@@ -22,7 +22,7 @@
 #ifndef __LENMUS_APP_H_
 #define __LENMUS_APP_H_
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "TheApp.cpp"
 #endif
 

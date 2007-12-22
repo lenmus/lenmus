@@ -89,7 +89,7 @@ void lmAuxObj::SetOrigin(lmUPoint uPos)
 {
 	// AuxObj origin is its parent origin, so ignore received point
     m_uOrg = GetOrigin();
-    wxLogMessage(_T("[lmAuxObj::SetOrigin] %.2f, %.2f"), m_uOrg.x, m_uOrg.y);
+    //wxLogMessage(_T("[lmAuxObj::SetOrigin] %.2f, %.2f"), m_uOrg.x, m_uOrg.y);
 }
 
 lmUPoint lmAuxObj::GetOrigin()

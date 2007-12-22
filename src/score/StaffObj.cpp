@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "StaffObj.h"
 #endif
 
@@ -529,7 +529,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 	else
 	{
 		//Create an invisible shape, to store the StaffObj position
-		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg);
+		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg, lmUSize(0.0, 0.0) );
 		pBox->AddShape(pShape);
 		m_pShape = pShape;
 		uWidth = 0;

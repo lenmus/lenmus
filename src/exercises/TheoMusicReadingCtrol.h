@@ -22,7 +22,7 @@
 #ifndef __THOEMUSICREADINGCTROL_H__        //to avoid nested includes
 #define __THOEMUSICREADINGCTROL_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "TheoMusicReadingCtrol.cpp"
 #endif
 

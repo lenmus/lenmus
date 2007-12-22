@@ -50,6 +50,7 @@ public:
 
 	//---- specific methods of this class ------------------------
 
+	//Adding StaffObs (at the end)
     lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
     lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true);
 
@@ -104,6 +105,15 @@ public:
 
     lmStaffObj* AddText(wxString sText, lmEAlignment nAlign,
                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
+
+	//inserting StaffObs
+    lmBarline* InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType = etb_SimpleBarline);
+	lmClef* InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType);
+	lmNote* InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
+					   wxString sOctave, lmENoteType nNoteType, float rDuration);
+
+
+
 
     void ShiftTime(float rTimeShift);
 

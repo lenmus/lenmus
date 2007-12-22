@@ -22,7 +22,7 @@
 #ifndef __FONTMANAGER_H        //to avoid nested includes
 #define __FONTMANAGER_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "FontManager.cpp"
 #endif
 

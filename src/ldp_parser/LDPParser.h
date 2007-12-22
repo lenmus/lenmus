@@ -104,10 +104,10 @@ public:
 
 
     // auxiliary methods
-    float   GetDefaultDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted,
-                      int nActualNotes, int nNormalNotes);
-    int     GetBeamingLevel(lmENoteType nNoteType);
-    bool    ParenthesisMatch(const wxString& sSource);
+    static float GetDefaultDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted,
+									int nActualNotes, int nNormalNotes);
+    int GetBeamingLevel(lmENoteType nNoteType);
+    bool ParenthesisMatch(const wxString& sSource);
 
 
 private:

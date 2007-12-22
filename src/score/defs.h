@@ -36,6 +36,7 @@
 #endif
 
 #include "wx/gdicmn.h"
+#include <list>
 
 
 

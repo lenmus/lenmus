@@ -22,7 +22,7 @@
 #ifndef __LM_SHAPESTAFF_H__        //to avoid nested includes
 #define __LM_SHAPESTAFF_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ShapeStaff.cpp"
 #endif
 

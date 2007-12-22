@@ -18,7 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ScoreCanvas.h"
 #endif
 
@@ -42,6 +42,7 @@
 #include "ScoreDoc.h"
 #include "ScoreCommand.h"
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
+#include "../ldp_parser/LDPParser.h"
 
 #include "global.h"
 
@@ -240,7 +241,7 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
     lmScoreObj* pSO = pGMO->GetScoreOwner();
 	wxString sName = wxString::Format(_T("Move %s"), pGMO->GetName().c_str() );
-	pCP->Submit(new lmScoreCommandMove(sName, m_pDoc, pSO, uPos));
+	pCP->Submit(new lmCmdMoveScoreObj(sName, m_pDoc, pSO, uPos));
 }
 
 void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
@@ -252,9 +253,41 @@ void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, pGMO));
 }
 
+void lmScoreCanvas::InsertClef(lmEClefType nClefType)
+{
+	//insert a Clef at current cursor position
+    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+	wxASSERT(pCursorSO);
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _T("Insert clef");
+	pCP->Submit(new lmCmdInsertClef(sName, m_pDoc, pCursorSO, nClefType) );
+}
+
+void lmScoreCanvas::InsertBarline(lmEBarline nType)
+{
+	//insert a barline at current cursor position
+    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+	wxASSERT(pCursorSO);
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _T("Insert barline");
+	pCP->Submit(new lmCmdInsertBarline(sName, m_pDoc, pCursorSO, nType) );
+}
+
+void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
+							   wxString sStep, wxString sOctave, 
+							   lmENoteType nNoteType, float rDuration)
+{
+	//insert a note at current cursor position
+    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+	wxASSERT(pCursorSO);
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _T("Insert note");
+	pCP->Submit(new lmCmdInsertNote(sName, m_pDoc, pCursorSO, nPitchType, sStep, sOctave, 
+							        nNoteType, rDuration) );
+}
+
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 {
-    wxLogMessage(_T("lmScoreCanvas::OnKeyPress"));
     int nKeyCode = event.GetKeyCode();
     switch (nKeyCode)
     {
@@ -274,9 +307,155 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 	        m_pView->CursorRight();
             break;
 
+        case 97:    // 'a'
+            //test: insert a clef
+            InsertClef(lmE_Do1);
+            break;
+
+        case 98:    // 'b'
+            //test: insert a barline
+            InsertBarline(etb_DoubleBarline);
+            break;
+
+        case 99:    // 'c'
+		{
+            //test: insert a note
+			float rDuration = lmLDPParser::GetDefaultDuration(eEighth, false, false, 0, 0);
+			InsertNote(lm_ePitchRelative, _T("c"), _T("4"), eEighth, rDuration);
+            break;
+		}
+
         default:
+        {
+            wxString key;
+            {
+                switch ( nKeyCode )
+                {
+                    case WXK_BACK: key = _T("BACK"); break;
+                    case WXK_TAB: key = _T("TAB"); break;
+                    case WXK_RETURN: key = _T("RETURN"); break;
+                    case WXK_ESCAPE: key = _T("ESCAPE"); break;
+                    case WXK_SPACE: key = _T("SPACE"); break;
+                    case WXK_DELETE: key = _T("DELETE"); break;
+                    case WXK_START: key = _T("START"); break;
+                    case WXK_LBUTTON: key = _T("LBUTTON"); break;
+                    case WXK_RBUTTON: key = _T("RBUTTON"); break;
+                    case WXK_CANCEL: key = _T("CANCEL"); break;
+                    case WXK_MBUTTON: key = _T("MBUTTON"); break;
+                    case WXK_CLEAR: key = _T("CLEAR"); break;
+                    case WXK_SHIFT: key = _T("SHIFT"); break;
+                    case WXK_ALT: key = _T("ALT"); break;
+                    case WXK_CONTROL: key = _T("CONTROL"); break;
+                    case WXK_MENU: key = _T("MENU"); break;
+                    case WXK_PAUSE: key = _T("PAUSE"); break;
+                    case WXK_CAPITAL: key = _T("CAPITAL"); break;
+                    case WXK_END: key = _T("END"); break;
+                    case WXK_HOME: key = _T("HOME"); break;
+                    case WXK_LEFT: key = _T("LEFT"); break;
+                    case WXK_UP: key = _T("UP"); break;
+                    case WXK_RIGHT: key = _T("RIGHT"); break;
+                    case WXK_DOWN: key = _T("DOWN"); break;
+                    case WXK_SELECT: key = _T("SELECT"); break;
+                    case WXK_PRINT: key = _T("PRINT"); break;
+                    case WXK_EXECUTE: key = _T("EXECUTE"); break;
+                    case WXK_SNAPSHOT: key = _T("SNAPSHOT"); break;
+                    case WXK_INSERT: key = _T("INSERT"); break;
+                    case WXK_HELP: key = _T("HELP"); break;
+                    case WXK_NUMPAD0: key = _T("NUMPAD0"); break;
+                    case WXK_NUMPAD1: key = _T("NUMPAD1"); break;
+                    case WXK_NUMPAD2: key = _T("NUMPAD2"); break;
+                    case WXK_NUMPAD3: key = _T("NUMPAD3"); break;
+                    case WXK_NUMPAD4: key = _T("NUMPAD4"); break;
+                    case WXK_NUMPAD5: key = _T("NUMPAD5"); break;
+                    case WXK_NUMPAD6: key = _T("NUMPAD6"); break;
+                    case WXK_NUMPAD7: key = _T("NUMPAD7"); break;
+                    case WXK_NUMPAD8: key = _T("NUMPAD8"); break;
+                    case WXK_NUMPAD9: key = _T("NUMPAD9"); break;
+                    case WXK_MULTIPLY: key = _T("MULTIPLY"); break;
+                    case WXK_ADD: key = _T("ADD"); break;
+                    case WXK_SEPARATOR: key = _T("SEPARATOR"); break;
+                    case WXK_SUBTRACT: key = _T("SUBTRACT"); break;
+                    case WXK_DECIMAL: key = _T("DECIMAL"); break;
+                    case WXK_DIVIDE: key = _T("DIVIDE"); break;
+                    case WXK_F1: key = _T("F1"); break;
+                    case WXK_F2: key = _T("F2"); break;
+                    case WXK_F3: key = _T("F3"); break;
+                    case WXK_F4: key = _T("F4"); break;
+                    case WXK_F5: key = _T("F5"); break;
+                    case WXK_F6: key = _T("F6"); break;
+                    case WXK_F7: key = _T("F7"); break;
+                    case WXK_F8: key = _T("F8"); break;
+                    case WXK_F9: key = _T("F9"); break;
+                    case WXK_F10: key = _T("F10"); break;
+                    case WXK_F11: key = _T("F11"); break;
+                    case WXK_F12: key = _T("F12"); break;
+                    case WXK_F13: key = _T("F13"); break;
+                    case WXK_F14: key = _T("F14"); break;
+                    case WXK_F15: key = _T("F15"); break;
+                    case WXK_F16: key = _T("F16"); break;
+                    case WXK_F17: key = _T("F17"); break;
+                    case WXK_F18: key = _T("F18"); break;
+                    case WXK_F19: key = _T("F19"); break;
+                    case WXK_F20: key = _T("F20"); break;
+                    case WXK_F21: key = _T("F21"); break;
+                    case WXK_F22: key = _T("F22"); break;
+                    case WXK_F23: key = _T("F23"); break;
+                    case WXK_F24: key = _T("F24"); break;
+                    case WXK_NUMLOCK: key = _T("NUMLOCK"); break;
+                    case WXK_SCROLL: key = _T("SCROLL"); break;
+                    case WXK_PAGEUP: key = _T("PAGEUP"); break;
+                    case WXK_PAGEDOWN: key = _T("PAGEDOWN"); break;
+                    case WXK_NUMPAD_SPACE: key = _T("NUMPAD_SPACE"); break;
+                    case WXK_NUMPAD_TAB: key = _T("NUMPAD_TAB"); break;
+                    case WXK_NUMPAD_ENTER: key = _T("NUMPAD_ENTER"); break;
+                    case WXK_NUMPAD_F1: key = _T("NUMPAD_F1"); break;
+                    case WXK_NUMPAD_F2: key = _T("NUMPAD_F2"); break;
+                    case WXK_NUMPAD_F3: key = _T("NUMPAD_F3"); break;
+                    case WXK_NUMPAD_F4: key = _T("NUMPAD_F4"); break;
+                    case WXK_NUMPAD_HOME: key = _T("NUMPAD_HOME"); break;
+                    case WXK_NUMPAD_LEFT: key = _T("NUMPAD_LEFT"); break;
+                    case WXK_NUMPAD_UP: key = _T("NUMPAD_UP"); break;
+                    case WXK_NUMPAD_RIGHT: key = _T("NUMPAD_RIGHT"); break;
+                    case WXK_NUMPAD_DOWN: key = _T("NUMPAD_DOWN"); break;
+                    case WXK_NUMPAD_PAGEUP: key = _T("NUMPAD_PAGEUP"); break;
+                    case WXK_NUMPAD_PAGEDOWN: key = _T("NUMPAD_PAGEDOWN"); break;
+                    case WXK_NUMPAD_END: key = _T("NUMPAD_END"); break;
+                    case WXK_NUMPAD_BEGIN: key = _T("NUMPAD_BEGIN"); break;
+                    case WXK_NUMPAD_INSERT: key = _T("NUMPAD_INSERT"); break;
+                    case WXK_NUMPAD_DELETE: key = _T("NUMPAD_DELETE"); break;
+                    case WXK_NUMPAD_EQUAL: key = _T("NUMPAD_EQUAL"); break;
+                    case WXK_NUMPAD_MULTIPLY: key = _T("NUMPAD_MULTIPLY"); break;
+                    case WXK_NUMPAD_ADD: key = _T("NUMPAD_ADD"); break;
+                    case WXK_NUMPAD_SEPARATOR: key = _T("NUMPAD_SEPARATOR"); break;
+                    case WXK_NUMPAD_SUBTRACT: key = _T("NUMPAD_SUBTRACT"); break;
+                    case WXK_NUMPAD_DECIMAL: key = _T("NUMPAD_DECIMAL"); break;
+
+                    default:
+                    {
+                        if ( wxIsprint((int)nKeyCode) )
+                            key.Printf(_T("'%c'"), (char)nKeyCode);
+                        else if ( nKeyCode > 0 && nKeyCode < 27 )
+                            key.Printf(_("Ctrl-%c"), _T('A') + nKeyCode - 1);
+                        else
+                            key.Printf(_T("unknown (%ld)"), nKeyCode);
+                    }
+                }
+            }
+
+            #if wxUSE_UNICODE
+                key += wxString::Format(_T(" (Unicode: %#04x)"), event.GetUnicodeKey());
+            #endif // wxUSE_UNICODE
+
+            wxMessageBox( wxString::Format( _T("Char event: %s (flags = %c%c%c%c)"),
+                    key.c_str(),
+                    (event.ControlDown() ? _T('C') : _T('-') ),
+                    (event.AltDown() ? _T('A') : _T('-') ),
+                    (event.ShiftDown() ? _T('S') : _T('-') ),
+                    (event.MetaDown() ? _T('M') : _T('-') ) ));
             event.Skip();
+        }
     }
+
 }
 
 void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)

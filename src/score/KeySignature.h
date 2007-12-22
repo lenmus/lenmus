@@ -22,7 +22,7 @@
 #ifndef __KEYSIGNATURE_H__        //to avoid nested includes
 #define __KEYSIGNATURE_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "KeySignature.cpp"
 #endif
 

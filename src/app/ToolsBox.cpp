@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ToolsBox.h"
 #endif
 
@@ -93,6 +93,9 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
                               wxSizerFlags(0).Border(wxALL, SPACING) );
         }
     }
+
+	//initializations
+	m_nSelTool = lmTOOL_NONE;
 
 }
 

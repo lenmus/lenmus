@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LMMAINFRAME_H__
-#define __LMMAINFRAME_H__
+#ifndef __LM_MAINFRAME_H__
+#define __LM_MAINFRAME_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "MainFrame.cpp"
 #endif
 
@@ -53,6 +53,7 @@ class lmHelpController;
 class lmMetronome;
 class lmMDIChildFrame;
 class lmStatusBar;
+class lmToolBox;
 
 
 //IDs for menu events that must be public (i.e. to generate them by program)
@@ -223,8 +224,9 @@ public:
     //debug method
     void DumpScore(lmScore* pScore);
 
-
-    lmTextBookController* GetBookController() { return m_pBookController; }
+	//access to information
+    inline lmTextBookController* GetBookController() { return m_pBookController; }
+	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
 
 	// call backs
 	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
@@ -235,7 +237,6 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
-    wxWindow* CreateToolBox();
 
     //status bar
     void CreateTheStatusBar(int nType=0);
@@ -245,7 +246,7 @@ protected:
 
     //controllers, special windows, and other controls
     wxAuiManager            m_mgrAUI;           // wxAUI manager
-    wxWindow*               m_pToolBox;         //tool box window
+    lmToolBox*              m_pToolBox;         //tool box window
     lmTextBookController*   m_pBookController;
     lmHtmlWindow*           m_pHtmlWin;
     lmHelpController*       m_pHelp;
@@ -282,4 +283,4 @@ protected:
 };
 
 
-#endif    // __LMMAINFRAME_H__
+#endif    // __LM_MAINFRAME_H__

@@ -22,7 +22,7 @@
 #ifndef __LMTOKEN_H        //to avoid nested includes
 #define __LMTOKEN_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "LDPToken.cpp"
 #endif
 

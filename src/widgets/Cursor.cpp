@@ -103,7 +103,7 @@ void lmScoreCursor::RemoveCursor()
     //to ensure that the cursor is not displayed while doing the operation.
     //This method stops the timer and ensures that the cursor is erased
 
-    //stopt cursor timer
+    //stop cursor timer
     m_fDisplayed = false;
     if (m_oCursorTimer.IsRunning())
         m_oCursorTimer.Stop();

@@ -135,7 +135,8 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
     }
 
 	//update system yBottom position by copying yBottom from first slice
-	SetYBottom(m_Slices[0]->GetYBottom());
+    if (m_Slices.size() > 0)
+	    SetYBottom(m_Slices[0]->GetYBottom());
 
 }
 

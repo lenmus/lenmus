@@ -24,7 +24,7 @@
 //      - a timepos shift.
 //      - a 'new system' tag
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "SOControl.h"
 #endif
 
@@ -59,10 +59,10 @@ lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift
 }
 
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
-    : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmNO_VISIBLE, lmNO_DRAGGABLE)
+    : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmVISIBLE, lmNO_DRAGGABLE)
 {
-    wxASSERT(nType == lmNEW_SYSTEM);
-    m_nCtrolType = lmNEW_SYSTEM;
+    wxASSERT(nType == lmNEW_SYSTEM || nType == lmEND_OF_STAFF);
+    m_nCtrolType = nType;
     m_rTimeShift = 0.0;
 }
 
@@ -84,6 +84,10 @@ wxString lmSOControl::Dump()
     else if (m_nCtrolType == lmNEW_SYSTEM) {
         sDump = wxString::Format(
             _T("%d\tControl <newSystem>\n"), m_nId);
+    }
+    else if (m_nCtrolType == lmEND_OF_STAFF) {
+        sDump = wxString::Format(
+            _T("%d\tControl EOS: End of Staff\n"), m_nId);
     }
     else {
         sDump = wxString::Format(
@@ -127,7 +131,33 @@ lmUPoint lmSOControl::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
 	return uPos;
+}
+
+lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
+{
+    if (m_nCtrolType == lmEND_OF_STAFF)
+    {
+        //DBG ------------------------------------------------------------------------------
+        //compute position
+        lmLUnits uyStart = uPos.y - TenthsToLogical(10);
+        lmLUnits uyEnd = uPos.y + TenthsToLogical(60);
+        lmLUnits uWidth = TenthsToLogical(1);
+        lmLUnits uBoundsExtraWidth = TenthsToLogical(2);
+
+        //create the shape
+        lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
+                                            uWidth, uBoundsExtraWidth, *wxGREEN,
+                                            _T("EOS"), eEdgeNormal);
+	    pBox->AddShape(pShape);
+        m_pShape = pShape;
+
+        return 0.0;
+        //END DBG --------------------------------------------------------------------------
+
+    }
+    else 
+        return 0.0;
+
 }
 

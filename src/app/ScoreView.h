@@ -121,9 +121,9 @@ public:
     void SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType);
 
     //access to components
-    lmController* GetController() { return (lmController*)m_pCanvas; }
-    lmScoreDocument* GetDocument() { return m_pDoc; }
-	lmBoxScore* GetBoxScore() { return m_graphMngr.GetBoxScore(); }
+    inline lmController* GetController() { return (lmController*)m_pCanvas; }
+    inline lmScoreDocument* GetDocument() { return m_pDoc; }
+	inline lmBoxScore* GetBoxScore() { return m_graphMngr.GetBoxScore(); }
 
 
     // sound related methods
@@ -135,6 +135,7 @@ public:
 	void CursorUp();
 	void CursorDown();
 	void CursorAtPoint(lmUPoint& point);
+	inline lmStaffObj* GetCursorPosition() { return m_pCursorSO; }
 
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
@@ -204,11 +205,11 @@ private:
     // dragging control variables
     int             m_dragState;
     lmUPoint        m_uDragStartPos;
-    lmDPoint        m_vDragHotSpot;        //absolute point (pixels)
-    lmUPoint        m_uHotSpotShift;       //distance from shape origin
+    lmDPoint        m_vDragHotSpot;			//absolute point (pixels)
+    lmUPoint        m_uHotSpotShift;		//distance from shape origin
     wxDragImage*    m_pDragImage;
-    lmComponentObj*     m_pSoDrag;            // lmComponentObj being dragged
-	lmGMObject*		m_pGMODrag;			//GMObject being dragged
+    lmComponentObj* m_pSoDrag;				// lmComponentObj being dragged
+	lmGMObject*		m_pGMODrag;				//GMObject being dragged
 
     //cursor
     lmScoreCursor*  m_pCursor;

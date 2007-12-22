@@ -353,7 +353,7 @@ void lmShapeBeam::AdjustStems()
     }
 
     // If there is a note in the group out of the interval formed by the first note and the
-    // last note, then stem could be too too short. For example, a group of three notes,
+    // last note, then stem could be too short. For example, a group of three notes,
     // the first and the last ones D4 and the middle one G4; the beam is horizontal, nearly
     // the G4 line; so the midle notehead would be positioned just on the beam line.
     // So let's avoid these problems by adjusting the stems so that all stems have
@@ -370,12 +370,16 @@ void lmShapeBeam::AdjustStems()
         uyIncr = dyMin - uMinStem;
         fAdjust = true;
     }
-    else if (uMinStem > dyStem) {
-        // all stems are greater than the standard size. Reduce them.
-		//TODO. For chords the size must be measured from highest/lowest pitch note
-        uyIncr = -(uMinStem - dyStem);
-        fAdjust = true;
-    }
+  //  else if (uMinStem > dyStem) {
+  //      // all stems are greater than the standard size. Reduce them.
+		////AWARE. For chords the size must be measured from highest/lowest pitch note
+        //// but this is not now possible as the only stem we have is the one for the
+        //// chord. All others were deleted during layout phase. Moreover. this trimming
+        //// is no longer necessary as stem length is properly computed in the note layout
+        //// method.
+  //      uyIncr = -(uMinStem - dyStem);
+  //      fAdjust = true;
+  //  }
     else {
         fAdjust = false;
     }
@@ -459,13 +463,21 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
 
 lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyShift)
 {
-    lmLUnits uyPos;
-	//if ( ((lmNote*)m_pOwner)->IsInChord() )
+    return pShapeStem->GetYEndStem() + uyShift;
+
+ //   lmLUnits uyPos;
+ //   lmNote* pNote = (lmNote*)m_pOwner;
+	//if ( pNote->IsInChord() )
 	//{
 	//    if (m_fStemsDown)
 	//	{
- //   //        lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
- //   //        uyPos = pMinNote->GetYStartStem() + pNote->GetStemLength();
+ //           //PROBLEM: During layout only the stem in base note exists. All other stem shapes
+ //           //are deleted.
+ //           //lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
+ //           //uyPos = pMinNote->GetYStartStem() + pNote->GetStemLength();
+ //           lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
+ //           lmShapeStem* pStem = ((lmShapeNote*)pMinNote->GetShap2())->GetStem();
+ //           uyPos = pStem->GetYEndStem();
  //       }
  //       else
 	//	{
@@ -473,19 +485,22 @@ lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyS
  //   //        uyPos = pMaxNote->GetYStartStem() - pNote->GetStemLength();
  //           //wxLogMessage(_T("[lmShapeBeam::ComputeYPosOfSegment] uyPos=%.2f, yStem=%.2f, stemLength=%.2f"),
  //           //    uyPos, pMaxNote->GetYStartStem(), pNote->GetStemLength());
+ //           lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
+ //           lmShapeStem* pStem = ((lmShapeNote*)pMaxNote->GetShap2())->GetStem();
+ //           uyPos = pStem->GetYEndStem();
  //       }
  //   }
  //   else 
 	//{
-		wxASSERT(pShapeStem);
-		if (m_fStemsDown)
-			uyPos = pShapeStem->GetYBottom();
-		else
-			uyPos = pShapeStem->GetYTop();
-    //}
-    uyPos += uyShift;
+	//	wxASSERT(pShapeStem);
+	//	if (m_fStemsDown)
+	//		uyPos = pShapeStem->GetYBottom();
+	//	else
+	//		uyPos = pShapeStem->GetYTop();
+ //   }
+ //   uyPos += uyShift;
 
-    return uyPos;
+ //   return uyPos;
 
 }
 

@@ -22,7 +22,7 @@
 #ifndef __LM_TOOLSBOX_H__        //to avoid nested includes
 #define __LM_TOOLSBOX_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ToolsBox.cpp"
 #endif
 
@@ -37,19 +37,29 @@
 #include "wx/wx.h"
 #endif
 
-
 class lmToolBox: public wxPanel
 {
    DECLARE_DYNAMIC_CLASS(lmToolBox)
 
 public:
+    //available tools
+    enum lmEEditTool 
+    {
+	    lmTOOL_NONE = 0,
+	    lmTOOL_NOTE,
+    };
+
     lmToolBox(wxWindow* parent, wxWindowID id = wxID_ANY);
     virtual ~lmToolBox() {}
 
     void OnButtonClicked(wxCommandEvent& event);
 
+	//current tool and its options
+	inline lmEEditTool GetSelectedTool() const { return m_nSelTool; }
+
 private:
     wxPanel*    m_pOptionsPanel;
+	lmEEditTool	m_nSelTool;
 
     DECLARE_EVENT_TABLE()
 };

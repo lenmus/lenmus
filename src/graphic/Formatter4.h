@@ -51,17 +51,20 @@ public:
 
 
 private:
-    lmBoxScore* RenderMinimal(lmPaper *pPaper);
     lmBoxScore* RenderJustified(lmPaper* pPaper);
 
     lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, lmBoxSystem* pBoxSystem,
                                lmPaper* pPaper, bool* pNewSystem);
+    void AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
+                               lmBoxSystem* pBoxSystem, lmPaper* pPaper);
     void RedistributeFreeSpace(lmLUnits nAvailable);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);
     bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nAbsMeasure,
 					 int nRelMeasure, lmPaper* pPaper);
     lmLUnits ComputeSystemHeight(lmPaper* pPaper);
 	void ResetLocation(int nAbsMeasure);
+    bool SplitMeasureColumn();
+
 
 
 

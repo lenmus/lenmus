@@ -22,7 +22,7 @@
 #ifndef _PAGE_H        //to avoid nested includes
 #define _PAGE_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Page.cpp"
 #endif
 

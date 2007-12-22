@@ -28,7 +28,7 @@
     define different traversal algorithms and allows us to change the internal representation
     of a StaffObjs collection without affecting the rest of the program.
 */
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "StaffObjIterator.h"
 #endif
 
@@ -60,14 +60,22 @@ lmStaffObjIterator::lmStaffObjIterator(ETraversingOrder nOrder, lmColStaffObjs* 
 bool lmStaffObjIterator::EndOfList()
 {
     // returns true if cursor does not point to a valid item
-    return (m_pCurrentNode ? false : true);
+    //return (m_pCurrentNode ? false : true);
+    return m_pColStaffobjs->EndOfList(m_pCurrentNode);
+}
+
+bool lmStaffObjIterator::StartOfList()
+{
+    // returns true if cursor points to before first item
+    return m_pColStaffobjs->StartOfList(m_pCurrentNode);
 }
 
 lmStaffObj* lmStaffObjIterator::GetCurrent()
 {
     // returns the lmStaffObj pointed by cursor
-    wxASSERT(m_pCurrentNode);
-    return (lmStaffObj*) m_pCurrentNode->GetData();
+    //wxASSERT(m_pCurrentNode);
+    //return (lmStaffObj*) m_pCurrentNode->GetData();
+    return *m_pCurrentNode;
 }
 
 void lmStaffObjIterator::AdvanceToMeasure(int nMeasure)
@@ -87,15 +95,18 @@ void lmStaffObjIterator::MoveFirst()
 void lmStaffObjIterator::MoveNext()
 {
     // advance cursor to next lmStaffObj
-    if (m_pCurrentNode)
-        m_pCurrentNode = m_pCurrentNode->GetNext();
+    m_pCurrentNode++;
+    //if (m_pCurrentNode)
+        //m_pCurrentNode = m_pCurrentNode->GetNext();
+
 }
 
 void lmStaffObjIterator::MovePrev()
 {
     // move cursor back to previous lmStaffObj
-    if (m_pCurrentNode)
-        m_pCurrentNode = m_pCurrentNode->GetPrevious();
+    m_pCurrentNode--;
+    //if (m_pCurrentNode)
+        //m_pCurrentNode = m_pCurrentNode->GetPrevious();
 }
 
 void lmStaffObjIterator::MoveLast()
@@ -108,9 +119,9 @@ void lmStaffObjIterator::BackToItemOfType(EStaffObjType nType)
 {
     // goes back until an staffObj of type nType is found or until passing the start of
     // the collection (cursor == 0) if none is found
-    if (EndOfList()) return;
+    if (StartOfList()) return;
     MovePrev();
-    for (; !EndOfList(); ) {
+    for (; !StartOfList(); ) {
         if (GetCurrent()->GetClass() == nType) break;
         MovePrev();
     }

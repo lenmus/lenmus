@@ -24,7 +24,7 @@
     @brief Methods to read and form a token
 
 */
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "LDPToken.h"
 #endif
 

@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ScoreCommand.h"
 #endif
 
@@ -43,11 +43,10 @@
 // Implementation of the score commands class
 //
 
-lmScoreCommand::lmScoreCommand(const wxString& sName, lmEScoreCommand nCommand, lmScoreDocument *pDoc)
+lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc)
     : wxCommand(true, sName)
 {
     m_pDoc = pDoc;
-    m_cmd = nCommand;
 	m_fDocModified = false;
 }
 
@@ -84,12 +83,12 @@ bool lmCmdSelectSingle::DoSelectObject()
 
 
 //----------------------------------------------------------------------------------------
-// lmScoreCommandMove implementation
+// lmCmdMoveScoreObj implementation
 //----------------------------------------------------------------------------------------
 
-lmScoreCommandMove::lmScoreCommandMove(const wxString& sName, lmScoreDocument *pDoc,
+lmCmdMoveScoreObj::lmCmdMoveScoreObj(const wxString& sName, lmScoreDocument *pDoc,
 									   lmScoreObj* pSO, const lmUPoint& uPos)
-	: lmScoreCommand(sName, lmCMD_MoveScoreObj, pDoc)
+	: lmScoreCommand(sName, pDoc)
 {
 	lmUPoint uOrg = pSO->GetOrigin();
 	m_tPos.x = uPos.x - uOrg.x;
@@ -102,9 +101,9 @@ lmScoreCommandMove::lmScoreCommandMove(const wxString& sName, lmScoreDocument *p
 	m_pSO = pSO;
 }
 
-bool lmScoreCommandMove::Do()
+bool lmCmdMoveScoreObj::Do()
 {
-    wxASSERT_MSG( m_pSO, _T("[lmScoreCommandMove::Do] No ScoreObj to move!"));
+    wxASSERT_MSG( m_pSO, _T("[lmCmdMoveScoreObj::Do] No ScoreObj to move!"));
 
     m_tOldPos = m_pSO->SetUserLocation(m_tPos);
 	m_fDocModified = m_pDoc->IsModified();
@@ -114,9 +113,9 @@ bool lmScoreCommandMove::Do()
 
 }
 
-bool lmScoreCommandMove::Undo()
+bool lmCmdMoveScoreObj::Undo()
 {
-    wxASSERT_MSG( m_pSO, _T("[lmScoreCommandMove::Undo]: No ScoreObj to move!"));
+    wxASSERT_MSG( m_pSO, _T("[lmCmdMoveScoreObj::Undo]: No ScoreObj to move!"));
 
     m_pSO->SetUserLocation(m_tOldPos);
 	m_pDoc->Modify(m_fDocModified);
@@ -124,3 +123,107 @@ bool lmScoreCommandMove::Undo()
     return true;
 
 }
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdInsertBarline implementation: Insert a clef at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdInsertBarline::lmCmdInsertBarline(const wxString& sName, lmScoreDocument *pDoc,
+                                 lmStaffObj* pCursorSO, lmEBarline nType)
+	: lmScoreCommand(sName, pDoc)
+{
+    m_nBarlineType = nType;
+	m_pCursorSO = pCursorSO;
+}
+
+bool lmCmdInsertBarline::Do()
+{
+	m_pCursorSO->GetVStaff()->InsertBarline(m_pCursorSO, m_nBarlineType);
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+bool lmCmdInsertBarline::Undo()
+{
+    //TODO
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdInsertClef implementation: Insert a clef at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdInsertClef::lmCmdInsertClef(const wxString& sName, lmScoreDocument *pDoc,
+                                 lmStaffObj* pCursorSO, lmEClefType nClefType)
+	: lmScoreCommand(sName, pDoc)
+{
+    m_nClefType = nClefType;
+	m_pCursorSO = pCursorSO;
+}
+
+bool lmCmdInsertClef::Do()
+{
+	m_pCursorSO->GetVStaff()->InsertClef(m_pCursorSO, m_nClefType);
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+bool lmCmdInsertClef::Undo()
+{
+    //TODO
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdInsertNote implementation: Insert a note at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdInsertNote::lmCmdInsertNote(const wxString& sName, lmScoreDocument *pDoc,
+                                 lmStaffObj* pCursorSO, lmEPitchType nPitchType,
+								 wxString sStep, wxString sOctave, 
+								 lmENoteType nNoteType, float rDuration)
+	: lmScoreCommand(sName, pDoc)
+{
+	m_nNoteType = nNoteType;
+	m_nPitchType = nPitchType;
+	m_sStep = sStep;
+	m_sOctave = sOctave;
+	m_rDuration = rDuration;
+	m_pCursorSO = pCursorSO;
+}
+
+bool lmCmdInsertNote::Do()
+{
+	m_pCursorSO->GetVStaff()->InsertNote(m_pCursorSO, m_nPitchType, m_sStep, m_sOctave, 
+										 m_nNoteType, m_rDuration);
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+bool lmCmdInsertNote::Undo()
+{
+    //TODO
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+

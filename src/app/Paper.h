@@ -22,7 +22,7 @@
 #ifndef _PAPER_H        //to avoid nested includes
 #define _PAPER_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Paper.cpp"
 #endif
 

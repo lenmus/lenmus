@@ -118,6 +118,10 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     lmStaff* pStaff = new lmStaff(pScore);
     m_cStaves.Append(pStaff);
 
+    //Add EOS control object to the StaffObjs collection
+    m_cStaffObjs.Store( new lmSOControl(lmEND_OF_STAFF, this) );
+
+
     //default value
     //TODO review this fixed space before the clef
     m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
@@ -277,6 +281,65 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
 
 
 //---------------------------------------------------------------------------------------
+// Methods for inserting StaffObjs
+//---------------------------------------------------------------------------------------
+
+lmClef* lmVStaff::InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType)
+{
+    int nStaff = pCursorSO->GetStaffNum();
+    lmClef* pClef = new lmClef(nClefType, this, nStaff, lmVISIBLE);
+    lmStaff* pStaff = GetStaff(nStaff);
+    pStaff->NewContext(pClef);
+    m_cStaffObjs.Insert(pClef, pCursorSO);
+    return pClef;
+}
+
+lmBarline* lmVStaff::InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType)
+{
+    lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
+    m_cStaffObjs.Insert(pBarline, pCursorSO);
+
+    //save the contexts in the barline
+    wxStaffListNode* pNode = m_cStaves.GetFirst();
+    for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
+	{
+        lmStaff* pStaff = (lmStaff *)pNode->GetData();
+        lmContext* pContext = pStaff->GetLastContext();
+        pBarline->AddContext(pContext, nStaff);
+    }
+
+    //Reset contexts for the new measure that starts
+	//TODO: it is necessary to update context in next measure objects !!!
+    //ResetContexts();
+
+    return pBarline;
+}
+
+lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
+							 wxString sOctave, lmENoteType nNoteType, float rDuration)
+{
+    int nStaff = pCursorSO->GetStaffNum();
+    lmStaff* pStaff = GetStaff(nStaff);
+    lmContext* pContext = pStaff->GetLastContext();
+
+    lmTBeamInfo BeamInfo[6];
+    for (int i=0; i < 6; i++) {
+        BeamInfo[i].Repeat = false;
+        BeamInfo[i].Type = eBeamNone;
+    }
+	wxString sAccidentals = _T("");
+
+    lmNote* pNt = new lmNote(this, nPitchType,
+                        sStep, sOctave, sAccidentals, eNoAccidentals,
+                        nNoteType, rDuration, false, false, nStaff, lmVISIBLE,
+                        pContext, false, BeamInfo, false, false, lmSTEM_DEFAULT);
+
+    m_cStaffObjs.Insert(pNt, pCursorSO);
+    return pNt;
+}
+
+
+//---------------------------------------------------------------------------------------
 // Methods for adding StaffObjs
 //---------------------------------------------------------------------------------------
 
@@ -290,7 +353,6 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
     pStaff->NewContext(pClef);
     m_cStaffObjs.Store(pClef);
     return pClef;
-
 }
 
 // adds a spacer to the end of current StaffObjs collection
@@ -629,11 +691,11 @@ wxString lmVStaff::Dump()
 
     //dump measures table
     sDump += _T("\nMeasures:\n");
-    wxStaffObjsListNode* pNode;
     int iM;
     for (iM=1; iM <= m_cStaffObjs.GetNumMeasures(); iM++) {
-        pNode = m_cStaffObjs.GetFirstInMeasure(iM);
-        pSO = (lmStaffObj*)pNode->GetData();
+        lmItCSO pNode = m_cStaffObjs.GetFirstInMeasure(iM);
+        //pSO = (lmStaffObj*)pNode->GetData();
+        pSO = *pNode;
         sDump += wxString::Format(_T("\tMeasure %d: starts with object Id %d\n"),
                                   iM, pSO->GetID() );
     }
@@ -841,17 +903,16 @@ void lmVStaff::ResetContexts()
     */
 
     // iterate over the collection of Staves
-    lmStaff* pStaff;
-    lmContext* pOldContext;
-    lmContext* pNewContext;
     wxStaffListNode* pNode = m_cStaves.GetFirst();
-    for (; pNode; pNode = pNode->GetNext() ) {
-        pStaff = (lmStaff *)pNode->GetData();
+    for (; pNode; pNode = pNode->GetNext() )
+    {
+        lmStaff* pStaff = (lmStaff *)pNode->GetData();
 
-        pOldContext = pStaff->GetLastContext();
-        pNewContext = new lmContext(pOldContext->GetClef(),
-                                    pOldContext->GeyKey(),
-                                    pOldContext->GetTime() );
+        lmContext* pOldContext = pStaff->GetLastContext();
+        if (!pOldContext) return;
+        lmContext* pNewContext = new lmContext(pOldContext->GetClef(),
+                                               pOldContext->GeyKey(),
+                                               pOldContext->GetTime() );
         bool fEqual = true;
         for (int i=0; i < 7; i++) {
             if (pOldContext->GetAccidentals(i) != pNewContext->GetAccidentals(i)) {
@@ -879,7 +940,7 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
     lmStaffObj* pSO = (lmStaffObj*) NULL;
     lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_AsStored);
     pIter->MoveLast();
-    while(!pIter->EndOfList())
+    while(!pIter->StartOfList())
     {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_Barline) break;
@@ -1208,7 +1269,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
     lmNote* pNote = (lmNote*)NULL;
     lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_AsStored);
     pIter->MoveLast();
-    while(!pIter->EndOfList())
+    while(!pIter->StartOfList())
     {
         pSO = pIter->GetCurrent();
         switch (pSO->GetClass()) {

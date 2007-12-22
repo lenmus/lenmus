@@ -22,7 +22,7 @@
 #ifndef __LM_SCORECOMMAND_H__        //to avoid nested includes
 #define __LM_SCORECOMMAND_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ScoreCommand.cpp"
 #endif
 
@@ -41,19 +41,22 @@ public:
 	{
 		lmCMD_SelectSingle = 1,
 		lmCMD_MoveScoreObj,
+        lmCMD_InsertBarline,
+        lmCMD_InsertClef,
+        lmCMD_InsertNote,
 	};
 
     virtual ~lmScoreCommand();
 
     virtual bool Do()=0;
     virtual bool Undo()=0;
+    virtual lmEScoreCommand GetCommandType()=0;
 
 protected:
-    lmScoreCommand(const wxString& name, lmEScoreCommand cmd, lmScoreDocument *pDoc);
+    lmScoreCommand(const wxString& name, lmScoreDocument *pDoc);
 
     lmScoreDocument*    m_pDoc;
 	bool				m_fDocModified;
-    lmEScoreCommand		m_cmd;
 
 };
 
@@ -63,7 +66,7 @@ class lmCmdSelectSingle: public lmScoreCommand
 {
 public:
     lmCmdSelectSingle(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO)
-        : lmScoreCommand(name, lmCMD_SelectSingle, pDoc)
+        : lmScoreCommand(name, pDoc)
         {
             m_pGMO = pGMO;
         }
@@ -73,6 +76,7 @@ public:
     //overrides of pure virtual methods in base class
     bool Do();
     bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_SelectSingle; }
 
 
 protected:
@@ -85,22 +89,94 @@ protected:
 
 // Move object command
 //------------------------------------------------------------------------------------
-class lmScoreCommandMove: public lmScoreCommand
+class lmCmdMoveScoreObj: public lmScoreCommand
 {
 public:
-    lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pSO,
+    lmCmdMoveScoreObj(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pSO,
 					   const lmUPoint& uPos);
-    ~lmScoreCommandMove() {}
+    ~lmCmdMoveScoreObj() {}
 
     //overrides of pure virtual methods in base class
     bool Do();
     bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_MoveScoreObj; }
 
 
 protected:
     lmLocation      m_tPos;
     lmLocation		m_tOldPos;        // for Undo
 	lmScoreObj*		m_pSO;
+};
+
+
+// Insert barline command
+//------------------------------------------------------------------------------------
+class lmCmdInsertBarline: public lmScoreCommand
+{
+public:
+
+    lmCmdInsertBarline(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO,
+					   lmEBarline nType);
+    ~lmCmdInsertBarline() {}
+
+    //overrides of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_InsertBarline; }
+
+
+protected:
+    lmEBarline	    m_nBarlineType;
+	lmStaffObj*		m_pCursorSO;
+};
+
+
+// Insert clef command
+//------------------------------------------------------------------------------------
+class lmCmdInsertClef: public lmScoreCommand
+{
+public:
+
+    lmCmdInsertClef(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO,
+					lmEClefType nClefType);
+    ~lmCmdInsertClef() {}
+
+    //overrides of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_InsertClef; }
+
+
+protected:
+    lmEClefType     m_nClefType;
+	lmStaffObj*		m_pCursorSO;
+};
+
+
+// Insert note command
+//------------------------------------------------------------------------------------
+class lmCmdInsertNote: public lmScoreCommand
+{
+public:
+
+    lmCmdInsertNote(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO,
+					lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
+					lmENoteType nNoteType, float rDuration);
+    ~lmCmdInsertNote() {}
+
+    //overrides of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_InsertNote; }
+
+
+protected:
+	lmENoteType		m_nNoteType;
+	lmEPitchType	m_nPitchType;
+	wxString		m_sStep;
+	wxString		m_sOctave;
+	float			m_rDuration;
+	lmStaffObj*		m_pCursorSO;
 };
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

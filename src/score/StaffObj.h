@@ -38,6 +38,8 @@
 #include "wx/dragimag.h"
 #endif
 
+#include "ColStaffObjs.h"
+
 #define lmDRAGGABLE         true
 #define lmNO_DRAGGABLE      false
 #define lmVISIBLE           true
@@ -247,15 +249,16 @@ public:
     virtual float GetTimePosIncrement() { return 0; }
 
     // methods related to positioning
-    virtual lmLUnits GetAnchorPos() {return 0; }
+    virtual lmLUnits GetAnchorPos() {return m_pShape->GetXLeft(); }
 
 	//highligh
 	virtual void Highlight(lmPaper* pPaper, wxColour colorC) {}
 
     // methods related to staff ownership
-    void SetNumMeasure(int nNum) { m_numMeasure = nNum; }
-    int GetStaffNum() { return m_nStaffNum; }
-    lmVStaff* GetVStaff() { return m_pVStaff; }
+    inline int GetStaffNum() { return m_nStaffNum; }
+    inline lmVStaff* GetVStaff() { return m_pVStaff; }
+	inline void SetItMeasure(lmItMeasure itMeasure) { m_itMeasure = itMeasure; }
+	inline lmItMeasure GetItMeasure() { return m_itMeasure; }
 
     // methods related to AuxObj/GraphObj ownership
     virtual bool IsComposite() { return false; }
@@ -283,7 +286,7 @@ protected:
     // Info about staff ownership
     lmVStaff*   m_pVStaff;          // lmVStaff owning this lmStaffObj
     int         m_nStaffNum;        // lmStaff (1..n) on which this object is located
-    int         m_numMeasure;       // measure number in which this lmStaffObj is included
+	lmItMeasure	m_itMeasure;		// iterator pointing at measure data 
 
 
 };

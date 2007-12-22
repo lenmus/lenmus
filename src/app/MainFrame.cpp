@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "MainFrame.h"
 #endif
 
@@ -390,7 +390,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 :
   lmDocMDIParentFrame(manager, frame, -1, title, pos, size, style, _T("myFrame"))
 {
-    m_pToolBox = (wxWindow*) NULL;
+    m_pToolBox = (lmToolBox*) NULL;
     m_pHelp = (lmHelpController*) NULL;
     m_pBookController = (lmTextBookController*) NULL;
 	m_pTbTextBooks = (wxToolBar*) NULL;
@@ -478,26 +478,6 @@ void lmMainFrame::CreateControls()
 
     m_mgrAUI.Update();
 
-}
-
-wxWindow* lmMainFrame::CreateToolBox()
-{
-   wxPanel *panel = new wxPanel(this, wxID_ANY, wxPoint(0,0), wxSize(300,300),
-                                wxNO_BORDER);
-   wxFlexGridSizer *flex = new wxFlexGridSizer( 2 );
-   flex->AddGrowableRow( 0 );
-   flex->AddGrowableRow( 3 );
-   flex->AddGrowableCol( 1 );
-   flex->Add( 5,5 );   flex->Add( 5,5 );
-   flex->Add( new wxStaticText( panel, -1, wxT("wxTextCtrl:") ), 0, wxALL|wxALIGN_CENTRE, 5 );
-   flex->Add( new wxTextCtrl( panel, -1, wxT(""), wxDefaultPosition, wxSize(100,-1)), 
-                1, wxALL|wxALIGN_CENTRE, 5 );
-   flex->Add( new wxStaticText( panel, -1, wxT("wxSpinCtrl:") ), 0, wxALL|wxALIGN_CENTRE, 5 );
-   flex->Add( new wxSpinCtrl( panel, -1, wxT("5"), wxDefaultPosition, wxSize(100,-1), 
-                wxSP_ARROW_KEYS, 5, 50, 5 ), 0, wxALL|wxALIGN_CENTRE, 5 );
-   flex->Add( 5,5 );   flex->Add( 5,5 );
-   panel->SetSizer( flex );
-   return panel;
 }
 
 void lmMainFrame::OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event))

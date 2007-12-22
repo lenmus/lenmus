@@ -22,7 +22,7 @@
 #ifndef _EDITFRAME_H        //to avoid nested includes
 #define _EDITFRAME_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "EditFrame.cpp"
 #endif
 

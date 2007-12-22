@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef _SCORECANVAS_H        //to avoid nested includes
-#define _SCORECANVAS_H
+#ifndef _LM_SCORECANVAS_H        //to avoid nested includes
+#define _LM_SCORECANVAS_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ScoreCanvas.cpp"
 #endif
 
@@ -60,6 +60,10 @@ public:
     virtual void PausePlaying() {}
 
 	// commands with Do/Undo support
+	virtual void InsertBarline(lmEBarline nType = etb_SimpleBarline) {}
+    virtual void InsertClef(lmEClefType nClefType) {}
+	virtual void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
+					lmENoteType nNoteType, float rDuration) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
 
@@ -115,6 +119,10 @@ public:
     void PausePlaying();
 
 	// commands with Do/Undo support
+	void InsertBarline(lmEBarline nType = etb_SimpleBarline);
+    void InsertClef(lmEClefType nClefType);
+	void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
+					lmENoteType nNoteType, float rDuration);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 	void SelectObject(lmGMObject* pGMO);
 
@@ -148,4 +156,4 @@ private:
 };
 
 
-#endif  // _SCORECANVAS_H
+#endif  // _LM_SCORECANVAS_H

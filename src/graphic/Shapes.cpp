@@ -586,13 +586,14 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 // lmShapeInvisible
 //========================================================================================
 
-lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, lmUPoint offset, wxString sName) 
+lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, lmUPoint uPos, lmUSize uSize,
+                                   wxString sName) 
 	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, sName, lmNO_DRAGGABLE)
 {
-    m_uBoundsTop.x = offset.x;
-    m_uBoundsTop.y = offset.y;
-    m_uBoundsBottom.x = m_uBoundsTop.x;
-    m_uBoundsBottom.y = m_uBoundsTop.y;
+    m_uBoundsTop.x = uPos.x;
+    m_uBoundsTop.y = uPos.y;
+    m_uBoundsBottom.x = uPos.x + uSize.x;
+    m_uBoundsBottom.y = uPos.y + uSize.y;
 }
 
 wxString lmShapeInvisible::Dump(int nIndent)

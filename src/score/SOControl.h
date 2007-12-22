@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SOCONTROL_H__        //to avoid nested includes
-#define __SOCONTROL_H__
+#ifndef __LM_SOCONTROL_H__        //to avoid nested includes
+#define __LM_SOCONTROL_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "SOControl.cpp"
 #endif
 
@@ -30,6 +30,7 @@ enum ESOCtrolType
 {
     lmTIME_SHIFT = 1,       // forward / backwards
     lmNEW_SYSTEM,           // force a new system
+    lmEND_OF_STAFF,         // EOS: End of staff, marking object
 };
 
 class lmSOControl:  public lmStaffObj
@@ -37,11 +38,11 @@ class lmSOControl:  public lmStaffObj
 public:
     //constructors and destructor
     lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift);   //lmTIME_SHIFT
-    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM
+    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM, lmEOS
     ~lmSOControl() {}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC) { return 0;};
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
     //SOControl specfic methods
@@ -59,4 +60,4 @@ private:
 
 };
 
-#endif    // __SOCONTROL_H__
+#endif    // __LM_SOCONTROL_H__

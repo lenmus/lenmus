@@ -22,7 +22,7 @@
 #ifndef _OBJOPTIONS_H__        //to avoid nested includes
 #define _OBJOPTIONS_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ObjOptions.cpp"
 #endif
 

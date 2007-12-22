@@ -1109,6 +1109,15 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         OnMouseWheel(event);
     }
 
+	else if (event.Entering())
+	{
+		//the mouse is entering the window. Change cursor icon as appropriate
+	}
+
+	else if (event.Leaving())
+	{
+		//the mouse is leaving the window. Change cursor icon as appropriate
+	}
 }
 
 void lmScoreView::OnMouseWheel(wxMouseEvent& event)
@@ -1562,6 +1571,7 @@ void lmScoreView::SetInitialCursorPosition()
 		if (m_pCursorIT->EndOfList())
 		{
 			//the score is empty. Place cursor at start of first staff
+            //AWARE: This will never happend, as there is at least an EOS control object
 		}
 		else
 		{
@@ -1603,7 +1613,7 @@ void lmScoreView::CursorLeft()
     if (!m_pCursor) return;
 
 	//go back to previous staff obj.
-	if (!m_pCursorIT->EndOfList()) {
+	if (!m_pCursorIT->StartOfList()) {
         m_pCursorIT->MovePrev();
 	    if (m_pCursorIT->EndOfList()) {
             //continue in first item
