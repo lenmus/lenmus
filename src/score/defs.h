@@ -313,13 +313,14 @@ enum lmEPitchType
 // barlines
 enum lmEBarline
 {
-    etb_SimpleBarline = 1,          //thin line
-    etb_DoubleBarline,              //two thin lines
-    etb_EndBarline,                 //thin-thick lines
-    etb_StartRepetitionBarline,     //thick-thin-two dots
-    etb_EndRepetitionBarline,       //two dots-thin-thick
-    etb_StartBarline,               //thick-thin
-    etb_DoubleRepetitionBarline     //two dots-thin-thin-two dots
+    lm_eBarlineSimple = 1,          //thin line
+    lm_eBarlineDouble,              //two thin lines
+    lm_eBarlineEnd,                 //thin-thick lines
+    lm_eBarlineStartRepetition,     //thick-thin-two dots
+    lm_eBarlineEndRepetition,       //two dots-thin-thick
+    lm_eBarlineStart,               //thick-thin
+    lm_eBarlineDoubleRepetition,    //two dots-thin-thin-two dots
+	lm_eBarlineEOS,					//Non-visible. For control purposes
 };
 
 

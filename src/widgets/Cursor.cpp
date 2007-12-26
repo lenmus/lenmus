@@ -141,8 +141,17 @@ void lmScoreCursor::SetCursorPosition(lmStaffObj* pSO)
     m_pCursorSO = pSO;
 	lmVStaff* pVStaff = m_pCursorSO->GetVStaff();
     int nStaff = m_pCursorSO->GetStaffNum();
-	m_oCursorPos = m_pCursorSO->GetReferencePaperPos();
-	m_oCursorPos.y -= pVStaff->TenthsToLogical(10, nStaff);
+	lmShape* pShape = m_pCursorSO->GetShap2();
+	if (!pShape)
+		m_oCursorPos = lmUPoint(0.0f, 0.0f);
+	else
+	{
+		m_oCursorPos.x = pShape->GetXLeft() + pShape->GetWidth()/2.0f;
+		m_oCursorPos.y = pShape->GetYTop();
+	}
+
+	//m_oCursorPos = m_pCursorSO->GetReferencePaperPos();
+	//m_oCursorPos.y -= pVStaff->TenthsToLogical(10, nStaff);
 	m_udyLength = pVStaff->TenthsToLogical(60, nStaff);
 	m_udxSegment = pVStaff->TenthsToLogical(5, nStaff);
 

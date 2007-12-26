@@ -86,7 +86,7 @@ public:
                     bool fTie = false,
                     lmEStemType nStem = lmSTEM_DEFAULT);
 
-    lmBarline*  AddBarline(lmEBarline nType = etb_SimpleBarline, bool fVisible = true);
+    lmBarline*  AddBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
 
     lmMetronomeMark* AddMetronomeMark(int nTicksPerMinute,
                             bool fParentheses = false, bool fVisible = true);
@@ -107,7 +107,7 @@ public:
                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
 	//inserting StaffObs
-    lmBarline* InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType = etb_SimpleBarline);
+    lmBarline* InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType = lm_eBarlineSimple);
 	lmClef* InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType);
 	lmNote* InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
 					   wxString sOctave, lmENoteType nNoteType, float rDuration);

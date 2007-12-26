@@ -380,19 +380,19 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
                 pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
             }
         }
-        pVStaff->AddBarline(etb_SimpleBarline);
+        pVStaff->AddBarline(lm_eBarlineSimple);
 
         sPattern = _T("(s r)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_SimpleBarline);
+        pVStaff->AddBarline(lm_eBarlineSimple);
     }
 
     // Loop to add chords
     for (int iC=0; iC < oCad.GetNumChords(); iC++)
     {
         pVStaff->AddSpacer(15);
-        if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
+        if (iC != 0) pVStaff->AddBarline(lm_eBarlineSimple);
         // first and second notes on F4 clef staff
         sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
     //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
@@ -413,7 +413,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }
     pVStaff->AddSpacer(20);
-    pVStaff->AddBarline(etb_EndBarline);
+    pVStaff->AddBarline(lm_eBarlineEnd);
 
     //Prepare Solution Score
     if (pSolutionScore) {
@@ -433,7 +433,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
         for (int iC=0; iC < oCad.GetNumChords(); iC++)
         {
             pVStaff->AddSpacer(15);
-            if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
+            if (iC != 0) pVStaff->AddBarline(lm_eBarlineSimple);
             // first and second notes on F4 clef staff
             sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
         //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
@@ -454,7 +454,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }
         pVStaff->AddSpacer(20);
-        pVStaff->AddBarline(etb_EndBarline);
+        pVStaff->AddBarline(lm_eBarlineEnd);
     }
     
     //return cadence name

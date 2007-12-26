@@ -1305,6 +1305,9 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     // The DC is not scrolled.
     // The rectangle to redraw is in pixels and unscrolled
 
+	// hide the cursor so repaint doesn't interfere
+	if (m_pCursor) m_pCursor->RemoveCursor();
+
     // To draw a cast shadow for each page we need the shadow sizes
     lmPixels nRightShadowWidth = 3;      //pixels
     lmPixels nBottomShadowHeight = 3;      //pixels
@@ -1345,17 +1348,17 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         AdjustScrollbars();
     }
 
-    // Following code initializes cursor position if not yet initialized.
-    // Next code has nothing to do with repainting but I didn't find a better place to
-    // include it. And when repainting it is necessary to have cursor initialized.
-    if (!m_pCursor)
-    {
-        m_pCursor = new lmScoreCursor(this, (lmCanvas*)m_pCanvas, pScore);
-        SetInitialCursorPosition();
-        //TODO: This is not the best place to start the cursor. If the PO is going to
-        //be higlighted this will force a repaint (inside the paint routine!!)
-        m_pCursor->DisplayCursor(m_rScale, m_pCursorSO);
-    }
+    //// Following code initializes cursor position if not yet initialized.
+    //// Next code has nothing to do with repainting but I didn't find a better place to
+    //// include it. And when repainting it is necessary to have cursor initialized.
+    //if (!m_pCursor)
+    //{
+    //    m_pCursor = new lmScoreCursor(this, (lmCanvas*)m_pCanvas, pScore);
+    //    SetInitialCursorPosition();
+    //    //TODO: This is not the best place to start the cursor. If the PO is going to
+    //    //be higlighted this will force a repaint (inside the paint routine!!)
+    //    m_pCursor->DisplayCursor(m_rScale, m_pCursorSO);
+    //}
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
     // To refer it to view origin it is necessary to add scrolling origin
@@ -1512,7 +1515,16 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         if (fPreviousPageVisible) break;
     }
 
-    ////DEBUG: draw cyan rectangle to show updated rectangle
+	//Restore cursor
+    if (!m_pCursor)
+    {
+		// Following code initializes cursor position if not yet initialized.
+        m_pCursor = new lmScoreCursor(this, (lmCanvas*)m_pCanvas, pScore);
+        SetInitialCursorPosition();
+    }
+    m_pCursor->DisplayCursor(m_rScale, m_pCursorSO);
+
+	////DEBUG: draw cyan rectangle to show updated rectangle
     //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
     //pDC->SetPen(*wxCYAN_PEN);
     //pDC->DrawRectangle(repaintRect);
@@ -1645,4 +1657,13 @@ void lmScoreView::CursorAtPoint(lmUPoint& point)
 {
 	wxMessageBox(_T("lmScoreView::CurserAtPoint"));
 }
+
+void lmScoreView::UpdateCursor()
+{
+	//the score has been modified. So the cursor must be repainted at right
+	//position
+	m_pCursor->RemoveCursor();
+    m_pCursor->DisplayCursor(m_rScale, m_pCursorSO);		//Restore Cursor
+}
+
 

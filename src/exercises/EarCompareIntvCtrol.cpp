@@ -169,10 +169,10 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     //    pVStaff->AddSpacer(30);       // 3 lines
         pNode = parserLDP.ParseText( sPattern[i][0] );
         pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
         pNode = parserLDP.ParseText( sPattern[i][1] );
         pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
+        pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
     }
 
     //create the answer score with both intervals
@@ -191,29 +191,29 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     parserLDP.AnalyzeText(pNode, pVStaff);
     pNode = parserLDP.ParseText( sPattern[0][0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[0][1] );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddSpacer(30);       // 3 lines
-    pVStaff->AddBarline(etb_DoubleBarline);
+    pVStaff->AddBarline(lm_eBarlineDouble);
         // two invisible rests to do a pause when playing the score
     pNode = parserLDP.ParseText( _T("(s b noVisible)"));
     parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);
+    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
     pNode = parserLDP.ParseText( _T("(s b noVisible)"));
     parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);
+    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
         //second interval
     pNode = parserLDP.ParseText(_T("(texto ''") + oIntv1.GetIntervalName() +
                                 _T("'' dy:-40 (font ''Arial'' 6))"));
     parserLDP.AnalyzeText(pNode, pVStaff);
     pNode = parserLDP.ParseText( sPattern[1][0] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[1][1] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddSpacer(30);      
-    pVStaff->AddBarline(etb_EndBarline);
+    pVStaff->AddBarline(lm_eBarlineEnd);
 
     //compute the right answer
     m_sAnswer = _T("");

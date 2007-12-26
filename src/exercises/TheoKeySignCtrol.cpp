@@ -452,7 +452,7 @@ wxString lmTheoKeySignCtrol::SetNewProblem()
     m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);
-    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
+    pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
 
     //wxLogMessage(wxString::Format(
     //    _T("[lmTheoKeySignCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d"),

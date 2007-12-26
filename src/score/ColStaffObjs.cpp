@@ -87,6 +87,9 @@
 #include "wx/debug.h"
 #include "StaffObjIterator.h"
 
+//access to logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
 
 
 //====================================================================================================
@@ -123,118 +126,39 @@ lmColStaffObjs::~lmColStaffObjs()
 
 
 //====================================================================================================
-//Funciones de creación, inserción y borrado
+//Methods to add, insert and delete StaffObjs
 //====================================================================================================
 
-
-//void lmColStaffObjs::Store(lmStaffObj* pSO)
-//{
-//    //Stores the received StaffObj in this collection, inserting it at the end, before EOS
-//    //objcet 
-//    //Controls division into measures and assign time position to the lmStaffObj
-//
-//    //assign time position
-//    pSO->SetTimePos(m_rTime);
-//    
-//    //increment time counters
-//    if (pSO->GetClass() == eSFOT_NoteRest) {
-//        //only NoteRests increment time counters
-//        lmNoteRest* pNR = (lmNoteRest*)pSO;
-//        if (pNR->IsRest()) {
-//            m_rTime += pNR->GetDuration();
-//        } else {
-//            //It is a note. Verify if it is part of a chord
-//            lmNote* pNote = (lmNote*)pSO;
-//            if (!pNote->IsInChord()) {
-//                //AWARE time counter is going to be incremented also for chord base notes.
-//                //As we are in the process of building the score object from the source code,
-//                //chord base notes have not yet being marked as "InChord". This is because
-//                //the chord is created when the next note is processed.
-//                m_rTime += pNote->GetDuration();
-//            } else {
-//                //for the same reason, this point is reached only by notes that are in a chord
-//                //(but not the base note).
-//                //Assing to this note the time position of the note base. Do not increment
-//                //time counter as it has been already incremented when storing the base note.
-//                lmNote* pNoteBase = (pNote->GetChord())->GetBaseNote();
-//                pSO->SetTimePos(pNoteBase->GetTimePos());
-//            }
-//        }
-//        
-//    } else {
-//        //it is not a lmNoteRest. Increment time counter in the amount coded in the lmStaffObj
-//        m_rTime += pSO->GetTimePosIncrement();
-//    }
-//    
-//    //Time counter update. Update now the maximun value reached.
-//    m_rMaxTime = wxMax(m_rMaxTime, m_rTime);
-//    
-//    //if (the lmStaffObj being stored is a barline it is necessary to ensure that
-//    //its time position match up the measure duration, as there could have been back and forward
-//    //displacements.
-//    if (pSO->GetClass() == eSFOT_Barline) {
-//        //the object is a barline. Assing to it the maximum time position
-//        pSO->SetTimePos(m_rMaxTime);
-//    }
-//    
-//    //store the lmStaffObj in the collection. StaffObjs are stored by arrival order
-//    if (pSO->GetClass() == eSFOT_Control && ((lmSOControl*)pSO)->GetCtrolType() == lmEND_OF_STAFF)
-//    {
-//        //it is the EOS object. Add it and finish
-//        m_cStaffobjs.push_back(pSO);    //insert at the end
-//        return;
-//    }
-//
-//    //insert before the EOS object
-//    lmItCSO pItem = --m_cStaffobjs.end();     //point to EOS object
-//    wxASSERT ((*pItem)->GetClass() == eSFOT_Control && ((lmSOControl*)(*pItem))->GetCtrolType() == lmEND_OF_STAFF);
-//    m_cStaffobjs.insert(pItem, pSO);    //insert before item pointed by pItem
-//    pItem--;    //point to inserted object
-//
-//    //if this lmStaffObj is the first one of a measure, store a pointer to the node in the
-//    //measures table
-//    if (m_fStartMeasure) 
-//    {
-//        m_fStartMeasure = false;
-//        m_aMeasures.push_back(pItem);
-//    }
-//    
-//    //store, inside the lmStaffObj, a ptr to the collection
-//	pSO->SetItMeasure(pItem);
-//
-//    //Finally, if this lmStaffObj is a barline, signal that a new measure must be started
-//    //for the next lmStaffObj and reset time counters
-//    if (pSO->GetClass() == eSFOT_Barline)
-//    {
-//        m_fStartMeasure = true;
-//        m_rTime = 0;            //reset time counters
-//        m_rMaxTime = 0;
-//    }
-//    
-//}
 
 void lmColStaffObjs::Store(lmStaffObj* pSO)
 {
     //Stores the received StaffObj in this collection, inserting it at the end, before EOS
-    //objcet 
+    //object 
     //Controls division into measures and assign time position to the lmStaffObj
 
     //assign time to the StaffObj and increment time counters
 	AssignTime(pSO, &m_rTime, &m_rMaxTime);
     
     //store the lmStaffObj in the collection. StaffObjs are stored by arrival order
-    if (pSO->GetClass() == eSFOT_Control && ((lmSOControl*)pSO)->GetCtrolType() == lmEND_OF_STAFF)
-    {
-        //it is the EOS object. Add it and finish
+	lmItCSO pItem;
+	//if (pSO->GetClass() == eSFOT_Barline && ((lmBarline*)pSO)->GetBarlineType() == lm_eBarlineEOS)
+ //   {
+ //       //it is the EOS object. Add it and finish
         m_cStaffobjs.push_back(pSO);    //insert at the end
-        return;
-    }
+		pItem = --m_cStaffobjs.end();     //point to inserted object
+	//}
+	//else 
+	//{
+	//	//insert before the EOS object
+	//	pItem = --m_cStaffobjs.end();     //point to EOS object
+	//	wxASSERT ((*pItem)->GetClass() == eSFOT_Barline && ((lmBarline*)(*pItem))->GetBarlineType() == lm_eBarlineEOS );
+	//	m_cStaffobjs.insert(pItem, pSO);    //insert before item pointed by pItem
 
-    //insert before the EOS object
-    lmItCSO pItem = --m_cStaffobjs.end();     //point to EOS object
-    wxASSERT ((*pItem)->GetClass() == eSFOT_Control && ((lmSOControl*)(*pItem))->GetCtrolType() == lmEND_OF_STAFF);
-    m_cStaffobjs.insert(pItem, pSO);    //insert before item pointed by pItem
-    pItem--;    //point to inserted object
+	//	//update EOS time
+	//	(*pItem)->SetTimePos(pSO->GetTimePos());
+
+	//	pItem--;    //point to inserted object
+	//}
 
     //if this lmStaffObj is the first one of a measure, store a pointer to the node in the
     //measures table
@@ -262,6 +186,58 @@ void lmColStaffObjs::Store(lmStaffObj* pSO)
     
 }
 
+//void lmColStaffObjs::Store(lmStaffObj* pSO)
+//{
+//    //Stores the received StaffObj in this collection, inserting it at the end, before EOS
+//    //objcet 
+//    //Controls division into measures and assign time position to the lmStaffObj
+//
+//    //assign time to the StaffObj and increment time counters
+//	AssignTime(pSO, &m_rTime, &m_rMaxTime);
+//    
+//    //store the lmStaffObj in the collection. StaffObjs are stored by arrival order
+//	lmItCSO pItem;
+//	if (pSO->GetClass() == eSFOT_Barline && ((lmBarline*)pSO)->GetBarlineType() == lm_eBarlineEOS)
+//    {
+//        //it is the EOS object
+//        m_cStaffobjs.push_back(pSO);    //insert at the end
+//		pItem = --m_cStaffobjs.end();     //point to EOS object
+//	}
+//	else 
+//	{
+//		//insert before the EOS object
+//		pItem = --m_cStaffobjs.end();     //point to EOS object
+//		wxASSERT ((*pItem)->GetClass() == eSFOT_Barline && ((lmBarline*)(*pItem))->GetBarlineType() == lm_eBarlineEOS );
+//		Insert(pSO, (*pItem));
+//		return;
+//	}
+//
+//    //if this lmStaffObj is the first one of a measure, store a pointer to the node in the
+//    //measures table
+//    if (m_fStartMeasure) 
+//    {
+//        m_fStartMeasure = false;
+//		AddMeasure(pItem, pItem);
+//    }
+//    
+//    //store, inside the lmStaffObj, a ptr to the measure data
+//	pSO->SetItMeasure( m_aMeasures[m_aMeasures.size() - 1] );
+//
+//    //Finally, if this lmStaffObj is a barline, signal that a new measure must be started
+//    //for the next lmStaffObj, reset time counters, and update measure data
+//    if (pSO->GetClass() == eSFOT_Barline)
+//    {
+//        m_fStartMeasure = true;		//a new measure must be started with next StaffObj
+//
+//		lmItMeasure itM = pSO->GetItMeasure();		//update measure data
+//		(*itM)->itEndSO = pItem;
+//
+//        m_rTime = 0;				//reset time counters
+//        m_rMaxTime = 0;
+//    }
+//    
+//}
+
 
 void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
 {
@@ -270,72 +246,74 @@ void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
 	//operation could create irregular measures
 
 	//locate insertion point
-	lmItMeasure itM = pBeforeSO->GetItMeasure();
-	lmItCSO itCSO = std::find((*itM)->itStartSO, ++((*itM)->itEndSO), pBeforeSO);
+	lmItMeasure itBeforeM = pBeforeSO->GetItMeasure();
+	lmMeasureData* pMData = *itBeforeM;
+	lmItCSO itFromCSO = pMData->itStartSO;
+	lmItCSO itToCSO = pMData->itEndSO; itToCSO++;
+	lmItCSO itBeforeCSO = std::find(itFromCSO, itToCSO, pBeforeSO);
 
 	//initialize time counters:
-	float rTime = (*itCSO)->GetTimePos();
-	float rMaxTime = (*((*itM)->itEndSO))->GetTimePos();
-	int nNumMeasure = (*itM)->nNumMeasure;
+	float rTime = pBeforeSO->GetTimePos();
+	lmItCSO itEndCSO = pMData->itEndSO;
+	lmStaffObj* pEndSO = *itEndCSO;
+	float rMaxTime = (*(pMData->itEndSO))->GetTimePos();
+	int nNumMeasure = pMData->nNumMeasure;
 	
-    //assign the time position of StattObj pointed by itCSO
+    //assign the time position of StattObj pointed by itBeforeCSO
     //assign time to the StaffObj and increment time counters
 	AssignTime(pNewSO, &rTime, &rMaxTime);
     
-    //store the lmStaffObj in the collection
-    if (pNewSO->GetClass() == eSFOT_Control && ((lmSOControl*)pNewSO)->GetCtrolType() == lmEND_OF_STAFF)
-    {
-        //it is the EOS object. Add it and finish
-        m_cStaffobjs.push_back(pNewSO);    //insert at the end
-        return;
-    }
-
-    //insert before the specified object
-    m_cStaffobjs.insert(itCSO, pNewSO);		//insert before item pointed by itCSO
-    lmItCSO itNewCSO = itCSO;				//iterator to point to the new inserted object
+    //insert the lmStaffObj in the collection, before the specified object
+    m_cStaffobjs.insert(itBeforeCSO, pNewSO);	//insert before item pointed by itBeforeCSO
+    lmItCSO itNewCSO = itBeforeCSO;				//iterator to point to the new inserted object
 	itNewCSO--;								
 
 	//if this StaffObj is a barline it is necessary to update the end of current measure
-	//and to create a new one
+	//and to create a new one before this one
     if (pNewSO->GetClass() == eSFOT_Barline)
     {
-		InsertMeasure(itM, (*itM)->itStartSO, itNewCSO);
-		(*itM)->itStartSO = itCSO;
+		InsertMeasure(itBeforeM, pMData->itStartSO, itNewCSO);
+		pMData->itStartSO = itBeforeCSO;
     }
-
-    //if this lmStaffObj is the first one of a measure, store a pointer to the node in the
-    //measures table
-  //  if (m_fStartMeasure) 
-  //  {
-  //      m_fStartMeasure = false;
-
-		//lmMeasureData* pData = new lmMeasureData;
-		//pData->itStartSO = pItem;
-		//pData->itEndSO = pItem;
-		//pData->nNumMeasure = ++m_nNumMeasure;
-		//m_aMeasureData.push_back(pData);
-
-		//m_aMeasures.push_back( --m_aMeasureData.end() );
-		//wxASSERT(m_nNumMeasure == (int)m_aMeasures.size());
-  //  }
+	else
+	{
+		//if the insertion point StaffObj is the first one of a measure, we have to update
+		//the pointer in the measuresData table, unless the new inserted one is a barline
+		lmItCSO itOldStartCSO = pMData->itStartSO;
+		if (*itOldStartCSO == pBeforeSO) 
+			pMData->itStartSO = itNewCSO;
+	}
     
     //store, inside the lmStaffObj, a ptr to the measure data
-	pNewSO->SetItMeasure( m_aMeasures[m_aMeasures.size()-1] );
+	pNewSO->SetItMeasure( m_aMeasures[nNumMeasure-1] );
 
-    ////Finally, if this lmStaffObj is a barline, signal that a new measure must be started
-    ////for the next lmStaffObj and reset time counters
-    //if (pNewSO->GetClass() == eSFOT_Barline)
-    //{
-    //    m_fStartMeasure = true;
-    //    rTime = 0;            //reset time counters
-    //    rMaxTime = 0;
-    //}
+	//Debug: force a dump of StaffObjs collection and measures tables
+	lmItMeasure itMNew = pNewSO->GetItMeasure();
+	lmMeasureData* pMDataNew = *itMNew;
+	itFromCSO = pMDataNew->itStartSO;
+	itToCSO = pMDataNew->itEndSO;
+	nNumMeasure = pMDataNew->nNumMeasure;
+	wxLogMessage(_T("[lmColStaffObjs::Insert] (Before) Inserted pSO ID=%d, Measure %d, Start ID=%d, End ID=%d"),
+		pNewSO->GetID(), nNumMeasure, (*itFromCSO)->GetID(),  (*itToCSO)->GetID() );
 
-	RepositionObjects(itCSO, &rTime, &rMaxTime);
-	DumpStaffObjs();
-	DumpMeasuresData();
-	DumpMeasures();
-    
+	RepositionObjects(itBeforeCSO, &rTime, &rMaxTime);
+
+	//Debug: force a dump of StaffObjs collection and measures tables
+	itMNew = pNewSO->GetItMeasure();
+	pMDataNew = *itMNew;
+	itFromCSO = pMDataNew->itStartSO;
+	itToCSO = pMDataNew->itEndSO;
+	nNumMeasure = pMDataNew->nNumMeasure;
+	wxLogMessage(_T("[lmColStaffObjs::Insert] (After) Inserted pSO ID=%d, Measure %d, Start ID=%d, End ID=%d"),
+		pNewSO->GetID(), nNumMeasure, (*itFromCSO)->GetID(),  (*itToCSO)->GetID() );
+    #if defined(__WXDEBUG__)
+    wxString sDump = _T("");
+	sDump += DumpStaffObjs();
+	sDump += DumpMeasuresData();
+	sDump += DumpMeasures();
+    g_pLogger->LogTrace(_T("lmColStaffObjs::Insert"), sDump );
+    #endif
+
 }
 
 void lmColStaffObjs::AssignTime(lmStaffObj* pSO, float* pTime, float* pMaxTime)
@@ -398,7 +376,9 @@ void lmColStaffObjs::RepositionObjects(lmItCSO itCSO, float* pTime, float* pMaxT
 void lmColStaffObjs::InsertMeasure(lmItMeasure itMBefore, lmItCSO itStartSO,
 								   lmItCSO itEndSO)
 {
-	//Inserts a new measure before measure pointed by itMBefore
+	//Inserts a new measure before measure pointed by itMBefore. Iterators
+	//itStartSO and itEndSO must point to start and end StaffObjs for this
+	//new created measure
 
 	//create the measure data item
 	int nNumMeasure = (*itMBefore)->nNumMeasure;
@@ -408,14 +388,17 @@ void lmColStaffObjs::InsertMeasure(lmItMeasure itMBefore, lmItCSO itStartSO,
 	pData->nNumMeasure = nNumMeasure;
 	m_aMeasureData.insert(itMBefore, pData);
 
-	//update measures table
+	//update measures table:
+	//1) make room for a new measure by inserting a new element at the end
 	m_aMeasures.push_back( m_aMeasureData.end() );
-	for (int i=nNumMeasure-1; i < (int)m_aMeasures.size()-1; i++)
+	//2) move data from element i to element i+1
+	for (int i=(int)m_aMeasures.size()-2; i >= nNumMeasure-1; i--)
 		m_aMeasures[i+1] = m_aMeasures[i];
+	//3)update the inserted element
 	m_aMeasures[nNumMeasure-1] = --itMBefore;		//new inserted item
 
 	//update measure numbers in m_aMeasureData
-	for (lmItMeasure itM = itMBefore; itM != m_aMeasureData.end(); itM++)
+	for (lmItMeasure itM = ++itMBefore; itM != m_aMeasureData.end(); itM++)
 	{
 		(*itM)->nNumMeasure++;
     }
@@ -493,26 +476,58 @@ bool lmColStaffObjs::StartOfList(lmItCSO pNode)
 //Debug methods
 //====================================================================================================
 
-void lmColStaffObjs::DumpStaffObjs()
+wxString lmColStaffObjs::DumpStaffObjs()
 {
+    wxString sDump = _T("\nStaffObjs collection:\n");
 	lmItCSO itSO;
 	for (itSO = m_cStaffobjs.begin(); itSO != m_cStaffobjs.end(); itSO++)
 	{
-		wxLogMessage((*itSO)->Dump());
+		sDump += (*itSO)->Dump();
 	}
+	return sDump;
 }
 
-void lmColStaffObjs::DumpMeasuresData()
+wxString lmColStaffObjs::DumpMeasuresData()
 {
+    wxString sDump = _T("\nMeasures Data:\n");
+	int i=1;
 	lmItMeasure itM;
-	for (itM = m_aMeasureData.begin(); itM != m_aMeasureData.end(); itM++)
+	for (itM = m_aMeasureData.begin(); itM != m_aMeasureData.end(); itM++, i++)
 	{
-		wxLogMessage(_T("MesureData: measure %d"), (*itM)->nNumMeasure);
+		sDump += wxString::Format(_T("%d: numMeasure=%d\n"),
+								  i, (*itM)->nNumMeasure );
+        sDump += wxString::Format(_T("\tStarts with object Id %d\n"),
+                                  (*((*itM)->itStartSO))->GetID() );
+        sDump += wxString::Format(_T("\tEnds with object Id %d\n"),
+                                  (*((*itM)->itEndSO))->GetID() );
     }
+	return sDump;
 }
 
-void lmColStaffObjs::DumpMeasures()
+wxString lmColStaffObjs::DumpMeasures()
 {
+	wxString sDump = _T("\nChecking Measures:\n");
+	bool fOK = true;
+	for (int i=0; i < (int)m_aMeasures.size(); i++)
+	{
+		lmItMeasure itM = m_aMeasures[i];
+		int nNumM = (*itM)->nNumMeasure;
+		if (nNumM != i+1)
+		{
+			sDump += wxString::Format(_T("\tError: Item %d points to measure %d\n"),
+								      i, nNumM);
+			fOK = false;
+		}
+		else
+			sDump += wxString::Format(_T("\tItem %d points to measure %d\n"),
+										i, nNumM);
+
+	}
+
+	if (fOK)
+		sDump += _T("\tNo errors found.");
+
+	return sDump;
 }
 
 

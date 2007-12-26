@@ -40,11 +40,12 @@
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 #include "TheApp.h"
 #include "ScoreCanvas.h"
+#include "../widgets/Button.h"
+#include "tool_clefs_24.xpm"
 
 //layout parameters
-const int SPACING = 5;          //spacing (pixels) around each sizer
+const int SPACING = 1;          //spacing (pixels) around each sizer
 const int NUM_COLUMNS = 4;      //number of buttons per row
-const int NUM_BUTTONS = 16;
 const int ID_BUTTON = 2200;
 
 
@@ -54,6 +55,29 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmToolBox, wxPanel)
 
+// an entry for the tools buttons table
+typedef struct lmToolsDataStruct {
+    lmEEditTool nToolId;		// button ID
+    wxString    sBitmap;		// bitmap name
+	wxString	sToolTip;		// tool tip
+} lmToolsData;
+
+
+// Conversion table: harmonic function to chord intervals.
+// Inversions are not necessary except in minor modes. In these cases the inversion
+// is notated without the slash (IVm6,
+// AWARE: The maximum number of notes in a chord is defined in 'ChordManager.h', constant
+//        lmNOTES_IN_CHORD. Currently its value is 6. Change this value if you need more
+//        notes.
+
+static const lmToolsData m_aToolsData[] = {
+    //tool ID			bitmap name				tool tip
+    //-----------		-------------			-------------
+    {lmTOOL_NOTES,		_T("tool_notes"),		_("Add or edit notes") },
+    {lmTOOL_CLEFS,		_T("tool_clefs"),		_("Add or edit clefs") },
+	{lmTOOL_BARLINES,	_T("tool_barlines"),	_("Add or edit barlines and rehearsal marks") },
+	{lmTOOL_NONE,		_T(""), _("") },
+};
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     : wxPanel(parent, id, wxPoint(0,0), wxSize(150, 400), wxNO_BORDER)
@@ -62,7 +86,7 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     //1. Tool selection buttons are, in the middle
     //2. Selected tool options, in the bottom
 
-    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENU));
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 
     //the main sizer, to contain the three areas
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -79,20 +103,19 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     optsSizer->Add(m_pOptionsPanel, 0, wxGROW|wxTOP, SPACING);
 
     //add the tool buttons
-    int iB = 0;
-    int nNumRows = (NUM_BUTTONS + NUM_COLUMNS - 1) / NUM_COLUMNS;
-    wxBitmapButton* m_pButton[NUM_BUTTONS];
-    for (int iRow=0; iRow < nNumRows; iRow++)
-    {
-        for (int iCol=0; iCol < NUM_COLUMNS; iCol++)
-        {
-            iB = iCol + iRow * NUM_COLUMNS;    // button index: 0 .. 24
-            m_pButton[iB] = new wxBitmapButton(this, ID_BUTTON + iB, 
-                wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, wxSize(16,16) ));
-            buttonsSizer->Add(m_pButton[iB],
-                              wxSizerFlags(0).Border(wxALL, SPACING) );
-        }
-    }
+    int iMax = sizeof(m_aToolsData)/sizeof(lmToolsData);
+	for (int iB=0; iB < iMax; iB++)
+	{
+		if (m_aToolsData[iB].nToolId == lmTOOL_NONE) break;
+        m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, 
+            wxArtProvider::GetBitmap(m_aToolsData[iB].sBitmap, wxART_TOOLBAR, wxSize(24,24) ));
+		//m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, tool_clefs_24_xpm, 
+		//								  wxDefaultPosition, wxSize(24,24) );
+        buttonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, SPACING) );
+		m_pButton[iB]->SetToolTip(m_aToolsData[iB].sToolTip);
+		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
+		m_pButton[iB]->SetBorderDown(lm_eBorderFlat);
+	}
 
 	//initializations
 	m_nSelTool = lmTOOL_NONE;
@@ -101,7 +124,32 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
 
 void lmToolBox::OnButtonClicked(wxCommandEvent& event)
 {
+    //identify button pressed
+	SelectTool((lmEEditTool)(event.GetId() - ID_BUTTON));
+
 	lmController* pController = g_pTheApp->GetViewController();
 	pController->SetCursor(*wxCROSS_CURSOR);
-    //wxMessageBox(_T("Button clicked"));
+    wxLogMessage(_T("[lmToolBox::OnButtonClicked] Tool %d selected"), m_nSelTool);
 }
+
+void lmToolBox::SelectTool(lmEEditTool nTool)
+{
+	if (nTool > lmTOOL_NONE && nTool < lmTOOL_MAX)
+	{
+		SelectButton((int)nTool);
+		m_nSelTool = nTool;
+	}
+}
+
+void lmToolBox::SelectButton(int nTool)
+{
+	// Set selected button as 'pressed' and all others as 'released'
+	for(int i=0; i < (int)lmTOOL_MAX; i++)
+	{
+		if (i != nTool)
+			m_pButton[i]->Release();
+		else
+			m_pButton[i]->Press();
+	}
+}
+

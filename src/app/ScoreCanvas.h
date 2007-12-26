@@ -60,7 +60,7 @@ public:
     virtual void PausePlaying() {}
 
 	// commands with Do/Undo support
-	virtual void InsertBarline(lmEBarline nType = etb_SimpleBarline) {}
+	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
     virtual void InsertClef(lmEClefType nClefType) {}
 	virtual void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
 					lmENoteType nNoteType, float rDuration) {}
@@ -119,7 +119,7 @@ public:
     void PausePlaying();
 
 	// commands with Do/Undo support
-	void InsertBarline(lmEBarline nType = etb_SimpleBarline);
+	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
     void InsertClef(lmEClefType nClefType);
 	void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
 					lmENoteType nNoteType, float rDuration);

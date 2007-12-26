@@ -351,7 +351,7 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, EChordType nType, lmS
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }
     pVStaff->AddSpacer(30);       // 5 lines
-    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
+    pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
 
     //(*pScore)->Dump();  //dbg
 

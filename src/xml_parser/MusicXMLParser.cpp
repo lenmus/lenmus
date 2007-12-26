@@ -321,7 +321,7 @@ void lmMusicXMLParser::ParseMeasure(wxXmlNode* pNode,     lmVStaff* pVStaff)
     }
 
     if (fSomethingAdded && !fBarline) {
-        pVStaff->AddBarline(etb_SimpleBarline);    //finish the bar
+        pVStaff->AddBarline(lm_eBarlineSimple);    //finish the bar
     }
 
 }
@@ -669,7 +669,7 @@ bool lmMusicXMLParser::ParseMusicDataBarline(wxXmlNode* pNode, lmVStaff* pVStaff
 
     //default values
     bool fVisible = true;
-    lmEBarline nBarStyle = etb_SimpleBarline;
+    lmEBarline nBarStyle = lm_eBarlineSimple;
 
     bool fError = false;
 

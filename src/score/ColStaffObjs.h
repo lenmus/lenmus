@@ -95,17 +95,17 @@ public:
     bool EndOfList(lmItCSO pNode);
     bool StartOfList(lmItCSO pNode);
 
+	//debug
+	wxString DumpStaffObjs();
+	wxString DumpMeasuresData();
+	wxString DumpMeasures();
+
 
 private:
 	void AssignTime(lmStaffObj* pSO, float* pTime, float* pMaxTime);
 	void RepositionObjects(lmItCSO pItem, float* pTime, float* pMaxTime);
 	void AddMeasure(lmItCSO itStartSO, lmItCSO itEndSO);
 	void InsertMeasure(lmItMeasure itMBefore, lmItCSO itStartSO, lmItCSO itEndSO);
-
-	//debug
-	void DumpStaffObjs();
-	void DumpMeasuresData();
-	void DumpMeasures();
 
 
     std::list<lmStaffObj*>		m_cStaffobjs;		//list of StaffObjs in this collection

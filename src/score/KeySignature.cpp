@@ -57,7 +57,7 @@ static wxString m_sLDPKeyName[30] = {
 //-------------------------------------------------------------------------------------------------
 
 //
-//constructors and destructor
+//constructors & destructor
 //
 
 //constructor for traditional key signatures
@@ -165,7 +165,7 @@ lmUPoint lmKeySignature::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object and adding it to the graphical model. 
+    // creating the shape object & adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
 
 
@@ -216,84 +216,144 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     uOneLine = pStaff->TenthsToLogical(10.0);
     lmEKeySignatures nKeySignature = m_nKeySignature;
 
-    //Compute position of sharps and flats. Depends on the clef
+    //Compute position of sharps & flats. Depends on the clef
 	lmLUnits yPos = uPos.y;
     switch(nClef) {
         case lmE_Sol:
-            uSharpPos[1] = yPos - 5 * uOneLine;         //line 5 (Fa)
-            uSharpPos[2] = yPos - 3.5 * uOneLine;       //space between lines 3 y 4 (Do)
-            uSharpPos[3] = yPos - 5.5 * uOneLine;       //space above line 5 (Sol)
-            uSharpPos[4] = yPos - 4 * uOneLine;         //line 4 (Re)
-            uSharpPos[5] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (La)
-            uSharpPos[6] = yPos - 4.5 * uOneLine;       //space between lines 4 y 5 (Mi)
-            uSharpPos[7] = yPos - 3 * uOneLine;         //line 3 (Si)
+            uSharpPos[1] = yPos - 5.0f * uOneLine;		//line 5 (Fa)
+            uSharpPos[2] = yPos - 3.5f * uOneLine;      //space between lines 3 & 4 (Do)
+            uSharpPos[3] = yPos - 5.5f * uOneLine;      //space above line 5 (Sol)
+            uSharpPos[4] = yPos - 4.0f * uOneLine;      //line 4 (Re)
+            uSharpPos[5] = yPos - 2.5f * uOneLine;      //space between lines 2 & 3 (La)
+            uSharpPos[6] = yPos - 4.5f * uOneLine;      //space between lines 4 & 5 (Mi)
+            uSharpPos[7] = yPos - 3.0f * uOneLine;      //line 3 (Si)
 
-            uFlatPos[1] = yPos - 3 * uOneLine;          //line 3 (Si)
-            uFlatPos[2] = yPos - 4.5 * uOneLine;        //space between lines 4 y 5 (Mi)
-            uFlatPos[3] = yPos - 2.5 * uOneLine;        //space between lines 2 y 3 (La)
-            uFlatPos[4] = yPos - 4 * uOneLine;          //line 4 (Re)
-            uFlatPos[5] = yPos - 2 * uOneLine;          //line 2 (Sol)
-            uFlatPos[6] = yPos - 3.5 * uOneLine;        //space between lines 3 y 4 (Do)
-            uFlatPos[7] = yPos - 1.5 * uOneLine;        //space between lines 1 y 2 (Fa)
+            uFlatPos[1] = yPos - 3.0f * uOneLine;		//line 3 (Si)
+            uFlatPos[2] = yPos - 4.5f * uOneLine;       //space between lines 4 & 5 (Mi)
+            uFlatPos[3] = yPos - 2.5f * uOneLine;       //space between lines 2 & 3 (La)
+            uFlatPos[4] = yPos - 4.0f * uOneLine;       //line 4 (Re)
+            uFlatPos[5] = yPos - 2.0f * uOneLine;       //line 2 (Sol)
+            uFlatPos[6] = yPos - 3.5f * uOneLine;       //space between lines 3 & 4 (Do)
+            uFlatPos[7] = yPos - 1.5f * uOneLine;       //space between lines 1 & 2 (Fa)
             break;
 
         case lmE_Fa4:
-            uSharpPos[1] = yPos - 4 * uOneLine;         //line 4 (Fa)
-            uSharpPos[2] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (Do)
-            uSharpPos[3] = yPos - 4.5 * uOneLine;       //space between lines 4 y 5 (Sol)
-            uSharpPos[4] = yPos - 3 * uOneLine;         //line 3 (Re)
-            uSharpPos[5] = yPos - 1.5 * uOneLine;       //line 5 (La)
-            uSharpPos[6] = yPos - 3.5 * uOneLine;       //space between lines 3 y 4 (Mi)
-            uSharpPos[7] = yPos - 2 * uOneLine;         //space aboveline 5 (Si)
+            uSharpPos[1] = yPos - 4.0f * uOneLine;		//line 4 (Fa)
+            uSharpPos[2] = yPos - 2.5f * uOneLine;      //space between lines 2 & 3 (Do)
+            uSharpPos[3] = yPos - 4.5f * uOneLine;      //space between lines 4 & 5 (Sol)
+            uSharpPos[4] = yPos - 3.0f * uOneLine;      //line 3 (Re)
+            uSharpPos[5] = yPos - 1.5f * uOneLine;      //line 5 (La)
+            uSharpPos[6] = yPos - 3.5f * uOneLine;      //space between lines 3 & 4 (Mi)
+            uSharpPos[7] = yPos - 2.0f * uOneLine;      //space aboveline 5 (Si)
 
-            uFlatPos[1] = yPos - 2 * uOneLine;          //line 2 (Si)
-            uFlatPos[2] = yPos - 3.5 * uOneLine;        //space between lines 3 y 4 (Mi)
-            uFlatPos[3] = yPos - 1.5 * uOneLine;        //space between lines 1 y 2 (La)
-            uFlatPos[4] = yPos - 3 * uOneLine;          //line 3 (Re)
+            uFlatPos[1] = yPos - 2.0f * uOneLine;		//line 2 (Si)
+            uFlatPos[2] = yPos - 3.5f * uOneLine;       //space between lines 3 & 4 (Mi)
+            uFlatPos[3] = yPos - 1.5f * uOneLine;       //space between lines 1 & 2 (La)
+            uFlatPos[4] = yPos - 3.0f * uOneLine;       //line 3 (Re)
             uFlatPos[5] = yPos - uOneLine;              //line 1 (Sol)
-            uFlatPos[6] = yPos - 2.5 * uOneLine;        //space between lines 2 y 3 (Do)
-            uFlatPos[7] = yPos - 4 * uOneLine;          //linea 4 (Fa)
+            uFlatPos[6] = yPos - 2.5f * uOneLine;       //space between lines 2 & 3 (Do)
+            uFlatPos[7] = yPos - 4.0f * uOneLine;       //linea 4 (Fa)
             break;
 
         case lmE_Fa3:
-            wxASSERT(false);        //TODO Clef Fa3
+            uSharpPos[1] = yPos - 3.0f * uOneLine;		//line 3 (Fa)
+            uSharpPos[2] = yPos - 5.0f * uOneLine;      //line 5 (Do)
+            uSharpPos[3] = yPos - 3.5f * uOneLine;      //space between lines 3 & 4 (Sol)
+            uSharpPos[4] = yPos - 2.0f * uOneLine;      //line 2 (Re)
+            uSharpPos[5] = yPos - 4.0f * uOneLine;      //line 4 (La)
+            uSharpPos[6] = yPos - 2.5f * uOneLine;      //space between lines 2 & 3 (Mi)
+            uSharpPos[7] = yPos - 4.5f * uOneLine;      //space between lines 4 & 5 (Si)
+
+            uFlatPos[1] = yPos - 4.5f * uOneLine;		//space between lines 4 & 5 (Si)
+            uFlatPos[2] = yPos - 2.5f * uOneLine;       //space between lines 2 & 3 (Mi)
+            uFlatPos[3] = yPos - 4.0f * uOneLine;       //line 4 (La)
+            uFlatPos[4] = yPos - 2.0f * uOneLine;       //line 2 (Re)
+            uFlatPos[5] = yPos - 3.5f * uOneLine;       //space between lines 3 & 4 (Sol)
+            uFlatPos[6] = yPos - 5.0f * uOneLine;       //line 5 (Do)
+            uFlatPos[7] = yPos - 3.0f * uOneLine;       //line 3 (Fa)
             break;
 
         case lmE_Do1:
-            uSharpPos[1] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (Fa)
+            uSharpPos[1] = yPos - 2.5f * uOneLine;		//space between lines 2 & 3 (Fa)
             uSharpPos[2] = yPos - uOneLine;             //line 1 (Do)
-            uSharpPos[3] = yPos - 3 * uOneLine;         //line 3 (Sol)
-            uSharpPos[4] = yPos - 1.5 * uOneLine;       //space between lines 1 y 2 (Re)
-            uSharpPos[5] = yPos - 3.5 * uOneLine;       //space between lines 3 y 4 (La)
-            uSharpPos[6] = yPos - 2 * uOneLine;         //line 2 (Mi)
-            uSharpPos[7] = yPos - 4 * uOneLine;         //linea 4 (Si)
+            uSharpPos[3] = yPos - 3.0f * uOneLine;      //line 3 (Sol)
+            uSharpPos[4] = yPos - 1.5f * uOneLine;      //space between lines 1 & 2 (Re)
+            uSharpPos[5] = yPos - 3.5f * uOneLine;      //space between lines 3 & 4 (La)
+            uSharpPos[6] = yPos - 2.0f * uOneLine;      //line 2 (Mi)
+            uSharpPos[7] = yPos - 4.0f * uOneLine;      //linea 4 (Si)
 
-            uFlatPos[1] = yPos - 4 * uOneLine;          //line 4 (Si)
-            uFlatPos[2] = yPos - 2 * uOneLine;          //line 2 (Mi)
-            uFlatPos[3] = yPos - 3.5 * uOneLine;        //space between lines 3 y 4 (La)
-            uFlatPos[4] = yPos - 1.5 * uOneLine;        //space between lines 1 y 2 (Re)
-            uFlatPos[5] = yPos - 3 * uOneLine;          //line 3 (Sol)
+            uFlatPos[1] = yPos - 4.0f * uOneLine;		//line 4 (Si)
+            uFlatPos[2] = yPos - 2.0f * uOneLine;       //line 2 (Mi)
+            uFlatPos[3] = yPos - 3.5f * uOneLine;       //space between lines 3 & 4 (La)
+            uFlatPos[4] = yPos - 1.5f * uOneLine;       //space between lines 1 & 2 (Re)
+            uFlatPos[5] = yPos - 3.0f * uOneLine;       //line 3 (Sol)
             uFlatPos[6] = yPos - uOneLine;              //line 1 (Do)
-            uFlatPos[7] = yPos - 2.5 * uOneLine;        //space between lines 2 y 3 (Fa)
+            uFlatPos[7] = yPos - 2.5f * uOneLine;       //space between lines 2 & 3 (Fa)
             break;
 
         case lmE_Do2:
-            wxASSERT(false);        //TODO Clef Do2
+            uSharpPos[1] = yPos - 3.5f * uOneLine;		//space between lines 3 & 4 (Fa)
+            uSharpPos[2] = yPos - 2.0f * uOneLine;      //line 2 (Do)
+            uSharpPos[3] = yPos - 4.0f * uOneLine;      //line 4 (Sol)
+            uSharpPos[4] = yPos - 2.5f * uOneLine;      //space between lines 2 & 3 (Re)
+            uSharpPos[5] = yPos - uOneLine;				//line 1 (La)
+            uSharpPos[6] = yPos - 3.0f * uOneLine;      //line 3 (Mi)
+            uSharpPos[7] = yPos - 1.5f * uOneLine;      //space between lines 1 & 2 (Si)
+
+            uFlatPos[1] = yPos - 1.5f * uOneLine;       //space between lines 1 & 2 (Si)
+            uFlatPos[2] = yPos - 3.0f * uOneLine;       //line 3 (Mi)
+            uFlatPos[3] = yPos - uOneLine;				//line 1 (La)
+            uFlatPos[4] = yPos - 2.5f * uOneLine;       //space between lines 2 & 3 (Re)
+            uFlatPos[5] = yPos - 4.0f * uOneLine;       //line 4 (Sol)
+            uFlatPos[6] = yPos - 2.0f * uOneLine;       //line 2 (Do)
+            uFlatPos[7] = yPos - 3.5f * uOneLine;       //space between lines 3 & 4 (Fa)
             break;
+
         case lmE_Do3:
-            wxASSERT(false);        //TODO Clef Do3
+            uSharpPos[1] = yPos - 4.5f * uOneLine;		//space between lines 4 & 5 (Fa)
+            uSharpPos[2] = yPos - 3.0f * uOneLine;      //line 3 (Do)
+            uSharpPos[3] = yPos - 5.0f * uOneLine;      //line 5 (Sol)
+            uSharpPos[4] = yPos - 3.5f * uOneLine;      //space between lines 3 & 4 (Re)
+            uSharpPos[5] = yPos - 2.0f * uOneLine;      //line 2 (La)
+            uSharpPos[6] = yPos - 4.0f * uOneLine;      //line 4 (Mi)
+            uSharpPos[7] = yPos - 2.5f * uOneLine;      //space between lines 2 & 3 (Si)
+
+            uFlatPos[1] = yPos - 2.5f * uOneLine;       //space between lines 2 & 3 (Si)
+            uFlatPos[2] = yPos - 4.0f * uOneLine;       //line 4 (Mi)
+            uFlatPos[3] = yPos - 2.0f * uOneLine;       //line 2 (La)
+            uFlatPos[4] = yPos - 3.5f * uOneLine;       //space between lines 3 & 4 (Re)
+            uFlatPos[5] = yPos - 5.0f * uOneLine;       //line 5 (Sol)
+            uFlatPos[6] = yPos - 3.0f * uOneLine;       //line 3 (Do)
+            uFlatPos[7] = yPos - 4.5f * uOneLine;       //space between lines 4 & 5 (Fa)
             break;
+
         case lmE_Do4:
-            wxASSERT(false);        //TODO Clef Do4
+            uSharpPos[1] = yPos - 2.0f * uOneLine;		//line 2 (Fa)
+            uSharpPos[2] = yPos - 4.0f * uOneLine;      //line 4 (Do)
+            uSharpPos[3] = yPos - 2.5f * uOneLine;      //space between lines 2 & 3 (Sol)
+            uSharpPos[4] = yPos - 4.5f * uOneLine;      //space between lines 4 & 5 (Re)
+            uSharpPos[5] = yPos - 3.0f * uOneLine;      //line 3 (La)
+            uSharpPos[6] = yPos - 5.0f * uOneLine;      //line 5 (Mi)
+            uSharpPos[7] = yPos - 3.5f * uOneLine;      //space between lines 3 & 4 (Si)
+
+            uFlatPos[1] = yPos - 3.5f * uOneLine;       //space between lines 3 & 4 (Si)
+            uFlatPos[2] = yPos - 5.0f * uOneLine;       //line 5 (Mi)
+            uFlatPos[3] = yPos - 3.0f * uOneLine;       //line 3 (La)
+            uFlatPos[4] = yPos - 4.5f * uOneLine;       //space between lines 4 & 5 (Re)
+            uFlatPos[5] = yPos - 2.5f * uOneLine;       //space between lines 2 & 3 (Sol)
+            uFlatPos[6] = yPos - 4.0f * uOneLine;       //line 4 (Do)
+            uFlatPos[7] = yPos - 2.0f * uOneLine;       //line 2 (Fa)
             break;
+
         case lmE_Percussion:
             nKeySignature = earmDo;    //force not to draw any accidentals
             break;
+
         default:
             wxASSERT(false);
     }
 
-    // Check if it is necessary to draw sharps or flats, and how many.
+    // Check if it is necessary to draw sharps or flats, & how many.
     int nNumAccidentals = KeySignatureToNumFifths(nKeySignature);
     bool fDrawSharps = (nNumAccidentals > 0);    //true if sharps, false if flats
 
@@ -409,7 +469,7 @@ void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[])
     // Given a key signature (nKeySignature) this function fills the array
     // nAccidentals with the accidentals implied by the key signature.
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
-    // and its value can be one of:
+    // & its value can be one of:
     //     0  = no accidental
     //    -1  = a flat
     //     1  = a sharp

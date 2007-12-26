@@ -544,6 +544,12 @@
 			Name="widgets"
 			Filter="">
 			<File
+				RelativePath="..\..\src\widgets\Button.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\Button.h">
+			</File>
+			<File
 				RelativePath="..\..\src\widgets\Cursor.cpp">
 			</File>
 			<File

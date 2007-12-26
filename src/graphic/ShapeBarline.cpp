@@ -60,33 +60,33 @@ lmShapeBarline::lmShapeBarline(lmBarline* pBarline, lmEBarline nBarlineType,
     //compute width
     switch(m_nBarlineType)
     {
-        case etb_DoubleBarline:
+        case lm_eBarlineDouble:
             m_uWidth = m_uThinLineWidth + m_uSpacing + m_uThinLineWidth;
             break;
 
-        case etb_EndRepetitionBarline:
+        case lm_eBarlineEndRepetition:
             m_uWidth = m_uRadius+ m_uSpacing + m_uRadius + m_uThinLineWidth + m_uSpacing + m_uThickLineWidth;
             break;
 
-        case etb_StartRepetitionBarline:
+        case lm_eBarlineStartRepetition:
             m_uWidth = m_uThinLineWidth + m_uSpacing + m_uThickLineWidth +
                         m_uSpacing + m_uRadius + m_uRadius;
             break;
 
-        case etb_DoubleRepetitionBarline:
+        case lm_eBarlineDoubleRepetition:
             m_uWidth = m_uRadius + m_uSpacing + m_uRadius + m_uThinLineWidth + m_uSpacing +
                         m_uThinLineWidth + m_uSpacing + m_uRadius + m_uRadius;
             break;
 
-        case etb_StartBarline:
+        case lm_eBarlineStart:
             m_uWidth = m_uThinLineWidth + m_uSpacing + m_uThickLineWidth;
             break;
 
-        case etb_EndBarline:
+        case lm_eBarlineEnd:
             m_uWidth = m_uThinLineWidth + m_uSpacing + m_uThickLineWidth;
             break;
 
-        case etb_SimpleBarline:
+        case lm_eBarlineSimple:
             m_uWidth = m_uThinLineWidth;
             break;
 
@@ -116,13 +116,13 @@ void lmShapeBarline::Render(lmPaper* pPaper, wxColour color)
 
     switch(m_nBarlineType)
     {
-        case etb_DoubleBarline:
+        case lm_eBarlineDouble:
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             uxPos += m_uThinLineWidth + m_uSpacing;
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             break;
 
-        case etb_EndRepetitionBarline:
+        case lm_eBarlineEndRepetition:
             uxPos += m_uRadius;
             DrawTwoDots(pPaper, uxPos, uyTop);
             uxPos += m_uSpacing + m_uRadius;
@@ -131,7 +131,7 @@ void lmShapeBarline::Render(lmPaper* pPaper, wxColour color)
             DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
             break;
 
-        case etb_StartRepetitionBarline:
+        case lm_eBarlineStartRepetition:
             DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
             uxPos += m_uThickLineWidth + m_uSpacing;
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
@@ -139,7 +139,7 @@ void lmShapeBarline::Render(lmPaper* pPaper, wxColour color)
             DrawTwoDots(pPaper, uxPos, uyTop);
             break;
 
-        case etb_DoubleRepetitionBarline:
+        case lm_eBarlineDoubleRepetition:
             uxPos += m_uRadius;
             DrawTwoDots(pPaper, uxPos, uyTop);
             uxPos += m_uSpacing + m_uRadius;
@@ -150,19 +150,19 @@ void lmShapeBarline::Render(lmPaper* pPaper, wxColour color)
             DrawTwoDots(pPaper, uxPos, uyTop);
             break;
 
-        case etb_StartBarline:
+        case lm_eBarlineStart:
             DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
             uxPos += m_uThickLineWidth + m_uSpacing;
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             break;
 
-        case etb_EndBarline:
+        case lm_eBarlineEnd:
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             uxPos += m_uThinLineWidth + m_uSpacing;
             DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
             break;
 
-        case etb_SimpleBarline:
+        case lm_eBarlineSimple:
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             break;
     }

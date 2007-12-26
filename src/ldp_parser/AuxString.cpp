@@ -551,19 +551,19 @@ bool XmlDataToClef(wxString sClefLine, lmEClefType* pClef)
 bool XmlDataToBarStyle(wxString sBarStyle, lmEBarline* pType)
 {
     if (sBarStyle == _T("FINREPETICION")) {
-        *pType = etb_EndRepetitionBarline;
+        *pType = lm_eBarlineEndRepetition;
     } else if (sBarStyle == _T("INICIOREPETICION")) {
-        *pType = etb_StartRepetitionBarline;
+        *pType = lm_eBarlineStartRepetition;
     } else if (sBarStyle == _T("light-heavy")) {
-        *pType = etb_EndBarline;
+        *pType = lm_eBarlineEnd;
     } else if (sBarStyle == _T("light-light")) {
-        *pType = etb_DoubleBarline;
+        *pType = lm_eBarlineDouble;
     } else if (sBarStyle == _T("regular")) {
-        *pType = etb_SimpleBarline;
+        *pType = lm_eBarlineSimple;
     } else if (sBarStyle == _T("heavy-light")) {
-        *pType = etb_StartBarline;
+        *pType = lm_eBarlineStart;
     } else if (sBarStyle == _T("DOBLEREPETICION")) {
-        *pType = etb_DoubleRepetitionBarline;
+        *pType = lm_eBarlineDoubleRepetition;
     } else {
         //TODO Add styles dotted, heavy, heavy-heavy, none
         //TODO Remove styles FINREPETICION, INICIOREPETICION, DOBLEREPETICION

@@ -90,6 +90,8 @@ wxString lmBarline::Dump()
 wxString lmBarline::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
+	if (m_nBarlineType == lm_eBarlineEOS) return sSource;
+
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sSource += _T("(barline ");
     sSource += GetBarlineLDPNameFromType(m_nBarlineType);
@@ -133,12 +135,26 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     // creating the shape object and adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
 
+	lmEBarline nType = m_nBarlineType;
+	//EOS is not renderizable, unless debugging
+	if (m_nBarlineType == lm_eBarlineEOS)
+	{
+		if (true)	//debug on
+		{
+			nType = lm_eBarlineDouble;
+			colorC = wxColor(50, 255, 0);
+		}
+		else
+			return 0.0f;
+	}
+
     lmLUnits uyTop = m_pVStaff->GetYTop();
     lmLUnits uyBottom = m_pVStaff->GetYBottom();
 
     //create the shape
+
     lmShapeBarline* pShape = 
-        new lmShapeBarline(this, m_nBarlineType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
+        new lmShapeBarline(this, nType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
 	pBox->AddShape(pShape);
     m_pShape = pShape;
@@ -161,20 +177,22 @@ wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType)
 {
     switch(nBarlineType)
     {
-        case etb_EndRepetitionBarline:
+        case lm_eBarlineEndRepetition:
             return _T("endRepetition");
-        case etb_StartRepetitionBarline:
+        case lm_eBarlineStartRepetition:
             return _T("startRepetition");
-        case etb_EndBarline:
+        case lm_eBarlineEnd:
             return _T("end");
-        case etb_DoubleBarline:
+        case lm_eBarlineDouble:
             return _T("double");
-        case etb_SimpleBarline:
+        case lm_eBarlineSimple:
             return _T("simple");
-        case etb_StartBarline:
+        case lm_eBarlineStart:
             return _T("start");
-        case etb_DoubleRepetitionBarline:
+        case lm_eBarlineDoubleRepetition:
             return _T("doubleRepetition");
+        case lm_eBarlineEOS:
+            return _T("EndOfStaff control");
         default:
             wxASSERT(false);
             return _T("");        //let's keep the compiler happy

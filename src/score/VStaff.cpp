@@ -118,9 +118,10 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     lmStaff* pStaff = new lmStaff(pScore);
     m_cStaves.Append(pStaff);
 
-    //Add EOS control object to the StaffObjs collection
-    m_cStaffObjs.Store( new lmSOControl(lmEND_OF_STAFF, this) );
-
+ //   //Add EOS control object to the StaffObjs collection
+ //   //m_cStaffObjs.Store( new lmSOControl(lmEND_OF_STAFF, this) );
+ //   //m_cStaffObjs.Store( new lmBarline(lm_eBarlineEOS, this, lmNO_VISIBLE) );
+	//AddBarline(lm_eBarlineEOS, lmVISIBLE);
 
     //default value
     //TODO review this fixed space before the clef
@@ -677,31 +678,10 @@ lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 wxString lmVStaff::Dump()
 {
     wxString sDump = _T("");
-
-    //iterate over the collection to dump the StaffObjs
-    lmStaffObj* pSO;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_AsStored);
-    while(!pIter->EndOfList())
-    {
-        pSO = pIter->GetCurrent();
-        sDump += pSO->Dump();
-        pIter->MoveNext();
-    }
-    delete pIter;
-
-    //dump measures table
-    sDump += _T("\nMeasures:\n");
-    int iM;
-    for (iM=1; iM <= m_cStaffObjs.GetNumMeasures(); iM++) {
-        lmItCSO pNode = m_cStaffObjs.GetFirstInMeasure(iM);
-        //pSO = (lmStaffObj*)pNode->GetData();
-        pSO = *pNode;
-        sDump += wxString::Format(_T("\tMeasure %d: starts with object Id %d\n"),
-                                  iM, pSO->GetID() );
-    }
-
+	sDump += m_cStaffObjs.DumpStaffObjs();
+	sDump += m_cStaffObjs.DumpMeasuresData();
+	sDump += m_cStaffObjs.DumpMeasures();
     return sDump;
-
 }
 
 wxString lmVStaff::SourceLDP(int nIndent)

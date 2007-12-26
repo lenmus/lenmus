@@ -338,14 +338,14 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
         //todo: is it necessary to avoid propagation of the accidental to the second note
     else {
         pVStaff->AddSpacer(20);
-        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
         sPattern = _T("(n ");
     }
     sPattern += lmConverter::NoteBitsToName(tBits[1], m_nKey) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddSpacer(60);
-    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);
+    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
 
 }
 

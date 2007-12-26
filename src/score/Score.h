@@ -291,6 +291,11 @@ public:
 	inline void SetModified(bool fValue) { m_fModified = fValue; }
 	inline bool IsModified() { return m_fModified; }
 
+	//methods used for renderization
+	void SetMeasureModified(int nMeasure, bool fModified = true);
+	bool IsMeasureModified(int nMeasure);
+	void ResetMeasuresModified();
+
 
     //other methods
     long GetID() { return m_nID; }
@@ -328,6 +333,10 @@ private:
 	int					m_nCurNode;			 //last returned instrument node
     long				m_nID;				//unique ID for this score
     wxString			m_sScoreName;		//for user identification
+
+	//temporary data used for edition/renderization
+	std::list<int>		m_aMeasureModified;		//list of measures modified
+
 
 };
 

@@ -132,7 +132,7 @@ protected:
     //These variables are only valid for the Formatter algorithm and, therefore, are not
 	//valid for other views using different formats.
     lmLocation      m_tPos;         //desired position for this object
-	lmLocation		m_tOldPos;
+	lmLocation		m_tSrcPos;		//position specified in source code
     lmUPoint		m_uPaperPos;	//relative origin to render this object: paper position
     lmShape*		m_pShape;		//new shape
     lmUPoint		m_uOrg;	        //real origin to render this object: paper position
@@ -281,12 +281,12 @@ protected:
     EStaffObjType   m_nClass;       // type of StaffObj
 
     // time related variables
-    float       m_rTimePos;         // time from start of measure
+    float			m_rTimePos;		// time from start of measure
 
     // Info about staff ownership
-    lmVStaff*   m_pVStaff;          // lmVStaff owning this lmStaffObj
-    int         m_nStaffNum;        // lmStaff (1..n) on which this object is located
-	lmItMeasure	m_itMeasure;		// iterator pointing at measure data 
+    lmVStaff*		m_pVStaff;		// lmVStaff owning this lmStaffObj
+    int				m_nStaffNum;	// lmStaff (1..n) on which this object is located
+	lmItMeasure 	m_itMeasure;	// iterator pointing at measure data 
 
 
 };

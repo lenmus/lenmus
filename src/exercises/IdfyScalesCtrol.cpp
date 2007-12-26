@@ -351,9 +351,9 @@ wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lm
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         pVStaff->AddSpacer(10);       // 1 lines
-        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);   //so accidentals doesn't affect a 2nd note
+        pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);   //so accidentals doesn't affect a 2nd note
     }
-    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
+    pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
 
     //use simple renderer; otherwise chromatic scale does not fit in available space
     (*pScore)->SetRenderizationType(eRenderSimple);

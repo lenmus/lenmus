@@ -37,18 +37,23 @@
 #include "wx/wx.h"
 #endif
 
+//available tools
+enum lmEEditTool 
+{
+	lmTOOL_NONE = -1,
+	lmTOOL_NOTES = 0,
+	lmTOOL_CLEFS,
+	lmTOOL_BARLINES,
+	lmTOOL_MAX		//this MUST BE the last one
+};
+
+class lmCheckButton;
+
 class lmToolBox: public wxPanel
 {
    DECLARE_DYNAMIC_CLASS(lmToolBox)
 
 public:
-    //available tools
-    enum lmEEditTool 
-    {
-	    lmTOOL_NONE = 0,
-	    lmTOOL_NOTE,
-    };
-
     lmToolBox(wxWindow* parent, wxWindowID id = wxID_ANY);
     virtual ~lmToolBox() {}
 
@@ -56,10 +61,18 @@ public:
 
 	//current tool and its options
 	inline lmEEditTool GetSelectedTool() const { return m_nSelTool; }
+	void SelectTool(lmEEditTool nTool);
 
 private:
-    wxPanel*    m_pOptionsPanel;
-	lmEEditTool	m_nSelTool;
+	void SelectButton(int nTool);
+
+	enum {
+		NUM_BUTTONS = 16,
+	};
+
+    wxPanel*		m_pOptionsPanel;
+	lmEEditTool		m_nSelTool;
+	lmCheckButton*	m_pButton[NUM_BUTTONS];
 
     DECLARE_EVENT_TABLE()
 };

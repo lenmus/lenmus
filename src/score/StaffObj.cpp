@@ -56,7 +56,7 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     // initializations: positioning related info
     m_uPaperPos.y = 0;
     m_uPaperPos.x = 0;
-	m_tOldPos = g_tDefaultPos;
+	m_tSrcPos = g_tDefaultPos;
 
     m_pShape = (lmShape*)NULL;
 }
@@ -157,14 +157,14 @@ void lmScoreObj::DetachAuxObj(lmAuxObj* pAO)
 
 lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 {
-	m_tOldPos = m_tPos;
+	m_tSrcPos = m_tPos;
 	m_tPos = tPos;
-	return m_tOldPos;
+	return m_tSrcPos;
 }
 
 void lmScoreObj::ResetObjectLocation() 
 {
-	m_tPos = m_tOldPos; 
+	m_tPos = m_tSrcPos; 
 
  //   // X position
  //   wxString sType = _T("");
@@ -402,12 +402,17 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
 
 lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 { 
-	m_tOldPos = m_tPos;
+	//m_tSrcPos = m_tPos;
 	lmUPoint uPos = GetReferencePaperPos();
 
 	//if default location, ask derived object to compute the best position for itself
     if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
 		uPos = ComputeBestLocation(uPos, pPaper);
+	else if (m_tPos.xType == lmLOCATION_COMPUTED || m_tPos.yType == lmLOCATION_COMPUTED)
+	{
+		m_tPos = m_tSrcPos;
+		uPos = ComputeBestLocation(uPos, pPaper);
+	}
 
 
     if (m_tPos.xType == lmLOCATION_DEFAULT)

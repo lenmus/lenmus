@@ -867,25 +867,25 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
         // abbreviated barlines
         else if (sName == _T("|") ) {
-            pVStaff->AddBarline(etb_SimpleBarline, true);
+            pVStaff->AddBarline(lm_eBarlineSimple, true);
         }
         else if (sName == _T("||") ) {
-            pVStaff->AddBarline(etb_DoubleBarline, true);
+            pVStaff->AddBarline(lm_eBarlineDouble, true);
         }
         else if (sName == _T("|]") ) {
-            pVStaff->AddBarline(etb_EndBarline, true);
+            pVStaff->AddBarline(lm_eBarlineEnd, true);
         }
         else if (sName == _T("[|") ) {
-            pVStaff->AddBarline(etb_StartBarline, true);
+            pVStaff->AddBarline(lm_eBarlineStart, true);
         }
         else if (sName == _T(":|") ) {
-            pVStaff->AddBarline(etb_EndRepetitionBarline, true);
+            pVStaff->AddBarline(lm_eBarlineEndRepetition, true);
         }
         else if (sName == _T("|:") ) {
-            pVStaff->AddBarline(etb_StartRepetitionBarline, true);
+            pVStaff->AddBarline(lm_eBarlineStartRepetition, true);
         }
         else if (sName == _T("::") ) {
-            pVStaff->AddBarline(etb_DoubleRepetitionBarline, true);
+            pVStaff->AddBarline(lm_eBarlineDoubleRepetition, true);
         }
         // go forward and backward
         else if (sName == m_pTags->TagName(_T("goFwd"))
@@ -905,6 +905,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
                 sName.c_str() );
         }
     }
+	pVStaff->AddBarline(lm_eBarlineEOS, true);
 
 }
 
@@ -1151,7 +1152,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     if (fSomethingAdded && !fBarline) {
-        pVStaff->AddBarline(etb_SimpleBarline);    //finish the bar
+        pVStaff->AddBarline(lm_eBarlineSimple);    //finish the bar
     }
 
 }
@@ -2046,27 +2047,27 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     //check that bar type is specified
     if(pNode->GetNumParms() < 1) {
         //assume simple barline, visible
-        pVStaff->AddBarline(etb_SimpleBarline, true);
+        pVStaff->AddBarline(lm_eBarlineSimple, true);
         return false;
     }
 
-    lmEBarline nType = etb_SimpleBarline;
+    lmEBarline nType = lm_eBarlineSimple;
 
     wxString sType = (pNode->GetParameter(1))->GetName();
     if (sType == m_pTags->TagName(_T("endRepetition"), _T("Barlines")) ) {
-        nType = etb_EndRepetitionBarline;
+        nType = lm_eBarlineEndRepetition;
     } else if (sType == m_pTags->TagName(_T("startRepetition"), _T("Barlines")) ) {
-        nType = etb_StartRepetitionBarline;
+        nType = lm_eBarlineStartRepetition;
     } else if (sType == m_pTags->TagName(_T("end"), _T("Barlines")) ) {
-        nType = etb_EndBarline;
+        nType = lm_eBarlineEnd;
     } else if (sType == m_pTags->TagName(_T("double"), _T("Barlines")) ) {
-        nType = etb_DoubleBarline;
+        nType = lm_eBarlineDouble;
     } else if (sType == m_pTags->TagName(_T("simple"), _T("Barlines")) ) {
-        nType = etb_SimpleBarline;
+        nType = lm_eBarlineSimple;
     } else if (sType == m_pTags->TagName(_T("start"), _T("Barlines")) ) {
-        nType = etb_StartBarline;
+        nType = lm_eBarlineStart;
     } else if (sType == m_pTags->TagName(_T("doubleRepetition"), _T("Barlines")) ) {
-        nType = etb_DoubleRepetitionBarline;
+        nType = lm_eBarlineDoubleRepetition;
     } else {
         AnalysisError( _T("Unknown barline type '%s'. '%s' barline assumed."),
             sType.c_str(), m_pTags->TagName(_T("simple"), _T("Barlines")).c_str() );

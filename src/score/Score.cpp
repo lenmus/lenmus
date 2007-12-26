@@ -609,3 +609,40 @@ wxString lmScore::DumpMidiEvents(wxString sFilename)
     return sDump;
 }
 
+void lmScore::SetMeasureModified(int nMeasure, bool fModified)
+{
+	if (fModified)
+	{
+		//Add the element to the list, if it not yet included
+		std::list<int>::iterator itWhere =
+			std::find(m_aMeasureModified.begin(), m_aMeasureModified.end(), nMeasure);
+		if (itWhere == m_aMeasureModified.end() ) 
+		{
+			//not found. Insert it
+			m_aMeasureModified.push_back(nMeasure);
+		}
+		else
+			return;		//already included
+	}
+	else
+	{
+		//Remove the element from the list
+		std::list<int>::iterator itWhere =
+			std::find(m_aMeasureModified.begin(), m_aMeasureModified.end(), nMeasure);
+		if (itWhere != m_aMeasureModified.end() ) 
+			m_aMeasureModified.erase(itWhere);
+	}
+}
+
+bool lmScore::IsMeasureModified(int nMeasure)
+{
+	std::list<int>::iterator itWhere =
+		std::find(m_aMeasureModified.begin(), m_aMeasureModified.end(), nMeasure);
+	return (itWhere != m_aMeasureModified.end() ); 
+}
+
+void lmScore::ResetMeasuresModified()
+{
+	m_aMeasureModified.clear();
+}
+

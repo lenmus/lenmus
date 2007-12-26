@@ -136,6 +136,7 @@ public:
 	void CursorDown();
 	void CursorAtPoint(lmUPoint& point);
 	inline lmStaffObj* GetCursorPosition() { return m_pCursorSO; }
+	void UpdateCursor();
 
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
