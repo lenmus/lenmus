@@ -29,6 +29,7 @@
 
 #include "wx/dc.h"
 
+
 //------------------------------------------------------------------------------------------------
 // lmBarline object
 //------------------------------------------------------------------------------------------------
@@ -40,6 +41,8 @@ public:
     lmBarline(lmEBarline nBarlineType, lmVStaff* pStaff, bool fVisible);
     ~lmBarline() {}
 
+	wxString GetName() const { return _T("barline"); }
+
     //other methods
     lmEBarline GetBarlineType() {return m_nBarlineType;}
 
@@ -50,8 +53,8 @@ public:
         //specific methods for barline
 
     //deal with contexts array
-    void AddContext(lmContext* pContext, int nStaff);
-    lmContext* GetContext(int nStaff);
+	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
+    inline lmContext* GetContext() { return m_pContext; }
 
     //positioning
     //void SetLocation(lmLUnits uxPos, lmELocationType nType);
@@ -67,10 +70,11 @@ public:
 
 private:
     lmEBarline          m_nBarlineType;     //type of barline
-    ArrayOfContexts     m_aContexts;        //pointers to contexts at barline position
+	lmContext*			m_pContext;			//ptr to current context
 
     lmLUnits            m_uxUserPos;
     lmELocationType     m_xUserPosType;
+
 };
 
 //

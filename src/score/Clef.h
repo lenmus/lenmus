@@ -42,6 +42,8 @@ public:
 		   wxColour colorC = *wxBLACK);
     ~lmClef() {}
 
+	wxString GetName() const { return _T("clef"); }
+
     //other methods
     lmEClefType GetClefType() {return m_nClefType;}
 
@@ -62,17 +64,22 @@ public:
     //methods for hiding the clef in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }
 
+	//context management
+	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
+    inline lmContext* GetContext() { return m_pContext; }
 
 
 private:
+
     // get fixed measures and values that depend on key type
     lmTenths GetGlyphOffset();
     lmEGlyphIndex GetGlyphIndex();
 
     //variables
-    lmEClefType       m_nClefType;        //type of clef
+    lmEClefType		m_nClefType;        //type of clef
     bool            m_fHidden;          //to hide it in system prolog
 	wxColour		m_color;			//clef color
+	lmContext*		m_pContext;			//context created by this clef
 
 };
 

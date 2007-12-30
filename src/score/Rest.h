@@ -36,7 +36,6 @@ public:
         lmENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
         int nStaff, bool fVisible,
-        lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[]);
 
     ~lmRest();
@@ -45,6 +44,7 @@ public:
         // lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+	wxString GetName() const { return _T("rest"); }
 
 	wxString    Dump();
     wxString    SourceLDP(int nIndent);

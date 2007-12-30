@@ -26,12 +26,12 @@
 #pragma interface "Score.cpp"
 #endif
 
+#include <vector>
+#include <list>
 #include "wx/debug.h"
 #include "defs.h"
 #include "Pitch.h"
 #include "../app/global.h"
-#include <vector>
-#include <list>
 
 // aligments
 enum lmEAlignment
@@ -166,7 +166,6 @@ class lmRest;
 class lmStaff;
 class StaffList;
 class lmContext;
-class ContextList;
 class lmSoundManager;
 class lmObjOptions;
 

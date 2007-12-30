@@ -60,6 +60,8 @@ public:
                     bool fVisible = true);
     ~lmMetronomeMark();
 
+	wxString GetName() const { return _T("metronome mark"); }
+
     // properties related to the clasification of this lmStaffObj
     float GetTimePosIncrement() { return 0; }
 

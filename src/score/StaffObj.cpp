@@ -577,6 +577,21 @@ lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
     return m_pVStaff->LogicalToTenths(uUnits, m_nStaffNum);
 }
 
+lmContext* lmStaffObj::GetCurrentContext() 
+{ 
+	// Returns the context that is applicable to the received StaffObj.
+	// AWARE: Only Clef, key signature and time signature are updated. To get
+	//	applicable accidentals use NewUpdatedContext() instead.
+	return m_pVStaff->GetCurrentContext(this);
+}
+
+lmContext* lmStaffObj::NewUpdatedContext()
+{ 
+	//returns the applicable context for this StaffObj, updated with all
+	//accidentals introduced by previous notes
+	return m_pVStaff->NewUpdatedContext(this); 
+}
+
 wxString lmStaffObj::SourceLDP(int nIndent)
 {
     // Generate source code for AuxObjs attached to this StaffObj

@@ -64,6 +64,7 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	void Highlight(lmPaper* pPaper, wxColour colorC);
+	wxString GetName() const { return _T("note"); }
 
     wxString    Dump();
     wxString    SourceLDP(int nIndent);
@@ -74,14 +75,6 @@ public:
     lmLUnits GetPitchShift();
     lmLUnits GetAnchorPos();
     int GetPosOnStaff();        //line/space on which note is rendered
-  //  void SetOrigin(lmLUnits uxPos, lmLUnits uyPos) {
-		//	m_uPaperPos.x = uxPos;
-		//	m_uPaperPos.y = uyPos;
-		//}
-  //  void SetOrigin(lmUPoint uPoint) {
-		//	m_uPaperPos.x = uPoint.x;
-		//	m_uPaperPos.y = uPoint.y;
-		//}
 
 
     //methods related to stems
@@ -150,17 +143,18 @@ public:
 	void CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
 
     //other methods
-    bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
-    lmContext*  GetContext() { return m_pContext; }
+    bool OnContextUpdated(int nStep, int nNewAccidentals, lmContext* pNewContext);
 
     // methods oriented to score processing
-    int GetPositionInBeat() const;
+    int GetPositionInBeat();
 
     // methods for harmonic analisis
-    int GetChordPosition() const;
+    int GetChordPosition();
 
-
-
+	//context related information
+	lmTimeSignature* GetTimeSignature();
+	lmEClefType GetClefType();
+	int GetContextAccidentals(int nStep);
 
 
 private:
@@ -184,6 +178,7 @@ private:
     void SetUpStemDirection();
     const lmEAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
 
+
     //pitch
     void DoChangePitch(int nStep, int nOctave, int nAlter);
 
@@ -200,8 +195,6 @@ private:
 
     lmAPitch        m_anPitch;          //real absolute pitch. Accidentals and context already included
     lmAccidental*   m_pAccidentals;     //accidentals to be drawn
-    lmEClefType       m_nClef;            //clef to draw this note
-    lmContext*      m_pContext;         //context for this note
 
     // additional positioning related variables
     lmLUnits        m_uSpacePrev;       // space (after accidental) before note
@@ -210,7 +203,7 @@ private:
     lmLUnits        m_uStemThickness;
     lmLUnits        m_uStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
-    lmEStemType       m_nStemType;       //type of stem
+    lmEStemType		m_nStemType;       //type of stem
 
     // playback info
     int             m_nVolume;          // MIDI volume (0-127)
@@ -236,10 +229,6 @@ private:
     // constituent shapes
     lmShapeGlyph*   m_pNoteheadShape;
     lmShapeStem*    m_pStemShape;
-
-    // stem information
-    //lmLUnits        m_uxStem;           //pos and length of stem (relative to m_uPaperPos)
-    //lmLUnits        m_uyStem;           //yStem refers to the notehead nearest position
 
 
 };

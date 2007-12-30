@@ -35,8 +35,22 @@
 #pragma interface "defs.cpp"
 #endif
 
-#include "wx/gdicmn.h"
 #include <list>
+
+#if defined( __WXMSW__ ) && defined( _DEBUG )
+// for debugging: Detecting and isolating memory leaks with Visual C++
+#include <stdlib.h>
+#include <crtdbg.h>
+#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#else
+#define DEBUG_NEW new
+#endif
+
+#if defined( __WXMSW__ ) && defined( _DEBUG )
+#define new DEBUG_NEW
+#endif
+
+#include "wx/gdicmn.h"
 
 
 

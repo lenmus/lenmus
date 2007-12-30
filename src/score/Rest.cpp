@@ -43,7 +43,7 @@
 
 
 lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
-        int nStaff, bool fVisible, lmContext* pContext, bool fBeamed, lmTBeamInfo BeamInfo[])
+        int nStaff, bool fVisible, bool fBeamed, lmTBeamInfo BeamInfo[])
     : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted, 
                  nStaff, fVisible)
 {

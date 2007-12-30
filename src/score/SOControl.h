@@ -41,6 +41,9 @@ public:
     lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM, lmEOS
     ~lmSOControl() {}
 
+	wxString GetName() const { return _T("control object"); }
+
+
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);

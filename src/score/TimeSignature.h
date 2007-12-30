@@ -26,6 +26,7 @@
 #pragma interface "TimeSignature.cpp"
 #endif
 
+
 //------------------------------------------------------------------------------------------------
 // lmTimeSignature object
 //------------------------------------------------------------------------------------------------
@@ -54,6 +55,8 @@ public:
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+	wxString GetName() const { return _T("time signature"); }
+
 
 
     //    debugging
@@ -68,6 +71,11 @@ public:
     int GetNumBeats() { return m_nBeats; }
     int GetBeatType() { return m_nBeatType; }
 
+	//context management
+	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
+    inline lmContext* GetContext() { return m_pContext; }
+
+
 private:
     lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
                                   wxString& sTopGlyphs,
@@ -77,10 +85,14 @@ private:
 
     // member variables
 
-    // attributes
-    lmETimeSignatureType    m_nType;
+	lmContext*		m_pContext;			//context created by this time signature
 
-    int        m_nNumFractions;    // for type eTS_Multiple and eTS_Normal
+	// attributes
+    int				m_nBeats;
+    int				m_nBeatType;
+    int				m_nNumFractions;    // for type eTS_Multiple and eTS_Normal
+
+    lmETimeSignatureType    m_nType;	//type of time signature
         //eTS_Normal = 1,       // it is a single fraction
         //eTS_Common,           // it is 4/4 but represented by a C symbol
         //eTS_Cut,              // it is 2/4 but represented by a C/ simbol
@@ -89,8 +101,6 @@ private:
         //eTS_Composite,        // composite fraction, i.e.: 3+2/8
         //eTS_SenzaMisura       // no time signature is present
 
-    int         m_nBeats;
-    int         m_nBeatType;
 
 };
 

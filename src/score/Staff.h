@@ -26,6 +26,7 @@
 #pragma interface "Staff.cpp"
 #endif
 
+#include <list>
 #include "Score.h"
 
 class lmStaff : public lmScoreObj
@@ -66,19 +67,8 @@ public:
     wxFont* GetFontDraw() { return m_pFontDraw; }
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
 
-    //access to current clef. Only used by key signatures for renderization
-    lmClef* GetCurrentClef() { return GetLastClef(); }
-
     //context management
-    lmContext* NewContext(lmClef* pClef);
-    lmContext* NewContext(lmKeySignature* pKey);
-    lmContext* NewContext(lmTimeSignature* pNewTime);
-    lmContext* NewContext(lmContext* pNewContext);
     lmContext* NewContext(lmContext* pCurrentContext, int nNewAccidentals, int nStep);
-    lmClef* GetLastClef();
-    lmKeySignature* GetLastKey();
-    lmTimeSignature* GetLastTime();
-    lmContext* GetLastContext();
 
     wxString Dump();
 
@@ -92,8 +82,6 @@ private:
     lmLUnits    m_uRightMargin;
     lmLUnits    m_uAfterSpace;
 
-    // List of contexts
-    ContextList     m_cContext;
 
 	//cursor (for edition). Points to current insertion position for this staff
 

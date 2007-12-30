@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __CONTEXT_H__        //to avoid nested includes
-#define __CONTEXT_H__
+#ifndef __LM_CONTEXT_H__        //to avoid nested includes
+#define __LM_CONTEXT_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Context.cpp"
@@ -43,20 +43,27 @@
 class lmContext
 {
 public:
-    lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime);
+    lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime, int nStaff);
+    lmContext(lmContext* pContext);
     ~lmContext() {}
 
     void SetAccidental(int i, int nValue) { m_nAccidentals[i] = nValue; }
     int GetAccidentals(int i) { return m_nAccidentals[i]; }
     void CopyAccidentals(lmContext* pContext);
 
-    lmClef*             GetClef() { return m_pClef; }
-    lmKeySignature*     GeyKey() { return m_pKey; }
-    lmTimeSignature*    GetTime() { return m_pTime; }
+    inline lmClef* GetClef() const { return m_pClef; }
+    inline lmKeySignature* GeyKey() const { return m_pKey; }
+    inline lmTimeSignature* GetTime() const { return m_pTime; }
+	inline int GetNumStaff() { return m_nStaff; }
 
-    //management of references counter
-    void StopUsing() { m_nNumReferences--; }
-    void StartUsing() { m_nNumReferences++; }
+	//navigation and list management
+	inline lmContext* GetPrev() const { return m_pPrev; }
+	inline lmContext* GetNext() const { return m_pNext; }
+	inline void SetPrev(lmContext* pPrev) { m_pPrev = pPrev; }
+	inline void SetNext(lmContext* pNext) { m_pNext = pNext; }
+
+	//other
+	bool AppliesTo(int nStaff) { return (m_nStaff==0 || nStaff==m_nStaff); }
 
 
 private:
@@ -73,18 +80,19 @@ private:
     //note. Each element refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     int     m_nAccidentals[7];
 
-    //counter of references to this context (to delete it when not used)
-    int     m_nNumReferences;
+    //staff to which this context applies (1..n). 0 if applicable to all
+    int     m_nStaff;				
+
+	//Contexts are organized as a double linked list. Here are the links
+	lmContext*		m_pNext;		//pointer to next context 
+	lmContext*		m_pPrev;		//pointer to previous context 
 
 };
 
 
-// declare a list of lmContext objects class
-#include "wx/list.h"
-WX_DECLARE_LIST(lmContext, ContextList);
 
 // this defines the type ArrayOfContexts as an array of lmContext pointers
 WX_DEFINE_ARRAY(lmContext*, ArrayOfContexts);
 
 
-#endif  // __CONTEXT_H__
+#endif  // __LM_CONTEXT_H__

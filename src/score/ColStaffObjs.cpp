@@ -316,6 +316,96 @@ void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
 
 }
 
+void lmColStaffObjs::Delete(lmStaffObj* pCursorSO)
+{
+	//Delete the StaffObj pointed by pCursorSO
+
+	//get some data
+	EStaffObjType nDeletedObjType = pCursorSO->GetClass();
+	lmItMeasure itMCursor = pCursorSO->GetItMeasure();
+	lmMeasureData* pMDataCursor = *itMCursor;
+	lmItCSO itFromCSO = pMDataCursor->itStartSO;
+	lmItCSO itToCSO = pMDataCursor->itEndSO;
+	lmStaffObj* pBarlineSO = *itToCSO;			//barline for current measure
+	itToCSO++;
+	lmItCSO itCursorCSO = std::find(itFromCSO, itToCSO, pCursorSO);
+	lmItCSO itNextCSO = itCursorCSO; itNextCSO++;
+	lmStaffObj* pNextSO = *itNextCSO;
+	lmItMeasure itMNext = pNextSO->GetItMeasure();
+	int nMeasure = pMDataCursor->nNumMeasure;
+
+	//the EOS Barline can not be deleted
+	if (nDeletedObjType == eSFOT_Barline 
+		&& ((lmBarline*)pCursorSO)->GetBarlineType() == lm_eBarlineEOS) return;
+
+	// 2. initialize time counters:
+	//		current time = time assigned to CursorSO
+	//		max.time = time assigned to barline of current measure
+	float rTime = pCursorSO->GetTimePos();
+	float rMaxTime = pBarlineSO->GetTimePos();
+	
+	// 3. if object to delete is the first one of measure update MeasureData
+	if (*(pMDataCursor->itStartSO) == pCursorSO)
+		pMDataCursor->itStartSO = itNextCSO;
+
+	// 4. Remove the StaffObj CursorSO
+	m_cStaffobjs.erase(itCursorCSO);
+
+	// 5. if CursorSO is a barline we have to update the end of current measureData
+	if (nDeletedObjType == eSFOT_Barline)
+		pMDataCursor->itEndSO = (*itMNext)->itEndSO;
+
+	// 4. Update time & MeasureData ptr of all following StaffObjs (from NextSO to 
+	//	  first barline):
+	// 4.1 Asign: Cur_StaffObj = NextSO
+	// 4.2 While not end of collection
+	while (itNextCSO != m_cStaffobjs.end())
+	{
+		// 4.2.1. Assign time to it
+		AssignTime(*itNextCSO, &rTime, &rMaxTime);
+
+		// 4.2.2. Update StaffObj information: MeasureData = MeasureData[CursorSO]
+		(*itNextCSO)->SetItMeasure( itMCursor );
+
+		// 4.2.3 if Cur_StaffObj is a barline break loop
+		//		 else take next StaffObj
+		if ((*itNextCSO)->GetClass() == eSFOT_Barline) break;
+		itNextCSO++;
+	}
+
+	// If CursorSO is a barline we have to update measures:
+	if (nDeletedObjType == eSFOT_Barline)
+	{
+		// 6. From current MeasureData (NextSO) to end of MeasureData collection
+		//    MeasureData[i].numMeasure --
+		lmItMeasure itM = itMNext; itM++;
+		while (itM != m_aMeasureData.end())
+		{
+			(*itM)->nNumMeasure--;
+			itM++;
+		}
+
+		// 7. Delete MeasureData[NextSO]
+		m_aMeasureData.erase( itMNext );
+
+		// 8. From Measure nMeasure+1 to end of vector aMeasures - 1:
+		//	  element[i] = element[i+1]
+		for (int i=nMeasure; i < (int)m_aMeasures.size()-1; i++)
+			m_aMeasures[i] = m_aMeasures[i+1];
+
+		// 9. Remove last element of aMeasures
+		m_aMeasures.pop_back();
+
+	}
+    #if defined(__WXDEBUG__)
+    wxString sDump = _T("");
+	sDump += DumpStaffObjs();
+	sDump += DumpMeasuresData();
+	sDump += DumpMeasures();
+    g_pLogger->LogTrace(_T("lmColStaffObjs::Delete"), sDump );
+    #endif
+}
+
 void lmColStaffObjs::AssignTime(lmStaffObj* pSO, float* pTime, float* pMaxTime)
 {
 	// Assigns a time to the StaffObj and update time counters
@@ -470,7 +560,15 @@ bool lmColStaffObjs::StartOfList(lmItCSO pNode)
     return pNode == --m_cStaffobjs.begin();
 }
 
+lmItCSO lmColStaffObjs::GetIteratorTo(lmStaffObj* pSO)
+{
+	//returns an iterator pointing to StaffObj pSO
 
+	lmItMeasure itM = pSO->GetItMeasure();
+	lmItCSO itFromCSO = (*itM)->itStartSO;
+	lmItCSO itToCSO = (*itM)->itEndSO; 	itToCSO++;
+	return std::find(itFromCSO, itToCSO, pSO);
+}
 
 //====================================================================================================
 //Debug methods
@@ -542,6 +640,15 @@ lmStaffObjIterator* lmColStaffObjs::CreateIterator(ETraversingOrder nOrder)
     //creates and returns an iterator
 
     lmStaffObjIterator* pIter = new lmStaffObjIterator(nOrder, this);
+    return pIter;
+    
+}
+
+lmStaffObjIterator* lmColStaffObjs::CreateIteratorTo(lmStaffObj* pSO)
+{
+    //creates and returns an iterator
+
+    lmStaffObjIterator* pIter = new lmStaffObjIterator(pSO, this);
     return pIter;
     
 }

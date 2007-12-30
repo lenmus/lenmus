@@ -66,18 +66,6 @@ lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) 
 
 }
 
-void lmBarline::AddContext(lmContext* pContext, int nStaff)
-{
-    wxASSERT(nStaff-1 == (int)m_aContexts.GetCount());
-    m_aContexts.Add(pContext);
-}
-
-lmContext* lmBarline::GetContext(int nStaff)
-{
-    wxASSERT(nStaff <= (int)m_aContexts.GetCount());
-    return m_aContexts.Item(nStaff-1);
-}
-
 wxString lmBarline::Dump()
 {
     wxString sDump = wxString::Format(

@@ -19,12 +19,14 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __KEYSIGNATURE_H__        //to avoid nested includes
-#define __KEYSIGNATURE_H__
+#ifndef __LM_KEYSIGNATURE_H__        //to avoid nested includes
+#define __LM_KEYSIGNATURE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "KeySignature.cpp"
 #endif
+
+
 
 //------------------------------------------------------------------------------------------------
 // lmKeySignature object
@@ -37,8 +39,9 @@ public:
 
         //constructor for traditional key signatures
     lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible=true);
-
     ~lmKeySignature() {}
+
+	wxString GetName() const { return _T("key signature"); }
 
     //other methods
     lmEKeySignatures GetKeyType() { return m_nKeySignature; }
@@ -60,6 +63,9 @@ public:
     //methods for hiding the key in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }
 
+	//context management
+	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
+    inline lmContext* GetContext() { return m_pContext; }
 
 
 private:
@@ -71,12 +77,13 @@ private:
     void SetKeySignatureType();
 
     // member variables
-    bool              m_fHidden;          //to hide it in system prolog
-    bool              m_fTraditional;     //it's a traditional signature. Encoded by the
-                                          // redundant enumaeration and fifths/mode pair
-    lmEKeySignatures    m_nKeySignature;
-    int               m_nFifths;
-    bool              m_fMajor;
+    bool				m_fHidden;          //to hide it in system prolog
+    bool				m_fMajor;
+    bool				m_fTraditional;     //it's a traditional signature. Encoded by the
+											//	redundant enumaeration and fifths/mode pair
+    lmEKeySignatures	m_nKeySignature;
+    int					m_nFifths;
+	lmContext*			m_pContext;			//context created by this key signature
 
 };
 
@@ -90,5 +97,5 @@ extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
 extern int KeySignatureToNumFifths(lmEKeySignatures nKeySignature);
 extern lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey);
 
-#endif    // __KEYSIGNATURE_H__
+#endif    // __LM_KEYSIGNATURE_H__
 

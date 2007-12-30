@@ -212,6 +212,7 @@ enum EStaffObjType
 
 class lmVStaff;
 class lmAuxObj;
+class lmContext;
 
 class lmStaffObj : public lmComponentObj
 {
@@ -238,6 +239,8 @@ public:
     virtual inline bool IsSizeable() { return false; }
     inline bool IsVisible() { return m_fVisible; }
     EStaffObjType GetClass() { return m_nClass; }
+	virtual wxString GetName() const=0;
+
 
     // source code related methods
     virtual wxString SourceLDP(int nIndent);
@@ -263,6 +266,9 @@ public:
     // methods related to AuxObj/GraphObj ownership
     virtual bool IsComposite() { return false; }
 
+	//contexts
+	lmContext* GetCurrentContext();
+	lmContext* NewUpdatedContext();
 
 
 protected:

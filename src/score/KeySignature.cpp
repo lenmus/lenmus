@@ -183,7 +183,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
     for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
     {
         //get current clef
-        lmClef* pClef = pStaff->GetCurrentClef();
+        lmClef* pClef = m_pContext->GetClef();
         lmEClefType nClef = pClef->GetClefType();
 
         // Add the shape for key signature
@@ -458,6 +458,7 @@ void lmKeySignature::SetKeySignatureType()
     }
 
 }
+
 
 
 //---------------------------------------------------------------------------------------

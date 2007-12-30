@@ -46,6 +46,10 @@ public:
     float GetTimePosIncrement() { return 0; }
     virtual lmENotationType GetNotationType() = 0;
 
+	wxString GetName() const { return _T("notation"); }
+
+
+
 protected:
     lmNotation(lmVStaff* pVStaff, int nStaff=1,
                bool fVisible = true, 

@@ -49,7 +49,29 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(NotesList);
 
+//global static variables common to all notes
+
+static bool m_fBeingBuilt = false;		//true when constructor not yet finished
+static lmContext* m_pContext = NULL;	//contains updated context when previous flag is true
+
+//AWARE: Rationale for these two previous variables
+//		 -------------------------------------------
+//		VStaff methods to get a context need a reference to the StaffObj. During 
+//note creation (lmNote constructor), as the note is not yet included
+//in the StaffObjs collection, these get context methods will fail.
+//		During note creation it is not necessary to access this methods, as the 
+//note constructor receives as parameter, an updated context. But invocation
+//of other lmNote methods in the constructor could (in fact, does) cause
+//problems because they will invoke get context methods.
+//		As solution, I will have a temporary flag to signal that the note is being
+//created and that context is stored in a temporary variable. All lmNote 
+//methods requiring a context will check this flag and, if raised, will use
+//the stored context instead of asking the VStaff for the context.
+
+
 const bool m_fDrawSmallNotesInBlock = false;    //TODO option depending on used font
+
+
 
 lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxString& sStep, wxString& sOctave, wxString& sAlter,
@@ -76,6 +98,15 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     // To support both kinds of definitions, parameter fAbsolutePitch indicates that pitch
     // information is absolute (MusicXML style) or relative (LDP style).
 
+	//AWARE: During lmNote construction is not possible to use methods to get contexts.
+	//They will fail because the note is not yet included in the ColStaffObjs.
+	//Therefore, all inititialization MUST use the received context pContext. VERIFY THIS
+	//WHEN INVOKING OTHER METHODS FROM CONSTRUCTOR
+
+
+	//Constructor starts
+	m_fBeingBuilt = true;
+	m_pContext = pContext;
 
     //shape initialization
 	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
@@ -93,17 +124,12 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     //    int nDbg = 0;
     //}
 
-    //context information
-    m_pContext = pContext;
-    m_pContext->StartUsing();
-    m_nClef = (m_pContext->GetClef())->GetClefType();
-
     //get octave, step and context accidentals for this note step
     long nAux;
     sOctave.ToLong(&nAux);
     int nOctave = (int)nAux;
     int nStep = LetterToStep(sStep);
-    int nCurContextAcc = m_pContext->GetAccidentals(nStep);
+    int nCurContextAcc = pContext->GetAccidentals(nStep);
     int nNewContextAcc = nCurContextAcc;
     lmEAccidentals nDisplayAcc = nAccidentals;
 
@@ -177,11 +203,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxASSERT(false);
     }
 
-    // if needed, update context for following notes
-    if (nNewContextAcc != nCurContextAcc) {
-        m_pVStaff->UpdateContext(this, nStaff, nStep, nNewContextAcc, m_pContext);
-    }
-
     // create the accidentals
     if (nDisplayAcc == eNoAccidentals) {
         m_pAccidentals = (lmAccidental*)NULL;
@@ -246,6 +267,10 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     //initializations for renderization
     m_uSpacePrev = 0;
 
+	//Constructor ends
+	m_fBeingBuilt = false;
+	m_pContext = (lmContext*)NULL;
+
 }
 
 lmNote::~lmNote()
@@ -288,32 +313,66 @@ lmNote::~lmNote()
 
 }
 
-bool lmNote::UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext)
+lmEClefType lmNote::GetClefType()
 {
-    // A previous note has updated the contex. It is necessary to verify if this note is
+	//returns the applicable clef for this note
+
+	//during note construction we have the context. use it
+	if (m_fBeingBuilt)
+		return m_pContext->GetClef()->GetClefType();
+
+	//in other cases, get the context
+	lmContext* pContext = GetCurrentContext();
+    if (pContext)
+		return pContext->GetClef()->GetClefType();
+	else
+		return lmE_Undefined;
+}
+
+lmTimeSignature* lmNote::GetTimeSignature()
+{
+	//returns the applicable time signauture for this note
+
+	//during note construction we have the context. use it
+	if (m_fBeingBuilt)
+		return m_pContext->GetTime();
+
+	//in other cases, get the context
+	lmContext* pContext = GetCurrentContext();
+    if (pContext)
+		return pContext->GetTime();
+	else
+		return (lmTimeSignature*)NULL;
+}
+
+int lmNote::GetContextAccidentals(int nStep)
+{
+	//returns the context number of accidentals for this note and step
+
+	//during note construction we have the context. use it
+	if (m_fBeingBuilt)
+		return m_pContext->GetAccidentals(nStep);
+
+	//in other cases, get the context
+	return m_pVStaff->GetUpdatedContextAccidentals(this, nStep);
+}
+
+bool lmNote::OnContextUpdated(int nStep, int nNewAccidentals, lmContext* pNewContext)
+{
+    // A previous note has updated the context. It is necessary to verify if this note is
     // affected and, if it is affected, to update context dependent information.
-    // Returns true if no context modification was needed.
+    // Returns true if no modification was needed.
 
-    //get context accidentals for the modified step
-    int nAccidentals = m_pContext->GetAccidentals(nStep);
+    ////get context accidentals for the modified step
+    //int nAccidentals = pNewContext->GetAccidentals(nStep);
 
-    //compare context accidentals for modified step with new accidentals
-    if (nAccidentals == nNewAccidentals) {
-        //are equal. No need to update context for this note.
-        //Verify if this note alters current context
-        //TODO
-        return true;
-    }
-    else {
-        //are different. Update contex information
-        m_pContext->StopUsing();    //inform old context that is not longer used by this note
-        m_pContext = pNewContext;    //update context for this note
-        m_pContext->StartUsing();    //and inform new context that it is being used by this note
-        //update pitch
-        m_anPitch.SetAccidentals(nNewAccidentals);
-        return false;
-    }
+    ////compare context accidentals for modified step with new accidentals
+    //if (nAccidentals == nNewAccidentals) return true;
 
+    ////update pitch
+    //m_anPitch.SetAccidentals(nNewAccidentals);
+    //return false;
+    return true;	//TODO
 }
 
 void lmNote::RemoveTie(lmTie* pTie)
@@ -341,25 +400,25 @@ void lmNote::ComputeVolume()
     // Volume should depend on several factors: beak (strong, medium, weak) on which
     // this note, phrase, on dynamics information, etc. For now we are going to
     // consider only beat information
-    lmTimeSignature* pTS = m_pContext->GetTime();
+    lmTimeSignature* pTS = GetTimeSignature();
     if (pTS)
         m_nVolume = AssignVolume(m_rTimePos, pTS->GetNumBeats(), pTS->GetBeatType());
     else
         m_nVolume = 64;
 }
 
-int lmNote::GetPositionInBeat() const
+int lmNote::GetPositionInBeat()
 {
-    lmTimeSignature* pTS = m_pContext->GetTime();
+    lmTimeSignature* pTS = GetTimeSignature();
     if (pTS)
         return GetNoteBeatPosition(m_rTimePos, pTS->GetNumBeats(), pTS->GetBeatType());
     else
         return lmUNKNOWN_BEAT;
 }
 
-int lmNote::GetChordPosition() const
+int lmNote::GetChordPosition()
 {
-    lmTimeSignature* pTS = m_pContext->GetTime();
+    lmTimeSignature* pTS = GetTimeSignature();
     if (pTS)
         return ::GetChordPosition(m_rTimePos, m_rDuration, pTS->GetNumBeats(), pTS->GetBeatType());
     else
@@ -1028,7 +1087,7 @@ int lmNote::PosOnStaffToPitch(int nSteps)
     // and computes the new pitch
 
     int nPos = GetPosOnStaff() + nSteps;
-    switch (m_nClef) {
+    switch (GetClefType()) {
         case lmE_Sol :
             return nPos + lmC4_DPITCH;
         case lmE_Fa4 :
@@ -1056,14 +1115,14 @@ void lmNote::SetUpPitchRelatedVariables(lmDPitch nNewPitch)
     // new step
 
     int nStep = m_anPitch.Step();
-    int nAcc = m_pContext->GetAccidentals(nStep);
+    int nAcc = GetContextAccidentals(nStep);
     m_anPitch.Set(nNewPitch, nAcc);
     SetUpStemDirection();
 }
 
 void lmNote::SetUpStemDirection()
 {
-    switch (m_nStemType) {
+	switch (m_nStemType) {
         case lmSTEM_DEFAULT:
             m_fStemDown = (GetPosOnStaff() >= 6);
             break;
@@ -1120,6 +1179,7 @@ lmLUnits lmNote::GetStandardStemLenght()
     //      on or below the second leger line below the staff: the end of stem
     //      have to touch the middle staff line.
 
+
     int nPos = GetPosOnStaff();     //0 = first leger line below staff
     int nTenths;
 
@@ -1172,8 +1232,8 @@ int lmNote::GetPosOnStaff()
     // if pitch is not yet defined, return line 0 (first bottom ledger line
     if (!IsPitchDefined()) return 0;
 
-    // pitch is defined. Position will depend on key
-    switch (m_nClef) {
+	// pitch is defined. Position will depend on key
+    switch (GetClefType()) {
         case lmE_Sol :
             return m_anPitch.ToDPitch() - lmC4_DPITCH;
         case lmE_Fa4 :
@@ -1298,28 +1358,31 @@ void lmNote::DoChangePitch(int nStep, int nOctave, int nAlter)
 {
     // This method changes the note pitch. It does not take care of tied notes
 
-    //Update context and displayed accidentals
-    int nCurAcc = m_pContext->GetAccidentals(nStep);
-    if (nCurAcc == nAlter) {
+	lmContext* pContext = NewUpdatedContext();
+	int nCurAcc = pContext->GetAccidentals(nStep);
+    if (nCurAcc == nAlter)
+	{
         //Accidentals already included. Remove any possible displayed accidental
         if (m_pAccidentals) {
             delete m_pAccidentals;
             m_pAccidentals = (lmAccidental*)NULL;
         }
     }
-    else {
+    else 
+	{
         // need to add/change displayed accidentals
         if (m_pAccidentals) delete m_pAccidentals;
         lmEAccidentals nNewAcc = ComputeAccidentalsToDisplay(nCurAcc, nAlter);
         m_pAccidentals = new lmAccidental(this, nNewAcc);
-        // update context
-        m_pVStaff->UpdateContext(this, GetStaffNum(), nStep, nAlter, m_pContext);
+
+        // propagate accidentals to other notes in this measure
+        m_pVStaff->OnContextUpdated(this, GetStaffNum(), nStep, nAlter, pContext);
     }
+	delete pContext;
 
     //update all pitch related information
     m_anPitch.Set(nStep, nOctave, nAlter);
     SetUpStemDirection();
-
 }
 
 void lmNote::PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward)
@@ -1341,7 +1404,7 @@ wxString lmNote::Dump()
 {
     //get pitch relative to key signature
     lmFPitch fp = FPitch(m_anPitch);
-    lmKeySignature* pKey = m_pContext->GeyKey();
+    lmKeySignature* pKey = GetCurrentContext()->GeyKey();
     lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
     wxString sPitch = FPitch_ToRelLDPName(fp, nKey);
 

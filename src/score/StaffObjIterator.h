@@ -34,6 +34,8 @@ class lmStaffObjIterator
 {
 public:
     lmStaffObjIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO);
+    lmStaffObjIterator(lmStaffObj* pSO, lmColStaffObjs* pCSO);
+
     bool        EndOfList();
     bool        StartOfList();
     lmStaffObj* GetCurrent();

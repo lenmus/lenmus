@@ -112,6 +112,9 @@ public:
 	lmNote* InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
 					   wxString sOctave, lmENoteType nNoteType, float rDuration);
 
+	//deleting StaffObjs
+	void DeleteObject(lmStaffObj* pCursorSO);
+
 
 
 
@@ -121,7 +124,6 @@ public:
 
     // rendering methods
     lmLUnits LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos);
-    void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
 	void AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
@@ -157,8 +159,19 @@ public:
     lmStaff* GetLastStaff();
 
     //context management
-    void UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
+    void OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
                        int nNewAccidentals, lmContext* pCurrentContext);
+	lmContext* GetCurrentContext(lmStaffObj* pSO);
+	lmContext* NewUpdatedContext(lmStaffObj* pSO);
+	lmContext* FindCurrentContext(lmContext* pContext, int nStaff);
+	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
+	lmContext* NewUpdatedLastContext(int nStaff);
+
+	//new context management
+    lmContext* NewContextAfter(lmClef* pClef, lmContext* pPrevContext);
+    lmContext* NewContextAfter(lmKeySignature* pKey, lmContext* pPrevContext);
+    lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext);
+	lmContext* GetLastContext(int nStaff);
 
     //sound related methods
     lmSoundManager* ComputeMidiEvents(int nChannel);
@@ -179,7 +192,8 @@ private:
     //common code for all time signatures types
     lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
 
-
+	//contexts management
+	void InsertContextAfter(lmContext* pNew, lmContext* pPrev);
 
 
         // member variables
@@ -206,6 +220,12 @@ private:
 
     //for drawing prolog
     lmLUnits    m_nSpaceBeforeClef;
+
+	//context related variables
+	//Contexts are organized as a double linked list. First and last nodes:
+	lmContext*		m_pFirstContext;
+	lmContext*		m_pLastContext;
+
 
 };
 

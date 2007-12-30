@@ -83,6 +83,34 @@ bool lmCmdSelectSingle::DoSelectObject()
 
 
 //----------------------------------------------------------------------------------------
+// lmCmdDeleteObject implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdDeleteObject::lmCmdDeleteObject(const wxString& name, lmScoreDocument *pDoc,
+									 lmStaffObj* pCursorSO)
+        : lmScoreCommand(name, pDoc)
+{
+	m_pCursorSO = pCursorSO;
+}
+
+bool lmCmdDeleteObject::Do()
+{
+	m_pCursorSO->GetVStaff()->DeleteObject(m_pCursorSO);
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+bool lmCmdDeleteObject::Undo()
+{
+	//TODO
+    return true;
+}
+
+
+
+//----------------------------------------------------------------------------------------
 // lmCmdMoveScoreObj implementation
 //----------------------------------------------------------------------------------------
 

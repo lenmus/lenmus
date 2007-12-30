@@ -254,6 +254,29 @@ void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, pGMO));
 }
 
+void lmScoreCanvas::DeleteObject()
+{
+	//delete the StaffObj at current cursor position
+
+	//get object pointed by the cursor
+    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+	wxASSERT(pCursorSO);
+
+	//the EOS Barline can not be deleted
+	if (pCursorSO->GetClass() == eSFOT_Barline 
+		&& ((lmBarline*)pCursorSO)->GetBarlineType() == lm_eBarlineEOS) return;
+
+	//advance cursor; otherwise the View will try to render cursor over the deleted
+	//StaffObj and will fail
+	m_pView->CursorRight();
+
+	//send delete command
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = wxString::Format(_T("Delete %s"), pCursorSO->GetName().c_str() );
+	pCP->Submit(new lmCmdDeleteObject(sName, m_pDoc, pCursorSO));
+}
+
+
 void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 {
 	//insert a Clef at current cursor position
@@ -292,7 +315,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 	lmEEditTool nTool = lmTOOL_NONE;
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	if (!pToolBox) {
-		wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] No TollBox!"));
+		wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] No ToolBox!"));
 	}
 	else
 		nTool = pToolBox->GetSelectedTool();
@@ -435,6 +458,9 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 				if (pToolBox) pToolBox->SelectTool((lmEEditTool)3);
 				break;
 
+            case WXK_DELETE:
+				DeleteObject();
+				break;
 
 			default:
 				fUnknown = true;

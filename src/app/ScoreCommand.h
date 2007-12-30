@@ -41,6 +41,7 @@ public:
 	{
 		lmCMD_SelectSingle = 1,
 		lmCMD_MoveScoreObj,
+		lmCMD_DeleteObject,
         lmCMD_InsertBarline,
         lmCMD_InsertClef,
         lmCMD_InsertNote,
@@ -60,6 +61,7 @@ protected:
 
 };
 
+
 // Select object command
 //------------------------------------------------------------------------------------
 class lmCmdSelectSingle: public lmScoreCommand
@@ -73,7 +75,7 @@ public:
 
     ~lmCmdSelectSingle() {}
 
-    //overrides of pure virtual methods in base class
+    //implementation of pure virtual methods in base class
     bool Do();
     bool Undo();
     lmEScoreCommand GetCommandType() { return lmCMD_SelectSingle; }
@@ -87,6 +89,7 @@ protected:
 
 };
 
+
 // Move object command
 //------------------------------------------------------------------------------------
 class lmCmdMoveScoreObj: public lmScoreCommand
@@ -96,7 +99,7 @@ public:
 					   const lmUPoint& uPos);
     ~lmCmdMoveScoreObj() {}
 
-    //overrides of pure virtual methods in base class
+    //implementation of pure virtual methods in base class
     bool Do();
     bool Undo();
     lmEScoreCommand GetCommandType() { return lmCMD_MoveScoreObj; }
@@ -106,6 +109,27 @@ protected:
     lmLocation      m_tPos;
     lmLocation		m_tOldPos;        // for Undo
 	lmScoreObj*		m_pSO;
+};
+
+
+// Delete object command
+//------------------------------------------------------------------------------------
+class lmCmdDeleteObject: public lmScoreCommand
+{
+public:
+    lmCmdDeleteObject(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO);
+    ~lmCmdDeleteObject() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_DeleteObject; }
+
+
+protected:
+
+	lmStaffObj*		m_pCursorSO;
+
 };
 
 
@@ -119,7 +143,7 @@ public:
 					   lmEBarline nType);
     ~lmCmdInsertBarline() {}
 
-    //overrides of pure virtual methods in base class
+    //implementation of pure virtual methods in base class
     bool Do();
     bool Undo();
     lmEScoreCommand GetCommandType() { return lmCMD_InsertBarline; }
@@ -141,7 +165,7 @@ public:
 					lmEClefType nClefType);
     ~lmCmdInsertClef() {}
 
-    //overrides of pure virtual methods in base class
+    //implementation of pure virtual methods in base class
     bool Do();
     bool Undo();
     lmEScoreCommand GetCommandType() { return lmCMD_InsertClef; }
@@ -164,7 +188,7 @@ public:
 					lmENoteType nNoteType, float rDuration);
     ~lmCmdInsertNote() {}
 
-    //overrides of pure virtual methods in base class
+    //implementation of pure virtual methods in base class
     bool Do();
     bool Undo();
     lmEScoreCommand GetCommandType() { return lmCMD_InsertNote; }
@@ -178,5 +202,6 @@ protected:
 	float			m_rDuration;
 	lmStaffObj*		m_pCursorSO;
 };
+
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

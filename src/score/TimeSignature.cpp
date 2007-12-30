@@ -270,6 +270,7 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 }
 
 
+
 //----------------------------------------------------------------------------------------
 // global functions related to TimeSignatures
 //----------------------------------------------------------------------------------------

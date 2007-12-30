@@ -59,16 +59,10 @@ lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits uUnits)
     m_uAfterSpace = lmToLogicalUnits(10, lmMILLIMETERS);    // 10 mm
     m_uLeftMargin = 0;
     m_uRightMargin = 0;
-
 }
 
 lmStaff::~lmStaff()
 {
-    //wxLogMessage(wxString::Format(
-    //    _T("[lmStaff::~lmStaff] Deleting ContextList: num objs = %d"), GetNumStaffObjs() ) );
-    m_cContext.DeleteContents(true);
-    m_cContext.Clear();
-
 }
 
 lmLUnits lmStaff::GetHeight()
@@ -79,97 +73,23 @@ lmLUnits lmStaff::GetHeight()
 
 }
 
-lmContext* lmStaff::NewContext(lmClef* pNewClef)
-{
-    //get current context
-    wxContextListNode* pNode = m_cContext.GetLast();
-    lmClef* pClef = (lmClef*)NULL;
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
-    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    lmContext* pLastContext;
-    if (pNode) {
-        pLastContext = pNode->GetData();
-        pClef = pLastContext->GetClef();
-        pKey = pLastContext->GeyKey();
-        pTime = pLastContext->GetTime();
-    }
-
-    //create a new context and store it
-    lmContext* pNewContext = new lmContext(pNewClef, pKey, pTime);
-    if (pNode) pNewContext->CopyAccidentals(pLastContext);
-
-    m_cContext.Append(pNewContext);
-    return pNewContext;
-
-}
-
-lmContext* lmStaff::NewContext(lmKeySignature* pNewKey)
-{
-    //get current context
-    wxContextListNode* pNode = m_cContext.GetLast();
-    lmClef* pClef = (lmClef*)NULL;
-    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    lmContext* pLastContext;
-    if (pNode) {
-        pLastContext = pNode->GetData();
-        pClef = pLastContext->GetClef();
-        pTime = pLastContext->GetTime();
-    }
-
-    //create a new context and store it
-    lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime);
-
-    m_cContext.Append(pNewContext);
-    return pNewContext;
-
-}
-
-lmContext* lmStaff::NewContext(lmTimeSignature* pNewTime)
-{
-    //get current context
-    wxContextListNode* pNode = m_cContext.GetLast();
-    lmClef* pClef = (lmClef*)NULL;
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
-    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    lmContext* pLastContext;
-    if (pNode) {
-        pLastContext = pNode->GetData();
-        pClef = pLastContext->GetClef();
-        pKey = pLastContext->GeyKey();
-        pTime = pLastContext->GetTime();
-    }
-
-    //create a new context and store it
-    lmContext* pNewContext = new lmContext(pClef, pKey, pNewTime);
-    if (pNode) pNewContext->CopyAccidentals(pLastContext);
-
-    m_cContext.Append(pNewContext);
-    return pNewContext;
-
-}
-
-lmContext* lmStaff::NewContext(lmContext* pNewContext)
-{
-    m_cContext.Append(pNewContext);
-    return pNewContext;
-}
-
 lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, int nStep)
 {
-    //locate context received
-    int nNodeIndex = m_cContext.IndexOf(pCurrentContext);
-    wxASSERT(nNodeIndex != wxNOT_FOUND);
+	return (lmContext*)NULL;
+    ////locate context received
+    //int nNodeIndex = m_cContext.IndexOf(pCurrentContext);
+    //wxASSERT(nNodeIndex != wxNOT_FOUND);
 
-    //create a new context and store it
-    lmContext* pNewContext = new lmContext(pCurrentContext->GetClef(),
-                                    pCurrentContext->GeyKey(),
-                                    pCurrentContext->GetTime() );
-    pNewContext->CopyAccidentals(pCurrentContext);
-    pNewContext->SetAccidental(nStep, nNewAccidentals);
+    ////create a new context and store it
+    //lmContext* pNewContext = new lmContext(pCurrentContext->GetClef(),
+    //                                pCurrentContext->GeyKey(),
+    //                                pCurrentContext->GetTime() );
+    //pNewContext->CopyAccidentals(pCurrentContext);
+    //pNewContext->SetAccidental(nStep, nNewAccidentals);
 
-    //insert new context after the received one
-    m_cContext.Insert(++nNodeIndex, pNewContext);
-    return pNewContext;
+    ////insert new context after the received one
+    //m_cContext.Insert(++nNodeIndex, pNewContext);
+    //return pNewContext;
 
     /*AWARE
       propagation of changes to following contexts until a start of measure found.
@@ -201,52 +121,10 @@ lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, 
 
         Solution:
         In current implementation I use the third alternative, so in this method it is
-        not necessary to do anything about, as te lmVStaff method UpdateContext() takes care
+        not necessary to do anything about, as te lmVStaff method OnContextUpdated() takes care
         of everything
     */
 
-}
-
-lmClef* lmStaff::GetLastClef()
-{
-    wxContextListNode* pNode = m_cContext.GetLast();
-    if (pNode) {
-        lmContext* pContext = pNode->GetData();
-        return pContext->GetClef();
-    }
-    else
-        return (lmClef*)NULL;
-}
-
-lmKeySignature* lmStaff::GetLastKey()
-{
-    wxContextListNode* pNode = m_cContext.GetLast();
-    if (pNode) {
-        lmContext* pContext = pNode->GetData();
-        return pContext->GeyKey();
-    }
-    else
-        return (lmKeySignature*)NULL;
-}
-
-lmTimeSignature* lmStaff::GetLastTime()
-{
-    wxContextListNode* pNode = m_cContext.GetLast();
-    if (pNode) {
-        lmContext* pContext = pNode->GetData();
-        return pContext->GetTime();
-    }
-    else
-        return (lmTimeSignature*)NULL;
-}
-
-lmContext* lmStaff::GetLastContext()
-{
-    wxContextListNode* pNode = m_cContext.GetLast();
-    if (pNode)
-        return pNode->GetData();
-    else
-        return (lmContext*)NULL;
 }
 
 wxString lmStaff::Dump()

@@ -83,11 +83,15 @@ public:
 
     void Store(lmStaffObj* pSO);
 	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
+	void Delete(lmStaffObj* pCursorSO);
+
     int GetNumMeasures();
     void ShiftTime(float rTimeShift);
 
     //iterator related methods
     lmStaffObjIterator* CreateIterator(ETraversingOrder nOrder);
+	lmStaffObjIterator* CreateIteratorTo(lmStaffObj* pSO);
+	lmItCSO GetIteratorTo(lmStaffObj* pSO);
     int GetNumStaffObjs();
     lmItCSO GetFirstInMeasure(int nBar);
     lmItCSO GetFirst();

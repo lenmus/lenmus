@@ -66,6 +66,7 @@ public:
 					lmENoteType nNoteType, float rDuration) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
+	virtual void DeleteObject() {}
 
     // event handlers
     virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
@@ -125,6 +126,7 @@ public:
 					lmENoteType nNoteType, float rDuration);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 	void SelectObject(lmGMObject* pGMO);
+	void DeleteObject();
 
 	//contextual menus
 	wxMenu* GetContextualMenu();

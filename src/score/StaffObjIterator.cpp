@@ -57,10 +57,16 @@ lmStaffObjIterator::lmStaffObjIterator(ETraversingOrder nOrder, lmColStaffObjs* 
 
 }
 
+lmStaffObjIterator::lmStaffObjIterator(lmStaffObj* pSO, lmColStaffObjs* pCSO)
+{
+    m_pColStaffobjs = pCSO;
+	m_pCurrentNode = m_pColStaffobjs->GetIteratorTo(pSO);
+}
+
+
 bool lmStaffObjIterator::EndOfList()
 {
     // returns true if cursor does not point to a valid item
-    //return (m_pCurrentNode ? false : true);
     return m_pColStaffobjs->EndOfList(m_pCurrentNode);
 }
 
@@ -73,8 +79,6 @@ bool lmStaffObjIterator::StartOfList()
 lmStaffObj* lmStaffObjIterator::GetCurrent()
 {
     // returns the lmStaffObj pointed by cursor
-    //wxASSERT(m_pCurrentNode);
-    //return (lmStaffObj*) m_pCurrentNode->GetData();
     return *m_pCurrentNode;
 }
 
@@ -96,17 +100,12 @@ void lmStaffObjIterator::MoveNext()
 {
     // advance cursor to next lmStaffObj
     m_pCurrentNode++;
-    //if (m_pCurrentNode)
-        //m_pCurrentNode = m_pCurrentNode->GetNext();
-
 }
 
 void lmStaffObjIterator::MovePrev()
 {
     // move cursor back to previous lmStaffObj
     m_pCurrentNode--;
-    //if (m_pCurrentNode)
-        //m_pCurrentNode = m_pCurrentNode->GetPrevious();
 }
 
 void lmStaffObjIterator::MoveLast()
@@ -132,11 +131,9 @@ void lmStaffObjIterator::GoToItem(lmStaffObj* pSO)
 {
     //locate staffObj received as parameter and leave iterator positioned on that item.
 
-    /*TODO
-        Review implementation and usage. Is it still true what is said in the
-        "aware" note?
-    */
-    //AWARE This method is only used in FindPossibleStartOfTie. Therefore, search is
+    //TODO: remove this method. It is not used
+
+	//AWARE This method is only used in FindPossibleStartOfTie. Therefore, search is
     // done backwards to optimize.
 
  //   lmStaffObj* pX;

@@ -81,11 +81,15 @@
 #error "You must set wxUSE_MENUS to 1 in setup.h!"
 #endif
 
-#ifdef __WXMSW__
-// Detecting and isolating memory leaks with Visual C++
+
+#if defined( __WXMSW__ ) && defined( _DEBUG )
+// for debugging: Detecting and isolating memory leaks with Visual C++
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#define DEBUG_NEW new(_NORMAL_BLOCK ,__FILE__, __LINE__)
+#else
+#define DEBUG_NEW new
 #endif
 
 // CONFIG: Under Windows, change this to 1 to use wxGenericDragImage
@@ -300,6 +304,8 @@ bool lmTheApp::OnInit(void)
     //define trace masks to be known by trace system
 	g_pLogger->DefineTraceMask(_T("lmCadence"));
 	g_pLogger->DefineTraceMask(_T("lmChordManager"));
+	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Delete"));
+	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Insert"));
     g_pLogger->DefineTraceMask(_T("lmComposer6"));
     g_pLogger->DefineTraceMask(_T("lmComposer6::AssignNonChordNotes")); 
     g_pLogger->DefineTraceMask(_T("lmComposer6::FunctionToChordNotes")); 
@@ -316,7 +322,6 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmLDPParser"));
     g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
     g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
-	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Insert"));
     g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
 	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
@@ -691,8 +696,6 @@ int lmTheApp::OnExit(void)
 
     // single instance checker
     if (m_pInstanceChecker) delete m_pInstanceChecker;
-
-	//wxDebugContext::Dump();
 
 	return 0;
 }

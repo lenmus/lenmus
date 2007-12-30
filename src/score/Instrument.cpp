@@ -112,6 +112,11 @@ lmInstrument::~lmInstrument()
 		delete m_cStaves[i];
 	}
     m_cStaves.clear();
+
+	//delete names
+	if (m_pName) delete m_pName;
+    if (m_pAbbreviation) delete m_pAbbreviation;
+
 }
 
 lmLUnits lmInstrument::TenthsToLogical(lmTenths nTenths)

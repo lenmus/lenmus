@@ -33,23 +33,33 @@
 #include "Score.h"
 #include "Context.h"
 
-//implementation of the Context objects List
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(ContextList);
 
 //access to global functions
-extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int    nAccidentals[]);
+extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
 
-lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime)
+lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime, int nStaff)
 {
+	//create a new context
     m_pClef = pClef;
     m_pKey = pKey;
     m_pTime = pTime;
+	m_nStaff = nStaff;
 
     InitializeAccidentals();
+	m_pPrev = (lmContext*) NULL;
+	m_pNext = (lmContext*) NULL;
+}
 
-    m_nNumReferences = 0;
+lmContext::lmContext(lmContext* pContext)
+{
+    m_pClef = pContext->GetClef();
+    m_pKey = pContext->GeyKey();
+    m_pTime = pContext->GetTime();
+	m_nStaff = pContext->GetNumStaff();
 
+    CopyAccidentals(pContext);
+	m_pPrev = (lmContext*) NULL;
+	m_pNext = (lmContext*) NULL;
 }
 
 void lmContext::InitializeAccidentals()
@@ -72,3 +82,4 @@ void lmContext::CopyAccidentals(lmContext* pContext)
     }
 
 }
+
