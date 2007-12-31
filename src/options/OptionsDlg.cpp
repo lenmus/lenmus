@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -30,7 +30,7 @@
 //
 //-----------------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "OptionsDlg.h"
 #endif
 
@@ -235,12 +235,10 @@ void lmOptionsDlg::CreateControls()
     Controls creation for OptionDlg
     */
 
-    lmOptionsDlg* itemDialog1 = this;
+    wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
+    this->SetSizer(pMainSizer);
 
-    wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-    itemDialog1->SetSizer(itemBoxSizer2);
-
-    m_pSplitWindow = new wxSplitterWindow( itemDialog1, ID_SPLITTERWINDOW, wxDefaultPosition, wxSize(100, 100), wxSP_3DBORDER|wxSP_3DSASH|wxNO_BORDER );
+    m_pSplitWindow = new wxSplitterWindow( this, ID_SPLITTERWINDOW, wxDefaultPosition, wxSize(100, 100), wxSP_3DBORDER|wxSP_3DSASH|wxNO_BORDER );
 
     m_pTreeCtrl = new wxTreeCtrl( m_pSplitWindow, ID_TREECTRL,
                             wxDefaultPosition, wxSize(180, 180),
@@ -250,19 +248,19 @@ void lmOptionsDlg::CreateControls()
     m_cPanels[m_nCurPanel] = m_pPanel;
 
     m_pSplitWindow->SplitVertically(m_pTreeCtrl, m_pPanel, 50);
-    itemBoxSizer2->Add(m_pSplitWindow, 1, wxGROW|wxALL, 5);
+    pMainSizer->Add(m_pSplitWindow, 1, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer2->Add(itemBoxSizer6, 0, wxALIGN_RIGHT|wxALL, 5);
+    wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+    pMainSizer->Add(pButtonsSizer, 0, wxALIGN_RIGHT|wxALL, 5);
 
-    m_pBtnOK = new wxButton( itemDialog1, ID_BUTTON_ACCEPT, _("&Accept"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer6->Add(m_pBtnOK, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_pBtnOK = new wxButton( this, ID_BUTTON_ACCEPT, _("&Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add(m_pBtnOK, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_pBtnCancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer6->Add(m_pBtnCancel, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_pBtnCancel = new wxButton( this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add(m_pBtnCancel, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_pBtnHelp = new wxButton( itemDialog1, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer6->Add(m_pBtnHelp, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_pBtnHelp = new wxButton( this, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add(m_pBtnHelp, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 }
 

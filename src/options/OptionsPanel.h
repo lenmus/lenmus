@@ -1,7 +1,7 @@
 
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -35,8 +35,8 @@
 
 -----------------------------------------------------------------------------------*/
 
-#ifndef __OPTIONSPANEL_H__
-#define __OPTIONSPANEL_H__
+#ifndef __LM_OPTIONSPANEL_H__
+#define __LM_OPTIONSPANEL_H__
 
 
 #include <wx/panel.h>
@@ -76,4 +76,4 @@ protected:
 
 };
 
-#endif        // __OPTIONSPANEL_H__
+#endif        // __LM_OPTIONSPANEL_H__

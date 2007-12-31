@@ -533,12 +533,22 @@
 			<File
 				RelativePath="..\..\src\app\TheApp.h">
 			</File>
-			<File
-				RelativePath="..\..\src\app\ToolsBox.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\ToolsBox.h">
-			</File>
+			<Filter
+				Name="toolbox"
+				Filter="">
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolNotesOpt.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolNotesOpt.h">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolsBox.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolsBox.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="widgets"

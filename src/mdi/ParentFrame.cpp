@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This file is derived from file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -26,7 +26,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ParentFrame.h"
 #endif
 

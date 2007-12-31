@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -37,6 +37,8 @@
 #include "wx/wx.h"
 #endif
 
+#include <vector>
+
 //available tools
 enum lmEEditTool 
 {
@@ -44,6 +46,7 @@ enum lmEEditTool
 	lmTOOL_NOTES = 0,
 	lmTOOL_CLEFS,
 	lmTOOL_BARLINES,
+    //TO_ADD: Add, before this line, a new lmTOOL_XXXXX code for the new tool
 	lmTOOL_MAX		//this MUST BE the last one
 };
 
@@ -55,7 +58,7 @@ class lmToolBox: public wxPanel
 
 public:
     lmToolBox(wxWindow* parent, wxWindowID id = wxID_ANY);
-    virtual ~lmToolBox() {}
+    virtual ~lmToolBox();
 
     void OnButtonClicked(wxCommandEvent& event);
 
@@ -64,15 +67,21 @@ public:
 	void SelectTool(lmEEditTool nTool);
 
 private:
+	void CreateControls();
 	void SelectButton(int nTool);
+    wxPanel* CreatePanel(lmEEditTool nPanel);
 
 	enum {
 		NUM_BUTTONS = 16,
 	};
 
     wxPanel*		m_pOptionsPanel;
-	lmEEditTool		m_nSelTool;
+	lmEEditTool		m_nSelTool;				//current selected tool
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
+
+	//panels for tools' options
+	std::vector<wxPanel*>	m_cPanels;		// tools' panels collection
+
 
     DECLARE_EVENT_TABLE()
 };

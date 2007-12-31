@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This file is a modified copy of file helpfrm.h from wxWidgets 2.6.2 project.
 //    wxWidgets licence is compatible with GNU GPL.
@@ -27,8 +27,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __TEXTBOOKFRAME__H_
-#define __TEXTBOOKFRAME__H_
+#ifndef __LM_TEXTBOOKFRAME__H_
+#define __LM_TEXTBOOKFRAME__H_
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "TextBookFrame.cpp"
@@ -276,4 +276,4 @@ private:
 
 #endif
 
-#endif // __TEXTBOOKFRAME__H_
+#endif // __LM_TEXTBOOKFRAME__H_

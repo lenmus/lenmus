@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __GLOBAL_H__        //to avoid nested includes
-#define __GLOBAL_H__
+#ifndef __LM_GLOBAL_H__        //to avoid nested includes
+#define __LM_GLOBAL_H__
 
 #include "wx/colour.h"
 
@@ -53,4 +53,4 @@ extern bool g_fDrawBounds;      //draw bounds rectangle
 
 
 
-#endif    // __GLOBAL_H__
+#endif    // __LM_GLOBAL_H__

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
-    <object class="wxPanel" name="LangOptionsPanel" subclass="lmLangOptionsPanel">
-        <style>wxNO_BORDER|wxTAB_TRAVERSAL</style>
+    <object class="wxPanel" name="LangOptionsPanel">
+        <style>wxNO_BORDER|wxTAB_TRAVERSAL|wxCLOSE_BOX|wxCAPTION|wxSYSTEM_MENU</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
         <object class="wxBoxSizer">
@@ -20,9 +20,7 @@
                                 <font>
                                     <size>8</size>
                                     <family>swiss</family>
-                                    <style>normal</style>
                                     <weight>bold</weight>
-                                    <underlined>0</underlined>
                                     <face>Tahoma</face>
                                 </font>
                                 <style>wxALIGN_LEFT</style>

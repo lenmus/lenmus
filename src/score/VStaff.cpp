@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -543,8 +543,6 @@ lmBarline* lmVStaff::InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType)
     lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
     m_cStaffObjs.Insert(pBarline, pCursorSO);
     pBarline->SetContext( pCursorSO->GetCurrentContext() );
-	//TODO: it is necessary to update context in following notes, as the measure has
-	//been splitted
     return pBarline;
 }
 
@@ -552,8 +550,6 @@ lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxS
 							 wxString sOctave, lmENoteType nNoteType, float rDuration)
 {
     int nStaff = pCursorSO->GetStaffNum();
-    //lmStaff* pStaff = GetStaff(nStaff);
-    //lmContext* pContext = pStaff->GetLastContext();
 
 	//get the applicable context
 	lmContext* pContext = NewUpdatedContext(pCursorSO);

@@ -1,7 +1,7 @@
 
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -20,10 +20,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __TOOLBARSOPTPANEL_H__
-#define __TOOLBARSOPTPANEL_H__
+#ifndef __LM_TOOLBARSOPTPANEL_H__
+#define __LM_TOOLBARSOPTPANEL_H__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ToolbarsOptPanel.cpp"
 #endif
 
@@ -66,4 +66,4 @@ private:
     int     m_nLabelsIndex;
 };
 
-#endif    // __TOOLBARSOPTPANEL_H__
+#endif    // __LM_TOOLBARSOPTPANEL_H__

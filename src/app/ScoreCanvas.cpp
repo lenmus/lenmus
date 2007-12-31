@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -42,7 +42,7 @@
 #include "ScoreDoc.h"
 #include "ScoreCommand.h"
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
-#include "ToolsBox.h"
+#include "toolbox/ToolsBox.h"
 #include "../ldp_parser/LDPParser.h"
 
 #include "global.h"

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This file is a modified copy of file helpctrl.h from wxWidgets 2.6.2 project.
 //    wxWidgets licence is compatible with GNU GPL.
@@ -27,8 +27,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __TEXTBOOKCONTROLLER_H__
-#define __TEXTBOOKCONTROLLER_H__
+#ifndef __LM_TEXTBOOKCONTROLLER_H__
+#define __LM_TEXTBOOKCONTROLLER_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "TextBookController.cpp"
@@ -94,4 +94,4 @@ protected:
     DECLARE_NO_COPY_CLASS(lmTextBookController)
 };
 
-#endif // __TEXTBOOKCONTROLLER_H__
+#endif // __LM_TEXTBOOKCONTROLLER_H__

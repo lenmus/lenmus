@@ -19,32 +19,33 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_OTHEROPTIONSPANEL_H__
-#define __LM_OTHEROPTIONSPANEL_H__
+#ifndef __LM_TOOLNOTESOPT_H__
+#define __LM_TOOLNOTESOPT_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "OtherOptionsPanel.cpp"
+#pragma interface "ToolNotesOpt.cpp"
 #endif
 
-#include "OptionsPanel.h"
+#include "ToolsBox.h"
 
 
-class lmOtherOptionsPanel: public lmOptionsPanel
+class lmToolNotesOpt: public wxPanel
 {
 public:
-    lmOtherOptionsPanel(wxWindow* parent);
-    ~lmOtherOptionsPanel();
+    lmToolNotesOpt(wxWindow* parent);
+    ~lmToolNotesOpt();
     bool Verify();
     void Apply();
 
 private:
-
     // controls
-        // Exercises
-    wxCheckBox*     m_pChkAnswerSounds;       // Enable right/wrong answer sounds
-    wxCheckBox*     m_pChkTeamCounters;       // Show two counters (for teams competition)
-    wxCheckBox*     m_pChkAutoNewProblem;     // Show two counters (for teams competition)
+    wxChoice*        m_pChoice;
 
+    // other member variables
+    int				m_nNumLangs;
+    wxArrayString	m_cLangCodes;
+    wxArrayString	m_cLangNames;
+    wxString        m_sCurLang;
 };
 
-#endif    // __LM_OTHEROPTIONSPANEL_H__
+#endif    // __LM_TOOLNOTESOPT_H__

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SCORECTROL_H__        //to avoid nested includes
-#define __SCORECTROL_H__
+#ifndef __LM_SCORECTROL_H__        //to avoid nested includes
+#define __LM_SCORECTROL_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ScoreCtrol.cpp"
@@ -105,4 +105,4 @@ private:
 
 
 
-#endif  // __SCORECTROL_H__
+#endif  // __LM_SCORECTROL_H__

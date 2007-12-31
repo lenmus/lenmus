@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2007 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -96,12 +96,6 @@ void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int
     for (int i = 1; i <= nNumStaves; i++) {
         AddVStaff( (i!=1) );    //second and remaining overlayered
     }
-
-    ////include name/abbrev. in global list so that they are selectable for edition
-    ////the owner of them is now the score. Do not delete them.
-    //if (m_pName) pScore->IncludeInGlobalList(m_pName);
-    //if (m_pAbbreviation) pScore->IncludeInGlobalList(m_pAbbreviation);
-
 
 }
 
