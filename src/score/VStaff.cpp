@@ -562,7 +562,7 @@ lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxS
 	wxString sAccidentals = _T("");
 
     lmNote* pNt = new lmNote(this, nPitchType,
-                        sStep, sOctave, sAccidentals, eNoAccidentals,
+                        sStep, sOctave, sAccidentals, lm_eNoAccidentals,
                         nNoteType, rDuration, false, false, nStaff, lmVISIBLE,
                         pContext, false, BeamInfo, false, false, lmSTEM_DEFAULT);
 

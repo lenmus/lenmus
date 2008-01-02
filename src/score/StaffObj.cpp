@@ -248,7 +248,10 @@ void lmScoreObj::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
 
 void lmScoreObj::OnProperties(lmGMObject* pGMO)
 {
-	wxMessageBox(pGMO->Dump(0));
+	//TODO: FIX_ME: pGMO is uselless here because whe the pop-up menu is removed
+	//the score could be re-layouted and the pGMO become invalid
+	//wxMessageBox(_T("Properties of this"));
+	wxMessageBox(GetShap2()->Dump(0));
 }
 
 int lmScoreObj::GetPageNumber()

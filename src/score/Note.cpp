@@ -157,29 +157,29 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 
         //update context with accidentals
         switch (nAccidentals) {
-            case eNoAccidentals:
+            case lm_eNoAccidentals:
                 //do not modify context
                 break;
             case eNatural:
                 //ignore context. Force 'natural' (=no accidentals)
                 nNewContextAcc = 0;
                 break;
-            case eFlat:
-            case eNaturalFlat:
+            case lm_eFlat:
+            case lm_eNaturalFlat:
                 //ignore context. Put one flat
                 nNewContextAcc = -1;
                 break;
-            case eSharp:
-            case eNaturalSharp:
+            case lm_eSharp:
+            case lm_eNaturalSharp:
                 //ignore context. Put one sharp
                 nNewContextAcc = 1;
                 break;
-            case eFlatFlat:
+            case lm_eFlatFlat:
                 //ignore context. Put two flats
                 nNewContextAcc = -2;
                 break;
-            case eSharpSharp:
-            case eDoubleSharp:
+            case lm_eSharpSharp:
+            case lm_eDoubleSharp:
                 //ignore context. Put two sharps
                 nNewContextAcc = 2;
                 break;
@@ -195,7 +195,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     else if (nPitchType == lm_ePitchNotDefined)
     {
         m_anPitch.Set(-1, 0);
-        nDisplayAcc = eNoAccidentals;
+        nDisplayAcc = lm_eNoAccidentals;
     }
 
     else {
@@ -204,7 +204,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     }
 
     // create the accidentals
-    if (nDisplayAcc == eNoAccidentals) {
+    if (nDisplayAcc == lm_eNoAccidentals) {
         m_pAccidentals = (lmAccidental*)NULL;
     } else {
         m_pAccidentals = new lmAccidental(this, nDisplayAcc);
@@ -1266,19 +1266,19 @@ const lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int
 
     lmEAccidentals nDisplayAcc;
     if (nNewAcc == nCurContextAcc)
-        nDisplayAcc = eNoAccidentals;
+        nDisplayAcc = lm_eNoAccidentals;
     else if (nNewAcc == 1 && nCurContextAcc == 2)
-        nDisplayAcc = eNaturalSharp;
+        nDisplayAcc = lm_eNaturalSharp;
     else if (nNewAcc == -1 && nCurContextAcc == -2)
-        nDisplayAcc = eNaturalFlat;
+        nDisplayAcc = lm_eNaturalFlat;
     else if (nNewAcc == 2)
-        nDisplayAcc = eDoubleSharp;
+        nDisplayAcc = lm_eDoubleSharp;
     else if (nNewAcc == -2)
-        nDisplayAcc = eFlatFlat;
+        nDisplayAcc = lm_eFlatFlat;
     else if (nNewAcc == 1)
-        nDisplayAcc = eSharp;
+        nDisplayAcc = lm_eSharp;
     else if (nNewAcc == -1)
-        nDisplayAcc = eFlat;
+        nDisplayAcc = lm_eFlat;
     else if (nNewAcc == 0)
         nDisplayAcc = eNatural;
     else {
@@ -1354,31 +1354,35 @@ void lmNote::ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies)
 
 }
 
+void lmNote::ChangePitch(int nSteps)
+{
+    // This method is used during edition. User has requested to raise/lower
+	// this note pitch by nSteps (half lines)
+
+    //update all pitch related information
+	if (nSteps > 0)
+	{
+		while (nSteps > 0) {
+			m_anPitch.IncrStep();
+			nSteps--;
+		}
+	}
+	else
+	{
+		while (nSteps < 0) {
+			m_anPitch.DecrStep();
+			nSteps++;
+		}
+	}
+    SetUpStemDirection();
+}
+
 void lmNote::DoChangePitch(int nStep, int nOctave, int nAlter)
 {
     // This method changes the note pitch. It does not take care of tied notes
 
-	lmContext* pContext = NewUpdatedContext();
-	int nCurAcc = pContext->GetAccidentals(nStep);
-    if (nCurAcc == nAlter)
-	{
-        //Accidentals already included. Remove any possible displayed accidental
-        if (m_pAccidentals) {
-            delete m_pAccidentals;
-            m_pAccidentals = (lmAccidental*)NULL;
-        }
-    }
-    else 
-	{
-        // need to add/change displayed accidentals
-        if (m_pAccidentals) delete m_pAccidentals;
-        lmEAccidentals nNewAcc = ComputeAccidentalsToDisplay(nCurAcc, nAlter);
-        m_pAccidentals = new lmAccidental(this, nNewAcc);
-
-        // propagate accidentals to other notes in this measure
-        m_pVStaff->OnContextUpdated(this, GetStaffNum(), nStep, nAlter, pContext);
-    }
-	delete pContext;
+	//update accidentals
+	OnAccidentalsChanged(nStep, nAlter);
 
     //update all pitch related information
     m_anPitch.Set(nStep, nOctave, nAlter);
@@ -1399,6 +1403,47 @@ void lmNote::PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool f
     }
 
 }
+
+void lmNote::ChangeAccidentals(int nAccSteps)
+{
+	int nAcc = m_anPitch.Accidentals();
+	int nStep = m_anPitch.Step();
+	if (nAccSteps == 0)
+		nAcc = 0;		//remove accidentals
+	else
+		nAcc += nAccSteps;		//increment/decrement accidentals
+	m_anPitch.SetAccidentals(nAcc);
+	OnAccidentalsChanged(nStep, nAcc);
+}
+
+void lmNote::OnAccidentalsChanged(int nStep, int nNewAcc)
+{
+	//accidentals have been changed to nNewAcc. This method recompute
+	//accidentals to display
+
+	lmContext* pContext = NewUpdatedContext();
+	int nCurAcc = pContext->GetAccidentals(nStep);
+    if (nCurAcc == nNewAcc)
+	{
+        //Accidentals already included. Remove any possible displayed accidental
+        if (m_pAccidentals) {
+            delete m_pAccidentals;
+            m_pAccidentals = (lmAccidental*)NULL;
+        }
+    }
+    else 
+	{
+        // need to add/change displayed accidentals
+        if (m_pAccidentals) delete m_pAccidentals;
+        lmEAccidentals nAlter = ComputeAccidentalsToDisplay(nCurAcc, nNewAcc);
+        m_pAccidentals = new lmAccidental(this, nAlter);
+
+        // propagate accidentals to other notes in this measure
+        m_pVStaff->OnContextUpdated(this, GetStaffNum(), nStep, nAlter, pContext);
+    }
+	delete pContext;
+}
+
 
 wxString lmNote::Dump()
 {

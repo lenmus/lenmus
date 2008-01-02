@@ -1343,7 +1343,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nActualNotes, nNormalNotes);
     wxString sStep = _T("c");
     wxString sOctave = _T("4");
-    lmEAccidentals nAccidentals = eNoAccidentals;
+    lmEAccidentals nAccidentals = lm_eNoAccidentals;
     lmEPitchType nPitchType = lm_ePitchRelative;
 
     bool fInChord = !fIsRest && ((sElmName == _T("na")) || fChord );

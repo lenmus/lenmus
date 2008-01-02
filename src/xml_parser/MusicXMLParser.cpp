@@ -889,7 +889,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     wxASSERT(pNode->GetName() == sElement);
 
     //default values
-    lmEAccidentals nAccidentals = eNoAccidentals;
+    lmEAccidentals nAccidentals = lm_eNoAccidentals;
     lmEStemType nStem = lmSTEM_DEFAULT;
     bool fDotted = false;
     bool fDoubleDotted = false;
@@ -1445,27 +1445,27 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             if (sValue == _T("natural") )
                 nAccidentals = eNatural;
             else if (sValue == _T("flat") )
-                nAccidentals = eFlat;
+                nAccidentals = lm_eFlat;
             else if (sValue == _T("sharp") )
-                nAccidentals = eSharp;
+                nAccidentals = lm_eSharp;
             else if (sValue == _T("flat-flat") )
-                nAccidentals = eFlatFlat;
+                nAccidentals = lm_eFlatFlat;
             else if (sValue == _T("double-sharp") )
-                nAccidentals = eDoubleSharp;
+                nAccidentals = lm_eDoubleSharp;
             else if (sValue == _T("sharp-sharp") )
-                nAccidentals = eSharpSharp;
+                nAccidentals = lm_eSharpSharp;
             else if (sValue == _T("natural-flat") )
-                nAccidentals = eNaturalFlat;
+                nAccidentals = lm_eNaturalFlat;
             else if (sValue == _T("natural-sharp") )
-                nAccidentals = eNaturalSharp;
+                nAccidentals = lm_eNaturalSharp;
              else if (sValue == _T("quarter-flat") )
-                nAccidentals = eQuarterFlat;
+                nAccidentals = lm_eQuarterFlat;
             else if (sValue == _T("quarter-sharp") )
-                nAccidentals = eQuarterSharp;
+                nAccidentals = lm_eQuarterSharp;
             else if (sValue == _T("three-quarters-flat") )
-                nAccidentals = eThreeQuartersFlat;
+                nAccidentals = lm_eThreeQuartersFlat;
             else if (sValue == _T("three-quarters-sharp") )
-                nAccidentals = eThreeQuartersSharp;
+                nAccidentals = lm_eThreeQuartersSharp;
             else
                 ParseError(
                     _("Parsing <note>.<accidental>: unknown type %s"),

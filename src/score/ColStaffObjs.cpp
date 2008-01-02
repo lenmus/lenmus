@@ -304,15 +304,15 @@ void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
 	itFromCSO = pMDataNew->itStartSO;
 	itToCSO = pMDataNew->itEndSO;
 	nNumMeasure = pMDataNew->nNumMeasure;
-	wxLogMessage(_T("[lmColStaffObjs::Insert] (After) Inserted pSO ID=%d, Measure %d, Start ID=%d, End ID=%d"),
-		pNewSO->GetID(), nNumMeasure, (*itFromCSO)->GetID(),  (*itToCSO)->GetID() );
-    #if defined(__WXDEBUG__)
-    wxString sDump = _T("");
-	sDump += DumpStaffObjs();
-	sDump += DumpMeasuresData();
-	sDump += DumpMeasures();
-    g_pLogger->LogTrace(_T("lmColStaffObjs::Insert"), sDump );
-    #endif
+	//wxLogMessage(_T("[lmColStaffObjs::Insert] (After) Inserted pSO ID=%d, Measure %d, Start ID=%d, End ID=%d"),
+	//	pNewSO->GetID(), nNumMeasure, (*itFromCSO)->GetID(),  (*itToCSO)->GetID() );
+ //   #if defined(__WXDEBUG__)
+ //   wxString sDump = _T("");
+	//sDump += DumpStaffObjs();
+	//sDump += DumpMeasuresData();
+	//sDump += DumpMeasures();
+ //   g_pLogger->LogTrace(_T("lmColStaffObjs::Insert"), sDump );
+ //   #endif
 
 }
 
@@ -397,13 +397,13 @@ void lmColStaffObjs::Delete(lmStaffObj* pCursorSO)
 		m_aMeasures.pop_back();
 
 	}
-    #if defined(__WXDEBUG__)
-    wxString sDump = _T("");
-	sDump += DumpStaffObjs();
-	sDump += DumpMeasuresData();
-	sDump += DumpMeasures();
-    g_pLogger->LogTrace(_T("lmColStaffObjs::Delete"), sDump );
-    #endif
+ //   #if defined(__WXDEBUG__)
+ //   wxString sDump = _T("");
+	//sDump += DumpStaffObjs();
+	//sDump += DumpMeasuresData();
+	//sDump += DumpMeasures();
+ //   g_pLogger->LogTrace(_T("lmColStaffObjs::Delete"), sDump );
+ //   #endif
 }
 
 void lmColStaffObjs::AssignTime(lmStaffObj* pSO, float* pTime, float* pMaxTime)

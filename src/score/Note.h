@@ -156,6 +156,11 @@ public:
 	lmEClefType GetClefType();
 	int GetContextAccidentals(int nStep);
 
+	//methods for edition
+	void ChangePitch(int nSteps);
+	void ChangeAccidentals(int nSteps);
+
+
 
 private:
     // rendering
@@ -177,6 +182,7 @@ private:
     void SetUpPitchRelatedVariables(lmDPitch nNewPitch);
     void SetUpStemDirection();
     const lmEAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
+	void OnAccidentalsChanged(int nStep, int nNewAcc);
 
 
     //pitch

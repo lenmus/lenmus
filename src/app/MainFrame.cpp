@@ -476,7 +476,21 @@ void lmMainFrame::CreateControls()
     m_mgrAUI.AddPane(m_pClientWindow, wxAuiPaneInfo().Name(wxT("notebook")).
                   CenterPane().PaneBorder(false));
 
-    m_mgrAUI.Update();
+	//AUI options
+    unsigned int flags = wxAUI_MGR_ALLOW_FLOATING |
+                        wxAUI_MGR_TRANSPARENT_HINT |
+                        wxAUI_MGR_HINT_FADE |
+						wxAUI_MGR_ALLOW_ACTIVE_PANE |
+                        wxAUI_MGR_NO_VENETIAN_BLINDS_FADE;
+
+	#if !defined(__WXMSW__) && !defined(__WXMAC__) && !defined(__WXGTK__)
+	//This option is only available on wxGTK, wxMSW and wxMac
+	flags |= wxAUI_MGR_TRANSPARENT_DRAG;
+	#endif
+
+	m_mgrAUI.SetFlags(flags);
+
+	m_mgrAUI.Update();
 
 }
 
@@ -1647,6 +1661,14 @@ void lmMainFrame::OnActiveViewChanged(lmMDIChildFrame* pFrame)
 
 }
 
+void lmMainFrame::OnNewEditFrame()
+{
+	// A new EditFrame has been open. If this is the first one, open also
+	// the edit ToolBox panel
+	ShowEditTools(true);
+}
+
+
 void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
 {
     lmMDIChildFrame* pChild = GetActiveChild();
@@ -1762,7 +1784,12 @@ void lmMainFrame::OnComboZoom(wxCommandEvent& event)
 
 void lmMainFrame::OnViewTools(wxCommandEvent& event)
 {
-    if (event.IsChecked())
+    ShowEditTools(event.IsChecked());
+}
+
+void lmMainFrame::ShowEditTools(bool fShow)
+{
+    if (fShow)
     {
         //show tools
         if (!m_pToolBox)
@@ -1770,7 +1797,13 @@ void lmMainFrame::OnViewTools(wxCommandEvent& event)
             //show tools
             m_pToolBox =  new lmToolBox(this, wxID_ANY);
             m_mgrAUI.AddPane(m_pToolBox, wxAuiPaneInfo(). Name(_T("ToolBox")).
-                             Caption(_("Edit tool box")).Left() );
+                             Caption(_("Edit tool box")).Left().
+							 Floatable(true).
+							 Resizable(false).
+							 TopDockable(false).
+							 BottomDockable(false).
+							 MaxSize(wxSize(m_pToolBox->GetWidth(), -1)).
+							 MinSize(wxSize(m_pToolBox->GetWidth(), -1)) );
         }
         else
             m_mgrAUI.GetPane(_T("ToolBox")).Show(true);
@@ -1781,7 +1814,7 @@ void lmMainFrame::OnViewTools(wxCommandEvent& event)
         m_mgrAUI.GetPane(_T("ToolBox")).Show(false);
     }
     m_mgrAUI.Update();
-
+	m_pToolBox->SetFocus();
 }
 
 void lmMainFrame::OnViewRulers(wxCommandEvent& event)

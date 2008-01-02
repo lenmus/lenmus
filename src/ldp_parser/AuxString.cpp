@@ -117,7 +117,7 @@ bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals)
         fError = !sPitch.ToLong(&nAux);
         wxASSERT(!fError);
         *pPitch = (int)nAux;
-        *pAccidentals = eNoAccidentals;
+        *pAccidentals = lm_eNoAccidentals;
         /*TODO
             analizar la nota MIDI y determinar las
             alteraciones en función de la armadura
@@ -152,27 +152,27 @@ bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals)
 
     //analyse accidentals
     if (sAlter.IsEmpty()) {
-        *pAccidentals = eNoAccidentals;
+        *pAccidentals = lm_eNoAccidentals;
     } else if (sAlter.StartsWith( _T("+") )) {
         if (sAlter.StartsWith( _T("++") )) {
-            *pAccidentals = eSharpSharp;
+            *pAccidentals = lm_eSharpSharp;
         } else {
-            *pAccidentals = eSharp;
+            *pAccidentals = lm_eSharp;
         }
     } else if (sAlter.StartsWith( _T("-") )) {
         if (sAlter.StartsWith( _T("--") )) {
-            *pAccidentals = eFlatFlat;
+            *pAccidentals = lm_eFlatFlat;
         } else {
-            *pAccidentals = eFlat;
+            *pAccidentals = lm_eFlat;
         }
     } else if (sAlter.StartsWith( _T("=+") )) {
-        *pAccidentals = eNaturalSharp;
+        *pAccidentals = lm_eNaturalSharp;
     } else if (sAlter.StartsWith( _T("=-") )) {
-        *pAccidentals = eNaturalFlat;
+        *pAccidentals = lm_eNaturalFlat;
     } else if (sAlter.StartsWith( _T("=") )) {
         *pAccidentals = eNatural;
     } else if (sAlter.StartsWith( _T("x") )) {
-        *pAccidentals = eDoubleSharp;
+        *pAccidentals = lm_eDoubleSharp;
     } else {
         return true;  //error
     }
@@ -378,12 +378,12 @@ bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
         if (nAux == 2) {
             *sStep = sPitch.substr(0, 1);
             *sOctave =  sPitch.substr(1);
-            *pAccidentals = eNoAccidentals;
+            *pAccidentals = lm_eNoAccidentals;
         }
         else {
             *sStep =  sPitch.substr(1, 1);
             *sOctave =  sPitch.substr(2);
-            *pAccidentals = eSharp;
+            *pAccidentals = lm_eSharp;
         }
         return false;
     }
@@ -413,27 +413,27 @@ bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
 
     //analyse accidentals
     if (sAlter.IsEmpty()) {
-        *pAccidentals = eNoAccidentals;
+        *pAccidentals = lm_eNoAccidentals;
     } else if (sAlter.StartsWith( _T("+") )) {
         if (sAlter.StartsWith( _T("++") )) {
-            *pAccidentals = eSharpSharp;
+            *pAccidentals = lm_eSharpSharp;
         } else {
-            *pAccidentals = eSharp;
+            *pAccidentals = lm_eSharp;
         }
     } else if (sAlter.StartsWith( _T("-") )) {
         if (sAlter.StartsWith( _T("--") )) {
-            *pAccidentals = eFlatFlat;
+            *pAccidentals = lm_eFlatFlat;
         } else {
-            *pAccidentals = eFlat;
+            *pAccidentals = lm_eFlat;
         }
     } else if (sAlter.StartsWith( _T("=+") )) {
-        *pAccidentals = eNaturalSharp;
+        *pAccidentals = lm_eNaturalSharp;
     } else if (sAlter.StartsWith( _T("=-") )) {
-        *pAccidentals = eNaturalFlat;
+        *pAccidentals = lm_eNaturalFlat;
     } else if (sAlter.StartsWith( _T("=") )) {
         *pAccidentals = eNatural;
     } else if (sAlter.StartsWith( _T("x") )) {
-        *pAccidentals = eDoubleSharp;
+        *pAccidentals = lm_eDoubleSharp;
     } else {
         return true;  //error
     }

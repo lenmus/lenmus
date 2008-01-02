@@ -64,6 +64,8 @@ public:
     virtual void InsertClef(lmEClefType nClefType) {}
 	virtual void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
 					lmENoteType nNoteType, float rDuration) {}
+	virtual void ChangeNotePitch(int nSteps) {}
+	virtual void ChangeNoteAccidentals(int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
 	virtual void DeleteObject() {}
@@ -124,6 +126,8 @@ public:
     void InsertClef(lmEClefType nClefType);
 	void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
 					lmENoteType nNoteType, float rDuration);
+	void ChangeNotePitch(int nSteps);
+	void ChangeNoteAccidentals(int nSteps);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 	void SelectObject(lmGMObject* pGMO);
 	void DeleteObject();
@@ -152,6 +156,10 @@ private:
     lmScoreDocument*    m_pDoc;         //the document rendered by the view
 
     wxColour        m_colorBg;			//colour for background
+
+	//to control octave when inserting several consecutive notes
+	bool			m_fInsertionSequence;
+	int				m_nLastOctave;
 
 
     DECLARE_EVENT_TABLE()

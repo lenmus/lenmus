@@ -197,19 +197,19 @@ enum lmENoteDuration
 // accidental signs
 enum lmEAccidentals
 {
-    eNoAccidentals = 0,
+    lm_eNoAccidentals = 0,
     eNatural,               // es: becuadro
-    eFlat,                  // es: bemol
-    eSharp,                 // es: sostenido
-    eFlatFlat,              // es: doble bemol
-    eDoubleSharp,           // es: doble sostenido (single sign)
-    eSharpSharp,            // es: doble sostenido (two sharp signs)
-    eNaturalFlat,           // es: becuadro bemol
-    eNaturalSharp,          // es: becuadro sostenido
-    eQuarterFlat,
-    eQuarterSharp,
-    eThreeQuartersFlat,
-    eThreeQuartersSharp
+    lm_eFlat,                  // es: bemol
+    lm_eSharp,                 // es: sostenido
+    lm_eFlatFlat,              // es: doble bemol
+    lm_eDoubleSharp,           // es: doble sostenido (single sign)
+    lm_eSharpSharp,            // es: doble sostenido (two sharp signs)
+    lm_eNaturalFlat,           // es: becuadro bemol
+    lm_eNaturalSharp,          // es: becuadro sostenido
+    lm_eQuarterFlat,
+    lm_eQuarterSharp,
+    lm_eThreeQuartersFlat,
+    lm_eThreeQuartersSharp
 };
 
 //! key signatures

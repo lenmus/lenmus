@@ -27,6 +27,7 @@
 #endif
 
 #include "ToolsBox.h"
+#include "../../score/defs.h"
 
 
 class lmToolNotesOpt: public wxPanel
@@ -34,8 +35,10 @@ class lmToolNotesOpt: public wxPanel
 public:
     lmToolNotesOpt(wxWindow* parent);
     ~lmToolNotesOpt();
-    bool Verify();
-    void Apply();
+
+	//access to options
+	lmENoteType GetNoteDuration();
+
 
 private:
     // controls
@@ -46,6 +49,10 @@ private:
     wxArrayString	m_cLangCodes;
     wxArrayString	m_cLangNames;
     wxString        m_sCurLang;
+
+	//options
+	wxComboBox*		m_pCboDurations;
+
 };
 
 #endif    // __LM_TOOLNOTESOPT_H__

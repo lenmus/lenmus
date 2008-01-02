@@ -63,6 +63,8 @@
 
 //layout parameters
 const int SPACING = 1;          //spacing (pixels) around each sizer
+const int BUTTON_SPACING = 3;	//spacing (pixels) between buttons
+const int BUTTON_SIZE = 32;		//tools button size (pixels)
 const int NUM_COLUMNS = 4;      //number of buttons per row
 const int ID_BUTTON = 2200;
 
@@ -83,11 +85,14 @@ typedef struct lmToolsDataStruct {
 
 // Tools table
 static const lmToolsData m_aToolsData[] = {
-    //tool ID			bitmap name				tool tip
-    //-----------		-------------			-------------
-    {lmTOOL_NOTES,		_T("tool_notes"),		_("Add or edit notes") },
-    {lmTOOL_CLEFS,		_T("tool_clefs"),		_("Add or edit clefs") },
-	{lmTOOL_BARLINES,	_T("tool_barlines"),	_("Add or edit barlines and rehearsal marks") },
+    //tool ID			bitmap name					tool tip
+    //-----------		-------------				-------------
+    {lmTOOL_SELECTION,	_T("tool_selection"),		_("Select objects") },
+    {lmTOOL_CLEFS,		_T("tool_clefs"),			_("Add or edit clefs") },
+	{lmTOOL_KEY_SIGN,	_T("tool_key_signatures"),	_("Add or edit key signatures") },
+	{lmTOOL_TIME_SIGN,	_T("tool_time_signatures"),	_("Add or edit time signatures") },
+    {lmTOOL_NOTES,		_T("tool_notes"),			_("Add or edit notes") },
+	{lmTOOL_BARLINES,	_T("tool_barlines"),		_("Add or edit barlines and rehearsal marks") },
 	//TO_ADD: Add here information about the new tool
 	//NEXT ONE MUST BE THE LAST ONE
 	{lmTOOL_NONE,		_T(""), _("") },
@@ -148,10 +153,11 @@ void lmToolBox::CreateControls()
 	{
 		if (m_aToolsData[iB].nToolId == lmTOOL_NONE) break;
         m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, 
-            wxArtProvider::GetBitmap(m_aToolsData[iB].sBitmap, wxART_TOOLBAR, wxSize(24,24) ));
+            wxArtProvider::GetBitmap(m_aToolsData[iB].sBitmap, wxART_TOOLBAR,
+									 wxSize(BUTTON_SIZE, BUTTON_SIZE) ));
 		//m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, tool_clefs_24_xpm, 
 		//								  wxDefaultPosition, wxSize(24,24) );
-        buttonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, SPACING) );
+        buttonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, BUTTON_SPACING) );
 		m_pButton[iB]->SetToolTip(m_aToolsData[iB].sToolTip);
 		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
 		m_pButton[iB]->SetBorderDown(lm_eBorderFlat);
@@ -165,10 +171,16 @@ lmToolBox::~lmToolBox()
 wxPanel* lmToolBox::CreatePanel(lmEEditTool nPanel)
 {
     switch(nPanel) {
-        case lmTOOL_NOTES:
-            return new lmToolNotesOpt(m_pOptionsPanel);
+		case lmTOOL_SELECTION:
+            return (wxPanel*)NULL;
         case lmTOOL_CLEFS:
             return (wxPanel*)NULL;	//new lmToolClefsOpt(m_pOptionsPanel);
+		case lmTOOL_KEY_SIGN:
+            return (wxPanel*)NULL;
+		case lmTOOL_TIME_SIGN:
+            return (wxPanel*)NULL;
+        case lmTOOL_NOTES:
+            return new lmToolNotesOpt(m_pOptionsPanel);
         case lmTOOL_BARLINES:
             return (wxPanel*)NULL;	//new lmToolBarlinesOpt(m_pOptionsPanel);
         //TO_ADD: Add a new case block for creating the new tool panel

@@ -64,7 +64,6 @@ lmEditFrame::lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame *mainFrame,
                         wxDEFAULT_FRAME_STYLE ) //| wxNO_FULL_REPAINT_ON_RESIZE)
 {
     m_pView = (lmScoreView *) view;
-
 }
 
 void lmEditFrame::OnSize(wxSizeEvent& WXUNUSED(event))

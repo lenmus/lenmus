@@ -156,7 +156,7 @@ bool lmCmdMoveScoreObj::Undo()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdInsertBarline implementation: Insert a clef at current cursor position
+// lmCmdInsertBarline: Insert a clef at current cursor position
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertBarline::lmCmdInsertBarline(const wxString& sName, lmScoreDocument *pDoc,
@@ -188,7 +188,7 @@ bool lmCmdInsertBarline::Undo()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdInsertClef implementation: Insert a clef at current cursor position
+// lmCmdInsertClef: Insert a clef at current cursor position
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertClef::lmCmdInsertClef(const wxString& sName, lmScoreDocument *pDoc,
@@ -220,7 +220,7 @@ bool lmCmdInsertClef::Undo()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdInsertNote implementation: Insert a note at current cursor position
+// lmCmdInsertNote: Insert a note at current cursor position
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertNote::lmCmdInsertNote(const wxString& sName, lmScoreDocument *pDoc,
@@ -250,6 +250,70 @@ bool lmCmdInsertNote::Do()
 bool lmCmdInsertNote::Undo()
 {
     //TODO
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdChangeNotePitch: Change pitch of note at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdChangeNotePitch::lmCmdChangeNotePitch(const wxString& sName, lmScoreDocument *pDoc,
+                                 lmNote* pNote, int nSteps)
+	: lmScoreCommand(sName, pDoc)
+{
+	m_nSteps = nSteps;
+	m_pNote = pNote;
+}
+
+bool lmCmdChangeNotePitch::Do()
+{
+	m_pNote->ChangePitch(m_nSteps);
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+bool lmCmdChangeNotePitch::Undo()
+{
+	m_pNote->ChangePitch(-m_nSteps);
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdChangeNoteAccidentals: Change accidentals of note at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdChangeNoteAccidentals::lmCmdChangeNoteAccidentals(const wxString& sName, lmScoreDocument *pDoc,
+                                 lmNote* pNote, int nSteps)
+	: lmScoreCommand(sName, pDoc)
+{
+	m_nSteps = nSteps;
+	m_pNote = pNote;
+}
+
+bool lmCmdChangeNoteAccidentals::Do()
+{
+	m_pNote->ChangeAccidentals(m_nSteps);
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+bool lmCmdChangeNoteAccidentals::Undo()
+{
+	m_pNote->ChangeAccidentals(-m_nSteps);
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
     return true;

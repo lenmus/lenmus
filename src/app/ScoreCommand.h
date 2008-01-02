@@ -45,6 +45,8 @@ public:
         lmCMD_InsertBarline,
         lmCMD_InsertClef,
         lmCMD_InsertNote,
+		lmCMD_ChangeNotePitch,
+		lmCMD_ChangeNoteAccidentals,
 	};
 
     virtual ~lmScoreCommand();
@@ -202,6 +204,53 @@ protected:
 	float			m_rDuration;
 	lmStaffObj*		m_pCursorSO;
 };
+
+
+// Change note pitch command
+//------------------------------------------------------------------------------------
+class lmCmdChangeNotePitch: public lmScoreCommand
+{
+public:
+
+    lmCmdChangeNotePitch(const wxString& name, lmScoreDocument *pDoc, lmNote* pNote,
+					int nSteps);
+    ~lmCmdChangeNotePitch() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_ChangeNotePitch; }
+
+
+protected:
+	int				m_nSteps;
+	lmNote*			m_pNote;
+};
+
+
+// Change note accidentals command
+//------------------------------------------------------------------------------------
+class lmCmdChangeNoteAccidentals: public lmScoreCommand
+{
+public:
+
+    lmCmdChangeNoteAccidentals(const wxString& name, lmScoreDocument *pDoc, lmNote* pNote,
+					int nSteps);
+    ~lmCmdChangeNoteAccidentals() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+    lmEScoreCommand GetCommandType() { return lmCMD_ChangeNoteAccidentals; }
+
+
+protected:
+	int				m_nSteps;
+	lmNote*			m_pNote;
+};
+
+	void ChangeNoteAccidentals(int nSteps);
+
 
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

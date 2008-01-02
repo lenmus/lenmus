@@ -43,14 +43,18 @@
 enum lmEEditTool 
 {
 	lmTOOL_NONE = -1,
-	lmTOOL_NOTES = 0,
+	lmTOOL_SELECTION = 0,
 	lmTOOL_CLEFS,
+	lmTOOL_KEY_SIGN,
+	lmTOOL_TIME_SIGN,
+	lmTOOL_NOTES,
 	lmTOOL_BARLINES,
     //TO_ADD: Add, before this line, a new lmTOOL_XXXXX code for the new tool
 	lmTOOL_MAX		//this MUST BE the last one
 };
 
 class lmCheckButton;
+class lmToolNotesOpt;
 
 class lmToolBox: public wxPanel
 {
@@ -62,9 +66,15 @@ public:
 
     void OnButtonClicked(wxCommandEvent& event);
 
+	//info
+	int GetWidth() { return 150; }
+
 	//current tool and its options
 	inline lmEEditTool GetSelectedTool() const { return m_nSelTool; }
 	void SelectTool(lmEEditTool nTool);
+
+	inline lmToolNotesOpt* GetNoteProperties() const { return (lmToolNotesOpt*)m_cPanels[lmTOOL_NOTES]; }
+    //TO_ADD: Add, before this line, a new method to get new tool properties
 
 private:
 	void CreateControls();

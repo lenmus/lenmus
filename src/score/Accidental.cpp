@@ -88,40 +88,40 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
         case eNatural:
             nGlyph[0] = GLYPH_NATURAL_ACCIDENTAL;
             break;
-        case eSharp:
+        case lm_eSharp:
             nGlyph[0] = GLYPH_SHARP_ACCIDENTAL;
             break;
-        case eFlat:
+        case lm_eFlat:
             nGlyph[0] = GLYPH_FLAT_ACCIDENTAL;
             break;
-        case eFlatFlat:
+        case lm_eFlatFlat:
             nGlyph[0] = GLYPH_DOUBLE_FLAT_ACCIDENTAL;
             break;
-        case eDoubleSharp:
+        case lm_eDoubleSharp:
             nGlyph[0] = GLYPH_DOUBLE_SHARP_ACCIDENTAL;
             break;
-        case eNaturalFlat:
+        case lm_eNaturalFlat:
             nGlyph[0] = GLYPH_NATURAL_ACCIDENTAL;
             nGlyph[1] = GLYPH_FLAT_ACCIDENTAL;
             break;
-        case eNaturalSharp:
+        case lm_eNaturalSharp:
             nGlyph[0] = GLYPH_NATURAL_ACCIDENTAL;
             nGlyph[1] = GLYPH_SHARP_ACCIDENTAL;
             break;
-        case eSharpSharp:
+        case lm_eSharpSharp:
             nGlyph[0] = GLYPH_SHARP_ACCIDENTAL;
             nGlyph[1] = GLYPH_SHARP_ACCIDENTAL;
             break;
-        case eQuarterFlat:
+        case lm_eQuarterFlat:
             wxASSERT(false);    //TODO Not implemented
             break;
-        case eQuarterSharp:
+        case lm_eQuarterSharp:
             wxASSERT(false);    //TODO Not implemented
             break;
-        case eThreeQuartersFlat:
+        case lm_eThreeQuartersFlat:
             wxASSERT(false);    //TODO Not implemented
             break;
-        case eThreeQuartersSharp:
+        case lm_eThreeQuartersSharp:
             wxASSERT(false);    //TODO Not implemented
             break;
         default:
@@ -158,24 +158,24 @@ wxString lmAccidental::GetLDPEncoding()
 {
     switch(m_nType) {
         case eNatural:		return _T("");
-        case eSharp:		return _T("+");
-        case eFlat:			return _T("-");
-        case eFlatFlat:		return _T("--");
-        case eDoubleSharp:	return _T("x");
-        case eNaturalFlat:	return _T("=-");
-        case eNaturalSharp:	return _T("=+");
-        case eSharpSharp:	return _T("++");
+        case lm_eSharp:		return _T("+");
+        case lm_eFlat:			return _T("-");
+        case lm_eFlatFlat:		return _T("--");
+        case lm_eDoubleSharp:	return _T("x");
+        case lm_eNaturalFlat:	return _T("=-");
+        case lm_eNaturalSharp:	return _T("=+");
+        case lm_eSharpSharp:	return _T("++");
 
-        case eQuarterFlat:
+        case lm_eQuarterFlat:
             wxASSERT(false);    //TODO Not implemented
             break;
-        case eQuarterSharp:
+        case lm_eQuarterSharp:
             wxASSERT(false);    //TODO Not implemented
             break;
-        case eThreeQuartersFlat:
+        case lm_eThreeQuartersFlat:
             wxASSERT(false);    //TODO Not implemented
             break;
-        case eThreeQuartersSharp:
+        case lm_eThreeQuartersSharp:
             wxASSERT(false);    //TODO Not implemented
             break;
         default:

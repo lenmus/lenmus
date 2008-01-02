@@ -36,6 +36,7 @@
 
 #include "wx/xrc/xmlres.h"
 #include "wx/bmpcbox.h"
+#include "wx/statline.h"
 
 #include "ToolNotesOpt.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
@@ -58,35 +59,69 @@ lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
 						 wxDefaultPosition, wxDefaultSize, 0),
 		0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
 
-    wxArrayString itemBitmapComboBox5Strings;
+    m_pCboDurations = new wxComboBox(this, wxID_ANY, _T(""), wxDefaultPosition, 
+									 wxSize(lmPANEL_WIDTH - 2 * lmSPACING, -1),
+									 0, (wxString*)NULL, wxCB_READONLY);
+    pMainSizer->Add(m_pCboDurations, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
 
-    wxBitmapComboBox* pCboDurations =
+	//populate combo box for note durations and select 'quarter' note
+	//AWARE: Must be loaded following lmENoteType enum
+    m_pCboDurations->Append(_("Long"));
+    m_pCboDurations->Append(_("Double whole"));
+	m_pCboDurations->Append(_("Whole"));
+	m_pCboDurations->Append(_("Half"));
+	m_pCboDurations->Append(_("Quarter"));
+	m_pCboDurations->Append(_("Eighth"));
+	m_pCboDurations->Append(_("Sixteenth"));
+	m_pCboDurations->Append(_("32nd"));
+	m_pCboDurations->Append(_("64th"));
+	m_pCboDurations->Append(_("128th"));
+	m_pCboDurations->Append(_("256th"));
+	m_pCboDurations->Select(eQuarter);
+
+
+	//Notehead type
+    pMainSizer->Add(
+		new wxStaticText(this, wxID_STATIC, _("Notehead type"),
+						 wxDefaultPosition, wxDefaultSize, 0),
+		0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+
+    wxBitmapComboBox* pCboNoteheads =
 		new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
 				wxSize(lmPANEL_WIDTH - 2 * lmSPACING, 24),
-				itemBitmapComboBox5Strings, wxCB_READONLY );
-    pMainSizer->Add(pCboDurations, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+				NULL, wxCB_READONLY );
+    pMainSizer->Add(pCboNoteheads, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+
+	//populate combo box for note durations and select 'normal' note
+	pCboNoteheads->Append(_T(""), wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
+	pCboNoteheads->Append(_T(""), wxArtProvider::GetBitmap(_T("tool_clefs"), wxART_TOOLBAR, wxSize(24,24) ));
+	pCboNoteheads->Select(0);
+
+
+	//separation line
+	wxStaticLine* pLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition,
+										   wxDefaultSize, wxLI_HORIZONTAL );
+    pMainSizer->Add(pLine, wxSizerFlags(0).Left().Border(wxGROW|wxTOP|wxBOTTOM, 5));
+
+    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("Accidentals"),
+									 wxDefaultPosition, wxDefaultSize, 0),
+									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("'-'  Down a flat"),
+									 wxDefaultPosition, wxDefaultSize, 0),
+									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("'+'  Up a sharp"),
+									 wxDefaultPosition, wxDefaultSize, 0),
+									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("'='  Remove accidentals"),
+									 wxDefaultPosition, wxDefaultSize, 0),
+									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+
+
 
     SetAutoLayout(true);
     pMainSizer->Fit(this);
     pMainSizer->SetSizeHints(this);
 
-
-	//populate combo box for note durations and select 'quarter' note
-	pCboDurations->Append(_("Whole"),
-		            wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
-	pCboDurations->Append(_("Half"),
-		            wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
-	pCboDurations->Append(_("Quarter"),
-		            wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
-	pCboDurations->Append(_("Eighth"), 
-		            wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
-	pCboDurations->Append(_("16th"),
-		            wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
-	pCboDurations->Append(_("32nd"),
-		            wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
-
-	//pCboDurations->SetValue(_("Quarter"));
-	pCboDurations->Select(2);
 
 }
 
@@ -94,11 +129,8 @@ lmToolNotesOpt::~lmToolNotesOpt()
 {
 }
 
-bool lmToolNotesOpt::Verify()
+lmENoteType lmToolNotesOpt::GetNoteDuration()
 {
-    return false;
+    return (lmENoteType)m_pCboDurations->GetSelection();
 }
 
-void lmToolNotesOpt::Apply()
-{
-}

@@ -205,6 +205,7 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     //show the frame
 	m_pFrame->Show(true);
     Activate(true);
+	m_pMainFrame->OnNewEditFrame();
 
     return true;
 }
@@ -874,11 +875,11 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     int nKeysPressed = 0;
     if (event.ShiftDown())
-        nKeysPressed = nKeysPressed | lmKEY_SHIFT;
+        nKeysPressed |= lmKEY_SHIFT;
     if (event.ControlDown())
-        nKeysPressed = nKeysPressed | lmKEY_CTRL;
+        nKeysPressed |= lmKEY_CTRL;
     if (event.AltDown())
-        nKeysPressed = nKeysPressed | lmKEY_ALT;
+        nKeysPressed |= lmKEY_ALT;
 
 
     if (event.LeftDClick() )

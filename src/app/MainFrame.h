@@ -230,6 +230,7 @@ public:
 
 	// call backs
 	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
+	void OnNewEditFrame();
 
 
 
@@ -237,6 +238,7 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
+	void ShowEditTools(bool fShow);
 
     //status bar
     void CreateTheStatusBar(int nType=0);

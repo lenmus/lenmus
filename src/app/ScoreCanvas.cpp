@@ -43,8 +43,9 @@
 #include "ScoreCommand.h"
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 #include "toolbox/ToolsBox.h"
-#include "../ldp_parser/LDPParser.h"
+#include "toolbox/ToolNotesOpt.h"
 
+#include "../ldp_parser/LDPParser.h"
 #include "global.h"
 
 // access to global external variables (to disable mouse interaction with the score)
@@ -310,6 +311,31 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
 							        nNoteType, rDuration) );
 }
 
+void lmScoreCanvas::ChangeNotePitch(int nSteps)
+{
+	//change pith of note at current cursor position
+    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+	wxASSERT(pCursorSO);
+	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && !((lmNoteRest*)pCursorSO)->IsRest() );
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _T("Change note pitch");
+	pCP->Submit(new lmCmdChangeNotePitch(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
+}
+
+void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
+{
+	//change note accidentals for note at current cursor position
+    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+	wxASSERT(pCursorSO);
+	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && !((lmNoteRest*)pCursorSO)->IsRest() );
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _T("Change note accidentals");
+	pCP->Submit(new lmCmdChangeNoteAccidentals(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
+}
+
+
+
+
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 {
 	lmEEditTool nTool = lmTOOL_NONE;
@@ -323,6 +349,22 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
     int nKeyCode = event.GetKeyCode();
 	bool fUnknown = false;
 
+    // check if an auxiliary key (Shift, Ctrl, Alt) is pressed
+    enum {
+        lmKEY_ALT = 0x0001,
+        lmKEY_CTRL = 0x0002,
+        lmKEY_SHIFT = 0x0004,
+    };
+
+    int nAuxKeys = 0;
+    if (event.ShiftDown())
+        nAuxKeys |= lmKEY_SHIFT;
+    if (event.ControlDown())
+        nAuxKeys |= lmKEY_CTRL;
+    if (event.AltDown())
+        nAuxKeys |= lmKEY_ALT;
+
+	//process main key
 	switch(nTool)
 	{
         case lmTOOL_NONE:	//---------------------------------------------------------
@@ -346,37 +388,73 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 
         case lmTOOL_NOTES:	//---------------------------------------------------------
 		{
-			float rDuration = lmLDPParser::GetDefaultDuration(eEighth, false, false, 0, 0);
+			lmToolNotesOpt* pNoteOptions = pToolBox->GetNoteProperties();
+			lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
+			float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, false, false, 0, 0);
 			switch (nKeyCode)
 			{
 				case 97:    // 'a' insert A note
-					InsertNote(lm_ePitchRelative, _T("a"), _T("4"), eEighth, rDuration);
+					InsertNote(lm_ePitchRelative, _T("a"), _T("4"), nNoteType, rDuration);
 					break;
 
 				case 98:    // 'b' insert B note
-					InsertNote(lm_ePitchRelative, _T("b"), _T("4"), eEighth, rDuration);
+					InsertNote(lm_ePitchRelative, _T("b"), _T("4"), nNoteType, rDuration);
 					break;
 
 				case 99:    // 'c' insert C note
-					InsertNote(lm_ePitchRelative, _T("c"), _T("4"), eEighth, rDuration);
+					InsertNote(lm_ePitchRelative, _T("c"), _T("4"), nNoteType, rDuration);
 					break;
 
 				case 100:   // 'd' insert D note
-					InsertNote(lm_ePitchRelative, _T("d"), _T("4"), eEighth, rDuration);
+					InsertNote(lm_ePitchRelative, _T("d"), _T("4"), nNoteType, rDuration);
 					break;
 
 				case 101:   // 'e' insert E note
-					InsertNote(lm_ePitchRelative, _T("e"), _T("4"), eEighth, rDuration);
+					InsertNote(lm_ePitchRelative, _T("e"), _T("4"), nNoteType, rDuration);
 					break;
 
 				case 102:   // 'f' insert F note
-					InsertNote(lm_ePitchRelative, _T("f"), _T("4"), eEighth, rDuration);
+					InsertNote(lm_ePitchRelative, _T("f"), _T("4"), nNoteType, rDuration);
 					break;
 
 				case 103:   // 'g' insert G	 note
-					InsertNote(lm_ePitchRelative, _T("g"), _T("4"), eEighth, rDuration);
+					InsertNote(lm_ePitchRelative, _T("g"), _T("4"), nNoteType, rDuration);
 					break;
 
+				//change selected note pitch
+				case WXK_UP:
+					if (nAuxKeys==0)
+						ChangeNotePitch(1);		//step up
+					else if (nAuxKeys && lmKEY_SHIFT)
+						ChangeNotePitch(7);		//octave up
+					else
+						fUnknown = true;
+					break;
+
+				case WXK_DOWN:
+					if (nAuxKeys==0)
+						ChangeNotePitch(-1);		//step down
+					else if (nAuxKeys && lmKEY_SHIFT)
+						ChangeNotePitch(-7);		//octave down
+					else
+						fUnknown = true;
+					break;
+
+				//accidentals
+				case 43:   // '+' increment accidental
+					ChangeNoteAccidentals(1);
+					break;
+
+				case 45:   // '-' decrement accidental
+					ChangeNoteAccidentals(-1);
+					break;
+
+				case 61:   // '=' remove accidental
+					ChangeNoteAccidentals(0);
+					break;
+
+
+				//invalid key
 				default:
 					fUnknown = true;
 			}
@@ -456,6 +534,14 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 
 			case WXK_F4:
 				if (pToolBox) pToolBox->SelectTool((lmEEditTool)3);
+				break;
+
+			case WXK_F5:
+				if (pToolBox) pToolBox->SelectTool((lmEEditTool)4);
+				break;
+
+			case WXK_F6:
+				if (pToolBox) pToolBox->SelectTool((lmEEditTool)5);
 				break;
 
             case WXK_DELETE:
