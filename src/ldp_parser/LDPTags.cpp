@@ -272,6 +272,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[5][_T("p")] = _T("p");   //staff number  
         m_Tags[5][_T("r")] = _T("r");   //rest 
         m_Tags[5][_T("t")] = _T("t");   //tuplet 
+        m_Tags[5][_T("v")] = _T("v");   //voice
 
         //context: tuplet options
         m_Contexts[_T("Tuplets")] = 6;
@@ -429,6 +430,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[5][_T("p")] = _T("p");   //staff number  
         m_Tags[5][_T("r")] = _T("s");   //rest 
         m_Tags[5][_T("t")] = _T("t");   //tuplet 
+        m_Tags[5][_T("v")] = _T("v");   //voice
 
         //context: tuplet options
         m_Contexts[_T("Tuplets")] = 6;

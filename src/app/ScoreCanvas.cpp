@@ -300,7 +300,9 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
 							   wxString sStep, wxString sOctave, 
-							   lmENoteType nNoteType, float rDuration)
+							   lmENoteType nNoteType, float rDuration,
+							   lmENoteHeads nNotehead,
+							   lmEAccidentals nAcc)
 {
 	//insert a note at current cursor position
     lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
@@ -308,7 +310,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert note");
 	pCP->Submit(new lmCmdInsertNote(sName, m_pDoc, pCursorSO, nPitchType, sStep, sOctave, 
-							        nNoteType, rDuration) );
+							        nNoteType, rDuration, nNotehead, nAcc) );
 }
 
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
@@ -391,34 +393,43 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 			lmToolNotesOpt* pNoteOptions = pToolBox->GetNoteProperties();
 			lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
 			float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, false, false, 0, 0);
+			lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
+			lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
 			switch (nKeyCode)
 			{
 				case 97:    // 'a' insert A note
-					InsertNote(lm_ePitchRelative, _T("a"), _T("4"), nNoteType, rDuration);
+					InsertNote(lm_ePitchRelative, _T("a"), _T("4"), nNoteType, rDuration,
+							   nNotehead, nAcc);
 					break;
 
 				case 98:    // 'b' insert B note
-					InsertNote(lm_ePitchRelative, _T("b"), _T("4"), nNoteType, rDuration);
+					InsertNote(lm_ePitchRelative, _T("b"), _T("4"), nNoteType, rDuration,
+							   nNotehead, nAcc);
 					break;
 
 				case 99:    // 'c' insert C note
-					InsertNote(lm_ePitchRelative, _T("c"), _T("4"), nNoteType, rDuration);
+					InsertNote(lm_ePitchRelative, _T("c"), _T("4"), nNoteType, rDuration,
+							   nNotehead, nAcc);
 					break;
 
 				case 100:   // 'd' insert D note
-					InsertNote(lm_ePitchRelative, _T("d"), _T("4"), nNoteType, rDuration);
+					InsertNote(lm_ePitchRelative, _T("d"), _T("4"), nNoteType, rDuration,
+							   nNotehead, nAcc);
 					break;
 
 				case 101:   // 'e' insert E note
-					InsertNote(lm_ePitchRelative, _T("e"), _T("4"), nNoteType, rDuration);
+					InsertNote(lm_ePitchRelative, _T("e"), _T("4"), nNoteType, rDuration,
+							   nNotehead, nAcc);
 					break;
 
 				case 102:   // 'f' insert F note
-					InsertNote(lm_ePitchRelative, _T("f"), _T("4"), nNoteType, rDuration);
+					InsertNote(lm_ePitchRelative, _T("f"), _T("4"), nNoteType, rDuration,
+							   nNotehead, nAcc);
 					break;
 
 				case 103:   // 'g' insert G	 note
-					InsertNote(lm_ePitchRelative, _T("g"), _T("4"), nNoteType, rDuration);
+					InsertNote(lm_ePitchRelative, _T("g"), _T("4"), nNoteType, rDuration,
+							   nNotehead, nAcc);
 					break;
 
 				//change selected note pitch
@@ -452,7 +463,57 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 				case 61:   // '=' remove accidental
 					ChangeNoteAccidentals(0);
 					break;
+				
+				//select note duration
+				case 48:    // '0' double whole
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
+					break;
 
+				case 49:    // '1' whole
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
+					break;
+
+				case 50:    // '2' half
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
+					break;
+
+				case 51:    // '3' quarter
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
+					break;
+
+				case 52:    // '4' eighth
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
+					break;
+
+				case 53:    // '5' 16th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
+					break;
+
+				case 54:    // '6' 32nd
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
+					break;
+
+				case 55:    // '7' 64th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
+					break;
+
+				case 56:    // '8' 128th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+					break;
+
+				case 57:    // '9' 256th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+					break;
 
 				//invalid key
 				default:

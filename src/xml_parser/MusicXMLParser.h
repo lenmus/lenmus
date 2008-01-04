@@ -92,8 +92,9 @@ private:
     // member variables
     ////////////////////
 
-    int        m_nCurrentDivisions;
-    lmTupletBracket* m_pTupletBracket;
+    int					m_nCurrentDivisions;
+	int					m_nCurVoice;
+    lmTupletBracket*	m_pTupletBracket;
 
     //error management
     int        m_nErrors;        // number of parsing errors

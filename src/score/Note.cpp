@@ -78,14 +78,14 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         lmEAccidentals nAccidentals,
         lmENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        int nStaff, bool fVisible,
+        int nStaff, int nVoice, bool fVisible,
         lmContext* pContext,
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
         bool fTie,
         lmEStemType nStem)  :
     lmNoteRest(pVStaff, DEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
-               fVisible)
+               nVoice, fVisible)
 {
     // Diatonic Pitch is determined by Step
     // This constructor is used for two kind of pitch information:
@@ -1455,10 +1455,10 @@ wxString lmNote::Dump()
 
     wxString sDump;
     sDump = wxString::Format(
-        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, PosOnStaff=%d, TimePos=%.2f, ")
+        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, Voice=%d, PosOnStaff=%d, TimePos=%.2f, ")
         _T("org=(%.2f, %.2f), rDuration=%.2f, StemType=%d"),
-        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, GetPosOnStaff(),
-        m_rTimePos, m_uOrg.x, m_uOrg.y, m_rDuration, m_nStemType);
+        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, m_nVoice, 
+		GetPosOnStaff(), m_rTimePos, m_uOrg.x, m_uOrg.y, m_rDuration, m_nStemType);
 
     if (m_pTieNext) sDump += _T(", TiedNext");
     if (m_pTiePrev) sDump += _T(", TiedPrev");
@@ -1573,6 +1573,9 @@ wxString lmNote::SourceLDP(int nIndent)
         sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
     }
 
+    //Voice
+    sSource += wxString::Format(_T(" v%d"), m_nVoice);
+
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
 
@@ -1640,10 +1643,9 @@ wxString lmNote::SourceXML(int nIndent)
     }
 	sSource += _T("</type>\n");
 
-	//TODO
 	//voice
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-	sSource += _T("<<voice>1</voice>\n");
+	sSource += wxString::Format(_T("<<voice>%d</voice>\n"), m_nVoice);
 
 	//stem
     if (m_nStemType != lmSTEM_NONE)

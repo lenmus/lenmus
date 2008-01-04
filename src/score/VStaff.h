@@ -72,7 +72,8 @@ public:
 
     lmRest*     AddRest(lmENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
-                      int nStaff, bool fVisible = true,
+                      int nStaff, int nVoice = 1,
+					  bool fVisible = true,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
     lmNote*     AddNote(lmEPitchType nPitchType,
@@ -80,7 +81,8 @@ public:
                     lmEAccidentals nAccidentals,
                     lmENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
-                    int nStaff, bool fVisible = true,
+                    int nStaff, int nVoice = 1,
+					bool fVisible = true,
                     bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
                     bool fInChord = false,
                     bool fTie = false,
@@ -110,7 +112,8 @@ public:
     lmBarline* InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType = lm_eBarlineSimple);
 	lmClef* InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType);
 	lmNote* InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
-					   wxString sOctave, lmENoteType nNoteType, float rDuration);
+					   wxString sOctave, lmENoteType nNoteType, float rDuration,
+					   lmENoteHeads nNotehead, lmEAccidentals nAcc);
 
 	//deleting StaffObjs
 	void DeleteObject(lmStaffObj* pCursorSO);

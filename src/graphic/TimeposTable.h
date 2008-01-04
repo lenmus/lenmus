@@ -26,18 +26,17 @@
 #pragma interface "TimeposTable.cpp"
 #endif
 
+#include <vector>
 #include "../score/defs.h"
 class lmStaffObj;
 
-#include <wx/dynarray.h>
 
 //entry types
 enum eTimeposEntryType
 {
-    eAlfa = 1,              //start of thread
-    ePrologue,              //prologue of staff
+    eAlfa = 1,              //start of voice
     eStaffobj,              //lmStaffObj inside bar
-    eOmega,                 //end of thread
+    eOmega,                 //end of voice
 };
 
 
@@ -46,8 +45,8 @@ class lmTimeposEntry
 {
 public:
     // constructor and destructor
-    lmTimeposEntry(eTimeposEntryType nType, int nThread, lmStaffObj* pSO, float rTimePos) {
-        m_nThread = nThread;
+    lmTimeposEntry(eTimeposEntryType nType, int nVoice, lmStaffObj* pSO, float rTimePos) {
+        m_nVoice = nVoice;
         m_nType = nType;
         m_pSO = pSO;
         m_rTimePos = rTimePos;
@@ -62,7 +61,7 @@ public:
 
     //member variables (one entry of the table)
     //----------------------------------------------------------------------------
-    int             m_nThread;      //num. of the thread to which this element belongs
+    int             m_nVoice;      //num. of the voice to which this element belongs
     eTimeposEntryType m_nType;      //type of entry
     lmStaffObj*     m_pSO;          //ptr to the lmStaffObj
     float           m_rTimePos;     //timepos for this pSO or -1 if not anchored in time
@@ -75,17 +74,14 @@ public:
 
 };
 
-// this defines the type ArrayOfTimepos as an array of lmTimeposEntry pointers
-WX_DEFINE_ARRAY(lmTimeposEntry*, ArrayOfTimepos);
-
 
 // Definition of an entry of the auxiliary table for ordering by time
 class lmTimeauxEntry
 {
 public:
     // constructor and destructor
-    lmTimeauxEntry(int item, int thread, float timePos) {
-        nThread = thread;
+    lmTimeauxEntry(int item, int voice, float timePos) {
+        nVoice = voice;
         nItem = item;
         rTimePos = timePos;
         uShift = 0;
@@ -93,15 +89,13 @@ public:
     ~lmTimeauxEntry() {}
 
     //member variables (one entry of the table)
-    int         nThread;        //num. of the thread to which this element belongs
+    int         nVoice;         //voice to which this element belongs
     int         nItem;          //index to TimePos table
     float       rTimePos;       //timepos for this entry
     lmLUnits    uShift;         //x position shift to apply to this entry
 
 };
 
-// this defines the type ArrayOfTimeaux as an array of lmTimeauxEntry objects
-WX_DEFINE_ARRAY(lmTimeauxEntry*, ArrayOfTimeaux);
 
 //Finally let's define the class that implements the tables and the algoritms
 class lmTimeposTable
@@ -110,8 +104,8 @@ public:
     lmTimeposTable();
     ~lmTimeposTable();
 
-    void    NewThread();
-    void    CloseThread(lmLUnits uCurX);
+    void    StartVoice(int nVoice);
+    void    CloseAllVoices(lmLUnits uCurX);
     void    AddEntry(float rTimePos, lmStaffObj* pSO);
     void    AddBarline(lmStaffObj* pSO);
     void    CleanTable();
@@ -119,13 +113,15 @@ public:
     // methods for accesing/updating entries
     void        SetCurXLeft(lmLUnits uValue);
     lmLUnits    GetCurXLeft();
-    void        SetCurXFinal(lmLUnits uValue);
+	lmLUnits	GetCurPaperPosX(int nVoice);
+	void        SetCurXFinal(lmLUnits uValue);
     void        SetCurXAnchor(lmLUnits uValue);
     void        SetxIni(float rTimePos, lmLUnits uxPos);
     lmLUnits    GetXFinal(float rTimePos);
     void        SetXFinal(float rTimePos, lmLUnits uxRight);
     void        UpdateEntry(float rTimePos, lmLUnits uxLeft, lmLUnits uxRight);
     lmLUnits    LastFinalX();
+	lmLUnits	GetXStart();
 
     //methods to compute results
     lmLUnits    GetStartOfBarPosition();
@@ -139,15 +135,16 @@ public:
 
 
 private:
-    void    NewEntry(eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO);
+    void    NewEntry(int nVoice, eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO);
     int     FindItem(float rTimePos);
     void    AddTimeAuxEntry(int nItem);
 
 
 private:
-    ArrayOfTimepos  m_aTimePos;     //The main table
-    ArrayOfTimeaux  m_aTimeAux;     //auxiliary table for ordering by time
-    int             m_nCurThread;   //num of current thread
+    int								m_nCurVoice;   //num of current voice
+	std::vector<bool>				m_aVoices;		
+	std::vector<lmTimeposEntry*>	m_aTimePos[lmMAX_VOICE];     //The main tables. One per voice
+    std::vector<lmTimeauxEntry*>	m_aTimeAux;		//auxiliary table for ordering by time
 
 };
 

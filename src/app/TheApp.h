@@ -68,6 +68,10 @@ class lmTheApp: public wxApp
 
 	lmController* GetViewController();
 
+	//overrides
+	int FilterEvent(wxEvent& event);
+
+
 private:
     void GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized);
     void GetDefaultMainWindowRect(wxRect *defRect);

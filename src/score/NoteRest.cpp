@@ -75,8 +75,8 @@ WX_DEFINE_LIST(NoteRestsList);
 //Constructors and destructors
 //====================================================================================================
 lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
-                   bool fDotted, bool fDoubleDotted, int nStaff, bool fVisible) :
-    lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
+                   bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible)
+	: lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
 {
     // initialize all atributes
     m_fCalderon = false;
@@ -84,6 +84,7 @@ lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, fl
     m_fDotted = fDotted;
     m_fDoubleDotted = fDoubleDotted;
     m_fIsRest = IsRest;
+	m_nVoice = nVoice;
 
     m_pNotations = (AuxObjsList*)NULL;
     m_pLyrics = (AuxObjsList*)NULL;

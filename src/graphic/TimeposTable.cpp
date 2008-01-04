@@ -19,9 +19,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-// @class lmTimeposTable
-// @brief Table and management algoritms to compute the positioning data for ComponentObjs.
-//
 // Encapsulation of the table and of management algoritms to compute the positioning
 // data for each lmStaffObj, when a bar column must be rendered.
 
@@ -40,7 +37,8 @@
 #include "wx/wx.h"
 #endif
 
-#include "../score/StaffObj.h"
+#include <algorithm>
+#include "../score/Score.h"
 #include "wx/debug.h"
 #include "TimeposTable.h"
 
@@ -56,45 +54,75 @@ bool IsEqualTime(float t1, float t2)
 
 lmTimeposTable::lmTimeposTable()
 {
-    m_nCurThread = 0;
+    m_nCurVoice = 0;
+	for (int i=0; i < lmMAX_VOICE; i++)
+	{
+		m_aVoices.push_back(false);
+	}
+
 }
 
 lmTimeposTable::~lmTimeposTable()
 {
-    WX_CLEAR_ARRAY(m_aTimeAux);
-    WX_CLEAR_ARRAY(m_aTimePos);
+	m_aVoices.clear();
+
+    for (int i = 0; i < (int)m_aTimeAux.size(); i++)
+	{
+        delete m_aTimeAux[i];
+    }
+    m_aTimeAux.clear();
+
+	for (int j=0; j < lmMAX_VOICE; j++)
+	{
+		for (int i = 0; i < (int)m_aTimePos[j].size(); i++)
+		{
+			delete m_aTimePos[j][i];
+		}
+	    m_aTimePos[j].clear();
+	}
 }
 
 void lmTimeposTable::CleanTable()
 {
-    /*
-    This method must be invoked before using the table. Can be also invoked as
-    many times as desired to clean the table and reuse it.
-    */
-    WX_CLEAR_ARRAY(m_aTimeAux);
-    WX_CLEAR_ARRAY(m_aTimePos);
-    m_aTimePos.Empty();
-    m_aTimeAux.Empty();
-    m_nCurThread = 0;
+    //This method must be invoked before using the table. Can be also invoked as
+    //many times as desired to clean the table and reuse it.
+
+    for (int i = 0; i < (int)m_aTimeAux.size(); i++)
+	{
+        delete m_aTimeAux[i];
+    }
+    m_aTimeAux.clear();
+
+	for (int j=0; j < lmMAX_VOICE; j++)
+	{
+		for (int i = 0; i < (int)m_aTimePos[j].size(); i++)
+		{
+			delete m_aTimePos[j][i];
+		}
+	    m_aTimePos[j].clear();
+	}
+
+    m_nCurVoice = 0;
 
 }
 
-void lmTimeposTable::NewThread()
+void lmTimeposTable::StartVoice(int nVoice)
 {
-    //start a new thread (increment counter and add alfa entry)
+    //start a new voice (increment counter and add alfa entry)
 
-    m_nCurThread++;
-    NewEntry(eAlfa, -1, (lmStaffObj*)NULL);
+    m_nCurVoice = nVoice;
+	m_aVoices[nVoice-1] = true;
+    NewEntry(nVoice, eAlfa, -1, (lmStaffObj*)NULL);
 
     //the start xpos has been set to zero in NewEntry method
-    //set the start xpos to the same value than in the previous thread
-    if (m_nCurThread > 1) {
-        //find alfa entry of previous thread
-        int i = m_aTimePos.GetCount() - 2;      //point to last entry (the previous to this new one)
-        lmTimeposEntry* pEntry = m_aTimePos[i];
+    //set the start xpos to the same value than in the previous voice
+    if (m_nCurVoice > 1) {
+        //find alfa entry of previous voice
+        int i = m_aTimePos[0].size() - 2;      //point to last entry (the previous to this new one)
+        lmTimeposEntry* pEntry = m_aTimePos[0][i];
         for (; pEntry->m_nType != eAlfa; i--) {
             wxASSERT(i >= 0);
-            pEntry = m_aTimePos[i];
+            pEntry = m_aTimePos[0][i];
         }
 
         //here i points to the alfa entry. Copy its xpos
@@ -103,30 +131,39 @@ void lmTimeposTable::NewThread()
 
 }
 
-void lmTimeposTable::CloseThread(lmLUnits uCurX)
+void lmTimeposTable::CloseAllVoices(lmLUnits uCurX)
 {
     //rCurX = current canvas position
-    wxASSERT(m_nCurThread > 0);       //there must be a thread
+    wxASSERT(m_nCurVoice > 0);       //there must be a voice
 
-    NewEntry(eOmega, -1, (lmStaffObj*)NULL);
+	for (int i=0; i < lmMAX_VOICE; i++)
+		NewEntry(i, eOmega, -1, (lmStaffObj*)NULL);
+
     SetCurXLeft(uCurX);
 
 }
 
 void lmTimeposTable::AddEntry(float rTimePos, lmStaffObj* pSO)
 {
-    NewEntry(eStaffobj, rTimePos, pSO);
+	int nVoice = 1;
+	if (pSO->GetClass() == eSFOT_NoteRest)
+	{
+		nVoice = ((lmNoteRest*)pSO)->GetVoice();
+		if (m_nCurVoice != nVoice)
+           StartVoice(nVoice);
+	}
+    NewEntry(nVoice, eStaffobj, rTimePos, pSO);
 }
 
 void lmTimeposTable::AddBarline(lmStaffObj* pSO)
 {
     /*
     There might be many barline StaffObjs for this bar column, one for each bar in
-    each staff. So, in this method the Omega entry of each thread is associated to
+    each staff. So, in this method the Omega entry of each voice is associated to
     the barline object
     */
 
-    lmTimeposEntry* pEntry = m_aTimePos[m_aTimePos.GetCount() - 1];
+    lmTimeposEntry* pEntry = m_aTimePos[0].back();
     wxASSERT(pEntry->m_nType == eOmega);
     pEntry->m_pSO = pSO;
     pEntry->m_rTimePos = pSO->GetTimePos();
@@ -143,7 +180,7 @@ void lmTimeposTable::SetCurXLeft(lmLUnits uValue)
     //If no anchor yet specified, initialices it with xLeft
     //If it is a staffObj also initialices its size
 
-    lmTimeposEntry* pEntry = m_aTimePos[m_aTimePos.GetCount() - 1];
+    lmTimeposEntry* pEntry = m_aTimePos[0].back();
     pEntry->m_xLeft = uValue;
     pEntry->m_xInitialLeft = uValue;
 
@@ -159,13 +196,37 @@ void lmTimeposTable::SetCurXLeft(lmLUnits uValue)
 
 lmLUnits lmTimeposTable::GetCurXLeft()
 {
-    lmTimeposEntry* pEntry = m_aTimePos[m_aTimePos.GetCount() - 1];
+    lmTimeposEntry* pEntry = m_aTimePos[0].back();
+    return pEntry->m_xLeft;
+}
+
+lmLUnits lmTimeposTable::GetCurPaperPosX(int nVoice)
+{
+	//return current paper position for specified voice
+	// or start of measure x pos if no object stored yet for that voice
+
+    for (int i = (int)m_aTimeAux.size()-1; i >=0; i--)
+	{
+        if (m_aTimeAux[i]->nVoice == nVoice)
+		{
+			lmTimeposEntry* pEntry = m_aTimePos[0][m_aTimeAux[i]->nItem];
+			return pEntry->m_xFinal;
+		}
+    }
+    lmTimeposEntry* pEntry = m_aTimePos[0][0];
+    return pEntry->m_xLeft;
+
+}
+
+lmLUnits lmTimeposTable::GetXStart()
+{
+    lmTimeposEntry* pEntry = m_aTimePos[0][0];
     return pEntry->m_xLeft;
 }
 
 void lmTimeposTable::SetCurXFinal(lmLUnits uValue)
 {
-    lmTimeposEntry* pEntry = m_aTimePos[m_aTimePos.GetCount() - 1];
+    lmTimeposEntry* pEntry = m_aTimePos[0].back();
     pEntry->m_xFinal = uValue;
     pEntry->m_uSize = pEntry->m_xFinal - pEntry->m_xLeft;
 
@@ -173,7 +234,7 @@ void lmTimeposTable::SetCurXFinal(lmLUnits uValue)
 
 void lmTimeposTable::SetCurXAnchor(lmLUnits uValue)
 {
-    lmTimeposEntry* pEntry = m_aTimePos[m_aTimePos.GetCount() - 1];
+    lmTimeposEntry* pEntry = m_aTimePos[0].back();
     pEntry->m_uxAnchor = uValue;
 
 }
@@ -184,7 +245,7 @@ void lmTimeposTable::SetCurXAnchor(lmLUnits uValue)
 
 lmLUnits lmTimeposTable::GetGrossBarSize()
 {
-    //returns the maximum size of all threads
+    //returns the maximum size of all voices
 
     lmLUnits rxIni, xFinal;
 
@@ -192,10 +253,10 @@ lmLUnits lmTimeposTable::GetGrossBarSize()
     rxIni = GetStartOfBarPosition();
 
     //now compute the maximum xFinal
-    lmTimeposEntry* pEntry = m_aTimePos[0];    //the compiler complains if not initialized !!
+    lmTimeposEntry* pEntry;
     xFinal = 0;
-    for (int i = 0; i < (int)m_aTimePos.GetCount(); i++) {
-        pEntry = m_aTimePos[i];
+    for (int i = 0; i < (int)m_aTimePos[0].size(); i++) {
+        pEntry = m_aTimePos[0][i];
         xFinal = wxMax(pEntry->m_xFinal, xFinal);
     }
 
@@ -208,7 +269,7 @@ lmLUnits lmTimeposTable::GetStartOfBarPosition()
     //returns the x position for the start of the bar column
 
     //the bar starts at the xLeft of the alfa entry
-    lmTimeposEntry* pEntry = m_aTimePos[0];    //the alfa entry
+    lmTimeposEntry* pEntry = m_aTimePos[0][0];    //the alfa entry
     wxASSERT(pEntry->m_nType == eAlfa);
     return pEntry->m_xLeft;
 
@@ -217,7 +278,7 @@ lmLUnits lmTimeposTable::GetStartOfBarPosition()
 lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
 {
     /*
-    Pentobjs positions are arranged so that all StaffObjs that must sound at the same time
+    StaffObjs positions are arranged so that all StaffObjs that must sound at the same time
     will have the same x anchor coordinate.
     The new positions are not stored in the StaffObjs but only in this object tables.
     This method returns the bar column size (including the width of the barline at the end)
@@ -226,8 +287,8 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
     //build timeaux table. Ordered by time
     //-------------------------------------
     int i;
-    m_aTimeAux.Empty();
-    for (i = 0; i < (int)m_aTimePos.GetCount(); i++) {
+    m_aTimeAux.clear();
+    for (i = 0; i < (int)m_aTimePos[0].size(); i++) {
         AddTimeAuxEntry(i);
     }
 
@@ -241,7 +302,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
 
     //loop to arrange StaffObjs positions. Each iteration corresponds to a time value
     //-----------------------------------------------------------------------------------
-    int nThread;            //auxiliary. The thread in process
+    int nVoice;            //auxiliary. The voice in process
     float rTime;            //auxiliary. The time value in process
     lmLUnits uShift;        //auxiliary. x shift to apply
     lmLUnits uMinStartPos;        //minimum start position for StaffObjs of current time value
@@ -261,7 +322,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
     iFirst = 0;        //index to the first table entry for current time value
     iNext = 0;        //index to the first entry for the next time value
 
-    while (iNext < (int)m_aTimeAux.GetCount())
+    while (iNext < (int)m_aTimeAux.size())
     {
         i = iFirst;
         pTAE = m_aTimeAux[iFirst];
@@ -269,12 +330,12 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         uMinStartPos = uMaxFinalPrev;
 
         //loop to compute the maximum left position of all entries of current time
-        while (i < (int)m_aTimeAux.GetCount())
+        while (i < (int)m_aTimeAux.size())
         {
             pTAE = m_aTimeAux[i];
             if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
             iItem = pTAE->nItem;
-            pTPE = m_aTimePos[iItem];
+            pTPE = m_aTimePos[0][iItem];
             uMinStartPos = wxMax(uMinStartPos, pTPE->m_xLeft);
             i++;
         }
@@ -287,12 +348,12 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         //the max. anchor position
         uMaxAnchorCur = 0;
         i = iFirst;
-        while (i < (int)m_aTimeAux.GetCount())
+        while (i < (int)m_aTimeAux.size())
         {
             pTAE = m_aTimeAux[i];
             if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
             iItem = pTAE->nItem;
-            pTPE = m_aTimePos[iItem];
+            pTPE = m_aTimePos[0][iItem];
             pTAE->uShift = uMinStartPos - pTPE->m_xLeft;
             uMaxAnchorCur = wxMax(uMaxAnchorCur, pTAE->uShift + pTPE->m_uxAnchor);
             i++;
@@ -303,22 +364,22 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
 
         //loop to compute the final shift to apply in order to align by anchor positions
         i = iFirst;
-        while (i < (int)m_aTimeAux.GetCount())
+        while (i < (int)m_aTimeAux.size())
         {
             pTAE = m_aTimeAux[i];
             if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
             iItem = pTAE->nItem;
-            pTPE = m_aTimePos[iItem];
+            pTPE = m_aTimePos[0][iItem];
             pTAE->uShift = uMaxAnchorCur - pTPE->m_uxAnchor;
             i++;
         }
 
         //shift the start position of all StaffObjs of current time (and those following
-        //them of the same thread with no specific time) and
+        //them of the same voice with no specific time) and
         //compute the the maximum final position for current time
         uMaxFinalCur = 0;
         i = iFirst;
-        while (i < (int)m_aTimeAux.GetCount())
+        while (i < (int)m_aTimeAux.size())
         {
             //process one entry of Time table
             pTAE = m_aTimeAux[i];
@@ -330,20 +391,20 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
 			///*dbg*/    wxLogMessage(wxString::Format(
 			//            _T("[lmTimeposTable::ArrangeStaffobjsByTime] applying shift (%.2f) to entry %d. rTime=%.2f "),
 			//            uShift, i, pTAE->rTimePos ));
-            pTPE = m_aTimePos[iItem];
+            pTPE = m_aTimePos[0][iItem];
             pTPE->m_xFinal += uShift;
             pTPE->m_uxAnchor += uShift;
             pTPE->m_xLeft += uShift;
             pTPE->m_xRight += uShift;
             uMaxFinalCur = wxMax(uMaxFinalCur, pTPE->m_xFinal);
-            nThread = pTPE->m_nThread;
+            nVoice = pTPE->m_nVoice;
 
-            //process any following entry of this thread with no specific time (timepos=-1)
+            //process any following entry of this voice with no specific time (timepos=-1)
             iItem++;
-            while (iItem < (int)m_aTimePos.GetCount())
+            while (iItem < (int)m_aTimePos[0].size())
             {
-                pTPE = m_aTimePos[iItem];
-                if (pTPE->m_nThread != nThread || pTPE->m_rTimePos != -1 ) break;
+                pTPE = m_aTimePos[0][iItem];
+                if (pTPE->m_nVoice != nVoice || pTPE->m_rTimePos != -1 ) break;
 
                 pTPE->m_xFinal += uShift;
                 pTPE->m_uxAnchor += uShift;
@@ -378,8 +439,8 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
     }
 
     //return the measure column size
-    lmTimeposEntry* pEnd = m_aTimePos[m_aTimePos.GetCount() - 1];
-    lmTimeposEntry* pStart = m_aTimePos[0];
+    lmTimeposEntry* pEnd = m_aTimePos[0].back();
+    lmTimeposEntry* pStart = m_aTimePos[0][0];
     lmLUnits uColumnSize = pEnd->m_xFinal - pStart->m_xLeft;
 
     //if trace requested dump tables to log
@@ -418,13 +479,13 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 
     lmLUnits uBarPosition = 0;
     lmLUnits uShift, nShiftBar;
-    lmTimeposEntry* pTPE = m_aTimePos[0];
+    lmTimeposEntry* pTPE = m_aTimePos[0][0];
     uShift = uNewStart - pTPE->m_xLeft;
 
     //Update table and store the new x positions into the StaffObjs
-    for (int i = 0; i < (int)m_aTimePos.GetCount(); i++)
+    for (int i = 0; i < (int)m_aTimePos[0].size(); i++)
     {
-        pTPE = m_aTimePos[i];
+        pTPE = m_aTimePos[0][i];
         if (pTPE->m_nType == eStaffobj)
         {
             pTPE->m_xLeft += uShift;
@@ -463,7 +524,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 void lmTimeposTable::SetxIni(float rTimePos, lmLUnits xPos)
 {
     int i = FindItem(rTimePos);
-    lmTimeposEntry* pTE = m_aTimePos[i];
+    lmTimeposEntry* pTE = m_aTimePos[0][i];
     pTE->m_xLeft = xPos;
 
 }
@@ -471,7 +532,7 @@ void lmTimeposTable::SetxIni(float rTimePos, lmLUnits xPos)
 lmLUnits lmTimeposTable::GetXFinal(float rTimePos)
 {
     int i = FindItem(rTimePos);
-    lmTimeposEntry* pTE = m_aTimePos[i];
+    lmTimeposEntry* pTE = m_aTimePos[0][i];
     return pTE->m_xRight;
 
 }
@@ -479,7 +540,7 @@ lmLUnits lmTimeposTable::GetXFinal(float rTimePos)
 void lmTimeposTable::SetXFinal(float rTimePos, lmLUnits xRight)
 {
     int i = FindItem(rTimePos);
-    lmTimeposEntry* pTE = m_aTimePos[i];
+    lmTimeposEntry* pTE = m_aTimePos[0][i];
     pTE->m_xRight = xRight;
 
 }
@@ -487,7 +548,7 @@ void lmTimeposTable::SetXFinal(float rTimePos, lmLUnits xRight)
 void lmTimeposTable::UpdateEntry(float rTimePos, lmLUnits xLeft, lmLUnits xRight)
 {
     int i = FindItem(rTimePos);
-    lmTimeposEntry* pTE = m_aTimePos[i];
+    lmTimeposEntry* pTE = m_aTimePos[0][i];
     pTE->m_xLeft = xLeft;
     pTE->m_xRight = xRight;
 
@@ -496,7 +557,7 @@ void lmTimeposTable::UpdateEntry(float rTimePos, lmLUnits xLeft, lmLUnits xRight
 lmLUnits lmTimeposTable::LastFinalX()
 {
     //returns the final X position of the last entry
-    lmTimeposEntry* pTE = m_aTimePos[m_aTimePos.GetCount() - 1];
+    lmTimeposEntry* pTE = m_aTimePos[0].back();
     return pTE->m_xRight;
 
 }
@@ -506,24 +567,24 @@ wxString lmTimeposTable::DumpTimeposTable()
     wxString sMsg = _T("TimePos table dump. \n");
     sMsg += _T("===================================================================\n\n");
 
-    if (m_aTimePos.GetCount() == 0)
+    if (m_aTimePos[0].size() == 0)
     {
         sMsg += _T("The table is empty.");
         return sMsg;
     }
 
     //headers
-    sMsg += _T("Item    Thread  Type         TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
+    sMsg += _T("Item    Voice  Type         TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
 
     //loop to dump table entries
     lmTimeposEntry* pTE;
-    for (int i = 0; i < (int)m_aTimePos.GetCount(); i++)
+    for (int i = 0; i < (int)m_aTimePos[0].size(); i++)
     {
         if (i % 4 == 0) {
             sMsg += wxT("----------------------------------------------------------------------------\n");
         }
-        pTE = m_aTimePos[i];
-        sMsg += wxString::Format(_T("%4d: %8d"), i, pTE->m_nThread);
+        pTE = m_aTimePos[0][i];
+        sMsg += wxString::Format(_T("%4d: %8d"), i, pTE->m_nVoice);
         switch (pTE->m_nType)
         {
             case eAlfa:
@@ -558,14 +619,14 @@ wxString lmTimeposTable::DumpTimeauxTable()
     wxString sMsg = _T("Dump of Time aux. table. \n");
     sMsg += _T("===================================================================\n\n");
 
-    if (m_aTimeAux.GetCount() == 0)
+    if (m_aTimeAux.size() == 0)
     {
         sMsg += _T("The table is empty.");
         return sMsg;
     }
 
     //headers
-    sMsg += _T("Item    Thread  Ref     TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
+    sMsg += _T("Item    Voice  Ref     TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
 
     //loop to dump table entries
     int iItem;
@@ -574,7 +635,7 @@ wxString lmTimeposTable::DumpTimeauxTable()
     lmTimeposEntry* pTPE;
 
     rTimePrev = -1;
-    for (int i = 0; i < (int)m_aTimeAux.GetCount(); i++)
+    for (int i = 0; i < (int)m_aTimeAux.size(); i++)
     {
         pTAE = m_aTimeAux[i];
         if (!IsEqualTime(rTimePrev, pTAE->rTimePos))
@@ -583,10 +644,10 @@ wxString lmTimeposTable::DumpTimeauxTable()
             sMsg += _T("----------------------------------------------------------------------------\n");
         }
         sMsg += wxString::Format( _T("%4d: %8d %4d %11.2f "),
-            i, pTAE->nThread, pTAE->nItem, pTAE->rTimePos);
+            i, pTAE->nVoice, pTAE->nItem, pTAE->rTimePos);
         iItem = pTAE->nItem;
 
-        pTPE = m_aTimePos[iItem];
+        pTPE = m_aTimePos[0][iItem];
         sMsg += wxString::Format( _T("%.2f %.2f %.2f %.2f %.2f\n"),
             pTPE->m_uSize, pTPE->m_xLeft, pTPE->m_uxAnchor, pTPE->m_xRight, pTPE->m_xFinal);
     }
@@ -608,41 +669,45 @@ void lmTimeposTable::AddTimeAuxEntry(int nItem)
 
     //the table must be ordered by timepos
 
-    lmTimeposEntry* pTPE = m_aTimePos[nItem];
+    lmTimeposEntry* pTPE = m_aTimePos[0][nItem];
     if (pTPE->m_rTimePos < 0) return;            //discard non timed entries
 
     // Create entry to be added
-    lmTimeauxEntry* pNew = new lmTimeauxEntry(nItem, pTPE->m_nThread, pTPE->m_rTimePos);
+    lmTimeauxEntry* pNew = new lmTimeauxEntry(nItem, pTPE->m_nVoice, pTPE->m_rTimePos);
 
     //if there are no entries in Timeaux table or the timePos of last entry is lower
     //or equal than the timepos to be inserted , just create the new entry at the end
     //of the table
-    if (m_aTimeAux.GetCount() == 0)
+    if (m_aTimeAux.size() == 0)
     {
         //No entries in table. This one is the first one.
-        m_aTimeAux.Add(pNew);
+        m_aTimeAux.push_back(pNew);
     }
     else
     {
-        int i = m_aTimeAux.GetCount() - 1;    //index to last entry
+        int i = m_aTimeAux.size() - 1;    //index to last entry
         lmTimeauxEntry* pTAE = m_aTimeAux[i];
         if (pTAE->rTimePos < pTPE->m_rTimePos || IsEqualTime(pTAE->rTimePos, pTPE->m_rTimePos))
         {
             //all existing entries in Timeaux table have timepos lower or equal than the
             //new one. Add it at the end.
-            m_aTimeAux.Add(pNew);
+            m_aTimeAux.push_back(pNew);
         }
         else
         {
             //the new entry must be inserted between two existing entries.
 
             //locate insertion point
-            for (i=0; i < (int)m_aTimeAux.GetCount(); i++) {
+            for (i=0; i < (int)m_aTimeAux.size(); i++) {
                 pTAE = m_aTimeAux[i];
                 if (pTAE->rTimePos > pTPE->m_rTimePos && !IsEqualTime(pTAE->rTimePos, pTPE->m_rTimePos)) break;
             }
             wxASSERT(i > 0);
-            m_aTimeAux.Insert(pNew, (size_t)i);    //insert before entry number i
+            //m_aTimeAux.Insert(pNew, (size_t)i);
+			//insert before entry number i
+			std::vector<lmTimeauxEntry*>::iterator it =
+				std::find(m_aTimeAux.begin(), m_aTimeAux.end(), m_aTimeAux[i]);
+			m_aTimeAux.insert(it, pNew);
         }
     }
 
@@ -650,14 +715,14 @@ void lmTimeposTable::AddTimeAuxEntry(int nItem)
 
 int lmTimeposTable::FindItem(float rTimePos)
 {
-    wxASSERT(m_aTimePos.GetCount() > 0);     //table empty !!
-    //wxASSERT(rTimePos <= (m_aTimePos[m_aTimePos.GetCount() - 1])->m_rTimePos );  //not in table !!
+    wxASSERT(m_aTimePos[0].size() > 0);     //table empty !!
+    //wxASSERT(rTimePos <= (m_aTimePos[0].back())->m_rTimePos );  //not in table !!
 
     //look up in table
     lmTimeposEntry* pEntry;
-    for (int i = 0; i < (int)m_aTimePos.GetCount(); i++)
+    for (int i = 0; i < (int)m_aTimePos[0].size(); i++)
     {
-        pEntry = m_aTimePos[i];
+        pEntry = m_aTimePos[0][i];
         if (IsEqualTime(rTimePos, pEntry->m_rTimePos))
         {
             //found. return this index
@@ -669,10 +734,11 @@ int lmTimeposTable::FindItem(float rTimePos)
 
 }
 
-void lmTimeposTable::NewEntry(eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO)
+void lmTimeposTable::NewEntry(int nVoice, eTimeposEntryType nType, float rTimePos,
+							  lmStaffObj* pSO)
 {
-    lmTimeposEntry* pEntry = new lmTimeposEntry(nType, m_nCurThread, pSO, rTimePos);
-    m_aTimePos.Add(pEntry);
+    lmTimeposEntry* pEntry = new lmTimeposEntry(nType, nVoice, pSO, rTimePos);
+    m_aTimePos[0].push_back(pEntry);
 
 }
 

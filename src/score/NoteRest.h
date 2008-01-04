@@ -71,7 +71,7 @@ class lmNoteRest:  public lmStaffObj
 public:
     //ctors and dtor
     lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
-             bool fDotted, bool fDoubleDotted, int nStaff, bool fVisible);
+             bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible);
     virtual ~lmNoteRest();
 
     virtual wxString Dump() = 0;
@@ -109,7 +109,8 @@ public:
                        int nMeasure);
 
     //accessors
-    lmENoteType GetNoteType() const { return m_nNoteType; }
+    inline lmENoteType GetNoteType() const { return m_nNoteType; }
+	inline int GetVoice() { return m_nVoice; }
 
 
 protected:
@@ -123,8 +124,9 @@ protected:
         // member variables
         //
 
-    bool        m_fIsRest;          //This lmNoteRest is a rest
-    lmENoteType   m_nNoteType;        //type of note / rest
+    bool		m_fIsRest;          //This lmNoteRest is a rest
+    lmENoteType	m_nNoteType;        //type of note / rest
+	int			m_nVoice;			//voice: 1..lmMAX_VOICE
     
     //duration and time modifiers
     float       m_rDuration;            //duration as defined in MusicXML: duration/divisions

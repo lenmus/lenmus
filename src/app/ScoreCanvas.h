@@ -63,7 +63,9 @@ public:
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
     virtual void InsertClef(lmEClefType nClefType) {}
 	virtual void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
-					lmENoteType nNoteType, float rDuration) {}
+					lmENoteType nNoteType, float rDuration,
+					lmENoteHeads nNotehead,
+					lmEAccidentals nAcc = lm_eNoAccidentals ) {}
 	virtual void ChangeNotePitch(int nSteps) {}
 	virtual void ChangeNoteAccidentals(int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
@@ -125,7 +127,9 @@ public:
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
     void InsertClef(lmEClefType nClefType);
 	void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
-					lmENoteType nNoteType, float rDuration);
+					lmENoteType nNoteType, float rDuration,
+					lmENoteHeads nNotehead,
+					lmEAccidentals nAcc = lm_eNoAccidentals );
 	void ChangeNotePitch(int nSteps);
 	void ChangeNoteAccidentals(int nSteps);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);

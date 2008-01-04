@@ -51,8 +51,9 @@ extern lmLogger* g_pLogger;
 
 lmMusicXMLParser::lmMusicXMLParser()
 {
-    m_pTupletBracket = (lmTupletBracket*)NULL;        //no tuplet being created
-    m_nCurrentDivisions = 0;                        //not set yet
+    m_pTupletBracket = (lmTupletBracket*)NULL;	//no tuplet being created
+    m_nCurrentDivisions = 0;					//not set yet
+	m_nCurVoice = 1;							//default: voice 1
 
 }
 
@@ -1508,14 +1509,14 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     if (fIsRest) {
         pNR = pVStaff->AddRest(nNoteType, rDuration,
                         fDotted, fDoubleDotted,
-                        nNumStaff, true, fBeamed, BeamInfo);
+                        nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
     }
     else {
         pNR = pVStaff->AddNote(lm_ePitchAbsolute,
                         sStep, sOctave, sAlter, nAccidentals,
                         nNoteType, rDuration,
                         fDotted, fDoubleDotted,
-                        nNumStaff, true, fBeamed, BeamInfo, fInChord, fTie,
+                        nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo, fInChord, fTie,
                         nStem);
     }
 

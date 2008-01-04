@@ -65,7 +65,8 @@ typedef wxRealPoint lmUPoint;       // a point in logical units
 typedef wxPoint lmDPoint;           // a point in device units
 
 
-
+//some limits
+#define lmMAX_VOICE		8		//num of voices supported
 
 // DC user mode
 #define lmDC_MODE    wxMM_LOMETRIC    // mode for DC (DC unit: one tenth of mm)

@@ -103,6 +103,7 @@
 #include "AboutDialog.h"
 #include "LangChoiceDlg.h"
 #include "ArtProvider.h"
+#include "toolbox/ToolsBox.h"
 
 // to save config information into a file
 #include "wx/confbase.h"
@@ -913,6 +914,29 @@ lmController* lmTheApp::GetViewController()
 		return pView->GetController();
 	else
 		return (lmController*)NULL;
+}
+
+int lmTheApp::FilterEvent(wxEvent& event)
+{
+	if (event.GetEventType()==wxEVT_KEY_DOWN)
+	{
+		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1 && g_pMainFrame
+			&& g_pMainFrame->IsToolBoxVisible())
+		{ 
+			lmController* pController = GetViewController();
+			if (pController)
+			{
+				g_pMainFrame->GetActiveToolBox()->ProcessEvent(event); 
+				return true;	//true: the event had been already processed
+			}
+
+			//g_pMainFrame->OnHelpF1( (wxKeyEvent&)event );
+			//return true;	//true: the event had been already processed
+			//				//false: the event is not going to be processed at all
+		}
+	}
+
+	return -1;		//process the event normally
 }
 
 

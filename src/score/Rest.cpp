@@ -43,9 +43,9 @@
 
 
 lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
-        int nStaff, bool fVisible, bool fBeamed, lmTBeamInfo BeamInfo[])
+        int nStaff, int nVoice, bool fVisible, bool fBeamed, lmTBeamInfo BeamInfo[])
     : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted, 
-                 nStaff, fVisible)
+                 nStaff, nVoice, fVisible)
 {
 
     CreateBeam(fBeamed, BeamInfo);
@@ -206,8 +206,8 @@ void lmRest::DoVerticalShift(lmTenths yShift)
 wxString lmRest::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tRest\tType=%d, TimePos=%.2f, rDuration=%.2f "),
-        m_nId, m_nNoteType, m_rTimePos, m_rDuration );
+        _T("%d\tRest\tType=%d, TimePos=%.2f, rDuration=%.2f, voice=%d "),
+        m_nId, m_nNoteType, m_rTimePos, m_rDuration, m_nVoice );
 
     if (m_fBeamed) {
         sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
@@ -236,6 +236,9 @@ wxString lmRest::SourceLDP(int nIndent)
     if (m_pVStaff->GetNumStaves() > 1) {
         sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
     }
+
+    //Voice
+    sSource += wxString::Format(_T(" v%d"), m_nVoice);
 
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }

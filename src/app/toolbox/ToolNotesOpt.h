@@ -29,6 +29,8 @@
 #include "ToolsBox.h"
 #include "../../score/defs.h"
 
+class wxBitmapComboBox;
+class lmCheckButton;
 
 class lmToolNotesOpt: public wxPanel
 {
@@ -38,9 +40,16 @@ public:
 
 	//access to options
 	lmENoteType GetNoteDuration();
+	lmENoteHeads GetNoteheadType();
+	lmEAccidentals GetNoteAccidentals();
+
+	void OnNoteButton(wxCommandEvent& event);
+	void SelectNoteButton(int iB);
+
 
 
 private:
+
     // controls
     wxChoice*        m_pChoice;
 
@@ -49,10 +58,17 @@ private:
     wxArrayString	m_cLangCodes;
     wxArrayString	m_cLangNames;
     wxString        m_sCurLang;
+	
+	//selected buttons
+	int			m_nNoteDuration;
 
 	//options
-	wxComboBox*		m_pCboDurations;
+	wxBitmapComboBox*	m_pCboNotehead;
+	wxBitmapComboBox*	m_pCboAccidentals;
+	lmCheckButton*		m_pBtDurations[10];
 
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif    // __LM_TOOLNOTESOPT_H__

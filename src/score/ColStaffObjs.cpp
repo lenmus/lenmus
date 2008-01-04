@@ -98,8 +98,8 @@ extern lmLogger* g_pLogger;
 lmColStaffObjs::lmColStaffObjs()
 {
     m_fStartMeasure = true;
-    m_rTime = 0;                   //reset time counters
-    m_rMaxTime = 0;
+    m_rTime[0] = 0;                   //reset time counters
+    m_rMaxTime[0] = 0;
 
 }
 
@@ -137,7 +137,7 @@ void lmColStaffObjs::Store(lmStaffObj* pSO)
     //Controls division into measures and assign time position to the lmStaffObj
 
     //assign time to the StaffObj and increment time counters
-	AssignTime(pSO, &m_rTime, &m_rMaxTime);
+	AssignTime(pSO, &m_rTime[0], &m_rMaxTime[0]);
     
     //store the lmStaffObj in the collection. StaffObjs are stored by arrival order
 	lmItCSO pItem;
@@ -179,65 +179,15 @@ void lmColStaffObjs::Store(lmStaffObj* pSO)
 
 		lmItMeasure itM = pSO->GetItMeasure();		//update measure data
 		(*itM)->itEndSO = pItem;
-
-        m_rTime = 0;				//reset time counters
-        m_rMaxTime = 0;
+		
+		for(int i=0; i < 8; i++)
+		{	//reset time counters
+			m_rTime[i] = 0.0f;				
+			m_rMaxTime[i] = 0.0f;
+		}
     }
     
 }
-
-//void lmColStaffObjs::Store(lmStaffObj* pSO)
-//{
-//    //Stores the received StaffObj in this collection, inserting it at the end, before EOS
-//    //objcet 
-//    //Controls division into measures and assign time position to the lmStaffObj
-//
-//    //assign time to the StaffObj and increment time counters
-//	AssignTime(pSO, &m_rTime, &m_rMaxTime);
-//    
-//    //store the lmStaffObj in the collection. StaffObjs are stored by arrival order
-//	lmItCSO pItem;
-//	if (pSO->GetClass() == eSFOT_Barline && ((lmBarline*)pSO)->GetBarlineType() == lm_eBarlineEOS)
-//    {
-//        //it is the EOS object
-//        m_cStaffobjs.push_back(pSO);    //insert at the end
-//		pItem = --m_cStaffobjs.end();     //point to EOS object
-//	}
-//	else 
-//	{
-//		//insert before the EOS object
-//		pItem = --m_cStaffobjs.end();     //point to EOS object
-//		wxASSERT ((*pItem)->GetClass() == eSFOT_Barline && ((lmBarline*)(*pItem))->GetBarlineType() == lm_eBarlineEOS );
-//		Insert(pSO, (*pItem));
-//		return;
-//	}
-//
-//    //if this lmStaffObj is the first one of a measure, store a pointer to the node in the
-//    //measures table
-//    if (m_fStartMeasure) 
-//    {
-//        m_fStartMeasure = false;
-//		AddMeasure(pItem, pItem);
-//    }
-//    
-//    //store, inside the lmStaffObj, a ptr to the measure data
-//	pSO->SetItMeasure( m_aMeasures[m_aMeasures.size() - 1] );
-//
-//    //Finally, if this lmStaffObj is a barline, signal that a new measure must be started
-//    //for the next lmStaffObj, reset time counters, and update measure data
-//    if (pSO->GetClass() == eSFOT_Barline)
-//    {
-//        m_fStartMeasure = true;		//a new measure must be started with next StaffObj
-//
-//		lmItMeasure itM = pSO->GetItMeasure();		//update measure data
-//		(*itM)->itEndSO = pItem;
-//
-//        m_rTime = 0;				//reset time counters
-//        m_rMaxTime = 0;
-//    }
-//    
-//}
-
 
 void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
 {
@@ -658,10 +608,10 @@ void lmColStaffObjs::ShiftTime(float rTimeShift)
     // Shifts time counters, forward or backwards
  
     //update time counters and check that shift is inside current measure
-    m_rTime += rTimeShift;
-    if (m_rTime < 0) { m_rTime = 0; }      //can not jump back before the start of current measure
+    m_rTime[0] += rTimeShift;
+    if (m_rTime[0] < 0) { m_rTime[0] = 0; }      //can not jump back before the start of current measure
     //TODO Check that does not go to the next measure
     //TODO Display error message if jump out of current measure boundaries
-//    if (m_rTime > m_rMaxTime) { m_rTime = m_rMaxTime   //can not jump out of this bar
+//    if (m_rTime[0] > m_rMaxTime[0]) { m_rTime[0] = m_rMaxTime[0]   //can not jump out of this bar
 
 }

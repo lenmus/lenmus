@@ -62,14 +62,14 @@ lmFormatter4::lmFormatter4()
 {
     // set debugging options
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("Formater4"));
-    m_nTraceMeasure = 0;
-    if (m_fDebugMode) {
-        m_nTraceMeasure = ::wxGetNumberFromUser(
-                                _T("Specify the measure to trace (0 for all measures)"),
-                                _T("Measure: "),
-                                _T("Debug Formatter4"),
-                                0L);        // default value: all measures
-    }
+    m_nTraceMeasure = 1;
+    //if (m_fDebugMode) {
+    //    m_nTraceMeasure = ::wxGetNumberFromUser(
+    //                            _T("Specify the measure to trace (0 for all measures)"),
+    //                            _T("Measure: "),
+    //                            _T("Debug Formatter4"),
+    //                            0L);        // default value: all measures
+    //}
 
 }
 
@@ -1025,9 +1025,9 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     //The stored value is accesible by method //GetXInicioCompas//
 //    pVStaff->SetXInicioCompas = pPaper->GetCursorX()
 
-    //start new thread
+    //start first voice
     lmLUnits xStart = pPaper->GetCursorX();
-    m_oTimepos[nRelMeasure].NewThread();
+    m_oTimepos[nRelMeasure].StartVoice(1);
     m_oTimepos[nRelMeasure].SetCurXLeft(xStart);
 
     //if this is not the first measure of the score advance (horizontally) a space to leave a gap
@@ -1067,6 +1067,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     lmLUnits xChordPos=0;               //position of base note of a chord
 
     //loop to process all StaffObjs in this measure
+	int nCurVoice = 1;
     bool fNoteRestFound = false;
     bool fNewSystem = false;                //newSystem tag found
     EStaffObjType nType;                    //type of score obj being processed
@@ -1080,6 +1081,13 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 
         if (nType == eSFOT_Barline) break;         //End of measure: exit loop.
 
+		//set paper position at current paper pos for this voice
+		int nVoice = 1;
+		if (pSO->GetClass() == eSFOT_NoteRest)
+			nVoice = ((lmNoteRest*)pSO)->GetVoice();
+		if (nCurVoice != nVoice)
+			pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurPaperPosX(nVoice));
+
         if (nType == eSFOT_Control)
         {
             lmSOControl* pSOCtrol = (lmSOControl*)pSO;
@@ -1088,8 +1096,9 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
             {
                 //start a new thread, setting x pos to the same x pos than the
                 //previous thread
-                m_oTimepos[nRelMeasure].NewThread();
-                pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());
+                //m_oTimepos[nRelMeasure].NewVoice();
+				//pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetXStart());
+                //////pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());
             }
             else if(lmNEW_SYSTEM == nCtrolType)
             {
@@ -1097,7 +1106,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
                 fNewSystem = true;
             }
             else    //layout it
-            pSO->Layout(pBSV, pPaper);
+				pSO->Layout(pBSV, pPaper);
         }
         else {
             //collect data about the lmStaffObj
@@ -1240,16 +1249,16 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
             pPaper->SetCursorX(xEnd);
         }
 
-        // end up current thread
-        m_oTimepos[nRelMeasure].CloseThread(pPaper->GetCursorX());
+        // end up current voice
+        m_oTimepos[nRelMeasure].CloseAllVoices(pPaper->GetCursorX());
 
         //Now add the barline
         m_oTimepos[nRelMeasure].AddBarline(pSO);
         pSO->Layout(pBSV, pPaper);
     }
     else {
-        // no barline at the end of the measure. Close thread
-        m_oTimepos[nRelMeasure].CloseThread(pPaper->GetCursorX());
+        // no barline at the end of the measure. Close voice
+        m_oTimepos[nRelMeasure].CloseAllVoices(pPaper->GetCursorX());
     }
 
     //now store final x position of this measure

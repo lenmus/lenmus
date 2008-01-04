@@ -78,6 +78,7 @@ public:
     virtual void SetText(const wxChar* text);
 	virtual void SetBorderDown(lmEButtonBorder nBorderType) { m_nBorderDown = nBorderType; }
 	virtual void SetBorderOver(lmEButtonBorder nBorderType) { m_nBorderOver = nBorderType; }
+	virtual void SetBitmapSelected(const wxBitmap& bitmap);
 
 
 protected:
@@ -127,7 +128,8 @@ public:
     lmCheckButton(wxWindow* parent, wxWindowID id, char** upXPM, 
 				  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
 				  char** overXPM = NULL, char** downXPM = NULL, char** disXPM = NULL);
-    virtual void OnMouseEvent(wxMouseEvent& event);
+
+	virtual void OnMouseEvent(wxMouseEvent& event);
     virtual bool Press();
     virtual bool Release();
 

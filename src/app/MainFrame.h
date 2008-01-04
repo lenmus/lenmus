@@ -197,6 +197,8 @@ public:
     void OnMetronomeUpdate(wxSpinEvent& WXUNUSED(event));
     void OnMetronomeUpdateText(wxCommandEvent& WXUNUSED(event));
     void OnPaneClose(wxAuiManagerEvent& event);
+    void OnKeyPress(wxKeyEvent& event);
+	void OnKeyF1(wxCommandEvent& event);
 
 
     //textbook events and methods
@@ -227,10 +229,15 @@ public:
 	//access to information
     inline lmTextBookController* GetBookController() { return m_pBookController; }
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
+	bool IsToolBoxVisible();
 
 	// call backs
 	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
 	void OnNewEditFrame();
+
+	//other
+	void RedirectKeyPressEvent(wxKeyEvent& event);
+
 
 
 

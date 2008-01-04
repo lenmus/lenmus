@@ -65,6 +65,7 @@ public:
     virtual ~lmToolBox();
 
     void OnButtonClicked(wxCommandEvent& event);
+    void OnKeyPress(wxKeyEvent& event);
 
 	//info
 	int GetWidth() { return 150; }
@@ -72,6 +73,8 @@ public:
 	//current tool and its options
 	inline lmEEditTool GetSelectedTool() const { return m_nSelTool; }
 	void SelectTool(lmEEditTool nTool);
+	inline wxPanel* GetToolPanel(lmEEditTool nPanel) { return m_cPanels[nPanel]; }
+
 
 	inline lmToolNotesOpt* GetNoteProperties() const { return (lmToolNotesOpt*)m_cPanels[lmTOOL_NOTES]; }
     //TO_ADD: Add, before this line, a new method to get new tool properties

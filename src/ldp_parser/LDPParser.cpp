@@ -868,31 +868,39 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         // abbreviated barlines
         else if (sName == _T("|") ) {
             pVStaff->AddBarline(lm_eBarlineSimple, true);
+			m_nCurVoice = 1;
         }
         else if (sName == _T("||") ) {
             pVStaff->AddBarline(lm_eBarlineDouble, true);
+			m_nCurVoice = 1;
         }
         else if (sName == _T("|]") ) {
             pVStaff->AddBarline(lm_eBarlineEnd, true);
+			m_nCurVoice = 1;
         }
         else if (sName == _T("[|") ) {
             pVStaff->AddBarline(lm_eBarlineStart, true);
+			m_nCurVoice = 1;
         }
         else if (sName == _T(":|") ) {
             pVStaff->AddBarline(lm_eBarlineEndRepetition, true);
+			m_nCurVoice = 1;
         }
         else if (sName == _T("|:") ) {
             pVStaff->AddBarline(lm_eBarlineStartRepetition, true);
+			m_nCurVoice = 1;
         }
         else if (sName == _T("::") ) {
             pVStaff->AddBarline(lm_eBarlineDoubleRepetition, true);
+			m_nCurVoice = 1;
         }
         // go forward and backward
         else if (sName == m_pTags->TagName(_T("goFwd"))
                  || sName == m_pTags->TagName(_T("goBack")) )
         {
             AnalyzeTimeShift(pX, pVStaff);
-        }
+			if (sName == m_pTags->TagName(_T("goBack")) ) m_nCurVoice++;
+		}
         //abbreviated syntax for notes and rests
         else if (sName.Left(1) == m_pTags->TagName(_T("n"), _T("SingleChar")) ) {
             AnalyzeNote(pX, pVStaff);
@@ -906,6 +914,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
     }
 	pVStaff->AddBarline(lm_eBarlineEOS, true);
+	m_nCurVoice = 1;
 
 }
 
@@ -1153,6 +1162,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     if (fSomethingAdded && !fBarline) {
         pVStaff->AddBarline(lm_eBarlineSimple);    //finish the bar
+		m_nCurVoice = 1;
     }
 
 }
@@ -1410,7 +1420,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 AnalysisError( _T("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
                 return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
-                                        m_nCurStaff, fVisible);
+                                        m_nCurStaff, m_nCurVoice, fVisible);
             }
         }
         else {
@@ -1420,7 +1430,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 return pVStaff->AddNote(lm_ePitchRelative,
                                         _T("c"), _T("4"), _T("0"), nAccidentals,
                                         nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
-                                        fVisible, fBeamed, BeamInfo, fInChord, fTie, nStem);
+                                        m_nCurVoice, fVisible, fBeamed, BeamInfo, fInChord, fTie, nStem);
             }
         }
 
@@ -1615,13 +1625,20 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
             }
 
-            else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar"))) {       //staff number
+            else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))
+			{	//staff number
                 m_nCurStaff = AnalyzeNumStaff(sData, pVStaff->GetNumStaves());
             }
-            else if (sData == m_pTags->TagName(_T("fermata"))) {       //fermata
+            else if (sData.Left(1) == m_pTags->TagName(_T("v"), _T("SingleChar")))
+            {	//voice
+				m_nCurVoice = AnalyzeVoiceNumber(sData);
+			}
+            else if (sData == m_pTags->TagName(_T("fermata")))
+			{	//fermata
                 fFermata = true;
             }
-            else if (sData == m_pTags->TagName(_T("noVisible"))) {     //no visible
+            else if (sData == m_pTags->TagName(_T("noVisible"))) 
+			{	//no visible
                 fVisible = false;
             }
             else {
@@ -1735,13 +1752,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     lmNoteRest* pNR;
     if (fIsRest) {
         pNR = pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
-                               m_nCurStaff, fVisible, fBeamed, BeamInfo);
+                               m_nCurStaff, m_nCurVoice, fVisible, fBeamed, BeamInfo);
     }
     else {
         pNR = pVStaff->AddNote(nPitchType,
                                sStep, sOctave, _T("0"), nAccidentals,
                                nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
-                               fVisible, fBeamed, BeamInfo, fInChord, fTie, nStem);
+                               m_nCurVoice, fVisible, fBeamed, BeamInfo, fInChord, fTie,
+							   nStem);
         m_sLastOctave = sOctave;
     }
 
@@ -2048,6 +2066,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     if(pNode->GetNumParms() < 1) {
         //assume simple barline, visible
         pVStaff->AddBarline(lm_eBarlineSimple, true);
+		m_nCurVoice = 1;
         return false;
     }
 
@@ -2083,6 +2102,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 	//create the tiem signature
     lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible);
+	m_nCurVoice = 1;
 	pBarline->SetUserLocation(tPos);
     return false;
 
@@ -3166,6 +3186,34 @@ int lmLDPParser::AnalyzeNumStaff(const wxString& sNotation, long nNumStaves)
     if (nValue > nNumStaves) {
         AnalysisError( _T("Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."),
             sNotation.c_str(), nNumStaves, m_pTags->TagName(_T("p"), _T("SingleChar")).c_str() );
+        return 1;
+    }
+    return (int)nValue;
+
+}
+
+int lmLDPParser::AnalyzeVoiceNumber(const wxString& sNotation)
+{
+    //analyzes a notation Vx.  x must be 1..lmMAX_VOICE
+
+    if (sNotation.Left(1) != m_pTags->TagName(_T("v"), _T("SingleChar")) ) {
+        AnalysisError( _T("Voice number expected but found '%s'. Replaced by '%s1'"),
+            sNotation.c_str(), m_pTags->TagName(_T("v"), _T("SingleChar")).c_str() );
+        return 1;
+    }
+
+    wxString sData = sNotation.substr(1);         //remove char 'v'
+    if (!sData.IsNumber()) {
+        AnalysisError( _T("Voice number expected but found '%s'. Replaced by '%s1'"),
+            sNotation.c_str(), m_pTags->TagName(_T("v"), _T("SingleChar")).c_str() );
+        return 1;
+    }
+
+    long nValue;
+    sData.ToLong(&nValue);
+    if (nValue > lmMAX_VOICE) {
+        AnalysisError( _T("Notation '%s': number is greater than supported voices (%d). Replaced by '%s1'."),
+            sNotation.c_str(), lmMAX_VOICE, m_pTags->TagName(_T("v"), _T("SingleChar")).c_str() );
         return 1;
     }
     return (int)nValue;

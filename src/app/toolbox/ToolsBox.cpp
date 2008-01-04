@@ -37,6 +37,7 @@
 #include "wx/cursor.h"
 #include "wx/statline.h"
 
+#include "../MainFrame.h"
 #include "ToolsBox.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "../TheApp.h"
@@ -63,13 +64,14 @@
 
 //layout parameters
 const int SPACING = 1;          //spacing (pixels) around each sizer
-const int BUTTON_SPACING = 3;	//spacing (pixels) between buttons
+const int BUTTON_SPACING = 2;	//spacing (pixels) between buttons
 const int BUTTON_SIZE = 32;		//tools button size (pixels)
 const int NUM_COLUMNS = 4;      //number of buttons per row
 const int ID_BUTTON = 2200;
 
 
 BEGIN_EVENT_TABLE(lmToolBox, wxPanel)
+	EVT_CHAR(lmToolBox::OnKeyPress)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmToolBox::OnButtonClicked)
 END_EVENT_TABLE()
 
@@ -162,6 +164,9 @@ void lmToolBox::CreateControls()
 		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
 		m_pButton[iB]->SetBorderDown(lm_eBorderFlat);
 	}
+  //  buttonsSizer->Add(
+		//new wxButton(this, wxID_ANY, _T(""), wxDefaultPosition, wxSize(26,26) ),
+		//wxSizerFlags(0).Border(wxALL, BUTTON_SPACING) );
 }
 
 lmToolBox::~lmToolBox()
@@ -229,3 +234,9 @@ void lmToolBox::SelectButton(int nTool)
 	}
 }
 
+void lmToolBox::OnKeyPress(wxKeyEvent& event)
+{
+	//redirect all key press events to the active child window
+	GetMainFrame()->RedirectKeyPressEvent(event);
+
+}

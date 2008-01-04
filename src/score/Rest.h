@@ -35,7 +35,7 @@ public:
     lmRest(lmVStaff* pVStaff, 
         lmENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        int nStaff, bool fVisible,
+        int nStaff, int nVoice, bool fVisible,
         bool fBeamed, lmTBeamInfo BeamInfo[]);
 
     ~lmRest();

@@ -226,7 +226,8 @@ bool lmCmdInsertClef::Undo()
 lmCmdInsertNote::lmCmdInsertNote(const wxString& sName, lmScoreDocument *pDoc,
                                  lmStaffObj* pCursorSO, lmEPitchType nPitchType,
 								 wxString sStep, wxString sOctave, 
-								 lmENoteType nNoteType, float rDuration)
+								 lmENoteType nNoteType, float rDuration,
+								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
 	: lmScoreCommand(sName, pDoc)
 {
 	m_nNoteType = nNoteType;
@@ -235,12 +236,14 @@ lmCmdInsertNote::lmCmdInsertNote(const wxString& sName, lmScoreDocument *pDoc,
 	m_sOctave = sOctave;
 	m_rDuration = rDuration;
 	m_pCursorSO = pCursorSO;
+	m_nNotehead = nNotehead;
+	m_nAcc = nAcc;
 }
 
 bool lmCmdInsertNote::Do()
 {
 	m_pCursorSO->GetVStaff()->InsertNote(m_pCursorSO, m_nPitchType, m_sStep, m_sOctave, 
-										 m_nNoteType, m_rDuration);
+										 m_nNoteType, m_rDuration, m_nNotehead, m_nAcc);
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(true);
     m_pDoc->UpdateAllViews();

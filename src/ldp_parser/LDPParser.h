@@ -94,6 +94,7 @@ public:
 
 	//analyze options
     int         AnalyzeNumStaff(const wxString& sNotation, long nNumStaves);
+	int			AnalyzeVoiceNumber(const wxString& sNotation);
 
     // for lmLDPToken
     const wxString& GetNewBuffer();

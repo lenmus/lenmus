@@ -50,7 +50,7 @@ public:
         lmEAccidentals nAccidentals,
         lmENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        int nStaff, bool fVisible,
+        int nStaff, int nVoice, bool fVisible,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,

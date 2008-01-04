@@ -47,7 +47,8 @@ BEGIN_EVENT_TABLE(lmBitmapButton, wxWindow)
     EVT_ERASE_BACKGROUND(lmBitmapButton::OnEraseBackground)
 END_EVENT_TABLE()
 
-#define wxMB_COLOR_OVER wxColour(255, 255, 255)	//0xE8,0xE8,0xE8)
+#define wxMB_COLOR_OVER wxColour(0xff,0xff,0xff)	//0xE8,0xE8,0xE8)
+#define wxMB_COLOR_DOWN wxColour(0xff,0xff,0xff)
 #define wxMB_COLOR_BG wxColour(0xD7,0xD7,0xD7)
 #define wxMB_TEXT_MARGIN 8
 
@@ -134,6 +135,11 @@ void lmBitmapButton::Create(const wxPoint& pos, const wxSize& size)
     m_bitmap = new wxBitmap(m_width, m_height);
 
 };
+
+void lmBitmapButton::SetBitmapSelected(const wxBitmap& bitmap)
+{
+	m_bitmaps[State_ButtonDown] = bitmap;
+}
 
 void lmBitmapButton::SetText(const wxChar* text)
 {

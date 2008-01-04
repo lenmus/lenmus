@@ -547,7 +547,8 @@ lmBarline* lmVStaff::InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType)
 }
 
 lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
-							 wxString sOctave, lmENoteType nNoteType, float rDuration)
+							 wxString sOctave, lmENoteType nNoteType, float rDuration,
+							 lmENoteHeads nNotehead, lmEAccidentals nAcc)
 {
     int nStaff = pCursorSO->GetStaffNum();
 
@@ -561,9 +562,11 @@ lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxS
     }
 	wxString sAccidentals = _T("");
 
+	//TODO: deal with voices
+	int nVoice = 1;
     lmNote* pNt = new lmNote(this, nPitchType,
-                        sStep, sOctave, sAccidentals, lm_eNoAccidentals,
-                        nNoteType, rDuration, false, false, nStaff, lmVISIBLE,
+                        sStep, sOctave, sAccidentals, nAcc,
+                        nNoteType, rDuration, false, false, nStaff, nVoice, lmVISIBLE,
                         pContext, false, BeamInfo, false, false, lmSTEM_DEFAULT);
 
     m_cStaffObjs.Insert(pNt, pCursorSO);
@@ -576,6 +579,8 @@ void lmVStaff::DeleteObject(lmStaffObj* pCursorSO)
 {
     m_cStaffObjs.Delete(pCursorSO);
 }
+
+
 
 //---------------------------------------------------------------------------------------
 // Methods for adding StaffObjs
@@ -627,7 +632,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                     lmEAccidentals nAccidentals,
                     lmENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
-                    int nStaff, bool fVisible,
+                    int nStaff, int nVoice, bool fVisible,
                     bool fBeamed, lmTBeamInfo BeamInfo[],
                     bool fInChord,
                     bool fTie,
@@ -639,8 +644,8 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
 
     lmNote* pNt = new lmNote(this, nPitchType,
                         sStep, sOctave, sAlter, nAccidentals,
-                        nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, fVisible,
-                        pContext, fBeamed, BeamInfo, fInChord, fTie, nStem);
+                        nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, nVoice,
+						fVisible, pContext, fBeamed, BeamInfo, fInChord, fTie, nStem);
 
     m_cStaffObjs.Store(pNt);
 
@@ -651,13 +656,13 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
 // returns a pointer to the lmRest object just created
 lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
-                      int nStaff, bool fVisible,
+                      int nStaff, int nVoice, bool fVisible,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
 {
     wxASSERT(nStaff <= GetNumStaves() );
 
     lmRest* pR = new lmRest(this, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
-                        fVisible, fBeamed, BeamInfo);
+							nVoice, fVisible, fBeamed, BeamInfo);
 
     m_cStaffObjs.Store(pR);
     return pR;
@@ -1473,3 +1478,51 @@ lmContext* lmVStaff::GetLastContext(int nStaff)
 	return pCT;
 }
 
+
+//void lmVStaff::AutoBeam(int nMeasure)
+//{
+//    //loop to process all StaffObjs in this measure
+//    bool fNoteRestFound = false;
+//    EStaffObjType nType;                    //type of score obj being processed
+//    lmStaffObj* pSO = (lmStaffObj*)NULL;
+//    lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_ByTime);
+//    pIT->AdvanceToMeasure(nAbsMeasure);
+//    while(!pIT->EndOfList())
+//    {
+//        pSO = pIT->GetCurrent();
+//        nType = pSO->GetClass();
+//
+//        if (nType == eSFOT_NoteRest) {
+//            fNoteRestFound = true;
+//            fPreviousWasClef = false;            //this lmStaffObj is not a clef
+//            pNoteRest = (lmNoteRest*)pSO;
+//            pNote = (lmNote*)pSO;        //AWARE we do not know yet if it is a note or a rest,
+//                                    //but I force the casting to simplify next if statement
+//            if (!pNoteRest->IsRest() && pNote->IsInChord())
+//            {
+//                //this note is part of a chord
+//                if (pNote->IsBaseOfChord()) {
+//                    //it is the base note. Save x position. All other notes in the
+//                    // chord must be assigned the same x position
+//                    xChordPos = pPaper->GetCursorX();    //save this position
+//                    oTimepos.SetCurXLeft(xChordPos);    //and store it as the x position for this lmStaffObj
+//                } else {
+//                    //All other notes in the chord must have the same x position
+//                    //than the base note.
+//                    pPaper->SetCursorX(xChordPos);        //Restore paper to note base x postion
+//                    oTimepos.SetCurXLeft(xChordPos);    //and store this as the x position for this lmStaffObj
+//                }
+//            }
+//			else
+//            {
+//                //Is a rest or is a lmNote not in chord. Store its x position
+//                oTimepos.SetCurXLeft(pPaper->GetCursorX());
+//            }
+//
+//        }
+//
+//        pIT->MoveNext();
+//    }
+//    delete pIT;
+//}
+//

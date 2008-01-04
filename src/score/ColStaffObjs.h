@@ -118,12 +118,12 @@ private:
 
 	//info only for Store method (info for last measure)
     bool	m_fStartMeasure;	//start a new measure. To manage the creation of measures
-    float	m_rTime;			//time from start of the measure
-									//Time is measured in semigarrapateas: 1-semigarrapatea, ..., 256-redonda, 512-cuadrada
-									//Float for grater precision (triplets problem, see comment at CPONota.ExactDuration)
-    float	m_rMaxTime;			//aqui se guarda el máximo tiempo alcanzado en el compas en curso. Sirve para evitar que una
-									//orden <avanzar> sobrepase este valor. Además, este será el tiempo que corresponde a la barra
-									//de fin de compas.
+    float	m_rTime[lmMAX_VOICE];	//time from start of the measure. One counter per voice
+										//Time is measured in 256th notes: 1-256th, ..., 256-whole, 512-double whole
+										//Float for grater precision (triplets problem, see comment at CPONota.ExactDuration)
+    float	m_rMaxTime[lmMAX_VOICE]; //aqui se guarda el máximo tiempo alcanzado en el compas en curso. Sirve para evitar que una
+										//orden <avanzar> sobrepase este valor. Además, este será el tiempo que corresponde a la barra
+										//de fin de compas.
 
 };
 
