@@ -32,13 +32,13 @@
 		<Cursor position="4140" topLine="94" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="61008" topLine="1593" />
+		<Cursor position="81761" topLine="2247" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
 	</File>
 	<File name="../../src/app/MidiWizard.cpp" open="1" top="0" tabpos="57">
-		<Cursor position="10366" topLine="288" />
+		<Cursor position="10370" topLine="288" />
 	</File>
 	<File name="../../src/app/MidiWizard.h" open="0" top="0" tabpos="30">
 		<Cursor position="1357" topLine="17" />
@@ -53,7 +53,7 @@
 		<Cursor position="7903" topLine="231" />
 	</File>
 	<File name="../../src/app/ScoreDoc.cpp" open="1" top="1" tabpos="58">
-		<Cursor position="4756" topLine="139" />
+		<Cursor position="4888" topLine="143" />
 	</File>
 	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="56">
 		<Cursor position="58077" topLine="1567" />

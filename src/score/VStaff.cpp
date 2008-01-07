@@ -104,7 +104,6 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     m_cStaves.Append(pStaff);
 
  //   //Add EOS control object to the StaffObjs collection
- //   //m_cStaffObjs.Store( new lmSOControl(lmEND_OF_STAFF, this) );
  //   //m_cStaffObjs.Store( new lmBarline(lm_eBarlineEOS, this, lmNO_VISIBLE) );
 	//AddBarline(lm_eBarlineEOS, lmVISIBLE);
 
@@ -1342,22 +1341,8 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
 
 void lmVStaff::ShiftTime(float rTimeShift)
 {
-    /*
-    Shifts the time counter and inserts a control lmStaffObj to signal the shift event
-    This is necessary for rendering (to start a new thread) and for exporting the score:
-     - in LDP, to create an element AVANCE/RETROCESO
-     - in MusicXML: to create an element FORWARD/BACKWARD
-
-    */
-
-    //shift time counters
+    //Shifts the time counter
     m_cStaffObjs.ShiftTime(rTimeShift);
-
-    //Insert a control object to signal the shift event so that we can start a
-    //new thread at rendering
-    lmSOControl* pControl = new lmSOControl(lmTIME_SHIFT, this, rTimeShift);
-    m_cStaffObjs.Store(pControl);
-
 }
 
 lmSOControl* lmVStaff::AddNewSystem()

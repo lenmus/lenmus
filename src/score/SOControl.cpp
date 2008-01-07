@@ -50,18 +50,10 @@
 //constructors and destructor
 //
 
-lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift)
-    : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmNO_VISIBLE, lmNO_DRAGGABLE)
-{
-    wxASSERT(nType == lmTIME_SHIFT);
-    m_nCtrolType = lmTIME_SHIFT;
-    m_rTimeShift = rTimeShift;
-}
-
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
     : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmVISIBLE, lmNO_DRAGGABLE)
 {
-    wxASSERT(nType == lmNEW_SYSTEM || nType == lmEND_OF_STAFF);
+    wxASSERT(nType == lmNEW_SYSTEM);
     m_nCtrolType = nType;
     m_rTimeShift = 0.0;
 }
@@ -69,25 +61,9 @@ lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
 wxString lmSOControl::Dump()
 {
     wxString sDump;
-    if (m_nCtrolType == lmTIME_SHIFT) {
-        wxString sType = _T("");
-        if (m_rTimeShift < 0) {
-            sType = _T("<backup>");
-        }
-        else {
-            sType = _T("<forward>");
-        }
-        sDump = wxString::Format(
-            _T("%d\tControl %s\tTimeShift=%.2f\n"),
-            m_nId, sType.c_str(), m_rTimeShift);
-    }
-    else if (m_nCtrolType == lmNEW_SYSTEM) {
+	if (m_nCtrolType == lmNEW_SYSTEM) {
         sDump = wxString::Format(
             _T("%d\tControl <newSystem>\n"), m_nId);
-    }
-    else if (m_nCtrolType == lmEND_OF_STAFF) {
-        sDump = wxString::Format(
-            _T("%d\tControl EOS: End of Staff\n"), m_nId);
     }
     else {
         sDump = wxString::Format(
@@ -109,16 +85,16 @@ wxString lmSOControl::SourceLDP(int nIndent)
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
 
-    if (m_nCtrolType == lmTIME_SHIFT)
-    {
-        if (m_rTimeShift < 0) {
-            sSource += _T("(goBack ");
-        }
-        else {
-            sSource += _T("(goFwd ");
-        }
-        sSource += wxString::Format(_T("%d)\n"), (int)fabs(m_rTimeShift));
-    }
+    //if (m_nCtrolType == lmTIME_SHIFT)
+    //{
+    //    if (m_rTimeShift < 0) {
+    //        sSource += _T("(goBack ");
+    //    }
+    //    else {
+    //        sSource += _T("(goFwd ");
+    //    }
+    //    sSource += wxString::Format(_T("%d)\n"), (int)fabs(m_rTimeShift));
+    //}
 
     return sSource;
 }
@@ -136,28 +112,24 @@ lmUPoint lmSOControl::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-    if (m_nCtrolType == lmEND_OF_STAFF)
-    {
-        //DBG ------------------------------------------------------------------------------
-        //compute position
-        lmLUnits uyStart = uPos.y - TenthsToLogical(10);
-        lmLUnits uyEnd = uPos.y + TenthsToLogical(60);
-        lmLUnits uWidth = TenthsToLogical(1);
-        lmLUnits uBoundsExtraWidth = TenthsToLogical(2);
+ //   //DBG ------------------------------------------------------------------------------
+ //   //compute position
+ //   lmLUnits uyStart = uPos.y - TenthsToLogical(10);
+ //   lmLUnits uyEnd = uPos.y + TenthsToLogical(60);
+ //   lmLUnits uWidth = TenthsToLogical(1);
+ //   lmLUnits uBoundsExtraWidth = TenthsToLogical(2);
 
-        //create the shape
-        lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
-                                            uWidth, uBoundsExtraWidth, *wxGREEN,
-                                            _T("EOS"), eEdgeNormal);
-	    pBox->AddShape(pShape);
-        m_pShape = pShape;
+ //   //create the shape
+ //   lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
+ //                                       uWidth, uBoundsExtraWidth, *wxGREEN,
+ //                                       _T("EOS"), eEdgeNormal);
+	//pBox->AddShape(pShape);
+ //   m_pShape = pShape;
 
-        return 0.0;
-        //END DBG --------------------------------------------------------------------------
-
-    }
-    else 
-        return 0.0;
+ //   return 0.0;
+ //   //END DBG --------------------------------------------------------------------------
+	
+	return 0.0;
 
 }
 

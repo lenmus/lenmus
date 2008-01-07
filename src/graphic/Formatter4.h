@@ -60,7 +60,7 @@ private:
     void RedistributeFreeSpace(lmLUnits nAvailable);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);
     bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nAbsMeasure,
-					 int nRelMeasure, lmPaper* pPaper);
+					 int nRelMeasure, int nInstr, lmPaper* pPaper);
     lmLUnits ComputeSystemHeight(lmPaper* pPaper);
 	void ResetLocation(int nAbsMeasure);
     bool SplitMeasureColumn();

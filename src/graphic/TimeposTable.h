@@ -45,8 +45,8 @@ class lmTimeposEntry
 {
 public:
     // constructor and destructor
-    lmTimeposEntry(eTimeposEntryType nType, int nVoice, lmStaffObj* pSO, float rTimePos) {
-        m_nVoice = nVoice;
+    lmTimeposEntry(eTimeposEntryType nType, lmStaffObj* pSO, float rTimePos)
+	{
         m_nType = nType;
         m_pSO = pSO;
         m_rTimePos = rTimePos;
@@ -59,15 +59,22 @@ public:
     }
     ~lmTimeposEntry() {}
 
+	void ShiftEntry(lmLUnits uShift)
+	{
+		m_xFinal += uShift;
+		m_uxAnchor += uShift;
+        m_xLeft += uShift;
+        m_xRight += uShift;
+	}
+
     //member variables (one entry of the table)
     //----------------------------------------------------------------------------
-    int             m_nVoice;      //num. of the voice to which this element belongs
     eTimeposEntryType m_nType;      //type of entry
     lmStaffObj*     m_pSO;          //ptr to the lmStaffObj
     float           m_rTimePos;     //timepos for this pSO or -1 if not anchored in time
     lmLUnits        m_uSize;        //size of this lmStaffObj
-    lmLUnits        m_xLeft;        //current position of the left border of the object
     lmLUnits        m_xInitialLeft; //initial position of the left border of the object
+    lmLUnits        m_xLeft;        //current position of the left border of the object
     lmLUnits        m_uxAnchor;      //position of the anchor line
     lmLUnits        m_xRight;       //position of the right border
     lmLUnits        m_xFinal;       //next position (right border position + trailing space)
@@ -80,8 +87,8 @@ class lmTimeauxEntry
 {
 public:
     // constructor and destructor
-    lmTimeauxEntry(int item, int voice, float timePos) {
-        nVoice = voice;
+    lmTimeauxEntry(int item, int line, float timePos) {
+        nLine = line;
         nItem = item;
         rTimePos = timePos;
         uShift = 0;
@@ -89,10 +96,38 @@ public:
     ~lmTimeauxEntry() {}
 
     //member variables (one entry of the table)
-    int         nVoice;         //voice to which this element belongs
-    int         nItem;          //index to TimePos table
+    int         nLine;          //line to which this element belongs
+    int         nItem;          //index to entry in line MainTable
     float       rTimePos;       //timepos for this entry
     lmLUnits    uShift;         //x position shift to apply to this entry
+
+};
+
+//Helper class to contain a line
+class lmTimeLine
+{
+public:
+    lmTimeLine(int nInstr, int nVoice, lmLUnits uxStart);
+    ~lmTimeLine();
+
+	lmTimeposEntry* AddEntry(eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO);
+	lmLUnits ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart);
+
+    void SetCurXLeft(lmLUnits uValue);
+	lmLUnits GetMaxXFinal();
+	inline lmLUnits GetXStartLine() { return m_aMainTable[0]->m_xLeft; }	//xLeft of alpha entry
+
+    //methods for debugging
+    wxString DumpMainTable();
+
+	
+//private:
+    lmTimeposEntry*  NewEntry(eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO);
+	#define lmItEntries		std::vector<lmTimeposEntry*>::iterator
+
+	int								m_nInstr;		//instrument (0..n-1)
+	int								m_nVoice;		//voice (0=not yet defined)
+	std::vector<lmTimeposEntry*>	m_aMainTable;	//The main table
 
 };
 
@@ -104,24 +139,20 @@ public:
     lmTimeposTable();
     ~lmTimeposTable();
 
-    void    StartVoice(int nVoice);
-    void    CloseAllVoices(lmLUnits uCurX);
-    void    AddEntry(float rTimePos, lmStaffObj* pSO);
-    void    AddBarline(lmStaffObj* pSO);
+    void    StartLine(int nInstr, lmLUnits uxStart, int nVoice=0);
+    void    CloseLine(lmLUnits uxLeft, lmLUnits uxFinal, lmStaffObj* pSO);
+    void    AddEntry(int nInstr, int nVoice, float rTimePos, lmStaffObj* pSO);
     void    CleanTable();
 
-    // methods for accesing/updating entries
+    // access to the last added entry
     void        SetCurXLeft(lmLUnits uValue);
     lmLUnits    GetCurXLeft();
-	lmLUnits	GetCurPaperPosX(int nVoice);
 	void        SetCurXFinal(lmLUnits uValue);
     void        SetCurXAnchor(lmLUnits uValue);
-    void        SetxIni(float rTimePos, lmLUnits uxPos);
-    lmLUnits    GetXFinal(float rTimePos);
-    void        SetXFinal(float rTimePos, lmLUnits uxRight);
-    void        UpdateEntry(float rTimePos, lmLUnits uxLeft, lmLUnits uxRight);
-    lmLUnits    LastFinalX();
-	lmLUnits	GetXStart();
+
+	//access to the last entry for a voice
+	lmLUnits	GetCurPaperPosX(int nInstr, int nVoice);
+
 
     //methods to compute results
     lmLUnits    GetStartOfBarPosition();
@@ -135,16 +166,18 @@ public:
 
 
 private:
-    void    NewEntry(int nVoice, eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO);
-    int     FindItem(float rTimePos);
-    void    AddTimeAuxEntry(int nItem);
+    void    AddTimeAuxEntry(int nLine, int nItem, lmTimeposEntry* pTPE);
+	lmTimeLine* FindLine(int nInstr, int nVoice);
+
+	#define lmItTimeLine	std::vector<lmTimeLine*>::iterator
 
 
 private:
-    int								m_nCurVoice;   //num of current voice
-	std::vector<bool>				m_aVoices;		
-	std::vector<lmTimeposEntry*>	m_aTimePos[lmMAX_VOICE];     //The main tables. One per voice
+    int								m_nCurVoice;	//num of current voice
     std::vector<lmTimeauxEntry*>	m_aTimeAux;		//auxiliary table for ordering by time
+	std::vector<lmTimeLine*>		m_aLines;		//the music lines
+	lmTimeposEntry*					m_pCurEntry;	//ptr to last added entry
+	lmItTimeLine					m_itCurLine;	//iter pointing to current line
 
 };
 

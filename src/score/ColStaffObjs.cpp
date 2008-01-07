@@ -139,7 +139,7 @@ void lmColStaffObjs::Store(lmStaffObj* pSO)
     //assign time to the StaffObj and increment time counters
 	AssignTime(pSO, &m_rTime[0], &m_rMaxTime[0]);
     
-    //store the lmStaffObj in the collection. StaffObjs are stored by arrival order
+    //store the lmStaffObj in the collection. StaffObjs are stored by time position
 	lmItCSO pItem;
 	//if (pSO->GetClass() == eSFOT_Barline && ((lmBarline*)pSO)->GetBarlineType() == lm_eBarlineEOS)
  //   {
@@ -237,23 +237,23 @@ void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
     //store, inside the lmStaffObj, a ptr to the measure data
 	pNewSO->SetItMeasure( m_aMeasures[nNumMeasure-1] );
 
-	//Debug: force a dump of StaffObjs collection and measures tables
-	lmItMeasure itMNew = pNewSO->GetItMeasure();
-	lmMeasureData* pMDataNew = *itMNew;
-	itFromCSO = pMDataNew->itStartSO;
-	itToCSO = pMDataNew->itEndSO;
-	nNumMeasure = pMDataNew->nNumMeasure;
-	wxLogMessage(_T("[lmColStaffObjs::Insert] (Before) Inserted pSO ID=%d, Measure %d, Start ID=%d, End ID=%d"),
-		pNewSO->GetID(), nNumMeasure, (*itFromCSO)->GetID(),  (*itToCSO)->GetID() );
+	////Debug: force a dump of StaffObjs collection and measures tables
+	//lmItMeasure itMNew = pNewSO->GetItMeasure();
+	//lmMeasureData* pMDataNew = *itMNew;
+	//itFromCSO = pMDataNew->itStartSO;
+	//itToCSO = pMDataNew->itEndSO;
+	//nNumMeasure = pMDataNew->nNumMeasure;
+	//wxLogMessage(_T("[lmColStaffObjs::Insert] (Before) Inserted pSO ID=%d, Measure %d, Start ID=%d, End ID=%d"),
+	//	pNewSO->GetID(), nNumMeasure, (*itFromCSO)->GetID(),  (*itToCSO)->GetID() );
 
 	RepositionObjects(itBeforeCSO, &rTime, &rMaxTime);
 
-	//Debug: force a dump of StaffObjs collection and measures tables
-	itMNew = pNewSO->GetItMeasure();
-	pMDataNew = *itMNew;
-	itFromCSO = pMDataNew->itStartSO;
-	itToCSO = pMDataNew->itEndSO;
-	nNumMeasure = pMDataNew->nNumMeasure;
+	////Debug: force a dump of StaffObjs collection and measures tables
+	//itMNew = pNewSO->GetItMeasure();
+	//pMDataNew = *itMNew;
+	//itFromCSO = pMDataNew->itStartSO;
+	//itToCSO = pMDataNew->itEndSO;
+	//nNumMeasure = pMDataNew->nNumMeasure;
 	//wxLogMessage(_T("[lmColStaffObjs::Insert] (After) Inserted pSO ID=%d, Measure %d, Start ID=%d, End ID=%d"),
 	//	pNewSO->GetID(), nNumMeasure, (*itFromCSO)->GetID(),  (*itToCSO)->GetID() );
  //   #if defined(__WXDEBUG__)

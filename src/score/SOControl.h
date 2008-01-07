@@ -28,17 +28,14 @@
 
 enum ESOCtrolType
 {
-    lmTIME_SHIFT = 1,       // forward / backwards
-    lmNEW_SYSTEM,           // force a new system
-    lmEND_OF_STAFF,         // EOS: End of staff, marking object
+    lmNEW_SYSTEM = 1,       // force a new system
 };
 
 class lmSOControl:  public lmStaffObj
 {
 public:
     //constructors and destructor
-    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift);   //lmTIME_SHIFT
-    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM, lmEOS
+    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM
     ~lmSOControl() {}
 
 	wxString GetName() const { return _T("control object"); }

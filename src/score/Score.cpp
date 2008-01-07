@@ -351,17 +351,14 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
 
 lmInstrument* lmScore::GetFirstInstrument()
 {
-	m_nCurNode = 0;
-	if (m_cInstruments.size() > 0)
-		return m_cInstruments[0];
-	else
-		return (lmInstrument*)NULL;
+	m_nCurNode = -1;
+	return GetNextInstrument();
 }
 
 lmInstrument* lmScore::GetNextInstrument()
 {
 	m_nCurNode++;
-	if (++m_nCurNode < (int)m_cInstruments.size())
+	if (m_nCurNode < (int)m_cInstruments.size())
 		return m_cInstruments[m_nCurNode];
 	else
 		return (lmInstrument*)NULL;
