@@ -54,6 +54,15 @@
 //  and a parent
 //-------------------------------------------------------------------------------------------
 
+//type of ScoreObj
+enum lmEScoreObjType {
+	lmSOT_Instrument = 0,
+	lmSOT_Score,
+	lmSOT_Staff,
+	lmSOT_ComponentObj,
+	lmSOT_VStaff,
+};
+
 class lmAuxObj;
 typedef std::vector<lmAuxObj*> lmAuxObjsCol; 
 class lmObjOptions;
@@ -81,6 +90,9 @@ public:
     double GetOptionDouble(wxString sOptName);
     bool GetOptionBool(wxString sOptName);
     wxString GetOptionString(wxString sOptName);
+
+	//--- ScoreObj properties ------------------------------
+	virtual lmEScoreObjType GetScoreObjType()=0;
 
     //--- a ScoreObj can own AuxObjs -----------------------
     
@@ -162,6 +174,7 @@ public:
     virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
     virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
 
+	inline lmEScoreObjType GetScoreObjType() { return lmSOT_ComponentObj; }
 
 
 	//---- specific methods of this class ------------------------

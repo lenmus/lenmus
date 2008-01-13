@@ -199,18 +199,29 @@ void lmScoreObj::ResetObjectLocation()
 void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uLeft)
 { 
     // update this StaffObj origin and shape position
-    SetOrigin(lmUPoint(m_uPaperPos.x + uLeft, m_uPaperPos.y));
-    //wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] org=(%.2f, %.2f), paper=(%.2f, %.2f), uLeft=%.2f"),
-    //    m_uOrg.x, m_uOrg.y, m_uPaperPos.x, m_uPaperPos.y, uLeft);
-    //wxLogMessage( Dump() );
+	lmUPoint uNewOrg = GetOrigin();
+	uNewOrg.x += uLeft;
+    SetOrigin(uNewOrg);
+
     if (m_pShape) m_pShape->Shift(uLeft, 0.0);
+
+	//DBG ------------------------------------------------------------------------
+	if (GetScoreObjType() == lmSOT_ComponentObj 
+		&& ((lmComponentObj*)this)->GetType() == eSCOT_StaffObj 
+		&& ((lmStaffObj*)this)->GetClass() == eSFOT_KeySignature )
+	{
+		wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uLeft=%.2f"),
+			uLeft );
+		if (m_pShape) wxLogMessage( m_pShape->Dump(0) );
+		wxLogMessage( this->Dump() );
+	}
+	//END DBG --------------------------------------------------------------------
 
     // shift also AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         { 
-            //wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] asking AuxObj to update origin"));
             (*m_pAuxObjs)[i]->StoreOriginAndShiftShapes(uLeft);
         }
     }
@@ -251,7 +262,10 @@ void lmScoreObj::OnProperties(lmGMObject* pGMO)
 	//TODO: FIX_ME: pGMO is uselless here because whe the pop-up menu is removed
 	//the score could be re-layouted and the pGMO become invalid
 	//wxMessageBox(_T("Properties of this"));
-	wxMessageBox(GetShap2()->Dump(0));
+	if(!GetShap2())
+		wxMessageBox(_T("Nothing selected!"));
+	else
+		wxMessageBox(GetShap2()->Dump(0));
 }
 
 int lmScoreObj::GetPageNumber()

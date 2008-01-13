@@ -92,6 +92,7 @@ public:
 
     //methods related to duration
     float GetDuration() const { return m_rDuration; }
+    wxString GetLDPNoteType();
 
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
@@ -114,7 +115,6 @@ public:
 
 
 protected:
-    wxString GetLDPNoteType();
     lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                      wxColour colorC, bool fUseFont);
     lmLUnits AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 

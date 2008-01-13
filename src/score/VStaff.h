@@ -47,6 +47,8 @@ public:
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
 
+	inline lmEScoreObjType GetScoreObjType() { return lmSOT_VStaff; }
+
 
 	//---- specific methods of this class ------------------------
 

@@ -218,6 +218,7 @@ public:
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
+	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Score; }
 
 
 	//---- specific methods of this class ------------------------

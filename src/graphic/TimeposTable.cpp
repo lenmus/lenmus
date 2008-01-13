@@ -38,6 +38,8 @@
 #endif
 
 #include <algorithm>
+#include <math.h>
+
 #include "../score/Score.h"
 #include "wx/debug.h"
 #include "TimeposTable.h"
@@ -48,17 +50,27 @@ bool IsEqualTime(float t1, float t2)
     return (fabs(t1 - t2) < 0.1);
 }
 
+////spacing function parameters
+//double              m_rSpacingFactor;           //for proportional spacing of notes
+//lmESpacingMethod    m_nSpacingMethod;           //fixed, proportional, etc.
+//lmTenths            m_nSpacingValue;            //spacing for 'fixed' method
+float				m_rDmin = 8.0f;				//Dmin: min. duration to consider
+lmTenths			m_rMinSpace = 15.0f;		//Space(Dmin):  space for Dmin
+
+//TODO: User options
+lmTenths m_rSpaceAfterStartOfMeasure = 7.5f;
+lmTenths m_rSpaceAfterProlog = 25.0f;
 
 //=====================================================================================
 //lmTimeLine
 //=====================================================================================
 
-lmTimeLine::lmTimeLine(int nInstr, int nVoice, lmLUnits uxStart)
+lmTimeLine::lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice)
 {
+	m_pOwner = pMngr;
 	m_nInstr = nInstr;
 	m_nVoice = nVoice;
     NewEntry(eAlfa, -1, (lmStaffObj*)NULL);
-	SetCurXLeft(uxStart);
 }
 
 lmTimeLine::~lmTimeLine()
@@ -108,31 +120,203 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
     lmTimeposEntry* pTPE = m_aMainTable.front();
     lmLUnits uShift = uNewStart - pTPE->m_xLeft;
 
+	wxLogMessage(_T("[lmTimeLine::ShiftEntries] Reposition: uNewBarSize=%.2f  uNewStart=%.2f  Shift=%.2f"),
+				 uNewBarSize, uNewStart, uShift );
+
 	//Update table and store the new x positions into the StaffObjs
     for (lmItEntries it = m_aMainTable.begin(); it != m_aMainTable.end(); it++) 
 	{
         pTPE = *it;
-        if (pTPE->m_nType == eStaffobj)
+        if (uShift != 0.0f && pTPE->m_nType == eStaffobj)
         {
-            pTPE->ShiftEntry(uShift);
-            (pTPE->m_pSO)->StoreOriginAndShiftShapes( pTPE->m_xLeft - pTPE->m_xInitialLeft);
-			pTPE->m_xInitialLeft = pTPE->m_xLeft;
+			pTPE->m_pSO->StoreOriginAndShiftShapes(uShift);
         }
         else if (pTPE->m_nType == eOmega)
         {
             //there might be no barline.
             if (pTPE->m_pSO)
             {
-                lmLUnits nShiftBar = uNewStart + uNewBarSize - pTPE->m_xFinal + 1;
-                pTPE->ShiftEntry(nShiftBar);
-                (pTPE->m_pSO)->StoreOriginAndShiftShapes(  pTPE->m_xLeft - pTPE->m_xInitialLeft );
-				pTPE->m_xInitialLeft = pTPE->m_xLeft;
-                uBarPosition = pTPE->m_xLeft;
+                lmLUnits uShiftBar = uNewStart + uNewBarSize - pTPE->m_xFinal + 1;
+				pTPE->m_pSO->StoreOriginAndShiftShapes(uShiftBar);
+                uBarPosition = pTPE->m_xLeft + uShiftBar;
+				wxLogMessage(_T("[lmTimeLine::ShiftEntries] Reposition bar: uShiftBar=%.2f  uBarPosition=%.2f"),
+							uShiftBar, uBarPosition );
             }
         }
     }
     return uBarPosition;
 
+}
+
+float lmTimeLine::SetTimedObjects(float rTime, lmLUnits uxPos, float rFactor)
+{
+	//Starting at current position, explores the line.
+	//Assings space and sets positions of all time positioned objects
+	//placed at time rTime, until we reach a time greater that rTime. The position
+	//for this next rTime object is also set tentatively.
+	//If during this traversal we find not timed objects they are ignored and when
+	//reached next rTime we go back assigning positions to them
+	//Returns the maximum xPos reached and updates parameter pNextTime to leave there
+	//the next entry time, or -1 if no more entries or next entry is not timed.
+
+	//When entering this method, iterator must point to a timed object. If it is
+	//placed at time rTime, process it and all the following having the same timepos,
+	//until we find the next timepos or we arrive to end of line.
+	//Not-timed objects are skipped
+	lmItEntries itLastNotTimed = m_aMainTable.end();
+	while (m_it != m_aMainTable.end() && 
+			(IsEqualTime((*m_it)->m_rTimePos, rTime) || (*m_it)->m_rTimePos < 0.0f) )
+    {
+		//if not-timed take note and continue
+		if ((*m_it)->m_rTimePos == -1.0f)
+			itLastNotTimed = m_it;
+
+        //else if contains a StaffObj (in the omega entry there might be no barline)
+		//assign final position
+        else if ((*m_it)->m_pSO)
+        {
+			//assign spacing
+			if ((*m_it)->m_pSO->GetClass() == eSFOT_NoteRest)
+				(*m_it)->m_uSpace = SetNoteRestSpace(rFactor, m_rDmin,
+											(lmNoteRest*)((*m_it)->m_pSO),
+											(*m_it)->m_uSize );
+
+			//move the shape and update the entry data
+			(*m_it)->Reposition(uxPos);
+
+			//compute new current position
+			lmLUnits uxFinal = uxPos + (*m_it)->m_uSpace;
+			m_uxCurPos = wxMax(uxFinal, m_uxCurPos);
+        }
+        m_it++;
+    }
+
+	//Here we have arrived to the next timepos or to the end of line.
+	if (m_it != m_aMainTable.end())
+	{
+		//next timepos. Assign position tentatively
+		(*m_it)->m_xLeft = m_uxCurPos;
+
+		//go back to assign positions to not-timed objects
+		if (itLastNotTimed != m_aMainTable.end())
+		{
+			//TODO
+		}
+	}
+
+	//done. Return the next entry time, or -1 if no more entries.
+	if (m_it != m_aMainTable.end()) {
+        wxLogMessage(_T("Timed. More entries. Next at time=%.2f ID=%d"),
+					 (*m_it)->m_rTimePos, (*m_it)->m_pSO->GetID() );
+        return (*m_it)->m_rTimePos;
+    }
+    else {
+        wxLogMessage(_T("Timed. No more entries"));
+        return -1.0f;
+    }
+
+}
+
+lmLUnits lmTimeLine::GetLineWidth()
+{
+	//Return the size of the measure represented by this line or 0 if
+	//no omega entry.
+
+	if (m_aMainTable.back()->m_nType == eOmega)
+		return m_aMainTable.back()->m_xLeft
+			   + m_aMainTable.back()->m_uSpace - m_aMainTable.front()->m_xLeft;
+	else
+		return 0.0f;
+}
+
+lmLUnits lmTimeLine::GetPosForTime(float rTime)
+{
+	//When enetring this method iterator m_it points to the next timed entry or
+	//to end iterator.
+	//If next entry time is rTime, returns its xLeft position. Else returns 0
+
+	if (m_it != m_aMainTable.end() && IsEqualTime((*m_it)->m_rTimePos, rTime) )
+		return (*m_it)->m_xLeft;
+	else
+		return 0.0f;
+}
+
+lmLUnits lmTimeLine::IntitializeSpacingAlgorithm()
+{
+	//Initialize iterator and current position
+	m_it = m_aMainTable.begin();
+	m_uxCurPos = (*m_it)->m_xLeft + (*m_it)->m_uSpace;
+	m_it++;
+
+	//iterate until we reach a timed object or end of line
+	//This loop will process non-note/rest objects (clefs, key sign, etc.)
+	bool fThereAreObjects = false;
+	while (m_it != m_aMainTable.end() && (*m_it)->m_rTimePos < 0.0f)
+    {
+		fThereAreObjects = true;
+
+		//Update spacing
+		(*m_it)->m_uSpace = (*m_it)->m_uSize;
+
+		//move the shape and update the entry data
+        (*m_it)->Reposition(m_uxCurPos);
+
+		//advance the width and spacing
+		m_uxCurPos += (*m_it)->m_uSpace;
+
+        m_it++;
+    }
+
+	//here m_it points to the first note/rest or to end of line
+	//If there were not-timed objects before the firts note/rest, I am going to
+	//add some additional space before the first note/rest
+	if (fThereAreObjects)
+	{
+		m_uxCurPos += m_pOwner->TenthsToLogical(m_rSpaceAfterProlog, 1);
+	}
+
+	//Now we are going to tentatively set position of first note/rest
+	if (m_it != m_aMainTable.end())
+	{
+		(*m_it)->m_xLeft = m_uxCurPos;
+	}
+
+	//Returns the maximum xPos reached
+	//DBG. log message
+	if (m_it != m_aMainTable.end())
+        wxLogMessage(_T("Not timed. More entries. Next at time=%.2f ID=%d"), 
+					 (*m_it)->m_rTimePos, (*m_it)->m_pSO->GetID() );
+    else
+        wxLogMessage(_T("Not timed. No more entries."));
+
+    return m_uxCurPos;
+}
+
+lmLUnits lmTimeLine::SetNoteRestSpace(float rFactor, float rDmin, lmNoteRest* pSO,
+									  lmLUnits uxWidth)
+{
+	static const float rLog2 = 0.3010299956640f;		// log(2)
+
+    float rVar = rFactor * log(pSO->GetDuration() / rDmin) / rLog2;
+	wxLogMessage(_T("[lmTimeLine::SetNoteRestSpace] duration=%s, rel.space=%.2f"),
+			pSO->GetLDPNoteType(), (1.0f + rVar) );
+
+	//spacing function
+	lmLUnits uSpace = m_rMinSpace;		//Space(Di) = Space(Dmin)
+	if (rVar > 0.0f) {
+		rVar *= m_rMinSpace;
+		uSpace += rVar;			//Space(Di) = Space(Dmin)*[1 + lod2(Di/Dmin)]
+	}
+
+	//convert to lmLUnits
+	int iStaff = pSO->GetStaffNum();
+	uSpace = m_pOwner->TenthsToLogical(uSpace, iStaff);
+
+	//if space is lower than object width force space to be a little more than width
+	if (uSpace < uxWidth)
+		return uxWidth + m_pOwner->TenthsToLogical(50.0f, iStaff);
+	else
+		return uSpace;
 }
 
 wxString lmTimeLine::DumpMainTable()
@@ -147,8 +331,9 @@ wxString lmTimeLine::DumpMainTable()
         return sMsg;
     }
 
-    //headers
-    sMsg += _T("Item    Type         TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
+    //headers  
+    //                                          ........'........'........¡........'........¡........¡
+    sMsg += _T("Item    Type    ID       TimePos    xInit  xAnchor    xLeft     Size    Space   xFinal\n");
 
     //loop to dump table entries
     lmTimeposEntry* pTE;
@@ -162,26 +347,28 @@ wxString lmTimeLine::DumpMainTable()
         switch (pTE->m_nType)
         {
             case eAlfa:
-                sMsg += _T("  Alfa     ");
+                sMsg += _T("  Alfa        ");
                 break;
 
             case eOmega:
                 sMsg += _T("  Omega");
                 if (pTE->m_pSO) {
-                    sMsg += wxString::Format(_T("%3d "), (pTE->m_pSO)->GetClass() );    //TODO convert to string
+                    sMsg += wxString::Format(_T("%3d    "), pTE->m_pSO->GetClass() );
                 } else {
-                    sMsg += _T("  -        ");
+                    sMsg += _T("  -           ");
                 }
                 break;
 
             default:
                 //lmStaffObj entry
-                sMsg += wxString::Format(_T("  pSO %4d "), (pTE->m_pSO)->GetClass() );     //TODO convert to string
+                sMsg += wxString::Format(_T("  pSO %4d %3d"),
+										 pTE->m_pSO->GetClass(),
+										 pTE->m_pSO->GetID() );
         }
 
-        sMsg += wxString::Format(_T("%11.2f %.2f %.2f %.2f %.2f %.2f\n"),
-            pTE->m_rTimePos, pTE->m_uSize, pTE->m_xLeft, pTE->m_uxAnchor,
-            pTE->m_xRight, pTE->m_xFinal);
+        sMsg += wxString::Format(_T("%11.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f\n"),
+            pTE->m_rTimePos, pTE->m_xInitialLeft, pTE->m_uxAnchor, pTE->m_xLeft,
+			pTE->m_uSize, pTE->m_uSpace, pTE->m_xFinal);
     }
 
     sMsg += _T("=== End of table ==================================================\n\n");
@@ -207,13 +394,15 @@ lmLUnits lmTimeLine::GetMaxXFinal()
 
 
 
+
 //=====================================================================================
 //lmTimeposTable
 //=====================================================================================
 
 lmTimeposTable::lmTimeposTable()
 {
-    m_nCurVoice = 0;
+    for(int i=0; i < lmMAX_STAFF; i++)
+        m_nCurVoice[i] = 0;
 	m_pCurEntry = (lmTimeposEntry*)NULL;
 }
 
@@ -227,13 +416,8 @@ void lmTimeposTable::CleanTable()
     //This method must be invoked before using the table. Can be also invoked as
     //many times as desired to clean the table and reuse it.
 
-    m_nCurVoice = 0;
-
-    for (int i = 0; i < (int)m_aTimeAux.size(); i++)
-	{
-        delete m_aTimeAux[i];
-    }
-    m_aTimeAux.clear();
+    for(int i=0; i < lmMAX_STAFF; i++)
+        m_nCurVoice[i] = 0;
 
 	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); it++)
 	{
@@ -243,20 +427,39 @@ void lmTimeposTable::CleanTable()
 
 }
 
-void lmTimeposTable::StartLine(int nInstr, lmLUnits uxStart, int nVoice)
+void lmTimeposTable::StartLines(int nInstr, lmVStaff* pVStaff)
+{
+	int nNumStaves = pVStaff->GetNumStaves();
+    wxASSERT(nNumStaves < lmMAX_STAFF);
+
+    for(int iS=0; iS < nNumStaves; iS++)
+    {
+        m_nCurVoice[iS] = iS+1;
+		m_pStaff[iS] = pVStaff->GetStaff(iS+1);
+        StartLine(nInstr, iS+1);
+    }
+}
+
+void lmTimeposTable::StartLine(int nInstr, int nVoice)
 {
     //Start a new line for instrument nInstr (0..n-1)
 	//If this is the first line for instrument nInstr, all non-voiced StaffObj
 	//will be assigned to this line, as well as the first voice encountered
 
-	lmTimeLine* pLine = new lmTimeLine(nInstr, nVoice, uxStart);
+	lmTimeLine* pLine = new lmTimeLine(this, nInstr, nVoice);
 	m_aLines.push_back(pLine);
 	m_pCurEntry = pLine->m_aMainTable.back(); 
 	m_itCurLine = m_aLines.end();
 	m_itCurLine--;
+
+	//add spacing after start of measure
+	SetSpace( TenthsToLogical(m_rSpaceAfterStartOfMeasure, 1) );
+
+	wxLogMessage(_T("[lmTimeposTable::StartLine] New line started for instr=%d, voice=%d"),
+        nInstr, nVoice);
 }
 
-void lmTimeposTable::CloseLine(lmLUnits uxLeft, lmLUnits uxFinal, lmStaffObj* pSO)
+void lmTimeposTable::CloseLine(lmStaffObj* pSO)
 {
 	//close current line.
 
@@ -264,9 +467,6 @@ void lmTimeposTable::CloseLine(lmLUnits uxLeft, lmLUnits uxFinal, lmStaffObj* pS
 		m_pCurEntry = (*m_itCurLine)->AddEntry(eOmega, pSO->GetTimePos(), pSO);
 	else
 		m_pCurEntry = (*m_itCurLine)->AddEntry(eOmega, -1, pSO);
-
-	SetCurXLeft(uxLeft);
-	SetCurXFinal(uxFinal);
 }
 
 lmTimeLine* lmTimeposTable::FindLine(int nInstr, int nVoice)
@@ -289,6 +489,14 @@ lmTimeLine* lmTimeposTable::FindLine(int nInstr, int nVoice)
 void lmTimeposTable::AddEntry(int nInstr, int nVoice, float rTimePos, lmStaffObj* pSO)
 {
 	//Add an entry to current line for this nInstr/nVoice
+    wxLogMessage(_T("[lmTimeposTable::AddEntry] instr=%d, voice=%d, SO type = %d, staff=%d"),
+        nInstr, nVoice, pSO->GetClass(), pSO->GetStaffNum() );
+
+    //use default voice when not specified [mainly for clefs]
+    if (nVoice == 0) 
+    {
+        nVoice = m_nCurVoice[ pSO->GetStaffNum() - 1 ];
+    }
 
 	//find line
 	lmItTimeLine itInstr = m_aLines.end();
@@ -303,17 +511,20 @@ void lmTimeposTable::AddEntry(int nInstr, int nVoice, float rTimePos, lmStaffObj
 			{	//voice found. Save current line and add entry
 				m_itCurLine = it;
 				m_pCurEntry = (*it)->AddEntry(eStaffobj, rTimePos, pSO);
+                wxLogMessage(_T("\tEntry added to line for voice=%d"), (*it)->m_nVoice);
 
 				//update voice
-				if ((*it)->m_nVoice == 0 && nVoice != 0)
+                if ((*it)->m_nVoice == 0 && nVoice != 0) {
 					(*it)->m_nVoice = nVoice;
+                    //m_nCurVoice = nVoice;
+                }
 				return;
 			}
 		}
 	}
 	//not found. Start new line
 	wxASSERT(itInstr != m_aLines.end());	//a line for the instrument must exist
-	StartLine(nInstr, (*itInstr)->GetXStartLine(), nVoice);
+	StartLine(nInstr, nVoice);
 	m_pCurEntry = (*m_itCurLine)->AddEntry(eStaffobj, rTimePos, pSO);
 }
 
@@ -365,61 +576,22 @@ void lmTimeposTable::SetCurXFinal(lmLUnits uValue)
     m_pCurEntry->m_uSize = m_pCurEntry->m_xFinal - m_pCurEntry->m_xLeft;
 }
 
+void lmTimeposTable::SetSpace(lmLUnits uValue)
+{
+    m_pCurEntry->m_uSpace = uValue;
+}
+
 void lmTimeposTable::SetCurXAnchor(lmLUnits uValue)
 {
     m_pCurEntry->m_uxAnchor = uValue;
 }
 
-
-void lmTimeposTable::AddTimeAuxEntry(int nLine, int nItem, lmTimeposEntry* pTPE)
+void lmTimeposTable::SetWidth(lmLUnits uValue)
 {
-    //Add a new entry to the auxiliary Timeaux table so that the table is ordered
-    //by timepos (ascending). Parameter nItem is the index over line table pointing
-    //to the item to add to the Tiemaux table and ptr pTPE point to that item.
-
-    //the table must be ordered by timepos
-
-    if (pTPE->m_rTimePos < 0) return;            //discard non timed entries
-
-    // Create entry to be added
-    lmTimeauxEntry* pNew = new lmTimeauxEntry(nItem, nLine, pTPE->m_rTimePos);
-
-    //if there are no entries in Timeaux table or the timePos of last entry is lower
-    //or equal than the timepos to be inserted , just create the new entry at the end
-    //of the table
-    if (m_aTimeAux.size() == 0)
-    {
-        //No entries in table. This one is the first one.
-        m_aTimeAux.push_back(pNew);
-    }
-    else
-    {
-        int i = m_aTimeAux.size() - 1;    //index to last entry
-        lmTimeauxEntry* pTAE = m_aTimeAux[i];
-        if (pTAE->rTimePos < pTPE->m_rTimePos || IsEqualTime(pTAE->rTimePos, pTPE->m_rTimePos))
-        {
-            //all existing entries in Timeaux table have timepos lower or equal than the
-            //new one. Add it at the end.
-            m_aTimeAux.push_back(pNew);
-        }
-        else
-        {
-            //the new entry must be inserted between two existing entries.
-
-            //locate insertion point
-            for (i=0; i < (int)m_aTimeAux.size(); i++) {
-                pTAE = m_aTimeAux[i];
-                if (pTAE->rTimePos > pTPE->m_rTimePos && !IsEqualTime(pTAE->rTimePos, pTPE->m_rTimePos)) break;
-            }
-            wxASSERT(i >= 0);
-			//insert before entry number i
-			std::vector<lmTimeauxEntry*>::iterator it =
-				std::find(m_aTimeAux.begin(), m_aTimeAux.end(), m_aTimeAux[i]);
-			m_aTimeAux.insert(it, pNew);
-        }
-    }
-
+    m_pCurEntry->m_uSize = uValue;
 }
+
+
 
 //-------------------------------------------------------------------------------------
 //  methods to compute results
@@ -450,185 +622,74 @@ lmLUnits lmTimeposTable::GetStartOfBarPosition()
     return pEntry->m_xLeft;
 }
 
-lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
+lmLUnits lmTimeposTable::DoSpacingFixed(lmTenths nSpacingValue, bool fTrace)
 {
-    //StaffObjs positions are arranged so that all StaffObjs that must sound at the same time
-    //will have the same x anchor coordinate.
-    //The new positions are not stored in the StaffObjs but only in these tables.
-    //This method returns the bar column size (including the width of the barline at the end)
+    //return ArrangeStaffobjsByTime(fTrace);
+	return 10000;
+}
 
-    //build timeaux table. Ordered by time
-    //-------------------------------------
-    int i;
-    m_aTimeAux.clear();
-    for (int iL=0; iL < (int)m_aLines.size(); iL++) 
+lmLUnits lmTimeposTable::DoSpacingProportional(double nSpacingFactor, bool fTrace)
+{
+
+    wxLogMessage( DumpTimeposTable() );
+    lmLUnits uSize = ComputeSpacing(0.45f);
+    wxLogMessage( DumpTimeposTable() );
+    return uSize;
+}
+
+lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
+{
+	//Initialize algorithm iterators and process any not timed 
+	//objects before time rTime = 0.0
+	lmLUnits uxPos = 0.0f;
+    float rTime = 0.0f;
+	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); it++)
 	{
-		for (int iE=0; iE < (int)(m_aLines[iL]->m_aMainTable).size(); iE++) 
-			AddTimeAuxEntry(iL, iE, m_aLines[iL]->m_aMainTable[iE] );
+		lmLUnits uxStartPos = (*it)->IntitializeSpacingAlgorithm();
+		uxPos = wxMax(uxStartPos, uxPos); 
 	}
 
-    //if trace requested dump tables to log
-    if (fTrace) {
-        wxLogMessage(_T("TimepoTable: Before arranging"));
-        wxLogMessage(_T("***************************************\n"));
-        wxLogMessage( DumpTimeposTable() );
-        wxLogMessage( DumpTimeauxTable() );
-    }
-
-    //loop to arrange StaffObjs positions. Each iteration corresponds to a time value
-    //-----------------------------------------------------------------------------------
-    int nLine;              //auxiliary. The line in process
-    float rTime;            //auxiliary. The time value in process
-    lmLUnits uShift;        //auxiliary. x shift to apply
-    lmLUnits uMinStartPos;        //minimum start position for StaffObjs of current time value
-
-    //As the position for a time value must be greater than the maximum final position of
-    //the StaffObjs located at the previous time value we have to:
-    // 1. compute the maximum final for each time value, and
-    // 2. ensure that the start position for the next time mark is greater than this
-    lmLUnits uMaxFinalPrev;        //maximum final position for previous time mark
-    lmLUnits uMaxFinalCur;        //maximum final position for current time mark
-    lmLUnits uMaxAnchorCur;        //maximum anchor position for current time mark
-    uMaxFinalPrev = 0;
-
-    int iItem;
-    lmTimeposEntry* pTPE;
-    lmTimeauxEntry* pTAE;
-    int iFirst = 0;        //index to the first entry for current time value
-    int iNext = 0;        //index to the first entry for the next time value
-
-    while (iNext < (int)m_aTimeAux.size())
+	bool fContinue = true;
+	while(fContinue)
     {
-        i = iFirst;
-        pTAE = m_aTimeAux[iFirst];
-        rTime = pTAE->rTimePos;        //time to process
-        uMinStartPos = uMaxFinalPrev;
+		//Determine minimum common x position for timepos rTime
+		for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); it++)
+		{
+			lmLUnits uxMinPos = (*it)->GetPosForTime(rTime);
+			uxPos = wxMax(uxPos, uxMinPos); 
+		}
+		wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Setting timed objects at time %.2f, xPos=%.2f"),
+			rTime, uxPos);
 
-        //loop to compute the maximum left position of all entries of current time
-        while (i < (int)m_aTimeAux.size())
-        {
-            pTAE = m_aTimeAux[i];
-            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
-            iItem = pTAE->nItem;
-			nLine = pTAE->nLine;
-            pTPE = m_aLines[nLine]->m_aMainTable[iItem];
-            uMinStartPos = wxMax(uMinStartPos, pTPE->m_xLeft);
-            i++;
-        }
-        iNext = i;       //save start index for next cicle of main loop
-        ///*dbg*/    wxLogMessage(wxString::Format(
-        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] uMinStartPos=%.2f "),
-        //            uMinStartPos ));
+		//Process all timed objects placed at time rTime
+		fContinue = false;
+		float rNextTime = 10000.0f;		//any too big value
+		for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); it++)
+		{
+			float rNewTime = (*it)->SetTimedObjects(rTime, uxPos, rFactor);
+			if (rNewTime > 0.0f)
+			{
+				fContinue = true;
+				rNextTime = wxMin(rNextTime, rNewTime);
+			}
+		}
+		//wxLogMessage( DumpTimeposTable() );
 
-        //loop to compute the shift to apply in order to align left positions, and
-        //the max. anchor position
-        uMaxAnchorCur = 0;
-        i = iFirst;
-        while (i < (int)m_aTimeAux.size())
-        {
-            pTAE = m_aTimeAux[i];
-            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
-            iItem = pTAE->nItem;
-			nLine = pTAE->nLine;
-            pTPE = m_aLines[nLine]->m_aMainTable[iItem];
-            pTAE->uShift = uMinStartPos - pTPE->m_xLeft;
-			lmLUnits xPos = pTAE->uShift + pTPE->m_uxAnchor;
-            uMaxAnchorCur = wxMax(uMaxAnchorCur, xPos);
-            i++;
-        }
-        ///*dbg*/    wxLogMessage(wxString::Format(
-        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] uMaxAnchorCur=%.2f "),
-        //            uMaxAnchorCur ));
+		//advance to next time
+		rTime = rNextTime;
+	}
 
-        //loop to compute the final shift to apply in order to align by anchor positions
-        i = iFirst;
-        while (i < (int)m_aTimeAux.size())
-        {
-            pTAE = m_aTimeAux[i];
-            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
-            iItem = pTAE->nItem;
-			nLine = pTAE->nLine;
-            pTPE = m_aLines[nLine]->m_aMainTable[iItem];
-            pTAE->uShift = uMaxAnchorCur - pTPE->m_uxAnchor;
-            i++;
-        }
+	//Get measure size
+	lmLUnits uMeasureSize = 0.0f;
+	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); it++)
+	{
+		lmLUnits uSize = (*it)->GetLineWidth();
+		uMeasureSize = wxMax(uMeasureSize, uSize);
+	}
 
-        //shift the start position of all StaffObjs of current time (and those following
-        //them of the same line with no specific time) and
-        //compute the the maximum final position for current time
-        uMaxFinalCur = 0;
-        i = iFirst;
-        while (i < (int)m_aTimeAux.size())
-        {
-            //process one entry of Time table
-            pTAE = m_aTimeAux[i];
-            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
-            iItem = pTAE->nItem;
-			nLine = pTAE->nLine;
-            uShift = pTAE->uShift;
-
-            //process this entry at TimePos table
-			///*dbg*/    wxLogMessage(wxString::Format(
-			//            _T("[lmTimeposTable::ArrangeStaffobjsByTime] applying shift (%.2f) to entry %d. rTime=%.2f "),
-			//            uShift, i, pTAE->rTimePos ));
-            pTPE = m_aLines[nLine]->m_aMainTable[iItem];
-            pTPE->ShiftEntry(uShift);
-            uMaxFinalCur = wxMax(uMaxFinalCur, pTPE->m_xFinal);
-
-            //process any following entry of this line with no specific time (timepos=-1)
-            iItem++;
-            while (iItem < (int)m_aLines[nLine]->m_aMainTable.size())
-            {
-                pTPE = m_aLines[nLine]->m_aMainTable[iItem];
-                if (pTPE->m_rTimePos != -1 ) break;
-
-				pTPE->ShiftEntry(uShift);
-                uMaxFinalCur = wxMax(uMaxFinalCur, pTPE->m_xFinal);
-                iItem++;
-            }
-
-            i++;
-
-        }
-
-        //at this point StaffObjs at current time value StaffObjs and their inmediate
-        //following entries with no specific tiem are aligned by its xAnchor position.
-        //The maximum final position of all these entries is storet in uMaxFinalCur
-
-        //if trace requested dump tables to log
-        if (fTrace) {
-            wxLogMessage( wxString::Format(
-                _T("TimepoTable: arrange loop. iFirst=%d, uMaxFinalCur=%.2f"),
-                iFirst, uMaxFinalCur) );
-            wxLogMessage(_T("***************************************\n"));
-            wxLogMessage( DumpTimeposTable() );
-            wxLogMessage( DumpTimeauxTable() );
-        }
-
-        //the current time StaffObjs are aligned. Advance to next time value
-        iFirst = iNext;
-        uMaxFinalPrev = uMaxFinalCur;
-
-    }
-
-    //return the measure column size
-    lmTimeposEntry* pEnd = m_aLines[nLine]->m_aMainTable.back();
-    lmTimeposEntry* pStart = m_aLines[nLine]->m_aMainTable[0];		//alpha entry
-    lmLUnits uColumnSize = pEnd->m_xFinal - pStart->m_xLeft;
-
-    //if trace requested dump tables to log
-    if (fTrace) {
-        wxLogMessage( wxString::Format(
-            _T("TimepoTable: After arranging. MeasureWidth=%.2f"),
-            uColumnSize) );
-        wxLogMessage(_T("***************************************\n"));
-        wxLogMessage( DumpTimeposTable() );
-        wxLogMessage( DumpTimeauxTable() );
-    }
-
-    return uColumnSize;
-
+	return uMeasureSize;
 }
+
 
 lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart)
 {
@@ -661,6 +722,11 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 
 }
 
+lmLUnits lmTimeposTable::TenthsToLogical(lmTenths rTenths, int nStaff)
+{
+	return m_pStaff[nStaff-1]->TenthsToLogical(rTenths);
+}
+
 //-------------------------------------------------------------------------------------
 //  debug methods
 //-------------------------------------------------------------------------------------
@@ -675,40 +741,3 @@ wxString lmTimeposTable::DumpTimeposTable()
     return sMsg;
 }
 
-wxString lmTimeposTable::DumpTimeauxTable()
-{
-    wxString sMsg = _T("Dump of Time aux. table. \n");
-    sMsg += _T("===================================================================\n\n");
-
-    if (m_aTimeAux.size() == 0)
-    {
-        sMsg += _T("The table is empty.");
-        return sMsg;
-    }
-
-    //headers
-    sMsg += _T("Item    Line   Ref     TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
-
-    //loop to dump table entries
-    float rTimePrev = -1;
-    for (int i = 0; i < (int)m_aTimeAux.size(); i++)
-    {
-        lmTimeauxEntry* pTAE = m_aTimeAux[i];
-        if (!IsEqualTime(rTimePrev, pTAE->rTimePos))
-        {
-            rTimePrev = pTAE->rTimePos;
-            sMsg += _T("----------------------------------------------------------------------------\n");
-        }
-        sMsg += wxString::Format( _T("%4d: %8d %4d %11.2f "),
-            i, pTAE->nLine, pTAE->nItem, pTAE->rTimePos);
-		int iItem = pTAE->nItem;
-		int nLine = pTAE->nLine;
-
-        lmTimeposEntry* pTPE = m_aLines[nLine]->m_aMainTable[iItem];
-        sMsg += wxString::Format( _T("%.2f %.2f %.2f %.2f %.2f\n"),
-            pTPE->m_uSize, pTPE->m_xLeft, pTPE->m_uxAnchor, pTPE->m_xRight, pTPE->m_xFinal);
-    }
-
-    return sMsg;
-
-}

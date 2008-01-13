@@ -114,8 +114,10 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
 wxString lmKeySignature::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tKey Sign. fifths: %d Key=%s %s\tTimePos=%.2f\n"),
-        m_nId, m_nFifths, m_sLDPKeyName[m_nKeySignature], (m_fMajor ? _T("major") : _T("minor")), m_rTimePos );
+        _T("%d\tKey Sign. fifths: %d Key=%s %s\tTimePos=%.2f, org=(%.2f, %.2f)\n"),
+        m_nId, m_nFifths, m_sLDPKeyName[m_nKeySignature],
+		(m_fMajor ? _T("major") : _T("minor")), m_rTimePos,
+        m_uOrg.x, m_uOrg.y);
     return sDump;
 }
 

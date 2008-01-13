@@ -27,7 +27,10 @@
 #endif
 
 #include <list>
-#include "Score.h"
+#include "defs.h"
+
+class lmScore;
+class lmContext;
 
 class lmStaff : public lmScoreObj
 {
@@ -41,6 +44,7 @@ public:
 	//units conversion
     inline lmLUnits TenthsToLogical(lmTenths rTenths) { return (m_uSpacing * rTenths)/10.0; }
 	inline lmTenths LogicalToTenths(lmLUnits uUnits) { return (uUnits * 10.0) / m_uSpacing; }
+	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Staff; }
 
 	//---- specific methods of this class ------------------------
 
