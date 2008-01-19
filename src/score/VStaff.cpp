@@ -113,9 +113,6 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
 
     g_pLastNoteRest = (lmNoteRest*)NULL;
 
-	//contexts
-	m_pFirstContext = (lmContext*)NULL;
-	m_pLastContext = (lmContext*)NULL;
 
 }
 
@@ -123,15 +120,6 @@ lmVStaff::~lmVStaff()
 {
     m_cStaves.DeleteContents(true);
     m_cStaves.Clear();
-
-	//delete contexts
-	lmContext* pCT = m_pFirstContext;
-	while(pCT)
-	{
-		lmContext* pNext = pCT->GetNext();
-		delete pCT;;
-		pCT = pNext;
-	}
 
 }
 
@@ -213,43 +201,6 @@ lmLUnits lmVStaff::GetStaffLineThick(int nStaff)
 // contexts management
 //----------------------------------------------------------------------------------------
 
-//void lmVStaff::ResetContexts()
-//{
-//    // Verify if current context is just the key signature accidentals. If not,
-//    // create a new context.
-//    // This method is invoked after a barline to reset the context if it was modified
-//    // by accidentals in notes
-//
-//    // iterate over the collection of Staves
-//    wxStaffListNode* pNode = m_cStaves.GetFirst();
-//    for (; pNode; pNode = pNode->GetNext() )
-//    {
-//        lmStaff* pStaff = (lmStaff *)pNode->GetData();
-//
-//        lmContext* pOldContext = pStaff->GetLastContext();
-//        if (!pOldContext) return;
-//        lmContext* pNewContext = new lmContext(pOldContext->GetClef(),
-//                                               pOldContext->GeyKey(),
-//                                               pOldContext->GetTime() );
-//        bool fEqual = true;
-//        for (int i=0; i < 7; i++) {
-//            if (pOldContext->GetAccidentals(i) != pNewContext->GetAccidentals(i)) {
-//                fEqual = false;
-//                break;
-//            }
-//        }
-//        if (fEqual) {
-//            //current context is just the key signature accidentals. Continue using it.
-//            delete pNewContext;
-//        }
-//        else {
-//            //current contex has additional accidentals. Use the new clean one
-//            pStaff->NewContext(pNewContext);
-//        }
-//    }
-//
-//}
-
 void lmVStaff::OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
                            int nNewAccidentals, lmContext* pCurrentContext)
 {
@@ -257,83 +208,14 @@ void lmVStaff::OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
 	// propagated to the context and to the following notes until the end of the measure
 	// or until a new accidental for the same step is found
 
-    //create a new context by updating current one
-    //lmStaff* pStaff = GetStaff(nStaff);
-    //lmContext* pNewContext = pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
-    //pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
-
-    /*TODO
-    For now, as we are not yet dealing with edition, it is not possible to
-    insert notes in a score. Therefore, there are no notes after the one being
-    processed (pStartNote). So the treatment to propagate accidentals until the
-    start of the next measure is not yet implemented.
-    */
-
-    /*
-    //propagate new context
-    //define a forward iterator
-    lmStaffObj* pSO = (lmStaffObj*) NULL;
-    lmNoteRest* pNR = (lmNoteRest*)NULL;
-    lmNote* pNote = (lmNote*)NULL;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-    pIter->MoveToObject(pStartNote);
-    wxASSERT(pIter);
-    pIter->MoveNext();
-
-    while(!pIter->EndOfList())
-    {
-        pSO = pIter->GetCurrent();
-        switch (pSO->GetClass()) {
-            case eSFOT_NoteRest:
-                if (pSO->GetStaffNum() == nStaff) {
-                    pNR = (lmNoteRest*)pSO;
-                    if (!pNR->IsRest()) {
-                        pNote = (lmNote*)pSO;
-                        if (pNote->OnContextUpdated(nStep, nNewAccidentals, pNewContext)) {
-                            //if returns true, no context modification was necessary.
-                            //So is not necessary to continue until the end of the measure
-                            delete pIter;
-                            return;
-                        }
-                    }
-                }
-                break;
-
-            case eSFOT_Barline:
-                //End of measure reached. End uptade process
-                    delete pIter;
-                    return;
-                break;
-
-            default:
-                ;
-        }
-        pIter->MoveNext();
-    }
-    delete pIter;
-    return;
-    */
-
-}
-
-lmContext* lmVStaff::FindCurrentContext(lmContext* pContext, int nStaff)
-{
-	// Starting with received context look backward for the first context
-	// applicable to staff nStaff and returns it.
-	// AWARE: Only Clef, key signature and time signature are updated. To get
-	//	applicable accidentals use NewUpdatedContext() instead.
-	//find an applicable context to staff nStaff (1..n)
-
-    lmContext* pCT = pContext;
-	for (; pCT && !pCT->AppliesTo(nStaff); pCT = pCT->GetPrev()) {}
-	return pCT;
 }
 
 lmContext* lmVStaff::GetCurrentContext(lmStaffObj* pSO)
 {
 	// Returns the context that is applicable to the received StaffObj.
-	// AWARE: Only Clef, key signature and time signature are updated. To get
-	//	applicable accidentals use NewUpdatedContext() instead.
+	// AWARE: This method does not return a context with updated accidentals; 
+    // the returned context is valid only for clef, key signature and time signature.
+    // To get applicable accidentals use NewUpdatedContext() instead.
 
     int nStaff = pSO->GetStaffNum();
     lmContext* pCT = (lmContext*)NULL;
@@ -341,38 +223,29 @@ lmContext* lmVStaff::GetCurrentContext(lmStaffObj* pSO)
     while(!pIter->StartOfList())
 	{
         pSO = pIter->GetCurrent();
-		if (pSO->GetClass() == eSFOT_Clef) {
+		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
             pCT = ((lmClef*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_KeySignature) {
-            pCT = ((lmKeySignature*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_TimeSignature) {
-            pCT = ((lmTimeSignature*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_Barline) {
-            pCT = ((lmBarline*)pSO)->GetContext();
-			break;
-		}
+		else if (pSO->GetClass() == eSFOT_KeySignature)
+            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
+		else if (pSO->GetClass() == eSFOT_TimeSignature)
+            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
+		else if (pSO->GetClass() == eSFOT_Barline)
+            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
+
+        if (pCT)
+            break;
 		else
 		    pIter->MovePrev();
     }
     delete pIter;
 
-	if (!pCT) return pCT;
-
-	//find an applicable context to staff nStaff (1..n)
-	for (; pCT && !pCT->AppliesTo(nStaff); pCT = pCT->GetPrev()) {}
 	return pCT;
 }
 
 int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 {
-	//returns the context accidentals for this StaffObj, updated with all
-	//accidentals introduced by previous notes.
+	//returns the updated context accidentals for step nStep, applicable to
+    //StaffObj pThisSO.
 
 	lmContext* pContext = NewUpdatedContext(pThisSO);
 	if (pContext)
@@ -398,22 +271,17 @@ lmContext* lmVStaff::NewUpdatedContext(lmStaffObj* pThisSO)
     while(!pIter->StartOfList())
 	{
         lmStaffObj* pSO = pIter->GetCurrent();
-		if (pSO->GetClass() == eSFOT_Clef) {
+		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
             pCT = ((lmClef*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_KeySignature) {
-            pCT = ((lmKeySignature*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_TimeSignature) {
-            pCT = ((lmTimeSignature*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_Barline) {
-            pCT = ((lmBarline*)pSO)->GetContext();
-			break;
-		}
+		else if (pSO->GetClass() == eSFOT_KeySignature)
+            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
+		else if (pSO->GetClass() == eSFOT_TimeSignature)
+            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
+		else if (pSO->GetClass() == eSFOT_Barline)
+            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
+
+        if (pCT)
+            break;
 		else
 		    pIter->MovePrev();
     }
@@ -426,16 +294,7 @@ lmContext* lmVStaff::NewUpdatedContext(lmStaffObj* pThisSO)
 	//Here pIter is pointing to the StaffObj pointing to the current context.
 	//Now we have to go forward, updating accidentals until we reach pThisSO
 
-	//find an applicable context to staff nStaff (1..n)
-	for (; pCT && !pCT->AppliesTo(nStaff); pCT = pCT->GetPrev()) {}
-	if (!pCT) {
-		delete pIter;
-		return pCT;
-	}
-
 	lmContext* pUpdated = new lmContext(pCT);
-
-	//Now, update context with accidentals
     while(true)
 	{
         lmStaffObj* pSO = pIter->GetCurrent();
@@ -468,23 +327,18 @@ lmContext* lmVStaff::NewUpdatedLastContext(int nStaff)
     while(!pIter->StartOfList())
 	{
         lmStaffObj* pSO = pIter->GetCurrent();
-		if (pSO->GetClass() == eSFOT_Clef) {
+		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
             pCT = ((lmClef*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_KeySignature) {
-            pCT = ((lmKeySignature*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_TimeSignature) {
-            pCT = ((lmTimeSignature*)pSO)->GetContext();
-			break;
-		}
-		else if (pSO->GetClass() == eSFOT_Barline) {
-            pCT = ((lmBarline*)pSO)->GetContext();
-			break;
-		}
-		else
+		else if (pSO->GetClass() == eSFOT_KeySignature)
+            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
+		else if (pSO->GetClass() == eSFOT_TimeSignature)
+            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
+		else if (pSO->GetClass() == eSFOT_Barline)
+            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
+
+        if (pCT)
+            break;
+        else
 		    pIter->MovePrev();
     }
 
@@ -496,16 +350,7 @@ lmContext* lmVStaff::NewUpdatedLastContext(int nStaff)
 	//Here pIter is pointing to the StaffObj pointing to the current context.
 	//Now we have to go forward, updating accidentals until we reach end of collection
 
-	//find an applicable context to staff nStaff (1..n)
-	for (; pCT && !pCT->AppliesTo(nStaff); pCT = pCT->GetPrev()) {}
-	if (!pCT) {
-		delete pIter;
-		return pCT;
-	}
-
 	lmContext* pUpdated = new lmContext(pCT);
-
-	//Now, update context with accidentals
     while(!pIter->EndOfList())
 	{
         lmStaffObj* pSO = pIter->GetCurrent();
@@ -531,7 +376,8 @@ lmClef* lmVStaff::InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType)
 {
     int nStaff = pCursorSO->GetStaffNum();
     lmClef* pClef = new lmClef(nClefType, this, nStaff, lmVISIBLE);
-    lmContext* pContext = NewContextAfter(pClef, GetCurrentContext(pCursorSO));
+    lmStaff* pStaff = GetStaff(nStaff);
+    lmContext* pContext = pStaff->NewContextAfter(pClef, GetCurrentContext(pCursorSO));
 	pClef->SetContext(pContext);
     m_cStaffObjs.Insert(pClef, pCursorSO);
     return pClef;
@@ -539,9 +385,66 @@ lmClef* lmVStaff::InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType)
 
 lmBarline* lmVStaff::InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType)
 {
+    //When inserting a barline it is necessary to get current contexts at the insertion
+    //time for all staves. Therefore we need to go to the previous barline, take the 
+    //contexts and advance until the new bar, updating the stored context with any later one.
+
     lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
     m_cStaffObjs.Insert(pBarline, pCursorSO);
-    pBarline->SetContext( pCursorSO->GetCurrentContext() );
+
+    bool fStaffDone[lmMAX_STAFF];
+    for (int iS=0; iS < GetNumStaves(); iS++) 
+        fStaffDone[iS] = false;
+
+	lmStaffObjIterator* pIter = m_cStaffObjs.CreateIteratorTo(pBarline);
+    bool fDone = false;
+    while(!fDone && !pIter->StartOfList())
+	{
+        lmContext* pCT = (lmContext*)NULL;
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->GetClass() == eSFOT_Clef)
+        {
+            int nStaff = pSO->GetStaffNum();
+            if (!fStaffDone[nStaff]-1)
+            {
+                pCT = ((lmClef*)pSO)->GetContext();
+                pBarline->SetContext(nStaff, pCT);
+                fStaffDone[nStaff-1] = true;
+            }
+        }
+
+        if (!pCT)
+        {
+		    if (pSO->GetClass() == eSFOT_KeySignature
+                || pSO->GetClass() == eSFOT_TimeSignature
+                || pSO->GetClass() == eSFOT_Barline)
+            {
+                for (int nStaff=1; nStaff < GetNumStaves(); nStaff++)
+                {
+                    if (!fStaffDone[nStaff-1])
+                    {
+		                if (pSO->GetClass() == eSFOT_KeySignature)
+                            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
+		                else if (pSO->GetClass() == eSFOT_TimeSignature)
+                            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
+		                else // Barline
+                            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
+                        pBarline->SetContext(nStaff, pCT);
+                        fStaffDone[nStaff-1] = true;
+                    }
+                }
+                break;  //fast finish
+            }
+        }
+
+        //check if we can finish
+        fDone = true;
+        for (int iS=0; iS < GetNumStaves(); iS++) 
+            fDone &= fStaffDone[iS];
+
+        pIter->MovePrev();
+    }
+
     return pBarline;
 }
 
@@ -591,7 +494,8 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
     wxASSERT(nStaff <= GetNumStaves());
 
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
-    lmContext* pContext = NewContextAfter(pClef, m_pLastContext);
+    lmStaff* pStaff = GetStaff(nStaff);
+    lmContext* pContext = pStaff->NewContextAfter(pClef);
 	pClef->SetContext(pContext);
     m_cStaffObjs.Store(pClef);
     return pClef;
@@ -772,8 +676,18 @@ lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignature nTimeSign, bool fVi
 //common code for all time signatures types
 lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS)
 {
-	lmContext* pContext = NewContextAfter(pTS, m_pLastContext);
-	pTS->SetContext(pContext);
+    //iterate over the collection of Staves to add a new context
+    StaffList::Node* pNode = m_cStaves.GetFirst();
+    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    for (int nStaff=1; pStaff; nStaff++)
+	{
+	    lmContext* pContext = pStaff->NewContextAfter(pTS);
+        pTS->SetContext(nStaff, pContext);
+
+        //get next lmStaff
+        pNode = pNode->GetNext();
+        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    }
     m_cStaffObjs.Store(pTS);
     return pTS;
 }
@@ -781,8 +695,19 @@ lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS)
 lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisible)
 {
     lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
-	lmContext* pContext = NewContextAfter(pKS, m_pLastContext);
-	pKS->SetContext(pContext);
+
+    //iterate over the collection of Staves to add a new context
+    StaffList::Node* pNode = m_cStaves.GetFirst();
+    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    for (int nStaff=1; pStaff; nStaff++)
+	{
+	    lmContext* pContext = pStaff->NewContextAfter(pKS);
+        pKS->SetContext(nStaff, pContext);
+
+        //get next lmStaff
+        pNode = pNode->GetNext();
+        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    }
     m_cStaffObjs.Store(pKS);
     return pKS;
 }
@@ -1074,7 +999,19 @@ lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
 {
     //create and save the barline
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
-	pBarline->SetContext(m_pLastContext);
+
+    //iterate over the collection of Staves to store the current contexts
+    StaffList::Node* pNode = m_cStaves.GetFirst();
+    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    for (int nStaff=1; pStaff; nStaff++)
+	{
+        pBarline->SetContext(nStaff, pStaff->GetLastContext());
+
+        //get next lmStaff
+        pNode = pNode->GetNext();
+        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    }
+
     m_cStaffObjs.Store(pBarline);
     return pBarline;
 }
@@ -1114,116 +1051,116 @@ void lmVStaff::NewLine(lmPaper* pPaper)
     pPaper->NewLine(GetVStaffHeight());
 
 }
-void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey,
-							   lmPaper* pPaper)
-{
-    // The prolog (clef and key signature) must be rendered on each system,
-    // but the matching StaffObjs only exist in the first system. Therefore, in the
-    // normal staffobj rendering process, the prolog would be rendered only in
-    // the first system.
-    // So, for the other systems it is necessary to force the rendering
-    // of the prolog because there are no StaffObjs representing it.
-    // This method does it.
-    //
-    // To know what clef, key and time signature to draw we take this information from the
-    // context associated to first note of the measure on each staff. If there are no notes,
-    // the context is taken from the barline. If, finally, no context is found, no prolog
-    // is drawn.
 
-    lmLUnits nPrologWidth = 0;
-    lmClef* pClef = (lmClef*)NULL;
-    lmEClefType nClef = lmE_Undefined;
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
-    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-
-    //AWARE when this method is invoked the paper position must be at the left marging,
-    //at the start of a new system.
-    lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
-    lmLUnits yStartPos = pPaper->GetCursorY();
-
-    //iterate over the collection of lmStaff objects to draw current cleft and key signature
-
-    wxStaffListNode* pNode = m_cStaves.GetFirst();
-    lmStaff* pStaff = (lmStaff*)NULL;
-    lmLUnits yOffset = m_topMargin;
-    lmLUnits xPos=0;
-    lmLUnits nWidth=0;
-
-    lmContext* pContext = (lmContext*)NULL;
-    lmStaffObj* pSO = (lmStaffObj*) NULL;
-    lmNoteRest* pNR = (lmNoteRest*)NULL;
-    lmNote* pNote = (lmNote*)NULL;
-    for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
-    {
-        pStaff = (lmStaff *)pNode->GetData();
-        xPos = xStartPos;
-
-        //locate first context for this staff
-        pContext = (lmContext*)NULL;
-        lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-        pIter->AdvanceToMeasure(nMeasure);
-        while(!pIter->EndOfList())
-		{
-            pSO = pIter->GetCurrent();
-            if (pSO->GetClass() == eSFOT_NoteRest) {
-                pNR = (lmNoteRest*)pSO;
-                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff)
-				{
-                    //OK. Note fount. Take context
-                    pNote = (lmNote*)pSO;
-                    pContext = pNote->GetCurrentContext();
-                    break;
-                }
-            }
-            else if (pSO->GetClass() == eSFOT_Barline)
-			{
-				//end of measure reached. Take content
-                lmBarline* pBar = (lmBarline*)pSO;
-                pContext = FindCurrentContext(pBar->GetContext(), nStaff);
-                break;
-            }
-            pIter->MoveNext();
-        }
-        delete pIter;
-
-        if (pContext) {
-            pClef = pContext->GetClef();
-            pKey = pContext->GeyKey();
-            pTime = pContext->GetTime();
-
-            //render clef
-            if (pClef) {
-                nClef = pClef->GetClefType();
-				if (pClef->IsVisible()) {
-					lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-					nWidth = pClef->AddShape(pBSV, pPaper, uPos);
-					xPos += nWidth;
-				}
-            }
-
-            //render key signature
-            if (pKey && pKey->IsVisible()) {
-                wxASSERT(nClef != lmE_Undefined);
-                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-                nWidth = pKey->AddShape(pBSV, pPaper, uPos, nClef, nStaff);
-                xPos += nWidth;
-            }
-
-        }
-
-        //compute prolog width
-        nPrologWidth = wxMax(nPrologWidth, xPos - xStartPos);
-
-        //compute vertical displacement for next staff
-        yOffset += pStaff->GetHeight();
-        yOffset += pStaff->GetAfterSpace();
-
-    }
-
-    // update paper cursor position
-    pPaper->SetCursorX(xStartPos + nPrologWidth);
-
-}
+//void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey,
+//							   lmPaper* pPaper)
+//{
+//    // The prolog (clef and key signature) must be rendered on each system,
+//    // but the matching StaffObjs only exist in the first system. Therefore, in the
+//    // normal staffobj rendering process, the prolog would be rendered only in
+//    // the first system.
+//    // So, for the other systems it is necessary to force the rendering
+//    // of the prolog because there are no StaffObjs representing it.
+//    // This method does it.
+//    //
+//    // To know what clef, key and time signature to draw we take this information from the
+//    // context associated to first note of the measure on each staff. If there are no notes,
+//    // the context is taken from the barline. If, finally, no context is found, no prolog
+//    // is drawn.
+//
+//    lmLUnits nPrologWidth = 0;
+//    lmClef* pClef = (lmClef*)NULL;
+//    lmEClefType nClef = lmE_Undefined;
+//    lmKeySignature* pKey = (lmKeySignature*)NULL;
+//    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
+//
+//    //AWARE when this method is invoked the paper position must be at the left marging,
+//    //at the start of a new system.
+//    lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
+//    lmLUnits yStartPos = pPaper->GetCursorY();
+//
+//    //iterate over the collection of lmStaff objects to draw current clef and key signature
+//
+//    wxStaffListNode* pNode = m_cStaves.GetFirst();
+//    lmStaff* pStaff = (lmStaff*)NULL;
+//    lmLUnits yOffset = m_topMargin;
+//    lmLUnits xPos=0;
+//
+//    lmContext* pContext = (lmContext*)NULL;
+//    lmStaffObj* pSO = (lmStaffObj*) NULL;
+//    lmNoteRest* pNR = (lmNoteRest*)NULL;
+//    lmNote* pNote = (lmNote*)NULL;
+//    for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
+//    {
+//        pStaff = (lmStaff *)pNode->GetData();
+//        xPos = xStartPos;
+//
+//        //locate first context for this staff
+//        pContext = (lmContext*)NULL;
+//        lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+//        pIter->AdvanceToMeasure(nMeasure);
+//        while(!pIter->EndOfList())
+//		{
+//            pSO = pIter->GetCurrent();
+//            if (pSO->GetClass() == eSFOT_NoteRest) {
+//                pNR = (lmNoteRest*)pSO;
+//                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff)
+//				{
+//                    //OK. Note fount. Take context
+//                    pNote = (lmNote*)pSO;
+//                    pContext = pNote->GetCurrentContext();
+//                    break;
+//                }
+//            }
+//            else if (pSO->GetClass() == eSFOT_Barline)
+//			{
+//				//end of measure reached. Take content
+//                lmBarline* pBar = (lmBarline*)pSO;
+//                pContext = pBar->GetContext(nStaff);
+//                break;
+//            }
+//            pIter->MoveNext();
+//        }
+//        delete pIter;
+//
+//        if (pContext) {
+//            pClef = pContext->GetClef();
+//            pKey = pContext->GeyKey();
+//            pTime = pContext->GetTime();
+//
+//            //render clef
+//            if (pClef) {
+//                nClef = pClef->GetClefType();
+//				if (pClef->IsVisible()) {
+//					lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+//					lmShape* pShape = pClef->AddShape(pBSV, pPaper, uPos);
+//					xPos += pShape->GetWidth();
+//				}
+//            }
+//
+//            //render key signature
+//            if (pKey && pKey->IsVisible()) {
+//                wxASSERT(nClef != lmE_Undefined);
+//                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+//                lmShape* pShape = pKey->AddShape(pBSV, pPaper, uPos, nClef, nStaff);
+//                xPos += pShape->GetWidth();
+//            }
+//
+//        }
+//
+//        //compute prolog width
+//        nPrologWidth = wxMax(nPrologWidth, xPos - xStartPos);
+//
+//        //compute vertical displacement for next staff
+//        yOffset += pStaff->GetHeight();
+//        yOffset += pStaff->GetAfterSpace();
+//
+//    }
+//
+//    // update paper cursor position
+//    pPaper->SetCursorX(xStartPos + nPrologWidth);
+//
+//}
 
 lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 {
@@ -1364,110 +1301,17 @@ lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 }
 
 
-//----------------------------------------------------------------------------------------
-// context management
-//----------------------------------------------------------------------------------------
-
-lmContext* lmVStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
-{
-    //get current values
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
-    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    if (pPrevContext)
-	{
-        pKey = pPrevContext->GeyKey();
-        pTime = pPrevContext->GetTime();
-    }
-
-	//create the new context
-	int nStaff = pNewClef->GetStaffNum();
-	lmContext* pNewContext = new lmContext(pNewClef, pKey, pTime, nStaff);
-	if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
-
-	//chain it in the list
-    InsertContextAfter(pNewContext, pPrevContext);
-	return pNewContext;
-}
-
-lmContext* lmVStaff::NewContextAfter(lmKeySignature* pNewKey, lmContext* pPrevContext)
-{
-    //get current values
-    lmClef* pClef = (lmClef*)NULL;
-    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    if (pPrevContext)
-	{
-        pClef = pPrevContext->GetClef();
-        pTime = pPrevContext->GetTime();
-    }
-
-	//create the new context
-    lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime, 0);
-
-	//chain it in the list
-    InsertContextAfter(pNewContext, pPrevContext);
-	return pNewContext;
-}
-
-lmContext* lmVStaff::NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext)
-{
-    //get current values
-    lmClef* pClef = (lmClef*)NULL;
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
-    if (pPrevContext)
-	{
-        pClef = pPrevContext->GetClef();
-        pKey = pPrevContext->GeyKey();
-    }
-
-	//create the new context
-    lmContext* pNewContext = new lmContext(pClef, pKey, pNewTime, 0);
-    if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
-
-	//chain it in the list
-    InsertContextAfter(pNewContext, pPrevContext);
-	return pNewContext;
-}
-
-void lmVStaff::InsertContextAfter(lmContext* pNew, lmContext* pPrev)
-{
-	if (pPrev)
-	{
-		//this is not the first context. Chain it after pPrevContext
-		lmContext* pNext = pPrev->GetNext();
-		pNew->SetPrev(pPrev);
-		pNew->SetNext(pNext);
-
-		//update old links in prev and next nodes
-		pPrev->SetNext(pNew);
-		if (pNext) pNext->SetPrev(pNew);
-
-		//update ptr to last node
-		if(pPrev == m_pLastContext)
-			m_pLastContext = pNew;	
-	}
-	else
-	{
-		//this is the first context. Insert it in front of list
-		//update ptrs to first and last nodes
-		m_pFirstContext = pNew;
-		m_pLastContext = pNew;
-	}
-}
-
 lmContext* lmVStaff::GetLastContext(int nStaff)
 {
 	//returns the last context applicable to staff nStaff (1..n)
 	wxASSERT(nStaff > 0);
-	lmContext* pCT = m_pLastContext;
-	for (; pCT && !pCT->AppliesTo(nStaff); pCT = pCT->GetPrev()) {}
-	return pCT;
+	return GetStaff(nStaff)->GetLastContext();
 }
 
 
 //void lmVStaff::AutoBeam(int nMeasure)
 //{
 //    //loop to process all StaffObjs in this measure
-//    bool fNoteRestFound = false;
 //    EStaffObjType nType;                    //type of score obj being processed
 //    lmStaffObj* pSO = (lmStaffObj*)NULL;
 //    lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_ByTime);
@@ -1478,30 +1322,15 @@ lmContext* lmVStaff::GetLastContext(int nStaff)
 //        nType = pSO->GetClass();
 //
 //        if (nType == eSFOT_NoteRest) {
-//            fNoteRestFound = true;
-//            fPreviousWasClef = false;            //this lmStaffObj is not a clef
 //            pNoteRest = (lmNoteRest*)pSO;
 //            pNote = (lmNote*)pSO;        //AWARE we do not know yet if it is a note or a rest,
 //                                    //but I force the casting to simplify next if statement
 //            if (!pNoteRest->IsRest() && pNote->IsInChord())
 //            {
-//                //this note is part of a chord
-//                if (pNote->IsBaseOfChord()) {
-//                    //it is the base note. Save x position. All other notes in the
-//                    // chord must be assigned the same x position
-//                    xChordPos = pPaper->GetCursorX();    //save this position
-//                    oTimepos.SetCurXLeft(xChordPos);    //and store it as the x position for this lmStaffObj
-//                } else {
-//                    //All other notes in the chord must have the same x position
-//                    //than the base note.
-//                    pPaper->SetCursorX(xChordPos);        //Restore paper to note base x postion
-//                    oTimepos.SetCurXLeft(xChordPos);    //and store this as the x position for this lmStaffObj
-//                }
 //            }
 //			else
 //            {
 //                //Is a rest or is a lmNote not in chord. Store its x position
-//                oTimepos.SetCurXLeft(pPaper->GetCursorX());
 //            }
 //
 //        }

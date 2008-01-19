@@ -154,7 +154,7 @@ void lmScoreConstrains::LoadSettings()
     //
 
     // allowed clefs and notes range
-    // default values: only G cleft allowed
+    // default values: only G clef allowed
     int i;
     bool fValue;
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {

@@ -64,8 +64,12 @@ private:
     lmLUnits ComputeSystemHeight(lmPaper* pPaper);
 	void ResetLocation(int nAbsMeasure);
     bool SplitMeasureColumn();
-
-
+	void AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMeasure, bool fDrawTimekey,
+				   lmVStaff* pVStaff, int nInstr, lmPaper* pPaper);
+	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper, lmVStaff* pVStaff,
+				int nInstr, int nRelMeasure);
+	void AddTime(lmTimeSignature* pTime, lmBox* pBox, lmPaper* pPaper, lmVStaff* pVStaff,
+				 int nInstr, int nRelMeasure);
 
 
         // member variables
@@ -79,13 +83,17 @@ private:
     int             m_nMeasuresInSystem;                        //the number of measures in current system
 
     // renderization options and parameters
-    double              m_rSpacingFactor;           //for proportional spacing of notes
+    float               m_rSpacingFactor;           //for proportional spacing of notes
     lmESpacingMethod    m_nSpacingMethod;           //fixed, proportional, etc.
     lmTenths            m_nSpacingValue;            //spacing for 'fixed' method
 
     // variables for debugging
     bool        m_fDebugMode;           //debug on/off
     long        m_nTraceMeasure;        //measure to trace. 0 = all
+
+    //for rendering the prolog
+	lmLUnits	m_uSpaceBeforeProlog;		//space between start of system and clef
+
 };
 
 

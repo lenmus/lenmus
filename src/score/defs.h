@@ -66,7 +66,8 @@ typedef wxPoint lmDPoint;           // a point in device units
 
 
 //some limits
-#define lmMAX_VOICE		8		//num of voices supported
+#define lmMAX_VOICE		8		//LIMIT: max. num of voices supported
+#define lmMAX_STAFF     4		//LIMIT: max. staves in an instrument
 
 // DC user mode
 #define lmDC_MODE    wxMM_LOMETRIC    // mode for DC (DC unit: one tenth of mm)

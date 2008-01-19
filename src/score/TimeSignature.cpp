@@ -52,6 +52,14 @@ lmTimeSignature::lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, b
     m_nType = eTS_Normal;
     m_nBeats = nBeats;
     m_nBeatType = nBeatType;
+
+    //contexts and shapes
+	for (int i=0; i < lmMAX_STAFF; i++)
+	{
+        m_pContext[i] = (lmContext*)NULL;
+	    m_pShapes[i] = (lmCompositeShape*)NULL;
+	}
+
 }
 
 lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible) :
@@ -60,6 +68,10 @@ lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, 
     m_nType = eTS_Normal;
     m_nBeats = GetNumUnitsFromTimeSignType(nTimeSign);
     m_nBeatType = GetBeatTypeFromTimeSignType(nTimeSign);
+
+    //contexts
+    for (int i=0; i < lmMAX_STAFF; i++)
+        m_pContext[i] = (lmContext*)NULL;
 }
 
 //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
@@ -191,15 +203,14 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
     //is necessary to repeat the shape in each staff of the instrument
     //So in the following loop we add a time signature shape for each VStaff of the
     //instrument
-    lmCompositeShape* pShape;
     lmLUnits yOffset = 0;
     lmStaff* pStaff = m_pVStaff->GetFirstStaff();
     for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
     {
         // Add the shape for time signature
-        pShape = CreateShape(pBox, pPaper, colorC,
-                             sTopGlyphs, uxPosTop, uyPosTop + yOffset,
-                             sBottomGlyphs, uxPosBottom, uyPosBottom + yOffset);
+        m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, colorC,
+									sTopGlyphs, uxPosTop, uyPosTop + yOffset,
+									sBottomGlyphs, uxPosBottom, uyPosBottom + yOffset);
 
         //compute vertical displacement for next staff
         yOffset += pStaff->GetHeight();
@@ -207,7 +218,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
     }
 
 	// set total width (incremented in one line for after space)
-	return pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
+	return m_pShapes[0]->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
 

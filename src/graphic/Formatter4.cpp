@@ -56,13 +56,12 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-
-
 lmFormatter4::lmFormatter4()
 {
     // set debugging options
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("Formater4"));
     m_nTraceMeasure = 1;
+
     //if (m_fDebugMode) {
     //    m_nTraceMeasure = ::wxGetNumberFromUser(
     //                            _T("Specify the measure to trace (0 for all measures)"),
@@ -109,7 +108,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
     // get options for renderization
     bool fStopStaffLinesAtFinalBarline = m_pScore->GetOptionBool(_T("StaffLines.StopAtFinalBarline"));
-    m_rSpacingFactor = m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
+    m_rSpacingFactor = (float) m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
     m_nSpacingMethod = (lmESpacingMethod) m_pScore->GetOptionLong(_T("Render.SpacingMethod"));
     m_nSpacingValue = (lmTenths) m_pScore->GetOptionLong(_T("Render.SpacingValue"));
 
@@ -127,6 +126,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             pVStaff->SetUpFonts(pPaper);
         }
     }
+
+	//Set up some spacing values, based on first instrument, first staff
+	lmTenths rSpaceBeforeProlog = 7.5f;			//TODO: User options
+	pInstr = m_pScore->GetFirstInstrument();
+	pVStaff = pInstr->GetVStaff(1);
+	m_uSpaceBeforeProlog = pVStaff->TenthsToLogical(rSpaceBeforeProlog, 1);
+
 
     // write score titles. Titles will be attached to current page (the fisr one)
     m_pScore->LayoutTitles(pBoxScore->GetCurrentPage(), pPaper);
@@ -184,6 +190,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         //set up tables for storing StaffObjs positioning information
         for (int i=1; i <= MAX_MEASURES_PER_SYSTEM; i++) {
             m_oTimepos[i].CleanTable();
+            m_oTimepos[i].SetParameters(m_rSpacingFactor, m_nSpacingMethod, m_nSpacingValue);
         }
 
         //-------------------------------------------------------------------------------
@@ -712,7 +719,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 			pBSV->SetYTop(yPaperPos);
 			pBSV->SetYBottom(yBottomLeft);
 
-            //The prolog must be rendered on each system, but the
+            //The prolog (clef and key signature) must be rendered on each system, but the
             //matching StaffObjs only exist in the first system. Therefore:
             //1. in the first system the prolog is rendered as part as the normal lmStaffObj
             //   rendering process.
@@ -721,7 +728,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             if (nSystem != 1 && nRelMeasure == 1)
 			{
 				pPaper->SetCursorX(xPaperPos);
-				pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
+				//pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
             }
 
             fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, nInstr, pPaper);
@@ -759,22 +766,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     *pNewSystem = fNewSystem;
     bool fTrace =  m_fDebugMode && (m_nTraceMeasure == 0 || m_nTraceMeasure == nAbsMeasure);
 
-    if (m_nSpacingMethod == esm_PropConstantFixed)
-    {
-        //proportional constant spacing.
-        return m_oTimepos[nRelMeasure].DoSpacingProportional(m_rSpacingFactor, fTrace);
-    }
-    else if (m_nSpacingMethod == esm_Fixed)
-    {
-        // fixed spacing
-        return m_oTimepos[nRelMeasure].DoSpacingFixed(m_nSpacingValue, fTrace);
-    }
-    else
-    {
-        wxASSERT(false);
-        return 0.0f;        //compiler happy
-    }
-    //return m_oTimepos[nRelMeasure].ArrangeStaffobjsByTime(fTrace);      //true = debug on
+    return m_oTimepos[nRelMeasure].DoSpacing(fTrace);
 
 }
 
@@ -873,7 +865,7 @@ void lmFormatter4::AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             if (nSystem != 1 && nRelMeasure == 1)
 			{
 				pPaper->SetCursorX(xPaperPos);
-				pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
+				//pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
             }
 
             //fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, pPaper);
@@ -1039,42 +1031,17 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 
     //start a voice for each staff
     lmLUnits xStart = pPaper->GetCursorX();
-    m_oTimepos[nRelMeasure].StartLines(nInstr, pVStaff);
+    m_oTimepos[nRelMeasure].StartLines(nInstr, xStart, pVStaff);
 
-    ////if this is not the first measure of the score advance (horizontally) a space to leave a gap
-    ////between the previous barline (or the prolog, if first measure in system) and the first note
-    //if (nAbsMeasure != 1)
-    //{
-    //    // If previous barline is not visible, do not add space
-
-    //    // Get the previous barline
-    //    lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
-    //    pIT->AdvanceToMeasure(nAbsMeasure);
-    //    pIT->BackToItemOfType(eSFOT_Barline);
-    //    if (!pIT->EndOfList())
-    //    {
-    //        // a barline found
-    //        //TODO: how do we know this is the previous barline?
-    //        lmStaffObj* pSO = pIT->GetCurrent();
-    //        if (pSO->IsVisible())
-    //        {
-    //            // the barline is visble. Add space
-    //            lmLUnits nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);    // two lines
-    //            pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
-				//m_oTimepos[nRelMeasure].SetSpace( nSpaceAfterBarline );
-    //       }
-
-    //    }
-    //    delete pIT;
-    //}
-
-    lmNote* pNote = (lmNote*)NULL;
-    lmNoteRest* pNoteRest = (lmNoteRest*)NULL;
-    lmClef* pClef = (lmClef*)NULL;
-    bool fPreviousWasClef = false;      //the previous lmStaffObj was a clef
-    lmLUnits nClefXPos=0;               //x left position of previous clef
-    int nClefStaffNum=0;                //number of staff in which the previous clef was located
-    lmLUnits xChordPos=0;               //position of base note of a chord
+    //The prolog (clef and key signature) must be rendered on each system, but the
+    //matching StaffObjs only exist in the first system. In the first system the prolog
+	//is rendered as part as the normal lmStaffObj rendering process, so there is nothig
+	//special to do to render the prolog But for the other systems we must force the
+	//rendering of the prolog because there are no StaffObjs representing the prolog.
+    if (nAbsMeasure != 1 && nRelMeasure == 1)
+	{
+		AddProlog(pBSV, nAbsMeasure, nRelMeasure, false, pVStaff, nInstr, pPaper);
+	}
 
     //loop to process all StaffObjs in this measure
 	int nCurVoice = 0;
@@ -1090,17 +1057,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 
         if (nType == eSFOT_Barline) break;         //End of measure: exit loop.
 
-		////set paper position at current paper pos for this voice
-		//int nVoice = nCurVoice;
-		//if (pSO->GetClass() == eSFOT_NoteRest)
-		//	nVoice = ((lmNoteRest*)pSO)->GetVoice();
-		//if (nCurVoice != nVoice)
-		//{
-		//	pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurPaperPosX(nInstr, nVoice));
-		//	nCurVoice = nVoice;
-		//}
-
-        if (nType == eSFOT_Control)
+        else if (nType == eSFOT_Control)
         {
             ESOCtrolType nCtrolType = ((lmSOControl*)pSO)->GetCtrolType();
             if(lmNEW_SYSTEM == nCtrolType)
@@ -1113,120 +1070,32 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 				wxASSERT(false);
 			}
         }
-        else
+
+        else if (nType == eSFOT_KeySignature)
 		{
-			//if this StaffObj is a NoteRest that is part of a chord its
-            //anchor x position must be the same than that of the base note
-            if (nType == eSFOT_NoteRest)
-			{
-   //             fNoteRestFound = true;
-   //             fPreviousWasClef = false;            //this lmStaffObj is not a clef
-   //             pNoteRest = (lmNoteRest*)pSO;
-   //             pNote = (lmNote*)pSO;        //AWARE we do not know yet if it is a note or a rest,
-   //                                     //but I force the casting to simplify next if statement
-   //             if (!pNoteRest->IsRest() && pNote->IsInChord())
-   //             {
-   //                 //this note is part of a chord
-   //                 if (pNote->IsBaseOfChord()) {
-   //                     //it is the base note. Save x position. All other notes in the
-   //                     // chord must be assigned the same x position
-   //                     xChordPos = pPaper->GetCursorX();    //save this position
-   //                 }
-			//		else {
-   //                     //All other notes in the chord must have the same x position
-   //                     //than the base note.
-   //                     pPaper->SetCursorX(xChordPos);        //Restore paper to note base x postion
-   //                 }
-   //             }
-            }
-
-			else
-			{
-                //it is not a lmNoteRest.
-
-                //if it is a clef or a key hide/unhide it in prologs
-                bool fHide = (nAbsMeasure != 1 && nRelMeasure == 1 && !fNoteRestFound);
-                if (nType == eSFOT_Clef) {
-                    ((lmClef*)pSO)->Hide(fHide);
-                }
-                if (nType == eSFOT_KeySignature) {
-                    ((lmKeySignature*)pSO)->Hide(fHide);
-                }
-
-     //           //if this is a key on the first measure of a system, add space before clef
-     //           if (nType == eSFOT_Clef && nRelMeasure == 1) {
-     //               //pPaper->IncrementCursorX( pVStaff->GetSpaceBeforeClef() );
-					//m_oTimepos[nRelMeasure].SetSpace( pVStaff->GetSpaceBeforeClef() );
-     //           }
-
-                //Store current x position for this lmStaffObj.
-                if (pSO->GetClass() == eSFOT_Clef)
-				{
-                    //if previous lmStaffObj was also a cleft and this new is in a
-                    //different staff than the previous one, the left position of this new
-                    //cleft must be the same than that of the previous clef so that
-                    //both clefs are aligned.
-                    pClef = (lmClef*)pSO;
-                    //int nStaff = pClef->GetStaffNum();
-                    // if (fPreviousWasClef && (nStaff != nClefStaffNum)) {
-                    //    pPaper->SetCursorX(nClefXPos);  //paper back to aling both clefs
-                    //}
-                }
-
-				//if it is a clef save xLeft position just in case the next
-                //lmStaffObj is also the clef for other staff
-                fPreviousWasClef = (pSO->GetClass() == eSFOT_Clef);
-                if (fPreviousWasClef) {
-                    pClef = (lmClef*)pSO;
-                    //nClefXPos = pPaper->GetCursorX();
-                    nClefStaffNum = pClef->GetStaffNum();
-                }
-            }
-
-			//here paper x position is adjusted.
-            //Layout this lmStaffObj (creates its shape)
-			//lmLUnits uPos = pPaper->GetCursorX();
 			pPaper->SetCursorX(xStart);
-            pSO->Layout(pBSV, pPaper);
+			AddKey((lmKeySignature*)pSO, pBSV, pPaper, pVStaff, nInstr, nRelMeasure);
+        }
 
-             //collect data about the lmStaffObj
-            lmTimeposTable& oTimepos = m_oTimepos[nRelMeasure];
-            if (nType == eSFOT_NoteRest) {
-                oTimepos.AddEntry(nInstr, ((lmNoteRest*)pSO)->GetVoice(), pSO->GetTimePos(), pSO);
-            } else {
-                oTimepos.AddEntry (nInstr, 0, -1, pSO);		//0=no voice, -1=no timepos
-            }
+        else if (nType == eSFOT_TimeSignature)
+		{
+			pPaper->SetCursorX(xStart);
+			AddTime((lmTimeSignature*)pSO, pBSV, pPaper, pVStaff, nInstr, nRelMeasure);
+		}
+
+		else
+		{
+            //if it is a clef or a key hide/unhide it in prologs
+            //bool fHide = (nAbsMeasure != 1 && nRelMeasure == 1 && !fNoteRestFound);
+            //if (nType == eSFOT_Clef) {
+            //    ((lmClef*)pSO)->Hide(fHide);
+            //}
+
+			//create this lmStaffObj shape and add to table
+			pPaper->SetCursorX(xStart);
+			pSO->Layout(pBSV, pPaper);
 			lmShape* pShape = pSO->GetShap2();
-            oTimepos.SetWidth( pShape->GetWidth() );
-
-            //oTimepos.SetCurXLeft(uPos);
-            //oTimepos.SetCurXFinal(pShape->GetXRight());
-            //oTimepos.SetCurXAnchor(pSO->GetAnchorPos());
-
-   //         // add after space
-   //         if (pSO->GetClass() == eSFOT_NoteRest) {
-   //             lmTenths rSpace;
-   //             if (m_nSpacingMethod == esm_PropConstantFixed) {
-   //                 //proportional constant spacing.
-   //                 pNoteRest = (lmNoteRest*)pSO;
-   //                 rSpace = pNoteRest->GetDuration()* m_rSpacingFactor;
-   //             }
-   //             else if (m_nSpacingMethod == esm_Fixed) {
-   //                 // fixed spacing
-   //                 rSpace = m_nSpacingValue;
-   //             }
-   //             else
-   //                 wxASSERT(false);
-
-   //             lmLUnits uSpace = pVStaff->TenthsToLogical(rSpace, pSO->GetStaffNum());
-   //             pPaper->IncrementCursorX( uSpace );
-   //         }
-			//else
-			//{
-   //             lmLUnits uSpace = pVStaff->TenthsToLogical(10);	//TODO: user options
-			//	m_oTimepos[nRelMeasure].SetSpace( uSpace );
-			//}
-
+			m_oTimepos[nRelMeasure].AddEntry(nInstr, pSO, pShape, false);
         }
 
         pIT->MoveNext();
@@ -1235,19 +1104,175 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 
     //The barline lmStaffObj is not included in the loop as it might not exist in the last
     //bar of a score. In theses cases, the loop is exited because the end of the score is
-    //reached. Let's verify if a barline exists
+    //reached. In any case we have to close the line
     if (pSO->GetClass() == eSFOT_Barline)
     {
 		//lmLUnits uPos = pPaper->GetCursorX();
+        pPaper->SetCursorX(xStart);
         pSO->Layout(pBSV, pPaper);
-        m_oTimepos[nRelMeasure].CloseLine(pSO);
+        lmShape* pShape = pSO->GetShap2();
+        m_oTimepos[nRelMeasure].CloseLine(pSO, pShape, xStart);
     }
     else
 	{
-        // no barline at the end of the measure. Close line anyway
-        m_oTimepos[nRelMeasure].CloseLine((lmStaffObj*)NULL);
+        // no barline at the end of the measure.
+        m_oTimepos[nRelMeasure].CloseLine((lmStaffObj*)NULL, (lmShape*)NULL, xStart);
     }
 
     return fNewSystem;
 }
+
+void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMeasure, 
+							 bool fDrawTimekey, lmVStaff* pVStaff, int nInstr, lmPaper* pPaper)
+{
+    // The prolog (clef and key signature) must be rendered on each system,
+    // but the matching StaffObjs only exist in the first system. Therefore, in the
+    // normal staffobj rendering process, the prolog would be rendered only in
+    // the first system.
+    // So, for the other systems it is necessary to force the rendering
+    // of the prolog because there are no StaffObjs representing it.
+    // This method does it.
+    //
+    // To know what clef, key and time signature to draw we take this information from the
+    // context associated to first note of the measure on each staff. If there are no notes,
+    // the context is taken from the barline. If, finally, no context is found, no prolog
+    // is drawn.
+
+    lmLUnits uPrologWidth = 0.0f;
+    lmClef* pClef = (lmClef*)NULL;
+    lmEClefType nClef = lmE_Undefined;
+    lmKeySignature* pKey = (lmKeySignature*)NULL;
+    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
+
+    //AWARE when this method is invoked the paper position must be at the left marging,
+    //at the start of a new system.
+    lmLUnits xStartPos = pPaper->GetCursorX() + m_uSpaceBeforeProlog;	//Save x to align all clefs
+    lmLUnits yStartPos = pPaper->GetCursorY();
+
+    //iterate over the collection of lmStaff objects to draw current clef and key signature
+
+    lmStaff* pStaff = pVStaff->GetFirstStaff();
+    lmLUnits uyOffset = pVStaff->GetTopMargin();
+    lmLUnits xPos = 0.0f;
+
+    lmContext* pContext = (lmContext*)NULL;
+    lmStaffObj* pSO = (lmStaffObj*) NULL;
+    lmNoteRest* pNR = (lmNoteRest*)NULL;
+    lmNote* pNote = (lmNote*)NULL;
+    for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); pStaff = pVStaff->GetNextStaff(), nStaff++)
+    {
+        xPos = xStartPos;
+
+        //locate first context for this staff
+        pContext = (lmContext*)NULL;
+        lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+        pIter->AdvanceToMeasure(nAbsMeasure);
+        while(!pIter->EndOfList())
+		{
+            pSO = pIter->GetCurrent();
+            if (pSO->GetClass() == eSFOT_NoteRest) {
+                pNR = (lmNoteRest*)pSO;
+                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff)
+				{
+                    //OK. Note fount. Take context
+                    pNote = (lmNote*)pSO;
+                    pContext = pNote->GetCurrentContext();
+                    break;
+                }
+            }
+            else if (pSO->GetClass() == eSFOT_Barline)
+			{
+				//end of measure reached. Take content
+                lmBarline* pBar = (lmBarline*)pSO;
+                pContext = pBar->GetContext(nStaff);
+                break;
+            }
+            pIter->MoveNext();
+        }
+        delete pIter;
+
+        if (pContext) {
+            pClef = pContext->GetClef();
+            pKey = pContext->GeyKey();
+            pTime = pContext->GetTime();
+
+            //render clef
+            if (pClef) {
+                nClef = pClef->GetClefType();
+				if (pClef->IsVisible()) {
+					lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
+					lmShape* pShape = pClef->AddShape(pBSV, pPaper, uPos);
+					xPos += pShape->GetWidth();
+					m_oTimepos[nRelMeasure].AddEntry(nInstr, pClef, pShape, true);
+				}
+            }
+
+            //render key signature
+            if (pKey && pKey->IsVisible()) {
+                wxASSERT(nClef != lmE_Undefined);
+                lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
+                lmShape* pShape = pKey->CreateShape(pBSV, pPaper, uPos, nClef, pStaff);
+				xPos += pShape->GetWidth();
+				m_oTimepos[nRelMeasure].AddEntry(nInstr, pKey, pShape, true);
+            }
+
+        }
+
+        //compute prolog width
+        uPrologWidth = wxMax(uPrologWidth, xPos - xStartPos);
+
+        //compute vertical displacement for next staff
+        uyOffset += pStaff->GetHeight();
+        uyOffset += pStaff->GetAfterSpace();
+
+    }
+
+    // update paper cursor position
+    pPaper->SetCursorX(xStartPos + uPrologWidth);
+
+}
+
+void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper,
+						  lmVStaff* pVStaff, int nInstr, int nRelMeasure)
+{
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating all the shape objects for all staves of this instrument
+	// and adding them to the graphical model and to the Timepos table
+
+    //create the shapes
+    pKey->Layout(pBox, pPaper);
+
+	//add the shapes to the timepos table
+	lmShape* pMainShape = pKey->GetShap2();
+    for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
+    {
+        lmShape* pShape = pKey->GetShape(nStaff);
+		m_oTimepos[nRelMeasure].AddEntry(nInstr, pKey, pShape,
+										 (pShape != pMainShape), nStaff);
+    }
+
+}
+
+
+void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox, lmPaper* pPaper,
+						   lmVStaff* pVStaff, int nInstr, int nRelMeasure)
+{
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating all the shape objects for all staves of this instrument
+	// and adding them to the graphical model and to the timepos table
+
+    //create the shapes
+    pTime->Layout(pBox, pPaper);
+
+	//add the shapes to the timepos table
+	lmShape* pMainShape = pTime->GetShap2();
+    for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
+    {
+        lmShape* pShape = pTime->GetShape(nStaff);
+		m_oTimepos[nRelMeasure].AddEntry(nInstr, pTime, pShape,
+										 (pShape != pMainShape), nStaff);
+    }
+
+}
+
 

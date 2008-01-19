@@ -72,11 +72,18 @@ public:
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
 
     //context management
-    lmContext* NewContext(lmContext* pCurrentContext, int nNewAccidentals, int nStep);
+    lmContext* NewContextAfter(lmClef* pClef, lmContext* pPrevContext=NULL);
+    lmContext* NewContextAfter(lmKeySignature* pKey, lmContext* pPrevContext=NULL);
+    lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext=NULL);
+    inline lmContext* GetLastContext() { return m_pLastContext; }
 
+    //debug
     wxString Dump();
 
 private:
+	//contexts management
+	void InsertContextAfter(lmContext* pNew, lmContext* pPrev);
+
     lmLUnits    m_uLineThickness;	// in logical units
     int         m_nNumLines;
     lmLUnits    m_uSpacing;			// in logical units (thousandths of a mm.,microns)
@@ -87,7 +94,11 @@ private:
     lmLUnits    m_uAfterSpace;
 
 
-	//cursor (for edition). Points to current insertion position for this staff
+	//Contexts are organized as a double linked list. First and last nodes:
+	lmContext*		m_pFirstContext;
+	lmContext*		m_pLastContext;
+
+    //cursor (for edition). Points to current insertion position for this staff
 
 
 

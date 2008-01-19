@@ -57,6 +57,8 @@ public:
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	wxString GetName() const { return _T("time signature"); }
 
+	//rederizarion
+	inline lmShape* GetShape(int nStaff) { return m_pShapes[nStaff-1]; }
 
 
     //    debugging
@@ -72,8 +74,8 @@ public:
     int GetBeatType() { return m_nBeatType; }
 
 	//context management
-	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
-    inline lmContext* GetContext() { return m_pContext; }
+    inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }
+    inline lmContext* GetContext(int nStaff) { return m_pContext[nStaff-1]; }
 
 
 private:
@@ -85,7 +87,8 @@ private:
 
     // member variables
 
-	lmContext*		m_pContext;			//context created by this time signature
+    lmContext*			m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
+    lmCompositeShape*	m_pShapes[lmMAX_STAFF];		//a shape for each staff
 
 	// attributes
     int				m_nBeats;

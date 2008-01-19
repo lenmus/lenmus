@@ -54,7 +54,6 @@ public:
     inline lmClef* GetClef() const { return m_pClef; }
     inline lmKeySignature* GeyKey() const { return m_pKey; }
     inline lmTimeSignature* GetTime() const { return m_pTime; }
-	inline int GetNumStaff() { return m_nStaff; }
 
 	//navigation and list management
 	inline lmContext* GetPrev() const { return m_pPrev; }
@@ -62,8 +61,6 @@ public:
 	inline void SetPrev(lmContext* pPrev) { m_pPrev = pPrev; }
 	inline void SetNext(lmContext* pNext) { m_pNext = pNext; }
 
-	//other
-	bool AppliesTo(int nStaff) { return (m_nStaff==0 || nStaff==m_nStaff); }
 
 
 private:
@@ -79,9 +76,6 @@ private:
     //the next array keeps information about the accidentals applicable to each
     //note. Each element refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     int     m_nAccidentals[7];
-
-    //staff to which this context applies (1..n). 0 if applicable to all
-    int     m_nStaff;				
 
 	//Contexts are organized as a double linked list. Here are the links
 	lmContext*		m_pNext;		//pointer to next context 

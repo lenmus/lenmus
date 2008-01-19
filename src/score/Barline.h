@@ -26,7 +26,6 @@
 #pragma interface "Barline.cpp"
 #endif
 
-
 #include "wx/dc.h"
 
 
@@ -39,7 +38,7 @@ class lmBarline:  public lmStaffObj
 public:
     //constructor and destructor
     lmBarline(lmEBarline nBarlineType, lmVStaff* pStaff, bool fVisible);
-    ~lmBarline() {}
+    ~lmBarline();
 
 	wxString GetName() const { return _T("barline"); }
 
@@ -52,9 +51,9 @@ public:
 
         //specific methods for barline
 
-    //deal with contexts array
-	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
-    inline lmContext* GetContext() { return m_pContext; }
+	//context management
+    inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }
+    inline lmContext* GetContext(int nStaff) { return m_pContext[nStaff-1]; }
 
     //positioning
     //void SetLocation(lmLUnits uxPos, lmELocationType nType);
@@ -69,8 +68,8 @@ public:
 
 
 private:
-    lmEBarline          m_nBarlineType;     //type of barline
-	lmContext*			m_pContext;			//ptr to current context
+    lmEBarline          m_nBarlineType;             //type of barline
+    lmContext*          m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
 
     lmLUnits            m_uxUserPos;
     lmELocationType     m_xUserPosType;

@@ -32,7 +32,7 @@
 		<Cursor position="4140" topLine="94" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="81761" topLine="2247" />
+		<Cursor position="81761" topLine="2250" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
@@ -52,8 +52,8 @@
 	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="55">
 		<Cursor position="7903" topLine="231" />
 	</File>
-	<File name="../../src/app/ScoreDoc.cpp" open="1" top="1" tabpos="58">
-		<Cursor position="4888" topLine="143" />
+	<File name="../../src/app/ScoreDoc.cpp" open="1" top="0" tabpos="58">
+		<Cursor position="4561" topLine="134" />
 	</File>
 	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="56">
 		<Cursor position="58077" topLine="1567" />
@@ -179,7 +179,7 @@
 		<Cursor position="4590" topLine="111" />
 	</File>
 	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="54">
-		<Cursor position="24514" topLine="586" />
+		<Cursor position="24514" topLine="415" />
 	</File>
 	<File name="../../src/graphic/GraphicManager.cpp" open="0" top="0" tabpos="36">
 		<Cursor position="8442" topLine="237" />
@@ -251,7 +251,7 @@
 		<Cursor position="7500" topLine="201" />
 	</File>
 	<File name="../../src/html/TheoMusicReadingCtrolParms.h" open="1" top="0" tabpos="52">
-		<Cursor position="5569" topLine="27" />
+		<Cursor position="5569" topLine="86" />
 	</File>
 	<File name="../../src/ldp_parser/AuxString.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="14697" topLine="433" />

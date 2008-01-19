@@ -196,22 +196,24 @@ void lmScoreObj::ResetObjectLocation()
 	//wxLogMessage(sSource);
 }
 
-void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uLeft)
+void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
 { 
-    // update this StaffObj origin and shape position
-	lmUPoint uNewOrg = GetOrigin();
-	uNewOrg.x += uLeft;
-    SetOrigin(uNewOrg);
+ //   //update this StaffObj origin and shape position
+	//lmUPoint uNewOrg = GetOrigin();
+ //   lmLUnits uxShift = uLeft - uNewOrg.x;
+	//uNewOrg.x += uLeft;
+ //   SetOrigin(uNewOrg);
 
-    if (m_pShape) m_pShape->Shift(uLeft, 0.0);
+    if (m_pShape) m_pShape->Shift(uxShift, 0.0);
 
 	//DBG ------------------------------------------------------------------------
+    if (m_pShape) wxLogMessage(_T("Shift shape: uxShift=%.2f"), uxShift);
 	if (GetScoreObjType() == lmSOT_ComponentObj 
 		&& ((lmComponentObj*)this)->GetType() == eSCOT_StaffObj 
 		&& ((lmStaffObj*)this)->GetClass() == eSFOT_KeySignature )
 	{
-		wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uLeft=%.2f"),
-			uLeft );
+		wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f"),
+			uxShift );
 		if (m_pShape) wxLogMessage( m_pShape->Dump(0) );
 		wxLogMessage( this->Dump() );
 	}
@@ -222,7 +224,7 @@ void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uLeft)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         { 
-            (*m_pAuxObjs)[i]->StoreOriginAndShiftShapes(uLeft);
+            (*m_pAuxObjs)[i]->StoreOriginAndShiftShapes(uxShift);
         }
     }
 
@@ -596,7 +598,7 @@ lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
 
 lmContext* lmStaffObj::GetCurrentContext() 
 { 
-	// Returns the context that is applicable to the received StaffObj.
+	// Returns the context that is applicable to the this StaffObj.
 	// AWARE: Only Clef, key signature and time signature are updated. To get
 	//	applicable accidentals use NewUpdatedContext() instead.
 	return m_pVStaff->GetCurrentContext(this);

@@ -56,21 +56,20 @@ public:
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
 
-    //rendering related methods
-	lmLUnits AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, lmEClefType nClef,
-                    int nStaff, wxColour colorC = *wxBLACK);
+    //renderization
+    lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+					              lmEClefType nClef, lmStaff* pStaff, wxColour colorC=*wxBLACK);
+	inline lmShape* GetShape(int nStaff) { return m_pShapes[nStaff-1]; }
 
     //methods for hiding the key in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }
 
 	//context management
-	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
-    inline lmContext* GetContext() { return m_pContext; }
+    inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }
+    inline lmContext* GetContext(int nStaff) { return m_pContext[nStaff-1]; }
 
 
 private:
-    lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					              lmEClefType nClef, wxColour colorC, lmStaff* pStaff);
     lmShape* AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uPos,
 					       wxColour colorC, lmStaff* pStaff);
 
@@ -83,7 +82,8 @@ private:
 											//	redundant enumaeration and fifths/mode pair
     lmEKeySignatures	m_nKeySignature;
     int					m_nFifths;
-	lmContext*			m_pContext;			//context created by this key signature
+    lmContext*          m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
+    lmCompositeShape*	m_pShapes[lmMAX_STAFF];		//a shape for each staff
 
 };
 

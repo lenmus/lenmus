@@ -129,7 +129,6 @@ public:
 
     // rendering methods
     lmLUnits LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos);
-	void AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);
@@ -168,14 +167,8 @@ public:
                        int nNewAccidentals, lmContext* pCurrentContext);
 	lmContext* GetCurrentContext(lmStaffObj* pSO);
 	lmContext* NewUpdatedContext(lmStaffObj* pSO);
-	lmContext* FindCurrentContext(lmContext* pContext, int nStaff);
 	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
 	lmContext* NewUpdatedLastContext(int nStaff);
-
-	//new context management
-    lmContext* NewContextAfter(lmClef* pClef, lmContext* pPrevContext);
-    lmContext* NewContextAfter(lmKeySignature* pKey, lmContext* pPrevContext);
-    lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext);
 	lmContext* GetLastContext(int nStaff);
 
     //sound related methods
@@ -185,6 +178,7 @@ public:
     bool GetXPosFinalBarline(lmLUnits* pPos);
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
+	inline lmLUnits GetTopMargin() const { return m_topMargin; }
 
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
@@ -197,8 +191,6 @@ private:
     //common code for all time signatures types
     lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
 
-	//contexts management
-	void InsertContextAfter(lmContext* pNew, lmContext* pPrev);
 
 
         // member variables
@@ -225,12 +217,6 @@ private:
 
     //for drawing prolog
     lmLUnits    m_nSpaceBeforeClef;
-
-	//context related variables
-	//Contexts are organized as a double linked list. First and last nodes:
-	lmContext*		m_pFirstContext;
-	lmContext*		m_pLastContext;
-
 
 };
 

@@ -42,34 +42,50 @@ enum eTimeposEntryType
     eOmega,                 //end of voice
 };
 
+class lmTimeposTable;
 
 // Definition of an entry of the timepos table
 class lmTimeposEntry
 {
 public:
     // constructor and destructor
-    lmTimeposEntry(eTimeposEntryType nType, lmStaffObj* pSO, float rTimePos)
+    lmTimeposEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape, bool fProlog)
 	{
         m_nType = nType;
         m_pSO = pSO;
-        m_rTimePos = rTimePos;
-        m_uSize = 0.0f;
+        m_pShape = pShape;
+		m_fProlog = fProlog;
+
         m_uSpace = 0.0f;
-        m_xLeft = 0.0f;
-        m_xInitialLeft = 0.0f;
-        m_uxAnchor = 0.0f;
         m_xFinal = 0.0f;
+
+        if (pSO && (pSO->GetClass() == eSFOT_NoteRest || pSO->GetClass() == eSFOT_Barline))
+            m_rTimePos = pSO->GetTimePos();
+        else
+            m_rTimePos = -1.0f;
+        m_uSize = (pShape ? pShape->GetWidth() : 0.0f);
+        m_xLeft = (pShape ? pShape->GetXLeft() : 0.0f);
+        m_xInitialLeft = m_xLeft;
+        m_uxAnchor = (pSO ? pSO->GetAnchorPos() : m_xLeft);
+
     }
     ~lmTimeposEntry() {}
 
+	void AssignSpace(lmTimeposTable* pTT);
+	void SetNoteRestSpace(lmTimeposTable* pTT);
 	void Reposition(lmLUnits uxPos)
 	{
 		//reposition Shape
-        m_pSO->StoreOriginAndShiftShapes(uxPos);
+        wxLogMessage(_T("Reposition: old xLeft=%.2f, new xLeft=%.2f"), m_xInitialLeft, uxPos);
+        lmLUnits uShift = uxPos - m_xInitialLeft;
+		if (!m_fProlog)
+			m_pSO->StoreOriginAndShiftShapes( uShift );
+		else
+			m_pShape->Shift(uShift, 0.0);
 
 		//update entry data
 		m_xLeft = uxPos;
-		m_uxAnchor = uxPos;
+		m_uxAnchor += uShift;
 		m_xInitialLeft = uxPos;
 		m_xFinal = uxPos + m_uSpace;
 	}
@@ -78,6 +94,8 @@ public:
     //----------------------------------------------------------------------------
     eTimeposEntryType m_nType;      //type of entry
     lmStaffObj*     m_pSO;          //ptr to the StaffObj
+    lmShape*        m_pShape;       //ptr to the shape
+	bool			m_fProlog;
     float           m_rTimePos;     //timepos for this pSO or -1 if not anchored in time
     lmLUnits        m_uSize;        //size of this StaffObj
     lmLUnits        m_uSpace;       //space after this StaffObj
@@ -95,13 +113,13 @@ class lmTimeposTable;
 class lmTimeLine
 {
 public:
-    lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice);
+    lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart);
     ~lmTimeLine();
 
-	lmTimeposEntry* AddEntry(eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO);
+	lmTimeposEntry* AddEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
+							 bool fProlog);
 	lmLUnits ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart);
 
-	void SetCurXLeft(lmLUnits uValue);
 	lmLUnits GetMaxXFinal();
 	inline lmLUnits GetXStartLine() { return m_aMainTable[0]->m_xLeft; }	//xLeft of alpha entry
 
@@ -111,14 +129,14 @@ public:
 	//spacing algorithm
 	lmLUnits IntitializeSpacingAlgorithm();
 	float SetTimedObjects(float rTime, lmLUnits uxPos, float rFactor);
-	//lmLUnits SetInitialNotTimedObjects(lmLUnits uxPos);
-	lmLUnits SetNoteRestSpace(float rFactor, float rDmin, lmNoteRest* pSO, lmLUnits uxWidth);
 	lmLUnits GetPosForTime(float rTime);
 	lmLUnits GetLineWidth();
 
 	
 //private:
-    lmTimeposEntry*  NewEntry(eTimeposEntryType nType, float rTimePos, lmStaffObj* pSO);
+    lmTimeposEntry*  NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
+							  bool fProlog);
+
 	#define lmItEntries		std::vector<lmTimeposEntry*>::iterator
 
 	lmTimeposTable*					m_pOwner;		//the owner of this line
@@ -142,56 +160,49 @@ public:
     lmTimeposTable();
     ~lmTimeposTable();
 
-    void StartLines(int nInstr, lmVStaff* pVStaff);
-    void CloseLine(lmStaffObj* pSO);
-    void AddEntry(int nInstr, int nVoice, float rTimePos, lmStaffObj* pSO);
+    void SetParameters(float rSpacingFactor, lmESpacingMethod nSpacingMethod,
+                       lmTenths nSpacingValue);
+    void StartLines(int nInstr, lmLUnits uxStart, lmVStaff* pVStaff);
+    void CloseLine(lmStaffObj* pSO, lmShape* pShape, lmLUnits xStart);
+    void AddEntry(int nInstr, lmStaffObj* pSO, lmShape* pShape, bool fProlog, int nStaff=0);
     void CleanTable();
-
-    // access to the last added entry
-    void SetCurXLeft(lmLUnits uValue);
-    lmLUnits GetCurXLeft();
-	void SetCurXFinal(lmLUnits uValue);
-    void SetCurXAnchor(lmLUnits uValue);
-	void SetSpace(lmLUnits uValue);
-	void SetWidth(lmLUnits uValue);
-
-	//access to the last entry for a voice
-	lmLUnits GetCurPaperPosX(int nInstr, int nVoice);
-
 
     //methods to compute results
     lmLUnits GetStartOfBarPosition();
     lmLUnits GetGrossBarSize();
-    lmLUnits DoSpacingFixed(lmTenths nSpacingValue, bool fTrace = false);
-    lmLUnits DoSpacingProportional(double nSpacingFactor, bool fTrace = false);
+    lmLUnits DoSpacing(bool fTrace = false);
     lmLUnits RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart);
 
     //methods for spacing
     lmLUnits ComputeSpacing(float rFactor);
 	lmLUnits TenthsToLogical(lmTenths rTenths, int nStaff); 
-
+    inline lmESpacingMethod SpacingMethod() const { return m_nSpacingMethod; }
+    inline lmTenths FixedSpacingValue() const { return m_rSpacingValue; }
+	inline float SpacingFactor() const { return m_rSpacingFactor; }
 
     //methods for debugging
     wxString DumpTimeposTable();
 
 
 private:
-    void StartLine(int nInstr, int nVoice=0);
+	void AddEntry(int nInstr, int nVoice, lmStaffObj* pSO, lmShape* pShape, bool fProlog);
+    void StartLine(int nInstr, int nVoice=0, lmLUnits uxStart = -1.0f);
 	lmTimeLine* FindLine(int nInstr, int nVoice);
 
 	#define lmItTimeLine	std::vector<lmTimeLine*>::iterator
 
 
 private:
-    enum {
-        lmMAX_STAFF=4,		//LIMIT: max. staves in an instrument
-    };
     int					m_nCurVoice[lmMAX_STAFF];	//num of current voice for each staff
 	lmStaff*			m_pStaff[lmMAX_STAFF];		//staff (used to compute spacing)
 	lmTimeposEntry*		m_pCurEntry;				//ptr to last added entry
 	lmItTimeLine		m_itCurLine;				//iter pointing to current line
 	std::vector<lmTimeLine*>	m_aLines;			//the music lines
 
+    //formatter parameters
+    float               m_rSpacingFactor;           //for proportional spacing of notes
+    lmESpacingMethod    m_nSpacingMethod;           //fixed, proportional, etc.
+    lmTenths            m_rSpacingValue;            //spacing for 'fixed' method
 
 };
 

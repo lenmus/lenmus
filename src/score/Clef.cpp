@@ -135,6 +135,8 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //create the shape object
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
+    wxLogMessage(_T("[lmClef::LayoutObject] Shape xPaper=%.2f, xPos=%.2f, xOrg=%.2f"),
+                 pPaper->GetCursorX(), uPos.x, GetOrigin().x);
 	pBox->AddShape(pShape);
     m_pShape = pShape;
 
@@ -144,7 +146,7 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
 }
 
-lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+lmShape* lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					  wxColour colorC)
 {
     // This method is, primarely, to be used when rendering the prolog
@@ -162,7 +164,7 @@ lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 										  pPaper, lmUPoint(uPos.x, yPos), 
 										  _T("Clef"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    return pShape->GetWidth();
+    return pShape;
 }
 
 wxString lmClef::Dump()
@@ -207,6 +209,7 @@ wxString lmClef::SourceXML(int nIndent)
     sSource += _T("TODO: lmClef XML Source code generation method\n");
     return sSource;
 }
+
 
 //
 // global functions related to clefs

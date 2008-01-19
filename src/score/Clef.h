@@ -58,7 +58,7 @@ public:
     wxString SourceXML(int nIndent);
 
     //rendering related methods
-	lmLUnits AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+	lmShape* AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					  wxColour colorC = *wxBLACK);
 
     //methods for hiding the clef in prologs

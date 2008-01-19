@@ -426,10 +426,10 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
     {
         sTag = pElement->GetName();
 
-        // <cleft> tag ------------------------------------------------------
+        // <clef> tag ------------------------------------------------------
         if (sTag == _T("clef")) {
             wxString sDbgTag = _T(">:<") + sTag;
-            wxString sClef = _T("G");            //<cleft> default values
+            wxString sClef = _T("G");            //<clef> default values
             wxString sLine = _T("4");
             wxString sStaffNumber = _T("1");
 
@@ -437,7 +437,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
             sStaffNumber = GetAttribute(pNode, _T("number"));
             if (sStaffNumber.IsEmpty()) sStaffNumber = _T("1");
 
-            // get cleft data
+            // get clef data
             wxXmlNode* pChild = GetFirstChild(pNode);
             wxXmlNode* pElmnt = pChild;
             while (pElmnt) {

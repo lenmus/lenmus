@@ -59,10 +59,23 @@ lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits uUnits)
     m_uAfterSpace = lmToLogicalUnits(10, lmMILLIMETERS);    // 10 mm
     m_uLeftMargin = 0;
     m_uRightMargin = 0;
+
+	//contexts
+	m_pFirstContext = (lmContext*)NULL;
+	m_pLastContext = (lmContext*)NULL;
 }
 
 lmStaff::~lmStaff()
 {
+	//delete contexts
+	lmContext* pCT = m_pFirstContext;
+	while(pCT)
+	{
+		lmContext* pNext = pCT->GetNext();
+		delete pCT;;
+		pCT = pNext;
+	}
+
 }
 
 lmLUnits lmStaff::GetHeight()
@@ -73,62 +86,105 @@ lmLUnits lmStaff::GetHeight()
 
 }
 
-lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, int nStep)
-{
-	return (lmContext*)NULL;
-    ////locate context received
-    //int nNodeIndex = m_cContext.IndexOf(pCurrentContext);
-    //wxASSERT(nNodeIndex != wxNOT_FOUND);
-
-    ////create a new context and store it
-    //lmContext* pNewContext = new lmContext(pCurrentContext->GetClef(),
-    //                                pCurrentContext->GeyKey(),
-    //                                pCurrentContext->GetTime() );
-    //pNewContext->CopyAccidentals(pCurrentContext);
-    //pNewContext->SetAccidental(nStep, nNewAccidentals);
-
-    ////insert new context after the received one
-    //m_cContext.Insert(++nNodeIndex, pNewContext);
-    //return pNewContext;
-
-    /*AWARE
-      propagation of changes to following contexts until a start of measure found.
-
-      Two problems had to be solved:
-
-        Problem 1: How to propagate changes to Notes using the context ?
-            When an accidental is inserted in/ deleted from a note it is the note who must
-            invoke for a change in context. And context propagates changes to the start of
-            a new measure. To update pitch I devise two alternatives:
-            1. If notes does not have precomputed pitch but it is computed when needed, nothing
-                else must be done: context is updated and pitch will be updated when required.
-            2. If notes must have pitch updated, then context must invoke a process to update
-                the pitch of all notes in the measure.
-
-        Problem 2: How to know when the start of measure is reached ?
-            The context must keep information about the measure in which it is created.
-            If, for example, the next context was created three measures later, how do we know
-            were to create a new context and what are the affected staffobj? ->
-            There MUST exist a context for each measure. Too expensive?
-
-        A third alternative could solve both problems and keep picth updated: When an accidental
-        is inserted in or deleted from a note this note invokes a method (in lmVStaff) to update
-        contexts. lmVStaff, through the lmColStaffObjs, has information
-        about where each measure starts and which StaffObjs belong to each staff. So lmVStaff
-        can locate
-        the starting note and ask all remaining notes (from that one until the end of that measure)
-        to update their contexts.
-
-        Solution:
-        In current implementation I use the third alternative, so in this method it is
-        not necessary to do anything about, as te lmVStaff method OnContextUpdated() takes care
-        of everything
-    */
-
-}
-
 wxString lmStaff::Dump()
 {
     wxString sDump = _T("Staff\n");
     return sDump;
 }
+
+//----------------------------------------------------------------------------------------
+// context management
+//----------------------------------------------------------------------------------------
+
+lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
+{
+    if (!pPrevContext) pPrevContext = m_pLastContext;
+
+    //get current values
+    lmKeySignature* pKey = (lmKeySignature*)NULL;
+    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
+    if (pPrevContext)
+	{
+        pKey = pPrevContext->GeyKey();
+        pTime = pPrevContext->GetTime();
+    }
+
+	//create the new context
+	int nStaff = pNewClef->GetStaffNum();
+	lmContext* pNewContext = new lmContext(pNewClef, pKey, pTime, nStaff);
+	if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
+
+	//chain it in the list
+    InsertContextAfter(pNewContext, pPrevContext);
+	return pNewContext;
+}
+
+lmContext* lmStaff::NewContextAfter(lmKeySignature* pNewKey, lmContext* pPrevContext)
+{
+    if (!pPrevContext) pPrevContext = m_pLastContext;
+
+    //get current values
+    lmClef* pClef = (lmClef*)NULL;
+    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
+    if (pPrevContext)
+	{
+        pClef = pPrevContext->GetClef();
+        pTime = pPrevContext->GetTime();
+    }
+
+	//create the new context
+    lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime, 0);
+
+	//chain it in the list
+    InsertContextAfter(pNewContext, pPrevContext);
+	return pNewContext;
+}
+
+lmContext* lmStaff::NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext)
+{
+    if (!pPrevContext) pPrevContext = m_pLastContext;
+
+    //get current values
+    lmClef* pClef = (lmClef*)NULL;
+    lmKeySignature* pKey = (lmKeySignature*)NULL;
+    if (pPrevContext)
+	{
+        pClef = pPrevContext->GetClef();
+        pKey = pPrevContext->GeyKey();
+    }
+
+	//create the new context
+    lmContext* pNewContext = new lmContext(pClef, pKey, pNewTime, 0);
+    if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
+
+	//chain it in the list
+    InsertContextAfter(pNewContext, pPrevContext);
+	return pNewContext;
+}
+
+void lmStaff::InsertContextAfter(lmContext* pNew, lmContext* pPrev)
+{
+	if (pPrev)
+	{
+		//this is not the first context. Chain it after pPrevContext
+		lmContext* pNext = pPrev->GetNext();
+		pNew->SetPrev(pPrev);
+		pNew->SetNext(pNext);
+
+		//update old links in prev and next nodes
+		pPrev->SetNext(pNew);
+		if (pNext) pNext->SetPrev(pNew);
+
+		//update ptr to last node
+		if(pPrev == m_pLastContext)
+			m_pLastContext = pNew;	
+	}
+	else
+	{
+		//this is the first context. Insert it in front of list
+		//update ptrs to first and last nodes
+		m_pFirstContext = pNew;
+		m_pLastContext = pNew;
+	}
+}
+

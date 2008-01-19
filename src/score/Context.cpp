@@ -43,7 +43,6 @@ lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime
     m_pClef = pClef;
     m_pKey = pKey;
     m_pTime = pTime;
-	m_nStaff = nStaff;
 
     InitializeAccidentals();
 	m_pPrev = (lmContext*) NULL;
@@ -55,7 +54,6 @@ lmContext::lmContext(lmContext* pContext)
     m_pClef = pContext->GetClef();
     m_pKey = pContext->GeyKey();
     m_pTime = pContext->GetTime();
-	m_nStaff = pContext->GetNumStaff();
 
     CopyAccidentals(pContext);
 	m_pPrev = (lmContext*) NULL;

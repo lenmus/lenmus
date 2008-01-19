@@ -105,6 +105,13 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
 
     SetKeySignatureType();
 
+    //contexts and shapes
+	for (int i=0; i < lmMAX_STAFF; i++)
+	{
+        m_pContext[i] = (lmContext*)NULL;
+	    m_pShapes[i] = (lmCompositeShape*)NULL;
+	}
+
     g_pLogger->LogTrace(_T("lmKeySignature"),
         _T("[lmKeySignature::lmKeySignature] m_nFifths=%d, m_fMajor=%s, nKey=%d"),
             m_nFifths, (m_fMajor ? _T("yes") : _T("no")), m_nKeySignature );
@@ -180,16 +187,15 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
     //is necessary to repeat the shape in each staff of the instrument
     //So in the following loop we add the key signature shape for each VStaff of the
     //instrument
-    lmCompositeShape* pShape;
     lmStaff* pStaff = m_pVStaff->GetFirstStaff();
     for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
     {
         //get current clef
-        lmClef* pClef = m_pContext->GetClef();
+        lmClef* pClef = m_pContext[nStaff-1]->GetClef();
         lmEClefType nClef = pClef->GetClefType();
 
         // Add the shape for key signature
-        pShape = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, colorC, pStaff);
+        m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, pStaff, colorC);
 
         //compute vertical displacement for next staff
         uyTop += pStaff->GetHeight();
@@ -197,12 +203,12 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
     }
 
 	// set total width (incremented in one line for after space)
-	return pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
+	return m_pShapes[0]->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
 
 lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					              lmEClefType nClef, wxColour colorC, lmStaff* pStaff)
+					              lmEClefType nClef, lmStaff* pStaff, wxColour colorC)
 {
     // This method is also used when rendering the prolog
 
@@ -396,22 +402,6 @@ lmShape* lmKeySignature::AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uP
     return new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
 							lmUPoint(uPos.x, yPos), _T("Accidental"));
 
-}
-
-lmLUnits lmKeySignature::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, lmEClefType nClef,
-                    int nStaff, wxColour colorC)
-{
-    // This method is, primarely, to be used when rendering the prolog
-    // Returns the width of the draw
-
-
-    // get the staff
-    lmStaff* pStaff = m_pVStaff->GetStaff(nStaff);
-
-    // create the shape for key signature
-    lmShape* pShape = CreateShape(pBox, pPaper, uPos, nClef, colorC, pStaff);
-
-    return pShape->GetWidth();
 }
 
 void lmKeySignature::SetKeySignatureType()

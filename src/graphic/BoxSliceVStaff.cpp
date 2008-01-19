@@ -129,7 +129,7 @@ void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
     //    if (pSO->GetClass() == eSFOT_Clef) {
     //        //clefs don't consume space until a lmStaffObj of other type is found
     //        if (!fSpacePending) {
-    //            //This is the first cleft. Save paper position
+    //            //This is the first clef. Save paper position
     //            xClefs = pPaper->GetCursorX();
     //            fSpacePending = true;
     //            nMaxClefWidth = 0;
