@@ -164,7 +164,6 @@ class lmNote;
 class lmRest;
 
 class lmStaff;
-class StaffList;
 class lmContext;
 class lmSoundManager;
 class lmObjOptions;
@@ -223,12 +222,6 @@ public:
 
 	//---- specific methods of this class ------------------------
 
-    lmInstrument* AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
-                                wxString sName, wxString sAbbrev=_T(""));
-    lmInstrument* AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
-                                lmScoreText* pName, lmScoreText* pAbbrev);
-
-    lmVStaff* GetVStaff(int nInstr, int nVStaff=1);
     int GetNumMeasures();
 
     // play methods
@@ -258,13 +251,15 @@ public:
     wxString SourceXML(wxString sFilename = _T(""));
     wxString DumpMidiEvents(wxString sFilename = _T(""));
 
+	// instrument related
     int GetNumInstruments() { return (int)m_cInstruments.size(); }
-
-    //// Friend methods for lmFormatter object
-
-    //iterator over instruments list
     lmInstrument* GetFirstInstrument();
     lmInstrument* GetNextInstrument();
+    lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
+                                wxString sName, wxString sAbbrev=_T(""));
+    lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
+                                lmScoreText* pName, lmScoreText* pAbbrev);
+
 
     // titles related methods
     void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
@@ -274,6 +269,7 @@ public:
     // identification
     wxString GetScoreName();
     void SetScoreName(wxString sName);
+    inline long GetID() const { return m_nID; }
 
     // methods related to MusicXML import/export
     lmInstrument* XML_FindInstrument(wxString sId);
@@ -296,9 +292,12 @@ public:
 	bool IsMeasureModified(int nMeasure);
 	void ResetMeasuresModified();
 
+	////cursor management
+	//CursorFwd();
+	//CursorBack();
+	//CursorAt(lmStaffObj* pSO);
 
-    //other methods
-    long GetID() { return m_nID; }
+
 
 
 private:

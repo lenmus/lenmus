@@ -57,7 +57,7 @@ class lmEditFrame;
 class lmScoreCanvas;
 class lmScoreDocument;
 class lmRuler;
-class lmScoreCursor;
+class lmScoreViewCursor;
 class lmMainFrame;
 
 
@@ -213,11 +213,11 @@ private:
 	lmGMObject*		m_pGMODrag;				//GMObject being dragged
 
     //cursor
-    lmScoreCursor*  m_pCursor;
+    lmScoreViewCursor*  m_pCursor;
 
     //cursor: current position in score
-	lmStaffObj*		m_pCursorSO;			//staff object pointed by the cursor
-	int		        m_nCursorIdSO;		    //previous staff object pointed by the cursor
+	lmStaffObj*			m_pCursorSO;		//staff object pointed by the cursor
+	int					m_nCursorIdSO;		//previous staff object pointed by the cursor
 	lmStaffObjIterator* m_pCursorIT;        //iterator, to speed up cursor moves
 
 

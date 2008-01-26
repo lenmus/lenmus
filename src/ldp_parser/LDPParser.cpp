@@ -795,26 +795,27 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     if (sInstrAbbrev != _T(""))
         pAbbrev = new lmScoreText(sInstrAbbrev, nAbbrevAlign, tAbbrevPos, tAbbrevFont);
 
-    lmInstrument* pInstr = pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr,
+    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr,
                                         pName, pAbbrev);
-    lmVStaff* pVStaff = pInstr->GetVStaff(1);      //get the VStaff created
+    lmVStaff* pVStaff = pInstr->GetVStaff();
 
     // analyce first MusicData
     AnalyzeMusicData(pX, pVStaff);
     iP++;
 
-    //analyze other MusicData elements
-    for(; iP <= pNode->GetNumParms(); iP++) {
-        pX = pNode->GetParameter(iP);
-        if (pX->GetName() = m_pTags->TagName(_T("musicData")) ) {
-            pVStaff = pInstr->AddVStaff(true);      //true -> overlayered
-            AnalyzeMusicData(pX, pVStaff);
-        }
-        else {
-            AnalysisError( _T("Expected '%s' but found element %s. Element ignored."),
-                m_pTags->TagName(_T("musicData")).c_str(), pX->GetName().c_str() );
-        }
-    }
+	//CSG: 19/jan/2008. Support for more than one VStaff removed
+    ////analyze other MusicData elements
+    //for(; iP <= pNode->GetNumParms(); iP++) {
+    //    pX = pNode->GetParameter(iP);
+    //    if (pX->GetName() = m_pTags->TagName(_T("musicData")) ) {
+    //        pVStaff = pInstr->AddVStaff(true);      //true -> overlayered
+    //        AnalyzeMusicData(pX, pVStaff);
+    //    }
+    //    else {
+    //        AnalysisError( _T("Expected '%s' but found element %s. Element ignored."),
+    //            m_pTags->TagName(_T("musicData")).c_str(), pX->GetName().c_str() );
+    //    }
+    //}
 
 }
 
@@ -965,7 +966,6 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
 
 
     lmLDPNode* pX;
-    long i;
     wxString sData;
     long iP;
     iP = 1;
@@ -1012,18 +1012,11 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
 //        iP = iP + 1
 //    }
 
-    // create the instrument with empty VStaves
-    pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr, _T(""));
-
-    //Loop to analyze elements <Pentagrama>
-    lmVStaff* pVStaff;
-    for (i=1; i <= nVStaves; i++) {
-        pVStaff = pScore->GetVStaff(nInstr, i);      //nInstr, nVstaff
-        pX = pNode->GetParameter(iP);
-        AnalyzeVStaff(pX, pVStaff);
-        iP++;
-    }
-
+    // create the instrument
+	//CSG: 19/jan/2008. Support for more than one VStaff removed
+    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr, _T(""));
+    pX = pNode->GetParameter(iP);
+    AnalyzeVStaff(pX, pInstr->GetVStaff());
 
 }
 

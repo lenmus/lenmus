@@ -43,7 +43,7 @@
 
 
 //====================================================================================
-// implementation of class lmScoreCursor
+// implementation of class lmScoreViewCursor
 //====================================================================================
 
 
@@ -57,15 +57,15 @@ enum
 #define lmVISIBLE true
 #define lmHIDDEN  false
 
-IMPLEMENT_CLASS(lmScoreCursor, wxEvtHandler)
+IMPLEMENT_CLASS(lmScoreViewCursor, wxEvtHandler)
 
-BEGIN_EVENT_TABLE(lmScoreCursor, wxEvtHandler)
-	EVT_TIMER   (lmID_TIMER_CURSOR, lmScoreCursor::OnCursorTimer)
+BEGIN_EVENT_TABLE(lmScoreViewCursor, wxEvtHandler)
+	EVT_TIMER   (lmID_TIMER_CURSOR, lmScoreViewCursor::OnCursorTimer)
 
 END_EVENT_TABLE()
 
 
-lmScoreCursor::lmScoreCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore)
+lmScoreViewCursor::lmScoreViewCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore)
 { 
     m_pView = pParent;
     m_pCanvas = pCanvas;
@@ -80,13 +80,13 @@ lmScoreCursor::lmScoreCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore
     m_nBlinkingRate = 750;		//cursor blinking rate = 750ms
 }
 
-lmScoreCursor::~lmScoreCursor()
+lmScoreViewCursor::~lmScoreViewCursor()
 {
     if (m_oCursorTimer.IsRunning())
         m_oCursorTimer.Stop();
 }
 
-void lmScoreCursor::OnCursorTimer(wxTimerEvent& event)
+void lmScoreViewCursor::OnCursorTimer(wxTimerEvent& event)
 {
     if (m_fDisplayed)
     {
@@ -97,7 +97,7 @@ void lmScoreCursor::OnCursorTimer(wxTimerEvent& event)
     }
 }
 
-void lmScoreCursor::RemoveCursor()
+void lmScoreViewCursor::RemoveCursor()
 {
     //When scrolling and other operations that could affect cursor, it is necessary
     //to ensure that the cursor is not displayed while doing the operation.
@@ -119,7 +119,7 @@ void lmScoreCursor::RemoveCursor()
 
 }
 
-void lmScoreCursor::DisplayCursor(double rScale, lmStaffObj* pSO)
+void lmScoreViewCursor::DisplayCursor(double rScale, lmStaffObj* pSO)
 {
     m_fDisplayed = true;
     m_fVisible = false;
@@ -127,7 +127,7 @@ void lmScoreCursor::DisplayCursor(double rScale, lmStaffObj* pSO)
     SetCursorPosition(pSO);
 }
 
-void lmScoreCursor::SetCursorPosition(lmStaffObj* pSO) 
+void lmScoreViewCursor::SetCursorPosition(lmStaffObj* pSO) 
 { 
     //if position doesn't change, return. Nothing to do.
     if (m_pCursorSO && m_pCursorSO->GetID() == pSO->GetID()) return;
@@ -162,7 +162,7 @@ void lmScoreCursor::SetCursorPosition(lmStaffObj* pSO)
     m_oCursorTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
 }
 
-void lmScoreCursor::RenderCursor(bool fVisible)
+void lmScoreViewCursor::RenderCursor(bool fVisible)
 {
     //AWARE. This code is execute protected by critical section m_locker to
     //avoid inconsistencies while changing m_fVisible status. This method is
@@ -207,14 +207,14 @@ void lmScoreCursor::RenderCursor(bool fVisible)
 
 }
 
-void lmScoreCursor::SetColour(wxColour color)
+void lmScoreViewCursor::SetColour(wxColour color)
 {
     // as painting uses XOR we need the complementary
     m_color = wxColour(255 - (int)color.Red(), 255 - (int)color.Green(), 255 - (int)color.Blue() );
 
 }
 
-void lmScoreCursor::SetBlinkingRate(int nMillisecs)
+void lmScoreViewCursor::SetBlinkingRate(int nMillisecs)
 {
     m_nBlinkingRate = nMillisecs;
 }

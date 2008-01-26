@@ -320,9 +320,9 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     lmLDPNode* pNode;
     *pScore = new lmScore();
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+    lmInstrument* pInstr = (*pScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 							 g_pMidi->DefaultVoiceInstr(), _T(""));
-    lmVStaff *pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
+    lmVStaff *pVStaff = pInstr->GetVStaff();
     (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( lmE_Sol );
     pVStaff->AddKeySignature(m_nKey);

@@ -156,46 +156,35 @@ void lmScore::SetScoreName(wxString sName)
 
 int lmScore::GetNumMeasures()
 {
-    //LIMIT: it is being assumed that all instruments and staves have the same number of bars
+    //LIMIT: it is being assumed that all instruments have the same number of bars
     //InstrumentsList::Node *node = m_cInstruments.GetFirst();
     //lmInstrument *pInstr = node->GetData();
-    lmVStaff *pStaff = m_cInstruments[0]->GetVStaff(1);
+    lmVStaff *pStaff = m_cInstruments[0]->GetVStaff();
     return(pStaff->GetNumMeasures());
 }
 
-lmInstrument* lmScore::AddInstrument(int nVStaves,
-                                     int nMIDIChannel, int nMIDIInstr,
+lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
                                      wxString sName, wxString sAbbrev)
 {
-    //add an lmInstrument with nVStaves (1..m) empty VStaves.
+    //add an lmInstrument.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
 
-    lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
-                                            sName, sAbbrev);
+    lmInstrument* pInstr = new lmInstrument(this, nMIDIChannel, nMIDIInstr, sName, sAbbrev);
     m_cInstruments.push_back(pInstr);
     return pInstr;
 
 }
 
-lmInstrument* lmScore::AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
-                                lmScoreText* pName, lmScoreText* pAbbrev)
+lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
+									 lmScoreText* pName, lmScoreText* pAbbrev)
 {
-    //add an lmInstrument with nVStaves (1..m) empty VStaves.
+    //add an lmInstrument.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
 
-    lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
-                                            pName, pAbbrev);
+    lmInstrument* pInstr = new lmInstrument(this, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
     m_cInstruments.push_back(pInstr);
     return pInstr;
 
-}
-
-lmVStaff* lmScore::GetVStaff(int nInstr, int nVStaff)
-{
-	//returns lmVStaff number nVStaff (1..n), of lmInstrument nInstr (1..m)
-
-	wxASSERT(nInstr > 0 && nInstr <= (int)m_cInstruments.size() );
-    return(m_cInstruments[nInstr-1]->GetVStaff(nVStaff));
 }
 
 lmInstrument* lmScore::XML_FindInstrument(wxString sId)
@@ -579,14 +568,10 @@ void lmScore::ComputeMidiEvents()
         nChannel = pInstr->GetMIDIChannel();
         nInstr = pInstr->GetMIDIInstrument();
 
-       //for each lmVStaff
-        for (int iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-		{
-            lmVStaff* pVStaff = pInstr->GetVStaff(iVStaff);
-            pSM = pVStaff->ComputeMidiEvents(nChannel);
-            m_pSoundMngr->Append(pSM);
-            delete pSM;
-        }
+        lmVStaff* pVStaff = pInstr->GetVStaff();
+        pSM = pVStaff->ComputeMidiEvents(nChannel);
+        m_pSoundMngr->Append(pSM);
+        delete pSM;
 
         //Add an event to program sound for this instrument
         m_pSoundMngr->StoreEvent(0, eSET_ProgInstr, nChannel, nInstr, 0, 0, (lmStaffObj*)NULL, 0);

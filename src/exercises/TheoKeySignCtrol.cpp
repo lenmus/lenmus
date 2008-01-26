@@ -447,8 +447,8 @@ wxString lmTheoKeySignCtrol::SetNewProblem()
 
     //create the score
     m_pProblemScore = new lmScore();
-    m_pProblemScore->AddInstrument(1,0,0,_T(""));                   //one vstaff, MIDI channel 0, MIDI instr 0
-    lmVStaff *pVStaff = m_pProblemScore->GetVStaff(1, 1);    //get first vstaff of instr.1
+    lmInstrument* pInstr = m_pProblemScore->AddInstrument(0,0,_T(""));                   //one vstaff, MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = pInstr->GetVStaff();
     m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);

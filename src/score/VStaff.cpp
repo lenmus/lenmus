@@ -81,8 +81,8 @@
 
 
 //constructor
-lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
-    : lmScoreObj(pScore)
+lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
+    : lmScoreObj(pScore), m_cStaffObjs(this)
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -90,7 +90,6 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
 
     m_pScore = pScore;
     m_pInstrument = pInstr;
-    m_fOverlayered = fOverlayered;
 
     // default lmVStaff margins (logical units = tenths of mm)
     m_nHeight = 0;          //a value of 0 means 'compute it'
@@ -99,9 +98,14 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     m_rightMargin = 0;
     m_bottomMargin = lmToLogicalUnits(1, lmCENTIMETERS);    // 1 cm
 
+    //initialize staves
+    for (int i=0; i < lmMAX_STAFF; i++)
+        m_cStaves[i] = (lmStaff*)NULL;
+
     //create one standard staff (five lines, 7.2 mm height)
     lmStaff* pStaff = new lmStaff(pScore);
-    m_cStaves.Append(pStaff);
+    m_nNumStaves = 1;
+    m_cStaves[0] = pStaff;
 
  //   //Add EOS control object to the StaffObjs collection
  //   //m_cStaffObjs.Store( new lmBarline(lm_eBarlineEOS, this, lmNO_VISIBLE) );
@@ -118,9 +122,8 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
 
 lmVStaff::~lmVStaff()
 {
-    m_cStaves.DeleteContents(true);
-    m_cStaves.Clear();
-
+    for (int i=0; i < lmMAX_STAFF; i++)
+        if (m_cStaves[i]) delete m_cStaves[i];
 }
 
 lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths)
@@ -135,8 +138,10 @@ lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits)
 
 lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
 {
+    wxASSERT(m_nNumStaves < lmMAX_STAFF);
     lmStaff* pStaff = new lmStaff(m_pScore, nNumLines, nMicrons);
-    m_cStaves.Append(pStaff);
+    m_cStaves[m_nNumStaves] = pStaff;
+    m_nNumStaves++;
 
     return pStaff;
 
@@ -144,35 +149,27 @@ lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
 
 lmStaff* lmVStaff::GetStaff(int nStaff)
 {
-    //iterate over the collection of Staves (lmStaff Objects) to locate staff nStaff
-    int iS;
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    for (iS=1 ; iS != nStaff && pNode; iS++ ) {
-        pNode = pNode->GetNext();    //get next lmStaff
-    }
-    wxASSERT(pNode);
-    return (lmStaff *)pNode->GetData();
-
+    return m_cStaves[nStaff-1];
 }
 
 lmStaff* lmVStaff::GetFirstStaff()
 {
-    m_pStaffNode = m_cStaves.GetFirst();
-    return (m_pStaffNode ? (lmStaff *)m_pStaffNode->GetData() : (lmStaff *)m_pStaffNode);
+    m_nCurStaff = 0;
+    return m_cStaves[0];
 }
 
 lmStaff* lmVStaff::GetNextStaff()
 {
-    wxASSERT(m_pStaffNode);
-    m_pStaffNode = m_pStaffNode->GetNext();
-    return (m_pStaffNode ? (lmStaff *)m_pStaffNode->GetData() : (lmStaff *)m_pStaffNode);
+    if (++m_nCurStaff < m_nNumStaves)
+        return m_cStaves[m_nCurStaff];
+    else
+        return (lmStaff*)NULL;
 }
 
 lmStaff* lmVStaff::GetLastStaff()
 {
-    wxASSERT(m_pStaffNode);
-    m_pStaffNode = m_cStaves.GetLast();
-    return (m_pStaffNode ? (lmStaff *)m_pStaffNode->GetData() : (lmStaff *)m_pStaffNode);
+    m_nCurStaff = m_nNumStaves-1;
+    return m_cStaves[m_nCurStaff];
 }
 
 lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths, int nStaff)
@@ -198,7 +195,7 @@ lmLUnits lmVStaff::GetStaffLineThick(int nStaff)
 }
 
 //----------------------------------------------------------------------------------------
-// contexts management
+// contexts related
 //----------------------------------------------------------------------------------------
 
 void lmVStaff::OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
@@ -210,44 +207,12 @@ void lmVStaff::OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
 
 }
 
-lmContext* lmVStaff::GetCurrentContext(lmStaffObj* pSO)
-{
-	// Returns the context that is applicable to the received StaffObj.
-	// AWARE: This method does not return a context with updated accidentals; 
-    // the returned context is valid only for clef, key signature and time signature.
-    // To get applicable accidentals use NewUpdatedContext() instead.
-
-    int nStaff = pSO->GetStaffNum();
-    lmContext* pCT = (lmContext*)NULL;
-	lmStaffObjIterator* pIter = m_cStaffObjs.CreateIteratorTo(pSO);
-    while(!pIter->StartOfList())
-	{
-        pSO = pIter->GetCurrent();
-		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
-            pCT = ((lmClef*)pSO)->GetContext();
-		else if (pSO->GetClass() == eSFOT_KeySignature)
-            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_TimeSignature)
-            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_Barline)
-            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
-
-        if (pCT)
-            break;
-		else
-		    pIter->MovePrev();
-    }
-    delete pIter;
-
-	return pCT;
-}
-
 int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 {
-	//returns the updated context accidentals for step nStep, applicable to
-    //StaffObj pThisSO.
+	//returns the current context, updated with the accidentals for step nStep,
+    //applicable to StaffObj pThisSO.
 
-	lmContext* pContext = NewUpdatedContext(pThisSO);
+	lmContext* pContext = m_cStaffObjs.NewUpdatedContext(pThisSO);
 	if (pContext)
 	{
 		int nAcc = pContext->GetAccidentals(nStep);
@@ -257,116 +222,6 @@ int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 	else
 		return 0;
 }
-
-lmContext* lmVStaff::NewUpdatedContext(lmStaffObj* pThisSO)
-{
-	//returns the applicable context for this StaffObj, updated with all
-	//accidentals introduced by previous notes.
-	//AWARE: context ownership is transferred to the caller.
-	//       The returned context MUST BE deleted by the invoking method.
-
-    int nStaff = pThisSO->GetStaffNum();
-    lmContext* pCT = (lmContext*)NULL;
-	lmStaffObjIterator* pIter = m_cStaffObjs.CreateIteratorTo(pThisSO);
-    while(!pIter->StartOfList())
-	{
-        lmStaffObj* pSO = pIter->GetCurrent();
-		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
-            pCT = ((lmClef*)pSO)->GetContext();
-		else if (pSO->GetClass() == eSFOT_KeySignature)
-            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_TimeSignature)
-            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_Barline)
-            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
-
-        if (pCT)
-            break;
-		else
-		    pIter->MovePrev();
-    }
-
-	if (!pCT) {
-		delete pIter;
-		return pCT;
-	}
-
-	//Here pIter is pointing to the StaffObj pointing to the current context.
-	//Now we have to go forward, updating accidentals until we reach pThisSO
-
-	lmContext* pUpdated = new lmContext(pCT);
-    while(true)
-	{
-        lmStaffObj* pSO = pIter->GetCurrent();
-		if (pSO == pThisSO) break;
-
-		if (pSO->GetClass() == eSFOT_NoteRest && !((lmNote*)pSO)->IsRest())
-		{
-			//Note found. Update context
-			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
-			pUpdated->SetAccidental(apPitch.Step(), apPitch.Accidentals());
-		}
-		pIter->MoveNext();
-	}
-    delete pIter;
-
-	return pUpdated;
-}
-
-lmContext* lmVStaff::NewUpdatedLastContext(int nStaff)
-{
-	//returns the last context for staff nStaff, updated with all
-	//accidentals introduced by previous notes.
-	//AWARE: context ownership is transferred to the caller.
-	//       The returned context MUST BE deleted by the invoking method.
-
-    //locate first context for this staff
-    lmContext* pCT = (lmContext*)NULL;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-    pIter->MoveLast();
-    while(!pIter->StartOfList())
-	{
-        lmStaffObj* pSO = pIter->GetCurrent();
-		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
-            pCT = ((lmClef*)pSO)->GetContext();
-		else if (pSO->GetClass() == eSFOT_KeySignature)
-            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_TimeSignature)
-            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_Barline)
-            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
-
-        if (pCT)
-            break;
-        else
-		    pIter->MovePrev();
-    }
-
-	if (!pCT) {
-		delete pIter;
-		return pCT;
-	}
-
-	//Here pIter is pointing to the StaffObj pointing to the current context.
-	//Now we have to go forward, updating accidentals until we reach end of collection
-
-	lmContext* pUpdated = new lmContext(pCT);
-    while(!pIter->EndOfList())
-	{
-        lmStaffObj* pSO = pIter->GetCurrent();
-		if (pSO->GetClass() == eSFOT_NoteRest && !((lmNote*)pSO)->IsRest())
-		{
-			//Note found. Update context
-			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
-			pUpdated->SetAccidental(apPitch.Step(), apPitch.Accidentals());
-		}
-		pIter->MoveNext();
-	}
-    delete pIter;
-
-	return pUpdated;
-}
-
 
 //---------------------------------------------------------------------------------------
 // Methods for inserting StaffObjs
@@ -392,58 +247,58 @@ lmBarline* lmVStaff::InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType)
     lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
     m_cStaffObjs.Insert(pBarline, pCursorSO);
 
-    bool fStaffDone[lmMAX_STAFF];
-    for (int iS=0; iS < GetNumStaves(); iS++) 
-        fStaffDone[iS] = false;
+ //   bool fStaffDone[lmMAX_STAFF];
+ //   for (int iS=0; iS < GetNumStaves(); iS++) 
+ //       fStaffDone[iS] = false;
 
-	lmStaffObjIterator* pIter = m_cStaffObjs.CreateIteratorTo(pBarline);
-    bool fDone = false;
-    while(!fDone && !pIter->StartOfList())
-	{
-        lmContext* pCT = (lmContext*)NULL;
-        lmStaffObj* pSO = pIter->GetCurrent();
-        if (pSO->GetClass() == eSFOT_Clef)
-        {
-            int nStaff = pSO->GetStaffNum();
-            if (!fStaffDone[nStaff]-1)
-            {
-                pCT = ((lmClef*)pSO)->GetContext();
-                pBarline->SetContext(nStaff, pCT);
-                fStaffDone[nStaff-1] = true;
-            }
-        }
+	//lmStaffObjIterator* pIter = m_cStaffObjs.CreateIteratorTo(pBarline);
+ //   bool fDone = false;
+ //   while(!fDone && !pIter->StartOfList())
+	//{
+ //       lmContext* pCT = (lmContext*)NULL;
+ //       lmStaffObj* pSO = pIter->GetCurrent();
+ //       if (pSO->GetClass() == eSFOT_Clef)
+ //       {
+ //           int nStaff = pSO->GetStaffNum();
+ //           if (!fStaffDone[nStaff]-1)
+ //           {
+ //               pCT = ((lmClef*)pSO)->GetContext();
+ //               pBarline->SetContext(nStaff, pCT);
+ //               fStaffDone[nStaff-1] = true;
+ //           }
+ //       }
 
-        if (!pCT)
-        {
-		    if (pSO->GetClass() == eSFOT_KeySignature
-                || pSO->GetClass() == eSFOT_TimeSignature
-                || pSO->GetClass() == eSFOT_Barline)
-            {
-                for (int nStaff=1; nStaff < GetNumStaves(); nStaff++)
-                {
-                    if (!fStaffDone[nStaff-1])
-                    {
-		                if (pSO->GetClass() == eSFOT_KeySignature)
-                            pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-		                else if (pSO->GetClass() == eSFOT_TimeSignature)
-                            pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
-		                else // Barline
-                            pCT = ((lmBarline*)pSO)->GetContext(nStaff);
-                        pBarline->SetContext(nStaff, pCT);
-                        fStaffDone[nStaff-1] = true;
-                    }
-                }
-                break;  //fast finish
-            }
-        }
+ //       if (!pCT)
+ //       {
+	//	    if (pSO->GetClass() == eSFOT_KeySignature
+ //               || pSO->GetClass() == eSFOT_TimeSignature
+ //               || pSO->GetClass() == eSFOT_Barline)
+ //           {
+ //               for (int nStaff=1; nStaff < GetNumStaves(); nStaff++)
+ //               {
+ //                   if (!fStaffDone[nStaff-1])
+ //                   {
+	//	                if (pSO->GetClass() == eSFOT_KeySignature)
+ //                           pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
+	//	                else if (pSO->GetClass() == eSFOT_TimeSignature)
+ //                           pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
+	//	                else // Barline
+ //                           pCT = ((lmBarline*)pSO)->GetContext(nStaff);
+ //                       pBarline->SetContext(nStaff, pCT);
+ //                       fStaffDone[nStaff-1] = true;
+ //                   }
+ //               }
+ //               break;  //fast finish
+ //           }
+ //       }
 
-        //check if we can finish
-        fDone = true;
-        for (int iS=0; iS < GetNumStaves(); iS++) 
-            fDone &= fStaffDone[iS];
+ //       //check if we can finish
+ //       fDone = true;
+ //       for (int iS=0; iS < GetNumStaves(); iS++) 
+ //           fDone &= fStaffDone[iS];
 
-        pIter->MovePrev();
-    }
+ //       pIter->MovePrev();
+ //   }
 
     return pBarline;
 }
@@ -677,16 +532,11 @@ lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignature nTimeSign, bool fVi
 lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS)
 {
     //iterate over the collection of Staves to add a new context
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
-    for (int nStaff=1; pStaff; nStaff++)
+    for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
+        lmStaff* pStaff = GetStaff(nStaff);
 	    lmContext* pContext = pStaff->NewContextAfter(pTS);
         pTS->SetContext(nStaff, pContext);
-
-        //get next lmStaff
-        pNode = pNode->GetNext();
-        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     }
     m_cStaffObjs.Store(pTS);
     return pTS;
@@ -697,16 +547,11 @@ lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisibl
     lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
 
     //iterate over the collection of Staves to add a new context
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
-    for (int nStaff=1; pStaff; nStaff++)
+    for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
+        lmStaff* pStaff = GetStaff(nStaff);
 	    lmContext* pContext = pStaff->NewContextAfter(pKS);
         pKS->SetContext(nStaff, pContext);
-
-        //get next lmStaff
-        pNode = pNode->GetNext();
-        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     }
     m_cStaffObjs.Store(pKS);
     return pKS;
@@ -737,10 +582,9 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
     m_yLinTop = yCur;              //save y coord. for first line start point
 
     //iterate over the collection of Staves (lmStaff Objects)
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
-    for ( ; pStaff; )
+    for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
+        lmStaff* pStaff = GetStaff(nStaff);
         //draw one staff
 		lmShapeStaff* pShape = 
 				new lmShapeStaff(pStaff, pStaff->GetNumLines(), 
@@ -749,10 +593,6 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 		pBox->AddShape(pShape);
         yCur = pShape->GetYBottom() + pStaff->GetAfterSpace();
 		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();  
-
-        //get next lmStaff
-        pNode = pNode->GetNext();
-        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     }
 	return m_yLinBottom;
 }
@@ -761,10 +601,9 @@ void lmVStaff::SetUpFonts(lmPaper* pPaper)
 {
     //iterate over the collection of Staves (lmStaff Objects) to set up the fonts
     // to use on that staff
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    for ( ; pNode; ) {
-        SetFont((lmStaff *)pNode->GetData(), pPaper);
-        pNode = pNode->GetNext();
+    for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
+	{
+        SetFont(GetStaff(nStaff), pPaper);
     }
 }
 
@@ -804,18 +643,16 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
 lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 {
     //returns the Y offset to staff nStaff (1..n)
-    wxASSERT(nStaff <= GetNumStaves() );
+    wxASSERT(nStaff <= m_nNumStaves );
     lmLUnits yOffset = m_topMargin;
 
     // iterate over the collection of Staves (lmStaff Objects) to add up the
     // height and after space of all previous staves to the requested one
-    lmStaff* pStaff;
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    for (int iS=1 ; iS < nStaff && pNode; iS++) {
-        pStaff = (lmStaff *)pNode->GetData();
+    for (int iS=1; iS < nStaff; iS++)
+	{
+        lmStaff* pStaff = GetStaff(iS);
         yOffset += pStaff->GetHeight();
         yOffset += pStaff->GetAfterSpace();
-        pNode = pNode->GetNext();
     }
     return yOffset;
 
@@ -825,7 +662,7 @@ wxString lmVStaff::Dump()
 {
     wxString sDump = _T("");
 	sDump += m_cStaffObjs.DumpStaffObjs();
-	sDump += m_cStaffObjs.DumpMeasuresData();
+	sDump += m_cStaffObjs.DumpSegmentsData();
 	sDump += m_cStaffObjs.DumpMeasures();
     return sDump;
 }
@@ -981,13 +818,11 @@ lmLUnits lmVStaff::GetVStaffHeight()
         m_nHeight = m_topMargin + m_bottomMargin;
         // iterate over the collection of Staves (lmStaff Objects) to add up its
         // height and its after space
-        lmStaff* pStaff;
-        StaffList::Node* pNode = m_cStaves.GetFirst();
-        for ( ; pNode; ) {
-            pStaff = (lmStaff *)pNode->GetData();
+        for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
+        {
+            lmStaff* pStaff = GetStaff(nStaff);
             m_nHeight += pStaff->GetHeight();
             m_nHeight += pStaff->GetAfterSpace();
-            pNode = pNode->GetNext();
         }
     }
 
@@ -999,19 +834,6 @@ lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
 {
     //create and save the barline
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
-
-    //iterate over the collection of Staves to store the current contexts
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
-    for (int nStaff=1; pStaff; nStaff++)
-	{
-        pBarline->SetContext(nStaff, pStaff->GetLastContext());
-
-        //get next lmStaff
-        pNode = pNode->GetNext();
-        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
-    }
-
     m_cStaffObjs.Store(pBarline);
     return pBarline;
 }
@@ -1300,12 +1122,9 @@ lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
     return m_cStaffObjs.CreateIterator(nOrder);
 }
 
-
-lmContext* lmVStaff::GetLastContext(int nStaff)
+lmItCSO lmVStaff::GetLastStaffObjInMeasure(int nMeasure)
 {
-	//returns the last context applicable to staff nStaff (1..n)
-	wxASSERT(nStaff > 0);
-	return GetStaff(nStaff)->GetLastContext();
+    return m_cStaffObjs.GetLastStaffObjInMeasure(nMeasure);
 }
 
 

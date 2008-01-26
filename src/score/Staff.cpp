@@ -38,10 +38,6 @@
 #include "Score.h"
 #include "../app/global.h"
 
-//implementation of the lmStaff List
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(StaffList);
-
 // A lmStaff is a collection of consecutive lines and spaces.
 
 //constructor

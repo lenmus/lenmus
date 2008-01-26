@@ -28,7 +28,6 @@
 
 #include "StaffObjIterator.h"
 
-class StaffList;
 class lmSpacer;
 class lmMetronomeMark;
 class lmBoxSliceVStaff;
@@ -38,7 +37,7 @@ class lmBoxSliceVStaff;
 class lmVStaff : public lmScoreObj
 {
 public:
-    lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered);
+    lmVStaff(lmScore* pScore, lmInstrument* pInstr);
     ~lmVStaff();
 
 	//---- virtual methods of base class -------------------------
@@ -125,14 +124,12 @@ public:
 
     void ShiftTime(float rTimeShift);
 
-    int GetNumMeasures();
 
     // rendering methods
     lmLUnits LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);
-    bool IsOverlayered() { return m_fOverlayered; }
     lmLUnits GetStaffLineThick(int nStaff);
     inline bool HideStaffLines() { return GetOptionBool(_T("StaffLines.Hide")); }
 
@@ -155,21 +152,35 @@ public:
 
     // restricted methods
     lmStaffObjIterator* CreateIterator(ETraversingOrder nOrder);    //for lmFormatter objects
+    inline lmStaffObjIterator* CreateIteratorTo(lmStaffObj* pSO) 
+                                        { return m_cStaffObjs.CreateIteratorTo(pSO); }
 
     //for navigation along staves
-    int GetNumStaves() { return (int)m_cStaves.GetCount(); }
+    inline int GetNumStaves() const { return m_nNumStaves; }
     lmStaff* GetFirstStaff();
     lmStaff* GetNextStaff();
     lmStaff* GetLastStaff();
 
     //context management
+	inline lmContext* GetCurrentContext(lmStaffObj* pSO)
+                            { return m_cStaffObjs.GetCurrentContext(pSO); }
+	inline lmContext* NewUpdatedContext(lmStaffObj* pSO)
+                            { return m_cStaffObjs.NewUpdatedContext(pSO); }
+	inline lmContext* NewUpdatedLastContext(int nStaff)
+                            { return m_cStaffObjs.NewUpdatedLastContext(nStaff); }
+	inline lmContext* GetLastContext(int nStaff)
+                            { return m_cStaffObjs.GetLastContext(nStaff); }
+    inline lmContext* GetStartOfSegmentContext(int nMeasure, int nStaff)
+                            { return m_cStaffObjs.GetStartOfSegmentContext(nMeasure, nStaff); }
+
+    //contexts related
     void OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
                        int nNewAccidentals, lmContext* pCurrentContext);
-	lmContext* GetCurrentContext(lmStaffObj* pSO);
-	lmContext* NewUpdatedContext(lmStaffObj* pSO);
 	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
-	lmContext* NewUpdatedLastContext(int nStaff);
-	lmContext* GetLastContext(int nStaff);
+
+    //measures related
+    lmItCSO GetLastStaffObjInMeasure(int nMeasure);
+    int GetNumMeasures();
 
     //sound related methods
     lmSoundManager* ComputeMidiEvents(int nChannel);
@@ -186,7 +197,6 @@ public:
 
 private:
     void SetFont(lmStaff* pStaff, lmPaper* pPaper);
-    void ResetContexts();
 
     //common code for all time signatures types
     lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
@@ -195,28 +205,27 @@ private:
 
         // member variables
 
-    lmScore*        m_pScore;           //lmScore to which this lmVStaff belongs
-    lmInstrument*   m_pInstrument;      //lmInstrument to which this lmVStaff belongs
-    bool            m_fOverlayered;     //this VStaff is overlayered on previous one
-
-    lmColStaffObjs    m_cStaffObjs;        //collection of StaffObjs that form this lmVStaff
+    lmScore*            m_pScore;           //lmScore to which this lmVStaff belongs
+    lmInstrument*       m_pInstrument;      //lmInstrument to which this lmVStaff belongs
+    lmColStaffObjs      m_cStaffObjs;       //collection of StaffObjs that form this lmVStaff
 
     // staves
-    StaffList           m_cStaves;      //list of Staves (lmStaff objects) that form this lmVStaff
-    wxStaffListNode*    m_pStaffNode;   //for navigation
+    lmStaff*            m_cStaves[lmMAX_STAFF];     //list of Staves (lmStaff objects) that form this lmVStaff
+    int                 m_nNumStaves;
+    int                 m_nCurStaff;                //for navigation
 
     //to draw barlines, from first staff to last staff
-    lmLUnits    m_yLinTop;         //Y coord. of first line (line 5, first staff)
-    lmLUnits    m_yLinBottom;      //Y coord. of last line (line 1, last staff)
+    lmLUnits            m_yLinTop;         //Y coord. of first line (line 5, first staff)
+    lmLUnits            m_yLinBottom;      //Y coord. of last line (line 1, last staff)
 
-    lmLUnits    m_leftMargin;      // lmVStaff margins (logical units)
-    lmLUnits    m_topMargin;
-    lmLUnits    m_rightMargin;
-    lmLUnits    m_bottomMargin;
-    lmLUnits    m_nHeight;          //TopMargin + Staves height + BottomMargin
+    lmLUnits            m_leftMargin;      // lmVStaff margins (logical units)
+    lmLUnits            m_topMargin;
+    lmLUnits            m_rightMargin;
+    lmLUnits            m_bottomMargin;
+    lmLUnits            m_nHeight;          //TopMargin + Staves height + BottomMargin
 
     //for drawing prolog
-    lmLUnits    m_nSpaceBeforeClef;
+    lmLUnits            m_nSpaceBeforeClef;
 
 };
 

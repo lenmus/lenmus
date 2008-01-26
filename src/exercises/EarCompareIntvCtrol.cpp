@@ -159,9 +159,9 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     //create the two single-interval scores
     for (i=0; i<2; i++) {
         m_pScore[i] = new lmScore();
-        m_pScore[i]->AddInstrument(1, 
+        lmInstrument* pInstr = m_pScore[i]->AddInstrument(
 						g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
-        pVStaff = m_pScore[i]->GetVStaff(1, 1);      //get first vstaff of instr.1
+        pVStaff = pInstr->GetVStaff();
         m_pScore[i]->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
         pVStaff->AddClef( nClef );
         pVStaff->AddKeySignature(nKey);
@@ -178,9 +178,9 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     //create the answer score with both intervals
     m_pSolutionScore = new lmScore();
     m_pSolutionScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    m_pSolutionScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+    lmInstrument* pInstr = m_pSolutionScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 								 g_pMidi->DefaultVoiceInstr(), _T(""));
-    pVStaff = m_pSolutionScore->GetVStaff(1, 1);      //get first vstaff of instr.1
+    pVStaff = pInstr->GetVStaff();
     m_pSolutionScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);

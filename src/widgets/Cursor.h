@@ -38,13 +38,13 @@ class lmStaffObj;
 
 //helper class to display and manage a score cursor
 
-class lmScoreCursor : public wxEvtHandler
+class lmScoreViewCursor : public wxEvtHandler
 {
-    DECLARE_DYNAMIC_CLASS(lmScoreCursor)
+    DECLARE_DYNAMIC_CLASS(lmScoreViewCursor)
 
 public:
-    lmScoreCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore);
-    ~lmScoreCursor();
+    lmScoreViewCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore);
+    ~lmScoreViewCursor();
 
     //event handlers
 	void OnCursorTimer(wxTimerEvent& event);

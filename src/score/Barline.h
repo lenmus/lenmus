@@ -42,26 +42,19 @@ public:
 
 	wxString GetName() const { return _T("barline"); }
 
-    //other methods
-    lmEBarline GetBarlineType() {return m_nBarlineType;}
-
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
         //specific methods for barline
 
-	//context management
-    inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }
-    inline lmContext* GetContext(int nStaff) { return m_pContext[nStaff-1]; }
+    //info
+    lmEBarline GetBarlineType() {return m_nBarlineType;}
 
     //positioning
-    //void SetLocation(lmLUnits uxPos, lmELocationType nType);
-    //lmLUnits GetLocationPos() { return m_uxUserPos; }
     lmELocationType GetLocationType() { return m_xUserPosType; }
 
-
-    //    debugging
+    //source code and debugging
     wxString Dump();
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
@@ -69,8 +62,6 @@ public:
 
 private:
     lmEBarline          m_nBarlineType;             //type of barline
-    lmContext*          m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
-
     lmLUnits            m_uxUserPos;
     lmELocationType     m_xUserPosType;
 

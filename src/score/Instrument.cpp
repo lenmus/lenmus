@@ -49,7 +49,7 @@
 lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, lmTEXT_BOLD };
 
 
-lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
+lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
                            int nMIDIInstr, wxString sName, wxString sAbbrev)
     : lmScoreObj(pScore)
 {
@@ -68,19 +68,19 @@ lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
     }
 
     //create the instrument
-    Create(pScore, nNumStaves, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
+    Create(pScore, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
 
 }
 
-lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
-                 lmScoreText* pName, lmScoreText* pAbbrev)
+lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
+						   lmScoreText* pName, lmScoreText* pAbbrev)
     : lmScoreObj(pScore)
 {
-    Create(pScore, nNumStaves, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
+    Create(pScore, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
 }
 
-void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
-                 lmScoreText* pName, lmScoreText* pAbbrev)
+void lmInstrument::Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
+						  lmScoreText* pName, lmScoreText* pAbbrev)
 {
     m_pScore = pScore;
     m_nMidiInstr = nMIDIInstr;
@@ -89,23 +89,12 @@ void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int
     m_nIndentOther = 0;
     m_pName = pName;
     m_pAbbreviation = pAbbrev;
-
-
-    //Normally, only one lmVStaff with one or two lmStaff
-    //If more than one, they normally represent overlayered additional voices
-    for (int i = 1; i <= nNumStaves; i++) {
-        AddVStaff( (i!=1) );    //second and remaining overlayered
-    }
-
+    m_pVStaff = new lmVStaff(m_pScore, this);
 }
 
 lmInstrument::~lmInstrument()
 {
-	for (int i=0; i < (int)m_cStaves.size(); i++)
-	{
-		delete m_cStaves[i];
-	}
-    m_cStaves.clear();
+	delete m_pVStaff;
 
 	//delete names
 	if (m_pName) delete m_pName;
@@ -128,7 +117,7 @@ lmTenths lmInstrument::LogicalToTenths(lmLUnits uUnits)
 void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
 {
     if (pPos->xUnits == lmTENTHS) {
-        lmVStaff *pVStaff = GetVStaff(1);
+        lmVStaff *pVStaff = GetVStaff();
         *pIndent = pVStaff->TenthsToLogical(pPos->x, 1);
     }
     else {
@@ -137,30 +126,10 @@ void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
 
 }
 
-lmVStaff* lmInstrument::AddVStaff(bool fOverlayered)
-{
-    lmVStaff *pStaff = new lmVStaff(m_pScore, this, fOverlayered);
-    m_cStaves.push_back(pStaff);
-    return pStaff;
-
-}
-
-lmVStaff* lmInstrument::GetVStaff(int nStaff)
-{
-	//returns lmVStaff number nStaff (1..n)
-	wxASSERT(nStaff > 0 && nStaff <= (int)m_cStaves.size() );
-	return m_cStaves[nStaff-1];
-}
-
 wxString lmInstrument::Dump()
 {
-    wxString sDump;
-    //iterate over the list of lmVStaff to dump them
-    for (int i=0; i < (int)m_cStaves.size(); i++)
-    {
-        sDump += wxString::Format(_T("\nVStaff %d\n"), i );
-        sDump += m_cStaves[i]->Dump();
-    }
+    wxString sDump = _T("\nVStaff\n");
+    sDump += m_pVStaff->Dump();
     return sDump;
 
 }
@@ -172,20 +141,14 @@ wxString lmInstrument::SourceLDP(int nIndent)
     sSource += _T("(instrument");
 
     //num of staves
-    if (m_cStaves.size() > 0) {
-        sSource += wxString::Format(_T(" (staves %d)"), m_cStaves[0]->GetNumStaves());
-    }
-    sSource += _T("\n");
+	sSource += wxString::Format(_T(" (staves %d)\n"), m_pVStaff->GetNumStaves());
 
-    //loop for each lmVStaff
-    nIndent++;
-    for (int i=0; i < (int)m_cStaves.size(); i++)
-    {
-        sSource += m_cStaves[i]->SourceLDP(nIndent);
-    }
+    //the music data (lmVStaff)
+	nIndent++;
+	sSource += m_pVStaff->SourceLDP(nIndent);
+	nIndent--;
 
     //close instrument
-    nIndent--;
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sSource += _T(")\n");
     return sSource;
@@ -194,14 +157,9 @@ wxString lmInstrument::SourceLDP(int nIndent)
 
 wxString lmInstrument::SourceXML(int nIndent)
 {
-
-	//THINK:
-	//MusicXML can not deal with more than one VStaff so I will export only
-	//the first VStaff
 	wxString sSource = _T("");
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-    if (m_cStaves.size() > 0)
-        sSource += m_cStaves[0]->SourceXML(nIndent);
+	sSource += m_pVStaff->SourceXML(nIndent);
 	return sSource;
 
 }

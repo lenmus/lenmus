@@ -241,7 +241,7 @@ void lmMusicXMLParser::ParsePart(wxXmlNode* pNode, lmScore* pScore)
     }
 
     // Get VStaff
-    lmVStaff* pVStaff = pInstr->GetVStaff(1);
+    lmVStaff* pVStaff = pInstr->GetVStaff();
     wxASSERT(pVStaff);
 
     // parse xml element
@@ -1798,10 +1798,9 @@ void lmMusicXMLParser::ParseScorePart(wxXmlNode* pNode, lmScore* pScore)
 
     // create one instrument with empty VStaves
     g_pLogger->LogTrace(_T("lmMusicXMLParser"), _T("Procesing score-part id = "), sId.c_str() );
-    long nVStaves=1;
 	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();	
 	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
-    lmInstrument* pInstr = pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr, _T(""));
+    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr, _T(""));
     pInstr->XML_SetId(sId);
 
     //while (!node.isNull()) {

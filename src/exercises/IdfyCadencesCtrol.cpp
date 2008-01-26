@@ -345,9 +345,9 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
 
     *pProblemScore = new lmScore();
     (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    (*pProblemScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+    lmInstrument* pInstr = (*pProblemScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 							g_pMidi->DefaultVoiceInstr(), _T(""));
-    pVStaff = (*pProblemScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+    pVStaff = pInstr->GetVStaff();
     (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
     pVStaff->AddClef( lmE_Sol, 1 );
@@ -419,9 +419,9 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
     if (pSolutionScore) {
         *pSolutionScore = new lmScore();
         (*pSolutionScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-        (*pSolutionScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+        lmInstrument* pInstr = (*pSolutionScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 							    g_pMidi->DefaultVoiceInstr(), _T(""));
-        pVStaff = (*pSolutionScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+        pVStaff = pInstr->GetVStaff();
         (*pSolutionScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
         pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
         pVStaff->AddClef( lmE_Sol, 1 );

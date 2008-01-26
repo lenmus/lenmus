@@ -219,9 +219,9 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
-    pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+    lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
    						  g_pMidi->DefaultVoiceInstr(), _T(""));
-    lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
+    lmVStaff *pVStaff = pInstr->GetVStaff();
     pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature( m_nKey );
@@ -662,7 +662,7 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     // and to locate last note. This is necessary to assign it the root pitch (later)
     lmNote* pLastNote = (lmNote*)NULL;
     lmInstrument* pInstr = pScore->GetFirstInstrument();
-    lmVStaff* pVStaff = pInstr->GetVStaff(1);
+    lmVStaff* pVStaff = pInstr->GetVStaff();
     lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
     int nNumPoints = 0;
     while(!pIter->EndOfList())
@@ -1335,7 +1335,7 @@ void lmComposer6::InstantiateWithNote(lmScore* pScore, lmAPitch anPitch)
 
     // Loop to instantiate notes
     lmInstrument* pInstr = pScore->GetFirstInstrument();
-    lmVStaff* pVStaff = pInstr->GetVStaff(1);
+    lmVStaff* pVStaff = pInstr->GetVStaff();
     lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
     while(!pIter->EndOfList())
     {

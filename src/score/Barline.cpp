@@ -64,10 +64,6 @@ lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) 
     m_xUserPosType = lmLOCATION_DEFAULT;
     m_uxUserPos = 0;
 
-    //contexts
-    for (int i=0; i < lmMAX_STAFF; i++)
-        m_pContext[i] = (lmContext*)NULL;
-
 }
 
 lmBarline::~lmBarline()

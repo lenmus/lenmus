@@ -31,6 +31,9 @@
 
 class lmStaffObj;
 class lmStaffObjIterator;
+class lmContext;
+class lmVStaff;
+
 
 // To simplify future modifications of this class (i.e changing the data structures to implement it)
 // when an iterator is requested we will force to specify the intended usage so that 
@@ -63,29 +66,114 @@ enum ETraversingOrder
 };
 
 
-#define lmItMeasure		std::list<lmMeasureData*>::iterator 
+#define lmItMeasure		std::list<lmSegmentData*>::iterator 
 #define lmItCSO			std::list<lmStaffObj*>::iterator
 
 
-typedef struct lmMeasureData_Struct {
-	lmItCSO		itStartSO;		//first StaffObj in the measure
-	lmItCSO		itEndSO;		//last StaffObj, normally a barline
-	int			nNumMeasure;	//measure number: 1..n
-} lmMeasureData;
 
+class lmVoiceLine
+{
+public:
+	lmVoiceLine(lmVStaff* pOwner);
+	~lmVoiceLine();
+
+	void AddToVoice(lmStaffObj* pSO);
+
+	wxString Dump();
+
+
+private:
+	void AssignTime(lmStaffObj* pSO, float* pTime, float* pMaxTime);
+
+		//member variables
+
+    std::list<lmStaffObj*>		m_StaffObjs;		//list of StaffObjs in this voice
+    lmVStaff*                   m_pOwner;           //owner VStaff
+
+	//info only for Store method (info for last measure)
+    bool	m_fStartMeasure;	//start a new measure. To manage the creation of measures
+    float	m_rTime;			//time from start of the measure. One counter per voice
+								//Time is measured in 256th notes: 1-256th, ..., 256-whole, 512-double whole
+								//Float for grater precision (triplets problem, see comment at CPONota.ExactDuration)
+    float	m_rMaxTime;			//To store maximum timepos reached in current measure.
+
+	//cursor data
+
+
+};
+
+
+
+class lmSegmentData
+{
+public:
+	lmSegmentData();
+	~lmSegmentData() {}
+
+	inline lmContext* GetContext(int nStaff) { return pContext[nStaff-1]; }
+
+
+	lmItCSO		itStartSO;		        //first StaffObj in the measure
+	lmItCSO		itEndSO;		        //last StaffObj, normally a barline
+	int			nNumMeasure;	        //measure number: 1..n
+    lmContext*  pContext[lmMAX_STAFF];  //ptr to current context for each staff
+
+};
+
+
+class lmSegmentsTable
+{
+public:
+    lmSegmentsTable(lmVStaff* pOwner);
+    ~lmSegmentsTable();
+
+	//context management
+    void SetContext(int nMeasure, int nStaff, lmContext* pContext);
+    lmContext* GetContext(int nMeasure, int nStaff);
+
+    void AddSegment(lmItCSO itStartSO, lmItCSO itEndSO);
+	void InsertSegment(lmItMeasure itMBefore, lmItCSO itStartSO, lmItCSO itEndSO);
+    void RemoveSegment(lmItMeasure itMNext, int nMeasure);
+
+    inline int size() const { return (int)m_aMeasures.size(); }
+    inline lmItMeasure back() { return m_aMeasures[m_aMeasures.size() - 1]; }
+    inline lmItMeasure operator[](int nNum) { return m_aMeasures[nNum - 1]; }
+
+    lmItCSO GetFirstStaffObjInMeasure(int nMeasure);
+    lmItCSO GetLastStaffObjInMeasure(int nMeasure);
+
+	//segments data
+	lmSegmentData* GetLastSegment() 
+				{ return (m_aMeasures.size()==0 ? 
+					(lmSegmentData*)NULL :m_aSegmentsData.back());
+				}
+
+
+	wxString DumpSegmentsData();
+	wxString DumpMeasures();
+
+
+private:
+    void UpdateContexts(int nNewMeasure);
+
+    lmVStaff*                   m_pOwner;           //owner VStaff
+    std::list<lmSegmentData*>	m_aSegmentsData;	//info about measures
+    std::vector<lmItMeasure>	m_aMeasures;		//iterator pointing to m_aSegmentsData item
+
+};
 
 
 class lmColStaffObjs
 {
 public:
-    lmColStaffObjs();
+    lmColStaffObjs(lmVStaff* pOwner);
     ~lmColStaffObjs();
 
+    //add/remove StaffObjs
     void Store(lmStaffObj* pSO);
 	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
 	void Delete(lmStaffObj* pCursorSO);
 
-    int GetNumMeasures();
     void ShiftTime(float rTimeShift);
 
     //iterator related methods
@@ -93,28 +181,47 @@ public:
 	lmStaffObjIterator* CreateIteratorTo(lmStaffObj* pSO);
 	lmItCSO GetIteratorTo(lmStaffObj* pSO);
     int GetNumStaffObjs();
-    lmItCSO GetFirstInMeasure(int nBar);
     lmItCSO GetFirst();
     lmItCSO GetLast();
     bool EndOfList(lmItCSO pNode);
     bool StartOfList(lmItCSO pNode);
 
+    //measures related
+    int GetNumMeasures();
+    lmItCSO GetFirstStaffObjInMeasure(int nMeasure);
+    lmItCSO GetLastStaffObjInMeasure(int nMeasure);
+
+	//context management
+    void SetContext(int nMeasure, int nStaff, lmContext* pContext);
+    lmContext* GetContext(int nMeasure, int nStaff);
+	lmContext* GetCurrentContext(lmStaffObj* pSO);
+	lmContext* NewUpdatedContext(lmStaffObj* pSO);
+	lmContext* NewUpdatedLastContext(int nStaff);
+	lmContext* GetLastContext(int nStaff);
+    lmContext* GetStartOfSegmentContext(int nMeasure, int nStaff);
+
 	//debug
 	wxString DumpStaffObjs();
-	wxString DumpMeasuresData();
+	wxString DumpSegmentsData();
 	wxString DumpMeasures();
+	wxString DumpVoices();
 
 
 private:
 	void AssignTime(lmStaffObj* pSO, float* pTime, float* pMaxTime);
 	void RepositionObjects(lmItCSO pItem, float* pTime, float* pMaxTime);
-	void AddMeasure(lmItCSO itStartSO, lmItCSO itEndSO);
-	void InsertMeasure(lmItMeasure itMBefore, lmItCSO itStartSO, lmItCSO itEndSO);
+	int DetermineVoiceLine(lmStaffObj* pSO, int nStaff=0);
+	void StartVoices();
 
 
+    lmVStaff*                   m_pOwner;           //owner VStaff
     std::list<lmStaffObj*>		m_cStaffobjs;		//list of StaffObjs in this collection
-    std::list<lmMeasureData*>	m_aMeasureData;		//info about measures
-    std::vector<lmItMeasure>	m_aMeasures;		//iterator pointing to m_aMeasureData item
+    lmSegmentsTable         	m_Segments;	
+
+	//voices
+	lmVoiceLine*				m_VoiceLine[lmMAX_VOICE];
+	int							m_nNumVoices;				//number of voices
+    int							m_nCurVoice[lmMAX_STAFF];	//num of current voice for each staff
 
 	//info only for Store method (info for last measure)
     bool	m_fStartMeasure;	//start a new measure. To manage the creation of measures

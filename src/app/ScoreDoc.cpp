@@ -84,8 +84,8 @@ bool lmScoreDocument::OnNewDocument()
 
     // create an empty score
     m_pScore = new lmScore();
-    m_pScore->AddInstrument(1,0,0,_T(""));        //one vstaff, MIDI channel 0, MIDI instr 0
-    lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);      //get first vstaff of instr.1
+    lmInstrument* pInstr = m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = pInstr->GetVStaff();
 	pVStaff->AddBarline(lm_eBarlineEOS, true);
 
     //In scores created in the score editor, we should render a full page, 

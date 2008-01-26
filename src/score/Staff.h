@@ -104,9 +104,5 @@ private:
 
 };
 
-// declare a list of StaffObjs class
-#include "wx/list.h"
-WX_DECLARE_LIST(lmStaff, StaffList);
-
 
 #endif    // __LM_STAFF_H__

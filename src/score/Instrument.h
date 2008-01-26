@@ -26,17 +26,15 @@
 #pragma interface "Instrument.cpp"
 #endif
 
-#include <vector>
-
 class lmBox;
 
 class lmInstrument : public lmScoreObj
 {
 public:
     //ctors and dtor
-    lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
+    lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
                  wxString sName, wxString sAbbrev);
-    lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
+    lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
                  lmScoreText* pName, lmScoreText* pAbbrev);
     ~lmInstrument();
 
@@ -50,12 +48,10 @@ public:
 
 	//---- specific methods of this class ------------------------
 
-    lmVStaff* AddVStaff(bool fOverlayered);
-    //returns lmVStaff number nStaff (1..n)
-    lmVStaff* GetVStaff(int nStaff);
+	inline lmVStaff* GetVStaff() { return m_pVStaff; }
 
-    //Returns the number of VStaves that this lmInstrument has (1..n)
-    inline int GetNumStaves() {return (int)m_cStaves.size(); }
+    //Returns the number of staves that this lmInstrument has (1..n)
+    inline int GetNumStaves() { return m_pVStaff->GetNumStaves(); }
 
     //layout
     void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_nIndentFirst, pPos); }
@@ -84,12 +80,12 @@ public:
     const wxString XML_GetId() { return m_xmlId; }
 
 private:
-    void Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
+    void Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
                 lmScoreText* pName, lmScoreText* pAbbrev);
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
 
     lmScore*        m_pScore;           //score to whith this instrument belongs
-	std::vector<lmVStaff*>	m_cStaves;	//list of VStaffs that this instrument has
+	lmVStaff*		m_pVStaff;			//VStaff for this instrument
     int             m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
     int             m_nMidiChannel;     //MIDI channel to use
 

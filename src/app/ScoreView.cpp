@@ -129,7 +129,7 @@ lmScoreView::lmScoreView()
     m_yScrollPosition = 0;
 
 	//cursor initializations
-    m_pCursor = (lmScoreCursor*)NULL;
+    m_pCursor = (lmScoreViewCursor*)NULL;
 	m_pCursorSO = (lmStaffObj*)NULL;
     m_nCursorIdSO = -1;
     m_pCursorIT = (lmStaffObjIterator*)NULL;
@@ -1354,7 +1354,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     //// include it. And when repainting it is necessary to have cursor initialized.
     //if (!m_pCursor)
     //{
-    //    m_pCursor = new lmScoreCursor(this, (lmCanvas*)m_pCanvas, pScore);
+    //    m_pCursor = new lmScoreViewCursor(this, (lmCanvas*)m_pCanvas, pScore);
     //    SetInitialCursorPosition();
     //    //TODO: This is not the best place to start the cursor. If the PO is going to
     //    //be higlighted this will force a repaint (inside the paint routine!!)
@@ -1520,7 +1520,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     if (!m_pCursor)
     {
 		// Following code initializes cursor position if not yet initialized.
-        m_pCursor = new lmScoreCursor(this, (lmCanvas*)m_pCanvas, pScore);
+        m_pCursor = new lmScoreViewCursor(this, (lmCanvas*)m_pCanvas, pScore);
         SetInitialCursorPosition();
     }
     m_pCursor->DisplayCursor(m_rScale, m_pCursorSO);
@@ -1569,6 +1569,9 @@ void lmScoreView::DumpBitmaps()
 void lmScoreView::SetInitialCursorPosition()
 {
     if (m_pCursorIT) return;
+	lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+	if (!pBS) return;
+
 	if (!m_pCursorSO)
 	{
 		// Set initial cursor position
@@ -1577,7 +1580,7 @@ void lmScoreView::SetInitialCursorPosition()
 		int nCursorStaff = 1;								//staff = 1
 		int nCursorMeasure = 1;							//measure = 1
 		int nCursorTime = 0;
-		lmVStaff* pVStaff = pInstr->GetVStaff(nCursorStaff);
+		lmVStaff* pVStaff = pInstr->GetVStaff();
 
 		//loop to process all StaffObjs in this measure
 		m_pCursorIT = pVStaff->CreateIterator(eTR_ByTime);
@@ -1592,8 +1595,8 @@ void lmScoreView::SetInitialCursorPosition()
 			m_pCursorSO = m_pCursorIT->GetCurrent();
             m_pCursor->SetCursorPosition(m_pCursorSO);
 
-            lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-            if (pBS)
+            //lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+            //if (pBS)
                 pBS->SetCursor(m_pCursorSO);
 		}
 	}

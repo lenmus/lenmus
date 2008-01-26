@@ -288,8 +288,8 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
 
     lmScore* pScore = new lmScore();
     pScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    pScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
-    pVStaff = pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
+    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+    pVStaff = pInstr->GetVStaff();
     pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature(0, true);                    // 0 fifths, major  ==> earmDo
@@ -329,8 +329,8 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
     {
         m_pSolutionScore = pScore;
         m_pProblemScore = new lmScore();
-        m_pProblemScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
-        pVStaff = m_pProblemScore->GetVStaff(1, 1);    //get first vstaff of instr.1
+        lmInstrument* pInstr = m_pProblemScore->AddInstrument(0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+        pVStaff = pInstr->GetVStaff();
         m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
         pVStaff->AddClef( m_nClef );
         pVStaff->AddKeySignature(0, true);                    // 0 fifths, major

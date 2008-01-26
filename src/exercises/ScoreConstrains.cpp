@@ -494,9 +494,9 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
-    pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+    lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 						  g_pMidi->DefaultVoiceInstr(), _T(""));
-    lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
+    lmVStaff *pVStaff = pInstr->GetVStaff();
     pVStaff->AddClef(lmE_Sol);
     pVStaff->AddKeySignature(earmDo);
     //pVStaff->AddTimeSignature( m_nTimeSign );
@@ -546,9 +546,9 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
-    pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+    lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 						  g_pMidi->DefaultVoiceInstr(), _T(""));
-    lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
+    lmVStaff *pVStaff = pInstr->GetVStaff();
     pVStaff->AddClef(lmE_Sol);
     pVStaff->AddKeySignature(earmDo);
     //pVStaff->AddTimeSignature( m_nTimeSign );

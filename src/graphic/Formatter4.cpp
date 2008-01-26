@@ -116,21 +116,18 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
     //for each staff size, setup fonts of right point size for that staff size
-    int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
     {
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
-            pVStaff = pInstr->GetVStaff(iVStaff);
-            pVStaff->SetUpFonts(pPaper);
-        }
+        pVStaff = pInstr->GetVStaff();
+        pVStaff->SetUpFonts(pPaper);
     }
 
 	//Set up some spacing values, based on first instrument, first staff
 	lmTenths rSpaceBeforeProlog = 7.5f;			//TODO: User options
 	pInstr = m_pScore->GetFirstInstrument();
-	pVStaff = pInstr->GetVStaff(1);
+	pVStaff = pInstr->GetVStaff();
 	m_uSpaceBeforeProlog = pVStaff->TenthsToLogical(rSpaceBeforeProlog, 1);
 
 
@@ -175,7 +172,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     //----------------------------------------------------------------------------------
     iIni = 1;                //iIni = Measure in which the system starts
     nAbsMeasure = 1;
-    nTotalMeasures = ((m_pScore->GetFirstInstrument())->GetVStaff(1))->GetNumMeasures();    //num measures in the score
+    nTotalMeasures = ((m_pScore->GetFirstInstrument())->GetVStaff())->GetNumMeasures();    //num measures in the score
         //! @limit It is assumed that all staves have the same number of measures
     nSystem = 1;
     lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
@@ -531,7 +528,6 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
 {
     //compute the height of the system
-    int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
 
@@ -543,27 +539,15 @@ lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
     lmLUnits yPaperPos;
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
     {
-        //loop for current instrument, explore all its staves
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-        {
-            pVStaff = pInstr->GetVStaff(iVStaff);
+        pVStaff = pInstr->GetVStaff();
 
-            //if it is not first VStaff, set paper position for this VStaff
-            if (iVStaff != 1) {
-                if (pVStaff->IsOverlayered()) {
-                    //overlayered: restore paper position to previous VStaff position
-                    pPaper->SetCursorY( yPaperPos );
-                }
-            }
+        //save this VStaff paper position
+        yPaperPos = pPaper->GetCursorY();
 
-            //save this VStaff paper position
-            yPaperPos = pPaper->GetCursorY();
+        //advance paper in height off this lmVStaff
+        pVStaff->NewLine(pPaper);
+        //TODO add inter-staff space
 
-            //advance paper in height off this lmVStaff
-            pVStaff->NewLine(pPaper);
-            //TODO add inter-staff space
-
-        }    // next lmVStaff
     }    // next lmInstrument
 
     lmLUnits nSystemHeight = pPaper->GetCursorY() - yPaperStart;
@@ -602,7 +586,7 @@ bool lmFormatter4::SplitMeasureColumn()
     //dbg ---------------
 
     //TODO
-    wxLogMessage(_T("[lmFormatter4::RenderJustified] The line width is not enough for drawing just one bar!!!."));
+    wxMessageBox(_T("[lmFormatter4::RenderJustified] The line width is not enough for drawing just one bar!!!."));
     return true;        //abort rederization
 
 }
@@ -629,7 +613,6 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     //        in this measure
     //
 
-    int iVStaff;
     lmInstrument* pInstr;
     lmVStaff* pVStaff;
     bool fNewSystem = false;
@@ -663,86 +646,74 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         lmBoxSliceInstr* pBSI = pBoxSlice->AddInstrument(pInstr);
 		bool fUpdateInstr = true;
 
-        //loop. For current instrument, explore all its staves to size the measure
+        //explore all its VStaff to size the measure
         //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-        {
-            pVStaff = pInstr->GetVStaff(iVStaff);
+        pVStaff = pInstr->GetVStaff();
 
-            //if it is not first VStaff, set paper position for this VStaff
-            if (iVStaff != 1) {
-                if (pVStaff->IsOverlayered()) {
-                    //overlayered: restore paper position to previous VStaff position
-                    pPaper->SetCursorX( xPaperPos );
-                    pPaper->SetCursorY( yPaperPos );
-                }
-            }
+        //save this VStaff paper position
+        xPaperPos = pPaper->GetCursorX();
+        yPaperPos = pPaper->GetCursorY();
 
-            //save this VStaff paper position
-            xPaperPos = pPaper->GetCursorX();
-            yPaperPos = pPaper->GetCursorY();
+        // create the BoxSliceVStaff
+        lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff);
+        // if first measure in system add the ShapeStaff
+		if (nRelMeasure == 1)
+		{
+			// Final xPos is yet unknown, so I use zero.
+			// It will be updated when the system is completed
+			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xPaperPos, 0.0, yPaperPos);
+		}
 
-            // create the BoxSliceVStaff
-            lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff);
-            // if first measure in system add the ShapeStaff
-			if (nRelMeasure == 1)
-			{
-				// Final xPos is yet unknown, so I use zero.
-				// It will be updated when the system is completed
-				yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xPaperPos, 0.0, yPaperPos);
-			}
+		//save start position of this system, slice, instrument and vstaff
+		if (fFirstStaffInSystem)
+		{
+			//start of system
+			fFirstStaffInSystem = false;
+			pBoxSystem->SetXLeft(xPaperPos);
+			pBoxSystem->SetYTop(yPaperPos);
+		}
+		if (fUpdateSlice)
+		{
+			//start of slice
+			pBoxSlice->SetXLeft(xPaperPos);
+			pBoxSlice->SetYTop(yPaperPos);
+			fUpdateSlice = false;
+		}
+		if (fUpdateInstr)
+		{
+			//start of instrument
+			pBSI->SetXLeft(xPaperPos);
+			pBSI->SetYTop(yPaperPos);
+			fUpdateInstr = false;
+		}
+		//start of VStaff slice
+		pBSV->SetXLeft(xPaperPos);
+		pBSV->SetYTop(yPaperPos);
+		pBSV->SetYBottom(yBottomLeft);
 
-			//save start position of this system, slice, instrument and vstaff
-			if (fFirstStaffInSystem)
-			{
-				//start of system
-				fFirstStaffInSystem = false;
-				pBoxSystem->SetXLeft(xPaperPos);
-				pBoxSystem->SetYTop(yPaperPos);
-			}
-			if (fUpdateSlice)
-			{
-				//start of slice
-				pBoxSlice->SetXLeft(xPaperPos);
-				pBoxSlice->SetYTop(yPaperPos);
-				fUpdateSlice = false;
-			}
-			if (fUpdateInstr)
-			{
-				//start of instrument
-				pBSI->SetXLeft(xPaperPos);
-				pBSI->SetYTop(yPaperPos);
-				fUpdateInstr = false;
-			}
-			//start of VStaff slice
-			pBSV->SetXLeft(xPaperPos);
-			pBSV->SetYTop(yPaperPos);
-			pBSV->SetYBottom(yBottomLeft);
+        //The prolog (clef and key signature) must be rendered on each system, but the
+        //matching StaffObjs only exist in the first system. Therefore:
+        //1. in the first system the prolog is rendered as part as the normal lmStaffObj
+        //   rendering process.
+        //2. but for the other systems we must force the rendering of the prolog because there
+        //   are no StaffObjs representing the prolog.
+        if (nSystem != 1 && nRelMeasure == 1)
+		{
+			pPaper->SetCursorX(xPaperPos);
+			//pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
+        }
 
-            //The prolog (clef and key signature) must be rendered on each system, but the
-            //matching StaffObjs only exist in the first system. Therefore:
-            //1. in the first system the prolog is rendered as part as the normal lmStaffObj
-            //   rendering process.
-            //2. but for the other systems we must force the rendering of the prolog because there
-            //   are no StaffObjs representing the prolog.
-            if (nSystem != 1 && nRelMeasure == 1)
-			{
-				pPaper->SetCursorX(xPaperPos);
-				//pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
-            }
+        fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, nInstr, pPaper);
 
-            fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, nInstr, pPaper);
+        //advance paper in height off this lmVStaff
+        //AWARE As advancing one staff has the effect of returning
+        //x position to the left marging, all x position information stored
+        //in m_timepos is relative to the start of the measure
+        pVStaff->NewLine(pPaper);
+        //TODO add inter-staff space
 
-            //advance paper in height off this lmVStaff
-            //AWARE As advancing one staff has the effect of returning
-            //x position to the left marging, all x position information stored
-            //in m_timepos is relative to the start of the measure
-            pVStaff->NewLine(pPaper);
-            //TODO add inter-staff space
+        ///*** Update measures of this BoxVStaffSlice
 
-            ///*** Update measures of this BoxVStaffSlice
-
-        }    // next lmVStaff
 
         ///*** Update measures of this BoxInstrSlice
 		pBSI->SetYBottom(yBottomLeft);
@@ -775,7 +746,6 @@ void lmFormatter4::AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
                                          lmBoxSystem* pBoxSystem, lmPaper* pPaper)
 {
 
-    int iVStaff;
     lmInstrument* pInstr;
     lmVStaff* pVStaff;
     bool fNewSystem = false;
@@ -800,86 +770,73 @@ void lmFormatter4::AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         lmBoxSliceInstr* pBSI = pBoxSlice->AddInstrument(pInstr);
 		bool fUpdateInstr = true;
 
-        //loop. For current instrument, explore all its staves to size the measure
+        //For current instrument, explore its VStaff to size the measure
         //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-        {
-            pVStaff = pInstr->GetVStaff(iVStaff);
+        pVStaff = pInstr->GetVStaff();
 
-            //if it is not first VStaff, set paper position for this VStaff
-            if (iVStaff != 1) {
-                if (pVStaff->IsOverlayered()) {
-                    //overlayered: restore paper position to previous VStaff position
-                    pPaper->SetCursorX( xPaperPos );
-                    pPaper->SetCursorY( yPaperPos );
-                }
-            }
+        //save this VStaff paper position
+        xPaperPos = pPaper->GetCursorX();
+        yPaperPos = pPaper->GetCursorY();
 
-            //save this VStaff paper position
-            xPaperPos = pPaper->GetCursorX();
-            yPaperPos = pPaper->GetCursorY();
+        // create the BoxSliceVStaff
+        lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff);
+        // if first measure in system add the ShapeStaff
+		if (nRelMeasure == 1)
+		{
+			// Final xPos is yet unknown, so I use zero.
+			// It will be updated when the system is completed
+			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xPaperPos, 0.0, yPaperPos);
+		}
 
-            // create the BoxSliceVStaff
-            lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff);
-            // if first measure in system add the ShapeStaff
-			if (nRelMeasure == 1)
-			{
-				// Final xPos is yet unknown, so I use zero.
-				// It will be updated when the system is completed
-				yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xPaperPos, 0.0, yPaperPos);
-			}
+		//save start position of this system, slice, instrument and vstaff
+		if (fFirstStaffInSystem)
+		{
+			//start of system
+			fFirstStaffInSystem = false;
+			pBoxSystem->SetXLeft(xPaperPos);
+			pBoxSystem->SetYTop(yPaperPos);
+		}
+		if (fUpdateSlice)
+		{
+			//start of slice
+			pBoxSlice->SetXLeft(xPaperPos);
+			pBoxSlice->SetYTop(yPaperPos);
+			fUpdateSlice = false;
+		}
+		if (fUpdateInstr)
+		{
+			//start of instrument
+			pBSI->SetXLeft(xPaperPos);
+			pBSI->SetYTop(yPaperPos);
+			fUpdateInstr = false;
+		}
+		//start of VStaff slice
+		pBSV->SetXLeft(xPaperPos);
+		pBSV->SetYTop(yPaperPos);
+		pBSV->SetYBottom(yBottomLeft);
 
-			//save start position of this system, slice, instrument and vstaff
-			if (fFirstStaffInSystem)
-			{
-				//start of system
-				fFirstStaffInSystem = false;
-				pBoxSystem->SetXLeft(xPaperPos);
-				pBoxSystem->SetYTop(yPaperPos);
-			}
-			if (fUpdateSlice)
-			{
-				//start of slice
-				pBoxSlice->SetXLeft(xPaperPos);
-				pBoxSlice->SetYTop(yPaperPos);
-				fUpdateSlice = false;
-			}
-			if (fUpdateInstr)
-			{
-				//start of instrument
-				pBSI->SetXLeft(xPaperPos);
-				pBSI->SetYTop(yPaperPos);
-				fUpdateInstr = false;
-			}
-			//start of VStaff slice
-			pBSV->SetXLeft(xPaperPos);
-			pBSV->SetYTop(yPaperPos);
-			pBSV->SetYBottom(yBottomLeft);
+        //The prolog must be rendered on each system, but the
+        //matching StaffObjs only exist in the first system. Therefore:
+        //1. in the first system the prolog is rendered as part as the normal lmStaffObj
+        //   rendering process and the available space for measures is all the paper width.
+        //2. but for the other systems we must force the rendering of the prolog because there
+        //   are no StaffObjs representing the prolog.
+        if (nSystem != 1 && nRelMeasure == 1)
+		{
+			pPaper->SetCursorX(xPaperPos);
+			//pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
+        }
 
-            //The prolog must be rendered on each system, but the
-            //matching StaffObjs only exist in the first system. Therefore:
-            //1. in the first system the prolog is rendered as part as the normal lmStaffObj
-            //   rendering process and the available space for measures is all the paper width.
-            //2. but for the other systems we must force the rendering of the prolog because there
-            //   are no StaffObjs representing the prolog.
-            if (nSystem != 1 && nRelMeasure == 1)
-			{
-				pPaper->SetCursorX(xPaperPos);
-				//pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
-            }
+        //fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, pPaper);
 
-            //fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, pPaper);
+        //advance paper in height off this lmVStaff
+        //AWARE As advancing one staff has the effect of returning
+        //x position to the left marging, all x position information stored
+        //in m_timepos is relative to the start of the measure
+        pVStaff->NewLine(pPaper);
+        //TODO add inter-staff space
 
-            //advance paper in height off this lmVStaff
-            //AWARE As advancing one staff has the effect of returning
-            //x position to the left marging, all x position information stored
-            //in m_timepos is relative to the start of the measure
-            pVStaff->NewLine(pPaper);
-            //TODO add inter-staff space
-
-            ///*** Update measures of this BoxVStaffSlice
-
-        }    // next lmVStaff
+        ///*** Update measures of this BoxVStaffSlice
 
         ///*** Update measures of this BoxInstrSlice
 		pBSI->SetYBottom(yBottomLeft);
@@ -904,23 +861,20 @@ void lmFormatter4::ResetLocation(int nAbsMeasure)
     lmInstrument* pInstr;
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
     {
-        //loop. For current instrument, explore all its staves
-        for (int iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-        {
-            lmVStaff* pVStaff = pInstr->GetVStaff(iVStaff);
+        //For current instrument, explore its VStaff
+        lmVStaff* pVStaff = pInstr->GetVStaff();
 
-			//loop to process all StaffObjs in this measure
-			lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
-			pIT->AdvanceToMeasure(nAbsMeasure);
-			while(!pIT->EndOfList())
-			{
-				lmStaffObj* pSO = pIT->GetCurrent();
-				pSO->ResetObjectLocation();
-				if (pSO->GetType() == eSFOT_Barline) break;	//End of measure: exit loop.
-				pIT->MoveNext();
-			}
-			delete pIT;
+		//loop to process all StaffObjs in this measure
+		lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
+		pIT->AdvanceToMeasure(nAbsMeasure);
+		while(!pIT->EndOfList())
+		{
+			lmStaffObj* pSO = pIT->GetCurrent();
+			pSO->ResetObjectLocation();
+			if (pSO->GetType() == eSFOT_Barline) break;	//End of measure: exit loop.
+			pIT->MoveNext();
 		}
+		delete pIT;
     }
 }
 
@@ -1163,33 +1117,8 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
     {
         xPos = xStartPos;
 
-        //locate first context for this staff
-        pContext = (lmContext*)NULL;
-        lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
-        pIter->AdvanceToMeasure(nAbsMeasure);
-        while(!pIter->EndOfList())
-		{
-            pSO = pIter->GetCurrent();
-            if (pSO->GetClass() == eSFOT_NoteRest) {
-                pNR = (lmNoteRest*)pSO;
-                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff)
-				{
-                    //OK. Note fount. Take context
-                    pNote = (lmNote*)pSO;
-                    pContext = pNote->GetCurrentContext();
-                    break;
-                }
-            }
-            else if (pSO->GetClass() == eSFOT_Barline)
-			{
-				//end of measure reached. Take content
-                lmBarline* pBar = (lmBarline*)pSO;
-                pContext = pBar->GetContext(nStaff);
-                break;
-            }
-            pIter->MoveNext();
-        }
-        delete pIter;
+        //locate context for first note in this staff
+		pContext = pVStaff->GetStartOfSegmentContext(nAbsMeasure, nStaff);
 
         if (pContext) {
             pClef = pContext->GetClef();
@@ -1213,7 +1142,7 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
                 lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
                 lmShape* pShape = pKey->CreateShape(pBSV, pPaper, uPos, nClef, pStaff);
 				xPos += pShape->GetWidth();
-				m_oTimepos[nRelMeasure].AddEntry(nInstr, pKey, pShape, true);
+				m_oTimepos[nRelMeasure].AddEntry(nInstr, pKey, pShape, true, nStaff);
             }
 
         }

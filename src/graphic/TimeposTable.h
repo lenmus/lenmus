@@ -49,46 +49,12 @@ class lmTimeposEntry
 {
 public:
     // constructor and destructor
-    lmTimeposEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape, bool fProlog)
-	{
-        m_nType = nType;
-        m_pSO = pSO;
-        m_pShape = pShape;
-		m_fProlog = fProlog;
-
-        m_uSpace = 0.0f;
-        m_xFinal = 0.0f;
-
-        if (pSO && (pSO->GetClass() == eSFOT_NoteRest || pSO->GetClass() == eSFOT_Barline))
-            m_rTimePos = pSO->GetTimePos();
-        else
-            m_rTimePos = -1.0f;
-        m_uSize = (pShape ? pShape->GetWidth() : 0.0f);
-        m_xLeft = (pShape ? pShape->GetXLeft() : 0.0f);
-        m_xInitialLeft = m_xLeft;
-        m_uxAnchor = (pSO ? pSO->GetAnchorPos() : m_xLeft);
-
-    }
+    lmTimeposEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape, bool fProlog);
     ~lmTimeposEntry() {}
 
 	void AssignSpace(lmTimeposTable* pTT);
 	void SetNoteRestSpace(lmTimeposTable* pTT);
-	void Reposition(lmLUnits uxPos)
-	{
-		//reposition Shape
-        wxLogMessage(_T("Reposition: old xLeft=%.2f, new xLeft=%.2f"), m_xInitialLeft, uxPos);
-        lmLUnits uShift = uxPos - m_xInitialLeft;
-		if (!m_fProlog)
-			m_pSO->StoreOriginAndShiftShapes( uShift );
-		else
-			m_pShape->Shift(uShift, 0.0);
-
-		//update entry data
-		m_xLeft = uxPos;
-		m_uxAnchor += uShift;
-		m_xInitialLeft = uxPos;
-		m_xFinal = uxPos + m_uSpace;
-	}
+	void Reposition(lmLUnits uxPos);
 
     //member variables (one entry of the table)
     //----------------------------------------------------------------------------
@@ -128,8 +94,9 @@ public:
 
 	//spacing algorithm
 	lmLUnits IntitializeSpacingAlgorithm();
-	float SetTimedObjects(float rTime, lmLUnits uxPos, float rFactor);
+	float ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor, lmLUnits* pMaxPos);
 	lmLUnits GetPosForTime(float rTime);
+    lmLUnits GetAnchorForTime(float rTime);
 	lmLUnits GetLineWidth();
 
 	
@@ -144,7 +111,7 @@ public:
 	int								m_nVoice;		//voice (0=not yet defined)
 	std::vector<lmTimeposEntry*>	m_aMainTable;	//The main table
 
-	//temporary data for SetTimedObjects() method
+	//temporary data for ProcessTimepos() method
 	lmItEntries			m_it;
 	lmLUnits			m_uxCurPos;
 
