@@ -1,5 +1,5 @@
 wxString sTxt;
-sTxt = _("Send your comments and sugesstions to the LenMus team (www.lenmus.org)");
+sTxt = _("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
 sTxt = _("Licensed under the terms of the GNU Free Documentation License v1.2");
 sTxt = _("the teacher of music");
 sTxt = _("Cover page");

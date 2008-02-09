@@ -97,7 +97,7 @@ wxString lmBarline::SourceLDP(int nIndent)
     //location
     sSource += SourceLDP_Location(m_uPaperPos);
 
-    sSource += _T(")\n\n");
+    sSource += _T(")\n");
     return sSource;
 }
 
@@ -105,7 +105,48 @@ wxString lmBarline::SourceXML(int nIndent)
 {
 	wxString sSource = _T("");
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-    sSource += _T("TODO: lmBarline XML Source code generation method\n");
+    sSource += _T("<barline>\n");
+	nIndent++;
+
+	//barline style
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	sSource += _T("<bar-style>");
+    switch(m_nBarlineType)
+    {
+        case lm_eBarlineEndRepetition:
+            sSource += _T("endRepetition");		//TODO
+			break;
+        case lm_eBarlineStartRepetition:
+            sSource += _T("startRepetition");	//TODO
+			break;
+        case lm_eBarlineEnd:
+            sSource += _T("light-heavy");
+			break;
+        case lm_eBarlineDouble:
+            sSource += _T("light-light");
+			break;
+        case lm_eBarlineSimple:
+            sSource += _T("regular");
+			break;
+        case lm_eBarlineStart:
+            sSource += _T("heavy-light");
+			break;
+        case lm_eBarlineDoubleRepetition:
+            sSource += _T("doubleRepetition");	//TODO
+			break;
+        case lm_eBarlineEOS:
+            sSource += _T("EndOfStaff control");	//TODO
+			break;
+        default:
+            wxASSERT(false);
+    }
+	sSource += _T("</bar-style>\n");
+
+	//close barline
+	nIndent--;
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("</barline>\n");
+
     return sSource;
 }
 

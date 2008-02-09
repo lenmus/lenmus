@@ -389,7 +389,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     lmNoteRest* pNR = (lmNoteRest*)NULL;
     lmNote* pNote = (lmNote*)NULL;
     bool fOnlyQuarterNotes = true;
-    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_AsStored);
+    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_AsStored);
     while(!pIter->EndOfList()) {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest) {
@@ -663,7 +663,7 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     lmNote* pLastNote = (lmNote*)NULL;
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     lmVStaff* pVStaff = pInstr->GetVStaff();
-    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
     int nNumPoints = 0;
     while(!pIter->EndOfList())
     {
@@ -1336,7 +1336,7 @@ void lmComposer6::InstantiateWithNote(lmScore* pScore, lmAPitch anPitch)
     // Loop to instantiate notes
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     lmVStaff* pVStaff = pInstr->GetVStaff();
-    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
     while(!pIter->EndOfList())
     {
         lmStaffObj* pSO = pIter->GetCurrent();

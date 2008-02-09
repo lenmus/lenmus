@@ -129,6 +129,8 @@ void lmScoreViewCursor::DisplayCursor(double rScale, lmStaffObj* pSO)
 
 void lmScoreViewCursor::SetCursorPosition(lmStaffObj* pSO) 
 { 
+    if (!pSO) return;
+
     //if position doesn't change, return. Nothing to do.
     if (m_pCursorSO && m_pCursorSO->GetID() == pSO->GetID()) return;
 

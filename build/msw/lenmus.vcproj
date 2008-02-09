@@ -534,7 +534,7 @@
 				RelativePath="..\..\src\app\TheApp.h">
 			</File>
 			<Filter
-				Name="toolbox"
+				Name="toolboox"
 				Filter="">
 				<File
 					RelativePath="..\..\src\app\toolbox\ToolNotesOpt.cpp">

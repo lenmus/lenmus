@@ -56,6 +56,8 @@ BEGIN_EVENT_TABLE(lmDlgCompileBook, wxDialog)
     EVT_CHECKBOX( XRCID( "chkLangFrench" ), lmDlgCompileBook::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkLangSpanish" ), lmDlgCompileBook::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkLangTurkish" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkLangDutch" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkLangBasque" ), lmDlgCompileBook::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkLangAll" ), lmDlgCompileBook::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkDumpTree" ), lmDlgCompileBook::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkLogTree" ), lmDlgCompileBook::OnDataChanged )
@@ -81,6 +83,7 @@ lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOpti
     m_pChkLang[eLangSpanish] = XRCCTRL(*this, "chkLangSpanish", wxCheckBox);
     m_pChkLang[eLangTurkish] = XRCCTRL(*this, "chkLangTurkish", wxCheckBox);
     m_pChkLang[eLangDutch] = XRCCTRL(*this, "chkLangDutch", wxCheckBox);
+    m_pChkLang[eLangBasque]  = XRCCTRL(*this, "chkLangBasque", wxCheckBox);
     m_pChkLang[eLangLast] = XRCCTRL(*this, "chkLangAll", wxCheckBox);
     m_pTxtSrcPath = XRCCTRL(*this, "txtSrcPath", wxTextCtrl);     
     m_pTxtDestPath = XRCCTRL(*this, "txtDestPath", wxTextCtrl); 

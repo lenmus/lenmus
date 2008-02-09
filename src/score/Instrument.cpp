@@ -49,6 +49,10 @@
 lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, lmTEXT_BOLD };
 
 
+//=======================================================================================
+// lmInstrument implementation
+//=======================================================================================
+
 lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
                            int nMIDIInstr, wxString sName, wxString sAbbrev)
     : lmScoreObj(pScore)
@@ -158,7 +162,6 @@ wxString lmInstrument::SourceLDP(int nIndent)
 wxString lmInstrument::SourceXML(int nIndent)
 {
 	wxString sSource = _T("");
-	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 	sSource += m_pVStaff->SourceXML(nIndent);
 	return sSource;
 

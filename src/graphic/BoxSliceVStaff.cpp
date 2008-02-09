@@ -120,7 +120,7 @@ void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
 
     ////loop to process all StaffObjs in this measure
     //lmStaffObj* pSO = (lmStaffObj*)NULL;
-    //lmStaffObjIterator* pIT = m_pVStaff->CreateIterator(eTR_AsStored);
+    //lmSOIterator* pIT = m_pVStaff->CreateIterator(eTR_AsStored);
     //pIT->AdvanceToMeasure(nMeasure);
     //while(!pIT->EndOfList())
     //{

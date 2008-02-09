@@ -144,7 +144,7 @@ class lmVStaff;
 class lmInstrument;
 class lmStaffObj;
 class lmColStaffObjs;
-class lmStaffObjIterator;
+class lmSOIterator;
 //class StaffObjsList;
 
 class lmBasicText;
@@ -204,6 +204,30 @@ class lmBox;
 // TODO: Replace for lmScore/lmNote member funtions
 extern lmNoteRest* g_pLastNoteRest;
 extern lmBeam* g_pCurBeam;
+
+class lmScoreCursor
+{
+public:
+    lmScoreCursor(lmScore* pOwnerScore);
+    ~lmScoreCursor() {}
+
+    //positioning
+    void ResetCursor();
+    void MoveRight();
+    void MoveLeft();
+    void MoveUp();
+    void MoveDown();
+
+    //current position info
+    lmStaffObj* GetCursorSO();
+
+
+private:
+    lmScore*            m_pScore;           //owner score
+	lmVStaffCursor*		m_pVCursor;		    //current cursor
+	int					m_nCursorInstr;		//instrument number (1..n) of current cursor
+
+};
 
 class lmScore : public lmScoreObj
 {
@@ -292,7 +316,9 @@ public:
 	bool IsMeasureModified(int nMeasure);
 	void ResetMeasuresModified();
 
-	////cursor management
+	//cursor management
+    inline void ResetCursor() { m_SCursor.ResetCursor(); }
+    inline lmScoreCursor* GetCursor() { return &m_SCursor; }
 	//CursorFwd();
 	//CursorBack();
 	//CursorAt(lmStaffObj* pSO);
@@ -301,11 +327,15 @@ public:
 
 
 private:
+    friend class lmScoreCursor;
+
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
 	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pTitle,
 							  lmLUnits nPrevTitleHeight);
+	void DoAddInstrument(lmInstrument* pInstr);
+
 
 
         //
@@ -336,6 +366,8 @@ private:
 	//temporary data used for edition/renderization
 	std::list<int>		m_aMeasureModified;		//list of measures modified
 
+	//for edition. Active cursor pointing to current position
+	lmScoreCursor		m_SCursor;		    //score cursor for edition
 
 };
 

@@ -106,6 +106,10 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     //verify that there is a score
     if (!m_pScore || m_pScore->GetNumInstruments() == 0) return (lmBoxScore*)NULL;
 
+	////DBG -------------------------------------------------------------------------
+	//m_pScore->Dump(_T("dump.txt"));
+	////END DBG ---------------------------------------------------------------------
+
     // get options for renderization
     bool fStopStaffLinesAtFinalBarline = m_pScore->GetOptionBool(_T("StaffLines.StopAtFinalBarline"));
     m_rSpacingFactor = (float) m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
@@ -865,13 +869,13 @@ void lmFormatter4::ResetLocation(int nAbsMeasure)
         lmVStaff* pVStaff = pInstr->GetVStaff();
 
 		//loop to process all StaffObjs in this measure
-		lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
+		lmSOIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
 		pIT->AdvanceToMeasure(nAbsMeasure);
-		while(!pIT->EndOfList())
+		while(!pIT->EndOfMeasure())
 		{
 			lmStaffObj* pSO = pIT->GetCurrent();
 			pSO->ResetObjectLocation();
-			if (pSO->GetType() == eSFOT_Barline) break;	//End of measure: exit loop.
+			//if (pSO->GetType() == eSFOT_Barline) break;	//End of measure: exit loop.
 			pIT->MoveNext();
 		}
 		delete pIT;
@@ -1002,9 +1006,9 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     bool fNoteRestFound = false;
     bool fNewSystem = false;                //newSystem tag found
     lmStaffObj* pSO = (lmStaffObj*)NULL;
-    lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
+    lmSOIterator* pIT = pVStaff->CreateIterator(eTR_ByTime);
     pIT->AdvanceToMeasure(nAbsMeasure);
-    while(!pIT->EndOfList())
+    while(!pIT->EndOfMeasure())
     {
         pSO = pIT->GetCurrent();
         EStaffObjType nType = pSO->GetClass();
@@ -1059,7 +1063,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     //The barline lmStaffObj is not included in the loop as it might not exist in the last
     //bar of a score. In theses cases, the loop is exited because the end of the score is
     //reached. In any case we have to close the line
-    if (pSO->GetClass() == eSFOT_Barline)
+    if (pSO && pSO->GetClass() == eSFOT_Barline)
     {
 		//lmLUnits uPos = pPaper->GetCursorX();
         pPaper->SetCursorX(xStart);

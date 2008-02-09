@@ -61,6 +61,9 @@ public:
 	inline void SetPrev(lmContext* pPrev) { m_pPrev = pPrev; }
 	inline void SetNext(lmContext* pNext) { m_pNext = pNext; }
 
+    //debug
+    wxString Dump();
+
 
 
 private:

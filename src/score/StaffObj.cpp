@@ -206,18 +206,18 @@ void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
 
     if (m_pShape) m_pShape->Shift(uxShift, 0.0);
 
-	//DBG ------------------------------------------------------------------------
-    if (m_pShape) wxLogMessage(_T("Shift shape: uxShift=%.2f"), uxShift);
-	if (GetScoreObjType() == lmSOT_ComponentObj 
-		&& ((lmComponentObj*)this)->GetType() == eSCOT_StaffObj 
-		&& ((lmStaffObj*)this)->GetClass() == eSFOT_KeySignature )
-	{
-		wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f"),
-			uxShift );
-		if (m_pShape) wxLogMessage( m_pShape->Dump(0) );
-		wxLogMessage( this->Dump() );
-	}
-	//END DBG --------------------------------------------------------------------
+	////DBG ------------------------------------------------------------------------
+    //if (m_pShape) wxLogMessage(_T("Shift shape: uxShift=%.2f"), uxShift);
+	//if (GetScoreObjType() == lmSOT_ComponentObj 
+	//	&& ((lmComponentObj*)this)->GetType() == eSCOT_StaffObj 
+	//	&& ((lmStaffObj*)this)->GetClass() == eSFOT_KeySignature )
+	//{
+	//	wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f"),
+	//		uxShift );
+	//	if (m_pShape) wxLogMessage( m_pShape->Dump(0) );
+	//	wxLogMessage( this->Dump() );
+	//}
+	////END DBG --------------------------------------------------------------------
 
     // shift also AuxObjs attached to this StaffObj
     if (m_pAuxObjs)

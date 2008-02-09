@@ -213,12 +213,14 @@ private:
 	lmGMObject*		m_pGMODrag;				//GMObject being dragged
 
     //cursor
-    lmScoreViewCursor*  m_pCursor;
+    lmScoreViewCursor*  m_pGuiCursor;
+    lmScoreCursor*      m_pScoreCursor;
+	bool				m_fCursorInit;
 
     //cursor: current position in score
 	lmStaffObj*			m_pCursorSO;		//staff object pointed by the cursor
 	int					m_nCursorIdSO;		//previous staff object pointed by the cursor
-	lmStaffObjIterator* m_pCursorIT;        //iterator, to speed up cursor moves
+	lmSOIterator* m_pCursorIT;        //iterator, to speed up cursor moves
 
 
     DECLARE_EVENT_TABLE()

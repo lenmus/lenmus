@@ -82,7 +82,7 @@
 
 //constructor
 lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
-    : lmScoreObj(pScore), m_cStaffObjs(this)
+    : lmScoreObj(pScore), m_nNumStaves(1), m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -104,8 +104,10 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
 
     //create one standard staff (five lines, 7.2 mm height)
     lmStaff* pStaff = new lmStaff(pScore);
-    m_nNumStaves = 1;
     m_cStaves[0] = pStaff;
+
+	//link cursor to collection
+	m_VCursor.AttachToCollection(&m_cStaffObjs);
 
  //   //Add EOS control object to the StaffObjs collection
  //   //m_cStaffObjs.Store( new lmBarline(lm_eBarlineEOS, this, lmNO_VISIBLE) );
@@ -116,6 +118,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
 
     g_pLastNoteRest = (lmNoteRest*)NULL;
+    m_sErrorMsg = _T("");
 
 
 }
@@ -142,6 +145,7 @@ lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
     lmStaff* pStaff = new lmStaff(m_pScore, nNumLines, nMicrons);
     m_cStaves[m_nNumStaves] = pStaff;
     m_nNumStaves++;
+    m_cStaffObjs.AddStaff();
 
     return pStaff;
 
@@ -240,66 +244,8 @@ lmClef* lmVStaff::InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType)
 
 lmBarline* lmVStaff::InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType)
 {
-    //When inserting a barline it is necessary to get current contexts at the insertion
-    //time for all staves. Therefore we need to go to the previous barline, take the 
-    //contexts and advance until the new bar, updating the stored context with any later one.
-
     lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
     m_cStaffObjs.Insert(pBarline, pCursorSO);
-
- //   bool fStaffDone[lmMAX_STAFF];
- //   for (int iS=0; iS < GetNumStaves(); iS++) 
- //       fStaffDone[iS] = false;
-
-	//lmStaffObjIterator* pIter = m_cStaffObjs.CreateIteratorTo(pBarline);
- //   bool fDone = false;
- //   while(!fDone && !pIter->StartOfList())
-	//{
- //       lmContext* pCT = (lmContext*)NULL;
- //       lmStaffObj* pSO = pIter->GetCurrent();
- //       if (pSO->GetClass() == eSFOT_Clef)
- //       {
- //           int nStaff = pSO->GetStaffNum();
- //           if (!fStaffDone[nStaff]-1)
- //           {
- //               pCT = ((lmClef*)pSO)->GetContext();
- //               pBarline->SetContext(nStaff, pCT);
- //               fStaffDone[nStaff-1] = true;
- //           }
- //       }
-
- //       if (!pCT)
- //       {
-	//	    if (pSO->GetClass() == eSFOT_KeySignature
- //               || pSO->GetClass() == eSFOT_TimeSignature
- //               || pSO->GetClass() == eSFOT_Barline)
- //           {
- //               for (int nStaff=1; nStaff < GetNumStaves(); nStaff++)
- //               {
- //                   if (!fStaffDone[nStaff-1])
- //                   {
-	//	                if (pSO->GetClass() == eSFOT_KeySignature)
- //                           pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-	//	                else if (pSO->GetClass() == eSFOT_TimeSignature)
- //                           pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
-	//	                else // Barline
- //                           pCT = ((lmBarline*)pSO)->GetContext(nStaff);
- //                       pBarline->SetContext(nStaff, pCT);
- //                       fStaffDone[nStaff-1] = true;
- //                   }
- //               }
- //               break;  //fast finish
- //           }
- //       }
-
- //       //check if we can finish
- //       fDone = true;
- //       for (int iS=0; iS < GetNumStaves(); iS++) 
- //           fDone &= fStaffDone[iS];
-
- //       pIter->MovePrev();
- //   }
-
     return pBarline;
 }
 
@@ -660,11 +606,7 @@ lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 
 wxString lmVStaff::Dump()
 {
-    wxString sDump = _T("");
-	sDump += m_cStaffObjs.DumpStaffObjs();
-	sDump += m_cStaffObjs.DumpSegmentsData();
-	sDump += m_cStaffObjs.DumpMeasures();
-    return sDump;
+    return m_cStaffObjs.Dump();
 }
 
 wxString lmVStaff::SourceLDP(int nIndent)
@@ -674,16 +616,77 @@ wxString lmVStaff::SourceLDP(int nIndent)
     sSource += _T("(musicData\n");
     nIndent++;
 
-    //iterate over the collection of StaffObjs
-    lmStaffObj* pSO;
-    lmStaffObjIterator* pIT = m_cStaffObjs.CreateIterator(eTR_AsStored);  //THINK: Should be eTR_ByTime?
-    while(!pIT->EndOfList())
+    //iterate over the collection of StaffObjs, ordered by voice.
+    //Measures must be processed one by one
+    for (int nMeasure=1; nMeasure <= m_cStaffObjs.GetNumMeasures(); nMeasure++)
     {
-        pSO = pIT->GetCurrent();
-        sSource += pSO->SourceLDP(nIndent);
-        pIT->MoveNext();
+        //add comment to separate measures
+        sSource += _T("\n");
+        sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+        sSource += wxString::Format(_T("//Measure %d\n"), nMeasure);
+
+        int nNumVoices = m_cStaffObjs.GetNumVoicesInMeasure(nMeasure);
+        int nVoice = 1;
+		lmBarline* pBL = (lmBarline*)NULL;
+        bool fGoBack = false;
+		float rTime = 0.0f;
+        while (true)
+        {
+            lmSOIterator* pIT = m_cStaffObjs.CreateIterator(eTR_ByTime, nVoice);
+            pIT->AdvanceToMeasure(nMeasure);
+            while(!pIT->EndOfMeasure())
+            {
+                lmStaffObj* pSO = pIT->GetCurrent();
+                //voice 0 staffobjs go with first voice if more than one voice
+				if (!pSO->IsBarline())
+				{
+					if (nVoice == 1)
+					{
+						if (!pSO->IsNoteRest() || ((lmNoteRest*)pSO)->GetVoice() == nVoice)
+						{
+							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							sSource += pSO->SourceLDP(nIndent);
+							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+						}
+					}
+					else
+						if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
+						{
+							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							sSource += pSO->SourceLDP(nIndent);
+							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+						}
+				}
+				else
+					pBL = (lmBarline*)pSO;
+
+                pIT->MoveNext();
+            }
+            delete pIT;
+
+            //check if more voices
+            nVoice++;
+            if (nVoice >= nNumVoices) break;
+
+            //there are more voices. Add (goBak) tag
+            fGoBack = true;
+            sSource += _T("\n");
+            sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+            sSource += _T("(goBack start)\n");
+        }
+
+        //if goBack added, add a goFwd to ensure that we are at end of measure
+        if (fGoBack)
+        {
+            sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+            sSource += _T("(goFwd end)\n");
+        }
+
+		//add barline, if present
+		if (pBL)
+			sSource += pBL->SourceLDP(nIndent);
+
     }
-    delete pIT;
 
     //close musicData
     nIndent--;
@@ -694,113 +697,173 @@ wxString lmVStaff::SourceLDP(int nIndent)
 
 }
 
+void lmVStaff::LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
+									      float rTime, lmStaffObj* pSO)
+{
+	if (!IsEqualTime(rTime, pSO->GetTimePos()))
+	{
+		//wxLogMessage(_T("[lmVStaff::LDP_AddShitTimeTagIfNeeded] Different times: %.2f %.2f"), rTime, pSO->GetTimePos() );
+		sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+		if (fFwd)
+			sSource += _T("(goFwd ");
+		else
+			sSource += _T("(goBack ");
+		sSource += wxString::Format(_T("%.0f)\n"), pSO->GetTimePos());
+	}
+}
+
+void lmVStaff::XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
+										  float rTime, lmStaffObj* pSO)
+{
+	if (!IsEqualTime(rTime, pSO->GetTimePos()))
+	{
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		if (fFwd)
+			sSource += _T("<forward>\n");
+		else
+			sSource += _T("<backup>\n");
+
+		//duration
+		nIndent++;
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += wxString::Format(_T("<duration>%.0f"), pSO->GetTimePos());
+		sSource += _T("</duration>\n");
+
+		//close tag
+		nIndent--;
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		if (fFwd)
+			sSource += _T("</forward>\n");
+		else
+			sSource += _T("</backup>");
+	}
+}
+
 wxString lmVStaff::SourceXML(int nIndent)
 {
-//    <measure number="1">
-//      <attributes>
-//        <divisions>1</divisions>
-//        <key>
-//          <fifths>0</fifths>
-//        </key>
-//        <time>
-//          <beats>4</beats>
-//          <beat-type>4</beat-type>
-//        </time>
-//        <clef>
-//          <sign>G</sign>
-//          <line>2</line>
-//        </clef>
-//      </attributes>
-//      <note>
-//        <pitch>
-//          <step>C</step>
-//          <octave>4</octave>
-//        </pitch>
-//        <duration>4</duration>
-//        <type>whole</type>
-//      </note>
-//    </measure>
-
 	wxString sSource = _T("");
-	bool fStartMeasure = true;
-	bool fStartAttributes = true;
-	int nMeasure = 0;
 
-    //iterate over the collection of StaffObjs
-    lmStaffObj* pSO;
-    lmStaffObjIterator* pIT = m_cStaffObjs.CreateIterator(eTR_AsStored);  //THINK: Should be eTR_ByTime?
-    while(!pIT->EndOfList())
+    //iterate over the collection of StaffObjs, ordered by voice.
+    //Measures must be processed one by one
+    for (int nMeasure=1; nMeasure <= m_cStaffObjs.GetNumMeasures(); nMeasure++)
     {
-        pSO = pIT->GetCurrent();
+        //start measure
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += wxString::Format(_T("<measure number='%d'>\n"), nMeasure);
+		nIndent++;
 
-		if (fStartMeasure)
-		{
-			nMeasure++;
-			sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-			sSource += wxString::Format(_T("<measure number='%d'>\n"), nMeasure);
-			fStartMeasure = false;
-			nIndent++;
-		}
+		bool fStartAttributes = true;
+        int nNumVoices = m_cStaffObjs.GetNumVoicesInMeasure(nMeasure);
+        int nVoice = 1;
+		lmBarline* pBL = (lmBarline*)NULL;
+        bool fGoBack = false;
+		float rTime = 0.0f;
+        while (true)
+        {
+            lmSOIterator* pIT = m_cStaffObjs.CreateIterator(eTR_ByTime, nVoice);
+            pIT->AdvanceToMeasure(nMeasure);
+            while(!pIT->EndOfMeasure())
+            {
+                lmStaffObj* pSO = pIT->GetCurrent();
+                //voice 0 staffobjs go with first voice if more than one voice
+				if (!pSO->IsBarline())
+				{
+					if (nVoice == 1)
+					{
+						if (!pSO->IsNoteRest() || ((lmNoteRest*)pSO)->GetVoice() == nVoice)
+						{
+							//check if this is a clef, time signature or key signature
+							if (pSO->IsClef() || pSO->IsKeySignature() ||
+								pSO->IsTimeSignature())
+							{
+								if (fStartAttributes)
+								{
+									//start <attributes> tag
+									sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+									sSource += _T("<attributes>\n");
+									fStartAttributes = false;
+									nIndent++;
+								}
+							}
+							else
+							{
+								if (!fStartAttributes)
+								{
+									//close <attributes> tag
+									nIndent--;
+									sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+									sSource += _T("</attributes>\n");
+									fStartAttributes = true;
+								}
+							}
 
-		//check if this is the end of a measure
-		if (pSO->GetClass() == eSFOT_Barline)
-		{
-			nIndent--;
-			sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-			sSource += _T("</measure>\n");
-			fStartMeasure = true;
-		}
+							//add xml source for this staffobj
+							XML_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							sSource += pSO->SourceXML(nIndent);
+							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+						}
+					}
+					else
+					{
+						if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
+						{
+							if (!fStartAttributes)
+							{
+								nIndent--;
+								sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+								sSource += _T("</attributes>\n");
+								fStartAttributes = true;
+							}
+							//add xml source for this staffobj
+							XML_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							sSource += pSO->SourceXML(nIndent);
+							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+						}
+					}
+				}
+				else
+					pBL = (lmBarline*)pSO;
 
-		//check if this is a clef, tiem signature or key signature
-		else if (pSO->GetClass() == eSFOT_Clef ||
-			pSO->GetClass() == eSFOT_KeySignature ||
-			pSO->GetClass() == eSFOT_TimeSignature)
-		{
-			if (fStartAttributes)
-			{
-				sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-				sSource += _T("<attributes>\n");
-				fStartAttributes = false;
-				nIndent++;
-			}
-			//get xml source for this staffobj
-			sSource += pSO->SourceXML(nIndent);
-		}
+                pIT->MoveNext();
+            }
+            delete pIT;
 
-		else
-		{
-			if (!fStartAttributes)
-			{
-				nIndent--;
-				sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-				sSource += _T("</attributes>\n");
-				fStartAttributes = true;
-			}
-			//get xml source for this staffobj
-			sSource += pSO->SourceXML(nIndent);
-		}
+            //check if more voices
+            nVoice++;
+            if (nVoice >= nNumVoices) break;
 
-        pIT->MoveNext();
-    }
-    delete pIT;
+            //there are more voices. Add <backup> tag
+            fGoBack = true;
+            sSource += _T("\n");
+            sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+            sSource += _T("<backup start />\n");		//TODO: this tag doesn't exists
+        }
 
-    //close last measure
-	if (!fStartMeasure)
-	{
+        //if goBack added, add a goFwd to ensure that we are at end of measure
+        if (fGoBack)
+        {
+            sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+            sSource += _T("<forward end />\n");		//TODO: this tag doesn't exists
+        }
+
+		//add barline, if present
+		if (pBL)
+			sSource += pBL->SourceXML(nIndent);
+
+		//close measure
 		nIndent--;
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += _T("</measure>\n");
-	}
+    }
 
     return sSource;
-
 }
 
 // the next two methods are mainly used for drawing the barlines. For that purpose it is necessary
 // to know the y coordinate of the top most upper line of first staff and the bottom most lower
 // line of the last staff.
 
-//TODO: This methods must be moved to lmBoxSystem / lmBoxSlice
+//TODO: These methods must be moved to lmBoxSystem / lmBoxSlice
 
 lmLUnits lmVStaff::GetYTop()
 {
@@ -844,12 +907,13 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
     // of variable pointed by pPos with the right x position of last barline
     // This method is only used by Formatter, in order to not justify the last system
     lmStaffObj* pSO = (lmStaffObj*) NULL;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_AsStored);
+    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
     pIter->MoveLast();
-    while(!pIter->StartOfList())
+    while(true)
     {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_Barline) break;
+		if(pIter->StartOfList()) break;
         pIter->MovePrev();
     }
     delete pIter;
@@ -919,7 +983,7 @@ void lmVStaff::NewLine(lmPaper* pPaper)
 //
 //        //locate first context for this staff
 //        pContext = (lmContext*)NULL;
-//        lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+//        lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
 //        pIter->AdvanceToMeasure(nMeasure);
 //        while(!pIter->EndOfList())
 //		{
@@ -1019,7 +1083,7 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     lmStaffObj* pSO;
     lmNoteRest* pNR;
     lmTimeSignature* pTS;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
     while(!pIter->EndOfList()) {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest) {
@@ -1063,9 +1127,9 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
     lmStaffObj* pSO = (lmStaffObj*) NULL;
     lmNoteRest* pNR = (lmNoteRest*)NULL;
     lmNote* pNote = (lmNote*)NULL;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_AsStored);
+    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
     pIter->MoveLast();
-    while(!pIter->StartOfList())
+    while(!pIter->EndOfList() && ! pIter->StartOfList())
     {
         pSO = pIter->GetCurrent();
         switch (pSO->GetClass()) {
@@ -1091,6 +1155,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
             default:
                 ;
         }
+		if(pIter->StartOfList()) break;
         pIter->MovePrev();
     }
     delete pIter;
@@ -1098,10 +1163,12 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
 
 }
 
-void lmVStaff::ShiftTime(float rTimeShift)
+bool lmVStaff::ShiftTime(float rTimeShift)
 {
-    //Shifts the time counter
-    m_cStaffObjs.ShiftTime(rTimeShift);
+    //Shifts the time counter.
+    //Returns true if error
+
+    return m_cStaffObjs.ShiftTime(rTimeShift);
 }
 
 lmSOControl* lmVStaff::AddNewSystem()
@@ -1117,23 +1184,17 @@ lmSOControl* lmVStaff::AddNewSystem()
 
 }
 
-lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
+lmSOIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 {
     return m_cStaffObjs.CreateIterator(nOrder);
 }
-
-lmItCSO lmVStaff::GetLastStaffObjInMeasure(int nMeasure)
-{
-    return m_cStaffObjs.GetLastStaffObjInMeasure(nMeasure);
-}
-
 
 //void lmVStaff::AutoBeam(int nMeasure)
 //{
 //    //loop to process all StaffObjs in this measure
 //    EStaffObjType nType;                    //type of score obj being processed
 //    lmStaffObj* pSO = (lmStaffObj*)NULL;
-//    lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_ByTime);
+//    lmSOIterator* pIT = pVStaff->CreateIterator(eTR_ByTime);
 //    pIT->AdvanceToMeasure(nAbsMeasure);
 //    while(!pIT->EndOfList())
 //    {

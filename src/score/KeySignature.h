@@ -96,6 +96,7 @@ extern bool IsMajor(lmEKeySignatures nKeySignature);
 extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
 extern int KeySignatureToNumFifths(lmEKeySignatures nKeySignature);
 extern lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey);
+extern wxString GetKeyLDPNameFromType(lmEKeySignatures nKeySignature);
 
 #endif    // __LM_KEYSIGNATURE_H__
 

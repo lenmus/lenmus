@@ -73,7 +73,7 @@ typedef struct lmLangDataStruct {
     wxString sCharCode;
 } lmLangData;
 
-#define lmNUM_LANGUAGES 5
+#define lmNUM_LANGUAGES 6
 //table must be ordered by language name (in English) to
 //ensure correspondence with table in DlgCompileBook.h
 static const lmLangData tLanguages[lmNUM_LANGUAGES] = { 
@@ -82,6 +82,7 @@ static const lmLangData tLanguages[lmNUM_LANGUAGES] = {
     { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
     { _T("tr"), _T("Turkish"), _T("iso-8859-9") }, 
     { _T("nl"), _T("Dutch"), _T("iso-8859-9") }, 
+    { _T("eu"), _T("Basque"), _T("utf-8") }, 
 };
 
 // ----------------------------------------------------------------------------

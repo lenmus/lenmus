@@ -68,6 +68,13 @@
 //
 
 
+//helper functions to compare times (two floating point numbers)
+bool IsEqualTime(float t1, float t2)
+{
+    return (fabs(t1 - t2) < 0.1);
+}
+
+
 //Global variables used for default initialization
 lmLocation g_tDefaultPos = {0.0, 0.0, lmLOCATION_DEFAULT,lmLOCATION_DEFAULT,lmTENTHS,lmTENTHS};
 

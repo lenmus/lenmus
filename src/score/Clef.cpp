@@ -135,8 +135,8 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //create the shape object
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
-    wxLogMessage(_T("[lmClef::LayoutObject] Shape xPaper=%.2f, xPos=%.2f, xOrg=%.2f"),
-                 pPaper->GetCursorX(), uPos.x, GetOrigin().x);
+    //wxLogMessage(_T("[lmClef::LayoutObject] Shape xPaper=%.2f, xPos=%.2f, xOrg=%.2f"),
+    //             pPaper->GetCursorX(), uPos.x, GetOrigin().x);
 	pBox->AddShape(pShape);
     m_pShape = pShape;
 

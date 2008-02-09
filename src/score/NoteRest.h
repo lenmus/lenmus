@@ -82,6 +82,8 @@ public:
     //implementation of virtual methods of base class lmStaffObj
     virtual bool IsComposite() { return true; }
 
+	//methods related to voice
+	inline void SetVoice(int nVoice) { m_nVoice = nVoice; }
 
     // methods related to note/rest positioning information
     lmLUnits GetStaffOffset() const { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
@@ -92,6 +94,7 @@ public:
 
     //methods related to duration
     float GetDuration() const { return m_rDuration; }
+    float GetTimePosIncrement() { return m_rDuration; }
     wxString GetLDPNoteType();
 
     // methods related to beams

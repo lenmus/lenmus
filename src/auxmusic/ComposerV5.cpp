@@ -352,7 +352,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     lmNoteRest* pNR = (lmNoteRest*)NULL;
     lmNote* pNote = (lmNote*)NULL;
     bool fOnlyQuarterNotes = true;
-    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_AsStored);
+    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_AsStored);
     while(!pIter->EndOfList()) {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest) {

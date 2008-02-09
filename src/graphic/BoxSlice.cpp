@@ -90,7 +90,7 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 
 lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-	wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+	//wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;

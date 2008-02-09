@@ -201,7 +201,7 @@ void lmBox::AddShape(lmShape* pShape)
 
 lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 {
-	wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+	//wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //loop to look up in the shapes collection
 	for(int i=0; i < (int)m_Shapes.size(); i++)
     {

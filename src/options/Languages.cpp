@@ -170,6 +170,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     sLangName.Append( _T("ol") );
     localLanguageName[_T("es")] = sLangName;    // _T("Español");
 
+    localLanguageName[_T("eu")] = _T("Euskera");
     localLanguageName[_T("fi")] = _T("Suomi");
 
     // _T("Français"); 

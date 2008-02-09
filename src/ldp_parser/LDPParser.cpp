@@ -1217,7 +1217,10 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (!fForward) rShift = - rShift;
 
     //procced to do the time shift
-    pVStaff->ShiftTime(rShift);
+    if (pVStaff->ShiftTime(rShift))
+    {
+        AnalysisError( pVStaff->GetErrorMessage() );
+    }
 
 }
 
@@ -1400,6 +1403,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
         else
             sDuration = sElmName.substr(i);
+
+        if (fIsRest)
+        {
+           // for rests, first parameter is duration
+            sDuration = sPitch;
+        }
 
         // inherit octave if not found
         if (!fOctaveFound) sPitch += m_sLastOctave;

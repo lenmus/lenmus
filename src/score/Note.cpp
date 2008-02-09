@@ -1449,16 +1449,16 @@ wxString lmNote::Dump()
 {
     //get pitch relative to key signature
     lmFPitch fp = FPitch(m_anPitch);
-    lmKeySignature* pKey = GetCurrentContext()->GeyKey();
-    lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
-    wxString sPitch = FPitch_ToRelLDPName(fp, nKey);
+    //lmKeySignature* pKey = GetCurrentContext()->GeyKey();
+    //lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+    wxString sPitch = _T("");   //FPitch_ToRelLDPName(fp, nKey);
 
     wxString sDump;
     sDump = wxString::Format(
-        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, Voice=%d, PosOnStaff=%d, TimePos=%.2f, ")
+        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, Voice=%d, TimePos=%.2f, ")
         _T("org=(%.2f, %.2f), rDuration=%.2f, StemType=%d"),
         m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, m_nVoice, 
-		GetPosOnStaff(), m_rTimePos, m_uOrg.x, m_uOrg.y, m_rDuration, m_nStemType);
+		m_rTimePos, m_uOrg.x, m_uOrg.y, m_rDuration, m_nStemType);
 
     if (m_pTieNext) sDump += _T(", TiedNext");
     if (m_pTiePrev) sDump += _T(", TiedPrev");
@@ -1477,7 +1477,7 @@ wxString lmNote::Dump()
     }
     if (m_pTupletBracket) {
         if ((m_pTupletBracket->GetEndNote())->GetID() == m_nId) {
-            sDump += _T(", End of tuplet\n");
+            sDump += _T(", End of tuplet");
         }
         else if ((m_pTupletBracket->GetStartNote())->GetID() == m_nId)
             sDump += _T(", Start of tuplet");
@@ -1489,7 +1489,6 @@ wxString lmNote::Dump()
     //    sDump += wxString::Format(_T(", xStem=%d, yStem=%d, length=%d"),
     //                m_uxStem, m_uyStem,m_uStemLength );
     //}
-    sDump += _T("\n");
 
 	//attached AuxObjs
 	sDump += lmStaffObj::Dump();
@@ -1645,7 +1644,7 @@ wxString lmNote::SourceXML(int nIndent)
 
 	//voice
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-	sSource += wxString::Format(_T("<<voice>%d</voice>\n"), m_nVoice);
+	sSource += wxString::Format(_T("<voice>%d</voice>\n"), m_nVoice);
 
 	//stem
     if (m_nStemType != lmSTEM_NONE)

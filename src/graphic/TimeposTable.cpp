@@ -44,12 +44,6 @@
 #include "wx/debug.h"
 #include "TimeposTable.h"
 
-//helper functions to compare two floating point numbers
-bool IsEqualTime(float t1, float t2)
-{
-    return (fabs(t1 - t2) < 0.1);
-}
-
 //spacing function parameters
 float				m_rDmin = 8.0f;				//Dmin: min. duration to consider
 lmTenths			m_rMinSpace = 15.0f;		//Space(Dmin):  space for Dmin

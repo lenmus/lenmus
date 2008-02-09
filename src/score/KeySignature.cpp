@@ -774,3 +774,8 @@ lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey)
 
 }
 
+wxString GetKeyLDPNameFromType(lmEKeySignatures nKeySignature)
+{
+    return m_sLDPKeyName[nKeySignature];
+}
+

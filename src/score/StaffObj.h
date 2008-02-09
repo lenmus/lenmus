@@ -254,6 +254,20 @@ public:
     EStaffObjType GetClass() { return m_nClass; }
 	virtual wxString GetName() const=0;
 
+    //classification
+    inline bool IsClef() { return m_nClass == eSFOT_Clef; }
+    inline bool IsKeySignature() { return m_nClass == eSFOT_KeySignature; }
+    inline bool IsTimeSignature() { return m_nClass == eSFOT_TimeSignature; }
+    inline bool IsNotation() { return m_nClass == eSFOT_Notation; }
+    inline bool IsBarline() { return m_nClass == eSFOT_Barline; }
+    inline bool IsNoteRest() { return m_nClass == eSFOT_NoteRest; }
+    inline bool IsText() { return m_nClass == eSFOT_Text; }
+    inline bool IsControl() { return m_nClass == eSFOT_Control; }
+    inline bool IsMetronomeMark() { return m_nClass == eSFOT_MetronomeMark; }
+    inline bool IsTupletBracket() { return m_nClass == eSFOT_TupletBracket; }
+
+    //inline bool IsNote() { return m_nClass == eSFOT_NoteRest && !((lmNote*)this)->IsRest(); }
+    //inline bool IsRest() { return m_nClass == eSFOT_NoteRest && ((lmNote*)this)->IsRest(); }
 
     // source code related methods
     virtual wxString SourceLDP(int nIndent);
@@ -273,8 +287,8 @@ public:
     // methods related to staff ownership
     inline int GetStaffNum() { return m_nStaffNum; }
     inline lmVStaff* GetVStaff() { return m_pVStaff; }
-	inline void SetItMeasure(lmItMeasure itMeasure) { m_itMeasure = itMeasure; }
-	inline lmItMeasure GetItMeasure() { return m_itMeasure; }
+	inline void SetSegment(lmSegment* pSegment) { m_pSegment = pSegment; }
+	inline lmSegment* GetSegment() { return m_pSegment; }
 
     // methods related to AuxObj/GraphObj ownership
     virtual bool IsComposite() { return false; }
@@ -305,7 +319,7 @@ protected:
     // Info about staff ownership
     lmVStaff*		m_pVStaff;		// lmVStaff owning this lmStaffObj
     int				m_nStaffNum;	// lmStaff (1..n) on which this object is located
-	lmItMeasure 	m_itMeasure;	// iterator pointing at measure data 
+	lmSegment* 		m_pSegment;		// ptr to segment including this staffobj 
 
 
 };

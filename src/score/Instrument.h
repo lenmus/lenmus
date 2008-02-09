@@ -27,6 +27,9 @@
 #endif
 
 class lmBox;
+class lmColStaffObjs;
+class lmVStaffCursor;
+
 
 class lmInstrument : public lmScoreObj
 {
@@ -65,6 +68,10 @@ public:
 
 	wxString GetInstrName();
 
+	//cursor methods
+	inline lmVStaffCursor* GetCursor() { return m_pVStaff->GetCursor(); }
+    inline void ResetCursor() { m_pVStaff->ResetCursor(); }
+
 
     //Debug methods
     wxString Dump();
@@ -93,6 +100,7 @@ private:
     lmLUnits        m_nIndentOther;     //indentation for other systems
     lmScoreText*    m_pName;            //instrument name
     lmScoreText*    m_pAbbreviation;    //abreviated name to use
+
 
 
     // variables related to MusicXML import/export

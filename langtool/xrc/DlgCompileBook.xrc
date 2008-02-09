@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxDialog" name="DlgCompileBook" subclass="lmDlgCompileBook">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
@@ -114,6 +114,14 @@
                                 <border>5</border>
                                 <object class="wxCheckBox" name="chkLangDutch">
                                     <label>Dutch</label>
+                                    <checked>0</checked>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxCheckBox" name="chkLangBasque">
+                                    <label>Basque</label>
                                     <checked>0</checked>
                                 </object>
                             </object>

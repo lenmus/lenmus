@@ -119,10 +119,11 @@ public:
 	//deleting StaffObjs
 	void DeleteObject(lmStaffObj* pCursorSO);
 
+    //error management
+    inline wxString GetErrorMessage() { return m_sErrorMsg; }
 
 
-
-    void ShiftTime(float rTimeShift);
+    bool ShiftTime(float rTimeShift);
 
 
     // rendering methods
@@ -151,9 +152,9 @@ public:
     wxString SourceXML(int nIndent);
 
     // restricted methods
-    lmStaffObjIterator* CreateIterator(ETraversingOrder nOrder);    //for lmFormatter objects
-    inline lmStaffObjIterator* CreateIteratorTo(lmStaffObj* pSO) 
-                                        { return m_cStaffObjs.CreateIteratorTo(pSO); }
+    lmSOIterator* CreateIterator(ETraversingOrder nOrder);    //for lmFormatter objects
+    inline lmSOIterator* CreateIteratorTo(ETraversingOrder nOrder, lmStaffObj* pSO) 
+                                        { return m_cStaffObjs.CreateIteratorTo(nOrder, pSO); }
 
     //for navigation along staves
     inline int GetNumStaves() const { return m_nNumStaves; }
@@ -179,7 +180,6 @@ public:
 	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
 
     //measures related
-    lmItCSO GetLastStaffObjInMeasure(int nMeasure);
     int GetNumMeasures();
 
     //sound related methods
@@ -194,12 +194,27 @@ public:
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
 
+    //cursor management
+	inline lmVStaffCursor* GetCursor() { return &m_VCursor; }
+    inline void ResetCursor() { m_VCursor.ResetCursor(); }
+
 
 private:
+    friend class lmColStaffObjs;
+
     void SetFont(lmStaff* pStaff, lmPaper* pPaper);
+
+    //error management
+    inline void SetError(wxString sMsge) { m_sErrorMsg = sMsge; }
 
     //common code for all time signatures types
     lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
+
+	//source LDP and MusicXML generation
+	void LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
+								    float rTime, lmStaffObj* pSO);
+	void XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
+								    float rTime, lmStaffObj* pSO);
 
 
 
@@ -208,6 +223,7 @@ private:
     lmScore*            m_pScore;           //lmScore to which this lmVStaff belongs
     lmInstrument*       m_pInstrument;      //lmInstrument to which this lmVStaff belongs
     lmColStaffObjs      m_cStaffObjs;       //collection of StaffObjs that form this lmVStaff
+	lmVStaffCursor	    m_VCursor;			//cursor for the staffobjs collection
 
     // staves
     lmStaff*            m_cStaves[lmMAX_STAFF];     //list of Staves (lmStaff objects) that form this lmVStaff
@@ -226,6 +242,9 @@ private:
 
     //for drawing prolog
     lmLUnits            m_nSpaceBeforeClef;
+
+    //error management
+    wxString            m_sErrorMsg;        //last error message
 
 };
 

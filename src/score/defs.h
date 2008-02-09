@@ -88,6 +88,9 @@ enum lmEUnits {
 	lmLUNITS
 };
 
+//defined in defs.cpp
+extern bool IsEqualTime(float t1, float t2);
+
 // defined in TheApp.cpp
 extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);
 extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);

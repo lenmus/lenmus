@@ -30,28 +30,35 @@
 #include "ColStaffObjs.h"
 
 
-class lmStaffObjIterator
+
+class lmSOIterator
 {
 public:
-    lmStaffObjIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO);
-    lmStaffObjIterator(lmStaffObj* pSO, lmColStaffObjs* pCSO);
+    lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, int nVoice);
+    lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaffObj* pTargetSO);
+	~lmSOIterator() {}
 
-    bool        EndOfList();
-    bool        StartOfList();
-    lmStaffObj* GetCurrent();
-    void        AdvanceToMeasure(int nBar);
-    void        MoveFirst();
-    void        MoveNext();
-    void        MovePrev();
-    void        MoveLast();
-    void        BackToItemOfType(EStaffObjType nType);
-    void        GoToItem(lmStaffObj* pSO);
+    bool EndOfList();
+    bool StartOfList();
+    bool EndOfMeasure();
+	inline lmStaffObj* GetCurrent() { return *m_it; }
+    void AdvanceToMeasure(int nBar);
+    void MoveFirst();
+    void MoveNext();
+    void MovePrev();
+    void MoveLast();
 
 private:
-    lmColStaffObjs*     m_pColStaffobjs;    //object lmColStaffObjs that is being traversed
-    lmItCSO           m_pCurrentNode;     //cursor pointing to curren node
+    lmColStaffObjs*		m_pColStaffObjs;    //object lmColStaffObjs that is being traversed
+    lmItCSO				m_pCurrentNode;     //cursor pointing to current node
+	int					m_nVoice;			//voice to recover. 0=all
 
+	lmItCSO				m_it;				//iterator pointing to current object
+	int					m_nSegment;			//current segment (0..n-1)
+	lmSegment*			m_pSegment;			//current segment
+    bool                m_fEndOfMeasure;    
 };
+
 
 #endif    // __LM_STAFFOBJITERATOR_H__
 

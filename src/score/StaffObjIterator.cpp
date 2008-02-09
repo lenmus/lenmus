@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-/*! @class lmStaffObjIterator
+/*! @class lmSOIterator
     @ingroup score_kernel
     @brief Encapsulates access and traverse of a collection of StaffObjs
 
-    lmStaffObjIterator encapsulates access and traverse of a collection of StaffObjs (lmColStaffObjs
+    lmSOIterator encapsulates access and traverse of a collection of StaffObjs (lmColStaffObjs
     object) without exposing the internal structure of the collection. This lets us
     define different traversal algorithms and allows us to change the internal representation
     of a StaffObjs collection without affecting the rest of the program.
@@ -46,104 +46,135 @@
 #include "Score.h"
 
 
-lmStaffObjIterator::lmStaffObjIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO)
-{
-    // Currently, StaffObjs are stored in a list and the list is always ordered by time.
-    // Therefore all three types of ETraversingOrder are the equivalent and can be implemented
-    // just by traversing the list
+//========================================================================================
+// lmSOIterator implementation
+//========================================================================================
 
-    m_pColStaffobjs = pCSO;
+lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, int nVoice)
+{
+    // Currently, StaffObjs are stored in a list, always ordered by time.
+    // Therefore all three types of ETraversingOrder are the equivalent
+	// I will keep parameter ETraversingOrder for documentation purposes about
+	// the inded usage, and just in case in future it become necessary.
+
+    m_pColStaffObjs = pCSO;
+	m_nVoice = nVoice;
+	m_pSegment = (lmSegment*)NULL;
+
+	//move to first staffobj
     MoveFirst();
-
+    m_fEndOfMeasure = false;
 }
 
-lmStaffObjIterator::lmStaffObjIterator(lmStaffObj* pSO, lmColStaffObjs* pCSO)
+lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaffObj* pTargetSO)
 {
-    m_pColStaffobjs = pCSO;
-	m_pCurrentNode = m_pColStaffobjs->GetIteratorTo(pSO);
+    // Currently, StaffObjs are stored in a list, always ordered by time.
+    // Therefore all three types of ETraversingOrder are the equivalent
+	// I will keep parameter ETraversingOrder for documentation purposes about
+	// the inded usage, and just in case in future it become necessary.
+
+    m_pColStaffObjs = pCSO;
+    m_nVoice = (pTargetSO->IsNoteRest() ? ((lmNoteRest*)pTargetSO)->GetVoice() : -1);
+	m_pSegment = pTargetSO->GetSegment();
+	m_nSegment = m_pSegment->m_nNumSegment;
+	m_it = --(m_pSegment->m_StaffObjs.end());
+
+    //find target SO
+    while(*m_it != pTargetSO) 
+        --m_it;
 }
 
-
-bool lmStaffObjIterator::EndOfList()
-{
-    // returns true if cursor does not point to a valid item
-    return m_pColStaffobjs->EndOfList(m_pCurrentNode);
-}
-
-bool lmStaffObjIterator::StartOfList()
-{
-    // returns true if cursor points to before first item
-    return m_pColStaffobjs->StartOfList(m_pCurrentNode);
-}
-
-lmStaffObj* lmStaffObjIterator::GetCurrent()
-{
-    // returns the lmStaffObj pointed by cursor
-    return *m_pCurrentNode;
-}
-
-void lmStaffObjIterator::AdvanceToMeasure(int nMeasure)
-{
-    // advance cursor to first lmStaffObj in measure number nMeasure (1..n)
-	if (nMeasure > m_pColStaffobjs->GetNumMeasures()) return;
-    m_pCurrentNode = m_pColStaffobjs->GetFirstStaffObjInMeasure(nMeasure);
-
-}
-
-void lmStaffObjIterator::MoveFirst()
+void lmSOIterator::MoveFirst()
 {
     // move cursor to first lmStaffObj
-    m_pCurrentNode = m_pColStaffobjs->GetFirst();
+
+	m_nSegment = 0;
+	m_pSegment = m_pColStaffObjs->m_Segments[0];
+	m_it = m_pSegment->m_StaffObjs.begin();
 }
 
-void lmStaffObjIterator::MoveNext()
+void lmSOIterator::MoveNext()
 {
     // advance cursor to next lmStaffObj
-    m_pCurrentNode++;
-}
 
-void lmStaffObjIterator::MovePrev()
-{
-    // move cursor back to previous lmStaffObj
-    m_pCurrentNode--;
-}
-
-void lmStaffObjIterator::MoveLast()
-{
-    // move cursor to last lmStaffObj
-    m_pCurrentNode = m_pColStaffobjs->GetLast();
-}
-
-void lmStaffObjIterator::BackToItemOfType(EStaffObjType nType)
-{
-    // goes back until an staffObj of type nType is found or until passing the start of
-    // the collection (cursor == 0) if none is found
-    if (StartOfList()) return;
-    MovePrev();
-    for (; !StartOfList(); ) {
-        if (GetCurrent()->GetClass() == nType) break;
-        MovePrev();
+    if (EndOfList()) {
+        m_fEndOfMeasure = true;
+        return;
     }
 
+	++m_it;
+	if (m_it == m_pSegment->m_StaffObjs.end())
+	{
+		//advance to next segment
+        m_fEndOfMeasure = true;
+		if (++m_nSegment < (int)m_pColStaffObjs->m_Segments.size())
+		{
+			m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+			m_it = m_pSegment->m_StaffObjs.begin();
+		}
+		//else nothing to do. End of collection reached
+	}
+    else
+        m_fEndOfMeasure = false;
 }
 
-void lmStaffObjIterator::GoToItem(lmStaffObj* pSO)
+void lmSOIterator::MovePrev()
 {
-    //locate staffObj received as parameter and leave iterator positioned on that item.
+    // move cursor back to previous lmStaffObj
 
-    //TODO: remove this method. It is not used
+	if (StartOfList()) return;
 
-	//AWARE This method is only used in FindPossibleStartOfTie. Therefore, search is
-    // done backwards to optimize.
-
- //   lmStaffObj* pX;
- //    m_pCurrentNode = m_pColStaffobjs->GetFirst();
-    //for (; m_pCurrentNode; ) {
-    //    pX = (lmStaffObj *)m_pCurrentNode->GetData();
-    //    if (pX->GetId() == pSO->GetId()) break;
-    //    m_pCurrentNode = m_pCurrentNode->GetNext();
-    //}
-
+	if (m_it == m_pSegment->m_StaffObjs.begin())
+	{
+		//currently pointing to first SO of this segment. Move to last SO of previous segment
+		m_nSegment--;
+		m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+		m_it = --(m_pSegment->m_StaffObjs.end());
+	}
+	else
+	{
+		//move back
+		--m_it;
+	}
 }
 
+void lmSOIterator::MoveLast()
+{
+    // move cursor to last lmStaffObj
 
+	m_nSegment = m_pColStaffObjs->m_Segments.size() - 1;
+	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+	m_it = m_pSegment->m_StaffObjs.end();
+    MovePrev();
+}
+
+bool lmSOIterator::EndOfList()
+{
+	//return true if iterator is at end of score: after last SO in last segment
+
+	return (m_it == m_pSegment->m_StaffObjs.end() 
+			&& m_nSegment == (int)m_pColStaffObjs->m_Segments.size() - 1);
+}
+
+bool lmSOIterator::StartOfList()
+{
+    // returns true if cursor points to first item
+
+	return (m_nSegment == 0 && m_it == m_pSegment->m_StaffObjs.begin());
+}
+
+bool lmSOIterator::EndOfMeasure()
+{
+    //returns true if last MoveNext() call crossed a segment boundary
+    return m_fEndOfMeasure;
+}
+
+void lmSOIterator::AdvanceToMeasure(int nMeasure)
+{
+    // advance cursor to first lmStaffObj in measure number nMeasure (1..n)
+
+	m_nSegment = nMeasure - 1;
+	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+	m_it = m_pSegment->m_StaffObjs.begin();
+    m_fEndOfMeasure = (m_it == m_pSegment->m_StaffObjs.end() );
+}

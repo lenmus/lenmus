@@ -97,7 +97,7 @@ static const lmToolsData m_aToolsData[] = {
 	{lmTOOL_BARLINES,	_T("tool_barlines"),		_("Add or edit barlines and rehearsal marks") },
 	//TO_ADD: Add here information about the new tool
 	//NEXT ONE MUST BE THE LAST ONE
-	{lmTOOL_NONE,		_T(""), _("") },
+	{lmTOOL_NONE,		_T(""), _T("") },
 };
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
@@ -136,7 +136,7 @@ void lmToolBox::CreateControls()
 	//the buttons area
     wxGridSizer* buttonsSizer = new wxGridSizer(NUM_COLUMNS);
     pMainSizer->Add(buttonsSizer, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, SPACING));
-	
+
 	//separation line
 	wxStaticLine* pLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition,
 										   wxDefaultSize, wxLI_HORIZONTAL );
@@ -154,10 +154,10 @@ void lmToolBox::CreateControls()
 	for (int iB=0; iB < iMax; iB++)
 	{
 		if (m_aToolsData[iB].nToolId == lmTOOL_NONE) break;
-        m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, 
+        m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB,
             wxArtProvider::GetBitmap(m_aToolsData[iB].sBitmap, wxART_TOOLBAR,
 									 wxSize(BUTTON_SIZE, BUTTON_SIZE) ));
-		//m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, tool_clefs_24_xpm, 
+		//m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, tool_clefs_24_xpm,
 		//								  wxDefaultPosition, wxSize(24,24) );
         buttonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, BUTTON_SPACING) );
 		m_pButton[iB]->SetToolTip(m_aToolsData[iB].sToolTip);
