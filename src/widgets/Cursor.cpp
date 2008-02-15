@@ -73,7 +73,7 @@ lmScoreViewCursor::lmScoreViewCursor(lmView* pParent, lmCanvas* pCanvas, lmScore
 
 	//cursor initializations
 	m_oCursorTimer.SetOwner(this, lmID_TIMER_CURSOR);
-	m_pCursorSO = (lmStaffObj*)NULL;
+	m_oCursorPos.x = -1;    //means: no position   
     m_fDisplayed = false;
     m_fVisible = false;
     SetColour(*wxBLUE);
@@ -115,24 +115,22 @@ void lmScoreViewCursor::RemoveCursor()
 
     //remove position (otherwise, Display (in fact, SetCursorPosition) will skip
     //repainting it and the cursor will never get displayed)
-	m_pCursorSO = (lmStaffObj*)NULL;
+	m_oCursorPos.x = -1;
 
 }
 
-void lmScoreViewCursor::DisplayCursor(double rScale, lmStaffObj* pSO)
+void lmScoreViewCursor::DisplayCursor(double rScale, lmUPoint uPos, lmStaff* pStaff)
 {
     m_fDisplayed = true;
     m_fVisible = false;
     m_rScale = rScale;
-    SetCursorPosition(pSO);
+    SetCursorPosition(uPos, pStaff);
 }
 
-void lmScoreViewCursor::SetCursorPosition(lmStaffObj* pSO) 
+void lmScoreViewCursor::SetCursorPosition(lmUPoint uPos, lmStaff* pStaff) 
 { 
-    if (!pSO) return;
-
     //if position doesn't change, return. Nothing to do.
-    if (m_pCursorSO && m_pCursorSO->GetID() == pSO->GetID()) return;
+    if (!pStaff || uPos == m_oCursorPos) return;
 
     if (m_oCursorTimer.IsRunning())
         m_oCursorTimer.Stop();
@@ -140,22 +138,11 @@ void lmScoreViewCursor::SetCursorPosition(lmStaffObj* pSO)
     RenderCursor(lmHIDDEN);     //hide old cursor
 
     //set new position
-    m_pCursorSO = pSO;
-	lmVStaff* pVStaff = m_pCursorSO->GetVStaff();
-    int nStaff = m_pCursorSO->GetStaffNum();
-	lmShape* pShape = m_pCursorSO->GetShap2();
-	if (!pShape)
-		m_oCursorPos = lmUPoint(0.0f, 0.0f);
-	else
-	{
-		m_oCursorPos.x = pShape->GetXLeft() + pShape->GetWidth()/2.0f;
-		m_oCursorPos.y = pShape->GetYTop();
-	}
+    m_oCursorPos = uPos;
+    m_oCursorPos.y -= pStaff->TenthsToLogical(10.0);
 
-	//m_oCursorPos = m_pCursorSO->GetReferencePaperPos();
-	//m_oCursorPos.y -= pVStaff->TenthsToLogical(10, nStaff);
-	m_udyLength = pVStaff->TenthsToLogical(60, nStaff);
-	m_udxSegment = pVStaff->TenthsToLogical(5, nStaff);
+	m_udyLength = pStaff->TenthsToLogical(60.0);
+	m_udxSegment = pStaff->TenthsToLogical(5.0);
 
     //render it
     RenderCursor(lmVISIBLE);
@@ -173,8 +160,8 @@ void lmScoreViewCursor::RenderCursor(bool fVisible)
     //if current state == desired state, nothing to do
     if (m_fVisible == fVisible) return;
 
-    //get pointed object
-	if (!m_pCursorSO) return;
+    //if not yet positioned, finish
+	if (m_oCursorPos.x == -1) return;
 
     m_fVisible = fVisible;       //new status
 

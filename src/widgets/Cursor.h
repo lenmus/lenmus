@@ -33,6 +33,7 @@ class lmView;
 class lmCanvas;
 class lmScore;
 class lmStaffObj;
+class lmStaff;
 
 #include "../score/defs.h"
 
@@ -49,9 +50,9 @@ public:
     //event handlers
 	void OnCursorTimer(wxTimerEvent& event);
 
-    void SetCursorPosition(lmStaffObj* pSO);
+    void SetCursorPosition(lmUPoint uPos, lmStaff* pStaff);
     void RemoveCursor();
-    void DisplayCursor(double rScale, lmStaffObj* pSO);
+    void DisplayCursor(double rScale, lmUPoint uPos, lmStaff* pStaff);
 
     //aspect
     void SetBlinkingRate(int nMillisecs);
@@ -81,7 +82,6 @@ private:
 	wxTimer			m_oCursorTimer;			//for cursor blinking
 
     //cursor position
-	lmStaffObj*		m_pCursorSO;			//staff object pointed by the cursor
     lmUPoint        m_oCursorPos;           //cursor position on screen
 
     //cursor layout

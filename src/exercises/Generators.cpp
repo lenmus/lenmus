@@ -169,7 +169,7 @@ wxString lmRandomGenerator::GenerateRandomRootNote(lmEClefType nClef,
     ComputeAccidentals(nKey, nAccidentals);
 
     wxString sAcc[5] = { _T("--"), _T("-"), _T(""), _T("+"), _T("x") };
-    wxString sRootNote = sAcc[nAccidentals[nRoot]+ 2] +
+    wxString sRootNote = sAcc[nAccidentals[nRoot]+ 2].c_str() +
                          sNotes.substr(nRoot, 1) +
                          (nRoot > 4 ? _T("3") : _T("4"));
 

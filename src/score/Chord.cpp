@@ -194,7 +194,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 {
 	// Add the shape for the stem of the chord.
 	// Once the last note of a chord has been layouted this method
-	// is invoked (from the last lines of lmNote::LayoutObject() ) to add the 
+	// is invoked (from the last lines of lmNote::LayoutObject() ) to add the
 	// shape for the stem and the flag of the chord.
 	// The stem position is stored in the base note.
 
@@ -240,7 +240,8 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     if (fFlagNeeded)
 	{
 		nGlyph = pBaseNote->GetGlyphForFlag();
-        lmLUnits uStemLength = fabs(uyStemStart - uyStemEnd);
+        //lmLUnits uStemLength = fabs(uyStemStart - uyStemEnd);
+
         // to measure flag and stem I am going to use some glyph data. These
         // data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
         // to convert these data into tenths: just divide FU by 51.2
@@ -269,12 +270,12 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     }
 
 	//create the stem shape
-	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShap2(); 
+	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShap2();
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
 	//wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
 	//	uxStem, uyStemStart, uyStemEnd, uyFlag, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
-    lmShapeStem* pStem = 
+    lmShapeStem* pStem =
         new lmShapeStem(pShapeNote->GetScoreOwner(), uxStem, uyStemStart, uyStemEnd,
 						pBaseNote->StemGoesDown(), uStemThickness, colorC);
 
@@ -286,7 +287,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	else
 		pShapeNote->AddStem(pStem);
 
-    //add the flag 
+    //add the flag
 	if (fFlagNeeded)
 	{
 		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->GetScoreOwner(), nGlyph, pFont,
@@ -621,7 +622,6 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 	///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] Compute common anchor line:"));
     lmLUnits uMaxAnchor = -99999;
     pNode = m_cNotes.GetFirst();
-	int iNote=0;
     for(; pNode; pNode=pNode->GetNext())
 	{
         pNote = (lmNote*)pNode->GetData();

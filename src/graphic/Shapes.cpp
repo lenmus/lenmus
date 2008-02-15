@@ -64,7 +64,7 @@ void lmShapeLine::Create(lmLUnits xStart, lmLUnits yStart,
 
 /*
 	//TODO
-    // if line is neither vertical nor horizontal, should we use a strait rectangle or a 
+    // if line is neither vertical nor horizontal, should we use a strait rectangle or a
     // leaned rectangle sorrounding the line?
 
     //width of rectangle = width of line + 2 pixels
@@ -126,7 +126,7 @@ wxString lmShapeLine::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), line width=%.2f, "),
-                m_nId, m_sGMOName, m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth );
+                m_nId, m_sGMOName.c_str(), m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth );
     sDump += DumpBounds();
     sDump += _T("\n");
 
@@ -200,7 +200,7 @@ wxString lmShapeGlyph::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: pos=(%.2f,%.2f), "),
-        m_nId, m_sGMOName, m_uGlyphPos.x, m_uGlyphPos.y);
+        m_nId, m_sGMOName.c_str(), m_uGlyphPos.x, m_uGlyphPos.y);
     sDump += DumpBounds();
     sDump += _T("\n");
 
@@ -221,10 +221,10 @@ void lmShapeGlyph::Shift(lmLUnits xIncr, lmLUnits yIncr)
 
 wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale)
 {
-	// A dragging operation is started. The view invokes this method to request the 
+	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
 	// If no bitmap is returned drag is cancelled.
-	//      
+	//
 	// So this method returns the bitmap to use with the drag image.
 
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
@@ -261,12 +261,12 @@ wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale)
     dc2.SelectObject(wxNullBitmap);
 
     //cut out the image, to discard the outside out of the bounding box
-    lmPixels vxLeft = dc2.LogicalToDeviceYRel(GetXLeft() - m_uGlyphPos.x);
-    lmPixels vyTop = dc2.LogicalToDeviceYRel(GetYTop() - m_uGlyphPos.y);
+    lmPixels vxLeft = dc2.LogicalToDeviceYRel((wxCoord)(GetXLeft() - m_uGlyphPos.x));
+    lmPixels vyTop = dc2.LogicalToDeviceYRel((wxCoord)(GetYTop() - m_uGlyphPos.y));
     lmPixels vWidth = wxMin(bitmap.GetWidth() - vxLeft,
-                            dc2.LogicalToDeviceXRel(GetWidth()) );
+                            dc2.LogicalToDeviceXRel((wxCoord)GetWidth()) );
     lmPixels vHeight = wxMin(bitmap.GetHeight() - vyTop,
-                             dc2.LogicalToDeviceYRel(GetHeight()) );
+                             dc2.LogicalToDeviceYRel((wxCoord)GetHeight()) );
     const wxRect rect(vxLeft, vyTop, vWidth, vHeight);
     //wxLogMessage(_T("[lmShapeGlyph::OnBeginDrag] bitmap size w=%d, h=%d. Cut x=%d, y=%d, w=%d, h=%d"),
     //    bitmap.GetWidth(), bitmap.GetHeight(), vxLeft, vyTop, vWidth, vHeight);
@@ -291,8 +291,8 @@ lmUPoint lmShapeGlyph::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	// The view informs that the user continues dragging. We receive the new desired
 	// shape position and we must return the new allowed shape position.
 	//
-	// The default behaviour is to return the received position, so the view redraws 
-	// the drag image at that position. No action must be performed by the shape on 
+	// The default behaviour is to return the received position, so the view redraws
+	// the drag image at that position. No action must be performed by the shape on
 	// the score and score objects.
 	//
 	// The received new desired shape position is in logical units and referred to page
@@ -307,7 +307,7 @@ void lmShapeGlyph::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).
-	// This method must validate/adjust final position and, if ok, it must 
+	// This method must validate/adjust final position and, if ok, it must
 	// send a move object command to the controller.
 
 
@@ -399,10 +399,10 @@ void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
 
 wxBitmap* lmShapeText::OnBeginDrag(double rScale)
 {
-	// A dragging operation is started. The view invokes this method to request the 
+	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
 	// If no bitmap is returned drag is cancelled.
-	//      
+	//
 	// So this method returns the bitmap to use with the drag image.
 
 
@@ -543,8 +543,8 @@ lmUPoint lmShapeClef::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	// The view informs that the user continues dragging. We receive the new desired
 	// shape position and we must return the new allowed shape position.
 	//
-	// The default behaviour is to return the received position, so the view redraws 
-	// the drag image at that position. No action must be performed by the shape on 
+	// The default behaviour is to return the received position, so the view redraws
+	// the drag image at that position. No action must be performed by the shape on
 	// the score and score objects.
 	//
 	// The received new desired shape position is in logical units and referred to page
@@ -562,7 +562,7 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).
-	// This method must validate/adjust final position and, if ok, it must 
+	// This method must validate/adjust final position and, if ok, it must
 	// send a move object command to the controller.
 
 	lmUPoint uFinalPos(uPos.x, uPos.y);
@@ -587,7 +587,7 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 //========================================================================================
 
 lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, lmUPoint uPos, lmUSize uSize,
-                                   wxString sName) 
+                                   wxString sName)
 	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, sName, lmNO_DRAGGABLE)
 {
     m_uBoundsTop.x = uPos.x;

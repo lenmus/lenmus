@@ -437,7 +437,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 
     // initialize status bar
     m_pStatusBar = (lmStatusBar*)NULL;
-    bool fStatusBar = false;			
+    bool fStatusBar = false;
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
     if (!m_pStatusBar && fStatusBar) {
         // create a status bar (by default with 1 pane only)
@@ -660,9 +660,9 @@ void lmMainFrame::CreateMyToolBar()
     //Metronome toolbar
     m_pTbMtr = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbMtr->SetToolBitmapSize(nSize);
-    m_pTbMtr->AddTool(MENU_Metronome, _("Metronome"), 
-        wxArtProvider::GetBitmap(_T("tool_metronome"), 
-        wxART_TOOLBAR, nSize), _("Turn metronome on/off"), 
+    m_pTbMtr->AddTool(MENU_Metronome, _("Metronome"),
+        wxArtProvider::GetBitmap(_T("tool_metronome"),
+        wxART_TOOLBAR, nSize), _("Turn metronome on/off"),
         wxITEM_CHECK);
     m_pSpinMetronome = new wxSpinCtrl(m_pTbMtr, ID_SPIN_METRONOME, _T(""), wxDefaultPosition,
         wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 20, 300);
@@ -856,7 +856,7 @@ void lmMainFrame::CreateTheStatusBar(int nType)
     m_pStatusBar = new lmStatusBar(this, (lmEStatusBarLayout)nType, MENU_View_StatusBar);
     SetStatusBar(m_pStatusBar);
 
-    //the status bar pane is used to display menu and toolbar help. 
+    //the status bar pane is used to display menu and toolbar help.
     //Using -1 disables help display.
     SetStatusBarPane(-1);
 
@@ -1125,7 +1125,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
                             _("Open help book"), wxITEM_CHECK);
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize) );
     help_menu->Append(pItem);
-	
+
     help_menu->AppendSeparator();
 
 	pItem = new wxMenuItem(help_menu, MENU_CheckForUpdates, _("Check now for &updates"),
@@ -1707,7 +1707,7 @@ void lmMainFrame::OnActiveViewChanged(lmMDIChildFrame* pFrame)
 {
 	// The active frame/view has changed. Update GUI
 
-	// update zoom combo box 
+	// update zoom combo box
 	double rScale = pFrame->GetActiveViewScale();
 	m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
 
@@ -2256,13 +2256,13 @@ void lmMainFrame::OnKeyPress(wxKeyEvent& event)
 	if (event.GetEventType()==wxEVT_KEY_DOWN
 		&& ((wxKeyEvent&)event).GetKeyCode()==WXK_F1
 		&& IsToolBoxVisible())
-	{ 
+	{
 		RedirectKeyPressEvent(event);
 	}
 }
 
 void lmMainFrame::OnKeyF1(wxCommandEvent& event)
 {
-		int i = 1;
+//		int i = 1;
 }
 

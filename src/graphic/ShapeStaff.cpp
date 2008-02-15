@@ -49,7 +49,7 @@ lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nNumLines, lmLUnits uLineWidth,
 	m_uLineWidth = uLineWidth;
 	m_uSpacing = uSpacing;
 	m_color = color;
-	
+
 	//bounds
 	SetXLeft(xLeft);
 	SetYTop(yTop);
@@ -80,7 +80,7 @@ wxString lmShapeStaff::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: "), m_nId, m_sGMOName);
+	sDump += wxString::Format(_T("%04d %s: "), m_nId, m_sGMOName.c_str());
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;

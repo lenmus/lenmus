@@ -102,7 +102,7 @@ wxString lmShapeArch::Dump(int nIndent)
 	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), ")
                 _T("ctrol1=(%.2f, %.2f), ctrol2=(%.2f, %.2f), ")
                 _T("Arch under note = %s, "),
-                m_nId, m_sGMOName, m_uStart.x, m_uStart.y, m_uEnd.x, m_uEnd.y,
+                m_nId, m_sGMOName.c_str(), m_uStart.x, m_uStart.y, m_uEnd.x, m_uEnd.y,
                 m_uCtrol1.x, m_uCtrol1.y, m_uCtrol2.x, m_uCtrol2.y,
                 (m_fArchUnder ? _T("yes") : _T("no")) );
     sDump += DumpBounds();
@@ -302,7 +302,7 @@ void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	lmShape* pSNH = ((lmShapeNote*)pShape)->GetNoteHead();
 	wxASSERT(pSNH);
 
-	//Compute new attachment point 
+	//Compute new attachment point
 	lmLUnits uHalfNH = (pSNH->GetXRight() - pSNH->GetXLeft()) / 2.0;
     lmLUnits uHeightNH = pSNH->GetYBottom() - pSNH->GetYTop();
     lmLUnits uxPos = pSNH->GetXLeft() + uHalfNH;
@@ -327,11 +327,11 @@ void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
     if (paperPosEnd.y != paperPosStart.y)
 	{
         //if start note paperPos Y is not the same than end note paperPos Y the
-		//notes are in different systems. Therefore, the tie must be splitted. 
+		//notes are in different systems. Therefore, the tie must be splitted.
 		//To do it:
 		//	- detach the two intermediate points.
 		//	- make both shapes visible.
-		//	
+		//
 		// As there is no controller object to perform these actions, the first tie
 		// detecting the need must co-ordinate the necessary actions.
 

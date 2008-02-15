@@ -71,7 +71,17 @@
 //helper functions to compare times (two floating point numbers)
 bool IsEqualTime(float t1, float t2)
 {
-    return (fabs(t1 - t2) < 0.1);
+    return (fabs(t1 - t2) < 0.1f);
+}
+
+bool IsLowerTime(float t1, float t2)
+{
+    return (t1 < t2) && ((t2 - t1) >= 0.1f);
+}
+
+bool IsHigherTime(float t1, float t2)
+{
+    return (t1 > t2) && ((t1 - t2) >= 0.1f);
 }
 
 

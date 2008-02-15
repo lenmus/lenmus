@@ -1164,9 +1164,9 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     //If no error updates the VStaff with the time shift (with sign).
     //As in this method we ignore the time occupied by a measure, if it
-    //is a move to start or end of measure, the returned value will be a very high one
-    //so that when checking measure limits, it gets truncated to those limits and
-    //so achieve the desired result.
+    //is a move to start or end of measure, the returned value will be a very high
+    //one (lmTIME_SHIFT_START_END) so that when checking measure limits, it gets truncated
+    //to those limits and so achieve the desired result.
 
     // the time shift can be:
     // a) one of the tags 'start' and 'end'
@@ -1192,7 +1192,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sValue = (pNode->GetParameter(1))->GetName();
     if (sValue == m_pTags->TagName(_T("start")) ) {
         if (!fForward)
-            rShift = 1000000.0;
+            rShift = lmTIME_SHIFT_START_END;
         else {
             AnalysisError( _T("Element '%s' has an incoherent value: go forward to start?. Element ignored"),
                 sElmName.c_str());
@@ -1201,7 +1201,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     else if (sValue == m_pTags->TagName(_T("end")) ) {
         if (fForward)
-            rShift = 1000000.0;
+            rShift = lmTIME_SHIFT_START_END;
         else {
             AnalysisError( _T("Element '%s' has an incoherent value: go backwards to end?. Element ignored"),
                 sElmName.c_str());
@@ -1639,7 +1639,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 			{	//fermata
                 fFermata = true;
             }
-            else if (sData == m_pTags->TagName(_T("noVisible"))) 
+            else if (sData == m_pTags->TagName(_T("noVisible")))
 			{	//no visible
                 fVisible = false;
             }
@@ -2197,7 +2197,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 	lmLDPOptionalTags oOptTags(this, m_pTags);
 	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y,
 						lm_eTag_StaffNum, -1);		//finish list with -1
-	
+
 	lmLocation tPos = g_tDefaultPos;
     int nStaff = 1;
     bool fVisible = true;
@@ -2292,7 +2292,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 	lmLDPOptionalTags oOptTags(this, m_pTags);
 	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
 	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-	
+
 	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
 
@@ -2386,7 +2386,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
     //get value
     long nNumberLong;
     double rNumberDouble;
-    bool fError = false;
+    //bool fError = false;
 	wxString sError;
 
     switch(nDataType) {
@@ -3379,12 +3379,12 @@ lmLDPOptionalTags::~lmLDPOptionalTags()
 {
 }
 
-void lmLDPOptionalTags::SetValid(lmETagLDP nTag, ...) 
-{ 
+void lmLDPOptionalTags::SetValid(lmETagLDP nTag, ...)
+{
 	//process optional tags. Finish list with -1
 
 	//process first arg
-	m_ValidTags[nTag] = true; 
+	m_ValidTags[nTag] = true;
 
 	//process additional args
 	va_list pArgs;
@@ -3396,9 +3396,9 @@ void lmLDPOptionalTags::SetValid(lmETagLDP nTag, ...)
 		// va_arg takes a va_list and a variable type, and returns the next argument
 		// in the list in the form of whatever variable type it is told. It then moves
 		// down the list to the next argument.
-		lmETagLDP nNextTag = va_arg(pArgs, lmETagLDP);
+		lmETagLDP nNextTag = (lmETagLDP)va_arg(pArgs, int);
 		if (nNextTag == -1) break;
-		m_ValidTags[nNextTag] = true; 
+		m_ValidTags[nNextTag] = true;
 	}
 	va_end(pArgs);		//clean up the list
 }
@@ -3412,19 +3412,19 @@ bool lmLDPOptionalTags::VerifyAllowed(lmETagLDP nTag, wxString sName)
 				_T("[AnalyzeCommonOptions]: Not allowed element '%s' found. Element ignored."),
                 sName.c_str() );
 	return false;
-	
+
 }
 
 void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff* pVStaff,
 									   // variables to return optional values
 									   bool* pfVisible,
 									   int* pStaffNum,
-									   lmLocation* pLocation 
+									   lmLocation* pLocation
 									   )
 {
     //analyze optional parameters
 	//if the optional tag is valid fills corresponding received variables
-	//if tag is not allowed, ignore it and continue with the next option 
+	//if tag is not allowed, ignore it and continue with the next option
 
 	for(; iP <= pNode->GetNumParms(); iP++)
 	{
@@ -3432,7 +3432,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
         const wxString sName = pX->GetName();
 
 		//number of staff on which the element is located
-        if (sName.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))   
+        if (sName.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))
         {
 			if (VerifyAllowed(lm_eTag_StaffNum, sName)) {
 				*pStaffNum = m_pParser->AnalyzeNumStaff(sName, pVStaff->GetNumStaves());
@@ -3447,7 +3447,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 			}
         }
 
-		// X location 
+		// X location
         else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) )
         {
 			if (VerifyAllowed(lm_eTag_Location_x, sName)) {
@@ -3455,7 +3455,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 			}
 		}
 
-		// Y location 
+		// Y location
         else if (sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
         {
 			if (VerifyAllowed(lm_eTag_Location_y, sName)) {

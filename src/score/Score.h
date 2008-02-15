@@ -220,6 +220,9 @@ public:
 
     //current position info
     lmStaffObj* GetCursorSO();
+    lmUPoint GetCursorPoint();
+    lmStaff* GetCursorStaff();
+    lmVStaff* GetVStaff();
 
 
 private:
@@ -277,6 +280,7 @@ public:
 
 	// instrument related
     int GetNumInstruments() { return (int)m_cInstruments.size(); }
+    lmInstrument* GetInstrument(int nInstr);
     lmInstrument* GetFirstInstrument();
     lmInstrument* GetNextInstrument();
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,

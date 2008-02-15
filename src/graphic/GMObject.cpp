@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ wxString lmGMObject::DumpBounds()
     return wxString::Format(_T("Bounds=(%.2f, %.2f, %.2f, %.2f)"),
         	m_uBoundsTop.x, m_uBoundsTop.y,
             m_uBoundsBottom.x - m_uBoundsTop.x, m_uBoundsBottom.y - m_uBoundsTop.y);
-}   
+}
 
 void lmGMObject::NormaliceBoundsRectangle()
 {
@@ -123,7 +123,7 @@ void lmGMObject::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).
-	// This method must validate/adjust final position and, if ok, it must 
+	// This method must validate/adjust final position and, if ok, it must
 	// send a move object command to the controller.
 
 	pCanvas->MoveObject(this, uPos);
@@ -137,8 +137,8 @@ void lmGMObject::Shift(lmLUnits xIncr, lmLUnits yIncr)
 void lmGMObject::ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr)
 {
 	// Auxiliary method to be used by derived classes to perform common actions when the
-	// shape is shifted    
-	
+	// shape is shifted
+
 	m_uSelRect.x += xIncr;		//AWARE: As it is a rectangle, changing its origin does not change
     m_uSelRect.y += yIncr;		//       its width/height. So no need to adjust bottom right point
 
@@ -201,7 +201,7 @@ void lmBox::AddShape(lmShape* pShape)
 
 lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 {
-	//wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+	//wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId);
     //loop to look up in the shapes collection
 	for(int i=0; i < (int)m_Shapes.size(); i++)
     {
@@ -210,7 +210,7 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
     }
 
     // no shape found.
-    return (lmShape*)NULL;      
+    return (lmShape*)NULL;
 }
 
 
@@ -263,13 +263,13 @@ void lmShape::RenderCommon(lmPaper* pPaper, wxColour colorC)
     if (g_fDrawBounds)
         DrawBounds(pPaper, colorC);
 }
-            
+
 wxString lmShape::DumpSelRect()
 {
     return wxString::Format(_T("SelRect=(%.2f, %.2f, %.2f, %.2f)"),
-        	m_uSelRect.x, m_uSelRect.y, m_uSelRect.width, m_uSelRect.height);     
+        	m_uSelRect.x, m_uSelRect.y, m_uSelRect.width, m_uSelRect.height);
 
-}   
+}
 
 int lmShape::Attach(lmShape* pShape, lmEAttachType nTag)
 {
@@ -423,7 +423,7 @@ wxString lmCompositeShape::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nId, m_sGMOName, 
+	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nId, m_sGMOName.c_str(),
         (m_fGrouped ? _T("yes") : _T("no")) );
     sDump += DumpBounds();
     sDump += _T("\n");
@@ -513,10 +513,10 @@ void lmCompositeShape::RecomputeBounds()
 
 wxBitmap* lmCompositeShape::OnBeginDrag(double rScale)
 {
-	// A dragging operation is started. The view invokes this method to request the 
+	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
 	// If no bitmap is returned drag is cancelled.
-	//      
+	//
 	// So this method returns the bitmap to use with the drag image.
 
     // allocate a memory DC for logical units to pixels conversions
@@ -530,8 +530,8 @@ wxBitmap* lmCompositeShape::OnBeginDrag(double rScale)
 
     // allocate the bitmap
     // convert size to pixels
-    int wD = (int)dc1.LogicalToDeviceXRel( GetWidth() );
-    int hD = (int)dc1.LogicalToDeviceYRel( GetHeight() );
+    int wD = (int)dc1.LogicalToDeviceXRel( (wxCoord)GetWidth() );
+    int hD = (int)dc1.LogicalToDeviceYRel( (wxCoord)GetHeight() );
     wxBitmap bitmap(wD, hD);
 
 	//clear the bitmap
@@ -550,8 +550,8 @@ wxBitmap* lmCompositeShape::OnBeginDrag(double rScale)
         //merge it
         if (pBMS)
 		{
-            lmPixels vxPos = dc1.LogicalToDeviceXRel( pShape->GetXLeft() - GetXLeft() );
-            lmPixels vyPos = dc1.LogicalToDeviceXRel( pShape->GetYTop() - GetYTop() );
+            lmPixels vxPos = dc1.LogicalToDeviceXRel( (wxCoord)(pShape->GetXLeft() - GetXLeft()) );
+            lmPixels vyPos = dc1.LogicalToDeviceXRel( (wxCoord)(pShape->GetYTop() - GetYTop()) );
             dc2.DrawBitmap(*pBMS, vxPos, vyPos, true);       //true = transparent
 
             delete pBMS;    //bitmap no longer needed
@@ -576,8 +576,8 @@ lmUPoint lmCompositeShape::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	// The view informs that the user continues dragging. We receive the new desired
 	// shape position and we must return the new allowed shape position.
 	//
-	// The default behaviour is to return the received position, so the view redraws 
-	// the drag image at that position. No action must be performed by the shape on 
+	// The default behaviour is to return the received position, so the view redraws
+	// the drag image at that position. No action must be performed by the shape on
 	// the score and score objects.
 	//
 	// The received new desired shape position is in logical units and referred to page

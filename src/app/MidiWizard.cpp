@@ -222,7 +222,8 @@ bool WizardDevicesPage::Create( wxWizard* parent )
     GetSizer()->Fit(this);
 
     // populate combo boxes with available Midi devices
-    int nItem, nInput=0, nOutput=0;
+    //int nInput=0;
+    int nItem, nOutput=0;
     int nNumDevices = g_pMidi->CountDevices();
     for (int i = 0; i < nNumDevices; i++) {
         wxMidiOutDevice* pMidiDev = new wxMidiOutDevice(i);
@@ -296,8 +297,8 @@ void WizardDevicesPage::CreateControls()
     //wxStaticText* itemStaticText14 = new wxStaticText( this, wxID_STATIC, _("Input device:"), wxDefaultPosition, wxDefaultSize, 0 );
     //itemBoxSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
-    wxString* m_pInComboStrings = NULL;
 	//TODO: Un-comment when ready to use MIDI input
+    //wxString* m_pInComboStrings = NULL;
     //m_pInCombo = new wxComboBox( this, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
     //itemBoxSizer11->Add(m_pInCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 

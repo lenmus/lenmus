@@ -119,7 +119,7 @@ protected:
 class lmCmdDeleteObject: public lmScoreCommand
 {
 public:
-    lmCmdDeleteObject(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO);
+    lmCmdDeleteObject(const wxString& name, lmScoreDocument *pDoc);
     ~lmCmdDeleteObject() {}
 
     //implementation of pure virtual methods in base class
@@ -130,7 +130,6 @@ public:
 
 protected:
 
-	lmStaffObj*		m_pCursorSO;
 
 };
 
@@ -141,8 +140,7 @@ class lmCmdInsertBarline: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertBarline(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO,
-					   lmEBarline nType);
+    lmCmdInsertBarline(const wxString& name, lmScoreDocument *pDoc, lmEBarline nType);
     ~lmCmdInsertBarline() {}
 
     //implementation of pure virtual methods in base class
@@ -153,7 +151,6 @@ public:
 
 protected:
     lmEBarline	    m_nBarlineType;
-	lmStaffObj*		m_pCursorSO;
 };
 
 
@@ -163,8 +160,7 @@ class lmCmdInsertClef: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertClef(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO,
-					lmEClefType nClefType);
+    lmCmdInsertClef(const wxString& name, lmScoreDocument *pDoc, lmEClefType nClefType);
     ~lmCmdInsertClef() {}
 
     //implementation of pure virtual methods in base class
@@ -175,7 +171,6 @@ public:
 
 protected:
     lmEClefType     m_nClefType;
-	lmStaffObj*		m_pCursorSO;
 };
 
 
@@ -185,7 +180,7 @@ class lmCmdInsertNote: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertNote(const wxString& name, lmScoreDocument *pDoc, lmStaffObj* pCursorSO,
+    lmCmdInsertNote(const wxString& name, lmScoreDocument *pDoc,
 					lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
 					lmENoteType nNoteType, float rDuration, lmENoteHeads nNotehead,
 					lmEAccidentals nAcc);
@@ -205,7 +200,6 @@ protected:
 	float			m_rDuration;
 	lmENoteHeads	m_nNotehead;
 	lmEAccidentals	m_nAcc;
-	lmStaffObj*		m_pCursorSO;
 };
 
 

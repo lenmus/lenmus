@@ -112,7 +112,9 @@ void lmSOIterator::MoveNext()
 			m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
 			m_it = m_pSegment->m_StaffObjs.begin();
 		}
-		//else nothing to do. End of collection reached
+        else
+		    //End of collection reached. Restore num segment
+            --m_nSegment;
 	}
     else
         m_fEndOfMeasure = false;

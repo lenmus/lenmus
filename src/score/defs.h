@@ -79,6 +79,11 @@ typedef wxPoint lmDPoint;           // a point in device units
 #define lmSCALE      0.1              // logical units: one cent of millimiter
 //#define lmSCALE      0.01             // logical units: one micron
 
+// for source tags <forward> <backup> (GoFwd) (goBack): time that will be interpreted as
+// go back to start measure or go forward to end of measure
+#define lmTIME_SHIFT_START_END    1000000.0f
+
+
 enum lmEUnits {
     lmMICRONS = 0,
     lmMILLIMETERS,
@@ -90,6 +95,8 @@ enum lmEUnits {
 
 //defined in defs.cpp
 extern bool IsEqualTime(float t1, float t2);
+extern bool IsLowerTime(float t1, float t2);
+extern bool IsHigherTime(float t1, float t2);
 
 // defined in TheApp.cpp
 extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);

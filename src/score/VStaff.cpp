@@ -80,6 +80,10 @@
 #include "../graphic/ShapeBarline.h"
 
 
+//for AddShitTimeTag methods
+#define lmGO_FWD   true
+#define lmGO_BACK  false
+
 //constructor
 lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     : lmScoreObj(pScore), m_nNumStaves(1), m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
@@ -231,8 +235,9 @@ int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 // Methods for inserting StaffObjs
 //---------------------------------------------------------------------------------------
 
-lmClef* lmVStaff::InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType)
+lmClef* lmVStaff::InsertClef(lmEClefType nClefType)
 {
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     int nStaff = pCursorSO->GetStaffNum();
     lmClef* pClef = new lmClef(nClefType, this, nStaff, lmVISIBLE);
     lmStaff* pStaff = GetStaff(nStaff);
@@ -242,17 +247,19 @@ lmClef* lmVStaff::InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType)
     return pClef;
 }
 
-lmBarline* lmVStaff::InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType)
+lmBarline* lmVStaff::InsertBarline(lmEBarline nType)
 {
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
     m_cStaffObjs.Insert(pBarline, pCursorSO);
     return pBarline;
 }
 
-lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
+lmNote* lmVStaff::InsertNote(lmEPitchType nPitchType, wxString sStep,
 							 wxString sOctave, lmENoteType nNoteType, float rDuration,
 							 lmENoteHeads nNotehead, lmEAccidentals nAcc)
 {
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     int nStaff = pCursorSO->GetStaffNum();
 
 	//get the applicable context
@@ -266,7 +273,7 @@ lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxS
 	wxString sAccidentals = _T("");
 
 	//TODO: deal with voices
-	int nVoice = 1;
+	int nVoice = 0;     //auto-voice
     lmNote* pNt = new lmNote(this, nPitchType,
                         sStep, sOctave, sAccidentals, nAcc,
                         nNoteType, rDuration, false, false, nStaff, nVoice, lmVISIBLE,
@@ -278,9 +285,10 @@ lmNote* lmVStaff::InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxS
     return pNt;
 }
 
-void lmVStaff::DeleteObject(lmStaffObj* pCursorSO)
+void lmVStaff::DeleteObject()
 {
-    m_cStaffObjs.Delete(pCursorSO);
+
+    m_cStaffObjs.Delete(m_VCursor.GetStaffObj());
 }
 
 
@@ -644,7 +652,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
 					{
 						if (!pSO->IsNoteRest() || ((lmNoteRest*)pSO)->GetVoice() == nVoice)
 						{
-							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
 							sSource += pSO->SourceLDP(nIndent);
 							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
 						}
@@ -652,7 +660,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
 					else
 						if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
 						{
-							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
 							sSource += pSO->SourceLDP(nIndent);
 							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
 						}
@@ -673,6 +681,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
             sSource += _T("\n");
             sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
             sSource += _T("(goBack start)\n");
+            rTime = 0.0f;
         }
 
         //if goBack added, add a goFwd to ensure that we are at end of measure
@@ -716,27 +725,30 @@ void lmVStaff::XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool f
 										  float rTime, lmStaffObj* pSO)
 {
 	if (!IsEqualTime(rTime, pSO->GetTimePos()))
-	{
-		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-		if (fFwd)
-			sSource += _T("<forward>\n");
-		else
-			sSource += _T("<backup>\n");
+        XML_AddShitTimeTag(sSource, nIndent, fFwd, pSO->GetTimePos());
+}
 
-		//duration
-		nIndent++;
-		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-		sSource += wxString::Format(_T("<duration>%.0f"), pSO->GetTimePos());
-		sSource += _T("</duration>\n");
+void lmVStaff::XML_AddShitTimeTag(wxString& sSource, int nIndent, bool fFwd, float rTime)
+{
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	if (fFwd)
+		sSource += _T("<forward>\n");
+	else
+		sSource += _T("<backup>\n");
 
-		//close tag
-		nIndent--;
-		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-		if (fFwd)
-			sSource += _T("</forward>\n");
-		else
-			sSource += _T("</backup>");
-	}
+	//duration
+	nIndent++;
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	sSource += wxString::Format(_T("<duration>%.0f"), rTime);
+	sSource += _T("</duration>\n");
+
+	//close tag
+	nIndent--;
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	if (fFwd)
+		sSource += _T("</forward>\n");
+	else
+		sSource += _T("</backup>\n");
 }
 
 wxString lmVStaff::SourceXML(int nIndent)
@@ -798,7 +810,7 @@ wxString lmVStaff::SourceXML(int nIndent)
 							}
 
 							//add xml source for this staffobj
-							XML_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							XML_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
 							sSource += pSO->SourceXML(nIndent);
 							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
 						}
@@ -815,7 +827,7 @@ wxString lmVStaff::SourceXML(int nIndent)
 								fStartAttributes = true;
 							}
 							//add xml source for this staffobj
-							XML_AddShitTimeTagIfNeeded(sSource, nIndent, true, rTime, pSO);
+							XML_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
 							sSource += pSO->SourceXML(nIndent);
 							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
 						}
@@ -834,16 +846,15 @@ wxString lmVStaff::SourceXML(int nIndent)
 
             //there are more voices. Add <backup> tag
             fGoBack = true;
-            sSource += _T("\n");
-            sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-            sSource += _T("<backup start />\n");		//TODO: this tag doesn't exists
+            XML_AddShitTimeTag(sSource, nIndent, lmGO_BACK, rTime);
+            rTime = 0.0f;
         }
 
         //if goBack added, add a goFwd to ensure that we are at end of measure
         if (fGoBack)
         {
-            sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
-            sSource += _T("<forward end />\n");		//TODO: this tag doesn't exists
+            rTime = m_cStaffObjs.GetMeasureDuration(nMeasure) - rTime;
+            XML_AddShitTimeTag(sSource, nIndent, lmGO_FWD, rTime);
         }
 
 		//add barline, if present

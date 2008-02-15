@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
 }
 
 lmBoxSystem* lmBoxSliceVStaff::GetOwnerSystem()
-{ 
+{
 	return m_pSliceInstr->GetOwnerSystem();
 }
 
@@ -100,15 +100,15 @@ void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
     //    code in lmFormatter4::SizeMeasure
     //*/
     ////el posicionamiento relativo de objetos (en LDP) requiere conocer la
-    ////posición de inicio del compas. Para ello, se guarda aquí, de forma
-    ////que el método GetXInicioCompas pueda devolver este valor
+    ////posiciÃ³n de inicio del compas. Para ello, se guarda aquÃ­, de forma
+    ////que el mÃ©todo GetXInicioCompas pueda devolver este valor
     ////m_pVStaff->SetXInicioCompas = pPaper->GetCursorX()
 
     ////TODO Review this
-    //////si no es el primer compas de la partitura avanza separación con la barra de compas
-    //////o con prólogo, si es comienzo de línea.
+    //////si no es el primer compas de la partitura avanza separaciÃ³n con la barra de compas
+    //////o con prÃ³logo, si es comienzo de lÃ­nea.
     ////if (nMeasure != 1) {
-    ////    m_oCanvas.Avanzar        //separación con la barra de compas
+    ////    m_oCanvas.Avanzar        //separaciÃ³n con la barra de compas
     ////}
 
     ////space occupied by clefs is computed only when all clefs has been drawn, so that we
@@ -235,13 +235,13 @@ wxString lmBoxSliceVStaff::Dump(int nIndent)
 
 lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-	wxLogMessage(_T("[lmBoxSliceVStaff::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+	wxLogMessage(_T("[lmBoxSliceVStaff::FindShapeAtPosition] GMO %s - %d"), m_sGMOName.c_str(), m_nId);
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
 
     // no object found. Verify if the point is in this object
-    if (ContainsPoint(pointL)) 
+    if (ContainsPoint(pointL))
         return this;
     else
         return (lmGMObject*)NULL;
@@ -249,6 +249,6 @@ lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
 }
 
 int lmBoxSliceVStaff::GetPageNumber() const
-{ 
+{
 	return m_pSliceInstr->GetPageNumber();
 }

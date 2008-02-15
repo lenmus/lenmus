@@ -75,6 +75,7 @@ public:
 
 	//miscellaneous info 
 	lmLUnits GetYTopFirstStaff();
+    inline lmShapeStaff* GetStaffShape(int nStaff) { return m_ShapeStaff[nStaff - 1]; }
 
     //pointing at
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);

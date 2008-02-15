@@ -135,13 +135,37 @@ void lmScoreCursor::MoveLeft()
 
 void lmScoreCursor::MoveUp()
 {
+    //TODO
 }
 
 void lmScoreCursor::MoveDown()
 {
+    //TODO
 }
 
+lmUPoint lmScoreCursor::GetCursorPoint()
+{
+    if (m_pVCursor)
+        return m_pVCursor->GetCursorPoint();
+    else
+        return lmUPoint(0.0f, 0.0f);
+}
 
+lmStaff* lmScoreCursor::GetCursorStaff()
+{
+    if (m_pVCursor)
+        return m_pVCursor->GetCursorStaff();
+    else
+        return (lmStaff*)NULL;
+}
+
+lmVStaff* lmScoreCursor::GetVStaff() 
+{ 
+    if (m_pVCursor)
+        return m_pScore->GetInstrument(m_nCursorInstr)->GetVStaff();
+    else
+        return (lmVStaff*)NULL;
+}
 
 //=======================================================================================
 // lmScore implementation
@@ -432,6 +456,12 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
 
     return nHeight;
 
+}
+
+lmInstrument* lmScore::GetInstrument(int nInstr)
+{
+	m_nCurNode = nInstr - 2;
+	return GetNextInstrument();
 }
 
 lmInstrument* lmScore::GetFirstInstrument()

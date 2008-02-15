@@ -1223,7 +1223,9 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
 #endif
 
     //Restore Cursor
-    m_pGuiCursor->DisplayCursor(m_rScale, m_pCursorSO);
+    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);
 }
 
 //------------------------------------------------------------------------------------------
@@ -1359,7 +1361,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     //    SetInitialCursorPosition();
     //    //TODO: This is not the best place to start the cursor. If the PO is going to
     //    //be higlighted this will force a repaint (inside the paint routine!!)
-    //    m_pGuiCursor->DisplayCursor(m_rScale, m_pCursorSO);
+    //    m_pGuiCursor->DisplayCursor(m_rScale);
     //}
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
@@ -1524,7 +1526,9 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         m_pGuiCursor = new lmScoreViewCursor(this, (lmCanvas*)m_pCanvas, pScore);
         SetInitialCursorPosition();
     }
-    m_pGuiCursor->DisplayCursor(m_rScale, m_pCursorSO);
+    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);
 
 	////DEBUG: draw cyan rectangle to show updated rectangle
     //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
@@ -1582,24 +1586,9 @@ void lmScoreView::SetInitialCursorPosition()
 		m_pScoreCursor->ResetCursor();
 		m_pCursorSO = m_pScoreCursor->GetCursorSO();
 
-		//loop to process all StaffObjs in this measure
-		//m_pCursorIT = pVStaff->CreateIterator(eTR_ByTime);
-		//if (m_pCursorIT->EndOfList())
-		if (!m_pCursorSO)
-		{
-			//the score is empty. Place cursor at start of first staff
-            //AWARE: This will never happend, as there is at least an EOS control object
-		}
-		else
-		{
-			////place cursor at first StaffObj
-			//m_pCursorSO = m_pCursorIT->GetCurrent();
-            m_pGuiCursor->SetCursorPosition(m_pCursorSO);
-
-            //lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-            //if (pBS)
-                pBS->SetCursor(m_pCursorSO);
-		}
+        lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+        lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+        m_pGuiCursor->SetCursorPosition(uPos, pStaff);
 	}
 
 }
@@ -1612,8 +1601,9 @@ void lmScoreView::CursorRight()
     m_pScoreCursor->MoveRight();
     m_pCursorSO = m_pScoreCursor->GetCursorSO();
 
-    m_pGuiCursor->SetCursorPosition(m_pCursorSO);
-
+    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+    m_pGuiCursor->SetCursorPosition(uPos, pStaff);
 }
 
 void lmScoreView::CursorLeft()
@@ -1624,8 +1614,9 @@ void lmScoreView::CursorLeft()
     m_pScoreCursor->MoveLeft();
     m_pCursorSO = m_pScoreCursor->GetCursorSO();
 
-    m_pGuiCursor->SetCursorPosition(m_pCursorSO);
-
+    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+    m_pGuiCursor->SetCursorPosition(uPos, pStaff);
 }
 
 void lmScoreView::CursorUp()
@@ -1650,7 +1641,9 @@ void lmScoreView::UpdateCursor()
 	//the score has been modified. So the cursor must be repainted at right
 	//position
 	m_pGuiCursor->RemoveCursor();
-    m_pGuiCursor->DisplayCursor(m_rScale, m_pCursorSO);		//Restore Cursor
+    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);		//Restore Cursor
 }
 
 

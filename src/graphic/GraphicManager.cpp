@@ -46,10 +46,6 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
-// Definition of the BitmapList class
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(BitmapList);
-
 // access to global some global flags
 extern bool g_fUseAntiAliasing;         // in TheApp.cpp
 
@@ -195,7 +191,8 @@ void lmGraphicManager::PrepareForHighlight()
     if (!g_fUseAntiAliasing) return;
 
     //If anti-aliased is used, bitmaps must exist, at least for currently displayed page.
-    wxASSERT(m_cBitmaps.GetCount() > 0);
+    //wxASSERT(m_cBitmaps.size() > 0);
+    wxASSERT(m_Bitmaps.size() > 0);
 
     //As we do not know which bitmap to save ("Play" normally starts at page 1 but
     //not always: i.e. when starting at a certain measure number) this method
@@ -276,15 +273,13 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
 
 void lmGraphicManager::DeleteBitmaps()
 {
-    wxBitmapListNode* pNode = m_cBitmaps.GetFirst();
-    while (pNode) {
-        wxBitmap* pBitmap = pNode->GetData();
-        delete pBitmap;
-        delete pNode;
-        pNode = m_cBitmaps.GetFirst();
+    std::list<lmBitmapPage*>::iterator it = m_Bitmaps.begin();
+    while (it != m_Bitmaps.end()) {
+        delete (*it)->pBitmap;
+        delete (*it);
+        ++it;
     }
-    m_aBitmapPage.Clear();
-
+    m_Bitmaps.clear();
 }
 
 wxBitmap* lmGraphicManager::GetPageBitmap(int nPage)
@@ -294,15 +289,13 @@ wxBitmap* lmGraphicManager::GetPageBitmap(int nPage)
 
     wxASSERT(nPage > 0);
 
-    int i;
-    for (i=0; i < (int)m_cBitmaps.GetCount(); i++) {
-        if (m_aBitmapPage.Item(i) == nPage) {
-            wxBitmapListNode* pNode = m_cBitmaps.Item(i);
-            return (wxBitmap*)pNode->GetData();
-        }
+    std::list<lmBitmapPage*>::iterator it = m_Bitmaps.begin();
+    for (it = m_Bitmaps.begin(); it != m_Bitmaps.end(); ++it)
+    {
+        if ((*it)->nPage == nPage)
+            return (*it)->pBitmap;
     }
     return (wxBitmap*)NULL;
-
 }
 
 wxBitmap* lmGraphicManager::NewBitmap(int nPage)
@@ -345,8 +338,13 @@ void lmGraphicManager::AddBitmap(int nPage, wxBitmap* pBitmap)
     //wxLogMessage(_T("[lmGraphicManager::AddBitmap] Page = %d"), nPage);
 
     // add the new bitmap to the list and store its size
-    m_cBitmaps.Append(pBitmap);
-    m_aBitmapPage.Add(nPage);
+    lmBitmapPage* pBP = new lmBitmapPage;
+    pBP->nPage = nPage;
+    pBP->pBitmap = pBitmap;
+    m_Bitmaps.push_back(pBP);
+
+    //m_cBitmaps.push_back(pBitmap);
+    //m_aBitmapPage.Add(nPage);
 
     m_xBitmapSize = m_xPageSize;
     m_yBitmapSize = m_yPageSize;
@@ -359,18 +357,18 @@ void lmGraphicManager::BitmapsToFile(wxString& sFilename, wxString& sExt, int nI
              || nImgType == wxBITMAP_TYPE_PNG || nImgType == wxBITMAP_TYPE_PCX
              || nImgType == wxBITMAP_TYPE_PNM);
 
-    wxBitmapListNode* pNode = m_cBitmaps.GetFirst();
+    std::list<lmBitmapPage*>::iterator it = m_Bitmaps.begin();
     int i = 1;
-    while (pNode) {
-        wxBitmap* pBitmap = pNode->GetData();
+    while (it != m_Bitmaps.end())
+    {
+        wxBitmap* pBitmap = (*it)->pBitmap;
         wxImage oImg = pBitmap->ConvertToImage();
         wxString sName = wxString::Format(_T("%s_%d.%s"),
-                                sFilename.c_str(), m_aBitmapPage.Item(i-1), sExt.c_str());
+                                sFilename.c_str(), (*it)->nPage, sExt.c_str());
         oImg.SaveFile(sName, nImgType);
-        pNode = pNode->GetNext();
+        ++it;
         i++;
     }
-
 }
 
 void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType)
@@ -381,16 +379,14 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
              || nImgType == wxBITMAP_TYPE_PNG || nImgType == wxBITMAP_TYPE_PCX
              || nImgType == wxBITMAP_TYPE_PNM);
 
-
     int i;
     for(i=1; i <= GetNumPages(); i++) {
         wxBitmap* pBitmap = Render(lmUSE_BITMAPS, i);
         wxImage oImg = pBitmap->ConvertToImage();
         wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename.c_str(),
-                                m_aBitmapPage.Item(i-1), sExt.c_str());
+                                i, sExt.c_str());
         oImg.SaveFile(sName, nImgType);
     }
-
 }
 
 lmGMObject* lmGraphicManager::FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos)

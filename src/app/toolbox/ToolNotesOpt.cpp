@@ -87,7 +87,7 @@ lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
     wxBoxSizer *pMainSizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(pMainSizer);
 
-    //create the notes duration buttons 
+    //create the notes duration buttons
     pMainSizer->Add( new wxStaticText(this, wxID_STATIC, _("Note duration"),
 									  wxDefaultPosition, wxDefaultSize, 0),
 									  0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
@@ -99,7 +99,7 @@ lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
 			pMainSizer->Add(pButtonsSizer);
 		}
 		m_pBtDurations[iB] =
-				new lmCheckButton(this, lmID_NOTE_BUTTON+iB, 
+				new lmCheckButton(this, lmID_NOTE_BUTTON+iB,
 				wxArtProvider::GetBitmap(m_sNotesBitmaps[iB] + _T("_off"), wxART_TOOLBAR, wxSize(24, 24)) );
 		pButtonsSizer->Add(m_pBtDurations[iB], wxSizerFlags(0).Border(wxALL, 2) );
 		m_pBtDurations[iB]->SetBitmapSelected( wxArtProvider::GetBitmap(m_sNotesBitmaps[iB] + _T("_on"), wxART_TOOLBAR, wxSize(24, 24)) );
@@ -113,7 +113,7 @@ lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
 									  0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
     m_pCboNotehead = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
 										  wxSize(lmPANEL_WIDTH - 2 * lmSPACING, 24),
-										  NULL, wxCB_READONLY );
+										  0, NULL, wxCB_READONLY );
     pMainSizer->Add(m_pCboNotehead, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
 
 	//populate combo box for note durations and select 'normal' note
@@ -122,14 +122,13 @@ lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
 	m_pCboNotehead->Append(_T("cross"), wxArtProvider::GetBitmap(_T("tool_clefs"), wxART_TOOLBAR, wxSize(24,24) ));
 	m_pCboNotehead->Select(0);
 
-
 	//Accidentals
     pMainSizer->Add( new wxStaticText(this, wxID_STATIC, _("Accidentals"),
 									  wxDefaultPosition, wxDefaultSize, 0),
 									  0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
     m_pCboAccidentals = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
 										  wxSize(lmPANEL_WIDTH - 2 * lmSPACING, 24),
-										  NULL, wxCB_READONLY );
+										  0, NULL, wxCB_READONLY );
     pMainSizer->Add(m_pCboAccidentals, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
 
 	//populate combo box for note durations and select 'normal' note

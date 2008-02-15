@@ -37,15 +37,14 @@
 #include "wx/wx.h"
 #endif
 
+#include <list>
+
 #include "../score/defs.h"
 
 class lmScore;
 class lmPaper;
 class lmBoxScore;
 class lmGMObject;
-
-// offscreen bitmaps will be maintained in a list structure. Let's declare it
-WX_DECLARE_LIST(wxBitmap, BitmapList);
 
 // to use offscreen bitmaps or not
 #define lmUSE_BITMAPS       true        //create a compatible bitmap and return it
@@ -111,10 +110,13 @@ private:
     bool            m_fReLayout;        //force to re-layout the score
 
     //offscreen bitmaps management
-    BitmapList      m_cBitmaps;         //offsceen bitmaps
-    wxArrayInt      m_aBitmapPage;      //num page for this bitmap
+	typedef struct lmBitmapPage_Struct {
+		wxBitmap*		pBitmap;        //ptr. to page bitmap
+		int				nPage;			//num page for this bitmap
+	} lmBitmapPage;
 
-    lmPixels        m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
+    std::list<lmBitmapPage*>    m_Bitmaps;      //offsceen bitmaps
+    lmPixels                    m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
 
     // double buffering for score higlight
     int             m_nHighlightedPage;     // displayed page number (0 = none)

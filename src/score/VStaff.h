@@ -110,14 +110,14 @@ public:
                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
 	//inserting StaffObs
-    lmBarline* InsertBarline(lmStaffObj* pCursorSO, lmEBarline nType = lm_eBarlineSimple);
-	lmClef* InsertClef(lmStaffObj* pCursorSO, lmEClefType nClefType);
-	lmNote* InsertNote(lmStaffObj* pCursorSO, lmEPitchType nPitchType, wxString sStep,
+    lmBarline* InsertBarline(lmEBarline nType = lm_eBarlineSimple);
+	lmClef* InsertClef(lmEClefType nClefType);
+	lmNote* InsertNote(lmEPitchType nPitchType, wxString sStep,
 					   wxString sOctave, lmENoteType nNoteType, float rDuration,
 					   lmENoteHeads nNotehead, lmEAccidentals nAcc);
 
 	//deleting StaffObjs
-	void DeleteObject(lmStaffObj* pCursorSO);
+	void DeleteObject();
 
     //error management
     inline wxString GetErrorMessage() { return m_sErrorMsg; }
@@ -215,6 +215,7 @@ private:
 								    float rTime, lmStaffObj* pSO);
 	void XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
 								    float rTime, lmStaffObj* pSO);
+    void XML_AddShitTimeTag(wxString& sSource, int nIndent, bool fFwd, float rTime);
 
 
 

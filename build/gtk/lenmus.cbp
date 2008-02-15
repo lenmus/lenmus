@@ -15,11 +15,11 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="`wx-config  --version=2.8 --static=no --unicode=yes --debug=yes --cflags`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=yes --cflags`" />
 					<Add directory="../../../wxMidi/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config  --version=2.8 --static=no --unicode=yes --debug=yes --libs`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=no --libs`" />
 					<Add library="../../packages/wxMidi/lib/linux/Debug/libwxmidi.so" />
 				</Linker>
 			</Target>
@@ -31,12 +31,12 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="`wx-config  --version=2.8 --static=no --unicode=yes --debug=no --cflags`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=no --cflags`" />
 					<Add directory="../../../wxMidi/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="`wx-config  --version=2.8 --static=no --unicode=yes --debug=no --libs`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=no --libs`" />
 				</Linker>
 			</Target>
 		</Build>
@@ -93,7 +93,6 @@
 		<Unit filename="../../src/app/ScoreCommand.cpp" />
 		<Unit filename="../../src/app/ScoreCommand.h" />
 		<Unit filename="../../src/app/ScoreController.cpp" />
-		<Unit filename="../../src/app/ScoreController.h" />
 		<Unit filename="../../src/app/ScoreDoc.cpp" />
 		<Unit filename="../../src/app/ScoreDoc.h" />
 		<Unit filename="../../src/app/ScoreView.cpp" />
@@ -102,9 +101,12 @@
 		<Unit filename="../../src/app/SplashFrame.h" />
 		<Unit filename="../../src/app/TheApp.cpp" />
 		<Unit filename="../../src/app/TheApp.h" />
-		<Unit filename="../../src/app/ToolsBox.cpp" />
 		<Unit filename="../../src/app/ToolsBox.h" />
 		<Unit filename="../../src/app/global.h" />
+		<Unit filename="../../src/app/toolbox/ToolNotesOpt.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolNotesOpt.h" />
+		<Unit filename="../../src/app/toolbox/ToolsBox.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolsBox.h" />
 		<Unit filename="../../src/auxmusic/Cadence.cpp" />
 		<Unit filename="../../src/auxmusic/Cadence.h" />
 		<Unit filename="../../src/auxmusic/ChordManager.cpp" />
@@ -175,7 +177,6 @@
 		<Unit filename="../../src/globals/Paths.h" />
 		<Unit filename="../../src/graphic/AggDrawer.cpp" />
 		<Unit filename="../../src/graphic/AggDrawer.h" />
-		<Unit filename="../../src/graphic/BoxInstrSlice.h" />
 		<Unit filename="../../src/graphic/BoxPage.cpp" />
 		<Unit filename="../../src/graphic/BoxPage.h" />
 		<Unit filename="../../src/graphic/BoxScore.cpp" />
@@ -188,15 +189,29 @@
 		<Unit filename="../../src/graphic/BoxSliceVStaff.h" />
 		<Unit filename="../../src/graphic/BoxSystem.cpp" />
 		<Unit filename="../../src/graphic/BoxSystem.h" />
-		<Unit filename="../../src/graphic/BoxVStaffSlice.h" />
 		<Unit filename="../../src/graphic/Drawer.cpp" />
 		<Unit filename="../../src/graphic/Drawer.h" />
 		<Unit filename="../../src/graphic/Formatter4.cpp" />
 		<Unit filename="../../src/graphic/Formatter4.h" />
+		<Unit filename="../../src/graphic/Formatter4_old.h" />
+		<Unit filename="../../src/graphic/GMObject.cpp" />
+		<Unit filename="../../src/graphic/GMObject.h" />
 		<Unit filename="../../src/graphic/GraphicManager.cpp" />
 		<Unit filename="../../src/graphic/GraphicManager.h" />
-		<Unit filename="../../src/graphic/Shape.cpp" />
-		<Unit filename="../../src/graphic/Shape.h" />
+		<Unit filename="../../src/graphic/ShapeArch.cpp" />
+		<Unit filename="../../src/graphic/ShapeArch.h" />
+		<Unit filename="../../src/graphic/ShapeBarline.cpp" />
+		<Unit filename="../../src/graphic/ShapeBarline.h" />
+		<Unit filename="../../src/graphic/ShapeBeam.cpp" />
+		<Unit filename="../../src/graphic/ShapeBeam.h" />
+		<Unit filename="../../src/graphic/ShapeNote.cpp" />
+		<Unit filename="../../src/graphic/ShapeNote.h" />
+		<Unit filename="../../src/graphic/ShapeStaff.cpp" />
+		<Unit filename="../../src/graphic/ShapeStaff.h" />
+		<Unit filename="../../src/graphic/ShapeTuplet.cpp" />
+		<Unit filename="../../src/graphic/ShapeTuplet.h" />
+		<Unit filename="../../src/graphic/Shapes.cpp" />
+		<Unit filename="../../src/graphic/Shapes.h" />
 		<Unit filename="../../src/graphic/TimeposTable.cpp" />
 		<Unit filename="../../src/graphic/TimeposTable.h" />
 		<Unit filename="../../src/html/BookContentsBox.cpp" />

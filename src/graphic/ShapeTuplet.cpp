@@ -164,7 +164,7 @@ void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
     }
 
 	//number placement
-    lmLUnits NUMBER_DISTANCE = ((lmStaffObj*)m_pOwner)->TenthsToLogical(5.0);
+    //lmLUnits NUMBER_DISTANCE = ((lmStaffObj*)m_pOwner)->TenthsToLogical(5.0);
     lmLUnits nNumberWidth=0, nNumberHeight=0;
     if (m_fShowNumber) {
         pPaper->SetFont(*m_pFont);
@@ -219,7 +219,7 @@ wxString lmShapeTuplet::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: "),
-		m_nId, m_sGMOName );
+		m_nId, m_sGMOName.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;

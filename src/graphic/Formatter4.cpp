@@ -144,14 +144,14 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     int nAbsMeasure;    //number of bar in process (absolute, counted from the start of the score)
     int nRelMeasure;        //number of bar in process (relative, counted from the start of current system)
     lmLUnits ySystemPos;    //paper y position at which current system starts
-    
+
 
     // The algorithm has two independent loops:
 	//
     //	1. Layout phase
     //		In the first one the number of measures that fits in the system is finded out,
 	//		as well as their size and the position of all their StaffObjs.
-    //		The number of measures per system is stored in .... , the shapes are created 
+    //		The number of measures per system is stored in .... , the shapes are created
 	//		and the positioning information is stored in the shapes.
 	//
     //	2. Reder phase
@@ -250,7 +250,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 				pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
             }
 
-            //size this measure column create BoxSlice (and BoxSlice hierarchy) for 
+            //size this measure column create BoxSlice (and BoxSlice hierarchy) for
             //the measure being processed
             m_uMeasureSize[nRelMeasure] =
                 SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pBoxSystem, pPaper, &fNewSystem);
@@ -274,7 +274,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             #if defined(__WXDEBUG__)
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
                 _T("RelMeasure=%d, m_uFreeSpace = %.2f, PaperRightMarginXPos=%.2f, StartOfBar=%.2f"),
-                nRelMeasure, m_uFreeSpace, pPaper->GetRightMarginXPos(), 
+                nRelMeasure, m_uFreeSpace, pPaper->GetRightMarginXPos(),
                 m_oTimepos[nRelMeasure].GetStartOfBarPosition() );
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
                 m_oTimepos[nRelMeasure].DumpTimeposTable());
@@ -411,7 +411,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 		//
 		//During layout phase it is not possible to set some measurements that depend on
 		//the final x position of two or more notes. For example:
-		//	- Beams: it is not posible to adjust the lenght of note stems in a beamed 
+		//	- Beams: it is not posible to adjust the lenght of note stems in a beamed
 		//		group until the x position of the notes is finally established.
 		//	- Ties: start and end points can not be fixed until their parent notes are
 		//		fixed.
@@ -438,10 +438,10 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 	    if (m_pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) && !pVStaff->HideStaffLines() )
 	    {
 			//GetSliceVStaff(int i)
-			lmLUnits uxPos = pBoxSystem->GetXLeft() + 
+			lmLUnits uxPos = pBoxSystem->GetXLeft() +
 						     (nSystem == 1 ? nFirstSystemIndent : nOtherSystemIndent);
 		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-            lmShapeLine* pLine = 
+            lmShapeLine* pLine =
                 new lmShapeLine(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
 						    uxPos, pBoxSystem->GetYBottom(),
 						    uLineThickness, 0.0, *wxBLACK, _T("System joining line"),
@@ -752,7 +752,7 @@ void lmFormatter4::AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 
     lmInstrument* pInstr;
     lmVStaff* pVStaff;
-    bool fNewSystem = false;
+    //bool fNewSystem = false;
 
     lmLUnits xPaperPos, yPaperPos;
     lmLUnits xStartPos = pPaper->GetCursorX();      //save x pos to align staves in system
@@ -1002,8 +1002,8 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 	}
 
     //loop to process all StaffObjs in this measure
-	int nCurVoice = 0;
-    bool fNoteRestFound = false;
+	//int nCurVoice = 0;
+    //bool fNoteRestFound = false;
     bool fNewSystem = false;                //newSystem tag found
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmSOIterator* pIT = pVStaff->CreateIterator(eTR_ByTime);
@@ -1080,7 +1080,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     return fNewSystem;
 }
 
-void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMeasure, 
+void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMeasure,
 							 bool fDrawTimekey, lmVStaff* pVStaff, int nInstr, lmPaper* pPaper)
 {
     // The prolog (clef and key signature) must be rendered on each system,
@@ -1114,9 +1114,9 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
     lmLUnits xPos = 0.0f;
 
     lmContext* pContext = (lmContext*)NULL;
-    lmStaffObj* pSO = (lmStaffObj*) NULL;
-    lmNoteRest* pNR = (lmNoteRest*)NULL;
-    lmNote* pNote = (lmNote*)NULL;
+    //lmStaffObj* pSO = (lmStaffObj*) NULL;
+    //lmNoteRest* pNR = (lmNoteRest*)NULL;
+    //lmNote* pNote = (lmNote*)NULL;
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); pStaff = pVStaff->GetNextStaff(), nStaff++)
     {
         xPos = xStartPos;

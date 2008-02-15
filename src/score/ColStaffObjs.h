@@ -74,6 +74,7 @@ public:
     //info
     int GetNumVoices();
     bool IsVoiceUsed(int nVoice);
+    inline float GetDuration() { return m_rMaxTime; }
 
 	//debug
 	wxString Dump();
@@ -92,13 +93,7 @@ private:
     lmBarline*		m_pBarline;					//segment barline, if exists
     lmContext*		m_pContext[lmMAX_STAFF];	//ptr to current context for each staff
     int             m_bVoices;                  //voices in this segment. One bit per used voice
-
- //   float	m_rTime[lmMAX_VOICE];	//time from start of the measure. One counter per voice
-	//									//Time is measured in 256th notes: 1-256th, ..., 256-whole, 512-double whole
-	//									//Float for grater precision (triplets problem, see comment at CPONota.ExactDuration)
- //   float	m_rMaxTime[lmMAX_VOICE]; //aqui se guarda el máximo tiempo alcanzado en el compas en curso. Sirve para evitar que una
-	//									//orden <avanzar> sobrepase este valor. Además, este será el tiempo que corresponde a la barra
-	//									//de fin de compas.
+    float	        m_rMaxTime;                 //occupied time from start of the measure
 
 };
 
@@ -125,8 +120,11 @@ public:
     lmSOIterator* CreateIterator(ETraversingOrder nOrder, int nVoice=-1);
 	lmSOIterator* CreateIteratorTo(ETraversingOrder nOrder, lmStaffObj* pSO);
 
-	//measures related
+	//info related to measures
     int GetNumMeasures();
+    float GetMeasureDuration(int nMeasure);
+	int GetNumVoicesInMeasure(int nMeasure);
+    bool IsVoiceUsedInMeasure(int nVoice, int nMeasure);
 
 	//context management
 	lmContext* GetCurrentContext(lmStaffObj* pSO);
@@ -137,11 +135,6 @@ public:
 
 	//debug
 	wxString Dump();
-
-	//info
-	int GetNumVoicesInMeasure(int nMeasure);
-    bool IsVoiceUsedInMeasure(int nVoice, int nMeasure);
-
 
 
 private:
@@ -159,21 +152,17 @@ private:
 	void UpdateContexts(lmSegment* pSegment);
 
 	//voices management
-	void AssignVoice(lmStaffObj* pSO);
+	void AssignVoice(lmStaffObj* pSO, int nSegment);
 
 	//timepos management
     void AssignTime(lmStaffObj* pSO);
-    bool IsTimePosOccupied(lmSegment* pSegment, float rTime, float rDuration);
+    bool IsTimePosOccupied(lmSegment* pSegment, float rTime, float rDuration, int nVoice);
 
 
     lmVStaff*                   m_pOwner;           //owner VStaff
 	std::vector<lmSegment*>		m_Segments;			//segments collection
     int                         m_nNumStaves;       //num staves in the collection
 	lmVStaffCursor*          	m_pVCursor;			//cursor
-
-	//voices management
-    int                         m_nNumVoices;       //num voices in the collection
-    int							m_nCurVoice[lmMAX_STAFF];	//num of current voice for each staff
 
 };
 
@@ -207,8 +196,13 @@ public:
     inline float GetTimepos() { return m_rTimepos; }
     inline lmItCSO GetCurIt() { return m_it; }
 
+    lmUPoint GetCursorPoint();
+    lmStaff* GetCursorStaff();
+
+
 
 private:
+    void UpdateTimepos();
 
 	lmColStaffObjs*		m_pColStaffObjs;	//collection pointed by this cursor
 	int					m_nStaff;			//staff (1..n)

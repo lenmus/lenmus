@@ -274,28 +274,24 @@ void lmScoreCanvas::DeleteObject()
 	//send delete command
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_T("Delete %s"), pCursorSO->GetName().c_str() );
-	pCP->Submit(new lmCmdDeleteObject(sName, m_pDoc, pCursorSO));
+	pCP->Submit(new lmCmdDeleteObject(m_pView, sName, m_pDoc));
 }
 
 
 void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 {
 	//insert a Clef at current cursor position
-    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
-	wxASSERT(pCursorSO);
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert clef");
-	pCP->Submit(new lmCmdInsertClef(sName, m_pDoc, pCursorSO, nClefType) );
+	pCP->Submit(new lmCmdInsertClef(m_pView, sName, m_pDoc, nClefType) );
 }
 
 void lmScoreCanvas::InsertBarline(lmEBarline nType)
 {
 	//insert a barline at current cursor position
-    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
-	wxASSERT(pCursorSO);
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert barline");
-	pCP->Submit(new lmCmdInsertBarline(sName, m_pDoc, pCursorSO, nType) );
+	pCP->Submit(new lmCmdInsertBarline(m_pView, sName, m_pDoc, nType) );
 }
 
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
@@ -305,11 +301,9 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
 							   lmEAccidentals nAcc)
 {
 	//insert a note at current cursor position
-    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
-	wxASSERT(pCursorSO);
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert note");
-	pCP->Submit(new lmCmdInsertNote(sName, m_pDoc, pCursorSO, nPitchType, sStep, sOctave, 
+	pCP->Submit(new lmCmdInsertNote(m_pView, sName, m_pDoc, nPitchType, sStep, sOctave, 
 							        nNoteType, rDuration, nNotehead, nAcc) );
 }
 

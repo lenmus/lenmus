@@ -165,6 +165,8 @@ void lmShapeBarline::Render(lmPaper* pPaper, wxColour color)
         case lm_eBarlineSimple:
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             break;
+        case lm_eBarlineEOS:
+            break;
     }
 
     lmShape::RenderCommon(pPaper);
@@ -177,7 +179,7 @@ wxString lmShapeBarline::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: xPos=%.2f, yTop=%.2f, yBot=%.2f, "),
-		m_nId, m_sGMOName, m_uxPos, m_uyTop, m_uyBottom );
+		m_nId, m_sGMOName.c_str(), m_uxPos, m_uyTop, m_uyBottom );
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;
@@ -223,10 +225,10 @@ void lmShapeBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos
 
 wxBitmap* lmShapeBarline::OnBeginDrag(double rScale)
 {
-	// A dragging operation is started. The view invokes this method to request the 
+	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
 	// If no bitmap is returned drag is cancelled.
-	//      
+	//
 	// So this method returns the bitmap to use with the drag image.
 
 
@@ -237,8 +239,8 @@ wxBitmap* lmShapeBarline::OnBeginDrag(double rScale)
 
     // allocate the bitmap
     // convert size to pixels
-    int wD = (int)dc2.LogicalToDeviceXRel(m_uWidth);
-    int hD = (int)dc2.LogicalToDeviceYRel(m_uyBottom - m_uyTop);
+    int wD = (int)dc2.LogicalToDeviceXRel((wxCoord)m_uWidth);
+    int hD = (int)dc2.LogicalToDeviceYRel((wxCoord)(m_uyBottom - m_uyTop));
     wxBitmap bitmap(wD+2, hD+2);
     dc2.SelectObject(bitmap);
 

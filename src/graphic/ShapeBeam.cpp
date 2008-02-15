@@ -173,7 +173,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                 fForwardPending = false;
             }
 
-            // now we can deal with current note 
+            // now we can deal with current note
 			lmTBeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
 			lmEBeamType nType = tBeamInfo.Type;
             switch (nType) {
@@ -277,12 +277,12 @@ void lmShapeBeam::Shift(lmLUnits xIncr, lmLUnits yIncr)
 void lmShapeBeam::AdjustStems()
 {
 	// In this method the lenght of note stems in a beamed group is adjusted.
-	// It is necessary to adjust stems whenever the x position of a note in the 
+	// It is necessary to adjust stems whenever the x position of a note in the
 	// beam changes.
-	
+
     // At this point all stems have the standard size and the stem start and end points
-    // are computed (start point = nearest to notehead). In the following loop we 
-	// retrieve the start and end 'y' coordinates for each stem, 
+    // are computed (start point = nearest to notehead). In the following loop we
+	// retrieve the start and end 'y' coordinates for each stem,
 	// and we store them in the auxiliary arrays yStart and yEnd, respectively.
 
     int nNumNotes = (int)m_cParentNotes.size();
@@ -319,7 +319,7 @@ void lmShapeBeam::AdjustStems()
 		}
     }
 
-	// In following loop we compute each stem and update their final position. 
+	// In following loop we compute each stem and update their final position.
     // lmShapeBeam line position is established by the first and last notes' stems. Now
     // let's adjust the intermediate notes' stem lengths to end up in the beam line.
     // This is just a proportional share based on line slope:
@@ -338,7 +338,7 @@ void lmShapeBeam::AdjustStems()
     lmLUnits uMinStem;
     for(int i=0; i < nNumNotes; i++)
     {
-		lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
+		//lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
 		lmShapeStem* pShapeStem = GetStem(i);
 
         if (pShapeStem)
@@ -387,7 +387,7 @@ void lmShapeBeam::AdjustStems()
     //    dyMin, nMinStem, dyStem, yIncr);
 
     if (fAdjust) {
-        for (i = 0; i < nNumNotes; i++) {
+        for (int i = 0; i < nNumNotes; i++) {
             //wxLogMessage(_T("[lmShapeBeam::AdjustStems] before yEnd[%d]=%d"), i, yEnd[i]);
            if (yStart[i] < yEnd[i]) {
                 yEnd[i] += uyIncr;
@@ -402,7 +402,7 @@ void lmShapeBeam::AdjustStems()
     // Transfer the computed values to the note shapes
     for(int i=0; i < nNumNotes; i++)
     {
-		lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
+		//lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
 		lmShapeStem* pShapeStem = GetStem(i);
 
         lmLUnits uLength = fabs(yEnd[i] - yStart[i]);
@@ -432,7 +432,7 @@ void lmShapeBeam::SetStemLength(lmShapeStem* pStem, lmLUnits uLength)
 	}
 }
 
-void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper, 
+void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
                              lmLUnits uxStart, lmLUnits uyStart,
                              lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
                              lmShapeNote* pStartNote, lmShapeNote* pEndNote,
@@ -490,7 +490,7 @@ lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyS
  //           uyPos = pStem->GetYEndStem();
  //       }
  //   }
- //   else 
+ //   else
 	//{
 	//	wxASSERT(pShapeStem);
 	//	if (m_fStemsDown)

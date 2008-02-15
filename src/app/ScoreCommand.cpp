@@ -86,16 +86,15 @@ bool lmCmdSelectSingle::DoSelectObject()
 // lmCmdDeleteObject implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdDeleteObject::lmCmdDeleteObject(const wxString& name, lmScoreDocument *pDoc,
-									 lmStaffObj* pCursorSO)
+lmCmdDeleteObject::lmCmdDeleteObject(const wxString& name, lmScoreDocument *pDoc)
         : lmScoreCommand(name, pDoc)
 {
-	m_pCursorSO = pCursorSO;
 }
 
 bool lmCmdDeleteObject::Do()
 {
-	m_pCursorSO->GetVStaff()->DeleteObject(m_pCursorSO);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->GetCursor();
+    pCursor->GetVStaff()->DeleteObject();
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(true);
     m_pDoc->UpdateAllViews();
@@ -159,17 +158,17 @@ bool lmCmdMoveScoreObj::Undo()
 // lmCmdInsertBarline: Insert a clef at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertBarline::lmCmdInsertBarline(const wxString& sName, lmScoreDocument *pDoc,
-                                 lmStaffObj* pCursorSO, lmEBarline nType)
+lmCmdInsertBarline::lmCmdInsertBarline(const wxString& sName, lmScoreDocument *pDoc, 
+                                       lmEBarline nType)
 	: lmScoreCommand(sName, pDoc)
 {
     m_nBarlineType = nType;
-	m_pCursorSO = pCursorSO;
 }
 
 bool lmCmdInsertBarline::Do()
 {
-	m_pCursorSO->GetVStaff()->InsertBarline(m_pCursorSO, m_nBarlineType);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->GetCursor();
+    pCursor->GetVStaff()->InsertBarline(m_nBarlineType);
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(true);
     m_pDoc->UpdateAllViews();
@@ -192,16 +191,16 @@ bool lmCmdInsertBarline::Undo()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertClef::lmCmdInsertClef(const wxString& sName, lmScoreDocument *pDoc,
-                                 lmStaffObj* pCursorSO, lmEClefType nClefType)
+                                 lmEClefType nClefType)
 	: lmScoreCommand(sName, pDoc)
 {
     m_nClefType = nClefType;
-	m_pCursorSO = pCursorSO;
 }
 
 bool lmCmdInsertClef::Do()
 {
-	m_pCursorSO->GetVStaff()->InsertClef(m_pCursorSO, m_nClefType);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->GetCursor();
+    pCursor->GetVStaff()->InsertClef(m_nClefType);
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(true);
     m_pDoc->UpdateAllViews();
@@ -224,7 +223,7 @@ bool lmCmdInsertClef::Undo()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertNote::lmCmdInsertNote(const wxString& sName, lmScoreDocument *pDoc,
-                                 lmStaffObj* pCursorSO, lmEPitchType nPitchType,
+                                 lmEPitchType nPitchType,
 								 wxString sStep, wxString sOctave, 
 								 lmENoteType nNoteType, float rDuration,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
@@ -235,15 +234,15 @@ lmCmdInsertNote::lmCmdInsertNote(const wxString& sName, lmScoreDocument *pDoc,
 	m_sStep = sStep;
 	m_sOctave = sOctave;
 	m_rDuration = rDuration;
-	m_pCursorSO = pCursorSO;
 	m_nNotehead = nNotehead;
 	m_nAcc = nAcc;
 }
 
 bool lmCmdInsertNote::Do()
 {
-	m_pCursorSO->GetVStaff()->InsertNote(m_pCursorSO, m_nPitchType, m_sStep, m_sOctave, 
-										 m_nNoteType, m_rDuration, m_nNotehead, m_nAcc);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->GetCursor();
+    pCursor->GetVStaff()->InsertNote(m_nPitchType, m_sStep, m_sOctave, m_nNoteType,
+                                     m_rDuration, m_nNotehead, m_nAcc);
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(true);
     m_pDoc->UpdateAllViews();
