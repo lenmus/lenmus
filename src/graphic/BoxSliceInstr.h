@@ -59,7 +59,7 @@ public:
     ~lmBoxSliceInstr();
 
 	//vstaff slices
-    lmBoxSliceVStaff* AddVStaff(lmVStaff* pVStaff);
+    lmBoxSliceVStaff* AddVStaff(lmVStaff* pVStaff, int nMeasure);
 	lmBoxSliceVStaff* GetSliceVStaff(int i) const { return m_SlicesVStaff[i]; }
 
 	//drawing

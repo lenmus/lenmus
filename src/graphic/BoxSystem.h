@@ -80,6 +80,7 @@ public:
     //pointing at
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
 
     //rendering
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);

@@ -33,7 +33,6 @@
 #include "BoxScore.h"
 #include "BoxPage.h"
 #include "BoxSlice.h"
-#include "BoxInstrSlice.h"
 #include "BoxSystem.h"
 
 
@@ -120,16 +119,11 @@ lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
     {
         lmGMObject* pGMO = m_aSystems[i]->FindGMObjectAtPosition(pointL);
         if (pGMO)
-			return pGMO;    //found
+			return pGMO;		//Object found
     }
 
-    // no object found. Verify if the point is in this object
-    //TODO
-    //if (ContainsPoint(pointL)) 
-    //    return this;
-    //else
-        return (lmGMObject*)NULL;
-
+    // no object found.
+    return (lmGMObject*)NULL;
 }
 
 wxString lmBoxPage::Dump(int nIndent)

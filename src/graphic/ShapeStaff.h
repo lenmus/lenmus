@@ -47,8 +47,9 @@ class lmStaff;
 class lmShapeStaff : public lmSimpleShape
 {
 public:
-	lmShapeStaff(lmStaff* pOwner, int nNumLines, lmLUnits uLineWidth, lmLUnits uSpacing,
-				 lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, wxColour color);
+	lmShapeStaff(lmStaff* pOwner, int nStaff, int nNumLines, lmLUnits uLineWidth,
+				 lmLUnits uSpacing, lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight,
+				 wxColour color);
 
 	~lmShapeStaff();
 
@@ -58,8 +59,11 @@ public:
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
-protected:
+	//ownership and related info
+	inline int GetNumStaff() { return m_nStaff; }
 
+protected:
+	int			m_nStaff;			//num of staff in the owner VStaff
 	int			m_nNumLines;		//how many staff lines
 	lmLUnits	m_uLineWidth;		//staff lines width
 	lmLUnits	m_uSpacing;			//spacing between lines

@@ -40,11 +40,12 @@
 // Implementation of lmShapeStaff: an staff (usually 5 lines)
 
 
-lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nNumLines, lmLUnits uLineWidth,
+lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nStaff, int nNumLines, lmLUnits uLineWidth,
 						   lmLUnits uSpacing, lmLUnits xLeft, lmLUnits yTop,
 						   lmLUnits xRight, wxColour color)
 	: lmSimpleShape(eGMO_ShapeStaff, pStaff, _T("Staff"))
 {
+	m_nStaff = nStaff;
 	m_nNumLines = nNumLines;
 	m_uLineWidth = uLineWidth;
 	m_uSpacing = uSpacing;
@@ -55,7 +56,6 @@ lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nNumLines, lmLUnits uLineWidth,
 	SetYTop(yTop);
 	SetXRight(xRight);
 	SetYBottom(yTop + (nNumLines - 1) * uSpacing + uLineWidth);
-
 }
 
 lmShapeStaff::~lmShapeStaff()

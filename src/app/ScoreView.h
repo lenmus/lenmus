@@ -59,6 +59,9 @@ class lmScoreDocument;
 class lmRuler;
 class lmScoreViewCursor;
 class lmMainFrame;
+class lmBoxSystem;
+class lmShapeStaff;
+class lmBoxSliceVStaff;
 
 
 //Abstract class. All views must derive from it
@@ -134,7 +137,6 @@ public:
 	void CursorLeft();
 	void CursorUp();
 	void CursorDown();
-	void CursorAtPoint(lmUPoint& point);
 	inline lmStaffObj* GetCursorPosition() { return m_pCursorSO; }
 	void UpdateCursor();
 
@@ -158,9 +160,16 @@ private:
 	//Dealing with the cursor
     void SetInitialCursorPosition();
 
+	//Mouse commands
+	void OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
+						lmUPoint uPos);
+
+	//Cursor
+	void MoveCursorTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure);
+	void MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
 
-        //-- variables ---
+	//-- variables ---
 
     // parents, managers and related
     lmScoreDocument*    m_pDoc;             //the MVC document (M)

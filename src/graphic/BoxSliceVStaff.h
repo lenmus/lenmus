@@ -53,7 +53,7 @@ class lmBoxSystem;
 class lmBoxSliceVStaff : public lmBox
 {
 public:
-    lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff);
+    lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, int nMeasure);
     ~lmBoxSliceVStaff();
 
     void Render(lmPaper* pPaper, lmUPoint uPos);
@@ -72,6 +72,8 @@ public:
 
 	//owners and related
 	lmBoxSystem* GetOwnerSystem();
+	inline lmVStaff* GetCreatorVStaff() { return m_pVStaff; }
+	inline int GetCreatorMeasure() { return m_nMeasure; }
 
 
 private:
@@ -79,6 +81,7 @@ private:
 
     lmBoxSliceInstr*    m_pSliceInstr;      //parent instrumet slice
     lmVStaff*           m_pVStaff;          //VStaff to which this slice belongs
+	int					m_nMeasure;			//Originator measure (1..n)
 
 };
 

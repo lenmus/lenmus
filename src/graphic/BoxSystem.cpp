@@ -33,7 +33,6 @@
 #include "BoxPage.h"
 #include "BoxSystem.h"
 #include "BoxSlice.h"
-#include "BoxInstrSlice.h"
 #include "BoxSliceInstr.h"
 #include "BoxSliceVStaff.h"
 #include "ShapeStaff.h"
@@ -180,12 +179,9 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
 			return pGMO;    //found
     }
 
-	//is it any staff?
-    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-    {
-        if (m_ShapeStaff[i]->ContainsPoint(pointL))
-			return m_ShapeStaff[i];
-    }
+	//AWARE: It is useless to check here if it is an staff, as in that case
+	//as the staff area is inside an SliceVStaff, this method will finish in
+	//previous 'for' loop, returning an SliceVStaff
 
     // no object found. Verify if the point is in this object
     if (ContainsPoint(pointL)) 
@@ -193,6 +189,17 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
     else
         return (lmGMObject*)NULL;
 
+}
+
+lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
+{
+	//is it any staff?
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        if (m_ShapeStaff[i]->ContainsPoint(pointL))
+			return m_ShapeStaff[i];
+    }
+	return (lmShapeStaff*)NULL;
 }
 
 lmBoxSlice* lmBoxSystem::AddSlice(int nAbsMeasure, lmLUnits xStart, lmLUnits xEnd)

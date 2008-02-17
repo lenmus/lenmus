@@ -66,9 +66,9 @@ lmBoxSliceInstr::~lmBoxSliceInstr()
     m_SlicesVStaff.clear();
 }
 
-lmBoxSliceVStaff* lmBoxSliceInstr::AddVStaff(lmVStaff* pVStaff)
+lmBoxSliceVStaff* lmBoxSliceInstr::AddVStaff(lmVStaff* pVStaff, int nMeasure)
 {
-    lmBoxSliceVStaff* pBSV = new lmBoxSliceVStaff(this, pVStaff);
+    lmBoxSliceVStaff* pBSV = new lmBoxSliceVStaff(this, pVStaff, nMeasure);
     m_SlicesVStaff.push_back(pBSV);
     return pBSV;
 }

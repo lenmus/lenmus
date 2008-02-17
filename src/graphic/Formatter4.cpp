@@ -659,7 +659,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         yPaperPos = pPaper->GetCursorY();
 
         // create the BoxSliceVStaff
-        lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff);
+        lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff, nAbsMeasure);
         // if first measure in system add the ShapeStaff
 		if (nRelMeasure == 1)
 		{
@@ -716,10 +716,10 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         pVStaff->NewLine(pPaper);
         //TODO add inter-staff space
 
-        ///*** Update measures of this BoxVStaffSlice
+        ///*** Update measures of this BoxSliceVStaff
 
 
-        ///*** Update measures of this BoxInstrSlice
+        ///*** Update measures of this BoxSliceInstr
 		pBSI->SetYBottom(yBottomLeft);
 		pBoxSlice->SetYBottom(yBottomLeft);
 
@@ -783,7 +783,7 @@ void lmFormatter4::AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         yPaperPos = pPaper->GetCursorY();
 
         // create the BoxSliceVStaff
-        lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff);
+        lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff, nAbsMeasure);
         // if first measure in system add the ShapeStaff
 		if (nRelMeasure == 1)
 		{
@@ -840,9 +840,9 @@ void lmFormatter4::AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         pVStaff->NewLine(pPaper);
         //TODO add inter-staff space
 
-        ///*** Update measures of this BoxVStaffSlice
+        ///*** Update measures of this BoxSliceVStaff
 
-        ///*** Update measures of this BoxInstrSlice
+        ///*** Update measures of this BoxSliceInstr
 		pBSI->SetYBottom(yBottomLeft);
 		pBoxSlice->SetYBottom(yBottomLeft);
 

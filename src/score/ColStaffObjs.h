@@ -185,6 +185,9 @@ public:
     void ResetCursor();
     void AdvanceToTime(float rTime);
     void AdvanceToNextSegment();
+	void MoveToSegment(int nSegment, float rTime);
+	void MoveToSegment(int nSegment, lmUPoint uPos);
+
 
     //status
     bool IsAtEnd();

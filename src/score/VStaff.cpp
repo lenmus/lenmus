@@ -541,7 +541,7 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
         lmStaff* pStaff = GetStaff(nStaff);
         //draw one staff
 		lmShapeStaff* pShape = 
-				new lmShapeStaff(pStaff, pStaff->GetNumLines(), 
+				new lmShapeStaff(pStaff, nStaff, pStaff->GetNumLines(), 
 								 pStaff->GetLineThick(), pStaff->GetLineSpacing(),
 								 xFrom, yCur, xTo, *wxBLACK );
 		pBox->AddShape(pShape);

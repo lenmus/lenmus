@@ -221,6 +221,48 @@ void lmVStaffCursor::AdvanceToNextSegment()
 	m_rTimepos = 0.0f; 
 }
 
+void lmVStaffCursor::MoveToSegment(int nSegment, float rTime)
+{
+    wxASSERT(nSegment < (int)(m_pColStaffObjs->m_Segments.size()));
+
+    m_nSegment = nSegment;
+	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+	m_it = m_pSegment->m_StaffObjs.begin();
+	m_rTimepos = 0.0f; 
+	if (rTime > 0.0f) 
+		MoveToTime(rTime);
+}
+
+void lmVStaffCursor::MoveToSegment(int nSegment, lmUPoint uPos)
+{
+    wxASSERT(nSegment < (int)(m_pColStaffObjs->m_Segments.size()));
+
+    m_nSegment = nSegment;
+	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+	m_it = m_pSegment->m_StaffObjs.begin();
+	m_rTimepos = 0.0f; 
+
+	//if segment empty finish. We are at start of segment
+	if (m_it == m_pSegment->m_StaffObjs.end()) return;      //the segment is empty
+
+    //move cursor to nearest object to uPos, constrained to this segment
+	lmLUnits uPrevDist = 1000000.0f;	//any too big value
+	while (m_it != m_pSegment->m_StaffObjs.end())
+	{
+		lmStaffObj* pSO = GetStaffObj();
+		lmLUnits xPos = pSO->GetShap2()->GetXLeft();
+		lmLUnits uDist = fabs(uPos.x - xPos);
+		if (uDist > uPrevDist) break;
+
+		uPrevDist = uDist;
+		++m_it;
+	}
+
+	//object found or end of segment reached
+	--m_it;
+    UpdateTimepos();
+}
+
 lmStaff* lmVStaffCursor::GetCursorStaff()
 {
     //return pointer to staff in which cursor is located

@@ -217,6 +217,8 @@ public:
     void MoveLeft();
     void MoveUp();
     void MoveDown();
+	void MoveTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure);
+	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
     //current position info
     lmStaffObj* GetCursorSO();

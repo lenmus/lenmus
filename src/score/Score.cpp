@@ -143,6 +143,52 @@ void lmScoreCursor::MoveDown()
     //TODO
 }
 
+void lmScoreCursor::MoveTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure)
+{
+	if ((m_pScore->m_cInstruments).empty()) return;
+
+	//get instrument
+	lmInstrument* pInstr = pVStaff->GetOwnerInstrument();
+
+	//Find instrument number
+    std::vector<lmInstrument*>::iterator it = (m_pScore->m_cInstruments).begin();
+    m_nCursorInstr = 1;
+	for (int i=1; it != (m_pScore->m_cInstruments).end(); ++it)
+    {
+        if ((*it) == pInstr) break;
+		m_nCursorInstr++;
+    }
+
+	//get cursor and reposition it
+	m_pVCursor = pInstr->GetCursor();
+	m_pVCursor->MoveToSegment(nMeasure - 1, rTime);
+
+	//TODO: nStaff is not yet used. VCursor doesn't use it!! 
+}
+
+void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
+{
+	if ((m_pScore->m_cInstruments).empty()) return;
+
+	//get instrument
+	lmInstrument* pInstr = pVStaff->GetOwnerInstrument();
+
+	//Find instrument number
+    std::vector<lmInstrument*>::iterator it = (m_pScore->m_cInstruments).begin();
+    m_nCursorInstr = 1;
+	for (int i=1; it != (m_pScore->m_cInstruments).end(); ++it)
+    {
+        if ((*it) == pInstr) break;
+		m_nCursorInstr++;
+    }
+
+	//get cursor and position it at required segment and position
+	m_pVCursor = pInstr->GetCursor();
+	m_pVCursor->MoveToSegment(nMeasure - 1, uPos);
+
+	//TODO: nStaff is not yet used. VCursor doesn't use it!! 
+}
+
 lmUPoint lmScoreCursor::GetCursorPoint()
 {
     if (m_pVCursor)
@@ -166,6 +212,9 @@ lmVStaff* lmScoreCursor::GetVStaff()
     else
         return (lmVStaff*)NULL;
 }
+
+
+
 
 //=======================================================================================
 // lmScore implementation

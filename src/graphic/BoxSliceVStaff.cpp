@@ -46,9 +46,10 @@ extern lmColors* g_pColors;
 // Implementation of class lmBoxSliceVStaff: a part (measure) of a VStaff of an instrument.
 //
 
-lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff)
+lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, int nMeasure)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceVStaff, _T("SliceVStaff"))
 {
+	m_nMeasure = nMeasure;
     m_pSliceInstr = pParent;
     m_pVStaff = pVStaff;
 }

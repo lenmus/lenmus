@@ -47,9 +47,11 @@
 #include "ArtProvider.h"
 #include "../graphic/BoxScore.h"
 #include "../graphic/BoxPage.h"
+#include "../graphic/BoxSystem.h"
 #include "../graphic/BoxSlice.h"
-#include "../graphic/BoxInstrSlice.h"
-#include "../graphic/BoxVStaffSlice.h"
+#include "../graphic/BoxSliceInstr.h"
+#include "../graphic/BoxSliceVStaff.h"
+#include "../graphic/ShapeStaff.h"
 
 
 
@@ -932,9 +934,9 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
         // locate the object pointed with the mouse
         lmGMObject* pGMO = m_graphMngr.FindGMObjectAtPagePosition(nNumPage, pageNPosL);
-        if (pGMO)
+        if (pGMO && pGMO->IsShape())
         {
-            //valid object pointed.
+            //shape object pointed.
             if (pGMO->IsDraggable())
             {
                 //Is a draggable object. Tentatively start dragging
@@ -949,13 +951,32 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             }
             else
             {
-                //Non-draggable object. Possible selection?
+                //Non-draggable shape
+				//TODO: Is this possible? Possible selection?
             }
-       }
-       else
-       {
-           //no object pointed. Possible tool box insert command
-       }
+		}
+		else if (pGMO && pGMO->IsBoxSliceVStaff())
+		{
+			//pointing inside an VStaff. Check if it is a staff
+			lmBoxSystem* pBS = ((lmBoxSliceVStaff*)pGMO)->GetOwnerSystem();
+			lmShapeStaff* pSS = pBS->FindStaffAtPosition(pageNPosL);
+			if (pSS)
+				OnClickOnStaff(pBS, pSS, (lmBoxSliceVStaff*)pGMO, pageNPosL);
+			else
+				;
+				//Clicking on a VStaffSlice but out of any shape
+				//TODO: Is this possible?
+		}
+		else if (pGMO)
+		{
+			//pointing to a Box different to SliceVStaff
+			//TODO: Is this possible?
+		}
+		else
+		{
+			//no object pointed. Possible tool box insert command
+			//TODO
+		}
 
     }
     else if ((event.LeftUp() && m_dragState != lmDRAG_NONE ))
@@ -1566,6 +1587,32 @@ void lmScoreView::DumpBitmaps()
     m_graphMngr.BitmapsToFile(sFilename, sExt, wxBITMAP_TYPE_JPEG);
 }
 
+void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
+								 lmUPoint uPos)     
+{
+	//Click on a staff
+	//uPos: click point, referred to current page origin
+
+	lmVStaff* pVStaff = pBSV->GetCreatorVStaff();
+	int nStaff = pSS->GetNumStaff();
+	int nMeasure = pBSV->GetCreatorMeasure();
+
+	//DBG --------------------------------------------------------------------------------
+	wxString sMsg = wxString::Format(_T("[lmScoreView::OnClickOnStaff] Click on staff %d, on measure %d"),
+									 nStaff, nMeasure);
+	m_pMainFrame->SetStatusBarMsg(sMsg);
+	// END DBG ---------------------------------------------------------------------------
+
+	//Locate nearest note/rest to click point and get its timepos
+	//TODO
+	float rTime = 0.0f;
+
+	//Move cursor there
+	//MoveCursorTo(rTime, pVStaff, nStaff, nMeasure);
+	MoveCursorNearTo(uPos, pVStaff, nStaff, nMeasure);
+
+}
+
 
 //------------------------------------------------------------------------------------------
 // cursor management
@@ -1631,11 +1678,6 @@ void lmScoreView::CursorDown()
 	wxMessageBox(_T("lmScoreView::CursorDown"));
 }
 
-void lmScoreView::CursorAtPoint(lmUPoint& point)
-{
-	wxMessageBox(_T("lmScoreView::CurserAtPoint"));
-}
-
 void lmScoreView::UpdateCursor()
 {
 	//the score has been modified. So the cursor must be repainted at right
@@ -1646,4 +1688,17 @@ void lmScoreView::UpdateCursor()
     m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);		//Restore Cursor
 }
 
+void lmScoreView::MoveCursorTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure)
+{
+    if (!m_pGuiCursor) return;
+	m_pScoreCursor->MoveTo(rTime, pVStaff, nStaff, nMeasure);
+	UpdateCursor();
+}
+
+void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
+{
+    if (!m_pGuiCursor) return;
+	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
+	UpdateCursor();
+}
 

@@ -97,9 +97,29 @@ public:
     // methods related to type and identificaction
     inline int GetID() const { return m_nId; }
     inline lmEGMOType GetType() const { return m_nType; }
+	inline wxString GetName() const { return m_sGMOName; }
     inline bool IsBox() const { return m_nType < eGMO_LastBox; }
     inline bool IsShape() const { return m_nType >= eGMO_Shape; }
-	inline wxString GetName() const { return m_sGMOName; }
+		//boxes
+	inline bool IsBoxScore() const { return m_nType == eGMO_BoxScore; }
+	inline bool IsBoxPage() const { return m_nType == eGMO_BoxPage; }
+    inline bool IsBoxSystem() const { return m_nType == eGMO_BoxSystem; }
+    inline bool IsBoxSlice() const { return m_nType == eGMO_BoxSlice; }
+    inline bool IsBoxSliceInstr() const { return m_nType == eGMO_BoxSliceInstr; }
+    inline bool IsBoxSliceVStaff() const { return m_nType == eGMO_BoxSliceVStaff; }
+		//shapes
+	inline bool IsShapeStaff() const { return m_nType == eGMO_ShapeStaff; }
+    inline bool IsShapeArch() const { return m_nType == eGMO_ShapeArch; }
+    inline bool IsShapeBarline() const { return m_nType == eGMO_ShapeBarline; }
+	inline bool IsShapeBeam() const { return m_nType == eGMO_ShapeBeam; }
+	inline bool IsShapeComposite() const { return m_nType == eGMO_ShapeComposite; }
+	inline bool IsShapeGlyph() const { return m_nType == eGMO_ShapeGlyph; }
+	inline bool IsShapeLine() const { return m_nType == eGMO_ShapeLine; }
+	inline bool IsShapeMultiAttached() const { return m_nType == eGMO_ShapeMultiAttached; }
+	inline bool IsShapeNote() const { return m_nType == eGMO_ShapeNote; }
+	inline bool IsShapeText() const { return m_nType == eGMO_ShapeText; }
+	inline bool IsShapeTuplet() const { return m_nType == eGMO_ShapeTuplet; }
+	inline bool IsShapeInvisible() const { return m_nType == eGMO_ShapeInvisible; }
 
     //bounding box
     inline void SetXLeft(lmLUnits xLeft) { m_uBoundsTop.x = xLeft; }

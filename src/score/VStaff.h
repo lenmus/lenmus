@@ -193,6 +193,7 @@ public:
 
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
+	inline lmInstrument* GetOwnerInstrument() const { return m_pInstrument; }
 
     //cursor management
 	inline lmVStaffCursor* GetCursor() { return &m_VCursor; }
