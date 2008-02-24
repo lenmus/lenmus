@@ -72,10 +72,11 @@ public:
 	virtual ~lmView() {}
 
 	virtual lmController* GetController()=0;
+    inline lmScoreDocument* GetDocument() { return m_pDoc; }
 
-private:
+protected:
+    lmScoreDocument*    m_pDoc;             //the MVC document (M)
 
-    //DECLARE_EVENT_TABLE()
 };
 
 
@@ -133,12 +134,13 @@ public:
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 
 	//visual cursor management
-	void CursorRight();
-	void CursorLeft();
+	void CursorRight(bool fNextObject = true);
+	void CursorLeft(bool fPrevObject = true);
 	void CursorUp();
 	void CursorDown();
 	inline lmStaffObj* GetCursorPosition() { return m_pCursorSO; }
 	void UpdateCursor();
+    void HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect);
 
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
@@ -165,14 +167,12 @@ private:
 						lmUPoint uPos);
 
 	//Cursor
-	void MoveCursorTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure);
 	void MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
 
 	//-- variables ---
 
     // parents, managers and related
-    lmScoreDocument*    m_pDoc;             //the MVC document (M)
     lmScoreCanvas*      m_pCanvas;          //the MVC controller (C) and the window for rendering the view
     lmFontManager       m_fontManager;      //font management
     lmGraphicManager    m_graphMngr;        //rederization manager

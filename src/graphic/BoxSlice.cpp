@@ -202,3 +202,10 @@ int lmBoxSlice::GetPageNumber() const
 { 
 	return m_pBSystem->GetPageNumber(); 
 }
+
+bool lmBoxSlice::ContainsXPos(lmLUnits uxPos)
+{
+	//return true if position uxPos is within the limits of this Slice
+
+	return (uxPos >= GetXLeft() && uxPos <= GetXRight());
+}

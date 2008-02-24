@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@
 //-------------------------------------------------------------------------------------
 
 lmScoreObj::lmScoreObj(lmScoreObj* pParent)
-{ 
+{
     m_pParent = pParent;
     m_pObjOptions = (lmObjOptions*)NULL;
     m_pAuxObjs = (lmAuxObjsCol*)NULL;
@@ -62,7 +62,7 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
 }
 
 lmScoreObj::~lmScoreObj()
-{ 
+{
     if (m_pObjOptions) delete m_pObjOptions;
 
     //delete the attached AuxObjs
@@ -118,22 +118,22 @@ void lmScoreObj::SetOption(wxString sName, bool fBoolValue)
 //Recursive search throug the ObjOptions chain
 
 long lmScoreObj::GetOptionLong(wxString sOptName)
-{ 
+{
     return GetCurrentObjOptions()->GetOptionLong(sOptName);
 }
 
-double lmScoreObj::GetOptionDouble(wxString sOptName) 
-{ 
-    return GetCurrentObjOptions()->GetOptionDouble(sOptName); 
+double lmScoreObj::GetOptionDouble(wxString sOptName)
+{
+    return GetCurrentObjOptions()->GetOptionDouble(sOptName);
 }
 
-bool lmScoreObj::GetOptionBool(wxString sOptName) 
-{ 
-    return GetCurrentObjOptions()->GetOptionBool(sOptName); 
+bool lmScoreObj::GetOptionBool(wxString sOptName)
+{
+    return GetCurrentObjOptions()->GetOptionBool(sOptName);
 }
 
-wxString lmScoreObj::GetOptionString(wxString sOptName) 
-{   
+wxString lmScoreObj::GetOptionString(wxString sOptName)
+{
     return GetCurrentObjOptions()->GetOptionString(sOptName);
 }
 
@@ -162,9 +162,9 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 	return m_tSrcPos;
 }
 
-void lmScoreObj::ResetObjectLocation() 
+void lmScoreObj::ResetObjectLocation()
 {
-	m_tPos = m_tSrcPos; 
+	m_tPos = m_tSrcPos;
 
  //   // X position
  //   wxString sType = _T("");
@@ -197,7 +197,7 @@ void lmScoreObj::ResetObjectLocation()
 }
 
 void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
-{ 
+{
  //   //update this StaffObj origin and shape position
 	//lmUPoint uNewOrg = GetOrigin();
  //   lmLUnits uxShift = uLeft - uNewOrg.x;
@@ -208,8 +208,8 @@ void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
 
 	////DBG ------------------------------------------------------------------------
     //if (m_pShape) wxLogMessage(_T("Shift shape: uxShift=%.2f"), uxShift);
-	//if (GetScoreObjType() == lmSOT_ComponentObj 
-	//	&& ((lmComponentObj*)this)->GetType() == eSCOT_StaffObj 
+	//if (GetScoreObjType() == lmSOT_ComponentObj
+	//	&& ((lmComponentObj*)this)->GetType() == eSCOT_StaffObj
 	//	&& ((lmStaffObj*)this)->GetClass() == eSFOT_KeySignature )
 	//{
 	//	wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f"),
@@ -223,7 +223,7 @@ void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-        { 
+        {
             (*m_pAuxObjs)[i]->StoreOriginAndShiftShapes(uxShift);
         }
     }
@@ -346,20 +346,20 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
         if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
 		{
 			if (m_tPos.xUnits == lmLUNITS)
-				sPosX = wxString::Format(_T("dx:%s"), 
-							DoubleToStr((double)LogicalToTenths(m_tPos.x), 4) );
+				sPosX = wxString::Format(_T("dx:%s"),
+							DoubleToStr((double)LogicalToTenths(m_tPos.x), 4).c_str() );
 			else if (m_tPos.xUnits == lmTENTHS)
-				sPosX = wxString::Format(_T("dx:%s"), DoubleToStr((double)m_tPos.x, 4) );
+				sPosX = wxString::Format(_T("dx:%s"), DoubleToStr((double)m_tPos.x, 4).c_str() );
 		}
         else
 		{
 			//absolute. Convert to relative
 			if (m_tPos.xUnits == lmLUNITS)
-				sPosX = wxString::Format(_T("dx:%s"), 
-							DoubleToStr((double)LogicalToTenths(m_tPos.x - uPaperPos.x), 4) );
+				sPosX = wxString::Format(_T("dx:%s"),
+							DoubleToStr((double)LogicalToTenths(m_tPos.x - uPaperPos.x), 4).c_str() );
 			else if (m_tPos.xUnits == lmTENTHS)
-				sPosX = wxString::Format(_T("dx:%.4f"), 
-							DoubleToStr((double)(m_tPos.x - LogicalToTenths(uPaperPos.x)), 4) );
+				sPosX = wxString::Format(_T("dx:%.4f"),
+							DoubleToStr((double)(m_tPos.x - LogicalToTenths(uPaperPos.x)), 4).c_str() );
 		}
 
         //units
@@ -385,20 +385,20 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
         if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
 		{
 			if (m_tPos.xUnits == lmLUNITS)
-				sPosY = wxString::Format(_T("dy:%s"), 
-								DoubleToStr((double)LogicalToTenths(m_tPos.y), 4) );
+				sPosY = wxString::Format(_T("dy:%s"),
+								DoubleToStr((double)LogicalToTenths(m_tPos.y), 4).c_str() );
 			else if (m_tPos.xUnits == lmTENTHS)
-				sPosY = wxString::Format(_T("dy:%s"), DoubleToStr((double)m_tPos.y, 4) );
+				sPosY = wxString::Format(_T("dy:%s"), DoubleToStr((double)m_tPos.y, 4).c_str() );
 		}
-        else 
+        else
 		{
 			//absolute. Convert to relative
 			if (m_tPos.yUnits == lmLUNITS)
-				sPosY = wxString::Format(_T("dy:%s"), 
-							DoubleToStr((double)LogicalToTenths(m_tPos.y - uPaperPos.y), 4) );
+				sPosY = wxString::Format(_T("dy:%s"),
+							DoubleToStr((double)LogicalToTenths(m_tPos.y - uPaperPos.y), 4).c_str() );
 			else if (m_tPos.yUnits == lmTENTHS)
-				sPosY = wxString::Format(_T("dy:%s"), 
-							DoubleToStr((double)(m_tPos.y - LogicalToTenths(uPaperPos.y)), 4) );
+				sPosY = wxString::Format(_T("dy:%s"),
+							DoubleToStr((double)(m_tPos.y - LogicalToTenths(uPaperPos.y)), 4).c_str() );
 		}
 
         //units
@@ -420,7 +420,7 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
 }
 
 lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
-{ 
+{
 	//m_tSrcPos = m_tPos;
 	lmUPoint uPos = GetReferencePaperPos();
 
@@ -545,7 +545,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 	lmUPoint uPos = ComputeObjectLocation(pPaper);			// compute location
 
 	lmLUnits uWidth;
-    if (m_fVisible) 
+    if (m_fVisible)
 	{
 		//SetFont(pPaper);										// set the font
 		uWidth = LayoutObject(pBox, pPaper, uPos, colorC);		// layout derived object
@@ -563,7 +563,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
     if (m_pAuxObjs)
     {
 	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-	    { 
+	    {
 		    //restore this object paper pos.
 		    pPaper->SetCursorX(uPos.x);
 		    pPaper->SetCursorY(uPos.y);
@@ -574,7 +574,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 
     // update paper cursor position
     pPaper->SetCursorX(uOrg.x + uWidth);
-    
+
 }
 
 wxFont* lmStaffObj::GetSuitableFont(lmPaper* pPaper)
@@ -587,17 +587,17 @@ wxFont* lmStaffObj::GetSuitableFont(lmPaper* pPaper)
 }
 
 lmLUnits lmStaffObj::TenthsToLogical(lmTenths nTenths)
-{ 
+{
     return m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
 }
 
 lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
-{ 
+{
     return m_pVStaff->LogicalToTenths(uUnits, m_nStaffNum);
 }
 
-lmContext* lmStaffObj::GetCurrentContext() 
-{ 
+lmContext* lmStaffObj::GetCurrentContext()
+{
 	// Returns the context that is applicable to the this StaffObj.
 	// AWARE: Only Clef, key signature and time signature are updated. To get
 	//	applicable accidentals use NewUpdatedContext() instead.
@@ -605,10 +605,10 @@ lmContext* lmStaffObj::GetCurrentContext()
 }
 
 lmContext* lmStaffObj::NewUpdatedContext()
-{ 
+{
 	//returns the applicable context for this StaffObj, updated with all
 	//accidentals introduced by previous notes
-	return m_pVStaff->NewUpdatedContext(this); 
+	return m_pVStaff->NewUpdatedContext(this);
 }
 
 wxString lmStaffObj::SourceLDP(int nIndent)
@@ -618,7 +618,7 @@ wxString lmStaffObj::SourceLDP(int nIndent)
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-        { 
+        {
             sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent);
         }
     }
@@ -632,7 +632,7 @@ wxString lmStaffObj::SourceXML(int nIndent)
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-        { 
+        {
             sSource += (*m_pAuxObjs)[i]->SourceXML(nIndent);
         }
     }
@@ -646,9 +646,30 @@ wxString lmStaffObj::Dump()
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-        { 
+        {
             sSource += (*m_pAuxObjs)[i]->Dump();
         }
     }
 	return sSource;
+}
+
+void lmStaffObj::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
+{
+    if (fHighlight)
+    {
+        GetShap2()->Render(pPaper, g_pColors->CursorColor());
+    }
+    else
+    {
+        //IMPROVE
+        // If we paint in black it remains a coloured aureole around
+        // the note. By painting it first in white the size of the aureole
+        // is smaller but still visible. A posible better solution is to
+        // modify Render method to accept an additional parameter: a flag
+        // to signal that XOR draw mode in colour followed by a normal
+        // draw in BLACK must be done.
+
+        GetShap2()->Render(pPaper, *wxWHITE);
+        GetShap2()->Render(pPaper, g_pColors->ScoreNormal());
+    }
 }

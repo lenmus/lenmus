@@ -57,6 +57,7 @@ private:
 
 	lmNoteRest*     m_pNotePrev;    //the previous note to the group (for ties)
     bool            m_fStemsDown;
+	lmShapeBeam*	m_pBeamShape;
 
 	//notes/rests in this beam (if chord, only base note)
 	std::vector<lmNoteRest*>	m_cNotes;
@@ -64,10 +65,7 @@ private:
     lmNote*         m_pLastNote;    //... keep pointers to the first and last notes.    
 
     //beam information to be transferred to each beamed note
-    int            m_nPosForRests;        //posición relativa de los silencios dentro del grupo
-
-	//
-	lmShapeBeam*	m_pBeamShape;
+    int            m_nPosForRests;        //relative position for rests
 
 };
 

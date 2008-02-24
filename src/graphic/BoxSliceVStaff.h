@@ -73,7 +73,7 @@ public:
 	//owners and related
 	lmBoxSystem* GetOwnerSystem();
 	inline lmVStaff* GetCreatorVStaff() { return m_pVStaff; }
-	inline int GetCreatorMeasure() { return m_nMeasure; }
+	inline int GetNumMeasure() { return m_nMeasure; }
 
 
 private:

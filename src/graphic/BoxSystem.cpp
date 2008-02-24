@@ -261,3 +261,40 @@ int lmBoxSystem::GetPageNumber() const
 { 
 	return m_pBPage->GetPageNumber();
 }
+
+int lmBoxSystem::GetSystemNumber()
+{
+	//return number of this system (1..n)
+
+	return m_pBPage->GetSystemNumber(this);
+}
+
+lmBoxScore* lmBoxSystem::GetBoxScore()
+{
+	//return owner BoxScore
+
+	return m_pBPage->GetBoxScore();
+}
+
+lmBoxSlice* lmBoxSystem::GetSliceAt(lmLUnits xPos)
+{
+	//return slice located at xPos
+
+    //locate the BoxSlice
+	for(int i=0; i < (int)m_Slices.size(); i++)
+    {
+        if (m_Slices[i]->ContainsXPos(xPos))
+			return m_Slices[i];		//found
+    }
+	return (lmBoxSlice*)NULL;
+}
+
+int lmBoxSystem::GetNumMeasureAt(lmLUnits uxPos)
+{
+	lmBoxSlice* pSlice = GetSliceAt(uxPos);
+	if (!pSlice)
+		return 0;
+	else
+		return pSlice->GetNumMeasure();
+}
+

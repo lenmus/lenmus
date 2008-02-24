@@ -42,6 +42,7 @@
 #include "../score/Score.h"
 #include "GMObject.h"
 
+class lmBoxScore;
 class lmBoxSlice;
 class lmBoxPage;
 class lmShapeStaff;
@@ -55,6 +56,8 @@ class lmBoxSystem : public lmBox
 public:
     lmBoxSystem(lmBoxPage* pParent, int nNumPage);
     ~lmBoxSystem();
+
+	int GetSystemNumber();
 
     void SetNumMeasures(int nMeasures, lmScore* pScore);
     int GetNumMeasures() { return m_nNumMeasures; }
@@ -81,11 +84,13 @@ public:
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
+	int GetNumMeasureAt(lmLUnits uxPos);
 
     //rendering
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
 
-    inline lmBoxPage* GetBoxPage() const { return m_pBPage; }
+	//access to objects
+	lmBoxSlice* GetSliceAt(lmLUnits xPos);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
@@ -96,7 +101,8 @@ public:
 
 	//owners and related
 	lmBoxSystem* GetOwnerSystem() { return this; }
-
+	lmBoxScore* GetBoxScore();
+    inline lmBoxPage* GetBoxPage() const { return m_pBPage; }
 
 
 private:

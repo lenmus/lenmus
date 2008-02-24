@@ -426,88 +426,90 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 							   nNotehead, nAcc);
 					break;
 
-				//change selected note pitch
-				case WXK_UP:
-					if (nAuxKeys==0)
-						ChangeNotePitch(1);		//step up
-					else if (nAuxKeys && lmKEY_SHIFT)
-						ChangeNotePitch(7);		//octave up
-					else
-						fUnknown = true;
-					break;
+				//commands requiring to have a note/rest selected
 
-				case WXK_DOWN:
-					if (nAuxKeys==0)
-						ChangeNotePitch(-1);		//step down
-					else if (nAuxKeys && lmKEY_SHIFT)
-						ChangeNotePitch(-7);		//octave down
-					else
-						fUnknown = true;
-					break;
+				////change selected note pitch
+				//case WXK_UP:
+				//	if (nAuxKeys==0)
+				//		ChangeNotePitch(1);		//step up
+				//	else if (nAuxKeys && lmKEY_SHIFT)
+				//		ChangeNotePitch(7);		//octave up
+				//	else
+				//		fUnknown = true;
+				//	break;
 
-				//accidentals
-				case 43:   // '+' increment accidental
-					ChangeNoteAccidentals(1);
-					break;
+				//case WXK_DOWN:
+				//	if (nAuxKeys==0)
+				//		ChangeNotePitch(-1);		//step down
+				//	else if (nAuxKeys && lmKEY_SHIFT)
+				//		ChangeNotePitch(-7);		//octave down
+				//	else
+				//		fUnknown = true;
+				//	break;
 
-				case 45:   // '-' decrement accidental
-					ChangeNoteAccidentals(-1);
-					break;
+				////accidentals
+				//case 43:   // '+' increment accidental
+				//	ChangeNoteAccidentals(1);
+				//	break;
 
-				case 61:   // '=' remove accidental
-					ChangeNoteAccidentals(0);
-					break;
-				
-				//select note duration
-				case 48:    // '0' double whole
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
-					break;
+				//case 45:   // '-' decrement accidental
+				//	ChangeNoteAccidentals(-1);
+				//	break;
 
-				case 49:    // '1' whole
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
-					break;
+				//case 61:   // '=' remove accidental
+				//	ChangeNoteAccidentals(0);
+				//	break;
+				//
+				////select note duration
+				//case 48:    // '0' double whole
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
+				//	break;
 
-				case 50:    // '2' half
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
-					break;
+				//case 49:    // '1' whole
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
+				//	break;
 
-				case 51:    // '3' quarter
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
-					break;
+				//case 50:    // '2' half
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
+				//	break;
 
-				case 52:    // '4' eighth
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
-					break;
+				//case 51:    // '3' quarter
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
+				//	break;
 
-				case 53:    // '5' 16th
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
-					break;
+				//case 52:    // '4' eighth
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
+				//	break;
 
-				case 54:    // '6' 32nd
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
-					break;
+				//case 53:    // '5' 16th
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
+				//	break;
 
-				case 55:    // '7' 64th
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
-					break;
+				//case 54:    // '6' 32nd
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
+				//	break;
 
-				case 56:    // '8' 128th
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
-					break;
+				//case 55:    // '7' 64th
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
+				//	break;
 
-				case 57:    // '9' 256th
-					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
-					break;
+				//case 56:    // '8' 128th
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+				//	break;
+
+				//case 57:    // '9' 256th
+				//	if (pToolBox) 
+				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+				//	break;
 
 				//invalid key
 				default:
@@ -568,11 +570,19 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 		switch (nKeyCode)
 		{
 			case WXK_LEFT:
-				m_pView->CursorLeft();
+				m_pView->CursorLeft((bool)(nAuxKeys & lmKEY_ALT));
 				break;
 
 			case WXK_RIGHT:
-				m_pView->CursorRight();
+				m_pView->CursorRight((bool)(nAuxKeys & lmKEY_ALT));
+				break;
+
+			case WXK_UP:
+				m_pView->CursorUp();
+				break;
+
+			case WXK_DOWN:
+				m_pView->CursorDown();
 				break;
 
 			case WXK_F1:

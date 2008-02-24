@@ -60,6 +60,7 @@ public:
     lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					              lmEClefType nClef, lmStaff* pStaff, wxColour colorC=*wxBLACK);
 	inline lmShape* GetShape(int nStaff) { return m_pShapes[nStaff-1]; }
+	void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
 
     //methods for hiding the key in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }

@@ -59,6 +59,7 @@ public:
 
 	//rederizarion
 	inline lmShape* GetShape(int nStaff) { return m_pShapes[nStaff-1]; }
+	void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
 
 
     //    debugging

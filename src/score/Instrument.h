@@ -71,6 +71,9 @@ public:
 	//cursor methods
 	inline lmVStaffCursor* GetCursor() { return m_pVStaff->GetCursor(); }
     inline void ResetCursor() { m_pVStaff->ResetCursor(); }
+	inline lmVStaffCursor* AttachCursor(lmScoreCursor* pSCursor)
+                                { return m_pVStaff->GetCursor()->AttachCursor(pSCursor); }
+	inline void DetachCursor() { m_pVStaff->GetCursor()->DetachCursor(); }
 
 
     //Debug methods

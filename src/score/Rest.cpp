@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@
 
 lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
         int nStaff, int nVoice, bool fVisible, bool fBeamed, lmTBeamInfo BeamInfo[])
-    : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted, 
+    : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted,
                  nStaff, nVoice, fVisible)
 {
 
@@ -68,24 +68,24 @@ lmRest::~lmRest()
 
 
 //--------------------------------------------------------------------------------------
-// get glyph data to define character to use and selection rectangle 
+// get glyph data to define character to use and selection rectangle
 //--------------------------------------------------------------------------------------
 
 lmEGlyphIndex lmRest::GetGlyphIndex()
 {
-    // returns the index (over global glyphs table) to the character to use to print 
+    // returns the index (over global glyphs table) to the character to use to print
     // the rest (LenMus font)
 
     switch (m_nNoteType) {
         case eLonga:        return GLYPH_LONGA_REST;
-        case eBreve:        return GLYPH_BREVE_REST;        
+        case eBreve:        return GLYPH_BREVE_REST;
         case eWhole:        return GLYPH_WHOLE_REST;
-        case eHalf:         return GLYPH_HALF_REST;        
-        case eQuarter:      return GLYPH_QUARTER_REST;     
-        case eEighth:       return GLYPH_EIGHTH_REST;       
-        case e16th:         return GLYPH_16TH_REST;        
-        case e32th:         return GLYPH_32ND_REST;        
-        case e64th:         return GLYPH_64TH_REST;        
+        case eHalf:         return GLYPH_HALF_REST;
+        case eQuarter:      return GLYPH_QUARTER_REST;
+        case eEighth:       return GLYPH_EIGHTH_REST;
+        case e16th:         return GLYPH_16TH_REST;
+        case e32th:         return GLYPH_32ND_REST;
+        case e64th:         return GLYPH_64TH_REST;
         case e128th:        return GLYPH_128TH_REST;
         case e256th:        return GLYPH_256TH_REST;
         default:
@@ -114,7 +114,7 @@ lmUPoint lmRest::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object and adding it to the graphical model. 
+    // creating the shape object and adding it to the graphical model.
     // Paper cursor must be used as the base for positioning.
 
     //get paper reference point
@@ -166,13 +166,13 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 }
 
 void lmRest::DoVerticalShift(lmTenths yShift)
-{ 
+{
     // rests inside a group of beamed notes need to be shifted to align with the noteheads.
-    // This method is invoked *after* the measurement phase. Therefore we have to 
+    // This method is invoked *after* the measurement phase. Therefore we have to
     // shift all already measured affected values
 
-    // compute shift in logical units
-    lmLUnits uShift = m_pVStaff->TenthsToLogical(yShift, m_nStaffNum);
+    //// compute shift in logical units
+    //lmLUnits uShift = m_pVStaff->TenthsToLogical(yShift, m_nStaffNum);
 
     //// apply shift to rest object
     //m_uGlyphPos.y += uShift;
@@ -217,15 +217,15 @@ wxString lmRest::Dump()
         sDump += _T(")");
     }
     sDump += _T("\n");
-                      
+
     return sDump;
-    
+
 }
 wxString lmRest::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(r ");    
+    sSource += _T("(r ");
 
     //duration
     sSource += GetLDPNoteType();
@@ -258,7 +258,7 @@ wxString lmRest::SourceXML(int nIndent)
 
     return sSource;
 //    sPitch = GetNombreSajon(m_nPitch)
-//    
+//
 //    sFuente = "            <note>" & sCrLf
 //    sFuente = sFuente & "                <rest>" & sCrLf
 //    sFuente = sFuente & "                    <display-step>" & Left$(sPitch, 1) & "</display-step>" & sCrLf

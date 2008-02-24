@@ -83,11 +83,11 @@ void lmContext::CopyAccidentals(lmContext* pContext)
 
 wxString lmContext::Dump()
 {
-    wxString sDump = wxString::Format(_T("Context: clef: %s, key: %s, time: %s\n"), 
-        (m_pClef ? GetClefLDPNameFromType(m_pClef->GetClefType()) : _T("No")),
-        (m_pKey ? GetKeyLDPNameFromType(m_pKey->GetKeyType()) : _T("No")),
+    wxString sDump = wxString::Format(_T("Context: clef: %s, key: %s, time: %s\n"),
+        (m_pClef ? GetClefLDPNameFromType(m_pClef->GetClefType()).c_str() : _T("No")),
+        (m_pKey ? GetKeyLDPNameFromType(m_pKey->GetKeyType()).c_str() : _T("No")),
         (m_pTime ? wxString::Format(_T("%d/%d"),
-            m_pTime->GetNumBeats(), m_pTime->GetBeatType()) : _T("No")) );
+            m_pTime->GetNumBeats(), m_pTime->GetBeatType()).c_str() : _T("No")) );
     return sDump;
 
 }

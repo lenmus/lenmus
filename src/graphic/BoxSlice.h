@@ -46,6 +46,7 @@ class lmBoxSystem;
 class lmBoxSliceInstr;
 class lmInstrument;
 class lmBoxSystem;
+class lmBoxSliceVStaff;
 
 //
 // Class lmBoxSlice represents a sytem measure
@@ -70,6 +71,9 @@ public:
 
     //info
     inline int GetNumMeasure() const { return m_nAbsMeasure; }
+	bool ContainsXPos(lmLUnits uxPos);
+
+	//access to objects
     lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 

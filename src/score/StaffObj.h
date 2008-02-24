@@ -282,7 +282,8 @@ public:
     virtual lmLUnits GetAnchorPos() {return m_pShape->GetXLeft(); }
 
 	//highligh
-	virtual void Highlight(lmPaper* pPaper, wxColour colorC) {}
+	virtual void PlaybackHighlight(lmPaper* pPaper, wxColour colorC) {}
+	virtual void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
 
     // methods related to staff ownership
     inline int GetStaffNum() { return m_nStaffNum; }

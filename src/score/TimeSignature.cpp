@@ -280,6 +280,28 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 
 }
 
+void lmTimeSignature::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
+{
+    if (fHighlight)
+    {
+        GetShape(nStaff)->Render(pPaper, g_pColors->CursorColor());
+    }
+    else
+    {
+        //IMPROVE
+        // If we paint in black it remains a coloured aureole around
+        // the note. By painting it first in white the size of the aureole
+        // is smaller but still visible. A posible better solution is to
+        // modify Render method to accept an additional parameter: a flag
+        // to signal that XOR draw mode in colour followed by a normal
+        // draw in BLACK must be done.
+
+        GetShape(nStaff)->Render(pPaper, *wxWHITE);
+        GetShape(nStaff)->Render(pPaper, g_pColors->ScoreNormal());
+    }
+}
+
+
 
 
 //----------------------------------------------------------------------------------------

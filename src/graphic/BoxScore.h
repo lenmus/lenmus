@@ -67,6 +67,12 @@ public:
     int GetNumPages();
     bool FindSliceAtPosition(lmUPoint& pointL);
 
+	//info
+	int GetNumSystems();
+
+	//access to objects
+	lmBoxSystem* GetSystem(int nSystem);	//nSystem = 1..n
+
     //cursor management
     void SetCursor(lmStaffObj* pSO) { m_pCursorSO = pSO; }
     lmStaffObj* GetCursorPointedObject() const { return m_pCursorSO; }

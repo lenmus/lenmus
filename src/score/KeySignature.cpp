@@ -122,7 +122,7 @@ wxString lmKeySignature::Dump()
 {
     wxString sDump = wxString::Format(
         _T("%d\tKey Sign. fifths: %d Key=%s %s\tTimePos=%.2f, org=(%.2f, %.2f)\n"),
-        m_nId, m_nFifths, m_sLDPKeyName[m_nKeySignature],
+        m_nId, m_nFifths, m_sLDPKeyName[m_nKeySignature].c_str(),
 		(m_fMajor ? _T("major") : _T("minor")), m_rTimePos,
         m_uOrg.x, m_uOrg.y);
     return sDump;
@@ -174,7 +174,7 @@ lmUPoint lmKeySignature::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object & adding it to the graphical model. 
+    // creating the shape object & adding it to the graphical model.
     // Paper cursor must be used as the base for positioning.
 
 
@@ -389,11 +389,11 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
 lmShape* lmKeySignature::AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uPos,
 					                   wxColour colorC, lmStaff* pStaff)
 {
-    //create a shape for the accidental at position uxLeft, uyTop. 
+    //create a shape for the accidental at position uxLeft, uyTop.
     //Returns it
 
     int nGlyph;
-    if (fSharp) 
+    if (fSharp)
         nGlyph = GLYPH_SHARP_ACCIDENTAL;
     else
         nGlyph = GLYPH_FLAT_ACCIDENTAL;
@@ -450,6 +450,28 @@ void lmKeySignature::SetKeySignatureType()
     }
 
 }
+
+void lmKeySignature::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
+{
+    if (fHighlight)
+    {
+        GetShape(nStaff)->Render(pPaper, g_pColors->CursorColor());
+    }
+    else
+    {
+        //IMPROVE
+        // If we paint in black it remains a coloured aureole around
+        // the note. By painting it first in white the size of the aureole
+        // is smaller but still visible. A posible better solution is to
+        // modify Render method to accept an additional parameter: a flag
+        // to signal that XOR draw mode in colour followed by a normal
+        // draw in BLACK must be done.
+
+        GetShape(nStaff)->Render(pPaper, *wxWHITE);
+        GetShape(nStaff)->Render(pPaper, g_pColors->ScoreNormal());
+    }
+}
+
 
 
 

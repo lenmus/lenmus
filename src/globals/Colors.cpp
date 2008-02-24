@@ -79,6 +79,8 @@ void lmColors::LoadUserPreferences()
     UnpackColor(sColor, &m_oScoreHighlight);
     sColor = g_pPrefs->Read(_T("/Colors/Scores/Selected"), _T("000,000,255") );    //blue
     UnpackColor(sColor, &m_oScoreSelected);
+    sColor = g_pPrefs->Read(_T("/Colors/Scores/Cursor"), _T("000,000,255") );    //blue
+    UnpackColor(sColor, &m_oCursorColor);
 
     //HTML controls
     sColor = g_pPrefs->Read(_T("/Colors/HTML/Links"), _T("000,000,255") );    //blue
@@ -104,6 +106,7 @@ void lmColors::SaveUserPreferences()
     g_pPrefs->Write(_T("/Colors/Scores/Normal"), PackColor(&m_oScoreNormal) );   
     g_pPrefs->Write(_T("/Colors/Scores/Highlight"), PackColor(&m_oScoreHighlight) );   
     g_pPrefs->Write(_T("/Colors/Scores/Selected"), PackColor(&m_oScoreSelected) ); 
+    g_pPrefs->Write(_T("/Colors/Scores/Cursor"), PackColor(&m_oCursorColor) ); 
 
     //HTML controls
     g_pPrefs->Write(_T("/Colors/HTML/Links"), PackColor(&m_oHtmlLinks) ); 

@@ -46,6 +46,9 @@
 #include "../sound/SoundEvents.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+#include "../app/ScoreView.h"
+#include "../graphic/BoxSystem.h"
+#include "../graphic/BoxScore.h"
 
 
 // global unique variables used during score building
@@ -66,8 +69,20 @@ static long m_nCounterID = 0;
 lmScoreCursor::lmScoreCursor(lmScore* pOwnerScore)
 {
     m_pScore = pOwnerScore;
+    m_pView = (lmScoreView*)NULL;
 	m_pVCursor = (lmVStaffCursor*)NULL;
 	m_nCursorInstr = 0;		//no cursor
+    m_pPointedSO = (lmStaffObj*)NULL;
+}
+
+void lmScoreCursor::AttachCursor(lmScoreView* pView)
+{
+    m_pView = pView;
+}
+
+void lmScoreCursor::DetachCursor()
+{
+    m_pView = (lmScoreView*)NULL;
 }
 
 void lmScoreCursor::ResetCursor()
@@ -79,9 +94,7 @@ void lmScoreCursor::ResetCursor()
         {
             (*it)->ResetCursor();
         }
-		lmInstrument* pInstr = (m_pScore->m_cInstruments).front();
-		m_pVCursor = pInstr->GetCursor();
-		m_nCursorInstr = 1;
+        SelectCursorFromInstr(1);
 	}
 	else
 	{
@@ -98,21 +111,46 @@ lmStaffObj* lmScoreCursor::GetCursorSO()
 		return (lmStaffObj*)NULL;
 }
 
-void lmScoreCursor::MoveRight()
+void lmScoreCursor::SelectCursorFromInstr(int nInstr)
+{
+    lmInstrument* pInstr;
+
+    //inform previous VCursor that it is not longer used
+    if (m_nCursorInstr > 0)
+    {
+        pInstr = m_pScore->m_cInstruments[m_nCursorInstr-1];
+	    pInstr->DetachCursor();
+    }
+
+    //inform new VCursor that it is now in use
+    m_nCursorInstr = nInstr;
+    pInstr = m_pScore->m_cInstruments[m_nCursorInstr-1];
+	m_pVCursor = pInstr->AttachCursor(this);
+    m_pVCursor->ResetCursor();
+}
+
+void lmScoreCursor::MoveRight(bool fNextObject)
 {
     if (!m_pVCursor) return;
 
     if (!m_pVCursor->IsAtEnd())
-        m_pVCursor->MoveRight();
+        m_pVCursor->MoveRight(fNextObject);
     else
     {
-        //advance to first staff of next instrument
-        if ((int)((m_pScore->m_cInstruments).size()) > m_nCursorInstr)
-        {
-    		lmInstrument* pInstr = m_pScore->m_cInstruments[m_nCursorInstr++];
-		    m_pVCursor = pInstr->GetCursor();
-            m_pVCursor->ResetCursor();
-        }
+		//if current instrument has more staves, advance to next staff.
+		//else to first staff of next instrument
+		lmInstrument* pInstr = m_pScore->m_cInstruments[m_nCursorInstr-1];
+		int nStaff = m_pVCursor->GetCursorNumStaff();
+		if (nStaff < pInstr->GetNumStaves())
+		{
+			//advance to next staff of current instrument
+			m_pVCursor->MoveToFirst(++nStaff);
+		}
+		else if ((int)((m_pScore->m_cInstruments).size()) > m_nCursorInstr)
+		{
+			//advance to first staff of next instrument
+            SelectCursorFromInstr(m_nCursorInstr+1);
+		}
         else
         {
             //no more instruments. Remain at the end
@@ -120,12 +158,12 @@ void lmScoreCursor::MoveRight()
     }
 }
 
-void lmScoreCursor::MoveLeft()
+void lmScoreCursor::MoveLeft(bool fPrevObject)
 {
     if (!m_pVCursor) return;
 
     if (!m_pVCursor->IsAtBeginning())
-        m_pVCursor->MoveLeft();
+        m_pVCursor->MoveLeft(fPrevObject);
     else
     {
         //go back to last staff of prev instrument
@@ -133,37 +171,124 @@ void lmScoreCursor::MoveLeft()
     }
 }
 
+void lmScoreCursor::MoveFirst()
+{
+    if (!m_pVCursor) return;
+    m_pVCursor->MoveToFirst(1);		//move to first object in staff 1
+}
+
 void lmScoreCursor::MoveUp()
 {
-    //TODO
+	//Move up to previous staff in current system (or to last staff in previous system if
+	//we are in first staff of current system), at aproximately the same horizontal paper
+	//position
+
+    if (!m_pVCursor) return;
+
+	//get current paper position and current staff
+    lmUPoint uPos = m_pVCursor->GetCursorPoint();
+	int nStaff = m_pVCursor->GetCursorNumStaff();
+	int nMeasure = m_pVCursor->GetSegment();
+
+	//if current instrument has previous staves, keep instrument and decrement staff
+	if (nStaff > 1)
+	{
+		m_pVCursor->MoveToSegment(nMeasure, --nStaff, uPos);
+		return;
+	}
+
+	//else if this is not the first instrument, take last staff of prev. instrument
+	else if (m_nCursorInstr > 1)
+	{
+		int nInstr = m_nCursorInstr - 1;
+		nStaff = m_pScore->GetInstrument(nInstr)->GetNumStaves();
+		SelectCursorFromInstr(nInstr);
+		m_pVCursor->MoveToSegment(nMeasure, nStaff, uPos);
+		return;
+	}
+
+	//else if this is not the first system move up to last staff on previous system
+	lmStaffObj* pCursorSO = m_pVCursor->GetStaffObj();
+	if (pCursorSO)
+	{
+		lmShape* pShape2 = pCursorSO->GetShap2();
+		if (pShape2)
+		{
+			lmBoxSystem* pSystem = pShape2->GetOwnerSystem();
+			int nSystem = pSystem->GetSystemNumber();
+			lmBoxScore* pBScore = pSystem->GetBoxScore();
+			if (nSystem > 1)
+			{
+				pSystem = pBScore->GetSystem(--nSystem);
+				nMeasure = pSystem->GetNumMeasureAt(uPos.x);
+				if (nMeasure > 0)
+				{
+					int nInstr = m_pScore->GetNumInstruments();
+					nStaff = m_pScore->GetInstrument(nInstr)->GetNumStaves();
+					SelectCursorFromInstr(nInstr);
+					m_pVCursor->MoveToSegment(nMeasure-1, nStaff, uPos);
+					return;
+				}
+			}
+		}
+	}
+
+	//else, remain at current position
 }
 
 void lmScoreCursor::MoveDown()
 {
-    //TODO
-}
+	//Move to next staff in current system (or to first staff in next system if we are in
+	//last staff of current system), at aproximately the same horizontal paper position
 
-void lmScoreCursor::MoveTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure)
-{
-	if ((m_pScore->m_cInstruments).empty()) return;
+    if (!m_pVCursor) return;
 
-	//get instrument
-	lmInstrument* pInstr = pVStaff->GetOwnerInstrument();
+	//get current paper position and current staff
+    lmUPoint uPos = m_pVCursor->GetCursorPoint();
+	int nStaff = m_pVCursor->GetCursorNumStaff();
+	int nMeasure = m_pVCursor->GetSegment();
 
-	//Find instrument number
-    std::vector<lmInstrument*>::iterator it = (m_pScore->m_cInstruments).begin();
-    m_nCursorInstr = 1;
-	for (int i=1; it != (m_pScore->m_cInstruments).end(); ++it)
-    {
-        if ((*it) == pInstr) break;
-		m_nCursorInstr++;
-    }
+	//if current instrument has more staves, keep instrument and increment staff
+	lmInstrument* pInstr = m_pScore->GetInstrument(m_nCursorInstr);
+	if (pInstr->GetNumStaves() > nStaff)
+	{
+		m_pVCursor->MoveToSegment(nMeasure, ++nStaff, uPos);
+		return;
+	}
 
-	//get cursor and reposition it
-	m_pVCursor = pInstr->GetCursor();
-	m_pVCursor->MoveToSegment(nMeasure - 1, rTime);
+	//else if there are more instrument, take first staff of next instrument
+	else if (m_nCursorInstr < m_pScore->GetNumInstruments())
+	{
+		SelectCursorFromInstr(m_nCursorInstr + 1);
+		m_pVCursor->MoveToSegment(nMeasure, 1, uPos);
+		return;
+	}
 
-	//TODO: nStaff is not yet used. VCursor doesn't use it!! 
+	//else if there are more systems move to first staff on next system
+	lmStaffObj* pCursorSO = m_pVCursor->GetStaffObj();
+	if (pCursorSO)
+	{
+		lmShape* pShape2 = pCursorSO->GetShap2();
+		if (pShape2)
+		{
+			lmBoxSystem* pSystem = pShape2->GetOwnerSystem();
+			int nSystem = pSystem->GetSystemNumber();
+			lmBoxScore* pBScore = pSystem->GetBoxScore();
+			if (nSystem < pBScore->GetNumSystems())
+			{
+				pSystem = pBScore->GetSystem(++nSystem);
+				nMeasure = pSystem->GetNumMeasureAt(uPos.x);
+				if (nMeasure > 0)
+				{
+					SelectCursorFromInstr(1);
+					m_pVCursor->MoveToSegment(nMeasure, 1, uPos);
+					return;
+				}
+			}
+		}
+	}
+
+	//else, remain at current position
 }
 
 void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
@@ -175,18 +300,15 @@ void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int
 
 	//Find instrument number
     std::vector<lmInstrument*>::iterator it = (m_pScore->m_cInstruments).begin();
-    m_nCursorInstr = 1;
-	for (int i=1; it != (m_pScore->m_cInstruments).end(); ++it)
+    int i;
+	for (i=1; it != (m_pScore->m_cInstruments).end(); ++it, i++)
     {
         if ((*it) == pInstr) break;
-		m_nCursorInstr++;
     }
 
 	//get cursor and position it at required segment and position
-	m_pVCursor = pInstr->GetCursor();
-	m_pVCursor->MoveToSegment(nMeasure - 1, uPos);
-
-	//TODO: nStaff is not yet used. VCursor doesn't use it!! 
+    SelectCursorFromInstr(i);
+	m_pVCursor->MoveToSegment(nMeasure - 1, nStaff, uPos);
 }
 
 lmUPoint lmScoreCursor::GetCursorPoint()
@@ -213,7 +335,29 @@ lmVStaff* lmScoreCursor::GetVStaff()
         return (lmVStaff*)NULL;
 }
 
+void lmScoreCursor::OnCursorObjectChanged() 
+{ 
+    //Current active VCursor has changed position and calls back to inform, just in
+    //case we would like to display any feedback (i.e. a change in colour of pointed object).
+    //To do it, if there is a View, we will inform it about the need to add/remove this 
+    //visual feedback
 
+    if (!m_pView) return;
+
+    //Remove highlight from previous object
+    if (m_pPointedSO)
+        m_pView->HighlightCursorObject(m_pPointedSO, m_nPointedStaff, false);       //false = remove higlight
+
+    //Update pointed object
+    m_pPointedSO = GetCursorSO();
+
+    //Add highlight to current object
+    if (m_pPointedSO)
+    {
+        m_nPointedStaff = m_pVCursor->GetCursorNumStaff();
+        m_pView->HighlightCursorObject(m_pPointedSO, m_nPointedStaff, true);       //true = add higlight
+    }
+}
 
 
 //=======================================================================================
@@ -822,7 +966,7 @@ void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nH
     switch (nHighlightType) {
         case eVisualOn:
             m_cHighlighted.push_back(pSO);
-            pSO->Highlight(pPaper, g_pColors->ScoreHighlight());
+            pSO->PlaybackHighlight(pPaper, g_pColors->ScoreHighlight());
             break;
 
         case eVisualOff:
@@ -863,8 +1007,13 @@ void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
     // to signal that XOR draw mode in RED followed by a normal
     // draw in BLACK must be done.
 
-    pSO->Highlight(pPaper, *wxWHITE);
-    pSO->Highlight(pPaper, g_pColors->ScoreNormal());
+    pSO->PlaybackHighlight(pPaper, *wxWHITE);
+    pSO->PlaybackHighlight(pPaper, g_pColors->ScoreNormal());
+}
+
+void lmScore::CursorHighlight(lmStaffObj* pSO, int nStaff, lmPaper* pPaper, bool fHighlight)
+{
+    pSO->CursorHighlight(pPaper, nStaff, fHighlight);
 }
 
 void lmScore::ComputeMidiEvents()
@@ -942,5 +1091,17 @@ bool lmScore::IsMeasureModified(int nMeasure)
 void lmScore::ResetMeasuresModified()
 {
 	m_aMeasureModified.clear();
+}
+
+lmScoreCursor* lmScore::AttachCursor(lmScoreView* pView) 
+{ 
+    m_SCursor.AttachCursor(pView);
+	m_SCursor.ResetCursor();
+    return &m_SCursor;
+}
+
+void lmScore::DetachCursor() 
+{ 
+    m_SCursor.DetachCursor();
 }
 

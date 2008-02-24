@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="15">
-		<Cursor position="15176" topLine="320" />
+	<File name="../../src/app/AboutDialog.cpp" open="1" top="1" tabpos="15">
+		<Cursor position="2157" topLine="49" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="34" />
@@ -56,7 +56,7 @@
 		<Cursor position="4851" topLine="134" />
 	</File>
 	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="56">
-		<Cursor position="58077" topLine="1567" />
+		<Cursor position="60489" topLine="1595" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="1" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
@@ -361,23 +361,29 @@
 	<File name="../../src/score/Clef.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="5745" topLine="153" />
 	</File>
+	<File name="../../src/score/ColStaffObjs.cpp" open="1" top="0" tabpos="76">
+		<Cursor position="17209" topLine="573" />
+	</File>
 	<File name="../../src/score/Context.cpp" open="1" top="0" tabpos="73">
-		<Cursor position="2860" topLine="74" />
+		<Cursor position="2942" topLine="74" />
 	</File>
 	<File name="../../src/score/Instrument.cpp" open="0" top="0" tabpos="22">
 		<Cursor position="9872" topLine="282" />
 	</File>
 	<File name="../../src/score/KeySignature.cpp" open="1" top="0" tabpos="13">
-		<Cursor position="5742" topLine="132" />
+		<Cursor position="4761" topLine="116" />
 	</File>
 	<File name="../../src/score/MetronomeMark.cpp" open="0" top="0" tabpos="25">
 		<Cursor position="11056" topLine="283" />
 	</File>
 	<File name="../../src/score/Note.cpp" open="1" top="0" tabpos="47">
-		<Cursor position="5445" topLine="132" />
+		<Cursor position="53565" topLine="1467" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="0" top="0" tabpos="71">
 		<Cursor position="6496" topLine="162" />
+	</File>
+	<File name="../../src/score/Rest.cpp" open="1" top="0" tabpos="77">
+		<Cursor position="6594" topLine="170" />
 	</File>
 	<File name="../../src/score/SOControl.cpp" open="0" top="0" tabpos="61">
 		<Cursor position="3047" topLine="78" />
@@ -391,8 +397,8 @@
 	<File name="../../src/score/Slur.cpp" open="0" top="0" tabpos="63">
 		<Cursor position="2609" topLine="74" />
 	</File>
-	<File name="../../src/score/StaffObj.cpp" open="0" top="0" tabpos="69">
-		<Cursor position="3147" topLine="92" />
+	<File name="../../src/score/StaffObj.cpp" open="1" top="0" tabpos="78">
+		<Cursor position="12408" topLine="390" />
 	</File>
 	<File name="../../src/score/StaffObj.h" open="0" top="0" tabpos="6">
 		<Cursor position="5013" topLine="123" />
@@ -403,11 +409,11 @@
 	<File name="../../src/score/TimeSignature.cpp" open="0" top="0" tabpos="65">
 		<Cursor position="8576" topLine="222" />
 	</File>
-	<File name="../../src/score/VStaff.cpp" open="1" top="1" tabpos="75">
-		<Cursor position="4195" topLine="80" />
+	<File name="../../src/score/VStaff.cpp" open="1" top="0" tabpos="75">
+		<Cursor position="4164" topLine="77" />
 	</File>
 	<File name="../../src/score/VStaff.h" open="1" top="0" tabpos="74">
-		<Cursor position="9610" topLine="218" />
+		<Cursor position="9421" topLine="216" />
 	</File>
 	<File name="../../src/score/defs.cpp" open="0" top="0" tabpos="70">
 		<Cursor position="1726" topLine="82" />

@@ -132,6 +132,7 @@ lmScoreView::lmScoreView()
     m_yScrollPosition = 0;
 
 	//cursor initializations
+    m_pScoreCursor = (lmScoreCursor*)NULL;
     m_pGuiCursor = (lmScoreViewCursor*)NULL;
 	m_pCursorSO = (lmStaffObj*)NULL;
     m_nCursorIdSO = -1;
@@ -1040,7 +1041,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             m_pDragImage->Show();
 			lmDPoint vNewPos(
 				m_Paper.LogicalToDeviceX(uFinalPos.x) + offsetD.x,
-				m_Paper.LogicalToDeviceY(uFinalPos.y) + offsetD.y 
+				m_Paper.LogicalToDeviceY(uFinalPos.y) + offsetD.y
 			);
 			m_pDragImage->Move(vNewPos);
         }
@@ -1103,7 +1104,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             lmUPoint uFinalPos = m_pGMODrag->OnDrag(&m_Paper, pageNPosL - m_uHotSpotShift) + m_uHotSpotShift;
 			lmDPoint vNewPos(
 				m_Paper.LogicalToDeviceX(uFinalPos.x) + offsetD.x,
-				m_Paper.LogicalToDeviceY(uFinalPos.y) + offsetD.y 
+				m_Paper.LogicalToDeviceY(uFinalPos.y) + offsetD.y
 			);
 			m_pDragImage->Move(vNewPos);
         }
@@ -1588,14 +1589,14 @@ void lmScoreView::DumpBitmaps()
 }
 
 void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
-								 lmUPoint uPos)     
+								 lmUPoint uPos)
 {
-	//Click on a staff
+	//Click on a staff. Move cursor to that staff and nearest note/rest to click point
 	//uPos: click point, referred to current page origin
 
 	lmVStaff* pVStaff = pBSV->GetCreatorVStaff();
 	int nStaff = pSS->GetNumStaff();
-	int nMeasure = pBSV->GetCreatorMeasure();
+	int nMeasure = pBSV->GetNumMeasure();
 
 	//DBG --------------------------------------------------------------------------------
 	wxString sMsg = wxString::Format(_T("[lmScoreView::OnClickOnStaff] Click on staff %d, on measure %d"),
@@ -1603,14 +1604,8 @@ void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSlice
 	m_pMainFrame->SetStatusBarMsg(sMsg);
 	// END DBG ---------------------------------------------------------------------------
 
-	//Locate nearest note/rest to click point and get its timepos
-	//TODO
-	float rTime = 0.0f;
-
-	//Move cursor there
-	//MoveCursorTo(rTime, pVStaff, nStaff, nMeasure);
+	//Move to nearest note/rest to click point
 	MoveCursorNearTo(uPos, pVStaff, nStaff, nMeasure);
-
 }
 
 
@@ -1629,70 +1624,58 @@ void lmScoreView::SetInitialCursorPosition()
 		// Set initial cursor position;
 		m_fCursorInit = true;
         lmScore* pScore = m_pDoc->GetScore();
-        m_pScoreCursor = pScore->GetCursor();
-		m_pScoreCursor->ResetCursor();
-		m_pCursorSO = m_pScoreCursor->GetCursorSO();
-
-        lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-        lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-        m_pGuiCursor->SetCursorPosition(uPos, pStaff);
+        m_pScoreCursor = pScore->AttachCursor(this);
+        m_pScoreCursor->MoveFirst();
+		UpdateCursor();
 	}
 
 }
 
-void lmScoreView::CursorRight()
+void lmScoreView::CursorRight(bool fNextObject)
 {
     if (!m_pGuiCursor) return;
 
 	//advance to next staff obj.
-    m_pScoreCursor->MoveRight();
-    m_pCursorSO = m_pScoreCursor->GetCursorSO();
-
-    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pGuiCursor->SetCursorPosition(uPos, pStaff);
+    m_pScoreCursor->MoveRight(fNextObject);
+	UpdateCursor();
 }
 
-void lmScoreView::CursorLeft()
+void lmScoreView::CursorLeft(bool fPrevObject)
 {
     if (!m_pGuiCursor) return;
 
 	//go back to previous staff obj.
-    m_pScoreCursor->MoveLeft();
-    m_pCursorSO = m_pScoreCursor->GetCursorSO();
-
-    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pGuiCursor->SetCursorPosition(uPos, pStaff);
+    m_pScoreCursor->MoveLeft(fPrevObject);
+	UpdateCursor();
 }
 
 void lmScoreView::CursorUp()
 {
-	wxMessageBox(_T("lmScoreView::CursorUp"));
+    if (!m_pGuiCursor) return;
+
+	//go up to previous staff
+    m_pScoreCursor->MoveUp();
+	UpdateCursor();
 }
 
 void lmScoreView::CursorDown()
 {
-//    lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-//    lmBoxPage* pBP = pBS->GetPage(1);
-	wxMessageBox(_T("lmScoreView::CursorDown"));
+    if (!m_pGuiCursor) return;
+
+	//go down to next staff
+    m_pScoreCursor->MoveDown();
+	UpdateCursor();
 }
 
 void lmScoreView::UpdateCursor()
 {
 	//the score has been modified. So the cursor must be repainted at right
 	//position
+
 	m_pGuiCursor->RemoveCursor();
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
     m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);		//Restore Cursor
-}
-
-void lmScoreView::MoveCursorTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure)
-{
-    if (!m_pGuiCursor) return;
-	m_pScoreCursor->MoveTo(rTime, pVStaff, nStaff, nMeasure);
-	UpdateCursor();
 }
 
 void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
@@ -1701,4 +1684,32 @@ void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff,
 	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
 	UpdateCursor();
 }
+
+void lmScoreView::HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect)
+{
+    if (!m_pScoreCursor) return;
+
+    //prepare paper DC
+    wxClientDC dc(m_pCanvas);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+
+	//position DC origing according to current scrolling and page position
+	int nNumPage = pSO->GetPageNumber();        // nNumPage = 1..n
+	wxPoint org = GetDCOriginForPage(nNumPage);
+	dc.SetDeviceOrigin(org.x, org.y);
+
+    //Hide cursor so it doesn't interfere
+	m_pGuiCursor->RemoveCursor();
+
+    //highlight or unhighlight the staffobj
+    m_pDoc->GetScore()->CursorHighlight(pSO, nStaff, &m_Paper, fSelect);
+
+    //Display cursor again
+    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);
+}
+
 

@@ -37,6 +37,8 @@ class lmInstrument;
 class lmVStaffCursor;
 class lmColStaffObjs;
 class lmBarline;
+class lmView;
+class lmScoreCursor;
 
 
 // To simplify future modifications of this class (i.e changing the data structures to implement it)
@@ -178,15 +180,19 @@ public:
 	//creation related
 	void AttachToCollection(lmColStaffObjs* pColStaffObjs);
 
+    //attachment to a ScoreCursor
+	lmVStaffCursor* AttachCursor(lmScoreCursor* pSCursor);
+	void DetachCursor();
+
     //positioning
-	void MoveRight();
-	void MoveLeft();
+	void MoveRight(bool fAlsoChordNotes = true);
+	void MoveLeft(bool fAlsoChordNotes = true);
     void MoveToTime(float rNewTime);
+    void MoveToFirst(int nStaff=0);
     void ResetCursor();
     void AdvanceToTime(float rTime);
     void AdvanceToNextSegment();
-	void MoveToSegment(int nSegment, float rTime);
-	void MoveToSegment(int nSegment, lmUPoint uPos);
+	void MoveToSegment(int nSegment, int nStaff, lmUPoint uPos);
 
 
     //status
@@ -201,13 +207,17 @@ public:
 
     lmUPoint GetCursorPoint();
     lmStaff* GetCursorStaff();
+    inline int GetCursorNumStaff() { return m_nStaff; }
 
 
 
 private:
     void UpdateTimepos();
+    lmStaffObj* GetPreviousStaffobj();
+
 
 	lmColStaffObjs*		m_pColStaffObjs;	//collection pointed by this cursor
+    lmScoreCursor*      m_pScoreCursor;     //ScoreCursor using this VCursor
 	int					m_nStaff;			//staff (1..n)
 	int					m_nSegment;			//current segment (0..n-1)
 	lmSegment*			m_pSegment;			//current segment

@@ -47,6 +47,7 @@ public:
     wxColour& ScoreHighlight() { return m_oScoreHighlight; }
     wxColour& ScoreNormal() { return m_oScoreNormal; }
     wxColour& ScoreSelected() { return m_oScoreSelected; }
+    wxColour& CursorColor() { return m_oCursorColor; }
 
     //HTML controls
     wxColour& HtmlLinks() { return m_oHtmlLinks; }
@@ -70,6 +71,7 @@ private:
     wxColour m_oScoreHighlight;
     wxColour m_oScoreNormal;
     wxColour m_oScoreSelected;
+    wxColour m_oCursorColor;
 
     //HTML controls
     wxColour m_oHtmlLinks;

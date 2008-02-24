@@ -439,13 +439,12 @@ wxString lmCompositeShape::Dump(int nIndent)
 
 void lmCompositeShape::Render(lmPaper* pPaper,  wxColour color)
 {
-	WXUNUSED(color);
 	RenderCommon(pPaper, *wxGREEN);
 
 	//Default behaviour: render all components
     for (int i=0; i < (int)m_Components.size(); i++)
     {
-        m_Components[i]->Render(pPaper);
+        m_Components[i]->Render(pPaper, color);
     }
 }
 

@@ -53,16 +53,20 @@ class lmBoxPage : public lmBox
 public:
     lmBoxPage(lmBoxScore* pParent, int nNumPage);
     ~lmBoxPage();
+
+	//info
     inline int GetFirstSystem() const { return m_nFirstSystem; }
     inline int GetLastSystem() const { return m_nLastSystem; }
+	int GetSystemNumber(lmBoxSystem* pSystem);
 
+	//access to objects
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
 
+	//operations
     lmBoxSystem* AddSystem(int nSystem);
     void Render(lmScore* pScore, lmPaper* pPaper);
-
-    inline lmBoxScore* GetBoxScore() const { return m_pBScore; }
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
@@ -70,6 +74,7 @@ public:
 
 	//owners and related
 	lmBoxSystem* GetOwnerSystem() { return (lmBoxSystem*)NULL; }
+    inline lmBoxScore* GetBoxScore() const { return m_pBScore; }
 
 
 

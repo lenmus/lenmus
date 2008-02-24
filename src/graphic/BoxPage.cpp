@@ -145,3 +145,29 @@ wxString lmBoxPage::Dump(int nIndent)
 	return sDump;
 }
 
+int lmBoxPage::GetSystemNumber(lmBoxSystem* pSystem)
+{
+	//returns the number of the system (1..n) received as parameter
+	//precondition: the system must be in this page
+
+    //loop to look up in the systems collection
+	for(int i=0; i < (int)m_aSystems.size(); i++)
+    {
+        if (m_aSystems[i] == pSystem)
+			return i + m_nFirstSystem;		//system found
+    }
+	wxASSERT(false);	//system not in this page
+	return 0;			//keep compiler happy
+}
+
+lmBoxSystem* lmBoxPage::GetSystem(int nSystem)
+{
+	//return pointer to BoxSystem for system nSystem (1..n)
+    //loop to look up in the systems collection
+
+	int i = nSystem - m_nFirstSystem;
+	if (i < 0)
+		return (lmBoxSystem*)NULL;		//the system is not in this page
+	else
+		return m_aSystems[i];
+}

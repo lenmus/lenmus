@@ -169,6 +169,7 @@ class lmSoundManager;
 class lmObjOptions;
 
 class lmBox;
+class lmScoreView;
 
 
 #include "StaffObj.h"
@@ -211,13 +212,17 @@ public:
     lmScoreCursor(lmScore* pOwnerScore);
     ~lmScoreCursor() {}
 
+    //attachment to a ScoreView
+	void AttachCursor(lmScoreView* pView);
+	void DetachCursor();
+
     //positioning
     void ResetCursor();
-    void MoveRight();
-    void MoveLeft();
+    void MoveRight(bool fNextObject = true);
+    void MoveLeft(bool fPrevObject = true);
+    void MoveFirst();
     void MoveUp();
     void MoveDown();
-	void MoveTo(float rTime, lmVStaff* pVStaff, int nStaff, int nMeasure);
 	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
     //current position info
@@ -225,12 +230,23 @@ public:
     lmUPoint GetCursorPoint();
     lmStaff* GetCursorStaff();
     lmVStaff* GetVStaff();
+	inline int GetCursorInstrumentNumber() { return m_nCursorInstr; }
+	inline lmScore* GetCursorScore() { return m_pScore; }
+
+    //call backs
+    void OnCursorObjectChanged() ;
+
 
 
 private:
+    void SelectCursorFromInstr(int nInstr);
+
     lmScore*            m_pScore;           //owner score
+    lmScoreView*        m_pView;            //View using this cursor
 	lmVStaffCursor*		m_pVCursor;		    //current cursor
 	int					m_nCursorInstr;		//instrument number (1..n) of current cursor
+    lmStaffObj*         m_pPointedSO;       //for visual feedback
+    int                 m_nPointedStaff;
 
 };
 
@@ -272,6 +288,8 @@ public:
     // serving highlight events
     void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nHighlightType);
 	void RemoveAllHighlight(wxWindow* pCanvas);
+    void CursorHighlight(lmStaffObj* pSO, int nStaff, lmPaper* pPaper, bool fHighlight);
+
 
     // Debug methods. If filename provided writes also to file
     wxString Dump() { return Dump(_T("")); }
@@ -325,11 +343,9 @@ public:
 	//cursor management
     inline void ResetCursor() { m_SCursor.ResetCursor(); }
     inline lmScoreCursor* GetCursor() { return &m_SCursor; }
-	//CursorFwd();
-	//CursorBack();
-	//CursorAt(lmStaffObj* pSO);
-
-
+        //attachment to a ScoreView
+	lmScoreCursor* AttachCursor(lmScoreView* pView);
+	void DetachCursor();
 
 
 private:

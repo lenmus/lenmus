@@ -118,3 +118,30 @@ wxString lmBoxScore::Dump(int nIndent)
 
 	return sDump;
 }
+
+int lmBoxScore::GetNumSystems()
+{
+	//return total number of systems (1..n) in this score
+
+	return m_aPages.back()->GetLastSystem();
+}
+
+lmBoxSystem* lmBoxScore::GetSystem(int nSystem)
+{
+	//return pointer to BoxSystem for system nSystem (1..n)
+
+	//locate page
+	bool fFound = false;
+    for (int i=0; i < (int)m_aPages.size(); i++)
+    {
+        if (m_aPages[i]->GetFirstSystem() <= nSystem &&
+			m_aPages[i]->GetLastSystem() >= nSystem)
+		{
+			fFound = true;
+			break;
+		}
+    }
+
+	wxASSERT(fFound);
+	return m_aPages[i]->GetSystem(nSystem);
+}
