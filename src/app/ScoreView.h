@@ -130,17 +130,19 @@ public:
 	inline lmBoxScore* GetBoxScore() { return m_graphMngr.GetBoxScore(); }
 
 
-    // sound related methods
+    // call backs: sound related methods
     void OnVisualHighlight(lmScoreHighlightEvent& event);
+
+    // call backs: cursor related methods
+    void OnCursorMoved();
+    void OnCursorObjectDeleted();
 
 	//visual cursor management
 	void CursorRight(bool fNextObject = true);
 	void CursorLeft(bool fPrevObject = true);
 	void CursorUp();
 	void CursorDown();
-	inline lmStaffObj* GetCursorPosition() { return m_pCursorSO; }
-	void UpdateCursor();
-    void HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect);
+    lmVStaffCursor* GetCursor();
 
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
@@ -161,10 +163,12 @@ private:
 
 	//Dealing with the cursor
     void SetInitialCursorPosition();
+    void HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect);
 
 	//Mouse commands
 	void OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
 						lmUPoint uPos);
+    void OnClickOnObject(lmGMObject* pGMO);
 
 	//Cursor
 	void MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
@@ -225,11 +229,9 @@ private:
     lmScoreViewCursor*  m_pGuiCursor;
     lmScoreCursor*      m_pScoreCursor;
 	bool				m_fCursorInit;
+    lmStaffObj*         m_pCursorSO;       //for visual feedback
+    int                 m_nCursorStaff;
 
-    //cursor: current position in score
-	lmStaffObj*			m_pCursorSO;		//staff object pointed by the cursor
-	int					m_nCursorIdSO;		//previous staff object pointed by the cursor
-	lmSOIterator* m_pCursorIT;        //iterator, to speed up cursor moves
 
 
     DECLARE_EVENT_TABLE()

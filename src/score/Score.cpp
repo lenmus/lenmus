@@ -42,6 +42,7 @@
 
 #include "Score.h"
 #include "VStaff.h"
+#include "UndoRedo.h"
 #include "../app/global.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/GMObject.h"
@@ -72,7 +73,6 @@ lmScoreCursor::lmScoreCursor(lmScore* pOwnerScore)
     m_pView = (lmScoreView*)NULL;
 	m_pVCursor = (lmVStaffCursor*)NULL;
 	m_nCursorInstr = 0;		//no cursor
-    m_pPointedSO = (lmStaffObj*)NULL;
 }
 
 void lmScoreCursor::AttachCursor(lmScoreView* pView)
@@ -311,6 +311,28 @@ void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int
 	m_pVCursor->MoveToSegment(nMeasure - 1, nStaff, uPos);
 }
 
+void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
+{
+    if (!m_pVCursor) return;
+
+    //get instrument
+	lmInstrument* pInstr = pSO->GetVStaff()->GetOwnerInstrument();   //get instrument
+
+	//Find instrument number
+    std::vector<lmInstrument*>::iterator it = (m_pScore->m_cInstruments).begin();
+    int i;
+	for (i=1; it != (m_pScore->m_cInstruments).end(); ++it, i++)
+    {
+        if ((*it) == pInstr) break;
+    }
+
+	//get cursor for that instrument
+    SelectCursorFromInstr(i);
+
+	//position it at required staffobj
+    m_pVCursor->MoveCursorToObject(pSO);
+}
+
 lmUPoint lmScoreCursor::GetCursorPoint()
 {
     if (m_pVCursor)
@@ -327,6 +349,22 @@ lmStaff* lmScoreCursor::GetCursorStaff()
         return (lmStaff*)NULL;
 }
 
+int lmScoreCursor::GetCursorNumStaff()
+{
+    if (m_pVCursor)
+        return m_pVCursor->GetCursorNumStaff();
+    else
+        return 1;
+}
+
+float lmScoreCursor::GetCursorTime()
+{
+    if (m_pVCursor)
+        return m_pVCursor->GetTimepos();
+    else
+        return 0.0f;;
+}
+
 lmVStaff* lmScoreCursor::GetVStaff() 
 { 
     if (m_pVCursor)
@@ -338,26 +376,56 @@ lmVStaff* lmScoreCursor::GetVStaff()
 void lmScoreCursor::OnCursorObjectChanged() 
 { 
     //Current active VCursor has changed position and calls back to inform, just in
-    //case we would like to display any feedback (i.e. a change in colour of pointed object).
-    //To do it, if there is a View, we will inform it about the need to add/remove this 
-    //visual feedback
+    //case we would like to display any feedback (i.e. update cursor position on the GUI,
+    //change colour of pointed object, or other).
+    //To do it, if there is a View, we will inform it about the event
 
-    if (!m_pView) return;
-
-    //Remove highlight from previous object
-    if (m_pPointedSO)
-        m_pView->HighlightCursorObject(m_pPointedSO, m_nPointedStaff, false);       //false = remove higlight
-
-    //Update pointed object
-    m_pPointedSO = GetCursorSO();
-
-    //Add highlight to current object
-    if (m_pPointedSO)
-    {
-        m_nPointedStaff = m_pVCursor->GetCursorNumStaff();
-        m_pView->HighlightCursorObject(m_pPointedSO, m_nPointedStaff, true);       //true = add higlight
-    }
+    if (m_pView) 
+        m_pView->OnCursorMoved();
 }
+
+
+void lmScoreCursor::SelectCursor(lmVStaffCursor* pVCursor)
+{
+    //Replace current cursor by the one received as parameter.
+    //PRECONDITION: The received cursor must be one of the active cursors in current 
+    //              instruments
+    //It is assumed that the Score and View don't change.
+    //Highlight is removed from previous staffobj and added to current one
+
+    m_pVCursor = pVCursor;
+
+	//Find instrument
+    std::vector<lmInstrument*>::iterator it = (m_pScore->m_cInstruments).begin();
+    int nInstr;
+	for (nInstr=1; it != (m_pScore->m_cInstruments).end(); ++it, nInstr++)
+    {
+        if ((*it)->GetCursor() == m_pVCursor) break;
+    }
+    wxASSERT(it != (m_pScore->m_cInstruments).end());
+
+    //get instrument number
+	m_nCursorInstr = nInstr;
+
+    //inform the view
+    OnCursorObjectChanged();
+}
+
+void lmScoreCursor::OnCursorObjectDeleted()
+{
+    //Current active VCursor informs that cursor pointed object has been deleted.
+    //Therefore any stored reference to the deleted object should be invalidaded.
+    //Let's inform the view.
+
+    if (m_pView) 
+        m_pView->OnCursorObjectDeleted();
+}
+
+void lmScoreCursor::SetNewCursorState(lmVCursorState* pState)
+{
+    m_pVCursor->SetNewCursorState(this, pState);
+}
+
 
 
 //=======================================================================================
@@ -1105,3 +1173,16 @@ void lmScore::DetachCursor()
     m_SCursor.DetachCursor();
 }
 
+lmScoreCursor* lmScore::SetCursor(lmVStaffCursor* pVCursor)
+{
+    //Replace current cursor by the one received as parameter
+
+    m_SCursor.SelectCursor(pVCursor);
+    return &m_SCursor;
+}
+
+lmScoreCursor* lmScore::SetNewCursorState(lmVCursorState* pState)
+{
+    m_SCursor.SetNewCursorState(pState);
+    return &m_SCursor;
+}

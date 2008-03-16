@@ -132,7 +132,7 @@ void lmLogger::SetDataErrorTarget(wxString sPath)
     m_sDataErrorPath = sPath;
     m_pDataError = new wxFile(m_sDataErrorPath, wxFile::write);
     if (!m_pDataError->IsOpened()) {
-        /* //TODO */
+        //TODO
         m_pDataError = (wxFile*)NULL;
         return;
     }

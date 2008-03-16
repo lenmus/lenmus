@@ -28,10 +28,13 @@
 
 #include <vector>
 #include <list>
+
 #include "wx/debug.h"
+
 #include "defs.h"
 #include "Pitch.h"
 #include "../app/global.h"
+
 
 // aligments
 enum lmEAlignment
@@ -196,7 +199,6 @@ class lmScoreView;
 #include "Note.h"
 #include "Rest.h"
 #include "Chord.h"
-#include "../app/global.h"
 #include "../app/Paper.h"
 #include "../sound/SoundManager.h"
 
@@ -224,19 +226,24 @@ public:
     void MoveUp();
     void MoveDown();
 	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
+    void MoveCursorToObject(lmStaffObj* pSO);
 
     //current position info
+    float GetCursorTime();
     lmStaffObj* GetCursorSO();
     lmUPoint GetCursorPoint();
     lmStaff* GetCursorStaff();
+    int GetCursorNumStaff();
     lmVStaff* GetVStaff();
 	inline int GetCursorInstrumentNumber() { return m_nCursorInstr; }
 	inline lmScore* GetCursorScore() { return m_pScore; }
+    inline lmVStaffCursor* GetCursor() { return m_pVCursor; }
+    void SetNewCursorState(lmVCursorState* pState);
+    void SelectCursor(lmVStaffCursor* pVCursor);
 
     //call backs
     void OnCursorObjectChanged() ;
-
-
+    void OnCursorObjectDeleted();
 
 private:
     void SelectCursorFromInstr(int nInstr);
@@ -245,8 +252,6 @@ private:
     lmScoreView*        m_pView;            //View using this cursor
 	lmVStaffCursor*		m_pVCursor;		    //current cursor
 	int					m_nCursorInstr;		//instrument number (1..n) of current cursor
-    lmStaffObj*         m_pPointedSO;       //for visual feedback
-    int                 m_nPointedStaff;
 
 };
 
@@ -341,11 +346,14 @@ public:
 	void ResetMeasuresModified();
 
 	//cursor management
+    lmScoreCursor* SetCursor(lmVStaffCursor* pVCursor);
     inline void ResetCursor() { m_SCursor.ResetCursor(); }
     inline lmScoreCursor* GetCursor() { return &m_SCursor; }
         //attachment to a ScoreView
 	lmScoreCursor* AttachCursor(lmScoreView* pView);
 	void DetachCursor();
+    lmScoreCursor* SetNewCursorState(lmVCursorState* pState);
+
 
 
 private:
@@ -373,23 +381,23 @@ private:
     std::list<lmStaffObj*>	m_cHighlighted;     //list of highlighted staffobjs
 
     //Layout related variables
-    lmLUnits			m_nTopSystemDistance;
-    lmLUnits			m_nHeadersHeight;
+    lmLUnits			    m_nTopSystemDistance;
+    lmLUnits			    m_nHeadersHeight;
 
     //renderization options
-    ERenderizationType  m_nRenderizationType;
-	bool				m_fModified;		//to force a repaint
+    ERenderizationType      m_nRenderizationType;
+	bool				    m_fModified;    //to force a repaint
 
     //other variables
-	int					m_nCurNode;			 //last returned instrument node
-    long				m_nID;				//unique ID for this score
-    wxString			m_sScoreName;		//for user identification
+	int					    m_nCurNode;     //last returned instrument node
+    long				    m_nID;          //unique ID for this score
+    wxString			    m_sScoreName;   //for user identification
 
 	//temporary data used for edition/renderization
-	std::list<int>		m_aMeasureModified;		//list of measures modified
+	std::list<int>          m_aMeasureModified;		//list of measures modified
 
-	//for edition. Active cursor pointing to current position
-	lmScoreCursor		m_SCursor;		    //score cursor for edition
+	//for edition
+	lmScoreCursor		m_SCursor;			//Active cursor pointing to current position
 
 };
 

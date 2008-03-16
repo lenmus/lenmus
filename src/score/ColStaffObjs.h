@@ -30,6 +30,7 @@
 #include <list>
 
 class lmStaffObj;
+class lmNoteRest;
 class lmSOIterator;
 class lmContext;
 class lmVStaff;
@@ -39,6 +40,7 @@ class lmColStaffObjs;
 class lmBarline;
 class lmView;
 class lmScoreCursor;
+class lmUndoData;
 
 
 // To simplify future modifications of this class (i.e changing the data structures to implement it)
@@ -64,10 +66,11 @@ enum ETraversingOrder
 class lmSegment
 {
 public:
-    lmSegment(lmVStaff* pOwner, int nSegment);
+    lmSegment(lmColStaffObjs* pOwner, int nSegment);
     ~lmSegment();
 
 	void Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor);
+    void UpdateDuration();
 
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
@@ -88,9 +91,11 @@ private:
 	friend class lmSOIterator;
 
     void VoiceUsed(int nVoice);
-    void ShiftTimepos(lmItCSO itStart, int nVoice);
+    void ShiftRightTimepos(lmItCSO itStart, int nVoice);
+    void ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart);
 
     std::list<lmStaffObj*>	m_StaffObjs;		//list of StaffObjs in this segment
+    lmColStaffObjs* m_pOwner;                   
     int				m_nNumSegment;				//0..n-1
     lmBarline*		m_pBarline;					//segment barline, if exists
     lmContext*		m_pContext[lmMAX_STAFF];	//ptr to current context for each staff
@@ -107,15 +112,13 @@ public:
     ~lmColStaffObjs();
 
 	//creation related
-	inline void SetCursor(lmVStaffCursor* pCursor) { m_pVCursor = pCursor; } 
+	inline void AttachCursor(lmVStaffCursor* pCursor) { m_pVCursor = pCursor; } 
     void AddStaff();
 
     //add/remove StaffObjs
     void Add(lmStaffObj* pNewSO);
-	void Delete(lmStaffObj* pCursorSO);
-	//Compatibility. //TODO: remove
-    void Store(lmStaffObj* pNewSO) { Add(pNewSO); }
-	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO) { Add(pNewSO); }
+	void Delete(lmStaffObj* pCursorSO, bool fDelete = true);
+	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
     bool ShiftTime(float rTimeShift);
 
     //iterator related methods
@@ -138,6 +141,9 @@ public:
 	//debug
 	wxString Dump();
 
+    //undo/redo related methods
+    void LogPosition(lmUndoData* pUndoData, lmStaffObj* pSO);
+
 
 private:
 	friend class lmSOIterator;
@@ -145,12 +151,12 @@ private:
 	friend class lmSegment;
 
 	//general management
+    void Store(lmStaffObj* pNewSO);
 
 	//segments management
-	void SplitSegment(int nSegment);
+	void SplitSegment(int nSegment, lmStaffObj* pLastSO);
     void CreateNewSegment(int nSegment);
-	void AddSegment(int nSegment);
-	void InsertSegment(int nSegment);
+    void RemoveSegment(int nSegment);
 	void UpdateContexts(lmSegment* pSegment);
 
 	//voices management
@@ -171,6 +177,15 @@ private:
 
 
 // Cursor pointing to current position
+
+//cursor state
+typedef struct lmVCursorState_Struct {
+	int         nStaff;         //staff (1..n)
+	int         nSegment;       //current segment (0..n-1)
+	float       rTimepos;       //timepos
+	lmStaffObj* pSO;			//current pointed staffobj
+} lmVCursorState;
+
 class lmVStaffCursor
 {
 public:
@@ -185,7 +200,7 @@ public:
 	void DetachCursor();
 
     //positioning
-	void MoveRight(bool fAlsoChordNotes = true);
+	void MoveRight(bool fAlsoChordNotes = true, bool fIncrementIterator = true);
 	void MoveLeft(bool fAlsoChordNotes = true);
     void MoveToTime(float rNewTime);
     void MoveToFirst(int nStaff=0);
@@ -193,9 +208,13 @@ public:
     void AdvanceToTime(float rTime);
     void AdvanceToNextSegment();
 	void MoveToSegment(int nSegment, int nStaff, lmUPoint uPos);
+    void MoveCursorToObject(lmStaffObj* pSO);
+    void SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* pState);
 
+    //call backs
+    void OnCursorObjectDeleted(lmItCSO itNext);
 
-    //status
+    //current position
     bool IsAtEnd();
     bool IsAtBeginning();
 
@@ -204,10 +223,12 @@ public:
 	lmStaffObj* GetStaffObj();
     inline float GetTimepos() { return m_rTimepos; }
     inline lmItCSO GetCurIt() { return m_it; }
+    lmVCursorState GetState();
 
     lmUPoint GetCursorPoint();
     lmStaff* GetCursorStaff();
     inline int GetCursorNumStaff() { return m_nStaff; }
+    lmVStaff* GetVStaff();
 
 
 
@@ -218,9 +239,11 @@ private:
 
 	lmColStaffObjs*		m_pColStaffObjs;	//collection pointed by this cursor
     lmScoreCursor*      m_pScoreCursor;     //ScoreCursor using this VCursor
-	int					m_nStaff;			//staff (1..n)
-	int					m_nSegment;			//current segment (0..n-1)
 	lmSegment*			m_pSegment;			//current segment
+
+    //state variables
+    int					m_nStaff;			//staff (1..n)
+	int					m_nSegment;			//current segment (0..n-1)
 	float				m_rTimepos;			//timepos
 	lmItCSO				m_it;				//iterator, to speed up cursor moves
 

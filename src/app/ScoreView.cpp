@@ -134,16 +134,11 @@ lmScoreView::lmScoreView()
 	//cursor initializations
     m_pScoreCursor = (lmScoreCursor*)NULL;
     m_pGuiCursor = (lmScoreViewCursor*)NULL;
-	m_pCursorSO = (lmStaffObj*)NULL;
-    m_nCursorIdSO = -1;
-    m_pCursorIT = (lmSOIterator*)NULL;
-
+    m_pCursorSO = (lmStaffObj*)NULL;
 }
 
 lmScoreView::~lmScoreView()
 {
-    if (m_pCursorIT)
-        delete m_pCursorIT;
     if (m_pGuiCursor)
         delete m_pGuiCursor;
 }
@@ -955,6 +950,8 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
                 //Non-draggable shape
 				//TODO: Is this possible? Possible selection?
             }
+            //move cursor to that object
+            OnClickOnObject(pGMO);
 		}
 		else if (pGMO && pGMO->IsBoxSliceVStaff())
 		{
@@ -1374,18 +1371,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         AdjustScrollbars();
     }
 
-    //// Following code initializes cursor position if not yet initialized.
-    //// Next code has nothing to do with repainting but I didn't find a better place to
-    //// include it. And when repainting it is necessary to have cursor initialized.
-    //if (!m_pGuiCursor)
-    //{
-    //    m_pGuiCursor = new lmScoreViewCursor(this, (lmCanvas*)m_pCanvas, pScore);
-    //    SetInitialCursorPosition();
-    //    //TODO: This is not the best place to start the cursor. If the PO is going to
-    //    //be higlighted this will force a repaint (inside the paint routine!!)
-    //    m_pGuiCursor->DisplayCursor(m_rScale);
-    //}
-
     // the repaintRect is referred to canvas window origin and is unscrolled.
     // To refer it to view origin it is necessary to add scrolling origin
     wxRect drawRect(repaintRect.x + canvasOffset.x, repaintRect.y + canvasOffset.y,
@@ -1608,6 +1593,48 @@ void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSlice
 	MoveCursorNearTo(uPos, pVStaff, nStaff, nMeasure);
 }
 
+void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
+{
+	//Click on a staffobj. Move cursor to that staffobj
+	//uPos: click point, referred to current page origin
+
+    lmScoreObj* pSCO = pGMO->GetScoreOwner();
+    wxASSERT(pSCO->GetScoreObjType() == lmSOT_ComponentObj);
+        
+    //move cursor to object
+    if (m_pGuiCursor)
+    {
+        lmStaffObj* pSO = (lmStaffObj*)NULL;
+        if (((lmComponentObj*)pSCO)->GetType() ==  eSCOT_StaffObj)
+        {
+            //it is a staffobj. Position cursor on it
+            pSO = (lmStaffObj*)pSCO;
+        }
+        else if (((lmComponentObj*)pSCO)->GetType() ==  eSCOT_AuxObj)
+        {
+            //it is an auxobj. locate parent staffobj
+            lmScoreObj* pParent = pSCO->GetParentScoreObj(); 
+            while(pParent->GetScoreObjType() == lmSOT_ComponentObj &&
+                  ((lmComponentObj*)pParent)->GetType() ==  eSCOT_AuxObj)
+            {
+                pParent = pParent->GetParentScoreObj();
+            }
+            if (pParent->GetScoreObjType() == lmSOT_ComponentObj &&
+                ((lmComponentObj*)pParent)->GetType() ==  eSCOT_StaffObj)
+                pSO = (lmStaffObj*)pParent;
+            else
+                //TODO: should we do anything when owner is an instrument or the score?
+                ;
+
+        }
+
+        //if staffobj identified, move cursor to it
+        if (pSO)
+        {
+	        m_pScoreCursor->MoveCursorToObject((lmStaffObj*)pSO);
+        }
+    }
+}
 
 //------------------------------------------------------------------------------------------
 // cursor management
@@ -1615,7 +1642,6 @@ void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSlice
 
 void lmScoreView::SetInitialCursorPosition()
 {
-    if (m_pCursorIT) return;
 	lmBoxScore* pBS = m_graphMngr.GetBoxScore();
 	if (!pBS) return;
 
@@ -1626,7 +1652,6 @@ void lmScoreView::SetInitialCursorPosition()
         lmScore* pScore = m_pDoc->GetScore();
         m_pScoreCursor = pScore->AttachCursor(this);
         m_pScoreCursor->MoveFirst();
-		UpdateCursor();
 	}
 
 }
@@ -1637,7 +1662,6 @@ void lmScoreView::CursorRight(bool fNextObject)
 
 	//advance to next staff obj.
     m_pScoreCursor->MoveRight(fNextObject);
-	UpdateCursor();
 }
 
 void lmScoreView::CursorLeft(bool fPrevObject)
@@ -1646,7 +1670,6 @@ void lmScoreView::CursorLeft(bool fPrevObject)
 
 	//go back to previous staff obj.
     m_pScoreCursor->MoveLeft(fPrevObject);
-	UpdateCursor();
 }
 
 void lmScoreView::CursorUp()
@@ -1655,7 +1678,6 @@ void lmScoreView::CursorUp()
 
 	//go up to previous staff
     m_pScoreCursor->MoveUp();
-	UpdateCursor();
 }
 
 void lmScoreView::CursorDown()
@@ -1664,30 +1686,18 @@ void lmScoreView::CursorDown()
 
 	//go down to next staff
     m_pScoreCursor->MoveDown();
-	UpdateCursor();
-}
-
-void lmScoreView::UpdateCursor()
-{
-	//the score has been modified. So the cursor must be repainted at right
-	//position
-
-	m_pGuiCursor->RemoveCursor();
-    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);		//Restore Cursor
 }
 
 void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
 {
     if (!m_pGuiCursor) return;
 	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
-	UpdateCursor();
 }
 
 void lmScoreView::HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect)
 {
-    if (!m_pScoreCursor) return;
+    //Add/Remove highligt from specified staffobj
+    //Precondition: the cursor is currently hidden, to avoid interferences
 
     //prepare paper DC
     wxClientDC dc(m_pCanvas);
@@ -1700,16 +1710,55 @@ void lmScoreView::HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelec
 	wxPoint org = GetDCOriginForPage(nNumPage);
 	dc.SetDeviceOrigin(org.x, org.y);
 
-    //Hide cursor so it doesn't interfere
-	m_pGuiCursor->RemoveCursor();
-
     //highlight or unhighlight the staffobj
     m_pDoc->GetScore()->CursorHighlight(pSO, nStaff, &m_Paper, fSelect);
+}
 
-    //Display cursor again
+void lmScoreView::OnCursorMoved()
+{
+    if (!m_pScoreCursor) return;
+
+    //Hide cursor at old position
+	m_pGuiCursor->RemoveCursor();
+
+    //Remove highlight from previous object
+    if (m_pCursorSO)
+        HighlightCursorObject(m_pCursorSO, m_nCursorStaff, false);       //false = remove higlight
+
+    //Update pointed object
+    m_pCursorSO = m_pScoreCursor->GetCursorSO();
+
+    //Add highlight to current object
+    if (m_pCursorSO)
+    {
+        if (m_pCursorSO->GetTimePos() == m_pScoreCursor->GetCursorTime())
+        {
+            //cursor is pointing to an object. Highlight it
+            m_nCursorStaff = m_pScoreCursor->GetCursorNumStaff();
+            HighlightCursorObject(m_pCursorSO, m_nCursorStaff, true);       //true = add higlight
+        }
+        else
+        {
+            //cursor is pointing to a timepos
+            m_pCursorSO = (lmStaffObj*)NULL;
+        }
+    }
+
+    //Display cursor in new position
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
     m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);
 }
 
+void lmScoreView::OnCursorObjectDeleted()
+{
+    //the object pointed by cursor has bee deleted. The view is informed to invalidate
+    //any stored reference to the deleted object
 
+    m_pCursorSO = (lmStaffObj*)NULL;
+}
+
+lmVStaffCursor* lmScoreView::GetCursor()
+{
+    return m_pScoreCursor->GetCursor();
+}

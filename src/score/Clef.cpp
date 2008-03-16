@@ -189,17 +189,10 @@ wxString lmClef::SourceLDP(int nIndent)
         sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
     }
     
-    //visible?
-    if (!m_fVisible) { sSource += _T(" noVisible"); }
+	//base class
+	sSource += lmStaffObj::SourceLDP(nIndent);
 
-    //location
-    sSource += SourceLDP_Location(m_uPaperPos);
-
-	//attached AuxObjs
-	sSource += lmStaffObj::SourceLDP(nIndent+1);
-
-    sSource += _T(")\n");
-    return sSource;
+	return sSource;
 }
 
 wxString lmClef::SourceXML(int nIndent)

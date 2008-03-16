@@ -81,6 +81,7 @@ public:
     bool GetOptionBool(wxString sOptName);
     wxString GetOptionString(wxString sOptName); 
 
+
 private:
     
     lmScoreObj*                   m_pOwner;      //the owner of this context

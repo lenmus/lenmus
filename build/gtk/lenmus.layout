@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../../src/app/AboutDialog.cpp" open="1" top="1" tabpos="15">
+	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="15">
 		<Cursor position="2157" topLine="49" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
@@ -32,7 +32,7 @@
 		<Cursor position="4140" topLine="94" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="81751" topLine="2238" />
+		<Cursor position="35375" topLine="884" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
@@ -56,7 +56,7 @@
 		<Cursor position="4851" topLine="134" />
 	</File>
 	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="56">
-		<Cursor position="60489" topLine="1595" />
+		<Cursor position="44946" topLine="1201" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="1" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
@@ -172,6 +172,12 @@
 	<File name="../../src/graphic/AggDrawer.h" open="0" top="0" tabpos="9">
 		<Cursor position="1596" topLine="33" />
 	</File>
+	<File name="../../src/graphic/BoxPage.cpp" open="1" top="0" tabpos="79">
+		<Cursor position="5032" topLine="143" />
+	</File>
+	<File name="../../src/graphic/BoxScore.cpp" open="1" top="0" tabpos="80">
+		<Cursor position="3886" topLine="118" />
+	</File>
 	<File name="../../src/graphic/BoxSliceVStaff.cpp" open="1" top="0" tabpos="61">
 		<Cursor position="8104" topLine="224" />
 	</File>
@@ -232,8 +238,11 @@
 	<File name="../../src/html/BookData.h" open="1" top="0" tabpos="45">
 		<Cursor position="5838" topLine="138" />
 	</File>
-	<File name="../../src/html/ContentsBoxCtrol.cpp" open="0" top="0" tabpos="102">
-		<Cursor position="20922" topLine="60" />
+	<File name="../../src/html/ContentsBoxCtrol.cpp" open="1" top="0" tabpos="88">
+		<Cursor position="2326" topLine="60" />
+	</File>
+	<File name="../../src/html/ContentsBoxCtrol.h" open="1" top="1" tabpos="89">
+		<Cursor position="4976" topLine="120" />
 	</File>
 	<File name="../../src/html/HtmlWindow.cpp" open="1" top="0" tabpos="17">
 		<Cursor position="7688" topLine="213" />
@@ -280,11 +289,17 @@
 	<File name="../../src/ldp_parser/AuxString.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="14697" topLine="433" />
 	</File>
-	<File name="../../src/ldp_parser/LDPNode.cpp" open="0" top="0" tabpos="18">
-		<Cursor position="4648" topLine="126" />
+	<File name="../../src/ldp_parser/LDPNode.cpp" open="1" top="0" tabpos="86">
+		<Cursor position="1915" topLine="51" />
+	</File>
+	<File name="../../src/ldp_parser/LDPNode.h" open="1" top="0" tabpos="87">
+		<Cursor position="2110" topLine="32" />
 	</File>
 	<File name="../../src/ldp_parser/LDPParser.cpp" open="1" top="0" tabpos="40">
-		<Cursor position="124289" topLine="3390" />
+		<Cursor position="17129" topLine="500" />
+	</File>
+	<File name="../../src/ldp_parser/LDPParser.h" open="1" top="0" tabpos="83">
+		<Cursor position="1380" topLine="19" />
 	</File>
 	<File name="../../src/ldp_parser/LDPToken.cpp" open="0" top="0" tabpos="20">
 		<Cursor position="22039" topLine="635" />
@@ -343,6 +358,9 @@
 	<File name="../../src/options/ToolbarsOptPanel.h" open="0" top="0" tabpos="38">
 		<Cursor position="1309" topLine="12" />
 	</File>
+	<File name="../../src/score/AuxObj.cpp" open="1" top="0" tabpos="85">
+		<Cursor position="12321" topLine="378" />
+	</File>
 	<File name="../../src/score/Barline.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="6604" topLine="177" />
 	</File>
@@ -365,10 +383,10 @@
 		<Cursor position="17209" topLine="573" />
 	</File>
 	<File name="../../src/score/Context.cpp" open="1" top="0" tabpos="73">
-		<Cursor position="2942" topLine="74" />
+		<Cursor position="2942" topLine="64" />
 	</File>
-	<File name="../../src/score/Instrument.cpp" open="0" top="0" tabpos="22">
-		<Cursor position="9872" topLine="282" />
+	<File name="../../src/score/Instrument.cpp" open="1" top="0" tabpos="81">
+		<Cursor position="3459" topLine="85" />
 	</File>
 	<File name="../../src/score/KeySignature.cpp" open="1" top="0" tabpos="13">
 		<Cursor position="4761" topLine="116" />
@@ -409,11 +427,14 @@
 	<File name="../../src/score/TimeSignature.cpp" open="0" top="0" tabpos="65">
 		<Cursor position="8576" topLine="222" />
 	</File>
+	<File name="../../src/score/UndoRedo.h" open="1" top="0" tabpos="82">
+		<Cursor position="3241" topLine="91" />
+	</File>
 	<File name="../../src/score/VStaff.cpp" open="1" top="0" tabpos="75">
 		<Cursor position="4164" topLine="77" />
 	</File>
 	<File name="../../src/score/VStaff.h" open="1" top="0" tabpos="74">
-		<Cursor position="9421" topLine="216" />
+		<Cursor position="10022" topLine="226" />
 	</File>
 	<File name="../../src/score/defs.cpp" open="0" top="0" tabpos="70">
 		<Cursor position="1726" topLine="82" />

@@ -74,6 +74,7 @@ WX_DEFINE_LIST(NoteRestsList);
 //====================================================================================================
 //Constructors and destructors
 //====================================================================================================
+
 lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
                    bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible)
 	: lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
@@ -123,6 +124,28 @@ lmNoteRest::~lmNoteRest()
         }
     }
 
+    //if note/rest to remove is in a beamed group, adjust/delete the beam
+    if (m_pBeam) {
+        m_pBeam->Remove(this);
+        if (m_pBeam->NumNotes() == 1)
+        {
+            //the beamed group had two notes. By removing this one the beam must be 
+            //removed
+            m_pBeam->RemoveAllNotes();
+            delete m_pBeam;
+            m_pBeam = (lmBeam*)NULL;
+        }
+        else if (m_pBeam->NumNotes() == 0)
+        {
+            //THINK: Is this case possible?. In any case following code doesn't harm
+            delete m_pBeam;
+            m_pBeam = (lmBeam*)NULL;
+        }
+        else
+            m_pBeam->AutoSetUp();       //adjust beam information
+    }
+
+
 }
 
 void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
@@ -157,12 +180,51 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
                     //AWARE with this note/rest the beaming ends. But it si not yet posible to
                     //compute beaming information as ther could remain notes to add in
                     //chord to this note. Due to this, the computation of stems has
-                    //been delayed to the measuremen phase of the first note of the beam.
+                    //been delayed to the layout phase, when layouting the first note of
+                    //the beam.
                     g_pCurBeam = (lmBeam*)NULL;        // no beam open
                 }
             }
         }
     }
+}
+
+
+void lmNoteRest::Freeze(lmUndoData* pUndoData)
+{
+    //save info about relations and invalidate ptrs.
+
+    //save info
+    //TODO
+
+    //invalidate relation pointers
+    m_pBeam = (lmBeam*)NULL;
+    m_pTupletBracket = (lmTupletBracket*)NULL;
+    //m_pNotations = (AuxObjsList*)NULL;
+    //m_pLyrics = (AuxObjsList*)NULL;
+
+    //invalidate other pointers
+    //NONE
+
+    //lmStaffObj::Freeze(pUndoData);
+}
+
+void lmNoteRest::UnFreeze(lmUndoData* pUndoData)
+{
+    //restore pointers
+    //TODO
+}
+
+void lmNoteRest::RemoveBeam()
+{
+    m_fBeamed = false;              //note is not longer beamed
+
+    //remove beam object
+    m_pBeam = (lmBeam*)NULL;
+
+    //remove beaming information
+    for (int i=0; i < 6; i++)
+        m_BeamInfo[i].Type = eBeamNone;      
 }
 
 lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,

@@ -26,8 +26,11 @@
 #pragma interface "Chord.cpp"
 #endif
 
+#include <list>
+
 class lmBox;
 class lmShapeNote;
+class lmUndoData;
 
 class lmChord
 {
@@ -35,18 +38,20 @@ public:
     lmChord(lmNote* pNote);
     ~lmChord();
 
-    lmNote* GetMaxNote() { return m_pMaxNote; }
-    lmNote* GetMinNote() { return m_pMinNote; }
-    lmNote* GetBaseNote();
-    int GetNumNotes();
-    void AddNote(lmNote* pNote);
+    lmNote* GetMaxNote();
+    lmNote* GetMinNote();
+	inline lmNote* GetBaseNote() { return m_Notes.front(); }
+    inline int GetNumNotes() { return (int)m_Notes.size(); }
+    void AddNote(lmNote* pNote, int nIndex = -1);
     void RemoveNote(lmNote* pNote);
-    bool IsLastNoteOfChord(lmNote* pNote);
+	inline bool IsLastNoteOfChord(lmNote* pNote) { return m_Notes.back() == pNote; }
     void SetStemDirection(bool fStemDown);
     void AddStemShape(lmPaper* pPaper, wxColour colorC,
 					  wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
     lmLUnits GetXRight();
+	inline bool IsBaseNote(lmNote* pNote) { return pNote == m_Notes.front(); }
+	int GetNoteIndex(lmNote* pNote);
 
 	//debug
     wxString Dump();
@@ -63,18 +68,11 @@ private:
     lmNote* CheckIfNoteCollision(lmShape* pShape);
 
 
-
-
         // member variables
 
-
-    NotesList		m_cNotes;		//list of notes that form the chord
-    lmNote*			m_pBaseNote;	//base note (first note in chord definition)
-    lmNote*			m_pMinNote;		//lowest pitch note
-    lmNote*			m_pMaxNote;		//highest pitch note
-    lmNote*			m_pLastNote;	//the last note added the chord
-    bool			m_fStemDown;	//chord stem direction
-    lmEStemType		m_nStemType;	//type of stem
+    std::list<lmNote*>  m_Notes;		//list of notes that form the chord    
+    bool				m_fStemDown;	//chord stem direction
+    lmEStemType			m_nStemType;	//type of stem
 };
 
 #endif    // __LM_CHORD_H__

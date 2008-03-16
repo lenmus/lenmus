@@ -37,6 +37,7 @@ class lmChord;
 class lmShape;
 class lmCompositeShape;
 class lmShapeNote;
+class lmUndoData;
 
 #define lmREMOVE_TIES   true
 #define lmCHANGE_TIED   false
@@ -65,7 +66,7 @@ public:
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	void PlaybackHighlight(lmPaper* pPaper, wxColour colorC);
 	void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
-	wxString GetName() const { return _T("note"); }
+	inline wxString GetName() const { return _T("note"); }
 
     wxString    Dump();
     wxString    SourceLDP(int nIndent);
@@ -79,14 +80,14 @@ public:
 
 
     //methods related to stems
-    lmEStemType GetStemType() { return m_nStemType; }
-    lmLUnits    GetDefaultStemLength();
-    lmLUnits    GetStandardStemLenght();
-    void        SetStemLength(lmLUnits uLength) { m_uStemLength = uLength; };
-    void        SetStemDirection(bool fStemDown);
-    lmLUnits    GetStemThickness() {return m_uStemThickness; }
-    lmLUnits    GetStemLength() { return m_uStemLength; }
-    bool        StemGoesDown() { return m_fStemDown; }
+    inline lmEStemType GetStemType() { return m_nStemType; }
+    lmLUnits GetDefaultStemLength();
+    lmLUnits GetStandardStemLenght();
+    inline void SetStemLength(lmLUnits uLength) { m_uStemLength = uLength; };
+    void SetStemDirection(bool fStemDown);
+    inline lmLUnits GetStemThickness() {return m_uStemThickness; }
+    inline lmLUnits GetStemLength() { return m_uStemLength; }
+    inline bool StemGoesDown() { return m_fStemDown; }
 
 	//stems: methods related to layout phase
     lmLUnits    GetXStemLeft();
@@ -98,47 +99,48 @@ public:
 
 
     // methods related to chords
-    bool        IsInChord() { return (m_pChord != (lmChord*)NULL); }        
-    bool        IsBaseOfChord() { return m_pChord && m_fIsNoteBase; }
-    lmChord*    GetChord() { return m_pChord; }
-    lmChord*    StartChord();
-    void        ClearChordInformation();
-    void        SetNoteheadReversed(bool fValue) { m_fNoteheadReversed = fValue; }
-    bool        IsNoteheadReversed() { return m_fNoteheadReversed; }
+    inline bool IsInChord() { return (m_pChord != (lmChord*)NULL); }        
+    bool IsBaseOfChord();
+    inline lmChord* GetChord() { return m_pChord; }
+    inline void SetNoteheadReversed(bool fValue) { m_fNoteheadReversed = fValue; }
+    inline bool IsNoteheadReversed() { return m_fNoteheadReversed; }
+	inline void OnIncludedInChord(lmChord* pChord) { m_pChord = pChord; }
+	inline void OnRemovedFromChord() { m_pChord = (lmChord*)NULL; }
 
     //methods related to accidentals
-    bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
-    lmAccidental* GetAccidentals() { return m_pAccidentals; }
+    inline bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
+    inline lmAccidental* GetAccidentals() { return m_pAccidentals; }
 
     //methods related to ties
-    bool    CanBeTied(lmAPitch anPitch);
-    bool    NeedToBeTied() { return m_fNeedToBeTied; }
-    void    SetTie(lmTie* pTie) {
+    bool CanBeTied(lmAPitch anPitch);
+    inline bool NeedToBeTied() { return m_fNeedToBeTied; }
+    inline void SetTiePrev(lmTie* pTie) { m_pTiePrev = pTie; }
+    inline void SetTieNext(lmTie* pTie) {
                     m_pTieNext = pTie;
                     m_fNeedToBeTied = false; 
                 }
-    void    RemoveTie(lmTie* pTie); 
-    bool    IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
-    bool    IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
+    void RemoveTie(lmTie* pTie); 
+    inline bool IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
+    inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
 
     // methods related to sound
-    lmDPitch    GetDPitch();
-    lmMPitch    GetMPitch();
+    lmDPitch GetDPitch();
+    lmMPitch GetMPitch();
     inline lmAPitch GetAPitch() { return m_anPitch; }
     bool    IsPitchDefined();
     void    ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies); 
     void    ChangePitch(lmAPitch nAPitch, bool fRemoveTies);
     void    PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward);
-    int     GetStep() { return m_anPitch.Step(); }      //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
-    int     GetOctave() { return m_anPitch.Octave(); }
-    int     GetVolume() { return m_nVolume; }
-    void    SetVolume(int nVolume) { m_nVolume = nVolume; }
+    inline int GetStep() { return m_anPitch.Step(); }      //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
+    inline int GetOctave() { return m_anPitch.Octave(); }
+    inline int GetVolume() { return m_nVolume; }
+    inline void SetVolume(int nVolume) { m_nVolume = nVolume; }
     void    ComputeVolume();
 
     // methods used during layout phase
     bool AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxLeft,
                       lmLUnits uyTop, wxColour colorC);
-    lmShape* GetNoteheadShape() { return m_pNoteheadShape; }
+    inline lmShape* GetNoteheadShape() { return m_pNoteheadShape; }
     void ShiftNoteHeadShape(lmLUnits uxShift);
 	lmEGlyphIndex GetGlyphForFlag();
 	void CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
@@ -161,11 +163,17 @@ public:
 	void ChangePitch(int nSteps);
 	void ChangeAccidentals(int nSteps);
 
+    //undo/redo
+    virtual void Freeze(lmUndoData* pUndoData);
+    virtual void UnFreeze(lmUndoData* pUndoData);
 
 
 private:
+    //creation related
+    lmAccidental* CreateAccidentals(lmEAccidentals nAcc);
+    void CreateTie(lmNote* pNtPrev, lmNote* pNtNext);
+
     // rendering
-    void MakeUpPhase(lmPaper* pPaper);
     lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //layouting
@@ -215,13 +223,8 @@ private:
     // playback info
     int             m_nVolume;          // MIDI volume (0-127)
 
-    // common for sound and look 
-    //-----------------------------------------------------------------------
-
     //info for chords
     lmChord*    m_pChord;           //chord to which this note belongs or NULL if it is a single note
-    bool        m_fIsNoteBase;      //in chords identifies the first note of the chord. For notes not in
-                                    //  in chord is always true
     bool        m_fNoteheadReversed;      //this notehead is reversed to avoid collisions
 
     //tie related variables
@@ -230,8 +233,7 @@ private:
     bool        m_fNeedToBeTied;    //for building tie to previous note as the score is being built
 
 
-    // temporary information. Only valid during layout phase 
-    //-----------------------------------------------------------------------
+    //temporary information. Only valid during layout phase 
 
     // constituent shapes
     lmShapeGlyph*   m_pNoteheadShape;

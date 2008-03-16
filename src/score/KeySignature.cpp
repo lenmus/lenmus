@@ -135,18 +135,10 @@ wxString lmKeySignature::SourceLDP(int nIndent)
     sSource += _T("(key ");
     sSource += m_sLDPKeyName[m_nKeySignature];
 
-    //visible?
-    if (!m_fVisible) { sSource += _T(" noVisible"); }
+	//base class
+	sSource += lmStaffObj::SourceLDP(nIndent);
 
-    //location
-    sSource += SourceLDP_Location(m_uPaperPos);
-
-	//attached AuxObjs
-	sSource += lmStaffObj::SourceLDP(nIndent+1);
-
-    sSource += _T(")\n");
-    return sSource;
-
+	return sSource;
 }
 
 wxString lmKeySignature::SourceXML(int nIndent)

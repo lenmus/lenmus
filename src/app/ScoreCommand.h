@@ -26,11 +26,23 @@
 #pragma interface "ScoreCommand.cpp"
 #endif
 
+#include <list>
+
 #include "wx/cmdproc.h"
 
 #include "../score/defs.h"
+#include "../score/UndoRedo.h"
+#include "../score/ColStaffObjs.h"      //lmVCursorState
 class lmComponentObj;
 class lmScoreDocument;
+class lmGMObject;
+class lmScoreObj;
+class lmVStaffCursor;
+class lmVStaff;
+class lmNote;
+
+
+
 
 // base abstract class
 class lmScoreCommand: public wxCommand
@@ -58,9 +70,13 @@ public:
 protected:
     lmScoreCommand(const wxString& name, lmScoreDocument *pDoc);
 
+    //common methods
+    void CommandDone();
+
+
     lmScoreDocument*    m_pDoc;
 	bool				m_fDocModified;
-
+	lmUndoData		    m_UndoData;		    //collection of undo/redo items
 };
 
 
@@ -119,8 +135,8 @@ protected:
 class lmCmdDeleteObject: public lmScoreCommand
 {
 public:
-    lmCmdDeleteObject(const wxString& name, lmScoreDocument *pDoc);
-    ~lmCmdDeleteObject() {}
+    lmCmdDeleteObject(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc);
+    ~lmCmdDeleteObject();
 
     //implementation of pure virtual methods in base class
     bool Do();
@@ -129,8 +145,9 @@ public:
 
 
 protected:
-
-
+    lmVCursorState      m_tCursorState; //cursor state before deletion
+    lmVStaff*           m_pVStaff;      //affected VStaff
+    lmStaffObj*         m_pSO;          //deleted note
 };
 
 
@@ -140,7 +157,8 @@ class lmCmdInsertBarline: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertBarline(const wxString& name, lmScoreDocument *pDoc, lmEBarline nType);
+    lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                       lmEBarline nType);
     ~lmCmdInsertBarline() {}
 
     //implementation of pure virtual methods in base class
@@ -150,7 +168,8 @@ public:
 
 
 protected:
-    lmEBarline	    m_nBarlineType;
+    lmVStaffCursor*     m_pVCursor;
+    lmEBarline	        m_nBarlineType;
 };
 
 
@@ -160,7 +179,8 @@ class lmCmdInsertClef: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertClef(const wxString& name, lmScoreDocument *pDoc, lmEClefType nClefType);
+    lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                    lmEClefType nClefType);
     ~lmCmdInsertClef() {}
 
     //implementation of pure virtual methods in base class
@@ -170,7 +190,8 @@ public:
 
 
 protected:
-    lmEClefType     m_nClefType;
+    lmVStaffCursor*     m_pVCursor;
+    lmEClefType         m_nClefType;
 };
 
 
@@ -180,7 +201,7 @@ class lmCmdInsertNote: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertNote(const wxString& name, lmScoreDocument *pDoc,
+    lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
 					lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
 					lmENoteType nNoteType, float rDuration, lmENoteHeads nNotehead,
 					lmEAccidentals nAcc);
@@ -193,13 +214,17 @@ public:
 
 
 protected:
-	lmENoteType		m_nNoteType;
-	lmEPitchType	m_nPitchType;
-	wxString		m_sStep;
-	wxString		m_sOctave;
-	float			m_rDuration;
-	lmENoteHeads	m_nNotehead;
-	lmEAccidentals	m_nAcc;
+    lmVStaffCursor*     m_pVCursor;
+	lmENoteType		    m_nNoteType;
+	lmEPitchType	    m_nPitchType;
+	wxString		    m_sStep;
+	wxString		    m_sOctave;
+	float			    m_rDuration;
+	lmENoteHeads	    m_nNotehead;
+	lmEAccidentals	    m_nAcc;
+
+    lmVStaff*           m_pVStaff;      //affected VStaff
+    lmNote*             m_pNewNote;     //inserted note
 };
 
 

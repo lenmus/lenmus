@@ -50,10 +50,14 @@ public:
     void CreateShape();
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
 	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
-
+    void RemoveAllNotes();
+    void AutoSetUp();
 
 private:
 	int FindNote(lmNoteRest* pNR);
+    int GetBeamingLevel(lmNote* pNote);
+
+
 
 	lmNoteRest*     m_pNotePrev;    //the previous note to the group (for ties)
     bool            m_fStemsDown;

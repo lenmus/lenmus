@@ -132,7 +132,8 @@ lmBoxSystem* lmBoxScore::GetSystem(int nSystem)
 
 	//locate page
 	bool fFound = false;
-    for (int i=0; i < (int)m_aPages.size(); i++)
+    int i;
+    for (i=0; i < (int)m_aPages.size(); i++)
     {
         if (m_aPages[i]->GetFirstSystem() <= nSystem &&
 			m_aPages[i]->GetLastSystem() >= nSystem)

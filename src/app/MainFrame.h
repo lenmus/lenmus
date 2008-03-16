@@ -181,6 +181,9 @@ public:
     void OnWindowNext(wxCommandEvent& WXUNUSED(event));
     void OnWindowPrev(wxCommandEvent& WXUNUSED(event));
 
+    // Voice events
+    void OnComboVoice(wxCommandEvent& event);
+
     // Other menu items events
     void OnOptions(wxCommandEvent& WXUNUSED(event));
     void OnOpenBook(wxCommandEvent& event);
@@ -230,6 +233,7 @@ public:
     inline lmTextBookController* GetBookController() { return m_pBookController; }
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
 	bool IsToolBoxVisible();
+    inline int GetSelectedVoice() { return m_pComboVoice->GetSelection(); }
 
 	// call backs
 	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
@@ -246,6 +250,8 @@ protected:
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
 	void ShowEditTools(bool fShow);
+    void SetFocusOnActiveView();
+
 
     //status bar
     void CreateTheStatusBar(int nType=0);
@@ -261,6 +267,7 @@ protected:
     lmHelpController*       m_pHelp;
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
+    wxComboBox*             m_pComboVoice;
 
     lmMetronome*        m_pMainMtr;        //independent metronome
     lmMetronome*        m_pMtr;            //metronome currently associated to frame metronome controls
@@ -280,6 +287,7 @@ protected:
     wxToolBar*      m_pTbMtr;           // metronome toolbar
     wxToolBar*      m_pToolbar;         // main toolbar
     wxToolBar*      m_pTbTextBooks;     // text books navigation toolbar
+    wxToolBar*      m_pTbVoice;         // voice toolbar
 
     // status bar
     lmStatusBar*    m_pStatusBar;

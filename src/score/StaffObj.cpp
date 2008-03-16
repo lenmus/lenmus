@@ -38,6 +38,7 @@
 #include "wx/image.h"
 #include "Score.h"
 #include "ObjOptions.h"
+#include "UndoRedo.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../app/ScoreCanvas.h"
@@ -59,6 +60,7 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
 	m_tSrcPos = g_tDefaultPos;
 
     m_pShape = (lmShape*)NULL;
+	m_fModified = false;
 }
 
 lmScoreObj::~lmScoreObj()
@@ -299,6 +301,19 @@ void lmScoreObj::SetReferencePos(lmUPoint& uPos)
     m_uPaperPos = uPos;
 }
 
+void lmScoreObj::RecordHistory(lmUndoData* pUndoData) 
+{
+	if (!m_fModified) return;
+
+	//once the changes are logged, consolidate new state
+	AcceptChanges();
+	m_fModified = false;
+}
+
+void lmScoreObj::AcceptChanges() 
+{
+	m_fModified = false;
+}
 
 
 //-------------------------------------------------------------------------------------------------
@@ -324,10 +339,6 @@ lmComponentObj::lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocat
 
     // behaviour
     m_fIsDraggable = fIsDraggable;
-
-    // initializations: font related info
-    //m_pFont = (wxFont *)NULL;
-
 }
 
 lmComponentObj::~lmComponentObj()
@@ -613,15 +624,26 @@ lmContext* lmStaffObj::NewUpdatedContext()
 
 wxString lmStaffObj::SourceLDP(int nIndent)
 {
-    // Generate source code for AuxObjs attached to this StaffObj
 	wxString sSource = _T("");
+
+    //visible?
+    if (!m_fVisible) { sSource += _T(" noVisible"); }
+
+    // Generate source code for AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
+		nIndent++;
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         {
             sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent);
         }
+		nIndent--;
     }
+
+    //location
+    sSource += SourceLDP_Location(m_uPaperPos);
+
+    sSource += _T(")\n");
 	return sSource;
 }
 

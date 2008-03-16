@@ -31,6 +31,7 @@
 class lmSpacer;
 class lmMetronomeMark;
 class lmBoxSliceVStaff;
+class lmScoreCommand;
 
 
 
@@ -109,15 +110,18 @@ public:
     lmStaffObj* AddText(wxString sText, lmEAlignment nAlign,
                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
-	//inserting StaffObs
+	//Edition commands
+	//--- inserting StaffObs
     lmBarline* InsertBarline(lmEBarline nType = lm_eBarlineSimple);
 	lmClef* InsertClef(lmEClefType nClefType);
-	lmNote* InsertNote(lmEPitchType nPitchType, wxString sStep,
+	lmNote* Cmd_InsertNote(lmUndoData* pUndoData, lmEPitchType nPitchType, wxString sStep,
 					   wxString sOctave, lmENoteType nNoteType, float rDuration,
 					   lmENoteHeads nNotehead, lmEAccidentals nAcc);
-
-	//deleting StaffObjs
+	//--- deleting StaffObjs
 	void DeleteObject();
+	void DeleteObject(lmStaffObj* pSO);
+    void Cmd_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO);
+    void Cmd_Undo_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO);
 
     //error management
     inline wxString GetErrorMessage() { return m_sErrorMsg; }
@@ -214,6 +218,7 @@ private:
 	//source LDP and MusicXML generation
 	void LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
 								    float rTime, lmStaffObj* pSO);
+	float LDP_AdvanceTimeCounter(lmStaffObj* pSO);
 	void XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
 								    float rTime, lmStaffObj* pSO);
     void XML_AddShitTimeTag(wxString& sSource, int nIndent, bool fFwd, float rTime);

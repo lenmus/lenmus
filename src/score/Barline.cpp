@@ -88,16 +88,9 @@ wxString lmBarline::SourceLDP(int nIndent)
     sSource += _T("(barline ");
     sSource += GetBarlineLDPNameFromType(m_nBarlineType);
 
-    //visible?
-    if (!m_fVisible) { sSource += _T(" noVisible"); }
+	//base class
+	sSource += lmStaffObj::SourceLDP(nIndent);
 
-	//attached AuxObjs
-	sSource += lmStaffObj::SourceLDP(nIndent+1);
-
-    //location
-    sSource += SourceLDP_Location(m_uPaperPos);
-
-    sSource += _T(")\n");
     return sSource;
 }
 

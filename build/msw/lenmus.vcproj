@@ -337,6 +337,9 @@
 				RelativePath="..\..\src\score\TupletBracket.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\UndoRedo.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\VStaff.cpp">
 			</File>
 			<File

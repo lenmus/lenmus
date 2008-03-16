@@ -47,8 +47,11 @@
 #include "wx/wx.h"
 #endif
 
+#include <algorithm>
+
 #include "Score.h"
 #include "Glyph.h"
+#include "UndoRedo.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
 #include "../graphic/GMObject.h"
@@ -64,19 +67,13 @@ int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 
 lmChord::lmChord(lmNote* pBaseNote)
 {
-    //
     // Creates the chord object, with only the base note.
-    //
 
-    m_cNotes.Append(pBaseNote);
-
-    // as this is the only note it is the max and the min one
-    m_pBaseNote = pBaseNote;
-    m_pMinNote = pBaseNote;
-    m_pMaxNote = pBaseNote;
-	m_pLastNote = pBaseNote;
-
+    m_Notes.push_back(pBaseNote);
     m_nStemType = pBaseNote->GetStemType();
+
+	//inform added note
+	pBaseNote->OnIncludedInChord(this);
 }
 
 lmChord::~lmChord()
@@ -86,107 +83,94 @@ lmChord::~lmChord()
     // note: the base note.
     //
 
-    wxASSERT(m_cNotes.GetCount() == 1);
+    wxASSERT(m_Notes.size() == 1);
 
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
-    lmNote* pNote = (lmNote*)pNode->GetData();
-    pNote->ClearChordInformation();
+    lmNote* pNote = m_Notes.front();
+    pNote->OnRemovedFromChord();
 
-    m_cNotes.DeleteObject(pNote);
-
-    //notes will not be deleted when deleting the list, as they are part of a lmScore
-    // and will be deled there.
-    m_cNotes.DeleteContents(false);
-    m_cNotes.Clear();
+    //notes will not be deleted when deleting the chord list, as they are still part of the
+    //score and will be deleted later
+    m_Notes.pop_front();
+    m_Notes.clear();
 }
 
 wxString lmChord::Dump()
 {
-    wxString sDump = wxString::Format(_T("Chord: num.notes=%d ("), m_cNotes.GetCount());
+    wxString sDump = wxString::Format(_T("Chord: num.notes=%d ("), GetNumNotes());
 
-    int iPos;
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
-    lmNote* pNote;
-    for(iPos=0; pNode; pNode=pNode->GetNext(), iPos++) {
-        pNote = (lmNote*)pNode->GetData();
-        sDump += wxString::Format(_T("%d,") ,pNote->GetDPitch() );
+    std::list<lmNote*>::iterator it;
+    for(it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    {
+        sDump += wxString::Format(_T("%d,"), (*it)->GetDPitch() );
     }
     sDump += wxString::Format(_T("), max=%d, min=%d, base=%d, stem="),
-                m_pMaxNote->GetDPitch(), m_pMinNote->GetDPitch(), m_pBaseNote->GetDPitch() );
+                GetMaxNote()->GetDPitch(), GetMinNote()->GetDPitch(), GetBaseNote()->GetDPitch() );
     sDump += (m_fStemDown ? _T("down") : _T("up"));
 
     return sDump;
 }
 
-void lmChord::AddNote(lmNote* pNewNote)
+void lmChord::AddNote(lmNote* pNewNote, int nIndex)
 {
-    // Add a note to the chord.
-    // Notes will be kept ordered by pitch. First item lowest pitch
-    // When this method is invoked at least the base note is in the collection
+    // Add a note to the chord. Index is the position taht the added note must occupy
+	// (0..n). If -1, note will be added at the end.
+    // Precondition: When this method is invoked at least one note in the
+	// chord: the base note
 
-    wxASSERT(m_cNotes.GetCount() > 0);
+    wxASSERT(GetNumNotes() > 0);
 
-    int iPos;
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
-    lmNote* pNote;
-    for(iPos=0; pNode; pNode=pNode->GetNext(), iPos++) {
-        pNote = (lmNote*)pNode->GetData();
-        if (pNote->GetDPitch() > pNewNote->GetDPitch()) break;
-    }
-    m_cNotes.Insert((size_t)iPos, pNewNote);
+	//add the note
+	if (nIndex == -1 || nIndex == GetNumNotes())
+		m_Notes.push_back(pNewNote);
+	else
+	{
+		int iN;
+		std::list<lmNote*>::iterator it;
+		for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
+		{
+			if (iN == nIndex)
+			{
+				//insert before current item
+				m_Notes.insert(it, pNewNote);
+				break;
+			}
 
-    //Update Max and Min note
-    if (m_pMinNote->GetDPitch() > pNewNote->GetDPitch()) {
-        m_pMinNote = pNewNote;
-    } else if (m_pMaxNote->GetDPitch() < pNewNote->GetDPitch()) {
-        m_pMaxNote = pNewNote;
-    }
+		}
+	}
 
-	// update last note
-	m_pLastNote = pNewNote;
-
-    //compute stem direction
+    //re-compute stem direction
     ComputeStemDirection();
 
 }
 
-void lmChord::RemoveNote(lmNote* pNote)
+void lmChord::RemoveNote(lmNote* pNoteToRemove)
 {
 	// Removes a note from a chord.
 	// When invoked there must be at least two notes as
 	// otherwise it can not be a chord.
 
-	wxASSERT(m_cNotes.GetCount() > 1);
+	wxASSERT(GetNumNotes() > 1);
 
-    m_cNotes.DeleteObject(pNote);
-
-    //Update Max and Min note
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
-    pNote = (lmNote*)pNode->GetData();
-    m_pMinNote = pNote;
-    m_pMaxNote = pNote;
-
-    pNode=pNode->GetNext();
-    for(; pNode; pNode=pNode->GetNext())
-    {
-        pNote = (lmNote*)pNode->GetData();
-        if (m_pMinNote->GetDPitch() > pNote->GetDPitch()) {
-            m_pMinNote = pNote;
-        } else if (m_pMaxNote->GetDPitch() < pNote->GetDPitch()) {
-            m_pMaxNote = pNote;
-        }
-    }
-
+    //remove note
+    std::list<lmNote*>::iterator it;
+    it = std::find(m_Notes.begin(), m_Notes.end(), pNoteToRemove);
+    m_Notes.erase(it);
 }
 
-lmNote* lmChord::GetBaseNote()
+int lmChord::GetNoteIndex(lmNote* pNote)
 {
-    return m_pBaseNote;
-}
+	//returns the position in the notes list (0..n)
 
-int lmChord::GetNumNotes()
-{
-    return (int)m_cNotes.GetCount();
+	wxASSERT(GetNumNotes() > 1);
+
+	int iN;
+    std::list<lmNote*>::iterator it;
+    for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
+	{
+		if (pNote == *it) return iN;
+	}
+    wxASSERT(false);	//note not found
+	return 0;			//compiler happy
 }
 
 void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
@@ -205,12 +189,12 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     if (!pBaseNote->IsBeamed()) {
         //compute y positions
         if (m_fStemDown) {
-            uyStemStart = m_pMaxNote->GetYStartStem();
-            uyStemEnd = m_pMinNote->GetYEndStem();
+            uyStemStart = GetMaxNote()->GetYStartStem();
+            uyStemEnd = GetMinNote()->GetYEndStem();
         }
         else {
-            uyStemStart = m_pMinNote->GetYStartStem();
-            uyStemEnd = m_pMaxNote->GetYEndStem();
+            uyStemStart = GetMinNote()->GetYStartStem();
+            uyStemEnd = GetMaxNote()->GetYEndStem();
         }
 
     }
@@ -219,12 +203,12 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
         // stored in the base note
         if (pBaseNote->StemGoesDown()) {
             //stem down: line at left of noteheads
-            uyStemStart = m_pMaxNote->GetYStartStem();
-            uyStemEnd = m_pMinNote->GetYStartStem() + pBaseNote->GetStemLength();
+            uyStemStart = GetMaxNote()->GetYStartStem();
+            uyStemEnd = GetMinNote()->GetYStartStem() + pBaseNote->GetStemLength();
         } else {
             //stem up: line at right of noteheads
-            uyStemStart = m_pMinNote->GetYStartStem();
-            uyStemEnd = m_pMaxNote->GetYStartStem() - pBaseNote->GetStemLength();
+            uyStemStart = GetMinNote()->GetYStartStem();
+            uyStemEnd = GetMaxNote()->GetYStartStem() - pBaseNote->GetStemLength();
         }
     }
 
@@ -296,20 +280,45 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	}
 
 	//delete stem shapes created in the notes
-    for(wxNotesListNode *pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext() )
-	{
-        ((lmNote*)pNode->GetData())->DeleteStemShape();
+    std::list<lmNote*>::iterator it;
+    for(it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    {
+        (*it)->DeleteStemShape();
     }
-
 }
 
-
-bool lmChord::IsLastNoteOfChord(lmNote* pNote)
+lmNote* lmChord::GetMaxNote() 
 {
-    //wxNotesListNode *pNode = m_cNotes.GetLast();
-    //lmNote* pLastNote = (lmNote*)pNode->GetData();
-    return (m_pLastNote->GetID() == pNote->GetID());
+    std::list<lmNote*>::iterator it = m_Notes.begin();
+	lmDPitch dMaxPitch = (*it)->GetDPitch();
+    lmNote* pMaxNote = (*it);
 
+    for(++it; it != m_Notes.end(); ++it)
+    {
+        if (dMaxPitch < (*it)->GetDPitch())
+		{
+            pMaxNote = (*it);
+			dMaxPitch = (*it)->GetDPitch();
+        }
+    }
+    return pMaxNote; 
+}
+
+lmNote* lmChord::GetMinNote() 
+{ 
+    std::list<lmNote*>::iterator it = m_Notes.begin();
+	lmDPitch dMinPitch = (*it)->GetDPitch();
+    lmNote* pMinNote = (*it);
+
+    for(++it; it != m_Notes.end(); ++it)
+    {
+        if (dMinPitch > (*it)->GetDPitch())
+		{
+            pMinNote = (*it);
+			dMinPitch = (*it)->GetDPitch();
+        }
+    }
+    return pMinNote; 
 }
 
 lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
@@ -395,7 +404,7 @@ void lmChord::ComputeStemDirection()
     //      ==>   Mean(NotePos) > MiddleLinePos -> downward
 
 
-    if (m_cNotes.GetCount() < 2) return;
+    if (GetNumNotes() < 2) return;
 
     lmNote* pBaseNote = GetBaseNote();
 
@@ -412,7 +421,7 @@ void lmChord::ComputeStemDirection()
     }
     else if (m_nStemType == lmSTEM_DEFAULT) {    //as decided by program
         //Rules
-        int nWeight = m_pMinNote->GetPosOnStaff() + m_pMaxNote->GetPosOnStaff();
+        int nWeight = GetMinNote()->GetPosOnStaff() + GetMaxNote()->GetPosOnStaff();
         if (nWeight > 12)
             m_fStemDown = true;
         else if (nWeight < 12)
@@ -420,14 +429,13 @@ void lmChord::ComputeStemDirection()
         else {
             //majority rule if more than two notes. Else default for two notes case
             m_fStemDown = TWO_NOTES_DEFAULT;
-            if (m_cNotes.GetCount() > 2) {
+            if (GetNumNotes() > 2) {
                 int iN;
                 nWeight = 0;
-                lmNote* pNote;
-                wxNotesListNode *pNode = m_cNotes.GetFirst();
-                for(iN=0; pNode; pNode=pNode->GetNext(), iN++) {
-                    pNote = (lmNote*)pNode->GetData();
-                    nWeight += pNote->GetPosOnStaff();
+				std::list<lmNote*>::iterator it;
+				for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
+				{
+                    nWeight += (*it)->GetPosOnStaff();
                 }
                 m_fStemDown = (nWeight >= 6*iN);
             }
@@ -435,7 +443,7 @@ void lmChord::ComputeStemDirection()
     }
 
     //update max and min notes with conclusion about stem direction.
-    //@aware for chords, setting the base note forces to call lmChord::SetStemDirection()
+    //AWARE: for chords, setting the base note forces to call lmChord::SetStemDirection()
     //  to setup also max and min notes
     pBaseNote->SetStemDirection(m_fStemDown);
 
@@ -445,10 +453,10 @@ void lmChord::SetStemDirection(bool fStemDown)
 {
     m_fStemDown = fStemDown;
     lmNote* pBaseNote = GetBaseNote();
-    if (pBaseNote != m_pMinNote)    //check to avoid infinite loops
-        m_pMinNote->SetStemDirection(m_fStemDown);
-    if (pBaseNote != m_pMaxNote)    //check to avoid infinite loops
-        m_pMaxNote->SetStemDirection(m_fStemDown);
+    if (pBaseNote != GetMinNote())    //check to avoid infinite loops
+        GetMinNote()->SetStemDirection(m_fStemDown);
+    if (pBaseNote != GetMaxNote())    //check to avoid infinite loops
+        GetMaxNote()->SetStemDirection(m_fStemDown);
 
 }
 
@@ -459,28 +467,30 @@ void lmChord::ArrangeNoteheads()
     //This method sets flag  pNote->SetNoteheadReversed(true); to true or false,
     //depending on the requiered notehead position for the chord.
 
-    if (m_cNotes.GetCount() < 2) return;
+    if (GetNumNotes() < 2) return;
 
     //arrange notes by pitch
-    //NotesList cNotes = m_cNotes;
-    //cNotes.Sort(GlobalPitchCompare);
+    std::list<lmNote*> cNotes = m_Notes; 
+    cNotes.sort(GlobalPitchCompare);
 
     bool fSomeReversed = false;
     int nPosPrev = 1000;    // a very high number not posible in real world
     int nPos;
-    lmNote* pNote;
-    wxNotesListNode *pNode = (m_fStemDown ? m_cNotes.GetLast() : m_cNotes.GetFirst());
-    for(; pNode; pNode=(m_fStemDown ? pNode->GetPrevious() : pNode->GetNext()) ) {
-        pNote = (lmNote*)pNode->GetData();
-        nPos = pNote->GetPosOnStaff();
-        if (abs(nPosPrev - nPos) < 2) {
+	std::list<lmNote*>::iterator it = 
+		(m_fStemDown ? --m_Notes.end() : m_Notes.begin());
+	for(; it != m_Notes.end(); (m_fStemDown ? --it : ++it))
+	{
+        nPos = (*it)->GetPosOnStaff();
+        if (abs(nPosPrev - nPos) < 2)
+		{
             //collision. Reverse position of this notehead
             fSomeReversed = true;
-            pNote->SetNoteheadReversed(true);
+            (*it)->SetNoteheadReversed(true);
             nPosPrev = 1000;
         }
-        else {
-            pNote->SetNoteheadReversed(false);
+        else
+		{
+            (*it)->SetNoteheadReversed(false);
             nPosPrev = nPos;
         }
     }
@@ -509,20 +519,18 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 	// In following loop all these issues are fixed
 	//-----------------------------------------------------------------------------------
     int iN;
-    lmNote* pNote;
-    wxNotesListNode* pNode = m_cNotes.GetFirst();
-    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ )
+	std::list<lmNote*>::iterator it = m_Notes.begin();
+	for(iN=1; it != m_Notes.end(); ++it, iN++ )
 	{
-		pNote = (lmNote*)pNode->GetData();
 		if (iN > 1) //skip base note
 		{
 			//assign paper pos to this note.
-			pNote->SetReferencePos(m_pBaseNote->GetReferencePaperPos());
+			(*it)->SetReferencePos(GetBaseNote()->GetReferencePaperPos());
 		}
 		//set the font
 		//pNote->SetFont(pPaper);
 		//create the shape container
-		pNote->CreateContainerShape(pBox, uPaperPos.x, uPaperPos.y, colorC);
+		(*it)->CreateContainerShape(pBox, uPaperPos.x, uPaperPos.y, colorC);
     }
 
 
@@ -539,20 +547,19 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 	//-----------------------------------------------------------------------------------
 
     //first loop: process notes not shitfted to right
-    pNode = m_cNotes.GetFirst();
-    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ )
+	it = m_Notes.begin();
+	for(iN=1; it != m_Notes.end(); ++it, iN++ )
 	{
-        pNote = (lmNote*)pNode->GetData();
-        if (!pNote->IsNoteheadReversed() && pNote->HasAccidentals())
-            ComputeAccidentalLayout(true, pNote, iN, pPaper, uPaperPos, colorC);
+        if (!(*it)->IsNoteheadReversed() && (*it)->HasAccidentals())
+            ComputeAccidentalLayout(true, *it, iN, pPaper, uPaperPos, colorC);
     }
+
     //second loop: process notes  shitfted to right
-    pNode = m_cNotes.GetFirst();
-    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ )
+	it = m_Notes.begin();
+	for(iN=1; it != m_Notes.end(); ++it, iN++ )
 	{
-        pNote = (lmNote*)pNode->GetData();
-        if (pNote->IsNoteheadReversed() && pNote->HasAccidentals())
-            ComputeAccidentalLayout(false, pNote, iN, pPaper, uPaperPos, colorC);
+        if ((*it)->IsNoteheadReversed() && (*it)->HasAccidentals())
+            ComputeAccidentalLayout(false, *it, iN, pPaper, uPaperPos, colorC);
     }
 
     //Here all accidentals are positioned without collisions. Procceed to compute
@@ -575,19 +582,18 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
     lmAccidental* pAccidental;
     lmShape* pNoteHead;
     lmNote* pCrashNote;
-    pNode = m_cNotes.GetFirst();
-    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ )
-    {
+	it = m_Notes.begin();
+	for(iN=1; it != m_Notes.end(); ++it, iN++ )
+	{
         //get the note
-        pNote = (lmNote*)pNode->GetData();
-		lmShapeNote* pNoteShape = (lmShapeNote*)pNote->GetShap2();
+		lmShapeNote* pNoteShape = (lmShapeNote*)(*it)->GetShap2();
 
         //compute offset
-        yStaffTopLine = pNote->GetStaffOffset();   // staff y position (top line)
-        yPos = yStaffTopLine - pNote->GetPitchShift();
+        yStaffTopLine = (*it)->GetStaffOffset();   // staff y position (top line)
+        yPos = yStaffTopLine - (*it)->GetPitchShift();
         xPos = 0;
-        if (pNote->HasAccidentals()) {
-            pAccidental = pNote->GetAccidentals();
+        if ((*it)->HasAccidentals()) {
+            pAccidental = (*it)->GetAccidentals();
             xPos += pAccidental->GetWidth();
             //add accidental shape
             pNoteShape->AddAccidental(pAccidental->GetShape());
@@ -595,15 +601,16 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 
         //compute notehead's position
 		///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] adding note %d, xPos=%.2f, reversed=%s"),
-		//      	iN, xPos + uPaperPos.x, (pNote->IsNoteheadReversed() ? _T("yes") : _T("no")) );
-		pNote->AddNoteShape(pNoteShape, pPaper, xPos + uPaperPos.x, yPos + uPaperPos.y, colorC);
-        pNoteHead = pNote->GetNoteheadShape();
+		//      	iN, xPos + uPaperPos.x, ((*it)->IsNoteheadReversed() ? _T("yes") : _T("no")) );
+		(*it)->AddNoteShape(pNoteShape, pPaper, xPos + uPaperPos.x, yPos + uPaperPos.y, colorC);
+        pNoteHead = (*it)->GetNoteheadShape();
         //check if collision with any previous note accidentals
         pCrashNote = CheckIfNoteCollision(pNoteHead);
-        while (pCrashNote) {
+        while (pCrashNote)
+		{
             //try to render at right of colliding accidental
 			lmLUnits uShift = (pCrashNote->GetAccidentals())->GetWidth();
-			pNote->ShiftNoteHeadShape(uShift);
+			(*it)->ShiftNoteHeadShape(uShift);
 			///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] shift note %d, uShift=%.2f"),
 			//                     iN, uShift );
             //check again for collision
@@ -621,11 +628,10 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 
 	///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] Compute common anchor line:"));
     lmLUnits uMaxAnchor = -99999;
-    pNode = m_cNotes.GetFirst();
-    for(; pNode; pNode=pNode->GetNext())
+	it = m_Notes.begin();
+	for(; it != m_Notes.end(); ++it)
 	{
-        pNote = (lmNote*)pNode->GetData();
-        uMaxAnchor = wxMax(uMaxAnchor, pNote->GetAnchorPos());
+        uMaxAnchor = wxMax(uMaxAnchor, (*it)->GetAnchorPos());
 		///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] note %d, uMaxAnchor=%.2f, pNote->GetAnchorPos = %.2f"),
 		//          	++iNote, uMaxAnchor, pNote->GetAnchorPos() );
     }
@@ -633,14 +639,13 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 	//b) Add a shift to each note so that its anchor line become the max anchor line
 	///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] Adding a shift to each note:"));
     lmLUnits uShift;
-    pNode = m_cNotes.GetFirst();
-    for(; pNode; pNode=pNode->GetNext())
+	it = m_Notes.begin();
+	for(; it != m_Notes.end(); ++it)
 	{
-        pNote = (lmNote*)pNode->GetData();
-        pNoteHead = pNote->GetNoteheadShape();
-        uShift = uMaxAnchor - pNote->GetAnchorPos();
+        pNoteHead = (*it)->GetNoteheadShape();
+        uShift = uMaxAnchor - (*it)->GetAnchorPos();
 		///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] uShift=%.2f"), uShift );
-        pNote->ShiftNoteHeadShape(uShift);
+        (*it)->ShiftNoteHeadShape(uShift);
     }
 
 
@@ -649,11 +654,10 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 lmLUnits lmChord::GetXRight()
 {
 	lmLUnits uxRight = 0.0;
-    wxNotesListNode* pNode = m_cNotes.GetFirst();
-    for(; pNode; pNode=pNode->GetNext())
+	std::list<lmNote*>::iterator it = m_Notes.begin();
+	for(; it != m_Notes.end(); ++it)
 	{
-        lmNote* pNote = (lmNote*)pNode->GetData();
-		uxRight = wxMax(uxRight, pNote->GetShap2()->GetXRight());
+		uxRight = wxMax(uxRight, (*it)->GetShap2()->GetXRight());
     }
 	return uxRight;
 }
@@ -661,22 +665,24 @@ lmLUnits lmChord::GetXRight()
 lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape)
 {
 	//Check to see if the shape pShape overlaps any accidental of
-    //the chord, from first note to note iCurNote (excluded, range: 1..m_cNotes.GetCount())
+    //the chord, from first note to note iCurNote (excluded, range: 1..GetNumNotes())
     //If no collision returns NULL, otherwse, returns the Note
     //owning the accidental that collides
 
     int iN;
-    lmNote* pNote;
     lmAccidental* pAccidental;
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
-    for(iN=1; pNode && iN < iCurNote; pNode=pNode->GetNext(), iN++ ) {
-        pNote = (lmNote*)pNode->GetData();
-        if (fOnlyLeftNotes && !pNote->IsNoteheadReversed() || !fOnlyLeftNotes) {
-            if (pNote->HasAccidentals()) {
-                pAccidental = pNote->GetAccidentals();
-                if ( pShape->Collision(pAccidental->GetShape()) ) {
+	std::list<lmNote*>::iterator it = m_Notes.begin();
+    for(iN=1; it != m_Notes.end() && iN < iCurNote; ++it, iN++ )
+	{
+        if (fOnlyLeftNotes && !(*it)->IsNoteheadReversed() || !fOnlyLeftNotes)
+		{
+            if ((*it)->HasAccidentals())
+			{
+                pAccidental = (*it)->GetAccidentals();
+                if ( pShape->Collision(pAccidental->GetShape()) )
+				{
                     //collision
-                    return pNote;
+                    return (*it);
                 }
             }
         }
@@ -684,16 +690,18 @@ lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNo
 
     //In second loop, when checking accidentals for right shifted notes, it is necessary
     //to verify collisions with all remaining notes at left
-    if (!fOnlyLeftNotes) {
-        for(iN=iCurNote; pNode && iN <= (int)m_cNotes.GetCount(); pNode=pNode->GetNext(), iN++ ) {
-            pNote = (lmNote*)pNode->GetData();
-            if (!pNote->IsNoteheadReversed()) {
-                if (pNote->HasAccidentals()) {
-                    pAccidental = pNote->GetAccidentals();
-                    if ( pShape->Collision(pAccidental->GetShape()) ) {
-                        //collision
-                        return pNote;
-                    }
+    if (!fOnlyLeftNotes)
+	{
+		it = m_Notes.begin();
+        for(iN=iCurNote; it != m_Notes.end() && iN <= GetNumNotes(); ++it, iN++ )
+		{
+            if (!(*it)->IsNoteheadReversed() && (*it)->HasAccidentals())
+			{
+                pAccidental = (*it)->GetAccidentals();
+                if ( pShape->Collision(pAccidental->GetShape()) )
+				{
+                    //collision
+                    return (*it);
                 }
             }
         }
@@ -711,16 +719,15 @@ lmNote* lmChord::CheckIfNoteCollision(lmShape* pShape)
     //owning the accidental that collides
 
     int iN;
-    lmNote* pNote;
     lmAccidental* pAccidental;
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
-    for(iN=1; pNode && iN <= (int)m_cNotes.GetCount(); pNode=pNode->GetNext(), iN++ ) {
-        pNote = (lmNote*)pNode->GetData();
-        if (pNote->HasAccidentals()) {
-            pAccidental = pNote->GetAccidentals();
+	std::list<lmNote*>::iterator it = m_Notes.begin();
+    for(iN=1; it != m_Notes.end() && iN <= GetNumNotes(); ++it, iN++ )
+	{
+        if ((*it)->HasAccidentals()) {
+            pAccidental = (*it)->GetAccidentals();
             if ( pShape->Collision(pAccidental->GetShape()) ) {
                 //collision
-                return pNote;
+                return *it;
             }
         }
     }

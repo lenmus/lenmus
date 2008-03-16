@@ -137,7 +137,7 @@ enum lmEStemType
     lmSTEM_UP,            //up: force stem up
     lmSTEM_DOWN,          //down: force stem down
     lmSTEM_NONE,          //none: force no stem
-    lmSTEM_DOUBLE         //double: force doble line. Direction as decided by program
+    lmSTEM_DOUBLE         //double: force double line: one up and one down
 };
 
 // Beaming: type of beaming
@@ -610,7 +610,7 @@ typedef struct lmLocationStruct {
 } lmLocation;
 
 //global variables used as default initializators
-extern lmLocation g_tDefaultPos;          // defined in StaffObj.cpp
+extern lmLocation g_tDefaultPos;          // defined in defs.cpp
 
 
 

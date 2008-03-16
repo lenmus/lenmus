@@ -70,9 +70,10 @@
 #endif
 
 #include "Score.h"
+#include "UndoRedo.h"
 #include "Notation.h"
-#include "../app/global.h"
 #include "MetronomeMark.h"
+#include "../app/global.h"
 #include "../app/TheApp.h"		//to access g_rScreenDPI and g_rPixelsPerLU
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeStaff.h"
@@ -114,7 +115,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
 	m_VCursor.AttachToCollection(&m_cStaffObjs);
 
  //   //Add EOS control object to the StaffObjs collection
- //   //m_cStaffObjs.Store( new lmBarline(lm_eBarlineEOS, this, lmNO_VISIBLE) );
+ //   //m_cStaffObjs.Add( new lmBarline(lm_eBarlineEOS, this, lmNO_VISIBLE) );
 	//AddBarline(lm_eBarlineEOS, lmVISIBLE);
 
     //default value
@@ -243,21 +244,21 @@ lmClef* lmVStaff::InsertClef(lmEClefType nClefType)
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = pStaff->NewContextAfter(pClef, GetCurrentContext(pCursorSO));
 	pClef->SetContext(pContext);
-    m_cStaffObjs.Insert(pClef, pCursorSO);
+    m_cStaffObjs.Add(pClef);
     return pClef;
 }
 
 lmBarline* lmVStaff::InsertBarline(lmEBarline nType)
 {
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
-    m_cStaffObjs.Insert(pBarline, pCursorSO);
+    m_cStaffObjs.Add(pBarline);
     return pBarline;
 }
 
-lmNote* lmVStaff::InsertNote(lmEPitchType nPitchType, wxString sStep,
-							 wxString sOctave, lmENoteType nNoteType, float rDuration,
-							 lmENoteHeads nNotehead, lmEAccidentals nAcc)
+lmNote* lmVStaff::Cmd_InsertNote(lmUndoData* pUndoData,
+								 lmEPitchType nPitchType, wxString sStep,
+								 wxString sOctave, lmENoteType nNoteType, float rDuration,
+								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
 {
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     int nStaff = pCursorSO->GetStaffNum();
@@ -272,14 +273,15 @@ lmNote* lmVStaff::InsertNote(lmEPitchType nPitchType, wxString sStep,
     }
 	wxString sAccidentals = _T("");
 
-	//TODO: deal with voices
+	//TODO: For now, only auto-voice. It is necessary to get info from GUI about
+	//user selected voice. Need to change this command parameter list to include voice
 	int nVoice = 0;     //auto-voice
     lmNote* pNt = new lmNote(this, nPitchType,
                         sStep, sOctave, sAccidentals, nAcc,
                         nNoteType, rDuration, false, false, nStaff, nVoice, lmVISIBLE,
                         pContext, false, BeamInfo, false, false, lmSTEM_DEFAULT);
 
-    m_cStaffObjs.Insert(pNt, pCursorSO);
+    m_cStaffObjs.Add(pNt);
 
 	delete pContext;
     return pNt;
@@ -287,10 +289,51 @@ lmNote* lmVStaff::InsertNote(lmEPitchType nPitchType, wxString sStep,
 
 void lmVStaff::DeleteObject()
 {
+    //delete object pointed by cursor
 
     m_cStaffObjs.Delete(m_VCursor.GetStaffObj());
 }
 
+void lmVStaff::DeleteObject(lmStaffObj* pSO)
+{
+    //delete requested object
+    //Precondition: must be in this VStaff
+
+    m_cStaffObjs.Delete(pSO);
+}
+
+void lmVStaff::Cmd_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO)
+{
+    //delete the requested object, and log info to undo history
+
+    //AWARE: Logged actions must be logged in the required order for re-construction. 
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+
+    //save positioning information
+    m_cStaffObjs.LogPosition(pUndoData, pSO);
+
+    //Save info to re-create the object
+    ((lmNote*)pSO)->Freeze(pUndoData);
+
+    //Delete the object
+    m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
+
+}
+
+void lmVStaff::Cmd_Undo_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO)
+{
+    //un-delete the object, according to info in history
+
+    //recover positioning info
+    lmStaffObj* pBeforeSO = pUndoData->GetParam<lmStaffObj*>();
+
+    //unfreeze restored object
+    ((lmNote*)pSO)->UnFreeze(pUndoData);
+
+	//re-insert the deleted object
+    m_cStaffObjs.Insert(pSO, pBeforeSO);
+	//wxLogMessage(m_cStaffObjs.Dump());
+}
 
 
 //---------------------------------------------------------------------------------------
@@ -306,7 +349,7 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = pStaff->NewContextAfter(pClef);
 	pClef->SetContext(pContext);
-    m_cStaffObjs.Store(pClef);
+    m_cStaffObjs.Add(pClef);
     return pClef;
 }
 
@@ -314,7 +357,7 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
 lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth)
 {
     lmSpacer* pSpacer = new lmSpacer(this, nWidth);
-    m_cStaffObjs.Store(pSpacer);
+    m_cStaffObjs.Add(pSpacer);
     return pSpacer;
 
 }
@@ -326,13 +369,13 @@ lmStaffObj* lmVStaff::AddAnchorObj()
     if (IsGlobalStaff())
     {
         lmScoreAnchor* pAnchor = new lmScoreAnchor(this);
-        m_cStaffObjs.Store(pAnchor);
+        m_cStaffObjs.Add(pAnchor);
         return pAnchor;
     }
     else
     {
         lmAnchor* pAnchor = new lmAnchor(this);
-        m_cStaffObjs.Store(pAnchor);
+        m_cStaffObjs.Add(pAnchor);
         return pAnchor;
     }
 
@@ -359,7 +402,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                         nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, nVoice,
 						fVisible, pContext, fBeamed, BeamInfo, fInChord, fTie, nStem);
 
-    m_cStaffObjs.Store(pNt);
+    m_cStaffObjs.Add(pNt);
 
 	delete pContext;
     return pNt;
@@ -376,7 +419,7 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration,
     lmRest* pR = new lmRest(this, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
 							nVoice, fVisible, fBeamed, BeamInfo);
 
-    m_cStaffObjs.Store(pR);
+    m_cStaffObjs.Add(pR);
     return pR;
 
 }
@@ -409,7 +452,7 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(int nTicksPerMinute,
 {
     lmMetronomeMark* pMM = new lmMetronomeMark(this, nTicksPerMinute,
                                                fParentheses, fVisible);
-    m_cStaffObjs.Store(pMM);
+    m_cStaffObjs.Add(pMM);
     return pMM;
 
 }
@@ -421,7 +464,7 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeft
     lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
                                                nRightNoteType, nRightDots,
                                                fParentheses, fVisible);
-    m_cStaffObjs.Store(pMM);
+    m_cStaffObjs.Add(pMM);
     return pMM;
 
 }
@@ -432,7 +475,7 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeft
     lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
                                                nTicksPerMinute,
                                                fParentheses, fVisible);
-    m_cStaffObjs.Store(pMM);
+    m_cStaffObjs.Add(pMM);
     return pMM;
 
 }
@@ -492,7 +535,7 @@ lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS)
 	    lmContext* pContext = pStaff->NewContextAfter(pTS);
         pTS->SetContext(nStaff, pContext);
     }
-    m_cStaffObjs.Store(pTS);
+    m_cStaffObjs.Add(pTS);
     return pTS;
 }
 
@@ -507,7 +550,7 @@ lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisibl
 	    lmContext* pContext = pStaff->NewContextAfter(pKS);
         pKS->SetContext(nStaff, pContext);
     }
-    m_cStaffObjs.Store(pKS);
+    m_cStaffObjs.Add(pKS);
     return pKS;
 }
 
@@ -654,7 +697,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
 						{
 							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
 							sSource += pSO->SourceLDP(nIndent);
-							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+							rTime = LDP_AdvanceTimeCounter(pSO);
 						}
 					}
 					else
@@ -662,7 +705,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
 						{
 							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
 							sSource += pSO->SourceLDP(nIndent);
-							rTime = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+							rTime = LDP_AdvanceTimeCounter(pSO);
 						}
 				}
 				else
@@ -719,6 +762,26 @@ void lmVStaff::LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool f
 			sSource += _T("(goBack ");
 		sSource += wxString::Format(_T("%.0f)\n"), pSO->GetTimePos());
 	}
+}
+
+float lmVStaff::LDP_AdvanceTimeCounter(lmStaffObj* pSO)
+{
+	float rTime = pSO->GetTimePos();
+	
+	//advance counter unless current object is a note in chord and is not the
+	//last note in the chord
+	bool fAdvance = true;
+	if (pSO->IsNoteRest() && !((lmNote*)pSO)->IsRest())
+	{
+		lmNote* pNote = (lmNote*)pSO;
+		if (pNote->IsInChord() && !pNote->GetChord()->IsLastNoteOfChord(pNote))
+			fAdvance = false;
+	}
+
+	if (fAdvance)
+		return rTime + pSO->GetTimePosIncrement();
+	else
+		return rTime;
 }
 
 void lmVStaff::XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
@@ -908,7 +971,7 @@ lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
 {
     //create and save the barline
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
-    m_cStaffObjs.Store(pBarline);
+    m_cStaffObjs.Add(pBarline);
     return pBarline;
 }
 
@@ -1190,7 +1253,7 @@ lmSOControl* lmVStaff::AddNewSystem()
 
     //Insert the control object
     lmSOControl* pControl = new lmSOControl(lmNEW_SYSTEM, this);
-    m_cStaffObjs.Store(pControl);
+    m_cStaffObjs.Add(pControl);
     return pControl;
 
 }

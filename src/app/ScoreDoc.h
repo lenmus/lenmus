@@ -50,8 +50,8 @@ public:
 
 private:
     // data to store
-    lmScore*            m_pScore;        // the score this document represents
-    wxSize            m_paperSize;    // intended paper size for which this score is designed (tenths of mm)
+    lmScore*            m_pScore;		//the score this document represents
+    wxSize				m_paperSize;    //intended paper size for which this score is designed (tenths of mm)
 
 };
 

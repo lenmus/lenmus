@@ -40,6 +40,9 @@
 
 #include "ColStaffObjs.h"
 
+class lmUndoData;
+
+
 #define lmDRAGGABLE         true
 #define lmNO_DRAGGABLE      false
 #define lmVISIBLE           true
@@ -94,8 +97,10 @@ public:
 	//--- ScoreObj properties ------------------------------
 	virtual lmEScoreObjType GetScoreObjType()=0;
 
-    //--- a ScoreObj can own AuxObjs -----------------------
-    
+    //--- a ScoreObj can own other ScoreObjs -----------------------
+    inline lmScoreObj* GetParentScoreObj() { return m_pParent; }
+
+
     //provide units conversion
     virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
     virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
@@ -132,6 +137,11 @@ public:
     //debug methods
     virtual wxString Dump()=0;
 
+	//edit management
+	inline bool IsModified() { return m_fModified; }
+	virtual void RecordHistory(lmUndoData* pUndoData);
+	virtual void AcceptChanges();
+
 
 protected:
     lmScoreObj(lmScoreObj* pParent);
@@ -139,6 +149,7 @@ protected:
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
+	bool			m_fModified;		//the object has been modified, directly or indirectly, by a user edit operation
 
 	//information only valid for rendering as score: position and shape
     //These variables are only valid for the Formatter algorithm and, therefore, are not
@@ -192,6 +203,7 @@ public:
 protected:
     lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocation* pPos = &g_tDefaultPos,
                    bool fIsDraggable = false);
+
     wxString SourceLDP_Location(lmUPoint uPaperPos);
 	lmUPoint ComputeObjectLocation(lmPaper* pPaper);
 
@@ -251,20 +263,20 @@ public:
     // characteristics
     virtual inline bool IsSizeable() { return false; }
     inline bool IsVisible() { return m_fVisible; }
-    EStaffObjType GetClass() { return m_nClass; }
+    inline EStaffObjType GetClass() { return m_nClass; }
 	virtual wxString GetName() const=0;
 
     //classification
-    inline bool IsClef() { return m_nClass == eSFOT_Clef; }
-    inline bool IsKeySignature() { return m_nClass == eSFOT_KeySignature; }
-    inline bool IsTimeSignature() { return m_nClass == eSFOT_TimeSignature; }
-    inline bool IsNotation() { return m_nClass == eSFOT_Notation; }
-    inline bool IsBarline() { return m_nClass == eSFOT_Barline; }
-    inline bool IsNoteRest() { return m_nClass == eSFOT_NoteRest; }
-    inline bool IsText() { return m_nClass == eSFOT_Text; }
-    inline bool IsControl() { return m_nClass == eSFOT_Control; }
-    inline bool IsMetronomeMark() { return m_nClass == eSFOT_MetronomeMark; }
-    inline bool IsTupletBracket() { return m_nClass == eSFOT_TupletBracket; }
+    inline bool IsClef() { return GetClass() == eSFOT_Clef; }
+    inline bool IsKeySignature() { return GetClass() == eSFOT_KeySignature; }
+    inline bool IsTimeSignature() { return GetClass() == eSFOT_TimeSignature; }
+    inline bool IsNotation() { return GetClass() == eSFOT_Notation; }
+    inline bool IsBarline() { return GetClass() == eSFOT_Barline; }
+    inline bool IsNoteRest() { return GetClass() == eSFOT_NoteRest; }
+    inline bool IsText() { return GetClass() == eSFOT_Text; }
+    inline bool IsControl() { return GetClass() == eSFOT_Control; }
+    inline bool IsMetronomeMark() { return GetClass() == eSFOT_MetronomeMark; }
+    inline bool IsTupletBracket() { return GetClass() == eSFOT_TupletBracket; }
 
     //inline bool IsNote() { return m_nClass == eSFOT_NoteRest && !((lmNote*)this)->IsRest(); }
     //inline bool IsRest() { return m_nClass == eSFOT_NoteRest && ((lmNote*)this)->IsRest(); }

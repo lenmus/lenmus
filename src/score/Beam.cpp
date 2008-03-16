@@ -48,18 +48,17 @@
 
 lmBeam::lmBeam(lmNoteRest* pNotePrev)
 {
-    //
     // m_pNotePrev is the note preceding the beamed group. It is necessary to have access to
     // it because if this note is tied to the first one of the group, the stems og the group
     // are forced to go in the same direction than this previous note.
-    //
+
     m_pNotePrev = pNotePrev;
 
     m_pFirstNote = (lmNote*)NULL;
     m_pLastNote = (lmNote*)NULL;
 	m_pBeamShape = (lmShapeBeam*)NULL;
-
 }
+
 lmBeam::~lmBeam()
 {
     // notes will not be deleted when deleting the list, as they are part of a lmScore
@@ -77,10 +76,10 @@ void lmBeam::Include(lmNoteRest* pNR)
     }
 }
 
-
 int lmBeam::FindNote(lmNoteRest* pNR)
 {
     //find a note/rest
+
     for (int i=0; i < (int)m_cNotes.size(); i++)
     {
         if (m_cNotes[i]->GetID() == pNR->GetID())
@@ -89,6 +88,19 @@ int lmBeam::FindNote(lmNoteRest* pNR)
 	return -1;
 }
 
+void lmBeam::RemoveAllNotes()
+{
+    //the beam is going to be removed. Release all notes
+
+    //ask each note to remove beam information
+    for (int i=0; i < (int)m_cNotes.size(); i++)
+    {
+        m_cNotes[i]->RemoveBeam();
+	}
+
+    //remove all notes from beam
+    m_cNotes.clear();   //erase(m_cNotes.begin(), m_cNotes.end());
+}
 
 void lmBeam::Remove(lmNoteRest* pNR)
 {
@@ -98,7 +110,6 @@ void lmBeam::Remove(lmNoteRest* pNR)
 	//if found, remove note
    if (i != -1)
 		m_cNotes.erase(m_cNotes.begin()+i);
-
 }
 
 void lmBeam::AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo)
@@ -261,3 +272,144 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 	return m_pBeamShape->GetWidth();
 
 }
+
+void lmBeam::AutoSetUp()
+{
+    //This method determines the beam type for each note, based on time signature and note
+    //types.
+
+    //Filter out any rest in the beam
+	std::vector<lmNote*> cNotes;
+    std::vector<lmNoteRest*>::iterator it;
+    for (it = m_cNotes.begin(); it != m_cNotes.end(); ++it)
+    {
+        if (!(*it)->IsRest())
+        {
+            //it is a note. Add to notes vector
+            cNotes.push_back((lmNote*)(*it));
+        }
+    }
+
+    //define pointers to current note in process, and previous and next notes
+    lmNote* pPrevNote = (lmNote*)NULL;
+    lmNote* pCurNote = cNotes[0];
+    lmNote* pNextNote = cNotes[1];
+
+    //Let's determine the maximum beam level for this first notes triad
+    int nLevelPrev = -1;
+    int nLevelCur = GetBeamingLevel(pCurNote);
+    int nLevelNext = GetBeamingLevel(pNextNote);
+
+    //determine current note position in beam: first, middle or end note
+    enum {
+        lmFirstNote = 0,
+        lmMiddleNote = 1,
+        lmLastNote = 2
+    };
+    int nNotePos = lmFirstNote;
+
+    //loop to assign beam information to current note
+    int iN=0;
+    while (iN < (int)cNotes.size())
+    {
+        //At this point, current note is classified as First, Middle or Last note in beam.
+        //Also, pointers not Prev, Cur and Next notes are set, as well as the maximum beam
+        //level for current notes triad 
+        
+        //Now compute beam types for each level
+        for (int iL=0; iL < 6; iL++)
+        {
+            if (iL > nLevelCur)
+                pCurNote->SetBeamType(iL, eBeamNone);
+
+            else if (nNotePos == lmFirstNote)
+            {
+                //is the first note
+                if (iL <= nLevelNext)
+                    pCurNote->SetBeamType(iL, eBeamBegin);
+                else
+                    pCurNote->SetBeamType(iL, eBeamForward);
+            }
+
+            else if (nNotePos == lmMiddleNote)
+            {
+                //is intermediate note
+                if (iL <= nLevelPrev)
+                    pCurNote->SetBeamType(iL, eBeamContinue);
+                else if (iL > nLevelNext)
+                {
+                    //hook. Backward/Forward, depends on position in beat
+                    int nPos = pCurNote->GetPositionInBeat();
+                    if (nPos == lmUNKNOWN_BEAT)
+                        //Unknownn time signature. Cannot determine type of hook. Use backward 
+                        pCurNote->SetBeamType(iL, eBeamBackward);
+                    else if (nPos >= 0)
+                        //on-beat note
+                        pCurNote->SetBeamType(iL, eBeamForward);
+                    else
+                        //off-beat note
+                        pCurNote->SetBeamType(iL, eBeamBackward);
+                }
+                else
+                    pCurNote->SetBeamType(iL, eBeamBegin);
+            }
+
+            else
+            {
+                //is last note
+                if (iL > nLevelPrev)
+                    pCurNote->SetBeamType(iL, eBeamBackward);
+                else
+                    pCurNote->SetBeamType(iL, eBeamEnd);
+            }
+        }
+
+        //Curren note done. Take next note, determine its position in beam and adjust 
+        //pointers to notes triad
+        iN++;
+        if (iN == (int)cNotes.size() - 1)
+        {
+            //last note
+            nNotePos = lmLastNote;
+            pPrevNote = pCurNote;
+            pCurNote = cNotes[iN];
+            pNextNote = (lmNote*)NULL;
+        }
+        else if (iN < (int)cNotes.size())
+        {
+            //middle note
+            nNotePos = lmMiddleNote;
+            pPrevNote = pCurNote;
+            pCurNote = cNotes[iN];
+            pNextNote = cNotes[iN+1];
+        }
+        else
+            break;
+
+        //determine the maximum beam level for the new notes triad
+        nLevelPrev = nLevelCur;
+        nLevelCur = GetBeamingLevel(pCurNote);
+        nLevelNext = (pNextNote ? GetBeamingLevel(pNextNote) : -1);
+    }
+}
+
+int lmBeam::GetBeamingLevel(lmNote* pNote)
+{
+    switch(pNote->GetNoteType()) {
+        case eEighth:
+            return 0;
+        case e16th:
+            return 1;
+        case e32th:
+            return 2;
+        case e64th:
+            return 3;
+        case e128th:
+            return 4;
+        case e256th:
+            return 5;
+        default:
+            return -1; //Error: Requesting beaming a note longer than eight
+    }
+}
+

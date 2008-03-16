@@ -19,7 +19,7 @@
 					<Add directory="../../../wxMidi/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=no --libs`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=yes --libs`" />
 					<Add library="../../packages/wxMidi/lib/linux/Debug/libwxmidi.so" />
 				</Linker>
 			</Target>
@@ -92,13 +92,14 @@
 		<Unit filename="../../src/app/ScoreCanvas.h" />
 		<Unit filename="../../src/app/ScoreCommand.cpp" />
 		<Unit filename="../../src/app/ScoreCommand.h" />
-		<Unit filename="../../src/app/ScoreController.cpp" />
 		<Unit filename="../../src/app/ScoreDoc.cpp" />
 		<Unit filename="../../src/app/ScoreDoc.h" />
 		<Unit filename="../../src/app/ScoreView.cpp" />
 		<Unit filename="../../src/app/ScoreView.h" />
 		<Unit filename="../../src/app/SplashFrame.cpp" />
 		<Unit filename="../../src/app/SplashFrame.h" />
+		<Unit filename="../../src/app/StatusBar.cpp" />
+		<Unit filename="../../src/app/StatusBar.h" />
 		<Unit filename="../../src/app/TheApp.cpp" />
 		<Unit filename="../../src/app/TheApp.h" />
 		<Unit filename="../../src/app/ToolsBox.h" />
@@ -273,6 +274,8 @@
 		<Unit filename="../../src/options/ToolbarsOptPanel.h" />
 		<Unit filename="../../src/score/Accidental.cpp" />
 		<Unit filename="../../src/score/Accidental.h" />
+		<Unit filename="../../src/score/AuxObj.cpp" />
+		<Unit filename="../../src/score/AuxObj.h" />
 		<Unit filename="../../src/score/Barline.cpp" />
 		<Unit filename="../../src/score/Barline.h" />
 		<Unit filename="../../src/score/Beam.cpp" />
@@ -323,6 +326,7 @@
 		<Unit filename="../../src/score/TimeSignature.h" />
 		<Unit filename="../../src/score/TupletBracket.cpp" />
 		<Unit filename="../../src/score/TupletBracket.h" />
+		<Unit filename="../../src/score/UndoRedo.h" />
 		<Unit filename="../../src/score/VStaff.cpp" />
 		<Unit filename="../../src/score/VStaff.h" />
 		<Unit filename="../../src/score/defs.cpp" />
@@ -341,6 +345,10 @@
 		<Unit filename="../../src/updater/Updater.h" />
 		<Unit filename="../../src/updater/UpdaterDlg.cpp" />
 		<Unit filename="../../src/updater/UpdaterDlg.h" />
+		<Unit filename="../../src/widgets/Button.cpp" />
+		<Unit filename="../../src/widgets/Button.h" />
+		<Unit filename="../../src/widgets/Cursor.cpp" />
+		<Unit filename="../../src/widgets/Cursor.h" />
 		<Unit filename="../../src/widgets/Ruler.cpp" />
 		<Unit filename="../../src/widgets/Ruler.h" />
 		<Unit filename="../../src/xml_parser/MusicXMLParser.cpp" />

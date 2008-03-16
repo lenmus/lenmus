@@ -44,7 +44,7 @@
 
 lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
         int nStaff, int nVoice, bool fVisible, bool fBeamed, lmTBeamInfo BeamInfo[])
-    : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted,
+    : lmNoteRest(pVStaff, lmDEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted,
                  nStaff, nVoice, fVisible)
 {
 
@@ -55,15 +55,6 @@ lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool f
 
 lmRest::~lmRest()
 {
-    //remove the rest from the beam and if beam is empty delete the beam
-    if (m_pBeam) {
-        m_pBeam->Remove(this);
-        if (m_pBeam->NumNotes() == 0) {
-            delete m_pBeam;
-            m_pBeam = (lmBeam*)NULL;
-        }
-    }
-
 }
 
 
@@ -240,14 +231,10 @@ wxString lmRest::SourceLDP(int nIndent)
     //Voice
     sSource += wxString::Format(_T(" v%d"), m_nVoice);
 
-    //visible?
-    if (!m_fVisible) { sSource += _T(" noVisible"); }
+	//base class
+	sSource += lmStaffObj::SourceLDP(nIndent);
 
-	//attached AuxObjs
-	sSource += lmStaffObj::SourceLDP(nIndent+1);
-
-    sSource += _T(")\n");
-    return sSource;
+	return sSource;
 }
 
 wxString lmRest::SourceXML(int nIndent)

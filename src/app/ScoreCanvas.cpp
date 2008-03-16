@@ -259,39 +259,51 @@ void lmScoreCanvas::DeleteObject()
 {
 	//delete the StaffObj at current cursor position
 
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+
 	//get object pointed by the cursor
-    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
 
 	//the EOS Barline can not be deleted
 	if (pCursorSO->GetClass() == eSFOT_Barline 
 		&& ((lmBarline*)pCursorSO)->GetBarlineType() == lm_eBarlineEOS) return;
 
-	//advance cursor; otherwise the View will try to render cursor over the deleted
-	//StaffObj and will fail
-	m_pView->CursorRight();
-
-	//send delete command
+    //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_T("Delete %s"), pCursorSO->GetName().c_str() );
-	pCP->Submit(new lmCmdDeleteObject(sName, m_pDoc));
+	pCP->Submit(new lmCmdDeleteObject(pVCursor, sName, m_pDoc));
 }
 
 
 void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 {
 	//insert a Clef at current cursor position
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+
+    //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert clef");
-	pCP->Submit(new lmCmdInsertClef(sName, m_pDoc, nClefType) );
+	pCP->Submit(new lmCmdInsertClef(pVCursor, sName, m_pDoc, nClefType) );
 }
 
 void lmScoreCanvas::InsertBarline(lmEBarline nType)
 {
 	//insert a barline at current cursor position
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+
+    //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert barline");
-	pCP->Submit(new lmCmdInsertBarline(sName, m_pDoc, nType) );
+	pCP->Submit(new lmCmdInsertBarline(pVCursor, sName, m_pDoc, nType) );
 }
 
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
@@ -301,16 +313,24 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
 							   lmEAccidentals nAcc)
 {
 	//insert a note at current cursor position
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+
+    //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert note");
-	pCP->Submit(new lmCmdInsertNote(sName, m_pDoc, nPitchType, sStep, sOctave, 
+	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, sStep, sOctave, 
 							        nNoteType, rDuration, nNotehead, nAcc) );
 }
 
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
 {
 	//change pith of note at current cursor position
-    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
 	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && !((lmNoteRest*)pCursorSO)->IsRest() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -321,7 +341,9 @@ void lmScoreCanvas::ChangeNotePitch(int nSteps)
 void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
 {
 	//change note accidentals for note at current cursor position
-    lmStaffObj* pCursorSO = m_pView->GetCursorPosition();
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
 	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && !((lmNoteRest*)pCursorSO)->IsRest() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -426,6 +448,59 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 							   nNotehead, nAcc);
 					break;
 
+				//commands to change options in Tool Box
+
+				//select note duration
+				case 48:    // '0' double whole
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
+					break;
+
+				case 49:    // '1' whole
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
+					break;
+
+				case 50:    // '2' half
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
+					break;
+
+				case 51:    // '3' quarter
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
+					break;
+
+				case 52:    // '4' eighth
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
+					break;
+
+				case 53:    // '5' 16th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
+					break;
+
+				case 54:    // '6' 32nd
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
+					break;
+
+				case 55:    // '7' 64th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
+					break;
+
+				case 56:    // '8' 128th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+					break;
+
+				case 57:    // '9' 256th
+					if (pToolBox) 
+						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+					break;
+
 				//commands requiring to have a note/rest selected
 
 				////change selected note pitch
@@ -459,58 +534,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 				//case 61:   // '=' remove accidental
 				//	ChangeNoteAccidentals(0);
 				//	break;
-				//
-				////select note duration
-				//case 48:    // '0' double whole
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
-				//	break;
-
-				//case 49:    // '1' whole
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
-				//	break;
-
-				//case 50:    // '2' half
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
-				//	break;
-
-				//case 51:    // '3' quarter
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
-				//	break;
-
-				//case 52:    // '4' eighth
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
-				//	break;
-
-				//case 53:    // '5' 16th
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
-				//	break;
-
-				//case 54:    // '6' 32nd
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
-				//	break;
-
-				//case 55:    // '7' 64th
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
-				//	break;
-
-				//case 56:    // '8' 128th
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
-				//	break;
-
-				//case 57:    // '9' 256th
-				//	if (pToolBox) 
-				//		((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
-				//	break;
-
+				
 				//invalid key
 				default:
 					fUnknown = true;

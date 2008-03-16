@@ -38,15 +38,17 @@
 #include "wx/wx.h"
 #endif
 
+#include <math.h>        // for function pow()
+#include <algorithm>
+
 #include "wx/textfile.h"
 #include "wx/log.h"
-#include <math.h>        // for function pow()
 
 #include "../score/Score.h"
 #include "../score/MetronomeMark.h"
+#include "../auxmusic/Conversion.h"
 #include "LDPParser.h"
 #include "AuxString.h"
-#include "../auxmusic/Conversion.h"
 #include "LDPTags.h"
 
 
@@ -116,17 +118,12 @@ void lmLDPParser::Clear()
     //        _T("**TRACE** Entering lmLDPParser destructor"));
     //}
 
-    long i = m_stackNodes.GetCount();
-    for(; i > 0; i--) {
-        //if (m_fDebugMode) {
-        //    lmLDPNode* pNode = (lmLDPNode*)m_stackNodes.Item(i-1);
-        //    wxLogMessage(
-        //        _T("**TRACE**         lmLDPParser destructor:  deleting stackNode %d, name=<%s>"),
-        //        i, pNode->GetName() );
-        //}
-         delete m_stackNodes.Item(i-1);
-        m_stackNodes.RemoveAt(i-1);
+    std::vector<lmLDPNode*>::iterator it;
+    for(it=m_StackNodes.begin(); it != m_StackNodes.end(); ++it)
+    {
+        delete *it;
     }
+    m_StackNodes.clear();
 
     delete m_pCurNode;
     m_pCurNode = (lmLDPNode*) NULL;
@@ -306,7 +303,7 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
 
     m_pTk = (lmLDPToken*) NULL;
     m_stackStates.Clear();
-    m_stackNodes.Clear();
+    m_StackNodes.clear();
     m_nErrors = 0;
     m_nWarnings = 0;
 
@@ -485,13 +482,13 @@ void lmLDPParser::PushNode(EParsingStates nPopState)
 {
     //nPopState is the state at which the automata will return when the Pop operation take place
     m_stackStates.Add(nPopState);
-    m_stackNodes.Add(m_pCurNode);    //Append(m_pCurNode);
+    m_StackNodes.push_back(m_pCurNode);    //Add(m_pCurNode);
     m_nLevel++;
 
     if (m_fDebugMode) {
         wxLogMessage( _T("**TRACE** PushNode - Stored values:  State %d, node <%s>. stack count=%d"),
             nPopState, m_pCurNode->GetName().c_str(),
-            m_stackNodes.GetCount() );
+            m_StackNodes.size() );
     }
 
 }
@@ -511,8 +508,10 @@ bool lmLDPParser::PopNode()
     EParsingStates curState = m_nState;
     m_nState = (EParsingStates) m_stackStates.Item(i);
     m_stackStates.RemoveAt(i);
-    m_pCurNode = (lmLDPNode*)m_stackNodes.Item(i);
-    m_stackNodes.RemoveAt(i);
+    m_pCurNode = m_StackNodes[i];
+    std::vector<lmLDPNode*>::iterator it =
+		std::find(m_StackNodes.begin(), m_StackNodes.end(), m_pCurNode);
+    m_StackNodes.erase(it);
 
     // if debug mode print message
     if (m_fDebugMode) {
@@ -1087,6 +1086,8 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
         pX = pNode->GetParameter(iP);
         AnalyzeMeasure(pX, pVStaff);
     }
+
+    pVStaff->AddBarline(lm_eBarlineEOS, true);
 
 }
 

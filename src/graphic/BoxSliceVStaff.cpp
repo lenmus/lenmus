@@ -236,7 +236,7 @@ wxString lmBoxSliceVStaff::Dump(int nIndent)
 
 lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-	wxLogMessage(_T("[lmBoxSliceVStaff::FindShapeAtPosition] GMO %s - %d"), m_sGMOName.c_str(), m_nId);
+	//wxLogMessage(_T("[lmBoxSliceVStaff::FindShapeAtPosition] GMO %s - %d"), m_sGMOName.c_str(), m_nId);
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;

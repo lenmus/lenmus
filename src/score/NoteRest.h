@@ -53,8 +53,8 @@
 #endif
 
 
-#define DEFINE_REST        true
-#define DEFINE_NOTE        false
+#define lmDEFINE_REST        true
+#define lmDEFINE_NOTE        false
 
 // struct BeamInfo represents raw info about this note beaming. It is the same information
 // present on a <beam> MusicXML tag.
@@ -72,6 +72,7 @@ public:
     //ctors and dtor
     lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
              bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible);
+
     virtual ~lmNoteRest();
 
     virtual wxString Dump() = 0;
@@ -99,6 +100,7 @@ public:
 
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
+    void RemoveBeam();
     bool IsBeamed() const { return m_fBeamed; }
     lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
     void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
@@ -115,6 +117,10 @@ public:
     //accessors
     inline lmENoteType GetNoteType() const { return m_nNoteType; }
 	inline int GetVoice() { return m_nVoice; }
+
+    //undo/redo
+    virtual void Freeze(lmUndoData* pUndoData);
+    virtual void UnFreeze(lmUndoData* pUndoData);
 
 
 protected:

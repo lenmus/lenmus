@@ -29,8 +29,8 @@
 #include <vector>
 
 class lmLDPNode;
-#include "wx/dynarray.h"
-WX_DEFINE_ARRAY(lmLDPNode*, lmArrayNodePtrs);
+//#include "wx/dynarray.h"
+//WX_DEFINE_ARRAY(lmLDPNode*, lmArrayNodePtrs);
 
 
 

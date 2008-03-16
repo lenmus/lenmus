@@ -60,16 +60,14 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
     //create objects for name and abbreviation
     lmScoreText* pName = (lmScoreText*)NULL;
     lmScoreText* pAbbreviation = (lmScoreText*)NULL;
-    if (sName != _T("")) {
+
+    if (sName != _T(""))
         pName = new lmScoreText(sName, lmALIGN_LEFT,
                            g_tDefaultPos, g_tInstrumentDefaultFont);
-        pName->SetOwner(this);
-    }
-    if (sAbbrev != _T("")) {
+
+    if (sAbbrev != _T(""))
         pAbbreviation = new lmScoreText(sAbbrev, lmALIGN_LEFT,
                                    g_tDefaultPos, g_tInstrumentDefaultFont);
-        pAbbreviation->SetOwner(this);
-    }
 
     //create the instrument
     Create(pScore, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
@@ -91,9 +89,15 @@ void lmInstrument::Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
     m_nMidiChannel = nMIDIChannel;
     m_nIndentFirst = 0;
     m_nIndentOther = 0;
-    m_pName = pName;
-    m_pAbbreviation = pAbbrev;
     m_pVStaff = new lmVStaff(m_pScore, this);
+
+    m_pName = pName;
+    if (pName)
+        pName->SetOwner(this);
+
+    m_pAbbreviation = pAbbrev;
+    if (pAbbrev)
+        pAbbrev->SetOwner(this);
 }
 
 lmInstrument::~lmInstrument()

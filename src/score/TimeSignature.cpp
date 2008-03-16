@@ -133,18 +133,10 @@ wxString lmTimeSignature::SourceLDP(int nIndent)
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sSource += wxString::Format(_T("(time %d %d"), m_nBeats, m_nBeatType);
 
-    //visible?
-    if (!m_fVisible) { sSource += _T(" noVisible"); }
+	//base class
+	sSource += lmStaffObj::SourceLDP(nIndent);
 
-    //location
-    sSource += SourceLDP_Location(m_uPaperPos);
-
-	//attached AuxObjs
-	sSource += lmStaffObj::SourceLDP(nIndent+1);
-
-    sSource += _T(")\n");
-    return sSource;
-
+	return sSource;
 }
 
 wxString lmTimeSignature::SourceXML(int nIndent)
@@ -502,7 +494,7 @@ int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType)
 
 int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType) 
 {
-    // Some times it is necessary to know a note/rest sounds in beat part.
+    // Some times it is necessary to know if a note/rest sounds in beat part.
     // This method receives the time for a note/rest and the current time signature
     // and returns the beat number if the note sounds in beat part (starts in beat or 
     // is sounding at beat time, or returns -1 (lmNON_CHORD_NOTE) if non-chord note

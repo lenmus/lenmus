@@ -35,15 +35,17 @@
 #endif
 
 #include "wx/image.h"
-#include "Score.h"
 #include "wx/debug.h"
+
+#include "Score.h"
+#include "Glyph.h"
+#include "UndoRedo.h"
 #include "../ldp_parser/AuxString.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeBeam.h"
 #include "../graphic/GMObject.h"
 
-#include "Glyph.h"
 
 //implementation of the Notes List
 #include <wx/listimpl.cpp>
@@ -56,7 +58,7 @@ static lmContext* m_pContext = NULL;	//contains updated context when previous fl
 
 //AWARE: Rationale for these two previous variables
 //		 -------------------------------------------
-//		VStaff methods to get a context need a reference to the StaffObj. During
+//		 Methods (in VStaff) to get a context need a reference to the StaffObj. During
 //note creation (lmNote constructor), as the note is not yet included
 //in the StaffObjs collection, these get context methods will fail.
 //		During note creation it is not necessary to access this methods, as the
@@ -72,7 +74,6 @@ static lmContext* m_pContext = NULL;	//contains updated context when previous fl
 const bool m_fDrawSmallNotesInBlock = false;    //TODO option depending on used font
 
 
-
 lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxString& sStep, wxString& sOctave, wxString& sAlter,
         lmEAccidentals nAccidentals,
@@ -84,7 +85,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         bool fInChord,
         bool fTie,
         lmEStemType nStem)  :
-    lmNoteRest(pVStaff, DEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
+    lmNoteRest(pVStaff, lmDEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
                nVoice, fVisible)
 {
     // Diatonic Pitch is determined by Step
@@ -204,11 +205,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     }
 
     // create the accidentals
-    if (nDisplayAcc == lm_eNoAccidentals) {
-        m_pAccidentals = (lmAccidental*)NULL;
-    } else {
-        m_pAccidentals = new lmAccidental(this, nDisplayAcc);
-    }
+    m_pAccidentals = CreateAccidentals(nDisplayAcc);
 
     //initialize stem
     SetUpStemDirection();       // standard lenght
@@ -220,7 +217,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_nVolume = -1;
 
     //if the note is part of a chord find the base note and take some values from it
-    m_fIsNoteBase = true;			//by default all notes are base notes
     m_pChord = (lmChord*)NULL;		//by defaul note is not in chord
     m_fNoteheadReversed = false;
     if (fInChord) {
@@ -228,14 +224,14 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
             ; //TODO
             wxLogMessage(_T("[lmNote::lmNote] Specified 'note in chord' but no base note yet defined. Chord ignored"));
         }
-        else {
-            m_fIsNoteBase = false;
+        else
+		{
             lmNote* pLastNote = (lmNote*)g_pLastNoteRest;
-            if (pLastNote->IsInChord()) {
+            if (pLastNote->IsInChord())
                 m_pChord = pLastNote->GetChord();
-            } else {
-                m_pChord = pLastNote->StartChord();
-            }
+            else
+				m_pChord = new lmChord(pLastNote);
+
             m_pChord->AddNote(this);
         }
     }
@@ -251,8 +247,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     if (pNtPrev && pNtPrev->NeedToBeTied())
 	{
         //do the tie between previous note and this one
-        m_pTiePrev = new lmTie(pNtPrev, this);
-        pNtPrev->SetTie(m_pTiePrev);
+        CreateTie(pNtPrev, this);
 
         //if stem direction is not forced, choose it to be as that of the start of tie note
         if (nStem == lmSTEM_DEFAULT)
@@ -275,15 +270,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 
 lmNote::~lmNote()
 {
-    //remove the note from the beam and if beam is empty delete the beam
-    if (m_pBeam) {
-        m_pBeam->Remove(this);
-        if (m_pBeam->NumNotes() == 0) {
-            delete m_pBeam;
-            m_pBeam = (lmBeam*)NULL;
-        }
-    }
-
     //if note in chord, remove it from the chord. Delete the chord when only one note left in it.
     if (IsInChord()) {
         m_pChord->RemoveNote(this);
@@ -311,6 +297,33 @@ lmNote::~lmNote()
         m_pAccidentals = (lmAccidental*)NULL;
     }
 
+}
+
+lmAccidental* lmNote::CreateAccidentals(lmEAccidentals nAcc)
+{
+    // create the accidentals object
+
+    if (nAcc != lm_eNoAccidentals)
+        return new lmAccidental(this, nAcc);
+    else
+        return (lmAccidental*)NULL;
+}
+
+void lmNote::CreateTie(lmNote* pNtPrev, lmNote* pNtNext)
+{
+    //create a tie between the two notes. One of them is this one. The other one can
+    //be NULL and in this case the tie is not created.
+
+    if (pNtPrev && pNtNext)
+    {
+        lmTie* pTie = new lmTie(pNtPrev, pNtNext);
+        pNtNext->SetTiePrev(pTie);
+        pNtPrev->SetTieNext(pTie);
+    }
+    else if (!pNtPrev)
+        SetTiePrev((lmTie*)NULL);
+    else if (!pNtNext)
+        SetTieNext((lmTie*)NULL);
 }
 
 lmEClefType lmNote::GetClefType()
@@ -385,11 +398,9 @@ void lmNote::RemoveTie(lmTie* pTie)
     }
 }
 
-void lmNote::ClearChordInformation()
-{
-    // invoked only from lmChord destructor
-    m_fIsNoteBase = true;        //by default all notes are base notes
-    m_pChord = (lmChord*)NULL;    //by defaul note is not in chord
+bool lmNote::IsBaseOfChord() 
+{ 
+	return m_pChord && m_pChord->IsBaseNote(this);
 }
 
 void lmNote::ComputeVolume()
@@ -515,6 +526,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //AWARE This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
     if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
+        m_pBeam->AutoSetUp();
         m_pBeam->CreateShape();
     }
 
@@ -637,7 +649,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         }
     }
 
-    //if this last note of a chord draw the stem of the chord
+    //if this is the last note of a chord draw the stem of the chord
     //-----------------------------------------------------------------------------
     if (IsInChord() && m_pChord->IsLastNoteOfChord(this) && m_nNoteType >= eHalf)
     {
@@ -1600,18 +1612,16 @@ wxString lmNote::SourceLDP(int nIndent)
     //Voice
     sSource += wxString::Format(_T(" v%d"), m_nVoice);
 
-    //visible?
-    if (!m_fVisible) { sSource += _T(" noVisible"); }
+	//base class
+	sSource += lmStaffObj::SourceLDP(nIndent);
 
-	//attached AuxObjs
-	sSource += lmStaffObj::SourceLDP(nIndent+1);
-
-	//close element
-    if (IsInChord() && m_pChord->IsLastNoteOfChord(this)) {
-        sSource += _T(") )\n");
-    }
-    else
+	//close chord element
+    if (IsInChord() && m_pChord->IsLastNoteOfChord(this))
+	{
+		nIndent--;
+		sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
         sSource += _T(")\n");
+    }
 
     return sSource;
 }
@@ -1694,12 +1704,103 @@ wxString lmNote::SourceXML(int nIndent)
 
 }
 
-lmChord* lmNote::StartChord()
+void lmNote::Freeze(lmUndoData* pUndoData)
 {
-    //Start a chord with this note as the base note of the chord
-    m_pChord = new lmChord(this);
-    m_fIsNoteBase = true;
-    return m_pChord;
+    //save info about relations and invalidate ptrs.
+
+    //save info
+    //TODO
+	//beam
+
+    //if note in chord, remove it from the chord
+    pUndoData->AddParam<bool>(IsInChord());
+    if (IsInChord())
+    {
+		//save position in chord of note to be removed
+		pUndoData->AddParam<int>(m_pChord->GetNoteIndex(this));
+
+		//m_pChord->SaveChord(pUndoData);
+        m_pChord->RemoveNote(this);
+
+		//save num notes, and first note in chord, for recovering chord pointer
+        pUndoData->AddParam<int>( m_pChord->GetNumNotes() );
+		pUndoData->AddParam<lmNote*>( m_pChord->GetBaseNote() );
+
+        //if only one note remaining, delete chord
+        if (m_pChord->GetNumNotes() == 1)
+			delete m_pChord;	//this notifies all notes
+
+        m_pChord = (lmChord*)NULL;
+    }
+
+    //save and remove tie with previous note
+    if (m_pTiePrev)
+    {
+        pUndoData->AddParam<lmNote*>( m_pTiePrev->GetStartNote() );
+        m_pTiePrev->Remove(this);
+        delete m_pTiePrev;
+        m_pTiePrev = (lmTie*)NULL;
+    }
+    else
+        pUndoData->AddParam<lmNote*>( (lmNote*)NULL );
+
+    //save and remove tie with next note
+    if (m_pTieNext)
+    {
+        pUndoData->AddParam<lmNote*>( m_pTieNext->GetEndNote() );
+        m_pTieNext->Remove(this);
+        delete m_pTieNext;
+        m_pTieNext = (lmTie*)NULL;
+    }
+    else
+        pUndoData->AddParam<lmNote*>( (lmNote*)NULL );
+
+    //save accidentals
+    pUndoData->AddParam<lmEAccidentals>( 
+        (m_pAccidentals ? m_pAccidentals->GetType() : lm_eNoAccidentals ) );
+    m_pAccidentals = (lmAccidental*)NULL;
+
+    //invalidate other pointers
+    m_pNoteheadShape = (lmShapeGlyph*)NULL;
+    m_pStemShape = (lmShapeStem*)NULL;
+
+    lmNoteRest::Freeze(pUndoData);
+}
+
+void lmNote::UnFreeze(lmUndoData* pUndoData)
+{
+    //restore pointers
+
+    //restore chord
+    bool fInChord = pUndoData->GetParam<bool>();
+    if (fInChord)
+    {
+		int nIndex = pUndoData->GetParam<int>();
+		int nNumNotes = pUndoData->GetParam<int>();
+		lmNote* pFirstNote = pUndoData->GetParam<lmNote*>();
+		if (nNumNotes == 1)
+		{
+			//build chord
+			m_pChord = new lmChord(pFirstNote);
+		}
+		else
+		{
+			//use existing chord
+			m_pChord = pFirstNote->GetChord();
+		}
+		m_pChord->AddNote(this, nIndex);
+    }
+
+    //restore tie with previous note
+    CreateTie(pUndoData->GetParam<lmNote*>(), this);
+
+    //restore tie with next note
+    CreateTie(this, pUndoData->GetParam<lmNote*>() );
+
+    //restore accidentals
+    m_pAccidentals = CreateAccidentals( pUndoData->GetParam<lmEAccidentals>() );
+
+    lmNoteRest::UnFreeze(pUndoData);
 }
 
 //devuelve true si esta nota puede estar ligada con otra cuyos valores se reciben como argumentos
