@@ -51,7 +51,7 @@ extern lmLogger* g_pLogger;
 
 lmMusicXMLParser::lmMusicXMLParser()
 {
-    m_pTupletBracket = (lmTupletBracket*)NULL;	//no tuplet being created
+    m_pTuplet = (lmTupletBracket*)NULL;	//no tuplet being created
     m_nCurrentDivisions = 0;					//not set yet
 	m_nCurVoice = 1;							//default: voice 1
 
@@ -59,7 +59,7 @@ lmMusicXMLParser::lmMusicXMLParser()
 
 lmMusicXMLParser::~lmMusicXMLParser()
 {
-    wxASSERT(!m_pTupletBracket);
+    wxASSERT(!m_pTuplet);
 }
 
 lmScore* lmMusicXMLParser::ParseMusicXMLFile(const wxString& filename, bool fNewLog, bool fShowLog)
@@ -1290,14 +1290,14 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
 
                     //Create the tuplet or mark it for termination
                     if (sTupletType == _T("start")) {
-                        wxASSERT(!m_pTupletBracket);
-                        m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber,
+                        wxASSERT(!m_pTuplet);
+                        m_pTuplet = new lmTupletBracket(fShowNumber, nTupletNumber,
                                 fTupletBracket, nTupletAbove, nTupletNumber, nTupletNumber);
                         //TODO Get nActualNotes and nNormalNotes
                     }
                     else if (sTupletType == _T("stop")) {
                         //signal that bracket must be ended
-                        wxASSERT(m_pTupletBracket);
+                        wxASSERT(m_pTuplet);
                         fEndTuplet = true;
                     }
 
@@ -1523,12 +1523,11 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     // Add notations
     if (fFermata) pNR->AddFermata(nPlacement);
 
-    if (m_pTupletBracket) {
-        m_pTupletBracket->Include(pNR);
-        pNR->SetTupletBracket(m_pTupletBracket);
+    if (m_pTuplet) {
+        m_pTuplet->Include(pNR);
 
         if (fEndTuplet) {
-            m_pTupletBracket = (lmTupletBracket*)NULL;
+            m_pTuplet = (lmTupletBracket*)NULL;
         }
     }
 

@@ -94,7 +94,7 @@ private:
 
     int					m_nCurrentDivisions;
 	int					m_nCurVoice;
-    lmTupletBracket*	m_pTupletBracket;
+    lmTupletBracket*	m_pTuplet;
 
     //error management
     int        m_nErrors;        // number of parsing errors

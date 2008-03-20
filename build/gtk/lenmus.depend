@@ -202,14 +202,14 @@
 	<vector>
 	"../graphic/ShapeTuplet.h"
 
-1205577088 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.h
+1205683070 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.h
 	"defs.h"
 	"wx/list.h"
 
 1199452100 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Rest.h
 	"Glyph.h"
 
-1205596198 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Chord.h
+1205682480 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Chord.h
 	<list>
 
 1199102970 /media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundManager.h
@@ -774,7 +774,7 @@
 	"../ldp_parser/LDPParser.h"
 	"../xml_parser/MusicXMLParser.h"
 
-1205615117 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
+1205615116 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
 	<vector>
 	"wx/txtstrm.h"
 	"wx/wfstream.h"
@@ -783,7 +783,7 @@
 	"LDPTags.h"
 	"../score/Score.h"
 
-1205614259 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPNode.h
+1205614258 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPNode.h
 	<vector>
 
 1199100672 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPToken.h
@@ -1586,17 +1586,18 @@
 	"wx/wx.h"
 	"LDPNode.h"
 
-1205410174 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
+1205659372 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
+	<math.h>
+	<algorithm>
 	"wx/textfile.h"
 	"wx/log.h"
-	<math.h>
 	"../score/Score.h"
 	"../score/MetronomeMark.h"
+	"../auxmusic/Conversion.h"
 	"LDPParser.h"
 	"AuxString.h"
-	"../auxmusic/Conversion.h"
 	"LDPTags.h"
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
@@ -1728,12 +1729,13 @@
 	"../graphic/Shapes.h"
 	"../graphic/ShapeNote.h"
 
-1205596438 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Chord.cpp
+1205683616 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Chord.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<algorithm>
 	"Score.h"
 	"Glyph.h"
+	"UndoRedo.h"
 	"../graphic/Shapes.h"
 	"../graphic/ShapeNote.h"
 	"../graphic/GMObject.h"
@@ -1828,7 +1830,7 @@
 
 1199103142 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.h
 
-1205599866 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
+1205683070 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1961,7 +1963,7 @@
 	"wx/wx.h"
 	"Score.h"
 
-1205603092 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
+1205660564 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -2596,7 +2598,7 @@
 	"../app/ScoreCanvas.h"
 	"../score/Score.h"
 
-1205613723 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/UndoRedo.h
+1205683746 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/UndoRedo.h
 	<vector>
 
 1199100662 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/AuxObj.cpp

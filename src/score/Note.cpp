@@ -47,10 +47,6 @@
 #include "../graphic/GMObject.h"
 
 
-//implementation of the Notes List
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(NotesList);
-
 //global static variables common to all notes
 
 static bool m_fBeingBuilt = false;		//true when constructor not yet finished
@@ -232,7 +228,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
             else
 				m_pChord = new lmChord(pLastNote);
 
-            m_pChord->AddNote(this);
+            m_pChord->Include(this);
         }
     }
 
@@ -272,8 +268,8 @@ lmNote::~lmNote()
 {
     //if note in chord, remove it from the chord. Delete the chord when only one note left in it.
     if (IsInChord()) {
-        m_pChord->RemoveNote(this);
-        if (m_pChord->GetNumNotes() == 1) {
+        m_pChord->Remove(this);
+        if (m_pChord->NumNotes() == 1) {
             delete m_pChord;
             m_pChord = (lmChord*)NULL;
         }
@@ -525,7 +521,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //if this is the first note/rest of a beam, create the beam
     //AWARE This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
-    if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
+    if (m_pBeam && m_BeamInfo[0].Type == eBeamBegin) {
         m_pBeam->AutoSetUp();
         m_pBeam->CreateShape();
     }
@@ -602,7 +598,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         }
 
 		//if flag to be drawn, adjust stem size and compute flag position
-        if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
+        if (!m_fDrawSmallNotesInBlock && !m_pBeam && m_nNoteType > eQuarter) {
             int nGlyph = GetGlyphForFlag();
             lmLUnits uStemLength = GetStandardStemLenght();
             // to measure flag and stem I am going to use some glyph data. These
@@ -641,7 +637,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         if (fDrawStem && ! fInChord)
 		{
 			// if beamed, the stem shape will be owned by the beam; otherwise by the note
-			if (m_fBeamed)
+			if (m_pBeam)
 				m_pBeam->AddNoteAndStem(m_pStemShape, pNoteShape, &m_BeamInfo[0]);
 			else
 				pNoteShape->AddStem(m_pStemShape);
@@ -661,7 +657,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //Add shape for flag if necessary
     //-----------------------------------------------------------------------------
     if (!m_fDrawSmallNotesInBlock) {
-        if (!m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
+        if (!m_pBeam && m_nNoteType > eQuarter && !IsInChord()) {
             lmLUnits uxPos = (m_fStemDown ? GetXStemLeft() : GetXStemRight());
             AddFlagShape(pNoteShape, pPaper, lmUPoint(uxPos, uyFlag), colorC);
         }
@@ -686,14 +682,14 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 		if (pBaseNote->IsBeamed() && pBaseNote->GetBeamType(0) == eBeamEnd)
 			pBaseNote->GetBeam()->LayoutObject(pBox, pPaper, colorC);
     }
-    else if (!IsInChord() && m_fBeamed && m_BeamInfo[0].Type == eBeamEnd)
+    else if (!IsInChord() && m_pBeam && m_BeamInfo[0].Type == eBeamEnd)
 	{
         m_pBeam->LayoutObject(pBox, pPaper, colorC);
     }
 
     // tuplet bracket
-    if (m_pTupletBracket && (m_pTupletBracket->GetEndNote())->GetID() == m_nId)
-		m_pTupletBracket->LayoutObject(pBox, pPaper, colorC);
+    if (m_pTuplet && (m_pTuplet->GetEndNoteRest())->GetID() == m_nId)
+		m_pTuplet->LayoutObject(pBox, pPaper, colorC);
 
     //ties
     if (m_pTiePrev)
@@ -774,7 +770,7 @@ bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxL
 
     bool fDrawStem = true;
 
-    if (m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter && !IsInChord())
+    if (m_fDrawSmallNotesInBlock && !m_pBeam && m_nNoteType > eQuarter && !IsInChord())
     {
         // It is a single note with flag: draw it in one step with a glyph
         AddSingleNoteShape(pNoteShape, pPaper, m_nNoteType, m_fStemDown, uxLeft, uyTop, colorC);
@@ -1505,18 +1501,18 @@ wxString lmNote::Dump()
         sDump += wxString::Format(_T(", InChord, Notehead shift = %s"),
             (m_fNoteheadReversed ? _T("yes") : _T("no")) );
     }
-    if (m_fBeamed) {
+    if (m_pBeam) {
         sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
         for (int i=1; i < 6; i++) {
             sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].Type);
         }
         sDump += _T(")");
     }
-    if (m_pTupletBracket) {
-        if ((m_pTupletBracket->GetEndNote())->GetID() == m_nId) {
+    if (m_pTuplet) {
+        if ((m_pTuplet->GetEndNoteRest())->GetID() == m_nId) {
             sDump += _T(", End of tuplet");
         }
-        else if ((m_pTupletBracket->GetStartNote())->GetID() == m_nId)
+        else if ((m_pTuplet->GetStartNoteRest())->GetID() == m_nId)
             sDump += _T(", Start of tuplet");
         else
             sDump += _T(", In tuplet");
@@ -1582,7 +1578,7 @@ wxString lmNote::SourceLDP(int nIndent)
     if (IsTiedToNext()) sSource += _T(" l");
 
     //start or end of group
-    if (m_fBeamed) {
+    if (m_pBeam) {
         if (m_BeamInfo[0].Type == eBeamBegin) {
             sSource += _T(" g+");
         }
@@ -1592,14 +1588,14 @@ wxString lmNote::SourceLDP(int nIndent)
     }
 
     //tuplets
-    if (m_pTupletBracket) {
-        if ((lmNoteRest*)this == m_pTupletBracket->GetStartNote()) {
+    if (m_pTuplet) {
+        if ((lmNoteRest*)this == m_pTuplet->GetStartNoteRest()) {
             sSource += wxString::Format(_T(" t%d/%d"),
-                                        m_pTupletBracket->GetActualNotes(),
-                                        m_pTupletBracket->GetNormalNotes() );
+                                        m_pTuplet->GetActualNotes(),
+                                        m_pTuplet->GetNormalNotes() );
 
         }
-        else if((lmNoteRest*)this == m_pTupletBracket->GetEndNote()) {
+        else if((lmNoteRest*)this == m_pTuplet->GetEndNoteRest()) {
             sSource += _T(" t-");
         }
     }
@@ -1708,10 +1704,6 @@ void lmNote::Freeze(lmUndoData* pUndoData)
 {
     //save info about relations and invalidate ptrs.
 
-    //save info
-    //TODO
-	//beam
-
     //if note in chord, remove it from the chord
     pUndoData->AddParam<bool>(IsInChord());
     if (IsInChord())
@@ -1720,14 +1712,14 @@ void lmNote::Freeze(lmUndoData* pUndoData)
 		pUndoData->AddParam<int>(m_pChord->GetNoteIndex(this));
 
 		//m_pChord->SaveChord(pUndoData);
-        m_pChord->RemoveNote(this);
+        m_pChord->Remove(this);
 
 		//save num notes, and first note in chord, for recovering chord pointer
-        pUndoData->AddParam<int>( m_pChord->GetNumNotes() );
+        pUndoData->AddParam<int>( m_pChord->NumNotes() );
 		pUndoData->AddParam<lmNote*>( m_pChord->GetBaseNote() );
 
         //if only one note remaining, delete chord
-        if (m_pChord->GetNumNotes() == 1)
+        if (m_pChord->NumNotes() == 1)
 			delete m_pChord;	//this notifies all notes
 
         m_pChord = (lmChord*)NULL;
@@ -1788,7 +1780,7 @@ void lmNote::UnFreeze(lmUndoData* pUndoData)
 			//use existing chord
 			m_pChord = pFirstNote->GetChord();
 		}
-		m_pChord->AddNote(this, nIndex);
+		m_pChord->Include(this, nIndex);
     }
 
     //restore tie with previous note

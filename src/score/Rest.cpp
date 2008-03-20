@@ -47,10 +47,8 @@ lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool f
     : lmNoteRest(pVStaff, lmDEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted,
                  nStaff, nVoice, fVisible)
 {
-
     CreateBeam(fBeamed, BeamInfo);
     g_pLastNoteRest = this;
-
 }
 
 lmRest::~lmRest()
@@ -123,13 +121,6 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 	pBox->AddShape(pRestShape);
     m_pShape = pRestShape;
 
-    ////if this is the first note/rest of a beam, create the beam
-    ////AWARE This must be done before using stem information, as the beam could
-    ////change stem direction if it is not determined for some/all the notes in the beam
-    //if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-    //    m_pBeam->CreateShape();
-    //}
-
     // create shape for the rest symbol
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
@@ -200,7 +191,7 @@ wxString lmRest::Dump()
         _T("%d\tRest\tType=%d, TimePos=%.2f, rDuration=%.2f, voice=%d "),
         m_nId, m_nNoteType, m_rTimePos, m_rDuration, m_nVoice );
 
-    if (m_fBeamed) {
+    if (m_pBeam) {
         sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
         for (int i=1; i < 6; i++) {
             sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].Type);
@@ -244,21 +235,5 @@ wxString lmRest::SourceXML(int nIndent)
     sSource += _T("TODO: lmRest XML Source code generation method\n");
 
     return sSource;
-//    sPitch = GetNombreSajon(m_nPitch)
-//
-//    sFuente = "            <note>" & sCrLf
-//    sFuente = sFuente & "                <rest>" & sCrLf
-//    sFuente = sFuente & "                    <display-step>" & Left$(sPitch, 1) & "</display-step>" & sCrLf
-//    sFuente = sFuente & "                    <display-octave>" & Mid$(sPitch, 2) & "</display-octave>" & sCrLf
-//    sFuente = sFuente & "                </rest>" & sCrLf
-//    sFuente = sFuente & "                <duration>2</duration>" & sCrLf
-//    sFuente = sFuente & "                <voice>1</voice>" & sCrLf
-//    sFuente = sFuente & "                <type>quarter</type>" & sCrLf
-//    sFuente = sFuente & "                <stem>up</stem>" & sCrLf
-//    sFuente = sFuente & "                <notations>" & sCrLf
-//    sFuente = sFuente & "                    <slur type=""start"" number=""1""/>" & sCrLf
-//    sFuente = sFuente & "                </notations>" & sCrLf
-//    sFuente = sFuente & "            </note>" & sCrLf
-//    FuenteXML = sFuente
 }
 

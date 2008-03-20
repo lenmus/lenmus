@@ -27,6 +27,7 @@
 				RuntimeLibrary="3"
 				EnableEnhancedInstructionSet="0"
 				DisableLanguageExtensions="FALSE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="wx/wxprec.h"
 				PrecompiledHeaderFile="..\..\z_debug_unicode\lenmus.pch"
@@ -263,6 +264,9 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\NoteRest.h">
+			</File>
+			<File
+				RelativePath="..\..\src\score\NotesRelationship.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\ObjOptions.cpp">

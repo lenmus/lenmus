@@ -26,27 +26,31 @@
 #pragma interface "Beam.cpp"
 #endif
 
-#include <vector>
+#include <list>
 #include "wx/dc.h"
-
-//------------------------------------------------------------------------------------------
-// lmBeam are auxiliary objects within lmNote objects to contain the information 
-// and methods related to beaming: grouping the beams of several consecutive notes
-//------------------------------------------------------------------------------------------
 
 class lmShapeBeam;
 class lmShapeStem;
 class lmShapeNote;
+class lmUndoData;
+
 
 class lmBeam
 {
 public:
-    lmBeam(lmNoteRest* pNotePrev);
+    lmBeam(lmNote* pNote);
+    lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData);
     ~lmBeam();
 
-    void Include(lmNoteRest* pNR);
+    inline void Save(lmUndoData* pUndoData) {}
+
+    void Include(lmNoteRest* pNR, int nIndex = -1);
     void Remove(lmNoteRest* pNR);
-    inline int NumNotes() { return (int)m_cNotes.size(); }
+    inline int NumNotes() { return (int)m_Notes.size(); }
+	int GetNoteIndex(lmNoteRest* pNR);
+    inline lmNoteRest* GetStartNoteRest() { return m_Notes.front(); }
+    inline lmNoteRest* GetEndNoteRest() { return m_Notes.back(); }
+
     void CreateShape();
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
 	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
@@ -54,19 +58,15 @@ public:
     void AutoSetUp();
 
 private:
-	int FindNote(lmNoteRest* pNR);
     int GetBeamingLevel(lmNote* pNote);
 
+        //member variables
 
-
-	lmNoteRest*     m_pNotePrev;    //the previous note to the group (for ties)
     bool            m_fStemsDown;
 	lmShapeBeam*	m_pBeamShape;
 
 	//notes/rests in this beam (if chord, only base note)
-	std::vector<lmNoteRest*>	m_cNotes;
-    lmNote*         m_pFirstNote;   //As the beam could start or end with a rest, here we ...
-    lmNote*         m_pLastNote;    //... keep pointers to the first and last notes.    
+	std::list<lmNoteRest*>	m_Notes;
 
     //beam information to be transferred to each beamed note
     int            m_nPosForRests;        //relative position for rests

@@ -40,52 +40,77 @@
 #include "wx/wx.h"
 #endif
 
-#include "vector"
+#include <list>
+#include <vector>
+#include <algorithm>
+
 #include "Score.h"
 #include "../graphic/ShapeBeam.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
 
-lmBeam::lmBeam(lmNoteRest* pNotePrev)
+lmBeam::lmBeam(lmNote* pNote)
 {
-    // m_pNotePrev is the note preceding the beamed group. It is necessary to have access to
-    // it because if this note is tied to the first one of the group, the stems og the group
-    // are forced to go in the same direction than this previous note.
-
-    m_pNotePrev = pNotePrev;
-
-    m_pFirstNote = (lmNote*)NULL;
-    m_pLastNote = (lmNote*)NULL;
 	m_pBeamShape = (lmShapeBeam*)NULL;
+    Include(pNote);
+}
+
+lmBeam::lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData)
+{
+    WXUNUSED(pUndoData);
+	m_pBeamShape = (lmShapeBeam*)NULL;
+    Include(pFirstNote);
 }
 
 lmBeam::~lmBeam()
 {
-    // notes will not be deleted when deleting the list, as they are part of a lmScore
-    // and will be deleted there.
-    //m_cNotes.clear();
+    //AWARE: notes must not be deleted when deleting the list, as they are part of a lmScore
+    //and will be deleted there.
+    RemoveAllNotes();
 }
 
-void lmBeam::Include(lmNoteRest* pNR)
+void lmBeam::Include(lmNoteRest* pNR, int nIndex)
 {
-	m_cNotes.push_back(pNR);
-    // if it is not a rest but a note, update first and last note pointers
-    if (!pNR->IsRest()) {
-        if (!m_pFirstNote) m_pFirstNote = (lmNote*)pNR;
-        m_pLastNote = (lmNote*)pNR;
-    }
-}
+    // Add a note to the beam. Index is the position that the added note/rest must occupy
+	// (0..n). If -1, note/rest will be added at the end.
 
-int lmBeam::FindNote(lmNoteRest* pNR)
-{
-    //find a note/rest
+    //precondition: a beam must always start with a note
+    wxASSERT(NumNotes() > 0 || NumNotes()==0 && !pNR->IsRest() );
 
-    for (int i=0; i < (int)m_cNotes.size(); i++)
-    {
-        if (m_cNotes[i]->GetID() == pNR->GetID())
-			return i;
+	//add the note/rest
+	if (nIndex == -1 || nIndex == NumNotes())
+		m_Notes.push_back(pNR);
+	else
+	{
+		int iN;
+		std::list<lmNoteRest*>::iterator it;
+		for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
+		{
+			if (iN == nIndex)
+			{
+				//insert before current item
+				m_Notes.insert(it, pNR);
+				break;
+			}
+		}
 	}
-	return -1;
+    pNR->OnIncludedInBeam(this);
+}
+
+int lmBeam::GetNoteIndex(lmNoteRest* pNR)
+{
+	//returns the position in the notes list (0..n)
+
+	wxASSERT(NumNotes() > 1);
+
+	int iN;
+    std::list<lmNoteRest*>::iterator it;
+    for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
+	{
+		if (pNR == *it) return iN;
+	}
+    wxASSERT(false);	//note not found
+	return 0;			//compiler happy
 }
 
 void lmBeam::RemoveAllNotes()
@@ -93,23 +118,25 @@ void lmBeam::RemoveAllNotes()
     //the beam is going to be removed. Release all notes
 
     //ask each note to remove beam information
-    for (int i=0; i < (int)m_cNotes.size(); i++)
-    {
-        m_cNotes[i]->RemoveBeam();
+    std::list<lmNoteRest*>::iterator it;
+    for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
+	{
+        (*it)->OnRemovedFromBeam();
 	}
 
     //remove all notes from beam
-    m_cNotes.clear();   //erase(m_cNotes.begin(), m_cNotes.end());
+    m_Notes.clear();
 }
 
 void lmBeam::Remove(lmNoteRest* pNR)
 {
-    //find note/rest to remove
-	int i = FindNote(pNR);
+    //remove note/rest
 
-	//if found, remove note
-   if (i != -1)
-		m_cNotes.erase(m_cNotes.begin()+i);
+    wxASSERT(NumNotes() > 1);
+
+    std::list<lmNoteRest*>::iterator it;
+    it = std::find(m_Notes.begin(), m_Notes.end(), pNR);
+    m_Notes.erase(it);
 }
 
 void lmBeam::AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo)
@@ -138,14 +165,14 @@ void lmBeam::CreateShape()
     // ending with a start of group. As this start is in the last note of the score,
     // the group has only one note.
     //
-    if (m_cNotes.size() == 1) {
-        wxLogMessage(_T("*** ERROR *** Group with just one note!"));
+    if (m_Notes.size() == 1) {
+        wxLogMessage(_T("*** ERROR *** Beam with just one note!"));
         return;
     }
     // End of BUG_BYPASS   ------------------------------------------------------------
 
     //create the beam container shape
-    m_pBeamShape = new lmShapeBeam(m_pFirstNote);
+    m_pBeamShape = new lmShapeBeam(m_Notes.front());
 
     // look for the highest and lowest pitch notes so that we can properly position posible
     // rests along the group
@@ -154,10 +181,13 @@ void lmBeam::CreateShape()
     int nMinPosOnStaff = 99999;
     m_nPosForRests = 0;
     int nNumNotes = 0;
-    for (int i=0; i < (int)m_cNotes.size(); i++)
-    {
-		lmNote* pNote = (lmNote*)m_cNotes[i];
-        if (!pNote->IsRest()) {     //ignore rests
+    int i;
+    std::list<lmNoteRest*>::iterator it;
+    for(i=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, i++)
+	{
+        if (!(*it)->IsRest())      //ignore rests
+        {
+		    lmNote* pNote = (lmNote*)(*it);
             if (pNote->IsInChord()) {
                 //Is in chord. So this is the base note
                 nMaxPosOnStaff = wxMax(nMaxPosOnStaff, ((pNote->GetChord())->GetMaxNote())->GetPosOnStaff());
@@ -200,10 +230,11 @@ void lmBeam::CreateShape()
     nNumNotes = 0;            // total number of notes
     m_fStemsDown = false;        // stems up by default
 
-    for (int i=0; i < (int)m_cNotes.size(); i++)
-    {
-		lmNote* pNote = (lmNote*)m_cNotes[i];
-        if (!pNote->IsRest()) {     //ignore rests
+    for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
+	{
+        if (!(*it)->IsRest())      //ignore rests
+        {
+		    lmNote* pNote = (lmNote*)(*it);
             //count number of notes with stem down
             nNumNotes++;
             if (pNote->StemGoesDown()) nStemDown++;
@@ -227,20 +258,21 @@ void lmBeam::CreateShape()
 
     //correct beam position (and reverse stems direction) if first note of beamed group is
     //tied to a previous note and the stems' directions are not forced
-    if (!fStemForced && m_pNotePrev && !m_pNotePrev->IsRest()) {
-        lmNote* pN = (lmNote*)m_pNotePrev;
-        if (pN->IsTiedToNext()) m_fStemsDown = pN->StemGoesDown();
+    if (!fStemForced && !m_Notes.front()->IsRest())
+    {
+        lmNote* pFirst = (lmNote*)m_Notes.front();
+        if (pFirst->IsTiedToPrev())
+            m_fStemsDown = pFirst->GetTiedNotePrev()->StemGoesDown();
     }
 
     //the beam line position is going to be established by the first and last notes' stems.
     //therefore, if stems are not prefixed, let's update stem directions of notes,
     //so that following computations take the right stem directions
     if (!fStemForced) {
-		for (int i=0; i < (int)m_cNotes.size(); i++)
-		{
-			lmNoteRest* pNR = m_cNotes[i];;
-            if (!pNR->IsRest()) {
-                ((lmNote*)pNR)->SetStemDirection(m_fStemsDown);
+        for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
+	    {
+            if (!(*it)->IsRest()) {
+                ((lmNote*)(*it))->SetStemDirection(m_fStemsDown);
             }
         }
     }
@@ -259,7 +291,7 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
     // ending with a start of group. As this start is in the last note of the score,
     // the group has only one note.
     //
-    if (m_cNotes.size() == 1) {
+    if (m_Notes.size() == 1) {
         wxLogMessage(_T("*** ERROR *** Group with just one note!"));
         return 0;
     }
@@ -280,12 +312,12 @@ void lmBeam::AutoSetUp()
 
     //Filter out any rest in the beam
 	std::vector<lmNote*> cNotes;
-    std::vector<lmNoteRest*>::iterator it;
-    for (it = m_cNotes.begin(); it != m_cNotes.end(); ++it)
+    std::list<lmNoteRest*>::iterator it;
+    for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
     {
         if (!(*it)->IsRest())
         {
-            //it is a note. Add to notes vector
+            //it is a note. Add to notes collection
             cNotes.push_back((lmNote*)(*it));
         }
     }

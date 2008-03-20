@@ -52,6 +52,7 @@
 #pragma interface "NoteRest.cpp"
 #endif
 
+#include "NotesRelationship.h"
 
 #define lmDEFINE_REST        true
 #define lmDEFINE_NOTE        false
@@ -70,15 +71,11 @@ class lmNoteRest:  public lmStaffObj
 {
 public:
     //ctors and dtor
-    lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
-             bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible);
-
     virtual ~lmNoteRest();
 
     virtual wxString Dump() = 0;
 
     bool IsRest() const { return m_fIsRest; }
-    virtual bool IsInChord() = 0;    
 
     //implementation of virtual methods of base class lmStaffObj
     virtual bool IsComposite() { return true; }
@@ -100,15 +97,17 @@ public:
 
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
-    void RemoveBeam();
-    bool IsBeamed() const { return m_fBeamed; }
+	inline void OnIncludedInBeam(lmBeam* pBeam) { m_pBeam = pBeam; }
+	inline void OnRemovedFromBeam() { m_pBeam = (lmBeam*)NULL; }
+    bool IsBeamed() const { return m_pBeam != (lmBeam*)NULL; }
     lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
     void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
 	inline lmBeam* GetBeam() { return m_pBeam; }
 	inline lmTBeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
 
     //methods related to tuplets
-    void SetTupletBracket(lmTupletBracket* pTB) { m_pTupletBracket = pTB; }
+	inline void OnIncludedInTuplet(lmTupletBracket* pTuplet) { m_pTuplet = pTuplet; }
+	inline void OnRemovedFromTuplet() { m_pTuplet = (lmTupletBracket*)NULL; }
 
     //methods related to sound
     void AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int nChannel,
@@ -122,12 +121,24 @@ public:
     virtual void Freeze(lmUndoData* pUndoData);
     virtual void UnFreeze(lmUndoData* pUndoData);
 
+	//relationships
+	template <class T> T* FreezeRelationship(T* pRel, lmUndoData* pUndoData);
+	template <class T> T* UnFreezeRelationship(lmUndoData* pUndoData);
+	template <class T> T* GetRelationship();
+	void OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelClass);
+	void OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass);
+
+
 
 protected:
+    lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
+             bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible);
+
     lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                      wxColour colorC, bool fUseFont);
     lmLUnits AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                          wxColour colorC);
+
         
         //
         // member variables
@@ -143,13 +154,12 @@ protected:
     bool        m_fDoubleDotted;
     bool        m_fCalderon;            //tiene calderón
 
-    // beaming information
-    bool        m_fBeamed;              // note is beamed
-    lmBeam*     m_pBeam;                //beaming information
+    // beaming information: only valid if m_pBeam != NULL
+    lmBeam*     m_pBeam;                //if not NULL the note/rest is in this beam
     lmTBeamInfo m_BeamInfo[6];          //beam mode for each level
 
     //tuplet related variables
-    lmTupletBracket*    m_pTupletBracket;    //ptr to lmTupletBracket if this note/rest is part of a tuplet
+    lmTupletBracket*    m_pTuplet;    //ptr to lmTupletBracket if this note/rest is part of a tuplet
 
     //AuxObjs associated to this note
     AuxObjsList*    m_pNotations;     //list of Notations
@@ -157,9 +167,6 @@ protected:
 
 };
 
-// declare a list of NoteRests class
-#include "wx/list.h"
-WX_DECLARE_LIST(lmNoteRest, NoteRestsList);
 
 // global functions related to noterests
 extern int LDPNoteTypeToEnumNoteType(const wxString& sNoteType);

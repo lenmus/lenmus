@@ -109,11 +109,13 @@ lmCmdDeleteObject::lmCmdDeleteObject(lmVStaffCursor* pVCursor, const wxString& n
     m_tCursorState = pVCursor->GetState();
     m_pVStaff = pVCursor->GetVStaff();
     m_pSO = pVCursor->GetStaffObj();
+    m_fDeleteSO = false;                //m_pSO is still owned by the score
 }
 
 lmCmdDeleteObject::~lmCmdDeleteObject()
 {
-    delete m_pSO;       //delete frozen object
+    if (m_fDeleteSO)
+        delete m_pSO;       //delete frozen object
 }
 
 bool lmCmdDeleteObject::Do()
@@ -123,6 +125,7 @@ bool lmCmdDeleteObject::Do()
     m_pVStaff->Cmd_DeleteObject(&m_UndoData, m_pSO);
 
 	CommandDone();
+    m_fDeleteSO = true;                //m_pSO is no longer owned by the score
     return true;
 }
 
@@ -132,11 +135,10 @@ bool lmCmdDeleteObject::Undo()
 
     m_UndoData.Rewind();
     m_pVStaff->Cmd_Undo_DeleteObject(&m_UndoData, m_pSO);
+    m_fDeleteSO = false;                //m_pSO is again owned by the score
 
     //set cursor
     m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-    m_pSO = (lmStaffObj*)NULL;      //to prevent deleting it at command destructor
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();

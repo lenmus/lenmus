@@ -41,9 +41,9 @@ public:
     lmNote* GetMaxNote();
     lmNote* GetMinNote();
 	inline lmNote* GetBaseNote() { return m_Notes.front(); }
-    inline int GetNumNotes() { return (int)m_Notes.size(); }
-    void AddNote(lmNote* pNote, int nIndex = -1);
-    void RemoveNote(lmNote* pNote);
+    inline int NumNotes() { return (int)m_Notes.size(); }
+    void Include(lmNote* pNote, int nIndex = -1);
+    void Remove(lmNote* pNote);
 	inline bool IsLastNoteOfChord(lmNote* pNote) { return m_Notes.back() == pNote; }
     void SetStemDirection(bool fStemDown);
     void AddStemShape(lmPaper* pPaper, wxColour colorC,

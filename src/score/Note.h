@@ -122,6 +122,8 @@ public:
     void RemoveTie(lmTie* pTie); 
     inline bool IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
     inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
+    inline lmNote* GetTiedNotePrev() { return (m_pTiePrev ? m_pTiePrev->GetStartNote() : (lmNote*)NULL); } 
+    inline lmNote* GetTiedNoteNext() { return (m_pTieNext ? m_pTieNext->GetEndNote() : (lmNote*)NULL); } 
 
     // methods related to sound
     lmDPitch GetDPitch();
@@ -241,10 +243,6 @@ private:
 
 
 };
-
-// declare a list of Notes class
-#include "wx/list.h"
-WX_DECLARE_LIST(lmNote, NotesList);
 
 
 // Global functions related to notes

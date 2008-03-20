@@ -96,7 +96,7 @@ lmChord::~lmChord()
 
 wxString lmChord::Dump()
 {
-    wxString sDump = wxString::Format(_T("Chord: num.notes=%d ("), GetNumNotes());
+    wxString sDump = wxString::Format(_T("Chord: num.notes=%d ("), NumNotes());
 
     std::list<lmNote*>::iterator it;
     for(it = m_Notes.begin(); it != m_Notes.end(); ++it)
@@ -110,17 +110,17 @@ wxString lmChord::Dump()
     return sDump;
 }
 
-void lmChord::AddNote(lmNote* pNewNote, int nIndex)
+void lmChord::Include(lmNote* pNewNote, int nIndex)
 {
     // Add a note to the chord. Index is the position taht the added note must occupy
 	// (0..n). If -1, note will be added at the end.
     // Precondition: When this method is invoked at least one note in the
 	// chord: the base note
 
-    wxASSERT(GetNumNotes() > 0);
+    wxASSERT(NumNotes() > 0);
 
 	//add the note
-	if (nIndex == -1 || nIndex == GetNumNotes())
+	if (nIndex == -1 || nIndex == NumNotes())
 		m_Notes.push_back(pNewNote);
 	else
 	{
@@ -134,7 +134,6 @@ void lmChord::AddNote(lmNote* pNewNote, int nIndex)
 				m_Notes.insert(it, pNewNote);
 				break;
 			}
-
 		}
 	}
 
@@ -143,13 +142,13 @@ void lmChord::AddNote(lmNote* pNewNote, int nIndex)
 
 }
 
-void lmChord::RemoveNote(lmNote* pNoteToRemove)
+void lmChord::Remove(lmNote* pNoteToRemove)
 {
 	// Removes a note from a chord.
 	// When invoked there must be at least two notes as
 	// otherwise it can not be a chord.
 
-	wxASSERT(GetNumNotes() > 1);
+	wxASSERT(NumNotes() > 1);
 
     //remove note
     std::list<lmNote*>::iterator it;
@@ -161,7 +160,7 @@ int lmChord::GetNoteIndex(lmNote* pNote)
 {
 	//returns the position in the notes list (0..n)
 
-	wxASSERT(GetNumNotes() > 1);
+	wxASSERT(NumNotes() > 1);
 
 	int iN;
     std::list<lmNote*>::iterator it;
@@ -404,7 +403,7 @@ void lmChord::ComputeStemDirection()
     //      ==>   Mean(NotePos) > MiddleLinePos -> downward
 
 
-    if (GetNumNotes() < 2) return;
+    if (NumNotes() < 2) return;
 
     lmNote* pBaseNote = GetBaseNote();
 
@@ -429,7 +428,7 @@ void lmChord::ComputeStemDirection()
         else {
             //majority rule if more than two notes. Else default for two notes case
             m_fStemDown = TWO_NOTES_DEFAULT;
-            if (GetNumNotes() > 2) {
+            if (NumNotes() > 2) {
                 int iN;
                 nWeight = 0;
 				std::list<lmNote*>::iterator it;
@@ -467,7 +466,7 @@ void lmChord::ArrangeNoteheads()
     //This method sets flag  pNote->SetNoteheadReversed(true); to true or false,
     //depending on the requiered notehead position for the chord.
 
-    if (GetNumNotes() < 2) return;
+    if (NumNotes() < 2) return;
 
     //arrange notes by pitch
     std::list<lmNote*> cNotes = m_Notes; 
@@ -665,7 +664,7 @@ lmLUnits lmChord::GetXRight()
 lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape)
 {
 	//Check to see if the shape pShape overlaps any accidental of
-    //the chord, from first note to note iCurNote (excluded, range: 1..GetNumNotes())
+    //the chord, from first note to note iCurNote (excluded, range: 1..NumNotes())
     //If no collision returns NULL, otherwse, returns the Note
     //owning the accidental that collides
 
@@ -693,7 +692,7 @@ lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNo
     if (!fOnlyLeftNotes)
 	{
 		it = m_Notes.begin();
-        for(iN=iCurNote; it != m_Notes.end() && iN <= GetNumNotes(); ++it, iN++ )
+        for(iN=iCurNote; it != m_Notes.end() && iN <= NumNotes(); ++it, iN++ )
 		{
             if (!(*it)->IsNoteheadReversed() && (*it)->HasAccidentals())
 			{
@@ -721,7 +720,7 @@ lmNote* lmChord::CheckIfNoteCollision(lmShape* pShape)
     int iN;
     lmAccidental* pAccidental;
 	std::list<lmNote*>::iterator it = m_Notes.begin();
-    for(iN=1; it != m_Notes.end() && iN <= GetNumNotes(); ++it, iN++ )
+    for(iN=1; it != m_Notes.end() && iN <= NumNotes(); ++it, iN++ )
 	{
         if ((*it)->HasAccidentals()) {
             pAccidental = (*it)->GetAccidentals();

@@ -787,10 +787,10 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 	bool fAddedToChord = false;
 	if (pNewSO->IsNoteRest() && !((lmNote*)pNewSO)->IsRest() && ((lmNote*)pNewSO)->IsInChord())
 	{
-		//added note is parta of a chord. Let's check if it is the first note or there
+		//added note is part of a chord. Let's check if it is the first note or there
 		//are already more notes in the chord
 		lmNote* pNote = (lmNote*)pNewSO;
-		fAddedToChord = pNote->GetChord()->GetNumNotes() > 1;
+		fAddedToChord = pNote->GetChord()->NumNotes() > 1;
 	}
 	
 	//if not added to chord update segment's duration and hift timepos of 
@@ -847,6 +847,7 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
     //        - Assign: pCurrentSO = take next object in voice iV after pCurrentSO
 
     int iV = ((lmNoteRest*)(*itStart))->GetVoice();
+    float rTimeIncr = ((lmNoteRest*)(*itStart))->GetTimePosIncrement();
 	lmItCSO it = itStart;
     ++it;
 	while (it != m_StaffObjs.end())
@@ -857,7 +858,7 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
             float rDuration = (*it)->GetTimePosIncrement();
             if (m_pOwner->IsTimePosOccupied(this, rTime, rDuration, iV))
             {
-                (*it)->SetTimePos(rTime + rDuration);
+                (*it)->SetTimePos(rTime + rTimeIncr);
             }
             else
                 break;

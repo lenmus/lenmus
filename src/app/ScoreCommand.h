@@ -148,6 +148,7 @@ protected:
     lmVCursorState      m_tCursorState; //cursor state before deletion
     lmVStaff*           m_pVStaff;      //affected VStaff
     lmStaffObj*         m_pSO;          //deleted note
+    bool                m_fDeleteSO;    //to control if m_pSO must be deleted
 };
 
 

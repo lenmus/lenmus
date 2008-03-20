@@ -77,7 +77,7 @@ void lmLDPParser::Create(const wxString& sLanguage, const wxString& sCharset)
     m_pTokenizer = new lmLDPTokenBuilder(this);
     m_pCurNode = (lmLDPNode*) NULL;
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmLDPParser"));
-    m_pTupletBracket = (lmTupletBracket*)NULL;
+    m_pTuplet = (lmTupletBracket*)NULL;
     m_pTags = lmLdpTagsTable::GetInstance();
     m_pTags->LoadTags(sLanguage, sCharset);
     // default values for font and aligment for <title> elements
@@ -1612,13 +1612,13 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
             else if (sData.Left(1) == m_pTags->TagName(_T("t"), _T("SingleChar"))) {       //start/end of tuplet. Simple parameter (tn / t-)
                 lmTupletBracket* pTuplet;
-                bool fOpenTuplet = (m_pTupletBracket ? false : true);
+                bool fOpenTuplet = (m_pTuplet ? false : true);
                 if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
                      &pTuplet, &nActualNotes, &nNormalNotes))
                 {
                     if (pTuplet) {
                         // start of tuplet
-                        m_pTupletBracket = pTuplet;
+                        m_pTuplet = pTuplet;
                     }
                     else {
                         //end of tuplet
@@ -1667,12 +1667,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
             else if (sData == m_pTags->TagName(_T("t"), _T("SingleChar"))) {       //start/end of tuplet. Simple parameter (tn / t-)
                 lmTupletBracket* pTuplet;
-                bool fOpenTuplet = (m_pTupletBracket ? false : true);
+                bool fOpenTuplet = (m_pTuplet ? false : true);
                 if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
                      &pTuplet, &nActualNotes, &nNormalNotes))
                 {
                     if (pTuplet) {   // start of tuplet
-                        m_pTupletBracket = pTuplet;
+                        m_pTuplet = pTuplet;
                     }
                     else {          //end of tuplet
                         fEndTuplet = true;
@@ -1742,10 +1742,10 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     //if not first note of tuple, tuple information is not present and need to be taken from
     //previous note
-    if (m_pTupletBracket) {
+    if (m_pTuplet) {
         // a tuplet is open
-       nActualNotes = m_pTupletBracket->GetActualNotes();
-       nNormalNotes = m_pTupletBracket->GetNormalNotes();
+       nActualNotes = m_pTuplet->GetActualNotes();
+       nNormalNotes = m_pTuplet->GetNormalNotes();
     }
 
     // calculation of duration
@@ -1767,12 +1767,11 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
 
     // Add notations
-    if (m_pTupletBracket) {
-        m_pTupletBracket->Include(pNR);             // add this note/rest to the tuplet
-        pNR->SetTupletBracket(m_pTupletBracket);    // inform the note
+    if (m_pTuplet) {
+        m_pTuplet->Include(pNR);             // add this note/rest to the tuplet
 
         if (fEndTuplet) {
-            m_pTupletBracket = (lmTupletBracket*)NULL;
+            m_pTuplet = (lmTupletBracket*)NULL;
         }
     }
 

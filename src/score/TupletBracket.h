@@ -26,28 +26,43 @@
 #pragma interface "TupletBracket.cpp"
 #endif
 
-#include <vector>
 
+#include "NotesRelationship.h"
 #include "../graphic/ShapeTuplet.h"
 
+class lmUndoData;
 
 // lmTupletBracket
 //    A lmTupletBracket represents the optional bracket graphically associated
 //    to tuplets. The lmTupletBracket object does not have any effect on sound. It is
 //    only to describe how a tuplet must be displayed.
 
-class lmTupletBracket
+class lmTupletBracket : public lmMultipleRelationship<lmNoteRest>
 {
 public:
     lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, lmEPlacement nAbove,
                     int nActualNotes, int nNormalNotes);
+    lmTupletBracket(lmNoteRest* pFirstNote, lmUndoData* pUndoData);
     ~lmTupletBracket();
 
-    void Include(lmNoteRest* pNR);
-    void Remove(lmNoteRest* pNR);
-    inline int NumNotes() { return (int)m_cNotes.size(); }
-    inline lmNoteRest* GetStartNote() { return m_cNotes.front(); }
-    inline lmNoteRest* GetEndNote() { return m_cNotes.back(); }
+	//creation related methods
+    void Create(bool fShowNumber, int nNumber, bool fBracket, lmEPlacement nAbove,
+                int nActualNotes, int nNormalNotes);
+
+	//implementation of lmMultipleRelationship virtual methods
+    void Save(lmUndoData* pUndoData);
+	inline lmERelationshipClass GetClass() { return lm_eTupletClass; }
+
+    //void Remove(lmNoteRest* pNR);
+    //void Include(lmNoteRest* pNR, int nIndex = -1);
+    //inline int NumNotes() { return (int)m_Notes.size(); }
+	//int GetNoteIndex(lmNoteRest* pNR);
+    //inline lmNoteRest* GetStartNoteRest() { return m_Notes.front(); }
+    //inline lmNoteRest* GetEndNoteRest() { return m_Notes.back(); }
+
+	//overrides of lmMultipleRelationship virtual methods
+    
+    //info
     inline int GetTupletNumber() { return m_nTupletNumber; }
     inline int GetActualNotes() { return m_nActualNotes; }
     inline int GetNormalNotes() { return m_nNormalNotes; }
@@ -58,25 +73,23 @@ public:
 
 
 private:
-	int FindNote(lmNoteRest* pNR);
-
-	//notes/rests in this bracket (if chord, only base note)
-	std::vector<lmNoteRest*>	m_cNotes;
+	////notes/rests in this bracket (if chord, only base note)
+	//std::list<lmNoteRest*>	m_Notes;
 
     //time modifiers
-    int     m_nActualNotes;     //number of notes to play in the time ...
-    int     m_nNormalNotes;     //... allotted for this number of normal notes
+    int             m_nActualNotes;     //number of notes to play in the time ...
+    int             m_nNormalNotes;     //... allotted for this number of normal notes
 
     // graphical attributes
-    bool    	m_fShowNumber;      // display tuplet number
-    bool    	m_fBracket;         // display bracket
-    bool        m_fBold;
-    bool        m_fItalic;
-    int     	m_nTupletNumber;    // number to display
-    int         m_nFontSize;
-    lmEPlacement	m_nAbove;		// bracket positioned above the notes
-    wxString    m_sFontName;		// font info for rendering tuplet number
-	lmShapeTuplet*	m_pShape;		//the shape to render the tuplet bracket
+    bool    	    m_fShowNumber;      // display tuplet number
+    bool    	    m_fBracket;         // display bracket
+    bool            m_fBold;
+    bool            m_fItalic;
+    int     	    m_nTupletNumber;    // number to display
+    int             m_nFontSize;
+    lmEPlacement	m_nAbove;		    // bracket positioned above the notes
+    wxString        m_sFontName;        // font info for rendering tuplet number
+	lmShapeTuplet*	m_pShape;		    //the shape to render the tuplet bracket
 
 };
 

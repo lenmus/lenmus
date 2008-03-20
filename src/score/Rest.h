@@ -46,12 +46,10 @@ public:
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	wxString GetName() const { return _T("rest"); }
 
+
 	wxString    Dump();
     wxString    SourceLDP(int nIndent);
     wxString    SourceXML(int nIndent);
-
-        //lmNoteRest
-    bool IsInChord() { return false; }        
 
     //lmRest methods
     void DoVerticalShift(lmTenths yShift);

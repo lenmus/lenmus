@@ -65,10 +65,10 @@
 		<Cursor position="2629" topLine="54" />
 	</File>
 	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="10534" topLine="233" />
+		<Cursor position="7818" topLine="177" />
 	</File>
-	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="7">
-		<Cursor position="1398" topLine="26" />
+	<File name="../../src/app/TheApp.h" open="1" top="0" tabpos="89">
+		<Cursor position="2598" topLine="70" />
 	</File>
 	<File name="../../src/app/toolbox/ToolNotesOpt.cpp" open="1" top="0" tabpos="59">
 		<Cursor position="4727" topLine="120" />
@@ -238,11 +238,11 @@
 	<File name="../../src/html/BookData.h" open="1" top="0" tabpos="45">
 		<Cursor position="5838" topLine="138" />
 	</File>
-	<File name="../../src/html/ContentsBoxCtrol.cpp" open="1" top="0" tabpos="88">
+	<File name="../../src/html/ContentsBoxCtrol.cpp" open="1" top="0" tabpos="87">
 		<Cursor position="2326" topLine="60" />
 	</File>
-	<File name="../../src/html/ContentsBoxCtrol.h" open="1" top="1" tabpos="89">
-		<Cursor position="4976" topLine="120" />
+	<File name="../../src/html/ContentsBoxCtrol.h" open="1" top="0" tabpos="88">
+		<Cursor position="4976" topLine="117" />
 	</File>
 	<File name="../../src/html/HtmlWindow.cpp" open="1" top="0" tabpos="17">
 		<Cursor position="7688" topLine="213" />
@@ -289,10 +289,10 @@
 	<File name="../../src/ldp_parser/AuxString.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="14697" topLine="433" />
 	</File>
-	<File name="../../src/ldp_parser/LDPNode.cpp" open="1" top="0" tabpos="86">
+	<File name="../../src/ldp_parser/LDPNode.cpp" open="1" top="0" tabpos="85">
 		<Cursor position="1915" topLine="51" />
 	</File>
-	<File name="../../src/ldp_parser/LDPNode.h" open="1" top="0" tabpos="87">
+	<File name="../../src/ldp_parser/LDPNode.h" open="1" top="0" tabpos="86">
 		<Cursor position="2110" topLine="32" />
 	</File>
 	<File name="../../src/ldp_parser/LDPParser.cpp" open="1" top="0" tabpos="40">
@@ -358,8 +358,8 @@
 	<File name="../../src/options/ToolbarsOptPanel.h" open="0" top="0" tabpos="38">
 		<Cursor position="1309" topLine="12" />
 	</File>
-	<File name="../../src/score/AuxObj.cpp" open="1" top="0" tabpos="85">
-		<Cursor position="12321" topLine="378" />
+	<File name="../../src/score/AuxObj.cpp" open="1" top="0" tabpos="84">
+		<Cursor position="12321" topLine="379" />
 	</File>
 	<File name="../../src/score/Barline.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="6604" topLine="177" />
@@ -371,7 +371,7 @@
 		<Cursor position="15204" topLine="363" />
 	</File>
 	<File name="../../src/score/Chord.cpp" open="1" top="0" tabpos="71">
-		<Cursor position="25875" topLine="705" />
+		<Cursor position="20550" topLine="663" />
 	</File>
 	<File name="../../src/score/Chord.h" open="1" top="0" tabpos="72">
 		<Cursor position="0" topLine="33" />
@@ -395,7 +395,7 @@
 		<Cursor position="11056" topLine="283" />
 	</File>
 	<File name="../../src/score/Note.cpp" open="1" top="0" tabpos="47">
-		<Cursor position="53565" topLine="1467" />
+		<Cursor position="53565" topLine="32" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="0" top="0" tabpos="71">
 		<Cursor position="6496" topLine="162" />
@@ -428,13 +428,13 @@
 		<Cursor position="8576" topLine="222" />
 	</File>
 	<File name="../../src/score/UndoRedo.h" open="1" top="0" tabpos="82">
-		<Cursor position="3241" topLine="91" />
+		<Cursor position="3241" topLine="94" />
 	</File>
-	<File name="../../src/score/VStaff.cpp" open="1" top="0" tabpos="75">
-		<Cursor position="4164" topLine="77" />
+	<File name="../../src/score/VStaff.cpp" open="1" top="1" tabpos="75">
+		<Cursor position="4170" topLine="79" />
 	</File>
 	<File name="../../src/score/VStaff.h" open="1" top="0" tabpos="74">
-		<Cursor position="10022" topLine="226" />
+		<Cursor position="9726" topLine="222" />
 	</File>
 	<File name="../../src/score/defs.cpp" open="0" top="0" tabpos="70">
 		<Cursor position="1726" topLine="82" />

@@ -34,7 +34,10 @@
 #include "wx/wx.h"
 #endif
 
+#include <algorithm>
+
 #include "Score.h"
+#include "UndoRedo.h"
 
 //---------------------------------------------------------
 //   lmTupletBracket implementation
@@ -42,6 +45,54 @@
 
 lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket,
 								 lmEPlacement nAbove, int nActualNotes, int nNormalNotes)
+	: lmMultipleRelationship<lmNoteRest>(lm_eTupletClass)
+{
+    Create(fShowNumber, nNumber, fBracket, nAbove, nActualNotes, nNormalNotes);
+}
+
+lmTupletBracket::lmTupletBracket(lmNoteRest* pFirstNote, lmUndoData* pUndoData)
+	: lmMultipleRelationship<lmNoteRest>(lm_eTupletClass, pFirstNote, pUndoData)
+{
+	//Following commented code didn't work. Probably it is a issue of the ordering in which
+	//the compiler recovers the parameters. As the order is important, we cannot let the
+	//compiler to choose it. So I recoded this.
+    //Create(
+    //    pUndoData->GetParam<bool>(),
+    //    pUndoData->GetParam<int>(),
+    //    pUndoData->GetParam<bool>(),
+    //    pUndoData->GetParam<lmEPlacement>(),
+    //    pUndoData->GetParam<int>(),
+    //    pUndoData->GetParam<int>()
+    //);
+	bool fShowNumber = pUndoData->GetParam<bool>();
+	int nTupletNumber = pUndoData->GetParam<int>();
+	bool fBracket = pUndoData->GetParam<bool>();
+	lmEPlacement nAbove = pUndoData->GetParam<lmEPlacement>();
+	int nActualNotes = pUndoData->GetParam<int>();
+	int nNormalNotes = pUndoData->GetParam<int>();
+    Create(fShowNumber, nTupletNumber, fBracket, nAbove, nActualNotes, nNormalNotes);
+
+    Include(pFirstNote);
+}
+
+lmTupletBracket::~lmTupletBracket()
+{
+ //   //the tuplet is going to be removed. Release all notes
+ //   //do not delete note/rests. They are owned by the VStaff
+
+ //   //ask each note to remove tuplet information
+ //   std::list<lmNoteRest*>::iterator it;
+ //   for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
+	//{
+ //       (*it)->OnRemovedFromTuplet();
+	//}
+
+ //   //remove all notes from tuplet
+ //   m_Notes.clear();
+}
+
+void lmTupletBracket::Create(bool fShowNumber, int nNumber, bool fBracket,
+							 lmEPlacement nAbove, int nActualNotes, int nNormalNotes)
 {
     m_fShowNumber = fShowNumber;
     m_nTupletNumber = nNumber;
@@ -56,19 +107,58 @@ lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket,
     m_nFontSize = PointsToLUnits(8);
     m_fBold = false;
     m_fItalic = true;
-
 }
 
-lmTupletBracket::~lmTupletBracket()
+void lmTupletBracket::Save(lmUndoData* pUndoData)
 {
-    //do not delete note/rests. They are owned by the VStaff
-    //m_cNotes.clear();
+    pUndoData->AddParam<bool>(m_fShowNumber);
+    pUndoData->AddParam<int>(m_nTupletNumber);
+    pUndoData->AddParam<bool>(m_fBracket);
+    pUndoData->AddParam<lmEPlacement>(m_nAbove);
+    pUndoData->AddParam<int>(m_nActualNotes);
+    pUndoData->AddParam<int>(m_nNormalNotes);
 }
 
-void lmTupletBracket::Include(lmNoteRest* pNR)
-{
-	m_cNotes.push_back(pNR);
-}
+//void lmTupletBracket::Include(lmNoteRest* pNR, int nIndex)
+//{
+    // Add a note to the tuplet. Index is the position that the added note/rest must occupy
+	// (0..n). If -1, note/rest will be added at the end.
+
+	////add the note/rest
+	//if (nIndex == -1 || nIndex == NumNotes())
+	//	m_Notes.push_back(pNR);
+	//else
+	//{
+	//	int iN;
+	//	std::list<lmNoteRest*>::iterator it;
+	//	for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
+	//	{
+	//		if (iN == nIndex)
+	//		{
+	//			//insert before current item
+	//			m_Notes.insert(it, pNR);
+	//			break;
+	//		}
+	//	}
+	//}
+ //   pNR->OnIncludedInTuplet(this);
+//}
+
+//int lmTupletBracket::GetNoteIndex(lmNoteRest* pNR)
+//{
+//	//returns the position in the notes list (0..n)
+//
+//	wxASSERT(NumNotes() > 1);
+//
+//	int iN;
+//    std::list<lmNoteRest*>::iterator it;
+//    for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
+//	{
+//		if (pNR == *it) return iN;
+//	}
+//    wxASSERT(false);	//note not found
+//	return 0;			//compiler happy
+//}
 
 lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 {
@@ -92,38 +182,24 @@ lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour co
 
 	//create the shape
 	bool fAbove = (m_nAbove == ep_Above) || (m_nAbove == ep_Default && 
-					!((lmNote*)m_cNotes[0])->StemGoesDown() );
-	m_pShape = new lmShapeTuplet(GetStartNote(), GetEndNote(), NumNotes(), fAbove,
+					!((lmNote*)m_Notes.front())->StemGoesDown() );
+	m_pShape = new lmShapeTuplet(GetStartNoteRest(), GetEndNoteRest(), NumNotes(), fAbove,
 								 m_fShowNumber, sNumber, pFont, color, lm_eSquared);
 	pBox->AddShape(m_pShape);
 
 	//attach the tuplet to start and end notes
-	GetStartNote()->GetShap2()->Attach(m_pShape, eGMA_StartNote);
-	GetEndNote()->GetShap2()->Attach(m_pShape, eGMA_EndNote);
+	GetStartNoteRest()->GetShap2()->Attach(m_pShape, eGMA_StartNote);
+	GetEndNoteRest()->GetShap2()->Attach(m_pShape, eGMA_EndNote);
 
 	return m_pShape;
 }
 
-int lmTupletBracket::FindNote(lmNoteRest* pNR)
-{
-    //find a note/rest
-    for (int i=0; i < (int)m_cNotes.size(); i++)
-    {
-        if (m_cNotes[i]->GetID() == pNR->GetID())
-			return i;
-	}
-	return -1;
-}
-
-
-void lmTupletBracket::Remove(lmNoteRest* pNR)
-{
-    //find note/rest to remove
-	int i = FindNote(pNR);
-
-	//if found, remove note
-   if (i != -1)
-		m_cNotes.erase(m_cNotes.begin()+i);
-
-}
+//void lmTupletBracket::Remove(lmNoteRest* pNR)
+//{
+//    //remove note/rest
+//
+//    std::list<lmNoteRest*>::iterator it;
+//    it = std::find(m_Notes.begin(), m_Notes.end(), pNR);
+//    m_Notes.erase(it);
+//}
 

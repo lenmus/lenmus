@@ -60,15 +60,11 @@
 #endif
 
 #include "Score.h"
+#include "UndoRedo.h"
 
 #include "wx/debug.h"
 #include "../ldp_parser/AuxString.h"
 #include <math.h>
-
-//implementation of the NoteRests List
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(NoteRestsList);
-
 
 
 //====================================================================================================
@@ -91,12 +87,9 @@ lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, fl
     m_pLyrics = (AuxObjsList*)NULL;
 
     m_rDuration = rDuration;
-    m_pTupletBracket = (lmTupletBracket*)NULL;
+    m_pTuplet = (lmTupletBracket*)NULL;
 
-    // default beaming information: not beamed
-    m_fBeamed = false;
     m_pBeam = (lmBeam*)NULL;
-
 }
 
 lmNoteRest::~lmNoteRest()
@@ -116,12 +109,12 @@ lmNoteRest::~lmNoteRest()
     }
 
     //remove the note/rest from the lmTupletBracket and if lmTupletBracket is empty delete it
-    if (m_pTupletBracket) {
-        m_pTupletBracket->Remove(this);
-        if (m_pTupletBracket->NumNotes() == 0) {
-            delete m_pTupletBracket;
-            m_pTupletBracket = (lmTupletBracket*)NULL;
-        }
+    if (m_pTuplet) {
+        m_pTuplet->Remove(this);
+        //if (m_pTuplet->NumNotes() == 0) {
+        //    delete m_pTuplet;
+        //    m_pTuplet = (lmTupletBracket*)NULL;
+        //}
     }
 
     //if note/rest to remove is in a beamed group, adjust/delete the beam
@@ -152,8 +145,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
 {
     // Set up beaming information
 
-    m_fBeamed = fBeamed;
-    if (!m_fBeamed) {
+    if (!fBeamed) {
         m_pBeam = (lmBeam*)NULL;
     }
     else {
@@ -161,9 +153,8 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
             m_BeamInfo[i] = BeamInfo[i];
         }
         if (m_BeamInfo[0].Type == eBeamBegin) {
-            m_pBeam = new lmBeam(g_pLastNoteRest);
+            m_pBeam = new lmBeam((lmNote*)this);
             g_pCurBeam = m_pBeam;
-            m_pBeam->Include(this);
         } else {
             m_pBeam = g_pCurBeam;
             if (!m_pBeam) {
@@ -173,7 +164,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
                 if (IsRest())
                     m_pBeam->Include(this);
                 else {
-                    if (!IsInChord()) m_pBeam->Include(this);
+                    if (!((lmNote*)this)->IsInChord()) m_pBeam->Include(this);
                 }
                 if (m_BeamInfo[0].Type == eBeamEnd) {
                         //m_pBeam->CreateShape();
@@ -194,38 +185,143 @@ void lmNoteRest::Freeze(lmUndoData* pUndoData)
 {
     //save info about relations and invalidate ptrs.
 
-    //save info
-    //TODO
+    //if note/rest is in a beam, remove it from the beam
+    m_pBeam = FreezeRelationship<lmBeam>(m_pBeam, pUndoData);
 
-    //invalidate relation pointers
-    m_pBeam = (lmBeam*)NULL;
-    m_pTupletBracket = (lmTupletBracket*)NULL;
+    //if note/rest is in a tuplet, remove it from the tuplet
+    m_pTuplet = FreezeRelationship<lmTupletBracket>(m_pTuplet, pUndoData);
+
+    //invalidate other pointers
     //m_pNotations = (AuxObjsList*)NULL;
     //m_pLyrics = (AuxObjsList*)NULL;
 
     //invalidate other pointers
     //NONE
 
+    //TODO
     //lmStaffObj::Freeze(pUndoData);
 }
 
 void lmNoteRest::UnFreeze(lmUndoData* pUndoData)
 {
     //restore pointers
+
+    //restore beam
+    m_pBeam = UnFreezeRelationship<lmBeam>(pUndoData);
+
+    //restore tuplet
+    m_pTuplet = UnFreezeRelationship<lmTupletBracket>(pUndoData);
+
     //TODO
+    //lmStaffObj::UnFreeze(pUndoData);
 }
 
-void lmNoteRest::RemoveBeam()
+template <class T>
+T* lmNoteRest::FreezeRelationship(T* pRel, lmUndoData* pUndoData)
 {
-    m_fBeamed = false;              //note is not longer beamed
+    //if note/rest is in the relation, remove it from the relation
+    pUndoData->AddParam<bool>(pRel != (T*)NULL);
+    if (pRel != (T*)NULL)
+    {
+		//save position in relation of note to be removed
+		pUndoData->AddParam<int>(pRel->GetNoteIndex(this));
 
-    //remove beam object
-    m_pBeam = (lmBeam*)NULL;
+        pRel->Remove(this);
 
-    //remove beaming information
-    for (int i=0; i < 6; i++)
-        m_BeamInfo[i].Type = eBeamNone;      
+		//save num note/rests, and first note/rest in beam, for recovering relation pointer
+        pUndoData->AddParam<int>( pRel->NumNotes() );
+		pUndoData->AddParam<lmNoteRest*>( pRel->GetStartNoteRest() );
+
+        //if only one note remaining, delete the relation
+        if (pRel->NumNotes() == 1)
+        {
+            pRel->Save(pUndoData);
+			delete pRel;	//this notifies all notes
+        }
+
+        pRel = (T*)NULL;
+    }
+    return pRel;
 }
+
+template <class T>
+T* lmNoteRest::UnFreezeRelationship(lmUndoData* pUndoData)
+{
+    T* pRel =(T*)NULL;
+    bool fInRel = pUndoData->GetParam<bool>();
+    if (fInRel)
+    {
+		int nIndex = pUndoData->GetParam<int>();
+		int nNumNotes = pUndoData->GetParam<int>();
+		lmNoteRest* pFirstNR = pUndoData->GetParam<lmNoteRest*>();
+		if (nNumNotes == 1)
+		{
+			//re-build the relation
+            pRel = new T(pFirstNR, pUndoData);
+		}
+		else
+		{
+			//use existing pointer
+			pRel = pFirstNR->GetRelationship<T>();
+		}
+		pRel->Include(this, nIndex);
+    }
+    return pRel;
+}
+
+void lmNoteRest::OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelClass)
+{	
+	switch (nRelClass)
+	{
+		case lm_eBeamClass:
+			m_pBeam = (lmBeam*)pRel;
+			return;
+
+		case lm_eTupletClass:
+			m_pTuplet = (lmTupletBracket*)pRel;
+			return;
+
+		default:
+			wxASSERT(false);
+	}
+}
+
+void lmNoteRest::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass)
+{ 
+	switch (nRelClass)
+	{
+		case lm_eBeamClass:
+			m_pBeam = (lmBeam*)NULL;
+			return;
+
+		case lm_eTupletClass:
+			m_pTuplet = (lmTupletBracket*)NULL;
+			return;
+
+		default:
+			wxASSERT(false);
+	}
+}
+
+//template <> void lmNoteRest::OnRemovedFromRelationship(lmMultipleRelationship<lmNoteRest>* pRel)
+//{ 
+//	if (lmBeam* pBeam = dynamic_cast<lmBeam*>(pRel))
+//		m_pBeam = (lmBeam*)NULL;
+//	else if (lmTupletBracket* pTuplet = dynamic_cast<lmTupletBracket*>(pRel))
+//		m_pTuplet = (lmTupletBracket*)NULL;
+//}
+
+//----------------------------------------------------------------------------------------
+//template specializations
+//----------------------------------------------------------------------------------------
+
+//for beams
+template <> lmBeam* lmNoteRest::GetRelationship<lmBeam>() { return m_pBeam; }
+
+//for tuplets
+template <> lmTupletBracket* lmNoteRest::GetRelationship<lmTupletBracket>() { return m_pTuplet; }
+
+
 
 lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,
                              lmLUnits xPos, lmLUnits yPos,

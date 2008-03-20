@@ -160,7 +160,6 @@ class lmBarline;
 class lmNoteRest;
 class lmBeam;
 class lmTupletBracket;
-class NotesList;
 class lmChord;
 struct lmTBeamInfo;
 class lmNote;
