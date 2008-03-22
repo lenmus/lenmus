@@ -191,18 +191,13 @@ wxString lmRest::Dump()
         _T("%d\tRest\tType=%d, TimePos=%.2f, rDuration=%.2f, voice=%d "),
         m_nId, m_nNoteType, m_rTimePos, m_rDuration, m_nVoice );
 
-    if (m_pBeam) {
-        sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
-        for (int i=1; i < 6; i++) {
-            sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].Type);
-        }
-        sDump += _T(")");
-    }
+	//base class info
+	sDump += lmNoteRest::Dump();
     sDump += _T("\n");
 
     return sDump;
-
 }
+
 wxString lmRest::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
@@ -214,16 +209,8 @@ wxString lmRest::SourceLDP(int nIndent)
     if (m_fDotted) sSource += _T(".");
     if (m_fDoubleDotted) sSource += _T(".");
 
-    //staff num
-    if (m_pVStaff->GetNumStaves() > 1) {
-        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
-    }
-
-    //Voice
-    sSource += wxString::Format(_T(" v%d"), m_nVoice);
-
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent);
+	sSource += lmNoteRest::SourceLDP(nIndent);
 
 	return sSource;
 }
@@ -233,6 +220,9 @@ wxString lmRest::SourceXML(int nIndent)
 	wxString sSource = _T("");
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
     sSource += _T("TODO: lmRest XML Source code generation method\n");
+
+	//base class
+	sSource += lmNoteRest::SourceXML(nIndent);
 
     return sSource;
 }

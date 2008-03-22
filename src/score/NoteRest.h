@@ -73,8 +73,6 @@ public:
     //ctors and dtor
     virtual ~lmNoteRest();
 
-    virtual wxString Dump() = 0;
-
     bool IsRest() const { return m_fIsRest; }
 
     //implementation of virtual methods of base class lmStaffObj
@@ -116,6 +114,11 @@ public:
     //accessors
     inline lmENoteType GetNoteType() const { return m_nNoteType; }
 	inline int GetVoice() { return m_nVoice; }
+
+	//source & debug
+    virtual wxString Dump();
+    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceXML(int nIndent);
 
     //undo/redo
     virtual void Freeze(lmUndoData* pUndoData);

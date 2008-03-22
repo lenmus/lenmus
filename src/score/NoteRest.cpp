@@ -108,37 +108,19 @@ lmNoteRest::~lmNoteRest()
         m_pLyrics = (AuxObjsList*)NULL;
     }
 
-    //remove the note/rest from the lmTupletBracket and if lmTupletBracket is empty delete it
-    if (m_pTuplet) {
+    //if note/rest to remove is in a tuplet, inform the tuplet
+	if (m_pTuplet) {
         m_pTuplet->Remove(this);
-        //if (m_pTuplet->NumNotes() == 0) {
-        //    delete m_pTuplet;
-        //    m_pTuplet = (lmTupletBracket*)NULL;
-        //}
-    }
+		if (m_pTuplet->NumNotes() <= 1)
+			delete m_pTuplet;
+	}
 
-    //if note/rest to remove is in a beamed group, adjust/delete the beam
-    if (m_pBeam) {
+    //if note/rest to remove is in a beam, inform the beam
+	if (m_pBeam) {
         m_pBeam->Remove(this);
-        if (m_pBeam->NumNotes() == 1)
-        {
-            //the beamed group had two notes. By removing this one the beam must be 
-            //removed
-            m_pBeam->RemoveAllNotes();
-            delete m_pBeam;
-            m_pBeam = (lmBeam*)NULL;
-        }
-        else if (m_pBeam->NumNotes() == 0)
-        {
-            //THINK: Is this case possible?. In any case following code doesn't harm
-            delete m_pBeam;
-            m_pBeam = (lmBeam*)NULL;
-        }
-        else
-            m_pBeam->AutoSetUp();       //adjust beam information
-    }
-
-
+		if (m_pBeam->NumNotes() <= 1)
+			delete m_pBeam;
+	}
 }
 
 void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
@@ -288,6 +270,11 @@ void lmNoteRest::OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelC
 
 void lmNoteRest::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass)
 { 
+	//AWARE: this method is invoked only when the relationship is being deleted and
+	//this deletion is not requested by this note/rest. If this note/rest would like
+	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//relationship object
+
 	switch (nRelClass)
 	{
 		case lm_eBeamClass:
@@ -365,6 +352,100 @@ lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
     return pShape->GetBounds().GetWidth();
 
 }
+
+wxString lmNoteRest::Dump()
+{
+    wxString sDump;
+
+	//beam
+    if (m_pBeam) {
+        sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
+        for (int i=1; i < 6; i++) {
+            sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].Type);
+        }
+        sDump += _T(")");
+    }
+
+	//tuplet
+	if (m_pTuplet) {
+        if ((m_pTuplet->GetEndNoteRest())->GetID() == m_nId) {
+            sDump += _T(", End of tuplet");
+        }
+        else if ((m_pTuplet->GetStartNoteRest())->GetID() == m_nId)
+            sDump += _T(", Start of tuplet");
+        else
+            sDump += _T(", In tuplet");
+    }
+
+	//attached AuxObjs
+	sDump += lmStaffObj::Dump();
+    //// Dump associated lyrics
+    //if (m_pLyrics) {
+    //    lmLyric* pLyric;
+    //    wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
+    //    for (; pNode; pNode = pNode->GetNext() ) {
+    //        pLyric = (lmLyric*)pNode->GetData();
+    //        sDump += pLyric->Dump();
+    //    }
+    //}
+
+	////positioning information
+	//lmURect rect = GetSelRect();
+	//sDump += wxString::Format(_T("\n                    SelRect=(%.2f, %.2f, %.2f, %.2f)"),
+	//	rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom() );
+    sDump += _T("\n");
+
+    return sDump;
+
+}
+
+wxString lmNoteRest::SourceLDP(int nIndent)
+{
+    wxString sSource = _T("");
+
+	//start or end of group
+    if (m_pBeam) {
+        if (m_BeamInfo[0].Type == eBeamBegin) {
+            sSource += _T(" g+");
+        }
+        else if (m_BeamInfo[0].Type == eBeamEnd) {
+            sSource += _T(" g-");
+        }
+    }
+
+    //tuplets
+    if (m_pTuplet) {
+        if ((lmNoteRest*)this == m_pTuplet->GetStartNoteRest()) {
+            sSource += wxString::Format(_T(" t%d/%d"),
+                                        m_pTuplet->GetActualNotes(),
+                                        m_pTuplet->GetNormalNotes() );
+
+        }
+        else if((lmNoteRest*)this == m_pTuplet->GetEndNoteRest()) {
+            sSource += _T(" t-");
+        }
+    }
+
+    //staff num
+    if (m_pVStaff->GetNumStaves() > 1) {
+        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+    }
+
+    //Voice
+    sSource += wxString::Format(_T(" v%d"), m_nVoice);
+
+	//base class
+	sSource += lmStaffObj::SourceLDP(nIndent);
+
+    return sSource;
+}
+
+wxString lmNoteRest::SourceXML(int nIndent)
+{
+    wxString sSource = _T("");
+    return sSource;
+}
+
 
 //====================================================================================================
 // methods related to associated AuxObjs management

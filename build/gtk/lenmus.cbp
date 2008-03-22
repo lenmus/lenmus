@@ -302,6 +302,7 @@
 		<Unit filename="../../src/score/Note.h" />
 		<Unit filename="../../src/score/NoteRest.cpp" />
 		<Unit filename="../../src/score/NoteRest.h" />
+		<Unit filename="../../src/score/NotesRelationship.h" />
 		<Unit filename="../../src/score/ObjOptions.cpp" />
 		<Unit filename="../../src/score/ObjOptions.h" />
 		<Unit filename="../../src/score/Pitch.cpp" />

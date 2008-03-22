@@ -149,6 +149,43 @@ public:
 
 private:
 
+	//mouse behaviour
+	double GetMouseTolerance();
+
+	//dragging on canvas with left button: selection
+	void OnBeginSelection(lmDPoint vCanvasPos, int nKeys);
+	void OnContinueSelection(bool fDraw, lmDPoint vCanvasPos, int nKeys);
+	void OnEndSelection(lmDPoint vCanvasPos, int nKeys);
+	void DrawSelectionArea(wxDC& dc, lmPixels vX1, lmPixels vY1, lmPixels vX2, lmPixels vY2);
+
+	//dragging on canvas with right button
+	void OnBeginDragRight(lmDPoint vCanvasPos, int nKeys);
+	void OnDragRight(bool fDraw, lmDPoint vCanvasPos, int nKeys);
+	void OnEndDragRight(lmDPoint vCanvasPos, int nKeys);
+
+	//dragging object with left button
+	void OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							   lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+	void OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool fDraw,
+								  lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+								  lmUPoint uPagePos, int nKeys);
+	void OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+
+	//dragging object with right button
+	void OnObjectBeginDragRight(lmDPoint vCanvasPos, int nKeys);
+	void OnObjectContinueDragRight(bool fDraw, lmDPoint vCanvasPos, int nKeys);
+	void OnObjectEndDragRight(lmDPoint vCanvasPos, int nKeys);
+
+	//non-dragging events: click on an object
+	void OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+
+	//non-dragging events: click on canvas
+	void OnRightClick(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnLeftClick(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+
 	// units conversion
 	lmDPoint GetScrollOffset();
     lmDPoint GetPageOffset(int nNumPage);
@@ -217,13 +254,21 @@ private:
     double        m_yDisplayPixelsPerLU;
 
     // dragging control variables
-    int             m_dragState;
+    int             m_nDragState;
     lmUPoint        m_uDragStartPos;
     lmDPoint        m_vDragHotSpot;			//absolute point (pixels)
     lmUPoint        m_uHotSpotShift;		//distance from shape origin
     wxDragImage*    m_pDragImage;
-    lmComponentObj* m_pSoDrag;				// lmComponentObj being dragged
-	lmGMObject*		m_pGMODrag;				//GMObject being dragged
+	lmGMObject*		m_pDraggedGMO;				//GMObject being dragged
+
+    //temporary data for OnMouseEvent method
+	lmDPoint		m_vOldDrag;
+	lmPixels		m_vFirstDragX, m_vFirstDragY;
+    lmPixels        m_vSelInitX, m_vSelInitY;   //initial point of selection area
+	int				m_nNumPage;		//score page number (1..n) on which the mouse is placed
+
+
+	bool			m_fCheckTolerance;
 
     //cursor
     lmScoreViewCursor*  m_pGuiCursor;

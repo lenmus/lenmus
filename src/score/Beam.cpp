@@ -50,12 +50,14 @@
 #include "../graphic/ShapeNote.h"
 
 lmBeam::lmBeam(lmNote* pNote)
+	: lmMultipleRelationship<lmNoteRest>(lm_eBeamClass)
 {
 	m_pBeamShape = (lmShapeBeam*)NULL;
     Include(pNote);
 }
 
 lmBeam::lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData)
+	: lmMultipleRelationship<lmNoteRest>(lm_eBeamClass)
 {
     WXUNUSED(pUndoData);
 	m_pBeamShape = (lmShapeBeam*)NULL;
@@ -64,80 +66,17 @@ lmBeam::lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData)
 
 lmBeam::~lmBeam()
 {
-    //AWARE: notes must not be deleted when deleting the list, as they are part of a lmScore
-    //and will be deleted there.
-    RemoveAllNotes();
 }
 
-void lmBeam::Include(lmNoteRest* pNR, int nIndex)
-{
-    // Add a note to the beam. Index is the position that the added note/rest must occupy
-	// (0..n). If -1, note/rest will be added at the end.
-
-    //precondition: a beam must always start with a note
-    wxASSERT(NumNotes() > 0 || NumNotes()==0 && !pNR->IsRest() );
-
-	//add the note/rest
-	if (nIndex == -1 || nIndex == NumNotes())
-		m_Notes.push_back(pNR);
-	else
-	{
-		int iN;
-		std::list<lmNoteRest*>::iterator it;
-		for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
-		{
-			if (iN == nIndex)
-			{
-				//insert before current item
-				m_Notes.insert(it, pNR);
-				break;
-			}
-		}
-	}
-    pNR->OnIncludedInBeam(this);
-}
-
-int lmBeam::GetNoteIndex(lmNoteRest* pNR)
-{
-	//returns the position in the notes list (0..n)
-
-	wxASSERT(NumNotes() > 1);
-
-	int iN;
-    std::list<lmNoteRest*>::iterator it;
-    for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
-	{
-		if (pNR == *it) return iN;
-	}
-    wxASSERT(false);	//note not found
-	return 0;			//compiler happy
-}
-
-void lmBeam::RemoveAllNotes()
-{
-    //the beam is going to be removed. Release all notes
-
-    //ask each note to remove beam information
-    std::list<lmNoteRest*>::iterator it;
-    for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
-	{
-        (*it)->OnRemovedFromBeam();
-	}
-
-    //remove all notes from beam
-    m_Notes.clear();
-}
-
-void lmBeam::Remove(lmNoteRest* pNR)
-{
-    //remove note/rest
-
-    wxASSERT(NumNotes() > 1);
-
-    std::list<lmNoteRest*>::iterator it;
-    it = std::find(m_Notes.begin(), m_Notes.end(), pNR);
-    m_Notes.erase(it);
-}
+//void lmBeam::Include(lmNoteRest* pNR, int nIndex)
+//{
+//    // Add a note to the beam. Index is the position that the added note/rest must occupy
+//	// (0..n). If -1, note/rest will be added at the end.
+//
+//    //precondition: a beam must always start with a note
+//    wxASSERT(NumNotes() > 0 || NumNotes()==0 && !pNR->IsRest() );
+//
+//}
 
 void lmBeam::AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo)
 {
@@ -159,7 +98,7 @@ void lmBeam::CreateShape()
 	// But if the stem goes down it must be the lowest pitch note.
 	// Be aware that for chords only the base note is included in the beam.
 
-	
+
 	// BUG_BYPASS:  -------------------------------------------------------------------
 	// There is a bug in Composer5 and it some times generate scores
     // ending with a start of group. As this start is in the last note of the score,
@@ -310,6 +249,8 @@ void lmBeam::AutoSetUp()
     //This method determines the beam type for each note, based on time signature and note
     //types.
 
+	if (NumNotes() < 2) return;
+
     //Filter out any rest in the beam
 	std::vector<lmNote*> cNotes;
     std::list<lmNoteRest*>::iterator it;
@@ -346,8 +287,8 @@ void lmBeam::AutoSetUp()
     {
         //At this point, current note is classified as First, Middle or Last note in beam.
         //Also, pointers not Prev, Cur and Next notes are set, as well as the maximum beam
-        //level for current notes triad 
-        
+        //level for current notes triad
+
         //Now compute beam types for each level
         for (int iL=0; iL < 6; iL++)
         {
@@ -373,7 +314,7 @@ void lmBeam::AutoSetUp()
                     //hook. Backward/Forward, depends on position in beat
                     int nPos = pCurNote->GetPositionInBeat();
                     if (nPos == lmUNKNOWN_BEAT)
-                        //Unknownn time signature. Cannot determine type of hook. Use backward 
+                        //Unknownn time signature. Cannot determine type of hook. Use backward
                         pCurNote->SetBeamType(iL, eBeamBackward);
                     else if (nPos >= 0)
                         //on-beat note
@@ -396,7 +337,7 @@ void lmBeam::AutoSetUp()
             }
         }
 
-        //Curren note done. Take next note, determine its position in beam and adjust 
+        //Curren note done. Take next note, determine its position in beam and adjust
         //pointers to notes triad
         iN++;
         if (iN == (int)cNotes.size() - 1)

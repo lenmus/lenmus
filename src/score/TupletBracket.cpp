@@ -77,18 +77,6 @@ lmTupletBracket::lmTupletBracket(lmNoteRest* pFirstNote, lmUndoData* pUndoData)
 
 lmTupletBracket::~lmTupletBracket()
 {
- //   //the tuplet is going to be removed. Release all notes
- //   //do not delete note/rests. They are owned by the VStaff
-
- //   //ask each note to remove tuplet information
- //   std::list<lmNoteRest*>::iterator it;
- //   for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
-	//{
- //       (*it)->OnRemovedFromTuplet();
-	//}
-
- //   //remove all notes from tuplet
- //   m_Notes.clear();
 }
 
 void lmTupletBracket::Create(bool fShowNumber, int nNumber, bool fBracket,
@@ -118,47 +106,6 @@ void lmTupletBracket::Save(lmUndoData* pUndoData)
     pUndoData->AddParam<int>(m_nActualNotes);
     pUndoData->AddParam<int>(m_nNormalNotes);
 }
-
-//void lmTupletBracket::Include(lmNoteRest* pNR, int nIndex)
-//{
-    // Add a note to the tuplet. Index is the position that the added note/rest must occupy
-	// (0..n). If -1, note/rest will be added at the end.
-
-	////add the note/rest
-	//if (nIndex == -1 || nIndex == NumNotes())
-	//	m_Notes.push_back(pNR);
-	//else
-	//{
-	//	int iN;
-	//	std::list<lmNoteRest*>::iterator it;
-	//	for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
-	//	{
-	//		if (iN == nIndex)
-	//		{
-	//			//insert before current item
-	//			m_Notes.insert(it, pNR);
-	//			break;
-	//		}
-	//	}
-	//}
- //   pNR->OnIncludedInTuplet(this);
-//}
-
-//int lmTupletBracket::GetNoteIndex(lmNoteRest* pNR)
-//{
-//	//returns the position in the notes list (0..n)
-//
-//	wxASSERT(NumNotes() > 1);
-//
-//	int iN;
-//    std::list<lmNoteRest*>::iterator it;
-//    for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
-//	{
-//		if (pNR == *it) return iN;
-//	}
-//    wxASSERT(false);	//note not found
-//	return 0;			//compiler happy
-//}
 
 lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 {
@@ -193,13 +140,3 @@ lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour co
 
 	return m_pShape;
 }
-
-//void lmTupletBracket::Remove(lmNoteRest* pNR)
-//{
-//    //remove note/rest
-//
-//    std::list<lmNoteRest*>::iterator it;
-//    it = std::find(m_Notes.begin(), m_Notes.end(), pNR);
-//    m_Notes.erase(it);
-//}
-

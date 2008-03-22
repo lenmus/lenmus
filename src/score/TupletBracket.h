@@ -52,16 +52,8 @@ public:
 	//implementation of lmMultipleRelationship virtual methods
     void Save(lmUndoData* pUndoData);
 	inline lmERelationshipClass GetClass() { return lm_eTupletClass; }
+	inline void OnRelationshipModified() {}
 
-    //void Remove(lmNoteRest* pNR);
-    //void Include(lmNoteRest* pNR, int nIndex = -1);
-    //inline int NumNotes() { return (int)m_Notes.size(); }
-	//int GetNoteIndex(lmNoteRest* pNR);
-    //inline lmNoteRest* GetStartNoteRest() { return m_Notes.front(); }
-    //inline lmNoteRest* GetEndNoteRest() { return m_Notes.back(); }
-
-	//overrides of lmMultipleRelationship virtual methods
-    
     //info
     inline int GetTupletNumber() { return m_nTupletNumber; }
     inline int GetActualNotes() { return m_nActualNotes; }
@@ -73,9 +65,6 @@ public:
 
 
 private:
-	////notes/rests in this bracket (if chord, only base note)
-	//std::list<lmNoteRest*>	m_Notes;
-
     //time modifiers
     int             m_nActualNotes;     //number of notes to play in the time ...
     int             m_nNormalNotes;     //... allotted for this number of normal notes

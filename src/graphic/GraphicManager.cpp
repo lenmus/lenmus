@@ -391,6 +391,8 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
 
 lmGMObject* lmGraphicManager::FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos)
 {
+	if (!m_pBoxScore) return (lmGMObject*)NULL;
+
     lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
     return pBPage->FindGMObjectAtPosition(uPos);
 }

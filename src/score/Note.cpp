@@ -1501,48 +1501,18 @@ wxString lmNote::Dump()
         sDump += wxString::Format(_T(", InChord, Notehead shift = %s"),
             (m_fNoteheadReversed ? _T("yes") : _T("no")) );
     }
-    if (m_pBeam) {
-        sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
-        for (int i=1; i < 6; i++) {
-            sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].Type);
-        }
-        sDump += _T(")");
-    }
-    if (m_pTuplet) {
-        if ((m_pTuplet->GetEndNoteRest())->GetID() == m_nId) {
-            sDump += _T(", End of tuplet");
-        }
-        else if ((m_pTuplet->GetStartNoteRest())->GetID() == m_nId)
-            sDump += _T(", Start of tuplet");
-        else
-            sDump += _T(", In tuplet");
-    }
+
     ////stem info
     //if (m_nStemType != lmSTEM_NONE) {
     //    sDump += wxString::Format(_T(", xStem=%d, yStem=%d, length=%d"),
     //                m_uxStem, m_uyStem,m_uStemLength );
     //}
 
-	//attached AuxObjs
-	sDump += lmStaffObj::Dump();
-    //// Dump associated lyrics
-    //if (m_pLyrics) {
-    //    lmLyric* pLyric;
-    //    wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
-    //    for (; pNode; pNode = pNode->GetNext() ) {
-    //        pLyric = (lmLyric*)pNode->GetData();
-    //        sDump += pLyric->Dump();
-    //    }
-    //}
-
-	////positioning information
-	//lmURect rect = GetSelRect();
-	//sDump += wxString::Format(_T("\n                    SelRect=(%.2f, %.2f, %.2f, %.2f)"),
-	//	rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom() );
+	//base class info
+	sDump += lmNoteRest::Dump();
     sDump += _T("\n");
 
     return sDump;
-
 }
 
 wxString lmNote::SourceLDP(int nIndent)
@@ -1577,39 +1547,8 @@ wxString lmNote::SourceLDP(int nIndent)
     //tied ?
     if (IsTiedToNext()) sSource += _T(" l");
 
-    //start or end of group
-    if (m_pBeam) {
-        if (m_BeamInfo[0].Type == eBeamBegin) {
-            sSource += _T(" g+");
-        }
-        else if (m_BeamInfo[0].Type == eBeamEnd) {
-            sSource += _T(" g-");
-        }
-    }
-
-    //tuplets
-    if (m_pTuplet) {
-        if ((lmNoteRest*)this == m_pTuplet->GetStartNoteRest()) {
-            sSource += wxString::Format(_T(" t%d/%d"),
-                                        m_pTuplet->GetActualNotes(),
-                                        m_pTuplet->GetNormalNotes() );
-
-        }
-        else if((lmNoteRest*)this == m_pTuplet->GetEndNoteRest()) {
-            sSource += _T(" t-");
-        }
-    }
-
-    //staff num
-    if (m_pVStaff->GetNumStaves() > 1) {
-        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
-    }
-
-    //Voice
-    sSource += wxString::Format(_T(" v%d"), m_nVoice);
-
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent);
+	sSource += lmNoteRest::SourceLDP(nIndent);
 
 	//close chord element
     if (IsInChord() && m_pChord->IsLastNoteOfChord(this))
@@ -1691,13 +1630,15 @@ wxString lmNote::SourceXML(int nIndent)
 //    sFuente = sFuente & "                    <slur type=""start"" number=""1""/>" & sCrLf
 //    sFuente = sFuente & "                </notations>" & sCrLf
 
+	//base class
+	sSource += lmNoteRest::SourceXML(nIndent);
+
 	//close note
 	nIndent--;
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
     sSource += _T("</note>\n");
 
     return sSource;
-
 }
 
 void lmNote::Freeze(lmUndoData* pUndoData)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="15">
+	<File name="../../src/app/AboutDialog.cpp" open="0" top="0" tabpos="15">
 		<Cursor position="2157" topLine="49" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
@@ -10,10 +10,10 @@
 	<File name="../../src/app/ArtProvider.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="6173" topLine="189" />
 	</File>
-	<File name="../../src/app/DlgCfgIdfyCadence.cpp" open="1" top="0" tabpos="38">
+	<File name="../../src/app/DlgCfgIdfyCadence.cpp" open="0" top="0" tabpos="38">
 		<Cursor position="12986" topLine="264" />
 	</File>
-	<File name="../../src/app/DlgCfgIdfyScale.cpp" open="1" top="0" tabpos="35">
+	<File name="../../src/app/DlgCfgIdfyScale.cpp" open="0" top="0" tabpos="35">
 		<Cursor position="11259" topLine="228" />
 	</File>
 	<File name="../../src/app/DlgCfgScoreReading.cpp" open="0" top="0" tabpos="10">
@@ -25,19 +25,19 @@
 	<File name="../../src/app/FontManager.cpp" open="0" top="0" tabpos="80">
 		<Cursor position="4448" topLine="105" />
 	</File>
-	<File name="../../src/app/Logger.cpp" open="1" top="0" tabpos="2">
+	<File name="../../src/app/Logger.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="4822" topLine="88" />
 	</File>
 	<File name="../../src/app/Logger.h" open="0" top="0" tabpos="4">
 		<Cursor position="4140" topLine="94" />
 	</File>
-	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="5">
+	<File name="../../src/app/MainFrame.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="35375" topLine="884" />
 	</File>
-	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
+	<File name="../../src/app/MainFrame.h" open="0" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
 	</File>
-	<File name="../../src/app/MidiWizard.cpp" open="1" top="0" tabpos="57">
+	<File name="../../src/app/MidiWizard.cpp" open="0" top="0" tabpos="57">
 		<Cursor position="10370" topLine="288" />
 	</File>
 	<File name="../../src/app/MidiWizard.h" open="0" top="0" tabpos="30">
@@ -49,34 +49,37 @@
 	<File name="../../src/app/Paper.h" open="0" top="0" tabpos="2">
 		<Cursor position="5328" topLine="107" />
 	</File>
-	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="55">
+	<File name="../../src/app/ScoreCanvas.cpp" open="0" top="0" tabpos="55">
 		<Cursor position="7903" topLine="231" />
 	</File>
-	<File name="../../src/app/ScoreDoc.cpp" open="1" top="0" tabpos="58">
+	<File name="../../src/app/ScoreDoc.cpp" open="0" top="0" tabpos="58">
 		<Cursor position="4851" topLine="134" />
 	</File>
-	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="56">
-		<Cursor position="44946" topLine="1201" />
+	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="38939" topLine="1060" />
 	</File>
-	<File name="../../src/app/SplashFrame.cpp" open="1" top="0" tabpos="9">
+	<File name="../../src/app/ScoreView.h" open="1" top="1" tabpos="2">
+		<Cursor position="9724" topLine="186" />
+	</File>
+	<File name="../../src/app/SplashFrame.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
 	</File>
 	<File name="../../src/app/SplashFrame.h" open="0" top="0" tabpos="27">
 		<Cursor position="2629" topLine="54" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="1">
+	<File name="../../src/app/TheApp.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="7818" topLine="177" />
 	</File>
-	<File name="../../src/app/TheApp.h" open="1" top="0" tabpos="89">
+	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="89">
 		<Cursor position="2598" topLine="70" />
 	</File>
-	<File name="../../src/app/toolbox/ToolNotesOpt.cpp" open="1" top="0" tabpos="59">
+	<File name="../../src/app/toolbox/ToolNotesOpt.cpp" open="0" top="0" tabpos="59">
 		<Cursor position="4727" topLine="120" />
 	</File>
-	<File name="../../src/auxmusic/Cadence.cpp" open="1" top="0" tabpos="44">
+	<File name="../../src/auxmusic/Cadence.cpp" open="0" top="0" tabpos="44">
 		<Cursor position="46767" topLine="1104" />
 	</File>
-	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="39">
+	<File name="../../src/auxmusic/ChordManager.cpp" open="0" top="0" tabpos="39">
 		<Cursor position="7805" topLine="196" />
 	</File>
 	<File name="../../src/auxmusic/Composer.cpp" open="0" top="0" tabpos="19">
@@ -91,10 +94,10 @@
 	<File name="../../src/auxmusic/ComposerV5.h" open="0" top="0" tabpos="31">
 		<Cursor position="2820" topLine="69" />
 	</File>
-	<File name="../../src/auxmusic/ComposerV6.cpp" open="1" top="0" tabpos="19">
+	<File name="../../src/auxmusic/ComposerV6.cpp" open="0" top="0" tabpos="19">
 		<Cursor position="54256" topLine="1389" />
 	</File>
-	<File name="../../src/auxmusic/Conversion.cpp" open="1" top="0" tabpos="36">
+	<File name="../../src/auxmusic/Conversion.cpp" open="0" top="0" tabpos="36">
 		<Cursor position="1698" topLine="146" />
 	</File>
 	<File name="../../src/auxmusic/Interval.cpp" open="0" top="0" tabpos="23">
@@ -106,64 +109,64 @@
 	<File name="../../src/exercises/ChordConstrains.cpp" open="0" top="0" tabpos="26">
 		<Cursor position="5623" topLine="151" />
 	</File>
-	<File name="../../src/exercises/Constrains.h" open="1" top="0" tabpos="50">
+	<File name="../../src/exercises/Constrains.h" open="0" top="0" tabpos="50">
 		<Cursor position="0" topLine="163" />
 	</File>
-	<File name="../../src/exercises/CountersCtrol.cpp" open="1" top="0" tabpos="42">
+	<File name="../../src/exercises/CountersCtrol.cpp" open="0" top="0" tabpos="42">
 		<Cursor position="8357" topLine="190" />
 	</File>
-	<File name="../../src/exercises/EarCompareIntvCtrol.cpp" open="1" top="0" tabpos="31">
+	<File name="../../src/exercises/EarCompareIntvCtrol.cpp" open="0" top="0" tabpos="31">
 		<Cursor position="1232" topLine="199" />
 	</File>
 	<File name="../../src/exercises/EarCompareIntvCtrol.h" open="0" top="0" tabpos="11">
 		<Cursor position="1202" topLine="9" />
 	</File>
-	<File name="../../src/exercises/EarIntervalsCtrol.cpp" open="1" top="0" tabpos="32">
+	<File name="../../src/exercises/EarIntervalsCtrol.cpp" open="0" top="0" tabpos="32">
 		<Cursor position="0" topLine="245" />
 	</File>
 	<File name="../../src/exercises/EarIntvalConstrains.cpp" open="0" top="0" tabpos="27">
 		<Cursor position="5106" topLine="108" />
 	</File>
-	<File name="../../src/exercises/Generators.cpp" open="1" top="0" tabpos="60">
+	<File name="../../src/exercises/Generators.cpp" open="0" top="0" tabpos="60">
 		<Cursor position="6672" topLine="147" />
 	</File>
-	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="1" top="0" tabpos="37">
+	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="0" top="0" tabpos="37">
 		<Cursor position="9867" topLine="289" />
 	</File>
-	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="1" top="0" tabpos="33">
+	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="0" top="0" tabpos="33">
 		<Cursor position="9888" topLine="247" />
 	</File>
-	<File name="../../src/exercises/IdfyScalesCtrol.cpp" open="1" top="0" tabpos="4">
+	<File name="../../src/exercises/IdfyScalesCtrol.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="10090" topLine="98" />
 	</File>
 	<File name="../../src/exercises/ScalesConstrains.cpp" open="0" top="0" tabpos="30">
 		<Cursor position="5306" topLine="140" />
 	</File>
-	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="1" top="0" tabpos="3">
+	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="7850" topLine="179" />
 	</File>
 	<File name="../../src/exercises/ScoreConstrains.cpp" open="0" top="0" tabpos="31">
 		<Cursor position="21423" topLine="588" />
 	</File>
-	<File name="../../src/exercises/ScoreConstrains.h" open="1" top="0" tabpos="51">
+	<File name="../../src/exercises/ScoreConstrains.h" open="0" top="0" tabpos="51">
 		<Cursor position="0" topLine="228" />
 	</File>
-	<File name="../../src/exercises/ScoreCtrol.cpp" open="1" top="0" tabpos="22">
+	<File name="../../src/exercises/ScoreCtrol.cpp" open="0" top="0" tabpos="22">
 		<Cursor position="0" topLine="126" />
 	</File>
-	<File name="../../src/exercises/TheoIntervalsCtrol.cpp" open="1" top="0" tabpos="29">
+	<File name="../../src/exercises/TheoIntervalsCtrol.cpp" open="0" top="0" tabpos="29">
 		<Cursor position="0" topLine="360" />
 	</File>
-	<File name="../../src/exercises/TheoKeySignCtrol.cpp" open="1" top="0" tabpos="30">
+	<File name="../../src/exercises/TheoKeySignCtrol.cpp" open="0" top="0" tabpos="30">
 		<Cursor position="0" topLine="197" />
 	</File>
-	<File name="../../src/exercises/TheoMusicReadingCtrol.cpp" open="1" top="0" tabpos="21">
+	<File name="../../src/exercises/TheoMusicReadingCtrol.cpp" open="0" top="0" tabpos="21">
 		<Cursor position="2712" topLine="59" />
 	</File>
-	<File name="../../src/exercises/TheoMusicReadingCtrol.h" open="1" top="0" tabpos="49">
+	<File name="../../src/exercises/TheoMusicReadingCtrol.h" open="0" top="0" tabpos="49">
 		<Cursor position="0" topLine="9" />
 	</File>
-	<File name="../../src/globals/Paths.cpp" open="1" top="0" tabpos="10">
+	<File name="../../src/globals/Paths.cpp" open="0" top="0" tabpos="10">
 		<Cursor position="5574" topLine="145" />
 	</File>
 	<File name="../../src/graphic/AggDrawer.cpp" open="0" top="0" tabpos="67">
@@ -172,16 +175,16 @@
 	<File name="../../src/graphic/AggDrawer.h" open="0" top="0" tabpos="9">
 		<Cursor position="1596" topLine="33" />
 	</File>
-	<File name="../../src/graphic/BoxPage.cpp" open="1" top="0" tabpos="79">
+	<File name="../../src/graphic/BoxPage.cpp" open="0" top="0" tabpos="79">
 		<Cursor position="5032" topLine="143" />
 	</File>
-	<File name="../../src/graphic/BoxScore.cpp" open="1" top="0" tabpos="80">
+	<File name="../../src/graphic/BoxScore.cpp" open="0" top="0" tabpos="80">
 		<Cursor position="3886" topLine="118" />
 	</File>
-	<File name="../../src/graphic/BoxSliceVStaff.cpp" open="1" top="0" tabpos="61">
+	<File name="../../src/graphic/BoxSliceVStaff.cpp" open="0" top="0" tabpos="61">
 		<Cursor position="8104" topLine="224" />
 	</File>
-	<File name="../../src/graphic/BoxSystem.cpp" open="1" top="0" tabpos="53">
+	<File name="../../src/graphic/BoxSystem.cpp" open="0" top="0" tabpos="53">
 		<Cursor position="2643" topLine="70" />
 	</File>
 	<File name="../../src/graphic/Drawer.cpp" open="0" top="0" tabpos="0">
@@ -190,34 +193,34 @@
 	<File name="../../src/graphic/Drawer.h" open="0" top="0" tabpos="3">
 		<Cursor position="4590" topLine="111" />
 	</File>
-	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="54">
+	<File name="../../src/graphic/Formatter4.cpp" open="0" top="0" tabpos="54">
 		<Cursor position="46001" topLine="1108" />
 	</File>
-	<File name="../../src/graphic/GMObject.cpp" open="1" top="0" tabpos="64">
+	<File name="../../src/graphic/GMObject.cpp" open="0" top="0" tabpos="64">
 		<Cursor position="16128" topLine="544" />
 	</File>
-	<File name="../../src/graphic/GraphicManager.cpp" open="1" top="0" tabpos="62">
+	<File name="../../src/graphic/GraphicManager.cpp" open="0" top="0" tabpos="62">
 		<Cursor position="1832" topLine="139" />
 	</File>
-	<File name="../../src/graphic/GraphicManager.h" open="1" top="0" tabpos="63">
+	<File name="../../src/graphic/GraphicManager.h" open="0" top="0" tabpos="63">
 		<Cursor position="0" topLine="95" />
 	</File>
-	<File name="../../src/graphic/ShapeArch.cpp" open="1" top="0" tabpos="65">
+	<File name="../../src/graphic/ShapeArch.cpp" open="0" top="0" tabpos="65">
 		<Cursor position="3733" topLine="97" />
 	</File>
-	<File name="../../src/graphic/ShapeBarline.cpp" open="1" top="0" tabpos="66">
+	<File name="../../src/graphic/ShapeBarline.cpp" open="0" top="0" tabpos="66">
 		<Cursor position="6141" topLine="153" />
 	</File>
-	<File name="../../src/graphic/ShapeBeam.cpp" open="1" top="0" tabpos="67">
+	<File name="../../src/graphic/ShapeBeam.cpp" open="0" top="0" tabpos="67">
 		<Cursor position="14305" topLine="394" />
 	</File>
-	<File name="../../src/graphic/ShapeStaff.cpp" open="1" top="0" tabpos="68">
+	<File name="../../src/graphic/ShapeStaff.cpp" open="0" top="0" tabpos="68">
 		<Cursor position="2756" topLine="68" />
 	</File>
-	<File name="../../src/graphic/ShapeTuplet.cpp" open="1" top="0" tabpos="69">
+	<File name="../../src/graphic/ShapeTuplet.cpp" open="0" top="0" tabpos="69">
 		<Cursor position="7144" topLine="211" />
 	</File>
-	<File name="../../src/graphic/Shapes.cpp" open="1" top="0" tabpos="70">
+	<File name="../../src/graphic/Shapes.cpp" open="0" top="0" tabpos="70">
 		<Cursor position="8984" topLine="259" />
 	</File>
 	<File name="../../src/graphic/TimeposTable.cpp" open="0" top="0" tabpos="56">
@@ -232,73 +235,73 @@
 	<File name="../../src/html/BookContentsBox.h" open="0" top="0" tabpos="5">
 		<Cursor position="1193" topLine="12" />
 	</File>
-	<File name="../../src/html/BookData.cpp" open="1" top="0" tabpos="46">
+	<File name="../../src/html/BookData.cpp" open="0" top="0" tabpos="46">
 		<Cursor position="10735" topLine="341" />
 	</File>
-	<File name="../../src/html/BookData.h" open="1" top="0" tabpos="45">
+	<File name="../../src/html/BookData.h" open="0" top="0" tabpos="45">
 		<Cursor position="5838" topLine="138" />
 	</File>
-	<File name="../../src/html/ContentsBoxCtrol.cpp" open="1" top="0" tabpos="87">
+	<File name="../../src/html/ContentsBoxCtrol.cpp" open="0" top="0" tabpos="87">
 		<Cursor position="2326" topLine="60" />
 	</File>
-	<File name="../../src/html/ContentsBoxCtrol.h" open="1" top="0" tabpos="88">
-		<Cursor position="4976" topLine="117" />
+	<File name="../../src/html/ContentsBoxCtrol.h" open="0" top="0" tabpos="88">
+		<Cursor position="4976" topLine="99" />
 	</File>
-	<File name="../../src/html/HtmlWindow.cpp" open="1" top="0" tabpos="17">
+	<File name="../../src/html/HtmlWindow.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="7688" topLine="213" />
 	</File>
-	<File name="../../src/html/HtmlWindow.h" open="1" top="0" tabpos="18">
+	<File name="../../src/html/HtmlWindow.h" open="0" top="0" tabpos="18">
 		<Cursor position="2445" topLine="37" />
 	</File>
-	<File name="../../src/html/IdfyChordCtrolParms.h" open="1" top="0" tabpos="27">
+	<File name="../../src/html/IdfyChordCtrolParms.h" open="0" top="0" tabpos="27">
 		<Cursor position="8761" topLine="210" />
 	</File>
-	<File name="../../src/html/IdfyScalesCtrolParms.h" open="1" top="0" tabpos="28">
+	<File name="../../src/html/IdfyScalesCtrolParms.h" open="0" top="0" tabpos="28">
 		<Cursor position="7920" topLine="186" />
 	</File>
-	<File name="../../src/html/ObjectParams.cpp" open="1" top="0" tabpos="24">
+	<File name="../../src/html/ObjectParams.cpp" open="0" top="0" tabpos="24">
 		<Cursor position="1654" topLine="30" />
 	</File>
-	<File name="../../src/html/ObjectParams.h" open="1" top="0" tabpos="26">
+	<File name="../../src/html/ObjectParams.h" open="0" top="0" tabpos="26">
 		<Cursor position="1634" topLine="33" />
 	</File>
 	<File name="../../src/html/ParamsParser.cpp" open="0" top="0" tabpos="43">
 		<Cursor position="4956" topLine="117" />
 	</File>
-	<File name="../../src/html/ScoreCtrolParams.h" open="1" top="0" tabpos="25">
+	<File name="../../src/html/ScoreCtrolParams.h" open="0" top="0" tabpos="25">
 		<Cursor position="12896" topLine="334" />
 	</File>
-	<File name="../../src/html/Tags.cpp" open="1" top="0" tabpos="23">
+	<File name="../../src/html/Tags.cpp" open="0" top="0" tabpos="23">
 		<Cursor position="26429" topLine="107" />
 	</File>
-	<File name="../../src/html/TextBookController.cpp" open="1" top="0" tabpos="7">
+	<File name="../../src/html/TextBookController.cpp" open="0" top="0" tabpos="7">
 		<Cursor position="6674" topLine="225" />
 	</File>
-	<File name="../../src/html/TextBookController.h" open="1" top="0" tabpos="11">
+	<File name="../../src/html/TextBookController.h" open="0" top="0" tabpos="11">
 		<Cursor position="3224" topLine="65" />
 	</File>
-	<File name="../../src/html/TextBookFrame.cpp" open="1" top="0" tabpos="8">
+	<File name="../../src/html/TextBookFrame.cpp" open="0" top="0" tabpos="8">
 		<Cursor position="29435" topLine="1010" />
 	</File>
-	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="16">
+	<File name="../../src/html/TextBookFrame.h" open="0" top="0" tabpos="16">
 		<Cursor position="7500" topLine="201" />
 	</File>
-	<File name="../../src/html/TheoMusicReadingCtrolParms.h" open="1" top="0" tabpos="52">
+	<File name="../../src/html/TheoMusicReadingCtrolParms.h" open="0" top="0" tabpos="52">
 		<Cursor position="5569" topLine="86" />
 	</File>
 	<File name="../../src/ldp_parser/AuxString.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="14697" topLine="433" />
 	</File>
-	<File name="../../src/ldp_parser/LDPNode.cpp" open="1" top="0" tabpos="85">
-		<Cursor position="1915" topLine="51" />
+	<File name="../../src/ldp_parser/LDPNode.cpp" open="0" top="0" tabpos="85">
+		<Cursor position="1915" topLine="45" />
 	</File>
-	<File name="../../src/ldp_parser/LDPNode.h" open="1" top="0" tabpos="86">
+	<File name="../../src/ldp_parser/LDPNode.h" open="0" top="0" tabpos="86">
 		<Cursor position="2110" topLine="32" />
 	</File>
-	<File name="../../src/ldp_parser/LDPParser.cpp" open="1" top="0" tabpos="40">
+	<File name="../../src/ldp_parser/LDPParser.cpp" open="0" top="0" tabpos="40">
 		<Cursor position="17129" topLine="500" />
 	</File>
-	<File name="../../src/ldp_parser/LDPParser.h" open="1" top="0" tabpos="83">
+	<File name="../../src/ldp_parser/LDPParser.h" open="0" top="0" tabpos="83">
 		<Cursor position="1380" topLine="19" />
 	</File>
 	<File name="../../src/ldp_parser/LDPToken.cpp" open="0" top="0" tabpos="20">
@@ -307,10 +310,10 @@
 	<File name="../../src/ldp_parser/LDPToken.h" open="0" top="0" tabpos="8">
 		<Cursor position="1174" topLine="11" />
 	</File>
-	<File name="../../src/mdi/ChildFrame.cpp" open="1" top="0" tabpos="12">
+	<File name="../../src/mdi/ChildFrame.cpp" open="0" top="0" tabpos="12">
 		<Cursor position="7636" topLine="223" />
 	</File>
-	<File name="../../src/mdi/ClientWindow.cpp" open="1" top="0" tabpos="14">
+	<File name="../../src/mdi/ClientWindow.cpp" open="0" top="0" tabpos="14">
 		<Cursor position="0" topLine="0" />
 	</File>
 	<File name="../../src/options/ColorsOptPanel.cpp" open="0" top="0" tabpos="22">
@@ -358,7 +361,7 @@
 	<File name="../../src/options/ToolbarsOptPanel.h" open="0" top="0" tabpos="38">
 		<Cursor position="1309" topLine="12" />
 	</File>
-	<File name="../../src/score/AuxObj.cpp" open="1" top="0" tabpos="84">
+	<File name="../../src/score/AuxObj.cpp" open="0" top="0" tabpos="84">
 		<Cursor position="12321" topLine="379" />
 	</File>
 	<File name="../../src/score/Barline.cpp" open="0" top="0" tabpos="17">
@@ -367,55 +370,61 @@
 	<File name="../../src/score/Barline.h" open="0" top="0" tabpos="33">
 		<Cursor position="2616" topLine="11" />
 	</File>
-	<File name="../../src/score/Beam.cpp" open="0" top="0" tabpos="57">
-		<Cursor position="15204" topLine="363" />
+	<File name="../../src/score/Beam.cpp" open="0" top="0" tabpos="91">
+		<Cursor position="4263" topLine="0" />
 	</File>
-	<File name="../../src/score/Chord.cpp" open="1" top="0" tabpos="71">
+	<File name="../../src/score/Beam.h" open="0" top="0" tabpos="92">
+		<Cursor position="1822" topLine="29" />
+	</File>
+	<File name="../../src/score/Chord.cpp" open="0" top="0" tabpos="71">
 		<Cursor position="20550" topLine="663" />
 	</File>
-	<File name="../../src/score/Chord.h" open="1" top="0" tabpos="72">
+	<File name="../../src/score/Chord.h" open="0" top="0" tabpos="72">
 		<Cursor position="0" topLine="33" />
 	</File>
 	<File name="../../src/score/Clef.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="5745" topLine="153" />
 	</File>
-	<File name="../../src/score/ColStaffObjs.cpp" open="1" top="0" tabpos="76">
+	<File name="../../src/score/ColStaffObjs.cpp" open="0" top="0" tabpos="76">
 		<Cursor position="17209" topLine="573" />
 	</File>
-	<File name="../../src/score/Context.cpp" open="1" top="0" tabpos="73">
+	<File name="../../src/score/Context.cpp" open="0" top="0" tabpos="73">
 		<Cursor position="2942" topLine="64" />
 	</File>
-	<File name="../../src/score/Instrument.cpp" open="1" top="0" tabpos="81">
+	<File name="../../src/score/Instrument.cpp" open="0" top="0" tabpos="81">
 		<Cursor position="3459" topLine="85" />
 	</File>
-	<File name="../../src/score/KeySignature.cpp" open="1" top="0" tabpos="13">
+	<File name="../../src/score/KeySignature.cpp" open="0" top="0" tabpos="13">
 		<Cursor position="4761" topLine="116" />
 	</File>
 	<File name="../../src/score/MetronomeMark.cpp" open="0" top="0" tabpos="25">
 		<Cursor position="11056" topLine="283" />
 	</File>
-	<File name="../../src/score/Note.cpp" open="1" top="0" tabpos="47">
+	<File name="../../src/score/Note.cpp" open="0" top="0" tabpos="47">
 		<Cursor position="53565" topLine="32" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="0" top="0" tabpos="71">
 		<Cursor position="6496" topLine="162" />
 	</File>
-	<File name="../../src/score/Rest.cpp" open="1" top="0" tabpos="77">
+	<File name="../../src/score/NotesRelationship.h" open="1" top="0" tabpos="5">
+		<Cursor position="5212" topLine="151" />
+	</File>
+	<File name="../../src/score/Rest.cpp" open="0" top="0" tabpos="77">
 		<Cursor position="6594" topLine="170" />
 	</File>
 	<File name="../../src/score/SOControl.cpp" open="0" top="0" tabpos="61">
 		<Cursor position="3047" topLine="78" />
 	</File>
-	<File name="../../src/score/Score.cpp" open="1" top="0" tabpos="41">
+	<File name="../../src/score/Score.cpp" open="0" top="0" tabpos="41">
 		<Cursor position="15565" topLine="391" />
 	</File>
-	<File name="../../src/score/Score.h" open="1" top="0" tabpos="20">
+	<File name="../../src/score/Score.h" open="0" top="0" tabpos="20">
 		<Cursor position="8088" topLine="222" />
 	</File>
 	<File name="../../src/score/Slur.cpp" open="0" top="0" tabpos="63">
 		<Cursor position="2609" topLine="74" />
 	</File>
-	<File name="../../src/score/StaffObj.cpp" open="1" top="0" tabpos="78">
+	<File name="../../src/score/StaffObj.cpp" open="0" top="0" tabpos="78">
 		<Cursor position="12408" topLine="390" />
 	</File>
 	<File name="../../src/score/StaffObj.h" open="0" top="0" tabpos="6">
@@ -427,20 +436,26 @@
 	<File name="../../src/score/TimeSignature.cpp" open="0" top="0" tabpos="65">
 		<Cursor position="8576" topLine="222" />
 	</File>
-	<File name="../../src/score/UndoRedo.h" open="1" top="0" tabpos="82">
+	<File name="../../src/score/TupletBracket.cpp" open="0" top="0" tabpos="94">
+		<Cursor position="1902" topLine="66" />
+	</File>
+	<File name="../../src/score/TupletBracket.h" open="0" top="0" tabpos="93">
+		<Cursor position="2031" topLine="33" />
+	</File>
+	<File name="../../src/score/UndoRedo.h" open="0" top="0" tabpos="82">
 		<Cursor position="3241" topLine="94" />
 	</File>
-	<File name="../../src/score/VStaff.cpp" open="1" top="1" tabpos="75">
-		<Cursor position="4170" topLine="79" />
+	<File name="../../src/score/VStaff.cpp" open="0" top="0" tabpos="75">
+		<Cursor position="4170" topLine="196" />
 	</File>
-	<File name="../../src/score/VStaff.h" open="1" top="0" tabpos="74">
+	<File name="../../src/score/VStaff.h" open="0" top="0" tabpos="74">
 		<Cursor position="9726" topLine="222" />
 	</File>
-	<File name="../../src/score/defs.cpp" open="0" top="0" tabpos="70">
-		<Cursor position="1726" topLine="82" />
+	<File name="../../src/score/defs.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="2081" topLine="40" />
 	</File>
-	<File name="../../src/score/defs.h" open="0" top="0" tabpos="23">
-		<Cursor position="6077" topLine="180" />
+	<File name="../../src/score/defs.h" open="1" top="0" tabpos="3">
+		<Cursor position="8834" topLine="261" />
 	</File>
 	<File name="../../src/sound/MidiManager.cpp" open="0" top="0" tabpos="51">
 		<Cursor position="4989" topLine="122" />
@@ -448,13 +463,13 @@
 	<File name="../../src/sound/MidiManager.h" open="0" top="0" tabpos="50">
 		<Cursor position="2176" topLine="9" />
 	</File>
-	<File name="../../src/sound/SoundManager.cpp" open="1" top="0" tabpos="48">
+	<File name="../../src/sound/SoundManager.cpp" open="0" top="0" tabpos="48">
 		<Cursor position="31343" topLine="0" />
 	</File>
-	<File name="../../src/sound/WaveManager.cpp" open="1" top="0" tabpos="43">
+	<File name="../../src/sound/WaveManager.cpp" open="0" top="0" tabpos="43">
 		<Cursor position="3324" topLine="77" />
 	</File>
-	<File name="../../src/updater/Updater.cpp" open="1" top="0" tabpos="34">
+	<File name="../../src/updater/Updater.cpp" open="0" top="0" tabpos="34">
 		<Cursor position="17032" topLine="494" />
 	</File>
 	<File name="../../src/updater/UpdaterDlg.cpp" open="0" top="0" tabpos="40">
