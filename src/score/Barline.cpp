@@ -73,10 +73,11 @@ lmBarline::~lmBarline()
 wxString lmBarline::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tBarline %s\tTimePos=%.2f\n"),
+        _T("%d\tBarline %s\tTimePos=%.2f"),
         m_nId, GetBarlineLDPNameFromType(m_nBarlineType).c_str(), m_rTimePos );
+    sDump += lmStaffObj::Dump();
+    sDump += _T("\n");
     return sDump;
-
 }
 
 wxString lmBarline::SourceLDP(int nIndent)

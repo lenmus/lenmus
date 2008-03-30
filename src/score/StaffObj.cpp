@@ -55,9 +55,10 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     m_pAuxObjs = (lmAuxObjsCol*)NULL;
 
     // initializations: positioning related info
-    m_uPaperPos.y = 0;
-    m_uPaperPos.x = 0;
+    m_uPaperPos.y = 0.0f,   m_uPaperPos.x = 0.0f;
 	m_tSrcPos = g_tDefaultPos;
+    m_uComputedPos.x = 0.0f,   m_uComputedPos.y = 0.0f;
+    m_uUserShift.x = 0.0f,   m_uUserShift.y = 0.0f;
 
     m_pShape = (lmShape*)NULL;
 	m_fModified = false;
@@ -159,8 +160,46 @@ void lmScoreObj::DetachAuxObj(lmAuxObj* pAO)
 
 lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 {
+	//convert location to logical units
+	if (tPos.xUnits == lmTENTHS)
+		tPos.x = TenthsToLogical(tPos.x);
+	if (tPos.yUnits == lmTENTHS)
+		tPos.y = TenthsToLogical(tPos.y);
+
+    if (m_pShape)
+    {
+		//interactive edition: user is moving an object
+		lmUPoint uOldShapePos = m_pShape->GetBounds().GetTopLeft();
+		m_uUserShift.x += tPos.x - uOldShapePos.x;
+		m_uUserShift.y += tPos.y - uOldShapePos.y;
+		//DBG--------------------------------------------------------------------------------
+		if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
+		{
+			wxLogMessage(_T("[lmScoreObj::SetUserLocation] UserPos=(%.2f, %.2f), old ShapePos=(%.2f, %.2f), old UserShift=(%.2f, %.2f), new UserShift=(%.2f, %.2f)"),
+						tPos.x, tPos.y, uOldShapePos.x, uOldShapePos.y,
+						tPos.x - uOldShapePos.x, tPos.y - uOldShapePos.y,
+						m_uUserShift.x, m_uUserShift.y );
+		}
+		//END DBG----------------------------------------------------------------------------
+
+		//Move also attached AuxObjs to this ScoreObj
+		if (m_pAuxObjs)
+		{
+			for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+			{
+				(*m_pAuxObjs)[i]->OnParentMoved(tPos.x - uOldShapePos.x, tPos.y - uOldShapePos.y);
+			}
+		}
+    }
+	else
+	{
+		//loading the score from a file. Not yet layouted
+		m_uUserShift.x = tPos.x;
+		m_uUserShift.y = tPos.y;
+	}
+
 	m_tSrcPos = m_tPos;
-	m_tPos = tPos;
+	//m_tPos = tPos;
 	return m_tSrcPos;
 }
 
@@ -200,28 +239,34 @@ void lmScoreObj::ResetObjectLocation()
 
 void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
 {
- //   //update this StaffObj origin and shape position
-	//lmUPoint uNewOrg = GetOrigin();
- //   lmLUnits uxShift = uLeft - uNewOrg.x;
-	//uNewOrg.x += uLeft;
- //   SetOrigin(uNewOrg);
+    //The ScoreObj position is being computed in auto-layout procedure and the auto-layout
+    //algorithm is invoking this method to inform about the computed final position for 
+    //this ScoreObj. Take into account that this method can be invoked several times for the
+    //same ScoreBoj, as the auto-layout algorithm refines the final position.
+    //In this method, we can choose either to move the shape to the requested position or
+    //to any other (i.e. the one requested by the user), and that has no influence on the
+    //auto-layout computations.
+    //This method is invoked only from TimeposTable module, from methods 
+    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition()
 
-    if (m_pShape) m_pShape->Shift(uxShift, 0.0);
+	m_uComputedPos.x += uxShift;
+    if (m_pShape)
+    {
+		//DBG--------------------------------------------------------------------------------
+		if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==3)
+		{
+			lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
+			wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
+						uxShift,
+						m_pShape->GetOrigin().x, m_pShape->GetOrigin().y,
+						m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
+						uNewOrg.x, uNewOrg.y );
+		}
+		//END DBG----------------------------------------------------------------------------
+        m_pShape->ShiftOrigin(m_uComputedPos + m_uUserShift);
+    }
 
-	////DBG ------------------------------------------------------------------------
-    //if (m_pShape) wxLogMessage(_T("Shift shape: uxShift=%.2f"), uxShift);
-	//if (GetScoreObjType() == lmSOT_ComponentObj
-	//	&& ((lmComponentObj*)this)->GetType() == eSCOT_StaffObj
-	//	&& ((lmStaffObj*)this)->GetClass() == eSFOT_KeySignature )
-	//{
-	//	wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f"),
-	//		uxShift );
-	//	if (m_pShape) wxLogMessage( m_pShape->Dump(0) );
-	//	wxLogMessage( this->Dump() );
-	//}
-	////END DBG --------------------------------------------------------------------
-
-    // shift also AuxObjs attached to this StaffObj
+	// shift also AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
@@ -313,6 +358,16 @@ void lmScoreObj::RecordHistory(lmUndoData* pUndoData)
 void lmScoreObj::AcceptChanges() 
 {
 	m_fModified = false;
+}
+
+wxString lmScoreObj::Dump()
+{
+	wxString sDump = _T("");
+
+    //position info
+    sDump += wxString::Format(_T(", ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f)"),
+                    m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y );
+	return sDump;
 }
 
 
@@ -432,8 +487,12 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
 
 lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 {
-	//m_tSrcPos = m_tPos;
 	lmUPoint uPos = GetReferencePaperPos();
+
+#if 1
+	return ComputeBestLocation(uPos, pPaper);
+
+#else
 
 	//if default location, ask derived object to compute the best position for itself
     if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
@@ -522,6 +581,7 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 		wxASSERT(false);
 
 	return uPos;
+#endif
 
 }
 
@@ -554,6 +614,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 {
 	lmUPoint uOrg = SetReferencePos(pPaper);
 	lmUPoint uPos = ComputeObjectLocation(pPaper);			// compute location
+    m_uComputedPos = uPos;
 
 	lmLUnits uWidth;
     if (m_fVisible)
@@ -569,6 +630,10 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 		m_pShape = pShape;
 		uWidth = 0;
 	}
+
+	//if user defined position shift the shape
+	if (m_pShape && m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f)
+		m_pShape->Shift(m_uUserShift.x, m_uUserShift.y);
 
 	// layout AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
@@ -641,9 +706,26 @@ wxString lmStaffObj::SourceLDP(int nIndent)
     }
 
     //location
-    sSource += SourceLDP_Location(m_uPaperPos);
+    sSource += SourceLDP_Location();
+
 
     sSource += _T(")\n");
+	return sSource;
+}
+
+wxString lmStaffObj::SourceLDP_Location()
+{
+	wxString sSource = _T("");
+
+	//location
+    if (m_uUserShift.x != 0.0f)
+		sSource += wxString::Format(_T(" dx:%s"),
+					DoubleToStr((double)LogicalToTenths(m_uUserShift.x), 4).c_str() );
+
+	if (m_uUserShift.y != 0.0f)
+		sSource += wxString::Format(_T(" dy:%s"),
+					DoubleToStr((double)LogicalToTenths(m_uUserShift.y), 4).c_str() );
+
 	return sSource;
 }
 
@@ -663,8 +745,12 @@ wxString lmStaffObj::SourceXML(int nIndent)
 
 wxString lmStaffObj::Dump()
 {
-    // Dump AuxObjs attached to this StaffObj
 	wxString sSource = _T("");
+
+    //base class info
+	sSource += lmScoreObj::Dump();
+
+    // Dump AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)

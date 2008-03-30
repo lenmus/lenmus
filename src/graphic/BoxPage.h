@@ -62,6 +62,8 @@ public:
 	//access to objects
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+    void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                       lmLUnits uYMin, lmLUnits uYMax);
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
 
 	//operations

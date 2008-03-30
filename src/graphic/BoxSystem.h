@@ -84,6 +84,8 @@ public:
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
+    void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                       lmLUnits uYMin, lmLUnits uYMax);
 	int GetNumMeasureAt(lmLUnits uxPos);
 
     //rendering

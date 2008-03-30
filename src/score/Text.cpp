@@ -152,10 +152,8 @@ lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 wxString lmScoreText::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tText %s\tOrg=(%.2f, %.2f)\n"),
-        m_nId, m_sText.Left(15).c_str(), m_uOrg.x, m_uOrg.y);
+        _T("%d\tText %s\n"), m_nId, m_sText.Left(15).c_str() );
     return sDump;
-
 }
 
 wxString lmScoreText::SourceLDP(int nIndent)

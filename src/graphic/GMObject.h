@@ -160,12 +160,13 @@ public:
 	virtual lmUPoint GetObjectOrigin();
     virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
+	void Shift(lmUPoint uPos) { Shift(uPos.x, uPos.y); }
+	void ShiftOrigin(lmUPoint uNewOrg);
 
     //info
     inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
 	virtual int GetPageNumber() const { return 0; }
     inline lmUPoint GetOrigin() const { return m_uOrigin; }
-    inline void SetOrigin(lmUPoint& uOrg) {m_uOrigin = uOrg; } 
 
 	//contextual menu
 	virtual void OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int nKeys);
@@ -213,6 +214,7 @@ protected:
 
 class lmShape;
 class lmBoxSystem;
+class lmGMSelection;
 
 class lmBox : public lmGMObject
 {
@@ -228,6 +230,9 @@ public:
 	//owners and related
 	virtual lmBoxSystem* GetOwnerSystem()=0;
 
+    //selection
+    void AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                              lmLUnits uYMin, lmLUnits uYMax);
 
 protected:
     lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _("Box"));
@@ -303,7 +308,8 @@ public:
 	inline lmShape* GetParentShape() { return m_pParentShape; }
 	inline void SetParentShape(lmShape* pShape) { m_pParentShape = pShape; }
 
-	
+    //selection
+    bool IsInRectangle(lmURect& rect);
 
 protected:
     lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("Shape"),
@@ -393,6 +399,32 @@ protected:
 	std::vector<lmShape*>	m_Components;	//list of its constituent shapes
 
 };
+
+
+// lmGMSelection is data holder with information about a selection.
+
+class lmGMSelection
+{
+public:
+    lmGMSelection();
+    ~lmGMSelection();
+    
+    void AddToSelection(lmGMObject* pGMO);
+    void RemoveFromSelection(lmGMObject* pGMO);
+    inline void Clear() { m_Selection.clear(); }
+
+    //info
+    inline int NumObjects() { return (int)m_Selection.size(); }
+    inline bool IsEmpty() const { return m_Selection.size()==0; }
+
+    //debug
+    wxString Dump();
+
+private:
+    std::list<lmGMObject*> m_Selection;
+
+};
+
 
 
 

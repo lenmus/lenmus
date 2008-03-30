@@ -171,10 +171,10 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
 
-    //loop to look up in the slices
-	for(int i=0; i < (int)m_Slices.size(); i++)
+    std::vector<lmBoxSlice*>::iterator it;
+	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
     {
-        lmGMObject* pGMO = m_Slices[i]->FindGMObjectAtPosition(pointL);
+        lmGMObject* pGMO = (*it)->FindGMObjectAtPosition(pointL);
         if (pGMO)
 			return pGMO;    //found
     }
@@ -189,6 +189,19 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
     else
         return (lmGMObject*)NULL;
 
+}
+
+void lmBoxSystem::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                              lmLUnits uYMin, lmLUnits uYMax)
+{
+    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+
+    //loop to look up in the slices
+    std::vector<lmBoxSlice*>::iterator it;
+	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
+    {
+        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    }
 }
 
 lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
@@ -297,4 +310,5 @@ int lmBoxSystem::GetNumMeasureAt(lmLUnits uxPos)
 	else
 		return pSlice->GetNumMeasure();
 }
+
 

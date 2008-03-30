@@ -183,14 +183,10 @@ IMPLEMENT_APP(lmTheApp)
 // the application class
 // ----------------------------------------------------------------------------
 
-lmTheApp::lmTheApp(void)
+bool lmTheApp::OnInit(void)
 {
     g_pTheApp = this;
     m_pInstanceChecker = (wxSingleInstanceChecker*) NULL;
-}
-
-bool lmTheApp::OnInit(void)
-{
     m_pDocManager = (wxDocManager *) NULL;
     m_pLocale = (wxLocale*) NULL;
 
@@ -325,7 +321,8 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
     g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
 	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
-    g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmScoreView::OnMouseEvent"));
+	g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
 #endif
 
@@ -333,7 +330,7 @@ bool lmTheApp::OnInit(void)
 	// AWARE: Log/debug methods are available from this point
 	// *******************************************************
 
-	wxLogMessage(_T("Config file: ") + oCfgFile.GetFullPath() );
+	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
 
         //
         // Set up current language

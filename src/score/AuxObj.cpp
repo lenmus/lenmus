@@ -55,6 +55,10 @@ void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
 	SetReferencePos(pPaper);
 	lmUPoint uPos = ComputeObjectLocation(pPaper);
     LayoutObject(pBox, pPaper, uPos, colorC);
+
+	//if user defined position shift the shape
+	if (m_pShape && m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f)
+		m_pShape->Shift(m_uUserShift.x, m_uUserShift.y);
 }
 
 lmLUnits lmAuxObj::TenthsToLogical(lmTenths nTenths)
@@ -79,33 +83,68 @@ wxFont* lmAuxObj::GetSuitableFont(lmPaper* pPaper)
 
 lmUPoint lmAuxObj::SetReferencePos(lmPaper* pPaper)
 {
-	// AuxObj origin is its parent origin
+	// AuxObj reference position is its parent origin
 
-	m_uPaperPos = m_pParent->GetReferencePaperPos();
+	m_uPaperPos = m_pParent->GetReferencePaperPos();	//GetLayoutRefPos()
 	return m_uPaperPos;
 }
 
-void lmAuxObj::SetOrigin(lmUPoint uPos)
+void lmAuxObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
 {
-	// AuxObj origin is its parent origin, so ignore received point
-    m_uOrg = GetOrigin();
-    //wxLogMessage(_T("[lmAuxObj::SetOrigin] %.2f, %.2f"), m_uOrg.x, m_uOrg.y);
+    //The ScoreObj position is being computed in auto-layout procedure and the auto-layout
+    //algorithm is invoking this method to inform about the computed final position for 
+    //this ScoreObj. Take into account that this method can be invoked several times for the
+    //same ScoreBoj, as the auto-layout algorithm refines the final position.
+    //In this method, we can choose either to move the shape to the requested position or
+    //to any other (i.e. the one requested by the user), and that has no influence on the
+    //auto-layout computations.
+    //This method is invoked only from lmScoreObj::StoreOriginAndShiftShapes() to shift
+	//the AuxObjs attached to the ScoreObj
+
+	m_uComputedPos.x += uxShift;
+	//if (m_pShape)
+ //   {
+		//DBG--------------------------------------------------------------------------------
+		if (GetID()==4)
+		{
+			lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
+			wxLogMessage(_T("[lmAuxObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
+						uxShift,
+						m_pShape->GetOrigin().x, m_pShape->GetOrigin().y,
+						m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
+						uNewOrg.x, uNewOrg.y );
+		}
+		//END DBG----------------------------------------------------------------------------
+ //       m_pShape->ShiftOrigin(m_uComputedPos + m_uUserShift);
+ //   }
+
+    if (m_pShape) m_pShape->Shift(uxShift, 0.0);
+
 }
 
-lmUPoint lmAuxObj::GetOrigin()
+void lmAuxObj::OnParentMoved(lmLUnits xShift, lmLUnits yShift)
 {
-	// AuxObj origin is its parent origin
-	lmUPoint uOrg = m_pParent->GetOrigin();
-    return m_pParent->GetOrigin();
+	//TODO: specific flag to decouple from parent staffObj, so the user can 
+	//control if the attached AuxObj will move with th parent or not
+
+	m_uUserShift.x += xShift;
+	m_uUserShift.y += yShift;
+
+	//DBG--------------------------------------------------------------------------------
+	if (GetID()==4)	//if (((lmComponentObj*)m_pParent)->GetID()==3)
+	{
+		lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
+		wxLogMessage(_T("[lmAuxObj::OnParentMoved] Shift=(%.2f, %.2f), new UserShift=(%.2f, %.2f)"),
+					xShift, yShift, m_uUserShift.x, m_uUserShift.y );
+	}
+	//END DBG----------------------------------------------------------------------------
 }
 
-void lmAuxObj::StoreOriginAndShiftShapes(lmLUnits uLeft)
-{ 
-    // update this StaffObj origin and shape position
-    SetOrigin(lmUPoint(0.0, 0.0));   //the parameter value desn't matter
-    if (m_pShape) m_pShape->Shift(uLeft, 0.0);
-
+wxString lmAuxObj::Dump()
+{
+	return lmComponentObj::Dump();
 }
+
 
 //========================================================================================
 // lmFermata implementation
@@ -136,7 +175,7 @@ lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
     //create a temporal shape object to get its measurements
     int nGlyphIndex = (fAbove ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShape* pPS = m_pParent->GetShap2();
-    lmShapeGlyph* pFS = 
+    lmShapeGlyph* pFS =
 		new lmShapeGlyph(this, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
 						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE);
 
@@ -186,12 +225,11 @@ bool lmFermata::IsAbove()
 lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object and adding it to the graphical model. 
-    // Paper cursor must be used as the base for positioning.
+    // creating the shape object and adding it to the graphical model.
 
     //create the shape object
     int nGlyphIndex = (IsAbove() ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
-    lmShapeGlyph* pShape = 
+    lmShapeGlyph* pShape =
 		new lmShapeGlyph(this, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
 						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
 	pBox->AddShape(pShape);
@@ -228,10 +266,12 @@ wxString lmFermata::SourceXML(int nIndent)
 
 wxString lmFermata::Dump()
 {
-    wxString sDump = wxString::Format(
-        _T("Fermata: org=(%.2f, %.2f)\n"), m_uOrg.x, m_uOrg.y);
-    return sDump;
+	wxString sDump = wxString::Format(_T("\n   %d\tFermata:"), GetID() );
 
+	//base class info
+	sDump += lmAuxObj::Dump();
+	sDump += _T("\n");
+	return sDump;
 }
 
 
@@ -359,8 +399,8 @@ wxString lmLyric::Dump()
 {
 	//TODO
     wxString sDump = wxString::Format(
-        _T("\t-->lmLyric\t%s\tnumLine=%d, Org=(%.2f, %.2f)\n"),
-        m_sText.c_str(), m_nNumLine, m_uOrg.x, m_uOrg.y);
+        _T("\t-->lmLyric\t%s\tnumLine=%d\n"),
+        m_sText.c_str(), m_nNumLine);
     return sDump;
 
 }
@@ -369,10 +409,10 @@ wxString lmLyric::Dump()
 // lmScoreLine object implementation
 //========================================================================================
 
-lmScoreLine::lmScoreLine(lmTenths xStart, lmTenths yStart, 
+lmScoreLine::lmScoreLine(lmTenths xStart, lmTenths yStart,
                          lmTenths xEnd, lmTenths yEnd,
                          lmTenths tWidth, wxColour nColor)
-    : lmAuxObj(lmDRAGGABLE) 
+    : lmAuxObj(lmDRAGGABLE)
 {
     m_txStart = xStart;
     m_tyStart = yStart;
@@ -386,7 +426,6 @@ wxString lmScoreLine::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-	lmStaffObj* pSO = (lmStaffObj*)m_pParent;
 	sSource += wxString::Format(_T("(graphic line %d %d %d %d)\n"),
 					(int)(m_txStart + 0.5), (int)(m_tyStart + 0.5),
 					(int)(m_txEnd + 0.5), (int)(m_tyEnd + 0.5) );

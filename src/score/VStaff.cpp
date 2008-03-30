@@ -87,7 +87,7 @@
 
 //constructor
 lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
-    : lmScoreObj(pScore), m_nNumStaves(1), m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
+    : lmScoreObj(pScore), m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -104,6 +104,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     m_bottomMargin = lmToLogicalUnits(1, lmCENTIMETERS);    // 1 cm
 
     //initialize staves
+    m_nNumStaves = 1;
     for (int i=0; i < lmMAX_STAFF; i++)
         m_cStaves[i] = (lmStaff*)NULL;
 
@@ -210,7 +211,7 @@ lmLUnits lmVStaff::GetStaffLineThick(int nStaff)
 void lmVStaff::OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
                            int nNewAccidentals, lmContext* pCurrentContext)
 {
-    // Note pStartNote (whose diatonic name is nStep) has accidentals that must be 
+    // Note pStartNote (whose diatonic name is nStep) has accidentals that must be
 	// propagated to the context and to the following notes until the end of the measure
 	// or until a new accidental for the same step is found
 
@@ -306,7 +307,7 @@ void lmVStaff::Cmd_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO)
 {
     //delete the requested object, and log info to undo history
 
-    //AWARE: Logged actions must be logged in the required order for re-construction. 
+    //AWARE: Logged actions must be logged in the required order for re-construction.
     //History works as a FIFO stack: first one logged will be the first one to be recovered
 
     //save positioning information
@@ -583,13 +584,13 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 	{
         lmStaff* pStaff = GetStaff(nStaff);
         //draw one staff
-		lmShapeStaff* pShape = 
-				new lmShapeStaff(pStaff, nStaff, pStaff->GetNumLines(), 
+		lmShapeStaff* pShape =
+				new lmShapeStaff(pStaff, nStaff, pStaff->GetNumLines(),
 								 pStaff->GetLineThick(), pStaff->GetLineSpacing(),
 								 xFrom, yCur, xTo, *wxBLACK );
 		pBox->AddShape(pShape);
         yCur = pShape->GetYBottom() + pStaff->GetAfterSpace();
-		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();  
+		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();
     }
 	return m_yLinBottom;
 }
@@ -767,7 +768,7 @@ void lmVStaff::LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool f
 float lmVStaff::LDP_AdvanceTimeCounter(lmStaffObj* pSO)
 {
 	float rTime = pSO->GetTimePos();
-	
+
 	//advance counter unless current object is a note in chord and is not the
 	//last note in the chord
 	bool fAdvance = true;

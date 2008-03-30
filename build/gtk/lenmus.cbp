@@ -16,6 +16,8 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=yes --cflags`" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__WXDEBUG__" />
 					<Add directory="../../../wxMidi/include" />
 				</Compiler>
 				<Linker>
@@ -102,7 +104,6 @@
 		<Unit filename="../../src/app/StatusBar.h" />
 		<Unit filename="../../src/app/TheApp.cpp" />
 		<Unit filename="../../src/app/TheApp.h" />
-		<Unit filename="../../src/app/ToolsBox.h" />
 		<Unit filename="../../src/app/global.h" />
 		<Unit filename="../../src/app/toolbox/ToolNotesOpt.cpp" />
 		<Unit filename="../../src/app/toolbox/ToolNotesOpt.h" />

@@ -150,12 +150,12 @@ public:
 private:
 
 	//mouse behaviour
-	double GetMouseTolerance();
+	lmLUnits GetMouseTolerance();
 
 	//dragging on canvas with left button: selection
-	void OnBeginSelection(lmDPoint vCanvasPos, int nKeys);
-	void OnContinueSelection(bool fDraw, lmDPoint vCanvasPos, int nKeys);
-	void OnEndSelection(lmDPoint vCanvasPos, int nKeys);
+	void OnBeginSelection(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnContinueSelection(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnEndSelection(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
 	void DrawSelectionArea(wxDC& dc, lmPixels vX1, lmPixels vY1, lmPixels vX2, lmPixels vY2);
 
 	//dragging on canvas with right button
@@ -259,13 +259,13 @@ private:
     lmDPoint        m_vDragHotSpot;			//absolute point (pixels)
     lmUPoint        m_uHotSpotShift;		//distance from shape origin
     wxDragImage*    m_pDragImage;
-	lmGMObject*		m_pDraggedGMO;				//GMObject being dragged
+	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
 
     //temporary data for OnMouseEvent method
-	lmDPoint		m_vOldDrag;
-	lmPixels		m_vFirstDragX, m_vFirstDragY;
-    lmPixels        m_vSelInitX, m_vSelInitY;   //initial point of selection area
-	int				m_nNumPage;		//score page number (1..n) on which the mouse is placed
+	lmDPoint		m_vStartDrag;			//initial point (pixels) of dragging area
+	lmDPoint		m_vEndDrag;				//last end point (pixels) of dragging area
+	lmUPoint		m_uStartDrag;			//initial point (logical, page origin) of dragging area
+	int				m_nNumPage;				//score page number (1..n) on which the mouse is placed
 
 
 	bool			m_fCheckTolerance;

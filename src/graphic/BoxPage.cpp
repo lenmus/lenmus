@@ -107,6 +107,20 @@ lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;;
 }
 
+void lmBoxPage::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                              lmLUnits uYMin, lmLUnits uYMax)
+{
+    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+
+    //loop to look up in the systems
+    std::vector<lmBoxSystem*>::iterator it;
+	for(it = m_aSystems.begin(); it != m_aSystems.end(); ++it)
+    {
+        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    }
+}
+
+
 lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 {
 	//wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 

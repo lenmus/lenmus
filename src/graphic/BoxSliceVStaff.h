@@ -65,6 +65,8 @@ public:
 
     //info
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+    void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                       lmLUnits uYMin, lmLUnits uYMax);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);

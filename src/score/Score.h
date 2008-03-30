@@ -239,6 +239,7 @@ public:
     inline lmVStaffCursor* GetCursor() { return m_pVCursor; }
     void SetNewCursorState(lmVCursorState* pState);
     void SelectCursor(lmVStaffCursor* pVCursor);
+    int GetPageNumber();
 
     //call backs
     void OnCursorObjectChanged() ;

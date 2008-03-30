@@ -2312,6 +2312,24 @@ void lmMainFrame::SetStatusBarMsg(const wxString& sText)
         m_pStatusBar->SetMsgText(sText);
 }
 
+void lmMainFrame::SetStatusBarMousePos(float x, float y)
+{
+    if (m_pStatusBar)
+        m_pStatusBar->SetMousePos(x, y);
+}
+
+void lmMainFrame::SetStatusBarCursorRelPos(float rTime)
+{
+    if (m_pStatusBar)
+        m_pStatusBar->SetCursorRelPos(rTime);
+}
+
+void lmMainFrame::SetStatusBarNumPage(int nPage)
+{
+    if (m_pStatusBar)
+        m_pStatusBar->SetNumPage(nPage);
+}
+
 void lmMainFrame::OnKeyPress(wxKeyEvent& event)
 {
 	//if (event.GetEventType()==wxEVT_KEY_DOWN)

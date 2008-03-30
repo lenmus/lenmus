@@ -118,11 +118,11 @@ public:
 	inline lmShape* GetShap2() { return m_pShape; }
     virtual lmUPoint& GetReferencePaperPos() { return m_uPaperPos; }
     int GetPageNumber();
-    virtual void SetOrigin(lmUPoint uPos) { m_uOrg = uPos; }
-    virtual lmUPoint GetOrigin() { return m_uOrg; }
+    inline lmUPoint GetLayoutRefPos() { return m_uComputedPos; }
 	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 	virtual void SetReferencePos(lmUPoint& uPos);
 	void ResetObjectLocation();
+	inline lmUPoint GetUserShift() { return m_uUserShift; }
 
     //contextual menu
 	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
@@ -135,7 +135,7 @@ public:
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
 
     //debug methods
-    virtual wxString Dump()=0;
+	virtual wxString Dump();
 
 	//edit management
 	inline bool IsModified() { return m_fModified; }
@@ -158,7 +158,10 @@ protected:
 	lmLocation		m_tSrcPos;		//position specified in source code
     lmUPoint		m_uPaperPos;	//relative origin to render this object: paper position
     lmShape*		m_pShape;		//new shape
-    lmUPoint		m_uOrg;	        //real origin to render this object: paper position
+
+    lmUPoint        m_uComputedPos; //absolute (referenced to top-left paper margin corner)
+    lmUPoint        m_uUserShift;   //(0.0, 0.0) if no user requirements
+
 
 };
 
@@ -265,6 +268,7 @@ public:
     inline bool IsVisible() { return m_fVisible; }
     inline EStaffObjType GetClass() { return m_nClass; }
 	virtual wxString GetName() const=0;
+	inline bool IsUserPositioned() { return m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f; }
 
     //classification
     inline bool IsClef() { return GetClass() == eSFOT_Clef; }
@@ -316,6 +320,8 @@ protected:
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects
              bool fVisible = true,
              bool fIsDraggable = false);
+
+	wxString SourceLDP_Location();
 
 	//rendering
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
@@ -372,16 +378,15 @@ public:
     lmTenths LogicalToTenths(lmLUnits uUnits);
 
     // debug methods
-    virtual wxString Dump()=0;
+    virtual wxString Dump();
 
     virtual void StoreOriginAndShiftShapes(lmLUnits uLeft);
+	void OnParentMoved(lmLUnits xShift, lmLUnits yShift);
 
 	//---- specific methods of this class ------------------------
 
     // ownership
     void SetOwner(lmScoreObj* pOwner);
-    virtual void SetOrigin(lmUPoint uPos);
-    virtual lmUPoint GetOrigin();
 
     // class info
     virtual lmEAuxObjType GetAuxObjType()=0;

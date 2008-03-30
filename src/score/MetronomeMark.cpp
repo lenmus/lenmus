@@ -205,9 +205,11 @@ wxString lmMetronomeMark::Dump()
 {
     wxString sDump = wxString::Format(
         _T("%d\tMetronome %d\tTicksPerMinute=%d, fParentheses=%s,")
-        _T(" TimePos=%.2f\n"),
+        _T(" TimePos=%.2f"),
         m_nId, m_nMarkType, m_nTicksPerMinute, (m_fParentheses ? _T("yes") : _T("no")),
         m_rTimePos );
+    sDump += lmStaffObj::Dump();
+    sDump += _T("\n");
     return sDump;
 }
 
@@ -237,8 +239,8 @@ wxString lmMetronomeMark::SourceLDP(int nIndent)
     if (m_fParentheses) sSource += _T(" parentheses");
     if (!m_fVisible) sSource += _T(" noVisible");
 
-	//location
-    sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetReferencePaperPos() );
+	////location
+ //   sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetReferencePaperPos() );
 
 	//close element
     sSource += _T(")\n");

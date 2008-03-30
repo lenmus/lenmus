@@ -554,6 +554,16 @@ lmStaff* lmVStaffCursor::GetCursorStaff()
     return m_pColStaffObjs->m_pOwner->GetStaff(m_nStaff);
 }
 
+int lmVStaffCursor::GetPageNumber()
+{
+    lmStaffObj* pSO = GetStaffObj();
+    if (pSO)
+        return pSO->GetPageNumber();
+    else
+        //TODO
+        return 0;
+}
+
 lmUPoint lmVStaffCursor::GetCursorPoint()
 {
     //compute coordinate for placing cursor and return it

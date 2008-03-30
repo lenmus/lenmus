@@ -47,6 +47,20 @@
 #include "StatusBar.h"
 
 
+//Status bar fields
+enum lmEStatusBarField 
+{
+    lm_eSB_Message = 0,
+    lm_eSB_MousePos,
+    lm_eSB_NumPage,
+    lm_eSB_AbsTime,
+    lm_eSB_RelTime,
+    lm_eSB_Caps,
+    lm_eSB_Nums,
+    lm_eSB_NUM_FIELDS       //MUST BE THE LAST ONE
+};
+
+
 // ----------------------------------------------------------------------------
 // lmStatusBar implementation
 // ----------------------------------------------------------------------------
@@ -55,9 +69,10 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
            : wxStatusBar(pFrame, wxID_ANY, wxST_SIZEGRIP)
 {
     m_pFrame = pFrame;
-    m_nNumFields = 2;
+    m_nType = lm_eStatBar_ScoreEdit;
+    m_nNumFields = lm_eSB_NUM_FIELDS;
     int ch = GetCharWidth();
-    const int widths[] = {-1, 20*ch};
+    const int widths[] = {-1, 15*ch, 15*ch, 15*ch, 10*ch, 4*ch, 4*ch};
     SetFieldsCount(m_nNumFields);
     SetStatusWidths(m_nNumFields, widths);
 }
@@ -66,8 +81,28 @@ lmStatusBar::~lmStatusBar()
 {
 }
 
-void lmStatusBar::SetMsgText(const wxString& sText)
+void lmStatusBar::SetMsgText(const wxString& sMsg)
 {
-    SetStatusText(sText, 0);
+    SetStatusText(sMsg, lm_eSB_Message);
+}
+
+void lmStatusBar::SetNumPage(int nPage)
+{
+    if (nPage > 0)
+        SetStatusText(wxString::Format(_("Page %d"), nPage), lm_eSB_NumPage);
+    else
+        SetStatusText(_T(""), lm_eSB_NumPage);
+}
+
+void lmStatusBar::SetMousePos(float x, float y)
+{
+    wxString sMsg = wxString::Format(_T("%.2f, %.2f"), x, y);
+    SetStatusText(sMsg, lm_eSB_MousePos);
+}
+
+void lmStatusBar::SetCursorRelPos(float rTime)
+{
+    wxString sMsg = wxString::Format(_T("%.2f"), rTime);
+    SetStatusText(sMsg, lm_eSB_RelTime);
 }
 

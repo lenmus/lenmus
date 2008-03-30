@@ -40,6 +40,7 @@ class lmScoreHighlightEvent;
 
 class lmScoreView;
 class lmScoreDocument;
+class lmGMSelection;
 
 
 //Abstract class. All controllers must derive from it
@@ -70,6 +71,7 @@ public:
 	virtual void ChangeNoteAccidentals(int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
+    virtual void SelectObjects(lmGMSelection* pSelection) {};
 	virtual void DeleteObject() {}
 
     // event handlers
@@ -134,6 +136,7 @@ public:
 	void ChangeNoteAccidentals(int nSteps);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 	void SelectObject(lmGMObject* pGMO);
+    void SelectObjects(lmGMSelection* pSelection);
 	void DeleteObject();
 
 	//contextual menus

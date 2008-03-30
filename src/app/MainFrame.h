@@ -95,6 +95,10 @@ public:
 
     //status bar
     void SetStatusBarMsg(const wxString& sText);
+    void SetStatusBarMousePos(float x, float y);
+    void SetStatusBarCursorRelPos(float rTime);
+    void SetStatusBarNumPage(int nPage);
+
 
     // menu bar
     wxMenuBar* CreateMenuBar(wxDocument* doc, wxView* view, bool fEdit, bool fDebug);

@@ -110,12 +110,12 @@ protected:
 
 // Move object command
 //------------------------------------------------------------------------------------
-class lmCmdMoveScoreObj: public lmScoreCommand
+class lmCmdUserMoveScoreObj: public lmScoreCommand
 {
 public:
-    lmCmdMoveScoreObj(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pSO,
+    lmCmdUserMoveScoreObj(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pSO,
 					   const lmUPoint& uPos);
-    ~lmCmdMoveScoreObj() {}
+    ~lmCmdUserMoveScoreObj() {}
 
     //implementation of pure virtual methods in base class
     bool Do();

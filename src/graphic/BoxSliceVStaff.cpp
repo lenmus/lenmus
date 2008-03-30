@@ -249,6 +249,12 @@ lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
 
 }
 
+void lmBoxSliceVStaff::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                              lmLUnits uYMin, lmLUnits uYMax)
+{
+    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+}
+
 int lmBoxSliceVStaff::GetPageNumber() const
 {
 	return m_pSliceInstr->GetPageNumber();

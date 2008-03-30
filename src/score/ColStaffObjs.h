@@ -224,6 +224,7 @@ public:
     inline float GetTimepos() { return m_rTimepos; }
     inline lmItCSO GetCurIt() { return m_it; }
     lmVCursorState GetState();
+    int GetPageNumber();
 
     lmUPoint GetCursorPoint();
     lmStaff* GetCursorStaff();

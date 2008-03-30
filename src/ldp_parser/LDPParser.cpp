@@ -1479,6 +1479,17 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
     m_sLastDuration = sDuration;
 
+    //analyze optional parameters
+	lmLDPOptionalTags oOptTags(this, m_pTags);
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y,
+						lm_eTag_StaffNum, -1);		//finish list with -1
+
+	lmLocation tPos = g_tDefaultPos;
+    int nStaff = 1;
+
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &nStaff, &tPos);
+	m_nCurStaff = nStaff;
+
     //analyze remaining parameters: annotations
     bool fFermata = false;
     lmEPlacement nFermataPlacement = ep_Default;
@@ -1628,10 +1639,10 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
             }
 
-            else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))
-			{	//staff number
-                m_nCurStaff = AnalyzeNumStaff(sData, pVStaff->GetNumStaves());
-            }
+   //         else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))
+			//{	//staff number
+   //             m_nCurStaff = AnalyzeNumStaff(sData, pVStaff->GetNumStaves());
+   //         }
             else if (sData.Left(1) == m_pTags->TagName(_T("v"), _T("SingleChar")))
             {	//voice
 				m_nCurVoice = AnalyzeVoiceNumber(sData);
@@ -1640,10 +1651,10 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 			{	//fermata
                 fFermata = true;
             }
-            else if (sData == m_pTags->TagName(_T("noVisible")))
-			{	//no visible
-                fVisible = false;
-            }
+   //         else if (sData == m_pTags->TagName(_T("noVisible")))
+			//{	//no visible
+   //             fVisible = false;
+   //         }
             else {
                 AnalysisError(_T("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
             }
@@ -1765,6 +1776,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 							   nStem);
         m_sLastOctave = sOctave;
     }
+	pNR->SetUserLocation(tPos);
 
     // Add notations
     if (m_pTuplet) {

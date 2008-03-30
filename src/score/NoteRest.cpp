@@ -377,8 +377,6 @@ wxString lmNoteRest::Dump()
             sDump += _T(", In tuplet");
     }
 
-	//attached AuxObjs
-	sDump += lmStaffObj::Dump();
     //// Dump associated lyrics
     //if (m_pLyrics) {
     //    lmLyric* pLyric;
@@ -393,6 +391,9 @@ wxString lmNoteRest::Dump()
 	//lmURect rect = GetSelRect();
 	//sDump += wxString::Format(_T("\n                    SelRect=(%.2f, %.2f, %.2f, %.2f)"),
 	//	rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom() );
+
+    //base class information
+	sDump += lmStaffObj::Dump();
     sDump += _T("\n");
 
     return sDump;

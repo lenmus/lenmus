@@ -76,10 +76,11 @@ lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
 wxString lmSpacer::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tSpacer %.2f\tTimePos=%.2f\n"),
+        _T("%d\tSpacer %.2f\tTimePos=%.2f"),
         m_nId, m_nSpacerWidth, m_rTimePos );
-    return sDump;
-            
+    sDump += lmStaffObj::Dump();
+    sDump += _T("\n");
+    return sDump;          
 }
 
 wxString lmSpacer::SourceLDP(int nIndent)
@@ -153,11 +154,11 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
 wxString lmAnchor::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tAnchor    \tTimePos=%.2f, Org=(%.2f, %.2f)\n"),
-        m_nId, m_rTimePos, m_uOrg.x, m_uOrg.y );
+        _T("%d\tAnchor    \tTimePos=%.2f"), m_nId, m_rTimePos );
+
 	sDump += lmStaffObj::Dump();
+    sDump += _T("\n");
     return sDump;
-            
 }
 
 wxString lmAnchor::SourceLDP(int nIndent)
@@ -211,7 +212,8 @@ wxString lmScoreAnchor::Dump()
     wxString sDump = wxString::Format(
         _T("%d\tScoreAnchor\tTimePos=%.2f\n"),
         m_nId, m_rTimePos );
-	sDump += lmStaffObj::Dump();
+    sDump += lmStaffObj::Dump();
+    sDump += _T("\n");
     return sDump;
 }
 

@@ -155,7 +155,7 @@ void lmAboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         _T("<center>")
         _T("<h3>") + _("License") + _T("</h3></center><p>")
         _T("LenMus ") + m_sVersionNumber + _T(" ") +
-        _("Copyright &copy; 2002-2007 Cecilio Salmer&oacute;n.") +
+        _("Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n.") +
         _T("</p><p>") +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
@@ -276,7 +276,7 @@ void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
         _T(" ") __TDATE__ _T("<br>") +
         wxVERSION_STRING + _T("<br>") +
         _("wxMidi Version ") + wxMIDI_VERSION + _T("<br><br><br>") +
-        _("Equipment information:") +
+        _("Your computer information:") +
         _T("<br>Charset encoding: ") + wxLocale::GetSystemEncodingName() + 
         _T("<br>System locale name: ") + wxGetApp().GetLocaleSysName() + 
         _T("<br>Canonical locale name: ") + wxGetApp().GetLanguageCanonicalName() + 

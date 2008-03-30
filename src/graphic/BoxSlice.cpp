@@ -96,9 +96,10 @@ lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
     if (pShape) return pShape;
 
     //loop to look up in the instrument slices
-	for(int i=0; i < (int)m_SliceInstr.size(); i++)
+    std::vector<lmBoxSliceInstr*>::iterator it;
+	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
     {
-        lmGMObject* pGMO = m_SliceInstr[i]->FindGMObjectAtPosition(pointL);
+        lmGMObject* pGMO = (*it)->FindGMObjectAtPosition(pointL);
         if (pGMO)
 			return pGMO;    //found
     }
@@ -109,6 +110,19 @@ lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
     else
         return (lmGMObject*)NULL;
 
+}
+
+void lmBoxSlice::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                              lmLUnits uYMin, lmLUnits uYMax)
+{
+    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+
+    //loop to look up in the intrument slices
+    std::vector<lmBoxSliceInstr*>::iterator it;
+	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
+    {
+        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    }
 }
 
 void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)

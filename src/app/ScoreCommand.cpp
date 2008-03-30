@@ -148,16 +148,16 @@ bool lmCmdDeleteObject::Undo()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdMoveScoreObj implementation
+// lmCmdUserMoveScoreObj implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdMoveScoreObj::lmCmdMoveScoreObj(const wxString& sName, lmScoreDocument *pDoc,
+lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocument *pDoc,
 									   lmScoreObj* pSO, const lmUPoint& uPos)
 	: lmScoreCommand(sName, pDoc)
 {
-	lmUPoint uOrg = pSO->GetOrigin();
-	m_tPos.x = uPos.x - uOrg.x;
-	m_tPos.y = uPos.y - uOrg.y;
+	m_tPos.x = uPos.x;
+	m_tPos.y = uPos.y;
+    wxLogMessage(_T("[lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj] User pos (%.2f, %.2f)"), uPos.x, uPos.y );
 	m_tPos.xType = lmLOCATION_USER_RELATIVE;
 	m_tPos.yType = lmLOCATION_USER_RELATIVE;
 	m_tPos.xUnits = lmLUNITS;
@@ -166,9 +166,9 @@ lmCmdMoveScoreObj::lmCmdMoveScoreObj(const wxString& sName, lmScoreDocument *pDo
 	m_pSO = pSO;
 }
 
-bool lmCmdMoveScoreObj::Do()
+bool lmCmdUserMoveScoreObj::Do()
 {
-    wxASSERT_MSG( m_pSO, _T("[lmCmdMoveScoreObj::Do] No ScoreObj to move!"));
+    wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Do] No ScoreObj to move!"));
 
     m_tOldPos = m_pSO->SetUserLocation(m_tPos);
 
@@ -177,9 +177,9 @@ bool lmCmdMoveScoreObj::Do()
 
 }
 
-bool lmCmdMoveScoreObj::Undo()
+bool lmCmdUserMoveScoreObj::Undo()
 {
-    wxASSERT_MSG( m_pSO, _T("[lmCmdMoveScoreObj::Undo]: No ScoreObj to move!"));
+    wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Undo]: No ScoreObj to move!"));
 
     m_pSO->SetUserLocation(m_tOldPos);
 	m_pDoc->Modify(m_fDocModified);

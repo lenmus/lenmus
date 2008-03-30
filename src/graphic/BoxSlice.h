@@ -76,6 +76,8 @@ public:
 	//access to objects
     lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+    void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                       lmLUnits uYMin, lmLUnits uYMax);
 
 	//instrument slices
     lmBoxSliceInstr* AddInstrument(lmInstrument* pInstr);

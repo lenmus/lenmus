@@ -45,12 +45,10 @@ class lmController;
 class lmTheApp: public wxApp
 {
   public:
-    lmTheApp();
 
-	// event handlers
+      // event handlers
     bool OnInit();
     int OnExit();
-
 
     void UpdateCurrentDocViews();
 

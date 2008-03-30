@@ -178,6 +178,7 @@ void lmShapeNote::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 	if (!g_fFreeMove)
 	{
 		//free movement not allowed. Must end on a staff line/space
+		//TODO: constrain movement to lines/spaces and change pitch
 		uFinalPos.y = GetYTop();
 	}
 

@@ -86,6 +86,13 @@ public:
     lmBoxScore* GetBoxScore() const { return m_pBoxScore; }
     lmGMObject* FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos);
 
+    //selection management
+    lmGMSelection* CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                                   lmLUnits uYMin, lmLUnits uYMax);
+    lmGMSelection* AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                                  lmLUnits uYMin, lmLUnits uYMax);
+    inline lmGMSelection* GetSelection() { return &m_Selection; }
+
 
 
 private:
@@ -109,6 +116,7 @@ private:
 
     bool            m_fReLayout;        //force to re-layout the score
 
+
     //offscreen bitmaps management
 	typedef struct lmBitmapPage_Struct {
 		wxBitmap*		pBitmap;        //ptr. to page bitmap
@@ -117,6 +125,8 @@ private:
 
     std::list<lmBitmapPage*>    m_Bitmaps;      //offsceen bitmaps
     lmPixels                    m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
+
+    lmGMSelection   m_Selection;            //selected objects
 
     // double buffering for score higlight
     int             m_nHighlightedPage;     // displayed page number (0 = none)

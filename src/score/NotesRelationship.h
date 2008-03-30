@@ -159,10 +159,10 @@ lmMultipleRelationship<T>::~lmMultipleRelationship()
     //and will be deleted there.
 
 	//the relationship is going to be removed. Release all notes
-    std::list<T*>::iterator it;
+    typename std::list<T*>::iterator it;
     for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
 	{
-        (*it)->OnRemovedFromRelationship((void*)this, GetClass());
+        (*it)->OnRemovedFromRelationship((void*)this, lmRelationship<T>::GetClass());
 	}
     m_Notes.clear();
 }
@@ -179,7 +179,7 @@ void lmMultipleRelationship<T>::Include(T* pNR, int nIndex)
 	else
 	{
 		int iN;
-		std::list<T*>::iterator it;
+		typename std::list<T*>::iterator it;
 		for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
 		{
 			if (iN == nIndex)
@@ -190,8 +190,8 @@ void lmMultipleRelationship<T>::Include(T* pNR, int nIndex)
 			}
 		}
 	}
-	wxLogMessage(Dump());
-	pNR->OnIncludedInRelationship((void*)this, GetClass());
+	//wxLogMessage(Dump());
+	pNR->OnIncludedInRelationship((void*)this, lmRelationship<T>::GetClass());
     OnRelationshipModified();
 }
 
@@ -199,7 +199,7 @@ template <class T>
 wxString lmMultipleRelationship<T>::Dump()
 {
 	wxString sDump = _T("");
-	std::list<T*>::iterator it;
+	typename std::list<T*>::iterator it;
 	for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
 	{
 		sDump += wxString::Format(_T("Note id = %d\n"), (*it)->GetID());
@@ -215,7 +215,7 @@ int lmMultipleRelationship<T>::GetNoteIndex(T* pNR)
 	wxASSERT(NumNotes() > 0);
 
 	int iN;
-    std::list<T*>::iterator it;
+    typename std::list<T*>::iterator it;
     for(iN=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, iN++)
 	{
 		if (pNR == *it) return iN;
@@ -234,7 +234,7 @@ void lmMultipleRelationship<T>::Remove(T* pNR)
 
     wxASSERT(NumNotes() > 0);
 
-    std::list<T*>::iterator it;
+    typename std::list<T*>::iterator it;
     it = std::find(m_Notes.begin(), m_Notes.end(), pNR);
     m_Notes.erase(it);
     OnRelationshipModified();

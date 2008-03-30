@@ -1489,9 +1489,9 @@ wxString lmNote::Dump()
     wxString sDump;
     sDump = wxString::Format(
         _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, Voice=%d, TimePos=%.2f, ")
-        _T("org=(%.2f, %.2f), rDuration=%.2f, StemType=%d"),
+        _T("rDuration=%.2f, StemType=%d"),
         m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, m_nVoice,
-		m_rTimePos, m_uOrg.x, m_uOrg.y, m_rDuration, m_nStemType);
+		m_rTimePos, m_rDuration, m_nStemType);
 
     if (m_pTieNext) sDump += _T(", TiedNext");
     if (m_pTiePrev) sDump += _T(", TiedPrev");

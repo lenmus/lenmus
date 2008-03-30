@@ -158,9 +158,10 @@ lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
     if (pShape) return pShape;
 
     //loop to look up in the VStaff slices
-	for(int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    std::vector<lmBoxSliceVStaff*>::iterator it;
+	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
     {
-        lmGMObject* pGMO = m_SlicesVStaff[i]->FindGMObjectAtPosition(pointL);
+        lmGMObject* pGMO = (*it)->FindGMObjectAtPosition(pointL);
         if (pGMO)
 			return pGMO;    //found
     }
@@ -171,6 +172,19 @@ lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
     else
         return (lmGMObject*)NULL;
 
+}
+
+void lmBoxSliceInstr::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                              lmLUnits uYMin, lmLUnits uYMax)
+{
+    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+
+    //loop to look up in the VStaff slices
+    std::vector<lmBoxSliceVStaff*>::iterator it;
+	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
+    {
+        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    }
 }
 
 int lmBoxSliceInstr::GetPageNumber() const

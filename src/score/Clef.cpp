@@ -135,15 +135,12 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //create the shape object
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
-    //wxLogMessage(_T("[lmClef::LayoutObject] Shape xPaper=%.2f, xPos=%.2f, xOrg=%.2f"),
-    //             pPaper->GetCursorX(), uPos.x, GetOrigin().x);
 	pBox->AddShape(pShape);
     m_pShape = pShape;
 
 	// set total width (incremented in one line for after space)
 	lmLUnits nWidth = pShape->GetWidth();
 	return nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-
 }
 
 lmShape* lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
@@ -170,9 +167,11 @@ lmShape* lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 wxString lmClef::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tClef %s\tTimePos=%.2f, org=(%.2f, %.2f)\n"),
-        m_nId, GetClefLDPNameFromType(m_nClefType).c_str(), m_rTimePos,
-        m_uOrg.x, m_uOrg.y);
+        _T("%d\tClef %s\tTimePos=%.2f"),
+        m_nId, GetClefLDPNameFromType(m_nClefType).c_str(), m_rTimePos);
+
+    sDump += lmStaffObj::Dump();
+    sDump += _T("\n");
     return sDump;
 
 }

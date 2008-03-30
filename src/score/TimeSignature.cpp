@@ -116,14 +116,18 @@ wxString lmTimeSignature::Dump()
     switch (m_nType) {
         case eTS_Normal :
             sDump = wxString::Format(
-                _T("%d\tTime Sign. %d/%d\tTimePos=%.2f\n"),
+                _T("%d\tTime Sign. %d/%d\tTimePos=%.2f"),
                 m_nId, m_nBeats, m_nBeatType, m_rTimePos );
             break;
         default:
             sDump = wxString::Format(
-                _T("%d\tTime Sign. Type=%d\tTimePos=%.2f\n"),
+                _T("%d\tTime Sign. Type=%d\tTimePos=%.2f"),
                 m_nId, m_nType, m_rTimePos );
     }
+
+    //base class information
+	sDump += lmStaffObj::Dump();
+    sDump += _T("\n");
     return sDump;
 }
 

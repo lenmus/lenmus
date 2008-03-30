@@ -44,7 +44,6 @@ enum lmEStatusBarLayout
     lm_eStatBar_ScoreEdit,
 };
 
-
 //the application status bar
 class lmStatusBar : public wxStatusBar
 {
@@ -54,6 +53,9 @@ public:
 
     //updating fields
     void SetMsgText(const wxString& sText);
+    void SetNumPage(int nPage);
+    void SetMousePos(float x, float y);
+    void SetCursorRelPos(float rTime);
 
     //info
     inline lmEStatusBarLayout GetType() const { return m_nType; }

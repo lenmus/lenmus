@@ -66,6 +66,8 @@ lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
     m_uBoundsTop = lmUPoint(0.0, 0.0);
 	m_fSelected = false;
 	m_fDraggable = fDraggable;
+
+    m_uOrigin = pOwner->GetLayoutRefPos();
 }
 
 lmGMObject::~lmGMObject()
@@ -132,6 +134,13 @@ void lmGMObject::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 void lmGMObject::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
     ShiftBoundsAndSelRec(xIncr, yIncr);
+}
+
+void lmGMObject::ShiftOrigin(lmUPoint uNewOrg)
+{
+	lmUPoint uShift = uNewOrg - m_uOrigin;
+	m_uOrigin = uNewOrg;
+	Shift(uShift.x, uShift.y);
 }
 
 void lmGMObject::ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr)
@@ -213,6 +222,20 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
     return (lmShape*)NULL;
 }
 
+void lmBox::AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+                                 lmLUnits uYMin, lmLUnits uYMax)
+{
+    //loop to look up in the shapes collection
+    lmURect selRect(uXMin, uYMin, uXMax-uXMin, uYMax-uYMin);
+    std::vector<lmShape*>::iterator it;
+    for(it = m_Shapes.begin(); it != m_Shapes.end(); ++it)
+    {
+        if ((*it)->IsInRectangle(selRect))
+			pSelection->AddToSelection(*it);
+    }
+}
+
+
 
 //========================================================================================
 // Implementation of class lmShape: any renderizable object, such as a line,
@@ -244,6 +267,15 @@ bool lmShape::Collision(lmShape* pShape)
 {
     lmURect rect1 = GetBounds();
     return rect1.Intersects( pShape->GetBounds() );
+}
+
+bool lmShape::IsInRectangle(lmURect& rect)
+{
+    lmURect rect1 = GetBounds();
+    //wxLogMessage(_T("[lmShape::IsInRectangle] Bounds(x=%.2f, y=%.2f, w=%.2f, h=%.2f), sel=(x=%.2f, y=%.2f, w=%.2f, h=%.2f)"),
+    //    rect1.x, rect1.y, rect1.width, rect1.height,
+    //    rect.x, rect.y, rect.width, rect.height );
+    return rect.Contains(rect1);
 }
 
 void lmShape::RenderCommon(lmPaper* pPaper)
@@ -586,3 +618,44 @@ lmUPoint lmCompositeShape::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	return uPos;
 
 }
+
+
+
+//--------------------------------------------------------------------------------------------
+// lmGMSelection is data holder with information about a selection.
+//--------------------------------------------------------------------------------------------
+
+lmGMSelection::lmGMSelection()
+{
+}
+
+lmGMSelection::~lmGMSelection()
+{
+    m_Selection.clear();
+}
+
+void lmGMSelection::AddToSelection(lmGMObject* pGMO)
+{
+    m_Selection.push_back(pGMO);
+}
+
+void lmGMSelection::RemoveFromSelection(lmGMObject* pGMO)
+{
+    std::list<lmGMObject*>::iterator it;
+    it = std::find(m_Selection.begin(), m_Selection.end(), pGMO);
+    wxASSERT(it != m_Selection.end());
+    m_Selection.erase(it);
+}
+
+wxString lmGMSelection::Dump()
+{
+    wxString sDump = wxString::Format(_T("Selection dump. %d objects selected:\n"), m_Selection.size() );
+    std::list<lmGMObject*>::iterator it;
+    for (it = m_Selection.begin(); it != m_Selection.end(); ++it)
+    {
+        sDump += (*it)->Dump(3);
+    }
+    sDump += _T("End of selection dump");
+    return sDump;
+}
+

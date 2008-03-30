@@ -96,6 +96,7 @@ lmGraphicManager::~lmGraphicManager()
         m_pAuxBitmap = (wxBitmap*)NULL;
     }
 
+    m_Selection.Clear();
 }
 
 int lmGraphicManager::GetNumPages()
@@ -396,3 +397,23 @@ lmGMObject* lmGraphicManager::FindGMObjectAtPagePosition(int nNumPage, lmUPoint 
     lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
     return pBPage->FindGMObjectAtPosition(uPos);
 }
+
+lmGMSelection* lmGraphicManager::CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                                                lmLUnits uYMin, lmLUnits uYMax)
+{
+    m_Selection.Clear();
+    return AddToSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
+}
+
+
+lmGMSelection* lmGraphicManager::AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                                               lmLUnits uYMin, lmLUnits uYMax)
+{
+	if (m_pBoxScore)
+    {
+        lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
+        pBPage->AddToSelection(&m_Selection, uXMin, uXMax, uYMin, uYMax);
+    }
+    return &m_Selection;
+}
+

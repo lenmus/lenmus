@@ -111,6 +111,14 @@ lmStaffObj* lmScoreCursor::GetCursorSO()
 		return (lmStaffObj*)NULL;
 }
 
+int lmScoreCursor::GetPageNumber()
+{
+	if (m_pVCursor)
+		return m_pVCursor->GetPageNumber();
+	else
+		return 0;
+}
+
 void lmScoreCursor::SelectCursorFromInstr(int nInstr)
 {
     lmInstrument* pInstr;
