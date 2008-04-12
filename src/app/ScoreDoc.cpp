@@ -43,7 +43,9 @@
 #include "wx/filename.h"
 
 #include "ScoreDoc.h"
-#include "ScoreView.h"
+//#include "ScoreView.h"
+#include "TheApp.h"                     //to access the main frame. Used in OnNewScoreWithWizard()
+#include "MainFrame.h"                  //to get the score created with the ScoreWizard
 #include "../ldp_parser/LDPParser.h"
 #include "../xml_parser/MusicXMLParser.h"
 
@@ -55,8 +57,6 @@ IMPLEMENT_DYNAMIC_CLASS(lmScoreDocument, wxDocument)
 lmScoreDocument::lmScoreDocument()
 {
     // default values
-    m_paperSize.SetWidth(2100);        // DIN A4  21.0 x 29.7 cm
-    m_paperSize.SetHeight(2970);
     m_pScore = (lmScore*) NULL;
 
 }
@@ -84,9 +84,10 @@ bool lmScoreDocument::OnNewDocument()
 
     // create an empty score
     m_pScore = new lmScore();
-    lmInstrument* pInstr = m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
-    lmVStaff *pVStaff = pInstr->GetVStaff();
-	pVStaff->AddBarline(lm_eBarlineEOS, true);
+    m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+    //lmInstrument* pInstr = m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+    //lmVStaff *pVStaff = pInstr->GetVStaff();
+	//pVStaff->AddBarline(lm_eBarlineEOS, true);
 
     //In scores created in the score editor, we should render a full page, 
     //with empty staves. To this end, we need to change some options default value
@@ -106,20 +107,32 @@ bool lmScoreDocument::OnNewDocument()
 
 bool lmScoreDocument::OnOpenDocument(const wxString& filename)
 {
-    /*
-    OpenDocument is called both for opening an LDP document and for importing MusicXML files.
-    In this second case parameter filename will start with "\\<<IMPORT>>//" follewed by the
-    filename to open
-    */
+    //OnOpenDocument() is invoked in three cases:
+    // - Normal invocation from DocManager for opening an LDP document
+    // - Special invocation from MainFrame:
+    //  * For importing MusicXML files. In this case parameter filename will start
+    //      with "\\<<IMPORT>>//" follewed by the filename to open
+    //  * For displaying a new score created with the Score Wizard. In this case parameter
+    //      filename will start with "\\<<NEW_WIZARD>>//"
 
+
+    //import a MusicXML score
     if (filename.StartsWith( _T("\\<<IMPORT>>//") ))
     {
         wxString sPath = filename.substr(15);
         size_t nSize = sPath.length() - 4;
-        wxLogMessage(_T("Importing <%s>"), sPath.Left(nSize).c_str());
+        wxLogMessage(_T("[lmScoreDocument::OnOpenDocument]Importing <%s>"), sPath.Left(nSize).c_str());
         return OnImportDocument(sPath.Left(nSize) );
     }
 
+    //Open a score created with the score wizard
+    if (filename.StartsWith( _T("\\<<NEW_WIZARD>>//") ))
+    {
+        wxLogMessage(_T("[lmScoreDocument::OnOpenDocument] New score with wizard"));
+        return OnNewScoreWithWizard();
+    }
+
+    //Normal case. Open a score from LDP file
     lmLDPParser parser;
     m_pScore = parser.ParseFile(filename);
     if (!m_pScore) return false;
@@ -147,11 +160,37 @@ bool lmScoreDocument::OnImportDocument(const wxString& filename)
     return true;
 }
 
+bool lmScoreDocument::OnNewScoreWithWizard()
+{
+    m_pScore = GetMainFrame()->GetWizardScore();       
+    if (!m_pScore) return false;
+
+    //Assign the score a default name
+    wxString name;
+    GetDocumentManager()->MakeDefaultName(name);
+    SetTitle(name);
+    SetFilename(name, true);
+
+    Modify(false);
+    UpdateAllViews();
+    return true;
+}
+
 void lmScoreDocument::UpdateAllViews(wxView* sender, wxObject* hint)
 {
+    //Updates all views. If sender is non-NULL, does not update this view.
+    //hint represents optional information to allow a view to optimize its update.
+
 	m_pScore->SetModified(true);
 	wxDocument::UpdateAllViews(sender, hint);
 }
+
+void lmScoreDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
+{
+	m_pScore->SetModified(fScoreModified);
+	wxDocument::UpdateAllViews((wxView*)NULL, pHints);
+}
+
 
 wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
 {

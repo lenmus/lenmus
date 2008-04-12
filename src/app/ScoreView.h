@@ -49,7 +49,6 @@
 #include "Paper.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/GraphicManager.h"
-#include "FontManager.h"
 #include "Printout.h"
 
 class lmComponentObj;
@@ -57,11 +56,12 @@ class lmEditFrame;
 class lmScoreCanvas;
 class lmScoreDocument;
 class lmRuler;
-class lmScoreViewCursor;
+class lmCaret;
 class lmMainFrame;
 class lmBoxSystem;
 class lmShapeStaff;
 class lmBoxSliceVStaff;
+class lmGMObject;
 
 
 //Abstract class. All views must derive from it
@@ -73,6 +73,7 @@ public:
 
 	virtual lmController* GetController()=0;
     inline lmScoreDocument* GetDocument() { return m_pDoc; }
+
 
 protected:
     lmScoreDocument*    m_pDoc;             //the MVC document (M)
@@ -95,6 +96,9 @@ public:
     void OnUpdate(wxView* sender, wxObject* hint);
     bool OnCreate(wxDocument* doc, long WXUNUSED(flags));
     void OnDraw(wxDC* dc);
+    void OnChangeFilename();
+    void OnSetFocus(wxFocusEvent& WXUNUSED(event));
+    void OnKillFocus(wxFocusEvent& WXUNUSED(event));
 
     // options
     void SetScale(double rScale);
@@ -116,8 +120,9 @@ public:
     void ResizeControls();
     void GetViewStart (int* x, int* y) const;
     void GetScrollPixelsPerUnit (int* x_unit, int* y_unit) const;
-    void RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect);
+    void RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRepaintOptions=0);
 	wxPoint GetDCOriginForPage(int nNumPage);
+
 
     // print/preview/export as image
     void GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, int* pSelPageTo);
@@ -198,7 +203,7 @@ private:
     int CalcScrollInc(wxScrollEvent& event);
     void DoScroll(int orientation, int nScrollSteps);
 
-	//Dealing with the cursor
+	//Dealing with the caret
     void SetInitialCursorPosition();
     void HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect);
 
@@ -215,7 +220,6 @@ private:
 
     // parents, managers and related
     lmScoreCanvas*      m_pCanvas;          //the MVC controller (C) and the window for rendering the view
-    lmFontManager       m_fontManager;      //font management
     lmGraphicManager    m_graphMngr;        //rederization manager
     lmEditFrame*        m_pFrame;           //the frame for the view
     lmMainFrame*        m_pMainFrame;       //for accesing StatusBar
@@ -234,12 +238,12 @@ private:
     int         m_xScrollStepsPerPage, m_yScrollStepsPerPage;   // scroll units to scroll a page
     int         m_thumbX, m_thumbY;                             // scrollbars thumbs size
 
-    double      m_rScale;       // presentation scale
-    lmPaper     m_Paper;        // the lmPaper object to use
+    double      m_rScale;               // presentation scale
+    lmPaper     m_Paper;                // the lmPaper object to use
 
     // visual options
-    bool            m_fRulers;      // draw rulers
-    wxColour        m_colorBg;      // colour for background
+    bool        m_fRulers;              // draw rulers
+    wxColour    m_colorBg;              // colour for background
 
     // positioning of page images (in pixels) onto the view space. This is
     // a virtual infinite paper on which all pages are rendered one after the other.
@@ -261,22 +265,12 @@ private:
     wxDragImage*    m_pDragImage;
 	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
 
-    //temporary data for OnMouseEvent method
-	lmDPoint		m_vStartDrag;			//initial point (pixels) of dragging area
-	lmDPoint		m_vEndDrag;				//last end point (pixels) of dragging area
-	lmUPoint		m_uStartDrag;			//initial point (logical, page origin) of dragging area
-	int				m_nNumPage;				//score page number (1..n) on which the mouse is placed
-
-
-	bool			m_fCheckTolerance;
-
     //cursor
-    lmScoreViewCursor*  m_pGuiCursor;
+    lmCaret*            m_pCaret;
     lmScoreCursor*      m_pScoreCursor;
 	bool				m_fCursorInit;
     lmStaffObj*         m_pCursorSO;       //for visual feedback
     int                 m_nCursorStaff;
-
 
 
     DECLARE_EVENT_TABLE()

@@ -224,17 +224,6 @@ _("Checking for available updates");
 _("This program will connect to LenMus website and look for \navailable updates.\n\nPress 'Proceed' to start.");
 _("Proceed");
 _("&Cancel");
-//AboutDialog.xrc 
-_("About LenMus Phonascus");
-_("LenMus Phonascus ");
-_("A free program for music language learning");
-_("Purpose");
-_("Licence");
-_("Project team");
-_("Art design");
-_("Software used");
-_("Build info.");
-_("Accept");
 //DlgCfgIdfyChord.xrc 
 _("Configuration: Chords' identification");
 _("Chords");

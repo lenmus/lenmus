@@ -81,7 +81,7 @@ protected:
     void CreateControls();
 
 private:
-    void DoPlay(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure=0);
+    void DoPlay(lmEPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure=0);
 
         // member variables
 

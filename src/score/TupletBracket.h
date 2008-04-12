@@ -63,6 +63,10 @@ public:
 	lmShape* LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
 	lmShape* GetShape() { return m_pShape; }
 
+    //source
+    wxString SourceLDP();
+   
+
 
 private:
     //time modifiers

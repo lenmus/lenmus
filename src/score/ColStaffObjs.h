@@ -220,15 +220,16 @@ public:
 
 	//access to cursor info
 	inline int GetSegment() { return m_nSegment; }
-	lmStaffObj* GetStaffObj();
     inline float GetTimepos() { return m_rTimepos; }
+    inline int GetNumStaff() { return m_nStaff; }
     inline lmItCSO GetCurIt() { return m_it; }
     lmVCursorState GetState();
     int GetPageNumber();
+	lmStaffObj* GetStaffObj();
+
 
     lmUPoint GetCursorPoint();
     lmStaff* GetCursorStaff();
-    inline int GetCursorNumStaff() { return m_nStaff; }
     lmVStaff* GetVStaff();
 
 
@@ -236,6 +237,7 @@ public:
 private:
     void UpdateTimepos();
     lmStaffObj* GetPreviousStaffobj();
+    float GetStaffPosY(lmStaffObj* pSO);
 
 
 	lmColStaffObjs*		m_pColStaffObjs;	//collection pointed by this cursor

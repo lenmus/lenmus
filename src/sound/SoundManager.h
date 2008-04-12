@@ -98,7 +98,7 @@ public:
     lmSoundManagerThread(lmSoundManager* pSM, 
                        int nEvStart, 
                        int nEvEnd,
-                       EPlayMode nPlayMode,
+                       lmEPlayMode nPlayMode,
                        bool fVisualTracking,
                        bool fMarcarUnCompasPrevio,
                        long nMM,
@@ -119,7 +119,7 @@ private:
     //parameters for DoPlaySegment
     int         m_nEvStart;
     int         m_nEvEnd;
-    EPlayMode   m_nPlayMode;
+    lmEPlayMode   m_nPlayMode;
     bool        m_fVisualTracking;
     bool        m_fMarcarUnCompasPrevio;
     long        m_nMM;
@@ -149,12 +149,12 @@ public:
     // playing
     void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING, 
               bool fMarcarCompasPrevio = NO_MARCAR_COMPAS_PREVIO,
-              EPlayMode nPlayMode = ePM_NormalInstrument,
+              lmEPlayMode nPlayMode = ePM_NormalInstrument,
               long nMM = 0,
               wxWindow* pWindow = (wxWindow*)NULL );
     void PlayMeasure(int nMeasure,
                      bool fVisualTracking = lmNO_VISUAL_TRACKING, 
-                     EPlayMode nPlayMode = ePM_NormalInstrument,
+                     lmEPlayMode nPlayMode = ePM_NormalInstrument,
                      long nMM = 0,
                      wxWindow* pWindow = (wxWindow*)NULL );
     void Stop();
@@ -168,7 +168,7 @@ public:
 
     //only to be used by lmSoundManagerThread
     void DoPlaySegment(int nEvStart, int nEvEnd,
-                     EPlayMode nPlayMode,
+                     lmEPlayMode nPlayMode,
                      bool fVisualTracking,
                      bool fMarcarUnCompasPrevio,
                      long nMM,
@@ -180,7 +180,7 @@ public:
 private:
     void SortByTime();
     void PlaySegment(int nEvStart, int nEvEnd,
-                     EPlayMode nPlayMode,
+                     lmEPlayMode nPlayMode,
                      bool fVisualTracking,
                      bool fMarcarUnCompasPrevio,
                      long nMM,

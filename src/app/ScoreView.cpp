@@ -42,7 +42,7 @@
 #include "ScoreCanvas.h"
 #include "EditFrame.h"
 #include "../widgets/Ruler.h"
-#include "../widgets/Cursor.h"
+#include "../widgets/Caret.h"
 #include "FontManager.h"
 #include "ArtProvider.h"
 #include "../graphic/GMObject.h"
@@ -98,12 +98,24 @@ enum {
 
 #define lmCURSOR_BLINKING_RATE  750		//cursor blinking rate = 750ms
 
+//temporary data for OnMouseEvent method
+static lmDPoint     m_vStartDrag;       //initial point (pixels) of dragging area
+static lmDPoint     m_vEndDrag;         //last end point (pixels) of dragging area
+static lmUPoint     m_uStartDrag;       //initial point (logical, page origin) of dragging area
+static int          m_nNumPage;         //score page number (1..n) on which the mouse is placed
+static bool         m_fDraggingObject;  //we were dragging an object
+static bool         m_fCheckTolerance;  //to control false dargging starts
+
+
+
 IMPLEMENT_DYNAMIC_CLASS(lmScoreView, lmView)
 
 BEGIN_EVENT_TABLE(lmScoreView, lmView)
     EVT_COMMAND_SCROLL	(lmID_HSCROLL, lmScoreView::OnScroll)
     EVT_COMMAND_SCROLL	(lmID_VSCROLL, lmScoreView::OnScroll)
     EVT_MOUSEWHEEL		(lmScoreView::OnMouseWheel)
+    EVT_SET_FOCUS       (lmScoreView::OnSetFocus)
+    EVT_KILL_FOCUS      (lmScoreView::OnKillFocus)
 END_EVENT_TABLE()
 
 
@@ -138,6 +150,8 @@ lmScoreView::lmScoreView()
     m_xBorder = 6;
     m_yBorder = 6;
     m_yInterpageGap = 8;
+
+    //TODO: user option
     //m_colorBg = wxColour(10,36,106);		//deep blue
     //m_colorBg = wxColour(200, 200, 200);	//light grey
     //m_colorBg = wxColour(127, 127, 127);	//dark grey
@@ -152,14 +166,14 @@ lmScoreView::lmScoreView()
 
 	//cursor initializations
     m_pScoreCursor = (lmScoreCursor*)NULL;
-    m_pGuiCursor = (lmScoreViewCursor*)NULL;
+    m_pCaret = (lmCaret*)NULL;
     m_pCursorSO = (lmStaffObj*)NULL;
 }
 
 lmScoreView::~lmScoreView()
 {
-    if (m_pGuiCursor)
-        delete m_pGuiCursor;
+    if (m_pCaret)
+        delete m_pCaret;
 }
 
 bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
@@ -170,6 +184,10 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     // In this method a child MDI frame is created, populated with the
     // needed controls and shown.
 
+    // AWARE
+    // When a document is created (but BEFORE the score is created) the view is created and
+    // method OnCreate() is invoked. Therefore, pScore will be always NULL at this point.
+
     //save the document
     m_pDoc = (lmScoreDocument*)doc;
 
@@ -177,17 +195,9 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     m_pFrame = new lmEditFrame(doc, this, GetMainFrame());
     m_pFrame->SetIcon( wxArtProvider::GetIcon(_T("app_score"), wxART_TOOLBAR, wxSize(16,16)) );
 
-    // Set frame title: the score title
-    lmScore* pScore = m_pDoc->GetScore();
-    if (pScore)
-        m_pFrame->SetTitle( pScore->GetScoreName() );
-    else
-        m_pFrame->SetTitle(_T("New score"));
 
     //rulers
     m_fRulers = GetMainFrame()->ShowRulers();
-
-
 
 #ifdef __X__
     // X seems to require a forced resize
@@ -218,11 +228,8 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     m_pHScroll = new wxScrollBar(m_pFrame, lmID_HSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
     m_pVScroll = new wxScrollBar(m_pFrame, lmID_VSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL);
 
-    SetScale(1.0);            // to create the font and resize controls and scrollbars
+    SetScale(m_rScale / lmSCALE);            // to create the font and resize controls and scrollbars
 
-    //show the frame
-	m_pFrame->Show(true);
-    Activate(true);
 	m_pMainFrame->OnNewEditFrame();
 
     return true;
@@ -230,17 +237,21 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 
 void lmScoreView::ResizeControls()
 {
+    if (!m_pCanvas) return;
+
     // Get client area
     lmPixels dxFrame, dyFrame;
     m_pFrame->GetClientSize(&dxFrame, &dyFrame);
     lmPixels dxFree = dxFrame,
              dyFree = dyFrame;
 
-
     // Discount scrollbars
-    lmPixels dxVScroll = m_pVScroll->GetSize().GetWidth(),
-             dyHScroll = m_pHScroll->GetSize().GetHeight();
-
+    lmPixels dxVScroll = 0;
+    lmPixels dyHScroll = 0;
+    if (m_pVScroll)
+        dxVScroll = m_pVScroll->GetSize().GetWidth();
+    if (m_pHScroll)
+        dyHScroll = m_pHScroll->GetSize().GetHeight();
     dxFree -= dxVScroll;
     dyFree -= dyHScroll;
 
@@ -273,35 +284,9 @@ void lmScoreView::ResizeControls()
     m_pHScroll->SetSize(xLeft, yTop + dyHRuler + dyCanvas, dxFrame - xLeft - dxVScroll, dyHScroll);
     m_pVScroll->SetSize(xLeft + dxVRuler + dxCanvas, yTop, dxVScroll, dyCanvas + dyHRuler);
 
-
-
-
-    //// Compute available space for the canvas
-    //lmPixels cvMaxDx = Min(m_xPageSizeD+m_xBorder+m_xBorder, dxFree),
-    //         cvMaxDy = Min(m_yPageSizeD, dyFree);
-
-    //// Compute view origin, to center everything
-    //dxFree -= cvMaxDx;
-    //lmPixels left = (dxFree > 0 ? dxFree/2 : 0);
-
-    //// Move controls to the computed positions
-    //if (m_fRulers) {
-    //    lmPixels dxHR = (cvMaxDx >= m_xPageSizeD+m_xBorder ? m_xPageSizeD : cvMaxDx-m_xBorder);
-    //    m_pHRuler->NewSize(left+dxVRuler+m_xBorder, 0, dxHR);
-    //    m_pVRuler->NewSize(left, dyHRuler, cvMaxDy);
-    //}
-    //m_pCanvas->SetSize(left+dxVRuler, dyHRuler, cvMaxDx, dyFrame - dyHScroll); 	//cvMaxDy);
-    //m_pHScroll->SetSize(0, dyFrame - dyHScroll, dxFrame - dxVScroll, dyHScroll);
-    //m_pVScroll->SetSize(dxFrame - dxVScroll, 0, dxVScroll, dyFrame - dyHScroll);
-
-    //wxLogStatus(_T("Frame size(%d,%d) dxVScroll=%d, dyHScroll=%d"),
-    //    dxFrame, dyFrame,
-    //    dxVScroll, dyHScroll);
-
     // compute new scrollbars
     AdjustScrollbars();
     m_pCanvas->Refresh();
-
 }
 
 void lmScoreView::AdjustScrollbars()
@@ -353,7 +338,7 @@ void lmScoreView::AdjustScrollbars()
     m_pVScroll->SetScrollbar(m_yScrollPosition, m_thumbY, m_yMaxScrollSteps, m_pixelsPerStepY);
 
     ////DEBUG
-    //wxLogStatus(_T("nPag=%d,lmPage(%d,%d),Px/Step(%d,%d),View(%d,%d),MaxSteps(%d,%d),StepsPage(%d,%d),Canvas(%d,%d)"),
+    //wxLogStatus(_T("nPag=%d, Page(%d,%d),Px/Step(%d,%d),View(%d,%d),MaxSteps(%d,%d),StepsPage(%d,%d),Canvas(%d,%d)"),
     //    m_numPages, m_xPageSizeD, m_yPageSizeD, m_pixelsPerStepX, m_pixelsPerStepY,
     //    xViewD, yViewD,
     //    m_xMaxScrollSteps, m_yMaxScrollSteps,
@@ -395,7 +380,7 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
     //m_Paper.SetDC(&mDC);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&mDC));
     lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
-    m_graphMngr.Prepare(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
+    m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
     int nTotalPages = m_graphMngr.GetNumPages();
 
     *pMinPage = 1;
@@ -416,7 +401,7 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
 
 
     // Get paper size and real usable size of printer paper (in world units)
-    wxSize uPaperSize = m_Paper.GetPaperSize();     // in lmLUnits
+    lmUSize uPaperSize = m_Paper.GetPaperSize();     // in lmLUnits
     int printerWidthMM, printerHeightMM;            // in millimeters
     pPrintout->GetPageSizeMM(&printerWidthMM, &printerHeightMM);
     lmLUnits uPrinterSizeX = lmToLogicalUnits(printerWidthMM, lmMILLIMETERS);
@@ -431,8 +416,8 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     // intended score paper, but in practise it will be a litle less
     // than 1.00 as wxPrintout reports paper size discounting printer
     // margings
-    double marginScaleX = (double)uPrinterSizeX / (double)uPaperSize.GetWidth();
-    double marginScaleY = (double)uPrinterSizeY / (double)uPaperSize.GetHeight();
+    double marginScaleX = (double)(uPrinterSizeX / uPaperSize.GetWidth());
+    double marginScaleY = (double)(uPrinterSizeY / uPaperSize.GetHeight());
 
 
     bool fPreview = pPrintout->IsPreview();
@@ -459,8 +444,8 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
         // use anti-aliasing
         wxMemoryDC memoryDC;
         m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-        m_graphMngr.Prepare(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
-        wxBitmap* pPageBitmap = m_graphMngr.Render(lmUSE_BITMAPS, nPage);
+        m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPage);
         wxASSERT(pPageBitmap && pPageBitmap->Ok());
         memoryDC.SelectObject(*pPageBitmap);
         pDC->SetUserScale(1.0, 1.0);
@@ -471,27 +456,27 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     else {
         //Direct renderization on printer DC
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-        m_graphMngr.Prepare(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
-        m_graphMngr.Render(lmNO_BITMAPS, nPage);
+        m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        m_graphMngr.RenderScore(nPage, lmNO_BITMAPS);
     }
 
 }
 
 void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
 {
-    // Called from the document when an update is needed. i.e. when UpdateAllViews()
-    // has been invoked
+    //Called from the document when UpdateAllViews() has been invoked.
+    //Re-paint the score
 
 	WXUNUSED(sender)
-	WXUNUSED(hint)
+    if (!m_pFrame) return;
 
-    if (m_pFrame) {
-        m_pCanvas->Refresh();
-        ResizeControls();
-        lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
-        m_pFrame->SetTitle( pScore->GetScoreName() );
-    }
-
+    lmUpdateHint* pHints = (lmUpdateHint*)hint;
+    wxClientDC dc(m_pCanvas);
+    int width, height;
+    m_pCanvas->GetClientSize(&width, &height);
+    wxRect rect(0, 0, width, height);
+    RepaintScoreRectangle(&dc, rect, (pHints ? pHints->Options() : 0) );
+    if (pHints) delete pHints;
 }
 
 bool lmScoreView::OnClose(bool deleteWindow)
@@ -512,19 +497,72 @@ bool lmScoreView::OnClose(bool deleteWindow)
     return true;
 }
 
+void lmScoreView::OnChangeFilename()
+{
+    // Called when the filename has changed (i.e. File > Save As ..)
+    //
+    // AWARE:
+    // As SetFilename() is invoked in both lmScoreDoc::OnOpenDocument() and
+    // lmScoreDoc::OnNewDocument() this causes that the first point at which lmScoreView
+    // is invoked (after creation) with a valid pointer to the score is in this method!
+    //
+    // Change the title of the view frame and initialize things if not done before.
+
+    if (!m_pDoc) return;
+
+    wxString sNewName;
+    m_pDoc->GetPrintableName(sNewName);
+    lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return
+
+    pScore->SetScoreName(sNewName);
+    m_pFrame->SetTitle(sNewName);
+
+    SetScale(1.0 / lmSCALE);         //force to compute m_xPageSizeD & m_yPageSizeD for reference
+    //TODO: User option te determine if initially 100% or fit width
+    SetScaleFitWidth();     //set scale to fit width
+    m_pMainFrame->UpdateZoomControls(m_rScale / lmSCALE);  //update MainFrame zoom controls
+}
+
+void lmScoreView::OnSetFocus(wxFocusEvent& WXUNUSED(event))
+{
+    if (m_pCaret && !m_pCaret->IsVisible())
+    {
+        m_pCaret->Show();
+        //SetCaretPosition();
+    }
+}
+
+void lmScoreView::OnKillFocus(wxFocusEvent& WXUNUSED(event))
+{
+    if (m_pCaret && m_pCaret->IsVisible())
+        m_pCaret->Hide();
+}
+
+
 void lmScoreView::SetScale(double rScale)
 {
     wxASSERT(rScale > 0);
     m_rScale = rScale * lmSCALE;
 
-    if (m_pCanvas) {
+    if (m_pCanvas)
+    {
+        // set paper size and margins
+        lmScore* pScore = m_pDoc->GetScore();
+        if (pScore)
+        {
+        lmPageInfo* pPageInfo = pScore->GetPageInfo();
+        if (pPageInfo)
+            m_Paper.SetPageInfo(pPageInfo, 1);
+        }
+
         // compute new paper size in pixels
         wxClientDC dc(m_pCanvas);
         dc.SetMapMode(lmDC_MODE);
         dc.SetUserScale( m_rScale, m_rScale );
-        wxSize uPageSize = m_Paper.GetPaperSize();
-        m_xPageSizeD = dc.LogicalToDeviceXRel(uPageSize.GetWidth());
-        m_yPageSizeD = dc.LogicalToDeviceYRel(uPageSize.GetHeight());
+        lmUSize uPageSize = m_Paper.GetPaperSize();
+        m_xPageSizeD = dc.LogicalToDeviceXRel((int)uPageSize.GetWidth());
+        m_yPageSizeD = dc.LogicalToDeviceYRel((int)uPageSize.GetHeight());
 
         // ----------------------------------------------------------------------------
         // This commented out code produces the same results than the
@@ -559,8 +597,8 @@ void lmScoreView::SetScale(double rScale)
         //    m_xPageSizeD, m_yPageSizeD);
     }
 
-    m_pCanvas->Refresh(true);    //erase background
-
+    if (m_pCanvas)
+        m_pCanvas->Refresh(true);    //erase background
 }
 
 void lmScoreView::SetScaleFitWidth()
@@ -596,7 +634,7 @@ void lmScoreView::SetScaleFitFull()
 void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
 	lmScore* pScore = m_pDoc->GetScore();
-    EHighlightType nHighlightType = event.GetHighlightType();
+    lmEHighlightType nHighlightType = event.GetHighlightType();
     switch (nHighlightType) {
         case ePrepareForHighlight:
         {
@@ -934,7 +972,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 		if (uAx <= uTolerance && uAy <= uTolerance)
 			return;
 		else
-            //I will not allow for a second involuntary small movement. Therefore 
+            //I will not allow for a second involuntary small movement. Therefore
 			//if we have ignored a drag, smaller than tolerance, then do not check for
             //tolerance the next time in this drag.
 			m_fCheckTolerance = false;
@@ -947,7 +985,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
     }
 
     // check for mouse entering/leaving the window events
-	else if (event.Entering())    //wxEVT_ENTER_WINDOW 
+	else if (event.Entering())    //wxEVT_ENTER_WINDOW
 	{
 		//the mouse is entering the window. Change cursor icon as appropriate
 		//TODO
@@ -1014,13 +1052,22 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
 			        if (m_nDragState == lmDRAG_CONTINUE_LEFT)
 			        {
-                        //draggin. Finish left dragging
-				        OnObjectContinueDragLeft(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
-				        OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                        if (m_fDraggingObject)
+                        {
+                            //draggin. Finish left object dragging
+				            OnObjectContinueDragLeft(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				            OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                        }
+                        else
+                        {
+                            //draggin. Finish left canvas dragging
+				            OnContinueSelection(false, m_vEndDrag, uPagePos, nKeysPressed);
+				            OnEndSelection(vCanvasPos, uPagePos, nKeysPressed);
+                       }
 			        }
                     else
                     {
-					    //click on object. Only send a click event if the same object 
+					    //click on object. Only send a click event if the same object
                         //was involved in 'down' and 'up' events
 					    if (pGMO == m_pDraggedGMO)
 						    OnLeftClickOnObject(pGMO, vCanvasPos, uPagePos, nKeysPressed);
@@ -1222,15 +1269,16 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
 				m_nDragState = lmDRAG_CONTINUE_LEFT;
 
-				if (m_pDraggedGMO->IsDraggable()) 
+				if (m_pDraggedGMO->IsDraggable())
 				{
+                    m_fDraggingObject = true;
 					OnObjectBeginDragLeft(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
 				}
 				else
 				{
 					//the object is not draggable: transfer message to canvas
 					m_pDraggedGMO = (lmGMObject*)NULL;
-					//OnBeginSelection(vCanvasPos, nKeysPressed);
+                    m_fDraggingObject = false;
 					OnBeginSelection(m_vStartDrag, uPagePos, nKeysPressed);
 				}
 				m_vEndDrag = vCanvasPos;
@@ -1436,7 +1484,7 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
 
 
     //hide cursor
-    m_pGuiCursor->RemoveCursor();
+    m_pCaret->RemoveCaret();
 
     // save data and transform steps into pixels
     if (orientation == wxHORIZONTAL) {
@@ -1471,8 +1519,9 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
     //Restore Cursor
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);
+    m_pCaret->DisplayCaret(m_rScale, uPos, pStaff);
 }
+
 
 //------------------------------------------------------------------------------------------
 // Helper methods for scrolling
@@ -1549,14 +1598,14 @@ int lmScoreView::CalcScrollInc(wxScrollEvent& event)
     return nScrollInc;
 }
 
-void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
+void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRepaintOptions)
 {
     // This method is invoked by lmScoreCanvas::OnPaint to repaint a rectangle of the score
     // The DC is not scrolled.
     // The rectangle to redraw is in pixels and unscrolled
 
 	// hide the cursor so repaint doesn't interfere
-	if (m_pGuiCursor) m_pGuiCursor->RemoveCursor();
+	if (m_pCaret) m_pCaret->RemoveCaret();
 
     // To draw a cast shadow for each page we need the shadow sizes
     lmPixels nRightShadowWidth = 3;      //pixels
@@ -1589,7 +1638,8 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
     m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-    m_graphMngr.Prepare(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
+    m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper,
+                                nRepaintOptions);
     int nTotalPages = m_graphMngr.GetNumPages();
 
     if (nTotalPages != m_numPages) {
@@ -1675,8 +1725,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         if (interRect.width > 0 && interRect.height > 0) {
 
             // ask paper for the offscreen bitmap of this page
-            wxBitmap* pPageBitmap = m_graphMngr.Render(lmUSE_BITMAPS, nPag+1);
+            wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPag+1, nRepaintOptions);
             wxASSERT(pPageBitmap && pPageBitmap->Ok());
+//            memoryDC.SetUserScale(1.0, 1.0);
+//            memoryDC.SetMapMode(wxMM_TEXT);
             memoryDC.SelectObject(*pPageBitmap);
 
             // Intersection rectangle is referred to view origin. To refer it
@@ -1694,6 +1746,8 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
 
             // Copy the damaged rectangle onto the device DC
+//            pDC->SetUserScale(1.0, 1.0);
+//            pDC->SetMapMode(wxMM_TEXT);
             pDC->Blit(xCanvas, yCanvas, interRect.width, interRect.height,
                         &memoryDC, xBitmap, yBitmap);
 
@@ -1754,15 +1808,15 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     }
 
 	//Restore cursor
-    if (!m_pGuiCursor)
+    if (!m_pCaret)
     {
 		// Following code initializes cursor position if not yet initialized.
-        m_pGuiCursor = new lmScoreViewCursor(this, (lmCanvas*)m_pCanvas, pScore);
+        m_pCaret = new lmCaret(this, (lmCanvas*)m_pCanvas, pScore);
         SetInitialCursorPosition();
     }
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);
+    m_pCaret->DisplayCaret(m_rScale, uPos, pStaff);
 
 	////DEBUG: draw cyan rectangle to show updated rectangle
     //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
@@ -1778,15 +1832,15 @@ void lmScoreView::SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType)
     wxClientDC dc(m_pCanvas);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( 1.0, 1.0 );
-    wxSize pageSize = m_Paper.GetPaperSize();
-    int paperWidth = dc.LogicalToDeviceXRel(pageSize.GetWidth());
-    int paperHeight = dc.LogicalToDeviceYRel(pageSize.GetHeight());
+    lmUSize pageSize = m_Paper.GetPaperSize();
+    int paperWidth = dc.LogicalToDeviceXRel((int)pageSize.GetWidth());
+    int paperHeight = dc.LogicalToDeviceYRel((int)pageSize.GetHeight());
 
     //Prepare the GraphicManager
     //m_Paper.SetDC(&dc);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&dc));
     lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
-    m_graphMngr.Prepare(pScore, paperWidth, paperHeight, 1.0, &m_Paper);
+    m_graphMngr.PrepareToRender(pScore, paperWidth, paperHeight, 1.0, &m_Paper);
 
     //Now proceed to export images
     m_graphMngr.ExportAsImage(sFilename, sExt, nImgType);
@@ -1829,25 +1883,25 @@ void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
     wxASSERT(pSCO->GetScoreObjType() == lmSOT_ComponentObj);
 
     //move cursor to object
-    if (m_pGuiCursor)
+    if (m_pCaret)
     {
         lmStaffObj* pSO = (lmStaffObj*)NULL;
-        if (((lmComponentObj*)pSCO)->GetType() ==  eSCOT_StaffObj)
+        if (((lmComponentObj*)pSCO)->GetType() ==  lm_eStaffObj)
         {
             //it is a staffobj. Position cursor on it
             pSO = (lmStaffObj*)pSCO;
         }
-        else if (((lmComponentObj*)pSCO)->GetType() ==  eSCOT_AuxObj)
+        else if (((lmComponentObj*)pSCO)->GetType() ==  lm_eAuxObj)
         {
             //it is an auxobj. locate parent staffobj
             lmScoreObj* pParent = pSCO->GetParentScoreObj();
             while(pParent->GetScoreObjType() == lmSOT_ComponentObj &&
-                  ((lmComponentObj*)pParent)->GetType() ==  eSCOT_AuxObj)
+                  ((lmComponentObj*)pParent)->GetType() ==  lm_eAuxObj)
             {
                 pParent = pParent->GetParentScoreObj();
             }
             if (pParent->GetScoreObjType() == lmSOT_ComponentObj &&
-                ((lmComponentObj*)pParent)->GetType() ==  eSCOT_StaffObj)
+                ((lmComponentObj*)pParent)->GetType() ==  lm_eStaffObj)
                 pSO = (lmStaffObj*)pParent;
             else
                 //TODO: should we do anything when owner is an instrument or the score?
@@ -1862,6 +1916,8 @@ void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
         }
     }
 }
+
+
 
 //------------------------------------------------------------------------------------------
 // cursor management
@@ -1885,7 +1941,7 @@ void lmScoreView::SetInitialCursorPosition()
 
 void lmScoreView::CursorRight(bool fNextObject)
 {
-    if (!m_pGuiCursor) return;
+    if (!m_pCaret) return;
 
 	//advance to next staff obj.
     m_pScoreCursor->MoveRight(fNextObject);
@@ -1893,7 +1949,7 @@ void lmScoreView::CursorRight(bool fNextObject)
 
 void lmScoreView::CursorLeft(bool fPrevObject)
 {
-    if (!m_pGuiCursor) return;
+    if (!m_pCaret) return;
 
 	//go back to previous staff obj.
     m_pScoreCursor->MoveLeft(fPrevObject);
@@ -1901,7 +1957,7 @@ void lmScoreView::CursorLeft(bool fPrevObject)
 
 void lmScoreView::CursorUp()
 {
-    if (!m_pGuiCursor) return;
+    if (!m_pCaret) return;
 
 	//go up to previous staff
     m_pScoreCursor->MoveUp();
@@ -1909,7 +1965,7 @@ void lmScoreView::CursorUp()
 
 void lmScoreView::CursorDown()
 {
-    if (!m_pGuiCursor) return;
+    if (!m_pCaret) return;
 
 	//go down to next staff
     m_pScoreCursor->MoveDown();
@@ -1917,7 +1973,7 @@ void lmScoreView::CursorDown()
 
 void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
 {
-    if (!m_pGuiCursor) return;
+    if (!m_pCaret) return;
 	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
 }
 
@@ -1946,7 +2002,7 @@ void lmScoreView::OnCursorMoved()
     if (!m_pScoreCursor) return;
 
     //Hide cursor at old position
-	m_pGuiCursor->RemoveCursor();
+	m_pCaret->RemoveCaret();
 
     //Remove highlight from previous object
     if (m_pCursorSO)
@@ -1970,7 +2026,7 @@ void lmScoreView::OnCursorMoved()
             m_pCursorSO = (lmStaffObj*)NULL;
         }
         //update status bar: relative cursor time
-        m_pMainFrame->SetStatusBarCursorRelPos(m_pCursorSO->GetTimePos());
+        m_pMainFrame->SetStatusBarCursorRelPos(m_pScoreCursor->GetCursor()->GetTimepos());
     }
 
     //update status bar: page number
@@ -1981,7 +2037,7 @@ void lmScoreView::OnCursorMoved()
     //Display cursor in new position
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pGuiCursor->DisplayCursor(m_rScale, uPos, pStaff);
+    m_pCaret->DisplayCaret(m_rScale, uPos, pStaff);
 }
 
 void lmScoreView::OnCursorObjectDeleted()
@@ -2050,12 +2106,15 @@ void lmScoreView::OnEndSelection(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKe
 
     //find all objects whithin the selected area and create a selection
     if (nKeys == lmKEY_NONE)
+    {
+        m_pCanvas->SelectObjects(lmUNSELECT, m_graphMngr.GetSelection() );
         m_graphMngr.CreateSelection(m_nNumPage, uXMin, uXMax, uYMin, uYMax);
+    }
     else if (nKeys & lmKEY_CTRL)
         m_graphMngr.AddToSelection(m_nNumPage, uXMin, uXMax, uYMin, uYMax);
 
     //select all objects in the selection
-    m_pCanvas->SelectObjects( m_graphMngr.GetSelection() );
+    m_pCanvas->SelectObjects(lmSELECT, m_graphMngr.GetSelection());
 }
 
 void lmScoreView::DrawSelectionArea(wxDC& dc, lmPixels x1, lmPixels y1, lmPixels x2, lmPixels y2)
@@ -2077,7 +2136,7 @@ lmLUnits lmScoreView::GetMouseTolerance()
     //The returned value is in lmLUnits
 
     //TODO: User option?
-	return 0.0f;
+	return m_pDoc->GetScore()->TenthsToLogical(1.0f);
 }
 
 
@@ -2089,6 +2148,7 @@ void lmScoreView::OnBeginDragRight(lmDPoint vCanvasPos, int nKeys)
 {
     WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
+    m_pCanvas->SetFocus();
 }
 
 void lmScoreView::OnDragRight(bool fDraw, lmDPoint vCanvasPos, int nKeys)
@@ -2113,6 +2173,7 @@ void lmScoreView::OnRightClick(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys
     WXUNUSED(vCanvasPos);
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
+    m_pCanvas->SetFocus();
 }
 
 void lmScoreView::OnLeftClick(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys)
@@ -2120,6 +2181,7 @@ void lmScoreView::OnLeftClick(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys)
     WXUNUSED(vCanvasPos);
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
+    m_pCanvas->SetFocus();
 }
 
 
@@ -2135,7 +2197,12 @@ void lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint
 	WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
 
+    m_pCanvas->SetFocus();
 	m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Starting dragging"));
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectBeginDragLeft()"));
+	#endif
 
     // prepare the image to drag
     if (m_pDragImage)
@@ -2165,7 +2232,7 @@ void lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint
         //and show it (was hidden until now)
         lmDPoint offset(vCanvasOffset.x + m_vDragHotSpot.x, vCanvasOffset.y + m_vDragHotSpot.y);
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-        lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift) 
+        lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift)
 							 + m_uHotSpotShift;
         m_pDragImage->Show();
 		lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
@@ -2234,7 +2301,7 @@ void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool 
         }
 
     }
-	else 
+	else
 	{
         // just move the image
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
@@ -2257,6 +2324,10 @@ void lmScoreView::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint v
     WXUNUSED(nKeys);
 
 	m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Finishing dragging"));
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectEndDragLeft()"));
+	#endif
 
     if (!m_pDraggedGMO || !m_pDragImage) return;
 
@@ -2281,6 +2352,12 @@ void lmScoreView::OnObjectBeginDragRight(lmDPoint vCanvasPos, int nKeys)
 {
     WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
+    m_pCanvas->SetFocus();
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectBeginDragRight()"));
+	#endif
+
 }
 
 void lmScoreView::OnObjectContinueDragRight(bool fDraw, lmDPoint vCanvasPos, int nKeys)
@@ -2294,6 +2371,11 @@ void lmScoreView::OnObjectEndDragRight(lmDPoint vCanvasPos, int nKeys)
 {
     WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectEndDragRight()"));
+	#endif
+
 }
 
 
@@ -2308,6 +2390,12 @@ void lmScoreView::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmU
 
     WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnLeftClickOnObject()"));
+	#endif
+
+    m_pCanvas->SetFocus();
 
     if (pGMO->IsShape())
     {
@@ -2346,25 +2434,31 @@ void lmScoreView::OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPo
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
 
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnLeftDoubleClickOnObject()"));
+	#endif
+
+    m_pCanvas->SetFocus();
+
     //ComponentObjs and other score objects (lmBoxXXXX) has all its measurements
     //relative to each page start position
 
     //select/deselect the object
     m_pCanvas->SelectObject(pGMO);
 
-    //DBG ---------------------------------------------------------------------
-    //prepare paper DC to draw bounds rectangles
-    wxClientDC dc(m_pCanvas);
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale( m_rScale, m_rScale );
-    //position DC origing at current page origin
-    wxPoint org = GetDCOriginForPage(m_nNumPage);
-    dc.SetDeviceOrigin(org.x, org.y);
-    //set paper and draw selection rectangle
-    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+    ////DBG ---------------------------------------------------------------------
+    ////prepare paper DC to draw bounds rectangles
+    //wxClientDC dc(m_pCanvas);
+    //dc.SetMapMode(lmDC_MODE);
+    //dc.SetUserScale( m_rScale, m_rScale );
+    ////position DC origing at current page origin
+    //wxPoint org = GetDCOriginForPage(m_nNumPage);
+    //dc.SetDeviceOrigin(org.x, org.y);
+    ////set paper and draw selection rectangle
+    //m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
-    pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
-    //END DBG ------------------------------------------------------------------
+    //pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
+    ////END DBG ------------------------------------------------------------------
 
     if (pGMO->GetType() == eGMO_BoxSlice)
     {
@@ -2384,6 +2478,12 @@ void lmScoreView::OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lm
     // mouse right click on object: show contextual menu for that object
 
     WXUNUSED(uPagePos);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnRightClickOnObject()"));
+	#endif
+
+    m_pCanvas->SetFocus();
 
 	m_pCanvas->SelectObject(pGMO);	//select/deselect it.
     pGMO->OnRightClick(m_pCanvas, vCanvasPos, nKeys);

@@ -65,8 +65,8 @@ lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-    m_pShape = new lmShapeInvisible(this, uPos, lmUSize(m_nSpacerWidth, 0.0), _T("spacer")); 
-	pBox->AddShape(m_pShape);
+    m_pGMObj = new lmShapeInvisible(this, uPos, lmUSize(m_nSpacerWidth, 0.0), _T("spacer")); 
+	pBox->AddShape((lmShape*)m_pGMObj);
 
     // set total width
     return m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
@@ -92,6 +92,8 @@ wxString lmSpacer::SourceLDP(int nIndent)
 	//base class
 	sSource += lmStaffObj::SourceLDP(nIndent);
 
+    //close element
+    sSource += _T(")\n");
 	return sSource;
 }
 
@@ -142,7 +144,7 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
                                           uWidth, uBoundsExtraWidth, *wxRED,
                                           _T("Anchor"), eEdgeNormal);
 	pBox->AddShape(pShape);
-    m_pShape = pShape;
+    m_pGMObj = pShape;
 
     //END DBG --------------------------------------------------------------------------
 

@@ -415,22 +415,17 @@ wxString lmNoteRest::SourceLDP(int nIndent)
     }
 
     //tuplets
-    if (m_pTuplet) {
-        if ((lmNoteRest*)this == m_pTuplet->GetStartNoteRest()) {
-            sSource += wxString::Format(_T(" t%d/%d"),
-                                        m_pTuplet->GetActualNotes(),
-                                        m_pTuplet->GetNormalNotes() );
-
-        }
-        else if((lmNoteRest*)this == m_pTuplet->GetEndNoteRest()) {
+    if (m_pTuplet)
+    {
+        if ((lmNoteRest*)this == m_pTuplet->GetStartNoteRest())
+            sSource += m_pTuplet->SourceLDP();
+        else if((lmNoteRest*)this == m_pTuplet->GetEndNoteRest())
             sSource += _T(" t-");
-        }
     }
 
     //staff num
-    if (m_pVStaff->GetNumStaves() > 1) {
+    if (m_pVStaff->GetNumStaves() > 1)
         sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
-    }
 
     //Voice
     sSource += wxString::Format(_T(" v%d"), m_nVoice);

@@ -19,52 +19,31 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BEAM_H__        //to avoid nested includes
-#define __LM_BEAM_H__
+#ifndef __LM_TOOLGROUP_H__
+#define __LM_TOOLGROUP_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "Beam.cpp"
+#pragma interface "ToolGroup.h"
 #endif
 
-#include <list>
-#include "UndoRedo.h"
+class lmToolPage;
 
-class lmShapeBeam;
-class lmShapeStem;
-class lmShapeNote;
-class lmUndoData;
-
-
-class lmBeam : public lmMultipleRelationship<lmNoteRest>
-{
+class lmToolGroup: public wxBoxSizer
+{    
 public:
-    lmBeam(lmNote* pNote);
-    lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData);
-    ~lmBeam();
+    lmToolGroup(lmToolPage* pParent);
+    ~lmToolGroup();
 
-	//implementation of lmMultipleRelationship virtual methods
-    inline void Save(lmUndoData* pUndoData) {}
-	inline lmERelationshipClass GetClass() { return lm_eBeamClass; }
-	void OnRelationshipModified();
+    //creation
+    wxBoxSizer* CreateGroup(wxBoxSizer* pParentSizer, wxString sTitle);
 
-	//specific methods
-    void CreateShape();
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
-	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
-    void AutoSetUp();
+	//info
+	int GetGroupWitdh();
 
-private:
-    int GetBeamingLevel(lmNote* pNote);
+protected:
+    void Init();
 
-        //member variables
-
-    bool            m_fStemsDown;
-	lmShapeBeam*	m_pBeamShape;
-
-    //beam information to be transferred to each beamed note
-    int            m_nPosForRests;        //relative position for rests
-
+	lmToolPage*		m_pParent;		//owner ToolPage
 };
 
-#endif    // __LM_BEAM_H__
-
+#endif   // __LM_TOOLGROUP_H__

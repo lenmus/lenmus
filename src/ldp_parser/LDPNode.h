@@ -44,11 +44,20 @@ public:
     wxString ToString();
 
     inline bool IsSimple() const { return m_fIsSimple; }
+    inline bool IsProcessed() const { return m_fProcessed; }
+    inline void SetProcessed(bool fValue) { m_fProcessed = fValue; }
+
     inline wxString GetName() const { return m_sName; }
     int GetNumParms();
 
+    //random access
     lmLDPNode* GetParameter(long i);
     lmLDPNode* GetParameter(wxString& sName) const;
+
+    //iteration
+    lmLDPNode* StartIterator(long iP=1, bool fOnlyNotProcessed = true);
+    lmLDPNode* GetNextParameter(bool fOnlyNotProcessed = true);
+
     void AddParameter(wxString sData);
     void AddNode(lmLDPNode* pNode);
 
@@ -56,7 +65,9 @@ public:
 private:
     wxString        m_sName;            //node name
     bool            m_fIsSimple;        //the node is simple (just a string)
+    bool            m_fProcessed;       //the node has been processed
 	std::vector<lmLDPNode*> m_cNodes;	//Parameters of this node
+    std::vector<lmLDPNode*>::iterator   m_it;       //for sequential accsess
 };
 
 #endif    // __LM_LDPNODE_H__

@@ -54,7 +54,7 @@ enum lmEEditTool
 };
 
 class lmCheckButton;
-class lmToolNotesOpt;
+class lmToolNotes;
 
 class lmToolBox: public wxPanel
 {
@@ -76,7 +76,7 @@ public:
 	inline wxPanel* GetToolPanel(lmEEditTool nPanel) { return m_cPanels[nPanel]; }
 
 
-	inline lmToolNotesOpt* GetNoteProperties() const { return (lmToolNotesOpt*)m_cPanels[lmTOOL_NOTES]; }
+	inline lmToolNotes* GetNoteProperties() const { return (lmToolNotes*)m_cPanels[lmTOOL_NOTES]; }
     //TO_ADD: Add, before this line, a new method to get new tool properties
 
 private:

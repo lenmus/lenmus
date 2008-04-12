@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_CURSOR_H__        //to avoid nested includes
-#define __LM_CURSOR_H__
+#ifndef __LM_CARET_H__        //to avoid nested includes
+#define __LM_CARET_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "Cursor.cpp"
+#pragma interface "Caret.cpp"
 #endif
 
 #include "wx/event.h"
@@ -37,55 +37,63 @@ class lmStaff;
 
 #include "../score/defs.h"
 
-//helper class to display and manage a score cursor
+//A caret is a blinking cursor showing the position where the edition will take place
 
-class lmScoreViewCursor : public wxEvtHandler
+class lmCaret : public wxEvtHandler
 {
-    DECLARE_DYNAMIC_CLASS(lmScoreViewCursor)
+    DECLARE_DYNAMIC_CLASS(lmCaret)
 
 public:
-    lmScoreViewCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore);
-    ~lmScoreViewCursor();
+    lmCaret(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore);
+    ~lmCaret();
 
     //event handlers
-	void OnCursorTimer(wxTimerEvent& event);
+	void OnCaretTimer(wxTimerEvent& event);
 
-    void SetCursorPosition(lmUPoint uPos, lmStaff* pStaff);
-    void RemoveCursor();
-    void DisplayCursor(double rScale, lmUPoint uPos, lmStaff* pStaff);
+    void SetCaretPosition(lmUPoint uPos, lmStaff* pStaff);
+    void RemoveCaret();
+    void DisplayCaret(double rScale, lmUPoint uPos, lmStaff* pStaff);
 
     //aspect
     void SetBlinkingRate(int nMillisecs);
     void SetColour(wxColour color);
 
     //status
-        //cursor displayed, but not necessarily visible at this time as it could be blinking
+        //caret displayed, but not necessarily visible at this moment, as it could
+        //have been blinked out
     inline bool IsDisplayed() const { return m_fDisplayed; } 
-    //    //cursor displayed and visible on virtual screen (it can be hidden due to scrolling)
-    //inline bool IsVisible() const { return m_fVisible; } 
- 
+        //caret displayed and currently visible
+    inline bool IsVisible() const { return m_nCountVisible > 0; }
+
+    // operations
+    void Show(bool fShow = true);
+    inline void Hide() { Show(false); }
 
 private:
-	void RenderCursor(bool fVisible);
+	void RenderCaret(bool fVisible);
+    void Refresh();
+    void DoShow();
+    void DoHide();
 
     lmCanvas*       m_pCanvas;          //the canvas
     lmView*         m_pView;
     lmScore*        m_pScore;
     double          m_rScale;           //view presentation scale
 
-    //cursor display status
-    bool                m_fDisplayed;   //cursor displayed, but not necessarily visible at this time as it could be blinking
-    bool                m_fVisible;     //cursor visible on screen (it implies it is displayed)
+    //caret display status
+    bool                m_fDisplayed;   //caret displayed, but not necessarily visible at this time as it could be blinked out
+    bool                m_fVisible;     //caret visible on screen (it implies it is displayed)
     wxCriticalSection   m_locker;       //locker for accesing previous flag
+    int                 m_nCountVisible;    //
 
-    //timer for cursor blinking
-	wxTimer			m_oCursorTimer;			//for cursor blinking
+    //timer for caret blinking
+	wxTimer			m_oCaretTimer;			//for caret blinking
 
-    //cursor position
-    lmUPoint        m_oCursorPos;           //cursor position on screen
+    //caret position
+    lmUPoint        m_oCaretPos;           //caret position on screen
 
-    //cursor layout
-    wxColour        m_color;                //cursor colour
+    //caret layout
+    wxColour        m_color;                //caret colour
     int             m_nBlinkingRate;        //milliseconds
 	lmLUnits        m_udyLength;
 	lmLUnits        m_udxSegment;
@@ -94,4 +102,4 @@ private:
 };
 
 
-#endif    // __LM_CURSOR_H__
+#endif    // __LM_CARET_H__

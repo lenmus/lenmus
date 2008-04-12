@@ -3,11 +3,12 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="lenmus" />
+		<Option platforms="Unix;" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option platforms="Unix;Mac;" />
+				<Option platforms="Unix;" />
 				<Option output="../../z_gtk_debug/lenmus" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../z_gtk_obj/Debug/" />
 				<Option type="0" />
@@ -17,7 +18,9 @@
 					<Add option="-g" />
 					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=yes --cflags`" />
 					<Add option="-D_DEBUG" />
+					<Add option="-D__WXGTK__" />
 					<Add option="-D__WXDEBUG__" />
+					<Add option="-D_UNICODE" />
 					<Add directory="../../../wxMidi/include" />
 				</Compiler>
 				<Linker>
@@ -98,6 +101,8 @@
 		<Unit filename="../../src/app/ScoreDoc.h" />
 		<Unit filename="../../src/app/ScoreView.cpp" />
 		<Unit filename="../../src/app/ScoreView.h" />
+		<Unit filename="../../src/app/ScoreWizard.cpp" />
+		<Unit filename="../../src/app/ScoreWizard.h" />
 		<Unit filename="../../src/app/SplashFrame.cpp" />
 		<Unit filename="../../src/app/SplashFrame.h" />
 		<Unit filename="../../src/app/StatusBar.cpp" />
@@ -105,8 +110,14 @@
 		<Unit filename="../../src/app/TheApp.cpp" />
 		<Unit filename="../../src/app/TheApp.h" />
 		<Unit filename="../../src/app/global.h" />
-		<Unit filename="../../src/app/toolbox/ToolNotesOpt.cpp" />
-		<Unit filename="../../src/app/toolbox/ToolNotesOpt.h" />
+		<Unit filename="../../src/app/toolbox/ColorScheme.cpp" />
+		<Unit filename="../../src/app/toolbox/ColorScheme.h" />
+		<Unit filename="../../src/app/toolbox/ToolGroup.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolGroup.h" />
+		<Unit filename="../../src/app/toolbox/ToolNotes.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolNotes.h" />
+		<Unit filename="../../src/app/toolbox/ToolPage.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolPage.h" />
 		<Unit filename="../../src/app/toolbox/ToolsBox.cpp" />
 		<Unit filename="../../src/app/toolbox/ToolsBox.h" />
 		<Unit filename="../../src/auxmusic/Cadence.cpp" />
@@ -349,8 +360,8 @@
 		<Unit filename="../../src/updater/UpdaterDlg.h" />
 		<Unit filename="../../src/widgets/Button.cpp" />
 		<Unit filename="../../src/widgets/Button.h" />
-		<Unit filename="../../src/widgets/Cursor.cpp" />
-		<Unit filename="../../src/widgets/Cursor.h" />
+		<Unit filename="../../src/widgets/Caret.cpp" />
+		<Unit filename="../../src/widgets/Caret.h" />
 		<Unit filename="../../src/widgets/Ruler.cpp" />
 		<Unit filename="../../src/widgets/Ruler.h" />
 		<Unit filename="../../src/xml_parser/MusicXMLParser.cpp" />
@@ -360,6 +371,7 @@
 		<Extensions>
 			<code_completion />
 			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

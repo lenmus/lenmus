@@ -1,4 +1,3 @@
-
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
@@ -35,6 +34,8 @@
 #include "wx/wx.h"
 #endif
 
+#include <algorithm>
+
 #include "LDPNode.h"
 
 // lmLDPNode represents an element of the LDP representation language.
@@ -48,6 +49,7 @@ lmLDPNode::lmLDPNode(wxString sData)
 {
     m_sName = sData;
     m_fIsSimple = true;
+    m_fProcessed = false;
 }
 
 lmLDPNode::~lmLDPNode()
@@ -81,6 +83,49 @@ lmLDPNode* lmLDPNode::GetParameter(long i)
     // parameter numbers are 1 based
     wxASSERT(i > 0 && i <= (int)m_cNodes.size());
     return m_cNodes[i-1];
+}
+
+lmLDPNode* lmLDPNode::StartIterator(long iP, bool fOnlyNotProcessed)
+{
+    //Set initial position
+    if (iP > (int)m_cNodes.size())
+        m_it = m_cNodes.end();
+    else if (iP == 1)
+        m_it = m_cNodes.begin();
+    else
+        m_it = std::find(m_cNodes.begin(), m_cNodes.end(), m_cNodes[iP-1]);
+
+    //return object
+    if (m_it == m_cNodes.end()) 
+        return (lmLDPNode*)NULL;
+
+    if (fOnlyNotProcessed && !(*m_it)->IsProcessed())
+            return *m_it;
+    
+    return GetNextParameter(fOnlyNotProcessed);
+}
+
+lmLDPNode* lmLDPNode::GetNextParameter(bool fOnlyNotProcessed)
+{
+    if (m_it == m_cNodes.end()) 
+        return (lmLDPNode*)NULL;
+
+    //advance to next one
+    ++m_it;
+    while (m_it != m_cNodes.end()) 
+    {
+        if (fOnlyNotProcessed)
+        {
+            if (!(*m_it)->IsProcessed())
+                return *m_it;
+        }
+        else
+            return *m_it;
+
+        ++m_it;
+    }
+    //no more items or all processed
+    return (lmLDPNode*)NULL;
 }
 
 lmLDPNode* lmLDPNode::GetParameter(wxString& sName) const

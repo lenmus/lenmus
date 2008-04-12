@@ -56,8 +56,8 @@ lmShapeTuplet::lmShapeTuplet(lmNoteRest* pStartNR, lmNoteRest* pEndNR, int nNumN
 	m_pFont = pFont;
 
 	//compute positions and bounds
-	OnAttachmentPointMoved(pStartNR->GetShap2(), eGMA_StartNote, 0.0, 0.0, lmMOVE_EVENT);
-	OnAttachmentPointMoved(pEndNR->GetShap2(), eGMA_EndNote, 0.0, 0.0, lmMOVE_EVENT);
+	OnAttachmentPointMoved(pStartNR->GetShape(), eGMA_StartNote, 0.0, 0.0, lmMOVE_EVENT);
+	OnAttachmentPointMoved(pEndNR->GetShape(), eGMA_EndNote, 0.0, 0.0, lmMOVE_EVENT);
 
 }
 

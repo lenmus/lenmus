@@ -225,7 +225,7 @@ void lmScoreCtrol::OnPlayMeasure(wxCommandEvent& event)
     DoPlay(ePM_NormalInstrument, m_pMeasureLink[i], i+1);
 }
 
-void lmScoreCtrol::DoPlay(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure)
+void lmScoreCtrol::DoPlay(lmEPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure)
 {
     if (!m_fPlaying) {
         // is not playing. "Play" pressed

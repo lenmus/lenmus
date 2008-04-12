@@ -43,7 +43,7 @@
 #include "ScoreCommand.h"
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 #include "toolbox/ToolsBox.h"
-#include "toolbox/ToolNotesOpt.h"
+#include "toolbox/ToolNotes.h"
 
 #include "../ldp_parser/LDPParser.h"
 #include "global.h"
@@ -151,14 +151,6 @@ lmScoreCanvas::~lmScoreCanvas()
 {
 }
 
-
-// Repainting behaviour
-//
-// We are going to use the technique of the virtual window. A bitmap, to act as the virtual
-// window is mateined in the lmScoreView. All score display output is drawn onto this bitmap.
-// Thus, to respond to a paint event we only have to copy the bitmap to the physical window.
-// For optimization, only the damaged window rectangles will be repainted.
-//
 void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
     // In a paint event handler, the application must always create a wxPaintDC object,
@@ -252,14 +244,23 @@ void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_T("Select %s"), pGMO->GetName().c_str() );
-	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, pGMO));
+	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, m_pView, pGMO));
 }
 
-void lmScoreCanvas::SelectObjects(lmGMSelection* pSelection)
+void lmScoreCanvas::SelectObjects(bool fSelect, lmGMSelection* pSelection)
 {
+	//select a set of objects
+
     //TODO
     //wxLogMessage(pSelection->Dump());
-    wxMessageBox(wxString::Format(_T("%d objects selected"), pSelection->NumObjects() ));
+
+    if (pSelection->NumObjects() < 1) return;
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = wxString::Format(
+        (fSelect ? _T("Select %d objects") : _T("Unselect %d objects")), pSelection->NumObjects() );
+	pCP->Submit(new lmCmdSelectMultiple(sName, m_pDoc, m_pView, pSelection, fSelect));
+
 }
 
 void lmScoreCanvas::DeleteObject()
@@ -413,7 +414,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 
         case lmTOOL_NOTES:	//---------------------------------------------------------
 		{
-			lmToolNotesOpt* pNoteOptions = pToolBox->GetNoteProperties();
+			lmToolNotes* pNoteOptions = pToolBox->GetNoteProperties();
 			lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
 			float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, false, false, 0, 0);
 			lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
@@ -460,52 +461,52 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 				//select note duration
 				case 48:    // '0' double whole
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
 					break;
 
 				case 49:    // '1' whole
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
 					break;
 
 				case 50:    // '2' half
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
 					break;
 
 				case 51:    // '3' quarter
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
 					break;
 
 				case 52:    // '4' eighth
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
 					break;
 
 				case 53:    // '5' 16th
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
 					break;
 
 				case 54:    // '6' 32nd
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
 					break;
 
 				case 55:    // '7' 64th
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
 					break;
 
 				case 56:    // '8' 128th
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
 					break;
 
 				case 57:    // '9' 256th
 					if (pToolBox) 
-						((lmToolNotesOpt*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
 					break;
 
 				//commands requiring to have a note/rest selected

@@ -476,7 +476,7 @@ lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyS
  //           //lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
  //           //uyPos = pMinNote->GetYStartStem() + pNote->GetStemLength();
  //           lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
- //           lmShapeStem* pStem = ((lmShapeNote*)pMinNote->GetShap2())->GetStem();
+ //           lmShapeStem* pStem = ((lmShapeNote*)pMinNote->GetShape())->GetStem();
  //           uyPos = pStem->GetYEndStem();
  //       }
  //       else
@@ -486,7 +486,7 @@ lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyS
  //           //wxLogMessage(_T("[lmShapeBeam::ComputeYPosOfSegment] uyPos=%.2f, yStem=%.2f, stemLength=%.2f"),
  //           //    uyPos, pMaxNote->GetYStartStem(), pNote->GetStemLength());
  //           lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
- //           lmShapeStem* pStem = ((lmShapeNote*)pMaxNote->GetShap2())->GetStem();
+ //           lmShapeStem* pStem = ((lmShapeNote*)pMaxNote->GetShape())->GetStem();
  //           uyPos = pStem->GetYEndStem();
  //       }
  //   }

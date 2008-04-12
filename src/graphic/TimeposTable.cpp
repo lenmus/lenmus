@@ -176,7 +176,7 @@ void lmTimeposEntry::Reposition(lmLUnits uxPos)
     //lmLUnits uShift = uxPos - m_xInitialLeft + m_uxAnchor;
     lmLUnits uShift = uxPos - m_xInitialLeft;
 	if (!m_fProlog)
-		m_pSO->StoreOriginAndShiftShapes( uShift );
+		if (m_pSO) m_pSO->StoreOriginAndShiftShapes( uShift );
 	else
 		if (m_pShape) m_pShape->Shift(uShift, 0.0);
 
@@ -411,31 +411,35 @@ lmLUnits lmTimeLine::IntitializeSpacingAlgorithm()
 	//Initialize iterator and current position
 	m_it = m_aMainTable.begin();
 	m_uxCurPos = (*m_it)->m_xLeft + (*m_it)->m_uSpace;
-	m_it++;
 
-	//iterate until we reach a timed object or end of line
-	//This loop will process non-note/rest objects (clefs, key sign, etc.)
-	bool fThereAreObjects = false;
-	while (m_it != m_aMainTable.end() && (*m_it)->m_rTimePos < 0.0f)
+    if (m_it != m_aMainTable.end())
     {
-		fThereAreObjects = true;
+	    ++m_it;
 
-		//move the shape and update the entry data
-        (*m_it)->Reposition(m_uxCurPos);
+	    //iterate until we reach a timed object or end of line
+	    //This loop will process non-note/rest objects (clefs, key sign, etc.)
+	    bool fThereAreObjects = false;
+	    while (m_it != m_aMainTable.end() && (*m_it)->m_rTimePos < 0.0f)
+        {
+		    fThereAreObjects = true;
 
-		//advance the width and spacing
-		m_uxCurPos += (*m_it)->m_uSpace;
+		    //move the shape and update the entry data
+            (*m_it)->Reposition(m_uxCurPos);
 
-        m_it++;
+		    //advance the width and spacing
+		    m_uxCurPos += (*m_it)->m_uSpace;
+
+            ++m_it;
+        }
+
+	    //here m_it points to the first note/rest or to end of line
+	    //If there were not-timed objects before the firts note/rest, I am going to
+	    //add some additional space before the first note/rest
+	    if (fThereAreObjects)
+	    {
+		    m_uxCurPos += m_pOwner->TenthsToLogical(m_rSpaceAfterProlog, 1);
+	    }
     }
-
-	//here m_it points to the first note/rest or to end of line
-	//If there were not-timed objects before the firts note/rest, I am going to
-	//add some additional space before the first note/rest
-	if (fThereAreObjects)
-	{
-		m_uxCurPos += m_pOwner->TenthsToLogical(m_rSpaceAfterProlog, 1);
-	}
 
 	//Now we are going to tentatively set position of first note/rest
 	if (m_it != m_aMainTable.end())
@@ -443,14 +447,15 @@ lmLUnits lmTimeLine::IntitializeSpacingAlgorithm()
 		(*m_it)->m_xLeft = m_uxCurPos;
 	}
 
-	//Returns the maximum xPos reached
-	////DBG. log message
+	////DBG -----------------------------------------------------------------
 	//if (m_it != m_aMainTable.end())
- //       wxLogMessage(_T("Not timed. More entries. Next at time=%.2f ID=%d"), 
+    //    wxLogMessage(_T("Not timed. More entries. Next at time=%.2f ID=%d"), 
 	//				 //(*m_it)->m_rTimePos, (*m_it)->m_pSO->GetID() );
- //   else
- //       wxLogMessage(_T("Not timed. No more entries."));
+    //else
+    //    wxLogMessage(_T("Not timed. No more entries."));
+	////END_DBG -------------------------------------------------------------
 
+	//Returns the maximum xPos reached
     return m_uxCurPos;
 }
 

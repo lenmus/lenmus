@@ -67,7 +67,7 @@ enum lmEScoreObjType {
 };
 
 class lmAuxObj;
-typedef std::vector<lmAuxObj*> lmAuxObjsCol; 
+typedef std::vector<lmAuxObj*> lmAuxObjsCol;
 class lmObjOptions;
 class lmBox;
 class lmController;
@@ -78,7 +78,7 @@ public:
     virtual ~lmScoreObj();
 
     //--- Options --------------------------------------------
-    
+
     // get and set the value of an option
     lmObjOptions* GetCurrentObjOptions();
     lmObjOptions* GetObjOptions() { return m_pObjOptions; }
@@ -115,10 +115,14 @@ public:
 	//position and main shape
     virtual void StoreOriginAndShiftShapes(lmLUnits uLeft);
 	virtual lmLocation SetUserLocation(lmLocation tPos);
-	inline lmShape* GetShap2() { return m_pShape; }
+    inline lmGMObject* GetGMObject() { return m_pGMObj; }
+	inline lmShape* GetShape() { return (lmShape*)m_pGMObj; }
+    inline lmBox* GetBox() { return (lmBox*)m_pGMObj; }
     virtual lmUPoint& GetReferencePaperPos() { return m_uPaperPos; }
     int GetPageNumber();
     inline lmUPoint GetLayoutRefPos() { return m_uComputedPos; }
+    inline void SetLayoutRefPos(lmUPoint uPos) { m_uComputedPos = uPos; }
+
 	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 	virtual void SetReferencePos(lmUPoint& uPos);
 	void ResetObjectLocation();
@@ -136,8 +140,10 @@ public:
 
     //debug methods
 	virtual wxString Dump();
+    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceXML(int nIndent);
 
-	//edit management
+    //edit management
 	inline bool IsModified() { return m_fModified; }
 	virtual void RecordHistory(lmUndoData* pUndoData);
 	virtual void AcceptChanges();
@@ -157,7 +163,7 @@ protected:
     lmLocation      m_tPos;         //desired position for this object
 	lmLocation		m_tSrcPos;		//position specified in source code
     lmUPoint		m_uPaperPos;	//relative origin to render this object: paper position
-    lmShape*		m_pShape;		//new shape
+    lmGMObject*		m_pGMObj;		//shape/box that renders this object
 
     lmUPoint        m_uComputedPos; //absolute (referenced to top-left paper margin corner)
     lmUPoint        m_uUserShift;   //(0.0, 0.0) if no user requirements
@@ -170,10 +176,10 @@ protected:
 // class lmComponentObj
 //-------------------------------------------------------------------------------------------
 
-enum EScoreObjType
+enum lmEComponentObjType
 {
-    eSCOT_StaffObj = 1,         // staff objects (lmStaffObj). Main objects. Consume time
-    eSCOT_AuxObj,               // aux objects (lmAuxObj). Auxiliary. Owned by StaffObjs
+    lm_eStaffObj = 1,         // staff objects (lmStaffObj). Main objects. Consume time
+    lm_eAuxObj,               // aux objects (lmAuxObj). Auxiliary. Owned by StaffObjs
 };
 
 
@@ -195,23 +201,22 @@ public:
 
 	// type and identificaction
     inline int GetID() const { return m_nId; }
-    inline EScoreObjType GetType() const { return m_nType; }
+    inline lmEComponentObjType GetType() const { return m_nType; }
 
-    // graphic model
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
+    // graphical model
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper,
 						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
 	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)=0;
 
 
 protected:
-    lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocation* pPos = &g_tDefaultPos,
+    lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, lmLocation* pPos = &g_tDefaultPos,
                    bool fIsDraggable = false);
 
-    wxString SourceLDP_Location(lmUPoint uPaperPos);
 	lmUPoint ComputeObjectLocation(lmPaper* pPaper);
 
 
-    EScoreObjType   m_nType;        //type of ComponentObj
+    lmEComponentObjType   m_nType;        //type of ComponentObj
     int             m_nId;          //unique number, to identify each lmComponentObj
     bool            m_fIsDraggable;
 
@@ -295,7 +300,7 @@ public:
     virtual float GetTimePosIncrement() { return 0; }
 
     // methods related to positioning
-    virtual lmLUnits GetAnchorPos() {return m_pShape->GetXLeft(); }
+    virtual lmLUnits GetAnchorPos() {return m_pGMObj->GetXLeft(); }
 
 	//highligh
 	virtual void PlaybackHighlight(lmPaper* pPaper, wxColour colorC) {}
@@ -321,8 +326,6 @@ protected:
              bool fVisible = true,
              bool fIsDraggable = false);
 
-	wxString SourceLDP_Location();
-
 	//rendering
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
 
@@ -338,7 +341,7 @@ protected:
     // Info about staff ownership
     lmVStaff*		m_pVStaff;		// lmVStaff owning this lmStaffObj
     int				m_nStaffNum;	// lmStaff (1..n) on which this object is located
-	lmSegment* 		m_pSegment;		// ptr to segment including this staffobj 
+	lmSegment* 		m_pSegment;		// ptr to segment including this staffobj
 
 
 };
@@ -369,7 +372,7 @@ public:
 
 	//---- virtual methods of base class -------------------------
 
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper,
 						wxColour colorC = *wxBLACK, bool fHighlight = false);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
 
@@ -380,7 +383,7 @@ public:
     // debug methods
     virtual wxString Dump();
 
-    virtual void StoreOriginAndShiftShapes(lmLUnits uLeft);
+    void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift);
 	void OnParentMoved(lmLUnits xShift, lmLUnits yShift);
 
 	//---- specific methods of this class ------------------------
@@ -392,14 +395,13 @@ public:
     virtual lmEAuxObjType GetAuxObjType()=0;
 
     // source code related methods
-    virtual wxString SourceLDP(int nIndent)=0;
-    virtual wxString SourceXML(int nIndent)=0;
+    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceXML(int nIndent);
 
 
 protected:
     lmAuxObj(bool fIsDraggable = false);
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
-	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 
 };
 

@@ -30,6 +30,7 @@
 
 #include "wx/cmdproc.h"
 
+#include "ScoreView.h"
 #include "../score/defs.h"
 #include "../score/UndoRedo.h"
 #include "../score/ColStaffObjs.h"      //lmVCursorState
@@ -40,6 +41,7 @@ class lmScoreObj;
 class lmVStaffCursor;
 class lmVStaff;
 class lmNote;
+class lmGMSelection;
 
 
 
@@ -52,6 +54,7 @@ public:
 	enum lmEScoreCommand
 	{
 		lmCMD_SelectSingle = 1,
+		lmCMD_SelectMultiple,
 		lmCMD_MoveScoreObj,
 		lmCMD_DeleteObject,
         lmCMD_InsertBarline,
@@ -71,7 +74,7 @@ protected:
     lmScoreCommand(const wxString& name, lmScoreDocument *pDoc);
 
     //common methods
-    void CommandDone();
+    void CommandDone(bool fScoreModified, int nOptions=0);
 
 
     lmScoreDocument*    m_pDoc;
@@ -80,15 +83,16 @@ protected:
 };
 
 
-// Select object command
+// Select object commands
 //------------------------------------------------------------------------------------
 class lmCmdSelectSingle: public lmScoreCommand
 {
 public:
-    lmCmdSelectSingle(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO)
+    lmCmdSelectSingle(const wxString& name, lmScoreDocument *pDoc, lmView* pView, lmGMObject* pGMO)
         : lmScoreCommand(name, pDoc)
         {
             m_pGMO = pGMO;
+            m_pView = pView;
         }
 
     ~lmCmdSelectSingle() {}
@@ -104,6 +108,28 @@ protected:
 
 
     lmGMObject*		m_pGMO;
+    lmView*         m_pView;
+
+};
+
+class lmCmdSelectMultiple: public lmScoreCommand
+{
+public:
+    lmCmdSelectMultiple(const wxString& name, lmScoreDocument *pDoc, lmView* pView,
+                        lmGMSelection* pSelection, bool fSelect);
+    ~lmCmdSelectMultiple() {}
+
+    //implementation of pure virtual methods in base class
+    inline bool Do() { return DoSelectUnselect(); }
+    inline bool Undo() { return DoSelectUnselect(); }
+    lmEScoreCommand GetCommandType() { return lmCMD_SelectMultiple; }
+
+protected:
+	bool DoSelectUnselect();
+
+    lmGMSelection*  m_pSelection;
+    lmView*         m_pView;
+    bool            m_fSelect;
 
 };
 
@@ -193,6 +219,9 @@ public:
 protected:
     lmVStaffCursor*     m_pVCursor;
     lmEClefType         m_nClefType;
+
+    lmVStaff*           m_pVStaff;      //affected VStaff
+    lmClef*				m_pNewClef;     //inserted clef
 };
 
 

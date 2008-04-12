@@ -46,17 +46,6 @@ class lmPaper;
 class lmBoxScore;
 class lmGMObject;
 
-// to use offscreen bitmaps or not
-#define lmUSE_BITMAPS       true        //create a compatible bitmap and return it
-#define lmNO_BITMAPS        false       //direct drawing on the DC
-
-//Options for method Prepare
-enum lmGraphMngrOptions
-{
-    lmFORCE_RELAYOUT                    = 0x0001,
-    lmRELAYOUT_ON_PAPER_SIZE_CHANGE     = 0x0002,
-};
-
 //Class lmGraphicManager stores and manages all score renderization issues
 class lmGraphicManager
 {
@@ -68,11 +57,11 @@ public:
     void Create(lmScore* pScore, lmPaper* pPaper);
 
     //renderization
-    void Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
-                 double rScale, lmPaper* pPaper, int nOptions=0);
+    void PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
+                         double rScale, lmPaper* pPaper, int nOptions=0);
 
-    void Layout();                          //measure phase
-    wxBitmap* Render(bool fUseBitmaps, int nPage);      //render page 1..n
+    void Layout();
+    wxBitmap* RenderScore(int nPage, int nOptions=0);      //render page 1..n
 
     //bitmaps export
     void ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType);

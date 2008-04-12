@@ -47,6 +47,8 @@
 #include "../app/TheApp.h"
 
 //cursor positioning requires access to shapes
+#include "../graphic/BoxScore.h"
+#include "../graphic/BoxPage.h"
 #include "../graphic/BoxSystem.h"
 #include "../graphic/ShapeStaff.h"
 
@@ -506,7 +508,7 @@ void lmVStaffCursor::MoveToSegment(int nSegment, int nStaff, lmUPoint uPos)
 		lmStaffObj* pSO = GetStaffObj();
         if (pSO->GetStaffNum() == m_nStaff)
         {
-		    lmLUnits xPos = pSO->GetShap2()->GetXLeft();
+		    lmLUnits xPos = pSO->GetShape()->GetXLeft();
 		    lmLUnits uDist = fabs(uPos.x - xPos);
 		    if (uDist < uMinDist)
             {
@@ -588,33 +590,35 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     {
         //get info from cursor staffobj
         rT2 = pCursorSO->GetTimePos();
-        lmShape* pShape2 = pCursorSO->GetShap2();
+        lmShape* pShape2 = pCursorSO->GetShape();
         if (pShape2)
         {
-	        lmBoxSystem* pSystem = pShape2->GetOwnerSystem();
-			//GetStaffShape() requires as parameter the staff number, relative to the
-			//total number of staves in the system. But we have staff number relative to
-			//staves in current instrument. So we have to determine how many instruments
-			//there are, and transform staff number.
-			int nRelStaff = pCursorSO->GetStaffNum();
-			int nInstr = m_pScoreCursor->GetCursorInstrumentNumber();
-			if (nInstr > 1)
-			{
-				lmScore* pScore = m_pScoreCursor->GetCursorScore();
-				nRelStaff += pScore->GetFirstInstrument()->GetNumStaves();
-				for (int i=2; i < nInstr; i++)
-				{
-					nRelStaff += pScore->GetNextInstrument()->GetNumStaves();
-				}
-			}
-			//here we have the staff number relative to total staves in system
-            uPos.y = pSystem->GetStaffShape(nRelStaff)->GetYTop();
+            uPos.y = GetStaffPosY(pCursorSO);
+	        //lmBoxSystem* pSystem = pShape2->GetOwnerSystem();
+			////GetStaffShape() requires as parameter the staff number, relative to the
+			////total number of staves in the system. But we have staff number relative to
+			////staves in current instrument. So we have to determine how many instruments
+			////there are, and transform staff number.
+			//int nRelStaff = pCursorSO->GetStaffNum();
+			//int nInstr = m_pScoreCursor->GetCursorInstrumentNumber();
+			//if (nInstr > 1)
+			//{
+			//	lmScore* pScore = m_pScoreCursor->GetCursorScore();
+			//	nRelStaff += pScore->GetFirstInstrument()->GetNumStaves();
+			//	for (int i=2; i < nInstr; i++)
+			//	{
+			//		nRelStaff += pScore->GetNextInstrument()->GetNumStaves();
+			//	}
+			//}
+			////here we have the staff number relative to total staves in system
+            //uPos.y = pSystem->GetStaffShape(nRelStaff)->GetYTop();
             uX2 = pShape2->GetXLeft() + pShape2->GetWidth()/2.0f;
         }
         else
         {
             //End of score
             //Or no shape! --> //TODO: All objects must have a shape, althought it can be not visible
+            wxLogMessage(_T("[lmVStaffCursor::GetCursorPoint] No shape for current sttafobj"));
             uPos.y = 0.0f;  //TODO
             uX2 = 0.0f;     //TODO
         }
@@ -625,7 +629,7 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     if (pPrevSO)
     {
         rT1 = pPrevSO->GetTimePos();
-        lmShape* pShape1 = pPrevSO->GetShap2();
+        lmShape* pShape1 = pPrevSO->GetShape();
 	    if (!pShape1)
             //NO shape! --> //TODO: All objects must have a shape, althought it can be not visible
             uX1 = 0.0f;     //TODO
@@ -642,8 +646,9 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
 
     if (pCursorSO && pPrevSO)
     {
-        //Between two staffobjs, or on the sencond one
-        //decide on positioning, based on cursor time
+        //Both staffobjs, previous and current, exist. So curor is between the two staffobjs,
+        //or over the sencond one.
+        //Decide on positioning, based on cursor time
         if (IsEqualTime(m_rTimepos, pCursorSO->GetTimePos()))
         {
             //Pointing to cursor staffobj. Take positioning information from staffobj
@@ -665,9 +670,10 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         return uPos;
     }
 
-    if (pCursorSO)
+    else if (pCursorSO)
     {
-        //No prev staffobj. It is the first one and so, cursor must be on it
+        //No previous staffobj. Current staffobj is the first one and, therefore, cursor 
+        //must be on it
         if (IsEqualTime(m_rTimepos, pCursorSO->GetTimePos()))
         {
             //Pointing to cursor staffobj. Take positioning information from staffobj
@@ -681,11 +687,57 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         return uPos;
     }
 
-    //Score empty. No current staffobj and no previous staffobj
-    //Take positioning information from staff and timepos
-    //TODO
+    else if (pPrevSO)
+    {
+        //No current staffobj but previous one exist. Previous one is the last one and 
+        //the cursor is at the end of the score.
+        //Position cursor four lines (40 tenths) at the right of last staffobj
+        uPos.y = GetStaffPosY(pPrevSO);
+        uPos.x = uX1 + pPrevSO->TenthsToLogical(40);
+
+        return uPos;
+    }
+
+    //No current staffobj and no previous staffobj
+    //The score is empty, place cursor at first system of current page (there should be
+    //only one page and one system, but let's have the code ready just in case we have
+    //many empty pages full of empty systems)
+
+    //Take positioning information from staff position
+    lmScore* pScore = m_pColStaffObjs->m_pOwner->GetScore();
+    lmBoxScore* pBS = (lmBoxScore*)pScore->GetBox();
+    lmBoxPage* pBPage = pBS->GetPage(pBS->GetNumPages());
+    lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
+    uPos.y = pBSystem->GetStaffShape(1)->GetYTop();
+    uPos.x = pBSystem->GetXLeft() + pScore->TenthsToLogical(10);
 
     return uPos;
+}
+
+float lmVStaffCursor::GetStaffPosY(lmStaffObj* pSO)
+{
+    //receives a staffobj and returns the y coordinate of the staff on which this staffobj
+    //is placed
+    
+    lmShape* pShape = pSO->GetShape();
+	lmBoxSystem* pSystem = pShape->GetOwnerSystem();
+	//GetStaffShape() requires as parameter the staff number, relative to the
+	//total number of staves in the system. But we have staff number relative to
+	//staves in current instrument. So we have to determine how many instruments
+	//there are, and transform staff number.
+	int nRelStaff = pSO->GetStaffNum();
+	int nInstr = m_pScoreCursor->GetCursorInstrumentNumber();
+	if (nInstr > 1)
+	{
+		lmScore* pScore = m_pScoreCursor->GetCursorScore();
+		nRelStaff += pScore->GetFirstInstrument()->GetNumStaves();
+		for (int i=2; i < nInstr; i++)
+		{
+			nRelStaff += pScore->GetNextInstrument()->GetNumStaves();
+		}
+	}
+	//here we have the staff number relative to total staves in system
+    return pSystem->GetStaffShape(nRelStaff)->GetYTop();
 }
 
 void lmVStaffCursor::UpdateTimepos()
@@ -1596,20 +1648,20 @@ bool lmColStaffObjs::ShiftTime(float rTimeShift)
 
     //check that new time is in current measure boundaries
     float rMaxTime = m_Segments[m_pVCursor->GetSegment()]->GetDuration();
-    if (rNewTime < 0.0f)
+    if (IsLowerTime(rNewTime, 0.0f))
     {
         //Move backwards: out of measure
-        if (rTimeShift != lmTIME_SHIFT_START_END)
+        if (!IsEqualTime(-rTimeShift, lmTIME_SHIFT_START_END))
         {
             m_pOwner->SetError(_("Move backwards: out of measure"));
             fError = true;
         }
         rNewTime = 0.0f;
     }
-    else if (rTimeShift > rMaxTime)
+    else if (IsHigherTime(rTimeShift, rMaxTime))
     {
         //Move forward: out of measure
-        if (rTimeShift != lmTIME_SHIFT_START_END)
+        if (!IsEqualTime(rTimeShift, lmTIME_SHIFT_START_END))
         {
             m_pOwner->SetError(_("Move forward: out of measure"));
             fError = true;
@@ -1761,6 +1813,10 @@ lmContext* lmColStaffObjs::NewUpdatedLastContext(int nStaff)
 		//last segment
 		pCT = m_pOwner->GetLastContext(nStaff);
 		it = pSegment->m_StaffObjs.begin();
+
+        //if the score is empty there is no context yet. Return NULL
+        if (!pCT)
+            return pCT;
 	}
 
 	//Here, iterator 'it' is pointing to the first staffobj able to modify current context.

@@ -44,7 +44,9 @@
 #include "VStaff.h"
 #include "UndoRedo.h"
 #include "../app/global.h"
+#include "../app/Page.h"
 #include "../sound/SoundEvents.h"
+#include "../graphic/Formatter4.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../app/ScoreView.h"
@@ -148,7 +150,7 @@ void lmScoreCursor::MoveRight(bool fNextObject)
 		//if current instrument has more staves, advance to next staff.
 		//else to first staff of next instrument
 		lmInstrument* pInstr = m_pScore->m_cInstruments[m_nCursorInstr-1];
-		int nStaff = m_pVCursor->GetCursorNumStaff();
+		int nStaff = m_pVCursor->GetNumStaff();
 		if (nStaff < pInstr->GetNumStaves())
 		{
 			//advance to next staff of current instrument
@@ -195,7 +197,7 @@ void lmScoreCursor::MoveUp()
 
 	//get current paper position and current staff
     lmUPoint uPos = m_pVCursor->GetCursorPoint();
-	int nStaff = m_pVCursor->GetCursorNumStaff();
+	int nStaff = m_pVCursor->GetNumStaff();
 	int nMeasure = m_pVCursor->GetSegment();
 
 	//if current instrument has previous staves, keep instrument and decrement staff
@@ -219,7 +221,7 @@ void lmScoreCursor::MoveUp()
 	lmStaffObj* pCursorSO = m_pVCursor->GetStaffObj();
 	if (pCursorSO)
 	{
-		lmShape* pShape2 = pCursorSO->GetShap2();
+		lmShape* pShape2 = pCursorSO->GetShape();
 		if (pShape2)
 		{
 			lmBoxSystem* pSystem = pShape2->GetOwnerSystem();
@@ -253,7 +255,7 @@ void lmScoreCursor::MoveDown()
 
 	//get current paper position and current staff
     lmUPoint uPos = m_pVCursor->GetCursorPoint();
-	int nStaff = m_pVCursor->GetCursorNumStaff();
+	int nStaff = m_pVCursor->GetNumStaff();
 	int nMeasure = m_pVCursor->GetSegment();
 
 	//if current instrument has more staves, keep instrument and increment staff
@@ -276,7 +278,7 @@ void lmScoreCursor::MoveDown()
 	lmStaffObj* pCursorSO = m_pVCursor->GetStaffObj();
 	if (pCursorSO)
 	{
-		lmShape* pShape2 = pCursorSO->GetShap2();
+		lmShape* pShape2 = pCursorSO->GetShape();
 		if (pShape2)
 		{
 			lmBoxSystem* pSystem = pShape2->GetOwnerSystem();
@@ -360,7 +362,7 @@ lmStaff* lmScoreCursor::GetCursorStaff()
 int lmScoreCursor::GetCursorNumStaff()
 {
     if (m_pVCursor)
-        return m_pVCursor->GetCursorNumStaff();
+        return m_pVCursor->GetNumStaff();
     else
         return 1;
 }
@@ -449,6 +451,10 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL), m_SCursor(this)
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
     m_sScoreName = _T("New score");
+    m_pTenthsConverter = (lmVStaff*)NULL;
+
+    //paper size and margins
+    m_pPageInfo = (lmPageInfo*)NULL;
 
     //TODO user options, not a constant
     m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
@@ -492,21 +498,35 @@ lmScore::~lmScore()
     //delete list of title indexes
     m_nTitles.clear();
 
+    //delete other objects
+    if (m_pPageInfo) delete m_pPageInfo;
+}
+
+void lmScore::SetPageInfo(lmPageInfo* pPageInfo)
+{
+    //Set default page information
+
+    if (m_pPageInfo) delete m_pPageInfo;
+    m_pPageInfo = pPageInfo;
 }
 
 lmLUnits lmScore::TenthsToLogical(lmTenths nTenths)
 {
-	//TODO
-	return 0.0;
+    //For all AuxObjs attached to the score 'tenths' will be 'tenths of millimeter'. This
+    //is equivalent to using a reference staff whose lines are spaced 1 mm.
+    lmLUnits uSpacing = lmToLogicalUnits(1.0f, lmMILLIMETERS);   //staff lines spacing: 1mm
+    return (uSpacing * nTenths)/10.0f;
 }
 
 lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
 {
-	//TODO
-	return 0.0;
+    //For all AuxObjs attached to the score 'tenths' will be 'tenths of millimeter'. This
+    //is equivalent to using a reference staff whose lines are spaced 1 mm.
+    lmLUnits uSpacing = lmToLogicalUnits(1.0f, lmMILLIMETERS);   //staff lines spacing: 1mm
+    return (10.0f * uUnits)/uSpacing;
 }
 
-void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
+lmScoreText* lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
                        wxString sFontName, int nFontSize, lmETextStyle nStyle)
 {
     lmFontInfo tFont;
@@ -514,16 +534,15 @@ void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
     tFont.nStyle = nStyle;
     tFont.sFontName = sFontName;
 
-    lmScoreText* pTitle = new lmScoreText(sTitle, nAlign, tPos, tFont);
+    lmScoreText* pTitle = new lmScoreText(sTitle, nAlign, tPos, tFont, true);  //true -> is title
     m_nTitles.push_back( AttachAuxObj(pTitle) );
-
+    return pTitle;
 }
 
 wxString lmScore::GetScoreName()
 {
     // returns the name of this score (the file name)
     return m_sScoreName;
-
 }
 
 void lmScore::SetScoreName(wxString sName)
@@ -551,7 +570,6 @@ lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
 
 	DoAddInstrument(pInstr);
     return pInstr;
-
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
@@ -589,21 +607,54 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
     return pInstr;
 }
 
+//void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
+//{
+//    lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
+//
+//    lmScoreText* pTitle;
+//    lmLUnits nPrevTitleHeight = 0;
+//    for (int i=0; i < (int)m_nTitles.size(); i++)
+//    {
+//        pTitle = (lmScoreText*)(*m_pAuxObjs)[m_nTitles[i]];
+//		nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
+//    }
+//
+//	m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
+//
+//}
+
 void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 {
-    lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
+    //TODO: review these fixed values
+    wxColour colorC = *wxBLACK;
+    bool fHighlight = false;
 
-    lmScoreText* pTitle;
-    lmLUnits nPrevTitleHeight = 0;
-    for (int i=0; i < (int)m_nTitles.size(); i++)
+    lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
+	m_uComputedPos.x = pPaper->GetCursorX();
+	m_uComputedPos.y = pPaper->GetCursorY();
+
+	// layout AuxObjs attached to directly to the score
+    if (m_pAuxObjs)
     {
-        pTitle = (lmScoreText*)(*m_pAuxObjs)[m_nTitles[i]];
-		nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
+	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+	    {
+		    //assign m_uComputedPos as paper pos. for this AuxObj
+		    pPaper->SetCursorX(m_uComputedPos.x);
+		    pPaper->SetCursorY(m_uComputedPos.y);
+
+		    (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
+
+            //force auxObjs to take user position into account
+            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(0.0f, 0.0f);
+	    }
     }
 
-	m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
+    // update paper cursor position
+    pPaper->SetCursorX(m_uComputedPos.x);
+    m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
 
 }
+
 
 lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pTitle,
 								   lmLUnits nPrevTitleHeight)
@@ -772,6 +823,17 @@ wxString lmScore::Dump(wxString sFilename)
     //dump global VStaff
     wxString sDump = wxString::Format(_T("Score ID: %d\nGlobal objects:\n"), GetID());
 
+    //dump titles and other attached auxobjs
+    if (m_pAuxObjs)
+    {
+        sDump += _T("\nAttached aux objects:\n");
+	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+	    {
+		    sDump += (*m_pAuxObjs)[i]->Dump();
+	    }
+        sDump += _T("\n");
+    }
+
     //loop to dump all instruments
     sDump += _T("\nLocal objects:\n");
     for (int i=0; i < (int)m_cInstruments.size(); i++)
@@ -788,8 +850,7 @@ wxString lmScore::Dump(wxString sFilename)
 
 wxString lmScore::SourceLDP(wxString sFilename)
 {
-    wxString sSource = wxString::Format(_T("//Score ID: %d\n\n"), m_nID);
-    sSource += _T("(score\n   (vers 1.5)(language en utf-8)\n");
+    wxString sSource = _T("(score\n   (vers 1.5)(language en utf-8)\n");
 
     //add comment with info about generating program
     sSource += _T("   //LDP file generated by LenMus, version ");
@@ -797,6 +858,15 @@ wxString lmScore::SourceLDP(wxString sFilename)
 	sSource += _T(". Date: ");
 	sSource += (wxDateTime::Now()).Format(_T("%Y-%m-%d"));
     sSource += _T("\n");
+
+    //titles and other attached auxobjs
+    if (m_pAuxObjs)
+    {
+	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+	    {
+		    sSource += (*m_pAuxObjs)[i]->SourceLDP(1);
+	    }
+    }
 
     //loop for each instrument
     for (int i=0; i < (int)m_cInstruments.size(); i++)
@@ -993,7 +1063,7 @@ wxString lmScore::SourceXML(wxString sFilename)
 
 }
 
-void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, EPlayMode nPlayMode,
+void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, lmEPlayMode nPlayMode,
                  long nMM, wxWindow* pWindow)
 {
     if (!m_pSoundMngr) {
@@ -1005,7 +1075,7 @@ void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, EPlayMode nPl
 
 }
 
-void lmScore::PlayMeasure(int nMeasure, bool fVisualTracking, EPlayMode nPlayMode,
+void lmScore::PlayMeasure(int nMeasure, bool fVisualTracking, lmEPlayMode nPlayMode,
                           long nMM, wxWindow* pWindow)
 {
     if (!m_pSoundMngr) {
@@ -1037,7 +1107,7 @@ void lmScore::WaitForTermination()
 
 }
 
-void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nHighlightType)
+void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, lmEHighlightType nHighlightType)
 {
     switch (nHighlightType) {
         case eVisualOn:
@@ -1194,3 +1264,13 @@ lmScoreCursor* lmScore::SetNewCursorState(lmVCursorState* pState)
     m_SCursor.SetNewCursorState(pState);
     return &m_SCursor;
 }
+
+//-------------------------------------------------------------------------------------
+
+lmBoxScore* lmScore::Layout(lmPaper* pPaper)
+{
+    lmFormatter4 oFormatter;
+    m_pGMObj = oFormatter.Layout(this, pPaper);
+    return (lmBoxScore*)m_pGMObj;
+}
+

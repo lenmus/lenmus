@@ -63,7 +63,7 @@ public:
     virtual ~lmShapeArch() {}
 
     //implementation of virtual methods from base class
-    virtual void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    virtual void Render(lmPaper* pPaper, wxColour color);
     virtual wxString Dump(int nIndent);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 

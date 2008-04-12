@@ -176,7 +176,7 @@ public:
 
 	//overrides
     wxString Dump(int nIndent);
-	void Render(lmPaper* pPaper, wxColour color) {};
+	void Render(lmPaper* pPaper, wxColour color);
 
 
 };

@@ -62,8 +62,8 @@ lmShape* lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 	// One of the tie shapes will be invisible
 
     //prepare information
-    lmShapeNote* pShapeStart = (lmShapeNote*)m_pStartNote->GetShap2();
-    lmShapeNote* pShapeEnd = (lmShapeNote*)m_pEndNote->GetShap2();
+    lmShapeNote* pShapeStart = (lmShapeNote*)m_pStartNote->GetShape();
+    lmShapeNote* pShapeEnd = (lmShapeNote*)m_pEndNote->GetShape();
     bool fTieUnderNote = !m_pStartNote->StemGoesDown();
 
 	//create the first tie shape, attached to both notes' shapes

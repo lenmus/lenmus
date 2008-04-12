@@ -237,13 +237,15 @@ int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 // Methods for inserting StaffObjs
 //---------------------------------------------------------------------------------------
 
-lmClef* lmVStaff::InsertClef(lmEClefType nClefType)
+lmClef* lmVStaff::Cmd_InsertClef(lmUndoData* pUndoData, lmEClefType nClefType)
 {
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
-    int nStaff = pCursorSO->GetStaffNum();
+    int nStaff = m_VCursor.GetNumStaff();
     lmClef* pClef = new lmClef(nClefType, this, nStaff, lmVISIBLE);
     lmStaff* pStaff = GetStaff(nStaff);
-    lmContext* pContext = pStaff->NewContextAfter(pClef, GetCurrentContext(pCursorSO));
+    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
+    pContext = pStaff->NewContextAfter(pClef, pContext);
+
 	pClef->SetContext(pContext);
     m_cStaffObjs.Add(pClef);
     return pClef;
@@ -261,11 +263,43 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoData* pUndoData,
 								 wxString sOctave, lmENoteType nNoteType, float rDuration,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
 {
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
-    int nStaff = pCursorSO->GetStaffNum();
+    int nStaff = m_VCursor.GetNumStaff();
 
 	//get the applicable context
-	lmContext* pContext = NewUpdatedContext(pCursorSO);
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    lmContext* pContext;
+    if (pCursorSO)
+	    pContext = NewUpdatedContext(pCursorSO);
+    else
+        pContext = NewUpdatedLastContext(nStaff);
+
+    //if no Clef defined yet the context will be NULL
+    if (!pContext)
+    {
+		int nAnswer = wxMessageBox( wxGetTranslation(
+				_T("Error: No clef defined yet.\n")
+				_T("Would you like to have notes placed on the staff as if a G clef \n")
+				_T("has been defined?\n\n")
+				_T("Yes: an invisible G clef will be inserted before the note.\n")
+				_T("No: the operation will be cancelled.") ),
+				//
+				_("Lenmus message"),
+				wxYES_NO | wxICON_QUESTION );
+		if (nAnswer == wxYES)
+		{
+			//TODO: how to undo this?
+			AddClef(lmE_Sol, nStaff, lmNO_VISIBLE);
+			//re-compute context
+			if (pCursorSO)
+				pContext = NewUpdatedContext(pCursorSO);
+			else
+				pContext = NewUpdatedLastContext(nStaff);
+			if (!pContext)
+				return (lmNote*)NULL;
+		}
+		else
+			return (lmNote*)NULL;
+    }
 
     lmTBeamInfo BeamInfo[6];
     for (int i=0; i < 6; i++) {
@@ -425,7 +459,7 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration,
 
 }
 
-lmStaffObj* lmVStaff::AddText(wxString sText, lmEAlignment nAlign,
+lmScoreText* lmVStaff::AddText(wxString sText, lmEAlignment nAlign,
                             lmLocation* pPos, lmFontInfo tFontData, bool fHasWidth)
 {
     lmScoreText* pText = new lmScoreText(sText, nAlign, *pPos, tFontData);
@@ -435,7 +469,7 @@ lmStaffObj* lmVStaff::AddText(wxString sText, lmEAlignment nAlign,
     if (fHasWidth)
     {
         //attach it to a spacer
-        pAnchor = this->AddSpacer( pText->GetShap2()->GetWidth() );
+        pAnchor = this->AddSpacer( pText->GetShape()->GetWidth() );
     }
     else
     {
@@ -444,8 +478,7 @@ lmStaffObj* lmVStaff::AddText(wxString sText, lmEAlignment nAlign,
     }
     pAnchor->AttachAuxObj(pText);
 
-    return pAnchor;
-
+    return pText;
 }
 
 lmMetronomeMark* lmVStaff::AddMetronomeMark(int nTicksPerMinute,
@@ -627,9 +660,15 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     lmLUnits dyLinesL = pStaff->GetLineSpacing();
 
     // the font for drawing is scaled by the DC.
+    #if defined(__WXGTK__)
+    //in Linux the reference resolution is 72 DPI
+    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 72.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
+    #else
     pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 96.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
+    #endif
 
-    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL);
+    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%.2f, font size=%d"), dyLinesL,
+    //             (int)(3.0 * dyLinesL * 96.0/g_rScreenDPI) );
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units
@@ -995,7 +1034,7 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
 
     //check that a barline is found. Otherwise no barlines in the score
     if (pSO->GetClass() == eSFOT_Barline) {
-        lmShape* pShape = (lmShape*)pSO->GetShap2();
+        lmShape* pShape = (lmShape*)pSO->GetShape();
         if (!pShape) return false;
 		*pPos = pShape->GetXRight();
         return true;

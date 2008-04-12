@@ -92,6 +92,8 @@ wxString lmBarline::SourceLDP(int nIndent)
 	//base class
 	sSource += lmStaffObj::SourceLDP(nIndent);
 
+    //close element
+    sSource += _T(")\n");
     return sSource;
 }
 
@@ -184,7 +186,7 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
         new lmShapeBarline(this, nType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
 	pBox->AddShape(pShape);
-    m_pShape = pShape;
+    m_pGMObj = pShape;
     return pShape->GetBounds().GetWidth();
 
 }

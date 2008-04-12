@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "Cursor.h"
+#pragma implementation "Caret.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -35,7 +35,7 @@
 
 #include "wx/colour.h"
 
-#include "Cursor.h"
+#include "Caret.h"
 #include "../app/ScoreView.h"
 #include "../app/ScoreCanvas.h"
 #include "../score/Score.h"
@@ -43,115 +43,144 @@
 
 
 //====================================================================================
-// implementation of class lmScoreViewCursor
+// implementation of class lmCaret
 //====================================================================================
 
 
 // IDs for events, windows, etc.
 enum
 {
-	// cursor timer
+	// caret timer
 	lmID_TIMER_CURSOR = 1050,       //AWARE: check to avoid conflicts with the View
 };
 
 #define lmVISIBLE true
 #define lmHIDDEN  false
 
-IMPLEMENT_CLASS(lmScoreViewCursor, wxEvtHandler)
+IMPLEMENT_CLASS(lmCaret, wxEvtHandler)
 
-BEGIN_EVENT_TABLE(lmScoreViewCursor, wxEvtHandler)
-	EVT_TIMER   (lmID_TIMER_CURSOR, lmScoreViewCursor::OnCursorTimer)
+BEGIN_EVENT_TABLE(lmCaret, wxEvtHandler)
+	EVT_TIMER   (lmID_TIMER_CURSOR, lmCaret::OnCaretTimer)
 
 END_EVENT_TABLE()
 
 
-lmScoreViewCursor::lmScoreViewCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore)
+lmCaret::lmCaret(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore)
 { 
     m_pView = pParent;
     m_pCanvas = pCanvas;
     m_pScore = pScore;
 
-	//cursor initializations
-	m_oCursorTimer.SetOwner(this, lmID_TIMER_CURSOR);
-	m_oCursorPos.x = -1;    //means: no position   
+	//caret initializations
+	m_oCaretTimer.SetOwner(this, lmID_TIMER_CURSOR);
+	m_oCaretPos.x = -1;    //means: no position   
     m_fDisplayed = false;
     m_fVisible = false;
+    m_nCountVisible = 0;
     SetColour(*wxBLUE);
-    m_nBlinkingRate = 750;		//cursor blinking rate = 750ms
+    m_nBlinkingRate = 750;		//caret blinking rate = 750ms
 }
 
-lmScoreViewCursor::~lmScoreViewCursor()
+lmCaret::~lmCaret()
 {
-    if (m_oCursorTimer.IsRunning())
-        m_oCursorTimer.Stop();
+    if (m_oCaretTimer.IsRunning())
+        m_oCaretTimer.Stop();
 }
 
-void lmScoreViewCursor::OnCursorTimer(wxTimerEvent& event)
+void lmCaret::OnCaretTimer(wxTimerEvent& event)
 {
     if (m_fDisplayed)
     {
         m_locker.Enter();
-    	RenderCursor(!m_fVisible);
+    	RenderCaret(!m_fVisible);
         m_locker.Leave();
-        m_oCursorTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
+        m_oCaretTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
     }
 }
 
-void lmScoreViewCursor::RemoveCursor()
+void lmCaret::RemoveCaret()
 {
-    //When scrolling and other operations that could affect cursor, it is necessary
-    //to ensure that the cursor is not displayed while doing the operation.
-    //This method stops the timer and ensures that the cursor is erased
+    //When scrolling and other operations that could affect caret, it is necessary
+    //to ensure that the caret is not displayed while doing the operation.
+    //This method stops the timer and ensures that the caret is erased
 
-    //stop cursor timer
+    //stop caret timer
     m_fDisplayed = false;
-    if (m_oCursorTimer.IsRunning())
-        m_oCursorTimer.Stop();
+    if (m_oCaretTimer.IsRunning())
+        m_oCaretTimer.Stop();
 
-    //hide old cursor
+    //hide old caret
     m_locker.Enter();
-    RenderCursor(lmHIDDEN);
+    RenderCaret(lmHIDDEN);
     m_locker.Leave();
 
-    //remove position (otherwise, Display (in fact, SetCursorPosition) will skip
-    //repainting it and the cursor will never get displayed)
-	m_oCursorPos.x = -1;
+    //remove position (otherwise, Display (in fact, SetCaretPosition) will skip
+    //repainting it and the caret will never get displayed)
+	m_oCaretPos.x = -1;
 
 }
 
-void lmScoreViewCursor::DisplayCursor(double rScale, lmUPoint uPos, lmStaff* pStaff)
+void lmCaret::DisplayCaret(double rScale, lmUPoint uPos, lmStaff* pStaff)
 {
     m_fDisplayed = true;
     m_fVisible = false;
     m_rScale = rScale;
-    SetCursorPosition(uPos, pStaff);
+    SetCaretPosition(uPos, pStaff);
 }
 
-void lmScoreViewCursor::SetCursorPosition(lmUPoint uPos, lmStaff* pStaff) 
+void lmCaret::Show(bool fShow)
+{
+    //Shows or hides the caret. Notice that if the caret was hidden N times, it must
+    //be shown N times as well to reappear on the screen.
+    if (fShow)
+    {
+        if ( m_nCountVisible++ == 0 )
+            DoShow();
+    }
+    else
+    {
+        if ( --m_nCountVisible == 0 )
+            DoHide();
+    }
+}
+
+void lmCaret::DoShow()
+{
+    m_oCaretTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
+    RenderCaret(lmVISIBLE);
+}
+
+void lmCaret::DoHide()
+{
+    m_oCaretTimer.Stop();
+    RenderCaret(lmHIDDEN);
+}
+
+void lmCaret::SetCaretPosition(lmUPoint uPos, lmStaff* pStaff) 
 { 
     //if position doesn't change, return. Nothing to do.
-    if (!pStaff || uPos == m_oCursorPos) return;
+    if (!pStaff || uPos == m_oCaretPos) return;
 
-    if (m_oCursorTimer.IsRunning())
-        m_oCursorTimer.Stop();
+    if (m_oCaretTimer.IsRunning())
+        m_oCaretTimer.Stop();
     m_locker.Enter();
-    RenderCursor(lmHIDDEN);     //hide old cursor
+    RenderCaret(lmHIDDEN);     //hide old caret
 
     //set new position
-    m_oCursorPos = uPos;
-    m_oCursorPos.y -= pStaff->TenthsToLogical(10.0);
+    m_oCaretPos = uPos;
+    m_oCaretPos.y -= pStaff->TenthsToLogical(10.0);
 
 	m_udyLength = pStaff->TenthsToLogical(60.0);
 	m_udxSegment = pStaff->TenthsToLogical(5.0);
 
     //render it
-    RenderCursor(lmVISIBLE);
+    RenderCaret(lmVISIBLE);
 
     m_locker.Leave();
-    m_oCursorTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
+    m_oCaretTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
 }
 
-void lmScoreViewCursor::RenderCursor(bool fVisible)
+void lmCaret::RenderCaret(bool fVisible)
 {
     //AWARE. This code is execute protected by critical section m_locker to
     //avoid inconsistencies while changing m_fVisible status. This method is
@@ -161,10 +190,16 @@ void lmScoreViewCursor::RenderCursor(bool fVisible)
     if (m_fVisible == fVisible) return;
 
     //if not yet positioned, finish
-	if (m_oCursorPos.x == -1) return;
+	if (m_oCaretPos.x == -1) return;
 
-    m_fVisible = fVisible;       //new status
+    //set new status
+    m_fVisible = fVisible;       
 
+    Refresh();
+}
+
+void lmCaret::Refresh()
+{
 	// prepare DC
     wxClientDC dc((wxWindow*)m_pCanvas);
 	//dc.SetBrush(*wxBLUE_BRUSH);
@@ -173,9 +208,9 @@ void lmScoreViewCursor::RenderCursor(bool fVisible)
 	dc.SetPen(pen);
 	dc.SetLogicalFunction(wxXOR);
 
-	//cursor geometry
+	//caret geometry
 	lmDPoint pointD;
-	lmUPoint cursorPos(m_oCursorPos.x, m_oCursorPos.y);
+	lmUPoint cursorPos(m_oCaretPos.x, m_oCaretPos.y);
 	((lmScoreView*)m_pView)->LogicalToDevice(cursorPos, pointD);
 	lmPixels vxLine = pointD.x;
 	lmPixels vyTop = pointD.y;
@@ -196,14 +231,14 @@ void lmScoreViewCursor::RenderCursor(bool fVisible)
 
 }
 
-void lmScoreViewCursor::SetColour(wxColour color)
+void lmCaret::SetColour(wxColour color)
 {
     // as painting uses XOR we need the complementary
     m_color = wxColour(255 - (int)color.Red(), 255 - (int)color.Green(), 255 - (int)color.Blue() );
 
 }
 
-void lmScoreViewCursor::SetBlinkingRate(int nMillisecs)
+void lmCaret::SetBlinkingRate(int nMillisecs)
 {
     m_nBlinkingRate = nMillisecs;
 }

@@ -47,7 +47,7 @@ lmAccidental::lmAccidental(lmNote* pOwner, lmEAccidentals nType)
     m_nType = nType;
 	m_pStaff = pOwner->GetVStaff()->GetStaff(pOwner->GetStaffNum());
 	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
-	//a shape if not NULL, as the shape is deleted in the graphic model.
+	//a shape if not NULL, as the shape is deleted in the graphical model.
 	m_pShape = (lmShape*)NULL;
 
 	//set up the after space

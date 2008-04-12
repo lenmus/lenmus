@@ -42,6 +42,9 @@ class lmScoreView;
 class lmScoreDocument;
 class lmGMSelection;
 
+#define lmUNSELECT      false       //remove selection
+#define lmSELECT        true        //select objects
+
 
 //Abstract class. All controllers must derive from it
 class lmController : public wxWindow
@@ -71,7 +74,7 @@ public:
 	virtual void ChangeNoteAccidentals(int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
-    virtual void SelectObjects(lmGMSelection* pSelection) {};
+    virtual void SelectObjects(bool fSelect, lmGMSelection* pSelection) {};
 	virtual void DeleteObject() {}
 
     // event handlers
@@ -136,7 +139,7 @@ public:
 	void ChangeNoteAccidentals(int nSteps);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 	void SelectObject(lmGMObject* pGMO);
-    void SelectObjects(lmGMSelection* pSelection);
+    void SelectObjects(bool fSelect, lmGMSelection* pSelection);
 	void DeleteObject();
 
 	//contextual menus

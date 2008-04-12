@@ -278,6 +278,11 @@ bool lmShape::IsInRectangle(lmURect& rect)
     return rect.Contains(rect1);
 }
 
+void lmShape::Render(lmPaper* pPaper)
+{
+    Render(pPaper, (this->IsSelected() ? g_pColors->ScoreSelected() : m_color) );
+}
+
 void lmShape::RenderCommon(lmPaper* pPaper)
 {
 	RenderCommon(pPaper, g_pColors->ScoreSelected());
@@ -289,7 +294,7 @@ void lmShape::RenderCommon(lmPaper* pPaper, wxColour colorC)
     // each shape renderization method
 
     // draw selection rectangle
-    if (g_fDrawSelRect || IsSelected() )
+    if (g_fDrawSelRect)
         DrawSelRectangle(pPaper, g_pColors->ScoreSelected() );
 
     if (g_fDrawBounds)
@@ -659,3 +664,22 @@ wxString lmGMSelection::Dump()
     return sDump;
 }
 
+lmGMObject* lmGMSelection::GetFirst()
+{
+    m_it = m_Selection.begin();
+    if (m_it == m_Selection.end())
+        return (lmGMObject*)NULL;
+
+    return *m_it;
+}
+
+lmGMObject* lmGMSelection::GetNext()
+{
+    //advance to next one
+    ++m_it;
+    if (m_it != m_Selection.end()) 
+        return *m_it;
+
+    //no more items
+    return (lmGMObject*)NULL;
+}

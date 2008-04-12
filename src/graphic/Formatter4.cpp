@@ -43,6 +43,7 @@
 #include "wx/numdlg.h"      // for ::wxGetNumberFromUser
 
 #include "../score/Score.h"
+#include "../app/Page.h"
 #include "TimeposTable.h"
 #include "Formatter4.h"
 #include "BoxScore.h"
@@ -116,6 +117,12 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     m_nSpacingMethod = (lmESpacingMethod) m_pScore->GetOptionLong(_T("Render.SpacingMethod"));
     m_nSpacingValue = (lmTenths) m_pScore->GetOptionLong(_T("Render.SpacingValue"));
 
+    //set paper size and margins
+    lmPageInfo* pPageInfo = m_pScore->GetPageInfo();
+    if (pPageInfo)
+        pPaper->SetPageInfo(pPageInfo, 1);
+
+    //create the root of the graphical model: BoxScore object
     lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
@@ -875,7 +882,6 @@ void lmFormatter4::ResetLocation(int nAbsMeasure)
 		{
 			lmStaffObj* pSO = pIT->GetCurrent();
 			pSO->ResetObjectLocation();
-			//if (pSO->GetType() == eSFOT_Barline) break;	//End of measure: exit loop.
 			pIT->MoveNext();
 		}
 		delete pIT;
@@ -1052,7 +1058,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 			//create this lmStaffObj shape and add to table
 			pPaper->SetCursorX(xStart);
 			pSO->Layout(pBSV, pPaper);
-			lmShape* pShape = pSO->GetShap2();
+			lmShape* pShape = pSO->GetShape();
 			m_oTimepos[nRelMeasure].AddEntry(nInstr, pSO, pShape, false);
         }
 
@@ -1068,7 +1074,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 		//lmLUnits uPos = pPaper->GetCursorX();
         pPaper->SetCursorX(xStart);
         pSO->Layout(pBSV, pPaper);
-        lmShape* pShape = pSO->GetShap2();
+        lmShape* pShape = pSO->GetShape();
         m_oTimepos[nRelMeasure].CloseLine(pSO, pShape, xStart);
     }
     else
@@ -1176,7 +1182,7 @@ void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper,
     pKey->Layout(pBox, pPaper);
 
 	//add the shapes to the timepos table
-	lmShape* pMainShape = pKey->GetShap2();
+	lmShape* pMainShape = ((lmStaffObj*)pKey)->GetShape();          //cast forced because otherwise the compiler complains
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
         lmShape* pShape = pKey->GetShape(nStaff);
@@ -1198,7 +1204,7 @@ void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox, lmPaper* pPaper,
     pTime->Layout(pBox, pPaper);
 
 	//add the shapes to the timepos table
-	lmShape* pMainShape = pTime->GetShap2();
+	lmShape* pMainShape = ((lmStaffObj*)pTime)->GetShape();          //cast forced because otherwise the compiler complains
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
         lmShape* pShape = pTime->GetShape(nStaff);

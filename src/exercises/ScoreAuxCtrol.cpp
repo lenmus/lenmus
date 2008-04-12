@@ -37,8 +37,9 @@
 #include "wx/font.h"
 
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
 #include "../app/DlgDebug.h"
+#include "../app/ScoreDoc.h"
+#include "ScoreAuxCtrol.h"
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -73,6 +74,8 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
     m_sMsg = wxEmptyString;
     m_sMsg2 = wxEmptyString;
     m_fDisplayMessage = false;
+
+    m_Paper.ForceDefaultPageInfo(true);
 
     SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                lmToLogicalUnits(10, lmMILLIMETERS),
@@ -244,9 +247,9 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
         // allocate a DC in memory for using the offscreen bitmaps
         wxMemoryDC memoryDC;
         m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-        m_graphMngr.Prepare(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
-                            lmFORCE_RELAYOUT);
-        wxBitmap* pPageBitmap = m_graphMngr.Render(lmUSE_BITMAPS, 1);
+        m_graphMngr.PrepareToRender(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
+                                    lmFORCE_RELAYOUT);
+        wxBitmap* pPageBitmap = m_graphMngr.RenderScore(1);
 
         wxASSERT(pPageBitmap && pPageBitmap->Ok());
         memoryDC.SelectObject(*pPageBitmap);
@@ -326,14 +329,14 @@ void lmScoreAuxCtrol::HideScore(bool fHide)
 }
 
 void lmScoreAuxCtrol::PlayScore(bool fVisualTracking, bool fMarcarCompasPrevio,
-        EPlayMode nPlayMode, long nMM)
+        lmEPlayMode nPlayMode, long nMM)
 {
     if (m_pScore) {
         m_pScore->Play(fVisualTracking && !m_fHidden, fMarcarCompasPrevio, nPlayMode, nMM, this);
     }
 }
 
-void lmScoreAuxCtrol::PlayMeasure(int nMeasure, bool fVisualTracking, EPlayMode nPlayMode,
+void lmScoreAuxCtrol::PlayMeasure(int nMeasure, bool fVisualTracking, lmEPlayMode nPlayMode,
         long nMM)
 {
     if (m_pScore) {
@@ -359,7 +362,7 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
     if (!m_pScore) return;
 
-    EHighlightType nHighlightType = event.GetHighlightType();
+    lmEHighlightType nHighlightType = event.GetHighlightType();
     if (nHighlightType == ePrepareForHighlight) {
         m_graphMngr.PrepareForHighlight();
         return;

@@ -41,12 +41,22 @@
 
 
 //Aux. function to convert font pointsize to lmLUnits
-int PointsToLUnits(lmLUnits nPoints)
+lmLUnits PointsToLUnits(int nPoints)
 {
     //One point equals 1/72 of an inch
     //One inch equals 2.54 cm = 25.4 mm
     //then 1 pt = 25.4/72 mm
-    return (int)lmToLogicalUnits(nPoints * 25.4 / 72.0, lmMILLIMETERS);
+    return lmToLogicalUnits(nPoints * 25.4 / 72.0, lmMILLIMETERS);
+}
+
+//Inverse function: convert font points to lmLUnits
+int LUnitsToPoints(lmLUnits uUnits)
+{
+    //One point equals 1/72 of an inch
+    //One inch equals 2.54 cm = 25.4 mm
+    //then 1 pt = 25.4/72 mm
+    //and 1mm = 72/25.4 pt
+    return (int)(0.5 + lmLogicalToUserUnits(uUnits * 72.0 / 25.4, lmMILLIMETERS) );
 }
 
 //Global variables used as default initializators
@@ -66,7 +76,7 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 
     // font data
     m_sFontName = tFontData.sFontName;
-    m_nFontSize = PointsToLUnits(tFontData.nFontSize);
+    m_nFontSize = (int)PointsToLUnits(tFontData.nFontSize);
     m_fBold = (tFontData.nStyle == lmTEXT_BOLD || tFontData.nStyle == lmTEXT_ITALIC_BOLD);
     m_fItalic = (tFontData.nStyle == lmTEXT_ITALIC || tFontData.nStyle == lmTEXT_ITALIC_BOLD);
 
@@ -80,26 +90,27 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 //==========================================================================================
 
 lmScoreText::lmScoreText(wxString sTitle, lmEAlignment nAlign,
-               lmLocation tPos, lmFontInfo tFont, wxColour colorC) :
+               lmLocation tPos, lmFontInfo tFont, bool fTitle, wxColour colorC) :
     lmAuxObj(lmDRAGGABLE)
 {
+    m_fIsTitle = fTitle;
     m_sText = sTitle;
     m_sFontName = tFont.sFontName;
-    m_nFontSize = PointsToLUnits(tFont.nFontSize);
+    m_nFontSize = (int)PointsToLUnits(tFont.nFontSize);
     m_fBold = (tFont.nStyle == lmTEXT_BOLD || tFont.nStyle == lmTEXT_ITALIC_BOLD);
     m_fItalic = (tFont.nStyle == lmTEXT_ITALIC || tFont.nStyle == lmTEXT_ITALIC_BOLD);
     m_tPos = tPos;
     m_nAlignment = nAlign;
 	m_color = colorC;
-
 }
 
 lmShapeText* lmScoreText::CreateShape(lmPaper* pPaper, lmUPoint uPos)
 {
     // Creates the shape and returns it
 
-    return new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
+    m_pGMObj = new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
                            uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
+    return (lmShapeText*)m_pGMObj;
 }
 
 lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
@@ -116,43 +127,26 @@ lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object and adding it to the graphical model. 
+    // creating the shape object and adding it to the graphical model.
 
 	WXUNUSED(colorC);
 
     //create the shape object
     lmShapeText* pShape = CreateShape(pPaper, uPos);
 	pBox->AddShape(pShape);
-    m_pShape = pShape;
-
-
-    ////Reposition object to take into account alignment and text height
-    ////method DC::DrawText position text with reference to its upper left
-    ////corner but lenmus anchor point is lower left corner. Therefore, it
-    ////is necessary to shift text up by text height
-    //lmLUnits uxShift;
-    //lmLUnits uWidth = pShape->GetWidth();
-    //if (m_nAlignment == lmALIGN_CENTER) {
-    //    uxShift = - uWidth/2;
-    //}
-    //else if (m_nAlignment == lmALIGN_RIGHT) {
-    //    uxShift = - uWidth;
-    //}
-    //else {
-    //    uxShift = 0.0;
-    //}
-    //pShape->Shift(uxShift,  - pShape->GetHeight());
-
+    m_pGMObj = pShape;
 
 	// set total width
 	return pShape->GetWidth();
-
 }
 
 wxString lmScoreText::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tText %s\n"), m_nId, m_sText.Left(15).c_str() );
+        _T("%d\tText '%s'"), m_nId, m_sText.Left(15).c_str() );
+
+    sDump += lmAuxObj::Dump();
+    sDump += _T("\n");
     return sDump;
 }
 
@@ -160,12 +154,15 @@ wxString lmScoreText::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(text \"");
-    sSource += m_sText;
-    sSource += _T("\"");
+    sSource += (m_fIsTitle ? _T("(title") : _T("(text"));
 
-    //location
-    sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetReferencePaperPos() );
+    //text goes after main tag in 'text' tags
+    if (!m_fIsTitle)
+    {
+        sSource += _T(" \"");
+        sSource += m_sText;
+        sSource += _T("\"");
+    }
 
     //alignment
     if (m_nAlignment == lmALIGN_CENTER)
@@ -175,15 +172,34 @@ wxString lmScoreText::SourceLDP(int nIndent)
     else
         sSource += _T(" right");
 
-    //font info
-    //add font info only if font changed since previous (text) element
-    //TODO
+    //text goes after alignment in 'title' tags
+    if (m_fIsTitle)
+    {
+        sSource += _T(" \"");
+        sSource += m_sText;
+        sSource += _T("\"");
+    }
 
+    //font info
+    //TODO:: add font info only if font changed since previous (text) element
+    sSource += wxString::Format(_T(" (font \"%s\" %dpt"),
+                                m_sFontName.c_str(), LUnitsToPoints((lmLUnits)m_nFontSize) );
+    if (m_fBold && m_fItalic)
+        sSource += _T(" bold-italic");
+    else if (m_fBold)
+        sSource += _T(" bold");
+    else if(m_fItalic)
+        sSource += _T(" italic");
+    else
+        sSource += _T(" normal");
+    sSource += _T(")");
+
+	//base class info
+    sSource += lmAuxObj::SourceLDP(nIndent);
 
     //close element
     sSource += _T(")\n");
     return sSource;
-
 }
 
 wxString lmScoreText::SourceXML(int nIndent)

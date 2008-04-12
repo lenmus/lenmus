@@ -53,7 +53,7 @@ class lmScoreHighlightEvent : public wxEvent
 {
 public:
     lmScoreHighlightEvent(lmStaffObj* pSO,
-                        EHighlightType nHighlightType,
+                        lmEHighlightType nHighlightType,
                         int id=0 ) 
         : wxEvent(id, lmEVT_SCORE_HIGHLIGHT)
         {
@@ -72,11 +72,11 @@ public:
 
     // accessors
     lmStaffObj*    GetStaffObj() { return m_pSO; }
-    EHighlightType GetHighlightType() { return m_nHighlightType; }
+    lmEHighlightType GetHighlightType() { return m_nHighlightType; }
 
 
 private:
-    EHighlightType    m_nHighlightType;    //event type: eVisualOn, eVisualOff, eRemoveAllHighlight
+    lmEHighlightType    m_nHighlightType;    //event type: eVisualOn, eVisualOff, eRemoveAllHighlight
     lmStaffObj*        m_pSO;                //staffobj who must be highlighted / unhighlighted
 };
 

@@ -107,7 +107,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 
     //shape initialization
 	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
-	//a shape if not NULL, as the shape is deleted in the graphic model.
+	//a shape if not NULL, as the shape is deleted in the graphical model.
     m_pNoteheadShape = (lmShapeGlyph*)NULL;
     m_pStemShape = (lmShapeStem*)NULL;
 
@@ -437,7 +437,7 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
     //create the container shape and add it to the box
     lmShapeNote* pNoteShape = new lmShapeNote(this, uxLeft, uyTop, colorC);
 	pBox->AddShape(pNoteShape);
-    m_pShape = pNoteShape;
+    m_pGMObj = pNoteShape;
 }
 
 
@@ -514,7 +514,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 		//Isolated note. create the container shape and add it to the box
 		CreateContainerShape(pBox, uxLeft, uyTop, colorC);
 	}
-	lmShapeNote* pNoteShape = (lmShapeNote*)GetShap2();
+	lmShapeNote* pNoteShape = (lmShapeNote*)GetShape();
 
 
 
@@ -706,7 +706,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 	if (IsInChord())
 		return m_pChord->GetXRight() - uPos.x + uAfterSpace;
 	else
-		return m_pShape->GetXRight() - uPos.x + uAfterSpace;
+		return m_pGMObj->GetXRight() - uPos.x + uAfterSpace;
 
 }
 
@@ -1547,8 +1547,24 @@ wxString lmNote::SourceLDP(int nIndent)
     //tied ?
     if (IsTiedToNext()) sSource += _T(" l");
 
+    //stem
+    if (m_nStemType != lmSTEM_DEFAULT)   //default: as decided by program
+    {
+        if (m_nStemType == lmSTEM_UP)           //up: force stem up
+            sSource += _T(" (stem up)");
+        else if (m_nStemType == lmSTEM_DOWN)    //down: force stem down
+            sSource += _T(" (stem down)");
+        else if (m_nStemType == lmSTEM_NONE)    //none: force no stem
+            sSource += _T(" (stem none)");
+        else    //lmSTEM_DOUBLE                 //double: force double line: one up and one down
+            sSource += _T(" (stem double)");
+    }
+
 	//base class
 	sSource += lmNoteRest::SourceLDP(nIndent);
+
+    //close note element
+    sSource += _T(")\n");
 
 	//close chord element
     if (IsInChord() && m_pChord->IsLastNoteOfChord(this))

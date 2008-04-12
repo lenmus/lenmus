@@ -75,7 +75,7 @@ class lmScoreText :  public lmAuxObj
 {
 public:
     lmScoreText(wxString sTitle, lmEAlignment nAlign, lmLocation tPos, lmFontInfo tFont,
-                wxColour colorC = *wxBLACK);
+                bool fTitle=false, wxColour colorC = *wxBLACK);
 
     ~lmScoreText() {}
 
@@ -110,11 +110,13 @@ private:
     int             m_nFontSize;
     bool            m_fBold;
     bool            m_fItalic;
+    bool            m_fIsTitle;     //to identify titles
 
 };
 
 //global functions defined in this module
-extern int PointsToLUnits(lmLUnits nPoints);
+extern lmLUnits PointsToLUnits(int nPoints);
+extern int LUnitsToPoints(lmLUnits uUnits);
 
 #endif    // __LM_TEXT_H__
 

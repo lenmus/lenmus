@@ -108,6 +108,7 @@ public:
     lmMetronome* GetMetronome() { return m_pMtr; }
 
     // File menu events
+    void OnScoreWizard(wxCommandEvent& WXUNUSED(event));
     void OnImportFile(wxCommandEvent& WXUNUSED(event));
     void OnExportBMP(wxCommandEvent& WXUNUSED(event));
     void OnExportJPG(wxCommandEvent& WXUNUSED(event));
@@ -146,8 +147,8 @@ public:
 
     // Zoom events
     void OnComboZoom(wxCommandEvent& event);
-    void OnZoom(wxCommandEvent& event, int nZoom);
-    void OnZoom100(wxCommandEvent& event) { OnZoom(event, 100); }
+    void OnZoom(wxCommandEvent& event, double rScale);
+    void OnZoom100(wxCommandEvent& event) { OnZoom(event, 1.0); }
     void OnZoomFitWidth(wxCommandEvent& event);
     void OnZoomFitFull(wxCommandEvent& event);
     void OnZoomOther(wxCommandEvent& event);
@@ -155,6 +156,8 @@ public:
     void OnZoomDecrease(wxCommandEvent& event);
     void OnZoomUpdateUI(wxUpdateUIEvent& event);
 
+    //zoom related
+    void UpdateZoomControls(double rScale);
 
     // View menu events
     void OnViewTools(wxCommandEvent& event);
@@ -171,8 +174,6 @@ public:
     void OnSoundTest(wxCommandEvent& WXUNUSED(event));
     void OnAllSoundsOff(wxCommandEvent& WXUNUSED(event));
     void OnRunMidiWizard(wxCommandEvent& WXUNUSED(event));
-    //void OnMidiWizardCancel(wxWizardEvent& event);
-    //void OnMidiWizardFinished(wxWizardEvent& event);
     void DoRunMidiWizard();
     void OnPlayStart(wxCommandEvent& WXUNUSED(event));
     void OnPlayStop(wxCommandEvent& WXUNUSED(event));
@@ -238,6 +239,7 @@ public:
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
 	bool IsToolBoxVisible();
     inline int GetSelectedVoice() { return m_pComboVoice->GetSelection(); }
+    inline lmScore* GetWizardScore() { return m_pWizardScore; }       
 
 	// call backs
 	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
@@ -298,9 +300,11 @@ protected:
 
     bool    m_fSilentCheck;
 
+    //other
+    lmScore*        m_pWizardScore;     //score created with the ScoreWizard
+
 
     DECLARE_EVENT_TABLE()
-
 };
 
 

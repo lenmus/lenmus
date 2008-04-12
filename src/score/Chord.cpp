@@ -253,7 +253,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     }
 
 	//create the stem shape
-	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShap2();
+	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShape();
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
 	//wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
@@ -513,7 +513,6 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 	// note. Therefore, all chord notes, except the base note, are not prepared for
 	// layout:
 	// - paper position is not yet assigned
-	// - font is nor set
 	// - container shape is not craeted
 	// In following loop all these issues are fixed
 	//-----------------------------------------------------------------------------------
@@ -524,10 +523,10 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 		if (iN > 1) //skip base note
 		{
 			//assign paper pos to this note.
-			(*it)->SetReferencePos(GetBaseNote()->GetReferencePaperPos());
+            lmNote* pBase = GetBaseNote();
+			(*it)->SetReferencePos( pBase->GetReferencePaperPos() );
+            (*it)->SetLayoutRefPos( pBase->GetLayoutRefPos() );
 		}
-		//set the font
-		//pNote->SetFont(pPaper);
 		//create the shape container
 		(*it)->CreateContainerShape(pBox, uPaperPos.x, uPaperPos.y, colorC);
     }
@@ -585,7 +584,7 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 	for(iN=1; it != m_Notes.end(); ++it, iN++ )
 	{
         //get the note
-		lmShapeNote* pNoteShape = (lmShapeNote*)(*it)->GetShap2();
+		lmShapeNote* pNoteShape = (lmShapeNote*)(*it)->GetShape();
 
         //compute offset
         yStaffTopLine = (*it)->GetStaffOffset();   // staff y position (top line)
@@ -656,7 +655,7 @@ lmLUnits lmChord::GetXRight()
 	std::list<lmNote*>::iterator it = m_Notes.begin();
 	for(; it != m_Notes.end(); ++it)
 	{
-		uxRight = wxMax(uxRight, (*it)->GetShap2()->GetXRight());
+		uxRight = wxMax(uxRight, (*it)->GetShape()->GetXRight());
     }
 	return uxRight;
 }

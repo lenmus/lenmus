@@ -57,7 +57,7 @@
 //-----------------------------------------------------------------------------------
 
 // Panels
-#include "ToolNotesOpt.h"
+#include "ToolNotes.h"
 //TO_ADD: add here the new tool panel include file
 
 
@@ -101,7 +101,7 @@ static const lmToolsData m_aToolsData[] = {
 };
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
-    : wxPanel(parent, id, wxPoint(0,0), wxSize(150, 400), wxNO_BORDER)
+    : wxPanel(parent, id, wxPoint(0,0), wxSize(170, 400), wxNO_BORDER)
 {
 	//Create the dialog
 	m_nSelTool = lmTOOL_NONE;
@@ -185,7 +185,7 @@ wxPanel* lmToolBox::CreatePanel(lmEEditTool nPanel)
 		case lmTOOL_TIME_SIGN:
             return (wxPanel*)NULL;
         case lmTOOL_NOTES:
-            return new lmToolNotesOpt(m_pOptionsPanel);
+            return new lmToolNotes(m_pOptionsPanel);
         case lmTOOL_BARLINES:
             return (wxPanel*)NULL;	//new lmToolBarlinesOpt(m_pOptionsPanel);
         //TO_ADD: Add a new case block for creating the new tool panel

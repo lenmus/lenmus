@@ -92,7 +92,7 @@ void lmTupletBracket::Create(bool fShowNumber, int nNumber, bool fBracket,
 
     //TODO: Allow user to change this values
     m_sFontName = _T("Arial");
-    m_nFontSize = PointsToLUnits(8);
+    m_nFontSize = (int)PointsToLUnits(8);
     m_fBold = false;
     m_fItalic = true;
 }
@@ -110,7 +110,7 @@ void lmTupletBracket::Save(lmUndoData* pUndoData)
 lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 {
 	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
-	//a shape if not NULL, as the shape is deleted in the graphic model.
+	//a shape if not NULL, as the shape is deleted in the graphical model.
 	m_pShape = (lmShapeTuplet*)NULL;
     if (!m_fBracket) return m_pShape;
 
@@ -135,8 +135,25 @@ lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour co
 	pBox->AddShape(m_pShape);
 
 	//attach the tuplet to start and end notes
-	GetStartNoteRest()->GetShap2()->Attach(m_pShape, eGMA_StartNote);
-	GetEndNoteRest()->GetShap2()->Attach(m_pShape, eGMA_EndNote);
+	GetStartNoteRest()->GetShape()->Attach(m_pShape, eGMA_StartNote);
+	GetEndNoteRest()->GetShape()->Attach(m_pShape, eGMA_EndNote);
 
 	return m_pShape;
+}
+
+wxString lmTupletBracket::SourceLDP()
+{
+    wxString sSource = _T("");
+    if (m_fShowNumber && m_fBracket)
+        sSource += wxString::Format(_T(" t%d/%d"), GetActualNotes(), GetNormalNotes() );
+    else
+    {
+        sSource += wxString::Format(_T(" (t + %d %d"), GetActualNotes(), GetNormalNotes() );
+        if (!m_fShowNumber)
+            sSource += _T(" numNone");
+        if (!m_fBracket)
+            sSource += _T(" noBracket");
+        sSource += _T(")");
+    }
+    return sSource;
 }

@@ -124,7 +124,7 @@ lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
  //                                       uWidth, uBoundsExtraWidth, *wxGREEN,
  //                                       _T("EOS"), eEdgeNormal);
 	//pBox->AddShape(pShape);
- //   m_pShape = pShape;
+ //   m_pGMObj = pShape;
 
  //   return 0.0;
  //   //END DBG --------------------------------------------------------------------------

@@ -50,14 +50,35 @@ extern wxPageSetupData* g_pPaperSetupData;
 
 lmPaper::lmPaper()
 {
-    m_xCursor = 0;
-    m_yCursor = 0;
+    m_uxCursor = 0.0f;
+    m_uyCursor = 0.0f;
     m_pDrawer = (lmDrawer*) NULL;
+    m_pPageInfo = &m_DefaultPage;
+    m_nNumPage = 1;
+    m_fUseDefault = false;
 }
 
 lmPaper::~lmPaper()
 {
     if (m_pDrawer) delete m_pDrawer;
+}
+
+void lmPaper::ForceDefaultPageInfo(bool fValue)
+{
+    if (fValue)
+        m_pPageInfo = &m_DefaultPage;
+    m_fUseDefault = fValue;
+}
+
+void lmPaper::SetPageInfo(lmPageInfo* pPageInfo, int nNumPage)
+{
+    //if paper not forced to use the default settings, sets the current page 
+    //number and page info
+
+    if (m_fUseDefault) return;
+
+    m_pPageInfo = pPageInfo;
+    m_nNumPage = nNumPage;
 }
 
 void lmPaper::SetDrawer(lmDrawer* pDrawer)
@@ -66,30 +87,19 @@ void lmPaper::SetDrawer(lmDrawer* pDrawer)
     m_pDrawer = pDrawer;
 }
 
-// returns paper size in logical units
-wxSize& lmPaper::GetPaperSize()
-{
-    return m_Page.PageSize();
-    //wxSize sz = g_pPaperSetupData->GetPaperSize();
-    //return wxSize(10*sz.GetWidth(), 10*sz.GetHeight());
-}
-
-
 void lmPaper::RestartPageCursors()
 {
-    m_xCursor = GetPageLeftMargin();
-    m_yCursor = GetPageTopMargin();
+    m_uxCursor = GetPageLeftMargin();
+    m_uyCursor = GetPageTopMargin();
 
 }
 
 void lmPaper::NewLine(lmLUnits nSpace)
 {
-    m_yCursor += nSpace;
-    m_xCursor = GetPageLeftMargin();
+    m_uyCursor += nSpace;
+    m_uxCursor = GetPageLeftMargin();
 
 }
-
-
 
 lmLUnits lmPaper::GetRightMarginXPos()
 {

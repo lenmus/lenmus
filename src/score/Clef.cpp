@@ -136,7 +136,7 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
 	pBox->AddShape(pShape);
-    m_pShape = pShape;
+    m_pGMObj = pShape;
 
 	// set total width (incremented in one line for after space)
 	lmLUnits nWidth = pShape->GetWidth();
@@ -191,6 +191,8 @@ wxString lmClef::SourceLDP(int nIndent)
 	//base class
 	sSource += lmStaffObj::SourceLDP(nIndent);
 
+    //close element
+    sSource += _T(")\n");
 	return sSource;
 }
 

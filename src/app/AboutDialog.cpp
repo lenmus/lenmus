@@ -56,37 +56,38 @@ extern lmMainFrame* g_pMainFrame;
 
 #include "../html/HtmlWindow.h"
 
+//IDs for controls
+const int lmID_BTN_ACCEPT = wxNewId();
+const int lmID_BTN_ART_CREDITS = wxNewId();
+const int lmID_BTN_BUILD_INFO = wxNewId();
+const int lmID_BTN_LICENCE = wxNewId();
+const int lmID_BTN_PURPOSE = wxNewId();
+const int lmID_BTN_SOFTWARE_CREDITS = wxNewId();
+const int lmID_BTN_DEVELOPERS = wxNewId();
+
 
 BEGIN_EVENT_TABLE(lmAboutDialog, wxDialog)
-    EVT_BUTTON( XRCID( "btnAccept" ), lmAboutDialog::OnAccept )
-    EVT_BUTTON( XRCID( "btnPurpose" ), lmAboutDialog::OnPurpose )
-    EVT_BUTTON( XRCID( "btnLicense" ), lmAboutDialog::OnLicense )
-    EVT_BUTTON( XRCID( "btnDevelopers" ), lmAboutDialog::OnDevelopers )
-    EVT_BUTTON( XRCID( "btnArtCredits" ), lmAboutDialog::OnArtCredits )
-    EVT_BUTTON( XRCID( "btnSoftwareCredits" ), lmAboutDialog::OnSoftwareCredits )
+    EVT_BUTTON(lmID_BTN_ACCEPT, lmAboutDialog::OnAccept )
+    EVT_BUTTON(lmID_BTN_PURPOSE, lmAboutDialog::OnPurpose )
+    EVT_BUTTON(lmID_BTN_LICENCE, lmAboutDialog::OnLicense )
+    EVT_BUTTON(lmID_BTN_DEVELOPERS, lmAboutDialog::OnDevelopers )
+    EVT_BUTTON(lmID_BTN_ART_CREDITS, lmAboutDialog::OnArtCredits )
+    EVT_BUTTON(lmID_BTN_SOFTWARE_CREDITS, lmAboutDialog::OnSoftwareCredits )
     //EVT_BUTTON( XRCID( "btnTranslators" ), lmAboutDialog::OnTranslators )
-    EVT_BUTTON( XRCID( "btnBuildInfo" ), lmAboutDialog::OnBuildInfo )
+    EVT_BUTTON(lmID_BTN_BUILD_INFO, lmAboutDialog::OnBuildInfo )
 
 END_EVENT_TABLE()
 
 
-
 lmAboutDialog::lmAboutDialog(wxWindow* pParent)
+	: wxDialog(pParent, wxID_ANY, _T("LenMus"), wxDefaultPosition, wxSize(600, 400), wxDEFAULT_DIALOG_STYLE, _T("dialogBox"))
+
 {
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, pParent, _T("AboutDialog"));
+	CreateControls();
 
-        //
-        //get pointers to all controls
-        //
-
-    m_pTxtTitle = XRCCTRL(*this, "txtTitle", wxStaticText);
-    m_pTxtSubtitle = XRCCTRL(*this, "txtSubtitle", wxStaticText);
-    m_pHtmlWindow = XRCCTRL(*this, "htmlWindow", wxHtmlWindow);
-
-    //load error icon
-    wxStaticBitmap* pBmpError = XRCCTRL(*this, "bmpLogo", wxStaticBitmap);
-    pBmpError->SetBitmap( wxArtProvider::GetIcon(_T("logo50x67"), wxART_OTHER) );
+    //load logo icon
+    m_pBmpLogo->SetBitmap( wxArtProvider::GetIcon(_T("logo50x67"), wxART_OTHER) );
 
     //initializations
     m_sHeader =
@@ -114,6 +115,74 @@ lmAboutDialog::lmAboutDialog(wxWindow* pParent)
 
 lmAboutDialog::~lmAboutDialog()
 {
+}
+
+void lmAboutDialog::CreateControls()
+{
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* pHeadersSizer;
+	pHeadersSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_pBmpLogo = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	pHeadersSizer->Add( m_pBmpLogo, 0, wxALIGN_TOP|wxALL, 5 );
+	
+	wxBoxSizer* pTitlesSizer;
+	pTitlesSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _("Arial") ) );
+	
+	pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
+	
+	m_pTxtSubtitle = new wxStaticText( this, wxID_ANY, _("A free program for music language learning"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtSubtitle->SetFont( wxFont( 10, 74, 90, 90, false, _("Arial") ) );
+	
+	pTitlesSizer->Add( m_pTxtSubtitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
+	
+	pHeadersSizer->Add( pTitlesSizer, 1, wxEXPAND|wxALL, 5 );
+	
+	pMainSizer->Add( pHeadersSizer, 0, wxEXPAND|wxALL, 5 );
+	
+	wxBoxSizer* pInfoSizer;
+	pInfoSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_pHtmlWindow = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 200,150 ), wxHW_SCROLLBAR_AUTO|wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL);
+	pInfoSizer->Add( m_pHtmlWindow, 1, wxEXPAND|wxBOTTOM, 5 );
+	
+	wxBoxSizer* pButtonsSizer;
+	pButtonsSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pBtnPurpose = new wxButton( this, lmID_BTN_PURPOSE, _("Purpose"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnPurpose, 0, wxEXPAND|wxALL, 5 );
+	
+	m_pBtnLicense = new wxButton( this, lmID_BTN_LICENCE, _("Licence"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnLicense, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+	
+	m_pBtnDevelopers = new wxButton( this, lmID_BTN_DEVELOPERS, _("Project team"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnDevelopers, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+	
+	m_pBtnArtCredits = new wxButton( this, lmID_BTN_ART_CREDITS, _("Art design"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnArtCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+	
+	m_pBtnSoftwareCredits = new wxButton( this, lmID_BTN_SOFTWARE_CREDITS, _("Software used"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnSoftwareCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+	
+	m_pBtnBuildInfo = new wxButton( this, lmID_BTN_BUILD_INFO, _("Build info."), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnBuildInfo, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+	
+	pButtonsSizer->Add( 5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	
+	m_pBtnAccept = new wxButton( this, lmID_BTN_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnAccept, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+	
+	pInfoSizer->Add( pButtonsSizer, 0, wxEXPAND|wxLEFT|wxBOTTOM, 5 );
+	
+	pMainSizer->Add( pInfoSizer, 1, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+	
+	this->SetSizer( pMainSizer );
+	this->Layout();
 }
 
 void lmAboutDialog::OnAccept(wxCommandEvent& WXUNUSED(event))

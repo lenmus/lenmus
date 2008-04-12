@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "ToolNotesOpt.h"
+#pragma implementation "ToolNotes.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -37,14 +37,16 @@
 #include "wx/xrc/xmlres.h"
 #include "wx/bmpcbox.h"
 #include "wx/statline.h"
+#include "wx/clrpicker.h"
 
-#include "ToolNotesOpt.h"
+#include "ToolsBox.h"
+#include "ToolNotes.h"
+#include "ToolGroup.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "../../widgets/Button.h"
 
 
 #define lmSPACING 5
-#define lmPANEL_WIDTH 150
 
 
 // an entry for the buttons data table
@@ -72,31 +74,29 @@ enum {
 	lmID_NOTE_BUTTON = 2400,
 };
 
-BEGIN_EVENT_TABLE(lmToolNotesOpt, wxPanel)
-	EVT_COMMAND_RANGE (lmID_NOTE_BUTTON, lmID_NOTE_BUTTON+9, wxEVT_COMMAND_BUTTON_CLICKED, lmToolNotesOpt::OnNoteButton)
+BEGIN_EVENT_TABLE(lmToolNotes, lmToolPage)
+	EVT_COMMAND_RANGE (lmID_NOTE_BUTTON, lmID_NOTE_BUTTON+9, wxEVT_COMMAND_BUTTON_CLICKED, lmToolNotes::OnNoteButton)
 END_EVENT_TABLE()
 
 
-lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
-	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, 300), wxNO_BORDER )
+lmToolNotes::lmToolNotes(wxWindow* parent)
+	: lmToolPage(parent)
 {
 
 	m_nNoteDuration = -1;	//none selected
 
 	//main sizer
-    wxBoxSizer *pMainSizer = new wxBoxSizer(wxVERTICAL);
-    SetSizer(pMainSizer);
+    wxBoxSizer *pMainSizer = GetMainSizer();
 
-    //create the notes duration buttons
-    pMainSizer->Add( new wxStaticText(this, wxID_STATIC, _("Note duration"),
-									  wxDefaultPosition, wxDefaultSize, 0),
-									  0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+    //notes duration group --------------------------------------
+	lmToolGroup oDurationGroup(this);
+    wxBoxSizer* pGroupSizer = oDurationGroup.CreateGroup(pMainSizer, _("Note duration"));
     wxBoxSizer* pButtonsSizer;
 	for (int iB=0; iB < 10; iB++)
 	{
 		if (iB % 5 == 0) {
 			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
-			pMainSizer->Add(pButtonsSizer);
+			pGroupSizer->Add(pButtonsSizer);
 		}
 		m_pBtDurations[iB] =
 				new lmCheckButton(this, lmID_NOTE_BUTTON+iB,
@@ -107,29 +107,29 @@ lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
 	}
 	SelectNoteButton(3);	//select quarter note
 
-	//Notehead type
-    pMainSizer->Add( new wxStaticText(this, wxID_STATIC, _("Notehead type"),
-									  wxDefaultPosition, wxDefaultSize, 0),
-									  0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
-    m_pCboNotehead = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
-										  wxSize(lmPANEL_WIDTH - 2 * lmSPACING, 24),
-										  0, NULL, wxCB_READONLY );
-    pMainSizer->Add(m_pCboNotehead, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
 
-	//populate combo box for note durations and select 'normal' note
+	//Notehead type group ------------------------------------------
+	lmToolGroup oNoteheadGroup(this);
+    wxBoxSizer* pNHSizer = oNoteheadGroup.CreateGroup(pMainSizer, _("Notehead type"));
+	int nPanelWidth = oNoteheadGroup.GetGroupWitdh();
+    m_pCboNotehead = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
+										  wxSize(nPanelWidth - 2 * lmSPACING, 24),
+										  0, NULL, wxCB_READONLY );
+    pNHSizer->Add(m_pCboNotehead, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+
+	//populate combo boxand select 'normal' notehead
 	//AWARE: Must be loaded following lmENoteHeads enum
 	m_pCboNotehead->Append(_T("normal"), wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
 	m_pCboNotehead->Append(_T("cross"), wxArtProvider::GetBitmap(_T("tool_clefs"), wxART_TOOLBAR, wxSize(24,24) ));
 	m_pCboNotehead->Select(0);
 
-	//Accidentals
-    pMainSizer->Add( new wxStaticText(this, wxID_STATIC, _("Accidentals"),
-									  wxDefaultPosition, wxDefaultSize, 0),
-									  0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+	//Accidentals group --------------------------------------------
+	lmToolGroup oAccidentalsGroup(this);
+    wxBoxSizer* pAccSizer = oAccidentalsGroup.CreateGroup(pMainSizer, _("Accidentals"));
     m_pCboAccidentals = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
-										  wxSize(lmPANEL_WIDTH - 2 * lmSPACING, 24),
+										  wxSize(nPanelWidth - 2 * lmSPACING, 24),
 										  0, NULL, wxCB_READONLY );
-    pMainSizer->Add(m_pCboAccidentals, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+    pAccSizer->Add(m_pCboAccidentals, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
 
 	//populate combo box for note durations and select 'normal' note
 	//AWARE: Must be loaded following lmEAccidentals enum
@@ -145,40 +145,46 @@ lmToolNotesOpt::lmToolNotesOpt(wxWindow* parent)
 	m_pCboAccidentals->Select(0);
 
 
-	//separation line
-	wxStaticLine* pLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition,
-										   wxDefaultSize, wxLI_HORIZONTAL );
-    pMainSizer->Add(pLine, wxSizerFlags(0).Left().Border(wxGROW|wxTOP|wxBOTTOM, 5));
-
-    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("Accidentals"),
+    pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'-'  Down a flat"),
 									 wxDefaultPosition, wxDefaultSize, 0),
 									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
-    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("'-'  Down a flat"),
+    pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'+'  Up a sharp"),
 									 wxDefaultPosition, wxDefaultSize, 0),
 									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
-    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("'+'  Up a sharp"),
-									 wxDefaultPosition, wxDefaultSize, 0),
-									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
-    pMainSizer->Add(new wxStaticText(this, wxID_STATIC, _("'='  Remove accidentals"),
+    pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'='  Remove accidentals"),
 									 wxDefaultPosition, wxDefaultSize, 0),
 									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
 
+	//Palette group --------------------------------------------
+	lmToolGroup oPaletteGroup(this);
+    wxBoxSizer* pPaletteSizer = oPaletteGroup.CreateGroup(pMainSizer, _("Palette"));
+	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyDark()),
+						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Dark()),
+						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightDark()),
+						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Normal()),
+						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightBright()),
+						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Bright()),
+						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyBright()),
+						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
 
+	//End of groups
 
-    SetAutoLayout(true);
-    pMainSizer->Fit(this);
-    pMainSizer->SetSizeHints(this);
-
-
+	CreateLayout();
 }
 
 
-void lmToolNotesOpt::OnNoteButton(wxCommandEvent& event)
+void lmToolNotes::OnNoteButton(wxCommandEvent& event)
 {
 	SelectNoteButton(event.GetId() - lmID_NOTE_BUTTON);
 }
 
-void lmToolNotesOpt::SelectNoteButton(int iB)
+void lmToolNotes::SelectNoteButton(int iB)
 {
 	// Set selected button as 'pressed' and all others as 'released'
 	m_nNoteDuration = iB;
@@ -191,21 +197,21 @@ void lmToolNotesOpt::SelectNoteButton(int iB)
 	}
 }
 
-lmToolNotesOpt::~lmToolNotesOpt()
+lmToolNotes::~lmToolNotes()
 {
 }
 
-lmENoteType lmToolNotesOpt::GetNoteDuration()
+lmENoteType lmToolNotes::GetNoteDuration()
 {
     return (lmENoteType)(m_nNoteDuration+1);
 }
 
-lmENoteHeads lmToolNotesOpt::GetNoteheadType()
+lmENoteHeads lmToolNotes::GetNoteheadType()
 {
     return (lmENoteHeads)m_pCboNotehead->GetSelection();
 }
 
-lmEAccidentals lmToolNotesOpt::GetNoteAccidentals()
+lmEAccidentals lmToolNotes::GetNoteAccidentals()
 {
     return (lmEAccidentals)m_pCboAccidentals->GetSelection();
 }

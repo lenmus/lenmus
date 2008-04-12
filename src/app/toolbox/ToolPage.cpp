@@ -19,56 +19,51 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_TOOLNOTESOPT_H__
-#define __LM_TOOLNOTESOPT_H__
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ToolNotesOpt.cpp"
+#pragma implementation "ToolPage.h"
 #endif
 
-#include "ToolsBox.h"
-#include "../../score/defs.h"
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
 
-class wxBitmapComboBox;
-class lmCheckButton;
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
 
-class lmToolNotesOpt: public wxPanel
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+#include "wx/xrc/xmlres.h"
+#include "wx/bmpcbox.h"
+#include "wx/statline.h"
+#include "wx/settings.h"
+
+#include "ToolPage.h"
+
+
+#define lmPANEL_WIDTH 150
+
+
+lmToolPage::lmToolPage(wxWindow* parent)
+	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, 300), wxNO_BORDER )
 {
-public:
-    lmToolNotesOpt(wxWindow* parent);
-    ~lmToolNotesOpt();
+	//main sizer
+    m_pMainSizer = new wxBoxSizer(wxVERTICAL);
+    SetSizer(m_pMainSizer);
 
-	//access to options
-	lmENoteType GetNoteDuration();
-	lmENoteHeads GetNoteheadType();
-	lmEAccidentals GetNoteAccidentals();
+	//set colors
+	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
+	this->SetBackgroundColour(m_colors.Normal());
+}
 
-	void OnNoteButton(wxCommandEvent& event);
-	void SelectNoteButton(int iB);
+lmToolPage::~lmToolPage()
+{
+}
 
-
-
-private:
-
-    // controls
-    wxChoice*        m_pChoice;
-
-    // other member variables
-    int				m_nNumLangs;
-    wxArrayString	m_cLangCodes;
-    wxArrayString	m_cLangNames;
-    wxString        m_sCurLang;
-	
-	//selected buttons
-	int			m_nNoteDuration;
-
-	//options
-	wxBitmapComboBox*	m_pCboNotehead;
-	wxBitmapComboBox*	m_pCboAccidentals;
-	lmCheckButton*		m_pBtDurations[10];
-
-
-    DECLARE_EVENT_TABLE()
-};
-
-#endif    // __LM_TOOLNOTESOPT_H__
+void lmToolPage::CreateLayout()
+{
+    SetAutoLayout(true);
+    m_pMainSizer->Fit(this);
+    m_pMainSizer->SetSizeHints(this);
+}

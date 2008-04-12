@@ -185,6 +185,9 @@ IMPLEMENT_APP(lmTheApp)
 
 bool lmTheApp::OnInit(void)
 {
+   //lmAboutDialog dlg(NULL);
+   //dlg.ShowModal();
+
     g_pTheApp = this;
     m_pInstanceChecker = (wxSingleInstanceChecker*) NULL;
     m_pDocManager = (wxDocManager *) NULL;
@@ -304,10 +307,10 @@ bool lmTheApp::OnInit(void)
 	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Delete"));
 	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Insert"));
     g_pLogger->DefineTraceMask(_T("lmComposer6"));
-    g_pLogger->DefineTraceMask(_T("lmComposer6::AssignNonChordNotes")); 
-    g_pLogger->DefineTraceMask(_T("lmComposer6::FunctionToChordNotes")); 
+    g_pLogger->DefineTraceMask(_T("lmComposer6::AssignNonChordNotes"));
+    g_pLogger->DefineTraceMask(_T("lmComposer6::FunctionToChordNotes"));
     g_pLogger->DefineTraceMask(_T("lmComposer6::GenerateContour"));
-    g_pLogger->DefineTraceMask(_T("lmComposer6::InstantiateNotes"));     
+    g_pLogger->DefineTraceMask(_T("lmComposer6::InstantiateNotes"));
     g_pLogger->DefineTraceMask(_T("lmComposer6::NearestNoteOnChord"));
     g_pLogger->DefineTraceMask(_T("Formater4"));
     g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
@@ -442,15 +445,12 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("ErrorDlg"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
-    // About box
-    oXrcFile = wxFileName(sPath, _T("AboutDialog"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
 #ifdef __WXDEBUG__
     // Debug: masks to trace dialog
     oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 #endif
+
         //
         // Create document manager and templates
         //
@@ -525,7 +525,7 @@ bool lmTheApp::OnInit(void)
     }
 
 //remove this in debug version to start with nothing displayed
-#if !defined(__WXDEBUG__) && !defined(__WXGTK__)
+#if !defined(__WXDEBUG__) //&& !defined(__WXGTK__)
     //force to show book frame
     wxCommandEvent event;       //it is not used, so not need to initialize it
     g_pMainFrame->OnOpenBook(event);
@@ -791,7 +791,7 @@ void lmTheApp::FindOutScreenDPI()
 
     double xPixelsPerLU = (double)dc.LogicalToDeviceXRel(100000) / 100000.0;
     double yPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
-    // screen resolution (User settings, dots per inch) 
+    // screen resolution (User settings, dots per inch)
     wxSize sizeDPI = dc.GetPPI();
 
     // In order to adjust staff lines to real size we will use only yPixelsPerLU.
@@ -919,11 +919,11 @@ int lmTheApp::FilterEvent(wxEvent& event)
 	{
 		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1 && g_pMainFrame
 			&& g_pMainFrame->IsToolBoxVisible())
-		{ 
+		{
 			lmController* pController = GetViewController();
 			if (pController)
 			{
-				g_pMainFrame->GetActiveToolBox()->ProcessEvent(event); 
+				g_pMainFrame->GetActiveToolBox()->ProcessEvent(event);
 				return true;	//true: the event had been already processed
 			}
 
@@ -948,26 +948,5 @@ int lmTheApp::FilterEvent(wxEvent& event)
 lmMainFrame* GetMainFrame(void)
 {
     return g_pMainFrame;
-}
-
-lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits)
-{
-    return lmToLogicalUnits((double)nValue, nUnits);
-}
-
-lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits)
-{
-    // first convert to tenths of millimeter (mode MM_LOMETRIC), then divide by SCALE factor
-    switch(nUnits) {
-		case lmLUNITS:			return (lmLUnits)rValue; 
-        case lmMICRONS:         return (lmLUnits)((rValue / 100.) / lmSCALE);      break;
-        case lmMILLIMETERS:     return (lmLUnits)((rValue * 10.) / lmSCALE);       break;
-        case lmCENTIMETERS:     return (lmLUnits)((rValue * 100.) / lmSCALE);      break;
-        case lmINCHES:          return (lmLUnits)((rValue * 254.) / lmSCALE);      break;
-        default:
-            wxASSERT(false);
-            return 10.0;
-    }
-
 }
 

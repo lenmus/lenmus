@@ -273,7 +273,7 @@ public:
     virtual ~lmShape();
 
 	virtual void Render(lmPaper* pPaper, wxColour color)=0;
-	virtual void Render(lmPaper* pPaper) { Render(pPaper, m_color); }
+	virtual void Render(lmPaper* pPaper);
 
     virtual bool Collision(lmShape* pShape);
     virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
@@ -349,7 +349,6 @@ public:
     virtual wxString Dump(int nIndent) = 0;
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
     virtual void Render(lmPaper* pPaper, wxColour color)=0;
-	virtual void Render(lmPaper* pPaper) { Render(pPaper, m_color); }
 
     //dragging
 	virtual wxBitmap* OnBeginDrag(double rScale) { return (wxBitmap*)NULL; }
@@ -359,7 +358,6 @@ protected:
     lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("SimpleShape"),
 				  bool fDraggable = false, wxColour color = *wxBLACK,
 				  bool fVisible = true);
-
 
 };
 
@@ -413,6 +411,10 @@ public:
     void RemoveFromSelection(lmGMObject* pGMO);
     inline void Clear() { m_Selection.clear(); }
 
+    //iteration
+    lmGMObject* GetFirst();
+    lmGMObject* GetNext();
+
     //info
     inline int NumObjects() { return (int)m_Selection.size(); }
     inline bool IsEmpty() const { return m_Selection.size()==0; }
@@ -421,7 +423,8 @@ public:
     wxString Dump();
 
 private:
-    std::list<lmGMObject*> m_Selection;
+    std::list<lmGMObject*>              m_Selection;
+    std::list<lmGMObject*>::iterator    m_it;           //for GetFirst(), GetNext() methods
 
 };
 

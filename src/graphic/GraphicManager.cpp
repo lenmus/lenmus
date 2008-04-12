@@ -33,10 +33,11 @@
 #include "wx/image.h"
 
 #include "../score/Score.h"
-#include "GraphicManager.h"
-#include "Formatter4.h"
-#include "AggDrawer.h"
 #include "../score/ObjOptions.h"
+#include "../app/ScoreDoc.h"
+#include "GraphicManager.h"
+//#include "Formatter4.h"
+#include "AggDrawer.h"
 #include "GMObject.h"
 #include "BoxScore.h"
 #include "BoxPage.h"
@@ -118,63 +119,67 @@ void lmGraphicManager::Layout()
         delete m_pBoxScore;
         m_pBoxScore = (lmBoxScore*) NULL;
     }
-    lmFormatter4 oFormatter;   //the formatter object
-    m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper);
+    //lmFormatter4 oFormatter;   //the formatter object
+    //m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper);
+    m_pBoxScore = m_pScore->Layout(m_pPaper);
     wxASSERT(m_pBoxScore);
     m_fReLayout = false;
 
 }
 
-wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
+wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
 {
-    //Renders page 1..n.
+    //Renders page 1..n
+    //Options are those defined for lmUpdateHint (see ScoreDoc.h)
 
-    if (!fUseBitmaps) {
-        //Render page directly on the DC
-        if (m_pBoxScore) m_pBoxScore->RenderPage(nPage, m_pPaper);
-        return (wxBitmap*)NULL;
-    }
-    else {
-        //Return the offscreen bitmap for the requested page
-        wxBitmap* pBitmap = GetPageBitmap(nPage);
-        if (!pBitmap) {
-            if (!g_fUseAntiAliasing) {
-                // standard DC renderization. Aliased.
-                pBitmap = NewBitmap(nPage);
-                wxMemoryDC memDC;   // Allocate a DC in memory for the offscreen bitmap
-                memDC.SelectObject(*pBitmap);
-                m_pPaper->SetDrawer(new lmDirectDrawer(&memDC));
-                memDC.Clear();
-                memDC.SetMapMode(lmDC_MODE);
-                memDC.SetUserScale( m_rScale, m_rScale );
-                m_pBoxScore->RenderPage(nPage, m_pPaper);
-                memDC.SelectObject(wxNullBitmap);
-            }
-            else {
-                // anti-aliased renderization
-                wxMemoryDC memDC;
-                pBitmap = new wxBitmap(1, 1);     //allocate something to paint on it
-                memDC.SelectObject(*pBitmap);
-                memDC.SetMapMode(lmDC_MODE);
-                memDC.SetUserScale( m_rScale, m_rScale );
-                lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, m_xPageSize, m_yPageSize);
-                m_pPaper->SetDrawer(pDrawer);
-                wxASSERT(m_pBoxScore);  //Layout phase omitted?
-                m_pBoxScore->RenderPage(nPage, m_pPaper);
+    //get options
+    bool fUseBitmaps = !(nOptions & lmNO_BITMAPS);
+    bool fReDraw = nOptions & lmREDRAW;
 
-                memDC.SelectObject(wxNullBitmap);
-                delete pBitmap;
+    wxBitmap* pBitmap = (wxBitmap*)NULL;
+    if (fUseBitmaps)
+        pBitmap = GetPageBitmap(nPage);
 
-                //Make room for the new bitmap
-                //TODO
-
-                //Add bitmap to the offscreen collection
-                pBitmap = new wxBitmap(pDrawer->GetImageBuffer());
-                AddBitmap(nPage, pBitmap);
-            }
+    if (!pBitmap || fReDraw)
+    {
+        if (!g_fUseAntiAliasing)
+        {
+            // standard DC renderization. Aliased.
+            pBitmap = NewBitmap(nPage);
+            wxMemoryDC memDC;   // Allocate a DC in memory for the offscreen bitmap
+            memDC.SelectObject(*pBitmap);
+            m_pPaper->SetDrawer(new lmDirectDrawer(&memDC));
+            memDC.Clear();
+            memDC.SetMapMode(lmDC_MODE);
+            memDC.SetUserScale( m_rScale, m_rScale );
+            m_pBoxScore->RenderPage(nPage, m_pPaper);
+            memDC.SelectObject(wxNullBitmap);
         }
-        return pBitmap;
+        else
+        {
+            // anti-aliased renderization
+            wxMemoryDC memDC;
+            pBitmap = new wxBitmap(1, 1);     //allocate something to paint on it
+            memDC.SelectObject(*pBitmap);
+            memDC.SetMapMode(lmDC_MODE);
+            memDC.SetUserScale( m_rScale, m_rScale );
+            lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, m_xPageSize, m_yPageSize);
+            m_pPaper->SetDrawer(pDrawer);
+            wxASSERT(m_pBoxScore);  //Layout phase omitted?
+            m_pBoxScore->RenderPage(nPage, m_pPaper);
+
+            memDC.SelectObject(wxNullBitmap);
+            delete pBitmap;
+
+            //Make room for the new bitmap
+            //TODO
+
+            //Add bitmap to the offscreen collection
+            pBitmap = new wxBitmap(pDrawer->GetImageBuffer());
+            AddBitmap(nPage, pBitmap);
+        }
     }
+    return pBitmap;
 }
 
 void lmGraphicManager::PrepareForHighlight()
@@ -209,11 +214,11 @@ void lmGraphicManager::PrepareForHighlight()
 
 }
 
-void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,
+void lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,
                                double rScale, lmPaper* pPaper, int nOptions)
 {
     //This method informs GraphicManager about the common parameters (the score,
-    //the paper, the scale, etc..) for a series of to subsequent Render()
+    //the paper, the scale, etc..) for a series of subsequent RenderScore()
     //invocations.
     //The GraphicManager must verify if all stored values are stil valid and, if not,
     //do whatever is necessary, i.e. delete invalid offscreen bitmaps.
@@ -226,23 +231,19 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     // Yes in following cases:
     // - the first time a score is going to be rendered
 	// - if the score has been modified since last re-layout
-    // - if paper size has changed and so requested (option lmRELAYOUT_ON_PAPER_SIZE_CHANGE)
+    // - if paper size has changed and not re-layout prevented (option lmNO_RELAYOUT_ON_PAPER_RESIZE)
     // - if explicitly requested (option lmFORCE_RELAYOUT)
-    bool fLayoutScore = !m_pScore || m_fReLayout
-                || m_nLastScoreID != pScore->GetID()
-				|| m_pScore->IsModified()
+    bool fLayoutScore = !m_pScore || m_fReLayout || m_nLastScoreID != pScore->GetID()
+				|| ( m_pScore->IsModified() && !(nOptions & lmREDRAW) )
                 || (nOptions & lmFORCE_RELAYOUT)
-                || ( (nOptions & lmRELAYOUT_ON_PAPER_SIZE_CHANGE)  &&
-                     (m_xPageSize != paperWidth || m_yPageSize != paperHeight) );
+                || ( (m_xPageSize != paperWidth || m_yPageSize != paperHeight) &&
+                     !(nOptions & lmNO_RELAYOUT_ON_PAPER_RESIZE) );
 
     //Is it necessary to delete stored offscreen bitmaps?
     //Yes in following cases:
-    // - When the scale (zooming factor) has changed
-    // - When a re-layout takes place
-	// - the score has been modified
-    bool fDeleteBitmaps = (m_rScale != rScale)
-                || fLayoutScore
-				|| m_pScore->IsModified();
+    // - if the scale (zooming factor) has changed
+    // - if a re-layout will take place
+    bool fDeleteBitmaps = (m_rScale != rScale) || fLayoutScore;
 
     //store received values
     m_pPaper = pPaper;
@@ -258,14 +259,14 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
 	if (fLayoutScore)
 	{
 		Layout();
-		m_pScore->SetModified(false);		//reset flag to avoid new relayouts until new changes
+		//m_pScore->SetModified(false);		//reset flag to avoid new relayouts until new changes
 	}
 
 
     //delete existing offscreen bitmaps if necessary
     if (fDeleteBitmaps) DeleteBitmaps();
 
-    //wxLogMessage(_T("[lmGraphicManager::Prepare] fLayoutScore=%s, fDeleteBitmaps=%s, Hay BoxScore=%s"),
+    //wxLogMessage(_T("[lmGraphicManager::PrepareToRender] fLayoutScore=%s, fDeleteBitmaps=%s, Hay BoxScore=%s"),
     //    (fLayoutScore ? _T("Yes") : _T("No")),
     //    (fDeleteBitmaps ? _T("Yes") : _T("No")),
     //    (m_pBoxScore ? _T("Yes") : _T("No")) );
@@ -338,18 +339,28 @@ void lmGraphicManager::AddBitmap(int nPage, wxBitmap* pBitmap)
 
     //wxLogMessage(_T("[lmGraphicManager::AddBitmap] Page = %d"), nPage);
 
+    //if a bitmap for that page already exists, remove it
+    wxASSERT(nPage > 0);
+    std::list<lmBitmapPage*>::iterator it;
+    for (it = m_Bitmaps.begin(); it != m_Bitmaps.end(); ++it)
+    {
+        if ((*it)->nPage == nPage)
+        {
+            delete (*it)->pBitmap;
+            delete *it;
+            m_Bitmaps.erase(it);
+            break;
+        }
+    }
+
     // add the new bitmap to the list and store its size
     lmBitmapPage* pBP = new lmBitmapPage;
     pBP->nPage = nPage;
     pBP->pBitmap = pBitmap;
     m_Bitmaps.push_back(pBP);
 
-    //m_cBitmaps.push_back(pBitmap);
-    //m_aBitmapPage.Add(nPage);
-
     m_xBitmapSize = m_xPageSize;
     m_yBitmapSize = m_yPageSize;
-
 }
 
 void lmGraphicManager::BitmapsToFile(wxString& sFilename, wxString& sExt, int nImgType)
@@ -374,7 +385,7 @@ void lmGraphicManager::BitmapsToFile(wxString& sFilename, wxString& sExt, int nI
 
 void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType)
 {
-    //Before invoking this method, Prepare() must be invoked
+    //Before invoking this method, PrepareToRender() must be invoked
 
     wxASSERT(nImgType == wxBITMAP_TYPE_BMP || nImgType == wxBITMAP_TYPE_JPEG
              || nImgType == wxBITMAP_TYPE_PNG || nImgType == wxBITMAP_TYPE_PCX
@@ -382,7 +393,7 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
 
     int i;
     for(i=1; i <= GetNumPages(); i++) {
-        wxBitmap* pBitmap = Render(lmUSE_BITMAPS, i);
+        wxBitmap* pBitmap = RenderScore(i);
         wxImage oImg = pBitmap->ConvertToImage();
         wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename.c_str(),
                                 i, sExt.c_str());

@@ -310,14 +310,8 @@ void lmShapeGlyph::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 	// This method must validate/adjust final position and, if ok, it must
 	// send a move object command to the controller.
 
-
-	//correct for glyph displacement
-	lmUPoint uFinalPos = uPos;
-	uFinalPos.x += m_uGlyphPos.x - GetXLeft();
-	uFinalPos.y += m_uGlyphPos.y - GetYTop();
-
 	//send a move object command to the controller
-	pCanvas->MoveObject(this, uFinalPos);
+	pCanvas->MoveObject(this, uPos);
 }
 
 
@@ -572,10 +566,6 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 		uFinalPos.y = GetYTop();
 	}
 
-	//correct glyph displacement
-	uFinalPos.x += m_uGlyphPos.x - GetXLeft();
-	uFinalPos.y += m_uGlyphPos.y - GetYTop();
-
 	//send a move object command to the controller
 	pCanvas->MoveObject(this, uFinalPos);
 
@@ -602,4 +592,10 @@ wxString lmShapeInvisible::Dump(int nIndent)
 	return _T("lmShapeInvisible\n");
 }
 
+void lmShapeInvisible::Render(lmPaper* pPaper, wxColour color)
+{
+    //if (g_fDrawInvisible)       //TODO
+    {
+    }
+}
 

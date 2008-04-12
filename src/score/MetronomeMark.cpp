@@ -99,7 +99,7 @@ lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
 	//create the container shape and add it to the box
 	lmCompositeShape* pShape = new lmCompositeShape(this, _("metronome mark"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-	m_pShape = pShape;
+	m_pGMObj = pShape;
 
 	wxFont* pFont = GetSuitableFont(pPaper);
 
@@ -139,7 +139,7 @@ lmLUnits lmMetronomeMark::AddTextShape(lmCompositeShape* pShape, lmPaper* pPaper
 
     int nWeight = wxNORMAL;
     int nStyle = wxNORMAL;
-    int nFontSize = PointsToLUnits(8);
+    int nFontSize = (int)PointsToLUnits(8);
     wxFont* pFont = pPaper->GetFont(nFontSize, _T("Times New Roman"), wxDEFAULT, nStyle, nWeight, false);
     if (!pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
@@ -237,10 +237,9 @@ wxString lmMetronomeMark::SourceLDP(int nIndent)
     }
 
     if (m_fParentheses) sSource += _T(" parentheses");
-    if (!m_fVisible) sSource += _T(" noVisible");
 
-	////location
- //   sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetReferencePaperPos() );
+	//base class info
+    sSource += lmStaffObj::SourceLDP(nIndent);
 
 	//close element
     sSource += _T(")\n");

@@ -19,52 +19,31 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BEAM_H__        //to avoid nested includes
-#define __LM_BEAM_H__
+#ifndef __LM_TOOLPAGE_H__
+#define __LM_TOOLPAGE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "Beam.cpp"
+#pragma interface "ToolPage.cpp"
 #endif
 
-#include <list>
-#include "UndoRedo.h"
-
-class lmShapeBeam;
-class lmShapeStem;
-class lmShapeNote;
-class lmUndoData;
+#include "ColorScheme.h"
 
 
-class lmBeam : public lmMultipleRelationship<lmNoteRest>
+class lmToolPage: public wxPanel
 {
 public:
-    lmBeam(lmNote* pNote);
-    lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData);
-    ~lmBeam();
+    lmToolPage(wxWindow* parent);
+    ~lmToolPage();
+	
+	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
+	void CreateLayout();
+	inline lmColorScheme* GetColors() { return &m_colors; }
 
-	//implementation of lmMultipleRelationship virtual methods
-    inline void Save(lmUndoData* pUndoData) {}
-	inline lmERelationshipClass GetClass() { return lm_eBeamClass; }
-	void OnRelationshipModified();
-
-	//specific methods
-    void CreateShape();
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
-	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
-    void AutoSetUp();
 
 private:
-    int GetBeamingLevel(lmNote* pNote);
-
-        //member variables
-
-    bool            m_fStemsDown;
-	lmShapeBeam*	m_pBeamShape;
-
-    //beam information to be transferred to each beamed note
-    int            m_nPosForRests;        //relative position for rests
+	wxBoxSizer*		m_pMainSizer;	//the main sizer for the panel
+	lmColorScheme	m_colors;
 
 };
 
-#endif    // __LM_BEAM_H__
-
+#endif    // __LM_TOOLPAGE_H__

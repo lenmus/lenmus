@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "Page.h"
+#pragma implementation "ToolGroup.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -34,34 +34,49 @@
 #include "wx/wx.h"
 #endif
 
-#include "Page.h"
+#include "ToolGroup.h"
+#include "ToolPage.h"
+
+#define lmTOOLGROUP_SIZE wxSize(400, 300)
+#define lmTOOLGROUP_STYLE wxCAPTION | wxRESIZE_BORDER
 
 
-lmPageInfo::lmPageInfo(int nLeftMargin, int nRightMargin, int nTopMargin,
-                       int nBottomMargin, int nBindingMargin, wxSize nPageSize,
-                       bool fPortrait)          
+lmToolGroup::lmToolGroup(lmToolPage* pParent)
+	: wxBoxSizer(wxVERTICAL)
 {
-    //constructor: all data in milimeters
-    //default paper size: DIN A4 (210.0 x 297.0 mm)
-
-    m_uLeftMargin = lmToLogicalUnits(nLeftMargin, lmMILLIMETERS);
-    m_uRightMargin = lmToLogicalUnits(nRightMargin, lmMILLIMETERS);
-    m_uTopMargin = lmToLogicalUnits(nTopMargin, lmMILLIMETERS);
-    m_uBottomMargin = lmToLogicalUnits(nBottomMargin, lmMILLIMETERS);
-    m_uBindingMargin = lmToLogicalUnits(nBindingMargin, lmMILLIMETERS);
-
-    m_uPageSize.SetHeight(lmToLogicalUnits(nPageSize.GetHeight(), lmMILLIMETERS));        
-    m_uPageSize.SetWidth(lmToLogicalUnits(nPageSize.GetWidth(), lmMILLIMETERS));
-
-    m_fPortrait = fPortrait;
-    m_fNewSection = true;
+    Init();
+	m_pParent = pParent;
 }
 
-void lmPageInfo::SetPageSize(lmLUnits uWidth, lmLUnits uHeight)
+lmToolGroup::~lmToolGroup()
 {
-    m_uPageSize.SetWidth(uWidth);
-    m_uPageSize.SetHeight(uHeight);
 }
 
+void lmToolGroup::Init()
+{
+	//member initialisation
+}
 
+wxBoxSizer* lmToolGroup::CreateGroup(wxBoxSizer* pParentSizer, wxString sTitle)
+{    
+	//create the controls for this lmToolGroup
 
+    wxStaticBox* pMainSizer = new wxStaticBox(m_pParent, wxID_ANY, sTitle);
+    wxStaticBoxSizer* pAuxSizer = new wxStaticBoxSizer(pMainSizer, wxVERTICAL);
+    pMainSizer->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
+	pMainSizer->SetForegroundColour(m_pParent->GetColors()->PrettyDark());
+	pMainSizer->SetBackgroundColour(m_pParent->GetColors()->Normal());
+    pParentSizer->Add(pAuxSizer, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+    wxBoxSizer* pCtrolsSizer = new wxBoxSizer(wxVERTICAL);
+    pAuxSizer->Add(pCtrolsSizer, 0, wxGROW, 5);
+
+	return pCtrolsSizer;
+}
+
+int lmToolGroup::GetGroupWitdh()
+{	
+	int width, height;
+	m_pParent->GetClientSize(&width, &height);
+	return width;
+}

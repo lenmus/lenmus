@@ -180,6 +180,13 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
         }
         return wxNullBitmap;
     }
+    else if (id == _T("score_wizard")) {
+        if (image.LoadFile(_T("score_wizard.png"), wxBITMAP_TYPE_PNG)) {
+            oBitmap = wxBitmap(image);
+            return oBitmap;
+        }
+        return wxNullBitmap;
+    }
     else if (id == _T("app_splash")) {
         sFile = _T("splash30");
 		sSize = _T(".png");

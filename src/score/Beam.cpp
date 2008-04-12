@@ -222,7 +222,7 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 {
     // This method is only called from lmNote::LayoutObject(), in particular from the last
     // note of a group of beamed notes. The purpose of this method is to add the beam shape
-	// to graphic model
+	// to graphical model
 
 
 	//BUG_BYPASS: ------------------------------------------------------------------
@@ -236,12 +236,21 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
     }
     // End of BUG_BYPASS -----------------------------------------------------------
 
-    //add the beam shape to graphic model
+    //add the beam shape to graphical model
     m_pBeamShape->SetStemsDown(m_fStemsDown);
     pBox->AddShape(m_pBeamShape);
 
 	return m_pBeamShape->GetWidth();
 
+}
+
+void lmBeam::OnRelationshipModified()
+{
+    //it is not ncessary to do anything. AutoSetUp() will be invoked when 
+    //rendering the first note in the beam. So, user edition commands (add or
+    //remove note from beam) will adjust the beam there.
+
+    //AutoSetUp();
 }
 
 void lmBeam::AutoSetUp()

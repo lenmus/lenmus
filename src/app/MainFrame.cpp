@@ -60,6 +60,7 @@
 #include "DlgDebugTrace.h"
 #include "Printout.h"
 #include "MidiWizard.h"             //Use lmMidiWizard
+#include "ScoreWizard.h"            //Use lmScoreWizard
 #include "wx/helpbase.h"		    //for wxHELP constants
 
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
@@ -174,7 +175,8 @@ enum
     // Menu File
     MENU_File_New = 1000,
 #endif
-    MENU_File_Import = MENU_Last_Public_ID,
+    MENU_ScoreMidiWizard = MENU_Last_Public_ID,
+    MENU_File_Import,
     MENU_File_Export,
     MENU_File_Export_bmp,
     MENU_File_Export_jpg,
@@ -275,6 +277,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
 
 
     //File menu/toolbar
+    EVT_MENU      (MENU_ScoreMidiWizard, lmMainFrame::OnScoreWizard)
     EVT_MENU      (MENU_File_Import, lmMainFrame::OnImportFile)
     EVT_UPDATE_UI (MENU_File_Import, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (MENU_File_Export_bmp, lmMainFrame::OnExportBMP)
@@ -453,8 +456,8 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_fBookOpened = false;
     m_fHelpOpened = false;
 
+    // other initializations
     m_fSilentCheck = false;     //default: visible 'check for updates' process
-
 
     //TODO metronome LED
     // Set picMetronomoOn = LoadResPicture("METRONOMO_ON", vbResBitmap)
@@ -551,7 +554,7 @@ void lmMainFrame::CreateMyToolBar()
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pToolbar->SetToolBitmapSize(nSize);
     m_pToolbar->AddTool(MENU_Preferences, _T("Preferences"), wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nSize), _("Set user preferences"));
-    m_pToolbar->AddTool(MENU_OpenHelp, _T("Help"), wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"), wxITEM_CHECK);
+    m_pToolbar->AddTool(MENU_OpenHelp, _T("Help"), wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"));
     m_pToolbar->Realize();
 
     //File toolbar
@@ -593,7 +596,7 @@ void lmMainFrame::CreateMyToolBar()
             wxArtProvider::GetBitmap(_T("tool_paste_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Paste"));
 #if __WXDEBUG__
-    m_pTbEdit->AddSeparator(),
+    m_pTbEdit->AddSeparator();
     m_pTbEdit->AddTool(MENU_View_Page_Margins, _T("Page margins"),
             wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nSize),
@@ -937,8 +940,12 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
 
-    pItem = new wxMenuItem(file_menu, MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
+    pItem = new wxMenuItem(file_menu, MENU_File_New, _("&New\tCtrl+N"), _("New blank score"), wxITEM_NORMAL);
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nIconSize) );
+    file_menu->Append(pItem);
+
+    pItem = new wxMenuItem(file_menu, MENU_ScoreMidiWizard, _("&New with wizard"), _("New score configured with wizard"), wxITEM_NORMAL);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
 
     pItem = new wxMenuItem(file_menu, wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
@@ -974,7 +981,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
 
-    pItem = new wxMenuItem(file_menu, wxID_SAVEAS, _("Save &as ...\tCtrl+Shift+S"));
+    pItem = new wxMenuItem(file_menu, wxID_SAVEAS, _("Save &as ..."));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
 
@@ -992,7 +999,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
 
-    pItem = new wxMenuItem(file_menu, MENU_Print_Preview, _("Print Pre&view\tCtrl+Shift+P") );
+    pItem = new wxMenuItem(file_menu, MENU_Print_Preview, _("Print Pre&view") );
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
 
@@ -1004,7 +1011,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
 #else
     //No bitmaps on menus for other plattforms different from Windows and GTK+
+
     file_menu->Append(MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
+    file_menu->Append(MENU_ScoreMidiWizard, _("&New with wizard"), _("New score configured with wizard"), wxITEM_NORMAL);
     file_menu->Append(wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
     file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
     file_menu->Append(MENU_File_Import, _("&Import..."));
@@ -1017,12 +1026,12 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
                            _("Save score in other formats") );
 
     file_menu->Append(wxID_SAVE, _("&Save\tCtrl+S"));
-    file_menu->Append(wxID_SAVEAS, _("Save &as ...\tCtrl+Shift+S"));
+    file_menu->Append(wxID_SAVEAS, _("Save &as ..."));
     file_menu->Append(wxID_CLOSE, _("&Close\tCtrl+W"));
     file_menu->AppendSeparator();
     file_menu->Append(MENU_Print, _("&Print ...\tCtrl+P"));
     file_menu->Append(wxID_PRINT_SETUP, _("Print &Setup..."));
-    file_menu->Append(MENU_Print_Preview, _("Print Pre&view\tCtrl+Shift+P"));
+    file_menu->Append(MENU_Print_Preview, _("Print Pre&view"));
     file_menu->AppendSeparator();
     file_menu->Append(wxID_EXIT, _("&Quit\tCtrl+Q"));
 
@@ -1134,11 +1143,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     // Options menu
     wxMenu* options_menu = new wxMenu;
-#if defined(__WXMSW__)
-    pItem = new wxMenuItem(options_menu, MENU_Preferences,  _("&Preferences"),
-                            _("Open help book"), wxITEM_CHECK);
-    pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize),
-                       wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) );
+#if defined(__WXMSW__) || defined(__WXGTK__)
+    pItem = new wxMenuItem(options_menu, MENU_Preferences,  _("&Preferences"), _("Open help book"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) );
     options_menu->Append(pItem);
 #else
     options_menu->Append(MENU_Preferences, _("&Preferences"));
@@ -1158,7 +1165,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     // help menu
     wxMenu *help_menu = new wxMenu;
-#if defined(__WXMSW__)
+#if defined(__WXMSW__) || defined(__WXGTK__)
 	pItem = new wxMenuItem(help_menu, MENU_Help_About, _("&About\tF1"),
 							_("Display information about program version and credits") );
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
@@ -1168,7 +1175,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     pItem = new wxMenuItem(help_menu, MENU_OpenHelp,  _("&Content\tCtrl+Alt+F1"),
                             _("Open help book"), wxITEM_CHECK);
+    #if !defined(__WXGTK__)
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize) );
+    #endif
     help_menu->Append(pItem);
 
     help_menu->AppendSeparator();
@@ -1492,13 +1501,17 @@ void lmMainFrame::ExportAsImage(int nImgType)
     sFilter += sExt;
 
     // ask for the name to give to the exported file
-    wxString sFilename = ::wxFileSelector(_("Name for the exported file"),
-                                        _T(""),    //default path
-                                        _T(""),    //default filename
-                                        sExt,
-                                        sFilter,
-                                        wxOPEN,        //flags
-                                        this);
+    wxFileDialog dlg(this,
+                     _("Name for the exported file"),
+                     _T(""),    //default path
+                     _T(""),    //default filename
+                     sFilter,
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);        //flags
+
+    if (dlg.ShowModal() == wxID_CANCEL)
+        return;
+
+    wxString sFilename = dlg.GetFilename();
     if ( !sFilename.IsEmpty() )
     {
         //remove extension including dot
@@ -1754,8 +1767,7 @@ void lmMainFrame::OnActiveViewChanged(lmMDIChildFrame* pFrame)
 
 	// update zoom combo box
 	double rScale = pFrame->GetActiveViewScale();
-	m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
-
+    UpdateZoomControls(rScale);
 }
 
 void lmMainFrame::OnNewEditFrame()
@@ -1765,15 +1777,23 @@ void lmMainFrame::OnNewEditFrame()
 	ShowEditTools(true);
 }
 
+void lmMainFrame::UpdateZoomControls(double rScale)
+{
+    //invoked from the view at score creation to inform about the scale used.
+    //Also invoked internally to centralize code to update zoom controls
 
-void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
+	//m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
+    if (m_pComboZoom)
+        m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale * 100.0));
+}
+
+void lmMainFrame::OnZoom(wxCommandEvent& event, double rScale)
 {
     lmMDIChildFrame* pChild = GetActiveChild();
 	if (pChild)
 	{
-		double rScale = (double)nZoom / 100.0;
 		if (pChild->SetActiveViewScale(rScale) )
-			m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), nZoom ));
+			UpdateZoomControls(rScale);
 	}
 }
 
@@ -1784,7 +1804,7 @@ void lmMainFrame::OnZoomIncrease(wxCommandEvent& event)
 	{
 		double rScale = pChild->GetActiveViewScale() * 1.1;
 		if (pChild->SetActiveViewScale(rScale) )
-			m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
+			UpdateZoomControls(rScale);
 	}
 
 }
@@ -1796,7 +1816,7 @@ void lmMainFrame::OnZoomDecrease(wxCommandEvent& event)
 	{
 		double rScale = pChild->GetActiveViewScale() / 1.1;
 		if ( pChild->SetActiveViewScale(rScale) )
-			m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
+			UpdateZoomControls(rScale);
 	}
 
 }
@@ -1825,23 +1845,21 @@ void lmMainFrame::OnZoomOther(wxCommandEvent& event)
     int nZoom = (int) ::wxGetNumberFromUser(_T(""),
         _("Zooming? (10 to 800)"), _T(""), (int)rScale, 10, 800);
     if (nZoom != -1)    // -1 means invalid input or user canceled
-        OnZoom(event, nZoom);
+        OnZoom(event, (double)nZoom / 100.0);
 }
 
 void lmMainFrame::OnZoomFitWidth(wxCommandEvent& event)
 {
     lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     pView->SetScaleFitWidth();
-    double rScale = pView->GetScale() * 100;
-    m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale));
+    UpdateZoomControls(pView->GetScale());
 }
 
 void lmMainFrame::OnZoomFitFull(wxCommandEvent& event)
 {
     lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     pView->SetScaleFitFull();
-    double rScale = pView->GetScale() * 100;
-    m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale));
+    UpdateZoomControls(pView->GetScale());
 }
 
 void lmMainFrame::OnComboZoom(wxCommandEvent& event)
@@ -1854,7 +1872,7 @@ void lmMainFrame::OnComboZoom(wxCommandEvent& event)
         OnZoomFitWidth(event);
     }
     else if (sValue == _("Actual size")) {
-        OnZoom(event, 100);
+        OnZoom(event, 1.0);
     }
     else {
         //sValue.Replace(_T(","), _T("."));
@@ -1871,7 +1889,7 @@ void lmMainFrame::OnComboZoom(wxCommandEvent& event)
                          _("Error message"), wxOK || wxICON_HAND );
             return;
         }
-        OnZoom(event, (int)rZoom);
+        OnZoom(event, rZoom/100.0);
     }
 	event.Skip();      //continue processing the  event
 
@@ -2216,9 +2234,6 @@ void lmMainFrame::SetFocusOnActiveView()
 		pChild->SetFocus();
 }
 
-
-//---------------------------------
-
 void lmMainFrame::OnRunMidiWizard(wxCommandEvent& WXUNUSED(event))
 {
     DoRunMidiWizard();
@@ -2228,6 +2243,25 @@ void lmMainFrame::DoRunMidiWizard()
 {
     lmMidiWizard oWizard(this);
     oWizard.Run();
+}
+
+void lmMainFrame::OnScoreWizard(wxCommandEvent& WXUNUSED(event))
+{
+    m_pWizardScore = (lmScore*)NULL;
+    lmScoreWizard oWizard(this, &m_pWizardScore);
+    oWizard.Run();
+
+    if (m_pWizardScore)
+    {
+        //Wizard finished successfully. A score has been defined. Create it
+        wxLogMessage(_T("[lmMainFrame::OnScoreWizard] Score created successfully"));
+
+        wxString sPath = _T("\\<<NEW_WIZARD>>//");
+        sPath += _T("new_wizard.txt");            //for DocumentManager
+        wxDocManager* pDocManager = g_pTheApp->GetDocManager();
+        if ( !pDocManager->CreateDocument( sPath, wxDOC_SILENT) )
+            pDocManager->OnOpenFileFailure();
+    }
 }
 
 void lmMainFrame::OnOptions(wxCommandEvent& WXUNUSED(event))

@@ -60,7 +60,7 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     m_uComputedPos.x = 0.0f,   m_uComputedPos.y = 0.0f;
     m_uUserShift.x = 0.0f,   m_uUserShift.y = 0.0f;
 
-    m_pShape = (lmShape*)NULL;
+    m_pGMObj = (lmShape*)NULL;
 	m_fModified = false;
 }
 
@@ -166,28 +166,32 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 	if (tPos.yUnits == lmTENTHS)
 		tPos.y = TenthsToLogical(tPos.y);
 
-    if (m_pShape)
+    if (m_pGMObj)
     {
 		//interactive edition: user is moving an object
-		lmUPoint uOldShapePos = m_pShape->GetBounds().GetTopLeft();
-		m_uUserShift.x += tPos.x - uOldShapePos.x;
-		m_uUserShift.y += tPos.y - uOldShapePos.y;
-		//DBG--------------------------------------------------------------------------------
-		if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
-		{
-			wxLogMessage(_T("[lmScoreObj::SetUserLocation] UserPos=(%.2f, %.2f), old ShapePos=(%.2f, %.2f), old UserShift=(%.2f, %.2f), new UserShift=(%.2f, %.2f)"),
-						tPos.x, tPos.y, uOldShapePos.x, uOldShapePos.y,
-						tPos.x - uOldShapePos.x, tPos.y - uOldShapePos.y,
-						m_uUserShift.x, m_uUserShift.y );
-		}
-		//END DBG----------------------------------------------------------------------------
+	    lmUPoint uShapePos = m_pGMObj->GetBounds().GetTopLeft();
+        lmUPoint uShift(tPos.x - uShapePos.x, tPos.y - uShapePos.y);
+		m_uUserShift.x += uShift.x;
+		m_uUserShift.y += uShift.y;
+
+		////DBG--------------------------------------------------------------------------------
+		//if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
+		//{
+		//    lmUPoint uShapePos = m_pGMObj->GetBounds().GetTopLeft();
+		//    lmUPoint uShapeOrg = m_pGMObj->GetOrigin();
+		//	  wxLogMessage(_T("[lmScoreObj::SetUserLocation] UserPos=(%.2f, %.2f), ShapeOrg=(%.2f, %.2f), ShapePos=(%.2f, %.2f), old UserShift=(%.2f, %.2f), new UserShift=(%.2f, %.2f)"),
+		//				tPos.x, tPos.y, uShapeOrg.x, uShapeOrg.y,
+		//				uShapePos.x, uShapePos.y, uShift.x, uShift.y,
+		//				m_uUserShift.x, m_uUserShift.y );
+		//}
+		////END DBG----------------------------------------------------------------------------
 
 		//Move also attached AuxObjs to this ScoreObj
 		if (m_pAuxObjs)
 		{
 			for (int i=0; i < (int)m_pAuxObjs->size(); i++)
 			{
-				(*m_pAuxObjs)[i]->OnParentMoved(tPos.x - uOldShapePos.x, tPos.y - uOldShapePos.y);
+				(*m_pAuxObjs)[i]->OnParentMoved(uShift.x, uShift.y);
 			}
 		}
     }
@@ -239,39 +243,41 @@ void lmScoreObj::ResetObjectLocation()
 
 void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
 {
-    //The ScoreObj position is being computed in auto-layout procedure and the auto-layout
-    //algorithm is invoking this method to inform about the computed final position for 
-    //this ScoreObj. Take into account that this method can be invoked several times for the
-    //same ScoreBoj, as the auto-layout algorithm refines the final position.
-    //In this method, we can choose either to move the shape to the requested position or
-    //to any other (i.e. the one requested by the user), and that has no influence on the
-    //auto-layout computations.
     //This method is invoked only from TimeposTable module, from methods 
-    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition()
+    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
+    //computations.
+    //By invoking this method, the auto-layout algorithm is iinforming about a change in
+    //the computed final position for this ScoreObj.
+    //Take into account that this method can be invoked several times for the
+    //same ScoreObj, when the auto-layout algorithm refines the final position.
 
 	m_uComputedPos.x += uxShift;
-    if (m_pShape)
+    if (m_pGMObj)
     {
-		//DBG--------------------------------------------------------------------------------
-		if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==3)
-		{
-			lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
-			wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
-						uxShift,
-						m_pShape->GetOrigin().x, m_pShape->GetOrigin().y,
-						m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
-						uNewOrg.x, uNewOrg.y );
-		}
-		//END DBG----------------------------------------------------------------------------
-        m_pShape->ShiftOrigin(m_uComputedPos + m_uUserShift);
+		////DBG--------------------------------------------------------------------------------
+		////if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
+		//if (GetScoreObjType()==lmSOT_ComponentObj
+        //    && ((lmComponentObj*)this)->GetType()==lm_eStaffObj
+        //    && ((lmStaffObj*)this)->IsNoteRest() )
+		//{
+		//	lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
+		//	wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
+		//				uxShift,
+		//				m_pGMObj->GetOrigin().x, m_pGMObj->GetOrigin().y,
+		//				m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
+		//				uNewOrg.x, uNewOrg.y );
+		//}
+		////END DBG----------------------------------------------------------------------------
+        
+        m_pGMObj->ShiftOrigin(m_uComputedPos + m_uUserShift);
     }
 
-	// shift also AuxObjs attached to this StaffObj
+	// inform about the change to AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         {
-            (*m_pAuxObjs)[i]->StoreOriginAndShiftShapes(uxShift);
+            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
         }
     }
 
@@ -311,10 +317,10 @@ void lmScoreObj::OnProperties(lmGMObject* pGMO)
 	//TODO: FIX_ME: pGMO is uselless here because whe the pop-up menu is removed
 	//the score could be re-layouted and the pGMO become invalid
 	//wxMessageBox(_T("Properties of this"));
-	if(!GetShap2())
+	if(!GetShape())
 		wxMessageBox(_T("Nothing selected!"));
 	else
-		wxMessageBox(GetShap2()->Dump(0));
+		wxMessageBox(GetShape()->Dump(0));
 }
 
 int lmScoreObj::GetPageNumber()
@@ -324,8 +330,8 @@ int lmScoreObj::GetPageNumber()
 	//Returns the page number in whith the shape for this ScoreObj is rendered
 	//if no shape returns 0
 
-	if (!m_pShape) return 0;
-	return m_pShape->GetPageNumber();
+	if (!m_pGMObj) return 0;
+	return m_pGMObj->GetPageNumber();
 }
 
 wxFont* lmScoreObj::GetSuitableFont(lmPaper* pPaper)
@@ -370,6 +376,30 @@ wxString lmScoreObj::Dump()
 	return sDump;
 }
 
+wxString lmScoreObj::SourceLDP(int nIndent)
+{
+	wxString sSource = _T("");
+
+	//location
+    if (m_uUserShift.x != 0.0f)
+		sSource += wxString::Format(_T(" dx:%s"),
+					DoubleToStr((double)m_pParent->LogicalToTenths(m_uUserShift.x), 4).c_str() );
+
+	if (m_uUserShift.y != 0.0f)
+		sSource += wxString::Format(_T(" dy:%s"),
+					DoubleToStr((double)m_pParent->LogicalToTenths(m_uUserShift.y), 4).c_str() );
+
+	return sSource;
+}
+
+wxString lmScoreObj::SourceXML(int nIndent)
+{
+    //TODO
+	wxString sSource = _T("");
+	return sSource;
+}
+
+
 
 //-------------------------------------------------------------------------------------------------
 // lmComponentObj implementation
@@ -384,7 +414,7 @@ WX_DEFINE_LIST(AuxObjsList);
 
 static int m_IdCounter = 0;        //to assign unique IDs to ComponentObjs
 
-lmComponentObj::lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocation* pPos,
+lmComponentObj::lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, lmLocation* pPos,
                                bool fIsDraggable)
     : lmScoreObj(pParent)
 {
@@ -400,90 +430,90 @@ lmComponentObj::~lmComponentObj()
 {
 }
 
-wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
-{
-    wxString sSource = _T("");
+//wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
+//{
+//    wxString sSource = _T("");
+//
+  //  // X position
+  //  wxString sPosX = _T("");
+  //  if (m_tPos.xType != lmLOCATION_DEFAULT && m_tPos.xType != lmLOCATION_COMPUTED)
+  //  {
+  //      //value
+  //      if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
+		//{
+		//	if (m_tPos.xUnits == lmLUNITS)
+		//		sPosX = wxString::Format(_T("dx:%s"),
+		//					DoubleToStr((double)LogicalToTenths(m_tPos.x), 4).c_str() );
+		//	else if (m_tPos.xUnits == lmTENTHS)
+		//		sPosX = wxString::Format(_T("dx:%s"), DoubleToStr((double)m_tPos.x, 4).c_str() );
+		//}
+  //      else
+		//{
+		//	//absolute. Convert to relative
+		//	if (m_tPos.xUnits == lmLUNITS)
+		//		sPosX = wxString::Format(_T("dx:%s"),
+		//					DoubleToStr((double)LogicalToTenths(m_tPos.x - uPaperPos.x), 4).c_str() );
+		//	else if (m_tPos.xUnits == lmTENTHS)
+		//		sPosX = wxString::Format(_T("dx:%.4f"),
+		//					DoubleToStr((double)(m_tPos.x - LogicalToTenths(uPaperPos.x)), 4).c_str() );
+		//}
 
-    // X position
-    wxString sPosX = _T("");
-    if (m_tPos.xType != lmLOCATION_DEFAULT && m_tPos.xType != lmLOCATION_COMPUTED)
-    {
-        //value
-        if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
-		{
-			if (m_tPos.xUnits == lmLUNITS)
-				sPosX = wxString::Format(_T("dx:%s"),
-							DoubleToStr((double)LogicalToTenths(m_tPos.x), 4).c_str() );
-			else if (m_tPos.xUnits == lmTENTHS)
-				sPosX = wxString::Format(_T("dx:%s"), DoubleToStr((double)m_tPos.x, 4).c_str() );
-		}
-        else
-		{
-			//absolute. Convert to relative
-			if (m_tPos.xUnits == lmLUNITS)
-				sPosX = wxString::Format(_T("dx:%s"),
-							DoubleToStr((double)LogicalToTenths(m_tPos.x - uPaperPos.x), 4).c_str() );
-			else if (m_tPos.xUnits == lmTENTHS)
-				sPosX = wxString::Format(_T("dx:%.4f"),
-							DoubleToStr((double)(m_tPos.x - LogicalToTenths(uPaperPos.x)), 4).c_str() );
-		}
+  //      //units
+  //      wxString sUnits = _T("");
+  //      if (m_tPos.xUnits != lmTENTHS)
+  //      {
+  //      }
+  //      sPosX += sUnits;
+  //  }
 
-        //units
-        wxString sUnits = _T("");
-        if (m_tPos.xUnits != lmTENTHS)
-        {
-        }
-        sPosX += sUnits;
-    }
+  //  if (sPosX != _T(""))
+  //  {
+  //      sSource += _T(" ");
+  //      sSource += sPosX;
+  //      sSource += _T("");
+  //  }
 
-    if (sPosX != _T(""))
-    {
-        sSource += _T(" ");
-        sSource += sPosX;
-        sSource += _T("");
-    }
+  //  // Y position
+  //  wxString sPosY = _T("");
+  //  if (m_tPos.yType != lmLOCATION_DEFAULT && m_tPos.yType != lmLOCATION_COMPUTED)
+  //  {
+  //      //value
+  //      if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
+		//{
+		//	if (m_tPos.xUnits == lmLUNITS)
+		//		sPosY = wxString::Format(_T("dy:%s"),
+		//						DoubleToStr((double)LogicalToTenths(m_tPos.y), 4).c_str() );
+		//	else if (m_tPos.xUnits == lmTENTHS)
+		//		sPosY = wxString::Format(_T("dy:%s"), DoubleToStr((double)m_tPos.y, 4).c_str() );
+		//}
+  //      else
+		//{
+		//	//absolute. Convert to relative
+		//	if (m_tPos.yUnits == lmLUNITS)
+		//		sPosY = wxString::Format(_T("dy:%s"),
+		//					DoubleToStr((double)LogicalToTenths(m_tPos.y - uPaperPos.y), 4).c_str() );
+		//	else if (m_tPos.yUnits == lmTENTHS)
+		//		sPosY = wxString::Format(_T("dy:%s"),
+		//					DoubleToStr((double)(m_tPos.y - LogicalToTenths(uPaperPos.y)), 4).c_str() );
+		//}
 
-    // Y position
-    wxString sPosY = _T("");
-    if (m_tPos.yType != lmLOCATION_DEFAULT && m_tPos.yType != lmLOCATION_COMPUTED)
-    {
-        //value
-        if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
-		{
-			if (m_tPos.xUnits == lmLUNITS)
-				sPosY = wxString::Format(_T("dy:%s"),
-								DoubleToStr((double)LogicalToTenths(m_tPos.y), 4).c_str() );
-			else if (m_tPos.xUnits == lmTENTHS)
-				sPosY = wxString::Format(_T("dy:%s"), DoubleToStr((double)m_tPos.y, 4).c_str() );
-		}
-        else
-		{
-			//absolute. Convert to relative
-			if (m_tPos.yUnits == lmLUNITS)
-				sPosY = wxString::Format(_T("dy:%s"),
-							DoubleToStr((double)LogicalToTenths(m_tPos.y - uPaperPos.y), 4).c_str() );
-			else if (m_tPos.yUnits == lmTENTHS)
-				sPosY = wxString::Format(_T("dy:%s"),
-							DoubleToStr((double)(m_tPos.y - LogicalToTenths(uPaperPos.y)), 4).c_str() );
-		}
+  //      //units
+  //      wxString sUnits = _T("");
+  //      if (m_tPos.yUnits != lmTENTHS)
+  //      {
+  //      }
+  //      sPosY += sUnits;
+  //  }
 
-        //units
-        wxString sUnits = _T("");
-        if (m_tPos.yUnits != lmTENTHS)
-        {
-        }
-        sPosY += sUnits;
-    }
-
-    if (sPosY != _T(""))
-    {
-        sSource += _T(" ");
-        sSource += sPosY;
-        sSource += _T("");
-    }
-
-    return sSource;
-}
+  //  if (sPosY != _T(""))
+  //  {
+  //      sSource += _T(" ");
+  //      sSource += sPosY;
+  //      sSource += _T("");
+  //  }
+//
+//    return sSource;
+//}
 
 lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 {
@@ -494,93 +524,93 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 
 #else
 
-	//if default location, ask derived object to compute the best position for itself
-    if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
-		uPos = ComputeBestLocation(uPos, pPaper);
-	else if (m_tPos.xType == lmLOCATION_COMPUTED || m_tPos.yType == lmLOCATION_COMPUTED)
-	{
-		m_tPos = m_tSrcPos;
-		uPos = ComputeBestLocation(uPos, pPaper);
-	}
+	////if default location, ask derived object to compute the best position for itself
+ //   if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
+	//	uPos = ComputeBestLocation(uPos, pPaper);
+	//else if (m_tPos.xType == lmLOCATION_COMPUTED || m_tPos.yType == lmLOCATION_COMPUTED)
+	//{
+	//	m_tPos = m_tSrcPos;
+	//	uPos = ComputeBestLocation(uPos, pPaper);
+	//}
 
 
-    if (m_tPos.xType == lmLOCATION_DEFAULT)
-	{
-		//use the computed best location
-		m_tPos.x = uPos.x;
-		m_tPos.xType = lmLOCATION_COMPUTED;
-		m_tPos.xUnits = lmLUNITS;
-    }
+ //   if (m_tPos.xType == lmLOCATION_DEFAULT)
+	//{
+	//	//use the computed best location
+	//	m_tPos.x = uPos.x;
+	//	m_tPos.xType = lmLOCATION_COMPUTED;
+	//	m_tPos.xUnits = lmLUNITS;
+ //   }
 
-	else if (m_tPos.xType == lmLOCATION_COMPUTED)
-	{
-		//the default position was computed in a previous invocation. Use it
-		//The computed location is always absolute, in tenths
-		uPos.x = m_tPos.x;
-    }
+	//else if (m_tPos.xType == lmLOCATION_COMPUTED)
+	//{
+	//	//the default position was computed in a previous invocation. Use it
+	//	//The computed location is always absolute, in tenths
+	//	uPos.x = m_tPos.x;
+ //   }
 
-	else if (m_tPos.xType == lmLOCATION_USER_ABSOLUTE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.xUnits == lmLUNITS)
-			uPos.x = m_tPos.x;
-		else if (m_tPos.xUnits == lmTENTHS)
-			uPos.x = TenthsToLogical( m_tPos.x );
-	}
+	//else if (m_tPos.xType == lmLOCATION_USER_ABSOLUTE)
+	//{
+	//	//the position was fixed by user (either in source file or by dragging object)
+	//	//Use it
+	//	if (m_tPos.xUnits == lmLUNITS)
+	//		uPos.x = m_tPos.x;
+	//	else if (m_tPos.xUnits == lmTENTHS)
+	//		uPos.x = TenthsToLogical( m_tPos.x );
+	//}
 
-	else if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.xUnits == lmLUNITS)
-			uPos.x += m_tPos.x;
-		else if (m_tPos.xUnits == lmTENTHS)
-			uPos.x += TenthsToLogical( m_tPos.x );
-	}
-	else
-		wxASSERT(false);
+	//else if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
+	//{
+	//	//the position was fixed by user (either in source file or by dragging object)
+	//	//Use it
+	//	if (m_tPos.xUnits == lmLUNITS)
+	//		uPos.x += m_tPos.x;
+	//	else if (m_tPos.xUnits == lmTENTHS)
+	//		uPos.x += TenthsToLogical( m_tPos.x );
+	//}
+	//else
+	//	wxASSERT(false);
 
 
-    if (m_tPos.yType == lmLOCATION_DEFAULT)
-	{
-		//use the computed best location
-		m_tPos.y = uPos.y;
-		m_tPos.yType = lmLOCATION_COMPUTED;
-		m_tPos.yUnits = lmLUNITS;
-    }
+ //   if (m_tPos.yType == lmLOCATION_DEFAULT)
+	//{
+	//	//use the computed best location
+	//	m_tPos.y = uPos.y;
+	//	m_tPos.yType = lmLOCATION_COMPUTED;
+	//	m_tPos.yUnits = lmLUNITS;
+ //   }
 
-	else if (m_tPos.yType == lmLOCATION_COMPUTED)
-	{
-		//the position was computed in a previous invocation or was fixed by user.
-		//Use it
-		//The computed location is always absolute, in tenths
-		uPos.y = m_tPos.y;
-    }
+	//else if (m_tPos.yType == lmLOCATION_COMPUTED)
+	//{
+	//	//the position was computed in a previous invocation or was fixed by user.
+	//	//Use it
+	//	//The computed location is always absolute, in tenths
+	//	uPos.y = m_tPos.y;
+ //   }
 
-	else if (m_tPos.yType == lmLOCATION_USER_ABSOLUTE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.yUnits == lmLUNITS)
-			uPos.y = m_tPos.y;
-		else if (m_tPos.yUnits == lmTENTHS)
-			uPos.y = TenthsToLogical( m_tPos.y );
-	}
+	//else if (m_tPos.yType == lmLOCATION_USER_ABSOLUTE)
+	//{
+	//	//the position was fixed by user (either in source file or by dragging object)
+	//	//Use it
+	//	if (m_tPos.yUnits == lmLUNITS)
+	//		uPos.y = m_tPos.y;
+	//	else if (m_tPos.yUnits == lmTENTHS)
+	//		uPos.y = TenthsToLogical( m_tPos.y );
+	//}
 
-	else if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.yUnits == lmLUNITS)
-			uPos.y += m_tPos.y;
-		else if (m_tPos.xUnits == lmTENTHS)
-			uPos.y += TenthsToLogical( m_tPos.y );
-	}
-	else
-		wxASSERT(false);
+	//else if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
+	//{
+	//	//the position was fixed by user (either in source file or by dragging object)
+	//	//Use it
+	//	if (m_tPos.yUnits == lmLUNITS)
+	//		uPos.y += m_tPos.y;
+	//	else if (m_tPos.xUnits == lmTENTHS)
+	//		uPos.y += TenthsToLogical( m_tPos.y );
+	//}
+	//else
+	//	wxASSERT(false);
 
-	return uPos;
+	//return uPos;
 #endif
 
 }
@@ -594,7 +624,7 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 
 lmStaffObj::lmStaffObj(lmScoreObj* pParent, EStaffObjType nType, lmVStaff* pStaff, int nStaff,
                    bool fVisible, bool fIsDraggable) :
-    lmComponentObj(pParent, eSCOT_StaffObj, &g_tDefaultPos, fIsDraggable)
+    lmComponentObj(pParent, lm_eStaffObj, &g_tDefaultPos, fIsDraggable)
 {
     // store parameters
     m_fVisible = fVisible;
@@ -613,36 +643,36 @@ lmStaffObj::~lmStaffObj()
 void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
 	lmUPoint uOrg = SetReferencePos(pPaper);
-	lmUPoint uPos = ComputeObjectLocation(pPaper);			// compute location
-    m_uComputedPos = uPos;
+	m_uComputedPos = ComputeObjectLocation(pPaper);			// compute location
 
 	lmLUnits uWidth;
     if (m_fVisible)
 	{
 		//SetFont(pPaper);										// set the font
-		uWidth = LayoutObject(pBox, pPaper, uPos, colorC);		// layout derived object
+		// layout derived object
+        uWidth = LayoutObject(pBox, pPaper, m_uComputedPos, colorC);
 	}
 	else
 	{
 		//Create an invisible shape, to store the StaffObj position
 		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg, lmUSize(0.0, 0.0) );
 		pBox->AddShape(pShape);
-		m_pShape = pShape;
+		m_pGMObj = pShape;
 		uWidth = 0;
 	}
 
 	//if user defined position shift the shape
-	if (m_pShape && m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f)
-		m_pShape->Shift(m_uUserShift.x, m_uUserShift.y);
+	if (m_pGMObj && m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f)
+		m_pGMObj->Shift(m_uUserShift.x, m_uUserShift.y);
 
 	// layout AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
 	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
 	    {
-		    //restore this object paper pos.
-		    pPaper->SetCursorX(uPos.x);
-		    pPaper->SetCursorY(uPos.y);
+		    //assign m_uComputedPos as paper pos. for this AuxObj
+		    pPaper->SetCursorX(m_uComputedPos.x);
+		    pPaper->SetCursorY(m_uComputedPos.y);
 
 		    (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
 	    }
@@ -650,7 +680,6 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 
     // update paper cursor position
     pPaper->SetCursorX(uOrg.x + uWidth);
-
 }
 
 wxFont* lmStaffObj::GetSuitableFont(lmPaper* pPaper)
@@ -705,27 +734,8 @@ wxString lmStaffObj::SourceLDP(int nIndent)
 		nIndent--;
     }
 
-    //location
-    sSource += SourceLDP_Location();
-
-
-    sSource += _T(")\n");
-	return sSource;
-}
-
-wxString lmStaffObj::SourceLDP_Location()
-{
-	wxString sSource = _T("");
-
-	//location
-    if (m_uUserShift.x != 0.0f)
-		sSource += wxString::Format(_T(" dx:%s"),
-					DoubleToStr((double)LogicalToTenths(m_uUserShift.x), 4).c_str() );
-
-	if (m_uUserShift.y != 0.0f)
-		sSource += wxString::Format(_T(" dy:%s"),
-					DoubleToStr((double)LogicalToTenths(m_uUserShift.y), 4).c_str() );
-
+    //base class info
+    sSource += lmScoreObj::SourceLDP(nIndent);
 	return sSource;
 }
 
@@ -765,7 +775,7 @@ void lmStaffObj::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
 {
     if (fHighlight)
     {
-        GetShap2()->Render(pPaper, g_pColors->CursorColor());
+        GetShape()->Render(pPaper, g_pColors->CursorColor());
     }
     else
     {
@@ -777,7 +787,7 @@ void lmStaffObj::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
         // to signal that XOR draw mode in colour followed by a normal
         // draw in BLACK must be done.
 
-        GetShap2()->Render(pPaper, *wxWHITE);
-        GetShap2()->Render(pPaper, g_pColors->ScoreNormal());
+        GetShape()->Render(pPaper, *wxWHITE);
+        GetShape()->Render(pPaper, g_pColors->ScoreNormal());
     }
 }

@@ -182,10 +182,6 @@ void lmShapeNote::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 		uFinalPos.y = GetYTop();
 	}
 
-	////correct glyph displacement
-	//uFinalPos.x += m_uGlyphPos.x - GetXLeft();
-	//uFinalPos.y += m_uGlyphPos.y - GetYTop();
-
 	//send a move object command to the controller
 	pCanvas->MoveObject(this, uFinalPos);
 

@@ -321,3 +321,45 @@ wxString DoubleToStr(double rNumber, int nDecimalDigits)
 
 }
 
+
+lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits)
+{
+    return lmToLogicalUnits((double)nValue, nUnits);
+}
+
+lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits)
+{
+    // first convert to tenths of millimeter (mode MM_LOMETRIC), then divide by SCALE factor
+    switch(nUnits) {
+		case lmLUNITS:			return (lmLUnits)rValue; 
+        case lmMICRONS:         return (lmLUnits)((rValue / 100.) / lmSCALE);      break;
+        case lmMILLIMETERS:     return (lmLUnits)((rValue * 10.) / lmSCALE);       break;
+        case lmCENTIMETERS:     return (lmLUnits)((rValue * 100.) / lmSCALE);      break;
+        case lmINCHES:          return (lmLUnits)((rValue * 254.) / lmSCALE);      break;
+        default:
+            wxASSERT(false);
+            return 10.0;
+    }
+
+}
+
+double lmLogicalToUserUnits(int nValue, lmEUnits nUnits)
+{
+    return lmLogicalToUserUnits((double)nValue, nUnits);
+}
+
+double lmLogicalToUserUnits(double rValue, lmEUnits nUnits)
+{
+    // first multiply by SCALE factor, then convert from tenths of millimeter (mode MM_LOMETRIC)
+    switch(nUnits) {
+		case lmLUNITS:			return rValue; 
+        case lmMICRONS:         return ((lmSCALE * rValue) * 100.);      break;
+        case lmMILLIMETERS:     return ((lmSCALE * rValue) / 10.);       break;
+        case lmCENTIMETERS:     return ((lmSCALE * rValue) / 100.);      break;
+        case lmINCHES:          return ((lmSCALE * rValue) / 254.);      break;
+        default:
+            wxASSERT(false);
+            return 10.0;
+    }
+
+}

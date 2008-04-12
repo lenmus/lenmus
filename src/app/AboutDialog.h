@@ -51,10 +51,20 @@ public:
 
 
 private:
+	void CreateControls();
+
     //controls on dialog
-    wxHtmlWindow*   m_pHtmlWindow;
-    wxStaticText*   m_pTxtTitle;
-    wxStaticText*   m_pTxtSubtitle;
+	wxStaticBitmap*		m_pBmpLogo;
+	wxStaticText*		m_pTxtTitle;
+	wxStaticText*		m_pTxtSubtitle;
+	wxHtmlWindow*		m_pHtmlWindow;
+	wxButton*			m_pBtnPurpose;
+	wxButton*			m_pBtnLicense;
+	wxButton*			m_pBtnDevelopers;
+	wxButton*			m_pBtnArtCredits;
+	wxButton*			m_pBtnSoftwareCredits;
+	wxButton*			m_pBtnBuildInfo;
+	wxButton*			m_pBtnAccept;
 
     //other variables
     wxString        m_sHeader;          //html code to start a page

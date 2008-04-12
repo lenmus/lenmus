@@ -140,6 +140,8 @@ wxString lmTimeSignature::SourceLDP(int nIndent)
 	//base class
 	sSource += lmStaffObj::SourceLDP(nIndent);
 
+    //close element
+    sSource += _T(")\n");
 	return sSource;
 }
 
@@ -227,7 +229,7 @@ lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxC
 	//create the shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, _T("Time signature"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    m_pShape = pShape;
+    m_pGMObj = pShape;
 
 	//loop to create glyphs for the top number
 	long nDigit;

@@ -40,40 +40,44 @@ public:
     lmPaper();
     ~lmPaper();
 
-    //Drawer to use
+    //settings
     void SetDrawer(lmDrawer* pDrawer);
+    void SetPageInfo(lmPageInfo* pPageInfo, int nNumPage);
+    void ForceDefaultPageInfo(bool fValue);
 
     // page cursors positioning
-    void NewLine(lmLUnits nSpace);
+    inline lmLUnits GetCursorX() { return m_uxCursor; }
+    inline lmLUnits GetCursorY() { return m_uyCursor; }
+    inline void SetCursorX(lmLUnits uValue) { m_uxCursor = uValue; }
+    inline void SetCursorY(lmLUnits uValue) { m_uyCursor = uValue; }
+    inline void IncrementCursorX(lmLUnits uValue) { m_uxCursor += uValue; }
+    inline void IncrementCursorY(lmLUnits uValue) { m_uyCursor += uValue; }
+
+    //methods using lmPaper ------------------------------------------------------------
+    void NewLine(lmLUnits uSpace);
     void RestartPageCursors();
-    lmLUnits GetCursorX() { return m_xCursor; }
-    lmLUnits GetCursorY() { return m_yCursor; }
-    void SetCursorX(lmLUnits rValor) { m_xCursor = rValor; }
-    void SetCursorY(lmLUnits rValor) { m_yCursor = rValor; }
-    void IncrementCursorX(lmLUnits rValor) { m_xCursor += rValor; }
-    void IncrementCursorY(lmLUnits rValor) { m_yCursor += rValor; }
+    // page object: size and margings
+    inline lmLUnits GetPageTopMargin() { return m_pPageInfo->TopMargin(); }
+    inline lmLUnits GetPageLeftMargin() { return m_pPageInfo->LeftMargin(m_nNumPage); }
+    inline lmLUnits GetPageRightMargin() { return m_pPageInfo->RightMargin(m_nNumPage); }
+    inline lmUSize GetPaperSize() { return lmUSize(m_pPageInfo->PageWidth(), m_pPageInfo->PageHeight()); }
+    inline lmLUnits GetMaximumY() {return m_pPageInfo->GetUsableHeight() + m_pPageInfo->TopMargin(); }
 
-    // page size and margings
-    lmLUnits GetPageTopMargin() { return m_Page.TopMargin(); }
-    lmLUnits GetPageLeftMargin() { return m_Page.LeftMargin(); }
-    lmLUnits GetPageRightMargin() { return m_Page.RightMargin(); }
-    wxSize& GetPaperSize();
-    lmLUnits GetMaximumY() {return m_Page.GetUsableHeight() + m_Page.TopMargin(); }
-
-    void SetPageTopMargin(lmLUnits nValue) { m_Page.SetTopMargin(nValue); }
-    void SetPageLeftMargin(lmLUnits nValue) { m_Page.SetLeftMargin(nValue); }
-    void SetPageRightMargin(lmLUnits nValue) { m_Page.SetRightMargin(nValue); }
-    void SetPageSize(lmLUnits nWidth, lmLUnits nHeight) { m_Page.SetPageSize(nWidth, nHeight); }
+    inline void SetPageTopMargin(lmLUnits uValue) { m_pPageInfo->SetTopMargin(uValue); }
+    inline void SetPageLeftMargin(lmLUnits uValue) { m_pPageInfo->SetLeftMargin(uValue); }
+    inline void SetPageRightMargin(lmLUnits uValue) { m_pPageInfo->SetRightMargin(uValue); }
+    inline void SetPageSize(lmLUnits uWidth, lmLUnits uHeight) { m_pPageInfo->SetPageSize(uWidth, uHeight); }
 
     lmLUnits GetRightMarginXPos();
     lmLUnits GetLeftMarginXPos();
+    //end of methods using lmPaper ------------------------------------------------------
 
     // unit conversion
-    lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDrawer->DeviceToLogicalX(x); }
-    lmLUnits DeviceToLogicalY(lmPixels y) { return m_pDrawer->DeviceToLogicalY(y); }
+    inline lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDrawer->DeviceToLogicalX(x); }
+    inline lmLUnits DeviceToLogicalY(lmPixels y) { return m_pDrawer->DeviceToLogicalY(y); }
 
-    lmPixels LogicalToDeviceX(lmLUnits x) { return m_pDrawer->LogicalToDeviceX(x); }
-    lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDrawer->LogicalToDeviceY(y); }
+    inline lmPixels LogicalToDeviceX(lmLUnits x) { return m_pDrawer->LogicalToDeviceX(x); }
+    inline lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDrawer->LogicalToDeviceY(y); }
 
     // fonts
     wxFont* GetFont(int nPointSize,
@@ -122,17 +126,21 @@ public:
 
 
 
-
 private:
-    lmDrawer*   m_pDrawer;
-    lmPage      m_Page;             // page layout settings
+    //device context (DC)
+    lmDrawer*       m_pDrawer;
 
-    // page cursors
-    lmLUnits   m_xCursor, m_yCursor;       // current default drawing position. Logical units
-                                            // relative to origin of paper
+    //page size and margins information
+    lmPageInfo*     m_pPageInfo;        //page info in use
+    int             m_nNumPage;         //number of current page
+    lmPageInfo      m_DefaultPage;      //default internal page info object
+    bool            m_fUseDefault;      //force to use the default page info object
 
-    // miscelaneous
-    lmFontManager   m_fontManager;          // font manager for this paper
+    //paper cursors
+    lmLUnits   m_uxCursor, m_uyCursor;  //current default drawing position. Logical units
+                                        //    relative to origin of paper
+    //font manager
+    lmFontManager   m_fontManager;      // font manager for this paper
 
 };
 

@@ -913,7 +913,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
                 sName.c_str() );
         }
     }
-	pVStaff->AddBarline(lm_eBarlineEOS, true);
+	//pVStaff->AddBarline(lm_eBarlineEOS, true);
 	m_nCurVoice = 1;
 
 }
@@ -1087,7 +1087,7 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
         AnalyzeMeasure(pX, pVStaff);
     }
 
-    pVStaff->AddBarline(lm_eBarlineEOS, true);
+    //pVStaff->AddBarline(lm_eBarlineEOS, true);
 
 }
 
@@ -1360,7 +1360,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     int iP = 1;
     wxString sPitch = _T("");
     wxString sDuration = _T("");
-    if (sElmName != _T("na") && sElmName.length() > 1) {
+    if (sElmName != _T("na") && sElmName.length() > 1)
+    {
         //abbreviated notation. Split node name
         bool fPitchFound = false;
         bool fOctaveFound = false;
@@ -1416,8 +1417,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
         iP = 1;
     }
-    else {
-        //full notation. Get parameters
+
+    else    //full notation. Get parameters
+    {
         if (fIsRest) {
             if (nParms < 1) {
                 AnalysisError( _T("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
@@ -1485,7 +1487,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 						lm_eTag_StaffNum, -1);		//finish list with -1
 
 	lmLocation tPos = g_tDefaultPos;
-    int nStaff = 1;
+    int nStaff = m_nCurStaff;
 
 	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &nStaff, &tPos);
 	m_nCurStaff = nStaff;
@@ -1496,12 +1498,13 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 	lmLocation tFermataPos = g_tDefaultPos;
 
     wxString sData;
-    lmLDPNode* pX;
     int iLevel, nLevel;
-    for (; iP <= nParms; iP++)
+    lmLDPNode* pX = pNode->StartIterator(iP);
+    while (pX)
     {
-        pX = pNode->GetParameter(iP);
-        if (pX->IsSimple()) {
+        if (pX->IsProcessed())
+            ;   //ignore it
+        else if (pX->IsSimple()) {
             //
             // Analysis of simple notations
             //
@@ -1639,10 +1642,6 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
             }
 
-   //         else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))
-			//{	//staff number
-   //             m_nCurStaff = AnalyzeNumStaff(sData, pVStaff->GetNumStaves());
-   //         }
             else if (sData.Left(1) == m_pTags->TagName(_T("v"), _T("SingleChar")))
             {	//voice
 				m_nCurVoice = AnalyzeVoiceNumber(sData);
@@ -1651,20 +1650,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 			{	//fermata
                 fFermata = true;
             }
-   //         else if (sData == m_pTags->TagName(_T("noVisible")))
-			//{	//no visible
-   //             fVisible = false;
-   //         }
             else {
                 AnalysisError(_T("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
             }
 
        }
 
-       else {
-            //
-            // Analysis of compound notations
-            //
+       else     // Analysis of compound notations
+       {
             sData = pX->GetName();
             if (sData == m_pTags->TagName(_T("g"), _T("SingleChar")) ) {       //Start of group element
                 AnalysisError(_T("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData.c_str());
@@ -1695,6 +1688,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
 
         }
+        pX = pNode->GetNextParameter();
     }
 
     //force beaming for notes between eBeamBegin and eBeamEnd (only for single notes
@@ -2483,6 +2477,8 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     tPos.xUnits = lmTENTHS;
     tPos.yType = lmLOCATION_DEFAULT;
     tPos.yUnits = lmTENTHS;
+    tPos.x = 0.0f;
+    tPos.y = 0.0f;
 
     //get the aligment
     long iP = 1;
@@ -2530,7 +2526,9 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     }
 
     //create the title
-    pScore->AddTitle(sTitle, nAlign, tPos, tFont.sFontName, tFont.nFontSize, tFont.nStyle);
+    lmScoreText* pTitle = pScore->AddTitle(sTitle, nAlign, tPos, tFont.sFontName,
+                                           tFont.nFontSize, tFont.nStyle);
+	pTitle->SetUserLocation(tPos);
 
     return false;
 
@@ -2637,6 +2635,8 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     tPos.xUnits = lmTENTHS;
     tPos.yType = lmLOCATION_DEFAULT;
     tPos.yUnits = lmTENTHS;
+    tPos.x = 0.0f;
+    tPos.y = 0.0f;
 
     if (AnalyzeTextString(pNode, &sText, &nAlign, &tPos, &tFont, &fHasWidth)) return true;
 
@@ -2647,7 +2647,8 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     m_nTextStyle = tFont.nStyle;
 
     //create the text
-    pVStaff->AddText(sText, nAlign, &tPos, tFont, fHasWidth);
+    lmScoreText* pText = pVStaff->AddText(sText, nAlign, &tPos, tFont, fHasWidth);
+    pText->SetUserLocation(tPos);
 
     return false;
 
@@ -3449,6 +3450,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 			if (VerifyAllowed(lm_eTag_StaffNum, sName)) {
 				*pStaffNum = m_pParser->AnalyzeNumStaff(sName, pVStaff->GetNumStaves());
 			}
+            pX->SetProcessed(true);
         }
 
 		//visible or not
@@ -3457,6 +3459,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 			if (VerifyAllowed(lm_eTag_Visible, sName)) {
 				*pfVisible = false;
 			}
+            pX->SetProcessed(true);
         }
 
 		// X location
@@ -3465,6 +3468,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 			if (VerifyAllowed(lm_eTag_Location_x, sName)) {
 				m_pParser->AnalyzeLocation(pX, pLocation);
 			}
+            pX->SetProcessed(true);
 		}
 
 		// Y location
@@ -3473,6 +3477,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 			if (VerifyAllowed(lm_eTag_Location_y, sName)) {
 				m_pParser->AnalyzeLocation(pX, pLocation);
 			}
+            pX->SetProcessed(true);
 		}
 
 		// Octave shift
@@ -3480,6 +3485,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
                     || sName == _T("+15ma") || sName == _T("-15ma") )
         {
             //TODO tessiture option in clef
+            pX->SetProcessed(true);
         }
 
         //else

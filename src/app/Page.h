@@ -29,45 +29,53 @@
 #include "../score/defs.h"
 
 
-class lmPage
+class lmPageInfo
 {
 public:
-    lmPage();
-    ~lmPage() {}
-    void SetTopMargin(lmLUnits nMicrons) { m_nTopMargin = nMicrons; }
-    void SetBottomMargin(lmLUnits nMicrons) { m_nBottomMargin = nMicrons; }
-    void SetLeftMargin(lmLUnits nMicrons) { m_nLeftMargin = nMicrons; }
-    void SetRightMargin(lmLUnits nMicrons) { m_nRightMargin = nMicrons; }
-    void SetBindingMargin(lmLUnits nMicrons) { m_nBindingMargin = nMicrons; }
+    //constructor: all data in milimeters
+    lmPageInfo(int nLeftMargin = 20, int nRightMargin = 15, int nTopMargin = 20,
+               int nBottomMargin = 20, int nBindingMargin = 0,
+               wxSize nPageSize = wxSize(210, 297), bool fPortrait = true );            
+    ~lmPageInfo() {}
+
+    //change settings
+    inline void SetTopMargin(lmLUnits uValue) { m_uTopMargin = uValue; }
+    inline void SetBottomMargin(lmLUnits uValue) { m_uBottomMargin = uValue; }
+    inline void SetLeftMargin(lmLUnits uValue) { m_uLeftMargin = uValue; }
+    inline void SetRightMargin(lmLUnits uValue) { m_uRightMargin = uValue; }
+    inline void SetBindingMargin(lmLUnits uValue) { m_uBindingMargin = uValue; }
     void SetPageSize(lmLUnits width, lmLUnits height);
+    inline void SetOrientation(bool fPortrait) { m_fPortrait = fPortrait; }
+    inline void SetNewSection(bool fNewSection) { m_fNewSection = fNewSection; }
 
     // Access
 
-    lmLUnits TopMargin() { return m_nTopMargin; }
-    lmLUnits BottomMargin() { return m_nBottomMargin; }
-    lmLUnits LeftMargin() {
-        return (m_nPageNum % 2) ? m_nLeftMargin + m_nBindingMargin : m_nLeftMargin ;
+    lmLUnits TopMargin() { return m_uTopMargin; }
+    lmLUnits BottomMargin() { return m_uBottomMargin; }
+    lmLUnits LeftMargin(int nNumPage) {
+        return (nNumPage % 2) ? m_uLeftMargin + m_uBindingMargin : m_uLeftMargin ;
     }
-    lmLUnits RightMargin() {
-        return (m_nPageNum % 2) ? m_nRightMargin : m_nRightMargin + m_nBindingMargin ;
+    lmLUnits RightMargin(int nNumPage) {
+        return (nNumPage % 2) ? m_uRightMargin : m_uRightMargin + m_uBindingMargin ;
     }
-    wxSize& PageSize() { return m_pageSize; }
-    lmLUnits GetUsableHeight() { return m_pageSize.GetHeight() - m_nTopMargin - m_nBottomMargin; }
+    inline lmLUnits PageWidth() { return (m_fPortrait ? m_uPageSize.Width() : m_uPageSize.Height()); }
+    inline lmLUnits PageHeight() { return (m_fPortrait ? m_uPageSize.Height() : m_uPageSize.Width()); }
+    inline lmLUnits GetUsableHeight() { return m_uPageSize.GetHeight() - m_uTopMargin - m_uBottomMargin; }
 
 
 
 private:
-    // Mesaures: all in logical units
-    lmLUnits        m_nLeftMargin;
-    lmLUnits        m_nRightMargin;
-    lmLUnits        m_nTopMargin;
-    lmLUnits        m_nBottomMargin;
-    lmLUnits        m_nBindingMargin;
+    //margins, all in logical units
+    lmLUnits        m_uLeftMargin;
+    lmLUnits        m_uRightMargin;
+    lmLUnits        m_uTopMargin;
+    lmLUnits        m_uBottomMargin;
+    lmLUnits        m_uBindingMargin;
 
-    wxSize          m_pageSize;            // paper size
-    int             m_nPageNum;            // absolute num of page
-
-
+    //paper size, in logical units
+    lmUSize         m_uPageSize; 
+    bool            m_fPortrait;
+    bool            m_fNewSection;
 };
 
 #endif    // __LM_PAGE_H__

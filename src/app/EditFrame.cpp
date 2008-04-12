@@ -58,9 +58,9 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(lmEditFrame, lmDocMDIChildFrame)
 
 
-lmEditFrame::lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame *mainFrame,
+lmEditFrame::lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame *pMainFrame,
                      const wxPoint& uPos, const wxSize& size) :
-    lmDocMDIChildFrame(doc, view, mainFrame, wxID_ANY, _T("EditFrame"), uPos, size,
+    lmDocMDIChildFrame(doc, view, pMainFrame, wxID_ANY, _T("EditFrame"), uPos, size,
                         wxDEFAULT_FRAME_STYLE ) //| wxNO_FULL_REPAINT_ON_RESIZE)
 {
     m_pView = (lmScoreView *) view;

@@ -43,6 +43,10 @@
 
 //----------------------------------------------------------------------------------------
 // lmScoreCommand abstract class implementation
+//
+// Do() method will return true to indicate that the action has taken place, false 
+// otherwise. Returning false will indicate to the command processor that the action is 
+// not undoable and should not be added to the command history.
 //----------------------------------------------------------------------------------------
 
 lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc)
@@ -56,7 +60,7 @@ lmScoreCommand::~lmScoreCommand()
 {
 }
 
-void lmScoreCommand::CommandDone()
+void lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
 {
     //common code after executing a command: 
     //- save document current modification status flag, to restore it if command undo
@@ -64,8 +68,8 @@ void lmScoreCommand::CommandDone()
     //- update the views with the changes
 
 	m_fDocModified = m_pDoc->IsModified();
-	m_pDoc->Modify(true);
-    m_pDoc->UpdateAllViews();		//this could generate more changes
+	m_pDoc->Modify(fScoreModified);
+    m_pDoc->UpdateAllViews(fScoreModified, new lmUpdateHint(nOptions) );
 }
 
 
@@ -87,13 +91,48 @@ bool lmCmdSelectSingle::Undo()
 
 bool lmCmdSelectSingle::DoSelectObject()
 {
+
     wxASSERT( m_pGMO);
 
-    //Toggle 'selected' and return 'true' to force redraw it
+    //Toggle 'selected'
     bool fSelected = m_pGMO->IsSelected();
     m_pGMO->SetSelected(!fSelected);
-    m_pDoc->UpdateAllViews();
-    return true;
+    m_pDoc->UpdateAllViews(lmSCORE_NOT_MODIFIED, new lmUpdateHint(lmREDRAW));
+    return false;       //do not add to Undo/Redo list
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdSelectMultiple implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdSelectMultiple::lmCmdSelectMultiple(const wxString& name, lmScoreDocument *pDoc,
+                                         lmView* pView, lmGMSelection* pSelection,
+                                         bool fSelect)
+        : lmScoreCommand(name, pDoc)
+{
+    m_pSelection = pSelection;
+    m_pView = pView;
+    m_fSelect = fSelect;
+}
+
+bool lmCmdSelectMultiple::DoSelectUnselect()
+{
+    if (m_pSelection->NumObjects() < 1)
+        return true;
+
+    //Toggle 'selected'
+    lmGMObject* pGMO = m_pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->IsSelected() != m_fSelect)
+            pGMO->SetSelected(m_fSelect);
+        pGMO = m_pSelection->GetNext();
+    }
+    m_pDoc->UpdateAllViews(lmSCORE_NOT_MODIFIED, new lmUpdateHint(lmREDRAW));
+    return false;       //do not add to Undo/Redo list
 }
 
 
@@ -124,7 +163,7 @@ bool lmCmdDeleteObject::Do()
     m_UndoData.Rewind();
     m_pVStaff->Cmd_DeleteObject(&m_UndoData, m_pSO);
 
-	CommandDone();
+	CommandDone(lmSCORE_MODIFIED);
     m_fDeleteSO = true;                //m_pSO is no longer owned by the score
     return true;
 }
@@ -157,7 +196,7 @@ lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocum
 {
 	m_tPos.x = uPos.x;
 	m_tPos.y = uPos.y;
-    wxLogMessage(_T("[lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj] User pos (%.2f, %.2f)"), uPos.x, uPos.y );
+    //wxLogMessage(_T("[lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj] User pos (%.2f, %.2f)"), uPos.x, uPos.y );
 	m_tPos.xType = lmLOCATION_USER_RELATIVE;
 	m_tPos.yType = lmLOCATION_USER_RELATIVE;
 	m_tPos.xUnits = lmLUNITS;
@@ -172,7 +211,7 @@ bool lmCmdUserMoveScoreObj::Do()
 
     m_tOldPos = m_pSO->SetUserLocation(m_tPos);
 
-	CommandDone();
+	CommandDone(lmSCORE_MODIFIED);  //, lmREDRAW);
     return true;
 
 }
@@ -208,7 +247,7 @@ bool lmCmdInsertBarline::Do()
     lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
     pCursor->GetVStaff()->InsertBarline(m_nBarlineType);
 
-	CommandDone();
+	CommandDone(lmSCORE_MODIFIED);
     return true;
 }
 
@@ -238,15 +277,23 @@ lmCmdInsertClef::lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& sName
 bool lmCmdInsertClef::Do()
 {
     lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
-    pCursor->GetVStaff()->InsertClef(m_nClefType);
+    m_pVStaff = pCursor->GetVStaff();
+    m_pNewClef = m_pVStaff->Cmd_InsertClef(&m_UndoData, m_nClefType);
 
-	CommandDone();
-    return true;
+    if (m_pNewClef)
+    {
+	    CommandDone(lmSCORE_MODIFIED);
+        return true;
+    }
+    else
+        return false;
 }
 
 bool lmCmdInsertClef::Undo()
 {
-    //TODO
+    m_pVStaff->DeleteObject(m_pNewClef);
+    m_pDoc->GetScore()->SetCursor(m_pVCursor);
+
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
     return true;
@@ -284,8 +331,13 @@ bool lmCmdInsertNote::Do()
     m_pNewNote = m_pVStaff->Cmd_InsertNote(&m_UndoData, m_nPitchType, m_sStep, m_sOctave,
                                        m_nNoteType, m_rDuration, m_nNotehead, m_nAcc);
 
-	CommandDone();
-    return true;
+    if (m_pNewNote)
+    {
+	    CommandDone(lmSCORE_MODIFIED);
+        return true;
+    }
+    else
+        return false;
 }
 
 bool lmCmdInsertNote::Undo()
@@ -317,7 +369,7 @@ bool lmCmdChangeNotePitch::Do()
 {
 	m_pNote->ChangePitch(m_nSteps);
 
-	CommandDone();
+	CommandDone(lmSCORE_MODIFIED);
     return true;
 }
 
@@ -348,7 +400,7 @@ bool lmCmdChangeNoteAccidentals::Do()
 {
 	m_pNote->ChangeAccidentals(m_nSteps);
 
-	CommandDone();
+	CommandDone(lmSCORE_MODIFIED);
     return true;
 }
 

@@ -119,7 +119,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //create the container shape and add it to the box
     lmCompositeShape* pRestShape = new lmCompositeShape(this, _T("Rest"), lmDRAGGABLE);
 	pBox->AddShape(pRestShape);
-    m_pShape = pRestShape;
+    m_pGMObj = pRestShape;
 
     // create shape for the rest symbol
     lmEGlyphIndex nGlyph = GetGlyphIndex();
@@ -144,7 +144,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         }
     }
 
-	return m_pShape->GetWidth();
+	return GetShape()->GetWidth();
 }
 
 void lmRest::DoVerticalShift(lmTenths yShift)
@@ -212,6 +212,8 @@ wxString lmRest::SourceLDP(int nIndent)
 	//base class
 	sSource += lmNoteRest::SourceLDP(nIndent);
 
+    //close element
+    sSource += _T(")\n");
 	return sSource;
 }
 

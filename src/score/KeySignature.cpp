@@ -140,6 +140,8 @@ wxString lmKeySignature::SourceLDP(int nIndent)
 	//base class
 	sSource += lmStaffObj::SourceLDP(nIndent);
 
+    //close element
+    sSource += _T(")\n");
 	return sSource;
 }
 
@@ -209,7 +211,7 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     //create the container shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, _T("Key signature"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    m_pShape = pShape;
+    m_pGMObj = pShape;
 
     lmLUnits uSharpPos[8];      //sharps positions, in order of sharps appearance
     lmLUnits uFlatPos[8];       //flats positions, in order of flats appearance

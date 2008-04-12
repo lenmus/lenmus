@@ -107,13 +107,13 @@ public:
 
     lmStaffObj* AddAnchorObj();
 
-    lmStaffObj* AddText(wxString sText, lmEAlignment nAlign,
-                        lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
+    lmScoreText* AddText(wxString sText, lmEAlignment nAlign,
+                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
 	//Edition commands
 	//--- inserting StaffObs
     lmBarline* InsertBarline(lmEBarline nType = lm_eBarlineSimple);
-	lmClef* InsertClef(lmEClefType nClefType);
+	lmClef* Cmd_InsertClef(lmUndoData* pUndoData, lmEClefType nClefType);
 	lmNote* Cmd_InsertNote(lmUndoData* pUndoData, lmEPitchType nPitchType, wxString sStep,
 					   wxString sOctave, lmENoteType nNoteType, float rDuration,
 					   lmENoteHeads nNotehead, lmEAccidentals nAcc);
@@ -198,6 +198,7 @@ public:
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
 	inline lmInstrument* GetOwnerInstrument() const { return m_pInstrument; }
+    inline lmScore* GetScore() { return m_pScore; }
 
     //cursor management
 	inline lmVStaffCursor* GetCursor() { return &m_VCursor; }

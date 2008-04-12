@@ -19,52 +19,56 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BEAM_H__        //to avoid nested includes
-#define __LM_BEAM_H__
+#ifndef __LM_TOOLNOTES_H__
+#define __LM_TOOLNOTES_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "Beam.cpp"
+#pragma interface "ToolNotes.cpp"
 #endif
 
-#include <list>
-#include "UndoRedo.h"
+#include "ToolPage.h"
+#include "../../score/defs.h"
 
-class lmShapeBeam;
-class lmShapeStem;
-class lmShapeNote;
-class lmUndoData;
+class wxBitmapComboBox;
+class lmCheckButton;
 
-
-class lmBeam : public lmMultipleRelationship<lmNoteRest>
+class lmToolNotes: public lmToolPage
 {
 public:
-    lmBeam(lmNote* pNote);
-    lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData);
-    ~lmBeam();
+    lmToolNotes(wxWindow* parent);
+    ~lmToolNotes();
 
-	//implementation of lmMultipleRelationship virtual methods
-    inline void Save(lmUndoData* pUndoData) {}
-	inline lmERelationshipClass GetClass() { return lm_eBeamClass; }
-	void OnRelationshipModified();
+	//access to options
+	lmENoteType GetNoteDuration();
+	lmENoteHeads GetNoteheadType();
+	lmEAccidentals GetNoteAccidentals();
 
-	//specific methods
-    void CreateShape();
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
-	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
-    void AutoSetUp();
+	void OnNoteButton(wxCommandEvent& event);
+	void SelectNoteButton(int iB);
+
+
 
 private:
-    int GetBeamingLevel(lmNote* pNote);
 
-        //member variables
+    // controls
+    wxChoice*        m_pChoice;
 
-    bool            m_fStemsDown;
-	lmShapeBeam*	m_pBeamShape;
+    // other member variables
+    int				m_nNumLangs;
+    wxArrayString	m_cLangCodes;
+    wxArrayString	m_cLangNames;
+    wxString        m_sCurLang;
+	
+	//selected buttons
+	int			m_nNoteDuration;
 
-    //beam information to be transferred to each beamed note
-    int            m_nPosForRests;        //relative position for rests
+	//options
+	wxBitmapComboBox*	m_pCboNotehead;
+	wxBitmapComboBox*	m_pCboAccidentals;
+	lmCheckButton*		m_pBtDurations[10];
 
+
+    DECLARE_EVENT_TABLE()
 };
 
-#endif    // __LM_BEAM_H__
-
+#endif    // __LM_TOOLNOTES_H__

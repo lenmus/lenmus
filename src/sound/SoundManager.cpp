@@ -371,7 +371,7 @@ void lmSoundManager::SortByTime()
 }
 
 void lmSoundManager::Play(bool fVisualTracking, bool fMarcarCompasPrevio,
-                        EPlayMode nPlayMode, long nMM, wxWindow* pWindow)
+                        lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
     int nEvStart = m_aMeasures.Item(1);     //get first event for firts measure
     PlaySegment(nEvStart, m_aEvents.GetCount() - 1, nPlayMode, fVisualTracking,
@@ -379,7 +379,7 @@ void lmSoundManager::Play(bool fVisualTracking, bool fMarcarCompasPrevio,
 }
 
 void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
-                        EPlayMode nPlayMode, long nMM, wxWindow* pWindow)
+                        lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
     //
     // Play back measure n (n = 1 ... num_measures)
@@ -401,7 +401,7 @@ void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
 ////fMarcarUnCompasPrevio - marcar con el metrónomo un compas completo antes de comenzar la
 ////       ejecución. Para que este flag actúe requiere que el lmMetronome esté activo
 void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
-                               EPlayMode nPlayMode,
+                               lmEPlayMode nPlayMode,
                                bool fVisualTracking,
                                bool fMarcarUnCompasPrevio,
                                long nMM,
@@ -488,7 +488,7 @@ void lmSoundManager::WaitForTermination()
 //----------------------------------------------------------------------------------------
 
 void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
-                               EPlayMode nPlayMode,
+                               lmEPlayMode nPlayMode,
                                bool fVisualTracking,
                                bool fMarcarUnCompasPrevio,
                                long nMM,
@@ -848,7 +848,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 lmSoundManagerThread::lmSoundManagerThread(lmSoundManager* pSM,
                                        int nEvStart,
                                        int nEvEnd,
-                                       EPlayMode nPlayMode,
+                                       lmEPlayMode nPlayMode,
                                        bool fVisualTracking,
                                        bool fMarcarUnCompasPrevio,
                                        long nMM,

@@ -523,6 +523,12 @@
 				RelativePath="..\..\src\app\ScoreView.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\ScoreWizard.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\ScoreWizard.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\SplashFrame.cpp">
 			</File>
 			<File
@@ -544,10 +550,28 @@
 				Name="toolboox"
 				Filter="">
 				<File
-					RelativePath="..\..\src\app\toolbox\ToolNotesOpt.cpp">
+					RelativePath="..\..\src\app\toolbox\ColorScheme.cpp">
 				</File>
 				<File
-					RelativePath="..\..\src\app\toolbox\ToolNotesOpt.h">
+					RelativePath="..\..\src\app\toolbox\ColorScheme.h">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolGroup.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolGroup.h">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolNotes.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolNotes.h">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolPage.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolPage.h">
 				</File>
 				<File
 					RelativePath="..\..\src\app\toolbox\ToolsBox.cpp">
@@ -567,10 +591,10 @@
 				RelativePath="..\..\src\widgets\Button.h">
 			</File>
 			<File
-				RelativePath="..\..\src\widgets\Cursor.cpp">
+				RelativePath="..\..\src\widgets\Caret.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\widgets\Cursor.h">
+				RelativePath="..\..\src\widgets\Caret.h">
 			</File>
 			<File
 				RelativePath="..\..\src\widgets\Ruler.cpp">

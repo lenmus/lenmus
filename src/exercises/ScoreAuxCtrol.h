@@ -71,11 +71,11 @@ public:
     //Play commands
     void PlayScore(bool fVisualTracking = lmVISUAL_TRACKING,
                    bool fMarcarCompasPrevio = NO_MARCAR_COMPAS_PREVIO,
-                   EPlayMode nPlayMode = ePM_NormalInstrument,
+                   lmEPlayMode nPlayMode = ePM_NormalInstrument,
                    long nMM = 0);
     void PlayMeasure(int nMeasure,
                      bool fVisualTracking = lmNO_VISUAL_TRACKING, 
-                     EPlayMode nPlayMode = ePM_NormalInstrument,
+                     lmEPlayMode nPlayMode = ePM_NormalInstrument,
                      long nMM = 0);
     void Stop();
     void Pause();

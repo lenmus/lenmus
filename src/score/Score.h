@@ -47,7 +47,7 @@ enum lmEAlignment
 
 
 //Play modes: instrument to use to play a score
-enum EPlayMode
+enum lmEPlayMode
 {
     ePM_NormalInstrument = 1,        //play using normal instrument
     ePM_RhythmInstrument,
@@ -56,12 +56,20 @@ enum EPlayMode
 };
 
 //Highlight when playing a score
-enum EHighlightType
+enum lmEHighlightType
 {
     eVisualOff = 0,
     eVisualOn,
     eRemoveAllHighlight,
     ePrepareForHighlight,
+};
+
+//for paper size and margins settings
+enum lmEPageScope
+{
+    lmSCOPE_PAGE = 0,       //for current page
+    lmSCOPE_SECTION,        //for current section
+    lmSCOPE_SCORE,          //for the whole document
 };
 
 /*  Renderization options
@@ -142,6 +150,7 @@ extern lmFontInfo tBasicTextDefaultFont;        // defined in NoteRestObj.cpp
 
 // forward declarations
 class lmPaper;
+class lmPageInfo;
 class lmScore;
 class lmVStaff;
 class lmInstrument;
@@ -171,6 +180,7 @@ class lmSoundManager;
 class lmObjOptions;
 
 class lmBox;
+class lmBoxScore;
 class lmScoreView;
 
 
@@ -277,12 +287,12 @@ public:
     // play methods
     void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING,
               bool fMarcarCompasPrevio = NO_MARCAR_COMPAS_PREVIO,
-              EPlayMode nPlayMode = ePM_NormalInstrument,
+              lmEPlayMode nPlayMode = ePM_NormalInstrument,
               long nMM = 0,
               wxWindow* pWindow = (wxWindow*)NULL );
     void PlayMeasure(int nMeasure,
                      bool fVisualTracking = lmNO_VISUAL_TRACKING,
-                     EPlayMode nPlayMode = ePM_NormalInstrument,
+                     lmEPlayMode nPlayMode = ePM_NormalInstrument,
                      long nMM = 0,
                      wxWindow* pWindow = (wxWindow*)NULL );
     void Pause();
@@ -291,7 +301,7 @@ public:
 
 
     // serving highlight events
-    void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nHighlightType);
+    void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, lmEHighlightType nHighlightType);
 	void RemoveAllHighlight(wxWindow* pCanvas);
     void CursorHighlight(lmStaffObj* pSO, int nStaff, lmPaper* pPaper, bool fHighlight);
 
@@ -315,7 +325,7 @@ public:
 
 
     // titles related methods
-    void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
+    lmScoreText* AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
                   wxString sFontName, int nFontSize, lmETextStyle nStyle);
 	void LayoutTitles(lmBox* pBox, lmPaper *pPaper);
 
@@ -328,6 +338,7 @@ public:
     lmInstrument* XML_FindInstrument(wxString sId);
 
     //layout related methods
+    lmBoxScore* Layout(lmPaper* pPaper);
     lmLUnits TopSystemDistance() { return m_nTopSystemDistance + m_nHeadersHeight; }
     void SetTopSystemDistance(lmLUnits nDistance) { m_nTopSystemDistance = nDistance; }
 
@@ -353,6 +364,12 @@ public:
 	lmScoreCursor* AttachCursor(lmScoreView* pView);
 	void DetachCursor();
     lmScoreCursor* SetNewCursorState(lmVCursorState* pState);
+
+    //paper size and margins
+    //lmEPageScope nScope = lmSCOPE_PAGE
+    void SetPageInfo(lmPageInfo* pPageInfo);
+    inline lmPageInfo* GetPageInfo() { return m_pPageInfo; }
+
 
 
 
@@ -383,10 +400,14 @@ private:
     //Layout related variables
     lmLUnits			    m_nTopSystemDistance;
     lmLUnits			    m_nHeadersHeight;
+    lmVStaff*               m_pTenthsConverter;     //for lmTenths <-> lmLUnits conversion
 
     //renderization options
     ERenderizationType      m_nRenderizationType;
-	bool				    m_fModified;    //to force a repaint
+	bool				    m_fModified;            //to force a repaint
+
+    //paper size and margins
+    lmPageInfo*             m_pPageInfo;
 
     //other variables
 	int					    m_nCurNode;     //last returned instrument node

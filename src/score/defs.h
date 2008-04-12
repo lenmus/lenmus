@@ -98,9 +98,11 @@ extern bool IsEqualTime(float t1, float t2);
 extern bool IsLowerTime(float t1, float t2);
 extern bool IsHigherTime(float t1, float t2);
 
-// defined in TheApp.cpp
+// defined in defs.cpp
 extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);
 extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);
+extern double lmLogicalToUserUnits(int nValue, lmEUnits nUnits);
+extern double lmLogicalToUserUnits(double rValue, lmEUnits nUnits);
 
 
 enum lmEClefType
@@ -364,61 +366,30 @@ public:
     lmUSize() : x(0.0), y(0.0) { }
     lmUSize(lmLUnits ux, lmLUnits uy) : x(ux), y(uy) { }
 
-    //// no copy ctor or assignment operator - the defaults are ok
+    // no copy ctor or assignment operator - the defaults are ok
 
-    //bool operator==(const lmUSize& sz) const { return x == sz.x && y == sz.y; }
-    //bool operator!=(const lmUSize& sz) const { return x != sz.x || y != sz.y; }
+    bool operator==(const lmUSize& sz) const { return x == sz.x && y == sz.y; }
+    bool operator!=(const lmUSize& sz) const { return x != sz.x || y != sz.y; }
 
-    //lmUSize operator+(const lmUSize& sz) const { return lmUSize(x + sz.x, y + sz.y); }
-    //lmUSize operator-(const lmUSize& sz) const { return lmUSize(x - sz.x, y - sz.y); }
-    //lmUSize operator/(lmLUnits i) const { return lmUSize(x / i, y / i); }
-    //lmUSize operator*(lmLUnits i) const { return lmUSize(x * i, y * i); }
+    lmUSize operator+(const lmUSize& sz) const { return lmUSize(x + sz.x, y + sz.y); }
+    lmUSize operator-(const lmUSize& sz) const { return lmUSize(x - sz.x, y - sz.y); }
+    lmUSize operator/(lmLUnits i) const { return lmUSize(x / i, y / i); }
+    lmUSize operator*(lmLUnits i) const { return lmUSize(x * i, y * i); }
 
-    //lmUSize& operator+=(const lmUSize& sz) { x += sz.x; y += sz.y; return *this; }
-    //lmUSize& operator-=(const lmUSize& sz) { x -= sz.x; y -= sz.y; return *this; }
-    //lmUSize& operator/=(const lmLUnits i) { x /= i; y /= i; return *this; }
-    //lmUSize& operator*=(const lmLUnits i) { x *= i; y *= i; return *this; }
+    lmUSize& operator+=(const lmUSize& sz) { x += sz.x; y += sz.y; return *this; }
+    lmUSize& operator-=(const lmUSize& sz) { x -= sz.x; y -= sz.y; return *this; }
+    lmUSize& operator/=(const lmLUnits i) { x /= i; y /= i; return *this; }
+    lmUSize& operator*=(const lmLUnits i) { x *= i; y *= i; return *this; }
 
-    //void IncTo(const lmUSize& sz)
-    //    { if ( sz.x > x ) x = sz.x; if ( sz.y > y ) y = sz.y; }
-    //void DecTo(const lmUSize& sz)
-    //    { if ( sz.x < x ) x = sz.x; if ( sz.y < y ) y = sz.y; }
-
-    //void IncBy(lmLUnits dx, lmLUnits dy) { x += dx; y += dy; }
-    //void IncBy(const lmUSize& sz) { IncBy(sz.x, sz.y); }
-    //void IncBy(lmLUnits d) { IncBy(d, d); }
-
-    //void DecBy(lmLUnits dx, lmLUnits dy) { IncBy(-dx, -dy); }
-    //void DecBy(const lmUSize& sz) { DecBy(sz.x, sz.y); }
-    //void DecBy(lmLUnits d) { DecBy(d, d); }
-
-
-    //lmUSize& Scale(float xscale, float yscale)
-    //    { x = (lmLUnits)(x*xscale); y = (lmLUnits)(y*yscale); return *this; }
-
-    //// accessors
-    //void Set(lmLUnits xx, lmLUnits yy) { x = xx; y = yy; }
-    //void SetWidth(lmLUnits w) { x = w; }
-    //void SetHeight(lmLUnits h) { y = h; }
+    void SetWidth(lmLUnits w) { x = w; }
+    void SetHeight(lmLUnits h) { y = h; }
+    void Width(lmLUnits w) { x = w; }
+    void Height(lmLUnits h) { y = h; }
 
     lmLUnits GetWidth() const { return x; }
     lmLUnits GetHeight() const { return y; }
-
-    //bool IsFullySpecified() const { return x != wxDefaultCoord && y != wxDefaultCoord; }
-
-    //// combine this size with the other one replacing the default (i.e. equal
-    //// to wxDefaultCoord) components of this object with those of the other
-    //void SetDefaults(const lmUSize& size)
-    //{
-    //    if ( x == wxDefaultCoord )
-    //        x = size.x;
-    //    if ( y == wxDefaultCoord )
-    //        y = size.y;
-    //}
-
-    //// compatibility
-    //lmLUnits GetX() const { return x; }
-    //lmLUnits GetY() const { return y; }
+    lmLUnits Width() const { return x; }
+    lmLUnits Height() const { return y; }
 };
 
 
