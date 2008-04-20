@@ -106,6 +106,34 @@ typedef struct lmInstrDataStruct
 
 static std::vector<lmInstrData*>    m_Instruments;
 
+//info for one template
+typedef struct lmTemplateDataStruct
+{
+    wxString    sName;
+    bool        fPortrait;
+
+} lmTemplateData;
+
+//template to use
+static int m_nSelTemplate = 0;
+static lmTemplateData m_Templates[] = {
+        { _T("Empty (manuscript paper)"), true },
+        { _T("Choir 4 voices (SATB)"), true },
+        { _T("Choir SATB + piano"), true },
+        { _T("Choir 3 voices (SSA)"), true },
+        { _T("Choir SSA + piano"), true },
+        { _T("Flute"), true },
+        { _T("Guitar"), true },
+        { _T("Jazz quartet"), true },
+        { _T("Lead sheet"), true },
+        { _T("Piano"), true },
+        { _T("Voice + keyboard"), true },
+        { _T("String quartet"), true },
+        { _T("String trio"), true },
+        { _T("Woodwind trio"), true },
+        { _T("Woodwind quartet"), true },
+};
+
 //--------------------------------------------------------------------------------
 // lmScoreWizard implementation
 //--------------------------------------------------------------------------------
@@ -150,17 +178,11 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore, wxWindowID i
 
 bool lmScoreWizard::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos)
 {
-    // creation
-    SetExtraStyle(GetExtraStyle()|wxWIZARD_EX_HELPBUTTON);
-    wxBitmap wizardBitmap(wxNullBitmap);
-    wxWizard::Create(parent, id, _("Score configuration wizard"), wizardBitmap, pos);
-    CreateControls();
-
     //initialize default score configuration
 
     //paper size and margins
     m_ScoreData.nPageSize = wxSize(210, 297);   //Page size in mm (default A4: 21.0 x 29.7 cm)
-    m_ScoreData.fPortrait = false;              //Orientation (default: portrait)
+    m_ScoreData.fPortrait = true;               //Orientation (default: portrait)
     m_ScoreData.nTopMargin = 20;                //20 mm
     m_ScoreData.nBottomMargin = 20;             //20 mm;
     m_ScoreData.nLeftMargin = 20;               //20 mm;
@@ -198,6 +220,12 @@ bool lmScoreWizard::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos)
 
     m_Instruments.push_back( pInstrData );
 
+    // create the wizard
+    SetExtraStyle(GetExtraStyle()|wxWIZARD_EX_HELPBUTTON);
+    wxBitmap wizardBitmap(wxNullBitmap);
+    wxWizard::Create(parent, id, _("Score configuration wizard"), wizardBitmap, pos);
+    CreateControls();
+
     return true;
 }
 
@@ -207,8 +235,8 @@ void lmScoreWizard::CreateControls()
     // Control creation for lmScoreWizard
 
     //create the pages
-    lmScoreWizardIntroPage* pPageIntro = new lmScoreWizardIntroPage(this);
-    FitToPage(pPageIntro);
+    lmScoreWizardLayout* pPageLayout = new lmScoreWizardLayout(this);
+    FitToPage(pPageLayout);
 
     lmScoreWizardInstrPage* pPageInstr = new lmScoreWizardInstrPage(this);
     FitToPage(pPageInstr);
@@ -220,7 +248,7 @@ void lmScoreWizard::CreateControls()
     //FitToPage(pPageTime);
 
     //chain the pages in the order of presentation
-    wxWizardPageSimple::Chain(pPageIntro, pPageInstr);
+    wxWizardPageSimple::Chain(pPageLayout, pPageInstr);
     //wxWizardPageSimple::Chain(pPageInstr, pPageClef);
     //wxWizardPageSimple::Chain(pPageClef, pPageTime);
 }
@@ -291,68 +319,128 @@ void lmScoreWizard::OnWizardCancel( wxWizardEvent& event )
 
 
 //--------------------------------------------------------------------------------
-// lmScoreWizardIntroPage implementation
+// lmScoreWizardLayout implementation
 //--------------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardIntroPage, wxWizardPageSimple )
+IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardLayout, wxWizardPageSimple )
 
-BEGIN_EVENT_TABLE( lmScoreWizardIntroPage, wxWizardPageSimple )
+BEGIN_EVENT_TABLE( lmScoreWizardLayout, wxWizardPageSimple )
     //
 END_EVENT_TABLE()
 
-lmScoreWizardIntroPage::lmScoreWizardIntroPage()
+
+lmScoreWizardLayout::lmScoreWizardLayout()
 {
 }
 
-lmScoreWizardIntroPage::lmScoreWizardIntroPage(wxWizard* parent)
+lmScoreWizardLayout::lmScoreWizardLayout(wxWizard* parent)
 {
     Create(parent);
 }
 
-bool lmScoreWizardIntroPage::Create(wxWizard* parent)
+bool lmScoreWizardLayout::Create(wxWizard* parent)
 {
     // page creation
     wxWizardPageSimple::Create(parent, NULL, NULL, wxArtProvider::GetBitmap(_T("score_wizard")));
     CreateControls();
     GetSizer()->Fit(this);
 
+        // populate controls
+
+    //available layouts
+    int nNumTemplates = sizeof(m_Templates) / sizeof(lmTemplateData);
+    for (int i=0; i < nNumTemplates; i++)
+        m_pLstEnsemble->Append( m_Templates[i].sName );
+    m_pLstEnsemble->SetSelection(m_nSelTemplate);
+
+    //paper size
+	m_pCboPaper->Append( _T("A4") );
+	m_pCboPaper->Append( _T("Legal") );
+    m_pCboPaper->SetSelection(0);
+
+    //paper orientation
+    m_pRadOrientation->SetSelection(m_ScoreData.fPortrait ? 1 : 0);
+
+    //bitmap preview
+	//m_pBmpPreview;
+
     return true;
 }
 
-void lmScoreWizardIntroPage::CreateControls()
+void lmScoreWizardLayout::CreateControls()
 {
-    wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
-    SetSizer(pMainSizer);
-
-    wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    pMainSizer->Add(itemBoxSizer4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    wxStaticText* itemStaticText5 = new wxStaticText( this, wxID_STATIC, _("New score configuration wizard"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText5->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-    itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-    pMainSizer->Add(itemBoxSizer6, 1, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer6->Add(itemBoxSizer7, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText8 = new wxStaticText( this, wxID_STATIC, _("To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer7->Add(itemStaticText8, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticText* itemStaticText9 = new wxStaticText( this, wxID_STATIC, _("If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer7->Add(itemStaticText9, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticLine* itemStaticLine10 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-    itemBoxSizer6->Add(itemStaticLine10, 0, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer6->Add(itemBoxSizer11, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText12 = new wxStaticText( this, wxID_STATIC, _("Output device:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxBoxSizer* pLeftColumnSizer;
+	pLeftColumnSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* pLayoutSizer;
+	pLayoutSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select instruments and style") ), wxVERTICAL );
+	
+	m_pLstEnsemble = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxSize( 240,-1 ), 0, NULL, 0 ); 
+	pLayoutSizer->Add( m_pLstEnsemble, 1, wxALL, 5 );
+	
+	pLeftColumnSizer->Add( pLayoutSizer, 1, wxEXPAND|wxALL, 5 );
+	
+	wxStaticBoxSizer* pPaperSizer;
+	pPaperSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select paper size and orientation") ), wxHORIZONTAL );
+	
+	wxBoxSizer* pCboSizeSizer;
+	pCboSizeSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pLblPaper = new wxStaticText( this, wxID_ANY, _("Paper size"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblPaper->Wrap( -1 );
+	pCboSizeSizer->Add( m_pLblPaper, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	wxArrayString m_pCboPaperChoices;
+	m_pCboPaper = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_pCboPaperChoices, 0 );
+	m_pCboPaper->SetSelection( 0 );
+	pCboSizeSizer->Add( m_pCboPaper, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	pPaperSizer->Add( pCboSizeSizer, 0, wxALIGN_CENTER_VERTICAL, 5 );
+	
+	wxString m_pRadOrientationChoices[] = { _("Landscape"), _("Portrait") };
+	int m_pRadOrientationNChoices = sizeof( m_pRadOrientationChoices ) / sizeof( wxString );
+	m_pRadOrientation = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_pRadOrientationNChoices, m_pRadOrientationChoices, 1, wxRA_SPECIFY_COLS );
+	m_pRadOrientation->SetSelection( 0 );
+	pPaperSizer->Add( m_pRadOrientation, 0, wxALL, 5 );
+	
+	pLeftColumnSizer->Add( pPaperSizer, 0, wxALL|wxEXPAND, 5 );
+	
+	pMainSizer->Add( pLeftColumnSizer, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* pRightColumnSizer;
+	pRightColumnSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer4;
+	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
+	
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
+	sbSizer4->Add( m_pBmpPreview, 1, wxALL|wxEXPAND, 5 );
+	
+	pRightColumnSizer->Add( sbSizer4, 1, wxEXPAND, 5 );
+	
+	pMainSizer->Add( pRightColumnSizer, 1, wxEXPAND, 5 );
+	
+	this->SetSizer( pMainSizer );
 }
 
+bool lmScoreWizardLayout::TransferDataFromWindow()
+{
+    // when moving to another page this methos is automatically invoked to
+    // verify that the data entered is correct before passing to the next page,
+    // and to copy entered data to the main page
+    // Returns true to allow moving to next page.
+    // If false is returned it should display a meesage box to the user to explain 
+    // the reason 
+
+    m_ScoreData.fPortrait = (m_pRadOrientation->GetSelection() == 1);
+    m_nSelTemplate = m_pLstEnsemble->GetSelection();
+
+    return true;
+
+}
 
 
 

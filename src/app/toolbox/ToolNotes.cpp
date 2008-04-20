@@ -48,171 +48,237 @@
 
 #define lmSPACING 5
 
-
-// an entry for the buttons data table
-typedef struct lmButtonsDataStruct {
-    wxString    sBitmap;		// bitmap name
-	wxString	sToolTip;		// tool tip
-} lmButtonsData;
-
-
-// Note durations table
-static const wxString m_sNotesBitmaps[10] = {
-    _T("note_0"),
-    _T("note_1"),
-    _T("note_2"),
-    _T("note_4"),
-    _T("note_8"),
-    _T("note_16"),
-    _T("note_32"),
-    _T("note_64"),
-    _T("note_128"),
-    _T("note_256"),
-};
-
+//event IDs
 enum {
-	lmID_NOTE_BUTTON = 2400,
+	lmID_BT_NoteDuration = 2600,
+    lmID_BT_NoteAcc = lmID_BT_NoteDuration + lmGrpNoteDuration::lm_NUM_BUTTONS,
 };
-
-BEGIN_EVENT_TABLE(lmToolNotes, lmToolPage)
-	EVT_COMMAND_RANGE (lmID_NOTE_BUTTON, lmID_NOTE_BUTTON+9, wxEVT_COMMAND_BUTTON_CLICKED, lmToolNotes::OnNoteButton)
-END_EVENT_TABLE()
 
 
 lmToolNotes::lmToolNotes(wxWindow* parent)
 	: lmToolPage(parent)
 {
-
-	m_nNoteDuration = -1;	//none selected
-
-	//main sizer
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    //notes duration group --------------------------------------
-	lmToolGroup oDurationGroup(this);
-    wxBoxSizer* pGroupSizer = oDurationGroup.CreateGroup(pMainSizer, _("Note duration"));
-    wxBoxSizer* pButtonsSizer;
-	for (int iB=0; iB < 10; iB++)
-	{
-		if (iB % 5 == 0) {
-			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
-			pGroupSizer->Add(pButtonsSizer);
-		}
-		m_pBtDurations[iB] =
-				new lmCheckButton(this, lmID_NOTE_BUTTON+iB,
-				wxArtProvider::GetBitmap(m_sNotesBitmaps[iB] + _T("_off"), wxART_TOOLBAR, wxSize(24, 24)) );
-		pButtonsSizer->Add(m_pBtDurations[iB], wxSizerFlags(0).Border(wxALL, 2) );
-		m_pBtDurations[iB]->SetBitmapSelected( wxArtProvider::GetBitmap(m_sNotesBitmaps[iB] + _T("_on"), wxART_TOOLBAR, wxSize(24, 24)) );
-		m_pBtDurations[iB]->SetBorderOver(lm_eBorderOver);
-	}
-	SelectNoteButton(3);	//select quarter note
+    //create groups  --------------------------------------
+
+    //notes duration group
+    m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
+
+ //   //Notehead type group ------------------------------------------
+	//lmToolGroup oNoteheadGroup(this);
+ //   wxBoxSizer* pNHSizer = oNoteheadGroup.CreateGroup(pMainSizer, _("Notehead type"));
+	//int nPanelWidth = oNoteheadGroup.GetGroupWitdh();
+ //   m_pCboNotehead = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
+	//									  wxSize(nPanelWidth - 2 * lmSPACING, 24),
+	//									  0, NULL, wxCB_READONLY );
+ //   pNHSizer->Add(m_pCboNotehead, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+
+	////populate combo boxand select 'normal' notehead
+	////AWARE: Must be loaded following lmENoteHeads enum
+	//m_pCboNotehead->Append(_T("normal"), wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
+	//m_pCboNotehead->Append(_T("cross"), wxArtProvider::GetBitmap(_T("tool_clefs"), wxART_TOOLBAR, wxSize(24,24) ));
+	//m_pCboNotehead->Select(0);
+
+	//Note accidentals group
+    m_pGrpNoteAcc = new lmGrpNoteAcc(this, pMainSizer);
 
 
-	//Notehead type group ------------------------------------------
-	lmToolGroup oNoteheadGroup(this);
-    wxBoxSizer* pNHSizer = oNoteheadGroup.CreateGroup(pMainSizer, _("Notehead type"));
-	int nPanelWidth = oNoteheadGroup.GetGroupWitdh();
-    m_pCboNotehead = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
-										  wxSize(nPanelWidth - 2 * lmSPACING, 24),
-										  0, NULL, wxCB_READONLY );
-    pNHSizer->Add(m_pCboNotehead, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+ //   pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'-'  Down a flat"),
+	//								 wxDefaultPosition, wxDefaultSize, 0),
+	//								 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+ //   pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'+'  Up a sharp"),
+	//								 wxDefaultPosition, wxDefaultSize, 0),
+	//								 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
+ //   pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'='  Remove accidentals"),
+	//								 wxDefaultPosition, wxDefaultSize, 0),
+	//								 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
 
-	//populate combo boxand select 'normal' notehead
-	//AWARE: Must be loaded following lmENoteHeads enum
-	m_pCboNotehead->Append(_T("normal"), wxArtProvider::GetBitmap(_T("tool_notes"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboNotehead->Append(_T("cross"), wxArtProvider::GetBitmap(_T("tool_clefs"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboNotehead->Select(0);
-
-	//Accidentals group --------------------------------------------
-	lmToolGroup oAccidentalsGroup(this);
-    wxBoxSizer* pAccSizer = oAccidentalsGroup.CreateGroup(pMainSizer, _("Accidentals"));
-    m_pCboAccidentals = new wxBitmapComboBox(this, wxID_ANY, _T(""), wxDefaultPosition,
-										  wxSize(nPanelWidth - 2 * lmSPACING, 24),
-										  0, NULL, wxCB_READONLY );
-    pAccSizer->Add(m_pCboAccidentals, 0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-
-	//populate combo box for note durations and select 'normal' note
-	//AWARE: Must be loaded following lmEAccidentals enum
-	m_pCboAccidentals->Append(_T("none"), wxArtProvider::GetBitmap(_T("none"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("natural"), wxArtProvider::GetBitmap(_T("acc_natural"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("flat"), wxArtProvider::GetBitmap(_T("acc_flat"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("sharp"), wxArtProvider::GetBitmap(_T("acc_sharp"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("flat-flat"), wxArtProvider::GetBitmap(_T("acc_flat_flat"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("double-sharp"), wxArtProvider::GetBitmap(_T("acc_double_sharp"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("sharp-sharp"), wxArtProvider::GetBitmap(_T("acc_sharp_sharp"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("natural-flat"), wxArtProvider::GetBitmap(_T("acc_natural_flat"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Append(_T("natural-sharp"), wxArtProvider::GetBitmap(_T("acc_natural_sharp"), wxART_TOOLBAR, wxSize(24,24) ));
-	m_pCboAccidentals->Select(0);
-
-
-    pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'-'  Down a flat"),
-									 wxDefaultPosition, wxDefaultSize, 0),
-									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
-    pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'+'  Up a sharp"),
-									 wxDefaultPosition, wxDefaultSize, 0),
-									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
-    pAccSizer->Add(new wxStaticText(this, wxID_STATIC, _("'='  Remove accidentals"),
-									 wxDefaultPosition, wxDefaultSize, 0),
-									 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, lmSPACING);
-
-	//Palette group --------------------------------------------
-	lmToolGroup oPaletteGroup(this);
-    wxBoxSizer* pPaletteSizer = oPaletteGroup.CreateGroup(pMainSizer, _("Palette"));
-	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyDark()),
-						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Dark()),
-						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightDark()),
-						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Normal()),
-						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightBright()),
-						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Bright()),
-						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyBright()),
-						0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	////Palette group --------------------------------------------
+	//lmToolGroup oPaletteGroup(this);
+ //   wxBoxSizer* pPaletteSizer = oPaletteGroup.CreateGroup(pMainSizer, _("Palette"));
+	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyDark()),
+	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Dark()),
+	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightDark()),
+	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Normal()),
+	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightBright()),
+	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Bright()),
+	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
+	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyBright()),
+	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
 
 	//End of groups
 
 	CreateLayout();
 }
 
-
-void lmToolNotes::OnNoteButton(wxCommandEvent& event)
-{
-	SelectNoteButton(event.GetId() - lmID_NOTE_BUTTON);
-}
-
-void lmToolNotes::SelectNoteButton(int iB)
-{
-	// Set selected button as 'pressed' and all others as 'released'
-	m_nNoteDuration = iB;
-	for(int i=0; i < 10; i++)
-	{
-		if (i != iB)
-			m_pBtDurations[i]->Release();
-		else
-			m_pBtDurations[i]->Press();
-	}
-}
-
 lmToolNotes::~lmToolNotes()
 {
-}
-
-lmENoteType lmToolNotes::GetNoteDuration()
-{
-    return (lmENoteType)(m_nNoteDuration+1);
+    delete m_pGrpNoteDuration;
 }
 
 lmENoteHeads lmToolNotes::GetNoteheadType()
 {
-    return (lmENoteHeads)m_pCboNotehead->GetSelection();
+    return enh_Quarter; //(lmENoteHeads)m_pCboNotehead->GetSelection();
 }
 
-lmEAccidentals lmToolNotes::GetNoteAccidentals()
+
+//--------------------------------------------------------------------------------
+// lmGrpNoteDuration implementation
+//--------------------------------------------------------------------------------
+
+
+BEGIN_EVENT_TABLE(lmGrpNoteDuration, lmToolGroup)
+	EVT_COMMAND_RANGE (lmID_BT_NoteDuration, lmID_BT_NoteDuration+lm_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpNoteDuration::OnButton)
+END_EVENT_TABLE()
+
+lmGrpNoteDuration::lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmToolGroup(pParent)
 {
-    return (lmEAccidentals)m_pCboAccidentals->GetSelection();
+	m_nSelButton = -1;	            //none selected
+    CreateControls(pMainSizer);
 }
 
+void lmGrpNoteDuration::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Note duration"));
+
+    //create the specific controls for this group
+    const wxString sButtonBmps[lm_NUM_BUTTONS] = {
+        _T("note_0"),
+        _T("note_1"),
+        _T("note_2"),
+        _T("note_4"),
+        _T("note_8"),
+        _T("note_16"),
+        _T("note_32"),
+        _T("note_64"),
+        _T("note_128"),
+        _T("note_256"),
+    };
+
+    wxBoxSizer* pButtonsSizer;
+	for (int iB=0; iB < lm_NUM_BUTTONS; iB++)
+	{
+		if (iB % 5 == 0) {
+			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+			pCtrolsSizer->Add(pButtonsSizer);
+		}
+		m_pButton[iB] =
+				new lmCheckButton(this, lmID_BT_NoteDuration+iB,
+				wxArtProvider::GetBitmap(sButtonBmps[iB] + _T("_off"), wxART_TOOLBAR, wxSize(24, 24)) );
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
+		m_pButton[iB]->SetBitmapSelected( wxArtProvider::GetBitmap(sButtonBmps[iB] + _T("_on"), wxART_TOOLBAR, wxSize(24, 24)) );
+		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
+	}
+	this->Layout();
+
+	SelectButton(3);	//select quarter note
+}
+
+lmENoteType lmGrpNoteDuration::GetNoteDuration()
+{
+    return (lmENoteType)(m_nSelButton+1);
+}
+
+void lmGrpNoteDuration::OnButton(wxCommandEvent& event)
+{
+	SelectButton(event.GetId() - lmID_BT_NoteDuration);
+}
+
+void lmGrpNoteDuration::SelectButton(int iB)
+{
+    // Set selected button as 'pressed' and all others as 'released'
+	m_nSelButton = iB;
+	for(int i=0; i < lm_NUM_BUTTONS; i++)
+	{
+		if (i != iB)
+			m_pButton[i]->Release();
+		else
+			m_pButton[i]->Press();
+	}
+}
+
+
+
+
+//--------------------------------------------------------------------------------
+// lmGrpNoteAcc implementation
+//--------------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(lmGrpNoteAcc, lmToolGroup)
+	EVT_COMMAND_RANGE (lmID_BT_NoteAcc, lmID_BT_NoteAcc+lm_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpNoteAcc::OnButton)
+END_EVENT_TABLE()
+
+lmGrpNoteAcc::lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmToolGroup(pParent)
+{
+	m_nSelButton = -1;	            //none selected
+    CreateControls(pMainSizer);
+}
+
+void lmGrpNoteAcc::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Note accidentals"));
+
+    //create the specific controls for this group
+    const wxString sButtonBmps[lm_NUM_BUTTONS] = {
+	    _T("none"),
+	    _T("acc_natural"),
+	    _T("acc_flat"),
+	    _T("acc_sharp"),
+	    _T("acc_flat_flat"),
+	    _T("acc_double_sharp"),
+	    _T("acc_sharp_sharp"),
+	    _T("acc_natural_flat"),
+	    _T("acc_natural_sharp"),
+    };
+
+    wxBoxSizer* pButtonsSizer;
+	for (int iB=0; iB < lm_NUM_BUTTONS; iB++)
+	{
+		if (iB % 5 == 0) {
+			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+			pCtrolsSizer->Add(pButtonsSizer);
+		}
+		m_pButton[iB] =
+				new lmCheckButton(this, lmID_BT_NoteAcc+iB,
+				wxArtProvider::GetBitmap(sButtonBmps[iB], wxART_TOOLBAR, wxSize(24, 24)) );
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
+		m_pButton[iB]->SetBitmapSelected( CreateOnBitmap(sButtonBmps[iB]) );
+		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
+	}
+	this->Layout();
+
+	SelectButton(3);	//select quarter note
+}
+
+lmEAccidentals lmGrpNoteAcc::GetNoteAcc()
+{
+    return (lmEAccidentals)(m_nSelButton+1);
+}
+
+void lmGrpNoteAcc::OnButton(wxCommandEvent& event)
+{
+	SelectButton(event.GetId() - lmID_BT_NoteAcc);
+}
+
+void lmGrpNoteAcc::SelectButton(int iB)
+{
+    // Set selected button as 'pressed' and all others as 'released'
+	m_nSelButton = iB;
+	for(int i=0; i < lm_NUM_BUTTONS; i++)
+	{
+		if (i != iB)
+			m_pButton[i]->Release();
+		else
+			m_pButton[i]->Press();
+	}
+}

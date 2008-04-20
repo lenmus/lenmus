@@ -101,13 +101,12 @@ lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
     if (pPrevContext)
 	{
-        pKey = pPrevContext->GeyKey();
+        pKey = pPrevContext->GetKey();
         pTime = pPrevContext->GetTime();
     }
 
 	//create the new context
-	int nStaff = pNewClef->GetStaffNum();
-	lmContext* pNewContext = new lmContext(pNewClef, pKey, pTime, nStaff);
+	lmContext* pNewContext = new lmContext(pNewClef, pKey, pTime, false, true, true);
 	if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
 
 	//chain it in the list
@@ -129,7 +128,7 @@ lmContext* lmStaff::NewContextAfter(lmKeySignature* pNewKey, lmContext* pPrevCon
     }
 
 	//create the new context
-    lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime, 0);
+    lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime, true, false, true);
 
 	//chain it in the list
     InsertContextAfter(pNewContext, pPrevContext);
@@ -146,11 +145,11 @@ lmContext* lmStaff::NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevC
     if (pPrevContext)
 	{
         pClef = pPrevContext->GetClef();
-        pKey = pPrevContext->GeyKey();
+        pKey = pPrevContext->GetKey();
     }
 
 	//create the new context
-    lmContext* pNewContext = new lmContext(pClef, pKey, pNewTime, 0);
+    lmContext* pNewContext = new lmContext(pClef, pKey, pNewTime, true, true, false);
     if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
 
 	//chain it in the list
@@ -184,3 +183,29 @@ void lmStaff::InsertContextAfter(lmContext* pNew, lmContext* pPrev)
 	}
 }
 
+void lmStaff::RemoveContext(lmContext* pContext, lmStaffObj* pSO)
+{
+    //remove context from the list
+
+    //un-chain the context to remove
+	lmContext* pPrev = pContext->GetPrev();
+	lmContext* pNext = pContext->GetNext();
+	if (pPrev)
+		pPrev->SetNext(pNext);
+    if (pNext)
+        pNext->SetPrev(pPrev);
+
+    //update pointers to first and last contexts, if necessary
+    if (pContext == m_pLastContext)
+        m_pLastContext = pPrev;
+
+    if (pContext == m_pFirstContext)
+        m_pFirstContext = pNext;
+
+    //update following contexts in the context chain. If following context inherited a value
+    //form removed context, we have to update these inherited values. An example: if we are 
+    //removing a clef and next context is created by a time signature, in this context 
+    //the clef was inherited.
+    if (pNext)
+        pNext->PropagateValueWhileInherited(pSO);
+}

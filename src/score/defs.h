@@ -589,8 +589,8 @@ extern lmLocation g_tDefaultPos;          // defined in defs.cpp
 //Helper functions for common operations
 //---------------------------------------------------------------------------------------
 
-extern double round(double val);
-extern float round(float val);
+//extern double round(double val);
+//extern float round(float val);
 
 // string methods
 

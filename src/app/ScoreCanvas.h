@@ -70,12 +70,14 @@ public:
 					lmENoteType nNoteType, float rDuration,
 					lmENoteHeads nNotehead,
 					lmEAccidentals nAcc = lm_eNoAccidentals ) {}
+    virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
 	virtual void ChangeNotePitch(int nSteps) {}
 	virtual void ChangeNoteAccidentals(int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
     virtual void SelectObjects(bool fSelect, lmGMSelection* pSelection) {};
 	virtual void DeleteObject() {}
+
 
     // event handlers
     virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
@@ -135,6 +137,7 @@ public:
 					lmENoteType nNoteType, float rDuration,
 					lmENoteHeads nNotehead,
 					lmEAccidentals nAcc = lm_eNoAccidentals );
+    void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
 	void ChangeNotePitch(int nSteps);
 	void ChangeNoteAccidentals(int nSteps);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);

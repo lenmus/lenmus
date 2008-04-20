@@ -166,8 +166,8 @@ public:
 	void ChangeAccidentals(int nSteps);
 
     //undo/redo
-    virtual void Freeze(lmUndoData* pUndoData);
-    virtual void UnFreeze(lmUndoData* pUndoData);
+    void Freeze(lmUndoData* pUndoData);
+    void UnFreeze(lmUndoData* pUndoData);
 
 
 private:

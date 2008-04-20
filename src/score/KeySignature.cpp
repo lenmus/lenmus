@@ -183,15 +183,17 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
     //is necessary to repeat the shape in each staff of the instrument
     //So in the following loop we add the key signature shape for each VStaff of the
     //instrument
+    lmLUnits uWidth = 0.0f;
     lmStaff* pStaff = m_pVStaff->GetFirstStaff();
     for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
     {
         //get current clef
         lmClef* pClef = m_pContext[nStaff-1]->GetClef();
-        lmEClefType nClef = pClef->GetClefType();
+        lmEClefType nClef = (pClef ? pClef->GetClefType() : lmE_Undefined);
 
         // Add the shape for key signature
         m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, pStaff, colorC);
+        uWidth = wxMax(m_pShapes[nStaff-1]->GetWidth(), uWidth);
 
         //compute vertical displacement for next staff
         uyTop += pStaff->GetHeight();
@@ -199,8 +201,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
     }
 
 	// set total width (incremented in one line for after space)
-	return m_pShapes[0]->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
-
+	return uWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);;
 }
 
 lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
@@ -350,6 +351,7 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
             break;
 
         case lmE_Percussion:
+        case lmE_Undefined:
             nKeySignature = earmDo;    //force not to draw any accidentals
             break;
 

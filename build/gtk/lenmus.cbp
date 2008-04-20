@@ -25,7 +25,6 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=yes --libs`" />
-					<Add library="../../packages/wxMidi/lib/linux/Debug/libwxmidi.so" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -37,6 +36,8 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=no --cflags`" />
+					<Add option="-D__WXGTK__" />
+					<Add option="-D_UNICODE" />
 					<Add directory="../../../wxMidi/include" />
 				</Compiler>
 				<Linker>
@@ -49,6 +50,12 @@
 			<Add option="-Wall" />
 			<Add directory="../../packages/agg/include" />
 		</Compiler>
+		<Linker>
+			<Add library="/usr/lib/libportmidi.so" />
+			<Add library="/usr/lib/libporttime.so" />
+		</Linker>
+		<Unit filename="../../packages/wxMidi/src/wxMidi.cpp" />
+		<Unit filename="../../packages/wxMidi/src/wxMidiDatabase.cpp" />
 		<Unit filename="../../src/app/AboutDialog.cpp" />
 		<Unit filename="../../src/app/AboutDialog.h" />
 		<Unit filename="../../src/app/ArtProvider.cpp" />
@@ -339,6 +346,7 @@
 		<Unit filename="../../src/score/TimeSignature.h" />
 		<Unit filename="../../src/score/TupletBracket.cpp" />
 		<Unit filename="../../src/score/TupletBracket.h" />
+		<Unit filename="../../src/score/UndoRedo.cpp" />
 		<Unit filename="../../src/score/UndoRedo.h" />
 		<Unit filename="../../src/score/VStaff.cpp" />
 		<Unit filename="../../src/score/VStaff.h" />

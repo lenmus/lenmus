@@ -45,6 +45,7 @@
 #include <algorithm>
 
 #include "Score.h"
+#include "UndoRedo.h"
 #include "../graphic/ShapeBeam.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"

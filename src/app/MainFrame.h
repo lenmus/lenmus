@@ -239,7 +239,8 @@ public:
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
 	bool IsToolBoxVisible();
     inline int GetSelectedVoice() { return m_pComboVoice->GetSelection(); }
-    inline lmScore* GetWizardScore() { return m_pWizardScore; }       
+    inline lmScore* GetWizardScore() { return m_pWizardScore; }  
+    lmController* GetActiveController();
 
 	// call backs
 	void OnActiveViewChanged(lmMDIChildFrame* pFrame);

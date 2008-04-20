@@ -319,6 +319,11 @@ public:
 	lmContext* GetCurrentContext();
 	lmContext* NewUpdatedContext();
 
+    //undo/redo
+    virtual void Freeze(lmUndoData* pUndoData) {};
+    virtual void UnFreeze(lmUndoData* pUndoData) {};
+
+
 
 protected:
     lmStaffObj(lmScoreObj* pParent, EStaffObjType nType,

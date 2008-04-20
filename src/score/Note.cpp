@@ -333,7 +333,10 @@ lmEClefType lmNote::GetClefType()
 	//in other cases, get the context
 	lmContext* pContext = GetCurrentContext();
     if (pContext)
-		return pContext->GetClef()->GetClefType();
+    {
+        lmClef* pClef = pContext->GetClef();
+        return (pClef ? pClef->GetClefType() : lmE_Undefined);
+    }
 	else
 		return lmE_Undefined;
 }
@@ -1134,6 +1137,8 @@ int lmNote::PosOnStaffToPitch(int nSteps)
             return nPos + lmC4_DPITCH - 6;
         case lmE_Do4 :
             return nPos + lmC4_DPITCH - 8;
+        case lmE_Undefined:
+            return nPos + lmC4_DPITCH;      //TODO: review this value
         default:
             wxASSERT(false);
             return 0;    //to get the compiler happy
@@ -1482,7 +1487,7 @@ wxString lmNote::Dump()
     //get pitch relative to key signature
     //TODO: Uncomment following code. Commented in to avoid a chrash while debugging colstaffobjs
     //lmFPitch fp = FPitch(m_anPitch);
-    //lmKeySignature* pKey = GetCurrentContext()->GeyKey();
+    //lmKeySignature* pKey = GetCurrentContext()->GetKey();
     //lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
     wxString sPitch = _T("");   //FPitch_ToRelLDPName(fp, nKey);
 

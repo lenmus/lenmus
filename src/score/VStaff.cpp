@@ -79,6 +79,7 @@
 #include "../graphic/ShapeStaff.h"
 #include "../graphic/BoxSliceVStaff.h"
 #include "../graphic/ShapeBarline.h"
+#include "../widgets/MsgBox.h"
 
 
 //for AddShitTimeTag methods
@@ -233,15 +234,38 @@ int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 		return 0;
 }
 
+void lmVStaff::RemoveCreatedContexts(lmStaffObj* pSO)
+{
+	if (!(pSO->IsClef() || pSO->IsKeySignature() || pSO->IsTimeSignature()))
+        return;         //this staffObj didn't created contexts
+
+    //if it is a clef, it only created one context. Else, if it is a time or key signature, 
+    //several contexts (one per staff) have been created. 
+    if (pSO->IsClef())
+    {
+        //clef. Only one context to remove
+        lmContext* pContext = ((lmClef*)pSO)->GetContext();
+        lmStaff* pStaff = GetStaff( pSO->GetStaffNum() );
+        pStaff->RemoveContext(pContext, pSO);
+        delete pContext;
+    }
+    else
+    {
+        //time or key signature. One context per staff to remove
+        //TODO
+    }
+}
+
+
 //---------------------------------------------------------------------------------------
 // Methods for inserting StaffObjs
 //---------------------------------------------------------------------------------------
 
-lmClef* lmVStaff::Cmd_InsertClef(lmUndoData* pUndoData, lmEClefType nClefType)
+lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
+                                 bool fVisible)
 {
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
-    int nStaff = m_VCursor.GetNumStaff();
-    lmClef* pClef = new lmClef(nClefType, this, nStaff, lmVISIBLE);
+    lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
     pContext = pStaff->NewContextAfter(pClef, pContext);
@@ -249,6 +273,37 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoData* pUndoData, lmEClefType nClefType)
 	pClef->SetContext(pContext);
     m_cStaffObjs.Add(pClef);
     return pClef;
+}
+lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
+                                    int nBeatType, bool fVisible)
+{
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, fVisible);
+
+    //the time signature is for all staves. Therefore we have to create a new context
+    //in all staves. But we only know the position for current staff!
+    //Get current staff and current context for current staff
+    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
+    int nStaff = m_VCursor.GetNumStaff();
+    lmStaff* pStaff = GetStaff(nStaff);
+    pTS->SetContext(nStaff, pStaff->NewContextAfter(pTS, pContext) );
+
+    //what to do for the other staves?
+    //TODO: Fix this. For noew let's insert the context at the end, as if the
+    //score were empty
+   //iterate over the collection of Staves to add a new context
+    for (int iStaff=1; iStaff <= m_nNumStaves; iStaff++)
+	{
+        if (iStaff != nStaff)
+        {
+            lmStaff* pStaff = GetStaff(iStaff);
+	        lmContext* pContext = pStaff->NewContextAfter(pTS);
+            pTS->SetContext(iStaff, pContext);
+        }
+    }
+
+    m_cStaffObjs.Add(pTS);
+    return pTS;
 }
 
 lmBarline* lmVStaff::InsertBarline(lmEBarline nType)
@@ -258,7 +313,7 @@ lmBarline* lmVStaff::InsertBarline(lmEBarline nType)
     return pBarline;
 }
 
-lmNote* lmVStaff::Cmd_InsertNote(lmUndoData* pUndoData,
+lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 								 lmEPitchType nPitchType, wxString sStep,
 								 wxString sOctave, lmENoteType nNoteType, float rDuration,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
@@ -276,19 +331,25 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoData* pUndoData,
     //if no Clef defined yet the context will be NULL
     if (!pContext)
     {
-		int nAnswer = wxMessageBox( wxGetTranslation(
-				_T("Error: No clef defined yet.\n")
+        lmQuestionBox oQB( wxGetTranslation(
+				_T("Error: No clef defined yet.\n\n")
 				_T("Would you like to have notes placed on the staff as if a G clef \n")
-				_T("has been defined?\n\n")
-				_T("Yes: an invisible G clef will be inserted before the note.\n")
-				_T("No: the operation will be cancelled.") ),
-				//
-				_("Lenmus message"),
-				wxYES_NO | wxICON_QUESTION );
-		if (nAnswer == wxYES)
+				_T("has been defined?\n") ),
+                //num buttons, and labels (2 per button: button text + explanation)
+                2,
+                _("Insert clef"), _("An invisible G clef will be inserted before the note."),
+                _("Cancel"), _("The 'insert note' command will be cancelled.") );
+        int nAnswer = oQB.ShowModal();
+
+		if (nAnswer == 0)   //'Insert clef' button
 		{
-			//TODO: how to undo this?
-			AddClef(lmE_Sol, nStaff, lmNO_VISIBLE);
+            //issue an 'insert clef' command
+            lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
+            lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
+            lmVCmdInsertClef* pVCmd = 
+                new lmVCmdInsertClef(this, pNewUndoItem, lmE_Sol, nStaff, lmNO_VISIBLE);
+            pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+
 			//re-compute context
 			if (pCursorSO)
 				pContext = NewUpdatedContext(pCursorSO);
@@ -329,15 +390,33 @@ void lmVStaff::DeleteObject()
     m_cStaffObjs.Delete(m_VCursor.GetStaffObj());
 }
 
-void lmVStaff::DeleteObject(lmStaffObj* pSO)
+void lmVStaff::DeleteObject(lmStaffObj* pSO, lmUndoItem* pUndoItem)
 {
-    //delete requested object
+    //delete the requested object, and log info to undo history
     //Precondition: must be in this VStaff
 
-    m_cStaffObjs.Delete(pSO);
+    //if logging requested (pUndoItem not NULL) save info for undo/redo
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+    if (pUndoItem)
+    {
+        //save positioning information
+        m_cStaffObjs.LogPosition(pUndoItem->GetUndoData(), pSO);
+
+        //Save info to re-create the object
+        pSO->Freeze(pUndoItem->GetUndoData());
+    }
+
+    //if object to remove is a clef, key or time signature, the contexts they created
+    //have to be removed
+	RemoveCreatedContexts(pSO);
+
+    //now remove the staffobj from the staffobjs collection
+    //if pUndoItem exists, do not delete staffobj, only remove it from the collection
+    m_cStaffObjs.Delete(pSO, (pUndoItem != (lmUndoItem*)NULL));
 }
 
-void lmVStaff::Cmd_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO)
+void lmVStaff::Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 {
     //delete the requested object, and log info to undo history
 
@@ -345,25 +424,25 @@ void lmVStaff::Cmd_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO)
     //History works as a FIFO stack: first one logged will be the first one to be recovered
 
     //save positioning information
-    m_cStaffObjs.LogPosition(pUndoData, pSO);
+    m_cStaffObjs.LogPosition(pUndoItem->GetUndoData(), pSO);
 
     //Save info to re-create the object
-    ((lmNote*)pSO)->Freeze(pUndoData);
+    pSO->Freeze(pUndoItem->GetUndoData());
 
     //Delete the object
     m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
 
 }
 
-void lmVStaff::Cmd_Undo_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO)
+void lmVStaff::Cmd_Undo_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 {
     //un-delete the object, according to info in history
 
     //recover positioning info
-    lmStaffObj* pBeforeSO = pUndoData->GetParam<lmStaffObj*>();
+    lmStaffObj* pBeforeSO = pUndoItem->GetUndoData()->GetParam<lmStaffObj*>();
 
     //unfreeze restored object
-    ((lmNote*)pSO)->UnFreeze(pUndoData);
+    pSO->UnFreeze(pUndoItem->GetUndoData());
 
 	//re-insert the deleted object
     m_cStaffObjs.Insert(pSO, pBeforeSO);
@@ -662,7 +741,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     // the font for drawing is scaled by the DC.
     #if defined(__WXGTK__)
     //in Linux the reference resolution is 72 DPI
-    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 72.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
+    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 50.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
     #else
     pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 96.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
     #endif
@@ -1125,7 +1204,7 @@ void lmVStaff::NewLine(lmPaper* pPaper)
 //
 //        if (pContext) {
 //            pClef = pContext->GetClef();
-//            pKey = pContext->GeyKey();
+//            pKey = pContext->GetKey();
 //            pTime = pContext->GetTime();
 //
 //            //render clef
@@ -1334,3 +1413,96 @@ lmSOIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 //    delete pIT;
 //}
 //
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVStaffCmd implementation
+//----------------------------------------------------------------------------------------
+
+lmVStaffCmd::lmVStaffCmd(lmVStaff* pVStaff)
+{
+    m_pVStaff = pVStaff;
+}
+
+lmVStaffCmd::~lmVStaffCmd()
+{
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdInsertNote implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdInsertNote::lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
+                        lmEPitchType nPitchType, wxString sStep,
+					    wxString sOctave, lmENoteType nNoteType, float rDuration,
+					    lmENoteHeads nNotehead, lmEAccidentals nAcc)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pNewNote = pVStaff->Cmd_InsertNote(pUndoItem, nPitchType, sStep, sOctave, nNoteType,
+                                         rDuration, nNotehead, nAcc);
+}
+
+void lmVCmdInsertNote::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->DeleteObject(m_pNewNote);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdInsertClef implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdInsertClef::lmVCmdInsertClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
+                                   lmEClefType nClefType, int nStaff, bool fVisible)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pNewClef = pVStaff->Cmd_InsertClef(pUndoItem, nClefType, nStaff, fVisible);
+}
+
+void lmVCmdInsertClef::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->DeleteObject(m_pNewClef);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdInsertTimeSignature implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdInsertTimeSignature::lmVCmdInsertTimeSignature(lmVStaff* pVStaff, 
+                                                     lmUndoItem* pUndoItem, int nBeats,
+                                                     int nBeatType, bool fVisible)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pNewTime = pVStaff->Cmd_InsertTimeSignature(pUndoItem, nBeats, nBeatType, fVisible);
+}
+
+void lmVCmdInsertTimeSignature::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->DeleteObject(m_pNewTime);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdDeleteObject implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdDeleteObject::lmVCmdDeleteObject(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                       lmStaffObj* pSO)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pSO = pSO;
+    pVStaff->DeleteObject(pSO, pUndoItem);
+}
+
+void lmVCmdDeleteObject::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->Cmd_Undo_DeleteObject(pUndoItem, m_pSO);
+}

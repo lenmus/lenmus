@@ -23,12 +23,12 @@
 #define __LM_TOOLGROUP_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ToolGroup.h"
+#pragma interface "ToolGroup.cpp"
 #endif
 
 class lmToolPage;
 
-class lmToolGroup: public wxBoxSizer
+class lmToolGroup: public wxPanel
 {    
 public:
     lmToolGroup(lmToolPage* pParent);
@@ -42,6 +42,7 @@ public:
 
 protected:
     void Init();
+    wxBitmap CreateOnBitmap(wxString sBmpName);
 
 	lmToolPage*		m_pParent;		//owner ToolPage
 };

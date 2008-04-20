@@ -1271,9 +1271,6 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete)
     //      Adjust timepos of all moved objects
     //      Update segment pointer in all moved objects
     //      remove next segment and renumber segments
-    //  - if it was a clef, key or time signature:
-    //      Propagate context change to all staffobjs until end of score
-    //      Update context of all following segments
     //  - delete the removed staffobj
 
 
@@ -1331,14 +1328,6 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete)
 
         //remove next segment and renumber segments
         RemoveSegment( pNextSegment->m_nNumSegment );
-    }
-
-    //if removed object was a clef, key or time signature:
-    //  - Propagate context change to all staffobjs until end of score
-    //  - Update context of all following segments
-	if (pSO->IsClef() || pSO->IsKeySignature() || pSO->IsTimeSignature())
-    {
-	    //TODO:
     }
 
     //delete the removed staffobj

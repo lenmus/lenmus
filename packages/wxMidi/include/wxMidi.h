@@ -42,8 +42,8 @@
 */
 
 // MIDI support throgh Portmidi lib
-#include "../src/portmidi/pm_common/portmidi.h"
-#include "../src/portmidi/porttime/porttime.h"
+#include "portmidi.h"
+#include "porttime.h"
 
 
 //Constants

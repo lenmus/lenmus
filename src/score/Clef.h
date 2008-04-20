@@ -68,7 +68,6 @@ public:
 	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
     inline lmContext* GetContext() { return m_pContext; }
 
-
 private:
 
     // get fixed measures and values that depend on key type

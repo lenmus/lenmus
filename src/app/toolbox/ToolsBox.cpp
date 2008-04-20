@@ -49,15 +49,15 @@
 //AWARE
 //
 //    Things to do to add a new tools panel to the Tools Box dialog:
-//     1. Create a new panel class derived from wxPanel
-//     2. Add the XRC panel to TheApp.cpp
-//     3. Look for "//TO_ADD:" tags in ToolsBox.h and follow instructions there
-//     4. Look for "//TO_ADD:" tags in this file and follow instructions there
+//     1. Create a new panel class derived from lmToolPage
+//     2. Look for "//TO_ADD:" tags in ToolsBox.h and follow instructions there
+//     3. Look for "//TO_ADD:" tags in this file and follow instructions there
 //
 //-----------------------------------------------------------------------------------
 
 // Panels
 #include "ToolNotes.h"
+#include "ToolClef.h"
 //TO_ADD: add here the new tool panel include file
 
 
@@ -179,7 +179,7 @@ wxPanel* lmToolBox::CreatePanel(lmEEditTool nPanel)
 		case lmTOOL_SELECTION:
             return (wxPanel*)NULL;
         case lmTOOL_CLEFS:
-            return (wxPanel*)NULL;	//new lmToolClefsOpt(m_pOptionsPanel);
+            return new lmToolClef(m_pOptionsPanel);
 		case lmTOOL_KEY_SIGN:
             return (wxPanel*)NULL;
 		case lmTOOL_TIME_SIGN:
@@ -201,9 +201,9 @@ void lmToolBox::OnButtonClicked(wxCommandEvent& event)
     //identify button pressed
 	SelectTool((lmEEditTool)(event.GetId() - ID_BUTTON));
 
-	lmController* pController = g_pTheApp->GetViewController();
-	pController->SetCursor(*wxCROSS_CURSOR);
-    wxLogMessage(_T("[lmToolBox::OnButtonClicked] Tool %d selected"), m_nSelTool);
+	//lmController* pController = g_pTheApp->GetViewController();
+	//pController->SetCursor(*wxCROSS_CURSOR);
+    //wxLogMessage(_T("[lmToolBox::OnButtonClicked] Tool %d selected"), m_nSelTool);
 }
 
 void lmToolBox::SelectTool(lmEEditTool nTool)

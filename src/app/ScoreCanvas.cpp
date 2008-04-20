@@ -300,6 +300,23 @@ void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 	pCP->Submit(new lmCmdInsertClef(pVCursor, sName, m_pDoc, nClefType) );
 }
 
+void lmScoreCanvas::InsertTimeSignature(int nBeats, int nBeatType, bool fVisible)
+{
+    //insert a time signature at current cursor position
+
+    wxLogMessage(_T("[lmScoreCanvas::InsertTimeSignature] nBeats=%d, nBeatType=%d"), nBeats, nBeatType);
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+
+    //prepare command and submit it
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _T("Insert time signature");
+	pCP->Submit(new lmCmdInsertTimeSignature(pVCursor, sName, m_pDoc, nBeats,
+                                             nBeatType, fVisible) );
+}
+
 void lmScoreCanvas::InsertBarline(lmEBarline nType)
 {
 	//insert a barline at current cursor position
@@ -461,52 +478,52 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 				//select note duration
 				case 48:    // '0' double whole
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(0);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(0);
 					break;
 
 				case 49:    // '1' whole
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(1);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(1);
 					break;
 
 				case 50:    // '2' half
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(2);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(2);
 					break;
 
 				case 51:    // '3' quarter
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(3);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(3);
 					break;
 
 				case 52:    // '4' eighth
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(4);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(4);
 					break;
 
 				case 53:    // '5' 16th
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(5);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(5);
 					break;
 
 				case 54:    // '6' 32nd
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(6);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(6);
 					break;
 
 				case 55:    // '7' 64th
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(7);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(7);
 					break;
 
 				case 56:    // '8' 128th
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(8);
 					break;
 
 				case 57:    // '9' 256th
 					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNoteButton(8);
+						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(8);
 					break;
 
 				//commands requiring to have a note/rest selected

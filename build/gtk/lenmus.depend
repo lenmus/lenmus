@@ -74,7 +74,7 @@
 	"../app/Paper.h"
 	"../sound/SoundManager.h"
 
-1207637838 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
+1208086516 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>
@@ -166,7 +166,7 @@
 	<list>
 	"defs.h"
 
-1207992874 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
+1208160004 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
 	"StaffObjIterator.h"
 
 1203490390 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Instrument.h
@@ -552,17 +552,17 @@
 	<wx/button.h>
 	<wx/html/htmlwin.h>
 
-1179587096 /media/sdb1/usr/Desarrollo_wx/wxMidi/include/wxMidi.h
+1208105016 /media/sdb1/usr/Desarrollo_wx/wxMidi/include/wxMidi.h
 	"wx/wxprec.h"
 	"wx/wx.h"
-	"../src/portmidi/pm_common/portmidi.h"
-	"../src/portmidi/porttime/porttime.h"
+	"portmidi.h"
+	"porttime.h"
 
 1179584234 /media/sdb1/usr/Desarrollo_wx/wxMidi/src/portmidi/pm_common/portmidi.h
 
 1154356926 /media/sdb1/usr/Desarrollo_wx/wxMidi/src/portmidi/porttime/porttime.h
 
-1207998699 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
+1207998698 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -851,7 +851,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1207999831 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1208010136 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -1183,11 +1183,11 @@
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
 
-1179587096 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxMidi/include/wxMidi.h
+1208099248 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxMidi/include/wxMidi.h
 	"wx/wxprec.h"
 	"wx/wx.h"
-	"../src/portmidi/pm_common/portmidi.h"
-	"../src/portmidi/porttime/porttime.h"
+	"portmidi.h"
+	"porttime.h"
 
 1199098918 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/globals/Paths.cpp
 	"wx/wxprec.h"
@@ -1724,13 +1724,14 @@
 	"wx/wx.h"
 	"Score.h"
 
-1207154874 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Beam.cpp
+1208162102 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Beam.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<list>
 	<vector>
 	<algorithm>
 	"Score.h"
+	"UndoRedo.h"
 	"../graphic/ShapeBeam.h"
 	"../graphic/Shapes.h"
 	"../graphic/ShapeNote.h"
@@ -1974,7 +1975,7 @@
 	"Score.h"
 	"UndoRedo.h"
 
-1207996718 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
+1208159956 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -2092,7 +2093,7 @@
 	"DlgDebugTrace.h"
 	"../app/Logger.h"
 
-1207204916 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.cpp
+1208086514 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.cpp
 	"wx/wxprec.h"
 	<math.h>
 	"wx/utils.h"
@@ -2300,7 +2301,7 @@
 	"GMObject.h"
 	"BoxSystem.h"
 
-1207992874 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.h
+1208159956 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.h
 	<list>
 	"wx/cmdproc.h"
 	"ScoreView.h"
@@ -2356,7 +2357,7 @@
 	"BoxScore.h"
 	"../globals/Colors.h"
 
-1207992874 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.cpp
+1208160200 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -2611,8 +2612,9 @@
 	"../app/ScoreCanvas.h"
 	"../score/Score.h"
 
-1205916348 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/UndoRedo.h
+1208162314 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/UndoRedo.h
 	<vector>
+	<list>
 
 1207896384 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/AuxObj.cpp
 	"wx/wxprec.h"
@@ -4830,7 +4832,7 @@
 	"ToolGroup.h"
 	"ToolPage.h"
 
-1207389962 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolGroup.h
+1208161448 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolGroup.h
 
 1207405468 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolNotes.cpp
 	"wx/wxprec.h"
@@ -4893,4 +4895,20 @@
 	"ArtProvider.h"
 	"../score/Score.h"
 	"../app/Page.h"
+
+1181507348 source:/media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxMidi/src/wxMidi.cpp
+	"wx/wxprec.h"
+	"wxMidi.h"
+
+1163839876 /media/sdb1/usr/Desarrollo_wx/wxMidi/include/portmidi.h
+
+1163839878 /media/sdb1/usr/Desarrollo_wx/wxMidi/include/porttime.h
+
+1208101140 source:/media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxMidi/src/wxMidiDatabase.cpp
+	"wx/wxprec.h"
+	"wxMidi.h"
+
+1163839876 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxMidi/include/portmidi.h
+
+1163839878 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxMidi/include/porttime.h
 

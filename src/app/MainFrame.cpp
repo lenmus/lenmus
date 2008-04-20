@@ -1410,6 +1410,14 @@ void lmMainFrame::SilentlyCheckForUpdates(bool fSilent)
     m_fSilentCheck = fSilent;
 }
 
+lmController* lmMainFrame::GetActiveController()
+{
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    if (pView)
+        return pView->GetController();
+    else
+        return (lmController*)NULL;
+}
 
 // ----------------------------------------------------------------------------
 // menu callbacks
@@ -2378,3 +2386,32 @@ void lmMainFrame::OnKeyF1(wxCommandEvent& event)
 //		int i = 1;
 }
 
+/*
+//------------------------------------------------------------------------------------
+// Tips at application start 
+//------------------------------------------------------------------------------------
+
+void lmMainFrame::ShowTips(bool fForceShow)
+{
+    bool fShowTips = false;
+    g_pPrefs->Read(_T("/MainFrame/ShowTips"), &fShowTips);
+    if (fForceShow || fShowTips)
+    {
+        //read data from last run
+        wxLogNull null; // disable error message if tips file does not exist
+        //wxString sTipsFile = g_pPrefs->Read(_T("/data_path")) + _T("/tips.txt");
+        //sTipsFile = g_pPaths->GetHelpPath();
+        //m_pHelp->SetTitleFormat(_("Test mode: using .hhp help file"));
+        long nTipsIndex = g_pPrefs->Read(_T("/MainFrame/NextTip"), 0L);
+        
+        //show next tip
+        wxTipProvider oTipDlg = wxCreateFileTipProvider(sTipsFile, nTipsIndex);
+        fShowTips = wxShowTip(this, &oTipDlg, fShowTips);
+        
+        //save data for next run
+        g_pPrefs->Write(_T("/MainFrame/ShowTips"), fShowTips);
+        g_pPrefs->Write(_T("/MainFrame/NextTip"), (long)oTipDlg.GetCurrentTip());
+    }
+}
+
+*/

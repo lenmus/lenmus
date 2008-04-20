@@ -80,8 +80,8 @@ END_EVENT_TABLE()
 
 
 lmAboutDialog::lmAboutDialog(wxWindow* pParent)
-	: wxDialog(pParent, wxID_ANY, _T("LenMus"), wxDefaultPosition, wxSize(600, 400), wxDEFAULT_DIALOG_STYLE, _T("dialogBox"))
-
+	: wxDialog(pParent, wxID_ANY, _T("LenMus"), wxDefaultPosition, wxSize(600, 400),
+               wxDEFAULT_DIALOG_STYLE, _T("dialogBox"))
 {
     // create the dialog controls
 	CreateControls();

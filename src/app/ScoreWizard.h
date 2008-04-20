@@ -31,7 +31,7 @@
 #include "wx/wizard.h"
 #include "wx/statline.h"
 
-class lmScoreWizardIntroPage;
+class lmScoreWizardLayout;
 class lmScoreWizardInstrPage;
 class lmScoreWizardClefPage;
 class lmScoreWizardTimePage;
@@ -43,6 +43,8 @@ enum
 {
     //ScoreWizard
     lmID_SCORE_WIZARD = 10000,
+
+    //lmScoreWizardLayout
 
     //ScoreWizardInstrPage
     lmID_WIZARD_INSTR_PAGE,
@@ -92,25 +94,33 @@ private:
     lmScore**       m_pPtrScore;
 };
 
+
 //----------------------------------------------------------------------------------
-// lmScoreWizardIntroPage class declaration
+// lmScoreWizardLayout class declaration
 //----------------------------------------------------------------------------------
 
-class lmScoreWizardIntroPage: public wxWizardPageSimple
+class lmScoreWizardLayout : public wxWizardPageSimple 
 {
-    DECLARE_DYNAMIC_CLASS( lmScoreWizardIntroPage )
+    DECLARE_DYNAMIC_CLASS( lmScoreWizardLayout )
     DECLARE_EVENT_TABLE()
 
 public:
-    lmScoreWizardIntroPage();
-    lmScoreWizardIntroPage(wxWizard* parent);
+    lmScoreWizardLayout();
+    lmScoreWizardLayout(wxWizard* parent);
 
-    //creation
+    bool TransferDataFromWindow();
+
+protected:
     bool Create(wxWizard* parent);
     void CreateControls();
 
+    wxListBox* m_pLstEnsemble;
+	wxStaticText* m_pLblPaper;
+	wxChoice* m_pCboPaper;
+	wxRadioBox* m_pRadOrientation;
+	wxStaticBitmap* m_pBmpPreview;
+	
 };
-
 
 //----------------------------------------------------------------------------------
 // lmScoreWizardInstrPage class declaration

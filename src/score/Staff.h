@@ -76,6 +76,8 @@ public:
     lmContext* NewContextAfter(lmKeySignature* pKey, lmContext* pPrevContext=NULL);
     lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext=NULL);
     inline lmContext* GetLastContext() { return m_pLastContext; }
+    void RemoveContext(lmContext* pContext, lmStaffObj* pSO = (lmStaffObj*)NULL);
+
 
     //debug
     wxString Dump();

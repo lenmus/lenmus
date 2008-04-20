@@ -19,8 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __LM_MSGBOX_H__        //to avoid nested includes
+#define __LM_MSGBOX_H__
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "ToolPage.h"
+#pragma interface "MsgBox.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -34,37 +37,71 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/xrc/xmlres.h"
-#include "wx/bmpcbox.h"
-#include "wx/statline.h"
-#include "wx/settings.h"
 
-#include "ToolPage.h"
-
-
-#define lmPANEL_WIDTH 150
-
-
-lmToolPage::lmToolPage(wxWindow* parent)
-	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, 300), wxNO_BORDER )
+class lmMsgBoxBase : public wxDialog
 {
-	//main sizer
-    m_pMainSizer = new wxBoxSizer(wxVERTICAL);
-    SetSizer(m_pMainSizer);
+public:
+    virtual ~lmMsgBoxBase();
 
-	//set colors
-	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
-	this->SetBackgroundColour(m_colors.Normal());
-}
+    //event handlers
+    void OnRespButton(wxCommandEvent& event);
 
-lmToolPage::~lmToolPage()
+    
+protected:
+    lmMsgBoxBase(const wxString& sMessage, const wxString& sTitle);
+    void CreateControls();
+    void AddButton(wxString* pLabel, wxString* pDescr);
+
+    
+	wxStaticBitmap*     m_pBitmap;
+	wxStaticText*       m_pMessage;
+	const wxString&     m_sMessage;
+	wxBoxSizer*         m_pButtonsSizer;
+    int                 m_nNumButtons;
+
+    DECLARE_EVENT_TABLE()
+};
+
+class lmErrorBox : public lmMsgBoxBase
 {
-}
+public:
+    lmErrorBox();
+    ~lmErrorBox();
+    
+protected:
 
-void lmToolPage::CreateLayout()
+};
+
+class lmInfoBox : public lmMsgBoxBase
 {
-    SetAutoLayout(true);
-    m_pMainSizer->Fit(this);
-    m_pMainSizer->SetSizeHints(this);
-    m_pMainSizer->Layout();
-}
+public:
+    lmInfoBox();
+    ~lmInfoBox();
+    
+protected:
+
+};
+
+class lmYesNoBox : public lmMsgBoxBase
+{
+public:
+    lmYesNoBox();
+    ~lmYesNoBox();
+    
+protected:
+
+};
+
+class lmQuestionBox : public lmMsgBoxBase
+{
+public:
+    lmQuestionBox(const wxString& sMessage, int nNumButtons, ...);
+    ~lmQuestionBox();
+    
+protected:
+
+};
+
+
+
+#endif    // __LM_MSGBOX_H__

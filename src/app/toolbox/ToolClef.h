@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_TOOLNOTES_H__
-#define __LM_TOOLNOTES_H__
+#ifndef __LM_TOOLCLEF_H__
+#define __LM_TOOLCLEF_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ToolNotes.cpp"
+#pragma interface "ToolClef.cpp"
 #endif
 
 #include "ToolGroup.h"
@@ -34,22 +34,22 @@ class wxBitmapComboBox;
 class lmCheckButton;
 
 //--------------------------------------------------------------------------------
-// Group for Note duration
+// Group for clef type
 //--------------------------------------------------------------------------------
-class lmGrpNoteDuration: public lmToolGroup
+class lmGrpClefType: public lmToolGroup
 {
 public:
-    lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer);
-    ~lmGrpNoteDuration() {}
+    lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpClefType() {}
 
 	//access to options
-	lmENoteType GetNoteDuration();
+	lmEClefType GetClefType();
 
 	void OnButton(wxCommandEvent& event);
-	void SelectButton(int iB);
+	void SelectClef(int iB);
 
     enum {
-        lm_NUM_BUTTONS = 10
+        lm_NUM_BUTTONS = 3
     };
 
 private:
@@ -58,76 +58,65 @@ private:
 	int			        m_nSelButton;               //selected button
 	lmCheckButton*		m_pButton[lm_NUM_BUTTONS];  //buttons
 
+
     DECLARE_EVENT_TABLE()
 };
 
 
-
 //--------------------------------------------------------------------------------
-// Group for Note accidentals
+// Group for time signature type
 //--------------------------------------------------------------------------------
-class lmGrpNoteAcc: public lmToolGroup
+class lmGrpTimeType: public lmToolGroup
 {
 public:
-    lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer);
-    ~lmGrpNoteAcc() {}
-
-	//access to options
-	lmEAccidentals GetNoteAcc();
+    lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpTimeType() {}
 
 	void OnButton(wxCommandEvent& event);
-	void SelectButton(int iB);
 
     enum {
-        lm_NUM_BUTTONS = 9
+        lm_NUM_BUTTONS = 12
     };
+
+    //buttons data
+    typedef struct lmButtonStruct
+    {
+        wxString    sBitmap;
+        int         nBeats;
+	    int     	nBeatType;
+
+    } lmButton;
 
 private:
     void CreateControls(wxBoxSizer* m_pMainSizer);
 
-	int			        m_nSelButton;               //selected button
-	lmCheckButton*		m_pButton[lm_NUM_BUTTONS];  //buttons
+	wxBitmapButton*		m_pButton[lm_NUM_BUTTONS];  //buttons
+
 
     DECLARE_EVENT_TABLE()
 };
-
 
 
 //--------------------------------------------------------------------------------
 // The panel
 //--------------------------------------------------------------------------------
 
-class lmToolNotes: public lmToolPage
+class lmToolClef: public lmToolPage
 {
 public:
-    lmToolNotes(wxWindow* parent);
-    ~lmToolNotes();
+    lmToolClef(wxWindow* parent);
+    ~lmToolClef();
 
 	//access to options
-
-    //interface with NoteDuration group
-    inline lmENoteType GetNoteDuration() { return m_pGrpNoteDuration->GetNoteDuration(); }
-    inline void SetNoteDuration(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
-
-    //interface with NoteAccidentals group
-    inline lmEAccidentals GetNoteAccidentals() { return m_pGrpNoteAcc->GetNoteAcc(); }
-    inline void SetNoteAcc(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
-
-    //interface with NoteheadType group
-	lmENoteHeads GetNoteheadType();
-    //inline lmENoteHeads GetNoteheadType() { return m_pGrpNoteDuration->GetNoteDuration(); }
-    //inline void SetNoteDuration(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
+    inline lmEClefType GetClefType() { m_pGrpClefType->GetClefType(); }
 
 
 private:
 
     //groups
-    lmGrpNoteDuration*  m_pGrpNoteDuration;
-    lmGrpNoteAcc*       m_pGrpNoteAcc;
+    lmGrpClefType*    m_pGrpClefType;
+    lmGrpTimeType*    m_pGrpTimeType;
 
-	//options
-	wxBitmapComboBox*	m_pCboNotehead;
-	wxBitmapComboBox*	m_pCboAccidentals;
 };
 
-#endif    // __LM_TOOLNOTES_H__
+#endif    // __LM_TOOLCLEF_H__

@@ -99,6 +99,9 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
     else if (size.GetHeight() == 22) {
         sSize = _T("_22.png");
     }
+    else if (size.GetHeight() == 48) {
+        sSize = _T("_48.png");
+    }
 
     //icon for text book controller
     if ( client == wxART_HELP_BROWSER ) {

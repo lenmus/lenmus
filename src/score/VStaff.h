@@ -32,8 +32,12 @@ class lmSpacer;
 class lmMetronomeMark;
 class lmBoxSliceVStaff;
 class lmScoreCommand;
+class lmUndoItem;
 
 
+//----------------------------------------------------------------------------------------
+// lmVStaff 
+//----------------------------------------------------------------------------------------
 
 class lmVStaff : public lmScoreObj
 {
@@ -113,15 +117,19 @@ public:
 	//Edition commands
 	//--- inserting StaffObs
     lmBarline* InsertBarline(lmEBarline nType = lm_eBarlineSimple);
-	lmClef* Cmd_InsertClef(lmUndoData* pUndoData, lmEClefType nClefType);
-	lmNote* Cmd_InsertNote(lmUndoData* pUndoData, lmEPitchType nPitchType, wxString sStep,
+	lmClef* Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff, bool fVisible);
+	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, wxString sStep,
 					   wxString sOctave, lmENoteType nNoteType, float rDuration,
 					   lmENoteHeads nNotehead, lmEAccidentals nAcc);
-	//--- deleting StaffObjs
+
+    lmTimeSignature* Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
+                                    int nBeatType, bool fVisible);
+
+    //--- deleting StaffObjs
 	void DeleteObject();
-	void DeleteObject(lmStaffObj* pSO);
-    void Cmd_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO);
-    void Cmd_Undo_DeleteObject(lmUndoData* pUndoData, lmStaffObj* pSO);
+	void DeleteObject(lmStaffObj* pSO, lmUndoItem* pUndoItem = (lmUndoItem*)NULL);
+    void Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    void Cmd_Undo_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
 
     //error management
     inline wxString GetErrorMessage() { return m_sErrorMsg; }
@@ -182,6 +190,8 @@ public:
     void OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
                        int nNewAccidentals, lmContext* pCurrentContext);
 	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
+    void RemoveCreatedContexts(lmStaffObj* pSO);
+
 
     //measures related
     int GetNumMeasures();
@@ -253,6 +263,88 @@ private:
 
     //error management
     wxString            m_sErrorMsg;        //last error message
+
+};
+
+
+//----------------------------------------------------------------------------------------
+// helper class lmVStaffCmd: a command with roll-back capabilities
+//----------------------------------------------------------------------------------------
+
+class lmVStaffCmd
+{
+public:
+    lmVStaffCmd(lmVStaff* pVStaff);
+    virtual ~lmVStaffCmd();
+
+    virtual void RollBack(lmUndoItem* pUndoItem)=0;
+    virtual bool Success()=0;
+
+protected:
+    lmVStaff*       m_pVStaff;
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdInsertNote : public lmVStaffCmd
+{
+public:
+    lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmEPitchType nPitchType,
+                     wxString sStep, wxString sOctave, lmENoteType nNoteType, float rDuration,
+					 lmENoteHeads nNotehead, lmEAccidentals nAcc);
+    ~lmVCmdInsertNote() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pNewNote != (lmNote*)NULL); }
+
+protected:
+    lmNote*             m_pNewNote;     //inserted note
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdInsertClef : public lmVStaffCmd
+{
+public:
+    lmVCmdInsertClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmEClefType nClefType, 
+                     int nStaff = 1, bool fVisible = lmVISIBLE);
+    ~lmVCmdInsertClef() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pNewClef != (lmClef*)NULL); }
+
+protected:
+    lmClef*				m_pNewClef;     //inserted clef
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdInsertTimeSignature : public lmVStaffCmd
+{
+public:
+    lmVCmdInsertTimeSignature(lmVStaff* pVStaff, lmUndoItem* pUndoItem, int nBeats,
+                              int nBeatType, bool fVisible);
+    ~lmVCmdInsertTimeSignature() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pNewTime != (lmTimeSignature*)NULL); }
+
+protected:
+    lmTimeSignature*    m_pNewTime;     //inserted time signature
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdDeleteObject : public lmVStaffCmd
+{
+public:
+    lmVCmdDeleteObject(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    ~lmVCmdDeleteObject() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pSO != (lmStaffObj*)NULL); }
+
+protected:
+    lmStaffObj*         m_pSO;          //deleted note
 
 };
 

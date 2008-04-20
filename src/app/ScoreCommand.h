@@ -50,36 +50,30 @@ class lmGMSelection;
 class lmScoreCommand: public wxCommand
 {
 public:
-	// Commands
-	enum lmEScoreCommand
-	{
-		lmCMD_SelectSingle = 1,
-		lmCMD_SelectMultiple,
-		lmCMD_MoveScoreObj,
-		lmCMD_DeleteObject,
-        lmCMD_InsertBarline,
-        lmCMD_InsertClef,
-        lmCMD_InsertNote,
-		lmCMD_ChangeNotePitch,
-		lmCMD_ChangeNoteAccidentals,
-	};
-
     virtual ~lmScoreCommand();
 
+    bool Undo();
+
     virtual bool Do()=0;
-    virtual bool Undo()=0;
-    virtual lmEScoreCommand GetCommandType()=0;
+    virtual bool UndoCommand()=0;
 
 protected:
-    lmScoreCommand(const wxString& name, lmScoreDocument *pDoc);
+    lmScoreCommand(const wxString& name, lmScoreDocument *pDoc,
+                   bool fHistory = true );
+
 
     //common methods
-    void CommandDone(bool fScoreModified, int nOptions=0);
+    bool CommandDone(bool fScoreModified, int nOptions=0);
+
+    //access to UndoInfo object
+    inline lmUndoLog* GetUndoInfo() { return &m_UndoLog; }
 
 
     lmScoreDocument*    m_pDoc;
 	bool				m_fDocModified;
-	lmUndoData		    m_UndoData;		    //collection of undo/redo items
+    bool                m_fHistory;         //include command in undo/redo history
+    lmUndoLog           m_UndoLog;          //collection of undo/redo items
+    lmUndoItem*         m_pUndoItem;        //undo item for this command
 };
 
 
@@ -99,8 +93,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_SelectSingle; }
+    bool UndoCommand();
 
 
 protected:
@@ -121,8 +114,7 @@ public:
 
     //implementation of pure virtual methods in base class
     inline bool Do() { return DoSelectUnselect(); }
-    inline bool Undo() { return DoSelectUnselect(); }
-    lmEScoreCommand GetCommandType() { return lmCMD_SelectMultiple; }
+    inline bool UndoCommand() { return DoSelectUnselect(); }
 
 protected:
 	bool DoSelectUnselect();
@@ -145,9 +137,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_MoveScoreObj; }
-
+    bool UndoCommand();
 
 protected:
     lmLocation      m_tPos;
@@ -166,9 +156,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_DeleteObject; }
-
+    bool UndoCommand();
 
 protected:
     lmVCursorState      m_tCursorState; //cursor state before deletion
@@ -190,9 +178,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_InsertBarline; }
-
+    bool UndoCommand();
 
 protected:
     lmVStaffCursor*     m_pVCursor;
@@ -207,22 +193,46 @@ class lmCmdInsertClef: public lmScoreCommand
 public:
 
     lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
-                    lmEClefType nClefType);
+                    lmEClefType nClefType, bool fHistory=true);
     ~lmCmdInsertClef() {}
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_InsertClef; }
-
+    bool UndoCommand();
 
 protected:
     lmVStaffCursor*     m_pVCursor;
     lmEClefType         m_nClefType;
 
     lmVStaff*           m_pVStaff;      //affected VStaff
-    lmClef*				m_pNewClef;     //inserted clef
+    //lmClef*				m_pNewClef;     //inserted clef
 };
+
+
+
+// Insert clef command
+//------------------------------------------------------------------------------------
+class lmCmdInsertTimeSignature: public lmScoreCommand
+{
+public:
+
+    lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                             int nBeats, int nBeatType, bool fVisible, bool fHistory=true);
+    ~lmCmdInsertTimeSignature() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmVStaffCursor*     m_pVCursor;
+    lmVStaff*           m_pVStaff;      //affected VStaff
+
+    int                 m_nBeats;
+    int                 m_nBeatType;
+    bool                m_fVisible;
+};
+
 
 
 // Insert note command
@@ -235,13 +245,11 @@ public:
 					lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
 					lmENoteType nNoteType, float rDuration, lmENoteHeads nNotehead,
 					lmEAccidentals nAcc);
-    ~lmCmdInsertNote() {}
+    ~lmCmdInsertNote();
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_InsertNote; }
-
+    bool UndoCommand();
 
 protected:
     lmVStaffCursor*     m_pVCursor;
@@ -254,7 +262,7 @@ protected:
 	lmEAccidentals	    m_nAcc;
 
     lmVStaff*           m_pVStaff;      //affected VStaff
-    lmNote*             m_pNewNote;     //inserted note
+    //lmNote*             m_pNewNote;     //inserted note
 };
 
 
@@ -270,9 +278,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_ChangeNotePitch; }
-
+    bool UndoCommand();
 
 protected:
 	int				m_nSteps;
@@ -292,9 +298,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
-    lmEScoreCommand GetCommandType() { return lmCMD_ChangeNoteAccidentals; }
-
+    bool UndoCommand();
 
 protected:
 	int				m_nSteps;

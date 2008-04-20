@@ -1132,13 +1132,14 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
 
         if (pContext) {
             pClef = pContext->GetClef();
-            pKey = pContext->GeyKey();
+            pKey = pContext->GetKey();
             pTime = pContext->GetTime();
 
             //render clef
             if (pClef) {
                 nClef = pClef->GetClefType();
-				if (pClef->IsVisible()) {
+				if (pClef->IsVisible())
+                {
 					lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
 					lmShape* pShape = pClef->AddShape(pBSV, pPaper, uPos);
 					xPos += pShape->GetWidth();
@@ -1147,8 +1148,8 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
             }
 
             //render key signature
-            if (pKey && pKey->IsVisible()) {
-                wxASSERT(nClef != lmE_Undefined);
+            if (pKey && pKey->IsVisible())
+            {
                 lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
                 lmShape* pShape = pKey->CreateShape(pBSV, pPaper, uPos, nClef, pStaff);
 				xPos += pShape->GetWidth();

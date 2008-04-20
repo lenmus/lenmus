@@ -341,6 +341,9 @@
 				RelativePath="..\..\src\score\TupletBracket.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\UndoRedo.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\score\UndoRedo.h">
 			</File>
 			<File
@@ -556,6 +559,18 @@
 					RelativePath="..\..\src\app\toolbox\ColorScheme.h">
 				</File>
 				<File
+					RelativePath="..\..\src\app\toolbox\PropTimeSignature.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\PropTimeSignature.h">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolClef.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolClef.h">
+				</File>
+				<File
 					RelativePath="..\..\src\app\toolbox\ToolGroup.cpp">
 				</File>
 				<File
@@ -595,6 +610,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\widgets\Caret.h">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\MsgBox.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\MsgBox.h">
 			</File>
 			<File
 				RelativePath="..\..\src\widgets\Ruler.cpp">
@@ -1194,6 +1215,16 @@
 			</File>
 			<File
 				RelativePath="..\..\src\mdi\ParentFrame.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="packages"
+			Filter="">
+			<File
+				RelativePath="..\..\packages\wxMidi\src\wxMidi.cpp">
+			</File>
+			<File
+				RelativePath="..\..\packages\wxMidi\src\wxMidiDatabase.cpp">
 			</File>
 		</Filter>
 	</Files>

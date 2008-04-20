@@ -43,7 +43,8 @@
 class lmContext
 {
 public:
-    lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime, int nStaff);
+    lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime,
+              bool fClefInherited, bool fKeyInherited, bool fTimeInherited);
     lmContext(lmContext* pContext);
     ~lmContext() {}
 
@@ -52,7 +53,7 @@ public:
     void CopyAccidentals(lmContext* pContext);
 
     inline lmClef* GetClef() const { return m_pClef; }
-    inline lmKeySignature* GeyKey() const { return m_pKey; }
+    inline lmKeySignature* GetKey() const { return m_pKey; }
     inline lmTimeSignature* GetTime() const { return m_pTime; }
 
 	//navigation and list management
@@ -63,6 +64,9 @@ public:
 
     //debug
     wxString Dump();
+
+    //Updating values
+    void PropagateValueWhileInherited(lmStaffObj* pSO);
 
 
 
@@ -75,6 +79,9 @@ private:
     lmClef*             m_pClef;
     lmKeySignature*     m_pKey;
     lmTimeSignature*    m_pTime;
+    bool                m_fClefInherited;
+    bool                m_fKeyInherited;
+    bool                m_fTimeInherited;
 
     //the next array keeps information about the accidentals applicable to each
     //note. Each element refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si

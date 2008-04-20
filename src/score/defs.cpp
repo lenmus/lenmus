@@ -41,7 +41,7 @@
 #include "wx/utils.h"
 #include "defs.h"
 
-// DOC: 
+// DOC:
 // prefixes for variables:
 //
 //  a) standard types:
@@ -241,23 +241,23 @@ bool lmURect::Intersects(const lmURect& rect) const
 //Helper functions for common operations
 //---------------------------------------------------------------------------------------
 
-float round(float val)
-{
-	if (val > 0) {
-		return ceil(val+0.5);
-	} else {
-		return floor(val-0.5);
-	}
-}
-
-double round(double val)
-{
-	if (val > 0) {
-		return ceil(val+0.5);
-	} else {
-		return floor(val-0.5);
-	}
-}
+//float round(float val)
+//{
+//	if (val > 0) {
+//		return ceil(val+0.5);
+//	} else {
+//		return floor(val-0.5);
+//	}
+//}
+//
+//double round(double val)
+//{
+//	if (val > 0) {
+//		return ceil(val+0.5);
+//	} else {
+//		return floor(val-0.5);
+//	}
+//}
 
 bool StrToDouble(wxString sValue, double* pNumber)
 {
@@ -331,7 +331,7 @@ lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits)
 {
     // first convert to tenths of millimeter (mode MM_LOMETRIC), then divide by SCALE factor
     switch(nUnits) {
-		case lmLUNITS:			return (lmLUnits)rValue; 
+		case lmLUNITS:			return (lmLUnits)rValue;
         case lmMICRONS:         return (lmLUnits)((rValue / 100.) / lmSCALE);      break;
         case lmMILLIMETERS:     return (lmLUnits)((rValue * 10.) / lmSCALE);       break;
         case lmCENTIMETERS:     return (lmLUnits)((rValue * 100.) / lmSCALE);      break;
@@ -352,7 +352,7 @@ double lmLogicalToUserUnits(double rValue, lmEUnits nUnits)
 {
     // first multiply by SCALE factor, then convert from tenths of millimeter (mode MM_LOMETRIC)
     switch(nUnits) {
-		case lmLUNITS:			return rValue; 
+		case lmLUNITS:			return rValue;
         case lmMICRONS:         return ((lmSCALE * rValue) * 100.);      break;
         case lmMILLIMETERS:     return ((lmSCALE * rValue) / 10.);       break;
         case lmCENTIMETERS:     return ((lmSCALE * rValue) / 100.);      break;

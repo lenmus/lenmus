@@ -37,12 +37,17 @@
 //access to global functions
 extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
 
-lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime, int nStaff)
+lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime,
+              bool fClefInherited, bool fKeyInherited, bool fTimeInherited)
 {
 	//create a new context
     m_pClef = pClef;
     m_pKey = pKey;
     m_pTime = pTime;
+
+    m_fClefInherited = fClefInherited;
+    m_fKeyInherited = fKeyInherited;
+    m_fTimeInherited = fTimeInherited;
 
     InitializeAccidentals();
 	m_pPrev = (lmContext*) NULL;
@@ -52,7 +57,7 @@ lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime
 lmContext::lmContext(lmContext* pContext)
 {
     m_pClef = pContext->GetClef();
-    m_pKey = pContext->GeyKey();
+    m_pKey = pContext->GetKey();
     m_pTime = pContext->GetTime();
 
     CopyAccidentals(pContext);
@@ -92,3 +97,23 @@ wxString lmContext::Dump()
 
 }
 
+void lmContext::PropagateValueWhileInherited(lmStaffObj* pSO)
+{
+    //update this and following contexts in the chain. If following context inherited a value
+    //form removed context, we have to update these inherited values. An example: if we are 
+    //removing a clef and next context is created by a time signature, in this context 
+    //the clef was inherited.
+
+    if (pSO->IsClef() && m_fClefInherited)
+        m_pClef = (m_pPrev ? m_pPrev->GetClef() : (lmClef*)NULL);
+    else if (pSO->IsTimeSignature() && m_fTimeInherited)
+        m_pTime = (m_pPrev ? m_pPrev->GetTime() : (lmTimeSignature*)NULL);
+    else if (pSO->IsKeySignature() && m_fKeyInherited)
+        m_pKey = (m_pPrev ? m_pPrev->GetKey() : (lmKeySignature*)NULL);
+    else
+        return;     //no inherited
+
+    //propagate to next one
+    if (m_pNext)
+        m_pNext->PropagateValueWhileInherited(pSO);
+}
