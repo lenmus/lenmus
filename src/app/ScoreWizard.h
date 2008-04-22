@@ -70,16 +70,13 @@ enum
 // lmScoreWizard class declaration
 class lmScoreWizard: public wxWizard
 {
-    DECLARE_DYNAMIC_CLASS( lmScoreWizard )
     DECLARE_EVENT_TABLE()
 
 public:
-    lmScoreWizard();
     lmScoreWizard(wxWindow* parent, lmScore** pPtrScore, wxWindowID id = lmID_SCORE_WIZARD, const wxPoint& pos = wxDefaultPosition );
     ~lmScoreWizard();
 
     //creation
-    bool Create(wxWindow* parent, wxWindowID id = lmID_SCORE_WIZARD, const wxPoint& pos = wxDefaultPosition );
     void CreateControls();
 
     //event handlers
@@ -89,7 +86,10 @@ public:
     //runs the wizard.
     bool Run();
 
+    inline wxWizardPage* GetFirstPage() const { return m_pFirstPage; }
+
 private:
+    wxWizardPageSimple* m_pFirstPage;
 
     lmScore**       m_pPtrScore;
 };

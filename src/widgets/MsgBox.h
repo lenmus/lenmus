@@ -50,8 +50,7 @@ public:
 protected:
     lmMsgBoxBase(const wxString& sMessage, const wxString& sTitle);
     void CreateControls();
-    void AddButton(wxString* pLabel, wxString* pDescr);
-
+    void AddButton(const wxString& sLabel, const wxString& sDescr);
     
 	wxStaticBitmap*     m_pBitmap;
 	wxStaticText*       m_pMessage;
@@ -65,8 +64,8 @@ protected:
 class lmErrorBox : public lmMsgBoxBase
 {
 public:
-    lmErrorBox();
-    ~lmErrorBox();
+    lmErrorBox(const wxString& sMessage, const wxString& sButtonText);
+    ~lmErrorBox() {}
     
 protected:
 
@@ -96,7 +95,7 @@ class lmQuestionBox : public lmMsgBoxBase
 {
 public:
     lmQuestionBox(const wxString& sMessage, int nNumButtons, ...);
-    ~lmQuestionBox();
+    ~lmQuestionBox() {}
     
 protected:
 

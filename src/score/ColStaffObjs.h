@@ -193,23 +193,31 @@ public:
 	~lmVStaffCursor() {}
 
 	//creation related
-	void AttachToCollection(lmColStaffObjs* pColStaffObjs);
+	void AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fReset=true);
 
     //attachment to a ScoreCursor
 	lmVStaffCursor* AttachCursor(lmScoreCursor* pSCursor);
 	void DetachCursor();
 
     //positioning
+
+    //Move methods: intended to implement user commands. They call back ScoreObj to 
+    //inform it about a position change, for highlight or GUI update.
 	void MoveRight(bool fAlsoChordNotes = true, bool fIncrementIterator = true);
 	void MoveLeft(bool fAlsoChordNotes = true);
     void MoveToTime(float rNewTime);
     void MoveToFirst(int nStaff=0);
+	void MoveToSegment(int nSegment, int nStaff, lmUPoint uPos);
+    void MoveCursorToObject(lmStaffObj* pSO);
+
+    //Advance methods: Intended for internal usage. They do not inform ScoreObj about
+    //position change.
     void ResetCursor();
     void AdvanceToTime(float rTime);
     void AdvanceToNextSegment();
-	void MoveToSegment(int nSegment, int nStaff, lmUPoint uPos);
-    void MoveCursorToObject(lmStaffObj* pSO);
+    void AdvanceToStartOfSegment(int nSegment, int nStaff);
     void SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* pState);
+    void SkipClefKey(bool fSkipKey);
 
     //call backs
     void OnCursorObjectDeleted(lmItCSO itNext);

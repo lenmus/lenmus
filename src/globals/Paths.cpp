@@ -74,6 +74,7 @@ lmPaths::lmPaths(wxString sBinPath)
     //          + /res                      + \res
     //          + /locale                   + \locale
     //          + /books                    + \books
+    //          + /templates                + \templates
     //
     // 2. Logs and temporal files:
     // ------------------------------------------------------------------------------
@@ -134,6 +135,10 @@ lmPaths::lmPaths(wxString sBinPath)
     path = oRootG1;
     path.AppendDir(_T("locale"));
     m_sLocaleRoot = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    path = oRootG1;
+    path.AppendDir(_T("templates"));
+    m_sTemplates = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
     // Group 2. Logs and temporal files

@@ -65,6 +65,8 @@
 #pragma hdrstop
 #endif
 
+#include <list>
+
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
@@ -277,12 +279,41 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
 lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
                                     int nBeatType, bool fVisible)
 {
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    //It must return NULL if not succedeed
+
+    //Check that we are at start of measure. Otherwise cancel insertion
+    if (!IsEqualTime(m_VCursor.GetTimepos(), 0.0f))
+    {
+        lmErrorBox oEB(_("Error: Time signature can only be inserted \n at start of measure"), _("Insertion will be cancelled."));
+        oEB.ShowModal();
+        return (lmTimeSignature*)NULL;
+    }
+
+    // Locate insertion points for all staves
+    std::list<lmVStaffCursor*> cAuxCursors;
+    int nNumMeasure = m_VCursor.GetSegment();
+    for (int iStaff=1; iStaff <= m_nNumStaves; iStaff++)
+	{
+        // Create an auxiliary cursor and position it at start of desired measure
+        lmVStaffCursor* pAuxCursor = new lmVStaffCursor();
+        pAuxCursor->AttachToCollection(&m_cStaffObjs);
+        pAuxCursor->AdvanceToStartOfSegment(nNumMeasure, iStaff);
+
+        // Advance aux cursor, if necessary, to skip clef and, if applicable, key signature.
+        pAuxCursor->SkipClefKey(true);  //true -> skip key
+
+        // save pointer to insertion point for this staff
+        cAuxCursors.push_back(pAuxCursor);
+    }
+
+
+    // create the time signature object and insert it in first staff
     lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, fVisible);
 
     //the time signature is for all staves. Therefore we have to create a new context
     //in all staves. But we only know the position for current staff!
     //Get current staff and current context for current staff
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
     int nStaff = m_VCursor.GetNumStaff();
     lmStaff* pStaff = GetStaff(nStaff);
@@ -302,7 +333,14 @@ lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nB
         }
     }
 
+    // insert the time signature object in first staff
+    lmVStaffCursor* pAuxCursor = cAuxCursors.front();
+    pAuxCursor->AttachToCollection(&m_cStaffObjs, false);   //false: do not reset cursor
     m_cStaffObjs.Add(pTS);
+
+    //restore VStaff cursor
+    m_VCursor.AttachToCollection(&m_cStaffObjs, false);    //false-> do not reset it
+
     return pTS;
 }
 

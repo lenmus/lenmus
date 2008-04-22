@@ -1,0 +1,10 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument (staves 2)
+      (musicData
+         (clef treble p1)
+         (clef bass p2)
+      )
+   )
+)
+

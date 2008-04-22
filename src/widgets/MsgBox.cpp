@@ -102,7 +102,7 @@ void lmMsgBoxBase::CreateControls()
 	this->SetSizer( pMainSizer );
 }
 
-void lmMsgBoxBase::AddButton(wxString* pLabel, wxString* pDescr)
+void lmMsgBoxBase::AddButton(const wxString& sLabel, const wxString& sDescr)
 {
     if (m_nNumButtons >= lmMAX_BUTTONS)
     {
@@ -115,18 +115,18 @@ void lmMsgBoxBase::AddButton(wxString* pLabel, wxString* pDescr)
     m_pButtonsSizer->Add( pBtSizer, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
     //the button
-    wxString sLabel = wxString::Format(_T("%s"), pLabel);
     wxButton* pButton = new wxButton( this, lmID_BUTTON + m_nNumButtons, sLabel,
         wxDefaultPosition, wxDefaultSize);
     pBtSizer->Add(pButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
     //the explanation
-    wxString sDescr = wxString::Format(_T("%s"), pDescr);
     wxStaticText* pText = new wxStaticText( this, wxID_ANY, sDescr, 
         wxDefaultPosition, wxDefaultSize, 0 );
     pBtSizer->Add(pText, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
     m_nNumButtons++;
 }
+
+
 
 void lmMsgBoxBase::OnRespButton(wxCommandEvent& event)
 {
@@ -155,9 +155,9 @@ lmQuestionBox::lmQuestionBox(const wxString& sMessage, int nNumButtons, ...)
     CreateControls();
     for (int i=0;i < nNumButtons; i++)
     {
-        wxString* pLabel = va_arg(pArg, wxString*);
-        wxString* pDescr = va_arg(pArg, wxString*);
-        AddButton(pLabel, pDescr);
+        wxString sLabel = wxString::Format(_T("%s"), va_arg(pArg, wxString*));
+        wxString sDescr = wxString::Format(_T("%s"), va_arg(pArg, wxString*));
+        AddButton(sLabel, sDescr);
     }
     va_end(pArg);
 
@@ -165,7 +165,20 @@ lmQuestionBox::lmQuestionBox(const wxString& sMessage, int nNumButtons, ...)
 	this->Layout();
 }
 
-lmQuestionBox::~lmQuestionBox()
+//------------------------------------------------------------------------------------
+// lmErrorBox implementation
+//------------------------------------------------------------------------------------
+
+
+lmErrorBox::lmErrorBox(const wxString& sMessage, const wxString& sButtonText)
+    : lmMsgBoxBase(sMessage, _("Error"))
 {
+    CreateControls();
+
+    wxString sLabel = _T("Accept");
+    AddButton(sLabel, sButtonText);
+
+    m_pBitmap->SetBitmap( wxArtProvider::GetBitmap(_T("msg_error"), wxART_OTHER, wxSize(32, 32)) );
+	this->Layout();
 }
 

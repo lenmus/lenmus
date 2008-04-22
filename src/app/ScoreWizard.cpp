@@ -36,10 +36,20 @@
 
 #include <vector>
 
+#include "wx/paper.h"
+
 #include "ScoreWizard.h"
 #include "ArtProvider.h"
 #include "../score/Score.h"
 #include "../app/Page.h"
+#include "../widgets/MsgBox.h"
+#include "../ldp_parser/LDPParser.h"
+
+// access to paths
+#include "../globals/Paths.h"
+extern lmPaths* g_pPaths;
+
+extern wxPrintPaperDatabase* wxThePrintPaperDatabase;
 
 
 //--------------------------------------------------------------------------------
@@ -68,7 +78,7 @@ typedef struct lmScoreDataStruct
 static lmScoreData m_ScoreData;
 
 
-//score titles
+//score titles -----------------------------
 typedef struct lmTitleDataStruct
 {
     wxString        sTitle;     
@@ -83,7 +93,7 @@ typedef struct lmTitleDataStruct
 static std::vector<lmTitleData*>    m_Titles;
 
 
-//info for one instrument
+//info for one instrument ---------------
 typedef struct lmInstrDataStruct
 {
     wxString    sName;          //instrument name
@@ -106,50 +116,67 @@ typedef struct lmInstrDataStruct
 
 static std::vector<lmInstrData*>    m_Instruments;
 
-//info for one template
+//info about templates ---------------------------
 typedef struct lmTemplateDataStruct
 {
-    wxString    sName;
-    bool        fPortrait;
+    wxString    sName;          //name to display
+    wxString    sTemplate;      //associated template file
+    bool        fPortrait;      //default paper orientation
 
 } lmTemplateData;
 
-//template to use
-static int m_nSelTemplate = 0;
 static lmTemplateData m_Templates[] = {
-        { _T("Empty (manuscript paper)"), true },
-        { _T("Choir 4 voices (SATB)"), true },
-        { _T("Choir SATB + piano"), true },
-        { _T("Choir 3 voices (SSA)"), true },
-        { _T("Choir SSA + piano"), true },
-        { _T("Flute"), true },
-        { _T("Guitar"), true },
-        { _T("Jazz quartet"), true },
-        { _T("Lead sheet"), true },
-        { _T("Piano"), true },
-        { _T("Voice + keyboard"), true },
-        { _T("String quartet"), true },
-        { _T("String trio"), true },
-        { _T("Woodwind trio"), true },
-        { _T("Woodwind quartet"), true },
+        //    Displayed name                Template    Portrait
+        { _("Empty (manuscript paper)"),    _T(""),     true },
+        { _("Choir 4 voices (SATB)"),       _T("x"),    false },
+        { _("Choir SATB + piano"),          _T("x"),    true },
+        { _("Choir 3 voices (SSA)"),        _T("x"),    true },
+        { _("Choir SSA + piano"),           _T("x"),    true },
+        { _("Flute"),                       _T("x"),    true },
+        { _("Guitar"),                      _T("x"),    true },
+        { _("Jazz quartet"),                _T("x"),    true },
+        { _("Lead sheet"),                  _T("x"),    true },
+        { _("Piano"),                       _T("piano.lms"),    true },
+        { _("Voice + keyboard"),            _T("x"),    true },
+        { _("String quartet"),              _T("x"),    true },
+        { _("String trio"),                 _T("x"),    true },
+        { _("Woodwind trio"),               _T("x"),    true },
+        { _("Woodwind quartet"),            _T("x"),    true },
 };
+
+//template to use
+static int m_nSelTemplate = 0;      //"Empty (manuscript paper)"
+
+
+//info about paper sizes ---------------------------
+typedef struct lmPaperSizeDataStruct
+{
+    wxString    sName;      //name to display
+    int         nWidth;     //width, in tenths of one millimeter
+    int         nHeight;    //height, in tenths of one millimeter
+
+} lmPaperSizeData;
+
+static lmPaperSizeData m_Papers[] = {
+        // Displayed name               Size
+        { _("DIN A3"),                  2970, 4200 },
+        { _("DIN A4"),                  2100, 2970 },
+        { _("Letter, 8 1/2 x 11 in"),   2159, 2794 },
+};
+
+//paper to use
+static int m_nSelPaper = 1;     //DIN A4
+
 
 //--------------------------------------------------------------------------------
 // lmScoreWizard implementation
 //--------------------------------------------------------------------------------
-
-// lmScoreWizard type definition
-IMPLEMENT_DYNAMIC_CLASS( lmScoreWizard, wxWizard )
 
 BEGIN_EVENT_TABLE( lmScoreWizard, wxWizard )
     EVT_WIZARD_CANCEL( lmID_SCORE_WIZARD, lmScoreWizard::OnWizardCancel )
     EVT_WIZARD_FINISHED( lmID_SCORE_WIZARD, lmScoreWizard::OnWizardFinished )
 END_EVENT_TABLE()
 
-
-lmScoreWizard::lmScoreWizard()
-{
-}
 
 lmScoreWizard::~lmScoreWizard()
 {
@@ -170,63 +197,48 @@ lmScoreWizard::~lmScoreWizard()
     m_Titles.clear();
 }
 
-lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore, wxWindowID id, const wxPoint& pos)
+lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore, wxWindowID id, 
+                             const wxPoint& pos)
+    : wxWizard(parent, id, _("Score configuration wizard"), wxNullBitmap, pos)
 {
-    Create(parent, id, pos);
+    SetExtraStyle(GetExtraStyle() | wxWIZARD_EX_HELPBUTTON);
+
     m_pPtrScore = pPtrScore;
-}
 
-bool lmScoreWizard::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos)
-{
     //initialize default score configuration
-
-    //paper size and margins
-    m_ScoreData.nPageSize = wxSize(210, 297);   //Page size in mm (default A4: 21.0 x 29.7 cm)
-    m_ScoreData.fPortrait = true;               //Orientation (default: portrait)
-    m_ScoreData.nTopMargin = 20;                //20 mm
-    m_ScoreData.nBottomMargin = 20;             //20 mm;
-    m_ScoreData.nLeftMargin = 20;               //20 mm;
-    m_ScoreData.nRightMargin = 20;              //20 mm;
-    m_ScoreData.nBindingMargin = 0;             //no binding margin
 
     //time signature
     m_ScoreData.nTimeType = emtr44;             //initial time signature:  4/4
 
-    //titles
-    lmTitleData* pTitle = new lmTitleData;
-    pTitle->sTitle = _("Score title");  
-    pTitle->nAlign = lmALIGN_CENTER;
-    pTitle->tPos.xType = lmLOCATION_DEFAULT;
-    pTitle->tPos.xUnits = lmTENTHS;
-    pTitle->tPos.yType = lmLOCATION_DEFAULT;
-    pTitle->tPos.yUnits = lmTENTHS;
-    pTitle->tPos.x = 0.0f;
-    pTitle->tPos.y = 0.0f;
-    pTitle->sFontName = _T("Times New Roman");
-    pTitle->nFontSize = 14;
-    pTitle->nStyle = lmTEXT_BOLD;
+    ////titles
+    //lmTitleData* pTitle = new lmTitleData;
+    //pTitle->sTitle = _("Score title");  
+    //pTitle->nAlign = lmALIGN_CENTER;
+    //pTitle->tPos.xType = lmLOCATION_DEFAULT;
+    //pTitle->tPos.xUnits = lmTENTHS;
+    //pTitle->tPos.yType = lmLOCATION_DEFAULT;
+    //pTitle->tPos.yUnits = lmTENTHS;
+    //pTitle->tPos.x = 0.0f;
+    //pTitle->tPos.y = 0.0f;
+    //pTitle->sFontName = _T("Times New Roman");
+    //pTitle->nFontSize = 14;
+    //pTitle->nStyle = lmTEXT_BOLD;
+    //
+    //m_Titles.push_back( pTitle );
 
-    m_Titles.push_back( pTitle );
+    ////one instrument
+    //lmInstrData* pInstrData = new lmInstrData;
+    //pInstrData->sName = _T("");         //instrument name
+    //pInstrData->sAbbrev = _T("");       //instrument abbreviation
+    //pInstrData->nMidiChanel = 0;        //MIDI channel
+    //pInstrData->nMidiInstr = 0;         //MIDI instr
+    //pInstrData->nClefType = lmE_Sol;    //initial clef
+    //pInstrData->nFifths = 0;            //initial key: C major        
+    //pInstrData->fMajor = true;; 
 
-    //one instrument
-    lmInstrData* pInstrData = new lmInstrData;
-    pInstrData->sName = _T("");         //instrument name
-    pInstrData->sAbbrev = _T("");       //instrument abbreviation
-    pInstrData->nMidiChanel = 0;        //MIDI channel
-    pInstrData->nMidiInstr = 0;         //MIDI instr
-    pInstrData->nClefType = lmE_Sol;    //initial clef
-    pInstrData->nFifths = 0;            //initial key: C major        
-    pInstrData->fMajor = true;; 
+    //m_Instruments.push_back( pInstrData );
 
-    m_Instruments.push_back( pInstrData );
-
-    // create the wizard
-    SetExtraStyle(GetExtraStyle()|wxWIZARD_EX_HELPBUTTON);
-    wxBitmap wizardBitmap(wxNullBitmap);
-    wxWizard::Create(parent, id, _("Score configuration wizard"), wizardBitmap, pos);
     CreateControls();
-
-    return true;
 }
 
 
@@ -270,14 +282,81 @@ bool lmScoreWizard::Run()
 
 void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
 {
-    // create an empty score
-    lmScore* pScore = new lmScore();
+    lmScore* pScore = (lmScore*)NULL;
+    wxString sFile = m_Templates[m_nSelTemplate].sTemplate;
+
+    //create the basic score
+    if (sFile != _T(""))
+    {
+        //load score from LDP template
+
+        lmLDPParser parser;
+        wxString sPath = g_pPaths->GetTemplatesPath();
+        wxFileName oFileName(sPath, sFile, wxPATH_NATIVE);
+        pScore = parser.ParseFile( oFileName.GetFullPath(), false );        //false -> No message if file not found
+        if (!pScore)
+        {
+            wxString sMsg = wxString::Format(
+                wxGetTranslation(
+				    _T("Error: Template '%s' not found\n\n")
+                    _T("Posible causes:\n")
+                    _T("- An error during lenmus installation.\n")
+                    _T("- An accidental deletion of the required template.") ), sFile);
+
+            lmErrorBox oEB(sMsg, _("An empty score will be created."));
+            oEB.ShowModal();
+        }
+        //{
+        //    //add instruments
+        //    std::vector<lmInstrData*>::iterator itI;
+        //    for (itI = m_Instruments.begin(); itI != m_Instruments.end(); ++itI)
+        //    {
+        //        lmInstrument* pInstr = 
+        //            pScore->AddInstrument((*itI)->nMidiChanel, (*itI)->nMidiInstr, (*itI)->sName,
+        //                                (*itI)->sAbbrev );
+        //        lmVStaff *pVStaff = pInstr->GetVStaff();
+        //        pVStaff->AddClef( (*itI)->nClefType );
+        //        pVStaff->AddKeySignature( (*itI)->nFifths, (*itI)->fMajor );
+        //        pVStaff->AddTimeSignature( m_ScoreData.nTimeType );
+	       //     //pVStaff->AddBarline(lm_eBarlineEOS, true);
+        //    }
+        //}
+
+    }
+
+    //if no template, or template load failure, create a basic score
+    if (!pScore)
+    {
+        // create an empty score
+        
+        pScore = new lmScore();
+        pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+        //lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+        //lmVStaff *pVStaff = pInstr->GetVStaff();
+	    //pVStaff->AddBarline(lm_eBarlineEOS, true);
+
+        //In scores created in the score editor, we should render a full page, 
+        //with empty staves. To this end, we need to change some options default value
+        pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
+        pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
+    }
+
+
+    // Modify score with user options (paper size, margins, titles, etc.)
 
     //set paper settings
+    //m_ScoreData.nPageSize = wxSize(m_Papers[m_nSelPaper].nWidth / 10, 
+    //                               m_Papers[m_nSelPaper].nHeight / 10 );
+    m_ScoreData.nTopMargin = 20;                //20 mm
+    m_ScoreData.nBottomMargin = 20;             //20 mm;
+    m_ScoreData.nLeftMargin = 20;               //20 mm;
+    m_ScoreData.nRightMargin = 20;              //20 mm;
+    m_ScoreData.nBindingMargin = 0;             //no binding margin
+
     lmPageInfo* pPageInfo 
         = new lmPageInfo(m_ScoreData.nLeftMargin, m_ScoreData.nRightMargin, m_ScoreData.nTopMargin,
-                         m_ScoreData.nBottomMargin, m_ScoreData.nBindingMargin,
-                         m_ScoreData.nPageSize, m_ScoreData.fPortrait);  
+                        m_ScoreData.nBottomMargin, m_ScoreData.nBindingMargin,
+                        m_ScoreData.nPageSize, m_ScoreData.fPortrait);  
     pScore->SetPageInfo(pPageInfo);
 
     //add titles
@@ -285,27 +364,9 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
     for (itT = m_Titles.begin(); itT != m_Titles.end(); ++itT)
     {
         pScore->AddTitle((*itT)->sTitle, (*itT)->nAlign, (*itT)->tPos, (*itT)->sFontName,
-                         (*itT)->nFontSize, (*itT)->nStyle );
+                        (*itT)->nFontSize, (*itT)->nStyle );
     }
 
-    //add instruments
-    std::vector<lmInstrData*>::iterator itI;
-    for (itI = m_Instruments.begin(); itI != m_Instruments.end(); ++itI)
-    {
-        lmInstrument* pInstr = 
-            pScore->AddInstrument((*itI)->nMidiChanel, (*itI)->nMidiInstr, (*itI)->sName,
-                                  (*itI)->sAbbrev );
-        lmVStaff *pVStaff = pInstr->GetVStaff();
-        pVStaff->AddClef( (*itI)->nClefType );
-        pVStaff->AddKeySignature( (*itI)->nFifths, (*itI)->fMajor );
-        pVStaff->AddTimeSignature( m_ScoreData.nTimeType );
-	    //pVStaff->AddBarline(lm_eBarlineEOS, true);
-    }
-
-    ////In scores created in the score editor, we should render a full page, 
-    ////with empty staves. To this end, we need to change some options default value
-    //pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
-    //pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
 
     //return the created score
     *m_pPtrScore = pScore;
@@ -354,9 +415,20 @@ bool lmScoreWizardLayout::Create(wxWizard* parent)
     m_pLstEnsemble->SetSelection(m_nSelTemplate);
 
     //paper size
-	m_pCboPaper->Append( _T("A4") );
-	m_pCboPaper->Append( _T("Legal") );
-    m_pCboPaper->SetSelection(0);
+    //int nNumPapers = sizeof(m_Papers) / sizeof(lmPaperSizeData);
+    //for (int i=0; i < nNumPapers; i++)
+    //    m_pCboPaper->Append( m_Papers[i].sName );
+    //m_pCboPaper->SetSelection(m_nSelPaper);
+
+    //Note: wxThePrintPaperDatabase is defined in common/paper.cpp
+
+    size_t n = wxThePrintPaperDatabase->GetCount();
+    for (size_t i = 0; i < n; i++)
+    {
+        wxPrintPaperType* paper = wxThePrintPaperDatabase->Item(i);
+        m_pCboPaper->Append( paper->GetName() );
+    }
+    m_pCboPaper->SetSelection(m_nSelPaper);
 
     //paper orientation
     m_pRadOrientation->SetSelection(m_ScoreData.fPortrait ? 1 : 0);
@@ -437,6 +509,14 @@ bool lmScoreWizardLayout::TransferDataFromWindow()
 
     m_ScoreData.fPortrait = (m_pRadOrientation->GetSelection() == 1);
     m_nSelTemplate = m_pLstEnsemble->GetSelection();
+    m_nSelPaper = m_pCboPaper->GetSelection();
+
+    if (m_nSelPaper != -1)
+    {
+        wxPrintPaperType* paper = wxThePrintPaperDatabase->Item(m_nSelPaper);
+        if ( paper )
+            m_ScoreData.nPageSize = wxSize(paper->GetWidth()/10, paper->GetHeight()/10 );
+    }
 
     return true;
 
@@ -473,25 +553,6 @@ bool lmScoreWizardInstrPage::Create(wxWizard* parent)
     wxWizardPageSimple::Create(parent, NULL, NULL, wxArtProvider::GetBitmap(_T("score_wizard")));
     CreateControls();
     GetSizer()->Fit(this);
-
-    //// populate combo boxes with available Midi devices
-    ////int nInput=0;
-    //int nItem, nOutput=0;
-    //int nNumDevices = g_pMidi->CountDevices();
-    //for (int i = 0; i < nNumDevices; i++) {
-    //    wxMidiOutDevice* pMidiDev = new wxMidiOutDevice(i);
-    //    if (pMidiDev->IsOutputPort()) {
-    //        nOutput++;
-    //        nItem = m_pOutCombo->Append( pMidiDev->DeviceName() );
-    //        m_pOutCombo->SetClientData(nItem, (void *)i);
-    //    }
-    //    delete pMidiDev;
-    //}
-    //if (nOutput == 0) {
-    //    nItem = m_pOutCombo->Append( _("None") );
-    //    m_pOutCombo->SetClientData(nItem, (void *)(-1));
-    //}
-    //m_pOutCombo->SetSelection(0);
 
     return true;
 }
@@ -537,318 +598,5 @@ void lmScoreWizardInstrPage::CreateControls()
 
 bool lmScoreWizardInstrPage::TransferDataFromWindow()
 {
-    // Save temporary data and open temporary Midi Devices
-
- //   //get number of Midi device to use for output
- //   int nIndex = m_pOutCombo->GetSelection();
- //   int nOutDevId = (int) m_pOutCombo->GetClientData(nIndex);
- //   g_pMidi->SetOutDevice(nOutDevId);
-
- //   //open input device
- //   int nInDevId = -1;
-	////TODO: Un-comment when ready to use MIDI input
- //   //if (m_pInCombo->GetStringSelection() != _("None") ) {
- //   //    nIndex = m_pInCombo->GetSelection();
- //   //    nInDevId = (int) m_pInCombo->GetClientData(nIndex);
- //   //}
- //   g_pMidi->SetInDevice(nInDevId);
-
-    return true;
-
-}
-
-
-
-//--------------------------------------------------------------------------------------
-// lmScoreWizardClefPage implementation
-//--------------------------------------------------------------------------------------
-
-/*
-
-IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardClefPage, wxWizardPageSimple )
-
-BEGIN_EVENT_TABLE( lmScoreWizardClefPage, wxWizardPageSimple )
-    EVT_COMBOBOX( lmID_COMBO_SECTION, lmScoreWizardClefPage::OnComboSection )
-    EVT_COMBOBOX( lmID_COMBO_INSTRUMENT, lmScoreWizardClefPage::OnComboInstrument )
-    EVT_BUTTON( lmID_BUTTON_TEST_SOUND, lmScoreWizardClefPage::OnButtonTestSoundClick )
-END_EVENT_TABLE()
-
-lmScoreWizardClefPage::lmScoreWizardClefPage()
-{
-}
-
-lmScoreWizardClefPage::lmScoreWizardClefPage(wxWizard* parent)
-{
-    Create(parent);
-}
-
-bool lmScoreWizardClefPage::Create(wxWizard* parent)
-{
-    // member initialisation
-    m_pVoiceChannelCombo = NULL;
-    m_pSectCombo = NULL;
-    m_pInstrCombo = NULL;
-
-    // page creation
-    wxBitmap wizardBitmap(wxNullBitmap);
-    wxWizardPageSimple::Create(parent, NULL, NULL, wizardBitmap );
-    CreateControls();
-    GetSizer()->Fit(this);
-
-    // populate channel combo
-    m_pVoiceChannelCombo->Clear();
-    for(int i=1; i <= 16; i++) {
-        m_pVoiceChannelCombo->Append(wxString::Format(_T("%d"), i));
-    }
-    //Set selection according to current user prefs
-    m_pVoiceChannelCombo->SetSelection( g_pMidi->VoiceChannel() );
-
-    //populate sections and instruments combos
-    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
-    int nInstr = g_pMidi->VoiceInstr();
-    int nSect = pMidiGM->PopulateWithSections((wxControlWithItems*)m_pSectCombo, nInstr );
-    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, nInstr);
-
     return true;
 }
-
-void lmScoreWizardClefPage::CreateControls()
-{
-    wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxVERTICAL);
-    SetSizer(itemBoxSizer17);
-
-    wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer17->Add(itemBoxSizer18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    wxStaticText* itemStaticText19 = new wxStaticText( this, wxID_STATIC, _("Voice channel and instrument"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText19->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-    itemBoxSizer18->Add(itemStaticText19, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer17->Add(itemBoxSizer20, 1, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer20->Add(itemBoxSizer21, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText22 = new wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer21->Add(itemStaticText22, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticText* itemStaticText23 = new wxStaticText( this, wxID_STATIC, _("To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer21->Add(itemStaticText23, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticLine* itemStaticLine24 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-    itemBoxSizer20->Add(itemStaticLine24, 0, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer20->Add(itemBoxSizer25, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText26 = new wxStaticText( this, wxID_STATIC, _("Channel:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer25->Add(itemStaticText26, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
-    wxString* m_pVoiceChannelComboStrings = NULL;
-    m_pVoiceChannelCombo = new wxComboBox( this, lmID_COMBO_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pVoiceChannelComboStrings, wxCB_READONLY );
-    itemBoxSizer25->Add(m_pVoiceChannelCombo, 0, wxALIGN_LEFT|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer28 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer25->Add(itemBoxSizer28, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    wxStaticText* itemStaticText29 = new wxStaticText( this, wxID_STATIC, _("Section:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer25->Add(itemStaticText29, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
-    wxString* m_pSectComboStrings = NULL;
-    m_pSectCombo = new wxComboBox( this, lmID_COMBO_SECTION, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_READONLY );
-    itemBoxSizer25->Add(m_pSectCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
-    wxStaticText* itemStaticText31 = new wxStaticText( this, wxID_STATIC, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer25->Add(itemStaticText31, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
-    wxString* m_pInstrComboStrings = NULL;
-    m_pInstrCombo = new wxComboBox( this, lmID_COMBO_INSTRUMENT, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_READONLY );
-    itemBoxSizer25->Add(m_pInstrCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
-    wxButton* itemButton33 = new wxButton( this, lmID_BUTTON_TEST_SOUND, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer25->Add(itemButton33, 0, wxALIGN_LEFT|wxALL, 5);
-}
-
-bool lmScoreWizardClefPage::TransferDataFromWindow()
-{
-    //
-    // Save temporary data and set temporary Midi program
-    //
-
-    DoProgramChange();
-    return true;
-
-}
-
-void lmScoreWizardClefPage::DoProgramChange()
-{
-    //Change Midi instrument to the one selected in combo Instruments
-    int nInstr = m_pInstrCombo->GetSelection();
-    int nSect = m_pSectCombo->GetSelection();
-    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
-    int nVoiceInstr = pMidiGM->GetInstrFromSection(nSect, nInstr);
-    int nVoiceChannel = m_pVoiceChannelCombo->GetSelection();
-    g_pMidi->VoiceChange(nVoiceChannel, nVoiceInstr);
-
-}
-
-void lmScoreWizardClefPage::OnComboSection( wxCommandEvent& event )
-{
-    // A new section selected. Reload Instruments combo with the instruments in the
-    //selected section
-
-    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
-    int nSect = m_pSectCombo->GetSelection();
-    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect);
-    DoProgramChange();
-
-}
-
-void lmScoreWizardClefPage::OnComboInstrument( wxCommandEvent& event )
-{
-    // A new instrument selected. Change Midi program
-    DoProgramChange();
-}
-
-void lmScoreWizardClefPage::OnButtonTestSoundClick( wxCommandEvent& event )
-{
-    //play a scale
-    g_pMidi->TestOut();
-}
-
-
-//---------------------------------------------------------------------------------------
-// lmScoreWizardTimePage implementation
-//---------------------------------------------------------------------------------------
-
-// lmScoreWizardTimePage type definition
-IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardTimePage, wxWizardPageSimple )
-
-// lmScoreWizardTimePage event table definition
-BEGIN_EVENT_TABLE( lmScoreWizardTimePage, wxWizardPageSimple )
-    EVT_COMBOBOX( lmID_COMBO_MTR_INSTR1, lmScoreWizardTimePage::OnComboMtrInstr1Selected )
-    EVT_COMBOBOX( lmID_COMBO_MTR_INSTR2, lmScoreWizardTimePage::OnComboMtrInstr2Selected )
-    EVT_BUTTON( lmID_BUTTON, lmScoreWizardTimePage::OnButtonClick )
-END_EVENT_TABLE()
-
-
-lmScoreWizardTimePage::lmScoreWizardTimePage()
-{
-}
-
-lmScoreWizardTimePage::lmScoreWizardTimePage(wxWizard* parent)
-{
-    Create(parent);
-}
-
-bool lmScoreWizardTimePage::Create(wxWizard* parent)
-{
-    // member initialisation
-    m_pMtrInstr1Combo = NULL;
-    m_pMtrInstr2Combo = NULL;
-
-    // Page creation
-    wxBitmap wizardBitmap(wxNullBitmap);
-    wxWizardPageSimple::Create(parent, NULL, NULL, wizardBitmap );
-    CreateControls();
-    GetSizer()->Fit(this);
-
-    //populate metronome sounds combos
-    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
-    int nTone1 = g_pMidi->MtrTone1();
-    int nTone2 = g_pMidi->MtrTone2();
-    pMidiGM->PopulateWithPercusionInstr((wxControlWithItems*)m_pMtrInstr1Combo, nTone1);
-    pMidiGM->PopulateWithPercusionInstr((wxControlWithItems*)m_pMtrInstr2Combo, nTone2);
-
-    return true;
-}
-
-void lmScoreWizardTimePage::CreateControls()
-{
-    wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxVERTICAL);
-    SetSizer(itemBoxSizer35);
-
-    wxBoxSizer* itemBoxSizer36 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer35->Add(itemBoxSizer36, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    wxStaticText* itemStaticText37 = new wxStaticText( this, wxID_STATIC, _("lmMetronome channel and sounds"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText37->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-    itemBoxSizer36->Add(itemStaticText37, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer35->Add(itemBoxSizer38, 1, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer38->Add(itemBoxSizer39, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText40 = new wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer39->Add(itemStaticText40, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticText* itemStaticText41 = new wxStaticText( this, wxID_STATIC, _("To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer39->Add(itemStaticText41, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticLine* itemStaticLine42 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-    itemBoxSizer38->Add(itemStaticLine42, 0, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer38->Add(itemBoxSizer43, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText44 = new wxStaticText( this, wxID_STATIC, _("Channel:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer43->Add(itemStaticText44, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
-    wxStaticText* itemStaticText47 = new wxStaticText( this, wxID_STATIC, _("Sound for first beat of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer43->Add(itemStaticText47, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
-    wxString* m_pMtrInstr1ComboStrings = NULL;
-    m_pMtrInstr1Combo = new wxComboBox( this, lmID_COMBO_MTR_INSTR1, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr1ComboStrings, wxCB_READONLY );
-    itemBoxSizer43->Add(m_pMtrInstr1Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
-    wxStaticText* itemStaticText49 = new wxStaticText( this, wxID_STATIC, _("Sound for other beats of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer43->Add(itemStaticText49, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
-    wxString* m_pMtrInstr2ComboStrings = NULL;
-    m_pMtrInstr2Combo = new wxComboBox( this, lmID_COMBO_MTR_INSTR2, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr2ComboStrings, wxCB_READONLY );
-    itemBoxSizer43->Add(m_pMtrInstr2Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
-    wxButton* itemButton51 = new wxButton( this, lmID_BUTTON, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer43->Add(itemButton51, 0, wxALIGN_LEFT|wxALL, 5);
-
-}
-
-void lmScoreWizardTimePage::OnComboMtrInstr1Selected( wxCommandEvent& event )
-{
-    //Change metronome sound, tone1, to the one selected in combo Instr1
-    int nTone1 = m_pMtrInstr1Combo->GetSelection() + 35;
-    g_pMidi->SetMetronomeTones(nTone1, g_pMidi->MtrTone2());
-
-}
-
-void lmScoreWizardTimePage::OnComboMtrInstr2Selected( wxCommandEvent& event )
-{
-    //Change metronome sound, tone2, to the one selected in combo Instr2
-    int nTone2 = m_pMtrInstr2Combo->GetSelection() + 35;
-    g_pMidi->SetMetronomeTones(g_pMidi->MtrTone1(), nTone2);
-}
-
-void lmScoreWizardTimePage::OnButtonClick( wxCommandEvent& event )
-{
-    if (!g_pMidiOut) return;
-
-    //two measures, 3/4 time signature
-    for (int i=0; i < 2; i++) {
-        //firts beat
-        g_pMidiOut->NoteOn(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
-        ::wxMilliSleep(500);    // wait 500ms
-        g_pMidiOut->NoteOff(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
-        // two more beats
-        for (int j=0; j < 2; j++) {
-            g_pMidiOut->NoteOn(g_pMidi->MtrChannel(), g_pMidi->MtrTone2(), 127);
-            ::wxMilliSleep(500);    // wait 500ms
-            g_pMidiOut->NoteOff(g_pMidi->MtrChannel(), g_pMidi->MtrTone2(), 127);
-        }
-    }
-
-}
-
-*/

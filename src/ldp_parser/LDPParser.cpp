@@ -130,12 +130,16 @@ void lmLDPParser::Clear()
 }
 
 
-lmScore* lmLDPParser::ParseFile(const wxString& filename)
+lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 {
     wxFileInputStream inFile(filename);
-    if (!inFile.Ok()) {
-        FileParsingError(wxString::Format( _T("Error opening file <%s>"),
-            filename.c_str()));
+    if (!inFile.Ok())
+    {
+        if (fErrorMsg)
+        {
+            FileParsingError(wxString::Format( _T("Error opening file <%s>"),
+                filename.c_str()));
+        }
         return (lmScore*) NULL;
     }
 

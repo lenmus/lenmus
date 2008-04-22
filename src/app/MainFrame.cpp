@@ -168,14 +168,8 @@ extern bool g_fBorderOnScores;          // in TheApp.cpp
 // Appart of these, there are more definitions in MainFrame.h
 enum
 {
-#ifdef __WXDEBUG__           //to disable New/Open items in Release version
     // Menu File
-    MENU_File_New = wxID_NEW,
-#else
-    // Menu File
-    MENU_File_New = 1000,
-#endif
-    MENU_ScoreMidiWizard = MENU_Last_Public_ID,
+    MENU_File_New = MENU_Last_Public_ID,
     MENU_File_Import,
     MENU_File_Export,
     MENU_File_Export_bmp,
@@ -277,7 +271,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
 
 
     //File menu/toolbar
-    EVT_MENU      (MENU_ScoreMidiWizard, lmMainFrame::OnScoreWizard)
+    EVT_MENU      (MENU_File_New, lmMainFrame::OnScoreWizard)
     EVT_MENU      (MENU_File_Import, lmMainFrame::OnImportFile)
     EVT_UPDATE_UI (MENU_File_Import, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (MENU_File_Export_bmp, lmMainFrame::OnExportBMP)
@@ -944,10 +938,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
 
-    pItem = new wxMenuItem(file_menu, MENU_ScoreMidiWizard, _("&New with wizard"), _("New score configured with wizard"), wxITEM_NORMAL);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
     pItem = new wxMenuItem(file_menu, wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
@@ -1013,7 +1003,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     //No bitmaps on menus for other plattforms different from Windows and GTK+
 
     file_menu->Append(MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
-    file_menu->Append(MENU_ScoreMidiWizard, _("&New with wizard"), _("New score configured with wizard"), wxITEM_NORMAL);
     file_menu->Append(wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
     file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
     file_menu->Append(MENU_File_Import, _("&Import..."));
@@ -2173,46 +2162,41 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
             event.Enable(fEditFrame);
             break;
 
-        //comands disbaled in current version
-        case MENU_File_New:
-            event.Enable(false);
-            break;
-
         // Other commnads: always enabled
         default:
             event.Enable(true);
     }
 
-    //TODO
-    //in spite of program logic, here I force to disable any unfinished feature
-    //if this is a release version
-    //   ----------------------------------------------------
-    //   VERY IMPORTANT: READ THIS BEFORE REMOVING THIS CODE
-    //   ----------------------------------------------------
-    //This code does not work to disable wxID_NEW menu item
-    //So have replaced identifier:
-    //          wxID_NEW -> MENU_File_New
-    //The problem with this is that now this item doesn't work, as wxDocManager
-    //has no knowledge about it.
-    //WHEN REMOVING THIS CODE RESTORE wxID_NEW identifier
-    //
-    if (g_fReleaseVersion || g_fReleaseBehaviour) {
-        switch (event.GetId())
-        {
-            case MENU_File_New:
-                event.Enable(false);
-                break;
-            case MENU_File_Import:
-                event.Enable(false);
-                break;
-            case wxID_SAVE:
-                event.Enable(false);
-                break;
-            case wxID_SAVEAS:
-                event.Enable(false);
-                break;
-        }
-    }
+    ////TODO
+    ////in spite of program logic, here I force to disable any unfinished feature
+    ////if this is a release version
+    ////   ----------------------------------------------------
+    ////   VERY IMPORTANT: READ THIS BEFORE REMOVING THIS CODE
+    ////   ----------------------------------------------------
+    ////This code does not work to disable wxID_NEW menu item
+    ////So have replaced identifier:
+    ////          wxID_NEW -> MENU_File_New
+    ////The problem with this is that now this item doesn't work, as wxDocManager
+    ////has no knowledge about it.
+    ////WHEN REMOVING THIS CODE RESTORE wxID_NEW identifier
+    ////
+    //if (g_fReleaseVersion || g_fReleaseBehaviour) {
+    //    switch (event.GetId())
+    //    {
+    //        case MENU_File_New:
+    //            event.Enable(false);
+    //            break;
+    //        case MENU_File_Import:
+    //            event.Enable(false);
+    //            break;
+    //        case wxID_SAVE:
+    //            event.Enable(false);
+    //            break;
+    //        case wxID_SAVEAS:
+    //            event.Enable(false);
+    //            break;
+    //    }
+    //}
 
 }
 
@@ -2262,8 +2246,6 @@ void lmMainFrame::OnScoreWizard(wxCommandEvent& WXUNUSED(event))
     if (m_pWizardScore)
     {
         //Wizard finished successfully. A score has been defined. Create it
-        wxLogMessage(_T("[lmMainFrame::OnScoreWizard] Score created successfully"));
-
         wxString sPath = _T("\\<<NEW_WIZARD>>//");
         sPath += _T("new_wizard.txt");            //for DocumentManager
         wxDocManager* pDocManager = g_pTheApp->GetDocManager();

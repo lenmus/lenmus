@@ -87,12 +87,13 @@ lmVStaffCursor::lmVStaffCursor()
     m_pScoreCursor = (lmScoreCursor*)NULL;
 }
 
-void lmVStaffCursor::AttachToCollection(lmColStaffObjs* pColStaffObjs)
+void lmVStaffCursor::AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fReset)
 {
 	m_pColStaffObjs = pColStaffObjs;
 	m_pColStaffObjs->AttachCursor(this);		//link back
 
-	ResetCursor();
+    if (fReset)
+	    ResetCursor();
 }
 
 void lmVStaffCursor::SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* pState)
@@ -483,6 +484,62 @@ void lmVStaffCursor::AdvanceToNextSegment()
 	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
 	m_it = m_pSegment->m_StaffObjs.begin();
 	m_rTimepos = 0.0f;
+}
+
+void lmVStaffCursor::SkipClefKey(bool fSkipKey)
+{
+    //First advance after last clef. Then, if fSkipKey, advance after last key
+
+    //ensure that cursor is at start of segment
+	m_it = m_pSegment->m_StaffObjs.begin();
+
+    lmItCSO it = m_it;          //it will be used to save the last valid position
+
+    //locate last clef
+	while (m_it != m_pSegment->m_StaffObjs.end())
+	{
+        if ((*m_it)->IsClef())
+            it = m_it;
+        else if (!IsEqualTime((*m_it)->GetTimePos(), 0.0f))
+            break;
+        ++m_it;
+    }
+
+    //here 'it' points to last clef
+    //if requested, advance to last key
+    if (fSkipKey)
+    {
+        //locate last key
+	    while (m_it != m_pSegment->m_StaffObjs.end())
+	    {
+            if ((*m_it)->IsKeySignature())
+                it = m_it;
+            else if (!IsEqualTime((*m_it)->GetTimePos(), 0.0f))
+                break;
+            ++m_it;
+        }
+    }
+
+    //here 'it' is pointing to last clef/key
+    //reposition cursor iterator and advance after last clef/key
+    m_it = it;
+    if (m_it != m_pSegment->m_StaffObjs.end())
+        ++m_it;
+}
+
+void lmVStaffCursor::AdvanceToStartOfSegment(int nSegment, int nStaff)
+{
+    //move cursor to start of segment. Set staff
+
+    wxASSERT(nSegment < (int)(m_pColStaffObjs->m_Segments.size()));
+
+    m_nStaff = nStaff;
+    m_nSegment = nSegment;
+	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+	m_it = m_pSegment->m_StaffObjs.begin();
+	m_rTimepos = 0.0f;
+
+	return;
 }
 
 void lmVStaffCursor::MoveToSegment(int nSegment, int nStaff, lmUPoint uPos)
