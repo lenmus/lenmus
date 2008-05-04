@@ -43,6 +43,7 @@
 #include "Score.h"
 #include "VStaff.h"
 #include "UndoRedo.h"
+#include "InstrGroup.h"
 #include "../app/global.h"
 #include "../app/Page.h"
 #include "../sound/SoundEvents.h"
@@ -561,30 +562,32 @@ int lmScore::GetNumMeasures()
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                     wxString sName, wxString sAbbrev)
+                                     wxString sName, wxString sAbbrev,
+                                     lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
 
     lmInstrument* pInstr = new lmInstrument(this, nMIDIChannel, nMIDIInstr, sName, sAbbrev);
 
-	DoAddInstrument(pInstr);
+	DoAddInstrument(pInstr, pGroup);
     return pInstr;
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
-									 lmScoreText* pName, lmScoreText* pAbbrev)
+									 lmScoreText* pName, lmScoreText* pAbbrev,
+                                     lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
 
     lmInstrument* pInstr = new lmInstrument(this, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
 
-	DoAddInstrument(pInstr);
+	DoAddInstrument(pInstr, pGroup);
 	return pInstr;
 }
 
-void lmScore::DoAddInstrument(lmInstrument* pInstr)
+void lmScore::DoAddInstrument(lmInstrument* pInstr, lmInstrGroup* pGroup)
 {
 	//if this is the first intrument, initialize edit cursor
 	if (m_cInstruments.empty())
@@ -592,6 +595,10 @@ void lmScore::DoAddInstrument(lmInstrument* pInstr)
 
     //add instrument
 	m_cInstruments.push_back(pInstr);
+
+    //include instrument in group
+    if (pGroup)
+        pGroup->Include(pInstr);
 }
 
 lmInstrument* lmScore::XML_FindInstrument(wxString sId)

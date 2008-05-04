@@ -19,45 +19,53 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef _EDITFRAME_H        //to avoid nested includes
-#define _EDITFRAME_H
+#ifndef __LM_SHAPEBRACKET_H__        //to avoid nested includes
+#define __LM_SHAPEBRACKET_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "EditFrame.cpp"
+#pragma interface "ShapeBracket.cpp"
 #endif
 
-#include "../mdi/DocViewMDI.h"
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
 
-//#include "wx/docmdi.h"
-#include "wx/docview.h"
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
 
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
 
-class lmMainFrame;
-class lmScoreDocument;
-class lmScoreView;
+#include "../score/defs.h"      // lmLUnits
+#include "../app/Paper.h"
+#include "GMObject.h"
 
-class lmEditFrame: public lmDocMDIChildFrame
+class lmInstrument;
+class lmPaper;
+
+class lmShapeBracket : public lmSimpleShape
 {
-    DECLARE_DYNAMIC_CLASS(lmEditFrame)
 public:
-    lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame* mainFrame,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize);
+    lmShapeBracket(lmInstrument* pInstr, lmEBracketSymbol nSymbol,
+                   lmLUnits xLeft, lmLUnits yTop,
+                   lmLUnits xRight, lmLUnits yBottom,
+				   wxColour color = *wxBLACK);
+	~lmShapeBracket();
 
-    // event handlers
-    void OnSize(wxSizeEvent& WXUNUSED(event));
-    void OnClose(wxCloseEvent& event);
-    void OnKeyPress(wxKeyEvent& event);
+	//implementation of pure virtual methods in base class
+    void Render(lmPaper* pPaper, wxColour color);
+    wxString Dump(int nIndent);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
-	double GetActiveViewScale();
-	bool SetActiveViewScale(double rScale);
-	void OnChildFrameActivated();
-    inline lmScoreView* GetView() { return m_pView; }
 
-private:
-    lmScoreView*        m_pView;    //the owner view of this frame
+protected:
+    //attributes
+    lmLUnits		    m_uxLeft, m_uyTop;
+    lmLUnits            m_uxRight, m_uyBottom;
+    lmEBracketSymbol    m_nSymbol;
 
-    DECLARE_EVENT_TABLE()
 };
 
-#endif    // _EDITFRAME_H
+#endif    // __LM_SHAPEBRACKET_H__
+

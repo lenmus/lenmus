@@ -53,10 +53,6 @@ DECLARE_DYNAMIC_CLASS (lmBitmapButton)
 public:
 	lmBitmapButton(wxWindow* parent, wxWindowID id, const wxBitmap& bitmap, 
 			const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize); 
-    lmBitmapButton(wxWindow * parent, wxWindowID id,
-		    const wxPoint & pos,
-		    const wxSize & size,
-		    char **upXPM, char **overXPM, char **downXPM, char **disXPM);
     lmBitmapButton() {};
     virtual ~ lmBitmapButton();
 
@@ -67,7 +63,7 @@ public:
 	   else Disable();
 	   return true;
     };
-    virtual bool IsPressed() {return m_state == State_ButtonDown;};
+    virtual bool IsPressed() {return m_state == lm_eButtonDown;};
     bool IsEnabled() {return m_enabled;};
     virtual void OnPaint(wxPaintEvent &event);
     virtual void OnEraseBackground(wxEraseEvent &event);
@@ -78,40 +74,43 @@ public:
     virtual void SetText(const wxChar* text);
 	virtual void SetBorderDown(lmEButtonBorder nBorderType) { m_nBorderDown = nBorderType; }
 	virtual void SetBorderOver(lmEButtonBorder nBorderType) { m_nBorderOver = nBorderType; }
-	virtual void SetBitmapSelected(const wxBitmap& bitmap);
+
+	virtual void SetBitmapDown(const wxBitmap& bitmap);
+	virtual void SetBitmapOver(const wxBitmap& bitmap);
+
+    virtual void SetBitmapUp(wxString sBmpName, wxString sBg, wxSize size);
+    virtual void SetBitmapDown(wxString sBmpName, wxString sBg, wxSize size);
+    virtual void SetBitmapOver(wxString sBmpName, wxString sBg, wxSize size);
 
 
 protected:
-    enum ButtonState {
-	   State_ButtonUp,
-	   State_ButtonOver,
-	   State_ButtonDown,
-	   State_ButtonDis,
-	   State_ButtonNew
+    enum lmEButtonState
+    {
+	   lm_eButtonUp = 0,
+	   lm_eButtonOver,
+	   lm_eButtonDown,
+	   lm_eButtonDis,
+	   lm_eButtonNew
     };
 
+    wxBitmap CreateBitmap(wxString sBmpName, wxString sBg, wxSize size);
 
 	void Create(const wxPoint& pos, const wxSize& size);
-    void DrawBorder(wxDC& dc, lmEButtonBorder border);
-    virtual void DrawOnBitmap();
     void Redraw();
 
-
-    int		m_width;
-    int		m_height;
+    wxSize      m_btSize;
     int		m_dx;
     int		m_dy;
 
     bool	m_enabled;
 
-    ButtonState		m_state;
-    ButtonState		m_laststate;
-    wxBitmap*		m_bitmap;
+    lmEButtonState		m_state;
+    lmEButtonState		m_laststate;
+    wxBitmap*		    m_bitmap;
 
     wxString	m_text;
     wxFont*		m_font;
 	wxBitmap	m_bitmaps[4];
-    bool		m_painted;
 
 	lmEButtonBorder		m_nBorderDown;
 	lmEButtonBorder		m_nBorderOver;
@@ -125,9 +124,6 @@ class lmCheckButton : public lmBitmapButton
 public:
 	lmCheckButton(wxWindow* parent, wxWindowID id, const wxBitmap& bitmap, 
 				  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
-    lmCheckButton(wxWindow* parent, wxWindowID id, char** upXPM, 
-				  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-				  char** overXPM = NULL, char** downXPM = NULL, char** disXPM = NULL);
 
 	virtual void OnMouseEvent(wxMouseEvent& event);
     virtual bool Press();

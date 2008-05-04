@@ -32,6 +32,9 @@
 
 class wxBitmapComboBox;
 class lmCheckButton;
+class wxRadioBox;
+class wxListBox;
+
 
 //--------------------------------------------------------------------------------
 // Group for clef type
@@ -98,24 +101,58 @@ private:
 
 
 //--------------------------------------------------------------------------------
+// Group for key signature type
+//--------------------------------------------------------------------------------
+class lmGrpKeyType: public lmToolGroup
+{
+public:
+    lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpKeyType() {}
+
+    void OnKeyType(wxCommandEvent& event);
+    void OnKeyList(wxCommandEvent& event);
+
+    //keys data
+    typedef struct lmKeysStruct
+    {
+        wxString            sKeyName;
+        int                 nFifths;
+        lmEKeySignatures    nKeyType;
+
+    } lmKeysData;
+
+private:
+    void CreateControls(wxBoxSizer* m_pMainSizer);
+    void LoadKeyList(int nType);
+    wxBitmap GenerateBitmap(wxString sKeyName);
+
+    wxRadioButton*      m_pKeyRad[2];   //rad.buttons for Major/Minor selection
+	wxBitmapComboBox*   m_pKeyList;
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+//--------------------------------------------------------------------------------
 // The panel
 //--------------------------------------------------------------------------------
 
-class lmToolClef: public lmToolPage
+class lmToolClef : public lmToolPage
 {
 public:
     lmToolClef(wxWindow* parent);
     ~lmToolClef();
 
 	//access to options
-    inline lmEClefType GetClefType() { m_pGrpClefType->GetClefType(); }
+    inline lmEClefType GetClefType() { return m_pGrpClefType->GetClefType(); }
 
 
 private:
 
     //groups
-    lmGrpClefType*    m_pGrpClefType;
-    lmGrpTimeType*    m_pGrpTimeType;
+    lmGrpClefType*      m_pGrpClefType;
+    lmGrpTimeType*      m_pGrpTimeType;
+    lmGrpKeyType*       m_pGrpKeyType;
 
 };
 

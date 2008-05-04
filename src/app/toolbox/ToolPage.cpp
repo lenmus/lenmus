@@ -46,15 +46,14 @@
 
 
 lmToolPage::lmToolPage(wxWindow* parent)
-	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, 300), wxNO_BORDER )
+	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1), wxSUNKEN_BORDER|wxTAB_TRAVERSAL )
 {
 	//main sizer
     m_pMainSizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(m_pMainSizer);
 
 	//set colors
-	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
-	this->SetBackgroundColour(m_colors.Normal());
+	SetBackgroundColour(GetColors()->Bright());  //.Normal());
 }
 
 lmToolPage::~lmToolPage()

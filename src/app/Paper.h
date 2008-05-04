@@ -48,8 +48,11 @@ public:
     // page cursors positioning
     inline lmLUnits GetCursorX() { return m_uxCursor; }
     inline lmLUnits GetCursorY() { return m_uyCursor; }
+
     inline void SetCursorX(lmLUnits uValue) { m_uxCursor = uValue; }
     inline void SetCursorY(lmLUnits uValue) { m_uyCursor = uValue; }
+    inline void SetCursor(lmUPoint uPos) { m_uxCursor = uPos.x; m_uyCursor = uPos.y; }
+
     inline void IncrementCursorX(lmLUnits uValue) { m_uxCursor += uValue; }
     inline void IncrementCursorY(lmLUnits uValue) { m_uyCursor += uValue; }
 

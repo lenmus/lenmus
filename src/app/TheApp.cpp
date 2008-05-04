@@ -903,16 +903,6 @@ wxString lmTheApp::GetInstallerLanguage()
     return sLang;
 }
 
-lmController* lmTheApp::GetViewController()
-{
-	//returns the controller associated to the active view
-    lmView* pView = GetActiveView();
-	if (pView)
-		return pView->GetController();
-	else
-		return (lmController*)NULL;
-}
-
 int lmTheApp::FilterEvent(wxEvent& event)
 {
 	if (event.GetEventType()==wxEVT_KEY_DOWN)
@@ -920,7 +910,7 @@ int lmTheApp::FilterEvent(wxEvent& event)
 		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1 && g_pMainFrame
 			&& g_pMainFrame->IsToolBoxVisible())
 		{
-			lmController* pController = GetViewController();
+			lmController* pController = g_pMainFrame->GetActiveController();
 			if (pController)
 			{
 				g_pMainFrame->GetActiveToolBox()->ProcessEvent(event);

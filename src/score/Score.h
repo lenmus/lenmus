@@ -157,7 +157,6 @@ class lmInstrument;
 class lmStaffObj;
 class lmColStaffObjs;
 class lmSOIterator;
-//class StaffObjsList;
 
 class lmBasicText;
 class lmScoreText;
@@ -173,7 +172,7 @@ class lmChord;
 struct lmTBeamInfo;
 class lmNote;
 class lmRest;
-
+class lmInstrGroup;
 class lmStaff;
 class lmContext;
 class lmSoundManager;
@@ -319,9 +318,11 @@ public:
     lmInstrument* GetFirstInstrument();
     lmInstrument* GetNextInstrument();
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                wxString sName, wxString sAbbrev=_T(""));
+                                wxString sName, wxString sAbbrev=_T(""),
+                                lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                lmScoreText* pName, lmScoreText* pAbbrev);
+                                lmScoreText* pName, lmScoreText* pAbbrev,
+                                lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
 
 
     // titles related methods
@@ -381,8 +382,7 @@ private:
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
 	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pTitle,
 							  lmLUnits nPrevTitleHeight);
-	void DoAddInstrument(lmInstrument* pInstr);
-
+	void DoAddInstrument(lmInstrument* pInstr, lmInstrGroup* pGroup);
 
 
         //

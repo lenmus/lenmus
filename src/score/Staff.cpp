@@ -90,6 +90,7 @@ wxString lmStaff::Dump()
 
 //----------------------------------------------------------------------------------------
 // context management
+// TODO: when inserting a context, is it necessary to update anything? 
 //----------------------------------------------------------------------------------------
 
 lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)

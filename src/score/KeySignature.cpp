@@ -56,48 +56,9 @@ static wxString m_sLDPKeyName[30] = {
 // lmKeySignature object implementation
 //-------------------------------------------------------------------------------------------------
 
-//
-//constructors & destructor
-//
-
-//constructor for traditional key signatures
 lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible) :
     lmStaffObj(pVStaff, eSFOT_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
-
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
-    m_sKeySignatureName[0] = _("C Major");
-    m_sKeySignatureName[1] = _("G Major");
-    m_sKeySignatureName[2] = _("D Major");
-    m_sKeySignatureName[3] = _("A Major");
-    m_sKeySignatureName[4] = _("E Major");
-    m_sKeySignatureName[5] = _("B Major");
-    m_sKeySignatureName[6] = _("F # Major");
-    m_sKeySignatureName[7] = _("C # Major");
-    m_sKeySignatureName[8] = _("C b Major");
-    m_sKeySignatureName[9] = _("G b Major");
-    m_sKeySignatureName[10] = _("D b Major");
-    m_sKeySignatureName[11] = _("A b Major");
-    m_sKeySignatureName[12] = _("E b Major");
-    m_sKeySignatureName[13] = _("B b Major");
-    m_sKeySignatureName[14] = _("F Major");
-    m_sKeySignatureName[15] = _("A minor");
-    m_sKeySignatureName[16] = _("E minor");
-    m_sKeySignatureName[17] = _("B minor");
-    m_sKeySignatureName[18] = _("F # minor");
-    m_sKeySignatureName[19] = _("C # minor");
-    m_sKeySignatureName[20] = _("G # minor");
-    m_sKeySignatureName[21] = _("D # minor");
-    m_sKeySignatureName[22] = _("A # minor");
-    m_sKeySignatureName[23] = _("A b minor");
-    m_sKeySignatureName[24] = _("E b minor");
-    m_sKeySignatureName[25] = _("B b minor");
-    m_sKeySignatureName[26] = _("F minor");
-    m_sKeySignatureName[27] = _("C minor");
-    m_sKeySignatureName[28] = _("G minor");
-    m_sKeySignatureName[29] = _("D minor");
-
     m_fHidden = false;
     m_fTraditional = true;
     m_nFifths = nFifths;
@@ -115,7 +76,6 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
     g_pLogger->LogTrace(_T("lmKeySignature"),
         _T("[lmKeySignature::lmKeySignature] m_nFifths=%d, m_fMajor=%s, nKey=%d"),
             m_nFifths, (m_fMajor ? _T("yes") : _T("no")), m_nKeySignature );
-
 }
 
 wxString lmKeySignature::Dump()
@@ -199,6 +159,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
         uyTop += pStaff->GetHeight();
         uyTop += pStaff->GetAfterSpace();
     }
+    m_pGMObj = m_pShapes[0];
 
 	// set total width (incremented in one line for after space)
 	return uWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);;
@@ -212,7 +173,6 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     //create the container shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, _T("Key signature"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    m_pGMObj = pShape;
 
     lmLUnits uSharpPos[8];      //sharps positions, in order of sharps appearance
     lmLUnits uFlatPos[8];       //flats positions, in order of flats appearance
@@ -471,6 +431,35 @@ void lmKeySignature::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighligh
 }
 
 
+void lmKeySignature::StoreOriginAndShiftShapes(lmLUnits uxShift)
+{
+    //This method is invoked only from TimeposTable module, from methods 
+    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
+    //computations.
+    //By invoking this method, the auto-layout algorithm is informing about a change in
+    //the computed final position for this ScoreObj.
+    //Take into account that this method can be invoked several times for the
+    //same ScoreObj, when the auto-layout algorithm refines the final position.
+
+	m_uComputedPos.x += uxShift;
+    for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
+    {
+        if (m_pShapes[nStaff])
+            m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + m_uUserShift);
+    }
+
+	// inform about the change to AuxObjs attached to this StaffObj
+    if (m_pAuxObjs)
+    {
+        for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+        {
+            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
+        }
+    }
+
+}
+
+
 
 
 //---------------------------------------------------------------------------------------
@@ -674,6 +663,45 @@ bool IsMajor(lmEKeySignatures nKeySignature)
 
 const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature)
 {
+    static bool fStringsLoaded = false;
+
+    if (!fStringsLoaded)
+    {
+        //language dependent strings. Can not be statically initiallized because
+        //then they do not get translated
+        m_sKeySignatureName[0] = _("C Major");
+        m_sKeySignatureName[1] = _("G Major");
+        m_sKeySignatureName[2] = _("D Major");
+        m_sKeySignatureName[3] = _("A Major");
+        m_sKeySignatureName[4] = _("E Major");
+        m_sKeySignatureName[5] = _("B Major");
+        m_sKeySignatureName[6] = _("F # Major");
+        m_sKeySignatureName[7] = _("C # Major");
+        m_sKeySignatureName[8] = _("C b Major");
+        m_sKeySignatureName[9] = _("G b Major");
+        m_sKeySignatureName[10] = _("D b Major");
+        m_sKeySignatureName[11] = _("A b Major");
+        m_sKeySignatureName[12] = _("E b Major");
+        m_sKeySignatureName[13] = _("B b Major");
+        m_sKeySignatureName[14] = _("F Major");
+        m_sKeySignatureName[15] = _("A minor");
+        m_sKeySignatureName[16] = _("E minor");
+        m_sKeySignatureName[17] = _("B minor");
+        m_sKeySignatureName[18] = _("F # minor");
+        m_sKeySignatureName[19] = _("C # minor");
+        m_sKeySignatureName[20] = _("G # minor");
+        m_sKeySignatureName[21] = _("D # minor");
+        m_sKeySignatureName[22] = _("A # minor");
+        m_sKeySignatureName[23] = _("A b minor");
+        m_sKeySignatureName[24] = _("E b minor");
+        m_sKeySignatureName[25] = _("B b minor");
+        m_sKeySignatureName[26] = _("F minor");
+        m_sKeySignatureName[27] = _("C minor");
+        m_sKeySignatureName[28] = _("G minor");
+        m_sKeySignatureName[29] = _("D minor");
+        fStringsLoaded = true;
+    }
+
     return m_sKeySignatureName[nKeySignature - lmMIN_KEY];
 }
 

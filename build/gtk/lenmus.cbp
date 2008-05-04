@@ -119,6 +119,8 @@
 		<Unit filename="../../src/app/global.h" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.cpp" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.h" />
+		<Unit filename="../../src/app/toolbox/ToolClef.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolClef.h" />
 		<Unit filename="../../src/app/toolbox/ToolGroup.cpp" />
 		<Unit filename="../../src/app/toolbox/ToolGroup.h" />
 		<Unit filename="../../src/app/toolbox/ToolNotes.cpp" />
@@ -370,8 +372,12 @@
 		<Unit filename="../../src/widgets/Button.h" />
 		<Unit filename="../../src/widgets/Caret.cpp" />
 		<Unit filename="../../src/widgets/Caret.h" />
+		<Unit filename="../../src/widgets/MsgBox.cpp" />
+		<Unit filename="../../src/widgets/MsgBox.h" />
 		<Unit filename="../../src/widgets/Ruler.cpp" />
 		<Unit filename="../../src/widgets/Ruler.h" />
+		<Unit filename="../../src/widgets/Wizard.cpp" />
+		<Unit filename="../../src/widgets/Wizard.h" />
 		<Unit filename="../../src/xml_parser/MusicXMLParser.cpp" />
 		<Unit filename="../../src/xml_parser/MusicXMLParser.h" />
 		<Unit filename="../../src/xml_parser/XMLParser.cpp" />

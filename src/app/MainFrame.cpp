@@ -1401,11 +1401,16 @@ void lmMainFrame::SilentlyCheckForUpdates(bool fSilent)
 
 lmController* lmMainFrame::GetActiveController()
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
-    if (pView)
-        return pView->GetController();
-    else
-        return (lmController*)NULL;
+	//returns the controller associated to the active view
+
+    lmMDIChildFrame* pChild = GetActiveChild();
+	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) )
+    {
+        lmScoreView* pView = ((lmEditFrame*)pChild)->GetView();
+        if (pView)
+            return pView->GetController();
+    }
+    return (lmController*)NULL;
 }
 
 // ----------------------------------------------------------------------------
@@ -1925,7 +1930,7 @@ void lmMainFrame::ShowEditTools(bool fShow)
                              Caption(_("Edit tool box")).Left().
 							 Floatable(true).
 							 Resizable(false).
-							 TopDockable(false).
+							 TopDockable(true).
 							 BottomDockable(false).
 							 MaxSize(wxSize(m_pToolBox->GetWidth(), -1)).
 							 MinSize(wxSize(m_pToolBox->GetWidth(), -1)) );
@@ -2242,6 +2247,7 @@ void lmMainFrame::OnScoreWizard(wxCommandEvent& WXUNUSED(event))
     m_pWizardScore = (lmScore*)NULL;
     lmScoreWizard oWizard(this, &m_pWizardScore);
     oWizard.Run();
+    //oWizard.Run();
 
     if (m_pWizardScore)
     {

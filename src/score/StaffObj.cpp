@@ -246,7 +246,7 @@ void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
     //This method is invoked only from TimeposTable module, from methods 
     //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
     //computations.
-    //By invoking this method, the auto-layout algorithm is iinforming about a change in
+    //By invoking this method, the auto-layout algorithm is informing about a change in
     //the computed final position for this ScoreObj.
     //Take into account that this method can be invoked several times for the
     //same ScoreObj, when the auto-layout algorithm refines the final position.
@@ -254,20 +254,20 @@ void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
 	m_uComputedPos.x += uxShift;
     if (m_pGMObj)
     {
-		////DBG--------------------------------------------------------------------------------
-		////if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
-		//if (GetScoreObjType()==lmSOT_ComponentObj
-        //    && ((lmComponentObj*)this)->GetType()==lm_eStaffObj
-        //    && ((lmStaffObj*)this)->IsNoteRest() )
-		//{
-		//	lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
-		//	wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
-		//				uxShift,
-		//				m_pGMObj->GetOrigin().x, m_pGMObj->GetOrigin().y,
-		//				m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
-		//				uNewOrg.x, uNewOrg.y );
-		//}
-		////END DBG----------------------------------------------------------------------------
+		//DBG--------------------------------------------------------------------------------
+		//if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
+		if (GetScoreObjType()==lmSOT_ComponentObj
+            && ((lmComponentObj*)this)->GetType()==lm_eStaffObj
+            && ((lmStaffObj*)this)->IsTimeSignature() )
+		{
+			lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
+			wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
+						uxShift,
+						m_pGMObj->GetOrigin().x, m_pGMObj->GetOrigin().y,
+						m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
+						uNewOrg.x, uNewOrg.y );
+		}
+		//END DBG----------------------------------------------------------------------------
         
         m_pGMObj->ShiftOrigin(m_uComputedPos + m_uUserShift);
     }

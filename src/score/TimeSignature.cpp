@@ -216,6 +216,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
     }
 
 	// set total width (incremented in one line for after space)
+    m_pGMObj = m_pShapes[0];
 	return m_pShapes[0]->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
@@ -229,7 +230,7 @@ lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxC
 	//create the shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, _T("Time signature"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    m_pGMObj = pShape;
+    //m_pGMObj = pShape;
 
 	//loop to create glyphs for the top number
 	long nDigit;
@@ -298,6 +299,35 @@ void lmTimeSignature::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlig
         GetShape(nStaff)->Render(pPaper, g_pColors->ScoreNormal());
     }
 }
+
+void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift)
+{
+    //This method is invoked only from TimeposTable module, from methods 
+    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
+    //computations.
+    //By invoking this method, the auto-layout algorithm is informing about a change in
+    //the computed final position for this ScoreObj.
+    //Take into account that this method can be invoked several times for the
+    //same ScoreObj, when the auto-layout algorithm refines the final position.
+
+	m_uComputedPos.x += uxShift;
+    for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
+    {
+        if (m_pShapes[nStaff])
+            m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + m_uUserShift);
+    }
+
+	// inform about the change to AuxObjs attached to this StaffObj
+    if (m_pAuxObjs)
+    {
+        for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+        {
+            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
+        }
+    }
+
+}
+
 
 
 

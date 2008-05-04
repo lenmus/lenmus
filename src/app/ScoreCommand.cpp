@@ -50,12 +50,15 @@
 //----------------------------------------------------------------------------------------
 
 lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc,
-                               bool fHistory)
+                               lmVStaffCursor* pVCursor, bool fHistory)
     : wxCommand(true, sName)
 {
     m_pDoc = pDoc;
 	m_fDocModified = false;
     m_fHistory = fHistory;
+    m_pVCursor = pVCursor;
+    if (pVCursor)
+        m_tCursorState = pVCursor->GetState();
 }
 
 lmScoreCommand::~lmScoreCommand()
@@ -122,7 +125,7 @@ bool lmCmdSelectSingle::DoSelectObject()
 lmCmdSelectMultiple::lmCmdSelectMultiple(const wxString& name, lmScoreDocument *pDoc,
                                          lmView* pView, lmGMSelection* pSelection,
                                          bool fSelect)
-        : lmScoreCommand(name, pDoc)
+        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
 {
     m_pSelection = pSelection;
     m_pView = pView;
@@ -154,9 +157,8 @@ bool lmCmdSelectMultiple::DoSelectUnselect()
 
 lmCmdDeleteObject::lmCmdDeleteObject(lmVStaffCursor* pVCursor, const wxString& name,
                                      lmScoreDocument *pDoc)
-        : lmScoreCommand(name, pDoc)
+        : lmScoreCommand(name, pDoc, pVCursor)
 {
-    m_tCursorState = pVCursor->GetState();
     m_pVStaff = pVCursor->GetVStaff();
     m_pSO = pVCursor->GetStaffObj();
     m_fDeleteSO = false;                //m_pSO is still owned by the score
@@ -211,7 +213,7 @@ bool lmCmdDeleteObject::UndoCommand()
 
 lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocument *pDoc,
 									   lmScoreObj* pSO, const lmUPoint& uPos)
-	: lmScoreCommand(sName, pDoc)
+	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
 {
 	m_tPos.x = uPos.x;
 	m_tPos.y = uPos.y;
@@ -248,28 +250,42 @@ bool lmCmdUserMoveScoreObj::UndoCommand()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdInsertBarline: Insert a clef at current cursor position
+// lmCmdInsertBarline: Insert a barline at current cursor position
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertBarline::lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString& sName,
                                        lmScoreDocument *pDoc, lmEBarline nType)
-	: lmScoreCommand(sName, pDoc)
+	: lmScoreCommand(sName, pDoc, pVCursor)
 {
-    m_pVCursor = pVCursor;
     m_nBarlineType = nType;
 }
 
 bool lmCmdInsertBarline::Do()
 {
     lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
-    pCursor->GetVStaff()->InsertBarline(m_nBarlineType);
+    lmVStaff* pVStaff = pCursor->GetVStaff();
 
-	return CommandDone(lmSCORE_MODIFIED);
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaffCmd* pVCmd = new lmVCmdInsertBarline(pVStaff, pUndoItem, m_nBarlineType);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
 }
 
 bool lmCmdInsertBarline::UndoCommand()
 {
-    //TODO
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetCursor(m_pVCursor);
+
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
     return true;
@@ -285,19 +301,19 @@ bool lmCmdInsertBarline::UndoCommand()
 lmCmdInsertClef::lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& sName,
                                  lmScoreDocument *pDoc, lmEClefType nClefType,
                                  bool fHistory)
-	: lmScoreCommand(sName, pDoc, fHistory)
+	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
 {
-    m_pVCursor = pVCursor;
     m_nClefType = nClefType;
 }
 
 bool lmCmdInsertClef::Do()
 {
     lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
-    m_pVStaff = pCursor->GetVStaff();
+    lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdInsertClef(m_pVStaff, pUndoItem, m_nClefType);
+    int nStaff = m_pVCursor->GetNumStaff();
+    lmVStaffCmd* pVCmd = new lmVCmdInsertClef(pVStaff, pUndoItem, m_nClefType, nStaff);
 
     if (pVCmd->Success())
     {
@@ -332,9 +348,8 @@ bool lmCmdInsertClef::UndoCommand()
 lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& sName,
                              lmScoreDocument *pDoc,  int nBeats, int nBeatType, 
                              bool fVisible, bool fHistory)
-	: lmScoreCommand(sName, pDoc, fHistory)
+	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
 {
-    m_pVCursor = pVCursor;
     m_nBeats = nBeats;
     m_nBeatType = nBeatType;
     m_fVisible = fVisible;
@@ -343,10 +358,10 @@ lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, con
 bool lmCmdInsertTimeSignature::Do()
 {
     lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
-    m_pVStaff = pCursor->GetVStaff();
+    lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdInsertTimeSignature(m_pVStaff, pUndoItem, m_nBeats,
+    lmVStaffCmd* pVCmd = new lmVCmdInsertTimeSignature(pVStaff, pUndoItem, m_nBeats,
                                                        m_nBeatType, m_fVisible);
 
     if (pVCmd->Success())
@@ -366,6 +381,59 @@ bool lmCmdInsertTimeSignature::UndoCommand()
 {
     m_UndoLog.UndoAll();
     m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmScoreCursor* pSC = m_pVCursor->GetScoreCursor();
+    m_pVCursor->SetNewCursorState(pSC, &m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdInsertKeySignature: Insert a key signature at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdInsertKeySignature::lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& sName,
+                             lmScoreDocument *pDoc, int nFifths, bool fMajor, 
+                             bool fVisible, bool fHistory)
+	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
+{
+    m_nFifths = nFifths;
+    m_fMajor = fMajor;
+    m_fVisible = fVisible;
+}
+
+bool lmCmdInsertKeySignature::Do()
+{
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmVStaff* pVStaff = pCursor->GetVStaff();
+
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaffCmd* pVCmd = new lmVCmdInsertKeySignature(pVStaff, pUndoItem, m_nFifths,
+                                                      m_fMajor, m_fVisible);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+}
+
+bool lmCmdInsertKeySignature::UndoCommand()
+{
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmScoreCursor* pSC = m_pVCursor->GetScoreCursor();
+    m_pVCursor->SetNewCursorState(pSC, &m_tCursorState);
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
@@ -385,9 +453,8 @@ lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName
 								 wxString sStep, wxString sOctave, 
 								 lmENoteType nNoteType, float rDuration,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
-	: lmScoreCommand(sName, pDoc)
+	: lmScoreCommand(sName, pDoc, pVCursor)
 {
-    m_pVCursor = pVCursor;
 	m_nNoteType = nNoteType;
 	m_nPitchType = nPitchType;
 	m_sStep = sStep;
@@ -444,7 +511,7 @@ bool lmCmdInsertNote::UndoCommand()
 
 lmCmdChangeNotePitch::lmCmdChangeNotePitch(const wxString& sName, lmScoreDocument *pDoc,
                                  lmNote* pNote, int nSteps)
-	: lmScoreCommand(sName, pDoc)
+	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
 {
 	m_nSteps = nSteps;
 	m_pNote = pNote;
@@ -474,7 +541,7 @@ bool lmCmdChangeNotePitch::UndoCommand()
 
 lmCmdChangeNoteAccidentals::lmCmdChangeNoteAccidentals(const wxString& sName, lmScoreDocument *pDoc,
                                  lmNote* pNote, int nSteps)
-	: lmScoreCommand(sName, pDoc)
+	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
 {
 	m_nSteps = nSteps;
 	m_pNote = pNote;

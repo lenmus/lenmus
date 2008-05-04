@@ -78,6 +78,7 @@ enum lmEGMOType
     eGMO_ShapeArch,
     eGMO_ShapeBarline,
 	eGMO_ShapeBeam,
+    eGMO_ShapeBracket,
 	eGMO_ShapeComposite,
 	eGMO_ShapeGlyph,
 	eGMO_ShapeLine,
@@ -134,6 +135,8 @@ public:
             return lmURect(m_uBoundsTop.x, m_uBoundsTop.y,
                            m_uBoundsBottom.x - m_uBoundsTop.x, m_uBoundsBottom.y - m_uBoundsTop.y);
         }
+    virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
+    virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
     virtual bool ContainsPoint(lmUPoint& pointL);
 
@@ -276,8 +279,6 @@ public:
 	virtual void Render(lmPaper* pPaper);
 
     virtual bool Collision(lmShape* pShape);
-    virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
-    virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
     //methods related to position
 	virtual void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,

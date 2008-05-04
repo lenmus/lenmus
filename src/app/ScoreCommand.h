@@ -58,7 +58,7 @@ public:
     virtual bool UndoCommand()=0;
 
 protected:
-    lmScoreCommand(const wxString& name, lmScoreDocument *pDoc,
+    lmScoreCommand(const wxString& name, lmScoreDocument *pDoc, lmVStaffCursor* pVCursor,
                    bool fHistory = true );
 
 
@@ -74,6 +74,9 @@ protected:
     bool                m_fHistory;         //include command in undo/redo history
     lmUndoLog           m_UndoLog;          //collection of undo/redo items
     lmUndoItem*         m_pUndoItem;        //undo item for this command
+    lmVStaffCursor*     m_pVCursor;         //VCursor when issuing the command
+    lmVCursorState      m_tCursorState;     //VCursor state
+
 };
 
 
@@ -83,7 +86,7 @@ class lmCmdSelectSingle: public lmScoreCommand
 {
 public:
     lmCmdSelectSingle(const wxString& name, lmScoreDocument *pDoc, lmView* pView, lmGMObject* pGMO)
-        : lmScoreCommand(name, pDoc)
+        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
         {
             m_pGMO = pGMO;
             m_pView = pView;
@@ -181,7 +184,6 @@ public:
     bool UndoCommand();
 
 protected:
-    lmVStaffCursor*     m_pVCursor;
     lmEBarline	        m_nBarlineType;
 };
 
@@ -201,16 +203,13 @@ public:
     bool UndoCommand();
 
 protected:
-    lmVStaffCursor*     m_pVCursor;
     lmEClefType         m_nClefType;
 
-    lmVStaff*           m_pVStaff;      //affected VStaff
-    //lmClef*				m_pNewClef;     //inserted clef
 };
 
 
 
-// Insert clef command
+// Insert time signature command
 //------------------------------------------------------------------------------------
 class lmCmdInsertTimeSignature: public lmScoreCommand
 {
@@ -225,11 +224,30 @@ public:
     bool UndoCommand();
 
 protected:
-    lmVStaffCursor*     m_pVCursor;
-    lmVStaff*           m_pVStaff;      //affected VStaff
-
     int                 m_nBeats;
     int                 m_nBeatType;
+    bool                m_fVisible;
+};
+
+
+
+// Insert key signature command
+//------------------------------------------------------------------------------------
+class lmCmdInsertKeySignature: public lmScoreCommand
+{
+public:
+
+    lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                            int nFifths, bool fMajor, bool fVisible, bool fHistory=true);
+    ~lmCmdInsertKeySignature() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    int                 m_nFifths;
+    bool                m_fMajor;
     bool                m_fVisible;
 };
 
@@ -252,7 +270,6 @@ public:
     bool UndoCommand();
 
 protected:
-    lmVStaffCursor*     m_pVCursor;
 	lmENoteType		    m_nNoteType;
 	lmEPitchType	    m_nPitchType;
 	wxString		    m_sStep;
@@ -262,7 +279,6 @@ protected:
 	lmEAccidentals	    m_nAcc;
 
     lmVStaff*           m_pVStaff;      //affected VStaff
-    //lmNote*             m_pNewNote;     //inserted note
 };
 
 

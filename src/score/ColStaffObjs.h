@@ -80,6 +80,10 @@ public:
     int GetNumVoices();
     bool IsVoiceUsed(int nVoice);
     inline float GetDuration() { return m_rMaxTime; }
+    inline bool IsEmpty() { return m_StaffObjs.size() == 0; }
+
+    //access to staffobjs
+    lmBarline* GetBarline();
 
 	//debug
 	wxString Dump();
@@ -97,7 +101,6 @@ private:
     std::list<lmStaffObj*>	m_StaffObjs;		//list of StaffObjs in this segment
     lmColStaffObjs* m_pOwner;                   
     int				m_nNumSegment;				//0..n-1
-    lmBarline*		m_pBarline;					//segment barline, if exists
     lmContext*		m_pContext[lmMAX_STAFF];	//ptr to current context for each staff
     int             m_bVoices;                  //voices in this segment. One bit per used voice
     float	        m_rMaxTime;                 //occupied time from start of the measure
@@ -120,6 +123,10 @@ public:
 	void Delete(lmStaffObj* pCursorSO, bool fDelete = true);
 	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
     bool ShiftTime(float rTimeShift);
+
+    //access StaffObjs
+    lmBarline* GetBarlineOfMeasure(int nMeasure);      //1..n
+    lmBarline* GetBarlineOfLastNonEmptyMeasure();
 
     //iterator related methods
     lmSOIterator* CreateIterator(ETraversingOrder nOrder, int nVoice=-1);
@@ -192,6 +199,9 @@ public:
 	lmVStaffCursor();
 	~lmVStaffCursor() {}
 
+    //copy constructor
+	lmVStaffCursor(lmVStaffCursor& oVCursor);
+
 	//creation related
 	void AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fReset=true);
 
@@ -216,6 +226,7 @@ public:
     void AdvanceToTime(float rTime);
     void AdvanceToNextSegment();
     void AdvanceToStartOfSegment(int nSegment, int nStaff);
+    void AdvanceToStartOfTimepos();
     void SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* pState);
     void SkipClefKey(bool fSkipKey);
 
@@ -232,6 +243,7 @@ public:
     inline int GetNumStaff() { return m_nStaff; }
     inline lmItCSO GetCurIt() { return m_it; }
     lmVCursorState GetState();
+    inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
     int GetPageNumber();
 	lmStaffObj* GetStaffObj();
 
@@ -246,6 +258,8 @@ private:
     void UpdateTimepos();
     lmStaffObj* GetPreviousStaffobj();
     float GetStaffPosY(lmStaffObj* pSO);
+    void AdvanceIterator();
+
 
 
 	lmColStaffObjs*		m_pColStaffObjs;	//collection pointed by this cursor

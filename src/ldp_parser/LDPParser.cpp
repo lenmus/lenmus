@@ -46,6 +46,7 @@
 
 #include "../score/Score.h"
 #include "../score/MetronomeMark.h"
+#include "../score/InstrGroup.h"
 #include "../auxmusic/Conversion.h"
 #include "LDPParser.h"
 #include "AuxString.h"
@@ -679,19 +680,136 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
 
-    // loop to parse elements <instrument>
+    // loop to parse elements <instrument> and <group>
     i=0;
-    while(pX->GetName() == m_pTags->TagName(_T("instrument")) &&  iP <= nNumParms) {
-        AnalyzeInstrument105(pX, pScore, i++);
+    while(iP <= nNumParms)
+    {
+        if ( pX->GetName() == m_pTags->TagName(_T("instrument")) )
+            AnalyzeInstrument105(pX, pScore, i++);
+        else if ( pX->GetName() == m_pTags->TagName(_T("group")) )
+            i += AnalyzeGroup(pX, pScore, i);
+        else
+        {
+            AnalysisError( _T("Elements <instrument> or <group> expected but found element %s. Analysis stopped."),
+                pNode->GetName().c_str() );
+            break;
+        }
         iP++;
-        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        if (iP <= nNumParms)
+            pX = pNode->GetParameter(iP);
     }
 
     return pScore;
 
 }
 
-void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr)
+int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
+{
+    //Returns the number of instruments added to the score
+
+    //<Group> = (group [<GrpName>] <GrpSymbol> [<JoinBarlines>] Instrument+ )
+    //
+    //<GrpName> = (name name-string [(abbrev abbreviation-string)])
+    //<GrpSymbol> = (symbol {none | brace | bracket} )
+    //<JoinBarlines> = (joinBarlines {yes | no} )
+
+    lmLDPNode* pX;
+    wxString sData;
+    long iP;
+    iP = 1;
+
+    wxASSERT( pNode->GetName() == m_pTags->TagName(_T("group")) );
+
+    //default values for name
+    //TODO user options instead of fixed values
+    wxString sGrpName = _T("");           //no name for group
+    lmEAlignment nNameAlign = lmALIGN_LEFT;
+    bool fNameHasWidth = false;
+    lmFontInfo tNameFont = g_tInstrumentDefaultFont;
+    lmLocation tNamePos = g_tDefaultPos;
+
+    //default values for abbreviation
+    //TODO user options instead of fixed values
+    wxString sGrpAbbrev = _T("");         //no abreviated name for group
+    lmEAlignment nAbbrevAlign = lmALIGN_LEFT;
+    bool fAbbrevHasWidth = false;
+    lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
+    lmLocation tAbbrevPos = g_tDefaultPos;
+
+    //default values for other parameters
+    bool fJoinBarlines = true;
+    lmEBracketSymbol nGrpSymbol = lm_eBrace;
+
+    //parse elements until <Instrument> tag found
+    bool fInstrFound = false;               
+    for (; iP <= pNode->GetNumParms(); iP++) {
+        pX = pNode->GetParameter(iP);
+
+        if (pX->GetName() == m_pTags->TagName(_T("instrument")) )
+        {
+            fInstrFound = true;
+            break;      //start of Instrument. Exit this loop
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("name")) )
+        {
+            AnalyzeTextString(pX, &sGrpName, &nNameAlign, &tNamePos,
+                              &tNameFont, &fNameHasWidth);
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("abbrev")) )
+        {
+            AnalyzeTextString(pX, &sGrpAbbrev, &nAbbrevAlign, &tAbbrevPos,
+                              &tAbbrevFont, &fAbbrevHasWidth);
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("symbol")) )
+        {
+            wxString sSymbol = (pX->GetParameter(1))->GetName();
+            if (sSymbol == m_pTags->TagName(_T("brace")) )
+                nGrpSymbol = lm_eBrace;
+            else if (sSymbol == m_pTags->TagName(_T("bracket")) )
+                nGrpSymbol = lm_eBracket;
+            else
+            {
+                AnalysisError( _T("Invalid group symbol '%s'. Brace assumed."), sSymbol.c_str());
+            }
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("joinBarlines")) )
+        {
+            fJoinBarlines = GetYesNoValue(pX, fJoinBarlines);
+        }
+        else
+        {
+            AnalysisError( _T("[%s]: unknown element '%s' found. Element ignored."),
+                m_pTags->TagName(_T("group")).c_str(), pX->GetName().c_str() );
+        }
+    }
+
+    //create the group relationship
+    lmInstrGroup* pGroup = new lmInstrGroup(nGrpSymbol, fJoinBarlines);
+
+    // loop to parse elements <instrument>
+    while(iP <= pNode->GetNumParms())
+    {
+        pX = pNode->GetParameter(iP);
+        if ( pX->GetName() == m_pTags->TagName(_T("instrument")) )
+        {
+            AnalyzeInstrument105(pX, pScore, nInstr++, pGroup);
+        }
+        else
+        {
+            AnalysisError( _T("Elements <instrument> expected but found element %s. Analysis stopped."),
+                pNode->GetName().c_str() );
+            break;
+        }
+        iP++;
+        if (iP <= pNode->GetNumParms())
+            pX = pNode->GetParameter(iP);
+    }
+
+    return nInstr;
+}
+
+void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr,
+                                       lmInstrGroup* pGroup)
 {
     //<instrument> = (instrument [<InstrName>][<InfoMIDI>][<Staves>] <Voice>+ )
 
@@ -705,11 +823,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     long iP;
     iP = 1;
 
-    if (pNode->GetName() != m_pTags->TagName(_T("instrument")) ) {
-        AnalysisError( _T("Element '%s' expected but found element %s. Analysis stopped."),
-            m_pTags->TagName(_T("instrument")).c_str(), pNode->GetName().c_str() );
-        return;
-    }
+    wxASSERT( pNode->GetName() == m_pTags->TagName(_T("instrument")) );
 
     //default values
 	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
@@ -799,7 +913,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         pAbbrev = new lmScoreText(sInstrAbbrev, nAbbrevAlign, tAbbrevPos, tAbbrevFont);
 
     lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr,
-                                        pName, pAbbrev);
+                                        pName, pAbbrev, pGroup);
     lmVStaff* pVStaff = pInstr->GetVStaff();
 
     // analyce first MusicData
@@ -2344,6 +2458,28 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     return false;    //no error
 
+}
+
+bool lmLDPParser::GetYesNoValue(lmLDPNode* pNode, bool fDefault)
+{
+    wxString sValue = ((pNode->GetParameter(1))->GetName()).Lower();
+    if (sValue == _T("true") || sValue == m_pTags->TagName(_T("yes")) )
+    {
+        return true;
+    }
+    else if (sValue == _T("false") || sValue == m_pTags->TagName(_T("no")) )
+    {
+        return false;
+    }
+    else
+    {
+        //get option name and value
+        wxString sName = pNode->GetName();
+        wxString sError = _T("a 'yes/no' or 'true/false' value");
+        AnalysisError( _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+            sName.c_str(), sError.c_str(), sValue.c_str());
+    }
+    return fDefault;
 }
 
 void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)

@@ -41,8 +41,6 @@ public:
 	int GetGroupWitdh();
 
 protected:
-    void Init();
-    wxBitmap CreateOnBitmap(wxString sBmpName);
 
 	lmToolPage*		m_pParent;		//owner ToolPage
 };

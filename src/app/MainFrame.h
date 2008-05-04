@@ -248,6 +248,7 @@ public:
 
 	//other
 	void RedirectKeyPressEvent(wxKeyEvent& event);
+    void SetFocusOnActiveView();
 
 
 
@@ -257,7 +258,6 @@ protected:
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
 	void ShowEditTools(bool fShow);
-    void SetFocusOnActiveView();
 
 
     //status bar

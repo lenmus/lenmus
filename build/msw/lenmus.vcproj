@@ -230,6 +230,12 @@
 				RelativePath="..\..\src\score\Glyph.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\InstrGroup.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\InstrGroup.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Instrument.cpp">
 			</File>
 			<File
@@ -622,6 +628,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\widgets\Ruler.h">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\Wizard.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\Wizard.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1141,6 +1153,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\ShapeBeam.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeBracket.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeBracket.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\ShapeNote.cpp">

@@ -39,6 +39,8 @@
 
 #include <vector>
 
+#include "ColorScheme.h"
+
 
 //available tools
 enum lmEEditTool 
@@ -56,6 +58,7 @@ enum lmEEditTool
 
 class lmCheckButton;
 class lmToolNotes;
+class wxBoxSizer;
 
 class lmToolBox: public wxPanel
 {
@@ -67,9 +70,11 @@ public:
 
     void OnButtonClicked(wxCommandEvent& event);
     void OnKeyPress(wxKeyEvent& event);
+    void OnResize(wxSizeEvent& event);
 
 	//info
 	int GetWidth() { return 150; }
+	inline lmColorScheme* GetColors() { return &m_colors; }
 
 	//current tool and its options
 	inline lmEEditTool GetSelectedTool() const { return m_nSelTool; }
@@ -89,12 +94,16 @@ private:
 		NUM_BUTTONS = 16,
 	};
 
-    wxPanel*		m_pOptionsPanel;
-	lmEEditTool		m_nSelTool;				//current selected tool
+    wxPanel*		m_pEmptyPage;           //an empty page
+    wxPanel*		m_pCurPage;             //currently displayed page
+    wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
+    lmEEditTool		m_nSelTool;				//current selected tool
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
 
 	//panels for tools' options
 	std::vector<wxPanel*>	m_cPanels;		// tools' panels collection
+
+	lmColorScheme	m_colors;               //colors to use in this toolbox
 
 
     DECLARE_EVENT_TABLE()

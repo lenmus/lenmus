@@ -1516,7 +1516,7 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
     m_pCanvas->MacUpdateImmediately() ;
 #endif
 
-    //Restore Cursor
+    //Restore Caret
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
     m_pCaret->DisplayCaret(m_rScale, uPos, pStaff);
@@ -2136,7 +2136,11 @@ lmLUnits lmScoreView::GetMouseTolerance()
     //The returned value is in lmLUnits
 
     //TODO: User option?
-	return m_pDoc->GetScore()->TenthsToLogical(1.0f);
+    if (!m_pDoc) return 1.0f;
+	lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return 1.0f;
+    
+    return pScore->TenthsToLogical(1.0f);
 }
 
 

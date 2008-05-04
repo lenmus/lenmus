@@ -273,7 +273,11 @@ void lmScoreCanvas::DeleteObject()
 
 	//get object pointed by the cursor
     lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
-	wxASSERT(pCursorSO);
+
+    //if no object, ignore command. It is due, for example, to the user clicking 'Del' key
+    //on no object
+	if (!pCursorSO)
+        return;
 
 	//the EOS Barline can not be deleted
 	if (pCursorSO->GetClass() == eSFOT_Barline 
@@ -304,7 +308,7 @@ void lmScoreCanvas::InsertTimeSignature(int nBeats, int nBeatType, bool fVisible
 {
     //insert a time signature at current cursor position
 
-    wxLogMessage(_T("[lmScoreCanvas::InsertTimeSignature] nBeats=%d, nBeatType=%d"), nBeats, nBeatType);
+    //wxLogMessage(_T("[lmScoreCanvas::InsertTimeSignature] nBeats=%d, nBeatType=%d"), nBeats, nBeatType);
 
     //get cursor
     lmVStaffCursor* pVCursor = m_pView->GetCursor();
@@ -315,6 +319,23 @@ void lmScoreCanvas::InsertTimeSignature(int nBeats, int nBeatType, bool fVisible
 	wxString sName = _T("Insert time signature");
 	pCP->Submit(new lmCmdInsertTimeSignature(pVCursor, sName, m_pDoc, nBeats,
                                              nBeatType, fVisible) );
+}
+
+void lmScoreCanvas::InsertKeySignature(int nFifths, bool fMajor, bool fVisible)
+{
+    //insert a key signature at current cursor position
+
+    wxLogMessage(_T("[lmScoreCanvas::InsertKeySignature] fifths=%d, %s"),
+                 nFifths, (fMajor ? _T("major") : _T("minor")) );
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+	wxASSERT(pVCursor);
+
+    //prepare command and submit it
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _T("Insert key signature");
+	pCP->Submit(new lmCmdInsertKeySignature(pVCursor, sName, m_pDoc, nFifths, fMajor, fVisible) );
 }
 
 void lmScoreCanvas::InsertBarline(lmEBarline nType)

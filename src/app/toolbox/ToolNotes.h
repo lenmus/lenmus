@@ -79,7 +79,7 @@ public:
 	void SelectButton(int iB);
 
     enum {
-        lm_NUM_BUTTONS = 9
+        lm_NUM_BUTTONS = 8
     };
 
 private:

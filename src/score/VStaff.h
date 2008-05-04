@@ -116,14 +116,18 @@ public:
 
 	//Edition commands
 	//--- inserting StaffObs
-    lmBarline* InsertBarline(lmEBarline nType = lm_eBarlineSimple);
-	lmClef* Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff, bool fVisible);
+    lmBarline* Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType = lm_eBarlineSimple,
+                                 bool fVisible = true);
+	lmClef* Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
+                           bool fVisible);
 	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, wxString sStep,
-					   wxString sOctave, lmENoteType nNoteType, float rDuration,
-					   lmENoteHeads nNotehead, lmEAccidentals nAcc);
+					       wxString sOctave, lmENoteType nNoteType, float rDuration,
+					       lmENoteHeads nNotehead, lmEAccidentals nAcc);
 
     lmTimeSignature* Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
                                     int nBeatType, bool fVisible);
+    lmKeySignature* Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
+                                    bool fMajor, bool fVisible);
 
     //--- deleting StaffObjs
 	void DeleteObject();
@@ -200,7 +204,8 @@ public:
     lmSoundManager* ComputeMidiEvents(int nChannel);
 
     //renderization related methods
-    bool GetXPosFinalBarline(lmLUnits* pPos);
+    lmBarline* GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos);
+    lmBarline* GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos);
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
 	inline lmLUnits GetTopMargin() const { return m_topMargin; }
@@ -225,6 +230,9 @@ private:
 
     //common code for all time signatures types
     lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
+
+    //common code for keys and time signatures
+    bool InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS);
 
 	//source LDP and MusicXML generation
 	void LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
@@ -318,6 +326,22 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
+class lmVCmdInsertBarline : public lmVStaffCmd
+{
+public:
+    lmVCmdInsertBarline(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
+                        lmEBarline nBarlineType, bool fVisible=true);
+    ~lmVCmdInsertBarline() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pNewBar != (lmBarline*)NULL); }
+
+protected:
+    lmBarline*          m_pNewBar;     //inserted barline
+
+};
+
+//---------------------------------------------------------------------------------------
 class lmVCmdInsertTimeSignature : public lmVStaffCmd
 {
 public:
@@ -330,6 +354,22 @@ public:
 
 protected:
     lmTimeSignature*    m_pNewTime;     //inserted time signature
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdInsertKeySignature : public lmVStaffCmd
+{
+public:
+    lmVCmdInsertKeySignature(lmVStaff* pVStaff, lmUndoItem* pUndoItem, int nFifths,
+                             bool fMajor, bool fVisible);
+    ~lmVCmdInsertKeySignature() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pNewKey != (lmKeySignature*)NULL); }
+
+protected:
+    lmKeySignature*     m_pNewKey;      //inserted key signature
 
 };
 

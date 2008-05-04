@@ -46,12 +46,12 @@ public:
     //event handlers
     void OnRespButton(wxCommandEvent& event);
 
-    
+
 protected:
     lmMsgBoxBase(const wxString& sMessage, const wxString& sTitle);
     void CreateControls();
     void AddButton(const wxString& sLabel, const wxString& sDescr);
-    
+
 	wxStaticBitmap*     m_pBitmap;
 	wxStaticText*       m_pMessage;
 	const wxString&     m_sMessage;
@@ -66,37 +66,37 @@ class lmErrorBox : public lmMsgBoxBase
 public:
     lmErrorBox(const wxString& sMessage, const wxString& sButtonText);
     ~lmErrorBox() {}
-    
+
 protected:
 
 };
 
-class lmInfoBox : public lmMsgBoxBase
-{
-public:
-    lmInfoBox();
-    ~lmInfoBox();
-    
-protected:
-
-};
-
-class lmYesNoBox : public lmMsgBoxBase
-{
-public:
-    lmYesNoBox();
-    ~lmYesNoBox();
-    
-protected:
-
-};
+//class lmInfoBox : public lmMsgBoxBase
+//{
+//public:
+//    lmInfoBox();
+//    ~lmInfoBox();
+//
+//protected:
+//
+//};
+//
+//class lmYesNoBox : public lmMsgBoxBase
+//{
+//public:
+//    lmYesNoBox();
+//    ~lmYesNoBox();
+//
+//protected:
+//
+//};
 
 class lmQuestionBox : public lmMsgBoxBase
 {
 public:
     lmQuestionBox(const wxString& sMessage, int nNumButtons, ...);
     ~lmQuestionBox() {}
-    
+
 protected:
 
 };

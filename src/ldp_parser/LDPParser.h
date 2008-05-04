@@ -38,6 +38,7 @@
 
 #include "../score/Score.h"
 
+class lmInstrGroup;
 
 enum lmETagLDP
 {
@@ -72,8 +73,10 @@ public:
     lmEPlacement AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff, lmLocation* pPos);
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
+    int         AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
-    void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr);
+    void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr,
+                                     lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUnit);
     void        AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos);
@@ -139,6 +142,8 @@ private:
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
+
+    bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
 
 
     void Clear();

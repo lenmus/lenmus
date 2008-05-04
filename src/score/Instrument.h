@@ -29,6 +29,7 @@
 class lmBox;
 class lmColStaffObjs;
 class lmVStaffCursor;
+class lmInstrGroup;
 
 
 class lmInstrument : public lmScoreObj
@@ -57,10 +58,10 @@ public:
     inline int GetNumStaves() { return m_pVStaff->GetNumStaves(); }
 
     //layout
-    void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_nIndentFirst, pPos); }
-    void SetIndentOther(lmLocation* pPos) { SetIndent(&m_nIndentOther, pPos); }
-    lmLUnits GetIndentFirst() { return m_nIndentFirst; }
-    lmLUnits GetIndentOther() { return m_nIndentOther; }
+    void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_uIndentFirst, pPos); }
+    void SetIndentOther(lmLocation* pPos) { SetIndent(&m_uIndentOther, pPos); }
+    lmLUnits GetIndentFirst() { return m_uIndentFirst; }
+    lmLUnits GetIndentOther() { return m_uIndentOther; }
 
     void MeasureNames(lmPaper* pPaper);
 	void AddNameShape(lmBox* pBox, lmPaper* pPaper);
@@ -75,6 +76,14 @@ public:
                                 { return m_pVStaff->GetCursor()->AttachCursor(pSCursor); }
 	inline void DetachCursor() { m_pVStaff->GetCursor()->DetachCursor(); }
 
+    //group related methods
+    void OnRemovedFromGroup(lmInstrGroup* pGroup);
+    void OnIncludedInGroup(lmInstrGroup* pGroup);
+    bool IsLastOfGroup();
+    bool IsFirstOfGroup();
+    void AddGroupName(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop, lmLUnits yBottom);
+    void AddGroupAbbreviation(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop,
+                              lmLUnits yBottom);
 
     //Debug methods
     wxString Dump();
@@ -93,16 +102,23 @@ private:
     void Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
                 lmScoreText* pName, lmScoreText* pAbbrev);
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
+	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName);
+    bool RenderBraket();
 
     lmScore*        m_pScore;           //score to whith this instrument belongs
 	lmVStaff*		m_pVStaff;			//VStaff for this instrument
     int             m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
     int             m_nMidiChannel;     //MIDI channel to use
 
-    lmLUnits        m_nIndentFirst;     //indentation for first system
-    lmLUnits        m_nIndentOther;     //indentation for other systems
+    lmLUnits        m_uIndentFirst;     //indentation for first system
+    lmLUnits        m_uIndentOther;     //indentation for other systems
     lmScoreText*    m_pName;            //instrument name
-    lmScoreText*    m_pAbbreviation;    //abreviated name to use
+    lmScoreText*    m_pAbbreviation;    //instrument abbreviated name
+
+    lmEBracketSymbol    m_nBracket;     //in case in has more that one staff
+    lmInstrGroup*       m_pGroup;       //NULL if instrument not in group
+    lmLUnits            m_uBracketWidth;    //to render the bracket
+    lmLUnits            m_uBracketGap;      //to render the bracket
 
 
 

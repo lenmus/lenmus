@@ -431,7 +431,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
             lmLUnits xPos;
-            if (pVStaff->GetXPosFinalBarline(&xPos))
+            //if (pVStaff->GetXPosFinalBarline(&xPos))
+            if (pVStaff->GetBarlineOfLastNonEmptyMeasure(&xPos))
                 pBoxSystem->UpdateXRight( xPos - 1 );
             else
                 pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
@@ -716,13 +717,6 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 
         fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, nInstr, pPaper);
 
-        //advance paper in height off this lmVStaff
-        //AWARE As advancing one staff has the effect of returning
-        //x position to the left marging, all x position information stored
-        //in m_timepos is relative to the start of the measure
-        pVStaff->NewLine(pPaper);
-        //TODO add inter-staff space
-
         ///*** Update measures of this BoxSliceVStaff
 
 
@@ -730,14 +724,37 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 		pBSI->SetYBottom(yBottomLeft);
 		pBoxSlice->SetYBottom(yBottomLeft);
 
-        // if first measure in system add instrument names and brackets/bracets
+        // if first measure in system add instrument name and bracket/bracet
+        lmLUnits yTopGroup;
 		if (nRelMeasure == 1)
 		{
 			if (nSystem == 1)
 				pInstr->AddNameShape(pBSI, pPaper);
 			else
 				pInstr->AddAbbreviationShape(pBSI, pPaper);
+
+            // if first instrument in group, save yTop position for group
+		    if (pInstr->IsFirstOfGroup())
+		    {
+			    yTopGroup = pBSI->GetYTop();
+            }
+
+            // if last instrument of a group, add group name and bracket/bracet
+		    if (pInstr->IsLastOfGroup())
+		    {
+			    if (nSystem == 1)
+				    pInstr->AddGroupName(pBSI, pPaper, yTopGroup, pBSI->GetYBottom());
+			    else
+				    pInstr->AddGroupAbbreviation(pBSI, pPaper, yTopGroup, pBSI->GetYBottom());
+            }
 		}
+
+        //advance paper in height off this lmVStaff
+        //AWARE As advancing one staff has the effect of returning
+        //x position to the left marging, all x position information stored
+        //in m_timepos is relative to the start of the measure
+        pVStaff->NewLine(pPaper);
+        //TODO add inter-staff space
 
     }    // next lmInstrument
 
@@ -1175,9 +1192,9 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
 void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper,
 						  lmVStaff* pVStaff, int nInstr, int nRelMeasure)
 {
-    // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating all the shape objects for all staves of this instrument
-	// and adding them to the graphical model and to the Timepos table
+    // This method is responsible for creating the key signature shapes for 
+    // all staves of this instrument. And also, of adding them to the graphical 
+    // model and to the Timepos table
 
     //create the shapes
     pKey->Layout(pBox, pPaper);
@@ -1197,9 +1214,9 @@ void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper,
 void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox, lmPaper* pPaper,
 						   lmVStaff* pVStaff, int nInstr, int nRelMeasure)
 {
-    // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating all the shape objects for all staves of this instrument
-	// and adding them to the graphical model and to the timepos table
+    // This method is responsible for creating the time signature shapes for 
+    // all staves of this instrument. And also, of adding them to the graphical 
+    // model and to the Timepos table
 
     //create the shapes
     pTime->Layout(pBox, pPaper);

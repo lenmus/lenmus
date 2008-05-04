@@ -71,6 +71,7 @@ public:
 					lmENoteHeads nNotehead,
 					lmEAccidentals nAcc = lm_eNoAccidentals ) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
+    virtual void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true) {}
 	virtual void ChangeNotePitch(int nSteps) {}
 	virtual void ChangeNoteAccidentals(int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
@@ -138,6 +139,7 @@ public:
 					lmENoteHeads nNotehead,
 					lmEAccidentals nAcc = lm_eNoAccidentals );
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
+    void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 	void ChangeNotePitch(int nSteps);
 	void ChangeNoteAccidentals(int nSteps);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);

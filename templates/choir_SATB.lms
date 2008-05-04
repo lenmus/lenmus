@@ -1,0 +1,26 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (group symbol:brace joinBarlines:no
+	   (instrument (name "Soprano")(abbrev "S") 
+          (musicData
+             (clef treble)
+          )
+       )
+	   (instrument (name "Alto")(abbrev "A") 
+          (musicData
+             (clef treble)
+          )
+       )
+	   (instrument (name "Tenor")(abbrev "T") 
+          (musicData
+             (clef treble)
+          )
+       )
+	   (instrument (name "Bass")(abbrev "B") 
+          (musicData
+             (clef bass)
+          )
+       )
+   )
+)
+

@@ -63,16 +63,17 @@
 
 
 //layout parameters
-const int SPACING = 1;          //spacing (pixels) around each sizer
+const int SPACING = 5;          //spacing (pixels) around each sizer
 const int BUTTON_SPACING = 2;	//spacing (pixels) between buttons
 const int BUTTON_SIZE = 32;		//tools button size (pixels)
-const int NUM_COLUMNS = 4;      //number of buttons per row
+const int NUM_COLUMNS = 5;      //number of buttons per row
 const int ID_BUTTON = 2200;
 
 
 BEGIN_EVENT_TABLE(lmToolBox, wxPanel)
-	EVT_CHAR(lmToolBox::OnKeyPress)
+	EVT_CHAR (lmToolBox::OnKeyPress)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmToolBox::OnButtonClicked)
+    EVT_SIZE (lmToolBox::OnResize) 
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmToolBox, wxPanel)
@@ -101,10 +102,14 @@ static const lmToolsData m_aToolsData[] = {
 };
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
-    : wxPanel(parent, id, wxPoint(0,0), wxSize(170, 400), wxNO_BORDER)
+    : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxNO_BORDER)
 {
 	//Create the dialog
 	m_nSelTool = lmTOOL_NONE;
+
+	//set colors
+	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
+
 	CreateControls();
 
 	//initialize panel's array
@@ -123,50 +128,49 @@ void lmToolBox::CreateControls()
 {
     //Controls creation for ToolsBox Dlg
 
-    //The Tool box panel has two areas:
-    //1. Tool selection buttons are, in the middle
-    //2. Selected tool options, in the bottom
-
-    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-
     //the main sizer, to contain the three areas
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
-    SetSizer(pMainSizer);
 
-	//the buttons area
-    wxGridSizer* buttonsSizer = new wxGridSizer(NUM_COLUMNS);
-    pMainSizer->Add(buttonsSizer, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, SPACING));
+    //the tool page buttons selection area
+	wxPanel* pSelectPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    pSelectPanel->SetBackgroundColour(m_colors.Normal());
 
-	//separation line
-	wxStaticLine* pLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition,
-										   wxDefaultSize, wxLI_HORIZONTAL );
-    pMainSizer->Add(pLine, wxSizerFlags(0).Left().Border(wxGROW|wxTOP|wxBOTTOM, 5));
-
-    //the options area
-    wxBoxSizer* optsSizer = new wxBoxSizer(wxVERTICAL);
-    pMainSizer->Add(optsSizer, 0, wxGROW|wxTOP, SPACING);
-    m_pOptionsPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(150, 300),
-								  wxNO_BORDER );
-    optsSizer->Add(m_pOptionsPanel, 0, wxGROW|wxTOP, SPACING);
-
-    //create the tool buttons
+	wxBoxSizer* pSelectSizer = new wxBoxSizer( wxVERTICAL );
+	
+    wxGridSizer* pButtonsSizer = new wxGridSizer(NUM_COLUMNS);
     int iMax = sizeof(m_aToolsData)/sizeof(lmToolsData);
+    wxSize btSize(BUTTON_SIZE, BUTTON_SIZE);
 	for (int iB=0; iB < iMax; iB++)
 	{
 		if (m_aToolsData[iB].nToolId == lmTOOL_NONE) break;
-        m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB,
-            wxArtProvider::GetBitmap(m_aToolsData[iB].sBitmap, wxART_TOOLBAR,
-									 wxSize(BUTTON_SIZE, BUTTON_SIZE) ));
-		//m_pButton[iB] = new lmCheckButton(this, ID_BUTTON + iB, tool_clefs_24_xpm,
-		//								  wxDefaultPosition, wxSize(24,24) );
-        buttonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, BUTTON_SPACING) );
-		m_pButton[iB]->SetToolTip(m_aToolsData[iB].sToolTip);
-		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
-		m_pButton[iB]->SetBorderDown(lm_eBorderFlat);
+
+        m_pButton[iB] = new lmCheckButton(pSelectPanel, ID_BUTTON + iB, wxBitmap(btSize.x, btSize.y));
+        m_pButton[iB]->SetBitmapUp(m_aToolsData[iB].sBitmap, _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(m_aToolsData[iB].sBitmap, _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(m_aToolsData[iB].sBitmap, _T("button_over_flat"), btSize);
+        pButtonsSizer->Add(m_pButton[iB], 0, 0, BUTTON_SPACING);
 	}
-  //  buttonsSizer->Add(
-		//new wxButton(this, wxID_ANY, _T(""), wxDefaultPosition, wxSize(26,26) ),
-		//wxSizerFlags(0).Border(wxALL, BUTTON_SPACING) );
+
+    pSelectSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALL, 5 );
+	
+	pSelectPanel->SetSizer( pSelectSizer );
+	pSelectPanel->Layout();
+	pSelectSizer->Fit( pSelectPanel );
+	pMainSizer->Add( pSelectPanel, 0, 0, 5 );
+	
+    //the pages
+	m_pPageSizer = new wxBoxSizer( wxVERTICAL );
+	
+    m_pEmptyPage = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize(170, 400), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+    m_pEmptyPage->SetBackgroundColour(m_colors.Bright());
+	m_pCurPage = m_pEmptyPage;
+	m_pPageSizer->Add( m_pCurPage, 1, wxEXPAND, 5 );
+	
+	pMainSizer->Add( m_pPageSizer, 1, wxEXPAND, 5 );
+	
+	SetSizer( pMainSizer );
+    pMainSizer->SetSizeHints(this);
+	Layout();
 }
 
 lmToolBox::~lmToolBox()
@@ -179,15 +183,15 @@ wxPanel* lmToolBox::CreatePanel(lmEEditTool nPanel)
 		case lmTOOL_SELECTION:
             return (wxPanel*)NULL;
         case lmTOOL_CLEFS:
-            return new lmToolClef(m_pOptionsPanel);
+            return new lmToolClef(this);
 		case lmTOOL_KEY_SIGN:
             return (wxPanel*)NULL;
 		case lmTOOL_TIME_SIGN:
             return (wxPanel*)NULL;
         case lmTOOL_NOTES:
-            return new lmToolNotes(m_pOptionsPanel);
+            return new lmToolNotes(this);
         case lmTOOL_BARLINES:
-            return (wxPanel*)NULL;	//new lmToolBarlinesOpt(m_pOptionsPanel);
+            return (wxPanel*)NULL;	//new lmToolBarlinesOpt(m_pCurPage);
         //TO_ADD: Add a new case block for creating the new tool panel
         default:
             wxASSERT(false);
@@ -201,25 +205,32 @@ void lmToolBox::OnButtonClicked(wxCommandEvent& event)
     //identify button pressed
 	SelectTool((lmEEditTool)(event.GetId() - ID_BUTTON));
 
-	//lmController* pController = g_pTheApp->GetViewController();
+	//lmController* pController = g_pTheApp->GetActiveController();
 	//pController->SetCursor(*wxCROSS_CURSOR);
     //wxLogMessage(_T("[lmToolBox::OnButtonClicked] Tool %d selected"), m_nSelTool);
 }
 
 void lmToolBox::SelectTool(lmEEditTool nTool)
 {
-    if (nTool == (int)m_nSelTool) return;        //tool already selected
+	if (!(nTool > lmTOOL_NONE && nTool < lmTOOL_MAX)) 
+        return;
 
-	if (nTool > lmTOOL_NONE && nTool < lmTOOL_MAX)
-	{
-		SelectButton((int)nTool);
-		m_nSelTool = nTool;
+    SelectButton((int)nTool);
+	m_nSelTool = nTool;
 
-		//show panel with options for selected tool
-		for(int i=0; i < (int)lmTOOL_MAX; i++)
-			if (m_cPanels[i]) m_cPanels[i]->Show(i == nTool);
-	}
+    //hide current page and save it
+    wxPanel* pOldPage = m_pCurPage;
+    pOldPage->Hide();
 
+    //show new one
+    m_pCurPage = (m_cPanels[nTool] ? m_cPanels[nTool] : m_pEmptyPage);
+    m_pCurPage->Show();
+    m_pPageSizer->Replace(pOldPage, m_pCurPage); 
+    m_pCurPage->SetFocus();
+    GetSizer()->Layout();
+
+    //return focus to active view
+    GetMainFrame()->SetFocusOnActiveView();
 }
 
 void lmToolBox::SelectButton(int nTool)
@@ -238,5 +249,11 @@ void lmToolBox::OnKeyPress(wxKeyEvent& event)
 {
 	//redirect all key press events to the active child window
 	GetMainFrame()->RedirectKeyPressEvent(event);
-
 }
+
+void lmToolBox::OnResize(wxSizeEvent& event)
+{
+    wxSize newSize = event.GetSize();
+    wxLogMessage(_T("[lmToolBox::OnResize] New size: %d, %d"), newSize.x, newSize.y);
+}
+

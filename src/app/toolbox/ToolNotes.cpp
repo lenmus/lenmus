@@ -44,6 +44,8 @@
 #include "ToolGroup.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "../../widgets/Button.h"
+#include "../TheApp.h"              //to use GetMainFrame()
+#include "../MainFrame.h"           //to get active lmScoreCanvas
 
 
 #define lmSPACING 5
@@ -164,18 +166,19 @@ void lmGrpNoteDuration::CreateControls(wxBoxSizer* pMainSizer)
     };
 
     wxBoxSizer* pButtonsSizer;
+    wxSize btSize(24, 24);
 	for (int iB=0; iB < lm_NUM_BUTTONS; iB++)
 	{
 		if (iB % 5 == 0) {
 			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
-		m_pButton[iB] =
-				new lmCheckButton(this, lmID_BT_NoteDuration+iB,
-				wxArtProvider::GetBitmap(sButtonBmps[iB] + _T("_off"), wxART_TOOLBAR, wxSize(24, 24)) );
+
+		m_pButton[iB] = new lmCheckButton(this, lmID_BT_NoteDuration+iB, wxBitmap(24, 24));
+        m_pButton[iB]->SetBitmapUp(sButtonBmps[iB] + _T("_off"), _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(sButtonBmps[iB] + _T("_off"), _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(sButtonBmps[iB] + _T("_off"), _T("button_over_flat"), btSize);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
-		m_pButton[iB]->SetBitmapSelected( wxArtProvider::GetBitmap(sButtonBmps[iB] + _T("_on"), wxART_TOOLBAR, wxSize(24, 24)) );
-		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
 	}
 	this->Layout();
 
@@ -203,6 +206,9 @@ void lmGrpNoteDuration::SelectButton(int iB)
 		else
 			m_pButton[i]->Press();
 	}
+
+    //return focus to active view
+    GetMainFrame()->SetFocusOnActiveView();
 }
 
 
@@ -230,7 +236,6 @@ void lmGrpNoteAcc::CreateControls(wxBoxSizer* pMainSizer)
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_BUTTONS] = {
-	    _T("none"),
 	    _T("acc_natural"),
 	    _T("acc_flat"),
 	    _T("acc_sharp"),
@@ -242,18 +247,18 @@ void lmGrpNoteAcc::CreateControls(wxBoxSizer* pMainSizer)
     };
 
     wxBoxSizer* pButtonsSizer;
+    wxSize btSize(24, 24);
 	for (int iB=0; iB < lm_NUM_BUTTONS; iB++)
 	{
 		if (iB % 5 == 0) {
 			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
-		m_pButton[iB] =
-				new lmCheckButton(this, lmID_BT_NoteAcc+iB,
-				wxArtProvider::GetBitmap(sButtonBmps[iB], wxART_TOOLBAR, wxSize(24, 24)) );
+		m_pButton[iB] = new lmCheckButton(this, lmID_BT_NoteAcc+iB, wxBitmap(24,24));
+        m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], _T("button_over_flat"), btSize);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
-		m_pButton[iB]->SetBitmapSelected( CreateOnBitmap(sButtonBmps[iB]) );
-		m_pButton[iB]->SetBorderOver(lm_eBorderOver);
 	}
 	this->Layout();
 
@@ -272,13 +277,27 @@ void lmGrpNoteAcc::OnButton(wxCommandEvent& event)
 
 void lmGrpNoteAcc::SelectButton(int iB)
 {
-    // Set selected button as 'pressed' and all others as 'released'
-	m_nSelButton = iB;
-	for(int i=0; i < lm_NUM_BUTTONS; i++)
-	{
-		if (i != iB)
-			m_pButton[i]->Release();
-		else
-			m_pButton[i]->Press();
-	}
+    // Set selected button as 'pressed'/'released' and all others as 'released'
+
+    if (!m_pButton[iB]->IsPressed())
+    {
+        //AWARE: As the click event is first processed by the button, the button state is
+        //already changed when at this point. Therefore, the condition to check is the opposite !!
+	    m_nSelButton = -1;
+        m_pButton[iB]->Release();
+    }
+    else
+    {
+	    m_nSelButton = iB;
+	    for(int i=0; i < lm_NUM_BUTTONS; i++)
+	    {
+		    if (i != iB)
+			    m_pButton[i]->Release();
+		    else
+			    m_pButton[i]->Press();
+	    }
+    }
+
+    //return focus to active view
+    GetMainFrame()->SetFocusOnActiveView();
 }

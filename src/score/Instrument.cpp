@@ -40,9 +40,11 @@
 #endif
 
 #include "Score.h"
+#include "InstrGroup.h"
 #include "wx/debug.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+#include "../graphic/ShapeBracket.h"
 
 
 //Global variables used as default initializators
@@ -71,7 +73,6 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
 
     //create the instrument
     Create(pScore, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
-
 }
 
 lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
@@ -87,9 +88,13 @@ void lmInstrument::Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
     m_pScore = pScore;
     m_nMidiInstr = nMIDIInstr;
     m_nMidiChannel = nMIDIChannel;
-    m_nIndentFirst = 0;
-    m_nIndentOther = 0;
+    m_uIndentFirst = 0;
+    m_uIndentOther = 0;
     m_pVStaff = new lmVStaff(m_pScore, this);
+    m_pGroup = (lmInstrGroup*)NULL;
+    m_nBracket = lm_eBracketDefault;
+    m_uBracketWidth = 0.0f;
+    m_uBracketGap = 0.0f;
 
     m_pName = pName;
     if (pName)
@@ -108,18 +113,23 @@ lmInstrument::~lmInstrument()
 	if (m_pName) delete m_pName;
     if (m_pAbbreviation) delete m_pAbbreviation;
 
+    //remove from group
+    if (m_pGroup)
+    {
+        m_pGroup->Remove(this);
+		if (m_pGroup->NumInstruments() <= 1)
+			delete m_pGroup;
+	}
 }
 
 lmLUnits lmInstrument::TenthsToLogical(lmTenths nTenths)
 {
-	//TODO
-	return 0.0;
+    return GetVStaff()->TenthsToLogical(nTenths, 1);
 }
 
 lmTenths lmInstrument::LogicalToTenths(lmLUnits uUnits)
 {
-	//TODO
-	return 0.0;
+    return GetVStaff()->LogicalToTenths(uUnits, 1);
 }
 
 void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
@@ -192,14 +202,30 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
     //Save original position to restore it later
     lmLUnits xPaper = pPaper->GetCursorX();
 
-    m_nIndentFirst = 0;
-    m_nIndentOther = 0;
+    //if this instrument is in a group get group names & brace widths
+    if (m_pGroup)
+    {
+        if (m_pGroup->GetFirstInstrument() == this)
+        {
+            m_pGroup->MeasureNames(pPaper);
+        }
+        m_uIndentFirst = m_pGroup->GetIndentFirst();
+        m_uIndentOther = m_pGroup->GetIndentOther();
+    }
+    else
+    {
+        m_uIndentFirst = 0;
+        m_uIndentOther = 0;
+    }
+
+    //TODO: user options
+    lmLUnits uSpaceAfterName = TenthsToLogical(10.0f);
 
     if (m_pName) {
         // measure text extent
         lmShapeText* pShape = m_pName->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
-        m_nIndentFirst = pShape->GetWidth() + 30;    //TODO user options
+        m_uIndentFirst += pShape->GetWidth() + uSpaceAfterName;
 		delete pShape;
     }
 
@@ -207,8 +233,18 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
         // measure text extent
         lmShapeText* pShape = m_pAbbreviation->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
-        m_nIndentOther = pShape->GetWidth() + 30;    //TODO user options
+        m_uIndentOther += pShape->GetWidth() + uSpaceAfterName;
 		delete pShape;
+    }
+
+    if (RenderBraket())
+    {
+        //TODO: user options
+        m_uBracketWidth = TenthsToLogical(20.0f);
+        m_uBracketGap = TenthsToLogical(5.0f);
+
+        m_uIndentOther += m_uBracketWidth + m_uBracketGap;
+        m_uIndentFirst += m_uBracketWidth + m_uBracketGap;
     }
 
     //restore original paper position
@@ -218,37 +254,84 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
 
 void lmInstrument::AddNameShape(lmBox* pBox, lmPaper* pPaper)
 {
-    //when this method is invoked paper is positioned at top left corner of instrument
-    //renderization point (x = left margin, y = top line of first staff)
-    //after rendering, paper position is not advanced
-
-    if (m_pName)
-	{
-		//create the shape
-        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-        pBox->AddShape( m_pName->CreateShape(pPaper, uPos) );
-
-		////restore paper position
-		//pPaper->SetCursorX(uPos.x);
-		//pPaper->SetCursorY(uPos.y);
-    }
+    AddNameAbbrevShape(pBox, pPaper, m_pName);
 }
 
 void lmInstrument::AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper)
 {
+    AddNameAbbrevShape(pBox, pPaper, m_pAbbreviation);
+}
+
+void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName)
+{
     //when this method is invoked paper is positioned at top left corner of instrument
-    //renderization point (x = left margin, y = top line of first staff)
-    //after rendering, paper position is not advanced
+    //renderization point (x = left border of staff, y = top line of first staff)
 
-    if (m_pAbbreviation)
-	{
-		//create the shape
-        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-        pBox->AddShape( m_pAbbreviation->CreateShape(pPaper, uPos) );
+    //save paper position
+    lmUPoint uPaper(pPaper->GetCursorX(), pPaper->GetCursorY());
 
-		////restore paper position
-		//pPaper->SetCursorX(uPos.x);
-		//pPaper->SetCursorY(uPos.y);
+    //add shape for the bracket, if necessary
+    if (RenderBraket())
+    {
+        lmLUnits xLeft = uPaper.x - m_uBracketWidth - m_uBracketGap;
+        lmLUnits xRight = uPaper.x - m_uBracketGap;
+        lmLUnits yBottom = pBox->GetYBottom();
+        lmShape* pShape = new lmShapeBracket(this, m_nBracket, xLeft, uPaper.y,
+                                    xRight, yBottom, *wxRED);
+        pBox->AddShape( pShape );
+    }
+
+    //add shape for the name/abbreviation
+    if (pName)
+    {
+        lmUPoint uPos(pPaper->GetPageLeftMargin(), uPaper.y);
+        lmShape* pShape = pName->CreateShape(pPaper, uPos);
+        pShape->Shift(0.0f, (pBox->GetHeight() - pShape->GetHeight())/2.0f );
+        pBox->AddShape( pShape );
     }
 }
 
+bool lmInstrument::RenderBraket()
+{
+    //returns true if a brace / bracket must be rendered
+
+    return (m_nBracket == lm_eBracketDefault && m_pVStaff->GetNumStaves() > 1 ||
+            m_nBracket == lm_eBracket ||
+            m_nBracket == lm_eBrace );
+}
+void lmInstrument::OnRemovedFromGroup(lmInstrGroup* pGroup)
+{
+	//AWARE: this method is invoked only when the group is being deleted and
+	//this deletion is not requested by this instrument. If this instrument would
+    //like to delete the group it MUST invoke Remove(this) before deleting the 
+	//group object
+
+    m_pGroup = (lmInstrGroup*)NULL;
+}
+
+void lmInstrument::OnIncludedInGroup(lmInstrGroup* pGroup)
+{
+    m_pGroup = pGroup;
+}
+
+bool lmInstrument::IsLastOfGroup()
+{
+    return (m_pGroup && m_pGroup->GetLastInstrument() == this);
+}
+
+bool lmInstrument::IsFirstOfGroup()
+{
+    return (m_pGroup && m_pGroup->GetFirstInstrument() == this);
+}
+
+void lmInstrument::AddGroupName(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop,
+                                lmLUnits yBottom)
+{
+    m_pGroup->AddNameShape(pBox, pPaper, yTop, yBottom);
+}
+    
+void lmInstrument::AddGroupAbbreviation(lmBox* pBox, lmPaper* pPaper,
+                                        lmLUnits yTop, lmLUnits yBottom)
+{
+    m_pGroup->AddAbbreviationShape(pBox, pPaper, yTop, yBottom);
+}

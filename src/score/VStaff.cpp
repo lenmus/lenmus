@@ -157,7 +157,6 @@ lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
     m_cStaffObjs.AddStaff();
 
     return pStaff;
-
 }
 
 lmStaff* lmVStaff::GetStaff(int nStaff)
@@ -281,17 +280,65 @@ lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nB
 {
     //It must return NULL if not succedeed
 
-    //Check that we are at start of measure. Otherwise cancel insertion
-    if (!IsEqualTime(m_VCursor.GetTimepos(), 0.0f))
+    lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, fVisible);
+    if ( InsertKeyTimeSignature(pUndoItem, pTS) )
+        return pTS;
+    else
     {
-        lmErrorBox oEB(_("Error: Time signature can only be inserted \n at start of measure"), _("Insertion will be cancelled."));
-        oEB.ShowModal();
+        delete pTS;
         return (lmTimeSignature*)NULL;
     }
+}
 
-    // Locate insertion points for all staves
+lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
+                                    bool fMajor, bool fVisible)
+{
+    //It must return NULL if not succedeed
+
+    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
+    if ( InsertKeyTimeSignature(pUndoItem, pKS) )
+        return pKS;
+    else
+    {
+        delete pKS;
+        return (lmKeySignature*)NULL;
+    }
+}
+
+bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
+{
+    //This method implements the common part of methods Cmd_InsertKeySignature() and
+    //Cmd_InsertTimeSignature. Object pKTS is the key/time signature to insert
+    //It returns 'true' if succedeed
+
+    wxASSERT(pKTS->IsKeySignature() || pKTS->IsTimeSignature());
+
+    //save object pointed by cursor
+    lmStaffObj* pSaveSO = m_VCursor.GetStaffObj();
+
+    //Check that we are at start of measure. Otherwise, insert a double barline
+    if (!IsEqualTime(m_VCursor.GetTimepos(), 0.0f))
+    {
+        //lmErrorBox oEB(_("Error: Key/time signature can only be inserted at start of measure"), _("Insertion will be cancelled."));
+        //oEB.ShowModal();
+        //return (lmTimeSignature*)NULL;
+
+        //issue an 'insert barline' command
+        lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
+        lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
+        lmVCmdInsertBarline* pVCmd = 
+            new lmVCmdInsertBarline(this, pNewUndoItem, lm_eBarlineDouble);
+        pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+    }
+
+    //Locate context insertion points for all staves
+    //The key/time signature is for all staves. Therefore, we have to create a new context
+    //in every staff, and chain it, at the right point, in the contexts chain. We know 
+    //the key/time insertion point in first staff but we have to locate insertion points
+    //for every staff
     std::list<lmVStaffCursor*> cAuxCursors;
     int nNumMeasure = m_VCursor.GetSegment();
+    bool fIsTime = pKTS->IsTimeSignature();
     for (int iStaff=1; iStaff <= m_nNumStaves; iStaff++)
 	{
         // Create an auxiliary cursor and position it at start of desired measure
@@ -300,54 +347,96 @@ lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nB
         pAuxCursor->AdvanceToStartOfSegment(nNumMeasure, iStaff);
 
         // Advance aux cursor, if necessary, to skip clef and, if applicable, key signature.
-        pAuxCursor->SkipClefKey(true);  //true -> skip key
+        pAuxCursor->SkipClefKey(fIsTime);           //true -> skip key
+
+        //Add a new context at found insertion point
+        lmStaffObj* pCursorSO = pAuxCursor->GetStaffObj();
+        lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
+        lmStaff* pStaff = GetStaff(iStaff);
+        if (fIsTime)
+            ((lmTimeSignature*)pKTS)->SetContext(iStaff, 
+                                        pStaff->NewContextAfter((lmTimeSignature*)pKTS, pContext) );
+        else
+        ((lmKeySignature*)pKTS)->SetContext(iStaff,
+	                                pStaff->NewContextAfter((lmKeySignature*)pKTS, pContext) );
 
         // save pointer to insertion point for this staff
         cAuxCursors.push_back(pAuxCursor);
     }
 
 
-    // create the time signature object and insert it in first staff
-    lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, fVisible);
+ //   //Get current staff and current context for current staff
+ //   lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+ //   lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
+ //   int nStaff = m_VCursor.GetNumStaff();
+ //   lmStaff* pStaff = GetStaff(nStaff);
+ //   if (fIsTime)
+ //       ((lmTimeSignature*)pKTS)->SetContext(nStaff, 
+ //                                   pStaff->NewContextAfter((lmTimeSignature*)pKTS, pContext) );
+ //   else
+ //       ((lmKeySignature*)pKTS)->SetContext(nStaff,
+	//                                pStaff->NewContextAfter((lmKeySignature*)pKTS, pContext) );
 
-    //the time signature is for all staves. Therefore we have to create a new context
-    //in all staves. But we only know the position for current staff!
-    //Get current staff and current context for current staff
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
-    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
-    int nStaff = m_VCursor.GetNumStaff();
-    lmStaff* pStaff = GetStaff(nStaff);
-    pTS->SetContext(nStaff, pStaff->NewContextAfter(pTS, pContext) );
+ //   //what to do for the other staves?
+ //   //TODO: Fix this. For now let's insert the context at the end, as if the
+ //   //score was empty
+ //  //iterate over the collection of Staves to add a new context
+ //   for (int iStaff=1; iStaff <= m_nNumStaves; iStaff++)
+	//{
+ //       if (iStaff != nStaff)
+ //       {
+ //           lmStaff* pStaff = GetStaff(iStaff);
+ //           if (fIsTime)
+ //           {
+	//            lmContext* pContext = pStaff->NewContextAfter((lmTimeSignature*)pKTS);
+ //               ((lmTimeSignature*)pKTS)->SetContext(iStaff, pContext);
+ //           }
+ //           else
+ //           {
+	//            lmContext* pContext = pStaff->NewContextAfter((lmKeySignature*)pKTS);
+ //               ((lmKeySignature*)pKTS)->SetContext(iStaff, pContext);
+ //           }
+ //       }
+ //   }
 
-    //what to do for the other staves?
-    //TODO: Fix this. For noew let's insert the context at the end, as if the
-    //score were empty
-   //iterate over the collection of Staves to add a new context
-    for (int iStaff=1; iStaff <= m_nNumStaves; iStaff++)
-	{
-        if (iStaff != nStaff)
-        {
-            lmStaff* pStaff = GetStaff(iStaff);
-	        lmContext* pContext = pStaff->NewContextAfter(pTS);
-            pTS->SetContext(iStaff, pContext);
-        }
-    }
-
-    // insert the time signature object in first staff
+    // insert the key/time signature object in first staff
     lmVStaffCursor* pAuxCursor = cAuxCursors.front();
     pAuxCursor->AttachToCollection(&m_cStaffObjs, false);   //false: do not reset cursor
-    m_cStaffObjs.Add(pTS);
+    m_cStaffObjs.Add(pKTS);
 
-    //restore VStaff cursor
+    //restore cursor and reposition it at time signature insertion point
     m_VCursor.AttachToCollection(&m_cStaffObjs, false);    //false-> do not reset it
+    if (pSaveSO)
+        m_VCursor.MoveCursorToObject(pSaveSO);
 
-    return pTS;
+    //delete aux cursors
+    std::list<lmVStaffCursor*>::iterator it;
+    for (it = cAuxCursors.begin(); it != cAuxCursors.end(); ++it)
+        delete *it;
+
+    return true;    //success
 }
 
-lmBarline* lmVStaff::InsertBarline(lmEBarline nType)
+lmBarline* lmVStaff::Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType, bool fVisible)
 {
-    lmBarline* pBarline = new lmBarline(nType, this, lmVISIBLE);
+
+    //move cursor to start of current timepos
+    //AWARE:
+    //  Cursor might be pointing not to the first SO at current timepos. Therefore
+    //  we have to move to the first SO at current timepos. Otherwise, the barline
+    //  would be inserted between to objects at the same timepos!
+    //  As an example, assume a piano grand staff with a C note on
+    //  first staff and a G note on second staff. Also assume that cursor is pointing 
+    //  to second staff, G note. As both notes C & G are at the same timepos, it would 
+    //  be wrong to insert the barline before the G note. Therefore, it is necessary
+    //  to find the first SO at current timepos (the C note in the example) and insert
+    //  the barline there.
+    m_VCursor.AdvanceToStartOfTimepos();
+
+    //now, proceed to insert the barline
+    lmBarline* pBarline = new lmBarline(nType, this, fVisible);
     m_cStaffObjs.Add(pBarline);
+
     return pBarline;
 }
 
@@ -911,7 +1000,8 @@ void lmVStaff::LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool f
 {
 	if (!IsEqualTime(rTime, pSO->GetTimePos()))
 	{
-		//wxLogMessage(_T("[lmVStaff::LDP_AddShitTimeTagIfNeeded] Different times: %.2f %.2f"), rTime, pSO->GetTimePos() );
+        //wxLogMessage(_T("[lmVStaff::LDP_AddShitTimeTagIfNeeded] Different times. Current: %.2f Needed: %.2f"),
+        //             rTime, pSO->GetTimePos() );
 		sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
 		if (fFwd)
 			sSource += _T("(goFwd ");
@@ -1132,33 +1222,73 @@ lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
     return pBarline;
 }
 
-bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
+//bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
+//{
+//    // returns true if a barline is found and in this case updates content
+//    // of variable pointed by pPos with the right x position of last barline
+//    // This method is only used by Formatter, in order to not justify the last system
+//    lmStaffObj* pSO = (lmStaffObj*) NULL;
+//    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+//    pIter->MoveLast();
+//    while(true)
+//    {
+//        pSO = pIter->GetCurrent();
+//        if (pSO->GetClass() == eSFOT_Barline) break;
+//		if(pIter->StartOfList()) break;
+//        pIter->MovePrev();
+//    }
+//    delete pIter;
+//
+//    //check that a barline is found. Otherwise no barlines in the score
+//    if (pSO->GetClass() == eSFOT_Barline) {
+//        lmShape* pShape = (lmShape*)pSO->GetShape();
+//        if (!pShape) return false;
+//		*pPos = pShape->GetXRight();
+//        return true;
+//    }
+//    else
+//        return false;
+//
+//}
+
+lmBarline* lmVStaff::GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos)
 {
-    // returns true if a barline is found and in this case updates content
-    // of variable pointed by pPos with the right x position of last barline
+    // returns the barline for measure nMeasure (1..n) and, if found, updates content
+    // of variable pointed by pPos with the X right position of this barline.
+    // If no barline is found for requested measure, returns NULL and pOs is not updated.
     // This method is only used by Formatter, in order to not justify the last system
-    lmStaffObj* pSO = (lmStaffObj*) NULL;
-    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-    pIter->MoveLast();
-    while(true)
+
+    //get the barline
+    lmBarline* pBarline = m_cStaffObjs.GetBarlineOfMeasure(nMeasure);
+
+    //if a barline is found update position
+    if (pBarline)
     {
-        pSO = pIter->GetCurrent();
-        if (pSO->GetClass() == eSFOT_Barline) break;
-		if(pIter->StartOfList()) break;
-        pIter->MovePrev();
-    }
-    delete pIter;
-
-    //check that a barline is found. Otherwise no barlines in the score
-    if (pSO->GetClass() == eSFOT_Barline) {
-        lmShape* pShape = (lmShape*)pSO->GetShape();
-        if (!pShape) return false;
+        lmShape* pShape = (lmShape*)pBarline->GetShape();
 		*pPos = pShape->GetXRight();
-        return true;
     }
-    else
-        return false;
 
+    return pBarline;
+}
+
+lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos)
+{
+    // returns the barline for last non-empty measure. If found, updates content
+    // of variable pointed by pPos with the X right position of this barline.
+    // If no barline is found for requested measure, returns NULL and pOs is not updated.
+    // This method is only used by Formatter, in order to not justify the last system
+
+    //get the barline
+    lmBarline* pBarline = m_cStaffObjs.GetBarlineOfLastNonEmptyMeasure();
+
+    //if a barline is found update position
+    if (pBarline)
+    {
+        lmShape* pShape = (lmShape*)pBarline->GetShape();
+		*pPos = pShape->GetXRight();
+    }
+
+    return pBarline;
 }
 
 void lmVStaff::NewLine(lmPaper* pPaper)
@@ -1510,6 +1640,24 @@ void lmVCmdInsertClef::RollBack(lmUndoItem* pUndoItem)
 
 
 //----------------------------------------------------------------------------------------
+// lmVCmdInsertBarline implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdInsertBarline::lmVCmdInsertBarline(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
+                                         lmEBarline nBarlineType, bool fVisible)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pNewBar = pVStaff->Cmd_InsertBarline(pUndoItem, nBarlineType, fVisible);
+}
+
+void lmVCmdInsertBarline::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->DeleteObject(m_pNewBar);
+}
+
+
+
+//----------------------------------------------------------------------------------------
 // lmVCmdInsertTimeSignature implementation
 //----------------------------------------------------------------------------------------
 
@@ -1524,6 +1672,25 @@ lmVCmdInsertTimeSignature::lmVCmdInsertTimeSignature(lmVStaff* pVStaff,
 void lmVCmdInsertTimeSignature::RollBack(lmUndoItem* pUndoItem)
 {
     m_pVStaff->DeleteObject(m_pNewTime);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdInsertKeySignature implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdInsertKeySignature::lmVCmdInsertKeySignature(lmVStaff* pVStaff, 
+                                                   lmUndoItem* pUndoItem, int nFifths,
+                                                   bool fMajor, bool fVisible)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pNewKey = pVStaff->Cmd_InsertKeySignature(pUndoItem, nFifths, fMajor, fVisible);
+}
+
+void lmVCmdInsertKeySignature::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->DeleteObject(m_pNewKey);
 }
 
 

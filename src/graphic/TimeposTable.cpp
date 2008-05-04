@@ -244,9 +244,11 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
         {
 			if (!pTPE->m_fProlog)
 				pTPE->m_pSO->StoreOriginAndShiftShapes( uShift );
-			else
-				pTPE->m_pShape->Shift(uShift, 0.0);
-
+			//else
+			//	pTPE->m_pShape->Shift(uShift, 0.0);
+   //         if (pTPE->m_pSO->IsTimeSignature())
+	  //          wxLogMessage(_T("[lmTimeLine::ShiftEntries] Reposition time signature: Prolog=%s, uNewBarSize=%.2f  uNewStart=%.2f  Shift=%.2f"),
+   //                          (pTPE->m_fProlog ? _T("Yes") : _T("No")), uNewBarSize, uNewStart, uShift );
         }
         else if (pTPE->m_nType == eOmega)
         {

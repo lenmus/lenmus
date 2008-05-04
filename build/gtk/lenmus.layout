@@ -38,7 +38,7 @@
 		<Cursor position="4140" topLine="94" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="6">
-		<Cursor position="59475" topLine="1451" />
+		<Cursor position="81810" topLine="2237" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="0" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
@@ -58,7 +58,7 @@
 	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="7">
 		<Cursor position="5767" topLine="166" />
 	</File>
-	<File name="../../src/app/ScoreCommand.cpp" open="1" top="1" tabpos="17">
+	<File name="../../src/app/ScoreCommand.cpp" open="1" top="0" tabpos="17">
 		<Cursor position="6134" topLine="12" />
 	</File>
 	<File name="../../src/app/ScoreDoc.cpp" open="1" top="0" tabpos="5">
@@ -69,6 +69,9 @@
 	</File>
 	<File name="../../src/app/ScoreView.h" open="0" top="0" tabpos="2">
 		<Cursor position="9724" topLine="171" />
+	</File>
+	<File name="../../src/app/ScoreWizard.cpp" open="1" top="0" tabpos="18">
+		<Cursor position="16916" topLine="349" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
@@ -498,6 +501,12 @@
 	</File>
 	<File name="../../src/widgets/Caret.cpp" open="1" top="0" tabpos="3">
 		<Cursor position="6073" topLine="204" />
+	</File>
+	<File name="../../src/widgets/MsgBox.cpp" open="1" top="0" tabpos="20">
+		<Cursor position="2340" topLine="39" />
+	</File>
+	<File name="../../src/widgets/MsgBox.h" open="1" top="1" tabpos="21">
+		<Cursor position="2516" topLine="66" />
 	</File>
 	<File name="../../src/widgets/Ruler.cpp" open="1" top="0" tabpos="11">
 		<Cursor position="1562" topLine="19" />

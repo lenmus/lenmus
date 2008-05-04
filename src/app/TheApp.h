@@ -64,8 +64,6 @@ class lmTheApp: public wxApp
     wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
     wxString GetVersionNumber();
 
-	lmController* GetViewController();
-
 	//overrides
 	int FilterEvent(wxEvent& event);
 

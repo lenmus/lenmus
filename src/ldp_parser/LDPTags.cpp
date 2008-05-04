@@ -140,6 +140,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("below")] = _T("below");
         m_Tags[0][_T("bold")] = _T("bold");
         m_Tags[0][_T("bold_italic")] = _T("bold-italic");
+        m_Tags[0][_T("brace")] = _T("brace");
+        m_Tags[0][_T("bracket")] = _T("bracket");
         m_Tags[0][_T("center")] = _T("center");
         m_Tags[0][_T("chord")] = _T("chord");
         m_Tags[0][_T("clef")] = _T("clef");
@@ -152,11 +154,13 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("goBack")] = _T("goBack");
         m_Tags[0][_T("goFwd")] = _T("goFwd");
         m_Tags[0][_T("graphic")] = _T("graphic");
+        m_Tags[0][_T("group")] = _T("group");
         m_Tags[0][_T("hasWidth")] = _T("hasWidth");
         m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[0][_T("instrName")] = _T("instrName");
         m_Tags[0][_T("instrument")] = _T("instrument");
         m_Tags[0][_T("italic")] = _T("italic");
+        m_Tags[0][_T("joinBarlines")] = _T("joinBarlines");
         m_Tags[0][_T("key")] = _T("key");
         m_Tags[0][_T("left")] = _T("left");
         m_Tags[0][_T("metronome")] = _T("metronome");
@@ -174,6 +178,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("start")] = _T("start");
         m_Tags[0][_T("staves")] = _T("staves");
         m_Tags[0][_T("stem")] = _T("stem");
+        m_Tags[0][_T("symbol")] = _T("symbol");
         m_Tags[0][_T("text")] = _T("text");
         m_Tags[0][_T("time")] = _T("time");
         m_Tags[0][_T("title")] = _T("title");
@@ -298,6 +303,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("below")] = _T("debajo");
         m_Tags[0][_T("bold")] = _T("negrita");
         m_Tags[0][_T("bold_italic")] = _T("negrita-cursiva");
+        m_Tags[0][_T("brace")] = _T("corchete");
+        m_Tags[0][_T("bracket")] = _T("llave");
         m_Tags[0][_T("center")] = _T("centrado");
         m_Tags[0][_T("chord")] = _T("acorde");
         m_Tags[0][_T("clef")] = _T("clave");            
@@ -310,11 +317,13 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("goBack")] = _T("retroceder");
         m_Tags[0][_T("goFwd")] = _T("avanzar");
         m_Tags[0][_T("graphic")] = _T("grafico");
+        m_Tags[0][_T("group")] = _T("grupo");
         m_Tags[0][_T("hasWidth")] = _T("tieneAnchura");
         m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[0][_T("instrName")] = _T("nombreInstrumento");
         m_Tags[0][_T("instrument")] = _T("instrumento");
         m_Tags[0][_T("italic")] = _T("cursiva");
+        m_Tags[0][_T("joinBarlines")] = _T("unirBarras");
         m_Tags[0][_T("key")] = _T("tonalidad");
         m_Tags[0][_T("left")] = _T("izquierda");
         m_Tags[0][_T("metronome")] = _T("metronomo");
@@ -332,6 +341,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("start")] = _T("inicio");
         m_Tags[0][_T("staves")] = _T("numPentagramas");
         m_Tags[0][_T("stem")] = _T("plica");
+        m_Tags[0][_T("symbol")] = _T("simbolo");
         m_Tags[0][_T("text")] = _T("texto");
         m_Tags[0][_T("time")] = _T("metrica");
         m_Tags[0][_T("title")] = _T("titulo");

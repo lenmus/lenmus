@@ -45,17 +45,15 @@
 lmToolGroup::lmToolGroup(lmToolPage* pParent)
 	: wxPanel(pParent, wxID_ANY, wxDefaultPosition, lmTOOLGROUP_SIZE)
 {
-    Init();
 	m_pParent = pParent;
+
+    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
+	SetForegroundColour(m_pParent->GetColors()->PrettyDark());
+	SetBackgroundColour(m_pParent->GetColors()->Bright());    //Normal());
 }
 
 lmToolGroup::~lmToolGroup()
 {
-}
-
-void lmToolGroup::Init()
-{
-	//member initialisation
 }
 
 wxBoxSizer* lmToolGroup::CreateGroup(wxBoxSizer* pMainSizer, wxString sTitle)
@@ -64,10 +62,6 @@ wxBoxSizer* lmToolGroup::CreateGroup(wxBoxSizer* pMainSizer, wxString sTitle)
 	wxStaticBoxSizer* pAuxSizer =
 	    new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, sTitle ), wxVERTICAL );
 	pMainSizer->Add( this, 0, wxALL|wxEXPAND, 5 );
-
-    this->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
-	this->SetForegroundColour(m_pParent->GetColors()->PrettyDark());
-	this->SetBackgroundColour(m_pParent->GetColors()->Normal());
 
 	wxBoxSizer* pCtrolsSizer = new wxBoxSizer( wxVERTICAL );
 	pAuxSizer->Add( pCtrolsSizer, 1, wxEXPAND, 5 );
@@ -83,25 +77,3 @@ int lmToolGroup::GetGroupWitdh()
 	m_pParent->GetClientSize(&width, &height);
 	return width;
 }
-
-wxBitmap lmToolGroup::CreateOnBitmap(wxString sBmpName)
-{
-    //get off bitmap
-	wxBitmap bmpOff = wxArtProvider::GetBitmap(sBmpName, wxART_TOOLBAR, wxSize(24, 24));
-    wxMemoryDC dcOff;
-    dcOff.SelectObject(bmpOff);
-
-    //get the on bitmap background
-	wxBitmap bmpOn = wxArtProvider::GetBitmap(_T("button_normal"), wxART_TOOLBAR, wxSize(24, 24));
-    wxMemoryDC dcOn;
-    dcOn.SelectObject(bmpOn);
-
-    //blend both bitmaps
-    dcOn.Blit(0, 0, 24, 24, &dcOff, 0, 0, wxCOPY, true);
-
-    //clean up and return new bitmap
-    dcOn.SelectObject(wxNullBitmap);
-    dcOff.SelectObject(wxNullBitmap);
-
-    return bmpOn;
-} 

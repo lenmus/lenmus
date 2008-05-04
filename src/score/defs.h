@@ -267,6 +267,11 @@ enum lmEKeySignatures
 #define lmMIN_KEY  earmDo
 #define lmMAX_KEY  earmRem
 #define lmNUM_KEYS lmMAX_KEY - lmMIN_KEY + 1
+#define lmMIN_MAJOR_KEY  earmDo
+#define lmMAX_MAJOR_KEY  earmFa
+#define lmMIN_MINOR_KEY  earmLam
+#define lmMAX_MINOR_KEY  earmRem
+
 // AWARE names for key signatures are defined in object lmKeySignature. There is an
 // array, named sKeySignatureName, and the key signatures names are defined
 // assuming a predefined order in the enum lmEKeySignatures
@@ -349,6 +354,15 @@ enum lmEBarline
     lm_eBarlineStart,               //thick-thin
     lm_eBarlineDoubleRepetition,    //two dots-thin-thin-two dots
 	lm_eBarlineEOS,					//Non-visible. For control purposes
+};
+
+// brace/bracket for grouping instruments
+enum lmEBracketSymbol
+{
+    lm_eBracketDefault = 0,
+    lm_eBracketNone,
+    lm_eBrace,
+    lm_eBracket,
 };
 
 
