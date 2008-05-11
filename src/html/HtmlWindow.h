@@ -59,10 +59,6 @@ public:
     double GetScale() { return m_rScale; }
 
 
-    #if defined(__WXGTK__)
-        void SetPixelScalingFactor(double m_rScale) {}
-    #endif
-
 private:
     double      m_rScale;
 

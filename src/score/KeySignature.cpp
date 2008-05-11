@@ -459,6 +459,21 @@ void lmKeySignature::StoreOriginAndShiftShapes(lmLUnits uxShift)
 
 }
 
+void lmKeySignature::RemoveCreatedContexts()
+{
+    //delete contexts
+	for (int iS=0; iS < lmMAX_STAFF; iS++)
+	{
+        if (m_pContext[iS])
+        {
+            lmStaff* pStaff = m_pVStaff->GetStaff(iS);
+            pStaff->RemoveContext(m_pContext[iS], this);
+            delete m_pContext[iS];
+            m_pContext[iS] = (lmContext*)NULL;
+        }
+	}
+}
+
 
 
 

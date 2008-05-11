@@ -69,7 +69,7 @@ public:
     void OnDebugShowMidiEvents(wxCommandEvent& event);
 
     // event handlers related with playing a score
-    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
+    void OnEndOfPlay(lmEndOfPlayEvent& event);
 
 protected:
     //implementation of virtual pure methods

@@ -53,6 +53,7 @@ lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVis
     m_nClefType = nClefType;
     m_fHidden = false;
 	m_color = colorC;
+    m_pContext = (lmContext*)NULL;
 }
 
 //--------------------------------------------------------------------------------------
@@ -204,6 +205,13 @@ wxString lmClef::SourceXML(int nIndent)
     return sSource;
 }
 
+void lmClef::RemoveCreatedContexts()
+{
+    lmStaff* pStaff = m_pVStaff->GetStaff( m_nStaffNum );
+    pStaff->RemoveContext(m_pContext, this);
+    delete m_pContext;
+    m_pContext = (lmContext*)NULL;
+}
 
 
 //------------------------------------------------------------------------------------------

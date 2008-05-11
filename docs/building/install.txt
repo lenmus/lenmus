@@ -1,0 +1,153 @@
+LenMus building documentation
+==============================
+
+Last updated: May/2008
+
+
+Table of content
+-----------------
+
+1. Requirements and supported platforms
+1.1 Dependencies
+1.2 Supported platforms
+
+2. Installing under Linux
+
+3. Installing under Windows
+
+
+
+ 
+====================================================================================
+1. Requirements and supported platforms
+====================================================================================
+
+1.1 Dependencies
+-----------------
+
+- wxWidgets
+	Building LenMus requires to install and build wxWidgets (http://www.wxwidgets.org/). There is a couple of fixes to add to wxWidgets source code. One of them is critical; without it LenMus will not build. This fixes are listed in file wxwidgets_patches.txt
+	
+	Currently LenMus can be built with wxMSW (Windows) or wxGTK (Linux). You should download the wxWidgets sources for the appropriate platform (http://www.wxWidgets.org/downloads/).
+
+LenMus depends on other software packages (Portmidi and agg 2.4) but they are already included in the LenMus source code package. Therefore, you have nothing to do about these dependencies. These packages are for:
+
+	- Portmidi
+		LenMus require Portmidi for sound generation. Portmidi is used through wrapper wxMidi (http://wxcode.sourceforge.net).
+
+	- agg 2.4
+		For anti-alised renderization LenMus uses AGG 2.4.
+
+
+1.2 Supported platforms
+------------------------
+
+Currently, LenMus has been tested and build in the following platforms:
+
+- Windows XP with MS VisualStudio .NET 2003
+
+- Linux Ubuntu, with Code::Blocks and g++
+
+Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
+
+
+
+====================================================================================
+2. Installing under Linux
+====================================================================================
+
+These are instructions on how to build LenMus under Linux. These instructions should work for all Linux distros, as we'll be installing from sources.
+
+
+Install wxWidgets (wxGTK)
+-------------------------
+
+1. Download the wxGTK source archive from http://www.wxwidgets.org/downloads/ and expand it. If you intend to use it in place (not install it in system dirs) choose a place where it can stay forever because you won't be able to move it without breaking the build.
+
+2. Apply the two required patches to the wxWidgtes sources. These patches are detailed in file wxwidgets_patches.txt
+
+3. Build wxWidgets. For this please refer to wxWidgets documentation. A quick guide is included in file linux_install_wxwidgets.txt for your convenience, and it should be enough in most cases.
+
+To compile LenMus, wxWidgets should be build with the following options:
+
+- define symbols:
+    __WXGTK__
+	_UNICODE
+    
+  and, for debug version:
+	__WXGTK__
+	_UNICODE
+	_DEBUG
+	__WXDEBUG__
+    
+    
+Install libportmidi & libporttime
+---------------------------------
+
+LenMus require the Portmidi libraries for sound generation. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
+
+sudo aptitude update
+sudo aptitude install libportmidi
+sudo aptitude install libporttime
+sudo updatedb
+ls /usr/lib/libport*
+
+
+Compile and build LenMus
+------------------------
+
+Once all previous pre-requisites are met, it is just a question of preparing a makefile and using your favourite compiler to compile and build LenMus. Makefiles are included for:
+
+- Linux Ubuntu, with Code::Blocks and g++
+
+Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
+
+
+a) Using Code::Blocks with g++
+
+The appropriate project file for Code::Blocks is in folder .../lenmus/build/gtk/lenmus.cbp.
+Open this file with Code::Blocks and build LenMus. 
+
+That's all.
+
+
+
+Problems with MIDI sound
+----------------------------
+
+In Linux it is frequent to find problems with MIDI as it is not installed by default. If this were your case:
+
+install Alas-dev
+see instructions in Ubuntu
+
+
+
+
+====================================================================================
+3. Installing under Windows
+====================================================================================
+
+Install wxWidgets (wxMSW)
+-------------------------
+
+1. Download
+
+2. Apply patches
+
+3. Build wxWidgets
+
+
+
+Compile and build LenMus
+------------------------
+
+a) Using MS VisualStudio
+
+
+
+
+
+
+
+
+

@@ -65,11 +65,49 @@ lmShapeBracket::~lmShapeBracket()
 
 void lmShapeBracket::Render(lmPaper* pPaper, wxColour color)
 {
-    //line width is at both side
-    lmLUnits uThick = m_uxRight - m_uxLeft;
-    lmLUnits uxPos = m_uxLeft + uThick / 2.0f;
+    if (m_nSymbol == lm_eBracket)
+    {
+        lmLUnits w = m_uxRight - m_uxLeft;
+        lmLUnits h = m_uyBottom - m_uyTop;
+        lmLUnits x = m_uxLeft;
+        lmLUnits y = m_uyTop;
 
-    pPaper->SolidLine(uxPos, m_uyTop, uxPos, m_uyBottom, uThick, eEdgeNormal, color);
+        lmUPoint uPoints[] = {
+            lmUPoint(x+w, y),
+            lmUPoint(x+w/6, y+h/8),
+            lmUPoint(x+w/6, y+h/5),
+            lmUPoint(x+w*2/3, y+h*2/5),
+            lmUPoint(x, y+h/2),
+            lmUPoint(x+w*2/3, y+h*3/5),
+            lmUPoint(x+w/6, y+h*4/5),
+            lmUPoint(x+w/6, y+h*7/8),
+            lmUPoint(x+w, y+h),
+            lmUPoint(x+w/2, y+h*7/8),
+            lmUPoint(x+w, y+h*3/5),
+            lmUPoint(x, y+h/2),
+            lmUPoint(x+w, y+h*2/5),
+            lmUPoint(x+w/2, y+h*1/8)
+        };
+        pPaper->SolidPolygon(14, uPoints, color);
+    }
+    else if (m_nSymbol == lm_eBrace)
+    {
+        lmInstrument* pInstr = (lmInstrument*)m_pOwner;
+
+        lmLUnits uThick = m_uxRight - m_uxLeft;
+        lmLUnits uyDown = pInstr->TenthsToLogical(20.0f);
+        lmLUnits uxDown = pInstr->TenthsToLogical(20.0f);
+
+        lmUPoint uPoints[] = {
+            lmUPoint(m_uxLeft, m_uyTop),
+            lmUPoint(m_uxLeft, m_uyBottom),
+            lmUPoint(m_uxLeft + uThick + uxDown, m_uyBottom + uyDown),
+            lmUPoint(m_uxLeft + uThick, m_uyBottom),
+            lmUPoint(m_uxLeft + uThick, m_uyTop),
+            lmUPoint(m_uxLeft + uThick + uxDown, m_uyTop - uyDown)
+        };
+        pPaper->SolidPolygon(6, uPoints, color);
+    }
     lmShape::RenderCommon(pPaper);
 }
 

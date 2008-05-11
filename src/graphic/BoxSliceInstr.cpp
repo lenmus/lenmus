@@ -85,6 +85,8 @@ void lmBoxSliceInstr::Render(lmPaper* pPaper, lmUPoint uPos)
     {
         m_SlicesVStaff[i]->Render(pPaper, uPos);
     }
+
+    //this->DrawBounds(pPaper, *wxGREEN);
 }
 
 void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)

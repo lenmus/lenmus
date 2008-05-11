@@ -1,0 +1,119 @@
+Installing wxWidgets in Linux
+==============================
+
+Last updated: May/2008
+
+
+
+This document is a quick guide to install wxWidgets for building LenMus package.
+
+THIS GUIDE ARE JUST MY NOTES FOR DOING IT EACH TIME I HAVE TO INSTALL A NEW WXWIDGETS VERSION. This notes should be enough in most cases. Please refer to wxWidgets documentation, for more detailed instructions. 
+
+This guide probably contains errors and inaccuracies. Please contact us if you would like to help us with creating a better and error-free document.
+
+In this instructions it is assumed that wxWidgets is installed in /home/cecilio/wxWidgets/. Please replace as appropriate.
+
+
+Steps to do:
+
+1. Download the wxGTK source archive from http://www.wxwidgets.org/downloads/. Place the archive in /home/cecilio/wxWidgets/wxGTK-2.8.7  (later, you won't be able to move it without breaking the build)
+
+2. Expand it (double click)
+
+3. Apply the two required patches to the wxWidgtes sources. This patches are detailed in file wxWidgets_fixes.txt
+
+4. Open a terminal window and do the following steps:
+
+a) Move to the installation folder:
+
+$ cd /home/cecilio/wxWidgets/wxGTK-2.8.7
+
+
+b) Create a new folder for this build. This enables us to have many wxWidgets builds (i.e. a debug and a release one). This sub directory will contain the compiled libraries to add later to your programs.
+
+$ mkdir build-debug
+$ cd build-debug
+
+
+c) Call 'configure' with the needed options for the build:
+
+Debug build:
+../configure --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --disable-shared --enable-debug --enable-unicode --disable-stl --disable-std_iostreams --with-gtk --disable-compat24
+
+Release build:
+../configure --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --disable-shared --enable-unicode --disable-stl --enable-std_iostreams --with-gtk --disable-compat24
+
+The options you pass to configure at this point will determine what build you get. For a list of all possible options, write ../configure --help
+
+If it stops saying it can't find a package, install it (with -dev packages if any) and run configure again. 
+
+Notes:
+*	--prefix' won't accept relative paths
+
+
+5. When 'configure' is done without errors, you are ready to build (using make):
+
+$ make
+
+
+6. When the build is done, and if no error occurred, you can now install it:
+
+$ sudo make install
+
+Enter your password when needed. wxWidgets will be installed in /usr/local/. There is a /usr/local/wx/config folder that contains the files
+
+[Note for my eyes] Verify this: All the libraries are installed under /usr/lib and there is a /usr/lib/wx/config folder that contains the files
+
+7. Re-directing wx-config
+
+File /usr/local/bin/wx-config is a symbolic link to one of the files under /home/cecilio/wxWidgets/wxGTK-xxx/build-debug/lib/wx/config. The file that it links to is the default build and the others are the alternatives listed by wx-config --list.
+
+So, to choose and set the default build you must set up a symbolic link in the dir where I want to call it from though. For this, after installing wxWidgets
+
+(you did the following:
+	cd /home/cecilio/wxWidgets/wxGTK-2.8.7
+	mkdir build-debug
+	cd build-debug
+	../configure ...blah...blah...blah
+	make
+)
+
+then go to /usr/local/bin:  
+
+$ cd /usr/local/bin
+
+remove old link:
+
+$ sudo rm wx-config
+
+and define a new one:
+
+$ sudo ln -s /home/cecilio/wxWidgets/wxGTK-2.8.7/bin/wx-config wx-config
+
+And this is it!
+
+The libraries will be where prefix told them to be, and wx-config will know where they are.
+
+
+
+Test installation
+-----------------------
+
+Open a terminal and type
+
+$ wx-config --version
+
+It should be the version you just built.
+
+If it is not:
+
+    try running which wx-config and see if it is the one you just installed (if you did not change the default value, you installed /usr/local/bin/wx-config) if you get something like /usr/bin/wx-config while you installed /usr/local/bin/wx-config, it means there is another version of wxWidgets installed somewhere else, probably installed by the system. You can quickly get it out the way with a hacky command like sudo mv /usr/bin/wx-config /usr/bin/wx-config-old1. 
+
+Then, to test more in depth, you can look at the samples. Open the Samples folder located at wxGTK-2.8.7/gtk-build/samples (be careful : wxGTK-2.8.7/samples contains the source code, while wxGTK-2.8.7/gtk-build/samples contains the makefiles for your system. for building samples, you will want to cd into the latter, while to study the code you will want to open the former)
+
+cd into one of the samples, and type make. You can then open the sample to see wxWidgets in action.
+
+* Test the installation using a sample:
+	g++ test.c++ -o hello `wx-config` --libs --debug=no` `wx-config --cxxflags` -D NDEBUG  
+
+

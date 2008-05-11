@@ -689,6 +689,9 @@ int lmTheApp::OnExit(void)
     // the LDP tags table
     lmLdpTagsTable::DeleteInstance();
 
+    //the program options object
+    lmPgmOptions::DeleteInstance();
+
     //locale object
     delete m_pLocale;
 

@@ -52,18 +52,20 @@ DECLARE_EVENT_TYPE( lmEVT_SCORE_HIGHLIGHT, -1 )
 class lmScoreHighlightEvent : public wxEvent
 {
 public:
-    lmScoreHighlightEvent(lmStaffObj* pSO,
-                        lmEHighlightType nHighlightType,
-                        int id=0 ) 
-        : wxEvent(id, lmEVT_SCORE_HIGHLIGHT)
+    lmScoreHighlightEvent(long nScoreID, lmStaffObj* pSO,
+                          lmEHighlightType nHighlightType,
+                          int id=0 ) 
+            : wxEvent(id, lmEVT_SCORE_HIGHLIGHT)
         {
+            m_nID = nScoreID;
             m_pSO = pSO;
             m_nHighlightType = nHighlightType;
         }
 
     // copy constructor
     lmScoreHighlightEvent(const lmScoreHighlightEvent& event) : wxEvent(event)
-        {    m_nHighlightType = event.m_nHighlightType;
+        {
+            m_nHighlightType = event.m_nHighlightType;
             m_pSO = event.m_pSO;
         }
 
@@ -71,13 +73,15 @@ public:
     virtual wxEvent *Clone() const { return new lmScoreHighlightEvent(*this); }
 
     // accessors
-    lmStaffObj*    GetStaffObj() { return m_pSO; }
+    long GetScoreID() { return m_nID; }
+    lmStaffObj* GetStaffObj() { return m_pSO; }
     lmEHighlightType GetHighlightType() { return m_nHighlightType; }
 
 
 private:
-    lmEHighlightType    m_nHighlightType;    //event type: eVisualOn, eVisualOff, eRemoveAllHighlight
-    lmStaffObj*        m_pSO;                //staffobj who must be highlighted / unhighlighted
+    long                m_nID;              //ID of the target score for the event
+    lmEHighlightType    m_nHighlightType;   //event type: eVisualOn, eVisualOff, eRemoveAllHighlight
+    lmStaffObj*         m_pSO;              //staffobj who must be highlighted / unhighlighted
 };
 
 typedef void (wxEvtHandler::*ScoreHighlightEventFunction)(lmScoreHighlightEvent&);

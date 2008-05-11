@@ -54,7 +54,7 @@ private:
     lmBoxScore* RenderJustified(lmPaper* pPaper);
 
     lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, lmBoxSystem* pBoxSystem,
-                               lmPaper* pPaper, bool* pNewSystem);
+                               lmPaper* pPaper, bool* pNewSystem, lmLUnits nSystemIndent);
     void AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
                                lmBoxSystem* pBoxSystem, lmPaper* pPaper);
     void RedistributeFreeSpace(lmLUnits nAvailable);

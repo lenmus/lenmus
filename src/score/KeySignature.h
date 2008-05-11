@@ -69,6 +69,7 @@ public:
 	//context management
     inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }
     inline lmContext* GetContext(int nStaff) { return m_pContext[nStaff-1]; }
+    void RemoveCreatedContexts();
 
 
 private:

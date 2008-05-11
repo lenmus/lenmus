@@ -64,8 +64,7 @@ public:
     lmLUnits GetIndentOther() { return m_uIndentOther; }
 
     void MeasureNames(lmPaper* pPaper);
-	void AddNameShape(lmBox* pBox, lmPaper* pPaper);
-	void AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper);
+    void AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPaper* pPaper, int nSystem);
 
 	wxString GetInstrName();
 
@@ -81,9 +80,6 @@ public:
     void OnIncludedInGroup(lmInstrGroup* pGroup);
     bool IsLastOfGroup();
     bool IsFirstOfGroup();
-    void AddGroupName(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop, lmLUnits yBottom);
-    void AddGroupAbbreviation(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop,
-                              lmLUnits yBottom);
 
     //Debug methods
     wxString Dump();

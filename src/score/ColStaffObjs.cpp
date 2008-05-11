@@ -920,6 +920,11 @@ lmSegment::~lmSegment()
     m_StaffObjs.clear();
 }
 
+lmSegment* lmSegment::GetNextSegment()
+{
+    return m_pOwner->GetNextSegment(m_nNumSegment);
+}
+
 int lmSegment::GetNumVoices()
 {
     int nNumVoices=0;
@@ -1009,6 +1014,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 				//wxLogMessage(Dump());
 		}
 	}
+
 	////DBG  ------------------------------------------------------------------
 	//wxLogMessage(_T("[lmSegment::Store] After insertion of %s"),
 	//			pNewSO->GetName());
@@ -1018,7 +1024,8 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 
 void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
 {
-    //The note/rest pointed by itStart has been inserted. If it is a note/rest and this timepos is
+    //The note/rest pointed by itStart has been inserted. If it is a note/rest and this 
+    //timepos is
     //ocuppied by other note/rest in the same voice, we must shift the timepos af all
     //consecutive objects in this voice, starting with next SO and up to the barline
     //(but excluding it).
@@ -1163,6 +1170,168 @@ wxString lmSegment::Dump()
 	return sDump;
 }
 
+void lmSegment::PropagateNewContexts(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKeepPitch)
+{
+    //When a staffobj is added to the collection, if it created contexts (clef, TS or KS) the
+    //created contexts are already chained in the staves. But it is necessary:
+    //- to update pointers to contexts at start of segment; and
+    //- to update staffobjs in segment, if affected by the context change
+
+
+    //AWARE: For time signatures, all needed context propagation and update is done when
+    //doing the Re-Bar operation. So no need to do anything here.
+    if (!(pNewSO->IsClef() || pNewSO->IsKeySignature()) )
+        return;     //nothing to do
+
+    //invalidate not applicable flags
+    //At maximum, only one of the flags will remain true
+    if (!pNewSO->IsClef())
+        fClefKeepPosition = false;
+    if (!pNewSO->IsKeySignature())
+        fKeyKeepPitch = false;
+
+    //Update current segment notes, if requested.
+    if (fClefKeepPosition)
+    {
+        //TODO
+        //Transpose((lmClef*)pNewSO)
+    }
+    else if (fKeyKeepPitch)
+    {
+        //TODO
+        //AddRemoveAccidentals((lmKeySignature*)pNewSO);
+    }
+
+    //determine staves affected by the context change and propagate context change
+    //to all following segments. This is necessary so that segments can update pointers
+    //to start of segment applicable contexts, and update their contained staffobjs, if
+    //affected by the change.
+    lmSegment* pNextSegment = GetNextSegment();
+    if (pNextSegment)
+    {
+        if (pNewSO->IsClef())
+        {
+            //just one staff. Determine context for this staff at end of segment
+            int nStaff = pNewSO->GetStaffNum();
+            lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
+
+            //inform next segment
+            pNextSegment->PropagateContextChange(pLastContext, nStaff, fClefKeepPosition,
+                                                 fKeyKeepPitch);
+        }
+        else
+        {
+            //key signature: all staves
+            for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
+            {
+                //determine context for current staff at end of segment
+                lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
+
+                //inform next segment
+                pNextSegment->PropagateContextChange(pLastContext, nStaff, fClefKeepPosition,
+                                                     fKeyKeepPitch);
+            }
+        }
+    }
+
+}
+
+void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff, bool fClefKeepPosition,
+                                       bool fKeyKeepPitch)
+{
+    //The context for staff nStaff at start of this segment has changed. Update contexts
+    //pointers and, if requested, update the contained staffobjs if affected by the change.
+    //then, propagate the change to next segment if the start of segment context pointer
+    //has been updated.
+
+    if (m_pContext[nStaff-1] == pStartContext)
+        return;     //nothing to do. Context are updated
+
+    //update context pointer
+    m_pContext[nStaff-1] = pStartContext;
+
+    //Update current segment notes, if requested
+    if (fClefKeepPosition)
+    {
+        //TODO
+        //Transpose((lmClef*)pNewSO)
+    }
+    else if (fKeyKeepPitch)
+    {
+        //TODO
+        //AddRemoveAccidentals((lmKeySignature*)pNewSO);
+    }
+
+    //propagate to next segment
+    lmSegment* pNextSegment = GetNextSegment();
+    if (pNextSegment)
+        pNextSegment->PropagateContextChange(pStartContext, nStaff, fClefKeepPosition,
+                                             fKeyKeepPitch);
+}
+
+lmContext* lmSegment::FindEndOfSegmentContext(int nStaff)
+{
+    //A new staffobj has introduced a new context in the pointed staff. This method goes
+    //backwards, looking for the context applicable at the end of this segment, that is, 
+    //the context applicable to first staffobj of next segment, and returns it.
+
+	lmItCSO it = m_StaffObjs.end();
+    --it;
+    while (it != m_StaffObjs.end())
+    {
+        if ((*it)->IsClef() && (*it)->GetStaffNum() == nStaff)
+            return ((lmClef*)(*it))->GetContext();
+        else if ((*it)->IsTimeSignature())
+            return ((lmTimeSignature*)(*it))->GetContext(nStaff);
+        else if ((*it)->IsKeySignature())
+            return ((lmKeySignature*)(*it))->GetContext(nStaff);
+        else
+            --it;
+    }
+
+    return m_pContext[nStaff-1];
+}
+
+void lmSegment::PropagateContextsRemoval(lmStaffObj* pSO)
+{
+    //When a staffobj is removed from the collection, if it created contexts (clef, TS or KS)
+    //the created contexts has been removed from the staves contexts chain. But it is necessary:
+    //- to update pointers to contexts at start of segment; and
+    //- to update staffobjs in segment, if affected by the context change
+
+
+    //AWARE: For time signatures, all needed context propagation and update, is done when
+    //doing the Re-Bar operation. So no need to do anything here.
+    if (!(pSO->IsClef() || pSO->IsKeySignature()) )
+        return;     //nothing to do
+
+
+    //The update context event is propagated to all following segments, until a new context
+    //originated by an staffobj of the same type is found. This is necessary so that segments
+    //can update pointers to start of segment applicable contexts, and update their contained
+    //staffobjs, if affected by the change.
+    //TODO
+
+
+    //when a clef is removed it might be necessary to update note pitches, depending on user
+    //decision (maintain pitch->move notes, or change pitch->do not reposition notes)
+    if (pSO->IsClef() )
+    {
+        //TODO
+    }
+
+    //when a key signature is removed it might be necessary to update note accidentals, depending
+    //on user decision (maintain pitch->add/remove accidentals, or change pitch->maintain note
+    //accidentals)
+    if (pSO->IsKeySignature() )
+    {
+        //TODO
+    }
+
+}
+
+
+
 //====================================================================================================
 // lmColStaffObjs implementation
 //====================================================================================================
@@ -1303,11 +1472,15 @@ void lmColStaffObjs::AssignTime(lmStaffObj* pSO)
 //		- Store: store before object pointed by current cursor.
 //====================================================================================================
 
-void lmColStaffObjs::Add(lmStaffObj* pNewSO)
+void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKeepPitch)
 {
-    //Assign voice and timepos to the received StaffObj, and store it in the collection,
-	//before object pointed by current cursor, and advance cursor after inserted object.
-    //Manage all details to maintain segments.
+    //AWARE:
+    //  This methos is intended to be used for normal add/insert operations, that is,
+    //  for operations not related to undo/redo.
+    //
+    //  Assign voice and timepos to the received StaffObj, and store it in the collection,
+	//  before object pointed by current cursor, and advance cursor after inserted object.
+    //  Manage all details to maintain segments.
 
 	//get segment
 	int nSegment = m_pVCursor->GetSegment();
@@ -1317,7 +1490,7 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO)
 	AssignVoice(pNewSO, nSegment);
 
 	//store new object in the collection
-	Store(pNewSO);
+	Store(pNewSO, fClefKeepPosition, fKeyKeepPitch);
 
     //advance cursor
 	lmStaffObj* pCursorSO = m_pVCursor->GetStaffObj();
@@ -1355,6 +1528,10 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO)
 
 void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
 {
+    //AWARE:
+    //  This method is intended only for undo/redo, to re-insert deleted objects when user
+    //  request to undo an action.
+
     //set cursor
     m_pVCursor->MoveCursorToObject(pBeforeSO);
 
@@ -1362,13 +1539,13 @@ void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
     Store(pNewSO);
 }
 
-void lmColStaffObjs::Store(lmStaffObj* pNewSO)
+void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKeepPitch)
 {
-	//add pNewSO into the segment's collection
+	//add pNewSO into the segment's collection.
 	int nSegment = m_pVCursor->GetSegment();
 	m_Segments[nSegment]->Store(pNewSO, m_pVCursor);
 
-	//manage segments split/creation
+	//if barline added manage segment split/creation
     //AWARE: inserting new elements into a vector can cause vector reallocation.
     //All currently in use segment iterators could be invalidated after SplitSegment()
     //or CreateNewSegment().
@@ -1385,6 +1562,21 @@ void lmColStaffObjs::Store(lmStaffObj* pNewSO)
                 CreateNewSegment(nSegment);
         }
     }
+    
+    //if time signature added, re-bar the collection. As this implies removing segments and
+    //creating new ones, all needed context propagation and update, is done at the same time.
+    //Therefore, no later steps are necessary for this
+    if (pNewSO->IsTimeSignature())
+    {
+        //TODO
+    }
+
+
+    //If inserted staffobj created contexts (clef, TS or KS) the created contexts are already
+    //chained in the staves. But it is necessary:
+    //- to update pointers to contexts at start of segment; and
+    //- to update staffobjs in segment, if affected by the context change
+    m_Segments[nSegment]->PropagateNewContexts(pNewSO, fClefKeepPosition, fKeyKeepPitch);
 }
 
 void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete)
@@ -1418,7 +1610,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete)
     //to next object
 	pSegment->m_StaffObjs.erase(itNext++);
 
-    //if removed object was a note not in chord:
+    //if removed object is a note not in chord:
     //  - Shift left all note/rests in this voice and sort the collection
 	if (pSO->IsNoteRest() && !((lmNoteRest*)pSO)->IsRest() && !((lmNote*)pSO)->IsInChord())
     {
@@ -1426,7 +1618,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete)
 		pSegment->m_StaffObjs.sort(TimeCompare);
     }
 
-    //if removed object was a barline:
+    //if removed object is a barline:
     //  - merge current segment with next one
     //  - Adjust timepos of all moved objects
     //  - Update segment pointer in all moved objects
@@ -1467,7 +1659,34 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete)
 	    itNext = find(pSegment->m_StaffObjs.begin(), pSegment->m_StaffObjs.end(), pFirstSO);
     }
 
-    //delete the removed staffobj
+
+    //if removed object is a time signature, re-bar the collection. As this implies removing
+    //current segments and creating new ones, all needed context propagation and update is
+    //done at the same time. Therefore, no later steps are necessary for this
+    if (pSO->IsTimeSignature())
+    {
+        //TODO
+    }
+
+
+    //AWARE:
+    //When a clef is removed it might be necessary to update note pitches, depending on user
+    //decision (maintain pitch->move notes, or change pitch->do not reposition notes). Also,
+    //when a key signature is removed it might be necessary to update note accidentals, depending
+    //on user decision (maintain pitch->add/remove accidentals, or change pitch->maintain note
+    //accidentals).
+    //These actions are managed automatically by each segment, when a context update. So,
+    //no need to do anything in here.
+
+
+    //If inserted staffobj created contexts (clef, TS or KS) the created contexts are already
+    //chained in the staves. But it is necessary:
+    //- to update pointers to contexts at start of segment; and
+    //- to update staffobjs in segment, if affected by the context change
+    pSegment->PropagateContextsRemoval(pSO);
+
+
+    //finally, delete the removed staffobj 
     if (fDelete) delete pSO;
     m_pVCursor->OnCursorObjectDeleted(itNext);
 
@@ -1585,6 +1804,13 @@ lmSOIterator* lmColStaffObjs::CreateIteratorTo(ETraversingOrder nOrder, lmStaffO
     return pIter;
 }
 
+lmSOIterator* lmColStaffObjs::CreateIteratorFrom(ETraversingOrder nOrder, lmVStaffCursor* pVCursor)
+{
+    //creates an iterator pointing to received cursor position
+
+    lmSOIterator* pIter = new lmSOIterator(nOrder, this, pVCursor);
+    return pIter;
+}
 
 
 //====================================================================================================
@@ -1680,6 +1906,17 @@ void lmColStaffObjs::CreateNewSegment(int nSegment)
 
     //Set contexts at start of this new segment.
     UpdateContexts(pS);
+}
+
+lmSegment* lmColStaffObjs::GetNextSegment(int nCurSegment)
+{
+    //retutn next segment after nCurSegment (0..n-1) or NULL if this is the last one
+
+    int i = nCurSegment + 1;
+    if (i < (int)m_Segments.size())
+        return m_Segments[i];
+    else
+        return (lmSegment*) NULL;
 }
 
 void lmColStaffObjs::RemoveSegment(int nSegment)

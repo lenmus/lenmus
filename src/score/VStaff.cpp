@@ -77,6 +77,7 @@
 #include "MetronomeMark.h"
 #include "../app/global.h"
 #include "../app/TheApp.h"		//to access g_rScreenDPI and g_rPixelsPerLU
+#include "../app/Preferences.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeStaff.h"
 #include "../graphic/BoxSliceVStaff.h"
@@ -235,27 +236,6 @@ int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 		return 0;
 }
 
-void lmVStaff::RemoveCreatedContexts(lmStaffObj* pSO)
-{
-	if (!(pSO->IsClef() || pSO->IsKeySignature() || pSO->IsTimeSignature()))
-        return;         //this staffObj didn't created contexts
-
-    //if it is a clef, it only created one context. Else, if it is a time or key signature, 
-    //several contexts (one per staff) have been created. 
-    if (pSO->IsClef())
-    {
-        //clef. Only one context to remove
-        lmContext* pContext = ((lmClef*)pSO)->GetContext();
-        lmStaff* pStaff = GetStaff( pSO->GetStaffNum() );
-        pStaff->RemoveContext(pContext, pSO);
-        delete pContext;
-    }
-    else
-    {
-        //time or key signature. One context per staff to remove
-        //TODO
-    }
-}
 
 
 //---------------------------------------------------------------------------------------
@@ -265,6 +245,48 @@ void lmVStaff::RemoveCreatedContexts(lmStaffObj* pSO)
 lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
                                  bool fVisible)
 {
+    //When a clef is inserted it might be necessary to update note pitches, depending on user
+    //decision (maintain pitch->move notes, or change pitch->do not reposition notes). 
+    //We have to determine user desired behaviour. As user might choose to cancel the
+    //insertion, this is the first thing to.
+
+    bool fClefKeepPosition = true;      //what to do when a clef added?
+
+    //if there are notes affected by new clef, get user desired behaviour
+    if (CheckIfNotesAffectedByClef())
+    {
+        lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+        long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_INSERT);  //0=ask, 1=keep pitch, 2=keep position
+        if (nOptValue == 0)
+        {
+            lmQuestionBox oQB(
+                wxGetTranslation(
+                    _T("Notes after the clef will be affected by this insertion.\n")
+				    _T("Would you like to keep notes' pitch and, therefore, to change\n")
+                    _T("notes' positions on the staff? or,\n")
+                    _T("would you prefer to keep notes placed on their current staff\n")
+                    _T("positions? (implies pitch change)\n\n")
+                ),
+                //num buttons, and labels (2 per button: button text + explanation)
+                3,
+                _("Keep position"), _("Change notes' pitch and keep their current staff position."),
+                _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
+                _("Cancel"), _("The 'insert clef' command will be cancelled.") 
+            );
+            int nAnswer = oQB.ShowModal();
+    
+		    if (nAnswer == 0)       //'Keep position' button
+                fClefKeepPosition = true;
+            else if (nAnswer == 1)  //'Keep pitch' button
+                fClefKeepPosition = false;
+            else
+                return (lmClef*)NULL;       //Cancel clef insertion
+        }
+        else
+            fClefKeepPosition = (nOptValue == 2);
+    }
+
+    //create the clef and prepare its insertion
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
@@ -272,7 +294,10 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
     pContext = pStaff->NewContextAfter(pClef, pContext);
 
 	pClef->SetContext(pContext);
-    m_cStaffObjs.Add(pClef);
+
+    //proceed to insert the clef
+    m_cStaffObjs.Add(pClef, fClefKeepPosition);
+
     return pClef;
 }
 lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
@@ -364,41 +389,6 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
         cAuxCursors.push_back(pAuxCursor);
     }
 
-
- //   //Get current staff and current context for current staff
- //   lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
- //   lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
- //   int nStaff = m_VCursor.GetNumStaff();
- //   lmStaff* pStaff = GetStaff(nStaff);
- //   if (fIsTime)
- //       ((lmTimeSignature*)pKTS)->SetContext(nStaff, 
- //                                   pStaff->NewContextAfter((lmTimeSignature*)pKTS, pContext) );
- //   else
- //       ((lmKeySignature*)pKTS)->SetContext(nStaff,
-	//                                pStaff->NewContextAfter((lmKeySignature*)pKTS, pContext) );
-
- //   //what to do for the other staves?
- //   //TODO: Fix this. For now let's insert the context at the end, as if the
- //   //score was empty
- //  //iterate over the collection of Staves to add a new context
- //   for (int iStaff=1; iStaff <= m_nNumStaves; iStaff++)
-	//{
- //       if (iStaff != nStaff)
- //       {
- //           lmStaff* pStaff = GetStaff(iStaff);
- //           if (fIsTime)
- //           {
-	//            lmContext* pContext = pStaff->NewContextAfter((lmTimeSignature*)pKTS);
- //               ((lmTimeSignature*)pKTS)->SetContext(iStaff, pContext);
- //           }
- //           else
- //           {
-	//            lmContext* pContext = pStaff->NewContextAfter((lmKeySignature*)pKTS);
- //               ((lmKeySignature*)pKTS)->SetContext(iStaff, pContext);
- //           }
- //       }
- //   }
-
     // insert the key/time signature object in first staff
     lmVStaffCursor* pAuxCursor = cAuxCursors.front();
     pAuxCursor->AttachToCollection(&m_cStaffObjs, false);   //false: do not reset cursor
@@ -458,14 +448,17 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     //if no Clef defined yet the context will be NULL
     if (!pContext)
     {
-        lmQuestionBox oQB( wxGetTranslation(
+        lmQuestionBox oQB(
+            wxGetTranslation(
 				_T("Error: No clef defined yet.\n\n")
 				_T("Would you like to have notes placed on the staff as if a G clef \n")
-				_T("has been defined?\n") ),
-                //num buttons, and labels (2 per button: button text + explanation)
-                2,
-                _("Insert clef"), _("An invisible G clef will be inserted before the note."),
-                _("Cancel"), _("The 'insert note' command will be cancelled.") );
+				_T("has been defined?\n")
+            ),
+            //num buttons, and labels (2 per button: button text + explanation)
+            2,
+            _("Insert clef"), _("An invisible G clef will be inserted before the note."),
+            _("Cancel"), _("The 'insert note' command will be cancelled.")
+        );
         int nAnswer = oQB.ShowModal();
 
 		if (nAnswer == 0)   //'Insert clef' button
@@ -536,7 +529,7 @@ void lmVStaff::DeleteObject(lmStaffObj* pSO, lmUndoItem* pUndoItem)
 
     //if object to remove is a clef, key or time signature, the contexts they created
     //have to be removed
-	RemoveCreatedContexts(pSO);
+	pSO->RemoveCreatedContexts();
 
     //now remove the staffobj from the staffobjs collection
     //if pUndoItem exists, do not delete staffobj, only remove it from the collection
@@ -867,14 +860,12 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
 
     // the font for drawing is scaled by the DC.
     #if defined(__WXGTK__)
-    //in Linux the reference resolution is 72 DPI
-    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 50.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
+    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL), _T("LenMus Basic") ) );        //logical points
     #else
     pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 96.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
     #endif
 
-    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%.2f, font size=%d"), dyLinesL,
-    //             (int)(3.0 * dyLinesL * 96.0/g_rScreenDPI) );
+    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL);
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units
@@ -1431,7 +1422,7 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 //    if (nTiempoIni = 0 { nTiempoIni = nDurCompas
 
     //Create lmSoundManager and initialize MIDI events table
-    lmSoundManager* pSM = new lmSoundManager();
+    lmSoundManager* pSM = new lmSoundManager(m_pScore);
     //TODO review next line
 //    pSM->Inicializar GetStaffsCompas(nMetrica), nTiempoIni, nDurCompas, this.NumCompases
 
@@ -1522,6 +1513,40 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
     delete pIter;
     return (lmNote*)NULL;        //no suitable note found
 
+}
+
+bool lmVStaff::CheckIfNotesAffectedByClef()
+{
+    //AWARE:
+    //  This method is used when a clef is going to be inserted, to verify if the new
+    //  clef affects any subsequent note.
+    //  
+    //  This method returns true if, starting from current position, no note
+    //  is found or a clef is found before finding a note.
+
+
+    //define iterator from current cursor position
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, &m_VCursor);
+    while(!pIter->EndOfList())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsClef())
+            break;              //clef found before finding a note. No notes affected
+        else if (pSO->IsNoteRest())
+        {
+            if (!((lmNoteRest*)pSO)->IsRest())
+            {
+                //note found
+                delete pIter;
+                return true;
+            }
+        }
+        pIter->MoveNext();
+    }
+
+    //clef found before finding a note or no note found
+    delete pIter;
+    return false;
 }
 
 bool lmVStaff::ShiftTime(float rTimeShift)

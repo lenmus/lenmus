@@ -414,9 +414,10 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
 
         if ( style & wxHF_BOOKMARKS )
         {
+            //AWARE: The size of this combo constraints the minimum size of the index panel
             m_Bookmarks = new wxComboBox(pPanel, ID_BOOKMARKS_LIST,
                                          wxEmptyString,
-                                         wxDefaultPosition, wxDefaultSize,
+                                         wxDefaultPosition, wxSize(60, -1), //wxDefaultSize,
                                          0, NULL, wxCB_READONLY | wxCB_SORT);
             m_Bookmarks->Append(_("(bookmarks)"));
             for (unsigned i = 0; i < m_BookmarksNames.GetCount(); i++)
@@ -995,7 +996,11 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
 	//Main frame invokes this method to inform that zomming factor has been changed.
 	//Returns false is scale has not been changed
 
+    #if defined(__WXGTK__)
+	double rFontSize = (double)m_nFontSize * rScale * 0.66f;
+    #else
 	double rFontSize = (double)m_nFontSize * rScale;
+    #endif
 
 	int nFontSizes[7];
     nFontSizes[0] = int(rFontSize * 0.6 + 0.5);

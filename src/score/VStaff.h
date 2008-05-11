@@ -194,7 +194,6 @@ public:
     void OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
                        int nNewAccidentals, lmContext* pCurrentContext);
 	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
-    void RemoveCreatedContexts(lmStaffObj* pSO);
 
 
     //measures related
@@ -241,6 +240,10 @@ private:
 	void XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
 								    float rTime, lmStaffObj* pSO);
     void XML_AddShitTimeTag(wxString& sSource, int nIndent, bool fFwd, float rTime);
+
+    //access
+    bool CheckIfNotesAffectedByClef();
+
 
 
 

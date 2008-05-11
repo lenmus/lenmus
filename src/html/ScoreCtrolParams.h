@@ -348,7 +348,11 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
     //set scale as a function of current font size
     float rTextScale = g_pMainFrame->GetHtmlWindow()->GetScale();
-    m_pOptions->rScale = rTextScale * 0.9;
+    #if defined(__WXGTK__)
+    m_pOptions->rScale = rTextScale * 1.80f;
+    #else
+    m_pOptions->rScale = rTextScale * 0.9f;
+    #endif
     int nHeight = (int)((double)m_nHeight * rTextScale);
 	g_pLogger->LogTrace(_T("lmScoreCtrolParams"),
 		_T("[CreateHtmlCell] Char height = %d, rTextScale=%.4f"),

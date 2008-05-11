@@ -132,7 +132,7 @@ private:
 class lmSoundManager
 {
 public:
-    lmSoundManager();
+    lmSoundManager(lmScore* pScore);
     ~lmSoundManager();
 
     // sound events table
@@ -163,8 +163,8 @@ public:
 
     // measures tables
     void StoreMeasureStartTime(int nMeasure, float rTime);
-    int  GetNumMeasures() { return (int)m_aStartTime.GetCount(); }
-    long GetStartTime(int nMeasure) { return m_aStartTime.Item(nMeasure); }
+    inline int  GetNumMeasures() { return (int)m_aStartTime.GetCount(); }
+    inline long GetStartTime(int nMeasure) { return m_aStartTime.Item(nMeasure); }
 
     //only to be used by lmSoundManagerThread
     void DoPlaySegment(int nEvStart, int nEvEnd,
@@ -174,8 +174,9 @@ public:
                      long nMM,
                      wxWindow* pWindow );
 
-    void EndOfThread() { m_pThread = (lmSoundManagerThread*)NULL; }
+    inline void EndOfThread() { m_pThread = (lmSoundManagerThread*)NULL; }
 
+    inline bool IsPlaying() { return m_fPlaying; }
 
 private:
     void SortByTime();
@@ -191,9 +192,11 @@ private:
 
         //member variables
 
-    lmSoundManagerThread*    m_pThread;        // play execution thread
-    wxWindow*                m_pWindow;        // window to receive SCORE_HIGHLIGHT events
-    bool                     m_fPaused;        // execution is paused
+    lmScore*                m_pScore;       //score to play
+    lmSoundManagerThread*   m_pThread;      // play execution thread
+    wxWindow*               m_pWindow;      // window to receive SCORE_HIGHLIGHT events
+    bool                    m_fPaused;      // execution is paused
+    bool                    m_fPlaying;     // playing (control in DoPlaySegment loop)
 
 
     //sound events table

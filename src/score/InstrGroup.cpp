@@ -45,6 +45,8 @@
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeBracket.h"
 
+#include "../app/Preferences.h"
+
 
 lmInstrGroup::lmInstrGroup(lmEBracketSymbol nGrpSymbol, bool fJoinBarlines)
 {
@@ -128,8 +130,9 @@ void lmInstrGroup::MeasureNames(lmPaper* pPaper)
     m_uIndentFirst = 0;
     m_uIndentOther = 0;
 
-    //TODO: user options
-    lmLUnits uSpaceAfterName = GetFirstInstrument()->TenthsToLogical(10.0f);
+    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+    lmTenths nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_SPACE_AFTER_NAME);
+    lmLUnits uSpaceAfterName = GetFirstInstrument()->TenthsToLogical(nOptValue);
 
     if (m_pName) {
         // measure text extent
@@ -149,9 +152,10 @@ void lmInstrGroup::MeasureNames(lmPaper* pPaper)
 
     if (RenderBraket())
     {
-        //TODO: user options
-        m_uBracketWidth = GetFirstInstrument()->TenthsToLogical(12.5f);
-        m_uBracketGap = GetFirstInstrument()->TenthsToLogical(10.0f);
+        nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_WIDTH);
+        m_uBracketWidth = GetFirstInstrument()->TenthsToLogical(nOptValue);
+        nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_GAP);
+        m_uBracketGap = GetFirstInstrument()->TenthsToLogical(nOptValue);
 
         m_uIndentOther += m_uBracketWidth + m_uBracketGap;
         m_uIndentFirst += m_uBracketWidth + m_uBracketGap;
@@ -170,34 +174,30 @@ bool lmInstrGroup::RenderBraket()
     return (m_nBracket == lm_eBracket || m_nBracket == lm_eBrace );
 }
 
-void lmInstrGroup::AddNameShape(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop,
-                                lmLUnits yBottom)
+void lmInstrGroup::AddNameAndBracket(lmBox* pBox, lmPaper* pPaper, int nSystem,
+                                     lmLUnits xLeft, lmLUnits yTop, lmLUnits yBottom)
 {
-    AddNameAbbrevShape(pBox, pPaper, m_pName, yTop, yBottom);
-}
+    //Layout. This method is responsible for adding the shapes for the group name/abbreviation
+    //and for the group brace/bracket. It receives xLeft, yTop & yBottom of the staves that
+    //form the group of instruments, and has to coumpute positions for the shapes to add.
+    //The received box is a BoxSystem and its xLeft bound is at right marging of paper
 
-void lmInstrGroup::AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop,
-                                        lmLUnits yBottom)
-{
-    AddNameAbbrevShape(pBox, pPaper, m_pAbbreviation, yTop, yBottom);
+	if (nSystem == 1)
+        AddNameAbbrevShape(pBox, pPaper, m_pName, xLeft, yTop, yBottom);
+	else
+        AddNameAbbrevShape(pBox, pPaper, m_pAbbreviation, xLeft, yTop, yBottom);
 }
 
 void lmInstrGroup::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName,
-                                      lmLUnits yTop, lmLUnits yBottom)
+                                      lmLUnits xStaff, lmLUnits yTop, lmLUnits yBottom)
 {
-    //when this method is invoked paper is positioned at top left corner of last
-    //instrument staff (x = left border of staff, y = top line of last staff)
-
-    //save paper position
-    lmLUnits uxPaper = pPaper->GetCursorX();
-
     //add shape for the bracket
     if (RenderBraket())
     {
-        lmLUnits xLeft = uxPaper - m_uBracketWidth - m_uBracketGap;
-        lmLUnits xRight = uxPaper - m_uBracketGap;
+        lmLUnits xLeft = xStaff - m_uBracketWidth - m_uBracketGap;
+        lmLUnits xRight = xStaff - m_uBracketGap;
         lmShape* pShape = new lmShapeBracket(GetFirstInstrument(), m_nBracket, xLeft,
-                                    yTop, xRight, yBottom, *wxGREEN);
+                                    yTop, xRight, yBottom, *wxBLACK);
         pBox->AddShape( pShape );
     }
 

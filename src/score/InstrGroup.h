@@ -55,9 +55,8 @@ public:
     void OnGroupModified();
 
     void MeasureNames(lmPaper* pPaper);
-	void AddNameShape(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop, lmLUnits yBottom);
-	void AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop,
-                              lmLUnits yBottom);
+    void AddNameAndBracket(lmBox* pBox, lmPaper* pPaper, int nSystem,
+                           lmLUnits xStaff, lmLUnits yTop, lmLUnits yBottom);
 
     lmLUnits GetIndentFirst() { return m_uIndentFirst; }
     lmLUnits GetIndentOther() { return m_uIndentOther; }
@@ -65,7 +64,7 @@ public:
 private:
     bool RenderBraket();
 	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName,
-                            lmLUnits yTop, lmLUnits yBottom);
+                            lmLUnits xStaff, lmLUnits yTop, lmLUnits yBottom);
 
 
     bool                        m_fJoinBarlines;

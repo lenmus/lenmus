@@ -85,7 +85,10 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
     // maintain the proportions between text size and scores. As users normally adjust
     // the OS font sizes to confortably read them, if we adjust staff sizes to text
     // sizes we will get a good compromise solution.
-    SetScale( (float)GetCharHeight() / 10.0 );
+    float rCharHeight = (float)GetCharHeight();
+    wxLogMessage(_T("[lmScoreAuxCtrol::lmScoreAuxCtrol] CharHeight=%.2f, Scale=%.2f"), rCharHeight, rCharHeight/10.0f);
+    SetScale( rCharHeight / 10.0f );
+    //SetScale( (float)GetCharHeight() / 10.0f );
 
     m_fHidden = false;
 
@@ -361,6 +364,8 @@ void lmScoreAuxCtrol::Pause()
 void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
     if (!m_pScore) return;
+    if (m_pScore->GetID() != event.GetScoreID() )
+        return;     //the event is not for the score controlled by this control
 
     lmEHighlightType nHighlightType = event.GetHighlightType();
     if (nHighlightType == ePrepareForHighlight) {

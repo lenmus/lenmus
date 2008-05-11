@@ -84,6 +84,17 @@ lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaf
         --m_it;
 }
 
+lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor)
+{
+    //creates an iterator pointing to received cursor position
+
+    m_pColStaffObjs = pCSO;
+    m_nVoice = 0;       //voice to recover. 0=all
+	m_nSegment = pVCursor->GetSegment();
+	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+	m_it = pVCursor->GetCurIt();
+}
+
 void lmSOIterator::MoveFirst()
 {
     // move cursor to first lmStaffObj

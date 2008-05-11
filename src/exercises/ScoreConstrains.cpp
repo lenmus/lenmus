@@ -507,7 +507,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     lmStaffObj* pSO;
     lmSOIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
     pIter->MoveLast();      // last is EOS control object
-    pIter->MovePrev();      // skip EOS
+//    pIter->MovePrev();      // skip EOS
     pSO = pIter->GetCurrent();
     wxASSERT(pSO->GetClass() == eSFOT_Barline);
     float rPatternDuration = pSO->GetTimePos();

@@ -318,6 +318,7 @@ public:
 	//contexts
 	lmContext* GetCurrentContext();
 	lmContext* NewUpdatedContext();
+    virtual void RemoveCreatedContexts() {}
 
     //undo/redo
     virtual void Freeze(lmUndoData* pUndoData) {};

@@ -89,3 +89,89 @@ lmProxySettings* GetProxySettings()
 }
 
 
+//-------------------------------------------------------------------------------------------
+// lmPgmOptions implementation
+//-------------------------------------------------------------------------------------------
+
+lmPgmOptions* lmPgmOptions::m_pInstance = (lmPgmOptions*)NULL;
+
+lmPgmOptions::lmPgmOptions()
+{
+    m_OptData.resize(lm_OP_END);        //allocate all the elements
+}
+
+lmPgmOptions::~lmPgmOptions()
+{
+    //delete the lmOptionData collection
+    std::vector<lmOptionData*>::iterator it;
+    for (it = m_OptData.begin(); it != m_OptData.end(); ++it)
+        delete *it;
+    m_OptData.clear();
+}
+
+lmPgmOptions* lmPgmOptions::GetInstance()
+{
+    if (!m_pInstance)
+    {
+        m_pInstance = new lmPgmOptions();
+        m_pInstance->LoadDefaultValues();
+    }
+    return m_pInstance;
+}
+
+void lmPgmOptions::DeleteInstance()
+{
+    if (m_pInstance)
+        delete m_pInstance;
+    m_pInstance = (lmPgmOptions*)NULL;
+}
+
+
+void lmPgmOptions::Register(lmOptionId nId, long nUnits, float rValue, wxString sKey)
+{
+    lmOptionData* pData = new lmOptionData();
+    pData->rValue = rValue;
+    pData->sGroup = sKey;
+    pData->type = nUnits;
+
+    m_OptData[nId] = pData;
+}
+
+void lmPgmOptions::Register(lmOptionId nId, long nUnits, long nValue, wxString sKey)
+{
+    lmOptionData* pData = new lmOptionData();
+    pData->nValue = nValue;
+    pData->sGroup = sKey;
+    pData->type = nUnits;
+
+    m_OptData[nId] = pData;
+}
+
+void lmPgmOptions::Register(lmOptionId nId, long nUnits, wxString sValue, wxString sKey)
+{
+}
+
+void lmPgmOptions::Register(lmOptionId nId, long nUnits, bool fValue, wxString sKey)
+{
+}
+
+void lmPgmOptions::LoadDefaultValues()
+{
+    //Engraving options
+    //------------------------------------------------------------------------
+    //Instruments grouping: space after name/abbreviation
+    Register(lm_EO_GRP_SPACE_AFTER_NAME, lmOP_TENTHS, 10.0f, _T("InstrGroup/Space after name/"));
+    //Instruments grouping: width of brace/bracket
+    Register(lm_EO_GRP_BRACKET_WIDTH, lmOP_TENTHS, 12.5f, _T("InstrGroup/Width of brace or bracket/"));
+    //Instruments grouping: space after brace or bracket
+    Register(lm_EO_GRP_BRACKET_GAP, lmOP_TENTHS, 10.0f, _T("InstrGroup/Space after brace or bracket/"));
+
+
+    //Edit options
+    //------------------------------------------------------------------------
+    //what to do when clef added?: 0=ask, 1=keep pitch, 2=keep position
+    Register(lm_DO_CLEF_INSERT, lmOP_ENUM, 0L, _T("Clef/Insert behaviour/transpose"));
+    //what to do when key added?: 0=ask, 1=keep pitch, 2=keep position
+    Register(lm_DO_KS_INSERT, lmOP_ENUM, 0L, _T("Key/Insert behaviour/transpose"));
+
+}

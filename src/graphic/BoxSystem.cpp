@@ -109,6 +109,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
         m_Shapes[i]->Render(pPaper);    //, lmUPoint(m_xPos, m_yPos));
     }
 
+    //this->DrawBounds(pPaper, *wxRED);
 }
 
 void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)

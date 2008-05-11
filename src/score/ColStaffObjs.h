@@ -75,6 +75,9 @@ public:
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
 	inline lmContext* GetContext(int iStaff) { return m_pContext[iStaff]; }
+    void PropagateNewContexts(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKeepPitch);
+    void PropagateContextsRemoval(lmStaffObj* pSO);
+
 
     //info
     int GetNumVoices();
@@ -98,6 +101,14 @@ private:
     void ShiftRightTimepos(lmItCSO itStart, int nVoice);
     void ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart);
 
+    //context management
+    lmContext* FindEndOfSegmentContext(int nStaff);
+    void PropagateContextChange(lmContext* pStartContext, int nStaff, bool fClefKeepPosition,
+                                bool fKeyKeepPitch);
+    lmSegment* GetNextSegment();
+
+
+
     std::list<lmStaffObj*>	m_StaffObjs;		//list of StaffObjs in this segment
     lmColStaffObjs* m_pOwner;                   
     int				m_nNumSegment;				//0..n-1
@@ -119,7 +130,7 @@ public:
     void AddStaff();
 
     //add/remove StaffObjs
-    void Add(lmStaffObj* pNewSO);
+    void Add(lmStaffObj* pNewSO, bool fClefKeepPosition=true, bool fKeyKeepPitch=true);
 	void Delete(lmStaffObj* pCursorSO, bool fDelete = true);
 	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
     bool ShiftTime(float rTimeShift);
@@ -131,6 +142,7 @@ public:
     //iterator related methods
     lmSOIterator* CreateIterator(ETraversingOrder nOrder, int nVoice=-1);
 	lmSOIterator* CreateIteratorTo(ETraversingOrder nOrder, lmStaffObj* pSO);
+	lmSOIterator* CreateIteratorFrom(ETraversingOrder nOrder, lmVStaffCursor* pVCursor);
 
 	//info related to measures
     int GetNumMeasures();
@@ -158,13 +170,14 @@ private:
 	friend class lmSegment;
 
 	//general management
-    void Store(lmStaffObj* pNewSO);
+    void Store(lmStaffObj* pNewSO, bool fClefKeepPosition=true, bool fKeyKeepPitch=true);
 
 	//segments management
 	void SplitSegment(int nSegment, lmStaffObj* pLastSO);
     void CreateNewSegment(int nSegment);
     void RemoveSegment(int nSegment);
 	void UpdateContexts(lmSegment* pSegment);
+    lmSegment* GetNextSegment(int nCurSegment);
 
 	//voices management
 	void AssignVoice(lmStaffObj* pSO, int nSegment);

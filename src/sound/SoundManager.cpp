@@ -97,9 +97,11 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
 //
 //-----------------------------------------------------------------------------------------
 
-lmSoundManager::lmSoundManager()
+lmSoundManager::lmSoundManager(lmScore* pScore)
 {
+    m_pScore = pScore;
     m_pThread = (lmSoundManagerThread*) NULL;
+    m_fPlaying = false;
 }
 
 
@@ -517,6 +519,9 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     #define SOLFA_NOTE        60        //pitch for sight reading with percussion sound
     int nPercussionChannel = g_pMidi->MtrChannel();        //channel to use for percussion
 
+    //OK. We start playing. 
+    m_fPlaying = true;
+
     //prepare metronome settings
     lmMetronome* pMtr = g_pMainFrame->GetMetronome();
     long nMtrClickIntval = (nMM == 0 ? 0 : 60000/nMM);
@@ -527,7 +532,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     // Ask score window to get ready for visual highlight
     bool fVisualHighlight = fVisualTracking && pWindow;
     if (fVisualHighlight && pWindow) {
-        lmScoreHighlightEvent event((lmStaffObj*)NULL, ePrepareForHighlight);
+        lmScoreHighlightEvent event(m_pScore->GetID(), (lmStaffObj*)NULL, ePrepareForHighlight);
         ::wxPostEvent( pWindow, event );
     }
 
@@ -718,7 +723,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 }
 
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_aEvents[i]->pSO, eVisualOn);
+                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOn);
                     ::wxPostEvent( pWindow, event );
                 }
 
@@ -742,7 +747,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 }
 
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_aEvents[i]->pSO, eVisualOff);
+                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOff);
                     ::wxPostEvent( pWindow, event );
                 }
             }
@@ -755,7 +760,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             {
                 //set visual highlight
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_aEvents[i]->pSO, eVisualOn);
+                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOn);
                     ::wxPostEvent( pWindow, event );
                 }
             }
@@ -763,7 +768,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             {
                 //remove visual highlight
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_aEvents[i]->pSO, eVisualOff);
+                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOff);
                     ::wxPostEvent( pWindow, event );
                 }
             }
@@ -810,7 +815,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             i++;
         }
 
-        if (m_pThread->TestDestroy()) {
+        if (!m_pThread || m_pThread->TestDestroy()) {
             //Stop playing requested. Exit the loop
             break;
         }
@@ -823,7 +828,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     //ensure that all visual highlight is removed in case the loop was exited because
     //stop playing was requested
     if (fVisualHighlight && pWindow) {
-        lmScoreHighlightEvent event((lmStaffObj*)NULL, eRemoveAllHighlight);
+        lmScoreHighlightEvent event(m_pScore->GetID(), (lmStaffObj*)NULL, eRemoveAllHighlight);
         ::wxPostEvent( pWindow, event );
     }
 
@@ -839,6 +844,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         ::wxPostEvent( pWindow, event );
     }
 
+    m_fPlaying = false;
 }
 
 //================================================================================

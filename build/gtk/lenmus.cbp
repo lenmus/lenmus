@@ -226,6 +226,8 @@
 		<Unit filename="../../src/graphic/ShapeBarline.h" />
 		<Unit filename="../../src/graphic/ShapeBeam.cpp" />
 		<Unit filename="../../src/graphic/ShapeBeam.h" />
+		<Unit filename="../../src/graphic/ShapeBracket.cpp" />
+		<Unit filename="../../src/graphic/ShapeBracket.h" />
 		<Unit filename="../../src/graphic/ShapeNote.cpp" />
 		<Unit filename="../../src/graphic/ShapeNote.h" />
 		<Unit filename="../../src/graphic/ShapeStaff.cpp" />
@@ -311,6 +313,8 @@
 		<Unit filename="../../src/score/Context.h" />
 		<Unit filename="../../src/score/Glyph.cpp" />
 		<Unit filename="../../src/score/Glyph.h" />
+		<Unit filename="../../src/score/InstrGroup.cpp" />
+		<Unit filename="../../src/score/InstrGroup.h" />
 		<Unit filename="../../src/score/Instrument.cpp" />
 		<Unit filename="../../src/score/Instrument.h" />
 		<Unit filename="../../src/score/KeySignature.cpp" />

@@ -36,6 +36,7 @@ class lmSOIterator
 public:
     lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, int nVoice);
     lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaffObj* pTargetSO);
+    lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor);
 	~lmSOIterator() {}
 
     bool EndOfList();

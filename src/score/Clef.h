@@ -67,6 +67,8 @@ public:
 	//context management
 	inline void SetContext(lmContext* pContext) { m_pContext = pContext; }
     inline lmContext* GetContext() { return m_pContext; }
+    void RemoveCreatedContexts();
+
 
 private:
 

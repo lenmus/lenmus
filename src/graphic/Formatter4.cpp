@@ -153,17 +153,11 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     lmLUnits ySystemPos;    //paper y position at which current system starts
 
 
-    // The algorithm has two independent loops:
-	//
-    //	1. Layout phase
-    //		In the first one the number of measures that fits in the system is finded out,
+    // The algorithm has a main loop to process measures columns:
+    //		The number of measures that fits in each system is finded out,
 	//		as well as their size and the position of all their StaffObjs.
     //		The number of measures per system is stored in .... , the shapes are created
 	//		and the positioning information is stored in the shapes.
-	//
-    //	2. Reder phase
-    //		In the second loop the StaffObjs are just rendered using the information compiled
-    //		in first loop.
     //-------------------------------------------------------------------------------------
 
     //compute systems indentation
@@ -232,6 +226,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         pBoxSystem = pBoxPage->AddSystem(nSystem);
         ySystemPos = pPaper->GetCursorY();  //save the start of system position
         pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
+        pBoxSystem->SetYTop( ySystemPos );
+        pBoxSystem->SetXLeft( pPaper->GetCursorX() );
         pBoxSystem->SetFirstMeasure(nAbsMeasure);
 
         bool fNewSystem = false;
@@ -240,6 +236,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         {
             //reposition paper vertically at the start of the system. It has been advanced
             //when sizing the previous measure column
+            wxLogMessage(_T("[lmFormatter4::RenderJustified] nAbsMeasure=%d, xPaper=%.2f "),
+                         nAbsMeasure, pPaper->GetCursorX() );
             pPaper->SetCursorY( ySystemPos );
 
 
@@ -248,19 +246,19 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                 _T("m_uMeasure=%d, Paper X = %.2f"), nRelMeasure, pPaper->GetCursorX() );
             #endif
 
-			//if start of system, set initial spacing and size
+			//if start of system, set initial system length
+            //TODO: Is this needed?
             if (nRelMeasure == 1)
 			{
-				pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
-				pPaper->IncrementCursorX(
-					((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
 				pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
             }
 
             //size this measure column create BoxSlice (and BoxSlice hierarchy) for
             //the measure being processed
             m_uMeasureSize[nRelMeasure] =
-                SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pBoxSystem, pPaper, &fNewSystem);
+                SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pBoxSystem,
+                                  pPaper, &fNewSystem,
+                                  (nSystem == 1 ? nFirstSystemIndent : nOtherSystemIndent) );
 
             #if defined(__WXDEBUG__)
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
@@ -427,17 +425,18 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
         //Update information about this system
         pBoxSystem->SetNumMeasures(m_nMeasuresInSystem, m_pScore);
-        if (fThisIsLastSystem && fStopStaffLinesAtFinalBarline) {
+        if (fThisIsLastSystem && fStopStaffLinesAtFinalBarline)
+        {
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
             lmLUnits xPos;
-            //if (pVStaff->GetXPosFinalBarline(&xPos))
             if (pVStaff->GetBarlineOfLastNonEmptyMeasure(&xPos))
                 pBoxSystem->UpdateXRight( xPos - 1 );
             else
                 pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
         }
-        else {
+        else
+        {
             //staff lines go to the rigth margin
             pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
         }
@@ -445,7 +444,6 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 	    //Add the shape for the initial barline that joins all staves in a system
 	    if (m_pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) && !pVStaff->HideStaffLines() )
 	    {
-			//GetSliceVStaff(int i)
 			lmLUnits uxPos = pBoxSystem->GetXLeft() +
 						     (nSystem == 1 ? nFirstSystemIndent : nOtherSystemIndent);
 		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
@@ -483,10 +481,11 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
     }    //while (nAbsMeasure <= nTotalMeasures)
 
+
     //Here the score is prepared. Last staff lines are finished at the right margin or
     //at the final bar, depending on flag fStopStaffLinesAtFinalBarline.
     //If this flag is false and option 'Score.FillPageWithEmptyStaves' is true it means
-    //that the user has requested to fill the remaining page space with empty staves.
+    //that the user has requested to fill the remaining page space with empty systems.
     //Let's proceed to do it.
     bool fFillPageWithEmptyStaves = m_pScore->GetOptionBool(_T("Score.FillPageWithEmptyStaves"));
     if (!fStopStaffLinesAtFinalBarline && fFillPageWithEmptyStaves)
@@ -604,7 +603,8 @@ bool lmFormatter4::SplitMeasureColumn()
 }
 
 lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
-                                         lmBoxSystem* pBoxSystem, lmPaper* pPaper, bool* pNewSystem)
+                                         lmBoxSystem* pBoxSystem, lmPaper* pPaper,
+                                         bool* pNewSystem, lmLUnits nSystemIndent)
 {
     // For each instrument and staff it is computed the size of this measure.
     // Also the hierarchy of BoxSlice objects is created for this measure.
@@ -617,6 +617,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     //   nAbsMeasure - Measure number (absolute) to size
     //   nRelMeasure - Measure number (relative) to size
     //   nSystem - System number
+    //   nSystemIndent - indentation for first measure
     //
     // Returns:
     //   - The size of this measure column.
@@ -626,18 +627,21 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     //
 
     lmInstrument* pInstr;
-    lmVStaff* pVStaff;
     bool fNewSystem = false;
 
-    lmLUnits xPaperPos, yPaperPos;
-    lmLUnits xStartPos = pPaper->GetCursorX();      //save x pos to align staves in system
+    wxLogMessage(_T("[lmFormatter4::SizeMeasureColumn] nAbsMeasure=%d, xPaper=%.2f "),
+                    nAbsMeasure, pPaper->GetCursorX() );
+
+    //determine xLeft position for this measure:
+    //      if fisrt measure: xPaper + system indent
+    //      for other measures it doesnt'n matter: use xPaper
+    lmLUnits xStartPos = pPaper->GetCursorX() + (nRelMeasure == 1 ? nSystemIndent : 0.0f);
+    lmLUnits yPaperPos = pPaper->GetCursorY();
 
     // create an empty BoxSlice to contain this measure column
     lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(nAbsMeasure);
-	bool fUpdateSlice = true;
-
-	//initial conditions
-	bool fFirstStaffInSystem = true;
+	pBoxSlice->SetYTop( yPaperPos );
+	pBoxSlice->SetXLeft( xStartPos );
 
     // explore all instruments in the score
 	lmLUnits yBottomLeft = 0;
@@ -652,102 +656,44 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             wxASSERT(false);
         }
 
-        pPaper->SetCursorX( xStartPos );    //align start of staves in this system
+        pPaper->SetCursorX( xStartPos );    //to align start of all staves in this system
+        yPaperPos = pPaper->GetCursorY();
 
         // create an empty BoxSliceInstr to contain this instrument slice
         lmBoxSliceInstr* pBSI = pBoxSlice->AddInstrument(pInstr);
-		bool fUpdateInstr = true;
+		pBSI->SetYTop( yPaperPos );
+		pBSI->SetXLeft( pBoxSlice->GetXLeft() );
 
-        //explore all its VStaff to size the measure
-        //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
-        pVStaff = pInstr->GetVStaff();
-
-        //save this VStaff paper position
-        xPaperPos = pPaper->GetCursorX();
-        yPaperPos = pPaper->GetCursorY();
+        //explore all its VStaff to size the measure column nAbsMeasure.
+        //All collected information is stored in m_oTimepos[nRelMeasure]
+        lmVStaff* pVStaff = pInstr->GetVStaff();
 
         // create the BoxSliceVStaff
         lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff, nAbsMeasure);
+
         // if first measure in system add the ShapeStaff
 		if (nRelMeasure == 1)
 		{
 			// Final xPos is yet unknown, so I use zero.
 			// It will be updated when the system is completed
-			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xPaperPos, 0.0, yPaperPos);
+			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xStartPos, 0.0, yPaperPos);
 		}
 
-		//save start position of this system, slice, instrument and vstaff
-		if (fFirstStaffInSystem)
-		{
-			//start of system
-			fFirstStaffInSystem = false;
-			pBoxSystem->SetXLeft(xPaperPos);
-			pBoxSystem->SetYTop(yPaperPos);
-		}
-		if (fUpdateSlice)
-		{
-			//start of slice
-			pBoxSlice->SetXLeft(xPaperPos);
-			pBoxSlice->SetYTop(yPaperPos);
-			fUpdateSlice = false;
-		}
-		if (fUpdateInstr)
-		{
-			//start of instrument
-			pBSI->SetXLeft(xPaperPos);
-			pBSI->SetYTop(yPaperPos);
-			fUpdateInstr = false;
-		}
-		//start of VStaff slice
-		pBSV->SetXLeft(xPaperPos);
+		//update bounds of VStaff slice
+		pBSV->SetXLeft(xStartPos);
 		pBSV->SetYTop(yPaperPos);
 		pBSV->SetYBottom(yBottomLeft);
 
-        //The prolog (clef and key signature) must be rendered on each system, but the
-        //matching StaffObjs only exist in the first system. Therefore:
-        //1. in the first system the prolog is rendered as part as the normal lmStaffObj
-        //   rendering process.
-        //2. but for the other systems we must force the rendering of the prolog because there
-        //   are no StaffObjs representing the prolog.
-        if (nSystem != 1 && nRelMeasure == 1)
-		{
-			pPaper->SetCursorX(xPaperPos);
-			//pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
-        }
-
         fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, nInstr, pPaper);
 
-        ///*** Update measures of this BoxSliceVStaff
-
-
-        ///*** Update measures of this BoxSliceInstr
+        //update bounds of boxes
 		pBSI->SetYBottom(yBottomLeft);
 		pBoxSlice->SetYBottom(yBottomLeft);
 
-        // if first measure in system add instrument name and bracket/bracet
-        lmLUnits yTopGroup;
+        // if first measure in system add instrument name and bracket/brace.
+        // Instrument is also responsible for managing group name and bracket/brace layout
 		if (nRelMeasure == 1)
-		{
-			if (nSystem == 1)
-				pInstr->AddNameShape(pBSI, pPaper);
-			else
-				pInstr->AddAbbreviationShape(pBSI, pPaper);
-
-            // if first instrument in group, save yTop position for group
-		    if (pInstr->IsFirstOfGroup())
-		    {
-			    yTopGroup = pBSI->GetYTop();
-            }
-
-            // if last instrument of a group, add group name and bracket/bracet
-		    if (pInstr->IsLastOfGroup())
-		    {
-			    if (nSystem == 1)
-				    pInstr->AddGroupName(pBSI, pPaper, yTopGroup, pBSI->GetYBottom());
-			    else
-				    pInstr->AddGroupAbbreviation(pBSI, pPaper, yTopGroup, pBSI->GetYBottom());
-            }
-		}
+            pInstr->AddNameAndBracket(pBoxSystem, pBSI, pPaper, nSystem);
 
         //advance paper in height off this lmVStaff
         //AWARE As advancing one staff has the effect of returning
@@ -870,14 +816,14 @@ void lmFormatter4::AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 		pBSI->SetYBottom(yBottomLeft);
 		pBoxSlice->SetYBottom(yBottomLeft);
 
-        // if first measure in system add instrument names and brackets/bracets
-		if (nRelMeasure == 1)
-		{
-			if (nSystem == 1)
-				pInstr->AddNameShape(pBSI, pPaper);
-			else
-				pInstr->AddAbbreviationShape(pBSI, pPaper);
-		}
+  //      // if first measure in system add instrument names and brackets/bracets
+		//if (nRelMeasure == 1)
+		//{
+		//	if (nSystem == 1)
+		//		pInstr->AddNameShape(pBSI, pPaper);
+		//	else
+		//		pInstr->AddAbbreviationShape(pBSI, pPaper);
+		//}
 
     }    // next lmInstrument
 

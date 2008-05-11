@@ -482,6 +482,12 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL), m_SCursor(this)
 
 lmScore::~lmScore()
 {
+    if (m_pSoundMngr && m_pSoundMngr->IsPlaying())
+    {
+        this->Stop();
+        while (m_pSoundMngr->IsPlaying())
+            ::wxMilliSleep(100);    
+    }
 	for(int i=0; i < (int)m_cInstruments.size(); i++)
 	{
 		delete m_cInstruments[i];
@@ -1074,7 +1080,7 @@ void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, lmEPlayMode n
                  long nMM, wxWindow* pWindow)
 {
     if (!m_pSoundMngr) {
-        m_pSoundMngr = new lmSoundManager();
+        m_pSoundMngr = new lmSoundManager(this);
         ComputeMidiEvents();
     }
 
@@ -1086,7 +1092,7 @@ void lmScore::PlayMeasure(int nMeasure, bool fVisualTracking, lmEPlayMode nPlayM
                           long nMM, wxWindow* pWindow)
 {
     if (!m_pSoundMngr) {
-        m_pSoundMngr = new lmSoundManager();
+        m_pSoundMngr = new lmSoundManager(this);
         ComputeMidiEvents();
     }
 
@@ -1145,7 +1151,7 @@ void lmScore::RemoveAllHighlight(wxWindow* pCanvas)
 	std::list<lmStaffObj*>::iterator pItem;
 	for (pItem = m_cHighlighted.begin(); pItem != m_cHighlighted.end(); pItem++)
 	{
-        lmScoreHighlightEvent event(*pItem, eVisualOff);
+        lmScoreHighlightEvent event(this->GetID(), *pItem, eVisualOff);
         ::wxPostEvent(pCanvas, event);
     }
 }
@@ -1177,7 +1183,7 @@ void lmScore::ComputeMidiEvents()
     if (m_pSoundMngr)
         m_pSoundMngr->DeleteEventsTable();
     else
-        m_pSoundMngr = new lmSoundManager();
+        m_pSoundMngr = new lmSoundManager(this);
 
     //Loop to generate Midi events for each instrument
     for (int i=0; i < (int)m_cInstruments.size(); i++)

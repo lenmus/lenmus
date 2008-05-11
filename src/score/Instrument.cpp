@@ -193,11 +193,13 @@ wxString lmInstrument::GetInstrName()
 void lmInstrument::MeasureNames(lmPaper* pPaper)
 {
 	// This method is invoked only from lmFormatter4::RenderJustified(), in order to
-	// measure the indentation for each instrument. 
+	// measure the indentation for each instrument, so that a suitable common indentation
+    // value for the whole system can be computed.
+    //
     // When this method is invoked paper is positioned at top left corner of instrument
     // renderization point (x = left margin, y = top line of first staff)
-	// To measure the names we have to create the shapes but we are going to delete
-	// them at the end
+	// To measure the names we need to create the shapes but they are deleted before
+	// returning
 
     //Save original position to restore it later
     lmLUnits xPaper = pPaper->GetCursorX();
@@ -221,7 +223,8 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
     //TODO: user options
     lmLUnits uSpaceAfterName = TenthsToLogical(10.0f);
 
-    if (m_pName) {
+    if (m_pName)
+    {
         // measure text extent
         lmShapeText* pShape = m_pName->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
@@ -229,7 +232,8 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
 		delete pShape;
     }
 
-    if (m_pAbbreviation) {
+    if (m_pAbbreviation)
+    {
         // measure text extent
         lmShapeText* pShape = m_pAbbreviation->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
@@ -252,39 +256,52 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
 
 }
 
-void lmInstrument::AddNameShape(lmBox* pBox, lmPaper* pPaper)
+void lmInstrument::AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPaper* pPaper,
+                                     int nSystem)
 {
-    AddNameAbbrevShape(pBox, pPaper, m_pName);
-}
+    //Layout.
+    // invoked when layouting first measure in system, to add instrument name and bracket/brace.
+    // This method is also responsible for managing group name and bracket/brace layout
+    // When reaching this point, BoxSystem and BoxSliceInstr have their bounds correctly
+    // set (except xRight)
 
-void lmInstrument::AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper)
-{
-    AddNameAbbrevShape(pBox, pPaper, m_pAbbreviation);
+	if (nSystem == 1)
+        AddNameAbbrevShape(pBSliceInstr, pPaper, m_pName);
+	else
+        AddNameAbbrevShape(pBSliceInstr, pPaper, m_pAbbreviation);
+
+    // if first instrument in group, save yTop position for group
+    static lmLUnits yTopGroup;
+	if (IsFirstOfGroup())
+		yTopGroup = pBSliceInstr->GetYTop();
+
+    // if last instrument of a group, add group name and bracket/brace
+	if (IsLastOfGroup())
+        m_pGroup->AddNameAndBracket(pBSystem, pPaper, nSystem, pBSliceInstr->GetXLeft(),
+                                    yTopGroup, pBSliceInstr->GetYBottom() );
 }
 
 void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName)
 {
-    //when this method is invoked paper is positioned at top left corner of instrument
-    //renderization point (x = left border of staff, y = top line of first staff)
-
-    //save paper position
-    lmUPoint uPaper(pPaper->GetCursorX(), pPaper->GetCursorY());
+    //get box position
+    lmUPoint uBox(pBox->GetXLeft(), pBox->GetYTop() );
 
     //add shape for the bracket, if necessary
     if (RenderBraket())
     {
-        lmLUnits xLeft = uPaper.x - m_uBracketWidth - m_uBracketGap;
-        lmLUnits xRight = uPaper.x - m_uBracketGap;
+        lmLUnits xLeft = uBox.x - m_uBracketWidth - m_uBracketGap;
+        lmLUnits xRight = uBox.x - m_uBracketGap;
         lmLUnits yBottom = pBox->GetYBottom();
-        lmShape* pShape = new lmShapeBracket(this, m_nBracket, xLeft, uPaper.y,
-                                    xRight, yBottom, *wxRED);
+        lmEBracketSymbol nSymbol = (m_nBracket == lm_eBracketDefault ? lm_eBracket : m_nBracket);
+        lmShape* pShape = new lmShapeBracket(this, nSymbol, xLeft, uBox.y,
+                                    xRight, yBottom, *wxBLACK);
         pBox->AddShape( pShape );
     }
 
     //add shape for the name/abbreviation
     if (pName)
     {
-        lmUPoint uPos(pPaper->GetPageLeftMargin(), uPaper.y);
+        lmUPoint uPos(pPaper->GetPageLeftMargin(), uBox.y);
         lmShape* pShape = pName->CreateShape(pPaper, uPos);
         pShape->Shift(0.0f, (pBox->GetHeight() - pShape->GetHeight())/2.0f );
         pBox->AddShape( pShape );
@@ -324,14 +341,3 @@ bool lmInstrument::IsFirstOfGroup()
     return (m_pGroup && m_pGroup->GetFirstInstrument() == this);
 }
 
-void lmInstrument::AddGroupName(lmBox* pBox, lmPaper* pPaper, lmLUnits yTop,
-                                lmLUnits yBottom)
-{
-    m_pGroup->AddNameShape(pBox, pPaper, yTop, yBottom);
-}
-    
-void lmInstrument::AddGroupAbbreviation(lmBox* pBox, lmPaper* pPaper,
-                                        lmLUnits yTop, lmLUnits yBottom)
-{
-    m_pGroup->AddAbbreviationShape(pBox, pPaper, yTop, yBottom);
-}

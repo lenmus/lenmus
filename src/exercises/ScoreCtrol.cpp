@@ -256,10 +256,11 @@ void lmScoreCtrol::DoPlay(lmEPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeas
     //    if (FMain.fFrmPiano) { FPiano.HabilitarMarcado = false;
 }
 
-void lmScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
+void lmScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& event)
 {
     m_CurPlayLink->SetNormalLabel();
     m_fPlaying = false;
+    event.Skip(true);     //do not continue propagating the event
 }
 
 void lmScoreCtrol::StopSounds()

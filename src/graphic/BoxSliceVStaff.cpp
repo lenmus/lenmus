@@ -79,6 +79,7 @@ void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
         m_Shapes[i]->Render(pPaper);
     }
 
+    //this->DrawBounds(pPaper, *wxGREEN);
 }
 
 lmBoxSystem* lmBoxSliceVStaff::GetOwnerSystem()
