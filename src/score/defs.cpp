@@ -338,7 +338,7 @@ lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits)
         case lmINCHES:          return (lmLUnits)((rValue * 254.) / lmSCALE);      break;
         default:
             wxASSERT(false);
-            return 10.0;
+            return 10.0f;
     }
 
 }

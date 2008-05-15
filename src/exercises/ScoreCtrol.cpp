@@ -2,27 +2,27 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
 /*  A control to embed a score in an HTML page by using an \<object\> directive
-    of type="Application/LenMusScore" 
+    of type="Application/LenMusScore"
 
-    A control to display a score in an HTML page. It displays a score with three optional 
+    A control to display a score in an HTML page. It displays a score with three optional
     links: Play, Solfa, and Play measures. Options are defined by constructor
     parameter lmScoreCtrolOptions
 
@@ -85,7 +85,7 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(lmScoreCtrol, lmEBookCtrol)
 
 
-lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore, 
+lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
                            lmScoreCtrolOptions* pOptions,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmEBookCtrol(parent, id, pOptions, pos, size, style)
@@ -115,25 +115,26 @@ void lmScoreCtrol::CreateControls()
 
         //Create the controls
 
-    // ensure that sizes are properly scaled
+    //ensure that sizes are properly scaled.
+    //not necessary to scale the size as it is received alreday scaled
     double rScale = m_pOptions->rScale;
-    int nSpacing = (int)(5.0 * rScale);       //5 pixels, scaled
-    wxSize nScoreSize( (int)((double)m_nScoreSize.x * rScale) ,
-                       (int)((double)m_nScoreSize.y * rScale) );
+    int nSpacing = (int)(5.0 * rScale + 0.5);       //5 pixels, scaled
 
     //the window is divided into two regions: top, for score
     //and bottom region, for links
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-    // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, nScoreSize,
-                            (m_pOptions->fMusicBorder ? eSIMPLE_BORDER : eNO_BORDER) );
-    pMainSizer->Add(m_pScoreCtrol, 1, wxGROW|wxALL, nSpacing);
+    // create score ctrl
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, m_nScoreSize,
+                            eSIMPLE_BORDER );
+                            //(m_pOptions->fMusicBorder ? eSIMPLE_BORDER : eNO_BORDER) );
+    pMainSizer->Add(m_pScoreCtrol, 1, wxGROW, nSpacing);
 
-    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(10, lmMILLIMETERS),
-                              - lmToLogicalUnits(10, lmMILLIMETERS));
-    m_pScoreCtrol->SetScale( 1.1f * (float)rScale); //m_pScoreCtrol->GetScale() * 
+    m_pScore->SetTopSystemDistance( lmToLogicalUnits(10, lmMILLIMETERS) );
+
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS) * rScale,
+                              lmToLogicalUnits(10, lmMILLIMETERS) * rScale, 0.0f);
+    m_pScoreCtrol->SetScale( (float)rScale * m_pScoreCtrol->GetScale() );
 
 
     //
@@ -179,7 +180,7 @@ void lmScoreCtrol::CreateControls()
                         0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
         }
     }
-    
+
     // debug buttons
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
@@ -236,11 +237,11 @@ void lmScoreCtrol::DoPlay(lmEPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeas
 
         //play
         if (nMeasure == 0) {
-            m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
+            m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
                                 nPlayMode, m_pOptions->GetMetronomeMM());
         }
         else {
-            m_pScoreCtrol->PlayMeasure(nMeasure, lmVISUAL_TRACKING,  
+            m_pScoreCtrol->PlayMeasure(nMeasure, lmVISUAL_TRACKING,
                                 nPlayMode, m_pOptions->GetMetronomeMM());
         }
         m_fPlaying = true;

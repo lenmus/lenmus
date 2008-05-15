@@ -31,6 +31,7 @@
 
 class lmStaffObj;
 class lmNoteRest;
+class lmClef;
 class lmSOIterator;
 class lmContext;
 class lmVStaff;
@@ -75,8 +76,10 @@ public:
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
 	inline lmContext* GetContext(int iStaff) { return m_pContext[iStaff]; }
-    void PropagateNewContexts(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKeepPitch);
-    void PropagateContextsRemoval(lmStaffObj* pSO);
+    void DoContextInsertion(lmStaffObj* pNewSO, lmStaffObj* pNextSO, bool fClefKeepPosition,
+                            bool fKeyKeepPitch);
+    void DoContextRemoval(lmStaffObj* pOldSO, lmStaffObj* pNextSO, bool fClefKeepPosition,
+                          bool fKeyKeepPitch);
 
 
     //info
@@ -103,9 +106,15 @@ private:
 
     //context management
     lmContext* FindEndOfSegmentContext(int nStaff);
-    void PropagateContextChange(lmContext* pStartContext, int nStaff, bool fClefKeepPosition,
+    void PropagateContextChange(lmContext* pStartContext, int nStaff, 
                                 bool fKeyKeepPitch);
+    void PropagateContextChange(lmContext* pStartContext, int nStaff, lmClef* pNewClef,
+                                lmClef* pOldClef, bool fClefKeepPosition);
     lmSegment* GetNextSegment();
+
+    //staffobjs management
+    void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO);
+
 
 
 
@@ -131,7 +140,9 @@ public:
 
     //add/remove StaffObjs
     void Add(lmStaffObj* pNewSO, bool fClefKeepPosition=true, bool fKeyKeepPitch=true);
-	void Delete(lmStaffObj* pCursorSO, bool fDelete = true);
+	void Delete(lmStaffObj* pCursorSO, bool fDelete = true, bool fClefKeepPosition = true,
+                bool fKeyKeepPitch=true);
+
 	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
     bool ShiftTime(float rTimeShift);
 

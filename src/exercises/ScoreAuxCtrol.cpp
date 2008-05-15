@@ -46,6 +46,7 @@
 extern lmLogger* g_pLogger;
 
 
+
 // lmScoreAuxCtrol
 //	  A window on which a music score is rendered.
 //
@@ -81,14 +82,8 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
                lmToLogicalUnits(10, lmMILLIMETERS),
                lmToLogicalUnits(10, lmMILLIMETERS));    //right=1cm, left=1cm, top=1cm
 
-    // For exercises user can not change the scale. So to choose the score size I will
-    // maintain the proportions between text size and scores. As users normally adjust
-    // the OS font sizes to confortably read them, if we adjust staff sizes to text
-    // sizes we will get a good compromise solution.
-    float rCharHeight = (float)GetCharHeight();
-    wxLogMessage(_T("[lmScoreAuxCtrol::lmScoreAuxCtrol] CharHeight=%.2f, Scale=%.2f"), rCharHeight, rCharHeight/10.0f);
-    SetScale( rCharHeight / 10.0f );
-    //SetScale( (float)GetCharHeight() / 10.0f );
+    // Choose the score size to maintain the proportions between text size and score size.
+    SetScale( (float)GetCharHeight() / 16.0f );
 
     m_fHidden = false;
 
@@ -104,6 +99,7 @@ void lmScoreAuxCtrol::SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop)
     m_nTopMargin = nTop;
     m_nLeftMargin = nLeft;
     m_nRightMargin = nRight;
+    Refresh();
 }
 
 void lmScoreAuxCtrol::SetScale(float rScale)
@@ -111,6 +107,12 @@ void lmScoreAuxCtrol::SetScale(float rScale)
     //rScale is the zooming factor
     m_rZoom = rScale;
     m_rScale = rScale * lmSCALE;
+
+    ////scale font size
+    //float rFontSize = g_pMainFrame->GetBookController()->GetFrame()->GetNormalFontSize();
+    //wxFont font = GetFont();
+    //font.SetPointSize((int)(rFontSize + 0.5));
+    //SetFont(font);
 
     //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
     ResizePaper();
@@ -365,7 +367,12 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
     if (!m_pScore) return;
     if (m_pScore->GetID() != event.GetScoreID() )
-        return;     //the event is not for the score controlled by this control
+    {
+        //the event is not for the score controlled by this control
+        wxLogMessage(_T("[lmScoreAuxCtrol::OnVisualHighlight] Ignored higlight event: this score ID =%d, target score ID = %d"),
+                     m_pScore->GetID(), event.GetScoreID() );
+        return;
+    }
 
     lmEHighlightType nHighlightType = event.GetHighlightType();
     if (nHighlightType == ePrepareForHighlight) {
@@ -382,24 +389,17 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
     wxClientDC dc(this);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
-    //m_Paper.SetDC(&dc);
     m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
-    /*TODO
-        Position DC origing according to current scrolling and page position
-        For now it is assumed that all score is displayed
-    */
+    //TODO
+    //  Position DC origing according to current page.
+    //  For now it is assumed that score is only one page.
 
     //do the highlight / unhighlight
     lmStaffObj* pSO = event.GetStaffObj();
     m_pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
 
 }
-
-
-    //
-    // Debug methods
-    //
 
 void lmScoreAuxCtrol::Dump()
 {

@@ -248,9 +248,9 @@ protected:
     int m_SearchPage;
 
     // lists of available fonts (used in options dialog)
-    wxArrayString* m_NormalFonts,* m_FixedFonts;
-    int         m_nFontSize;
-    wxString    m_NormalFace, m_FixedFace;
+    wxArrayString*  m_NormalFonts,* m_FixedFonts;
+    float           m_rFontSize;
+    wxString        m_NormalFace, m_FixedFace;
 
     bool m_UpdateContents;
 

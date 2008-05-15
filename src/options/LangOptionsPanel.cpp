@@ -98,10 +98,13 @@ void lmLangOptionsPanel::Apply()
         bool f = true;
         g_pPrefs->Write(_T("/Locale/LanguageChanged"), f);
 
+#if defined(__WXGTK__)      //by pass, as this fails in Linux
         //inform user
-        //wxMessageBox(wxString::Format(
-        //    _("Language '%s' will be used the next time you run LenMus."),
-        //    sLangName ));
+        wxMessageBox(wxString::Format(
+            _("Language '%s' will be used the next time you run LenMus."),
+            sLangName.c_str() ));
+#else
         g_pTheApp->ChangeLanguage(sLang);
+#endif
     }
 }

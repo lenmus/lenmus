@@ -319,6 +319,7 @@ reliability and stability.") +
 
 void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
+   #if defined(__WXMSW__)
     // Get screen information
     wxScreenDC dc;
     wxSize ppiScreen = dc.GetPPI();     //logical pixels per inch of screen
@@ -336,6 +337,10 @@ void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
         sFontInfo = wxString::Format(_T("Char size (px): (w=%d, h=%d), rScale=%.4f"),
                         nCharWidth, nCharHeight, rHtmlWinScale );
     }
+    #else
+    wxString sFontInfo = _T("No info available");
+    wxString sScreenPPI = _T("No info available");
+    #endif
 
     //Prepare build info message
     wxString sContent = m_sHeader +
@@ -371,14 +376,21 @@ Some of them devoted a few hours, others months or years. But all them \
 gave their time for free to the project. Thanks to all them.") +
     _T("</p><p>&nbsp;</p><p>") +
     _T("<table border='0' width='100%' cellpadding='0' cellspacing='0'>")
+        //
     _T("<tr><td colspan='3'><b>") +
         _("Management and programming:") + _T("</b></td></tr>")
     _T("  <tr><td width='40px'>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
     _T("<tr><td colspan='3'><b>") +
         _("Music texts and exercises:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+   _T("<tr><td colspan='3'><b>") +
+        _("Package for Linux prepared by:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Juan Manuel Garc&iacute;a Molina</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +

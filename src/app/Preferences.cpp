@@ -149,10 +149,22 @@ void lmPgmOptions::Register(lmOptionId nId, long nUnits, long nValue, wxString s
 
 void lmPgmOptions::Register(lmOptionId nId, long nUnits, wxString sValue, wxString sKey)
 {
+    lmOptionData* pData = new lmOptionData();
+    pData->sValue = sValue;
+    pData->sGroup = sKey;
+    pData->type = nUnits;
+
+    m_OptData[nId] = pData;
 }
 
 void lmPgmOptions::Register(lmOptionId nId, long nUnits, bool fValue, wxString sKey)
 {
+    lmOptionData* pData = new lmOptionData();
+    pData->fValue = fValue;
+    pData->sGroup = sKey;
+    pData->type = nUnits;
+
+    m_OptData[nId] = pData;
 }
 
 void lmPgmOptions::LoadDefaultValues()
@@ -173,5 +185,7 @@ void lmPgmOptions::LoadDefaultValues()
     Register(lm_DO_CLEF_INSERT, lmOP_ENUM, 0L, _T("Clef/Insert behaviour/transpose"));
     //what to do when key added?: 0=ask, 1=keep pitch, 2=keep position
     Register(lm_DO_KS_INSERT, lmOP_ENUM, 0L, _T("Key/Insert behaviour/transpose"));
+    //AutoBar: automatically insert a barline when a measure is full
+    Register(lm_DO_AUTOBAR, lmOP_BOOL, true, _T("Barline/Insert barlines automatically"));
 
 }

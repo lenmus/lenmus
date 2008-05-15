@@ -20,7 +20,7 @@ Steps to do:
 
 2. Expand it (double click)
 
-3. Apply the two required patches to the wxWidgtes sources. This patches are detailed in file wxWidgets_fixes.txt
+3. Apply the two required patches to the wxWidgtes sources. This patches are detailed in file wxWidgets_patches.txt
 
 4. Open a terminal window and do the following steps:
 
@@ -48,7 +48,7 @@ The options you pass to configure at this point will determine what build you ge
 If it stops saying it can't find a package, install it (with -dev packages if any) and run configure again. 
 
 Notes:
-*	--prefix' won't accept relative paths
+*   --prefix' won't accept relative paths
 
 
 5. When 'configure' is done without errors, you are ready to build (using make):
@@ -71,11 +71,11 @@ File /usr/local/bin/wx-config is a symbolic link to one of the files under /home
 So, to choose and set the default build you must set up a symbolic link in the dir where I want to call it from though. For this, after installing wxWidgets
 
 (you did the following:
-	cd /home/cecilio/wxWidgets/wxGTK-2.8.7
-	mkdir build-debug
-	cd build-debug
-	../configure ...blah...blah...blah
-	make
+    cd /home/cecilio/wxWidgets/wxGTK-2.8.7
+    mkdir build-debug
+    cd build-debug
+    ../configure ...blah...blah...blah
+    make
 )
 
 then go to /usr/local/bin:  
@@ -114,6 +114,6 @@ Then, to test more in depth, you can look at the samples. Open the Samples folde
 cd into one of the samples, and type make. You can then open the sample to see wxWidgets in action.
 
 * Test the installation using a sample:
-	g++ test.c++ -o hello `wx-config` --libs --debug=no` `wx-config --cxxflags` -D NDEBUG  
+    g++ test.c++ -o hello `wx-config` --libs --debug=no` `wx-config --cxxflags` -D NDEBUG  
 
 

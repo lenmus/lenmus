@@ -236,8 +236,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         {
             //reposition paper vertically at the start of the system. It has been advanced
             //when sizing the previous measure column
-            wxLogMessage(_T("[lmFormatter4::RenderJustified] nAbsMeasure=%d, xPaper=%.2f "),
-                         nAbsMeasure, pPaper->GetCursorX() );
+            //wxLogMessage(_T("[lmFormatter4::RenderJustified] nAbsMeasure=%d, xPaper=%.2f "),
+            //             nAbsMeasure, pPaper->GetCursorX() );
             pPaper->SetCursorY( ySystemPos );
 
 
@@ -629,8 +629,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     lmInstrument* pInstr;
     bool fNewSystem = false;
 
-    wxLogMessage(_T("[lmFormatter4::SizeMeasureColumn] nAbsMeasure=%d, xPaper=%.2f "),
-                    nAbsMeasure, pPaper->GetCursorX() );
+    //wxLogMessage(_T("[lmFormatter4::SizeMeasureColumn] nAbsMeasure=%d, xPaper=%.2f "),
+    //                nAbsMeasure, pPaper->GetCursorX() );
 
     //determine xLeft position for this measure:
     //      if fisrt measure: xPaper + system indent

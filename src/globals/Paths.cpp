@@ -78,17 +78,17 @@ lmPaths::lmPaths(wxString sBinPath)
     //
     // 2. Logs and temporal files:
     // ------------------------------------------------------------------------------
-    //      /var/lenmus                 lenmus
+    //      ~/lenmus                    lenmus
     //          + /logs                     + \logs
     //          + /temp                     + \temp
     //
     // 3. Configuration files, user dependent:
     // ------------------------------------------------------------------------------
-    //      $HOME/.lenmus               lenmus\bin
+    //      ~/lenmus                    lenmus\bin
     //
     // 4. User scores and samples:
     // ------------------------------------------------------------------------------
-    //      $HOME/lenmus                lenmus\scores
+    //      ~/lenmus                    lenmus\scores
     //          + /scores
 	//
 
@@ -111,9 +111,8 @@ lmPaths::lmPaths(wxString sBinPath)
     wxFileName oRootG4 = m_root;
 #elif defined(__WXGTK__)
     wxFileName oRootG1 = m_root;
-    wxFileName oRootG2(_T("/var/lenmus");
-    wxFileName oRootG3(_T("~/.lenmus");
-    wxFileName oRootG4(_T("~/lenmus");
+    wxFileName oRootG2(_T("~/lenmus")); //("/var/lenmus"));
+    wxFileName oRootG3(_T("~/lenmus"));
 #endif
 
     // Group 1. Software and essentials

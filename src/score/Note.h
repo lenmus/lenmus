@@ -132,6 +132,7 @@ public:
     bool    IsPitchDefined();
     void    ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies); 
     void    ChangePitch(lmAPitch nAPitch, bool fRemoveTies);
+    void    ChangePitch(lmClef* pOldClef, lmClef* pNewClef);
     void    PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward);
     inline int GetStep() { return m_anPitch.Step(); }      //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
     inline int GetOctave() { return m_anPitch.Octave(); }
@@ -189,7 +190,7 @@ private:
     lmEGlyphIndex AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //auxiliary
-    int PosOnStaffToPitch(int nSteps);
+    //int PosOnStaffToPitch(int nSteps);
     void SetUpPitchRelatedVariables(lmDPitch nNewPitch);
     void SetUpStemDirection();
     const lmEAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
@@ -250,6 +251,8 @@ private:
 wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad, 
                               lmDPitch* pPitch = (lmDPitch*)NULL);
 wxString GetNoteNamePhysicists(lmDPitch nPitch);
+int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch);
+lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos);
 
 
 #endif    // __LM_NOTE_H__

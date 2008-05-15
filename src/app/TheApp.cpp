@@ -524,12 +524,11 @@ bool lmTheApp::OnInit(void)
         pSplash->AllowDestroy();    // allow to destroy the splash
     }
 
-//remove this in debug version to start with nothing displayed
-#if !defined(__WXDEBUG__) //&& !defined(__WXGTK__)
     //force to show book frame
-    wxCommandEvent event;       //it is not used, so not need to initialize it
-    g_pMainFrame->OnOpenBook(event);
-#endif
+    #if !defined(__WXDEBUG__)       //in debug version, start with nothing displayed
+        wxCommandEvent event;       //it is not used, so not need to initialize it
+        g_pMainFrame->OnOpenBook(event);
+    #endif
 
     //cursor normal
     ::wxEndBusyCursor();

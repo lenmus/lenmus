@@ -98,11 +98,7 @@ extern lmPaths* g_pPaths;
 #endif
 
 // Default font size
-#ifdef __WXMSW__
-    #define lmDEFAULT_FONT_SIZE    10
-#else
-    #define lmDEFAULT_FONT_SIZE    14
-#endif
+#define lmDEFAULT_FONT_SIZE    10
 
 //--------------------------------------------------------------------------
 // TextBookHelpTreeItemData (private)
@@ -327,8 +323,9 @@ void lmTextBookFrame::Init(lmBookData* data)
 
     m_NormalFonts = m_FixedFonts = NULL;
     m_NormalFace = m_FixedFace = wxEmptyString;
-    m_nFontSize = lmDEFAULT_FONT_SIZE;
-    m_rScale = 1.0;
+    m_rFontSize = 1.25f * (float)(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize());    //lmDEFAULT_FONT_SIZE;
+    wxLogMessage(_T("[lmTextBookFrame::Init] Font size %.2f"), m_rFontSize);
+    m_rScale = 1.0f;
 
 #if wxUSE_PRINTING_ARCHITECTURE
     m_Printer = NULL;
@@ -996,11 +993,7 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
 	//Main frame invokes this method to inform that zomming factor has been changed.
 	//Returns false is scale has not been changed
 
-    #if defined(__WXGTK__)
-	double rFontSize = (double)m_nFontSize * rScale * 0.66f;
-    #else
-	double rFontSize = (double)m_nFontSize * rScale;
-    #endif
+	double rFontSize = (double)m_rFontSize * rScale;
 
 	int nFontSizes[7];
     nFontSizes[0] = int(rFontSize * 0.6 + 0.5);
@@ -1011,18 +1004,25 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
     nFontSizes[5] = int(rFontSize * 1.6 + 0.5);
     nFontSizes[6] = int(rFontSize * 1.8 + 0.5);
 
-	//wxLogMessage(_T("[] scale=%.4f, font[0]=%d,%d,%d,%d,%d,%d,%d , m_nFontSize=%d"), rScale,
-	//	nFontSizes[0], nFontSizes[1], nFontSizes[2], nFontSizes[3], nFontSizes[4],
-	//	nFontSizes[5], nFontSizes[6], m_nFontSize);
+	wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] scale=%.4f, font[0]=%d,%d,%d,%d,%d,%d,%d , m_rFontSize=%.2f"), rScale,
+		nFontSizes[0], nFontSizes[1], nFontSizes[2], nFontSizes[3], nFontSizes[4],
+		nFontSizes[5], nFontSizes[6], m_rFontSize);
 
 	if (nFontSizes[0] < 3)
 		return false;
 	else
 	{
+       //set normal font, to be used by controls (ScoreCtrol, ScoreAuxCtrol, UrlAuxCtrol, etc.)
+        wxFont font = m_HtmlWin->GetFont();
+        font.SetPointSize( nFontSizes[2] );
+        m_HtmlWin->SetFont(font);
+        wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] m_HtmlWin normal font size = %d"), nFontSizes[2]);
+
 		m_rScale = rScale;
 		m_HtmlWin->SetScale(m_rScale);
 		m_HtmlWin->SetPixelScalingFactor(m_rScale);
 		m_HtmlWin->SetFonts(wxEmptyString, wxEmptyString, nFontSizes);
+
 		return true;
 	}
 

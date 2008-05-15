@@ -1114,37 +1114,37 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
 //
 //}
 
-int lmNote::PosOnStaffToPitch(int nSteps)
-{
-    // When the note is dragged it is necessary to compute the new pitch from the
-    // its new position on the paper. From the paper displacement it is computed how
-    // many half line steps the note has been moved. This method receives the steps
-    // and computes the new pitch
-
-    int nPos = GetPosOnStaff() + nSteps;
-    switch (GetClefType()) {
-        case lmE_Sol :
-            return nPos + lmC4_DPITCH;
-        case lmE_Fa4 :
-            return nPos + lmC4_DPITCH - 12;
-        case lmE_Fa3 :
-            return nPos + lmC4_DPITCH - 10;
-        case lmE_Do1 :
-            return nPos + lmC4_DPITCH - 2;
-        case lmE_Do2 :
-            return nPos + lmC4_DPITCH - 4;
-        case lmE_Do3 :
-            return nPos + lmC4_DPITCH - 6;
-        case lmE_Do4 :
-            return nPos + lmC4_DPITCH - 8;
-        case lmE_Undefined:
-            return nPos + lmC4_DPITCH;      //TODO: review this value
-        default:
-            wxASSERT(false);
-            return 0;    //to get the compiler happy
-    }
-
-}
+//int lmNote::PosOnStaffToPitch(int nSteps)
+//{
+//    // When the note is dragged it is necessary to compute the new pitch from the
+//    // its new position on the paper. From the paper displacement it is computed how
+//    // many half line steps the note has been moved. This method receives the steps
+//    // and computes the new pitch
+//
+//    int nPos = GetPosOnStaff() + nSteps;
+//    switch (GetClefType()) {
+//        case lmE_Sol :
+//            return nPos + lmC4_DPITCH;
+//        case lmE_Fa4 :
+//            return nPos + lmC4_DPITCH - 12;
+//        case lmE_Fa3 :
+//            return nPos + lmC4_DPITCH - 10;
+//        case lmE_Do1 :
+//            return nPos + lmC4_DPITCH - 2;
+//        case lmE_Do2 :
+//            return nPos + lmC4_DPITCH - 4;
+//        case lmE_Do3 :
+//            return nPos + lmC4_DPITCH - 6;
+//        case lmE_Do4 :
+//            return nPos + lmC4_DPITCH - 8;
+//        case lmE_Undefined:
+//            return nPos + lmC4_DPITCH;      //TODO: review this value
+//        default:
+//            wxASSERT(false);
+//            return 0;    //to get the compiler happy
+//    }
+//
+//}
 
 void lmNote::SetUpPitchRelatedVariables(lmDPitch nNewPitch)
 {
@@ -1266,33 +1266,11 @@ int lmNote::GetPosOnStaff()
     //        5 - on second space
     //        etc.
 
-    // if pitch is not yet defined, return line 0 (first bottom ledger line
-    if (!IsPitchDefined()) return 0;
-
-	// pitch is defined. Position will depend on key
-    switch (GetClefType()) {
-        case lmE_Sol :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH;
-        case lmE_Fa4 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 12;
-        case lmE_Fa3 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 10;
-        case lmE_Fa5 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 14;
-        case lmE_Do1 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 2;
-        case lmE_Do2 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 4;
-        case lmE_Do3 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 6;
-        case lmE_Do4 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 8;
-        case lmE_Do5 :
-            return m_anPitch.ToDPitch() - lmC4_DPITCH + 10;
-        default:
-            // no key, assume lmE_Sol
-            return m_anPitch.ToDPitch() - lmC4_DPITCH;
-    }
+    if (!IsPitchDefined())
+        // if pitch is not yet defined, return line 0 (first bottom ledger line
+        return 0;
+    else
+        return PitchToPosOnStaff(GetClefType(), m_anPitch);
 }
 
 const lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
@@ -1346,6 +1324,21 @@ lmMPitch lmNote::GetMPitch()
 bool lmNote::IsPitchDefined()
 {
     return (m_anPitch.ToDPitch() != -1);
+}
+
+void lmNote::ChangePitch(lmClef* pOldClef, lmClef* pNewClef)
+{
+    //The clef for this note has been chaged from pOldClef to pNewClef.
+    //This method changes the note pitch to keep the note position on staff. For
+    //example, if this note is B4, old clef was G and new clef is F4, note will be
+    //re-pitched to D3, so that it will remain on third line.
+
+    // if pitch is not yet defined, nothing to do
+    if (!IsPitchDefined()) return;
+
+    int nOldPos = PitchToPosOnStaff(pOldClef->GetClefType(), m_anPitch);
+    lmDPitch nNewDPitch = PosOnStaffToPitch(pNewClef->GetClefType(), nOldPos);
+    ChangePitch(lmAPitch(nNewDPitch, m_anPitch.Accidentals()), false);     //false->propagate pitch change to tied notes
 }
 
 void lmNote::ChangePitch(lmAPitch nPitch, bool fRemoveTies)
@@ -1988,5 +1981,82 @@ wxString GetNoteNamePhysicists(lmDPitch nPitch)
 
     return wxString::Format(sNoteName[iNote], nOctave);
 
+}
+
+int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch)
+{
+    // Returns the position on the staff (line/space) referred to the first ledger line of
+    // the staff. Depends on clef:
+    //        0 - on first ledger line (C note in G clef)
+    //        1 - on next space (D in G clef)
+    //        2 - on first line (E not in G clef)
+    //        3 - on first space
+    //        4 - on second line
+    //        5 - on second space
+    //        etc.
+
+	// pitch is defined. Position will depend on key
+    switch (nClef) {
+        case lmE_Sol :
+            return aPitch.ToDPitch() - lmC4_DPITCH;
+        case lmE_Fa4 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 12;
+        case lmE_Fa3 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 10;
+        case lmE_Fa5 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 14;
+        case lmE_Do1 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 2;
+        case lmE_Do2 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 4;
+        case lmE_Do3 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 6;
+        case lmE_Do4 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 8;
+        case lmE_Do5 :
+            return aPitch.ToDPitch() - lmC4_DPITCH + 10;
+        default:
+            // no clef, assume lmE_Sol
+            wxLogMessage(_T("[PitchToPosOnStaff] Clef %d not defined "), nClef);
+            return aPitch.ToDPitch() - lmC4_DPITCH;
+    }
+}
+
+lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos)
+{
+    // Returns the pitch for the given position on the staff (line/space) and given clef.
+    // Position on staff is referred to the first ledger line of the staff, as follows:
+    //        0 - on first ledger line (C note in G clef)
+    //        1 - on next space (D in G clef)
+    //        2 - on first line (E not in G clef)
+    //        3 - on first space
+    //        4 - on second line
+    //        5 - on second space
+    //        etc.
+
+    switch (nClef) {
+        case lmE_Sol :
+            return (lmDPitch)(nPos + lmC4_DPITCH);
+        case lmE_Fa4 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 12);
+        case lmE_Fa3 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 10);
+        case lmE_Fa5 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 14);
+        case lmE_Do1 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 2);
+        case lmE_Do2 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 4);
+        case lmE_Do3 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 6);
+        case lmE_Do4 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 8);
+        case lmE_Do5 :
+            return (lmDPitch)(nPos + lmC4_DPITCH - 10);
+        default:
+            // no clef, assume lmE_Sol
+            wxLogMessage(_T("[PosOnStaffToPitch] Clef %d not defined "), nClef);
+            return (lmDPitch)(nPos + lmC4_DPITCH);
+    }
 }
 

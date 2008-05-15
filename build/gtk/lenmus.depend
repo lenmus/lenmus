@@ -166,7 +166,7 @@
 	<list>
 	"defs.h"
 
-1210253140 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
+1210589908 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
 	"StaffObjIterator.h"
 
 1209991744 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Instrument.h
@@ -1028,7 +1028,7 @@
 	"../auxmusic/ChordManager.h"
 	"../globals/Colors.h"
 
-1210430232 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreAuxCtrol.cpp
+1210598086 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreAuxCtrol.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/font.h"
@@ -1038,7 +1038,7 @@
 	"ScoreAuxCtrol.h"
 	"../app/Logger.h"
 
-1210430292 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreCtrol.cpp
+1210615139 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreCtrol.cpp
 	"wx/wxprec.h"
 	"ScoreCtrol.h"
 	"UrlAuxCtrol.h"
@@ -1174,7 +1174,7 @@
 	"wx/wxprec.h"
 	"EarIntvalConstrains.h"
 
-1201963980 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreConstrains.cpp
+1210505604 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreConstrains.cpp
 	"wx/wxprec.h"
 	"ScoreConstrains.h"
 	"../ldp_parser/AuxString.h"
@@ -1349,7 +1349,7 @@
 	<vector>
 	"../score/defs.h"
 
-1209995600 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
+1210596050 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/debug.h"
@@ -1470,7 +1470,7 @@
 	"../exercises/MusicReadingConstrains.h"
 	"../ldp_parser/AuxString.h"
 
-1210485562 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
+1210614862 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ObjectParams.h"
@@ -1536,7 +1536,7 @@
 	"../auxmusic/ChordManager.h"
 	"../ldp_parser/AuxString.h"
 
-1210485788 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.cpp
+1210614326 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.cpp
 	"wx/wxprec.h"
 	"wx/intl.h"
 	"wx/log.h"
@@ -1980,7 +1980,7 @@
 	"Score.h"
 	"UndoRedo.h"
 
-1210487994 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
+1210598946 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
 	"wx/wxprec.h"
 	<list>
 	"wx/wx.h"

@@ -286,6 +286,10 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
             fClefKeepPosition = (nOptValue == 2);
     }
 
+    //save answer for undo/redo
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    pUndoData->AddParam<bool>(fClefKeepPosition);
+
     //create the clef and prepare its insertion
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
@@ -300,6 +304,23 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
 
     return pClef;
 }
+
+void lmVStaff::UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef)
+{
+    //delete the requested object, and log info to undo history
+    //Precondition: must be in this VStaff
+
+    //recover user option about keeping pitch or position
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    bool fClefKeepPosition = pUndoData->GetParam<bool>();
+
+    //remove the contexts created by the clef
+	pClef->RemoveCreatedContexts();
+
+    //now remove the clef from the staffobjs collection
+    m_cStaffObjs.Delete(pClef, true, fClefKeepPosition);        //true->invoke destructor
+}
+
 lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
                                     int nBeatType, bool fVisible)
 {
@@ -433,7 +454,8 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType, 
 lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 								 lmEPitchType nPitchType, wxString sStep,
 								 wxString sOctave, lmENoteType nNoteType, float rDuration,
-								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
+								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                                 bool fAutoBar)
 {
     int nStaff = m_VCursor.GetNumStaff();
 
@@ -500,6 +522,11 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     m_cStaffObjs.Add(pNt);
 
 	delete pContext;
+
+    ////if this note fills up a measure and AutoBar option is enabled, insert a simple barline
+    //if (fAutoBar)
+    //    CheckAndDoAutoBar();
+
     return pNt;
 }
 
@@ -554,7 +581,7 @@ void lmVStaff::Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 
 }
 
-void lmVStaff::Cmd_Undo_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
+void lmVStaff::UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 {
     //un-delete the object, according to info in history
 
@@ -856,22 +883,32 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     //       Let dyLines be the distance between lines (logical units), then
     //       Font size = 3 * dyLines   (logical points)
 
-    lmLUnits dyLinesL = pStaff->GetLineSpacing();
+    static lmLUnits uPrevSpacing = 0.0f;
+    static float rScale = 1.0f;
 
-    // the font for drawing is scaled by the DC.
-    #if defined(__WXGTK__)
-    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL), _T("LenMus Basic") ) );        //logical points
-    #else
-    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 96.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
-    #endif
+    lmLUnits uLineSpacing = pStaff->GetLineSpacing();
+    if (uPrevSpacing != uLineSpacing)
+    {
+        //the font size is choosen so that the height of the C clef music symbol (it has the
+        //same height than the staff height) matches the staff size
+        uPrevSpacing = uLineSpacing;
+        wxFont* pFont = pPaper->GetFont((int)(3.0f * uLineSpacing), _T("LenMus Basic") );
+        pPaper->SetFont(*pFont);
+        wxString sGlyph( aGlyphsInfo[GLYPH_C_CLEF].GlyphChar );
+        lmLUnits uWidth, uHeight;
+        pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
+        rScale = 2.0f * (4.0f * uLineSpacing) / uHeight;
+        //wxLogMessage(_T("[lmVStaff::SetFont] Staff height = %.2f, uHeight = %.2f, scale = %.4f, g_rScreenDPI=%.2f"),
+        //    (4.0f * uLineSpacing), uHeight, rScale, g_rScreenDPI);
+    }
 
-    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL);
+    // the font for drawing will be scaled by the DC.
+    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * uLineSpacing * rScale), _T("LenMus Basic") ));        //logical points
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units
     //int dyLinesD = pPaper->LogicalToDeviceY(100 * dyLinesL);
     //pStaff->SetFontDrag( pPaper->GetFont((3 * dyLinesD) / 100) );
-
 }
 
 lmLUnits lmVStaff::GetStaffOffset(int nStaff)
@@ -1635,8 +1672,10 @@ lmVCmdInsertNote::lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 					    lmENoteHeads nNotehead, lmEAccidentals nAcc)
     : lmVStaffCmd(pVStaff)
 {
+    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+    bool fAutoBar = pPgmOpt->GetBoolValue(lm_DO_AUTOBAR);
     m_pNewNote = pVStaff->Cmd_InsertNote(pUndoItem, nPitchType, sStep, sOctave, nNoteType,
-                                         rDuration, nNotehead, nAcc);
+                                         rDuration, nNotehead, nAcc, fAutoBar);
 }
 
 void lmVCmdInsertNote::RollBack(lmUndoItem* pUndoItem)
@@ -1659,7 +1698,7 @@ lmVCmdInsertClef::lmVCmdInsertClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 
 void lmVCmdInsertClef::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewClef);
+    m_pVStaff->UndoCmd_InsertClef(pUndoItem, m_pNewClef);
 }
 
 
@@ -1734,5 +1773,5 @@ lmVCmdDeleteObject::lmVCmdDeleteObject(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 
 void lmVCmdDeleteObject::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->Cmd_Undo_DeleteObject(pUndoItem, m_pSO);
+    m_pVStaff->UndoCmd_DeleteObject(pUndoItem, m_pSO);
 }

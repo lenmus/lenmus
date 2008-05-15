@@ -26,17 +26,17 @@ Table of content
 -----------------
 
 - wxWidgets
-	Building LenMus requires to install and build wxWidgets (http://www.wxwidgets.org/). There is a couple of fixes to add to wxWidgets source code. One of them is critical; without it LenMus will not build. This fixes are listed in file wxwidgets_patches.txt
-	
-	Currently LenMus can be built with wxMSW (Windows) or wxGTK (Linux). You should download the wxWidgets sources for the appropriate platform (http://www.wxWidgets.org/downloads/).
+    Building LenMus requires to install and build wxWidgets (http://www.wxwidgets.org/). There is a couple of fixes to add to wxWidgets source code. One of them is critical; without it LenMus will not build. This fixes are listed in file wxwidgets_patches.txt
+    
+    Currently LenMus can be built with wxMSW (Windows) or wxGTK (Linux). You should download the wxWidgets sources for the appropriate platform (http://www.wxWidgets.org/downloads/).
 
 LenMus depends on other software packages (Portmidi and agg 2.4) but they are already included in the LenMus source code package. Therefore, you have nothing to do about these dependencies. These packages are for:
 
-	- Portmidi
-		LenMus require Portmidi for sound generation. Portmidi is used through wrapper wxMidi (http://wxcode.sourceforge.net).
+    - Portmidi
+        LenMus require Portmidi for sound generation. Portmidi is used through wrapper wxMidi (http://wxcode.sourceforge.net).
 
-	- agg 2.4
-		For anti-alised renderization LenMus uses AGG 2.4.
+    - agg 2.4
+        For anti-alised renderization LenMus uses AGG 2.4.
 
 
 1.2 Supported platforms
@@ -72,13 +72,13 @@ To compile LenMus, wxWidgets should be build with the following options:
 
 - define symbols:
     __WXGTK__
-	_UNICODE
+    _UNICODE
     
   and, for debug version:
-	__WXGTK__
-	_UNICODE
-	_DEBUG
-	__WXDEBUG__
+    __WXGTK__
+    _UNICODE
+    _DEBUG
+    __WXDEBUG__
     
     
 Install libportmidi & libporttime
@@ -86,11 +86,11 @@ Install libportmidi & libporttime
 
 LenMus require the Portmidi libraries for sound generation. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
 
-sudo aptitude update
-sudo aptitude install libportmidi
-sudo aptitude install libporttime
-sudo updatedb
-ls /usr/lib/libport*
+sudo aptitude update                    //update the list of available packages
+sudo aptitude install libportmidi       //install libportmidi
+sudo aptitude install libporttime       //install libporttime
+sudo updatedb                           //updates databases used by GNU locate
+ls /usr/lib/libport*                    //verify that the libraries are there
 
 
 Compile and build LenMus
@@ -130,18 +130,30 @@ see instructions in Ubuntu
 Install wxWidgets (wxMSW)
 -------------------------
 
-1. Download
+1. Download the wxMSW source zip archive from http://www.wxwidgets.org/downloads/ and expand it.
 
-2. Apply patches
+2. Apply the two required patches to the wxWidgtes sources. These patches are detailed in file wxwidgets_patches.txt
 
-3. Build wxWidgets
+3. Build wxWidgets. For this please refer to wxWidgets documentation. A quick guide is included in file windows_install_wxwidgets.txt for your convenience, and it should be enough in most cases.
 
 
 
 Compile and build LenMus
 ------------------------
 
+Once wxWidgets is installed, it is just a question of preparing a makefile and using your favourite compiler to compile and build LenMus. Makefiles and project files are included only for:
+
+- MS VisualStudio
+
+Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
+
+
 a) Using MS VisualStudio
+
+The appropriate project file for MS VisualStudio is in folder .../lenmus/build/msw/lenmus.sln.
+Open this file with MS VisualStudio and build LenMus. 
+
+That's all.
 
 
 

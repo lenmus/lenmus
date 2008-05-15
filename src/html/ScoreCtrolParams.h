@@ -346,23 +346,30 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     m_pOptions->fBorder = (m_nWindowStyle == eSIMPLE_BORDER);      //around control
     m_pOptions->fMusicBorder = g_fBorderOnScores;                   //around score
 
-    //set scale as a function of current font size
+    //scale control size
     float rTextScale = g_pMainFrame->GetHtmlWindow()->GetScale();
-    #if defined(__WXGTK__)
-    m_pOptions->rScale = rTextScale * 1.80f;
-    #else
-    m_pOptions->rScale = rTextScale * 0.9f;
-    #endif
-    int nHeight = (int)((double)m_nHeight * rTextScale);
+    m_pOptions->rScale = rTextScale;
+    //int nHeight = (int)((double)m_nHeight * rTextScale);
+    float rHeight = (float)m_nHeight * rTextScale;
+    int nWidth = (int)((double)m_nWidth * rTextScale);
+
+    //BUG_BYPASS:
+    //Add height of links to compensate height when scale increases
+//    rHeight += (float)g_pMainFrame->GetHtmlWindow()->GetCharHeight() * 2.0f * rTextScale *
+//            (rTextScale > 1.0f ? (1.0f + rTextScale/4.0f) : rTextScale);
+    int nHeight = (int)rHeight;
+
+
 	g_pLogger->LogTrace(_T("lmScoreCtrolParams"),
 		_T("[CreateHtmlCell] Char height = %d, rTextScale=%.4f"),
         g_pMainFrame->GetHtmlWindow()->GetCharHeight(), rTextScale);
 
     // create the lmScoreCtrol
     int nStyle = 0;
-    if (m_pOptions->fBorder) nStyle |= wxSIMPLE_BORDER;
+    //if (m_pOptions->fBorder) nStyle |= wxSIMPLE_BORDER;
+    nStyle |= wxSIMPLE_BORDER;
     wnd = new lmScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
-        m_pOptions, wxPoint(0,0), wxSize(m_nWidth, nHeight), nStyle );
+        m_pOptions, wxPoint(0,0), wxSize(nWidth, nHeight), nStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 

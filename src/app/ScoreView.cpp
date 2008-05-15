@@ -610,11 +610,10 @@ void lmScoreView::SetScaleFitWidth()
 
     double xScale = m_rScale * (double)(xScreen-50) / (double)m_xPageSizeD;
 
-    wxLogMessage(_T("[] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
+    wxLogMessage(_T("[lmScoreView::SetScaleFitWidth] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
             xScreen, m_xPageSizeD, m_rScale, xScale );
 
     SetScale(xScale / lmSCALE);
-
 }
 
 void lmScoreView::SetScaleFitFull()
@@ -628,7 +627,6 @@ void lmScoreView::SetScaleFitFull()
     double yScale = m_rScale * (double)(yScreen-20) / (double)m_yPageSizeD;
     double rScale = wxMin(xScale, yScale) / lmSCALE;
     SetScale(rScale);
-
 }
 
 void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)

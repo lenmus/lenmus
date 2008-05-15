@@ -70,6 +70,7 @@ typedef struct lmOptionDataStruct
 enum {
     lmOP_TENTHS = 0,    //tenths
     lmOP_ENUM,          //enumeration
+    lmOP_BOOL,          //boolean
 };
 
 //Add a value for each option. Must be consecutive, and are used as indexes to access a vector.
@@ -90,6 +91,7 @@ enum lmOptionId
     //
     lm_DO_CLEF_INSERT,              //what to do when clef added?: 0=ask, 1=keep pitch, 2=keep position
     lm_DO_KS_INSERT,                //what to do when key added?: 0=ask, 1=keep pitch, 2=add accidentals
+    lm_DO_AUTOBAR,                  //AutoBar: automatically insert a barline when a measure is full
     //
     lm_DO_LAST_EDIT,
 

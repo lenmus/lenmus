@@ -69,9 +69,12 @@ lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, 
     m_nBeats = GetNumUnitsFromTimeSignType(nTimeSign);
     m_nBeatType = GetBeatTypeFromTimeSignType(nTimeSign);
 
-    //contexts
-    for (int i=0; i < lmMAX_STAFF; i++)
+    //contexts and shapes
+	for (int i=0; i < lmMAX_STAFF; i++)
+	{
         m_pContext[i] = (lmContext*)NULL;
+	    m_pShapes[i] = (lmCompositeShape*)NULL;
+	}
 }
 
 //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
@@ -311,7 +314,7 @@ void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift)
     //same ScoreObj, when the auto-layout algorithm refines the final position.
 
 	m_uComputedPos.x += uxShift;
-    for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
+    for (int nStaff=0; nStaff < m_pVStaff->GetNumStaves(); nStaff++)
     {
         if (m_pShapes[nStaff])
             m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + m_uUserShift);
@@ -331,7 +334,7 @@ void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift)
 void lmTimeSignature::RemoveCreatedContexts()
 {
     //delete contexts
-	for (int iS=0; iS < lmMAX_STAFF; iS++)
+	for (int iS=0; iS < m_pVStaff->GetNumStaves(); iS++)
 	{
         if (m_pContext[iS])
         {

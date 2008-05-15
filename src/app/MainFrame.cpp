@@ -402,11 +402,11 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
-	#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
-		SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
-	#else
+    #if defined(__WXMSW__)
         //macro wxICON creates an icon using an icon resource on Windows.
         SetIcon(wxICON(app_icon));
+	#else
+		SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
 	#endif
 
 	//acceleration keys table

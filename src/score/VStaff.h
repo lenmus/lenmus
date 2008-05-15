@@ -118,11 +118,14 @@ public:
 	//--- inserting StaffObs
     lmBarline* Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType = lm_eBarlineSimple,
                                  bool fVisible = true);
+
 	lmClef* Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
                            bool fVisible);
+    void UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef);
+
 	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, wxString sStep,
 					       wxString sOctave, lmENoteType nNoteType, float rDuration,
-					       lmENoteHeads nNotehead, lmEAccidentals nAcc);
+					       lmENoteHeads nNotehead, lmEAccidentals nAcc, bool fAutoBar);
 
     lmTimeSignature* Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
                                     int nBeatType, bool fVisible);
@@ -132,8 +135,10 @@ public:
     //--- deleting StaffObjs
 	void DeleteObject();
 	void DeleteObject(lmStaffObj* pSO, lmUndoItem* pUndoItem = (lmUndoItem*)NULL);
+
     void Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
-    void Cmd_Undo_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    void UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+
 
     //error management
     inline wxString GetErrorMessage() { return m_sErrorMsg; }

@@ -67,6 +67,7 @@ public:
         {
             m_nHighlightType = event.m_nHighlightType;
             m_pSO = event.m_pSO;
+            m_nID = event.m_nID;
         }
 
     // clone constructor. Required for sending with wxPostEvent()
