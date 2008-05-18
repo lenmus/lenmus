@@ -148,7 +148,7 @@ void lmAboutDialog::CreateControls()
 	wxBoxSizer* pInfoSizer;
 	pInfoSizer = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_pHtmlWindow = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 200,150 ), wxHW_SCROLLBAR_AUTO|wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL);
+	m_pHtmlWindow = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 200,150 ), wxHW_SCROLLBAR_AUTO|wxBORDER_SUNKEN|wxHSCROLL|wxVSCROLL);
 	pInfoSizer->Add( m_pHtmlWindow, 1, wxEXPAND|wxBOTTOM, 5 );
 	
 	wxBoxSizer* pButtonsSizer;

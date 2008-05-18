@@ -115,10 +115,7 @@ That's all.
 Problems with MIDI sound
 ----------------------------
 
-In Linux it is frequent to find problems with MIDI as it is not installed by default. If this were your case:
-
-install Alas-dev
-see instructions in Ubuntu
+When installing LenMus in Linux you might find problems with sound as a MIDI synthesizer is not installed by default in some Linux distros. In file 'linux_install_midi.txt' you will find some instructions to install a Midi software synthesis package.
 
 
 

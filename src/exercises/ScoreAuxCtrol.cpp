@@ -82,11 +82,31 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
                lmToLogicalUnits(10, lmMILLIMETERS),
                lmToLogicalUnits(10, lmMILLIMETERS));    //right=1cm, left=1cm, top=1cm
 
-    // Choose the score size to maintain the proportions between text size and score size.
-    SetScale( (float)GetCharHeight() / 16.0f );
-
+    ComputeScale();
     m_fHidden = false;
+}
 
+void lmScoreAuxCtrol::ComputeScale()
+{
+    // Choose the score size to maintain the proportions between text size and score size.
+
+    //assume scale=1.0 and measure staff
+    m_rScale = 1.0f * lmSCALE;
+    wxClientDC dc(this);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    //Measure text height. We will force the staff height to be 1.6 times text height
+    lmPixels nStaffHeight = (lmPixels)(1.6f * (float)GetCharHeight());
+
+    //standard staff height is 720 LU. Compute needed scaling factor
+    lmLUnits uTextHeight = (lmLUnits)dc.DeviceToLogicalYRel(nStaffHeight);
+    m_rScale = uTextHeight / 720.0f;
+
+    wxLogMessage(_T("[lmScoreAuxCtrol::ComputeScale] Char height=%d px, Staff height=%d px, uTextHeight=%.2f LU, m_rScale=%f"),
+                 GetCharHeight(), nStaffHeight, uTextHeight, m_rScale);
+
+    SetScale(m_rScale);
 }
 
 lmScoreAuxCtrol::~lmScoreAuxCtrol()
@@ -108,13 +128,7 @@ void lmScoreAuxCtrol::SetScale(float rScale)
     m_rZoom = rScale;
     m_rScale = rScale * lmSCALE;
 
-    ////scale font size
-    //float rFontSize = g_pMainFrame->GetBookController()->GetFrame()->GetNormalFontSize();
-    //wxFont font = GetFont();
-    //font.SetPointSize((int)(rFontSize + 0.5));
-    //SetFont(font);
-
-    //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
+    wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
     ResizePaper();
 }
 
@@ -274,7 +288,10 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 
         //scale the font
         wxFont font = GetParent()->GetFont();
+        //in Linux, fonts get automatically scaled by the DC but not in Windows
+        #if defined(__WXMSW__)
         font.SetPointSize( (int)((float)font.GetPointSize() * m_rZoom) );
+        #endif
         dc.SetFont( font );
 
         dc.DrawText(m_sMsg, xPos, yPos);

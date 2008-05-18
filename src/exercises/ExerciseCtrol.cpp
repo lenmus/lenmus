@@ -943,7 +943,7 @@ wxWindow* lmCompareMidiCtrol::CreateDisplayCtrol()
     // Using MIDI Pitches and Static Text box
     return new wxStaticText(this, -1, _T(""), wxDefaultPosition,
                           m_nDisplaySize, 
-                          wxSIMPLE_BORDER | wxST_NO_AUTORESIZE );
+                          wxBORDER_SIMPLE | wxST_NO_AUTORESIZE );
 
 }
 

@@ -323,7 +323,8 @@ void lmTextBookFrame::Init(lmBookData* data)
 
     m_NormalFonts = m_FixedFonts = NULL;
     m_NormalFace = m_FixedFace = wxEmptyString;
-    m_rFontSize = 1.25f * (float)(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize());    //lmDEFAULT_FONT_SIZE;
+    //m_rFontSize = 1.25f * (float)(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize());    //lmDEFAULT_FONT_SIZE;
+    m_rFontSize = float(lmDEFAULT_FONT_SIZE);
     wxLogMessage(_T("[lmTextBookFrame::Init] Font size %.2f"), m_rFontSize);
     m_rScale = 1.0f;
 
@@ -378,7 +379,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_Splitter = new wxSplitterWindow(this);
 
         m_HtmlWin = new lmTextBookHelpHtmlWindow(this, m_Splitter);
-        m_NavigPan = new wxPanel(m_Splitter, wxID_ANY); //, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
+        m_NavigPan = new wxPanel(m_Splitter, wxID_ANY); //, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
         m_NavigNotebook = new wxNotebook(m_NavigPan, ID_NOTEBOOK,
                                          wxDefaultPosition, wxDefaultSize);
 
@@ -440,7 +441,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         }
 
         m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL,
-                                wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+                                wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE );
         topsizer->Add(m_pContentsBox, 1,
                       wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,
                       2);
@@ -520,6 +521,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_SearchPage = notebook_page;
     }
 
+    SetHtmlWindowFonts();
     m_HtmlWin->Show();
 
     RefreshLists();
@@ -913,6 +915,10 @@ void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
 
     m_rScale = cfg->Read(_T("tbcScale"), (double*)&m_rScale);
 
+    //In Linux, if no .ini file found, previous sentence sets m_rScale to zero and
+    //this causes problems. Next sentence fixes the bug
+    if (m_rScale == 0.0f) m_rScale = 1.0f;
+
     {
         int i;
         int cnt;
@@ -988,12 +994,9 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
         cfg->SetPath(oldpath);
 }
 
-bool lmTextBookFrame::SetActiveViewScale(double rScale)
+void lmTextBookFrame::SetHtmlWindowFonts()
 {
-	//Main frame invokes this method to inform that zomming factor has been changed.
-	//Returns false is scale has not been changed
-
-	double rFontSize = (double)m_rFontSize * rScale;
+	double rFontSize = (double)m_rFontSize;
 
 	int nFontSizes[7];
     nFontSizes[0] = int(rFontSize * 0.6 + 0.5);
@@ -1004,28 +1007,29 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
     nFontSizes[5] = int(rFontSize * 1.6 + 0.5);
     nFontSizes[6] = int(rFontSize * 1.8 + 0.5);
 
-	wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] scale=%.4f, font[0]=%d,%d,%d,%d,%d,%d,%d , m_rFontSize=%.2f"), rScale,
-		nFontSizes[0], nFontSizes[1], nFontSizes[2], nFontSizes[3], nFontSizes[4],
-		nFontSizes[5], nFontSizes[6], m_rFontSize);
+    //set normal font, to be used by controls (ScoreCtrol, ScoreAuxCtrol, UrlAuxCtrol, etc.)
+    wxFont font = m_HtmlWin->GetFont();
+    font.SetPointSize( nFontSizes[2] );
+    m_HtmlWin->SetFont(font);
+    //wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] m_HtmlWin normal font size = %d, font height=%d pixels"),
+    //    nFontSizes[2], m_HtmlWin->GetCharHeight() );
 
-	if (nFontSizes[0] < 3)
-		return false;
-	else
-	{
-       //set normal font, to be used by controls (ScoreCtrol, ScoreAuxCtrol, UrlAuxCtrol, etc.)
-        wxFont font = m_HtmlWin->GetFont();
-        font.SetPointSize( nFontSizes[2] );
-        m_HtmlWin->SetFont(font);
-        wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] m_HtmlWin normal font size = %d"), nFontSizes[2]);
+	m_HtmlWin->SetFonts(wxEmptyString, wxEmptyString, nFontSizes);
+}
 
-		m_rScale = rScale;
-		m_HtmlWin->SetScale(m_rScale);
-		m_HtmlWin->SetPixelScalingFactor(m_rScale);
-		m_HtmlWin->SetFonts(wxEmptyString, wxEmptyString, nFontSizes);
+bool lmTextBookFrame::SetActiveViewScale(double rScale)
+{
+	//Main frame invokes this method to inform that zomming factor has been changed.
+	//Returns false is scale has not been changed
 
-		return true;
-	}
+	m_rScale = rScale;
+	m_HtmlWin->SetScale(m_rScale);
+	m_HtmlWin->SetPixelScalingFactor(m_rScale);
 
+    //force to repaint all with the new scaling factor
+    SetHtmlWindowFonts();
+
+	return true;
 }
 
 void lmTextBookFrame::NotifyPageChanged()
@@ -1035,7 +1039,6 @@ void lmTextBookFrame::NotifyPageChanged()
         m_pContentsBox->ChangePage();
         m_UpdateContents = true;
     }
-
 }
 
 void lmTextBookFrame::RefreshContent()
@@ -1043,7 +1046,6 @@ void lmTextBookFrame::RefreshContent()
     if (m_pContentsBox) {
         m_pContentsBox->Refresh();
     }
-
 }
 
 wxString lmTextBookFrame::GetOpenedPageWithAnchor()

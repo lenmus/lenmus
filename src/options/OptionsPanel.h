@@ -58,7 +58,7 @@ class lmOptionsPanel : public wxPanel
 public:
     lmOptionsPanel() {}    //default constructor for dynamic creation of derived classes
     lmOptionsPanel(wxWindow* parent)
-        : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL )
+        : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxTAB_TRAVERSAL )
     {
       /* I'm not sure if we should be setting this... I'll play around
        * and see what looks best on different platforms under

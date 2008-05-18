@@ -28,8 +28,9 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="z_bin/Release/lenmus" prefix_auto="1" extension_auto="1" />
-				<Option object_output="z_obj/Release/" />
+				<Option platforms="Unix;" />
+				<Option output="../../z_gtk_release/lenmus" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../z_gtk_obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />

@@ -38,7 +38,7 @@
 
 enum EScoreStyles {
     eNO_BORDER = 0,
-    eSIMPLE_BORDER = wxSIMPLE_BORDER,
+    eSIMPLE_BORDER = wxBORDER_SIMPLE,
 };
 
 class lmScoreAuxCtrol : public wxWindow    
@@ -94,6 +94,7 @@ private:
     void ResizePaper();
     void SetBaseScale();
     void DoStopSounds();
+    void ComputeScale();
 
         // member variables
 

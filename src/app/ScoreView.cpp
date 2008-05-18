@@ -222,7 +222,7 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 
     // create the canvas for the score to edit
     m_pCanvas = new lmScoreCanvas(this, m_pFrame, m_pDoc, wxPoint(0, 0), m_pFrame->GetSize(),
-                        wxSUNKEN_BORDER, m_colorBg );
+                        wxBORDER_SUNKEN, m_colorBg );
 
     // create the scrollbars
     m_pHScroll = new wxScrollBar(m_pFrame, lmID_HSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);

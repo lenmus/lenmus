@@ -35,7 +35,7 @@ public:
     lmHtmlWindow(wxWindow *parent, wxWindowID id = wxID_ANY,
                  const wxPoint& pos = wxDefaultPosition,
                  const wxSize& size = wxDefaultSize,
-                 long style = wxHW_DEFAULT_STYLE | wxSIMPLE_BORDER ,
+                 long style = wxHW_DEFAULT_STYLE | wxBORDER_SIMPLE ,
                  const wxString& name = wxT("htmlWindow"))
         : wxHtmlWindow(parent, id, pos, size, style, name) { m_rScale = 1.0; }
     ~lmHtmlWindow() {}

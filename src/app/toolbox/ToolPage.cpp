@@ -46,7 +46,7 @@
 
 
 lmToolPage::lmToolPage(wxWindow* parent)
-	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1), wxSUNKEN_BORDER|wxTAB_TRAVERSAL )
+	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1), wxBORDER_SUNKEN|wxTAB_TRAVERSAL )
 {
 	//main sizer
     m_pMainSizer = new wxBoxSizer(wxVERTICAL);

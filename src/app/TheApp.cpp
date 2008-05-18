@@ -472,7 +472,7 @@ bool lmTheApp::OnInit(void)
         // Create the main frame window
         //
 
-    int nMilliseconds = 3000;   // at least visible for 3 seconds
+    int nMilliseconds = 10000;   // at least visible for 3 seconds
 	long nSplashTime = (long) time( NULL );
     lmSplashFrame* pSplash = RecreateGUI(nMilliseconds);
     ::wxBeginBusyCursor();
@@ -862,7 +862,7 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
             pSplash = new lmSplashFrame(bitmap, colorTransparent,
                 lmSPLASH_CENTRE_ON_PARENT | lmSPLASH_TIMEOUT,
                 nMilliseconds, g_pMainFrame, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+                wxBORDER_SIMPLE|wxSTAY_ON_TOP);
         }
         wxSafeYield();
     }

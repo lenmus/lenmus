@@ -102,7 +102,7 @@ static const lmToolsData m_aToolsData[] = {
 };
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
-    : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxNO_BORDER)
+    : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxBORDER_NONE)
 {
 	//Create the dialog
 	m_nSelTool = lmTOOL_NONE;
@@ -161,7 +161,7 @@ void lmToolBox::CreateControls()
     //the pages
 	m_pPageSizer = new wxBoxSizer( wxVERTICAL );
 	
-    m_pEmptyPage = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize(170, 400), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+    m_pEmptyPage = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize(170, 400), wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
     m_pEmptyPage->SetBackgroundColour(m_colors.Bright());
 	m_pCurPage = m_pEmptyPage;
 	m_pPageSizer->Add( m_pCurPage, 1, wxEXPAND, 5 );

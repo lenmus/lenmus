@@ -187,6 +187,7 @@ protected:
     void CreateIndex();
     void CreateSearch();
     void UpdateMergedIndex();
+    void SetHtmlWindowFonts();
 
     void OnContentsLinkClicked(wxHtmlLinkEvent& event);
     void OnIndexSel(wxCommandEvent& event);

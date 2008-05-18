@@ -35,8 +35,10 @@
 #endif
 
 #include "wx/splash.h"      // to use splash style constants
+#include "wx/stattext.h"
 
 #include "SplashFrame.h"
+#include "TheApp.h"         //to get version.
 
 #define wxSPLASH_TIMER_ID 9999
 
@@ -57,13 +59,11 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
                              long splashStyle, int milliseconds, 
                              wxWindow* parent, wxWindowID id, const wxPoint& pos, 
                              const wxSize& size, long style)
-       : wxFrame(parent, id, wxEmptyString,
-                  wxDefaultPosition, wxSize(100, 100), //wxDefaultSize,
-                  0
-                  | wxFRAME_SHAPED
-                  | wxSIMPLE_BORDER
-                  | wxFRAME_NO_TASKBAR
-                  | wxSTAY_ON_TOP
+       : wxFrame(parent, id, wxEmptyString, wxDefaultPosition, wxSize(100, 100),
+                 wxFRAME_SHAPED
+                 | wxBORDER_NONE     //wxBORDER_SIMPLE
+                 | wxFRAME_NO_TASKBAR
+                 | wxSTAY_ON_TOP
             )
 {
     m_fHasShape = false;
@@ -73,10 +73,42 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
     m_bmp = bitmap;
     SetSize(wxSize(m_bmp.GetWidth(), m_bmp.GetHeight()));
 
-	//// message area
-	//new wxStaticText(this, wxID_ANY, _("Initializing application"), wxPoint(200, 200), 
-	//	wxDefaultSize);
+	// message area
+    //AWARE: As user could have different settings for normal font size it is
+    //better not to do this here. Use a picture instead
+#if 0
+    wxString sMsg = _T("Version ");
+    sMsg += wxGetApp().GetVersionNumber();
 
+    wxStaticText* pText1 = new wxStaticText(this, wxID_ANY, sMsg, wxPoint(370, 150), 
+		wxDefaultSize);
+    wxFont font = pText1->GetFont();
+    wxColour color(255, 255, 255, wxALPHA_TRANSPARENT);
+    font.SetWeight( wxFONTWEIGHT_BOLD );
+    pText1->SetFont(font);
+    pText1->SetBackgroundColour(color);
+
+    // copyright message
+    wxString sCopy = _T("Copyright ");
+    sCopy += 169;       //copyright symbol
+    sCopy += _T(" 2002-2008 Cecilio Salmer");
+    sCopy += 243;       //o acute symbol
+    sCopy += _T("n");
+    wxStaticText* pText3 = new wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 240), 
+		wxDefaultSize);
+    font.SetWeight( wxFONTWEIGHT_BOLD );
+    pText3->SetFont(font);
+    pText3->SetBackgroundColour(color);
+
+    // licence message
+    wxString sLicense = _("Free software under GNU General Public License, version 2 or later.");
+    wxStaticText* pText2 = new wxStaticText(this, wxID_ANY, sLicense, wxPoint(70, 310), 
+		wxDefaultSize);
+    font.SetPointSize(7);
+    font.SetWeight( wxFONTWEIGHT_NORMAL );
+    pText2->SetFont(font);
+    pText2->SetBackgroundColour(color);
+#endif
 
 
 #ifndef __WXGTK__
@@ -126,7 +158,7 @@ void lmSplashFrame::SetWindowShape()
 void lmSplashFrame::OnPaint(wxPaintEvent& WXUNUSED(evt))
 {
     wxPaintDC dc(this);
-    dc.DrawBitmap(m_bmp, 0, 0, true);
+    dc.DrawBitmap(m_bmp, 0, 0, true);       //true->transparent
 }
 
 void lmSplashFrame::OnWindowCreate(wxWindowCreateEvent& WXUNUSED(evt))

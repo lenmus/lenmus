@@ -1,0 +1,39 @@
+Installing wxWidgets in Windows
+=================================
+
+Last updated: May\2008
+
+
+
+This document is a quick guide to install wxWidgets for building LenMus package.
+
+THIS GUIDE ARE JUST MY NOTES FOR DOING IT EACH TIME I HAVE TO INSTALL A NEW WXWIDGETS VERSION. This notes should be enough in most cases. Please refer to wxWidgets documentation, for more detailed instructions. 
+
+This guide probably contains errors and inaccuracies. Please contact us if you would like to help us with creating a better and error-free document.
+
+In this instructions it is assumed that wxWidgets is installed in d:\programming\wxWidgets287\. Please replace as appropriate.
+
+
+Steps to do:
+
+1. Download the wxMSW source zip archive (not the installer archive) from http://www.wxwidgets.org/downloads/.
+
+2. Expand the archive in d:\programming\wxWidgets287\
+
+3. Apply the two required patches to the wxWidgtes sources. This patches are detailed in file wxWidgets_patches.txt
+
+4. Open MS Visual Studio and open project file:
+
+        d:\programming\wxWidgets287\build\msw\wx.dsw
+        
+5. Choose menu > 'Generate > Batch generation ...' and check all the 'Unidode Debug' and 'Unicode Release' builds. Press 'Generate' button. It takes a few minutes, but everything should generate without problems.
+
+6. Now, define a new environment variable, named WXWIN, to point to the wxWidgets installation folder:
+
+- Control panel > System > Advanced options > button 'Environment variables':
+
+
+7. That's all. You should have now wxWidgets ready to build LenMus.
+
+8. Check that you can build and run a wxWidgets sample. For this, open any sample (in folder wxWidgets287\samples\) and build it. If you get an error saying that it can not open 'wx\setup.h' check that you are trying to generate the Unicode Debug or the Unicode Release version, not others (you didn't build others!)
+

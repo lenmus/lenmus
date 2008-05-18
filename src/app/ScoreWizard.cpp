@@ -533,7 +533,7 @@ void lmScoreWizardLayout::CreateControls()
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
 
-	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN );
 	sbSizer4->Add( m_pBmpPreview, 1, wxALL|wxEXPAND, 5 );
 
 	pRightColumnSizer->Add( sbSizer4, 1, wxEXPAND, 5 );

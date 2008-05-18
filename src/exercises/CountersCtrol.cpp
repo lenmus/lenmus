@@ -36,8 +36,8 @@
 
 //access to global flag
 #include "../app/Preferences.h"
-extern bool g_fAnswerSoundsEnabled; 
-extern bool g_fTeamCounters; 
+extern bool g_fAnswerSoundsEnabled;
+extern bool g_fTeamCounters;
 
 
 
@@ -60,7 +60,7 @@ END_EVENT_TABLE()
 
 lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id,  double rScale, 
                                  const wxPoint& pos)
-    : wxWindow(parent, id, pos, wxDefaultSize, wxNO_BORDER )
+    : wxWindow(parent, id, pos, wxDefaultSize, wxBORDER_NONE )
 {
     //initializations
     m_nMaxTeam = 0;             
@@ -68,12 +68,13 @@ lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id,  double rScale
     m_rScale = rScale;
 
     // Create the controls
+    this->SetBackgroundColour(*wxWHITE);
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
     if (g_fTeamCounters)
     {
         m_pTeamTxt = new wxStaticText( this, wxID_STATIC, _("Two teams competition"), wxDefaultPosition,
                             wxSize(-1, -1),
-                            wxALIGN_CENTRE|wxNO_BORDER|wxST_NO_AUTORESIZE );
+                            wxALIGN_CENTRE|wxBORDER_NONE|wxST_NO_AUTORESIZE );
         m_pTeamTxt->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
         pMainSizer->Add(m_pTeamTxt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
         CreateCountersGroup(0, pMainSizer, true);
@@ -137,7 +138,7 @@ void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, boo
         }
         wxStaticText* pTeamLabel = new wxStaticText( this, wxID_STATIC, 
                 wxString::Format(_T("%d"), nTeam+1), wxDefaultPosition,
-                wxSize(nBoxSize, -1), wxALIGN_CENTRE|wxNO_BORDER|wxST_NO_AUTORESIZE );
+                wxSize(nBoxSize, -1), wxALIGN_CENTRE|wxBORDER_NONE|wxST_NO_AUTORESIZE );
         pTeamLabel->SetBackgroundColour(wxColour(255, 255, 255));
         pTeamLabel->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
         pTeamSizer->Add(pTeamLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
@@ -156,7 +157,7 @@ void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, boo
     }
     m_pRightCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
 		wxDefaultPosition, wxSize(nBoxSize, -1),
-		wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
+		wxALIGN_CENTRE|wxBORDER_SIMPLE|wxST_NO_AUTORESIZE );
     m_pRightCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
     m_pRightCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
     pRightSizer->Add(m_pRightCounter[nTeam], 0,
@@ -174,7 +175,7 @@ void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, boo
     }
     m_pWrongCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
 		wxDefaultPosition, wxSize(nBoxSize, -1),
-		wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
+		wxALIGN_CENTRE|wxBORDER_SIMPLE|wxST_NO_AUTORESIZE );
     m_pWrongCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
     m_pWrongCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
     pWrongSizer->Add(m_pWrongCounter[nTeam], 0,
@@ -192,7 +193,7 @@ void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, boo
     }
     m_pTotalCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
 		wxDefaultPosition, wxSize(nBoxSize, -1),
-		wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
+		wxALIGN_CENTRE|wxBORDER_SIMPLE|wxST_NO_AUTORESIZE );
     m_pTotalCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
     m_pTotalCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("Arial")));
     pTotalSizer->Add(m_pTotalCounter[nTeam], 0,

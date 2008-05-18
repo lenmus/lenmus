@@ -238,11 +238,11 @@ void lmOptionsDlg::CreateControls()
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(pMainSizer);
 
-    m_pSplitWindow = new wxSplitterWindow( this, ID_SPLITTERWINDOW, wxDefaultPosition, wxSize(100, 100), wxSP_3DBORDER|wxSP_3DSASH|wxNO_BORDER );
+    m_pSplitWindow = new wxSplitterWindow( this, ID_SPLITTERWINDOW, wxDefaultPosition, wxSize(100, 100), wxSP_3DBORDER|wxSP_3DSASH|wxBORDER_NONE );
 
     m_pTreeCtrl = new wxTreeCtrl( m_pSplitWindow, ID_TREECTRL,
                             wxDefaultPosition, wxSize(180, 180),
-                            wxTR_SINGLE | wxTR_HAS_BUTTONS | wxNO_BORDER  );
+                            wxTR_SINGLE | wxTR_HAS_BUTTONS | wxBORDER_NONE  );
 
     m_pPanel = CreatePanel((EOptionsPanels) m_nCurPanel);
     m_cPanels[m_nCurPanel] = m_pPanel;

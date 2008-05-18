@@ -333,7 +333,11 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
     }
 
     //conect to server and get information about updates
+#if defined(__WXMSW__)
     if (DoCheck(_T("Win32"), fSilent)) {
+#else
+    if (DoCheck(_T("Linux"), fSilent)) {
+#endif
         ::wxEndBusyCursor();
         return;  //Error. Not posible to do check
     }
