@@ -38,7 +38,7 @@
 
 
 //-------------------------------------------------------------------------------------
-// Implementation of lmShapeNote: an staff (usually 5 lines)
+// Implementation of lmShapeNote
 
 
 lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxColour color)

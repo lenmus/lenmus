@@ -384,25 +384,12 @@ lmVStaff* lmScoreCursor::GetVStaff()
         return (lmVStaff*)NULL;
 }
 
-void lmScoreCursor::OnCursorObjectChanged() 
-{ 
-    //Current active VCursor has changed position and calls back to inform, just in
-    //case we would like to display any feedback (i.e. update cursor position on the GUI,
-    //change colour of pointed object, or other).
-    //To do it, if there is a View, we will inform it about the event
-
-    if (m_pView) 
-        m_pView->OnCursorMoved();
-}
-
-
 void lmScoreCursor::SelectCursor(lmVStaffCursor* pVCursor)
 {
     //Replace current cursor by the one received as parameter.
     //PRECONDITION: The received cursor must be one of the active cursors in current 
     //              instruments
     //It is assumed that the Score and View don't change.
-    //Highlight is removed from previous staffobj and added to current one
 
     m_pVCursor = pVCursor;
 
@@ -411,25 +398,12 @@ void lmScoreCursor::SelectCursor(lmVStaffCursor* pVCursor)
     int nInstr;
 	for (nInstr=1; it != (m_pScore->m_cInstruments).end(); ++it, nInstr++)
     {
-        if ((*it)->GetCursor() == m_pVCursor) break;
+        if ((*it)->GetVCursor() == m_pVCursor) break;
     }
     wxASSERT(it != (m_pScore->m_cInstruments).end());
 
     //get instrument number
 	m_nCursorInstr = nInstr;
-
-    //inform the view
-    OnCursorObjectChanged();
-}
-
-void lmScoreCursor::OnCursorObjectDeleted()
-{
-    //Current active VCursor informs that cursor pointed object has been deleted.
-    //Therefore any stored reference to the deleted object should be invalidaded.
-    //Let's inform the view.
-
-    if (m_pView) 
-        m_pView->OnCursorObjectDeleted();
 }
 
 void lmScoreCursor::SetNewCursorState(lmVCursorState* pState)

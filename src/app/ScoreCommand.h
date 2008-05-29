@@ -74,8 +74,7 @@ protected:
     bool                m_fHistory;         //include command in undo/redo history
     lmUndoLog           m_UndoLog;          //collection of undo/redo items
     lmUndoItem*         m_pUndoItem;        //undo item for this command
-    lmVStaffCursor*     m_pVCursor;         //VCursor when issuing the command
-    lmVCursorState      m_tCursorState;     //VCursor state
+    lmVCursorState      m_tCursorState;     //VCursor state when issuing the command
 
 };
 
@@ -162,7 +161,6 @@ public:
     bool UndoCommand();
 
 protected:
-    lmVCursorState      m_tCursorState; //cursor state before deletion
     lmVStaff*           m_pVStaff;      //affected VStaff
     lmStaffObj*         m_pSO;          //deleted note
     bool                m_fDeleteSO;    //to control if m_pSO must be deleted

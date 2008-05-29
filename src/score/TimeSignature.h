@@ -26,6 +26,7 @@
 #pragma interface "TimeSignature.cpp"
 #endif
 
+class lmContext;
 
 //------------------------------------------------------------------------------------------------
 // lmTimeSignature object
@@ -74,6 +75,7 @@ public:
     // access to information
     int GetNumBeats() { return m_nBeats; }
     int GetBeatType() { return m_nBeatType; }
+    float GetMeasureDuration();
 
 	//context management
     inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }

@@ -72,6 +72,9 @@
 #endif
 
 #include "Score.h"
+#include "Staff.h"
+#include "VStaff.h"
+#include "Context.h"
 #include "UndoRedo.h"
 #include "Notation.h"
 #include "MetronomeMark.h"
@@ -236,6 +239,30 @@ int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 		return 0;
 }
 
+lmTimeSignature* lmVStaff::GetApplicableTimeSignature()
+{
+    //returns the applicable time signature at current cursor position
+
+    lmStaffObj* pSO = m_VCursor.GetStaffObj();
+    if (pSO)
+        return pSO->GetApplicableTimeSignature();
+    else
+    {
+        pSO = m_VCursor.GetPreviousStaffobj();
+        if (pSO)
+            return pSO->GetApplicableTimeSignature();
+        else
+        {
+            //empty segment?
+            lmContext* pContext = m_cStaffObjs.GetStartOfSegmentContext(m_VCursor.GetSegment(),
+                                                  m_VCursor.GetNumStaff() );
+            if (pContext)
+                return pContext->GetTime();
+            else
+                return (lmTimeSignature*)NULL;
+        }
+    }
+}
 
 
 //---------------------------------------------------------------------------------------
@@ -335,6 +362,23 @@ lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nB
         return (lmTimeSignature*)NULL;
     }
 }
+
+//void lmVStaff::UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
+//{
+//    //delete the requested object, and log info to undo history
+//    //Precondition: must be in this VStaff
+//
+// //   //recover user option about keeping pitch or position
+// //   lmUndoData* pUndoData = pUndoItem->GetUndoData();
+// //   bool fClefKeepPosition = pUndoData->GetParam<bool>();
+//
+// //   //remove the contexts created by the clef
+//	//pClef->RemoveCreatedContexts();
+//
+//    //now remove the TS from the staffobjs collection
+//    //The collection will take care of removing contexts and of doing re-bar
+//    m_cStaffObjs.Delete(pTS, true);        //true->invoke destructor
+//}
 
 lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
                                     bool fMajor, bool fVisible)
@@ -523,16 +567,39 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 
 	delete pContext;
 
-    ////if this note fills up a measure and AutoBar option is enabled, insert a simple barline
-    //if (fAutoBar)
-    //    CheckAndDoAutoBar();
+    //if this note fills up a measure and AutoBar option is enabled, insert a simple barline
+    if (fAutoBar)
+        CheckAndDoAutoBar(pUndoItem);
 
     return pNt;
 }
 
+void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem)
+{
+    //verify if measure is full
+    lmTimeSignature* pTime = GetApplicableTimeSignature();
+    if (!pTime)
+        return;         //no time signature. Do not add barlines
+    //TODO: When no TS, we could try to insert hidden barlines to deal with no time
+    //signature scores
+
+    //float rMeasure = pTime->GetMeasureDuration();
+    //float rCurrent = GetCurrentMesureDuration();
+    //wxLogMessage(_T("[lmVStaff::CheckAndDoAutoBar] current=%.2f, maximum=%.2f"), rCurrent, rMeasure);
+    if (IsLowerTime(GetCurrentMesureDuration(), pTime->GetMeasureDuration()))
+      return;         //measure is not full
+
+    //measure full. Issue an 'insert barline' command
+    lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
+    lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
+    lmVCmdInsertBarline* pVCmd =
+        new lmVCmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
+    pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+}
+
 void lmVStaff::DeleteObject()
 {
-    //delete object pointed by cursor
+    //remove object pointed by cursor
 
     m_cStaffObjs.Delete(m_VCursor.GetStaffObj());
 }
@@ -560,7 +627,7 @@ void lmVStaff::DeleteObject(lmStaffObj* pSO, lmUndoItem* pUndoItem)
 
     //now remove the staffobj from the staffobjs collection
     //if pUndoItem exists, do not delete staffobj, only remove it from the collection
-    m_cStaffObjs.Delete(pSO, (pUndoItem != (lmUndoItem*)NULL));
+    m_cStaffObjs.Delete(pSO, (pUndoItem == (lmUndoItem*)NULL));
 }
 
 void lmVStaff::Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
@@ -1594,6 +1661,11 @@ bool lmVStaff::ShiftTime(float rTimeShift)
     return m_cStaffObjs.ShiftTime(rTimeShift);
 }
 
+float lmVStaff::GetCurrentMesureDuration()
+{
+    return m_cStaffObjs.GetMeasureDuration(m_VCursor.GetSegment()+1);
+}
+
 lmSOControl* lmVStaff::AddNewSystem()
 {
     /*
@@ -1680,7 +1752,8 @@ lmVCmdInsertNote::lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 
 void lmVCmdInsertNote::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewNote);
+    m_pVStaff->DeleteObject(m_pNewNote);     //m_pNewNote destructor will be invoked
+    //TODO: UndoCmd_InsertNote
 }
 
 
@@ -1716,7 +1789,8 @@ lmVCmdInsertBarline::lmVCmdInsertBarline(lmVStaff* pVStaff, lmUndoItem* pUndoIte
 
 void lmVCmdInsertBarline::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewBar);
+    m_pVStaff->DeleteObject(m_pNewBar);     //m_pNewBar destructor will be invoked
+    //TODO: UndoCmd_InsertBarline
 }
 
 
@@ -1735,7 +1809,8 @@ lmVCmdInsertTimeSignature::lmVCmdInsertTimeSignature(lmVStaff* pVStaff,
 
 void lmVCmdInsertTimeSignature::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewTime);
+    m_pVStaff->DeleteObject(m_pNewTime);     //m_pNewTime destructor will be invoked
+    //TODO: UndoCmd_TimeSignature
 }
 
 
@@ -1754,7 +1829,8 @@ lmVCmdInsertKeySignature::lmVCmdInsertKeySignature(lmVStaff* pVStaff,
 
 void lmVCmdInsertKeySignature::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewKey);
+    m_pVStaff->DeleteObject(m_pNewKey);     //m_pNewKey destructor will be invoked
+    //TODO: UndoCmd_KeySignature
 }
 
 

@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -42,10 +42,13 @@ class lmBarline;
 class lmView;
 class lmScoreCursor;
 class lmUndoData;
+class lmTimeSignature;
+class lmKeySignature;
+enum EStaffObjType;
 
 
 // To simplify future modifications of this class (i.e changing the data structures to implement it)
-// when an iterator is requested we will force to specify the intended usage so that 
+// when an iterator is requested we will force to specify the intended usage so that
 // this class can optimize it. The defined codes are:
 //
 //	eTR_ByTime:
@@ -61,7 +64,7 @@ enum ETraversingOrder
 };
 
 
-#define lmItMeasure		std::list<lmSegmentData*>::iterator 
+#define lmItMeasure		std::list<lmSegmentData*>::iterator
 #define lmItCSO			std::list<lmStaffObj*>::iterator
 
 class lmSegment
@@ -71,6 +74,7 @@ public:
     ~lmSegment();
 
 	void Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor);
+    void Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition, bool fKeyKeepPitch);
     void UpdateDuration();
 
 	//context management
@@ -106,7 +110,7 @@ private:
 
     //context management
     lmContext* FindEndOfSegmentContext(int nStaff);
-    void PropagateContextChange(lmContext* pStartContext, int nStaff, 
+    void PropagateContextChange(lmContext* pStartContext, int nStaff,
                                 bool fKeyKeepPitch);
     void PropagateContextChange(lmContext* pStartContext, int nStaff, lmClef* pNewClef,
                                 lmClef* pOldClef, bool fClefKeepPosition);
@@ -116,10 +120,10 @@ private:
     void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO);
 
 
-
+    //member variables
 
     std::list<lmStaffObj*>	m_StaffObjs;		//list of StaffObjs in this segment
-    lmColStaffObjs* m_pOwner;                   
+    lmColStaffObjs* m_pOwner;
     int				m_nNumSegment;				//0..n-1
     lmContext*		m_pContext[lmMAX_STAFF];	//ptr to current context for each staff
     int             m_bVoices;                  //voices in this segment. One bit per used voice
@@ -135,7 +139,7 @@ public:
     ~lmColStaffObjs();
 
 	//creation related
-	inline void AttachCursor(lmVStaffCursor* pCursor) { m_pVCursor = pCursor; } 
+	inline void AttachCursor(lmVStaffCursor* pCursor) { m_pVCursor = pCursor; }
     void AddStaff();
 
     //add/remove StaffObjs
@@ -149,11 +153,18 @@ public:
     //access StaffObjs
     lmBarline* GetBarlineOfMeasure(int nMeasure);      //1..n
     lmBarline* GetBarlineOfLastNonEmptyMeasure();
+    lmTimeSignature* FindFwdTimeSignature(lmStaffObj* pCurSO);
+    lmKeySignature* FindFwdKeySignature(lmStaffObj* pCurSO);
+    lmClef* FindFwdClef(lmStaffObj* pCurSO);
+    lmStaffObj* FindFwdStaffObj(lmStaffObj* pCurSO, EStaffObjType nType);
+    lmStaffObj* FindNextStaffObj(lmStaffObj* pCurSO);
+    lmStaffObj* FindPrevStaffObj(lmStaffObj* pCurSO);
 
     //iterator related methods
     lmSOIterator* CreateIterator(ETraversingOrder nOrder, int nVoice=-1);
 	lmSOIterator* CreateIteratorTo(ETraversingOrder nOrder, lmStaffObj* pSO);
 	lmSOIterator* CreateIteratorFrom(ETraversingOrder nOrder, lmVStaffCursor* pVCursor);
+	lmSOIterator* CreateIteratorFrom(ETraversingOrder nOrder, lmStaffObj* pSO);
 
 	//info related to measures
     int GetNumMeasures();
@@ -186,9 +197,12 @@ private:
 	//segments management
 	void SplitSegment(int nSegment, lmStaffObj* pLastSO);
     void CreateNewSegment(int nSegment);
-    void RemoveSegment(int nSegment);
-	void UpdateContexts(lmSegment* pSegment);
+    void RemoveSegment(int nSegment, bool fDeleteStaffObjs = true);
+	void UpdateSegmentContexts(lmSegment* pSegment);
     lmSegment* GetNextSegment(int nCurSegment);
+
+    //segments management: AutoReBar
+    void AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO, lmTimeSignature* pNewTS);
 
 	//voices management
 	void AssignVoice(lmStaffObj* pSO, int nSegment);
@@ -217,6 +231,10 @@ typedef struct lmVCursorState_Struct {
 	lmStaffObj* pSO;			//current pointed staffobj
 } lmVCursorState;
 
+//global variable used as default initializator
+extern lmVCursorState g_tNoVCursorState;
+
+
 class lmVStaffCursor
 {
 public:
@@ -235,7 +253,7 @@ public:
 
     //positioning
 
-    //Move methods: intended to implement user commands. They call back ScoreObj to 
+    //Move methods: intended to implement user commands. They call back ScoreObj to
     //inform it about a position change, for highlight or GUI update.
 	void MoveRight(bool fAlsoChordNotes = true, bool fIncrementIterator = true);
 	void MoveLeft(bool fAlsoChordNotes = true);
@@ -254,9 +272,6 @@ public:
     void SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* pState);
     void SkipClefKey(bool fSkipKey);
 
-    //call backs
-    void OnCursorObjectDeleted(lmItCSO itNext);
-
     //current position
     bool IsAtEnd();
     bool IsAtBeginning();
@@ -270,17 +285,17 @@ public:
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
     int GetPageNumber();
 	lmStaffObj* GetStaffObj();
+    lmStaffObj* GetPreviousStaffobj();
 
 
     lmUPoint GetCursorPoint();
     lmStaff* GetCursorStaff();
     lmVStaff* GetVStaff();
 
-
+    void RefreshInternalInfo();
 
 private:
     void UpdateTimepos();
-    lmStaffObj* GetPreviousStaffobj();
     float GetStaffPosY(lmStaffObj* pSO);
     void AdvanceIterator();
 

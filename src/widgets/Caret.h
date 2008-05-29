@@ -27,7 +27,7 @@
 #endif
 
 #include "wx/event.h"
-#include "wx/thread.h"
+//#include "wx/thread.h"
 
 class lmView;
 class lmCanvas;
@@ -50,24 +50,24 @@ public:
     //event handlers
 	void OnCaretTimer(wxTimerEvent& event);
 
-    void SetCaretPosition(lmUPoint uPos, lmStaff* pStaff);
-    void RemoveCaret();
-    void DisplayCaret(double rScale, lmUPoint uPos, lmStaff* pStaff);
+    //operations
+    void SetCaretPosition(double rScale, lmUPoint uPos, lmStaff* pStaff);
+    void Show(bool fShow = true);
+	void Show(double rScale, lmUPoint uPos, lmStaff* pStaff);
+    inline void Hide() { Show(false); }
 
     //aspect
     void SetBlinkingRate(int nMillisecs);
     void SetColour(wxColour color);
 
     //status
-        //caret displayed, but not necessarily visible at this moment, as it could
-        //have been blinked out
-    inline bool IsDisplayed() const { return m_fDisplayed; } 
-        //caret displayed and currently visible
-    inline bool IsVisible() const { return m_nCountVisible > 0; }
+        //caret permanently hidden
+    inline bool IsHidden() const { return m_nCountVisible <= 0;; } 
+        //caret shown, but not necessarily visible at this moment. That dependens on
+        //current blinking state. Is always false if caret is hidden. It is true if
+        //caret not hidden and it has not blinket out at this moment.
+    inline bool IsVisible() const { return m_fCaretDrawn; }
 
-    // operations
-    void Show(bool fShow = true);
-    inline void Hide() { Show(false); }
 
 private:
 	void RenderCaret(bool fVisible);
@@ -81,10 +81,8 @@ private:
     double          m_rScale;           //view presentation scale
 
     //caret display status
-    bool                m_fDisplayed;   //caret displayed, but not necessarily visible at this time as it could be blinked out
-    bool                m_fVisible;     //caret visible on screen (it implies it is displayed)
-    wxCriticalSection   m_locker;       //locker for accesing previous flag
-    int                 m_nCountVisible;    //
+    bool                m_fCaretDrawn;      //caret visible on screen (it implies it is displayed)
+    int                 m_nCountVisible;    //number of times Show() - number of times Hide()
 
     //timer for caret blinking
 	wxTimer			m_oCaretTimer;			//for caret blinking

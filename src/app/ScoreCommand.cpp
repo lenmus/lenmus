@@ -36,6 +36,7 @@
 
 #include "../score/Score.h"
 #include "../score/UndoRedo.h"
+#include "../score/VStaff.h"
 #include "ScoreCommand.h"
 #include "ScoreDoc.h"
 #include "TheApp.h"
@@ -56,9 +57,10 @@ lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc,
     m_pDoc = pDoc;
 	m_fDocModified = false;
     m_fHistory = fHistory;
-    m_pVCursor = pVCursor;
     if (pVCursor)
         m_tCursorState = pVCursor->GetState();
+    else
+        m_tCursorState = g_tNoVCursorState;
 }
 
 lmScoreCommand::~lmScoreCommand()
@@ -212,7 +214,7 @@ bool lmCmdDeleteObject::UndoCommand()
 //----------------------------------------------------------------------------------------
 
 lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocument *pDoc,
-									   lmScoreObj* pSO, const lmUPoint& uPos)
+									         lmScoreObj* pSO, const lmUPoint& uPos)
 	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
 {
 	m_tPos.x = uPos.x;
@@ -262,7 +264,7 @@ lmCmdInsertBarline::lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString&
 
 bool lmCmdInsertBarline::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
     lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
@@ -284,7 +286,7 @@ bool lmCmdInsertBarline::Do()
 bool lmCmdInsertBarline::UndoCommand()
 {
     m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
@@ -308,11 +310,11 @@ lmCmdInsertClef::lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& sName
 
 bool lmCmdInsertClef::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
     lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    int nStaff = m_pVCursor->GetNumStaff();
+    int nStaff = pCursor->GetCursorNumStaff();
     lmVStaffCmd* pVCmd = new lmVCmdInsertClef(pVStaff, pUndoItem, m_nClefType, nStaff);
 
     if (pVCmd->Success())
@@ -331,7 +333,7 @@ bool lmCmdInsertClef::Do()
 bool lmCmdInsertClef::UndoCommand()
 {
     m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
@@ -357,7 +359,7 @@ lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, con
 
 bool lmCmdInsertTimeSignature::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
     lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
@@ -380,9 +382,7 @@ bool lmCmdInsertTimeSignature::Do()
 bool lmCmdInsertTimeSignature::UndoCommand()
 {
     m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetCursor(m_pVCursor);
-    lmScoreCursor* pSC = m_pVCursor->GetScoreCursor();
-    m_pVCursor->SetNewCursorState(pSC, &m_tCursorState);
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
@@ -408,7 +408,7 @@ lmCmdInsertKeySignature::lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const
 
 bool lmCmdInsertKeySignature::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
     lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
@@ -431,9 +431,7 @@ bool lmCmdInsertKeySignature::Do()
 bool lmCmdInsertKeySignature::UndoCommand()
 {
     m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetCursor(m_pVCursor);
-    lmScoreCursor* pSC = m_pVCursor->GetScoreCursor();
-    m_pVCursor->SetNewCursorState(pSC, &m_tCursorState);
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
@@ -470,7 +468,7 @@ lmCmdInsertNote::~lmCmdInsertNote()
 
 bool lmCmdInsertNote::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
     m_pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
@@ -495,7 +493,7 @@ bool lmCmdInsertNote::Do()
 bool lmCmdInsertNote::UndoCommand()
 {
     m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetCursor(m_pVCursor);
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();

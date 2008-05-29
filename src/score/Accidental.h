@@ -26,7 +26,7 @@
 #pragma interface "Accidental.cpp"
 #endif
 
-#include "../graphic/Shapes.h"
+class lmShape;
 
 
 // Helper class:

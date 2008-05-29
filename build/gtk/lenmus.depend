@@ -41,7 +41,7 @@
 	"../score/Score.h"
 	"Constrains.h"
 
-1209829638 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.h
+1211352466 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.h
 	<vector>
 	<list>
 	"wx/debug.h"
@@ -74,7 +74,7 @@
 	"../app/Paper.h"
 	"../sound/SoundManager.h"
 
-1209893136 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
+1211351748 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>
@@ -92,7 +92,7 @@
 	"wx/wx.h"
 	"Score.h"
 
-1210142686 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
+1211436338 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
 	<vector>
 	"../app/TheApp.h"
 	"../graphic/Shapes.h"
@@ -146,7 +146,7 @@
 	"StaffObj.h"
 	"ColStaffObjs.h"
 
-1210320252 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/ColStaffObjs.h
+1211576237 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/ColStaffObjs.h
 	<vector>
 	<list>
 
@@ -166,10 +166,10 @@
 	<list>
 	"defs.h"
 
-1210589908 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
+1211351748 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
 	"StaffObjIterator.h"
 
-1209991744 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Instrument.h
+1211351748 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Instrument.h
 
 1199097062 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Slur.h
 
@@ -187,7 +187,7 @@
 	"wx/wx.h"
 	"defs.h"
 
-1210142686 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TimeSignature.h
+1211269964 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TimeSignature.h
 
 1210142686 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/KeySignature.h
 
@@ -202,7 +202,7 @@
 	"NotesRelationship.h"
 	"../graphic/ShapeTuplet.h"
 
-1208503828 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.h
+1210753398 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.h
 	"defs.h"
 
 1205763670 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Rest.h
@@ -286,14 +286,14 @@
 	"CountersCtrol.h"
 	"../sound/SoundEvents.h"
 
-1207635114 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreAuxCtrol.h
+1211032946 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreAuxCtrol.h
 	"../app/Paper.h"
 	"../app/global.h"
 	"../sound/SoundEvents.h"
 	"../graphic/GraphicManager.h"
 	"wx/window.h"
 
-1210487288 /media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundEvents.h
+1210622636 /media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundEvents.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -610,7 +610,7 @@
 	"OptionsPanel.h"
 	"wx/dynarray.h"
 
-1199099544 /media/sdb1/usr/Desarrollo_wx/lenmus/src/options/OptionsPanel.h
+1211033058 /media/sdb1/usr/Desarrollo_wx/lenmus/src/options/OptionsPanel.h
 	<wx/panel.h>
 
 1199098918 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MidiWizard.h
@@ -621,7 +621,7 @@
 	<wx/config.h>
 	"../../wxMidi/include/wxMidi.h"
 
-1210244292 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Preferences.h
+1210834924 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Preferences.h
 	<vector>
 	<wx/config.h>
 
@@ -666,7 +666,7 @@
 	"wx/wfstream.h"
 	"wx/xml/xml.h"
 
-1199099544 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.h
+1210920684 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.h
 	"wx/defs.h"
 	"wx/helpbase.h"
 	"wx/html/helpdata.h"
@@ -687,7 +687,7 @@
 	"BookData.h"
 	"BookContentsBox.h"
 
-1210486178 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/HtmlWindow.h
+1211032946 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/HtmlWindow.h
 	"wx/html/htmlwin.h"
 
 1199097066 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/BookContentsBox.h
@@ -1470,7 +1470,7 @@
 	"../exercises/MusicReadingConstrains.h"
 	"../ldp_parser/AuxString.h"
 
-1210614862 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
+1211033096 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ObjectParams.h"
@@ -2279,7 +2279,7 @@
 	"MusicReadingConstrains.h"
 	"Generators.h"
 
-1207577480 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreView.h
+1211374576 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreView.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/generic/dragimgg.h"
@@ -2639,7 +2639,7 @@
 	<list>
 	<algorithm>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wxprec.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wxprec.h
 	"wx/defs.h"
 	"wx/wxchar.h"
 	"wx/msw/wrapwin.h"
@@ -2652,7 +2652,7 @@
 	"wx/mgl/private.h"
 	"wx/wx.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/defs.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/defs.h
 	"wx/platform.h"
 	"wx/features.h"
 	"wx/version.h"
@@ -2663,7 +2663,7 @@
 	<unistd.h>
 	"wx/msw/winundef.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/platform.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/platform.h
 	<stddef.h>
 	<AvailabilityMacros.h>
 	<unistd.h>
@@ -2677,7 +2677,7 @@
 
 1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/lib/wx/include/gtk2-unicode-debug-static-2.8/wx/setup.h
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/chkconf.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/chkconf.h
 	"wx/palmos/chkconf.h"
 	"wx/msw/wince/chkconf.h"
 	"wx/msw/chkconf.h"
@@ -2689,21 +2689,21 @@
 	"wx/x11/chkconf.h"
 	"wx/univ/chkconf.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/features.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/features.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/version.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/version.h
 	"wx/cpp.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cpp.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cpp.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dlimpexp.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dlimpexp.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/debug.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/debug.h
 	<assert.h>
 	<limits.h>
 	"wx/wxchar.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wxchar.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wxchar.h
 	"wx/platform.h"
 	"wx/dlimpexp.h"
 	<stdio.h>
@@ -2733,7 +2733,7 @@
 	<time.h>
 	<string.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wx.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wx.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/dynarray.h"
@@ -2813,18 +2813,18 @@
 	"wx/validate.h"
 	"wx/valtext.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/object.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/object.h
 	"wx/memory.h"
 	"wx/xti.h"
 	"wx/msw/msvcrt.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/memory.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/memory.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/msgout.h"
 	<stddef.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/string.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/string.h
 	"wx/defs.h"
 	<ctype.h>
 	<stdio.h>
@@ -2847,11 +2847,11 @@
 	"wx/arrstr.h"
 	"wx/iosfwrap.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/buffer.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/buffer.h
 	"wx/wxchar.h"
 	<stdlib.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/strconv.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/strconv.h
 	"wx/defs.h"
 	"wx/wxchar.h"
 	"wx/buffer.h"
@@ -2859,35 +2859,35 @@
 	<stdlib.h>
 	"wx/fontenc.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/fontenc.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/fontenc.h
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/beforestd.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/beforestd.h
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/afterstd.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/afterstd.h
 	"wx/msw/winundef.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/arrstr.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/arrstr.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/dynarray.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dynarray.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dynarray.h
 	"wx/defs.h"
 	"wx/beforestd.h"
 	<vector>
 	<algorithm>
 	"wx/afterstd.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/iosfwrap.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/iosfwrap.h
 	<iostream.h>
 	<iosfwd>
 	"wx/msw/winundef.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/msgout.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/msgout.h
 	"wx/defs.h"
 	"wx/wxchar.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/xti.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/xti.h
 	"wx/defs.h"
 	"wx/memory.h"
 	"wx/flags.h"
@@ -2899,13 +2899,13 @@
 	<typeinfo>
 	"wx/dynarray.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/hashmap.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/hashmap.h
 	"wx/string.h"
 	<ext/hash_map>
 	<hash_map>
 	<stddef.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/log.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/log.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/arrstr.h"
@@ -2915,14 +2915,14 @@
 	"wx/generic/logg.h"
 	"wx/cocoa/log.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/logg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/logg.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/intl.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/intl.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/fontenc.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/list.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/list.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -2932,13 +2932,13 @@
 	<list>
 	"wx/afterstd.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/hash.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/hash.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/list.h"
 	"wx/dynarray.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/event.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/event.h
 	"wx/defs.h"
 	"wx/cpp.h"
 	"wx/object.h"
@@ -2948,16 +2948,16 @@
 	"wx/thread.h"
 	"wx/dynarray.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/clntdata.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/clntdata.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/hashmap.h"
 	"wx/vector.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/vector.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/vector.h
 	"wx/defs.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gdicmn.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gdicmn.h
 	"wx/defs.h"
 	"wx/list.h"
 	"wx/string.h"
@@ -2965,12 +2965,12 @@
 	"wx/hashmap.h"
 	"wx/math.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/math.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/math.h
 	"wx/defs.h"
 	<math.h>
 	<float.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cursor.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cursor.h
 	"wx/defs.h"
 	"wx/palmos/cursor.h"
 	"wx/msw/cursor.h"
@@ -2985,10 +2985,10 @@
 	"wx/os2/cursor.h"
 	"wx/utils.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/cursor.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/cursor.h
 	"wx/object.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/utils.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/utils.h
 	"wx/object.h"
 	"wx/list.h"
 	"wx/filefn.h"
@@ -3000,7 +3000,7 @@
 	<unistd.h>
 	<stdio.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filefn.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filefn.h
 	"wx/list.h"
 	"wx/arrstr.h"
 	"wx/msw/wince/time.h"
@@ -3036,19 +3036,19 @@
 	<fcntl.h>
 	<sys/types.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/longlong.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/longlong.h
 	"wx/defs.h"
 	"wx/string.h"
 	<limits.h>
 	"wx/iosfwrap.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/platinfo.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/platinfo.h
 	"wx/string.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/thread.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/thread.h
 	"wx/defs.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/app.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/app.h
 	"wx/event.h"
 	"wx/build.h"
 	"wx/init.h"
@@ -3066,32 +3066,32 @@
 	"wx/os2/app.h"
 	"wx/univ/theme.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/build.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/build.h
 	"wx/version.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/init.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/init.h
 	"wx/defs.h"
 	"wx/wxchar.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/app.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/app.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/stream.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/stream.h
 	"wx/defs.h"
 	<stdio.h>
 	"wx/object.h"
 	"wx/string.h"
 	"wx/filefn.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/stopwatch.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/stopwatch.h
 	"wx/defs.h"
 	"wx/longlong.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/module.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/module.h
 	"wx/object.h"
 	"wx/list.h"
 	"wx/dynarray.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/window.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/window.h
 	"wx/event.h"
 	"wx/list.h"
 	"wx/cursor.h"
@@ -3117,7 +3117,7 @@
 	"wx/os2/window.h"
 	"wx/univ/window.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/font.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/font.h
 	"wx/defs.h"
 	"wx/fontenc.h"
 	"wx/gdiobj.h"
@@ -3133,12 +3133,12 @@
 	"wx/cocoa/font.h"
 	"wx/os2/font.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gdiobj.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gdiobj.h
 	"wx/object.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/font.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/font.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/colour.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/colour.h
 	"wx/defs.h"
 	"wx/gdiobj.h"
 	"wx/variant.h"
@@ -3154,7 +3154,7 @@
 	"wx/cocoa/colour.h"
 	"wx/os2/colour.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/variant.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/variant.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -3165,7 +3165,7 @@
 	"wx/db.h"
 	"wx/iosfwrap.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/datetime.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/datetime.h
 	"wx/defs.h"
 	<time.h>
 	"wx/msw/wince/time.h"
@@ -3173,7 +3173,7 @@
 	"wx/longlong.h"
 	"wx/dynarray.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/db.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/db.h
 	"wx/defs.h"
 	"wx/string.h"
 	<afxwin.h>
@@ -3188,14 +3188,14 @@
 	<sqlext.h>
 	"wx/object.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/isql.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/isql.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/isqlext.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/isqlext.h
 	"wx/isql.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/colour.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/colour.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/region.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/region.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 	"wx/palmos/region.h"
@@ -3209,13 +3209,13 @@
 	"wx/cocoa/region.h"
 	"wx/os2/region.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/region.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/region.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/validate.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/validate.h
 	"wx/defs.h"
 	"wx/event.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/palette.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/palette.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/gdiobj.h"
@@ -3228,13 +3228,13 @@
 	"wx/mac/palette.h"
 	"wx/os2/palette.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/paletteg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/paletteg.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/accel.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/accel.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/generic/accel.h"
@@ -3246,29 +3246,29 @@
 	"wx/generic/accel.h"
 	"wx/os2/accel.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/accel.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/accel.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/accel.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/accel.h
 	"wx/generic/accel.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/access.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/access.h
 	"wx/defs.h"
 	"wx/variant.h"
 	"wx/msw/ole/access.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/window.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/window.h
 	"wx/dynarray.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/containr.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/containr.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/panel.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/panel.h
 	"wx/generic/panelg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/panelg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/panelg.h
 	"wx/window.h"
 	"wx/containr.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/toplevel.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/toplevel.h
 	"wx/window.h"
 	"wx/iconbndl.h"
 	"wx/palmos/toplevel.h"
@@ -3284,13 +3284,13 @@
 	"wx/motif/toplevel.h"
 	"wx/univ/toplevel.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/iconbndl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/iconbndl.h
 	"wx/dynarray.h"
 	"wx/gdicmn.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/toplevel.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/toplevel.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/frame.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/frame.h
 	"wx/toplevel.h"
 	"wx/univ/frame.h"
 	"wx/palmos/frame.h"
@@ -3302,9 +3302,9 @@
 	"wx/cocoa/frame.h"
 	"wx/os2/frame.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/frame.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/frame.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bitmap.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bitmap.h
 	"wx/string.h"
 	"wx/gdicmn.h"
 	"wx/colour.h"
@@ -3322,9 +3322,9 @@
 	"wx/os2/bitmap.h"
 	"wx/generic/mask.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/bitmap.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/bitmap.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/image.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/image.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -3343,40 +3343,40 @@
 	"wx/imagxpm.h"
 	"wx/imagiff.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagbmp.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagbmp.h
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagpng.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagpng.h
 	"wx/defs.h"
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imaggif.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imaggif.h
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagpcx.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagpcx.h
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagjpeg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagjpeg.h
 	"wx/defs.h"
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagtga.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagtga.h
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagtiff.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagtiff.h
 	"wx/defs.h"
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagpnm.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagpnm.h
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagxpm.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagxpm.h
 	"wx/image.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagiff.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imagiff.h
 	"wx/image.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dc.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dc.h
 	"wx/object.h"
 	"wx/intl.h"
 	"wx/cursor.h"
@@ -3402,7 +3402,7 @@
 	"wx/os2/dc.h"
 	"wx/dcgraph.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/brush.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/brush.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/gdiobj.h"
@@ -3417,9 +3417,9 @@
 	"wx/cocoa/brush.h"
 	"wx/os2/brush.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/brush.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/brush.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/pen.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/pen.h
 	"wx/defs.h"
 	"wx/palmos/pen.h"
 	"wx/msw/pen.h"
@@ -3432,28 +3432,28 @@
 	"wx/cocoa/pen.h"
 	"wx/os2/pen.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/pen.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/pen.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dc.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dc.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcgraph.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcgraph.h
 	"wx/geometry.h"
 	"wx/dynarray.h"
 	"wx/graphics.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/geometry.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/geometry.h
 	"wx/defs.h"
 	"wx/utils.h"
 	"wx/gdicmn.h"
 	"wx/math.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/graphics.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/graphics.h
 	"wx/geometry.h"
 	"wx/dynarray.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcclient.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcclient.h
 	"wx/defs.h"
 	"wx/palmos/dcclient.h"
 	"wx/msw/dcclient.h"
@@ -3467,11 +3467,11 @@
 	"wx/cocoa/dcclient.h"
 	"wx/os2/dcclient.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dcclient.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dcclient.h
 	"wx/dc.h"
 	"wx/region.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcmemory.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcmemory.h
 	"wx/bitmap.h"
 	"wx/palmos/dcmemory.h"
 	"wx/msw/dcmemory.h"
@@ -3485,17 +3485,17 @@
 	"wx/cocoa/dcmemory.h"
 	"wx/os2/dcmemory.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dcmemory.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dcmemory.h
 	"wx/dcclient.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcprint.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcprint.h
 	"wx/defs.h"
 	"wx/palmos/dcprint.h"
 	"wx/msw/dcprint.h"
 	"wx/os2/dcprint.h"
 	"wx/mac/dcprint.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcscreen.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcscreen.h
 	"wx/defs.h"
 	"wx/palmos/dcscreen.h"
 	"wx/msw/dcscreen.h"
@@ -3509,10 +3509,10 @@
 	"wx/cocoa/dcscreen.h"
 	"wx/os2/dcscreen.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dcscreen.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dcscreen.h
 	"wx/dcclient.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/button.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/button.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/button.h"
@@ -3525,7 +3525,7 @@
 	"wx/os2/button.h"
 	"wx/palmos/button.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/control.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/control.h
 	"wx/defs.h"
 	"wx/window.h"
 	"wx/univ/control.h"
@@ -3538,11 +3538,11 @@
 	"wx/cocoa/control.h"
 	"wx/os2/control.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/control.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/control.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/button.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/button.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/menuitem.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/menuitem.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/univ/menuitem.h"
@@ -3555,10 +3555,10 @@
 	"wx/cocoa/menuitem.h"
 	"wx/os2/menuitem.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/menuitem.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/menuitem.h
 	"wx/bitmap.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/menu.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/menu.h
 	"wx/defs.h"
 	"wx/list.h"
 	"wx/window.h"
@@ -3573,9 +3573,9 @@
 	"wx/cocoa/menu.h"
 	"wx/os2/menu.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/menu.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/menu.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/icon.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/icon.h
 	"wx/iconloc.h"
 	"wx/generic/icon.h"
 	"wx/msw/icon.h"
@@ -3590,13 +3590,13 @@
 	"wx/os2/icon.h"
 	"wx/variant.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/iconloc.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/iconloc.h
 	"wx/string.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/icon.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/icon.h
 	"wx/bitmap.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dialog.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dialog.h
 	"wx/defs.h"
 	"wx/containr.h"
 	"wx/toplevel.h"
@@ -3610,10 +3610,10 @@
 	"wx/cocoa/dialog.h"
 	"wx/os2/dialog.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dialog.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dialog.h
 	"wx/defs.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/timer.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/timer.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/longlong.h"
@@ -3629,15 +3629,15 @@
 	"wx/mac/timer.h"
 	"wx/os2/timer.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/timer.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/timer.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/timer.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/timer.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/settings.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/settings.h
 	"wx/colour.h"
 	"wx/font.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/msgdlg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/msgdlg.h
 	"wx/defs.h"
 	"wx/generic/msgdlgg.h"
 	"wx/generic/msgdlgg.h"
@@ -3651,15 +3651,15 @@
 	"wx/cocoa/msgdlg.h"
 	"wx/os2/msgdlg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/msgdlgg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/msgdlgg.h
 	"wx/defs.h"
 	"wx/dialog.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/msgdlg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/msgdlg.h
 	"wx/defs.h"
 	"wx/dialog.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cmndata.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cmndata.h
 	"wx/window.h"
 	"wx/font.h"
 	"wx/encinfo.h"
@@ -3667,10 +3667,10 @@
 	"wx/gdicmn.h"
 	"wx/stream.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/encinfo.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/encinfo.h
 	"wx/string.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dataobj.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dataobj.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/bitmap.h"
@@ -3701,17 +3701,17 @@
 	"wx/cocoa/dataobj2.h"
 	"wx/os2/dataobj2.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dataform.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dataform.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dataobj.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dataobj.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dataobj2.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dataobj2.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/ctrlsub.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/ctrlsub.h
 	"wx/defs.h"
 	"wx/control.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bmpbuttn.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bmpbuttn.h
 	"wx/defs.h"
 	"wx/bitmap.h"
 	"wx/button.h"
@@ -3724,9 +3724,9 @@
 	"wx/cocoa/bmpbuttn.h"
 	"wx/os2/bmpbuttn.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/bmpbuttn.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/bmpbuttn.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/checkbox.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/checkbox.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/checkbox.h"
@@ -3739,9 +3739,9 @@
 	"wx/os2/checkbox.h"
 	"wx/palmos/checkbox.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/checkbox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/checkbox.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/checklst.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/checklst.h
 	"wx/listbox.h"
 	"wx/univ/checklst.h"
 	"wx/msw/wince/checklst.h"
@@ -3753,7 +3753,7 @@
 	"wx/cocoa/checklst.h"
 	"wx/os2/checklst.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listbox.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listbox.h
 	"wx/defs.h"
 	"wx/ctrlsub.h"
 	"wx/univ/listbox.h"
@@ -3765,11 +3765,11 @@
 	"wx/os2/listbox.h"
 	"wx/cocoa/listbox.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/listbox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/listbox.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/checklst.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/checklst.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/choice.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/choice.h
 	"wx/defs.h"
 	"wx/ctrlsub.h"
 	"wx/univ/choice.h"
@@ -3782,9 +3782,9 @@
 	"wx/cocoa/choice.h"
 	"wx/os2/choice.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/choice.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/choice.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/scrolbar.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/scrolbar.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/scrolbar.h"
@@ -3796,10 +3796,10 @@
 	"wx/cocoa/scrolbar.h"
 	"wx/os2/scrolbar.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/scrolbar.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/scrolbar.h
 	"wx/defs.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/stattext.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/stattext.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/stattext.h"
@@ -3812,9 +3812,9 @@
 	"wx/os2/stattext.h"
 	"wx/palmos/stattext.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/stattext.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/stattext.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statbmp.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statbmp.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/bitmap.h"
@@ -3828,10 +3828,10 @@
 	"wx/cocoa/statbmp.h"
 	"wx/os2/statbmp.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/statbmp.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/statbmp.h
 	"wx/icon.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statbox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statbox.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/statbox.h"
@@ -3843,9 +3843,9 @@
 	"wx/cocoa/statbox.h"
 	"wx/os2/statbox.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/statbox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/statbox.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/radiobox.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/radiobox.h
 	"wx/ctrlsub.h"
 	"wx/dynarray.h"
 	"wx/univ/radiobox.h"
@@ -3858,11 +3858,11 @@
 	"wx/os2/radiobox.h"
 	"wx/palmos/radiobox.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/radiobox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/radiobox.h
 	"wx/bitmap.h"
 	"wx/list.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/radiobut.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/radiobut.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/radiobut.h"
@@ -3875,9 +3875,9 @@
 	"wx/os2/radiobut.h"
 	"wx/palmos/radiobut.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/radiobut.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/radiobut.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textctrl.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/dynarray.h"
@@ -3894,14 +3894,14 @@
 	"wx/cocoa/textctrl.h"
 	"wx/os2/textctrl.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/ioswrap.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/ioswrap.h
 	<iostream.h>
 	<iostream>
 	"wx/msw/winundef.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/textctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/textctrl.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/slider.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/slider.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/slider.h"
@@ -3914,9 +3914,9 @@
 	"wx/os2/slider.h"
 	"wx/palmos/slider.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/slider.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/slider.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gauge.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gauge.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/gauge.h"
@@ -3928,16 +3928,16 @@
 	"wx/cocoa/gauge.h"
 	"wx/os2/gauge.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/gauge.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/gauge.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/scrolwin.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/scrolwin.h
 	"wx/panel.h"
 	"wx/gtk/scrolwin.h"
 	"wx/gtk1/scrolwin.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/scrolwin.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/scrolwin.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dirdlg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dirdlg.h
 	"wx/dialog.h"
 	"wx/generic/dirdlgg.h"
 	"wx/generic/dirdlgg.h"
@@ -3949,13 +3949,13 @@
 	"wx/cocoa/dirdlg.h"
 	"wx/generic/dirdlgg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/dirdlgg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/dirdlgg.h
 	"wx/dialog.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dirdlg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/dirdlg.h
 	"wx/generic/dirdlgg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/toolbar.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/toolbar.h
 	"wx/defs.h"
 	"wx/tbarbase.h"
 	"wx/univ/toolbar.h"
@@ -3969,15 +3969,15 @@
 	"wx/cocoa/toolbar.h"
 	"wx/os2/toolbar.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/tbarbase.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/tbarbase.h
 	"wx/defs.h"
 	"wx/bitmap.h"
 	"wx/list.h"
 	"wx/control.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/tbargtk.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/tbargtk.h
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/combobox.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/combobox.h
 	"wx/defs.h"
 	"wx/textctrl.h"
 	"wx/ctrlsub.h"
@@ -3990,16 +3990,16 @@
 	"wx/cocoa/combobox.h"
 	"wx/os2/combobox.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/combobox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/combobox.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/layout.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/layout.h
 	"wx/object.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/sizer.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/sizer.h
 	"wx/defs.h"
 	"wx/window.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/mdi.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/mdi.h
 	"wx/defs.h"
 	"wx/generic/mdig.h"
 	"wx/msw/mdi.h"
@@ -4010,10 +4010,10 @@
 	"wx/cocoa/mdi.h"
 	"wx/generic/mdig.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/mdi.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/mdi.h
 	"wx/frame.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statusbr.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statusbr.h
 	"wx/defs.h"
 	"wx/window.h"
 	"wx/list.h"
@@ -4025,41 +4025,41 @@
 	"wx/mac/statusbr.h"
 	"wx/generic/statusbr.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/statusbr.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/statusbr.h
 	"wx/defs.h"
 	"wx/pen.h"
 	"wx/arrstr.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/choicdlg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/choicdlg.h
 	"wx/generic/choicdgg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/choicdgg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/choicdgg.h
 	"wx/dynarray.h"
 	"wx/dialog.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textdlg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textdlg.h
 	"wx/generic/textdlgg.h"
 	"wx/numdlg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/textdlgg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/textdlgg.h
 	"wx/defs.h"
 	"wx/dialog.h"
 	"wx/valtext.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/valtext.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/valtext.h
 	"wx/defs.h"
 	"wx/textctrl.h"
 	"wx/validate.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/numdlg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/numdlg.h
 	"wx/defs.h"
 	"wx/generic/numdlgg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/numdlgg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/numdlgg.h
 	"wx/defs.h"
 	"wx/dialog.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filedlg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filedlg.h
 	"wx/defs.h"
 	"wx/dialog.h"
 	"wx/arrstr.h"
@@ -4073,32 +4073,32 @@
 	"wx/cocoa/filedlg.h"
 	"wx/os2/filedlg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/filedlgg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/filedlgg.h
 	"wx/listctrl.h"
 	"wx/datetime.h"
 	"wx/filefn.h"
 	"wx/filedlg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listctrl.h
 	"wx/defs.h"
 	"wx/listbase.h"
 	"wx/msw/listctrl.h"
 	"wx/mac/carbon/listctrl.h"
 	"wx/generic/listctrl.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listbase.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listbase.h
 	"wx/colour.h"
 	"wx/font.h"
 	"wx/gdicmn.h"
 	"wx/event.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/listctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/listctrl.h
 	"wx/textctrl.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/filedlg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/filedlg.h
 	"wx/generic/filedlgg.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/xrc/xmlres.h
+1210871410 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/xrc/xmlres.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/dynarray.h"
@@ -4113,25 +4113,25 @@
 	"wx/animate.h"
 	"wx/xml/xml.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filesys.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filesys.h
 	"wx/defs.h"
 	"wx/stream.h"
 	"wx/datetime.h"
 	"wx/filename.h"
 	"wx/hashmap.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filename.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/filename.h
 	"wx/arrstr.h"
 	"wx/filefn.h"
 	"wx/datetime.h"
 	"wx/intl.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/artprov.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/artprov.h
 	"wx/string.h"
 	"wx/bitmap.h"
 	"wx/icon.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/animate.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/animate.h
 	"wx/defs.h"
 	"wx/animdecod.h"
 	"wx/control.h"
@@ -4140,23 +4140,23 @@
 	"wx/gtk/animate.h"
 	"wx/generic/animate.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/animdecod.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/animdecod.h
 	"wx/defs.h"
 	"wx/colour.h"
 	"wx/gdicmn.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/animate.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/animate.h
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/animate.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/animate.h
 	"wx/bitmap.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/xml/xml.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/xml/xml.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/object.h"
 	"wx/list.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlwin.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlwin.h
 	"wx/defs.h"
 	"wx/window.h"
 	"wx/scrolwin.h"
@@ -4169,7 +4169,7 @@
 	"wx/filename.h"
 	"wx/bitmap.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/config.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/config.h
 	"wx/defs.h"
 	"wx/confbase.h"
 	"wx/msw/regconf.h"
@@ -4177,39 +4177,39 @@
 	"wx/palmos/prefconf.h"
 	"wx/fileconf.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/confbase.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/confbase.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/string.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/fileconf.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/fileconf.h
 	"wx/defs.h"
 	"wx/textfile.h"
 	"wx/string.h"
 	"wx/confbase.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textfile.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textfile.h
 	"wx/defs.h"
 	"wx/textbuf.h"
 	"wx/file.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textbuf.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/textbuf.h
 	"wx/defs.h"
 	"wx/arrstr.h"
 	"wx/convauto.h"
 	"wx/string.h"
 	"wx/dynarray.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/convauto.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/convauto.h
 	"wx/strconv.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/file.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/file.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/filefn.h"
 	"wx/strconv.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/winpars.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/winpars.h
 	"wx/defs.h"
 	"wx/module.h"
 	"wx/font.h"
@@ -4217,38 +4217,38 @@
 	"wx/html/htmlcell.h"
 	"wx/encconv.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlpars.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlpars.h
 	"wx/defs.h"
 	"wx/html/htmltag.h"
 	"wx/filesys.h"
 	"wx/hash.h"
 	"wx/fontenc.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmltag.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmltag.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/arrstr.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlcell.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlcell.h
 	"wx/defs.h"
 	"wx/html/htmltag.h"
 	"wx/html/htmldefs.h"
 	"wx/window.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmldefs.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmldefs.h
 	"wx/defs.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/encconv.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/encconv.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/fontenc.h"
 	"wx/dynarray.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlfilt.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmlfilt.h
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/docview.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/docview.h
 	"wx/defs.h"
 	"wx/list.h"
 	"wx/string.h"
@@ -4257,17 +4257,17 @@
 	"wx/iosfwrap.h"
 	"wx/stream.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/print.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/print.h
 	"wx/defs.h"
 	"wx/msw/printwin.h"
 	"wx/mac/printmac.h"
 	"wx/os2/printos2.h"
 	"wx/generic/printps.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/printps.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/printps.h
 	"wx/prntbase.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/prntbase.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/prntbase.h
 	"wx/defs.h"
 	"wx/event.h"
 	"wx/cmndata.h"
@@ -4276,14 +4276,14 @@
 	"wx/dialog.h"
 	"wx/frame.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/docmdi.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/docmdi.h
 	"wx/defs.h"
 	"wx/docview.h"
 	"wx/mdi.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/snglinst.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/snglinst.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/dragimgg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/dragimgg.h
 	"wx/bitmap.h"
 	"wx/icon.h"
 	"wx/cursor.h"
@@ -4292,7 +4292,7 @@
 	"wx/log.h"
 	"wx/overlay.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/treectrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/treectrl.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/treebase.h"
@@ -4306,20 +4306,20 @@
 	"wx/generic/treectlg.h"
 	"wx/generic/treectlg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/treebase.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/treebase.h
 	"wx/defs.h"
 	"wx/window.h"
 	"wx/event.h"
 	"wx/dynarray.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/treectlg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/treectlg.h
 	"wx/scrolwin.h"
 	"wx/pen.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/overlay.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/overlay.h
 	"wx/defs.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dragimag.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dragimag.h
 	"wx/generic/dragimgg.h"
 	"wx/msw/dragimag.h"
 	"wx/generic/dragimgg.h"
@@ -4328,7 +4328,7 @@
 	"wx/generic/dragimgg.h"
 	"wx/generic/dragimgg.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wizard.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wizard.h
 	"wx/defs.h"
 	"wx/dialog.h"
 	"wx/panel.h"
@@ -4336,9 +4336,9 @@
 	"wx/bitmap.h"
 	"wx/generic/wizard.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/wizard.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/wizard.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/spinctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/spinctrl.h
 	"wx/defs.h"
 	"wx/spinbutt.h"
 	"wx/generic/spinctlg.h"
@@ -4350,7 +4350,7 @@
 	"wx/mac/spinctrl.h"
 	"wx/generic/spinctlg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/spinbutt.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/spinbutt.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/event.h"
@@ -4363,21 +4363,21 @@
 	"wx/cocoa/spinbutt.h"
 	"wx/os2/spinbutt.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/spinbutt.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/spinbutt.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/spinctlg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/spinctlg.h
 	"wx/textctrl.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/spinctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/spinctrl.h
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/aui.h
+1210871410 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/aui.h
 	"wx/aui/framemanager.h"
 	"wx/aui/dockart.h"
 	"wx/aui/floatpane.h"
 	"wx/aui/auibook.h"
 	"wx/aui/tabmdi.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/framemanager.h
+1210871410 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/framemanager.h
 	"wx/defs.h"
 	"wx/dynarray.h"
 	"wx/gdicmn.h"
@@ -4385,19 +4385,19 @@
 	"wx/timer.h"
 	"wx/sizer.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/dockart.h
+1210871410 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/dockart.h
 	"wx/defs.h"
 	"wx/pen.h"
 	"wx/brush.h"
 	"wx/bitmap.h"
 	"wx/colour.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/floatpane.h
+1210871410 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/floatpane.h
 	"wx/defs.h"
 	"wx/frame.h"
 	"wx/minifram.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/minifram.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/minifram.h
 	"wx/defs.h"
 	"wx/palmos/minifram.h"
 	"wx/msw/minifram.h"
@@ -4409,27 +4409,27 @@
 	"wx/os2/minifram.h"
 	"wx/frame.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/minifram.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/minifram.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/bitmap.h"
 	"wx/frame.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/auibook.h
+1210871410 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/auibook.h
 	"wx/defs.h"
 	"wx/aui/framemanager.h"
 	"wx/aui/dockart.h"
 	"wx/aui/floatpane.h"
 	"wx/control.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/tabmdi.h
+1210871410 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/aui/tabmdi.h
 	"wx/frame.h"
 	"wx/panel.h"
 	"wx/notebook.h"
 	"wx/icon.h"
 	"wx/aui/auibook.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/notebook.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/notebook.h
 	"wx/defs.h"
 	"wx/bookctrl.h"
 	"wx/univ/notebook.h"
@@ -4441,26 +4441,26 @@
 	"wx/cocoa/notebook.h"
 	"wx/os2/notebook.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bookctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bookctrl.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/dynarray.h"
 	"wx/notebook.h"
 	"wx/choicebk.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/choicebk.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/choicebk.h
 	"wx/defs.h"
 	"wx/bookctrl.h"
 	"wx/choice.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/notebook.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/notebook.h
 	"wx/event.h"
 	"wx/control.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/notebook.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/notebook.h
 	"wx/list.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wfstream.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/wfstream.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -4468,40 +4468,40 @@
 	"wx/file.h"
 	"wx/ffile.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/ffile.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/ffile.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/filefn.h"
 	"wx/convauto.h"
 	<stdio.h>
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cmdproc.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/cmdproc.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/list.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listimpl.cpp
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/listimpl.cpp
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/printdlg.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/printdlg.h
 	"wx/defs.h"
 	"wx/event.h"
 	"wx/dialog.h"
 	"wx/intl.h"
 	"wx/cmndata.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dir.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dir.h
 	"wx/longlong.h"
 	"wx/string.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/splitter.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/splitter.h
 	"wx/event.h"
 	"wx/generic/splitter.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/splitter.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/splitter.h
 	"wx/window.h"
 	"wx/containr.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statline.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/statline.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/univ/statline.h"
@@ -4513,22 +4513,22 @@
 	"wx/cocoa/statline.h"
 	"wx/generic/statline.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/statline.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/statline.h
 	"wx/defs.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/helpbase.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/helpbase.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
 	"wx/gdicmn.h"
 	"wx/frame.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpctrl.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpctrl.h
 	"wx/defs.h"
 	"wx/helpbase.h"
 	"wx/html/helpfrm.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpfrm.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpfrm.h
 	"wx/defs.h"
 	"wx/helpbase.h"
 	"wx/html/helpdata.h"
@@ -4546,7 +4546,7 @@
 	"wx/html/helpwnd.h"
 	"wx/html/htmprint.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpdata.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpdata.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -4554,7 +4554,7 @@
 	"wx/dynarray.h"
 	"wx/font.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpwnd.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/helpwnd.h
 	"wx/defs.h"
 	"wx/helpbase.h"
 	"wx/html/helpdata.h"
@@ -4571,7 +4571,7 @@
 	"wx/html/htmlwin.h"
 	"wx/html/htmprint.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmprint.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/htmprint.h
 	"wx/defs.h"
 	"wx/html/htmlcell.h"
 	"wx/html/winpars.h"
@@ -4580,11 +4580,11 @@
 	"wx/printdlg.h"
 	<limits.h>
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/txtstrm.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/txtstrm.h
 	"wx/stream.h"
 	"wx/convauto.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/vscroll.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/vscroll.h
 	"wx/panel.h"
 
 1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/splash.h
@@ -4616,7 +4616,7 @@
 	"wx/filesys.h"
 	"wx/hashmap.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/sound.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/sound.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/msw/sound.h"
@@ -4625,26 +4625,26 @@
 	"wx/os2/sound.h"
 	"wx/unix/sound.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/unix/sound.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/unix/sound.h
 	"wx/defs.h"
 	"wx/object.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bmpcbox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/bmpcbox.h
 	"wx/defs.h"
 	"wx/bitmap.h"
 	"wx/generic/bmpcbox.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/bmpcbox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/bmpcbox.h
 	"wx/odcombo.h"
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/odcombo.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/odcombo.h
 	"wx/defs.h"
 	"wx/combo.h"
 	"wx/ctrlsub.h"
 	"wx/vlbox.h"
 	"wx/timer.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/combo.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/combo.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/renderer.h"
@@ -4652,63 +4652,63 @@
 	"wx/msw/combo.h"
 	"wx/generic/combo.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/renderer.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/renderer.h
 	"wx/gdicmn.h"
 	"wx/colour.h"
 	"wx/font.h"
 	"wx/bitmap.h"
 	"wx/string.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/combo.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/combo.h
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/vlbox.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/vlbox.h
 	"wx/vscroll.h"
 	"wx/bitmap.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/arrimpl.cpp
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/arrimpl.cpp
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/zipstrm.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/zipstrm.h
 	"wx/defs.h"
 	"wx/archive.h"
 	"wx/filename.h"
 
-1210355120 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/archive.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/archive.h
 	"wx/defs.h"
 	"wx/stream.h"
 	"wx/filename.h"
 	<iterator>
 	<utility>
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcbuffer.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/dcbuffer.h
 	"wx/dcmemory.h"
 	"wx/dcclient.h"
 	"wx/window.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/selstore.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/selstore.h
 	"wx/dynarray.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/forcelnk.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/forcelnk.h
 	"wx/link.h"
 
-1210355121 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/link.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/link.h
 
-1210355123 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/m_templ.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/html/m_templ.h
 	"wx/defs.h"
 	"wx/html/winpars.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/busyinfo.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/busyinfo.h
 	"wx/defs.h"
 	"wx/generic/busyinfo.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/busyinfo.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/busyinfo.h
 	"wx/defs.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/tipwin.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/tipwin.h
 	"wx/popupwin.h"
 	"wx/frame.h"
 	"wx/arrstr.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/popupwin.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/popupwin.h
 	"wx/defs.h"
 	"wx/window.h"
 	"wx/msw/popupwin.h"
@@ -4720,7 +4720,7 @@
 	"wx/mgl/popupwin.h"
 	"wx/mac/popupwin.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/popupwin.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/popupwin.h
 
 1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/imaglist.h
 	"wx/generic/imaglist.h"
@@ -4863,21 +4863,21 @@
 	"../TheApp.h"
 	"../MainFrame.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/clrpicker.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/clrpicker.h
 	"wx/defs.h"
 	"wx/pickerbase.h"
 	"wx/gtk/clrpicker.h"
 	"wx/generic/clrpickerg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/pickerbase.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/pickerbase.h
 	"wx/control.h"
 	"wx/sizer.h"
 	"wx/containr.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/clrpicker.h
+1210871409 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/gtk/clrpicker.h
 	"wx/generic/clrpickerg.h"
 
-1210355122 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/clrpickerg.h
+1210871408 /home/cecilio/wxWidgets/wxGTK-2.8.7/include/wx-2.8/wx/generic/clrpickerg.h
 	"wx/button.h"
 	"wx/cmndata.h"
 

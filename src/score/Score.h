@@ -155,7 +155,6 @@ class lmScore;
 class lmVStaff;
 class lmInstrument;
 class lmStaffObj;
-class lmColStaffObjs;
 class lmSOIterator;
 
 class lmBasicText;
@@ -185,15 +184,10 @@ class lmScoreView;
 
 #include "StaffObj.h"
 
-#include "Context.h"
-#include "StaffObjIterator.h"
-#include "ColStaffObjs.h"
+class lmContext;
 #include "SOControl.h"
-#include "Text.h"
 #include "AuxObj.h"
 #include "Accidental.h"
-#include "Staff.h"
-#include "VStaff.h"
 #include "Instrument.h"
 #include "Slur.h"            // Slurs and Ties
 #include "Direction.h"
@@ -245,14 +239,11 @@ public:
     lmVStaff* GetVStaff();
 	inline int GetCursorInstrumentNumber() { return m_nCursorInstr; }
 	inline lmScore* GetCursorScore() { return m_pScore; }
-    inline lmVStaffCursor* GetCursor() { return m_pVCursor; }
+    inline lmVStaffCursor* GetVCursor() { return m_pVCursor; }
     void SetNewCursorState(lmVCursorState* pState);
     void SelectCursor(lmVStaffCursor* pVCursor);
     int GetPageNumber();
 
-    //call backs
-    void OnCursorObjectChanged() ;
-    void OnCursorObjectDeleted();
 
 private:
     void SelectCursorFromInstr(int nInstr);

@@ -34,6 +34,7 @@
 #include "vector"
 
 #include "../score/Score.h"
+#include "../score/VStaff.h"
 #include "../ldp_parser/LDPParser.h"
 #include "ComposerV6.h"
 #include "Conversion.h"

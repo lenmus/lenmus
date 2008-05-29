@@ -30,11 +30,14 @@
 #pragma hdrstop
 #endif
 
-#include "GMObject.h"
-#include "../score/Score.h"
-#include "ShapeNote.h"
-#include "ShapeBeam.h"
 #include <vector>
+
+#include "GMObject.h"
+#include "ShapeNote.h"
+#include "ShapeRest.h"
+#include "ShapeBeam.h"
+#include "../score/Score.h"
+#include "../app/Preferences.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -60,17 +63,28 @@ lmShapeBeam::~lmShapeBeam()
     }
 }
 
-void lmShapeBeam::AddNoteRest(lmShapeStem* pStem, lmShapeNote* pNote,
+void lmShapeBeam::AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest,
 							  lmTBeamInfo* pBeamInfo)
 {
-	//add the info
+	//add the info. For rests pStem and pBeamInfo are NULL
+
 	lmParentNote* pData = new lmParentNote;
 	pData->pBeamInfo = pBeamInfo;
-	pData->pShape = pNote;
-	pData->nStem = Add(pStem);
+	pData->pShape = pNoteRest;
+    if (pStem)
+	    pData->nStem = Add(pStem);
+    else
+        pData->nStem = -1;
 	m_cParentNotes.push_back(pData);
-	pNote->SetBeamShape(this);
-	pNote->SetStemShape(pStem);
+
+    //link note/rest to beam and, if it is a note, add stem info to note
+    if (pStem)
+    {
+	    ((lmShapeNote*)pNoteRest)->SetBeamShape(this);
+	    ((lmShapeNote*)pNoteRest)->SetStemShape(pStem);
+    }
+    else
+	    ((lmShapeRest*)pNoteRest)->SetBeamShape(this);
 }
 
 lmShapeStem* lmShapeBeam::GetStem(int iParentNote)
@@ -78,7 +92,7 @@ lmShapeStem* lmShapeBeam::GetStem(int iParentNote)
 	wxASSERT(iParentNote < (int)m_cParentNotes.size());
 
 	int iShape = m_cParentNotes[iParentNote]->nStem;
-	return (lmShapeStem*)GetShape(iShape);
+    return (iShape != -1 ? (lmShapeStem*)GetShape(iShape) : (lmShapeStem*)NULL);
 }
 
 int lmShapeBeam::FindNoteShape(lmShapeNote* pShape)
@@ -97,6 +111,21 @@ void lmShapeBeam::SetStemsDown(bool fValue)
 	m_fLayoutPending = true;
 }
 
+void lmShapeBeam::AdjustStemsIfNeeded()
+{
+    //The beam and the stems are rendered *after* noteheads and rests are rendered.
+    //Therefore, when rendering the beam there is no option to adjust rests positions
+    //to fit gracefuly inside the beamed group. 
+    //Theis method is invoked when going to renter a rest that is included in the beam.
+    //Its purpose is to adjust stems, if necessary, to adjust all rests' positions.
+
+	if (m_fLayoutPending)
+	{
+		m_fLayoutPending = false;
+		AdjustStems();
+	}
+}
+
 void lmShapeBeam::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 										 lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
 {
@@ -113,6 +142,11 @@ void lmShapeBeam::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 
 void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 {
+    //AWARE:
+    //The beam and the stems are rendered *after* noteheads and rests are rendered.
+    //Therefore, at this point it is not feasible to move rests. Stem leght is adjusted
+    //but only changes the stem itself.
+
 	if (m_fLayoutPending)
 	{
 		m_fLayoutPending = false;
@@ -127,13 +161,12 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
     //  But if I use 3 tenths (2.5 up rounding) beam spacing is practicaly
     //  invisible. In pictures displayed in the above mentioned www page, spacing
     //  is about 1/2 space, not 1/4 space. So I will use 5 tenths.
-    //  So the number to put in next statement is 9:
-    //      4 for beam thikness + 5 for beams spacing
     //
-	//TODO: User options
-	//TODO: Move to shape?
-	lmLUnits uThickness = ((lmStaffObj*)m_pOwner)->TenthsToLogical(5.0);
-    lmLUnits uBeamSpacing = ((lmStaffObj*)m_pOwner)->TenthsToLogical(9.0);
+    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+    lmTenths nOptValue = pPgmOpt->GetFloatValue(lm_EO_BEAM_THICKNESS);
+	lmLUnits uThickness = ((lmStaffObj*)m_pOwner)->TenthsToLogical(nOptValue);
+    nOptValue = pPgmOpt->GetFloatValue(lm_EO_BEAM_SPACING);
+    lmLUnits uBeamSpacing = ((lmStaffObj*)m_pOwner)->TenthsToLogical(nOptValue) + uThickness;
 
 
 	lmLUnits uxStart=0, uxEnd=0, uyStart=0, uyEnd=0; // start and end points for a segment
@@ -155,100 +188,103 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
         fEnd = false;
         for(int iNote=0; iNote < (int)m_cParentNotes.size(); iNote++)
         {
-            pShapeNote = (lmShapeNote*)m_cParentNotes[iNote]->pShape;
 			lmShapeStem* pShapeStem = GetStem(iNote);
-			wxASSERT(pShapeStem);
+            bool fIsNote = (pShapeStem != (lmShapeStem*)NULL);
+            if (fIsNote)
+            {
+                pShapeNote = (lmShapeNote*)m_cParentNotes[iNote]->pShape;
 
-            //compute current position to optimize
-            uxCur = pShapeStem->GetXLeft();
-            uyCur = ComputeYPosOfSegment(pShapeStem, uyShift);
+                //compute current position to optimize
+                uxCur = pShapeStem->GetXLeft();
+                uyCur = ComputeYPosOfSegment(pShapeStem, uyShift);
 
-            //Let's check if we have to finish a forward hook in prev. note
-            if (fForwardPending) {
-                //TODO set forward hook equal to notehead width and allow for customization.
-                uxEnd = uxPrev + (uxCur-uxPrev)/3;
-                uyEnd = uyPrev + (uyCur-uyPrev)/3;
-                DrawBeamSegment(pPaper, uxStart, uyStart, uxEnd, uyEnd, uThickness,
-                        pStartNote, pEndNote, color);
-                fForwardPending = false;
+                //Let's check if we have to finish a forward hook in prev. note
+                if (fForwardPending) {
+                    //TODO set forward hook equal to notehead width and allow for customization.
+                    uxEnd = uxPrev + (uxCur-uxPrev)/3;
+                    uyEnd = uyPrev + (uyCur-uyPrev)/3;
+                    DrawBeamSegment(pPaper, uxStart, uyStart, uxEnd, uyEnd, uThickness,
+                            pStartNote, pEndNote, color);
+                    fForwardPending = false;
+                }
+
+                // now we can deal with current note
+			    lmTBeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
+			    lmEBeamType nType = tBeamInfo.Type;
+                switch (nType) {
+                    case eBeamBegin:
+                        //start of segment. Compute initial point
+                        fStart = true;
+                        uxStart = uxCur;
+                        uyStart = uyCur;
+                        pStartNote = pShapeNote;
+					    iStartNote = iNote;
+                        break;
+
+                    case eBeamEnd:
+                        // end of segment. Compute end point
+                        fEnd = true;
+                        uxEnd = uxCur;
+                        uyEnd = uyCur;
+                        pEndNote = pShapeNote;
+					    iEndNote = iNote;
+                        break;
+
+                    case eBeamForward:
+                        // start of segment. Mark that a forward hook is pending and
+                        // compute initial point
+                        fForwardPending = true;
+                        uxStart = uxCur;
+                        uyStart = uyCur;
+                        pStartNote = pShapeNote;
+					    iStartNote = iNote;
+                        break;
+
+                    case eBeamBackward:
+                        // end of segment. compute start and end points
+                        uxEnd = uxCur;
+                        uyEnd = uyCur;
+                        pEndNote = pShapeNote;
+					    iEndNote = iNote;
+
+                        //TODO set backward hook equal to notehead width and allow for customization.
+                        uxStart = uxPrev + (2*(uxCur-uxPrev))/3;
+                        uyStart = uyPrev + (2*(uyCur-uyPrev))/3;
+                        fStart = true;      //mark 'segment ready to be drawn'
+                        fEnd = true;
+                    break;
+
+                    case eBeamContinue:
+                    case eBeamNone:
+                        // nothing to do.
+                        break;
+
+                    default:
+                        wxASSERT(false);
+                }
+
+                // if we have data to draw a segment, draw it
+                if (fStart && fEnd)
+			    {
+                    //lmLUnits uStemWidth = pEndNote->GetStemThickness();
+				    pShapeStem = GetStem(iEndNote);
+				    wxASSERT(pShapeStem);
+				    lmLUnits uStemWidth = pShapeStem->GetXRight() - pShapeStem->GetXLeft();
+
+                    DrawBeamSegment(pPaper,  uxStart, uyStart, uxEnd + uStemWidth, uyEnd,
+								    uThickness, pStartNote, pEndNote, color);
+                    fStart = false;
+                    fEnd = false;
+                    pStartNote = (lmShapeNote*)NULL;
+				    iStartNote = -1;
+                    pEndNote = (lmShapeNote*)NULL;
+				    iEndNote = -1;
+                }
+
+                // save position of current note
+                uxPrev = uxCur;
+                uyPrev = uyCur;
             }
-
-            // now we can deal with current note
-			lmTBeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
-			lmEBeamType nType = tBeamInfo.Type;
-            switch (nType) {
-                case eBeamBegin:
-                    //start of segment. Compute initial point
-                    fStart = true;
-                    uxStart = uxCur;
-                    uyStart = uyCur;
-                    pStartNote = pShapeNote;
-					iStartNote = iNote;
-                    break;
-
-                case eBeamEnd:
-                    // end of segment. Compute end point
-                    fEnd = true;
-                    uxEnd = uxCur;
-                    uyEnd = uyCur;
-                    pEndNote = pShapeNote;
-					iEndNote = iNote;
-                    break;
-
-                case eBeamForward:
-                    // start of segment. Mark that a forward hook is pending and
-                    // compute initial point
-                    fForwardPending = true;
-                    uxStart = uxCur;
-                    uyStart = uyCur;
-                    pStartNote = pShapeNote;
-					iStartNote = iNote;
-                    break;
-
-                case eBeamBackward:
-                    // end of segment. compute start and end points
-                    uxEnd = uxCur;
-                    uyEnd = uyCur;
-                    pEndNote = pShapeNote;
-					iEndNote = iNote;
-
-                    //TODO set backward hook equal to notehead width and allow for customization.
-                    uxStart = uxPrev + (2*(uxCur-uxPrev))/3;
-                    uyStart = uyPrev + (2*(uyCur-uyPrev))/3;
-                    fStart = true;      //mark 'segment ready to be drawn'
-                    fEnd = true;
-                   break;
-
-                case eBeamContinue:
-                case eBeamNone:
-                    // nothing to do.
-                    break;
-
-                default:
-                    wxASSERT(false);
-            }
-
-            // if we have data to draw a segment, draw it
-            if (fStart && fEnd)
-			{
-                //lmLUnits uStemWidth = pEndNote->GetStemThickness();
-				pShapeStem = GetStem(iEndNote);
-				wxASSERT(pShapeStem);
-				lmLUnits uStemWidth = pShapeStem->GetXRight() - pShapeStem->GetXLeft();
-
-                DrawBeamSegment(pPaper,  uxStart, uyStart, uxEnd + uStemWidth, uyEnd,
-								uThickness, pStartNote, pEndNote, color);
-                fStart = false;
-                fEnd = false;
-                pStartNote = (lmShapeNote*)NULL;
-				iStartNote = -1;
-                pEndNote = (lmShapeNote*)NULL;
-				iEndNote = -1;
-            }
-
-            // save position of current note
-            uxPrev = uxCur;
-            uyPrev = uyCur;
         }
 
         // displace y coordinate for next beamline
@@ -262,11 +298,6 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 
 void lmShapeBeam::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
- //   m_uxStart += xIncr;
-	//m_uyStart += yIncr;
- //   m_uxEnd += xIncr;
-	//m_uyEnd += yIncr;
-
     ShiftBoundsAndSelRec(xIncr, yIncr);
 
 	//if included in a composite shape update parent bounding and selection rectangles
@@ -285,7 +316,7 @@ void lmShapeBeam::AdjustStems()
 	// retrieve the start and end 'y' coordinates for each stem,
 	// and we store them in the auxiliary arrays yStart and yEnd, respectively.
 
-    int nNumNotes = (int)m_cParentNotes.size();
+	int nNumNotes = (int)m_cParentNotes.size();
     std::vector<lmLUnits> yStart(nNumNotes);
     std::vector<lmLUnits> yEnd(nNumNotes);
 
@@ -294,12 +325,12 @@ void lmShapeBeam::AdjustStems()
 
     for(int i=0; i < nNumNotes; i++)
     {
-		lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
 		lmShapeStem* pShapeStem = GetStem(i);
 
 		if (pShapeStem)
 		{
 			//it is a note
+		    lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
 			if (i == 0)  x1 = pShapeStem->GetXLeft();
 			else if (i == n)  xn = pShapeStem->GetXLeft();
 
@@ -312,11 +343,8 @@ void lmShapeBeam::AdjustStems()
 				yEnd[i] = pShapeStem->GetYTop();
 			}
 		}
-		else
-		{
-			//assume it is a rest
-			//TODO
-		}
+		//else
+		    //it is a rest. Nothing to do
     }
 
 	// In following loop we compute each stem and update their final position.
@@ -338,7 +366,6 @@ void lmShapeBeam::AdjustStems()
     lmLUnits uMinStem;
     for(int i=0; i < nNumNotes; i++)
     {
-		//lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
 		lmShapeStem* pShapeStem = GetStem(i);
 
         if (pShapeStem)
@@ -399,19 +426,31 @@ void lmShapeBeam::AdjustStems()
     }
 
     // At this point stems' lengths are computed and adjusted.
-    // Transfer the computed values to the note shapes
+    // Transfer the computed values to the stem shape or shift the rest shape
     for(int i=0; i < nNumNotes; i++)
     {
-		//lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
 		lmShapeStem* pShapeStem = GetStem(i);
-
-        lmLUnits uLength = fabs(yEnd[i] - yStart[i]);
-		//TODO: treatment for rests
-        if (pShapeStem) {
-			SetStemLength(pShapeStem, uLength);
+        if (pShapeStem)
+        {
+			SetStemLength(pShapeStem, fabs(yEnd[i] - yStart[i]));
         }
-        else {
-        //    ((lmRest*)pNR)->DoVerticalShift(m_nPosForRests);
+        else
+        {
+		    //It is a rest. Shift rest to fit gracefuly inside the beamed group
+		    lmShape* pShapeRest = m_cParentNotes[i]->pShape;
+            lmLUnits uRestCenter = pShapeRest->GetYTop() + pShapeRest->GetHeight() / 2.0f;
+
+            //compute center of first and last notes
+            lmLUnits uMiddle = yStart[0] + (yStart[n] - yStart[0]) / 2.0f;
+
+            //get shift
+            lmLUnits uyShift = uMiddle - uRestCenter;
+
+            //TODO: ensure that rest doesn't collide with beam line
+            lmTODO(_T("[lmShapeBeam::AdjustStems] TODO: Ensure that rest doesn't collide with beam line"));
+
+            //shift rest
+            pShapeRest->Shift(0.0f, uyShift);
         }
     }
 	RecomputeBounds();

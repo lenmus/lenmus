@@ -246,6 +246,10 @@ enum EStaffObjType
 class lmVStaff;
 class lmAuxObj;
 class lmContext;
+class lmClef;
+class lmTimeSignature;
+class lmKeySignature;
+
 
 class lmStaffObj : public lmComponentObj
 {
@@ -319,6 +323,10 @@ public:
 	lmContext* GetCurrentContext();
 	lmContext* NewUpdatedContext();
     virtual void RemoveCreatedContexts() {}
+    lmClef* GetApplicableClef();
+    lmTimeSignature* GetApplicableTimeSignature();
+    lmKeySignature* GetApplicableKeySignature();
+
 
     //undo/redo
     virtual void Freeze(lmUndoData* pUndoData) {};

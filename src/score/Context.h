@@ -37,7 +37,9 @@
 #include "wx/wx.h"
 #endif
 
-#include "Score.h"
+class lmKeySignature;
+class lmClef;
+class lmTimeSignature;
 
 
 class lmContext

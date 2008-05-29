@@ -133,7 +133,7 @@ lmScoreView::lmScoreView()
     m_xScrollPosition = 0;
     m_yScrollPosition = 0;
     m_rScale = 1.0 * lmSCALE;
-	m_fCursorInit = false;
+	m_fCaretInit = false;
 
     // drag state control initializations
     m_nDragState = lmDRAG_NONE;
@@ -167,7 +167,6 @@ lmScoreView::lmScoreView()
 	//cursor initializations
     m_pScoreCursor = (lmScoreCursor*)NULL;
     m_pCaret = (lmCaret*)NULL;
-    m_pCursorSO = (lmStaffObj*)NULL;
 }
 
 lmScoreView::~lmScoreView()
@@ -465,17 +464,25 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
 void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
 {
     //Called from the document when UpdateAllViews() has been invoked.
-    //Re-paint the score
+    //Re-paint the score and update caret and status bar info
 
 	WXUNUSED(sender)
     if (!m_pFrame) return;
 
+    //re-paint the score
+    HideCaret();
     lmUpdateHint* pHints = (lmUpdateHint*)hint;
     wxClientDC dc(m_pCanvas);
     int width, height;
     m_pCanvas->GetClientSize(&width, &height);
     wxRect rect(0, 0, width, height);
     RepaintScoreRectangle(&dc, rect, (pHints ? pHints->Options() : 0) );
+
+    //update caret and status bar related info
+    UpdateCaret();
+    ShowCaret();
+
+    //delete hints
     if (pHints) delete pHints;
 }
 
@@ -526,17 +533,12 @@ void lmScoreView::OnChangeFilename()
 
 void lmScoreView::OnSetFocus(wxFocusEvent& WXUNUSED(event))
 {
-    if (m_pCaret && !m_pCaret->IsVisible())
-    {
-        m_pCaret->Show();
-        //SetCaretPosition();
-    }
+    ShowCaret();
 }
 
 void lmScoreView::OnKillFocus(wxFocusEvent& WXUNUSED(event))
 {
-    if (m_pCaret && m_pCaret->IsVisible())
-        m_pCaret->Hide();
+    HideCaret();
 }
 
 
@@ -597,8 +599,16 @@ void lmScoreView::SetScale(double rScale)
         //    m_xPageSizeD, m_yPageSizeD);
     }
 
+    //delete the caret. It will be created with new scale at repaint
+    if (m_pCaret)
+    {
+        delete m_pCaret;
+        m_pCaret = (lmCaret*)NULL;
+    }
+
     if (m_pCanvas)
-        m_pCanvas->Refresh(true);    //erase background
+        m_pCanvas->Refresh(true);    //true erase background
+
 }
 
 void lmScoreView::SetScaleFitWidth()
@@ -1481,8 +1491,8 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
     if (nScrollSteps == 0) return;        // can't scroll further
 
 
-    //hide cursor
-    m_pCaret->RemoveCaret();
+    //hide caret
+    HideCaret();
 
     // save data and transform steps into pixels
     if (orientation == wxHORIZONTAL) {
@@ -1514,10 +1524,10 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
     m_pCanvas->MacUpdateImmediately() ;
 #endif
 
-    //Restore Caret
+    //Restore caret
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pCaret->DisplayCaret(m_rScale, uPos, pStaff);
+    m_pCaret->Show(m_rScale, uPos, pStaff);
 }
 
 
@@ -1603,7 +1613,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
     // The rectangle to redraw is in pixels and unscrolled
 
 	// hide the cursor so repaint doesn't interfere
-	if (m_pCaret) m_pCaret->RemoveCaret();
+    HideCaret();
 
     // To draw a cast shadow for each page we need the shadow sizes
     lmPixels nRightShadowWidth = 3;      //pixels
@@ -1805,16 +1815,8 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
         if (fPreviousPageVisible) break;
     }
 
-	//Restore cursor
-    if (!m_pCaret)
-    {
-		// Following code initializes cursor position if not yet initialized.
-        m_pCaret = new lmCaret(this, (lmCanvas*)m_pCanvas, pScore);
-        SetInitialCursorPosition();
-    }
-    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pCaret->DisplayCaret(m_rScale, uPos, pStaff);
+	//Restore caret
+    ShowCaret();
 
 	////DEBUG: draw cyan rectangle to show updated rectangle
     //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
@@ -1869,7 +1871,7 @@ void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSlice
 	// END DBG ---------------------------------------------------------------------------
 
 	//Move to nearest note/rest to click point
-	MoveCursorNearTo(uPos, pVStaff, nStaff, nMeasure);
+	MoveCaretNearTo(uPos, pVStaff, nStaff, nMeasure);
 }
 
 void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
@@ -1910,7 +1912,7 @@ void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
         //if staffobj identified, move cursor to it
         if (pSO)
         {
-	        m_pScoreCursor->MoveCursorToObject((lmStaffObj*)pSO);
+	        MoveCaretToObject((lmStaffObj*)pSO);
         }
     }
 }
@@ -1918,137 +1920,163 @@ void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
 
 
 //------------------------------------------------------------------------------------------
-// cursor management
+// caret management
 //------------------------------------------------------------------------------------------
 
-void lmScoreView::SetInitialCursorPosition()
+void lmScoreView::SetInitialCaretPosition()
 {
 	lmBoxScore* pBS = m_graphMngr.GetBoxScore();
 	if (!pBS) return;
 
-	if (!m_fCursorInit)
+	if (!m_fCaretInit)
 	{
 		// Set initial cursor position;
-		m_fCursorInit = true;
+		m_fCaretInit = true;
         lmScore* pScore = m_pDoc->GetScore();
         m_pScoreCursor = pScore->AttachCursor(this);
         m_pScoreCursor->MoveFirst();
 	}
-
+    UpdateCaret();
 }
 
-void lmScoreView::CursorRight(bool fNextObject)
+void lmScoreView::HideCaret() 
+{ 
+    if (m_pCaret) 
+        m_pCaret->Hide();
+}
+
+void lmScoreView::ShowCaret() 
+{ 
+    if (m_pCaret) 
+        m_pCaret->Show(); 
+    else
+    {
+		//initialise caret position
+        lmScore* pScore = m_pDoc->GetScore();
+        if (!pScore) return;
+        m_pCaret = new lmCaret(this, (lmCanvas*)m_pCanvas, pScore);
+        SetInitialCaretPosition();
+
+        lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+        lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+        m_pCaret->Show(m_rScale, uPos, pStaff);
+    }
+}
+
+
+void lmScoreView::CaretRight(bool fNextObject)
 {
+	//advance to next staff obj.
+
     if (!m_pCaret) return;
 
 	//advance to next staff obj.
+    HideCaret();
     m_pScoreCursor->MoveRight(fNextObject);
+    UpdateCaret();
+    ShowCaret();
 }
 
-void lmScoreView::CursorLeft(bool fPrevObject)
+void lmScoreView::CaretLeft(bool fPrevObject)
 {
-    if (!m_pCaret) return;
-
 	//go back to previous staff obj.
+
+    if (!m_pCaret) return;
+
+    HideCaret();
     m_pScoreCursor->MoveLeft(fPrevObject);
+    UpdateCaret();
+    ShowCaret();
 }
 
-void lmScoreView::CursorUp()
+void lmScoreView::CaretUp()
 {
-    if (!m_pCaret) return;
-
 	//go up to previous staff
+
+    if (!m_pCaret) return;
+
+    HideCaret();
     m_pScoreCursor->MoveUp();
+    UpdateCaret();
+    ShowCaret();
 }
 
-void lmScoreView::CursorDown()
+void lmScoreView::CaretDown()
 {
-    if (!m_pCaret) return;
-
 	//go down to next staff
+
+    if (!m_pCaret) return;
+
+    HideCaret();
     m_pScoreCursor->MoveDown();
+    UpdateCaret();
+    ShowCaret();
 }
 
-void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
+void lmScoreView::MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
 {
     if (!m_pCaret) return;
+
+    HideCaret();
 	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
+    UpdateCaret();
+    ShowCaret();
 }
 
-void lmScoreView::HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect)
+void lmScoreView::MoveCaretToObject(lmStaffObj* pSO)
 {
-    //Add/Remove highligt from specified staffobj
-    //Precondition: the cursor is currently hidden, to avoid interferences
+    if (!m_pCaret) return;
 
-    //prepare paper DC
-    wxClientDC dc(m_pCanvas);
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale( m_rScale, m_rScale );
-    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
-
-	//position DC origing according to current scrolling and page position
-	int nNumPage = pSO->GetPageNumber();        // nNumPage = 1..n
-	wxPoint org = GetDCOriginForPage(nNumPage);
-	dc.SetDeviceOrigin(org.x, org.y);
-
-    //highlight or unhighlight the staffobj
-    m_pDoc->GetScore()->CursorHighlight(pSO, nStaff, &m_Paper, fSelect);
+    HideCaret();
+	m_pScoreCursor->MoveCursorToObject(pSO);
+    UpdateCaret();
+    ShowCaret();
 }
 
-void lmScoreView::OnCursorMoved()
+
+void lmScoreView::HightlightCaretObject(lmStaffObj* pSO, int nStaff, bool fSelect)
 {
+ //   //Add/Remove highligt from specified staffobj
+ //   //Precondition: the cursor is currently hidden, to avoid interferences
+
+ //   //prepare paper DC
+ //   wxClientDC dc(m_pCanvas);
+ //   dc.SetMapMode(lmDC_MODE);
+ //   dc.SetUserScale( m_rScale, m_rScale );
+ //   m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+
+	////position DC origing according to current scrolling and page position
+	//int nNumPage = pSO->GetPageNumber();        // nNumPage = 1..n
+	//wxPoint org = GetDCOriginForPage(nNumPage);
+	//dc.SetDeviceOrigin(org.x, org.y);
+
+ //   //highlight or unhighlight the staffobj
+ //   m_pDoc->GetScore()->CursorHighlight(pSO, nStaff, &m_Paper, fSelect);
+}
+
+void lmScoreView::UpdateCaret()
+{
+    //updates caret position and status bar related info.
+
     if (!m_pScoreCursor) return;
+    if (!m_pCaret) return;
 
     //Hide cursor at old position
-	m_pCaret->RemoveCaret();
-
-    //Remove highlight from previous object
-    if (m_pCursorSO)
-        HighlightCursorObject(m_pCursorSO, m_nCursorStaff, false);       //false = remove higlight
-
-    //Update pointed object
-    m_pCursorSO = m_pScoreCursor->GetCursorSO();
-
-    //Add highlight to current object
-    if (m_pCursorSO)
-    {
-        if (m_pCursorSO->GetTimePos() == m_pScoreCursor->GetCursorTime())
-        {
-            //cursor is pointing to an object. Highlight it
-            m_nCursorStaff = m_pScoreCursor->GetCursorNumStaff();
-            HighlightCursorObject(m_pCursorSO, m_nCursorStaff, true);       //true = add higlight
-        }
-        else
-        {
-            //cursor is pointing to a timepos
-            m_pCursorSO = (lmStaffObj*)NULL;
-        }
-        //update status bar: relative cursor time
-        m_pMainFrame->SetStatusBarCursorRelPos(m_pScoreCursor->GetCursor()->GetTimepos());
-    }
+	m_pCaret->Hide();
 
     //update status bar: page number
-    //TODO
     int nNumPage = m_pScoreCursor->GetPageNumber();
     m_pMainFrame->SetStatusBarNumPage(nNumPage);
 
     //Display cursor in new position
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pCaret->DisplayCaret(m_rScale, uPos, pStaff);
+    m_pCaret->Show(m_rScale, uPos, pStaff);
 }
 
-void lmScoreView::OnCursorObjectDeleted()
+lmVStaffCursor* lmScoreView::GetVCursor()
 {
-    //the object pointed by cursor has bee deleted. The view is informed to invalidate
-    //any stored reference to the deleted object
-
-    m_pCursorSO = (lmStaffObj*)NULL;
-}
-
-lmVStaffCursor* lmScoreView::GetCursor()
-{
-    return m_pScoreCursor->GetCursor();
+    return m_pScoreCursor->GetVCursor();
 }
 
 //-------------------------------------------------------------------------------------

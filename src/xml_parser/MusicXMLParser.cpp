@@ -38,6 +38,7 @@
 #include "wx/log.h"
 
 #include "../score/Score.h"
+#include "../score/VStaff.h"
 #include "MusicXMLParser.h"
 #include "../ldp_parser/AuxString.h"
 

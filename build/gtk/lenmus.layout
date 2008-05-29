@@ -172,7 +172,7 @@
 	<File name="../../src/exercises/ScoreConstrains.h" open="0" top="0" tabpos="51">
 		<Cursor position="0" topLine="228" />
 	</File>
-	<File name="../../src/exercises/ScoreCtrol.cpp" open="1" top="1" tabpos="5">
+	<File name="../../src/exercises/ScoreCtrol.cpp" open="1" top="0" tabpos="5">
 		<Cursor position="5355" topLine="117" />
 	</File>
 	<File name="../../src/exercises/TheoIntervalsCtrol.cpp" open="0" top="0" tabpos="29">
@@ -409,8 +409,11 @@
 	<File name="../../src/score/Clef.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="5745" topLine="153" />
 	</File>
-	<File name="../../src/score/ColStaffObjs.cpp" open="0" top="0" tabpos="76">
-		<Cursor position="17209" topLine="573" />
+	<File name="../../src/score/ColStaffObjs.cpp" open="1" top="0" tabpos="7">
+		<Cursor position="63237" topLine="1833" />
+	</File>
+	<File name="../../src/score/ColStaffObjs.h" open="1" top="1" tabpos="6">
+		<Cursor position="1707" topLine="15" />
 	</File>
 	<File name="../../src/score/Context.cpp" open="0" top="0" tabpos="73">
 		<Cursor position="2942" topLine="64" />
@@ -451,8 +454,8 @@
 	<File name="../../src/score/StaffObj.cpp" open="0" top="0" tabpos="78">
 		<Cursor position="12408" topLine="390" />
 	</File>
-	<File name="../../src/score/StaffObj.h" open="0" top="0" tabpos="4">
-		<Cursor position="9998" topLine="280" />
+	<File name="../../src/score/StaffObj.h" open="1" top="0" tabpos="8">
+		<Cursor position="1409" topLine="18" />
 	</File>
 	<File name="../../src/score/Text.cpp" open="0" top="0" tabpos="7">
 		<Cursor position="6179" topLine="175" />

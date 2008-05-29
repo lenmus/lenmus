@@ -69,22 +69,20 @@ lmBeam::~lmBeam()
 {
 }
 
-//void lmBeam::Include(lmNoteRest* pNR, int nIndex)
-//{
-//    // Add a note to the beam. Index is the position that the added note/rest must occupy
-//	// (0..n). If -1, note/rest will be added at the end.
-//
-//    //precondition: a beam must always start with a note
-//    wxASSERT(NumNotes() > 0 || NumNotes()==0 && !pNR->IsRest() );
-//
-//}
-
 void lmBeam::AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo)
 {
 	m_pBeamShape->AddNoteRest(pStem, pNote, pBeamInfo);
 
 	//attach the beam to the note
 	pNote->Attach(m_pBeamShape);
+}
+
+void lmBeam::AddRestShape(lmShape* pRestShape)
+{
+	m_pBeamShape->AddNoteRest((lmShapeStem*)NULL, pRestShape, (lmTBeamInfo*)NULL);
+
+	//attach the beam to the rest
+	pRestShape->Attach(m_pBeamShape);
 }
 
 void lmBeam::CreateShape()

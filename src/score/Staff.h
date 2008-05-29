@@ -32,6 +32,8 @@
 class lmScore;
 class lmContext;
 
+#include "StaffObj.h"
+
 class lmStaff : public lmScoreObj
 {
 public:

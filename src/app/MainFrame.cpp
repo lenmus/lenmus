@@ -291,6 +291,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_UPDATE_UI (wxID_COPY, lmMainFrame::OnEditUpdateUI)
     EVT_UPDATE_UI (wxID_PASTE, lmMainFrame::OnEditUpdateUI)
     EVT_UPDATE_UI (wxID_CUT, lmMainFrame::OnEditUpdateUI)
+    EVT_UPDATE_UI (wxID_UNDO, lmMainFrame::OnEditUpdateUI)
+    EVT_UPDATE_UI (wxID_REDO, lmMainFrame::OnEditUpdateUI)
 
     //View menu/toolbar
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
@@ -589,6 +591,14 @@ void lmMainFrame::CreateMyToolBar()
             wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_paste_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Paste"));
+    m_pTbEdit->AddTool(wxID_UNDO, _T("Undo"),
+            wxArtProvider::GetBitmap(_T("tool_undo"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_undo_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Undo"));
+    m_pTbEdit->AddTool(wxID_REDO, _T("Redo"),
+            wxArtProvider::GetBitmap(_T("tool_redo"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_redo_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Redo"));
 #if __WXDEBUG__
     m_pTbEdit->AddSeparator();
     m_pTbEdit->AddTool(MENU_View_Page_Margins, _T("Page margins"),

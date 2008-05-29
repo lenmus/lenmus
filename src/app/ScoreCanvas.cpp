@@ -268,7 +268,7 @@ void lmScoreCanvas::DeleteObject()
 	//delete the StaffObj at current cursor position
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
 
 	//get object pointed by the cursor
@@ -295,7 +295,7 @@ void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 	//insert a Clef at current cursor position
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
 
     //prepare command and submit it
@@ -311,7 +311,7 @@ void lmScoreCanvas::InsertTimeSignature(int nBeats, int nBeatType, bool fVisible
     //wxLogMessage(_T("[lmScoreCanvas::InsertTimeSignature] nBeats=%d, nBeatType=%d"), nBeats, nBeatType);
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
 
     //prepare command and submit it
@@ -329,7 +329,7 @@ void lmScoreCanvas::InsertKeySignature(int nFifths, bool fMajor, bool fVisible)
                  nFifths, (fMajor ? _T("major") : _T("minor")) );
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
 
     //prepare command and submit it
@@ -343,7 +343,7 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 	//insert a barline at current cursor position
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
 
     //prepare command and submit it
@@ -361,7 +361,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
 	//insert a note at current cursor position
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
 
     //prepare command and submit it
@@ -374,7 +374,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
 {
 	//change pith of note at current cursor position
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
     lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
@@ -387,7 +387,7 @@ void lmScoreCanvas::ChangeNotePitch(int nSteps)
 void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
 {
 	//change note accidentals for note at current cursor position
-    lmVStaffCursor* pVCursor = m_pView->GetCursor();
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
     lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
@@ -436,11 +436,11 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 			switch (nKeyCode)
 			{
 				case WXK_UP:
-					m_pView->CursorUp();
+					m_pView->CaretUp();
 					break;
 
 				case WXK_DOWN:
-					m_pView->CursorDown();
+					m_pView->CaretDown();
 					break;
 
 
@@ -640,19 +640,19 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 		switch (nKeyCode)
 		{
 			case WXK_LEFT:
-				m_pView->CursorLeft((bool)(nAuxKeys & lmKEY_ALT));
+				m_pView->CaretLeft((bool)(nAuxKeys & lmKEY_ALT));
 				break;
 
 			case WXK_RIGHT:
-				m_pView->CursorRight((bool)(nAuxKeys & lmKEY_ALT));
+				m_pView->CaretRight((bool)(nAuxKeys & lmKEY_ALT));
 				break;
 
 			case WXK_UP:
-				m_pView->CursorUp();
+				m_pView->CaretUp();
 				break;
 
 			case WXK_DOWN:
-				m_pView->CursorDown();
+				m_pView->CaretDown();
 				break;
 
 			case WXK_F1:

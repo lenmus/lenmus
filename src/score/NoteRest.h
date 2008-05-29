@@ -52,6 +52,8 @@
 #pragma interface "NoteRest.cpp"
 #endif
 
+class lmVStaff;
+
 #include "NotesRelationship.h"
 
 #define lmDEFINE_REST        true
@@ -82,7 +84,7 @@ public:
 	inline void SetVoice(int nVoice) { m_nVoice = nVoice; }
 
     // methods related to note/rest positioning information
-    lmLUnits GetStaffOffset() const { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
+    lmLUnits GetStaffOffset() const;
 
     //methods related to associated AuxObjs management
     lmFermata* AddFermata(const lmEPlacement nPlacement);

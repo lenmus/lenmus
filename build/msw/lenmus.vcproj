@@ -888,12 +888,6 @@
 				RelativePath="..\..\src\auxmusic\Composer.h">
 			</File>
 			<File
-				RelativePath="..\..\src\auxmusic\ComposerV5.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\auxmusic\ComposerV5.h">
-			</File>
-			<File
 				RelativePath="..\..\src\auxmusic\ComposerV6.cpp">
 			</File>
 			<File
@@ -1165,6 +1159,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\ShapeNote.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeRest.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeRest.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\Shapes.cpp">

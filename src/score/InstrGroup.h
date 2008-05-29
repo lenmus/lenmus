@@ -28,14 +28,12 @@
 
 #include <list>
 #include "defs.h"
-//#include "UndoRedo.h"
 
 class lmShape;
 class lmInstrument;
 class lmPaper;
 class lmScoreText;
 class lmBox;
-//class lmUndoData;
 
 
 class lmInstrGroup

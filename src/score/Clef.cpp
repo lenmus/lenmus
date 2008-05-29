@@ -36,6 +36,9 @@
 
 #include "wx/image.h"
 #include "Score.h"
+#include "VStaff.h"
+#include "Staff.h"
+#include "Context.h"
 
 
 //-------------------------------------------------------------------------------------------------

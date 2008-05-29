@@ -138,16 +138,12 @@ public:
     // call backs: sound related methods
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 
-    // call backs: cursor related methods
-    void OnCursorMoved();
-    void OnCursorObjectDeleted();
-
-	//visual cursor management
-	void CursorRight(bool fNextObject = true);
-	void CursorLeft(bool fPrevObject = true);
-	void CursorUp();
-	void CursorDown();
-    lmVStaffCursor* GetCursor();
+	//caret management
+	void CaretRight(bool fNextObject = true);
+	void CaretLeft(bool fPrevObject = true);
+	void CaretUp();
+	void CaretDown();
+    lmVStaffCursor* GetVCursor();
 
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
@@ -203,17 +199,20 @@ private:
     int CalcScrollInc(wxScrollEvent& event);
     void DoScroll(int orientation, int nScrollSteps);
 
-	//Dealing with the caret
-    void SetInitialCursorPosition();
-    void HighlightCursorObject(lmStaffObj* pSO, int nStaff, bool fSelect);
+	//caret management
+    void SetInitialCaretPosition();
+    void UpdateCaret();
+    void HightlightCaretObject(lmStaffObj* pSO, int nStaff, bool fSelect);
+    void HideCaret();
+    void ShowCaret();
+	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
+    void MoveCaretToObject(lmStaffObj* pSO);
 
 	//Mouse commands
 	void OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
 						lmUPoint uPos);
     void OnClickOnObject(lmGMObject* pGMO);
 
-	//Cursor
-	void MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
 
 	//-- variables ---
@@ -268,7 +267,7 @@ private:
     //cursor
     lmCaret*            m_pCaret;
     lmScoreCursor*      m_pScoreCursor;
-	bool				m_fCursorInit;
+	bool				m_fCaretInit;
     lmStaffObj*         m_pCursorSO;       //for visual feedback
     int                 m_nCursorStaff;
 

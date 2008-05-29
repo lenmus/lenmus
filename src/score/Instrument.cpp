@@ -40,6 +40,7 @@
 #endif
 
 #include "Score.h"
+#include "VStaff.h"
 #include "InstrGroup.h"
 #include "wx/debug.h"
 #include "../graphic/GMObject.h"
@@ -339,5 +340,30 @@ bool lmInstrument::IsLastOfGroup()
 bool lmInstrument::IsFirstOfGroup()
 {
     return (m_pGroup && m_pGroup->GetFirstInstrument() == this);
+}
+
+lmVStaffCursor* lmInstrument::GetVCursor() 
+{ 
+    return m_pVStaff->GetVCursor();
+}
+
+void lmInstrument::ResetCursor() 
+{ 
+    m_pVStaff->ResetCursor(); 
+}
+
+lmVStaffCursor* lmInstrument::AttachCursor(lmScoreCursor* pSCursor)
+{ 
+    return m_pVStaff->GetVCursor()->AttachCursor(pSCursor); 
+}
+
+void lmInstrument::DetachCursor() 
+{ 
+    m_pVStaff->GetVCursor()->DetachCursor(); 
+}
+
+int lmInstrument::GetNumStaves() 
+{ 
+    return m_pVStaff->GetNumStaves(); 
 }
 

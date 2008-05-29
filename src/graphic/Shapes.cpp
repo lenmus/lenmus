@@ -175,7 +175,6 @@ lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPape
 
     // store selection rectangle position and size
 	m_uSelRect = GetBounds();
-
 }
 
 void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
@@ -187,7 +186,6 @@ void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
     pPaper->DrawText(sGlyph, m_uGlyphPos.x, m_uGlyphPos.y);
 
     lmShape::RenderCommon(pPaper);
-
 }
 
 void lmShapeGlyph::SetFont(wxFont *pFont)

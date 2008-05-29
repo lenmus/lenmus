@@ -44,6 +44,7 @@
 class lmNoteRest;
 class lmShapeStem;
 class lmShapeNote;
+struct lmTBeamInfo;
 
 
 class lmShapeBeam : public lmCompositeShape
@@ -53,7 +54,7 @@ public:
 	~lmShapeBeam();
 
 	//creation
-	void AddNoteRest(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
+	void AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest, lmTBeamInfo* pBeamInfo);
 	void SetStemsDown(bool fValue);
 
 	//implementation of pure virtual methods in base class
@@ -61,6 +62,7 @@ public:
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 	//layout changes
+    void AdjustStemsIfNeeded();
 	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 								lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
@@ -85,8 +87,8 @@ protected:
 	bool		m_fLayoutPending;		//to optimize re-layouts
 
 	typedef struct lmParentNote_Struct {
-		lmShape*		pShape;			//ptr. to parent ShapeNote
-		int				nStem;			//index to shapes collection
+		lmShape*		pShape;			//ptr. to parent ShapeNote or Rest
+		int				nStem;			//index to shapes collection. -1 if no stem (rests)
 		lmTBeamInfo*	pBeamInfo;		//beaming info from parent note
 	} lmParentNote;
 

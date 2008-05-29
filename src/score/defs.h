@@ -83,6 +83,13 @@ typedef wxPoint lmDPoint;           // a point in device units
 // go back to start measure or go forward to end of measure
 #define lmTIME_SHIFT_START_END    1000000.0f
 
+//helper macro to for better controlling things to do
+#if defined(__WXDEBUG__)
+#define lmTODO(s)   wxLogMessage(s);
+#else
+#define lmTODO(s)   
+#endif
+
 
 enum lmEUnits {
     lmMICRONS = 0,

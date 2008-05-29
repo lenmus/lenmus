@@ -31,6 +31,7 @@
 #endif
 
 #include "Score.h"
+#include "VStaff.h"
 #include "MetronomeMark.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"

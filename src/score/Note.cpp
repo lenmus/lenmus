@@ -38,6 +38,8 @@
 #include "wx/debug.h"
 
 #include "Score.h"
+#include "VStaff.h"
+#include "Context.h"
 #include "Glyph.h"
 #include "UndoRedo.h"
 #include "../ldp_parser/AuxString.h"
@@ -1478,11 +1480,10 @@ void lmNote::OnAccidentalsChanged(int nStep, int nNewAcc)
 wxString lmNote::Dump()
 {
     //get pitch relative to key signature
-    //TODO: Uncomment following code. Commented in to avoid a chrash while debugging colstaffobjs
-    //lmFPitch fp = FPitch(m_anPitch);
-    //lmKeySignature* pKey = GetCurrentContext()->GetKey();
-    //lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
-    wxString sPitch = _T("");   //FPitch_ToRelLDPName(fp, nKey);
+    lmFPitch fp = FPitch(m_anPitch);
+    lmKeySignature* pKey = GetApplicableKeySignature();
+    lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+    wxString sPitch = FPitch_ToRelLDPName(fp, nKey);
 
     wxString sDump;
     sDump = wxString::Format(

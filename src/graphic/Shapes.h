@@ -38,12 +38,15 @@
 #endif
 
 #include "../score/defs.h"      // lmLUnits
-#include "../app/Paper.h"
+#include "../app/Paper.h"       // enum lmELineEdges
 #include "GMObject.h"
 
 class lmScoreObj;
 class lmStaff;
 class lmStaffObj;
+class lmPaper;
+
+
 
 
 class lmShapeLine : public lmSimpleShape
@@ -78,12 +81,12 @@ class lmShapeGlyph : public lmSimpleShape
 {
 public:
     lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                 lmUPoint offset, wxString sName=_T("ShapeGlyp2"),
+                 lmUPoint offset, wxString sName=_T("ShapeGlyph"),
 				 bool fDraggable = false, wxColour color = *wxBLACK);
     virtual ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    virtual void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual wxBitmap* OnBeginDrag(double rScale);
@@ -109,7 +112,7 @@ class lmShapeText : public lmSimpleShape
 {
 public:
     lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
-                lmUPoint offset, wxString sName=_T("ShapeTex2"),
+                lmUPoint offset, wxString sName=_T("ShapeText"),
 				bool fDraggable = false, wxColour color = *wxBLACK);
     ~lmShapeText() {}
 

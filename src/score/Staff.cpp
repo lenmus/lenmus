@@ -35,7 +35,9 @@
 #include "wx/wx.h"
 #endif
 
+#include "Staff.h"
 #include "Score.h"
+#include "Context.h"
 #include "../app/global.h"
 
 // A lmStaff is a collection of consecutive lines and spaces.

@@ -28,11 +28,33 @@
 
 #include "StaffObjIterator.h"
 
+class lmScore;
 class lmSpacer;
+class lmInstrument;
+class lmRest;
+class lmNote;
+class lmSOControl;
+class lmScoreText;
 class lmMetronomeMark;
 class lmBoxSliceVStaff;
 class lmScoreCommand;
 class lmUndoItem;
+
+#include "Score.h"
+
+////enums
+//lmENoteHead
+//lmENoteType
+//lmEScoreObjType
+//lmEClefType
+//lmETimeSignature
+//lmETimeSignatureType
+//lmEKeySignatures
+//lmEAccidentals
+//lmEPitchType
+//lmEStemType
+//lmEAlignment
+//ETraversingOrder
 
 
 //----------------------------------------------------------------------------------------
@@ -199,10 +221,11 @@ public:
     void OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
                        int nNewAccidentals, lmContext* pCurrentContext);
 	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
-
+    lmTimeSignature* GetApplicableTimeSignature();
 
     //measures related
     int GetNumMeasures();
+    float GetCurrentMesureDuration();
 
     //sound related methods
     lmSoundManager* ComputeMidiEvents(int nChannel);
@@ -220,7 +243,7 @@ public:
     inline lmScore* GetScore() { return m_pScore; }
 
     //cursor management
-	inline lmVStaffCursor* GetCursor() { return &m_VCursor; }
+	inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }
     inline void ResetCursor() { m_VCursor.ResetCursor(); }
 
 
@@ -248,6 +271,10 @@ private:
 
     //access
     bool CheckIfNotesAffectedByClef();
+
+    //barlines
+    void CheckAndDoAutoBar(lmUndoItem* pUndoItem);
+
 
 
 

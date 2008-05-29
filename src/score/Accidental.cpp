@@ -35,6 +35,9 @@
 #endif
 
 #include "Score.h"
+#include "Staff.h"
+#include "VStaff.h"
+#include "../graphic/Shapes.h"
 
 
 //========================================================================================

@@ -472,7 +472,7 @@ bool lmTheApp::OnInit(void)
         // Create the main frame window
         //
 
-    int nMilliseconds = 10000;   // at least visible for 3 seconds
+    int nMilliseconds = 3000;   // at least visible for 3 seconds
 	long nSplashTime = (long) time( NULL );
     lmSplashFrame* pSplash = RecreateGUI(nMilliseconds);
     ::wxBeginBusyCursor();
@@ -497,7 +497,7 @@ bool lmTheApp::OnInit(void)
 
     //if MIDI not set, force to run the MIDI wizard
     if (!g_pMidi->IsConfigured()) {
-	    // first of all, remove splash; otherwise, splahs hides the wizard!
+	    // first of all, remove splash; otherwise, splash hides the wizard!
         if (pSplash) {
             pSplash->TerminateSplash();
             pSplash = (lmSplashFrame*) NULL;
@@ -591,7 +591,6 @@ void lmTheApp::ChangeLanguage(wxString lang)
 
     //Re-create main frame
     RecreateGUI(0);   //recreate all. No splash
-
 }
 
 void lmTheApp::SetUpLocale(wxString lang)
@@ -642,8 +641,6 @@ void lmTheApp::SetUpLocale(wxString lang)
                 sCtlg.c_str(), sPath.c_str());
     }
 }
-
-
 
 int lmTheApp::OnExit(void)
 {
@@ -721,7 +718,6 @@ void lmTheApp::GetDefaultMainWindowRect(wxRect *defRect)
 #endif
 
 }
-
 
 // Calculate where to place the main window
 void lmTheApp::GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized)
@@ -806,12 +802,12 @@ void lmTheApp::FindOutScreenDPI()
 				 xPixelsPerLU, yPixelsPerLU, sizeDPI.x, sizeDPI.y );
 }
 
-// Update all views of document associated to currentView
 void lmTheApp::UpdateCurrentDocViews(void)
 {
+    // Update all views of document associated to currentView
+
     lmScoreDocument *doc = (lmScoreDocument *)m_pDocManager->GetCurrentDocument();
     doc->UpdateAllViews();
-
 }
 
 wxString lmTheApp::GetVersionNumber()

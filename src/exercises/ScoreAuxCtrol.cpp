@@ -99,12 +99,12 @@ void lmScoreAuxCtrol::ComputeScale()
     //Measure text height. We will force the staff height to be 1.6 times text height
     lmPixels nStaffHeight = (lmPixels)(1.6f * (float)GetCharHeight());
 
-    //standard staff height is 720 LU. Compute needed scaling factor
+    //standard staff height is 7.2mm (720 LU). Compute needed scaling factor
     lmLUnits uTextHeight = (lmLUnits)dc.DeviceToLogicalYRel(nStaffHeight);
     m_rScale = uTextHeight / 720.0f;
 
-    wxLogMessage(_T("[lmScoreAuxCtrol::ComputeScale] Char height=%d px, Staff height=%d px, uTextHeight=%.2f LU, m_rScale=%f"),
-                 GetCharHeight(), nStaffHeight, uTextHeight, m_rScale);
+    //wxLogMessage(_T("[lmScoreAuxCtrol::ComputeScale] Char height=%d px, Staff height=%d px, uTextHeight=%.2f LU, m_rScale=%f"),
+    //             GetCharHeight(), nStaffHeight, uTextHeight, m_rScale);
 
     SetScale(m_rScale);
 }

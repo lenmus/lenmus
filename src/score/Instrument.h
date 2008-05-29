@@ -30,6 +30,7 @@ class lmBox;
 class lmColStaffObjs;
 class lmVStaffCursor;
 class lmInstrGroup;
+class lmVStaff;
 
 
 class lmInstrument : public lmScoreObj
@@ -55,7 +56,7 @@ public:
 	inline lmVStaff* GetVStaff() { return m_pVStaff; }
 
     //Returns the number of staves that this lmInstrument has (1..n)
-    inline int GetNumStaves() { return m_pVStaff->GetNumStaves(); }
+    int GetNumStaves();
 
     //layout
     void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_uIndentFirst, pPos); }
@@ -69,11 +70,10 @@ public:
 	wxString GetInstrName();
 
 	//cursor methods
-	inline lmVStaffCursor* GetCursor() { return m_pVStaff->GetCursor(); }
-    inline void ResetCursor() { m_pVStaff->ResetCursor(); }
-	inline lmVStaffCursor* AttachCursor(lmScoreCursor* pSCursor)
-                                { return m_pVStaff->GetCursor()->AttachCursor(pSCursor); }
-	inline void DetachCursor() { m_pVStaff->GetCursor()->DetachCursor(); }
+	lmVStaffCursor* GetVCursor();
+    void ResetCursor();
+	lmVStaffCursor* AttachCursor(lmScoreCursor* pSCursor);
+	void DetachCursor();
 
     //group related methods
     void OnRemovedFromGroup(lmInstrGroup* pGroup);

@@ -30,6 +30,7 @@
 #pragma hdrstop
 #endif
 
+#include "../score/VStaff.h"
 #include "IdfyChordCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"

@@ -35,6 +35,7 @@
 #endif
 
 #include "Score.h"
+#include "VStaff.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"

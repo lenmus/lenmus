@@ -43,6 +43,9 @@
 #include "wx/numdlg.h"      // for ::wxGetNumberFromUser
 
 #include "../score/Score.h"
+#include "../score/Context.h"
+#include "../score/Staff.h"
+#include "../score/VStaff.h"
 #include "../app/Page.h"
 #include "TimeposTable.h"
 #include "Formatter4.h"
@@ -876,6 +879,12 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
     if (nAvailable <= 0) return;       //no space to distribute
 
     lmLUnits nDif[MAX_MEASURES_PER_SYSTEM];
+    if (m_nMeasuresInSystem == MAX_MEASURES_PER_SYSTEM)
+    {
+        wxMessageBox( wxString::Format(_T("Program limit reached: no more than %d measures per system"),
+                        MAX_MEASURES_PER_SYSTEM ));
+        return;
+    }
 
     //compute average measure column size
     lmLUnits nAverage = 0;
@@ -954,7 +963,16 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 
     //   return bool: true if newSystem tag found in this measure
 
-    wxASSERT(nAbsMeasure <= pVStaff->GetNumMeasures());
+    //BUG_BYPASS:
+    //These algorithm was designed for scores in which all staves have the same number
+    //of measures. This is the normal case when loading a complete score, for eBooks.
+    //But in score edition, the opposite is the normal case. For example,
+    //assume a choir SATB four staves score. You start adding notes and measures in the first
+    //staff and all other staves are empty. They could be synchronized by adding measures with
+    //rests, but this is not yet implemented. Also, it is not clear if that is going to be 
+    //the solution. For now, next 'if' sentence works.
+    if(nAbsMeasure > pVStaff->GetNumMeasures())
+        return false;       //this instrument has less measures than maximum
 
     //start a voice for each staff
     lmLUnits xStart = pPaper->GetCursorX();

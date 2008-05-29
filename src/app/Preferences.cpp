@@ -178,6 +178,12 @@ void lmPgmOptions::LoadDefaultValues()
     //Instruments grouping: space after brace or bracket
     Register(lm_EO_GRP_BRACKET_GAP, lmOP_TENTHS, 10.0f, _T("InstrGroup/Space after brace or bracket/"));
 
+    //Beams
+    //thickness of beam line
+    Register(lm_EO_BEAM_THICKNESS, lmOP_TENTHS, 5.0f, _T("Beam/Thickness of beam line/"));
+    //Space between beam lines
+    Register(lm_EO_BEAM_SPACING, lmOP_TENTHS, 4.0f, _T("Beam/Space between beam lines/"));
+
 
     //Edit options
     //------------------------------------------------------------------------

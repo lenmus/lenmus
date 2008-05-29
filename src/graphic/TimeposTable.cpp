@@ -40,8 +40,11 @@
 #include <algorithm>
 #include <math.h>
 
-#include "../score/Score.h"
 #include "wx/debug.h"
+
+#include "../score/Score.h"
+#include "../score/Staff.h"
+#include "../score/VStaff.h"
 #include "TimeposTable.h"
 
 //spacing function parameters
@@ -726,9 +729,9 @@ lmLUnits lmTimeposTable::GetStartOfBarPosition()
 
 lmLUnits lmTimeposTable::DoSpacing(bool fTrace)
 {
-    //wxLogMessage( DumpTimeposTable() );
+    wxLogMessage( DumpTimeposTable() );
     lmLUnits uSize = ComputeSpacing(m_rSpacingFactor);
-    //wxLogMessage( DumpTimeposTable() );
+    wxLogMessage( DumpTimeposTable() );
     return uSize;
 }
 

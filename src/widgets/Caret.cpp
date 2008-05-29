@@ -39,6 +39,7 @@
 #include "../app/ScoreView.h"
 #include "../app/ScoreCanvas.h"
 #include "../score/Score.h"
+#include "../score/Staff.h"
 
 
 
@@ -73,9 +74,8 @@ lmCaret::lmCaret(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore)
 
 	//caret initializations
 	m_oCaretTimer.SetOwner(this, lmID_TIMER_CURSOR);
-	m_oCaretPos.x = -1;    //means: no position   
-    m_fDisplayed = false;
-    m_fVisible = false;
+	m_oCaretPos.x = -1;         //means: no position   
+    m_fCaretDrawn = false;
     m_nCountVisible = 0;
     SetColour(*wxBLUE);
     m_nBlinkingRate = 750;		//caret blinking rate = 750ms
@@ -89,57 +89,35 @@ lmCaret::~lmCaret()
 
 void lmCaret::OnCaretTimer(wxTimerEvent& event)
 {
-    if (m_fDisplayed)
+    if (!IsHidden())
     {
-        m_locker.Enter();
-    	RenderCaret(!m_fVisible);
-        m_locker.Leave();
+    	RenderCaret(!m_fCaretDrawn);
         m_oCaretTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
     }
 }
 
-void lmCaret::RemoveCaret()
+void lmCaret::Show(double rScale, lmUPoint uPos, lmStaff* pStaff)
 {
-    //When scrolling and other operations that could affect caret, it is necessary
-    //to ensure that the caret is not displayed while doing the operation.
-    //This method stops the timer and ensures that the caret is erased
-
-    //stop caret timer
-    m_fDisplayed = false;
-    if (m_oCaretTimer.IsRunning())
-        m_oCaretTimer.Stop();
-
-    //hide old caret
-    m_locker.Enter();
-    RenderCaret(lmHIDDEN);
-    m_locker.Leave();
-
-    //remove position (otherwise, Display (in fact, SetCaretPosition) will skip
-    //repainting it and the caret will never get displayed)
-	m_oCaretPos.x = -1;
-
-}
-
-void lmCaret::DisplayCaret(double rScale, lmUPoint uPos, lmStaff* pStaff)
-{
-    m_fDisplayed = true;
-    m_fVisible = false;
-    m_rScale = rScale;
-    SetCaretPosition(uPos, pStaff);
+    SetCaretPosition(rScale, uPos, pStaff);
+    Show();
 }
 
 void lmCaret::Show(bool fShow)
 {
-    //Shows or hides the caret. Notice that if the caret was hidden N times, it must
-    //be shown N times as well to reappear on the screen.
+    //Shows or hides the caret.
+    //AWARE:
+    //  Note that Show() and Hide() operates on a counter. If you invoke Hide() N times 
+    //  then you must invoke Show() N times before the caret is displayed again
+    //  on the screen.
+    //  But invoking Hide() inmediately hides the caret.
     if (fShow)
     {
-        if ( m_nCountVisible++ == 0 )
+        if (++m_nCountVisible > 0)
             DoShow();
     }
     else
     {
-        if ( --m_nCountVisible == 0 )
+        if (--m_nCountVisible >= 0)
             DoHide();
     }
 }
@@ -156,17 +134,15 @@ void lmCaret::DoHide()
     RenderCaret(lmHIDDEN);
 }
 
-void lmCaret::SetCaretPosition(lmUPoint uPos, lmStaff* pStaff) 
+void lmCaret::SetCaretPosition(double rScale, lmUPoint uPos, lmStaff* pStaff) 
 { 
-    //if position doesn't change, return. Nothing to do.
-    if (!pStaff || uPos == m_oCaretPos) return;
+    //if position and scale don't change, return. Nothing to do.
+    if (!pStaff || (uPos == m_oCaretPos && rScale == m_rScale)) return;
 
-    if (m_oCaretTimer.IsRunning())
-        m_oCaretTimer.Stop();
-    m_locker.Enter();
-    RenderCaret(lmHIDDEN);     //hide old caret
+    Hide();
 
     //set new position
+    m_rScale = rScale;
     m_oCaretPos = uPos;
     m_oCaretPos.y -= pStaff->TenthsToLogical(10.0);
 
@@ -174,28 +150,23 @@ void lmCaret::SetCaretPosition(lmUPoint uPos, lmStaff* pStaff)
 	m_udxSegment = pStaff->TenthsToLogical(5.0);
 
     //render it
-    RenderCaret(lmVISIBLE);
-
-    m_locker.Leave();
-    m_oCaretTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
+    Show();
 }
 
 void lmCaret::RenderCaret(bool fVisible)
 {
-    //AWARE. This code is execute protected by critical section m_locker to
-    //avoid inconsistencies while changing m_fVisible status. This method is
-    //the only allowed to change m_fVisible status.
+    //AWARE: This method is the only allowed to change m_fCaretDrawn status.
 
     //if current state == desired state, nothing to do
-    if (m_fVisible == fVisible) return;
+    if (m_fCaretDrawn == fVisible) return;
 
     //if not yet positioned, finish
 	if (m_oCaretPos.x == -1) return;
 
-    //set new status
-    m_fVisible = fVisible;       
-
     Refresh();
+
+    //set new status
+    m_fCaretDrawn = fVisible;       
 }
 
 void lmCaret::Refresh()

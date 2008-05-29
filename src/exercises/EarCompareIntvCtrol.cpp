@@ -30,6 +30,7 @@
 #pragma hdrstop
 #endif
 
+#include "../score/VStaff.h"
 #include "EarCompareIntvCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"

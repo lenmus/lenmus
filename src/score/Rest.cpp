@@ -34,10 +34,15 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/image.h"
-#include "Score.h"
 #include "wx/debug.h"
+#include "wx/image.h"
+
+#include "Score.h"
+#include "VStaff.h"
 #include "../ldp_parser/AuxString.h"
+#include "../graphic/Shapes.h"
+#include "../graphic/ShapeRest.h"
+
 
 #include "Glyph.h"
 
@@ -117,15 +122,15 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     pPaper->SetFont(*GetSuitableFont(pPaper));
 
     //create the container shape and add it to the box
-    lmCompositeShape* pRestShape = new lmCompositeShape(this, _T("Rest"), lmDRAGGABLE);
+    lmShapeRest* pRestShape = new lmShapeRest(this, lmDRAGGABLE, m_fVisible);
 	pBox->AddShape(pRestShape);
     m_pGMObj = pRestShape;
 
     // create shape for the rest symbol
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
-                                            lmUPoint(uxLeft, yPos), _T("Rest"));
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper),
+                                            pPaper, lmUPoint(uxLeft, yPos), _T("RestGlyph"));
 	pRestShape->Add(pShape);
     uxLeft += pShape->GetWidth();
 
@@ -136,7 +141,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         //TODO user selectable
         lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         uxLeft += uSpaceBeforeDot;
-        lmLUnits uyPos = uyTop;
+        lmLUnits uyPos = yPos - m_pVStaff->TenthsToLogical(GetDotShift(), m_nStaffNum);
         uxLeft += AddDotShape(pRestShape, pPaper, uxLeft, uyPos, colorC);
         if (m_fDoubleDotted) {
             uxLeft += uSpaceBeforeDot;
@@ -144,45 +149,11 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         }
     }
 
+	// if rest in a beam, link the rest shape to the beam shape
+	if (m_pBeam)
+		m_pBeam->AddRestShape(pRestShape);
+
 	return GetShape()->GetWidth();
-}
-
-void lmRest::DoVerticalShift(lmTenths yShift)
-{
-    // rests inside a group of beamed notes need to be shifted to align with the noteheads.
-    // This method is invoked *after* the measurement phase. Therefore we have to
-    // shift all already measured affected values
-
-    //// compute shift in logical units
-    //lmLUnits uShift = m_pVStaff->TenthsToLogical(yShift, m_nStaffNum);
-
-    //// apply shift to rest object
-    //m_uGlyphPos.y += uShift;
-    //m_uSelRect.y += uShift;
-
-    // apply shift to associated notations
-    // todo: there is a problem with following code: I need pointer pPaper
-    //if (m_pNotations) {
-    //    lmNoteRestObj* pNRO;
-    //    wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-    //    for (; pNode; pNode = pNode->GetNext() ) {
-    //        pNRO = (lmNoteRestObj*)pNode->GetData();
-    //        lmLUnits xPos = 0;
-    //        lmLUnits yPos = 0;
-    //        switch(pNRO->GetSymbolType()) {
-    //            case eST_Fermata:
-    //                // set position (relative to paperPos)
-    //                xPos = m_uSelRect.x + m_uSelRect.width / 2;
-    //                yPos = GetStaffOffset() + uShift;
-    //                pNRO->SetSizePosition(m_pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
-    //                pNRO->UpdateMeasurements();
-    //                break;
-    //            default:
-    //                wxASSERT(false);
-    //        }
-    //    }
-    //}
-
 }
 
 wxString lmRest::Dump()
@@ -229,3 +200,25 @@ wxString lmRest::SourceXML(int nIndent)
     return sSource;
 }
 
+lmLUnits lmRest::GetDotShift()
+{
+    //returns needed shift (move upwards) to align it as required for each rest glyph
+
+    switch (m_nNoteType) {
+        case eLonga:        return 5.0f;         //half line
+        case eBreve:        return 15.0f;
+        case eWhole:        return 15.0f;
+        case eHalf:         return 5.0f;
+        case eQuarter:      return 5.0f;
+        case eEighth:       return 5.0f;
+        case e16th:         return 5.0f;
+        case e32th:         return 5.0f;
+        case e64th:         return 5.0f;
+        case e128th:        return 5.0f;
+        case e256th:        return 5.0f;
+        default:
+            wxLogMessage(_T("[lmRest::GetDotShift] Invalid value for m_nNoteType (%d)"), m_nNoteType);
+            wxASSERT(false);
+            return 5.0f;
+    }
+}

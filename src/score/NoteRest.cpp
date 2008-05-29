@@ -61,6 +61,7 @@
 
 #include "Score.h"
 #include "UndoRedo.h"
+#include "VStaff.h"
 
 #include "wx/debug.h"
 #include "../ldp_parser/AuxString.h"
@@ -549,6 +550,11 @@ wxString lmNoteRest::GetLDPNoteType()
             return _T("");        //compiler happy
     }
 
+}
+
+lmLUnits lmNoteRest::GetStaffOffset() const 
+{ 
+    return m_pVStaff->GetStaffOffset(m_nStaffNum); 
 }
 
 

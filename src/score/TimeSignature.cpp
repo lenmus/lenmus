@@ -36,6 +36,9 @@
 
 #include "wx/image.h"
 #include "Score.h"
+#include "Staff.h"
+#include "VStaff.h"
+#include "Context.h"
 
 //-------------------------------------------------------------------------------------------------
 // lmTimeSignature object implementation
@@ -346,6 +349,10 @@ void lmTimeSignature::RemoveCreatedContexts()
 	}
 }
 
+float lmTimeSignature::GetMeasureDuration()
+{ 
+    return m_nBeats * GetBeatDuration(m_nBeatType);
+}
 
 
 

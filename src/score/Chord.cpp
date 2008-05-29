@@ -50,6 +50,7 @@
 #include <algorithm>
 
 #include "Score.h"
+#include "VStaff.h"
 #include "Glyph.h"
 #include "UndoRedo.h"
 #include "../graphic/Shapes.h"

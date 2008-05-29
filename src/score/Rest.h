@@ -51,14 +51,11 @@ public:
     wxString    SourceLDP(int nIndent);
     wxString    SourceXML(int nIndent);
 
-    //lmRest methods
-    void DoVerticalShift(lmTenths yShift);
-
-
 
 private:
     // access to glyph data to define character to use and selection rectangle 
     lmEGlyphIndex GetGlyphIndex();
+    lmLUnits GetDotShift();
 
 };
 

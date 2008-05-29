@@ -41,6 +41,7 @@
 
 #include "wx/image.h"
 #include "Score.h"
+#include "VStaff.h"
 
 //-------------------------------------------------------------------------------------------------
 // lmSOControl object implementation

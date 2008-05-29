@@ -32,6 +32,7 @@
 
 #include "IdfyCadencesCtrol.h"
 
+#include "../score/VStaff.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"

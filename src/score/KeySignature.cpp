@@ -35,7 +35,11 @@
 #endif
 
 #include "wx/image.h"
+
 #include "Score.h"
+#include "Staff.h"
+#include "VStaff.h"
+#include "Context.h"
 
 //access to error's logger
 #include "../app/Logger.h"

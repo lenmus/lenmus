@@ -393,8 +393,8 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         //In scores created in the score editor, we should render a full page,
         //with empty staves. To this end, we need to change some options default value
         pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
-        pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
     }
+    pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
 
 
     // Modify score with user options (paper size, margins, titles, etc.)

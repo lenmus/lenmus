@@ -33,6 +33,7 @@
 
 #include "Score.h"
 #include "Notation.h"
+#include "VStaff.h"
 
 
 lmNotation::lmNotation(lmVStaff* pVStaff, int nStaff, bool fVisible, bool fIsDraggable)

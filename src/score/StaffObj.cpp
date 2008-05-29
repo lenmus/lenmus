@@ -37,6 +37,9 @@
 #include <math.h>
 #include "wx/image.h"
 #include "Score.h"
+#include "Staff.h"
+#include "VStaff.h"
+#include "Context.h"
 #include "ObjOptions.h"
 #include "UndoRedo.h"
 #include "../graphic/GMObject.h"
@@ -715,6 +718,40 @@ lmContext* lmStaffObj::NewUpdatedContext()
 	//accidentals introduced by previous notes
 	return m_pVStaff->NewUpdatedContext(this);
 }
+
+lmClef* lmStaffObj::GetApplicableClef()
+{
+    //returns the TS applicable to this staffobj, if any
+
+    lmContext* pContext = GetCurrentContext();
+    if (pContext)
+        return pContext->GetClef();
+    else
+        return (lmClef*)NULL;
+}
+
+lmTimeSignature* lmStaffObj::GetApplicableTimeSignature()
+{
+    //returns the TS applicable to this staffobj, if any
+
+    lmContext* pContext = GetCurrentContext();
+    if (pContext)
+        return pContext->GetTime();
+    else
+        return (lmTimeSignature*)NULL;
+}
+
+lmKeySignature* lmStaffObj::GetApplicableKeySignature()
+{
+    //returns the Key Signature applicable to this staffobj, if any
+
+    lmContext* pContext = GetCurrentContext();
+    if (pContext)
+        return pContext->GetKey();
+    else
+        return (lmKeySignature*)NULL;
+}
+
 
 wxString lmStaffObj::SourceLDP(int nIndent)
 {

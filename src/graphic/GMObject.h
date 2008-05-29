@@ -84,6 +84,7 @@ enum lmEGMOType
 	eGMO_ShapeLine,
 	eGMO_ShapeMultiAttached,
 	eGMO_ShapeNote,
+	eGMO_ShapeRest,
 	eGMO_ShapeText,
 	eGMO_ShapeTuplet,
 	eGMO_ShapeInvisible,

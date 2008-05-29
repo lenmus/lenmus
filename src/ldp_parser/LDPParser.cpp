@@ -45,6 +45,7 @@
 #include "wx/log.h"
 
 #include "../score/Score.h"
+#include "../score/VStaff.h"
 #include "../score/MetronomeMark.h"
 #include "../score/InstrGroup.h"
 #include "../auxmusic/Conversion.h"

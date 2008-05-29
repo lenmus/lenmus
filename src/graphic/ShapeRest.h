@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_SHAPENOTE_H__        //to avoid nested includes
-#define __LM_SHAPENOTE_H__
+#ifndef __LM_SHAPEREST_H__        //to avoid nested includes
+#define __LM_SHAPEREST_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ShapeNote.cpp"
+#pragma interface "ShapeRest.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -38,74 +38,33 @@
 #endif
 
 #include "../score/defs.h"      // lmLUnits
-#include "../app/Paper.h"
-#include "GMObject.h"
+#include "Shapes.h"
 
-class lmNoteRest;
-class lmController;
 class lmShapeBeam;
-class lmShapeStem;
+class lmPaper;
 
 
-class lmShapeNote : public lmCompositeShape
+class lmShapeRest : public lmCompositeShape
 {
 public:
-    lmShapeNote(lmNoteRest* pOwner, lmLUnits xPos, lmLUnits yTop, wxColour color);
+    lmShapeRest(lmScoreObj* pOwner, bool fDraggable = false, bool fVisible = true,
+                lmEGMOType nType = eGMO_ShapeRest, wxString sName = _T("Rest"));
 
-	~lmShapeNote();
+
+	virtual ~lmShapeRest();
 
 	//overrides of virtual methods in base class
-	void Shift(lmLUnits xIncr, lmLUnits yIncr);
-
-	//specific methods
-	void AddStem(lmShapeStem* pShape);
-	void AddNoteHead(lmShape* pShape);
-	void AddFlag(lmShape* pShape);
-	void AddAccidental(lmShape* pShape);
-	void AddNoteInBlock(lmShape* pShape);
+    virtual void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
 
 	//info about related shapes
 	inline void SetBeamShape(lmShapeBeam* pBeamShape) { m_pBeamShape = pBeamShape; }
 	inline lmShapeBeam* GetBeamShape() const { return m_pBeamShape; }
-	inline void SetStemShape(lmShapeStem* pStemShape) { m_pStemShape = pStemShape; }
-
-	//access to constituent shapes
-	lmShape* GetNoteHead();
-	inline lmShapeStem* GetStem() const { return m_pStemShape; }
-
-	//access to info
-	inline lmLUnits GetXEnd() const { return m_uxLeft + m_uWidth; }
-	lmLUnits GetStemThickness();
-	bool StemGoesDown();
-
-	//re-layout
-	void SetStemLength(lmLUnits uLength);
-
-	//dragging
-    wxBitmap* OnBeginDrag(double rScale);
-	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-	void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
-
-
 
 protected:
-	//index to some important constituent shapes
-	int		m_nNoteHead;
-
-    //position
-    lmLUnits    m_uxLeft;
-    lmLUnits    m_uyTop;
-
-	lmLUnits	m_uWidth;
-
-    wxColour    m_color;
-
 	//related shapes
 	lmShapeBeam*	m_pBeamShape;
-	lmShapeStem*	m_pStemShape;
-
 
 };
 
-#endif    // __LM_SHAPENOTE_H__
+#endif    // __LM_SHAPEREST_H__
 

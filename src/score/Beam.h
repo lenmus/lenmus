@@ -27,7 +27,6 @@
 #endif
 
 #include <list>
-#include "UndoRedo.h"
 
 class lmShapeBeam;
 class lmShapeStem;
@@ -51,6 +50,7 @@ public:
     void CreateShape();
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
 	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
+    void AddRestShape(lmShape* pRestShape);
     void AutoSetUp();
 
 private:
