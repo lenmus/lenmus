@@ -52,7 +52,6 @@ float				m_rDmin = 8.0f;				//Dmin: min. duration to consider
 lmTenths			m_rMinSpace = 15.0f;		//Space(Dmin):  space for Dmin
 
 //TODO: User options
-lmTenths m_rSpaceAfterStartOfMeasure = 7.5f;
 lmTenths m_rSpaceAfterProlog = 25.0f;
 lmTenths m_rSpaceAfterIntermediateClef = 20.0f;
 lmTenths m_rMinSpaceBetweenNoteAndClef = 10.0f;
@@ -94,7 +93,7 @@ void lmTimeposEntry::AssignSpace(lmTimeposTable* pTT)
     switch (m_nType)
     {
         case eAlfa:
-			m_uSpace = pTT->TenthsToLogical(m_rSpaceAfterStartOfMeasure, 1);
+			//already assigned
 			break;
 
         case eOmega:
@@ -195,12 +194,13 @@ void lmTimeposEntry::Reposition(lmLUnits uxPos)
 //lmTimeLine
 //=====================================================================================
 
-lmTimeLine::lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart)
+lmTimeLine::lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart,
+                       lmLUnits uSpace)
 {
 	m_pOwner = pMngr;
 	m_nInstr = nInstr;
 	m_nVoice = nVoice;
-    NewEntry(eAlfa, (lmStaffObj*)NULL, (lmShape*)NULL, false);
+    NewEntry(eAlfa, (lmStaffObj*)NULL, (lmShape*)NULL, false, uSpace);
     m_aMainTable.back()->m_uxAnchor = 0.0f;
     m_aMainTable.back()->m_xLeft = uxStart;
     m_aMainTable.back()->m_xInitialLeft = uxStart;
@@ -222,11 +222,14 @@ lmTimeposEntry* lmTimeLine::AddEntry(eTimeposEntryType nType, lmStaffObj* pSO, l
 }
 
 lmTimeposEntry* lmTimeLine::NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
-									 bool fProlog)
+									 bool fProlog, lmLUnits uSpace)
 {
     lmTimeposEntry* pEntry = new lmTimeposEntry(nType, pSO, pShape, fProlog);
     m_aMainTable.push_back(pEntry);
-	pEntry->AssignSpace(m_pOwner);
+    if (nType == eAlfa)
+        pEntry->m_uSpace = uSpace;
+    else
+	    pEntry->AssignSpace(m_pOwner);
 	return pEntry;
 }
 
@@ -387,9 +390,9 @@ lmLUnits lmTimeLine::GetLineWidth()
 		return 0.0f;
 }
 
-lmLUnits lmTimeLine::GetPosForTime(float rTime)
+lmLUnits lmTimeLine::GetMinPossiblePosForTime(float rTime)
 {
-	//When enetring this method iterator m_it points to the next timed entry or
+	//When entering this method iterator m_it points to the next timed entry or
 	//to end iterator.
 	//If next entry time is rTime, returns its xLeft position. Else returns 0
 
@@ -397,6 +400,22 @@ lmLUnits lmTimeLine::GetPosForTime(float rTime)
 		return (*m_it)->m_xLeft;
 	else
 		return 0.0f;
+}
+
+lmLUnits lmTimeLine::GetMinRequiredPosForTime(float rTime)
+{
+    //Explore all timed staffobjs at time rTime and return the maximum start xPos found
+	//When enetring this method iterator m_it points to the next timed entry or
+	//to end iterator. This method doen't change m_it
+
+    lmLUnits uxPos = 0.0f;
+	lmItEntries it = m_it;
+	while (it != m_aMainTable.end() && IsEqualTime((*it)->m_rTimePos, rTime) )
+    {
+	    uxPos = wxMax(uxPos, (*it)->m_xLeft);
+        ++it;
+    }
+    return uxPos;
 }
 
 lmLUnits lmTimeLine::GetAnchorForTime(float rTime)
@@ -581,7 +600,8 @@ void lmTimeposTable::CleanTable()
 
 }
 
-void lmTimeposTable::StartLines(int nInstr, lmLUnits uxStart, lmVStaff* pVStaff)
+void lmTimeposTable::StartLines(int nInstr, lmLUnits uxStart, lmVStaff* pVStaff,
+                                lmLUnits uSpace)
 {
 	int nNumStaves = pVStaff->GetNumStaves();
     wxASSERT(nNumStaves < lmMAX_STAFF);
@@ -590,11 +610,11 @@ void lmTimeposTable::StartLines(int nInstr, lmLUnits uxStart, lmVStaff* pVStaff)
     {
         m_nCurVoice[iS] = iS+1;
 		m_pStaff[iS] = pVStaff->GetStaff(iS+1);
-        StartLine(nInstr, iS+1, uxStart);
+        StartLine(nInstr, iS+1, uxStart, uSpace);
     }
 }
 
-void lmTimeposTable::StartLine(int nInstr, int nVoice, lmLUnits uxStart)
+void lmTimeposTable::StartLine(int nInstr, int nVoice, lmLUnits uxStart, lmLUnits uSpace)
 {
     //Start a new line for instrument nInstr (0..n-1)
 	//If this is the first line for instrument nInstr, all non-voiced StaffObj
@@ -607,7 +627,7 @@ void lmTimeposTable::StartLine(int nInstr, int nVoice, lmLUnits uxStart)
     }
 
 
-	lmTimeLine* pLine = new lmTimeLine(this, nInstr, nVoice, uxStart);
+	lmTimeLine* pLine = new lmTimeLine(this, nInstr, nVoice, uxStart, uSpace);
 	m_aLines.push_back(pLine);
 	m_pCurEntry = pLine->m_aMainTable.back(); 
 	m_itCurLine = m_aLines.end();
@@ -753,13 +773,17 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
 		//Determine minimum common x position for timepos rTime
 		for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); it++)
 		{
-			lmLUnits uxObjPos = (*it)->GetPosForTime(rTime);
+			lmLUnits uxMinPossiblePos = (*it)->GetMinPossiblePosForTime(rTime);            //returns m_xLeft for that line
+			lmLUnits uxMinRequiredPos = (*it)->GetMinRequiredPosForTime(rTime);
+            lmLUnits uxMinPos = wxMax(uxMinPossiblePos, uxMinRequiredPos);
             lmLUnits uxObjAnchor = (*it)->GetAnchorForTime(rTime);
-            if (uxObjAnchor < 0.0f) uxObjPos -= uxObjAnchor;
-			uxPos = wxMax(uxPos, uxObjPos); 
+            if (uxObjAnchor < 0.0f) uxMinPos -= uxObjAnchor;
+			uxPos = wxMax(uxPos, uxMinPos); 
+		    wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Computing minimum xPos for time %.2f, uxMinPossiblePos=%.2f, uxMinRequiredPos=%.2f, uxMinPos=%.2f, uxObjAnchor=%.2f, uxPos=%.2f"),
+			    rTime, uxMinPossiblePos, uxMinRequiredPos, uxMinPos, uxObjAnchor, uxPos);
 		}
-		//wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Setting timed objects at time %.2f, xPos=%.2f"),
-		//	rTime, uxPos);
+		wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Setting timed objects at time %.2f, min xPos=%.2f"),
+			rTime, uxPos);
 
 		//Process all timed objects placed at time rTime
 		fContinue = false;

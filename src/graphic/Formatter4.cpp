@@ -974,9 +974,23 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     if(nAbsMeasure > pVStaff->GetNumMeasures())
         return false;       //this instrument has less measures than maximum
 
+    //determine if this is not the first measure of the score and the previous barline is
+    //visible. This is required to decide if add or not some space after previous barline.
+    lmLUnits uSpaceAfterBarline = 0.0f;
+    if (nAbsMeasure != 1)
+    {
+        // Get the previous barline
+        lmBarline* pBar = pVStaff->GetBarlineOfMeasure(nAbsMeasure-1, NULL);
+        if (pBar)
+        {
+            if (pBar->IsVisible())
+                uSpaceAfterBarline = pVStaff->TenthsToLogical(20.0f);    // TODO: user options
+        }
+    }
+
     //start a voice for each staff
-    lmLUnits xStart = pPaper->GetCursorX();
-    m_oTimepos[nRelMeasure].StartLines(nInstr, xStart, pVStaff);
+    lmLUnits uxStart = pPaper->GetCursorX();
+    m_oTimepos[nRelMeasure].StartLines(nInstr, uxStart, pVStaff, uSpaceAfterBarline);
 
     //The prolog (clef and key signature) must be rendered on each system, but the
     //matching StaffObjs only exist in the first system. In the first system the prolog
@@ -1018,13 +1032,13 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 
         else if (nType == eSFOT_KeySignature)
 		{
-			pPaper->SetCursorX(xStart);
+			pPaper->SetCursorX(uxStart);
 			AddKey((lmKeySignature*)pSO, pBSV, pPaper, pVStaff, nInstr, nRelMeasure);
         }
 
         else if (nType == eSFOT_TimeSignature)
 		{
-			pPaper->SetCursorX(xStart);
+			pPaper->SetCursorX(uxStart);
 			AddTime((lmTimeSignature*)pSO, pBSV, pPaper, pVStaff, nInstr, nRelMeasure);
 		}
 
@@ -1037,7 +1051,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
             //}
 
 			//create this lmStaffObj shape and add to table
-			pPaper->SetCursorX(xStart);
+			pPaper->SetCursorX(uxStart);
 			pSO->Layout(pBSV, pPaper);
 			lmShape* pShape = pSO->GetShape();
 			m_oTimepos[nRelMeasure].AddEntry(nInstr, pSO, pShape, false);
@@ -1053,15 +1067,15 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     if (pSO && pSO->GetClass() == eSFOT_Barline)
     {
 		//lmLUnits uPos = pPaper->GetCursorX();
-        pPaper->SetCursorX(xStart);
+        pPaper->SetCursorX(uxStart);
         pSO->Layout(pBSV, pPaper);
         lmShape* pShape = pSO->GetShape();
-        m_oTimepos[nRelMeasure].CloseLine(pSO, pShape, xStart);
+        m_oTimepos[nRelMeasure].CloseLine(pSO, pShape, uxStart);
     }
     else
 	{
         // no barline at the end of the measure.
-        m_oTimepos[nRelMeasure].CloseLine((lmStaffObj*)NULL, (lmShape*)NULL, xStart);
+        m_oTimepos[nRelMeasure].CloseLine((lmStaffObj*)NULL, (lmShape*)NULL, uxStart);
     }
 
     return fNewSystem;

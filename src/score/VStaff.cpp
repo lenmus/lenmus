@@ -1350,14 +1350,14 @@ lmBarline* lmVStaff::GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos)
 {
     // returns the barline for measure nMeasure (1..n) and, if found, updates content
     // of variable pointed by pPos with the X right position of this barline.
-    // If no barline is found for requested measure, returns NULL and pOs is not updated.
+    // If no barline is found for requested measure, returns NULL and pos is not updated.
     // This method is only used by Formatter, in order to not justify the last system
 
     //get the barline
     lmBarline* pBarline = m_cStaffObjs.GetBarlineOfMeasure(nMeasure);
 
     //if a barline is found update position
-    if (pBarline)
+    if (pBarline && pPos)
     {
         lmShape* pShape = (lmShape*)pBarline->GetShape();
 		*pPos = pShape->GetXRight();

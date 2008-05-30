@@ -79,7 +79,7 @@ class lmTimeposTable;
 class lmTimeLine
 {
 public:
-    lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart);
+    lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart, lmLUnits uSpace);
     ~lmTimeLine();
 
 	lmTimeposEntry* AddEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
@@ -95,14 +95,15 @@ public:
 	//spacing algorithm
 	lmLUnits IntitializeSpacingAlgorithm();
 	float ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor, lmLUnits* pMaxPos);
-	lmLUnits GetPosForTime(float rTime);
+	lmLUnits GetMinPossiblePosForTime(float rTime);
+    lmLUnits GetMinRequiredPosForTime(float rTime);
     lmLUnits GetAnchorForTime(float rTime);
 	lmLUnits GetLineWidth();
 
 	
 //private:
     lmTimeposEntry*  NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
-							  bool fProlog);
+							  bool fProlog, lmLUnits uSpace = 0.0f);
 
 	#define lmItEntries		std::vector<lmTimeposEntry*>::iterator
 
@@ -129,7 +130,7 @@ public:
 
     void SetParameters(float rSpacingFactor, lmESpacingMethod nSpacingMethod,
                        lmTenths nSpacingValue);
-    void StartLines(int nInstr, lmLUnits uxStart, lmVStaff* pVStaff);
+    void StartLines(int nInstr, lmLUnits uxStart, lmVStaff* pVStaff, lmLUnits uSpace);
     void CloseLine(lmStaffObj* pSO, lmShape* pShape, lmLUnits xStart);
     void AddEntry(int nInstr, lmStaffObj* pSO, lmShape* pShape, bool fProlog, int nStaff=0);
     void CleanTable();
@@ -153,7 +154,7 @@ public:
 
 private:
 	void AddEntry(int nInstr, int nVoice, lmStaffObj* pSO, lmShape* pShape, bool fProlog);
-    void StartLine(int nInstr, int nVoice=0, lmLUnits uxStart = -1.0f);
+    void StartLine(int nInstr, int nVoice=0, lmLUnits uxStart = -1.0f, lmLUnits uSpace = 0.0f);
 	lmTimeLine* FindLine(int nInstr, int nVoice);
 
 	#define lmItTimeLine	std::vector<lmTimeLine*>::iterator
