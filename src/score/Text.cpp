@@ -133,6 +133,14 @@ lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 
     //create the shape object
     lmShapeText* pShape = CreateShape(pPaper, uPos);
+
+    //According to LDP specifications [LDP manual, 3.6. The Text element] default text
+    //anchor pos is at bottom left corner. But text shape anchor pos is top left corner.
+    //Therefore it is necessary to shift the shape upwards by text height.
+    lmLUnits uHeight = pShape->GetHeight();
+    pShape->Shift(0.0f, -uHeight);
+
+    //add shape to graphic model
 	pBox->AddShape(pShape);
     m_pGMObj = pShape;
 

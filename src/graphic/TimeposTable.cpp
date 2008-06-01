@@ -779,11 +779,11 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
             lmLUnits uxObjAnchor = (*it)->GetAnchorForTime(rTime);
             if (uxObjAnchor < 0.0f) uxMinPos -= uxObjAnchor;
 			uxPos = wxMax(uxPos, uxMinPos); 
-		    wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Computing minimum xPos for time %.2f, uxMinPossiblePos=%.2f, uxMinRequiredPos=%.2f, uxMinPos=%.2f, uxObjAnchor=%.2f, uxPos=%.2f"),
-			    rTime, uxMinPossiblePos, uxMinRequiredPos, uxMinPos, uxObjAnchor, uxPos);
+		    //wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Computing minimum xPos for time %.2f, uxMinPossiblePos=%.2f, uxMinRequiredPos=%.2f, uxMinPos=%.2f, uxObjAnchor=%.2f, uxPos=%.2f"),
+			   // rTime, uxMinPossiblePos, uxMinRequiredPos, uxMinPos, uxObjAnchor, uxPos);
 		}
-		wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Setting timed objects at time %.2f, min xPos=%.2f"),
-			rTime, uxPos);
+		//wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Setting timed objects at time %.2f, min xPos=%.2f"),
+		//	rTime, uxPos);
 
 		//Process all timed objects placed at time rTime
 		fContinue = false;

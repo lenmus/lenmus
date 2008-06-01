@@ -87,6 +87,7 @@ lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
     {
         case eRenderJustified:
         case eRenderSimple:
+            m_rSpacingFactor = (float) m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
             return RenderJustified(pPaper);
         default:
             wxASSERT(false);
@@ -116,7 +117,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
     // get options for renderization
     bool fStopStaffLinesAtFinalBarline = m_pScore->GetOptionBool(_T("StaffLines.StopAtFinalBarline"));
-    m_rSpacingFactor = (float) m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
+    //m_rSpacingFactor = (float) m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
     m_nSpacingMethod = (lmESpacingMethod) m_pScore->GetOptionLong(_T("Render.SpacingMethod"));
     m_nSpacingValue = (lmTenths) m_pScore->GetOptionLong(_T("Render.SpacingValue"));
 
@@ -337,13 +338,16 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         if (m_nMeasuresInSystem == 0)
         {
             //The line width is not enough for drawing just one bar!!!
+
             //We have to split the measure
             if (SplitMeasureColumn())
             {
                 //it has been requested to abort layout. Return an empty score
 			    if (pBoxScore) delete pBoxScore;
                 pBoxScore = new lmBoxScore(m_pScore);
-	            return pBoxScore;
+                m_rSpacingFactor *= 0.7f;
+                return RenderJustified(pPaper);
+	            //return pBoxScore;
             }
             //As a consequence of splitting the measure, the score will have one more measure.
             //In order to take this into account incrementing measure
@@ -594,8 +598,8 @@ bool lmFormatter4::SplitMeasureColumn()
     //dbg --------------
     wxLogMessage(_T("[lmFormatter4::SplitMeasureColumn]. Dump of relevant info"));
     wxLogMessage(_T("*********************************************************\n"));
-    wxLogMessage(wxString::Format(_T("Measure width= %.2f, free space=%.2f"),
-                 m_uMeasureSize[1], m_uFreeSpace));
+    wxLogMessage(wxString::Format(_T("Measure width= %.2f, free space=%.2f, m_rSpacingFactor=%f"),
+                 m_uMeasureSize[1], m_uFreeSpace, m_rSpacingFactor));
     m_oTimepos[1].DumpTimeposTable();
     //dbg ---------------
 
