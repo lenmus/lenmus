@@ -269,6 +269,12 @@ enum lmEParentEvent {
 	lmMOVE_EVENT,
 };
 
+typedef struct lmVertexStruct {
+    lmLUnits    ux_coord;
+    lmLUnits    uy_coord;
+    unsigned    cmd;
+} lmVertex;
+    
 
 
 class lmShape : public lmGMObject
@@ -312,6 +318,10 @@ public:
 
     //selection
     bool IsInRectangle(lmURect& rect);
+
+    //vertex source
+    virtual void RewindVertices(int nPathId = 0) {}
+    virtual unsigned GetVertex(lmLUnits* pux, lmLUnits* puy);
 
 protected:
     lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("Shape"),

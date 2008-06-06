@@ -37,6 +37,7 @@
 #include "../app/Paper.h"
 #include "../score/StaffObj.h"
 #include "../app/ScoreCanvas.h"
+#include "agg_basics.h"         // agg::path_cmd_stop
 
 //access to colors
 #include "../globals/Colors.h"
@@ -349,6 +350,10 @@ int lmShape::GetPageNumber() const
 	return m_pOwnerBox->GetPageNumber();
 }
 
+unsigned lmShape::GetVertex(lmLUnits* pux, lmLUnits* puy)
+{ 
+    return agg::path_cmd_stop;
+}
 
 
 //========================================================================================

@@ -216,7 +216,7 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
         max_interval    a number indicating the maximum allowed interval for two consecutive notes
                         Default: 4
 
-        @todo: update the example
+        TODO: update the example
         Example:
         ------------------------------------
 

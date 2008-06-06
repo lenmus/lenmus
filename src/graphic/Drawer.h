@@ -39,6 +39,8 @@
 
 #include "../score/defs.h"      // lmLUnits, lmPixels
 
+class lmShape;
+
 enum lmELineEdges
 {
     eEdgeNormal = 0,        // edge line is perpendicular to line
@@ -61,6 +63,7 @@ public:
                           lmLUnits width, lmELineEdges nEdge, wxColour color);
     virtual void SolidPolygon(int n, lmUPoint points[], wxColour color) = 0;
     virtual void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius) = 0;
+    virtual void SolidShape(lmShape* pShape, wxColor color) = 0;
 
     //settings: line width, colors, fonts, ...
     virtual void SetFont(wxFont& font) = 0;
@@ -108,6 +111,7 @@ public:
     //solid shapes, anti-aliased when supported.
     void SolidPolygon(int n, lmUPoint points[], wxColour color);
     void SolidCircle(lmLUnits ux, lmLUnits uy, lmLUnits uRadius);
+    void SolidShape(lmShape* pShape, wxColor color) {};     //not supported
 
 
     //settings: line width, colors, fonts, ...

@@ -76,6 +76,7 @@ public:
     //solid shapes, anti-aliased when supported.
     void SolidPolygon(int n, lmUPoint uPoints[], wxColor color);
     void SolidCircle(lmLUnits ux, lmLUnits uy, lmLUnits uRadius);
+    void SolidShape(lmShape* pShape, wxColor color);
 
     //brushes, colors, fonts, ...
     void SetFont(wxFont& font);

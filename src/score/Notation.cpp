@@ -66,11 +66,12 @@ lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-    m_pGMObj = new lmShapeInvisible(this, uPos, lmUSize(m_nSpacerWidth, 0.0), _T("spacer")); 
+    lmLUnits uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
+    m_pGMObj = new lmShapeInvisible(this, uPos, lmUSize(uWidth, 0.0), _T("spacer")); 
 	pBox->AddShape((lmShape*)m_pGMObj);
 
     // set total width
-    return m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
+    return uWidth;
 
 }
 

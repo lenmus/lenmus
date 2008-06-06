@@ -1876,11 +1876,12 @@ void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSlice
 
 void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
 {
-	//Click on a staffobj. Move cursor to that staffobj
+	//Click on an score obj staffobj. 
+    //if it is a staffobj move cursor to it. Else do nothing
 	//uPos: click point, referred to current page origin
 
     lmScoreObj* pSCO = pGMO->GetScoreOwner();
-    wxASSERT(pSCO->GetScoreObjType() == lmSOT_ComponentObj);
+    if (pSCO->GetScoreObjType() != lmSOT_ComponentObj) return;
 
     //move cursor to object
     if (m_pCaret)

@@ -33,6 +33,80 @@
 #include "GMObject.h"
 #include "ShapeBracket.h"
 #include "../score/Score.h"
+#include "agg_basics.h"
+
+
+lmVertex m_BracketVertices[] = {
+    {   0.0, 2051.0, agg::path_cmd_move_to },
+    {   0.0, 2036.0, agg::path_cmd_line_to },
+    {  84.0, 1975.0, agg::path_cmd_curve3 },      //ctrol
+    { 131.0, 1896.0, agg::path_cmd_curve3 },      //on-curve
+    { 183.0, 1808.0, agg::path_cmd_curve3 },      //ctrol
+    { 183.0, 1703.0, agg::path_cmd_curve3 },      //on-curve
+    { 183.0, 1623.0, agg::path_cmd_curve3 },      //ctrol
+    { 143.0, 1454.0, agg::path_cmd_curve3 },      //on-curve
+    {  75.0, 1164.0, agg::path_cmd_curve3 },      //ctrol
+    {  69.0, 1137.0, agg::path_cmd_curve3 },      //on-curve
+    {  28.0,  936.0, agg::path_cmd_curve3 },      //ctrol
+    {  28.0,  794.0, agg::path_cmd_curve3 },      //on-curve
+    {  28.0,  614.0, agg::path_cmd_curve3 },      //ctrol
+    {  91.0,  425.0, agg::path_cmd_curve3 },      //on-curve
+    { 163.0,  210.0, agg::path_cmd_curve3 },      //ctrol
+    { 311.0,    0.0, agg::path_cmd_curve3 },      //on-curve
+    { 311.0,   15.0, agg::path_cmd_line_to },
+    { 247.0,  133.0, agg::path_cmd_curve3 },      //ctrol
+    { 216.0,  204.0, agg::path_cmd_curve3 },      //on-curve
+    { 172.0,  300.0, agg::path_cmd_curve3 },      //ctrol
+    { 151.0,  396.0, agg::path_cmd_curve3 },      //on-curve
+    { 129.0,  489.0, agg::path_cmd_curve3 },      //ctrol
+    { 129.0,  596.0, agg::path_cmd_curve3 },      //on-curve
+    { 129.0,  724.0, agg::path_cmd_curve3 },      //ctrol
+    { 175.0,  910.0, agg::path_cmd_curve3 },      //on-curve
+    { 219.0, 1066.0, agg::path_cmd_curve3 },      //ctrol
+    { 263.0, 1229.0, agg::path_cmd_curve3 },      //on-curve
+    { 307.0, 1389.0, agg::path_cmd_curve3 },      //ctrol
+    { 307.0, 1488.0, agg::path_cmd_curve3 },      //on-curve
+    { 307.0, 1697.0, agg::path_cmd_curve3 },      //ctrol
+    { 237.0, 1820.0, agg::path_cmd_curve3 },      //on-curve
+    { 173.0, 1932.0, agg::path_cmd_curve3 },      //ctrol
+    {  11.0, 2043.0, agg::path_cmd_curve3 },
+    { 176.0, 2165.0, agg::path_cmd_curve3 },      //ctrol
+    { 237.0, 2274.0, agg::path_cmd_curve3 },      //on-curve
+    { 307.0, 2398.0, agg::path_cmd_curve3 },      //ctrol
+    { 307.0, 2609.0, agg::path_cmd_curve3 },      //on-curve
+    { 307.0, 2703.0, agg::path_cmd_curve3 },      //ctrol
+    { 263.0, 2865.0, agg::path_cmd_curve3 },      //on-curve
+    { 218.0, 3030.0, agg::path_cmd_curve3 },      //ctrol
+    { 175.0, 3185.0, agg::path_cmd_curve3 },      //on-curve
+    { 129.0, 3371.0, agg::path_cmd_curve3 },      //ctrol
+    { 129.0, 3501.0, agg::path_cmd_curve3 },      //on-curve
+    { 129.0, 3658.0, agg::path_cmd_curve3 },      //ctrol
+    { 177.0, 3802.0, agg::path_cmd_curve3 },      //on-curve
+    { 216.0, 3919.0, agg::path_cmd_curve3 },      //ctrol
+    { 307.0, 4078.0, agg::path_cmd_curve3 },      //on-curve
+    { 307.0, 4094.0, agg::path_cmd_line_to },
+    { 162.0, 3894.0, agg::path_cmd_curve3 },      //ctrol
+    {  90.0, 3673.0, agg::path_cmd_curve3 },      //on-curve
+    {  28.0, 3483.0, agg::path_cmd_curve3 },      //ctrol
+    {  28.0, 3301.0, agg::path_cmd_curve3 },      //on-curve
+    {  28.0, 3156.0, agg::path_cmd_curve3 },      //ctrol
+    {  68.0, 2960.0, agg::path_cmd_curve3 },      //on-curve
+    {  75.0, 2927.0, agg::path_cmd_curve3 },      //ctrol
+    { 142.0, 2643.0, agg::path_cmd_curve3 },      //on-curve
+    { 183.0, 2470.0, agg::path_cmd_curve3 },      //ctrol
+    { 183.0, 2394.0, agg::path_cmd_curve3 },      //on-curve
+    { 183.0, 2287.0, agg::path_cmd_curve3 },      //ctrol
+    { 132.0, 2199.0, agg::path_cmd_curve3 },      //on-curve
+    {  89.0, 2124.0, agg::path_cmd_curve3 },      //ctrol
+    {   0.0, 2051.0, agg::path_cmd_curve3 },      //on_curve
+    {   0.0,    0.0, agg::path_cmd_end_poly | agg::path_flags_close | agg::path_flags_ccw }, //close polygon
+    {   0.0,    0.0, agg::path_cmd_stop }
+};
+
+float m_rxMaxBracket = 311.0f;
+float m_ryMaxBracket = 4094.0f;
+const int m_nNumVerticesBracket = sizeof(m_BracketVertices)/sizeof(lmVertex);
+
 
 
 //-------------------------------------------------------------------------------------
@@ -57,39 +131,32 @@ lmShapeBracket::lmShapeBracket(lmInstrument* pInstr, lmEBracketSymbol nSymbol,
 	SetYTop(yTop);
 	SetXRight(xRight);
 	SetYBottom(yBottom);
+
+    //set scaling and translation
+    SetAffineTransform();
 }
 
 lmShapeBracket::~lmShapeBracket()
 {
 }
 
+void lmShapeBracket::SetAffineTransform()
+{
+    //scale and position vertices
+    double rxScale((m_uxRight - m_uxLeft) / m_rxMaxBracket);
+    double ryScale((m_uyBottom - m_uyTop) / m_ryMaxBracket);
+    m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
+    m_trans *= agg::trans_affine_translation(m_uxLeft, m_uyTop);
+}
+
 void lmShapeBracket::Render(lmPaper* pPaper, wxColour color)
 {
     if (m_nSymbol == lm_eBracket)
     {
-        lmLUnits w = m_uxRight - m_uxLeft;
-        lmLUnits h = m_uyBottom - m_uyTop;
-        lmLUnits x = m_uxLeft;
-        lmLUnits y = m_uyTop;
-
-        lmUPoint uPoints[] = {
-            lmUPoint(x+w, y),
-            lmUPoint(x+w/6, y+h/8),
-            lmUPoint(x+w/6, y+h/5),
-            lmUPoint(x+w*2/3, y+h*2/5),
-            lmUPoint(x, y+h/2),
-            lmUPoint(x+w*2/3, y+h*3/5),
-            lmUPoint(x+w/6, y+h*4/5),
-            lmUPoint(x+w/6, y+h*7/8),
-            lmUPoint(x+w, y+h),
-            lmUPoint(x+w/2, y+h*7/8),
-            lmUPoint(x+w, y+h*3/5),
-            lmUPoint(x, y+h/2),
-            lmUPoint(x+w, y+h*2/5),
-            lmUPoint(x+w/2, y+h*1/8)
-        };
-        pPaper->SolidPolygon(14, uPoints, color);
+        pPaper->SolidShape(this, color);
     }
+
     else if (m_nSymbol == lm_eBrace)
     {
         lmInstrument* pInstr = (lmInstrument*)m_pOwner;
@@ -131,9 +198,26 @@ void lmShapeBracket::Shift(lmLUnits xIncr, lmLUnits yIncr)
 	m_uyBottom += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+    SetAffineTransform();
 
 	//if included in a composite shape update parent bounding and selection rectangles
 	if (this->IsChildShape())
 		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
+}
+
+unsigned lmShapeBracket::GetVertex(lmLUnits* pux, lmLUnits* puy)
+{
+    if(m_nCurVertex >= m_nNumVerticesBracket)
+        return agg::path_cmd_stop;
+
+    //scaling and translation
+    double x = m_BracketVertices[m_nCurVertex].ux_coord;
+    double y = m_BracketVertices[m_nCurVertex].uy_coord;
+    m_trans.transform(&x, &y);
+
+    //return values
+    *pux = (lmLUnits)x;
+    *puy = (lmLUnits)y;
+    return m_BracketVertices[m_nCurVertex++].cmd;
 }
 

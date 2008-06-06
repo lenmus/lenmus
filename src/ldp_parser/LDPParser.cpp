@@ -2965,11 +2965,11 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
 
         // get line width (optional parameter). Default: 1 tenth
-        //@todo
+        //TODO
         lmTenths rWidth = 1;
 
         // get colour (optional parameter). Default: black
-        //@todo
+        //TODO
         wxColour nColor = *wxBLACK;
 
         // create the AuxObj and attach it to the VStaff

@@ -44,7 +44,6 @@
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeBracket.h"
-
 #include "../app/Preferences.h"
 
 

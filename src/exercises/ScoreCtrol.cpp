@@ -31,7 +31,7 @@
     - Solfa link: next to Play link. Gap 40px
     - Play measures: next to Solfa link. Gap 20px
 
-    @todo
+    TODO
     For now it only displays Play link
 
 */

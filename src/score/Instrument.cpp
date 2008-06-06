@@ -46,6 +46,7 @@
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeBracket.h"
+#include "../app/Preferences.h"
 
 
 //Global variables used as default initializators
@@ -244,9 +245,11 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
 
     if (RenderBraket())
     {
-        //TODO: user options
-        m_uBracketWidth = TenthsToLogical(20.0f);
-        m_uBracketGap = TenthsToLogical(5.0f);
+        lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+        float rOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_WIDTH);
+        m_uBracketWidth = TenthsToLogical(rOptValue);
+        rOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_GAP);
+        m_uBracketGap = TenthsToLogical(rOptValue);
 
         m_uIndentOther += m_uBracketWidth + m_uBracketGap;
         m_uIndentFirst += m_uBracketWidth + m_uBracketGap;

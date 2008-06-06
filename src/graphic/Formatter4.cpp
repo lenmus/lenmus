@@ -453,7 +453,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 	    {
 			lmLUnits uxPos = pBoxSystem->GetXLeft() +
 						     (nSystem == 1 ? nFirstSystemIndent : nOtherSystemIndent);
-		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
+		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm TODO user options
             lmShapeLine* pLine =
                 new lmShapeLine(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
 						    uxPos, pBoxSystem->GetYBottom(),
@@ -718,6 +718,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     *pNewSystem = fNewSystem;
     bool fTrace =  m_fDebugMode && (m_nTraceMeasure == 0 || m_nTraceMeasure == nAbsMeasure);
 
+    m_oTimepos[nRelMeasure].EndOfData();        //inform that all data has been suplied
     return m_oTimepos[nRelMeasure].DoSpacing(fTrace);
 
 }

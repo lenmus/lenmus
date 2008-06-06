@@ -40,6 +40,7 @@
 #include "../score/defs.h"      // lmLUnits
 #include "../app/Paper.h"
 #include "GMObject.h"
+#include "agg_trans_affine.h"
 
 class lmInstrument;
 class lmPaper;
@@ -58,12 +59,22 @@ public:
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
+    //vertex source
+    void RewindVertices(int nPathId = 0) { m_nCurVertex = 0; }
+    unsigned GetVertex(lmLUnits* pux, lmLUnits* puy);
+
 
 protected:
+    void SetAffineTransform();
+
     //attributes
     lmLUnits		    m_uxLeft, m_uyTop;
     lmLUnits            m_uxRight, m_uyBottom;
     lmEBracketSymbol    m_nSymbol;
+
+    //vertex control
+    int                 m_nCurVertex;   //index to current vertex
+    agg::trans_affine   m_trans;        //affine transformation to apply
 
 };
 

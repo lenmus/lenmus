@@ -32,6 +32,10 @@
 
 #include "AggDrawer.h"
 #include "agg_ellipse.h"
+#include "GMObject.h"
+#include "agg_basics.h"
+#include "agg_conv_curve.h"
+#include "agg_path_storage.h"
 
 
 // lmDrawer interface must be designed so that all methods can be easily implemented
@@ -232,6 +236,62 @@ void lmAggDrawer::SolidPolygon(int n, lmUPoint points[], wxColor color)
     agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, lmToRGBA8(color));
 
 }
+
+void lmAggDrawer::SolidShape(lmShape* pShape, wxColor color)
+{
+    
+    //get vertices from shape
+    lmLUnits ux;
+    lmLUnits uy;
+    unsigned cmd;
+
+    agg::path_storage path;
+    agg::conv_curve<agg::path_storage> curve(path);
+
+    path.remove_all();
+    unsigned int nPathId = path.start_new_path();
+
+    pShape->RewindVertices(0);      //path_id = 0
+    while(!agg::is_stop(cmd = pShape->GetVertex(&ux, &uy)))
+    {
+        double x1 = WorldToDeviceX(ux);
+        double y1 = WorldToDeviceY(uy);
+        switch(cmd)
+        {
+            case agg::path_cmd_move_to:
+                path.move_to(x1, y1);
+                break;
+
+            case agg::path_cmd_line_to:
+                path.line_to(x1, y1);
+                break;
+
+            case agg::path_cmd_curve3:
+            {
+                cmd = pShape->GetVertex(&ux, &uy);
+                double x2 = WorldToDeviceX(ux);
+                double y2 = WorldToDeviceY(uy);
+                path.curve3(x1, y1, x2, y2);
+                break;
+            }
+
+            default:
+                path.end_poly(cmd);
+        }
+    }
+
+    double x;
+    double y;
+    m_ras.reset();
+    path.rewind(nPathId);
+    while(!agg::is_stop(cmd = curve.vertex(&x, &y)))
+    {
+        m_ras.add_vertex(x, y, cmd);
+    }
+
+    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, lmToRGBA8(color));
+}
+
 
 
 //brushes, colors, fonts, ...

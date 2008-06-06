@@ -1239,6 +1239,12 @@
 			Name="packages"
 			Filter="">
 			<File
+				RelativePath="..\..\packages\agg\src\agg_curves.cpp">
+			</File>
+			<File
+				RelativePath="..\..\packages\agg\src\agg_trans_affine.cpp">
+			</File>
+			<File
 				RelativePath="..\..\packages\wxMidi\src\wxMidi.cpp">
 			</File>
 			<File

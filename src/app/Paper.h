@@ -33,6 +33,8 @@
 #include "FontManager.h"
 #include "../graphic/Drawer.h"
 
+class lmShape;
+
 
 class lmPaper
 {
@@ -107,6 +109,8 @@ public:
     void SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
                   lmLUnits width, lmELineEdges nEdge, wxColour color)
             { m_pDrawer->SolidLine(x1, y1, x2, y2, width, nEdge, color); }
+    void SolidShape(lmShape* pShape, wxColor color)
+            { m_pDrawer->SolidShape(pShape, color); }
 
     //settings: line width, colors, fonts, ...
     void SetFont(wxFont& font) {m_pDrawer->SetFont(font); }

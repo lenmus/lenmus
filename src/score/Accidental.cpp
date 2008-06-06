@@ -54,7 +54,7 @@ lmAccidental::lmAccidental(lmNote* pOwner, lmEAccidentals nType)
 	m_pShape = (lmShape*)NULL;
 
 	//set up the after space
-    #define ACCIDENTALS_AFTERSPACE  3      //in tenths   @todo user options
+    #define ACCIDENTALS_AFTERSPACE  3      //in tenths   TODO user options
     m_uAfterSpace = m_pStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE);
 }
 
