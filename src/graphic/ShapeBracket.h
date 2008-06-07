@@ -71,10 +71,13 @@ protected:
     lmLUnits		    m_uxLeft, m_uyTop;
     lmLUnits            m_uxRight, m_uyBottom;
     lmEBracketSymbol    m_nSymbol;
+    double              m_rBraceBarHeight;
+    lmLUnits            m_udyHook;
 
     //vertex control
     int                 m_nCurVertex;   //index to current vertex
     agg::trans_affine   m_trans;        //affine transformation to apply
+    int                 m_nContour;     //contour number (0..3) for brace
 
 };
 

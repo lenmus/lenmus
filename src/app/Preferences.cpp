@@ -173,10 +173,16 @@ void lmPgmOptions::LoadDefaultValues()
     //------------------------------------------------------------------------
     //Instruments grouping: space after name/abbreviation
     Register(lm_EO_GRP_SPACE_AFTER_NAME, lmOP_TENTHS, 10.0f, _T("InstrGroup/Space after name/"));
-    //Instruments grouping: width of brace/bracket
-    Register(lm_EO_GRP_BRACKET_WIDTH, lmOP_TENTHS, 12.5f, _T("InstrGroup/Width of brace or bracket/"));
-    //Instruments grouping: space after brace or bracket
-    Register(lm_EO_GRP_BRACKET_GAP, lmOP_TENTHS, 5.0f, _T("InstrGroup/Space after brace or bracket/"));
+    //Instruments grouping: width of bracket
+    Register(lm_EO_GRP_BRACKET_WIDTH, lmOP_TENTHS, 12.5f, _T("InstrGroup/Width of bracket/"));
+    //Instruments grouping: space after bracket
+    Register(lm_EO_GRP_BRACKET_GAP, lmOP_TENTHS, 5.0f, _T("InstrGroup/Space after bracket/"));
+    lm_EO_GRP_BRACE_WIDTH,
+    lm_EO_GRP_BRACE_GAP,
+    //Instruments grouping: width of brace
+    Register(lm_EO_GRP_BRACE_WIDTH, lmOP_TENTHS, 6.0f, _T("InstrGroup/Width of brace/"));
+    //Instruments grouping: space after brace
+    Register(lm_EO_GRP_BRACE_GAP, lmOP_TENTHS, 5.0f, _T("InstrGroup/Space after brace bar/"));
 
     //Beams
     //thickness of beam line

@@ -151,10 +151,22 @@ void lmInstrGroup::MeasureNames(lmPaper* pPaper)
 
     if (RenderBraket())
     {
-        nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_WIDTH);
-        m_uBracketWidth = GetFirstInstrument()->TenthsToLogical(nOptValue);
-        nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_GAP);
-        m_uBracketGap = GetFirstInstrument()->TenthsToLogical(nOptValue);
+        if (m_nBracket == lm_eBracket)
+        {
+            //bracket
+            nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_WIDTH);
+            m_uBracketWidth = GetFirstInstrument()->TenthsToLogical(nOptValue);
+            nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACKET_GAP);
+            m_uBracketGap = GetFirstInstrument()->TenthsToLogical(nOptValue);
+        }
+        else
+        {
+            //brace
+            nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACE_WIDTH);
+            m_uBracketWidth = GetFirstInstrument()->TenthsToLogical(nOptValue);
+            nOptValue = pPgmOpt->GetFloatValue(lm_EO_GRP_BRACE_GAP);
+            m_uBracketGap = GetFirstInstrument()->TenthsToLogical(nOptValue);
+        }
 
         m_uIndentOther += m_uBracketWidth + m_uBracketGap;
         m_uIndentFirst += m_uBracketWidth + m_uBracketGap;

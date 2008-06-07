@@ -82,6 +82,8 @@ enum lmOptionId
     lm_EO_GRP_SPACE_AFTER_NAME,
     lm_EO_GRP_BRACKET_WIDTH,
     lm_EO_GRP_BRACKET_GAP,
+    lm_EO_GRP_BRACE_WIDTH,
+    lm_EO_GRP_BRACE_GAP,
     //Beams
     lm_EO_BEAM_THICKNESS,
     lm_EO_BEAM_SPACING,
