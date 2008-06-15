@@ -217,7 +217,7 @@ void lmShapeGlyph::Shift(lmLUnits xIncr, lmLUnits yIncr)
 		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
-wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale)
+wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale, wxDC* pDC)
 {
 	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
@@ -236,18 +236,18 @@ wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale)
     dc.GetTextExtent(sGlyph, &wText, &hText);
     dc.SetFont(wxNullFont);
 
-    // allocate a memory DC for drawing into a bitmap
+    // allocate the bitmap
+    // convert size to pixels
+    int wD = (int)pDC->LogicalToDeviceXRel(wText);
+    int hD = (int)pDC->LogicalToDeviceYRel(hText);
+    wxBitmap bitmap(wD+2, hD+2);
+
+     // allocate a memory DC for drawing into a bitmap
     wxMemoryDC dc2;
+    dc2.SelectObject(bitmap);
     dc2.SetMapMode(lmDC_MODE);
     dc2.SetUserScale(rScale, rScale);
     dc2.SetFont(*m_pFont);
-
-    // allocate the bitmap
-    // convert size to pixels
-    int wD = (int)dc2.LogicalToDeviceXRel(wText);
-    int hD = (int)dc2.LogicalToDeviceYRel(hText);
-    wxBitmap bitmap(wD+2, hD+2);
-    dc2.SelectObject(bitmap);
 
     // draw onto the bitmap
     dc2.SetBackground(* wxWHITE_BRUSH);
@@ -389,7 +389,7 @@ void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
 		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
-wxBitmap* lmShapeText::OnBeginDrag(double rScale)
+wxBitmap* lmShapeText::OnBeginDrag(double rScale, wxDC* pDC)
 {
 	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
@@ -400,25 +400,25 @@ wxBitmap* lmShapeText::OnBeginDrag(double rScale)
 
 	// Get size of text, in logical units
     wxCoord wText, hText;
-    wxScreenDC dc;
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale(rScale, rScale);
-    dc.SetFont(*m_pFont);
-    dc.GetTextExtent(m_sText, &wText, &hText);
-    dc.SetFont(wxNullFont);
-
-    // allocate a memory DC for drawing into a bitmap
-    wxMemoryDC dc2;
-    dc2.SetMapMode(lmDC_MODE);
-    dc2.SetUserScale(rScale, rScale);
-    dc2.SetFont(*m_pFont);
+//    wxScreenDC dc;
+//    dc.SetMapMode(lmDC_MODE);
+//    dc.SetUserScale(rScale, rScale);
+    pDC->SetFont(*m_pFont);
+    pDC->GetTextExtent(m_sText, &wText, &hText);
+//    dc.SetFont(wxNullFont);
 
     // allocate the bitmap
     // convert size to pixels
-    int wD = (int)dc2.LogicalToDeviceXRel(wText);
-    int hD = (int)dc2.LogicalToDeviceYRel(hText);
+    int wD = (int)pDC->LogicalToDeviceXRel(wText);
+    int hD = (int)pDC->LogicalToDeviceYRel(hText);
     wxBitmap bitmap(wD+2, hD+2);
+
+    // allocate a memory DC for drawing into a bitmap
+    wxMemoryDC dc2;
     dc2.SelectObject(bitmap);
+    dc2.SetMapMode(lmDC_MODE);
+    dc2.SetUserScale(rScale, rScale);
+    dc2.SetFont(*m_pFont);
 
     // draw onto the bitmap
     dc2.SetBackground(* wxWHITE_BRUSH);

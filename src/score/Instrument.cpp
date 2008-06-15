@@ -297,8 +297,15 @@ void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText*
         lmLUnits xRight = uBox.x - m_uBracketGap;
         lmLUnits yBottom = pBox->GetYBottom();
         lmEBracketSymbol nSymbol = (m_nBracket == lm_eBracketDefault ? lm_eBracket : m_nBracket);
-        lmShape* pShape = new lmShapeBracket(this, nSymbol, xLeft, uBox.y,
-                                    xRight, yBottom, *wxBLACK);
+        lmShape* pShape;
+        if (nSymbol == lm_eBracket)
+            pShape = new lmShapeBracket(this, xLeft, uBox.y, xRight, yBottom, *wxBLACK);
+        else
+        {
+            lmLUnits dyHook = TenthsToLogical(6.0f);
+            pShape = new lmShapeBrace(this, xLeft, uBox.y, xRight, yBottom,
+                                      dyHook, *wxBLACK);
+        }
         pBox->AddShape( pShape );
     }
 

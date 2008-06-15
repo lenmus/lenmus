@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
+	<File name="../../packages/agg/src/agg_curves.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="8384" topLine="245" />
+	</File>
 	<File name="../../src/app/AboutDialog.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="13881" topLine="317" />
 	</File>
@@ -217,8 +220,11 @@
 	<File name="../../src/graphic/Formatter4.cpp" open="0" top="0" tabpos="54">
 		<Cursor position="46001" topLine="1108" />
 	</File>
-	<File name="../../src/graphic/GMObject.cpp" open="0" top="0" tabpos="64">
-		<Cursor position="16128" topLine="544" />
+	<File name="../../src/graphic/GMObject.cpp" open="1" top="0" tabpos="11">
+		<Cursor position="16371" topLine="555" />
+	</File>
+	<File name="../../src/graphic/GMObject.h" open="1" top="0" tabpos="13">
+		<Cursor position="10448" topLine="290" />
 	</File>
 	<File name="../../src/graphic/GraphicManager.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="11940" topLine="335" />
@@ -232,8 +238,8 @@
 	<File name="../../src/graphic/ShapeBarline.cpp" open="0" top="0" tabpos="66">
 		<Cursor position="6141" topLine="153" />
 	</File>
-	<File name="../../src/graphic/ShapeBeam.cpp" open="0" top="0" tabpos="67">
-		<Cursor position="14305" topLine="394" />
+	<File name="../../src/graphic/ShapeBeam.cpp" open="1" top="0" tabpos="12">
+		<Cursor position="2747" topLine="220" />
 	</File>
 	<File name="../../src/graphic/ShapeBracket.cpp" open="0" top="0" tabpos="24">
 		<Cursor position="2348" topLine="81" />
@@ -247,8 +253,8 @@
 	<File name="../../src/graphic/Shapes.cpp" open="0" top="0" tabpos="70">
 		<Cursor position="8984" topLine="259" />
 	</File>
-	<File name="../../src/graphic/TimeposTable.cpp" open="0" top="0" tabpos="56">
-		<Cursor position="3669" topLine="262" />
+	<File name="../../src/graphic/TimeposTable.cpp" open="1" top="1" tabpos="14">
+		<Cursor position="18056" topLine="529" />
 	</File>
 	<File name="../../src/graphic/TimeposTable.h" open="0" top="0" tabpos="59">
 		<Cursor position="3990" topLine="95" />
@@ -410,10 +416,10 @@
 		<Cursor position="5745" topLine="153" />
 	</File>
 	<File name="../../src/score/ColStaffObjs.cpp" open="1" top="0" tabpos="7">
-		<Cursor position="63237" topLine="1833" />
+		<Cursor position="68579" topLine="42" />
 	</File>
-	<File name="../../src/score/ColStaffObjs.h" open="1" top="1" tabpos="6">
-		<Cursor position="1707" topLine="15" />
+	<File name="../../src/score/ColStaffObjs.h" open="1" top="0" tabpos="6">
+		<Cursor position="5599" topLine="170" />
 	</File>
 	<File name="../../src/score/Context.cpp" open="0" top="0" tabpos="73">
 		<Cursor position="2942" topLine="64" />
@@ -455,7 +461,7 @@
 		<Cursor position="12408" topLine="390" />
 	</File>
 	<File name="../../src/score/StaffObj.h" open="1" top="0" tabpos="8">
-		<Cursor position="1409" topLine="18" />
+		<Cursor position="8125" topLine="220" />
 	</File>
 	<File name="../../src/score/Text.cpp" open="0" top="0" tabpos="7">
 		<Cursor position="6179" topLine="175" />
@@ -481,8 +487,8 @@
 	<File name="../../src/score/defs.cpp" open="0" top="0" tabpos="8">
 		<Cursor position="6945" topLine="243" />
 	</File>
-	<File name="../../src/score/defs.h" open="0" top="0" tabpos="10">
-		<Cursor position="20689" topLine="553" />
+	<File name="../../src/score/defs.h" open="1" top="0" tabpos="10">
+		<Cursor position="20689" topLine="43" />
 	</File>
 	<File name="../../src/sound/MidiManager.cpp" open="0" top="0" tabpos="51">
 		<Cursor position="4989" topLine="122" />

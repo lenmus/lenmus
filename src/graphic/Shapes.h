@@ -89,7 +89,7 @@ public:
     virtual void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
-	virtual wxBitmap* OnBeginDrag(double rScale);
+	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
 	virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
 	lmUPoint GetObjectOrigin();
@@ -120,7 +120,7 @@ public:
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
-	virtual wxBitmap* OnBeginDrag(double rScale);
+	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
 
     //specific methods
     void SetFont(wxFont *pFont);

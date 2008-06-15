@@ -45,14 +45,12 @@
 class lmInstrument;
 class lmPaper;
 
-class lmShapeBracket : public lmSimpleShape
+class lmShapeBracketBrace : public lmSimpleShape
 {
 public:
-    lmShapeBracket(lmInstrument* pInstr, lmEBracketSymbol nSymbol,
-                   lmLUnits xLeft, lmLUnits yTop,
-                   lmLUnits xRight, lmLUnits yBottom,
-				   wxColour color = *wxBLACK);
-	~lmShapeBracket();
+    lmShapeBracketBrace(lmInstrument* pInstr, lmEBracketSymbol nSymbol,
+                        wxColour color, wxString sName);
+	virtual ~lmShapeBracketBrace();
 
 	//implementation of pure virtual methods in base class
     void Render(lmPaper* pPaper, wxColour color);
@@ -61,6 +59,49 @@ public:
 
     //vertex source
     void RewindVertices(int nPathId = 0) { m_nCurVertex = 0; }
+    virtual unsigned GetVertex(lmLUnits* pux, lmLUnits* puy) = 0;
+
+
+protected:
+    virtual void SetAffineTransform() = 0;
+
+    //attributes
+    lmEBracketSymbol    m_nSymbol;
+    lmLUnits		    m_uxLeft, m_uyTop;
+    lmLUnits            m_uxRight, m_uyBottom;
+
+    //vertex control
+    int                 m_nCurVertex;   //index to current vertex
+    agg::trans_affine   m_trans;        //affine transformation to apply
+    int                 m_nContour;     //contour number (0..3) for brace
+
+};
+
+class lmShapeBracket : public lmShapeBracketBrace
+{
+public:
+    lmShapeBracket(lmInstrument* pInstr, lmLUnits xLeft, lmLUnits yTop,
+                   lmLUnits xRight, lmLUnits yBottom, wxColour color = *wxBLACK);
+	~lmShapeBracket();
+
+    //vertex source
+    unsigned GetVertex(lmLUnits* pux, lmLUnits* puy);
+
+
+protected:
+    void SetAffineTransform();
+
+};
+
+
+class lmShapeBrace : public lmShapeBracketBrace
+{
+public:
+    lmShapeBrace(lmInstrument* pInstr, lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight,
+                 lmLUnits yBottom, lmLUnits dyHook, wxColour color = *wxBLACK);
+	~lmShapeBrace();
+
+    //vertex source
     unsigned GetVertex(lmLUnits* pux, lmLUnits* puy);
 
 
@@ -68,17 +109,8 @@ protected:
     void SetAffineTransform();
 
     //attributes
-    lmLUnits		    m_uxLeft, m_uyTop;
-    lmLUnits            m_uxRight, m_uyBottom;
-    lmEBracketSymbol    m_nSymbol;
     double              m_rBraceBarHeight;
     lmLUnits            m_udyHook;
-
-    //vertex control
-    int                 m_nCurVertex;   //index to current vertex
-    agg::trans_affine   m_trans;        //affine transformation to apply
-    int                 m_nContour;     //contour number (0..3) for brace
-
 };
 
 #endif    // __LM_SHAPEBRACKET_H__

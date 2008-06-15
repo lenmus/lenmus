@@ -31,6 +31,7 @@ class lmColStaffObjs;
 class lmVStaffCursor;
 class lmInstrGroup;
 class lmVStaff;
+class lmScoreCursor;
 
 
 class lmInstrument : public lmScoreObj

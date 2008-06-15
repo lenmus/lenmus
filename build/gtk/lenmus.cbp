@@ -55,6 +55,8 @@
 			<Add library="/usr/lib/libportmidi.so" />
 			<Add library="/usr/lib/libporttime.so" />
 		</Linker>
+		<Unit filename="../../packages/agg/src/agg_curves.cpp" />
+		<Unit filename="../../packages/agg/src/agg_trans_affine.cpp" />
 		<Unit filename="../../packages/wxMidi/src/wxMidi.cpp" />
 		<Unit filename="../../packages/wxMidi/src/wxMidiDatabase.cpp" />
 		<Unit filename="../../src/app/AboutDialog.cpp" />
@@ -231,6 +233,8 @@
 		<Unit filename="../../src/graphic/ShapeBracket.h" />
 		<Unit filename="../../src/graphic/ShapeNote.cpp" />
 		<Unit filename="../../src/graphic/ShapeNote.h" />
+		<Unit filename="../../src/graphic/ShapeRest.cpp" />
+		<Unit filename="../../src/graphic/ShapeRest.h" />
 		<Unit filename="../../src/graphic/ShapeStaff.cpp" />
 		<Unit filename="../../src/graphic/ShapeStaff.h" />
 		<Unit filename="../../src/graphic/ShapeTuplet.cpp" />

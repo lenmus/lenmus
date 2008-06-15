@@ -141,9 +141,9 @@ bool lmShapeNote::StemGoesDown()
 	return ((lmNote*)m_pOwner)->StemGoesDown();
 }
 
-wxBitmap* lmShapeNote::OnBeginDrag(double rScale)
+wxBitmap* lmShapeNote::OnBeginDrag(double rScale, wxDC* pDC)
 {
-	return lmCompositeShape::OnBeginDrag(rScale);
+	return lmCompositeShape::OnBeginDrag(rScale, pDC);
 }
 
 lmUPoint lmShapeNote::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)

@@ -317,13 +317,11 @@ void lmScoreObj::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
 
 void lmScoreObj::OnProperties(lmGMObject* pGMO)
 {
-	//TODO: FIX_ME: pGMO is uselless here because whe the pop-up menu is removed
-	//the score could be re-layouted and the pGMO become invalid
-	//wxMessageBox(_T("Properties of this"));
+    //TODO. For now just show a dump of the shape
 	if(!GetShape())
 		wxMessageBox(_T("Nothing selected!"));
 	else
-		wxMessageBox(GetShape()->Dump(0));
+		wxMessageBox(pGMO->Dump(0));
 }
 
 int lmScoreObj::GetPageNumber()

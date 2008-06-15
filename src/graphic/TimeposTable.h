@@ -52,12 +52,16 @@ public:
     // constructor and destructor
     lmTimeposEntry(lmTimeLine* pOwner, eTimeposEntryType nType, lmStaffObj* pSO,
                    lmShape* pShape, bool fProlog);
+    lmTimeposEntry(lmTimeLine* pOwner, lmTimeposEntry* pEntry);
     ~lmTimeposEntry() {}
 
 	void AssignSpace(lmTimeposTable* pTT, float rFactor);
 	void SetNoteRestSpace(lmTimeposTable* pTT, float rFactor);
 	void Reposition(lmLUnits uxPos);
     inline lmLUnits GetTotalSize() { return m_uSize + m_uFixedSpace + m_uVariableSpace; }
+
+    wxString Dump(int iEntry);
+
 
     //member variables (one entry of the table)
     //----------------------------------------------------------------------------
@@ -87,25 +91,29 @@ class lmTimeLine
 {
 public:
     lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart, lmLUnits uSpace);
-    ~lmTimeLine();
+    virtual ~lmTimeLine();
 
 	lmTimeposEntry* AddEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
 							 bool fProlog);
 	lmLUnits ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart);
+    lmLUnits RepositionShapes(lmLUnits uNewBarSize, lmLUnits uNewStart, lmLUnits uOldBarSize);
 
-	lmLUnits GetMaxXFinal();
+    lmLUnits GetMaxXFinal();
 	inline lmLUnits GetXStartLine() { return m_aMainTable[0]->m_xLeft; }	//xLeft of alpha entry
 
     //methods for debugging
     wxString DumpMainTable();
 
 	//spacing algorithm
-	lmLUnits IntitializeSpacingAlgorithm(float rFactor);
-	float ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor, lmLUnits* pMaxPos);
+	lmLUnits IntitializeSpacingAlgorithm(float rFactor, bool fCreateCriticalLine);
+	float ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor,
+                         bool fCreateCriticalLine, lmLUnits* pMaxPos);
 	lmLUnits GetMinPossiblePosForTime(float rTime);
     lmLUnits GetMinRequiredPosForTime(float rTime);
+    lmLUnits GetSpaceNonTimedForTime(float rTime);
     lmLUnits GetAnchorForTime(float rTime);
 	lmLUnits GetLineWidth();
+    lmTimeposEntry* GetMinNoteRestForTime(float rTime);
     void AssignSpace(float rFactor);
     float ComputeRequiredSpacingFactor(lmLUnits uNewBarSize);
 	
@@ -120,13 +128,32 @@ public:
 	int								m_nVoice;		//voice (0=not yet defined)
 	std::vector<lmTimeposEntry*>	m_aMainTable;	//The main table
 
-	//temporary data for ProcessTimepos() method
-	lmItEntries			m_it;
+	//temporary data for ComputeSpacing() and related methods
+	lmItEntries			m_it;           //point to current entry 
+	lmItEntries			m_itNote;       //point to first note/rest at rTime.
+	lmItEntries			m_itStart;      //point to start of rTime (possibly, a non-timed object)
 	lmLUnits			m_uxCurPos;
 
     //data to recompute spacing factor
     float               m_rBeta;
 
+protected:
+    lmTimeLine(lmTimeposTable* pMngr);      //constructor for lmCriticalLine
+
+
+};
+
+
+//derived class to implement the critical line
+class lmCriticalLine : public lmTimeLine
+{
+public:
+    lmCriticalLine(lmTimeposTable* pMngr) : lmTimeLine(pMngr) {}
+    ~lmCriticalLine() {}
+
+    void AddNonTimed(lmTimeLine* pLine, float rTime);
+    void AddTimed(lmTimeposEntry* pEntry);
+    void ComputeBeta(float rFactor);
 };
 
 
@@ -177,7 +204,7 @@ private:
 	lmTimeposEntry*		m_pCurEntry;				//ptr to last added entry
 	lmItTimeLine		m_itCurLine;				//iter pointing to current line
 	std::vector<lmTimeLine*>	m_aLines;			//the music lines
-    lmTimeLine*         m_pCriticalLine;			//the critical line
+    lmCriticalLine*     m_pCriticalLine;			//the critical line
 
     //formatter parameters
     float               m_rSpacingFactor;           //for proportional spacing of notes
@@ -185,6 +212,7 @@ private:
     lmTenths            m_rSpacingValue;            //spacing for 'fixed' method
 
 };
+
 
 #endif    // __LM_TIMEPOSTABLE_H__
 

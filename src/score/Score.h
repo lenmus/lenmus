@@ -184,7 +184,6 @@ class lmScoreView;
 
 #include "StaffObj.h"
 
-class lmContext;
 #include "SOControl.h"
 #include "AuxObj.h"
 #include "Accidental.h"
@@ -201,6 +200,7 @@ class lmContext;
 #include "Note.h"
 #include "Rest.h"
 #include "Chord.h"
+#include "ColStaffObjs.h"   //for lmVCursorState;
 #include "../app/Paper.h"
 #include "../sound/SoundManager.h"
 
@@ -382,7 +382,7 @@ private:
 
     // a lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
     std::vector<lmInstrument*>	m_cInstruments;     //list of instruments that form this score
-    std::vector<int>			m_nTitles;          //indexes (over attached AuxObjs) to titles 
+    std::vector<int>			m_nTitles;          //indexes (over attached AuxObjs) to titles
 
     //Variables related to polyphonic interpretation
     lmSoundManager*			m_pSoundMngr;       //Sound events table & manager

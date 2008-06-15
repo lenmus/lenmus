@@ -254,7 +254,6 @@ void lmAggDrawer::SolidShape(lmShape* pShape, wxColor color)
     pShape->RewindVertices(0);      //path_id = 0
     while(!agg::is_stop(cmd = pShape->GetVertex(&ux, &uy)))
     {
-        wxLogMessage(_T("[lmAggDrawer::SolidShape] ux=%2f, uy=%2f, cmd=%d"), ux, uy, cmd);
         double x1 = WorldToDeviceX(ux);
         double y1 = WorldToDeviceY(uy);
         switch(cmd)

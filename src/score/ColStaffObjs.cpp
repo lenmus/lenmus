@@ -42,6 +42,7 @@
 #include "Staff.h"
 #include "VStaff.h"
 #include "Context.h"
+#include "ColStaffObjs.h"
 #include "UndoRedo.h"
 #include "StaffObjIterator.h"
 #include "../app/ScoreView.h"
@@ -882,7 +883,7 @@ void lmVStaffCursor::UpdateTimepos()
 
 void lmVStaffCursor::RefreshInternalInfo()
 {
-    //during insert/remove operations, although m_it is correctly pointing to 
+    //during insert/remove operations, although m_it is correctly pointing to
     //current object, all other VCursor information could be wrong. So, it
     //is necessary to syncronize all this information.
 
@@ -953,7 +954,7 @@ void lmSegment::VoiceUsed(int nVoice)
 void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
                        bool fKeyKeepPitch)
 {
-	//Remove the staffobj pSO from the segment 
+	//Remove the staffobj pSO from the segment
     //The removed object is deleted or not, depending on flag 'fDelete'
     //VCursor is neither used nor updated
 
@@ -962,7 +963,7 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
 	lmItCSO itDel = find(m_StaffObjs.begin(), m_StaffObjs.end(), pSO);
     wxASSERT(itDel != m_StaffObjs.end());
 
-    //save an iterator pointing to object after object to remove       
+    //save an iterator pointing to object after object to remove
     lmItCSO itNext = itDel;
     ++itNext;
 
@@ -1808,7 +1809,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
         RemoveSegment( pNextSegment->m_nNumSegment );
     }
 
-    //after removing the staffobj, VCursor iterator is pointing to next staffobj but 
+    //after removing the staffobj, VCursor iterator is pointing to next staffobj but
     //other VCursor variables (rTimePos, in particular) are no longer valid and should be
     //updated.
     m_pVCursor->SetNewCursorState(m_pVCursor->GetScoreCursor(), &tVCState);
@@ -2404,10 +2405,10 @@ void lmColStaffObjs::AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO,
     if (nCurSegment < (int)m_Segments.size()-1)
     {
         //There are more segments.
-        
+
         //Fill with rests
         lmTODO(_T("[lmColStaffObjs::AutoReBar] Fill last segment with rests"));
-        
+
         //and add barline
         lmBarline* pBar = new lmBarline(lm_eBarlineSimple, m_pOwner, lmVISIBLE);
         pBar->SetTimePos( rMeasureDuration );
@@ -2544,6 +2545,10 @@ bool lmColStaffObjs::ShiftTime(float rTimeShift)
         }
         rNewTime = rMaxTime;
     }
+    else 
+        //round off errors. Ensure that it is 0
+        rNewTime = 0.0f;
+
 
     //move cursor to required time
     m_pVCursor->MoveToTime(rNewTime);

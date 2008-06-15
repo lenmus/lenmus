@@ -399,8 +399,8 @@ void lmNote::RemoveTie(lmTie* pTie)
     }
 }
 
-bool lmNote::IsBaseOfChord() 
-{ 
+bool lmNote::IsBaseOfChord()
+{
 	return m_pChord && m_pChord->IsBaseNote(this);
 }
 
@@ -956,8 +956,6 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
                 uyPos = uyStart - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                //pPaper->SolidLine(uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                //                   eEdgeNormal, *wxBLACK);
                 lmShapeLine* pLine =
                     new lmShapeLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                                     uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
@@ -971,8 +969,6 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
             if (i % 2 == 0) {
                 nTenths = 5 * (10 - i);
                 uyPos = uyStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->SolidLine(uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                                   eEdgeNormal, *wxBLACK);
                 lmShapeLine* pLine =
                     new lmShapeLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                                     uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
@@ -1704,7 +1700,7 @@ void lmNote::Freeze(lmUndoData* pUndoData)
         pUndoData->AddParam<lmNote*>( (lmNote*)NULL );
 
     //save accidentals
-    pUndoData->AddParam<lmEAccidentals>( 
+    pUndoData->AddParam<lmEAccidentals>(
         (m_pAccidentals ? m_pAccidentals->GetType() : lm_eNoAccidentals ) );
     m_pAccidentals = (lmAccidental*)NULL;
 

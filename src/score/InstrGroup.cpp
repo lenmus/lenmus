@@ -207,8 +207,16 @@ void lmInstrGroup::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText*
     {
         lmLUnits xLeft = xStaff - m_uBracketWidth - m_uBracketGap;
         lmLUnits xRight = xStaff - m_uBracketGap;
-        lmShape* pShape = new lmShapeBracket(GetFirstInstrument(), m_nBracket, xLeft,
-                                    yTop, xRight, yBottom, *wxBLACK);
+        lmShape* pShape;
+        if (m_nBracket == lm_eBracket)
+            pShape = new lmShapeBracket(GetFirstInstrument(), xLeft, yTop, xRight, yBottom,
+                                        *wxBLACK);
+        else
+        {
+            lmLUnits dyHook = GetFirstInstrument()->TenthsToLogical(6.0f);
+            pShape = new lmShapeBrace(GetFirstInstrument(), xLeft, yTop, xRight, yBottom,
+                                      dyHook, *wxBLACK);
+        }
         pBox->AddShape( pShape );
     }
 

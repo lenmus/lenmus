@@ -38,8 +38,8 @@
 #include "wx/dragimag.h"
 #endif
 
-#include "ColStaffObjs.h"
-
+//#include "ColStaffObjs.h"
+class lmSegment;
 class lmUndoData;
 
 

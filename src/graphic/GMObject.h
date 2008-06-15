@@ -159,7 +159,7 @@ public:
 
 	//dragging and moving
     inline bool IsDraggable() const { return m_fDraggable; }
-	virtual wxBitmap* OnBeginDrag(double rScale) { return (wxBitmap*)NULL; }
+	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC) { return (wxBitmap*)NULL; }
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
 	virtual lmUPoint GetObjectOrigin();
     virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
@@ -363,7 +363,7 @@ public:
     virtual void Render(lmPaper* pPaper, wxColour color)=0;
 
     //dragging
-	virtual wxBitmap* OnBeginDrag(double rScale) { return (wxBitmap*)NULL; }
+	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC) { return (wxBitmap*)NULL; }
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
 
 protected:
@@ -397,7 +397,7 @@ public:
     bool Collision(lmShape* pShape);
 
     //dragging
-    virtual wxBitmap* OnBeginDrag(double rScale);
+    virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
 
 

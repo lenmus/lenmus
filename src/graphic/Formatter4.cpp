@@ -979,23 +979,26 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     if(nAbsMeasure > pVStaff->GetNumMeasures())
         return false;       //this instrument has less measures than maximum
 
-    //determine if this is not the first measure of the score and the previous barline is
-    //visible. This is required to decide if add or not some space after previous barline.
-    lmLUnits uSpaceAfterBarline = 0.0f;
+    //if this is the first measure of the score or the previous barline is
+    //visible, add some space.
+    lmLUnits uSpaceAfterStart = 0.0f;
     if (nAbsMeasure != 1)
     {
-        // Get the previous barline
+        //Not first measure. Get the previous barline
         lmBarline* pBar = pVStaff->GetBarlineOfMeasure(nAbsMeasure-1, NULL);
         if (pBar)
         {
             if (pBar->IsVisible())
-                uSpaceAfterBarline = pVStaff->TenthsToLogical(20.0f);    // TODO: user options
+                uSpaceAfterStart = pVStaff->TenthsToLogical(20.0f);    // TODO: user options
         }
     }
+    else
+        //if first measure
+        uSpaceAfterStart = m_uSpaceBeforeProlog;
 
     //start a voice for each staff
     lmLUnits uxStart = pPaper->GetCursorX();
-    m_oTimepos[nRelMeasure].StartLines(nInstr, uxStart, pVStaff, uSpaceAfterBarline);
+    m_oTimepos[nRelMeasure].StartLines(nInstr, uxStart, pVStaff, uSpaceAfterStart);
 
     //The prolog (clef and key signature) must be rendered on each system, but the
     //matching StaffObjs only exist in the first system. In the first system the prolog
@@ -1120,9 +1123,6 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
     lmLUnits xPos = 0.0f;
 
     lmContext* pContext = (lmContext*)NULL;
-    //lmStaffObj* pSO = (lmStaffObj*) NULL;
-    //lmNoteRest* pNR = (lmNoteRest*)NULL;
-    //lmNote* pNote = (lmNote*)NULL;
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); pStaff = pVStaff->GetNextStaff(), nStaff++)
     {
         xPos = xStartPos;

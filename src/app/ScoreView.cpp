@@ -2238,7 +2238,7 @@ void lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint
     // prepare the image to drag
     if (m_pDragImage)
 		delete m_pDragImage;
-    wxBitmap* pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale);
+    wxBitmap* pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
     if (!pBitmap)
 	{
         wxLogMessage(_T("No drag image for object"));

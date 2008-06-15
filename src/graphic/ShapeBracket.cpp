@@ -165,36 +165,70 @@ const int m_nNumVerticesBrace2 = sizeof(m_BraceVertices2)/sizeof(lmVertex);
 
 
 //-------------------------------------------------------------------------------------
-// Implementation of lmShapeBracket
+// Implementation of lmShapeBracketBrace
 
 
-lmShapeBracket::lmShapeBracket(lmInstrument* pInstr, lmEBracketSymbol nSymbol,
-                               lmLUnits xLeft, lmLUnits yTop,
-                               lmLUnits xRight, lmLUnits yBottom,
-                               wxColour color)
-	: lmSimpleShape(eGMO_ShapeBracket, pInstr, _T("brace/bracket"))
+lmShapeBracketBrace::lmShapeBracketBrace(lmInstrument* pInstr, lmEBracketSymbol nSymbol,
+                                         wxColour color, wxString sName)
+	: lmSimpleShape(eGMO_ShapeBracket, pInstr, sName)
 {
     m_nSymbol = nSymbol;
 	m_color = color;
+}
 
-    if (m_nSymbol == lm_eBracket)
-    {
-        //bracket
-        m_uxLeft = xLeft;
-        m_uyTop = yTop;
-        m_uxRight = xRight;
-        m_uyBottom = yBottom;
-    }
-    else
-    {
-        //brace
-        m_uxLeft = xLeft;
-        m_udyHook = pInstr->TenthsToLogical(6.0f);
-        m_uyTop = yTop - m_udyHook;
-        m_uxRight = xRight;
-        m_uyBottom = yBottom + m_udyHook;
-        m_rBraceBarHeight = (double)(yBottom - yTop);
-    }
+lmShapeBracketBrace::~lmShapeBracketBrace()
+{
+}
+
+wxString lmShapeBracketBrace::Dump(int nIndent)
+{
+	//TODO
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump += wxString::Format(_T("%04d %s: "),
+		m_nId, m_sGMOName.c_str() );
+    sDump += DumpBounds();
+    sDump += _T("\n");
+	return sDump;
+}
+
+void lmShapeBracketBrace::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+    m_uxLeft += xIncr;
+	m_uyTop += yIncr;
+    m_uxRight += xIncr;
+	m_uyBottom += yIncr;
+
+    ShiftBoundsAndSelRec(xIncr, yIncr);
+    SetAffineTransform();
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
+}
+
+void lmShapeBracketBrace::Render(lmPaper* pPaper, wxColour color)
+{
+    m_nContour = 0;
+    m_nCurVertex = 0;
+    pPaper->SolidShape(this, color);
+
+    lmShape::RenderCommon(pPaper);
+}
+
+
+//-------------------------------------------------------------------------------------
+// Implementation of lmShapeBracket
+
+
+lmShapeBracket::lmShapeBracket(lmInstrument* pInstr, lmLUnits xLeft, lmLUnits yTop,
+                               lmLUnits xRight, lmLUnits yBottom, wxColour color)
+	: lmShapeBracketBrace(pInstr, lm_eBracket, color, _T("bracket"))
+{
+    m_uxLeft = xLeft;
+    m_uyTop = yTop;
+    m_uxRight = xRight;
+    m_uyBottom = yBottom;
 
 	//set bounds
 	SetXLeft(xLeft);
@@ -213,138 +247,116 @@ lmShapeBracket::~lmShapeBracket()
 void lmShapeBracket::SetAffineTransform()
 {
     //scale and position vertices
-    if (m_nSymbol == lm_eBracket)
-    {
-        double rxScale((m_uxRight - m_uxLeft) / m_rxMaxBracket);
-        double ryScale((m_uyBottom - m_uyTop) / m_ryMaxBracket);
-        m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-        m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
-        m_trans *= agg::trans_affine_translation(m_uxLeft, m_uyTop);
-    }
-    else
-    {
-        double rxScale((m_uxRight - m_uxLeft) / m_dxBraceBar);
-        double ryScale(m_udyHook / m_dyBrace);
-        m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-        m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
-        m_trans *= agg::trans_affine_translation(m_uxLeft, m_uyTop);
-    }
-}
 
-void lmShapeBracket::Render(lmPaper* pPaper, wxColour color)
-{
-    m_nContour = 0;
-    m_nCurVertex = 0;
-    pPaper->SolidShape(this, color);
-
-    //    lmInstrument* pInstr = (lmInstrument*)m_pOwner;
-
-    //    lmLUnits uThick = m_uxRight - m_uxLeft;
-    //    lmLUnits uyDown = pInstr->TenthsToLogical(20.0f);
-    //    lmLUnits uxDown = pInstr->TenthsToLogical(20.0f);
-
-    //    lmUPoint uPoints[] = {
-    //        lmUPoint(m_uxLeft, m_uyTop),
-    //        lmUPoint(m_uxLeft, m_uyBottom),
-    //        lmUPoint(m_uxLeft + uThick + uxDown, m_uyBottom + uyDown),
-    //        lmUPoint(m_uxLeft + uThick, m_uyBottom),
-    //        lmUPoint(m_uxLeft + uThick, m_uyTop),
-    //        lmUPoint(m_uxLeft + uThick + uxDown, m_uyTop - uyDown)
-    //    };
-    //    pPaper->SolidPolygon(6, uPoints, color);
-
-    lmShape::RenderCommon(pPaper);
-}
-
-wxString lmShapeBracket::Dump(int nIndent)
-{
-	//TODO
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: "),
-		m_nId, m_sGMOName.c_str() );
-    sDump += DumpBounds();
-    sDump += _T("\n");
-	return sDump;
-}
-
-void lmShapeBracket::Shift(lmLUnits xIncr, lmLUnits yIncr)
-{
-    m_uxLeft += xIncr;
-	m_uyTop += yIncr;
-    m_uxRight += xIncr;
-	m_uyBottom += yIncr;
-
-    ShiftBoundsAndSelRec(xIncr, yIncr);
-    SetAffineTransform();
-
-	//if included in a composite shape update parent bounding and selection rectangles
-	if (this->IsChildShape())
-		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
+    double rxScale((m_uxRight - m_uxLeft) / m_rxMaxBracket);
+    double ryScale((m_uyBottom - m_uyTop) / m_ryMaxBracket);
+    m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
+    m_trans *= agg::trans_affine_translation(m_uxLeft, m_uyTop);
 }
 
 unsigned lmShapeBracket::GetVertex(lmLUnits* pux, lmLUnits* puy)
 {
-    if (m_nSymbol == lm_eBracket)
-    {
-		if(m_nCurVertex >= m_nNumVerticesBracket)
-			return agg::path_cmd_stop;
+	if(m_nCurVertex >= m_nNumVerticesBracket)
+		return agg::path_cmd_stop;
 
-		//scaling and translation
-		double x = m_BracketVertices[m_nCurVertex].ux_coord;
-		double y = m_BracketVertices[m_nCurVertex].uy_coord;
-		m_trans.transform(&x, &y);
+	//scaling and translation
+	double x = m_BracketVertices[m_nCurVertex].ux_coord;
+	double y = m_BracketVertices[m_nCurVertex].uy_coord;
+	m_trans.transform(&x, &y);
 
-		//return values
-		*pux = (lmLUnits)x;
-		*puy = (lmLUnits)y;
-		return m_BracketVertices[m_nCurVertex++].cmd;
-	}
-	else
+	//return values
+	*pux = (lmLUnits)x;
+	*puy = (lmLUnits)y;
+	return m_BracketVertices[m_nCurVertex++].cmd;
+}
+
+
+
+//-------------------------------------------------------------------------------------
+// Implementation of lmShapeBrace
+
+lmShapeBrace::lmShapeBrace(lmInstrument* pInstr, lmLUnits xLeft, lmLUnits yTop,
+                           lmLUnits xRight, lmLUnits yBottom,
+                           lmLUnits dyHook, wxColour color)
+	: lmShapeBracketBrace(pInstr, lm_eBrace, color, _T("brace"))
+{
+    m_uxLeft = xLeft;
+    m_udyHook = dyHook;
+    m_uyTop = yTop - m_udyHook;
+    m_uxRight = xRight;
+    m_uyBottom = yBottom + m_udyHook;
+    m_rBraceBarHeight = (double)(yBottom - yTop);
+
+	//set bounds
+	SetXLeft(xLeft);
+	SetYTop(yTop);
+	SetXRight(xRight);
+	SetYBottom(yBottom);
+
+    //set scaling and translation
+    SetAffineTransform();
+}
+
+lmShapeBrace::~lmShapeBrace()
+{
+}
+
+void lmShapeBrace::SetAffineTransform()
+{
+    //scale and position vertices
+
+    double rxScale((m_uxRight - m_uxLeft) / m_dxBraceBar);
+    double ryScale(m_udyHook / m_dyBrace);
+    m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
+    m_trans *= agg::trans_affine_translation(m_uxLeft, m_uyTop);
+}
+
+unsigned lmShapeBrace::GetVertex(lmLUnits* pux, lmLUnits* puy)
+{
+	switch(m_nContour)
 	{
-		switch(m_nContour)
+		case 0:		//top hook
 		{
-			case 0:		//top hook
-			{
-			    //scaling and translation
-			    double x = m_BraceVertices[m_nCurVertex].ux_coord;
-			    double y = m_BraceVertices[m_nCurVertex].uy_coord;
-			    m_trans.transform(&x, &y);
+			//scaling and translation
+			double x = m_BraceVertices[m_nCurVertex].ux_coord;
+			double y = m_BraceVertices[m_nCurVertex].uy_coord;
+			m_trans.transform(&x, &y);
 
-			    //return values
-			    *pux = (lmLUnits)x;
-			    *puy = (lmLUnits)y;
-			    unsigned cmd = m_BraceVertices[m_nCurVertex++].cmd;
+			//return values
+			*pux = (lmLUnits)x;
+			*puy = (lmLUnits)y;
+			unsigned cmd = m_BraceVertices[m_nCurVertex++].cmd;
 
-			    //change to rectangle contour?
-			    if(m_nCurVertex == m_nNumVerticesBrace)
-                {
-				    m_nContour++;
-                    m_nCurVertex = 0;
-                }
+			//change to rectangle contour?
+			if(m_nCurVertex == m_nNumVerticesBrace)
+            {
+				m_nContour++;
+                m_nCurVertex = 0;
+            }
 
-                return cmd;
-			}
-			case 1:		//bottom hook
-			{
-		        if(m_nCurVertex >= m_nNumVerticesBrace2)
-			        return agg::path_cmd_stop;
-
-				//scaling and translation
-				double x = m_BraceVertices2[m_nCurVertex].ux_coord;
-			    double y = m_BraceVertices2[m_nCurVertex].uy_coord;
-				m_trans.transform(&x, &y);
-
-                y += m_rBraceBarHeight;
-
-				//return values
-				*pux = (lmLUnits)x;
-				*puy = (lmLUnits)y;
-			    return m_BraceVertices2[m_nCurVertex++].cmd;
-			}
-			default:
-				return agg::path_cmd_stop;
+            return cmd;
 		}
+		case 1:		//bottom hook
+		{
+		    if(m_nCurVertex >= m_nNumVerticesBrace2)
+			    return agg::path_cmd_stop;
+
+			//scaling and translation
+			double x = m_BraceVertices2[m_nCurVertex].ux_coord;
+			double y = m_BraceVertices2[m_nCurVertex].uy_coord;
+			m_trans.transform(&x, &y);
+
+            y += m_rBraceBarHeight;
+
+			//return values
+			*pux = (lmLUnits)x;
+			*puy = (lmLUnits)y;
+			return m_BraceVertices2[m_nCurVertex++].cmd;
+		}
+		default:
+			return agg::path_cmd_stop;
 	}
 }
 

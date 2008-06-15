@@ -58,7 +58,7 @@ public:
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
-	wxBitmap* OnBeginDrag(double rScale);
+	wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
 
 
 	//access to info

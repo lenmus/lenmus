@@ -68,7 +68,7 @@ to Describe Scores'.</para>
 
 <!--
 <para>Why to define a new language instead of using a existing
-one such as MIDI,  MusicXML, abc, Guido or others?</para>
+one such as MIDI, MusicXML, abc, Guido or others?</para>
 
 <ul>
  <li>MIDI: oriented
@@ -133,16 +133,16 @@ will have a whole c note. Here is how it would look:</para>
 
 <informalexample><programlisting>
   (score
-     (vers 1.5)
-     (instrument
-        (musicData
+     (vers 1.5)
+     (instrument
+       (musicData
             (clef G)
             (key C)
             (time 4 4)
             (n c4 w)
             (barline)
-        )
-     )
+        )
+     )
   )
 
 </programlisting></informalexample>
@@ -239,7 +239,7 @@ all text until the end of the line will be ignored. For example:</para>
             (time 4 4)      // Time signature: 4 4
             (n c4 w)        // Note. Pitch: C4, duration: w (whole note)
             (barline)       // a simple barline
-        )
+        )
     )
 )
 </programlisting></informalexample>
@@ -257,16 +257,16 @@ encode the scores using tags in Spanish instead of tags in English, you would wr
 <informalexample><programlisting>
   (score                            //the score and language tags are the only non-translatable
      (language es ISO-8859-1)       //specifies to use the Spanish set of tags
-     (vers 1.5)
-     (instrumento
-        (voz
+     (vers 1.5)
+     (instrumento
+        (voz
             (clave Sol)         //note the keyword 'clave' instead of 'clef'
             (tonalidad Do)
             (metrica 4 4)
             (n c4 r)            // duration: r (redonda = whole note)
-            (barra)
-        )
-     )
+            (barra)
+        )
+     )
   )
 
 </programlisting></informalexample>
@@ -940,7 +940,7 @@ and the double sharp symbol. So, for example,
 </programlisting></informalexample>
 
 <!--
-<para>La alteración representa el número de semitonos (ej. -1 para bemol, +1 para
+<para>La alteracion representa el numero de semitonos (ej. -1 para bemol, +1 para
 sostenido). Se pueden usar valores decimales (ej. +0,5 = un cuarto de tono
 arriba) para microtonos.</para>
 -->

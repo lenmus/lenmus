@@ -44,7 +44,8 @@ class lmScoreCursor;
 class lmUndoData;
 class lmTimeSignature;
 class lmKeySignature;
-enum EStaffObjType;
+
+#include "StaffObj.h"   //EStaffObjType
 
 
 // To simplify future modifications of this class (i.e changing the data structures to implement it)

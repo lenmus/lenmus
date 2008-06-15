@@ -351,7 +351,7 @@ int lmShape::GetPageNumber() const
 }
 
 unsigned lmShape::GetVertex(lmLUnits* pux, lmLUnits* puy)
-{ 
+{
     return agg::path_cmd_stop;
 }
 
@@ -552,18 +552,15 @@ void lmCompositeShape::RecomputeBounds()
 }
 
 
-wxBitmap* lmCompositeShape::OnBeginDrag(double rScale)
+wxBitmap* lmCompositeShape::OnBeginDrag(double rScale, wxDC* pDC)
 {
 	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
 	// If no bitmap is returned drag is cancelled.
+    // The received DC is used for logical units to pixels conversions
 	//
 	// So this method returns the bitmap to use with the drag image.
 
-    // allocate a memory DC for logical units to pixels conversions
-    wxMemoryDC dc1;
-    dc1.SetMapMode(lmDC_MODE);
-    dc1.SetUserScale(rScale, rScale);
 
     // allocate a memory DC for drawing onto a bitmap
     wxMemoryDC dc2;
@@ -571,8 +568,8 @@ wxBitmap* lmCompositeShape::OnBeginDrag(double rScale)
 
     // allocate the bitmap
     // convert size to pixels
-    int wD = (int)dc1.LogicalToDeviceXRel( (wxCoord)GetWidth() );
-    int hD = (int)dc1.LogicalToDeviceYRel( (wxCoord)GetHeight() );
+    int wD = (int)pDC->LogicalToDeviceXRel( (wxCoord)GetWidth() );
+    int hD = (int)pDC->LogicalToDeviceYRel( (wxCoord)GetHeight() );
     wxBitmap bitmap(wD, hD);
 
 	//clear the bitmap
@@ -586,13 +583,13 @@ wxBitmap* lmCompositeShape::OnBeginDrag(double rScale)
     {
         //get shape bitmap
         lmShape* pShape = m_Components[i];
-		wxBitmap* pBMS = pShape->OnBeginDrag(rScale);
+		wxBitmap* pBMS = pShape->OnBeginDrag(rScale, pDC);
 
         //merge it
         if (pBMS)
 		{
-            lmPixels vxPos = dc1.LogicalToDeviceXRel( (wxCoord)(pShape->GetXLeft() - GetXLeft()) );
-            lmPixels vyPos = dc1.LogicalToDeviceXRel( (wxCoord)(pShape->GetYTop() - GetYTop()) );
+            lmPixels vxPos = pDC->LogicalToDeviceXRel( (wxCoord)(pShape->GetXLeft() - GetXLeft()) );
+            lmPixels vyPos = pDC->LogicalToDeviceXRel( (wxCoord)(pShape->GetYTop() - GetYTop()) );
             dc2.DrawBitmap(*pBMS, vxPos, vyPos, true);       //true = transparent
 
             delete pBMS;    //bitmap no longer needed
@@ -682,7 +679,7 @@ lmGMObject* lmGMSelection::GetNext()
 {
     //advance to next one
     ++m_it;
-    if (m_it != m_Selection.end()) 
+    if (m_it != m_Selection.end())
         return *m_it;
 
     //no more items

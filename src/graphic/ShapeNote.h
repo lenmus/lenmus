@@ -82,7 +82,7 @@ public:
 	void SetStemLength(lmLUnits uLength);
 
 	//dragging
-    wxBitmap* OnBeginDrag(double rScale);
+    wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
 	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
 	void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
 
