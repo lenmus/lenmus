@@ -55,20 +55,20 @@ static int m_IdCounter = 0;        //to assign unique IDs to GMObjects
 
 
 lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
-					   wxString sName)
+					   wxString sName, int nOwnerIdx)
 {
     m_nId = m_IdCounter++;      // give it an ID
-    m_nType = nType;            // save its type
+    m_nType = nType;
 	m_pOwner = pOwner;
+    m_nOwnerIdx = nOwnerIdx;
 	m_sGMOName = sName;
 
 	//initializations
-	m_uBoundsBottom = lmUPoint(0.0, 0.0);
-    m_uBoundsTop = lmUPoint(0.0, 0.0);
+	m_uBoundsBottom = lmUPoint(0.0f, 0.0f);
+    m_uBoundsTop = lmUPoint(0.0f, 0.0f);
+    m_uUserShift = lmUPoint(0.0f, 0.0f);
 	m_fSelected = false;
 	m_fDraggable = fDraggable;
-
-    m_uOrigin = pOwner->GetLayoutRefPos();
 }
 
 lmGMObject::~lmGMObject()
@@ -132,6 +132,13 @@ void lmGMObject::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 	pCanvas->MoveObject(this, uPos);
 }
 
+void lmGMObject::ApplyUserShift(lmUPoint uUserShift)
+{
+    lmUPoint uShift = uUserShift - m_uUserShift;
+    Shift(uShift.x, uShift.y);
+    m_uUserShift = uUserShift;
+}
+
 void lmGMObject::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
     ShiftBoundsAndSelRec(xIncr, yIncr);
@@ -139,8 +146,7 @@ void lmGMObject::Shift(lmLUnits xIncr, lmLUnits yIncr)
 
 void lmGMObject::ShiftOrigin(lmUPoint uNewOrg)
 {
-	lmUPoint uShift = uNewOrg - m_uOrigin;
-	m_uOrigin = uNewOrg;
+	lmUPoint uShift = uNewOrg - m_pOwner->GetLayoutRefPos();
 	Shift(uShift.x, uShift.y);
 }
 
@@ -244,9 +250,9 @@ void lmBox::AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLU
 //========================================================================================
 
 
-lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName, bool fDraggable,
-				 wxColour color, bool fVisible)
-	: lmGMObject(pOwner, nType, fDraggable, sName)
+lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName,
+                 bool fDraggable, wxColour color, bool fVisible)
+	: lmGMObject(pOwner, nType, fDraggable, sName, nOwnerIdx)
 {
 	m_pOwnerBox = (lmBox*)NULL;
 	m_color = color;
@@ -360,9 +366,9 @@ unsigned lmShape::GetVertex(lmLUnits* pux, lmLUnits* puy)
 // Implementation of class lmSimpleShape
 //========================================================================================
 
-lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName,
-							 bool fDraggable, wxColour color, bool fVisible)
-	: lmShape(nType, pOwner, sName, fDraggable, color, fVisible)
+lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmScoreObj* pOwner, int nOwnerIdx,
+                             wxString sName, bool fDraggable, wxColour color, bool fVisible)
+	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, color, fVisible)
 {
 }
 
@@ -394,9 +400,10 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 
-lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, wxString sName, bool fDraggable,
+lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxString sName,
+                                   bool fDraggable,
                                    lmEGMOType nType, bool fVisible)
-	: lmShape(nType, pOwner, sName, fDraggable, *wxBLACK, fVisible)
+	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, *wxBLACK, fVisible)
 {
     m_fGrouped = true;	//by default all constituent shapes are grouped
 	m_fDoingShift = false;
@@ -465,7 +472,7 @@ wxString lmCompositeShape::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nId, m_sGMOName.c_str(),
+	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nOwnerIdx, m_sGMOName.c_str(),
         (m_fGrouped ? _T("yes") : _T("no")) );
     sDump += DumpBounds();
     sDump += _T("\n");

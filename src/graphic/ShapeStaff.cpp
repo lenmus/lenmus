@@ -44,7 +44,7 @@
 lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nStaff, int nNumLines, lmLUnits uLineWidth,
 						   lmLUnits uSpacing, lmLUnits xLeft, lmLUnits yTop,
 						   lmLUnits xRight, wxColour color)
-	: lmSimpleShape(eGMO_ShapeStaff, pStaff, _T("Staff"))
+	: lmSimpleShape(eGMO_ShapeStaff, pStaff, 0, _T("Staff"))
 {
 	m_nStaff = nStaff;
 	m_nNumLines = nNumLines;
@@ -81,7 +81,7 @@ wxString lmShapeStaff::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: "), m_nId, m_sGMOName.c_str());
+	sDump += wxString::Format(_T("%04d %s: "), m_nOwnerIdx, m_sGMOName.c_str());
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;

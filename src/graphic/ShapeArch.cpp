@@ -43,7 +43,7 @@
 
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
                 wxColour nColor, wxString sName, bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName, fDraggable, nColor, fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, nColor, fVisible)
 {
     m_uStart = uStart;
     m_uEnd = uEnd;
@@ -57,7 +57,7 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, boo
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
                          lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
                          wxString sName, bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName, fDraggable, nColor, fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, nColor, fVisible)
 {
     m_uStart = uStart;
     m_uEnd = uEnd;
@@ -71,7 +71,7 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
 
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, bool fArchUnder, wxColour nColor,
                          wxString sName, bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName, fDraggable, nColor, fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, nColor, fVisible)
 {
     m_uStart = lmUPoint(0.0, 0.0);
     m_uEnd = lmUPoint(0.0, 0.0);
@@ -102,7 +102,7 @@ wxString lmShapeArch::Dump(int nIndent)
 	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), ")
                 _T("ctrol1=(%.2f, %.2f), ctrol2=(%.2f, %.2f), ")
                 _T("Arch under note = %s, "),
-                m_nId, m_sGMOName.c_str(), m_uStart.x, m_uStart.y, m_uEnd.x, m_uEnd.y,
+                m_nOwnerIdx, m_sGMOName.c_str(), m_uStart.x, m_uStart.y, m_uEnd.x, m_uEnd.y,
                 m_uCtrol1.x, m_uCtrol1.y, m_uCtrol2.x, m_uCtrol2.y,
                 (m_fArchUnder ? _T("yes") : _T("no")) );
     sDump += DumpBounds();

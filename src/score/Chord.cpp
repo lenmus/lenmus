@@ -274,7 +274,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     //add the flag
 	if (fFlagNeeded)
 	{
-		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->GetScoreOwner(), nGlyph, pFont,
+		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->GetScoreOwner(), -1, nGlyph, pFont,
                                                 pPaper, uFlag, _T("Flag"));
 		pShapeNote->AddFlag(pShape);
 	}

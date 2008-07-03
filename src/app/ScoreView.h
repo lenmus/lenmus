@@ -202,7 +202,6 @@ private:
 	//caret management
     void SetInitialCaretPosition();
     void UpdateCaret();
-    void HightlightCaretObject(lmStaffObj* pSO, int nStaff, bool fSelect);
     void HideCaret();
     void ShowCaret();
 	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);

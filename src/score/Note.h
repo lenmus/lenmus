@@ -65,7 +65,6 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	void PlaybackHighlight(lmPaper* pPaper, wxColour colorC);
-	void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
 	inline wxString GetName() const { return _T("note"); }
 
     wxString    Dump();

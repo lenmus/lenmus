@@ -170,7 +170,7 @@ const int m_nNumVerticesBrace2 = sizeof(m_BraceVertices2)/sizeof(lmVertex);
 
 lmShapeBracketBrace::lmShapeBracketBrace(lmInstrument* pInstr, lmEBracketSymbol nSymbol,
                                          wxColour color, wxString sName)
-	: lmSimpleShape(eGMO_ShapeBracket, pInstr, sName)
+	: lmSimpleShape(eGMO_ShapeBracket, pInstr, 0, sName)
 {
     m_nSymbol = nSymbol;
 	m_color = color;
@@ -186,7 +186,7 @@ wxString lmShapeBracketBrace::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: "),
-		m_nId, m_sGMOName.c_str() );
+		m_nOwnerIdx, m_sGMOName.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;

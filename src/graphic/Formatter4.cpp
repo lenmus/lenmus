@@ -979,12 +979,17 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
     if(nAbsMeasure > pVStaff->GetNumMeasures())
         return false;       //this instrument has less measures than maximum
 
-    //if this is the first measure of the score or the previous barline is
-    //visible, add some space.
+    //add some space at start of measure, if necessary
     lmLUnits uSpaceAfterStart = 0.0f;
-    if (nAbsMeasure != 1)
+    if (nRelMeasure == 1)
     {
-        //Not first measure. Get the previous barline
+        //if first measure of system, add some space before prolog
+        uSpaceAfterStart = m_uSpaceBeforeProlog;
+    }
+    else
+    {
+        //Not first measure of system. Get the previous barline and add some space if
+        //the previous barline is visible.
         lmBarline* pBar = pVStaff->GetBarlineOfMeasure(nAbsMeasure-1, NULL);
         if (pBar)
         {
@@ -992,9 +997,6 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
                 uSpaceAfterStart = pVStaff->TenthsToLogical(20.0f);    // TODO: user options
         }
     }
-    else
-        //if first measure
-        uSpaceAfterStart = m_uSpaceBeforeProlog;
 
     //start a voice for each staff
     lmLUnits uxStart = pPaper->GetCursorX();
@@ -1113,7 +1115,7 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMe
 
     //AWARE when this method is invoked the paper position must be at the left marging,
     //at the start of a new system.
-    lmLUnits xStartPos = pPaper->GetCursorX() + m_uSpaceBeforeProlog;	//Save x to align all clefs
+    lmLUnits xStartPos = pPaper->GetCursorX();      //Save x to align all clefs
     lmLUnits yStartPos = pPaper->GetCursorY();
 
     //iterate over the collection of lmStaff objects to draw current clef and key signature
@@ -1186,7 +1188,7 @@ void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper,
 	lmShape* pMainShape = ((lmStaffObj*)pKey)->GetShape();          //cast forced because otherwise the compiler complains
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
-        lmShape* pShape = pKey->GetShape(nStaff);
+        lmShape* pShape = pKey->GetShapeForStaff(nStaff);
 		m_oTimepos[nRelMeasure].AddEntry(nInstr, pKey, pShape,
 										 (pShape != pMainShape), nStaff);
     }
@@ -1208,7 +1210,7 @@ void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox, lmPaper* pPaper,
 	lmShape* pMainShape = ((lmStaffObj*)pTime)->GetShape();          //cast forced because otherwise the compiler complains
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
-        lmShape* pShape = pTime->GetShape(nStaff);
+        lmShape* pShape = pTime->GetShapeForStaff(nStaff);
 		m_oTimepos[nRelMeasure].AddEntry(nInstr, pTime, pShape,
 										 (pShape != pMainShape), nStaff);
     }

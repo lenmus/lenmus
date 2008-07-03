@@ -87,7 +87,9 @@ void lmAuxObj::OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShif
     //is necessary to update this AuxObj reference pos.
 
 	m_uComputedPos.x += uxShift;
-	if (m_pGMObj)
+	m_uComputedPos.y += uyShift;
+    lmShape* pGMObj = GetShape();
+	if (pGMObj)
     {
 		////DBG--------------------------------------------------------------------------------
 		//if (GetID()==4)
@@ -102,17 +104,25 @@ void lmAuxObj::OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShif
 		//				uNewOrg.x, uNewOrg.y );
 		//}
 		////END DBG----------------------------------------------------------------------------
-        m_pGMObj->ShiftOrigin(m_uComputedPos + m_uUserShift);
+        pGMObj->Shift(uxShift, uyShift);
+        pGMObj->ApplyUserShift( this->GetUserShift() );
     }
 }
 
-void lmAuxObj::OnParentMoved(lmLUnits xShift, lmLUnits yShift)
+void lmAuxObj::OnParentMoved(lmLUnits uxShift, lmLUnits uyShift)
 {
 	//TODO: specific flag to decouple from parent staffObj, so the user can 
 	//control if the attached AuxObj will be moved with the parent or not
 
-	m_uUserShift.x += xShift;
-	m_uUserShift.y += yShift;
+    lmShape* pGMObj = GetShape();
+	if (pGMObj)
+    {
+        lmUPoint uUserShift = GetUserShift();
+	    uUserShift.x += uxShift;
+	    uUserShift.y += uyShift;
+        this->SaveUserLocation(uUserShift.x, uUserShift.y, 0);
+        pGMObj->ApplyUserShift(uUserShift);
+    }
 
 	////DBG--------------------------------------------------------------------------------
 	//if (GetID()==4)	//if (((lmComponentObj*)m_pParent)->GetID()==3)
@@ -171,13 +181,13 @@ lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
     int nGlyphIndex = (fAbove ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShape* pPS = m_pParent->GetShape();
     lmShapeGlyph* pFS =
-		new lmShapeGlyph(this, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
+		new lmShapeGlyph(this, -1, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
 						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE);
 
 	//center it on the owner
 	lmLUnits uCenterPos;
 	if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
-		!((lmNoteRest*)m_pParent)->IsRest() )
+		((lmNoteRest*)m_pParent)->IsNote() )
 	{
 		//it is a note. Center fermata on notehead shape
 		lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
@@ -225,10 +235,10 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     //create the shape object
     int nGlyphIndex = (IsAbove() ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShapeGlyph* pShape =
-		new lmShapeGlyph(this, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
+		new lmShapeGlyph(this, 0, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
 						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
 	pBox->AddShape(pShape);
-    m_pGMObj = pShape;
+    StoreShape(pShape);
 
 	return pShape->GetWidth();
 }
@@ -474,7 +484,7 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
                                           uWidth, uBoundsExtraWidth, m_nColor,
                                           _T("GraphLine"), eEdgeNormal);
 	pBox->AddShape(pShape);
-    m_pGMObj = pShape;
+    StoreShape(pShape);
     return pShape->GetBounds().GetWidth();
 
 }

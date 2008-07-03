@@ -45,7 +45,7 @@
 
 
 lmShapeBeam::lmShapeBeam(lmNoteRest* pOwner, bool fStemsDown, wxColour color)
-	: lmCompositeShape(pOwner, _T("Beam"), lmNO_DRAGGABLE, eGMO_ShapeBeam)
+	: lmCompositeShape(pOwner, 0, _T("Beam"), lmNO_DRAGGABLE, eGMO_ShapeBeam)
 {
 	m_color = color;
 	m_fStemsDown = fStemsDown;
@@ -180,7 +180,8 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
     lmShapeNote* pEndNote = (lmShapeNote*)NULL;
 	int iEndNote = -1;
 
-    //TODO set BeamHookSize equal to notehead width and allow for customization.
+    //TODO allow for customization.
+    lmLUnits uBeamHookSize = ((lmStaffObj*)m_pOwner)->TenthsToLogical(11.0f);
 
     for (int iLevel=0; iLevel < 6; iLevel++)
 	{
@@ -199,10 +200,10 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                 uyCur = ComputeYPosOfSegment(pShapeStem, uyShift);
 
                 //Let's check if we have to finish a forward hook in prev. note
-                if (fForwardPending) {
-                    //TODO set forward hook equal to notehead width and allow for customization.
-                    uxEnd = uxPrev + (uxCur-uxPrev)/3;
-                    uyEnd = uyPrev + (uyCur-uyPrev)/3;
+                if (fForwardPending)
+                {
+                    uxEnd = uxPrev + uBeamHookSize;
+                    uyEnd = uyPrev + uBeamHookSize*(uyCur-uyPrev)/(uxCur-uxPrev);
                     DrawBeamSegment(pPaper, uxStart, uyStart, uxEnd, uyEnd, uThickness,
                             pStartNote, pEndNote, color);
                     fForwardPending = false;
@@ -246,10 +247,8 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                         uyEnd = uyCur;
                         pEndNote = pShapeNote;
 					    iEndNote = iNote;
-
-                        //TODO set backward hook equal to notehead width and allow for customization.
-                        uxStart = uxPrev + (2*(uxCur-uxPrev))/3;
-                        uyStart = uyPrev + (2*(uyCur-uyPrev))/3;
+                        uxStart = uxCur - uBeamHookSize;
+                        uyStart = uyPrev + (uxCur-uxPrev-uBeamHookSize)*(uyCur-uyPrev)/(uxCur-uxPrev);
                         fStart = true;      //mark 'segment ready to be drawn'
                         fEnd = true;
                     break;

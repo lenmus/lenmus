@@ -41,7 +41,7 @@
 		<Cursor position="4140" topLine="94" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="75516" topLine="2047" />
+		<Cursor position="78271" topLine="2109" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="0" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
@@ -57,6 +57,12 @@
 	</File>
 	<File name="../../src/app/Paper.h" open="0" top="0" tabpos="2">
 		<Cursor position="5328" topLine="107" />
+	</File>
+	<File name="../../src/app/Printout.cpp" open="1" top="0" tabpos="16">
+		<Cursor position="1565" topLine="24" />
+	</File>
+	<File name="../../src/app/Printout.h" open="1" top="1" tabpos="15">
+		<Cursor position="1673" topLine="18" />
 	</File>
 	<File name="../../src/app/ScoreCanvas.cpp" open="0" top="0" tabpos="7">
 		<Cursor position="5767" topLine="166" />
@@ -253,7 +259,7 @@
 	<File name="../../src/graphic/Shapes.cpp" open="0" top="0" tabpos="70">
 		<Cursor position="8984" topLine="259" />
 	</File>
-	<File name="../../src/graphic/TimeposTable.cpp" open="1" top="1" tabpos="14">
+	<File name="../../src/graphic/TimeposTable.cpp" open="1" top="0" tabpos="14">
 		<Cursor position="18056" topLine="529" />
 	</File>
 	<File name="../../src/graphic/TimeposTable.h" open="0" top="0" tabpos="59">

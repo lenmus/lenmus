@@ -26,6 +26,8 @@
 #pragma interface "Clef.cpp"
 #endif
 
+#include <vector>
+
 #include "wx/dc.h"
 
 #include "Glyph.h"
@@ -40,7 +42,7 @@ public:
     //constructor and destructor
     lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff=1, bool fVisible=true,
 		   wxColour colorC = *wxBLACK);
-    ~lmClef() {}
+    ~lmClef();
 
 	wxString GetName() const { return _T("clef"); }
 
@@ -50,7 +52,9 @@ public:
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-
+ //   lmGMObject* GetGraphicObject(int nIdx=0);
+	//void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0);
+	//lmUPoint GetUserShift(int nShapeIdx = 0);
 
     //debugging
     wxString Dump();
@@ -81,6 +85,14 @@ private:
     bool            m_fHidden;          //to hide it in system prolog
 	wxColour		m_color;			//clef color
 	lmContext*		m_pContext;			//context created by this clef
+
+	//typedef struct lmShapeInfo_Struct {
+	//	lmShape*		pShape;			//ptr. to shape
+	//	lmUPoint    	uUserShift;		//user shift
+	//} lmShapeInfo;
+
+	////array of shapes
+ //   std::vector<lmShapeInfo*> m_ShapesInfo;
 
 };
 

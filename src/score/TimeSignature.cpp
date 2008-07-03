@@ -55,14 +55,7 @@ lmTimeSignature::lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, b
     m_nType = eTS_Normal;
     m_nBeats = nBeats;
     m_nBeatType = nBeatType;
-
-    //contexts and shapes
-	for (int i=0; i < lmMAX_STAFF; i++)
-	{
-        m_pContext[i] = (lmContext*)NULL;
-	    m_pShapes[i] = (lmCompositeShape*)NULL;
-	}
-
+    Create();
 }
 
 lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible) :
@@ -71,13 +64,7 @@ lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, 
     m_nType = eTS_Normal;
     m_nBeats = GetNumUnitsFromTimeSignType(nTimeSign);
     m_nBeatType = GetBeatTypeFromTimeSignType(nTimeSign);
-
-    //contexts and shapes
-	for (int i=0; i < lmMAX_STAFF; i++)
-	{
-        m_pContext[i] = (lmContext*)NULL;
-	    m_pShapes[i] = (lmCompositeShape*)NULL;
-	}
+    Create();
 }
 
 //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
@@ -85,6 +72,7 @@ lmTimeSignature::lmTimeSignature(lmETimeSignatureType nType, lmVStaff* pVStaff, 
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = nType;
+    Create();
     wxASSERT(false);    //TODO not yet implemented
 }
 
@@ -93,6 +81,7 @@ lmTimeSignature::lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, bool fVis
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_SingleNumber;
+    Create();
     wxASSERT(false);    //TODO not yet implemented
 }
 
@@ -102,7 +91,8 @@ lmTimeSignature::lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType, lmV
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Composite;
-    wxASSERT(false);    //TODO not yet implemented
+    Create();
+   wxASSERT(false);    //TODO not yet implemented
 }
 
 //constructor for type eTS_Multiple
@@ -111,7 +101,19 @@ lmTimeSignature::lmTimeSignature(int nNumFractions, int nBeats[], int nBeatType[
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Multiple;
+    Create();
     wxASSERT(false);    //TODO not yet implemented
+}
+
+void lmTimeSignature::Create()
+{
+    DefineAsMultiShaped();      //define time signature as multi-shaped ScoreObj
+
+    //contexts and shapes
+	for (int i=0; i < lmMAX_STAFF; i++)
+	{
+        m_pContext[i] = (lmContext*)NULL;
+	}
 }
 
 wxString lmTimeSignature::Dump()
@@ -212,9 +214,8 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
     for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
     {
         // Add the shape for time signature
-        m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, colorC,
-									sTopGlyphs, uxPosTop, uyPosTop + yOffset,
-									sBottomGlyphs, uxPosBottom, uyPosBottom + yOffset);
+        CreateShape(nStaff-1, pBox, pPaper, colorC, sTopGlyphs, uxPosTop, uyPosTop + yOffset,
+					sBottomGlyphs, uxPosBottom, uyPosBottom + yOffset);
 
         //compute vertical displacement for next staff
         yOffset += pStaff->GetHeight();
@@ -222,21 +223,22 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
     }
 
 	// set total width (incremented in one line for after space)
-    m_pGMObj = m_pShapes[0];
-	return m_pShapes[0]->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
+	return GetShapeForStaff(1)->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
 
-lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+lmCompositeShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPaper,
+                                      wxColour colorC,
                                       wxString& sTopGlyphs,
                                       lmLUnits uxPosTop, lmLUnits uyPosTop,
                                       wxString& sBottomGlyphs,
                                       lmLUnits uxPosBottom, lmLUnits uyPosBottom)
 {
 	//create the shape object
-    lmCompositeShape* pShape = new lmCompositeShape(this, _T("Time signature"), lmDRAGGABLE);
+    lmCompositeShape* pShape = new lmCompositeShape(this, nShapeIdx, _T("Time signature"),
+                                                    lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    //m_pGMObj = pShape;
+    StoreShape(pShape);
 
 	//loop to create glyphs for the top number
 	long nDigit;
@@ -247,7 +249,7 @@ lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxC
 		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
 		lmLUnits uyPos = uyPosTop 
 						 + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-		pShape->Add(new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
+        pShape->Add(new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
 									 lmUPoint(uxPosTop, uyPos), 
 									 _T("Beats"), lmNO_DRAGGABLE) );
 		uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
@@ -261,7 +263,7 @@ lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxC
 		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
 		lmLUnits uyPos = uyPosBottom 
 						+ m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-		pShape->Add(new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
+		pShape->Add(new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
 									 lmUPoint(uxPosBottom, uyPos), 
 									 _T("BeatType"), lmNO_DRAGGABLE) );
 		uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
@@ -285,52 +287,34 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 
 }
 
-void lmTimeSignature::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
+void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
-    if (fHighlight)
-    {
-        GetShape(nStaff)->Render(pPaper, g_pColors->CursorColor());
-    }
-    else
-    {
-        //IMPROVE
-        // If we paint in black it remains a coloured aureole around
-        // the note. By painting it first in white the size of the aureole
-        // is smaller but still visible. A posible better solution is to
-        // modify Render method to accept an additional parameter: a flag
-        // to signal that XOR draw mode in colour followed by a normal
-        // draw in BLACK must be done.
+ //   //This method is invoked only from TimeposTable module, from methods 
+ //   //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
+ //   //computations.
+ //   //By invoking this method, the auto-layout algorithm is informing about a change in
+ //   //the computed final position for this ScoreObj.
+ //   //Take into account that this method can be invoked several times for the
+ //   //same ScoreObj, when the auto-layout algorithm refines the final position.
 
-        GetShape(nStaff)->Render(pPaper, *wxWHITE);
-        GetShape(nStaff)->Render(pPaper, g_pColors->ScoreNormal());
-    }
-}
+ //   WXUNUSED(nShapeIdx);
 
-void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift)
-{
-    //This method is invoked only from TimeposTable module, from methods 
-    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
-    //computations.
-    //By invoking this method, the auto-layout algorithm is informing about a change in
-    //the computed final position for this ScoreObj.
-    //Take into account that this method can be invoked several times for the
-    //same ScoreObj, when the auto-layout algorithm refines the final position.
+	//m_uComputedPos.x += uxShift;
+ //   for (int nStaff=0; nStaff < m_pVStaff->GetNumStaves(); nStaff++)
+ //   {
+ //       if (m_pShapes[nStaff])
+ //           m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + m_uUserShift);
+ //   }
 
-	m_uComputedPos.x += uxShift;
-    for (int nStaff=0; nStaff < m_pVStaff->GetNumStaves(); nStaff++)
-    {
-        if (m_pShapes[nStaff])
-            m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + m_uUserShift);
-    }
-
-	// inform about the change to AuxObjs attached to this StaffObj
-    if (m_pAuxObjs)
-    {
-        for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-        {
-            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
-        }
-    }
+	//// inform about the change to AuxObjs attached to this StaffObj
+ //   if (m_pAuxObjs)
+ //   {
+ //       for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+ //       {
+ //           (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
+ //       }
+ //   }
+    lmStaffObj::StoreOriginAndShiftShapes(uxShift, nShapeIdx);
 
 }
 
@@ -463,9 +447,9 @@ float GetBeatDuration(int nBeatType)
         case 4:
             return pow(2, (10 - eQuarter));
         case 8:
-            return (1.5 * pow(2, (10 - eQuarter)) );
-        case 16:
             return pow(2, (10 - eEighth));
+        case 16:
+            return pow(2, (10 - e16th));
         default:
             wxASSERT(false);
             return 0;     //compiler happy

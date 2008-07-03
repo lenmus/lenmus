@@ -57,6 +57,18 @@ lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVis
     m_fHidden = false;
 	m_color = colorC;
     m_pContext = (lmContext*)NULL;
+    
+    DefineAsMultiShaped();      //define clef as multi-shaped ScoreObj
+}
+
+lmClef::~lmClef()
+{
+    //std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
+    //while (it != m_ShapesInfo.end())
+    //{
+    //    delete *it;
+    //    ++it;
+    //}
 }
 
 //--------------------------------------------------------------------------------------
@@ -137,10 +149,11 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // Paper cursor must be used as the base for positioning.
 
     //create the shape object
-    lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
+    int nIdx = NewShapeIndex();
+    lmShapeClef* pShape = new lmShapeClef(this, nIdx, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
 	pBox->AddShape(pShape);
-    m_pGMObj = pShape;
+    StoreShape(pShape);
 
 	// set total width (incremented in one line for after space)
 	lmLUnits nWidth = pShape->GetWidth();
@@ -159,11 +172,11 @@ lmShape* lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object
-    //lmShapeGlyph* pShape = new lmShapeGlyph(this, GetGlyphIndex(), GetSuitableFont(pPaper), pPaper,
-    //                                        lmUPoint(uPos.x, yPos), _T("Clef"));
-    lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
+    int nIdx = NewShapeIndex();
+    lmShapeClef* pShape = new lmShapeClef(this, nIdx, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, lmUPoint(uPos.x, yPos), 
 										  _T("Clef"), lmDRAGGABLE);
+    StoreShape(pShape);
 	pBox->AddShape(pShape);
     return pShape;
 }
@@ -215,6 +228,39 @@ void lmClef::RemoveCreatedContexts()
     delete m_pContext;
     m_pContext = (lmContext*)NULL;
 }
+
+//lmGMObject* lmClef::GetGraphicObject(int nIdx)
+//{
+//    //For clefs shape index is staff number (1..n) minus 1
+//
+//    if (m_ShapesInfo.size() == 0) return (lmGMObject*)NULL;
+//
+//    wxASSERT(nIdx < (int)m_ShapesInfo.size());
+//    return m_ShapesInfo[nIdx]->pShape;
+//}
+//
+//void lmClef::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)
+//{
+//    //if necessary, create empty shapes info entries
+//    int nToAdd = nShapeIdx - (int)m_ShapesInfo.size() + 1;
+//    for (int i=0; i < nToAdd; ++i)
+//    {
+//        lmShapeInfo* pShapeInfo = new lmShapeInfo;
+//        pShapeInfo->pShape = (lmShape*)NULL;
+//        pShapeInfo->uUserShift = lmUPoint(0.0f, 0.0f);
+//        m_ShapesInfo.push_back(pShapeInfo);
+//    }
+//
+//    //save new user position
+//    m_ShapesInfo[nShapeIdx]->uUserShift = lmUPoint(xPos, yPos);
+//}
+//
+//lmUPoint lmClef::GetUserShift(int nShapeIdx)
+//{
+//    wxASSERT(nShapeIdx < (int)m_ShapesInfo.size());
+//    return m_ShapesInfo[nShapeIdx]->uUserShift;
+//}
+//
 
 
 //------------------------------------------------------------------------------------------

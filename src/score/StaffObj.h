@@ -49,6 +49,60 @@ class lmUndoData;
 #define lmNO_VISIBLE        false
 
 
+//---------------------------------------------------------------------------------------
+// Helper classes for to define different shapes management behaviours
+//---------------------------------------------------------------------------------------
+
+//an object that is renderized by using shapes. Default behaviour is to use one shape
+class lmShapesMngr       
+{
+public:
+    lmShapesMngr();
+    virtual~lmShapesMngr();
+
+    //graphic objects
+    lmShape* GetShape(int nShapeIdx) { return (lmShape*)GetGraphicObject(nShapeIdx); }
+    virtual lmGMObject* GetGraphicObject(int nShapeIdx);
+	virtual void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx);
+	virtual lmUPoint GetUserShift(int nShapeIdx);
+    virtual void StoreShape(lmGMObject* pGMObj) { m_pGMObj = pGMObj; }
+    virtual int NewShapeIndex() { return 0; }
+    virtual void Init() {}
+
+protected:
+    lmGMObject*		m_pGMObj;		//shape/box that renders this object
+    lmUPoint        m_uUserShift;   //(0.0, 0.0) if no user requirements
+};
+
+
+//an object that is renderized using many independent shapes
+class lmMultiShapesMngr : public lmShapesMngr
+{
+public:
+    lmMultiShapesMngr();
+    ~lmMultiShapesMngr();
+
+    //implementation of virtual methods
+    lmGMObject* GetGraphicObject(int nShapeIdx);
+	void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx);
+	lmUPoint GetUserShift(int nShapeIdx);
+    void StoreShape(lmGMObject* pGMObj);
+    inline int NewShapeIndex() { return m_nNextIdx++; }
+    void Init();
+
+
+protected:
+
+	typedef struct lmShapeInfo_Struct {
+		lmGMObject*		pGMObj;			//ptr. to shape
+		lmUPoint    	uUserShift;		//user shift
+	} lmShapeInfo;
+
+	//array of shapes
+    int     m_nNextIdx;
+    std::vector<lmShapeInfo*> m_ShapesInfo;
+};
+
 
 
 //-------------------------------------------------------------------------------------------
@@ -76,6 +130,10 @@ class lmScoreObj
 {
 public:
     virtual ~lmScoreObj();
+
+    //building
+    void DefineAsMultiShaped();
+
 
     //--- Options --------------------------------------------
 
@@ -112,12 +170,22 @@ public:
 
 	//--- a ScoreObj can be renderizable
 
-	//position and main shape
-    virtual void StoreOriginAndShiftShapes(lmLUnits uLeft);
-	virtual lmLocation SetUserLocation(lmLocation tPos);
-    inline lmGMObject* GetGMObject() { return m_pGMObj; }
-	inline lmShape* GetShape() { return (lmShape*)m_pGMObj; }
-    inline lmBox* GetBox() { return (lmBox*)m_pGMObj; }
+    //interface with shapes manager
+    void StoreShape(lmGMObject* pGMObj) { m_pShapesMngr->StoreShape(pGMObj); }
+    lmShape* GetShape(int nShapeIdx=0) { return (lmShape*)m_pShapesMngr->GetGraphicObject(nShapeIdx); }
+    inline lmGMObject* GetGraphicObject(int nShapeIdx=0) { return m_pShapesMngr->GetGraphicObject(nShapeIdx); }
+	inline void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0) {
+                m_pShapesMngr->SaveUserLocation(xPos, yPos, nShapeIdx); 
+            }
+    inline lmUPoint GetUserShift(int nShapeIdx = 0) { return m_pShapesMngr->GetUserShift(nShapeIdx); }
+    int NewShapeIndex() { return m_pShapesMngr->NewShapeIndex(); }
+
+    //other shapes related methods
+    virtual inline bool IsMainShape(int nShapeIdx) { return nShapeIdx == 0; }
+
+	//positioning
+    virtual void StoreOriginAndShiftShapes(lmLUnits uLeft, int nShapeIdx = 0);
+	virtual lmLocation SetUserLocation(lmLocation tPos, int nShapeIdx = 0);
     virtual lmUPoint& GetReferencePaperPos() { return m_uPaperPos; }
     int GetPageNumber();
     inline lmUPoint GetLayoutRefPos() { return m_uComputedPos; }
@@ -126,7 +194,6 @@ public:
 	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 	virtual void SetReferencePos(lmUPoint& uPos);
 	void ResetObjectLocation();
-	inline lmUPoint GetUserShift() { return m_uUserShift; }
 
     //contextual menu
 	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
@@ -137,6 +204,9 @@ public:
 
 	//font to use to render the ScoreObj
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
+
+
+    //--- other methods
 
     //debug methods
 	virtual wxString Dump();
@@ -151,6 +221,7 @@ public:
 
 protected:
     lmScoreObj(lmScoreObj* pParent);
+    void PrepareToCreateShapes() { m_pShapesMngr->Init(); }
 
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
@@ -163,12 +234,11 @@ protected:
     lmLocation      m_tPos;         //desired position for this object
 	lmLocation		m_tSrcPos;		//position specified in source code
     lmUPoint		m_uPaperPos;	//relative origin to render this object: paper position
-    lmGMObject*		m_pGMObj;		//shape/box that renders this object
 
     lmUPoint        m_uComputedPos; //absolute (referenced to top-left paper margin corner)
-    lmUPoint        m_uUserShift;   //(0.0, 0.0) if no user requirements
 
-
+private:
+    lmShapesMngr*   m_pShapesMngr;
 };
 
 
@@ -277,7 +347,6 @@ public:
     inline bool IsVisible() { return m_fVisible; }
     inline EStaffObjType GetClass() { return m_nClass; }
 	virtual wxString GetName() const=0;
-	inline bool IsUserPositioned() { return m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f; }
 
     //classification
     inline bool IsClef() { return GetClass() == eSFOT_Clef; }
@@ -304,11 +373,10 @@ public:
     virtual float GetTimePosIncrement() { return 0; }
 
     // methods related to positioning
-    virtual lmLUnits GetAnchorPos() {return m_pGMObj->GetXLeft(); }
+    virtual lmLUnits GetAnchorPos() {return GetShape()->GetXLeft(); }
 
 	//highligh
 	virtual void PlaybackHighlight(lmPaper* pPaper, wxColour colorC) {}
-	virtual void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
 
     // methods related to staff ownership
     inline int GetStaffNum() { return m_nStaffNum; }
@@ -398,7 +466,7 @@ public:
     virtual wxString Dump();
 
     void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift);
-	void OnParentMoved(lmLUnits xShift, lmLUnits yShift);
+	void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift);
 
 	//---- specific methods of this class ------------------------
 
@@ -422,5 +490,6 @@ protected:
 // declare a list of AuxObjs
 #include "wx/list.h"
 WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
+
 
 #endif    // __LM_STAFFOBJ_H__

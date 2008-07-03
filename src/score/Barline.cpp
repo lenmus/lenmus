@@ -188,7 +188,7 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
         new lmShapeBarline(this, nType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
 	pBox->AddShape(pShape);
-    m_pGMObj = pShape;
+    StoreShape(pShape);
     return pShape->GetBounds().GetWidth();
 
 }

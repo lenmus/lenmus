@@ -128,11 +128,11 @@ typedef struct lmTemplateDataStruct
 static lmTemplateData m_Templates[] = {
         //    Displayed name                Template                Portrait
         { _("Empty (manuscript paper)"),    _T(""),     true },
-        { _("Choir 4 voices (SATB)"),       _T("choir_SATB.lms"),   true },
+        { _("Choir 4 voices (SATB)"),       _T("choir_SATB.lms"),   false },
         { _("Choir SATB + piano"),          _T("x"),    true },
         { _("Choir 3 voices (SSA)"),        _T("x"),    true },
         { _("Choir SSA + piano"),           _T("x"),    true },
-        { _("Flute"),                       _T("x"),    false },
+        { _("Flute"),                       _T("flute.lms"),        true },
         { _("Guitar"),                      _T("x"),    true },
         { _("Jazz quartet"),                _T("x"),    true },
         { _("Lead sheet"),                  _T("x"),    true },
@@ -441,7 +441,8 @@ void lmScoreWizard::OnWizardCancel( wxWizardEvent& event )
 IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardLayout, wxWizardPageSimple )
 
 BEGIN_EVENT_TABLE( lmScoreWizardLayout, wxWizardPageSimple )
-    //
+    EVT_LISTBOX(lmID_LIST_ENSEMBLE, OnEnsembleSelected)
+
 END_EVENT_TABLE()
 
 
@@ -495,7 +496,7 @@ void lmScoreWizardLayout::CreateControls()
 	wxStaticBoxSizer* pLayoutSizer;
 	pLayoutSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select instruments and style") ), wxVERTICAL );
 
-	m_pLstEnsemble = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxSize( 240,-1 ), 0, NULL, 0 );
+	m_pLstEnsemble = new wxListBox( this, lmID_LIST_ENSEMBLE, wxDefaultPosition, wxSize( 240,-1 ), 0, NULL, 0 );
 	pLayoutSizer->Add( m_pLstEnsemble, 1, wxALL, 5 );
 
 	pLeftColumnSizer->Add( pLayoutSizer, 1, wxEXPAND|wxALL, 5 );
@@ -541,6 +542,13 @@ void lmScoreWizardLayout::CreateControls()
 	pMainSizer->Add( pRightColumnSizer, 1, wxEXPAND, 5 );
 
 	this->SetSizer( pMainSizer );
+}
+
+void lmScoreWizardLayout::OnEnsembleSelected(wxCommandEvent& event)
+{
+    m_nSelTemplate = m_pLstEnsemble->GetSelection();
+    bool fPortrait = m_Templates[m_nSelTemplate].fPortrait;
+    m_pRadOrientation->SetSelection(fPortrait ? 1 : 0);
 }
 
 bool lmScoreWizardLayout::TransferDataFromWindow()

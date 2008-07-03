@@ -45,7 +45,7 @@ lmShapeBarline::lmShapeBarline(lmBarline* pBarline, lmEBarline nBarlineType,
 						       lmLUnits yBottom, lmLUnits uThinLineWidth,
                                lmLUnits uThickLineWidth, lmLUnits uSpacing,
                                lmLUnits uRadius, wxColour color)
-	: lmSimpleShape(eGMO_ShapeBarline, pBarline, _T("Barline"), lmDRAGGABLE)
+	: lmSimpleShape(eGMO_ShapeBarline, pBarline, 0, _T("Barline"), lmDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
     m_uxPos = xPos;
@@ -179,7 +179,7 @@ wxString lmShapeBarline::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: xPos=%.2f, yTop=%.2f, yBot=%.2f, "),
-		m_nId, m_sGMOName.c_str(), m_uxPos, m_uyTop, m_uyBottom );
+		m_nOwnerIdx, m_sGMOName.c_str(), m_uxPos, m_uyTop, m_uyBottom );
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;

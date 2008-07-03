@@ -49,14 +49,14 @@ public:
 	void SelectButton(int iB);
 
     enum {
-        lm_NUM_BUTTONS = 10
+        lm_NUM_ACC_BUTTONS = 10
     };
 
 private:
     void CreateControls(wxBoxSizer* m_pMainSizer);
 
 	int			        m_nSelButton;               //selected button
-	lmCheckButton*		m_pButton[lm_NUM_BUTTONS];  //buttons
+	lmCheckButton*		m_pButton[lm_NUM_ACC_BUTTONS];  //buttons
 
     DECLARE_EVENT_TABLE()
 };
@@ -66,27 +66,53 @@ private:
 //--------------------------------------------------------------------------------
 // Group for Note accidentals
 //--------------------------------------------------------------------------------
-class lmGrpNoteAcc: public lmToolGroup
+class lmGrpNoteAcc: public lmToolButtonsGroup
 {
 public:
     lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer);
     ~lmGrpNoteAcc() {}
 
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+
 	//access to options
 	lmEAccidentals GetNoteAcc();
 
 	void OnButton(wxCommandEvent& event);
-	void SelectButton(int iB);
 
     enum {
-        lm_NUM_BUTTONS = 8
+        lm_NUM_ACC_BUTTONS = 8
     };
 
 private:
-    void CreateControls(wxBoxSizer* m_pMainSizer);
 
-	int			        m_nSelButton;               //selected button
-	lmCheckButton*		m_pButton[lm_NUM_BUTTONS];  //buttons
+    DECLARE_EVENT_TABLE()
+};
+
+
+
+//--------------------------------------------------------------------------------
+// Group for note dots
+//--------------------------------------------------------------------------------
+class lmGrpNoteDots: public lmToolButtonsGroup
+{
+public:
+    lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpNoteDots() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+
+	//access to options
+	int GetNoteDots();
+
+	void OnButton(wxCommandEvent& event);
+
+    enum {
+        lm_NUM_DOT_BUTTONS = 3
+    };
+
+private:
 
     DECLARE_EVENT_TABLE()
 };
@@ -111,7 +137,16 @@ public:
 
     //interface with NoteAccidentals group
     inline lmEAccidentals GetNoteAccidentals() { return m_pGrpNoteAcc->GetNoteAcc(); }
-    inline void SetNoteAcc(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
+    inline void SetNoteAcc(int iB) { m_pGrpNoteAcc->SelectButton(iB); }
+    inline void SelectNextAccidental() { m_pGrpNoteAcc->SelectNextButton(); }
+    inline void SelectPrevAccidental() { m_pGrpNoteAcc->SelectPrevButton(); }
+
+    //interface with NoteDots group
+    inline int GetNoteDots() { return m_pGrpNoteDots->GetNoteDots(); }
+    inline void SetNoteDots(int iB) { m_pGrpNoteDots->SelectButton(iB); }
+    inline void SelectNextDot() { m_pGrpNoteDots->SelectNextButton(); }
+    inline void SelectPrevDot() { m_pGrpNoteDots->SelectPrevButton(); }
+
 
     //interface with NoteheadType group
 	lmENoteHeads GetNoteheadType();
@@ -124,6 +159,7 @@ private:
     //groups
     lmGrpNoteDuration*  m_pGrpNoteDuration;
     lmGrpNoteAcc*       m_pGrpNoteAcc;
+    lmGrpNoteDots*      m_pGrpNoteDots;
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;

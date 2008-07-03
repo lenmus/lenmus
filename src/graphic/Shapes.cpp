@@ -43,7 +43,7 @@
 lmShapeLine::lmShapeLine(lmScoreObj* pOwner, lmLUnits xStart, lmLUnits yStart,
                 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth, lmLUnits uBoundsExtraWidth,
 				wxColour nColor, wxString sName, lmELineEdges nEdge)
-    : lmSimpleShape(eGMO_ShapeLine, pOwner, sName)
+    : lmSimpleShape(eGMO_ShapeLine, pOwner, 0, sName)
 {
 	Create(xStart, yStart, xEnd, yEnd, uWidth, uBoundsExtraWidth, nColor, nEdge);
 }
@@ -126,7 +126,7 @@ wxString lmShapeLine::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), line width=%.2f, "),
-                m_nId, m_sGMOName.c_str(), m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth );
+                m_nOwnerIdx, m_sGMOName.c_str(), m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth );
     sDump += DumpBounds();
     sDump += _T("\n");
 
@@ -151,9 +151,10 @@ void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
 // lmShapeGlyph object implementation
 //========================================================================================
 
-lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                           lmUPoint uPos, wxString sName, bool fDraggable, wxColour color)
-    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, sName, fDraggable, color)
+lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, wxFont* pFont,
+                           lmPaper* pPaper, lmUPoint uPos, wxString sName, bool fDraggable,
+                           wxColour color)
+    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, nShapeIdx, sName, fDraggable, color)
 {
     m_nGlyph = nGlyph;
     m_pFont = pFont;
@@ -198,7 +199,7 @@ wxString lmShapeGlyph::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: pos=(%.2f,%.2f), "),
-        m_nId, m_sGMOName.c_str(), m_uGlyphPos.x, m_uGlyphPos.y);
+        m_nOwnerIdx, m_sGMOName.c_str(), m_uGlyphPos.x, m_uGlyphPos.y);
     sDump += DumpBounds();
     sDump += _T("\n");
 
@@ -326,7 +327,7 @@ lmUPoint lmShapeGlyph::GetObjectOrigin()
 
 lmShapeText::lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
 						 lmUPoint offset, wxString sName, bool fDraggable, wxColour color)
-    : lmSimpleShape(eGMO_ShapeText, pOwner, sName, fDraggable, color)
+    : lmSimpleShape(eGMO_ShapeText, pOwner, 0, sName, fDraggable, color)
 {
     m_sText = sText;
     m_pFont = pFont;
@@ -576,7 +577,7 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 
 lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, lmUPoint uPos, lmUSize uSize,
                                    wxString sName)
-	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, sName, lmNO_DRAGGABLE)
+	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, 0, sName, lmNO_DRAGGABLE)
 {
     m_uBoundsTop.x = uPos.x;
     m_uBoundsTop.y = uPos.y;

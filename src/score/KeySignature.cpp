@@ -77,9 +77,21 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
 	    m_pShapes[i] = (lmCompositeShape*)NULL;
 	}
 
+    DefineAsMultiShaped();      //define clef as multi-shaped ScoreObj
+
     g_pLogger->LogTrace(_T("lmKeySignature"),
         _T("[lmKeySignature::lmKeySignature] m_nFifths=%d, m_fMajor=%s, nKey=%d"),
             m_nFifths, (m_fMajor ? _T("yes") : _T("no")), m_nKeySignature );
+}
+
+lmKeySignature::~lmKeySignature()
+{
+    //std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
+    //while (it != m_ShapesInfo.end())
+    //{
+    //    delete *it;
+    //    ++it;
+    //}
 }
 
 wxString lmKeySignature::Dump()
@@ -156,14 +168,15 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
         lmEClefType nClef = (pClef ? pClef->GetClefType() : lmE_Undefined);
 
         // Add the shape for key signature
-        m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, pStaff, colorC);
+        m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, pStaff,
+                                          colorC);
         uWidth = wxMax(m_pShapes[nStaff-1]->GetWidth(), uWidth);
 
         //compute vertical displacement for next staff
         uyTop += pStaff->GetHeight();
         uyTop += pStaff->GetAfterSpace();
     }
-    m_pGMObj = m_pShapes[0];
+    //m_pGMObj = m_pShapes[0];
 
 	// set total width (incremented in one line for after space)
 	return uWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);;
@@ -175,7 +188,9 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     // This method is also used when rendering the prolog
 
     //create the container shape object
-    lmCompositeShape* pShape = new lmCompositeShape(this, _T("Key signature"), lmDRAGGABLE);
+    int nIdx = NewShapeIndex();
+    lmCompositeShape* pShape = new lmCompositeShape(this, nIdx, _T("Key signature"), lmDRAGGABLE);
+    StoreShape(pShape);
 	pBox->AddShape(pShape);
 
     lmLUnits uSharpPos[8];      //sharps positions, in order of sharps appearance
@@ -361,7 +376,7 @@ lmShape* lmKeySignature::AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uP
         nGlyph = GLYPH_FLAT_ACCIDENTAL;
 
     lmLUnits yPos = uPos.y - pStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset);
-    return new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
+    return new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
 							lmUPoint(uPos.x, yPos), _T("Accidental"));
 
 }
@@ -413,54 +428,33 @@ void lmKeySignature::SetKeySignatureType()
 
 }
 
-void lmKeySignature::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
+void lmKeySignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
-    if (fHighlight)
-    {
-        GetShape(nStaff)->Render(pPaper, g_pColors->CursorColor());
-    }
-    else
-    {
-        //IMPROVE
-        // If we paint in black it remains a coloured aureole around
-        // the note. By painting it first in white the size of the aureole
-        // is smaller but still visible. A posible better solution is to
-        // modify Render method to accept an additional parameter: a flag
-        // to signal that XOR draw mode in colour followed by a normal
-        // draw in BLACK must be done.
+ //   //This method is invoked only from TimeposTable module, from methods 
+ //   //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
+ //   //computations.
+ //   //By invoking this method, the auto-layout algorithm is informing about a change in
+ //   //the computed final position for this ScoreObj.
+ //   //Be aware of the fact that this method can be invoked several times for the
+ //   //same ScoreObj, when the auto-layout algorithm refines the final position.
 
-        GetShape(nStaff)->Render(pPaper, *wxWHITE);
-        GetShape(nStaff)->Render(pPaper, g_pColors->ScoreNormal());
-    }
-}
+	////m_uComputedPos.x += uxShift;
+ //   for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
+ //   {
+ //       lmUPoint uUserShift = this->GetUserShift(nShapeIdx);
+ //       if (m_pShapes[nStaff])
+ //           m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + uUserShift);
+ //   }
 
-
-void lmKeySignature::StoreOriginAndShiftShapes(lmLUnits uxShift)
-{
-    //This method is invoked only from TimeposTable module, from methods 
-    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
-    //computations.
-    //By invoking this method, the auto-layout algorithm is informing about a change in
-    //the computed final position for this ScoreObj.
-    //Take into account that this method can be invoked several times for the
-    //same ScoreObj, when the auto-layout algorithm refines the final position.
-
-	m_uComputedPos.x += uxShift;
-    for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
-    {
-        if (m_pShapes[nStaff])
-            m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + m_uUserShift);
-    }
-
-	// inform about the change to AuxObjs attached to this StaffObj
-    if (m_pAuxObjs)
-    {
-        for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-        {
-            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
-        }
-    }
-
+	//// inform about the change to AuxObjs attached to this StaffObj
+ //   if (m_pAuxObjs)
+ //   {
+ //       for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+ //       {
+ //           (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
+ //       }
+ //   }
+    lmStaffObj::StoreOriginAndShiftShapes(uxShift, nShapeIdx);
 }
 
 void lmKeySignature::RemoveCreatedContexts()
@@ -478,6 +472,37 @@ void lmKeySignature::RemoveCreatedContexts()
 	}
 }
 
+//lmGMObject* lmKeySignature::GetGraphicObject(int nIdx)
+//{
+//    //For KeySignatures shape index is staff number (1..n) minus 1
+//
+//    if (m_ShapesInfo.size() == 0) return (lmGMObject*)NULL;
+//
+//    wxASSERT(nIdx < (int)m_ShapesInfo.size());
+//    return m_ShapesInfo[nIdx]->pShape;
+//}
+//
+//void lmKeySignature::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)
+//{
+//    //if necessary, create empty shapes info entries
+//    int nToAdd = nShapeIdx - (int)m_ShapesInfo.size() + 1;
+//    for (int i=0; i < nToAdd; ++i)
+//    {
+//        lmShapeInfo* pShapeInfo = new lmShapeInfo;
+//        pShapeInfo->pShape = (lmShape*)NULL;
+//        pShapeInfo->uUserShift = lmUPoint(0.0f, 0.0f);
+//        m_ShapesInfo.push_back(pShapeInfo);
+//    }
+//
+//    //save new user position
+//    m_ShapesInfo[nShapeIdx]->uUserShift = lmUPoint(xPos, yPos);
+//}
+//
+//lmUPoint lmKeySignature::GetUserShift(int nShapeIdx)
+//{
+//    wxASSERT(nShapeIdx < (int)m_ShapesInfo.size());
+//    return m_ShapesInfo[nShapeIdx]->uUserShift;
+//}
 
 
 

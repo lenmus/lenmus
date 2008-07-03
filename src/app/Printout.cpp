@@ -37,7 +37,7 @@
 #include "ScoreView.h"
 #include "Printout.h"
 
-lmPrintout::lmPrintout(lmScoreView* pView, wxChar *title)
+lmPrintout::lmPrintout(lmScoreView* pView, wxString title)
     : wxPrintout(title)
 {
     wxASSERT(pView);

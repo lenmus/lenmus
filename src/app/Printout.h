@@ -31,7 +31,7 @@ class lmScoreView;
 class lmPrintout: public wxPrintout
 {
 public:
-    lmPrintout(lmScoreView* pView, wxChar *title = _T("My printout"));
+    lmPrintout(lmScoreView* pView, wxString title = _T("My printout"));
     bool OnPrintPage(int page);
     bool HasPage(int page);
     bool OnBeginDocument(int startPage, int endPage);

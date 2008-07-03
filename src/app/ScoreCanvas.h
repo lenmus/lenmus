@@ -66,7 +66,7 @@ public:
 	// commands with Do/Undo support
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
     virtual void InsertClef(lmEClefType nClefType) {}
-	virtual void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
+	virtual void InsertNote(lmEPitchType nPitchType, wxString sStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration,
 					lmENoteHeads nNotehead,
 					lmEAccidentals nAcc = lm_eNoAccidentals ) {}
@@ -82,6 +82,8 @@ public:
 
     // event handlers
     virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
+    virtual void OnKeyDown(wxKeyEvent& event) { event.Skip(); }
+    virtual void OnKeyUp(wxKeyEvent& event) { event.Skip(); }
 	virtual void OnEraseBackground(wxEraseEvent& event);
 
 	//contextual menus
@@ -100,6 +102,8 @@ protected:
 	wxMenu*			m_pMenu;			//contextual menu
 	lmScoreObj*		m_pMenuOwner;		//contextual menu owner
 	lmGMObject*		m_pMenuGMO;			//graphic object who displayed the contextual menu
+
+    int             m_nOctave;          //current octave for note insertion
 
 private:
 
@@ -125,6 +129,8 @@ public:
     void OnEraseBackground(wxEraseEvent& event);
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 	void OnKeyPress(wxKeyEvent& event);
+    void OnKeyDown(wxKeyEvent& event);
+    void OnKeyUp(wxKeyEvent& event);
 
 	//commands without Do/Undo support
     void PlayScore();
@@ -134,7 +140,7 @@ public:
 	// commands with Do/Undo support
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
     void InsertClef(lmEClefType nClefType);
-	void InsertNote(lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
+	void InsertNote(lmEPitchType nPitchType, wxString sStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration,
 					lmENoteHeads nNotehead,
 					lmEAccidentals nAcc = lm_eNoAccidentals );
@@ -161,11 +167,14 @@ public:
 
 private:
 
-    // Tile the bitmap
     bool TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap);
+    void LogKeyEvent(wxString name, wxKeyEvent& event, int nTool=-1) const;
+
+    //tools' selection
+    void SelectNoteDuration(int iButton);
+    void SelectNoteAccidentals(bool fNext);
 
 
-private:
     lmScoreView*        m_pView;        //owner view
     wxWindow*           m_pOwner;       //parent window
     lmScoreDocument*    m_pDoc;         //the document rendered by the view
@@ -175,6 +184,11 @@ private:
 	//to control octave when inserting several consecutive notes
 	bool			m_fInsertionSequence;
 	int				m_nLastOctave;
+
+    //to control aux.keys
+    bool            m_fCtrl;        //Ctrol pressed
+    bool            m_fAlt;         //Alt pressed
+    bool            m_fShift;       //Shift pressed
 
 
     DECLARE_EVENT_TABLE()

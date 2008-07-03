@@ -188,7 +188,7 @@ void lmPgmOptions::LoadDefaultValues()
     //thickness of beam line
     Register(lm_EO_BEAM_THICKNESS, lmOP_TENTHS, 5.0f, _T("Beam/Thickness of beam line/"));
     //Space between beam lines
-    Register(lm_EO_BEAM_SPACING, lmOP_TENTHS, 4.0f, _T("Beam/Space between beam lines/"));
+    Register(lm_EO_BEAM_SPACING, lmOP_TENTHS, 3.0f, _T("Beam/Space between beam lines/"));
 
 
     //Edit options

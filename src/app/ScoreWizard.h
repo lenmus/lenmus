@@ -45,6 +45,7 @@ enum
     lmID_SCORE_WIZARD = 10000,
 
     //lmScoreWizardLayout
+    lmID_LIST_ENSEMBLE,
 
     //ScoreWizardInstrPage
     lmID_WIZARD_INSTR_PAGE,
@@ -92,11 +93,13 @@ private:
 class lmScoreWizardLayout : public lmWizardPage 
 {
     DECLARE_DYNAMIC_CLASS( lmScoreWizardLayout )
-    DECLARE_EVENT_TABLE()
 
 public:
     lmScoreWizardLayout();
     lmScoreWizardLayout(wxWizard* parent);
+
+    //event handlers
+    void OnEnsembleSelected(wxCommandEvent& event);
 
     bool TransferDataFromWindow();
 
@@ -110,6 +113,7 @@ protected:
 	wxRadioBox* m_pRadOrientation;
 	wxStaticBitmap* m_pBmpPreview;
 	
+    DECLARE_EVENT_TABLE()
 };
 
 //----------------------------------------------------------------------------------

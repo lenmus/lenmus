@@ -26,13 +26,16 @@
 #pragma interface "ToolGroup.cpp"
 #endif
 
+#include <vector>
+
 class lmToolPage;
+class lmCheckButton;
 
 class lmToolGroup: public wxPanel
 {    
 public:
     lmToolGroup(lmToolPage* pParent);
-    ~lmToolGroup();
+    virtual ~lmToolGroup();
 
     //creation
     wxBoxSizer* CreateGroup(wxBoxSizer* pParentSizer, wxString sTitle);
@@ -43,6 +46,33 @@ public:
 protected:
 
 	lmToolPage*		m_pParent;		//owner ToolPage
+};
+
+
+
+class lmToolButtonsGroup: public lmToolGroup
+{    
+public:
+    lmToolButtonsGroup(lmToolPage* pParent, int nNumButtons, bool fAllowNone,
+                       wxBoxSizer* pMainSizer);
+    ~lmToolButtonsGroup();
+
+	//buttons
+    inline int GetSelectedButton() { return m_nSelButton; }
+
+	void SelectButton(int iB);
+    void SelectNextButton();
+    void SelectPrevButton();
+
+protected:
+    //creation
+    virtual void CreateControls(wxBoxSizer* pMainSizer)=0;
+
+
+    bool                m_fAllowNone;               //allow no button selected
+    int                 m_nNumButtons;              //number of buttons in this group
+	int			        m_nSelButton;               //selected button (0..n). -1 = none selected
+    std::vector<lmCheckButton*> m_pButton;          //buttons
 };
 
 #endif   // __LM_TOOLGROUP_H__

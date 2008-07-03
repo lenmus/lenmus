@@ -1144,11 +1144,6 @@ void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
     pSO->PlaybackHighlight(pPaper, g_pColors->ScoreNormal());
 }
 
-void lmScore::CursorHighlight(lmStaffObj* pSO, int nStaff, lmPaper* pPaper, bool fHighlight)
-{
-    pSO->CursorHighlight(pPaper, nStaff, fHighlight);
-}
-
 void lmScore::ComputeMidiEvents()
 {
     int nChannel, nInstr;        //MIDI info. for instrument in process
@@ -1257,7 +1252,8 @@ lmScoreCursor* lmScore::SetNewCursorState(lmVCursorState* pState)
 lmBoxScore* lmScore::Layout(lmPaper* pPaper)
 {
     lmFormatter4 oFormatter;
-    m_pGMObj = oFormatter.Layout(this, pPaper);
-    return (lmBoxScore*)m_pGMObj;
+    lmBoxScore* pGMObj = oFormatter.Layout(this, pPaper);
+    StoreShape(pGMObj);
+    return pGMObj;
 }
 

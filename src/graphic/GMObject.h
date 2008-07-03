@@ -166,11 +166,12 @@ public:
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	void Shift(lmUPoint uPos) { Shift(uPos.x, uPos.y); }
 	void ShiftOrigin(lmUPoint uNewOrg);
+    void ApplyUserShift(lmUPoint uUserShift);
 
     //info
     inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
+    inline int GetOwnerIDX() { return m_nOwnerIdx; }
 	virtual int GetPageNumber() const { return 0; }
-    inline lmUPoint GetOrigin() const { return m_uOrigin; }
 
 	//contextual menu
 	virtual void OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int nKeys);
@@ -178,7 +179,7 @@ public:
 
 protected:
     lmGMObject(lmScoreObj* pOwner, lmEGMOType m_nType, bool fDraggable = false,
-		       wxString sName = _("Object"));
+		       wxString sName = _("Object"), int nOwnerIdx = -1);
     wxString DumpBounds();
 	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
 	void NormaliceBoundsRectangle();
@@ -189,6 +190,7 @@ protected:
 
 
 	lmScoreObj*	    m_pOwner;		//associated owner object (in lmScore representation)
+    int             m_nOwnerIdx;    //index assigned by the owner to this GMObject (-1 if none)
     lmEGMOType      m_nType;        //type of GMO
     int             m_nId;          //unique identification number
 	wxString		m_sGMOName;
@@ -198,6 +200,8 @@ protected:
     lmUPoint        m_uBoundsBottom;	//bottom right corner point
     lmUPoint        m_uBoundsTop;		//top left corner point
 
+    lmUPoint        m_uUserShift;
+
 	//selection rectangle
 	lmURect		m_uSelRect;   
 
@@ -206,9 +210,6 @@ protected:
 
     //dragging
     bool			m_fDraggable;		//this object is draggable
-
-    //origin
-    lmUPoint        m_uOrigin;          //origin point to use as reference
 
 };
 
@@ -324,7 +325,7 @@ public:
     virtual unsigned GetVertex(lmLUnits* pux, lmLUnits* puy);
 
 protected:
-    lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("Shape"),
+    lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName=_T("Shape"),
 			bool fDraggable = false, wxColour color = *wxBLACK,
 			bool fVisible = true);
     void RenderCommon(lmPaper* pPaper, wxColour colorC);
@@ -367,7 +368,8 @@ public:
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
 
 protected:
-    lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("SimpleShape"),
+    lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx,
+                  wxString sName=_T("SimpleShape"),
 				  bool fDraggable = false, wxColour color = *wxBLACK,
 				  bool fVisible = true);
 
@@ -377,7 +379,7 @@ protected:
 class lmCompositeShape : public lmShape
 {
 public:
-    lmCompositeShape(lmScoreObj* pOwner, wxString sName = _T("CompositeShape"),
+    lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxString sName = _T("CompositeShape"),
                      bool fDraggable = false, lmEGMOType nType = eGMO_ShapeComposite,
 					 bool fVisible = true);
     virtual ~lmCompositeShape();

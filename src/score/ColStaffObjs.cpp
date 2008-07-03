@@ -221,7 +221,7 @@ void lmVStaffCursor::MoveRight(bool fAlsoChordNotes, bool fIncrementIterator)
             if (fAlsoChordNotes) break;
             //else we have to skip notes in chord except base note
             if (!(*m_it)->IsNoteRest() ||
-                (*m_it)->IsNoteRest() && !((lmNoteRest*)(*m_it))->IsRest() &&
+                (*m_it)->IsNoteRest() && ((lmNoteRest*)(*m_it))->IsNote() &&
                 ( !((lmNote*)(*m_it))->IsInChord() || ((lmNote*)(*m_it))->IsBaseOfChord())
                ) break;
         }
@@ -305,7 +305,7 @@ void lmVStaffCursor::MoveLeft(bool fAlsoChordNotes)
             if (fAlsoChordNotes) break;
             //else we have to skip notes in chord except base note
             if (!(*m_it)->IsNoteRest() ||
-                (*m_it)->IsNoteRest() && !((lmNoteRest*)(*m_it))->IsRest() &&
+                (*m_it)->IsNoteRest() && ((lmNoteRest*)(*m_it))->IsNote() &&
                 ( !((lmNote*)(*m_it))->IsInChord() || ((lmNote*)(*m_it))->IsBaseOfChord())
                ) break;
         }
@@ -372,7 +372,7 @@ lmStaffObj* lmVStaffCursor::GetPreviousStaffobj()
             //it is in current staff.
             //We have to skip notes in chord except base note
             if (!(*it)->IsNoteRest() ||
-                (*it)->IsNoteRest() && !((lmNoteRest*)(*it))->IsRest() &&
+                (*it)->IsNoteRest() && ((lmNoteRest*)(*it))->IsNote() &&
                 ( !((lmNote*)(*it))->IsInChord() || ((lmNote*)(*it))->IsBaseOfChord())
             ) break;
         }
@@ -840,7 +840,8 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
 
     //Take positioning information from staff position
     lmScore* pScore = m_pColStaffObjs->m_pOwner->GetScore();
-    lmBoxScore* pBS = (lmBoxScore*)pScore->GetBox();
+    wxASSERT(pScore->GetGraphicObject()->IsBox());
+    lmBoxScore* pBS = (lmBoxScore*)pScore->GetGraphicObject();
     lmBoxPage* pBPage = pBS->GetPage(pBS->GetNumPages());
     lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
     uPos.y = pBSystem->GetStaffShape(1)->GetYTop();
@@ -972,7 +973,7 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
 
     //if removed object is a note not in chord:
     //  - Shift left all note/rests in this voice and sort the collection
-	if (pSO->IsNoteRest() && !((lmNoteRest*)pSO)->IsRest() && !((lmNote*)pSO)->IsInChord())
+	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote() && !((lmNote*)pSO)->IsInChord())
     {
         ShiftLeftTimepos((lmNoteRest*)pSO, itNext);
 		m_StaffObjs.sort(TimeCompare);
@@ -1042,7 +1043,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 
 	//check if added object is a note added to an existing chord
 	bool fAddedToChord = false;
-	if (pNewSO->IsNoteRest() && !((lmNote*)pNewSO)->IsRest() && ((lmNote*)pNewSO)->IsInChord())
+	if (pNewSO->IsNoteRest() && ((lmNote*)pNewSO)->IsNote() && ((lmNote*)pNewSO)->IsInChord())
 	{
 		//added note is part of a chord. Let's check if it is the first note or there
 		//are already more notes in the chord
@@ -1381,13 +1382,102 @@ void lmSegment::Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStart
 	while (itSO != m_StaffObjs.end() && !(*itSO)->IsClef())
 	{
 		if ((*itSO)->IsNoteRest() && (*itSO)->GetStaffNum() == nStaff &&
-            !((lmNote*)(*itSO))->IsRest())
+            ((lmNote*)(*itSO))->IsNote())
         {
             //note in the affected staff. Re-pitch it to keep staff position
             ((lmNote*)(*itSO))->ChangePitch(pOldClef, pNewClef);
         }
         ++itSO;
 	}
+}
+
+void lmSegment::AutoBeam(int nVoice)
+{
+    //A note/rest in voice nVoice has been added/removed in this segment. Review beaming
+    //in specified voice
+
+    //vector to store notes that form a beam
+    std::vector<lmNoteRest*> cBeamedNotes;
+
+    //find first note in voice nVoice in this segment
+	lmItCSO it = m_StaffObjs.begin();
+	for (; it != m_StaffObjs.end(); ++it)
+	{
+		if ((*it)->IsNoteRest() && 
+            ((lmNoteRest*)(*it))->IsNote() &&
+            ((lmNoteRest*)(*it))->GetVoice() == nVoice)
+            break;
+    }
+    wxASSERT (it != m_StaffObjs.end());     //at least the inserted note/rest that originated the invocation to this method!
+
+    //get context and get current time signature.
+    lmContext* pContext = (*it)->GetCurrentContext();
+    if (!pContext) return;           //no context yet
+    lmTimeSignature* pTS = pContext->GetTime();
+    if (!pTS) return;               //no time signature defined yet
+    int nBeatType = pTS->GetBeatType();
+    int nBeats = pTS->GetNumBeats();
+
+    //Explore all segment (only involved voice) and select notes/rests that should be beamed
+	for (; it != m_StaffObjs.end(); ++it)
+	{
+		if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == nVoice)
+        {
+            //note in the affected voice
+            lmNoteRest* pNR = (lmNoteRest*)(*it);
+            int nPos = GetNoteBeatPosition(pNR->GetTimePos(), nBeats, nBeatType);
+            if (nPos != lmOFF_BEAT)     //nPos = lmOFF_BEAT or number of beat (0..n)
+            {
+                //A new beat starts. Terminate previous beam and start a new one
+                AutoBeam_CreateBeam(cBeamedNotes);
+                cBeamedNotes.clear();
+            }
+
+            //add note to current beam if smaller than an eighth
+            if (pNR->GetNoteType() > eQuarter)
+                cBeamedNotes.push_back(pNR);
+        }
+	}
+
+    //terminate last beam
+    AutoBeam_CreateBeam(cBeamedNotes);
+    cBeamedNotes.clear();
+}
+
+void lmSegment::AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes)
+{
+    //When this method is invoked, vector cBeamedNotes contains the notes/rests that should
+    //be beamed toghether. Review current beam information and modify it so that they
+    //form a beamed group.
+
+    if (cBeamedNotes.size() == 0) return;
+
+    //remove rests at the end
+    int nLastNote = (int)cBeamedNotes.size() - 1;       //0..n-1
+    while (cBeamedNotes[nLastNote]->IsRest() && nLastNote > 0)
+        --nLastNote;
+
+    if (nLastNote < 1) return;      //only one note. No beam possible
+
+    //Real beam information will be computed by the beam, when method AutoSetUp is invoked.
+    //Therefore, We do not have to worry here about the beam details. So, it is enough to
+    //create the beam and to add the notes to the beam.
+
+    lmBeam* pBeam = (lmBeam*)NULL;
+    std::vector<lmNoteRest*>::iterator it = cBeamedNotes.begin();
+    for (int i=0; it != cBeamedNotes.end(); ++it, ++i)
+    {
+        //remove old beam
+        //OPTIMIZATION: preserve current beam information when beam exists and is correct.
+        if ((*it)->IsBeamed())
+             (*it)->GetBeam()->Remove(*it);
+
+        //add to new one
+        if (it == cBeamedNotes.begin())
+            pBeam = (*it)->IncludeOnBeam(eBeamBegin);
+        else
+            (*it)->IncludeOnBeam((i == nLastNote ? eBeamEnd : eBeamContinue), pBeam);
+    }
 }
 
 lmContext* lmSegment::FindEndOfSegmentContext(int nStaff)
@@ -1600,7 +1690,7 @@ void lmColStaffObjs::AssignTime(lmStaffObj* pSO)
 	//if it is a note in chord and not base note assign it the time assigned to
 	//base note
 	bool fPartOfChord = false;		//to avoid having to check this many times
-    if (pSO->GetClass() == eSFOT_NoteRest && !(((lmNoteRest*)pSO)->IsRest())
+    if (pSO->GetClass() == eSFOT_NoteRest && (((lmNoteRest*)pSO)->IsNote())
        && ((lmNote*)pSO)->IsInChord() && !((lmNote*)pSO)->IsBaseOfChord() )
 	{
         lmNote* pNoteBase = ((lmNote*)pSO)->GetChord()->GetBaseNote();
@@ -1715,6 +1805,13 @@ void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKey
         }
     }
 
+    //If added staffobj is a note/rest and AutoBeam is on, apply auto-beam to current voice
+    bool g_fAutoBeam = true;    //TODO: Move to right place and assign value based on user options
+    if (pNewSO->IsNoteRest() && g_fAutoBeam)
+    {
+        //m_Segments[nSegment]->AutoBeam( ((lmNoteRest*)pNewSO)->GetVoice() );
+    }
+
     //if time signature added, re-bar the collection. As this implies removing segments and
     //creating new ones, all needed context propagation and update, is done at the same time.
     //Therefore, no later steps are necessary for this
@@ -1728,7 +1825,6 @@ void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKey
 
         AutoReBar(pCursorSO, pLastSO, (lmTimeSignature*)pNewSO);
     }
-
 
     //If inserted staffobj created contexts (clef, TS or KS) the created contexts are already
     //chained in the staves context chain. But it is necessary:
@@ -1830,7 +1926,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
 
     //if removed object is a note not in chord:
     //  - Shift left all note/rests in this voice and sort the collection
-	if (pSO->IsNoteRest() && !((lmNoteRest*)pSO)->IsRest() && !((lmNote*)pSO)->IsInChord())
+	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote() && !((lmNote*)pSO)->IsInChord())
     {
         lmItCSO itNext = m_pVCursor->GetCurIt();
         pSegment->ShiftLeftTimepos((lmNoteRest*)pSO, itNext);
@@ -2641,10 +2737,10 @@ lmContext* lmColStaffObjs::NewUpdatedContext(lmStaffObj* pThisSO)
 	//Now we have to go forward, updating accidentals until we reach target SO
 
 	lmContext* pUpdated = new lmContext(pCT);
-    while(*it != pThisSO)
+    while(*it != pThisSO && it != pSegment->m_StaffObjs.end())
 	{
         lmStaffObj* pSO = *it;
-		if (pSO->IsNoteRest() && !((lmNote*)pSO)->IsRest())
+		if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
 		{
 			//Note found. Update context
 			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
@@ -2707,7 +2803,7 @@ lmContext* lmColStaffObjs::NewUpdatedLastContext(int nStaff)
     while(it != pSegment->m_StaffObjs.end())
 	{
         lmStaffObj* pSO = *it;
-		if (pSO->GetClass() == eSFOT_NoteRest && !((lmNote*)pSO)->IsRest())
+		if (pSO->GetClass() == eSFOT_NoteRest && ((lmNote*)pSO)->IsNote())
 		{
 			//Note found. Update context
 			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();

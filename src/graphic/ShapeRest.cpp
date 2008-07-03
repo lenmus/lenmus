@@ -44,7 +44,7 @@
 
 lmShapeRest::lmShapeRest(lmScoreObj* pOwner, bool fDraggable, bool fVisible,
                          lmEGMOType nType, wxString sName)
-	: lmCompositeShape(pOwner, sName, fDraggable, nType, fVisible)
+	: lmCompositeShape(pOwner, 0, sName, fDraggable, nType, fVisible)
 {
     m_pBeamShape = (lmShapeBeam*)NULL;
 }

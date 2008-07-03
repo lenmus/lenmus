@@ -26,7 +26,9 @@
 #pragma interface "KeySignature.cpp"
 #endif
 
+#include <vector>
 
+class lmGMObject;
 
 //------------------------------------------------------------------------------------------------
 // lmKeySignature object
@@ -39,7 +41,7 @@ public:
 
         //constructor for traditional key signatures
     lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible=true);
-    ~lmKeySignature() {}
+    ~lmKeySignature();
 
 	wxString GetName() const { return _T("key signature"); }
 
@@ -49,7 +51,10 @@ public:
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-    void StoreOriginAndShiftShapes(lmLUnits uxShift);
+    void StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx = 0);
+ //   lmGMObject* GetGraphicObject(int nIdx=0);
+	//void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0);
+	//lmUPoint GetUserShift(int nShapeIdx = 0);
 
 
     //    debugging
@@ -60,8 +65,7 @@ public:
     //renderization
     lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					              lmEClefType nClef, lmStaff* pStaff, wxColour colorC=*wxBLACK);
-	inline lmShape* GetShape(int nStaff) { return m_pShapes[nStaff-1]; }
-	void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
+	inline lmShape* GetShapeForStaff(int nStaff) { return GetShape(nStaff - 1); }
 
     //methods for hiding the key in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }
@@ -82,11 +86,19 @@ private:
     bool				m_fHidden;          //to hide it in system prolog
     bool				m_fMajor;
     bool				m_fTraditional;     //it's a traditional signature. Encoded by the
-											//	redundant enumaeration and fifths/mode pair
+											//	redundant enumeration and fifths/mode pair
     lmEKeySignatures	m_nKeySignature;
     int					m_nFifths;
     lmContext*          m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
     lmCompositeShape*	m_pShapes[lmMAX_STAFF];		//a shape for each staff
+
+	//typedef struct lmShapeInfo_Struct {
+	//	lmShape*		pShape;			//ptr. to shape
+	//	lmUPoint    	uUserShift;		//user shift
+	//} lmShapeInfo;
+
+	////array of shapes
+ //   std::vector<lmShapeInfo*> m_ShapesInfo;
 
 };
 

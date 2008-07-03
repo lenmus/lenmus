@@ -1113,7 +1113,7 @@ float lmVStaff::LDP_AdvanceTimeCounter(lmStaffObj* pSO)
 	//advance counter unless current object is a note in chord and is not the
 	//last note in the chord
 	bool fAdvance = true;
-	if (pSO->IsNoteRest() && !((lmNote*)pSO)->IsRest())
+	if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
 	{
 		lmNote* pNote = (lmNote*)pSO;
 		if (pNote->IsInChord() && !pNote->GetChord()->IsLastNoteOfChord(pNote))
@@ -1591,7 +1591,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
         switch (pSO->GetClass()) {
             case eSFOT_NoteRest:
                 pNR = (lmNoteRest*)pSO;
-                if (!pNR->IsRest()) {
+                if (pNR->IsNote()) {
                     pNote = (lmNote*)pSO;
                     if (pNote->CanBeTied(anPitch)) {
                         delete pIter;
@@ -1638,7 +1638,7 @@ bool lmVStaff::CheckIfNotesAffectedByClef()
             break;              //clef found before finding a note. No notes affected
         else if (pSO->IsNoteRest())
         {
-            if (!((lmNoteRest*)pSO)->IsRest())
+            if ( ((lmNoteRest*)pSO)->IsNote() )
             {
                 //note found
                 delete pIter;

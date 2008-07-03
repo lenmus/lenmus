@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-23 10:44+0100\n"
+"PO-Revision-Date: 2008-06-27 16:56+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -2634,11 +2634,11 @@ msgstr "Mostrar/ocultar el panel de navegación"
 
 #: app/MainFrame.cpp:774
 msgid "Previous page of current eMusicBook"
-msgstr "Siguiente página de este eMusicBook"
+msgstr "Página anterior de este eMusicBook"
 
 #: app/MainFrame.cpp:778
 msgid "Next page of current eMusicBook"
-msgstr "Página anterior de este eMusicBook"
+msgstr "Siguiente página de este eMusicBook"
 
 #: app/MainFrame.cpp:783
 msgid "Go to previous visited page"

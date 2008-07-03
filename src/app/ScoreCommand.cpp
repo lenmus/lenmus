@@ -40,6 +40,7 @@
 #include "ScoreCommand.h"
 #include "ScoreDoc.h"
 #include "TheApp.h"
+#include "../graphic/GMObject.h"
 
 
 //----------------------------------------------------------------------------------------
@@ -214,7 +215,7 @@ bool lmCmdDeleteObject::UndoCommand()
 //----------------------------------------------------------------------------------------
 
 lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocument *pDoc,
-									         lmScoreObj* pSO, const lmUPoint& uPos)
+									         lmGMObject* pGMO, const lmUPoint& uPos)
 	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
 {
 	m_tPos.x = uPos.x;
@@ -225,14 +226,15 @@ lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocum
 	m_tPos.xUnits = lmLUNITS;
 	m_tPos.yUnits = lmLUNITS;
 
-	m_pSO = pSO;
+	m_pSO = pGMO->GetScoreOwner();
+    m_nShapeIdx = pGMO->GetOwnerIDX();
 }
 
 bool lmCmdUserMoveScoreObj::Do()
 {
     wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Do] No ScoreObj to move!"));
 
-    m_tOldPos = m_pSO->SetUserLocation(m_tPos);
+    m_tOldPos = m_pSO->SetUserLocation(m_tPos, m_nShapeIdx);
 
 	return CommandDone(lmSCORE_MODIFIED);  //, lmREDRAW);
 }
@@ -241,7 +243,7 @@ bool lmCmdUserMoveScoreObj::UndoCommand()
 {
     wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Undo]: No ScoreObj to move!"));
 
-    m_pSO->SetUserLocation(m_tOldPos);
+    m_pSO->SetUserLocation(m_tOldPos, m_nShapeIdx);
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
     return true;

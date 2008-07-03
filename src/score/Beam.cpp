@@ -123,7 +123,7 @@ void lmBeam::CreateShape()
     std::list<lmNoteRest*>::iterator it;
     for(i=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, i++)
 	{
-        if (!(*it)->IsRest())      //ignore rests
+        if ((*it)->IsNote())      //ignore rests
         {
 		    lmNote* pNote = (lmNote*)(*it);
             if (pNote->IsInChord()) {
@@ -170,7 +170,7 @@ void lmBeam::CreateShape()
 
     for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
 	{
-        if (!(*it)->IsRest())      //ignore rests
+        if ((*it)->IsNote())      //ignore rests
         {
 		    lmNote* pNote = (lmNote*)(*it);
             //count number of notes with stem down
@@ -196,7 +196,7 @@ void lmBeam::CreateShape()
 
     //correct beam position (and reverse stems direction) if first note of beamed group is
     //tied to a previous note and the stems' directions are not forced
-    if (!fStemForced && !m_Notes.front()->IsRest())
+    if (!fStemForced && m_Notes.front()->IsNote())
     {
         lmNote* pFirst = (lmNote*)m_Notes.front();
         if (pFirst->IsTiedToPrev())
@@ -209,7 +209,7 @@ void lmBeam::CreateShape()
     if (!fStemForced) {
         for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
 	    {
-            if (!(*it)->IsRest()) {
+            if ((*it)->IsNote()) {
                 ((lmNote*)(*it))->SetStemDirection(m_fStemsDown);
             }
         }
@@ -264,7 +264,7 @@ void lmBeam::AutoSetUp()
     std::list<lmNoteRest*>::iterator it;
     for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
     {
-        if (!(*it)->IsRest())
+        if ((*it)->IsNote())
         {
             //it is a note. Add to notes collection
             cNotes.push_back((lmNote*)(*it));
@@ -305,43 +305,98 @@ void lmBeam::AutoSetUp()
 
             else if (nNotePos == lmFirstNote)
             {
-                //is the first note
-                if (iL <= nLevelNext)
-                    pCurNote->SetBeamType(iL, eBeamBegin);
+                //a) Case First note:								
+	            // 2.1) CurLevel > Level(i+1)   -->		Forward hook
+	            // 2.2) other cases             -->		Begin
+	
+                if (iL > nLevelNext)
+                    pCurNote->SetBeamType(iL, eBeamForward);    //2.1
                 else
-                    pCurNote->SetBeamType(iL, eBeamForward);
+                    pCurNote->SetBeamType(iL, eBeamBegin);      //2.2
             }
 
             else if (nNotePos == lmMiddleNote)
             {
-                //is intermediate note
-                if (iL <= nLevelPrev)
-                    pCurNote->SetBeamType(iL, eBeamContinue);
-                else if (iL > nLevelNext)
+                //b) Case Intermediate note:
+	            //   2.1) CurLevel < Level(i)			
+	            //     2.1a) CurLevel > Level(i+1)		-->		End
+	            //     2.1b) else						-->		Continue
+                //	
+	            //   2.2) CurLevel > Level(i-1)
+		        //     2.2a) CurLevel > Level(i+1)		-->		Hook (fwd or bwd, depending on beat)
+		        //     2.2b) else						-->		Begin
+                //		
+	            //   2.3) else [CurLevel <= Level(i-1)]
+		        //     2.3a) CurLevel > Level(i+1)		-->		End
+		        //     2.3b) else						-->		Continue
+		
+                if (iL > nLevelCur)     //2.1) CurLevel < Level(i)
                 {
-                    //hook. Backward/Forward, depends on position in beat
-                    int nPos = pCurNote->GetPositionInBeat();
-                    if (nPos == lmUNKNOWN_BEAT)
-                        //Unknownn time signature. Cannot determine type of hook. Use backward
-                        pCurNote->SetBeamType(iL, eBeamBackward);
-                    else if (nPos >= 0)
-                        //on-beat note
-                        pCurNote->SetBeamType(iL, eBeamForward);
+                    if (iL < nLevelNext)
+                        pCurNote->SetBeamType(iL, eBeamEnd);        //2.1a
                     else
-                        //off-beat note
-                        pCurNote->SetBeamType(iL, eBeamBackward);
+                        pCurNote->SetBeamType(iL, eBeamContinue);   //2.1b
                 }
-                else
-                    pCurNote->SetBeamType(iL, eBeamBegin);
+                else if (iL > nLevelPrev)       //2.2) CurLevel > Level(i-1)
+                {
+                    if (iL > nLevelNext)        //2.2a
+                    {
+                        //hook. Backward/Forward, depends on position in beat or on values
+                        //of previous beams
+                        for (int i=0; i < iL; i++)
+                        {
+                            if (pCurNote->GetBeamType(i) == eBeamBegin ||
+                                pCurNote->GetBeamType(i) == eBeamForward)
+                            {
+                                pCurNote->SetBeamType(iL, eBeamForward);
+                                break;
+                            }
+                            else if (pCurNote->GetBeamType(i) == eBeamEnd ||
+                                     pCurNote->GetBeamType(i) == eBeamBackward)
+                            {
+                                pCurNote->SetBeamType(iL, eBeamBackward);
+                                break;
+                            }
+                        }
+                        if (i == iL)
+                        {
+                            //no possible to take decision based on higher level beam values
+                            //Determine it based on position in beat
+
+                            int nPos = pCurNote->GetPositionInBeat();
+                            if (nPos == lmUNKNOWN_BEAT)
+                                //Unknownn time signature. Cannot determine type of hook. Use backward
+                                pCurNote->SetBeamType(iL, eBeamBackward);
+                            else if (nPos >= 0)
+                                //on-beat note
+                                pCurNote->SetBeamType(iL, eBeamForward);
+                            else
+                                //off-beat note
+                                pCurNote->SetBeamType(iL, eBeamBackward);
+                        }
+                    }
+                    else
+                        pCurNote->SetBeamType(iL, eBeamBegin);      //2.2b
+                }
+
+                else   //   2.3) else [CurLevel <= Level(i-1)]
+                {
+                    if (iL > nLevelNext)
+                        pCurNote->SetBeamType(iL, eBeamEnd);        //2.3a
+                    else
+                        pCurNote->SetBeamType(iL, eBeamContinue);   //2.3b
+                }
             }
 
             else
             {
-                //is last note
-                if (iL > nLevelPrev)
-                    pCurNote->SetBeamType(iL, eBeamBackward);
+                //c) Case Final note:
+	            //   2.1) CurLevel <= Level(i-1)    -->		End
+	            //   2.2) else						-->		Backward hook
+                if (iL <= nLevelPrev)
+                    pCurNote->SetBeamType(iL, eBeamEnd);        //2.1
                 else
-                    pCurNote->SetBeamType(iL, eBeamEnd);
+                    pCurNote->SetBeamType(iL, eBeamBackward);   //2.2
             }
         }
 

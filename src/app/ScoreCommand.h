@@ -133,7 +133,7 @@ protected:
 class lmCmdUserMoveScoreObj: public lmScoreCommand
 {
 public:
-    lmCmdUserMoveScoreObj(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pSO,
+    lmCmdUserMoveScoreObj(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO,
 					   const lmUPoint& uPos);
     ~lmCmdUserMoveScoreObj() {}
 
@@ -145,6 +145,7 @@ protected:
     lmLocation      m_tPos;
     lmLocation		m_tOldPos;        // for Undo
 	lmScoreObj*		m_pSO;
+    int             m_nShapeIdx;
 };
 
 

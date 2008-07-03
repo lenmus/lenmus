@@ -442,7 +442,7 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
     //create the container shape and add it to the box
     lmShapeNote* pNoteShape = new lmShapeNote(this, uxLeft, uyTop, colorC);
 	pBox->AddShape(pNoteShape);
-    m_pGMObj = pNoteShape;
+    StoreShape(pNoteShape);
 }
 
 
@@ -711,7 +711,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 	if (IsInChord())
 		return m_pChord->GetXRight() - uPos.x + uAfterSpace;
 	else
-		return m_pGMObj->GetXRight() - uPos.x + uAfterSpace;
+		return GetShape()->GetXRight() - uPos.x + uAfterSpace;
 
 }
 
@@ -721,30 +721,6 @@ void lmNote::PlaybackHighlight(lmPaper* pPaper, wxColour colorC)
 	//FIX_ME: m_pNoteheadShape is only valid during layout. And there can be many views!!
 
 	m_pNoteheadShape->Render(pPaper, colorC);
-}
-
-void lmNote::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
-{
-	//FIX_ME: there can be many views. Should only the active view be higlighted?
-	//FIX_ME: m_pNoteheadShape is only valid during layout. And there can be many views!!
-
-    if (fHighlight)
-    {
-        m_pNoteheadShape->Render(pPaper, g_pColors->CursorColor());
-    }
-    else
-    {
-        //IMPROVE
-        // If we paint in black it remains a coloured aureole around
-        // the note. By painting it first in white the size of the aureole
-        // is smaller but still visible. A posible better solution is to
-        // modify Render method to accept an additional parameter: a flag
-        // to signal that XOR draw mode in colour followed by a normal
-        // draw in BLACK must be done.
-
-        m_pNoteheadShape->Render(pPaper, *wxWHITE);
-        m_pNoteheadShape->Render(pPaper, g_pColors->ScoreNormal());
-    }
 }
 
 lmLUnits lmNote::GetPitchShift()
@@ -902,7 +878,7 @@ lmEGlyphIndex lmNote::AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmU
     lmEGlyphIndex nGlyph = GetGlyphForFlag();
 
     lmLUnits yPos = uPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
                                             lmUPoint(uPos.x, yPos), _T("Flag"));
 	pNoteShape->AddFlag(pShape);
     return nGlyph;
@@ -1013,7 +989,7 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENot
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
                                             lmUPoint(uxLeft, yPos), _T("NoteSingle"));
 	pNoteShape->AddNoteInBlock(pShape);
 
@@ -1053,7 +1029,7 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
     lmLUnits yPos = uyTop - m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
-    m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
+    m_pNoteheadShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
                                         lmUPoint(uxLeft, yPos), _T("Notehead"),
 										lmDRAGGABLE, colorC);
 	pNoteShape->AddNoteHead(m_pNoteheadShape);

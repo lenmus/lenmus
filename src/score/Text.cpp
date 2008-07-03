@@ -108,9 +108,10 @@ lmShapeText* lmScoreText::CreateShape(lmPaper* pPaper, lmUPoint uPos)
 {
     // Creates the shape and returns it
 
-    m_pGMObj = new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
+    lmShapeText* pGMObj = new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
                            uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
-    return (lmShapeText*)m_pGMObj;
+    StoreShape(pGMObj);
+    return pGMObj;
 }
 
 lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
@@ -142,7 +143,6 @@ lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 
     //add shape to graphic model
 	pBox->AddShape(pShape);
-    m_pGMObj = pShape;
 
 	// set total width
 	return pShape->GetWidth();

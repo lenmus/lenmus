@@ -42,7 +42,7 @@
 
 
 lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxColour color)
-	: lmCompositeShape(pOwner, _T("Note"), lmDRAGGABLE, eGMO_ShapeNote)
+	: lmCompositeShape(pOwner, 0, _T("Note"), lmDRAGGABLE, eGMO_ShapeNote)
 {
     m_uxLeft = xLeft;
     m_uyTop = yTop;

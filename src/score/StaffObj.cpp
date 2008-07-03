@@ -61,10 +61,8 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     m_uPaperPos.y = 0.0f,   m_uPaperPos.x = 0.0f;
 	m_tSrcPos = g_tDefaultPos;
     m_uComputedPos.x = 0.0f,   m_uComputedPos.y = 0.0f;
-    m_uUserShift.x = 0.0f,   m_uUserShift.y = 0.0f;
-
-    m_pGMObj = (lmShape*)NULL;
 	m_fModified = false;
+    m_pShapesMngr = new lmShapesMngr();     //default behaviour: only one shape
 }
 
 lmScoreObj::~lmScoreObj()
@@ -82,7 +80,16 @@ lmScoreObj::~lmScoreObj()
         delete m_pAuxObjs;
     }
 
+    if (m_pShapesMngr) delete m_pShapesMngr;
+
 }
+
+void lmScoreObj::DefineAsMultiShaped()
+{
+    delete m_pShapesMngr;
+    m_pShapesMngr = new lmMultiShapesMngr();
+}
+
 
 lmObjOptions* lmScoreObj::GetCurrentObjOptions()
 {
@@ -161,7 +168,7 @@ void lmScoreObj::DetachAuxObj(lmAuxObj* pAO)
     //TODO
 }
 
-lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
+lmLocation lmScoreObj::SetUserLocation(lmLocation tPos, int nShapeIdx)
 {
 	//convert location to logical units
 	if (tPos.xUnits == lmTENTHS)
@@ -169,19 +176,22 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 	if (tPos.yUnits == lmTENTHS)
 		tPos.y = TenthsToLogical(tPos.y);
 
-    if (m_pGMObj)
+    lmGMObject* pGMObj = GetGraphicObject(nShapeIdx);
+    if (pGMObj)
     {
 		//interactive edition: user is moving an object
-	    lmUPoint uShapePos = m_pGMObj->GetBounds().GetTopLeft();
+	    lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
         lmUPoint uShift(tPos.x - uShapePos.x, tPos.y - uShapePos.y);
-		m_uUserShift.x += uShift.x;
-		m_uUserShift.y += uShift.y;
+        lmUPoint uUserShift = GetUserShift(nShapeIdx);
+		uUserShift.x += uShift.x;
+		uUserShift.y += uShift.y;
+        this->SaveUserLocation(uUserShift.x, uUserShift.y, nShapeIdx);
 
 		////DBG--------------------------------------------------------------------------------
-		//if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
+		//if (GetScoreObjType()==lmSOT_ComponentObj) // && ((lmComponentObj*)this)->GetID()==4)
 		//{
-		//    lmUPoint uShapePos = m_pGMObj->GetBounds().GetTopLeft();
-		//    lmUPoint uShapeOrg = m_pGMObj->GetOrigin();
+		//    lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
+		//    lmUPoint uShapeOrg = pGMObj->GetOrigin();
 		//	  wxLogMessage(_T("[lmScoreObj::SetUserLocation] UserPos=(%.2f, %.2f), ShapeOrg=(%.2f, %.2f), ShapePos=(%.2f, %.2f), old UserShift=(%.2f, %.2f), new UserShift=(%.2f, %.2f)"),
 		//				tPos.x, tPos.y, uShapeOrg.x, uShapeOrg.y,
 		//				uShapePos.x, uShapePos.y, uShift.x, uShift.y,
@@ -190,7 +200,7 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 		////END DBG----------------------------------------------------------------------------
 
 		//Move also attached AuxObjs to this ScoreObj
-		if (m_pAuxObjs)
+		if (m_pAuxObjs && IsMainShape(nShapeIdx))
 		{
 			for (int i=0; i < (int)m_pAuxObjs->size(); i++)
 			{
@@ -201,8 +211,7 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 	else
 	{
 		//loading the score from a file. Not yet layouted
-		m_uUserShift.x = tPos.x;
-		m_uUserShift.y = tPos.y;
+        this->SaveUserLocation(tPos.x, tPos.y, nShapeIdx);
 	}
 
 	m_tSrcPos = m_tPos;
@@ -244,39 +253,37 @@ void lmScoreObj::ResetObjectLocation()
 	//wxLogMessage(sSource);
 }
 
-void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift)
+void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
     //This method is invoked only from TimeposTable module, from methods 
     //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
     //computations.
     //By invoking this method, the auto-layout algorithm is informing about a change in
     //the computed final position for this ScoreObj.
-    //Take into account that this method can be invoked several times for the
+    //Be aware of the fact that this method can be invoked several times for the
     //same ScoreObj, when the auto-layout algorithm refines the final position.
 
-	m_uComputedPos.x += uxShift;
-    if (m_pGMObj)
+    lmGMObject* pGMObj = GetGraphicObject(nShapeIdx);
+    if (pGMObj)
     {
-		//DBG--------------------------------------------------------------------------------
-		//if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==4)
-		if (GetScoreObjType()==lmSOT_ComponentObj
-            && ((lmComponentObj*)this)->GetType()==lm_eStaffObj
-            && ((lmStaffObj*)this)->IsTimeSignature() )
-		{
-			lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
-			wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
-						uxShift,
-						m_pGMObj->GetOrigin().x, m_pGMObj->GetOrigin().y,
-						m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
-						uNewOrg.x, uNewOrg.y );
-		}
-		//END DBG----------------------------------------------------------------------------
+		////DBG--------------------------------------------------------------------------------
+		////if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==1)
+		//if (GetScoreObjType()==lmSOT_ComponentObj
+  //          && ((lmComponentObj*)this)->GetType()==lm_eStaffObj
+  //          && ((lmStaffObj*)this)->IsClef() )
+		//{
+		//	lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
+		//	wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeIdx=%d"),
+		//				uxShift, nShapeIdx );
+		//}
+		////END DBG----------------------------------------------------------------------------
         
-        m_pGMObj->ShiftOrigin(m_uComputedPos + m_uUserShift);
+        pGMObj->Shift(uxShift, 0.0f);
+        pGMObj->ApplyUserShift( this->GetUserShift(nShapeIdx) );
     }
 
 	// inform about the change to AuxObjs attached to this StaffObj
-    if (m_pAuxObjs)
+    if (m_pAuxObjs && this->IsMainShape(nShapeIdx))
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         {
@@ -318,7 +325,7 @@ void lmScoreObj::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
 void lmScoreObj::OnProperties(lmGMObject* pGMO)
 {
     //TODO. For now just show a dump of the shape
-	if(!GetShape())
+	if(!pGMO)
 		wxMessageBox(_T("Nothing selected!"));
 	else
 		wxMessageBox(pGMO->Dump(0));
@@ -331,8 +338,9 @@ int lmScoreObj::GetPageNumber()
 	//Returns the page number in whith the shape for this ScoreObj is rendered
 	//if no shape returns 0
 
-	if (!m_pGMObj) return 0;
-	return m_pGMObj->GetPageNumber();
+    lmShape* pGMObj = GetShape();
+	if (!pGMObj) return 0;
+	return pGMObj->GetPageNumber();
 }
 
 wxFont* lmScoreObj::GetSuitableFont(lmPaper* pPaper)
@@ -371,9 +379,9 @@ wxString lmScoreObj::Dump()
 {
 	wxString sDump = _T("");
 
-    //position info
-    sDump += wxString::Format(_T(", ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f)"),
-                    m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y );
+    ////position info
+    //sDump += wxString::Format(_T(", ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f)"),
+    //                m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y );
 	return sDump;
 }
 
@@ -381,14 +389,17 @@ wxString lmScoreObj::SourceLDP(int nIndent)
 {
 	wxString sSource = _T("");
 
-	//location
-    if (m_uUserShift.x != 0.0f)
-		sSource += wxString::Format(_T(" dx:%s"),
-					DoubleToStr((double)m_pParent->LogicalToTenths(m_uUserShift.x), 4).c_str() );
+    //TODO: Code for multi-shaped objects
 
-	if (m_uUserShift.y != 0.0f)
+	//location
+    lmUPoint uUserShift = this->GetUserShift(0);
+    if (uUserShift.x != 0.0f)
+		sSource += wxString::Format(_T(" dx:%s"),
+					DoubleToStr((double)m_pParent->LogicalToTenths(uUserShift.x), 4).c_str() );
+
+	if (uUserShift.y != 0.0f)
 		sSource += wxString::Format(_T(" dy:%s"),
-					DoubleToStr((double)m_pParent->LogicalToTenths(m_uUserShift.y), 4).c_str() );
+					DoubleToStr((double)m_pParent->LogicalToTenths(uUserShift.y), 4).c_str() );
 
 	return sSource;
 }
@@ -399,6 +410,7 @@ wxString lmScoreObj::SourceXML(int nIndent)
 	wxString sSource = _T("");
 	return sSource;
 }
+
 
 
 
@@ -643,6 +655,8 @@ lmStaffObj::~lmStaffObj()
 
 void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
+    PrepareToCreateShapes();
+
 	lmUPoint uOrg = SetReferencePos(pPaper);
 	m_uComputedPos = ComputeObjectLocation(pPaper);			// compute location
 
@@ -658,13 +672,13 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 		//Create an invisible shape, to store the StaffObj position
 		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg, lmUSize(0.0, 0.0) );
 		pBox->AddShape(pShape);
-		m_pGMObj = pShape;
+		StoreShape(pShape);
 		uWidth = 0;
 	}
 
-	//if user defined position shift the shape
-	if (m_pGMObj && m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f)
-		m_pGMObj->Shift(m_uUserShift.x, m_uUserShift.y);
+	////if user defined position shift the shape
+	//if (m_pGMObj && m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f)
+	//	m_pGMObj->Shift(m_uUserShift.x, m_uUserShift.y);
 
 	// layout AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
@@ -806,23 +820,133 @@ wxString lmStaffObj::Dump()
 	return sSource;
 }
 
-void lmStaffObj::CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight)
+
+
+
+//-------------------------------------------------------------------------------------------------
+// lmShapesMngr implementation
+//-------------------------------------------------------------------------------------------------
+
+lmShapesMngr::lmShapesMngr()
 {
-    if (fHighlight)
+    m_uUserShift = lmUPoint(0.0f, 0.0f);
+    m_pGMObj = (lmShape*)NULL;
+}
+
+lmShapesMngr::~lmShapesMngr()
+{
+}
+
+lmGMObject* lmShapesMngr::GetGraphicObject(int nShapeIdx)
+{
+    //default implementation assumes that an ScoreObj only has
+    //one associated grapic object, ant it is pointed by m_pGMObj
+
+    WXUNUSED(nShapeIdx);
+    return m_pGMObj;
+}
+
+void lmShapesMngr::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)
+{
+    //default implementation for virtual method.
+    //It assumes that ScoreObj only has a shape. 
+
+    WXUNUSED(nShapeIdx);
+	m_uUserShift.x = xPos;
+	m_uUserShift.y = yPos;
+}
+
+
+lmUPoint lmShapesMngr::GetUserShift(int nShapeIdx)
+{
+    //default implementation for virtual method.
+    //It assumes that ScoreObj only has a shape. 
+
+    WXUNUSED(nShapeIdx);
+    return m_uUserShift;
+}
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------
+// lmMultiShapesMngr implementation
+//-------------------------------------------------------------------------------------------------
+
+lmMultiShapesMngr::lmMultiShapesMngr()
+{
+    Init();
+}
+
+lmMultiShapesMngr::~lmMultiShapesMngr()
+{
+    std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
+    while (it != m_ShapesInfo.end())
     {
-        GetShape()->Render(pPaper, g_pColors->CursorColor());
+        delete *it;
+        ++it;
+    }
+}
+
+void lmMultiShapesMngr::Init()
+{
+    m_nNextIdx = 0;
+
+    //remove pointers to already deleted shapes
+    std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
+    while (it != m_ShapesInfo.end())
+    {
+        (*it)->pGMObj = (lmGMObject*)NULL;
+        ++it;
+    }
+}
+
+void lmMultiShapesMngr::StoreShape(lmGMObject* pGMObj)
+{
+    int nIdx = pGMObj->GetOwnerIDX();
+    if (nIdx == (int)m_ShapesInfo.size())
+    {
+        lmShapeInfo* pShapeInfo = new lmShapeInfo;
+        pShapeInfo->pGMObj = pGMObj;
+        pShapeInfo->uUserShift = lmUPoint(0.0f, 0.0f);
+        m_ShapesInfo.push_back(pShapeInfo);
     }
     else
     {
-        //IMPROVE
-        // If we paint in black it remains a coloured aureole around
-        // the note. By painting it first in white the size of the aureole
-        // is smaller but still visible. A posible better solution is to
-        // modify Render method to accept an additional parameter: a flag
-        // to signal that XOR draw mode in colour followed by a normal
-        // draw in BLACK must be done.
-
-        GetShape()->Render(pPaper, *wxWHITE);
-        GetShape()->Render(pPaper, g_pColors->ScoreNormal());
+        wxASSERT(m_ShapesInfo[nIdx]->pGMObj == (lmGMObject*)NULL); 
+        m_ShapesInfo[nIdx]->pGMObj = pGMObj;
     }
+}
+
+lmGMObject* lmMultiShapesMngr::GetGraphicObject(int nShapeIdx)
+{
+    //For KeySignatures shape index is staff number (1..n) minus 1
+
+    if (m_ShapesInfo.size() == 0) return (lmGMObject*)NULL;
+
+    wxASSERT(nShapeIdx < (int)m_ShapesInfo.size());
+    return m_ShapesInfo[nShapeIdx]->pGMObj;
+}
+
+void lmMultiShapesMngr::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)
+{
+    //if necessary, create empty shapes info entries
+    int nToAdd = nShapeIdx - (int)m_ShapesInfo.size() + 1;
+    for (int i=0; i < nToAdd; ++i)
+    {
+        lmShapeInfo* pShapeInfo = new lmShapeInfo;
+        pShapeInfo->pGMObj = (lmGMObject*)NULL;
+        pShapeInfo->uUserShift = lmUPoint(0.0f, 0.0f);
+        m_ShapesInfo.push_back(pShapeInfo);
+    }
+
+    //save new user position
+    m_ShapesInfo[nShapeIdx]->uUserShift = lmUPoint(xPos, yPos);
+}
+
+lmUPoint lmMultiShapesMngr::GetUserShift(int nShapeIdx)
+{
+    wxASSERT(nShapeIdx < (int)m_ShapesInfo.size());
+    return m_ShapesInfo[nShapeIdx]->uUserShift;
 }

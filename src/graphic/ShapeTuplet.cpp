@@ -43,7 +43,7 @@
 lmShapeTuplet::lmShapeTuplet(lmNoteRest* pStartNR, lmNoteRest* pEndNR, int nNumNotes,
 							 bool fAbove, bool fShowNumber, wxString sNumber, wxFont* pFont,
 							 wxColour color, lmETupletDesign nDesign)
-	: lmSimpleShape(eGMO_ShapeTuplet, pStartNR, _T("Tuplet bracket"))
+	: lmSimpleShape(eGMO_ShapeTuplet, pStartNR, 0, _T("Tuplet bracket"))
 {
 	m_pStartNR = pStartNR;
 	m_pEndNR = pEndNR;
@@ -219,7 +219,7 @@ wxString lmShapeTuplet::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: "),
-		m_nId, m_sGMOName.c_str() );
+		m_nOwnerIdx, m_sGMOName.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;

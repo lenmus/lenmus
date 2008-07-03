@@ -116,7 +116,7 @@ void lmTimeposEntry::AssignSpace(lmTimeposTable* pTT, float rFactor)
     switch (m_nType)
     {
         case eAlfa:
-			//already assigned. Ii was assigned when creating the entry.
+			//already assigned. It was assigned when creating the entry.
 			break;
 
         case eOmega:
@@ -213,19 +213,27 @@ void lmTimeposEntry::SetNoteRestSpace(lmTimeposTable* pTT, float rFactor)
 void lmTimeposEntry::Reposition(lmLUnits uxPos)
 {
 	//reposition Shape
-    wxLogMessage(_T("Reposition: old xLeft=%.2f, new xLeft=%.2f"), m_xInitialLeft, uxPos);
+    //wxLogMessage(_T("Reposition: old xLeft=%.2f, new xLeft=%.2f"), m_xInitialLeft, uxPos);
     //lmLUnits uShift = uxPos - m_xInitialLeft + m_uxAnchor;
     lmLUnits uShift = uxPos - m_xInitialLeft;
-	if (!m_fProlog)
-		if (m_pSO) m_pSO->StoreOriginAndShiftShapes( uShift );
-	else
-		if (m_pShape) m_pShape->Shift(uShift, 0.0);
+	//if (!m_fProlog)
+	//	if (m_pSO) m_pSO->StoreOriginAndShiftShapes( uShift );
+	//else
+	//	if (m_pShape) m_pShape->Shift(uShift, 0.0);
+    if (m_pSO && m_pShape)
+        m_pSO->StoreOriginAndShiftShapes( uShift, m_pShape->GetOwnerIDX() );
 
 	//update entry data
 	//m_xLeft = uxPos + m_uxAnchor;
 	m_xLeft = uxPos;
 	m_xInitialLeft = m_xLeft;
 	m_xFinal = uxPos + GetTotalSize();
+}
+
+wxString lmTimeposEntry::DumpHeader()
+{
+    //         ...+  ..+   ...+ ..+   +  ..........+........+........+........+........+........+........+........+........+......+
+    return _T("Item    Type      ID Prolog   TimePos    xInit  xAnchor    xLeft     Size    Space   xFinal  SpFixed   SpVar ShpIdx\n");
 }
 
 wxString lmTimeposEntry::Dump(int iEntry)
@@ -254,10 +262,15 @@ wxString lmTimeposEntry::Dump(int iEntry)
 									(m_fProlog ? _T("S") : _T(" ")) );
     }
 
-    sMsg += wxString::Format(_T("%11.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f\n"),
+    sMsg += wxString::Format(_T("%11.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f"),
                 m_rTimePos, m_xInitialLeft, m_uxAnchor, m_xLeft,
 		        m_uSize, GetTotalSize(), m_xFinal,
                 m_uFixedSpace, m_uVariableSpace);
+
+    if (m_pShape)
+        sMsg += wxString::Format(_T("  %4d\n"), m_pShape->GetOwnerIDX());
+    else
+        sMsg += _T("    --\n");
 
     return sMsg;
 }
@@ -324,26 +337,44 @@ lmLUnits lmTimeLine::RepositionShapes(lmLUnits uNewBarSize, lmLUnits uNewStart, 
 
     lmLUnits uBarPosition = 0;
     lmTimeposEntry* pTPE = m_aMainTable.front();
-    lmLUnits uStartShift = uNewStart - pTPE->m_xLeft;
     lmLUnits uOldStart = pTPE->m_xLeft;
-    float rProp = uNewBarSize / uOldBarSize;
 
-	wxLogMessage(_T("[lmTimeLine::RepositionShapes] Reposition: uNewBarSize=%.2f  uNewStart=%.2f  uOldBarSize=%.2f"),
-				 uNewBarSize, uNewStart, uOldBarSize );
+    //all non-timed entries at beginning, and first timed object, are only re-located
+    lmLUnits uShiftReloc = uNewStart - uOldStart;
+    lmItEntries it = m_aMainTable.begin();
+    while (it != m_aMainTable.end() && (*it)->m_rTimePos < 0.0f)
+    {
+        if ((*it)->m_pShape)
+			(*it)->m_pSO->StoreOriginAndShiftShapes( uShiftReloc, (*it)->m_pShape->GetOwnerIDX() );
+        ++it;
+    } 
 
-	//Update table and store the new x positions into the StaffObjs
-    for (lmItEntries it = m_aMainTable.begin(); it != m_aMainTable.end(); ++it)
+    if (it == m_aMainTable.end())
+         return uBarPosition;
+     
+	//wxLogMessage(_T("[lmTimeLine::RepositionShapes] Reposition: uNewBarSize=%.2f  uNewStart=%.2f  uOldBarSize=%.2f"),
+	//			 uNewBarSize, uNewStart, uOldBarSize );
+
+    //first timed entry marks the start point for repositioning. Compute proportion factor
+    lmLUnits uStartPos = (*it)->m_xLeft - (*it)->m_uxAnchor;
+    lmLUnits uDiscount = uStartPos - uOldStart;
+    float rProp = (uNewBarSize-uDiscount) / (uOldBarSize-uDiscount);
+    
+    //but this first entry must not me displaced, only relocated. Do it.
+    if ((*it)->m_pShape)
+		(*it)->m_pSO->StoreOriginAndShiftShapes( uShiftReloc, (*it)->m_pShape->GetOwnerIDX() );
+
+	//Reposition the remainder entries
+    ++it;
+    for (; it != m_aMainTable.end(); ++it)
 	{
         pTPE = *it;
         if (pTPE->m_nType == eStaffobj)
         {
-			if (!pTPE->m_fProlog)
-            {
-                lmLUnits uOldPos = pTPE->m_xLeft - pTPE->m_uxAnchor;
-                lmLUnits uShift = (uNewStart + (uOldPos - uOldStart) * rProp) - uOldPos;
-                if (uShift != 0.0f)
-				    pTPE->m_pSO->StoreOriginAndShiftShapes( uShift );
-            }
+            lmLUnits uOldPos = pTPE->m_xLeft - pTPE->m_uxAnchor;
+            lmLUnits uShift = uDiscount + (uNewStart + (uOldPos - uStartPos) * rProp) - uOldPos;
+            if (pTPE->m_pShape)
+				pTPE->m_pSO->StoreOriginAndShiftShapes( uShift, pTPE->m_pShape->GetOwnerIDX() );
         }
         else if (pTPE->m_nType == eOmega)
         {
@@ -352,8 +383,8 @@ lmLUnits lmTimeLine::RepositionShapes(lmLUnits uNewBarSize, lmLUnits uNewStart, 
             {
                 uBarPosition = uNewStart + uNewBarSize - pTPE->m_uSize;
                 lmLUnits uShiftBar = uBarPosition - pTPE->m_xLeft;
-                if (uShiftBar != 0.0f)
-				    pTPE->m_pSO->StoreOriginAndShiftShapes(uShiftBar);
+                if (pTPE->m_pShape)
+				    pTPE->m_pSO->StoreOriginAndShiftShapes(uShiftBar, pTPE->m_pShape->GetOwnerIDX() );
                 //uBarPosition = pTPE->m_xLeft + uShiftBar;
 				//wxLogMessage(_T("[lmTimeLine::RepositionShapes] Reposition bar: uBarPosition=%.2f, uShiftBar=%.2f"),
 				//			uBarPosition, uShiftBar );
@@ -379,13 +410,10 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
         pTPE = *it;
         if (uShift != 0.0f && pTPE->m_nType == eStaffobj)
         {
-			if (!pTPE->m_fProlog)
-				pTPE->m_pSO->StoreOriginAndShiftShapes( uShift );
-			//else
-			//	pTPE->m_pShape->Shift(uShift, 0.0);
-   //         if (pTPE->m_pSO->IsTimeSignature())
-	  //          wxLogMessage(_T("[lmTimeLine::ShiftEntries] Reposition time signature: Prolog=%s, uNewBarSize=%.2f  uNewStart=%.2f  Shift=%.2f"),
-   //                          (pTPE->m_fProlog ? _T("Yes") : _T("No")), uNewBarSize, uNewStart, uShift );
+			//if (!pTPE->m_fProlog)
+			//	pTPE->m_pSO->StoreOriginAndShiftShapes( uShift );
+            if (pTPE->m_pShape)
+				pTPE->m_pSO->StoreOriginAndShiftShapes(uShift, pTPE->m_pShape->GetOwnerIDX() );
         }
         else if (pTPE->m_nType == eOmega)
         {
@@ -394,10 +422,9 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
             {
                 uBarPosition = uNewStart + uNewBarSize - pTPE->m_uSize;
                 lmLUnits uShiftBar = uBarPosition - pTPE->m_xLeft;
-				pTPE->m_pSO->StoreOriginAndShiftShapes(uShiftBar);
-                //uBarPosition = pTPE->m_xLeft + uShiftBar;
-				//wxLogMessage(_T("[lmTimeLine::ShiftEntries] Reposition bar: uBarPosition=%.2f, uShiftBar=%.2f"),
-				//			uBarPosition, uShiftBar );
+                if (pTPE->m_pShape)
+				    pTPE->m_pSO->StoreOriginAndShiftShapes(uShiftBar, pTPE->m_pShape->GetOwnerIDX() );
+				//pTPE->m_pSO->StoreOriginAndShiftShapes(uShiftBar);
             }
         }
     }
@@ -565,8 +592,8 @@ lmLUnits lmTimeLine::IntitializeSpacingAlgorithm(float rFactor, bool fCreateCrit
 
 		    //move the shape and update the entry data
             (*m_it)->Reposition(m_uxCurPos);
-            wxLogMessage(_T("[lmTimeLine::IntitializeSpacingAlgorithm] ID=%d, m_uxCurPos=%.2f"),
-                ((*m_it)->m_pSO ? (*m_it)->m_pSO->GetID() : 0), m_uxCurPos);
+            //wxLogMessage(_T("[lmTimeLine::IntitializeSpacingAlgorithm] ID=%d, m_uxCurPos=%.2f"),
+            //    ((*m_it)->m_pSO ? (*m_it)->m_pSO->GetID() : 0), m_uxCurPos);
 
 		    //advance the width and spacing
 		    m_uxCurPos += (*m_it)->GetTotalSize();
@@ -699,6 +726,17 @@ float lmTimeLine::ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor,
 
 		}
 	}
+    else
+    {
+        //we have arrived to the end of line, but it could be an omega entry without barline.
+        //In that case, it is necessary to update its information
+		if (itLastNotTimed != m_aMainTable.end() &&
+            (*itLastNotTimed)->m_nType == eOmega &&
+            (*itLastNotTimed)->m_rTimePos < 0.0f )
+		{
+		    (*itLastNotTimed)->Reposition(m_uxCurPos);
+        }
+    }
 
 	//done. Return the next timepos in this line, or -1 if no more entries.
 	if (m_it != m_aMainTable.end()) {
@@ -884,8 +922,8 @@ float lmTimeLine::ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor,
 
 float lmTimeLine::ComputeRequiredSpacingFactor(lmLUnits uNewBarSize)
 {
-    wxLogMessage(_T("[lmTimeLine::ComputeRequiredSpacingFactor] New measure size=%.2f, current size=%.2f"),
-                uNewBarSize, this->GetLineWidth());
+    //wxLogMessage(_T("[lmTimeLine::ComputeRequiredSpacingFactor] New measure size=%.2f, current size=%.2f"),
+    //            uNewBarSize, this->GetLineWidth());
 
     lmLUnits uTotalSize = 0.0f;
     lmLUnits uTotalFixed = 0.0f;
@@ -902,8 +940,8 @@ float lmTimeLine::ComputeRequiredSpacingFactor(lmLUnits uNewBarSize)
             nVarNotes++;
     }
     lmLUnits uOldBarSize = uTotalSize + uTotalFixed + uTotalVariable;
-    wxLogMessage(_T("[lmTimeLine::ComputeRequiredSpacingFactor] Shapes=%.2f, fixed=%.2f, var=%.2f, total=%.2f, NumNotes=%d"),
-		uTotalSize, uTotalFixed, uTotalVariable, uOldBarSize, nVarNotes);
+  //  wxLogMessage(_T("[lmTimeLine::ComputeRequiredSpacingFactor] Shapes=%.2f, fixed=%.2f, var=%.2f, total=%.2f, NumNotes=%d"),
+		//uTotalSize, uTotalFixed, uTotalVariable, uOldBarSize, nVarNotes);
 
     //compute new required spacing factor A':
     //
@@ -915,8 +953,8 @@ float lmTimeLine::ComputeRequiredSpacingFactor(lmLUnits uNewBarSize)
     float rOldFactor = m_pOwner->SpacingFactor();
     float rNewFactor = rOldFactor + (m_rBeta > 0.0f ? (uNewBarSize - uOldBarSize)/m_rBeta : 0.0f);
 
-    wxLogMessage(_T("[lmTimeLine::ComputeRequiredSpacingFactor] old factor=%.2f, new factor=%.2f"),
-		m_pOwner->SpacingFactor(), rNewFactor);
+  //  wxLogMessage(_T("[lmTimeLine::ComputeRequiredSpacingFactor] old factor=%.2f, new factor=%.2f"),
+		//m_pOwner->SpacingFactor(), rNewFactor);
     return rNewFactor;
 }
 
@@ -933,8 +971,7 @@ wxString lmTimeLine::DumpMainTable()
     }
 
     //headers
-    //          ...+  ..+   ...+ ..+   +  ..........+........+........+........+........+........+........+........+........+
-    sMsg += _T("Item    Type      ID Prolog   TimePos    xInit  xAnchor    xLeft     Size    Space   xFinal  SpFixed   SpVar\n");
+    sMsg += lmTimeposEntry::DumpHeader();
 
     //loop to dump table entries
     lmTimeposEntry* pTE;
@@ -1455,8 +1492,8 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
 		lmLUnits uSize = (*it)->GetLineWidth();
 		uMeasureSize = wxMax(uMeasureSize, uSize);
 
-        wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Dump of line %d"), iLine++);
-        wxLogMessage( (*it)->DumpMainTable() );
+        //wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Dump of line %d"), iLine++);
+        //wxLogMessage( (*it)->DumpMainTable() );
 
         if (fCreateCriticalLine)
         {
@@ -1477,14 +1514,14 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
     }
 
 
-    //DBG
-    if (m_pCriticalLine)
-    {
-        wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Dump of critical line:"));
-        wxLogMessage( m_pCriticalLine->DumpMainTable() );
-    }
+    ////DBG
+    //if (m_pCriticalLine)
+    //{
+    //    wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Dump of critical line:"));
+    //    wxLogMessage( m_pCriticalLine->DumpMainTable() );
+    //}
 
-    wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] measure size = %.2f"), uMeasureSize);
+    //wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] measure size = %.2f"), uMeasureSize);
 	return uMeasureSize;
 }
 
@@ -1521,8 +1558,8 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 		uBarPosition = wxMax(uBarPosition, uPos);
     }
 
-    wxLogMessage(_T("[lmTimeposTable::RedistributeSpace] uNewBarSize=%.2f, uNewStart=%.2f, uBarPosition=%.2f"),
-                 uNewBarSize, uNewStart, uBarPosition );
+    //wxLogMessage(_T("[lmTimeposTable::RedistributeSpace] uNewBarSize=%.2f, uNewStart=%.2f, uBarPosition=%.2f"),
+    //             uNewBarSize, uNewStart, uBarPosition );
     return uNewStart + uNewBarSize;
 }
 

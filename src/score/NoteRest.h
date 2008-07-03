@@ -75,7 +75,8 @@ public:
     //ctors and dtor
     virtual ~lmNoteRest();
 
-    bool IsRest() const { return m_fIsRest; }
+    inline bool IsRest() const { return m_fIsRest; }
+    inline bool IsNote() const { return !m_fIsRest; }
 
     //implementation of virtual methods of base class lmStaffObj
     virtual bool IsComposite() { return true; }
@@ -91,19 +92,21 @@ public:
     void AddLyric(lmLyric* pLyric);
 
     //methods related to duration
-    float GetDuration() const { return m_rDuration; }
-    float GetTimePosIncrement() { return m_rDuration; }
+    inline float GetDuration() const { return m_rDuration; }
+    inline float GetTimePosIncrement() { return m_rDuration; }
     wxString GetLDPNoteType();
 
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
 	inline void OnIncludedInBeam(lmBeam* pBeam) { m_pBeam = pBeam; }
 	inline void OnRemovedFromBeam() { m_pBeam = (lmBeam*)NULL; }
-    bool IsBeamed() const { return m_pBeam != (lmBeam*)NULL; }
-    lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
-    void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
+    inline bool IsBeamed() const { return m_pBeam != (lmBeam*)NULL; }
+    inline lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
+    inline void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
 	inline lmBeam* GetBeam() { return m_pBeam; }
 	inline lmTBeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
+    lmBeam* IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam=(lmBeam*)NULL);
+
 
     //methods related to tuplets
 	inline void OnIncludedInTuplet(lmTupletBracket* pTuplet) { m_pTuplet = pTuplet; }

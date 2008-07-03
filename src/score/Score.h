@@ -293,7 +293,6 @@ public:
     // serving highlight events
     void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, lmEHighlightType nHighlightType);
 	void RemoveAllHighlight(wxWindow* pCanvas);
-    void CursorHighlight(lmStaffObj* pSO, int nStaff, lmPaper* pPaper, bool fHighlight);
 
 
     // Debug methods. If filename provided writes also to file

@@ -395,7 +395,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest) {
             pNR = (lmNoteRest*)pSO;
-            if (!pNR->IsRest()) {
+            if (pNR->IsNote()) {
                 //OK. Note fount. Take duration
                 pNote = (lmNote*)pSO;
                 float rDuration = pNote->GetDuration();
@@ -671,7 +671,7 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
         lmStaffObj* pSO = pIter->GetCurrent();
         EStaffObjType nType = pSO->GetClass();
         if (nType == eSFOT_NoteRest) {
-            if (!((lmNoteRest*)pSO)->IsRest())
+            if ( ((lmNoteRest*)pSO)->IsNote() )
             {
                 // It is a note. Get its chord position
                 if( ((lmNote*)pSO)->GetChordPosition() != lmNON_CHORD_NOTE)
@@ -723,7 +723,7 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
         if (pSO->GetClass() == eSFOT_NoteRest)
         {
             // 1. It is a note or a rest
-            if (!((lmNoteRest*)pSO)->IsRest())
+            if ( ((lmNoteRest*)pSO)->IsNote() )
             {
                 // It is a note. Get its chord position
                 pNoteCur = (lmNote*)pSO;
@@ -1343,7 +1343,7 @@ void lmComposer6::InstantiateWithNote(lmScore* pScore, lmAPitch anPitch)
         lmStaffObj* pSO = pIter->GetCurrent();
         EStaffObjType nType = pSO->GetClass();
         if (nType == eSFOT_NoteRest) {
-            if (!((lmNoteRest*)pSO)->IsRest())
+            if ( ((lmNoteRest*)pSO)->IsNote() )
             {
                 // It is a note. Instantiate it
                 ((lmNote*)pSO)->ChangePitch(anPitch, lmCHANGE_TIED);

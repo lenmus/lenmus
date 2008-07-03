@@ -126,7 +126,8 @@ lmNoteRest::~lmNoteRest()
 
 void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
 {
-    // Set up beaming information
+    //This method is used when loading a file.
+    //Set up beaming information
 
     if (!fBeamed) {
         m_pBeam = (lmBeam*)NULL;
@@ -151,8 +152,8 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
                 }
                 if (m_BeamInfo[0].Type == eBeamEnd) {
                         //m_pBeam->CreateShape();
-                    //AWARE with this note/rest the beaming ends. But it si not yet posible to
-                    //compute beaming information as ther could remain notes to add in
+                    //AWARE with this note/rest the beaming ends. But it it not yet posible to
+                    //compute beaming information as there could be more notes to add in
                     //chord to this note. Due to this, the computation of stems has
                     //been delayed to the layout phase, when layouting the first note of
                     //the beam.
@@ -163,6 +164,33 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
     }
 }
 
+lmBeam* lmNoteRest::IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam)
+{
+    //this method is used in the score editor, when the beam has been created and this
+    //note/rest must be included on it. Previously, any current beam has been removed.
+    //pBeam is only valid when nBeamType is not eBeamBegin
+
+    //set up basic beaming information
+    for (int i=0; i < 6; i++) {
+        m_BeamInfo[i].Repeat = false;
+        m_BeamInfo[i].Type = eBeamNone;
+    }
+    m_BeamInfo[0].Type = nBeamType;         //eBeamBegin, eBeamContinue or eBeamEnd
+
+    //save beam and include tis note/rest on it
+    if (nBeamType == eBeamBegin)
+    {
+        wxASSERT (this->IsNote());
+        m_pBeam = new lmBeam((lmNote*)this);
+    }
+    else
+    {
+        m_pBeam = pBeam;
+        m_pBeam->Include(this);
+    }
+
+    return m_pBeam;
+}
 
 void lmNoteRest::Freeze(lmUndoData* pUndoData)
 {
@@ -347,7 +375,7 @@ lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
 
     yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
     yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum);
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, GLYPH_DOT, GetSuitableFont(pPaper), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, GLYPH_DOT, GetSuitableFont(pPaper), pPaper,
                                             lmUPoint(xPos, yPos), _T("Dot"));
 	pCS->Add(pShape);
     return pShape->GetBounds().GetWidth();

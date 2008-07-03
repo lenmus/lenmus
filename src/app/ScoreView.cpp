@@ -2034,27 +2034,6 @@ void lmScoreView::MoveCaretToObject(lmStaffObj* pSO)
     ShowCaret();
 }
 
-
-void lmScoreView::HightlightCaretObject(lmStaffObj* pSO, int nStaff, bool fSelect)
-{
- //   //Add/Remove highligt from specified staffobj
- //   //Precondition: the cursor is currently hidden, to avoid interferences
-
- //   //prepare paper DC
- //   wxClientDC dc(m_pCanvas);
- //   dc.SetMapMode(lmDC_MODE);
- //   dc.SetUserScale( m_rScale, m_rScale );
- //   m_Paper.SetDrawer(new lmDirectDrawer(&dc));
-
-	////position DC origing according to current scrolling and page position
-	//int nNumPage = pSO->GetPageNumber();        // nNumPage = 1..n
-	//wxPoint org = GetDCOriginForPage(nNumPage);
-	//dc.SetDeviceOrigin(org.x, org.y);
-
- //   //highlight or unhighlight the staffobj
- //   m_pDoc->GetScore()->CursorHighlight(pSO, nStaff, &m_Paper, fSelect);
-}
-
 void lmScoreView::UpdateCaret()
 {
     //updates caret position and status bar related info.

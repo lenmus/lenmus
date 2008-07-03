@@ -74,9 +74,11 @@ public:
     lmSegment(lmColStaffObjs* pOwner, int nSegment);
     ~lmSegment();
 
+    //operations
 	void Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor);
     void Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition, bool fKeyKeepPitch);
     void UpdateDuration();
+    void AutoBeam(int nVoice);
 
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
@@ -108,6 +110,9 @@ private:
     void VoiceUsed(int nVoice);
     void ShiftRightTimepos(lmItCSO itStart, int nVoice);
     void ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart);
+
+    //auto beam
+    void AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes);
 
     //context management
     lmContext* FindEndOfSegmentContext(int nStaff);

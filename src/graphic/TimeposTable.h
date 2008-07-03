@@ -61,6 +61,8 @@ public:
     inline lmLUnits GetTotalSize() { return m_uSize + m_uFixedSpace + m_uVariableSpace; }
 
     wxString Dump(int iEntry);
+    static wxString DumpHeader();
+
 
 
     //member variables (one entry of the table)

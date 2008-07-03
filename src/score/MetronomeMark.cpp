@@ -98,9 +98,9 @@ lmUPoint lmMetronomeMark::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
 	//create the container shape and add it to the box
-	lmCompositeShape* pShape = new lmCompositeShape(this, _("metronome mark"), lmDRAGGABLE);
+	lmCompositeShape* pShape = new lmCompositeShape(this, 0, _("metronome mark"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-	m_pGMObj = pShape;
+    StoreShape(pShape);
 
 	wxFont* pFont = GetSuitableFont(pPaper);
 
@@ -169,7 +169,7 @@ lmLUnits lmMetronomeMark::AddSymbolShape(lmCompositeShape* pShape, lmPaper* pPap
 
 	//create the shape
     lmShapeGlyph* pSG = 
-		new lmShapeGlyph(this, nGlyph, pFont, pPaper, uPos, _T("metronome mark symbol"),
+		new lmShapeGlyph(this, -1, nGlyph, pFont, pPaper, uPos, _T("metronome mark symbol"),
 				         lmDRAGGABLE, colorC);
 
 	//add the shape to the composite parent shape

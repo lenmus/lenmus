@@ -57,11 +57,10 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	wxString GetName() const { return _T("time signature"); }
-    void StoreOriginAndShiftShapes(lmLUnits uxShift);
+    void StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx=0);
 
 	//rederizarion
-	inline lmShape* GetShape(int nStaff) { return m_pShapes[nStaff-1]; }
-	void CursorHighlight(lmPaper* pPaper, int nStaff, bool fHighlight);
+    inline lmShape* GetShapeForStaff(int nStaff) { return GetShape(nStaff-1); }
 
 
     //    debugging
@@ -84,16 +83,15 @@ public:
 
 
 private:
-    lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
-                                  wxString& sTopGlyphs,
-                                  lmLUnits uxPosTop, lmLUnits uyPosTop,
+    void Create();
+    lmCompositeShape* CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+                                  wxString& sTopGlyphs, lmLUnits uxPosTop, lmLUnits uyPosTop,
                                   wxString& sBottomGlyphs,
                                   lmLUnits uxPosBottom, lmLUnits uyPosBottom);
 
     // member variables
 
     lmContext*			m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
-    lmCompositeShape*	m_pShapes[lmMAX_STAFF];		//a shape for each staff
 
 	// attributes
     int				m_nBeats;

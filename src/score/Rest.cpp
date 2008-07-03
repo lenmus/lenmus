@@ -124,12 +124,12 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //create the container shape and add it to the box
     lmShapeRest* pRestShape = new lmShapeRest(this, lmDRAGGABLE, m_fVisible);
 	pBox->AddShape(pRestShape);
-    m_pGMObj = pRestShape;
+    StoreShape(pRestShape);
 
     // create shape for the rest symbol
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper),
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper),
                                             pPaper, lmUPoint(uxLeft, yPos), _T("RestGlyph"));
 	pRestShape->Add(pShape);
     uxLeft += pShape->GetWidth();

@@ -80,8 +80,8 @@ protected:
 class lmShapeGlyph : public lmSimpleShape
 {
 public:
-    lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                 lmUPoint offset, wxString sName=_T("ShapeGlyph"),
+    lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, wxFont* pFont,
+                 lmPaper* pPaper, lmUPoint offset, wxString sName=_T("ShapeGlyph"),
 				 bool fDraggable = false, wxColour color = *wxBLACK);
     virtual ~lmShapeGlyph() {}
 
@@ -157,10 +157,10 @@ private:
 class lmShapeClef : public lmShapeGlyph
 {
 public:
-    lmShapeClef(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                lmUPoint offset, wxString sName=_T("Clef"),
+    lmShapeClef(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, wxFont* pFont,
+                lmPaper* pPaper, lmUPoint offset, wxString sName=_T("Clef"),
 				bool fDraggable = false, wxColour color = *wxBLACK) 
-				: lmShapeGlyph(pOwner, nGlyph, pFont, pPaper, offset, sName,
+				: lmShapeGlyph(pOwner, nShapeIdx, nGlyph, pFont, pPaper, offset, sName,
 				               fDraggable, color) {}
     ~lmShapeClef() {}
 

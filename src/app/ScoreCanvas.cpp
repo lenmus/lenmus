@@ -66,7 +66,9 @@ const int lmID_PROPERTIES = wxNewId();
 
 
 BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
-	EVT_CHAR(lmController::OnKeyPress)
+	//EVT_CHAR(lmController::OnKeyPress)
+	EVT_KEY_DOWN(lmController::OnKeyDown)
+	EVT_KEY_UP(lmController::OnKeyUp)
     EVT_ERASE_BACKGROUND(lmController::OnEraseBackground)
 
 	//contextual menus
@@ -145,6 +147,11 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocum
 	//attach the edit menu to the command processor
 	m_pDoc->GetCommandProcessor()->SetEditMenu( GetMainFrame()->GetEditMenu() );
 
+    //initializations
+    m_nOctave = 4;      //start in octave 4
+    m_fCtrl = false;
+    m_fAlt = false;
+    m_fShift = false;
 }
 
 lmScoreCanvas::~lmScoreCanvas()
@@ -233,9 +240,8 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 	//Generate move command to move the lmComponentObj and update the document
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-    lmScoreObj* pSO = pGMO->GetScoreOwner();
 	wxString sName = wxString::Format(_T("Move %s"), pGMO->GetName().c_str() );
-	pCP->Submit(new lmCmdUserMoveScoreObj(sName, m_pDoc, pSO, uPos));
+	pCP->Submit(new lmCmdUserMoveScoreObj(sName, m_pDoc, pGMO, uPos));
 }
 
 void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
@@ -353,7 +359,7 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 }
 
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
-							   wxString sStep, wxString sOctave, 
+							   wxString sStep, int nOctave, 
 							   lmENoteType nNoteType, float rDuration,
 							   lmENoteHeads nNotehead,
 							   lmEAccidentals nAcc)
@@ -367,6 +373,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert note");
+    wxString sOctave = wxString::Format(_T("%d"), nOctave);
 	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, sStep, sOctave, 
 							        nNoteType, rDuration, nNotehead, nAcc) );
 }
@@ -378,7 +385,7 @@ void lmScoreCanvas::ChangeNotePitch(int nSteps)
 	wxASSERT(pVCursor);
     lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
-	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && !((lmNoteRest*)pCursorSO)->IsRest() );
+	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Change note pitch");
 	pCP->Submit(new lmCmdChangeNotePitch(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
@@ -391,17 +398,44 @@ void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
 	wxASSERT(pVCursor);
     lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
-	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && !((lmNoteRest*)pCursorSO)->IsRest() );
+	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Change note accidentals");
 	pCP->Submit(new lmCmdChangeNoteAccidentals(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
 }
 
+void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
+{
+    switch ( event.GetKeyCode() )
+    {
+        case WXK_SHIFT:     m_fShift = true;    break;
+        case WXK_ALT:       m_fAlt = true;      break;
+        case WXK_CONTROL:   m_fCtrl = true;     break;
+        default:
+            OnKeyPress(event);
+            ;   //LogKeyEvent( wxT("Key down"), event);
+    }
 
+    //event.Skip();       //to generate Key press event
+}
 
+void lmScoreCanvas::OnKeyUp(wxKeyEvent& event)
+{
+    switch ( event.GetKeyCode() )
+    {
+        case WXK_SHIFT:     m_fShift = false;   break;
+        case WXK_ALT:       m_fAlt = false;     break;
+        case WXK_CONTROL:   m_fCtrl = false;    break;
+        default:
+            ; //LogKeyEvent( wxT("Key up"), event);
+    }
+
+    //event.Skip();       //to generate Key press event
+}
 
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 {
+    //We are processing a Key Down event 
 	lmEEditTool nTool = lmTOOL_NONE;
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	if (!pToolBox) {
@@ -413,7 +447,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
     int nKeyCode = event.GetKeyCode();
 	bool fUnknown = false;
 
-    // check if an auxiliary key (Shift, Ctrl, Alt) is pressed
+    // check if an auxiliary key (Shift, Ctrl/Meta, Alt) is pressed
     enum {
         lmKEY_ALT = 0x0001,
         lmKEY_CTRL = 0x0002,
@@ -423,277 +457,260 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
     int nAuxKeys = 0;
     if (event.ShiftDown())
         nAuxKeys |= lmKEY_SHIFT;
-    if (event.ControlDown())
+    if (event.CmdDown())        //Ctrl for non-Mac platforms, Meta for Mac platform
         nAuxKeys |= lmKEY_CTRL;
     if (event.AltDown())
         nAuxKeys |= lmKEY_ALT;
 
-	//process main key
-	switch(nTool)
+	//Verify common keys working with all tools
+	fUnknown = false;
+	switch (nKeyCode)
 	{
-        case lmTOOL_NONE:	//---------------------------------------------------------
-		{
-			switch (nKeyCode)
-			{
-				case WXK_UP:
-					m_pView->CaretUp();
-					break;
-
-				case WXK_DOWN:
-					m_pView->CaretDown();
-					break;
-
-
-				default:
-					fUnknown = true;
-			}
+		case WXK_LEFT:
+			m_pView->CaretLeft((bool)(nAuxKeys & lmKEY_ALT));
 			break;
-		}
 
-        case lmTOOL_NOTES:	//---------------------------------------------------------
-		{
-			lmToolNotes* pNoteOptions = pToolBox->GetNoteProperties();
-			lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
-			float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, false, false, 0, 0);
-			lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
-			lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
-			switch (nKeyCode)
-			{
-				case 97:    // 'a' insert A note
-					InsertNote(lm_ePitchRelative, _T("a"), _T("4"), nNoteType, rDuration,
-							   nNotehead, nAcc);
-					break;
-
-				case 98:    // 'b' insert B note
-					InsertNote(lm_ePitchRelative, _T("b"), _T("4"), nNoteType, rDuration,
-							   nNotehead, nAcc);
-					break;
-
-				case 99:    // 'c' insert C note
-					InsertNote(lm_ePitchRelative, _T("c"), _T("4"), nNoteType, rDuration,
-							   nNotehead, nAcc);
-					break;
-
-				case 100:   // 'd' insert D note
-					InsertNote(lm_ePitchRelative, _T("d"), _T("4"), nNoteType, rDuration,
-							   nNotehead, nAcc);
-					break;
-
-				case 101:   // 'e' insert E note
-					InsertNote(lm_ePitchRelative, _T("e"), _T("4"), nNoteType, rDuration,
-							   nNotehead, nAcc);
-					break;
-
-				case 102:   // 'f' insert F note
-					InsertNote(lm_ePitchRelative, _T("f"), _T("4"), nNoteType, rDuration,
-							   nNotehead, nAcc);
-					break;
-
-				case 103:   // 'g' insert G	 note
-					InsertNote(lm_ePitchRelative, _T("g"), _T("4"), nNoteType, rDuration,
-							   nNotehead, nAcc);
-					break;
-
-				//commands to change options in Tool Box
-
-				//select note duration
-				case 48:    // '0' double whole
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(0);
-					break;
-
-				case 49:    // '1' whole
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(1);
-					break;
-
-				case 50:    // '2' half
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(2);
-					break;
-
-				case 51:    // '3' quarter
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(3);
-					break;
-
-				case 52:    // '4' eighth
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(4);
-					break;
-
-				case 53:    // '5' 16th
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(5);
-					break;
-
-				case 54:    // '6' 32nd
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(6);
-					break;
-
-				case 55:    // '7' 64th
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(7);
-					break;
-
-				case 56:    // '8' 128th
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(8);
-					break;
-
-				case 57:    // '9' 256th
-					if (pToolBox) 
-						((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(8);
-					break;
-
-				//commands requiring to have a note/rest selected
-
-				////change selected note pitch
-				//case WXK_UP:
-				//	if (nAuxKeys==0)
-				//		ChangeNotePitch(1);		//step up
-				//	else if (nAuxKeys && lmKEY_SHIFT)
-				//		ChangeNotePitch(7);		//octave up
-				//	else
-				//		fUnknown = true;
-				//	break;
-
-				//case WXK_DOWN:
-				//	if (nAuxKeys==0)
-				//		ChangeNotePitch(-1);		//step down
-				//	else if (nAuxKeys && lmKEY_SHIFT)
-				//		ChangeNotePitch(-7);		//octave down
-				//	else
-				//		fUnknown = true;
-				//	break;
-
-				////accidentals
-				//case 43:   // '+' increment accidental
-				//	ChangeNoteAccidentals(1);
-				//	break;
-
-				//case 45:   // '-' decrement accidental
-				//	ChangeNoteAccidentals(-1);
-				//	break;
-
-				//case 61:   // '=' remove accidental
-				//	ChangeNoteAccidentals(0);
-				//	break;
-				
-				//invalid key
-				default:
-					fUnknown = true;
-			}
+		case WXK_RIGHT:
+			m_pView->CaretRight((bool)(nAuxKeys & lmKEY_ALT));
 			break;
-		}
 
-        case lmTOOL_CLEFS:	//---------------------------------------------------------
-		{
-			switch (nKeyCode)
-			{
-				case 103:	// 'g' insert G clef
-					InsertClef(lmE_Sol);
-					break;
-
-				case 102:	// 'f' insert F4 clef
-					InsertClef(lmE_Fa4);
-					break;
-
-				case 99:    // 'c' insert C3 clef
-					InsertClef(lmE_Do3);
-					break;
-
-				default:
-					fUnknown = true;
-			}
+		case WXK_UP:
+			m_pView->CaretUp();
 			break;
-		}
 
-        case lmTOOL_BARLINES:	//---------------------------------------------------------
-		{
-			switch (nKeyCode)
-			{
-				case 98:	// 'b' insert duble barline
-					InsertBarline(lm_eBarlineDouble);
-					break;
-
-				default:
-					fUnknown = true;
-			}
+		case WXK_DOWN:
+			m_pView->CaretDown();
 			break;
-		}
 
-		default:	// Unknown Tool -----------------------------------------------------
-		{
-			wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] Unknown tool %d."), nTool);
+		case WXK_F1:
+			if (pToolBox) pToolBox->SelectTool((lmEEditTool)0);
+			break;
+
+		case WXK_F2:
+			if (pToolBox) pToolBox->SelectTool((lmEEditTool)1);
+			break;
+
+		case WXK_F3:
+			if (pToolBox) pToolBox->SelectTool((lmEEditTool)2);
+			break;
+
+		case WXK_F4:
+			if (pToolBox) pToolBox->SelectTool((lmEEditTool)3);
+			break;
+
+		case WXK_F5:
+			if (pToolBox) pToolBox->SelectTool((lmEEditTool)4);
+			break;
+
+		case WXK_F6:
+			if (pToolBox) pToolBox->SelectTool((lmEEditTool)5);
+			break;
+
+        case WXK_DELETE:
+			DeleteObject();
+			break;
+
+		default:
 			fUnknown = true;
-		}
-
-
 	}
 
-	//Not yet processed key. Verify common keys working with all tools
+	//if not processed, check if specific for current selected tool panel
 	if (fUnknown) 
 	{
-		fUnknown = false;
-		switch (nKeyCode)
-		{
-			case WXK_LEFT:
-				m_pView->CaretLeft((bool)(nAuxKeys & lmKEY_ALT));
-				break;
+	    switch(nTool)
+	    {
+            case lmTOOL_NONE:	//---------------------------------------------------------
+		    {
+			    switch (nKeyCode)
+			    {
+				    case WXK_UP:
+					    m_pView->CaretUp();
+					    break;
 
-			case WXK_RIGHT:
-				m_pView->CaretRight((bool)(nAuxKeys & lmKEY_ALT));
-				break;
+				    case WXK_DOWN:
+					    m_pView->CaretDown();
+					    break;
 
-			case WXK_UP:
-				m_pView->CaretUp();
-				break;
+				    default:
+					    fUnknown = true;
+			    }
+			    break;
+		    }
 
-			case WXK_DOWN:
-				m_pView->CaretDown();
-				break;
+            case lmTOOL_NOTES:	//---------------------------------------------------------
+		    {
+			    lmToolNotes* pNoteOptions = pToolBox->GetNoteProperties();
+			    lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
+			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, false, false, 0, 0);
+			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
+			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
+                
+                //if insert note determine octave
+                if (nKeyCode >= int('A') && nKeyCode <= int('G'))
+                {
+                    if (nAuxKeys & lmKEY_SHIFT)
+                        ++m_nOctave;
+                    else if (nAuxKeys & lmKEY_CTRL)
+                        --m_nOctave;
+                    
+                    //limit octave 0..9
+                    if (m_nOctave < 0)
+                        m_nOctave = 0;
+                    else if (m_nOctave > 9)
+                        m_nOctave = 9;
+                }
 
-			case WXK_F1:
-				if (pToolBox) pToolBox->SelectTool((lmEEditTool)0);
-				break;
+			    switch (nKeyCode)
+			    {
+				    case int('A'):    // 'a' insert A note
+					    InsertNote(lm_ePitchRelative, _T("a"), m_nOctave, nNoteType, rDuration,
+							    nNotehead, nAcc);
+					    break;
 
-			case WXK_F2:
-				if (pToolBox) pToolBox->SelectTool((lmEEditTool)1);
-				break;
+				    case int('B'):    // 'b' insert B note
+					    InsertNote(lm_ePitchRelative, _T("b"), m_nOctave, nNoteType, rDuration,
+							    nNotehead, nAcc);
+					    break;
 
-			case WXK_F3:
-				if (pToolBox) pToolBox->SelectTool((lmEEditTool)2);
-				break;
+				    case int('C'):    // 'c' insert C note
+					    InsertNote(lm_ePitchRelative, _T("c"), m_nOctave, nNoteType, rDuration,
+							    nNotehead, nAcc);
+					    break;
 
-			case WXK_F4:
-				if (pToolBox) pToolBox->SelectTool((lmEEditTool)3);
-				break;
+				    case int('D'):   // 'd' insert D note
+					    InsertNote(lm_ePitchRelative, _T("d"), m_nOctave, nNoteType, rDuration,
+							    nNotehead, nAcc);
+					    break;
 
-			case WXK_F5:
-				if (pToolBox) pToolBox->SelectTool((lmEEditTool)4);
-				break;
+				    case int('E'):   // 'e' insert E note
+					    InsertNote(lm_ePitchRelative, _T("e"), m_nOctave, nNoteType, rDuration,
+							    nNotehead, nAcc);
+					    break;
 
-			case WXK_F6:
-				if (pToolBox) pToolBox->SelectTool((lmEEditTool)5);
-				break;
+				    case int('F'):   // 'f' insert F note
+					    InsertNote(lm_ePitchRelative, _T("f"), m_nOctave, nNoteType, rDuration,
+							    nNotehead, nAcc);
+					    break;
 
-            case WXK_DELETE:
-				DeleteObject();
-				break;
+				    case int('G'):   // 'g' insert G	 note
+					    InsertNote(lm_ePitchRelative, _T("g"), m_nOctave, nNoteType, rDuration,
+							    nNotehead, nAcc);
+					    break;
 
-			default:
-				fUnknown = true;
-		}
-	}
+				    //not 
+				    default:
+					    fUnknown = true;
+			    }
 
+                //commands to change options in Tool Box
+                if (fUnknown)
+                {
+                    fUnknown = false;
+
+                    //select note duration: digits 0..9
+			        if (nKeyCode >= int('0') && nKeyCode <= int('9'))
+			        {
+					    SelectNoteDuration(nKeyCode - int('0'));
+                    }
+
+				    //select accidentals
+                    else if (nKeyCode == int('+'))
+                        SelectNoteAccidentals(true);        // '+' increment accidental
+                    else if (nKeyCode == int('-'))
+                        SelectNoteAccidentals(false);       // '-' decrement accidental
+
+                    else
+					    fUnknown = true;
+
+
+				    //commands requiring to have a note/rest selected
+
+				    ////change selected note pitch
+				    //case WXK_UP:
+				    //	if (nAuxKeys==0)
+				    //		ChangeNotePitch(1);		//step up
+				    //	else if (nAuxKeys && lmKEY_SHIFT)
+				    //		ChangeNotePitch(7);		//octave up
+				    //	else
+				    //		fUnknown = true;
+				    //	break;
+
+				    //case WXK_DOWN:
+				    //	if (nAuxKeys==0)
+				    //		ChangeNotePitch(-1);		//step down
+				    //	else if (nAuxKeys && lmKEY_SHIFT)
+				    //		ChangeNotePitch(-7);		//octave down
+				    //	else
+				    //		fUnknown = true;
+				    //	break;
+
+    				
+				   // //invalid key
+				   // default:
+					  //  fUnknown = true;
+			    //}
+                }
+			    break;      //case lmTOOL_NOTES
+		    }
+
+            case lmTOOL_CLEFS:	//---------------------------------------------------------
+		    {
+			    switch (nKeyCode)
+			    {
+				    case int('G'):	// 'g' insert G clef
+					    InsertClef(lmE_Sol);
+					    break;
+
+				    case int('F'):	// 'f' insert F4 clef
+					    InsertClef(lmE_Fa4);
+					    break;
+
+				    case int('C'):    // 'c' insert C3 clef
+					    InsertClef(lmE_Do3);
+					    break;
+
+				    default:
+					    fUnknown = true;
+			    }
+			    break;
+		    }
+
+            case lmTOOL_BARLINES:	//---------------------------------------------------------
+		    {
+			    switch (nKeyCode)
+			    {
+				    case int('B'):	// 'b' insert duble barline
+					    InsertBarline(lm_eBarlineDouble);
+					    break;
+
+				    default:
+					    fUnknown = true;
+			    }
+			    break;
+		    }
+
+		    default:	// Unknown Tool -----------------------------------------------------
+		    {
+			    wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] Unknown tool %d."), nTool);
+			    fUnknown = true;
+		    }
+
+
+	    }
+    }
 
 	//Debug: Unidentified tool or unidentified key. Log message
-	if (fUnknown) 
-	{
-        wxString key;
-        switch ( nKeyCode )
+	//if (fUnknown) 
+        LogKeyEvent(_T("Key Press"), event, nTool);
+
+}
+
+void lmScoreCanvas::LogKeyEvent(wxString name, wxKeyEvent& event, int nTool) const
+{
+    wxString key;
+    long keycode = event.GetKeyCode();
+    {
+        switch ( keycode )
         {
             case WXK_BACK: key = _T("BACK"); break;
             case WXK_TAB: key = _T("TAB"); break;
@@ -796,28 +813,25 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 
             default:
             {
-                if ( wxIsprint((int)nKeyCode) )
-                    key.Printf(_T("'%c'"), (char)nKeyCode);
-                else if ( nKeyCode > 0 && nKeyCode < 27 )
-                    key.Printf(_("Ctrl-%c"), _T('A') + nKeyCode - 1);
-                else
-                    key.Printf(_T("unknown (%ld)"), nKeyCode);
+               if ( wxIsprint((int)keycode) )
+                   key.Printf(_T("'%c'"), (char)keycode);
+               else if ( keycode > 0 && keycode < 27 )
+                   key.Printf(_("Ctrl-%c"), _T('A') + keycode - 1);
+               else
+                   key.Printf(_T("unknown (%ld)"), keycode);
             }
         }
-        #if wxUSE_UNICODE
-            key += wxString::Format(_T(" (Unicode: %#04x)"), event.GetUnicodeKey());
-        #endif // wxUSE_UNICODE
-
-        wxMessageBox( wxString::Format( _T("[lmScoreCanvas::OnKeyPress] Unknown char event: %s (flags = %c%c%c%c). Tool = %d"),
-                key.c_str(),
-                (event.ControlDown() ? _T('C') : _T('-') ),
-                (event.AltDown() ? _T('A') : _T('-') ),
-                (event.ShiftDown() ? _T('S') : _T('-') ),
-                (event.MetaDown() ? _T('M') : _T('-') ),
-				nTool ));
-        event.Skip();
     }
 
+    key += wxString::Format(_T(" (Unicode: %#04x)"), event.GetUnicodeKey());
+
+    wxLogMessage( wxString::Format( _T("[lmScoreCanvas::LogKeyEvent] Event: %s - %s, nKeyCode=%d, (flags = %c%c%c%c). Tool=%d"),
+            name, key.c_str(), keycode, 
+            (event.ControlDown() ? _T('C') : _T('-') ),
+            (event.AltDown() ? _T('A') : _T('-') ),
+            (event.ShiftDown() ? _T('S') : _T('-') ),
+            (event.MetaDown() ? _T('M') : _T('-') ),
+            nTool ));
 }
 
 void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
@@ -903,5 +917,24 @@ void lmScoreCanvas::OnProperties(wxCommandEvent& event)
 {
 	WXUNUSED(event);
 	m_pMenuOwner->OnProperties(m_pMenuGMO);
+}
+
+void lmScoreCanvas::SelectNoteDuration(int iButton)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (pToolBox) 
+		((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(iButton);
+}
+
+void lmScoreCanvas::SelectNoteAccidentals(bool fNext)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (pToolBox) 
+    {
+        if (fNext)
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNextAccidental();
+        else
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectPrevAccidental();
+    }
 }
 
