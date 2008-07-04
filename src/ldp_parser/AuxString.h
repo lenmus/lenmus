@@ -31,6 +31,7 @@
 extern bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals);
 extern bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch);
 extern int LetterToStep(wxString sStep);
+extern int LetterToStep(wxChar cStep);
 extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote);
 extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName);
 

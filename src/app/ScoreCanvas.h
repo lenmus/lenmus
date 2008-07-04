@@ -66,10 +66,9 @@ public:
 	// commands with Do/Undo support
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
     virtual void InsertClef(lmEClefType nClefType) {}
-	virtual void InsertNote(lmEPitchType nPitchType, wxString sStep, int nOctave, 
-					lmENoteType nNoteType, float rDuration,
-					lmENoteHeads nNotehead,
-					lmEAccidentals nAcc = lm_eNoAccidentals ) {}
+	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
+					lmENoteType nNoteType, float rDuration, int nDots,
+					lmENoteHeads nNotehead, lmEAccidentals nAcc = lm_eNoAccidentals ) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
     virtual void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true) {}
 	virtual void ChangeNotePitch(int nSteps) {}
@@ -140,10 +139,9 @@ public:
 	// commands with Do/Undo support
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
     void InsertClef(lmEClefType nClefType);
-	void InsertNote(lmEPitchType nPitchType, wxString sStep, int nOctave, 
-					lmENoteType nNoteType, float rDuration,
-					lmENoteHeads nNotehead,
-					lmEAccidentals nAcc = lm_eNoAccidentals );
+	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
+					lmENoteType nNoteType, float rDuration, int nDots,
+					lmENoteHeads nNotehead, lmEAccidentals nAcc = lm_eNoAccidentals );
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
     void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 	void ChangeNotePitch(int nSteps);
@@ -173,6 +171,7 @@ private:
     //tools' selection
     void SelectNoteDuration(int iButton);
     void SelectNoteAccidentals(bool fNext);
+    void SelectNoteDots(bool fNext);
 
 
     lmScoreView*        m_pView;        //owner view

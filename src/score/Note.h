@@ -47,11 +47,9 @@ class lmNote: public lmNoteRest
 public:
 
     lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
-        wxString& sStep, wxString& sOctave, wxString& sAlter,
-        lmEAccidentals nAccidentals,
+        int nStep, int nOctave, int nAlter, lmEAccidentals nAccidentals,
         lmENoteType nNoteType, float rDuration,
-        bool fDotted, bool fDoubleDotted,
-        int nStaff, int nVoice, bool fVisible,
+        int nNumDots, int nStaff, int nVoice, bool fVisible,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,

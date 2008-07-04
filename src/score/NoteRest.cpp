@@ -73,14 +73,14 @@
 //====================================================================================================
 
 lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
-                   bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible)
+               int nNumDots, int nStaff, int nVoice, bool fVisible)
 	: lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
 {
     // initialize all atributes
     m_fCalderon = false;
     m_nNoteType = nNoteType;
-    m_fDotted = fDotted;
-    m_fDoubleDotted = fDoubleDotted;
+    m_nNumDots = nNumDots;
+
     m_fIsRest = IsRest;
 	m_nVoice = nVoice;
 
@@ -651,6 +651,32 @@ float LDPNoteTypeToDuration(const wxString& sNoteType)
     //}
 
     //return NoteTypeToDuration((lmENoteType)nNoteType, fDotted, fDoubleDotted);
+}
+
+float NoteTypeToDuration(lmENoteType nNoteType, int nDots)
+{
+    //compute duration without modifiers
+    float rDuration = pow(2, (10 - nNoteType));
+
+    //take dots into account
+    switch (nDots)
+    {
+        case 0:                             break;
+        case 1: rDuration *= 1.5f;          break;
+        case 2: rDuration *= 1.75f;         break;
+        case 3: rDuration *= 1.875f;        break;
+        case 4: rDuration *= 1.9375f;       break;
+        case 5: rDuration *= 1.96875f;      break;
+        case 6: rDuration *= 1.984375f;     break;
+        case 7: rDuration *= 1.9921875f;    break;
+        case 8: rDuration *= 1.99609375f;   break;
+        case 9: rDuration *= 1.998046875f;  break;
+        default:
+            wxLogMessage(_T("[NoteTypeToDuration] Program limit: do you really need more than nine dots?"));
+    }
+
+    return rDuration;
+
 }
 
 float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted)

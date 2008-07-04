@@ -1,0 +1,40 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef G)
+         (key C)
+         (time 6 8)
+         (n b4 e g+)(n c5 e)(n b4 e g-)
+         (n b4 e g+)(r e)(n c4 e g-)
+         (barline simple)
+         
+         (n f4 q.)
+         (n d4 e g+)(r e)(n b3 e g-)
+         (barline simple)
+         
+         (n b3 q.)
+         (r q.)
+         (barline simple)
+         
+         (n f4 q.)
+         (r q)(n g4 e)
+         (barline simple)
+         
+         (n f4 q. l)
+         (n f4 q)(n a4 e)
+         (barline simple)
+         
+         (n c5 e g+)(n e5 e)(n c5 e g-)
+         (n e5 q.)
+         (barline simple)
+         
+         (n b4 e g+)(r e)(n c5 e g-)
+         (n f4 q.)
+         (barline simple)
+         
+         (n b4 h.)
+         (barline end)
+      )
+   )
+)

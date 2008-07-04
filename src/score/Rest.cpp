@@ -47,9 +47,9 @@
 #include "Glyph.h"
 
 
-lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
+lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, int nNumDots,
         int nStaff, int nVoice, bool fVisible, bool fBeamed, lmTBeamInfo BeamInfo[])
-    : lmNoteRest(pVStaff, lmDEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted,
+    : lmNoteRest(pVStaff, lmDEFINE_REST, nNoteType, rDuration, nNumDots,
                  nStaff, nVoice, fVisible)
 {
     CreateBeam(fBeamed, BeamInfo);
@@ -136,14 +136,13 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
     //create shapes for dots if necessary
     //------------------------------------------------------------
-    if (m_fDotted || m_fDoubleDotted)
-	{
+    if (m_nNumDots > 0)
+    {
         //TODO user selectable
         lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        uxLeft += uSpaceBeforeDot;
         lmLUnits uyPos = yPos - m_pVStaff->TenthsToLogical(GetDotShift(), m_nStaffNum);
-        uxLeft += AddDotShape(pRestShape, pPaper, uxLeft, uyPos, colorC);
-        if (m_fDoubleDotted) {
+        for (int i = 0; i < m_nNumDots; i++)
+        {
             uxLeft += uSpaceBeforeDot;
             uxLeft += AddDotShape(pRestShape, pPaper, uxLeft, uyPos, colorC);
         }
@@ -177,8 +176,8 @@ wxString lmRest::SourceLDP(int nIndent)
 
     //duration
     sSource += GetLDPNoteType();
-    if (m_fDotted) sSource += _T(".");
-    if (m_fDoubleDotted) sSource += _T(".");
+    for (int i=0; i < m_nNumDots; i++)
+        sSource += _T(".");
 
 	//base class
 	sSource += lmNoteRest::SourceLDP(nIndent);

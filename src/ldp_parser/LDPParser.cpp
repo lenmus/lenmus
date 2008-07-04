@@ -1383,14 +1383,14 @@ bool lmLDPParser::AnalyzeTimeExpression(const wxString& sData, float* pValue)
         }
         else {
             //letter: compute its value. Multiply by rNum and do addition or substraction
-            bool fDotted, fDoubleDotted;
+            int nDots;
             lmENoteType nNoteType;
-            if (AnalyzeNoteType(sChar, &nNoteType, &fDotted, &fDoubleDotted)) {
+            if (AnalyzeNoteType(sChar, &nNoteType, &nDots)) {
                 AnalysisError(_T("Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"), sChar.c_str());
                 rValue = (float)eQuarter;
             }
             else {
-                rValue = NoteTypeToDuration(nNoteType, fDotted, fDoubleDotted);
+                rValue = NoteTypeToDuration(nNoteType, nDots);
             }
 
             if (!fNumberReady) rNum = 1;       //no había multiplicador
@@ -1463,10 +1463,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     int nNormalNotes = 0;
 
     //default values
-    bool fDotted = false;
-    bool fDoubleDotted = false;
+    int nDots = 0;
     lmENoteType nNoteType = eQuarter;
-    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nActualNotes, nNormalNotes);
+    float rDuration = GetDefaultDuration(nNoteType, nDots, nActualNotes, nNormalNotes);
     wxString sStep = _T("c");
     wxString sOctave = _T("4");
     lmEAccidentals nAccidentals = lm_eNoAccidentals;
@@ -1543,7 +1542,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             if (nParms < 1) {
                 AnalysisError( _T("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
-                return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
+                return pVStaff->AddRest(nNoteType, rDuration, nDots,
                                         m_nCurStaff, m_nCurVoice, fVisible);
             }
         }
@@ -1551,9 +1550,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             if (nParms < 2) {
                 AnalysisError( _T("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
-                return pVStaff->AddNote(lm_ePitchRelative,
-                                        _T("c"), _T("4"), _T("0"), nAccidentals,
-                                        nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
+                return pVStaff->AddNote(lm_ePitchRelative, 0, 4, 0, nAccidentals,
+                                        nNoteType, rDuration, nDots, m_nCurStaff,
                                         m_nCurVoice, fVisible, fBeamed, BeamInfo, fInChord, fTie, nStem);
             }
         }
@@ -1594,7 +1592,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
 
     //analyze duration and dots
-    if (AnalyzeNoteType(sDuration, &nNoteType, &fDotted, &fDoubleDotted)) {
+    if (AnalyzeNoteType(sDuration, &nNoteType, &nDots)) {
         AnalysisError( _T("Unknown note/rest duration '%s'. A quarter note assumed."),
             sDuration.c_str() );
     }
@@ -1873,18 +1871,24 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
 
     // calculation of duration
-    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nActualNotes, nNormalNotes);
+    rDuration = GetDefaultDuration(nNoteType, nDots, nActualNotes, nNormalNotes);
 
     //create the nore/rest
     lmNoteRest* pNR;
     if (fIsRest) {
-        pNR = pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
+        pNR = pVStaff->AddRest(nNoteType, rDuration, nDots,
                                m_nCurStaff, m_nCurVoice, fVisible, fBeamed, BeamInfo);
     }
     else {
+        //TODO: Convert early to int
+        int nStep = LetterToStep(sStep);
+        long nAux;
+        sOctave.ToLong(&nAux);
+        int nOctave = (int)nAux;
+
         pNR = pVStaff->AddNote(nPitchType,
-                               sStep, sOctave, _T("0"), nAccidentals,
-                               nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
+                               nStep, nOctave, 0, nAccidentals,
+                               nNoteType, rDuration, nDots, m_nCurStaff,
                                m_nCurVoice, fVisible, fBeamed, BeamInfo, fInChord, fTie,
 							   nStem);
         m_sLastOctave = sOctave;
@@ -2362,8 +2366,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     EMetronomeMarkType nMarkType;
     long nTicksPerMinute = 0;
-    bool fDotted = false;
-    bool fDoubleDotted = false;
+    int nDots = 0;
     lmENoteType nLeftNoteType = eQuarter, nRightNoteType = eQuarter;
     int nLeftDots = 0, nRightDots = 0;
 
@@ -2376,12 +2379,11 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     else {
         //string value. Assume it is mark type (note duration and dots)
-        if (AnalyzeNoteType(sData, &nLeftNoteType, &fDotted, &fDoubleDotted)) {
+        if (AnalyzeNoteType(sData, &nLeftNoteType, &nDots)) {
             AnalysisError( _T("Unknown note/rest duration '%s'. A quarter note assumed."),
                 sData.c_str() );
         }
-        if (fDotted) nLeftDots++;
-        if (fDoubleDotted) nLeftDots++;
+        nLeftDots = nDots;
 
         // Get right part
         if (iP > nNumParms) {
@@ -2399,12 +2401,11 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
         else {
             //string value. Assume it is mark type (note duration and dots)
             nMarkType = eMMT_Note_Note;
-            if (AnalyzeNoteType(sData, &nRightNoteType, &fDotted, &fDoubleDotted)) {
+            if (AnalyzeNoteType(sData, &nRightNoteType, &nDots)) {
                 AnalysisError( _T("Unknown note/rest duration '%s'. A quarter note assumed."),
                     sData.c_str() );
             }
-            if (fDotted) nRightDots++;
-            if (fDoubleDotted) nRightDots++;
+            nRightDots = nDots;
         }
     }
 
@@ -3376,11 +3377,11 @@ int lmLDPParser::AnalyzeVoiceNumber(const wxString& sNotation)
 
 }
 
-float lmLDPParser::GetDefaultDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted,
-                      int nActualNotes, int nNormalNotes)
+float lmLDPParser::GetDefaultDuration(lmENoteType nNoteType, int nDots, int nActualNotes,
+                                    int nNormalNotes)
 {
     //compute duration without modifiers
-    float rDuration = NoteTypeToDuration(nNoteType, fDotted, fDoubleDotted);
+    float rDuration = NoteTypeToDuration(nNoteType, nDots);
 
     //alter by tuplet modifiers
     if (nActualNotes != 0) rDuration = (rDuration * (float)nNormalNotes) / (float)nActualNotes;
@@ -3409,11 +3410,11 @@ int lmLDPParser::GetBeamingLevel(lmENoteType nNoteType)
 }
 
 bool lmLDPParser::AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType,
-                                  bool* pfDotted, bool* pfDoubleDotted)
+                                  int* pNumDots)
 {
     // Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
     // dots "."
-    // Set up variables nNoteType and flags fDotted and fDoubleDotted.
+    // Set up variables nNoteType and pNumDots.
     //
     //  USA           UK                      ESP               LDP     NoteType
     //  -----------   --------------------    -------------     ---     ---------
@@ -3496,16 +3497,18 @@ bool lmLDPParser::AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType,
         return true;    //error
 
     //analyze dots
-    *pfDotted = false;
-    *pfDoubleDotted = false;
+    *pNumDots = 0;
     if (sDots.length() > 0) {
-        if (sDots.StartsWith( _T("..") )) {
-            *pfDoubleDotted = true;
-        } else if (sDots.StartsWith( _T(".") )) {
-            *pfDotted = true;
-        } else {
+        if (sDots.StartsWith( _T("....") ))
+            *pNumDots = 4;
+        else if (sDots.StartsWith( _T("...") ))
+            *pNumDots = 3;
+        else if (sDots.StartsWith( _T("..") ))
+            *pNumDots = 2;
+        else if (sDots.StartsWith( _T(".") ))
+            *pNumDots = 1;
+        else
             return true;    //error
-        }
     }
 
     return false;   //no error

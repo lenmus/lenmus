@@ -450,15 +450,16 @@ bool lmCmdInsertKeySignature::UndoCommand()
 lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName,
                                  lmScoreDocument *pDoc,
                                  lmEPitchType nPitchType,
-								 wxString sStep, wxString sOctave, 
-								 lmENoteType nNoteType, float rDuration,
+								 int nStep, int nOctave,
+								 lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
 	: lmScoreCommand(sName, pDoc, pVCursor)
 {
 	m_nNoteType = nNoteType;
 	m_nPitchType = nPitchType;
-	m_sStep = sStep;
-	m_sOctave = sOctave;
+	m_nStep = nStep;
+	m_nOctave = nOctave;
+    m_nDots = nDots;
 	m_rDuration = rDuration;
 	m_nNotehead = nNotehead;
 	m_nAcc = nAcc;
@@ -474,9 +475,10 @@ bool lmCmdInsertNote::Do()
     m_pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_sStep,
-                                             m_sOctave, m_nNoteType, m_rDuration, m_nNotehead,
-                                             m_nAcc);
+
+    lmVStaffCmd* pVCmd = new lmVCmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_nStep,
+                                             m_nOctave, m_nNoteType, m_rDuration, m_nDots, 
+                                             m_nNotehead, m_nAcc);
 
     if (pVCmd->Success())
     {

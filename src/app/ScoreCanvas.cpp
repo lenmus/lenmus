@@ -44,9 +44,10 @@
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 #include "toolbox/ToolsBox.h"
 #include "toolbox/ToolNotes.h"
+#include "global.h"
 
 #include "../ldp_parser/LDPParser.h"
-#include "global.h"
+#include "../ldp_parser/AuxString.h"
 
 // access to global external variables (to disable mouse interaction with the score)
 extern bool g_fReleaseVersion;            // in TheApp.cpp
@@ -358,11 +359,9 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 	pCP->Submit(new lmCmdInsertBarline(pVCursor, sName, m_pDoc, nType) );
 }
 
-void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
-							   wxString sStep, int nOctave, 
-							   lmENoteType nNoteType, float rDuration,
-							   lmENoteHeads nNotehead,
-							   lmEAccidentals nAcc)
+void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
+							   lmENoteType nNoteType, float rDuration, int nDots,
+							   lmENoteHeads nNotehead, lmEAccidentals nAcc)
 {
 	//insert a note at current cursor position
 
@@ -374,8 +373,13 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType,
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _T("Insert note");
     wxString sOctave = wxString::Format(_T("%d"), nOctave);
-	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, sStep, sOctave, 
-							        nNoteType, rDuration, nNotehead, nAcc) );
+
+    //TODO:
+    wxString sAllSteps = _T("cdefgab");
+    wxString sStep = sAllSteps.GetChar( nStep );
+
+	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, nStep, nOctave, 
+							        nNoteType, rDuration, nDots, nNotehead, nAcc) );
 }
 
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
@@ -541,13 +545,15 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 		    {
 			    lmToolNotes* pNoteOptions = pToolBox->GetNoteProperties();
 			    lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
-			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, false, false, 0, 0);
+			    int nDots = pNoteOptions->GetNoteDots();
+			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, nDots, 0, 0);
 			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
 			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
                 
-                //if insert note determine octave
+                //insert note
                 if (nKeyCode >= int('A') && nKeyCode <= int('G'))
                 {
+                    // determine octave
                     if (nAuxKeys & lmKEY_SHIFT)
                         ++m_nOctave;
                     else if (nAuxKeys & lmKEY_CTRL)
@@ -558,69 +564,54 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
                         m_nOctave = 0;
                     else if (m_nOctave > 9)
                         m_nOctave = 9;
+
+                    //get step 
+                    static wxString sSteps = _T("abcdefg");
+                    int nStep = LetterToStep( sSteps.GetChar( nKeyCode - int('A') ));
+
+                    //do insert note
+					InsertNote(lm_ePitchRelative, nStep, m_nOctave, nNoteType, rDuration,
+							   nDots, nNotehead, nAcc);
+
                 }
 
-			    switch (nKeyCode)
-			    {
-				    case int('A'):    // 'a' insert A note
-					    InsertNote(lm_ePitchRelative, _T("a"), m_nOctave, nNoteType, rDuration,
-							    nNotehead, nAcc);
-					    break;
-
-				    case int('B'):    // 'b' insert B note
-					    InsertNote(lm_ePitchRelative, _T("b"), m_nOctave, nNoteType, rDuration,
-							    nNotehead, nAcc);
-					    break;
-
-				    case int('C'):    // 'c' insert C note
-					    InsertNote(lm_ePitchRelative, _T("c"), m_nOctave, nNoteType, rDuration,
-							    nNotehead, nAcc);
-					    break;
-
-				    case int('D'):   // 'd' insert D note
-					    InsertNote(lm_ePitchRelative, _T("d"), m_nOctave, nNoteType, rDuration,
-							    nNotehead, nAcc);
-					    break;
-
-				    case int('E'):   // 'e' insert E note
-					    InsertNote(lm_ePitchRelative, _T("e"), m_nOctave, nNoteType, rDuration,
-							    nNotehead, nAcc);
-					    break;
-
-				    case int('F'):   // 'f' insert F note
-					    InsertNote(lm_ePitchRelative, _T("f"), m_nOctave, nNoteType, rDuration,
-							    nNotehead, nAcc);
-					    break;
-
-				    case int('G'):   // 'g' insert G	 note
-					    InsertNote(lm_ePitchRelative, _T("g"), m_nOctave, nNoteType, rDuration,
-							    nNotehead, nAcc);
-					    break;
-
-				    //not 
-				    default:
-					    fUnknown = true;
-			    }
-
                 //commands to change options in Tool Box
+
+
+                //select note duration: digits 0..9
+                if (fUnknown && nKeyCode >= int('0') && nKeyCode <= int('9'))
+			    {
+					SelectNoteDuration(nKeyCode - int('0'));
+                    fUnknown = false;
+                }
+
                 if (fUnknown)
                 {
-                    fUnknown = false;
-
-                    //select note duration: digits 0..9
-			        if (nKeyCode >= int('0') && nKeyCode <= int('9'))
+                    fUnknown = false;       //assume it
+			        switch (nKeyCode)
 			        {
-					    SelectNoteDuration(nKeyCode - int('0'));
+                        //select accidentals
+				        case int('+'):      // '+' increment accidentals  
+                            SelectNoteAccidentals(true);
+                            break;
+
+                        case int('-'):      // '-' decrement accidentals
+                            SelectNoteAccidentals(false);
+                            break;
+
+                        //select dots
+				        case int('.'):      // '.' increment/decrement dots 
+                            if (event.AltDown())
+                                SelectNoteDots(false);      // Alt + '.' decrement dots     
+                            else
+                                SelectNoteDots(true);       // '.' increment dots 
+                            break;
+
+                        //unknown
+				        default:
+					        fUnknown = true;
                     }
-
-				    //select accidentals
-                    else if (nKeyCode == int('+'))
-                        SelectNoteAccidentals(true);        // '+' increment accidental
-                    else if (nKeyCode == int('-'))
-                        SelectNoteAccidentals(false);       // '-' decrement accidental
-
-                    else
-					    fUnknown = true;
+                }
 
 
 				    //commands requiring to have a note/rest selected
@@ -649,7 +640,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 				   // default:
 					  //  fUnknown = true;
 			    //}
-                }
+
 			    break;      //case lmTOOL_NOTES
 		    }
 
@@ -938,3 +929,14 @@ void lmScoreCanvas::SelectNoteAccidentals(bool fNext)
     }
 }
 
+void lmScoreCanvas::SelectNoteDots(bool fNext)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (pToolBox) 
+    {
+        if (fNext)
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNextDot();
+        else
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectPrevDot();
+    }
+}

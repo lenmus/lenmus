@@ -98,17 +98,15 @@ public:
     lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true);
     lmKeySignature* AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible = true);
 
-    lmRest*     AddRest(lmENoteType nNoteType, float rDuration,
-                      bool fDotted, bool fDoubleDotted,
+    lmRest*     AddRest(lmENoteType nNoteType, float rDuration, int nDots,
                       int nStaff, int nVoice = 1,
 					  bool fVisible = true,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
     lmNote*     AddNote(lmEPitchType nPitchType,
-                    wxString sStep, wxString sOctave, wxString sAlter,
+                    int nStep, int nOctave, int nAlter,
                     lmEAccidentals nAccidentals,
-                    lmENoteType nNoteType, float rDuration,
-                    bool fDotted, bool fDoubleDotted,
+                    lmENoteType nNoteType, float rDuration, int nDots,
                     int nStaff, int nVoice = 1,
 					bool fVisible = true,
                     bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
@@ -145,8 +143,8 @@ public:
                            bool fVisible);
     void UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef);
 
-	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, wxString sStep,
-					       wxString sOctave, lmENoteType nNoteType, float rDuration,
+	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, int nStep,
+					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
 					       lmENoteHeads nNotehead, lmEAccidentals nAcc, bool fAutoBar);
 
     lmTimeSignature* Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
@@ -332,8 +330,8 @@ class lmVCmdInsertNote : public lmVStaffCmd
 {
 public:
     lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmEPitchType nPitchType,
-                     wxString sStep, wxString sOctave, lmENoteType nNoteType, float rDuration,
-					 lmENoteHeads nNotehead, lmEAccidentals nAcc);
+                     int nStep, int nOctave, lmENoteType nNoteType, float rDuration,
+					 int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc);
     ~lmVCmdInsertNote() {}
 
     void RollBack(lmUndoItem* pUndoItem);

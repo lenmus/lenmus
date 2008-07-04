@@ -110,8 +110,8 @@ public:
 
 
     // auxiliary methods
-    static float GetDefaultDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted,
-									int nActualNotes, int nNormalNotes);
+    static float GetDefaultDuration(lmENoteType nNoteType, int nDots, int nActualNotes,
+                                    int nNormalNotes);
     int GetBeamingLevel(lmENoteType nNoteType);
     bool ParenthesisMatch(const wxString& sSource);
 
@@ -129,8 +129,7 @@ private:
 
     void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
-    bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType,
-                                bool* pfDotted, bool* pfDoubleDotted);
+    bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText,

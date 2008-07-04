@@ -51,10 +51,14 @@
 #define lmSPACING 5
 
 //event IDs
+#define lm_NUM_DUR_BUTTONS  10
+#define lm_NUM_ACC_BUTTONS  8
+#define lm_NUM_DOT_BUTTONS  3
+
 enum {
 	lmID_BT_NoteDuration = 2600,
-    lmID_BT_NoteAcc = lmID_BT_NoteDuration + lmGrpNoteDuration::lm_NUM_ACC_BUTTONS,
-    lmID_BT_NoteDots = lmID_BT_NoteAcc + lmGrpNoteDots::lm_NUM_DOT_BUTTONS,
+    lmID_BT_NoteAcc = lmID_BT_NoteDuration + lm_NUM_DUR_BUTTONS,
+    lmID_BT_NoteDots = lmID_BT_NoteAcc + lm_NUM_ACC_BUTTONS,
 };
 
 
@@ -114,15 +118,10 @@ lmENoteHeads lmToolNotes::GetNoteheadType()
 // lmGrpNoteDuration implementation
 //--------------------------------------------------------------------------------
 
-
-BEGIN_EVENT_TABLE(lmGrpNoteDuration, lmToolGroup)
-	EVT_COMMAND_RANGE (lmID_BT_NoteDuration, lmID_BT_NoteDuration+lm_NUM_ACC_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpNoteDuration::OnButton)
-END_EVENT_TABLE()
-
 lmGrpNoteDuration::lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent)
+        : lmToolButtonsGroup(pParent, lm_NUM_DUR_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+                             lmID_BT_NoteDuration)
 {
-	m_nSelButton = -1;	            //none selected
     CreateControls(pMainSizer);
 }
 
@@ -132,7 +131,7 @@ void lmGrpNoteDuration::CreateControls(wxBoxSizer* pMainSizer)
     wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Note duration"));
 
     //create the specific controls for this group
-    const wxString sButtonBmps[lm_NUM_ACC_BUTTONS] = {
+    const wxString sButtonBmps[lm_NUM_DUR_BUTTONS] = {
         _T("note_0"),
         _T("note_1"),
         _T("note_2"),
@@ -147,7 +146,7 @@ void lmGrpNoteDuration::CreateControls(wxBoxSizer* pMainSizer)
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(24, 24);
-	for (int iB=0; iB < lm_NUM_ACC_BUTTONS; iB++)
+	for (int iB=0; iB < lm_NUM_DUR_BUTTONS; iB++)
 	{
 		if (iB % 5 == 0) {
 			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -170,27 +169,6 @@ lmENoteType lmGrpNoteDuration::GetNoteDuration()
     return (lmENoteType)(m_nSelButton+1);
 }
 
-void lmGrpNoteDuration::OnButton(wxCommandEvent& event)
-{
-	SelectButton(event.GetId() - lmID_BT_NoteDuration);
-}
-
-void lmGrpNoteDuration::SelectButton(int iB)
-{
-    // Set selected button as 'pressed' and all others as 'released'
-	m_nSelButton = iB;
-	for(int i=0; i < lm_NUM_ACC_BUTTONS; i++)
-	{
-		if (i != iB)
-			m_pButton[i]->Release();
-		else
-			m_pButton[i]->Press();
-	}
-
-    //return focus to active view
-    GetMainFrame()->SetFocusOnActiveView();
-}
-
 
 
 
@@ -198,12 +176,9 @@ void lmGrpNoteDuration::SelectButton(int iB)
 // lmGrpNoteAcc implementation
 //--------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(lmGrpNoteAcc, lmToolButtonsGroup)
-	EVT_COMMAND_RANGE (lmID_BT_NoteAcc, lmID_BT_NoteAcc+lm_NUM_ACC_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpNoteAcc::OnButton)
-END_EVENT_TABLE()
-
 lmGrpNoteAcc::lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_ACC_BUTTONS, true, pMainSizer)
+        : lmToolButtonsGroup(pParent, lm_NUM_ACC_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
+                             lmID_BT_NoteAcc)
 {
     CreateControls(pMainSizer);
 }
@@ -249,11 +224,6 @@ lmEAccidentals lmGrpNoteAcc::GetNoteAcc()
     return (lmEAccidentals)(m_nSelButton+1);
 }
 
-void lmGrpNoteAcc::OnButton(wxCommandEvent& event)
-{
-	SelectButton(event.GetId() - lmID_BT_NoteAcc);
-}
-
 
 
 
@@ -261,12 +231,9 @@ void lmGrpNoteAcc::OnButton(wxCommandEvent& event)
 // lmGrpNoteDots implementation
 //--------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(lmGrpNoteDots, lmToolButtonsGroup)
-	EVT_COMMAND_RANGE (lmID_BT_NoteDots, lmID_BT_NoteDots+lm_NUM_DOT_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpNoteDots::OnButton)
-END_EVENT_TABLE()
-
 lmGrpNoteDots::lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_DOT_BUTTONS, true, pMainSizer)
+        : lmToolButtonsGroup(pParent, lm_NUM_DOT_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
+                             lmID_BT_NoteDots)
 {
     CreateControls(pMainSizer);
 }
@@ -306,10 +273,4 @@ int lmGrpNoteDots::GetNoteDots()
 {
     return m_nSelButton + 1;
 }
-
-void lmGrpNoteDots::OnButton(wxCommandEvent& event)
-{
-	SelectButton(event.GetId() - lmID_BT_NoteDots);
-}
-
 

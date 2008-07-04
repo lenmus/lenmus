@@ -140,7 +140,7 @@ public:
 
 protected:
     lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
-             bool fDotted, bool fDoubleDotted, int nStaff, int nVoice, bool fVisible);
+               int nNumDots, int nStaff, int nVoice, bool fVisible);
 
     lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                      wxColour colorC, bool fUseFont);
@@ -158,8 +158,7 @@ protected:
     
     //duration and time modifiers
     float       m_rDuration;            //duration as defined in MusicXML: duration/divisions
-    bool        m_fDotted;
-    bool        m_fDoubleDotted;
+    int         m_nNumDots;             //number of dots: 0..n (3 max?)
     bool        m_fCalderon;            //tiene calderón
 
     // beaming information: only valid if m_pBeam != NULL
@@ -180,6 +179,7 @@ protected:
 extern int LDPNoteTypeToEnumNoteType(const wxString& sNoteType);
 extern float LDPNoteTypeToDuration(const wxString& sNoteType);
 extern float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted);
+extern float NoteTypeToDuration(lmENoteType nNoteType, int nDots);
 
 
 

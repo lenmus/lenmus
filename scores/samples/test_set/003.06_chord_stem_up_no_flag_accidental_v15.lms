@@ -1,0 +1,11 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef treble)
+         (key C)
+         (chord (n a3 q)(n -d4 q)(n f4 q))
+      )
+   )
+)
+

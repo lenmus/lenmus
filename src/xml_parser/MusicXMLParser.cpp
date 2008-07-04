@@ -893,8 +893,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     //default values
     lmEAccidentals nAccidentals = lm_eNoAccidentals;
     lmEStemType nStem = lmSTEM_DEFAULT;
-    bool fDotted = false;
-    bool fDoubleDotted = false;
+    int nDots = 0;
     lmENoteType nNoteType = eQuarter;
     bool fBeamed = false;
     lmTBeamInfo BeamInfo[6];
@@ -1508,15 +1507,21 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     lmNoteRest* pNR;
     float rDuration = ((float)nDuration / (float)m_nCurrentDivisions) * XML_DURATION_TO_LDP;
     if (fIsRest) {
-        pNR = pVStaff->AddRest(nNoteType, rDuration,
-                        fDotted, fDoubleDotted,
+        pNR = pVStaff->AddRest(nNoteType, rDuration, nDots,
                         nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
     }
     else {
+        //TODO: Convert early to int
+        int nStep = LetterToStep(sStep);
+        long nAux;
+        sOctave.ToLong(&nAux);
+        int nOctave = (int)nAux;
+        sAlter.ToLong(&nAux);
+        int nAlter = (int)nAux;
+
         pNR = pVStaff->AddNote(lm_ePitchAbsolute,
-                        sStep, sOctave, sAlter, nAccidentals,
-                        nNoteType, rDuration,
-                        fDotted, fDoubleDotted,
+                        nStep, nOctave, nAlter, nAccidentals,
+                        nNoteType, rDuration, nDots,
                         nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo, fInChord, fTie,
                         nStem);
     }

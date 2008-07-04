@@ -28,6 +28,11 @@
 
 #include <vector>
 
+//some helper definitions de define the behaviour of lmToolButtonsGroup
+#define lmTBG_ALLOW_NONE    true
+#define lmTBG_ONE_SELECTED  false
+
+
 class lmToolPage;
 class lmCheckButton;
 
@@ -45,7 +50,7 @@ public:
 
 protected:
 
-	lmToolPage*		m_pParent;		//owner ToolPage
+	lmToolPage*		m_pParent;		        //owner ToolPage
 };
 
 
@@ -54,8 +59,11 @@ class lmToolButtonsGroup: public lmToolGroup
 {    
 public:
     lmToolButtonsGroup(lmToolPage* pParent, int nNumButtons, bool fAllowNone,
-                       wxBoxSizer* pMainSizer);
+                       wxBoxSizer* pMainSizer, int nFirstButtonID);
     ~lmToolButtonsGroup();
+
+    //event handlers
+    void OnButton(wxCommandEvent& event);
 
 	//buttons
     inline int GetSelectedButton() { return m_nSelButton; }
@@ -65,14 +73,17 @@ public:
     void SelectPrevButton();
 
 protected:
-    //creation
     virtual void CreateControls(wxBoxSizer* pMainSizer)=0;
+    void ConnectButtonEvents();
+    inline int GetFirstButtonID() { return m_nFirstButtonID; }
+    inline bool IsNoneAllowed() { return m_fAllowNone; }
 
 
-    bool                m_fAllowNone;               //allow no button selected
-    int                 m_nNumButtons;              //number of buttons in this group
-	int			        m_nSelButton;               //selected button (0..n). -1 = none selected
-    std::vector<lmCheckButton*> m_pButton;          //buttons
+    bool            m_fAllowNone;           //allow no button selected
+    int             m_nNumButtons;          //number of buttons in this group
+	int             m_nSelButton;           //selected button (0..n). -1 = none selected
+    int             m_nFirstButtonID;       //even ID of first button
+    std::vector<lmCheckButton*> m_pButton;      //buttons
 };
 
 #endif   // __LM_TOOLGROUP_H__

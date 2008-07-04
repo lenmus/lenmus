@@ -73,17 +73,16 @@ const bool m_fDrawSmallNotesInBlock = false;    //TODO option depending on used 
 
 
 lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
-        wxString& sStep, wxString& sOctave, wxString& sAlter,
+        int nStep, int nOctave, int nAlter,
         lmEAccidentals nAccidentals,
         lmENoteType nNoteType, float rDuration,
-        bool fDotted, bool fDoubleDotted,
-        int nStaff, int nVoice, bool fVisible,
+        int nNumDots, int nStaff, int nVoice, bool fVisible,
         lmContext* pContext,
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
         bool fTie,
         lmEStemType nStem)  :
-    lmNoteRest(pVStaff, lmDEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
+    lmNoteRest(pVStaff, lmDEFINE_NOTE, nNoteType, rDuration, nNumDots, nStaff,
                nVoice, fVisible)
 {
     // Diatonic Pitch is determined by Step
@@ -124,10 +123,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     //}
 
     //get octave, step and context accidentals for this note step
-    long nAux;
-    sOctave.ToLong(&nAux);
-    int nOctave = (int)nAux;
-    int nStep = LetterToStep(sStep);
     int nCurContextAcc = pContext->GetAccidentals(nStep);
     int nNewContextAcc = nCurContextAcc;
     lmEAccidentals nDisplayAcc = nAccidentals;
@@ -141,8 +136,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         // Sound and look information totally independent
 
         //set pitch and accidentals to display
-        sAlter.ToLong(&nAux);
-        nNewContextAcc = (int)nAux;
+        nNewContextAcc = nAlter;
         m_anPitch.Set(nStep, nOctave, nNewContextAcc);
         nDisplayAcc = ComputeAccidentalsToDisplay(nCurContextAcc, nNewContextAcc);
     }
@@ -555,17 +549,17 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
     //create shapes for dots if necessary
     //------------------------------------------------------------
-    if (m_fDotted || m_fDoubleDotted) {
+    if (m_nNumDots > 0)
+    {
         //TODO user selectable
         lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        uxLeft += uSpaceBeforeDot;
         lmLUnits uyPos = uyTop;
         if (nPosOnStaff % 2 == 0) {
             // notehead is over a line. Shift up the dots by half line
             uyPos -= m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         }
-        uxLeft += AddDotShape(pNoteShape, pPaper, uxLeft, uyPos, colorC);
-        if (m_fDoubleDotted) {
+        for (int i = 0; i < m_nNumDots; i++)
+        {
             uxLeft += uSpaceBeforeDot;
             uxLeft += AddDotShape(pNoteShape, pPaper, uxLeft, uyPos, colorC);
         }
@@ -1512,8 +1506,8 @@ wxString lmNote::SourceLDP(int nIndent)
 
     //duration
     sSource += GetLDPNoteType();
-    if (m_fDotted) sSource += _T(".");
-    if (m_fDoubleDotted) sSource += _T(".");
+    for (int i=0; i < m_nNumDots; i++)
+        sSource += _T(".");
 
     //tied ?
     if (IsTiedToNext()) sSource += _T(" l");
@@ -1574,8 +1568,7 @@ wxString lmNote::SourceXML(int nIndent)
     //duration
 	//  <duration>2</duration>
     //sSource += GetLDPNoteType();
-    //if (m_fDotted) sSource += _T(".");
-    //if (m_fDoubleDotted) sSource += _T(".");
+    //Dots
 
 	//note type
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));

@@ -213,7 +213,12 @@ bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch)
 int LetterToStep(wxString sStep)
 {
     //analyze the letter and return it as diatonic note number
-    wxChar cStep = sStep.GetChar(0);
+    return LetterToStep( sStep.GetChar(0) );
+}
+
+int LetterToStep(wxChar cStep)
+{
+    //analyze the letter and return it as diatonic note number
     switch (cStep) {
         case _T('c'):
             return 0;

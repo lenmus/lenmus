@@ -259,9 +259,9 @@ class lmCmdInsertNote: public lmScoreCommand
 public:
 
     lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
-					lmEPitchType nPitchType, wxString sStep, wxString sOctave, 
-					lmENoteType nNoteType, float rDuration, lmENoteHeads nNotehead,
-					lmEAccidentals nAcc);
+					lmEPitchType nPitchType, int nStep, int nOctave, 
+					lmENoteType nNoteType, float rDuration, int nDots, 
+                    lmENoteHeads nNotehead, lmEAccidentals nAcc);
     ~lmCmdInsertNote();
 
     //implementation of pure virtual methods in base class
@@ -271,8 +271,9 @@ public:
 protected:
 	lmENoteType		    m_nNoteType;
 	lmEPitchType	    m_nPitchType;
-	wxString		    m_sStep;
-	wxString		    m_sOctave;
+	int		            m_nStep;
+	int		            m_nOctave;
+    int                 m_nDots;
 	float			    m_rDuration;
 	lmENoteHeads	    m_nNotehead;
 	lmEAccidentals	    m_nAcc;

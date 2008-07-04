@@ -94,17 +94,29 @@ int lmToolGroup::GetGroupWitdh()
 //-----------------------------------------------------------------------------------
 
 lmToolButtonsGroup::lmToolButtonsGroup(lmToolPage* pParent, int nNumButtons, bool fAllowNone,
-                                       wxBoxSizer* pMainSizer)
+                                       wxBoxSizer* pMainSizer, int nFirstButtonID)
 	: lmToolGroup(pParent)
 {
 	m_nSelButton = -1;	            //none selected
+    m_nFirstButtonID = nFirstButtonID;
     m_fAllowNone = fAllowNone;
     m_nNumButtons = nNumButtons;
     m_pButton.resize(nNumButtons);
+
+    ConnectButtonEvents();
 }
 
 lmToolButtonsGroup::~lmToolButtonsGroup()
 {
+}
+
+void lmToolButtonsGroup::ConnectButtonEvents()
+{
+    //connect OnButton events
+    m_pParent->Connect( m_nFirstButtonID, m_nFirstButtonID + m_nNumButtons - 1,
+                        wxEVT_COMMAND_BUTTON_CLICKED,
+                        (wxObjectEventFunction)& lmToolButtonsGroup::OnButton );
+                      //wxCommandEventHandler(lmToolButtonsGroup::OnButton) );
 }
 
 void lmToolButtonsGroup::SelectButton(int iB)
@@ -136,14 +148,31 @@ void lmToolButtonsGroup::SelectPrevButton()
 {
     if (m_fAllowNone)
     {
-        if (--m_nSelButton < -1)
-            m_nSelButton = -1;
+        if (m_nSelButton == -1)
+            m_nSelButton = m_nNumButtons;
     }
     else
     {
-        if (--m_nSelButton < 0)
-            m_nSelButton = 0;
+        if (m_nSelButton == 0)
+            m_nSelButton = m_nNumButtons;
     }
+    --m_nSelButton;
 
     SelectButton(m_nSelButton);
+}
+
+void lmToolButtonsGroup::OnButton(wxCommandEvent& event)
+{
+    //AWARE:
+    //  As this method is connected to the event handler of the parent object,
+    //  when it gets invoked, the 'this' pointer points to the parent (the lmToolBox object).
+    //  Therefore, we must get and use a pointer to the real affected lmToolButtonsGroup
+    //  object.
+    lmToolButtonsGroup* pThis = (lmToolButtonsGroup*)event.GetEventObject();
+
+    int iB = event.GetId() - pThis->GetFirstButtonID();
+    if (pThis->IsNoneAllowed() && pThis->GetSelectedButton() == iB)
+	    pThis->SelectButton(-1);       //no button selected
+    else
+	    pThis->SelectButton(iB);
 }

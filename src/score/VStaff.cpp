@@ -496,8 +496,8 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType, 
 }
 
 lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
-								 lmEPitchType nPitchType, wxString sStep,
-								 wxString sOctave, lmENoteType nNoteType, float rDuration,
+								 lmEPitchType nPitchType, int nStep, int nOctave,
+                                 lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
                                  bool fAutoBar)
 {
@@ -553,14 +553,15 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
         BeamInfo[i].Repeat = false;
         BeamInfo[i].Type = eBeamNone;
     }
-	wxString sAccidentals = _T("");
+	int nAccidentals = 0;
 
 	//TODO: For now, only auto-voice. It is necessary to get info from GUI about
 	//user selected voice. Need to change this command parameter list to include voice
 	int nVoice = 0;     //auto-voice
+
     lmNote* pNt = new lmNote(this, nPitchType,
-                        sStep, sOctave, sAccidentals, nAcc,
-                        nNoteType, rDuration, false, false, nStaff, nVoice, lmVISIBLE,
+                        nStep, nOctave, nAccidentals, nAcc,
+                        nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
                         pContext, false, BeamInfo, false, false, lmSTEM_DEFAULT);
 
     m_cStaffObjs.Add(pNt);
@@ -711,10 +712,9 @@ lmStaffObj* lmVStaff::AddAnchorObj()
 
 // returns a pointer to the lmNote object just created
 lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
-                    wxString sStep, wxString sOctave, wxString sAlter,
+                    int nStep, int nOctave, int nAlter,
                     lmEAccidentals nAccidentals,
-                    lmENoteType nNoteType, float rDuration,
-                    bool fDotted, bool fDoubleDotted,
+                    lmENoteType nNoteType, float rDuration, int nDots,
                     int nStaff, int nVoice, bool fVisible,
                     bool fBeamed, lmTBeamInfo BeamInfo[],
                     bool fInChord,
@@ -726,8 +726,8 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
     lmContext* pContext = NewUpdatedLastContext(nStaff);
 
     lmNote* pNt = new lmNote(this, nPitchType,
-                        sStep, sOctave, sAlter, nAccidentals,
-                        nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, nVoice,
+                        nStep, nOctave, nAlter, nAccidentals,
+                        nNoteType, rDuration, nDots, nStaff, nVoice,
 						fVisible, pContext, fBeamed, BeamInfo, fInChord, fTie, nStem);
 
     m_cStaffObjs.Add(pNt);
@@ -737,14 +737,13 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
 }
 
 // returns a pointer to the lmRest object just created
-lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration,
-                      bool fDotted, bool fDoubleDotted,
+lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
                       int nStaff, int nVoice, bool fVisible,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
 {
     wxASSERT(nStaff <= GetNumStaves() );
 
-    lmRest* pR = new lmRest(this, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
+    lmRest* pR = new lmRest(this, nNoteType, rDuration, nDots, nStaff,
 							nVoice, fVisible, fBeamed, BeamInfo);
 
     m_cStaffObjs.Add(pR);
@@ -1739,15 +1738,16 @@ lmVStaffCmd::~lmVStaffCmd()
 //----------------------------------------------------------------------------------------
 
 lmVCmdInsertNote::lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
-                        lmEPitchType nPitchType, wxString sStep,
-					    wxString sOctave, lmENoteType nNoteType, float rDuration,
-					    lmENoteHeads nNotehead, lmEAccidentals nAcc)
+                        lmEPitchType nPitchType, int nStep,
+					    int nOctave, lmENoteType nNoteType, float rDuration,
+					    int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc)
     : lmVStaffCmd(pVStaff)
 {
     lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
     bool fAutoBar = pPgmOpt->GetBoolValue(lm_DO_AUTOBAR);
-    m_pNewNote = pVStaff->Cmd_InsertNote(pUndoItem, nPitchType, sStep, sOctave, nNoteType,
-                                         rDuration, nNotehead, nAcc, fAutoBar);
+
+    m_pNewNote = pVStaff->Cmd_InsertNote(pUndoItem, nPitchType, nStep, nOctave, nNoteType,
+                                         rDuration, nDots, nNotehead, nAcc, fAutoBar);
 }
 
 void lmVCmdInsertNote::RollBack(lmUndoItem* pUndoItem)

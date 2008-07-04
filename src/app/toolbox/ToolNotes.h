@@ -36,31 +36,19 @@ class lmCheckButton;
 //--------------------------------------------------------------------------------
 // Group for Note duration
 //--------------------------------------------------------------------------------
-class lmGrpNoteDuration: public lmToolGroup
+class lmGrpNoteDuration: public lmToolButtonsGroup
 {
 public:
     lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer);
     ~lmGrpNoteDuration() {}
 
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+
 	//access to options
 	lmENoteType GetNoteDuration();
 
-	void OnButton(wxCommandEvent& event);
-	void SelectButton(int iB);
-
-    enum {
-        lm_NUM_ACC_BUTTONS = 10
-    };
-
-private:
-    void CreateControls(wxBoxSizer* m_pMainSizer);
-
-	int			        m_nSelButton;               //selected button
-	lmCheckButton*		m_pButton[lm_NUM_ACC_BUTTONS];  //buttons
-
-    DECLARE_EVENT_TABLE()
 };
-
 
 
 //--------------------------------------------------------------------------------
@@ -78,17 +66,7 @@ public:
 	//access to options
 	lmEAccidentals GetNoteAcc();
 
-	void OnButton(wxCommandEvent& event);
-
-    enum {
-        lm_NUM_ACC_BUTTONS = 8
-    };
-
-private:
-
-    DECLARE_EVENT_TABLE()
 };
-
 
 
 //--------------------------------------------------------------------------------
@@ -106,15 +84,6 @@ public:
 	//access to options
 	int GetNoteDots();
 
-	void OnButton(wxCommandEvent& event);
-
-    enum {
-        lm_NUM_DOT_BUTTONS = 3
-    };
-
-private:
-
-    DECLARE_EVENT_TABLE()
 };
 
 

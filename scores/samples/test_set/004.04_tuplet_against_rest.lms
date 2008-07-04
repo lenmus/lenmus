@@ -1,0 +1,30 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   
+   (opt Render.SpacingFactor 0.4)
+   
+   (instrument (staves 2)
+      (musicData 
+        (clef treble p1)
+        (clef bass p2)  
+        (key E)
+        (time 4 4)
+
+        //5
+        (n e3 e t3  g+ p2 (stem up))(n g3 e (stem up))(n c4 e t- g- (stem up))
+        (n g3 e t3  g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3  g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3  g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+
+        (goBack 4q)     //for left hand
+        (chord (n c2 w p2)(n g2 w)(n c3 w))
+
+        (goBack w)     //for main voice
+        (r h p1)(r q)(n g4 e. g+)(n g4 s g-)
+        (barline end)
+        
+     )
+     
+   )
+)
+
