@@ -486,27 +486,27 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 			m_pView->CaretDown();
 			break;
 
-		case WXK_F1:
+		case WXK_F2:
 			if (pToolBox) pToolBox->SelectTool((lmEEditTool)0);
 			break;
 
-		case WXK_F2:
+		case WXK_F3:
 			if (pToolBox) pToolBox->SelectTool((lmEEditTool)1);
 			break;
 
-		case WXK_F3:
+		case WXK_F4:
 			if (pToolBox) pToolBox->SelectTool((lmEEditTool)2);
 			break;
 
-		case WXK_F4:
+		case WXK_F5:
 			if (pToolBox) pToolBox->SelectTool((lmEEditTool)3);
 			break;
 
-		case WXK_F5:
+		case WXK_F6:
 			if (pToolBox) pToolBox->SelectTool((lmEEditTool)4);
 			break;
 
-		case WXK_F6:
+		case WXK_F7:
 			if (pToolBox) pToolBox->SelectTool((lmEEditTool)5);
 			break;
 
