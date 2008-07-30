@@ -224,7 +224,7 @@ public:
     void ResetCursor();
     void MoveRight(bool fNextObject = true);
     void MoveLeft(bool fPrevObject = true);
-    void MoveFirst();
+    void MoveToInitialPosition();
     void MoveUp();
     void MoveDown();
 	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);

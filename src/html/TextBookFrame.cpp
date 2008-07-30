@@ -1011,7 +1011,7 @@ void lmTextBookFrame::SetHtmlWindowFonts()
     wxFont font = m_HtmlWin->GetFont();
     font.SetPointSize( nFontSizes[2] );
     m_HtmlWin->SetFont(font);
-    //wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] m_HtmlWin normal font size = %d, font height=%d pixels"),
+    //wxLogMessage(_T("[mTextBookFrame::SetHtmlWindowFonts] m_HtmlWin normal font size = %d, font height=%d pixels"),
     //    nFontSizes[2], m_HtmlWin->GetCharHeight() );
 
 	m_HtmlWin->SetFonts(wxEmptyString, wxEmptyString, nFontSizes);
@@ -1025,6 +1025,7 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
 	m_rScale = rScale;
 	m_HtmlWin->SetScale(m_rScale);
 	m_HtmlWin->SetPixelScalingFactor(m_rScale);
+    //wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] m_rScale = %f"), m_rScale);
 
     //force to repaint all with the new scaling factor
     SetHtmlWindowFonts();

@@ -182,10 +182,22 @@ void lmScoreCursor::MoveLeft(bool fPrevObject)
     }
 }
 
-void lmScoreCursor::MoveFirst()
+void lmScoreCursor::MoveToInitialPosition()
 {
+    // Move cursor to initial position: at timepos 0 after prolog.
+
     if (!m_pVCursor) return;
     m_pVCursor->MoveToFirst(1);		//move to first object in staff 1
+
+    lmStaffObj* pSO = m_pVCursor->GetStaffObj();
+    if (!pSO) return;       //no object
+
+    //advance to skip prolog
+    while(pSO && (pSO->IsClef() || pSO->IsTimeSignature() || pSO->IsKeySignature()) )
+    {
+        m_pVCursor->MoveRight();
+        pSO = m_pVCursor->GetStaffObj();
+    }
 }
 
 void lmScoreCursor::MoveUp()

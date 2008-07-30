@@ -1935,7 +1935,7 @@ void lmScoreView::SetInitialCaretPosition()
 		m_fCaretInit = true;
         lmScore* pScore = m_pDoc->GetScore();
         m_pScoreCursor = pScore->AttachCursor(this);
-        m_pScoreCursor->MoveFirst();
+        m_pScoreCursor->MoveToInitialPosition();
 	}
     UpdateCaret();
 }

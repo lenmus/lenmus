@@ -142,6 +142,8 @@ void lmVStaffCursor::SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* 
     {
         while(m_it != m_pSegment->m_StaffObjs.end() && *m_it != pState->pSO)
             ++m_it;
+        //update timepos
+        m_rTimepos = pState->pSO->GetTimePos();
     }
     else
         MoveToTime(m_rTimepos);
@@ -459,7 +461,6 @@ void lmVStaffCursor::ResetCursor()
 void lmVStaffCursor::MoveToFirst(int nStaff)
 {
     //Move cursor to first object in first segment on staff nStaff.
-    //Visual feedback provided.
 	//If no staff specified (nStaff==0) remains in current staff
 
 	if (nStaff != 0)
@@ -718,6 +719,10 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     //collect information about staffobjs and shapes' positions
     //
 
+    lmScore* pScore = m_pColStaffObjs->m_pOwner->GetScore();
+    wxASSERT(pScore->GetGraphicObject()->IsBox());
+    lmLUnits uCaretSpace = pScore->TenthsToLogical(5.0f);
+
     //get current staffobj info
     if (pCursorSO)
     {
@@ -727,25 +732,7 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         if (pShape2)
         {
             uPos.y = GetStaffPosY(pCursorSO);
-	        //lmBoxSystem* pSystem = pShape2->GetOwnerSystem();
-			////GetStaffShape() requires as parameter the staff number, relative to the
-			////total number of staves in the system. But we have staff number relative to
-			////staves in current instrument. So we have to determine how many instruments
-			////there are, and transform staff number.
-			//int nRelStaff = pCursorSO->GetStaffNum();
-			//int nInstr = m_pScoreCursor->GetCursorInstrumentNumber();
-			//if (nInstr > 1)
-			//{
-			//	lmScore* pScore = m_pScoreCursor->GetCursorScore();
-			//	nRelStaff += pScore->GetFirstInstrument()->GetNumStaves();
-			//	for (int i=2; i < nInstr; i++)
-			//	{
-			//		nRelStaff += pScore->GetNextInstrument()->GetNumStaves();
-			//	}
-			//}
-			////here we have the staff number relative to total staves in system
-            //uPos.y = pSystem->GetStaffShape(nRelStaff)->GetYTop();
-            uX2 = pShape2->GetXLeft() + pShape2->GetWidth()/2.0f;
+            uX2 = pShape2->GetXLeft() - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
         }
         else
         {
@@ -770,7 +757,7 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
             //uX1 = 0.0f;     //TODO
 	    else
         {
-		    uX1 = pShape1->GetXLeft() + pShape1->GetWidth()/2.0f;
+		    uX1 = pShape1->GetXLeft() - uCaretSpace;    //+ pShape1->GetWidth()/2.0f;
         }
     }
 
@@ -781,7 +768,7 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
 
     if (pCursorSO && pPrevSO)
     {
-        //Both staffobjs, previous and current, exist. So curor is between the two staffobjs,
+        //Both staffobjs, previous and current, exist. So cursor is between the two staffobjs,
         //or over the sencond one.
         //Decide on positioning, based on cursor time
         if (IsEqualTime(m_rTimepos, pCursorSO->GetTimePos()))
@@ -839,8 +826,6 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     //many empty pages full of empty systems)
 
     //Take positioning information from staff position
-    lmScore* pScore = m_pColStaffObjs->m_pOwner->GetScore();
-    wxASSERT(pScore->GetGraphicObject()->IsBox());
     lmBoxScore* pBS = (lmBoxScore*)pScore->GetGraphicObject();
     lmBoxPage* pBPage = pBS->GetPage(pBS->GetNumPages());
     lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
@@ -1064,14 +1049,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 		{
 			ShiftRightTimepos(itNewCSO, ((lmNoteRest*)pNewSO)->GetVoice());
 			//and sort the collection by timepos
-				////DBG
-				//wxLogMessage(_T("[lmSegment::Store] Before sort"));
-				//wxLogMessage(Dump());
 			m_StaffObjs.sort(TimeCompare);
-				////DBG
-				//wxLogMessage(_T("[lmSegment::Store] After insertion of %s. Sort performed"),
-				//			 pNewSO->GetName());
-				//wxLogMessage(Dump());
 		}
 	}
 
@@ -1088,7 +1066,7 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
     //timepos is
     //ocuppied by other note/rest in the same voice, we must shift the timepos af all
     //consecutive objects in this voice, starting with next SO and up to the barline
-    //(but excluding it).
+    //(but excluding it). Finally, the barline timepos is updated.
 
     //Algorithm:
     //  Parameters: pStartSO (inserted object)
@@ -1126,21 +1104,15 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
         ++it;
 	}
 
-
-    //check segment's duration
-	//TODO
-    lmTODO(_T("[lmSegment::ShiftRightTimepos] TODO: Check segment duration"));
-
-    //float rTime = pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement();
-    //m_rMaxTime = wxMax(m_rMaxTime, rTime);
-
+    UpdateMeasureDuration();
 }
 
 void lmSegment::ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart)
 {
     //The note/rest pSO, that was just before the object pointed by itStart, has been deleted.
     //We must shift left the timepos af all consecutive objects in this voice, starting
-    //with the SO pointed by itStart and up to the barline (but excluding it).
+    //with the SO pointed by itStart and up to the barline (but excluding it). Finally,
+    //the barline timepos is updated.
 
     //Algorithm:
     //  Parameters: pSO (deleted object)
@@ -1181,13 +1153,33 @@ void lmSegment::ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart)
         ++it;
 	}
 
-    //check segment's duration
-	//TODO
-    lmTODO(_T("[lmSegment::ShiftLeftTimepos] TODO: Check segment duration"));
+    UpdateMeasureDuration();
+}
 
-    //float rTime = pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement();
-    //m_rMaxTime = wxMax(m_rMaxTime, rTime);
+void lmSegment::UpdateMeasureDuration()
+{
+    //determines the new duration of this segment, and updates barline timepos, if
+    //barline exists
 
+	lmItCSO it = m_StaffObjs.end();
+    --it;
+    while (it != m_StaffObjs.end() && (*it)->IsBarline())
+        --it;
+
+    float rDuration = 0.0f;
+    if (it != m_StaffObjs.end())
+    {
+        rDuration = (*it)->GetTimePos() + (*it)->GetTimePosIncrement();
+    }
+
+    //if segment's duration is irregular attach a warning tag to it
+    lmTODO(_T("[lmSegment::UpdateMeasureDuration] TODO: if segment's duration is irregular attach a warning tag to it"));
+    m_rMaxTime = rDuration;
+
+    //Update barline timepos if barline exists.
+	lmBarline* pBL = GetBarline();
+    if (pBL)
+        pBL->SetTimePos( m_rMaxTime );
 }
 
 lmBarline* lmSegment::GetBarline()
@@ -1865,7 +1857,9 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     m_pVCursor->MoveRight();
     lmVCursorState tVCState = m_pVCursor->GetState();
 
-#if 1
+#if 1       //new code invoking lmSegment::Remove instead of doing it here
+            //TODO: Remove old code when enough testing done
+
     //get segment and remove object
     lmSegment* pSegment = pSO->GetSegment();
 	pSegment->Remove(pSO, false, fClefKeepPosition, fKeyKeepPitch); //false -> do not delete object

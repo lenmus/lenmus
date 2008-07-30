@@ -111,6 +111,9 @@ private:
     void ShiftRightTimepos(lmItCSO itStart, int nVoice);
     void ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart);
 
+    //segment management
+    void UpdateMeasureDuration();
+
     //auto beam
     void AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes);
 
