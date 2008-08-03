@@ -555,6 +555,12 @@
 			<File
 				RelativePath="..\..\src\app\TheApp.h">
 			</File>
+			<File
+				RelativePath="..\..\src\app\WelcomeWnd.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\WelcomeWnd.h">
+			</File>
 			<Filter
 				Name="toolboox"
 				Filter="">

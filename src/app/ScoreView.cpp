@@ -482,6 +482,11 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     UpdateCaret();
     ShowCaret();
 
+    //delete the MIDI event table
+    lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return;
+    pScore->DeleteMidiEvents();
+
     //delete hints
     if (pHints) delete pHints;
 }
@@ -520,7 +525,7 @@ void lmScoreView::OnChangeFilename()
     wxString sNewName;
     m_pDoc->GetPrintableName(sNewName);
     lmScore* pScore = m_pDoc->GetScore();
-    if (!pScore) return
+    if (!pScore) return;
 
     pScore->SetScoreName(sNewName);
     m_pFrame->SetTitle(sNewName);
@@ -620,8 +625,8 @@ void lmScoreView::SetScaleFitWidth()
 
     double xScale = m_rScale * (double)(xScreen-50) / (double)m_xPageSizeD;
 
-    wxLogMessage(_T("[lmScoreView::SetScaleFitWidth] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
-            xScreen, m_xPageSizeD, m_rScale, xScale );
+    //wxLogMessage(_T("[lmScoreView::SetScaleFitWidth] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
+    //        xScreen, m_xPageSizeD, m_rScale, xScale );
 
     SetScale(xScale / lmSCALE);
 }

@@ -288,7 +288,7 @@ public:
     void Pause();
     void Stop();
     void WaitForTermination();
-
+    void DeleteMidiEvents();
 
     // serving highlight events
     void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, lmEHighlightType nHighlightType);

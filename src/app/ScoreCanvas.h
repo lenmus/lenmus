@@ -82,7 +82,6 @@ public:
     // event handlers
     virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
     virtual void OnKeyDown(wxKeyEvent& event) { event.Skip(); }
-    virtual void OnKeyUp(wxKeyEvent& event) { event.Skip(); }
 	virtual void OnEraseBackground(wxEraseEvent& event);
 
 	//contextual menus
@@ -129,7 +128,6 @@ public:
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 	void OnKeyPress(wxKeyEvent& event);
     void OnKeyDown(wxKeyEvent& event);
-    void OnKeyUp(wxKeyEvent& event);
 
 	//commands without Do/Undo support
     void PlayScore();
@@ -166,7 +164,9 @@ public:
 private:
 
     bool TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap);
-    void LogKeyEvent(wxString name, wxKeyEvent& event, int nTool=-1) const;
+    void LogKeyEvent(wxString name, wxKeyEvent& event, int nTool=-1);
+    wxString KeyCodeToName(int nKeyCode);
+    void ProcessKey(wxKeyEvent& event);
 
     //tools' selection
     void SelectNoteDuration(int iButton);
@@ -184,10 +184,14 @@ private:
 	bool			m_fInsertionSequence;
 	int				m_nLastOctave;
 
-    //to control aux.keys
-    bool            m_fCtrl;        //Ctrol pressed
-    bool            m_fAlt;         //Alt pressed
-    bool            m_fShift;       //Shift pressed
+    //to sore information of key down event in order to deal properly with key codes
+    int             m_nKeyDownCode;     //key code when KEY_DOWN event
+    bool            m_fCmd;             //Ctrol pressed
+    bool            m_fAlt;             //Alt pressed
+    bool            m_fShift;           //Shift pressed
+
+    //buffer for commands requiring several keystrokes
+    wxString        m_sCmd;
 
 
     DECLARE_EVENT_TABLE()

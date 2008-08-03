@@ -1156,6 +1156,16 @@ void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
     pSO->PlaybackHighlight(pPaper, g_pColors->ScoreNormal());
 }
 
+void lmScore::DeleteMidiEvents()
+{
+    if (m_pSoundMngr)
+    {
+        m_pSoundMngr->DeleteEventsTable();
+        delete m_pSoundMngr;
+        m_pSoundMngr = (lmSoundManager*)NULL;
+    }
+}
+
 void lmScore::ComputeMidiEvents()
 {
     int nChannel, nInstr;        //MIDI info. for instrument in process

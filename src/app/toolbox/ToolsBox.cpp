@@ -253,7 +253,7 @@ void lmToolBox::OnKeyPress(wxKeyEvent& event)
 
 void lmToolBox::OnResize(wxSizeEvent& event)
 {
-    wxSize newSize = event.GetSize();
-    wxLogMessage(_T("[lmToolBox::OnResize] New size: %d, %d"), newSize.x, newSize.y);
+    //wxSize newSize = event.GetSize();
+    //wxLogMessage(_T("[lmToolBox::OnResize] New size: %d, %d"), newSize.x, newSize.y);
 }
 

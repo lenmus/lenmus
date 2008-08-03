@@ -54,6 +54,7 @@ class lmMetronome;
 class lmMDIChildFrame;
 class lmStatusBar;
 class lmToolBox;
+class lmWelcomeWnd;
 
 
 //IDs for menu events that must be public (i.e. to generate them by program)
@@ -168,6 +169,8 @@ public:
     void OnToolbarsUI(wxUpdateUIEvent& event);
     void OnStatusbarUI(wxUpdateUIEvent& event);
     void OnViewPageMargins(wxCommandEvent& WXUNUSED(event));
+    void OnViewWelcomePage(wxCommandEvent& event);
+    void OnViewWelcomePageUI(wxUpdateUIEvent& event);
 
     // Sound menu events
     void OnSoundUpdateUI(wxUpdateUIEvent& event);
@@ -226,6 +229,9 @@ public:
     //options
     bool ShowRulers();
 
+    //welcome window
+    void ShowWelcomeWindow();
+    void OnCloseWelcomeWnd();
 
     //eBooks controller
     void SetHtmlWindow(lmHtmlWindow* pHtmlWin) { m_pHtmlWin = pHtmlWin; }
@@ -260,6 +266,7 @@ protected:
 	void ShowEditTools(bool fShow);
 
 
+
     //status bar
     void CreateTheStatusBar(int nType=0);
     void DeleteTheStatusBar();
@@ -269,6 +276,7 @@ protected:
     //controllers, special windows, and other controls
     wxAuiManager            m_mgrAUI;           // wxAUI manager
     lmToolBox*              m_pToolBox;         //tool box window
+    lmWelcomeWnd*           m_pWelcomeWnd;      //welcome window
     lmTextBookController*   m_pBookController;
     lmHtmlWindow*           m_pHtmlWin;
     lmHelpController*       m_pHelp;
@@ -280,7 +288,6 @@ protected:
     lmMetronome*        m_pMtr;            //metronome currently associated to frame metronome controls
 
     //flags for toggle buttons/menus
-    bool m_fBookOpened;
     bool m_fHelpOpened;
 
 	// menus

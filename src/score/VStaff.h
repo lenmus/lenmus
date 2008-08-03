@@ -229,7 +229,7 @@ public:
     lmSoundManager* ComputeMidiEvents(int nChannel);
 
     //renderization related methods
-    lmBarline* GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos);
+    lmBarline* GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos = (lmLUnits*)NULL);
     lmBarline* GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos);
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
@@ -271,7 +271,7 @@ private:
     bool CheckIfNotesAffectedByClef();
 
     //barlines
-    void CheckAndDoAutoBar(lmUndoItem* pUndoItem);
+    void CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNote* pN);
 
 
 

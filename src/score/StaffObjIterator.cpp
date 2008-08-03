@@ -79,6 +79,7 @@ lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaf
 	m_pSegment = pTargetSO->GetSegment();
 	m_nSegment = m_pSegment->m_nNumSegment;
 	m_it = --(m_pSegment->m_StaffObjs.end());
+    m_fEndOfMeasure = false;
 
     //find target SO
     while(*m_it != pTargetSO) 
@@ -94,6 +95,7 @@ lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmVSta
 	m_nSegment = pVCursor->GetSegment();
 	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
 	m_it = pVCursor->GetCurIt();
+    m_fEndOfMeasure = false;
 }
 
 void lmSOIterator::MoveFirst()

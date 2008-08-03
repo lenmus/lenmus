@@ -67,9 +67,8 @@ const int lmID_PROPERTIES = wxNewId();
 
 
 BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
-	//EVT_CHAR(lmController::OnKeyPress)
+	EVT_CHAR(lmController::OnKeyPress)
 	EVT_KEY_DOWN(lmController::OnKeyDown)
-	EVT_KEY_UP(lmController::OnKeyUp)
     EVT_ERASE_BACKGROUND(lmController::OnEraseBackground)
 
 	//contextual menus
@@ -150,7 +149,8 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocum
 
     //initializations
     m_nOctave = 4;      //start in octave 4
-    m_fCtrl = false;
+    m_sCmd = _T("");
+    m_fCmd = false;
     m_fAlt = false;
     m_fShift = false;
 }
@@ -410,34 +410,44 @@ void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
 
 void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
 {
+    //wxLogMessage(_T("EVT_KEY_DOWN"));
     switch ( event.GetKeyCode() )
     {
-        case WXK_SHIFT:     m_fShift = true;    break;
-        case WXK_ALT:       m_fAlt = true;      break;
-        case WXK_CONTROL:   m_fCtrl = true;     break;
+        case WXK_SHIFT:
+        case WXK_ALT:
+        case WXK_CONTROL:
+            break;      //do nothing
+
         default:
-            OnKeyPress(event);
-            ;   //LogKeyEvent( wxT("Key down"), event);
+            //save key down info
+            m_nKeyDownCode = event.GetKeyCode();
+            m_fShift = event.ShiftDown();
+            m_fAlt = event.AltDown();
+            m_fCmd = event.CmdDown();
+
+            //If a key down (EVT_KEY_DOWN) event is caught and the event handler does not
+            //call event.Skip() then the corresponding char event (EVT_CHAR) will not happen.
+            //This is by design of wxWidgets and enables the programs that handle both types of
+            //events to be a bit simpler.
+
+            event.Skip();       //to generate Key char event
     }
-
-    //event.Skip();       //to generate Key press event
-}
-
-void lmScoreCanvas::OnKeyUp(wxKeyEvent& event)
-{
-    switch ( event.GetKeyCode() )
-    {
-        case WXK_SHIFT:     m_fShift = false;   break;
-        case WXK_ALT:       m_fAlt = false;     break;
-        case WXK_CONTROL:   m_fCtrl = false;    break;
-        default:
-            ; //LogKeyEvent( wxT("Key up"), event);
-    }
-
-    //event.Skip();       //to generate Key press event
 }
 
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
+{
+    wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
+            KeyCodeToName(event.GetKeyCode()), event.GetKeyCode(),
+            KeyCodeToName(m_nKeyDownCode), m_nKeyDownCode, 
+            (m_fCmd ? _T('C') : _T('-') ),
+            (m_fAlt ? _T('A') : _T('-') ),
+            (m_fShift ? _T('S') : _T('-') ),
+            (event.MetaDown() ? _T('M') : _T('-') )
+            );
+    ProcessKey(event);
+}
+
+void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 {
     //We are processing a Key Down event 
 	lmEEditTool nTool = lmTOOL_NONE;
@@ -451,31 +461,20 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
     int nKeyCode = event.GetKeyCode();
 	bool fUnknown = false;
 
-    // check if an auxiliary key (Shift, Ctrl/Meta, Alt) is pressed
-    enum {
-        lmKEY_ALT = 0x0001,
-        lmKEY_CTRL = 0x0002,
-        lmKEY_SHIFT = 0x0004,
-    };
-
-    int nAuxKeys = 0;
-    if (event.ShiftDown())
-        nAuxKeys |= lmKEY_SHIFT;
-    if (event.CmdDown())        //Ctrl for non-Mac platforms, Meta for Mac platform
-        nAuxKeys |= lmKEY_CTRL;
-    if (event.AltDown())
-        nAuxKeys |= lmKEY_ALT;
+    //fix ctrol+key codes
+    if (nKeyCode > 0 && nKeyCode < 27)
+        nKeyCode += int('A') - 1;
 
 	//Verify common keys working with all tools
 	fUnknown = false;
 	switch (nKeyCode)
 	{
 		case WXK_LEFT:
-			m_pView->CaretLeft((bool)(nAuxKeys & lmKEY_ALT));
+			m_pView->CaretLeft(event.AltDown());
 			break;
 
 		case WXK_RIGHT:
-			m_pView->CaretRight((bool)(nAuxKeys & lmKEY_ALT));
+			m_pView->CaretRight(event.AltDown());
 			break;
 
 		case WXK_UP:
@@ -525,6 +524,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 	    {
             case lmTOOL_NONE:	//---------------------------------------------------------
 		    {
+                fUnknown = false;       //assume it will be processed
 			    switch (nKeyCode)
 			    {
 				    case WXK_UP:
@@ -536,6 +536,8 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 					    break;
 
 				    default:
+                        if (wxIsprint(nKeyCode))
+                            m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
 					    fUnknown = true;
 			    }
 			    break;
@@ -550,13 +552,46 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
 			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
                 
-                //insert note
-                if (nKeyCode >= int('A') && nKeyCode <= int('G'))
+                //analyse accidentals
+                if (m_sCmd != _T(""))
                 {
+                    if (m_sCmd.StartsWith( _T("+") )) {
+                        if (m_sCmd.StartsWith( _T("++") )) {
+                            nAcc = lm_eSharpSharp;
+                        } else {
+                            nAcc = lm_eSharp;
+                        }
+                    } else if (m_sCmd.StartsWith( _T("-") )) {
+                        if (m_sCmd.StartsWith( _T("--") )) {
+                            nAcc = lm_eFlatFlat;
+                        } else {
+                            nAcc = lm_eFlat;
+                        }
+                    } else if (m_sCmd.StartsWith( _T("=+") )) {
+                        nAcc = lm_eNaturalSharp;
+                    } else if (m_sCmd.StartsWith( _T("=-") )) {
+                        nAcc = lm_eNaturalFlat;
+                    } else if (m_sCmd.StartsWith( _T("=") )) {
+                        nAcc = eNatural;
+                    } else if (m_sCmd.StartsWith( _T("x") )) {
+                        nAcc = lm_eDoubleSharp;
+                    } else {
+                        ; //ignore m_sCmd
+                    }
+                }
+
+                //insert note
+                if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
+                    (nKeyCode >= int('a') && nKeyCode <= int('g')) )
+                {
+                    //convert key to upper case
+                    if (nKeyCode > int('G'))
+                        nKeyCode -= 32;
+
                     // determine octave
-                    if (nAuxKeys & lmKEY_SHIFT)
+                    if (event.ShiftDown())
                         ++m_nOctave;
-                    else if (nAuxKeys & lmKEY_CTRL)
+                    else if (event.CmdDown())
                         --m_nOctave;
                     
                     //limit octave 0..9
@@ -573,6 +608,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 					InsertNote(lm_ePitchRelative, nStep, m_nOctave, nNoteType, rDuration,
 							   nDots, nNotehead, nAcc);
 
+                    fUnknown = false;
                 }
 
                 //commands to change options in Tool Box
@@ -585,34 +621,35 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
                     fUnknown = false;
                 }
 
-                if (fUnknown)
-                {
-                    fUnknown = false;       //assume it
-			        switch (nKeyCode)
-			        {
-                        //select accidentals
-				        case int('+'):      // '+' increment accidentals  
-                            SelectNoteAccidentals(true);
-                            break;
+#if 0   //old code, to select accidentals and dots
+           //     if (fUnknown)
+           //     {
+           //         fUnknown = false;       //assume it
+			        //switch (nKeyCode)
+			        //{
+           //             //select accidentals
+				       // case int('+'):      // '+' increment accidentals  
+           //                 SelectNoteAccidentals(true);
+           //                 break;
 
-                        case int('-'):      // '-' decrement accidentals
-                            SelectNoteAccidentals(false);
-                            break;
+           //             case int('-'):      // '-' decrement accidentals
+           //                 SelectNoteAccidentals(false);
+           //                 break;
 
-                        //select dots
-				        case int('.'):      // '.' increment/decrement dots 
-                            if (event.AltDown())
-                                SelectNoteDots(false);      // Alt + '.' decrement dots     
-                            else
-                                SelectNoteDots(true);       // '.' increment dots 
-                            break;
+           //             //select dots
+				       // case int('.'):      // '.' increment/decrement dots 
+           //                 if (event.AltDown())
+           //                     SelectNoteDots(false);      // Alt + '.' decrement dots     
+           //                 else
+           //                     SelectNoteDots(true);       // '.' increment dots 
+           //                 break;
 
-                        //unknown
-				        default:
-					        fUnknown = true;
-                    }
-                }
-
+           //             //unknown
+				       // default:
+					      //  fUnknown = true;
+           //         }
+           //     }
+#endif
 
 				    //commands requiring to have a note/rest selected
 
@@ -641,26 +678,36 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 					  //  fUnknown = true;
 			    //}
 
+                //save char if unused
+                if (fUnknown && wxIsprint(nKeyCode))
+                    m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
+
 			    break;      //case lmTOOL_NOTES
 		    }
 
             case lmTOOL_CLEFS:	//---------------------------------------------------------
 		    {
+                fUnknown = false;       //assume it will be processed
 			    switch (nKeyCode)
 			    {
 				    case int('G'):	// 'g' insert G clef
+				    case int('g'):
 					    InsertClef(lmE_Sol);
 					    break;
 
 				    case int('F'):	// 'f' insert F4 clef
+				    case int('f'):
 					    InsertClef(lmE_Fa4);
 					    break;
 
 				    case int('C'):    // 'c' insert C3 clef
+				    case int('c'):
 					    InsertClef(lmE_Do3);
 					    break;
 
 				    default:
+                        if (wxIsprint(nKeyCode))
+                            m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
 					    fUnknown = true;
 			    }
 			    break;
@@ -668,13 +715,17 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 
             case lmTOOL_BARLINES:	//---------------------------------------------------------
 		    {
+                fUnknown = false;       //assume it will be processed
 			    switch (nKeyCode)
 			    {
 				    case int('B'):	// 'b' insert duble barline
+				    case int('b'):
 					    InsertBarline(lm_eBarlineDouble);
 					    break;
 
 				    default:
+                        if (wxIsprint(nKeyCode))
+                            m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
 					    fUnknown = true;
 			    }
 			    break;
@@ -691,138 +742,179 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
     }
 
 	//Debug: Unidentified tool or unidentified key. Log message
-	//if (fUnknown) 
+	if (fUnknown)
+    {
         LogKeyEvent(_T("Key Press"), event, nTool);
-
+        event.Skip();       //pass the event. Perhaps it is a menu shortcut
+    }
+    else
+    {
+        //the command has been processed. Clear buffer
+        m_sCmd = _T("");
+    }
 }
 
-void lmScoreCanvas::LogKeyEvent(wxString name, wxKeyEvent& event, int nTool) const
+void lmScoreCanvas::LogKeyEvent(wxString name, wxKeyEvent& event, int nTool)
 {
-    wxString key;
-    long keycode = event.GetKeyCode();
-    {
-        switch ( keycode )
-        {
-            case WXK_BACK: key = _T("BACK"); break;
-            case WXK_TAB: key = _T("TAB"); break;
-            case WXK_RETURN: key = _T("RETURN"); break;
-            case WXK_ESCAPE: key = _T("ESCAPE"); break;
-            case WXK_SPACE: key = _T("SPACE"); break;
-            case WXK_DELETE: key = _T("DELETE"); break;
-            case WXK_START: key = _T("START"); break;
-            case WXK_LBUTTON: key = _T("LBUTTON"); break;
-            case WXK_RBUTTON: key = _T("RBUTTON"); break;
-            case WXK_CANCEL: key = _T("CANCEL"); break;
-            case WXK_MBUTTON: key = _T("MBUTTON"); break;
-            case WXK_CLEAR: key = _T("CLEAR"); break;
-            case WXK_SHIFT: key = _T("SHIFT"); break;
-            case WXK_ALT: key = _T("ALT"); break;
-            case WXK_CONTROL: key = _T("CONTROL"); break;
-            case WXK_MENU: key = _T("MENU"); break;
-            case WXK_PAUSE: key = _T("PAUSE"); break;
-            case WXK_CAPITAL: key = _T("CAPITAL"); break;
-            case WXK_END: key = _T("END"); break;
-            case WXK_HOME: key = _T("HOME"); break;
-            case WXK_LEFT: key = _T("LEFT"); break;
-            case WXK_UP: key = _T("UP"); break;
-            case WXK_RIGHT: key = _T("RIGHT"); break;
-            case WXK_DOWN: key = _T("DOWN"); break;
-            case WXK_SELECT: key = _T("SELECT"); break;
-            case WXK_PRINT: key = _T("PRINT"); break;
-            case WXK_EXECUTE: key = _T("EXECUTE"); break;
-            case WXK_SNAPSHOT: key = _T("SNAPSHOT"); break;
-            case WXK_INSERT: key = _T("INSERT"); break;
-            case WXK_HELP: key = _T("HELP"); break;
-            case WXK_NUMPAD0: key = _T("NUMPAD0"); break;
-            case WXK_NUMPAD1: key = _T("NUMPAD1"); break;
-            case WXK_NUMPAD2: key = _T("NUMPAD2"); break;
-            case WXK_NUMPAD3: key = _T("NUMPAD3"); break;
-            case WXK_NUMPAD4: key = _T("NUMPAD4"); break;
-            case WXK_NUMPAD5: key = _T("NUMPAD5"); break;
-            case WXK_NUMPAD6: key = _T("NUMPAD6"); break;
-            case WXK_NUMPAD7: key = _T("NUMPAD7"); break;
-            case WXK_NUMPAD8: key = _T("NUMPAD8"); break;
-            case WXK_NUMPAD9: key = _T("NUMPAD9"); break;
-            case WXK_MULTIPLY: key = _T("MULTIPLY"); break;
-            case WXK_ADD: key = _T("ADD"); break;
-            case WXK_SEPARATOR: key = _T("SEPARATOR"); break;
-            case WXK_SUBTRACT: key = _T("SUBTRACT"); break;
-            case WXK_DECIMAL: key = _T("DECIMAL"); break;
-            case WXK_DIVIDE: key = _T("DIVIDE"); break;
-            case WXK_F1: key = _T("F1"); break;
-            case WXK_F2: key = _T("F2"); break;
-            case WXK_F3: key = _T("F3"); break;
-            case WXK_F4: key = _T("F4"); break;
-            case WXK_F5: key = _T("F5"); break;
-            case WXK_F6: key = _T("F6"); break;
-            case WXK_F7: key = _T("F7"); break;
-            case WXK_F8: key = _T("F8"); break;
-            case WXK_F9: key = _T("F9"); break;
-            case WXK_F10: key = _T("F10"); break;
-            case WXK_F11: key = _T("F11"); break;
-            case WXK_F12: key = _T("F12"); break;
-            case WXK_F13: key = _T("F13"); break;
-            case WXK_F14: key = _T("F14"); break;
-            case WXK_F15: key = _T("F15"); break;
-            case WXK_F16: key = _T("F16"); break;
-            case WXK_F17: key = _T("F17"); break;
-            case WXK_F18: key = _T("F18"); break;
-            case WXK_F19: key = _T("F19"); break;
-            case WXK_F20: key = _T("F20"); break;
-            case WXK_F21: key = _T("F21"); break;
-            case WXK_F22: key = _T("F22"); break;
-            case WXK_F23: key = _T("F23"); break;
-            case WXK_F24: key = _T("F24"); break;
-            case WXK_NUMLOCK: key = _T("NUMLOCK"); break;
-            case WXK_SCROLL: key = _T("SCROLL"); break;
-            case WXK_PAGEUP: key = _T("PAGEUP"); break;
-            case WXK_PAGEDOWN: key = _T("PAGEDOWN"); break;
-            case WXK_NUMPAD_SPACE: key = _T("NUMPAD_SPACE"); break;
-            case WXK_NUMPAD_TAB: key = _T("NUMPAD_TAB"); break;
-            case WXK_NUMPAD_ENTER: key = _T("NUMPAD_ENTER"); break;
-            case WXK_NUMPAD_F1: key = _T("NUMPAD_F1"); break;
-            case WXK_NUMPAD_F2: key = _T("NUMPAD_F2"); break;
-            case WXK_NUMPAD_F3: key = _T("NUMPAD_F3"); break;
-            case WXK_NUMPAD_F4: key = _T("NUMPAD_F4"); break;
-            case WXK_NUMPAD_HOME: key = _T("NUMPAD_HOME"); break;
-            case WXK_NUMPAD_LEFT: key = _T("NUMPAD_LEFT"); break;
-            case WXK_NUMPAD_UP: key = _T("NUMPAD_UP"); break;
-            case WXK_NUMPAD_RIGHT: key = _T("NUMPAD_RIGHT"); break;
-            case WXK_NUMPAD_DOWN: key = _T("NUMPAD_DOWN"); break;
-            case WXK_NUMPAD_PAGEUP: key = _T("NUMPAD_PAGEUP"); break;
-            case WXK_NUMPAD_PAGEDOWN: key = _T("NUMPAD_PAGEDOWN"); break;
-            case WXK_NUMPAD_END: key = _T("NUMPAD_END"); break;
-            case WXK_NUMPAD_BEGIN: key = _T("NUMPAD_BEGIN"); break;
-            case WXK_NUMPAD_INSERT: key = _T("NUMPAD_INSERT"); break;
-            case WXK_NUMPAD_DELETE: key = _T("NUMPAD_DELETE"); break;
-            case WXK_NUMPAD_EQUAL: key = _T("NUMPAD_EQUAL"); break;
-            case WXK_NUMPAD_MULTIPLY: key = _T("NUMPAD_MULTIPLY"); break;
-            case WXK_NUMPAD_ADD: key = _T("NUMPAD_ADD"); break;
-            case WXK_NUMPAD_SEPARATOR: key = _T("NUMPAD_SEPARATOR"); break;
-            case WXK_NUMPAD_SUBTRACT: key = _T("NUMPAD_SUBTRACT"); break;
-            case WXK_NUMPAD_DECIMAL: key = _T("NUMPAD_DECIMAL"); break;
-
-            default:
-            {
-               if ( wxIsprint((int)keycode) )
-                   key.Printf(_T("'%c'"), (char)keycode);
-               else if ( keycode > 0 && keycode < 27 )
-                   key.Printf(_("Ctrl-%c"), _T('A') + keycode - 1);
-               else
-                   key.Printf(_T("unknown (%ld)"), keycode);
-            }
-        }
-    }
-
+    wxString key = KeyCodeToName( event.GetKeyCode() );
     key += wxString::Format(_T(" (Unicode: %#04x)"), event.GetUnicodeKey());
 
     wxLogMessage( wxString::Format( _T("[lmScoreCanvas::LogKeyEvent] Event: %s - %s, nKeyCode=%d, (flags = %c%c%c%c). Tool=%d"),
-            name, key.c_str(), keycode, 
-            (event.ControlDown() ? _T('C') : _T('-') ),
+            name, key.c_str(), event.GetKeyCode(), 
+            (event.CmdDown() ? _T('C') : _T('-') ),
             (event.AltDown() ? _T('A') : _T('-') ),
             (event.ShiftDown() ? _T('S') : _T('-') ),
             (event.MetaDown() ? _T('M') : _T('-') ),
             nTool ));
+}
+
+wxString lmScoreCanvas::KeyCodeToName(int nKeyCode)
+{
+    wxString sKey;
+    switch ( nKeyCode )
+    {
+        case WXK_BACK: sKey = _T("BACK"); break;
+        case WXK_TAB: sKey = _T("TAB"); break;
+        case WXK_RETURN: sKey = _T("RETURN"); break;
+        case WXK_ESCAPE: sKey = _T("ESCAPE"); break;
+        case WXK_SPACE: sKey = _T("SPACE"); break;
+        case WXK_DELETE: sKey = _T("DELETE"); break;
+
+        case WXK_START: sKey = _T("START"); break;
+        case WXK_LBUTTON: sKey = _T("LBUTTON"); break;
+        case WXK_RBUTTON: sKey = _T("RBUTTON"); break;
+        case WXK_CANCEL: sKey = _T("CANCEL"); break;
+        case WXK_MBUTTON: sKey = _T("MBUTTON"); break;
+        case WXK_CLEAR: sKey = _T("CLEAR"); break;
+        case WXK_SHIFT: sKey = _T("SHIFT"); break;
+        case WXK_ALT: sKey = _T("ALT"); break;
+        case WXK_CONTROL: sKey = _T("CONTROL"); break;
+        case WXK_MENU: sKey = _T("MENU"); break;
+        case WXK_PAUSE: sKey = _T("PAUSE"); break;
+        case WXK_CAPITAL: sKey = _T("CAPITAL"); break;
+        case WXK_END: sKey = _T("END"); break;
+        case WXK_HOME: sKey = _T("HOME"); break;
+        case WXK_LEFT: sKey = _T("LEFT"); break;
+        case WXK_UP: sKey = _T("UP"); break;
+        case WXK_RIGHT: sKey = _T("RIGHT"); break;
+        case WXK_DOWN: sKey = _T("DOWN"); break;
+        case WXK_SELECT: sKey = _T("SELECT"); break;
+        case WXK_PRINT: sKey = _T("PRINT"); break;
+        case WXK_EXECUTE: sKey = _T("EXECUTE"); break;
+        case WXK_SNAPSHOT: sKey = _T("SNAPSHOT"); break;
+        case WXK_INSERT: sKey = _T("INSERT"); break;
+        case WXK_HELP: sKey = _T("HELP"); break;
+        case WXK_NUMPAD0: sKey = _T("NUMPAD0"); break;
+        case WXK_NUMPAD1: sKey = _T("NUMPAD1"); break;
+        case WXK_NUMPAD2: sKey = _T("NUMPAD2"); break;
+        case WXK_NUMPAD3: sKey = _T("NUMPAD3"); break;
+        case WXK_NUMPAD4: sKey = _T("NUMPAD4"); break;
+        case WXK_NUMPAD5: sKey = _T("NUMPAD5"); break;
+        case WXK_NUMPAD6: sKey = _T("NUMPAD6"); break;
+        case WXK_NUMPAD7: sKey = _T("NUMPAD7"); break;
+        case WXK_NUMPAD8: sKey = _T("NUMPAD8"); break;
+        case WXK_NUMPAD9: sKey = _T("NUMPAD9"); break;
+        case WXK_MULTIPLY: sKey = _T("MULTIPLY"); break;
+        case WXK_ADD: sKey = _T("ADD"); break;
+        case WXK_SEPARATOR: sKey = _T("SEPARATOR"); break;
+        case WXK_SUBTRACT: sKey = _T("SUBTRACT"); break;
+        case WXK_DECIMAL: sKey = _T("DECIMAL"); break;
+        case WXK_DIVIDE: sKey = _T("DIVIDE"); break;
+        case WXK_F1: sKey = _T("F1"); break;
+        case WXK_F2: sKey = _T("F2"); break;
+        case WXK_F3: sKey = _T("F3"); break;
+        case WXK_F4: sKey = _T("F4"); break;
+        case WXK_F5: sKey = _T("F5"); break;
+        case WXK_F6: sKey = _T("F6"); break;
+        case WXK_F7: sKey = _T("F7"); break;
+        case WXK_F8: sKey = _T("F8"); break;
+        case WXK_F9: sKey = _T("F9"); break;
+        case WXK_F10: sKey = _T("F10"); break;
+        case WXK_F11: sKey = _T("F11"); break;
+        case WXK_F12: sKey = _T("F12"); break;
+        case WXK_F13: sKey = _T("F13"); break;
+        case WXK_F14: sKey = _T("F14"); break;
+        case WXK_F15: sKey = _T("F15"); break;
+        case WXK_F16: sKey = _T("F16"); break;
+        case WXK_F17: sKey = _T("F17"); break;
+        case WXK_F18: sKey = _T("F18"); break;
+        case WXK_F19: sKey = _T("F19"); break;
+        case WXK_F20: sKey = _T("F20"); break;
+        case WXK_F21: sKey = _T("F21"); break;
+        case WXK_F22: sKey = _T("F22"); break;
+        case WXK_F23: sKey = _T("F23"); break;
+        case WXK_F24: sKey = _T("F24"); break;
+        case WXK_NUMLOCK: sKey = _T("NUMLOCK"); break;
+        case WXK_SCROLL: sKey = _T("SCROLL"); break;
+        case WXK_PAGEUP: sKey = _T("PAGEUP"); break;
+        case WXK_PAGEDOWN: sKey = _T("PAGEDOWN"); break;
+
+        case WXK_NUMPAD_SPACE: sKey = _T("NUMPAD_SPACE"); break;
+        case WXK_NUMPAD_TAB: sKey = _T("NUMPAD_TAB"); break;
+        case WXK_NUMPAD_ENTER: sKey = _T("NUMPAD_ENTER"); break;
+        case WXK_NUMPAD_F1: sKey = _T("NUMPAD_F1"); break;
+        case WXK_NUMPAD_F2: sKey = _T("NUMPAD_F2"); break;
+        case WXK_NUMPAD_F3: sKey = _T("NUMPAD_F3"); break;
+        case WXK_NUMPAD_F4: sKey = _T("NUMPAD_F4"); break;
+        case WXK_NUMPAD_HOME: sKey = _T("NUMPAD_HOME"); break;
+        case WXK_NUMPAD_LEFT: sKey = _T("NUMPAD_LEFT"); break;
+        case WXK_NUMPAD_UP: sKey = _T("NUMPAD_UP"); break;
+        case WXK_NUMPAD_RIGHT: sKey = _T("NUMPAD_RIGHT"); break;
+        case WXK_NUMPAD_DOWN: sKey = _T("NUMPAD_DOWN"); break;
+        case WXK_NUMPAD_PAGEUP: sKey = _T("NUMPAD_PAGEUP"); break;
+        case WXK_NUMPAD_PAGEDOWN: sKey = _T("NUMPAD_PAGEDOWN"); break;
+        case WXK_NUMPAD_END: sKey = _T("NUMPAD_END"); break;
+        case WXK_NUMPAD_BEGIN: sKey = _T("NUMPAD_BEGIN"); break;
+        case WXK_NUMPAD_INSERT: sKey = _T("NUMPAD_INSERT"); break;
+        case WXK_NUMPAD_DELETE: sKey = _T("NUMPAD_DELETE"); break;
+        case WXK_NUMPAD_EQUAL: sKey = _T("NUMPAD_EQUAL"); break;
+        case WXK_NUMPAD_MULTIPLY: sKey = _T("NUMPAD_MULTIPLY"); break;
+        case WXK_NUMPAD_ADD: sKey = _T("NUMPAD_ADD"); break;
+        case WXK_NUMPAD_SEPARATOR: sKey = _T("NUMPAD_SEPARATOR"); break;
+        case WXK_NUMPAD_SUBTRACT: sKey = _T("NUMPAD_SUBTRACT"); break;
+        case WXK_NUMPAD_DECIMAL: sKey = _T("NUMPAD_DECIMAL"); break;
+        case WXK_NUMPAD_DIVIDE: sKey = _T("NUMPAD_DIVIDE"); break;
+
+        // the following key codes are only generated under Windows currently
+         case WXK_WINDOWS_LEFT: sKey = _T("WINDOWS_LEFT"); break;
+         case WXK_WINDOWS_RIGHT: sKey = _T("WINDOWS_RIGHT"); break;
+         case WXK_WINDOWS_MENU: sKey = _T("WINDOWS_MENU"); break;
+         case WXK_COMMAND: sKey = _T("COMMAND"); break;
+
+        // Hardware-specific buttons
+         case WXK_SPECIAL1: sKey = _T("SPECIAL1"); break;
+         case WXK_SPECIAL2: sKey = _T("SPECIAL2"); break;
+         case WXK_SPECIAL3: sKey = _T("SPECIAL3"); break;
+         case WXK_SPECIAL4: sKey = _T("SPECIAL4"); break;
+         case WXK_SPECIAL5: sKey = _T("SPECIAL5"); break;
+         case WXK_SPECIAL6: sKey = _T("SPECIAL6"); break;
+         case WXK_SPECIAL7: sKey = _T("SPECIAL7"); break;
+         case WXK_SPECIAL8: sKey = _T("SPECIAL8"); break;
+         case WXK_SPECIAL9: sKey = _T("SPECIAL9"); break;
+         case WXK_SPECIAL10: sKey = _T("SPECIAL10"); break;
+         case WXK_SPECIAL11: sKey = _T("SPECIAL11"); break;
+         case WXK_SPECIAL12: sKey = _T("SPECIAL12"); break;
+         case WXK_SPECIAL13: sKey = _T("SPECIAL13"); break;
+         case WXK_SPECIAL14: sKey = _T("SPECIAL14"); break;
+         case WXK_SPECIAL15: sKey = _T("SPECIAL15"); break;
+         case WXK_SPECIAL16: sKey = _T("SPECIAL16"); break;
+         case WXK_SPECIAL17: sKey = _T("SPECIAL17"); break;
+         case WXK_SPECIAL18: sKey = _T("SPECIAL18"); break;
+         case WXK_SPECIAL19: sKey = _T("SPECIAL19"); break;
+         case WXK_SPECIAL20: sKey = _T("SPECIAL20"); break;
+
+
+        default:
+        {
+            if ( wxIsprint((int)nKeyCode) )
+                sKey.Printf(_T("'%c'"), (char)nKeyCode);
+            else if ( nKeyCode > 0 && nKeyCode < 27 )
+                sKey.Printf(_("Ctrl-%c"), _T('A') + nKeyCode - 1);
+            else
+                sKey.Printf(_T("unknown (%d)"), nKeyCode);
+        }
+    }
+    return sKey;
 }
 
 void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)

@@ -167,6 +167,10 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
     else if (id.Left(7) == _T("button_")) {
         sFile = id;
     }
+    else if (id.Left(8) == _T("welcome_")) {
+        sFile = id;
+        sSize = _T(".png");
+    }
 
     //miscelaneous
     else if (id == _T("backgrnd")) {

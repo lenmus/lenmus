@@ -336,7 +336,6 @@ void lmGrpKeyType::LoadKeyList(int nType)
         {
             wxString sKeyName = m_tMajorKeys[i].sKeyName;
             m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
-            //m_pKeyList->Append(m_tMajorKeys[i].sKeyName);
         }
     }
     else
@@ -346,7 +345,6 @@ void lmGrpKeyType::LoadKeyList(int nType)
         {
             wxString sKeyName = m_tMinorKeys[i].sKeyName;
             m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
-            //m_pKeyList->Append(m_tMinorKeys[i].sKeyName);
         }
     }
     m_pKeyList->SetSelection(0);

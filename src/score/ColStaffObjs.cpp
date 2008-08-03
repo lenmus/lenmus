@@ -136,17 +136,21 @@ void lmVStaffCursor::SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* 
     m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
     m_rTimepos = pState->rTimepos;
 
-    //locate position
-    m_it = m_pSegment->m_StaffObjs.begin();
+    //position m_it to point to staffobj
     if (pState->pSO)
     {
+        //Pointing to an staffobj. Locate it 
+        m_it = m_pSegment->m_StaffObjs.begin();
         while(m_it != m_pSegment->m_StaffObjs.end() && *m_it != pState->pSO)
             ++m_it;
         //update timepos
         m_rTimepos = pState->pSO->GetTimePos();
     }
     else
-        MoveToTime(m_rTimepos);
+    {
+        //Not pointing to an staffobj. Cursor is at end of collection
+        m_it = m_pSegment->m_StaffObjs.end();
+    }
 
     //point to segment and restore ScoreCursor
 	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
@@ -399,24 +403,42 @@ lmStaffObj* lmVStaffCursor::GetPreviousStaffobj()
 void lmVStaffCursor::MoveToTime(float rNewTime)
 {
     //Within the limits of current segment,
-    //move cursor to first object with time > rNewTime in staff m_nStaff
+    //move cursor to first object with time > rNewTime in staff m_nStaff.
+    //If no object found, cursor is moved to end of segment, with time rNewTime
 
     m_it = m_pSegment->m_StaffObjs.begin();
     m_rTimepos = rNewTime;
 
 	if (m_it == m_pSegment->m_StaffObjs.end()) return;      //the segment is empty
 
+    //skip staffobjs with time lower than rNewTime
 	while (m_it != m_pSegment->m_StaffObjs.end() && IsLowerTime((*m_it)->GetTimePos(), rNewTime))
         ++m_it;
 
     if (m_it != m_pSegment->m_StaffObjs.end() && IsEqualTime((*m_it)->GetTimePos(), rNewTime))
     {
-        //time found. Advance to last object in current staff
-	    while (m_it != m_pSegment->m_StaffObjs.end() && IsEqualTime((*m_it)->GetTimePos(), rNewTime))
+        //time found. Advance to first object at this time and in current staff
+	    while (m_it != m_pSegment->m_StaffObjs.end() && 
+               IsEqualTime((*m_it)->GetTimePos(), rNewTime) &&
+               (*m_it)->GetStaffNum() != m_nStaff )
+        {
+                ++m_it;
+        }
+        //if object found, return.
+	    if (m_it != m_pSegment->m_StaffObjs.end() &&  
+            IsEqualTime((*m_it)->GetTimePos(), rNewTime) &&
+            (*m_it)->GetStaffNum() == m_nStaff )
+        {
+            //object found.
+            return;
+        }
+
+        //No object satisfying the constrains is found.
+        //If we are not at end of segment, advance to first object with time > rNewTime.
+	    while (m_it != m_pSegment->m_StaffObjs.end() &&
+                IsEqualTime((*m_it)->GetTimePos(), rNewTime))
         {
             ++m_it;
-            while (m_it != m_pSegment->m_StaffObjs.end() && (*m_it)->GetStaffNum() != m_nStaff)
-                ++m_it;
         }
     }
     else
@@ -707,13 +729,12 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     lmUPoint uPos(0.0f, 0.0f);
     lmStaffObj* pCursorSO = GetStaffObj();
 
-    //variables to contain time and x pos of current, and previous staffobjs. Subindexes:
-    //  2 - current staffobj
-    //  1 - previous staffobj
-    //  3 - current timepos
-    lmLUnits uX1, uX2;
-    float rT1, rT2, rT3;
-    rT3 = m_rTimepos;         //save it, as will be lost when MoveLeft(), etc.
+    //variables to contain time and x pos of previous and current staffobjs.
+    //I will use subindex 1 for previous and 2 for current staffobj.
+    lmLUnits uxStart1, uxStart2;
+    lmLUnits uxEnd1, uxEnd2;
+    float rTime1, rTime2;
+    float rTimeCursor = m_rTimepos;  //save it, as will be lost when MoveLeft(), etc.
 
     //
     //collect information about staffobjs and shapes' positions
@@ -721,18 +742,19 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
 
     lmScore* pScore = m_pColStaffObjs->m_pOwner->GetScore();
     wxASSERT(pScore->GetGraphicObject()->IsBox());
-    lmLUnits uCaretSpace = pScore->TenthsToLogical(5.0f);
+    lmLUnits uCaretSpace = pScore->TenthsToLogical(5.0f);   //distance between caret and object
 
     //get current staffobj info
     if (pCursorSO)
     {
         //get info from cursor staffobj
-        rT2 = pCursorSO->GetTimePos();
+        rTime2 = pCursorSO->GetTimePos();
         lmShape* pShape2 = pCursorSO->GetShape();
         if (pShape2)
         {
             uPos.y = GetStaffPosY(pCursorSO);
-            uX2 = pShape2->GetXLeft() - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
+            uxStart2 = pShape2->GetXLeft();
+            uxEnd2 = pShape2->GetXRight();
         }
         else
         {
@@ -741,7 +763,8 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
             wxASSERT(false);
             lmTODO(_T("[lmVStaffCursor::GetCursorPoint] No shape for current sttafobj"));
             uPos.y = 0.0f;  //TODO
-            uX2 = 0.0f;     //TODO
+            uxStart2 = 0.0f;     //TODO
+            uxEnd2 = 0.0f;
         }
     }
 
@@ -749,15 +772,16 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     lmStaffObj* pPrevSO = GetPreviousStaffobj();
     if (pPrevSO)
     {
-        rT1 = pPrevSO->GetTimePos();
+        rTime1 = pPrevSO->GetTimePos();
         lmShape* pShape1 = pPrevSO->GetShape();
 	    if (!pShape1)
             wxASSERT(false);
             //NO shape! --> //TODO: All objects must have a shape, althought it can be not visible
-            //uX1 = 0.0f;     //TODO
+            //uxStart1 = 0.0f;     //TODO
 	    else
         {
-		    uX1 = pShape1->GetXLeft() - uCaretSpace;    //+ pShape1->GetWidth()/2.0f;
+		    uxStart1 = pShape1->GetXLeft();
+            uxEnd1 = pShape1->GetXRight();
         }
     }
 
@@ -774,16 +798,16 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         if (IsEqualTime(m_rTimepos, pCursorSO->GetTimePos()))
         {
             //Pointing to cursor staffobj. Take positioning information from staffobj
-		    uPos.x = uX2;
+		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
         }
         else if (IsLowerTime(m_rTimepos, pCursorSO->GetTimePos()))
         {
             //Between current and previous. Interpolate position
-            rT1 = pPrevSO->GetTimePos();
-            float rTimeIncr = rT2 - rT1;    // At = t2 - t1
-            lmLUnits uXIncr = uX2 - uX1;    //Ax = x2-x1
+            rTime1 = pPrevSO->GetTimePos();
+            float rTimeIncr = rTime2 - rTime1;      // At = t2 - t1
+            lmLUnits uXIncr = uxStart2 - uxEnd1;    //Ax = x2-x1
             //At' = t3-t1;   Ax' = x3 - x1 = Ax * (At' / At);   x3 = Ax' + x1
-            uPos.x = (uXIncr * ((rT3 - rT1) / rTimeIncr)) + uX1;
+            uPos.x = (uXIncr * ((rTimeCursor - rTime1) / rTimeIncr)) + uxEnd1;
         }
         else
             //current cursor time > current staffobj time. Impossible!!
@@ -799,12 +823,12 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         if (IsEqualTime(m_rTimepos, pCursorSO->GetTimePos()))
         {
             //Pointing to cursor staffobj. Take positioning information from staffobj
-		    uPos.x = uX2;
+		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
         }
         else
-            //can not be before the first staffobj
-		    uPos.x = uX2;
+            //can not be before the first staffobj !!
             //wxASSERT(false);
+		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
 
         return uPos;
     }
@@ -815,7 +839,7 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         //the cursor is at the end of the score.
         //Position cursor four lines (40 tenths) at the right of last staffobj
         uPos.y = GetStaffPosY(pPrevSO);
-        uPos.x = uX1 + pPrevSO->TenthsToLogical(40);
+        uPos.x = uxEnd1 + pPrevSO->TenthsToLogical(40);
 
         return uPos;
     }
@@ -865,6 +889,8 @@ void lmVStaffCursor::UpdateTimepos()
 {
     if (m_it != m_pSegment->m_StaffObjs.end())
         m_rTimepos = (*m_it)->GetTimePos();
+    else
+        m_rTimepos = 0.0f;
 }
 
 void lmVStaffCursor::RefreshInternalInfo()
@@ -1801,7 +1827,7 @@ void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKey
     bool g_fAutoBeam = true;    //TODO: Move to right place and assign value based on user options
     if (pNewSO->IsNoteRest() && g_fAutoBeam)
     {
-        //m_Segments[nSegment]->AutoBeam( ((lmNoteRest*)pNewSO)->GetVoice() );
+        m_Segments[nSegment]->AutoBeam( ((lmNoteRest*)pNewSO)->GetVoice() );
     }
 
     //if time signature added, re-bar the collection. As this implies removing segments and
@@ -1897,13 +1923,17 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
 
         //remove next segment and renumber segments
         RemoveSegment( pNextSegment->m_nNumSegment );
+
+        //As a consequence of joining segments, saved cursor information is no longer
+        //valid. In particular we have to fix rTimePos and nSegment.
+        --tVCState.nSegment;
+        tVCState.rTimepos += rTime;
     }
 
     //after removing the staffobj, VCursor iterator is pointing to next staffobj but
     //other VCursor variables (rTimePos, in particular) are no longer valid and should be
     //updated.
     m_pVCursor->SetNewCursorState(m_pVCursor->GetScoreCursor(), &tVCState);
-    //m_pVCursor->RefreshInternalInfo();
 
     //finally, if requested, invoke destructor for removed staffobj
     if (fDelete) delete pSO;

@@ -524,10 +524,9 @@ bool lmTheApp::OnInit(void)
         pSplash->AllowDestroy();    // allow to destroy the splash
     }
 
-    //force to show book frame
+    //force to show welcome window
     #if !defined(__WXDEBUG__)       //in debug version, start with nothing displayed
-        wxCommandEvent event;       //it is not used, so not need to initialize it
-        g_pMainFrame->OnOpenBook(event);
+        g_pMainFrame->ShowWelcomeWindow();
     #endif
 
     //cursor normal
@@ -590,7 +589,7 @@ void lmTheApp::ChangeLanguage(wxString lang)
     SetUpLocale(lang);
 
     //Re-create main frame
-    RecreateGUI(0);   //recreate all. No splash
+    RecreateGUI(0);   //0 = No splash
 }
 
 void lmTheApp::SetUpLocale(wxString lang)
@@ -848,7 +847,7 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
         //
 
     lmSplashFrame* pSplash = (lmSplashFrame*) NULL;
-    if (!fRestarting)
+    if (nMilliseconds > 0 && !fRestarting)
     {
         wxBitmap bitmap = wxArtProvider::GetBitmap(_T("app_splash"), wxART_OTHER);
         if (bitmap.Ok() && bitmap.GetHeight() > 100)
@@ -865,12 +864,6 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
     g_pMainFrame->Show(true);
 
     SetTopWindow(g_pMainFrame);
-
-    //force to show book frame
-    if (fRestarting) {
-        wxCommandEvent event;       //it is not used, so not need to initialize it
-        g_pMainFrame->OnOpenBook(event);
-    }
 
     return pSplash;
 }

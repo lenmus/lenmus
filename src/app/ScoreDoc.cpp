@@ -121,14 +121,14 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     {
         wxString sPath = filename.substr(15);
         size_t nSize = sPath.length() - 4;
-        wxLogMessage(_T("[lmScoreDocument::OnOpenDocument]Importing <%s>"), sPath.Left(nSize).c_str());
+        //wxLogMessage(_T("[lmScoreDocument::OnOpenDocument]Importing <%s>"), sPath.Left(nSize).c_str());
         return OnImportDocument(sPath.Left(nSize) );
     }
 
     //Open a score created with the score wizard
     if (filename.StartsWith( _T("\\<<NEW_WIZARD>>//") ))
     {
-        wxLogMessage(_T("[lmScoreDocument::OnOpenDocument] New score with wizard"));
+        //wxLogMessage(_T("[lmScoreDocument::OnOpenDocument] New score with wizard"));
         return OnNewScoreWithWizard();
     }
 

@@ -243,15 +243,36 @@ static int m_nSelPaper = 1;     //DIN A4
 // lmScoreWizard implementation
 //--------------------------------------------------------------------------------
 
+// control identifiers
+enum 
+{
+    //lmScoreWizard
+    lmID_SCORE_WIZARD = 10000,
+
+    //lmScoreWizardLayout page
+    lmID_LIST_ENSEMBLE,
+
+    //lmScoreWizardKey page
+	lmID_RADIO_KEY,
+	lmID_COMBO_KEY,
+
+    //lmScoreWizardTime page
+	lmID_RADIO_TIME,
+	lmID_TIME_TOP_NUMBER,
+	lmID_TIME_BOTTOM_NUMBER,
+
+    //lmScoreWizardTitles page
+
+};
+
+
 BEGIN_EVENT_TABLE( lmScoreWizard, lmWizard )
     EVT_WIZARD_CANCEL( lmID_SCORE_WIZARD, lmScoreWizard::OnWizardCancel )
     EVT_WIZARD_FINISHED( lmID_SCORE_WIZARD, lmScoreWizard::OnWizardFinished )
 END_EVENT_TABLE()
 
-
-lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore, wxWindowID id,
-                             const wxPoint& pos)
-    : lmWizard(parent, id, _("Score configuration wizard"), pos)
+lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
+    : lmWizard(parent, lmID_SCORE_WIZARD, _("Score configuration wizard"), wxDefaultPosition)
 {
     SetExtraStyle(GetExtraStyle() | wxWIZARD_EX_HELPBUTTON);
 
@@ -309,11 +330,14 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore, wxWindowID i
     lmScoreWizardLayout* pPageLayout = new lmScoreWizardLayout((wxWizard*)this);
     AddPage(pPageLayout, true);     //true -> Optional
 
-    lmScoreWizardInstrPage* pPageInstr = new lmScoreWizardInstrPage((wxWizard*)this);
-    AddPage(pPageInstr);
-    ////FitToPage(pPageInstr);
+    lmScoreWizardKey* pPageKey = new lmScoreWizardKey((wxWizard*)this);
+    AddPage(pPageKey, true);     //true -> Optional
 
-    //wxWizardPageSimple::Chain(pPageLayout, pPageInstr);
+    lmScoreWizardTime* pPageTime = new lmScoreWizardTime((wxWizard*)this);
+    AddPage(pPageTime, true);     //true -> Optional
+
+    lmScoreWizardTitles* pPageTitles = new lmScoreWizardTitles((wxWizard*)this);
+    AddPage(pPageTitles, true);     //true -> Optional
 }
 
 lmScoreWizard::~lmScoreWizard()
@@ -421,6 +445,12 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         pScore->AddTitle((*itT)->sTitle, (*itT)->nAlign, (*itT)->tPos, (*itT)->sFontName,
                         (*itT)->nFontSize, (*itT)->nStyle );
     }
+
+    //add key signature 
+    //TODO: How?
+
+    //add time signature 
+    //TODO: How?
 
 
     //return the created score
@@ -553,7 +583,7 @@ void lmScoreWizardLayout::OnEnsembleSelected(wxCommandEvent& event)
 
 bool lmScoreWizardLayout::TransferDataFromWindow()
 {
-    // when moving to another page this methos is automatically invoked to
+    // when moving to another page this method is automatically invoked to
     // verify that the data entered is correct before passing to the next page,
     // and to copy entered data to the main page
     // Returns true to allow moving to next page.
@@ -572,31 +602,222 @@ bool lmScoreWizardLayout::TransferDataFromWindow()
     }
 
     return true;
-
 }
 
 
 
 //--------------------------------------------------------------------------------
-// lmScoreWizardInstrPage implementation
+// lmScoreWizardKey implementation
 //--------------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardInstrPage, wxWizardPageSimple )
+IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardKey, wxWizardPageSimple )
 
-BEGIN_EVENT_TABLE( lmScoreWizardInstrPage, wxWizardPageSimple )
-    //
+BEGIN_EVENT_TABLE( lmScoreWizardKey, wxWizardPageSimple )
+    EVT_RADIOBOX (lmID_RADIO_KEY, lmScoreWizardKey::OnKeyType)
 END_EVENT_TABLE()
 
-lmScoreWizardInstrPage::lmScoreWizardInstrPage()
+#define lmMAX_MINOR_KEYS    lmMAX_MINOR_KEY - lmMIN_MINOR_KEY + 1
+#define lmMAX_MAJOR_KEYS    lmMAX_MAJOR_KEY - lmMIN_MAJOR_KEY + 1
+
+static lmScoreWizardKey::lmKeysData m_tMajorKeys[lmMAX_MAJOR_KEYS];
+static lmScoreWizardKey::lmKeysData m_tMinorKeys[lmMAX_MINOR_KEYS];
+
+
+lmScoreWizardKey::lmScoreWizardKey()
 {
 }
 
-lmScoreWizardInstrPage::lmScoreWizardInstrPage(wxWizard* parent)
+lmScoreWizardKey::lmScoreWizardKey(wxWizard* parent)
+{
+    Create(parent);
+
+    //load initial data
+    m_pKeyRadioBox->SetSelection(0);
+    LoadKeyList(0);
+}
+
+bool lmScoreWizardKey::Create(wxWizard* parent)
+{
+    //To avoid having to translate again key signature names, we are going to load them
+    //by using global function GetKeySignatureName()
+    for (int j=0, i = lmMIN_MAJOR_KEY; i <= lmMAX_MAJOR_KEY; i++, j++)
+    {
+        m_tMajorKeys[j].nKeyType = (lmEKeySignatures)i;
+        m_tMajorKeys[j].sKeyName = GetKeySignatureName((lmEKeySignatures)i);    //wxString::Format(_T("%s (%d%s)"),;
+        m_tMajorKeys[j].nFifths = KeySignatureToNumFifths((lmEKeySignatures)i);
+    }
+
+    for (int j=0, i = lmMIN_MINOR_KEY; i <= lmMAX_MINOR_KEY; i++, j++)
+    {
+        m_tMinorKeys[j].nKeyType = (lmEKeySignatures)i;
+        m_tMinorKeys[j].sKeyName = GetKeySignatureName((lmEKeySignatures)i);    //wxString::Format(_T("%s (%d%s)"),;
+        m_tMinorKeys[j].nFifths = KeySignatureToNumFifths((lmEKeySignatures)i);
+    }
+
+    //// member initialisation
+    //m_pOutCombo = NULL;
+    //m_pInCombo = NULL;
+
+    // page creation
+    wxWizardPageSimple::Create(parent, NULL, NULL, wxNullBitmap);
+    CreateControls();
+    GetSizer()->Fit(this);
+
+    return true;
+}
+
+void lmScoreWizardKey::CreateControls()
+{
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxBoxSizer* pLeftColumnSizer;
+	pLeftColumnSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* pKeySizer;
+	pKeySizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select a key signature") ), wxVERTICAL );
+	
+	wxString m_pKeyRadioBoxChoices[] = { _("Major"), _("minor") };
+	int m_pKeyRadioBoxNChoices = sizeof( m_pKeyRadioBoxChoices ) / sizeof( wxString );
+	m_pKeyRadioBox = new wxRadioBox( this, lmID_RADIO_KEY, _("Key type"), wxDefaultPosition, wxDefaultSize, m_pKeyRadioBoxNChoices, m_pKeyRadioBoxChoices, 1, wxRA_SPECIFY_ROWS );
+	m_pKeyRadioBox->SetSelection( 0 );
+	pKeySizer->Add( m_pKeyRadioBox, 0, wxALL, 5 );
+	
+    m_pKeyList = new wxBitmapComboBox();
+    m_pKeyList->Create(this, lmID_COMBO_KEY, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
+                       0, NULL, wxCB_READONLY);
+	pKeySizer->Add( m_pKeyList, 0, wxALL, 5 );
+	
+	pLeftColumnSizer->Add( pKeySizer, 1, wxEXPAND|wxALL, 5 );
+	
+	pMainSizer->Add( pLeftColumnSizer, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* pRightColumnSizer;
+	pRightColumnSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* pPreviewSizer;
+	pPreviewSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
+	
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
+	pPreviewSizer->Add( m_pBmpPreview, 1, wxALL|wxEXPAND, 5 );
+	
+	pRightColumnSizer->Add( pPreviewSizer, 1, wxEXPAND, 5 );
+	
+	pMainSizer->Add( pRightColumnSizer, 1, wxEXPAND, 5 );
+	
+	this->SetSizer( pMainSizer );
+}
+
+bool lmScoreWizardKey::TransferDataFromWindow()
+{
+    // when moving to another page this method is automatically invoked to
+    // verify that the data entered is correct before passing to the next page,
+    // and to copy entered data to the main page
+    // Returns true to allow moving to next page.
+    // If false is returned it should display a meesage box to the user to explain
+    // the reason
+
+    //m_ScoreData.fPortrait = (m_pRadOrientation->GetSelection() == 1);
+    //m_nSelTemplate = m_pLstEnsemble->GetSelection();
+    //m_nSelPaper = m_pCboPaper->GetSelection();
+
+	int iK = m_pKeyList->GetSelection();
+    bool fMajor = (m_pKeyRadioBox->GetSelection() == 0);
+    int nFifths = 0;
+    if (fMajor)
+        nFifths = m_tMajorKeys[iK].nFifths;
+    else
+        nFifths = m_tMinorKeys[iK].nFifths;
+
+    return true;
+}
+
+void lmScoreWizardKey::LoadKeyList(int nType)
+{
+    //nType: 0=major, 1=minor
+
+    if (nType==0)
+    {
+        m_pKeyList->Clear();
+        for (int i=0; i < lmMAX_MAJOR_KEYS; i++)
+        {
+            wxString sKeyName = m_tMajorKeys[i].sKeyName;
+            m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
+        }
+    }
+    else
+    {
+        m_pKeyList->Clear();
+        for (int i=0; i < lmMAX_MINOR_KEYS; i++)
+        {
+            wxString sKeyName = m_tMinorKeys[i].sKeyName;
+            m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
+        }
+    }
+    m_pKeyList->SetSelection(0);
+}
+
+void lmScoreWizardKey::OnKeyType(wxCommandEvent& event)
+{
+    //load list box with the appropiate keys for selected key type
+
+    LoadKeyList(event.GetSelection());
+}
+
+wxBitmap lmScoreWizardKey::GenerateBitmap(wxString sKeyName)
+{
+    wxMemoryDC dc;
+    wxSize size(108, 64);
+	wxBitmap bmp(size.x, size.y);
+
+    //fill bitmap in white
+    dc.SelectObject(bmp);
+    dc.SetBrush(*wxWHITE_BRUSH);
+	dc.SetBackground(*wxWHITE_BRUSH);
+	dc.Clear();
+
+    //draw rectangle and two red diagonals
+    dc.SetPen(*wxBLACK);
+    dc.DrawRectangle(0, 0, size.x, size.y);
+    dc.SetPen(*wxRED);
+    dc.DrawLine(0, 0, size.x, size.y);
+    dc.DrawLine(0, size.y, size.x, 0);
+
+    //write key signature name in black
+    int h, w;
+    dc.SetPen(*wxBLACK);
+    dc.SetFont(*wxNORMAL_FONT);
+    dc.GetTextExtent(sKeyName, &w, &h);
+    dc.DrawText(sKeyName, (size.x-w)/2, (size.y-h)/2);
+
+    //clean up and return new bitmap
+    dc.SelectObject(wxNullBitmap);
+
+    return bmp;
+}
+
+
+
+//--------------------------------------------------------------------------------
+// lmScoreWizardTime implementation
+//--------------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardTime, wxWizardPageSimple )
+
+BEGIN_EVENT_TABLE( lmScoreWizardTime, wxWizardPageSimple )
+    //
+END_EVENT_TABLE()
+
+lmScoreWizardTime::lmScoreWizardTime()
+{
+}
+
+lmScoreWizardTime::lmScoreWizardTime(wxWizard* parent)
 {
     Create(parent);
 }
 
-bool lmScoreWizardInstrPage::Create(wxWizard* parent)
+bool lmScoreWizardTime::Create(wxWizard* parent)
 {
     //// member initialisation
     //m_pOutCombo = NULL;
@@ -610,46 +831,198 @@ bool lmScoreWizardInstrPage::Create(wxWizard* parent)
     return true;
 }
 
-void lmScoreWizardInstrPage::CreateControls()
+void lmScoreWizardTime::CreateControls()
 {
-    wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
-    SetSizer(pMainSizer);
-
-    wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    pMainSizer->Add(itemBoxSizer4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    wxStaticText* itemStaticText5 = new wxStaticText( this, wxID_STATIC, _("Midi devices to use"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText5->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-    itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-    pMainSizer->Add(itemBoxSizer6, 1, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer6->Add(itemBoxSizer7, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText8 = new wxStaticText( this, wxID_STATIC, _("To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer7->Add(itemStaticText8, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticText* itemStaticText9 = new wxStaticText( this, wxID_STATIC, _("If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."), wxDefaultPosition, wxSize(250, -1), 0 );
-    itemBoxSizer7->Add(itemStaticText9, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
-
-    wxStaticLine* itemStaticLine10 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-    itemBoxSizer6->Add(itemStaticLine10, 0, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer6->Add(itemBoxSizer11, 1, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText12 = new wxStaticText( this, wxID_STATIC, _("Output device:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
-
-    wxString* m_pOutComboStrings = NULL;
-    m_pOutCombo = new wxComboBox( this, lmID_COMBO_OUT_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_READONLY );
-    itemBoxSizer11->Add(m_pOutCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxBoxSizer* pLeftColumnSizer;
+	pLeftColumnSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* pTimeSizer;
+	pTimeSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select time signature") ), wxVERTICAL );
+	
+	wxString m_pTimeRadioBoxChoices[] = { _("2/2"), _("2/4"), _("6/8"), _("2/8"), _("3/2"), _("3/4"), _("9/8"), _("3/8"), _("4/2"), _("4/4"), _("12/8"), _("4/8"), _("other"), _("none") };
+	int m_pTimeRadioBoxNChoices = sizeof( m_pTimeRadioBoxChoices ) / sizeof( wxString );
+	m_pTimeRadioBox = new wxRadioBox( this, lmID_RADIO_TIME, _("Time signature"), wxDefaultPosition, wxDefaultSize, m_pTimeRadioBoxNChoices, m_pTimeRadioBoxChoices, 4, wxRA_SPECIFY_COLS );
+	m_pTimeRadioBox->SetSelection( 9 );
+	pTimeSizer->Add( m_pTimeRadioBox, 0, wxALL, 5 );
+	
+	wxStaticBoxSizer* pOtherTimeSizer;
+	pOtherTimeSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Other time signatures") ), wxVERTICAL );
+	
+	wxBoxSizer* pTopNumSizer;
+	pTopNumSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_pLblTopNumber = new wxStaticText( this, wxID_ANY, _("Numerator"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblTopNumber->Wrap( -1 );
+	pTopNumSizer->Add( m_pLblTopNumber, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	m_pTxtTopNumber = new wxTextCtrl( this, lmID_TIME_TOP_NUMBER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pTopNumSizer->Add( m_pTxtTopNumber, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	pOtherTimeSizer->Add( pTopNumSizer, 0, 0, 5 );
+	
+	wxBoxSizer* pBottomNumSizer;
+	pBottomNumSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_pLblBottomNum = new wxStaticText( this, wxID_ANY, _("Denominator"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblBottomNum->Wrap( -1 );
+	pBottomNumSizer->Add( m_pLblBottomNum, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pTxtBottomNumber = new wxTextCtrl( this, lmID_TIME_BOTTOM_NUMBER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pBottomNumSizer->Add( m_pTxtBottomNumber, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	pOtherTimeSizer->Add( pBottomNumSizer, 0, 0, 5 );
+	
+	pTimeSizer->Add( pOtherTimeSizer, 0, wxEXPAND, 5 );
+	
+	pLeftColumnSizer->Add( pTimeSizer, 1, wxALL|wxEXPAND, 5 );
+	
+	pMainSizer->Add( pLeftColumnSizer, 1, wxEXPAND, 5 );
+	
+	wxBoxSizer* pRightColumnSizer;
+	pRightColumnSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* pPreviewSizer;
+	pPreviewSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
+	
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
+	pPreviewSizer->Add( m_pBmpPreview, 1, wxALL|wxEXPAND, 5 );
+	
+	pRightColumnSizer->Add( pPreviewSizer, 1, wxEXPAND|wxALL, 5 );
+	
+	pMainSizer->Add( pRightColumnSizer, 1, wxEXPAND, 5 );
+	
+	this->SetSizer( pMainSizer );
 }
 
-bool lmScoreWizardInstrPage::TransferDataFromWindow()
+bool lmScoreWizardTime::TransferDataFromWindow()
 {
+    // when moving to another page this method is automatically invoked to
+    // verify that the data entered is correct before passing to the next page,
+    // and to copy entered data to the main page
+    // Returns true to allow moving to next page.
+    // If false is returned it should display a meesage box to the user to explain
+    // the reason
+
+    //m_ScoreData.fPortrait = (m_pRadOrientation->GetSelection() == 1);
+    //m_nSelTemplate = m_pLstEnsemble->GetSelection();
+    //m_nSelPaper = m_pCboPaper->GetSelection();
+
+    //if (m_nSelPaper != -1)
+    //{
+    //    wxPrintPaperType* paper = wxThePrintPaperDatabase->Item(m_nSelPaper);
+    //    if ( paper )
+    //        m_ScoreData.nPageSize = wxSize(paper->GetWidth()/10, paper->GetHeight()/10 );
+    //}
+
+    return true;
+}
+
+
+
+
+//--------------------------------------------------------------------------------
+// lmScoreWizardTitles implementation
+//--------------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardTitles, wxWizardPageSimple )
+
+BEGIN_EVENT_TABLE( lmScoreWizardTitles, wxWizardPageSimple )
+    //
+END_EVENT_TABLE()
+
+lmScoreWizardTitles::lmScoreWizardTitles()
+{
+}
+
+lmScoreWizardTitles::lmScoreWizardTitles(wxWizard* parent)
+{
+    Create(parent);
+}
+
+bool lmScoreWizardTitles::Create(wxWizard* parent)
+{
+    //// member initialisation
+    //m_pOutCombo = NULL;
+    //m_pInCombo = NULL;
+
+    // page creation
+    wxWizardPageSimple::Create(parent, NULL, NULL, wxNullBitmap);
+    CreateControls();
+    GetSizer()->Fit(this);
+
+    return true;
+}
+
+void lmScoreWizardTitles::CreateControls()
+{
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* pLeftColumnSizer;
+	pLeftColumnSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Add titles") ), wxVERTICAL );
+	
+	m_pLblTitle = new wxStaticText( this, wxID_ANY, _("Title:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblTitle->Wrap( -1 );
+	pLeftColumnSizer->Add( m_pLblTitle, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	m_pTxtTitle = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pLeftColumnSizer->Add( m_pTxtTitle, 0, wxEXPAND|wxALL, 5 );
+	
+	m_pLblSubtitle = new wxStaticText( this, wxID_ANY, _("Subtitle:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblSubtitle->Wrap( -1 );
+	pLeftColumnSizer->Add( m_pLblSubtitle, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	m_pTxtSubtitle = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pLeftColumnSizer->Add( m_pTxtSubtitle, 0, wxEXPAND|wxALL, 5 );
+	
+	m_pLblComposer = new wxStaticText( this, wxID_ANY, _("Composer:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblComposer->Wrap( -1 );
+	pLeftColumnSizer->Add( m_pLblComposer, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	m_pTxtComposer = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pLeftColumnSizer->Add( m_pTxtComposer, 0, wxALL|wxEXPAND, 5 );
+	
+	m_pLblArranger = new wxStaticText( this, wxID_ANY, _("Arranger:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblArranger->Wrap( -1 );
+	pLeftColumnSizer->Add( m_pLblArranger, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	m_pTxtArranger = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pLeftColumnSizer->Add( m_pTxtArranger, 0, wxALL|wxEXPAND, 5 );
+	
+	m_pLblLyricist = new wxStaticText( this, wxID_ANY, _("Lyricist:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblLyricist->Wrap( -1 );
+	pLeftColumnSizer->Add( m_pLblLyricist, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	m_pTxtLyricist = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pLeftColumnSizer->Add( m_pTxtLyricist, 0, wxALL|wxEXPAND, 5 );
+	
+	pMainSizer->Add( pLeftColumnSizer, 1, wxEXPAND|wxALL, 10 );
+	
+	this->SetSizer( pMainSizer );
+}
+
+bool lmScoreWizardTitles::TransferDataFromWindow()
+{
+    // when moving to another page this method is automatically invoked to
+    // verify that the data entered is correct before passing to the next page,
+    // and to copy entered data to the main page
+    // Returns true to allow moving to next page.
+    // If false is returned it should display a meesage box to the user to explain
+    // the reason
+
+    //m_ScoreData.fPortrait = (m_pRadOrientation->GetSelection() == 1);
+    //m_nSelTemplate = m_pLstEnsemble->GetSelection();
+    //m_nSelPaper = m_pCboPaper->GetSelection();
+
+    //if (m_nSelPaper != -1)
+    //{
+    //    wxPrintPaperType* paper = wxThePrintPaperDatabase->Item(m_nSelPaper);
+    //    if ( paper )
+    //        m_ScoreData.nPageSize = wxSize(paper->GetWidth()/10, paper->GetHeight()/10 );
+    //}
+
     return true;
 }

@@ -28,44 +28,15 @@
 
 #include "wx/wizard.h"
 #include "wx/statline.h"
+#include "wx/bmpcbox.h"
 
 #include "../widgets/Wizard.h"
+#include "../score/defs.h"
 
 class lmScoreWizardLayout;
-class lmScoreWizardInstrPage;
-class lmScoreWizardClefPage;
+class lmScoreWizardKey;
 class lmScoreWizardTimePage;
 class lmScore;
-
-
-// control identifiers
-enum 
-{
-    //ScoreWizard
-    lmID_SCORE_WIZARD = 10000,
-
-    //lmScoreWizardLayout
-    lmID_LIST_ENSEMBLE,
-
-    //ScoreWizardInstrPage
-    lmID_WIZARD_INSTR_PAGE,
-    lmID_COMBO_OUT_DEVICES,
-    lmID_COMBO_IN_DEVICES,
-
-    //ScoreWizardClefPage
-    lmID_WIZARD_CLEF_PAGE,
-    lmID_COMBO_CHANNEL,
-    lmID_COMBO_SECTION,
-    lmID_COMBO_INSTRUMENT,
-    lmID_BUTTON_TEST_SOUND,
-
-    //ScoreWizardTimePage
-    lmID_WIZARD_TIME_PAGE,
-    lmID_COMBO_MTR_CHANNEL,
-    lmID_COMBO_MTR_INSTR1,
-    lmID_COMBO_MTR_INSTR2,
-    lmID_BUTTON,
-};
 
 
 // lmScoreWizard class declaration
@@ -74,7 +45,7 @@ class lmScoreWizard: public lmWizard
     DECLARE_EVENT_TABLE()
 
 public:
-    lmScoreWizard(wxWindow* parent, lmScore** pPtrScore, wxWindowID id = lmID_SCORE_WIZARD, const wxPoint& pos = wxDefaultPosition );
+    lmScoreWizard(wxWindow* parent, lmScore** pPtrScore);
     ~lmScoreWizard();
 
     //event handlers
@@ -117,116 +88,110 @@ protected:
 };
 
 //----------------------------------------------------------------------------------
-// lmScoreWizardInstrPage class declaration
+// lmScoreWizardKey class declaration
 //----------------------------------------------------------------------------------
 
-class lmScoreWizardInstrPage: public lmWizardPage
+class lmScoreWizardKey: public lmWizardPage
 {
-    DECLARE_DYNAMIC_CLASS( lmScoreWizardInstrPage )
-    DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS( lmScoreWizardKey )
 
 public:
-    //constructors
-    lmScoreWizardInstrPage( );
+	lmScoreWizardKey();
+    lmScoreWizardKey(wxWizard* parent);
 
-    lmScoreWizardInstrPage( wxWizard* parent);
+    //event handlers
+    void OnKeyType(wxCommandEvent& event);
 
-    //creation
+    bool TransferDataFromWindow();
+
+    //keys data
+    typedef struct lmKeysStruct
+    {
+        wxString            sKeyName;
+        int                 nFifths;
+        lmEKeySignatures    nKeyType;
+
+    } lmKeysData;
+
+
+protected:
     bool Create(wxWizard* parent);
-
-    //creates the controls and sizers
     void CreateControls();
+    void LoadKeyList(int nType);
+    wxBitmap GenerateBitmap(wxString sKeyName);
+
+	wxRadioBox* m_pKeyRadioBox;
+	wxBitmapComboBox* m_pKeyList;
+	wxStaticBitmap* m_pBmpPreview;
+	
+    DECLARE_EVENT_TABLE()
+};
+
+
+//----------------------------------------------------------------------------------
+// lmScoreWizardTime class declaration
+//----------------------------------------------------------------------------------
+
+class lmScoreWizardTime: public lmWizardPage
+{
+    DECLARE_DYNAMIC_CLASS( lmScoreWizardTime )
+
+public:
+	lmScoreWizardTime();
+    lmScoreWizardTime(wxWizard* parent);
 
     //event handlers
 
     bool TransferDataFromWindow();
 
-    //public member variables
-    wxComboBox* m_pOutCombo;
-    wxComboBox* m_pInCombo;
+protected:
+    bool Create(wxWizard* parent);
+    void CreateControls();
+
+	wxRadioBox* m_pTimeRadioBox;
+	wxStaticText* m_pLblTopNumber;
+	wxTextCtrl* m_pTxtTopNumber;
+	wxStaticText* m_pLblBottomNum;
+	wxTextCtrl* m_pTxtBottomNumber;
+	wxStaticBitmap* m_pBmpPreview;
+	
+    DECLARE_EVENT_TABLE()
 };
 
 
-/*
-//---------------------------------------------------------------------------------------
-// lmScoreWizardClefPage class declaration
-//---------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+// lmScoreWizardTitles class declaration
+//----------------------------------------------------------------------------------
 
-class lmScoreWizardClefPage: public lmWizardPage
+class lmScoreWizardTitles: public lmWizardPage
 {
-    DECLARE_DYNAMIC_CLASS( lmScoreWizardClefPage )
-    DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS( lmScoreWizardTitles )
 
 public:
-    //constructors
-    lmScoreWizardClefPage( );
+	lmScoreWizardTitles();
+    lmScoreWizardTitles(wxWizard* parent);
 
-    lmScoreWizardClefPage( wxWizard* parent);
-
-    //creation
-    bool Create(wxWizard* parent);
-
-    //creates the controls and sizers
-    void CreateControls();
-
-////@begin lmScoreWizardClefPage event handler declarations
-
-    /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for lmID_COMBO_SECTION
-    void OnComboSection( wxCommandEvent& event );
-
-    /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for lmID_COMBO_INSTRUMENT
-    void OnComboInstrument( wxCommandEvent& event );
-
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for lmID_BUTTON_TEST_SOUND
-    void OnButtonTestSoundClick( wxCommandEvent& event );
-
-////@end lmScoreWizardClefPage event handler declarations
-
-////@begin lmScoreWizardClefPage member function declarations
+    //event handlers
 
     bool TransferDataFromWindow();
-    void DoProgramChange();
 
-////@begin lmScoreWizardClefPage member variables
-    wxComboBox* m_pVoiceChannelCombo;
-    wxComboBox* m_pSectCombo;
-    wxComboBox* m_pInstrCombo;
-////@end lmScoreWizardClefPage member variables
-};
-
-//---------------------------------------------------------------------------------------
-// lmScoreWizardTimePage class declaration
-//---------------------------------------------------------------------------------------
-
-class lmScoreWizardTimePage: public lmWizardPage
-{
-    DECLARE_DYNAMIC_CLASS( lmScoreWizardTimePage )
-    DECLARE_EVENT_TABLE()
-
-public:
-    //constructors
-    lmScoreWizardTimePage( );
-
-    lmScoreWizardTimePage( wxWizard* parent);
-
-    //creation
+protected:
     bool Create(wxWizard* parent);
-
-    //creates the controls and sizers
     void CreateControls();
 
-////@begin lmScoreWizardTimePage event handler declarations
-
-    /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for lmID_COMBO_MTR_INSTR1
-    void OnComboMtrInstr1Selected( wxCommandEvent& event );
-    void OnComboMtrInstr2Selected( wxCommandEvent& event );
-    void OnButtonClick( wxCommandEvent& event );
-
-////@begin lmScoreWizardTimePage member variables
-    wxComboBox* m_pMtrInstr1Combo;
-    wxComboBox* m_pMtrInstr2Combo;
-////@end lmScoreWizardTimePage member variables
+	wxStaticText* m_pLblTitle;
+	wxTextCtrl* m_pTxtTitle;
+	wxStaticText* m_pLblSubtitle;
+	wxTextCtrl* m_pTxtSubtitle;
+	wxStaticText* m_pLblComposer;
+	wxTextCtrl* m_pTxtComposer;
+	wxStaticText* m_pLblArranger;
+	wxTextCtrl* m_pTxtArranger;
+	wxStaticText* m_pLblLyricist;
+	wxTextCtrl* m_pTxtLyricist;
+	
+    DECLARE_EVENT_TABLE()
 };
-*/
+
 
 #endif  // __LM_SCOREWIZARD_H__

@@ -570,32 +570,75 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 
     //if this note fills up a measure and AutoBar option is enabled, insert a simple barline
     if (fAutoBar)
-        CheckAndDoAutoBar(pUndoItem);
+        CheckAndDoAutoBar(pUndoItem, pNt);
 
     return pNt;
 }
 
-void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem)
+void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNote* pN)
 {
-    //verify if measure is full
+    //Check if note pN fills a measure. If it does, add a barline if necessary
+
+
+    //get normal measure duration
     lmTimeSignature* pTime = GetApplicableTimeSignature();
     if (!pTime)
         return;         //no time signature. Do not add barlines
     //TODO: When no TS, we could try to insert hidden barlines to deal with no time
     //signature scores
 
-    //float rMeasure = pTime->GetMeasureDuration();
-    //float rCurrent = GetCurrentMesureDuration();
+    float rMeasure = pTime->GetMeasureDuration();
+
+    //get time ocupied by all notes/rest until pN included
+    float rCurrent = pN->GetTimePos() + pN->GetTimePosIncrement();
+
+    //check if measure is full
     //wxLogMessage(_T("[lmVStaff::CheckAndDoAutoBar] current=%.2f, maximum=%.2f"), rCurrent, rMeasure);
-    if (IsLowerTime(GetCurrentMesureDuration(), pTime->GetMeasureDuration()))
+    if (IsLowerTime(rCurrent, rMeasure))
       return;         //measure is not full
 
-    //measure full. Issue an 'insert barline' command
-    lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
-    lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-    lmVCmdInsertBarline* pVCmd =
-        new lmVCmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
-    pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+    //Measure is full after note pN.
+    //Add a barline if no barline in current segment or if more notes/rests after pN
+
+    bool fInsertBarline = false;        //assume no need to add barline
+    lmBarline* pBL = GetBarlineOfMeasure( GetVCursor()->GetSegment() + 1 );
+    if (!pBL)
+    {
+        //no barline. Add one
+        fInsertBarline = true;
+    }
+    else
+    {
+        //check if more notes/rest with greater timepos in current measure
+        lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, pN);
+        pIT->MoveNext();        //skip pN
+        while(!pIT->EndOfMeasure())
+        {
+            lmStaffObj* pSO = pIT->GetCurrent();
+			if (pSO->IsNoteRest())
+            {
+                //there are notes/rest after pN.
+                //If they have greater timepos insert a barline after pN
+                if (IsHigherTime(pSO->GetTimePos(), pN->GetTimePos()) )
+                    fInsertBarline = true;
+
+                break;
+            }
+            pIT->MoveNext();
+        }
+        delete pIT;
+    }
+  
+    //finally, insert the barline if necessary
+    if (fInsertBarline)
+    {
+        //Issue an 'insert barline' command
+        lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
+        lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
+        lmVCmdInsertBarline* pVCmd =
+            new lmVCmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
+        pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+    }
 }
 
 void lmVStaff::DeleteObject()
@@ -1350,7 +1393,6 @@ lmBarline* lmVStaff::GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos)
     // returns the barline for measure nMeasure (1..n) and, if found, updates content
     // of variable pointed by pPos with the X right position of this barline.
     // If no barline is found for requested measure, returns NULL and pos is not updated.
-    // This method is only used by Formatter, in order to not justify the last system
 
     //get the barline
     lmBarline* pBarline = m_cStaffObjs.GetBarlineOfMeasure(nMeasure);
