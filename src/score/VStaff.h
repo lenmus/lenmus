@@ -141,22 +141,33 @@ public:
 
 	lmClef* Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
                            bool fVisible);
-    void UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef);
+
+    lmKeySignature* Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
+                                    bool fMajor, bool fVisible);
 
 	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
 					       lmENoteHeads nNotehead, lmEAccidentals nAcc, bool fAutoBar);
 
+	lmRest* Cmd_InsertRest(lmUndoItem* pUndoItem, lmENoteType nNoteType,
+                           float rDuration, int nDots, bool fAutoBar);
+
     lmTimeSignature* Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
                                     int nBeatType, bool fVisible);
-    lmKeySignature* Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
-                                    bool fMajor, bool fVisible);
+
 
     //--- deleting StaffObjs
-	void DeleteObject();
-	void DeleteObject(lmStaffObj* pSO, lmUndoItem* pUndoItem = (lmUndoItem*)NULL);
-
     void Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+
+
+    //--- Undoing edition commands
+    void UndoCmd_InsertBarline(lmUndoItem* pUndoItem, lmBarline* pBarline);
+    void UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef);
+    void UndoCmd_InsertKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
+    void UndoCmd_InsertNote(lmUndoItem* pUndoItem, lmNote* pNote);
+    void UndoCmd_InsertRest(lmUndoItem* pUndoItem, lmRest* pRest);
+    void UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
+
     void UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
 
 
@@ -271,7 +282,7 @@ private:
     bool CheckIfNotesAffectedByClef();
 
     //barlines
-    void CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNote* pN);
+    void CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR);
 
 
 
@@ -339,6 +350,22 @@ public:
 
 protected:
     lmNote*             m_pNewNote;     //inserted note
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdInsertRest : public lmVStaffCmd
+{
+public:
+    lmVCmdInsertRest(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                     lmENoteType nNoteType, float rDuration, int nDots);
+    ~lmVCmdInsertRest() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pNewRest != (lmRest*)NULL); }
+
+protected:
+    lmRest*         m_pNewRest;     //inserted rest
 
 };
 

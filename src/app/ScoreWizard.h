@@ -51,6 +51,7 @@ public:
     //event handlers
     void OnWizardCancel( wxWizardEvent& event );
     void OnWizardFinished( wxWizardEvent& event );
+    void OnPageChanged( wxWizardEvent& event );
 
 private:
     lmScore**       m_pPtrScore;
@@ -73,6 +74,7 @@ public:
     void OnEnsembleSelected(wxCommandEvent& event);
 
     bool TransferDataFromWindow();
+    void OnEnterPage();
 
 protected:
     bool Create(wxWizard* parent);
@@ -103,16 +105,7 @@ public:
     void OnKeyType(wxCommandEvent& event);
 
     bool TransferDataFromWindow();
-
-    //keys data
-    typedef struct lmKeysStruct
-    {
-        wxString            sKeyName;
-        int                 nFifths;
-        lmEKeySignatures    nKeyType;
-
-    } lmKeysData;
-
+    void OnEnterPage();
 
 protected:
     bool Create(wxWizard* parent);
@@ -141,19 +134,25 @@ public:
     lmScoreWizardTime(wxWizard* parent);
 
     //event handlers
+    void OnTimeType(wxCommandEvent& event);
 
     bool TransferDataFromWindow();
+    void OnEnterPage();
 
 protected:
     bool Create(wxWizard* parent);
     void CreateControls();
+    void EnableOtherTimeSignatures(bool fEnable);
 
-	wxRadioBox* m_pTimeRadioBox;
-	wxStaticText* m_pLblTopNumber;
-	wxTextCtrl* m_pTxtTopNumber;
-	wxStaticText* m_pLblBottomNum;
-	wxTextCtrl* m_pTxtBottomNumber;
-	wxStaticBitmap* m_pBmpPreview;
+    wxStaticBoxSizer*   m_pOtherTimeSizer;
+
+		wxRadioBox* m_pTimeRadioBox;
+		wxPanel* m_pOtherTimeBoxPanel;
+		wxStaticText* m_pLblTopNumber;
+		wxTextCtrl* m_pTxtTopNumber;
+		wxStaticText* m_pLblBottomNum;
+		wxTextCtrl* m_pTxtBottomNumber;
+		wxStaticBitmap* m_pBmpPreview;
 	
     DECLARE_EVENT_TABLE()
 };

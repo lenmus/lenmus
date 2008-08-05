@@ -87,6 +87,8 @@
 		<Unit filename="../../src/app/ErrorDlg.h" />
 		<Unit filename="../../src/app/FontManager.cpp" />
 		<Unit filename="../../src/app/FontManager.h" />
+		<Unit filename="../../src/app/KbdCmdParser.cpp" />
+		<Unit filename="../../src/app/KbdCmdParser.h" />
 		<Unit filename="../../src/app/LangChoiceDlg.cpp" />
 		<Unit filename="../../src/app/LangChoiceDlg.h" />
 		<Unit filename="../../src/app/Logger.cpp" />
@@ -119,6 +121,8 @@
 		<Unit filename="../../src/app/StatusBar.h" />
 		<Unit filename="../../src/app/TheApp.cpp" />
 		<Unit filename="../../src/app/TheApp.h" />
+		<Unit filename="../../src/app/WelcomeWnd.cpp" />
+		<Unit filename="../../src/app/WelcomeWnd.h" />
 		<Unit filename="../../src/app/global.h" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.cpp" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.h" />

@@ -457,6 +457,12 @@
 				RelativePath="..\..\src\app\global.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\KbdCmdParser.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\KbdCmdParser.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\LangChoiceDlg.cpp">
 			</File>
 			<File

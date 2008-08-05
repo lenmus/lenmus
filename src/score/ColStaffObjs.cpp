@@ -690,17 +690,29 @@ void lmVStaffCursor::MoveCursorToObject(lmStaffObj* pSO)
     //Move cursor to required staffobj
     //Precondition: the staffobj is in current instrument
 
-    m_nStaff = pSO->GetStaffNum();
-	m_pSegment = pSO->GetSegment();
-    m_nSegment = m_pSegment->m_nNumSegment;
-	m_it = m_pSegment->m_StaffObjs.begin();
+    if (!pSO)
+    {
+        //No object. Move to end of score
+        //m_nStaff = pSO->GetStaffNum();        //do not change Staff TODO: is this ok?
+        m_nSegment = m_pColStaffObjs->m_Segments.size() - 1;
+	    m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+	    m_it = m_pSegment->m_StaffObjs.end();
+    }
+    else
+    {
+        //Object exists. Restore cursor info to point to that object
+        m_nStaff = pSO->GetStaffNum();
+	    m_pSegment = pSO->GetSegment();
+        m_nSegment = m_pSegment->m_nNumSegment;
+	    m_it = m_pSegment->m_StaffObjs.begin();
 
-    //locate the object
-    while(m_it != m_pSegment->m_StaffObjs.end() && *m_it != pSO)
-        ++m_it;
+        //locate the object
+        while(m_it != m_pSegment->m_StaffObjs.end() && *m_it != pSO)
+            ++m_it;
 
-	//object found
-	wxASSERT(m_it != m_pSegment->m_StaffObjs.end());
+	    //object found
+	    wxASSERT(m_it != m_pSegment->m_StaffObjs.end());
+    }
     UpdateTimepos();
 }
 
@@ -1426,7 +1438,9 @@ void lmSegment::AutoBeam(int nVoice)
             ((lmNoteRest*)(*it))->GetVoice() == nVoice)
             break;
     }
-    wxASSERT (it != m_StaffObjs.end());     //at least the inserted note/rest that originated the invocation to this method!
+    if (it == m_StaffObjs.end())
+        //no notes in voice nVoice. Only rests. Nothing to do
+        return;
 
     //get context and get current time signature.
     lmContext* pContext = (*it)->GetCurrentContext();
@@ -2029,17 +2043,47 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     //#endif
 }
 
-void lmColStaffObjs::LogPosition(lmUndoData* pUndoData, lmStaffObj* pSO)
+void lmColStaffObjs::LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj* pSO)
 {
-    //log info to locate insertion point
+    //log info to locate insertion point when undoing delete command
 
     //get segment and find object
     lmSegment* pSegment = pSO->GetSegment();
 	lmItCSO it = find(pSegment->m_StaffObjs.begin(), pSegment->m_StaffObjs.end(), pSO);
-    wxASSERT(it != pSegment->m_StaffObjs.end());
+    wxASSERT(it != pSegment->m_StaffObjs.end());        //object to delete must exists
 
+    //advance to next object
     ++it;
-    pUndoData->AddParam<lmStaffObj*>(*it);
+    if (it != pSegment->m_StaffObjs.end())
+    {
+        //not at end of segment. done
+        pUndoData->AddParam<lmStaffObj*>(*it);
+        return;
+    }
+
+    //we are at end of segment. If we are deleting the barline advance to next segment
+    if (pSO->IsBarline())
+    {
+        //advance to first object of next segment
+        pSegment = pSegment->GetNextSegment();
+        if (pSegment)
+            it = pSegment->m_StaffObjs.begin();
+
+        if (pSegment && it != pSegment->m_StaffObjs.end())
+        {
+            //deleting a barline and there is an object in next segment. done
+            pUndoData->AddParam<lmStaffObj*>(*it);
+        }
+        else
+        {
+            //deleting a barline a no next segment or it is empty. End of score
+            pUndoData->AddParam<lmStaffObj*>((lmStaffObj*)NULL);
+        }
+        return;     //done
+    }
+
+    //we are at end of segment. No barline and no next segment. End of score
+    pUndoData->AddParam<lmStaffObj*>((lmStaffObj*)NULL);
 }
 
 

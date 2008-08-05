@@ -31,6 +31,8 @@
 #include "wx/wizard.h"
 
 
+class lmWizard;
+
 //-----------------------------------------------------------------------------
 // lmWizardPage: 
 //-----------------------------------------------------------------------------
@@ -44,7 +46,12 @@ public:
     inline bool IsOptional() { return m_fOptional; }
     inline void SetOptional(bool fValue) { m_fOptional = fValue; }
 
+    virtual void OnEnterPage() {}
+
+    wxWizard* GetParentWizard() { return m_pParent; }
+
 private:
+    wxWizard*   m_pParent;
     bool        m_fOptional;
 
 };
@@ -74,6 +81,10 @@ public:
 
     virtual bool IsOptional(lmWizardPage* page)
         { return ((lmWizardPage*)page)->IsOptional(); }
+
+    //buttons
+    void EnableButtonNext(bool fEnable);
+    void EnableButtonPrev(bool fEnable);
 
 
 private:

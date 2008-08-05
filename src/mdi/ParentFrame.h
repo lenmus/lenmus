@@ -79,7 +79,7 @@ public:
 
     virtual void ActivateNext();
     virtual void ActivatePrevious();
-    virtual void CloseAll();
+    virtual bool CloseAll();
     virtual void CloseActive();
 
     virtual void RemoveChildFrame(lmMDIChildFrame* pChild);

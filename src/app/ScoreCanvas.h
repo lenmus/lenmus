@@ -69,6 +69,7 @@ public:
 	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots,
 					lmENoteHeads nNotehead, lmEAccidentals nAcc = lm_eNoAccidentals ) {}
+                    virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
     virtual void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true) {}
 	virtual void ChangeNotePitch(int nSteps) {}
@@ -140,6 +141,7 @@ public:
 	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots,
 					lmENoteHeads nNotehead, lmEAccidentals nAcc = lm_eNoAccidentals );
+    void InsertRest(lmENoteType nNoteType, float rDuration, int nDots);
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
     void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 	void ChangeNotePitch(int nSteps);

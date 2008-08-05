@@ -192,7 +192,7 @@ public:
 	wxString Dump();
 
     //undo/redo related methods
-    void LogPosition(lmUndoData* pUndoData, lmStaffObj* pSO);
+    void LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj* pSO);
 
 
 private:

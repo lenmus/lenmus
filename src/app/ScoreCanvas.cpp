@@ -45,6 +45,7 @@
 #include "toolbox/ToolsBox.h"
 #include "toolbox/ToolNotes.h"
 #include "global.h"
+#include "KbdCmdParser.h"
 
 #include "../ldp_parser/LDPParser.h"
 #include "../ldp_parser/AuxString.h"
@@ -241,7 +242,7 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 	//Generate move command to move the lmComponentObj and update the document
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = wxString::Format(_T("Move %s"), pGMO->GetName().c_str() );
+	wxString sName = wxString::Format(_("Move %s"), pGMO->GetName().c_str() );
 	pCP->Submit(new lmCmdUserMoveScoreObj(sName, m_pDoc, pGMO, uPos));
 }
 
@@ -250,7 +251,7 @@ void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 	//select/deselect a ComponentObj
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = wxString::Format(_T("Select %s"), pGMO->GetName().c_str() );
+	wxString sName = wxString::Format(_("Select %s"), pGMO->GetName().c_str() );
 	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, m_pView, pGMO));
 }
 
@@ -265,7 +266,7 @@ void lmScoreCanvas::SelectObjects(bool fSelect, lmGMSelection* pSelection)
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(
-        (fSelect ? _T("Select %d objects") : _T("Unselect %d objects")), pSelection->NumObjects() );
+        (fSelect ? _("Select %d objects") : _("Unselect %d objects")), pSelection->NumObjects() );
 	pCP->Submit(new lmCmdSelectMultiple(sName, m_pDoc, m_pView, pSelection, fSelect));
 
 }
@@ -287,12 +288,12 @@ void lmScoreCanvas::DeleteObject()
         return;
 
 	//the EOS Barline can not be deleted
-	if (pCursorSO->GetClass() == eSFOT_Barline 
+	if (pCursorSO->GetClass() == eSFOT_Barline
 		&& ((lmBarline*)pCursorSO)->GetBarlineType() == lm_eBarlineEOS) return;
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = wxString::Format(_T("Delete %s"), pCursorSO->GetName().c_str() );
+	wxString sName = wxString::Format(_("Delete %s"), pCursorSO->GetName().c_str() );
 	pCP->Submit(new lmCmdDeleteObject(pVCursor, sName, m_pDoc));
 }
 
@@ -307,7 +308,7 @@ void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _T("Insert clef");
+	wxString sName = _("Insert clef");
 	pCP->Submit(new lmCmdInsertClef(pVCursor, sName, m_pDoc, nClefType) );
 }
 
@@ -323,7 +324,7 @@ void lmScoreCanvas::InsertTimeSignature(int nBeats, int nBeatType, bool fVisible
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _T("Insert time signature");
+	wxString sName = _("Insert time signature");
 	pCP->Submit(new lmCmdInsertTimeSignature(pVCursor, sName, m_pDoc, nBeats,
                                              nBeatType, fVisible) );
 }
@@ -341,7 +342,7 @@ void lmScoreCanvas::InsertKeySignature(int nFifths, bool fMajor, bool fVisible)
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _T("Insert key signature");
+	wxString sName = _("Insert key signature");
 	pCP->Submit(new lmCmdInsertKeySignature(pVCursor, sName, m_pDoc, nFifths, fMajor, fVisible) );
 }
 
@@ -355,11 +356,11 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _T("Insert barline");
+	wxString sName = _("Insert barline");
 	pCP->Submit(new lmCmdInsertBarline(pVCursor, sName, m_pDoc, nType) );
 }
 
-void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
+void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 							   lmENoteType nNoteType, float rDuration, int nDots,
 							   lmENoteHeads nNotehead, lmEAccidentals nAcc)
 {
@@ -371,15 +372,29 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _T("Insert note");
+	wxString sName = _("Insert note");
     wxString sOctave = wxString::Format(_T("%d"), nOctave);
 
-    //TODO:
     wxString sAllSteps = _T("cdefgab");
     wxString sStep = sAllSteps.GetChar( nStep );
 
-	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, nStep, nOctave, 
+	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, nStep, nOctave,
 							        nNoteType, rDuration, nDots, nNotehead, nAcc) );
+}
+
+void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots)
+{
+	//insert a rest at current cursor position
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+    //prepare command and submit it
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Insert rest");
+
+	pCP->Submit(new lmCmdInsertRest(pVCursor, sName, m_pDoc, nNoteType, rDuration, nDots) );
 }
 
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
@@ -391,7 +406,7 @@ void lmScoreCanvas::ChangeNotePitch(int nSteps)
 	wxASSERT(pCursorSO);
 	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _T("Change note pitch");
+	wxString sName = _("Change note pitch");
 	pCP->Submit(new lmCmdChangeNotePitch(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
 }
 
@@ -404,7 +419,7 @@ void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
 	wxASSERT(pCursorSO);
 	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _T("Change note accidentals");
+	wxString sName = _("Change note accidentals");
 	pCP->Submit(new lmCmdChangeNoteAccidentals(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
 }
 
@@ -437,8 +452,8 @@ void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 {
     wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
-            KeyCodeToName(event.GetKeyCode()), event.GetKeyCode(),
-            KeyCodeToName(m_nKeyDownCode), m_nKeyDownCode, 
+            KeyCodeToName(event.GetKeyCode()).c_str(), event.GetKeyCode(),
+            KeyCodeToName(m_nKeyDownCode).c_str(), m_nKeyDownCode,
             (m_fCmd ? _T('C') : _T('-') ),
             (m_fAlt ? _T('A') : _T('-') ),
             (m_fShift ? _T('S') : _T('-') ),
@@ -449,7 +464,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 
 void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 {
-    //We are processing a Key Down event 
+    //We are processing a Key Down event
 	lmEEditTool nTool = lmTOOL_NONE;
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	if (!pToolBox) {
@@ -460,10 +475,6 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 
     int nKeyCode = event.GetKeyCode();
 	bool fUnknown = false;
-
-    //fix ctrol+key codes
-    if (nKeyCode > 0 && nKeyCode < 27)
-        nKeyCode += int('A') - 1;
 
 	//Verify common keys working with all tools
 	fUnknown = false;
@@ -513,12 +524,21 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			DeleteObject();
 			break;
 
+        case WXK_BACK:
+			m_pView->CaretLeft(false);      //false: treat chords as a single object
+			DeleteObject();
+			break;
+
 		default:
 			fUnknown = true;
 	}
 
+    //fix ctrol+key codes
+    if (nKeyCode > 0 && nKeyCode < 27)
+        nKeyCode += int('A') - 1;
+
 	//if not processed, check if specific for current selected tool panel
-	if (fUnknown) 
+	if (fUnknown)
 	{
 	    switch(nTool)
 	    {
@@ -551,32 +571,20 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, nDots, 0, 0);
 			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
 			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
-                
-                //analyse accidentals
-                if (m_sCmd != _T(""))
+
+                //if terminal symbol, analyze full command
+                if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
+                    (nKeyCode >= int('a') && nKeyCode <= int('g')) ||
+                    nKeyCode == int(' ') )
                 {
-                    if (m_sCmd.StartsWith( _T("+") )) {
-                        if (m_sCmd.StartsWith( _T("++") )) {
-                            nAcc = lm_eSharpSharp;
-                        } else {
-                            nAcc = lm_eSharp;
+                    if (m_sCmd != _T(""))
+                    {
+                        lmKbdCmdParser oCmdParser;
+                        if (oCmdParser.ParserCommand(m_sCmd))
+                        {
+                            nAcc = oCmdParser.GetAccidentals();
+                            nDots = oCmdParser.GetDots();
                         }
-                    } else if (m_sCmd.StartsWith( _T("-") )) {
-                        if (m_sCmd.StartsWith( _T("--") )) {
-                            nAcc = lm_eFlatFlat;
-                        } else {
-                            nAcc = lm_eFlat;
-                        }
-                    } else if (m_sCmd.StartsWith( _T("=+") )) {
-                        nAcc = lm_eNaturalSharp;
-                    } else if (m_sCmd.StartsWith( _T("=-") )) {
-                        nAcc = lm_eNaturalFlat;
-                    } else if (m_sCmd.StartsWith( _T("=") )) {
-                        nAcc = eNatural;
-                    } else if (m_sCmd.StartsWith( _T("x") )) {
-                        nAcc = lm_eDoubleSharp;
-                    } else {
-                        ; //ignore m_sCmd
                     }
                 }
 
@@ -593,20 +601,29 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                         ++m_nOctave;
                     else if (event.CmdDown())
                         --m_nOctave;
-                    
+
                     //limit octave 0..9
                     if (m_nOctave < 0)
                         m_nOctave = 0;
                     else if (m_nOctave > 9)
                         m_nOctave = 9;
 
-                    //get step 
+                    //get step
                     static wxString sSteps = _T("abcdefg");
                     int nStep = LetterToStep( sSteps.GetChar( nKeyCode - int('A') ));
 
                     //do insert note
 					InsertNote(lm_ePitchRelative, nStep, m_nOctave, nNoteType, rDuration,
 							   nDots, nNotehead, nAcc);
+
+                    fUnknown = false;
+                }
+
+                //insert rest
+                if (nKeyCode == int(' '))
+                {
+                    //do insert rest
+                    InsertRest(nNoteType, rDuration, nDots);
 
                     fUnknown = false;
                 }
@@ -628,7 +645,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			        //switch (nKeyCode)
 			        //{
            //             //select accidentals
-				       // case int('+'):      // '+' increment accidentals  
+				       // case int('+'):      // '+' increment accidentals
            //                 SelectNoteAccidentals(true);
            //                 break;
 
@@ -637,11 +654,11 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
            //                 break;
 
            //             //select dots
-				       // case int('.'):      // '.' increment/decrement dots 
+				       // case int('.'):      // '.' increment/decrement dots
            //                 if (event.AltDown())
-           //                     SelectNoteDots(false);      // Alt + '.' decrement dots     
+           //                     SelectNoteDots(false);      // Alt + '.' decrement dots
            //                 else
-           //                     SelectNoteDots(true);       // '.' increment dots 
+           //                     SelectNoteDots(true);       // '.' increment dots
            //                 break;
 
            //             //unknown
@@ -672,7 +689,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 				    //		fUnknown = true;
 				    //	break;
 
-    				
+
 				   // //invalid key
 				   // default:
 					  //  fUnknown = true;
@@ -741,7 +758,8 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 	    }
     }
 
-	//Debug: Unidentified tool or unidentified key. Log message
+    // If unidentified tool or unidentified key, log message and skip event.
+    // Else, clear command buffer
 	if (fUnknown)
     {
         LogKeyEvent(_T("Key Press"), event, nTool);
@@ -752,6 +770,9 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
         //the command has been processed. Clear buffer
         m_sCmd = _T("");
     }
+
+	//Display command
+    GetMainFrame()->SetStatusBarMsg(wxString::Format(_T("cmd: %s"), m_sCmd.c_str() ));
 }
 
 void lmScoreCanvas::LogKeyEvent(wxString name, wxKeyEvent& event, int nTool)
@@ -760,7 +781,7 @@ void lmScoreCanvas::LogKeyEvent(wxString name, wxKeyEvent& event, int nTool)
     key += wxString::Format(_T(" (Unicode: %#04x)"), event.GetUnicodeKey());
 
     wxLogMessage( wxString::Format( _T("[lmScoreCanvas::LogKeyEvent] Event: %s - %s, nKeyCode=%d, (flags = %c%c%c%c). Tool=%d"),
-            name, key.c_str(), event.GetKeyCode(), 
+            name.c_str(), key.c_str(), event.GetKeyCode(),
             (event.CmdDown() ? _T('C') : _T('-') ),
             (event.AltDown() ? _T('A') : _T('-') ),
             (event.ShiftDown() ? _T('S') : _T('-') ),
@@ -1005,14 +1026,14 @@ void lmScoreCanvas::OnProperties(wxCommandEvent& event)
 void lmScoreCanvas::SelectNoteDuration(int iButton)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	if (pToolBox) 
+	if (pToolBox)
 		((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(iButton);
 }
 
 void lmScoreCanvas::SelectNoteAccidentals(bool fNext)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	if (pToolBox) 
+	if (pToolBox)
     {
         if (fNext)
             ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNextAccidental();
@@ -1024,7 +1045,7 @@ void lmScoreCanvas::SelectNoteAccidentals(bool fNext)
 void lmScoreCanvas::SelectNoteDots(bool fNext)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	if (pToolBox) 
+	if (pToolBox)
     {
         if (fNext)
             ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNextDot();

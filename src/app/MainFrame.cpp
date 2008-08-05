@@ -1629,11 +1629,11 @@ void lmMainFrame::OnOpenBookUI(wxUpdateUIEvent &event)
 void lmMainFrame::OnCloseWindow(wxCloseEvent& event)
 {
     // Invoked when the application is going to close the main window
-    // Override default method in lmDocMDIParentFrame, to close also the TextBookFrame
+    // Override default method in lmDocMDIParentFrame, as it will only close
+    // the lmDocMDIChild windows (the scores) but no other windows (Welcome, eBooks)
 
-    CloseAll();
-    lmDocMDIParentFrame::OnCloseWindow(event);
-
+    if (CloseAll())     //force to close all windows
+        event.Skip();   //allow event to continue normal processing if all closed
 }
 
 void lmMainFrame::OnWindowClose(wxCommandEvent& WXUNUSED(event))

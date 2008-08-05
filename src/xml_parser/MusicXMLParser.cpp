@@ -1444,7 +1444,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             //wxString sEditorial = GetAttribute(pElement, _T("editorial"));
 
             if (sValue == _T("natural") )
-                nAccidentals = eNatural;
+                nAccidentals = lm_eNatural;
             else if (sValue == _T("flat") )
                 nAccidentals = lm_eFlat;
             else if (sValue == _T("sharp") )

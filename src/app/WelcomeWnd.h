@@ -57,10 +57,10 @@ public:
     ~lmWelcomeWnd();
 
     //event handlers
-    void OnNewInLenmus(wxHyperlinkEvent& event); 
-    void OnNewScore(wxHyperlinkEvent& event); 
-    void OnOpenEBooks(wxHyperlinkEvent& event); 
-    void OnOpenRecent(wxHyperlinkEvent& event); 
+    void OnNewInLenmus(wxHyperlinkEvent& event);
+    void OnNewScore(wxHyperlinkEvent& event);
+    void OnOpenEBooks(wxHyperlinkEvent& event);
+    void OnOpenRecent(wxHyperlinkEvent& event);
     void OnCloseWindow(wxCloseEvent& event);
 
 
@@ -68,11 +68,10 @@ private:
     void CreateControls();
 
     //controls on dialog
-		wxStaticBitmap* m_pBmpLogo;
-		
+		wxStaticBitmap* m_pBmpLeftBanner;
+
 		wxStaticText* m_pTxtTitle;
-		
-		
+
 		wxStaticText* m_pLearnTitle;
 		wxStaticBitmap* m_pLearnIcon;
 		wxHyperlinkCtrl* m_pLinkNewInLenmus;
@@ -84,7 +83,7 @@ private:
 		wxStaticBitmap* m_pScoreIcon;
 		wxHyperlinkCtrl* m_pLinkNewScore;
 		wxStaticText* m_pRecentScoresTitle;
-		
+
 		wxHyperlinkCtrl* m_pLinkRecent1;
 		wxHyperlinkCtrl* m_pLinkRecent2;
 

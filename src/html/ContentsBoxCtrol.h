@@ -39,7 +39,7 @@
 
 class wxSelectionStore;
 
-#define wxVListBoxNameStr _T("lmContentsBoxCtrol")
+#define lmContentsBoxCtrolStr _T("lmContentsBoxCtrol")
 
 // ----------------------------------------------------------------------------
 // lmContentsBoxCtrol
@@ -69,14 +69,14 @@ public:
                const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize,
                long style = 0,
-               const wxString& name = wxVListBoxNameStr);
+               const wxString& name = lmContentsBoxCtrolStr);
 
     bool Create(wxWindow *parent,
                 wxWindowID id = wxID_ANY,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
                 long style = 0,
-                const wxString& name = wxVListBoxNameStr);
+                const wxString& name = lmContentsBoxCtrolStr);
 
     virtual ~lmContentsBoxCtrol();
 

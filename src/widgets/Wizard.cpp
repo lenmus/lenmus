@@ -37,6 +37,8 @@
 
 #include "Wizard.h"
 
+
+
 // ----------------------------------------------------------------------------
 // lmWizardPage
 // ----------------------------------------------------------------------------
@@ -44,6 +46,7 @@
 lmWizardPage::lmWizardPage(wxWizard* pParent)
     : wxWizardPageSimple(pParent, NULL, NULL, wxNullBitmap, NULL)
 {
+    m_pParent = pParent;
     m_fOptional = false;
 }
 
@@ -186,7 +189,6 @@ bool lmWizard::ShowPage(lmWizardPage* page, bool fGoingFwd)
 
     //update buttons state
     UpdateButtons();
-    m_pBtnNext->SetDefault();
 
     //send the change event to the new page
     wxWizardEvent event(wxEVT_WIZARD_PAGE_CHANGED, GetId(), fGoingFwd, m_pCurPage);
@@ -217,6 +219,9 @@ void lmWizard::UpdateButtons()
     bool fNext = HasNextPage(m_pCurPage);
     m_pBtnNext->Enable(fNext);
     m_pBtnFinish->Enable(!fNext || IsOptional(m_pCurPage));
+
+    if (fNext)
+        m_pBtnNext->SetDefault();
 }
 
 void lmWizard::OnPageButton(wxCommandEvent& event)
@@ -294,6 +299,27 @@ void lmWizard::OnWizardEvent(wxWizardEvent& event)
     }
 }
 
+void lmWizard::EnableButtonNext(bool fEnable)
+{
+    if (fEnable)
+        m_pBtnNext->SetDefault();
+    else if (m_pBtnFinish->IsEnabled())
+    {
+        m_pBtnFinish->SetDefault();
+        //TODO:
+        //Looks like a wxWidgets bug:
+        //SetDefault doesn't cause to remove the selection of button next. Probably it is
+        //delayed to idle time. But when redraw is done, as button next
+        //is disabled by next instruction, the selection is not removed.
+    }
+
+    m_pBtnNext->Enable(fEnable);
+}
+
+void lmWizard::EnableButtonPrev(bool fEnable)
+{
+    m_pBtnPrev->Enable(fEnable);
+}
 
 
 

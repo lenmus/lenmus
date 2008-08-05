@@ -508,6 +508,61 @@ bool lmCmdInsertNote::UndoCommand()
 
 
 //----------------------------------------------------------------------------------------
+// lmCmdInsertRest: Insert a rest at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdInsertRest::lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& sName,
+                                 lmScoreDocument *pDoc,
+								 lmENoteType nNoteType, float rDuration, int nDots)
+	: lmScoreCommand(sName, pDoc, pVCursor)
+{
+	m_nNoteType = nNoteType;
+    m_nDots = nDots;
+	m_rDuration = rDuration;
+}
+
+lmCmdInsertRest::~lmCmdInsertRest()
+{
+}
+
+bool lmCmdInsertRest::Do()
+{
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+    m_pVStaff = pCursor->GetVStaff();
+
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+
+    lmVStaffCmd* pVCmd = new lmVCmdInsertRest(m_pVStaff, pUndoItem, m_nNoteType,
+                                              m_rDuration, m_nDots);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+
+}
+
+bool lmCmdInsertRest::UndoCommand()
+{
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
 // lmCmdChangeNotePitch: Change pitch of note at current cursor position
 //----------------------------------------------------------------------------------------
 

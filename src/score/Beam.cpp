@@ -245,7 +245,7 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 
 void lmBeam::OnRelationshipModified()
 {
-    //it is not ncessary to do anything. AutoSetUp() will be invoked when 
+    //it is not ncessary to do anything. AutoSetUp() will be invoked when
     //rendering the first note in the beam. So, user edition commands (add or
     //remove note from beam) will adjust the beam there.
 
@@ -305,10 +305,10 @@ void lmBeam::AutoSetUp()
 
             else if (nNotePos == lmFirstNote)
             {
-                //a) Case First note:								
+                //a) Case First note:
 	            // 2.1) CurLevel > Level(i+1)   -->		Forward hook
 	            // 2.2) other cases             -->		Begin
-	
+
                 if (iL > nLevelNext)
                     pCurNote->SetBeamType(iL, eBeamForward);    //2.1
                 else
@@ -318,18 +318,18 @@ void lmBeam::AutoSetUp()
             else if (nNotePos == lmMiddleNote)
             {
                 //b) Case Intermediate note:
-	            //   2.1) CurLevel < Level(i)			
+	            //   2.1) CurLevel < Level(i)
 	            //     2.1a) CurLevel > Level(i+1)		-->		End
 	            //     2.1b) else						-->		Continue
-                //	
+                //
 	            //   2.2) CurLevel > Level(i-1)
 		        //     2.2a) CurLevel > Level(i+1)		-->		Hook (fwd or bwd, depending on beat)
 		        //     2.2b) else						-->		Begin
-                //		
+                //
 	            //   2.3) else [CurLevel <= Level(i-1)]
 		        //     2.3a) CurLevel > Level(i+1)		-->		End
 		        //     2.3b) else						-->		Continue
-		
+
                 if (iL > nLevelCur)     //2.1) CurLevel < Level(i)
                 {
                     if (iL < nLevelNext)
@@ -343,7 +343,8 @@ void lmBeam::AutoSetUp()
                     {
                         //hook. Backward/Forward, depends on position in beat or on values
                         //of previous beams
-                        for (int i=0; i < iL; i++)
+                        int i;
+                        for (i=0; i < iL; i++)
                         {
                             if (pCurNote->GetBeamType(i) == eBeamBegin ||
                                 pCurNote->GetBeamType(i) == eBeamForward)

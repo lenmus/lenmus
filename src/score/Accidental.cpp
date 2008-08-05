@@ -88,7 +88,7 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
     wxString sGlyphs;
     int nGlyph[2] = { -1, -1};
     switch(m_nType) {
-        case eNatural:
+        case lm_eNatural:
             nGlyph[0] = GLYPH_NATURAL_ACCIDENTAL;
             break;
         case lm_eSharp:
@@ -160,7 +160,7 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
 wxString lmAccidental::GetLDPEncoding()
 {
     switch(m_nType) {
-        case eNatural:		return _T("");
+        case lm_eNatural:		return _T("");
         case lm_eSharp:		return _T("+");
         case lm_eFlat:			return _T("-");
         case lm_eFlatFlat:		return _T("--");

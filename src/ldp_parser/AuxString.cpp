@@ -170,7 +170,7 @@ bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals)
     } else if (sAlter.StartsWith( _T("=-") )) {
         *pAccidentals = lm_eNaturalFlat;
     } else if (sAlter.StartsWith( _T("=") )) {
-        *pAccidentals = eNatural;
+        *pAccidentals = lm_eNatural;
     } else if (sAlter.StartsWith( _T("x") )) {
         *pAccidentals = lm_eDoubleSharp;
     } else {
@@ -436,7 +436,7 @@ bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
     } else if (sAlter.StartsWith( _T("=-") )) {
         *pAccidentals = lm_eNaturalFlat;
     } else if (sAlter.StartsWith( _T("=") )) {
-        *pAccidentals = eNatural;
+        *pAccidentals = lm_eNatural;
     } else if (sAlter.StartsWith( _T("x") )) {
         *pAccidentals = lm_eDoubleSharp;
     } else {

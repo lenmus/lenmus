@@ -220,25 +220,34 @@ void lmMDIParentFrame::ActivatePrevious()
     }
 }
 
-void lmMDIParentFrame::CloseAll()
+bool lmMDIParentFrame::CloseAll()
 {
+    //Returns true if all windows get closed
+
     int nNumPages = (int)m_pClientWindow->GetPageCount();
-    if (nNumPages == 0) return;     //nothing to close
+    if (nNumPages == 0) return true;     //nothing to close. 
     int iActive = m_pClientWindow->GetSelection();
 
     //loop to close all pages but not the active one. This is to avoid having
     //to activate (and repaint) a new page if we close the current active one.
+    bool fAllClosed = true;     //assume it
     for (int i=nNumPages-1; i >= 0; i--) {
         if (i != iActive) {
-            m_pClientWindow->GetPage(i)->Close();
-            m_pClientWindow->RemovePage(i);
+            bool fClosed = m_pClientWindow->GetPage(i)->Close();
+            if (fClosed)
+                m_pClientWindow->RemovePage(i);
+            fAllClosed &= fClosed;
         }
     }
 
     //Now the only remaining page is the active one. Close it.
-    m_pClientWindow->GetPage(0)->Close();
-    m_pClientWindow->RemovePage(0);
+    iActive = m_pClientWindow->GetSelection();
+    bool fClosed = m_pClientWindow->GetPage(iActive)->Close();
+    if (fClosed)
+        m_pClientWindow->RemovePage(iActive);
+    fAllClosed &= fClosed;
 
+    return fAllClosed;
 }
 
 void lmMDIParentFrame::CloseActive()

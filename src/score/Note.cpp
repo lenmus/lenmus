@@ -153,7 +153,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
             case lm_eNoAccidentals:
                 //do not modify context
                 break;
-            case eNatural:
+            case lm_eNatural:
                 //ignore context. Force 'natural' (=no accidentals)
                 nNewContextAcc = 0;
                 break;
@@ -1263,7 +1263,7 @@ const lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int
     else if (nNewAcc == -1)
         nDisplayAcc = lm_eFlat;
     else if (nNewAcc == 0)
-        nDisplayAcc = eNatural;
+        nDisplayAcc = lm_eNatural;
     else {
         wxLogMessage(_T("[lmNote::ComputeAccidentalsToDisplay] Non programmed case: nNewAcc=%d, nCurContextAcc=%d"),
             nNewAcc, nCurContextAcc );

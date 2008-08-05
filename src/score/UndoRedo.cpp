@@ -125,8 +125,9 @@ void lmUndoLog::Clear()
 
 void lmUndoLog::UndoAll()
 {
-    std::list<lmUndoItem*>::iterator it;
-    for (it = m_items.begin(); it != m_items.end(); ++it)
+    //commands must be undone in reverse order
+    std::list<lmUndoItem*>::reverse_iterator it;
+    for (it = m_items.rbegin(); it != m_items.rend(); ++it)
     {
         (*it)->GetUndoData()->Rewind();
         (*it)->GetCommand()->RollBack(*it);

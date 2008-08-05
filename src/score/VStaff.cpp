@@ -363,22 +363,16 @@ lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nB
     }
 }
 
-//void lmVStaff::UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
-//{
-//    //delete the requested object, and log info to undo history
-//    //Precondition: must be in this VStaff
-//
-// //   //recover user option about keeping pitch or position
-// //   lmUndoData* pUndoData = pUndoItem->GetUndoData();
-// //   bool fClefKeepPosition = pUndoData->GetParam<bool>();
-//
-// //   //remove the contexts created by the clef
-//	//pClef->RemoveCreatedContexts();
-//
-//    //now remove the TS from the staffobjs collection
-//    //The collection will take care of removing contexts and of doing re-bar
-//    m_cStaffObjs.Delete(pTS, true);        //true->invoke destructor
-//}
+void lmVStaff::UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
+{
+    //delete the requested object, and log info to undo history
+
+    //remove the contexts created by the TS
+	pTS->RemoveCreatedContexts();
+
+    //now remove the TS from the staffobjs collection
+    m_cStaffObjs.Delete(pTS, true);        //true->invoke destructor
+}
 
 lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
                                     bool fMajor, bool fVisible)
@@ -393,6 +387,17 @@ lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFif
         delete pKS;
         return (lmKeySignature*)NULL;
     }
+}
+
+void lmVStaff::UndoCmd_InsertKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
+{
+    //delete the requested object, and log info to undo history
+
+    //remove the contexts created by the KS
+	pKS->RemoveCreatedContexts();
+
+    //now remove the KS from the staffobjs collection
+    m_cStaffObjs.Delete(pKS, true);        //true->invoke destructor
 }
 
 bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
@@ -495,6 +500,14 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType, 
     return pBarline;
 }
 
+void lmVStaff::UndoCmd_InsertBarline(lmUndoItem* pUndoItem, lmBarline* pBarline)
+{
+    //delete the requested object, and log info to undo history
+
+    //now remove the barline from the staffobjs collection
+    m_cStaffObjs.Delete(pBarline, true);        //true->invoke destructor
+}
+
 lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 								 lmEPitchType nPitchType, int nStep, int nOctave,
                                  lmENoteType nNoteType, float rDuration, int nDots,
@@ -575,9 +588,53 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     return pNt;
 }
 
-void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNote* pN)
+void lmVStaff::UndoCmd_InsertNote(lmUndoItem* pUndoItem, lmNote* pNote)
 {
-    //Check if note pN fills a measure. If it does, add a barline if necessary
+    //delete the requested object, and log info to undo history
+
+    //remove the note from the staffobjs collection
+    m_cStaffObjs.Delete(pNote, true);        //true->invoke destructor
+}
+
+lmRest* lmVStaff::Cmd_InsertRest(lmUndoItem* pUndoItem,
+                                 lmENoteType nNoteType, float rDuration, int nDots,
+                                 bool fAutoBar)
+{
+    int nStaff = m_VCursor.GetNumStaff();
+
+    lmTBeamInfo BeamInfo[6];
+    for (int i=0; i < 6; i++) {
+        BeamInfo[i].Repeat = false;
+        BeamInfo[i].Type = eBeamNone;
+    }
+
+	//TODO: For now, only auto-voice. It is necessary to get info from GUI about
+	//user selected voice. Need to change this command parameter list to include voice
+	int nVoice = 0;     //auto-voice
+
+    lmRest* pRest = new lmRest(this, nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
+                             false, BeamInfo);
+
+    m_cStaffObjs.Add(pRest);
+
+    //if this rest fills up a measure and AutoBar option is enabled, insert a simple barline
+    if (fAutoBar)
+        CheckAndDoAutoBar(pUndoItem, pRest);
+
+    return pRest;
+}
+
+void lmVStaff::UndoCmd_InsertRest(lmUndoItem* pUndoItem, lmRest* pRest)
+{
+    //delete the requested object, and log info to undo history
+
+    //now remove the rest from the staffobjs collection
+    m_cStaffObjs.Delete(pRest, true);        //true->invoke destructor
+}
+
+void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
+{
+    //Check if note/rest pNR fills a measure. If it does, add a barline if necessary
 
 
     //get normal measure duration
@@ -589,16 +646,16 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNote* pN)
 
     float rMeasure = pTime->GetMeasureDuration();
 
-    //get time ocupied by all notes/rest until pN included
-    float rCurrent = pN->GetTimePos() + pN->GetTimePosIncrement();
+    //get time ocupied by all notes/rests until pNR included
+    float rCurrent = pNR->GetTimePos() + pNR->GetTimePosIncrement();
 
     //check if measure is full
     //wxLogMessage(_T("[lmVStaff::CheckAndDoAutoBar] current=%.2f, maximum=%.2f"), rCurrent, rMeasure);
     if (IsLowerTime(rCurrent, rMeasure))
       return;         //measure is not full
 
-    //Measure is full after note pN.
-    //Add a barline if no barline in current segment or if more notes/rests after pN
+    //Measure is full after note/rest pNR.
+    //Add a barline if no barline in current segment or if more notes/rests after pNR
 
     bool fInsertBarline = false;        //assume no need to add barline
     lmBarline* pBL = GetBarlineOfMeasure( GetVCursor()->GetSegment() + 1 );
@@ -610,16 +667,16 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNote* pN)
     else
     {
         //check if more notes/rest with greater timepos in current measure
-        lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, pN);
-        pIT->MoveNext();        //skip pN
+        lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, pNR);
+        pIT->MoveNext();        //skip pNR
         while(!pIT->EndOfMeasure())
         {
             lmStaffObj* pSO = pIT->GetCurrent();
 			if (pSO->IsNoteRest())
             {
-                //there are notes/rest after pN.
-                //If they have greater timepos insert a barline after pN
-                if (IsHigherTime(pSO->GetTimePos(), pN->GetTimePos()) )
+                //there are notes/rest after pNR.
+                //If they have greater timepos insert a barline after pNR
+                if (IsHigherTime(pSO->GetTimePos(), pNR->GetTimePos()) )
                     fInsertBarline = true;
 
                 break;
@@ -641,55 +698,26 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNote* pN)
     }
 }
 
-void lmVStaff::DeleteObject()
-{
-    //remove object pointed by cursor
-
-    m_cStaffObjs.Delete(m_VCursor.GetStaffObj());
-}
-
-void lmVStaff::DeleteObject(lmStaffObj* pSO, lmUndoItem* pUndoItem)
-{
-    //delete the requested object, and log info to undo history
-    //Precondition: must be in this VStaff
-
-    //if logging requested (pUndoItem not NULL) save info for undo/redo
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-    if (pUndoItem)
-    {
-        //save positioning information
-        m_cStaffObjs.LogPosition(pUndoItem->GetUndoData(), pSO);
-
-        //Save info to re-create the object
-        pSO->Freeze(pUndoItem->GetUndoData());
-    }
-
-    //if object to remove is a clef, key or time signature, the contexts they created
-    //have to be removed
-	pSO->RemoveCreatedContexts();
-
-    //now remove the staffobj from the staffobjs collection
-    //if pUndoItem exists, do not delete staffobj, only remove it from the collection
-    m_cStaffObjs.Delete(pSO, (pUndoItem == (lmUndoItem*)NULL));
-}
-
 void lmVStaff::Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 {
     //delete the requested object, and log info to undo history
+    wxASSERT(pUndoItem);
 
     //AWARE: Logged actions must be logged in the required order for re-construction.
     //History works as a FIFO stack: first one logged will be the first one to be recovered
 
     //save positioning information
-    m_cStaffObjs.LogPosition(pUndoItem->GetUndoData(), pSO);
+    m_cStaffObjs.LogObjectToDeletePosition(pUndoItem->GetUndoData(), pSO);
 
     //Save info to re-create the object
     pSO->Freeze(pUndoItem->GetUndoData());
 
+    //if object to remove is a clef, key or time signature, the contexts they created
+    //have to be removed
+	pSO->RemoveCreatedContexts();
+
     //Delete the object
     m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
-
 }
 
 void lmVStaff::UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
@@ -1725,37 +1753,6 @@ lmSOIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
     return m_cStaffObjs.CreateIterator(nOrder);
 }
 
-//void lmVStaff::AutoBeam(int nMeasure)
-//{
-//    //loop to process all StaffObjs in this measure
-//    EStaffObjType nType;                    //type of score obj being processed
-//    lmStaffObj* pSO = (lmStaffObj*)NULL;
-//    lmSOIterator* pIT = pVStaff->CreateIterator(eTR_ByTime);
-//    pIT->AdvanceToMeasure(nAbsMeasure);
-//    while(!pIT->EndOfList())
-//    {
-//        pSO = pIT->GetCurrent();
-//        nType = pSO->GetClass();
-//
-//        if (nType == eSFOT_NoteRest) {
-//            pNoteRest = (lmNoteRest*)pSO;
-//            pNote = (lmNote*)pSO;        //AWARE we do not know yet if it is a note or a rest,
-//                                    //but I force the casting to simplify next if statement
-//            if (!pNoteRest->IsRest() && pNote->IsInChord())
-//            {
-//            }
-//			else
-//            {
-//                //Is a rest or is a lmNote not in chord. Store its x position
-//            }
-//
-//        }
-//
-//        pIT->MoveNext();
-//    }
-//    delete pIT;
-//}
-//
 
 
 
@@ -1794,8 +1791,29 @@ lmVCmdInsertNote::lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 
 void lmVCmdInsertNote::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewNote);     //m_pNewNote destructor will be invoked
-    //TODO: UndoCmd_InsertNote
+    m_pVStaff->UndoCmd_InsertNote(pUndoItem, m_pNewNote);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdInsertRest implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdInsertRest::lmVCmdInsertRest(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
+                                   lmENoteType nNoteType, float rDuration, int nDots)
+    : lmVStaffCmd(pVStaff)
+{
+    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+    bool fAutoBar = pPgmOpt->GetBoolValue(lm_DO_AUTOBAR);
+
+    m_pNewRest = pVStaff->Cmd_InsertRest(pUndoItem, nNoteType,
+                                         rDuration, nDots, fAutoBar);
+}
+
+void lmVCmdInsertRest::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_InsertRest(pUndoItem, m_pNewRest);
 }
 
 
@@ -1831,8 +1849,7 @@ lmVCmdInsertBarline::lmVCmdInsertBarline(lmVStaff* pVStaff, lmUndoItem* pUndoIte
 
 void lmVCmdInsertBarline::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewBar);     //m_pNewBar destructor will be invoked
-    //TODO: UndoCmd_InsertBarline
+    m_pVStaff->UndoCmd_InsertBarline(pUndoItem, m_pNewBar);
 }
 
 
@@ -1851,8 +1868,7 @@ lmVCmdInsertTimeSignature::lmVCmdInsertTimeSignature(lmVStaff* pVStaff,
 
 void lmVCmdInsertTimeSignature::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewTime);     //m_pNewTime destructor will be invoked
-    //TODO: UndoCmd_TimeSignature
+    m_pVStaff->UndoCmd_InsertTimeSignature(pUndoItem, m_pNewTime);
 }
 
 
@@ -1871,8 +1887,7 @@ lmVCmdInsertKeySignature::lmVCmdInsertKeySignature(lmVStaff* pVStaff,
 
 void lmVCmdInsertKeySignature::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->DeleteObject(m_pNewKey);     //m_pNewKey destructor will be invoked
-    //TODO: UndoCmd_KeySignature
+    m_pVStaff->UndoCmd_InsertKeySignature(pUndoItem, m_pNewKey);
 }
 
 
@@ -1886,7 +1901,7 @@ lmVCmdDeleteObject::lmVCmdDeleteObject(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
     : lmVStaffCmd(pVStaff)
 {
     m_pSO = pSO;
-    pVStaff->DeleteObject(pSO, pUndoItem);
+    pVStaff->Cmd_DeleteObject(pUndoItem, pSO);
 }
 
 void lmVCmdDeleteObject::RollBack(lmUndoItem* pUndoItem)

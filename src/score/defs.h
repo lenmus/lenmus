@@ -219,7 +219,7 @@ enum lmENoteDuration
 enum lmEAccidentals
 {
     lm_eNoAccidentals = 0,
-    eNatural,               // es: becuadro
+    lm_eNatural,               // es: becuadro
     lm_eFlat,                  // es: bemol
     lm_eSharp,                 // es: sostenido
     lm_eFlatFlat,              // es: doble bemol

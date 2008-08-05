@@ -282,6 +282,30 @@ protected:
 };
 
 
+
+// Insert rest command
+//------------------------------------------------------------------------------------
+class lmCmdInsertRest: public lmScoreCommand
+{
+public:
+
+    lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+					lmENoteType nNoteType, float rDuration, int nDots);
+    ~lmCmdInsertRest();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+	lmENoteType		    m_nNoteType;
+    int                 m_nDots;
+	float			    m_rDuration;
+
+    lmVStaff*           m_pVStaff;      //affected VStaff
+};
+
+
 // Change note pitch command
 //------------------------------------------------------------------------------------
 class lmCmdChangeNotePitch: public lmScoreCommand
