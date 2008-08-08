@@ -76,11 +76,17 @@ public:
     lmGMObject* FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos);
 
     //selection management
-    lmGMSelection* CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
-                                   lmLUnits uYMin, lmLUnits uYMax);
-    lmGMSelection* AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
-                                  lmLUnits uYMin, lmLUnits uYMax);
-    inline lmGMSelection* GetSelection() { return &m_Selection; }
+    //lmGMSelection* CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+    //                               lmLUnits uYMin, lmLUnits uYMax);
+    //lmGMSelection* AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+    //                              lmLUnits uYMin, lmLUnits uYMax);
+    //inline lmGMSelection* GetSelection() { return &m_Selection; }
+
+    int GetNumObjectsSelected();
+    void ClearSelection();
+    void NewSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                      lmLUnits uYMin, lmLUnits uYMax);
+    void NewSelection(lmGMObject* pGMO);
 
 
 

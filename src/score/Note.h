@@ -116,11 +116,13 @@ public:
                     m_pTieNext = pTie;
                     m_fNeedToBeTied = false; 
                 }
+    void CreateTie(lmNote* pNtPrev, lmNote* pNtNext);
     void RemoveTie(lmTie* pTie); 
     inline bool IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
     inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
     inline lmNote* GetTiedNotePrev() { return (m_pTiePrev ? m_pTiePrev->GetStartNote() : (lmNote*)NULL); } 
     inline lmNote* GetTiedNoteNext() { return (m_pTieNext ? m_pTieNext->GetEndNote() : (lmNote*)NULL); } 
+    void DeleteTiePrev(); 
 
     // methods related to sound
     lmDPitch GetDPitch();
@@ -171,7 +173,6 @@ public:
 private:
     //creation related
     lmAccidental* CreateAccidentals(lmEAccidentals nAcc);
-    void CreateTie(lmNote* pNtPrev, lmNote* pNtNext);
 
     // rendering
     lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);

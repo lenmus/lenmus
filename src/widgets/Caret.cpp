@@ -77,6 +77,7 @@ lmCaret::lmCaret(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore)
 	m_oCaretPos.x = -1;         //means: no position   
     m_fCaretDrawn = false;
     m_nCountVisible = 0;
+    m_fInvisible = false;       //visible
     SetColour(*wxBLUE);
     m_nBlinkingRate = 750;		//caret blinking rate = 750ms
 }
@@ -157,6 +158,9 @@ void lmCaret::RenderCaret(bool fVisible)
 {
     //AWARE: This method is the only allowed to change m_fCaretDrawn status.
 
+    //if caret invisible, ensure it will never be drawn visible
+    if (m_fInvisible && !m_fCaretDrawn) return;
+
     //if current state == desired state, nothing to do
     if (m_fCaretDrawn == fVisible) return;
 
@@ -214,3 +218,20 @@ void lmCaret::SetBlinkingRate(int nMillisecs)
     m_nBlinkingRate = nMillisecs;
 }
 
+void lmCaret::SetInvisible(bool fInvisible)
+{ 
+    m_fInvisible = fInvisible;
+
+    //if caret is shown, draw it visible/invisible acoording to the new state
+    if (m_nCountVisible >= 0)
+    {
+        if (fInvisible)
+        {
+            DoHide();
+        }
+        else
+        {
+            DoShow();
+        }
+    }
+}

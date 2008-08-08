@@ -121,6 +121,10 @@ bool lmKbdCmdParser::DoParse()
                         nState = FT_DOT01;
                         m_nDots = 1;
                         break;
+                    case _T('_'):
+                        nState = FT_Start;
+                        m_fTiedPrev = true;
+                        break;
                     case nEOB:
                         return true;    //End of buffer. Parsed without errors
                     default:

@@ -65,8 +65,12 @@ public:
 
     //info
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
-    void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                       lmLUnits uYMin, lmLUnits uYMax);
+    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+    //                   lmLUnits uYMin, lmLUnits uYMax);
+
+    //selection
+    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
@@ -76,6 +80,7 @@ public:
 	lmBoxSystem* GetOwnerSystem();
 	inline lmVStaff* GetCreatorVStaff() { return m_pVStaff; }
 	inline int GetNumMeasure() { return m_nMeasure; }
+    lmBoxScore* GetOwnerBoxScore();
 
 
 private:

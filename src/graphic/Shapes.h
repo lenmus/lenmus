@@ -161,7 +161,7 @@ public:
                 lmPaper* pPaper, lmUPoint offset, wxString sName=_T("Clef"),
 				bool fDraggable = false, wxColour color = *wxBLACK) 
 				: lmShapeGlyph(pOwner, nShapeIdx, nGlyph, pFont, pPaper, offset, sName,
-				               fDraggable, color) {}
+				               fDraggable, color) { m_nType = eGMO_ShapeClef; }
     ~lmShapeClef() {}
 
 	//overrides

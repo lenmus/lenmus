@@ -52,9 +52,13 @@ public:
 
     //operations
     void SetCaretPosition(double rScale, lmUPoint uPos, lmStaff* pStaff);
+        //Hide/show the caret. If the caret is hidden N times, it must be shown
+        //also N times to reappear again on the screen.
     void Show(bool fShow = true);
 	void Show(double rScale, lmUPoint uPos, lmStaff* pStaff);
     inline void Hide() { Show(false); }
+        //When shown, the caret can be made invisible
+    void SetInvisible(bool fInvisible);
 
     //aspect
     void SetBlinkingRate(int nMillisecs);
@@ -64,9 +68,12 @@ public:
         //caret permanently hidden
     inline bool IsHidden() const { return m_nCountVisible <= 0;; } 
         //caret shown, but not necessarily visible at this moment. That dependens on
-        //current blinking state. Is always false if caret is hidden. It is true if
-        //caret not hidden and it has not blinket out at this moment.
+        //current blinking state and visibility state. Is always false if caret
+        //is hidden or if its visibility is false. It is true if caret not hidden
+        //and it has not blinket out at this moment.
     inline bool IsVisible() const { return m_fCaretDrawn; }
+        //invisibility status
+    inline bool IsInvisible() { return m_fInvisible; }
 
 
 private:
@@ -81,18 +88,20 @@ private:
     double          m_rScale;           //view presentation scale
 
     //caret display status
-    bool                m_fCaretDrawn;      //caret visible on screen (it implies it is displayed)
-    int                 m_nCountVisible;    //number of times Show() - number of times Hide()
+    bool            m_fCaretDrawn;      //caret visible on screen (it implies it is displayed)
+    bool            m_fInvisible;       //true = invisible
+    int             m_nCountVisible;    //number of times Show() - number of times Hide()
+
 
     //timer for caret blinking
-	wxTimer			m_oCaretTimer;			//for caret blinking
+	wxTimer			m_oCaretTimer;      //for caret blinking
 
     //caret position
-    lmUPoint        m_oCaretPos;           //caret position on screen
+    lmUPoint        m_oCaretPos;        //caret position on screen
 
     //caret layout
-    wxColour        m_color;                //caret colour
-    int             m_nBlinkingRate;        //milliseconds
+    wxColour        m_color;            //caret colour
+    int             m_nBlinkingRate;    //milliseconds
 	lmLUnits        m_udyLength;
 	lmLUnits        m_udxSegment;
 

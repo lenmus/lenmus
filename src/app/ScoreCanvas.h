@@ -63,21 +63,31 @@ public:
     virtual void StopPlaying(bool fWait=false) {}
     virtual void PausePlaying() {}
 
+
 	// commands with Do/Undo support
+
+        //insert commands
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
     virtual void InsertClef(lmEClefType nClefType) {}
 	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots,
-					lmENoteHeads nNotehead, lmEAccidentals nAcc = lm_eNoAccidentals ) {}
-                    virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots) {}
+					lmENoteHeads nNotehead,
+                    lmEAccidentals nAcc = lm_eNoAccidentals,
+                    bool fTiedPrev = false) {}
+
+    virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
     virtual void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true) {}
+
+        //delete commands
+	virtual void DeleteCaretSatffobj() {}
+    virtual void DeleteCaretOrSelected() {}
+    virtual void DeleteTie(lmNote* pEndNote) {}
+
+        //change/move commands
 	virtual void ChangeNotePitch(int nSteps) {}
 	virtual void ChangeNoteAccidentals(int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
-	virtual void SelectObject(lmGMObject* pGMO) {}
-    virtual void SelectObjects(bool fSelect, lmGMSelection* pSelection) {};
-	virtual void DeleteObject() {}
 
 
     // event handlers
@@ -136,20 +146,31 @@ public:
     void PausePlaying();
 
 	// commands with Do/Undo support
+
+        //insert commands
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
     void InsertClef(lmEClefType nClefType);
 	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots,
-					lmENoteHeads nNotehead, lmEAccidentals nAcc = lm_eNoAccidentals );
+					lmENoteHeads nNotehead,
+                    lmEAccidentals nAcc = lm_eNoAccidentals,
+                    bool fTiedPrev = false);
+
     void InsertRest(lmENoteType nNoteType, float rDuration, int nDots);
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
     void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
+
+        //delete commands
+	void DeleteCaretSatffobj();
+    void DeleteCaretOrSelected();
+    void DeleteTie(lmNote* pEndNote);
+
+        //change/move commands
 	void ChangeNotePitch(int nSteps);
 	void ChangeNoteAccidentals(int nSteps);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
-	void SelectObject(lmGMObject* pGMO);
-    void SelectObjects(bool fSelect, lmGMSelection* pSelection);
-	void DeleteObject();
+
+
 
 	//contextual menus
 	wxMenu* GetContextualMenu();

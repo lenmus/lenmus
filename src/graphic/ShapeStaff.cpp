@@ -70,10 +70,10 @@ void lmShapeStaff::Render(lmPaper* pPaper, wxColour color)
     for (int iL=0; iL < m_nNumLines; iL++ )
 	{
         pPaper->SolidLine(m_uBoundsTop.x, yPos, m_uBoundsBottom.x, yPos,
-                          m_uLineWidth, eEdgeNormal, m_color);
+                          m_uLineWidth, eEdgeNormal, color);
         yPos += m_uSpacing;
     }
-    lmShape::RenderCommon(pPaper);
+    lmSimpleShape::Render(pPaper,color);
 }
 
 wxString lmShapeStaff::Dump(int nIndent)

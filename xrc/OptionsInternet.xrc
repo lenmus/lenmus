@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxPanel" name="ID_DIALOG" subclass="OptionsInternet">
         <size>400,300</size>

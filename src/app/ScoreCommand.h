@@ -41,7 +41,6 @@ class lmScoreObj;
 class lmVStaffCursor;
 class lmVStaff;
 class lmNote;
-class lmGMSelection;
 
 
 
@@ -75,55 +74,6 @@ protected:
     lmUndoLog           m_UndoLog;          //collection of undo/redo items
     lmUndoItem*         m_pUndoItem;        //undo item for this command
     lmVCursorState      m_tCursorState;     //VCursor state when issuing the command
-
-};
-
-
-// Select object commands
-//------------------------------------------------------------------------------------
-class lmCmdSelectSingle: public lmScoreCommand
-{
-public:
-    lmCmdSelectSingle(const wxString& name, lmScoreDocument *pDoc, lmView* pView, lmGMObject* pGMO)
-        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
-        {
-            m_pGMO = pGMO;
-            m_pView = pView;
-        }
-
-    ~lmCmdSelectSingle() {}
-
-    //implementation of pure virtual methods in base class
-    bool Do();
-    bool UndoCommand();
-
-
-protected:
-	bool DoSelectObject();
-
-
-    lmGMObject*		m_pGMO;
-    lmView*         m_pView;
-
-};
-
-class lmCmdSelectMultiple: public lmScoreCommand
-{
-public:
-    lmCmdSelectMultiple(const wxString& name, lmScoreDocument *pDoc, lmView* pView,
-                        lmGMSelection* pSelection, bool fSelect);
-    ~lmCmdSelectMultiple() {}
-
-    //implementation of pure virtual methods in base class
-    inline bool Do() { return DoSelectUnselect(); }
-    inline bool UndoCommand() { return DoSelectUnselect(); }
-
-protected:
-	bool DoSelectUnselect();
-
-    lmGMSelection*  m_pSelection;
-    lmView*         m_pView;
-    bool            m_fSelect;
 
 };
 
@@ -165,6 +115,23 @@ protected:
     lmVStaff*           m_pVStaff;      //affected VStaff
     lmStaffObj*         m_pSO;          //deleted note
     bool                m_fDeleteSO;    //to control if m_pSO must be deleted
+};
+
+
+// Delete tie command
+//------------------------------------------------------------------------------------
+class lmCmdDeleteTie: public lmScoreCommand
+{
+public:
+    lmCmdDeleteTie(const wxString& name, lmScoreDocument *pDoc, lmNote* pEndNote);
+    ~lmCmdDeleteTie();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmNote*     m_pEndNote;     //end of tie note
 };
 
 
@@ -261,7 +228,8 @@ public:
     lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
 					lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots, 
-                    lmENoteHeads nNotehead, lmEAccidentals nAcc);
+                    lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                    bool fTiedPrev);
     ~lmCmdInsertNote();
 
     //implementation of pure virtual methods in base class
@@ -277,6 +245,7 @@ protected:
 	float			    m_rDuration;
 	lmENoteHeads	    m_nNotehead;
 	lmEAccidentals	    m_nAcc;
+    bool                m_fTiedPrev;
 
     lmVStaff*           m_pVStaff;      //affected VStaff
 };

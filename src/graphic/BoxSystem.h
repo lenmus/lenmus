@@ -84,9 +84,13 @@ public:
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
-    void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                       lmLUnits uYMin, lmLUnits uYMax);
+    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+    //                   lmLUnits uYMin, lmLUnits uYMax);
 	int GetNumMeasureAt(lmLUnits uxPos);
+
+    //selection
+    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax);
 
     //rendering
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
@@ -105,6 +109,7 @@ public:
 	lmBoxSystem* GetOwnerSystem() { return this; }
 	lmBoxScore* GetBoxScore();
     inline lmBoxPage* GetBoxPage() const { return m_pBPage; }
+    lmBoxScore* GetOwnerBoxScore();
 
 
 private:

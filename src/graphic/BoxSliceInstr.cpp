@@ -176,16 +176,30 @@ lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
 
 }
 
-void lmBoxSliceInstr::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                              lmLUnits uYMin, lmLUnits uYMax)
+//void lmBoxSliceInstr::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+//                              lmLUnits uYMin, lmLUnits uYMax)
+//{
+//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//
+//    //loop to look up in the VStaff slices
+//    std::vector<lmBoxSliceVStaff*>::iterator it;
+//	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
+//    {
+//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//    }
+//}
+
+void lmBoxSliceInstr::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax)
 {
-    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    //look up in this box
+    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
     //loop to look up in the VStaff slices
     std::vector<lmBoxSliceVStaff*>::iterator it;
 	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
     {
-        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
 }
 

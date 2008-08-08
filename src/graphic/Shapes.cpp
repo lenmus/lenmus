@@ -118,7 +118,7 @@ void lmShapeLine::Create(lmLUnits xStart, lmLUnits yStart,
 void lmShapeLine::Render(lmPaper* pPaper, wxColour color)
 {
     pPaper->SolidLine(m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth, m_nEdge, color);
-    lmShape::RenderCommon(pPaper);
+    lmSimpleShape::Render(pPaper, color);
 }
 
 wxString lmShapeLine::Dump(int nIndent)
@@ -186,7 +186,7 @@ void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
     pPaper->SetTextForeground(color);
     pPaper->DrawText(sGlyph, m_uGlyphPos.x, m_uGlyphPos.y);
 
-    lmShape::RenderCommon(pPaper);
+    lmSimpleShape::Render(pPaper, color);
 }
 
 void lmShapeGlyph::SetFont(wxFont *pFont)
@@ -358,7 +358,7 @@ void lmShapeText::Render(lmPaper* pPaper, wxColour color)
     pPaper->SetTextForeground(color);
     pPaper->DrawText(m_sText, m_uPos.x, m_uPos.y);
 
-    lmShape::RenderCommon(pPaper);
+    lmSimpleShape::Render(pPaper, color);
 }
 
 void lmShapeText::SetFont(wxFont *pFont)
@@ -472,6 +472,7 @@ lmShapeStem::lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart,
 	: lmShapeLine(pOwner, xPos, yStart, xPos, yEnd, uWidth, 0.0, nColor,
 				  _T("Stem"), eEdgeHorizontal)
 {
+    m_nType = eGMO_ShapeStem;
 	m_fStemDown = fStemDown;
 }
 

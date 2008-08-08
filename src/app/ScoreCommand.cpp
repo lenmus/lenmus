@@ -93,68 +93,6 @@ bool lmScoreCommand::Undo()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdSelectSingle implementation
-//----------------------------------------------------------------------------------------
-
-bool lmCmdSelectSingle::Do()
-{
-    return DoSelectObject();
-}
-
-bool lmCmdSelectSingle::UndoCommand()
-{
-    return DoSelectObject();
-}
-
-bool lmCmdSelectSingle::DoSelectObject()
-{
-
-    wxASSERT( m_pGMO);
-
-    //Toggle 'selected'
-    bool fSelected = m_pGMO->IsSelected();
-    m_pGMO->SetSelected(!fSelected);
-    m_pDoc->UpdateAllViews(lmSCORE_NOT_MODIFIED, new lmUpdateHint(lmREDRAW));
-    return false;       //do not add to Undo/Redo list
-}
-
-
-
-
-//----------------------------------------------------------------------------------------
-// lmCmdSelectMultiple implementation
-//----------------------------------------------------------------------------------------
-
-lmCmdSelectMultiple::lmCmdSelectMultiple(const wxString& name, lmScoreDocument *pDoc,
-                                         lmView* pView, lmGMSelection* pSelection,
-                                         bool fSelect)
-        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
-{
-    m_pSelection = pSelection;
-    m_pView = pView;
-    m_fSelect = fSelect;
-}
-
-bool lmCmdSelectMultiple::DoSelectUnselect()
-{
-    if (m_pSelection->NumObjects() < 1)
-        return true;
-
-    //Toggle 'selected'
-    lmGMObject* pGMO = m_pSelection->GetFirst();
-    while (pGMO)
-    {
-        if (pGMO->IsSelected() != m_fSelect)
-            pGMO->SetSelected(m_fSelect);
-        pGMO = m_pSelection->GetNext();
-    }
-    m_pDoc->UpdateAllViews(lmSCORE_NOT_MODIFIED, new lmUpdateHint(lmREDRAW));
-    return false;       //do not add to Undo/Redo list
-}
-
-
-
-//----------------------------------------------------------------------------------------
 // lmCmdDeleteObject implementation
 //----------------------------------------------------------------------------------------
 
@@ -202,6 +140,53 @@ bool lmCmdDeleteObject::UndoCommand()
 
     //set cursor
     m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdDeleteTie implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdDeleteTie::lmCmdDeleteTie(const wxString& name, lmScoreDocument *pDoc,
+                               lmNote* pEndNote)
+        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
+{
+    m_pEndNote = pEndNote;
+}
+
+lmCmdDeleteTie::~lmCmdDeleteTie()
+{
+}
+
+bool lmCmdDeleteTie::Do()
+{
+    //Proceed to delete the tie
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaffCmd* pVCmd = new lmVCmdDeleteTie(m_pEndNote->GetVStaff(), pUndoItem, m_pEndNote);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+}
+
+bool lmCmdDeleteTie::UndoCommand()
+{
+    //undelete the tie
+    m_UndoLog.UndoAll();
 
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
@@ -452,7 +437,8 @@ lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName
                                  lmEPitchType nPitchType,
 								 int nStep, int nOctave,
 								 lmENoteType nNoteType, float rDuration, int nDots,
-								 lmENoteHeads nNotehead, lmEAccidentals nAcc)
+								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                                 bool fTiedPrev)
 	: lmScoreCommand(sName, pDoc, pVCursor)
 {
 	m_nNoteType = nNoteType;
@@ -463,6 +449,7 @@ lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName
 	m_rDuration = rDuration;
 	m_nNotehead = nNotehead;
 	m_nAcc = nAcc;
+    m_fTiedPrev = fTiedPrev;
 }
 
 lmCmdInsertNote::~lmCmdInsertNote()
@@ -478,7 +465,7 @@ bool lmCmdInsertNote::Do()
 
     lmVStaffCmd* pVCmd = new lmVCmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_nStep,
                                              m_nOctave, m_nNoteType, m_rDuration, m_nDots, 
-                                             m_nNotehead, m_nAcc);
+                                             m_nNotehead, m_nAcc, m_fTiedPrev);
 
     if (pVCmd->Success())
     {

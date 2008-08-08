@@ -213,7 +213,7 @@ void lmShapeBracketBrace::Render(lmPaper* pPaper, wxColour color)
     m_nCurVertex = 0;
     pPaper->SolidShape(this, color);
 
-    lmShape::RenderCommon(pPaper);
+    lmSimpleShape::Render(pPaper, color);
 }
 
 
@@ -225,6 +225,8 @@ lmShapeBracket::lmShapeBracket(lmInstrument* pInstr, lmLUnits xLeft, lmLUnits yT
                                lmLUnits xRight, lmLUnits yBottom, wxColour color)
 	: lmShapeBracketBrace(pInstr, lm_eBracket, color, _T("bracket"))
 {
+    m_nType = eGMO_ShapeBracket;
+
     m_uxLeft = xLeft;
     m_uyTop = yTop;
     m_uxRight = xRight;
@@ -281,6 +283,8 @@ lmShapeBrace::lmShapeBrace(lmInstrument* pInstr, lmLUnits xLeft, lmLUnits yTop,
                            lmLUnits dyHook, wxColour color)
 	: lmShapeBracketBrace(pInstr, lm_eBrace, color, _T("brace"))
 {
+    m_nType = eGMO_ShapeBrace;
+
     m_uxLeft = xLeft;
     m_udyHook = dyHook;
     m_uyTop = yTop - m_udyHook;

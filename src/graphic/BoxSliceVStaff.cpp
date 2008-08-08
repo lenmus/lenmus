@@ -250,13 +250,26 @@ lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
 
 }
 
-void lmBoxSliceVStaff::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                              lmLUnits uYMin, lmLUnits uYMax)
+//void lmBoxSliceVStaff::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+//                              lmLUnits uYMin, lmLUnits uYMax)
+//{
+//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//}
+
+void lmBoxSliceVStaff::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax)
 {
-    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    //look up in this box
+    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 }
 
 int lmBoxSliceVStaff::GetPageNumber() const
 {
 	return m_pSliceInstr->GetPageNumber();
 }
+
+lmBoxScore* lmBoxSliceVStaff::GetOwnerBoxScore() 
+{ 
+    return m_pSliceInstr->GetOwnerBoxScore(); 
+}
+

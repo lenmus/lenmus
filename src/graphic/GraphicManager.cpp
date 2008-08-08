@@ -97,7 +97,7 @@ lmGraphicManager::~lmGraphicManager()
         m_pAuxBitmap = (wxBitmap*)NULL;
     }
 
-    m_Selection.Clear();
+    m_Selection.ClearSelection();
 }
 
 int lmGraphicManager::GetNumPages()
@@ -409,22 +409,54 @@ lmGMObject* lmGraphicManager::FindGMObjectAtPagePosition(int nNumPage, lmUPoint 
     return pBPage->FindGMObjectAtPosition(uPos);
 }
 
-lmGMSelection* lmGraphicManager::CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
-                                                lmLUnits uYMin, lmLUnits uYMax)
+//lmGMSelection* lmGraphicManager::CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+//                                                lmLUnits uYMin, lmLUnits uYMax)
+//{
+//    m_Selection.ClearSelection();
+//    return AddToSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
+//}
+
+
+//lmGMSelection* lmGraphicManager::AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+//                                               lmLUnits uYMin, lmLUnits uYMax)
+//{
+//	if (m_pBoxScore)
+//    {
+//        lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
+//        pBPage->AddToSelection(&m_Selection, uXMin, uXMax, uYMin, uYMax);
+//    }
+//    return &m_Selection;
+//}
+
+void lmGraphicManager::ClearSelection()
 {
-    m_Selection.Clear();
-    return AddToSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
+	if (!m_pBoxScore) return;
+
+    m_pBoxScore->ClearSelection();
 }
 
-
-lmGMSelection* lmGraphicManager::AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
-                                               lmLUnits uYMin, lmLUnits uYMax)
+int lmGraphicManager::GetNumObjectsSelected()
 {
 	if (m_pBoxScore)
-    {
-        lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
-        pBPage->AddToSelection(&m_Selection, uXMin, uXMax, uYMin, uYMax);
-    }
-    return &m_Selection;
+        return m_pBoxScore->GetNumObjectsSelected();
+    else
+        return 0;
+}
+
+void lmGraphicManager::NewSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                                              lmLUnits uYMin, lmLUnits uYMax)
+{
+	if (!m_pBoxScore) return;
+
+    m_pBoxScore->ClearSelection();
+    m_pBoxScore->AddToSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
+}
+
+void lmGraphicManager::NewSelection(lmGMObject* pGMO)
+{
+	if (!m_pBoxScore) return;
+
+    m_pBoxScore->ClearSelection();
+    pGMO->SetSelected(true);
 }
 

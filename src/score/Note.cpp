@@ -235,7 +235,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_pTieNext = (lmTie*)NULL;        //assume no tied
 
     // verify if a previous note is tied to this one and if so, build the tie
-    lmNote* pNtPrev = m_pVStaff->FindPossibleStartOfTie(m_anPitch);
+    lmNote* pNtPrev = m_pVStaff->FindPossibleStartOfTie(this, true);    //true->note is not yet in the collection
     if (pNtPrev && pNtPrev->NeedToBeTied())
 	{
         //do the tie between previous note and this one
@@ -272,11 +272,8 @@ lmNote::~lmNote()
     }
 
     //delete the Ties.
-    if (m_pTiePrev) {
-        m_pTiePrev->Remove(this);
-        delete m_pTiePrev;
-    }
-    m_pTiePrev = (lmTie*)NULL;
+    DeleteTiePrev();
+
     if (m_pTieNext) {
         m_pTieNext->Remove(this);
         delete m_pTieNext;
@@ -391,6 +388,15 @@ void lmNote::RemoveTie(lmTie* pTie)
     else if (m_pTieNext == pTie) {
         m_pTieNext = (lmTie*)NULL;
     }
+}
+
+void lmNote::DeleteTiePrev()
+{
+    if (m_pTiePrev) {
+        m_pTiePrev->Remove(this);
+        delete m_pTiePrev;
+    }
+    m_pTiePrev = (lmTie*)NULL;
 }
 
 bool lmNote::IsBaseOfChord()

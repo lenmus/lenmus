@@ -512,7 +512,7 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 								 lmEPitchType nPitchType, int nStep, int nOctave,
                                  lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                                 bool fAutoBar)
+                                 bool fTiedPrev, bool fAutoBar)
 {
     int nStaff = m_VCursor.GetNumStaff();
 
@@ -580,6 +580,17 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     m_cStaffObjs.Add(pNt);
 
 	delete pContext;
+
+    //if requested to tie it with a previous note, try to do it
+    if (fTiedPrev)
+    {
+        lmNote* pNtStart = FindPossibleStartOfTie(pNt);
+        if (pNtStart)
+        {
+            //create the tie
+            pNt->CreateTie(pNtStart, pNt);
+        }
+    }
 
     //if this note fills up a measure and AutoBar option is enabled, insert a simple barline
     if (fAutoBar)
@@ -734,6 +745,36 @@ void lmVStaff::UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
     m_cStaffObjs.Insert(pSO, pBeforeSO);
 	//wxLogMessage(m_cStaffObjs.Dump());
 }
+
+void lmVStaff::Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)
+{
+    //delete the requested tie, and log info to undo history
+    wxASSERT(pUndoItem);
+
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+
+    //save start note
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    lmNote* pStartNote = pEndNote->GetTiedNotePrev();
+    pUndoData->AddParam<lmNote*>( pStartNote );
+
+    //remove tie
+    pEndNote->DeleteTiePrev();
+}
+
+void lmVStaff::UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)
+{
+    //un-delete the tie, according to info in history
+
+    //recover start note
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    lmNote* pStartNote = pUndoItem->GetUndoData()->GetParam<lmNote*>();
+
+    //re-create the tie
+    pEndNote->CreateTie(pStartNote, pEndNote);
+}
+
 
 
 //---------------------------------------------------------------------------------------
@@ -1633,53 +1674,63 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 
 }
 
-lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
+lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
 {
-    //
-    // This method is invoked from lmNote constructor to find if the note being created
-    // (the "target note") is tied to a previous one ("the candidate" one).
-    // This method explores backwards to try to find a note that can be tied with the received
-    // as parameter (the "target note").
+    // This method explores backwards to try to find a note ("the candidate note") that
+    // can be tied (as start of tie) with pEndNote.
+    // Flag 'fNotAdded' signals than the end note is not yet included in the StaffObjs
+    // collection. Therefore, in this case search must start from the end
     //
     // Algorithm:
-    // Find the first previous note of the same pitch, in this measure or
-    // in the previous one
-    //
+    // Find the first previous note of the same pitch and voice, and verify that 
+    // distance (in timepos) is equal to candidate note duration.
+    // The search will fail as soon as we find a rest or a note with different pitch.
 
+    //get targt pitch and voice
+    lmAPitch anPitch = pEndNote->GetAPitch();
+    int nVoice = pEndNote->GetVoice();
 
     //define a backwards iterator
-    bool fInPrevMeasure = false;
-    lmStaffObj* pSO = (lmStaffObj*) NULL;
-    lmNoteRest* pNR = (lmNoteRest*)NULL;
-    lmNote* pNote = (lmNote*)NULL;
-    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-    pIter->MoveLast();
+    lmSOIterator* pIter;
+    if (fNotAdded) 
+    {
+        pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+        pIter->MoveLast();
+    }
+    else
+    {
+        pIter = m_cStaffObjs.CreateIteratorTo(eTR_ByTime, pEndNote);
+        pIter->MovePrev();
+    }
+
+    //do search
     while(!pIter->EndOfList() && ! pIter->StartOfList())
     {
-        pSO = pIter->GetCurrent();
-        switch (pSO->GetClass()) {
-            case eSFOT_NoteRest:
-                pNR = (lmNoteRest*)pSO;
-                if (pNR->IsNote()) {
-                    pNote = (lmNote*)pSO;
-                    if (pNote->CanBeTied(anPitch)) {
-                        delete pIter;
-                        return pNote;    // candidate found
-                    }
-                }
-                break;
-
-            case eSFOT_Barline:
-                if (fInPrevMeasure) {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
+        {
+            if (((lmNoteRest*)pSO)->IsNote())
+            {
+                if (((lmNote*)pSO)->CanBeTied(anPitch))
+                {
                     delete pIter;
-                    return (lmNote*)NULL;        // no suitable note found
+                    return (lmNote*)pSO;    // candidate found
                 }
-                fInPrevMeasure = true;
-                break;
-
-            default:
-                ;
+                else
+                {
+                    // a note in the same voice with different pitch found. Imposible to tie
+                    delete pIter;
+                    return (lmNote*)NULL;   // no suitable note found
+                }
+            }
+            else
+            {
+                // a rest in the same voice found. Imposible to tie
+                delete pIter;
+                return (lmNote*)NULL;   // no suitable note found
+            }
         }
+
 		if(pIter->StartOfList()) break;
         pIter->MovePrev();
     }
@@ -1779,14 +1830,16 @@ lmVStaffCmd::~lmVStaffCmd()
 lmVCmdInsertNote::lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
                         lmEPitchType nPitchType, int nStep,
 					    int nOctave, lmENoteType nNoteType, float rDuration,
-					    int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc)
+					    int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                        bool fTiedPrev)
     : lmVStaffCmd(pVStaff)
 {
     lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
     bool fAutoBar = pPgmOpt->GetBoolValue(lm_DO_AUTOBAR);
 
     m_pNewNote = pVStaff->Cmd_InsertNote(pUndoItem, nPitchType, nStep, nOctave, nNoteType,
-                                         rDuration, nDots, nNotehead, nAcc, fAutoBar);
+                                         rDuration, nDots, nNotehead, nAcc, 
+                                         fTiedPrev, fAutoBar);
 }
 
 void lmVCmdInsertNote::RollBack(lmUndoItem* pUndoItem)
@@ -1907,4 +1960,23 @@ lmVCmdDeleteObject::lmVCmdDeleteObject(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 void lmVCmdDeleteObject::RollBack(lmUndoItem* pUndoItem)
 {
     m_pVStaff->UndoCmd_DeleteObject(pUndoItem, m_pSO);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdDeleteTie implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdDeleteTie::lmVCmdDeleteTie(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                 lmNote* pEndNote)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pEndNote = pEndNote;
+    pVStaff->Cmd_DeleteTie(pUndoItem, pEndNote);
+}
+
+void lmVCmdDeleteTie::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_DeleteTie(pUndoItem, m_pEndNote);
 }

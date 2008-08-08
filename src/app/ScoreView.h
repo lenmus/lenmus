@@ -154,15 +154,15 @@ private:
 	lmLUnits GetMouseTolerance();
 
 	//dragging on canvas with left button: selection
-	void OnBeginSelection(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnContinueSelection(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnEndSelection(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasContinueDragLeft(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasEndDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
 	void DrawSelectionArea(wxDC& dc, lmPixels vX1, lmPixels vY1, lmPixels vX2, lmPixels vY2);
 
 	//dragging on canvas with right button
-	void OnBeginDragRight(lmDPoint vCanvasPos, int nKeys);
-	void OnDragRight(bool fDraw, lmDPoint vCanvasPos, int nKeys);
-	void OnEndDragRight(lmDPoint vCanvasPos, int nKeys);
+	void OnCanvasBeginDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasContinueDragRight(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasEndDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
 
 	//dragging object with left button
 	void OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
@@ -174,18 +174,23 @@ private:
 							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
 
 	//dragging object with right button
-	void OnObjectBeginDragRight(lmDPoint vCanvasPos, int nKeys);
-	void OnObjectContinueDragRight(bool fDraw, lmDPoint vCanvasPos, int nKeys);
-	void OnObjectEndDragRight(lmDPoint vCanvasPos, int nKeys);
+	void OnObjectBeginDragRight(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							   lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+	void OnObjectContinueDragRight(wxMouseEvent& event, wxDC* pDC, bool fDraw,
+								  lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+								  lmUPoint uPagePos, int nKeys);
+	void OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
 
 	//non-dragging events: click on an object
 	void OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
 	void OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
 	void OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnRightDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
 
 	//non-dragging events: click on canvas
-	void OnRightClick(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnLeftClick(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnRightClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnLeftClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
 
 	// units conversion
 	lmDPoint GetScrollOffset();
@@ -211,6 +216,13 @@ private:
 	void OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
 						lmUPoint uPos);
     void OnClickOnObject(lmGMObject* pGMO);
+
+    //dealing with selections
+    void DeselectAllGMObjects(bool fRedraw = false);
+    void SelectGMObject(lmGMObject* pGMO, bool fRedraw = false);
+    void SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                               lmLUnits uYMin, lmLUnits uYMax, bool fRedraw = false);
+
 
 
 

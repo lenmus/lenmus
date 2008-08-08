@@ -81,7 +81,6 @@ protected:
 
     //attributes for a beam
 	bool		m_fStemsDown;
-    wxColour	m_color;
 
 	//other
 	bool		m_fLayoutPending;		//to optimize re-layouts

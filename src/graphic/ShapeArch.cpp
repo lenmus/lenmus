@@ -214,8 +214,7 @@ void lmShapeArch::Render(lmPaper* pPaper, wxColour colorC)
     SetXRight(xMax);
     SetYBottom(yMax);
 
-    RenderCommon(pPaper);
-
+    lmSimpleShape::Render(pPaper, colorC);
 }
 
 void lmShapeArch::CubicBezier(double* x, double* y, int nNumPoints)
@@ -269,6 +268,8 @@ lmShapeTie::lmShapeTie(lmNote* pOwner, lmShapeNote* pShapeStart, lmShapeNote* pS
                        bool fTieUnderNote, wxColour color, bool fVisible)
     : lmShapeArch(pOwner, fTieUnderNote, color, _T("Tie"), lmDRAGGABLE, fVisible)
 {
+    m_nType = eGMO_ShapeTie;
+
     //store parameters
     m_fTieUnderNote = fTieUnderNote;
 	m_pBrotherTie = (lmShapeTie*)NULL;
@@ -276,7 +277,6 @@ lmShapeTie::lmShapeTie(lmNote* pOwner, lmShapeNote* pShapeStart, lmShapeNote* pS
     //compute the arch
     OnAttachmentPointMoved(pShapeStart, eGMA_StartNote, 0.0, 0.0, lmSHIFT_EVENT);
     OnAttachmentPointMoved(pShapeEnd, eGMA_EndNote, 0.0, 0.0, lmSHIFT_EVENT);
-
 }
 
 lmShapeTie::~lmShapeTie()
@@ -286,6 +286,12 @@ lmShapeTie::~lmShapeTie()
 void lmShapeTie::Render(lmPaper* pPaper, wxColour color)
 {
     lmShapeArch::Render(pPaper, color);
+}
+
+void lmShapeTie::DrawControlPoints(lmPaper* pPaper)
+{
+    //DBG
+    DrawBounds(pPaper, *wxGREEN);
 }
 
 void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
@@ -362,5 +368,17 @@ void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 
 	}
 
+}
+
+lmNote* lmShapeTie::GetStartNote()
+{
+    //the owner of a tie is always the end note
+    return ((lmNote*)m_pOwner)->GetTiedNotePrev();
+}
+
+lmNote* lmShapeTie::GetEndNote()
+{
+    //the owner of a tie is always the end note
+    return (lmNote*)m_pOwner;
 }
 

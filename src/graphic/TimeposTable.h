@@ -181,6 +181,9 @@ public:
     lmLUnits DoSpacing(bool fTrace = false);
     lmLUnits RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart);
 
+    //access to info
+    lmBarline* GetBarline();
+
     //methods for spacing
     lmLUnits ComputeSpacing(float rFactor);
 	lmLUnits TenthsToLogical(lmTenths rTenths, int nStaff); 

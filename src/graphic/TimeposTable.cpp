@@ -1235,6 +1235,23 @@ void lmTimeposTable::AddEntry(int nInstr, int nVoice, lmStaffObj* pSO, lmShape* 
 }
 
 //-------------------------------------------------------------------------------------
+//  methods to access to info
+//-------------------------------------------------------------------------------------
+
+lmBarline* lmTimeposTable::GetBarline()
+{
+    //returns the barline object in the omega entry, if any
+
+    //we know that the bar is in the critical line
+    if (!m_pCriticalLine)
+        return (lmBarline*)NULL;
+
+    lmTimeposEntry* pEntry = m_pCriticalLine->m_aMainTable.back();    //the omega entry
+    wxASSERT(pEntry->m_nType == eOmega);
+    return (lmBarline*)pEntry->m_pSO;
+}
+
+//-------------------------------------------------------------------------------------
 //  methods to compute results
 //-------------------------------------------------------------------------------------
 

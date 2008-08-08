@@ -78,6 +78,7 @@ void lmBoxSystem::AddShape(lmShape* pShape)
 	if (pShape->GetType() == eGMO_ShapeStaff)
 	{
 		m_ShapeStaff.push_back( (lmShapeStaff*)pShape );
+        pShape->SetOwnerBox(this);
 	}
 	else
 		lmBox::AddShape(pShape);
@@ -192,16 +193,30 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
 
 }
 
-void lmBoxSystem::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                              lmLUnits uYMin, lmLUnits uYMax)
+//void lmBoxSystem::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+//                              lmLUnits uYMin, lmLUnits uYMax)
+//{
+//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//
+//    //loop to look up in the slices
+//    std::vector<lmBoxSlice*>::iterator it;
+//	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
+//    {
+//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//    }
+//}
+
+void lmBoxSystem::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax)
 {
-    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    //look up in this box
+    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
     //loop to look up in the slices
     std::vector<lmBoxSlice*>::iterator it;
 	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
     {
-        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
 }
 
@@ -312,4 +327,8 @@ int lmBoxSystem::GetNumMeasureAt(lmLUnits uxPos)
 		return pSlice->GetNumMeasure();
 }
 
+lmBoxScore* lmBoxSystem::GetOwnerBoxScore() 
+{ 
+    return m_pBPage->GetOwnerBoxScore(); 
+}
 

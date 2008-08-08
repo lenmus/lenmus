@@ -114,7 +114,8 @@ public:
 	~lmShapeTie();
 
 	//implementation of virtual methods in base class
-    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color);
+    void DrawControlPoints(lmPaper* pPaper);
 
 	//layout changes
 	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
@@ -122,6 +123,11 @@ public:
 
 	//splitting
 	void SetBrotherTie(lmShapeTie* pBrotherTie) { m_pBrotherTie = pBrotherTie; }
+
+    //access to information
+    lmNote* GetStartNote();
+    lmNote* GetEndNote();
+
 
 private:
     bool			m_fTieUnderNote;

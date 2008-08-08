@@ -81,6 +81,7 @@ lmDlgDebugTrace::lmDlgDebugTrace(wxWindow * parent)
     }
 
     // show dialog
+    this->SetSize(600, 400);
     CentreOnParent();
 
 }

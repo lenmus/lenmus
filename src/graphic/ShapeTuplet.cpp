@@ -209,7 +209,7 @@ void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
         pPaper->DrawText(m_sNumber, xNumber, yNumber);
     }
 
-    lmShape::RenderCommon(pPaper);
+    lmSimpleShape::Render(pPaper, color);
 
 }
 

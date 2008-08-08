@@ -112,16 +112,30 @@ lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
 
 }
 
-void lmBoxSlice::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                              lmLUnits uYMin, lmLUnits uYMax)
+//void lmBoxSlice::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+//                              lmLUnits uYMin, lmLUnits uYMax)
+//{
+//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//
+//    //loop to look up in the intrument slices
+//    std::vector<lmBoxSliceInstr*>::iterator it;
+//	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
+//    {
+//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//    }
+//}
+
+void lmBoxSlice::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax)
 {
-    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    //look up in this box
+    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
     //loop to look up in the intrument slices
     std::vector<lmBoxSliceInstr*>::iterator it;
 	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
     {
-        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
 }
 
@@ -223,3 +237,9 @@ bool lmBoxSlice::ContainsXPos(lmLUnits uxPos)
 
 	return (uxPos >= GetXLeft() && uxPos <= GetXRight());
 }
+
+lmBoxScore* lmBoxSlice::GetOwnerBoxScore() 
+{ 
+    return m_pBSystem->GetOwnerBoxScore(); 
+}
+

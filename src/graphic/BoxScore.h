@@ -73,15 +73,24 @@ public:
 	//access to objects
 	lmBoxSystem* GetSystem(int nSystem);	//nSystem = 1..n
 
-    //cursor management
-    void SetCursor(lmStaffObj* pSO) { m_pCursorSO = pSO; }
-    lmStaffObj* GetCursorPointedObject() const { return m_pCursorSO; }
+    //selected objects management
+    //inline lmGMSelection* GetSelection() { return &m_Selection; }
+    //void AddToSelection(lmGMSelection* pSelection);
+    void AddToSelection(lmGMObject* pGMO);
+    void AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                       lmLUnits uYMin, lmLUnits uYMax);
+    //void RemoveFromSelection(lmGMSelection* pSelection);
+    void RemoveFromSelection(lmGMObject* pGMO);
+    inline int GetNumObjectsSelected() { return m_Selection.NumObjects(); }
+    void ClearSelection();
+
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
 
 	//owners and related
 	lmBoxSystem* GetOwnerSystem() { return (lmBoxSystem*)NULL; }
+    inline lmBoxScore* GetOwnerBoxScore() { return this; }
 
 
 private:
@@ -90,8 +99,8 @@ private:
     // a lmBoxScore is, mainly, a collection of lmBoxPages
 	std::vector<lmBoxPage*>	   m_aPages;	//array of ptrs to pages that form this score
 
-    //cursor management
-	lmStaffObj*		m_pCursorSO;			//staff object pointed by the cursor
+    //selected objects
+    lmGMSelection   m_Selection;        //info about selected objects
 
 
 };

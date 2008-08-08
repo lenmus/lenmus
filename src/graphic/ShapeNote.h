@@ -98,8 +98,6 @@ protected:
 
 	lmLUnits	m_uWidth;
 
-    wxColour    m_color;
-
 	//related shapes
 	lmShapeBeam*	m_pBeamShape;
 	lmShapeStem*	m_pStemShape;

@@ -49,7 +49,6 @@ lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
     m_nFirstSystem = 0;
     m_nLastSystem = 0;
     m_pBScore = pParent;
-
 }
 
 lmBoxPage::~lmBoxPage()
@@ -107,19 +106,32 @@ lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;;
 }
 
-void lmBoxPage::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                              lmLUnits uYMin, lmLUnits uYMax)
+//void lmBoxPage::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+//                              lmLUnits uYMin, lmLUnits uYMax)
+//{
+//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//
+//    //loop to look up in the systems
+//    std::vector<lmBoxSystem*>::iterator it;
+//	for(it = m_aSystems.begin(); it != m_aSystems.end(); ++it)
+//    {
+//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+//    }
+//}
+
+void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax)
 {
-    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+    //look up in this box
+    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
     //loop to look up in the systems
     std::vector<lmBoxSystem*>::iterator it;
 	for(it = m_aSystems.begin(); it != m_aSystems.end(); ++it)
     {
-        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
+        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
 }
-
 
 lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 {

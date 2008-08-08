@@ -54,6 +54,8 @@ extern bool g_fFreeMove;		// the shapes can be dragged without restrictions
 class lmPaper;
 class lmScoreObj;
 class lmController;
+class lmBoxScore;
+class lmGMSelection;
 
 
 //------------------------------------------------------------------------------
@@ -78,16 +80,20 @@ enum lmEGMOType
     eGMO_ShapeArch,
     eGMO_ShapeBarline,
 	eGMO_ShapeBeam,
+    eGMO_ShapeBrace,
     eGMO_ShapeBracket,
+    eGMO_ShapeClef,
 	eGMO_ShapeComposite,
 	eGMO_ShapeGlyph,
+	eGMO_ShapeInvisible,
 	eGMO_ShapeLine,
 	eGMO_ShapeMultiAttached,
 	eGMO_ShapeNote,
 	eGMO_ShapeRest,
+    eGMO_ShapeStem,
 	eGMO_ShapeText,
+    eGMO_ShapeTie,
 	eGMO_ShapeTuplet,
-	eGMO_ShapeInvisible,
 };
 
 
@@ -114,14 +120,20 @@ public:
     inline bool IsShapeArch() const { return m_nType == eGMO_ShapeArch; }
     inline bool IsShapeBarline() const { return m_nType == eGMO_ShapeBarline; }
 	inline bool IsShapeBeam() const { return m_nType == eGMO_ShapeBeam; }
+    inline bool IsShapeBrace() const { return m_nType == eGMO_ShapeBrace; }
+    inline bool IsShapeBracket() const { return m_nType == eGMO_ShapeBracket; }
+    inline bool IsShapeClef() const { return m_nType == eGMO_ShapeClef; }
 	inline bool IsShapeComposite() const { return m_nType == eGMO_ShapeComposite; }
 	inline bool IsShapeGlyph() const { return m_nType == eGMO_ShapeGlyph; }
+	inline bool IsShapeInvisible() const { return m_nType == eGMO_ShapeInvisible; }
 	inline bool IsShapeLine() const { return m_nType == eGMO_ShapeLine; }
 	inline bool IsShapeMultiAttached() const { return m_nType == eGMO_ShapeMultiAttached; }
 	inline bool IsShapeNote() const { return m_nType == eGMO_ShapeNote; }
+    inline bool IsShapeRest() const { return m_nType == eGMO_ShapeRest; }
+    inline bool IsShapeStem() const { return m_nType == eGMO_ShapeStem; }
 	inline bool IsShapeText() const { return m_nType == eGMO_ShapeText; }
+    inline bool IsShapeTie() const { return m_nType == eGMO_ShapeTie; }
 	inline bool IsShapeTuplet() const { return m_nType == eGMO_ShapeTuplet; }
-	inline bool IsShapeInvisible() const { return m_nType == eGMO_ShapeInvisible; }
 
     //bounding box
     inline void SetXLeft(lmLUnits xLeft) { m_uBoundsTop.x = xLeft; }
@@ -155,10 +167,11 @@ public:
 
     //selection
     inline bool IsSelected() const { return m_fSelected; }
-    inline void SetSelected(bool fValue) { m_fSelected = fValue; }
+    void SetSelected(bool fValue);
 
 	//dragging and moving
-    inline bool IsDraggable() const { return m_fDraggable; }
+    inline bool IsLeftDraggable() const { return m_fLeftDraggable; }
+    inline bool IsRightDraggable() const { return false; }
 	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC) { return (wxBitmap*)NULL; }
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
 	virtual lmUPoint GetObjectOrigin();
@@ -169,6 +182,7 @@ public:
     void ApplyUserShift(lmUPoint uUserShift);
 
     //info
+    virtual lmBoxScore* GetOwnerBoxScore() = 0;
     inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
     inline int GetOwnerIDX() { return m_nOwnerIdx; }
 	virtual int GetPageNumber() const { return 0; }
@@ -178,11 +192,14 @@ public:
 
 
 protected:
+    friend class lmGMSelection;
+
     lmGMObject(lmScoreObj* pOwner, lmEGMOType m_nType, bool fDraggable = false,
 		       wxString sName = _("Object"), int nOwnerIdx = -1);
     wxString DumpBounds();
 	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
 	void NormaliceBoundsRectangle();
+    inline void DoSetSelected(bool fSelected) { m_fSelected = fSelected; }
 
 	enum {
 		lmINDENT_STEP = 3,		//for Dump() method
@@ -209,7 +226,7 @@ protected:
     bool            m_fSelected;        //this object is selected
 
     //dragging
-    bool			m_fDraggable;		//this object is draggable
+    bool			m_fLeftDraggable;		//this object is draggable
 
 };
 
@@ -219,7 +236,6 @@ protected:
 
 class lmShape;
 class lmBoxSystem;
-class lmGMSelection;
 
 class lmBox : public lmGMObject
 {
@@ -236,8 +252,10 @@ public:
 	virtual lmBoxSystem* GetOwnerSystem()=0;
 
     //selection
-    void AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                              lmLUnits uYMin, lmLUnits uYMax);
+    virtual void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                                 lmLUnits uYMin, lmLUnits uYMax);
+    //void AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+    //                          lmLUnits uYMin, lmLUnits uYMax);
 
 protected:
     lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _("Box"));
@@ -283,8 +301,8 @@ class lmShape : public lmGMObject
 public:
     virtual ~lmShape();
 
-	virtual void Render(lmPaper* pPaper, wxColour color)=0;
-	virtual void Render(lmPaper* pPaper);
+	virtual void Render(lmPaper* pPaper, wxColour color);
+	void Render(lmPaper* pPaper);
 
     virtual bool Collision(lmShape* pShape);
 
@@ -306,6 +324,7 @@ public:
 
     //info
 	virtual int GetPageNumber() const;
+    lmBoxScore* GetOwnerBoxScore();
 
 	//owners and related
 	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
@@ -328,9 +347,8 @@ protected:
     lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName=_T("Shape"),
 			bool fDraggable = false, wxColour color = *wxBLACK,
 			bool fVisible = true);
-    void RenderCommon(lmPaper* pPaper, wxColour colorC);
-    void RenderCommon(lmPaper* pPaper);
 	void InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
+    virtual void DrawControlPoints(lmPaper* pPaper) {};
 
 
 	lmBox*		m_pOwnerBox;	//box in which this shape is included
@@ -361,7 +379,6 @@ public:
     //implementation of virtual methods from base class
     virtual wxString Dump(int nIndent) = 0;
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
-    virtual void Render(lmPaper* pPaper, wxColour color)=0;
 
     //dragging
 	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC) { return (wxBitmap*)NULL; }
@@ -423,7 +440,7 @@ public:
     
     void AddToSelection(lmGMObject* pGMO);
     void RemoveFromSelection(lmGMObject* pGMO);
-    inline void Clear() { m_Selection.clear(); }
+    void ClearSelection();
 
     //iteration
     lmGMObject* GetFirst();

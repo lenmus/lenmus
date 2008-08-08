@@ -25,6 +25,12 @@
 	<File name="../../src/app/DlgCfgTheoIntervals.cpp" open="0" top="0" tabpos="11">
 		<Cursor position="7426" topLine="192" />
 	</File>
+	<File name="../../src/app/DlgDebugTrace.cpp" open="1" top="1" tabpos="24">
+		<Cursor position="1802" topLine="97" />
+	</File>
+	<File name="../../src/app/DlgDebugTrace.h" open="1" top="0" tabpos="25">
+		<Cursor position="2085" topLine="25" />
+	</File>
 	<File name="../../src/app/DlgPatternEditor.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="1597" topLine="31" />
 	</File>
@@ -100,7 +106,7 @@
 	<File name="../../src/app/WelcomeWnd.cpp" open="1" top="0" tabpos="21">
 		<Cursor position="2638" topLine="63" />
 	</File>
-	<File name="../../src/app/WelcomeWnd.h" open="1" top="1" tabpos="22">
+	<File name="../../src/app/WelcomeWnd.h" open="1" top="0" tabpos="22">
 		<Cursor position="2293" topLine="62" />
 	</File>
 	<File name="../../src/app/toolbox/ToolGroup.cpp" open="0" top="0" tabpos="0">
@@ -254,7 +260,7 @@
 		<Cursor position="6141" topLine="153" />
 	</File>
 	<File name="../../src/graphic/ShapeBeam.cpp" open="1" top="0" tabpos="12">
-		<Cursor position="2747" topLine="220" />
+		<Cursor position="2421" topLine="62" />
 	</File>
 	<File name="../../src/graphic/ShapeBracket.cpp" open="0" top="0" tabpos="24">
 		<Cursor position="2348" topLine="81" />
@@ -269,7 +275,7 @@
 		<Cursor position="8984" topLine="259" />
 	</File>
 	<File name="../../src/graphic/TimeposTable.cpp" open="1" top="0" tabpos="14">
-		<Cursor position="52906" topLine="1481" />
+		<Cursor position="53514" topLine="1495" />
 	</File>
 	<File name="../../src/graphic/TimeposTable.h" open="0" top="0" tabpos="59">
 		<Cursor position="3990" topLine="95" />

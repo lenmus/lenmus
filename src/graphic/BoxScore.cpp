@@ -41,9 +41,6 @@ lmBoxScore::lmBoxScore(lmScore* pScore)
 {
     m_pScore = pScore;
 
-    //initializations
-    m_pCursorSO = (lmStaffObj*)NULL;
-
     //Initially the BoxScore will have one page.
     AddPage();
 
@@ -146,3 +143,49 @@ lmBoxSystem* lmBoxScore::GetSystem(int nSystem)
 	wxASSERT(fFound);
 	return m_aPages[i]->GetSystem(nSystem);
 }
+
+//void lmBoxScore::AddToSelection(lmGMSelection* pSelection)
+//{
+//    lmGMObject* pGMO = pSelection->GetFirst();
+//    while(pGMO)
+//    {
+//        m_Selection.AddToSelection(pGMO);
+//        pGMO = pSelection->GetNext();
+//    }
+//}
+
+void lmBoxScore::AddToSelection(lmGMObject* pGMO)
+{
+    m_Selection.AddToSelection(pGMO);
+}
+
+//void lmBoxScore::RemoveFromSelection(lmGMSelection* pSelection)
+//{
+//    lmGMObject* pGMO = pSelection->GetFirst();
+//    while(pGMO)
+//    {
+//        m_Selection.RemoveFromSelection(pGMO);
+//        pGMO = pSelection->GetNext();
+//    }
+//}
+
+void lmBoxScore::RemoveFromSelection(lmGMObject* pGMO)
+{
+    m_Selection.RemoveFromSelection(pGMO);
+}
+
+void lmBoxScore::ClearSelection()
+{
+    m_Selection.ClearSelection();
+}
+
+void lmBoxScore::AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                                lmLUnits uYMin, lmLUnits uYMax)
+{
+    wxASSERT(nNumPage <= GetNumPages());
+
+    lmBoxPage* pBPage = GetPage(nNumPage);
+    pBPage->SelectGMObjects(true, uXMin, uXMax, uYMin, uYMax);
+}
+
+

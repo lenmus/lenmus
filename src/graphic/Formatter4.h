@@ -57,7 +57,7 @@ private:
                                lmPaper* pPaper, bool* pNewSystem, lmLUnits nSystemIndent);
     void AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
                                lmBoxSystem* pBoxSystem, lmPaper* pPaper);
-    void RedistributeFreeSpace(lmLUnits nAvailable);
+    void RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);
     bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nAbsMeasure,
 					 int nRelMeasure, int nInstr, lmPaper* pPaper);

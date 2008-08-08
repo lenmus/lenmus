@@ -62,13 +62,18 @@ public:
 	//access to objects
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
-    void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                       lmLUnits uYMin, lmLUnits uYMax);
+    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+    //                   lmLUnits uYMin, lmLUnits uYMax);
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
 
 	//operations
     lmBoxSystem* AddSystem(int nSystem);
     void Render(lmScore* pScore, lmPaper* pPaper);
+
+    //selection
+    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                         lmLUnits uYMin, lmLUnits uYMax);
+
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
@@ -77,6 +82,7 @@ public:
 	//owners and related
 	lmBoxSystem* GetOwnerSystem() { return (lmBoxSystem*)NULL; }
     inline lmBoxScore* GetBoxScore() const { return m_pBScore; }
+    inline lmBoxScore* GetOwnerBoxScore() { return m_pBScore; }
 
 
 

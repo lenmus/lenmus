@@ -147,7 +147,8 @@ public:
 
 	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
-					       lmENoteHeads nNotehead, lmEAccidentals nAcc, bool fAutoBar);
+					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
+                           bool fTiedPrev, bool fAutoBar);
 
 	lmRest* Cmd_InsertRest(lmUndoItem* pUndoItem, lmENoteType nNoteType,
                            float rDuration, int nDots, bool fAutoBar);
@@ -158,6 +159,7 @@ public:
 
     //--- deleting StaffObjs
     void Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    void Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
 
 
     //--- Undoing edition commands
@@ -169,6 +171,7 @@ public:
     void UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
 
     void UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    void UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
 
 
     //error management
@@ -186,7 +189,7 @@ public:
     lmLUnits GetStaffLineThick(int nStaff);
     inline bool HideStaffLines() { return GetOptionBool(_T("StaffLines.Hide")); }
 
-    lmNote* FindPossibleStartOfTie(lmAPitch anPitch);
+    lmNote* FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded = false);
 
 	//units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);
@@ -342,7 +345,8 @@ class lmVCmdInsertNote : public lmVStaffCmd
 public:
     lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmEPitchType nPitchType,
                      int nStep, int nOctave, lmENoteType nNoteType, float rDuration,
-					 int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc);
+					 int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                     bool fTiedPrev);
     ~lmVCmdInsertNote() {}
 
     void RollBack(lmUndoItem* pUndoItem);
@@ -445,6 +449,21 @@ public:
 
 protected:
     lmStaffObj*         m_pSO;          //deleted note
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdDeleteTie : public lmVStaffCmd
+{
+public:
+    lmVCmdDeleteTie(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNote* pEndNote);
+    ~lmVCmdDeleteTie() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return !m_pEndNote->IsTiedToPrev(); }
+
+protected:
+    lmNote*         m_pEndNote;     //owner note
 
 };
 

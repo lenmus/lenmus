@@ -50,6 +50,9 @@
 #include "../ldp_parser/LDPParser.h"
 #include "../ldp_parser/AuxString.h"
 
+#include "../graphic/GMObject.h"
+#include "../graphic/ShapeArch.h"
+
 // access to global external variables (to disable mouse interaction with the score)
 extern bool g_fReleaseVersion;            // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
@@ -183,19 +186,12 @@ void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 
 void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 {
+    //transfer mouse event to the view
+
     if (!m_pView) return;
+
     wxClientDC dc(this);
-
-    //Disable interaction with the score. Only mouse wheel allowed
-    //Only for release version
-    if (g_fReleaseVersion || g_fReleaseBehaviour) {
-        if (event.GetEventType() == wxEVT_MOUSEWHEEL) {
-            m_pView->OnMouseEvent(event, &dc);
-        }
-    }
-    else
-        m_pView->OnMouseEvent(event, &dc);
-
+    m_pView->OnMouseEvent(event, &dc);
 }
 
 
@@ -207,7 +203,6 @@ void lmScoreCanvas::PlayScore()
     //play the score. Use current metronome setting
     pScore->Play(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, ePM_NormalInstrument,
                  0, this);
-
 }
 
 void lmScoreCanvas::StopPlaying(bool fWait)
@@ -217,8 +212,8 @@ void lmScoreCanvas::StopPlaying(bool fWait)
 
     //request it to stop playing
     pScore->Stop();
-    if (fWait) pScore->WaitForTermination();
-
+    if (fWait)
+        pScore->WaitForTermination();
 }
 
 void lmScoreCanvas::PausePlaying()
@@ -228,14 +223,16 @@ void lmScoreCanvas::PausePlaying()
 
     //request it to pause playing
     pScore->Pause();
-
 }
-
 
 void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
     m_pView->OnVisualHighlight(event);
 }
+
+//--------------------------------------------------------------------------------------------
+// Commands
+//--------------------------------------------------------------------------------------------
 
 void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 {
@@ -246,34 +243,9 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 	pCP->Submit(new lmCmdUserMoveScoreObj(sName, m_pDoc, pGMO, uPos));
 }
 
-void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
+void lmScoreCanvas::DeleteCaretSatffobj()
 {
-	//select/deselect a ComponentObj
-
-    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = wxString::Format(_("Select %s"), pGMO->GetName().c_str() );
-	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, m_pView, pGMO));
-}
-
-void lmScoreCanvas::SelectObjects(bool fSelect, lmGMSelection* pSelection)
-{
-	//select a set of objects
-
-    //TODO
-    //wxLogMessage(pSelection->Dump());
-
-    if (pSelection->NumObjects() < 1) return;
-
-    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = wxString::Format(
-        (fSelect ? _("Select %d objects") : _("Unselect %d objects")), pSelection->NumObjects() );
-	pCP->Submit(new lmCmdSelectMultiple(sName, m_pDoc, m_pView, pSelection, fSelect));
-
-}
-
-void lmScoreCanvas::DeleteObject()
-{
-	//delete the StaffObj at current cursor position
+	//delete the StaffObj at current caret position
 
     //get cursor
     lmVStaffCursor* pVCursor = m_pView->GetVCursor();
@@ -297,6 +269,23 @@ void lmScoreCanvas::DeleteObject()
 	pCP->Submit(new lmCmdDeleteObject(pVCursor, sName, m_pDoc));
 }
 
+void lmScoreCanvas::DeleteCaretOrSelected()
+{
+    //If there is a selection, deleted all objects in the selection.
+    //Else delete staffobj pointed by caret
+
+    //TODO. For now delete staffobj pointed by caret
+    DeleteCaretSatffobj();
+}
+
+void lmScoreCanvas::DeleteTie(lmNote* pEndNote)
+{
+    //remove tie between two notes
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Delete tie");
+	pCP->Submit(new lmCmdDeleteTie(sName, m_pDoc, pEndNote) );
+}
 
 void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 {
@@ -362,7 +351,8 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 							   lmENoteType nNoteType, float rDuration, int nDots,
-							   lmENoteHeads nNotehead, lmEAccidentals nAcc)
+							   lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                               bool fTiedPrev)
 {
 	//insert a note at current cursor position
 
@@ -379,7 +369,8 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
     wxString sStep = sAllSteps.GetChar( nStep );
 
 	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, nStep, nOctave,
-							        nNoteType, rDuration, nDots, nNotehead, nAcc) );
+							        nNoteType, rDuration, nDots, nNotehead, nAcc,
+                                    fTiedPrev) );
 }
 
 void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots)
@@ -422,6 +413,8 @@ void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
 	wxString sName = _("Change note accidentals");
 	pCP->Submit(new lmCmdChangeNoteAccidentals(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
 }
+
+//--------------------------------------------------------------------------------------------
 
 void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
 {
@@ -521,12 +514,13 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			break;
 
         case WXK_DELETE:
-			DeleteObject();
+            //delete selected objects or object pointed by caret
+			DeleteCaretOrSelected();
 			break;
 
         case WXK_BACK:
 			m_pView->CaretLeft(false);      //false: treat chords as a single object
-			DeleteObject();
+			DeleteCaretOrSelected();
 			break;
 
 		default:
@@ -571,6 +565,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, nDots, 0, 0);
 			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
 			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
+                bool fTiedPrev = false;
 
                 //if terminal symbol, analyze full command
                 if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
@@ -584,6 +579,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                         {
                             nAcc = oCmdParser.GetAccidentals();
                             nDots = oCmdParser.GetDots();
+                            fTiedPrev = oCmdParser.GetTiedPrev();
                         }
                     }
                 }
@@ -614,7 +610,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 
                     //do insert note
 					InsertNote(lm_ePitchRelative, nStep, m_nOctave, nNoteType, rDuration,
-							   nDots, nNotehead, nAcc);
+							   nDots, nNotehead, nAcc, fTiedPrev);
 
                     fUnknown = false;
                 }
@@ -1000,6 +996,36 @@ wxMenu* lmScoreCanvas::GetContextualMenu()
 void lmScoreCanvas::OnCut(wxCommandEvent& event)
 {
 	WXUNUSED(event);
+
+    switch(m_pMenuGMO->GetType())
+    {
+        case eGMO_ShapeTie:
+            DeleteTie( ((lmShapeTie*)m_pMenuGMO)->GetEndNote() );
+            break;
+
+        case eGMO_ShapeStaff:
+        case eGMO_ShapeArch:
+        case eGMO_ShapeBarline:
+        case eGMO_ShapeBeam:
+        case eGMO_ShapeBrace:
+        case eGMO_ShapeBracket:
+        case eGMO_ShapeClef:
+        case eGMO_ShapeComposite:
+        case eGMO_ShapeGlyph:
+        case eGMO_ShapeInvisible:
+        case eGMO_ShapeLine:
+        case eGMO_ShapeMultiAttached:
+        case eGMO_ShapeNote:
+        case eGMO_ShapeRest:
+        case eGMO_ShapeStem:
+        case eGMO_ShapeText:
+        case eGMO_ShapeTuplet:
+            break;
+
+        default:
+            lmScoreObj* pSO = m_pMenuGMO->GetScoreOwner();
+            wxLogMessage( pSO->Dump() );
+    }
 }
 
 void lmScoreCanvas::OnCopy(wxCommandEvent& event)

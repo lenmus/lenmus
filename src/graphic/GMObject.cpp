@@ -34,6 +34,7 @@
 
 #include "../app/global.h"
 #include "GMObject.h"
+#include "BoxScore.h"
 #include "../app/Paper.h"
 #include "../score/StaffObj.h"
 #include "../app/ScoreCanvas.h"
@@ -68,7 +69,7 @@ lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
     m_uBoundsTop = lmUPoint(0.0f, 0.0f);
     m_uUserShift = lmUPoint(0.0f, 0.0f);
 	m_fSelected = false;
-	m_fDraggable = fDraggable;
+	m_fLeftDraggable = fDraggable;
 }
 
 lmGMObject::~lmGMObject()
@@ -183,6 +184,21 @@ void lmGMObject::OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int n
     m_pOwner->PopupMenu(pCanvas, this, vPos);
 }
 
+void lmGMObject::SetSelected(bool fValue) 
+{ 
+    if (m_fSelected == fValue) return;      //nothing to do
+
+    //change selection status
+    m_fSelected = fValue;       
+
+    //add/remove object from global list
+    lmBoxScore* pBS = this->GetOwnerBoxScore();
+    wxASSERT(pBS);
+    if (fValue)
+        pBS->AddToSelection(this);
+    else
+        pBS->RemoveFromSelection(this);
+}
 
 
 
@@ -229,8 +245,20 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
     return (lmShape*)NULL;
 }
 
-void lmBox::AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-                                 lmLUnits uYMin, lmLUnits uYMax)
+//void lmBox::AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
+//                                 lmLUnits uYMin, lmLUnits uYMax)
+//{
+//    //loop to look up in the shapes collection
+//    lmURect selRect(uXMin, uYMin, uXMax-uXMin, uYMax-uYMin);
+//    std::vector<lmShape*>::iterator it;
+//    for(it = m_Shapes.begin(); it != m_Shapes.end(); ++it)
+//    {
+//        if ((*it)->IsInRectangle(selRect))
+//			pSelection->AddToSelection(*it);
+//    }
+//}
+void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
+                            lmLUnits uYMin, lmLUnits uYMax)
 {
     //loop to look up in the shapes collection
     lmURect selRect(uXMin, uYMin, uXMax-uXMin, uYMax-uYMin);
@@ -238,7 +266,7 @@ void lmBox::AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLU
     for(it = m_Shapes.begin(); it != m_Shapes.end(); ++it)
     {
         if ((*it)->IsInRectangle(selRect))
-			pSelection->AddToSelection(*it);
+			(*it)->SetSelected(fSelect);
     }
 }
 
@@ -290,15 +318,14 @@ void lmShape::Render(lmPaper* pPaper)
     Render(pPaper, (this->IsSelected() ? g_pColors->ScoreSelected() : m_color) );
 }
 
-void lmShape::RenderCommon(lmPaper* pPaper)
-{
-	RenderCommon(pPaper, g_pColors->ScoreSelected());
-}
-
-void lmShape::RenderCommon(lmPaper* pPaper, wxColour colorC)
+void lmShape::Render(lmPaper* pPaper, wxColour colorC)
 {
     // Code common to all shapes renderization. Must be invoked after specific code at
     // each shape renderization method
+
+    // if shape is 'selected' allow derived classes to draw control points
+    if (IsSelected())
+        DrawControlPoints(pPaper);
 
     // draw selection rectangle
     if (g_fDrawSelRect)
@@ -361,6 +388,13 @@ unsigned lmShape::GetVertex(lmLUnits* pux, lmLUnits* puy)
     return agg::path_cmd_stop;
 }
 
+lmBoxScore* lmShape::GetOwnerBoxScore()
+{
+    if (m_pOwnerBox)
+        return m_pOwnerBox->GetOwnerBoxScore();
+    else
+        return (lmBoxScore*)NULL;
+}
 
 //========================================================================================
 // Implementation of class lmSimpleShape
@@ -488,7 +522,7 @@ wxString lmCompositeShape::Dump(int nIndent)
 
 void lmCompositeShape::Render(lmPaper* pPaper,  wxColour color)
 {
-	RenderCommon(pPaper, *wxGREEN);
+    lmShape::Render(pPaper, color);
 
 	//Default behaviour: render all components
     for (int i=0; i < (int)m_Components.size(); i++)
@@ -659,6 +693,19 @@ void lmGMSelection::RemoveFromSelection(lmGMObject* pGMO)
     it = std::find(m_Selection.begin(), m_Selection.end(), pGMO);
     wxASSERT(it != m_Selection.end());
     m_Selection.erase(it);
+}
+
+void lmGMSelection::ClearSelection()
+{
+    if (m_Selection.empty()) return;
+
+    //Unselect all selected objects
+    std::list<lmGMObject*>::iterator it = m_Selection.begin();
+    for (it = m_Selection.begin(); it != m_Selection.end(); ++it)
+    {
+        (*it)->DoSetSelected(false);
+    }
+    m_Selection.clear();
 }
 
 wxString lmGMSelection::Dump()

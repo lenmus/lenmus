@@ -19,9 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-/*! @class lmSOIterator
-    @ingroup score_kernel
-    @brief Encapsulates access and traverse of a collection of StaffObjs
+/* Encapsulates access and traverse of a collection of StaffObjs
 
     lmSOIterator encapsulates access and traverse of a collection of StaffObjs (lmColStaffObjs
     object) without exposing the internal structure of the collection. This lets us

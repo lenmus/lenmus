@@ -369,9 +369,9 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         if (fJustified) {
             //if requested to justify systems, divide up the remaining space
             //between all bars, except if this is the last bar and options flag
-            //"StopStaffLinesAtFinalBar" is set.
+            //"StopStaffLinesAtFinalBar" is set or no barline.
             if (!(fThisIsLastSystem && fStopStaffLinesAtFinalBarline))
-                RedistributeFreeSpace(m_uFreeSpace);
+                RedistributeFreeSpace(m_uFreeSpace, fThisIsLastSystem);
         }
 
         //dbg --------------
@@ -860,7 +860,7 @@ void lmFormatter4::ResetLocation(int nAbsMeasure)
 }
 
 
-void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
+void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
 {
     //Step 3: Justify measures (distribute remainnig space across all measures)
     //-------------------------------------------------------------------------------
@@ -869,20 +869,32 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
     //so that their size is grown to the average size. The process of computing the new
     //average and enlarging the narrower than average measures is repeated until all
     //space is distributed.
+    //The system is not justified if this is the last system and there is no barline
+    //in the last measure.
     //
     //on entering in this function:
-    // - the table m_uMeasureSize() stores the minimum size for each measure column for the
-    //   current system.
+    // - the table m_uMeasureSize() stores the minimum size for each measure column for
+    //   the current system.
     // - nAvailable stores the free space remaining at the end of this system
     //
     //on exit:
     // - the values stored in table m_uMeasureSize() are modified to reflect the new size
     //   for the bar columns, so that the line get justified.
-
+    //
     //-------------------------------------------------------------------------------------
 
     if (nAvailable <= 0) return;       //no space to distribute
 
+    //The system must not be justified if this is the last system and there is no barline
+    //in the last measure. Check this.
+    if (fLastSystem)
+    {
+        lmBarline* pBar = m_oTimepos[m_nMeasuresInSystem].GetBarline();
+        if (!pBar)
+            return;     //no need to justify
+    }
+
+    //Check for program limits
     lmLUnits nDif[MAX_MEASURES_PER_SYSTEM];
     if (m_nMeasuresInSystem == MAX_MEASURES_PER_SYSTEM)
     {
