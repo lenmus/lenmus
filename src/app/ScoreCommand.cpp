@@ -41,6 +41,7 @@
 #include "ScoreDoc.h"
 #include "TheApp.h"
 #include "../graphic/GMObject.h"
+#include "../graphic/ShapeArch.h"
 
 
 //----------------------------------------------------------------------------------------
@@ -133,6 +134,269 @@ bool lmCmdDeleteObject::Do()
 }
 
 bool lmCmdDeleteObject::UndoCommand()
+{
+    //undelete the object
+    m_UndoLog.UndoAll();
+    m_fDeleteSO = false;                //m_pSO is again owned by the score
+
+    //set cursor
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdDeleteSelection implementation
+//----------------------------------------------------------------------------------------
+
+enum        //type of object to delete
+{
+    //lm_eObjArch,
+    //lm_eObjBeam,
+    //lm_eObjBrace,
+    //lm_eObjBracket,
+    //lm_eObjGlyph,
+    //lm_eObjInvisible,
+    //lm_eObjLine,
+    //lm_eObjStaff,
+    lm_eObjStaffObj,
+    //lm_eObjStem,
+    //lm_eObjText,
+    lm_eObjTie,
+    //lm_eObjTuplet,
+};
+
+lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxString& name,
+                                           lmScoreDocument *pDoc, lmGMSelection* pSelection)
+        : lmScoreCommand(name, pDoc, pVCursor)
+{
+    //loop to save objects to delete and its parameters
+    wxString sCmdName;
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        switch(pGMO->GetType())
+        {
+            case eGMO_ShapeTie:
+                {
+                    lmDeletedSO* pSOData = new lmDeletedSO;
+                    pSOData->nObjType = lm_eObjTie;
+                    pSOData->pSO = (lmScoreObj*)NULL;
+                    pSOData->fSODeleted = false;
+                    pSOData->pParm1 = (void*)( ((lmShapeTie*)pGMO)->GetEndNote() );     //end note
+                    pSOData->pParm2 = (void*)NULL;
+
+                    m_ScoreObjects.push_back( pSOData );
+                    sCmdName = _T("Delete tie");
+                }
+                break;
+
+            case eGMO_ShapeBarline:
+            case eGMO_ShapeClef:
+            case eGMO_ShapeNote:
+            case eGMO_ShapeRest:
+                {
+                    lmDeletedSO* pSOData = new lmDeletedSO;
+                    pSOData->nObjType = lm_eObjStaffObj;
+                    pSOData->pSO = pGMO->GetScoreOwner();
+                    pSOData->fSODeleted = false;
+                    pSOData->pParm1 = (void*)NULL;
+                    pSOData->pParm2 = (void*)NULL;
+
+                    m_ScoreObjects.push_back( pSOData );
+
+                    //select command name
+                    switch(pGMO->GetType())
+                    {
+                        case eGMO_ShapeBarline:
+                            sCmdName = _T("Delete barline");    break;
+                        case eGMO_ShapeClef:
+                            sCmdName = _T("Delete clef");       break;
+                        case eGMO_ShapeNote:
+                            sCmdName = _T("Delete note");       break;
+                        case eGMO_ShapeRest:
+                            sCmdName = _T("Delete rest");       break;
+                    }
+               }
+                break;
+
+            //case eGMO_ShapeStaff:
+            //case eGMO_ShapeArch:
+            //case eGMO_ShapeBeam:
+            //case eGMO_ShapeBrace:
+            //case eGMO_ShapeBracket:
+            //case eGMO_ShapeComposite:
+            //case eGMO_ShapeGlyph:
+            //case eGMO_ShapeInvisible:
+            //case eGMO_ShapeLine:
+            //case eGMO_ShapeMultiAttached:
+            //case eGMO_ShapeStem:
+            //case eGMO_ShapeText:
+            //case eGMO_ShapeTuplet:
+            //    break;
+
+            default:
+                wxASSERT(false);
+        }
+        pGMO = pSelection->GetNext();
+    }
+
+    //if only one object, change command name for better command identification
+    if (pSelection->NumObjects() == 1)
+        this->m_commandName = sCmdName;
+}
+
+lmCmdDeleteSelection::~lmCmdDeleteSelection()
+{
+    //delete frozen objects and selection data
+    std::list<lmDeletedSO*>::iterator it = m_ScoreObjects.begin();
+    for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
+    {
+        if ((*it)->fSODeleted && (*it)->pSO)
+            delete (*it)->pSO; 
+        delete *it;
+    }
+    m_ScoreObjects.clear();
+}
+
+bool lmCmdDeleteSelection::Do()
+{
+    //loop to delete the objects
+    bool fSuccess = true;
+    lmVStaffCmd* pVCmd;
+    std::list<lmDeletedSO*>::iterator it = m_ScoreObjects.begin();
+    for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
+    {
+        lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+        switch((*it)->nObjType)
+        {
+            case lm_eObjTie:
+                {
+                    lmNote* pEndNote = (lmNote*)(*it)->pParm1;
+                    lmVStaff* pVStaff = pEndNote->GetVStaff();      //affected VStaff
+                    pVCmd = new lmVCmdDeleteTie(pVStaff, pUndoItem, pEndNote);
+                }
+                break;
+
+            case lm_eObjStaffObj:
+                {
+                    lmStaffObj* pSO = (lmStaffObj*)(*it)->pSO;
+                    lmVStaff* pVStaff = pSO->GetVStaff();      //affected VStaff
+                    pVCmd = new lmVCmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
+                }
+                break;
+
+            //case lm_eObjArch:
+            //case lm_eObjBeam:
+            //case lm_eObjBrace:
+            //case lm_eObjBracket:
+            //case lm_eObjComposite:
+            //case lm_eObjGlyph:
+            //case lm_eObjInvisible:
+            //case lm_eObjLine:
+            //case lm_eObjStaff:
+            //case lm_eObjStem:
+            //case lm_eObjText:
+            //case lm_eObjTuplet:
+            //    break;
+
+            default:
+                wxASSERT(false);
+        }
+
+        if (pVCmd->Success())
+        {
+            (*it)->fSODeleted = true;                //the pSO is no longer owned by the score
+            m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        }
+        else
+        {
+            fSuccess = false;
+            delete pUndoItem;
+            delete pVCmd;
+        }
+    }
+
+    //
+    if (fSuccess)
+   	    return CommandDone(lmSCORE_MODIFIED);
+    else
+    {
+        //undo command for the deleted ScoreObjs
+        UndoCommand();
+        return false;
+    }
+}
+
+bool lmCmdDeleteSelection::UndoCommand()
+{
+    //undelete the object
+    m_UndoLog.UndoAll();
+
+    //mark all objects as valid
+    std::list<lmDeletedSO*>::iterator it = m_ScoreObjects.begin();
+    for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
+    {
+        (*it)->fSODeleted = false;      //the pSO is again owned by the score
+    }
+
+    //set cursor
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdDeleteStaffObj implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(lmVStaffCursor* pVCursor, const wxString& name,
+                                     lmScoreDocument *pDoc, lmStaffObj* pSO)
+        : lmScoreCommand(name, pDoc, pVCursor)
+{
+    m_pVStaff = pSO->GetVStaff();
+    m_pSO = pSO;
+    m_fDeleteSO = false;                //m_pSO is still owned by the score
+}
+
+lmCmdDeleteStaffObj::~lmCmdDeleteStaffObj()
+{
+    if (m_fDeleteSO)
+        delete m_pSO;       //delete frozen object
+}
+
+bool lmCmdDeleteStaffObj::Do()
+{
+    //Proceed to delete the object
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaffCmd* pVCmd = new lmVCmdDeleteStaffObj(m_pVStaff, pUndoItem, m_pSO);
+
+    if (pVCmd->Success())
+    {
+        m_fDeleteSO = true;                //m_pSO is no longer owned by the score
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        m_fDeleteSO = false;
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+}
+
+bool lmCmdDeleteStaffObj::UndoCommand()
 {
     //undelete the object
     m_UndoLog.UndoAll();

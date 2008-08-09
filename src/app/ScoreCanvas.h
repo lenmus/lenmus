@@ -81,8 +81,9 @@ public:
 
         //delete commands
 	virtual void DeleteCaretSatffobj() {}
-    virtual void DeleteCaretOrSelected() {}
+    virtual void DeleteSelection() {}
     virtual void DeleteTie(lmNote* pEndNote) {}
+    virtual void DeleteStaffObj(lmStaffObj* pSO) {}
 
         //change/move commands
 	virtual void ChangeNotePitch(int nSteps) {}
@@ -162,8 +163,9 @@ public:
 
         //delete commands
 	void DeleteCaretSatffobj();
-    void DeleteCaretOrSelected();
+    void DeleteSelection();
     void DeleteTie(lmNote* pEndNote);
+    void DeleteStaffObj(lmStaffObj* pSO);
 
         //change/move commands
 	void ChangeNotePitch(int nSteps);
@@ -185,6 +187,7 @@ public:
 
 
 private:
+    void DeleteCaretOrSelected();
 
     bool TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap);
     void LogKeyEvent(wxString name, wxKeyEvent& event, int nTool=-1);

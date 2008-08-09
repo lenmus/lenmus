@@ -51,7 +51,6 @@
 #include "../ldp_parser/AuxString.h"
 
 #include "../graphic/GMObject.h"
-#include "../graphic/ShapeArch.h"
 
 // access to global external variables (to disable mouse interaction with the score)
 extern bool g_fReleaseVersion;            // in TheApp.cpp
@@ -269,13 +268,43 @@ void lmScoreCanvas::DeleteCaretSatffobj()
 	pCP->Submit(new lmCmdDeleteObject(pVCursor, sName, m_pDoc));
 }
 
+void lmScoreCanvas::DeleteStaffObj(lmStaffObj* pSO)
+{
+	//delete the StaffObj.
+    //caret is updated only if it was pointing to the deleted object
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+    //prepare command and submit it
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = wxString::Format(_("Delete %s"), pSO->GetName().c_str() );
+	pCP->Submit(new lmCmdDeleteStaffObj(pVCursor, sName, m_pDoc, pSO));
+}
+
 void lmScoreCanvas::DeleteCaretOrSelected()
 {
-    //If there is a selection, deleted all objects in the selection.
+    //If there is a selection, delete all objects in the selection.
     //Else delete staffobj pointed by caret
 
-    //TODO. For now delete staffobj pointed by caret
-    DeleteCaretSatffobj();
+    if (m_pView->SomethingSelected())
+        DeleteSelection();
+    else
+        DeleteCaretSatffobj();
+}
+
+void lmScoreCanvas::DeleteSelection()
+{
+    //Deleted all objects in the selection.
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Delete selection");
+	pCP->Submit(new lmCmdDeleteSelection(pVCursor, sName, m_pDoc, m_pView->GetSelection()) );
 }
 
 void lmScoreCanvas::DeleteTie(lmNote* pEndNote)
@@ -996,36 +1025,7 @@ wxMenu* lmScoreCanvas::GetContextualMenu()
 void lmScoreCanvas::OnCut(wxCommandEvent& event)
 {
 	WXUNUSED(event);
-
-    switch(m_pMenuGMO->GetType())
-    {
-        case eGMO_ShapeTie:
-            DeleteTie( ((lmShapeTie*)m_pMenuGMO)->GetEndNote() );
-            break;
-
-        case eGMO_ShapeStaff:
-        case eGMO_ShapeArch:
-        case eGMO_ShapeBarline:
-        case eGMO_ShapeBeam:
-        case eGMO_ShapeBrace:
-        case eGMO_ShapeBracket:
-        case eGMO_ShapeClef:
-        case eGMO_ShapeComposite:
-        case eGMO_ShapeGlyph:
-        case eGMO_ShapeInvisible:
-        case eGMO_ShapeLine:
-        case eGMO_ShapeMultiAttached:
-        case eGMO_ShapeNote:
-        case eGMO_ShapeRest:
-        case eGMO_ShapeStem:
-        case eGMO_ShapeText:
-        case eGMO_ShapeTuplet:
-            break;
-
-        default:
-            lmScoreObj* pSO = m_pMenuGMO->GetScoreOwner();
-            wxLogMessage( pSO->Dump() );
-    }
+    DeleteSelection();
 }
 
 void lmScoreCanvas::OnCopy(wxCommandEvent& event)

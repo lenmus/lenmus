@@ -62,6 +62,7 @@ class lmBoxSystem;
 class lmShapeStaff;
 class lmBoxSliceVStaff;
 class lmGMObject;
+class lmGMSelection;
 
 
 //Abstract class. All views must derive from it
@@ -146,6 +147,10 @@ public:
     lmVStaffCursor* GetVCursor();
 
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
+
+    //information
+    bool SomethingSelected();
+    lmGMSelection* GetSelection();
 
 
 private:

@@ -677,6 +677,16 @@ lmGMSelection::lmGMSelection()
 {
 }
 
+lmGMSelection::lmGMSelection(lmGMSelection* pSel)
+{
+    lmGMObject* pGMO = pSel->GetFirst();
+    while(pGMO)
+    {
+        m_Selection.push_back(pGMO);
+        pGMO = pSel->GetNext();
+    }
+}
+
 lmGMSelection::~lmGMSelection()
 {
     m_Selection.clear();

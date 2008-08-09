@@ -176,6 +176,11 @@ enum
     MENU_File_Export_jpg,
     MENU_OpenBook,
 
+     // Menu Edit
+    MENU_Edit_Copy,
+    MENU_Edit_Cut,
+    MENU_Edit_Paste,
+
      // Menu View
     MENU_View_Tools,
     MENU_View_Rulers,
@@ -289,9 +294,12 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_File_New, lmMainFrame::OnFileUpdateUI)
 
     //Edit menu/toolbar
-    EVT_UPDATE_UI (wxID_COPY, lmMainFrame::OnEditUpdateUI)
-    EVT_UPDATE_UI (wxID_PASTE, lmMainFrame::OnEditUpdateUI)
-    EVT_UPDATE_UI (wxID_CUT, lmMainFrame::OnEditUpdateUI)
+    EVT_MENU      (MENU_Edit_Copy, lmMainFrame::OnEditCopy)
+    EVT_UPDATE_UI (MENU_Edit_Copy, lmMainFrame::OnEditUpdateUI)
+    EVT_MENU      (MENU_Edit_Cut, lmMainFrame::OnEditCut)
+    EVT_UPDATE_UI (MENU_Edit_Cut, lmMainFrame::OnEditUpdateUI)
+    EVT_MENU      (MENU_Edit_Paste, lmMainFrame::OnEditPaste)
+    EVT_UPDATE_UI (MENU_Edit_Paste, lmMainFrame::OnEditUpdateUI)
     EVT_UPDATE_UI (wxID_UNDO, lmMainFrame::OnEditUpdateUI)
     EVT_UPDATE_UI (wxID_REDO, lmMainFrame::OnEditUpdateUI)
 
@@ -582,15 +590,15 @@ void lmMainFrame::CreateMyToolBar()
     //Edit toolbar
     m_pTbEdit = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbEdit->SetToolBitmapSize(nSize);
-    m_pTbEdit->AddTool(wxID_COPY, _T("Copy"),
+    m_pTbEdit->AddTool(MENU_Edit_Copy, _T("Copy"),
             wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_copy_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Copy"));
-    m_pTbEdit->AddTool(wxID_CUT, _T("Cut"),
+    m_pTbEdit->AddTool(MENU_Edit_Cut, _T("Cut"),
             wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_cut_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Cut"));
-    m_pTbEdit->AddTool(wxID_PASTE, _T("Paste"),
+    m_pTbEdit->AddTool(MENU_Edit_Paste, _T("Paste"),
             wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_paste_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Paste"));
@@ -2167,11 +2175,66 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
 
 }
 
+void lmMainFrame::OnEditCut(wxCommandEvent& event)
+{
+    //When invoked, current active child frame must be an lmEditFrame
+
+    lmMDIChildFrame* pChild = GetActiveChild();
+	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
+    {
+        ((lmEditFrame*)pChild)->GetView()->GetController()->DeleteSelection();
+    }
+}
+
+void lmMainFrame::OnEditCopy(wxCommandEvent& event)
+{
+    //When invoked, current active child frame must be an lmEditFrame
+
+    lmMDIChildFrame* pChild = GetActiveChild();
+	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
+    {
+        lmTODO(_T("[lmMainFrame::OnEditCopy] All code in this method"));
+    }
+}
+
+void lmMainFrame::OnEditPaste(wxCommandEvent& event)
+{
+    //When invoked, current active child frame must be an lmEditFrame
+
+    lmMDIChildFrame* pChild = GetActiveChild();
+	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
+    {
+        lmTODO(_T("[lmMainFrame::OnEditPaste] All code in this method"));
+    }
+}
+
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
     lmMDIChildFrame* pChild = GetActiveChild();
 	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-    event.Enable(fEnable);
+    if (!fEnable)
+    {
+        event.Enable(false);
+    }
+    else
+    {
+        switch (event.GetId())
+        {
+            case MENU_Edit_Copy:
+            case MENU_Edit_Cut:
+                // Copy & cut: enable only if something selected
+                event.Enable( ((lmEditFrame*)pChild)->GetView()->SomethingSelected() );
+                break;
+            case MENU_Edit_Paste:
+                //Enable only if something saved in clipboard
+                event.Enable(false);    //TODO
+                break;
+
+            // Other commnads: always enabled
+            default:
+                event.Enable(true);
+        }
+    }
 }
 
 void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)

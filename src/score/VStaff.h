@@ -453,6 +453,21 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
+class lmVCmdDeleteStaffObj : public lmVStaffCmd
+{
+public:
+    lmVCmdDeleteStaffObj(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    ~lmVCmdDeleteStaffObj() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pSO != (lmStaffObj*)NULL); }
+
+protected:
+    lmStaffObj*         m_pSO;          //deleted note
+
+};
+
+//---------------------------------------------------------------------------------------
 class lmVCmdDeleteTie : public lmVStaffCmd
 {
 public:

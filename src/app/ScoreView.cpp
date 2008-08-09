@@ -2670,3 +2670,16 @@ void lmScoreView::DeselectAllGMObjects(bool fRedraw)
             OnUpdate(this, new lmUpdateHint(lmREDRAW));
     }
 }
+
+bool lmScoreView::SomethingSelected()
+{
+    //returns true if there are objects currently selected 
+
+    return m_graphMngr.GetNumObjectsSelected() > 0;
+}
+
+lmGMSelection* lmScoreView::GetSelection()
+{
+    return m_graphMngr.GetBoxScore()->GetSelection();
+}
+

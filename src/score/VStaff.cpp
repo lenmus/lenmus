@@ -1965,6 +1965,25 @@ void lmVCmdDeleteObject::RollBack(lmUndoItem* pUndoItem)
 
 
 //----------------------------------------------------------------------------------------
+// lmVCmdDeleteStaffObj implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdDeleteStaffObj::lmVCmdDeleteStaffObj(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                       lmStaffObj* pSO)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pSO = pSO;
+    pVStaff->Cmd_DeleteObject(pUndoItem, pSO);
+}
+
+void lmVCmdDeleteStaffObj::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_DeleteObject(pUndoItem, m_pSO);
+}
+
+
+
+//----------------------------------------------------------------------------------------
 // lmVCmdDeleteTie implementation
 //----------------------------------------------------------------------------------------
 

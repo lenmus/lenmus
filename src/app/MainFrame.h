@@ -123,6 +123,9 @@ public:
 
 
     // Edit menu events
+    void OnEditCut(wxCommandEvent& event);
+    void OnEditCopy(wxCommandEvent& event);
+    void OnEditPaste(wxCommandEvent& event);
     void OnEditUpdateUI(wxUpdateUIEvent& event);
 
     // Debug menu events

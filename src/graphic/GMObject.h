@@ -436,6 +436,7 @@ class lmGMSelection
 {
 public:
     lmGMSelection();
+    lmGMSelection(lmGMSelection* pSel);
     ~lmGMSelection();
     
     void AddToSelection(lmGMObject* pGMO);

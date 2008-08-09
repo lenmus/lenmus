@@ -118,6 +118,54 @@ protected:
 };
 
 
+// Delete staffobj command
+//------------------------------------------------------------------------------------
+class lmCmdDeleteStaffObj: public lmScoreCommand
+{
+public:
+    lmCmdDeleteStaffObj(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                        lmStaffObj* pSO);
+    ~lmCmdDeleteStaffObj();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmVStaff*           m_pVStaff;      //affected VStaff
+    lmStaffObj*         m_pSO;          //deleted note
+    bool                m_fDeleteSO;    //to control if m_pSO must be deleted
+};
+
+
+// Delete the current selection
+//------------------------------------------------------------------------------------
+class lmCmdDeleteSelection: public lmScoreCommand
+{
+public:
+    lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxString& name,
+                         lmScoreDocument *pDoc, lmGMSelection* pSelection);
+    ~lmCmdDeleteSelection();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+
+    typedef struct
+    {
+        int             nObjType;       //type of object to delete
+        bool            fSODeleted;     //to control if the SO must be deleted
+        lmScoreObj*     pSO;            //the ScoreObj to delete
+        void*           pParm1;         //parameter 1
+        void*           pParm2;         //parameter 2
+    } lmDeletedSO;
+
+    std::list<lmDeletedSO*>     m_ScoreObjects;     //deleted ScoreObjs
+};
+
+
 // Delete tie command
 //------------------------------------------------------------------------------------
 class lmCmdDeleteTie: public lmScoreCommand

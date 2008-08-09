@@ -74,7 +74,7 @@ public:
 	lmBoxSystem* GetSystem(int nSystem);	//nSystem = 1..n
 
     //selected objects management
-    //inline lmGMSelection* GetSelection() { return &m_Selection; }
+    inline lmGMSelection* GetSelection() { return &m_Selection; }
     //void AddToSelection(lmGMSelection* pSelection);
     void AddToSelection(lmGMObject* pGMO);
     void AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
