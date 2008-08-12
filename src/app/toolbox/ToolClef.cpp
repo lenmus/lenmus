@@ -40,7 +40,6 @@
 #include "wx/clrpicker.h"
 
 #include "ToolsBox.h"
-#include "ToolsBox.h"
 #include "ToolClef.h"
 #include "ToolGroup.h"
 #include "../ArtProvider.h"         //to use ArtProvider for managing icons

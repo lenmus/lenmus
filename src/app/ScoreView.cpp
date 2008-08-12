@@ -2649,6 +2649,9 @@ void lmScoreView::SelectGMObject(lmGMObject* pGMO, bool fRedraw)
     m_graphMngr.NewSelection(pGMO);
     if (fRedraw)
         OnUpdate(this, new lmUpdateHint(lmREDRAW));
+
+    //synchronize toolbox selected options with current selected object properties
+    GetController()->SynchronizeToolBoxWithSelection();
 }
 
 void lmScoreView::SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
@@ -2659,6 +2662,9 @@ void lmScoreView::SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits u
     m_graphMngr.NewSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
     if (fRedraw)
         OnUpdate(this, new lmUpdateHint(lmREDRAW));
+
+    //synchronize toolbox selected options with current selected object properties
+    GetController()->SynchronizeToolBoxWithSelection();
 }
 
 void lmScoreView::DeselectAllGMObjects(bool fRedraw)
@@ -2669,6 +2675,9 @@ void lmScoreView::DeselectAllGMObjects(bool fRedraw)
         if (fRedraw)
             OnUpdate(this, new lmUpdateHint(lmREDRAW));
     }
+
+    //restore toolbox selected options to those previously selected by user
+    GetController()->RestoreToolBoxSelections();
 }
 
 bool lmScoreView::SomethingSelected()

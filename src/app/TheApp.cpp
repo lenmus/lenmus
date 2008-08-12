@@ -576,7 +576,7 @@ bool lmTheApp::OnInit(void)
         // if time for another check, do it
         if (fDoCheck) {
             g_pMainFrame->SilentlyCheckForUpdates(true);
-            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, MENU_CheckForUpdates);
+            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, lmMENU_CheckForUpdates);
             wxPostEvent(g_pMainFrame, event);
         }
     }

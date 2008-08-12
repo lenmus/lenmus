@@ -220,7 +220,8 @@ void lmVStaff::OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
     // Note pStartNote (whose diatonic name is nStep) has accidentals that must be
 	// propagated to the context and to the following notes until the end of the measure
 	// or until a new accidental for the same step is found
-
+    
+    lmTODO(_T("[lmVStaff::OnContextUpdated] All code in this method"));
 }
 
 int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
@@ -709,7 +710,7 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
     }
 }
 
-void lmVStaff::Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
+void lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 {
     //delete the requested object, and log info to undo history
     wxASSERT(pUndoItem);
@@ -731,7 +732,7 @@ void lmVStaff::Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
     m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
 }
 
-void lmVStaff::UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO)
+void lmVStaff::UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 {
     //un-delete the object, according to info in history
 
@@ -775,6 +776,57 @@ void lmVStaff::UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)
     pEndNote->CreateTie(pStartNote, pEndNote);
 }
 
+void lmVStaff::Cmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote)
+{
+    //add a tie
+    pEndNote->CreateTie(pStartNote, pEndNote);
+}
+
+void lmVStaff::UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote)
+{
+    //remove tie
+    pEndNote->DeleteTiePrev();
+}
+
+void lmVStaff::Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots)
+{
+    //Change the number of dots of NoteRests pNR. As a consecuence, the measure duration
+    //must be reviewed, as in could change
+
+
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+
+    //save current note/rest dots
+    wxASSERT(pUndoItem);
+    pUndoItem->GetUndoData()->AddParam<int>( pNR->GetNumDots() );
+
+    //change dots and compute timepos increment/decrement
+    float rTimeIncr = pNR->GetTimePosIncrement();
+    pNR->ChangeDots(nDots);
+    rTimeIncr -= pNR->GetTimePosIncrement();
+
+    //recompute current measure duration
+    m_cStaffObjs.RecomputeSegmentDuration(pNR, -rTimeIncr);
+}
+
+void lmVStaff::UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR)
+{
+    //Restore original dots
+
+
+    //recover original dots
+    wxASSERT(pUndoItem);
+    int nDots = pUndoItem->GetUndoData()->GetParam<int>();
+
+    //restore dots and compute timepos increment/decrement
+    float rTimeIncr = pNR->GetTimePosIncrement();
+    pNR->ChangeDots(nDots);
+    rTimeIncr -= pNR->GetTimePosIncrement();
+
+    //recompute current measure duration
+    m_cStaffObjs.RecomputeSegmentDuration(pNR, -rTimeIncr);
+}
 
 
 //---------------------------------------------------------------------------------------
@@ -1686,7 +1738,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
     // distance (in timepos) is equal to candidate note duration.
     // The search will fail as soon as we find a rest or a note with different pitch.
 
-    //get targt pitch and voice
+    //get target pitch and voice
     lmAPitch anPitch = pEndNote->GetAPitch();
     int nVoice = pEndNote->GetVoice();
 
@@ -1733,6 +1785,60 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
 
 		if(pIter->StartOfList()) break;
         pIter->MovePrev();
+    }
+    delete pIter;
+    return (lmNote*)NULL;        //no suitable note found
+
+}
+
+lmNote* lmVStaff::FindPossibleEndOfTie(lmNote* pStartNote)
+{
+    // This method explores forwards to try to find a note ("the candidate note") that
+    // can be tied (as end of tie) with pStartNote.
+    //
+    // Algorithm:
+    // Find the first comming note of the same pitch and voice, and verify that 
+    // distance (in timepos) is equal to start note duration.
+    // The search will fail as soon as we find a rest or a note with different pitch.
+
+    //get target pitch and voice
+    lmAPitch anPitch = pStartNote->GetAPitch();
+    int nVoice = pStartNote->GetVoice();
+
+    //define a forwards iterator
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorTo(eTR_ByTime, pStartNote);
+    if (!pIter->EndOfList())
+        pIter->MoveNext();
+
+    //do search
+    while(!pIter->EndOfList())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
+        {
+            if (((lmNoteRest*)pSO)->IsNote())
+            {
+                if (((lmNote*)pSO)->CanBeTied(anPitch))
+                {
+                    delete pIter;
+                    return (lmNote*)pSO;    // candidate found
+                }
+                else
+                {
+                    // a note in the same voice with different pitch found. Imposible to tie
+                    delete pIter;
+                    return (lmNote*)NULL;   // no suitable note found
+                }
+            }
+            else
+            {
+                // a rest in the same voice found. Imposible to tie
+                delete pIter;
+                return (lmNote*)NULL;   // no suitable note found
+            }
+        }
+
+        pIter->MoveNext();
     }
     delete pIter;
     return (lmNote*)NULL;        //no suitable note found
@@ -1946,25 +2052,6 @@ void lmVCmdInsertKeySignature::RollBack(lmUndoItem* pUndoItem)
 
 
 //----------------------------------------------------------------------------------------
-// lmVCmdDeleteObject implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdDeleteObject::lmVCmdDeleteObject(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                       lmStaffObj* pSO)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pSO = pSO;
-    pVStaff->Cmd_DeleteObject(pUndoItem, pSO);
-}
-
-void lmVCmdDeleteObject::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_DeleteObject(pUndoItem, m_pSO);
-}
-
-
-
-//----------------------------------------------------------------------------------------
 // lmVCmdDeleteStaffObj implementation
 //----------------------------------------------------------------------------------------
 
@@ -1973,12 +2060,12 @@ lmVCmdDeleteStaffObj::lmVCmdDeleteStaffObj(lmVStaff* pVStaff, lmUndoItem* pUndoI
     : lmVStaffCmd(pVStaff)
 {
     m_pSO = pSO;
-    pVStaff->Cmd_DeleteObject(pUndoItem, pSO);
+    pVStaff->Cmd_DeleteStaffObj(pUndoItem, pSO);
 }
 
 void lmVCmdDeleteStaffObj::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->UndoCmd_DeleteObject(pUndoItem, m_pSO);
+    m_pVStaff->UndoCmd_DeleteStaffObj(pUndoItem, m_pSO);
 }
 
 
@@ -1999,3 +2086,43 @@ void lmVCmdDeleteTie::RollBack(lmUndoItem* pUndoItem)
 {
     m_pVStaff->UndoCmd_DeleteTie(pUndoItem, m_pEndNote);
 }
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdAddTie implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdAddTie::lmVCmdAddTie(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                           lmNote* pStartNote, lmNote* pEndNote)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pStartNote = pStartNote;
+    m_pEndNote = pEndNote;
+    pVStaff->Cmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
+}
+
+void lmVCmdAddTie::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdChangeDots implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdChangeDots::lmVCmdChangeDots(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                   lmNoteRest* pNR, int nDots)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pNR = pNR;
+    pVStaff->Cmd_ChangeDots(pUndoItem, pNR, nDots);
+}
+
+void lmVCmdChangeDots::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_ChangeDots(pUndoItem, m_pNR);
+}
+

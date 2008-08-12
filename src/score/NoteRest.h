@@ -96,6 +96,10 @@ public:
     inline float GetTimePosIncrement() { return m_rDuration; }
     wxString GetLDPNoteType();
 
+    //methods related to dots
+    inline int GetNumDots() { return m_nNumDots; }
+    void ChangeDots(int nDots);
+
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
 	inline void OnIncludedInBeam(lmBeam* pBeam) { m_pBeam = pBeam; }
@@ -159,7 +163,6 @@ protected:
     //duration and time modifiers
     float       m_rDuration;            //duration as defined in MusicXML: duration/divisions
     int         m_nNumDots;             //number of dots: 0..n (3 max?)
-    bool        m_fCalderon;            //tiene calderón
 
     // beaming information: only valid if m_pBeam != NULL
     lmBeam*     m_pBeam;                //if not NULL the note/rest is in this beam

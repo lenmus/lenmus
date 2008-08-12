@@ -42,18 +42,41 @@
 #include "ColorScheme.h"
 
 
-//available tools
-enum lmEEditTool 
+//available tool pages
+enum lmEToolPage 
 {
-	lmTOOL_NONE = -1,
-	lmTOOL_SELECTION = 0,
-	lmTOOL_CLEFS,
-	lmTOOL_KEY_SIGN,
-	lmTOOL_TIME_SIGN,
-	lmTOOL_NOTES,
-	lmTOOL_BARLINES,
-    //TO_ADD: Add, before this line, a new lmTOOL_XXXXX code for the new tool
-	lmTOOL_MAX		//this MUST BE the last one
+	lmPAGE_NONE = -1,
+	lmPAGE_SELECTION = 0,
+	lmPAGE_CLEFS,
+	lmPAGE_KEY_SIGN,
+	lmPAGE_TIME_SIGN,
+	lmPAGE_NOTES,
+	lmPAGE_BARLINES,
+    //TO_ADD: Add, before this line, a new lmPAGE_XXXXX code for the new tool
+	lmPAGE_MAX		//this MUST BE the last one
+};
+
+enum lmEToolGroupID
+{
+	//lmPAGE_NOTES
+    lmGRP_NoteDuration,         //notes duration group
+    lmGRP_NoteAcc,              //Note accidentals group
+    lmGRP_NoteDots,             //Note dots group
+    lmGRP_TieTuplet,            //Ties and tuplets group
+
+	//lmPAGE_CLEFS
+    lmGRP_ClefType,
+    lmGRP_TimeType,
+    lmGRP_KeyType,
+
+};
+
+// Only needed for groups needing an ID for each tool
+enum lmEToolID
+{
+    //lmGRP_TieTuplet
+    lmTOOL_NOTE_TIE,
+    lmTOOL_NOTE_TUPLET,
 };
 
 class lmCheckButton;
@@ -77,18 +100,18 @@ public:
 	inline lmColorScheme* GetColors() { return &m_colors; }
 
 	//current tool and its options
-	inline lmEEditTool GetSelectedTool() const { return m_nSelTool; }
-	void SelectTool(lmEEditTool nTool);
-	inline wxPanel* GetToolPanel(lmEEditTool nPanel) { return m_cPanels[nPanel]; }
+	inline lmEToolPage GetSelectedToolPage() const { return m_nSelTool; }
+	void SelectToolPage(lmEToolPage nTool);
+	inline wxPanel* GetToolPanel(lmEToolPage nPanel) { return m_cPanels[nPanel]; }
 
 
-	inline lmToolNotes* GetNoteProperties() const { return (lmToolNotes*)m_cPanels[lmTOOL_NOTES]; }
+	inline lmToolNotes* GetNoteProperties() const { return (lmToolNotes*)m_cPanels[lmPAGE_NOTES]; }
     //TO_ADD: Add, before this line, a new method to get new tool properties
 
 private:
 	void CreateControls();
 	void SelectButton(int nTool);
-    wxPanel* CreatePanel(lmEEditTool nPanel);
+    wxPanel* CreatePanel(lmEToolPage nPanel);
 
 	enum {
 		NUM_BUTTONS = 16,
@@ -97,7 +120,7 @@ private:
     wxPanel*		m_pEmptyPage;           //an empty page
     wxPanel*		m_pCurPage;             //currently displayed page
     wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
-    lmEEditTool		m_nSelTool;				//current selected tool
+    lmEToolPage		m_nSelTool;				//current selected tool
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
 
 	//panels for tools' options

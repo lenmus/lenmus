@@ -260,7 +260,7 @@ IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmMDIChildFrame)
 
 
 BEGIN_EVENT_TABLE(lmTextBookFrame, lmMDIChildFrame)
-    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_OpenFile, lmTextBookFrame::OnToolbar)
+    EVT_TOOL_RANGE(lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmTextBookFrame::OnToolbar)
 
     EVT_BUTTON      (ID_BOOKMARKS_REMOVE, lmTextBookFrame::OnToolbar)
     EVT_BUTTON      (ID_BOOKMARKS_ADD, lmTextBookFrame::OnToolbar)
@@ -1058,17 +1058,17 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
 {
     switch (event.GetId())
     {
-        case MENU_eBook_GoBack :
+        case lmMENU_eBook_GoBack :
             m_HtmlWin->HistoryBack();
             NotifyPageChanged();
             break;
 
-        case MENU_eBook_GoForward :
+        case lmMENU_eBook_GoForward :
             m_HtmlWin->HistoryForward();
             NotifyPageChanged();
             break;
 
-        case MENU_eBook_PagePrev :
+        case lmMENU_eBook_PagePrev :
             {
                 int nItem = m_pContentsBox->PagePrev();
                 const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
@@ -1078,7 +1078,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case MENU_eBook_PageNext :
+        case lmMENU_eBook_PageNext :
             {
                 int nItem = m_pContentsBox->PageNext();
                 const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
@@ -1088,7 +1088,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case MENU_eBookPanel :
+        case lmMENU_eBookPanel :
             {
                 if (! (m_Splitter && m_NavigPan))
                     return ;
@@ -1143,7 +1143,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             break;
 
 #if wxUSE_PRINTING_ARCHITECTURE
-        case MENU_eBook_Print :
+        case lmMENU_eBook_Print :
             {
                 if (m_Printer == NULL)
                     m_Printer = new wxHtmlEasyPrinting(_("Help Printing"), this);
@@ -1155,7 +1155,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             break;
 #endif
 
-        case MENU_eBook_OpenFile :
+        case lmMENU_eBook_OpenFile :
             {
                 wxString filemask = wxString(
                     _("HTML files (*.html;*.htm)|*.html;*.htm|")) +
@@ -1468,31 +1468,31 @@ void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
 {
     bool fEnable = false;
     switch(event.GetId()) {
-        case MENU_eBook_PageNext:
+        case lmMENU_eBook_PageNext:
             fEnable = !m_pContentsBox->IsLastPage();
             break;
 
-        case MENU_eBook_PagePrev:
+        case lmMENU_eBook_PagePrev:
             fEnable = !m_pContentsBox->IsFirstPage();
             break;
 
-        case MENU_eBook_GoBack:
+        case lmMENU_eBook_GoBack:
             fEnable = m_HtmlWin->HistoryCanBack();
             break;
 
-        case MENU_eBook_GoForward:
+        case lmMENU_eBook_GoForward:
             fEnable = m_HtmlWin->HistoryCanForward();
             break;
 
         default:
             // Always enabled when TextBookFrame is visible. Disabled on MainFrame
-            //      MENU_eBookPanel,
-            //      MENU_eBook_Print,
-            //      MENU_eBook_OpenFile,
+            //      lmMENU_eBookPanel,
+            //      lmMENU_eBook_Print,
+            //      lmMENU_eBook_OpenFile,
             //      MENU_Zoom_Decrease,
             //      MENU_Zoom_Increase,
             fEnable = true;
-            pToolBar->ToggleTool(MENU_eBookPanel, IsNavPanelVisible());
+            pToolBar->ToggleTool(lmMENU_eBookPanel, IsNavPanelVisible());
     }
     event.Enable(fEnable);
 }

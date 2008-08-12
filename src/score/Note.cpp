@@ -1408,21 +1408,22 @@ void lmNote::PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool f
 
 }
 
-void lmNote::ChangeAccidentals(int nAccSteps)
+void lmNote::ChangeAccidentals(int nAcc)
 {
-	int nAcc = m_anPitch.Accidentals();
-	int nStep = m_anPitch.Step();
-	if (nAccSteps == 0)
-		nAcc = 0;		//remove accidentals
-	else
-		nAcc += nAccSteps;		//increment/decrement accidentals
+	if (m_anPitch.Accidentals() == nAcc) return;     //nothing to change
+
+    int nStep = m_anPitch.Step();
+	//if (nAccSteps == 0)
+	//	nAcc = 0;		//remove accidentals
+	//else
+	//	nAcc += nAccSteps;		//increment/decrement accidentals
 	m_anPitch.SetAccidentals(nAcc);
 	OnAccidentalsChanged(nStep, nAcc);
 }
 
 void lmNote::OnAccidentalsChanged(int nStep, int nNewAcc)
 {
-	//accidentals have been changed to nNewAcc. This method recompute
+	//accidentals have been changed to nNewAcc. This method recomputes
 	//accidentals to display
 
 	lmContext* pContext = NewUpdatedContext();
@@ -1779,6 +1780,15 @@ void lmNote::DeleteStemShape()
 		delete m_pStemShape;
 		m_pStemShape = (lmShapeStem*)NULL;
 	}
+}
+
+void lmNote::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
+{
+    if (IsTiedToPrev())
+    {
+        pMenu->AppendSeparator();
+        pMenu->Append(lmPOPUP_DeleteTiePrev, _("Delete tie &previous"));
+    }
 }
 
 //==========================================================================================

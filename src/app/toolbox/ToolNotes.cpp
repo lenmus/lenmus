@@ -42,6 +42,7 @@
 #include "ToolsBox.h"
 #include "ToolNotes.h"
 #include "ToolGroup.h"
+#include "ToolBoxEvents.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "../../widgets/Button.h"
 #include "../TheApp.h"              //to use GetMainFrame()
@@ -59,6 +60,8 @@ enum {
 	lmID_BT_NoteDuration = 2600,
     lmID_BT_NoteAcc = lmID_BT_NoteDuration + lm_NUM_DUR_BUTTONS,
     lmID_BT_NoteDots = lmID_BT_NoteAcc + lm_NUM_ACC_BUTTONS,
+    lmID_BT_Tie = lmID_BT_NoteDots + lm_NUM_DOT_BUTTONS,
+    lmID_BT_Tuplet,
 };
 
 
@@ -77,6 +80,9 @@ lmToolNotes::lmToolNotes(wxWindow* parent)
 
     //Note dots group
     m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
+
+    //Ties and tuplets group
+    m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
 
 
         
@@ -225,8 +231,6 @@ lmEAccidentals lmGrpNoteAcc::GetNoteAcc()
 }
 
 
-
-
 //--------------------------------------------------------------------------------
 // lmGrpNoteDots implementation
 //--------------------------------------------------------------------------------
@@ -274,3 +278,77 @@ int lmGrpNoteDots::GetNoteDots()
     return m_nSelButton + 1;
 }
 
+
+
+
+
+//--------------------------------------------------------------------------------
+// lmGrpTieTuplet implementation
+//--------------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(lmGrpTieTuplet, lmToolGroup)
+    EVT_BUTTON  (lmID_BT_Tie, lmGrpTieTuplet::OnTieButton)
+    EVT_BUTTON  (lmID_BT_Tuplet, lmGrpTieTuplet::OnTupletButton)
+END_EVENT_TABLE()
+
+
+lmGrpTieTuplet::lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmToolGroup(pParent)
+{
+    CreateControls(pMainSizer);
+}
+
+void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Modifiers"));
+
+    //create the specific controls for this group
+
+    // Tie button
+	wxBoxSizer* pRow1Sizer = new wxBoxSizer( wxHORIZONTAL );
+	
+    wxSize btSize(24, 24);
+	m_pBtnTie = new lmCheckButton(this, lmID_BT_Tie, wxBitmap(24,24));
+    m_pBtnTie->SetBitmapUp(_T("tie"), _T(""), btSize);
+    m_pBtnTie->SetBitmapDown(_T("tie"), _T("button_selected_flat"), btSize);
+    m_pBtnTie->SetBitmapOver(_T("tie"), _T("button_over_flat"), btSize);
+	pRow1Sizer->Add( m_pBtnTie, wxSizerFlags(0).Border(wxALL, 2) );
+	
+    // Tuplet button
+	m_pBtnTuplet = new lmCheckButton(this, lmID_BT_Tuplet, wxBitmap(24,24));
+    m_pBtnTuplet->SetBitmapUp(_T("tuplet"), _T(""), btSize);
+    m_pBtnTuplet->SetBitmapDown(_T("tuplet"), _T("button_selected_flat"), btSize);
+    m_pBtnTuplet->SetBitmapOver(_T("tuplet"), _T("button_over_flat"), btSize);
+	pRow1Sizer->Add( m_pBtnTuplet, wxSizerFlags(0).Border(wxALL, 2) );
+	
+	pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
+	
+	this->Layout();
+}
+
+void lmGrpTieTuplet::OnTieButton(wxCommandEvent& event)
+{
+    WXUNUSED(event);
+    PostToolBoxEvent(lmTOOL_NOTE_TIE, event.IsChecked());
+}
+
+void lmGrpTieTuplet::OnTupletButton(wxCommandEvent& event)
+{
+    WXUNUSED(event);
+    PostToolBoxEvent(lmTOOL_NOTE_TUPLET, event.IsChecked());
+}
+
+void lmGrpTieTuplet::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
+{
+    //post tool box event to the active controller
+    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+    if (pWnd)
+    {
+	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        lmToolBoxEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+                             fSelected);
+        ::wxPostEvent( pWnd, event );
+    }
+}

@@ -45,6 +45,9 @@ public:
     lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
     ~lmGrpClefType() {}
 
+    //implement virtual methods
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_ClefType; }
+
 	//access to options
 	lmEClefType GetClefType();
 
@@ -74,6 +77,9 @@ class lmGrpTimeType: public lmToolGroup
 public:
     lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
     ~lmGrpTimeType() {}
+
+    //implement virtual methods
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_TimeType; }
 
 	void OnButton(wxCommandEvent& event);
 
@@ -108,6 +114,9 @@ class lmGrpKeyType: public lmToolGroup
 public:
     lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
     ~lmGrpKeyType() {}
+
+    //implement virtual methods
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_KeyType; }
 
     void OnKeyType(wxCommandEvent& event);
     void OnKeyList(wxCommandEvent& event);

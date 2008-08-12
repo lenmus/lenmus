@@ -41,6 +41,7 @@ class lmScoreHighlightEvent;
 class lmScoreView;
 class lmScoreDocument;
 class lmGMSelection;
+class lmToolBoxEvent;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -86,8 +87,11 @@ public:
     virtual void DeleteStaffObj(lmStaffObj* pSO) {}
 
         //change/move commands
+    virtual void AddTie(lmNote* pStartNote, lmNote* pEndNote) {}
 	virtual void ChangeNotePitch(int nSteps) {}
-	virtual void ChangeNoteAccidentals(int nSteps) {}
+	virtual void ChangeNoteAccidentals(int nAcc) {}
+	virtual void ChangeNoteDots(int nDots) {}
+    virtual void ChangeTie(lmNote* pStartNote, lmNote* pEndNote) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 
 
@@ -106,6 +110,12 @@ public:
     virtual void OnPaste(wxCommandEvent& event) {}
     virtual void OnColor(wxCommandEvent& event) {}
     virtual void OnProperties(wxCommandEvent& event) {}
+    virtual void OnDeleteTiePrev(wxCommandEvent& event) {}
+
+    //call backs
+    virtual void SynchronizeToolBoxWithSelection() {}
+    virtual void RestoreToolBoxSelections() {}
+
 
 
 protected:
@@ -140,6 +150,7 @@ public:
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 	void OnKeyPress(wxKeyEvent& event);
     void OnKeyDown(wxKeyEvent& event);
+    void OnToolBoxEvent(lmToolBoxEvent& event);
 
 	//commands without Do/Undo support
     void PlayScore();
@@ -168,11 +179,18 @@ public:
     void DeleteStaffObj(lmStaffObj* pSO);
 
         //change/move commands
+    void AddTie(lmNote* pStartNote, lmNote* pEndNote);
 	void ChangeNotePitch(int nSteps);
-	void ChangeNoteAccidentals(int nSteps);
+	void ChangeNoteAccidentals(int nAcc);
+	void ChangeNoteDots(int nDots);
+    void ChangeTie(lmNote* pStartNote, lmNote* pEndNote);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 
 
+
+    //call backs
+    void SynchronizeToolBoxWithSelection();
+    void RestoreToolBoxSelections();
 
 	//contextual menus
 	wxMenu* GetContextualMenu();
@@ -183,6 +201,7 @@ public:
     void OnPaste(wxCommandEvent& event);
     void OnColor(wxCommandEvent& event);
     void OnProperties(wxCommandEvent& event);
+    void OnDeleteTiePrev(wxCommandEvent& event);
 
 
 
@@ -198,6 +217,10 @@ private:
     void SelectNoteDuration(int iButton);
     void SelectNoteAccidentals(bool fNext);
     void SelectNoteDots(bool fNext);
+
+    //managing selections
+    bool IsSelectionValidForTies(lmNote** ppStartNote, lmNote** ppEndNote);
+
 
 
     lmScoreView*        m_pView;        //owner view
@@ -218,6 +241,13 @@ private:
 
     //buffer for commands requiring several keystrokes
     wxString        m_sCmd;
+
+
+    //to save options selected by user in ToolBox
+    bool            m_fToolBoxSavedOptions;
+    int             m_nTbAcc;
+    int             m_nTbDots;
+    int             m_nTbDuration;
 
 
     DECLARE_EVENT_TABLE()

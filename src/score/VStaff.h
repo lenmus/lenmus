@@ -135,7 +135,8 @@ public:
                          lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
 	//Edition commands
-	//--- inserting StaffObs
+
+	    //--- inserting StaffObs
     lmBarline* Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType = lm_eBarlineSimple,
                                  bool fVisible = true);
 
@@ -157,12 +158,21 @@ public:
                                     int nBeatType, bool fVisible);
 
 
-    //--- deleting StaffObjs
-    void Cmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+        //--- deleting StaffObjs
+    void Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
     void Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
+
+        //--- Modifying staffobjs
+    void Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
+
+        //--- Adding other markup
+    void Cmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
+
 
 
     //--- Undoing edition commands
+
+	    //--- inserting StaffObs
     void UndoCmd_InsertBarline(lmUndoItem* pUndoItem, lmBarline* pBarline);
     void UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef);
     void UndoCmd_InsertKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
@@ -170,8 +180,16 @@ public:
     void UndoCmd_InsertRest(lmUndoItem* pUndoItem, lmRest* pRest);
     void UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
 
-    void UndoCmd_DeleteObject(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+        //--- deleting StaffObjs
+    void UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
     void UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
+
+        //--- Modifying staffobjs
+    void UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR);
+
+        //--- Adding other markup
+    void UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
+
 
 
     //error management
@@ -189,7 +207,9 @@ public:
     lmLUnits GetStaffLineThick(int nStaff);
     inline bool HideStaffLines() { return GetOptionBool(_T("StaffLines.Hide")); }
 
+    //ties
     lmNote* FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded = false);
+    lmNote* FindPossibleEndOfTie(lmNote* pStartNote);
 
 	//units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);
@@ -438,21 +458,6 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-class lmVCmdDeleteObject : public lmVStaffCmd
-{
-public:
-    lmVCmdDeleteObject(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmStaffObj* pSO);
-    ~lmVCmdDeleteObject() {}
-
-    void RollBack(lmUndoItem* pUndoItem);
-    inline bool Success() { return (m_pSO != (lmStaffObj*)NULL); }
-
-protected:
-    lmStaffObj*         m_pSO;          //deleted note
-
-};
-
-//---------------------------------------------------------------------------------------
 class lmVCmdDeleteStaffObj : public lmVStaffCmd
 {
 public:
@@ -479,6 +484,37 @@ public:
 
 protected:
     lmNote*         m_pEndNote;     //owner note
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdAddTie : public lmVStaffCmd
+{
+public:
+    lmVCmdAddTie(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
+    ~lmVCmdAddTie() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return m_pEndNote->IsTiedToPrev(); }
+
+protected:
+    lmNote*         m_pStartNote;
+    lmNote*         m_pEndNote;
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdChangeDots : public lmVStaffCmd
+{
+public:
+    lmVCmdChangeDots(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
+    ~lmVCmdChangeDots() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return true; }
+
+protected:
+    lmNoteRest*     m_pNR;     //affected note/rest
 
 };
 

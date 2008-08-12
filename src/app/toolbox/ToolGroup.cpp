@@ -36,6 +36,7 @@
 
 #include "ToolGroup.h"
 #include "ToolPage.h"
+#include "ToolBoxEvents.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "../../widgets/Button.h"
 #include "../TheApp.h"              //to use GetMainFrame()
@@ -129,7 +130,9 @@ void lmToolButtonsGroup::SelectButton(int iB)
 		if (i != iB)
 			m_pButton[i]->Release();
 		else
+        {
 			m_pButton[i]->Press();
+        }
 	}
 
     //return focus to active view
@@ -175,4 +178,22 @@ void lmToolButtonsGroup::OnButton(wxCommandEvent& event)
 	    pThis->SelectButton(-1);       //no button selected
     else
 	    pThis->SelectButton(iB);
+
+    
+    //inform derived class
+    pThis->OnButtonSelected(m_nSelButton);
+}
+
+void lmToolButtonsGroup::OnButtonSelected(int nSelButton)
+{
+    //post tool box event to the active controller
+    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+    if (pWnd)
+    {
+	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        lmToolBoxEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(),
+                             nSelButton, true);
+        ::wxPostEvent( pWnd, event );
+    }
 }

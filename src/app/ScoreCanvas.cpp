@@ -44,13 +44,13 @@
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 #include "toolbox/ToolsBox.h"
 #include "toolbox/ToolNotes.h"
+#include "toolbox/ToolBoxEvents.h"
 #include "global.h"
 #include "KbdCmdParser.h"
-
 #include "../ldp_parser/LDPParser.h"
 #include "../ldp_parser/AuxString.h"
-
 #include "../graphic/GMObject.h"
+#include "../score/VStaff.h"
 
 // access to global external variables (to disable mouse interaction with the score)
 extern bool g_fReleaseVersion;            // in TheApp.cpp
@@ -61,12 +61,6 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 // implementation of lmController
 //-------------------------------------------------------------------------------------
 
-//IDs for contextual menus
-const int lmID_CUT = wxNewId();
-const int lmID_COPY = wxNewId();
-const int lmID_PASTE = wxNewId();
-const int lmID_COLOR = wxNewId();
-const int lmID_PROPERTIES = wxNewId();
 
 
 BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
@@ -75,11 +69,12 @@ BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
     EVT_ERASE_BACKGROUND(lmController::OnEraseBackground)
 
 	//contextual menus
-	EVT_MENU	(lmID_CUT, lmController::OnCut)
-    EVT_MENU	(lmID_COPY, lmController::OnCopy)
-    EVT_MENU	(lmID_PASTE, lmController::OnPaste)
-    EVT_MENU	(lmID_COLOR, lmController::OnColor)
-    EVT_MENU	(lmID_PROPERTIES, lmController::OnProperties)
+	EVT_MENU	(lmPOPUP_Cut, lmController::OnCut)
+    EVT_MENU	(lmPOPUP_Copy, lmController::OnCopy)
+    EVT_MENU	(lmPOPUP_Paste, lmController::OnPaste)
+    EVT_MENU	(lmPOPUP_Color, lmController::OnColor)
+    EVT_MENU	(lmPOPUP_Properties, lmController::OnProperties)
+    EVT_MENU	(lmPOPUP_DeleteTiePrev, lmController::OnDeleteTiePrev)
 
 END_EVENT_TABLE()
 
@@ -134,6 +129,7 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
     EVT_MOUSE_EVENTS(lmScoreCanvas::OnMouseEvent)
     EVT_PAINT(lmScoreCanvas::OnPaint)
     LM_EVT_SCORE_HIGHLIGHT(lmScoreCanvas::OnVisualHighlight)
+    LM_EVT_TOOLBOX(lmScoreCanvas::OnToolBoxEvent)
 
 END_EVENT_TABLE()
 
@@ -156,6 +152,7 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocum
     m_fCmd = false;
     m_fAlt = false;
     m_fShift = false;
+    m_fToolBoxSavedOptions = false;
 }
 
 lmScoreCanvas::~lmScoreCanvas()
@@ -265,7 +262,7 @@ void lmScoreCanvas::DeleteCaretSatffobj()
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_("Delete %s"), pCursorSO->GetName().c_str() );
-	pCP->Submit(new lmCmdDeleteObject(pVCursor, sName, m_pDoc));
+	pCP->Submit(new lmCmdDeleteStaffObj(pVCursor, sName, m_pDoc, pCursorSO));
 }
 
 void lmScoreCanvas::DeleteStaffObj(lmStaffObj* pSO)
@@ -314,6 +311,27 @@ void lmScoreCanvas::DeleteTie(lmNote* pEndNote)
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Delete tie");
 	pCP->Submit(new lmCmdDeleteTie(sName, m_pDoc, pEndNote) );
+}
+
+void lmScoreCanvas::ChangeTie(lmNote* pStartNote, lmNote* pEndNote)
+{
+    //Add/remove tie from the two selected notes (there could be other objects selected beetween
+    //the notes)
+
+    if (pEndNote->IsTiedToPrev())
+        DeleteTie(pEndNote);
+    else
+        AddTie(pStartNote, pEndNote);
+}
+
+void lmScoreCanvas::AddTie(lmNote* pStartNote, lmNote* pEndNote)
+{
+    //Tie received note with previous one.
+    //Preconditions: pEndNote is not tied and has been checked that can be tied to previous one
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Add tie");
+	pCP->Submit(new lmCmdAddTie(sName, m_pDoc, pStartNote, pEndNote) );
 }
 
 void lmScoreCanvas::InsertClef(lmEClefType nClefType)
@@ -430,18 +448,101 @@ void lmScoreCanvas::ChangeNotePitch(int nSteps)
 	pCP->Submit(new lmCmdChangeNotePitch(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
 }
 
-void lmScoreCanvas::ChangeNoteAccidentals(int nSteps)
+void lmScoreCanvas::ChangeNoteAccidentals(int nAcc)
 {
-	//change note accidentals for note at current cursor position
+	//change note accidentals for current selected notes
+
     lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
-    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
-	wxASSERT(pCursorSO);
-	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
+
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change note accidentals");
-	pCP->Submit(new lmCmdChangeNoteAccidentals(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
+	pCP->Submit(new lmCmdChangeNoteAccidentals(pVCursor, sName, m_pDoc,
+                            m_pView->GetSelection(), nAcc) );
 }
+
+void lmScoreCanvas::ChangeNoteDots(int nDots)
+{
+	//change note dots for current selected notes
+
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Change note dots");
+	pCP->Submit(new lmCmdChangeNoteRestDots(pVCursor, sName, m_pDoc,
+                            m_pView->GetSelection(), nDots) );
+}
+
+void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	wxASSERT(pToolBox);
+	lmEToolPage nTool = pToolBox->GetSelectedToolPage();
+
+    switch (event.GetToolGroupID())
+    {
+        case lmGRP_NoteAcc:       //selection of accidental event
+            if (m_pView->SomethingSelected())
+            {
+			    lmToolNotes* pNoteOptions = pToolBox->GetNoteProperties();
+			    int nAcc;
+                switch(pNoteOptions->GetNoteAccidentals())
+                {
+                    case lm_eNatural:       nAcc = 0;   break;
+                    case lm_eFlat:          nAcc = -1;  break;
+                    case lm_eSharp:         nAcc = 1;   break;
+                    case lm_eFlatFlat:      nAcc = -2;  break;
+                    case lm_eDoubleSharp:   nAcc = 2;   break;
+                    case lm_eSharpSharp:    nAcc = 2;   break;
+                    case lm_eNaturalFlat:   nAcc = -1;  break;
+                    case lm_eNaturalSharp:  nAcc = 1;   break;
+                    default:
+                        nAcc = 0;
+                }
+                ChangeNoteAccidentals(nAcc);
+            }
+            break;
+
+        case lmGRP_NoteDots:              //selection of dots
+            if (m_pView->SomethingSelected())
+            {
+			    lmToolNotes* pNoteOptions = pToolBox->GetNoteProperties();
+			    ChangeNoteDots( pNoteOptions->GetNoteDots() );
+            }
+            break;
+
+        case lmGRP_TieTuplet:              //Tie, Tuplet
+            if (m_pView->SomethingSelected())
+            {
+                switch(event.GetToolID())
+                {
+                    case lmTOOL_NOTE_TIE:
+                        {
+                            lmNote* pStartNote;
+                            lmNote* pEndNote;
+                            if (IsSelectionValidForTies(&pStartNote, &pEndNote))
+                                ChangeTie(pStartNote, pEndNote);
+                        }
+                        break;
+
+                    case lmTOOL_NOTE_TUPLET:
+                        wxMessageBox( wxString::Format(_T("Change Tuplet. Selected=%s"),
+                            (event.ToolSelected() ? _T("yes") : _T("no")) ));
+                        break;
+
+                    default:
+                        wxASSERT(false);
+                }
+            }
+            break;
+
+
+        default:
+            ;   //ignore the event
+    }
+}
+
 
 //--------------------------------------------------------------------------------------------
 
@@ -487,13 +588,13 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 {
     //We are processing a Key Down event
-	lmEEditTool nTool = lmTOOL_NONE;
+	lmEToolPage nTool = lmPAGE_NONE;
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	if (!pToolBox) {
 		wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] No ToolBox!"));
 	}
 	else
-		nTool = pToolBox->GetSelectedTool();
+		nTool = pToolBox->GetSelectedToolPage();
 
     int nKeyCode = event.GetKeyCode();
 	bool fUnknown = false;
@@ -519,27 +620,27 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			break;
 
 		case WXK_F2:
-			if (pToolBox) pToolBox->SelectTool((lmEEditTool)0);
+			if (pToolBox) pToolBox->SelectToolPage((lmEToolPage)0);
 			break;
 
 		case WXK_F3:
-			if (pToolBox) pToolBox->SelectTool((lmEEditTool)1);
+			if (pToolBox) pToolBox->SelectToolPage((lmEToolPage)1);
 			break;
 
 		case WXK_F4:
-			if (pToolBox) pToolBox->SelectTool((lmEEditTool)2);
+			if (pToolBox) pToolBox->SelectToolPage((lmEToolPage)2);
 			break;
 
 		case WXK_F5:
-			if (pToolBox) pToolBox->SelectTool((lmEEditTool)3);
+			if (pToolBox) pToolBox->SelectToolPage((lmEToolPage)3);
 			break;
 
 		case WXK_F6:
-			if (pToolBox) pToolBox->SelectTool((lmEEditTool)4);
+			if (pToolBox) pToolBox->SelectToolPage((lmEToolPage)4);
 			break;
 
 		case WXK_F7:
-			if (pToolBox) pToolBox->SelectTool((lmEEditTool)5);
+			if (pToolBox) pToolBox->SelectToolPage((lmEToolPage)5);
 			break;
 
         case WXK_DELETE:
@@ -565,7 +666,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 	{
 	    switch(nTool)
 	    {
-            case lmTOOL_NONE:	//---------------------------------------------------------
+            case lmPAGE_NONE:	//---------------------------------------------------------
 		    {
                 fUnknown = false;       //assume it will be processed
 			    switch (nKeyCode)
@@ -586,7 +687,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			    break;
 		    }
 
-            case lmTOOL_NOTES:	//---------------------------------------------------------
+            case lmPAGE_NOTES:	//---------------------------------------------------------
 		    {
 			    lmToolNotes* pNoteOptions = pToolBox->GetNoteProperties();
 			    lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
@@ -724,10 +825,10 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                 if (fUnknown && wxIsprint(nKeyCode))
                     m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
 
-			    break;      //case lmTOOL_NOTES
+			    break;      //case lmPAGE_NOTES
 		    }
 
-            case lmTOOL_CLEFS:	//---------------------------------------------------------
+            case lmPAGE_CLEFS:	//---------------------------------------------------------
 		    {
                 fUnknown = false;       //assume it will be processed
 			    switch (nKeyCode)
@@ -755,7 +856,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			    break;
 		    }
 
-            case lmTOOL_BARLINES:	//---------------------------------------------------------
+            case lmPAGE_BARLINES:	//---------------------------------------------------------
 		    {
                 fUnknown = false;       //assume it will be processed
 			    switch (nKeyCode)
@@ -984,25 +1085,25 @@ wxMenu* lmScoreCanvas::GetContextualMenu()
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
 
-    pItem = new wxMenuItem(m_pMenu, lmID_CUT, _("&Cut"));
+    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Cut, _("&Cut"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nIconSize) );
     m_pMenu->Append(pItem);
 
-    pItem = new wxMenuItem(m_pMenu, lmID_COPY, _("&Copy"));
+    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Copy, _("&Copy"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nIconSize) );
     m_pMenu->Append(pItem);
 
-    pItem = new wxMenuItem(m_pMenu, lmID_PASTE, _("&Paste"));
+    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Paste, _("&Paste"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nIconSize) );
     m_pMenu->Append(pItem);
 
 	m_pMenu->AppendSeparator();
 
-    pItem = new wxMenuItem(m_pMenu, lmID_COLOR, _("Colour"));
+    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Color, _("Colour"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_colors"), wxART_TOOLBAR, nIconSize) );
     m_pMenu->Append(pItem);
 
-    pItem = new wxMenuItem(m_pMenu, lmID_PROPERTIES, _("Properties"));
+    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Properties, _("Properties"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_tools"), wxART_TOOLBAR, nIconSize) );
     m_pMenu->Append(pItem);
 
@@ -1010,11 +1111,11 @@ wxMenu* lmScoreCanvas::GetContextualMenu()
 
 
 #else
-	m_pMenu->Append(lmID_CUT, _("&Cut"));
-	m_pMenu->Append(lmID_COPY, _("&Copy"));
-	m_pMenu->Append(lmID_PASTE, _("&Paste"));
+	m_pMenu->Append(lmPOPUP_Cut, _("&Cut"));
+	m_pMenu->Append(lmPOPUP_Copy, _("&Copy"));
+	m_pMenu->Append(lmPOPUP_Paste, _("&Paste"));
 	m_pMenu->AppendSeparator();
-	m_pMenu->Append(lmID_COLOR, _("Colour"));
+	m_pMenu->Append(lmPOPUP_Color, _("Colour"));
 	//m_pMenu->AppendSeparator();
 
 #endif
@@ -1049,11 +1150,23 @@ void lmScoreCanvas::OnProperties(wxCommandEvent& event)
 	m_pMenuOwner->OnProperties(m_pMenuGMO);
 }
 
+void lmScoreCanvas::OnDeleteTiePrev(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+	wxASSERT(m_pMenuOwner->GetScoreObjType() == lmSOT_ComponentObj);
+    wxASSERT( ((lmComponentObj*)m_pMenuOwner)->GetType() == lm_eStaffObj);
+    wxASSERT( ((lmStaffObj*)m_pMenuOwner)->IsNoteRest());
+    wxASSERT( ((lmNoteRest*)m_pMenuOwner)->IsNote());
+
+    DeleteTie( (lmNote*)m_pMenuOwner );
+}
+
+
 void lmScoreCanvas::SelectNoteDuration(int iButton)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	if (pToolBox)
-		((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SetNoteDuration(iButton);
+		((lmToolNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SetNoteDurationButton(iButton);
 }
 
 void lmScoreCanvas::SelectNoteAccidentals(bool fNext)
@@ -1062,9 +1175,9 @@ void lmScoreCanvas::SelectNoteAccidentals(bool fNext)
 	if (pToolBox)
     {
         if (fNext)
-            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNextAccidental();
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SelectNextAccidental();
         else
-            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectPrevAccidental();
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SelectPrevAccidental();
     }
 }
 
@@ -1074,8 +1187,202 @@ void lmScoreCanvas::SelectNoteDots(bool fNext)
 	if (pToolBox)
     {
         if (fNext)
-            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectNextDot();
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SelectNextDot();
         else
-            ((lmToolNotes*)pToolBox->GetToolPanel(lmTOOL_NOTES))->SelectPrevDot();
+            ((lmToolNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SelectPrevDot();
     }
+}
+
+void lmScoreCanvas::SynchronizeToolBoxWithSelection()
+{
+    //synchronize toolbox selected options with current selected object properties
+
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (!pToolBox) return;
+
+    switch( pToolBox->GetSelectedToolPage() )
+    {
+        case lmPAGE_NONE:
+            return;         //nothing selected!
+
+        case lmPAGE_NOTES:
+            //sync. duration, dots, accidentals
+            {
+                lmToolNotes* pTool = (lmToolNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES);
+
+                //find common values for all selected notes, if any
+                lmGMSelection* pSelection = m_pView->GetSelection();
+                lmGMObject* pGMO = pSelection->GetFirst();
+                bool fFirst = true;
+                int nAcc, nDots, nDuration;
+                while (pGMO)
+                {
+                    if (pGMO->GetType() == eGMO_ShapeNote)
+                    {
+                        lmNote* pNote = (lmNote*)pGMO->GetScoreOwner();
+                        int nThisDuration = (int)pNote->GetNoteType() - 1;
+                        int nThisDots = pNote->GetNumDots() - 1;
+                        int nThisAcc = pNote->GetAPitch().Accidentals();
+                        if (fFirst)
+                        {
+                            fFirst = false;
+                            nDuration = nThisDuration;
+                            nDots = nThisDots;
+                            nAcc = nThisAcc;
+                        }
+                        else
+                        {
+                            if (nDuration != nThisDuration)
+                                nDuration = -1;
+                            if (nDots != nThisDots)
+                                nDots = -1;
+                            if (nAcc != nThisAcc)
+                                nAcc = -10;
+                        }
+                    }
+                    pGMO = pSelection->GetNext();
+                }
+
+                //if any note found, proceed to sync. the toolbox
+                if (!fFirst)
+                {
+                    //save current options
+                    if (!m_fToolBoxSavedOptions)
+                    {
+                        m_fToolBoxSavedOptions = true;
+                        m_nTbAcc = pTool->GetNoteAccButton();
+                        m_nTbDots = pTool->GetNoteDotsButton();
+                        m_nTbDuration = pTool->GetNoteDurationButton();
+                    }
+                    //translate Acc
+                    switch(nAcc)
+                    {
+                        case -2:  nAcc = 3;  break;
+                        case -1:  nAcc = 1;  break;
+                        case  0:  nAcc = -1; break;
+                        case  1:  nAcc = 2;  break;
+                        case  2:  nAcc = 4;  break;
+                        default:
+                            nAcc = -1;
+                    }
+
+                    pTool->SetNoteDotsButton(nDots);
+                    pTool->SetNoteAccButton(nAcc);
+                    pTool->SetNoteDurationButton( nDuration );
+                }
+            }
+            break;
+
+        case lmPAGE_SELECTION:
+        case lmPAGE_CLEFS:
+        case lmPAGE_KEY_SIGN:
+        case lmPAGE_TIME_SIGN:
+        case lmPAGE_BARLINES:
+            lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithSelection] Code to sync. this tool"));
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+}
+
+void lmScoreCanvas::RestoreToolBoxSelections()
+{
+    //restore toolbox selected options to those previously selected by user
+
+    if (!m_fToolBoxSavedOptions) return;        //nothing to do
+
+    m_fToolBoxSavedOptions = false;
+
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (!pToolBox) return;
+
+    switch( pToolBox->GetSelectedToolPage() )
+    {
+        case lmPAGE_NONE:
+            return;         //nothing selected!
+
+        case lmPAGE_NOTES:
+            //restore duration, dots, accidentals
+            {
+                lmToolNotes* pTool = (lmToolNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES);
+                pTool->SetNoteDotsButton(m_nTbDots);
+                pTool->SetNoteAccButton(m_nTbAcc);
+                pTool->SetNoteDurationButton(m_nTbDuration);
+            }
+            break;
+
+        case lmPAGE_SELECTION:
+        case lmPAGE_CLEFS:
+        case lmPAGE_KEY_SIGN:
+        case lmPAGE_TIME_SIGN:
+        case lmPAGE_BARLINES:
+            lmTODO(_T("[lmScoreCanvas::RestoreToolBoxSelections] Code to restore this tool"));
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+}
+
+bool lmScoreCanvas::IsSelectionValidForTies(lmNote** ppStartNote, lmNote** ppEndNote)
+{
+    //Returns TRUE if current selection is valid for adding/removing a tie.
+    //If valid, returns pointers to start and end notes, if not NULL parameters received
+
+
+    //Conditions to be valid:
+    //   1. The first note found either is tied to next or can be tied to next one
+    //   2. If condition 1 is true, the next note must also be in the selection
+
+    //verify conditions
+    lmGMSelection* pSelection = m_pView->GetSelection();
+    bool fValid = false;
+    lmNote* pStart = (lmNote*)NULL;
+    lmNote* pEnd = (lmNote*)NULL;
+
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote)
+        {
+            if (!pStart)
+            {
+                //first note found.
+                //Verify if it is tied to next or can be tied to next
+                pStart = (lmNote*)pGMO->GetScoreOwner();
+                if (pStart->IsTiedToNext())
+                    pEnd = pStart->GetTiedNoteNext();   //Tied to next.
+                else
+                    pEnd = pStart->GetVStaff()->FindPossibleEndOfTie(pStart);
+            }
+            else
+            {
+                //Start note processed. verify if next note is also in the selection
+                if (pEnd)
+                {
+                    if (pEnd == (lmNote*)pGMO->GetScoreOwner())
+                    {
+                        fValid = true;      //ok. End note is in the selection
+                        break;    
+                    }
+                }
+                else
+                    return false;
+            }
+
+        }
+        pGMO = pSelection->GetNext();
+    }
+
+    if (fValid)
+    {
+        if (ppStartNote)
+            *ppStartNote = pStart;
+        if (ppEndNote)
+            *ppEndNote = pEnd;
+        return true;
+    }
+    else
+        return (lmNote*)NULL;
 }

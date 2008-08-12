@@ -99,25 +99,6 @@ protected:
 };
 
 
-// Delete object command
-//------------------------------------------------------------------------------------
-class lmCmdDeleteObject: public lmScoreCommand
-{
-public:
-    lmCmdDeleteObject(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc);
-    ~lmCmdDeleteObject();
-
-    //implementation of pure virtual methods in base class
-    bool Do();
-    bool UndoCommand();
-
-protected:
-    lmVStaff*           m_pVStaff;      //affected VStaff
-    lmStaffObj*         m_pSO;          //deleted note
-    bool                m_fDeleteSO;    //to control if m_pSO must be deleted
-};
-
-
 // Delete staffobj command
 //------------------------------------------------------------------------------------
 class lmCmdDeleteStaffObj: public lmScoreCommand
@@ -180,6 +161,24 @@ public:
 
 protected:
     lmNote*     m_pEndNote;     //end of tie note
+};
+
+
+// Add tie command
+//------------------------------------------------------------------------------------
+class lmCmdAddTie: public lmScoreCommand
+{
+public:
+    lmCmdAddTie(const wxString& name, lmScoreDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
+    ~lmCmdAddTie();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmNote*     m_pStartNote;   //start of tie
+    lmNote*     m_pEndNote;     //end of tie
 };
 
 
@@ -349,20 +348,49 @@ class lmCmdChangeNoteAccidentals: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeNoteAccidentals(const wxString& name, lmScoreDocument *pDoc, lmNote* pNote,
-					int nSteps);
-    ~lmCmdChangeNoteAccidentals() {}
+    lmCmdChangeNoteAccidentals(lmVStaffCursor* pVCursor, const wxString& name,
+                               lmScoreDocument *pDoc, lmGMSelection* pSelection,
+					           int nAcc);
+    ~lmCmdChangeNoteAccidentals();
 
     //implementation of pure virtual methods in base class
     bool Do();
     bool UndoCommand();
 
 protected:
-	int				m_nSteps;
-	lmNote*			m_pNote;
+	int                 m_nAcc;
+
+    typedef struct
+    {
+        lmNote*         pNote;          //note to modify
+        int             nAcc;           //current accidentals
+    }
+    lmCmdNoteData;
+
+    std::list<lmCmdNoteData*>  m_Notes;    //modified notes
 };
 
-	void ChangeNoteAccidentals(int nSteps);
+
+// Change note dots command
+//------------------------------------------------------------------------------------
+class lmCmdChangeNoteRestDots: public lmScoreCommand
+{
+public:
+
+    lmCmdChangeNoteRestDots(lmVStaffCursor* pVCursor, const wxString& name,
+                               lmScoreDocument *pDoc, lmGMSelection* pSelection,
+					           int nDots);
+    ~lmCmdChangeNoteRestDots();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+	int                     m_nDots;
+    std::list<lmNoteRest*>  m_NoteRests;    //modified note/rests
+};
+
 
 
 

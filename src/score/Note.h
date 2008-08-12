@@ -69,6 +69,8 @@ public:
     wxString    SourceLDP(int nIndent);
     wxString    SourceXML(int nIndent);
 
+	void CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO);
+
 
     // methods related to note positioning information
     lmLUnits GetPitchShift();

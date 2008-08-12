@@ -373,6 +373,33 @@ enum lmEBracketSymbol
 };
 
 
+//IDs for events that must be public
+enum
+{
+    lmMENU_CheckForUpdates = 1100,
+
+    // eBook controller events, to be known by lmTextBookController
+    lmMENU_eBookPanel,
+    lmMENU_eBook_GoBack,
+    lmMENU_eBook_GoForward,
+    lmMENU_eBook_PagePrev,
+    lmMENU_eBook_PageNext,
+    lmMENU_eBook_Print,
+    lmMENU_eBook_OpenFile,
+
+    //contextual menus
+    lmPOPUP_Cut,
+    lmPOPUP_Copy,
+    lmPOPUP_Paste,
+    lmPOPUP_Color,
+    lmPOPUP_Properties,
+    lmPOPUP_DeleteTiePrev,
+
+    lmMENU_Last_Public_ID
+};
+
+
+
 //-------------------------------------------------------------------------------------
 // class lmUSize. Size object in lmLUnits. Based on wxSize
 //-------------------------------------------------------------------------------------

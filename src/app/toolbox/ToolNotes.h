@@ -33,6 +33,7 @@
 class wxBitmapComboBox;
 class lmCheckButton;
 
+
 //--------------------------------------------------------------------------------
 // Group for Note duration
 //--------------------------------------------------------------------------------
@@ -44,6 +45,9 @@ public:
 
     //implement virtual methods
     void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteDuration; }
+    //inline int GetNumTools();
+    //inline long GetToolID(int nTool);
 
 	//access to options
 	lmENoteType GetNoteDuration();
@@ -62,6 +66,7 @@ public:
 
     //implement virtual methods
     void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteAcc; }
 
 	//access to options
 	lmEAccidentals GetNoteAcc();
@@ -80,10 +85,40 @@ public:
 
     //implement virtual methods
     void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteDots; }
 
 	//access to options
 	int GetNoteDots();
 
+};
+
+
+//--------------------------------------------------------------------------------
+// Group for tuplets, ties, ...
+//--------------------------------------------------------------------------------
+class lmGrpTieTuplet: public lmToolGroup
+{
+public:
+    lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpTieTuplet() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_TieTuplet; }
+
+    //event handlers
+    void OnTieButton(wxCommandEvent& event);
+    void OnTupletButton(wxCommandEvent& event);
+
+	//access to options
+
+protected:
+    void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
+
+    lmCheckButton*      m_pBtnTie;
+    lmCheckButton*      m_pBtnTuplet;
+
+    DECLARE_EVENT_TABLE()
 };
 
 
@@ -101,26 +136,33 @@ public:
 	//access to options
 
     //interface with NoteDuration group
+    inline void SetNoteDuration(lmENoteType nNoteType) { return m_pGrpNoteDuration->SelectButton((int)nNoteType - 1); }
     inline lmENoteType GetNoteDuration() { return m_pGrpNoteDuration->GetNoteDuration(); }
-    inline void SetNoteDuration(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
+    inline int GetNoteDurationButton() { return m_pGrpNoteDuration->GetSelectedButton(); }
+    inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
 
     //interface with NoteAccidentals group
+    inline void SetNoteAccidentals(lmEAccidentals nAcc) { m_pGrpNoteAcc->SelectButton((int)nAcc - 1); }
     inline lmEAccidentals GetNoteAccidentals() { return m_pGrpNoteAcc->GetNoteAcc(); }
-    inline void SetNoteAcc(int iB) { m_pGrpNoteAcc->SelectButton(iB); }
     inline void SelectNextAccidental() { m_pGrpNoteAcc->SelectNextButton(); }
     inline void SelectPrevAccidental() { m_pGrpNoteAcc->SelectPrevButton(); }
+    inline int GetNoteAccButton() { return m_pGrpNoteAcc->GetSelectedButton(); }
+    inline void SetNoteAccButton(int iB) { m_pGrpNoteAcc->SelectButton(iB); }
 
     //interface with NoteDots group
+    inline void SetNoteDots(int nDots) { m_pGrpNoteDots->SelectButton(nDots - 1); }
     inline int GetNoteDots() { return m_pGrpNoteDots->GetNoteDots(); }
-    inline void SetNoteDots(int iB) { m_pGrpNoteDots->SelectButton(iB); }
     inline void SelectNextDot() { m_pGrpNoteDots->SelectNextButton(); }
     inline void SelectPrevDot() { m_pGrpNoteDots->SelectPrevButton(); }
+    inline int GetNoteDotsButton() { return m_pGrpNoteDots->GetSelectedButton(); }
+    inline void SetNoteDotsButton(int iB) { m_pGrpNoteDots->SelectButton(iB); }
+
 
 
     //interface with NoteheadType group
 	lmENoteHeads GetNoteheadType();
     //inline lmENoteHeads GetNoteheadType() { return m_pGrpNoteDuration->GetNoteDuration(); }
-    //inline void SetNoteDuration(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
+    //inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
 
 
 private:
@@ -129,6 +171,7 @@ private:
     lmGrpNoteDuration*  m_pGrpNoteDuration;
     lmGrpNoteAcc*       m_pGrpNoteAcc;
     lmGrpNoteDots*      m_pGrpNoteDots;
+    lmGrpTieTuplet*     m_pGrpTieTuplet;
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;

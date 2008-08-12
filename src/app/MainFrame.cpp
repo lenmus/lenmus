@@ -169,7 +169,7 @@ extern bool g_fBorderOnScores;          // in TheApp.cpp
 enum
 {
     // Menu File
-    MENU_File_New = MENU_Last_Public_ID,
+    MENU_File_New = lmMENU_Last_Public_ID,
     MENU_File_Import,
     MENU_File_Export,
     MENU_File_Export_bmp,
@@ -359,7 +359,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU (MENU_Help_About, lmMainFrame::OnAbout)
     EVT_MENU      (MENU_OpenHelp, lmMainFrame::OnOpenHelp)
     EVT_UPDATE_UI (MENU_OpenHelp, lmMainFrame::OnOpenHelpUI)
-    EVT_MENU      (MENU_CheckForUpdates, lmMainFrame::OnCheckForUpdates)
+    EVT_MENU      (lmMENU_CheckForUpdates, lmMainFrame::OnCheckForUpdates)
     EVT_MENU      (MENU_VisitWebsite, lmMainFrame::OnVisitWebsite)
 
         //general debug options. Always enabled
@@ -394,8 +394,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_TIMER       (lmID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
     //TextBookFrame
-    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_OpenFile, lmMainFrame::OnBookFrame)
-    EVT_UPDATE_UI_RANGE (MENU_eBookPanel, MENU_eBook_OpenFile, lmMainFrame::OnBookFrameUpdateUI)
+    EVT_TOOL_RANGE(lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmMainFrame::OnBookFrame)
+    EVT_UPDATE_UI_RANGE (lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmMainFrame::OnBookFrameUpdateUI)
 
     //other events
     EVT_CLOSE(lmMainFrame::OnCloseWindow)
@@ -874,27 +874,27 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow)
     m_pTbTextBooks->SetToolBitmapSize(nIconSize);
 
     //add tools
-    m_pTbTextBooks->AddTool(MENU_eBookPanel, _T("Index"),
+    m_pTbTextBooks->AddTool(lmMENU_eBookPanel, _T("Index"),
             wxArtProvider::GetBitmap(_T("tool_index_panel"), wxART_TOOLBAR, nIconSize),
             wxArtProvider::GetBitmap(_T("tool_index_panel_dis"), wxART_TOOLBAR, nIconSize),
             wxITEM_CHECK, _("Show/hide navigation panel") );
-    m_pTbTextBooks->ToggleTool(MENU_eBookPanel, false);
+    m_pTbTextBooks->ToggleTool(lmMENU_eBookPanel, false);
 
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_PagePrev, _T("Back page"),
+    m_pTbTextBooks->AddTool(lmMENU_eBook_PagePrev, _T("Back page"),
             wxArtProvider::GetBitmap(_T("tool_page_previous"), wxART_TOOLBAR, nIconSize),
             wxArtProvider::GetBitmap(_T("tool_page_previous_dis"), wxART_TOOLBAR, nIconSize),
             wxITEM_NORMAL, _("Previous page of current eMusicBook") );
-    m_pTbTextBooks->AddTool(MENU_eBook_PageNext, _T("Next page"),
+    m_pTbTextBooks->AddTool(lmMENU_eBook_PageNext, _T("Next page"),
             wxArtProvider::GetBitmap(_T("tool_page_next"), wxART_TOOLBAR, nIconSize),
             wxArtProvider::GetBitmap(_T("tool_page_next_dis"), wxART_TOOLBAR, nIconSize),
             wxITEM_NORMAL, _("Next page of current eMusicBook") );
 
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_GoBack, _T("Go back"),
+    m_pTbTextBooks->AddTool(lmMENU_eBook_GoBack, _T("Go back"),
             wxArtProvider::GetBitmap(_T("tool_previous"), wxART_TOOLBAR, nIconSize),
             _("Go to previous visited page"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_GoForward, _T("Go forward"),
+    m_pTbTextBooks->AddTool(lmMENU_eBook_GoForward, _T("Go forward"),
             wxArtProvider::GetBitmap(_T("tool_next"), wxART_TOOLBAR, nIconSize),
             _("Go to next visited page"), wxITEM_NORMAL );
 
@@ -1193,7 +1193,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     help_menu->AppendSeparator();
 
-	pItem = new wxMenuItem(help_menu, MENU_CheckForUpdates, _("Check now for &updates"),
+	pItem = new wxMenuItem(help_menu, lmMENU_CheckForUpdates, _("Check now for &updates"),
 							_("Connect to the Internet and check for program updates") );
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     help_menu->Append(pItem);
@@ -1210,7 +1210,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     help_menu->Append(MENU_OpenHelp, _("&Content\tCtrl+Alt+F1"),
         _("Open help book"), wxITEM_CHECK);
     help_menu->AppendSeparator();
-    help_menu->Append(MENU_CheckForUpdates, _("Check now for &updates"),
+    help_menu->Append(lmMENU_CheckForUpdates, _("Check now for &updates"),
         _("Connect to the Internet and check for program updates") );
     help_menu->Append(MENU_VisitWebsite, _("&Visit LenMus website"),
         _("Open the Internet browser and go to LenMus website") );
@@ -2167,7 +2167,7 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
         }
     }
     else if (fTextBookFrame) {
-        event.SetId(MENU_eBook_Print);
+        event.SetId(lmMENU_eBook_Print);
         lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
         pBookFrame->OnToolbar(event);
         event.Skip(false);      //no further processing

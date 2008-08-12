@@ -57,23 +57,6 @@ class lmToolBox;
 class lmWelcomeWnd;
 
 
-//IDs for menu events that must be public (i.e. to generate them by program)
-enum
-{
-    MENU_CheckForUpdates = 1100,
-
-    // eBook controller events, to be known by lmTextBookController
-    MENU_eBookPanel,
-    MENU_eBook_GoBack,
-    MENU_eBook_GoForward,
-    MENU_eBook_PagePrev,
-    MENU_eBook_PageNext,
-    MENU_eBook_Print,
-    MENU_eBook_OpenFile,
-
-    MENU_Last_Public_ID
-};
-
 
 // Class lmMainFrame defines the main MDI frame for the application
 class lmMainFrame: public lmDocMDIParentFrame

@@ -77,7 +77,6 @@ lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, fl
 	: lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
 {
     // initialize all atributes
-    m_fCalderon = false;
     m_nNoteType = nNoteType;
     m_nNumDots = nNumDots;
 
@@ -585,16 +584,34 @@ lmLUnits lmNoteRest::GetStaffOffset() const
     return m_pVStaff->GetStaffOffset(m_nStaffNum); 
 }
 
+void lmNoteRest::ChangeDots(int nDots)
+{
+    //Note duration could be altered by modifiers (i.e. a tuplet). Instead of investigating
+    //this, I just compute the current time modification factor
+    float rFactor = m_rDuration / NoteTypeToDuration(m_nNoteType, m_nNumDots);
 
-/*! Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
-    dots ".". It is assumed the source is normalized (no spaces, lower case)
-    @returns the enum value that corresponds to this note type, or -1 if error
-*/
+    //Now, compute the new duration with new dots
+    m_nNumDots = nDots;
+    m_rDuration = rFactor * NoteTypeToDuration(m_nNoteType, m_nNumDots);
+}
+
+
+
+
+
+//==========================================================================================
+// Global functions related to NoteRests
+//==========================================================================================
+
 int LDPNoteTypeToEnumNoteType(const wxString& sNoteType)
 {
     //OBSOLETE
     wxASSERT(false);
     return -1;
+
+    // Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
+    // dots ".". It is assumed the source is normalized (no spaces, lower case).
+    // Returns the enum value that corresponds to this note type, or -1 if error
 
     //wxChar cNoteType = sNoteType.GetChar(0);
     //switch (cNoteType) {

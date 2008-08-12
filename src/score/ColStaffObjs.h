@@ -108,6 +108,7 @@ private:
 	friend class lmSOIterator;
 
     void VoiceUsed(int nVoice);
+    void RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr);
     void ShiftRightTimepos(lmItCSO itStart, int nVoice);
     void ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart);
 
@@ -158,6 +159,9 @@ public:
 
 	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
     bool ShiftTime(float rTimeShift);
+
+    //actions to deal with staffobjs modifications
+    void RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr);
 
     //access StaffObjs
     lmBarline* GetBarlineOfMeasure(int nMeasure);      //1..n

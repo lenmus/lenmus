@@ -80,7 +80,7 @@ IMPLEMENT_CLASS(lmToolBox, wxPanel)
 
 // an entry for the tools buttons table
 typedef struct lmToolsDataStruct {
-    lmEEditTool nToolId;		// button ID
+    lmEToolPage nToolId;		// button ID
     wxString    sBitmap;		// bitmap name
 	wxString	sToolTip;		// tool tip
 } lmToolsData;
@@ -90,22 +90,22 @@ typedef struct lmToolsDataStruct {
 static const lmToolsData m_aToolsData[] = {
     //tool ID			bitmap name					tool tip
     //-----------		-------------				-------------
-    {lmTOOL_SELECTION,	_T("tool_selection"),		_("Select objects") },
-    {lmTOOL_CLEFS,		_T("tool_clefs"),			_("Add or edit clefs") },
-	{lmTOOL_KEY_SIGN,	_T("tool_key_signatures"),	_("Add or edit key signatures") },
-	{lmTOOL_TIME_SIGN,	_T("tool_time_signatures"),	_("Add or edit time signatures") },
-    {lmTOOL_NOTES,		_T("tool_notes"),			_("Add or edit notes") },
-	{lmTOOL_BARLINES,	_T("tool_barlines"),		_("Add or edit barlines and rehearsal marks") },
+    {lmPAGE_SELECTION,	_T("tool_selection"),		_("Select objects") },
+    {lmPAGE_CLEFS,		_T("tool_clefs"),			_("Add or edit clefs") },
+	{lmPAGE_KEY_SIGN,	_T("tool_key_signatures"),	_("Add or edit key signatures") },
+	{lmPAGE_TIME_SIGN,	_T("tool_time_signatures"),	_("Add or edit time signatures") },
+    {lmPAGE_NOTES,		_T("tool_notes"),			_("Add or edit notes") },
+	{lmPAGE_BARLINES,	_T("tool_barlines"),		_("Add or edit barlines and rehearsal marks") },
 	//TO_ADD: Add here information about the new tool
 	//NEXT ONE MUST BE THE LAST ONE
-	{lmTOOL_NONE,		_T(""), _T("") },
+	{lmPAGE_NONE,		_T(""), _T("") },
 };
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxBORDER_NONE)
 {
 	//Create the dialog
-	m_nSelTool = lmTOOL_NONE;
+	m_nSelTool = lmPAGE_NONE;
 
 	//set colors
 	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
@@ -113,14 +113,14 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
 	CreateControls();
 
 	//initialize panel's array
-    for (int i=0; i < (int)lmTOOL_MAX; i++)
+    for (int i=0; i < (int)lmPAGE_MAX; i++)
 	{
-        wxPanel* pPanel = CreatePanel((lmEEditTool)i);
+        wxPanel* pPanel = CreatePanel((lmEToolPage)i);
         if (pPanel) pPanel->Show(false);
         m_cPanels.push_back(pPanel);
     }
 
-	SelectTool(lmTOOL_NOTES);
+	SelectToolPage(lmPAGE_NOTES);
 
 }
 
@@ -142,7 +142,7 @@ void lmToolBox::CreateControls()
     wxSize btSize(BUTTON_SIZE, BUTTON_SIZE);
 	for (int iB=0; iB < iMax; iB++)
 	{
-		if (m_aToolsData[iB].nToolId == lmTOOL_NONE) break;
+		if (m_aToolsData[iB].nToolId == lmPAGE_NONE) break;
 
         m_pButton[iB] = new lmCheckButton(pSelectPanel, ID_BUTTON + iB, wxBitmap(btSize.x, btSize.y));
         m_pButton[iB]->SetBitmapUp(m_aToolsData[iB].sBitmap, _T(""), btSize);
@@ -177,20 +177,20 @@ lmToolBox::~lmToolBox()
 {
 }
 
-wxPanel* lmToolBox::CreatePanel(lmEEditTool nPanel)
+wxPanel* lmToolBox::CreatePanel(lmEToolPage nPanel)
 {
     switch(nPanel) {
-		case lmTOOL_SELECTION:
+		case lmPAGE_SELECTION:
             return (wxPanel*)NULL;
-        case lmTOOL_CLEFS:
+        case lmPAGE_CLEFS:
             return new lmToolClef(this);
-		case lmTOOL_KEY_SIGN:
+		case lmPAGE_KEY_SIGN:
             return (wxPanel*)NULL;
-		case lmTOOL_TIME_SIGN:
+		case lmPAGE_TIME_SIGN:
             return (wxPanel*)NULL;
-        case lmTOOL_NOTES:
+        case lmPAGE_NOTES:
             return new lmToolNotes(this);
-        case lmTOOL_BARLINES:
+        case lmPAGE_BARLINES:
             return (wxPanel*)NULL;	//new lmToolBarlinesOpt(m_pCurPage);
         //TO_ADD: Add a new case block for creating the new tool panel
         default:
@@ -203,16 +203,16 @@ wxPanel* lmToolBox::CreatePanel(lmEEditTool nPanel)
 void lmToolBox::OnButtonClicked(wxCommandEvent& event)
 {
     //identify button pressed
-	SelectTool((lmEEditTool)(event.GetId() - ID_BUTTON));
+	SelectToolPage((lmEToolPage)(event.GetId() - ID_BUTTON));
 
 	//lmController* pController = g_pTheApp->GetActiveController();
 	//pController->SetCursor(*wxCROSS_CURSOR);
     //wxLogMessage(_T("[lmToolBox::OnButtonClicked] Tool %d selected"), m_nSelTool);
 }
 
-void lmToolBox::SelectTool(lmEEditTool nTool)
+void lmToolBox::SelectToolPage(lmEToolPage nTool)
 {
-	if (!(nTool > lmTOOL_NONE && nTool < lmTOOL_MAX)) 
+	if (!(nTool > lmPAGE_NONE && nTool < lmPAGE_MAX)) 
         return;
 
     SelectButton((int)nTool);
@@ -236,7 +236,7 @@ void lmToolBox::SelectTool(lmEEditTool nTool)
 void lmToolBox::SelectButton(int nTool)
 {
 	// Set selected button as 'pressed' and all others as 'released'
-	for(int i=0; i < (int)lmTOOL_MAX; i++)
+	for(int i=0; i < (int)lmPAGE_MAX; i++)
 	{
 		if (i != nTool)
 			m_pButton[i]->Release();

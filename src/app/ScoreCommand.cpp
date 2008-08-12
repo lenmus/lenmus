@@ -94,63 +94,6 @@ bool lmScoreCommand::Undo()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdDeleteObject implementation
-//----------------------------------------------------------------------------------------
-
-lmCmdDeleteObject::lmCmdDeleteObject(lmVStaffCursor* pVCursor, const wxString& name,
-                                     lmScoreDocument *pDoc)
-        : lmScoreCommand(name, pDoc, pVCursor)
-{
-    m_pVStaff = pVCursor->GetVStaff();
-    m_pSO = pVCursor->GetStaffObj();
-    m_fDeleteSO = false;                //m_pSO is still owned by the score
-}
-
-lmCmdDeleteObject::~lmCmdDeleteObject()
-{
-    if (m_fDeleteSO)
-        delete m_pSO;       //delete frozen object
-}
-
-bool lmCmdDeleteObject::Do()
-{
-    //Proceed to delete the object
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdDeleteObject(m_pVStaff, pUndoItem, m_pSO);
-
-    if (pVCmd->Success())
-    {
-        m_fDeleteSO = true;                //m_pSO is no longer owned by the score
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
-	    return CommandDone(lmSCORE_MODIFIED);
-    }
-    else
-    {
-        m_fDeleteSO = false;
-        delete pUndoItem;
-        delete pVCmd;
-        return false;
-    }
-}
-
-bool lmCmdDeleteObject::UndoCommand()
-{
-    //undelete the object
-    m_UndoLog.UndoAll();
-    m_fDeleteSO = false;                //m_pSO is again owned by the score
-
-    //set cursor
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
-
-
-
-//----------------------------------------------------------------------------------------
 // lmCmdDeleteSelection implementation
 //----------------------------------------------------------------------------------------
 
@@ -254,7 +197,7 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
 lmCmdDeleteSelection::~lmCmdDeleteSelection()
 {
     //delete frozen objects and selection data
-    std::list<lmDeletedSO*>::iterator it = m_ScoreObjects.begin();
+    std::list<lmDeletedSO*>::iterator it;
     for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
     {
         if ((*it)->fSODeleted && (*it)->pSO)
@@ -269,7 +212,7 @@ bool lmCmdDeleteSelection::Do()
     //loop to delete the objects
     bool fSuccess = true;
     lmVStaffCmd* pVCmd;
-    std::list<lmDeletedSO*>::iterator it = m_ScoreObjects.begin();
+    std::list<lmDeletedSO*>::iterator it;
     for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
     {
         lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
@@ -339,7 +282,7 @@ bool lmCmdDeleteSelection::UndoCommand()
     m_UndoLog.UndoAll();
 
     //mark all objects as valid
-    std::list<lmDeletedSO*>::iterator it = m_ScoreObjects.begin();
+    std::list<lmDeletedSO*>::iterator it;
     for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
     {
         (*it)->fSODeleted = false;      //the pSO is again owned by the score
@@ -448,6 +391,55 @@ bool lmCmdDeleteTie::Do()
 }
 
 bool lmCmdDeleteTie::UndoCommand()
+{
+    //undelete the tie
+    m_UndoLog.UndoAll();
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdAddTie implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdAddTie::lmCmdAddTie(const wxString& name, lmScoreDocument *pDoc,
+                         lmNote* pStartNote, lmNote* pEndNote)
+        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
+{
+    m_pStartNote = pStartNote;
+    m_pEndNote = pEndNote;
+}
+
+lmCmdAddTie::~lmCmdAddTie()
+{
+}
+
+bool lmCmdAddTie::Do()
+{
+    //Proceed to add a tie
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaffCmd* pVCmd = new lmVCmdAddTie(m_pEndNote->GetVStaff(), pUndoItem,
+                                          m_pStartNote, m_pEndNote);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+}
+
+bool lmCmdAddTie::UndoCommand()
 {
     //undelete the tie
     m_UndoLog.UndoAll();
@@ -844,26 +836,145 @@ bool lmCmdChangeNotePitch::UndoCommand()
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdChangeNoteAccidentals: Change accidentals of note at current cursor position
+// lmCmdChangeNoteAccidentals: Change accidentals of notes in current selection
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeNoteAccidentals::lmCmdChangeNoteAccidentals(const wxString& sName, lmScoreDocument *pDoc,
-                                 lmNote* pNote, int nSteps)
-	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
+lmCmdChangeNoteAccidentals::lmCmdChangeNoteAccidentals(
+                                        lmVStaffCursor* pVCursor,
+                                        const wxString& name, lmScoreDocument *pDoc,
+                                        lmGMSelection* pSelection, int nAcc)
+	: lmScoreCommand(name, pDoc, pVCursor)
 {
-	m_nSteps = nSteps;
-	m_pNote = pNote;
+	m_nAcc = nAcc;
+
+    //loop to save notes to modify
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote)
+        {
+            lmCmdNoteData* pData = new lmCmdNoteData;
+            pData->pNote = (lmNote*)pGMO->GetScoreOwner();
+            pData->nAcc = pData->pNote->GetAPitch().Accidentals();
+
+            m_Notes.push_back( pData );
+        }
+        pGMO = pSelection->GetNext();
+    }
+}
+
+lmCmdChangeNoteAccidentals::~lmCmdChangeNoteAccidentals()
+{
+    //delete selection data
+    std::list<lmCmdNoteData*>::iterator it;
+    for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    {
+        delete *it;
+    }
+    m_Notes.clear();
 }
 
 bool lmCmdChangeNoteAccidentals::Do()
 {
-	m_pNote->ChangeAccidentals(m_nSteps);
+    //AWARE: Not using UndoLog. Direct execution of command
+
+    std::list<lmCmdNoteData*>::iterator it;
+    for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    {
+        (*it)->pNote->ChangeAccidentals(m_nAcc);
+    }
+
 	return CommandDone(lmSCORE_MODIFIED);
 }
 
 bool lmCmdChangeNoteAccidentals::UndoCommand()
 {
-	m_pNote->ChangeAccidentals(-m_nSteps);
+    //AWARE: Not using UndoLog. Direct execution of command
+
+    std::list<lmCmdNoteData*>::iterator it;
+    for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    {
+        (*it)->pNote->ChangeAccidentals( (*it)->nAcc );
+    }
+
+    //set cursor
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdChangeNoteRestDots: Change dots of notes in current selection
+//----------------------------------------------------------------------------------------
+
+lmCmdChangeNoteRestDots::lmCmdChangeNoteRestDots(lmVStaffCursor* pVCursor,
+                                                 const wxString& name, lmScoreDocument *pDoc,
+                                                 lmGMSelection* pSelection, int nDots)
+	: lmScoreCommand(name, pDoc, pVCursor)
+{
+	m_nDots = nDots;
+
+    //loop to save note/rests to modify
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
+        {
+            m_NoteRests.push_back( (lmNoteRest*)pGMO->GetScoreOwner() );
+        }
+        pGMO = pSelection->GetNext();
+    }
+}
+
+lmCmdChangeNoteRestDots::~lmCmdChangeNoteRestDots()
+{
+    //delete selection data
+    m_NoteRests.clear();
+}
+
+bool lmCmdChangeNoteRestDots::Do()
+{
+    //loop to change dots
+    bool fSuccess = true;
+    lmVStaffCmd* pVCmd;
+    std::list<lmNoteRest*>::iterator it;
+    for (it = m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
+    {
+        lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+        lmVStaff* pVStaff = (*it)->GetVStaff();      //affected VStaff
+        pVCmd = new lmVCmdChangeDots(pVStaff, pUndoItem, *it, m_nDots);
+
+        if (pVCmd->Success())
+            m_UndoLog.LogCommand(pVCmd, pUndoItem);     //save command in the undo log
+        else
+        {
+            fSuccess = false;
+            delete pUndoItem;
+            delete pVCmd;
+        }
+    }
+
+    // return result
+    if (fSuccess)
+   	    return CommandDone(lmSCORE_MODIFIED);
+    else
+    {
+        //undo command for the modified note/rests
+        UndoCommand();
+        return false;
+    }
+}
+
+bool lmCmdChangeNoteRestDots::UndoCommand()
+{
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
     return true;

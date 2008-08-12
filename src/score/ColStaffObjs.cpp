@@ -1098,6 +1098,21 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 	////END DBG ---------------------------------------------------------------
 }
 
+void lmSegment::RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr)
+{
+    //Duration of note/rest pNR has been changed. Therefore it could be necessary to recompute
+    //segment duration and reposition (in time) all objects after pNR.
+
+    //find pNR
+	lmItCSO itNR = find(m_StaffObjs.begin(), m_StaffObjs.end(), pNR);
+    wxASSERT(itNR != m_StaffObjs.end());
+
+    if (rTimeIncr > 0)
+        ShiftRightTimepos(itNR, pNR->GetVoice());
+    else
+        ShiftLeftTimepos(pNR, itNR);
+}
+
 void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
 {
     //The note/rest pointed by itStart has been inserted. If it is a note/rest and this
@@ -2717,6 +2732,14 @@ bool lmColStaffObjs::ShiftTime(float rTimeShift)
     //move cursor to required time
     m_pVCursor->MoveToTime(rNewTime);
     return fError;
+}
+
+void lmColStaffObjs::RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr)
+{
+    //Duration of note/rest pNR has been changed. Therefore it could be necessary to recompute
+    //segment duration and reposition (in time) all objects after pNR.
+
+    pNR->GetSegment()->RecomputeSegmentDuration(pNR, rTimeIncr);
 }
 
 

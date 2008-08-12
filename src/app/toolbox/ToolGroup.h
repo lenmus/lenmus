@@ -32,6 +32,7 @@
 #define lmTBG_ALLOW_NONE    true
 #define lmTBG_ONE_SELECTED  false
 
+#include "ToolsBox.h"        //enum lmEToolGroupID
 
 class lmToolPage;
 class lmCheckButton;
@@ -44,6 +45,11 @@ public:
 
     //creation
     wxBoxSizer* CreateGroup(wxBoxSizer* pParentSizer, wxString sTitle);
+
+    //identification
+    virtual lmEToolGroupID GetToolGroupID()=0;
+    //virtual int GetNumTools();
+    //virtual long GetToolID(int nTool);
 
 	//info
 	int GetGroupWitdh();
@@ -74,6 +80,7 @@ public:
 
 protected:
     virtual void CreateControls(wxBoxSizer* pMainSizer)=0;
+    virtual void OnButtonSelected(int nSelButton);
     void ConnectButtonEvents();
     inline int GetFirstButtonID() { return m_nFirstButtonID; }
     inline bool IsNoneAllowed() { return m_fAllowNone; }
