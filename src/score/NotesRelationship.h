@@ -103,9 +103,14 @@ public:
     virtual void Save(lmUndoData* pUndoData)=0;
 	virtual void OnRelationshipModified()=0;
 
-    //specific methods
+        //specific methods
 
     virtual int GetNoteIndex(T* pNR);
+
+    //access to notes/rests
+    T* GetFirstNoteRest();
+    T* GetNextNoteRest();
+    (typename std::list<T*>)& GetListOfNoteRests() { return m_Notes; }
 
 	wxString Dump();
 
@@ -115,6 +120,7 @@ protected:
 	lmMultipleRelationship(lmERelationshipClass nClass, T* pFirstNote, lmUndoData* pUndoData);
 
     std::list<T*>   m_Notes;        //list of note/rests that form the relation
+    typename std::list<T*>::iterator m_it;   //for methods GetFirstNoteRest() and GetNextNoteRest()
 
 };
 
@@ -239,6 +245,28 @@ void lmMultipleRelationship<T>::Remove(T* pNR)
     m_Notes.erase(it);
     OnRelationshipModified();
 	//pNR->OnRemovedFromRelationship((void*)this, GetClass());
+}
+
+template <class T>
+T* lmMultipleRelationship<T>::GetFirstNoteRest()
+{
+    m_it = m_Notes.begin();
+    if (m_it == m_Notes.end())
+        return (T*)NULL;
+    else
+        return *m_it;
+}
+
+template <class T>
+T* lmMultipleRelationship<T>::GetNextNoteRest()
+{
+    //advance to next one
+    ++m_it;
+    if (m_it != m_Notes.end())
+        return *m_it;
+
+    //no more notes/rests
+    return (T*)NULL;
 }
 
 

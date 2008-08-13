@@ -788,6 +788,76 @@ void lmVStaff::UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote*
     pEndNote->DeleteTiePrev();
 }
 
+
+void lmVStaff::Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote)
+{
+    //delete the tuplet, adjust duration of affected notes/rests, and log info
+    //to undo history
+
+    //get the tuplet
+    lmTupletBracket* pTuplet = pStartNote->GetTuplet();
+    if (!pTuplet) return;       //nothing to do
+
+    //save data for undoing the command
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+    wxASSERT(pUndoItem);
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+
+        //save number of note/rests in the tuplet
+    pUndoData->AddParam<int>( pTuplet->NumNotes() );
+
+        //save pointers to the note/rests
+    lmNoteRest* pNR = pTuplet->GetFirstNoteRest();
+    while (pNR)
+    {
+        pUndoData->AddParam<lmNoteRest*>( pNR );
+        pNR = pTuplet->GetNextNoteRest();
+    }
+
+        //save tuplet info:
+    pTuplet->Save(pUndoData);
+
+
+    //adjust note rests duration
+    lmTODO(_T("[lmVStaff::Cmd_DeleteTuplet] Adjust notes/rests duration"));
+
+    //remove the tuplet
+    pNR = pTuplet->GetFirstNoteRest();
+    while (pNR)
+    {
+        pNR->OnRemovedFromTuplet();
+        pNR = pTuplet->GetNextNoteRest();
+    }
+    delete pTuplet;
+}
+
+void lmVStaff::UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote)
+{
+    //un-delete the tuplet, according to info in history
+
+    //recover number of note/rests in the tuplet
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    int nNumNotes = pUndoData->GetParam<int>();
+
+    //recover pointers to the note/rests
+    std::vector<lmNoteRest*> notes;
+    for (int i=0; i < nNumNotes; i++)
+        notes.push_back( pUndoData->GetParam<lmNoteRest*>() );
+
+    //recover tuplet info and re-create the tuplet object
+    lmTupletBracket* pTuplet = new lmTupletBracket(pStartNote, pUndoData);
+
+    //add the tuplet to the notes and adjusts their duration
+    std::vector<lmNoteRest*>::iterator it;
+    for (it=notes.begin(); it != notes.end(); ++it)
+    {
+        if (it != notes.begin())    //first note is automatically included at tuplet constructor
+            (*it)->OnIncludedInTuplet(pTuplet);
+        lmTODO(_T("[lmVStaff::UndoCmd_DeleteTuplet] Adjust notes/rests duration"));
+    }
+}
+
 void lmVStaff::Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots)
 {
     //Change the number of dots of NoteRests pNR. As a consecuence, the measure duration
@@ -2125,4 +2195,43 @@ void lmVCmdChangeDots::RollBack(lmUndoItem* pUndoItem)
 {
     m_pVStaff->UndoCmd_ChangeDots(pUndoItem, m_pNR);
 }
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdDeleteTuplet implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdDeleteTuplet::lmVCmdDeleteTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                       lmNoteRest* pStartNote)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pStartNote = pStartNote;
+    pVStaff->Cmd_DeleteTuplet(pUndoItem, m_pStartNote);
+}
+
+void lmVCmdDeleteTuplet::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_DeleteTuplet(pUndoItem, m_pStartNote);
+}
+
+
+
+////----------------------------------------------------------------------------------------
+//// lmVCmdAddTuplet implementation
+////----------------------------------------------------------------------------------------
+//
+//lmVCmdAddTuplet::lmVCmdAddTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+//                           lmNote* pStartNote, lmNote* pEndNote)
+//    : lmVStaffCmd(pVStaff)
+//{
+//    m_pStartNote = pStartNote;
+//    m_pEndNote = pEndNote;
+//    pVStaff->Cmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
+//}
+//
+//void lmVCmdAddTuplet::RollBack(lmUndoItem* pUndoItem)
+//{
+//    m_pVStaff->UndoCmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
+//}
 

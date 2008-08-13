@@ -113,6 +113,8 @@ public:
 
 
     //methods related to tuplets
+    inline bool IsInTuplet() { return m_pTuplet != (lmTupletBracket*)NULL; }
+    inline lmTupletBracket* GetTuplet() { return m_pTuplet; }
 	inline void OnIncludedInTuplet(lmTupletBracket* pTuplet) { m_pTuplet = pTuplet; }
 	inline void OnRemovedFromTuplet() { m_pTuplet = (lmTupletBracket*)NULL; }
 

@@ -86,6 +86,19 @@ int lmToolGroup::GetGroupWitdh()
 	return width;
 }
 
+void lmToolGroup::EnableGroup(bool fEnable)
+{
+    wxWindowListNode* pNode = this->GetChildren().GetFirst();
+    while(pNode)
+    {
+      wxWindow* pCtrol = pNode->GetData();
+      pCtrol->Enable(fEnable);
+     
+      pNode = pNode->GetNext();
+    }
+}
+
+
 
 
 //-----------------------------------------------------------------------------------

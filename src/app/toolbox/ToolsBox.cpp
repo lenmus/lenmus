@@ -183,13 +183,13 @@ wxPanel* lmToolBox::CreatePanel(lmEToolPage nPanel)
 		case lmPAGE_SELECTION:
             return (wxPanel*)NULL;
         case lmPAGE_CLEFS:
-            return new lmToolClef(this);
+            return new lmToolPageClefs(this);
 		case lmPAGE_KEY_SIGN:
             return (wxPanel*)NULL;
 		case lmPAGE_TIME_SIGN:
             return (wxPanel*)NULL;
         case lmPAGE_NOTES:
-            return new lmToolNotes(this);
+            return new lmToolPageNotes(this);
         case lmPAGE_BARLINES:
             return (wxPanel*)NULL;	//new lmToolBarlinesOpt(m_pCurPage);
         //TO_ADD: Add a new case block for creating the new tool panel

@@ -81,6 +81,7 @@ public:
     virtual void SetBitmapUp(wxString sBmpName, wxString sBg, wxSize size);
     virtual void SetBitmapDown(wxString sBmpName, wxString sBg, wxSize size);
     virtual void SetBitmapOver(wxString sBmpName, wxString sBg, wxSize size);
+    virtual void SetBitmapDisabled(wxString sBmpName, wxString sBg, wxSize size);
 
 
 protected:

@@ -392,6 +392,41 @@ protected:
 };
 
 
+// Delete tuplet command
+//------------------------------------------------------------------------------------
+class lmCmdDeleteTuplet: public lmScoreCommand
+{
+public:
+    lmCmdDeleteTuplet(const wxString& name, lmScoreDocument *pDoc, lmNoteRest* pStartNote);
+    ~lmCmdDeleteTuplet();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmNoteRest*     m_pStartNote;
+};
+
+
+//// Add tuplet command
+////------------------------------------------------------------------------------------
+//class lmCmdAddTuplet: public lmScoreCommand
+//{
+//public:
+//    lmCmdAddTuplet(const wxString& name, lmScoreDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
+//    ~lmCmdAddTuplet();
+//
+//    //implementation of pure virtual methods in base class
+//    bool Do();
+//    bool UndoCommand();
+//
+//protected:
+//    lmNote*     m_pStartNote;   //start of tie
+//    lmNote*     m_pEndNote;     //end of tie
+//};
+
+
 
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

@@ -111,6 +111,10 @@ public:
     void OnTupletButton(wxCommandEvent& event);
 
 	//access to options
+    void SetToolTie(bool fChecked);
+    void SetToolTuplet(bool fChecked);
+    void EnableTool(lmEToolID nToolID, bool fEnabled);
+
 
 protected:
     void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
@@ -127,21 +131,26 @@ protected:
 // The panel
 //--------------------------------------------------------------------------------
 
-class lmToolNotes: public lmToolPage
+class lmToolPageNotes: public lmToolPage
 {
 public:
-    lmToolNotes(wxWindow* parent);
-    ~lmToolNotes();
+    lmToolPageNotes(wxWindow* parent);
+    ~lmToolPageNotes();
+
+    //implementation of virtual methods
+    lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
 
 	//access to options
 
     //interface with NoteDuration group
+    inline void EnableGrpNoteDuration(bool fEnabled) { m_pGrpNoteDuration->EnableGroup(fEnabled); }
     inline void SetNoteDuration(lmENoteType nNoteType) { return m_pGrpNoteDuration->SelectButton((int)nNoteType - 1); }
     inline lmENoteType GetNoteDuration() { return m_pGrpNoteDuration->GetNoteDuration(); }
     inline int GetNoteDurationButton() { return m_pGrpNoteDuration->GetSelectedButton(); }
     inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
 
     //interface with NoteAccidentals group
+    inline void EnableGrpNoteAcc(bool fEnabled) { m_pGrpNoteAcc->EnableGroup(fEnabled); }
     inline void SetNoteAccidentals(lmEAccidentals nAcc) { m_pGrpNoteAcc->SelectButton((int)nAcc - 1); }
     inline lmEAccidentals GetNoteAccidentals() { return m_pGrpNoteAcc->GetNoteAcc(); }
     inline void SelectNextAccidental() { m_pGrpNoteAcc->SelectNextButton(); }
@@ -150,6 +159,7 @@ public:
     inline void SetNoteAccButton(int iB) { m_pGrpNoteAcc->SelectButton(iB); }
 
     //interface with NoteDots group
+    inline void EnableGrpNoteDots(bool fEnabled) { m_pGrpNoteDots->EnableGroup(fEnabled); }
     inline void SetNoteDots(int nDots) { m_pGrpNoteDots->SelectButton(nDots - 1); }
     inline int GetNoteDots() { return m_pGrpNoteDots->GetNoteDots(); }
     inline void SelectNextDot() { m_pGrpNoteDots->SelectNextButton(); }
@@ -157,6 +167,10 @@ public:
     inline int GetNoteDotsButton() { return m_pGrpNoteDots->GetSelectedButton(); }
     inline void SetNoteDotsButton(int iB) { m_pGrpNoteDots->SelectButton(iB); }
 
+    //interface with TieTuplet group
+    inline void EnableGrpTieTuplet(bool fEnabled) { m_pGrpTieTuplet->EnableGroup(fEnabled); }
+    inline void SetToolTie(bool fChecked) { m_pGrpTieTuplet->SetToolTie(fChecked); }
+    inline void SetToolTuplet(bool fChecked) { m_pGrpTieTuplet->SetToolTuplet(fChecked); }
 
 
     //interface with NoteheadType group

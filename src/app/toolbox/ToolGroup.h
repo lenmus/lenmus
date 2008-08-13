@@ -46,10 +46,14 @@ public:
     //creation
     wxBoxSizer* CreateGroup(wxBoxSizer* pParentSizer, wxString sTitle);
 
+    //status
+    void EnableGroup(bool fEnable);
+    //virtual void EnableTool(lmEToolID nToolID, bool fEnable)=0;
+
     //identification
     virtual lmEToolGroupID GetToolGroupID()=0;
     //virtual int GetNumTools();
-    //virtual long GetToolID(int nTool);
+    //virtual lmEToolID GetToolID(int nTool);
 
 	//info
 	int GetGroupWitdh();

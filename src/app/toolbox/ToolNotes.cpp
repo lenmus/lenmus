@@ -65,7 +65,7 @@ enum {
 };
 
 
-lmToolNotes::lmToolNotes(wxWindow* parent)
+lmToolPageNotes::lmToolPageNotes(wxWindow* parent)
 	: lmToolPage(parent)
 {
     wxBoxSizer *pMainSizer = GetMainSizer();
@@ -109,14 +109,31 @@ lmToolNotes::lmToolNotes(wxWindow* parent)
 	CreateLayout();
 }
 
-lmToolNotes::~lmToolNotes()
+lmToolPageNotes::~lmToolPageNotes()
 {
     delete m_pGrpNoteDuration;
+    delete m_pGrpNoteAcc;
+    delete m_pGrpNoteDots;
+    delete m_pGrpTieTuplet;
 }
 
-lmENoteHeads lmToolNotes::GetNoteheadType()
+lmENoteHeads lmToolPageNotes::GetNoteheadType()
 {
     return enh_Quarter; //(lmENoteHeads)m_pCboNotehead->GetSelection();
+}
+
+lmToolGroup* lmToolPageNotes::GetToolGroup(lmEToolGroupID nGroupID)
+{
+    switch(nGroupID)
+    {
+        case lmGRP_NoteDuration:    return m_pGrpNoteDuration;
+        case lmGRP_NoteAcc:         return m_pGrpNoteAcc;
+        case lmGRP_NoteDots:        return m_pGrpNoteDots;
+        case lmGRP_TieTuplet:       return m_pGrpTieTuplet;
+        default:
+            wxASSERT(false);
+    }
+    return (lmToolGroup*)NULL;      //compiler happy
 }
 
 
@@ -313,6 +330,7 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnTie->SetBitmapUp(_T("tie"), _T(""), btSize);
     m_pBtnTie->SetBitmapDown(_T("tie"), _T("button_selected_flat"), btSize);
     m_pBtnTie->SetBitmapOver(_T("tie"), _T("button_over_flat"), btSize);
+    m_pBtnTie->SetBitmapDisabled(_T("tie_dis"), _T(""), btSize);
 	pRow1Sizer->Add( m_pBtnTie, wxSizerFlags(0).Border(wxALL, 2) );
 	
     // Tuplet button
@@ -320,6 +338,7 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnTuplet->SetBitmapUp(_T("tuplet"), _T(""), btSize);
     m_pBtnTuplet->SetBitmapDown(_T("tuplet"), _T("button_selected_flat"), btSize);
     m_pBtnTuplet->SetBitmapOver(_T("tuplet"), _T("button_over_flat"), btSize);
+    m_pBtnTuplet->SetBitmapDisabled(_T("tuplet_dis"), _T(""), btSize);
 	pRow1Sizer->Add( m_pBtnTuplet, wxSizerFlags(0).Border(wxALL, 2) );
 	
 	pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
@@ -352,3 +371,32 @@ void lmGrpTieTuplet::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
         ::wxPostEvent( pWnd, event );
     }
 }
+
+void lmGrpTieTuplet::SetToolTie(bool fChecked) 
+{ 
+    fChecked ? m_pBtnTie->Press() : m_pBtnTie->Release();
+}
+
+void lmGrpTieTuplet::SetToolTuplet(bool fChecked) 
+{ 
+    fChecked ? m_pBtnTuplet->Press() : m_pBtnTuplet->Release();
+}
+
+void lmGrpTieTuplet::EnableTool(lmEToolID nToolID, bool fEnabled)
+{
+    switch (nToolID)
+    {
+        case lmTOOL_NOTE_TIE:
+            m_pBtnTie->Enable(fEnabled);
+            break;
+
+
+        case lmTOOL_NOTE_TUPLET:
+            m_pBtnTuplet->Enable(fEnabled);
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+}
+

@@ -102,8 +102,6 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 			else
 				m_uyStart = pShape->GetYBottom();
 		}
-		SetXLeft(m_uxStart);
-		SetYTop(m_uyStart);
 	}
 
 	else if (nTag == eGMA_EndNote)
@@ -127,12 +125,42 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 			else
 				m_uyEnd = pShape->GetYBottom();
 		}
-		SetXRight(m_uxEnd);
-		SetYBottom(m_uyEnd);
 	}
 
-	NormaliceBoundsRectangle();
+    // Recompute boundling rectangle
 
+	lmLUnits BORDER_LENGHT = ((lmStaffObj*)m_pOwner)->TenthsToLogical(10.0);
+    lmLUnits BRACKET_DISTANCE = ((lmStaffObj*)m_pOwner)->TenthsToLogical(10.0);
+
+	lmLUnits yLineStart;
+    lmLUnits yLineEnd;
+    lmLUnits yStartBorder;
+    lmLUnits yEndBorder;
+
+    if (m_fAbove) {
+        yLineStart = m_uyStart - BRACKET_DISTANCE;
+        yLineEnd = m_uyEnd - BRACKET_DISTANCE;
+        yStartBorder = yLineStart + BORDER_LENGHT;
+        yEndBorder = yLineEnd + BORDER_LENGHT;
+    } else {
+        yLineStart = m_uyStart + BRACKET_DISTANCE;
+        yLineEnd = m_uyEnd + BRACKET_DISTANCE;
+        yStartBorder = yLineStart - BORDER_LENGHT;
+        yEndBorder = yLineEnd - BORDER_LENGHT;
+    }
+
+    //TODO:
+    // Above code is duplicated in method Render(). Share it !!!
+    //
+    // Center of control points are in (m_uxStart, yStartBorder) (m_uxStart, yLineStart)
+    // (m_uxEnd, yLineEnd) and (m_uxEnd, yEndBorder)
+
+	SetXLeft(m_uxStart);
+	SetXRight(m_uxEnd);
+	SetYTop( wxMin( wxMin(yLineStart, yLineEnd), wxMin(yStartBorder, yEndBorder)) );
+	SetYBottom( wxMax( wxMax(yLineStart, yLineEnd), wxMax(yStartBorder, yEndBorder)) );
+
+    NormaliceBoundsRectangle();
 }
 
 void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
@@ -237,5 +265,11 @@ void lmShapeTuplet::Shift(lmLUnits xIncr, lmLUnits yIncr)
 	//if included in a composite shape update parent bounding and selection rectangles
 	if (this->IsChildShape())
 		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
+}
+
+void lmShapeTuplet::DrawControlPoints(lmPaper* pPaper)
+{
+    //DBG
+    DrawBounds(pPaper, *wxGREEN);
 }
 

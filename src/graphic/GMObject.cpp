@@ -85,7 +85,7 @@ bool lmGMObject::ContainsPoint(lmUPoint& pointL)
 
 void lmGMObject::DrawBounds(lmPaper* pPaper, wxColour color)
 {
-    //draw a border around instrSlice region
+    //draw a border around object region
     pPaper->SketchRectangle(m_uBoundsTop,
                             lmUSize(m_uBoundsBottom.x - m_uBoundsTop.x, m_uBoundsBottom.y - m_uBoundsTop.y),
                             color);

@@ -146,11 +146,14 @@ private:
 // The panel
 //--------------------------------------------------------------------------------
 
-class lmToolClef : public lmToolPage
+class lmToolPageClefs : public lmToolPage
 {
 public:
-    lmToolClef(wxWindow* parent);
-    ~lmToolClef();
+    lmToolPageClefs(wxWindow* parent);
+    ~lmToolPageClefs();
+
+    //implementation of virtual methods
+    lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
 
 	//access to options
     inline lmEClefType GetClefType() { return m_pGrpClefType->GetClefType(); }

@@ -67,7 +67,7 @@ enum {
 
 
 
-lmToolClef::lmToolClef(wxWindow* parent)
+lmToolPageClefs::lmToolPageClefs(wxWindow* parent)
 	: lmToolPage(parent)
 {
 	wxBoxSizer* pMainSizer = GetMainSizer();
@@ -81,12 +81,26 @@ lmToolClef::lmToolClef(wxWindow* parent)
 }
 
 
-lmToolClef::~lmToolClef()
+lmToolPageClefs::~lmToolPageClefs()
 {
     delete m_pGrpClefType;
     delete m_pGrpTimeType;
     delete m_pGrpKeyType;
 }
+
+lmToolGroup* lmToolPageClefs::GetToolGroup(lmEToolGroupID nGroupID)
+{
+    switch(nGroupID)
+    {
+        case lmGRP_ClefType:    return m_pGrpClefType;
+        case lmGRP_TimeType:    return m_pGrpTimeType;
+        case lmGRP_KeyType:     return m_pGrpKeyType;
+        default:
+            wxASSERT(false);
+    }
+    return (lmToolGroup*)NULL;      //compiler happy
+}
+
 
 
 //--------------------------------------------------------------------------------

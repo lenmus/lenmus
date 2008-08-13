@@ -161,6 +161,7 @@ public:
         //--- deleting StaffObjs
     void Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
     void Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
+    void Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
 
         //--- Modifying staffobjs
     void Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
@@ -183,6 +184,7 @@ public:
         //--- deleting StaffObjs
     void UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
     void UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
+    void UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
 
         //--- Modifying staffobjs
     void UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR);
@@ -517,6 +519,38 @@ protected:
     lmNoteRest*     m_pNR;     //affected note/rest
 
 };
+
+//---------------------------------------------------------------------------------------
+class lmVCmdDeleteTuplet : public lmVStaffCmd
+{
+public:
+    lmVCmdDeleteTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
+    ~lmVCmdDeleteTuplet() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return !m_pStartNote->IsInTuplet(); }
+
+protected:
+    lmNoteRest*     m_pStartNote;
+
+};
+
+////---------------------------------------------------------------------------------------
+//class lmVCmdAddTuplet : public lmVStaffCmd
+//{
+//public:
+//    lmVCmdAddTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNote* pStartNote);
+//    ~lmVCmdAddTuplet() {}
+//
+//    void RollBack(lmUndoItem* pUndoItem);
+//    inline bool Success() { return ?; }
+//
+//protected:
+//    lmNote*         m_pStartNote;
+//    lmNote*         m_pEndNote;
+//
+//};
+
 
 
 

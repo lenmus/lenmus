@@ -28,6 +28,7 @@
 
 #include "ColorScheme.h"
 #include "ToolsBox.h"
+#include "ToolGroup.h"
 
 
 class lmToolPage: public wxPanel
@@ -39,6 +40,7 @@ public:
 	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void CreateLayout();
 	inline lmColorScheme* GetColors() { return ((lmToolBox*)GetParent())->GetColors(); }
+    virtual lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID) = 0;
 
 
 private:

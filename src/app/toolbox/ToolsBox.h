@@ -80,7 +80,7 @@ enum lmEToolID
 };
 
 class lmCheckButton;
-class lmToolNotes;
+class lmToolPageNotes;
 class wxBoxSizer;
 
 class lmToolBox: public wxPanel
@@ -105,7 +105,7 @@ public:
 	inline wxPanel* GetToolPanel(lmEToolPage nPanel) { return m_cPanels[nPanel]; }
 
 
-	inline lmToolNotes* GetNoteProperties() const { return (lmToolNotes*)m_cPanels[lmPAGE_NOTES]; }
+	inline lmToolPageNotes* GetNoteProperties() const { return (lmToolPageNotes*)m_cPanels[lmPAGE_NOTES]; }
     //TO_ADD: Add, before this line, a new method to get new tool properties
 
 private:

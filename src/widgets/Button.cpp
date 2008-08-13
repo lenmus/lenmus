@@ -393,6 +393,11 @@ void lmBitmapButton::SetBitmapUp(wxString sBmpName, wxString sBg, wxSize size)
 	m_bitmaps[lm_eButtonUp] = CreateBitmap(sBmpName, sBg, size);
 }
 
+void lmBitmapButton::SetBitmapDisabled(wxString sBmpName, wxString sBg, wxSize size)
+{
+	m_bitmaps[lm_eButtonDis] = CreateBitmap(sBmpName, sBg, size);
+}
+
 
 
 
