@@ -137,6 +137,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     m_pScore = parser.ParseFile(filename);
     if (!m_pScore) return false;
 
+    GetMainFrame()->AddFileToHistory(filename);
     wxFileName oFN(filename);
     m_pScore->SetScoreName(oFN.GetFullName());
     SetFilename(filename, true);

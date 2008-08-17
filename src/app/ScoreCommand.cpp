@@ -129,8 +129,8 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                 {
                     lmDeletedSO* pSOData = new lmDeletedSO;
                     pSOData->nObjType = lm_eObjTie;
-                    pSOData->pSO = (lmScoreObj*)NULL;
-                    pSOData->fSODeleted = false;
+                    pSOData->pObj = (void*)NULL;
+                    pSOData->fObjDeleted = false;
                     pSOData->pParm1 = (void*)( ((lmShapeTie*)pGMO)->GetEndNote() );     //end note
                     pSOData->pParm2 = (void*)NULL;
 
@@ -146,8 +146,8 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                 {
                     lmDeletedSO* pSOData = new lmDeletedSO;
                     pSOData->nObjType = lm_eObjStaffObj;
-                    pSOData->pSO = pGMO->GetScoreOwner();
-                    pSOData->fSODeleted = false;
+                    pSOData->pObj = (void*)pGMO->GetScoreOwner();
+                    pSOData->fObjDeleted = false;
                     pSOData->pParm1 = (void*)NULL;
                     pSOData->pParm2 = (void*)NULL;
 
@@ -172,8 +172,8 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                 {
                     lmDeletedSO* pSOData = new lmDeletedSO;
                     pSOData->nObjType = lm_eObjTuplet;
-                    pSOData->pSO = (lmScoreObj*)NULL;
-                    pSOData->fSODeleted = false;
+                    pSOData->pObj = (void*)NULL;
+                    pSOData->fObjDeleted = false;
                     pSOData->pParm1 = (void*)( ((lmShapeTuplet*)pGMO)->GetScoreOwner() );   //start note
                     pSOData->pParm2 = (void*)NULL;
 
@@ -197,7 +197,9 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
             //    break;
 
             default:
-                wxASSERT(false);
+                wxMessageBox(
+                    wxString::Format(_T("TODO: Code in lmCmdDeleteSelection to delete %s (type %d)"),
+                    pGMO->GetName(), pGMO->GetType() )); 
         }
         pGMO = pSelection->GetNext();
     }
@@ -209,12 +211,21 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
 
 lmCmdDeleteSelection::~lmCmdDeleteSelection()
 {
-    //delete frozen objects and selection data
+    //delete frozen objects
     std::list<lmDeletedSO*>::iterator it;
     for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
     {
-        if ((*it)->fSODeleted && (*it)->pSO)
-            delete (*it)->pSO; 
+        if ((*it)->fObjDeleted && (*it)->pObj)
+        {
+            switch((*it)->nObjType)
+            {
+                case lm_eObjTie:        delete (lmTie*)(*it)->pObj;             break;
+                case lm_eObjTuplet:     delete (lmTupletBracket*)(*it)->pObj;   break;
+                case lm_eObjStaffObj:   delete (lmStaffObj*)(*it)->pObj;        break;
+                default:
+                    wxASSERT(false);
+            }
+        }
         delete *it;
     }
     m_ScoreObjects.clear();
@@ -252,7 +263,7 @@ bool lmCmdDeleteSelection::Do()
 
             case lm_eObjStaffObj:
                 {
-                    lmStaffObj* pSO = (lmStaffObj*)(*it)->pSO;
+                    lmStaffObj* pSO = (lmStaffObj*)(*it)->pObj;
                     lmVStaff* pVStaff = pSO->GetVStaff();      //affected VStaff
                     pVCmd = new lmVCmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
                     wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting staffobj"));
@@ -299,7 +310,7 @@ bool lmCmdDeleteSelection::Do()
         {
             if (pVCmd->Success())
             {
-                (*it)->fSODeleted = true;                //the pSO is no longer owned by the score
+                (*it)->fObjDeleted = true;                //the Obj is no longer owned by the score
                 m_UndoLog.LogCommand(pVCmd, pUndoItem);
             }
             else
@@ -331,7 +342,7 @@ bool lmCmdDeleteSelection::UndoCommand()
     std::list<lmDeletedSO*>::iterator it;
     for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
     {
-        (*it)->fSODeleted = false;      //the pSO is again owned by the score
+        (*it)->fObjDeleted = false;      //the Obj is again owned by the score
     }
 
     //set cursor
@@ -1034,10 +1045,10 @@ bool lmCmdChangeNoteRestDots::UndoCommand()
 //----------------------------------------------------------------------------------------
 
 lmCmdDeleteTuplet::lmCmdDeleteTuplet(const wxString& name, lmScoreDocument *pDoc,
-                                     lmNoteRest* pStartNote)
+                                     lmNoteRest* pStartNR)
         : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
 {
-    m_pStartNote = pStartNote;
+    m_pStartNR = pStartNR;
 }
 
 lmCmdDeleteTuplet::~lmCmdDeleteTuplet()
@@ -1048,8 +1059,8 @@ bool lmCmdDeleteTuplet::Do()
 {
     //Proceed to delete the tuplet
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaff* pVStaff = m_pStartNote->GetVStaff();
-    lmVStaffCmd* pVCmd = new lmVCmdDeleteTuplet(pVStaff, pUndoItem, m_pStartNote);
+    lmVStaff* pVStaff = m_pStartNR->GetVStaff();
+    lmVStaffCmd* pVCmd = new lmVCmdDeleteTuplet(pVStaff, pUndoItem, m_pStartNR);
 
     if (pVCmd->Success())
     {
@@ -1066,7 +1077,7 @@ bool lmCmdDeleteTuplet::Do()
 
 bool lmCmdDeleteTuplet::UndoCommand()
 {
-    //undelete the tie
+    //undelete the tuplet
     m_UndoLog.UndoAll();
 
 	m_pDoc->Modify(m_fDocModified);
@@ -1077,49 +1088,119 @@ bool lmCmdDeleteTuplet::UndoCommand()
 
 
 
-////----------------------------------------------------------------------------------------
-//// lmCmdAddTuplet implementation
-////----------------------------------------------------------------------------------------
-//
-//lmCmdAddTuplet::lmCmdAddTuplet(const wxString& name, lmScoreDocument *pDoc,
-//                         lmNote* pStartNote, lmNote* pEndNote)
-//        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
-//{
-//    m_pStartNote = pStartNote;
-//    m_pEndNote = pEndNote;
-//}
-//
-//lmCmdAddTuplet::~lmCmdAddTuplet()
-//{
-//}
-//
-//bool lmCmdAddTuplet::Do()
-//{
-//    //Proceed to add a tie
-//    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-//    lmVStaffCmd* pVCmd = new lmVCmdAddTie(m_pEndNote->GetVStaff(), pUndoItem,
-//                                          m_pStartNote, m_pEndNote);
-//
-//    if (pVCmd->Success())
-//    {
-//        m_UndoLog.LogCommand(pVCmd, pUndoItem);
-//	    return CommandDone(lmSCORE_MODIFIED);
-//    }
-//    else
-//    {
-//        delete pUndoItem;
-//        delete pVCmd;
-//        return false;
-//    }
-//}
-//
-//bool lmCmdAddTuplet::UndoCommand()
-//{
-//    //undelete the tie
-//    m_UndoLog.UndoAll();
-//
-//	m_pDoc->Modify(m_fDocModified);
-//    m_pDoc->UpdateAllViews();
-//    return true;
-//}
-//
+//----------------------------------------------------------------------------------------
+// lmCmdAddTuplet implementation: Add a tuplet to notes in current selection
+//----------------------------------------------------------------------------------------
+
+lmCmdAddTuplet::lmCmdAddTuplet(lmVStaffCursor* pVCursor, const wxString& name,
+                               lmScoreDocument *pDoc, lmGMSelection* pSelection,
+                               bool fShowNumber, int nNumber, bool fBracket,
+                               lmEPlacement nAbove, int nActual, int nNormal)
+	: lmScoreCommand(name, pDoc, pVCursor)
+{
+    m_fShowNumber = fShowNumber;
+    m_nNumber = nNumber;
+    m_fBracket = fBracket;
+    m_nAbove = nAbove;
+    m_nActual = nActual;
+    m_nNormal = nNormal;
+
+    //loop to save note/rests to form the tuplet
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
+        {
+            m_NotesRests.push_back( (lmNoteRest*)pGMO->GetScoreOwner() );
+        }
+        pGMO = pSelection->GetNext();
+    }
+}
+
+lmCmdAddTuplet::~lmCmdAddTuplet()
+{
+    //delete selection data
+    m_NotesRests.clear();
+}
+
+bool lmCmdAddTuplet::Do()
+{
+    //Proceed to create the tuplet
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaff* pVStaff = m_NotesRests.front()->GetVStaff();
+    lmVStaffCmd* pVCmd = 
+        new lmVCmdAddTuplet(pVStaff, pUndoItem, m_NotesRests,  m_fShowNumber, m_nNumber,
+                            m_fBracket, m_nAbove, m_nActual, m_nNormal);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+}
+
+bool lmCmdAddTuplet::UndoCommand()
+{
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdBreakBeam implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdBreakBeam::lmCmdBreakBeam(lmVStaffCursor* pVCursor, const wxString& name,
+                                     lmScoreDocument *pDoc, lmNoteRest* pBeforeNR)
+        : lmScoreCommand(name, pDoc, pVCursor)
+{
+    m_pBeforeNR = pBeforeNR;
+}
+
+lmCmdBreakBeam::~lmCmdBreakBeam()
+{
+}
+
+bool lmCmdBreakBeam::Do()
+{
+    //Proceed to delete the object
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaffCmd* pVCmd = new lmVCmdBreakBeam(m_pBeforeNR->GetVStaff(), pUndoItem, m_pBeforeNR);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+}
+
+bool lmCmdBreakBeam::UndoCommand()
+{
+    //undelete the object
+
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+

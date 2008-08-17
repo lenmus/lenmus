@@ -62,6 +62,10 @@ enum {
     lmID_BT_NoteDots = lmID_BT_NoteAcc + lm_NUM_ACC_BUTTONS,
     lmID_BT_Tie = lmID_BT_NoteDots + lm_NUM_DOT_BUTTONS,
     lmID_BT_Tuplet,
+    lmID_BT_Beam_Cut,
+    lmID_BT_Beam_Join,
+    lmID_BT_Beam_Flatten,
+    lmID_BT_Beam_Subgroup,
 };
 
 
@@ -83,6 +87,9 @@ lmToolPageNotes::lmToolPageNotes(wxWindow* parent)
 
     //Ties and tuplets group
     m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
+
+    //Beam tools group
+    m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
 
 
         
@@ -115,6 +122,7 @@ lmToolPageNotes::~lmToolPageNotes()
     delete m_pGrpNoteAcc;
     delete m_pGrpNoteDots;
     delete m_pGrpTieTuplet;
+    delete m_pGrpBeams;
 }
 
 lmENoteHeads lmToolPageNotes::GetNoteheadType()
@@ -130,6 +138,7 @@ lmToolGroup* lmToolPageNotes::GetToolGroup(lmEToolGroupID nGroupID)
         case lmGRP_NoteAcc:         return m_pGrpNoteAcc;
         case lmGRP_NoteDots:        return m_pGrpNoteDots;
         case lmGRP_TieTuplet:       return m_pGrpTieTuplet;
+        case lmGRP_Beams:           return m_pGrpBeams;
         default:
             wxASSERT(false);
     }
@@ -348,13 +357,11 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
 
 void lmGrpTieTuplet::OnTieButton(wxCommandEvent& event)
 {
-    WXUNUSED(event);
     PostToolBoxEvent(lmTOOL_NOTE_TIE, event.IsChecked());
 }
 
 void lmGrpTieTuplet::OnTupletButton(wxCommandEvent& event)
 {
-    WXUNUSED(event);
     PostToolBoxEvent(lmTOOL_NOTE_TUPLET, event.IsChecked());
 }
 
@@ -398,5 +405,147 @@ void lmGrpTieTuplet::EnableTool(lmEToolID nToolID, bool fEnabled)
         default:
             wxASSERT(false);
     }
+
+    //enable /disable group
+    bool fEnableGroup = m_pBtnTie->IsEnabled() || m_pBtnTuplet->IsEnabled();
+    EnableGroup(fEnableGroup);
+}
+
+
+
+
+
+//--------------------------------------------------------------------------------
+// lmGrpBeams implementation
+//--------------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(lmGrpBeams, lmToolGroup)
+    EVT_BUTTON  (lmID_BT_Beam_Cut, lmGrpBeams::OnButton)
+    EVT_BUTTON  (lmID_BT_Beam_Join, lmGrpBeams::OnButton)
+    EVT_BUTTON  (lmID_BT_Beam_Flatten, lmGrpBeams::OnButton)
+    EVT_BUTTON  (lmID_BT_Beam_Subgroup, lmGrpBeams::OnButton)
+END_EVENT_TABLE()
+
+
+lmGrpBeams::lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmToolGroup(pParent)
+{
+    CreateControls(pMainSizer);
+}
+
+void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Beams"));
+
+    //create the specific controls for this group
+
+    // cut beam button
+	wxBoxSizer* pRow1Sizer = new wxBoxSizer( wxHORIZONTAL );
+	
+    wxSize btSize(24, 24);
+	m_pBtnBeamCut = new lmBitmapButton(this, lmID_BT_Beam_Cut, wxBitmap(24,24));
+    m_pBtnBeamCut->SetBitmapUp(_T("tool_beam_cut"), _T(""), btSize);
+    m_pBtnBeamCut->SetBitmapDown(_T("tool_beam_cut"), _T("button_selected_flat"), btSize);
+    m_pBtnBeamCut->SetBitmapOver(_T("tool_beam_cut"), _T("button_over_flat"), btSize);
+    m_pBtnBeamCut->SetBitmapDisabled(_T("tool_beam_cut_dis"), _T(""), btSize);
+	pRow1Sizer->Add( m_pBtnBeamCut, wxSizerFlags(0).Border(wxALL, 2) );
+	
+    // beam join button
+	m_pBtnBeamJoin = new lmBitmapButton(this, lmID_BT_Beam_Join, wxBitmap(24,24));
+    m_pBtnBeamJoin->SetBitmapUp(_T("tool_beam_join"), _T(""), btSize);
+    m_pBtnBeamJoin->SetBitmapDown(_T("tool_beam_join"), _T("button_selected_flat"), btSize);
+    m_pBtnBeamJoin->SetBitmapOver(_T("tool_beam_join"), _T("button_over_flat"), btSize);
+    m_pBtnBeamJoin->SetBitmapDisabled(_T("tool_beam_join_dis"), _T(""), btSize);
+	pRow1Sizer->Add( m_pBtnBeamJoin, wxSizerFlags(0).Border(wxALL, 2) );
+	
+    // beam subgroup button
+	m_pBtnBeamSubgroup = new lmBitmapButton(this, lmID_BT_Beam_Subgroup, wxBitmap(24,24));
+    m_pBtnBeamSubgroup->SetBitmapUp(_T("tool_beam_subgroup"), _T(""), btSize);
+    m_pBtnBeamSubgroup->SetBitmapDown(_T("tool_beam_subgroup"), _T("button_selected_flat"), btSize);
+    m_pBtnBeamSubgroup->SetBitmapOver(_T("tool_beam_subgroup"), _T("button_over_flat"), btSize);
+    m_pBtnBeamSubgroup->SetBitmapDisabled(_T("tool_beam_subgroup_dis"), _T(""), btSize);
+	pRow1Sizer->Add( m_pBtnBeamSubgroup, wxSizerFlags(0).Border(wxALL, 2) );
+	
+    // beam flatten button
+	m_pBtnBeamFlatten = new lmBitmapButton(this, lmID_BT_Beam_Flatten, wxBitmap(24,24));
+    m_pBtnBeamFlatten->SetBitmapUp(_T("tool_beam_flatten"), _T(""), btSize);
+    m_pBtnBeamFlatten->SetBitmapDown(_T("tool_beam_flatten"), _T("button_selected_flat"), btSize);
+    m_pBtnBeamFlatten->SetBitmapOver(_T("tool_beam_flatten"), _T("button_over_flat"), btSize);
+    m_pBtnBeamFlatten->SetBitmapDisabled(_T("tool_beam_flatten_dis"), _T(""), btSize);
+	pRow1Sizer->Add( m_pBtnBeamFlatten, wxSizerFlags(0).Border(wxALL, 2) );
+
+
+	pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
+	this->Layout();
+}
+
+void lmGrpBeams::OnButton(wxCommandEvent& event)
+{
+    lmEToolID nToolID;
+    switch(event.GetId())
+    {
+        case lmID_BT_Beam_Cut:          nToolID = lmTOOL_BEAMS_CUT;         break;
+        case lmID_BT_Beam_Join:         nToolID = lmTOOL_BEAMS_JOIN;        break;
+        case lmID_BT_Beam_Flatten:      nToolID = lmTOOL_BEAMS_FLATTEN;     break;
+        case lmID_BT_Beam_Subgroup:     nToolID = lmTOOL_BEAMS_SUBGROUP;    break;
+        default:
+            wxASSERT(false);
+    }
+    PostToolBoxEvent(nToolID, event.IsChecked());
+}
+
+void lmGrpBeams::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
+{
+    //post tool box event to the active controller
+    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+    if (pWnd)
+    {
+	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        lmToolBoxEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+                             fSelected);
+        ::wxPostEvent( pWnd, event );
+    }
+}
+
+//void lmGrpBeams::SetToolTie(bool fChecked) 
+//{ 
+//    fChecked ? m_pBtnBeamCut->Press() : m_pBtnBeamCut->Release();
+//}
+//
+//void lmGrpBeams::SetToolTuplet(bool fChecked) 
+//{ 
+//    fChecked ? m_pBtnBeamJoin->Press() : m_pBtnBeamJoin->Release();
+//}
+
+void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)
+{
+    switch (nToolID)
+    {
+        case lmTOOL_BEAMS_CUT:
+            m_pBtnBeamCut->Enable(fEnabled);
+            break;
+
+        case lmTOOL_BEAMS_JOIN:
+            m_pBtnBeamJoin->Enable(fEnabled);
+            break;
+
+        case lmTOOL_BEAMS_FLATTEN:
+            m_pBtnBeamFlatten->Enable(fEnabled);
+            break;
+
+        case lmTOOL_BEAMS_SUBGROUP:
+            m_pBtnBeamSubgroup->Enable(fEnabled);
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+
+    //enable /disable group
+    bool fEnableGroup = m_pBtnBeamCut->IsEnabled() || m_pBtnBeamJoin->IsEnabled() ||
+                        m_pBtnBeamFlatten->IsEnabled() || m_pBtnBeamSubgroup->IsEnabled();
+    EnableGroup(fEnableGroup);
 }
 

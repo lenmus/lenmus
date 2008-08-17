@@ -167,8 +167,8 @@ void lmShapeBarline::Render(lmPaper* pPaper, wxColour color)
         case lm_eBarlineSimple:
             DrawThinLine(pPaper, uxPos, uyTop, uyBottom, color);
             break;
-        case lm_eBarlineEOS:
-            break;
+        //case lm_eBarlineEOS:
+        //    break;
     }
 
     lmSimpleShape::Render(pPaper, color);

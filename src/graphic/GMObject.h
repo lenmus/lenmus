@@ -53,6 +53,7 @@ extern bool g_fFreeMove;		// the shapes can be dragged without restrictions
 
 class lmPaper;
 class lmScoreObj;
+class lmStaffObj;
 class lmController;
 class lmBoxScore;
 class lmGMSelection;
@@ -450,6 +451,9 @@ public:
     //info
     inline int NumObjects() { return (int)m_Selection.size(); }
     inline bool IsEmpty() const { return m_Selection.size()==0; }
+
+    //access 
+    lmStaffObj* GetFirstOwnerStaffObj();
 
     //debug
     wxString Dump();

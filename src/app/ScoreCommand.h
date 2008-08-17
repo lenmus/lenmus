@@ -137,11 +137,12 @@ protected:
     typedef struct
     {
         int             nObjType;       //type of object to delete
-        bool            fSODeleted;     //to control if the SO must be deleted
-        lmScoreObj*     pSO;            //the ScoreObj to delete
+        bool            fObjDeleted;    //to control if the object must be deleted
+        void*           pObj;           //the object to delete
         void*           pParm1;         //parameter 1
         void*           pParm2;         //parameter 2
-    } lmDeletedSO;
+    }
+    lmDeletedSO;
 
     std::list<lmDeletedSO*>     m_ScoreObjects;     //deleted ScoreObjs
 };
@@ -397,7 +398,7 @@ protected:
 class lmCmdDeleteTuplet: public lmScoreCommand
 {
 public:
-    lmCmdDeleteTuplet(const wxString& name, lmScoreDocument *pDoc, lmNoteRest* pStartNote);
+    lmCmdDeleteTuplet(const wxString& name, lmScoreDocument *pDoc, lmNoteRest* pStartNR);
     ~lmCmdDeleteTuplet();
 
     //implementation of pure virtual methods in base class
@@ -405,26 +406,52 @@ public:
     bool UndoCommand();
 
 protected:
-    lmNoteRest*     m_pStartNote;
+    lmNoteRest*     m_pStartNR;
 };
 
 
-//// Add tuplet command
-////------------------------------------------------------------------------------------
-//class lmCmdAddTuplet: public lmScoreCommand
-//{
-//public:
-//    lmCmdAddTuplet(const wxString& name, lmScoreDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
-//    ~lmCmdAddTuplet();
-//
-//    //implementation of pure virtual methods in base class
-//    bool Do();
-//    bool UndoCommand();
-//
-//protected:
-//    lmNote*     m_pStartNote;   //start of tie
-//    lmNote*     m_pEndNote;     //end of tie
-//};
+// Add tuplet command
+//------------------------------------------------------------------------------------
+class lmCmdAddTuplet: public lmScoreCommand
+{
+public:
+    lmCmdAddTuplet(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                   lmGMSelection* pSelection, bool fShowNumber, int nNumber, bool fBracket,
+                   lmEPlacement nAbove, int nActual, int nNormal);
+
+    ~lmCmdAddTuplet();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    bool                        m_fShowNumber;
+    bool                        m_fBracket;
+    int                         m_nNumber;
+    lmEPlacement                m_nAbove;
+    int                         m_nActual;
+    int                         m_nNormal;
+    std::vector<lmNoteRest*>    m_NotesRests;
+};
+
+
+// break a beam command
+//------------------------------------------------------------------------------------
+class lmCmdBreakBeam: public lmScoreCommand
+{
+public:
+    lmCmdBreakBeam(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                   lmNoteRest* pBeforeNR);
+    ~lmCmdBreakBeam();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmNoteRest*         m_pBeforeNR;
+};
 
 
 

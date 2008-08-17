@@ -109,8 +109,8 @@ private:
 
     void VoiceUsed(int nVoice);
     void RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr);
-    void ShiftRightTimepos(lmItCSO itStart, int nVoice);
-    void ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart);
+    void ShiftRightTimepos(lmItCSO itStart, float rTimeShift);
+    void ShiftLeftTimepos(lmItCSO itStart, float rTimeShift, float rStartTimepos, int nVoice);
 
     //segment management
     void UpdateMeasureDuration();

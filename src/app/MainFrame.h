@@ -101,6 +101,7 @@ public:
     void OnPrintSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrint(wxCommandEvent& event);
     void OnFileUpdateUI(wxUpdateUIEvent& event);
+    void OnOpenRecentFile(wxCommandEvent& event);
 
     void ExportAsImage(int nImgType);
 
@@ -233,6 +234,8 @@ public:
     inline int GetSelectedVoice() { return m_pComboVoice->GetSelection(); }
     inline lmScore* GetWizardScore() { return m_pWizardScore; }  
     lmController* GetActiveController();
+    wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
+
 
 	// call backs
 	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
@@ -241,7 +244,7 @@ public:
 	//other
 	void RedirectKeyPressEvent(wxKeyEvent& event);
     void SetFocusOnActiveView();
-
+    void AddFileToHistory(const wxString& filename);
 
 
 
@@ -296,7 +299,7 @@ protected:
 
     //other
     lmScore*        m_pWizardScore;     //score created with the ScoreWizard
-
+    wxFileHistory*  m_pRecentFiles;     //list of rencently open files 
 
     DECLARE_EVENT_TABLE()
 };

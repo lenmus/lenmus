@@ -461,11 +461,17 @@ bool lmTheApp::OnInit(void)
     // Sets the directory to be displayed to the user when opening a score.
     m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
 
+    //load list of recently open files
+    m_pDocManager->FileHistoryLoad( *wxConfigBase::Get() );
+
     // Create a template relating score documents to their views
     (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("LenMus score"), _T("lmScore View"),
           CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView));
     (void) new wxDocTemplate(m_pDocManager, _T("MusicXML score"), _T("*.xml;*.*"), _T(""), _T("xml"), _T("MusicXML score"), _T("lmScore View"),
           CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
+//#ifdef __WXMAC__
+//    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("lms") , 'WXMB' , 'WXMA' ) ;
+//#endif
 
 
         //
@@ -662,7 +668,8 @@ int lmTheApp::OnExit(void)
     // the wave sound manager object
     lmWaveManager::Destroy();
 
-    // the docManager
+    // save file history and delete the docManager
+    m_pDocManager->FileHistorySave( *wxConfigBase::Get() );
     delete m_pDocManager;
 
     // the printer setup data

@@ -165,10 +165,13 @@ public:
 
         //--- Modifying staffobjs
     void Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
+    void Cmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
 
         //--- Adding other markup
     void Cmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
-
+    void Cmd_AddTuplet(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes,
+                       bool fShowNumber, int nNumber, bool fBracket,
+                       lmEPlacement nAbove, int nActual, int nNormal);
 
 
     //--- Undoing edition commands
@@ -188,9 +191,11 @@ public:
 
         //--- Modifying staffobjs
     void UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR);
+    void UndoCmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
 
         //--- Adding other markup
     void UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
+    void UndoCmd_AddTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR);
 
 
 
@@ -524,32 +529,56 @@ protected:
 class lmVCmdDeleteTuplet : public lmVStaffCmd
 {
 public:
-    lmVCmdDeleteTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
+    lmVCmdDeleteTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNoteRest* pStartNR);
     ~lmVCmdDeleteTuplet() {}
 
     void RollBack(lmUndoItem* pUndoItem);
-    inline bool Success() { return !m_pStartNote->IsInTuplet(); }
+    inline bool Success() { return !m_pStartNR->IsInTuplet(); }
 
 protected:
-    lmNoteRest*     m_pStartNote;
+    lmNoteRest*     m_pStartNR;
 
 };
 
-////---------------------------------------------------------------------------------------
-//class lmVCmdAddTuplet : public lmVStaffCmd
-//{
-//public:
-//    lmVCmdAddTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNote* pStartNote);
-//    ~lmVCmdAddTuplet() {}
-//
-//    void RollBack(lmUndoItem* pUndoItem);
-//    inline bool Success() { return ?; }
-//
-//protected:
-//    lmNote*         m_pStartNote;
-//    lmNote*         m_pEndNote;
-//
-//};
+//---------------------------------------------------------------------------------------
+class lmVCmdAddTuplet : public lmVStaffCmd
+{
+public:
+    lmVCmdAddTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                    std::vector<lmNoteRest*>& notes,
+                    bool fShowNumber, int nNumber, bool fBracket,
+                    lmEPlacement nAbove, int nActual, int nNormal);
+
+    ~lmVCmdAddTuplet() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return m_NotesRests.front()->IsInTuplet(); }
+
+protected:
+    bool                        m_fShowNumber;
+    bool                        m_fBracket;
+    int                         m_nNumber;
+    lmEPlacement                m_nAbove;
+    int                         m_nActual;
+    int                         m_nNormal;
+    std::vector<lmNoteRest*>&   m_NotesRests;
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdBreakBeam : public lmVStaffCmd
+{
+public:
+    lmVCmdBreakBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
+    ~lmVCmdBreakBeam() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return true; }
+
+protected:
+    lmNoteRest*     m_pBeforeNR;
+
+};
 
 
 

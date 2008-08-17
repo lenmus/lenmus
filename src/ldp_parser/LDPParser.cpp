@@ -58,6 +58,8 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
+#include "../app/Preferences.h"
+
 //access to MIDI manager to get default settings for instrument to use
 #include "../sound/MidiManager.h"
 
@@ -155,8 +157,17 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
     g_pLogger->FlushDataErrorLog();
     lmLDPNode* pRoot = LexicalAnalysis();
     lmScore* pScore = (lmScore*) NULL;
+
+    //disable edition options that could interfere with direct score creation
+    bool fAutoBeam = g_fAutoBeam;
+    g_fAutoBeam = false;
+
+    //proceed to create the score
     if (pRoot)
         pScore = AnalyzeScore(pRoot);
+
+    //restore edition options
+    g_fAutoBeam = fAutoBeam;
 
     // report errors
     bool fShowLog = true;

@@ -63,6 +63,7 @@ enum lmEToolGroupID
     lmGRP_NoteAcc,              //Note accidentals group
     lmGRP_NoteDots,             //Note dots group
     lmGRP_TieTuplet,            //Ties and tuplets group
+    lmGRP_Beams,                //tools for beams
 
 	//lmPAGE_CLEFS
     lmGRP_ClefType,
@@ -77,6 +78,13 @@ enum lmEToolID
     //lmGRP_TieTuplet
     lmTOOL_NOTE_TIE,
     lmTOOL_NOTE_TUPLET,
+
+    //lmGRP_Beams
+    lmTOOL_BEAMS_CUT,
+    lmTOOL_BEAMS_JOIN,
+    lmTOOL_BEAMS_FLATTEN,
+    lmTOOL_BEAMS_SUBGROUP,
+
 };
 
 class lmCheckButton;

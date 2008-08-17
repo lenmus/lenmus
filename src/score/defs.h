@@ -360,7 +360,7 @@ enum lmEBarline
     lm_eBarlineEndRepetition,       //two dots-thin-thick
     lm_eBarlineStart,               //thick-thin
     lm_eBarlineDoubleRepetition,    //two dots-thin-thin-two dots
-	lm_eBarlineEOS,					//Non-visible. For control purposes
+	//lm_eBarlineEOS,					//Non-visible. For control purposes
 };
 
 // brace/bracket for grouping instruments

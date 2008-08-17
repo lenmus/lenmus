@@ -255,9 +255,9 @@ void lmScoreCanvas::DeleteCaretSatffobj()
 	if (!pCursorSO)
         return;
 
-	//the EOS Barline can not be deleted
-	if (pCursorSO->GetClass() == eSFOT_Barline
-		&& ((lmBarline*)pCursorSO)->GetBarlineType() == lm_eBarlineEOS) return;
+	////the EOS Barline can not be deleted
+	//if (pCursorSO->GetClass() == eSFOT_Barline
+	//	&& ((lmBarline*)pCursorSO)->GetBarlineType() == lm_eBarlineEOS) return;
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -304,6 +304,24 @@ void lmScoreCanvas::DeleteSelection()
 	pCP->Submit(new lmCmdDeleteSelection(pVCursor, sName, m_pDoc, m_pView->GetSelection()) );
 }
 
+void lmScoreCanvas::BreakBeam()
+{
+    //Break beamed group at selected note (the one pointed by cursor)
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+	//get object pointed by the cursor
+    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
+	wxASSERT(pCursorSO && pCursorSO->IsNoteRest());
+
+    //prepare command and submit it
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Break a beam");
+	pCP->Submit(new lmCmdBreakBeam(pVCursor, sName, m_pDoc, (lmNoteRest*)pCursorSO));
+}
+
 void lmScoreCanvas::ChangeTie(lmNote* pStartNote, lmNote* pEndNote)
 {
     //Add/remove tie from the two selected notes (there could be other objects selected beetween
@@ -343,27 +361,28 @@ void lmScoreCanvas::AddTuplet()
     //      it has been checked that all notes/rest in the seleccion are not in a tuplet,
     //      are consecutive and are in the same voice.
 
-    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = _("Add tuplet");
-	//pCP->Submit(new lmCmdAddTie(sName, m_pDoc, pStartNote, pEndNote) );
-}
-
-void lmScoreCanvas::DeleteTuplet()
-{
-    // Remove tuplet from the selected notes/rests (there could be other objects selected
-    // beetween the notes)
-    //
-    // Precondition:
-    //      it has been checked that all notes/rest in the seleccion are in a tuplet,
-    //      it is the same tuplet for all them and there are no more notes/rests in the tuplet
-
     //get cursor
     lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Add tuplet");
+	pCP->Submit(new lmCmdAddTuplet(pVCursor, sName, m_pDoc, m_pView->GetSelection(),
+                                   true, 3, true, ep_Default, 3, 2) );
+                               //bool fShowNumber, int nNumber, bool fBracket,
+                               //lmEPlacement nAbove, int nActual, int nNormal)
+}
+
+void lmScoreCanvas::DeleteTuplet(lmNoteRest* pStartNR)
+{
+    // Remove tuplet from tuplet group. The first note/rest of the tuplet group is pStartNR
+    //
+    // Precondition:
+    // It has been checked that pStatNR is in a tuplet and that it is the first note/rest.
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Delete tuplet");
-	//pCP->Submit(new lmCmdDeleteSelection(pVCursor, sName, m_pDoc, m_pView->GetSelection()) );
+	pCP->Submit(new lmCmdDeleteTuplet(sName, m_pDoc, pStartNR) );
 }
 
 void lmScoreCanvas::InsertClef(lmEClefType nClefType)
@@ -514,7 +533,8 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
 
     switch (event.GetToolGroupID())
     {
-        case lmGRP_NoteAcc:       //selection of accidental event
+        case lmGRP_NoteAcc:
+            //selection of accidentals ----------------------------------------------------
             if (m_pView->SomethingSelected())
             {
 			    lmToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
@@ -536,7 +556,8 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
             }
             break;
 
-        case lmGRP_NoteDots:              //selection of dots
+        case lmGRP_NoteDots:
+            //selection of dots -----------------------------------------------------------
             if (m_pView->SomethingSelected())
             {
 			    lmToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
@@ -544,7 +565,8 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
             }
             break;
 
-        case lmGRP_TieTuplet:              //Tie, Tuplet
+        case lmGRP_TieTuplet:
+            //Tie, Tuplet tools -----------------------------------------------------------
             if (m_pView->SomethingSelected())
             {
                 switch(event.GetToolID())
@@ -560,15 +582,41 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
 
                     case lmTOOL_NOTE_TUPLET:
                         {
-                            lmNote* pStartNote = IsSelectionValidForTuplet();
-                            if (pStartNote)
-                                pStartNote->IsInTuplet() ? DeleteTuplet() : AddTuplet();
+                            lmNoteRest* pStartNR = IsSelectionValidForTuplet();
+                            if (pStartNR)
+                            {
+                                if (pStartNR->IsInTuplet())
+                                    DeleteTuplet(pStartNR);
+                                else
+                                    AddTuplet();
+                            }
                         }
                         break;
 
                     default:
                         wxASSERT(false);
                 }
+            }
+            break;
+
+        case lmGRP_Beams:
+            //Beam tools ------------------------------------------------------------------
+            switch(event.GetToolID())
+            {
+                case lmTOOL_BEAMS_CUT:
+                    BreakBeam();
+                    break;
+
+                case lmTOOL_BEAMS_JOIN:
+                case lmTOOL_BEAMS_FLATTEN:
+                case lmTOOL_BEAMS_SUBGROUP:
+                    {
+                        //TODO
+                    }
+                    break;
+
+                default:
+                    wxASSERT(false);
             }
             break;
 
@@ -1241,14 +1289,14 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection()
             return;         //nothing selected!
 
         case lmPAGE_NOTES:
-            //sync. duration, dots, accidentals, ties
+            //sync. duration, dots, accidentals, ties, tuples
             {
                 lmToolPageNotes* pPage = (lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES);
 
                 //find common values for all selected notes, if any
                 lmGMSelection* pSelection = m_pView->GetSelection();
                 lmGMObject* pGMO = pSelection->GetFirst();
-                bool fFirst = true;
+                bool fNoteFound = false;
                 int nAcc, nDots, nDuration;
                 while (pGMO)
                 {
@@ -1258,9 +1306,9 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection()
                         int nThisDuration = (int)pNote->GetNoteType() - 1;
                         int nThisDots = pNote->GetNumDots() - 1;
                         int nThisAcc = pNote->GetAPitch().Accidentals();
-                        if (fFirst)
+                        if (!fNoteFound)
                         {
-                            fFirst = false;
+                            fNoteFound = true;
                             nDuration = nThisDuration;
                             nDots = nThisDots;
                             nAcc = nThisAcc;
@@ -1279,7 +1327,7 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection()
                 }
 
                 //if any note found, proceed to sync. the toolbox
-                if (!fFirst)
+                if (fNoteFound)
                 {
                     //save current options
                     if (!m_fToolBoxSavedOptions)
@@ -1304,18 +1352,29 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection()
                     pPage->SetNoteDotsButton(nDots);
                     pPage->SetNoteAccButton(nAcc);
                     pPage->SetNoteDurationButton( nDuration );
-
-                    //Ties status
-                    lmNote* pStartNote;
-                    lmGrpTieTuplet* pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
-                    if (IsSelectionValidForTies(&pStartNote))
-                    {
-                        pGrp->EnableTool(lmTOOL_NOTE_TIE, true);
-                        pPage->SetToolTie( pStartNote->IsTiedToNext() );
-                    }
-                    else
-                        pGrp->EnableTool(lmTOOL_NOTE_TIE, false);
                 }
+
+                //Ties status
+                lmNote* pStartNote;
+                lmGrpTieTuplet* pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
+                if (fNoteFound && IsSelectionValidForTies(&pStartNote))
+                {
+                    pGrp->EnableTool(lmTOOL_NOTE_TIE, true);
+                    pPage->SetToolTie( pStartNote->IsTiedToNext() );
+                }
+                else
+                    pGrp->EnableTool(lmTOOL_NOTE_TIE, false);
+
+                //Tuplets status
+                pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
+                lmNoteRest* pStartNR = (fNoteFound ? IsSelectionValidForTuplet() : (lmNoteRest*)NULL);
+                if (pStartNR)
+                {
+                    pGrp->EnableTool(lmTOOL_NOTE_TUPLET, true);
+                    pPage->SetToolTuplet( pStartNR->IsInTuplet() );
+                }
+                else
+                    pGrp->EnableTool(lmTOOL_NOTE_TUPLET, false);
             }
             break;
 
@@ -1434,7 +1493,7 @@ bool lmScoreCanvas::IsSelectionValidForTies(lmNote** ppStartNote, lmNote** ppEnd
 }
 
 
-lmNote* lmScoreCanvas::IsSelectionValidForTuplet()
+lmNoteRest* lmScoreCanvas::IsSelectionValidForTuplet()
 {
     //Checks if current selection is valid for adding/removing a tuplet.
     //If valid, returns a pointer to the first note, else returns NULL
@@ -1442,10 +1501,52 @@ lmNote* lmScoreCanvas::IsSelectionValidForTuplet()
     //Conditions to be valid:
     //  Either:
     //   1. All notes/rest in the seleccion are not in a tuplet, are consecutive, and are
-    //      in the same voice. The first and last NoteRests must be notes, can not be rests.
+    //      in the same voice.
     //   2. All notes/rest in the seleccion are in a tuplet, it is the same tuplet for all
     //      of them, and there are no more notes/rests in the tuplet.
 
-    //TODO
-    return (lmNote*)NULL;
+    //verify conditions
+    lmGMSelection* pSelection = m_pView->GetSelection();
+    bool fValid = true;
+    lmNoteRest* pStart = (lmNoteRest*)NULL;
+    lmNoteRest* pEnd = (lmNoteRest*)NULL;
+    lmTupletBracket* pTuplet = (lmTupletBracket*)NULL;
+
+    int nNumNotes = 0;
+    int nVoice;
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO && fValid)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
+        {
+            nNumNotes++;
+            if (!pStart)
+            {
+                //This is the first note/rest
+                pStart = (lmNoteRest*)pGMO->GetScoreOwner();
+                if (pStart->IsInTuplet())
+                    pTuplet = pStart->GetTuplet();
+                else
+                    nVoice = pStart->GetVoice();
+            }
+            else
+            {
+                lmNoteRest* pNext = (lmNoteRest*)pGMO->GetScoreOwner();
+                fValid &= pTuplet == pNext->GetTuplet();
+                if (!pTuplet)
+                    fValid &= nVoice == pNext->GetVoice();
+            }
+        }
+        pGMO = pSelection->GetNext();
+    }
+
+    //check that all notes in the tuplet are selected
+    if (fValid && pTuplet)
+        fValid &= (pTuplet->NumNotes() == nNumNotes);
+
+    //return results
+    if (fValid)
+        return pStart;
+    else
+        return (lmNoteRest*)NULL;
 }

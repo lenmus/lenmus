@@ -32,6 +32,7 @@
 
 class wxBitmapComboBox;
 class lmCheckButton;
+class lmBitmapButton;
 
 
 //--------------------------------------------------------------------------------
@@ -126,6 +127,40 @@ protected:
 };
 
 
+//--------------------------------------------------------------------------------
+// Group for beams
+//--------------------------------------------------------------------------------
+class lmGrpBeams: public lmToolGroup
+{
+public:
+    lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpBeams() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_Beams; }
+
+    //event handlers
+    void OnButton(wxCommandEvent& event);
+
+	////access to options
+ //   void SetToolTie(bool fChecked);
+ //   void SetToolTuplet(bool fChecked);
+    void EnableTool(lmEToolID nToolID, bool fEnabled);
+
+
+protected:
+    void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
+
+    lmBitmapButton*      m_pBtnBeamCut;
+    lmBitmapButton*      m_pBtnBeamJoin;
+    lmBitmapButton*      m_pBtnBeamFlatten;
+    lmBitmapButton*      m_pBtnBeamSubgroup;
+
+    DECLARE_EVENT_TABLE()
+};
+
+
 
 //--------------------------------------------------------------------------------
 // The panel
@@ -172,6 +207,11 @@ public:
     inline void SetToolTie(bool fChecked) { m_pGrpTieTuplet->SetToolTie(fChecked); }
     inline void SetToolTuplet(bool fChecked) { m_pGrpTieTuplet->SetToolTuplet(fChecked); }
 
+    //interface with Beam tools group
+    //inline void EnableGrpTieTuplet(bool fEnabled) { m_pGrpTieTuplet->EnableGroup(fEnabled); }
+    //inline void SetToolTie(bool fChecked) { m_pGrpTieTuplet->SetToolTie(fChecked); }
+    //inline void SetToolTuplet(bool fChecked) { m_pGrpTieTuplet->SetToolTuplet(fChecked); }
+
 
     //interface with NoteheadType group
 	lmENoteHeads GetNoteheadType();
@@ -186,6 +226,7 @@ private:
     lmGrpNoteAcc*       m_pGrpNoteAcc;
     lmGrpNoteDots*      m_pGrpNoteDots;
     lmGrpTieTuplet*     m_pGrpTieTuplet;
+    lmGrpBeams*         m_pGrpBeams;
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;

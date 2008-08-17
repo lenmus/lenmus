@@ -2646,12 +2646,10 @@ void lmScoreView::OnRightDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasP
 
 void lmScoreView::SelectGMObject(lmGMObject* pGMO, bool fRedraw)
 {
-    m_graphMngr.NewSelection(pGMO);
-    if (fRedraw)
-        OnUpdate(this, new lmUpdateHint(lmREDRAW));
+    //deselect all currently selected objects, if any, and select the received object
 
-    //synchronize toolbox selected options with current selected object properties
-    GetController()->SynchronizeToolBoxWithSelection();
+    m_graphMngr.NewSelection(pGMO);
+    SelectionDone(fRedraw);
 }
 
 void lmScoreView::SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
@@ -2659,7 +2657,21 @@ void lmScoreView::SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits u
 {
     //deselect all currently selected objects, if any, and select all objects
     //in page m_nNumPage, within specified area
+
     m_graphMngr.NewSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
+    SelectionDone(fRedraw);
+}
+
+void lmScoreView::SelectionDone(bool fRedraw)
+{
+    //A selection has just been prepared. Do several houskeeping tasks
+
+    //move cursor to first object in the selection
+    lmStaffObj* pSO = m_graphMngr.GetBoxScore()->GetSelection()->GetFirstOwnerStaffObj();
+    if (pSO)
+        MoveCaretToObject(pSO);
+
+    //redraw the view to show the selection
     if (fRedraw)
         OnUpdate(this, new lmUpdateHint(lmREDRAW));
 

@@ -266,9 +266,9 @@ enum
 };
 
 
-/*
- lmMainFrame is the top-level window of the application.
-*/
+ //lmMainFrame is the top-level window of the application.
+
+const wxString lmRECENT_FILES = _T("Recent Files/file");
 
 IMPLEMENT_CLASS(lmMainFrame, lmDocMDIParentFrame)
 BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
@@ -292,6 +292,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_UPDATE_UI (wxID_SAVE, lmMainFrame::OnFileUpdateUI)
     EVT_UPDATE_UI (wxID_SAVEAS, lmMainFrame::OnFileUpdateUI)
     EVT_UPDATE_UI (MENU_File_New, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, lmMainFrame::OnOpenRecentFile)
 
     //Edit menu/toolbar
     EVT_MENU      (MENU_Edit_Copy, lmMainFrame::OnEditCopy)
@@ -428,6 +429,10 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     entries[0].Set(wxACCEL_CTRL, WXK_F1, wxID_ABOUT);
     wxAcceleratorTable accel(1, entries);
     SetAcceleratorTable(accel);
+
+    //load recent files
+    m_pRecentFiles = new wxFileHistory();
+    m_pRecentFiles->Load( *wxConfigBase::Get() );
 
 	// create main metronome and associate it to frame metronome controls
     //metronome speed. Default MM=60
@@ -1048,7 +1053,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 #endif
 
     // history of files visited.
-    //m_pDocManager->FileHistoryUseMenu(file_menu);
+    m_pRecentFiles->UseMenu(file_menu);
+    m_pRecentFiles->AddFilesToMenu(file_menu);
 
     // edit menu
     if (fEdit) {
@@ -1292,6 +1298,9 @@ lmMainFrame::~lmMainFrame()
         delete m_pMainMtr;
     }
 
+    //save and delete other objects
+    m_pRecentFiles->Save( *wxConfigBase::Get() );
+    delete m_pRecentFiles;
 }
 
 void lmMainFrame::OnCloseBookFrame()
@@ -1380,6 +1389,22 @@ void lmMainFrame::ShowWelcomeWindow()
         m_pWelcomeWnd = (lmWelcomeWnd*)NULL;
     }
 
+}
+
+void lmMainFrame::AddFileToHistory(const wxString& filename)
+{
+    if (m_pRecentFiles)
+        m_pRecentFiles->AddFileToHistory(filename);
+}
+
+void lmMainFrame::OnOpenRecentFile(wxCommandEvent &event)
+{
+    if (m_pRecentFiles)
+    {
+        wxString sFile(m_pRecentFiles->GetHistoryFile(event.GetId() - wxID_FILE1));
+        if (!sFile.empty())
+            (void)m_docManager->CreateDocument(sFile, wxDOC_SILENT);
+    }
 }
 
 void lmMainFrame::OnCloseWelcomeWnd()

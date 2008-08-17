@@ -749,3 +749,20 @@ lmGMObject* lmGMSelection::GetNext()
     //no more items
     return (lmGMObject*)NULL;
 }
+
+lmStaffObj* lmGMSelection::GetFirstOwnerStaffObj()
+{
+    //returns the first staffobj in the selection or NULL
+
+    std::list<lmGMObject*>::iterator it;
+    for (it = m_Selection.begin(); it != m_Selection.end(); ++it)
+    {
+        lmScoreObj* pSCO = (*it)->GetScoreOwner();
+        if (pSCO->GetScoreObjType() == lmSOT_ComponentObj &&
+            ((lmComponentObj*)pSCO)->GetType() == lm_eStaffObj )
+        {
+            return (lmStaffObj*)pSCO;
+        }
+    }
+    return (lmStaffObj*)NULL;
+}

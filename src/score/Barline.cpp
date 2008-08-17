@@ -85,7 +85,7 @@ wxString lmBarline::Dump()
 wxString lmBarline::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
-	if (m_nBarlineType == lm_eBarlineEOS) return sSource;
+	//if (m_nBarlineType == lm_eBarlineEOS) return sSource;
 
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sSource += _T("(barline ");
@@ -132,9 +132,9 @@ wxString lmBarline::SourceXML(int nIndent)
         case lm_eBarlineDoubleRepetition:
             sSource += _T("doubleRepetition");	//TODO
 			break;
-        case lm_eBarlineEOS:
-            sSource += _T("EndOfStaff control");	//TODO
-			break;
+   //     case lm_eBarlineEOS:
+   //         sSource += _T("EndOfStaff control");	//TODO
+			//break;
         default:
             wxASSERT(false);
     }
@@ -167,17 +167,17 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     // Paper cursor must be used as the base for positioning.
 
 	lmEBarline nType = m_nBarlineType;
-	//EOS is not renderizable, unless debugging
-	if (m_nBarlineType == lm_eBarlineEOS)
-	{
-		if (true)	//debug on
-		{
-			nType = lm_eBarlineDouble;
-			colorC = wxColor(50, 255, 0);
-		}
-		else
-			return 0.0f;
-	}
+	////EOS is not renderizable, unless debugging
+	//if (m_nBarlineType == lm_eBarlineEOS)
+	//{
+	//	if (true)	//debug on
+	//	{
+	//		nType = lm_eBarlineDouble;
+	//		colorC = wxColor(50, 255, 0);
+	//	}
+	//	else
+	//		return 0.0f;
+	//}
 
     lmLUnits uyTop = m_pVStaff->GetYTop();
     lmLUnits uyBottom = m_pVStaff->GetYBottom();
@@ -222,8 +222,8 @@ wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType)
             return _T("start");
         case lm_eBarlineDoubleRepetition:
             return _T("doubleRepetition");
-        case lm_eBarlineEOS:
-            return _T("EndOfStaff control");
+        //case lm_eBarlineEOS:
+        //    return _T("EndOfStaff control");
         default:
             wxASSERT(false);
             return _T("");        //let's keep the compiler happy

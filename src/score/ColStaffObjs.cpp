@@ -49,6 +49,7 @@
 #include "../app/ScoreDoc.h"
 #include "../app/MainFrame.h"
 #include "../app/TheApp.h"
+#include "../app/Preferences.h"
 
 //cursor positioning requires access to shapes
 #include "../graphic/BoxScore.h"
@@ -998,8 +999,13 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
     //  - Shift left all note/rests in this voice and sort the collection
 	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote() && !((lmNote*)pSO)->IsInChord())
     {
-        ShiftLeftTimepos((lmNoteRest*)pSO, itNext);
-		m_StaffObjs.sort(TimeCompare);
+        //ShiftLeftTimepos((lmNoteRest*)pSO, itNext, ((lmNoteRest*)pSO)->GetTimePosIncrement() );
+        ShiftLeftTimepos(itNext,
+                         ((lmNoteRest*)pSO)->GetDuration(), 
+                         ((lmNoteRest*)pSO)->GetTimePos() + ((lmNoteRest*)pSO)->GetDuration(),
+                         ((lmNoteRest*)pSO)->GetVoice()  );
+
+        m_StaffObjs.sort(TimeCompare);
     }
 
     //get object after the removed one
@@ -1085,7 +1091,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 		//shift timepos of all objects in this voice after the inserted one
 		if (pCursorSO && pNewSO->IsNoteRest())
 		{
-			ShiftRightTimepos(itNewCSO, ((lmNoteRest*)pNewSO)->GetVoice());
+			ShiftRightTimepos(itNewCSO, ((lmNoteRest*)pNewSO)->GetDuration() );
 			//and sort the collection by timepos
 			m_StaffObjs.sort(TimeCompare);
 		}
@@ -1107,25 +1113,30 @@ void lmSegment::RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr)
 	lmItCSO itNR = find(m_StaffObjs.begin(), m_StaffObjs.end(), pNR);
     wxASSERT(itNR != m_StaffObjs.end());
 
-    if (rTimeIncr > 0)
-        ShiftRightTimepos(itNR, pNR->GetVoice());
+    if (IsHigherTime(rTimeIncr, 0.0f))
+        ShiftRightTimepos(itNR, rTimeIncr);
     else
-        ShiftLeftTimepos(pNR, itNR);
+    {
+        ++itNR;
+        ShiftLeftTimepos(itNR, -rTimeIncr, pNR->GetTimePos() + pNR->GetDuration() - rTimeIncr,
+                         pNR->GetVoice() );
+    }
 }
 
-void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
+void lmSegment::ShiftRightTimepos(lmItCSO itStart, float rTimeShift)
 {
-    //The note/rest pointed by itStart has been inserted. If it is a note/rest and this
-    //timepos is
-    //ocuppied by other note/rest in the same voice, we must shift the timepos af all
-    //consecutive objects in this voice, starting with next SO and up to the barline
-    //(but excluding it). Finally, the barline timepos is updated.
+    //Either, the note/rest pointed by itStart has been inserted, or its duration has been
+    //increased.
+    //In both cases, we must shift the timepos af all next objects in this voice, starting with
+    //staffobj after itStart, and up to the barline (included).
+    //The amount of time to shift objects right is rTimeShift. This value is either the duration
+    //of the inserted note (if a note inserted) or the increment in duration (positive) if 
+    //the duration of itStart note/rest has been modified.
 
     //Algorithm:
-    //  Parameters: pStartSO (inserted object)
+    //  Parameters: pStartSO (inserted/modified object)
     //
-    //    1 Asign: TimeIncr = Duration(pStartSO)
-    //             iV = Voice(pStartSO)
+    //    1 Asign: iV = Voice(pStartSO)
     //             pCurrentSO = take next object in voice iV after pStartSO
     //
     //    2 While not end of segment
@@ -1137,8 +1148,14 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
     //            - break
     //        - Assign: pCurrentSO = take next object in voice iV after pCurrentSO
 
+
+    if (IsEqualTime(rTimeShift, 0.0f)) return;       //nothing to do
+
+    //increment in duration must be always positive
+    wxASSERT(IsHigherTime(rTimeShift, 0.0f));
+
+    bool fChanges = false;
     int iV = ((lmNoteRest*)(*itStart))->GetVoice();
-    float rTimeIncr = ((lmNoteRest*)(*itStart))->GetTimePosIncrement();
 	lmItCSO it = itStart;
     ++it;
 	while (it != m_StaffObjs.end())
@@ -1149,7 +1166,8 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
             float rDuration = (*it)->GetTimePosIncrement();
             if (m_pOwner->IsTimePosOccupied(this, rTime, rDuration, iV))
             {
-                (*it)->SetTimePos(rTime + rTimeIncr);
+                (*it)->SetTimePos(rTime + rTimeShift);
+                fChanges = true;
             }
             else
                 break;
@@ -1157,48 +1175,63 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, int nVoice)
         ++it;
 	}
 
-    UpdateMeasureDuration();
+    //if any change, update measure duration and review AutoBeam
+    if (fChanges)
+    {
+        UpdateMeasureDuration();
+        if (g_fAutoBeam)
+            AutoBeam(iV);
+    }
 }
 
-void lmSegment::ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart)
+void lmSegment::ShiftLeftTimepos(lmItCSO itStart, float rTimeShift, float rStartTimepos,
+                                 int nVoice)
 {
-    //The note/rest pSO, that was just before the object pointed by itStart, has been deleted.
-    //We must shift left the timepos af all consecutive objects in this voice, starting
-    //with the SO pointed by itStart and up to the barline (but excluding it). Finally,
-    //the barline timepos is updated.
+    //The timepos of all consecutive notes/rests, in voice nVoice, starting with the one 
+    //pointed by itStart must be modified, because either the previous note/rest has been
+    //deleted or its duration has been decreased.
+    //
+    //To check that next note/rest is consecutive, we need to know what was the next timepos
+    //after modified/deleted note. This value is received in parameter rStartTimepos.
+    //
+    //The amount of time to shift notes/rests is in rTimeShift (always positive). It is
+    //the duration of the removed note/rest or its decrement in duration. Always positive
+
 
     //Algorithm:
-    //  Parameters: pSO (deleted object)
-    //              pStartSO (next object after it)
+    //  Parameters: nVoice (the affected voice)
+    //              rTimeShift (the duration of the removed note/rest or its decrement in
+    //                          duration. Always positive)
+    //              rStartTimepos (the next timepos after modified/deleted note)
+    //              pStartSO (the first object to start shifting -- check its voice --)
     //
-    //    1 Asign: TimeIncr = Duration(pSO)
-    //             NextTime = Timepos(pSO) + TimeIncr
-    //             iV = Voice(pSO)
-    //             pCurrentSO = take next object in voice iV starting with pStartSO
+    //    1 Asign: NextTime = rStartTimepos
+    //             pCurrentSO = take next object in voice nVoice starting with pStartSO
     //
     //    2 While not end of segment
     //        - Assign: t = Timepos(pCurrentSO)
     //        - if t == NextTime:
-    //            - Assign: Timepos(pCurrentSO) = t - TimeIncr
+    //            - Assign: Timepos(pCurrentSO) = t - TimeShift
     //                      NextTime = t + Duration(pCurrentSO)
-    //        else
+    //          else
     //            - break
-    //        - Assign: pCurrentSO = take next object in voice iV after pCurrentSO
+    //        - Assign: pCurrentSO = take next object in voice nVoice after pCurrentSO
 
-	float rTimeIncr = pSO->GetTimePosIncrement();
-    float rNextTime = pSO->GetTimePos() + rTimeIncr;
-    int iV = pSO->GetVoice();
+
+    float rNextTime = rStartTimepos;
 	lmItCSO it = itStart;
+    bool fChanges = false;
 
 	while (it != m_StaffObjs.end())
 	{
-        if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == iV)
+        if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == nVoice)
         {
             float rTime = (*it)->GetTimePos();
             if (IsEqualTime(rTime, rNextTime))
             {
-                (*it)->SetTimePos(rTime - rTimeIncr);
+                (*it)->SetTimePos(rTime - rTimeShift);
                 rNextTime = rTime + (*it)->GetTimePosIncrement();
+                fChanges = true;
             }
             else
                 break;
@@ -1206,7 +1239,14 @@ void lmSegment::ShiftLeftTimepos(lmNoteRest* pSO, lmItCSO itStart)
         ++it;
 	}
 
-    UpdateMeasureDuration();
+
+    //if any change, update measure duration and review AutoBeam
+    if (fChanges)
+    {
+        UpdateMeasureDuration();
+        if (g_fAutoBeam)
+            AutoBeam(nVoice);
+    }
 }
 
 void lmSegment::UpdateMeasureDuration()
@@ -1517,7 +1557,12 @@ void lmSegment::AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes)
         //remove old beam
         //OPTIMIZATION: preserve current beam information when beam exists and is correct.
         if ((*it)->IsBeamed())
-             (*it)->GetBeam()->Remove(*it);
+        {
+            lmBeam* pBeam = (*it)->GetBeam();
+            pBeam->Remove(*it);
+		    if (pBeam->NumNotes() <= 1)
+			    delete pBeam;
+        }
 
         //add to new one
         if (it == cBeamedNotes.begin())
@@ -1790,8 +1835,8 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
         if (pNewSO->IsBarline())
         {
             //Advance cursor to time 0 in next segment
-            if ( ((lmBarline*)pNewSO)->GetBarlineType() != lm_eBarlineEOS )
-                m_pVCursor->AdvanceToNextSegment();
+                    //if ( ((lmBarline*)pNewSO)->GetBarlineType() != lm_eBarlineEOS )
+            m_pVCursor->AdvanceToNextSegment();
         }
         else
             //Advance cursor to time t + duration of inserted object
@@ -1847,13 +1892,12 @@ void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKey
         }
         else
         {	//create a new segment
-            if (((lmBarline*)pNewSO)->GetBarlineType() != lm_eBarlineEOS)
-                CreateNewSegment(nSegment);
+                    //if (((lmBarline*)pNewSO)->GetBarlineType() != lm_eBarlineEOS)
+            CreateNewSegment(nSegment);
         }
     }
 
     //If added staffobj is a note/rest and AutoBeam is on, apply auto-beam to current voice
-    bool g_fAutoBeam = true;    //TODO: Move to right place and assign value based on user options
     if (pNewSO->IsNoteRest() && g_fAutoBeam)
     {
         m_Segments[nSegment]->AutoBeam( ((lmNoteRest*)pNewSO)->GetVoice() );
@@ -1903,17 +1947,14 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     //  - delete the removed staffobj
 
 
-    //the EOS barline can not be deleted
-    //TO_REMOVE
-	if (pSO->IsBarline() && ((lmBarline*)pSO)->GetBarlineType() == lm_eBarlineEOS) return;
+ //   //the EOS barline can not be deleted
+ //   //TO_REMOVE
+	//if (pSO->IsBarline() && ((lmBarline*)pSO)->GetBarlineType() == lm_eBarlineEOS) return;
 
     //leave cursor positioned on object after object to remove
     m_pVCursor->MoveCursorToObject(pSO);
     m_pVCursor->MoveRight();
     lmVCursorState tVCState = m_pVCursor->GetState();
-
-#if 1       //new code invoking lmSegment::Remove instead of doing it here
-            //TODO: Remove old code when enough testing done
 
     //get segment and remove object
     lmSegment* pSegment = pSO->GetSegment();
@@ -1967,89 +2008,6 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     //finally, if requested, invoke destructor for removed staffobj
     if (fDelete) delete pSO;
 
-#else
-
-    //get segment and find object to remove
-    lmSegment* pSegment = pSO->GetSegment();
-	lmItCSO itDel = find(pSegment->m_StaffObjs.begin(), pSegment->m_StaffObjs.end(), pSO);
-    wxASSERT(itDel != pSegment->m_StaffObjs.end());
-
-	//remove the staffobj from the collection. After removal, iterator 'itDel' is invalid
-	pSegment->m_StaffObjs.erase(itDel);
-
-    //if removed object is a note not in chord:
-    //  - Shift left all note/rests in this voice and sort the collection
-	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote() && !((lmNote*)pSO)->IsInChord())
-    {
-        lmItCSO itNext = m_pVCursor->GetCurIt();
-        pSegment->ShiftLeftTimepos((lmNoteRest*)pSO, itNext);
-		pSegment->m_StaffObjs.sort(TimeCompare);
-    }
-
-    //if removed object is a barline:
-    //  - merge current segment with next one
-    //  - Adjust timepos of all moved objects
-    //  - Update segment pointer in all moved objects
-    //  - remove next segment and renumber segments
-	if (pSO->IsBarline())
-    {
-        //merge current segment with next one
-	    //As we are dealing with lists this is just to cut and append the lists (this
-        //is done with an 'splice' operation in STL)
-        lmSegment* pNextSegment = m_Segments[pSegment->m_nNumSegment + 1];
-	    lmItCSO it = pNextSegment->m_StaffObjs.begin();    //point to first object to move
-        lmItCSO itLast = (pSegment->m_StaffObjs).end();    //save ptr to last object
-        --itLast;
-        (pSegment->m_StaffObjs).splice(pSegment->m_StaffObjs.end(),
-                    pNextSegment->m_StaffObjs, it, pNextSegment->m_StaffObjs.end() );
-
-        //Adjust timepos and update segment pointer in all moved objects
-	    //Re-assign time to all objects in new segment.
-        //As objects ordering will not change this is just udating all staffobjs timepos, by
-	    //adding timepos of deleted barline
-        float rTime = pSO->GetTimePos();
-        for(it = ++itLast; it != pSegment->m_StaffObjs.end(); ++it)
-        {
-            (*it)->SetTimePos( (*it)->GetTimePos() + rTime );
-            (*it)->SetSegment(pSegment);
-        }
-
-        //re-compute segment duration
-        pSegment->UpdateDuration();
-
-        //remove next segment and renumber segments
-        RemoveSegment( pNextSegment->m_nNumSegment );
-    }
-
-    //get object after the removed one. Remember we positioned VCursor on it, at start of
-    //this method
-    lmStaffObj* pNextSO = m_pVCursor->GetStaffObj();
-
-    //if removed object is a time signature, re-bar the collection. As this implies removing
-    //current segments and creating new ones, all needed context propagation and update is
-    //done at the same time. Therefore, no later steps are necessary for this
-    //If there are no objects after the removed TS, nothing to re-bar
-    if (pSO->IsTimeSignature() && pNextSO)
-    {
-        //we have to re-bar from current segment to next time signature.
-        lmTimeSignature* pNewTS = pNextSO->GetApplicableTimeSignature();
-        lmStaffObj* pLastSO = FindFwdTimeSignature(pNextSO);
-        if (pLastSO)
-            pLastSO = FindPrevStaffObj(pLastSO);
-
-        AutoReBar(pNextSO, pLastSO, pNewTS);
-    }
-
-    //If inserted staffobj created contexts (clef, TS or KS) the contexts are already
-    //unchained from the staves context chain. But it is necessary:
-    //- to update pointers to contexts at start of segment; and
-    //- to update staffobjs in segment, if affected by the context change
-    pSegment->DoContextRemoval(pSO, pNextSO, fClefKeepPosition, fKeyKeepPitch);
-
-    //finally, if requested, invoke destructor for removed staffobj
-    if (fDelete) delete pSO;
-
-#endif
 
     //wxLogMessage(_T("[lmColStaffObjs::Delete] Forcing a dump:");
     //wxLogMessage( Dump() );

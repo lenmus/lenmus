@@ -47,6 +47,8 @@ typedef struct lmProxySettingsStruct {
 extern void InitPreferences();
 extern lmProxySettings* GetProxySettings();
 
+//program: user options
+extern bool g_fAutoBeam;
 
 
 

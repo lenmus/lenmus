@@ -41,7 +41,7 @@
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 //access to MainFrame
 #include "../app/MainFrame.h"
-extern lmMainFrame *g_pMainFrame;
+extern lmMainFrame* g_pMainFrame;
 
 
 //IDs for controls
@@ -84,6 +84,9 @@ lmWelcomeWnd::lmWelcomeWnd(wxWindow* parent, wxWindowID id)
     m_pScoreIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_editor"), wxART_OTHER) );
     m_pPhonascusIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_theory"), wxART_OTHER) );
     m_pBmpLeftBanner->SetBitmap( wxArtProvider::GetIcon(_T("welcome_left"), wxART_OTHER) );
+
+    //load recent open files
+    wxFileHistory* pHistory = g_pMainFrame->GetFileHistory();
 
 	this->Layout();
 }

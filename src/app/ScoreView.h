@@ -223,6 +223,7 @@ private:
     void OnClickOnObject(lmGMObject* pGMO);
 
     //dealing with selections
+    void SelectionDone(bool fRedraw);
     void DeselectAllGMObjects(bool fRedraw = false);
     void SelectGMObject(lmGMObject* pGMO, bool fRedraw = false);
     void SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,

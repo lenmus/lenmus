@@ -49,6 +49,7 @@ wxConfigBase* g_pPrefs = (wxConfigBase*) NULL;
 bool g_fAnswerSoundsEnabled;    // Feedback right/wrong answer sounds are enabled
 bool g_fTeamCounters;           // Exercises will have two counters to play in teams
 bool g_fAutoNewProblem;         // If right answer, don't show solution and generate a new problem
+bool g_fAutoBeam;               // Assign beam structure automatically
 
 
 // proxy settings
@@ -63,7 +64,7 @@ void InitPreferences()
     g_pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
     g_pPrefs->Read(_T("/Options/TeamCounters"), &g_fTeamCounters, false);
     g_pPrefs->Read(_T("/Options/AutoNewProblem"), &g_fAutoNewProblem, true);
-
+    g_pPrefs->Read(_T("/Options/AutoBeam"), &g_fAutoBeam, true);
 }
 
 lmProxySettings* GetProxySettings()

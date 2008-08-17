@@ -67,8 +67,8 @@ lmToolGroup::~lmToolGroup()
 wxBoxSizer* lmToolGroup::CreateGroup(wxBoxSizer* pMainSizer, wxString sTitle)
 {    
 	//create common controls for a lmToolGroup
-	wxStaticBoxSizer* pAuxSizer =
-	    new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, sTitle ), wxVERTICAL );
+    m_pBoxTitle = new wxStaticBox( this, wxID_ANY, sTitle );
+	wxStaticBoxSizer* pAuxSizer = new wxStaticBoxSizer(m_pBoxTitle, wxVERTICAL);
 	pMainSizer->Add( this, 0, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* pCtrolsSizer = new wxBoxSizer( wxVERTICAL );
@@ -88,14 +88,15 @@ int lmToolGroup::GetGroupWitdh()
 
 void lmToolGroup::EnableGroup(bool fEnable)
 {
-    wxWindowListNode* pNode = this->GetChildren().GetFirst();
-    while(pNode)
-    {
-      wxWindow* pCtrol = pNode->GetData();
-      pCtrol->Enable(fEnable);
-     
-      pNode = pNode->GetNext();
-    }
+    m_pBoxTitle->Enable(fEnable);
+    //wxWindowListNode* pNode = this->GetChildren().GetFirst();
+    //while(pNode)
+    //{
+    //  wxWindow* pCtrol = pNode->GetData();
+    //  pCtrol->Enable(fEnable);
+    // 
+    //  pNode = pNode->GetNext();
+    //}
 }
 
 

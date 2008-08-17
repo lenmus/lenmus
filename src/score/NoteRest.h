@@ -94,6 +94,7 @@ public:
     //methods related to duration
     inline float GetDuration() const { return m_rDuration; }
     inline float GetTimePosIncrement() { return m_rDuration; }
+    inline void SetDuration(float rNewDuration) { m_rDuration = rNewDuration; }
     wxString GetLDPNoteType();
 
     //methods related to dots

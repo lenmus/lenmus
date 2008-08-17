@@ -93,8 +93,9 @@ public:
 	virtual void ChangeNoteDots(int nDots) {}
     virtual void ChangeTie(lmNote* pStartNote, lmNote* pEndNote) {}
     virtual void AddTuplet() {}
-    virtual void DeleteTuplet() {}
+    virtual void DeleteTuplet(lmNoteRest* pStartNote) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
+    virtual void BreakBeam() {}
 
 
     // event handlers
@@ -187,8 +188,9 @@ public:
 	void ChangeNoteDots(int nDots);
     void ChangeTie(lmNote* pStartNote, lmNote* pEndNote);
     void AddTuplet();
-    void DeleteTuplet();
+    void DeleteTuplet(lmNoteRest* pStartNR);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
+    void BreakBeam();
 
 
 
@@ -224,7 +226,7 @@ private:
 
     //managing selections
     bool IsSelectionValidForTies(lmNote** ppStartNote = NULL, lmNote** ppEndNote = NULL);
-    lmNote* IsSelectionValidForTuplet();
+    lmNoteRest* IsSelectionValidForTuplet();
 
 
 

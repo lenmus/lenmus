@@ -59,8 +59,8 @@ public:
 	int GetGroupWitdh();
 
 protected:
-
-	lmToolPage*		m_pParent;		        //owner ToolPage
+	wxStaticBox*        m_pBoxTitle;    //the box and title
+	lmToolPage*		    m_pParent;      //owner ToolPage
 };
 
 

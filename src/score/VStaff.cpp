@@ -788,39 +788,55 @@ void lmVStaff::UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote*
     pEndNote->DeleteTiePrev();
 }
 
-
-void lmVStaff::Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote)
+void lmVStaff::Cmd_AddTuplet(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes,
+                             bool fShowNumber, int nNumber, bool fBracket,
+                             lmEPlacement nAbove, int nActual, int nNormal)
 {
-    //delete the tuplet, adjust duration of affected notes/rests, and log info
-    //to undo history
+    // add a tuplet
+
+    WXUNUSED(pUndoItem);
+
+    //create the tuplet object
+    lmTupletBracket* pTuplet = 
+        new lmTupletBracket(fShowNumber, nNumber, fBracket, nAbove, nActual, nNormal);
+
+    //include the tuplet in the notes and adjusts notes duration
+    float rFactor = (float)nNormal / (float)nActual;
+    std::vector<lmNoteRest*>::iterator it;
+    for (it=notes.begin(); it != notes.end(); ++it)
+    {
+        //include the note in the tuplet
+        pTuplet->Include(*it);
+
+        //adjust note/rest duration and recompute current measure duration
+        float rOldDuration = (*it)->GetDuration();
+        float rNewDuration = rOldDuration * rFactor;
+        (*it)->SetDuration(rNewDuration);
+        m_cStaffObjs.RecomputeSegmentDuration(*it, rNewDuration - rOldDuration);
+    }
+}
+
+void lmVStaff::UndoCmd_AddTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
+{
+    WXUNUSED(pUndoItem);
 
     //get the tuplet
-    lmTupletBracket* pTuplet = pStartNote->GetTuplet();
-    if (!pTuplet) return;       //nothing to do
+    lmTupletBracket* pTuplet = pStartNR->GetTuplet();
 
-    //save data for undoing the command
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-    wxASSERT(pUndoItem);
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-
-        //save number of note/rests in the tuplet
-    pUndoData->AddParam<int>( pTuplet->NumNotes() );
-
-        //save pointers to the note/rests
+    //re-adjust notes/rests duration
+    float rFactor = (float)pTuplet->GetActualNotes() / (float)pTuplet->GetNormalNotes();
     lmNoteRest* pNR = pTuplet->GetFirstNoteRest();
     while (pNR)
     {
-        pUndoData->AddParam<lmNoteRest*>( pNR );
+        //adjust note/rest duration and recompute current measure duration
+        float rOldDuration = pNR->GetDuration();
+        float rNewDuration = rOldDuration * rFactor;
+        pNR->SetDuration(rNewDuration);
+        m_cStaffObjs.RecomputeSegmentDuration(pNR, rNewDuration - rOldDuration);
+
+        //proceed with next note/rest
         pNR = pTuplet->GetNextNoteRest();
     }
-
-        //save tuplet info:
-    pTuplet->Save(pUndoData);
-
-
-    //adjust note rests duration
-    lmTODO(_T("[lmVStaff::Cmd_DeleteTuplet] Adjust notes/rests duration"));
 
     //remove the tuplet
     pNR = pTuplet->GetFirstNoteRest();
@@ -832,7 +848,56 @@ void lmVStaff::Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote)
     delete pTuplet;
 }
 
-void lmVStaff::UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote)
+void lmVStaff::Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
+{
+    //delete the tuplet, adjust duration of affected notes/rests, and log info
+    //to undo history
+
+    //get the tuplet
+    lmTupletBracket* pTuplet = pStartNR->GetTuplet();
+    if (!pTuplet) return;       //nothing to do
+
+    //save data for undoing the command
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+    wxASSERT(pUndoItem);
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+
+        //save number of note/rests in the tuplet
+    pUndoData->AddParam<int>( pTuplet->NumNotes() );
+
+    //save pointers to the note/rests and adjust notes/rests duration
+    float rFactor = (float)pTuplet->GetActualNotes() / (float)pTuplet->GetNormalNotes();
+    lmNoteRest* pNR = pTuplet->GetFirstNoteRest();
+    while (pNR)
+    {
+        //save pointer
+        pUndoData->AddParam<lmNoteRest*>( pNR );
+
+        //adjust notes/rests duration and recompute current measure duration
+        float rOldDuration = pNR->GetDuration();
+        float rNewDuration = rOldDuration * rFactor;
+        pNR->SetDuration(rNewDuration);
+        m_cStaffObjs.RecomputeSegmentDuration(pNR, rNewDuration - rOldDuration);
+
+        //proceed with next note/rest
+        pNR = pTuplet->GetNextNoteRest();
+    }
+
+    //save tuplet info:
+    pTuplet->Save(pUndoData);
+
+    //remove the tuplet
+    pNR = pTuplet->GetFirstNoteRest();
+    while (pNR)
+    {
+        pNR->OnRemovedFromTuplet();
+        pNR = pTuplet->GetNextNoteRest();
+    }
+    delete pTuplet;
+}
+
+void lmVStaff::UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
 {
     //un-delete the tuplet, according to info in history
 
@@ -846,16 +911,193 @@ void lmVStaff::UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNot
         notes.push_back( pUndoData->GetParam<lmNoteRest*>() );
 
     //recover tuplet info and re-create the tuplet object
-    lmTupletBracket* pTuplet = new lmTupletBracket(pStartNote, pUndoData);
+    lmTupletBracket* pTuplet = new lmTupletBracket(pStartNR, pUndoData);
 
     //add the tuplet to the notes and adjusts their duration
+    float rFactor = (float)pTuplet->GetNormalNotes() / (float)pTuplet->GetActualNotes();
     std::vector<lmNoteRest*>::iterator it;
+    bool fFirst = true;
     for (it=notes.begin(); it != notes.end(); ++it)
     {
-        if (it != notes.begin())    //first note is automatically included at tuplet constructor
-            (*it)->OnIncludedInTuplet(pTuplet);
-        lmTODO(_T("[lmVStaff::UndoCmd_DeleteTuplet] Adjust notes/rests duration"));
+        //skip first note, as it is automatically included at tuplet constructor
+        if (!fFirst)
+            pTuplet->Include(*it);
+
+        //adjust note/rest duration and recompute current measure duration
+        float rOldDuration = (*it)->GetDuration();
+        float rNewDuration = rOldDuration * rFactor;
+        (*it)->SetDuration(rNewDuration);
+        m_cStaffObjs.RecomputeSegmentDuration(*it, rNewDuration - rOldDuration);
+
+        fFirst = false;
     }
+}
+
+void lmVStaff::Cmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
+{
+    //break the beamed group before note/rest pBeforeNR. 
+
+    //it is previously verified that pBeforeNR is beamed and it is not the first one
+    //of the beam
+
+    //get the beam
+    lmBeam* pBeam = pBeforeNR->GetBeam();
+
+    //find this note/rest and the previous one and count notes before break point
+    int nNotesBefore = 0;
+    lmNoteRest* pNR = pBeam->GetFirstNoteRest();
+    lmNoteRest* pPrevNR = (lmNoteRest*)NULL;
+    while (pNR && pNR != pBeforeNR)
+    {
+        pPrevNR = pNR;
+        ++nNotesBefore;
+        pNR = pBeam->GetNextNoteRest();
+    }
+    wxASSERT(pNR);          //pBeforeNR must be found!!
+    wxASSERT(pPrevNR);      //pBeforeNR is not the first one in the beam
+
+    //save data for undoing the command: all note/rests before break point
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+    wxASSERT(pUndoItem);
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+
+    //save number of note/rests before the break point
+    pUndoData->AddParam<int>( nNotesBefore );
+
+    //save pointers to the note/rests before break point
+    std::vector<lmNoteRest*> notes;
+    pNR = pBeam->GetFirstNoteRest();
+    while (pNR && pNR != pBeforeNR)
+    {
+        //save pointer in undo log and also copy it in local variable
+        pUndoData->AddParam<lmNoteRest*>( pNR );
+        notes.push_back( pNR );
+        pNR = pBeam->GetNextNoteRest();
+    }
+
+    int nNotesAfter = pBeam->NumNotes() - nNotesBefore;
+
+    //four cases:
+    //  a) two single notes         (nNotesBefore == 1 && nNotesAfter == 1)
+    //  b) single note + new beam   (nNotesBefore == 1 && nNotesAfter > 1)
+    //  c) new beam + new beam      (nNotesBefore > 1 && nNotesAfter > 1)
+    //  d) new beam + single note   (nNotesBefore > 1 && nNotesAfter == 1)
+
+    //Case a) two single notes 
+    if (nNotesBefore == 1 && nNotesAfter == 1)
+    {
+        //just remove the beam
+	    pPrevNR->OnRemovedFromBeam();
+	    pBeforeNR->OnRemovedFromBeam();
+        delete pBeam;
+    }
+    //cae b) single note + new beam
+    else if (nNotesBefore == 1 && nNotesAfter > 1)
+    {
+        //remove first note from beam
+        pBeam->Remove(pPrevNR);
+	    pPrevNR->OnRemovedFromBeam();
+        pBeam->AutoSetUp();
+    }
+    //case c) new beam + new beam
+    else if (nNotesBefore > 1 && nNotesAfter > 1)
+    {
+        //split the beam. Create a new beam for first group and keep the existing one
+        //for the second group
+        std::vector<lmNoteRest*>::iterator it = notes.begin();
+
+        pBeam->Remove(*it);
+	    (*it)->OnRemovedFromBeam();
+        lmBeam* pBeam1 = new lmBeam((lmNote*)(*it));
+
+        ++it;
+        while (it != notes.end())
+        {
+            pBeam->Remove(*it);
+	        (*it)->OnRemovedFromBeam();
+            pBeam1->Include((*it));
+            ++it;
+        }
+
+        pBeam->AutoSetUp();
+        pBeam1->AutoSetUp();
+    }
+    //case d) new beam + single note
+    else if (nNotesBefore > 1 && nNotesAfter == 1)
+    {
+        //remove last note from beam
+        pBeam->Remove(pBeforeNR);
+	    pBeforeNR->OnRemovedFromBeam();
+        pBeam->AutoSetUp();
+    }
+    else
+        wxASSERT(false);
+}
+
+void lmVStaff::UndoCmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
+{
+    //re-create the beamed group that was broken before note/rest pBeforeNR. 
+
+    //recover the notes before pBeforeNR
+
+    //recover number of note/rests
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    int nNotesBefore = pUndoData->GetParam<int>();
+
+    //recover pointers to the note/rests
+    std::vector<lmNoteRest*> notes;
+    for (int i=0; i < nNotesBefore; i++)
+        notes.push_back( pUndoData->GetParam<lmNoteRest*>() );
+
+    //count notes after break point
+    int nNotesAfter = (pBeforeNR->IsBeamed() ? pBeforeNR->GetBeam()->NumNotes() : 1);
+
+    //re-create the beam. Four cases:
+    //  a) join two single notes    (nNotesBefore == 1 && nNotesAfter == 1)
+    //  b) join single note + beam  (nNotesBefore == 1 && nNotesAfter > 1)
+    //  c) join two beams           (nNotesBefore > 1 && nNotesAfter > 1)
+    //  d) join beam + single note  (nNotesBefore > 1 && nNotesAfter == 1)
+
+    if (nNotesBefore == 1 && nNotesAfter == 1)
+    {
+        //case a) join two single notes
+        lmBeam* pNewBeam = new lmBeam( (lmNote*)notes.front() );
+        pNewBeam->Include(pBeforeNR);
+    }
+    else if (nNotesBefore == 1 && nNotesAfter > 1)
+    {
+        //case b) join single note + beam
+        lmBeam* pBeam = pBeforeNR->GetBeam();
+	    pBeam->Include(notes.front(), 0);
+    }
+    else if (nNotesBefore > 1 && nNotesAfter > 1)
+    {
+        //case c) join two beams
+        //To keep note/rest order we must remove note/rests from the second beam and add them
+        //to the firts one.
+        lmBeam* pBeam1 = notes.front()->GetBeam();
+        lmBeam* pBeam2 = pBeforeNR->GetBeam();
+        lmNoteRest* pNR = pBeam2->GetFirstNoteRest();
+        while (pNR)
+        {
+            pBeam2->Remove(pNR);
+	        pNR->OnRemovedFromBeam();
+            pBeam1->Include(pNR);
+            //AWARE:  As we have removed the firts note, GetNextNoteRest() will fail because
+            //the internal iterator is now invalid. Moreover, the next note is now the first one.
+            pNR = pBeam2->GetFirstNoteRest();
+        }
+        delete pBeam2;
+    }
+    else if (nNotesBefore > 1 && nNotesAfter == 1)
+    {
+        //case d) join beam + single note
+        lmBeam* pBeam = notes.front()->GetBeam();
+	    pBeam->Include(pBeforeNR);
+    }
+    else
+        wxASSERT(false);
 }
 
 void lmVStaff::Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots)
@@ -872,12 +1114,11 @@ void lmVStaff::Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots)
     pUndoItem->GetUndoData()->AddParam<int>( pNR->GetNumDots() );
 
     //change dots and compute timepos increment/decrement
-    float rTimeIncr = pNR->GetTimePosIncrement();
+    float rOldDuration = pNR->GetDuration();
     pNR->ChangeDots(nDots);
-    rTimeIncr -= pNR->GetTimePosIncrement();
 
     //recompute current measure duration
-    m_cStaffObjs.RecomputeSegmentDuration(pNR, -rTimeIncr);
+    m_cStaffObjs.RecomputeSegmentDuration(pNR, pNR->GetDuration() - rOldDuration);
 }
 
 void lmVStaff::UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR)
@@ -890,12 +1131,11 @@ void lmVStaff::UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR)
     int nDots = pUndoItem->GetUndoData()->GetParam<int>();
 
     //restore dots and compute timepos increment/decrement
-    float rTimeIncr = pNR->GetTimePosIncrement();
+    float rOldDuration = pNR->GetDuration();
     pNR->ChangeDots(nDots);
-    rTimeIncr -= pNR->GetTimePosIncrement();
 
     //recompute current measure duration
-    m_cStaffObjs.RecomputeSegmentDuration(pNR, -rTimeIncr);
+    m_cStaffObjs.RecomputeSegmentDuration(pNR, pNR->GetDuration() - rOldDuration);
 }
 
 
@@ -2203,35 +2443,62 @@ void lmVCmdChangeDots::RollBack(lmUndoItem* pUndoItem)
 //----------------------------------------------------------------------------------------
 
 lmVCmdDeleteTuplet::lmVCmdDeleteTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                       lmNoteRest* pStartNote)
+                                       lmNoteRest* pStartNR)
     : lmVStaffCmd(pVStaff)
 {
-    m_pStartNote = pStartNote;
-    pVStaff->Cmd_DeleteTuplet(pUndoItem, m_pStartNote);
+    m_pStartNR = pStartNR;
+    pVStaff->Cmd_DeleteTuplet(pUndoItem, m_pStartNR);
 }
 
 void lmVCmdDeleteTuplet::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->UndoCmd_DeleteTuplet(pUndoItem, m_pStartNote);
+    m_pVStaff->UndoCmd_DeleteTuplet(pUndoItem, m_pStartNR);
 }
 
 
 
-////----------------------------------------------------------------------------------------
-//// lmVCmdAddTuplet implementation
-////----------------------------------------------------------------------------------------
-//
-//lmVCmdAddTuplet::lmVCmdAddTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-//                           lmNote* pStartNote, lmNote* pEndNote)
-//    : lmVStaffCmd(pVStaff)
-//{
-//    m_pStartNote = pStartNote;
-//    m_pEndNote = pEndNote;
-//    pVStaff->Cmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
-//}
-//
-//void lmVCmdAddTuplet::RollBack(lmUndoItem* pUndoItem)
-//{
-//    m_pVStaff->UndoCmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
-//}
+//----------------------------------------------------------------------------------------
+// lmVCmdAddTuplet implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdAddTuplet::lmVCmdAddTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                 std::vector<lmNoteRest*>& notes,
+                                 bool fShowNumber, int nNumber, bool fBracket,
+                                 lmEPlacement nAbove, int nActual, int nNormal)
+    : lmVStaffCmd(pVStaff), m_NotesRests(notes)
+{
+    m_fShowNumber = fShowNumber;
+    m_nNumber = nNumber;
+    m_fBracket = fBracket;
+    m_nAbove = nAbove;
+    m_nActual = nActual;
+    m_nNormal = nNormal;
+
+    pVStaff->Cmd_AddTuplet(pUndoItem, m_NotesRests, m_fShowNumber, m_nNumber, m_fBracket,
+                           m_nAbove, m_nActual, m_nNormal);
+}
+
+void lmVCmdAddTuplet::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_AddTuplet(pUndoItem, m_NotesRests.front());
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdBreakBeam implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdBreakBeam::lmVCmdBreakBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                 lmNoteRest* pBeforeNR)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pBeforeNR = pBeforeNR;
+    pVStaff->Cmd_BreakBeamedGroup(pUndoItem, m_pBeforeNR);
+}
+
+void lmVCmdBreakBeam::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_BreakBeamedGroup(pUndoItem, m_pBeforeNR);
+}
 
