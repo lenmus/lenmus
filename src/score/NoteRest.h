@@ -19,32 +19,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-//THINK: -----------------------------------------------------------------------------------
-//Pregunta: ¿No debería existir un constructor en lmNoteRest capaz de crear una nota a partir del fuente?
-//Resp: Ningún PentObj deben crearse fuera de un pentagrama y luego agregarse a él.
-//Pregunta: ¿Quizá, entonces, una funcion en CStaff que admita un fuente? ¿Hay algo así para
-//   otros tipos de PentObjs?
-//Resp: Si; ahora mismo existen algunas. Todos los restantes PentObjs
-//   se crean a partir de parámetros, no de un fuente.
-//Pregunta: ¿Deben mantenerse o eliminarse?
-//Resp: No veo razones por las que una funcion de creacion en CStaff no pueda admitir ambos
-//   tipos de argumentos: un fuente o sus parámetros ya procesados. El único argumento es que
-//   si admite un fuente, el análisis del fuente no debe duplicarse, sino que debe estar
-//   centralizado en algun sitio, quiza en MParseFile. Ello implica que la esta función de
-//   analisis tiene que devolver parámetros, con lo que terminamos en que la creación se
-//   hace, al final, a partir de sus parámetros no de su fuente. Sin embargo, puede dar
-//   flexibilidad.
-//Conclusión: Pueden existir funciones de creación a partir de los fuentes, pero siempre
-//   son auxiliares ya que tienen que tener la
-//   restricción de que, internamente, llamen a la función de análisis y, tras ella, a la
-//   de creación por parámetros.
-//Problema: La función de análisis de MParse trabaja con una estructura de CNodos no con el
-//   fuente plano. Realizar otra para análisis del fuente plano duplicaría el trabajo sólo
-//   con el objeto de no llamar internamente con parámtros sino con fuente plano
-//Conclusión final: Se rechaza la creación directa a partir de fuente. Puede hacerse sólo para
-//   encapsular la llamada a la función de análisis
-//---------------------------------------------------------------------------------------------
-
 #ifndef __LM_NOTEREST_H__        //to avoid nested includes
 #define __LM_NOTEREST_H__
 
@@ -108,6 +82,12 @@ public:
     inline bool IsBeamed() const { return m_pBeam != (lmBeam*)NULL; }
     inline lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
     inline void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
+    inline void SetBeamInfo(int level, lmTBeamInfo& BeamInfo)
+                    { 
+                        m_BeamInfo[level].Type = BeamInfo.Type;
+                        m_BeamInfo[level].Repeat = BeamInfo.Repeat;
+                    }
+
 	inline lmBeam* GetBeam() { return m_pBeam; }
 	inline lmTBeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
     lmBeam* IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam=(lmBeam*)NULL);

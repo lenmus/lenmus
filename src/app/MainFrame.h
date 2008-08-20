@@ -61,7 +61,8 @@ class lmWelcomeWnd;
 // Class lmMainFrame defines the main MDI frame for the application
 class lmMainFrame: public lmDocMDIParentFrame
 {
-    DECLARE_CLASS(lmMainFrame)
+    DECLARE_DYNAMIC_CLASS(lmMainFrame)
+
 public:
     wxLocale*   m_pLocale;            // locale for internationalization
 
@@ -204,14 +205,15 @@ public:
     void OnBookFrameUpdateUI(wxUpdateUIEvent& event);
     void OnCloseBookFrame();
 
+    //other events
+    void OnCloseWindow(wxCloseEvent& event);
+
     // other methods
     void SetOpenHelpButton(bool fButtonPressed);
     void UpdateToolbarsLayout();
     void SilentlyCheckForUpdates(bool fSilent);
 	inline wxMenu* GetEditMenu() {return m_pMenuEdit; }
-
-    //other events
-    void OnCloseWindow(wxCloseEvent& event);
+    void OpenRecentFile(wxString sFile);      //call back from WelcomeDlg
 
     //options
     bool ShowRulers();
@@ -253,7 +255,8 @@ protected:
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
 	void ShowEditTools(bool fShow);
-
+    void LoadRecentFiles();
+    void SaveRecentFiles();
 
 
     //status bar

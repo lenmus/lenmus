@@ -46,7 +46,7 @@
 
 class wxHyperlinkCtrl;
 class wxHyperlinkEvent;
-
+class wxFileHistory;
 
 class lmWelcomeWnd: public lmMDIChildFrame
 {
@@ -65,27 +65,26 @@ public:
 
 
 private:
-    void CreateControls();
+    void CreateControls(int nRecentFiles, wxFileHistory* pHistory);
 
     //controls on dialog
-		wxStaticBitmap* m_pBmpLeftBanner;
+	wxStaticBitmap*     m_pBmpLeftBanner;
 
-		wxStaticText* m_pTxtTitle;
+	wxStaticText*       m_pTxtTitle;
 
-		wxStaticText* m_pLearnTitle;
-		wxStaticBitmap* m_pLearnIcon;
-		wxHyperlinkCtrl* m_pLinkNewInLenmus;
-		wxHyperlinkCtrl* m_pLinkVisitWebsite;
-		wxStaticText* m_pPhonascusTitle;
-		wxStaticBitmap* m_pPhonascusIcon;
-		wxHyperlinkCtrl* m_pLinkOpenEBooks;
-		wxStaticText* m_pScoreTitle;
-		wxStaticBitmap* m_pScoreIcon;
-		wxHyperlinkCtrl* m_pLinkNewScore;
-		wxStaticText* m_pRecentScoresTitle;
+	wxStaticText*       m_pLearnTitle;
+	wxStaticBitmap*     m_pLearnIcon;
+	wxHyperlinkCtrl*    m_pLinkNewInLenmus;
+	wxHyperlinkCtrl*    m_pLinkVisitWebsite;
+	wxStaticText*       m_pPhonascusTitle;
+	wxStaticBitmap*     m_pPhonascusIcon;
+	wxHyperlinkCtrl*    m_pLinkOpenEBooks;
+	wxStaticText*       m_pScoreTitle;
+	wxStaticBitmap*     m_pScoreIcon;
+	wxHyperlinkCtrl*    m_pLinkNewScore;
+	wxStaticText*       m_pRecentScoresTitle;
 
-		wxHyperlinkCtrl* m_pLinkRecent1;
-		wxHyperlinkCtrl* m_pLinkRecent2;
+	wxHyperlinkCtrl*    m_pLinkRecent[9];
 
     //other variables
     wxString        m_sHeader;          //html code to start a page

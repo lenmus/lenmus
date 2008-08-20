@@ -1204,3 +1204,62 @@ bool lmCmdBreakBeam::UndoCommand()
     return true;
 }
 
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdJoinBeam implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdJoinBeam::lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name,
+                                     lmScoreDocument *pDoc, lmGMSelection* pSelection)
+        : lmScoreCommand(name, pDoc, pVCursor)
+{
+    //loop to save the note/rests to beam
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
+        {
+            m_NotesRests.push_back( (lmNoteRest*)pGMO->GetScoreOwner() );
+        }
+        pGMO = pSelection->GetNext();
+    }
+}
+
+lmCmdJoinBeam::~lmCmdJoinBeam()
+{
+}
+
+bool lmCmdJoinBeam::Do()
+{
+    //Proceed to create the beam
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmVStaff* pVStaff = m_NotesRests.front()->GetVStaff();
+    lmVStaffCmd* pVCmd = new lmVCmdJoinBeam(pVStaff, pUndoItem, m_NotesRests);
+
+    if (pVCmd->Success())
+    {
+        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pVCmd;
+        return false;
+    }
+}
+
+bool lmCmdJoinBeam::UndoCommand()
+{
+    //undelete the object
+
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+

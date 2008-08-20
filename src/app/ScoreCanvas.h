@@ -96,6 +96,7 @@ public:
     virtual void DeleteTuplet(lmNoteRest* pStartNote) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
     virtual void BreakBeam() {}
+    virtual void JoinBeam() {}
 
 
     // event handlers
@@ -116,7 +117,7 @@ public:
     virtual void OnDeleteTiePrev(wxCommandEvent& event) {}
 
     //call backs
-    virtual void SynchronizeToolBoxWithSelection() {}
+    virtual void SynchronizeToolBox() {}
     virtual void RestoreToolBoxSelections() {}
 
 
@@ -137,7 +138,7 @@ private:
 
 class lmScoreCanvas : public lmController
 {
-	DECLARE_CLASS(lmScoreCanvas)
+	DECLARE_DYNAMIC_CLASS(lmScoreCanvas)
 
 public:
 
@@ -191,11 +192,12 @@ public:
     void DeleteTuplet(lmNoteRest* pStartNR);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
     void BreakBeam();
+    void JoinBeam();
 
 
 
     //call backs
-    void SynchronizeToolBoxWithSelection();
+    void SynchronizeToolBox();
     void RestoreToolBoxSelections();
 
 	//contextual menus
@@ -213,6 +215,8 @@ public:
 
 private:
     void DeleteCaretOrSelected();
+    void SynchronizeToolBoxWithSelection(bool fEnable = true);
+    void SynchronizeToolBoxWithCaret(bool fEnable = true);
 
     bool TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap);
     void LogKeyEvent(wxString name, wxKeyEvent& event, int nTool=-1);
@@ -224,9 +228,12 @@ private:
     void SelectNoteAccidentals(bool fNext);
     void SelectNoteDots(bool fNext);
 
-    //managing selections
+    //managing selections and cursor pointed objects
     bool IsSelectionValidForTies(lmNote** ppStartNote = NULL, lmNote** ppEndNote = NULL);
     lmNoteRest* IsSelectionValidForTuplet();
+    bool IsCursorValidToCutBeam();
+    bool IsSelectionValidToJoinBeam();
+
 
 
 

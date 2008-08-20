@@ -63,6 +63,7 @@ extern lmMainFrame* GetMainFrame();
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
+IMPLEMENT_ABSTRACT_CLASS(lmView, wxView)
 
 // IDs for events, windows, etc.
 enum
@@ -515,6 +516,7 @@ bool lmScoreView::OnClose(bool deleteWindow)
 
     if (deleteWindow) {
         if (m_pFrame) {
+            //m_pFrame->Close();
             delete m_pFrame;
             m_pFrame = (lmEditFrame*) NULL;
         }
@@ -2137,6 +2139,9 @@ void lmScoreView::UpdateCaret()
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
     m_pCaret->Show(m_rScale, uPos, pStaff);
+
+    //inform the controller, for updating other windows (i.e. toolsbox)
+    GetController()->SynchronizeToolBox();
 }
 
 lmVStaffCursor* lmScoreView::GetVCursor()
@@ -2676,7 +2681,7 @@ void lmScoreView::SelectionDone(bool fRedraw)
         OnUpdate(this, new lmUpdateHint(lmREDRAW));
 
     //synchronize toolbox selected options with current selected object properties
-    GetController()->SynchronizeToolBoxWithSelection();
+    GetController()->SynchronizeToolBox();
 }
 
 void lmScoreView::DeselectAllGMObjects(bool fRedraw)

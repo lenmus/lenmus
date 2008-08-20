@@ -111,7 +111,6 @@ protected:
     bool Create(wxWizard* parent);
     void CreateControls();
     void LoadKeyList(int nType);
-    wxBitmap GenerateBitmap(wxString sKeyName);
 
 	wxRadioBox* m_pKeyRadioBox;
 	wxBitmapComboBox* m_pKeyList;

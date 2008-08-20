@@ -431,6 +431,10 @@ lmGrpBeams::lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent)
 {
     CreateControls(pMainSizer);
+
+    //disable buttons not yet used 
+    m_pBtnBeamFlatten->Enable(false);
+    m_pBtnBeamSubgroup->Enable(false);
 }
 
 void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)

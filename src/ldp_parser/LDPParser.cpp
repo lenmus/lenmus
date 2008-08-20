@@ -49,6 +49,7 @@
 #include "../score/MetronomeMark.h"
 #include "../score/InstrGroup.h"
 #include "../auxmusic/Conversion.h"
+#include "../widgets/MsgBox.h"
 #include "LDPParser.h"
 #include "AuxString.h"
 #include "LDPTags.h"
@@ -213,6 +214,8 @@ bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
 void lmLDPParser::FileParsingError(const wxString& sMsg)
 {
     wxMessageBox(sMsg, _T("Error"));
+    //lmErrorBox oEB(sMsg, _(""));
+    //oEB.ShowModal();
 }
 
 //------------------------------------------------------------------------------------------

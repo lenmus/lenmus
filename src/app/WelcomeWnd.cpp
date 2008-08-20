@@ -43,6 +43,9 @@
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
 
+// Paths names
+#include "../globals/Paths.h"
+extern lmPaths* g_pPaths;
 
 //IDs for controls
 const int lmLINK_NewInLenmus = wxNewId();
@@ -50,6 +53,13 @@ const int lmLINK_NewScore = wxNewId();
 const int lmLINK_OpenEBooks = wxNewId();
 const int lmLINK_Recent1 = wxNewId();
 const int lmLINK_Recent2 = wxNewId();
+const int lmLINK_Recent3 = wxNewId();
+const int lmLINK_Recent4 = wxNewId();
+const int lmLINK_Recent5 = wxNewId();
+const int lmLINK_Recent6 = wxNewId();
+const int lmLINK_Recent7 = wxNewId();
+const int lmLINK_Recent8 = wxNewId();
+const int lmLINK_Recent9 = wxNewId();
 
 
 BEGIN_EVENT_TABLE(lmWelcomeWnd, lmMDIChildFrame)
@@ -58,6 +68,13 @@ BEGIN_EVENT_TABLE(lmWelcomeWnd, lmMDIChildFrame)
     EVT_HYPERLINK   (lmLINK_OpenEBooks, lmWelcomeWnd::OnOpenEBooks)
     EVT_HYPERLINK   (lmLINK_Recent1, lmWelcomeWnd::OnOpenRecent)
     EVT_HYPERLINK   (lmLINK_Recent2, lmWelcomeWnd::OnOpenRecent)
+    EVT_HYPERLINK   (lmLINK_Recent3, lmWelcomeWnd::OnOpenRecent)
+    EVT_HYPERLINK   (lmLINK_Recent4, lmWelcomeWnd::OnOpenRecent)
+    EVT_HYPERLINK   (lmLINK_Recent5, lmWelcomeWnd::OnOpenRecent)
+    EVT_HYPERLINK   (lmLINK_Recent6, lmWelcomeWnd::OnOpenRecent)
+    EVT_HYPERLINK   (lmLINK_Recent7, lmWelcomeWnd::OnOpenRecent)
+    EVT_HYPERLINK   (lmLINK_Recent8, lmWelcomeWnd::OnOpenRecent)
+    EVT_HYPERLINK   (lmLINK_Recent9, lmWelcomeWnd::OnOpenRecent)
     EVT_CLOSE       (lmWelcomeWnd::OnCloseWindow)
 END_EVENT_TABLE()
 
@@ -67,7 +84,10 @@ IMPLEMENT_CLASS(lmWelcomeWnd, lmMDIChildFrame)
 lmWelcomeWnd::lmWelcomeWnd(wxWindow* parent, wxWindowID id)
     : lmMDIChildFrame((lmMDIParentFrame*)parent, id, _("Welcome"))
 {
-	CreateControls();
+    //get recent open files history and get number of files saved
+    wxFileHistory* pHistory = g_pMainFrame->GetFileHistory();
+    int nRecentFiles = pHistory->GetCount();
+	CreateControls(nRecentFiles, pHistory);
 
     this->SetBackgroundColour(*wxWHITE);
 
@@ -76,8 +96,8 @@ lmWelcomeWnd::lmWelcomeWnd(wxWindow* parent, wxWindowID id)
 	m_pLinkVisitWebsite->SetBackgroundColour(*wxWHITE);
 	m_pLinkOpenEBooks->SetBackgroundColour(*wxWHITE);
 	m_pLinkNewScore->SetBackgroundColour(*wxWHITE);
-	m_pLinkRecent1->SetBackgroundColour(*wxWHITE);
-	m_pLinkRecent2->SetBackgroundColour(*wxWHITE);
+    for (int i=0; i < nRecentFiles; i++)
+	    m_pLinkRecent[i]->SetBackgroundColour(*wxWHITE);
 
     //load icons
     m_pLearnIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_news"), wxART_OTHER) );
@@ -86,12 +106,13 @@ lmWelcomeWnd::lmWelcomeWnd(wxWindow* parent, wxWindowID id)
     m_pBmpLeftBanner->SetBitmap( wxArtProvider::GetIcon(_T("welcome_left"), wxART_OTHER) );
 
     //load recent open files
-    wxFileHistory* pHistory = g_pMainFrame->GetFileHistory();
+    pHistory = g_pMainFrame->GetFileHistory();
 
-	this->Layout();
+    this->Refresh();
+
 }
 
-void lmWelcomeWnd::CreateControls()
+void lmWelcomeWnd::CreateControls(int nRecentFiles, wxFileHistory* pHistory)
 {
     //Controls creation for WelcomeWnd
 
@@ -146,13 +167,13 @@ void lmWelcomeWnd::CreateControls()
 	wxBoxSizer* pLearnSubsizer;
 	pLearnSubsizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pLearnIcon = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLearnIcon = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(45, 45), 0 );
 	pLearnSubsizer->Add( m_pLearnIcon, 0, wxALL, 5 );
 
 	wxBoxSizer* pLearnLinksSizer;
 	pLearnLinksSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_pLinkNewInLenmus = new wxHyperlinkCtrl( this, lmLINK_NewInLenmus, _("What's is new in LenMus"), wxT("http://www.wxformbuilder.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkNewInLenmus = new wxHyperlinkCtrl( this, lmLINK_NewInLenmus, _("What's is new in LenMus"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	pLearnLinksSizer->Add( m_pLinkNewInLenmus, 0, wxRIGHT|wxLEFT, 5 );
 
 	m_pLinkVisitWebsite = new wxHyperlinkCtrl( this, wxID_ANY, _("Visit LenMus website"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
@@ -176,13 +197,13 @@ void lmWelcomeWnd::CreateControls()
 	wxBoxSizer* pPhonascusSubsizer;
 	pPhonascusSubsizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pPhonascusIcon = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pPhonascusIcon = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(45, 45), 0 );
 	pPhonascusSubsizer->Add( m_pPhonascusIcon, 0, wxALL, 5 );
 
 	wxBoxSizer* pPhonascusLinksSizer;
 	pPhonascusLinksSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_pLinkOpenEBooks = new wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open eMusicBooks "), wxT("http://www.wxformbuilder.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkOpenEBooks = new wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open eMusicBooks "), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	pPhonascusLinksSizer->Add( m_pLinkOpenEBooks, 0, wxRIGHT|wxLEFT, 5 );
 
 	pPhonascusSubsizer->Add( pPhonascusLinksSizer, 1, wxEXPAND|wxLEFT, 10 );
@@ -203,13 +224,13 @@ void lmWelcomeWnd::CreateControls()
 	wxBoxSizer* pScoreSubsizer;
 	pScoreSubsizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pScoreIcon = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pScoreIcon = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(45, 45), 0 );
 	pScoreSubsizer->Add( m_pScoreIcon, 0, wxALL, 5 );
 
 	wxBoxSizer* pScoreLinksSizer;
 	pScoreLinksSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_pLinkNewScore = new wxHyperlinkCtrl( this, lmLINK_NewScore, _("New score ..."), wxT("http://www.wxformbuilder.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkNewScore = new wxHyperlinkCtrl( this, lmLINK_NewScore, _("New score ..."), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	pScoreLinksSizer->Add( m_pLinkNewScore, 0, wxRIGHT|wxLEFT, 5 );
 
 	wxBoxSizer* pRecentScoresSizer;
@@ -230,11 +251,14 @@ void lmWelcomeWnd::CreateControls()
 	wxBoxSizer* pRecentScoresLinksSizer1;
 	pRecentScoresLinksSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	m_pLinkRecent1 = new wxHyperlinkCtrl( this, lmLINK_Recent1, _("c://usr/docs/Bach.lms"), wxT("http://www.wxformbuilder.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
-	pRecentScoresLinksSizer1->Add( m_pLinkRecent1, 0, wxRIGHT|wxLEFT, 5 );
-
-	m_pLinkRecent2 = new wxHyperlinkCtrl( this, lmLINK_Recent2, _("d://scores/Chopin prelude.lms"), wxT("http://www.wxformbuilder.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
-	pRecentScoresLinksSizer1->Add( m_pLinkRecent2, 0, wxRIGHT|wxLEFT, 5 );
+    for (int i=0; i < nRecentFiles; i++)
+    {
+	    m_pLinkRecent[i] =
+            new wxHyperlinkCtrl(this, lmLINK_Recent1+i, pHistory->GetHistoryFile(i),
+                                pHistory->GetHistoryFile(i), wxDefaultPosition, wxDefaultSize,
+                                wxHL_DEFAULT_STYLE);
+	    pRecentScoresLinksSizer1->Add( m_pLinkRecent[i], 0, wxRIGHT|wxLEFT, 5 );
+    }
 
 	pRecentScoresLinksSizer->Add( pRecentScoresLinksSizer1, 1, wxEXPAND, 5 );
 
@@ -265,7 +289,12 @@ lmWelcomeWnd::~lmWelcomeWnd()
 
 void lmWelcomeWnd::OnNewInLenmus(wxHyperlinkEvent& event)
 {
-    wxMessageBox(_T("Evento no tratado"));
+    wxString sPath = g_pPaths->GetRootPath();
+    wxFileName oFile;
+    oFile.SetPath(sPath);
+    oFile.AppendDir(_T("docs"));
+    oFile.SetFullName(_T("release_notes.htm"));
+    ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
 }
 
 void lmWelcomeWnd::OnNewScore(wxHyperlinkEvent& event)
@@ -282,7 +311,8 @@ void lmWelcomeWnd::OnOpenEBooks(wxHyperlinkEvent& event)
 
 void lmWelcomeWnd::OnOpenRecent(wxHyperlinkEvent& event)
 {
-    wxMessageBox(_T("Evento no tratado"));
+    wxString sFile = m_pLinkRecent[event.GetId() - lmLINK_Recent1]->GetURL();
+    g_pMainFrame->OpenRecentFile(sFile);
 }
 
 void lmWelcomeWnd::OnCloseWindow(wxCloseEvent& event)

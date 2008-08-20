@@ -68,15 +68,18 @@ class lmGMSelection;
 //Abstract class. All views must derive from it
 class lmView : public wxView
 {
+    DECLARE_ABSTRACT_CLASS(lmView)
+
 public:
-	lmView() : wxView() {}
 	virtual ~lmView() {}
 
 	virtual lmController* GetController()=0;
     inline lmScoreDocument* GetDocument() { return m_pDoc; }
+    virtual void OnDraw(wxDC* dc)=0;
 
 
 protected:
+    lmView() : wxView() {}
     lmScoreDocument*    m_pDoc;             //the MVC document (M)
 
 };

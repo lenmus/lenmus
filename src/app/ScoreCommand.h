@@ -454,6 +454,24 @@ protected:
 };
 
 
+// break a beam command
+//------------------------------------------------------------------------------------
+class lmCmdJoinBeam: public lmScoreCommand
+{
+public:
+    lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+                  lmGMSelection* pSelection);
+    ~lmCmdJoinBeam();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    std::vector<lmNoteRest*>    m_NotesRests;
+};
+
+
 
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

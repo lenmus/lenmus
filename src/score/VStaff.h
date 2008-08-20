@@ -165,7 +165,8 @@ public:
 
         //--- Modifying staffobjs
     void Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
-    void Cmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
+    void Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
+    void Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes);
 
         //--- Adding other markup
     void Cmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
@@ -191,7 +192,8 @@ public:
 
         //--- Modifying staffobjs
     void UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR);
-    void UndoCmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
+    void UndoCmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
+    void UndoCmd_JoinBeam(lmUndoItem* pUndoItem);
 
         //--- Adding other markup
     void UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
@@ -313,6 +315,19 @@ private:
 
     //barlines
     void CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR);
+
+    //beams
+        //structure with info about a note/rest beam status information
+    typedef struct 
+    {
+        lmNoteRest*     pNR;
+        lmTBeamInfo     tBeamInfo[6];
+        int             nBeamRef;
+    }
+    lmBeamNoteInfo;
+
+    void SaveBeamNoteInfo(lmNoteRest* pNR, std::list<lmBeamNoteInfo*>& oListNR, int nBeamIdx);
+
 
 
 
@@ -577,6 +592,21 @@ public:
 
 protected:
     lmNoteRest*     m_pBeforeNR;
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdJoinBeam : public lmVStaffCmd
+{
+public:
+    lmVCmdJoinBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes);
+    ~lmVCmdJoinBeam() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return true; }
+
+protected:
+    std::vector<lmNoteRest*>&   m_NotesRests;
 
 };
 

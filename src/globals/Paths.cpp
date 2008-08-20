@@ -158,10 +158,11 @@ lmPaths::lmPaths(wxString sBinPath)
 
     // Group 4. User scores and samples
 
-    path = oRootG3;
+    path = oRootG4;
     path.AppendDir(_T("scores"));
     path.AppendDir(_T("samples"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
 	//create temp folder if it does not exist. Otherwise the program will

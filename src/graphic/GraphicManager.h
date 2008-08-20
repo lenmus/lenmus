@@ -130,5 +130,9 @@ private:
 
 };
 
+
+//Global functions related to rendering scores
+extern wxBitmap GenerateBitmapForKeyCtrol(wxString sKeyName, lmEKeySignatures nKey);
+
 #endif  // __LM_GRAPHICMANAGER_H__
 

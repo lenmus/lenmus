@@ -432,7 +432,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 
     //load recent files
     m_pRecentFiles = new wxFileHistory();
-    m_pRecentFiles->Load( *wxConfigBase::Get() );
+    LoadRecentFiles();
 
 	// create main metronome and associate it to frame metronome controls
     //metronome speed. Default MM=60
@@ -480,6 +480,54 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     //picMtrLEDRojoOn.Top = Me.picMtrLEDOff.Top
     //picMtrLEDRojoOn.Left = Me.picMtrLEDOff.Left
 
+}
+
+void lmMainFrame::LoadRecentFiles()
+{
+    //m_pRecentFiles->Load( *wxConfigBase::Get() );
+    //wxFileHistory::Load() does not use any key to look for the files and this causes problems.
+    //So lets do it here
+    for (int nFile = 1; nFile <= 9; nFile++)
+    {
+        wxString sKey = wxString::Format(_T("/RecentFiles/file%d"), nFile);
+        wxString sFile = g_pPrefs->Read(sKey, _T(""));
+        if (sFile.empty())
+            break;
+        m_pRecentFiles->AddFileToHistory(sFile);
+    }
+
+    //if no recent files, load some samples
+    if (m_pRecentFiles->GetCount() == 0)
+    {
+        wxString sPath = g_pPaths->GetSamplesPath();
+        wxFileName oFile1(sPath, _T("greensleeves_v15.lms"));
+        wxFileName oFile2(sPath, _T("chopin_prelude20_v15.lms"));
+        wxFileName oFile3(sPath, _T("beethoven_moonlight_sonata_v15.lms"));
+        wxLogMessage(_T("[lmMainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
+                     sPath.c_str(), oFile1.GetFullPath().c_str() );
+        m_pRecentFiles->AddFileToHistory(oFile1.GetFullPath());
+        m_pRecentFiles->AddFileToHistory(oFile2.GetFullPath());
+        m_pRecentFiles->AddFileToHistory(oFile3.GetFullPath());
+    }
+}
+
+void lmMainFrame::SaveRecentFiles()
+{
+    //wxFileHistory is not using a key to save the files, and this causes problems. Therefore
+    //I will implement my own function
+
+    if (!m_pRecentFiles) return;
+
+    int nNumFiles = m_pRecentFiles->GetCount();
+    for (int i = 1; i <= 9; i++)
+    {
+        wxString buf;
+        buf.Printf(_T("/RecentFiles/file%d"), i);
+        if (i <= nNumFiles)
+            g_pPrefs->Write(buf, m_pRecentFiles->GetHistoryFile(i-1));
+        else
+            g_pPrefs->Write(buf, wxEmptyString);
+    }
 }
 
 void lmMainFrame::CreateControls()
@@ -1069,7 +1117,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     wxMenu *view_menu = new wxMenu;
     view_menu->Append(MENU_View_ToolBar, _("Tool &bar"), _("Hide/show the tools bar"), wxITEM_CHECK);
     view_menu->Append(MENU_View_StatusBar, _("&Status bar"), _("Hide/show the status bar"), wxITEM_CHECK);
-    file_menu->AppendSeparator();
+    view_menu->AppendSeparator();
     view_menu->Append(MENU_View_Tools, _("&Tool box"), _("Hide/show edition tool box window"), wxITEM_CHECK);
     view_menu->Append(MENU_View_Rulers, _("&Rulers"), _("Hide/show rulers"), wxITEM_CHECK);
     view_menu->Append(MENU_View_Welcome_Page, _("&Welcome page"), _("Hide/show welcome page"));
@@ -1299,7 +1347,7 @@ lmMainFrame::~lmMainFrame()
     }
 
     //save and delete other objects
-    m_pRecentFiles->Save( *wxConfigBase::Get() );
+    SaveRecentFiles();
     delete m_pRecentFiles;
 }
 
@@ -1402,9 +1450,14 @@ void lmMainFrame::OnOpenRecentFile(wxCommandEvent &event)
     if (m_pRecentFiles)
     {
         wxString sFile(m_pRecentFiles->GetHistoryFile(event.GetId() - wxID_FILE1));
-        if (!sFile.empty())
-            (void)m_docManager->CreateDocument(sFile, wxDOC_SILENT);
+        OpenRecentFile(sFile);
     }
+}
+
+void lmMainFrame::OpenRecentFile(wxString sFile)
+{
+    if (!sFile.empty())
+        (void)m_docManager->CreateDocument(sFile, wxDOC_SILENT);
 }
 
 void lmMainFrame::OnCloseWelcomeWnd()
@@ -2514,7 +2567,7 @@ void lmMainFrame::OnKeyF1(wxCommandEvent& event)
 
 /*
 //------------------------------------------------------------------------------------
-// Tips at application start 
+// Tips at application start
 //------------------------------------------------------------------------------------
 
 void lmMainFrame::ShowTips(bool fForceShow)
@@ -2529,11 +2582,11 @@ void lmMainFrame::ShowTips(bool fForceShow)
         //sTipsFile = g_pPaths->GetHelpPath();
         //m_pHelp->SetTitleFormat(_("Test mode: using .hhp help file"));
         long nTipsIndex = g_pPrefs->Read(_T("/MainFrame/NextTip"), 0L);
-        
+
         //show next tip
         wxTipProvider oTipDlg = wxCreateFileTipProvider(sTipsFile, nTipsIndex);
         fShowTips = wxShowTip(this, &oTipDlg, fShowTips);
-        
+
         //save data for next run
         g_pPrefs->Write(_T("/MainFrame/ShowTips"), fShowTips);
         g_pPrefs->Write(_T("/MainFrame/NextTip"), (long)oTipDlg.GetCurrentTip());

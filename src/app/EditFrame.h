@@ -38,7 +38,7 @@ class lmScoreView;
 
 class lmEditFrame: public lmDocMDIChildFrame
 {
-    DECLARE_DYNAMIC_CLASS(lmEditFrame)
+    DECLARE_CLASS(lmEditFrame)
 public:
     lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame* mainFrame,
                 const wxPoint& pos = wxDefaultPosition,

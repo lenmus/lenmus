@@ -110,7 +110,7 @@ public:
     //access to notes/rests
     T* GetFirstNoteRest();
     T* GetNextNoteRest();
-    (typename std::list<T*>)& GetListOfNoteRests() { return m_Notes; }
+    typename std::list<T*>& GetListOfNoteRests() { return m_Notes; }
 
 	wxString Dump();
 

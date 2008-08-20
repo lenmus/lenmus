@@ -120,6 +120,7 @@ public:
 
     void OnKeyType(wxCommandEvent& event);
     void OnKeyList(wxCommandEvent& event);
+    void OnAddKey(wxCommandEvent& event);
 
     //keys data
     typedef struct lmKeysStruct
@@ -133,10 +134,10 @@ public:
 private:
     void CreateControls(wxBoxSizer* m_pMainSizer);
     void LoadKeyList(int nType);
-    wxBitmap GenerateBitmap(wxString sKeyName);
 
     wxRadioButton*      m_pKeyRad[2];   //rad.buttons for Major/Minor selection
 	wxBitmapComboBox*   m_pKeyList;
+    wxButton*           m_pBtnAddKey;
 
     DECLARE_EVENT_TABLE()
 };

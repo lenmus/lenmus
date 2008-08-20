@@ -126,6 +126,8 @@
 		<Unit filename="../../src/app/global.h" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.cpp" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.h" />
+		<Unit filename="../../src/app/toolbox/ToolBoxEvents.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolBoxEvents.h" />
 		<Unit filename="../../src/app/toolbox/ToolClef.cpp" />
 		<Unit filename="../../src/app/toolbox/ToolClef.h" />
 		<Unit filename="../../src/app/toolbox/ToolGroup.cpp" />

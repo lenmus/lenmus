@@ -49,6 +49,8 @@
 #include "../../widgets/Button.h"
 #include "../../score/defs.h"
 #include "../../score/KeySignature.h"
+#include "../../graphic/GraphicManager.h"   //to use GenerateBitmapForKeyCtrol()
+
 
 
 #define lmSPACING 5
@@ -63,6 +65,7 @@ enum {
     // Key signature group
     lmID_KEY_TYPE = lmID_BT_TimeType + lmGrpTimeType::lm_NUM_BUTTONS,
     lmID_KEY_LIST = lmID_KEY_TYPE + 2,
+    lmID_KEY_ADD,
 };
 
 
@@ -248,6 +251,7 @@ BEGIN_EVENT_TABLE(lmGrpKeyType, lmToolGroup)
     EVT_RADIOBUTTON (lmID_KEY_TYPE, lmGrpKeyType::OnKeyType)
     EVT_RADIOBUTTON (lmID_KEY_TYPE+1, lmGrpKeyType::OnKeyType)
     EVT_COMBOBOX    (lmID_KEY_LIST, lmGrpKeyType::OnKeyList)
+    EVT_BUTTON      (lmID_KEY_ADD, lmGrpKeyType::OnAddKey)
 END_EVENT_TABLE()
 
 #define lmMAX_MINOR_KEYS    lmMAX_MINOR_KEY - lmMIN_MINOR_KEY + 1
@@ -300,6 +304,10 @@ void lmGrpKeyType::CreateControls(wxBoxSizer* pMainSizer)
                        0, NULL, wxCB_READONLY);
 
 	pCtrolsSizer->Add( m_pKeyList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+    //button to add the key
+    m_pBtnAddKey = new wxButton(this, lmID_KEY_ADD, _("Add key"), wxDefaultPosition, wxDefaultSize, 0 );
+	pCtrolsSizer->Add( m_pBtnAddKey, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
     //load initial data
     m_pKeyRad[0]->SetValue(true);
@@ -320,6 +328,11 @@ void lmGrpKeyType::OnKeyType(wxCommandEvent& event)
 }
 
 void lmGrpKeyType::OnKeyList(wxCommandEvent& event)
+{
+    WXUNUSED(event);
+}
+
+void lmGrpKeyType::OnAddKey(wxCommandEvent& event)
 {
     //insert selected key
 	WXUNUSED(event);
@@ -347,8 +360,9 @@ void lmGrpKeyType::LoadKeyList(int nType)
         m_pKeyList->Clear();
         for (int i=0; i < lmMAX_MAJOR_KEYS; i++)
         {
-            wxString sKeyName = m_tMajorKeys[i].sKeyName;
-            m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
+            m_pKeyList->Append(wxEmptyString, 
+                               GenerateBitmapForKeyCtrol(m_tMajorKeys[i].sKeyName,
+                                                         m_tMajorKeys[i].nKeyType) );
         }
     }
     else
@@ -356,41 +370,11 @@ void lmGrpKeyType::LoadKeyList(int nType)
         m_pKeyList->Clear();
         for (int i=0; i < lmMAX_MINOR_KEYS; i++)
         {
-            wxString sKeyName = m_tMinorKeys[i].sKeyName;
-            m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
+            m_pKeyList->Append(wxEmptyString,
+                               GenerateBitmapForKeyCtrol(m_tMinorKeys[i].sKeyName,
+                                                         m_tMinorKeys[i].nKeyType) );
         }
     }
     m_pKeyList->SetSelection(0);
 }
 
-wxBitmap lmGrpKeyType::GenerateBitmap(wxString sKeyName)
-{
-    wxMemoryDC dc;
-    wxSize size(108, 64);
-	wxBitmap bmp(size.x, size.y);
-
-    //fill bitmap in white
-    dc.SelectObject(bmp);
-    dc.SetBrush(*wxWHITE_BRUSH);
-	dc.SetBackground(*wxWHITE_BRUSH);
-	dc.Clear();
-
-    //draw rectangle and two red diagonals
-    dc.SetPen(*wxBLACK);
-    dc.DrawRectangle(0, 0, size.x, size.y);
-    dc.SetPen(*wxRED);
-    dc.DrawLine(0, 0, size.x, size.y);
-    dc.DrawLine(0, size.y, size.x, 0);
-
-    //write key signature name in black
-    int h, w;
-    dc.SetPen(*wxBLACK);
-    dc.SetFont(*wxNORMAL_FONT);
-    dc.GetTextExtent(sKeyName, &w, &h);
-    dc.DrawText(sKeyName, (size.x-w)/2, (size.y-h)/2);
-
-    //clean up and return new bitmap
-    dc.SelectObject(wxNullBitmap);
-
-    return bmp;
-}

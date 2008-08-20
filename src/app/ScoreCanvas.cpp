@@ -177,7 +177,6 @@ void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
         m_pView->RepaintScoreRectangle(&dc, rect);
         upd++;
     }
-
 }
 
 void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
@@ -205,6 +204,7 @@ void lmScoreCanvas::StopPlaying(bool fWait)
 {
     //get the score
     lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return;
 
     //request it to stop playing
     pScore->Stop();
@@ -320,6 +320,22 @@ void lmScoreCanvas::BreakBeam()
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Break a beam");
 	pCP->Submit(new lmCmdBreakBeam(pVCursor, sName, m_pDoc, (lmNoteRest*)pCursorSO));
+}
+
+void lmScoreCanvas::JoinBeam() 
+{
+    //depending on current selection content, either:
+    // - create a beamed group with the selected notes,
+    // - join two or more beamed groups
+    // - or add a note to a beamed group
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Add beam");
+	pCP->Submit(new lmCmdJoinBeam(pVCursor, sName, m_pDoc, m_pView->GetSelection()) );
 }
 
 void lmScoreCanvas::ChangeTie(lmNote* pStartNote, lmNote* pEndNote)
@@ -529,7 +545,6 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	wxASSERT(pToolBox);
-	lmEToolPage nTool = pToolBox->GetSelectedToolPage();
 
     switch (event.GetToolGroupID())
     {
@@ -608,6 +623,9 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
                     break;
 
                 case lmTOOL_BEAMS_JOIN:
+                    JoinBeam();
+                    break;
+
                 case lmTOOL_BEAMS_FLATTEN:
                 case lmTOOL_BEAMS_SUBGROUP:
                     {
@@ -1276,12 +1294,81 @@ void lmScoreCanvas::SelectNoteDots(bool fNext)
     }
 }
 
-void lmScoreCanvas::SynchronizeToolBoxWithSelection()
+void lmScoreCanvas::SynchronizeToolBox()
+{
+    //synchronize toolbox selected options with current selection and cursor object
+
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (!pToolBox) return;
+
+    lmGMSelection* pSelection = m_pView->GetSelection();
+    if (!pSelection->IsEmpty())
+    {
+        //there is a selection. Disable options related to cursor
+        SynchronizeToolBoxWithCaret(false);
+        SynchronizeToolBoxWithSelection(true);
+    }
+    else
+    {
+        //No selection. Disable options related to selections
+        SynchronizeToolBoxWithCaret(true);
+        SynchronizeToolBoxWithSelection(false);
+    }
+}
+
+void lmScoreCanvas::SynchronizeToolBoxWithCaret(bool fEnable)
+{
+    //synchronize toolbox selected options with current pointed object properties
+
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (!pToolBox) return;
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+	//get object pointed by the cursor
+    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
+    switch( pToolBox->GetSelectedToolPage() )
+    {
+        case lmPAGE_NONE:
+            return;         //nothing selected!
+
+        case lmPAGE_NOTES:
+            //cut beams
+            {
+                bool fCut = false;
+                if (fEnable && pCursorSO)
+                    fCut = IsCursorValidToCutBeam();
+
+                //syncr. cut beam button
+                lmToolPageNotes* pPage = (lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES);
+                lmGrpBeams* pGrp = (lmGrpBeams*)pPage->GetToolGroup(lmGRP_Beams);
+                pGrp->EnableTool(lmTOOL_BEAMS_CUT, fCut);
+            }
+            break;
+
+        case lmPAGE_SELECTION:
+        case lmPAGE_CLEFS:
+        case lmPAGE_KEY_SIGN:
+        case lmPAGE_TIME_SIGN:
+        case lmPAGE_BARLINES:
+            lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithCaret] Code to sync. this tool"));
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+}
+
+void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
 {
     //synchronize toolbox selected options with current selected object properties
 
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	if (!pToolBox) return;
+
+    lmGMSelection* pSelection = m_pView->GetSelection();
 
     switch( pToolBox->GetSelectedToolPage() )
     {
@@ -1293,88 +1380,120 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection()
             {
                 lmToolPageNotes* pPage = (lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES);
 
-                //find common values for all selected notes, if any
-                lmGMSelection* pSelection = m_pView->GetSelection();
-                lmGMObject* pGMO = pSelection->GetFirst();
-                bool fNoteFound = false;
-                int nAcc, nDots, nDuration;
-                while (pGMO)
+                //flags to enable/disable tools
+                bool fEnableTie = false;
+                bool fCheckTie = false;
+                bool fEnableTuplet = false;
+                bool fCheckTuplet = false;
+                bool fEnableJoinBeam = false;
+
+                if (fEnable && !pSelection->IsEmpty())
                 {
-                    if (pGMO->GetType() == eGMO_ShapeNote)
+                    //find common values for all selected notes, if any
+                    lmGMObject* pGMO = pSelection->GetFirst();
+                    bool fNoteFound = false;
+                    int nAcc, nDots, nDuration;
+                    while (pGMO)
                     {
-                        lmNote* pNote = (lmNote*)pGMO->GetScoreOwner();
-                        int nThisDuration = (int)pNote->GetNoteType() - 1;
-                        int nThisDots = pNote->GetNumDots() - 1;
-                        int nThisAcc = pNote->GetAPitch().Accidentals();
-                        if (!fNoteFound)
+                        if (pGMO->GetType() == eGMO_ShapeNote)
                         {
-                            fNoteFound = true;
-                            nDuration = nThisDuration;
-                            nDots = nThisDots;
-                            nAcc = nThisAcc;
+                            lmNote* pNote = (lmNote*)pGMO->GetScoreOwner();
+                            int nThisDuration = (int)pNote->GetNoteType() - 1;
+                            int nThisDots = pNote->GetNumDots() - 1;
+                            int nThisAcc = pNote->GetAPitch().Accidentals();
+                            if (!fNoteFound)
+                            {
+                                fNoteFound = true;
+                                nDuration = nThisDuration;
+                                nDots = nThisDots;
+                                nAcc = nThisAcc;
+                            }
+                            else
+                            {
+                                if (nDuration != nThisDuration)
+                                    nDuration = -1;
+                                if (nDots != nThisDots)
+                                    nDots = -1;
+                                if (nAcc != nThisAcc)
+                                    nAcc = -10;
+                            }
                         }
+                        pGMO = pSelection->GetNext();
+                    }
+
+                    //if any note found, proceed to sync. the toolbox
+                    if (fNoteFound)
+                    {
+                        //save current options
+                        if (!m_fToolBoxSavedOptions)
+                        {
+                            m_fToolBoxSavedOptions = true;
+                            m_nTbAcc = pPage->GetNoteAccButton();
+                            m_nTbDots = pPage->GetNoteDotsButton();
+                            m_nTbDuration = pPage->GetNoteDurationButton();
+                        }
+                        //translate Acc
+                        switch(nAcc)
+                        {
+                            case -2:  nAcc = 3;  break;
+                            case -1:  nAcc = 1;  break;
+                            case  0:  nAcc = -1; break;
+                            case  1:  nAcc = 2;  break;
+                            case  2:  nAcc = 4;  break;
+                            default:
+                                nAcc = -1;
+                        }
+
+                        pPage->SetNoteDotsButton(nDots);
+                        pPage->SetNoteAccButton(nAcc);
+                        pPage->SetNoteDurationButton( nDuration );
+                    }
+
+                    //Ties status
+                    lmNote* pStartNote;
+                    fEnableTie = fNoteFound;
+                    if (IsSelectionValidForTies(&pStartNote))
+                        fCheckTie = (pStartNote && pStartNote->IsTiedToNext());
+                    else
+                        fEnableTie = false;
+
+
+                    //Tuplets status
+                    fEnableTuplet = fNoteFound; 
+                    if (fNoteFound)
+                    {
+                        lmNoteRest* pStartNR = IsSelectionValidForTuplet();
+                        if (pStartNR)
+                            fCheckTuplet = pStartNR->IsInTuplet();
                         else
-                        {
-                            if (nDuration != nThisDuration)
-                                nDuration = -1;
-                            if (nDots != nThisDots)
-                                nDots = -1;
-                            if (nAcc != nThisAcc)
-                                nAcc = -10;
-                        }
+                            fEnableTuplet = false;
                     }
-                    pGMO = pSelection->GetNext();
+
+                    //Join beams
+                    fEnableJoinBeam = fNoteFound; 
+                    if (fNoteFound)
+                        fEnableJoinBeam = IsSelectionValidToJoinBeam();
+
                 }
 
-                //if any note found, proceed to sync. the toolbox
-                if (fNoteFound)
-                {
-                    //save current options
-                    if (!m_fToolBoxSavedOptions)
-                    {
-                        m_fToolBoxSavedOptions = true;
-                        m_nTbAcc = pPage->GetNoteAccButton();
-                        m_nTbDots = pPage->GetNoteDotsButton();
-                        m_nTbDuration = pPage->GetNoteDurationButton();
-                    }
-                    //translate Acc
-                    switch(nAcc)
-                    {
-                        case -2:  nAcc = 3;  break;
-                        case -1:  nAcc = 1;  break;
-                        case  0:  nAcc = -1; break;
-                        case  1:  nAcc = 2;  break;
-                        case  2:  nAcc = 4;  break;
-                        default:
-                            nAcc = -1;
-                    }
-
-                    pPage->SetNoteDotsButton(nDots);
-                    pPage->SetNoteAccButton(nAcc);
-                    pPage->SetNoteDurationButton( nDuration );
-                }
-
-                //Ties status
-                lmNote* pStartNote;
+                //enable/disable tools
+                
+                //Ties
                 lmGrpTieTuplet* pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
-                if (fNoteFound && IsSelectionValidForTies(&pStartNote))
-                {
-                    pGrp->EnableTool(lmTOOL_NOTE_TIE, true);
-                    pPage->SetToolTie( pStartNote->IsTiedToNext() );
-                }
-                else
-                    pGrp->EnableTool(lmTOOL_NOTE_TIE, false);
+                pGrp->EnableTool(lmTOOL_NOTE_TIE, fEnableTie);
+                if (fEnableTie)
+                    pPage->SetToolTie(fCheckTie);
 
-                //Tuplets status
+                //Tuples
                 pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
-                lmNoteRest* pStartNR = (fNoteFound ? IsSelectionValidForTuplet() : (lmNoteRest*)NULL);
-                if (pStartNR)
-                {
-                    pGrp->EnableTool(lmTOOL_NOTE_TUPLET, true);
-                    pPage->SetToolTuplet( pStartNR->IsInTuplet() );
-                }
-                else
-                    pGrp->EnableTool(lmTOOL_NOTE_TUPLET, false);
+                pGrp->EnableTool(lmTOOL_NOTE_TUPLET, fEnableTuplet);
+                if (fEnableTuplet)
+                    pPage->SetToolTuplet(fCheckTuplet);
+
+                //Join beams
+                lmGrpBeams* pGrpBeams = (lmGrpBeams*)pPage->GetToolGroup(lmGRP_Beams);
+                pGrpBeams->EnableTool(lmTOOL_BEAMS_JOIN, fEnableJoinBeam);
+
             }
             break;
 
@@ -1469,7 +1588,7 @@ bool lmScoreCanvas::IsSelectionValidForTies(lmNote** ppStartNote, lmNote** ppEnd
                     if (pEnd == (lmNote*)pGMO->GetScoreOwner())
                     {
                         fValid = true;      //ok. End note is in the selection
-                        break;    
+                        break;
                     }
                 }
                 else
@@ -1492,7 +1611,6 @@ bool lmScoreCanvas::IsSelectionValidForTies(lmNote** ppStartNote, lmNote** ppEnd
         return (lmNote*)NULL;
 }
 
-
 lmNoteRest* lmScoreCanvas::IsSelectionValidForTuplet()
 {
     //Checks if current selection is valid for adding/removing a tuplet.
@@ -1509,7 +1627,6 @@ lmNoteRest* lmScoreCanvas::IsSelectionValidForTuplet()
     lmGMSelection* pSelection = m_pView->GetSelection();
     bool fValid = true;
     lmNoteRest* pStart = (lmNoteRest*)NULL;
-    lmNoteRest* pEnd = (lmNoteRest*)NULL;
     lmTupletBracket* pTuplet = (lmTupletBracket*)NULL;
 
     int nNumNotes = 0;
@@ -1549,4 +1666,90 @@ lmNoteRest* lmScoreCanvas::IsSelectionValidForTuplet()
         return pStart;
     else
         return (lmNoteRest*)NULL;
+}
+
+bool lmScoreCanvas::IsCursorValidToCutBeam()
+{
+    //Returns TRUE if object pointed by cursor is valid for breaking a beam. 
+
+    //Conditions to be valid:
+    //  The object must be a note/rest in a beam
+    //  It must not be the first one in the beam
+
+    //get cursor
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+	//get object pointed by the cursor
+    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
+    if (pCursorSO && pCursorSO->IsNoteRest())
+    {
+        //it is a note/rest. Verify if it is beamed
+        lmNoteRest* pNR = (lmNoteRest*)pCursorSO;
+        if (pNR->IsBeamed())
+        {
+            //ok. it is in a beam. Verify that it is not the first object in the beam
+            lmBeam* pBeam = pNR->GetBeam();
+            if (pNR != pBeam->GetFirstNoteRest())
+                return true;
+        }
+    }
+
+    return false;
+}
+
+bool lmScoreCanvas::IsSelectionValidToJoinBeam()
+{
+    //Returns TRUE if current selection is valid either:
+    // - to create a beamed group with the selected notes,
+    // - to join two or more beamed groups
+    // - or to add a note to a beamed group
+
+    //Conditions to be valid:
+    //  Either:
+    //   1. All notes/rest in the seleccion are not in a tuplet, are consecutive, and are
+    //      in the same voice.
+    //   2. All notes/rest in the seleccion are in a tuplet, it is the same tuplet for all
+    //      of them, and there are no more notes/rests in the tuplet.
+
+    //verify conditions
+    lmGMSelection* pSelection = m_pView->GetSelection();
+    bool fValid = true;
+    //lmNoteRest* pStart = (lmNoteRest*)NULL;
+    //lmTupletBracket* pTuplet = (lmTupletBracket*)NULL;
+
+    //int nNumNotes = 0;
+    //int nVoice;
+    //lmGMObject* pGMO = pSelection->GetFirst();
+    //while (pGMO && fValid)
+    //{
+    //    if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
+    //    {
+    //        nNumNotes++;
+    //        if (!pStart)
+    //        {
+    //            //This is the first note/rest
+    //            pStart = (lmNoteRest*)pGMO->GetScoreOwner();
+    //            if (pStart->IsInTuplet())
+    //                pTuplet = pStart->GetTuplet();
+    //            else
+    //                nVoice = pStart->GetVoice();
+    //        }
+    //        else
+    //        {
+    //            lmNoteRest* pNext = (lmNoteRest*)pGMO->GetScoreOwner();
+    //            fValid &= pTuplet == pNext->GetTuplet();
+    //            if (!pTuplet)
+    //                fValid &= nVoice == pNext->GetVoice();
+    //        }
+    //    }
+    //    pGMO = pSelection->GetNext();
+    //}
+
+    ////check that all notes in the tuplet are selected
+    //if (fValid && pTuplet)
+    //    fValid &= (pTuplet->NumNotes() == nNumNotes);
+
+    //return results
+    return fValid;
 }

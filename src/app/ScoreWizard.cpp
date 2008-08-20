@@ -45,6 +45,7 @@
 #include "../app/Page.h"
 #include "../widgets/MsgBox.h"
 #include "../ldp_parser/LDPParser.h"
+#include "../graphic/GraphicManager.h"      //to use GenerateBitmapForKeyCtrol()
 
 // access to paths
 #include "../globals/Paths.h"
@@ -752,8 +753,9 @@ void lmScoreWizardKey::LoadKeyList(int nType)
         m_pKeyList->Clear();
         for (int i=0; i < lmMAX_MAJOR_KEYS; i++)
         {
-            wxString sKeyName = m_tMajorKeys[i].sKeyName;
-            m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
+            m_pKeyList->Append(wxEmptyString,
+                               GenerateBitmapForKeyCtrol(m_tMajorKeys[i].sKeyName,
+                                                         m_tMajorKeys[i].nKeyType) );
         }
     }
     else
@@ -761,8 +763,9 @@ void lmScoreWizardKey::LoadKeyList(int nType)
         m_pKeyList->Clear();
         for (int i=0; i < lmMAX_MINOR_KEYS; i++)
         {
-            wxString sKeyName = m_tMinorKeys[i].sKeyName;
-            m_pKeyList->Append(wxEmptyString, GenerateBitmap(sKeyName));
+            m_pKeyList->Append(wxEmptyString,
+                               GenerateBitmapForKeyCtrol(m_tMinorKeys[i].sKeyName,
+                                                         m_tMinorKeys[i].nKeyType) );
         }
     }
     m_pKeyList->SetSelection(0);
@@ -773,38 +776,6 @@ void lmScoreWizardKey::OnKeyType(wxCommandEvent& event)
     //load list box with the appropiate keys for selected key type
 
     LoadKeyList(event.GetSelection());
-}
-
-wxBitmap lmScoreWizardKey::GenerateBitmap(wxString sKeyName)
-{
-    wxMemoryDC dc;
-    wxSize size(108, 64);
-	wxBitmap bmp(size.x, size.y);
-
-    //fill bitmap in white
-    dc.SelectObject(bmp);
-    dc.SetBrush(*wxWHITE_BRUSH);
-	dc.SetBackground(*wxWHITE_BRUSH);
-	dc.Clear();
-
-    //draw rectangle and two red diagonals
-    dc.SetPen(*wxBLACK);
-    dc.DrawRectangle(0, 0, size.x, size.y);
-    dc.SetPen(*wxRED);
-    dc.DrawLine(0, 0, size.x, size.y);
-    dc.DrawLine(0, size.y, size.x, 0);
-
-    //write key signature name in black
-    int h, w;
-    dc.SetPen(*wxBLACK);
-    dc.SetFont(*wxNORMAL_FONT);
-    dc.GetTextExtent(sKeyName, &w, &h);
-    dc.DrawText(sKeyName, (size.x-w)/2, (size.y-h)/2);
-
-    //clean up and return new bitmap
-    dc.SelectObject(wxNullBitmap);
-
-    return bmp;
 }
 
 void lmScoreWizardKey::OnEnterPage()

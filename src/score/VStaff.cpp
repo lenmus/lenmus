@@ -933,7 +933,7 @@ void lmVStaff::UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
     }
 }
 
-void lmVStaff::Cmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
+void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
 {
     //break the beamed group before note/rest pBeforeNR. 
 
@@ -1035,7 +1035,7 @@ void lmVStaff::Cmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR
         wxASSERT(false);
 }
 
-void lmVStaff::UndoCmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
+void lmVStaff::UndoCmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
 {
     //re-create the beamed group that was broken before note/rest pBeforeNR. 
 
@@ -1098,6 +1098,199 @@ void lmVStaff::UndoCmd_BreakBeamedGroup(lmUndoItem* pUndoItem, lmNoteRest* pBefo
     }
     else
         wxASSERT(false);
+}
+
+void lmVStaff::Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes)
+{
+    //depending on received note/rests beam status, either:
+    // - create a beamed group with the received notes,
+    // - join two or more beamed groups
+    // - or add a note to a beamed group
+
+    //preconditions:
+    // - if not beamed, first note/rest must be a note
+    // - note/rests to beam must be eighths or shorter ones
+
+
+    //list of involved note/rests with its beam status information
+    std::list<lmBeamNoteInfo*> oInvolvedNR;
+    int nBeamIdx = 1;
+
+    //create beam and add first note
+    std::vector<lmNoteRest*>::iterator it = notes.begin();
+    lmBeam* pNewBeam;
+    if ((*it)->IsBeamed())
+    {
+        //First note is beamed. Add notes to this beam
+        pNewBeam = (*it)->GetBeam();
+
+        //save all notes in this beam
+        lmNoteRest* pNR = pNewBeam->GetFirstNoteRest();
+        while (pNR)
+        {
+            SaveBeamNoteInfo(pNR, oInvolvedNR, nBeamIdx);
+            pNR = pNewBeam->GetNextNoteRest();
+        }
+        nBeamIdx++;
+    }
+    else
+    {
+        //save this note/rest info
+        SaveBeamNoteInfo(*it, oInvolvedNR, 0);     //0 -> not beamed
+
+        //Create a new beam and add all notes to it
+        pNewBeam = new lmBeam((lmNote*)(*it));
+    }
+
+    //here target beam is initialized and first note/rest is included. Add remaining
+    //notes to it
+    for (++it; it != notes.end(); ++it)
+    {
+        if ((*it)->IsBeamed())
+        {
+            if ((*it)->GetBeam() == pNewBeam)
+                ;   //nothing to do. Note already in target beam
+            else
+            {
+                //remove this and following notes from current beam and add them to target beam
+                lmBeam* pOldBeam = (*it)->GetBeam();
+
+                //find this note
+                lmNoteRest* pNR = pOldBeam->GetFirstNoteRest();
+                while (pNR && pNR != *it)
+                    pNR = pOldBeam->GetNextNoteRest();
+
+                //copy the list of remaining notes in the beam, clear beam info from
+                //notes and add them to target beam
+                std::vector<lmNoteRest*> oldNotes;
+                while(pNR)
+                {
+                    SaveBeamNoteInfo(pNR, oInvolvedNR, nBeamIdx);
+	                pNR->OnRemovedFromBeam();
+                    pNewBeam->Include(pNR);
+                    oldNotes.push_back(pNR);
+                    pNR = pOldBeam->GetNextNoteRest();
+                }
+                
+                //remove notes form old beam
+                std::vector<lmNoteRest*>::iterator itON;
+                for(itON = oldNotes.begin(); itON != oldNotes.end(); ++itON)
+                    pOldBeam->Remove(*itON);
+
+                //delete old beam if empty. Else reorganize it
+                if (pOldBeam->NumNotes() <= 1)
+			        delete pOldBeam;
+                else
+                    pOldBeam->AutoSetUp();
+
+                nBeamIdx++;
+            }
+        }
+        else
+        {
+            //add the note to target beam
+            SaveBeamNoteInfo(*it, oInvolvedNR, 0);     //0 -> not beamed
+            pNewBeam->Include(*it);
+        }
+    }
+
+    //reorganize new beam
+    pNewBeam->AutoSetUp();
+
+
+        //save data for undoing the command
+
+
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+    wxASSERT(pUndoItem);
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+
+    //save number of involved note/rests
+    pUndoData->AddParam<int>( int(oInvolvedNR.size()) );
+
+    //save data about the involved note/rests and clear the list
+    std::list<lmBeamNoteInfo*>::iterator itINR;
+    for (itINR = oInvolvedNR.begin(); itINR != oInvolvedNR.end(); ++itINR)
+    {
+        pUndoData->AddParam<lmBeamNoteInfo>( **itINR );
+        delete *itINR;
+    }
+}
+
+void lmVStaff::UndoCmd_JoinBeam(lmUndoItem* pUndoItem)
+{
+    //what info do I need?
+    // - all involved note/rests, not only the ones in the selection. For each note, save
+    //   and index (1..n) to refer to a saved beam. Index 0 means it was not beamed
+    // - if first beam is nor new, but reused, save it as beam 0
+    // - save any deleted beam
+    // - removed beams info (note/rests + fStemsDown + beam level (it is in each note/rest) )
+
+
+    //recover number of involved note/rests
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    int nNotes = pUndoData->GetParam<int>();
+
+    //recover data about the involved note/rests
+    std::list<lmBeamNoteInfo> notes;
+    for (int i=0; i < nNotes; i++)
+        notes.push_back( pUndoData->GetParam<lmBeamNoteInfo>() );
+
+
+        // Now we have all necessary information. Proceed to restore previous state
+
+    //remove notes from current beam
+    std::list<lmBeamNoteInfo>::iterator it;
+    lmBeam* pBeam = notes.front().pNR->GetBeam();
+    for(it = notes.begin(); it != notes.end(); ++it)
+    {
+        pBeam->Remove((*it).pNR);
+        (*it).pNR->OnRemovedFromBeam();
+    }
+
+    //delete the old beam
+    wxASSERT(pBeam->NumNotes() == 0);
+	delete pBeam;
+    pBeam = (lmBeam*)NULL;
+
+    //re-create each removed beam, and restore notes beam info
+    int nCurBeam = 0;
+    for(it = notes.begin(); it != notes.end(); ++it)
+    {
+        lmNoteRest* pNR = (*it).pNR;
+
+        if ((*it).nBeamRef > 0)
+        {
+            if ((*it).nBeamRef > nCurBeam)
+            {
+                //create a new beam and add the note to it
+                wxASSERT(pNR->IsNote());
+                pBeam = new lmBeam((lmNote*)pNR);
+                ++nCurBeam;
+            }
+            else
+            {
+                //add note/rest to current beam
+                pBeam->Include(pNR);
+            }
+        }
+
+        //restore note/rest beaming info
+        for(int i=0; i < 6; i++)
+            pNR->SetBeamInfo(i, (*it).tBeamInfo[i]);
+    }
+}
+
+void lmVStaff::SaveBeamNoteInfo(lmNoteRest* pNR, std::list<lmBeamNoteInfo*>& oListNR, int nBeamIdx)
+{
+    lmBeamNoteInfo* pInvNR = new lmBeamNoteInfo;
+    pInvNR->pNR = pNR;
+    lmTBeamInfo* pBI = pNR->GetBeamInfo();
+    for(int i=0; i < 6; i++)
+        pInvNR->tBeamInfo[i] = *pBI;
+    pInvNR->nBeamRef = nBeamIdx;
+    oListNR.push_back(pInvNR);
 }
 
 void lmVStaff::Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots)
@@ -2494,11 +2687,29 @@ lmVCmdBreakBeam::lmVCmdBreakBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
     : lmVStaffCmd(pVStaff)
 {
     m_pBeforeNR = pBeforeNR;
-    pVStaff->Cmd_BreakBeamedGroup(pUndoItem, m_pBeforeNR);
+    pVStaff->Cmd_BreakBeam(pUndoItem, m_pBeforeNR);
 }
 
 void lmVCmdBreakBeam::RollBack(lmUndoItem* pUndoItem)
 {
-    m_pVStaff->UndoCmd_BreakBeamedGroup(pUndoItem, m_pBeforeNR);
+    m_pVStaff->UndoCmd_BreakBeam(pUndoItem, m_pBeforeNR);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdJoinBeam implementation
+//----------------------------------------------------------------------------------------
+
+lmVCmdJoinBeam::lmVCmdJoinBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                               std::vector<lmNoteRest*>& notes)
+    : lmVStaffCmd(pVStaff), m_NotesRests(notes)
+{
+    pVStaff->Cmd_JoinBeam(pUndoItem, m_NotesRests);
+}
+
+void lmVCmdJoinBeam::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_JoinBeam(pUndoItem);
 }
 

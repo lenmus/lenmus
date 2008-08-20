@@ -33,6 +33,7 @@
 #include "wx/image.h"
 
 #include "../score/Score.h"
+#include "../score/VStaff.h"
 #include "../score/ObjOptions.h"
 #include "../app/ScoreDoc.h"
 #include "GraphicManager.h"
@@ -41,7 +42,6 @@
 #include "GMObject.h"
 #include "BoxScore.h"
 #include "BoxPage.h"
-
 
 //access to colors
 #include "../globals/Colors.h"
@@ -460,3 +460,70 @@ void lmGraphicManager::NewSelection(lmGMObject* pGMO)
     pGMO->SetSelected(true);
 }
 
+
+//--------------------------------------------------------------------------------------------
+// global functions related to rendering scores
+//--------------------------------------------------------------------------------------------
+
+wxBitmap GenerateBitmapForKeyCtrol(wxString sKeyName, lmEKeySignatures nKey)
+{
+    //create a score with an invisible G clef and the key signature
+    lmScore oScore;
+    lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = pInstr->GetVStaff();
+    oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+    pVStaff->AddClef( lmE_Sol, 1, lmNO_VISIBLE );
+    pVStaff->AddKeySignature(nKey);
+
+
+        //use a graphic manager object to render this score in a memory DC
+
+    //allocate a memory dc
+    wxMemoryDC dc;
+    wxSize size(108, 64);
+	wxBitmap bmp(size.x, size.y);
+
+    //fill bitmap in white
+    dc.SelectObject(bmp);
+    dc.SetBrush(*wxWHITE_BRUSH);
+	dc.SetBackground(*wxWHITE_BRUSH);
+	dc.Clear();
+
+    // prepare and do renderization
+    double rScale = 1.0 * lmSCALE;
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( rScale, rScale );
+
+    lmPaper oPaper;
+    lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(size.x);
+    lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(size.y);
+    oPaper.SetPageSize(xLU, yLU);
+
+    oPaper.SetPageTopMargin(0.0f);
+    oPaper.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    oPaper.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+    oPaper.SetDrawer(new lmDirectDrawer(&dc));
+
+    lmGraphicManager oGraphMngr(&oScore, &oPaper);
+    oGraphMngr.PrepareToRender(&oScore, size.x, size.y, rScale, &oPaper,
+                                lmFORCE_RELAYOUT);
+    wxBitmap* pKeyBitmap = oGraphMngr.RenderScore(1);
+    wxASSERT(pKeyBitmap && pKeyBitmap->Ok());
+
+
+        //write key signature name in black
+    dc.SelectObject(*pKeyBitmap);
+    dc.SetMapMode(wxMM_TEXT);
+    dc.SetUserScale(1.0, 1.0);
+
+    int h, w;
+    dc.SetPen(*wxBLACK);
+    dc.SetFont(*wxNORMAL_FONT);
+    dc.GetTextExtent(sKeyName, &w, &h);
+    dc.DrawText(sKeyName, (size.x-w)/2, (size.y-h)/2 + h);
+
+
+        //clean up and return new bitmap
+    dc.SelectObject(wxNullBitmap);
+    return *pKeyBitmap;
+}
