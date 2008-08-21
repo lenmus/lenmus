@@ -3,16 +3,15 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -121,10 +120,6 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
 
 	//link cursor to collection
 	m_VCursor.AttachToCollection(&m_cStaffObjs);
-
- //   //Add EOS control object to the StaffObjs collection
- //   //m_cStaffObjs.Add( new lmBarline(lm_eBarlineEOS, this, lmNO_VISIBLE) );
-	//AddBarline(lm_eBarlineEOS, lmVISIBLE);
 
     //default value
     //TODO review this fixed space before the clef
@@ -1198,61 +1193,48 @@ void lmVStaff::Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& not
     pNewBeam->AutoSetUp();
 
 
-        //save data for undoing the command
-
-
+    //save data for undoing the command
     //AWARE: Logged actions must be logged in the required order for re-construction.
     //History works as a FIFO stack: first one logged will be the first one to be recovered
     wxASSERT(pUndoItem);
     lmUndoData* pUndoData = pUndoItem->GetUndoData();
-
-    //save number of involved note/rests
-    pUndoData->AddParam<int>( int(oInvolvedNR.size()) );
-
-    //save data about the involved note/rests and clear the list
-    std::list<lmBeamNoteInfo*>::iterator itINR;
-    for (itINR = oInvolvedNR.begin(); itINR != oInvolvedNR.end(); ++itINR)
-    {
-        pUndoData->AddParam<lmBeamNoteInfo>( **itINR );
-        delete *itINR;
-    }
+    LogBeamData(pUndoData, oInvolvedNR);
 }
 
 void lmVStaff::UndoCmd_JoinBeam(lmUndoItem* pUndoItem)
 {
-    //what info do I need?
-    // - all involved note/rests, not only the ones in the selection. For each note, save
-    //   and index (1..n) to refer to a saved beam. Index 0 means it was not beamed
-    // - if first beam is nor new, but reused, save it as beam 0
-    // - save any deleted beam
-    // - removed beams info (note/rests + fStemsDown + beam level (it is in each note/rest) )
+    //Restore beam status for a collection of logged note/rests
+    //AWARE: this method is used also for cmd UndoCmd_DeleteBeam
 
 
-    //recover number of involved note/rests
+    //recover number of involved note/rests and data about them
     lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    int nNotes = pUndoData->GetParam<int>();
-
-    //recover data about the involved note/rests
+    int nNotes;
     std::list<lmBeamNoteInfo> notes;
-    for (int i=0; i < nNotes; i++)
-        notes.push_back( pUndoData->GetParam<lmBeamNoteInfo>() );
+    GetLoggedBeamData(pUndoData, &nNotes, notes);
 
 
-        // Now we have all necessary information. Proceed to restore previous state
+        // Now we have all necessary information. Proceed to restore previous beam state
 
-    //remove notes from current beam
+    //all note/rests either are in a single beam group or aren't beamed. If they are
+    //in a beam remove noteRests from it an delete this beam
     std::list<lmBeamNoteInfo>::iterator it;
-    lmBeam* pBeam = notes.front().pNR->GetBeam();
-    for(it = notes.begin(); it != notes.end(); ++it)
+    lmBeam* pBeam = (lmBeam*)NULL;
+    if (notes.front().pNR->IsBeamed())
     {
-        pBeam->Remove((*it).pNR);
-        (*it).pNR->OnRemovedFromBeam();
-    }
+        //remove noe/rest from current beam
+        pBeam = notes.front().pNR->GetBeam();
+        for(it = notes.begin(); it != notes.end(); ++it)
+        {
+            pBeam->Remove((*it).pNR);
+            (*it).pNR->OnRemovedFromBeam();
+        }
 
-    //delete the old beam
-    wxASSERT(pBeam->NumNotes() == 0);
-	delete pBeam;
-    pBeam = (lmBeam*)NULL;
+        //delete the old beam
+        wxASSERT(pBeam->NumNotes() == 0);
+	    delete pBeam;
+        pBeam = (lmBeam*)NULL;
+    }
 
     //re-create each removed beam, and restore notes beam info
     int nCurBeam = 0;
@@ -1291,6 +1273,75 @@ void lmVStaff::SaveBeamNoteInfo(lmNoteRest* pNR, std::list<lmBeamNoteInfo*>& oLi
         pInvNR->tBeamInfo[i] = *pBI;
     pInvNR->nBeamRef = nBeamIdx;
     oListNR.push_back(pInvNR);
+}
+
+void lmVStaff::LogBeamData(lmUndoData* pUndoData, std::list<lmBeamNoteInfo*>& oListNR)
+{
+    //save number of involved note/rests
+    pUndoData->AddParam<int>( int(oListNR.size()) );
+
+    //save data about the involved note/rests and clear the list
+    std::list<lmBeamNoteInfo*>::iterator it;
+    for (it = oListNR.begin(); it != oListNR.end(); ++it)
+    {
+        pUndoData->AddParam<lmBeamNoteInfo>( **it );
+        delete *it;
+    }
+}
+
+void lmVStaff::GetLoggedBeamData(lmUndoData* pUndoData, int* pNumNotes,
+                                 std::list<lmBeamNoteInfo>& oListNR)
+{
+    //recover number of involved note/rests
+    int nNotes = pUndoData->GetParam<int>();
+    *pNumNotes = nNotes;
+
+    //recover data about the involved note/rests
+    for (int i=0; i < nNotes; i++)
+        oListNR.push_back( pUndoData->GetParam<lmBeamNoteInfo>() );
+}
+
+void lmVStaff::Cmd_DeleteBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeamedNR)
+{
+    //removes the beam associated to received note/rest
+
+    wxASSERT(pBeamedNR->IsBeamed());
+
+    //list of involved note/rests with its beam status information
+    std::list<lmBeamNoteInfo*> oBeamNR;
+
+    //save beam notes and status
+    lmBeam* pBeam = pBeamedNR->GetBeam();
+    lmNoteRest* pNR = pBeam->GetFirstNoteRest();
+    while (pNR)
+    {
+        SaveBeamNoteInfo(pNR, oBeamNR, 1);      //beam 1, the only one we are removing
+        pNR = pBeam->GetNextNoteRest();
+    }
+
+    //remove note/rests from beam
+    std::list<lmBeamNoteInfo*>::iterator it;
+    for(it = oBeamNR.begin(); it != oBeamNR.end(); ++it)
+    {
+        pBeam->Remove((*it)->pNR);
+        (*it)->pNR->OnRemovedFromBeam();
+    }
+
+    //delete the beam
+    wxASSERT(pBeam->NumNotes() == 0);
+	delete pBeam;
+
+    //save data for undoing the command
+    //AWARE: Logged actions must be logged in the required order for re-construction.
+    //History works as a FIFO stack: first one logged will be the first one to be recovered
+    wxASSERT(pUndoItem);
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    LogBeamData(pUndoData, oBeamNR);
+}
+
+void lmVStaff::UndoCmd_DeleteBeam(lmUndoItem* pUndoItem)
+{
+    UndoCmd_JoinBeam(pUndoItem);
 }
 
 void lmVStaff::Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots)
@@ -2711,5 +2762,25 @@ lmVCmdJoinBeam::lmVCmdJoinBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 void lmVCmdJoinBeam::RollBack(lmUndoItem* pUndoItem)
 {
     m_pVStaff->UndoCmd_JoinBeam(pUndoItem);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmVCmdDeleteBeam implementation
+//      pNR is any note/rest of the beam
+//----------------------------------------------------------------------------------------
+
+lmVCmdDeleteBeam::lmVCmdDeleteBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                 lmNoteRest* pNR)
+    : lmVStaffCmd(pVStaff)
+{
+    m_pNR = pNR;
+    pVStaff->Cmd_DeleteBeam(pUndoItem, m_pNR);
+}
+
+void lmVCmdDeleteBeam::RollBack(lmUndoItem* pUndoItem)
+{
+    m_pVStaff->UndoCmd_DeleteBeam(pUndoItem);
 }
 

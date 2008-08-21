@@ -3,16 +3,16 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
+
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -42,6 +42,7 @@
 #include "TheApp.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeArch.h"
+#include "../graphic/ShapeBeam.h"
 
 
 //----------------------------------------------------------------------------------------
@@ -100,7 +101,7 @@ bool lmScoreCommand::Undo()
 enum        //type of object to delete
 {
     //lm_eObjArch,
-    //lm_eObjBeam,
+    lm_eObjBeam,
     //lm_eObjBrace,
     //lm_eObjBracket,
     //lm_eObjGlyph,
@@ -182,9 +183,22 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                 }
                 break;
 
+            case eGMO_ShapeBeam:
+                {
+                    lmDeletedSO* pSOData = new lmDeletedSO;
+                    pSOData->nObjType = lm_eObjBeam;
+                    pSOData->pObj = (void*)NULL;
+                    pSOData->fObjDeleted = false;
+                    pSOData->pParm1 = (void*)( ((lmShapeBeam*)pGMO)->GetScoreOwner() );   //a note in the beam
+                    pSOData->pParm2 = (void*)NULL;
+
+                    m_ScoreObjects.push_back( pSOData );
+                    sCmdName = _T("Delete beam");
+                }
+                break;
+
             //case eGMO_ShapeStaff:
             //case eGMO_ShapeArch:
-            //case eGMO_ShapeBeam:
             //case eGMO_ShapeBrace:
             //case eGMO_ShapeBracket:
             //case eGMO_ShapeComposite:
@@ -222,6 +236,7 @@ lmCmdDeleteSelection::~lmCmdDeleteSelection()
                 case lm_eObjTie:        delete (lmTie*)(*it)->pObj;             break;
                 case lm_eObjTuplet:     delete (lmTupletBracket*)(*it)->pObj;   break;
                 case lm_eObjStaffObj:   delete (lmStaffObj*)(*it)->pObj;        break;
+                case lm_eObjBeam:       delete (lmStaffObj*)(*it)->pObj;        break;
                 default:
                     wxASSERT(false);
             }
@@ -261,6 +276,23 @@ bool lmCmdDeleteSelection::Do()
                 }
                 break;
 
+            case lm_eObjBeam:
+                {
+                    lmNote* pNote = (lmNote*)(*it)->pParm1;
+                    //if the owner notes are also in the selection, they could get deleted
+                    //before the beam, causing automatically the removal of the beam.
+                    //So let's check that the beam still exists
+                    if (pNote->IsBeamed())
+                    {
+                        lmVStaff* pVStaff = pNote->GetVStaff();
+                        pVCmd = new lmVCmdDeleteBeam(pVStaff, pUndoItem, pNote);
+                        wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting beam"));
+                    }
+                    else
+                        fSkipCmd = true;
+                }
+                break;
+
             case lm_eObjStaffObj:
                 {
                     lmStaffObj* pSO = (lmStaffObj*)(*it)->pObj;
@@ -288,7 +320,6 @@ bool lmCmdDeleteSelection::Do()
                 break;
 
             //case lm_eObjArch:
-            //case lm_eObjBeam:
             //case lm_eObjBrace:
             //case lm_eObjBracket:
             //case lm_eObjComposite:

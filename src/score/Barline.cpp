@@ -3,16 +3,15 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -85,7 +84,6 @@ wxString lmBarline::Dump()
 wxString lmBarline::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
-	//if (m_nBarlineType == lm_eBarlineEOS) return sSource;
 
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sSource += _T("(barline ");
@@ -132,9 +130,6 @@ wxString lmBarline::SourceXML(int nIndent)
         case lm_eBarlineDoubleRepetition:
             sSource += _T("doubleRepetition");	//TODO
 			break;
-   //     case lm_eBarlineEOS:
-   //         sSource += _T("EndOfStaff control");	//TODO
-			//break;
         default:
             wxASSERT(false);
     }
@@ -167,18 +162,6 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     // Paper cursor must be used as the base for positioning.
 
 	lmEBarline nType = m_nBarlineType;
-	////EOS is not renderizable, unless debugging
-	//if (m_nBarlineType == lm_eBarlineEOS)
-	//{
-	//	if (true)	//debug on
-	//	{
-	//		nType = lm_eBarlineDouble;
-	//		colorC = wxColor(50, 255, 0);
-	//	}
-	//	else
-	//		return 0.0f;
-	//}
-
     lmLUnits uyTop = m_pVStaff->GetYTop();
     lmLUnits uyBottom = m_pVStaff->GetYBottom();
 
@@ -222,8 +205,6 @@ wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType)
             return _T("start");
         case lm_eBarlineDoubleRepetition:
             return _T("doubleRepetition");
-        //case lm_eBarlineEOS:
-        //    return _T("EndOfStaff control");
         default:
             wxASSERT(false);
             return _T("");        //let's keep the compiler happy

@@ -3,16 +3,15 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -903,7 +902,15 @@ void lmVStaffCursor::UpdateTimepos()
     if (m_it != m_pSegment->m_StaffObjs.end())
         m_rTimepos = (*m_it)->GetTimePos();
     else
-        m_rTimepos = 0.0f;
+    {
+        //We are at end of collection.
+        //Get last staffobj and assign its timepos plus its duration
+        lmStaffObj* pSO = GetPreviousStaffobj();
+        if (pSO)
+            m_rTimepos = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+        else
+            m_rTimepos = 0.0f;
+    }
 }
 
 void lmVStaffCursor::RefreshInternalInfo()
@@ -1179,8 +1186,8 @@ void lmSegment::ShiftRightTimepos(lmItCSO itStart, float rTimeShift)
     if (fChanges)
     {
         UpdateMeasureDuration();
-        if (g_fAutoBeam)
-            AutoBeam(iV);
+        //if (g_fAutoBeam)
+        //    AutoBeam(iV);
     }
 }
 
@@ -1244,8 +1251,8 @@ void lmSegment::ShiftLeftTimepos(lmItCSO itStart, float rTimeShift, float rStart
     if (fChanges)
     {
         UpdateMeasureDuration();
-        if (g_fAutoBeam)
-            AutoBeam(nVoice);
+        //if (g_fAutoBeam)
+        //    AutoBeam(nVoice);
     }
 }
 
@@ -1835,7 +1842,6 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
         if (pNewSO->IsBarline())
         {
             //Advance cursor to time 0 in next segment
-                    //if ( ((lmBarline*)pNewSO)->GetBarlineType() != lm_eBarlineEOS )
             m_pVCursor->AdvanceToNextSegment();
         }
         else
@@ -1892,7 +1898,6 @@ void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKey
         }
         else
         {	//create a new segment
-                    //if (((lmBarline*)pNewSO)->GetBarlineType() != lm_eBarlineEOS)
             CreateNewSegment(nSegment);
         }
     }
@@ -1946,10 +1951,6 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     //      remove next segment and renumber segments
     //  - delete the removed staffobj
 
-
- //   //the EOS barline can not be deleted
- //   //TO_REMOVE
-	//if (pSO->IsBarline() && ((lmBarline*)pSO)->GetBarlineType() == lm_eBarlineEOS) return;
 
     //leave cursor positioned on object after object to remove
     m_pVCursor->MoveCursorToObject(pSO);

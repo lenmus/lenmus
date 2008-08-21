@@ -3,16 +3,16 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
+
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -606,23 +606,22 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
     return pInstr;
 }
 
-//void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
-//{
-//    lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
-//
-//    lmScoreText* pTitle;
-//    lmLUnits nPrevTitleHeight = 0;
-//    for (int i=0; i < (int)m_nTitles.size(); i++)
-//    {
-//        pTitle = (lmScoreText*)(*m_pAuxObjs)[m_nTitles[i]];
-//		nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
-//    }
-//
-//	m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
-//
-//}
-
 void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
+{
+    lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
+
+    lmScoreText* pTitle;
+    lmLUnits nPrevTitleHeight = 0;
+    for (int i=0; i < (int)m_nTitles.size(); i++)
+    {
+        pTitle = (lmScoreText*)(*m_pAuxObjs)[m_nTitles[i]];
+		nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
+    }
+
+	m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
+}
+
+void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 {
     //TODO: review these fixed values
     wxColour colorC = *wxBLACK;
@@ -632,7 +631,12 @@ void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 	m_uComputedPos.x = pPaper->GetCursorX();
 	m_uComputedPos.y = pPaper->GetCursorY();
 
-	// layout AuxObjs attached to directly to the score
+    //layout titles
+    LayoutTitles(pBox, pPaper);
+	m_uComputedPos.y += m_nHeadersHeight;
+
+
+	//layout other AuxObjs attached directly to the score
     if (m_pAuxObjs)
     {
 	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
@@ -641,17 +645,21 @@ void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 		    pPaper->SetCursorX(m_uComputedPos.x);
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
-		    (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
+            //skip titles. They have been already layouted
+	        std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
+            if (it == m_nTitles.end())
+            {
+		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
 
-            //force auxObjs to take user position into account
-            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(0.0f, 0.0f);
+                //force auxObjs to take user position into account
+                (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(0.0f, 0.0f);
+            }
 	    }
     }
 
     // update paper cursor position
     pPaper->SetCursorX(m_uComputedPos.x);
     m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
-
 }
 
 

@@ -3,16 +3,16 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
+
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -340,6 +340,7 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnTie->SetBitmapDown(_T("tie"), _T("button_selected_flat"), btSize);
     m_pBtnTie->SetBitmapOver(_T("tie"), _T("button_over_flat"), btSize);
     m_pBtnTie->SetBitmapDisabled(_T("tie_dis"), _T(""), btSize);
+    m_pBtnTie->SetToolTip(_("Add/remove a tie to/from selected notes"));
 	pRow1Sizer->Add( m_pBtnTie, wxSizerFlags(0).Border(wxALL, 2) );
 	
     // Tuplet button
@@ -348,6 +349,7 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnTuplet->SetBitmapDown(_T("tuplet"), _T("button_selected_flat"), btSize);
     m_pBtnTuplet->SetBitmapOver(_T("tuplet"), _T("button_over_flat"), btSize);
     m_pBtnTuplet->SetBitmapDisabled(_T("tuplet_dis"), _T(""), btSize);
+    m_pBtnTuplet->SetToolTip(_("Add/remove tuplet to/from selected notes"));
 	pRow1Sizer->Add( m_pBtnTuplet, wxSizerFlags(0).Border(wxALL, 2) );
 	
 	pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
@@ -453,6 +455,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnBeamCut->SetBitmapDown(_T("tool_beam_cut"), _T("button_selected_flat"), btSize);
     m_pBtnBeamCut->SetBitmapOver(_T("tool_beam_cut"), _T("button_over_flat"), btSize);
     m_pBtnBeamCut->SetBitmapDisabled(_T("tool_beam_cut_dis"), _T(""), btSize);
+    m_pBtnBeamCut->SetToolTip(_("Break beam at current cursor position"));
 	pRow1Sizer->Add( m_pBtnBeamCut, wxSizerFlags(0).Border(wxALL, 2) );
 	
     // beam join button
@@ -461,6 +464,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnBeamJoin->SetBitmapDown(_T("tool_beam_join"), _T("button_selected_flat"), btSize);
     m_pBtnBeamJoin->SetBitmapOver(_T("tool_beam_join"), _T("button_over_flat"), btSize);
     m_pBtnBeamJoin->SetBitmapDisabled(_T("tool_beam_join_dis"), _T(""), btSize);
+    m_pBtnBeamJoin->SetToolTip(_("Beam together all selected notes"));
 	pRow1Sizer->Add( m_pBtnBeamJoin, wxSizerFlags(0).Border(wxALL, 2) );
 	
     // beam subgroup button
@@ -469,6 +473,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnBeamSubgroup->SetBitmapDown(_T("tool_beam_subgroup"), _T("button_selected_flat"), btSize);
     m_pBtnBeamSubgroup->SetBitmapOver(_T("tool_beam_subgroup"), _T("button_over_flat"), btSize);
     m_pBtnBeamSubgroup->SetBitmapDisabled(_T("tool_beam_subgroup_dis"), _T(""), btSize);
+    m_pBtnBeamSubgroup->SetToolTip(_("Subdivide beamed group at current cursor position"));
 	pRow1Sizer->Add( m_pBtnBeamSubgroup, wxSizerFlags(0).Border(wxALL, 2) );
 	
     // beam flatten button
@@ -477,6 +482,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnBeamFlatten->SetBitmapDown(_T("tool_beam_flatten"), _T("button_selected_flat"), btSize);
     m_pBtnBeamFlatten->SetBitmapOver(_T("tool_beam_flatten"), _T("button_over_flat"), btSize);
     m_pBtnBeamFlatten->SetBitmapDisabled(_T("tool_beam_flatten_dis"), _T(""), btSize);
+    m_pBtnBeamFlatten->SetToolTip(_("Adjust selected beam to draw it horizontal"));
 	pRow1Sizer->Add( m_pBtnBeamFlatten, wxSizerFlags(0).Border(wxALL, 2) );
 
 

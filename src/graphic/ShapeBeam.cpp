@@ -3,16 +3,16 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
+
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -183,6 +183,13 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
     //TODO allow for customization.
     lmLUnits uBeamHookSize = ((lmStaffObj*)m_pOwner)->TenthsToLogical(11.0f);
 
+    //clear bounds. They will be recomputed as we draw the beam segments
+    m_uBoundsTop.x = 100000000.0f;      //any too big value
+    m_uBoundsTop.y = 100000000.0f;      //any too big value
+    m_uBoundsBottom.x = -100000000.0f;      //any too low value
+    m_uBoundsBottom.y = -100000000.0f;      //any too low value
+
+    //draw beam segments
     for (int iLevel=0; iLevel < 6; iLevel++)
 	{
         fStart = false;
@@ -494,6 +501,12 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
     //draw the segment
     pPaper->SolidLine(uxStart, uyStart, uxEnd, uyEnd, uThickness, eEdgeVertical, color);
 
+    //update bounds
+    m_uBoundsTop.x = wxMin(m_uBoundsTop.x, uxStart);
+    m_uBoundsTop.y = wxMin(m_uBoundsTop.y, uyStart-uThickness);
+    m_uBoundsBottom.x = wxMax(m_uBoundsBottom.x, uxEnd);
+    m_uBoundsBottom.y = wxMax(m_uBoundsBottom.y, uyEnd+uThickness);
+
     //wxLogMessage(_T("[lmShapeBeam::DrawBeamSegment] uxStart=%d, uyStart=%d, uxEnd=%d, uyEnd=%d, uThickness=%d, yStartIncr=%d, yEndIncr=%d, m_fStemsDown=%s"),
     //    uxStart, uyStart, uxEnd, uyEnd, uThickness, yStartIncr, yEndIncr, (m_fStemsDown ? _T("down") : _T("up")) );
 
@@ -540,5 +553,15 @@ lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyS
 
  //   return uyPos;
 
+}
+
+bool lmShapeBeam::ContainsPoint(lmUPoint& pointL)
+{
+    //check if point is in beam segments
+    if (lmGMObject::ContainsPoint(pointL))
+        return true;
+
+    //check if point is in any of the stems
+    return lmCompositeShape::ContainsPoint(pointL);
 }
 

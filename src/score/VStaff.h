@@ -3,16 +3,16 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>. 
+
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -167,6 +167,7 @@ public:
     void Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
     void Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
     void Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes);
+    void Cmd_DeleteBeam(lmUndoItem* pUndoItem, lmNoteRest* pNR);
 
         //--- Adding other markup
     void Cmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
@@ -194,6 +195,7 @@ public:
     void UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR);
     void UndoCmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
     void UndoCmd_JoinBeam(lmUndoItem* pUndoItem);
+    void UndoCmd_DeleteBeam(lmUndoItem* pUndoItem);
 
         //--- Adding other markup
     void UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
@@ -327,6 +329,9 @@ private:
     lmBeamNoteInfo;
 
     void SaveBeamNoteInfo(lmNoteRest* pNR, std::list<lmBeamNoteInfo*>& oListNR, int nBeamIdx);
+    void LogBeamData(lmUndoData* pUndoData, std::list<lmBeamNoteInfo*>& oListNR);
+    void GetLoggedBeamData(lmUndoData* pUndoData, int* pNumNotes,
+                           std::list<lmBeamNoteInfo>& oListNR);
 
 
 
@@ -607,6 +612,21 @@ public:
 
 protected:
     std::vector<lmNoteRest*>&   m_NotesRests;
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmVCmdDeleteBeam : public lmVStaffCmd
+{
+public:
+    lmVCmdDeleteBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmNoteRest* pNR);
+    ~lmVCmdDeleteBeam() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return true; }
+
+protected:
+    lmNoteRest*     m_pNR;
 
 };
 

@@ -3,16 +3,15 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -90,12 +89,12 @@ typedef struct lmToolsDataStruct {
 static const lmToolsData m_aToolsData[] = {
     //tool ID			bitmap name					tool tip
     //-----------		-------------				-------------
-    {lmPAGE_SELECTION,	_T("tool_selection"),		_("Select objects") },
-    {lmPAGE_CLEFS,		_T("tool_clefs"),			_("Add or edit clefs") },
-	{lmPAGE_KEY_SIGN,	_T("tool_key_signatures"),	_("Add or edit key signatures") },
-	{lmPAGE_TIME_SIGN,	_T("tool_time_signatures"),	_("Add or edit time signatures") },
-    {lmPAGE_NOTES,		_T("tool_notes"),			_("Add or edit notes") },
-	{lmPAGE_BARLINES,	_T("tool_barlines"),		_("Add or edit barlines and rehearsal marks") },
+    {lmPAGE_CLEFS,		_T("tool_clefs"),			_("Select clef, key and time signature edit tools") },
+    {lmPAGE_NOTES,		_T("tool_notes"),			_("Select notes / rests edit tools") },
+ //   {lmPAGE_SELECTION,	_T("tool_selection"),		_("Select objects") },
+	//{lmPAGE_KEY_SIGN,	_T("tool_key_signatures"),	_("Select key signature edit tools") },
+	//{lmPAGE_TIME_SIGN,	_T("tool_time_signatures"),	_("Select time signatures edit tools") },
+	//{lmPAGE_BARLINES,	_T("tool_barlines"),		_("Select barlines and rehearsal marks edit tools") },
 	//TO_ADD: Add here information about the new tool
 	//NEXT ONE MUST BE THE LAST ONE
 	{lmPAGE_NONE,		_T(""), _T("") },
@@ -148,6 +147,7 @@ void lmToolBox::CreateControls()
         m_pButton[iB]->SetBitmapUp(m_aToolsData[iB].sBitmap, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(m_aToolsData[iB].sBitmap, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(m_aToolsData[iB].sBitmap, _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetToolTip(m_aToolsData[iB].sToolTip);
         pButtonsSizer->Add(m_pButton[iB], 0, 0, BUTTON_SPACING);
 	}
 

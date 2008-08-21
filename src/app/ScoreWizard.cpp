@@ -3,16 +3,15 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -296,7 +295,6 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
     for (int i=0; i < lmNUM_TITLES; ++i)
     {
         m_Titles[i].sTitle = _T("");
-        m_Titles[i].nAlign = lmALIGN_CENTER;
         m_Titles[i].tPos.xType = lmLOCATION_DEFAULT;
         m_Titles[i].tPos.xUnits = lmTENTHS;
         m_Titles[i].tPos.yType = lmLOCATION_DEFAULT;
@@ -304,9 +302,28 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
         m_Titles[i].tPos.x = 0.0f;
         m_Titles[i].tPos.y = 0.0f;
         m_Titles[i].sFontName = _T("Times New Roman");
-        m_Titles[i].nFontSize = 14;
-        m_Titles[i].nStyle = lmTEXT_BOLD;
     }
+
+    //titles alignment
+    m_Titles[lmTITLE].nAlign = lmALIGN_CENTER;
+    m_Titles[lmSUBTITLE].nAlign = lmALIGN_CENTER;
+    m_Titles[lmCOMPOSER].nAlign = lmALIGN_RIGHT;
+    m_Titles[lmARRANGER].nAlign = lmALIGN_LEFT;
+    m_Titles[lmLYRICIST].nAlign = lmALIGN_RIGHT;
+
+    //titles font size
+    m_Titles[lmTITLE].nFontSize = 21;
+    m_Titles[lmSUBTITLE].nFontSize = 16;
+    m_Titles[lmCOMPOSER].nFontSize = 12;
+    m_Titles[lmARRANGER].nFontSize = 12;
+    m_Titles[lmLYRICIST].nFontSize = 12;
+
+    //titles font style
+    m_Titles[lmTITLE].nStyle = lmTEXT_BOLD;
+    m_Titles[lmSUBTITLE].nStyle = lmTEXT_ITALIC;
+    m_Titles[lmCOMPOSER].nStyle = lmTEXT_NORMAL;
+    m_Titles[lmARRANGER].nStyle = lmTEXT_NORMAL;
+    m_Titles[lmLYRICIST].nStyle = lmTEXT_NORMAL;
 
 
     //initialize paper strings and sizes
@@ -374,14 +391,27 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         }
 
         //add titles
+        bool fFirstLR = true;
         if (pScore && m_ScoreData.fAddTitles)
         {
             for (int i=0; i < lmNUM_TITLES; ++i)
             {
                 if (!m_Titles[i].sTitle.IsEmpty())
+                {
+                    //shift down the first left/right title
+                    if (i > lmSUBTITLE && fFirstLR)
+                    {
+                        fFirstLR = false;
+                        m_Titles[i].tPos.yType = lmLOCATION_USER_RELATIVE;
+                        m_Titles[i].tPos.yUnits = lmMILLIMETERS;
+                        m_Titles[i].tPos.y = 10.0f;
+                    }
+
+                    //add the title
                     pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nAlign,
                                      m_Titles[i].tPos, m_Titles[i].sFontName,
                                      m_Titles[i].nFontSize, m_Titles[i].nStyle );
+                }
             }
         }
 
@@ -408,9 +438,6 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
 
         pScore = new lmScore();
         pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
-        //lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
-        //lmVStaff *pVStaff = pInstr->GetVStaff();
-	    //pVStaff->AddBarline(lm_eBarlineEOS, true);
 
         //In scores created in the score editor, we should render a full page,
         //with empty staves. To this end, we need to change some options default value
@@ -480,6 +507,7 @@ bool lmScoreWizardLayout::Create(wxWizard* parent)
 {
     // page creation
     CreateControls();
+    m_pBmpPreview->SetBitmap( wxArtProvider::GetIcon(_T("preview"), wxART_OTHER) );
     GetSizer()->Fit(this);
 
         // populate controls
@@ -670,6 +698,7 @@ bool lmScoreWizardKey::Create(wxWizard* parent)
 
     // page creation
     CreateControls();
+    m_pBmpPreview->SetBitmap( wxArtProvider::GetIcon(_T("preview"), wxART_OTHER) );
     GetSizer()->Fit(this);
 
     //initial selection
@@ -839,6 +868,7 @@ bool lmScoreWizardTime::Create(wxWizard* parent)
 {
     // page creation
     CreateControls();
+    m_pBmpPreview->SetBitmap( wxArtProvider::GetIcon(_T("preview"), wxART_OTHER) );
     GetSizer()->Fit(this);
 
     //initialize controls

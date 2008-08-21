@@ -3,16 +3,15 @@
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -254,10 +253,6 @@ void lmScoreCanvas::DeleteCaretSatffobj()
     //on no object
 	if (!pCursorSO)
         return;
-
-	////the EOS Barline can not be deleted
-	//if (pCursorSO->GetClass() == eSFOT_Barline
-	//	&& ((lmBarline*)pCursorSO)->GetBarlineType() == lm_eBarlineEOS) return;
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -1706,50 +1701,60 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
     // - or to add a note to a beamed group
 
     //Conditions to be valid:
-    //  Either:
-    //   1. All notes/rest in the seleccion are not in a tuplet, are consecutive, and are
-    //      in the same voice.
-    //   2. All notes/rest in the seleccion are in a tuplet, it is the same tuplet for all
-    //      of them, and there are no more notes/rests in the tuplet.
+    //   1. All notes/rest in the seleccion are consecutive, are in the same voice, and
+    //      must be eighths or shorter ones.
+    //   2. If not beamed, first note/rest must be a note
+    //   3. If not beamed, last note/rest must be a note
+    //   4. If beamed, all selected note/rest must not be in the same beam
 
     //verify conditions
     lmGMSelection* pSelection = m_pView->GetSelection();
     bool fValid = true;
-    //lmNoteRest* pStart = (lmNoteRest*)NULL;
-    //lmTupletBracket* pTuplet = (lmTupletBracket*)NULL;
+    lmNoteRest* pStart = (lmNoteRest*)NULL;
 
-    //int nNumNotes = 0;
-    //int nVoice;
-    //lmGMObject* pGMO = pSelection->GetFirst();
-    //while (pGMO && fValid)
-    //{
-    //    if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
-    //    {
-    //        nNumNotes++;
-    //        if (!pStart)
-    //        {
-    //            //This is the first note/rest
-    //            pStart = (lmNoteRest*)pGMO->GetScoreOwner();
-    //            if (pStart->IsInTuplet())
-    //                pTuplet = pStart->GetTuplet();
-    //            else
-    //                nVoice = pStart->GetVoice();
-    //        }
-    //        else
-    //        {
-    //            lmNoteRest* pNext = (lmNoteRest*)pGMO->GetScoreOwner();
-    //            fValid &= pTuplet == pNext->GetTuplet();
-    //            if (!pTuplet)
-    //                fValid &= nVoice == pNext->GetVoice();
-    //        }
-    //    }
-    //    pGMO = pSelection->GetNext();
-    //}
+    int nNumNotes = 0;
+    int nVoice;
+    lmNoteRest* pLast = (lmNoteRest*)NULL;
+    lmGMObject* pGMO = pSelection->GetFirst();
+    bool fAllBeamed = true;     //assume that all are beamed in the same beam
+    lmBeam* pCurBeam = (lmBeam*)NULL;
+    while (pGMO && fValid)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
+        {
+            nNumNotes++;
+            if (!pStart)
+            {
+                //This is the first note/rest. If not beamed, it must be a note
+                pStart = (lmNoteRest*)pGMO->GetScoreOwner();
+                nVoice = pStart->GetVoice();
+                if (!pStart->IsBeamed())
+                {
+                    fValid &= pStart->IsNote();
+                    fAllBeamed = false;
+                }
+                else
+                    pCurBeam = pStart->GetBeam();
+            }
+            else
+            {
+                // verify voice, and that it is an eighth or shorter
+                pLast = (lmNoteRest*)pGMO->GetScoreOwner();
+                fValid &= pLast->GetNoteType() >= eEighth;
+                fValid &= nVoice == pLast->GetVoice();
 
-    ////check that all notes in the tuplet are selected
-    //if (fValid && pTuplet)
-    //    fValid &= (pTuplet->NumNotes() == nNumNotes);
+                //verify that if beamed, all selected note/rest must not be in the same beam
+                fAllBeamed &= pLast->IsBeamed();
+                if (fValid && fAllBeamed)
+                    fAllBeamed &= (pCurBeam == pLast->GetBeam());
+            }
+        }
+        pGMO = pSelection->GetNext();
+    }
 
-    //return results
-    return fValid;
+    //verify last note/rest. If not beamed, it must be a note
+    if (pLast && !pLast->IsBeamed())
+        fValid &= pLast->IsNote();
+
+    return fValid && !fAllBeamed && nNumNotes > 1;
 }
