@@ -44,7 +44,7 @@
 #endif
 
 #include "Score.h"
-#include "VStaff.h"
+#include "EditCmd.h"
 #include "UndoRedo.h"
 
 
@@ -87,17 +87,17 @@ inline lmUndoData& lmUndoData::operator=( const lmUndoData& param)
 // lmUndoItem implementation
 //----------------------------------------------------------------------------------------
 
-lmUndoItem::lmUndoItem(lmUndoLog* pUndoLog, lmVStaffCmd* pCmd, int nChunkSize)
+lmUndoItem::lmUndoItem(lmUndoLog* pUndoLog, lmEditCmd* pCmd, int nChunkSize)
 {
     m_pUndoLog = pUndoLog;
-    m_pVCmd = pCmd;
+    m_pECmd = pCmd;
     m_pData = new lmUndoData(nChunkSize);
 }
 
 lmUndoItem::~lmUndoItem()
 {
     if (m_pData) delete m_pData;
-    if (m_pVCmd) delete m_pVCmd;
+    if (m_pECmd) delete m_pECmd;
 }
 
 
@@ -135,8 +135,8 @@ void lmUndoLog::UndoAll()
     Clear();
 }
 
-void lmUndoLog::LogCommand(lmVStaffCmd* pVCmd, lmUndoItem* pUndoItem)
+void lmUndoLog::LogCommand(lmEditCmd* pECmd, lmUndoItem* pUndoItem)
 {
-    pUndoItem->SetCommand(pVCmd);
+    pUndoItem->SetCommand(pECmd);
     m_items.push_back(pUndoItem);
 }

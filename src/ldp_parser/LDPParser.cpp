@@ -2797,7 +2797,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     m_nTextStyle = tFont.nStyle;
 
     //create the text
-    lmScoreText* pText = pVStaff->AddText(sText, nAlign, &tPos, tFont, fHasWidth);
+    lmScoreText* pText = pVStaff->AddText(sText, nAlign, tPos, tFont, fHasWidth);
     pText->SetUserLocation(tPos);
 
     return false;

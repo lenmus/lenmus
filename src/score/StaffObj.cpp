@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -322,8 +321,10 @@ void lmScoreObj::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
 
 }
 
-void lmScoreObj::OnProperties(lmGMObject* pGMO)
+void lmScoreObj::OnProperties(lmController* pController, lmGMObject* pGMO)
 {
+    WXUNUSED(pController)
+
     //TODO. For now just show a dump of the shape
 	if(!pGMO)
 		wxMessageBox(_T("Nothing selected!"));

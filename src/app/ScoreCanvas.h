@@ -97,6 +97,8 @@ public:
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
     virtual void BreakBeam() {}
     virtual void JoinBeam() {}
+    virtual void ChangeText(lmScoreText* pST, wxString sText, lmEAlignment nAlign,
+                            lmLocation tPos, lmFontInfo tFont, wxColour colorC) {}
 
 
     // event handlers
@@ -193,6 +195,8 @@ public:
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
     void BreakBeam();
     void JoinBeam();
+    void ChangeText(lmScoreText* pST, wxString sText, lmEAlignment nAlign,
+                    lmLocation tPos, lmFontInfo tFont, wxColour colorC);
 
 
 

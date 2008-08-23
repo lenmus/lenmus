@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -35,15 +34,6 @@
 #include "Pitch.h"
 #include "../app/global.h"
 
-
-// aligments
-enum lmEAlignment
-{
-    lmALIGN_DEFAULT = 0,
-    lmALIGN_LEFT,
-    lmALIGN_RIGHT,
-    lmALIGN_CENTER
-};
 
 
 //Play modes: instrument to use to play a score
@@ -113,28 +103,6 @@ enum lmESpacingMethod
     //esm_PropVariableShortNote,
     //esm_PropVariableNumBars,
 };
-
-
-// font specification
-enum lmETextStyle           // text styles
-{
-    lmTEXT_DEFAULT = 0,
-    lmTEXT_NORMAL,
-    lmTEXT_BOLD,
-    lmTEXT_ITALIC,
-    lmTEXT_ITALIC_BOLD,
-};
-
-typedef struct lmFontInfoStruct {
-    wxString sFontName;
-    int nFontSize;
-    lmETextStyle nStyle;
-} lmFontInfo;
-
-    //global variables used as default initializators
-extern lmFontInfo tLyricDefaultFont;            // defined in NoteRestObj.cpp
-extern lmFontInfo g_tInstrumentDefaultFont;       // defined in Instrument.cpp
-extern lmFontInfo tBasicTextDefaultFont;        // defined in NoteRestObj.cpp
 
 
 //Constants

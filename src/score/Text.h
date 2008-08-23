@@ -36,33 +36,67 @@
 #include "wx/wx.h"
 #endif
 
-#include "Score.h"
+#include "defs.h"
+#include "StaffObj.h"
+
+class lmBox;
+class lmPaper;
+class lmGMObject;
+class lmUndoItem;
 
 
 class lmBasicText
 {
 public:
-    lmBasicText(wxString sText, wxString sLanguage,
-                   lmLocation* pPos, lmFontInfo oFontData);
+    lmBasicText(wxString& sText, lmLocation& tPos, lmFontInfo& oFontData,
+                wxColour color = *wxBLACK, wxString sLanguage = _T("Unknown") );
 
     ~lmBasicText() {}
 
-    void SetText(wxString sText) { m_sText = sText; }
-    void SetLanguage(wxString sLanguage) { m_sLanguage = sLanguage; }
+    //access to properties
+    inline void SetText(wxString& text) { m_sText = text; }
+	inline wxString& GetText() {return m_sText; }
+
+    inline void SetLanguage(wxString sLanguage) { m_sLanguage = sLanguage; }
+    inline wxString& GetLanguage() { return m_sLanguage; }
+
+    void SetFontInfo(lmFontInfo& tFont);
+    lmFontInfo GetFontInfo();
+
+    inline void SetFontName(wxString& sFontName) { m_sFontName = sFontName; }
+    inline wxString& GetFontName() { return m_sFontName; }
+
+    inline void SetFontSize(int nFontSize) { m_nFontSize = nFontSize; }
+    inline int GetFontSize() { return m_nFontSize; }
+
+    inline void SetFontAttibutes(bool fBold, bool fItalic, wxColour color)
+                {
+                    m_fBold = fBold;
+                    m_fItalic = fItalic;
+                    m_color = color;
+                }
+    inline bool IsBold() { return m_fBold; }
+    inline bool IsItalic() { return m_fItalic; }
+    inline wxColour GetColour() { return m_color; }
+
+    inline void SetLocation(lmLocation tPos) { m_tTextPos = tPos; }
+    inline lmLocation GetLocation() { return m_tTextPos; }
 
 
 protected:
-    wxString    m_sText;
-    wxString    m_sLanguage;
+    wxString        m_sText;
+    wxString        m_sLanguage;
+    bool            m_fIsTitle;     //to identify titles
 
     // position
-    lmLocation  m_tPos;
+    lmLocation      m_tTextPos;
 
     // font
-    wxString    m_sFontName;
-    int         m_nFontSize;
-    bool        m_fBold;
-    bool        m_fItalic;
+    wxString        m_sFontName;
+    int             m_nFontSize;    //in points
+    bool            m_fBold;
+    bool            m_fItalic;
+	wxColour        m_color;
 
 };
 
@@ -70,10 +104,10 @@ class lmShapeText;
 class lmBox;
 
 
-class lmScoreText :  public lmAuxObj
+class lmScoreText :  public lmAuxObj, public lmBasicText
 {
 public:
-    lmScoreText(wxString sTitle, lmEAlignment nAlign, lmLocation tPos, lmFontInfo tFont,
+    lmScoreText(wxString& sTitle, lmEAlignment nAlign, lmLocation& tPos, lmFontInfo& tFont,
                 bool fTitle=false, wxColour colorC = *wxBLACK);
 
     ~lmScoreText() {}
@@ -84,32 +118,29 @@ public:
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
     //implementation of virtual methods from base class
-    lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
-
-
-    //    debugging
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
+	void OnProperties(lmController* pController, lmGMObject* pGMO);
     wxString Dump();
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
 
-    //specific method of this object
-    void SetText(wxString text) { m_sText = text; }
-	wxString GetText() {return m_sText; }
-    lmEAlignment GetAlignment() { return m_nAlignment; }
-    lmLocation GetLocation() { return m_tPos; }
+    //properties
+    inline lmEAlignment GetAlignment() { return m_nAlignment; }
+    inline void SetAlignment(lmEAlignment nAlignment) { m_nAlignment = nAlignment; }
+
+    //layout
 	lmShapeText* CreateShape(lmPaper* pPaper, lmUPoint uPos);
 
+    //edit commands
+    void Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEAlignment nAlign,
+                        lmLocation tPos, lmFontInfo& tFont, wxColour colorC);
+    void UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEAlignment nAlign,
+                            lmLocation tPos, lmFontInfo& tFont, wxColour colorC);
+
+
 private:
-    wxString        m_sText;
-
     lmEAlignment    m_nAlignment;
-	wxColour		m_color;
 
-    wxString        m_sFontName;
-    int             m_nFontSize;
-    bool            m_fBold;
-    bool            m_fItalic;
-    bool            m_fIsTitle;     //to identify titles
 
 };
 

@@ -37,6 +37,7 @@
 #include "../score/Score.h"
 #include "../score/UndoRedo.h"
 #include "../score/VStaff.h"
+#include "../score/EditCmd.h"
 #include "ScoreCommand.h"
 #include "ScoreDoc.h"
 #include "TheApp.h"
@@ -251,7 +252,7 @@ bool lmCmdDeleteSelection::Do()
     //loop to delete the objects
     bool fSuccess = true;
     bool fSkipCmd;
-    lmVStaffCmd* pVCmd;
+    lmEditCmd* pECmd;
     std::list<lmDeletedSO*>::iterator it;
     for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
     {
@@ -268,7 +269,7 @@ bool lmCmdDeleteSelection::Do()
                     if (pEndNote->IsTiedToPrev())
                     {
                         lmVStaff* pVStaff = pEndNote->GetVStaff();      //affected VStaff
-                        pVCmd = new lmVCmdDeleteTie(pVStaff, pUndoItem, pEndNote);
+                        pECmd = new lmECmdDeleteTie(pVStaff, pUndoItem, pEndNote);
                         wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tie"));
                     }
                     else
@@ -285,7 +286,7 @@ bool lmCmdDeleteSelection::Do()
                     if (pNote->IsBeamed())
                     {
                         lmVStaff* pVStaff = pNote->GetVStaff();
-                        pVCmd = new lmVCmdDeleteBeam(pVStaff, pUndoItem, pNote);
+                        pECmd = new lmECmdDeleteBeam(pVStaff, pUndoItem, pNote);
                         wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting beam"));
                     }
                     else
@@ -297,7 +298,7 @@ bool lmCmdDeleteSelection::Do()
                 {
                     lmStaffObj* pSO = (lmStaffObj*)(*it)->pObj;
                     lmVStaff* pVStaff = pSO->GetVStaff();      //affected VStaff
-                    pVCmd = new lmVCmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
+                    pECmd = new lmECmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
                     wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting staffobj"));
                 }
                 break;
@@ -311,7 +312,7 @@ bool lmCmdDeleteSelection::Do()
                     if (pStartNote->IsInTuplet())
                     {
                         lmVStaff* pVStaff = pStartNote->GetVStaff();
-                        pVCmd = new lmVCmdDeleteTuplet(pVStaff, pUndoItem, pStartNote);
+                        pECmd = new lmECmdDeleteTuplet(pVStaff, pUndoItem, pStartNote);
                         wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet"));
                     }
                     else
@@ -339,16 +340,16 @@ bool lmCmdDeleteSelection::Do()
             delete pUndoItem;
         else
         {
-            if (pVCmd->Success())
+            if (pECmd->Success())
             {
                 (*it)->fObjDeleted = true;                //the Obj is no longer owned by the score
-                m_UndoLog.LogCommand(pVCmd, pUndoItem);
+                m_UndoLog.LogCommand(pECmd, pUndoItem);
             }
             else
             {
                 fSuccess = false;
                 delete pUndoItem;
-                delete pVCmd;
+                delete pECmd;
             }
         }
     }
@@ -410,19 +411,19 @@ bool lmCmdDeleteStaffObj::Do()
 {
     //Proceed to delete the object
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdDeleteStaffObj(m_pVStaff, pUndoItem, m_pSO);
+    lmEditCmd* pECmd = new lmECmdDeleteStaffObj(m_pVStaff, pUndoItem, m_pSO);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
         m_fDeleteSO = true;                //m_pSO is no longer owned by the score
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         m_fDeleteSO = false;
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -463,17 +464,17 @@ bool lmCmdDeleteTie::Do()
 {
     //Proceed to delete the tie
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdDeleteTie(m_pEndNote->GetVStaff(), pUndoItem, m_pEndNote);
+    lmEditCmd* pECmd = new lmECmdDeleteTie(m_pEndNote->GetVStaff(), pUndoItem, m_pEndNote);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -511,18 +512,18 @@ bool lmCmdAddTie::Do()
 {
     //Proceed to add a tie
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdAddTie(m_pEndNote->GetVStaff(), pUndoItem,
+    lmEditCmd* pECmd = new lmECmdAddTie(m_pEndNote->GetVStaff(), pUndoItem,
                                           m_pStartNote, m_pEndNote);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -599,17 +600,17 @@ bool lmCmdInsertBarline::Do()
     lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdInsertBarline(pVStaff, pUndoItem, m_nBarlineType);
+    lmEditCmd* pECmd = new lmECmdInsertBarline(pVStaff, pUndoItem, m_nBarlineType);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -646,17 +647,17 @@ bool lmCmdInsertClef::Do()
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
     int nStaff = pCursor->GetCursorNumStaff();
-    lmVStaffCmd* pVCmd = new lmVCmdInsertClef(pVStaff, pUndoItem, m_nClefType, nStaff);
+    lmEditCmd* pECmd = new lmECmdInsertClef(pVStaff, pUndoItem, m_nClefType, nStaff);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -694,18 +695,18 @@ bool lmCmdInsertTimeSignature::Do()
     lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdInsertTimeSignature(pVStaff, pUndoItem, m_nBeats,
+    lmEditCmd* pECmd = new lmECmdInsertTimeSignature(pVStaff, pUndoItem, m_nBeats,
                                                        m_nBeatType, m_fVisible);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -743,18 +744,18 @@ bool lmCmdInsertKeySignature::Do()
     lmVStaff* pVStaff = pCursor->GetVStaff();
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdInsertKeySignature(pVStaff, pUndoItem, m_nFifths,
+    lmEditCmd* pECmd = new lmECmdInsertKeySignature(pVStaff, pUndoItem, m_nFifths,
                                                       m_fMajor, m_fVisible);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -807,19 +808,19 @@ bool lmCmdInsertNote::Do()
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
 
-    lmVStaffCmd* pVCmd = new lmVCmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_nStep,
+    lmEditCmd* pECmd = new lmECmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_nStep,
                                              m_nOctave, m_nNoteType, m_rDuration, m_nDots, 
                                              m_nNotehead, m_nAcc, m_fTiedPrev);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 
@@ -863,18 +864,18 @@ bool lmCmdInsertRest::Do()
 
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
 
-    lmVStaffCmd* pVCmd = new lmVCmdInsertRest(m_pVStaff, pUndoItem, m_nNoteType,
+    lmEditCmd* pECmd = new lmECmdInsertRest(m_pVStaff, pUndoItem, m_nNoteType,
                                               m_rDuration, m_nDots);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 
@@ -1029,21 +1030,21 @@ bool lmCmdChangeNoteRestDots::Do()
 {
     //loop to change dots
     bool fSuccess = true;
-    lmVStaffCmd* pVCmd;
+    lmEditCmd* pECmd;
     std::list<lmNoteRest*>::iterator it;
     for (it = m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
     {
         lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
         lmVStaff* pVStaff = (*it)->GetVStaff();      //affected VStaff
-        pVCmd = new lmVCmdChangeDots(pVStaff, pUndoItem, *it, m_nDots);
+        pECmd = new lmECmdChangeDots(pVStaff, pUndoItem, *it, m_nDots);
 
-        if (pVCmd->Success())
-            m_UndoLog.LogCommand(pVCmd, pUndoItem);     //save command in the undo log
+        if (pECmd->Success())
+            m_UndoLog.LogCommand(pECmd, pUndoItem);     //save command in the undo log
         else
         {
             fSuccess = false;
             delete pUndoItem;
-            delete pVCmd;
+            delete pECmd;
         }
     }
 
@@ -1091,17 +1092,17 @@ bool lmCmdDeleteTuplet::Do()
     //Proceed to delete the tuplet
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
     lmVStaff* pVStaff = m_pStartNR->GetVStaff();
-    lmVStaffCmd* pVCmd = new lmVCmdDeleteTuplet(pVStaff, pUndoItem, m_pStartNR);
+    lmEditCmd* pECmd = new lmECmdDeleteTuplet(pVStaff, pUndoItem, m_pStartNR);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -1159,19 +1160,19 @@ bool lmCmdAddTuplet::Do()
     //Proceed to create the tuplet
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
     lmVStaff* pVStaff = m_NotesRests.front()->GetVStaff();
-    lmVStaffCmd* pVCmd = 
-        new lmVCmdAddTuplet(pVStaff, pUndoItem, m_NotesRests,  m_fShowNumber, m_nNumber,
+    lmEditCmd* pECmd = 
+        new lmECmdAddTuplet(pVStaff, pUndoItem, m_NotesRests,  m_fShowNumber, m_nNumber,
                             m_fBracket, m_nAbove, m_nActual, m_nNormal);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -1208,17 +1209,17 @@ bool lmCmdBreakBeam::Do()
 {
     //Proceed to delete the object
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaffCmd* pVCmd = new lmVCmdBreakBeam(m_pBeforeNR->GetVStaff(), pUndoItem, m_pBeforeNR);
+    lmEditCmd* pECmd = new lmECmdBreakBeam(m_pBeforeNR->GetVStaff(), pUndoItem, m_pBeforeNR);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -1267,17 +1268,17 @@ bool lmCmdJoinBeam::Do()
     //Proceed to create the beam
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
     lmVStaff* pVStaff = m_NotesRests.front()->GetVStaff();
-    lmVStaffCmd* pVCmd = new lmVCmdJoinBeam(pVStaff, pUndoItem, m_NotesRests);
+    lmEditCmd* pECmd = new lmECmdJoinBeam(pVStaff, pUndoItem, m_NotesRests);
 
-    if (pVCmd->Success())
+    if (pECmd->Success())
     {
-        m_UndoLog.LogCommand(pVCmd, pUndoItem);
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
 	    return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {
         delete pUndoItem;
-        delete pVCmd;
+        delete pECmd;
         return false;
     }
 }
@@ -1286,6 +1287,61 @@ bool lmCmdJoinBeam::UndoCommand()
 {
     //undelete the object
 
+    m_UndoLog.UndoAll();
+    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdChangeText: Change ScoreText properties
+//----------------------------------------------------------------------------------------
+
+lmCmdChangeText::lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
+                                 lmScoreDocument *pDoc, lmScoreText* pST,
+                                 wxString& sText, lmEAlignment nAlign, 
+                                 lmLocation tPos, lmFontInfo& tFont,
+                                 wxColour colorC)
+	: lmScoreCommand(name, pDoc, pVCursor)
+{
+    m_pST = pST;
+    m_sText = sText;
+    m_nAlign = nAlign; 
+    m_tPos = tPos;
+    m_tFont = tFont;
+    m_colorC = colorC;
+}
+
+lmCmdChangeText::~lmCmdChangeText()
+{
+}
+
+bool lmCmdChangeText::Do()
+{
+    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    lmEditCmd* pECmd = new lmECmdChangeText(m_pST, pUndoItem, m_sText, m_nAlign,
+                                            m_tPos, m_tFont, m_colorC);
+
+    if (pECmd->Success())
+    {
+        m_UndoLog.LogCommand(pECmd, pUndoItem);
+	    return CommandDone(lmSCORE_MODIFIED);
+    }
+    else
+    {
+        delete pUndoItem;
+        delete pECmd;
+        return false;
+    }
+}
+
+bool lmCmdChangeText::UndoCommand()
+{
     m_UndoLog.UndoAll();
     m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
 

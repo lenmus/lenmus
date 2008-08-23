@@ -119,7 +119,7 @@ enum ESyllabicTypes {
 class lmLyric : public lmAuxObj, public lmBasicText
 {
 public:
-    lmLyric(wxString sText, ESyllabicTypes nSyllabic = eSyllabicSingle,
+    lmLyric(wxString& sText, ESyllabicTypes nSyllabic = eSyllabicSingle,
             int nNumLine=1, wxString sLanguage=_T("it") );
     ~lmLyric() {}
 

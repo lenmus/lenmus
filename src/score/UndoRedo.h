@@ -40,7 +40,7 @@
 #include <vector>
 #include <list>
 
-class lmVStaffCmd;
+class lmEditCmd;
 class lmUndoLog;
 
 //-----------------------------------------------------------------------------------------
@@ -67,6 +67,7 @@ public:
 
 	template <typename T> void	AddParam( T param );
 	template <typename T> T		GetParam();
+
 
 private:
 	std::vector<char> m_buffer;				// parameters buffer
@@ -99,6 +100,7 @@ inline T lmUndoData::GetParam( )
 	return ret;
 }
 
+
 //-----------------------------------------------------------------------------------------
 // lmUndoItem:
 //      Information for undoing a specific command
@@ -106,19 +108,19 @@ inline T lmUndoData::GetParam( )
 class lmUndoItem
 {
 public:
-    lmUndoItem(lmUndoLog* pUndoLog, lmVStaffCmd* pCmd=NULL, int nChunkSize=128);
+    lmUndoItem(lmUndoLog* pUndoLog, lmEditCmd* pCmd=NULL, int nChunkSize=128);
     ~lmUndoItem();
 
     inline lmUndoData* GetUndoData() { return m_pData; }
-    inline lmVStaffCmd* GetCommand() { return m_pVCmd; }
+    inline lmEditCmd* GetCommand() { return m_pECmd; }
     inline lmUndoLog* GetUndoLog() { return m_pUndoLog; }
 
 protected:
     friend class lmUndoLog; 
-    inline void SetCommand(lmVStaffCmd* pVCmd) { m_pVCmd = pVCmd; }
+    inline void SetCommand(lmEditCmd* pECmd) { m_pECmd = pECmd; }
 
     lmUndoLog*      m_pUndoLog;     //ptr to owner lmUndoLog collection
-    lmVStaffCmd*    m_pVCmd;        //ptr to the command
+    lmEditCmd*      m_pECmd;        //ptr to the command
     lmUndoData*     m_pData;        //data for undoing the command
 };
 
@@ -134,7 +136,7 @@ public:
     lmUndoLog();
     ~lmUndoLog();
 
-    void LogCommand(lmVStaffCmd* pVCmd, lmUndoItem* pUndoItem);
+    void LogCommand(lmEditCmd* pECmd, lmUndoItem* pUndoItem);
 
     void UndoAll();
 

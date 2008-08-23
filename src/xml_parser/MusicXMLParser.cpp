@@ -859,7 +859,7 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
             return false;    //nothing added to lmVStaff
             break;
         case eWords:
-            pVStaff->AddText(sText, lmALIGN_LEFT, &tPos, oFontData, false);
+            pVStaff->AddText(sText, lmALIGN_LEFT, tPos, oFontData, false);
             break;
         default:
             wxASSERT(false);

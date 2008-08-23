@@ -370,6 +370,15 @@ enum lmEBracketSymbol
     lm_eBracket,
 };
 
+// aligments
+enum lmEAlignment
+{
+    lmALIGN_DEFAULT = 0,
+    lmALIGN_LEFT,
+    lmALIGN_RIGHT,
+    lmALIGN_CENTER
+};
+
 
 //IDs for events that must be public
 enum
@@ -628,6 +637,33 @@ typedef struct lmLocationStruct {
 
 //global variables used as default initializators
 extern lmLocation g_tDefaultPos;          // defined in defs.cpp
+
+
+//---------------------------------------------------------------------------------------
+//Font data
+//---------------------------------------------------------------------------------------
+
+// font specification
+enum lmETextStyle           // text styles
+{
+    lmTEXT_DEFAULT = 0,
+    lmTEXT_NORMAL,
+    lmTEXT_BOLD,
+    lmTEXT_ITALIC,
+    lmTEXT_ITALIC_BOLD,
+};
+
+typedef struct lmFontInfoStruct {
+    wxString sFontName;
+    int nFontSize;
+    lmETextStyle nStyle;
+} lmFontInfo;
+
+    //global variables used as default initializators
+extern lmFontInfo tLyricDefaultFont;            // defined in NoteRestObj.cpp
+extern lmFontInfo g_tInstrumentDefaultFont;       // defined in Instrument.cpp
+extern lmFontInfo tBasicTextDefaultFont;        // defined in NoteRestObj.cpp
+
 
 
 

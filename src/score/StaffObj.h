@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -200,7 +199,7 @@ public:
 	virtual void CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO);
 
 	//handlers for contextual menu
-	virtual void OnProperties(lmGMObject* pGMO);
+	virtual void OnProperties(lmController* pController, lmGMObject* pGMO);
 
 	//font to use to render the ScoreObj
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);

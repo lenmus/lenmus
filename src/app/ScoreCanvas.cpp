@@ -536,6 +536,20 @@ void lmScoreCanvas::ChangeNoteDots(int nDots)
                             m_pView->GetSelection(), nDots) );
 }
 
+void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEAlignment nAlign,
+                               lmLocation tPos, lmFontInfo tFont, wxColour colorC)
+{
+	//change properties of a lmScoreText object
+
+    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	wxASSERT(pVCursor);
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Change text");
+	pCP->Submit(new lmCmdChangeText(pVCursor, sName, m_pDoc, pST, sText,
+                                    nAlign, tPos, tFont, colorC) );
+}
+
 void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
@@ -1243,7 +1257,7 @@ void lmScoreCanvas::OnColor(wxCommandEvent& event)
 void lmScoreCanvas::OnProperties(wxCommandEvent& event)
 {
 	WXUNUSED(event);
-	m_pMenuOwner->OnProperties(m_pMenuGMO);
+	m_pMenuOwner->OnProperties(this, m_pMenuGMO);
 }
 
 void lmScoreCanvas::OnDeleteTiePrev(wxCommandEvent& event)

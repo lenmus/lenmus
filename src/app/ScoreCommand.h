@@ -472,6 +472,32 @@ protected:
 };
 
 
+// Change ScoreText properties
+//------------------------------------------------------------------------------------
+class lmCmdChangeText: public lmScoreCommand
+{
+public:
+
+    lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
+                    lmScoreDocument *pDoc, lmScoreText* pST, wxString& sText,
+                    lmEAlignment nAlign, lmLocation tPos, lmFontInfo& tFont,
+                    wxColour colorC);
+    ~lmCmdChangeText();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmScoreText*        m_pST;
+    wxString            m_sText;
+    lmEAlignment        m_nAlign; 
+    lmLocation          m_tPos;
+    lmFontInfo          m_tFont;
+    wxColour            m_colorC;
+
+};
+
 
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

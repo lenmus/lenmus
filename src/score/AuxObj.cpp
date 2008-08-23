@@ -286,9 +286,9 @@ wxString lmFermata::Dump()
 //Global variables used as default initializators
 lmFontInfo tLyricDefaultFont = { _T("Arial"), 8, lmTEXT_ITALIC };
 
-lmLyric::lmLyric(wxString sText, ESyllabicTypes nSyllabic, int nNumLine, wxString sLanguage)
+lmLyric::lmLyric(wxString& sText, ESyllabicTypes nSyllabic, int nNumLine, wxString sLanguage)
     : lmAuxObj(lmDRAGGABLE),
-      lmBasicText(sText, sLanguage, &g_tDefaultPos, tLyricDefaultFont)
+      lmBasicText(sText, g_tDefaultPos, tLyricDefaultFont, *wxBLACK, sLanguage)
 {
     m_nNumLine = nNumLine;
 }

@@ -224,6 +224,12 @@
 				RelativePath="..\..\src\score\defs.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\EditCmd.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\EditCmd.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Glyph.cpp">
 			</File>
 			<File
@@ -358,6 +364,28 @@
 			<File
 				RelativePath="..\..\src\score\VStaff.h">
 			</File>
+			<Filter
+				Name="properties"
+				Filter="">
+				<File
+					RelativePath="..\..\src\score\properties\DlgProperties.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\score\properties\DlgProperties.h">
+				</File>
+				<File
+					RelativePath="..\..\src\score\properties\DlgTextStyles.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\score\properties\DlgTextStyles.h">
+				</File>
+				<File
+					RelativePath="..\..\src\score\properties\TextProperties.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\score\properties\TextProperties.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="docs"

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -36,8 +35,13 @@
 
 #include "Score.h"
 #include "Text.h"
+#include "UndoRedo.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+#include "properties/DlgProperties.h"
+#include "properties/TextProperties.h"
+#include "properties/DlgTextStyles.h"
+
 
 
 //Aux. function to convert font pointsize to lmLUnits
@@ -68,40 +72,53 @@ lmFontInfo tBasicTextDefaultFont = { _T("Arial"), 12, lmTEXT_NORMAL };
 // lmBasicText implementation
 //==========================================================================================
 
-lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
-                   lmLocation* pPos, lmFontInfo tFontData)
+lmBasicText::lmBasicText(wxString& sText, lmLocation& tPos, lmFontInfo& tFontData,
+                         wxColour color, wxString sLanguage)
 {
     m_sText = sText;
     m_sLanguage = sLanguage;
-
-    // font data
-    m_sFontName = tFontData.sFontName;
-    m_nFontSize = (int)PointsToLUnits(tFontData.nFontSize);
-    m_fBold = (tFontData.nStyle == lmTEXT_BOLD || tFontData.nStyle == lmTEXT_ITALIC_BOLD);
-    m_fItalic = (tFontData.nStyle == lmTEXT_ITALIC || tFontData.nStyle == lmTEXT_ITALIC_BOLD);
-
-    // position data
-    m_tPos = *pPos;
-
+    SetFontInfo(tFontData);
+    m_tTextPos = tPos;
+	m_color = color;
 }
+
+void lmBasicText::SetFontInfo(lmFontInfo& tFont)
+{
+    m_sFontName = tFont.sFontName;
+    m_nFontSize = tFont.nFontSize;
+    m_fBold = (tFont.nStyle == lmTEXT_BOLD || tFont.nStyle == lmTEXT_ITALIC_BOLD);
+    m_fItalic = (tFont.nStyle == lmTEXT_ITALIC || tFont.nStyle == lmTEXT_ITALIC_BOLD);
+}
+
+lmFontInfo lmBasicText::GetFontInfo()
+{
+    lmFontInfo tFont;
+    tFont.nFontSize = m_nFontSize;
+    tFont.sFontName = m_sFontName;
+    if (m_fBold && m_fItalic)
+        tFont.nStyle = lmTEXT_ITALIC_BOLD;
+    else if (m_fBold)
+        tFont.nStyle = lmTEXT_BOLD;
+    else if(m_fItalic)
+        tFont.nStyle = lmTEXT_ITALIC;
+    else
+        tFont.nStyle = lmTEXT_NORMAL;
+
+    return tFont;
+}
+
 
 //==========================================================================================
 // lmScoreText implementation
 //==========================================================================================
 
-lmScoreText::lmScoreText(wxString sTitle, lmEAlignment nAlign,
-               lmLocation tPos, lmFontInfo tFont, bool fTitle, wxColour colorC) :
-    lmAuxObj(lmDRAGGABLE)
+lmScoreText::lmScoreText(wxString& sTitle, lmEAlignment nAlign, lmLocation& tPos,
+                         lmFontInfo& tFont, bool fTitle, wxColour colorC)
+    : lmAuxObj(lmDRAGGABLE),
+      lmBasicText(sTitle, tPos, tFont, colorC)
 {
     m_fIsTitle = fTitle;
-    m_sText = sTitle;
-    m_sFontName = tFont.sFontName;
-    m_nFontSize = (int)PointsToLUnits(tFont.nFontSize);
-    m_fBold = (tFont.nStyle == lmTEXT_BOLD || tFont.nStyle == lmTEXT_ITALIC_BOLD);
-    m_fItalic = (tFont.nStyle == lmTEXT_ITALIC || tFont.nStyle == lmTEXT_ITALIC_BOLD);
-    m_tPos = tPos;
     m_nAlignment = nAlign;
-	m_color = colorC;
 }
 
 lmShapeText* lmScoreText::CreateShape(lmPaper* pPaper, lmUPoint uPos)
@@ -191,7 +208,7 @@ wxString lmScoreText::SourceLDP(int nIndent)
     //font info
     //TODO:: add font info only if font changed since previous (text) element
     sSource += wxString::Format(_T(" (font \"%s\" %dpt"),
-                                m_sFontName.c_str(), LUnitsToPoints((lmLUnits)m_nFontSize) );
+                                m_sFontName.c_str(), m_nFontSize );
     if (m_fBold && m_fItalic)
         sSource += _T(" bold-italic");
     else if (m_fBold)
@@ -239,7 +256,8 @@ wxFont* lmScoreText::GetSuitableFont(lmPaper* pPaper)
 
     int nWeight = (m_fBold ? wxBOLD : wxNORMAL);
     int nStyle = (m_fItalic ? wxITALIC : wxNORMAL);
-    wxFont* pFont = pPaper->GetFont(m_nFontSize, m_sFontName, wxDEFAULT, nStyle, nWeight, false);
+    wxFont* pFont = pPaper->GetFont((int)PointsToLUnits(m_nFontSize),
+                                    m_sFontName, wxDEFAULT, nStyle, nWeight, false);
 
     if (!pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
@@ -247,4 +265,34 @@ wxFont* lmScoreText::GetSuitableFont(lmPaper* pPaper)
         ::wxExit();
     }
 	return pFont;
+}
+
+void lmScoreText::OnProperties(lmController* pController, lmGMObject* pGMO)
+{
+	wxASSERT(pGMO);
+
+    //lmDlgProperties dlg(pController, this);
+    //dlg.AddPanel( new lmTextProperties(dlg.GetNotebook(), this), _("Text"));
+    //dlg.Layout();
+
+    lmDlgTextStyles dlg((wxWindow*)pController);
+
+    dlg.ShowModal();
+}
+
+void lmScoreText::Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEAlignment nAlign,
+                                 lmLocation tPos, lmFontInfo& tFont, wxColour colorC)
+{
+    m_sText = sText;
+    m_nAlignment = nAlign;
+    m_tTextPos = tPos;
+    SetFontInfo(tFont);
+	m_color = colorC;
+}
+
+void lmScoreText::UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
+                                     lmEAlignment nAlign, lmLocation tPos,
+                                     lmFontInfo& tFont, wxColour colorC)
+{
+    Cmd_ChangeText(pUndoItem, sText, nAlign, tPos, tFont, colorC);
 }

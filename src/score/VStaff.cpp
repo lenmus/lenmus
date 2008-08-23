@@ -73,6 +73,7 @@
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
+#include "EditCmd.h"
 #include "Context.h"
 #include "UndoRedo.h"
 #include "Notation.h"
@@ -417,9 +418,9 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
         //issue an 'insert barline' command
         lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
         lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-        lmVCmdInsertBarline* pVCmd = 
-            new lmVCmdInsertBarline(this, pNewUndoItem, lm_eBarlineDouble);
-        pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+        lmECmdInsertBarline* pECmd = 
+            new lmECmdInsertBarline(this, pNewUndoItem, lm_eBarlineDouble);
+        pUndoLog->LogCommand(pECmd, pNewUndoItem);
     }
 
     //Locate context insertion points for all staves
@@ -541,9 +542,9 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
             //issue an 'insert clef' command
             lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
             lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-            lmVCmdInsertClef* pVCmd = 
-                new lmVCmdInsertClef(this, pNewUndoItem, lmE_Sol, nStaff, lmNO_VISIBLE);
-            pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+            lmECmdInsertClef* pECmd = 
+                new lmECmdInsertClef(this, pNewUndoItem, lmE_Sol, nStaff, lmNO_VISIBLE);
+            pUndoLog->LogCommand(pECmd, pNewUndoItem);
 
 			//re-compute context
 			if (pCursorSO)
@@ -699,9 +700,9 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
         //Issue an 'insert barline' command
         lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
         lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-        lmVCmdInsertBarline* pVCmd =
-            new lmVCmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
-        pUndoLog->LogCommand(pVCmd, pNewUndoItem);
+        lmECmdInsertBarline* pECmd =
+            new lmECmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
+        pUndoLog->LogCommand(pECmd, pNewUndoItem);
     }
 }
 
@@ -1382,7 +1383,6 @@ void lmVStaff::UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR)
     m_cStaffObjs.RecomputeSegmentDuration(pNR, pNR->GetDuration() - rOldDuration);
 }
 
-
 //---------------------------------------------------------------------------------------
 // Methods for adding StaffObjs
 //---------------------------------------------------------------------------------------
@@ -1469,10 +1469,10 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
 
 }
 
-lmScoreText* lmVStaff::AddText(wxString sText, lmEAlignment nAlign,
-                            lmLocation* pPos, lmFontInfo tFontData, bool fHasWidth)
+lmScoreText* lmVStaff::AddText(wxString& sText, lmEAlignment nAlign,
+                            lmLocation& tPos, lmFontInfo& tFontData, bool fHasWidth)
 {
-    lmScoreText* pText = new lmScoreText(sText, nAlign, *pPos, tFontData);
+    lmScoreText* pText = new lmScoreText(sText, nAlign, tPos, tFontData);
 
     // create an anchor object
     lmStaffObj* pAnchor;
@@ -2462,325 +2462,5 @@ lmSOControl* lmVStaff::AddNewSystem()
 lmSOIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 {
     return m_cStaffObjs.CreateIterator(nOrder);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVStaffCmd implementation
-//----------------------------------------------------------------------------------------
-
-lmVStaffCmd::lmVStaffCmd(lmVStaff* pVStaff)
-{
-    m_pVStaff = pVStaff;
-}
-
-lmVStaffCmd::~lmVStaffCmd()
-{
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdInsertNote implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdInsertNote::lmVCmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
-                        lmEPitchType nPitchType, int nStep,
-					    int nOctave, lmENoteType nNoteType, float rDuration,
-					    int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                        bool fTiedPrev)
-    : lmVStaffCmd(pVStaff)
-{
-    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
-    bool fAutoBar = pPgmOpt->GetBoolValue(lm_DO_AUTOBAR);
-
-    m_pNewNote = pVStaff->Cmd_InsertNote(pUndoItem, nPitchType, nStep, nOctave, nNoteType,
-                                         rDuration, nDots, nNotehead, nAcc, 
-                                         fTiedPrev, fAutoBar);
-}
-
-void lmVCmdInsertNote::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_InsertNote(pUndoItem, m_pNewNote);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdInsertRest implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdInsertRest::lmVCmdInsertRest(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
-                                   lmENoteType nNoteType, float rDuration, int nDots)
-    : lmVStaffCmd(pVStaff)
-{
-    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
-    bool fAutoBar = pPgmOpt->GetBoolValue(lm_DO_AUTOBAR);
-
-    m_pNewRest = pVStaff->Cmd_InsertRest(pUndoItem, nNoteType,
-                                         rDuration, nDots, fAutoBar);
-}
-
-void lmVCmdInsertRest::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_InsertRest(pUndoItem, m_pNewRest);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdInsertClef implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdInsertClef::lmVCmdInsertClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
-                                   lmEClefType nClefType, int nStaff, bool fVisible)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pNewClef = pVStaff->Cmd_InsertClef(pUndoItem, nClefType, nStaff, fVisible);
-}
-
-void lmVCmdInsertClef::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_InsertClef(pUndoItem, m_pNewClef);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdInsertBarline implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdInsertBarline::lmVCmdInsertBarline(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
-                                         lmEBarline nBarlineType, bool fVisible)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pNewBar = pVStaff->Cmd_InsertBarline(pUndoItem, nBarlineType, fVisible);
-}
-
-void lmVCmdInsertBarline::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_InsertBarline(pUndoItem, m_pNewBar);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdInsertTimeSignature implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdInsertTimeSignature::lmVCmdInsertTimeSignature(lmVStaff* pVStaff, 
-                                                     lmUndoItem* pUndoItem, int nBeats,
-                                                     int nBeatType, bool fVisible)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pNewTime = pVStaff->Cmd_InsertTimeSignature(pUndoItem, nBeats, nBeatType, fVisible);
-}
-
-void lmVCmdInsertTimeSignature::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_InsertTimeSignature(pUndoItem, m_pNewTime);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdInsertKeySignature implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdInsertKeySignature::lmVCmdInsertKeySignature(lmVStaff* pVStaff, 
-                                                   lmUndoItem* pUndoItem, int nFifths,
-                                                   bool fMajor, bool fVisible)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pNewKey = pVStaff->Cmd_InsertKeySignature(pUndoItem, nFifths, fMajor, fVisible);
-}
-
-void lmVCmdInsertKeySignature::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_InsertKeySignature(pUndoItem, m_pNewKey);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdDeleteStaffObj implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdDeleteStaffObj::lmVCmdDeleteStaffObj(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                       lmStaffObj* pSO)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pSO = pSO;
-    pVStaff->Cmd_DeleteStaffObj(pUndoItem, pSO);
-}
-
-void lmVCmdDeleteStaffObj::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_DeleteStaffObj(pUndoItem, m_pSO);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdDeleteTie implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdDeleteTie::lmVCmdDeleteTie(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                 lmNote* pEndNote)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pEndNote = pEndNote;
-    pVStaff->Cmd_DeleteTie(pUndoItem, pEndNote);
-}
-
-void lmVCmdDeleteTie::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_DeleteTie(pUndoItem, m_pEndNote);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdAddTie implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdAddTie::lmVCmdAddTie(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                           lmNote* pStartNote, lmNote* pEndNote)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pStartNote = pStartNote;
-    m_pEndNote = pEndNote;
-    pVStaff->Cmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
-}
-
-void lmVCmdAddTie::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_AddTie(pUndoItem, m_pStartNote, m_pEndNote);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdChangeDots implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdChangeDots::lmVCmdChangeDots(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                   lmNoteRest* pNR, int nDots)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pNR = pNR;
-    pVStaff->Cmd_ChangeDots(pUndoItem, pNR, nDots);
-}
-
-void lmVCmdChangeDots::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_ChangeDots(pUndoItem, m_pNR);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdDeleteTuplet implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdDeleteTuplet::lmVCmdDeleteTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                       lmNoteRest* pStartNR)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pStartNR = pStartNR;
-    pVStaff->Cmd_DeleteTuplet(pUndoItem, m_pStartNR);
-}
-
-void lmVCmdDeleteTuplet::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_DeleteTuplet(pUndoItem, m_pStartNR);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdAddTuplet implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdAddTuplet::lmVCmdAddTuplet(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                 std::vector<lmNoteRest*>& notes,
-                                 bool fShowNumber, int nNumber, bool fBracket,
-                                 lmEPlacement nAbove, int nActual, int nNormal)
-    : lmVStaffCmd(pVStaff), m_NotesRests(notes)
-{
-    m_fShowNumber = fShowNumber;
-    m_nNumber = nNumber;
-    m_fBracket = fBracket;
-    m_nAbove = nAbove;
-    m_nActual = nActual;
-    m_nNormal = nNormal;
-
-    pVStaff->Cmd_AddTuplet(pUndoItem, m_NotesRests, m_fShowNumber, m_nNumber, m_fBracket,
-                           m_nAbove, m_nActual, m_nNormal);
-}
-
-void lmVCmdAddTuplet::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_AddTuplet(pUndoItem, m_NotesRests.front());
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdBreakBeam implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdBreakBeam::lmVCmdBreakBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                 lmNoteRest* pBeforeNR)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pBeforeNR = pBeforeNR;
-    pVStaff->Cmd_BreakBeam(pUndoItem, m_pBeforeNR);
-}
-
-void lmVCmdBreakBeam::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_BreakBeam(pUndoItem, m_pBeforeNR);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdJoinBeam implementation
-//----------------------------------------------------------------------------------------
-
-lmVCmdJoinBeam::lmVCmdJoinBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                               std::vector<lmNoteRest*>& notes)
-    : lmVStaffCmd(pVStaff), m_NotesRests(notes)
-{
-    pVStaff->Cmd_JoinBeam(pUndoItem, m_NotesRests);
-}
-
-void lmVCmdJoinBeam::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_JoinBeam(pUndoItem);
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmVCmdDeleteBeam implementation
-//      pNR is any note/rest of the beam
-//----------------------------------------------------------------------------------------
-
-lmVCmdDeleteBeam::lmVCmdDeleteBeam(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                                 lmNoteRest* pNR)
-    : lmVStaffCmd(pVStaff)
-{
-    m_pNR = pNR;
-    pVStaff->Cmd_DeleteBeam(pUndoItem, m_pNR);
-}
-
-void lmVCmdDeleteBeam::RollBack(lmUndoItem* pUndoItem)
-{
-    m_pVStaff->UndoCmd_DeleteBeam(pUndoItem);
 }
 
