@@ -12,25 +12,24 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef _PAPER_H        //to avoid nested includes
-#define _PAPER_H
+#ifndef __LM_PAPER_H__        //to avoid nested includes
+#define __LM_PAPER_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Paper.cpp"
 #endif
 
 
-#include "wx/dc.h"
-#include "../score/defs.h"
-#include "Page.h"
+#include <wx/dc.h>
+
 #include "FontManager.h"
+#include "../score/defs.h"
 #include "../graphic/Drawer.h"
 
 class lmShape;
@@ -44,8 +43,7 @@ public:
 
     //settings
     void SetDrawer(lmDrawer* pDrawer);
-    void SetPageInfo(lmPageInfo* pPageInfo, int nNumPage);
-    void ForceDefaultPageInfo(bool fValue);
+    bool IsDirectDrawer();
 
     // page cursors positioning
     inline lmLUnits GetCursorX() { return m_uxCursor; }
@@ -54,28 +52,11 @@ public:
     inline void SetCursorX(lmLUnits uValue) { m_uxCursor = uValue; }
     inline void SetCursorY(lmLUnits uValue) { m_uyCursor = uValue; }
     inline void SetCursor(lmUPoint uPos) { m_uxCursor = uPos.x; m_uyCursor = uPos.y; }
+    inline void SetCursor(lmLUnits uxPos, lmLUnits uyPos)
+                    { m_uxCursor = uxPos; m_uyCursor = uyPos; }
 
     inline void IncrementCursorX(lmLUnits uValue) { m_uxCursor += uValue; }
     inline void IncrementCursorY(lmLUnits uValue) { m_uyCursor += uValue; }
-
-    //methods using lmPaper ------------------------------------------------------------
-    void NewLine(lmLUnits uSpace);
-    void RestartPageCursors();
-    // page object: size and margings
-    inline lmLUnits GetPageTopMargin() { return m_pPageInfo->TopMargin(); }
-    inline lmLUnits GetPageLeftMargin() { return m_pPageInfo->LeftMargin(m_nNumPage); }
-    inline lmLUnits GetPageRightMargin() { return m_pPageInfo->RightMargin(m_nNumPage); }
-    inline lmUSize GetPaperSize() { return lmUSize(m_pPageInfo->PageWidth(), m_pPageInfo->PageHeight()); }
-    inline lmLUnits GetMaximumY() {return m_pPageInfo->GetUsableHeight() + m_pPageInfo->TopMargin(); }
-
-    inline void SetPageTopMargin(lmLUnits uValue) { m_pPageInfo->SetTopMargin(uValue); }
-    inline void SetPageLeftMargin(lmLUnits uValue) { m_pPageInfo->SetLeftMargin(uValue); }
-    inline void SetPageRightMargin(lmLUnits uValue) { m_pPageInfo->SetRightMargin(uValue); }
-    inline void SetPageSize(lmLUnits uWidth, lmLUnits uHeight) { m_pPageInfo->SetPageSize(uWidth, uHeight); }
-
-    lmLUnits GetRightMarginXPos();
-    lmLUnits GetLeftMarginXPos();
-    //end of methods using lmPaper ------------------------------------------------------
 
     // unit conversion
     inline lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDrawer->DeviceToLogicalX(x); }
@@ -137,12 +118,6 @@ private:
     //device context (DC)
     lmDrawer*       m_pDrawer;
 
-    //page size and margins information
-    lmPageInfo*     m_pPageInfo;        //page info in use
-    int             m_nNumPage;         //number of current page
-    lmPageInfo      m_DefaultPage;      //default internal page info object
-    bool            m_fUseDefault;      //force to use the default page info object
-
     //paper cursors
     lmLUnits   m_uxCursor, m_uyCursor;  //current default drawing position. Logical units
                                         //    relative to origin of paper
@@ -151,4 +126,4 @@ private:
 
 };
 
-#endif    // _PAPER_H
+#endif    // __LM_PAPER_H__

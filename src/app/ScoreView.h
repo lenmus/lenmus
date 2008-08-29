@@ -232,7 +232,8 @@ private:
     void SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
                                lmLUnits uYMin, lmLUnits uYMax, bool fRedraw = false);
 
-
+    //internal call backs
+    void OnNewGraphicalModel();
 
 
 	//-- variables ---
@@ -283,6 +284,9 @@ private:
     lmUPoint        m_uHotSpotShift;		//distance from shape origin
     wxDragImage*    m_pDragImage;
 	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
+
+    // mouse over objects
+	lmGMObject*		m_pMouseOverGMO;    //GMObject on which mouse is flying over
 
     //cursor
     lmCaret*            m_pCaret;

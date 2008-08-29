@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -97,8 +96,9 @@ public:
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
     virtual void BreakBeam() {}
     virtual void JoinBeam() {}
-    virtual void ChangeText(lmScoreText* pST, wxString sText, lmEAlignment nAlign,
-                            lmLocation tPos, lmFontInfo tFont, wxColour colorC) {}
+    virtual void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
+                            lmLocation tPos, lmTextStyle* pStyle) {}
+    virtual void ChangePageMargin(lmGMObject* pGMO, int nIdx, lmLUnits uPos) {}
 
 
     // event handlers
@@ -195,8 +195,9 @@ public:
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
     void BreakBeam();
     void JoinBeam();
-    void ChangeText(lmScoreText* pST, wxString sText, lmEAlignment nAlign,
-                    lmLocation tPos, lmFontInfo tFont, wxColour colorC);
+    void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
+                    lmLocation tPos, lmTextStyle* pStyle);
+    virtual void ChangePageMargin(lmGMObject* pGMO, int nIdx, lmLUnits uPos);
 
 
 

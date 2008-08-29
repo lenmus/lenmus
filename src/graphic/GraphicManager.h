@@ -57,7 +57,7 @@ public:
     void Create(lmScore* pScore, lmPaper* pPaper);
 
     //renderization
-    void PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
+    bool PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
                          double rScale, lmPaper* pPaper, int nOptions=0);
 
     void Layout();

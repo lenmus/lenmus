@@ -214,7 +214,7 @@ void lmGraphicManager::PrepareForHighlight()
 
 }
 
-void lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,
+bool lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,
                                double rScale, lmPaper* pPaper, int nOptions)
 {
     //This method informs GraphicManager about the common parameters (the score,
@@ -224,6 +224,10 @@ void lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmL
     //do whatever is necessary, i.e. delete invalid offscreen bitmaps.
     //Also, it must prepare anything that could be necessary, i.e. force a re-layout
     //of the score.
+
+    //returns true if a re-alyout has been forced. This implies that the graphical
+    //model has been rebuild and, therefore, all pointers to lmGMObjects are no
+    //longer valid
 
 
 
@@ -271,6 +275,7 @@ void lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmL
     //    (fDeleteBitmaps ? _T("Yes") : _T("No")),
     //    (m_pBoxScore ? _T("Yes") : _T("No")) );
 
+    return fLayoutScore;
 }
 
 void lmGraphicManager::DeleteBitmaps()
@@ -406,7 +411,10 @@ lmGMObject* lmGraphicManager::FindGMObjectAtPagePosition(int nNumPage, lmUPoint 
 	if (!m_pBoxScore) return (lmGMObject*)NULL;
 
     lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
-    return pBPage->FindGMObjectAtPosition(uPos);
+    if (pBPage)
+        return pBPage->FindGMObjectAtPosition(uPos);
+    else
+        return (lmGMObject*)NULL;
 }
 
 //lmGMSelection* lmGraphicManager::CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
@@ -497,11 +505,11 @@ wxBitmap GenerateBitmapForKeyCtrol(wxString sKeyName, lmEKeySignatures nKey)
     lmPaper oPaper;
     lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(size.x);
     lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(size.y);
-    oPaper.SetPageSize(xLU, yLU);
+    oScore.SetPageSize(xLU, yLU);
 
-    oPaper.SetPageTopMargin(0.0f);
-    oPaper.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-    oPaper.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+    oScore.SetPageTopMargin(0.0f);
+    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
     oPaper.SetDrawer(new lmDirectDrawer(&dc));
 
     lmGraphicManager oGraphMngr(&oScore, &oPaper);

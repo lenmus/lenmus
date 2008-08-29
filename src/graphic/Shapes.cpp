@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -147,6 +146,8 @@ void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
 		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
+
+
 //========================================================================================
 // lmShapeGlyph object implementation
 //========================================================================================
@@ -154,7 +155,7 @@ void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
 lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, wxFont* pFont,
                            lmPaper* pPaper, lmUPoint uPos, wxString sName, bool fDraggable,
                            wxColour color)
-    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, nShapeIdx, sName, fDraggable, color)
+    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, nShapeIdx, sName, fDraggable, lmSELECTABLE, color)
 {
     m_nGlyph = nGlyph;
     m_pFont = pFont;
@@ -322,147 +323,6 @@ lmUPoint lmShapeGlyph::GetObjectOrigin()
 
 
 //========================================================================================
-// lmShapeText object implementation
-//========================================================================================
-
-lmShapeText::lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
-						 lmUPoint offset, wxString sName, bool fDraggable, wxColour color)
-    : lmSimpleShape(eGMO_ShapeText, pOwner, 0, sName, fDraggable, color)
-{
-    m_sText = sText;
-    m_pFont = pFont;
-
-    // compute and store position
-    m_uPos.x = offset.x;
-    m_uPos.y = offset.y;
-
-    // store boundling rectangle position and size
-    lmLUnits uWidth, uHeight;
-    pPaper->SetFont(*m_pFont);
-    pPaper->GetTextExtent(m_sText, &uWidth, &uHeight);
-
-    m_uBoundsTop.x = offset.x;
-    m_uBoundsTop.y = offset.y;
-    m_uBoundsBottom.x = m_uBoundsTop.x + uWidth;
-    m_uBoundsBottom.y = m_uBoundsTop.y + uHeight;
-
-    // store selection rectangle position and size
-	m_uSelRect = GetBounds();
-
-}
-
-
-void lmShapeText::Render(lmPaper* pPaper, wxColour color)
-{
-    pPaper->SetFont(*m_pFont);
-    pPaper->SetTextForeground(color);
-    pPaper->DrawText(m_sText, m_uPos.x, m_uPos.y);
-
-    lmSimpleShape::Render(pPaper, color);
-}
-
-void lmShapeText::SetFont(wxFont *pFont)
-{
-    m_pFont = pFont;
-}
-
-wxString lmShapeText::Dump(int nIndent)
-{
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-    sDump += wxString::Format(_T("TextShape: pos=(%.2f,%.2f), text=%s, "),
-        m_uPos.x, m_uPos.y, m_sText.c_str() );
-    sDump += DumpBounds();
-    sDump += _T("\n");
-
-	return sDump;
-}
-
-void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
-{
-    m_uPos.x += xIncr;
-    m_uPos.y += yIncr;
-
-    ShiftBoundsAndSelRec(xIncr, yIncr);
-
-	//if included in a composite shape update parent bounding and selection rectangles
-	if (this->IsChildShape())
-		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
-}
-
-wxBitmap* lmShapeText::OnBeginDrag(double rScale, wxDC* pDC)
-{
-	// A dragging operation is started. The view invokes this method to request the
-	// bitmap to be used as drag image. No other action is required.
-	// If no bitmap is returned drag is cancelled.
-	//
-	// So this method returns the bitmap to use with the drag image.
-
-
-	// Get size of text, in logical units
-    wxCoord wText, hText;
-//    wxScreenDC dc;
-//    dc.SetMapMode(lmDC_MODE);
-//    dc.SetUserScale(rScale, rScale);
-    pDC->SetFont(*m_pFont);
-    pDC->GetTextExtent(m_sText, &wText, &hText);
-//    dc.SetFont(wxNullFont);
-
-    // allocate the bitmap
-    // convert size to pixels
-    int wD = (int)pDC->LogicalToDeviceXRel(wText);
-    int hD = (int)pDC->LogicalToDeviceYRel(hText);
-    wxBitmap bitmap(wD+2, hD+2);
-
-    // allocate a memory DC for drawing into a bitmap
-    wxMemoryDC dc2;
-    dc2.SelectObject(bitmap);
-    dc2.SetMapMode(lmDC_MODE);
-    dc2.SetUserScale(rScale, rScale);
-    dc2.SetFont(*m_pFont);
-
-    // draw onto the bitmap
-    dc2.SetBackground(* wxWHITE_BRUSH);
-    dc2.Clear();
-    dc2.SetBackgroundMode(wxTRANSPARENT);
-    dc2.SetTextForeground(g_pColors->ScoreSelected());
-    dc2.DrawText(m_sText, 0, 0);
-
-
-    dc2.SelectObject(wxNullBitmap);
-
- //   //cut out the image, to discard the outside out of the bounding box
- //   lmPixels vxLeft = dc2.LogicalToDeviceYRel(GetXLeft() - m_uGlyphPos.x);
- //   lmPixels vyTop = dc2.LogicalToDeviceYRel(GetYTop() - m_uGlyphPos.y);
- //   lmPixels vWidth = wxMin(bitmap.GetWidth() - vxLeft,
- //                           dc2.LogicalToDeviceXRel(GetWidth()) );
- //   lmPixels vHeight = wxMin(bitmap.GetHeight() - vyTop,
- //                            dc2.LogicalToDeviceYRel(GetHeight()) );
- //   const wxRect rect(vxLeft, vyTop, vWidth, vHeight);
- //   //wxLogMessage(_T("[lmShapeGlyph::OnBeginDrag] bitmap size w=%d, h=%d. Cut x=%d, y=%d, w=%d, h=%d"),
- //   //    bitmap.GetWidth(), bitmap.GetHeight(), vxLeft, vyTop, vWidth, vHeight);
- //   wxBitmap oShapeBitmap = bitmap.GetSubBitmap(rect);
- //   wxASSERT(oShapeBitmap.IsOk());
-
-    // Make the bitmap masked
-    //wxImage image = oShapeBitmap.ConvertToImage();
-    wxImage image = bitmap.ConvertToImage();
-    image.SetMaskColour(255, 255, 255);
-    wxBitmap* pBitmap = new wxBitmap(image);
-
- //   ////DBG -----------
- //   //wxString sFileName = _T("ShapeGlyp2.bmp");
- //   //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
- //   ////END DBG -------
-
-    return pBitmap;
-
-}
-
-
-
-
-//========================================================================================
 // lmShapeStem object implementation: a vertical line
 //========================================================================================
 
@@ -578,7 +438,7 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 
 lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, lmUPoint uPos, lmUSize uSize,
                                    wxString sName)
-	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, 0, sName, lmNO_DRAGGABLE)
+	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, 0, sName, lmNO_DRAGGABLE, lmNO_SELECTABLE)
 {
     m_uBoundsTop.x = uPos.x;
     m_uBoundsTop.y = uPos.y;
@@ -597,5 +457,86 @@ void lmShapeInvisible::Render(lmPaper* pPaper, wxColour color)
     //if (g_fDrawInvisible)       //TODO
     {
     }
+}
+
+
+//========================================================================================
+// lmShapeRectangle: a rectangle with optional rounded corners
+//========================================================================================
+
+lmShapeRectangle::lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits yTop,
+                                   lmLUnits xRight, lmLUnits yBottom, lmLUnits uWidth,
+                                   wxString sName,
+				                   bool fDraggable, bool fSelectable, 
+                                   wxColour color, bool fVisible)
+    : lmSimpleShape(eGMO_ShapeRectangle, pOwner, 0, sName, fDraggable, fSelectable, 
+                    color, fVisible)
+{
+    m_uCornerRadius = 0.0f;
+    m_xLeft = xLeft;
+    m_yTop = yTop;
+    m_xRight = xRight;
+    m_yBottom = yBottom;
+    m_uWidth = uWidth;
+
+    // store boundling rectangle position and size
+    lmLUnits uWidthRect = m_uWidth / 2.0;
+    
+    m_uBoundsTop.x = xLeft - uWidthRect;
+    m_uBoundsTop.y = yTop - uWidthRect;
+    m_uBoundsBottom.x = xRight + uWidthRect;
+    m_uBoundsBottom.y = yBottom + uWidthRect;
+
+    NormaliceBoundsRectangle();
+
+    // store selection rectangle position and size
+    m_uSelRect = GetBounds();
+}
+
+void lmShapeRectangle::Render(lmPaper* pPaper, wxColour color)
+{
+    lmELineEdges nEdge = eEdgeNormal;
+
+    //top side
+    pPaper->SolidLine(m_xLeft, m_yTop, m_xRight, m_yTop, m_uWidth, nEdge, color);
+    //right side
+    pPaper->SolidLine(m_xRight, m_yTop, m_xRight, m_yBottom, m_uWidth, nEdge, color);
+    //bottom side
+    pPaper->SolidLine(m_xLeft, m_yBottom, m_xRight, m_yBottom, m_uWidth, nEdge, color);
+    //left side
+    pPaper->SolidLine(m_xLeft, m_yTop, m_xLeft, m_yBottom, m_uWidth, nEdge, color);
+
+    lmSimpleShape::Render(pPaper, color);
+}
+
+void lmShapeRectangle::SetCornerRadius(lmLUnits uRadius)
+{
+    m_uCornerRadius = uRadius;
+}
+
+wxString lmShapeRectangle::Dump(int nIndent)
+{
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump += wxString::Format(_T("%04d %s: left-top=(%.2f, %.2f), right-bottom=(%.2f, %.2f), line width=%.2f, "),
+                m_nOwnerIdx, m_sGMOName.c_str(), m_xLeft, m_yTop, m_xRight, m_yBottom, m_uWidth );
+    sDump += DumpBounds();
+    sDump += _T("\n");
+
+	return sDump;
+}
+
+void lmShapeRectangle::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+    m_xLeft += xIncr;
+    m_yTop += yIncr;
+    m_xRight += xIncr;
+    m_yBottom += yIncr;
+
+    ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 

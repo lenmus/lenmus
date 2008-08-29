@@ -34,12 +34,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "ScoreView.h"
-#include "../score/Score.h"
-#include "Page.h"
-#include "FontManager.h"
 #include "Paper.h"
-#include "../graphic/GraphicManager.h"
 
 
 // global data structures for printing. Defined in TheApp.cpp
@@ -53,62 +48,25 @@ lmPaper::lmPaper()
     m_uxCursor = 0.0f;
     m_uyCursor = 0.0f;
     m_pDrawer = (lmDrawer*) NULL;
-    m_pPageInfo = &m_DefaultPage;
-    m_nNumPage = 1;
-    m_fUseDefault = false;
 }
 
 lmPaper::~lmPaper()
 {
-    if (m_pDrawer) delete m_pDrawer;
-}
-
-void lmPaper::ForceDefaultPageInfo(bool fValue)
-{
-    if (fValue)
-        m_pPageInfo = &m_DefaultPage;
-    m_fUseDefault = fValue;
-}
-
-void lmPaper::SetPageInfo(lmPageInfo* pPageInfo, int nNumPage)
-{
-    //if paper not forced to use the default settings, sets the current page 
-    //number and page info
-
-    if (m_fUseDefault) return;
-
-    m_pPageInfo = pPageInfo;
-    m_nNumPage = nNumPage;
+    if (m_pDrawer)
+        delete m_pDrawer;
 }
 
 void lmPaper::SetDrawer(lmDrawer* pDrawer)
 {
-    if (m_pDrawer) delete m_pDrawer;
+    if (m_pDrawer)
+        delete m_pDrawer;
+
     m_pDrawer = pDrawer;
 }
 
-void lmPaper::RestartPageCursors()
+bool lmPaper::IsDirectDrawer()
 {
-    m_uxCursor = GetPageLeftMargin();
-    m_uyCursor = GetPageTopMargin();
-
-}
-
-void lmPaper::NewLine(lmLUnits nSpace)
-{
-    m_uyCursor += nSpace;
-    m_uxCursor = GetPageLeftMargin();
-
-}
-
-lmLUnits lmPaper::GetRightMarginXPos()
-{
-    return GetPaperSize().GetWidth() - GetPageRightMargin();
-}
-
-lmLUnits lmPaper::GetLeftMarginXPos()
-{
-    return GetPageLeftMargin();
+    return m_pDrawer && m_pDrawer->IsDirectDrawer();
 }
 
 wxFont* lmPaper::GetFont(int nPointSize, wxString sFontName,

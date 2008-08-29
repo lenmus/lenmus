@@ -321,15 +321,6 @@ enum lmETimeSignature
 #define lmOFF_BEAT      -1      //off-beat
 
 
-// Placement indicates whether something is above or below another element,
-// such as a note or a notation.
-enum lmEPlacement
-{
-    ep_Default = 0,
-    ep_Above,
-    ep_Below
-};
-
 //noteheads
 enum lmENoteHeads
 {
@@ -369,16 +360,6 @@ enum lmEBracketSymbol
     lm_eBrace,
     lm_eBracket,
 };
-
-// aligments
-enum lmEAlignment
-{
-    lmALIGN_DEFAULT = 0,
-    lmALIGN_LEFT,
-    lmALIGN_RIGHT,
-    lmALIGN_CENTER
-};
-
 
 //IDs for events that must be public
 enum
@@ -640,29 +621,74 @@ extern lmLocation g_tDefaultPos;          // defined in defs.cpp
 
 
 //---------------------------------------------------------------------------------------
+// Aligment, justification, placement
+//---------------------------------------------------------------------------------------
+
+//For blocks, lmEBlockAlign specifies how the block is horizontally positioned
+enum lmEBlockAlign
+{
+    lmBLOCK_ALIGN_DEFAULT = 0,  //alignment is not specified
+    lmBLOCK_ALIGN_LEFT,         //xLeft on left page margin
+    lmBLOCK_ALIGN_RIGHT,        //xRight on right page margin
+    lmBLOCK_ALIGN_BOTH,         //xLeft and xRight on respective page margins
+    lmBLOCK_ALIGN_NONE,         //Floating block: xLeft and xRight set by user
+};
+
+//lmEVAlign is used to indicate vertical alignment within a block: to the top,
+//middle or bottom
+enum lmEVAlign
+{
+    lmVALIGN_DEFAULT = 0,   //alignment is not specified
+    lmVALIGN_TOP,
+    lmVALIGN_MIDDLE,
+    lmVALIGN_BOTTOM,
+};
+
+//lmEHAlign is used to indicate text justification:
+enum lmEHAlign
+{
+    lmHALIGN_DEFAULT = 0,   //alignment is not specified
+    lmHALIGN_LEFT,          //text aligned on left side
+    lmHALIGN_RIGHT,         //text aligned on right side
+    lmHALIGN_JUSTIFY,       //text justified on both sides
+    lmHALIGN_CENTER,        //text centered
+};
+
+// Placement indicates whether something is above or below another element,
+// such as a note or a notation.
+enum lmEPlacement
+{
+    ep_Default = 0,
+    ep_Above,
+    ep_Below
+};
+
+
+
+//---------------------------------------------------------------------------------------
 //Font data
 //---------------------------------------------------------------------------------------
 
-// font specification
-enum lmETextStyle           // text styles
-{
-    lmTEXT_DEFAULT = 0,
-    lmTEXT_NORMAL,
-    lmTEXT_BOLD,
-    lmTEXT_ITALIC,
-    lmTEXT_ITALIC_BOLD,
-};
+typedef struct {
+    wxString        sFontName;
+    int             nFontSize;      //in points
+    int             nFontStyle;     //can be wxFONTSTYLE_NORMAL or wxFONTSTYLE_ITALIC
+    wxFontWeight    nFontWeight;    //can be wxFONTWEIGHT_NORMAL or wxFONTWEIGHT_BOLD
+}
+lmFontInfo;
 
-typedef struct lmFontInfoStruct {
-    wxString sFontName;
-    int nFontSize;
-    lmETextStyle nStyle;
-} lmFontInfo;
 
-    //global variables used as default initializators
-extern lmFontInfo tLyricDefaultFont;            // defined in NoteRestObj.cpp
+// Text style
+typedef struct {
+    wxString        sName;
+    lmFontInfo      tFont;
+    wxColour        nColor;
+}
+lmTextStyle;
+
+//global variables used as default initializators
 extern lmFontInfo g_tInstrumentDefaultFont;       // defined in Instrument.cpp
-extern lmFontInfo tBasicTextDefaultFont;        // defined in NoteRestObj.cpp
+
 
 
 

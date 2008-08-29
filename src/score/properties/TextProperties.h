@@ -36,25 +36,24 @@
 #include "wx/wx.h"
 
 #else
-#include <wx/intl.h>
-#include <wx/string.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
-#include <wx/clrpicker.h>
+#include <wx/bmpbuttn.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
+#include <wx/colour.h>
+#include <wx/settings.h>
+#include <wx/string.h>
+#include <wx/button.h>
+#include <wx/stattext.h>
 #include <wx/choice.h>
-#include <wx/toolbar.h>
-#include <wx/textctrl.h>
 #include <wx/sizer.h>
+#include <wx/textctrl.h>
 #include <wx/panel.h>
 
 #endif
 
-#include "../../widgets/Button.h"
 #include "DlgProperties.h"
 
 
@@ -75,13 +74,11 @@ public:
     void OnAcceptChanges(lmController* pController);
 
     // event handlers
-    void OnBold(wxCommandEvent& event);
-    void OnItalic(wxCommandEvent& event);
     void OnCut(wxCommandEvent& event);
     void OnCopy(wxCommandEvent& event);
     void OnPaste(wxCommandEvent& event);
-    void OnColor(wxColourPickerEvent& event);
     void OnStyle(wxCommandEvent& event);
+    void OnEditStyles(wxCommandEvent& event);
 
 
 protected:
@@ -89,18 +86,16 @@ protected:
     void DoChangeFont(const wxFont& font, const wxColour& color = wxNullColour);
 
     //controls
-	lmBitmapButton*          m_pBtCut;
-	wxBitmapButton*          m_pBtCopy;
-	wxBitmapButton*          m_pBtPaste;
-	lmCheckButton*          m_pBtBold;
-	wxBitmapButton*          m_pBtItalic;
-	wxColourPickerCtrl*     m_pColourPicker;
-	wxChoice*               m_pCboTextStyle;
-	wxTextCtrl*             m_pTxtCtrl;
+	wxBitmapButton*     m_pBtCut;
+	wxBitmapButton*     m_pBtCopy;
+	wxBitmapButton*     m_pBtPaste;
+	wxStaticText*       m_pTxtStyle;
+	wxChoice*           m_pCboTextStyle;
+    wxButton*           m_pBtnChangeStyles;
+	wxTextCtrl*         m_pTxtCtrl;
 	
     //other variables
     lmScoreText*        m_pParentText;
-    size_t              m_fontSize;     // in points
 
 
     DECLARE_EVENT_TABLE()

@@ -163,7 +163,6 @@ void lmAggDrawer::Initialize()
     m_pDC->SetBackgroundMode(wxTRANSPARENT);
     m_pDC->SetBackground(*wxWHITE_BRUSH);
     m_pDC->SetTextBackground(wxColour(0,0,0));
-
 }
 
 //draw shapes

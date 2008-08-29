@@ -37,6 +37,9 @@
 #include "wx/wx.h"
 #endif
 
+#include <vector>
+#include <list>
+
 #include "../score/defs.h"
 #include "GMObject.h"
 
@@ -45,13 +48,17 @@ class lmBoxSystem;
 class lmBoxSlice;
 class lmScore;
 class lmPaper;
-
+class lmShapeMargin;
+class lmHandler;
 
 
 class lmBoxPage : public lmBox
 {
 public:
-    lmBoxPage(lmBoxScore* pParent, int nNumPage);
+    lmBoxPage(lmBoxScore* pParent, int nNumPage,
+              lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
+              lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
+              lmLUnits uPageWidth, lmLUnits uPageHeight);
     ~lmBoxPage();
 
 	//info
@@ -69,6 +76,14 @@ public:
 	//operations
     lmBoxSystem* AddSystem(int nSystem);
     void Render(lmScore* pScore, lmPaper* pPaper);
+    void DrawHandlers(lmPaper* pPaper);
+
+    //handlers
+	void AddHandler(lmHandler* pHandler);
+	lmHandler* GetFirstHandler();
+	lmHandler* GetNextHandler();
+    inline int GetNumHandlers() { return (int)m_Handlers.size(); }
+
 
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
@@ -92,8 +107,18 @@ private:
     int             m_nFirstSystem;
     int             m_nLastSystem;
 
+    //margins
+    lmShapeMargin*  m_pTopMargin;
+    lmShapeMargin*  m_pBottomMargin;
+    lmShapeMargin*  m_pLeftMargin;
+    lmShapeMargin*  m_pRightMargin;
+
     // a lmBoxPage is, mainly, a collection of lmBoxSystems
 	std::vector<lmBoxSystem*>	m_aSystems;		//array of ptrs to systems that form this page
+
+	//it also contains the list of handler shapes contained within the page
+	std::list<lmHandler*>	            m_Handlers;
+    std::list<lmHandler*>::iterator    m_it;           //for GetFirst(), GetNext() methods
 
     //page origin
     lmUPoint    m_pageOrgL;

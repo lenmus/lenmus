@@ -86,16 +86,18 @@ void lmLDPParser::Create(const wxString& sLanguage, const wxString& sCharset)
     m_pTags->LoadTags(sLanguage, sCharset);
     // default values for font and aligment for <title> elements
     //TODO user options instead of fixed values
-    m_nTitleAlignment = lmALIGN_CENTER;
+    m_nTitleAlignment = lmHALIGN_CENTER;
     m_sTitleFontName = _T("Times New Roman");
     m_nTitleFontSize = 14;
-    m_nTitleStyle = lmTEXT_BOLD;
+    m_nTitleStyle = wxFONTSTYLE_NORMAL;
+    m_nTitleWeight = wxFONTWEIGHT_BOLD;
 
     // default values for font and aligment for <text> elements
     //TODO user options instead of fixed values
     m_sTextFontName = _T("Times New Roman");
     m_nTextFontSize = 10;
-    m_nTextStyle = lmTEXT_NORMAL;
+    m_nTextStyle = wxFONTSTYLE_NORMAL;
+    m_nTextWeight = wxFONTWEIGHT_NORMAL;
 
     // default values for notes/rests octave and duration
     m_sLastOctave = _T("4");                                        // octave 4
@@ -678,7 +680,16 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     // create the score
     pScore = new lmScore();
 
-    //parse optional element <titles>
+    //parse optional elements <defineStyle>
+    pX = pNode->GetParameter(iP);
+    while(pX->GetName() == m_pTags->TagName(_T("defineStyle")) &&  iP <= nNumParms)
+    {
+        AnalyzeDefineStyle(pX, pScore);
+        iP++;
+        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+    }
+
+    //parse optional elements <titles>
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == m_pTags->TagName(_T("title")) &&  iP <= nNumParms) {
         AnalyzeTitle(pX, pScore);
@@ -737,7 +748,8 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
     //default values for name
     //TODO user options instead of fixed values
     wxString sGrpName = _T("");           //no name for group
-    lmEAlignment nNameAlign = lmALIGN_LEFT;
+    wxString sNameStyle = _T("");
+    lmEHAlign nNameAlign = lmHALIGN_LEFT;
     bool fNameHasWidth = false;
     lmFontInfo tNameFont = g_tInstrumentDefaultFont;
     lmLocation tNamePos = g_tDefaultPos;
@@ -745,7 +757,8 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
     //default values for abbreviation
     //TODO user options instead of fixed values
     wxString sGrpAbbrev = _T("");         //no abreviated name for group
-    lmEAlignment nAbbrevAlign = lmALIGN_LEFT;
+    wxString sAbbrevStyle = _T("");
+    lmEHAlign nAbbrevAlign = lmHALIGN_LEFT;
     bool fAbbrevHasWidth = false;
     lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
     lmLocation tAbbrevPos = g_tDefaultPos;
@@ -766,12 +779,12 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
         }
         else if (pX->GetName() == m_pTags->TagName(_T("name")) )
         {
-            AnalyzeTextString(pX, &sGrpName, &nNameAlign, &tNamePos,
+            AnalyzeTextString(pX, &sGrpName, &sNameStyle, &nNameAlign, &tNamePos,
                               &tNameFont, &fNameHasWidth);
         }
         else if (pX->GetName() == m_pTags->TagName(_T("abbrev")) )
         {
-            AnalyzeTextString(pX, &sGrpAbbrev, &nAbbrevAlign, &tAbbrevPos,
+            AnalyzeTextString(pX, &sGrpAbbrev, &sAbbrevStyle, &nAbbrevAlign, &tAbbrevPos,
                               &tAbbrevFont, &fAbbrevHasWidth);
         }
         else if (pX->GetName() == m_pTags->TagName(_T("symbol")) )
@@ -848,7 +861,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //default values for name
     //TODO user options instead of fixed values
     wxString sInstrName = _T("");           //no name for instrument
-    lmEAlignment nNameAlign = lmALIGN_LEFT;
+    wxString sInstrNameStyle = _T("");
+    lmEHAlign nNameAlign = lmHALIGN_LEFT;
     bool fNameHasWidth = false;
     lmFontInfo tNameFont = g_tInstrumentDefaultFont;
     lmLocation tNamePos = g_tDefaultPos;
@@ -856,7 +870,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //default values for abbreviation
     //TODO user options instead of fixed values
     wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
-    lmEAlignment nAbbrevAlign = lmALIGN_LEFT;
+    wxString sInstrAbbrevStyle = _T("");
+    lmEHAlign nAbbrevAlign = lmHALIGN_LEFT;
     bool fAbbrevHasWidth = false;
     lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
     lmLocation tAbbrevPos = g_tDefaultPos;
@@ -870,12 +885,12 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             break;      //start of MusicData. Exit this loop
         }
         else if (pX->GetName() == m_pTags->TagName(_T("name")) ) {
-            AnalyzeTextString(pX, &sInstrName, &nNameAlign, &tNamePos,
+            AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign, &tNamePos,
                               &tNameFont, &fNameHasWidth);
         }
         else if (pX->GetName() == m_pTags->TagName(_T("abbrev")) ) {
-            AnalyzeTextString(pX, &sInstrAbbrev, &nAbbrevAlign, &tAbbrevPos,
-                              &tAbbrevFont, &fAbbrevHasWidth);
+            AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
+                              &tAbbrevPos, &tAbbrevFont, &fAbbrevHasWidth);
         }
         else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) ) {
             //TODO No treatment for now
@@ -922,9 +937,25 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     lmScoreText* pName = (lmScoreText*)NULL;
     lmScoreText* pAbbrev = (lmScoreText*)NULL;
     if (sInstrName != _T(""))
-        pName = new lmScoreText(sInstrName, nNameAlign, tNamePos, tNameFont);
+    {
+        lmTextStyle* pTS;
+        if (sInstrNameStyle != _T(""))
+            pTS = pScore->GetStyleInfo(sInstrNameStyle);
+        else
+            pTS = pScore->GetStyleName(tNameFont);
+        wxASSERT(pTS);
+        pName = new lmScoreText(sInstrName, nNameAlign, tNamePos, pTS);
+    }
     if (sInstrAbbrev != _T(""))
-        pAbbrev = new lmScoreText(sInstrAbbrev, nAbbrevAlign, tAbbrevPos, tAbbrevFont);
+    {
+        lmTextStyle* pTS;
+        if (sInstrAbbrevStyle != _T(""))
+            pTS = pScore->GetStyleInfo(sInstrAbbrevStyle);
+        else
+        lmTextStyle* pTS = pScore->GetStyleName(tAbbrevFont);
+        wxASSERT(pTS);
+        pAbbrev = new lmScoreText(sInstrAbbrev, nAbbrevAlign, tAbbrevPos, pTS);
+    }
 
     lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr,
                                         pName, pAbbrev, pGroup);
@@ -2620,8 +2651,10 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     }
 
     wxString sTitle;
-    lmEAlignment nAlign = m_nTitleAlignment;
-    lmFontInfo tFont = {m_sTitleFontName, m_nTitleFontSize, m_nTitleStyle};
+    wxString sStyle = _T("");
+    bool fFont = false;
+    lmEHAlign nAlign = m_nTitleAlignment;
+    lmFontInfo tFont = {m_sTitleFontName, m_nTitleFontSize, m_nTitleStyle, m_nTitleWeight};
     lmLocation tPos;
     tPos.xType = lmLOCATION_DEFAULT;
     tPos.xUnits = lmTENTHS;
@@ -2634,15 +2667,15 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     long iP = 1;
     wxString sName = (pNode->GetParameter(iP))->GetName();
     if (sName == m_pTags->TagName(_T("left")) )
-        nAlign = lmALIGN_LEFT;
+        nAlign = lmHALIGN_LEFT;
     else if (sName == m_pTags->TagName(_T("right")) )
-        nAlign = lmALIGN_RIGHT;
+        nAlign = lmHALIGN_RIGHT;
     else if (sName == m_pTags->TagName(_T("center")) )
-        nAlign = lmALIGN_CENTER;
+        nAlign = lmHALIGN_CENTER;
     else {
         AnalysisError( _T("Invalid alignment value '%s'. Assumed '%s'."),
             sName.c_str(), m_pTags->TagName(_T("center")).c_str() );
-        nAlign = lmALIGN_CENTER;
+        nAlign = lmHALIGN_CENTER;
     }
     //save alignment as new default for titles
     m_nTitleAlignment = nAlign;
@@ -2652,18 +2685,32 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     sTitle = (pNode->GetParameter(iP))->GetName();
     iP++;
 
-    //analyze remaining parameters (optional): font, location
+    //analyze remaining parameters (optional): font, style, location
     lmLDPNode* pX;
     for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
         sName = pX->GetName();
 
-        if (sName == m_pTags->TagName(_T("font")) ) {
-            AnalyzeFont(pX, &tFont);
-            //save font values as new default for titles
-            m_sTitleFontName = tFont.sFontName;
-            m_nTitleFontSize = tFont.nFontSize;
-            m_nTitleStyle = tFont.nStyle;
+        if (sName == m_pTags->TagName(_T("font")) )
+        {
+            if (sStyle != _T(""))
+                AnalysisError( _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
+            else
+            {
+                fFont = true;
+                AnalyzeFont(pX, &tFont);
+                //save font values as new default for titles
+                m_sTitleFontName = tFont.sFontName;
+                m_nTitleFontSize = tFont.nFontSize;
+                m_nTitleStyle = tFont.nFontStyle;
+                m_nTitleWeight = tFont.nFontWeight;
+            }
+        }
+        else if (sName == m_pTags->TagName(_T("style")) )
+        {
+            if (fFont)
+                AnalysisError( _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
+            sStyle = (pX->GetParameter(1))->GetName();
         }
         else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
                  sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
@@ -2676,26 +2723,38 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     }
 
     //create the title
-    lmScoreText* pTitle = pScore->AddTitle(sTitle, nAlign, tPos, tFont.sFontName,
-                                           tFont.nFontSize, tFont.nStyle);
+    lmTextStyle* pStyle = (lmTextStyle*)NULL;
+    if (sStyle != _T(""))
+    {
+        pStyle = pScore->GetStyleInfo(sStyle);
+        if (!pStyle)
+            AnalysisError( _T("Style '%s' is not defined. Default style will be used."),
+                           sStyle.c_str());
+    }
+
+    if (!pStyle)
+        pStyle = pScore->GetStyleName(tFont);
+
+    lmScoreText* pTitle = pScore->AddTitle(sTitle, nAlign, tPos, pStyle);
 	pTitle->SetUserLocation(tPos);
 
     return false;
 
 }
 
-bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
-                                    lmEAlignment* pAlign, lmLocation* pPos,
+bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
+                                    lmEHAlign* pAlign, lmLocation* pPos,
                                     lmFontInfo* pFont, bool* pHasWidth)
 {
     //A certain number of LDP elements accepts a text-string with additional parameters,
-    //such as location font or alignment. This method parses these elements.
+    //such as location, font or alignment. This method parses these elements.
     //Default values for information not present must be initialized in return variables
     //before invoking this method.
     //Returns true if error; in this case return variables are not changed.
     //If no error all variables but pNode are loaded with parsed information
 
-    // <text-string> = (any-tag string [<location>][<font>][<alingment>])
+    // <text-string> = (any-tag string [<location>] [{<font> | <style>}] [<alingment>])
+    // <style> = (style <name>)
 
     //check that at least one parameter (text string) is specified
     if(pNode->GetNumParms() < 1) {
@@ -2706,8 +2765,10 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
     }
 
     wxString sText;
-    lmEAlignment nAlign = *pAlign;
-    lmFontInfo tFont = {pFont->sFontName, pFont->nFontSize, pFont->nStyle};
+    wxString sStyle = _T("");
+    bool fFont = false;
+    lmEHAlign nAlign = *pAlign;
+    lmFontInfo tFont = {pFont->sFontName, pFont->nFontSize, pFont->nFontStyle, pFont->nFontWeight};
     lmLocation tPos = *pPos;
     bool fHasWidth = *pHasWidth;
 
@@ -2730,17 +2791,28 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
         {
             AnalyzeLocation(pX, &tPos);
         }
-        else if (sName == m_pTags->TagName(_T("font")) ) {
-            AnalyzeFont(pX, &tFont);
+        else if (sName == m_pTags->TagName(_T("font")) )
+        {
+            fFont = true;
+            if (sStyle != _T(""))
+                AnalysisError( _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
+            else
+                AnalyzeFont(pX, &tFont);
+        }
+        else if (sName == m_pTags->TagName(_T("style")) )
+        {
+            if (fFont)
+                AnalysisError( _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
+            sStyle = (pX->GetParameter(1))->GetName();
         }
         else if (sName == m_pTags->TagName(_T("left")) ) {
-            nAlign = lmALIGN_LEFT;
+            nAlign = lmHALIGN_LEFT;
         }
         else if (sName == m_pTags->TagName(_T("right")) ) {
-            nAlign = lmALIGN_RIGHT;
+            nAlign = lmHALIGN_RIGHT;
         }
         else if (sName == m_pTags->TagName(_T("center")) ) {
-            nAlign = lmALIGN_CENTER;
+            nAlign = lmHALIGN_CENTER;
         }
         else if (sName == m_pTags->TagName(_T("hasWidth")) ) {
             fHasWidth = true;
@@ -2757,8 +2829,100 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
     *pPos = tPos;
     *pFont = tFont;
     *pHasWidth = fHasWidth;
+    *pStyle = sStyle;
     return false;
 
+}
+
+bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
+{
+    // <defineStyle> = (defineStyle <name><font><color>)
+
+    //Analyzes a 'defineStyle' tag and, if successful, register the style in the
+    //received score. Returns true if success.
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("defineStyle")) );
+
+    //check that three parameters are specified
+    if(pNode->GetNumParms() != 3) {
+        AnalysisError(
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+            pNode->GetName().c_str() );
+        return true;
+    }
+
+    //initialize values
+    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
+    wxColour color(0, 0, 0);        //default: black
+
+    //get the style name
+    int iP = 1;
+    wxString sStyleName = (pNode->GetParameter(iP))->GetName();
+    iP++;
+
+    //get font and color, in no particular order
+    lmLDPNode* pX;
+    wxString sName;
+    for(; iP <= pNode->GetNumParms(); iP++)
+    {
+        pX = pNode->GetParameter(iP);
+        sName = pX->GetName();
+
+        if (sName == m_pTags->TagName(_T("font")) )
+        {
+                AnalyzeFont(pX, &tFont);
+        }
+        else if (sName == m_pTags->TagName(_T("color")) )
+        {
+                color = AnalyzeColor(pX);
+        }
+        else
+        {
+            AnalysisError( _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                pNode->GetName().c_str(), sName.c_str() );
+        }
+    }
+
+    //register the style
+    if (!sStyleName.IsEmpty())
+        pScore->AddStyle(sStyleName, tFont, color);
+
+    return false;
+}
+
+wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
+{
+    // <color> = (color #rrggbb))
+
+    //returns the result of the analysis. If error, returns black color.
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("color")) );
+
+    //check that one parameter is specified
+    wxColor color;
+    if(pNode->GetNumParms() != 1) {
+        AnalysisError(
+            _T("Element '%s' has less parameters than the minimum required. Color black will be used."),
+            pNode->GetName().c_str() );
+        color.Set(0,0,0);
+        return color;
+    }
+
+    wxString sColor;
+
+    //get the color in HTML-like syntax (i.e. "#" followed by 6 hexadecimal digits
+    //for red, green and blue components
+    sColor = (pNode->GetParameter(1))->GetName();
+
+    //convert to color value
+    if (!color.Set(sColor))
+    {
+        AnalysisError( _T("Invalid color value '%s'. Black will be used."),
+                       sColor.c_str() );
+        color.Set(0,0,0);
+    }
+
+    return color;
 }
 
 //returns true if error; in this case nothing is added to the VStaff
@@ -2777,9 +2941,10 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     wxString sText;
-    lmEAlignment nAlign = lmALIGN_LEFT;     //TODO user options instead of fixed values
+    wxString sStyle;
+    lmEHAlign nAlign = lmHALIGN_LEFT;     //TODO user options instead of fixed values
     bool fHasWidth = false;
-    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle};
+    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
     lmLocation tPos;
     tPos.xType = lmLOCATION_DEFAULT;
     tPos.xUnits = lmTENTHS;
@@ -2788,20 +2953,33 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     tPos.x = 0.0f;
     tPos.y = 0.0f;
 
-    if (AnalyzeTextString(pNode, &sText, &nAlign, &tPos, &tFont, &fHasWidth)) return true;
+    if (AnalyzeTextString(pNode, &sText, &sStyle, &nAlign, &tPos, &tFont, &fHasWidth)) 
+        return true;
 
     //no error:
-    //save font values as new default for titles
+    //save font values as new default for texts
     m_sTextFontName = tFont.sFontName;
     m_nTextFontSize = tFont.nFontSize;
-    m_nTextStyle = tFont.nStyle;
+    m_nTextStyle = tFont.nFontStyle;
+    m_nTextWeight = tFont.nFontWeight;
 
     //create the text
-    lmScoreText* pText = pVStaff->AddText(sText, nAlign, tPos, tFont, fHasWidth);
-    pText->SetUserLocation(tPos);
+    lmTextStyle* pStyle = (lmTextStyle*)NULL;
+    if (sStyle != _T(""))
+    {
+        lmTextStyle* pStyle = pVStaff->GetScore()->GetStyleInfo(sStyle);
+        if (!pStyle)
+            AnalysisError( _T("Style '%s' is not defined. Default style will be used."),
+                           sStyle.c_str());
+    }
+
+    if (!pStyle)
+        pStyle = pVStaff->GetScore()->GetStyleName(tFont);
+
+    lmScoreText* pText = pVStaff->AddText(sText, nAlign, tPos, pStyle, fHasWidth);
+	pText->SetUserLocation(tPos);
 
     return false;
-
 }
 
 bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -3112,17 +3290,29 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
         fProcessed = false;
 
         if (!fStyle) {
-            //try style
+            //try style and weight
             fStyle = true;
             fProcessed = true;
             if (sParm == m_pTags->TagName(_T("bold")) )
-                tFont.nStyle = lmTEXT_BOLD;
+            {
+                tFont.nFontStyle = wxFONTSTYLE_NORMAL;
+                tFont.nFontWeight = wxFONTWEIGHT_BOLD;
+            }
             else if (sParm == m_pTags->TagName(_T("normal")) )
-                tFont.nStyle = lmTEXT_NORMAL;
+            {
+                tFont.nFontStyle = wxFONTSTYLE_NORMAL;
+                tFont.nFontWeight = wxFONTWEIGHT_NORMAL;
+            }
             else if (sParm == m_pTags->TagName(_T("italic")) )
-                tFont.nStyle = lmTEXT_ITALIC;
+            {
+                tFont.nFontStyle = wxFONTSTYLE_ITALIC;
+                tFont.nFontWeight = wxFONTWEIGHT_NORMAL;
+            }
             else if (sParm == m_pTags->TagName(_T("bold-italic")) )
-                tFont.nStyle = lmTEXT_ITALIC_BOLD;
+            {
+                tFont.nFontStyle = wxFONTSTYLE_ITALIC;
+                tFont.nFontWeight = wxFONTWEIGHT_BOLD;
+            }
             else {
                 fStyle = false;
                 fProcessed = false;

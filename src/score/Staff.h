@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -47,6 +46,7 @@ public:
     inline lmLUnits TenthsToLogical(lmTenths rTenths) { return (m_uSpacing * rTenths)/10.0; }
 	inline lmTenths LogicalToTenths(lmLUnits uUnits) { return (uUnits * 10.0) / m_uSpacing; }
 	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Staff; }
+    inline lmScore* GetScore() { return m_pParent->GetScore(); }
 
 	//---- specific methods of this class ------------------------
 

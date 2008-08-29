@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -35,6 +34,7 @@
 #include "MetronomeMark.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+#include "../graphic/ShapeText.h"
 
 // 'note_symbol = 80'
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, lmENoteType nNoteType, int nDots,

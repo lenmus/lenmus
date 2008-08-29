@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -283,12 +282,11 @@ wxString lmFermata::Dump()
 //========================================================================================
 // lmLyric object implementation
 //========================================================================================
-//Global variables used as default initializators
-lmFontInfo tLyricDefaultFont = { _T("Arial"), 8, lmTEXT_ITALIC };
 
-lmLyric::lmLyric(wxString& sText, ESyllabicTypes nSyllabic, int nNumLine, wxString sLanguage)
+lmLyric::lmLyric(wxString& sText, lmTextStyle* pStyle, ESyllabicTypes nSyllabic,
+                 int nNumLine, wxString sLanguage)
     : lmAuxObj(lmDRAGGABLE),
-      lmBasicText(sText, g_tDefaultPos, tLyricDefaultFont, *wxBLACK, sLanguage)
+      lmBasicText(sText, g_tDefaultPos, pStyle, sLanguage)
 {
     m_nNumLine = nNumLine;
 }
@@ -298,10 +296,11 @@ wxFont* lmLyric::GetSuitableFont(lmPaper* pPaper)
     //wxLogMessage(_T("[lmLyric::GetSuitableFont]: size=%d, name=%s"),
 	//             m_nFontSize, m_sFontName );
 
-    int nWeight = (m_fBold ? wxBOLD : wxNORMAL);
-    int nStyle = (m_fItalic ? wxITALIC : wxNORMAL);
-    wxFont* pFont = pPaper->GetFont(m_nFontSize, m_sFontName, wxDEFAULT, nStyle, nWeight, false);
-
+    int nWeight = m_pStyle->tFont.nFontWeight;
+    int nStyle = m_pStyle->tFont.nFontStyle;
+    wxFont* pFont = pPaper->GetFont((int)PointsToLUnits(m_pStyle->tFont.nFontSize),
+                                    m_pStyle->tFont.sFontName, wxDEFAULT, nStyle,
+                                    nWeight, false);
     if (!pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
             _T("lmLyric::GetSuitableFont"), wxOK);

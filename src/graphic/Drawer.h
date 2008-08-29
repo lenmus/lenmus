@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -51,8 +50,9 @@ enum lmELineEdges
 class lmDrawer
 {
 public:
-    lmDrawer(wxDC* pDC);
     virtual ~lmDrawer() {}
+
+    virtual bool IsDirectDrawer() = 0;
 
     // Aliased shapes, even when anti-alising is supported.
     virtual void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color) = 0;
@@ -91,6 +91,8 @@ public:
     virtual lmPixels LogicalToDeviceY(lmLUnits y) = 0;
 
 protected:
+    lmDrawer(wxDC* pDC);
+
     wxDC*       m_pDC;              // the DC to use
     lmLUnits    m_uLineWidth;       // pen width
 
@@ -103,6 +105,8 @@ class lmDirectDrawer : public lmDrawer
 public:
     lmDirectDrawer(wxDC* pDC) : lmDrawer(pDC) {};
     ~lmDirectDrawer() {};
+
+    bool IsDirectDrawer() { return true; }
 
     // Aliased shapes, even when anti-alising is supported.
     void SketchLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2, wxColour color);

@@ -51,6 +51,8 @@
 #endif
 
 
+class lmScore;
+
 //--------------------------------------------------------------------------------------
 /// Class lmDlgTextStyles
 //--------------------------------------------------------------------------------------
@@ -62,24 +64,39 @@ class lmDlgTextStyles : public wxDialog
 	protected:
 		wxStaticText* m_staticText1;
 		wxGrid* m_pGrid;
-		wxRadioBox* m_radioBox1;
-		wxButton* m_button11;
-		wxButton* m_button21;
-		wxButton* m_button211;
-		wxButton* m_button6;
+		wxRadioBox* m_pRadShow;
+		wxButton* m_pBtAddNew;
+		wxButton* m_pBtRemove;
+		wxButton* m_pBtAddDefault;
+		wxButton* m_pBtEdit;
 		
-		wxButton* m_button3;
+		wxButton* m_pBtAccept;
 		
-		wxButton* m_button4;
+		wxButton* m_pBtCancel;
 		
 	
 	public:
-		lmDlgTextStyles( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Text styles defined in current score"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 530,400 ), long style = wxDEFAULT_DIALOG_STYLE );
+		lmDlgTextStyles( wxWindow* parent, lmScore* pScore);
 		~lmDlgTextStyles();
+
+
+
+    // event handlers
+    void OnAccept(wxCommandEvent& WXUNUSED(event));
+    void OnCancel(wxCommandEvent& WXUNUSED(event));
+    void OnAddNew(wxCommandEvent& WXUNUSED(event));
+    void OnAddDefault(wxCommandEvent& WXUNUSED(event));
+    void OnRemove(wxCommandEvent& WXUNUSED(event));
+    void OnEdit(wxGridEvent& event);
 
 private:
     void CreateControls();
+    void LoadStyles();
+
 	
+    lmScore*        m_pScore;
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif //__LM_DLGTEXTSTYLES_H__

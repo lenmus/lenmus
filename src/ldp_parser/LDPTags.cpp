@@ -12,28 +12,21 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
-/*! @class lmLDPTags
-    @ingroup ldp_parser
-    @brief lmLDPTags This class is a singleton to contain the LDP tags table.
-
-	Tag translations are going to be stored in a file named 'LDP_Tags.txt' in
-	current language directory.
-	On object initialization the Spanish tags set will be loaded.
-
-	When parsing a score, if the score has a 'lang=xx' tag, then the tags set
-	for that language will be loaded.
-
-	The 'score' and 'language' tags are the only non-translatable, according to
-	LDP standard v4.0
-
-*/
+// Class lmLDPTags: This class is a singleton to contain the LDP tags table.
+//
+// On object initialization the Spanish tags set will be loaded.
+//
+// When parsing a score, if the score has a 'lang=xx' tag, then the tags set
+// for that language will be loaded.
+//
+// The 'score' and 'language' tags are the only non-translatable ones, according to
+// LDP standard v4.0
 
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
@@ -145,6 +138,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("center")] = _T("center");
         m_Tags[0][_T("chord")] = _T("chord");
         m_Tags[0][_T("clef")] = _T("clef");
+        m_Tags[0][_T("color")] = _T("color");            
+        m_Tags[0][_T("defineStyle")] = _T("defineStyle");
         m_Tags[0][_T("down")] = _T("down");
         m_Tags[0][_T("dx")] = _T("dx");
         m_Tags[0][_T("dy")] = _T("dy");
@@ -178,6 +173,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("start")] = _T("start");
         m_Tags[0][_T("staves")] = _T("staves");
         m_Tags[0][_T("stem")] = _T("stem");
+        m_Tags[0][_T("style")] = _T("style");
         m_Tags[0][_T("symbol")] = _T("symbol");
         m_Tags[0][_T("text")] = _T("text");
         m_Tags[0][_T("time")] = _T("time");
@@ -308,6 +304,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("center")] = _T("centrado");
         m_Tags[0][_T("chord")] = _T("acorde");
         m_Tags[0][_T("clef")] = _T("clave");            
+        m_Tags[0][_T("color")] = _T("color");            
+        m_Tags[0][_T("defineStyle")] = _T("definirEstilo");
         m_Tags[0][_T("down")] = _T("abajo");
         m_Tags[0][_T("dx")] = _T("dx");
         m_Tags[0][_T("dy")] = _T("dy");
@@ -341,6 +339,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("start")] = _T("inicio");
         m_Tags[0][_T("staves")] = _T("numPentagramas");
         m_Tags[0][_T("stem")] = _T("plica");
+        m_Tags[0][_T("style")] = _T("estilo");
         m_Tags[0][_T("symbol")] = _T("simbolo");
         m_Tags[0][_T("text")] = _T("texto");
         m_Tags[0][_T("time")] = _T("metrica");

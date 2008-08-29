@@ -156,7 +156,7 @@ public:
     void OnViewStatusBar(wxCommandEvent& WXUNUSED(event));
     void OnToolbarsUI(wxUpdateUIEvent& event);
     void OnStatusbarUI(wxUpdateUIEvent& event);
-    void OnViewPageMargins(wxCommandEvent& WXUNUSED(event));
+    void OnViewPageMargins(wxCommandEvent& event);
     void OnViewWelcomePage(wxCommandEvent& event);
     void OnViewWelcomePageUI(wxUpdateUIEvent& event);
 

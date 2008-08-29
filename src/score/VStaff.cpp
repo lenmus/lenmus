@@ -1469,10 +1469,18 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
 
 }
 
-lmScoreText* lmVStaff::AddText(wxString& sText, lmEAlignment nAlign,
+lmScoreText* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
                             lmLocation& tPos, lmFontInfo& tFontData, bool fHasWidth)
 {
-    lmScoreText* pText = new lmScoreText(sText, nAlign, tPos, tFontData);
+    lmTextStyle* pTS = m_pScore->GetStyleName(tFontData);
+    wxASSERT(pTS);
+    return AddText(sText, nAlign, tPos, pTS, fHasWidth);
+}
+
+lmScoreText* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
+                            lmLocation& tPos, lmTextStyle* pStyle, bool fHasWidth)
+{
+    lmScoreText* pText = new lmScoreText(sText, nAlign, tPos, pStyle);
 
     // create an anchor object
     lmStaffObj* pAnchor;
@@ -2105,9 +2113,9 @@ lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos)
 void lmVStaff::NewLine(lmPaper* pPaper)
 {
     //move x cursor to the left and advance y cursor the space
-    //height of all stafves of this lmVStaff
-    pPaper->NewLine(GetVStaffHeight());
-
+    //height of all staves of this lmVStaff
+    pPaper->SetCursor( m_pScore->GetPageLeftMargin(),
+                       pPaper->GetCursorY() + GetVStaffHeight() );
 }
 
 //void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey,

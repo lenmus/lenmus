@@ -129,11 +129,13 @@ private:
 
     void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
+    wxColour    AnalyzeColor(lmLDPNode* pNode);
+    bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
-    bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
-                                  lmEAlignment* pAlign, lmLocation* pPos,
+    bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
+                                  lmEHAlign* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont, bool* pHasWidth);
     bool        AnalyzeTimeExpression(const wxString& sData, float* pValue);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
@@ -199,15 +201,17 @@ private:
     wxString        m_sLastDuration;
 
     // font and aligment for <title> elements
-    lmEAlignment    m_nTitleAlignment;
+    lmEHAlign    m_nTitleAlignment;
     wxString        m_sTitleFontName;
     int             m_nTitleFontSize;
-    lmETextStyle    m_nTitleStyle;
+    int             m_nTitleStyle;
+    wxFontWeight    m_nTitleWeight;
 
     // font for <text> elements
     wxString        m_sTextFontName;
     int             m_nTextFontSize;
-    lmETextStyle    m_nTextStyle;
+    int             m_nTextStyle;
+    wxFontWeight    m_nTextWeight;
 
     // tuplet options
     bool            m_fShowTupletBracket;

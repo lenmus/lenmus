@@ -43,7 +43,8 @@
 
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
                 wxColour nColor, wxString sName, bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, nColor, fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, lmSELECTABLE, nColor,
+                    fVisible)
 {
     m_uStart = uStart;
     m_uEnd = uEnd;
@@ -57,7 +58,8 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, boo
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
                          lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
                          wxString sName, bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, nColor, fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, lmSELECTABLE, 
+                    nColor, fVisible)
 {
     m_uStart = uStart;
     m_uEnd = uEnd;
@@ -71,7 +73,8 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
 
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, bool fArchUnder, wxColour nColor,
                          wxString sName, bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, nColor, fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, lmSELECTABLE,
+                    nColor, fVisible)
 {
     m_uStart = lmUPoint(0.0, 0.0);
     m_uEnd = lmUPoint(0.0, 0.0);

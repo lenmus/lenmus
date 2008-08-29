@@ -45,7 +45,7 @@ lmShapeBarline::lmShapeBarline(lmBarline* pBarline, lmEBarline nBarlineType,
 						       lmLUnits yBottom, lmLUnits uThinLineWidth,
                                lmLUnits uThickLineWidth, lmLUnits uSpacing,
                                lmLUnits uRadius, wxColour color)
-	: lmSimpleShape(eGMO_ShapeBarline, pBarline, 0, _T("Barline"), lmDRAGGABLE)
+	: lmSimpleShape(eGMO_ShapeBarline, pBarline, 0, _T("Barline"), lmDRAGGABLE, lmSELECTABLE)
 {
     m_nBarlineType = nBarlineType;
     m_uxPos = xPos;

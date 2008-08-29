@@ -205,11 +205,11 @@ lmUPoint lmScoreAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     //force paper pos. to page origin
-    pPaper->RestartPageCursors();
+    lmScore* pScore = GetScore();
+    pPaper->SetCursor(pScore->GetPageLeftMargin(), pScore->GetPageTopMargin());
 
     // set total width
     return 0;
-
 }
 
 wxString lmScoreAnchor::Dump()

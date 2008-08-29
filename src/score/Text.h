@@ -36,6 +36,9 @@
 #include "wx/wx.h"
 #endif
 
+#include <wx/font.h>
+
+
 #include "defs.h"
 #include "StaffObj.h"
 
@@ -43,15 +46,24 @@ class lmBox;
 class lmPaper;
 class lmGMObject;
 class lmUndoItem;
+class lmShapeText;
+class lmBox;
 
+// lmScoreText types
+enum
+{
+    lmSIMPLE_TEXT = 0,
+    lmBLOCK_TEXT,
+};
+
+//------------------------------------------------------------------------------------
 
 class lmBasicText
 {
 public:
-    lmBasicText(wxString& sText, lmLocation& tPos, lmFontInfo& oFontData,
-                wxColour color = *wxBLACK, wxString sLanguage = _T("Unknown") );
-
-    ~lmBasicText() {}
+    lmBasicText(wxString& sText, lmLocation& tPos, lmTextStyle* pStyle,
+                const wxString& sLanguage = _T("Unknown") );
+    virtual ~lmBasicText();
 
     //access to properties
     inline void SetText(wxString& text) { m_sText = text; }
@@ -60,24 +72,13 @@ public:
     inline void SetLanguage(wxString sLanguage) { m_sLanguage = sLanguage; }
     inline wxString& GetLanguage() { return m_sLanguage; }
 
-    void SetFontInfo(lmFontInfo& tFont);
-    lmFontInfo GetFontInfo();
-
-    inline void SetFontName(wxString& sFontName) { m_sFontName = sFontName; }
-    inline wxString& GetFontName() { return m_sFontName; }
-
-    inline void SetFontSize(int nFontSize) { m_nFontSize = nFontSize; }
-    inline int GetFontSize() { return m_nFontSize; }
-
-    inline void SetFontAttibutes(bool fBold, bool fItalic, wxColour color)
-                {
-                    m_fBold = fBold;
-                    m_fItalic = fItalic;
-                    m_color = color;
-                }
-    inline bool IsBold() { return m_fBold; }
-    inline bool IsItalic() { return m_fItalic; }
-    inline wxColour GetColour() { return m_color; }
+    inline lmTextStyle* GetStyle() { return m_pStyle; }
+    inline lmFontInfo GetFontInfo() { return m_pStyle->tFont; }
+    inline wxString& GetFontName() { return m_pStyle->tFont.sFontName; }
+    inline int GetFontSize() { return m_pStyle->tFont.nFontSize; }
+    inline bool IsBold() { return m_pStyle->tFont.nFontWeight == wxFONTWEIGHT_BOLD; }
+    inline bool IsItalic() { return m_pStyle->tFont.nFontStyle == wxFONTSTYLE_ITALIC; }
+    inline wxColour GetColour() { return m_pStyle->nColor; }
 
     inline void SetLocation(lmLocation tPos) { m_tTextPos = tPos; }
     inline lmLocation GetLocation() { return m_tTextPos; }
@@ -92,23 +93,24 @@ protected:
     lmLocation      m_tTextPos;
 
     // font
-    wxString        m_sFontName;
-    int             m_nFontSize;    //in points
-    bool            m_fBold;
-    bool            m_fItalic;
-	wxColour        m_color;
+    lmTextStyle*    m_pStyle;
 
 };
 
-class lmShapeText;
-class lmBox;
 
+//------------------------------------------------------------------------------------
 
 class lmScoreText :  public lmAuxObj, public lmBasicText
 {
 public:
-    lmScoreText(wxString& sTitle, lmEAlignment nAlign, lmLocation& tPos, lmFontInfo& tFont,
-                bool fTitle=false, wxColour colorC = *wxBLACK);
+    //simple text constructor
+    lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
+                lmTextStyle* pStyle, bool fTitle=false);
+
+    //block text constructor
+    lmScoreText(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
+                lmEVAlign nVAlign, lmLocation& tPos, lmTextStyle* pStyle,
+                bool fTitle=false);
 
     ~lmScoreText() {}
 
@@ -125,24 +127,28 @@ public:
     wxString SourceXML(int nIndent);
 
     //properties
-    inline lmEAlignment GetAlignment() { return m_nAlignment; }
-    inline void SetAlignment(lmEAlignment nAlignment) { m_nAlignment = nAlignment; }
+    inline lmEHAlign GetAlignment() { return m_nHAlign; }
+    inline void SetAlignment(lmEHAlign nHAlign) { m_nHAlign = nHAlign; }
 
     //layout
 	lmShapeText* CreateShape(lmPaper* pPaper, lmUPoint uPos);
 
     //edit commands
-    void Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEAlignment nAlign,
-                        lmLocation tPos, lmFontInfo& tFont, wxColour colorC);
-    void UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEAlignment nAlign,
-                            lmLocation tPos, lmFontInfo& tFont, wxColour colorC);
+    void Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEHAlign nHAlign,
+                        lmLocation tPos, lmTextStyle* pTS);
+    void UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEHAlign nHAlign,
+                            lmLocation tPos, lmTextStyle* pTS);
 
 
 private:
-    lmEAlignment    m_nAlignment;
-
+    lmEBlockAlign   m_nBlockAlign;
+    lmEHAlign       m_nHAlign;
+    lmEVAlign       m_nVAlign;
 
 };
+
+
+//------------------------------------------------------------------------------------
 
 //global functions defined in this module
 extern lmLUnits PointsToLUnits(int nPoints);

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -480,8 +479,7 @@ public:
 
     lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
                     lmScoreDocument *pDoc, lmScoreText* pST, wxString& sText,
-                    lmEAlignment nAlign, lmLocation tPos, lmFontInfo& tFont,
-                    wxColour colorC);
+                    lmEHAlign nAlign, lmLocation tPos, lmTextStyle* pStyle);
     ~lmCmdChangeText();
 
     //implementation of pure virtual methods in base class
@@ -491,13 +489,34 @@ public:
 protected:
     lmScoreText*        m_pST;
     wxString            m_sText;
-    lmEAlignment        m_nAlign; 
+    lmEHAlign        m_nAlign; 
     lmLocation          m_tPos;
-    lmFontInfo          m_tFont;
-    wxColour            m_colorC;
+    lmTextStyle*        m_pStyle;
 
 };
 
+
+// Change page margin command
+//------------------------------------------------------------------------------------
+class lmCmdChangePageMargin: public lmScoreCommand
+{
+public:
+    lmCmdChangePageMargin(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO,
+					      int nIdx, lmLUnits uPos);
+    ~lmCmdChangePageMargin() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    void ChangeMargin(lmLUnits uPos);
+
+    lmScore*        m_pScore;
+	lmLUnits        m_uNewPos;
+	lmLUnits        m_uOldPos;
+    int             m_nIdx;
+};
 
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

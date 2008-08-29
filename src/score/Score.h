@@ -148,7 +148,7 @@ class lmObjOptions;
 class lmBox;
 class lmBoxScore;
 class lmScoreView;
-
+class lmHandler;
 
 #include "StaffObj.h"
 
@@ -176,6 +176,13 @@ class lmScoreView;
 // TODO: Replace for lmScore/lmNote member funtions
 extern lmNoteRest* g_pLastNoteRest;
 extern lmBeam* g_pCurBeam;
+
+
+
+
+//=======================================================================================
+// class lmScoreCursor
+//=======================================================================================
 
 class lmScoreCursor
 {
@@ -222,6 +229,115 @@ private:
 
 };
 
+
+//=======================================================================================
+// lmStylesCollection: helper class with info about available styles
+//=======================================================================================
+
+class lmStylesCollection
+{
+public:
+    lmStylesCollection();
+    ~lmStylesCollection();
+    
+    //info
+    inline int NumObjects() { return (int)m_aTextStyles.size(); }
+    inline bool IsEmpty() const { return m_aTextStyles.size()==0; }
+
+    //management
+    lmTextStyle* AddStyle(const wxString& sName, lmFontInfo& tFontData, wxColour nColor);
+    void RemoveStyle(lmTextStyle* pStyle);
+
+    //access 
+    lmTextStyle* GetStyleInfo(const wxString& sStyleName);
+    lmTextStyle* GetStyleName(lmFontInfo& tFontData, wxColour nColor);
+    void StyleInUse(bool fInUse);
+    lmTextStyle* GetFirstStyle();
+    lmTextStyle* GetNextStyle();
+
+    //other
+    wxString SourceLDP(int nIndent);
+
+
+protected:
+    wxString SourceLDP(int nIndent, lmTextStyle* pStyle);
+
+	std::list<lmTextStyle*>     m_aTextStyles;		//list of defined styles
+    std::list<lmTextStyle*>::iterator    m_it;      //for GetFirst(), GetNext() methods
+
+};
+
+
+
+//=======================================================================================
+// helper class lmPageInfo: page size, margins, orientation, etc.
+//=======================================================================================
+
+class lmPageInfo
+{
+public:
+    //constructor: all data in milimeters
+    lmPageInfo(int nLeftMargin = 20, int nRightMargin = 15, int nTopMargin = 20,
+               int nBottomMargin = 20, int nBindingMargin = 0,
+               wxSize nPageSize = wxSize(210, 297), bool fPortrait = true );            
+    ~lmPageInfo() {}
+
+    //change settings
+    inline void SetTopMargin(lmLUnits uValue) { m_uTopMargin = uValue; }
+    inline void SetBottomMargin(lmLUnits uValue) { m_uBottomMargin = uValue; }
+    inline void SetLeftMargin(lmLUnits uValue) { m_uLeftMargin = uValue; }
+    inline void SetRightMargin(lmLUnits uValue) { m_uRightMargin = uValue; }
+    inline void SetBindingMargin(lmLUnits uValue) { m_uBindingMargin = uValue; }
+    inline void SetPageSize(lmLUnits uWidth, lmLUnits uHeight)
+                    { m_uPageSize.SetWidth(uWidth); m_uPageSize.SetHeight(uHeight); }
+    void SetPageSizeMillimeters(wxSize nSize);
+    inline void SetOrientation(bool fPortrait) { m_fPortrait = fPortrait; }
+    inline void SetNewSection(bool fNewSection) { m_fNewSection = fNewSection; }
+
+    // Access
+
+    lmLUnits TopMargin() { return m_uTopMargin; }
+    lmLUnits BottomMargin() { return m_uBottomMargin; }
+    lmLUnits LeftMargin(int nNumPage) {
+        return (nNumPage % 2) ? m_uLeftMargin + m_uBindingMargin : m_uLeftMargin ;
+    }
+    lmLUnits RightMargin(int nNumPage) {
+        return (nNumPage % 2) ? m_uRightMargin : m_uRightMargin + m_uBindingMargin ;
+    }
+    inline lmLUnits PageWidth() { return (m_fPortrait ? m_uPageSize.Width() : m_uPageSize.Height()); }
+    inline lmLUnits PageHeight() { return (m_fPortrait ? m_uPageSize.Height() : m_uPageSize.Width()); }
+    inline lmLUnits GetUsableHeight() { return m_uPageSize.GetHeight() - m_uTopMargin - m_uBottomMargin; }
+
+
+
+private:
+    //margins, all in logical units
+    lmLUnits        m_uLeftMargin;
+    lmLUnits        m_uRightMargin;
+    lmLUnits        m_uTopMargin;
+    lmLUnits        m_uBottomMargin;
+    lmLUnits        m_uBindingMargin;
+
+    //paper size, in logical units
+    lmUSize         m_uPageSize; 
+    bool            m_fPortrait;
+    bool            m_fNewSection;
+};
+
+
+
+//=======================================================================================
+// class lmScore
+//=======================================================================================
+
+// to identify handlers
+enum {
+    lmMARGIN_TOP = 0,
+    lmMARGIN_BOTTOM,
+    lmMARGIN_LEFT,
+    lmMARGIN_RIGHT,
+};
+
 class lmScore : public lmScoreObj
 {
 public:
@@ -235,6 +351,7 @@ public:
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
 	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Score; }
+    inline lmScore* GetScore() { return this; }
 
 
 	//---- specific methods of this class ------------------------
@@ -283,8 +400,8 @@ public:
 
 
     // titles related methods
-    lmScoreText* AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
-                  wxString sFontName, int nFontSize, lmETextStyle nStyle);
+    lmScoreText* AddTitle(wxString sTitle, lmEHAlign nAlign, lmLocation pos,
+                          lmTextStyle* pStyle);
 	void LayoutTitles(lmBox* pBox, lmPaper *pPaper);
 
     // identification
@@ -325,12 +442,48 @@ public:
     lmScoreCursor* SetNewCursorState(lmVCursorState* pState);
 
     //paper size and margins
-    //lmEPageScope nScope = lmSCOPE_PAGE
-    void SetPageInfo(lmPageInfo* pPageInfo);
-    inline lmPageInfo* GetPageInfo() { return m_pPageInfo; }
 
+        //change settings of current page
+    inline void SetPageTopMargin(lmLUnits uValue) { m_pPageInfo->SetTopMargin(uValue); }
+    inline void SetPageLeftMargin(lmLUnits uValue) { m_pPageInfo->SetLeftMargin(uValue); }
+    inline void SetPageRightMargin(lmLUnits uValue) { m_pPageInfo->SetRightMargin(uValue); }
+    inline void SetPageBottomMargin(lmLUnits uValue) { m_pPageInfo->SetBottomMargin(uValue); }
+    inline void SetPageBindingMargin(lmLUnits uValue) { m_pPageInfo->SetBindingMargin(uValue); }
 
+    inline void SetPageSize(lmLUnits uWidth, lmLUnits uHeight) { m_pPageInfo->SetPageSize(uWidth, uHeight); }
+    inline void SetPageSizeMillimeters(wxSize nSize)
+                            { m_pPageInfo->SetPageSizeMillimeters(nSize); }
 
+    inline void SetPageOrientation(bool fPortrait) { m_pPageInfo->SetOrientation(fPortrait); }
+    inline void SetPageNewSection(bool fNewSection) { m_pPageInfo->SetNewSection(fNewSection); }
+
+    void SetNumPage(int nNumPage);
+
+        // access to size and margings
+    inline lmLUnits GetPageTopMargin() { return m_pPageInfo->TopMargin(); }
+    inline lmLUnits GetPageLeftMargin() { return m_pPageInfo->LeftMargin(m_nNumPage); }
+    inline lmLUnits GetPageRightMargin() { return m_pPageInfo->RightMargin(m_nNumPage); }
+    inline lmUSize GetPaperSize() { return lmUSize(m_pPageInfo->PageWidth(), m_pPageInfo->PageHeight()); }
+    inline lmLUnits GetMaximumY() {return m_pPageInfo->GetUsableHeight() + m_pPageInfo->TopMargin(); }
+
+    lmLUnits GetRightMarginXPos();
+    lmLUnits GetLeftMarginXPos();
+    //end of methods using lmPaper ------------------------------------------------------
+
+    //text styles
+    inline lmTextStyle* GetStyleInfo(const wxString& sStyleName)
+                            { return m_TextStyles.GetStyleInfo(sStyleName); }
+    inline lmTextStyle* GetStyleName(lmFontInfo& tFontData, wxColour nColor = *wxBLACK)
+                            { return m_TextStyles.GetStyleName(tFontData, nColor); }
+    inline lmTextStyle* GetFirstStyle() { return m_TextStyles.GetFirstStyle(); }
+    inline lmTextStyle* GetNextStyle() { return m_TextStyles.GetNextStyle(); }
+    inline lmTextStyle* AddStyle(const wxString& sName, lmFontInfo& tFont, wxColour nColor)
+                            { return m_TextStyles.AddStyle(sName, tFont, nColor); }
+    inline void RemoveStyle(lmTextStyle* pStyle)
+                            { m_TextStyles.RemoveStyle(pStyle); }
+
+    //handlers
+    lmUPoint CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, lmUPoint& uPos);
 
 private:
     friend class lmScoreCursor;
@@ -364,13 +517,17 @@ private:
     ERenderizationType      m_nRenderizationType;
 	bool				    m_fModified;            //to force a repaint
 
-    //paper size and margins
-    lmPageInfo*             m_pPageInfo;
+    //page size and margins information
+    lmPageInfo*             m_pPageInfo;    //for current page 
+    int                     m_nNumPage;     //number of current page
+	std::list<lmPageInfo*>  m_PagesInfo;    //info for each score page
+
 
     //other variables
 	int					    m_nCurNode;     //last returned instrument node
     long				    m_nID;          //unique ID for this score
     wxString			    m_sScoreName;   //for user identification
+	lmStylesCollection      m_TextStyles;   //list of defined styles
 
 	//temporary data used for edition/renderization
 	std::list<int>          m_aMeasureModified;		//list of measures modified

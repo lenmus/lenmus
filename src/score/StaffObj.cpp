@@ -654,6 +654,11 @@ lmStaffObj::~lmStaffObj()
 {
 }
 
+lmScore* lmStaffObj::GetScore()
+{ 
+    return m_pVStaff->GetScore(); 
+}
+
 void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     PrepareToCreateShapes();

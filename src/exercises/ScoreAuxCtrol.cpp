@@ -76,8 +76,6 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
     m_sMsg2 = wxEmptyString;
     m_fDisplayMessage = false;
 
-    m_Paper.ForceDefaultPageInfo(true);
-
     SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                lmToLogicalUnits(10, lmMILLIMETERS),
                lmToLogicalUnits(10, lmMILLIMETERS));    //right=1cm, left=1cm, top=1cm
@@ -142,14 +140,17 @@ void lmScoreAuxCtrol::ResizePaper()
     dc.SetUserScale( m_rScale, m_rScale );
     lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(xPixels);
     lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(yPixels);
-    m_Paper.SetPageSize(xLU, yLU);
 
     //save new DC scaling factor to be used later for message positioning
     m_yScalingFactor =(float)yPixels / (float)yLU;
 
-    m_Paper.SetPageTopMargin(m_nTopMargin);
-    m_Paper.SetPageLeftMargin(m_nLeftMargin);
-    m_Paper.SetPageRightMargin(m_nRightMargin);
+    if (m_pScore)
+    {
+        m_pScore->SetPageSize(xLU, yLU);
+        m_pScore->SetPageTopMargin(m_nTopMargin);
+        m_pScore->SetPageLeftMargin(m_nLeftMargin);
+        m_pScore->SetPageRightMargin(m_nRightMargin);
+    }
 
     if (g_pLogger->IsAllowedTraceMask(_T("lmScoreAuxCtrol"))) GetPixelsPerLU();
     g_pLogger->LogTrace(_T("lmScoreAuxCtrol"),

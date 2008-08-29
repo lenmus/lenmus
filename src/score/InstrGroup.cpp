@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -34,15 +33,11 @@
 #include "wx/wx.h"
 #endif
 
-//#include <list>
-//#include <vector>
-//#include <algorithm>
-
 #include "InstrGroup.h"
 #include "Score.h"
-//#include "UndoRedo.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+#include "../graphic/ShapeText.h"
 #include "../graphic/ShapeBracket.h"
 #include "../app/Preferences.h"
 
@@ -223,7 +218,8 @@ void lmInstrGroup::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText*
     //add shape for the name/abbreviation
     if (pName)
     {
-        lmUPoint uPos(pPaper->GetPageLeftMargin(), yTop);
+        lmScore* pScore = pBox->GetScoreOwner()->GetScore();
+        lmUPoint uPos(pScore->GetPageLeftMargin(), yTop);
         lmShape* pShape = pName->CreateShape(pPaper, uPos);
         pShape->Shift(0.0f, ((yBottom - yTop) - pShape->GetHeight())/2.0f );
         pBox->AddShape( pShape );

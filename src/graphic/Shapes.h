@@ -47,6 +47,7 @@ class lmPaper;
 
 
 
+//------------------------------------------------------------------------------------
 
 class lmShapeLine : public lmSimpleShape
 {
@@ -74,6 +75,37 @@ protected:
 	lmELineEdges	m_nEdge;
 
 };
+
+//------------------------------------------------------------------------------------
+
+class lmShapeRectangle : public lmSimpleShape
+{
+public:
+    lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits yTop,
+                     lmLUnits xRight, lmLUnits yBottom, lmLUnits uWidth,
+                     wxString sName = _T("Rectangle"),
+				     bool fDraggable = true, bool fSelectable = true, 
+                     wxColour color = *wxBLACK, bool fVisible = true);
+    ~lmShapeRectangle() {}
+
+    //implementation of virtual methods from base class
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    wxString Dump(int nIndent);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
+
+    //settings
+    void SetCornerRadius(lmLUnits uRadius);
+
+
+protected:
+    lmLUnits        m_xLeft, m_yTop;
+    lmLUnits        m_xRight, m_yBottom;
+    lmLUnits        m_uWidth;
+    lmLUnits        m_uCornerRadius;
+
+};
+
+//------------------------------------------------------------------------------------
 
 //represents a glyph from LenMus font
 class lmShapeGlyph : public lmSimpleShape
@@ -105,33 +137,7 @@ protected:
 
 };
 
-
-//represents a text with the same font
-class lmShapeText : public lmSimpleShape
-{
-public:
-    lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
-                lmUPoint offset, wxString sName=_T("ShapeText"),
-				bool fDraggable = false, wxColour color = *wxBLACK);
-    ~lmShapeText() {}
-
-    //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
-    wxString Dump(int nIndent);
-    void Shift(lmLUnits xIncr, lmLUnits yIncr);
-	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
-
-    //specific methods
-    void SetFont(wxFont *pFont);
-    wxString* GetText() { return &m_sText; }
-
-
-private:
-    wxString    m_sText;
-    wxFont*     m_pFont;
-    lmUPoint    m_uPos;        // text position (absolute)
-
-};
+//------------------------------------------------------------------------------------
 
 class lmShapeStem : public lmShapeLine
 {
@@ -153,6 +159,8 @@ private:
 
 };
 
+//------------------------------------------------------------------------------------
+
 class lmShapeClef : public lmShapeGlyph
 {
 public:
@@ -168,6 +176,8 @@ public:
     void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
 
 };
+
+//------------------------------------------------------------------------------------
 
 class lmShapeInvisible : public lmSimpleShape
 {

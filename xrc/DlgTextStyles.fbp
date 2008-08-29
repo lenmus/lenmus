@@ -8,7 +8,7 @@
         <property name="encoding">UTF-8</property>
         <property name="event_generation">connect</property>
         <property name="file"></property>
-        <property name="first_id">1000</property>
+        <property name="first_id">2100</property>
         <property name="help_provider">none</property>
         <property name="internationalize">0</property>
         <property name="name">MyProject1</property>
@@ -72,7 +72,7 @@
             <event name="OnUpdateUI"></event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
-                <property name="name">bSizer1</property>
+                <property name="name">pMainSizer</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
                 <object class="sizeritem" expanded="1">
@@ -81,7 +81,7 @@
                     <property name="proportion">1</property>
                     <object class="wxBoxSizer" expanded="1">
                         <property name="minimum_size"></property>
-                        <property name="name">bSizer11</property>
+                        <property name="name">pMainCtrolsSizer</property>
                         <property name="orient">wxVERTICAL</property>
                         <property name="permission">none</property>
                         <object class="sizeritem" expanded="1">
@@ -90,7 +90,7 @@
                             <property name="proportion">1</property>
                             <object class="wxBoxSizer" expanded="1">
                                 <property name="minimum_size"></property>
-                                <property name="name">bSizer2</property>
+                                <property name="name">pGridSizer</property>
                                 <property name="orient">wxVERTICAL</property>
                                 <property name="permission">none</property>
                                 <object class="sizeritem" expanded="1">
@@ -263,7 +263,7 @@
                             <property name="proportion">0</property>
                             <object class="wxBoxSizer" expanded="1">
                                 <property name="minimum_size"></property>
-                                <property name="name">bSizer10</property>
+                                <property name="name">pActionsSizer</property>
                                 <property name="orient">wxHORIZONTAL</property>
                                 <property name="permission">none</property>
                                 <object class="sizeritem" expanded="1">
@@ -278,12 +278,12 @@
                                         <property name="fg"></property>
                                         <property name="font"></property>
                                         <property name="hidden">0</property>
-                                        <property name="id">wxID_ANY</property>
+                                        <property name="id">lmID_SHOW</property>
                                         <property name="label"></property>
                                         <property name="majorDimension">1</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">m_radioBox1</property>
+                                        <property name="name">m_pRadShow</property>
                                         <property name="permission">protected</property>
                                         <property name="pos"></property>
                                         <property name="selection">2</property>
@@ -328,7 +328,7 @@
                                         <property name="cols">2</property>
                                         <property name="hgap">0</property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">gSizer1</property>
+                                        <property name="name">m_pGrid</property>
                                         <property name="permission">none</property>
                                         <property name="rows">2</property>
                                         <property name="vgap">0</property>
@@ -344,11 +344,11 @@
                                                 <property name="fg"></property>
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
-                                                <property name="id">wxID_ANY</property>
+                                                <property name="id">lmID_ADD_NEW</property>
                                                 <property name="label">Add new</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
-                                                <property name="name">m_button11</property>
+                                                <property name="name">m_pBtAddNew</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
                                                 <property name="size"></property>
@@ -396,11 +396,11 @@
                                                 <property name="fg"></property>
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
-                                                <property name="id">wxID_ANY</property>
+                                                <property name="id">lmID_REMOVE</property>
                                                 <property name="label">Remove selected</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
-                                                <property name="name">m_button21</property>
+                                                <property name="name">m_pBtRemove</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
                                                 <property name="size"></property>
@@ -448,11 +448,11 @@
                                                 <property name="fg"></property>
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
-                                                <property name="id">wxID_ANY</property>
+                                                <property name="id">lmID_ADD_DEFAULT</property>
                                                 <property name="label">Add default set</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
-                                                <property name="name">m_button211</property>
+                                                <property name="name">m_pBtAddDefault</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
                                                 <property name="size"></property>
@@ -500,11 +500,11 @@
                                                 <property name="fg"></property>
                                                 <property name="font"></property>
                                                 <property name="hidden">0</property>
-                                                <property name="id">wxID_ANY</property>
+                                                <property name="id">lmID_EDIT</property>
                                                 <property name="label">Edit selected</property>
                                                 <property name="maximum_size"></property>
                                                 <property name="minimum_size"></property>
-                                                <property name="name">m_button6</property>
+                                                <property name="name">m_pBtEdit</property>
                                                 <property name="permission">protected</property>
                                                 <property name="pos"></property>
                                                 <property name="size"></property>
@@ -552,7 +552,7 @@
                     <property name="proportion">0</property>
                     <object class="wxBoxSizer" expanded="1">
                         <property name="minimum_size"></property>
-                        <property name="name">bSizer12</property>
+                        <property name="name">pButtonsSizer</property>
                         <property name="orient">wxHORIZONTAL</property>
                         <property name="permission">none</property>
                         <object class="sizeritem" expanded="1">
@@ -581,7 +581,7 @@
                                 <property name="label">Accept</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_button3</property>
+                                <property name="name">m_pBtAccept</property>
                                 <property name="permission">protected</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
@@ -643,7 +643,7 @@
                                 <property name="label">Cancel</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_button4</property>
+                                <property name="name">m_pBtCancel</property>
                                 <property name="permission">protected</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>

@@ -66,6 +66,8 @@ public:
     lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int stride=0);
     ~lmAggDrawer();
 
+    bool IsDirectDrawer() { return false; }
+
     //access to image
     wxImage& GetImageBuffer() { return m_buffer; }
 

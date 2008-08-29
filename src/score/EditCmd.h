@@ -320,8 +320,8 @@ class lmECmdChangeText : public lmEditCmd
 {
 public:
     lmECmdChangeText(lmScoreText* pST, lmUndoItem* pUndoItem, 
-                     wxString& sText, lmEAlignment nAlign, lmLocation tPos, 
-                     lmFontInfo& tFont, wxColour colorC);
+                     wxString& sText, lmEHAlign nAlign, lmLocation tPos, 
+                     lmTextStyle* pStyle);
     ~lmECmdChangeText() {}
 
     void RollBack(lmUndoItem* pUndoItem);
@@ -329,10 +329,9 @@ public:
 
 protected:
     wxString        m_sText;
-    lmEAlignment    m_nAlign;
+    lmEHAlign    m_nAlign;
     lmLocation      m_tPos;
-    lmFontInfo      m_tFont;
-	wxColour        m_color;
+    lmTextStyle*    m_pStyle;
 };
 
 

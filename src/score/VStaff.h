@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -53,7 +52,7 @@ class lmUndoItem;
 //lmEAccidentals
 //lmEPitchType
 //lmEStemType
-//lmEAlignment
+//lmEHAlign
 //ETraversingOrder
 
 
@@ -74,6 +73,7 @@ public:
     lmTenths LogicalToTenths(lmLUnits uUnits);
 
 	inline lmEScoreObjType GetScoreObjType() { return lmSOT_VStaff; }
+    inline lmScore* GetScore() { return m_pScore; }
 
 
 	//---- specific methods of this class ------------------------
@@ -131,8 +131,10 @@ public:
 
     lmStaffObj* AddAnchorObj();
 
-    lmScoreText* AddText(wxString& sText, lmEAlignment nAlign,
+    lmScoreText* AddText(wxString& sText, lmEHAlign nAlign,
                          lmLocation& tPos, lmFontInfo& oFontData, bool fHasWidth);
+    lmScoreText* AddText(wxString& sText, lmEHAlign nAlign,
+                         lmLocation& tPos, lmTextStyle* pStyle, bool fHasWidth);
 
 	//Edition commands
 
@@ -283,7 +285,6 @@ public:
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
 	inline lmInstrument* GetOwnerInstrument() const { return m_pInstrument; }
-    inline lmScore* GetScore() { return m_pScore; }
 
     //cursor management
 	inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }

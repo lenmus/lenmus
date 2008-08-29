@@ -162,7 +162,6 @@ extern bool g_fShowDebugLinks;          // in TheApp.cpp
 extern bool g_fUseAntiAliasing;         // in TheApp.cpp
 extern bool g_fBorderOnScores;          // in TheApp.cpp
 
-
 // IDs for menus and controls
 // Appart of these, there are more definitions in MainFrame.h
 enum
@@ -2501,14 +2500,18 @@ void lmMainFrame::DumpScore(lmScore* pScore)
 
 }
 
-void lmMainFrame::OnViewPageMargins(wxCommandEvent& WXUNUSED(event))
+void lmMainFrame::OnViewPageMargins(wxCommandEvent& event)
 {
+    g_fShowMargins = event.IsChecked();
+    g_pTheApp->UpdateCurrentDocViews();
 }
 
 
-void lmMainFrame::OnViewWelcomePage(wxCommandEvent& WXUNUSED(event))
+void lmMainFrame::OnViewWelcomePage(wxCommandEvent& event)
 {
+    WXUNUSED(event)
     ShowWelcomeWindow();
+    wxMessageBox(_T("The score editor is yet in preliminar version. Many features are missing"));
 }
 
 void lmMainFrame::OnViewWelcomePageUI(wxUpdateUIEvent &event)

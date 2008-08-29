@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -45,12 +44,13 @@
 #include "wx/debug.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+#include "../graphic/ShapeText.h"
 #include "../graphic/ShapeBracket.h"
 #include "../app/Preferences.h"
 
 
 //Global variables used as default initializators
-lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, lmTEXT_BOLD };
+lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD };
 
 
 //=======================================================================================
@@ -66,12 +66,18 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
     lmScoreText* pAbbreviation = (lmScoreText*)NULL;
 
     if (sName != _T(""))
-        pName = new lmScoreText(sName, lmALIGN_LEFT,
-                           g_tDefaultPos, g_tInstrumentDefaultFont);
+    { 
+        lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
+        wxASSERT(pStyle);
+        pName = new lmScoreText(sName, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
+    }
 
     if (sAbbrev != _T(""))
-        pAbbreviation = new lmScoreText(sAbbrev, lmALIGN_LEFT,
-                                   g_tDefaultPos, g_tInstrumentDefaultFont);
+    { 
+        lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
+        wxASSERT(pStyle);
+        pAbbreviation = new lmScoreText(sAbbrev, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
+    }
 
     //create the instrument
     Create(pScore, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
@@ -312,7 +318,7 @@ void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText*
     //add shape for the name/abbreviation
     if (pName)
     {
-        lmUPoint uPos(pPaper->GetPageLeftMargin(), uBox.y);
+        lmUPoint uPos(GetScore()->GetPageLeftMargin(), uBox.y);
         lmShape* pShape = pName->CreateShape(pPaper, uPos);
         pShape->Shift(0.0f, (pBox->GetHeight() - pShape->GetHeight())/2.0f );
         pBox->AddShape( pShape );

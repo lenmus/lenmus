@@ -56,7 +56,7 @@ static int m_IdCounter = 0;        //to assign unique IDs to GMObjects
 
 
 lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
-					   wxString sName, int nOwnerIdx)
+					   bool fSelectable, wxString sName, int nOwnerIdx)
 {
     m_nId = m_IdCounter++;      // give it an ID
     m_nType = nType;
@@ -69,6 +69,7 @@ lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
     m_uBoundsTop = lmUPoint(0.0f, 0.0f);
     m_uUserShift = lmUPoint(0.0f, 0.0f);
 	m_fSelected = false;
+    m_fSelectable = fSelectable;
 	m_fLeftDraggable = fDraggable;
 }
 
@@ -211,7 +212,7 @@ void lmGMObject::SetSelected(bool fValue)
 
 
 lmBox::lmBox(lmScoreObj* pOwner, lmEGMOType nType, wxString sName)
-	: lmGMObject(pOwner, nType, lmNO_DRAGGABLE, sName)
+	: lmGMObject(pOwner, nType, lmNO_DRAGGABLE, lmNO_SELECTABLE, sName)
 {
 }
 
@@ -265,7 +266,7 @@ void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
     std::vector<lmShape*>::iterator it;
     for(it = m_Shapes.begin(); it != m_Shapes.end(); ++it)
     {
-        if ((*it)->IsInRectangle(selRect))
+        if ((*it)->IsSelectable() && (*it)->IsInRectangle(selRect))
 			(*it)->SetSelected(fSelect);
     }
 }
@@ -279,13 +280,14 @@ void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
 
 
 lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName,
-                 bool fDraggable, wxColour color, bool fVisible)
-	: lmGMObject(pOwner, nType, fDraggable, sName, nOwnerIdx)
+                 bool fDraggable, bool fSelectable, wxColour color, bool fVisible)
+	: lmGMObject(pOwner, nType, fDraggable, fSelectable, sName, nOwnerIdx)
 {
 	m_pOwnerBox = (lmBox*)NULL;
 	m_color = color;
 	m_fVisible = fVisible;
 	m_pParentShape = (lmShape*)NULL;
+    m_pMouseCursorWindow = (wxWindow*)NULL;
 }
 
 lmShape::~lmShape()
@@ -296,6 +298,10 @@ lmShape::~lmShape()
 	{
 		delete *pItem;
     }
+
+    //restore mouse cursor if necessary
+    if (m_pMouseCursorWindow)
+        OnMouseOut(m_pMouseCursorWindow, lmUPoint(0.0f, 0.0f));
 }
 
 bool lmShape::Collision(lmShape* pShape)
@@ -333,6 +339,24 @@ void lmShape::Render(lmPaper* pPaper, wxColour colorC)
 
     if (g_fDrawBounds)
         DrawBounds(pPaper, *wxRED); //colorC);
+}
+
+void lmShape::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
+{
+    if (m_fSelected)
+    {
+	    pWindow->SetCursor( wxCursor(wxCURSOR_SIZING));
+        m_pMouseCursorWindow = pWindow;
+    }
+}
+
+void lmShape::OnMouseOut(wxWindow* pWindow, lmUPoint& pointL)
+{
+    if (m_pMouseCursorWindow)
+    {
+	    pWindow->SetCursor(*wxSTANDARD_CURSOR);
+        m_pMouseCursorWindow = (wxWindow*)NULL;
+    }
 }
 
 wxString lmShape::DumpSelRect()
@@ -401,8 +425,9 @@ lmBoxScore* lmShape::GetOwnerBoxScore()
 //========================================================================================
 
 lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmScoreObj* pOwner, int nOwnerIdx,
-                             wxString sName, bool fDraggable, wxColour color, bool fVisible)
-	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, color, fVisible)
+                             wxString sName, bool fDraggable, bool fSelectable, 
+                             wxColour color, bool fVisible)
+	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, fSelectable, color, fVisible)
 {
 }
 
@@ -437,7 +462,7 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxString sName,
                                    bool fDraggable,
                                    lmEGMOType nType, bool fVisible)
-	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, *wxBLACK, fVisible)
+	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, lmSELECTABLE, *wxBLACK, fVisible)
 {
     m_fGrouped = true;	//by default all constituent shapes are grouped
 	m_fDoingShift = false;

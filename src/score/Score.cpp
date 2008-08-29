@@ -45,15 +45,15 @@
 #include "UndoRedo.h"
 #include "InstrGroup.h"
 #include "../app/global.h"
-#include "../app/Page.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/Formatter4.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+#include "../graphic/ShapeText.h"
 #include "../app/ScoreView.h"
 #include "../graphic/BoxSystem.h"
 #include "../graphic/BoxScore.h"
-
+#include "../graphic/Handlers.h"
 
 // global unique variables used during score building
 lmNoteRest*    g_pLastNoteRest;
@@ -65,6 +65,40 @@ extern lmColors* g_pColors;
 
 //to give a unique ID to each score
 static long m_nCounterID = 0;
+
+
+
+//=======================================================================================
+// helper class lmPageInfo implementation
+//=======================================================================================
+
+lmPageInfo::lmPageInfo(int nLeftMargin, int nRightMargin, int nTopMargin,
+                       int nBottomMargin, int nBindingMargin, wxSize nPageSize,
+                       bool fPortrait)          
+{
+    //constructor: all data in milimeters
+    //default paper size: DIN A4 (210.0 x 297.0 mm)
+
+    m_uLeftMargin = lmToLogicalUnits(nLeftMargin, lmMILLIMETERS);
+    m_uRightMargin = lmToLogicalUnits(nRightMargin, lmMILLIMETERS);
+    m_uTopMargin = lmToLogicalUnits(nTopMargin, lmMILLIMETERS);
+    m_uBottomMargin = lmToLogicalUnits(nBottomMargin, lmMILLIMETERS);
+    m_uBindingMargin = lmToLogicalUnits(nBindingMargin, lmMILLIMETERS);
+
+    SetPageSizeMillimeters(nPageSize);
+
+    m_fPortrait = fPortrait;
+    m_fNewSection = true;
+}
+
+void lmPageInfo::SetPageSizeMillimeters(wxSize nSize)
+{
+    m_uPageSize.SetHeight(lmToLogicalUnits(nSize.GetHeight(), lmMILLIMETERS));        
+    m_uPageSize.SetWidth(lmToLogicalUnits(nSize.GetWidth(), lmMILLIMETERS));
+}
+
+
+
 
 //=======================================================================================
 // lmScoreCursor implementation
@@ -441,7 +475,9 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL), m_SCursor(this)
     m_pTenthsConverter = (lmVStaff*)NULL;
 
     //paper size and margins
-    m_pPageInfo = (lmPageInfo*)NULL;
+    m_pPageInfo = new lmPageInfo();     //default page size and margins
+    m_PagesInfo.push_back( m_pPageInfo );
+    m_nNumPage = 1;
 
     //TODO user options, not a constant
     m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
@@ -491,16 +527,32 @@ lmScore::~lmScore()
     //delete list of title indexes
     m_nTitles.clear();
 
-    //delete other objects
-    if (m_pPageInfo) delete m_pPageInfo;
+    //delete pages info 
+    std::list<lmPageInfo*>::iterator it;
+    for (it = m_PagesInfo.begin(); it != m_PagesInfo.end(); ++it)
+        delete *it;
 }
 
-void lmScore::SetPageInfo(lmPageInfo* pPageInfo)
+void lmScore::SetNumPage(int nNumPage)
 {
-    //Set default page information
+    //sets the current page number and page info
 
-    if (m_pPageInfo) delete m_pPageInfo;
-    m_pPageInfo = pPageInfo;
+    //if (nNumPage > 1)
+    {
+        //m_pPageInfo = new lmPageInfo();
+        //m_PagesInfo.push_back( m_pPageInfo );
+        m_nNumPage = nNumPage;
+    }
+}
+
+lmLUnits lmScore::GetLeftMarginXPos()
+{
+    return GetPageLeftMargin();
+}
+
+lmLUnits lmScore::GetRightMarginXPos()
+{
+    return GetPaperSize().GetWidth() - GetPageRightMargin();
 }
 
 lmLUnits lmScore::TenthsToLogical(lmTenths nTenths)
@@ -519,15 +571,10 @@ lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
     return (10.0f * uUnits)/uSpacing;
 }
 
-lmScoreText* lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
-                       wxString sFontName, int nFontSize, lmETextStyle nStyle)
+lmScoreText* lmScore::AddTitle(wxString sTitle, lmEHAlign nAlign, lmLocation tPos,
+                               lmTextStyle* pStyle)
 {
-    lmFontInfo tFont;
-    tFont.nFontSize = nFontSize;
-    tFont.nStyle = nStyle;
-    tFont.sFontName = sFontName;
-
-    lmScoreText* pTitle = new lmScoreText(sTitle, nAlign, tPos, tFont, true);  //true -> is title
+    lmScoreText* pTitle = new lmScoreText(sTitle, nAlign, tPos, pStyle, true);  //true -> is title
     m_nTitles.push_back( AttachAuxObj(pTitle) );
     return pTitle;
 }
@@ -631,9 +678,9 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 	m_uComputedPos.x = pPaper->GetCursorX();
 	m_uComputedPos.y = pPaper->GetCursorY();
 
-    //layout titles
-    LayoutTitles(pBox, pPaper);
-	m_uComputedPos.y += m_nHeadersHeight;
+ //   //layout titles
+ //   LayoutTitles(pBox, pPaper);
+	//m_uComputedPos.y += m_nHeadersHeight;
 
 
 	//layout other AuxObjs attached directly to the score
@@ -646,8 +693,10 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
             //skip titles. They have been already layouted
-	        std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
-            if (it == m_nTitles.end())
+            //////if (!((*m_pAuxObjs)[i]->GetAuxObjType() == eAXOT_Text) ||
+            //////    !((lmScoreText*)((*m_pAuxObjs)[i]))->IsTitle() )
+	        //std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
+         //   if (it == m_nTitles.end())
             {
 		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
 
@@ -675,7 +724,7 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
     //// if not yet measured and positioned do it
     //if (!pTitle->IsFixed())
     //{
-        lmEAlignment nAlign = pTitle->GetAlignment();
+        lmEHAlign nAlign = pTitle->GetAlignment();
         lmLUnits xInitPaperPos = pPaper->GetCursorX();
         lmLUnits xPaperPos = xInitPaperPos;
         lmLUnits yPaperPos = pPaper->GetCursorY();
@@ -702,14 +751,14 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
             xPaperPos += xPos;
         }
         else if (tPos.xType == lmLOCATION_USER_ABSOLUTE) {
-            xPaperPos = xPos + pPaper->GetLeftMarginXPos();
+            xPaperPos = xPos + GetLeftMarginXPos();
         }
 
         if (tPos.yType == lmLOCATION_USER_RELATIVE) {
             yPaperPos += yPos;
         }
         else if (tPos.yType == lmLOCATION_USER_ABSOLUTE) {
-            yPaperPos = yPos + pPaper->GetPageTopMargin();
+            yPaperPos = yPos + GetPageTopMargin();
         }
         pPaper->SetCursorY( yPaperPos );
 
@@ -722,35 +771,35 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
         nHeight = pShape->GetHeight();
 
         //Force new line if no space in current line
-        lmLUnits xSpace = pPaper->GetRightMarginXPos() - xInitPaperPos;
+        lmLUnits xSpace = GetRightMarginXPos() - xInitPaperPos;
         if (xSpace < nWidth) {
-            pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+            pPaper->SetCursorX(GetLeftMarginXPos());
             pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
         }
 
-        if (nAlign == lmALIGN_CENTER)
+        if (nAlign == lmHALIGN_CENTER)
         {
             // 'center' alignment forces to center the string in current line,
             // without taking into account the space consumed by any posible existing
             // left title. That is, 'center' always means 'centered in the line'
 
             if (tPos.xType == lmLOCATION_DEFAULT) {
-                xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
+                xPos = (GetRightMarginXPos() - GetLeftMarginXPos() - nWidth)/2;
                 //force new line if not enough space
                 if (pPaper->GetCursorX() > xPos)
                     pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
-                pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
+                pPaper->SetCursorX(GetLeftMarginXPos() + xPos);
             }
             else {
                 pPaper->SetCursorX( xPaperPos );
             }
         }
 
-        else if (nAlign == lmALIGN_LEFT)
+        else if (nAlign == lmHALIGN_LEFT)
         {
             //align left.
             if (tPos.xType == lmLOCATION_DEFAULT)
-                pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+                pPaper->SetCursorX( GetLeftMarginXPos() );
             else
                 pPaper->SetCursorX( xPaperPos );
         }
@@ -759,7 +808,7 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
         {
             //align right
             if (tPos.xType == lmLOCATION_DEFAULT)
-                pPaper->SetCursorX(pPaper->GetRightMarginXPos() - nWidth);
+                pPaper->SetCursorX(GetRightMarginXPos() - nWidth);
             else
                 pPaper->SetCursorX(xPaperPos - nWidth);
         }
@@ -776,8 +825,8 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
     nHeight = pShape->GetHeight();
 
     //if rigth aligned, advance new line
-    if (pTitle->GetAlignment() == lmALIGN_RIGHT) {
-        pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+    if (pTitle->GetAlignment() == lmHALIGN_RIGHT) {
+        pPaper->SetCursorX( GetLeftMarginXPos() );
         pPaper->IncrementCursorY( nHeight );
     }
 
@@ -865,6 +914,9 @@ wxString lmScore::SourceLDP(wxString sFilename)
 	sSource += _T(". Date: ");
 	sSource += (wxDateTime::Now()).Format(_T("%Y-%m-%d"));
     sSource += _T("\n");
+
+    //styles
+    sSource += m_TextStyles.SourceLDP(1);
 
     //titles and other attached auxobjs
     if (m_pAuxObjs)
@@ -1277,6 +1329,81 @@ lmScoreCursor* lmScore::SetNewCursorState(lmVCursorState* pState)
     return &m_SCursor;
 }
 
+lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, lmUPoint& uPos)
+{
+    //A handler owned by the score is being dragged. This method is invoked to
+    //apply any desired movement constrain on the handler.
+    //Returns the received point, modified to satisfy the constrains
+
+
+    //limit margins movement to have at least 30% of page size for rendering the score
+
+    lmUSize size = GetPaperSize();
+
+    lmLUnits uTopPos = GetPageTopMargin();
+    lmLUnits uBottomPos = GetMaximumY();
+    lmLUnits uLeftPos = GetPageLeftMargin();
+    lmLUnits uRightPos = GetRightMarginXPos();
+
+    if (nIdx == lmMARGIN_TOP)
+        uTopPos = uPos.y;
+
+    else if (nIdx == lmMARGIN_BOTTOM)
+        uBottomPos = uPos.y;
+
+    else if (nIdx == lmMARGIN_LEFT)
+        uLeftPos = uPos.x;
+
+    else    //right
+        uRightPos = uPos.x;
+
+    //check 30% of size
+    lmLUnits uMinimum;
+    bool fLimit = false;
+    if (nIdx == lmMARGIN_LEFT || nIdx == lmMARGIN_RIGHT)     //vertical margin
+    {
+        uMinimum = 0.3f * size.Width();
+        fLimit = (uRightPos - uLeftPos < uMinimum);
+    }
+    else    //horizontal margin
+    {
+        uMinimum = 0.3f * size.Height();
+        fLimit = (uBottomPos - uTopPos < uMinimum);
+    }
+
+
+    //proceed to clip
+    lmUPoint pos = uPos;
+    if (fLimit)
+    {
+        if (nIdx == lmMARGIN_TOP)
+            pos. y = uBottomPos - uMinimum;
+
+        else if (nIdx == lmMARGIN_BOTTOM)
+            pos.y = uTopPos + uMinimum;
+
+        else if (nIdx == lmMARGIN_LEFT)
+            pos.x = uRightPos - uMinimum;
+
+        else    //right
+            pos.x = uLeftPos + uMinimum;
+    }
+
+    if (pos.x < 0.0f)
+        pos.x = 0.0f;
+
+    if (pos.x > size.Width())
+        pos.x = size.Width();
+
+    if (pos.y < 0.0f)
+        pos.y = 0.0f;
+
+    if (pos.y > size.Height())
+        pos.y = size.Height();
+
+    return pos;
+}
+
 //-------------------------------------------------------------------------------------
 
 lmBoxScore* lmScore::Layout(lmPaper* pPaper)
@@ -1287,3 +1414,159 @@ lmBoxScore* lmScore::Layout(lmPaper* pPaper)
     return pGMObj;
 }
 
+
+
+//-----------------------------------------------------------------------------------
+// lmStylesCollection implementation
+//-----------------------------------------------------------------------------------
+
+lmStylesCollection::lmStylesCollection()
+{
+    //initialize iterator
+    m_it = m_aTextStyles.begin();
+}
+
+lmStylesCollection::~lmStylesCollection()
+{
+    std::list<lmTextStyle*>::iterator it;
+    for (it = m_aTextStyles.begin(); it != m_aTextStyles.end(); ++it)
+        delete *it;
+    m_aTextStyles.clear();
+}
+    
+lmTextStyle* lmStylesCollection::GetStyleInfo(const wxString& sStyleName)
+{
+    //Returns the TextStyle info for the requested style name
+
+    std::list<lmTextStyle*>::iterator it;
+    for (it = m_aTextStyles.begin(); it != m_aTextStyles.end(); ++it)
+    {
+        if ((*it)->sName == sStyleName)
+            return *it;
+    }
+
+    //Style not found
+    //if the requested style is one of the default styles, create and register it
+    if (sStyleName == _("Lyrics"))
+    {
+        lmFontInfo tLyricFont = { _T("Times New Roman"), 8, wxFONTSTYLE_ITALIC, wxFONTWEIGHT_NORMAL};
+        lmTextStyle* pTS = new lmTextStyle;
+        pTS->nColor = *wxBLACK;
+        pTS->tFont = tLyricFont;
+        pTS->sName = _("Lyrics");
+        m_aTextStyles.push_back( pTS );
+        return pTS;
+    }
+
+    return (lmTextStyle*)NULL;
+}
+
+lmTextStyle* lmStylesCollection::GetStyleName(lmFontInfo& tFontData, wxColour nColor)
+{
+    //This method tries to find a matching style for the received font and colour info.
+    //If not found, creates a new one and returns it.
+
+    std::list<lmTextStyle*>::iterator it;
+    for (it = m_aTextStyles.begin(); it != m_aTextStyles.end(); ++it)
+    {
+        if (nColor == (*it)->nColor &&
+            tFontData.nFontSize == (*it)->tFont.nFontSize &&
+            tFontData.nFontStyle == (*it)->tFont.nFontStyle &&
+            tFontData.nFontWeight == (*it)->tFont.nFontWeight &&
+            tFontData.sFontName == (*it)->tFont.sFontName )
+
+            return *it;
+    }
+
+    //not found. Create a new style
+    return AddStyle( wxString::Format(_("Style%d"), (int)m_aTextStyles.size()),
+                     tFontData, nColor );
+}
+
+lmTextStyle* lmStylesCollection::AddStyle(const wxString& sName, lmFontInfo& tFontData,
+                                          wxColour nColor)
+{
+    lmTextStyle* pNewTS = new lmTextStyle;
+    pNewTS->nColor = nColor;
+    pNewTS->tFont = tFontData;
+    pNewTS->sName = sName;
+
+    m_aTextStyles.push_back( pNewTS );
+    return pNewTS;
+}
+
+void lmStylesCollection::RemoveStyle(lmTextStyle* pStyle)
+{
+    std::list<lmTextStyle*>::iterator it;
+    it = std::find(m_aTextStyles.begin(), m_aTextStyles.end(), pStyle);
+    m_aTextStyles.erase(it);
+}
+
+void lmStylesCollection::StyleInUse(bool fInUse)
+{
+}
+
+lmTextStyle* lmStylesCollection::GetFirstStyle()
+{
+    m_it = m_aTextStyles.begin();
+    if (m_it == m_aTextStyles.end())
+        return (lmTextStyle*)NULL;
+
+    return *m_it;
+}
+
+lmTextStyle* lmStylesCollection::GetNextStyle()
+{
+    //advance to next one
+    ++m_it;
+    if (m_it != m_aTextStyles.end())
+        return *m_it;
+
+    //no more items
+    return (lmTextStyle*)NULL;
+}
+
+wxString lmStylesCollection::SourceLDP(int nIndent)
+{
+	wxString sSource = _T("");
+    std::list<lmTextStyle*>::iterator it;
+    for (it = m_aTextStyles.begin(); it != m_aTextStyles.end(); ++it)
+        sSource += SourceLDP(nIndent, *it);
+
+    return sSource;
+}
+
+wxString lmStylesCollection::SourceLDP(int nIndent, lmTextStyle* pStyle)
+{
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(defineStyle");
+
+    //style name
+    sSource += _T(" \"");
+    sSource += pStyle->sName;
+    sSource += _T("\"");
+
+    //font info
+    sSource += wxString::Format(_T(" (font \"%s\" %dpt"),
+                                pStyle->tFont.sFontName.c_str(), pStyle->tFont.nFontSize );
+    if (pStyle->tFont.nFontStyle == wxFONTSTYLE_ITALIC &&
+        pStyle->tFont.nFontWeight == wxFONTWEIGHT_BOLD)
+        sSource += _T(" bold-italic");
+    else if (pStyle->tFont.nFontWeight == wxFONTWEIGHT_BOLD)
+        sSource += _T(" bold");
+    else if(pStyle->tFont.nFontStyle == wxFONTSTYLE_ITALIC)
+        sSource += _T(" italic");
+    else
+        sSource += _T(" normal");
+    sSource += _T(")");
+
+    //color
+    sSource += _T(" (color ");
+    sSource += pStyle->nColor.GetAsString(wxC2S_HTML_SYNTAX);
+    sSource += _T(")");
+
+    //close element
+    sSource += _T(")\n");
+    return sSource;
+}

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -35,6 +34,8 @@
 
 #include "wx/scrolbar.h"
 
+#include <vector>
+
 #include "global.h"
 #include "TheApp.h"
 #include "ScoreDoc.h"
@@ -53,6 +54,7 @@
 #include "../graphic/BoxSliceInstr.h"
 #include "../graphic/BoxSliceVStaff.h"
 #include "../graphic/ShapeStaff.h"
+#include "../graphic/Handlers.h"
 
 
 // access to main frame and to status bar
@@ -76,6 +78,7 @@ enum
 // global variables. Used for debugging
 bool g_fDrawSelRect = false;    //draw selection rectangles around staff objects
 bool g_fDrawBounds = false;     //draw bounds rectangles around staff objects
+bool g_fShowMargins = false;    //draw margins in scores, so user can change them 
 
 
 // Dragging states
@@ -143,6 +146,9 @@ lmScoreView::lmScoreView()
 	m_vStartDrag.x = 0;
 	m_vStartDrag.y = 0;
 	m_fCheckTolerance = true;
+
+    //mouse over
+    m_pMouseOverGMO = (lmGMObject*)NULL;
 
     //options
     m_fRulers = false;
@@ -380,7 +386,9 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
     //m_Paper.SetDC(&mDC);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&mDC));
     lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
-    m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
+    if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper))
+        OnNewGraphicalModel();
+
     int nTotalPages = m_graphMngr.GetNumPages();
 
     *pMinPage = 1;
@@ -400,8 +408,10 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     // Reader) that presents the same behaviour that LenMus.
 
 
+    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+
     // Get paper size and real usable size of printer paper (in world units)
-    lmUSize uPaperSize = m_Paper.GetPaperSize();     // in lmLUnits
+    lmUSize uPaperSize = pScore->GetPaperSize();     // in lmLUnits
     int printerWidthMM, printerHeightMM;            // in millimeters
     pPrintout->GetPageSizeMM(&printerWidthMM, &printerHeightMM);
     lmLUnits uPrinterSizeX = lmToLogicalUnits(printerWidthMM, lmMILLIMETERS);
@@ -439,12 +449,12 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     pDC->SetUserScale(overallScale, overallScale);
     pDC->SetMapMode(lmDC_MODE);
 
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+    bool fNewModel;
     if (fPreview) {
         // use anti-aliasing
         wxMemoryDC memoryDC;
         m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-        m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        fNewModel = m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
         wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPage);
         wxASSERT(pPageBitmap && pPageBitmap->Ok());
         memoryDC.SelectObject(*pPageBitmap);
@@ -456,10 +466,23 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     else {
         //Direct renderization on printer DC
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-        m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        fNewModel = m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
         m_graphMngr.RenderScore(nPage, lmNO_BITMAPS);
     }
 
+    if (fNewModel)
+        OnNewGraphicalModel();
+}
+
+void lmScoreView::OnNewGraphicalModel()
+{
+    //Called when the graphical model has been recreated. This implies that any
+    //saved pointer to a lmObject is no longer valid.
+    //This method should deal with these pointer.
+
+	m_pDraggedGMO = (lmGMObject*)NULL;	    //object being dragged
+	m_pMouseOverGMO = (lmGMObject*)NULL;	//object on which mouse was flying over
+    wxLogMessage(_T("[lmScoreView::OnNewGraphicalModel]"));
 }
 
 void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
@@ -573,17 +596,17 @@ void lmScoreView::SetScale(double rScale)
         // set paper size and margins
         lmScore* pScore = m_pDoc->GetScore();
         if (pScore)
-        {
-        lmPageInfo* pPageInfo = pScore->GetPageInfo();
-        if (pPageInfo)
-            m_Paper.SetPageInfo(pPageInfo, 1);
-        }
+            pScore->SetNumPage(1);
 
         // compute new paper size in pixels
         wxClientDC dc(m_pCanvas);
         dc.SetMapMode(lmDC_MODE);
         dc.SetUserScale( m_rScale, m_rScale );
-        lmUSize uPageSize = m_Paper.GetPaperSize();
+        lmUSize uPageSize;
+        if (pScore)
+            uPageSize = pScore->GetPaperSize();
+        else
+            ; //posible problem?
         m_xPageSizeD = dc.LogicalToDeviceXRel((int)uPageSize.GetWidth());
         m_yPageSizeD = dc.LogicalToDeviceYRel((int)uPageSize.GetHeight());
 
@@ -930,8 +953,8 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     //filter out non-dragging mouse movements (moving without having a button pressed)
 	bool fDragging = event.Dragging();
-    if (nEventType==wxEVT_MOTION && !fDragging)
-        return;
+    //if (nEventType==wxEVT_MOTION && !fDragging)
+    //    return;
 
 	// get mouse point
     lmDPoint vCanvasPos(event.GetPosition());
@@ -953,7 +976,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
     pDC->SetMapMode(lmDC_MODE);
     pDC->SetUserScale( m_rScale, m_rScale );
 
-    //compute click point in logical units. Get also different origins and values
+    //compute mouse point in logical units. Get also different origins and values
     lmDPoint vPageOrg;     //the origin (pixels) of this page
     lmDPoint vPagePos;     //the position (pixels) referred to current page origin
     lmDPoint vCanvasOffset;      //offset from canvas origin
@@ -1026,6 +1049,34 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 		//TODO
 		return;
 	}
+
+
+    //check for mouse moving over objects
+    if (nEventType==wxEVT_MOTION && !fDragging)
+    {
+		//find the object pointed with the mouse
+		lmGMObject* pGMO = m_graphMngr.FindGMObjectAtPagePosition(m_nNumPage, uPagePos);
+		if (pGMO)
+        {
+            if (m_pMouseOverGMO)
+                m_pMouseOverGMO->OnMouseOut(m_pCanvas, uPagePos);
+            m_pMouseOverGMO = pGMO;
+            pGMO->OnMouseIn(m_pCanvas, uPagePos);
+        }
+        else
+        {
+	        //DBG --------------------------------------------------------------------------------
+	        wxString sMsg = _T("");
+	        m_pMainFrame->SetStatusBarMsg(sMsg);
+	        // END DBG ---------------------------------------------------------------------------
+            if (m_pMouseOverGMO)
+            {
+                m_pMouseOverGMO->OnMouseOut(m_pCanvas, uPagePos);
+                m_pMouseOverGMO = (lmGMObject*)NULL;
+            }
+        }
+        return;
+    }
 
 	// now check for dragging and mouse click events
 
@@ -1368,6 +1419,9 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 				else
 				{
 					//the object is not draggable: transfer message to canvas
+				    #ifdef __WXDEBUG__
+				    if(fDebugMode) g_pLogger->LogDebug(_T("object is not left draggable. Drag cancelled"));
+				    #endif
 					m_pDraggedGMO = (lmGMObject*)NULL;
                     m_fDraggingObject = false;
 					OnCanvasBeginDragLeft(m_vStartDrag, uPagePos, nKeysPressed);
@@ -1696,7 +1750,7 @@ int lmScoreView::CalcScrollInc(wxScrollEvent& event)
 void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRepaintOptions)
 {
     // This method is invoked by lmScoreCanvas::OnPaint to repaint a rectangle of the score
-    // The DC is not scrolled.
+    // The DC is a wxPaintDC and is neither scaled nor scrolled.
     // The rectangle to redraw is in pixels and unscrolled
 
 	// hide the cursor so repaint doesn't interfere
@@ -1733,8 +1787,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
     lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
     m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-    m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper,
-                                nRepaintOptions);
+    if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD,
+                                    m_rScale, &m_Paper, nRepaintOptions) )
+        OnNewGraphicalModel();
+
     int nTotalPages = m_graphMngr.GetNumPages();
 
     if (nTotalPages != m_numPages) {
@@ -1742,6 +1798,8 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
         m_numPages = nTotalPages;
         AdjustScrollbars();
     }
+
+    std::vector<bool> fModifiedPages( m_numPages, false );
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
     // To refer it to view origin it is necessary to add scrolling origin
@@ -1800,7 +1858,8 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
     // a visible one.
     bool fPreviousPageVisible = false;
     int nPag=0;
-    for (nPag=0; nPag < m_numPages; nPag++) {
+    for (nPag=0; nPag < m_numPages; nPag++)
+    {
         // Let's compute this page rectangle, referred to view origin (0,0)
         wxRect pageRect(m_xBorder,
                         m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap),
@@ -1817,13 +1876,14 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
         interRect.Intersect(drawRect);
 
         // if intersection is not null this page needs repainting.
-        if (interRect.width > 0 && interRect.height > 0) {
+        if (interRect.width > 0 && interRect.height > 0)
+        {
+            //mark page as repainted
+            fModifiedPages[nPag] = true;
 
             // ask paper for the offscreen bitmap of this page
             wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPag+1, nRepaintOptions);
             wxASSERT(pPageBitmap && pPageBitmap->Ok());
-//            memoryDC.SetUserScale(1.0, 1.0);
-//            memoryDC.SetMapMode(wxMM_TEXT);
             memoryDC.SelectObject(*pPageBitmap);
 
             // Intersection rectangle is referred to view origin. To refer it
@@ -1841,8 +1901,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
             //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
 
             // Copy the damaged rectangle onto the device DC
-//            pDC->SetUserScale(1.0, 1.0);
-//            pDC->SetMapMode(wxMM_TEXT);
             pDC->Blit(xCanvas, yCanvas, interRect.width, interRect.height,
                         &memoryDC, xBitmap, yBitmap);
 
@@ -1902,6 +1960,33 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
         if (fPreviousPageVisible) break;
     }
 
+    //paint handlers on modified pages
+    for (nPag=0; nPag < m_numPages; nPag++)
+    {
+        if (fModifiedPages[nPag])
+        {
+            lmBoxPage* pBP = m_graphMngr.GetBoxScore()->GetPage(nPag+1);
+
+            //compute this page rectangle, referred to view origin (0,0)
+            wxRect pageRect(m_xBorder,
+                            m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap),
+                            m_xPageSizeD,
+                            m_yPageSizeD);
+
+            //set a DirectDrawer
+            m_Paper.SetDrawer(new lmDirectDrawer(pDC));
+            pDC->SetMapMode(lmDC_MODE);
+            pDC->SetUserScale( m_rScale, m_rScale );
+
+            //set origin on page origin
+            pDC->SetDeviceOrigin(pageRect.x - canvasOffset.x,
+                                 pageRect.y - canvasOffset.y );
+
+            //draw the handlers
+            pBP->DrawHandlers(&m_Paper);
+        }
+    }
+
 	//Restore caret
     ShowCaret();
 
@@ -1909,25 +1994,24 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
     //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
     //pDC->SetPen(*wxCYAN_PEN);
     //pDC->DrawRectangle(repaintRect);
-
-
 }
 
 void lmScoreView::SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType)
 {
     //compute required screen size (pixels) for 1:1 renderization
+    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
     wxClientDC dc(m_pCanvas);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( 1.0, 1.0 );
-    lmUSize pageSize = m_Paper.GetPaperSize();
+    lmUSize pageSize = pScore->GetPaperSize();
     int paperWidth = dc.LogicalToDeviceXRel((int)pageSize.GetWidth());
     int paperHeight = dc.LogicalToDeviceYRel((int)pageSize.GetHeight());
 
     //Prepare the GraphicManager
     //m_Paper.SetDC(&dc);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&dc));
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
-    m_graphMngr.PrepareToRender(pScore, paperWidth, paperHeight, 1.0, &m_Paper);
+    if (m_graphMngr.PrepareToRender(pScore, paperWidth, paperHeight, 1.0, &m_Paper))
+        OnNewGraphicalModel();
 
     //Now proceed to export images
     m_graphMngr.ExportAsImage(sFilename, sExt, nImgType);
@@ -2324,40 +2408,55 @@ void lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint
 	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectBeginDragLeft()"));
 	#endif
 
-    // prepare the image to drag
-    if (m_pDragImage)
-		delete m_pDragImage;
-    wxBitmap* pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
-    if (!pBitmap)
-	{
-        wxLogMessage(_T("No drag image for object"));
-        m_nDragState = lmDRAG_NONE;
-        return;
-    }
-    m_pDragImage = new wxDragImage(*pBitmap);
-    delete pBitmap;
+    if (m_pDraggedGMO->IsHandler())
+    {
+        //((lmShapeMargin*)m_pDraggedGMO)->OnLeftBeginDrag();
 
-    // show drag image
-    bool fOK = m_pDragImage->BeginDrag(m_vDragHotSpot, m_pCanvas);
-    if (!fOK)
-	{
-        delete m_pDragImage;
-        m_pDragImage = (wxDragImage*) NULL;
-        m_nDragState = lmDRAG_NONE;
-
-    }
-	else
-	{
-        //drag image started OK. Move image to current cursor position
-        //and show it (was hidden until now)
+        //((lmShapeMargin*)m_pDraggedGMO)->OnLeftDrag();
         lmDPoint offset(vCanvasOffset.x + m_vDragHotSpot.x, vCanvasOffset.y + m_vDragHotSpot.y);
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-        lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift)
-							 + m_uHotSpotShift;
-        m_pDragImage->Show();
-		lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
-						  m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
-		m_pDragImage->Move(vNewPos);
+        pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
+        m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift);
+    }
+    else
+    {
+        // prepare the image to drag
+        if (m_pDragImage)
+		    delete m_pDragImage;
+        wxBitmap* pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
+        if (!pBitmap)
+	    {
+            wxLogMessage(_T("No drag image for object"));
+            m_nDragState = lmDRAG_NONE;
+            return;
+        }
+        m_pDragImage = new wxDragImage(*pBitmap);
+        delete pBitmap;
+
+        // show drag image
+        bool fOK = m_pDragImage->BeginDrag(m_vDragHotSpot, m_pCanvas);
+        if (!fOK)
+	    {
+            delete m_pDragImage;
+            m_pDragImage = (wxDragImage*) NULL;
+            m_nDragState = lmDRAG_NONE;
+
+        }
+	    else
+	    {
+            //drag image started OK. Move image to current cursor position
+            //and show it (was hidden until now)
+            lmDPoint offset(vCanvasOffset.x + m_vDragHotSpot.x, vCanvasOffset.y + m_vDragHotSpot.y);
+            m_Paper.SetDrawer(new lmDirectDrawer(pDC));
+            if (m_pDraggedGMO->IsHandler())
+                pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
+            lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift)
+                                + m_uHotSpotShift;
+            m_pDragImage->Show();
+		    lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
+						    m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
+		    m_pDragImage->Move(vNewPos);
+        }
     }
 }
 
@@ -2370,10 +2469,6 @@ void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool 
     WXUNUSED(fDraw);
     WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
-
-	if (!m_pDragImage) return;
-
-	m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Dragging"));
 
     // If mouse outside of canvas window let's force autoscrolling.
     bool fDoScroll = false;
@@ -2400,9 +2495,11 @@ void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool 
 
     if (fDoScroll)
 	{
-        m_pDragImage->Hide();
+	    if (m_pDragImage)
+            m_pDragImage->Hide();
         DoScroll(orientation, nUnits);
-        m_pDragImage->Show();
+	    if (m_pDragImage)
+            m_pDragImage->Show();
         //wxLogStatus(_T("Scrolling(%d), vCanvasPos=(%d, %d), canvasSize=(%d, %d)"),
         //    nUnits, vCanvasPos.x, vCanvasPos.y,
         //    canvasSize.GetWidth(), canvasSize.GetHeight());
@@ -2419,16 +2516,29 @@ void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool 
             wxEvtHandler* pEvtH = m_pCanvas->GetEventHandler();
             pEvtH->AddPendingEvent(event);
         }
-
     }
 	else
 	{
-        // just move the image
-        m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-        lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift) + m_uHotSpotShift;
-		lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
-						  m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
-		m_pDragImage->Move(vNewPos);
+        if (m_pDraggedGMO->IsHandler())
+        {
+            //((lmShapeMargin*)m_pDraggedGMO)->OnLeftDrag();
+            lmDPoint offset(vCanvasOffset.x + m_vDragHotSpot.x, vCanvasOffset.y + m_vDragHotSpot.y);
+            m_Paper.SetDrawer(new lmDirectDrawer(pDC));
+            pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
+            m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift);
+        }
+        else
+        {
+	        if (!m_pDragImage) return;
+
+            // just move the image
+            m_Paper.SetDrawer(new lmDirectDrawer(pDC));
+            lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift)
+                                    + m_uHotSpotShift;
+		    lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
+						    m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
+		    m_pDragImage->Move(vNewPos);
+        }
     }
 }
 
@@ -2449,17 +2559,26 @@ void lmScoreView::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint v
 	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectEndDragLeft()"));
 	#endif
 
-    if (!m_pDraggedGMO || !m_pDragImage) return;
-
-    // delete the image used for dragging
-    m_pDragImage->Hide();
-    m_pDragImage->EndDrag();
-    delete m_pDragImage;
-    m_pDragImage = (wxDragImage*) NULL;
+    if (!m_pDraggedGMO) return;
 
     //inform shape to do whatever it likes
-	lmUPoint finalPos = uPagePos - m_uHotSpotShift;
-	m_pDraggedGMO->OnEndDrag(m_pCanvas, finalPos);
+    if (m_pDraggedGMO->IsHandler())
+    {
+        //((lmShapeMargin*)m_pDraggedGMO)->OnLeftEndDrag();
+	    lmUPoint finalPos = uPagePos - m_uHotSpotShift;
+	    m_pDraggedGMO->OnEndDrag(m_pCanvas, finalPos);
+    }
+    else
+    {
+        // delete the image used for dragging
+        m_pDragImage->Hide();
+        m_pDragImage->EndDrag();
+        delete m_pDragImage;
+        m_pDragImage = (wxDragImage*) NULL;
+
+	    lmUPoint finalPos = uPagePos - m_uHotSpotShift;
+	    m_pDraggedGMO->OnEndDrag(m_pCanvas, finalPos);
+    }
 }
 
 
@@ -2586,7 +2705,8 @@ void lmScoreView::OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPo
     //relative to each page start position
 
     //select/deselect the object
-    SelectGMObject(pGMO, true);     //true: redraw view content
+    if (pGMO->IsSelectable())
+        SelectGMObject(pGMO, true);     //true: redraw view content
 
     ////DBG ---------------------------------------------------------------------
     ////prepare paper DC to draw bounds rectangles
@@ -2628,7 +2748,8 @@ void lmScoreView::OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lm
     DeselectAllGMObjects();
     m_pCanvas->SetFocus();
 
-    SelectGMObject(pGMO, true);     //true: redraw view content
+    if (pGMO->IsSelectable())
+        SelectGMObject(pGMO, true);     //true: redraw view content
     pGMO->OnRightClick(m_pCanvas, vCanvasPos, nKeys);
 }
 
@@ -2656,6 +2777,7 @@ void lmScoreView::SelectGMObject(lmGMObject* pGMO, bool fRedraw)
 {
     //deselect all currently selected objects, if any, and select the received object
 
+    if (!pGMO->IsSelectable()) return;
     m_graphMngr.NewSelection(pGMO);
     SelectionDone(fRedraw);
 }

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -34,6 +33,7 @@
 #include "BoxPage.h"
 #include "BoxSlice.h"
 #include "BoxSystem.h"
+#include "Handlers.h"
 
 
 //access to colors
@@ -42,13 +42,27 @@ extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
+lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage,
+                     lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
+                     lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
+                     lmLUnits uPageWidth, lmLUnits uPageHeight)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage, _("page"))
 {
     m_nNumPage = nNumPage;
     m_nFirstSystem = 0;
     m_nLastSystem = 0;
     m_pBScore = pParent;
+    m_it = m_Handlers.begin();
+
+    //create margin shapes
+    m_pTopMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_TOP, lmHORIZONTAL, 
+                                     uyTopMargin, uPageWidth);
+    m_pBottomMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_BOTTOM, lmHORIZONTAL,
+                                        uyBottomMargin, uPageWidth);
+    m_pLeftMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_LEFT, lmVERTICAL,
+                                      uxLeftMargin, uPageHeight);
+    m_pRightMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_RIGHT, lmVERTICAL,
+                                       uxRightMargin, uPageHeight);
 }
 
 lmBoxPage::~lmBoxPage()
@@ -59,6 +73,17 @@ lmBoxPage::~lmBoxPage()
         delete m_aSystems[i];
     }
     m_aSystems.clear();
+
+    //delete handlers
+    std::list<lmHandler*>::iterator it;
+    for (it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
+        delete *it;
+
+    //delete margin shapes
+    delete m_pTopMargin;
+    delete m_pBottomMargin;
+    delete m_pLeftMargin;
+    delete m_pRightMargin;
 }
 
 lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
@@ -90,7 +115,19 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
     {
         m_aSystems[i]->Render(iSystem, pScore, pPaper);
     }
+}
 
+void lmBoxPage::DrawHandlers(lmPaper* pPaper)
+{
+    //render page margins
+    if (g_fShowMargins)
+    {
+        wxColour color = *wxGREEN;      //TODO User options
+        m_pTopMargin->Render(pPaper, color);
+        m_pBottomMargin->Render(pPaper, color);
+        m_pLeftMargin->Render(pPaper, color);
+        m_pRightMargin->Render(pPaper, color);
+    }
 }
 
 lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
@@ -148,6 +185,15 @@ lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 			return pGMO;		//Object found
     }
 
+    //find in margins
+    if (g_fShowMargins)
+    {
+        if (m_pTopMargin->ContainsPoint(pointL)) return m_pTopMargin;
+        if (m_pBottomMargin->ContainsPoint(pointL)) return m_pBottomMargin;
+        if (m_pLeftMargin->ContainsPoint(pointL)) return m_pLeftMargin;
+        if (m_pRightMargin->ContainsPoint(pointL)) return m_pRightMargin;
+    }
+
     // no object found.
     return (lmGMObject*)NULL;
 }
@@ -197,3 +243,29 @@ lmBoxSystem* lmBoxPage::GetSystem(int nSystem)
 	else
 		return m_aSystems[i];
 }
+
+void lmBoxPage::AddHandler(lmHandler* pHandler)
+{
+    m_Handlers.push_back(pHandler);
+}
+
+lmHandler* lmBoxPage::GetFirstHandler()
+{
+    m_it = m_Handlers.begin();
+    if (m_it == m_Handlers.end())
+        return (lmHandler*)NULL;
+
+    return *m_it;
+}
+
+lmHandler* lmBoxPage::GetNextHandler()
+{
+    //advance to next one
+    ++m_it;
+    if (m_it != m_Handlers.end())
+        return *m_it;
+
+    //no more items
+    return (lmHandler*)NULL;
+}
+

@@ -59,11 +59,13 @@ public:
     lmBoxScore(lmScore* pScore);
     ~lmBoxScore();
 
-    lmBoxPage* AddPage();
+    lmBoxPage* AddPage(lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
+                       lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
+                       lmLUnits uPageWidth, lmLUnits uPageHeight);
     void RenderPage(int nPage, lmPaper* pPaper); 
 
     inline lmBoxPage* GetCurrentPage() const { return m_aPages.back(); }
-    inline lmBoxPage* GetPage(int nPage) const { return m_aPages[nPage - 1]; }
+    lmBoxPage* GetPage(int nPage);
     int GetNumPages();
     bool FindSliceAtPosition(lmUPoint& pointL);
 

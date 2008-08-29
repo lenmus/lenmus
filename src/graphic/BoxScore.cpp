@@ -40,10 +40,6 @@ lmBoxScore::lmBoxScore(lmScore* pScore)
     : lmBox(pScore, eGMO_BoxScore, _("score"))
 {
     m_pScore = pScore;
-
-    //Initially the BoxScore will have one page.
-    AddPage();
-
 }
 
 lmBoxScore::~lmBoxScore()
@@ -76,9 +72,13 @@ void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
 
 }
 
-lmBoxPage* lmBoxScore::AddPage()
+lmBoxPage* lmBoxScore::AddPage(lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
+                               lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
+                               lmLUnits uPageWidth, lmLUnits uPageHeight)
 {
-    lmBoxPage* pPage = new lmBoxPage(this, (int)m_aPages.size()+1);
+    lmBoxPage* pPage = new lmBoxPage(this, (int)m_aPages.size()+1,
+                                     uxLeftMargin, uxRightMargin, uyTopMargin,
+                                     uyBottomMargin, uPageWidth, uPageHeight);
     m_aPages.push_back(pPage);
     return pPage;
 
@@ -156,7 +156,8 @@ lmBoxSystem* lmBoxScore::GetSystem(int nSystem)
 
 void lmBoxScore::AddToSelection(lmGMObject* pGMO)
 {
-    m_Selection.AddToSelection(pGMO);
+    if (pGMO->IsSelectable())
+        m_Selection.AddToSelection(pGMO);
 }
 
 //void lmBoxScore::RemoveFromSelection(lmGMSelection* pSelection)
@@ -188,4 +189,11 @@ void lmBoxScore::AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
     pBPage->SelectGMObjects(true, uXMin, uXMax, uYMin, uYMax);
 }
 
+lmBoxPage* lmBoxScore::GetPage(int nPage) 
+{ 
+    if (nPage <= GetNumPages())
+        return m_aPages[nPage - 1]; 
+    else
+        return (lmBoxPage*)NULL;
+}
 

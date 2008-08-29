@@ -238,6 +238,14 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 	pCP->Submit(new lmCmdUserMoveScoreObj(sName, m_pDoc, pGMO, uPos));
 }
 
+void lmScoreCanvas::ChangePageMargin(lmGMObject* pGMO, int nIdx, lmLUnits uPos)
+{
+	//Updates the position of a margin
+
+	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdChangePageMargin(_("Change margin"), m_pDoc, pGMO, nIdx, uPos));
+}
+
 void lmScoreCanvas::DeleteCaretSatffobj()
 {
 	//delete the StaffObj at current caret position
@@ -536,8 +544,8 @@ void lmScoreCanvas::ChangeNoteDots(int nDots)
                             m_pView->GetSelection(), nDots) );
 }
 
-void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEAlignment nAlign,
-                               lmLocation tPos, lmFontInfo tFont, wxColour colorC)
+void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
+                               lmLocation tPos, lmTextStyle* pStyle)
 {
 	//change properties of a lmScoreText object
 
@@ -547,7 +555,7 @@ void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEAlignment nA
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change text");
 	pCP->Submit(new lmCmdChangeText(pVCursor, sName, m_pDoc, pST, sText,
-                                    nAlign, tPos, tFont, colorC) );
+                                    nAlign, tPos, pStyle) );
 }
 
 void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)

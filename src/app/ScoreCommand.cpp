@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -1304,17 +1303,15 @@ bool lmCmdJoinBeam::UndoCommand()
 
 lmCmdChangeText::lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
                                  lmScoreDocument *pDoc, lmScoreText* pST,
-                                 wxString& sText, lmEAlignment nAlign, 
-                                 lmLocation tPos, lmFontInfo& tFont,
-                                 wxColour colorC)
+                                 wxString& sText, lmEHAlign nAlign, 
+                                 lmLocation tPos, lmTextStyle* pStyle)
 	: lmScoreCommand(name, pDoc, pVCursor)
 {
     m_pST = pST;
     m_sText = sText;
     m_nAlign = nAlign; 
     m_tPos = tPos;
-    m_tFont = tFont;
-    m_colorC = colorC;
+    m_pStyle = pStyle;
 }
 
 lmCmdChangeText::~lmCmdChangeText()
@@ -1325,7 +1322,7 @@ bool lmCmdChangeText::Do()
 {
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
     lmEditCmd* pECmd = new lmECmdChangeText(m_pST, pUndoItem, m_sText, m_nAlign,
-                                            m_tPos, m_tFont, m_colorC);
+                                            m_tPos, m_pStyle);
 
     if (pECmd->Success())
     {
@@ -1348,5 +1345,89 @@ bool lmCmdChangeText::UndoCommand()
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
     return true;
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdChangePageMargin implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdChangePageMargin::lmCmdChangePageMargin(const wxString& name, lmScoreDocument *pDoc,
+                                             lmGMObject* pGMO, int nIdx, lmLUnits uPos)
+	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
+{
+	m_nIdx = nIdx;
+	m_uNewPos = uPos;
+
+    //save current position
+    m_pScore = pDoc->GetScore();
+    switch(m_nIdx)
+    {
+        case lmMARGIN_TOP:
+            m_uOldPos = m_pScore->GetPageTopMargin();
+            break;
+
+        case lmMARGIN_BOTTOM:
+            m_uOldPos = m_pScore->GetMaximumY();
+            break;
+
+        case lmMARGIN_LEFT:
+            m_uOldPos = m_pScore->GetLeftMarginXPos();
+            break;
+
+        case lmMARGIN_RIGHT:
+            m_uOldPos = m_pScore->GetRightMarginXPos();
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+
+}
+
+bool lmCmdChangePageMargin::Do()
+{
+    //Direct command. NO UNDO LOG
+
+    ChangeMargin(m_uNewPos);
+	return CommandDone(lmSCORE_MODIFIED);  //, lmREDRAW);
+}
+
+bool lmCmdChangePageMargin::UndoCommand()
+{
+    //Direct command. NO UNDO LOG
+
+    ChangeMargin(m_uOldPos);
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+void lmCmdChangePageMargin::ChangeMargin(lmLUnits uPos)
+{
+    lmUSize size = m_pScore->GetPaperSize();
+
+    switch(m_nIdx)
+    {
+        case lmMARGIN_TOP:
+            m_pScore->SetPageTopMargin(uPos);
+            break;
+
+        case lmMARGIN_BOTTOM:
+            m_pScore->SetPageBottomMargin(size.Height() - uPos);
+            break;
+
+        case lmMARGIN_LEFT:
+            m_pScore->SetPageLeftMargin(uPos);
+            break;
+
+        case lmMARGIN_RIGHT:
+            m_pScore->SetPageRightMargin(size.Width() - uPos);
+            break;
+
+        default:
+            wxASSERT(false);
+    }
 }
 

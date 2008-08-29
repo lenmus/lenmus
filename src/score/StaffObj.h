@@ -124,6 +124,7 @@ typedef std::vector<lmAuxObj*> lmAuxObjsCol;
 class lmObjOptions;
 class lmBox;
 class lmController;
+class lmScore;
 
 class lmScoreObj
 {
@@ -156,6 +157,7 @@ public:
 
     //--- a ScoreObj can own other ScoreObjs -----------------------
     inline lmScoreObj* GetParentScoreObj() { return m_pParent; }
+    virtual lmScore* GetScore()=0;
 
 
     //provide units conversion
@@ -264,6 +266,7 @@ public:
     virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
 
 	inline lmEScoreObjType GetScoreObjType() { return lmSOT_ComponentObj; }
+    virtual lmScore* GetScore()=0;
 
 
 	//---- specific methods of this class ------------------------
@@ -331,6 +334,8 @@ public:
                         bool fHighlight = false);
     //virtual void SetFont(lmPaper* pPaper);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
+    lmScore* GetScore();
+
 
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
@@ -456,6 +461,7 @@ public:
     virtual void Layout(lmBox* pBox, lmPaper* pPaper,
 						wxColour colorC = *wxBLACK, bool fHighlight = false);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
+    inline lmScore* GetScore() { return m_pParent->GetScore(); }
 
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);

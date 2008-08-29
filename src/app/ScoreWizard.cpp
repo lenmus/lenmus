@@ -41,7 +41,6 @@
 #include "ArtProvider.h"
 #include "../score/Score.h"
 #include "../score/VStaff.h"
-#include "../app/Page.h"
 #include "../widgets/MsgBox.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../graphic/GraphicManager.h"      //to use GenerateBitmapForKeyCtrol()
@@ -92,12 +91,14 @@ static lmScoreData m_ScoreData;
 //score titles -----------------------------
 typedef struct lmTitleDataStruct
 {
+    wxString        sStyleName;
     wxString        sTitle;
-    lmEAlignment    nAlign;
+    lmEHAlign    nAlign;
     lmLocation      tPos;
     wxString        sFontName;
     int             nFontSize;
-    lmETextStyle    nStyle;
+    int             nFontStyle;
+    wxFontWeight    nFontWeight;
 
 } lmTitleData;
 
@@ -302,14 +303,23 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
         m_Titles[i].tPos.x = 0.0f;
         m_Titles[i].tPos.y = 0.0f;
         m_Titles[i].sFontName = _T("Times New Roman");
+        m_Titles[i].nFontWeight = wxFONTWEIGHT_NORMAL;
+        m_Titles[i].nFontStyle = wxFONTSTYLE_NORMAL;
     }
 
+    //Name of the style
+    m_Titles[lmTITLE].sStyleName = _("Title");
+    m_Titles[lmSUBTITLE].sStyleName = _("Subtitle");
+    m_Titles[lmCOMPOSER].sStyleName = _("Composer");
+    m_Titles[lmARRANGER].sStyleName = _("Arranger");
+    m_Titles[lmLYRICIST].sStyleName = _("Lyricist");
+
     //titles alignment
-    m_Titles[lmTITLE].nAlign = lmALIGN_CENTER;
-    m_Titles[lmSUBTITLE].nAlign = lmALIGN_CENTER;
-    m_Titles[lmCOMPOSER].nAlign = lmALIGN_RIGHT;
-    m_Titles[lmARRANGER].nAlign = lmALIGN_LEFT;
-    m_Titles[lmLYRICIST].nAlign = lmALIGN_RIGHT;
+    m_Titles[lmTITLE].nAlign = lmHALIGN_CENTER;
+    m_Titles[lmSUBTITLE].nAlign = lmHALIGN_CENTER;
+    m_Titles[lmCOMPOSER].nAlign = lmHALIGN_RIGHT;
+    m_Titles[lmARRANGER].nAlign = lmHALIGN_LEFT;
+    m_Titles[lmLYRICIST].nAlign = lmHALIGN_RIGHT;
 
     //titles font size
     m_Titles[lmTITLE].nFontSize = 21;
@@ -318,12 +328,9 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
     m_Titles[lmARRANGER].nFontSize = 12;
     m_Titles[lmLYRICIST].nFontSize = 12;
 
-    //titles font style
-    m_Titles[lmTITLE].nStyle = lmTEXT_BOLD;
-    m_Titles[lmSUBTITLE].nStyle = lmTEXT_ITALIC;
-    m_Titles[lmCOMPOSER].nStyle = lmTEXT_NORMAL;
-    m_Titles[lmARRANGER].nStyle = lmTEXT_NORMAL;
-    m_Titles[lmLYRICIST].nStyle = lmTEXT_NORMAL;
+    //titles font style and weight
+    m_Titles[lmTITLE].nFontWeight = wxFONTWEIGHT_BOLD;
+    m_Titles[lmSUBTITLE].nFontStyle = wxFONTSTYLE_ITALIC;
 
 
     //initialize paper strings and sizes
@@ -408,9 +415,16 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                     }
 
                     //add the title
+                    lmFontInfo tFont;
+                    tFont.nFontSize = m_Titles[i].nFontSize;
+                    tFont.nFontStyle = m_Titles[i].nFontStyle;
+                    tFont.nFontWeight = m_Titles[i].nFontWeight;
+                    tFont.sFontName = m_Titles[i].sFontName;
+                    lmTextStyle* pStyle = 
+                        pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
+
                     pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nAlign,
-                                     m_Titles[i].tPos, m_Titles[i].sFontName,
-                                     m_Titles[i].nFontSize, m_Titles[i].nStyle );
+                                     m_Titles[i].tPos, pStyle );
                 }
             }
         }
@@ -457,11 +471,13 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
     m_ScoreData.nRightMargin = 20;              //20 mm;
     m_ScoreData.nBindingMargin = 0;             //no binding margin
 
-    lmPageInfo* pPageInfo
-        = new lmPageInfo(m_ScoreData.nLeftMargin, m_ScoreData.nRightMargin, m_ScoreData.nTopMargin,
-                        m_ScoreData.nBottomMargin, m_ScoreData.nBindingMargin,
-                        m_ScoreData.nPageSize, m_ScoreData.fPortrait);
-    pScore->SetPageInfo(pPageInfo);
+    pScore->SetPageLeftMargin( m_ScoreData.nLeftMargin );
+    pScore->SetPageRightMargin( m_ScoreData.nRightMargin );
+    pScore->SetPageTopMargin( m_ScoreData.nTopMargin );
+    pScore->SetPageBottomMargin( m_ScoreData.nBottomMargin );
+    pScore->SetPageBindingMargin( m_ScoreData.nBindingMargin );
+    pScore->SetPageSizeMillimeters( m_ScoreData.nPageSize );
+    pScore->SetPageOrientation( m_ScoreData.fPortrait );
 
     //return the created score
     *m_pPtrScore = pScore;
@@ -1099,7 +1115,7 @@ bool lmScoreWizardTitles::TransferDataFromWindow()
 	if (m_pTxtTitle->GetValue() != _T(""))
     {
         m_Titles[lmTITLE].sTitle = m_pTxtTitle->GetValue();
-        //m_Titles[i].nAlign = lmALIGN_CENTER;
+        //m_Titles[i].nAlign = lmHALIGN_CENTER;
         //m_Titles[i].tPos.xType = lmLOCATION_DEFAULT;
         //m_Titles[i].tPos.xUnits = lmTENTHS;
         //m_Titles[i].tPos.yType = lmLOCATION_DEFAULT;

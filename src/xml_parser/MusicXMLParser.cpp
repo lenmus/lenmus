@@ -744,7 +744,7 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
     wxString sText;
     wxString sJustify;
     wxString sLanguage;
-    lmFontInfo oFontData = tBasicTextDefaultFont;
+    lmFontInfo oFontData = { _T("Times New Roman"), 12, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
     lmLocation tPos;
 
 
@@ -859,7 +859,7 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
             return false;    //nothing added to lmVStaff
             break;
         case eWords:
-            pVStaff->AddText(sText, lmALIGN_LEFT, tPos, oFontData, false);
+            pVStaff->AddText(sText, lmHALIGN_LEFT, tPos, oFontData, false);
             break;
         default:
             wxASSERT(false);
@@ -1413,7 +1413,9 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             }
 
             // create de lmLyric object
-            lmLyric* pLyric = new lmLyric(sText, nSyllabic, (int)nNumber);
+            lmTextStyle* pStyle = pVStaff->GetScore()->GetStyleInfo(_("Lyrics"));
+            wxASSERT(pStyle);
+            lmLyric* pLyric = new lmLyric(sText, pStyle, nSyllabic, (int)nNumber);
 
             //Add the lmLyric to the list of lyrics
             fLyrics = true;
@@ -1650,14 +1652,24 @@ void lmMusicXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
     tPos.xType = lmLOCATION_DEFAULT;
     tPos.yType = lmLOCATION_DEFAULT;
 
-    if (sTitle == _T("")) {
+    if (sTitle == _T(""))
+    {
         if (sNum != _T(""))
-            pScore->AddTitle(sNum, lmALIGN_CENTER, tPos, _T("Times New Roman"), 14, lmTEXT_BOLD);
+        {
+            lmFontInfo tFont = {_T("Times New Roman"), 14, wxFONTSTYLE_NORMAL,
+                                wxFONTWEIGHT_BOLD };
+            lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+            pScore->AddTitle(sNum, lmHALIGN_CENTER, tPos, pStyle);
+        }
     }
-    else if (sNum != _T("")) {
+    else if (sNum != _T(""))
+    {
         sTitle += _T(", ");
         sTitle += sNum;
-        pScore->AddTitle(sTitle, lmALIGN_CENTER, tPos, _T("Times New Roman"), 14, lmTEXT_BOLD);
+        lmFontInfo tFont = {_T("Times New Roman"), 14, wxFONTSTYLE_NORMAL,
+                            wxFONTWEIGHT_BOLD };
+        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+        pScore->AddTitle(sTitle, lmHALIGN_CENTER, tPos, pStyle);
     }
 
 }
@@ -1976,14 +1988,25 @@ void lmMusicXMLParser::ParseFont(wxXmlNode* pElement, lmFontInfo* pFontData)
     bool fItalic = (sValue == _T("italic"));
 
     if (fBold && fItalic)
-        pFontData->nStyle = lmTEXT_ITALIC_BOLD;
+    {
+        pFontData->nFontStyle = wxFONTSTYLE_ITALIC;
+        pFontData->nFontWeight = wxFONTWEIGHT_BOLD;
+    }
     else if (fBold)
-        pFontData->nStyle = lmTEXT_BOLD;
+    {
+        pFontData->nFontStyle = wxFONTSTYLE_NORMAL;
+        pFontData->nFontWeight = wxFONTWEIGHT_BOLD;
+    }
     else if (fItalic)
-        pFontData->nStyle = lmTEXT_ITALIC;
+    {
+        pFontData->nFontStyle = wxFONTSTYLE_ITALIC;
+        pFontData->nFontWeight = wxFONTWEIGHT_NORMAL;
+    }
     else
-        pFontData->nStyle = lmTEXT_NORMAL;
-
+    {
+        pFontData->nFontStyle = wxFONTSTYLE_NORMAL;
+        pFontData->nFontWeight = wxFONTWEIGHT_NORMAL;
+    }
 }
 
 

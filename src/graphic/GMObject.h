@@ -88,6 +88,7 @@ enum lmEGMOType
 	eGMO_ShapeGlyph,
 	eGMO_ShapeInvisible,
 	eGMO_ShapeLine,
+    eGMO_ShapeRectangle,
 	eGMO_ShapeMultiAttached,
 	eGMO_ShapeNote,
 	eGMO_ShapeRest,
@@ -95,7 +96,11 @@ enum lmEGMOType
 	eGMO_ShapeText,
     eGMO_ShapeTie,
 	eGMO_ShapeTuplet,
+    eGMO_Handler,
 };
+
+#define lmSELECTABLE         true
+#define lmNO_SELECTABLE      false
 
 
 class lmGMObject : public wxObject
@@ -135,6 +140,7 @@ public:
 	inline bool IsShapeText() const { return m_nType == eGMO_ShapeText; }
     inline bool IsShapeTie() const { return m_nType == eGMO_ShapeTie; }
 	inline bool IsShapeTuplet() const { return m_nType == eGMO_ShapeTuplet; }
+    inline bool IsHandler() const { return m_nType == eGMO_Handler; }
 
     //bounding box
     inline void SetXLeft(lmLUnits xLeft) { m_uBoundsTop.x = xLeft; }
@@ -167,6 +173,8 @@ public:
     virtual wxString Dump(int nIndent)=0;
 
     //selection
+    inline bool IsSelectable() const { return m_fSelectable; }
+    inline void SetSelectable(bool fValue) { m_fSelectable = fValue; }
     inline bool IsSelected() const { return m_fSelected; }
     void SetSelected(bool fValue);
 
@@ -182,6 +190,10 @@ public:
 	void ShiftOrigin(lmUPoint uNewOrg);
     void ApplyUserShift(lmUPoint uUserShift);
 
+    //call backs
+    virtual void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL) {}
+    virtual void OnMouseOut(wxWindow* pWindow, lmUPoint& pointL) {}
+
     //info
     virtual lmBoxScore* GetOwnerBoxScore() = 0;
     inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
@@ -196,7 +208,7 @@ protected:
     friend class lmGMSelection;
 
     lmGMObject(lmScoreObj* pOwner, lmEGMOType m_nType, bool fDraggable = false,
-		       wxString sName = _("Object"), int nOwnerIdx = -1);
+		       bool fSelectable = false, wxString sName = _("Object"), int nOwnerIdx = -1);
     wxString DumpBounds();
 	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
 	void NormaliceBoundsRectangle();
@@ -225,6 +237,7 @@ protected:
 
     //selection
     bool            m_fSelected;        //this object is selected
+    bool            m_fSelectable;      //this object can be selected by user
 
     //dragging
     bool			m_fLeftDraggable;		//this object is draggable
@@ -340,13 +353,17 @@ public:
     //selection
     bool IsInRectangle(lmURect& rect);
 
+    //call backs
+    void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
+    void OnMouseOut(wxWindow* pWindow, lmUPoint& pointL);
+
     //vertex source
     virtual void RewindVertices(int nPathId = 0) {}
     virtual unsigned GetVertex(lmLUnits* pux, lmLUnits* puy);
 
 protected:
     lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName=_T("Shape"),
-			bool fDraggable = false, wxColour color = *wxBLACK,
+			bool fDraggable = false, bool fSelectable = false, wxColour color = *wxBLACK,
 			bool fVisible = true);
 	void InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
     virtual void DrawControlPoints(lmPaper* pPaper) {};
@@ -354,6 +371,7 @@ protected:
 
 	lmBox*		m_pOwnerBox;	//box in which this shape is included
 	bool		m_fVisible;
+    wxWindow*   m_pMouseCursorWindow;      //to optimize mouse cursor changes
 
 	typedef struct lmAtachPoint_Struct {
 		lmShape*		pShape;
@@ -388,8 +406,8 @@ public:
 protected:
     lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx,
                   wxString sName=_T("SimpleShape"),
-				  bool fDraggable = false, wxColour color = *wxBLACK,
-				  bool fVisible = true);
+				  bool fDraggable = false, bool fSelectable = true, 
+                  wxColour color = *wxBLACK, bool fVisible = true);
 
 };
 

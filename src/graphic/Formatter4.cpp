@@ -46,7 +46,6 @@
 #include "../score/Context.h"
 #include "../score/Staff.h"
 #include "../score/VStaff.h"
-#include "../app/Page.h"
 #include "TimeposTable.h"
 #include "Formatter4.h"
 #include "BoxScore.h"
@@ -122,13 +121,21 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     m_nSpacingValue = (lmTenths) m_pScore->GetOptionLong(_T("Render.SpacingValue"));
 
     //set paper size and margins
-    lmPageInfo* pPageInfo = m_pScore->GetPageInfo();
-    if (pPageInfo)
-        pPaper->SetPageInfo(pPageInfo, 1);
+    m_pScore->SetNumPage(1);
 
     //create the root of the graphical model: BoxScore object
     lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
-    pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
+
+    //create first page
+    lmBoxPage* pBoxPage = pBoxScore->AddPage(m_pScore->GetLeftMarginXPos(),
+                                             m_pScore->GetRightMarginXPos(),
+                                             m_pScore->GetPageTopMargin(),
+                                             m_pScore->GetMaximumY(),
+                                             m_pScore->GetPaperSize().GetWidth(),
+                                             m_pScore->GetPaperSize().GetHeight() );
+
+    //ensure that page cursors are at top-left corner
+    pPaper->SetCursor(m_pScore->GetPageLeftMargin(), m_pScore->GetPageTopMargin());
 
     //for each staff size, setup fonts of right point size for that staff size
     lmInstrument *pInstr;
@@ -148,7 +155,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
     // write score titles. Titles will be attached to current page (the fisr one)
     m_pScore->LayoutAttachedObjects(pBoxScore->GetCurrentPage(), pPaper);
-    pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
+    pPaper->SetCursor(m_pScore->GetPageLeftMargin(), m_pScore->GetPageTopMargin());
     pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
 
     int nSystem;        //number of system in process
@@ -184,7 +191,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     nTotalMeasures = ((m_pScore->GetFirstInstrument())->GetVStaff())->GetNumMeasures();    //num measures in the score
         //! @limit It is assumed that all staves have the same number of measures
     nSystem = 1;
-    lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
+    pBoxPage = pBoxScore->GetCurrentPage();
     lmBoxSystem* pBoxSystem;
 
     lmLUnits nSystemHeight;
@@ -218,11 +225,18 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //TODO It is assumed that next system height is equal to previous one.
             //     It is necesary to compute each system height
             lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
-            if (yNew > pPaper->GetMaximumY() ) {
-                //wxLogMessage(_T("Page break needed. yCur=%.2f, yNew=%.2f, MaximumY=%.2f"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
-                pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
+            if (yNew > m_pScore->GetMaximumY() )
+            {
+                //wxLogMessage(_T("Page break needed. yCur=%.2f, yNew=%.2f, MaximumY=%.2f"), pPaper->GetCursorY(), yNew, m_pScore->GetMaximumY());
+                //ensure that page cursors are at top-left corner
+                pPaper->SetCursor(m_pScore->GetPageLeftMargin(), m_pScore->GetPageTopMargin());
                 //start a new page
-                pBoxPage = pBoxScore->AddPage();
+                pBoxPage = pBoxScore->AddPage(m_pScore->GetLeftMarginXPos(),
+                                              m_pScore->GetRightMarginXPos(),
+                                              m_pScore->GetPageTopMargin(),
+                                              m_pScore->GetMaximumY(),
+                                              m_pScore->GetPaperSize().GetWidth(),
+                                              m_pScore->GetPaperSize().GetHeight() );
             }
         }
 
@@ -254,7 +268,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //TODO: Is this needed?
             if (nRelMeasure == 1)
 			{
-				pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
+				pBoxSystem->UpdateXRight( m_pScore->GetRightMarginXPos() );
             }
 
             //size this measure column create BoxSlice (and BoxSlice hierarchy) for
@@ -271,19 +285,19 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
             //if this is the first measure column compute the space available in
             //this system. The method is a little tricky. The total space available
-            //is (pPaper->GetPageRightMargin() - pPaper->GetCursorX()). But we have
+            //is (pScore->GetPageRightMargin() - pScore->GetCursorX()). But we have
             //to take into account the space that will be used by the prolog. As the
             //left position of the first measure column has taken all this into account,
             //it is posible to use that value by just doing:
             if (nRelMeasure == 1) {
                 m_uFreeSpace =
-                    pPaper->GetRightMarginXPos() - m_oTimepos[nRelMeasure].GetStartOfBarPosition();
+                    m_pScore->GetRightMarginXPos() - m_oTimepos[nRelMeasure].GetStartOfBarPosition();
             }
 
             #if defined(__WXDEBUG__)
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
                 _T("RelMeasure=%d, m_uFreeSpace = %.2f, PaperRightMarginXPos=%.2f, StartOfBar=%.2f"),
-                nRelMeasure, m_uFreeSpace, pPaper->GetRightMarginXPos(),
+                nRelMeasure, m_uFreeSpace, m_pScore->GetRightMarginXPos(),
                 m_oTimepos[nRelMeasure].GetStartOfBarPosition() );
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
                 m_oTimepos[nRelMeasure].DumpTimeposTable());
@@ -346,8 +360,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 			    if (pBoxScore) delete pBoxScore;
                 pBoxScore = new lmBoxScore(m_pScore);
                 m_rSpacingFactor *= 0.7f;
-                return RenderJustified(pPaper);
-	            //return pBoxScore;
+                //return RenderJustified(pPaper);
+	            return pBoxScore;
             }
             //As a consequence of splitting the measure, the score will have one more measure.
             //In order to take this into account incrementing measure
@@ -440,12 +454,12 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             if (pVStaff->GetBarlineOfLastNonEmptyMeasure(&xPos))
                 pBoxSystem->UpdateXRight( xPos - 1 );
             else
-                pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
+                pBoxSystem->UpdateXRight( m_pScore->GetRightMarginXPos() );
         }
         else
         {
             //staff lines go to the rigth margin
-            pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
+            pBoxSystem->UpdateXRight( m_pScore->GetRightMarginXPos() );
         }
 
 	    //Add the shape for the initial barline that joins all staves in a system
@@ -508,7 +522,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                 //TODO It is assumed that next system height is equal to previous one.
                 //!     It is necesary to compute each system height
                 lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
-                if (yNew > pPaper->GetMaximumY() )
+                if (yNew > m_pScore->GetMaximumY() )
                     break;        //exit loop
             }
 
@@ -525,7 +539,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //Store information about this system
             pBoxSystem->SetNumMeasures(0, m_pScore);
             //staff lines go to the rigth margin
-            pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
+            pBoxSystem->UpdateXRight( m_pScore->GetRightMarginXPos() );
 
             // compute system height
             if (nSystem == 1) {
