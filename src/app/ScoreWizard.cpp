@@ -93,7 +93,7 @@ typedef struct lmTitleDataStruct
 {
     wxString        sStyleName;
     wxString        sTitle;
-    lmEHAlign    nAlign;
+    lmEHAlign       nHAlign;
     lmLocation      tPos;
     wxString        sFontName;
     int             nFontSize;
@@ -315,11 +315,11 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
     m_Titles[lmLYRICIST].sStyleName = _("Lyricist");
 
     //titles alignment
-    m_Titles[lmTITLE].nAlign = lmHALIGN_CENTER;
-    m_Titles[lmSUBTITLE].nAlign = lmHALIGN_CENTER;
-    m_Titles[lmCOMPOSER].nAlign = lmHALIGN_RIGHT;
-    m_Titles[lmARRANGER].nAlign = lmHALIGN_LEFT;
-    m_Titles[lmLYRICIST].nAlign = lmHALIGN_RIGHT;
+    m_Titles[lmTITLE].nHAlign = lmHALIGN_CENTER;
+    m_Titles[lmSUBTITLE].nHAlign = lmHALIGN_CENTER;
+    m_Titles[lmCOMPOSER].nHAlign = lmHALIGN_RIGHT;
+    m_Titles[lmARRANGER].nHAlign = lmHALIGN_LEFT;
+    m_Titles[lmLYRICIST].nHAlign = lmHALIGN_RIGHT;
 
     //titles font size
     m_Titles[lmTITLE].nFontSize = 21;
@@ -396,39 +396,6 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                 pInstr = pScore->GetNextInstrument();
             }
         }
-
-        //add titles
-        bool fFirstLR = true;
-        if (pScore && m_ScoreData.fAddTitles)
-        {
-            for (int i=0; i < lmNUM_TITLES; ++i)
-            {
-                if (!m_Titles[i].sTitle.IsEmpty())
-                {
-                    //shift down the first left/right title
-                    if (i > lmSUBTITLE && fFirstLR)
-                    {
-                        fFirstLR = false;
-                        m_Titles[i].tPos.yType = lmLOCATION_USER_RELATIVE;
-                        m_Titles[i].tPos.yUnits = lmMILLIMETERS;
-                        m_Titles[i].tPos.y = 10.0f;
-                    }
-
-                    //add the title
-                    lmFontInfo tFont;
-                    tFont.nFontSize = m_Titles[i].nFontSize;
-                    tFont.nFontStyle = m_Titles[i].nFontStyle;
-                    tFont.nFontWeight = m_Titles[i].nFontWeight;
-                    tFont.sFontName = m_Titles[i].sFontName;
-                    lmTextStyle* pStyle = 
-                        pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
-
-                    pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nAlign,
-                                     m_Titles[i].tPos, pStyle );
-                }
-            }
-        }
-
     }
 
     //Create an empty score if user selected that option of template load failure
@@ -471,13 +438,46 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
     m_ScoreData.nRightMargin = 20;              //20 mm;
     m_ScoreData.nBindingMargin = 0;             //no binding margin
 
-    pScore->SetPageLeftMargin( m_ScoreData.nLeftMargin );
-    pScore->SetPageRightMargin( m_ScoreData.nRightMargin );
-    pScore->SetPageTopMargin( m_ScoreData.nTopMargin );
-    pScore->SetPageBottomMargin( m_ScoreData.nBottomMargin );
-    pScore->SetPageBindingMargin( m_ScoreData.nBindingMargin );
+    pScore->SetPageLeftMargin( lmToLogicalUnits( m_ScoreData.nLeftMargin, lmMILLIMETERS) );
+    pScore->SetPageRightMargin( lmToLogicalUnits( m_ScoreData.nRightMargin, lmMILLIMETERS) );
+    pScore->SetPageTopMargin( lmToLogicalUnits( m_ScoreData.nTopMargin, lmMILLIMETERS) );
+    pScore->SetPageBottomMargin( lmToLogicalUnits( m_ScoreData.nBottomMargin, lmMILLIMETERS) );
+    pScore->SetPageBindingMargin( lmToLogicalUnits( m_ScoreData.nBindingMargin, lmMILLIMETERS) );
     pScore->SetPageSizeMillimeters( m_ScoreData.nPageSize );
     pScore->SetPageOrientation( m_ScoreData.fPortrait );
+
+
+    //add titles
+    bool fFirstLR = true;
+    if (pScore && m_ScoreData.fAddTitles)
+    {
+        for (int i=0; i < lmNUM_TITLES; ++i)
+        {
+            if (!m_Titles[i].sTitle.IsEmpty())
+            {
+                //shift down the first left/right title
+                if (i > lmSUBTITLE && fFirstLR)
+                {
+                    fFirstLR = false;
+                    m_Titles[i].tPos.yType = lmLOCATION_USER_RELATIVE;
+                    m_Titles[i].tPos.yUnits = lmMILLIMETERS;
+                    m_Titles[i].tPos.y = 10.0f;
+                }
+
+                //add the title
+                lmFontInfo tFont;
+                tFont.nFontSize = m_Titles[i].nFontSize;
+                tFont.nFontStyle = m_Titles[i].nFontStyle;
+                tFont.nFontWeight = m_Titles[i].nFontWeight;
+                tFont.sFontName = m_Titles[i].sFontName;
+                lmTextStyle* pStyle = 
+                    pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
+
+                pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nHAlign,
+                                    m_Titles[i].tPos, pStyle );
+            }
+        }
+    }
 
     //return the created score
     *m_pPtrScore = pScore;
@@ -1115,7 +1115,7 @@ bool lmScoreWizardTitles::TransferDataFromWindow()
 	if (m_pTxtTitle->GetValue() != _T(""))
     {
         m_Titles[lmTITLE].sTitle = m_pTxtTitle->GetValue();
-        //m_Titles[i].nAlign = lmHALIGN_CENTER;
+        //m_Titles[i].nHAlign = lmHALIGN_CENTER;
         //m_Titles[i].tPos.xType = lmLOCATION_DEFAULT;
         //m_Titles[i].tPos.xUnits = lmTENTHS;
         //m_Titles[i].tPos.yType = lmLOCATION_DEFAULT;

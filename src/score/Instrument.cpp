@@ -62,21 +62,21 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
     : lmScoreObj(pScore)
 {
     //create objects for name and abbreviation
-    lmScoreText* pName = (lmScoreText*)NULL;
-    lmScoreText* pAbbreviation = (lmScoreText*)NULL;
+    lmTextItem* pName = (lmTextItem*)NULL;
+    lmTextItem* pAbbreviation = (lmTextItem*)NULL;
 
     if (sName != _T(""))
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pName = new lmScoreText(sName, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
+        pName = new lmTextItem(sName, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
     }
 
     if (sAbbrev != _T(""))
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pAbbreviation = new lmScoreText(sAbbrev, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
+        pAbbreviation = new lmTextItem(sAbbrev, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
     }
 
     //create the instrument
@@ -84,14 +84,14 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
 }
 
 lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-						   lmScoreText* pName, lmScoreText* pAbbrev)
+						   lmTextItem* pName, lmTextItem* pAbbrev)
     : lmScoreObj(pScore)
 {
     Create(pScore, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
 }
 
 void lmInstrument::Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-						  lmScoreText* pName, lmScoreText* pAbbrev)
+						  lmTextItem* pName, lmTextItem* pAbbrev)
 {
     m_pScore = pScore;
     m_nMidiInstr = nMIDIInstr;
@@ -234,7 +234,7 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
     if (m_pName)
     {
         // measure text extent
-        lmShapeText* pShape = m_pName->CreateShape(pPaper, m_uPaperPos);
+        lmShape* pShape = m_pName->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
         m_uIndentFirst += pShape->GetWidth() + uSpaceAfterName;
 		delete pShape;
@@ -243,7 +243,7 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
     if (m_pAbbreviation)
     {
         // measure text extent
-        lmShapeText* pShape = m_pAbbreviation->CreateShape(pPaper, m_uPaperPos);
+        lmShape* pShape = m_pAbbreviation->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
         m_uIndentOther += pShape->GetWidth() + uSpaceAfterName;
 		delete pShape;
@@ -291,7 +291,7 @@ void lmInstrument::AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPap
                                     yTopGroup, pBSliceInstr->GetYBottom() );
 }
 
-void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName)
+void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmTextItem* pName)
 {
     //get box position
     lmUPoint uBox(pBox->GetXLeft(), pBox->GetYTop() );

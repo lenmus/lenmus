@@ -80,50 +80,18 @@ lmBasicText::lmBasicText(wxString& sText, lmLocation& tPos, lmTextStyle* pStyle,
 lmBasicText::~lmBasicText()
 {
 }
-
-
-
 //==========================================================================================
 // lmScoreText implementation
 //==========================================================================================
 
-//simple text constructor
 lmScoreText::lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
-                         lmTextStyle* pStyle, bool fTitle)
+                         lmTextStyle* pStyle)
     : lmAuxObj(lmDRAGGABLE),
       lmBasicText(sTitle, tPos, pStyle)
 {
-    m_fIsTitle = fTitle;
     m_nBlockAlign = lmBLOCK_ALIGN_NONE;
     m_nHAlign = nHAlign;
     m_nVAlign = lmVALIGN_DEFAULT;
-}
-
-//block text constructor
-lmScoreText::lmScoreText(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
-                         lmEVAlign nVAlign, lmLocation& tPos, lmTextStyle* pStyle,
-                         bool fTitle)
-    : lmAuxObj(lmDRAGGABLE),
-      lmBasicText(sTitle, tPos, pStyle)
-{
-    m_fIsTitle = fTitle;
-    m_nBlockAlign = nBlockAlign;
-    m_nHAlign = nHAlign;
-    m_nVAlign = nVAlign;
-}
-
-lmShapeText* lmScoreText::CreateShape(lmPaper* pPaper, lmUPoint uPos)
-{
-    // Creates the shape and returns it
-
-    //lmShapeText* pGMObj = new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
-    //                       uPos, _T("ScoreText"), lmDRAGGABLE, m_pStyle->nColor);
-    lmShapeText* pGMObj =
-        new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
-                        m_nBlockAlign, m_nHAlign, m_nVAlign,
-                        uPos.x, uPos.y, 0.0f, 0.0f, m_pStyle->nColor);
-    StoreShape(pGMObj);
-    return pGMObj;
 }
 
 lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
@@ -135,104 +103,6 @@ lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 	lmUPoint uPos = uOrg;
 	return uPos;
-}
-
-lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
-{
-    // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object and adding it to the graphical model.
-
-	WXUNUSED(colorC);
-
-    //create the shape object
-    lmShapeText* pShape = CreateShape(pPaper, uPos);
-
-    //According to LDP specifications [LDP manual, 3.6. The Text element] default text
-    //anchor pos is at bottom left corner. But text shape anchor pos is top left corner.
-    //Therefore it is necessary to shift the shape upwards by text height.
-    lmLUnits uHeight = pShape->GetHeight();
-    pShape->Shift(0.0f, -uHeight);
-
-    //add shape to graphic model
-	pBox->AddShape(pShape);
-
-	// set total width
-	return pShape->GetWidth();
-}
-
-wxString lmScoreText::Dump()
-{
-    wxString sDump = wxString::Format(
-        _T("%d\tText '%s'"), m_nId, m_sText.Left(15).c_str() );
-
-    sDump += lmAuxObj::Dump();
-    sDump += _T("\n");
-    return sDump;
-}
-
-wxString lmScoreText::SourceLDP(int nIndent)
-{
-    wxString sSource = _T("");
-    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += (m_fIsTitle ? _T("(title") : _T("(text"));
-
-    //text goes after main tag in 'text' tags
-    if (!m_fIsTitle)
-    {
-        sSource += _T(" \"");
-        sSource += m_sText;
-        sSource += _T("\"");
-    }
-
-    //alignment
-    if (m_nHAlign == lmHALIGN_CENTER)
-        sSource += _T(" center");
-    else if (m_nHAlign == lmHALIGN_LEFT)
-        sSource += _T(" left");
-    else
-        sSource += _T(" right");
-
-    //text goes after alignment in 'title' tags
-    if (m_fIsTitle)
-    {
-        sSource += _T(" \"");
-        sSource += m_sText;
-        sSource += _T("\"");
-    }
-
-    //style info
-    sSource += _T(" (style \"");
-    sSource += m_pStyle->sName;
-    sSource += _T("\")");
-
-	//base class info
-    sSource += lmAuxObj::SourceLDP(nIndent);
-
-    //close element
-    sSource += _T(")\n");
-    return sSource;
-}
-
-wxString lmScoreText::SourceXML(int nIndent)
-{
-    //TODO
-    wxString sSource = _T("TODO: lmScoreText XML Source code generation methods");
-    return sSource;
-
-////    <direction placement="above">
-////      <direction-type>
-////        <words xml:lang="la" relative-y="5" relative-x="-5">Angelus
-//// dicit:</words>
-////      </direction-type>
-////    </direction>
-//
-//    sFuente = "<direction placement=""?"">" & sCrLf & _
-//                "  <direction-type>" & sCrLf & _
-//                "    <words xml:lang=""??"" relative-y=""??"" relative-x=""??"">" & _
-//                    m_sTexto & "</words>" & sCrLf & _
-//                "  </direction-type>" & sCrLf & _
-//                "<direction>"
-//
 }
 
 wxFont* lmScoreText::GetSuitableFont(lmPaper* pPaper)
@@ -258,7 +128,7 @@ void lmScoreText::OnProperties(lmController* pController, lmGMObject* pGMO)
 {
 	wxASSERT(pGMO);
 
-    lmDlgProperties dlg(pController, this);
+    lmDlgProperties dlg(pController);
     dlg.AddPanel( new lmTextProperties(dlg.GetNotebook(), this), _("Text"));
     dlg.Layout();
 
@@ -280,3 +150,212 @@ void lmScoreText::UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
 {
     Cmd_ChangeText(pUndoItem, sText, nAlign, tPos, pTS);
 }
+
+
+
+//==========================================================================================
+// lmTextItem implementation
+//==========================================================================================
+
+lmTextItem::lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
+                         lmTextStyle* pStyle)
+    : lmScoreText(sTitle, nHAlign, tPos, pStyle)
+{
+    m_nBlockAlign = lmBLOCK_ALIGN_NONE;
+    m_nVAlign = lmVALIGN_DEFAULT;
+}
+
+lmShape* lmTextItem::CreateShape(lmPaper* pPaper, lmUPoint uPos)
+{
+    // Creates the shape and returns it
+
+    lmShapeText* pGMObj =
+        new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
+                        uPos, _T("ScoreText"), lmDRAGGABLE, m_pStyle->nColor);
+
+    StoreShape(pGMObj);
+    return pGMObj;
+}
+
+lmLUnits lmTextItem::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
+{
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model.
+
+	WXUNUSED(colorC);
+
+    //create the shape object
+    lmShape* pShape = CreateShape(pPaper, uPos);
+
+    //According to LDP specifications [LDP manual, 3.6. The Text element] default text
+    //anchor pos is at bottom left corner. But text shape anchor pos is top left corner.
+    //Therefore it is necessary to shift the shape upwards by text height.
+    lmLUnits uHeight = pShape->GetHeight();
+    pShape->Shift(0.0f, -uHeight);
+
+    //add shape to graphic model
+	pBox->AddShape(pShape);
+
+	// set total width
+	return pShape->GetWidth();
+}
+
+wxString lmTextItem::Dump()
+{
+    wxString sDump = wxString::Format(
+        _T("%d\tText '%s'"), m_nId, m_sText.Left(15).c_str() );
+
+    sDump += lmAuxObj::Dump();
+    sDump += _T("\n");
+    return sDump;
+}
+
+wxString lmTextItem::SourceLDP(int nIndent)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(text");
+
+    //text goes after main tag
+    sSource += _T(" \"");
+    sSource += m_sText;
+    sSource += _T("\"");
+
+    //alignment
+    if (m_nHAlign == lmHALIGN_CENTER)
+        sSource += _T(" center");
+    else if (m_nHAlign == lmHALIGN_LEFT)
+        sSource += _T(" left");
+    else
+        sSource += _T(" right");
+
+    //style info
+    sSource += _T(" (style \"");
+    sSource += m_pStyle->sName;
+    sSource += _T("\")");
+
+	//base class info
+    sSource += lmAuxObj::SourceLDP(nIndent);
+
+    //close element
+    sSource += _T(")\n");
+    return sSource;
+}
+
+wxString lmTextItem::SourceXML(int nIndent)
+{
+    //TODO
+    wxString sSource = _T("TODO: lmTextItem XML Source code generation methods");
+    return sSource;
+
+////    <direction placement="above">
+////      <direction-type>
+////        <words xml:lang="la" relative-y="5" relative-x="-5">Angelus
+//// dicit:</words>
+////      </direction-type>
+////    </direction>
+//
+//    sFuente = "<direction placement=""?"">" & sCrLf & _
+//                "  <direction-type>" & sCrLf & _
+//                "    <words xml:lang=""??"" relative-y=""??"" relative-x=""??"">" & _
+//                    m_sTexto & "</words>" & sCrLf & _
+//                "  </direction-type>" & sCrLf & _
+//                "<direction>"
+//
+}
+
+
+
+
+//==========================================================================================
+// lmTextBlock implementation
+//==========================================================================================
+
+lmTextBlock::lmTextBlock(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
+                         lmEVAlign nVAlign, lmLocation& tPos, lmTextStyle* pStyle,
+                         bool fTitle)
+    : lmScoreText(sTitle, nHAlign, tPos, pStyle)
+{
+    m_nBlockAlign = nBlockAlign;
+    m_nVAlign = nVAlign;
+}
+
+lmShape* lmTextBlock::CreateShape(lmPaper* pPaper, lmUPoint uPos)
+{
+    // Creates the shape and returns it
+
+    lmShapeTextBlock* pGMObj
+        = new lmShapeTextBlock(this, m_sText, GetSuitableFont(pPaper), pPaper,
+                               m_nBlockAlign, m_nHAlign, m_nVAlign,
+                               uPos.x, uPos.y, 0.0f, 0.0f, m_pStyle->nColor);
+
+    StoreShape(pGMObj);
+    return pGMObj;
+}
+
+lmLUnits lmTextBlock::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
+{
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model.
+
+	WXUNUSED(colorC);
+
+    //create the shape object
+    lmShape* pShape = CreateShape(pPaper, uPos);
+
+    //add shape to graphic model
+	pBox->AddShape(pShape);
+
+	// set total width
+	return pShape->GetWidth();
+}
+
+wxString lmTextBlock::Dump()
+{
+    wxString sDump = wxString::Format(
+        _T("%d\tTitle '%s'"), m_nId, m_sText.Left(15).c_str() );
+
+    sDump += lmAuxObj::Dump();
+    sDump += _T("\n");
+    return sDump;
+}
+
+wxString lmTextBlock::SourceLDP(int nIndent)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(title");
+
+    //alignment
+    if (m_nHAlign == lmHALIGN_CENTER)
+        sSource += _T(" center");
+    else if (m_nHAlign == lmHALIGN_LEFT)
+        sSource += _T(" left");
+    else
+        sSource += _T(" right");
+
+    //text goes after alignment
+    sSource += _T(" \"");
+    sSource += m_sText;
+    sSource += _T("\"");
+
+    //style info
+    sSource += _T(" (style \"");
+    sSource += m_pStyle->sName;
+    sSource += _T("\")");
+
+	//base class info
+    sSource += lmAuxObj::SourceLDP(nIndent);
+
+    //close element
+    sSource += _T(")\n");
+    return sSource;
+}
+
+wxString lmTextBlock::SourceXML(int nIndent)
+{
+    //TODO
+    wxString sSource = _T("TODO: lmTextBlock XML Source code generation methods");
+    return sSource;
+}
+

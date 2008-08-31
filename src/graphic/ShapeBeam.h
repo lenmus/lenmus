@@ -62,7 +62,7 @@ public:
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
     //overrides
-    bool ContainsPoint(lmUPoint& pointL);
+    bool BoundsContainsPoint(lmUPoint& pointL);
 
 	//layout changes
     void AdjustStemsIfNeeded();

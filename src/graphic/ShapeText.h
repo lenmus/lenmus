@@ -49,13 +49,13 @@ class lmPaper;
 
 //------------------------------------------------------------------------------------
 
-class lmShapeTextOld : public lmSimpleShape
+class lmShapeText : public lmSimpleShape
 {
 public:
-    lmShapeTextOld(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
+    lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
                 lmUPoint offset, wxString sName=_T("ShapeText"),
 				bool fDraggable = false, wxColour color = *wxBLACK);
-    ~lmShapeTextOld() {}
+    ~lmShapeText() {}
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
@@ -77,14 +77,10 @@ private:
 
 //------------------------------------------------------------------------------------
 
-class lmShapeText : public lmShapeRectangle
+class lmShapeTextBlock : public lmShapeRectangle
 {
 public:
-    lmShapeText(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont, lmPaper* pPaper,
-                lmUPoint offset, wxString sName =_T("ShapeText"),
-				bool fDraggable = true, wxColour color = *wxBLACK);
-
-    lmShapeText(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
+    lmShapeTextBlock(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
                      lmPaper* pPaper, lmEBlockAlign nBlockAlign,
                      lmEHAlign nHAlign, lmEVAlign nVAlign,
                      lmLUnits xLeft, lmLUnits yTop,
@@ -92,7 +88,7 @@ public:
                      wxColour nColor = *wxBLACK, wxString sName=_T("ShapeTextBlock"),
 					 bool fDraggable = true);
 
-    ~lmShapeText() {}
+    ~lmShapeTextBlock() {}
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
@@ -104,7 +100,10 @@ public:
     wxString* GetText() { return &m_sText; }
 
     //call backs
-	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
+    wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
+	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+	void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+
 
 
 private:
@@ -112,12 +111,17 @@ private:
                 lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
                 lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
 
+    void ComputeTextPosition();
+    void ComputeBlockBounds(lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
+
     lmEBlockAlign   m_nBlockAlign;
     lmEHAlign       m_nHAlign;
     lmEVAlign       m_nVAlign;
     wxString        m_sText;
     wxFont*         m_pFont;
     lmUPoint        m_uTextPos;     // text position (relative to top-left of rectangle)
+    lmLUnits        m_uTextWidth;
+    lmLUnits        m_uTextHeight;
 
 };
 

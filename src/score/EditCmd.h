@@ -48,7 +48,7 @@ class lmBarline;
 class lmTimeSignature;
 class lmKeySignature;
 class lmStaffObj;
-class lmScoreText;
+class lmTextItem;
 class lmVStaff;
 class lmUndoItem;
 
@@ -320,7 +320,7 @@ class lmECmdChangeText : public lmEditCmd
 {
 public:
     lmECmdChangeText(lmScoreText* pST, lmUndoItem* pUndoItem, 
-                     wxString& sText, lmEHAlign nAlign, lmLocation tPos, 
+                     wxString& sText, lmEHAlign nHAlign, lmLocation tPos, 
                      lmTextStyle* pStyle);
     ~lmECmdChangeText() {}
 
@@ -329,7 +329,7 @@ public:
 
 protected:
     wxString        m_sText;
-    lmEHAlign    m_nAlign;
+    lmEHAlign       m_nHAlign;
     lmLocation      m_tPos;
     lmTextStyle*    m_pStyle;
 };

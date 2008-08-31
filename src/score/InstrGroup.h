@@ -32,7 +32,7 @@
 class lmShape;
 class lmInstrument;
 class lmPaper;
-class lmScoreText;
+class lmTextItem;
 class lmBox;
 
 
@@ -61,7 +61,7 @@ public:
 
 private:
     bool RenderBraket();
-	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName,
+	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmTextItem* pName,
                             lmLUnits xStaff, lmLUnits yTop, lmLUnits yBottom);
 
 
@@ -71,8 +71,8 @@ private:
 
     lmLUnits            m_uIndentFirst;     //indentation for first system
     lmLUnits            m_uIndentOther;     //indentation for other systems
-    lmScoreText*        m_pName;            //group name
-    lmScoreText*        m_pAbbreviation;    //group abbreviated name
+    lmTextItem*        m_pName;            //group name
+    lmTextItem*        m_pAbbreviation;    //group abbreviated name
     lmEBracketSymbol    m_nBracket;         //bracket symbol
     lmLUnits            m_uBracketWidth;    //to render the bracket
     lmLUnits            m_uBracketGap;      //to render the bracket

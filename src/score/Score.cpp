@@ -571,10 +571,13 @@ lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
     return (10.0f * uUnits)/uSpacing;
 }
 
-lmScoreText* lmScore::AddTitle(wxString sTitle, lmEHAlign nAlign, lmLocation tPos,
+lmTextBlock* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmLocation tPos,
                                lmTextStyle* pStyle)
 {
-    lmScoreText* pTitle = new lmScoreText(sTitle, nAlign, tPos, pStyle, true);  //true -> is title
+    lmTextBlock* pTitle = 
+        new lmTextBlock(sTitle, lmBLOCK_ALIGN_BOTH, nHAlign,
+                        lmVALIGN_TOP, tPos, pStyle, true);      //true -> is title
+
     m_nTitles.push_back( AttachAuxObj(pTitle) );
     return pTitle;
 }
@@ -614,7 +617,7 @@ lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
-									 lmScoreText* pName, lmScoreText* pAbbrev,
+									 lmTextItem* pName, lmTextItem* pAbbrev,
                                      lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
@@ -655,14 +658,33 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
 
 void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 {
+ //   lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
+
+ //   lmTextBlock* pTitle;
+ //   lmLUnits nPrevTitleHeight = 0;
+ //   for (int i=0; i < (int)m_nTitles.size(); i++)
+ //   {
+ //       pTitle = (lmTextBlock*)(*m_pAuxObjs)[m_nTitles[i]];
+	//	nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
+ //   }
+
+	//m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
+
+
     lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
 
-    lmScoreText* pTitle;
-    lmLUnits nPrevTitleHeight = 0;
     for (int i=0; i < (int)m_nTitles.size(); i++)
     {
-        pTitle = (lmScoreText*)(*m_pAuxObjs)[m_nTitles[i]];
-		nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
+        lmTextBlock* pTitle = (lmTextBlock*)(*m_pAuxObjs)[m_nTitles[i]];
+        pTitle->Layout(pBox, pPaper);   //, colorC, fHighlight);
+
+        //force auxObjs to take user position into account
+        pTitle->OnParentComputedPositionShifted(0.0f, 0.0f);
+
+        //get hight of title
+        lmGMObject* pGMO = pTitle->GetGraphicObject();
+		lmLUnits uHeight = pGMO->GetHeight();
+		pPaper->SetCursorY( pPaper->GetCursorY() + uHeight);
     }
 
 	m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
@@ -678,9 +700,9 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 	m_uComputedPos.x = pPaper->GetCursorX();
 	m_uComputedPos.y = pPaper->GetCursorY();
 
- //   //layout titles
- //   LayoutTitles(pBox, pPaper);
-	//m_uComputedPos.y += m_nHeadersHeight;
+    //layout titles
+    LayoutTitles(pBox, pPaper);
+	m_uComputedPos.y += m_nHeadersHeight;
 
 
 	//layout other AuxObjs attached directly to the score
@@ -693,10 +715,10 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
             //skip titles. They have been already layouted
-            //////if (!((*m_pAuxObjs)[i]->GetAuxObjType() == eAXOT_Text) ||
-            //////    !((lmScoreText*)((*m_pAuxObjs)[i]))->IsTitle() )
-	        //std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
-         //   if (it == m_nTitles.end())
+            ////if (!((*m_pAuxObjs)[i]->GetAuxObjType() == eAXOT_Text) ||
+            ////    !((lmTextItem*)((*m_pAuxObjs)[i]))->IsTitle() )
+	        std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
+            if (it == m_nTitles.end())
             {
 		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
 
@@ -712,14 +734,14 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 }
 
 
-lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pTitle,
+lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmTextBlock* pTitle,
 								   lmLUnits nPrevTitleHeight)
 {
     // Creates the shape for the title and adds it to the box.
 	// Returns height of title
 
     lmLUnits nWidth, nHeight;
-	lmShapeText* pShape = (lmShapeText*)NULL;
+	lmShape* pShape = (lmShape*)NULL;
 
     //// if not yet measured and positioned do it
     //if (!pTitle->IsFixed())

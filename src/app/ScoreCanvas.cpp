@@ -547,7 +547,7 @@ void lmScoreCanvas::ChangeNoteDots(int nDots)
 void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
                                lmLocation tPos, lmTextStyle* pStyle)
 {
-	//change properties of a lmScoreText object
+	//change properties of a lmTextItem object
 
     lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);

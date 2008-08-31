@@ -243,7 +243,7 @@ lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
     if (pShape) return pShape;
 
     // no object found. Verify if the point is in this object
-    if (ContainsPoint(pointL))
+    if (BoundsContainsPoint(pointL))
         return this;
     else
         return (lmGMObject*)NULL;

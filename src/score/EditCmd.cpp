@@ -365,22 +365,22 @@ void lmECmdDeleteBeam::RollBack(lmUndoItem* pUndoItem)
 //----------------------------------------------------------------------------------------
 
 lmECmdChangeText::lmECmdChangeText(lmScoreText* pST, lmUndoItem* pUndoItem,
-                                   wxString& sText, lmEHAlign nAlign,
+                                   wxString& sText, lmEHAlign nHAlign,
                                    lmLocation tPos, lmTextStyle* pStyle)
     : lmEditCmd((lmScoreObj*)pST)
 {
     //save all data to be modified
     m_sText = pST->GetText();
-    m_nAlign = pST->GetAlignment();
+    m_nHAlign = pST->GetAlignment();
     m_tPos = pST->GetLocation();
     m_pStyle = pST->GetStyle();
 
-    pST->Cmd_ChangeText(pUndoItem, sText, nAlign, tPos, pStyle);
+    pST->Cmd_ChangeText(pUndoItem, sText, nHAlign, tPos, pStyle);
 }
 
 void lmECmdChangeText::RollBack(lmUndoItem* pUndoItem)
 {
-    ((lmScoreText*)m_pSCO)->UndoCmd_ChangeText(pUndoItem, m_sText, m_nAlign, m_tPos, 
+    ((lmScoreText*)m_pSCO)->UndoCmd_ChangeText(pUndoItem, m_sText, m_nHAlign, m_tPos, 
                                                m_pStyle);
 }
 

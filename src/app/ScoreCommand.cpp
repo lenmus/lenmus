@@ -1303,13 +1303,13 @@ bool lmCmdJoinBeam::UndoCommand()
 
 lmCmdChangeText::lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
                                  lmScoreDocument *pDoc, lmScoreText* pST,
-                                 wxString& sText, lmEHAlign nAlign, 
+                                 wxString& sText, lmEHAlign nHAlign, 
                                  lmLocation tPos, lmTextStyle* pStyle)
 	: lmScoreCommand(name, pDoc, pVCursor)
 {
     m_pST = pST;
     m_sText = sText;
-    m_nAlign = nAlign; 
+    m_nHAlign = nHAlign; 
     m_tPos = tPos;
     m_pStyle = pStyle;
 }
@@ -1321,7 +1321,7 @@ lmCmdChangeText::~lmCmdChangeText()
 bool lmCmdChangeText::Do()
 {
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdChangeText(m_pST, pUndoItem, m_sText, m_nAlign,
+    lmEditCmd* pECmd = new lmECmdChangeText(m_pST, pUndoItem, m_sText, m_nHAlign,
                                             m_tPos, m_pStyle);
 
     if (pECmd->Success())

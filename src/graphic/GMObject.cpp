@@ -77,7 +77,7 @@ lmGMObject::~lmGMObject()
 {
 }
 
-bool lmGMObject::ContainsPoint(lmUPoint& pointL)
+bool lmGMObject::BoundsContainsPoint(lmUPoint& pointL)
 {
     //returns true if point received is within the limits of this Box
     return GetBounds().Contains(pointL);
@@ -238,7 +238,7 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
     //loop to look up in the shapes collection
 	for(int i=0; i < (int)m_Shapes.size(); i++)
     {
-        if (m_Shapes[i]->ContainsPoint(pointL))
+        if (m_Shapes[i]->BoundsContainsPoint(pointL))
 			return m_Shapes[i];    //found
     }
 
@@ -556,11 +556,11 @@ void lmCompositeShape::Render(lmPaper* pPaper,  wxColour color)
     }
 }
 
-bool lmCompositeShape::ContainsPoint(lmUPoint& pointL)
+bool lmCompositeShape::BoundsContainsPoint(lmUPoint& pointL)
 {
     for (int i=0; i < (int)m_Components.size(); i++)
     {
-        if (m_Components[i]->ContainsPoint(pointL))
+        if (m_Components[i]->BoundsContainsPoint(pointL))
 			return true;
     }
 	return false;

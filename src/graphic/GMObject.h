@@ -158,7 +158,7 @@ public:
     virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
     virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
-    virtual bool ContainsPoint(lmUPoint& pointL);
+    virtual bool BoundsContainsPoint(lmUPoint& pointL);
 
     // methods related to selection rectangle
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
@@ -431,7 +431,7 @@ public:
 	virtual void Render(lmPaper* pPaper, wxColour color);
 
 	//overrides
-    bool ContainsPoint(lmUPoint& pointL);
+    bool BoundsContainsPoint(lmUPoint& pointL);
     bool Collision(lmShape* pShape);
 
     //dragging

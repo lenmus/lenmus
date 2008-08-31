@@ -555,13 +555,13 @@ lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyS
 
 }
 
-bool lmShapeBeam::ContainsPoint(lmUPoint& pointL)
+bool lmShapeBeam::BoundsContainsPoint(lmUPoint& pointL)
 {
     //check if point is in beam segments
-    if (lmGMObject::ContainsPoint(pointL))
+    if (lmGMObject::BoundsContainsPoint(pointL))
         return true;
 
     //check if point is in any of the stems
-    return lmCompositeShape::ContainsPoint(pointL);
+    return lmCompositeShape::BoundsContainsPoint(pointL);
 }
 

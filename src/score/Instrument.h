@@ -40,7 +40,7 @@ public:
     lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
                  wxString sName, wxString sAbbrev);
     lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-                 lmScoreText* pName, lmScoreText* pAbbrev);
+                 lmTextItem* pName, lmTextItem* pAbbrev);
     ~lmInstrument();
 
 	//---- virtual methods of base class -------------------------
@@ -97,9 +97,9 @@ public:
 
 private:
     void Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-                lmScoreText* pName, lmScoreText* pAbbrev);
+                lmTextItem* pName, lmTextItem* pAbbrev);
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
-	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName);
+	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmTextItem* pName);
     bool RenderBraket();
 
     lmScore*        m_pScore;           //score to whith this instrument belongs
@@ -109,8 +109,8 @@ private:
 
     lmLUnits        m_uIndentFirst;     //indentation for first system
     lmLUnits        m_uIndentOther;     //indentation for other systems
-    lmScoreText*    m_pName;            //instrument name
-    lmScoreText*    m_pAbbreviation;    //instrument abbreviated name
+    lmTextItem*    m_pName;            //instrument name
+    lmTextItem*    m_pAbbreviation;    //instrument abbreviated name
 
     lmEBracketSymbol    m_nBracket;     //in case in has more that one staff
     lmInstrGroup*       m_pGroup;       //NULL if instrument not in group

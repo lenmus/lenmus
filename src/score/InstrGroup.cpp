@@ -47,8 +47,8 @@ lmInstrGroup::lmInstrGroup(lmEBracketSymbol nGrpSymbol, bool fJoinBarlines)
 	m_pShape = (lmShape*)NULL;
     m_fJoinBarlines = fJoinBarlines;
     m_nBracket = nGrpSymbol;
-    m_pName = (lmScoreText*)NULL;
-    m_pAbbreviation = (lmScoreText*)NULL;
+    m_pName = (lmTextItem*)NULL;
+    m_pAbbreviation = (lmTextItem*)NULL;
 }
 
 lmInstrGroup::~lmInstrGroup()
@@ -130,7 +130,7 @@ void lmInstrGroup::MeasureNames(lmPaper* pPaper)
 
     if (m_pName) {
         // measure text extent
-        lmShapeText* pShape = m_pName->CreateShape(pPaper, uPaperPos);
+        lmShape* pShape = m_pName->CreateShape(pPaper, uPaperPos);
         // set indent =  text extend + after text space
         m_uIndentFirst = pShape->GetWidth() + uSpaceAfterName;
 		delete pShape;
@@ -138,7 +138,7 @@ void lmInstrGroup::MeasureNames(lmPaper* pPaper)
 
     if (m_pAbbreviation) {
         // measure text extent
-        lmShapeText* pShape = m_pAbbreviation->CreateShape(pPaper, uPaperPos);
+        lmShape* pShape = m_pAbbreviation->CreateShape(pPaper, uPaperPos);
         // set indent =  text extend + after text space
         m_uIndentOther = pShape->GetWidth() + uSpaceAfterName;
 		delete pShape;
@@ -194,7 +194,7 @@ void lmInstrGroup::AddNameAndBracket(lmBox* pBox, lmPaper* pPaper, int nSystem,
         AddNameAbbrevShape(pBox, pPaper, m_pAbbreviation, xLeft, yTop, yBottom);
 }
 
-void lmInstrGroup::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmScoreText* pName,
+void lmInstrGroup::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmTextItem* pName,
                                       lmLUnits xStaff, lmLUnits yTop, lmLUnits yBottom)
 {
     //add shape for the bracket

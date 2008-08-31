@@ -47,9 +47,10 @@ class lmPaper;
 class lmGMObject;
 class lmUndoItem;
 class lmShapeText;
+class lmShapeTextBlock;
 class lmBox;
 
-// lmScoreText types
+// lmTextItem types
 enum
 {
     lmSIMPLE_TEXT = 0,
@@ -87,7 +88,6 @@ public:
 protected:
     wxString        m_sText;
     wxString        m_sLanguage;
-    bool            m_fIsTitle;     //to identify titles
 
     // position
     lmLocation      m_tTextPos;
@@ -103,47 +103,95 @@ protected:
 class lmScoreText :  public lmAuxObj, public lmBasicText
 {
 public:
-    //simple text constructor
-    lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
-                lmTextStyle* pStyle, bool fTitle=false);
-
-    //block text constructor
-    lmScoreText(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
-                lmEVAlign nVAlign, lmLocation& tPos, lmTextStyle* pStyle,
-                bool fTitle=false);
-
-    ~lmScoreText() {}
+    virtual ~lmScoreText() {}
 
     //implementation of virtual methods defined in abstract base class
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	wxFont* GetSuitableFont(lmPaper* pPaper);
-	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+    virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+                                  wxColour colorC)=0;
+	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
+	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
     //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
 	void OnProperties(lmController* pController, lmGMObject* pGMO);
-    wxString Dump();
-    wxString SourceLDP(int nIndent);
-    wxString SourceXML(int nIndent);
 
     //properties
     inline lmEHAlign GetAlignment() { return m_nHAlign; }
     inline void SetAlignment(lmEHAlign nHAlign) { m_nHAlign = nHAlign; }
 
     //layout
-	lmShapeText* CreateShape(lmPaper* pPaper, lmUPoint uPos);
+	virtual lmShape* CreateShape(lmPaper* pPaper, lmUPoint uPos)=0;
 
     //edit commands
-    void Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEHAlign nHAlign,
-                        lmLocation tPos, lmTextStyle* pTS);
-    void UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEHAlign nHAlign,
-                            lmLocation tPos, lmTextStyle* pTS);
+    virtual void Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
+                                lmEHAlign nHAlign, lmLocation tPos, lmTextStyle* pTS);
+    virtual void UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
+                                    lmEHAlign nHAlign, lmLocation tPos, lmTextStyle* pTS);
 
 
-private:
+protected:
+    lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
+                lmTextStyle* pStyle);
+
     lmEBlockAlign   m_nBlockAlign;
     lmEHAlign       m_nHAlign;
     lmEVAlign       m_nVAlign;
+
+};
+
+
+//------------------------------------------------------------------------------------
+
+class lmTextItem :  public lmScoreText
+{
+public:
+    //simple text constructor
+    lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
+                lmTextStyle* pStyle);
+
+    ~lmTextItem() {}
+
+    //implementation of virtual methods defined in abstract base class
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+
+    //implementation of virtual methods from base class
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
+    wxString Dump();
+    wxString SourceLDP(int nIndent);
+    wxString SourceXML(int nIndent);
+
+    //layout
+	lmShape* CreateShape(lmPaper* pPaper, lmUPoint uPos);
+
+private:
+
+};
+
+
+//------------------------------------------------------------------------------------
+
+class lmTextBlock :  public lmScoreText
+{
+public:
+    lmTextBlock(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
+                lmEVAlign nVAlign, lmLocation& tPos, lmTextStyle* pStyle,
+                bool fTitle=false);
+
+    ~lmTextBlock() {}
+
+    //implementation of virtual methods defined in abstract base class
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+
+    //implementation of virtual methods from base class
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
+    wxString Dump();
+    wxString SourceLDP(int nIndent);
+    wxString SourceXML(int nIndent);
+
+    //layout
+	lmShape* CreateShape(lmPaper* pPaper, lmUPoint uPos);
+
+
+private:
 
 };
 

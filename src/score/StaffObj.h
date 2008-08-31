@@ -308,7 +308,7 @@ enum EStaffObjType
     eSFOT_Notation,             // notations (lmNotation). Has subtype
     eSFOT_Barline,              // barlines (lmBarline)
     eSFOT_NoteRest,             // notes and rests (lmNoreRest)
-    eSFOT_Text,                 // texts (lmScoreText)
+    eSFOT_Text,                 // texts (lmTextItem)
     eSFOT_Control,              // control element (backup, forward) (lmSOControl)
     eSFOT_MetronomeMark,        // metronome mark (lmMetronomeMark)
     eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)

@@ -56,7 +56,7 @@
 
 #include <list>
 
-class lmScoreText;
+class lmTextItem;
 class lmController;
 
 
@@ -86,7 +86,7 @@ protected:
 class lmDlgProperties : public wxDialog 
 {
 public:
-	lmDlgProperties(lmController* pController, lmScoreText* pText);
+	lmDlgProperties(lmController* pController);
     ~lmDlgProperties();
 
     // event handlers

@@ -49,7 +49,7 @@ BEGIN_EVENT_TABLE(lmDlgProperties, wxDialog)
 END_EVENT_TABLE()
 
 
-lmDlgProperties::lmDlgProperties(lmController* pController, lmScoreText* pParentText)
+lmDlgProperties::lmDlgProperties(lmController* pController)
     : wxDialog(pController, wxID_ANY, _("Edit text"), wxDefaultPosition, wxSize(400, 250),
                wxDEFAULT_DIALOG_STYLE )
 {

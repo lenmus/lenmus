@@ -33,7 +33,7 @@ class lmInstrument;
 class lmRest;
 class lmNote;
 class lmSOControl;
-class lmScoreText;
+class lmTextItem;
 class lmMetronomeMark;
 class lmBoxSliceVStaff;
 class lmScoreCommand;
@@ -131,9 +131,9 @@ public:
 
     lmStaffObj* AddAnchorObj();
 
-    lmScoreText* AddText(wxString& sText, lmEHAlign nAlign,
+    lmTextItem* AddText(wxString& sText, lmEHAlign nAlign,
                          lmLocation& tPos, lmFontInfo& oFontData, bool fHasWidth);
-    lmScoreText* AddText(wxString& sText, lmEHAlign nAlign,
+    lmTextItem* AddText(wxString& sText, lmEHAlign nAlign,
                          lmLocation& tPos, lmTextStyle* pStyle, bool fHasWidth);
 
 	//Edition commands

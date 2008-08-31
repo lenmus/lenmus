@@ -489,7 +489,7 @@ public:
 protected:
     lmScoreText*        m_pST;
     wxString            m_sText;
-    lmEHAlign        m_nAlign; 
+    lmEHAlign           m_nHAlign; 
     lmLocation          m_tPos;
     lmTextStyle*        m_pStyle;
 

@@ -188,10 +188,10 @@ lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
     //find in margins
     if (g_fShowMargins)
     {
-        if (m_pTopMargin->ContainsPoint(pointL)) return m_pTopMargin;
-        if (m_pBottomMargin->ContainsPoint(pointL)) return m_pBottomMargin;
-        if (m_pLeftMargin->ContainsPoint(pointL)) return m_pLeftMargin;
-        if (m_pRightMargin->ContainsPoint(pointL)) return m_pRightMargin;
+        if (m_pTopMargin->BoundsContainsPoint(pointL)) return m_pTopMargin;
+        if (m_pBottomMargin->BoundsContainsPoint(pointL)) return m_pBottomMargin;
+        if (m_pLeftMargin->BoundsContainsPoint(pointL)) return m_pLeftMargin;
+        if (m_pRightMargin->BoundsContainsPoint(pointL)) return m_pRightMargin;
     }
 
     // no object found.

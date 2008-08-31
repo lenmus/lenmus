@@ -1469,7 +1469,7 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
 
 }
 
-lmScoreText* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
+lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
                             lmLocation& tPos, lmFontInfo& tFontData, bool fHasWidth)
 {
     lmTextStyle* pTS = m_pScore->GetStyleName(tFontData);
@@ -1477,10 +1477,10 @@ lmScoreText* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
     return AddText(sText, nAlign, tPos, pTS, fHasWidth);
 }
 
-lmScoreText* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
+lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
                             lmLocation& tPos, lmTextStyle* pStyle, bool fHasWidth)
 {
-    lmScoreText* pText = new lmScoreText(sText, nAlign, tPos, pStyle);
+    lmTextItem* pText = new lmTextItem(sText, nAlign, tPos, pStyle);
 
     // create an anchor object
     lmStaffObj* pAnchor;

@@ -152,7 +152,7 @@ lmLUnits lmBoxSystem::GetYTopFirstStaff()
 
 lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
 {
-    if (ContainsPoint(pointL))
+    if (BoundsContainsPoint(pointL))
     {
         //identify the measure
         for (int iS=0; iS < (int)m_Slices.size(); iS++)
@@ -188,7 +188,7 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
 	//previous 'for' loop, returning an SliceVStaff
 
     // no object found. Verify if the point is in this object
-    if (ContainsPoint(pointL)) 
+    if (BoundsContainsPoint(pointL)) 
         return this;
     else
         return (lmGMObject*)NULL;
@@ -227,7 +227,7 @@ lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
 	//is it any staff?
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-        if (m_ShapeStaff[i]->ContainsPoint(pointL))
+        if (m_ShapeStaff[i]->BoundsContainsPoint(pointL))
 			return m_ShapeStaff[i];
     }
 	return (lmShapeStaff*)NULL;

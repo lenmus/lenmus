@@ -126,7 +126,7 @@ class lmStaffObj;
 class lmSOIterator;
 
 class lmBasicText;
-class lmScoreText;
+class lmTextItem;
 class lmSOControl;
 class lmClef;
 class lmTimeSignature;
@@ -395,12 +395,12 @@ public:
                                 wxString sName, wxString sAbbrev=_T(""),
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                lmScoreText* pName, lmScoreText* pAbbrev,
+                                lmTextItem* pName, lmTextItem* pAbbrev,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
 
 
     // titles related methods
-    lmScoreText* AddTitle(wxString sTitle, lmEHAlign nAlign, lmLocation pos,
+    lmTextBlock* AddTitle(wxString sTitle, lmEHAlign nAlign, lmLocation pos,
                           lmTextStyle* pStyle);
 	void LayoutTitles(lmBox* pBox, lmPaper *pPaper);
 
@@ -491,7 +491,7 @@ private:
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
-	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pTitle,
+	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmTextBlock* pTitle,
 							  lmLUnits nPrevTitleHeight);
 	void DoAddInstrument(lmInstrument* pInstr, lmInstrGroup* pGroup);
 

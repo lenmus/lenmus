@@ -934,8 +934,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     // create the instrument with one empty VStaff
-    lmScoreText* pName = (lmScoreText*)NULL;
-    lmScoreText* pAbbrev = (lmScoreText*)NULL;
+    lmTextItem* pName = (lmTextItem*)NULL;
+    lmTextItem* pAbbrev = (lmTextItem*)NULL;
     if (sInstrName != _T(""))
     {
         lmTextStyle* pTS;
@@ -944,7 +944,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else
             pTS = pScore->GetStyleName(tNameFont);
         wxASSERT(pTS);
-        pName = new lmScoreText(sInstrName, nNameAlign, tNamePos, pTS);
+        pName = new lmTextItem(sInstrName, nNameAlign, tNamePos, pTS);
     }
     if (sInstrAbbrev != _T(""))
     {
@@ -954,7 +954,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else
         lmTextStyle* pTS = pScore->GetStyleName(tAbbrevFont);
         wxASSERT(pTS);
-        pAbbrev = new lmScoreText(sInstrAbbrev, nAbbrevAlign, tAbbrevPos, pTS);
+        pAbbrev = new lmTextItem(sInstrAbbrev, nAbbrevAlign, tAbbrevPos, pTS);
     }
 
     lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr,
@@ -2735,7 +2735,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     if (!pStyle)
         pStyle = pScore->GetStyleName(tFont);
 
-    lmScoreText* pTitle = pScore->AddTitle(sTitle, nAlign, tPos, pStyle);
+    lmTextBlock* pTitle = pScore->AddTitle(sTitle, nAlign, tPos, pStyle);
 	pTitle->SetUserLocation(tPos);
 
     return false;
@@ -2976,7 +2976,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (!pStyle)
         pStyle = pVStaff->GetScore()->GetStyleName(tFont);
 
-    lmScoreText* pText = pVStaff->AddText(sText, nAlign, tPos, pStyle, fHasWidth);
+    lmTextItem* pText = pVStaff->AddText(sText, nAlign, tPos, pStyle, fHasWidth);
 	pText->SetUserLocation(tPos);
 
     return false;
