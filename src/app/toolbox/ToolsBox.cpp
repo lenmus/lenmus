@@ -57,15 +57,19 @@
 // Panels
 #include "ToolNotes.h"
 #include "ToolClef.h"
+#include "ToolBarlines.h"
 //TO_ADD: add here the new tool panel include file
 
 
 
 //layout parameters
-const int SPACING = 5;          //spacing (pixels) around each sizer
-const int BUTTON_SPACING = 2;	//spacing (pixels) between buttons
+const int SPACING = 4;          //spacing (pixels) around each sizer
+const int BUTTON_SPACING = 4;	//spacing (pixels) between buttons
 const int BUTTON_SIZE = 32;		//tools button size (pixels)
-const int NUM_COLUMNS = 5;      //number of buttons per row
+const int NUM_COLUMNS = 4;      //number of buttons per row
+// ToolBox width = NUM_COLUMNS * BUTTON_SIZE + 2*(NUM_COLUMNS-1)*BUTTON_SPACING + 2*SPACING
+//				 = 4*32 + 2*3*4 + 2*4 = 128+24+8 = 160
+
 const int ID_BUTTON = 2200;
 
 
@@ -94,7 +98,7 @@ static const lmToolsData m_aToolsData[] = {
  //   {lmPAGE_SELECTION,	_T("tool_selection"),		_("Select objects") },
 	//{lmPAGE_KEY_SIGN,	_T("tool_key_signatures"),	_("Select key signature edit tools") },
 	//{lmPAGE_TIME_SIGN,	_T("tool_time_signatures"),	_("Select time signatures edit tools") },
-	//{lmPAGE_BARLINES,	_T("tool_barlines"),		_("Select barlines and rehearsal marks edit tools") },
+	{lmPAGE_BARLINES,	_T("tool_barlines"),		_("Select barlines and rehearsal marks edit tools") },
 	//TO_ADD: Add here information about the new tool
 	//NEXT ONE MUST BE THE LAST ONE
 	{lmPAGE_NONE,		_T(""), _T("") },
@@ -148,25 +152,31 @@ void lmToolBox::CreateControls()
         m_pButton[iB]->SetBitmapDown(m_aToolsData[iB].sBitmap, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(m_aToolsData[iB].sBitmap, _T("button_over_flat"), btSize);
         m_pButton[iB]->SetToolTip(m_aToolsData[iB].sToolTip);
-        pButtonsSizer->Add(m_pButton[iB], 0, 0, BUTTON_SPACING);
+		int sides = 0;
+		if (iB > 0) sides |= wxLEFT;
+		if (iB < iMax-1) sides |= wxRIGHT;
+		pButtonsSizer->Add(m_pButton[iB],
+						   wxSizerFlags(0).Border(sides, BUTTON_SPACING) );
 	}
 
-    pSelectSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALL, 5 );
+    pSelectSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALL, SPACING );
 	
 	pSelectPanel->SetSizer( pSelectSizer );
 	pSelectPanel->Layout();
 	pSelectSizer->Fit( pSelectPanel );
-	pMainSizer->Add( pSelectPanel, 0, 0, 5 );
+	pMainSizer->Add( pSelectPanel, 0, 0, SPACING );
 	
     //the pages
 	m_pPageSizer = new wxBoxSizer( wxVERTICAL );
 	
-    m_pEmptyPage = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize(170, 400), wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
+	int nWidth = NUM_COLUMNS * BUTTON_SIZE + 2*(NUM_COLUMNS-1)*BUTTON_SPACING + 2*SPACING;
+    m_pEmptyPage = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(-1, 800),
+							   wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
     m_pEmptyPage->SetBackgroundColour(m_colors.Bright());
 	m_pCurPage = m_pEmptyPage;
-	m_pPageSizer->Add( m_pCurPage, 1, wxEXPAND, 5 );
+	m_pPageSizer->Add( m_pCurPage, 1, wxEXPAND, SPACING );
 	
-	pMainSizer->Add( m_pPageSizer, 1, wxEXPAND, 5 );
+	pMainSizer->Add( m_pPageSizer, 1, wxEXPAND, SPACING );
 	
 	SetSizer( pMainSizer );
     pMainSizer->SetSizeHints(this);
@@ -191,7 +201,7 @@ wxPanel* lmToolBox::CreatePanel(lmEToolPage nPanel)
         case lmPAGE_NOTES:
             return new lmToolPageNotes(this);
         case lmPAGE_BARLINES:
-            return (wxPanel*)NULL;	//new lmToolBarlinesOpt(m_pCurPage);
+            return new lmToolPageBarlines(this);
         //TO_ADD: Add a new case block for creating the new tool panel
         default:
             wxASSERT(false);

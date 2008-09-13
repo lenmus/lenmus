@@ -74,6 +74,9 @@ BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
     EVT_MENU	(lmPOPUP_Color, lmController::OnColor)
     EVT_MENU	(lmPOPUP_Properties, lmController::OnProperties)
     EVT_MENU	(lmPOPUP_DeleteTiePrev, lmController::OnDeleteTiePrev)
+    EVT_MENU	(lmPOPUP_AttachText, lmController::OnAttachText)
+    EVT_MENU	(lmPOPUP_Score_Titles, lmController::OnScoreTitles)
+    EVT_MENU	(lmPOPUP_View_Page_Margins, lmController::OnViewPageMargins)
 
 END_EVENT_TABLE()
 
@@ -111,7 +114,7 @@ void lmController::ShowContextualMenu(lmScoreObj* pOwner, lmGMObject* pGMO, wxMe
 	PopupMenu(pMenu, x, y);
 }
 
-wxMenu* lmController::GetContextualMenu()
+wxMenu* lmController::GetContextualMenu(bool fInitialize)
 {
 	return (wxMenu*)NULL;
 }
@@ -189,14 +192,29 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 }
 
 
-void lmScoreCanvas::PlayScore()
+void lmScoreCanvas::PlayScore(bool fFromCursor)
 {
     //get the score
     lmScore* pScore = m_pDoc->GetScore();
 
-    //play the score. Use current metronome setting
-    pScore->Play(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, ePM_NormalInstrument,
-                 0, this);
+	//determine measure from cursor or start of selection
+	int nMeasure = 1;
+	lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+	lmGMSelection* pSel = m_pView->GetSelection();
+	bool fFromMeasure = fFromCursor || pSel->NumObjects() > 0;
+	if (pSel->NumObjects() > 0)
+	{
+		nMeasure = ((lmNote*)pSel->GetFirst()->GetScoreOwner())->GetSegment()->GetNumSegment() + 1;
+		m_pView->DeselectAllGMObjects(true);	//redraw, to remove selction highlight
+	}
+	else if (pVCursor)
+		nMeasure = pVCursor->GetSegment() + 1;
+
+	//play back the score
+	if (fFromMeasure)
+		pScore->PlayFromMeasure(nMeasure, lmVISUAL_TRACKING, ePM_NormalInstrument, 0, this);
+	else
+		pScore->Play(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, ePM_NormalInstrument, 0, this);
 }
 
 void lmScoreCanvas::StopPlaying(bool fWait)
@@ -229,6 +247,24 @@ void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
 // Commands
 //--------------------------------------------------------------------------------------------
 
+
+void lmScoreCanvas::AttachNewText(lmComponentObj* pCO)
+{
+    //Create a new text and attach it to the received object
+
+	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("attach text");
+	pCP->Submit(new lmCmdAttachNewText(sName, m_pDoc, pCO));
+}
+
+void lmScoreCanvas::AddTitle()
+{
+    //Create a new block of text and attach it to the score
+
+	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdAddNewTitle(m_pDoc));
+}
+
 void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 {
 	//Generate move command to move the lmComponentObj and update the document
@@ -238,12 +274,20 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 	pCP->Submit(new lmCmdUserMoveScoreObj(sName, m_pDoc, pGMO, uPos));
 }
 
-void lmScoreCanvas::ChangePageMargin(lmGMObject* pGMO, int nIdx, lmLUnits uPos)
+void lmScoreCanvas::MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps)
+{
+	//Generate move command to move the note and change its pitch
+
+	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdMoveNote(m_pDoc, (lmNote*)pGMO->GetScoreOwner(), uPos, nSteps));
+}
+
+void lmScoreCanvas::ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos)
 {
 	//Updates the position of a margin
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmCmdChangePageMargin(_("Change margin"), m_pDoc, pGMO, nIdx, uPos));
+	pCP->Submit(new lmCmdChangePageMargin(_("Change margin"), m_pDoc, pGMO, nIdx, nPage, uPos));
 }
 
 void lmScoreCanvas::DeleteCaretSatffobj()
@@ -469,13 +513,15 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 							   lmENoteType nNoteType, float rDuration, int nDots,
 							   lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                               bool fTiedPrev)
+                               int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
 {
 	//insert a note at current cursor position
 
     //get cursor
     lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	wxASSERT(pVCursor);
+
+	//if new note in chord check that there is a base note at current cursor position
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -487,7 +533,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 
 	pCP->Submit(new lmCmdInsertNote(pVCursor, sName, m_pDoc, nPitchType, nStep, nOctave,
 							        nNoteType, rDuration, nDots, nNotehead, nAcc,
-                                    fTiedPrev) );
+                                    nVoice, pBaseOfChord, fTiedPrev) );
 }
 
 void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots)
@@ -545,7 +591,7 @@ void lmScoreCanvas::ChangeNoteDots(int nDots)
 }
 
 void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
-                               lmLocation tPos, lmTextStyle* pStyle)
+                               lmLocation tPos, lmTextStyle* pStyle, int nHintOptions)
 {
 	//change properties of a lmTextItem object
 
@@ -555,7 +601,13 @@ void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlig
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change text");
 	pCP->Submit(new lmCmdChangeText(pVCursor, sName, m_pDoc, pST, sText,
-                                    nAlign, tPos, pStyle) );
+                                    nAlign, tPos, pStyle, nHintOptions) );
+}
+
+void lmScoreCanvas::ChangeBarline(lmBarline* pBL, lmEBarline nType, bool fVisible)
+{
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdChangeBarline(m_pDoc, pBL, nType, fVisible) );
 }
 
 void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
@@ -813,6 +865,9 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, nDots, 0, 0);
 			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
 			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
+				m_nOctave = pNoteOptions->GetOctave();
+				int nVoice = pNoteOptions->GetVoice();
+
                 bool fTiedPrev = false;
 
                 //if terminal symbol, analyze full command
@@ -856,9 +911,18 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                     static wxString sSteps = _T("abcdefg");
                     int nStep = LetterToStep( sSteps.GetChar( nKeyCode - int('A') ));
 
+					//check if the note is added to form a chord and determine base note
+					lmNote* pBaseOfChord = (lmNote*)NULL;
+					if (event.AltDown())
+					{
+						lmStaffObj* pSO = m_pView->GetVCursor()->GetStaffObj();
+						if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+							pBaseOfChord = (lmNote*)pSO;
+					}
+
                     //do insert note
 					InsertNote(lm_ePitchRelative, nStep, m_nOctave, nNoteType, rDuration,
-							   nDots, nNotehead, nAcc, fTiedPrev);
+							   nDots, nNotehead, nAcc, nVoice, pBaseOfChord, fTiedPrev);
 
                     fUnknown = false;
                 }
@@ -948,29 +1012,29 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 
             case lmPAGE_CLEFS:	//---------------------------------------------------------
 		    {
-                fUnknown = false;       //assume it will be processed
-			    switch (nKeyCode)
-			    {
-				    case int('G'):	// 'g' insert G clef
-				    case int('g'):
-					    InsertClef(lmE_Sol);
-					    break;
+       //         fUnknown = false;       //assume it will be processed
+			    //switch (nKeyCode)
+			    //{
+				   // case int('G'):	// 'g' insert G clef
+				   // case int('g'):
+					  //  InsertClef(lmE_Sol);
+					  //  break;
 
-				    case int('F'):	// 'f' insert F4 clef
-				    case int('f'):
-					    InsertClef(lmE_Fa4);
-					    break;
+				   // case int('F'):	// 'f' insert F4 clef
+				   // case int('f'):
+					  //  InsertClef(lmE_Fa4);
+					  //  break;
 
-				    case int('C'):    // 'c' insert C3 clef
-				    case int('c'):
-					    InsertClef(lmE_Do3);
-					    break;
+				   // case int('C'):    // 'c' insert C3 clef
+				   // case int('c'):
+					  //  InsertClef(lmE_Do3);
+					  //  break;
 
-				    default:
-                        if (wxIsprint(nKeyCode))
-                            m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
-					    fUnknown = true;
-			    }
+				   // default:
+       //                 if (wxIsprint(nKeyCode))
+       //                     m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
+					  //  fUnknown = true;
+			    //}
 			    break;
 		    }
 
@@ -1193,10 +1257,13 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
 	// canvas areas
 }
 
-wxMenu* lmScoreCanvas::GetContextualMenu()
+wxMenu* lmScoreCanvas::GetContextualMenu(bool fInitialize)
 {
 	if (m_pMenu) delete m_pMenu;
 	m_pMenu = new wxMenu();
+
+	if (!fInitialize) 
+		return m_pMenu;
 
 #if defined(__WXMSW__) || defined(__WXGTK__)
 
@@ -1207,22 +1274,22 @@ wxMenu* lmScoreCanvas::GetContextualMenu()
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nIconSize) );
     m_pMenu->Append(pItem);
 
-    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Copy, _("&Copy"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nIconSize) );
-    m_pMenu->Append(pItem);
+    //pItem = new wxMenuItem(m_pMenu, lmPOPUP_Copy, _("&Copy"));
+    //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nIconSize) );
+    //m_pMenu->Append(pItem);
 
-    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Paste, _("&Paste"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nIconSize) );
-    m_pMenu->Append(pItem);
+    //pItem = new wxMenuItem(m_pMenu, lmPOPUP_Paste, _("&Paste"));
+    //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nIconSize) );
+    //m_pMenu->Append(pItem);
 
-	m_pMenu->AppendSeparator();
+	//m_pMenu->AppendSeparator();
 
-    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Color, _("Colour"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_colors"), wxART_TOOLBAR, nIconSize) );
-    m_pMenu->Append(pItem);
+    //pItem = new wxMenuItem(m_pMenu, lmPOPUP_Color, _("Colour"));
+    //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_colors"), wxART_TOOLBAR, nIconSize) );
+    //m_pMenu->Append(pItem);
 
-    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Properties, _("Properties"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_tools"), wxART_TOOLBAR, nIconSize) );
+    pItem = new wxMenuItem(m_pMenu, lmPOPUP_Properties, _("Edit"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_properties"), wxART_TOOLBAR, nIconSize) );
     m_pMenu->Append(pItem);
 
 	//m_pMenu->AppendSeparator();
@@ -1230,10 +1297,12 @@ wxMenu* lmScoreCanvas::GetContextualMenu()
 
 #else
 	m_pMenu->Append(lmPOPUP_Cut, _("&Cut"));
-	m_pMenu->Append(lmPOPUP_Copy, _("&Copy"));
-	m_pMenu->Append(lmPOPUP_Paste, _("&Paste"));
-	m_pMenu->AppendSeparator();
-	m_pMenu->Append(lmPOPUP_Color, _("Colour"));
+	//m_pMenu->Append(lmPOPUP_Copy, _("&Copy"));
+	//m_pMenu->Append(lmPOPUP_Paste, _("&Paste"));
+	//m_pMenu->AppendSeparator();
+	//m_pMenu->Append(lmPOPUP_Color, _("Colour"));
+    m_pMenu->Append(lmPOPUP_Properties, _("Edit"));
+
 	//m_pMenu->AppendSeparator();
 
 #endif
@@ -1271,14 +1340,33 @@ void lmScoreCanvas::OnProperties(wxCommandEvent& event)
 void lmScoreCanvas::OnDeleteTiePrev(wxCommandEvent& event)
 {
 	WXUNUSED(event);
-	wxASSERT(m_pMenuOwner->GetScoreObjType() == lmSOT_ComponentObj);
-    wxASSERT( ((lmComponentObj*)m_pMenuOwner)->GetType() == lm_eStaffObj);
+	wxASSERT(m_pMenuOwner->IsComponentObj());
+    wxASSERT( ((lmComponentObj*)m_pMenuOwner)->IsStaffObj());
     wxASSERT( ((lmStaffObj*)m_pMenuOwner)->IsNoteRest());
     wxASSERT( ((lmNoteRest*)m_pMenuOwner)->IsNote());
 
     DeleteTie( (lmNote*)m_pMenuOwner );
 }
 
+void lmScoreCanvas::OnAttachText(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+	wxASSERT(m_pMenuOwner->IsComponentObj());
+
+    AttachNewText( (lmComponentObj*)m_pMenuOwner );
+}
+
+void lmScoreCanvas::OnScoreTitles(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+	AddTitle();
+}
+
+void lmScoreCanvas::OnViewPageMargins(wxCommandEvent& event)
+{
+    g_fShowMargins = !g_fShowMargins;
+    g_pTheApp->UpdateCurrentDocViews();
+}
 
 void lmScoreCanvas::SelectNoteDuration(int iButton)
 {
@@ -1331,6 +1419,36 @@ void lmScoreCanvas::SynchronizeToolBox()
         SynchronizeToolBoxWithCaret(true);
         SynchronizeToolBoxWithSelection(false);
     }
+
+	//options independent from caret/selection
+
+    switch( pToolBox->GetSelectedToolPage() )
+    {
+        case lmPAGE_NONE:
+            return;         //nothing selected!
+
+        case lmPAGE_NOTES:
+            //voice and octave
+            {
+                lmToolPageNotes* pPage = (lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES);
+                lmGrpOctave* pGrp = (lmGrpOctave*)pPage->GetToolGroup(lmGRP_Octave);
+                pGrp->SetOctave(m_nOctave);
+            }
+            break;
+
+        case lmPAGE_SELECTION:
+        case lmPAGE_CLEFS:
+        case lmPAGE_KEY_SIGN:
+        case lmPAGE_TIME_SIGN:
+        case lmPAGE_BARLINES:
+            lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithCaret] Code to sync. this tool"));
+            break;
+
+        default:
+            wxASSERT_MSG(false, _T("[lmScoreCanvas::SynchronizeToolBox] Default case reached"));
+    }
+
+
 }
 
 void lmScoreCanvas::SynchronizeToolBoxWithCaret(bool fEnable)

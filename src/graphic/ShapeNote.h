@@ -56,6 +56,7 @@ public:
 
 	//overrides of virtual methods in base class
 	void Shift(lmLUnits xIncr, lmLUnits yIncr);
+	virtual void Render(lmPaper* pPaper, wxColour color);
 
 	//specific methods
 	void AddStem(lmShapeStem* pShape);
@@ -63,6 +64,8 @@ public:
 	void AddFlag(lmShape* pShape);
 	void AddAccidental(lmShape* pShape);
 	void AddNoteInBlock(lmShape* pShape);
+	void AddLegerLinesInfo(int nPosOnStaff, lmLUnits uyStaffTopLine);
+
 
 	//info about related shapes
 	inline void SetBeamShape(lmShapeBeam* pBeamShape) { m_pBeamShape = pBeamShape; }
@@ -78,8 +81,9 @@ public:
 	lmLUnits GetStemThickness();
 	bool StemGoesDown();
 
-	//re-layout
+	//layout related
 	void SetStemLength(lmLUnits uLength);
+	void DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPaper, wxColour color);
 
 	//dragging
     wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
@@ -90,18 +94,21 @@ public:
 
 protected:
 	//index to some important constituent shapes
-	int		m_nNoteHead;
+	int				m_nNoteHead;
 
     //position
-    lmLUnits    m_uxLeft;
-    lmLUnits    m_uyTop;
+    lmLUnits		m_uxLeft;
+    lmLUnits		m_uyTop;
 
-	lmLUnits	m_uWidth;
+	lmLUnits		m_uWidth;
 
 	//related shapes
 	lmShapeBeam*	m_pBeamShape;
 	lmShapeStem*	m_pStemShape;
 
+	//info to render leger lines
+	int				m_nPosOnStaff;		//line/space on staff on which this note is placed
+	lmLUnits		m_uyStaffTopLine;	//y pos. of top staff line (5th line)
 
 };
 

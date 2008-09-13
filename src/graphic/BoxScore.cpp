@@ -72,13 +72,9 @@ void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
 
 }
 
-lmBoxPage* lmBoxScore::AddPage(lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
-                               lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
-                               lmLUnits uPageWidth, lmLUnits uPageHeight)
+lmBoxPage* lmBoxScore::AddPage()
 {
-    lmBoxPage* pPage = new lmBoxPage(this, (int)m_aPages.size()+1,
-                                     uxLeftMargin, uxRightMargin, uyTopMargin,
-                                     uyBottomMargin, uPageWidth, uPageHeight);
+    lmBoxPage* pPage = new lmBoxPage(this, (int)m_aPages.size()+1);
     m_aPages.push_back(pPage);
     return pPage;
 

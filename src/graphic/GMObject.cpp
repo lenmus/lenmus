@@ -35,6 +35,7 @@
 #include "../app/global.h"
 #include "GMObject.h"
 #include "BoxScore.h"
+#include "Handlers.h"
 #include "../app/Paper.h"
 #include "../score/StaffObj.h"
 #include "../app/ScoreCanvas.h"
@@ -71,17 +72,34 @@ lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
 	m_fSelected = false;
     m_fSelectable = fSelectable;
 	m_fLeftDraggable = fDraggable;
+	m_pHandlers = (std::list<lmHandler*>*)NULL;
 }
 
 lmGMObject::~lmGMObject()
 {
+    //delete handlers
+	if (m_pHandlers)
+	{
+		std::list<lmHandler*>::iterator it;
+		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
+			delete *it;
+		delete m_pHandlers;
+	}
 }
 
 bool lmGMObject::BoundsContainsPoint(lmUPoint& pointL)
 {
-    //returns true if point received is within the limits of this Box
-    return GetBounds().Contains(pointL);
+    //returns true if point received is within the limits of this object bounds
 
+    return GetBounds().Contains(pointL);
+}
+
+bool lmGMObject::SelRectContainsPoint(lmUPoint& pointL)
+{
+    //returns true if point received is within the limits of this object
+    //selection rectangle
+
+    return GetSelRectangle().Contains(pointL);
 }
 
 void lmGMObject::DrawBounds(lmPaper* pPaper, wxColour color)
@@ -200,6 +218,49 @@ void lmGMObject::SetSelected(bool fValue)
     else
         pBS->RemoveFromSelection(this);
 }
+void lmGMObject::AddHandler(lmHandler* pHandler)
+{
+	if (!m_pHandlers)
+	{
+		m_pHandlers = new std::list<lmHandler*>();
+	    m_itHandler = m_pHandlers->begin();
+	}
+
+    m_pHandlers->push_back(pHandler);
+}
+
+lmHandler* lmGMObject::GetFirstHandler()
+{
+	wxASSERT(m_pHandlers);
+    m_itHandler = m_pHandlers->begin();
+    if (m_itHandler == m_pHandlers->end())
+        return (lmHandler*)NULL;
+
+    return *m_itHandler;
+}
+
+lmHandler* lmGMObject::GetNextHandler()
+{
+    //advance to next one
+    ++m_itHandler;
+    if (m_itHandler != m_pHandlers->end())
+        return *m_itHandler;
+
+    //no more items
+    return (lmHandler*)NULL;
+}
+
+void lmGMObject::DrawHandlers(lmPaper* pPaper)
+{
+    //render handlers for selected objects
+    if (m_pHandlers)	// && m_fSelected)
+    {
+        wxColour color = *wxRED;      //TODO User options
+		std::list<lmHandler*>::iterator it;
+		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
+            (*it)->Render(pPaper, color);
+    }
+}
 
 
 
@@ -238,7 +299,7 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
     //loop to look up in the shapes collection
 	for(int i=0; i < (int)m_Shapes.size(); i++)
     {
-        if (m_Shapes[i]->BoundsContainsPoint(pointL))
+        if (m_Shapes[i]->IsSelectable() && m_Shapes[i]->SelRectContainsPoint(pointL))
 			return m_Shapes[i];    //found
     }
 

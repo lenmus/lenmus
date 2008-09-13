@@ -382,6 +382,10 @@ enum
     lmPOPUP_Color,
     lmPOPUP_Properties,
     lmPOPUP_DeleteTiePrev,
+    lmPOPUP_AttachText,
+	lmPOPUP_Score_Titles,
+	lmPOPUP_View_Page_Margins,
+
 
     lmMENU_Last_Public_ID
 };

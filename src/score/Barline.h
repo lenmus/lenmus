@@ -28,6 +28,8 @@
 
 #include "wx/dc.h"
 
+class lmDlgProperties;
+class wxBitmapComboBox;
 
 //------------------------------------------------------------------------------------------------
 // lmBarline object
@@ -49,7 +51,8 @@ public:
         //specific methods for barline
 
     //info
-    lmEBarline GetBarlineType() {return m_nBarlineType;}
+    inline lmEBarline GetBarlineType() { return m_nBarlineType; }
+	inline void SetBarlineType(lmEBarline nType) { m_nBarlineType = nType; }
 
     //positioning
     lmELocationType GetLocationType() { return m_xUserPosType; }
@@ -59,6 +62,9 @@ public:
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
 
+	//edit properties
+	void OnEditProperties(lmDlgProperties* pDlg);
+
 
 private:
     lmEBarline          m_nBarlineType;             //type of barline
@@ -67,10 +73,27 @@ private:
 
 };
 
-//
-// global functions related to barlines
-//
-wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType);
+
+//-----------------------------------------------------------------------------------------
+// Utility global definitions and functions related to barlines
+//-----------------------------------------------------------------------------------------
+
+//info about barlines, to centralize data about barlines
+typedef struct
+{
+    wxString		sBarlineName;
+    lmEBarline		nBarlineType;
+} lmBarlinesDBEntry;
+
+extern lmBarlinesDBEntry g_tBarlinesDB[];
+
+
+// Utility global functions to use a wxBitmapComboBox control to display barlines
+extern void LoadBarlinesBitmapComboBox(wxBitmapComboBox* pCtrol, lmBarlinesDBEntry tBarlines[]);
+extern void SelectBarlineBitmapComboBox(wxBitmapComboBox* pCtrol, lmEBarline nType);
+
+// other global functions
+extern wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType);
 
 
 #endif    // __LM_BARLINE_H__

@@ -59,9 +59,7 @@ public:
     lmBoxScore(lmScore* pScore);
     ~lmBoxScore();
 
-    lmBoxPage* AddPage(lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
-                       lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
-                       lmLUnits uPageWidth, lmLUnits uPageHeight);
+    lmBoxPage* AddPage();
     void RenderPage(int nPage, lmPaper* pPaper); 
 
     inline lmBoxPage* GetCurrentPage() const { return m_aPages.back(); }

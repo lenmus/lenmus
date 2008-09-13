@@ -55,10 +55,7 @@ class lmHandler;
 class lmBoxPage : public lmBox
 {
 public:
-    lmBoxPage(lmBoxScore* pParent, int nNumPage,
-              lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
-              lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
-              lmLUnits uPageWidth, lmLUnits uPageHeight);
+    lmBoxPage(lmBoxScore* pParent, int nNumPage);
     ~lmBoxPage();
 
 	//info
@@ -68,7 +65,7 @@ public:
 
 	//access to objects
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+    lmGMObject* FindSelectableObjectAtPos(lmUPoint& pointL);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
@@ -77,12 +74,6 @@ public:
     lmBoxSystem* AddSystem(int nSystem);
     void Render(lmScore* pScore, lmPaper* pPaper);
     void DrawHandlers(lmPaper* pPaper);
-
-    //handlers
-	void AddHandler(lmHandler* pHandler);
-	lmHandler* GetFirstHandler();
-	lmHandler* GetNextHandler();
-    inline int GetNumHandlers() { return (int)m_Handlers.size(); }
 
 
     //selection
@@ -107,18 +98,8 @@ private:
     int             m_nFirstSystem;
     int             m_nLastSystem;
 
-    //margins
-    lmShapeMargin*  m_pTopMargin;
-    lmShapeMargin*  m_pBottomMargin;
-    lmShapeMargin*  m_pLeftMargin;
-    lmShapeMargin*  m_pRightMargin;
-
     // a lmBoxPage is, mainly, a collection of lmBoxSystems
 	std::vector<lmBoxSystem*>	m_aSystems;		//array of ptrs to systems that form this page
-
-	//it also contains the list of handler shapes contained within the page
-	std::list<lmHandler*>	            m_Handlers;
-    std::list<lmHandler*>::iterator    m_it;           //for GetFirst(), GetNext() methods
 
     //page origin
     lmUPoint    m_pageOrgL;

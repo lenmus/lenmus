@@ -37,12 +37,14 @@
 #include "../score/UndoRedo.h"
 #include "../score/VStaff.h"
 #include "../score/EditCmd.h"
+#include "../score/properties/DlgProperties.h"
 #include "ScoreCommand.h"
 #include "ScoreDoc.h"
 #include "TheApp.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeArch.h"
 #include "../graphic/ShapeBeam.h"
+#include "../graphic/ShapeText.h"
 
 
 //----------------------------------------------------------------------------------------
@@ -54,12 +56,13 @@
 //----------------------------------------------------------------------------------------
 
 lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc,
-                               lmVStaffCursor* pVCursor, bool fHistory)
+                               lmVStaffCursor* pVCursor, bool fHistory, int nOptions)
     : wxCommand(true, sName)
 {
     m_pDoc = pDoc;
 	m_fDocModified = false;
     m_fHistory = fHistory;
+    m_nOptions = nOptions;
     if (pVCursor)
         m_tCursorState = pVCursor->GetState();
     else
@@ -81,7 +84,7 @@ bool lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
 
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(fScoreModified);
-    m_pDoc->UpdateAllViews(fScoreModified, new lmUpdateHint(nOptions) );
+    m_pDoc->UpdateAllViews(fScoreModified, new lmUpdateHint(m_nOptions | nOptions) );
 
     return m_fHistory;
 }
@@ -110,7 +113,8 @@ enum        //type of object to delete
     //lm_eObjStaff,
     lm_eObjStaffObj,
     //lm_eObjStem,
-    //lm_eObjText,
+    lm_eObjText,
+	lm_eObjTextBlock,
     lm_eObjTie,
     lm_eObjTuplet,
 };
@@ -197,6 +201,34 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                 }
                 break;
 
+            case eGMO_ShapeText:
+                {
+                    lmDeletedSO* pSOData = new lmDeletedSO;
+                    pSOData->nObjType = lm_eObjText;
+                    pSOData->pObj = (void*)NULL;
+                    pSOData->fObjDeleted = false;
+                    pSOData->pParm1 = (void*)( ((lmShapeText*)pGMO)->GetScoreOwner() );
+                    pSOData->pParm2 = (void*)NULL;
+
+                    m_ScoreObjects.push_back( pSOData );
+                    sCmdName = _T("Delete text");
+                }
+                break;
+
+			case eGMO_ShapeTextBlock:
+                {
+                    lmDeletedSO* pSOData = new lmDeletedSO;
+                    pSOData->nObjType = lm_eObjText;
+                    pSOData->pObj = (void*)NULL;
+                    pSOData->fObjDeleted = false;
+                    pSOData->pParm1 = (void*)( ((lmShapeTextBlock*)pGMO)->GetScoreOwner() );
+                    pSOData->pParm2 = (void*)NULL;
+
+                    m_ScoreObjects.push_back( pSOData );
+                    sCmdName = _T("Delete text");
+                }
+                break;
+
             //case eGMO_ShapeStaff:
             //case eGMO_ShapeArch:
             //case eGMO_ShapeBrace:
@@ -207,7 +239,6 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
             //case eGMO_ShapeLine:
             //case eGMO_ShapeMultiAttached:
             //case eGMO_ShapeStem:
-            //case eGMO_ShapeText:
             //    break;
 
             default:
@@ -237,6 +268,8 @@ lmCmdDeleteSelection::~lmCmdDeleteSelection()
                 case lm_eObjTuplet:     delete (lmTupletBracket*)(*it)->pObj;   break;
                 case lm_eObjStaffObj:   delete (lmStaffObj*)(*it)->pObj;        break;
                 case lm_eObjBeam:       delete (lmStaffObj*)(*it)->pObj;        break;
+				case lm_eObjText:		delete (lmTextItem*)(*it)->pObj;        break;
+				case lm_eObjTextBlock:	delete (lmTextItem*)(*it)->pObj;        break;
                 default:
                     wxASSERT(false);
             }
@@ -319,7 +352,18 @@ bool lmCmdDeleteSelection::Do()
                 }
                 break;
 
-            //case lm_eObjArch:
+            case lm_eObjText:
+			case lm_eObjTextBlock:
+                {
+                    lmScoreText* pText = (lmScoreText*)(*it)->pParm1;
+					lmComponentObj* pAnchor = (lmComponentObj*)pText->GetParentScoreObj();
+					pECmd = new lmEDeleteText(pText, pAnchor, pUndoItem);
+					wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet. %s"),
+						(pECmd->Success() ? _T("Success") : _T("Fail")) );
+				}
+                break;
+
+			//case lm_eObjArch:
             //case lm_eObjBrace:
             //case lm_eObjBracket:
             //case lm_eObjComposite:
@@ -328,7 +372,6 @@ bool lmCmdDeleteSelection::Do()
             //case lm_eObjLine:
             //case lm_eObjStaff:
             //case lm_eObjStem:
-            //case lm_eObjText:
             //    break;
 
             default:
@@ -561,6 +604,8 @@ lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocum
 
 bool lmCmdUserMoveScoreObj::Do()
 {
+    //Direct command. NO UNDO LOG
+
     wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Do] No ScoreObj to move!"));
 
     m_tOldPos = m_pSO->SetUserLocation(m_tPos, m_nShapeIdx);
@@ -570,6 +615,8 @@ bool lmCmdUserMoveScoreObj::Do()
 
 bool lmCmdUserMoveScoreObj::UndoCommand()
 {
+    //Direct command. NO UNDO LOG
+
     wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Undo]: No ScoreObj to move!"));
 
     m_pSO->SetUserLocation(m_tOldPos, m_nShapeIdx);
@@ -782,7 +829,7 @@ lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName
 								 int nStep, int nOctave,
 								 lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                                 bool fTiedPrev)
+                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
 	: lmScoreCommand(sName, pDoc, pVCursor)
 {
 	m_nNoteType = nNoteType;
@@ -793,6 +840,8 @@ lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName
 	m_rDuration = rDuration;
 	m_nNotehead = nNotehead;
 	m_nAcc = nAcc;
+	m_nVoice = nVoice;
+	m_pBaseOfChord = pBaseOfChord;
     m_fTiedPrev = fTiedPrev;
 }
 
@@ -809,7 +858,8 @@ bool lmCmdInsertNote::Do()
 
     lmEditCmd* pECmd = new lmECmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_nStep,
                                              m_nOctave, m_nNoteType, m_rDuration, m_nDots, 
-                                             m_nNotehead, m_nAcc, m_fTiedPrev);
+                                             m_nNotehead, m_nAcc, m_nVoice, m_pBaseOfChord,
+											 m_fTiedPrev);
 
     if (pECmd->Success())
     {
@@ -907,6 +957,8 @@ lmCmdChangeNotePitch::lmCmdChangeNotePitch(const wxString& sName, lmScoreDocumen
 
 bool lmCmdChangeNotePitch::Do()
 {
+    //Direct command. NO UNDO LOG
+
 	m_pNote->ChangePitch(m_nSteps);
 
 	return CommandDone(lmSCORE_MODIFIED);
@@ -914,6 +966,8 @@ bool lmCmdChangeNotePitch::Do()
 
 bool lmCmdChangeNotePitch::UndoCommand()
 {
+    //Direct command. NO UNDO LOG
+
 	m_pNote->ChangePitch(-m_nSteps);
 	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
@@ -1304,8 +1358,9 @@ bool lmCmdJoinBeam::UndoCommand()
 lmCmdChangeText::lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
                                  lmScoreDocument *pDoc, lmScoreText* pST,
                                  wxString& sText, lmEHAlign nHAlign, 
-                                 lmLocation tPos, lmTextStyle* pStyle)
-	: lmScoreCommand(name, pDoc, pVCursor)
+                                 lmLocation tPos, lmTextStyle* pStyle,
+                                 int nHintOptions)
+	: lmScoreCommand(name, pDoc, pVCursor, true, nHintOptions)
 {
     m_pST = pST;
     m_sText = sText;
@@ -1354,30 +1409,32 @@ bool lmCmdChangeText::UndoCommand()
 //----------------------------------------------------------------------------------------
 
 lmCmdChangePageMargin::lmCmdChangePageMargin(const wxString& name, lmScoreDocument *pDoc,
-                                             lmGMObject* pGMO, int nIdx, lmLUnits uPos)
+                                             lmGMObject* pGMO, int nIdx, int nPage,
+											 lmLUnits uPos)
 	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
 {
 	m_nIdx = nIdx;
 	m_uNewPos = uPos;
+	m_nPage = nPage;
 
     //save current position
     m_pScore = pDoc->GetScore();
     switch(m_nIdx)
     {
         case lmMARGIN_TOP:
-            m_uOldPos = m_pScore->GetPageTopMargin();
+            m_uOldPos = m_pScore->GetPageTopMargin(nPage);
             break;
 
         case lmMARGIN_BOTTOM:
-            m_uOldPos = m_pScore->GetMaximumY();
+            m_uOldPos = m_pScore->GetMaximumY(nPage);
             break;
 
         case lmMARGIN_LEFT:
-            m_uOldPos = m_pScore->GetLeftMarginXPos();
+            m_uOldPos = m_pScore->GetLeftMarginXPos(nPage);
             break;
 
         case lmMARGIN_RIGHT:
-            m_uOldPos = m_pScore->GetRightMarginXPos();
+            m_uOldPos = m_pScore->GetRightMarginXPos(nPage);
             break;
 
         default:
@@ -1406,28 +1463,240 @@ bool lmCmdChangePageMargin::UndoCommand()
 
 void lmCmdChangePageMargin::ChangeMargin(lmLUnits uPos)
 {
-    lmUSize size = m_pScore->GetPaperSize();
+    lmUSize size = m_pScore->GetPaperSize(m_nPage);
 
     switch(m_nIdx)
     {
         case lmMARGIN_TOP:
-            m_pScore->SetPageTopMargin(uPos);
+            m_pScore->SetPageTopMargin(uPos, m_nPage);
             break;
 
         case lmMARGIN_BOTTOM:
-            m_pScore->SetPageBottomMargin(size.Height() - uPos);
+            m_pScore->SetPageBottomMargin(size.Height() - uPos, m_nPage);
             break;
 
         case lmMARGIN_LEFT:
-            m_pScore->SetPageLeftMargin(uPos);
+            m_pScore->SetPageLeftMargin(uPos, m_nPage);
             break;
 
         case lmMARGIN_RIGHT:
-            m_pScore->SetPageRightMargin(size.Width() - uPos);
+            m_pScore->SetPageRightMargin(size.Width() - uPos, m_nPage);
             break;
 
         default:
             wxASSERT(false);
     }
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdAttachNewText implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdAttachNewText::lmCmdAttachNewText(const wxString& name, lmScoreDocument *pDoc,
+                                       lmComponentObj* pAnchor)
+	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
+{
+	m_pAnchor = pAnchor;
+    m_fDeleteText = false;
+
+    //Create the text
+    lmTextStyle* pStyle = pAnchor->GetScore()->GetStyleInfo(_("Normal text"));
+    wxASSERT(pStyle);
+
+    //create the text object
+    wxString sText = _T("");
+    m_pNewText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
+
+	//This is dirty: To use OnEditProperties() the text must be on the score. so I will
+	//attach it provisionally to the score
+	pAnchor->GetScore()->AttachAuxObj(m_pNewText);
+
+    //show dialog to create the text
+	lmDlgProperties dlg((lmController*)NULL);
+	m_pNewText->OnEditProperties(&dlg);
+	dlg.Layout();
+	dlg.ShowModal();
+
+	//dettach the text from the score
+	pAnchor->GetScore()->DetachAuxObj(m_pNewText);
+}
+
+lmCmdAttachNewText::~lmCmdAttachNewText()
+{
+	if (m_pNewText && m_fDeleteText)
+        delete m_pNewText;
+}
+
+bool lmCmdAttachNewText::Do()
+{
+    //Direct command. NO UNDO LOG
+
+    m_pAnchor->AttachAuxObj(m_pNewText);
+    m_fDeleteText = false;
+	return CommandDone(lmSCORE_MODIFIED);  //, lmREDRAW);
+}
+
+bool lmCmdAttachNewText::UndoCommand()
+{
+    //Direct command. NO UNDO LOG
+
+    m_pAnchor->DetachAuxObj(m_pNewText);
+    m_fDeleteText = true;
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdAddNewTitle implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdAddNewTitle::lmCmdAddNewTitle(lmScoreDocument *pDoc)
+	: lmScoreCommand(_("add title"), pDoc, (lmVStaffCursor*)NULL )
+{
+    m_fDeleteTitle = false;
+
+    //Create the text
+    lmTextStyle* pStyle = pDoc->GetScore()->GetStyleInfo(_("Title"));
+    wxASSERT(pStyle);
+
+    //create the text object
+    wxString sTitle = _T("");
+    m_pNewTitle = new lmTextBlock(sTitle, lmBLOCK_ALIGN_BOTH, lmHALIGN_DEFAULT,
+								  lmVALIGN_DEFAULT, pStyle);
+
+	//This is dirty: To use OnEditProperties() the text must be on the score. so I will
+	//attach it provisionally to the score
+	pDoc->GetScore()->AttachAuxObj(m_pNewTitle);
+
+    //show dialog to create the text
+	lmDlgProperties dlg((lmController*)NULL);
+	m_pNewTitle->OnEditProperties(&dlg);
+	dlg.Layout();
+	dlg.ShowModal();
+
+	//dettach the text from the score
+	pDoc->GetScore()->DetachAuxObj(m_pNewTitle);
+}
+
+lmCmdAddNewTitle::~lmCmdAddNewTitle()
+{
+	if (m_pNewTitle && m_fDeleteTitle)
+        delete m_pNewTitle;
+}
+
+bool lmCmdAddNewTitle::Do()
+{
+    //Direct command. NO UNDO LOG
+
+    if (m_pNewTitle->GetText() != _T(""))
+    {
+		m_pDoc->GetScore()->AttachAuxObj(m_pNewTitle);
+		m_fDeleteTitle = false;
+		return CommandDone(lmSCORE_MODIFIED); 
+    }
+    else
+    {
+        m_fDeleteTitle = true;
+        return false;
+    }
+}
+
+bool lmCmdAddNewTitle::UndoCommand()
+{
+    //Direct command. NO UNDO LOG
+
+    m_pDoc->GetScore()->DetachAuxObj(m_pNewTitle);
+    m_fDeleteTitle = true;
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdChangeBarline implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdChangeBarline::lmCmdChangeBarline(lmScoreDocument *pDoc, lmBarline* pBL,
+									   lmEBarline nType, bool fVisible)
+	: lmScoreCommand(_("change barline"), pDoc, (lmVStaffCursor*)NULL )
+{
+    m_pBL = pBL;
+    m_nType = nType;
+	m_fVisible = fVisible;
+    m_nOldType = m_pBL->GetBarlineType();
+	m_fOldVisible = m_pBL->IsVisible();
+}
+
+lmCmdChangeBarline::~lmCmdChangeBarline()
+{
+}
+
+bool lmCmdChangeBarline::Do()
+{
+    //Direct command. NO UNDO LOG
+
+    m_pBL->SetBarlineType(m_nType);
+    m_pBL->SetVisible(m_fVisible);
+	return CommandDone(lmSCORE_MODIFIED);
+}
+
+bool lmCmdChangeBarline::UndoCommand()
+{
+    //Direct command. NO UNDO LOG
+
+    m_pBL->SetBarlineType(m_nOldType);
+    m_pBL->SetVisible(m_fOldVisible);
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdMoveNote implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdMoveNote::lmCmdMoveNote(lmScoreDocument *pDoc, lmNote* pNote, const lmUPoint& uPos,
+							 int nSteps)
+	: lmScoreCommand(_("move note"), pDoc, (lmVStaffCursor*)NULL )
+{
+	m_tPos.x = uPos.x;
+	m_tPos.xType = lmLOCATION_USER_RELATIVE;
+	m_tPos.xUnits = lmLUNITS;
+	m_tPos.y = uPos.y;	//(g_fFreeMove ? uPos.y : pNote->GetUserShift().y);
+	m_tPos.yType = lmLOCATION_USER_RELATIVE;
+	m_tPos.yUnits = lmLUNITS;
+
+	m_pNote = pNote;
+    m_nSteps = nSteps;
+}
+
+bool lmCmdMoveNote::Do()
+{
+    //m_tOldPos = m_pNote->SetUserLocation(m_tPos);
+	m_pNote->ChangePitch(m_nSteps);
+
+	return CommandDone(lmSCORE_MODIFIED);
+}
+
+bool lmCmdMoveNote::UndoCommand()
+{
+    //Direct command. NO UNDO LOG
+
+	//m_pNote->SetUserLocation(m_tOldPos);
+	m_pNote->ChangePitch(-m_nSteps);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+
 }
 

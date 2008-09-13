@@ -5,7 +5,7 @@
          (clef treble)
          (n c4 q)
          (newSystem)
-         (barline simple NoVisible)
+         (barline simple noVisible)
          (n e4 q)
          (barline end)
       )

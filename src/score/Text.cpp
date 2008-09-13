@@ -84,10 +84,9 @@ lmBasicText::~lmBasicText()
 // lmScoreText implementation
 //==========================================================================================
 
-lmScoreText::lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
-                         lmTextStyle* pStyle)
+lmScoreText::lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
     : lmAuxObj(lmDRAGGABLE),
-      lmBasicText(sTitle, tPos, pStyle)
+      lmBasicText(sTitle, g_tDefaultPos, pStyle)
 {
     m_nBlockAlign = lmBLOCK_ALIGN_NONE;
     m_nHAlign = nHAlign;
@@ -129,10 +128,28 @@ void lmScoreText::OnProperties(lmController* pController, lmGMObject* pGMO)
 	wxASSERT(pGMO);
 
     lmDlgProperties dlg(pController);
-    dlg.AddPanel( new lmTextProperties(dlg.GetNotebook(), this), _("Text"));
+    dlg.AddPanel( new lmTextProperties(dlg.GetNotebook(), this),
+                  _("Text"));
     dlg.Layout();
 
     dlg.ShowModal();
+}
+
+//void lmScoreText::EditText(lmScore* pScore)
+//{
+//    lmDlgProperties dlg((lmController*)NULL);
+//    dlg.AddPanel( new lmTextProperties(dlg.GetNotebook(), this), _("Text"));
+//    dlg.Layout();
+//
+//    dlg.ShowModal();
+//}
+
+void lmScoreText::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
+{
+	//invoked to add specific panels to the dialog
+
+	pDlg->AddPanel( new lmTextProperties(pDlg->GetNotebook(), this),
+										 (sTabName == wxEmptyString ? _("Text") : sTabName) );
 }
 
 void lmScoreText::Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEHAlign nAlign,
@@ -157,9 +174,8 @@ void lmScoreText::UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
 // lmTextItem implementation
 //==========================================================================================
 
-lmTextItem::lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
-                         lmTextStyle* pStyle)
-    : lmScoreText(sTitle, nHAlign, tPos, pStyle)
+lmTextItem::lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
+    : lmScoreText(sTitle, nHAlign, pStyle)
 {
     m_nBlockAlign = lmBLOCK_ALIGN_NONE;
     m_nVAlign = lmVALIGN_DEFAULT;
@@ -272,9 +288,8 @@ wxString lmTextItem::SourceXML(int nIndent)
 //==========================================================================================
 
 lmTextBlock::lmTextBlock(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
-                         lmEVAlign nVAlign, lmLocation& tPos, lmTextStyle* pStyle,
-                         bool fTitle)
-    : lmScoreText(sTitle, nHAlign, tPos, pStyle)
+                         lmEVAlign nVAlign, lmTextStyle* pStyle)
+    : lmScoreText(sTitle, nHAlign, pStyle)
 {
     m_nBlockAlign = nBlockAlign;
     m_nVAlign = nVAlign;

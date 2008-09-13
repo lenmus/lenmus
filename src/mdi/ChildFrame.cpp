@@ -19,7 +19,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -54,8 +53,6 @@
 #endif
 
 #include "../app/global.h"
-
-#if lmUSE_NOTEBOOK_MDI
 
 
 // For compilers that support precompilation, includes "wx.h".
@@ -298,5 +295,3 @@ void lmMDIChildFrame::ApplyMDIChildFrameRect()
 {
     wxPanel::DoMoveWindow(m_MDIRect.x, m_MDIRect.y, m_MDIRect.width, m_MDIRect.height);
 }
-
-#endif  //lmUSE_NOTEBOOK_MDI

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -33,6 +32,45 @@
 class wxBitmapComboBox;
 class lmCheckButton;
 class lmBitmapButton;
+
+//--------------------------------------------------------------------------------
+// Group for octave number
+//--------------------------------------------------------------------------------
+class lmGrpOctave: public lmToolButtonsGroup
+{
+public:
+    lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpOctave() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_Octave; }
+
+	//access to options
+	inline int GetOctave() { return m_nSelButton; }
+	inline void SetOctave(int nOctave) { SelectButton(nOctave); }
+
+};
+
+
+//--------------------------------------------------------------------------------
+// Group for voice number
+//--------------------------------------------------------------------------------
+class lmGrpVoice: public lmToolButtonsGroup
+{
+public:
+    lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpVoice() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_Voice; }
+
+	//access to options
+	inline int GetVoice() { return m_nSelButton; }
+	inline void SetVoice(int nVoice) { SelectButton(nVoice); }
+
+};
 
 
 //--------------------------------------------------------------------------------
@@ -177,6 +215,12 @@ public:
 
 	//access to options
 
+    //interface with Octave group
+	inline int GetOctave() { return m_pGrpOctave->GetOctave(); }
+
+    //interface with voice group
+	inline int GetVoice() { return m_pGrpVoice->GetVoice(); }
+
     //interface with NoteDuration group
     inline void EnableGrpNoteDuration(bool fEnabled) { m_pGrpNoteDuration->EnableGroup(fEnabled); }
     inline void SetNoteDuration(lmENoteType nNoteType) { return m_pGrpNoteDuration->SelectButton((int)nNoteType - 1); }
@@ -227,6 +271,8 @@ private:
     lmGrpNoteDots*      m_pGrpNoteDots;
     lmGrpTieTuplet*     m_pGrpTieTuplet;
     lmGrpBeams*         m_pGrpBeams;
+	lmGrpOctave*		m_pGrpOctave;
+	lmGrpVoice*			m_pGrpVoice;
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;

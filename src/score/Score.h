@@ -172,13 +172,6 @@ class lmHandler;
 #include "../sound/SoundManager.h"
 
 
-// global unique variables used during score building
-// TODO: Replace for lmScore/lmNote member funtions
-extern lmNoteRest* g_pLastNoteRest;
-extern lmBeam* g_pCurBeam;
-
-
-
 
 //=======================================================================================
 // class lmScoreCursor
@@ -216,7 +209,7 @@ public:
     inline lmVStaffCursor* GetVCursor() { return m_pVCursor; }
     void SetNewCursorState(lmVCursorState* pState);
     void SelectCursor(lmVStaffCursor* pVCursor);
-    int GetPageNumber();
+    //int GetPageNumber();
 
 
 private:
@@ -280,6 +273,7 @@ public:
     lmPageInfo(int nLeftMargin = 20, int nRightMargin = 15, int nTopMargin = 20,
                int nBottomMargin = 20, int nBindingMargin = 0,
                wxSize nPageSize = wxSize(210, 297), bool fPortrait = true );            
+    lmPageInfo(lmPageInfo* pPageInfo);            
     ~lmPageInfo() {}
 
     //change settings
@@ -308,6 +302,8 @@ public:
     inline lmLUnits PageHeight() { return (m_fPortrait ? m_uPageSize.Height() : m_uPageSize.Width()); }
     inline lmLUnits GetUsableHeight() { return m_uPageSize.GetHeight() - m_uTopMargin - m_uBottomMargin; }
 
+	//source code
+    wxString SourceLDP(int nIndent);
 
 
 private:
@@ -353,6 +349,9 @@ public:
 	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Score; }
     inline lmScore* GetScore() { return this; }
 
+	//---- overrides
+	void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
+
 
 	//---- specific methods of this class ------------------------
 
@@ -369,6 +368,11 @@ public:
                      lmEPlayMode nPlayMode = ePM_NormalInstrument,
                      long nMM = 0,
                      wxWindow* pWindow = (wxWindow*)NULL );
+    void PlayFromMeasure(int nMeasure,
+						 bool fVisualTracking = lmNO_VISUAL_TRACKING,
+						 lmEPlayMode nPlayMode = ePM_NormalInstrument,
+						 long nMM = 0,
+						 wxWindow* pWindow = (wxWindow*)NULL );
     void Pause();
     void Stop();
     void WaitForTermination();
@@ -400,14 +404,17 @@ public:
 
 
     // titles related methods
-    lmTextBlock* AddTitle(wxString sTitle, lmEHAlign nAlign, lmLocation pos,
-                          lmTextStyle* pStyle);
+    lmTextBlock* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle);
 	void LayoutTitles(lmBox* pBox, lmPaper *pPaper);
 
     // identification
     wxString GetScoreName();
     void SetScoreName(wxString sName);
     inline long GetID() const { return m_nID; }
+
+    // properties
+    inline bool IsReadOnly() { return m_fReadOnly; }
+    inline void SetReadOnly(bool fValue) { m_fReadOnly = fValue; }
 
     // methods related to MusicXML import/export
     lmInstrument* XML_FindInstrument(wxString sId);
@@ -441,34 +448,32 @@ public:
 	void DetachCursor();
     lmScoreCursor* SetNewCursorState(lmVCursorState* pState);
 
-    //paper size and margins
+	//pages layout information
+	void SetPageInfo(int nPage);
+	void ClearPages();
+
+    // paper size and margings
+    lmLUnits GetPageTopMargin(int nPage = 1);
+    lmLUnits GetPageLeftMargin(int nPage = 1);
+    lmLUnits GetPageRightMargin(int nPage = 1);
+    lmUSize GetPaperSize(int nPage = 1);
+    lmLUnits GetMaximumY(int nPage = 1);
+    lmLUnits GetRightMarginXPos(int nPage = 1);
+    lmLUnits GetLeftMarginXPos(int nPage = 1);
 
         //change settings of current page
-    inline void SetPageTopMargin(lmLUnits uValue) { m_pPageInfo->SetTopMargin(uValue); }
-    inline void SetPageLeftMargin(lmLUnits uValue) { m_pPageInfo->SetLeftMargin(uValue); }
-    inline void SetPageRightMargin(lmLUnits uValue) { m_pPageInfo->SetRightMargin(uValue); }
-    inline void SetPageBottomMargin(lmLUnits uValue) { m_pPageInfo->SetBottomMargin(uValue); }
-    inline void SetPageBindingMargin(lmLUnits uValue) { m_pPageInfo->SetBindingMargin(uValue); }
+    void SetPageTopMargin(lmLUnits uValue, int nPage=1);
+    void SetPageLeftMargin(lmLUnits uValue, int nPage=1);
+    void SetPageRightMargin(lmLUnits uValue, int nPage=1);
+    void SetPageBottomMargin(lmLUnits uValue, int nPage=1);
+    void SetPageBindingMargin(lmLUnits uValue, int nPage=1);
 
-    inline void SetPageSize(lmLUnits uWidth, lmLUnits uHeight) { m_pPageInfo->SetPageSize(uWidth, uHeight); }
+    void SetPageSize(lmLUnits uWidth, lmLUnits uHeight, int nPage=1);
     inline void SetPageSizeMillimeters(wxSize nSize)
                             { m_pPageInfo->SetPageSizeMillimeters(nSize); }
 
-    inline void SetPageOrientation(bool fPortrait) { m_pPageInfo->SetOrientation(fPortrait); }
-    inline void SetPageNewSection(bool fNewSection) { m_pPageInfo->SetNewSection(fNewSection); }
-
-    void SetNumPage(int nNumPage);
-
-        // access to size and margings
-    inline lmLUnits GetPageTopMargin() { return m_pPageInfo->TopMargin(); }
-    inline lmLUnits GetPageLeftMargin() { return m_pPageInfo->LeftMargin(m_nNumPage); }
-    inline lmLUnits GetPageRightMargin() { return m_pPageInfo->RightMargin(m_nNumPage); }
-    inline lmUSize GetPaperSize() { return lmUSize(m_pPageInfo->PageWidth(), m_pPageInfo->PageHeight()); }
-    inline lmLUnits GetMaximumY() {return m_pPageInfo->GetUsableHeight() + m_pPageInfo->TopMargin(); }
-
-    lmLUnits GetRightMarginXPos();
-    lmLUnits GetLeftMarginXPos();
-    //end of methods using lmPaper ------------------------------------------------------
+    void SetPageOrientation(bool fPortrait, int nPage=1);
+    void SetPageNewSection(bool fNewSection, int nPage=1);
 
     //text styles
     inline lmTextStyle* GetStyleInfo(const wxString& sStyleName)
@@ -483,7 +488,10 @@ public:
                             { m_TextStyles.RemoveStyle(pStyle); }
 
     //handlers
-    lmUPoint CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, lmUPoint& uPos);
+    lmUPoint CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, int nPage, lmUPoint& uPos);
+
+	//call backs for edition
+	void OnInstrProperties(int nInstr);
 
 private:
     friend class lmScoreCursor;
@@ -524,6 +532,7 @@ private:
 
 
     //other variables
+    bool                    m_fReadOnly;    //the score is in read only mode
 	int					    m_nCurNode;     //last returned instrument node
     long				    m_nID;          //unique ID for this score
     wxString			    m_sScoreName;   //for user identification

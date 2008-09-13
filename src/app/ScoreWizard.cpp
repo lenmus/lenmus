@@ -132,13 +132,14 @@ static lmTemplateData m_Templates[] = {
         { _("Choir 3 voices (SSA)"),        _T("x"),                true },
         { _("Choir SSA + piano"),           _T("x"),                true },
         { _("Flute"),                       _T("flute.lms"),        true },
-        { _("Guitar"),                      _T("x"),                true },
+        { _("Guitar"),                      _T("guitar.lms"),       true },
         { _("Jazz quartet"),                _T("x"),                true },
         { _("Lead sheet"),                  _T("x"),                true },
         { _("Piano"),                       _T("piano.lms"),        true },
-        { _("Voice + keyboard"),            _T("x"),                true },
+        { _("Voice + keyboard"),            _T("voice_keyboard.lms"), true },
         { _("String quartet"),              _T("x"),                true },
         { _("String trio"),                 _T("x"),                true },
+        { _("Violin"),                      _T("violin.lms"),       true },
         { _("Woodwind trio"),               _T("x"),                true },
         { _("Woodwind quartet"),            _T("x"),                true },
 };
@@ -448,6 +449,13 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
 
 
     //add titles
+
+    //prepare a DC to measure texts
+    wxClientDC dc(this);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale(lmSCALE, lmSCALE);      //any scale is ok, so use 1.0
+
+    int iPrev = -1;             //index to previous added title
     bool fFirstLR = true;
     if (pScore && m_ScoreData.fAddTitles)
     {
@@ -455,7 +463,7 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         {
             if (!m_Titles[i].sTitle.IsEmpty())
             {
-                //shift down the first left/right title
+               //shift down the first left/right title
                 if (i > lmSUBTITLE && fFirstLR)
                 {
                     fFirstLR = false;
@@ -463,6 +471,49 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                     m_Titles[i].tPos.yUnits = lmMILLIMETERS;
                     m_Titles[i].tPos.y = 10.0f;
                 }
+
+                //Fix y_location if a left aligned title is followed by a right 
+                //aligned one. This last one must be repositioned in the same line
+                //than the left aligned title, unless it doesn't fit in the 
+                //available line space.
+
+                if (iPrev != -1 && 
+                    m_Titles[iPrev].nHAlign == lmHALIGN_LEFT &&
+                    m_Titles[i].nHAlign == lmHALIGN_RIGHT ) 
+                {
+                    //Adding a title automatically increments y-cursor by the height of
+                    //the title. Therefore, it is only necessary to undo this increment
+                    //if necessary
+
+                    lmLUnits uLineSpace = pScore->GetRightMarginXPos() - 
+                                          pScore->GetLeftMarginXPos();
+
+                    int nWidth, nHeight;
+                    wxFont font1((int)PointsToLUnits(m_Titles[iPrev].nFontSize),
+                                 wxFONTFAMILY_DEFAULT, m_Titles[iPrev].nFontStyle,
+                                 m_Titles[iPrev].nFontWeight, false,
+                                 m_Titles[iPrev].sFontName, wxFONTENCODING_DEFAULT);
+                    dc.SetFont(font1);
+                    dc.GetTextExtent(m_Titles[iPrev].sTitle, &nWidth, &nHeight);
+                    uLineSpace -= (lmLUnits)nWidth;
+
+                    wxFont font2((int)PointsToLUnits(m_Titles[i].nFontSize),
+                                 wxFONTFAMILY_DEFAULT, m_Titles[i].nFontStyle,
+                                 m_Titles[i].nFontWeight, false,
+                                 m_Titles[i].sFontName, wxFONTENCODING_DEFAULT);
+                    dc.SetFont(font2);
+                    dc.GetTextExtent(m_Titles[i].sTitle, &nWidth, &nHeight);
+                    uLineSpace -= (lmLUnits)nWidth;
+
+                    if (uLineSpace > 0.0f)
+                    {
+                        //reposition title in the same line than previous one
+                        m_Titles[i].tPos.y = - pScore->LogicalToTenths((lmLUnits)nHeight);
+                        m_Titles[i].tPos.yType = lmLOCATION_USER_RELATIVE;
+                        m_Titles[i].tPos.yUnits = lmTENTHS;
+                    }
+                }
+
 
                 //add the title
                 lmFontInfo tFont;
@@ -473,8 +524,10 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                 lmTextStyle* pStyle = 
                     pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
 
-                pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nHAlign,
-                                    m_Titles[i].tPos, pStyle );
+                lmTextBlock* pTitle =
+                    pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nHAlign, pStyle);
+	            pTitle->SetUserLocation(m_Titles[i].tPos);
+                iPrev = i;
             }
         }
     }

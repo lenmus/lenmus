@@ -90,6 +90,7 @@ public:
 
 
     //info
+	inline int GetNumSegment() { return m_nNumSegment; }
     int GetNumVoices();
     bool IsVoiceUsed(int nVoice);
     inline float GetDuration() { return m_rMaxTime; }
@@ -296,7 +297,7 @@ public:
     inline lmItCSO GetCurIt() { return m_it; }
     lmVCursorState GetState();
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
-    int GetPageNumber();
+    //int GetPageNumber();
 	lmStaffObj* GetStaffObj();
     lmStaffObj* GetPreviousStaffobj();
 

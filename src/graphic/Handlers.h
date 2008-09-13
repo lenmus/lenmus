@@ -60,7 +60,7 @@ protected:
 class lmShapeMargin : public lmHandler
 {
 public:
-    lmShapeMargin(lmScore* pScore, int nIdx, bool fVertical, lmLUnits uPos,
+    lmShapeMargin(lmScore* pScore, int nIdx, int nPage, bool fVertical, lmLUnits uPos,
                   lmLUnits uLenght, wxColour color = *wxBLACK);
 	~lmShapeMargin();
 
@@ -81,6 +81,7 @@ protected:
 
     //reference
     int         m_nIdx;         //used by the owner to identify which margin is this one
+	int			m_nPage;		//page in which this margin is placed
 
     //position and size
     bool        m_fVertical;    //vertical line

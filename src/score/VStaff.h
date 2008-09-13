@@ -110,7 +110,7 @@ public:
                     int nStaff, int nVoice = 1,
 					bool fVisible = true,
                     bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
-                    bool fInChord = false,
+                    lmNote* pBaseOfChord = (lmNote*)NULL,
                     bool fTie = false,
                     lmEStemType nStem = lmSTEM_DEFAULT);
 
@@ -131,10 +131,10 @@ public:
 
     lmStaffObj* AddAnchorObj();
 
-    lmTextItem* AddText(wxString& sText, lmEHAlign nAlign,
-                         lmLocation& tPos, lmFontInfo& oFontData, bool fHasWidth);
-    lmTextItem* AddText(wxString& sText, lmEHAlign nAlign,
-                         lmLocation& tPos, lmTextStyle* pStyle, bool fHasWidth);
+    lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& oFontData,
+                        bool fHasWidth);
+    lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
+                        bool fHasWidth);
 
 	//Edition commands
 
@@ -151,7 +151,7 @@ public:
 	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
 					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
-                           bool fTiedPrev, bool fAutoBar);
+                           int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
 
 	lmRest* Cmd_InsertRest(lmUndoItem* pUndoItem, lmENoteType nNoteType,
                            float rDuration, int nDots, bool fAutoBar);
@@ -294,6 +294,7 @@ public:
 private:
     friend class lmColStaffObjs;
 
+	//seetings
     void SetFont(lmStaff* pStaff, lmPaper* pPaper);
 
     //error management

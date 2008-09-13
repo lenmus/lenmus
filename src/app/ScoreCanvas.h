@@ -25,13 +25,6 @@
 #pragma interface "ScoreCanvas.cpp"
 #endif
 
-#if wxUSE_GENERIC_DRAGIMAGE
-#include "wx/generic/dragimgg.h"
-#define wxDragImage wxGenericDragImage
-#else
-#include "wx/dragimag.h"
-#endif
-
 #include "wx/docview.h"
 #include "global.h"
 class lmScoreHighlightEvent;
@@ -59,21 +52,25 @@ public:
 	virtual ~lmController();
 
 	//commands without Do/Undo support
-	virtual void PlayScore() {}
+	virtual void PlayScore(bool fFromCursor=false) {}
     virtual void StopPlaying(bool fWait=false) {}
     virtual void PausePlaying() {}
 
 
 	// commands with Do/Undo support
 
-        //insert commands
+        //add/insert commands
+	virtual void AddTitle() {}
+    virtual void AttachNewText(lmComponentObj* pCO) {}
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
     virtual void InsertClef(lmEClefType nClefType) {}
 	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots,
 					lmENoteHeads nNotehead,
                     lmEAccidentals nAcc = lm_eNoAccidentals,
-                    bool fTiedPrev = false) {}
+                    int nVoice = 0,
+					lmNote* pBaseOfChord = (lmNote*)NULL,
+					bool fTiedPrev = false) {}
 
     virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
@@ -94,11 +91,14 @@ public:
     virtual void AddTuplet() {}
     virtual void DeleteTuplet(lmNoteRest* pStartNote) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
+	virtual void MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps) {}
     virtual void BreakBeam() {}
     virtual void JoinBeam() {}
     virtual void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
-                            lmLocation tPos, lmTextStyle* pStyle) {}
-    virtual void ChangePageMargin(lmGMObject* pGMO, int nIdx, lmLUnits uPos) {}
+                            lmLocation tPos, lmTextStyle* pStyle, int nHintOptions=0) {}
+    virtual void ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos) {}
+	virtual void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible) {}
+
 
 
     // event handlers
@@ -108,7 +108,7 @@ public:
 
 	//contextual menus
 	void ShowContextualMenu(lmScoreObj* pOwner, lmGMObject* pGMO, wxMenu* pMenu, int x, int y);
-	virtual wxMenu* GetContextualMenu();
+	virtual wxMenu* GetContextualMenu(bool fInitialize = true);
 
 	//event handlers for contextual menus
 	virtual void OnCut(wxCommandEvent& event) {}
@@ -117,6 +117,9 @@ public:
     virtual void OnColor(wxCommandEvent& event) {}
     virtual void OnProperties(wxCommandEvent& event) {}
     virtual void OnDeleteTiePrev(wxCommandEvent& event) {}
+    virtual void OnAttachText(wxCommandEvent& event) {}
+	virtual void OnScoreTitles(wxCommandEvent& event) {}
+	virtual void OnViewPageMargins(wxCommandEvent& event) {}
 
     //call backs
     virtual void SynchronizeToolBox() {}
@@ -130,6 +133,7 @@ protected:
 	lmGMObject*		m_pMenuGMO;			//graphic object who displayed the contextual menu
 
     int             m_nOctave;          //current octave for note insertion
+	int				m_nVoice;			//current voice for note insertion
 
 private:
 
@@ -159,20 +163,24 @@ public:
     void OnToolBoxEvent(lmToolBoxEvent& event);
 
 	//commands without Do/Undo support
-    void PlayScore();
+    void PlayScore(bool fFromCursor=false);
     void StopPlaying(bool fWait=false);
     void PausePlaying();
 
 	// commands with Do/Undo support
 
-        //insert commands
+        //add/insert commands
+	void AddTitle();
+    void AttachNewText(lmComponentObj* pCO);
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
     void InsertClef(lmEClefType nClefType);
 	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots,
 					lmENoteHeads nNotehead,
                     lmEAccidentals nAcc = lm_eNoAccidentals,
-                    bool fTiedPrev = false);
+                    int nVoice = 0,
+					lmNote* pBaseOfChord = (lmNote*)NULL,
+					bool fTiedPrev = false);
 
     void InsertRest(lmENoteType nNoteType, float rDuration, int nDots);
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
@@ -193,11 +201,13 @@ public:
     void AddTuplet();
     void DeleteTuplet(lmNoteRest* pStartNR);
 	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
+	void MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps);
     void BreakBeam();
     void JoinBeam();
     void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
-                    lmLocation tPos, lmTextStyle* pStyle);
-    virtual void ChangePageMargin(lmGMObject* pGMO, int nIdx, lmLUnits uPos);
+                    lmLocation tPos, lmTextStyle* pStyle, int nHintOptions=0);
+    void ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos);
+	void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible);
 
 
 
@@ -206,7 +216,7 @@ public:
     void RestoreToolBoxSelections();
 
 	//contextual menus
-	wxMenu* GetContextualMenu();
+	wxMenu* GetContextualMenu(bool fInitialize = true);
 
 	//event handlers for contextual menus
 	void OnCut(wxCommandEvent& event);
@@ -215,7 +225,9 @@ public:
     void OnColor(wxCommandEvent& event);
     void OnProperties(wxCommandEvent& event);
     void OnDeleteTiePrev(wxCommandEvent& event);
-
+    void OnAttachText(wxCommandEvent& event);
+    void OnScoreTitles(wxCommandEvent& event);
+    void OnViewPageMargins(wxCommandEvent& event);
 
 
 private:

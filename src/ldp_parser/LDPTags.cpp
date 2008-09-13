@@ -157,6 +157,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("italic")] = _T("italic");
         m_Tags[0][_T("joinBarlines")] = _T("joinBarlines");
         m_Tags[0][_T("key")] = _T("key");
+        m_Tags[0][_T("landscape")] = _T("landscape");
         m_Tags[0][_T("left")] = _T("left");
         m_Tags[0][_T("metronome")] = _T("metronome");
         m_Tags[0][_T("musicData")] = _T("musicData");
@@ -166,7 +167,11 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("normal")] = _T("normal");
         m_Tags[0][_T("noVisible")] = _T("noVisible");
         m_Tags[0][_T("opt")] = _T("opt");
+        m_Tags[0][_T("pageLayout")] = _T("pageLayout");
+        m_Tags[0][_T("pageMargins")] = _T("pageMargins");
+        m_Tags[0][_T("pageSize")] = _T("pageSize");
         m_Tags[0][_T("parentheses")] = _T("parentheses");
+        m_Tags[0][_T("portrait")] = _T("portrait");
         m_Tags[0][_T("right")] = _T("right");
         m_Tags[0][_T("spacer")] = _T("spacer");
         m_Tags[0][_T("split")] = _T("split");
@@ -323,6 +328,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("italic")] = _T("cursiva");
         m_Tags[0][_T("joinBarlines")] = _T("unirBarras");
         m_Tags[0][_T("key")] = _T("tonalidad");
+        m_Tags[0][_T("landscape")] = _T("paisaje");
         m_Tags[0][_T("left")] = _T("izquierda");
         m_Tags[0][_T("metronome")] = _T("metronomo");
         m_Tags[0][_T("musicData")] = _T("datosMusica");
@@ -332,7 +338,11 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("normal")] = _T("normal");
         m_Tags[0][_T("noVisible")] = _T("noVisible");
         m_Tags[0][_T("opt")] = _T("opcion");
+        m_Tags[0][_T("pageLayout")] = _T("pageLayout");
+        m_Tags[0][_T("pageMargins")] = _T("pageMargins");
+        m_Tags[0][_T("pageSize")] = _T("pageSize");
         m_Tags[0][_T("parentheses")] = _T("parentesis");
+        m_Tags[0][_T("portrait")] = _T("retrato");
         m_Tags[0][_T("right")] = _T("derecha");
         m_Tags[0][_T("spacer")] = _T("espacio");
         m_Tags[0][_T("split")] = _T("partes");

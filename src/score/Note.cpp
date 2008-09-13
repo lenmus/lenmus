@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -79,7 +78,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         int nNumDots, int nStaff, int nVoice, bool fVisible,
         lmContext* pContext,
         bool fBeamed, lmTBeamInfo BeamInfo[],
-        bool fInChord,
+        lmNote* pBaseOfChord,
         bool fTie,
         lmEStemType nStem)  :
     lmNoteRest(pVStaff, lmDEFINE_NOTE, nNoteType, rDuration, nNumDots, nStaff,
@@ -211,21 +210,15 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     //if the note is part of a chord find the base note and take some values from it
     m_pChord = (lmChord*)NULL;		//by defaul note is not in chord
     m_fNoteheadReversed = false;
-    if (fInChord) {
-        if (!g_pLastNoteRest || g_pLastNoteRest->IsRest()) {
-            ; //TODO
-            wxLogMessage(_T("[lmNote::lmNote] Specified 'note in chord' but no base note yet defined. Chord ignored"));
-        }
+    if (pBaseOfChord)
+	{
+		//note in chord.
+        if (pBaseOfChord->IsInChord())
+            m_pChord = pBaseOfChord->GetChord();
         else
-		{
-            lmNote* pLastNote = (lmNote*)g_pLastNoteRest;
-            if (pLastNote->IsInChord())
-                m_pChord = pLastNote->GetChord();
-            else
-				m_pChord = new lmChord(pLastNote);
+			m_pChord = new lmChord(pBaseOfChord);
 
-            m_pChord->Include(this);
-        }
+        m_pChord->Include(this);
     }
 
 
@@ -248,8 +241,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 
     // Generate beaming information -----------------------------------------------------
     CreateBeam(fBeamed, BeamInfo);
-
-    if (!IsInChord() || IsBaseOfChord()) g_pLastNoteRest = this;
 
     //initializations for renderization
     m_uSpacePrev = 0;
@@ -462,6 +453,21 @@ lmUPoint lmNote::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	return uPos;
 }
 
+lmLUnits lmNote::CheckNoteNewPosition(lmLUnits uyOldPos, lmLUnits uyNewPos, int* pnSteps)
+{
+    // A note only can be moved in discrete vertical steps (staff lines/spaces).
+	// This method receives current notehead position and new intended position and
+	// returns the nearest valid yPosition. It also updates content of pnSteps with
+	// the number of steps (half lines) that the note has been moved.
+
+	//compute the number of steps (half lines) that the notehead has been moved
+	lmLUnits uHalfLine = m_pVStaff->TenthsToLogical(5.0f);
+	*pnSteps = int(0.5f + (uyOldPos - uyNewPos)/uHalfLine );
+
+	//compute the nearest valid discrete position
+	return uyOldPos - uHalfLine * float(*pnSteps);
+}
+
 lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
@@ -670,11 +676,14 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
     // add shapes for leger lines if necessary
     //--------------------------------------------
+#if 0
     lmLUnits uxLine = m_pNoteheadShape->GetXLeft() - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
     lmLUnits widthLine = m_pNoteheadShape->GetWidth() +
                             m_pVStaff->TenthsToLogical(8, m_nStaffNum);
     AddLegerLineShape(pNoteShape, pPaper, nPosOnStaff, uyStaffTopLine, uxLine,
                         widthLine, m_nStaffNum);
+#endif
+	pNoteShape->AddLegerLinesInfo(nPosOnStaff, uyStaffTopLine);
 
 
 	//if this is the last note of a multi-attached AuxObj add the shape for the aux obj
@@ -1784,6 +1793,8 @@ void lmNote::DeleteStemShape()
 
 void lmNote::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
 {
+    lmStaffObj::CustomizeContextualMenu(pMenu, pGMO);
+
     if (IsTiedToPrev())
     {
         pMenu->AppendSeparator();

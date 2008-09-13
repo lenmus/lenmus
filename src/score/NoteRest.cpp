@@ -19,31 +19,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------------------------
-/*! @class lmNoteRest
-    @ingroup score_kernel
-    @brief Object lmNoteRest represents a note or a silence
-
-    Si consideramos los silencios como un tipo de figura y los acordes como una generalización de
-    una nota, obtenemos una entidad conceptual más general que engloba a todos ellos. Como en la
-    notación músical tradicional no existe este concepto, le llamo "FigSil" (Figura/Silencio):
-        - Un silencio es un lmNoteRest sin notas
-        - Una nota es un lmNoteRest con sólo una nota
-        - Un acorde es un lmNoteRest con varias notas
-
-    Por cómo ha ido evolucionando el programa, no se ha definido un objeto abstracto (FigSil) y
-    tres objetos concretos (Nota, Acorde y Silencio) sino que el objeto lmNoteRest modela todo.
-
-    Se han definido los métodos .EsSilencio y .InChord para identificar, respectivamente, si
-    una lmNoteRest modeliza un silencio y si una lmNoteRest es una nota que forma parte de un acorde. Si
-    el resultado de ambas es False, indica que es una nota simple.
-
-    Existe un objeto auxiliar (CAcorde) cuya función es englobar algunas funcionalidaes propias
-    de los acordes. Pero el acorde no es más que un conjunto de CNotas, identificadas como
-    que forman un acorde.
-
-*/
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "NoteRest.h"
 #endif
@@ -128,22 +103,33 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
     //This method is used when loading a file.
     //Set up beaming information
 
-    if (!fBeamed) {
+	static lmBeam* pCurBeam = (lmBeam*)NULL;        // no beam open
+
+
+    if (!fBeamed)
+	{
         m_pBeam = (lmBeam*)NULL;
     }
-    else {
-        for (int i=0; i < 6; i++) {
+    else
+	{
+        for (int i=0; i < 6; i++)
+		{
             m_BeamInfo[i] = BeamInfo[i];
         }
-        if (m_BeamInfo[0].Type == eBeamBegin) {
+        if (m_BeamInfo[0].Type == eBeamBegin)
+		{
             m_pBeam = new lmBeam((lmNote*)this);
-            g_pCurBeam = m_pBeam;
-        } else {
-            m_pBeam = g_pCurBeam;
+            pCurBeam = m_pBeam;
+        }
+		else 
+		{
+            m_pBeam = pCurBeam;
             if (!m_pBeam) {
                 //TODO Show message. Error: ¡se pide finalizar un grupo que no ha sido abierto!
                 fBeamed = false;
-            } else {
+            }
+			else
+			{
                 if (IsRest())
                     m_pBeam->Include(this);
                 else {
@@ -156,7 +142,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
                     //chord to this note. Due to this, the computation of stems has
                     //been delayed to the layout phase, when layouting the first note of
                     //the beam.
-                    g_pCurBeam = (lmBeam*)NULL;        // no beam open
+                    pCurBeam = (lmBeam*)NULL;        // no beam open
                 }
             }
         }

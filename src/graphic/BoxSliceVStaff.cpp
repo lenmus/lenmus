@@ -235,7 +235,7 @@ wxString lmBoxSliceVStaff::Dump(int nIndent)
 	return sDump;
 }
 
-lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
+lmGMObject* lmBoxSliceVStaff::FindSelectableObjectAtPos(lmUPoint& pointL)
 {
 	//wxLogMessage(_T("[lmBoxSliceVStaff::FindShapeAtPosition] GMO %s - %d"), m_sGMOName.c_str(), m_nId);
     //look in shapes collection
@@ -243,7 +243,7 @@ lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
     if (pShape) return pShape;
 
     // no object found. Verify if the point is in this object
-    if (BoundsContainsPoint(pointL))
+    if (IsSelectable() && SelRectContainsPoint(pointL))
         return this;
     else
         return (lmGMObject*)NULL;

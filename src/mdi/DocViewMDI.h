@@ -19,7 +19,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -27,12 +26,6 @@
 //-------------------------------------------------------------------------------------
 #ifndef __LM_DOCVIEWMDI_H__
 #define __LM_DOCVIEWMDI_H__
-
-
-#include "../app/global.h"
-
-#if lmUSE_NOTEBOOK_MDI
-
 
 #include "wx/defs.h"
 #include "wx/docview.h"
@@ -118,17 +111,5 @@ private:
     DECLARE_NO_COPY_CLASS(lmDocMDIChildFrame)
 };
 
-
-#else   // do not lmUSE_NOTEBOOK_MDI
-
-//use standard wxWidgets classes
-#define lmDocMDIParentFrame wxDocMDIParentFrame
-#define lmDocMDIChildFrame wxDocMDIChildFrame
-
-
-#endif  //lmUSE_NOTEBOOK_MDI
-
-
 #endif      // __LM_DOCVIEWMDI_H__
-
 

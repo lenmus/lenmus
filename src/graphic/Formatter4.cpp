@@ -120,19 +120,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     m_nSpacingMethod = (lmESpacingMethod) m_pScore->GetOptionLong(_T("Render.SpacingMethod"));
     m_nSpacingValue = (lmTenths) m_pScore->GetOptionLong(_T("Render.SpacingValue"));
 
-    //set paper size and margins
-    m_pScore->SetNumPage(1);
-
     //create the root of the graphical model: BoxScore object
     lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
 
     //create first page
-    lmBoxPage* pBoxPage = pBoxScore->AddPage(m_pScore->GetLeftMarginXPos(),
-                                             m_pScore->GetRightMarginXPos(),
-                                             m_pScore->GetPageTopMargin(),
-                                             m_pScore->GetMaximumY(),
-                                             m_pScore->GetPaperSize().GetWidth(),
-                                             m_pScore->GetPaperSize().GetHeight() );
+	int nNumPage = 0;
+	m_pScore->SetPageInfo(++nNumPage);
+    lmBoxPage* pBoxPage = pBoxScore->AddPage();
 
     //ensure that page cursors are at top-left corner
     pPaper->SetCursor(m_pScore->GetPageLeftMargin(), m_pScore->GetPageTopMargin());
@@ -231,16 +225,12 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                 //ensure that page cursors are at top-left corner
                 pPaper->SetCursor(m_pScore->GetPageLeftMargin(), m_pScore->GetPageTopMargin());
                 //start a new page
-                pBoxPage = pBoxScore->AddPage(m_pScore->GetLeftMarginXPos(),
-                                              m_pScore->GetRightMarginXPos(),
-                                              m_pScore->GetPageTopMargin(),
-                                              m_pScore->GetMaximumY(),
-                                              m_pScore->GetPaperSize().GetWidth(),
-                                              m_pScore->GetPaperSize().GetHeight() );
+				m_pScore->SetPageInfo(++nNumPage);
+                pBoxPage = pBoxScore->AddPage();
             }
-        }
+       }
 
-        //create the system container
+       //create the system container
         pBoxSystem = pBoxPage->AddSystem(nSystem);
         ySystemPos = pPaper->GetCursorY();  //save the start of system position
         pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
@@ -400,7 +390,6 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         //dbg --------------
 
 
-
         //-------------------------------------------------------------------------------
         //Step 3: Re-position StaffObjs.
         //-------------------------------------------------------------------------------
@@ -430,6 +419,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             wxLogMessage( m_pScore->Dump() );
         }
         //dbg ------------------------------------------------------------------------------
+
 
 
         //-------------------------------------------------------------------------------
@@ -512,7 +502,6 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     if (!fStopStaffLinesAtFinalBarline && fFillPageWithEmptyStaves)
     {
         //fill the remaining page space with empty staves
-
         while (true)      //loop is exited when reaching end of page
         {
             //if this is not the first system advance vertically the previous system height

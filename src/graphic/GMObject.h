@@ -57,6 +57,7 @@ class lmStaffObj;
 class lmController;
 class lmBoxScore;
 class lmGMSelection;
+class lmHandler;
 
 
 //------------------------------------------------------------------------------
@@ -94,6 +95,7 @@ enum lmEGMOType
 	eGMO_ShapeRest,
     eGMO_ShapeStem,
 	eGMO_ShapeText,
+	eGMO_ShapeTextBlock,
     eGMO_ShapeTie,
 	eGMO_ShapeTuplet,
     eGMO_Handler,
@@ -159,6 +161,7 @@ public:
     virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
     virtual bool BoundsContainsPoint(lmUPoint& pointL);
+    virtual bool SelRectContainsPoint(lmUPoint& pointL);
 
     // methods related to selection rectangle
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
@@ -168,6 +171,13 @@ public:
 
     //rendering
     virtual void DrawBounds(lmPaper* pPaper, wxColour color);
+	virtual void DrawHandlers(lmPaper* pPaper);
+
+    //handlers
+	virtual void AddHandler(lmHandler* pHandler);
+	virtual lmHandler* GetFirstHandler();
+	virtual lmHandler* GetNextHandler();
+	virtual int GetNumHandlers() { return (m_pHandlers ? (int)m_pHandlers->size() : 0); }
 
 	//debugging
     virtual wxString Dump(int nIndent)=0;
@@ -241,6 +251,10 @@ protected:
 
     //dragging
     bool			m_fLeftDraggable;		//this object is draggable
+
+	//list of handlers contained within this GMObject
+	std::list<lmHandler*>*	            m_pHandlers;
+    std::list<lmHandler*>::iterator		m_itHandler;	//for GetFirst(), GetNext() methods
 
 };
 

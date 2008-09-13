@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -48,22 +47,24 @@ public:
     //implement virtual methods
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_ClefType; }
 
-	//access to options
-	lmEClefType GetClefType();
+	//event handlers
+    void OnAddClef(wxCommandEvent& event);
 
-	void OnButton(wxCommandEvent& event);
-	void SelectClef(int iB);
+    //clefs data
+    typedef struct
+    {
+        wxString		sClefName;
+        lmEClefType		nClefType;
 
-    enum {
-        lm_NUM_BUTTONS = 3
-    };
+    } lmClefData;
+
 
 private:
     void CreateControls(wxBoxSizer* m_pMainSizer);
+    void LoadClefList();
 
-	int			        m_nSelButton;               //selected button
-	lmCheckButton*		m_pButton[lm_NUM_BUTTONS];  //buttons
-
+	wxBitmapComboBox*   m_pClefList;
+    wxButton*           m_pBtnAddClef;
 
     DECLARE_EVENT_TABLE()
 };
@@ -155,9 +156,6 @@ public:
 
     //implementation of virtual methods
     lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
-
-	//access to options
-    inline lmEClefType GetClefType() { return m_pGrpClefType->GetClefType(); }
 
 
 private:

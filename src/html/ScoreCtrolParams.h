@@ -366,8 +366,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
     // create the lmScoreCtrol
     int nStyle = 0;
-    //if (m_pOptions->fBorder) nStyle |= wxBORDER_SIMPLE;
-    nStyle |= wxBORDER_SIMPLE;
+    if (m_pOptions->fBorder) nStyle |= wxBORDER_SIMPLE;
     wnd = new lmScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
         m_pOptions, wxPoint(0,0), wxSize(nWidth, nHeight), nStyle );
     wnd->Show(true);

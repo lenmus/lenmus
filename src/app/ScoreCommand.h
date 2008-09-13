@@ -57,7 +57,7 @@ public:
 
 protected:
     lmScoreCommand(const wxString& name, lmScoreDocument *pDoc, lmVStaffCursor* pVCursor,
-                   bool fHistory = true );
+                   bool fHistory = true, int nOptions=0);
 
 
     //common methods
@@ -70,6 +70,7 @@ protected:
     lmScoreDocument*    m_pDoc;
 	bool				m_fDocModified;
     bool                m_fHistory;         //include command in undo/redo history
+    int                 m_nOptions;         //repaint hint options
     lmUndoLog           m_UndoLog;          //collection of undo/redo items
     lmUndoItem*         m_pUndoItem;        //undo item for this command
     lmVCursorState      m_tCursorState;     //VCursor state when issuing the command
@@ -276,7 +277,7 @@ public:
 					lmEPitchType nPitchType, int nStep, int nOctave, 
 					lmENoteType nNoteType, float rDuration, int nDots, 
                     lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                    bool fTiedPrev);
+                    int nVoice, lmNote* pBaseOfChord, bool fTiedPrev);
     ~lmCmdInsertNote();
 
     //implementation of pure virtual methods in base class
@@ -292,6 +293,8 @@ protected:
 	float			    m_rDuration;
 	lmENoteHeads	    m_nNotehead;
 	lmEAccidentals	    m_nAcc;
+	int					m_nVoice;
+	lmNote*				m_pBaseOfChord;
     bool                m_fTiedPrev;
 
     lmVStaff*           m_pVStaff;      //affected VStaff
@@ -479,7 +482,8 @@ public:
 
     lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
                     lmScoreDocument *pDoc, lmScoreText* pST, wxString& sText,
-                    lmEHAlign nAlign, lmLocation tPos, lmTextStyle* pStyle);
+                    lmEHAlign nAlign, lmLocation tPos, lmTextStyle* pStyle,
+                    int nHintOptions);
     ~lmCmdChangeText();
 
     //implementation of pure virtual methods in base class
@@ -502,7 +506,7 @@ class lmCmdChangePageMargin: public lmScoreCommand
 {
 public:
     lmCmdChangePageMargin(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO,
-					      int nIdx, lmLUnits uPos);
+					      int nIdx, int nPage, lmLUnits uPos);
     ~lmCmdChangePageMargin() {}
 
     //implementation of pure virtual methods in base class
@@ -516,6 +520,87 @@ protected:
 	lmLUnits        m_uNewPos;
 	lmLUnits        m_uOldPos;
     int             m_nIdx;
+	int				m_nPage;
+};
+
+
+// Attach new text to an AuxObj / StaffObj
+//------------------------------------------------------------------------------------
+class lmCmdAttachNewText: public lmScoreCommand
+{
+public:
+    lmCmdAttachNewText(const wxString& name, lmScoreDocument *pDoc, lmComponentObj* pAnchor);
+    ~lmCmdAttachNewText();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+	lmComponentObj*     m_pAnchor;
+    lmTextItem*         m_pNewText;
+    bool                m_fDeleteText;
+};
+
+
+// Add a new title to the score
+//------------------------------------------------------------------------------------
+class lmCmdAddNewTitle: public lmScoreCommand
+{
+public:
+    lmCmdAddNewTitle(lmScoreDocument *pDoc);
+    ~lmCmdAddNewTitle();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmTextBlock*		m_pNewTitle;
+    bool                m_fDeleteTitle;
+};
+
+
+// Change barline properties
+//------------------------------------------------------------------------------------
+class lmCmdChangeBarline: public lmScoreCommand
+{
+public:
+
+    lmCmdChangeBarline(lmScoreDocument *pDoc, lmBarline* pBL, lmEBarline nType, bool fVisible);
+    ~lmCmdChangeBarline();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmBarline*			m_pBL;
+    lmEBarline			m_nType;
+    lmEBarline			m_nOldType;
+	bool				m_fVisible;
+	bool				m_fOldVisible;
+
+};
+
+
+// Move note and change its pitch command
+//------------------------------------------------------------------------------------
+class lmCmdMoveNote: public lmScoreCommand
+{
+public:
+    lmCmdMoveNote(lmScoreDocument *pDoc, lmNote* pNote, const lmUPoint& uPos, int nSteps);
+    ~lmCmdMoveNote() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmLocation      m_tPos;
+    lmLocation		m_tOldPos;        // for Undo
+	lmNote*			m_pNote;
+    int             m_nSteps;
 };
 
 

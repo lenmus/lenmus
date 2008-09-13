@@ -37,9 +37,10 @@
 #include "wx/dragimag.h"
 #endif
 
-//#include "ColStaffObjs.h"
 class lmSegment;
 class lmUndoData;
+class lmUndoItem;
+class lmTextItem;
 
 
 #define lmDRAGGABLE         true
@@ -125,6 +126,7 @@ class lmObjOptions;
 class lmBox;
 class lmController;
 class lmScore;
+class lmDlgProperties;
 
 class lmScoreObj
 {
@@ -133,7 +135,6 @@ public:
 
     //building
     void DefineAsMultiShaped();
-
 
     //--- Options --------------------------------------------
 
@@ -154,6 +155,11 @@ public:
 
 	//--- ScoreObj properties ------------------------------
 	virtual lmEScoreObjType GetScoreObjType()=0;
+	bool IsInstrument() { return GetScoreObjType() == lmSOT_Instrument; }
+	bool IsScore() { return GetScoreObjType() == lmSOT_Score; }
+	bool IsStaff() { return GetScoreObjType() == lmSOT_Staff; }
+	bool IsComponentObj() { return GetScoreObjType() == lmSOT_ComponentObj; }
+	bool IsVStaff() { return GetScoreObjType() == lmSOT_VStaff; }
 
     //--- a ScoreObj can own other ScoreObjs -----------------------
     inline lmScoreObj* GetParentScoreObj() { return m_pParent; }
@@ -165,8 +171,8 @@ public:
     virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
 
     //attach and detach AuxObjs
-    int AttachAuxObj(lmAuxObj* pAO);
-    void DetachAuxObj(lmAuxObj* pAO);
+    virtual int AttachAuxObj(lmAuxObj* pAO, int nIndex = -1);
+    virtual int DetachAuxObj(lmAuxObj* pAO);
 
 
 	//--- a ScoreObj can be renderizable
@@ -200,8 +206,9 @@ public:
 	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
 	virtual void CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO);
 
-	//handlers for contextual menu
+	//handlers for contextual menu and related methods
 	virtual void OnProperties(lmController* pController, lmGMObject* pGMO);
+	virtual void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
 
 	//font to use to render the ScoreObj
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
@@ -274,11 +281,15 @@ public:
 	// type and identificaction
     inline int GetID() const { return m_nId; }
     inline lmEComponentObjType GetType() const { return m_nType; }
+	inline bool IsStaffObj() { return m_nType == lm_eStaffObj; }
+	inline bool IsAuxObj() { return m_nType == lm_eAuxObj; }
 
     // graphical model
     virtual void Layout(lmBox* pBox, lmPaper* pPaper,
 						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
 	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)=0;
+
+
 
 
 protected:
@@ -332,7 +343,6 @@ public:
 
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                         bool fHighlight = false);
-    //virtual void SetFont(lmPaper* pPaper);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
     lmScore* GetScore();
 
@@ -349,20 +359,21 @@ public:
     // characteristics
     virtual inline bool IsSizeable() { return false; }
     inline bool IsVisible() { return m_fVisible; }
+	inline void SetVisible(bool fVisible) { m_fVisible = fVisible; }
     inline EStaffObjType GetClass() { return m_nClass; }
 	virtual wxString GetName() const=0;
 
     //classification
-    inline bool IsClef() { return GetClass() == eSFOT_Clef; }
-    inline bool IsKeySignature() { return GetClass() == eSFOT_KeySignature; }
-    inline bool IsTimeSignature() { return GetClass() == eSFOT_TimeSignature; }
-    inline bool IsNotation() { return GetClass() == eSFOT_Notation; }
-    inline bool IsBarline() { return GetClass() == eSFOT_Barline; }
-    inline bool IsNoteRest() { return GetClass() == eSFOT_NoteRest; }
-    inline bool IsText() { return GetClass() == eSFOT_Text; }
-    inline bool IsControl() { return GetClass() == eSFOT_Control; }
-    inline bool IsMetronomeMark() { return GetClass() == eSFOT_MetronomeMark; }
-    inline bool IsTupletBracket() { return GetClass() == eSFOT_TupletBracket; }
+    inline bool IsClef() { return m_nClass == eSFOT_Clef; }
+    inline bool IsKeySignature() { return m_nClass == eSFOT_KeySignature; }
+    inline bool IsTimeSignature() { return m_nClass == eSFOT_TimeSignature; }
+    inline bool IsNotation() { return m_nClass == eSFOT_Notation; }
+    inline bool IsBarline() { return m_nClass == eSFOT_Barline; }
+    inline bool IsNoteRest() { return m_nClass == eSFOT_NoteRest; }
+    inline bool IsText() { return m_nClass == eSFOT_Text; }
+    inline bool IsControl() { return m_nClass == eSFOT_Control; }
+    inline bool IsMetronomeMark() { return m_nClass == eSFOT_MetronomeMark; }
+    inline bool IsTupletBracket() { return m_nClass == eSFOT_TupletBracket; }
 
     //inline bool IsNote() { return m_nClass == eSFOT_NoteRest && !((lmNote*)this)->IsRest(); }
     //inline bool IsRest() { return m_nClass == eSFOT_NoteRest && ((lmNote*)this)->IsRest(); }
@@ -445,7 +456,8 @@ enum lmEAuxObjType
 {
     eAXOT_Fermata,
     eAXOT_Lyric,
-    eAXOT_Text,
+    eAXOT_TextItem,
+	eAOXT_TextBlock,
 
     //graphic objects
     eAXOT_Line,

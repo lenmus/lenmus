@@ -81,20 +81,17 @@ wxString lmSOControl::SourceXML(int nIndent)
 
 wxString lmSOControl::SourceLDP(int nIndent)
 {
-    //TODO
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
 
-    //if (m_nCtrolType == lmTIME_SHIFT)
-    //{
-    //    if (m_rTimeShift < 0) {
-    //        sSource += _T("(goBack ");
-    //    }
-    //    else {
-    //        sSource += _T("(goFwd ");
-    //    }
-    //    sSource += wxString::Format(_T("%d)\n"), (int)fabs(m_rTimeShift));
-    //}
+    switch(m_nCtrolType)
+	{
+		case lmNEW_SYSTEM:
+			sSource += _T("(newSystem)\n");
+			break;
+		default:
+			wxASSERT_MSG(false, _T("No treatment for this Ctrol type"));
+    }
 
     return sSource;
 }

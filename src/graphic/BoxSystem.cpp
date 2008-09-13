@@ -36,6 +36,7 @@
 #include "BoxSliceInstr.h"
 #include "BoxSliceVStaff.h"
 #include "ShapeStaff.h"
+#include "Handlers.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -52,8 +53,16 @@ lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
     m_nNumMeasures = 0;
     m_nNumPage = nNumPage;
     m_pBPage = pParent;
-}
+	m_pTopSpacer = NULL;
 
+	//add handler for top spacer. It will be positioned in lmBoxSystem::SetPosition() method
+	//lmScore* pScore = (lmScore*)GetScoreOwner();
+ //   lmLUnits uPageWidth = pScore->GetPaperSize().GetWidth();
+	//lmLUnits uyTopMargin = 0.0f;
+	//m_pTopSpacer = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_TOP, lmHORIZONTAL, 
+ //                                    uyTopMargin, uPageWidth);
+	//AddHandler(m_pTopSpacer);
+}
 
 lmBoxSystem::~lmBoxSystem()
 {
@@ -70,6 +79,19 @@ lmBoxSystem::~lmBoxSystem()
         delete m_ShapeStaff[i];
     }
     m_ShapeStaff.clear();
+}
+
+void lmBoxSystem::SetPosition(lmLUnits xPos, lmLUnits yPos)
+{ 
+	m_xPos = xPos; 
+	m_yPos = yPos; 
+
+	//reposition the handlers
+	if (m_pTopSpacer)
+	{
+		m_pTopSpacer->SetYBottom(yPos);
+		m_pTopSpacer->SetYTop(yPos);
+	}
 }
 
 void lmBoxSystem::AddShape(lmShape* pShape)
@@ -109,10 +131,6 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     {
         m_Shapes[i]->Render(pPaper);    //, lmUPoint(m_xPos, m_yPos));
     }
-
-    //render margins
-    if (g_fShowMargins)
-        this->DrawBounds(pPaper, *wxRED);
 }
 
 void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
@@ -169,7 +187,7 @@ lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;
 }
 
-lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
+lmGMObject* lmBoxSystem::FindSelectableObjectAtPos(lmUPoint& pointL)
 {
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
@@ -178,7 +196,7 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
     std::vector<lmBoxSlice*>::iterator it;
 	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
     {
-        lmGMObject* pGMO = (*it)->FindGMObjectAtPosition(pointL);
+        lmGMObject* pGMO = (*it)->FindSelectableObjectAtPos(pointL);
         if (pGMO)
 			return pGMO;    //found
     }
@@ -188,7 +206,7 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
 	//previous 'for' loop, returning an SliceVStaff
 
     // no object found. Verify if the point is in this object
-    if (BoundsContainsPoint(pointL)) 
+    if (IsSelectable() && SelRectContainsPoint(pointL))
         return this;
     else
         return (lmGMObject*)NULL;

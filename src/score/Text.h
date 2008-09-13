@@ -74,6 +74,7 @@ public:
     inline wxString& GetLanguage() { return m_sLanguage; }
 
     inline lmTextStyle* GetStyle() { return m_pStyle; }
+    inline void SetStyle(lmTextStyle* pStyle) { m_pStyle = pStyle; }
     inline lmFontInfo GetFontInfo() { return m_pStyle->tFont; }
     inline wxString& GetFontName() { return m_pStyle->tFont.sFontName; }
     inline int GetFontSize() { return m_pStyle->tFont.nFontSize; }
@@ -127,10 +128,12 @@ public:
     virtual void UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
                                     lmEHAlign nHAlign, lmLocation tPos, lmTextStyle* pTS);
 
+    //edition
+	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
+
 
 protected:
-    lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
-                lmTextStyle* pStyle);
+    lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle);
 
     lmEBlockAlign   m_nBlockAlign;
     lmEHAlign       m_nHAlign;
@@ -145,8 +148,7 @@ class lmTextItem :  public lmScoreText
 {
 public:
     //simple text constructor
-    lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmLocation& tPos,
-                lmTextStyle* pStyle);
+    lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle);
 
     ~lmTextItem() {}
 
@@ -154,13 +156,14 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextItem; }
     wxString Dump();
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
 
     //layout
 	lmShape* CreateShape(lmPaper* pPaper, lmUPoint uPos);
+
 
 private:
 
@@ -173,8 +176,7 @@ class lmTextBlock :  public lmScoreText
 {
 public:
     lmTextBlock(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
-                lmEVAlign nVAlign, lmLocation& tPos, lmTextStyle* pStyle,
-                bool fTitle=false);
+                lmEVAlign nVAlign, lmTextStyle* pStyle);
 
     ~lmTextBlock() {}
 
@@ -182,7 +184,7 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
+    inline lmEAuxObjType GetAuxObjType() { return eAOXT_TextBlock; }
     wxString Dump();
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);

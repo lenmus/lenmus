@@ -55,7 +55,8 @@ public:
     virtual bool IsDirectDrawer() = 0;
 
     // Aliased shapes, even when anti-alising is supported.
-    virtual void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color) = 0;
+    virtual void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+							wxColour color, int style = wxSOLID) = 0;
     virtual void SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color) = 0;
 
     //solid shapes, anti-aliased when supported.
@@ -109,7 +110,8 @@ public:
     bool IsDirectDrawer() { return true; }
 
     // Aliased shapes, even when anti-alising is supported.
-    void SketchLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2, wxColour color);
+    void SketchLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2,
+					wxColour color, int style = wxSOLID);
     void SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color);
 
     //solid shapes, anti-aliased when supported.

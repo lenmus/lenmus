@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -77,24 +76,48 @@
 #define BYTES_PP 3      // Bytes per pixel
 
 
-lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int stride) :
-    lmDrawer(pDC)
+lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int stride)
+	: lmDrawer(pDC)
     //, m_feng()
     //, m_fman(m_feng)
 {
-    //wxLogMessage(_T("[lmAggDrawer::lmAggDrawer] pixels=(%d, %d)"), widthPixels, heightPixels);
+    // Constructor, allocating a new bitmap as rendering buffer
+
     wxASSERT(widthPixels != 0 && heightPixels != 0);
     Initialize();
 
-    // allocate a rendering buffer
-    if (stride==0)
-        m_nStride = widthPixels * BYTES_PP;
-    else
-        m_nStride = stride * BYTES_PP;
-
+    // allocate a new rendering buffer
     m_nBufWidth = widthPixels;
     m_nBufHeight = heightPixels;
     m_buffer = wxImage(widthPixels, heightPixels);
+
+	Create(stride);
+}
+
+lmAggDrawer::lmAggDrawer(wxDC* pDC, wxBitmap* pBitmap, int stride)
+	: lmDrawer(pDC)
+{
+	//Constructor, allocating a copy of the received bitmap as rendering buffer
+
+    Initialize();
+
+    // allocate a copy of the received bitmap as rendering buffer
+	m_nBufWidth = pBitmap->GetWidth();
+	m_nBufHeight = pBitmap->GetHeight();
+    m_buffer = pBitmap->ConvertToImage();
+
+	Create(stride);
+}
+
+void lmAggDrawer::Create(int stride)
+{
+    // allocate a rendering buffer
+
+    if (stride==0)
+        m_nStride = m_nBufWidth * BYTES_PP;
+    else
+        m_nStride = stride * BYTES_PP;
+
     m_pdata = m_buffer.GetData();
     m_oRenderingBuffer.attach(m_pdata, m_nBufWidth, m_nBufHeight, m_nStride);
 
@@ -117,7 +140,6 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
 
     // initialize colours
     m_pRenMarker->line_color( m_textColorF );
-
 }
 
 lmAggDrawer::~lmAggDrawer()
@@ -167,8 +189,10 @@ void lmAggDrawer::Initialize()
 
 //draw shapes
 void lmAggDrawer::SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
-                             wxColour color)
+                             wxColour color, int style)
 {
+	//TODO: take style into account
+
     m_pRenMarker->line_color( lmToRGBA8(color) );
     // renderer_marker expects no decimals, so values must be multiplied by 256.
     m_pRenMarker->line((int)(WorldToDeviceX(x1)*256), int(WorldToDeviceY(y1)*256),

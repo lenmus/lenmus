@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -32,6 +31,7 @@
 
 #include "GMObject.h"
 #include "../score/Score.h"
+#include "../score/VStaff.h"
 #include "../app/ScoreCanvas.h"
 
 #include "ShapeNote.h"
@@ -39,6 +39,12 @@
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmShapeNote
+//-------------------------------------------------------------------------------------
+
+//temporary data to be used during dragging
+static int m_nOldSteps;		//to clear leger lines while dragging
+static lmLUnits m_uxOldPos;
+
 
 
 lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxColour color)
@@ -143,6 +149,8 @@ bool lmShapeNote::StemGoesDown()
 
 wxBitmap* lmShapeNote::OnBeginDrag(double rScale, wxDC* pDC)
 {
+	m_nOldSteps = 0;
+	m_uxOldPos = -100000.0f;		//any absurd value
 	return lmCompositeShape::OnBeginDrag(rScale, pDC);
 }
 
@@ -162,9 +170,37 @@ lmUPoint lmShapeNote::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	if (g_fFreeMove) return uPos;
 
     // A note only can be moved in discrete vertical steps (staff lines/spaces)
-    //return lmUPoint(uPos.x, GetYTop());
-    return lmUPoint(uPos.x, uPos.y);
+    //return lmUPoint(uPos.x, GetYTop());	//only horizontal movement
+    //return lmUPoint(uPos.x, uPos.y);		//free movement
+    lmUPoint pos = uPos;
+	int nSteps;
+    pos.y = ((lmNote*)m_pOwner)->CheckNoteNewPosition(GetYTop(), uPos.y, &nSteps);
 
+		//draw leger lines
+
+	//as painting uses XOR we need the complementary color
+	wxColour color = *wxBLUE;
+	wxColour colorC(255 - (int)color.Red(), 255 - (int)color.Green(), 255 - (int)color.Blue() );
+	pPaper->SetLogicalFunction(wxXOR);
+
+	//wxLogMessage(_T("[lmShapeNote::OnDrag] OldSteps=%d, oldPos=%.2f, newSteps=%d, newPos=%.2f"),
+	//	m_nOldSteps, m_uxOldPos, nSteps, uPos.x );
+	//remove old ledger lines
+	if (m_uxOldPos != -100000.0f)
+	{
+		wxLogMessage(_T("[lmShapeNote::OnDrag] Erasing lines ..."));
+		DrawLegerLines(m_nPosOnStaff + m_nOldSteps, m_uxOldPos, pPaper, colorC);
+	}
+
+	//draw new ledger lines
+	wxLogMessage(_T("[lmShapeNote::OnDrag] Drawing lines ..."));
+	DrawLegerLines(m_nPosOnStaff + nSteps, uPos.x, pPaper, colorC);
+
+	//save data for next time
+	m_nOldSteps = nSteps;
+	m_uxOldPos = uPos.x;
+
+	return pos;
 }
 
 void lmShapeNote::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
@@ -175,16 +211,92 @@ void lmShapeNote::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 	// send a move object command to the controller.
 
 	lmUPoint uFinalPos(uPos.x, uPos.y);
+	int nSteps = 0;
 	if (!g_fFreeMove)
 	{
-		//free movement not allowed. Must end on a staff line/space
-		//TODO: constrain movement to lines/spaces and change pitch
-		uFinalPos.y = GetYTop();
+		//free movement not allowed. The note must be moved in discrete 
+		//vertical steps (half lines)
+		uFinalPos.y = ((lmNote*)m_pOwner)->CheckNoteNewPosition(GetYTop(), uPos.y, &nSteps);
 	}
 
-	//send a move object command to the controller
-	pCanvas->MoveObject(this, uFinalPos);
-
+	//send a move note command to the controller
+	pCanvas->MoveNote(this, uFinalPos, nSteps);
 }
 
+void lmShapeNote::Render(lmPaper* pPaper, wxColour color)
+{
+    lmCompositeShape::Render(pPaper, color);
+	DrawLegerLines(m_nPosOnStaff, GetXLeft(), pPaper, color);
+}
+
+void lmShapeNote::AddLegerLinesInfo(int nPosOnStaff, lmLUnits uyStaffTopLine)
+{
+	m_nPosOnStaff = nPosOnStaff;
+	m_uyStaffTopLine = uyStaffTopLine;
+}
+
+void lmShapeNote::DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPaper, wxColour color)
+{
+	//During note drag, it could be necessary to display new leger lines. This method
+	//overlays to drag image the necesary leger lines
+
+	//to draw leger lines we could use the same idea than for highlight: just invoke
+	//render method of the appropiate shape. That means that:
+	//1. the shape for leger lines
+	//should not be a fixed shape for each line but a generic shape to draw all leger
+	//lines of a note. The number of lines to draw should be dynamically computed by
+	//shape render method
+	//2. All notes must have a leger lines shape, even if no line is going to be drawn
+	//
+	//Therefore, it is note necessary to have leger lines shapes. They must be implicit
+	//in the note shape rendering methods. So we only need to have the necessary information
+	//in the note shape
+
+    if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
+
+	lmVStaff* pVStaff = ((lmNote*)m_pOwner)->GetVStaff();
+	int nStaff = ((lmNote*)m_pOwner)->GetStaffNum();
+    lmLUnits uThick = pVStaff->GetStaffLineThick(nStaff);
+    uxLine -= pVStaff->TenthsToLogical(4, nStaff);
+    lmLUnits uLineLength = this->GetWidth() + pVStaff->TenthsToLogical(8, nStaff);
+
+	//force to paint lines of at least 1 px
+	lmLUnits uOnePixel = pPaper->DeviceToLogicalY(1);
+	uThick = uOnePixel;
+
+    if (nPosOnStaff > 11)
+	{
+        // pos on staff > 11  ==> lines at top
+        lmLUnits uDsplz = pVStaff->GetOptionLong(_T("Staff.UpperLegerLines.Displacement"));
+        lmLUnits uyStart = m_uyStaffTopLine - pVStaff->TenthsToLogical(uDsplz, nStaff);
+        for (int i=12; i <= nPosOnStaff; i++) {
+            if (i % 2 == 0) {
+                int nTenths = 5 * (i - 10);
+                lmLUnits uyPos = uyStart - pVStaff->TenthsToLogical(nTenths, nStaff);
+				//draw the line
+				pPaper->SolidLine(uxLine, uyPos, uxLine + uLineLength, uyPos,
+								  uThick, eEdgeNormal, color);
+           }
+        }
+
+    }
+	else
+	{
+        // nPosOnStaff < 1  ==>  lines at bottom
+        for (int i=nPosOnStaff; i <= 0; i++) {
+            if (i % 2 == 0)
+			{
+                int nTenths = 5 * (10 - i);
+                lmLUnits uyPos = m_uyStaffTopLine + pVStaff->TenthsToLogical(nTenths, nStaff);
+				//draw the line
+				pPaper->SolidLine(uxLine, uyPos, uxLine + uLineLength, uyPos,
+								  uThick, eEdgeNormal, color);
+				//wxLogMessage(_T("[lmShapeNote::DrawLegerLines] Line from (%.2f, %.2f) to (%.2f, %.2f)"),
+				//	uxLine, uyPos, uxLine + uLineLength, uyPos);
+
+            }
+        }
+    }
+
+}
 

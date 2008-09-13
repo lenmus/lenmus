@@ -1,22 +1,22 @@
 (score
    (vers 1.5)(language en iso-8859-1)
    (group symbol:brace joinBarlines:no
-	   (instrument (name "Soprano")(abbrev "S") 
+       (instrument (name "Soprano")(abbrev "S")(infoMIDI 40 1)  //40 - Violin
           (musicData
              (clef treble)
           )
        )
-	   (instrument (name "Alto")(abbrev "A") 
+       (instrument (name "Alto")(abbrev "A")(infoMIDI 41 1)     //41 - Viola
           (musicData
              (clef treble)
           )
        )
-	   (instrument (name "Tenor")(abbrev "T") 
+       (instrument (name "Tenor")(abbrev "T")(infoMIDI 71 1)    //71 - Clarinet
           (musicData
              (clef treble)
           )
        )
-	   (instrument (name "Bass")(abbrev "B") 
+       (instrument (name "Bass")(abbrev "B")(infoMIDI 32 1)     //32 - Acoustic Bass
           (musicData
              (clef bass)
           )

@@ -1,0 +1,9 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument (infoMIDI 24 1)      //24 - Acoustic Guitar (nylon)
+      (musicData
+         (clef treble)
+      )
+   )
+)
+

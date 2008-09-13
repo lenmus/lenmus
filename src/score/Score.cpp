@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -32,11 +31,12 @@
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
-#endif
-
+#else
+#include <wx/choicdlg.h>
 #include <wx/file.h>
 #include <wx/debug.h>
 #include <wx/datetime.h>
+#endif
 
 #include <algorithm>
 
@@ -44,7 +44,10 @@
 #include "VStaff.h"
 #include "UndoRedo.h"
 #include "InstrGroup.h"
+#include "properties/DlgProperties.h"
 #include "../app/global.h"
+#include "../app/ScoreCanvas.h"
+#include "../app/ArtProvider.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/Formatter4.h"
 #include "../graphic/GMObject.h"
@@ -54,10 +57,6 @@
 #include "../graphic/BoxSystem.h"
 #include "../graphic/BoxScore.h"
 #include "../graphic/Handlers.h"
-
-// global unique variables used during score building
-lmNoteRest*    g_pLastNoteRest;
-lmBeam*        g_pCurBeam;            // lmBeam object that is being built ot NULL if none in process. See lmNote constructor
 
 // access to colors
 #include "../globals/Colors.h"
@@ -91,10 +90,47 @@ lmPageInfo::lmPageInfo(int nLeftMargin, int nRightMargin, int nTopMargin,
     m_fNewSection = true;
 }
 
+lmPageInfo::lmPageInfo(lmPageInfo* pPageInfo)
+{
+    m_uLeftMargin = pPageInfo->m_uLeftMargin;
+    m_uRightMargin = pPageInfo->m_uRightMargin;
+    m_uTopMargin = pPageInfo->m_uTopMargin;
+    m_uBottomMargin = pPageInfo->m_uBottomMargin;
+    m_uBindingMargin = pPageInfo->m_uBindingMargin;
+
+    m_uPageSize.SetHeight(pPageInfo->PageHeight());
+	m_uPageSize.SetWidth(pPageInfo->PageWidth());
+
+    m_fPortrait = pPageInfo->m_fPortrait;
+    m_fNewSection = false;
+}
+
 void lmPageInfo::SetPageSizeMillimeters(wxSize nSize)
 {
     m_uPageSize.SetHeight(lmToLogicalUnits(nSize.GetHeight(), lmMILLIMETERS));        
     m_uPageSize.SetWidth(lmToLogicalUnits(nSize.GetWidth(), lmMILLIMETERS));
+}
+
+wxString lmPageInfo::SourceLDP(int nIndent)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(pageLayout ");
+
+    //size: width, height
+	sSource += wxString::Format(_T("(pageSize %.0f %.0f)"), m_uPageSize.x, m_uPageSize.y);
+
+	//margins: left,top,right,bottom, binding
+	sSource += wxString::Format(_T("(pageMargins %.0f %.0f %.0f %.0f %.0f)"),
+							    m_uLeftMargin, m_uTopMargin, m_uRightMargin,
+								m_uBottomMargin, m_uBindingMargin);
+
+	//orientation
+	sSource += (m_fPortrait ? _T(" portrait") : _T(" landscape"));
+
+    //close element
+    sSource += _T(")\n");
+	return sSource;
 }
 
 
@@ -148,14 +184,14 @@ lmStaffObj* lmScoreCursor::GetCursorSO()
 		return (lmStaffObj*)NULL;
 }
 
-int lmScoreCursor::GetPageNumber()
-{
-	if (m_pVCursor)
-		return m_pVCursor->GetPageNumber();
-	else
-		return 0;
-}
-
+//int lmScoreCursor::GetPageNumber()
+//{
+//	if (m_pVCursor)
+//		return m_pVCursor->GetPageNumber();
+//	else
+//		return 0;
+//}
+//
 void lmScoreCursor::SelectCursorFromInstr(int nInstr)
 {
     lmInstrument* pInstr;
@@ -470,6 +506,7 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL), m_SCursor(this)
     m_nID = ++m_nCounterID;
 
     //initializations
+    m_fReadOnly = false;
     m_pSoundMngr = (lmSoundManager*)NULL;
     m_sScoreName = _T("New score");
     m_pTenthsConverter = (lmVStaff*)NULL;
@@ -533,26 +570,134 @@ lmScore::~lmScore()
         delete *it;
 }
 
-void lmScore::SetNumPage(int nNumPage)
+void lmScore::ClearPages()
 {
-    //sets the current page number and page info
+    std::list<lmPageInfo*>::iterator it;
+    for (it = m_PagesInfo.begin(); it != m_PagesInfo.end(); ++it)
+        delete *it;
 
-    //if (nNumPage > 1)
-    {
-        //m_pPageInfo = new lmPageInfo();
-        //m_PagesInfo.push_back( m_pPageInfo );
-        m_nNumPage = nNumPage;
-    }
+	//create default page size and margins for first page
+    m_pPageInfo = new lmPageInfo();
+    m_PagesInfo.push_back( m_pPageInfo );
+    m_nNumPage = 1;
 }
 
-lmLUnits lmScore::GetLeftMarginXPos()
+void lmScore::SetPageInfo(int nPage)
 {
+	//wxLogMessage(_T("[lmScore::SetPageInfo] nPage=%d, m_nNumPage=%d, num items=%d"),
+	//			 nPage, m_nNumPage, m_PagesInfo.size() );
+	if (nPage != m_nNumPage)
+	{
+		if (nPage > (int)m_PagesInfo.size())
+		{
+			//create new page, copying info from previous one
+			m_pPageInfo = new lmPageInfo( m_pPageInfo );
+			m_PagesInfo.push_back( m_pPageInfo );
+			m_nNumPage = nPage;
+			wxASSERT_MSG(nPage == (int)m_PagesInfo.size(), _T("[lmScore::SetPageInfo] Pages not in sequence!"));
+		}
+		else
+		{
+			//find page info
+			int iP = 1;
+			std::list<lmPageInfo*>::iterator it;
+			for (it = m_PagesInfo.begin(); it != m_PagesInfo.end(); ++it, ++iP)
+				if (iP == nPage) break;
+			wxASSERT_MSG(it != m_PagesInfo.end(), _T("[lmScore::SetPageInfo] Page not found!"));
+			m_pPageInfo = *it;
+			m_nNumPage = nPage;
+		}
+	}
+}
+
+lmLUnits lmScore::GetPageTopMargin(int nPage) 
+{ 
+	SetPageInfo(nPage);
+	return m_pPageInfo->TopMargin(); 
+}
+
+lmLUnits lmScore::GetPageLeftMargin(int nPage) 
+{ 
+	SetPageInfo(nPage);
+	return m_pPageInfo->LeftMargin(m_nNumPage); 
+}
+
+lmLUnits lmScore::GetPageRightMargin(int nPage) 
+{ 
+	SetPageInfo(nPage);
+	return m_pPageInfo->RightMargin(m_nNumPage); 
+}
+
+lmUSize lmScore::GetPaperSize(int nPage) 
+{ 
+	SetPageInfo(nPage);
+	return lmUSize(m_pPageInfo->PageWidth(), m_pPageInfo->PageHeight()); 
+}
+
+lmLUnits lmScore::GetMaximumY(int nPage) 
+{
+	SetPageInfo(nPage);
+	return m_pPageInfo->GetUsableHeight() + m_pPageInfo->TopMargin(); 
+}
+
+lmLUnits lmScore::GetLeftMarginXPos(int nPage)
+{
+	SetPageInfo(nPage);
     return GetPageLeftMargin();
 }
 
-lmLUnits lmScore::GetRightMarginXPos()
+lmLUnits lmScore::GetRightMarginXPos(int nPage)
 {
+	SetPageInfo(nPage);
     return GetPaperSize().GetWidth() - GetPageRightMargin();
+}
+
+void lmScore::SetPageTopMargin(lmLUnits uValue, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetTopMargin(uValue); 
+}
+
+void lmScore::SetPageLeftMargin(lmLUnits uValue, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetLeftMargin(uValue); 
+}
+
+void lmScore::SetPageRightMargin(lmLUnits uValue, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetRightMargin(uValue); 
+}
+
+void lmScore::SetPageBottomMargin(lmLUnits uValue, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetBottomMargin(uValue); 
+}
+
+void lmScore::SetPageBindingMargin(lmLUnits uValue, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetBindingMargin(uValue); 
+}
+
+void lmScore::SetPageSize(lmLUnits uWidth, lmLUnits uHeight, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetPageSize(uWidth, uHeight); 
+}
+
+void lmScore::SetPageOrientation(bool fPortrait, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetOrientation(fPortrait); 
+}
+
+void lmScore::SetPageNewSection(bool fNewSection, int nPage) 
+{ 
+	SetPageInfo(nPage);
+	m_pPageInfo->SetNewSection(fNewSection); 
 }
 
 lmLUnits lmScore::TenthsToLogical(lmTenths nTenths)
@@ -571,12 +716,10 @@ lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
     return (10.0f * uUnits)/uSpacing;
 }
 
-lmTextBlock* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmLocation tPos,
-                               lmTextStyle* pStyle)
+lmTextBlock* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
 {
     lmTextBlock* pTitle = 
-        new lmTextBlock(sTitle, lmBLOCK_ALIGN_BOTH, nHAlign,
-                        lmVALIGN_TOP, tPos, pStyle, true);      //true -> is title
+        new lmTextBlock(sTitle, lmBLOCK_ALIGN_BOTH, nHAlign, lmVALIGN_TOP, pStyle);
 
     m_nTitles.push_back( AttachAuxObj(pTitle) );
     return pTitle;
@@ -681,7 +824,7 @@ void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
         //force auxObjs to take user position into account
         pTitle->OnParentComputedPositionShifted(0.0f, 0.0f);
 
-        //get hight of title
+        //get height of title and advance paper cursor
         lmGMObject* pGMO = pTitle->GetGraphicObject();
 		lmLUnits uHeight = pGMO->GetHeight();
 		pPaper->SetCursorY( pPaper->GetCursorY() + uHeight);
@@ -700,9 +843,9 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 	m_uComputedPos.x = pPaper->GetCursorX();
 	m_uComputedPos.y = pPaper->GetCursorY();
 
-    //layout titles
-    LayoutTitles(pBox, pPaper);
-	m_uComputedPos.y += m_nHeadersHeight;
+ //   //layout titles
+ //   LayoutTitles(pBox, pPaper);
+	//m_uComputedPos.y += m_nHeadersHeight;
 
 
 	//layout other AuxObjs attached directly to the score
@@ -714,16 +857,19 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 		    pPaper->SetCursorX(m_uComputedPos.x);
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
-            //skip titles. They have been already layouted
-            ////if (!((*m_pAuxObjs)[i]->GetAuxObjType() == eAXOT_Text) ||
-            ////    !((lmTextItem*)((*m_pAuxObjs)[i]))->IsTitle() )
-	        std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
-            if (it == m_nTitles.end())
-            {
-		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
+			//layout object
+	        //std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
+         //   if (it == m_nTitles.end())
+			(*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
 
-                //force auxObjs to take user position into account
-                (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(0.0f, 0.0f);
+            //force auxObjs to take user position into account
+            (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(0.0f, 0.0f);
+
+			//if block shape, add vertical space to paper cursor
+            if ((*m_pAuxObjs)[i]->GetAuxObjType() == eAOXT_TextBlock)
+            {
+				lmGMObject* pGMO = (*m_pAuxObjs)[i]->GetGraphicObject();
+				m_uComputedPos.y += pGMO->GetHeight();
             }
 	    }
     }
@@ -949,6 +1095,10 @@ wxString lmScore::SourceLDP(wxString sFilename)
 	    }
     }
 
+    //pfirst page layout info
+	lmPageInfo* pPageInfo = m_PagesInfo.front();
+    sSource += pPageInfo->SourceLDP(1);
+
     //loop for each instrument
     for (int i=0; i < (int)m_cInstruments.size(); i++)
     {
@@ -1167,6 +1317,17 @@ void lmScore::PlayMeasure(int nMeasure, bool fVisualTracking, lmEPlayMode nPlayM
     m_pSoundMngr->PlayMeasure(nMeasure, fVisualTracking, nPlayMode, nMM, pWindow);
 }
 
+void lmScore::PlayFromMeasure(int nMeasure, bool fVisualTracking, lmEPlayMode nPlayMode,
+							  long nMM, wxWindow* pWindow)
+{
+    if (!m_pSoundMngr) {
+        m_pSoundMngr = new lmSoundManager(this);
+        ComputeMidiEvents();
+    }
+
+    m_pSoundMngr->PlayFromMeasure(nMeasure, fVisualTracking, nPlayMode, nMM, pWindow);
+}
+
 void lmScore::Pause()
 {
     if (!m_pSoundMngr) return;
@@ -1351,7 +1512,7 @@ lmScoreCursor* lmScore::SetNewCursorState(lmVCursorState* pState)
     return &m_SCursor;
 }
 
-lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, lmUPoint& uPos)
+lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, int nPage, lmUPoint& uPos)
 {
     //A handler owned by the score is being dragged. This method is invoked to
     //apply any desired movement constrain on the handler.
@@ -1360,12 +1521,12 @@ lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, lmUPoin
 
     //limit margins movement to have at least 30% of page size for rendering the score
 
-    lmUSize size = GetPaperSize();
+    lmUSize size = GetPaperSize(nPage);
 
-    lmLUnits uTopPos = GetPageTopMargin();
-    lmLUnits uBottomPos = GetMaximumY();
-    lmLUnits uLeftPos = GetPageLeftMargin();
-    lmLUnits uRightPos = GetRightMarginXPos();
+    lmLUnits uTopPos = GetPageTopMargin(nPage);
+    lmLUnits uBottomPos = GetMaximumY(nPage);
+    lmLUnits uLeftPos = GetPageLeftMargin(nPage);
+    lmLUnits uRightPos = GetRightMarginXPos(nPage);
 
     if (nIdx == lmMARGIN_TOP)
         uTopPos = uPos.y;
@@ -1426,6 +1587,74 @@ lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, lmUPoin
     return pos;
 }
 
+void lmScore::PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos)
+{
+	wxMenu* pMenu = pCanvas->GetContextualMenu(false);		//false->do not add any menu item
+;
+
+#if defined(__WXMSW__) || defined(__WXGTK__)
+    //bitmaps on menus are supported only on Windows and GTK+
+    wxMenuItem* pItem;
+    wxSize nIconSize(16, 16);
+
+    pItem = new wxMenuItem(pMenu, lmPOPUP_Score_Titles, _("Add title"),
+						   _("Add a title to the score"), wxITEM_NORMAL);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_add_text"),
+										       wxART_TOOLBAR, nIconSize) );
+    pMenu->Append(pItem);
+
+    pItem = new wxMenuItem(pMenu, lmPOPUP_View_Page_Margins, _("Margins and spacers"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nIconSize) );
+    pMenu->Append(pItem);
+
+	//pMenu->AppendSeparator();
+
+
+#else
+    //No bitmaps on menus for other platforms different from Windows and GTK+
+    pMenu->Append(lmPOPUP_Score_Titles, _("Add title"));
+    pMenu->Append(lmPOPUP_View_Page_Margins, _("Margins and spacers"));
+	//pMenu->AppendSeparator();
+
+#endif
+
+	pCanvas->ShowContextualMenu(this, pGMO, pMenu, vPos.x, vPos.y);
+}
+
+void lmScore::OnInstrProperties(int nInstr)
+{
+	//Shows the Instruments properties dialog for the selected instrumnet (0..n).
+	//If nInst == -1 shows a selction dialog first
+
+	if (nInstr == -1)
+	{
+		//load array with instruments names
+		wxArrayString aChoices;
+		int iN = 1;
+		lmInstrument* pInstr = this->GetFirstInstrument();
+		while(pInstr)
+		{
+			aChoices.Add( wxString::Format(_T("%d - %s"), iN, pInstr->GetInstrName()) );
+			pInstr = this->GetNextInstrument();
+			iN++;
+		}
+		//if only one instrument select it. Otherwise, show selection dialog
+		if (iN==2)
+			nInstr = 0;
+		else
+			nInstr = ::wxGetSingleChoiceIndex(_("Select instrument:"),
+											  _("Instrument selection"), aChoices);
+	}
+
+	if (nInstr == -1) return;		//cancel button
+
+	//Instrument selected. Show properties dialog
+	lmDlgProperties dlg((lmController*)NULL);
+	GetInstrument(nInstr+1)->OnEditProperties(&dlg);		//add specific panels
+	dlg.Layout();
+	dlg.ShowModal();
+}	
+
 //-------------------------------------------------------------------------------------
 
 lmBoxScore* lmScore::Layout(lmPaper* pPaper)
@@ -1480,6 +1709,28 @@ lmTextStyle* lmStylesCollection::GetStyleInfo(const wxString& sStyleName)
         return pTS;
     }
 
+    if (sStyleName == _("Normal text"))
+    {
+        lmFontInfo tNormalFont = { _T("Times New Roman"), 10, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+        lmTextStyle* pTS = new lmTextStyle;
+        pTS->nColor = *wxBLACK;
+        pTS->tFont = tNormalFont;
+        pTS->sName = _("Normal text");
+        m_aTextStyles.push_back( pTS );
+        return pTS;
+    }
+
+    if (sStyleName == _("Title"))
+    {
+        lmFontInfo tNormalFont = { _T("Times New Roman"), 21, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD};
+        lmTextStyle* pTS = new lmTextStyle;
+        pTS->nColor = *wxBLACK;
+        pTS->tFont = tNormalFont;
+        pTS->sName = _("Title");
+        m_aTextStyles.push_back( pTS );
+        return pTS;
+    }
+
     return (lmTextStyle*)NULL;
 }
 
@@ -1508,6 +1759,15 @@ lmTextStyle* lmStylesCollection::GetStyleName(lmFontInfo& tFontData, wxColour nC
 lmTextStyle* lmStylesCollection::AddStyle(const wxString& sName, lmFontInfo& tFontData,
                                           wxColour nColor)
 {
+	//check that style name is not duplicated
+    std::list<lmTextStyle*>::iterator it;
+    for (it = m_aTextStyles.begin(); it != m_aTextStyles.end(); ++it)
+    {
+        if ((*it)->sName == sName)
+			return *it;		//already exists
+            break;
+    }
+
     lmTextStyle* pNewTS = new lmTextStyle;
     pNewTS->nColor = nColor;
     pNewTS->tFont = tFontData;

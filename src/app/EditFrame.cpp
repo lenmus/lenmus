@@ -93,8 +93,15 @@ bool lmEditFrame::SetActiveViewScale(double rScale)
 void lmEditFrame::OnChildFrameActivated()
 {
 	//this frame is now the active frame. Inform main frame.
-	g_pMainFrame->OnActiveViewChanged(this);
+	g_pMainFrame->OnActiveChildChanged(this);
 }
+
+void lmEditFrame::OnChildFrameDeactivated()
+{
+    //this frame is going to be inactivated. Stop the score if playing back
+    m_pView->GetController()->StopPlaying(true);     //true -> wait for termination
+}
+
 
 void lmEditFrame::OnKeyPress(wxKeyEvent& event)
 {

@@ -53,11 +53,12 @@ lmHandler::lmHandler(lmScoreObj* pOwner)
 //-------------------------------------------------------------------------------------
 
 
-lmShapeMargin::lmShapeMargin(lmScore* pScore, int nIdx, bool fVertical, lmLUnits uPos,
+lmShapeMargin::lmShapeMargin(lmScore* pScore, int nIdx, int nPage, bool fVertical, lmLUnits uPos,
                              lmLUnits uLenght, wxColour color)
 	: lmHandler(pScore)
 {
     m_nIdx = nIdx;
+	m_nPage = nPage;
 
     m_fVertical = fVertical;
     m_uPos = uPos;
@@ -108,7 +109,6 @@ void lmShapeMargin::Render(lmPaper* pPaper, wxColour color)
     // as painting uses XOR we need the complementary color
     colorC = wxColour(255 - (int)color.Red(), 255 - (int)color.Green(), 255 - (int)color.Blue() );
 
-
     DrawLine(pPaper, colorC);
     DrawHandlers(pPaper, colorC);
 
@@ -146,9 +146,9 @@ void lmShapeMargin::Shift(lmLUnits xIncr, lmLUnits yIncr)
 void lmShapeMargin::DrawLine(lmPaper* pPaper, wxColour color)
 {
     if (m_fVertical)
-        pPaper->SketchLine(m_uPos, 0.0f, m_uPos, m_uLenght, color);
+        pPaper->SketchLine(m_uPos, 0.0f, m_uPos, m_uLenght, color, wxSHORT_DASH);
     else
-        pPaper->SketchLine(0.0f, m_uPos, m_uLenght, m_uPos, color);
+        pPaper->SketchLine(0.0f, m_uPos, m_uLenght, m_uPos, color, wxSHORT_DASH);
 }
 
 void lmShapeMargin::DrawHandlers(lmPaper* pPaper, wxColour color)
@@ -199,7 +199,7 @@ lmUPoint lmShapeMargin::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
     //limit margins movement to have at least 30% of page size for rendering the score
     lmScore* pScore = (lmScore*)m_pOwner;
     lmUPoint pos = uPos;
-    pos = pScore->CheckHandlerNewPosition(this, m_nIdx, pos);
+    pos = pScore->CheckHandlerNewPosition(this, m_nIdx, m_nPage, pos);
 
 
     //received paper is a DirectDrawer DC
@@ -229,7 +229,7 @@ void lmShapeMargin::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 
     lmScore* pScore = (lmScore*)m_pOwner;
     lmUPoint pos = uPos;
-    pos = pScore->CheckHandlerNewPosition(this, m_nIdx, pos);
+    pos = pScore->CheckHandlerNewPosition(this, m_nIdx, m_nPage, pos);
 
     //save new position and send the command to change margin position
     if (m_fVertical)
@@ -237,5 +237,5 @@ void lmShapeMargin::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
     else
         m_uPos = pos.y;
 
-    pCanvas->ChangePageMargin(this, m_nIdx, m_uPos);
+    pCanvas->ChangePageMargin(this, m_nIdx, m_nPage, m_uPos);
 }

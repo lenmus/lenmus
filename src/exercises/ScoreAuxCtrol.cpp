@@ -117,6 +117,12 @@ void lmScoreAuxCtrol::SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop)
     m_nTopMargin = nTop;
     m_nLeftMargin = nLeft;
     m_nRightMargin = nRight;
+    if (m_pScore)
+    {
+        m_pScore->SetPageTopMargin(m_nTopMargin);
+        m_pScore->SetPageLeftMargin(m_nLeftMargin);
+        m_pScore->SetPageRightMargin(m_nRightMargin);
+    }
     Refresh();
 }
 
@@ -343,6 +349,12 @@ void lmScoreAuxCtrol::SetScore(lmScore* pScore, bool fHidden)
 {
     m_fHidden = fHidden;
     m_pScore = pScore;
+    if (m_pScore)
+    {
+        m_pScore->SetPageTopMargin(m_nTopMargin);
+        m_pScore->SetPageLeftMargin(m_nLeftMargin);
+        m_pScore->SetPageRightMargin(m_nRightMargin);
+    }
 }
 
 void lmScoreAuxCtrol::HideScore(bool fHide)

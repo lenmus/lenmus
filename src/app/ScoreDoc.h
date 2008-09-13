@@ -44,6 +44,7 @@ enum
     lmFORCE_RELAYOUT                = 0x0002,   //force an score re-layout
     lmNO_BITMAPS                    = 0x0004,   //do not re-use offscreen bitmaps
     lmNO_RELAYOUT_ON_PAPER_RESIZE   = 0x0008,   //do not re-layout if paper re-size
+    lmDELAY_RELAYOUT                = 0x0010,   //delay relayout to next repaint
 };
 
 class lmUpdateHint: public wxObject

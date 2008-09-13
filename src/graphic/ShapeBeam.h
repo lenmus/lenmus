@@ -63,6 +63,7 @@ public:
 
     //overrides
     bool BoundsContainsPoint(lmUPoint& pointL);
+    bool SelRectContainsPoint(lmUPoint& pointL);
 
 	//layout changes
     void AdjustStemsIfNeeded();

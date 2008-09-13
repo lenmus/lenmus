@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -63,7 +62,12 @@ typedef agg::rgba  lmColor_rgba;            //internal rgba, double value per ch
 class lmAggDrawer : public lmDrawer
 {
 public:
+    //Constructor, allocating a new bitmap as rendering buffer
     lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int stride=0);
+
+	//Constructor, allocating a copy of the received bitmap as rendering buffer
+	lmAggDrawer(wxDC* pDC, wxBitmap* pBitmap, int stride=0);
+
     ~lmAggDrawer();
 
     bool IsDirectDrawer() { return false; }
@@ -72,7 +76,8 @@ public:
     wxImage& GetImageBuffer() { return m_buffer; }
 
     // Aliased shapes, even when anti-alising is supported.
-    void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color);
+    void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color,
+					int style = wxSOLID);
     void SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color);
 
     //solid shapes, anti-aliased when supported.
@@ -105,6 +110,7 @@ public:
 
 private:
     void Initialize();
+	void Create(int stride);
     inline double WorldToDeviceX(lmLUnits x) const { return m_xDevicePixelsPerLU * (double)x; }
     inline double WorldToDeviceY(lmLUnits y) const { return m_yDevicePixelsPerLU * (double)y; }
     lmColor_rgba8 lmToRGBA8(wxColour color);

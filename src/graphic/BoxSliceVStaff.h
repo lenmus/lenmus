@@ -64,7 +64,7 @@ public:
 	void CopyYBounds(lmBoxSliceVStaff* pBSV);
 
     //info
-    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+    lmGMObject* FindSelectableObjectAtPos(lmUPoint& pointL);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
 

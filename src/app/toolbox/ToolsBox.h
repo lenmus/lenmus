@@ -47,18 +47,20 @@ enum lmEToolPage
 	lmPAGE_NONE = -1,
 	lmPAGE_CLEFS =0,
 	lmPAGE_NOTES,
+	lmPAGE_BARLINES,
     //TO_ADD: Add, before this line, a new lmPAGE_XXXXX code for the new tool
 	lmPAGE_MAX,		//this MUST BE the last one
     //not used yet
 	lmPAGE_SELECTION,
 	lmPAGE_KEY_SIGN,
 	lmPAGE_TIME_SIGN,
-	lmPAGE_BARLINES,
 };
 
 enum lmEToolGroupID
 {
 	//lmPAGE_NOTES
+    lmGRP_Octave,
+    lmGRP_Voice,
     lmGRP_NoteDuration,         //notes duration group
     lmGRP_NoteAcc,              //Note accidentals group
     lmGRP_NoteDots,             //Note dots group
@@ -69,6 +71,9 @@ enum lmEToolGroupID
     lmGRP_ClefType,
     lmGRP_TimeType,
     lmGRP_KeyType,
+
+	//lmPAGE_BARLINES,
+	lmGRP_BarlineType,			//barline type
 
 };
 

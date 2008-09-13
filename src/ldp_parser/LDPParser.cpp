@@ -108,6 +108,8 @@ void lmLDPParser::Create(const wxString& sLanguage, const wxString& sCharset)
     m_fShowNumber = true;
     m_fTupletAbove = true;
 
+	//other initializations
+	m_pLastNoteRest = (lmNoteRest*)NULL;
 }
 
 lmLDPParser::~lmLDPParser()
@@ -159,6 +161,7 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
     g_pLogger->FlushDataErrorLog();
     lmLDPNode* pRoot = LexicalAnalysis();
     lmScore* pScore = (lmScore*) NULL;
+	m_pLastNoteRest = (lmNoteRest*)NULL;
 
     //disable edition options that could interfere with direct score creation
     bool fAutoBeam = g_fAutoBeam;
@@ -652,7 +655,7 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
 
 lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
-    //<score> = (score <vers> [<language>] [<titles>] <instrument>*)
+    //<score> = (score <vers> [<language>][<styles>][<pageLayout>][<titles>] <instrument>*)
     //<language> = (language LanguageCode Charset )
 
     lmLDPNode* pX;
@@ -697,6 +700,15 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
 
+    //parse optional element <pageLayout>
+    pX = pNode->GetParameter(iP);
+    while(pX->GetName() == m_pTags->TagName(_T("pageLayout")) &&  iP <= nNumParms)
+    {
+        AnalyzePageLayout(pX, pScore);
+        iP++;
+        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+    }
+
     //parse optional elements <opt>
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == m_pTags->TagName(_T("opt")) &&  iP <= nNumParms) {
@@ -716,7 +728,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         else
         {
             AnalysisError( _T("Elements <instrument> or <group> expected but found element %s. Analysis stopped."),
-                pNode->GetName().c_str() );
+                pX->GetName().c_str() );
             break;
         }
         iP++;
@@ -841,7 +853,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //<instrument> = (instrument [<InstrName>][<InfoMIDI>][<Staves>] <Voice>+ )
 
     //<InstrName> = (instrName name-string [abbreviation-string])
-    //<InfoMIDI> = (infoMIDI num-instr [num-device])
+    //<InfoMIDI> = (infoMIDI num-instr [num-channel])
     //<Staves> = (staves {num | overlayered} )
     //<Voice> = (MusicData <music>+ )
 
@@ -888,21 +900,17 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign, &tNamePos,
                               &tNameFont, &fNameHasWidth);
         }
-        else if (pX->GetName() == m_pTags->TagName(_T("abbrev")) ) {
+        else if (pX->GetName() == m_pTags->TagName(_T("abbrev")) )
+		{
             AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
                               &tAbbrevPos, &tAbbrevFont, &fAbbrevHasWidth);
         }
-        else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) ) {
-            //TODO No treatment for now
-            //    nMIDIChannel = nMidiCanalVoz
-            //    nMIDIInstr = nMidiInstrVoz
-            //
-            //    if (pX->GetName() = "INFOMIDI") {
-            //        AnalizarInfoMIDI pX, nMIDIChannel, nMIDIInstr
-            //        iP = iP + 1
-            //    }
-        }
-        else if (pX->GetName() == m_pTags->TagName(_T("staves")) ) {
+        else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) )
+		{
+			AnalyzeInfoMIDI(pX, &nMIDIChannel, &nMIDIInstr);
+		}
+        else if (pX->GetName() == m_pTags->TagName(_T("staves")) )
+		{
             pX = pX->GetParameter(1);
             if (pX->IsSimple()) {
                 sNumStaves = pX->GetName();
@@ -944,7 +952,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else
             pTS = pScore->GetStyleName(tNameFont);
         wxASSERT(pTS);
-        pName = new lmTextItem(sInstrName, nNameAlign, tNamePos, pTS);
+        pName = new lmTextItem(sInstrName, nNameAlign, pTS);
+        pName->SetUserLocation(tNamePos);
     }
     if (sInstrAbbrev != _T(""))
     {
@@ -954,7 +963,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else
         lmTextStyle* pTS = pScore->GetStyleName(tAbbrevFont);
         wxASSERT(pTS);
-        pAbbrev = new lmTextItem(sInstrAbbrev, nAbbrevAlign, tAbbrevPos, pTS);
+        pAbbrev = new lmTextItem(sInstrAbbrev, nAbbrevAlign, pTS);
+        pAbbrev->SetUserLocation(tAbbrevPos);
     }
 
     lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr,
@@ -979,6 +989,40 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //    }
     //}
 
+}
+
+bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr)
+{
+	//analizes a <infoMIDI> element and updates variables pChannel and pNumInstr
+	//returns true if error.
+	//
+    //		<InfoMIDI> = (infoMIDI num-instr num-channel)
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == m_pTags->TagName(_T("infoMIDI")) );
+
+    //check that two numbers are specified
+    if(pNode->GetNumParms() < 2) {
+        AnalysisError( _T("Element 'infoMIDI' has less parameters than the minimum required. Ignored."));
+        return true;
+    }
+
+    wxString sNum1 = (pNode->GetParameter(1))->GetName();
+    wxString sNum2 = (pNode->GetParameter(2))->GetName();
+    if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
+        AnalysisError(
+            _T("Element 'infoMIDI': Two numbers expected but found '%s' and '%s'. Ignored."),
+            sNum1.c_str(), sNum2.c_str() );
+        return true;
+    }
+
+    long nAux;
+    sNum1.ToLong(&nAux);
+	*pNumInstr = int(nAux);
+    sNum2.ToLong(&nAux);
+	*pChannel = int(nAux);
+
+    return false;
 }
 
 void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -1581,17 +1625,23 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             if (nParms < 1) {
                 AnalysisError( _T("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
-                return pVStaff->AddRest(nNoteType, rDuration, nDots,
-                                        m_nCurStaff, m_nCurVoice, fVisible);
+				m_pLastNoteRest = pVStaff->AddRest(nNoteType, rDuration, nDots,
+										m_nCurStaff, m_nCurVoice, fVisible);
             }
         }
-        else {
-            if (nParms < 2) {
+        else
+		{
+            if (nParms < 2)
+			{
                 AnalysisError( _T("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
-                return pVStaff->AddNote(lm_ePitchRelative, 0, 4, 0, nAccidentals,
-                                        nNoteType, rDuration, nDots, m_nCurStaff,
-                                        m_nCurVoice, fVisible, fBeamed, BeamInfo, fInChord, fTie, nStem);
+                lmNote* pNt = pVStaff->AddNote(lm_ePitchRelative, 0, 4, 0, nAccidentals,
+											   nNoteType, rDuration, nDots, m_nCurStaff,
+											   m_nCurVoice, fVisible, fBeamed, BeamInfo,
+											   (fInChord ? (lmNote*)m_pLastNoteRest : (lmNote*)NULL),
+											   fTie, nStem);
+				if (!fInChord || pNt->IsBaseOfChord())
+					m_pLastNoteRest = pNt;
             }
         }
 
@@ -1682,8 +1732,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     }
                     else {
                         // and the previous note must be beamed
-                        if (g_pLastNoteRest && g_pLastNoteRest->IsBeamed() &&
-                            g_pLastNoteRest->GetBeamType(0) != eBeamEnd) {
+                        if (m_pLastNoteRest && m_pLastNoteRest->IsBeamed() &&
+                            m_pLastNoteRest->GetBeamType(0) != eBeamEnd) {
                             AnalysisError(
                                 _T("Requesting to start a beamed group but there is already an open group. Beaming ignored."));
                         }
@@ -1711,15 +1761,15 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     }
 
                     //There must exist a previous note/rest
-                    if (!g_pLastNoteRest) {
+                    if (!m_pLastNoteRest) {
                         AnalysisError(
                             _T("Request to end beaming a group but there is not a  previous note. Beaming ignored."));
                         fCloseBeam = false;
                     }
                     else {
                         // and the previous note must be beamed
-                        if (!g_pLastNoteRest->IsBeamed() ||
-                            g_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
+                        if (!m_pLastNoteRest->IsBeamed() ||
+                            m_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
                             AnalysisError(
                                 _T("Request to end beaming a group but previous note is not beamed. Beaming ignored."));
                             fCloseBeam = false;
@@ -1730,7 +1780,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     if (fCloseBeam) {
                         fBeamed = true;
                         int nCurLevel = GetBeamingLevel(nNoteType);
-                        int nPrevLevel = GetBeamingLevel(g_pLastNoteRest->GetNoteType());
+                        int nPrevLevel = GetBeamingLevel(m_pLastNoteRest->GetNoteType());
 
                         // close commom levels (as this must be done in each if/else branch it has
                         // been moved here to optimize. A commnet has been included there instead to
@@ -1755,13 +1805,13 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                             // current level is lower than previous one:
                             // close common levels (done) and close deeper levels in previous note
                             for (; iLevel <= nPrevLevel; iLevel++) {
-                                if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
-                                    g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
+                                if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
+                                    m_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
                                     g_pLogger->LogTrace(_T("LDPParser_beams"),
                                         _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                                 }
-                                else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
-                                    g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
+                                else if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
+                                    m_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
                                     g_pLogger->LogTrace(_T("LDPParser_beams"),
                                         _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
                                 }
@@ -1850,12 +1900,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     //force beaming for notes between eBeamBegin and eBeamEnd (only for single notes
     //and chord base notes, not for secondary notes of a chord)
     if (!fBeamed && !fInChord && nNoteType > eQuarter) {
-        if (g_pLastNoteRest) {
-            if (g_pLastNoteRest->IsBeamed()) {
+        if (m_pLastNoteRest) {
+            if (m_pLastNoteRest->IsBeamed()) {
                 //it can be the end of a group. Let's verify that at least a beam is open
                 for (iLevel=0; iLevel <= 6; iLevel++) {
-                    if ((g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) ||
-                        (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue)) {
+                    if ((m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) ||
+                        (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue)) {
                             fBeamed = true;
                             break;
                     }
@@ -1863,7 +1913,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
                 if (fBeamed) {
                     int nCurLevel = GetBeamingLevel(nNoteType);
-                    int nPrevLevel = GetBeamingLevel(g_pLastNoteRest->GetNoteType());
+                    int nPrevLevel = GetBeamingLevel(m_pLastNoteRest->GetNoteType());
 
                     // continue common levels
                     for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
@@ -1884,13 +1934,13 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         // current level is lower than previous one
                         // close common levels (done) and close deeper levels in previous note
                         for (; iLevel <= nPrevLevel; iLevel++) {
-                            if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
-                                g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
+                            if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
+                                m_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
                                     _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                             }
-                            else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
-                                g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
+                            else if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
+                                m_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
                                     _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
                             }
@@ -1914,22 +1964,30 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     //create the nore/rest
     lmNoteRest* pNR;
-    if (fIsRest) {
+    if (fIsRest)
+	{
         pNR = pVStaff->AddRest(nNoteType, rDuration, nDots,
                                m_nCurStaff, m_nCurVoice, fVisible, fBeamed, BeamInfo);
+		m_pLastNoteRest = pNR;
     }
-    else {
+    else
+	{
         //TODO: Convert early to int
         int nStep = LetterToStep(sStep);
         long nAux;
         sOctave.ToLong(&nAux);
         int nOctave = (int)nAux;
 
-        pNR = pVStaff->AddNote(nPitchType,
+        lmNote* pNt = pVStaff->AddNote(nPitchType,
                                nStep, nOctave, 0, nAccidentals,
                                nNoteType, rDuration, nDots, m_nCurStaff,
-                               m_nCurVoice, fVisible, fBeamed, BeamInfo, fInChord, fTie,
-							   nStem);
+                               m_nCurVoice, fVisible, fBeamed, BeamInfo,
+							   (fInChord ? (lmNote*)m_pLastNoteRest : (lmNote*)NULL),
+							   fTie, nStem);
+		if (!fInChord || pNt->IsBaseOfChord())
+			m_pLastNoteRest = pNt;
+
+		pNR = pNt;
         m_sLastOctave = sOctave;
     }
 	pNR->SetUserLocation(tPos);
@@ -2712,8 +2770,11 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
                 AnalysisError( _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
             sStyle = (pX->GetParameter(1))->GetName();
         }
-        else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
-                 sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
+        else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) )
+        {
+            AnalysisError( _T("Obsolete: x location is not allowed in titles.") );
+        }
+        else if (sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
         {
             AnalyzeLocation(pX, &tPos);
         }
@@ -2735,7 +2796,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     if (!pStyle)
         pStyle = pScore->GetStyleName(tFont);
 
-    lmTextBlock* pTitle = pScore->AddTitle(sTitle, nAlign, tPos, pStyle);
+    lmTextBlock* pTitle = pScore->AddTitle(sTitle, nAlign, pStyle);
 	pTitle->SetUserLocation(tPos);
 
     return false;
@@ -2848,7 +2909,7 @@ bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
         AnalysisError(
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             pNode->GetName().c_str() );
-        return true;
+        return false;
     }
 
     //initialize values
@@ -2887,7 +2948,7 @@ bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
     if (!sStyleName.IsEmpty())
         pScore->AddStyle(sStyleName, tFont, color);
 
-    return false;
+    return true;
 }
 
 wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
@@ -2923,6 +2984,126 @@ wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
     }
 
     return color;
+}
+
+bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
+{
+	//  <pageLayout> := (pageLayout <pageSize><pageMargins><pageOrientation>)
+	//  <pageSize> := (pageSize width height)
+	//  <pageMargins> := (pageMargins left top right bottom binding)
+	//  <pageOrientation> := [ "portrait" | "landscape" ]
+
+    //Analyzes a 'pageLayout' tag and, if successful, pass layout data to the
+    //received score. Returns true if success.
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("pageLayout")) );
+
+    //check that three parameters are specified
+    if(pNode->GetNumParms() != 3) {
+        AnalysisError(
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+            pNode->GetName().c_str() );
+        return false;
+    }
+
+    //get page size
+    int iP = 1;
+    lmLDPNode* pX = pNode->GetParameter(iP);
+    wxString sName = pX->GetName();
+    if (sName != m_pTags->TagName(_T("pageSize")) )
+    {
+        AnalysisError( _T("Expected 'pageSize' element but found '%s'. Ignored."),
+            sName.c_str() );
+		return false;
+    }
+    if(pX->GetNumParms() != 2) {
+        AnalysisError(
+            _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
+				m_pTags->TagName(_T("pageSize")).c_str(), pX->GetNumParms() );
+        return false;
+    }
+	lmLUnits uWidth, uHeight;
+    wxString sValue = (pX->GetParameter(1))->GetName();
+	if (GetFloatNumber(sValue, sName, &uWidth))
+        return false;
+    sValue = (pX->GetParameter(2))->GetName();
+	if (GetFloatNumber(sValue, sName, &uHeight))
+        return false;
+    pScore->SetPageSize(uWidth, uHeight);
+    iP++;
+
+    //get page margins
+    pX = pNode->GetParameter(iP);
+    sName = pX->GetName();
+    if (sName != m_pTags->TagName(_T("pageMargins")) )
+    {
+        AnalysisError( _T("Expected 'pageMargins' element but found '%s'. Ignored."),
+            sName.c_str() );
+		return false;
+    }
+    if(pX->GetNumParms() != 5) {
+        AnalysisError(
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+				m_pTags->TagName(_T("pageMargins")).c_str() );
+        return false;
+    }
+	lmLUnits uLeft, uTop, uRight, uBottom, uBinding;
+    sValue = (pX->GetParameter(1))->GetName();
+	if (GetFloatNumber(sValue, sName, &uLeft))
+        return false;
+    sValue = (pX->GetParameter(2))->GetName();
+	if (GetFloatNumber(sValue, sName, &uTop))
+        return false;
+    sValue = (pX->GetParameter(3))->GetName();
+	if (GetFloatNumber(sValue, sName, &uRight))
+        return false;
+    sValue = (pX->GetParameter(4))->GetName();
+	if (GetFloatNumber(sValue, sName, &uBottom))
+        return false;
+    sValue = (pX->GetParameter(5))->GetName();
+	if (GetFloatNumber(sValue, sName, &uBinding))
+        return false;
+    pScore->SetPageSize(uWidth, uHeight);
+    pScore->SetPageBindingMargin(uBinding);
+	pScore->SetPageBottomMargin(uBottom);
+	pScore->SetPageLeftMargin(uLeft);
+	pScore->SetPageRightMargin(uRight);
+	pScore->SetPageTopMargin(uTop);
+    iP++;
+
+    //get page orientation
+    pX = pNode->GetParameter(iP);
+    sName = (pNode->GetParameter(iP))->GetName();
+    if (sName == m_pTags->TagName(_T("portrait")) )
+		pScore->SetPageOrientation(true);
+    else if (sName == m_pTags->TagName(_T("landscape")) )
+		pScore->SetPageOrientation(false);
+	else
+    {
+        AnalysisError( _T("Expected 'portrait' or 'landscape' but found '%s'. Ignored."),
+            sName.c_str() );
+		pScore->SetPageOrientation(true);
+    }
+
+	return true;
+}
+
+bool lmLDPParser::GetFloatNumber(wxString& sValue, wxString& nodeName, float* pValue)
+{
+	//returns true if error and send an error message
+
+	double rNumberDouble;
+	if (!StrToDouble(sValue, &rNumberDouble))
+	{
+        *pValue = (float)rNumberDouble;
+		return false;
+	}
+    else
+	{
+        AnalysisError( _T("Element '%s': Invalid value '%s'. It must be a float number."),
+            nodeName.c_str(), sValue.c_str() );
+        return true;
+    }
 }
 
 //returns true if error; in this case nothing is added to the VStaff
@@ -2967,7 +3148,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     lmTextStyle* pStyle = (lmTextStyle*)NULL;
     if (sStyle != _T(""))
     {
-        lmTextStyle* pStyle = pVStaff->GetScore()->GetStyleInfo(sStyle);
+        pStyle = pVStaff->GetScore()->GetStyleInfo(sStyle);
         if (!pStyle)
             AnalysisError( _T("Style '%s' is not defined. Default style will be used."),
                            sStyle.c_str());
@@ -2976,7 +3157,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (!pStyle)
         pStyle = pVStaff->GetScore()->GetStyleName(tFont);
 
-    lmTextItem* pText = pVStaff->AddText(sText, nAlign, tPos, pStyle, fHasWidth);
+    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, fHasWidth);
 	pText->SetUserLocation(tPos);
 
     return false;
@@ -3393,10 +3574,6 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUn
 	{
         *pValue = (float)rNumberDouble;
     }
-    //if (sValue.IsNumber()) {
-    //    sValue.ToLong(&nValue);
-    //    *pValue = (int)nValue;
-    //}
     else {
         AnalysisError( _T("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
             pNode->GetName().c_str(), sParm.c_str() );

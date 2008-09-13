@@ -42,6 +42,7 @@
 #include "VStaff.h"
 #include "InstrGroup.h"
 #include "wx/debug.h"
+#include "properties/DlgProperties.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeText.h"
@@ -51,6 +52,133 @@
 
 //Global variables used as default initializators
 lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD };
+
+
+
+
+//--------------------------------------------------------------------------------------
+/// Class lmInstrProperties
+//--------------------------------------------------------------------------------------
+
+#include "defs.h"
+#include "properties/DlgProperties.h"
+
+class lmScoreObj;
+class lmController;
+class lmScore;
+
+//class lmInstrProperties : public lmPropertiesPage 
+//{
+//public:
+//	lmInstrProperties(wxWindow* parent, lmBarline* pBL);
+//	~lmInstrProperties();
+//
+//    //implementation of pure virtual methods in base class
+//    void OnAcceptChanges(lmController* pController);
+//
+//    // event handlers
+//
+//protected:
+//    void CreateControls();
+//
+//    //controls
+//	wxStaticText*		m_pTxtBarline;
+//	wxBitmapComboBox*	m_pBarlinesList;
+//
+//    //other variables
+//    lmBarline*			m_pBL;
+//
+//
+//    DECLARE_EVENT_TABLE()
+//};
+//
+//
+////--------------------------------------------------------------------------------------
+///// Implementation of lmInstrProperties
+////--------------------------------------------------------------------------------------
+//
+//#include "../app/ScoreCanvas.h"			//lmConroller
+//
+//enum {
+//    lmID_BARLINE = 2600,
+//};
+//
+//lmBarlinesDBEntry g_tBarlinesDB[] = {
+//    { _("Simple barline"),		lm_eBarlineSimple },
+//    { _("Double barline"),		lm_eBarlineDouble },
+//    { _("Final barline"),		lm_eBarlineEnd },
+//    { _("Start repetition"),	lm_eBarlineStartRepetition },
+//    { _("End repetition"),		lm_eBarlineEndRepetition },
+//    { _("Star barline"),		lm_eBarlineStart },
+//    { _("Double repetition"),	lm_eBarlineDoubleRepetition },
+//	//End of table item
+//	{ _T(""),					(lmEBarline)-1 }
+//};
+//
+//BEGIN_EVENT_TABLE(lmInstrProperties, lmPropertiesPage)
+//
+//END_EVENT_TABLE()
+//
+//
+////AWARE: pScore is needed as parameter in the constructor for those cases in
+////wich the text is being created and is not yet included in the score. In this
+////cases method GetScore() will fail, so we can not use it in the implementation
+////of this class
+//lmInstrProperties::lmInstrProperties(wxWindow* parent, lmBarline* pBL)
+//    : lmPropertiesPage(parent)
+//{
+//    m_pBL = pBL;
+//    CreateControls();
+//	LoadBarlinesBitmapComboBox(m_pBarlinesList, g_tBarlinesDB);
+//	SelectBarlineBitmapComboBox(m_pBarlinesList, m_pBL->GetBarlineType() );
+//}
+//
+//void lmInstrProperties::CreateControls()
+//{
+//	wxBoxSizer* pMainSizer;
+//	pMainSizer = new wxBoxSizer( wxVERTICAL );
+//	
+//	m_pTxtBarline = new wxStaticText( this, wxID_ANY, wxT("Barline type"), wxDefaultPosition, wxDefaultSize, 0 );
+//	m_pTxtBarline->Wrap( -1 );
+//	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+//	
+//	pMainSizer->Add( m_pTxtBarline, 0, wxALL, 5 );
+//	
+//	wxArrayString m_pBarlinesListChoices;
+//    m_pBarlinesList = new wxBitmapComboBox();
+//    m_pBarlinesList->Create(this, lmID_BARLINE, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
+//							0, NULL, wxCB_READONLY);
+//	pMainSizer->Add( m_pBarlinesList, 0, wxALL, 5 );
+//	
+//	this->SetSizer( pMainSizer );
+//	this->Layout();
+//}
+//
+//lmInstrProperties::~lmInstrProperties()
+//{
+//}
+//
+//void lmInstrProperties::OnAcceptChanges(lmController* pController)
+//{
+//	int iB = m_pBarlinesList->GetSelection();
+//    lmEBarline nType = g_tBarlinesDB[iB].nBarlineType;
+//	if (nType == m_pBL->GetBarlineType())
+//		return;		//nothing to change
+//
+//    if (pController)
+//    {
+//        //Editing and existing object. Do changes by issuing edit commands
+//        pController->ChangeBarline(m_pBL, nType, m_pBL->IsVisible());
+//    }
+//  //  else
+//  //  {
+//  //      //Direct creation. Modify text object directly
+//  //      m_pParentText->SetText( m_pTxtCtrl->GetValue() );
+//  //      m_pParentText->SetStyle(pStyle);
+//		//m_pParentText->SetAlignment(m_nHAlign);
+//  //  }
+//}
+//
 
 
 //=======================================================================================
@@ -69,14 +197,14 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pName = new lmTextItem(sName, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
+        pName = new lmTextItem(sName, lmHALIGN_LEFT, pStyle);
     }
 
     if (sAbbrev != _T(""))
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pAbbreviation = new lmTextItem(sAbbrev, lmHALIGN_LEFT, g_tDefaultPos, pStyle);
+        pAbbreviation = new lmTextItem(sAbbrev, lmHALIGN_LEFT, pStyle);
     }
 
     //create the instrument
@@ -167,7 +295,10 @@ wxString lmInstrument::SourceLDP(int nIndent)
     sSource += _T("(instrument");
 
     //num of staves
-	sSource += wxString::Format(_T(" (staves %d)\n"), m_pVStaff->GetNumStaves());
+	sSource += wxString::Format(_T(" (staves %d)"), m_pVStaff->GetNumStaves());
+
+	//MIDI info
+	sSource += wxString::Format(_T(" (infoMIDI %d %d)\n"), m_nMidiInstr, m_nMidiChannel);
 
     //the music data (lmVStaff)
 	nIndent++;
@@ -189,13 +320,12 @@ wxString lmInstrument::SourceXML(int nIndent)
 
 }
 
-wxString lmInstrument::GetInstrName()
+const wxString& lmInstrument::GetInstrName()
 {
     if (m_pName)
 		return m_pName->GetText();
 
-	wxString sName = _T("");
-	return sName;
+	return wxEmptyString;
 }
 
 void lmInstrument::MeasureNames(lmPaper* pPaper)
@@ -383,3 +513,17 @@ int lmInstrument::GetNumStaves()
     return m_pVStaff->GetNumStaves(); 
 }
 
+
+void lmInstrument::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
+{
+	//invoked to add specific panels to the dialog
+
+	//pDlg->AddPanel( new lmInstrProperties(pDlg->GetNotebook(), this),
+	//			_("Instrument"));
+	//add pages to edit name and abbreviation
+	m_pName->OnEditProperties(pDlg, _("Name"));
+	//m_pAbbreviation->>OnEditProperties(pDlg, _("Abbreviation"));
+
+	//change dialog title
+	pDlg->SetTitle(_("Instrument properties"));
+}

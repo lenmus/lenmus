@@ -380,6 +380,12 @@
 					RelativePath="..\..\src\score\properties\DlgTextStyles.h">
 				</File>
 				<File
+					RelativePath="..\..\src\score\properties\GeneralProperties.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\score\properties\GeneralProperties.h">
+				</File>
+				<File
 					RelativePath="..\..\src\score\properties\TextProperties.cpp">
 				</File>
 				<File
@@ -603,6 +609,12 @@
 				</File>
 				<File
 					RelativePath="..\..\src\app\toolbox\PropTimeSignature.h">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolBarlines.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolBarlines.h">
 				</File>
 				<File
 					RelativePath="..\..\src\app\toolbox\ToolBoxEvents.cpp">

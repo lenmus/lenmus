@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -22,11 +21,6 @@
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ClientWindow.h"
 #endif
-
-#include "../app/global.h"
-
-#if lmUSE_NOTEBOOK_MDI
-
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -101,7 +95,13 @@ void lmMDIClientWindow::OnPageChanged(wxAuiNotebookEvent& event)
     if (OldSelection == newSelection) return;		//nothing to do
     if (newSelection != -1)
     {
-        lmMDIChildFrame* child = (lmMDIChildFrame*)GetPage(newSelection);
+        lmMDIChildFrame* child;
+        if (OldSelection != -1)
+        {
+            child = (lmMDIChildFrame*)GetPage(OldSelection);
+            child->OnChildFrameDeactivated();
+        }
+        child = (lmMDIChildFrame*)GetPage(newSelection);
 		child->OnChildFrameActivated();
     }
 }
@@ -138,5 +138,3 @@ void lmMDIClientWindow::OnChildClose(wxAuiNotebookEvent& evt)
     RemovePage(iPage);
 
 }
-
-#endif  //lmUSE_NOTEBOOK_MDI

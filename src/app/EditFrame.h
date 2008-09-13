@@ -51,7 +51,11 @@ public:
 
 	double GetActiveViewScale();
 	bool SetActiveViewScale(double rScale);
+
+    //call backs
 	void OnChildFrameActivated();
+    void OnChildFrameDeactivated();
+
     inline lmScoreView* GetView() { return m_pView; }
 
 private:

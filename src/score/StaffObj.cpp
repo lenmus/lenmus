@@ -41,9 +41,13 @@
 #include "Context.h"
 #include "ObjOptions.h"
 #include "UndoRedo.h"
+#include "Text.h"
+#include "../app/ArtProvider.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../app/ScoreCanvas.h"
+#include "properties/DlgProperties.h"
+#include "properties/GeneralProperties.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -150,21 +154,57 @@ wxString lmScoreObj::GetOptionString(wxString sOptName)
 }
 
 
-int lmScoreObj::AttachAuxObj(lmAuxObj* pAO)
+int lmScoreObj::AttachAuxObj(lmAuxObj* pAO, int nIndex)
 {
-    //return index to attached object
+    // Add an AuxObj to the collection of attached AuxObjs. Index is the position
+	// that the addedAuxObj must occupy (0..n). If -1, it will be added at the end.
 
-    if (!m_pAuxObjs) m_pAuxObjs = new lmAuxObjsCol();
-    m_pAuxObjs->push_back(pAO);
+	//add the AuxObj
+    if (!m_pAuxObjs)
+	{
+		wxASSERT(nIndex == -1 || nIndex == 0);
+		m_pAuxObjs = new lmAuxObjsCol();
+		m_pAuxObjs->push_back(pAO);
+		nIndex = 0;
+	}
+	else if (nIndex == -1 || nIndex == (int)m_pAuxObjs->size())
+	{
+		m_pAuxObjs->push_back(pAO);
+		nIndex = (int)m_pAuxObjs->size() - 1;
+	}
+	else
+	{
+		int iN;
+		std::vector<lmAuxObj*>::iterator it;
+		for (iN=0, it=m_pAuxObjs->begin(); it != m_pAuxObjs->end(); ++it, ++iN)
+		{
+			if (iN == nIndex)
+			{
+				//insert before current item
+				m_pAuxObjs->insert(it, pAO);
+				break;
+			}
+		}
+	}
+
+	//set owner and return index to attached object
     pAO->SetOwner(this);
-
-	//return index to attached object
-	return (int)m_pAuxObjs->size() - 1;
+	return nIndex;
 }
 
-void lmScoreObj::DetachAuxObj(lmAuxObj* pAO)
+int lmScoreObj::DetachAuxObj(lmAuxObj* pAO)
 {
-    //TODO
+    //Remove object from collection. Return index to position it occupied
+
+	int nIdx = 0;
+    std::vector<lmAuxObj*>::iterator it;
+    for (it = m_pAuxObjs->begin(); it != m_pAuxObjs->end(); ++it, ++nIdx)
+	{
+		if (*it == pAO) break;
+	}
+    wxASSERT(it != m_pAuxObjs->end());
+    m_pAuxObjs->erase(it);
+	return nIdx;
 }
 
 lmLocation lmScoreObj::SetUserLocation(lmLocation tPos, int nShapeIdx)
@@ -306,30 +346,49 @@ void lmScoreObj::PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoi
 
 void lmScoreObj::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
 {
-    //pMenu->Append(Menu_Help_About, _T("&About"));
-    //pMenu->Append(Menu_Popup_Submenu, _T("&Submenu"), CreateDummyMenu(NULL));
-    //pMenu->Append(Menu_Popup_ToBeDeleted, _T("To be &deleted"));
-    //pMenu->AppendCheckItem(Menu_Popup_ToBeChecked, _T("To be &checked"));
-    //pMenu->Append(Menu_Popup_ToBeGreyed, _T("To be &greyed"),
-    //            _T("This menu item should be initially greyed out"));
-    //pMenu->AppendSeparator();
-    //pMenu->Append(Menu_File_Quit, _T("E&xit"));
+    // Add 'Attach text' item if it is a StaffObj or a AuxObj
+    if (this->IsComponentObj())
+    {
+#if defined(__WXMSW__) || defined(__WXGTK__)
 
-    //pMenu->Delete(Menu_Popup_ToBeDeleted);
-    //pMenu->Check(Menu_Popup_ToBeChecked, true);
-    //pMenu->Enable(Menu_Popup_ToBeGreyed, false);
+		wxMenuItem* pItem;
+		wxSize nIconSize(16, 16);
 
+        pMenu->AppendSeparator();
+
+		pItem = new wxMenuItem(pMenu, lmPOPUP_AttachText, _("Attach text"));
+		pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_add_text"), wxART_TOOLBAR, nIconSize) );
+		pMenu->Append(pItem);
+
+#else
+        pMenu->AppendSeparator();
+        pMenu->Append(lmPOPUP_AttachText, _("Attach text"));
+
+#endif
+    }
 }
 
 void lmScoreObj::OnProperties(lmController* pController, lmGMObject* pGMO)
 {
-    WXUNUSED(pController)
-
-    //TODO. For now just show a dump of the shape
 	if(!pGMO)
 		wxMessageBox(_T("Nothing selected!"));
 	else
-		wxMessageBox(pGMO->Dump(0));
+	{
+		lmDlgProperties dlg(pController);
+
+		//give opportunity to derived classes to add specific panels
+		OnEditProperties(&dlg);
+
+		//prepare dialog and show it
+		dlg.Layout();
+		dlg.ShowModal();
+	}
+}
+
+void lmScoreObj::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
+{
+	pDlg->AddPanel( new lmGeneralProperties(pDlg->GetNotebook(), this, this->GetScore()),
+				_("General"));
 }
 
 int lmScoreObj::GetPageNumber()
@@ -628,7 +687,6 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 #endif
 
 }
-
 
 
 

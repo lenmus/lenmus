@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -43,14 +42,6 @@ extern bool g_fShowMargins;     //draw margins in scores, so user can change the
 #define Min(x, y)  ((x < y) ? x : y)
 #define Max(x, y)  ((x > y) ? x : y)
 
-
-//------------------------------------------
-//Conditional compilation options
-//------------------------------------------
-
-// MDI style: Windows or Notebook
-// 0 for Windows MDI style, 1 for Notebook MDI style
-#define lmUSE_NOTEBOOK_MDI          1
 
 
 

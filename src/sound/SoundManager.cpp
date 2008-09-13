@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -375,25 +374,40 @@ void lmSoundManager::SortByTime()
 void lmSoundManager::Play(bool fVisualTracking, bool fMarcarCompasPrevio,
                         lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
+	//play all the score
+
     int nEvStart = m_aMeasures.Item(1);     //get first event for firts measure
-    PlaySegment(nEvStart, m_aEvents.GetCount() - 1, nPlayMode, fVisualTracking,
+    int nEvEnd = m_aEvents.GetCount() - 1;
+
+    PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
                 fMarcarCompasPrevio, nMM, pWindow);
 }
 
 void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
                         lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
-    //
     // Play back measure n (n = 1 ... num_measures)
-    //
-
-    int nEvStart, nEvEnd;
 
     //remember:
     //   real measures 1..n correspond to table items 1..n
     //   items 0 and n+1 are fictitius measures for pre and post control events
-    nEvStart = m_aMeasures.Item(nMeasure);
-    nEvEnd = m_aMeasures.Item(nMeasure + 1) - 1;
+    int nEvStart = m_aMeasures.Item(nMeasure);
+    int nEvEnd = m_aMeasures.Item(nMeasure + 1) - 1;
+
+    PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
+                NO_MARCAR_COMPAS_PREVIO, nMM, pWindow);
+}
+
+void lmSoundManager::PlayFromMeasure(int nMeasure, bool fVisualTracking,
+                        lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
+{
+    // Play back from measure n (n = 1 ... num_measures) to end
+
+    //remember:
+    //   real measures 1..n correspond to table items 1..n
+    //   items 0 and n+1 are fictitius measures for pre and post control events
+    int nEvStart = m_aMeasures.Item(nMeasure);
+    int nEvEnd = m_aEvents.GetCount() - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
                 NO_MARCAR_COMPAS_PREVIO, nMM, pWindow);

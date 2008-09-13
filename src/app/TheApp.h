@@ -57,7 +57,6 @@ class lmTheApp: public wxApp
 
     // Accessors
     wxBitmap& GetBackgroundBitmap() const { return (wxBitmap&) m_background; }
-    lmView* GetActiveView() { return (lmView*)m_pDocManager->GetCurrentView(); }
     wxDocManager* GetDocManager() { return m_pDocManager; }
     wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
     wxString GetLocaleName() { return m_pLocale->GetLocale(); }

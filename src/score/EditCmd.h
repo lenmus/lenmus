@@ -78,7 +78,7 @@ public:
     lmECmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmEPitchType nPitchType,
                      int nStep, int nOctave, lmENoteType nNoteType, float rDuration,
 					 int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                     bool fTiedPrev);
+                     int nVoice, lmNote* pBaseOfChord, bool fTiedPrev);
     ~lmECmdInsertNote() {}
 
     void RollBack(lmUndoItem* pUndoItem);
@@ -332,6 +332,22 @@ protected:
     lmEHAlign       m_nHAlign;
     lmLocation      m_tPos;
     lmTextStyle*    m_pStyle;
+};
+
+//---------------------------------------------------------------------------------------
+class lmEDeleteText : public lmEditCmd
+{
+public:
+    lmEDeleteText(lmScoreText* pST, lmComponentObj* pAnchor, lmUndoItem* WXUNUSED(pUndoItem));
+    ~lmEDeleteText() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return true; }
+
+protected:
+    lmScoreText*		m_pST;
+    lmComponentObj*		m_pAnchor;
+	int					m_nIdx;
 };
 
 

@@ -65,7 +65,7 @@ lmECmdInsertNote::lmECmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
                         lmEPitchType nPitchType, int nStep,
 					    int nOctave, lmENoteType nNoteType, float rDuration,
 					    int nDots, lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                        bool fTiedPrev)
+                        int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
     : lmEditCmd(pVStaff)
 {
     lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
@@ -73,7 +73,7 @@ lmECmdInsertNote::lmECmdInsertNote(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
 
     m_pNewNote = pVStaff->Cmd_InsertNote(pUndoItem, nPitchType, nStep, nOctave, nNoteType,
                                          rDuration, nDots, nNotehead, nAcc, 
-                                         fTiedPrev, fAutoBar);
+                                         nVoice, pBaseOfChord, fTiedPrev, fAutoBar);
 }
 
 void lmECmdInsertNote::RollBack(lmUndoItem* pUndoItem)
@@ -382,5 +382,26 @@ void lmECmdChangeText::RollBack(lmUndoItem* pUndoItem)
 {
     ((lmScoreText*)m_pSCO)->UndoCmd_ChangeText(pUndoItem, m_sText, m_nHAlign, m_tPos, 
                                                m_pStyle);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmEDeleteText implementation
+//----------------------------------------------------------------------------------------
+
+lmEDeleteText::lmEDeleteText(lmScoreText* pST, lmComponentObj* pAnchor,
+							 lmUndoItem* WXUNUSED(pUndoItem))
+    : lmEditCmd((lmScoreObj*)pST)
+{
+    //save all data to be modified
+    m_pST = pST;
+    m_pAnchor = pAnchor;
+	m_nIdx = pAnchor->DetachAuxObj(pST);
+}
+
+void lmEDeleteText::RollBack(lmUndoItem* pUndoItem)
+{
+	m_pAnchor->AttachAuxObj(m_pST, m_nIdx);
 }
 

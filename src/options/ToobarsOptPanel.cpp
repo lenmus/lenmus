@@ -61,7 +61,7 @@ lmToolbarsOptPanel::lmToolbarsOptPanel(wxWindow* parent)
 
     //load icon
     wxStaticBitmap* pBmpIcon = XRCCTRL(*this, "bmpIconTitle", wxStaticBitmap);
-    pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_tools"), wxART_TOOLBAR, wxSize(24,24)) );
+    pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("tool_properties"), wxART_TOOLBAR, wxSize(24,24)) );
 
     //
     // set panel controls according to current user selected options

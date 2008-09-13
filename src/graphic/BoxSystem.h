@@ -46,6 +46,7 @@ class lmBoxScore;
 class lmBoxSlice;
 class lmBoxPage;
 class lmShapeStaff;
+class lmShapeMargin;
 
 //
 // Class lmBoxSystem represents a line of music in the printed score. 
@@ -69,7 +70,7 @@ public:
 
     //positioning
     void UpdateXRight(lmLUnits xPos);
-    void SetPosition(lmLUnits xPos, lmLUnits yPos) { m_xPos = xPos; m_yPos = yPos; }
+    void SetPosition(lmLUnits xPos, lmLUnits yPos);
     inline lmLUnits GetPositionX() const { return m_xPos; }
     inline lmLUnits GetPositionY() const { return m_yPos; }
     inline void SetIndent(lmLUnits xDsplz) { m_nIndent = xDsplz; }
@@ -82,7 +83,7 @@ public:
 
     //pointing at
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+    lmGMObject* FindSelectableObjectAtPos(lmUPoint& pointL);
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
@@ -120,6 +121,7 @@ private:
     lmLUnits    m_xPos, m_yPos;     //system position: pos to render first staff
     lmLUnits    m_nIndent;          //indentation for this system
     int         m_nNumPage;         //page number (1..n) on which this system is included
+	lmShapeMargin*	m_pTopSpacer;	
 
     std::vector<lmBoxSlice*>        m_Slices;   //collection of slices in this system
 

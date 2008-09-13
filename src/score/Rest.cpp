@@ -53,7 +53,6 @@ lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, int nN
                  nStaff, nVoice, fVisible)
 {
     CreateBeam(fBeamed, BeamInfo);
-    g_pLastNoteRest = this;
 }
 
 lmRest::~lmRest()

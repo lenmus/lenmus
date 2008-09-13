@@ -86,7 +86,8 @@ public:
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmNoteRest* AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     void        AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject);
-    lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
+	bool		AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore);
+	lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -131,6 +132,7 @@ private:
     lmLDPNode*  LexicalAnalysis();
     wxColour    AnalyzeColor(lmLDPNode* pNode);
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
+	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
@@ -145,6 +147,7 @@ private:
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
+	bool		GetFloatNumber(wxString& sValue, wxString& nodeName, float* pValue);
 
 
     void Clear();
@@ -164,10 +167,11 @@ private:
     lmLdpTagsTable*     m_pTags;
 
     // variables to store temporary values as the file is being analized.
-    int     m_nCurStaff;        //default staff num. for the lmNoteRest being processed
-    int     m_nCurVoice;        //default voice num. for the lmNoteRest being processed
-    long    m_nNumStaves;       //number of staffs for the lmVStaff being processed
-    lmTupletBracket* m_pTuplet;      //tuplet being analyzed
+    int					m_nCurStaff;	//default staff num. for the lmNoteRest being processed
+    int					m_nCurVoice;	//default voice num. for the lmNoteRest being processed
+    long				m_nNumStaves;	//number of staffs for the lmVStaff being processed
+    lmTupletBracket*	m_pTuplet;      //tuplet being analyzed
+	lmNoteRest*			m_pLastNoteRest;	//last rest or note not in chord or base of chord
 
 
 

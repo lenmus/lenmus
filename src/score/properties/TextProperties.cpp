@@ -38,6 +38,7 @@
 #include "../Text.h"
 #include "../../app/ArtProvider.h"
 #include "../../app/ScoreCanvas.h"
+#include "../../app/ScoreDoc.h"         // lmDELAY_REPAINT
 
 
 //--------------------------------------------------------------------------------------
@@ -48,6 +49,9 @@ enum {
     lmEDIT_CUT = 2100,
     lmEDIT_COPY,
     lmEDIT_PASTE,
+    lmEDIT_LEFT,
+    lmEDIT_CENTER,
+    lmEDIT_RIGHT,
     lmEDIT_STYLE,
     lmEDIT_CHANGE_STYLE,
 };
@@ -57,6 +61,9 @@ BEGIN_EVENT_TABLE(lmTextProperties, lmPropertiesPage)
     EVT_BUTTON  (lmEDIT_CUT, lmTextProperties::OnCut)
     EVT_BUTTON  (lmEDIT_COPY, lmTextProperties::OnCopy)
     EVT_BUTTON  (lmEDIT_PASTE, lmTextProperties::OnPaste)
+    EVT_BUTTON  (lmEDIT_LEFT, lmTextProperties::OnLeft)
+    EVT_BUTTON  (lmEDIT_CENTER, lmTextProperties::OnCenter)
+    EVT_BUTTON  (lmEDIT_RIGHT, lmTextProperties::OnRight)
     EVT_CHOICE  (lmEDIT_STYLE, lmTextProperties::OnStyle)
     EVT_BUTTON  (lmEDIT_CHANGE_STYLE, lmTextProperties::OnEditStyles)
 END_EVENT_TABLE()
@@ -65,7 +72,7 @@ END_EVENT_TABLE()
 lmTextProperties::lmTextProperties(wxWindow* parent, lmScoreText* pParentText)
     : lmPropertiesPage(parent)
 {
-    //m_pController = pController;
+	m_pScore = pParentText->GetScore();
     m_pParentText = pParentText;
     CreateControls();
 
@@ -80,20 +87,24 @@ lmTextProperties::lmTextProperties(wxWindow* parent, lmScoreText* pParentText)
     font.SetFaceName(m_pParentText->GetFontName());
     DoChangeFont(font, m_pParentText->GetColour());
 
+	m_nHAlign = m_pParentText->GetAlignment();
+	DoChangeAlignment();
+
     //combo with styles
-    lmScore* pScore = m_pParentText->GetScore();
     lmTextStyle* pCurStyle = m_pParentText->GetStyle();
     int nSel = -1;
     int iStyle = 0;
-    lmTextStyle* pStyle = pScore->GetFirstStyle();
+    lmTextStyle* pStyle = m_pScore->GetFirstStyle();
     while (pStyle)
     {
         m_pCboTextStyle->Append( pStyle->sName );
         if (pCurStyle == pStyle)
+		{
             nSel = iStyle;
-
+			DoChangeStyle(pStyle);
+		}
         iStyle++;
-        pStyle = pScore->GetNextStyle();
+        pStyle = m_pScore->GetNextStyle();
     }
     m_pCboTextStyle->SetSelection(nSel);
 }
@@ -110,17 +121,35 @@ void lmTextProperties::CreateControls()
 	m_pBtCut = new wxBitmapButton( this, lmEDIT_CUT,
                             wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
-	pToolbarSizer->Add( m_pBtCut, 0, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	pToolbarSizer->Add( m_pBtCut, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_pBtCopy = new wxBitmapButton( this, lmEDIT_COPY,
                             wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
-	pToolbarSizer->Add( m_pBtCopy, 0, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	pToolbarSizer->Add( m_pBtCopy, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_pBtPaste = new wxBitmapButton( this, lmEDIT_PASTE,
                             wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
-	pToolbarSizer->Add( m_pBtPaste, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	pToolbarSizer->Add( m_pBtPaste, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	
+	pToolbarSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_pBtLeft = new wxBitmapButton( this, lmEDIT_LEFT,
+                            wxArtProvider::GetBitmap(_T("tool_text_left"), wxART_TOOLBAR, btSize),
+                            wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
+	pToolbarSizer->Add( m_pBtLeft, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pBtCenter = new wxBitmapButton( this, lmEDIT_CENTER,
+                            wxArtProvider::GetBitmap(_T("tool_text_center"), wxART_TOOLBAR, btSize),
+                            wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
+	pToolbarSizer->Add( m_pBtCenter, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pBtRight = new wxBitmapButton( this, lmEDIT_RIGHT,
+                            wxArtProvider::GetBitmap(_T("tool_text_right"), wxART_TOOLBAR, btSize),
+                            wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
+	pToolbarSizer->Add( m_pBtRight, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	
 	pToolbarSizer->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -139,9 +168,11 @@ void lmTextProperties::CreateControls()
 	
 	pMainSizer->Add( pToolbarSizer, 0, wxEXPAND, 5 );
 	
-	m_pTxtCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	//m_pTxtCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtCtrl = new wxRichTextCtrl(this, wxID_ANY, wxEmptyString);
 	m_pTxtCtrl->SetMinSize( wxSize( 550,150 ) );
-	
+
+
 	pMainSizer->Add( m_pTxtCtrl, 1, wxALL|wxEXPAND, 5 );
 	
 	this->SetSizer( pMainSizer );
@@ -155,52 +186,57 @@ lmTextProperties::~lmTextProperties()
 
 void lmTextProperties::OnCut(wxCommandEvent& event)
 {
-    //wxFont font = m_pTxtCtrl->GetFont();
-
-    //font.SetStyle(event.IsChecked() ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
-    //DoChangeFont(font);
+    m_pTxtCtrl->Cut();
 }
 
 void lmTextProperties::OnCopy(wxCommandEvent& event)
 {
-    //wxFont font = m_pTxtCtrl->GetFont();
-
-    //font.SetStyle(event.IsChecked() ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
-    //DoChangeFont(font);
+    m_pTxtCtrl->Copy();
 }
 
 void lmTextProperties::OnPaste(wxCommandEvent& event)
 {
-    //wxFont font = m_pTxtCtrl->GetFont();
+    m_pTxtCtrl->Paste();
+}
 
-    //font.SetStyle(event.IsChecked() ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL);
-    //DoChangeFont(font);
+void lmTextProperties::OnLeft(wxCommandEvent& event)
+{
+	m_nHAlign = lmHALIGN_LEFT;
+	DoChangeAlignment();
+}
+
+void lmTextProperties::OnCenter(wxCommandEvent& event)
+{
+	m_nHAlign = lmHALIGN_CENTER;
+	DoChangeAlignment();
+}
+
+void lmTextProperties::OnRight(wxCommandEvent& event)
+{
+	m_nHAlign = lmHALIGN_RIGHT;
+	DoChangeAlignment();
 }
 
 void lmTextProperties::OnEditStyles(wxCommandEvent& event)
 {
     //open styles dialog
-    lmScore* pScore = m_pParentText->GetScore();
-    lmDlgTextStyles dlg(this->GetParent(), pScore);
+    lmDlgTextStyles dlg(this->GetParent(), m_pScore);
     dlg.ShowModal();
 
     //apply changes
-    lmTextStyle* pStyle = pScore->GetStyleInfo( m_pParentText->GetStyle()->sName );
-
-    wxFont font = m_pTxtCtrl->GetFont();
-    font.SetStyle(pStyle->tFont.nFontStyle);
-    font.SetWeight(pStyle->tFont.nFontWeight);
-    font.SetPointSize(pStyle->tFont.nFontSize);
-    font.SetFaceName(pStyle->tFont.sFontName);
-    DoChangeFont(font, pStyle->nColor);
+    lmTextStyle* pStyle = m_pScore->GetStyleInfo( m_pParentText->GetStyle()->sName );
+	DoChangeStyle(pStyle);
 }
 
 void lmTextProperties::OnStyle(wxCommandEvent& event)
 {
     //apply changes
-    lmScore* pScore = m_pParentText->GetScore();
-    lmTextStyle* pStyle = pScore->GetStyleInfo( m_pCboTextStyle->GetStringSelection() );
+    lmTextStyle* pStyle = m_pScore->GetStyleInfo( m_pCboTextStyle->GetStringSelection() );
+	DoChangeStyle(pStyle);
+}
 
+void lmTextProperties::DoChangeStyle(lmTextStyle* pStyle)
+{
     wxFont font = m_pTxtCtrl->GetFont();
     font.SetStyle(pStyle->tFont.nFontStyle);
     font.SetWeight(pStyle->tFont.nFontWeight);
@@ -211,20 +247,52 @@ void lmTextProperties::OnStyle(wxCommandEvent& event)
 
 void lmTextProperties::DoChangeFont(const wxFont& font, const wxColour& color)
 {
-    m_pTxtCtrl->SetFont(font);
-    if ( color.Ok() )
-        m_pTxtCtrl->SetForegroundColour(color);
-    Refresh();
+    wxRichTextRange range = wxRichTextRange(0, m_pTxtCtrl->GetLastPosition()+1);
+    wxTextAttrEx attr;
+    attr.SetFlags(wxTEXT_ATTR_FONT | wxTEXT_ATTR_TEXT_COLOUR );
+    attr.SetFont(font);
+	attr.SetTextColour(color);
+    if (attr.GetFont().Ok())
+	{
+        m_pTxtCtrl->SetStyle(range, attr);
+        m_pTxtCtrl->SetBasicStyle(attr);
+	}
+}
+
+void lmTextProperties::DoChangeAlignment()
+{
+	wxTextAttrAlignment nAlign;
+	switch (m_nHAlign)
+	{
+		case lmHALIGN_LEFT:		nAlign = wxTEXT_ALIGNMENT_LEFT;		break;
+		case lmHALIGN_CENTER:	nAlign = wxTEXT_ALIGNMENT_CENTER;	break;
+		case lmHALIGN_RIGHT:	nAlign = wxTEXT_ALIGNMENT_RIGHT;	break;
+		default:
+			nAlign = wxTEXT_ALIGNMENT_DEFAULT;
+	}
+	m_pTxtCtrl->SelectAll();
+	m_pTxtCtrl->ApplyAlignmentToSelection(nAlign);
+	m_pTxtCtrl->SelectNone();
 }
 
 void lmTextProperties::OnAcceptChanges(lmController* pController)
 {
-    lmScore* pScore = m_pParentText->GetScore();
-    lmTextStyle* pStyle = pScore->GetStyleInfo( m_pCboTextStyle->GetStringSelection() );
+    lmTextStyle* pStyle = m_pScore->GetStyleInfo( m_pCboTextStyle->GetStringSelection() );
 
-    pController->ChangeText(m_pParentText,
-                            m_pTxtCtrl->GetValue(),
-                            m_pParentText->GetAlignment(),
-                            m_pParentText->GetLocation(),
-                            pStyle );
+    if (pController)
+    {
+        //Editing and existing object. Do changes by issuing edit commands
+        pController->ChangeText(m_pParentText,
+                                m_pTxtCtrl->GetValue(),
+                                m_nHAlign,
+                                m_pParentText->GetLocation(),
+                                pStyle);    //, lmDELAY_RELAYOUT );
+    }
+    else
+    {
+        //Direct creation. Modify text object directly
+        m_pParentText->SetText( m_pTxtCtrl->GetValue() );
+        m_pParentText->SetStyle(pStyle);
+		m_pParentText->SetAlignment(m_nHAlign);
+    }
 }

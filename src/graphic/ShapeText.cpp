@@ -216,6 +216,8 @@ void lmShapeTextBlock::Create(const wxString& sText, wxFont* pFont, lmPaper* pPa
 {                         
     //The simplest constructor: just a text using a single font. No break lines
 
+	m_nType = eGMO_ShapeTextBlock;
+
     m_sText = sText;
     m_pFont = pFont;
     m_nBlockAlign = nBlockAlign;
@@ -233,7 +235,7 @@ void lmShapeTextBlock::Create(const wxString& sText, wxFont* pFont, lmPaper* pPa
     ComputeBlockBounds(xLeft, yTop, xRight, yBottom);
 
     //Position the text within the box
-    ComputeTextPosition();
+    ComputeTextPosition(pPaper);
 
 }
 
@@ -290,11 +292,40 @@ void lmShapeTextBlock::ComputeBlockBounds(lmLUnits xLeft, lmLUnits yTop, lmLUnit
 	m_uSelRect = GetBounds();
 }
 
-void lmShapeTextBlock::ComputeTextPosition()
+void lmShapeTextBlock::ComputeTextPosition(lmPaper* pPaper)
 {
     //Position the text within the box
     lmLUnits uxLeft, uyTop;
     lmLUnits uBoxAreaWidth = m_uBoundsBottom.x - m_uBoundsTop.x;
+
+	//clip text if longer than available space
+	m_sClippedText = m_sText;
+    m_uClippedTextWidth = m_uTextWidth;
+    m_uClippedTextHeight = m_uTextHeight;
+	if (uBoxAreaWidth < m_uTextWidth)
+	{
+		//we have to cut the text. Loop to add chars until line full
+		pPaper->SetFont(*m_pFont);
+		lmLUnits uWidth, uHeight;
+		m_sClippedText = _T("");
+		int iC = 0;
+		lmLUnits uAvailable = uBoxAreaWidth;
+		while(iC < (int)m_sText.Length())
+		{
+			const wxString ch = m_sText.Mid(iC, 1);
+			pPaper->GetTextExtent(ch, &uWidth, &uHeight);
+			if (uAvailable < uWidth)
+				break;
+
+			//add char to clipped text
+			uAvailable -= uWidth;
+			m_sClippedText += ch;
+			iC++;
+		}
+		pPaper->GetTextExtent(m_sClippedText, &m_uClippedTextWidth, &m_uClippedTextHeight);
+	}
+
+
     switch (m_nHAlign)
     {
         case lmHALIGN_DEFAULT:
@@ -307,7 +338,7 @@ void lmShapeTextBlock::ComputeTextPosition()
 
         case lmHALIGN_RIGHT:
             {
-                uxLeft = m_uBoundsBottom.x - m_uTextWidth;
+                uxLeft = m_uBoundsBottom.x - m_uClippedTextWidth;
                 uyTop = m_uBoundsTop.y;
             }
             break;
@@ -322,7 +353,7 @@ void lmShapeTextBlock::ComputeTextPosition()
 
         case lmHALIGN_CENTER:
             {
-                uxLeft = m_uBoundsTop.x + (uBoxAreaWidth - m_uTextWidth) / 2.0f;
+                uxLeft = m_uBoundsTop.x + (uBoxAreaWidth - m_uClippedTextWidth) / 2.0f;
                 uyTop = m_uBoundsTop.y;
             }
             break;
@@ -335,19 +366,19 @@ void lmShapeTextBlock::ComputeTextPosition()
 
     // store selection rectangle position and size
 	m_uSelRect.SetLeftTop(m_uTextPos);
-    m_uSelRect.SetWidth(m_uTextWidth);
-    m_uSelRect.SetHeight(m_uTextHeight);
+    m_uSelRect.SetWidth(m_uClippedTextWidth);
+    m_uSelRect.SetHeight(m_uClippedTextHeight);
 
 }
 
 void lmShapeTextBlock::Render(lmPaper* pPaper, wxColour color)
 {
     //ensure measures are ok
-    ComputeTextPosition();
+    ComputeTextPosition(pPaper);
 
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
-    pPaper->DrawText(m_sText, m_uTextPos.x, m_uTextPos.y);
+    pPaper->DrawText(m_sClippedText, m_uTextPos.x, m_uTextPos.y);
 
     lmSimpleShape::Render(pPaper, color);
 }
@@ -408,7 +439,7 @@ wxBitmap* lmShapeTextBlock::OnBeginDrag(double rScale, wxDC* pDC)
     dc2.Clear();
     dc2.SetBackgroundMode(wxTRANSPARENT);
     dc2.SetTextForeground(g_pColors->ScoreSelected());
-    dc2.DrawText(m_sText, m_uTextPos.x - m_uBoundsTop.x, m_uTextPos.y - m_uBoundsTop.y);
+    dc2.DrawText(m_sClippedText, m_uTextPos.x - m_uBoundsTop.x, m_uTextPos.y - m_uBoundsTop.y);
     dc2.SelectObject(wxNullBitmap);
 
     // Make the bitmap masked

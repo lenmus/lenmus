@@ -51,6 +51,9 @@ public:
     lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID id);
     virtual ~lmStatusBar();
 
+	//event handlers
+	void OnSize(wxSizeEvent& event);
+
     //updating fields
     void SetMsgText(const wxString& sText);
     void SetNumPage(int nPage);
@@ -65,7 +68,12 @@ private:
     wxFrame*            m_pFrame;       //parent frame
     int                 m_nNumFields;
     lmEStatusBarLayout  m_nType;
+	wxStaticBitmap*		m_pBmpClock;
+	wxStaticBitmap*		m_pBmpPage;
+	wxString			m_sIconSpace;
 
+
+    DECLARE_EVENT_TABLE()
 };
 
 

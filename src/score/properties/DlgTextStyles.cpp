@@ -78,7 +78,7 @@ enum {
 
 lmDlgTextStyles::lmDlgTextStyles(wxWindow* parent, lmScore* pScore) 
     : wxDialog(parent, wxID_ANY, _("Styles defined in current score"),
-               wxDefaultPosition, wxSize( 630,400 ), wxDEFAULT_DIALOG_STYLE)
+               wxDefaultPosition, wxSize( 630,400 ), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
     m_pScore = pScore;
     CreateControls();

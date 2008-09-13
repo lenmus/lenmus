@@ -151,10 +151,10 @@ public:
 
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
-    //information
+	//selections
     bool SomethingSelected();
     lmGMSelection* GetSelection();
-
+    void DeselectAllGMObjects(bool fRedraw = false);
 
 private:
 
@@ -227,13 +227,17 @@ private:
 
     //dealing with selections
     void SelectionDone(bool fRedraw);
-    void DeselectAllGMObjects(bool fRedraw = false);
     void SelectGMObject(lmGMObject* pGMO, bool fRedraw = false);
     void SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
                                lmLUnits uYMin, lmLUnits uYMax, bool fRedraw = false);
 
     //internal call backs
     void OnNewGraphicalModel();
+
+	//auxiliary for dragging
+	void OnPaperStartDrag(wxDC* pDC, lmDPoint vCanvasOffset);
+	void OnPaperEndDrag();
+
 
 
 	//-- variables ---
@@ -286,14 +290,17 @@ private:
 	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
 
     // mouse over objects
-	lmGMObject*		m_pMouseOverGMO;    //GMObject on which mouse is flying over
+	lmGMObject*		m_pMouseOverGMO;        //GMObject on which mouse is flying over
 
     //cursor
     lmCaret*            m_pCaret;
     lmScoreCursor*      m_pScoreCursor;
 	bool				m_fCaretInit;
-    lmStaffObj*         m_pCursorSO;       //for visual feedback
+    lmStaffObj*         m_pCursorSO;            //for visual feedback
     int                 m_nCursorStaff;
+
+    //repaint control
+    bool                m_fRelayoutPending;     //to delay relayouts
 
 
     DECLARE_EVENT_TABLE()

@@ -126,7 +126,6 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     //TODO review this fixed space before the clef
     m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
 
-    g_pLastNoteRest = (lmNoteRest*)NULL;
     m_sErrorMsg = _T("");
 
 
@@ -509,7 +508,8 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 								 lmEPitchType nPitchType, int nStep, int nOctave,
                                  lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                                 bool fTiedPrev, bool fAutoBar)
+                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
+								 bool fAutoBar)
 {
     int nStaff = m_VCursor.GetNumStaff();
 
@@ -565,14 +565,10 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     }
 	int nAccidentals = 0;
 
-	//TODO: For now, only auto-voice. It is necessary to get info from GUI about
-	//user selected voice. Need to change this command parameter list to include voice
-	int nVoice = 0;     //auto-voice
-
     lmNote* pNt = new lmNote(this, nPitchType,
                         nStep, nOctave, nAccidentals, nAcc,
                         nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
-                        pContext, false, BeamInfo, false, false, lmSTEM_DEFAULT);
+                        pContext, false, BeamInfo, pBaseOfChord, false, lmSTEM_DEFAULT);
 
     m_cStaffObjs.Add(pNt);
 
@@ -1413,19 +1409,14 @@ lmStaffObj* lmVStaff::AddAnchorObj()
 {
     // adds an anchor StaffObj to the end of current StaffObjs collection
 
+    lmStaffObj* pAnchor;
     if (IsGlobalStaff())
-    {
-        lmScoreAnchor* pAnchor = new lmScoreAnchor(this);
-        m_cStaffObjs.Add(pAnchor);
-        return pAnchor;
-    }
+		pAnchor = new lmScoreAnchor(this);
     else
-    {
-        lmAnchor* pAnchor = new lmAnchor(this);
-        m_cStaffObjs.Add(pAnchor);
-        return pAnchor;
-    }
+        pAnchor = new lmAnchor(this);
 
+    m_cStaffObjs.Add(pAnchor);
+    return pAnchor;
 }
 
 // returns a pointer to the lmNote object just created
@@ -1435,7 +1426,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                     lmENoteType nNoteType, float rDuration, int nDots,
                     int nStaff, int nVoice, bool fVisible,
                     bool fBeamed, lmTBeamInfo BeamInfo[],
-                    bool fInChord,
+                    lmNote* pBaseOfChord,
                     bool fTie,
                     lmEStemType nStem)
 {
@@ -1446,7 +1437,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
     lmNote* pNt = new lmNote(this, nPitchType,
                         nStep, nOctave, nAlter, nAccidentals,
                         nNoteType, rDuration, nDots, nStaff, nVoice,
-						fVisible, pContext, fBeamed, BeamInfo, fInChord, fTie, nStem);
+						fVisible, pContext, fBeamed, BeamInfo, pBaseOfChord, fTie, nStem);
 
     m_cStaffObjs.Add(pNt);
 
@@ -1469,18 +1460,18 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
 
 }
 
-lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
-                            lmLocation& tPos, lmFontInfo& tFontData, bool fHasWidth)
+lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& tFontData,
+                              bool fHasWidth)
 {
     lmTextStyle* pTS = m_pScore->GetStyleName(tFontData);
     wxASSERT(pTS);
-    return AddText(sText, nAlign, tPos, pTS, fHasWidth);
+    return AddText(sText, nHAlign, pTS, fHasWidth);
 }
 
-lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nAlign,
-                            lmLocation& tPos, lmTextStyle* pStyle, bool fHasWidth)
+lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
+                              bool fHasWidth)
 {
-    lmTextItem* pText = new lmTextItem(sText, nAlign, tPos, pStyle);
+    lmTextItem* pText = new lmTextItem(sText, nHAlign, pStyle);
 
     // create an anchor object
     lmStaffObj* pAnchor;
@@ -2456,15 +2447,12 @@ float lmVStaff::GetCurrentMesureDuration()
 
 lmSOControl* lmVStaff::AddNewSystem()
 {
-    /*
-    Inserts a control lmStaffObj to signal a new system
-    */
+    //Inserts a control lmStaffObj to signal a new system
 
     //Insert the control object
     lmSOControl* pControl = new lmSOControl(lmNEW_SYSTEM, this);
     m_cStaffObjs.Add(pControl);
     return pControl;
-
 }
 
 lmSOIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)

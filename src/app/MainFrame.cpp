@@ -170,6 +170,7 @@ enum
     MENU_File_New = lmMENU_Last_Public_ID,
     MENU_File_Import,
     MENU_File_Export,
+    MENU_File_Export_MusicXML,
     MENU_File_Export_bmp,
     MENU_File_Export_jpg,
     MENU_OpenBook,
@@ -187,6 +188,13 @@ enum
     MENU_View_Page_Margins,
     MENU_View_Welcome_Page,
 
+	// Menu Score
+	MENU_Score_Titles,
+
+	// Menu Instrument
+    MENU_Instr_Name,
+    MENU_Instr_MIDI,
+	
     // Menu Debug
     MENU_Debug_ForceReleaseBehaviour,
     MENU_Debug_ShowDebugLinks,
@@ -212,7 +220,6 @@ enum
     MENU_Zoom_Decrease,
     MENU_Zoom_Increase,
 
-
     //Menu Sound
     MENU_Sound_MidiWizard,
     MENU_Sound_test,
@@ -220,6 +227,7 @@ enum
 
     //Menu Play
     MENU_Play_Start,
+	MENU_Play_Cursor_Start,
     MENU_Play_Stop,
     MENU_Play_Pause,
 
@@ -247,7 +255,6 @@ enum
   // controls IDs
     lmID_COMBO_ZOOM,
     lmID_SPIN_METRONOME,
-    lmID_COMBO_VOICE,
 
   // other IDs
     lmID_TIMER_MTR,
@@ -278,9 +285,13 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU      (MENU_File_New, lmMainFrame::OnScoreWizard)
     EVT_MENU      (MENU_File_Import, lmMainFrame::OnImportFile)
     EVT_UPDATE_UI (MENU_File_Import, lmMainFrame::OnFileUpdateUI)
-    EVT_MENU      (MENU_File_Export_bmp, lmMainFrame::OnExportBMP)
-    EVT_MENU      (MENU_File_Export_jpg, lmMainFrame::OnExportJPG)
     EVT_UPDATE_UI (MENU_File_Export, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU      (MENU_File_Export_MusicXML, lmMainFrame::OnExportMusicXML)
+    EVT_UPDATE_UI (MENU_File_Export_MusicXML, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU      (MENU_File_Export_bmp, lmMainFrame::OnExportBMP)
+    EVT_UPDATE_UI (MENU_File_Export_bmp, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU      (MENU_File_Export_jpg, lmMainFrame::OnExportJPG)
+    EVT_UPDATE_UI (MENU_File_Export_jpg, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (MENU_Print_Preview, lmMainFrame::OnPrintPreview)
     EVT_UPDATE_UI (MENU_Print_Preview, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (wxID_PRINT_SETUP, lmMainFrame::OnPrintSetup)
@@ -316,7 +327,17 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU      (MENU_View_Welcome_Page, lmMainFrame::OnViewWelcomePage)
     EVT_UPDATE_UI (MENU_View_Welcome_Page, lmMainFrame::OnViewWelcomePageUI)
 
-    //Zoom menu/toolbar
+    //Score menu/toolbar
+    EVT_MENU      (MENU_Score_Titles, lmMainFrame::OnScoreTitles)
+    EVT_UPDATE_UI (MENU_Score_Titles, lmMainFrame::OnEditUpdateUI)
+
+	// Instrument menu
+	EVT_MENU      (MENU_Instr_Name, lmMainFrame::OnInstrumentName)
+    EVT_UPDATE_UI (MENU_Instr_Name, lmMainFrame::OnEditUpdateUI)
+	EVT_MENU      (MENU_Instr_MIDI, lmMainFrame::OnInstrumentMIDISettings)
+    EVT_UPDATE_UI (MENU_Instr_MIDI, lmMainFrame::OnEditUpdateUI)
+
+	//Zoom menu/toolbar
     EVT_MENU (MENU_Zoom_100, lmMainFrame::OnZoom100)
     EVT_MENU (MENU_Zoom_Other, lmMainFrame::OnZoomOther)
     EVT_MENU (MENU_Zoom_Fit_Full, lmMainFrame::OnZoomFitFull)
@@ -328,15 +349,14 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_TEXT_ENTER(lmID_COMBO_ZOOM, lmMainFrame::OnComboZoom )
     EVT_UPDATE_UI (lmID_COMBO_ZOOM, lmMainFrame::OnZoomUpdateUI)
 
-    //Voice menu/toolbar
-    EVT_COMBOBOX  (lmID_COMBO_VOICE, lmMainFrame::OnComboVoice )
-
     //Sound menu/toolbar
     EVT_MENU      (MENU_Sound_MidiWizard, lmMainFrame::OnRunMidiWizard)
     EVT_MENU      (MENU_Sound_test, lmMainFrame::OnSoundTest)
     EVT_MENU      (MENU_Sound_AllSoundsOff, lmMainFrame::OnAllSoundsOff)
     EVT_MENU      (MENU_Play_Start, lmMainFrame::OnPlayStart)
     EVT_UPDATE_UI (MENU_Play_Start, lmMainFrame::OnSoundUpdateUI)
+    EVT_MENU      (MENU_Play_Cursor_Start, lmMainFrame::OnPlayCursorStart)
+    EVT_UPDATE_UI (MENU_Play_Cursor_Start, lmMainFrame::OnSoundUpdateUI)
     EVT_MENU      (MENU_Play_Stop, lmMainFrame::OnPlayStop)
     EVT_UPDATE_UI (MENU_Play_Stop, lmMainFrame::OnSoundUpdateUI)
     EVT_MENU      (MENU_Play_Pause, lmMainFrame::OnPlayPause)
@@ -440,7 +460,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 
     // create main menu
 	m_pMenuEdit = (wxMenu*)NULL;
-    wxMenuBar* menu_bar = CreateMenuBar(NULL, NULL, true, !g_fReleaseVersion);        //fEdit, fDebug
+    wxMenuBar* menu_bar = CreateMenuBar(NULL, NULL);
     SetMenuBar(menu_bar);
 
     // initialize tool bars
@@ -450,7 +470,6 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pTbFile = (wxToolBar*)NULL;
     m_pTbEdit = (wxToolBar*)NULL;
     m_pTbZoom = (wxToolBar*)NULL;
-    m_pTbVoice = (wxToolBar*)NULL;
     m_pTbTextBooks = (wxToolBar*)NULL;
 
     // initialize status bar
@@ -661,13 +680,11 @@ void lmMainFrame::CreateMyToolBar()
             wxArtProvider::GetBitmap(_T("tool_redo"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_redo_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Redo"));
-#if __WXDEBUG__
     m_pTbEdit->AddSeparator();
     m_pTbEdit->AddTool(MENU_View_Page_Margins, _T("Page margins"),
             wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nSize),
-            wxITEM_CHECK, _("Show/hide page margins"));
-#endif
+            wxITEM_CHECK, _("Show/hide page margins and spacers"));
     m_pTbEdit->Realize();
 
     //Zoom toolbar
@@ -719,7 +736,11 @@ void lmMainFrame::CreateMyToolBar()
     m_pTbPlay->AddTool(MENU_Play_Start, _T("Play"),
             wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_play_dis"), wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Start/resume play back of the score"));
+            wxITEM_NORMAL, _("Start/resume play back. From selection of full score"));
+    m_pTbPlay->AddTool(MENU_Play_Cursor_Start, _T("Play from cursor"),
+            wxArtProvider::GetBitmap(_T("tool_play_cursor"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_play_cursor_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Start/resume play back. From cursor"));
     m_pTbPlay->AddTool(MENU_Play_Stop, _T("Stop"),
             wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_stop_dis"), wxART_TOOLBAR, nSize),
@@ -743,24 +764,6 @@ void lmMainFrame::CreateMyToolBar()
     m_pTbMtr->AddControl(m_pSpinMetronome);
     m_pTbMtr->Realize();
 
-    //Voice toolbar
-    m_pTbVoice = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
-    m_pTbVoice->SetToolBitmapSize(nSize);
-
-    m_pComboVoice = new wxComboBox(m_pTbVoice, lmID_COMBO_VOICE, _T(""),
-                                  wxDefaultPosition, wxSize(80, -1) );
-    m_pComboVoice->Append(_("All voices"));
-    m_pComboVoice->Append(_("Voice 1"));
-    m_pComboVoice->Append(_("Voice 2"));
-    m_pComboVoice->Append(_("Voice 3"));
-    m_pComboVoice->Append(_("Voice 4"));
-    m_pComboVoice->Append(_("Voice 5"));
-    m_pComboVoice->Append(_("Voice 6"));
-    m_pComboVoice->Append(_("Voice 7"));
-    m_pComboVoice->SetSelection(0);
-    m_pTbVoice->AddControl(m_pComboVoice);
-    m_pTbVoice->Realize();
-
     //compute best size for metronome toolbar
     wxSize sizeSpin = m_pSpinMetronome->GetSize();
     wxSize sizeButton = m_pTbMtr->GetToolSize();
@@ -775,12 +778,6 @@ void lmMainFrame::CreateMyToolBar()
                       sizeCombo.GetWidth() +
                       m_pTbZoom->GetToolSeparation() + 10,
                       wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
-
-    //compute best size for voice toolbar
-    sizeCombo = m_pComboVoice->GetSize();
-    sizeButton = m_pTbZoom->GetToolSize();
-    wxSize sizeVoiceTb(2 * m_pTbVoice->GetToolSeparation() + sizeCombo.GetWidth(),
-                      wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()) );
 
     // add the toolbars to the manager
 	const int ROW_1 = 0;
@@ -812,11 +809,6 @@ void lmMainFrame::CreateMyToolBar()
                 Name(wxT("Play")).Caption(_("Play tools")).
                 ToolbarPane().Top().Row(ROW_1).
                 LeftDockable(false).RightDockable(false));
-        // row 2
-    m_mgrAUI.AddPane(m_pTbVoice, wxAuiPaneInfo().
-                Name(wxT("Voice")).Caption(_("Voice tools")).
-                ToolbarPane().Top().Row(ROW_2).
-                LeftDockable(false).RightDockable(false));
 
 #else
         // row 1
@@ -843,11 +835,6 @@ void lmMainFrame::CreateMyToolBar()
     m_mgrAUI.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name(wxT("Metronome")).Caption(_("Metronome tools")).
                 ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
-                LeftDockable(false).RightDockable(false));
-        // row 2
-    m_mgrAUI.AddPane(m_pTbVoice, wxAuiPaneInfo().
-                Name(wxT("Voice")).Caption(_("Voice tools")).
-                ToolbarPane().Top().Row(ROW_2).
                 LeftDockable(false).RightDockable(false));
 
 #endif
@@ -899,13 +886,6 @@ void lmMainFrame::DeleteToolbar()
         m_mgrAUI.DetachPane(m_pTbZoom);
         delete m_pTbZoom;
         m_pTbZoom = (wxToolBar*)NULL;
-    }
-
-    // voice toolbar
-    if (m_pTbVoice) {
-        m_mgrAUI.DetachPane(m_pTbVoice);
-        delete m_pTbVoice;
-        m_pTbVoice = (wxToolBar*)NULL;
     }
 
     // Text books navigation toolbar
@@ -989,13 +969,11 @@ void lmMainFrame::DeleteTheStatusBar()
 }
 
 
-wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
-                                bool fEdit, bool fDebug)
+wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 {
-    //Centralized code to create the menu bar. It will be customized according to the
-    //received flags:
-    //fEdit - Include score edit commands
-    //fDebug - Include debug commands
+    //Centralized code to create the menu bar
+
+	bool fDebug = !g_fReleaseVersion;
 
     // file menu
     wxMenu* file_menu = new wxMenu;
@@ -1023,6 +1001,10 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     file_menu->Append(pItem);
 
     //export submenu -----------------------------------------------
+    pItem = new wxMenuItem(pExportMenu, MENU_File_Export_MusicXML, _("MusicXML format"), _("Save score as a MusicXML file"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
+    pExportMenu->Append(pItem);
+
     pItem = new wxMenuItem(pExportMenu, MENU_File_Export_bmp, _("As &bmp image"), _("Save score as BMP images"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save_as_bmp"), wxART_TOOLBAR, nIconSize) );
     pExportMenu->Append(pItem);
@@ -1033,8 +1015,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     //end of export submenu ----------------------------------------
 
-
-    pItem = new wxMenuItem(file_menu, MENU_File_Import, _("&Export ..."), _("Save score in other formats"),
+    pItem = new wxMenuItem(file_menu, MENU_File_Export, _("&Export ..."), _("Save score in other formats"),
 						   wxITEM_NORMAL, pExportMenu);
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem);
@@ -1079,6 +1060,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
     file_menu->Append(MENU_File_Import, _("&Import..."));
     //export submenu -----------------------------------------------
+    pExportMenu->Append(MENU_File_Export_MusicXML, _("MusicXML format"), _("Save score as a MusicXML file"));
     pExportMenu->Append(MENU_File_Export_bmp, _("As &bmp image"), _("Save score as BMP images"));
     pExportMenu->Append(MENU_File_Export_jpg, _("As &jpg image"), _("Save score as JPG images"));
     pExportMenu->Append(pItem);
@@ -1102,16 +1084,18 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     m_pRecentFiles->UseMenu(file_menu);
     m_pRecentFiles->AddFilesToMenu(file_menu);
 
-    // edit menu
-    if (fEdit) {
-        m_pMenuEdit = new wxMenu;
-        m_pMenuEdit->Append(wxID_UNDO, _("&Undo"));
-        m_pMenuEdit->Append(wxID_REDO, _("&Redo"));
-        //m_pMenuEdit->AppendSeparator();
-        //doc->GetCommandProcessor()->SetEditMenu(m_pMenuEdit);
-    }
 
-    // View menu
+    // edit menu -------------------------------------------------------------------
+
+    m_pMenuEdit = new wxMenu;
+    m_pMenuEdit->Append(wxID_UNDO, _("&Undo"));
+    m_pMenuEdit->Append(wxID_REDO, _("&Redo"));
+    //m_pMenuEdit->AppendSeparator();
+    //doc->GetCommandProcessor()->SetEditMenu(m_pMenuEdit);
+
+
+    // View menu -------------------------------------------------------------------
+
     wxMenu *view_menu = new wxMenu;
     view_menu->Append(MENU_View_ToolBar, _("Tool &bar"), _("Hide/show the tools bar"), wxITEM_CHECK);
     view_menu->Append(MENU_View_StatusBar, _("&Status bar"), _("Hide/show the status bar"), wxITEM_CHECK);
@@ -1120,11 +1104,67 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     view_menu->Append(MENU_View_Rulers, _("&Rulers"), _("Hide/show rulers"), wxITEM_CHECK);
     view_menu->Append(MENU_View_Welcome_Page, _("&Welcome page"), _("Hide/show welcome page"));
 
-    // debug menu
+
+    // score menu ------------------------------------------------------------------
+
+    wxMenu *pScoreMenu = new wxMenu;
+#if defined(__WXMSW__) || defined(__WXGTK__)
+    //bitmaps on menus are supported only on Windows and GTK+
+    pItem = new wxMenuItem(pScoreMenu, MENU_Score_Titles, _("Add title"),
+						   _("Add a title to the score"), wxITEM_NORMAL);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_add_text"),
+										       wxART_TOOLBAR, nIconSize) );
+    pScoreMenu->Append(pItem);
+
+    pItem = new wxMenuItem(pScoreMenu, MENU_View_Page_Margins, _("Margins and spacers"),
+						   _("Show/hide page margins and spacers"), wxITEM_CHECK);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_page_margins"),
+										       wxART_TOOLBAR, nIconSize) );
+    pScoreMenu->Append(pItem);
+
+#else
+    //No bitmaps on menus for other platforms different from Windows and GTK+
+    pScoreMenu->Append(MENU_Score_Titles, _("Add title"), _("Add a title to the score"));
+    pScoreMenu->Append(MENU_View_Page_Margins, _("Margins and spacers"),
+					   _("Show/hide page margins and spacers"), wxITEM_CHECK);
+
+#endif
+
+
+    // instrument menu ------------------------------------------------------------------
+
+    wxMenu *pInstrMenu = new wxMenu;
+#if defined(__WXMSW__) || defined(__WXGTK__)
+    //bitmaps on menus are supported only on Windows and GTK+
+    pItem = new wxMenuItem(pInstrMenu, MENU_Instr_Name, _("Name and abbreviation"),
+						   _("Add/change name and abbreviation"), wxITEM_NORMAL);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"),
+										       wxART_TOOLBAR, nIconSize) );
+    pInstrMenu->Append(pItem);
+
+    pItem = new wxMenuItem(pInstrMenu, MENU_Instr_MIDI, _("MIDI settings"),
+						   _("Change instrument MIDI settings"), wxITEM_NORMAL);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"),
+										       wxART_TOOLBAR, nIconSize) );
+    pInstrMenu->Append(pItem);
+
+#else
+    //No bitmaps on menus for other platforms different from Windows and GTK+
+    pInstrMenu->Append(MENU_Instr_Name, _("Name and abbreviation"),
+					   _("Add/change name and abbreviation"), wxITEM_NORMAL);
+    pInstrMenu->Append(MENU_Instr_MIDI, _("MIDI settings"),
+					   _("Change instrument MIDI settings"), wxITEM_NORMAL);
+
+#endif
+
+
+    // debug menu --------------------------------------------------------------------
+
     // Debug strings will not be translatable. It is mandatory that all development is
     // in English
     wxMenu* debug_menu;
-    if (fDebug) {
+    if (fDebug)
+	{
         debug_menu = new wxMenu;
         debug_menu->Append(MENU_Debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
             _T("Force release behaviour for certain functions"), wxITEM_CHECK);
@@ -1150,19 +1190,26 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     }
 
 
-    // Zoom menu
+    // Zoom menu -----------------------------------------------------------------------
+
     wxMenu *zoom_menu = new wxMenu;
     zoom_menu->Append(MENU_Zoom_100, _("Actual size"));
     zoom_menu->Append(MENU_Zoom_Fit_Full, _("Fit page full"));
     zoom_menu->Append(MENU_Zoom_Fit_Width, _("Fit page width"));
     zoom_menu->Append(MENU_Zoom_Other, _("Zoom to ..."));
 
-    //Sound menu
+
+    //Sound menu -------------------------------------------------------------------------
+
     wxMenu *sound_menu = new wxMenu;
 #if defined(__WXMSW__) || defined(__WXGTK__)
 
     pItem = new wxMenuItem(sound_menu, MENU_Play_Start, _("&Play"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nIconSize) );
+    sound_menu->Append(pItem);
+
+    pItem = new wxMenuItem(sound_menu, MENU_Play_Cursor_Start, _("Play from cursor"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_play_cursor"), wxART_TOOLBAR, nIconSize) );
     sound_menu->Append(pItem);
 
     pItem = new wxMenuItem(sound_menu, MENU_Play_Stop, _("S&top"));
@@ -1191,6 +1238,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
 #else
     sound_menu->Append(MENU_Play_Start, _("&Play"));
+    sound_menu->Append(MENU_Play_Cursor_Start, _("Play from cursor"));
     sound_menu->Append(MENU_Play_Stop, _("S&top"));
     sound_menu->Append(MENU_Play_Pause, _("P&ause"));
     sound_menu->AppendSeparator();
@@ -1204,7 +1252,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 #endif
 
 
-    // Options menu
+    // Options menu ---------------------------------------------------------------------
+
     wxMenu* options_menu = new wxMenu;
 #if defined(__WXMSW__) || defined(__WXGTK__)
     pItem = new wxMenuItem(options_menu, MENU_Preferences,  _("&Preferences"), _("Open help book"));
@@ -1215,18 +1264,17 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 #endif
 
 
-#if lmUSE_NOTEBOOK_MDI
-    // Window menu
+    // Window menu -----------------------------------------------------------------------
     wxMenu* pWindowMenu = new wxMenu;
     pWindowMenu->Append(MENU_WindowClose,    _("Cl&ose"));
     pWindowMenu->Append(MENU_WindowCloseAll, _("Close All"));
     pWindowMenu->AppendSeparator();
     pWindowMenu->Append(MENU_WindowNext,     _("&Next"));
     pWindowMenu->Append(MENU_WindowPrev,     _("&Previous"));
-#endif  // lmUSE_NOTEBOOK_MDI
 
 
-    // help menu
+    // help menu -------------------------------------------------------------------------
+
     wxMenu *help_menu = new wxMenu;
 #if defined(__WXMSW__) || defined(__WXGTK__)
 	pItem = new wxMenuItem(help_menu, MENU_Help_About, _("&About\tF1"),
@@ -1268,23 +1316,25 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         _("Open the Internet browser and go to LenMus website") );
 #endif
 
-    // set up the menubar.
+
+    // set up the menubar ---------------------------------------------------------------
+
     // AWARE: As lmMainFrame is derived from lmMDIParentFrame, in MSWindows build the menu
     // bar automatically inherits a "Window" menu inserted in the second last position.
     // To suppress it (under MSWindows) it is necessary to add style wxFRAME_NO_WINDOW_MENU
     // in frame creation.
-    wxMenuBar *menu_bar = new wxMenuBar;
-    menu_bar->Append(file_menu, _("&File"));
-    if (fEdit) menu_bar->Append(m_pMenuEdit, _("&Edit"));
-    menu_bar->Append(view_menu, _("&View"));
-    menu_bar->Append(sound_menu, _("&Sound"));
-    if (fDebug) menu_bar->Append(debug_menu, _T("&Debug"));     //DO NOT TRANSLATE
-    menu_bar->Append(zoom_menu, _("&Zoom"));
-    menu_bar->Append(options_menu, _("&Options"));
-#if lmUSE_NOTEBOOK_MDI
-    menu_bar->Append(pWindowMenu, _("&Window"));
-#endif  // lmUSE_NOTEBOOK_MDI
-    menu_bar->Append(help_menu, _("&Help"));
+    wxMenuBar* pMenuBar = new wxMenuBar;
+    pMenuBar->Append(file_menu, _("&File"));
+    pMenuBar->Append(m_pMenuEdit, _("&Edit"));
+    pMenuBar->Append(view_menu, _("&View"));
+	pMenuBar->Append(pScoreMenu, _("S&core"));
+	pMenuBar->Append(pInstrMenu, _("&Instrument"));
+    pMenuBar->Append(sound_menu, _("&Sound"));
+    if (fDebug) pMenuBar->Append(debug_menu, _T("&Debug"));     //DO NOT TRANSLATE
+    pMenuBar->Append(zoom_menu, _("&Zoom"));
+    pMenuBar->Append(options_menu, _("&Options"));
+    pMenuBar->Append(pWindowMenu, _("&Window"));
+    pMenuBar->Append(help_menu, _("&Help"));
 
         //
         // items initially checked
@@ -1294,25 +1344,24 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     //debug toolbar
     if (fDebug) {
-        menu_bar->Check(MENU_Debug_ForceReleaseBehaviour, g_fReleaseBehaviour);
-        menu_bar->Check(MENU_Debug_ShowDebugLinks, g_fShowDebugLinks);
-        menu_bar->Check(MENU_Debug_recSelec, g_fDrawSelRect);
-        menu_bar->Check(MENU_Debug_DrawBounds, g_fDrawBounds);
-        menu_bar->Check(MENU_Debug_UseAntiAliasing, g_fUseAntiAliasing);
+        pMenuBar->Check(MENU_Debug_ForceReleaseBehaviour, g_fReleaseBehaviour);
+        pMenuBar->Check(MENU_Debug_ShowDebugLinks, g_fShowDebugLinks);
+        pMenuBar->Check(MENU_Debug_recSelec, g_fDrawSelRect);
+        pMenuBar->Check(MENU_Debug_DrawBounds, g_fDrawBounds);
+        pMenuBar->Check(MENU_Debug_UseAntiAliasing, g_fUseAntiAliasing);
     }
 
     // view toolbar
     bool fToolBar = true;
     g_pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
-    menu_bar->Check(MENU_View_ToolBar, fToolBar);
+    pMenuBar->Check(MENU_View_ToolBar, fToolBar);
 
     // view status bar
     bool fStatusBar = true;
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
-    menu_bar->Check(MENU_View_StatusBar, fStatusBar);
+    pMenuBar->Check(MENU_View_StatusBar, fStatusBar);
 
-    return menu_bar;
-
+    return pMenuBar;
 }
 
 lmMainFrame::~lmMainFrame()
@@ -1588,6 +1637,11 @@ void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
    dlg.ShowModal();
 }
 
+void lmMainFrame::OnExportMusicXML(wxCommandEvent& WXUNUSED(event))
+{
+	//TODO
+}
+
 void lmMainFrame::OnExportBMP(wxCommandEvent& WXUNUSED(event))
 {
     ExportAsImage(wxBITMAP_TYPE_BMP);
@@ -1639,7 +1693,7 @@ void lmMainFrame::ExportAsImage(int nImgType)
     {
         //remove extension including dot
         wxString sName = sFilename.Left( sFilename.length() - sExt.length() - 1 );
-        lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+        lmScoreView* pView = GetActiveScoreView();
         pView->SaveAsImage(sName, sExt, nImgType);
     }
 
@@ -1697,7 +1751,7 @@ void lmMainFrame::OnOpenBook(wxCommandEvent& event)
         // display book "intro"
         m_pBookController->Display(_T("intro_thm0.htm"));       //By page name
         m_pBookController->GetFrame()->NotifyPageChanged();     // needed in Linux. I don't know why !
-		OnActiveViewChanged(m_pBookController->GetFrame());
+		OnActiveChildChanged(m_pBookController->GetFrame());
     }
     else
     {
@@ -1784,19 +1838,37 @@ void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
 
 }
 
+lmScoreView* lmMainFrame::GetActiveScoreView()
+{
+    // get the view
+    lmMDIChildFrame* pChild = GetActiveChild();
+	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    return ((lmEditFrame*)pChild)->GetView();
+}
+
+lmScore* lmMainFrame::GetActiveScore()
+{
+    // get the score
+    lmMDIChildFrame* pChild = GetActiveChild();
+	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    lmScoreDocument* pDoc = (lmScoreDocument*)((lmEditFrame*)pChild)->GetDocument();
+    return pDoc->GetScore();
+}
+
 void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
 {
     // get the view
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmMDIChildFrame* pChild = GetActiveChild();
+	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    lmScoreView* pView = ((lmEditFrame*)pChild)->GetView();
+
     pView->DumpBitmaps();
 }
 
 void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
 {
-    // get the score
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
-    lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
-    lmScore* pScore = pDoc->GetScore();
+    lmScore* pScore = GetActiveScore();
+    wxASSERT(pScore);
 
     lmDlgDebug dlg(this, _T("lmStaff objects dump"), pScore->Dump());
     dlg.ShowModal();
@@ -1806,7 +1878,7 @@ void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
 void lmMainFrame::OnDebugDumpGMObjects(wxCommandEvent& event)
 {
     // get the BoxScore
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmScoreView* pView = GetActiveScoreView();
 	lmBoxScore* pBox = pView->GetBoxScore();
 	if (!pBox) return;
 
@@ -1817,28 +1889,24 @@ void lmMainFrame::OnDebugDumpGMObjects(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
-    event.Enable( (pView != (lmScoreView*)NULL) );
+    lmMDIChildFrame* pChild = GetActiveChild();
+	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    event.Enable(fEnable);
 }
 
 void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
 {
-    // get the score
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
-    lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
-    lmScore* pScore = pDoc->GetScore();
+    lmScore* pScore = GetActiveScore();
+    wxASSERT(pScore);
 
     lmDlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP());
     dlg.ShowModal();
-
 }
 
 void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 {
-    // get the score
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
-    lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
-    lmScore* pScore = pDoc->GetScore();
+    lmScore* pScore = GetActiveScore();
+    wxASSERT(pScore);
 
     lmDlgDebug dlg(this, _T("Generated MusicXML code"), pScore->SourceXML());
     dlg.ShowModal();
@@ -1855,10 +1923,8 @@ void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
 {
-    // get the score
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
-    lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
-    lmScore* pScore = pDoc->GetScore();
+    lmScore* pScore = GetActiveScore();
+    wxASSERT(pScore);
 
     lmDlgDebug dlg(this, _T("MIDI events table"), pScore->DumpMidiEvents() );
     dlg.ShowModal();
@@ -1884,9 +1950,9 @@ void lmMainFrame::OnSoundTest(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void lmMainFrame::OnActiveViewChanged(lmMDIChildFrame* pFrame)
+void lmMainFrame::OnActiveChildChanged(lmMDIChildFrame* pFrame)
 {
-	// The active frame/view has changed. Update GUI
+	// The active child frame has changed. Update things
 
 	// update zoom combo box
 	double rScale = pFrame->GetActiveViewScale();
@@ -1964,7 +2030,7 @@ void lmMainFrame::OnZoomUpdateUI(wxUpdateUIEvent &event)
 
 void lmMainFrame::OnZoomOther(wxCommandEvent& event)
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmScoreView* pView = GetActiveScoreView();
     double rScale = pView->GetScale() * 100;
     int nZoom = (int) ::wxGetNumberFromUser(_T(""),
         _("Zooming? (10 to 800)"), _T(""), (int)rScale, 10, 800);
@@ -1974,14 +2040,14 @@ void lmMainFrame::OnZoomOther(wxCommandEvent& event)
 
 void lmMainFrame::OnZoomFitWidth(wxCommandEvent& event)
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmScoreView* pView = GetActiveScoreView();
     pView->SetScaleFitWidth();
     UpdateZoomControls(pView->GetScale());
 }
 
 void lmMainFrame::OnZoomFitFull(wxCommandEvent& event)
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmScoreView* pView = GetActiveScoreView();
     pView->SetScaleFitFull();
     UpdateZoomControls(pView->GetScale());
 }
@@ -2072,7 +2138,7 @@ void lmMainFrame::ShowEditTools(bool fShow)
 
 void lmMainFrame::OnViewRulers(wxCommandEvent& event)
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmScoreView* pView = GetActiveScoreView();
     pView->SetRulersVisible(event.IsChecked());
 
 }
@@ -2174,7 +2240,7 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
 
     if (fEditFrame) {
         // Get the active view
-        lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+        lmScoreView* pView = GetActiveScoreView();
 
         // Pass two printout objects: for preview, and possible printing.
         wxPrintDialogData printDialogData(*g_pPrintData);
@@ -2229,7 +2295,7 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
         wxPrinter printer(& printDialogData);
 
         // Get the active view and create the printout object
-        lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+        lmScoreView* pView = GetActiveScoreView();
         lmPrintout printout(pView);
 
         if (!printer.Print(this, &printout, true)) {
@@ -2306,9 +2372,17 @@ void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
                 event.Enable(false);    //TODO
                 break;
 
+			case MENU_View_Page_Margins:
+				event.Enable(true);
+				event.Check(g_fShowMargins);	//synchronize check status
+				break;
+
+
             // Other commnads: always enabled
             default:
                 event.Enable(true);
+
+
         }
     }
 }
@@ -2318,6 +2392,7 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
     lmMDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
     bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
+    bool fEnableImport = fEditFrame && !(g_fReleaseVersion || g_fReleaseBehaviour);
 
     switch (event.GetId())
     {
@@ -2344,6 +2419,18 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
         case MENU_File_Export:
             event.Enable(fEditFrame);
             break;
+		case MENU_File_Export_MusicXML:
+			event.Enable(fEditFrame);
+			break;
+        case MENU_File_Export_bmp:
+            event.Enable(fEditFrame);
+            break;
+        case MENU_File_Export_jpg:
+            event.Enable(fEditFrame);
+            break;
+        case MENU_File_Import:          //Disabled until MusicXML ready
+            event.Enable( fEnableImport );      //fEditFrame);
+            break;
 
         // Other commnads: always enabled
         default:
@@ -2357,15 +2444,18 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
     ////   VERY IMPORTANT: READ THIS BEFORE REMOVING THIS CODE
     ////   ----------------------------------------------------
     ////This code does not work to disable wxID_NEW menu item
-    ////So have replaced identifier:
+    ////So I have replaced identifier:
     ////          wxID_NEW -> MENU_File_New
     ////The problem with this is that now this item doesn't work, as wxDocManager
     ////has no knowledge about it.
     ////WHEN REMOVING THIS CODE RESTORE wxID_NEW identifier
     ////
-    //if (g_fReleaseVersion || g_fReleaseBehaviour) {
-    //    switch (event.GetId())
-    //    {
+    if (g_fReleaseVersion || g_fReleaseBehaviour) {
+        switch (event.GetId())
+        {
+            case MENU_File_Export_MusicXML:
+                event.Enable(false);
+                break;
     //        case MENU_File_New:
     //            event.Enable(false);
     //            break;
@@ -2378,8 +2468,8 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
     //        case wxID_SAVEAS:
     //            event.Enable(false);
     //            break;
-    //    }
-    //}
+        }
+    }
 
 }
 
@@ -2447,29 +2537,49 @@ void lmMainFrame::OnOptions(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPlayStart(wxCommandEvent& WXUNUSED(event))
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
-    pView->GetController()->PlayScore();
+    lmScoreView* pView = GetActiveScoreView();
+    pView->GetController()->PlayScore(false);	//false: full score or from selection
+}
+
+void lmMainFrame::OnPlayCursorStart(wxCommandEvent& WXUNUSED(event))
+{
+    lmScoreView* pView = GetActiveScoreView();
+    pView->GetController()->PlayScore(true);	//true: from cursor
 }
 
 void lmMainFrame::OnPlayStop(wxCommandEvent& WXUNUSED(event))
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmScoreView* pView = GetActiveScoreView();
     pView->GetController()->StopPlaying();
 }
 
 void lmMainFrame::OnPlayPause(wxCommandEvent& WXUNUSED(event))
 {
-    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    lmScoreView* pView = GetActiveScoreView();
     pView->GetController()->PausePlaying();
+}
+
+void lmMainFrame::OnScoreTitles(wxCommandEvent& WXUNUSED(event))
+{
+    lmScoreView* pView = GetActiveScoreView();
+    pView->GetController()->AddTitle();
+}
+
+void lmMainFrame::OnInstrumentName(wxCommandEvent& WXUNUSED(event))
+{
+	this->GetActiveScore()->OnInstrProperties(-1);		//-1 = select instrument
+}
+
+void lmMainFrame::OnInstrumentMIDISettings(wxCommandEvent& WXUNUSED(event))
+{
+	//TODO
 }
 
 void lmMainFrame::OnMetronomeTimer(wxTimerEvent& event)
 {
-    /*
-    A metronome click has been produced, and this event is generated so that we
-    can flash the metronome LED or do any other    desired visual efect.
-    Do not generate sounds as they are done by the lmMetronome object
-    */
+    //A metronome click has been produced, and this event is generated so that we
+    //can flash the metronome LED or do any other desired visual efect.
+    //Do not generate sounds as they are done by the lmMetronome object
 
     //TODO flash metronome LED
   //  Me.picMtrLEDOff.Visible = false;
@@ -2511,7 +2621,6 @@ void lmMainFrame::OnViewWelcomePage(wxCommandEvent& event)
 {
     WXUNUSED(event)
     ShowWelcomeWindow();
-    wxMessageBox(_T("The score editor is yet in preliminar version. Many features are missing"));
 }
 
 void lmMainFrame::OnViewWelcomePageUI(wxUpdateUIEvent &event)

@@ -111,17 +111,20 @@ private:
                 lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
                 lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
 
-    void ComputeTextPosition();
+    void ComputeTextPosition(lmPaper* pPaper);
     void ComputeBlockBounds(lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
 
     lmEBlockAlign   m_nBlockAlign;
     lmEHAlign       m_nHAlign;
     lmEVAlign       m_nVAlign;
     wxString        m_sText;
+	wxString		m_sClippedText;
     wxFont*         m_pFont;
     lmUPoint        m_uTextPos;     // text position (relative to top-left of rectangle)
     lmLUnits        m_uTextWidth;
     lmLUnits        m_uTextHeight;
+    lmLUnits        m_uClippedTextWidth;
+    lmLUnits        m_uClippedTextHeight;
 
 };
 

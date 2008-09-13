@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -95,6 +94,7 @@ private:
     int					m_nCurrentDivisions;
 	int					m_nCurVoice;
     lmTupletBracket*	m_pTuplet;
+	lmNoteRest*			m_pLastNoteRest;
 
     //error management
     int        m_nErrors;        // number of parsing errors

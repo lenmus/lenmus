@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -52,10 +51,10 @@ extern lmLogger* g_pLogger;
 
 lmMusicXMLParser::lmMusicXMLParser()
 {
-    m_pTuplet = (lmTupletBracket*)NULL;	//no tuplet being created
-    m_nCurrentDivisions = 0;					//not set yet
-	m_nCurVoice = 1;							//default: voice 1
-
+    m_pTuplet = (lmTupletBracket*)NULL;		//no tuplet being created
+	m_pLastNoteRest = (lmNoteRest*)NULL;	//no previous note/rest
+    m_nCurrentDivisions = 0;				//not set yet
+	m_nCurVoice = 1;						//default: voice 1
 }
 
 lmMusicXMLParser::~lmMusicXMLParser()
@@ -67,6 +66,9 @@ lmScore* lmMusicXMLParser::ParseMusicXMLFile(const wxString& filename, bool fNew
 {
     if (fNewLog) g_pLogger->FlushDataErrorLog();
     g_pLogger->LogDataMessage(_("Importing XML file %s\n\n"), filename.c_str() );
+
+	//initializations
+	m_pLastNoteRest = (lmNoteRest*)NULL;		//no previous note/rest
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
@@ -859,7 +861,11 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
             return false;    //nothing added to lmVStaff
             break;
         case eWords:
-            pVStaff->AddText(sText, lmHALIGN_LEFT, tPos, oFontData, false);
+            {
+                lmTextItem* pText =
+                    pVStaff->AddText(sText, lmHALIGN_LEFT, oFontData, false);
+	            pText->SetUserLocation(tPos);
+            }
             break;
         default:
             wxASSERT(false);
@@ -1508,11 +1514,14 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
 
     lmNoteRest* pNR;
     float rDuration = ((float)nDuration / (float)m_nCurrentDivisions) * XML_DURATION_TO_LDP;
-    if (fIsRest) {
+    if (fIsRest)
+	{
         pNR = pVStaff->AddRest(nNoteType, rDuration, nDots,
                         nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
+		m_pLastNoteRest = pNR;
     }
-    else {
+    else
+	{
         //TODO: Convert early to int
         int nStep = LetterToStep(sStep);
         long nAux;
@@ -1521,11 +1530,15 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         sAlter.ToLong(&nAux);
         int nAlter = (int)nAux;
 
-        pNR = pVStaff->AddNote(lm_ePitchAbsolute,
-                        nStep, nOctave, nAlter, nAccidentals,
-                        nNoteType, rDuration, nDots,
-                        nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo, fInChord, fTie,
-                        nStem);
+        lmNote* pNt = pVStaff->AddNote(lm_ePitchAbsolute,
+									   nStep, nOctave, nAlter, nAccidentals,
+									   nNoteType, rDuration, nDots,
+									   nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo,
+									   (fInChord ? (lmNote*)m_pLastNoteRest : (lmNote*)NULL),
+									   fTie, nStem);
+		if (!fInChord || pNt->IsBaseOfChord())
+			m_pLastNoteRest = pNt;
+		pNR = pNt;
     }
 
     // Add notations
@@ -1659,7 +1672,9 @@ void lmMusicXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
             lmFontInfo tFont = {_T("Times New Roman"), 14, wxFONTSTYLE_NORMAL,
                                 wxFONTWEIGHT_BOLD };
             lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-            pScore->AddTitle(sNum, lmHALIGN_CENTER, tPos, pStyle);
+            lmTextBlock* pTitle = pScore->AddTitle(sNum, lmHALIGN_CENTER, pStyle);
+            pTitle->SetUserLocation(tPos);
+
         }
     }
     else if (sNum != _T(""))
@@ -1669,7 +1684,8 @@ void lmMusicXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
         lmFontInfo tFont = {_T("Times New Roman"), 14, wxFONTSTYLE_NORMAL,
                             wxFONTWEIGHT_BOLD };
         lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-        pScore->AddTitle(sTitle, lmHALIGN_CENTER, tPos, pStyle);
+        lmTextBlock* pTitle = pScore->AddTitle(sTitle, lmHALIGN_CENTER, pStyle);
+        pTitle->SetUserLocation(tPos);
     }
 
 }

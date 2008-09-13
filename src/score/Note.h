@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -52,7 +51,7 @@ public:
         int nNumDots, int nStaff, int nVoice, bool fVisible,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[],
-        bool fInChord,
+        lmNote* pBaseOfChord,
         bool fTie,
         lmEStemType nStem);
 
@@ -76,7 +75,7 @@ public:
     lmLUnits GetPitchShift();
     lmLUnits GetAnchorPos();
     int GetPosOnStaff();        //line/space on which note is rendered
-
+	lmLUnits CheckNoteNewPosition(lmLUnits uyOldPos, lmLUnits uyNewPos, int* pnSteps);
 
     //methods related to stems
     inline lmEStemType GetStemType() { return m_nStemType; }

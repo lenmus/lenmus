@@ -19,7 +19,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -32,10 +31,6 @@
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ChildFrame.cpp"
 #endif
-
-#include "../app/global.h"      //access to lmUSE_NOTEBOOK_MDI flag
-
-#if lmUSE_NOTEBOOK_MDI
 
 #include "wx/panel.h"
 
@@ -106,6 +101,7 @@ public:
 
 	// call back from lmMDIClientWindow::PageChanged
 	virtual void OnChildFrameActivated() {}
+    virtual void OnChildFrameDeactivated() {}
 
 
 protected:
@@ -130,15 +126,6 @@ private:
 
     friend class lmMDIClientWindow;
 };
-
-
-#else   // do not lmUSE_NOTEBOOK_MDI
-
-//use standard wxWidgets classes
-#define lmMDIChildFrame wxMDIChildFrame
-
-
-#endif  //lmUSE_NOTEBOOK_MDI
 
 
 #endif      // __LM_CHILDFRAME_H__

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -57,10 +56,11 @@
 
 //event IDs
 enum {
-	lmID_BT_ClefType = 2600,
+    lmID_CLEF_LIST = 2600,
+    lmID_CLEF_ADD,
 
     // Time signature group
-    lmID_BT_TimeType = lmID_BT_ClefType + lmGrpClefType::lm_NUM_BUTTONS,
+    lmID_BT_TimeType = lmID_CLEF_ADD + 1,
 
     // Key signature group
     lmID_KEY_TYPE = lmID_BT_TimeType + lmGrpTimeType::lm_NUM_BUTTONS,
@@ -111,71 +111,71 @@ lmToolGroup* lmToolPageClefs::GetToolGroup(lmEToolGroupID nGroupID)
 //--------------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(lmGrpClefType, lmToolGroup)
-	EVT_COMMAND_RANGE (lmID_BT_ClefType, lmID_BT_ClefType+lm_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpClefType::OnButton)
+    EVT_BUTTON      (lmID_CLEF_ADD, lmGrpClefType::OnAddClef)
 END_EVENT_TABLE()
+
+static lmGrpClefType::lmClefData m_tClefs[] = {
+    { _("G clef on 2nd line"), lmE_Sol },
+    { _("F clef on 4th line"), lmE_Fa4 },
+    { _("F clef on 3rd line"), lmE_Fa3 },
+    { _("C clef on 1st line"), lmE_Do1 },
+    { _("C clef on 2nd line"), lmE_Do2 },
+    { _("C clef on 3rd line"), lmE_Do3 },
+    { _("C clef on 4th line"), lmE_Do4 },
+    { _("Percussion clef"), lmE_Percussion },
+};
+
 
 lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent)
 {
-	m_nSelButton = -1;	//none selected
     CreateControls(pMainSizer);
 }
 
 void lmGrpClefType::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Clef type"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Add clef"));
 
-    //create the specific controls for this group
-    const wxString sButtonBmps[lm_NUM_BUTTONS] = {
-        _T("clef_g"),
-        _T("clef_f"),
-        _T("clef_c"),
-    };
+    //bitmap combo box to select the clef
+    m_pClefList = new wxBitmapComboBox();
+    m_pClefList->Create(this, lmID_CLEF_LIST, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
+                       0, NULL, wxCB_READONLY);
 
-    wxBoxSizer* pButtonsSizer;
-    wxSize btSize(24, 24);
-	for (int iB=0; iB < lm_NUM_BUTTONS; iB++)
-	{
-		if (iB % 5 == 0) {
-			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
-			pCtrolsSizer->Add(pButtonsSizer);
-		}
+	pCtrolsSizer->Add( m_pClefList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-		m_pButton[iB] = new lmCheckButton(this, lmID_BT_ClefType+iB, wxBitmap(24,24));
-        m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], _T("button_over_flat"), btSize);
-		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
-	}
+    //button to add the clef
+    m_pBtnAddClef = new wxButton(this, lmID_CLEF_ADD, _("Add clef"), wxDefaultPosition, wxDefaultSize, 0 );
+	pCtrolsSizer->Add( m_pBtnAddClef, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+    LoadClefList();
 	this->Layout();
-
-	SelectClef(0);	//select G clef
 }
 
-lmEClefType lmGrpClefType::GetClefType()
+void lmGrpClefType::OnAddClef(wxCommandEvent& event)
 {
-    return (lmEClefType)(m_nSelButton+1);
+    //insert selected key
+	WXUNUSED(event);
+	int iC = m_pClefList->GetSelection();
+    lmController* pSC = GetMainFrame()->GetActiveController();
+    pSC->InsertClef(m_tClefs[iC].nClefType);
+
+    //return focus to active view
+    GetMainFrame()->SetFocusOnActiveView();
 }
 
-void lmGrpClefType::OnButton(wxCommandEvent& event)
+void lmGrpClefType::LoadClefList()
 {
-	SelectClef(event.GetId() - lmID_BT_ClefType);
+	int nMaxClefs = int( sizeof(m_tClefs) / sizeof(lmClefData) );
+    m_pClefList->Clear();
+    for (int i=0; i < nMaxClefs; i++)
+    {
+        m_pClefList->Append(wxEmptyString, 
+                            GenerateBitmapForClefCtrol(m_tClefs[i].sClefName,
+                                                       m_tClefs[i].nClefType) );
+    }
+    m_pClefList->SetSelection(0);
 }
-
-void lmGrpClefType::SelectClef(int iB)
-{
-    // Set selected button as 'pressed' and all others as 'released'
-	m_nSelButton = iB;
-	for(int i=0; i < lm_NUM_BUTTONS; i++)
-	{
-		if (i != iB)
-			m_pButton[i]->Release();
-		else
-			m_pButton[i]->Press();
-	}
-}
-
 
 
 

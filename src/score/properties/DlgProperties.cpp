@@ -50,8 +50,8 @@ END_EVENT_TABLE()
 
 
 lmDlgProperties::lmDlgProperties(lmController* pController)
-    : wxDialog(pController, wxID_ANY, _("Edit text"), wxDefaultPosition, wxSize(400, 250),
-               wxDEFAULT_DIALOG_STYLE )
+    : wxDialog(pController, wxID_ANY, _("Properties"), wxDefaultPosition, wxSize(400, 250),
+               wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
     m_pController = pController;
     CreateControls();
@@ -113,6 +113,8 @@ lmDlgProperties::~lmDlgProperties()
 void lmDlgProperties::OnAccept(wxCommandEvent& WXUNUSED(event))
 {
     //apply changes
+
+    //Editing and existing objects. Do changes by issuing edit commands
     std::list<lmPropertiesPage*>::iterator it;
     for (it = m_pPages.begin(); it != m_pPages.end(); ++it)
         (*it)->OnAcceptChanges(m_pController);

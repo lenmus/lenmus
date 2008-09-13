@@ -722,18 +722,18 @@ lmStaff* lmVStaffCursor::GetCursorStaff()
     return m_pColStaffObjs->m_pOwner->GetStaff(m_nStaff);
 }
 
-int lmVStaffCursor::GetPageNumber()
-{
-    lmStaffObj* pSO = GetStaffObj();
-    if (pSO)
-        return pSO->GetPageNumber();
-    else
-    {
-        lmTODO(_T("[lmVStaffCursor::GetPageNumber] TODO: Get page number when no SO"));
-        return 0;
-    }
-}
-
+//int lmVStaffCursor::GetPageNumber()
+//{
+//    lmStaffObj* pSO = GetStaffObj();
+//    if (pSO)
+//        return pSO->GetPageNumber();
+//    else
+//    {
+//        lmTODO(_T("[lmVStaffCursor::GetPageNumber] TODO: Get page number when no SO"));
+//        return 0;
+//    }
+//}
+//
 lmUPoint lmVStaffCursor::GetCursorPoint()
 {
     //compute coordinate for placing cursor and return it
@@ -1719,33 +1719,28 @@ void lmColStaffObjs::AssignVoice(lmStaffObj* pSO, int nSegment)
     //if voice already assigned, return: nothing to do
     if (((lmNoteRest*)pSO)->GetVoice() != 0) return;
 
-    //if user has choosen a voice, assign it
-    int iV = GetMainFrame()->GetSelectedVoice();
-    if (iV == 0)
+    //No voice assigned. Auto-voice algorithm:
+    // we have to assign it a voice. Let's determine if there are note/rests
+    // in timepos range [timepos, timepos+object_duration)
+
+    // First, lets check if default staff voice is suitable
+    int iV = pSO->GetStaffNum();
+    bool fOccupied = IsTimePosOccupied(m_Segments[nSegment], pSO->GetTimePos(),
+                                    pSO->GetTimePosIncrement(), iV);
+
+    // else, loop to find empty voice in this timepos range
+    int nNumVoices = m_Segments[nSegment]->GetNumVoices() - 1;  //AWARE: substract 1 because voice #0 is counted in GetNumVoices()
+    for(iV=1; fOccupied && iV <= nNumVoices; iV++)
     {
-        //No voice selected. Auto-voice algorithm:
-        // we have to assign it a voice. Let's determine if there are note/rests
-        // in timepos range [timepos, timepos+object_duration)
-
-        // First, lets check if default staff voice is suitable
-        iV = pSO->GetStaffNum();
-        bool fOccupied = IsTimePosOccupied(m_Segments[nSegment], pSO->GetTimePos(),
-                                        pSO->GetTimePosIncrement(), iV);
-
-        // else, loop to find empty voice in this timepos range
-        int nNumVoices = m_Segments[nSegment]->GetNumVoices() - 1;  //AWARE: substract 1 because voice #0 is counted in GetNumVoices()
-        for(iV=1; fOccupied && iV <= nNumVoices; iV++)
-        {
-            fOccupied = IsTimePosOccupied(m_Segments[nSegment], pSO->GetTimePos(),
-                                        pSO->GetTimePosIncrement(), iV);
-        }
-
-        // if no empty voice found, start a new voice.
-        if (fOccupied)
-            iV = ++nNumVoices;
+        fOccupied = IsTimePosOccupied(m_Segments[nSegment], pSO->GetTimePos(),
+                                    pSO->GetTimePosIncrement(), iV);
     }
 
-    // assign the voice
+    // if no empty voice found, start a new voice.
+    if (fOccupied)
+        iV = ++nNumVoices;
+
+    // done. set the voice
     ((lmNoteRest*)pSO)->SetVoice(iV);
 }
 

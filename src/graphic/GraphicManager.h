@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -40,11 +39,11 @@
 #include <list>
 
 #include "../score/defs.h"
+#include "GMObject.h"		//for using lmGMSelection
 
 class lmScore;
 class lmPaper;
 class lmBoxScore;
-class lmGMObject;
 
 //Class lmGraphicManager stores and manages all score renderization issues
 class lmGraphicManager
@@ -73,7 +72,7 @@ public:
     //access
     int GetNumPages();
     lmBoxScore* GetBoxScore() const { return m_pBoxScore; }
-    lmGMObject* FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos);
+    lmGMObject* FindSelectableObjectAtPagePos(int nNumPage, lmUPoint uPos);
 
     //selection management
     //lmGMSelection* CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
@@ -123,16 +122,15 @@ private:
 
     lmGMSelection   m_Selection;            //selected objects
 
-    // double buffering for score higlight
-    int             m_nHighlightedPage;     // displayed page number (0 = none)
-    wxBitmap*       m_pAuxBitmap;           // saved bitmap for displayed page
-    bool            m_fHighlight;           // highlight in process
-
 };
 
 
 //Global functions related to rendering scores
-extern wxBitmap GenerateBitmapForKeyCtrol(wxString sKeyName, lmEKeySignatures nKey);
+extern wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey);
+extern wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef);
+extern wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType);
+extern wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size,
+							   wxSize shift = wxSize(0,0));
 
 #endif  // __LM_GRAPHICMANAGER_H__
 

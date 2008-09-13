@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -289,11 +288,16 @@ lmWelcomeWnd::~lmWelcomeWnd()
 
 void lmWelcomeWnd::OnNewInLenmus(wxHyperlinkEvent& event)
 {
-    wxString sPath = g_pPaths->GetRootPath();
-    wxFileName oFile;
-    oFile.SetPath(sPath);
-    oFile.AppendDir(_T("docs"));
-    oFile.SetFullName(_T("release_notes.htm"));
+    wxString sPath = g_pPaths->GetLocalePath();
+    wxFileName oFile(sPath, _T("release_notes.htm"), wxPATH_NATIVE);
+	if (!oFile.FileExists())
+	{
+		//use english version
+		sPath = g_pPaths->GetLocaleRootPath();
+		oFile.AssignDir(sPath);
+		oFile.AppendDir(_T("en"));
+		oFile.SetFullName(_T("release_notes.htm"));
+	}
     ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
 }
 

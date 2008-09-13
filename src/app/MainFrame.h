@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -86,7 +85,7 @@ public:
 
 
     // menu bar
-    wxMenuBar* CreateMenuBar(wxDocument* doc, wxView* view, bool fEdit, bool fDebug);
+    wxMenuBar* CreateMenuBar(wxDocument* doc, wxView* view);
 
     // metronome
     void SetMetronome(lmMetronome* pMtr);
@@ -95,7 +94,8 @@ public:
     // File menu events
     void OnScoreWizard(wxCommandEvent& WXUNUSED(event));
     void OnImportFile(wxCommandEvent& WXUNUSED(event));
-    void OnExportBMP(wxCommandEvent& WXUNUSED(event));
+	void OnExportMusicXML(wxCommandEvent& WXUNUSED(event));
+	void OnExportBMP(wxCommandEvent& WXUNUSED(event));
     void OnExportJPG(wxCommandEvent& WXUNUSED(event));
     void OnPrintPreview(wxCommandEvent& WXUNUSED(event));
     //void OnPageSetup(wxCommandEvent& WXUNUSED(event));
@@ -112,6 +112,13 @@ public:
     void OnEditCopy(wxCommandEvent& event);
     void OnEditPaste(wxCommandEvent& event);
     void OnEditUpdateUI(wxUpdateUIEvent& event);
+
+	// Score Menu events
+	void OnScoreTitles(wxCommandEvent& WXUNUSED(event));
+
+	// Instrument menu events
+	void OnInstrumentName(wxCommandEvent& WXUNUSED(event));
+	void OnInstrumentMIDISettings(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
         // general options, always enabled
@@ -167,6 +174,7 @@ public:
     void OnRunMidiWizard(wxCommandEvent& WXUNUSED(event));
     void DoRunMidiWizard();
     void OnPlayStart(wxCommandEvent& WXUNUSED(event));
+    void OnPlayCursorStart(wxCommandEvent& WXUNUSED(event));
     void OnPlayStop(wxCommandEvent& WXUNUSED(event));
     void OnPlayPause(wxCommandEvent& WXUNUSED(event));
     void OnPlayUI(wxUpdateUIEvent& event);
@@ -233,20 +241,24 @@ public:
     inline lmTextBookController* GetBookController() { return m_pBookController; }
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
 	bool IsToolBoxVisible();
-    inline int GetSelectedVoice() { return m_pComboVoice->GetSelection(); }
     inline lmScore* GetWizardScore() { return m_pWizardScore; }  
     lmController* GetActiveController();
     wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
 
 
 	// call backs
-	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
-	void OnNewEditFrame();
+	void OnActiveChildChanged(lmMDIChildFrame* pFrame);
+    void OnNewEditFrame();
 
 	//other
 	void RedirectKeyPressEvent(wxKeyEvent& event);
     void SetFocusOnActiveView();
     void AddFileToHistory(const wxString& filename);
+
+    //access to current active MDI Child
+    lmScoreView* GetActiveScoreView();
+    lmScore* GetActiveScore();
+
 
 
 
@@ -274,7 +286,6 @@ protected:
     lmHelpController*       m_pHelp;
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
-    wxComboBox*             m_pComboVoice;
 
     lmMetronome*        m_pMainMtr;        //independent metronome
     lmMetronome*        m_pMtr;            //metronome currently associated to frame metronome controls
@@ -293,7 +304,6 @@ protected:
     wxToolBar*      m_pTbMtr;           // metronome toolbar
     wxToolBar*      m_pToolbar;         // main toolbar
     wxToolBar*      m_pTbTextBooks;     // text books navigation toolbar
-    wxToolBar*      m_pTbVoice;         // voice toolbar
 
     // status bar
     lmStatusBar*    m_pStatusBar;

@@ -50,11 +50,13 @@
 #include <wx/choice.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include <wx/richtext/richtextctrl.h>
 #include <wx/panel.h>
 
 #endif
 
 #include "DlgProperties.h"
+#include "../../score/defs.h"
 
 
 //--------------------------------------------------------------------------------------
@@ -63,6 +65,7 @@
 
 class lmScoreText;
 class lmController;
+class lmScore;
 
 class lmTextProperties : public lmPropertiesPage 
 {
@@ -77,6 +80,9 @@ public:
     void OnCut(wxCommandEvent& event);
     void OnCopy(wxCommandEvent& event);
     void OnPaste(wxCommandEvent& event);
+    void OnLeft(wxCommandEvent& event);
+    void OnCenter(wxCommandEvent& event);
+    void OnRight(wxCommandEvent& event);
     void OnStyle(wxCommandEvent& event);
     void OnEditStyles(wxCommandEvent& event);
 
@@ -84,18 +90,26 @@ public:
 protected:
     void CreateControls();
     void DoChangeFont(const wxFont& font, const wxColour& color = wxNullColour);
+	void DoChangeAlignment();
+	void DoChangeStyle(lmTextStyle* pStyle);
 
     //controls
 	wxBitmapButton*     m_pBtCut;
 	wxBitmapButton*     m_pBtCopy;
 	wxBitmapButton*     m_pBtPaste;
+	wxBitmapButton*		m_pBtLeft;
+	wxBitmapButton*		m_pBtCenter;
+	wxBitmapButton*		m_pBtRight;
 	wxStaticText*       m_pTxtStyle;
 	wxChoice*           m_pCboTextStyle;
     wxButton*           m_pBtnChangeStyles;
-	wxTextCtrl*         m_pTxtCtrl;
+	wxRichTextCtrl*		m_pTxtCtrl;
 	
     //other variables
     lmScoreText*        m_pParentText;
+    lmScore*            m_pScore;
+
+	lmEHAlign			m_nHAlign;
 
 
     DECLARE_EVENT_TABLE()

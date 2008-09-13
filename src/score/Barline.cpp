@@ -31,13 +31,155 @@
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
+
+#else
+//for lmBarline
+#include <wx/image.h>
+
+//for lmBarline properties
+#include <wx/string.h>
+#include <wx/stattext.h>
+#include <wx/gdicmn.h>
+#include <wx/font.h>
+#include <wx/colour.h>
+#include <wx/settings.h>
+#include <wx/bmpcbox.h>
+#include <wx/sizer.h>
+#include <wx/panel.h>
+
 #endif
 
-#include "wx/image.h"
 
 #include "Score.h"
 #include "VStaff.h"
 #include "../graphic/ShapeBarline.h"
+
+
+//--------------------------------------------------------------------------------------
+/// Class lmBarlineProperties
+//--------------------------------------------------------------------------------------
+
+#include "defs.h"
+#include "properties/DlgProperties.h"
+
+class lmScoreObj;
+class lmController;
+class lmScore;
+
+class lmBarlineProperties : public lmPropertiesPage 
+{
+public:
+	lmBarlineProperties(wxWindow* parent, lmBarline* pBL);
+	~lmBarlineProperties();
+
+    //implementation of pure virtual methods in base class
+    void OnAcceptChanges(lmController* pController);
+
+    // event handlers
+
+protected:
+    void CreateControls();
+
+    //controls
+	wxStaticText*		m_pTxtBarline;
+	wxBitmapComboBox*	m_pBarlinesList;
+
+    //other variables
+    lmBarline*			m_pBL;
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+//--------------------------------------------------------------------------------------
+/// Implementation of lmBarlineProperties
+//--------------------------------------------------------------------------------------
+
+#include "../graphic/GraphicManager.h"	//to use GenerateBitmapForBarlineCtrol()
+#include "../app/ScoreCanvas.h"			//lmConroller
+
+enum {
+    lmID_BARLINE = 2600,
+};
+
+lmBarlinesDBEntry g_tBarlinesDB[] = {
+    { _("Simple barline"),		lm_eBarlineSimple },
+    { _("Double barline"),		lm_eBarlineDouble },
+    { _("Final barline"),		lm_eBarlineEnd },
+    { _("Start repetition"),	lm_eBarlineStartRepetition },
+    { _("End repetition"),		lm_eBarlineEndRepetition },
+    { _("Star barline"),		lm_eBarlineStart },
+    { _("Double repetition"),	lm_eBarlineDoubleRepetition },
+	//End of table item
+	{ _T(""),					(lmEBarline)-1 }
+};
+
+BEGIN_EVENT_TABLE(lmBarlineProperties, lmPropertiesPage)
+
+END_EVENT_TABLE()
+
+
+//AWARE: pScore is needed as parameter in the constructor for those cases in
+//wich the text is being created and is not yet included in the score. In this
+//cases method GetScore() will fail, so we can not use it in the implementation
+//of this class
+lmBarlineProperties::lmBarlineProperties(wxWindow* parent, lmBarline* pBL)
+    : lmPropertiesPage(parent)
+{
+    m_pBL = pBL;
+    CreateControls();
+	LoadBarlinesBitmapComboBox(m_pBarlinesList, g_tBarlinesDB);
+	SelectBarlineBitmapComboBox(m_pBarlinesList, m_pBL->GetBarlineType() );
+}
+
+void lmBarlineProperties::CreateControls()
+{
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pTxtBarline = new wxStaticText( this, wxID_ANY, wxT("Barline type"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtBarline->Wrap( -1 );
+	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+	
+	pMainSizer->Add( m_pTxtBarline, 0, wxALL, 5 );
+	
+	wxArrayString m_pBarlinesListChoices;
+    m_pBarlinesList = new wxBitmapComboBox();
+    m_pBarlinesList->Create(this, lmID_BARLINE, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
+							0, NULL, wxCB_READONLY);
+	pMainSizer->Add( m_pBarlinesList, 0, wxALL, 5 );
+	
+	this->SetSizer( pMainSizer );
+	this->Layout();
+}
+
+lmBarlineProperties::~lmBarlineProperties()
+{
+}
+
+void lmBarlineProperties::OnAcceptChanges(lmController* pController)
+{
+	int iB = m_pBarlinesList->GetSelection();
+    lmEBarline nType = g_tBarlinesDB[iB].nBarlineType;
+	if (nType == m_pBL->GetBarlineType())
+		return;		//nothing to change
+
+    if (pController)
+    {
+        //Editing and existing object. Do changes by issuing edit commands
+        pController->ChangeBarline(m_pBL, nType, m_pBL->IsVisible());
+    }
+  //  else
+  //  {
+  //      //Direct creation. Modify text object directly
+  //      m_pParentText->SetText( m_pTxtCtrl->GetValue() );
+  //      m_pParentText->SetStyle(pStyle);
+		//m_pParentText->SetAlignment(m_nHAlign);
+  //  }
+}
+
+
 
 //-------------------------------------------------------------------------------------------------
 // lmBarline object implementation
@@ -176,16 +318,52 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
 
 }
 
-//void lmBarline::SetLocation(lmLUnits uxPos, lmELocationType nType)
-//{
-//    m_uxUserPos = uxPos;
-//    m_xUserPosType = nType;
-//}
-//
+void lmBarline::OnEditProperties(lmDlgProperties* pDlg)
+{
+	//invoked to add specific panels to the dialog
+
+	pDlg->AddPanel( new lmBarlineProperties(pDlg->GetNotebook(), this),
+				_("Barline"));
+
+	//change dialog title
+	pDlg->SetTitle(_("Barline properties"));
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // global functions related to barlines
 //-------------------------------------------------------------------------------------------------
+
+void LoadBarlinesBitmapComboBox(wxBitmapComboBox* pCtrol, lmBarlinesDBEntry tBarlines[])
+{
+    pCtrol->Clear();
+    int i=0;
+	while ((int)tBarlines[i].nBarlineType != -1)
+    {
+        pCtrol->Append(wxEmptyString, 
+                       GenerateBitmapForBarlineCtrol(tBarlines[i].sBarlineName,
+                                                     tBarlines[i].nBarlineType ),
+					   (void*)(&tBarlines[i]) );
+		i++;
+    }
+	if (i > 0)
+		pCtrol->SetSelection(0);
+}
+
+void SelectBarlineBitmapComboBox(wxBitmapComboBox* pCtrol, lmEBarline nType)
+{
+	//select received barline type in the barlines combo box
+	int nMax = pCtrol->GetCount();
+	for (int iB=0; iB < nMax; iB++)
+	{
+		if (nType == ((lmBarlinesDBEntry*)pCtrol->GetClientData(iB))->nBarlineType)
+		{
+			wxLogMessage(_T("[SelectBarlineBitmapComboBox] nType=%d, iB=%d, nMax=%d"), nType, iB, nMax);
+			pCtrol->SetSelection(iB);
+			return;
+		}
+	}
+}
 
 wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType)
 {

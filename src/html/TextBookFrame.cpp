@@ -358,12 +358,6 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
                     wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
                     wxDEFAULT_FRAME_STYLE, _T("TextBookFrame") );
 
-#if lmUSE_NOTEBOOK_MDI
-    ////Notebook: is always maximized
-#else
-    lmMDIChildFrame::Maximize(true);
-#endif  // lmUSE_NOTEBOOK_MDI
-
     GetPosition(&m_Cfg.x, &m_Cfg.y);
 
     SetIcon(wxArtProvider::GetIcon(_T("tool_open_ebook"), wxART_TOOLBAR, wxSize(16,16)));
@@ -1500,5 +1494,5 @@ void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
 void lmTextBookFrame::OnChildFrameActivated()
 {
 	//this frame is now the active frame. Inform main frame.
-	g_pMainFrame->OnActiveViewChanged(this);
+	g_pMainFrame->OnActiveChildChanged(this);
 }

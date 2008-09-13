@@ -126,8 +126,7 @@ void lmScoreCtrol::CreateControls()
 
     // create score ctrl
     m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, m_nScoreSize,
-                            eSIMPLE_BORDER );
-                            //(m_pOptions->fMusicBorder ? eSIMPLE_BORDER : eNO_BORDER) );
+                            (m_pOptions->fMusicBorder ? eSIMPLE_BORDER : eNO_BORDER) );
     pMainSizer->Add(m_pScoreCtrol, 1, wxGROW, nSpacing);
 
     m_pScore->SetTopSystemDistance( lmToLogicalUnits(10, lmMILLIMETERS) );
@@ -161,16 +160,18 @@ void lmScoreCtrol::CreateControls()
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
 
-    /*TODO Play_measure links are not positioned under each measure, as the lmScoreCtrol
-        has no knowledge of measure boundaries. Perhaps this information have to be
-        provided by the Score and the links have to be repositioned after the score
-        is rendered.
-        For now, play-measure links are positioned at regular intervals. This is
-        the v2.0 behaviour
-    */
+    //TODO
+	//Play_measure links are not positioned under each measure, as the lmScoreCtrol
+	//has no knowledge of measure boundaries. Perhaps this information have to be
+	//provided by the Score and the links have to be repositioned after the score
+	//is rendered.
+	//They could be links in the score (text with link) instead of external objects
+	//For now, play-measure links are positioned at regular intervals. This is
+	//the v2.0 behaviour
     if (m_pOptions->fMeasuresCtrol)
     {
         int nNumMeasures = wxMin(m_pScore->GetNumMeasures(), 10);
+		wxMessageBox(wxString::Format(_T("nNumMeasures=%d"), nNumMeasures));
         for (int i=0; i < nNumMeasures; i++) {
             m_pMeasureLink[i] =
                 new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, rScale,

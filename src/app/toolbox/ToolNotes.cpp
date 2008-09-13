@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -55,6 +54,8 @@
 #define lm_NUM_DUR_BUTTONS  10
 #define lm_NUM_ACC_BUTTONS  8
 #define lm_NUM_DOT_BUTTONS  3
+#define lm_NUM_OCTAVE_BUTTONS 10
+#define lm_NUM_VOICE_BUTTONS 9
 
 enum {
 	lmID_BT_NoteDuration = 2600,
@@ -66,6 +67,8 @@ enum {
     lmID_BT_Beam_Join,
     lmID_BT_Beam_Flatten,
     lmID_BT_Beam_Subgroup,
+	lmID_BT_Octave,
+	lmID_BT_Voice = lmID_BT_Octave + lm_NUM_OCTAVE_BUTTONS,
 };
 
 
@@ -74,50 +77,22 @@ lmToolPageNotes::lmToolPageNotes(wxWindow* parent)
 {
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    //create groups  --------------------------------------
-
-    //notes duration group
+    //create groups
+	m_pGrpOctave = new lmGrpOctave(this, pMainSizer);
+	m_pGrpVoice = new lmGrpVoice(this, pMainSizer);
     m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
-
-	//Note accidentals group
     m_pGrpNoteAcc = new lmGrpNoteAcc(this, pMainSizer);
-
-    //Note dots group
     m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
-
-    //Ties and tuplets group
     m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
-
-    //Beam tools group
     m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
-
-
-        
-    ////Palette group --------------------------------------------
-	//lmToolGroup oPaletteGroup(this);
- //   wxBoxSizer* pPaletteSizer = oPaletteGroup.CreateGroup(pMainSizer, _("Palette"));
-	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyDark()),
-	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Dark()),
-	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightDark()),
-	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Normal()),
-	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->LightBright()),
-	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->Bright()),
-	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-	//pPaletteSizer->Add( new wxColourPickerCtrl(this, wxID_ANY, GetColors()->PrettyBright()),
-	//					0, wxGROW|wxLEFT|wxRIGHT, lmSPACING);
-
-	//End of groups
 
 	CreateLayout();
 }
 
 lmToolPageNotes::~lmToolPageNotes()
 {
+	delete m_pGrpOctave;
+	delete m_pGrpVoice;
     delete m_pGrpNoteDuration;
     delete m_pGrpNoteAcc;
     delete m_pGrpNoteDots;
@@ -134,6 +109,8 @@ lmToolGroup* lmToolPageNotes::GetToolGroup(lmEToolGroupID nGroupID)
 {
     switch(nGroupID)
     {
+        case lmGRP_Octave:			return m_pGrpOctave;
+        case lmGRP_Voice:			return m_pGrpVoice;
         case lmGRP_NoteDuration:    return m_pGrpNoteDuration;
         case lmGRP_NoteAcc:         return m_pGrpNoteAcc;
         case lmGRP_NoteDots:        return m_pGrpNoteDots;
@@ -160,7 +137,7 @@ lmGrpNoteDuration::lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer
 void lmGrpNoteDuration::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Note duration"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Note/rest duration"));
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_DUR_BUTTONS] = {
@@ -199,6 +176,99 @@ void lmGrpNoteDuration::CreateControls(wxBoxSizer* pMainSizer)
 lmENoteType lmGrpNoteDuration::GetNoteDuration()
 {
     return (lmENoteType)(m_nSelButton+1);
+}
+
+
+
+
+//--------------------------------------------------------------------------------
+// lmGrpOctave implementation
+//--------------------------------------------------------------------------------
+
+lmGrpOctave::lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmToolButtonsGroup(pParent, lm_NUM_OCTAVE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+                             lmID_BT_Octave)
+{
+    CreateControls(pMainSizer);
+}
+
+void lmGrpOctave::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Octave"));
+
+    wxBoxSizer* pButtonsSizer;
+    wxSize btSize(16, 16);
+	for (int iB=0; iB < lm_NUM_OCTAVE_BUTTONS; iB++)
+	{
+		if (iB % 9 == 0) {
+			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+			pCtrolsSizer->Add(pButtonsSizer);
+		}
+
+		wxString sBtName = wxString::Format(_T("opt_num%1d"), iB);
+		wxString sToolTip = wxString::Format(_("Select octave %d"), iB);
+		m_pButton[iB] = new lmCheckButton(this, lmID_BT_Octave+iB, wxBitmap(16, 16));
+        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+		m_pButton[iB]->SetToolTip(sToolTip);
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
+	}
+	this->Layout();
+
+	SelectButton(4);	//select octave 4
+}
+
+
+
+//--------------------------------------------------------------------------------
+// lmGrpVoice implementation
+//--------------------------------------------------------------------------------
+
+lmGrpVoice::lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmToolButtonsGroup(pParent, lm_NUM_VOICE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+                             lmID_BT_Voice)
+{
+    CreateControls(pMainSizer);
+}
+
+void lmGrpVoice::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Voice"));
+
+    wxBoxSizer* pButtonsSizer;
+    wxSize btSize(16, 16);
+	for (int iB=0; iB < lm_NUM_VOICE_BUTTONS; iB++)
+	{
+		if (iB % 9 == 0) {
+			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+			pCtrolsSizer->Add(pButtonsSizer);
+		}
+
+		wxString sBtName;
+		if (iB == 0)
+		{
+			//button 0: AutoVoice
+			sBtName = _T("opt_auto");
+			m_pButton[iB] = new lmCheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
+			m_pButton[iB]->SetToolTip(_("Automatic voice assignment"));
+		}
+		else
+		{
+			sBtName = wxString::Format(_T("opt_num%1d"), iB);
+			m_pButton[iB] = new lmCheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
+			m_pButton[iB]->SetToolTip( wxString::Format(_("Select voice %d"), iB) );
+		}
+        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
+	}
+	this->Layout();
+
+	SelectButton(0);	//select voice 1
 }
 
 
@@ -271,7 +341,7 @@ lmGrpNoteDots::lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpNoteDots::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Note dots"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Dots"));
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_DOT_BUTTONS] = {

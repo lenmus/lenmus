@@ -31,6 +31,7 @@ class lmVStaffCursor;
 class lmInstrGroup;
 class lmVStaff;
 class lmScoreCursor;
+class lmDlgProperties;
 
 
 class lmInstrument : public lmScoreObj
@@ -68,7 +69,7 @@ public:
     void MeasureNames(lmPaper* pPaper);
     void AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPaper* pPaper, int nSystem);
 
-	wxString GetInstrName();
+	const wxString& GetInstrName();
 
 	//cursor methods
 	lmVStaffCursor* GetVCursor();
@@ -94,6 +95,10 @@ public:
     // methods related to MusicXML import/export
     void XML_SetId(const wxString sId) { m_xmlId = sId; }
     const wxString XML_GetId() { return m_xmlId; }
+
+	//interactive edition
+	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
+
 
 private:
     void Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,

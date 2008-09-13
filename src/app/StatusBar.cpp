@@ -45,36 +45,60 @@
 
 
 #include "StatusBar.h"
+#include "ArtProvider.h" 
 
 
 //Status bar fields
 enum lmEStatusBarField 
 {
-    lm_eSB_Message = 0,
-    lm_eSB_MousePos,
-    lm_eSB_NumPage,
-    lm_eSB_AbsTime,
-    lm_eSB_RelTime,
-    lm_eSB_Caps,
-    lm_eSB_Nums,
-    lm_eSB_NUM_FIELDS       //MUST BE THE LAST ONE
+    lm_Field_Message = 0,
+    lm_Field_MousePos,
+    lm_Field_NumPage,
+    lm_Field_AbsTime,
+    lm_Field_RelTime,
+    lm_Field_Caps,
+    lm_Field_Nums,
+    lm_Field_NUM_FIELDS       //MUST BE THE LAST ONE
 };
 
 
 // ----------------------------------------------------------------------------
 // lmStatusBar implementation
 // ----------------------------------------------------------------------------
+BEGIN_EVENT_TABLE(lmStatusBar, wxStatusBar)
+    EVT_SIZE(lmStatusBar::OnSize)
+END_EVENT_TABLE()
+
 
 lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID id)
            : wxStatusBar(pFrame, wxID_ANY, wxST_SIZEGRIP)
 {
     m_pFrame = pFrame;
     m_nType = lm_eStatBar_ScoreEdit;
-    m_nNumFields = lm_eSB_NUM_FIELDS;
+    m_nNumFields = lm_Field_NUM_FIELDS;
     int ch = GetCharWidth();
+
     const int widths[] = {-1, 15*ch, 15*ch, 15*ch, 10*ch, 4*ch, 4*ch};
     SetFieldsCount(m_nNumFields);
     SetStatusWidths(m_nNumFields, widths);
+
+	//icon space
+	wxSize size(16,16);
+	int nWidth, nHeight;
+	GetTextExtent(_T(" "), &nWidth, &nHeight);
+	size_t nSpaces = size_t(0.5f + ((4.0f + float(size.x)) / (float)nWidth) );
+	wxLogMessage(wxString::Format(_T("nSpaces=%d"), nSpaces));
+	m_sIconSpace.insert(size_t(0), nSpaces, _T(' '));
+
+	//add bitmap for time
+    m_pBmpClock = new wxStaticBitmap(this, wxID_ANY, 
+									 wxArtProvider::GetIcon(_T("status_time"), wxART_TOOLBAR, size) );
+
+	//add bitmap for page num
+    m_pBmpPage = new wxStaticBitmap(this, wxID_ANY, 
+									 wxArtProvider::GetIcon(_T("status_page"), wxART_TOOLBAR, size) );
+
+	SetMinHeight(size.y);
 }
 
 lmStatusBar::~lmStatusBar()
@@ -83,26 +107,44 @@ lmStatusBar::~lmStatusBar()
 
 void lmStatusBar::SetMsgText(const wxString& sMsg)
 {
-    SetStatusText(sMsg, lm_eSB_Message);
+    SetStatusText(sMsg, lm_Field_Message);
 }
 
 void lmStatusBar::SetNumPage(int nPage)
 {
     if (nPage > 0)
-        SetStatusText(wxString::Format(_("Page %d"), nPage), lm_eSB_NumPage);
+        SetStatusText(wxString::Format(_("%s%d"), m_sIconSpace, nPage), lm_Field_NumPage);
     else
-        SetStatusText(_T(""), lm_eSB_NumPage);
+        SetStatusText(_T(""), lm_Field_NumPage);
 }
 
 void lmStatusBar::SetMousePos(float x, float y)
 {
-    wxString sMsg = wxString::Format(_T("%.2f, %.2f"), x, y);
-    SetStatusText(sMsg, lm_eSB_MousePos);
+    SetStatusText(wxString::Format(_T("%.2f, %.2f"), x, y), lm_Field_MousePos);
 }
 
 void lmStatusBar::SetCursorRelPos(float rTime)
 {
-    wxString sMsg = wxString::Format(_T("%.2f"), rTime);
-    SetStatusText(sMsg, lm_eSB_RelTime);
+    SetStatusText(wxString::Format(_T("%s%.2f"), m_sIconSpace, rTime), lm_Field_RelTime);
+}
+
+void lmStatusBar::OnSize(wxSizeEvent& event)
+{
+	//position bitmaps in the appropiate field area
+    
+	//page
+	wxRect rect;
+    GetFieldRect(lm_Field_NumPage, rect);
+    wxSize size = m_pBmpPage->GetSize();
+    m_pBmpPage->Move(rect.x,
+                     rect.y + (rect.height - size.y) / 2);
+
+	//clock
+    GetFieldRect(lm_Field_RelTime, rect);
+    size = m_pBmpClock->GetSize();
+    m_pBmpClock->Move(rect.x,
+                      rect.y + (rect.height - size.y) / 2);
+
+    event.Skip();
 }
 

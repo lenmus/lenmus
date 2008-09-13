@@ -106,9 +106,9 @@ void lmDirectDrawer::GetTextExtent(const wxString& string, lmLUnits* uw, lmLUnit
 }
 
 void lmDirectDrawer::SketchLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2,
-                                wxColour color)
+                                wxColour color, int style)
 {
-    m_pDC->SetPen( wxPen(color, 1, wxSOLID) );
+    m_pDC->SetPen( wxPen(color, 1, style) );
     m_pDC->SetBrush( *wxTRANSPARENT_BRUSH );
     m_pDC->DrawLine((int)ux1, (int)uy1, (int)ux2, (int)uy2);
 }

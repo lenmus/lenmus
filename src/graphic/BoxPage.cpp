@@ -42,27 +42,31 @@ extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage,
-                     lmLUnits uxLeftMargin, lmLUnits uxRightMargin,
-                     lmLUnits uyTopMargin, lmLUnits uyBottomMargin,
-                     lmLUnits uPageWidth, lmLUnits uPageHeight)
+lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage, _("page"))
 {
     m_nNumPage = nNumPage;
     m_nFirstSystem = 0;
     m_nLastSystem = 0;
     m_pBScore = pParent;
-    m_it = m_Handlers.begin();
 
     //create margin shapes
-    m_pTopMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_TOP, lmHORIZONTAL, 
-                                     uyTopMargin, uPageWidth);
-    m_pBottomMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_BOTTOM, lmHORIZONTAL,
-                                        uyBottomMargin, uPageWidth);
-    m_pLeftMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_LEFT, lmVERTICAL,
-                                      uxLeftMargin, uPageHeight);
-    m_pRightMargin = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_RIGHT, lmVERTICAL,
-                                       uxRightMargin, uPageHeight);
+	lmScore* pScore = (lmScore*)m_pOwner;
+	lmLUnits uxLeftMargin = pScore->GetLeftMarginXPos();
+    lmLUnits uxRightMargin = pScore->GetRightMarginXPos();
+	lmLUnits uyTopMargin = pScore->GetPageTopMargin();
+    lmLUnits uyBottomMargin = pScore->GetMaximumY();
+    lmLUnits uPageWidth = pScore->GetPaperSize().GetWidth();
+    lmLUnits uPageHeight = pScore->GetPaperSize().GetHeight();
+	
+	AddHandler( new lmShapeMargin(pScore, lmMARGIN_TOP, m_nNumPage, lmHORIZONTAL, 
+                                  uyTopMargin, uPageWidth) );
+    AddHandler( new lmShapeMargin(pScore, lmMARGIN_BOTTOM, m_nNumPage, lmHORIZONTAL,
+                                  uyBottomMargin, uPageWidth) );
+    AddHandler( new lmShapeMargin(pScore, lmMARGIN_LEFT, m_nNumPage, lmVERTICAL,
+                                  uxLeftMargin, uPageHeight) );
+    AddHandler( new lmShapeMargin(pScore, lmMARGIN_RIGHT, m_nNumPage, lmVERTICAL,
+                                  uxRightMargin, uPageHeight) );
 }
 
 lmBoxPage::~lmBoxPage()
@@ -73,17 +77,6 @@ lmBoxPage::~lmBoxPage()
         delete m_aSystems[i];
     }
     m_aSystems.clear();
-
-    //delete handlers
-    std::list<lmHandler*>::iterator it;
-    for (it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
-        delete *it;
-
-    //delete margin shapes
-    delete m_pTopMargin;
-    delete m_pBottomMargin;
-    delete m_pLeftMargin;
-    delete m_pRightMargin;
 }
 
 lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
@@ -120,14 +113,18 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
 void lmBoxPage::DrawHandlers(lmPaper* pPaper)
 {
     //render page margins
-    if (g_fShowMargins)
+    if (g_fShowMargins && m_pHandlers)
     {
         wxColour color = *wxGREEN;      //TODO User options
-        m_pTopMargin->Render(pPaper, color);
-        m_pBottomMargin->Render(pPaper, color);
-        m_pLeftMargin->Render(pPaper, color);
-        m_pRightMargin->Render(pPaper, color);
+		std::list<lmHandler*>::iterator it;
+		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
+            (*it)->Render(pPaper, color);
     }
+
+	//propagate to childs
+	std::vector<lmBoxSystem*>::iterator it;
+	for(it = m_aSystems.begin(); it != m_aSystems.end(); ++it)
+        (*it)->DrawHandlers(pPaper);
 }
 
 lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
@@ -170,7 +167,7 @@ void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
     }
 }
 
-lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
+lmGMObject* lmBoxPage::FindSelectableObjectAtPos(lmUPoint& pointL)
 {
 	//wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
@@ -180,18 +177,17 @@ lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
     //loop to look up in the systems
 	for(int i=0; i < (int)m_aSystems.size(); i++)
     {
-        lmGMObject* pGMO = m_aSystems[i]->FindGMObjectAtPosition(pointL);
+        lmGMObject* pGMO = m_aSystems[i]->FindSelectableObjectAtPos(pointL);
         if (pGMO)
 			return pGMO;		//Object found
     }
 
     //find in margins
-    if (g_fShowMargins)
+    if (g_fShowMargins && m_pHandlers)
     {
-        if (m_pTopMargin->BoundsContainsPoint(pointL)) return m_pTopMargin;
-        if (m_pBottomMargin->BoundsContainsPoint(pointL)) return m_pBottomMargin;
-        if (m_pLeftMargin->BoundsContainsPoint(pointL)) return m_pLeftMargin;
-        if (m_pRightMargin->BoundsContainsPoint(pointL)) return m_pRightMargin;
+		std::list<lmHandler*>::iterator it;
+		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
+			if ((*it)->BoundsContainsPoint(pointL)) return *it;
     }
 
     // no object found.
@@ -244,28 +240,4 @@ lmBoxSystem* lmBoxPage::GetSystem(int nSystem)
 		return m_aSystems[i];
 }
 
-void lmBoxPage::AddHandler(lmHandler* pHandler)
-{
-    m_Handlers.push_back(pHandler);
-}
-
-lmHandler* lmBoxPage::GetFirstHandler()
-{
-    m_it = m_Handlers.begin();
-    if (m_it == m_Handlers.end())
-        return (lmHandler*)NULL;
-
-    return *m_it;
-}
-
-lmHandler* lmBoxPage::GetNextHandler()
-{
-    //advance to next one
-    ++m_it;
-    if (m_it != m_Handlers.end())
-        return *m_it;
-
-    //no more items
-    return (lmHandler*)NULL;
-}
 

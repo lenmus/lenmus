@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -74,29 +73,15 @@ void lmGraphicManager::Create(lmScore* pScore, lmPaper* pPaper)
     m_nLastScoreID = -1;
     m_xPageSize = 0;
     m_yPageSize = 0;
-
-    m_nHighlightedPage = 0;
-    m_pAuxBitmap = (wxBitmap*)NULL;
-    m_fHighlight = false;
-
 }
 
 
 
 lmGraphicManager::~lmGraphicManager()
 {
-    if (m_pBoxScore) {
+    if (m_pBoxScore)
         delete m_pBoxScore;
-        m_pBoxScore = (lmBoxScore*) NULL;
-    }
-
     DeleteBitmaps();
-
-    if (m_pAuxBitmap) {
-        delete m_pAuxBitmap;
-        m_pAuxBitmap = (wxBitmap*)NULL;
-    }
-
     m_Selection.ClearSelection();
 }
 
@@ -184,34 +169,8 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
 
 void lmGraphicManager::PrepareForHighlight()
 {
-    // The score is going to be highlighted while played back. This method
-    // saves de AGGDrawer bitmap buffers, to achive fast un-highlight by just
-    // restoring the original bitmap.
-    //wxLogMessage(_T("[lmGraphicManager::PrepareForHighlight]"));
-
-    //If this method is invoked, a score must be currently displayed. This implies
-    //that Layout() has benn invoked and, therefore, a BoxScore object exists.
-    wxASSERT(m_pBoxScore);  //Layout phase omitted?
-
-    //If anti-aliased is not used there is nothing to do in this method
-    if (!g_fUseAntiAliasing) return;
-
-    //If anti-aliased is used, bitmaps must exist, at least for currently displayed page.
-    //wxASSERT(m_cBitmaps.size() > 0);
-    wxASSERT(m_Bitmaps.size() > 0);
-
-    //As we do not know which bitmap to save ("Play" normally starts at page 1 but
-    //not always: i.e. when starting at a certain measure number) this method
-    //just deletes all auxiliary bitmap data.
-    m_nHighlightedPage = 0;
-    if (m_pAuxBitmap) {
-        delete m_pAuxBitmap;
-        m_pAuxBitmap = (wxBitmap*)NULL;
-    }
-
-    //Finally, signal that all upcoming drawing is for highlight
-    m_fHighlight = true;
-
+    // The score is going to be highlighted while played back.
+	// Do here any needed preparatory work
 }
 
 bool lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,
@@ -406,13 +365,13 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
     }
 }
 
-lmGMObject* lmGraphicManager::FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos)
+lmGMObject* lmGraphicManager::FindSelectableObjectAtPagePos(int nNumPage, lmUPoint uPos)
 {
 	if (!m_pBoxScore) return (lmGMObject*)NULL;
 
     lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
     if (pBPage)
-        return pBPage->FindGMObjectAtPosition(uPos);
+        return pBPage->FindSelectableObjectAtPos(uPos);
     else
         return (lmGMObject*)NULL;
 }
@@ -473,7 +432,7 @@ void lmGraphicManager::NewSelection(lmGMObject* pGMO)
 // global functions related to rendering scores
 //--------------------------------------------------------------------------------------------
 
-wxBitmap GenerateBitmapForKeyCtrol(wxString sKeyName, lmEKeySignatures nKey)
+wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey)
 {
     //create a score with an invisible G clef and the key signature
     lmScore oScore;
@@ -483,12 +442,45 @@ wxBitmap GenerateBitmapForKeyCtrol(wxString sKeyName, lmEKeySignatures nKey)
     pVStaff->AddClef( lmE_Sol, 1, lmNO_VISIBLE );
     pVStaff->AddKeySignature(nKey);
 
+	return GenerateBitmap(&oScore, sKeyName, wxSize(108, 64));
+}
 
-        //use a graphic manager object to render this score in a memory DC
+wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
+{
+    //create a score with a clef
+    lmScore oScore;
+    lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = pInstr->GetVStaff();
+    oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+    pVStaff->AddClef( nClef );
+
+	return GenerateBitmap(&oScore, sClefName, wxSize(108, 64), wxSize(0, 10));
+}
+
+wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
+{
+    //create a score with a barline
+    lmScore oScore;
+	oScore.SetOption(_T("Staff.DrawLeftBarline"), false);
+    lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = pInstr->GetVStaff();
+    oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+	pVStaff->AddSpacer(40);
+    pVStaff->AddBarline(nBarlineType);
+	pVStaff->AddSpacer(40);
+
+	return GenerateBitmap(&oScore, sName, wxSize(108, 64));
+}
+
+wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize shift)
+{
+	//use a graphic manager object to render the score in a memory DC
+	//and return the bitmap
+	// size - (in pixels) is the size of the bitmap
+	// shift - (in pixels) is the shift to apply to the text
 
     //allocate a memory dc
     wxMemoryDC dc;
-    wxSize size(108, 64);
 	wxBitmap bmp(size.x, size.y);
 
     //fill bitmap in white
@@ -505,33 +497,35 @@ wxBitmap GenerateBitmapForKeyCtrol(wxString sKeyName, lmEKeySignatures nKey)
     lmPaper oPaper;
     lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(size.x);
     lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(size.y);
-    oScore.SetPageSize(xLU, yLU);
+    pScore->SetPageSize(xLU, yLU);
 
-    oScore.SetPageTopMargin(0.0f);
-    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+    lmInstrument* pInstr = pScore->GetFirstInstrument();
+    lmVStaff *pVStaff = pInstr->GetVStaff();
+    pScore->SetPageTopMargin(0.0f);
+    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
     oPaper.SetDrawer(new lmDirectDrawer(&dc));
 
-    lmGraphicManager oGraphMngr(&oScore, &oPaper);
-    oGraphMngr.PrepareToRender(&oScore, size.x, size.y, rScale, &oPaper,
+    lmGraphicManager oGraphMngr(pScore, &oPaper);
+    oGraphMngr.PrepareToRender(pScore, size.x, size.y, rScale, &oPaper,
                                 lmFORCE_RELAYOUT);
-    wxBitmap* pKeyBitmap = oGraphMngr.RenderScore(1);
-    wxASSERT(pKeyBitmap && pKeyBitmap->Ok());
+    wxBitmap* pBitmap = oGraphMngr.RenderScore(1);
+    wxASSERT(pBitmap && pBitmap->Ok());
 
 
         //write key signature name in black
-    dc.SelectObject(*pKeyBitmap);
+    dc.SelectObject(*pBitmap);
     dc.SetMapMode(wxMM_TEXT);
     dc.SetUserScale(1.0, 1.0);
 
     int h, w;
     dc.SetPen(*wxBLACK);
     dc.SetFont(*wxNORMAL_FONT);
-    dc.GetTextExtent(sKeyName, &w, &h);
-    dc.DrawText(sKeyName, (size.x-w)/2, (size.y-h)/2 + h);
+    dc.GetTextExtent(sName, &w, &h);
+    dc.DrawText(sName, shift.x+(size.x-w)/2, shift.y+(size.y-h)/2 + h);
 
 
         //clean up and return new bitmap
     dc.SelectObject(wxNullBitmap);
-    return *pKeyBitmap;
+    return *pBitmap;
 }
