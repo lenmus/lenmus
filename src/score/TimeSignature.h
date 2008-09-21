@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -58,10 +57,6 @@ public:
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	wxString GetName() const { return _T("time signature"); }
     void StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx=0);
-
-	//rederizarion
-    inline lmShape* GetShapeForStaff(int nStaff) { return GetShape(nStaff-1); }
-
 
     //    debugging
     wxString Dump();
