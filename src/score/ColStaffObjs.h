@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -128,7 +127,7 @@ private:
     lmSegment* GetNextSegment();
 
     //staffobjs management
-    void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO);
+    void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO, int nStaff);
 
 
     //member variables
@@ -269,12 +268,13 @@ public:
 
     //Move methods: intended to implement user commands. They call back ScoreObj to
     //inform it about a position change, for highlight or GUI update.
-	void MoveRight(bool fAlsoChordNotes = true, bool fIncrementIterator = true);
+	void MoveRight(bool fAlsoChordNotes = true);
 	void MoveLeft(bool fAlsoChordNotes = true);
     void MoveToTime(float rNewTime);
     void MoveToFirst(int nStaff=0);
 	void MoveToSegment(int nSegment, int nStaff, lmUPoint uPos);
     void MoveCursorToObject(lmStaffObj* pSO);
+
 
     //Advance methods: Intended for internal usage. They do not inform ScoreObj about
     //position change.
@@ -283,7 +283,7 @@ public:
     void AdvanceToNextSegment();
     void AdvanceToStartOfSegment(int nSegment, int nStaff);
     void AdvanceToStartOfTimepos();
-    void SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* pState);
+    void SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* pState, bool fUpdateTimepos=false);
     void SkipClefKey(bool fSkipKey);
 
     //current position
@@ -312,6 +312,18 @@ private:
     void UpdateTimepos();
     float GetStaffPosY(lmStaffObj* pSO);
     void AdvanceIterator();
+
+    //cursor
+    void MoveRightToNextTime();
+    void MoveRightIncrementingTime(float rTimeincr);
+    void MoveRightToNextObject(float rTimeincr);
+    void MoveLeftToPrevTime();
+    void MoveLeftDecrementingTime(float rTimeincr);
+    void MoveLeftToPrevObject(float rTimeincr);
+
+    //helper, for cursor common operations
+    void PositionAt(float rTargetTimepos);
+
 
 
 

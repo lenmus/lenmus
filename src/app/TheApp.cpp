@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -802,14 +801,6 @@ void lmTheApp::FindOutScreenDPI()
 	wxLogMessage(_T("[lmTheApp::FindOutScreenDPI] DisplayPixelsPerLU=(%f, %f), ")
 				 _T("sizePPI=(%d, %d)"),
 				 xPixelsPerLU, yPixelsPerLU, sizeDPI.x, sizeDPI.y );
-}
-
-void lmTheApp::UpdateCurrentDocViews(void)
-{
-    // Update all views of document associated to currentView
-
-    lmScoreDocument *doc = (lmScoreDocument *)m_pDocManager->GetCurrentDocument();
-    doc->UpdateAllViews();
 }
 
 wxString lmTheApp::GetVersionNumber()

@@ -74,9 +74,9 @@ public:
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
 
     //context management
-    lmContext* NewContextAfter(lmClef* pClef, lmContext* pPrevContext=NULL);
-    lmContext* NewContextAfter(lmKeySignature* pKey, lmContext* pPrevContext=NULL);
-    lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext=NULL);
+    lmContext* NewContextAfter(lmClef* pClef, lmContext* pPrevContext);
+    lmContext* NewContextAfter(lmKeySignature* pKey, lmContext* pPrevContext);
+    lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext);
     inline lmContext* GetLastContext() { return m_pLastContext; }
     void RemoveContext(lmContext* pContext, lmStaffObj* pSO = (lmStaffObj*)NULL);
 
@@ -86,7 +86,8 @@ public:
 
 private:
 	//contexts management
-	void InsertContextAfter(lmContext* pNew, lmContext* pPrev);
+	void InsertContextAfter(lmContext* pNew, lmContext* pPrev, lmContext* pNext,
+                            lmStaffObj* pSO);
 
     lmLUnits    m_uLineThickness;	// in logical units
     int         m_nNumLines;

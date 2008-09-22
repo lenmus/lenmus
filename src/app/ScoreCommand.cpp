@@ -302,7 +302,7 @@ bool lmCmdDeleteSelection::Do()
                     {
                         lmVStaff* pVStaff = pEndNote->GetVStaff();      //affected VStaff
                         pECmd = new lmECmdDeleteTie(pVStaff, pUndoItem, pEndNote);
-                        wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tie"));
+                        //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tie"));
                     }
                     else
                         fSkipCmd = true;
@@ -319,7 +319,7 @@ bool lmCmdDeleteSelection::Do()
                     {
                         lmVStaff* pVStaff = pNote->GetVStaff();
                         pECmd = new lmECmdDeleteBeam(pVStaff, pUndoItem, pNote);
-                        wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting beam"));
+                        //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting beam"));
                     }
                     else
                         fSkipCmd = true;
@@ -330,8 +330,17 @@ bool lmCmdDeleteSelection::Do()
                 {
                     lmStaffObj* pSO = (lmStaffObj*)(*it)->pObj;
                     lmVStaff* pVStaff = pSO->GetVStaff();      //affected VStaff
-                    pECmd = new lmECmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
-                    wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting staffobj"));
+                    if (pSO->IsClef())
+                        pECmd = new lmECmdDeleteClef(pVStaff, pUndoItem, (lmClef*)pSO);
+                    else if (pSO->IsTimeSignature())
+                        pECmd = new lmECmdDeleteTimeSignature(pVStaff, pUndoItem,
+                                                              (lmTimeSignature*)pSO);
+                    else if (pSO->IsKeySignature())
+                        pECmd = new lmECmdDeleteKeySignature(pVStaff, pUndoItem,
+                                                             (lmKeySignature*)pSO);
+                    else
+                        pECmd = new lmECmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
+                    //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting staffobj"));
                 }
                 break;
 
@@ -345,7 +354,7 @@ bool lmCmdDeleteSelection::Do()
                     {
                         lmVStaff* pVStaff = pStartNote->GetVStaff();
                         pECmd = new lmECmdDeleteTuplet(pVStaff, pUndoItem, pStartNote);
-                        wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet"));
+                        //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet"));
                     }
                     else
                         fSkipCmd = true;
@@ -358,8 +367,8 @@ bool lmCmdDeleteSelection::Do()
                     lmScoreText* pText = (lmScoreText*)(*it)->pParm1;
 					lmComponentObj* pAnchor = (lmComponentObj*)pText->GetParentScoreObj();
 					pECmd = new lmEDeleteText(pText, pAnchor, pUndoItem);
-					wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet. %s"),
-						(pECmd->Success() ? _T("Success") : _T("Fail")) );
+					//wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet. %s"),
+					//	(pECmd->Success() ? _T("Success") : _T("Fail")) );
 				}
                 break;
 
@@ -453,7 +462,17 @@ bool lmCmdDeleteStaffObj::Do()
 {
     //Proceed to delete the object
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdDeleteStaffObj(m_pVStaff, pUndoItem, m_pSO);
+    lmEditCmd* pECmd;
+    if (m_pSO->IsClef())
+        pECmd = new lmECmdDeleteClef(m_pVStaff, pUndoItem, (lmClef*)m_pSO);
+    else if (m_pSO->IsTimeSignature())
+        pECmd = new lmECmdDeleteTimeSignature(m_pVStaff, pUndoItem,
+                                                (lmTimeSignature*)m_pSO);
+    else if (m_pSO->IsKeySignature())
+        pECmd = new lmECmdDeleteKeySignature(m_pVStaff, pUndoItem,
+                                                (lmKeySignature*)m_pSO);
+    else
+        pECmd = new lmECmdDeleteStaffObj(m_pVStaff, pUndoItem, m_pSO);
 
     if (pECmd->Success())
     {
@@ -1306,7 +1325,12 @@ lmCmdJoinBeam::lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name,
     {
         if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
         {
-            m_NotesRests.push_back( (lmNoteRest*)pGMO->GetScoreOwner() );
+            lmNoteRest* pNR = (lmNoteRest*)pGMO->GetScoreOwner();
+            //exclude notes in chord
+            if (pNR->IsRest() || (pNR->IsNote() && 
+                                  (!((lmNote*)pNR)->IsInChord() ||
+                                   ((lmNote*)pNR)->IsBaseOfChord() )) )
+                m_NotesRests.push_back(pNR);
         }
         pGMO = pSelection->GetNext();
     }

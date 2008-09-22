@@ -214,7 +214,7 @@ void lmScoreCanvas::PlayScore(bool fFromCursor)
 	if (fFromMeasure)
 		pScore->PlayFromMeasure(nMeasure, lmVISUAL_TRACKING, ePM_NormalInstrument, 0, this);
 	else
-		pScore->Play(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, ePM_NormalInstrument, 0, this);
+		pScore->Play(lmVISUAL_TRACKING, lmNO_COUNTOFF, ePM_NormalInstrument, 0, this);
 }
 
 void lmScoreCanvas::StopPlaying(bool fWait)
@@ -744,14 +744,14 @@ void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
 
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 {
-    wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
-            KeyCodeToName(event.GetKeyCode()).c_str(), event.GetKeyCode(),
-            KeyCodeToName(m_nKeyDownCode).c_str(), m_nKeyDownCode,
-            (m_fCmd ? _T('C') : _T('-') ),
-            (m_fAlt ? _T('A') : _T('-') ),
-            (m_fShift ? _T('S') : _T('-') ),
-            (event.MetaDown() ? _T('M') : _T('-') )
-            );
+    //wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
+    //        KeyCodeToName(event.GetKeyCode()).c_str(), event.GetKeyCode(),
+    //        KeyCodeToName(m_nKeyDownCode).c_str(), m_nKeyDownCode,
+    //        (m_fCmd ? _T('C') : _T('-') ),
+    //        (m_fAlt ? _T('A') : _T('-') ),
+    //        (m_fShift ? _T('S') : _T('-') ),
+    //        (event.MetaDown() ? _T('M') : _T('-') )
+    //        );
     ProcessKey(event);
 }
 
@@ -862,7 +862,6 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 			    lmToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
 			    lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
 			    int nDots = pNoteOptions->GetNoteDots();
-			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, nDots, 0, 0);
 			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
 			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
 				m_nOctave = pNoteOptions->GetOctave();
@@ -886,6 +885,9 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                         }
                     }
                 }
+
+                //compute note/rest duration
+			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, nDots, 0, 0);
 
                 //insert note
                 if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
@@ -1080,7 +1082,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
     }
 
 	//Display command
-    GetMainFrame()->SetStatusBarMsg(wxString::Format(_T("cmd: %s"), m_sCmd.c_str() ));
+    //GetMainFrame()->SetStatusBarMsg(wxString::Format(_T("cmd: %s"), m_sCmd.c_str() ));
 }
 
 void lmScoreCanvas::LogKeyEvent(wxString name, wxKeyEvent& event, int nTool)
@@ -1365,7 +1367,7 @@ void lmScoreCanvas::OnScoreTitles(wxCommandEvent& event)
 void lmScoreCanvas::OnViewPageMargins(wxCommandEvent& event)
 {
     g_fShowMargins = !g_fShowMargins;
-    g_pTheApp->UpdateCurrentDocViews();
+    GetMainFrame()->GetActiveDoc()->UpdateAllViews();
 }
 
 void lmScoreCanvas::SelectNoteDuration(int iButton)
@@ -1841,8 +1843,8 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
     // - or to add a note to a beamed group
 
     //Conditions to be valid:
-    //   1. All notes/rest in the seleccion are consecutive, are in the same voice, and
-    //      must be eighths or shorter ones.
+    //   1. All notes/rest in the seleccion are consecutive, are in the same
+    //      voice (unless in chord), and must be eighths or shorter ones.
     //   2. If not beamed, first note/rest must be a note
     //   3. If not beamed, last note/rest must be a note
     //   4. If beamed, all selected note/rest must not be in the same beam
@@ -1881,7 +1883,8 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
                 // verify voice, and that it is an eighth or shorter
                 pLast = (lmNoteRest*)pGMO->GetScoreOwner();
                 fValid &= pLast->GetNoteType() >= eEighth;
-                fValid &= nVoice == pLast->GetVoice();
+                fValid &= nVoice == pLast->GetVoice() || 
+                          (pLast->IsNote() && ((lmNote*)pLast)->IsInChord());
 
                 //verify that if beamed, all selected note/rest must not be in the same beam
                 fAllBeamed &= pLast->IsBeamed();

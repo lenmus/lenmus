@@ -80,7 +80,6 @@ lmLUnits lmStaff::GetHeight()
     // returns the height (in logical units) of the staff without margins, that is, the
     // distance between first and last line
     return (m_nNumLines - 1) * m_uSpacing;
-
 }
 
 wxString lmStaff::Dump()
@@ -89,15 +88,13 @@ wxString lmStaff::Dump()
     return sDump;
 }
 
+
 //----------------------------------------------------------------------------------------
-// context management
-// TODO: when inserting a context, is it necessary to update anything? 
+// contexts management
 //----------------------------------------------------------------------------------------
 
 lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
 {
-    if (!pPrevContext) pPrevContext = m_pLastContext;
-
     //get current values
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
@@ -109,17 +106,18 @@ lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
 
 	//create the new context
 	lmContext* pNewContext = new lmContext(pNewClef, pKey, pTime, false, true, true);
-	if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
+	if (pPrevContext)
+        pNewContext->CopyAccidentals(pPrevContext);
 
-	//chain it in the list
-    InsertContextAfter(pNewContext, pPrevContext);
+	//chain it in the list and update following contexts in the context chain
+    lmContext* pNextContext = (pPrevContext ? pPrevContext->GetNext() : m_pFirstContext);
+    InsertContextAfter(pNewContext, pPrevContext, pNextContext, pNewClef);
+
 	return pNewContext;
 }
 
 lmContext* lmStaff::NewContextAfter(lmKeySignature* pNewKey, lmContext* pPrevContext)
 {
-    if (!pPrevContext) pPrevContext = m_pLastContext;
-
     //get current values
     lmClef* pClef = (lmClef*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
@@ -129,18 +127,19 @@ lmContext* lmStaff::NewContextAfter(lmKeySignature* pNewKey, lmContext* pPrevCon
         pTime = pPrevContext->GetTime();
     }
 
-	//create the new context
+	//create the new context. Do not copy prev accidentals, as we are introducing a 
+    //new key
     lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime, true, false, true);
 
-	//chain it in the list
-    InsertContextAfter(pNewContext, pPrevContext);
+	//chain it in the list and update following contexts in the context chain
+    lmContext* pNextContext = (pPrevContext ? pPrevContext->GetNext() : m_pFirstContext);
+    InsertContextAfter(pNewContext, pPrevContext, pNextContext, pNewKey);
+
 	return pNewContext;
 }
 
 lmContext* lmStaff::NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext)
 {
-    if (!pPrevContext) pPrevContext = m_pLastContext;
-
     //get current values
     lmClef* pClef = (lmClef*)NULL;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
@@ -152,37 +151,40 @@ lmContext* lmStaff::NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevC
 
 	//create the new context
     lmContext* pNewContext = new lmContext(pClef, pKey, pNewTime, true, true, false);
-    if (pPrevContext) pNewContext->CopyAccidentals(pPrevContext);
+	if (pPrevContext)
+        pNewContext->CopyAccidentals(pPrevContext);
 
-	//chain it in the list
-    InsertContextAfter(pNewContext, pPrevContext);
+	//chain it in the list and update following contexts in the context chain
+    lmContext* pNextContext = (pPrevContext ? pPrevContext->GetNext() : m_pFirstContext);
+    InsertContextAfter(pNewContext, pPrevContext, pNextContext, pNewTime);
+
 	return pNewContext;
 }
 
-void lmStaff::InsertContextAfter(lmContext* pNew, lmContext* pPrev)
+void lmStaff::InsertContextAfter(lmContext* pNew, lmContext* pPrev, lmContext* pNext,
+                                 lmStaffObj* pSO)
 {
+	//Chain new context
+	pNew->SetPrev(pPrev);
+	pNew->SetNext(pNext);
+
+    //update links in prev and next nodes
 	if (pPrev)
-	{
-		//this is not the first context. Chain it after pPrevContext
-		lmContext* pNext = pPrev->GetNext();
-		pNew->SetPrev(pPrev);
-		pNew->SetNext(pNext);
-
-		//update old links in prev and next nodes
 		pPrev->SetNext(pNew);
-		if (pNext) pNext->SetPrev(pNew);
+    if (pNext) 
+        pNext->SetPrev(pNew);
 
-		//update ptr to last node
-		if(pPrev == m_pLastContext)
-			m_pLastContext = pNew;	
-	}
-	else
-	{
-		//this is the first context. Insert it in front of list
-		//update ptrs to first and last nodes
+    //update ptrs to first and last nodes
+	if(!pPrev)
 		m_pFirstContext = pNew;
+    if (!pNext)
 		m_pLastContext = pNew;
-	}
+
+    //update this and following contexts in the chain with new inserted context.
+    //If following context inherited a value it must be replaced by the value
+    //from the new context.
+    if (pNext)
+        pNext->PropagateNewWhileInherited(pSO);
 }
 
 void lmStaff::RemoveContext(lmContext* pContext, lmStaffObj* pSO)

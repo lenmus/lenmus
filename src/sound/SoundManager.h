@@ -81,10 +81,9 @@ public:
 
 };
 
-//sbSoundEvents will be maintained in a dynamic array. Let's declare it
+//lmSoundEvents will be maintained in a dynamic array. Let's declare it
 #include "wx/dynarray.h"
 WX_DEFINE_ARRAY(lmSoundEvent*, ArraySoundEventPtrs);
-//WX_DEFINE_ARRAY_LONG(long, sbArrayOfLong);
 
 
 class lmSoundManager;        //forward declaration
@@ -99,7 +98,7 @@ public:
                        int nEvEnd,
                        lmEPlayMode nPlayMode,
                        bool fVisualTracking,
-                       bool fMarcarUnCompasPrevio,
+                       bool fCountOff,
                        long nMM,
                        wxWindow* pWindow );
 
@@ -120,7 +119,7 @@ private:
     int         m_nEvEnd;
     lmEPlayMode   m_nPlayMode;
     bool        m_fVisualTracking;
-    bool        m_fMarcarUnCompasPrevio;
+    bool        m_fCountOff;
     long        m_nMM;
     wxWindow*   m_pWindow;        // window to receive SCORE_HIGHLIGHT events
 
@@ -147,15 +146,17 @@ public:
 
     // playing
     void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING, 
-              bool fMarcarCompasPrevio = NO_MARCAR_COMPAS_PREVIO,
+              bool fCountOff = lmNO_COUNTOFF,
               lmEPlayMode nPlayMode = ePM_NormalInstrument,
               long nMM = 0,
               wxWindow* pWindow = (wxWindow*)NULL );
+
     void PlayMeasure(int nMeasure,
                      bool fVisualTracking = lmNO_VISUAL_TRACKING, 
                      lmEPlayMode nPlayMode = ePM_NormalInstrument,
                      long nMM = 0,
                      wxWindow* pWindow = (wxWindow*)NULL );
+
     void PlayFromMeasure(int nMeasure,
 						bool fVisualTracking = lmNO_VISUAL_TRACKING, 
 						lmEPlayMode nPlayMode = ePM_NormalInstrument,
@@ -165,16 +166,11 @@ public:
     void Pause();
     void WaitForTermination();
 
-    // measures tables
-    void StoreMeasureStartTime(int nMeasure, float rTime);
-    inline int  GetNumMeasures() { return (int)m_aStartTime.GetCount(); }
-    inline long GetStartTime(int nMeasure) { return m_aStartTime.Item(nMeasure); }
-
     //only to be used by lmSoundManagerThread
     void DoPlaySegment(int nEvStart, int nEvEnd,
                      lmEPlayMode nPlayMode,
                      bool fVisualTracking,
-                     bool fMarcarUnCompasPrevio,
+                     bool fCountOff,
                      long nMM,
                      wxWindow* pWindow );
 
@@ -187,7 +183,7 @@ private:
     void PlaySegment(int nEvStart, int nEvEnd,
                      lmEPlayMode nPlayMode,
                      bool fVisualTracking,
-                     bool fMarcarUnCompasPrevio,
+                     bool fCountOff,
                      long nMM,
                      wxWindow* pWindow );
 
@@ -207,18 +203,8 @@ private:
     ArraySoundEventPtrs        m_aEvents;        //the events table
     int                        m_iEV;            //index to first free entry
 
-    //measures tables 
+    //measures table 
     wxArrayInt        m_aMeasures;        //index on m_aEvents for the first event of each measure
-    wxArrayLong       m_aStartTime;       //start time for each measure
-
-    //information about the score
-    int        m_nTiempoIni;            //tiempo en silencio al inicio de la partitura (anacrusa)
-        //Si el primer compas no es anacrusa, m_nTiempoLibre se inicializa con la duración del
-        //compas, de forma que se retrase todo un compas y se fuerce así a marcar un compas completo
-        //antes de comenzar la melodía
-    int        m_nPartesCompas;        //número de partes por compas (golpes de metrónomo)
-    int        m_nDuracionCompas;        //tiempo que dura un compas
-    int        m_nNumCompases;            //num de compases reales de la partitura
 
 };
 

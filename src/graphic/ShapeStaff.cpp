@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -65,6 +64,11 @@ lmShapeStaff::~lmShapeStaff()
 
 void lmShapeStaff::Render(lmPaper* pPaper, wxColour color)
 {
+    if (!m_fVisible) return;
+
+    //update selection rectangle
+    m_uSelRect = GetBounds();
+
     //draw the staff
 	lmLUnits yPos = m_uBoundsTop.y;
     for (int iL=0; iL < m_nNumLines; iL++ )

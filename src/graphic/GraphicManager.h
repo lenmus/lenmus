@@ -72,7 +72,7 @@ public:
     //access
     int GetNumPages();
     lmBoxScore* GetBoxScore() const { return m_pBoxScore; }
-    lmGMObject* FindSelectableObjectAtPagePos(int nNumPage, lmUPoint uPos);
+    lmGMObject* FindObjectAtPagePos(int nNumPage, lmUPoint uPos, bool fSelectable);
 
     //selection management
     //lmGMSelection* CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,

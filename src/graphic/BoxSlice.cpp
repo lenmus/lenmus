@@ -88,24 +88,25 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;
 }
 
-lmGMObject* lmBoxSlice::FindSelectableObjectAtPos(lmUPoint& pointL)
+lmGMObject* lmBoxSlice::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL);
+    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
     if (pShape) return pShape;
 
     //loop to look up in the instrument slices
     std::vector<lmBoxSliceInstr*>::iterator it;
 	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
     {
-        lmGMObject* pGMO = (*it)->FindSelectableObjectAtPos(pointL);
+        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
         if (pGMO)
 			return pGMO;    //found
     }
 
     // no object found. Verify if the point is in this slice
-    if (IsSelectable() && SelRectContainsPoint(pointL))
+    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
+         (!fSelectable && SelRectContainsPoint(pointL)) )
         return this;
     else
         return (lmGMObject*)NULL;

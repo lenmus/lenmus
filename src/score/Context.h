@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -64,16 +63,18 @@ public:
 	inline void SetPrev(lmContext* pPrev) { m_pPrev = pPrev; }
 	inline void SetNext(lmContext* pNext) { m_pNext = pNext; }
 
-    //debug
-    wxString Dump();
-
     //Updating values
     void PropagateValueWhileInherited(lmStaffObj* pSO);
+    void PropagateNewWhileInherited(lmStaffObj* pNewSO);
+
+    //debug
+    wxString Dump(int nIndent = 0);
 
 
 
 private:
     void InitializeAccidentals();
+    void SetKey(lmKeySignature* pKey);
 
         // member variables
 

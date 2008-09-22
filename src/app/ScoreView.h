@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -143,8 +142,8 @@ public:
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 
 	//caret management
-	void CaretRight(bool fNextObject = true);
-	void CaretLeft(bool fPrevObject = true);
+	void CaretRight(bool fAlsoChordNotes = true);
+	void CaretLeft(bool fAlsoChordNotes = true);
 	void CaretUp();
 	void CaretDown();
     lmVStaffCursor* GetVCursor();

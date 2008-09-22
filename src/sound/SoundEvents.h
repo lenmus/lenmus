@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -40,11 +39,9 @@
 #include "../score/Score.h"
 
 //-----------------------------------------------------------------------------------------
-/*! @class lmScoreHighlightEvent
-    @ingroup sound_management
-    @brief An event to signal different actions related to 
-        highlighting / unhighlighting notes while they are being played.
-*/
+// lmScoreHighlightEvent
+//      An event to signal different actions related to 
+//      highlighting / unhighlighting notes while they are being played.
 //-----------------------------------------------------------------------------------------
 
 DECLARE_EVENT_TYPE( lmEVT_SCORE_HIGHLIGHT, -1 )
@@ -94,10 +91,7 @@ typedef void (wxEvtHandler::*ScoreHighlightEventFunction)(lmScoreHighlightEvent&
 
 
 //-----------------------------------------------------------------------------------------
-/*! @class lmEndOfPlayEvent
-    @ingroup sound_management
-    @brief An event to signal end of playback
-*/
+// lmEndOfPlayEvent: An event to signal end of playback
 //-----------------------------------------------------------------------------------------
 
 DECLARE_EVENT_TYPE( lmEVT_END_OF_PLAY, -1 )

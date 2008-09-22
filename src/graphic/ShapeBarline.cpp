@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -32,6 +31,7 @@
 
 #include "GMObject.h"
 #include "../score/Score.h"
+#include "../score/VStaff.h"
 
 #include "ShapeBarline.h"
 
@@ -104,6 +104,15 @@ lmShapeBarline::lmShapeBarline(lmBarline* pBarline, lmEBarline nBarlineType,
 
     // store selection rectangle position and size
 	m_uSelRect = GetBounds();
+
+    //force selection rectangle to have at least a width of half line (5 tenths)
+    lmTenths nWidth = pBarline->GetVStaff()->LogicalToTenths(m_uSelRect.GetWidth());
+    if (nWidth < 5.0f)
+    {
+        lmLUnits uWidth = pBarline->GetVStaff()->TenthsToLogical(5.0f);
+        m_uSelRect.SetX(m_uSelRect.x - uWidth/2.0f);
+        m_uSelRect.SetWidth(uWidth);
+    }
 }
 
 lmShapeBarline::~lmShapeBarline()

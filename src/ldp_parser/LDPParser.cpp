@@ -953,6 +953,17 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             pTS = pScore->GetStyleName(tNameFont);
         wxASSERT(pTS);
         pName = new lmTextItem(sInstrName, nNameAlign, pTS);
+        //convert position to LUnits. As the text is not yet owned we must use the score 
+	    if (tNamePos.xUnits == lmTENTHS)
+        {
+		    tNamePos.x = pScore->TenthsToLogical(tNamePos.x);
+            tNamePos.xUnits = lmLUNITS;
+        }
+	    if (tNamePos.yUnits == lmTENTHS)
+        {
+		    tNamePos.y = pScore->TenthsToLogical(tNamePos.y);
+            tNamePos.yUnits = lmLUNITS;
+        }
         pName->SetUserLocation(tNamePos);
     }
     if (sInstrAbbrev != _T(""))
@@ -961,9 +972,20 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         if (sInstrAbbrevStyle != _T(""))
             pTS = pScore->GetStyleInfo(sInstrAbbrevStyle);
         else
-        lmTextStyle* pTS = pScore->GetStyleName(tAbbrevFont);
+            pTS = pScore->GetStyleName(tAbbrevFont);
         wxASSERT(pTS);
         pAbbrev = new lmTextItem(sInstrAbbrev, nAbbrevAlign, pTS);
+        //convert position to LUnits. As the text is not yet owned we must use the score 
+	    if (tAbbrevPos.xUnits == lmTENTHS)
+        {
+		    tAbbrevPos.x = pScore->TenthsToLogical(tAbbrevPos.x);
+            tAbbrevPos.xUnits = lmLUNITS;
+        }
+	    if (tAbbrevPos.yUnits == lmTENTHS)
+        {
+		    tAbbrevPos.y = pScore->TenthsToLogical(tAbbrevPos.y);
+            tAbbrevPos.yUnits = lmLUNITS;
+        }
         pAbbrev->SetUserLocation(tAbbrevPos);
     }
 
@@ -3743,7 +3765,7 @@ int lmLDPParser::AnalyzeVoiceNumber(const wxString& sNotation)
 
     long nValue;
     sData.ToLong(&nValue);
-    if (nValue > lmMAX_VOICE) {
+    if (nValue >= lmMAX_VOICE) {
         AnalysisError( _T("Notation '%s': number is greater than supported voices (%d). Replaced by '%s1'."),
             sNotation.c_str(), lmMAX_VOICE, m_pTags->TagName(_T("v"), _T("SingleChar")).c_str() );
         return 1;

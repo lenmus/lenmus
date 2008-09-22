@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -32,15 +31,17 @@
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
+#else
+#include <wx/debug.h>
 #endif
+
+#include <math.h>
 
 #include "Score.h"
 #include "UndoRedo.h"
 #include "VStaff.h"
-
-#include "wx/debug.h"
 #include "../ldp_parser/AuxString.h"
-#include <math.h>
+#include "../sound/SoundManager.h"
 
 
 //====================================================================================================
@@ -369,7 +370,8 @@ lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
 
 wxString lmNoteRest::Dump()
 {
-    wxString sDump;
+    //Voice
+    wxString sDump = wxString::Format(_T(", voice=%d"), m_nVoice);
 
 	//beam
     if (m_pBeam) {
@@ -400,11 +402,6 @@ wxString lmNoteRest::Dump()
     //        sDump += pLyric->Dump();
     //    }
     //}
-
-	////positioning information
-	//lmURect rect = GetSelRect();
-	//sDump += wxString::Format(_T("\n                    SelRect=(%.2f, %.2f, %.2f, %.2f)"),
-	//	rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom() );
 
     //base class information
 	sDump += lmStaffObj::Dump();

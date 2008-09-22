@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -65,7 +64,7 @@ public:
 
 	//access to objects
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    lmGMObject* FindSelectableObjectAtPos(lmUPoint& pointL);
+    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n

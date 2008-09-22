@@ -54,6 +54,7 @@ class lmMDIChildFrame;
 class lmStatusBar;
 class lmToolBox;
 class lmWelcomeWnd;
+class lmScoreDocument;
 
 
 
@@ -244,6 +245,7 @@ public:
     inline lmScore* GetWizardScore() { return m_pWizardScore; }  
     lmController* GetActiveController();
     wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
+    lmScoreDocument* GetActiveDoc();
 
 
 	// call backs

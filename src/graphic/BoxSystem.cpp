@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -187,16 +186,16 @@ lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;
 }
 
-lmGMObject* lmBoxSystem::FindSelectableObjectAtPos(lmUPoint& pointL)
+lmGMObject* lmBoxSystem::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
 {
     //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL);
+    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
     if (pShape) return pShape;
 
     std::vector<lmBoxSlice*>::iterator it;
 	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
     {
-        lmGMObject* pGMO = (*it)->FindSelectableObjectAtPos(pointL);
+        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
         if (pGMO)
 			return pGMO;    //found
     }
@@ -206,7 +205,8 @@ lmGMObject* lmBoxSystem::FindSelectableObjectAtPos(lmUPoint& pointL)
 	//previous 'for' loop, returning an SliceVStaff
 
     // no object found. Verify if the point is in this object
-    if (IsSelectable() && SelRectContainsPoint(pointL))
+    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
+         (!fSelectable && SelRectContainsPoint(pointL)) )
         return this;
     else
         return (lmGMObject*)NULL;

@@ -3,7 +3,7 @@
 // --------------------------------------------------------------------------------
 //
 // Author:      Cecilio Salmeron
-// Copyright:   (c) 2005-2007 Cecilio Salmeron
+// Copyright:   (c) 2005-2008 Cecilio Salmeron
 // Licence:     wxWidgets licence
 //=====================================================================================
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)

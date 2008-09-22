@@ -167,17 +167,17 @@ void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
     }
 }
 
-lmGMObject* lmBoxPage::FindSelectableObjectAtPos(lmUPoint& pointL)
+lmGMObject* lmBoxPage::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL);
+    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
     if (pShape) return pShape;
 
     //loop to look up in the systems
 	for(int i=0; i < (int)m_aSystems.size(); i++)
     {
-        lmGMObject* pGMO = m_aSystems[i]->FindSelectableObjectAtPos(pointL);
+        lmGMObject* pGMO = m_aSystems[i]->FindObjectAtPos(pointL, fSelectable);
         if (pGMO)
 			return pGMO;		//Object found
     }

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -216,6 +215,9 @@ void lmShapeArch::Render(lmPaper* pPaper, wxColour colorC)
     SetYTop(yMin);
     SetXRight(xMax);
     SetYBottom(yMax);
+
+    //update selection rectangle
+    m_uSelRect = GetBounds();
 
     lmSimpleShape::Render(pPaper, colorC);
 }

@@ -740,7 +740,7 @@ void lmMainFrame::CreateMyToolBar()
     m_pTbPlay->AddTool(MENU_Play_Cursor_Start, _T("Play from cursor"),
             wxArtProvider::GetBitmap(_T("tool_play_cursor"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_play_cursor_dis"), wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Start/resume play back. From cursor"));
+            wxITEM_NORMAL, _("Start/resume play back. From cursor measure"));
     m_pTbPlay->AddTool(MENU_Play_Stop, _T("Stop"),
             wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_stop_dis"), wxART_TOOLBAR, nSize),
@@ -1822,13 +1822,13 @@ void lmMainFrame::OnDebugUseAntiAliasing(wxCommandEvent& event)
 void lmMainFrame::OnDebugRecSelec(wxCommandEvent& event)
 {
     g_fDrawSelRect = event.IsChecked();
-    g_pTheApp->UpdateCurrentDocViews();
+    GetActiveDoc()->UpdateAllViews();
 }
 
 void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
 {
     g_fDrawBounds = event.IsChecked();
-    g_pTheApp->UpdateCurrentDocViews();
+    GetActiveDoc()->UpdateAllViews();
 }
 
 void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
@@ -1853,6 +1853,13 @@ lmScore* lmMainFrame::GetActiveScore()
 	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     lmScoreDocument* pDoc = (lmScoreDocument*)((lmEditFrame*)pChild)->GetDocument();
     return pDoc->GetScore();
+}
+
+lmScoreDocument* lmMainFrame::GetActiveDoc()
+{
+    lmMDIChildFrame* pChild = GetActiveChild();
+	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    return (lmScoreDocument*)((lmEditFrame*)pChild)->GetDocument();
 }
 
 void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
@@ -2613,7 +2620,7 @@ void lmMainFrame::DumpScore(lmScore* pScore)
 void lmMainFrame::OnViewPageMargins(wxCommandEvent& event)
 {
     g_fShowMargins = event.IsChecked();
-    g_pTheApp->UpdateCurrentDocViews();
+    GetActiveDoc()->UpdateAllViews();
 }
 
 

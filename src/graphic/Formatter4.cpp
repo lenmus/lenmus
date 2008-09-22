@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -466,7 +465,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 	        pBoxSystem->AddShape(pLine);
 	    }
 
-        //update lmBoxSlices with the final measures sizes
+        //update lmBoxSlices with the final measures sizes, except for last
+        //measure, as its length has been already set up
 		lmLUnits xEnd = m_oTimepos[1].GetStartOfBarPosition();
         for (int iRel=1; iRel <= m_nMeasuresInSystem; iRel++)
         {
@@ -474,7 +474,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             xEnd = xStart + m_uMeasureSize[iRel];
             lmBoxSlice* pBoxSlice = pBoxSystem->GetSlice(iRel);
 			pBoxSlice->UpdateXLeft(xStart);
-			pBoxSlice->UpdateXRight(xEnd);
+            if (iRel < m_nMeasuresInSystem)
+			    pBoxSlice->UpdateXRight(xEnd);
         }
 
         // compute system height
@@ -1203,7 +1204,7 @@ void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper,
 	lmShape* pMainShape = ((lmStaffObj*)pKey)->GetShape();          //cast forced because otherwise the compiler complains
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
-        lmShape* pShape = pKey->GetShapeForStaff(nStaff);
+        lmShape* pShape = pKey->GetShape(nStaff);
 		m_oTimepos[nRelMeasure].AddEntry(nInstr, pKey, pShape,
 										 (pShape != pMainShape), nStaff);
     }
@@ -1225,7 +1226,7 @@ void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox, lmPaper* pPaper,
 	lmShape* pMainShape = ((lmStaffObj*)pTime)->GetShape();          //cast forced because otherwise the compiler complains
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
-        lmShape* pShape = pTime->GetShapeForStaff(nStaff);
+        lmShape* pShape = pTime->GetShape(nStaff);
 		m_oTimepos[nRelMeasure].AddEntry(nInstr, pTime, pShape,
 										 (pShape != pMainShape), nStaff);
     }

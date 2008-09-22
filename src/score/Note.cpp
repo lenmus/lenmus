@@ -662,6 +662,8 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     {
         m_pChord->AddStemShape(pPaper, colorC, GetSuitableFont(pPaper), m_pVStaff,
 							   m_nStaffNum);
+        //AWARE: m_pShapeStem created in all the notes that form the chord at start
+        //of layout method will be deleted in previous method lmChord::AddStemShape
     }
 
 
@@ -709,7 +711,11 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     if (m_pTiePrev)
 		m_pTiePrev->LayoutObject(pBox, pPaper, colorC);
 
-	//clear temporary info
+	//if not used, delete stem shape created at start of this method.
+    //For chords, stem will be deleted when invoking lmChord::AddStemShape in last note
+    //of the chord, so we cannot delete the stem here.
+    //For notes shorter than half notes that are not beamed, stem is not necessary
+    //as they are drawn using a single glyph, so we have also to delete the stem shape.
 	if (!fStemAdded && (!IsInChord() || m_nNoteType < eHalf))
 		DeleteStemShape();
 
@@ -1469,9 +1475,9 @@ wxString lmNote::Dump()
 
     wxString sDump;
     sDump = wxString::Format(
-        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, Voice=%d, TimePos=%.2f, ")
+        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, TimePos=%.2f, ")
         _T("rDuration=%.2f, StemType=%d"),
-        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, m_nVoice,
+        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, 
 		m_rTimePos, m_rDuration, m_nStemType);
 
     if (m_pTieNext) sDump += _T(", TiedNext");

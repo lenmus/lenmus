@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -592,7 +591,7 @@ void lmCompareScoresCtrol::Play()
         {
             //Playing the solution. Play total score
             ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING,
-                    NO_MARCAR_COMPAS_PREVIO, ePM_NormalInstrument, m_nPlayMM);
+                    lmNO_COUNTOFF, ePM_NormalInstrument, m_nPlayMM);
         }
     }
     else {
@@ -610,7 +609,7 @@ void lmCompareScoresCtrol::PlayScore(int nIntv)
 
     //AWARE: As the intervals are built using whole notes, we will play them at
     // MM=320 so that real note rate will be 80.
-    m_pScore[nIntv]->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
+    m_pScore[nIntv]->Play(lmNO_VISUAL_TRACKING, lmNO_COUNTOFF, 
                              ePM_NormalInstrument, 320, this);
 
 }
@@ -785,7 +784,7 @@ void lmOneScoreCtrol::Play()
         m_pPlayButton->SetLabel(_("Stop"));
 
         //play the score
-        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
+        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, lmNO_COUNTOFF, 
                                 ePM_NormalInstrument, m_nPlayMM);
         m_fPlaying = true;
 
@@ -818,7 +817,7 @@ void lmOneScoreCtrol::PlaySpecificSound(int nButton)
     //prepare the score with the requested sound and play it
     PrepareAuxScore(nButton);
     if (m_pAuxScore) {
-        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
+        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, lmNO_COUNTOFF,
                             ePM_NormalInstrument, m_nPlayMM, (wxWindow*) NULL);
     }
 }

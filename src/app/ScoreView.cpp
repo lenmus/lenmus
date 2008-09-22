@@ -483,7 +483,7 @@ void lmScoreView::OnNewGraphicalModel()
 
 	m_pDraggedGMO = (lmGMObject*)NULL;	    //object being dragged
 	m_pMouseOverGMO = (lmGMObject*)NULL;	//object on which mouse was flying over
-    wxLogMessage(_T("[lmScoreView::OnNewGraphicalModel]"));
+    //wxLogMessage(_T("[lmScoreView::OnNewGraphicalModel]"));
 }
 
 void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
@@ -515,7 +515,7 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     {
         //hide caret if there are objects selected. Otherwise, show it
         int nSel = ((lmBoxScore*)pScore->GetGraphicObject())->GetNumObjectsSelected();
-        wxLogMessage(_T("[lmScoreView::OnUpdate] NumSelected = %d"), nSel);
+        //wxLogMessage(_T("[lmScoreView::OnUpdate] NumSelected = %d"), nSel);
         m_pCaret->SetInvisible(((lmBoxScore*)pScore->GetGraphicObject())->GetNumObjectsSelected() > 0);
         UpdateCaret();
         ShowCaret();
@@ -533,7 +533,6 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
 	m_vEndDrag = lmDPoint(0, 0);
 	m_vStartDrag.x = 0;
 	m_vStartDrag.y = 0;
-
 }
 
 bool lmScoreView::OnClose(bool deleteWindow)
@@ -1059,11 +1058,11 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 	}
 
 
-    //check for mouse moving over objects
+    //check for mouse moving over selectable objects
     if (nEventType==wxEVT_MOTION && !fDragging)
     {
-		//find the object pointed with the mouse
-		lmGMObject* pGMO = m_graphMngr.FindSelectableObjectAtPagePos(m_nNumPage, uPagePos);
+		//find the object pointed with the mouse. 
+		lmGMObject* pGMO = m_graphMngr.FindObjectAtPagePos(m_nNumPage, uPagePos, true);
 		if (pGMO)
         {
             if (m_pMouseOverGMO)
@@ -1073,10 +1072,10 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         }
         else
         {
-	        //DBG --------------------------------------------------------------------------------
-	        wxString sMsg = _T("");
-	        m_pMainFrame->SetStatusBarMsg(sMsg);
-	        // END DBG ---------------------------------------------------------------------------
+	        ////DBG --------------------------------------------------------------------------------
+	        //wxString sMsg = _T("");
+	        //m_pMainFrame->SetStatusBarMsg(sMsg);
+	        //// END DBG ---------------------------------------------------------------------------
             if (m_pMouseOverGMO)
             {
                 m_pMouseOverGMO->OnMouseOut(m_pCanvas, uPagePos);
@@ -1105,7 +1104,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 			#endif
 
 			//find the object pointed with the mouse
-			lmGMObject* pGMO = m_graphMngr.FindSelectableObjectAtPagePos(m_nNumPage, uPagePos);
+			lmGMObject* pGMO = m_graphMngr.FindObjectAtPagePos(m_nNumPage, uPagePos, false);
 			if (pGMO) // Object event
 			{
 				#ifdef __WXDEBUG__
@@ -2068,11 +2067,11 @@ void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSlice
 	int nStaff = pSS->GetNumStaff();
 	int nMeasure = pBSV->GetNumMeasure();
 
-	//DBG --------------------------------------------------------------------------------
-	wxString sMsg = wxString::Format(_T("[lmScoreView::OnClickOnStaff] Click on staff %d, on measure %d"),
-									 nStaff, nMeasure);
-	m_pMainFrame->SetStatusBarMsg(sMsg);
-	// END DBG ---------------------------------------------------------------------------
+	////DBG --------------------------------------------------------------------------------
+	//wxString sMsg = wxString::Format(_T("[lmScoreView::OnClickOnStaff] Click on staff %d, on measure %d"),
+	//								 nStaff, nMeasure);
+	//m_pMainFrame->SetStatusBarMsg(sMsg);
+	//// END DBG ---------------------------------------------------------------------------
 
 	//Move to nearest note/rest to click point
 	MoveCaretNearTo(uPos, pVStaff, nStaff, nMeasure);
@@ -2239,7 +2238,7 @@ void lmScoreView::ShowCaret()
 }
 
 
-void lmScoreView::CaretRight(bool fNextObject)
+void lmScoreView::CaretRight(bool fAlsoChordNotes)
 {
 	//advance to next staff obj.
 
@@ -2247,7 +2246,7 @@ void lmScoreView::CaretRight(bool fNextObject)
 
 	//advance to next staff obj.
     HideCaret();
-    m_pScoreCursor->MoveRight(fNextObject);
+    m_pScoreCursor->MoveRight(fAlsoChordNotes);
     UpdateCaret();
     ShowCaret();
 }
@@ -2325,6 +2324,25 @@ void lmScoreView::UpdateCaret()
 
 	//status bar: timepos
 	m_pMainFrame->SetStatusBarCursorRelPos( m_pScoreCursor->GetCursorTime() );
+
+    //DBG ------------------------------------------------------------------------------
+    wxString sType = _T("end of collection");
+    lmStaffObj* pSO = m_pScoreCursor->GetCursorSO();
+    if (pSO)
+    {
+        sType = pSO->GetName();
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+        {
+            lmNote* pN = (lmNote*)pSO;
+            lmFPitch fp = FPitch(pN->GetAPitch());
+            lmKeySignature* pKey = pN->GetApplicableKeySignature();
+            lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+            sType += _T("-");
+            sType += FPitch_ToRelLDPName(fp, nKey);
+        }
+    }
+    m_pMainFrame->SetStatusBarMsg(wxString::Format(_T("cursor pointing to %s"), sType));
+    //END DBG --------------------------------------------------------------------------
 
 	//Display cursor in new position
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
@@ -2439,7 +2457,7 @@ lmLUnits lmScoreView::GetMouseTolerance()
 	lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return 1.0f;
     
-    return pScore->TenthsToLogical(1.0f);
+    return pScore->TenthsToLogical(5.0f);
 }
 
 
@@ -2512,7 +2530,7 @@ void lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint
 
 	HideCaret();
 	m_pCanvas->SetFocus();
-	m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Starting dragging"));
+	//m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Starting dragging"));
 
 	#ifdef __WXDEBUG__
 	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectBeginDragLeft()"));
@@ -2678,7 +2696,7 @@ void lmScoreView::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint v
 	WXUNUSED(vCanvasOffset);
     WXUNUSED(nKeys);
 
-	m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Finishing dragging"));
+	//m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Finishing dragging"));
 
 	#ifdef __WXDEBUG__
 	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectEndDragLeft()"));
@@ -2857,13 +2875,13 @@ void lmScoreView::OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPo
     if (pGMO->GetType() == eGMO_BoxSlice)
     {
         lmBoxSlice* pBSlice = (lmBoxSlice*)pGMO;
-        m_pMainFrame->SetStatusBarMsg(
-            wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
-                m_nNumPage, pBSlice->GetNumMeasure() ));
+        //m_pMainFrame->SetStatusBarMsg(
+        //    wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
+        //        m_nNumPage, pBSlice->GetNumMeasure() ));
     }
     else if (pGMO->GetType() == eGMO_BoxPage)
     {
-        m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), m_nNumPage ));
+        //m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), m_nNumPage ));
     }
 
 	ShowCaret();

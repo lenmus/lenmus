@@ -179,7 +179,8 @@ public:
 
     //interface with shapes manager
     void StoreShape(lmGMObject* pGMObj) { m_pShapesMngr->StoreShape(pGMObj); }
-    lmShape* GetShape(int nShapeIdx=0) { return (lmShape*)m_pShapesMngr->GetGraphicObject(nShapeIdx); }
+    lmShape* GetShapeFromIdx(int nShapeIdx=0) { return (lmShape*)GetGraphicObject(nShapeIdx); }
+    virtual lmShape* GetShape(int nStaff=1);
     inline lmGMObject* GetGraphicObject(int nShapeIdx=0) { return m_pShapesMngr->GetGraphicObject(nShapeIdx); }
 	inline void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0) {
                 m_pShapesMngr->SaveUserLocation(xPos, yPos, nShapeIdx); 

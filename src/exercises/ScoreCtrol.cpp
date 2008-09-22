@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -238,7 +237,7 @@ void lmScoreCtrol::DoPlay(lmEPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeas
 
         //play
         if (nMeasure == 0) {
-            m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
+            m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, lmNO_COUNTOFF,
                                 nPlayMode, m_pOptions->GetMetronomeMM());
         }
         else {

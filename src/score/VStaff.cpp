@@ -78,6 +78,7 @@
 #include "UndoRedo.h"
 #include "Notation.h"
 #include "MetronomeMark.h"
+#include "../sound/SoundManager.h"
 #include "../app/global.h"
 #include "../app/TheApp.h"		//to access g_rScreenDPI and g_rPixelsPerLU
 #include "../app/Preferences.h"
@@ -317,7 +318,7 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
-    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
+    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
     pContext = pStaff->NewContextAfter(pClef, pContext);
 
 	pClef->SetContext(pContext);
@@ -442,13 +443,13 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
 
         //Add a new context at found insertion point
         lmStaffObj* pCursorSO = pAuxCursor->GetStaffObj();
-        lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO): (lmContext*)NULL);
+        lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(iStaff));
         lmStaff* pStaff = GetStaff(iStaff);
         if (fIsTime)
             ((lmTimeSignature*)pKTS)->SetContext(iStaff, 
                                         pStaff->NewContextAfter((lmTimeSignature*)pKTS, pContext) );
         else
-        ((lmKeySignature*)pKTS)->SetContext(iStaff,
+            ((lmKeySignature*)pKTS)->SetContext(iStaff,
 	                                pStaff->NewContextAfter((lmKeySignature*)pKTS, pContext) );
 
         // save pointer to insertion point for this staff
@@ -517,12 +518,12 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmContext* pContext;
     if (pCursorSO)
-	    pContext = NewUpdatedContext(pCursorSO);
+	    pContext = NewUpdatedContext(pCursorSO);    //TODO 1: pointed SO could be in different staff
     else
         pContext = NewUpdatedLastContext(nStaff);
 
     //if no Clef defined yet the context will be NULL
-    if (!pContext)
+    if (!pContext || !pContext->GetClef())
     {
         lmQuestionBox oQB(
             wxGetTranslation(
@@ -737,6 +738,96 @@ void lmVStaff::UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 	//re-insert the deleted object
     m_cStaffObjs.Insert(pSO, pBeforeSO);
 	//wxLogMessage(m_cStaffObjs.Dump());
+}
+
+void lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
+{
+    ////--- Block: ask user about re-pitch
+    ////When a clef is inserted it might be necessary to update note pitches, depending on user
+    ////decision (maintain pitch->move notes, or change pitch->do not reposition notes). 
+    ////We have to determine user desired behaviour. As user might choose to cancel the
+    ////insertion, this is the first thing to.
+
+    bool fClefKeepPosition = true;      //what to do when a clef added?
+
+    ////if there are notes affected by new clef, get user desired behaviour
+    //if (CheckIfNotesAffectedByClef())
+    {
+        lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+        long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_INSERT);  //0=ask, 1=keep pitch, 2=keep position
+        if (nOptValue == 0)
+        {
+            lmQuestionBox oQB(
+                wxGetTranslation(
+                    _T("Notes after the clef will be affected by this insertion.\n")
+				    _T("Would you like to keep notes' pitch and, therefore, to change\n")
+                    _T("notes' positions on the staff? or,\n")
+                    _T("would you prefer to keep notes placed on their current staff\n")
+                    _T("positions? (implies pitch change)\n\n")
+                ),
+                //num buttons, and labels (2 per button: button text + explanation)
+                3,
+                _("Keep position"), _("Change notes' pitch and keep their current staff position."),
+                _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
+                _("Cancel"), _("The 'insert clef' command will be cancelled.") 
+            );
+            int nAnswer = oQB.ShowModal();
+    
+		    if (nAnswer == 0)       //'Keep position' button
+                fClefKeepPosition = true;
+            else if (nAnswer == 1)  //'Keep pitch' button
+                fClefKeepPosition = false;
+            else
+                return; // (lmClef*)NULL;       //Cancel clef insertion
+        }
+        else
+            fClefKeepPosition = (nOptValue == 2);
+    }
+
+    ////save answer for undo/redo
+    //lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    //pUndoData->AddParam<bool>(fClefKeepPosition);
+
+    ////--End block -----------------------------------------------------------------
+
+    //remove the contexts created by the clef
+	pClef->RemoveCreatedContexts();
+
+    //now remove the clef from the staffobjs collection
+    m_cStaffObjs.Delete(pClef, true, fClefKeepPosition);        //true->invoke destructor
+
+    lmTODO(_T("TODO: lmVStaff::Cmd_DeleteClef"));
+    //Cmd_DeleteStaffObj(pUndoItem, pClef);
+}
+
+void lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
+{
+    lmTODO(_T("TODO: lmVStaff::Cmd_DeleteKeySignature"));
+    Cmd_DeleteStaffObj(pUndoItem, pKS);
+}
+
+void lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
+{
+    lmTODO(_T("TODO: lmVStaff::Cmd_DeleteTimeSignature"));
+    Cmd_DeleteStaffObj(pUndoItem, pTS);
+}
+
+void lmVStaff::UndoCmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
+{
+    lmTODO(_T("TODO: lmVStaff::UndoCmd_DeleteClef"));
+    UndoCmd_DeleteStaffObj(pUndoItem, pClef);
+}
+
+void lmVStaff::UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
+{
+    lmTODO(_T("TODO: lmVStaff::UndoCmd_DeleteKeySignature"));
+    UndoCmd_DeleteStaffObj(pUndoItem, pKS);
+}
+
+void lmVStaff::UndoCmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
+{
+    lmTODO(_T("TODO: lmVStaff::UndoCmd_DeleteTimeSignature"));
+    UndoCmd_DeleteStaffObj(pUndoItem, pTS);
 }
 
 void lmVStaff::Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)
@@ -1390,7 +1481,7 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
 
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
-    lmContext* pContext = pStaff->NewContextAfter(pClef);
+    lmContext* pContext = pStaff->NewContextAfter(pClef, GetLastContext(nStaff));
 	pClef->SetContext(pContext);
     m_cStaffObjs.Add(pClef);
     return pClef;
@@ -1575,7 +1666,7 @@ lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS)
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
         lmStaff* pStaff = GetStaff(nStaff);
-	    lmContext* pContext = pStaff->NewContextAfter(pTS);
+	    lmContext* pContext = pStaff->NewContextAfter(pTS, GetLastContext(nStaff));
         pTS->SetContext(nStaff, pContext);
     }
     m_cStaffObjs.Add(pTS);
@@ -1590,7 +1681,7 @@ lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisibl
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
         lmStaff* pStaff = GetStaff(nStaff);
-	    lmContext* pContext = pStaff->NewContextAfter(pKS);
+	    lmContext* pContext = pStaff->NewContextAfter(pKS, GetLastContext(nStaff));
         pKS->SetContext(nStaff, pContext);
     }
     m_cStaffObjs.Add(pKS);
@@ -1615,7 +1706,7 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 	//to render them. Add this shapes to the received lmBox object.
     //Returns the Y coord. of last line (line 1, last staff)
 
-    if (HideStaffLines()) return 0.0;
+    bool fVisible = !HideStaffLines();
 
     //Set left position and lenght of lines, and save these values
     lmLUnits yCur = yPos + m_topMargin;
@@ -1633,6 +1724,7 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 		pBox->AddShape(pShape);
         yCur = pShape->GetYBottom() + pStaff->GetAfterSpace();
 		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();
+        pShape->SetVisible(fVisible);
     }
 	return m_yLinBottom;
 }
@@ -1735,6 +1827,12 @@ wxString lmVStaff::SourceLDP(int nIndent)
 
         int nNumVoices = m_cStaffObjs.GetNumVoicesInMeasure(nMeasure);
         int nVoice = 1;
+        while (!m_cStaffObjs.IsVoiceUsedInMeasure(nVoice, nMeasure) &&
+               nVoice <= lmMAX_VOICE)
+        {
+            nVoice++;
+        }
+        int nVoicesProcessed = 1;   //voice 0 is automatically processed
 		lmBarline* pBL = (lmBarline*)NULL;
         bool fGoBack = false;
 		float rTime = 0.0f;
@@ -1748,7 +1846,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
                 //voice 0 staffobjs go with first voice if more than one voice
 				if (!pSO->IsBarline())
 				{
-					if (nVoice == 1)
+					if (nVoicesProcessed == 1)
 					{
 						if (!pSO->IsNoteRest() || ((lmNoteRest*)pSO)->GetVoice() == nVoice)
 						{
@@ -1773,8 +1871,14 @@ wxString lmVStaff::SourceLDP(int nIndent)
             delete pIT;
 
             //check if more voices
+            if (++nVoicesProcessed >= nNumVoices) break;
             nVoice++;
-            if (nVoice >= nNumVoices) break;
+            while (!m_cStaffObjs.IsVoiceUsedInMeasure(nVoice, nMeasure) &&
+                nVoice <= lmMAX_VOICE)
+            {
+                nVoice++;
+            }
+            wxASSERT(nVoice <= lmMAX_VOICE);
 
             //there are more voices. Add (goBak) tag
             fGoBack = true;
@@ -1888,6 +1992,12 @@ wxString lmVStaff::SourceXML(int nIndent)
 		bool fStartAttributes = true;
         int nNumVoices = m_cStaffObjs.GetNumVoicesInMeasure(nMeasure);
         int nVoice = 1;
+        while (!m_cStaffObjs.IsVoiceUsedInMeasure(nVoice, nMeasure) &&
+               nVoice <= lmMAX_VOICE)
+        {
+            nVoice++;
+        }
+        int nVoicesProcessed = 1;   //voice 0 is automatically processed
 		lmBarline* pBL = (lmBarline*)NULL;
         bool fGoBack = false;
 		float rTime = 0.0f;
@@ -1901,7 +2011,7 @@ wxString lmVStaff::SourceXML(int nIndent)
                 //voice 0 staffobjs go with first voice if more than one voice
 				if (!pSO->IsBarline())
 				{
-					if (nVoice == 1)
+					if (nVoicesProcessed == 1)
 					{
 						if (!pSO->IsNoteRest() || ((lmNoteRest*)pSO)->GetVoice() == nVoice)
 						{
@@ -1962,8 +2072,14 @@ wxString lmVStaff::SourceXML(int nIndent)
             delete pIT;
 
             //check if more voices
+            if (++nVoicesProcessed >= nNumVoices) break;
             nVoice++;
-            if (nVoice >= nNumVoices) break;
+            while (!m_cStaffObjs.IsVoiceUsedInMeasure(nVoice, nMeasure) &&
+                nVoice <= lmMAX_VOICE)
+            {
+                nVoice++;
+            }
+            wxASSERT(nVoice <= lmMAX_VOICE);
 
             //there are more voices. Add <backup> tag
             fGoBack = true;
@@ -2221,11 +2337,10 @@ void lmVStaff::NewLine(lmPaper* pPaper)
 
 lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 {
-    /*
-    nChannel is the MIDI channel to use for all events of this lmVStaff.
-    Returns the lmSoundManager object. It is not retained by the lmVStaff, so it is caller
-    responsibility to delete it when no longer needed.
-    */
+    //nChannel is the MIDI channel to use for all events of this lmVStaff.
+    //Returns the lmSoundManager object. It is not retained by the lmVStaff, so 
+    //it is caller responsibility to delete it when no longer needed.
+
 
     //TODO review this commented code
 //    Dim nMetrica As lmETimeSignature, nDurCompas As Long, nTiempoIni As Long
@@ -2248,25 +2363,27 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     //iterate over the collection to create the MIDI events
     float rMeasureStartTime = 0;
     int nMeasure = 1;        //to count measures (1 based, normal musicians way)
-    pSM->StoreMeasureStartTime(nMeasure, rMeasureStartTime);
 
     //iterate over the collection to create the MIDI events
     lmStaffObj* pSO;
     lmNoteRest* pNR;
     lmTimeSignature* pTS;
     lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-    while(!pIter->EndOfList()) {
+    while(!pIter->EndOfList())
+    {
         pSO = pIter->GetCurrent();
-        if (pSO->GetClass() == eSFOT_NoteRest) {
+        if (pSO->GetClass() == eSFOT_NoteRest)
+        {
             pNR = (lmNoteRest*)pSO;
             pNR->AddMidiEvents(pSM, rMeasureStartTime, nChannel, nMeasure);
         }
-        else if (pSO->GetClass() == eSFOT_Barline) {
+        else if (pSO->GetClass() == eSFOT_Barline)
+        {
             rMeasureStartTime += pSO->GetTimePos();        //add measure duration
             nMeasure++;
-            pSM->StoreMeasureStartTime(nMeasure, rMeasureStartTime);
         }
-        else if (pSO->GetClass() == eSFOT_TimeSignature) {
+        else if (pSO->GetClass() == eSFOT_TimeSignature)
+        {
             //add a RhythmChange event to set up tempo (num beats, duration of a beat)
             pTS = (lmTimeSignature*)pSO;
             pTS->AddMidiEvent(pSM, rMeasureStartTime, nMeasure);
@@ -2276,7 +2393,6 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     delete pIter;
 
     return pSM;
-
 }
 
 lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
@@ -2341,7 +2457,6 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
     }
     delete pIter;
     return (lmNote*)NULL;        //no suitable note found
-
 }
 
 lmNote* lmVStaff::FindPossibleEndOfTie(lmNote* pStartNote)
@@ -2395,7 +2510,6 @@ lmNote* lmVStaff::FindPossibleEndOfTie(lmNote* pStartNote)
     }
     delete pIter;
     return (lmNote*)NULL;        //no suitable note found
-
 }
 
 bool lmVStaff::CheckIfNotesAffectedByClef()

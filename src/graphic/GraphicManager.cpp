@@ -365,13 +365,13 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
     }
 }
 
-lmGMObject* lmGraphicManager::FindSelectableObjectAtPagePos(int nNumPage, lmUPoint uPos)
+lmGMObject* lmGraphicManager::FindObjectAtPagePos(int nNumPage, lmUPoint uPos, bool fSelectable)
 {
 	if (!m_pBoxScore) return (lmGMObject*)NULL;
 
     lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
     if (pBPage)
-        return pBPage->FindSelectableObjectAtPos(uPos);
+        return pBPage->FindObjectAtPos(uPos, fSelectable);
     else
         return (lmGMObject*)NULL;
 }

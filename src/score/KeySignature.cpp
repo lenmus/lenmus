@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -41,10 +40,11 @@
 #include "VStaff.h"
 #include "Context.h"
 
+#ifdef __WXDEBUG__
 //access to error's logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
-
+#endif
 
 
 static wxString m_sKeySignatureName[30];
@@ -79,19 +79,15 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
 
     DefineAsMultiShaped();      //define clef as multi-shaped ScoreObj
 
+	#ifdef __WXDEBUG__
     g_pLogger->LogTrace(_T("lmKeySignature"),
         _T("[lmKeySignature::lmKeySignature] m_nFifths=%d, m_fMajor=%s, nKey=%d"),
             m_nFifths, (m_fMajor ? _T("yes") : _T("no")), m_nKeySignature );
+    #endif
 }
 
 lmKeySignature::~lmKeySignature()
 {
-    //std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
-    //while (it != m_ShapesInfo.end())
-    //{
-    //    delete *it;
-    //    ++it;
-    //}
 }
 
 wxString lmKeySignature::Dump()
@@ -101,8 +97,24 @@ wxString lmKeySignature::Dump()
         m_nId, m_nFifths, m_sLDPKeyName[m_nKeySignature].c_str(),
 		(m_fMajor ? _T("major") : _T("minor")), m_rTimePos );
 
+    //base class
     sDump += lmStaffObj::Dump();
     sDump += _T("\n");
+
+    //contexts
+    int nIndent = 5;
+    for (int i=0; i < lmMAX_STAFF; i++)
+    {
+        if (m_pContext[i])
+            sDump += m_pContext[i]->Dump(nIndent);
+        else
+        {
+            sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+            sDump += _T("Context: NULL\n");
+        }
+    }
+    sDump += _T("\n");
+
     return sDump;
 }
 
@@ -139,7 +151,6 @@ lmUPoint lmKeySignature::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
 	return uPos;
 }
 
@@ -342,10 +353,12 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     int nNumAccidentals = KeySignatureToNumFifths(nKeySignature);
     bool fDrawSharps = (nNumAccidentals > 0);    //true if sharps, false if flats
 
+	#ifdef __WXDEBUG__
     g_pLogger->LogTrace(_T("lmKeySignature"),
         _T("[lmKeySignature::DrawAt] nNumAccidentals=%d, fDrawSharps=%s, m_nFifths=%d, m_fMajor=%s, nKey=%d"),
             nNumAccidentals, (fDrawSharps ? _T("yes") : _T("no")),
             m_nFifths, (m_fMajor ? _T("yes") : _T("no")), nKeySignature );
+    #endif
 
     //add shapes for the required flats / sharps
     nNumAccidentals = abs(nNumAccidentals);
@@ -471,38 +484,6 @@ void lmKeySignature::RemoveCreatedContexts()
         }
 	}
 }
-
-//lmGMObject* lmKeySignature::GetGraphicObject(int nIdx)
-//{
-//    //For KeySignatures shape index is staff number (1..n) minus 1
-//
-//    if (m_ShapesInfo.size() == 0) return (lmGMObject*)NULL;
-//
-//    wxASSERT(nIdx < (int)m_ShapesInfo.size());
-//    return m_ShapesInfo[nIdx]->pShape;
-//}
-//
-//void lmKeySignature::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)
-//{
-//    //if necessary, create empty shapes info entries
-//    int nToAdd = nShapeIdx - (int)m_ShapesInfo.size() + 1;
-//    for (int i=0; i < nToAdd; ++i)
-//    {
-//        lmShapeInfo* pShapeInfo = new lmShapeInfo;
-//        pShapeInfo->pShape = (lmShape*)NULL;
-//        pShapeInfo->uUserShift = lmUPoint(0.0f, 0.0f);
-//        m_ShapesInfo.push_back(pShapeInfo);
-//    }
-//
-//    //save new user position
-//    m_ShapesInfo[nShapeIdx]->uUserShift = lmUPoint(xPos, yPos);
-//}
-//
-//lmUPoint lmKeySignature::GetUserShift(int nShapeIdx)
-//{
-//    wxASSERT(nShapeIdx < (int)m_ShapesInfo.size());
-//    return m_ShapesInfo[nShapeIdx]->uUserShift;
-//}
 
 
 

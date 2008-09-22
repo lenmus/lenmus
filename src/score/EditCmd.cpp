@@ -199,6 +199,63 @@ void lmECmdDeleteStaffObj::RollBack(lmUndoItem* pUndoItem)
 
 
 //----------------------------------------------------------------------------------------
+// lmECmdDeleteClef implementation
+//----------------------------------------------------------------------------------------
+
+lmECmdDeleteClef::lmECmdDeleteClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                   lmClef* pClef)
+    : lmEditCmd(pVStaff)
+{
+    m_pClef = pClef;
+    pVStaff->Cmd_DeleteClef(pUndoItem, pClef);
+}
+
+void lmECmdDeleteClef::RollBack(lmUndoItem* pUndoItem)
+{
+    ((lmVStaff*)m_pSCO)->UndoCmd_DeleteClef(pUndoItem, m_pClef);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmECmdDeleteKeySignature implementation
+//----------------------------------------------------------------------------------------
+
+lmECmdDeleteKeySignature::lmECmdDeleteKeySignature(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                                   lmKeySignature* pKS)
+    : lmEditCmd(pVStaff)
+{
+    m_pKS = pKS;
+    pVStaff->Cmd_DeleteKeySignature(pUndoItem, pKS);
+}
+
+void lmECmdDeleteKeySignature::RollBack(lmUndoItem* pUndoItem)
+{
+    ((lmVStaff*)m_pSCO)->UndoCmd_DeleteKeySignature(pUndoItem, m_pKS);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmECmdDeleteTimeSignature implementation
+//----------------------------------------------------------------------------------------
+
+lmECmdDeleteTimeSignature::lmECmdDeleteTimeSignature(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
+                                       lmTimeSignature* pTS)
+    : lmEditCmd(pVStaff)
+{
+    m_pTS = pTS;
+    pVStaff->Cmd_DeleteTimeSignature(pUndoItem, pTS);
+}
+
+void lmECmdDeleteTimeSignature::RollBack(lmUndoItem* pUndoItem)
+{
+    ((lmVStaff*)m_pSCO)->UndoCmd_DeleteTimeSignature(pUndoItem, m_pTS);
+}
+
+
+
+//----------------------------------------------------------------------------------------
 // lmECmdDeleteTie implementation
 //----------------------------------------------------------------------------------------
 

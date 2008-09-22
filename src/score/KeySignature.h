@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -52,20 +51,17 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
     void StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx = 0);
- //   lmGMObject* GetGraphicObject(int nIdx=0);
-	//void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0);
-	//lmUPoint GetUserShift(int nShapeIdx = 0);
 
-
-    //    debugging
+    //debugging
     wxString Dump();
+
+    //source code generation
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
 
     //renderization
     lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					              lmEClefType nClef, lmStaff* pStaff, wxColour colorC=*wxBLACK);
-	inline lmShape* GetShapeForStaff(int nStaff) { return GetShape(nStaff - 1); }
 
     //methods for hiding the key in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }
@@ -91,14 +87,6 @@ private:
     int					m_nFifths;
     lmContext*          m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
     lmCompositeShape*	m_pShapes[lmMAX_STAFF];		//a shape for each staff
-
-	//typedef struct lmShapeInfo_Struct {
-	//	lmShape*		pShape;			//ptr. to shape
-	//	lmUPoint    	uUserShift;		//user shift
-	//} lmShapeInfo;
-
-	////array of shapes
- //   std::vector<lmShapeInfo*> m_ShapesInfo;
 
 };
 

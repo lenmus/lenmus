@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -70,7 +69,7 @@ public:
 
     //Play commands
     void PlayScore(bool fVisualTracking = lmVISUAL_TRACKING,
-                   bool fMarcarCompasPrevio = NO_MARCAR_COMPAS_PREVIO,
+                   bool fCountOff = lmNO_COUNTOFF,
                    lmEPlayMode nPlayMode = ePM_NormalInstrument,
                    long nMM = 0);
     void PlayMeasure(int nMeasure,

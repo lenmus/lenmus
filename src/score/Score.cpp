@@ -49,6 +49,7 @@
 #include "../app/ScoreCanvas.h"
 #include "../app/ArtProvider.h"
 #include "../sound/SoundEvents.h"
+#include "../sound/SoundManager.h"
 #include "../graphic/Formatter4.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
@@ -210,12 +211,12 @@ void lmScoreCursor::SelectCursorFromInstr(int nInstr)
     m_pVCursor->ResetCursor();
 }
 
-void lmScoreCursor::MoveRight(bool fNextObject)
+void lmScoreCursor::MoveRight(bool fAlsoChordNotes)
 {
     if (!m_pVCursor) return;
 
     if (!m_pVCursor->IsAtEnd())
-        m_pVCursor->MoveRight(fNextObject);
+        m_pVCursor->MoveRight(fAlsoChordNotes);
     else
     {
 		//if current instrument has more staves, advance to next staff.
@@ -1294,7 +1295,7 @@ wxString lmScore::SourceXML(wxString sFilename)
 
 }
 
-void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, lmEPlayMode nPlayMode,
+void lmScore::Play(bool fVisualTracking, bool fCountOff, lmEPlayMode nPlayMode,
                  long nMM, wxWindow* pWindow)
 {
     if (!m_pSoundMngr) {
@@ -1302,7 +1303,7 @@ void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, lmEPlayMode n
         ComputeMidiEvents();
     }
 
-    m_pSoundMngr->Play(fVisualTracking, fMarcarCompasPrevio, nPlayMode, nMM, pWindow);
+    m_pSoundMngr->Play(fVisualTracking, fCountOff, nPlayMode, nMM, pWindow);
 
 }
 

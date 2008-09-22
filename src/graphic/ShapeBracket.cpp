@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -209,6 +208,9 @@ void lmShapeBracketBrace::Shift(lmLUnits xIncr, lmLUnits yIncr)
 
 void lmShapeBracketBrace::Render(lmPaper* pPaper, wxColour color)
 {
+    //update selection rectangle
+    m_uSelRect = GetBounds();
+
     m_nContour = 0;
     m_nCurVertex = 0;
     pPaper->SolidShape(this, color);

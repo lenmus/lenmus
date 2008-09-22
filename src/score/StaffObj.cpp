@@ -403,6 +403,23 @@ int lmScoreObj::GetPageNumber()
 	return pGMObj->GetPageNumber();
 }
 
+lmShape* lmScoreObj::GetShape(int nStaff)
+{
+    //Single shape ScoreObjs use a simple shape manager. Idx is ignored as there is
+    //only one shape.
+    //There are two behaviours for multi-shape ScoreObjs (clefs, time & key signatures). 
+    //For clefs, there is a shape for each system. Real object corresponds to Idx=0
+    //For key signatures there is a shape for each staff and system. Indexes are 
+    //computed as nIdx = (nSystem -1) * numStaves + nStaff - 1
+    //For time signatures there is a shape only for each staff in first system. Indexes
+    //are computed as nIdx = nStaff - 1
+
+    //This is the basic implementation, is valid for single shape ScoreObjs and for
+    //time & key signatures. Therfore, it is overriden by Clefs
+
+    return (lmShape*)m_pShapesMngr->GetGraphicObject(nStaff - 1);
+}
+
 wxFont* lmScoreObj::GetSuitableFont(lmPaper* pPaper)
 {
 	//returns the font to use to render this ScoreObj
@@ -833,6 +850,14 @@ wxString lmStaffObj::SourceLDP(int nIndent)
 {
 	wxString sSource = _T("");
 
+    //staff num
+    if (m_pVStaff->GetNumStaves() > 1
+        && !IsKeySignature()
+        && !IsTimeSignature())
+    {
+        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+    }
+    
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
 
@@ -868,20 +893,21 @@ wxString lmStaffObj::SourceXML(int nIndent)
 
 wxString lmStaffObj::Dump()
 {
-	wxString sSource = _T("");
+    //staff
+    wxString sDump = wxString::Format(_T(", staff=%d"), m_nStaffNum);
 
     //base class info
-	sSource += lmScoreObj::Dump();
+	sDump += lmScoreObj::Dump();
 
     // Dump AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         {
-            sSource += (*m_pAuxObjs)[i]->Dump();
+            sDump += (*m_pAuxObjs)[i]->Dump();
         }
     }
-	return sSource;
+	return sDump;
 }
 
 

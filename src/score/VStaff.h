@@ -162,6 +162,9 @@ public:
 
         //--- deleting StaffObjs
     void Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    void Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef);
+    void Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
+    void Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
     void Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
     void Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
 
@@ -190,6 +193,9 @@ public:
 
         //--- deleting StaffObjs
     void UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    void UndoCmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef);
+    void UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
+    void UndoCmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
     void UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
     void UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
 

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -65,6 +64,12 @@ lmContext::lmContext(lmContext* pContext)
 	m_pNext = (lmContext*) NULL;
 }
 
+void lmContext::SetKey(lmKeySignature* pKey)
+{
+    m_pKey = pKey;
+    InitializeAccidentals();
+}
+
 void lmContext::InitializeAccidentals()
 {
     // initialize array: no accidentals
@@ -74,7 +79,6 @@ void lmContext::InitializeAccidentals()
     if (!m_pKey) return;
 
     ComputeAccidentals(m_pKey->GetKeyType(), m_nAccidentals);
-
 }
 
 void lmContext::CopyAccidentals(lmContext* pContext)
@@ -83,18 +87,20 @@ void lmContext::CopyAccidentals(lmContext* pContext)
     for (i=0; i < 7; i++) {
         m_nAccidentals[i] = pContext->GetAccidentals(i);
     }
-
 }
 
-wxString lmContext::Dump()
+wxString lmContext::Dump(int nIndent)
 {
-    wxString sDump = wxString::Format(_T("Context: clef: %s, key: %s, time: %s\n"),
+    wxString sDump = _T("");
+    sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sDump += wxString::Format(_T("Context: clef: %s, key: %s, time: %s, acc=%d,%d,%d,%d,%d,%d,%d\n"),
         (m_pClef ? GetClefLDPNameFromType(m_pClef->GetClefType()).c_str() : _T("No")),
         (m_pKey ? GetKeyLDPNameFromType(m_pKey->GetKeyType()).c_str() : _T("No")),
         (m_pTime ? wxString::Format(_T("%d/%d"),
-            m_pTime->GetNumBeats(), m_pTime->GetBeatType()).c_str() : _T("No")) );
+            m_pTime->GetNumBeats(), m_pTime->GetBeatType()).c_str() : _T("No")),
+         m_nAccidentals[0], m_nAccidentals[1], m_nAccidentals[2], m_nAccidentals[3],
+         m_nAccidentals[4], m_nAccidentals[5], m_nAccidentals[6] );
     return sDump;
-
 }
 
 void lmContext::PropagateValueWhileInherited(lmStaffObj* pSO)
@@ -109,11 +115,31 @@ void lmContext::PropagateValueWhileInherited(lmStaffObj* pSO)
     else if (pSO->IsTimeSignature() && m_fTimeInherited)
         m_pTime = (m_pPrev ? m_pPrev->GetTime() : (lmTimeSignature*)NULL);
     else if (pSO->IsKeySignature() && m_fKeyInherited)
-        m_pKey = (m_pPrev ? m_pPrev->GetKey() : (lmKeySignature*)NULL);
+        SetKey(m_pPrev ? m_pPrev->GetKey() : (lmKeySignature*)NULL);
     else
         return;     //no inherited
 
     //propagate to next one
     if (m_pNext)
         m_pNext->PropagateValueWhileInherited(pSO);
+}
+
+void lmContext::PropagateNewWhileInherited(lmStaffObj* pNewSO)
+{
+    //update this and following contexts in the chain with new inserted context.
+    //If following context inherited a value it must be replaced by the value
+    //from the new context.
+
+    if (pNewSO->IsClef() && m_fClefInherited)
+        m_pClef = (lmClef*)pNewSO;
+    else if (pNewSO->IsTimeSignature() && m_fTimeInherited)
+        m_pTime = (lmTimeSignature*)pNewSO;
+    else if (pNewSO->IsKeySignature() && m_fKeyInherited)
+        SetKey((lmKeySignature*)pNewSO);
+    else
+        return;     //no inherited
+
+    //propagate to next one
+    if (m_pNext)
+        m_pNext->PropagateNewWhileInherited(pNewSO);
 }

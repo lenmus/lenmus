@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -63,12 +62,6 @@ lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVis
 
 lmClef::~lmClef()
 {
-    //std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
-    //while (it != m_ShapesInfo.end())
-    //{
-    //    delete *it;
-    //    ++it;
-    //}
 }
 
 //--------------------------------------------------------------------------------------
@@ -187,10 +180,22 @@ wxString lmClef::Dump()
         _T("%d\tClef %s\tTimePos=%.2f"),
         m_nId, GetClefLDPNameFromType(m_nClefType).c_str(), m_rTimePos);
 
+    //base class
     sDump += lmStaffObj::Dump();
     sDump += _T("\n");
-    return sDump;
 
+    //contexts
+    int nIndent = 5;
+    if (m_pContext)
+        sDump += m_pContext->Dump(nIndent);
+    else
+    {
+        sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+        sDump += _T("Context: NULL\n");
+    }
+    sDump += _T("\n");
+
+    return sDump;
 }
 
 wxString lmClef::SourceLDP(int nIndent)
@@ -200,11 +205,6 @@ wxString lmClef::SourceLDP(int nIndent)
     sSource += _T("(clef ");
     sSource += GetClefLDPNameFromType(m_nClefType);
 
-    //staff num
-    if (m_pVStaff->GetNumStaves() > 1) {
-        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
-    }
-    
 	//base class
 	sSource += lmStaffObj::SourceLDP(nIndent);
 
@@ -228,39 +228,6 @@ void lmClef::RemoveCreatedContexts()
     delete m_pContext;
     m_pContext = (lmContext*)NULL;
 }
-
-//lmGMObject* lmClef::GetGraphicObject(int nIdx)
-//{
-//    //For clefs shape index is staff number (1..n) minus 1
-//
-//    if (m_ShapesInfo.size() == 0) return (lmGMObject*)NULL;
-//
-//    wxASSERT(nIdx < (int)m_ShapesInfo.size());
-//    return m_ShapesInfo[nIdx]->pShape;
-//}
-//
-//void lmClef::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)
-//{
-//    //if necessary, create empty shapes info entries
-//    int nToAdd = nShapeIdx - (int)m_ShapesInfo.size() + 1;
-//    for (int i=0; i < nToAdd; ++i)
-//    {
-//        lmShapeInfo* pShapeInfo = new lmShapeInfo;
-//        pShapeInfo->pShape = (lmShape*)NULL;
-//        pShapeInfo->uUserShift = lmUPoint(0.0f, 0.0f);
-//        m_ShapesInfo.push_back(pShapeInfo);
-//    }
-//
-//    //save new user position
-//    m_ShapesInfo[nShapeIdx]->uUserShift = lmUPoint(xPos, yPos);
-//}
-//
-//lmUPoint lmClef::GetUserShift(int nShapeIdx)
-//{
-//    wxASSERT(nShapeIdx < (int)m_ShapesInfo.size());
-//    return m_ShapesInfo[nShapeIdx]->uUserShift;
-//}
-//
 
 
 //------------------------------------------------------------------------------------------

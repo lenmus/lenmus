@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -64,7 +63,7 @@ public:
 	void CopyYBounds(lmBoxSliceVStaff* pBSV);
 
     //info
-    lmGMObject* FindSelectableObjectAtPos(lmUPoint& pointL);
+    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
 
@@ -84,8 +83,6 @@ public:
 
 
 private:
-    void RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage);
-
     lmBoxSliceInstr*    m_pSliceInstr;      //parent instrumet slice
     lmVStaff*           m_pVStaff;          //VStaff to which this slice belongs
 	int					m_nMeasure;			//Originator measure (1..n)

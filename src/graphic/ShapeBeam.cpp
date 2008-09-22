@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -296,6 +295,9 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
         // displace y coordinate for next beamline
         uyShift += (m_fStemsDown ? - uBeamSpacing : uBeamSpacing);
     }
+
+    //update selection rectangle
+    m_uSelRect = GetBounds();
 
 	//render stems
 	lmCompositeShape::Render(pPaper, color);

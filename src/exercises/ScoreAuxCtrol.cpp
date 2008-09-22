@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -363,11 +362,11 @@ void lmScoreAuxCtrol::HideScore(bool fHide)
     Refresh();
 }
 
-void lmScoreAuxCtrol::PlayScore(bool fVisualTracking, bool fMarcarCompasPrevio,
+void lmScoreAuxCtrol::PlayScore(bool fVisualTracking, bool fCountOff,
         lmEPlayMode nPlayMode, long nMM)
 {
     if (m_pScore) {
-        m_pScore->Play(fVisualTracking && !m_fHidden, fMarcarCompasPrevio, nPlayMode, nMM, this);
+        m_pScore->Play(fVisualTracking && !m_fHidden, fCountOff, nPlayMode, nMM, this);
     }
 }
 

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -277,8 +276,8 @@ void lmScoreCtrolParams::PrepareScore()
     switch(m_nScoreType) {
         case eHST_fileXML:
             m_pScore = parserXML.ParseMusicXMLFile(m_sMusic,
-                                                   sbDO_NOT_START_NEW_LOG,
-                                                   sbDO_NOT_SHOW_LOG_TO_USER );
+                                                   lmDO_NOT_START_NEW_LOG,
+                                                   lmDO_NOT_SHOW_LOG_TO_USER );
             break;
 
         case eHST_fileLDP:

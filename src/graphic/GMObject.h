@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -167,9 +166,11 @@ public:
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
     void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxBLUE);
     lmURect GetSelRectangle() const { return m_uSelRect; }
+    virtual void DrawControlPoints(lmPaper* pPaper) {};
 
 
     //rendering
+	virtual void Render(lmPaper* pPaper, wxColour color);
     virtual void DrawBounds(lmPaper* pPaper, wxColour color);
 	virtual void DrawHandlers(lmPaper* pPaper);
 
@@ -287,7 +288,7 @@ public:
 
 protected:
     lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _("Box"));
-    lmShape* FindShapeAtPosition(lmUPoint& pointL);
+    lmShape* FindShapeAtPosition(lmUPoint& pointL, bool fSelectable);
 
 
 	std::vector<lmShape*>	m_Shapes;		//list of contained shapes
@@ -329,8 +330,8 @@ class lmShape : public lmGMObject
 public:
     virtual ~lmShape();
 
-	virtual void Render(lmPaper* pPaper, wxColour color);
 	void Render(lmPaper* pPaper);
+    virtual void Render(lmPaper* pPaper, wxColour color) { lmGMObject::Render(pPaper, color); }
 
     virtual bool Collision(lmShape* pShape);
 
@@ -380,7 +381,6 @@ protected:
 			bool fDraggable = false, bool fSelectable = false, wxColour color = *wxBLACK,
 			bool fVisible = true);
 	void InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
-    virtual void DrawControlPoints(lmPaper* pPaper) {};
 
 
 	lmBox*		m_pOwnerBox;	//box in which this shape is included

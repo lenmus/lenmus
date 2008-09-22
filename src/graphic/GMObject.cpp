@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -109,6 +108,23 @@ void lmGMObject::DrawBounds(lmPaper* pPaper, wxColour color)
                             lmUSize(m_uBoundsBottom.x - m_uBoundsTop.x, m_uBoundsBottom.y - m_uBoundsTop.y),
                             color);
 
+}
+
+void lmGMObject::Render(lmPaper* pPaper, wxColour colorC)
+{
+    // Code common to all shapes renderization. Must be invoked after specific code at
+    // each shape renderization method
+
+    // if shape is 'selected' allow derived classes to draw control points
+    if (IsSelected())
+        DrawControlPoints(pPaper);
+
+    // draw selection rectangle
+    if (g_fDrawSelRect)
+        DrawSelRectangle(pPaper, g_pColors->ScoreSelected() );
+
+    if (g_fDrawBounds)
+        DrawBounds(pPaper, *wxRED); //colorC);
 }
 
 wxString lmGMObject::DumpBounds()
@@ -293,7 +309,7 @@ void lmBox::AddShape(lmShape* pShape)
 	pShape->SetOwnerBox(this);
 }
 
-lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
+lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId);
     //loop to look up in the shapes collection
@@ -383,23 +399,6 @@ bool lmShape::IsInRectangle(lmURect& rect)
 void lmShape::Render(lmPaper* pPaper)
 {
     Render(pPaper, (this->IsSelected() ? g_pColors->ScoreSelected() : m_color) );
-}
-
-void lmShape::Render(lmPaper* pPaper, wxColour colorC)
-{
-    // Code common to all shapes renderization. Must be invoked after specific code at
-    // each shape renderization method
-
-    // if shape is 'selected' allow derived classes to draw control points
-    if (IsSelected())
-        DrawControlPoints(pPaper);
-
-    // draw selection rectangle
-    if (g_fDrawSelRect)
-        DrawSelRectangle(pPaper, g_pColors->ScoreSelected() );
-
-    if (g_fDrawBounds)
-        DrawBounds(pPaper, *wxRED); //colorC);
 }
 
 void lmShape::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)

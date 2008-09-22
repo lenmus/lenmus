@@ -161,6 +161,9 @@ bool lmDocMDIChildFrame::ProcessEvent(wxEvent& event)
 {
     static wxEvent *ActiveEvent = NULL;
 
+    if (m_childView)
+        m_childView->Activate(true);
+
     // Break recursion loops
     if (ActiveEvent == &event)
         return false;
@@ -185,8 +188,8 @@ bool lmDocMDIChildFrame::ProcessEvent(wxEvent& event)
 
 void lmDocMDIChildFrame::OnActivate(wxActivateEvent& event)
 {
-  if (event.GetActive() && m_childView)
-    m_childView->Activate(event.GetActive());
+    if (event.GetActive() && m_childView)
+        m_childView->Activate(event.GetActive());
 }
 
 void lmDocMDIChildFrame::OnCloseWindow(wxCloseEvent& event)

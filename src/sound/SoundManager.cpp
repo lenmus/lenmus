@@ -29,13 +29,13 @@
 #pragma hdrstop
 #endif
 
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
 #include "SoundManager.h"
-
-//use of Metonome
-#include "../sound/Metronome.h"
-
-//access to Midi configuration
-#include "../sound/MidiManager.h"
+#include "../sound/Metronome.h"         //use of Metonome
+#include "../sound/MidiManager.h"       //access to Midi configuration
 
 //access to MainFrame to get metronome settings
 #include "../app/MainFrame.h"
@@ -43,8 +43,7 @@ extern lmMainFrame *g_pMainFrame;
 
 
 //-----------------------------------------------------------------------------------------
-//! @class lmSoundEvent
-//! @brief Auxiliary class to represent an event of the events table
+// lmSoundEvent: Auxiliary class to represent an event of the events table
 //-----------------------------------------------------------------------------------------
 
 lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel,
@@ -59,21 +58,17 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
     Volume = nVolume;
     pSO = pStaffObj;
     Measure = nMeasure;
-
 }
 
 
 
 //-----------------------------------------------------------------------------------------
-//!   @class lmSoundManager
-//    @brief Manager for the events table
+// lmSoundManager: Manager for the events table
 //
-//    There are three tables to maintain:
+//    There are two tables to maintain:
 //    - m_aEvents: contains the MIDI events.
 //    - m_aMeasures (wxArrayInt):
 //        It contains the index over m_aEvents for the first event of each measure.
-//    - m_aStartTime (wxArrayLong): Also, each item corresponds to a measure and
-//        contains the start time for that measure.
 //
 //    AWARE
 //    Measures are numbered 1..n (musicians usual way) not 0..n-1. But tables
@@ -86,12 +81,13 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
 //    In the events table m_aEvents, all events not in a real measure (measures 1..n) are
 //    market as belonging to measure 0.
 //
-//    The three tables must be synchronized but are populated at different times and by
-//    different methods:
-//    - First, StoreMeasureStartTime() is invoked at the start of each measure.
-//    - Then, StoreEvent() is invoked many times to store the events of that measure.
-//    This process is repeated for every lmVStaff and lmInstrument and all tables are merged.
-//    Finally, table m_aMeasures is computed.
+//    The two tables must be synchronized but are populated as follows:
+//    - StoreEvent() is invoked many times to store the events of that measure.
+//      This process is repeated for every lmVStaff and lmInstrument and all tables are
+//      merged.
+//    - When all events are computed, method CloseTable() is invoked to add the last
+//      entry (End_Of-Table), sort the events table by time, and crete the measures
+//      table.
 //
 //
 //-----------------------------------------------------------------------------------------
@@ -103,32 +99,6 @@ lmSoundManager::lmSoundManager(lmScore* pScore)
     m_fPlaying = false;
 }
 
-
-void lmSoundManager::Initialize(int nPartes, int nTiempoIni, int nDurCompas, int nNumCompases)
-{
-    //
-    // This method MUST BE invoked before using the table. Can be invoked later, at any time,
-    // to reuse the object
-    //
-
-    //delete events in table
-    for (int i = m_aEvents.GetCount(); i > 0; i--) {
-        delete m_aEvents.Item(i-1);
-        m_aEvents.RemoveAt(i-1);
-    }
-
-    //delete measures table
-    m_aMeasures.Clear();
-
-    //store information about the score
-    m_nTiempoIni = nTiempoIni;
-    m_nPartesCompas = nPartes;
-    m_nDuracionCompas = nDurCompas;
-    m_nNumCompases = nNumCompases;
-
-}
-
-
 void lmSoundManager::DeleteEventsTable()
 {
     //delete events in table
@@ -136,7 +106,6 @@ void lmSoundManager::DeleteEventsTable()
         delete m_aEvents.Item(i-1);
         m_aEvents.RemoveAt(i-1);
     }
-
 }
 
 lmSoundManager::~lmSoundManager()
@@ -150,8 +119,6 @@ lmSoundManager::~lmSoundManager()
         m_pThread->Delete();
         m_pThread = (lmSoundManagerThread*)NULL;
     }
-
-
 }
 
 void lmSoundManager::StoreEvent(float rTime, ESoundEventType nEventType, int nChannel,
@@ -161,73 +128,16 @@ void lmSoundManager::StoreEvent(float rTime, ESoundEventType nEventType, int nCh
     lmSoundEvent* pEvent = new lmSoundEvent(rTime, nEventType, nChannel, nMidiPitch,
                                             nVolume, nStep, pSO, nMeasure);
     m_aEvents.Add(pEvent);        //add event to table
-
-}
-
-void lmSoundManager::StoreMeasureStartTime(int nMeasure, float rTime)
-{
-    //wxMessageBox( wxString::Format( _T("measure=%d, count=%d"), nMeasure, m_aStartTime.GetCount() ));
-    if (m_aStartTime.GetCount() == 0) {
-        //add start time for fictitius control measure 0
-       m_aStartTime.Add(0L);
-    }
-    wxASSERT(nMeasure == (int)m_aStartTime.GetCount());        //remember: nMeasure is 1 based
-    m_aStartTime.Add((long)(rTime + 0.5));
 }
 
 void lmSoundManager::Append(lmSoundManager* pSndMgr)
 {
-    //
-    // Add to this object tables the entries from the tables received
-    //
+    // Add to this object table the entries from the received table
 
-        //
-        // Merge m_aEvents table
-        //
-
-    //THINK: Next commented code doesn't work. Alloc doesn't reallocate existing items; it
-    //just allocates empty space; existing items are just destroyed!
     int nNewRows = pSndMgr->GetNumEvents();
-    //int nCurSize = m_aEvents.GetCount();
-    //m_aEvents.Alloc((size_t)(nCurSize + nNewRows));        //allocate more space if needed
-
-    //loop to copy entries
     for (int i=0; i < nNewRows; i++) {
         m_aEvents.Add( pSndMgr->GetEvent(i) );
     }
-
-        //
-        // Merge m_aStartTime table. All measures should be equal in the different
-        // instruments and VSTaffs, so the merge process is just to verify tables
-        //
-
-    //tables must have equal sizes unless one of them is empty
-    int nNewTableSize = pSndMgr->GetNumMeasures();
-    int nCurTableSize = m_aStartTime.GetCount();
-    if (nCurTableSize == 0)
-    {
-        //current table is empty. Copy the appended table
-        for (int i=0; i < nNewTableSize; i++) {
-            m_aStartTime.Add( pSndMgr->GetStartTime(i) );
-        }
-    }
-    else if (nNewTableSize != nCurTableSize) {
-        wxMessageBox( wxString::Format( _T("[lmSoundManager::Append] StartTime tables have different sizes (%d, %d)"),
-            nNewTableSize, nCurTableSize ));
-        wxASSERT(false);
-    }
-    else
-    {
-        //verify times
-        for (int i=0; i < nCurTableSize; i++) {
-            if (m_aStartTime[i] != pSndMgr->GetStartTime(i)) {
-                wxMessageBox( wxString::Format( _T("[lmSoundManager::Append] Measure %d has different duration: old %d, new %d"),
-                    i, m_aStartTime[i], pSndMgr->GetStartTime(i) ));
-                wxASSERT(false);
-            }
-        }
-    }
-
 }
 
 lmSoundEvent* lmSoundManager::GetEvent(int i)
@@ -254,7 +164,6 @@ void lmSoundManager::CloseTable()
             wxASSERT(nM == m_aEvents.Item(i)->Measure || 0 == m_aEvents.Item(i)->Measure);
         }
     }
-
 }
 
 wxString lmSoundManager::DumpMidiEvents()
@@ -268,7 +177,6 @@ wxString lmSoundManager::DumpMidiEvents()
         //headers
         sMsg = _T("Num.\tTime\tChannel\tMeas.\tEvent\t\tPitch\tStep\tVolume\n");
 
-        lmSoundEvent* pSE;
         for(int i=0; i < (int)m_aEvents.GetCount(); i++) {
             //division line every four entries
             if (i % 4 == 0) {
@@ -276,7 +184,7 @@ wxString lmSoundManager::DumpMidiEvents()
             }
 
             //list current entry
-            pSE = m_aEvents.Item(i);
+            lmSoundEvent* pSE = m_aEvents.Item(i);
             sMsg += wxString::Format( _T("%4d:\t%d\t%d\t%d\t"),
                         i, pSE->DeltaTime, pSE->Channel, pSE->Measure);
             switch (pSE->EventType)
@@ -314,28 +222,26 @@ wxString lmSoundManager::DumpMidiEvents()
 
         // measures start time table and first event for each measure
         sMsg += wxString::Format( _T("\n\nMeasures start times and first event (%d measures)\n\n"),
-                    m_aStartTime.GetCount() );
+                    m_aMeasures.GetCount() );
         sMsg += _T("Num.\tTime\tEvent\n");
-        for(int i=0; i < (int)m_aStartTime.GetCount(); i++) {
+        for(int i=0; i < (int)m_aMeasures.GetCount(); i++) {
             //division line every four entries
             if (i % 4 == 0) {
                 sMsg += _T("-------------------------------------------------------------\n");
             }
-            sMsg += wxString::Format( _T("%4d:\t%d\t%d\n"),
-                            i, m_aStartTime[i], m_aMeasures[i]);
+            int nEntry = m_aMeasures[i];
+            lmSoundEvent* pSE = m_aEvents.Item(nEntry);
+            sMsg += wxString::Format(_T("%4d:\t%d\t%d\n"),
+                                     i, pSE->DeltaTime, nEntry);
        }
-
     }
 
     return sMsg;
-
 }
 
 void lmSoundManager::SortByTime()
 {
-    //
     // Sort events by time, measure and event type. Uses the bubble sort algorithm
-    //
 
     int j, k;
     bool fChanges;
@@ -368,10 +274,9 @@ void lmSoundManager::SortByTime()
         //in this case exit loop to save time
         if (!fChanges) break;
     }
-
 }
 
-void lmSoundManager::Play(bool fVisualTracking, bool fMarcarCompasPrevio,
+void lmSoundManager::Play(bool fVisualTracking, bool fCountOff,
                         lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
 	//play all the score
@@ -380,7 +285,7 @@ void lmSoundManager::Play(bool fVisualTracking, bool fMarcarCompasPrevio,
     int nEvEnd = m_aEvents.GetCount() - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
-                fMarcarCompasPrevio, nMM, pWindow);
+                fCountOff, nMM, pWindow);
 }
 
 void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
@@ -395,7 +300,7 @@ void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
     int nEvEnd = m_aMeasures.Item(nMeasure + 1) - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
-                NO_MARCAR_COMPAS_PREVIO, nMM, pWindow);
+                lmNO_COUNTOFF, nMM, pWindow);
 }
 
 void lmSoundManager::PlayFromMeasure(int nMeasure, bool fVisualTracking,
@@ -410,22 +315,20 @@ void lmSoundManager::PlayFromMeasure(int nMeasure, bool fVisualTracking,
     int nEvEnd = m_aEvents.GetCount() - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
-                NO_MARCAR_COMPAS_PREVIO, nMM, pWindow);
+                lmNO_COUNTOFF, nMM, pWindow);
 }
 
 
-////fMarcarUnCompasPrevio - marcar con el metrónomo un compas completo antes de comenzar la
-////       ejecución. Para que este flag actúe requiere que el lmMetronome esté activo
 void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
                                lmEPlayMode nPlayMode,
                                bool fVisualTracking,
-                               bool fMarcarUnCompasPrevio,
+                               bool fCountOff,
                                long nMM,
                                wxWindow* pWindow )
 {
-    //
     // Replay all events in table, from nEvStart to nEvEnd, both included.
-    //
+    // fCountOff - marcar con el metrónomo un compas completo antes de comenzar la
+    //       ejecución. Para que este flag actúe requiere que el lmMetronome esté activo
 
     if (m_pThread) {
         // A thread exits. If it is paused resume it
@@ -443,7 +346,7 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
     //Create a new thread. The thread object is created in the suspended state
     m_pThread = new lmSoundManagerThread(this,
                         nEvStart, nEvEnd, nPlayMode, fVisualTracking,
-                        fMarcarUnCompasPrevio, nMM, pWindow);
+                        fCountOff, nMM, pWindow);
 
     if ( m_pThread->Create() != wxTHREAD_NO_ERROR ) {
         //TODO proper error handling
@@ -465,7 +368,6 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
         m_pThread = (lmSoundManagerThread*) NULL;
         return;
    }
-
 }
 
 void lmSoundManager::Stop()
@@ -474,7 +376,6 @@ void lmSoundManager::Stop()
 
     m_pThread->Delete();    //request the tread to terminate
     m_pThread = (lmSoundManagerThread*)NULL;
-
 }
 
 void lmSoundManager::Pause()
@@ -482,20 +383,16 @@ void lmSoundManager::Pause()
     if (!m_pThread) return;
 
     m_pThread->Pause();
-
 }
 
 void lmSoundManager::WaitForTermination()
 {
-    //
     // Waits until the end of the score playback
-    //
 
     if (!m_pThread) return;
 
     m_pThread->Delete();
     m_pThread = (lmSoundManagerThread*)NULL;
-
 }
 
 
@@ -506,13 +403,11 @@ void lmSoundManager::WaitForTermination()
 void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                                lmEPlayMode nPlayMode,
                                bool fVisualTracking,
-                               bool fMarcarUnCompasPrevio,
+                               bool fCountOff,
                                long nMM,
                                wxWindow* pWindow )
 {
-    //
     // This is the real method doing the work. It will execute in the lmSoundManagerThread
-    //
 
     // if MIDI not operative terminate
     if (!g_pMidi || !g_pMidiOut) {
@@ -629,7 +524,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         Si el metrónomo no está activo o se solicita que no se marque un compás completo antes de empezar
         hay que avanzar el contador de tiempo hasta la primera nota
     */
-//////    if (Not (fPlayWithMetronome && fMarcarUnCompasPrevio)) {
+//////    if (Not (fPlayWithMetronome && fCountOff)) {
 //////        if (m_nTiempoIni = nMeasureDuration) {
 //////            nTime = (nSpeed * m_nTiempoIni) / EIGHT_DURATION;
 //////        } else {
@@ -870,7 +765,7 @@ lmSoundManagerThread::lmSoundManagerThread(lmSoundManager* pSM,
                                        int nEvEnd,
                                        lmEPlayMode nPlayMode,
                                        bool fVisualTracking,
-                                       bool fMarcarUnCompasPrevio,
+                                       bool fCountOff,
                                        long nMM,
                                        wxWindow* pWindow )
     : wxThread(wxTHREAD_DETACHED)
@@ -880,7 +775,7 @@ lmSoundManagerThread::lmSoundManagerThread(lmSoundManager* pSM,
     m_nEvEnd = nEvEnd;
     m_nPlayMode = nPlayMode;
     m_fVisualTracking = fVisualTracking;
-    m_fMarcarUnCompasPrevio = fMarcarUnCompasPrevio;
+    m_fCountOff = fCountOff;
     m_nMM = nMM;
     m_pWindow = pWindow;
 }
@@ -896,7 +791,7 @@ void* lmSoundManagerThread::Entry()
     //ask Sound Manager to play
     //AWARE the checking to see if the thread was asked to exit is done in DoPlaySegment
     m_pSM->DoPlaySegment(m_nEvStart, m_nEvEnd, m_nPlayMode, m_fVisualTracking,
-                m_fMarcarUnCompasPrevio, m_nMM, m_pWindow);
+                m_fCountOff, m_nMM, m_pWindow);
 
     return NULL;
 }

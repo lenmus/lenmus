@@ -225,6 +225,10 @@ void lmShapeNote::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 
 void lmShapeNote::Render(lmPaper* pPaper, wxColour color)
 {
+    //set selection rectangle as the notehead rectangle
+	if (m_nNoteHead >= 0)
+        m_uSelRect = GetNoteHead()->GetBounds();
+
     lmCompositeShape::Render(pPaper, color);
 	DrawLegerLines(m_nPosOnStaff, GetXLeft(), pPaper, color);
 }

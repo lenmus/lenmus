@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -34,11 +33,12 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/image.h"
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
 #include "Context.h"
+#include "../sound/SoundManager.h"
+
 
 //-------------------------------------------------------------------------------------------------
 // lmTimeSignature object implementation
@@ -133,9 +133,24 @@ wxString lmTimeSignature::Dump()
                 m_nId, m_nType, m_rTimePos );
     }
 
-    //base class information
-	sDump += lmStaffObj::Dump();
+    //base class
+    sDump += lmStaffObj::Dump();
     sDump += _T("\n");
+
+    //contexts
+    int nIndent = 5;
+    for (int i=0; i < lmMAX_STAFF; i++)
+    {
+        if (m_pContext[i])
+            sDump += m_pContext[i]->Dump(nIndent);
+        else
+        {
+            sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+            sDump += _T("Context: NULL\n");
+        }
+    }
+    sDump += _T("\n");
+
     return sDump;
 }
 
@@ -223,7 +238,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
     }
 
 	// set total width (incremented in one line for after space)
-	return GetShapeForStaff(1)->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
+	return GetShape(1)->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
 

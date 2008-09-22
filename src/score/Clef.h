@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -52,9 +51,6 @@ public:
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
- //   lmGMObject* GetGraphicObject(int nIdx=0);
-	//void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0);
-	//lmUPoint GetUserShift(int nShapeIdx = 0);
 
     //debugging
     wxString Dump();
@@ -62,7 +58,8 @@ public:
     wxString SourceXML(int nIndent);
 
     //rendering related methods
-	lmShape* AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+    inline lmShape* GetShape(int nStaff=1) { return lmScoreObj::GetShape(1); }
+    lmShape* AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					  wxColour colorC = *wxBLACK);
 
     //methods for hiding the clef in prologs
@@ -85,14 +82,6 @@ private:
     bool            m_fHidden;          //to hide it in system prolog
 	wxColour		m_color;			//clef color
 	lmContext*		m_pContext;			//context created by this clef
-
-	//typedef struct lmShapeInfo_Struct {
-	//	lmShape*		pShape;			//ptr. to shape
-	//	lmUPoint    	uUserShift;		//user shift
-	//} lmShapeInfo;
-
-	////array of shapes
- //   std::vector<lmShapeInfo*> m_ShapesInfo;
 
 };
 

@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this 
 //    program. If not, see <http://www.gnu.org/licenses/>. 
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -85,8 +84,6 @@ void lmBoxSliceInstr::Render(lmPaper* pPaper, lmUPoint uPos)
     {
         m_SlicesVStaff[i]->Render(pPaper, uPos);
     }
-
-    //this->DrawBounds(pPaper, *wxGREEN);
 }
 
 void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)
@@ -152,24 +149,25 @@ wxString lmBoxSliceInstr::Dump(int nIndent)
 	return sDump;
 }
 
-lmGMObject* lmBoxSliceInstr::FindSelectableObjectAtPos(lmUPoint& pointL)
+lmGMObject* lmBoxSliceInstr::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBoxSliceInstr::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL);
+    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
     if (pShape) return pShape;
 
     //loop to look up in the VStaff slices
     std::vector<lmBoxSliceVStaff*>::iterator it;
 	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
     {
-        lmGMObject* pGMO = (*it)->FindSelectableObjectAtPos(pointL);
+        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
         if (pGMO)
 			return pGMO;    //found
     }
 
     // no object found. Verify if the point is in this object
-    if (IsSelectable() && SelRectContainsPoint(pointL)) 
+    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
+         (!fSelectable && SelRectContainsPoint(pointL)) )
         return this;
     else
         return (lmGMObject*)NULL;

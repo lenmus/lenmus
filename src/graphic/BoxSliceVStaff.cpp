@@ -12,7 +12,6 @@
 //
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
-
 //
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
@@ -57,21 +56,12 @@ lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, 
 
 lmBoxSliceVStaff::~lmBoxSliceVStaff()
 {
-    ////delete staff shapes
-    //for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-    //{
-    //    delete m_ShapeStaff[i];
-    //}
-    //m_ShapeStaff.clear();
 }
 
 void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
 {
-    ////render staff lines
-    //for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-    //{
-    //    m_ShapeStaff[i]->Render(pPaper);
-    //}
+    //update selection rectangle
+    m_uSelRect = GetBounds();
 
 	//render shapes
     for (int i=0; i < (int)m_Shapes.size(); i++)
@@ -79,6 +69,7 @@ void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
         m_Shapes[i]->Render(pPaper);
     }
 
+    lmGMObject::Render(pPaper, *wxGREEN);
     //this->DrawBounds(pPaper, *wxGREEN);
 }
 
@@ -87,97 +78,12 @@ lmBoxSystem* lmBoxSliceVStaff::GetOwnerSystem()
 	return m_pSliceInstr->GetOwnerSystem();
 }
 
-void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage)
-{
-    ////
-    //// Draw all StaffObjs in measure nMeasure, including the barline.
-    //// It is assumed that all positioning information is already computed
-    ////
-
-    //wxASSERT(nMeasure <= m_pVStaff->GetNumMeasures());
-
-
-    ///*TODO
-    //    Review this commented code. Implies to review also comented
-    //    code in lmFormatter4::SizeMeasure
-    //*/
-    ////el posicionamiento relativo de objetos (en LDP) requiere conocer la
-    ////posición de inicio del compas. Para ello, se guarda aquí, de forma
-    ////que el método GetXInicioCompas pueda devolver este valor
-    ////m_pVStaff->SetXInicioCompas = pPaper->GetCursorX()
-
-    ////TODO Review this
-    //////si no es el primer compas de la partitura avanza separación con la barra de compas
-    //////o con prólogo, si es comienzo de línea.
-    ////if (nMeasure != 1) {
-    ////    m_oCanvas.Avanzar        //separación con la barra de compas
-    ////}
-
-    ////space occupied by clefs is computed only when all clefs has been drawn, so that we
-    ////can properly align notes and othe StaffObjs. The next flag is used to signal that
-    ////it is pending to compute clefs space.
-    //bool fSpacePending = false;        //initialy not clefs ==> no space pending
-    //lmLUnits xClefs=0;                //x position of first clef. To align all clefs
-    //lmLUnits nMaxClefWidth=0;        //to save the width of the wider clef
-
-    ////loop to process all StaffObjs in this measure
-    //lmStaffObj* pSO = (lmStaffObj*)NULL;
-    //lmSOIterator* pIT = m_pVStaff->CreateIterator(eTR_AsStored);
-    //pIT->AdvanceToMeasure(nMeasure);
-    //while(!pIT->EndOfList())
-    //{
-    //    pSO = pIT->GetCurrent();
-
-    //    if (pSO->GetClass() == eSFOT_Clef) {
-    //        //clefs don't consume space until a lmStaffObj of other type is found
-    //        if (!fSpacePending) {
-    //            //This is the first clef. Save paper position
-    //            xClefs = pPaper->GetCursorX();
-    //            fSpacePending = true;
-    //            nMaxClefWidth = 0;
-    //        } else {
-    //            /*TODO
-    //                Review this. I thing that now, with lmTimeposTable mechanism,
-    //                it is useless.
-    //            */
-    //            pPaper->SetCursorX(xClefs);        //force position to align all clefs
-    //        }
-    //        pSO->Draw(DO_DRAW, pPaper);
-    //        if (fSpacePending) {
-    //            nMaxClefWidth = wxMax(nMaxClefWidth, pPaper->GetCursorX() - xClefs);
-    //        }
-
-    //    } else {
-    //        //It is not a clef. Just draw it
-    //        if (fSpacePending) {
-    //            pPaper->SetCursorX(xClefs + nMaxClefWidth);
-    //            fSpacePending = false;
-    //        }
-    //        pSO->Draw(DO_DRAW, pPaper);
-
-    //    }
-
-    //    //for visual highlight we need to know the page in wich the StaffObj to highlight
-    //    //is located. To this end we are going to store the page number in each
-    //    //StaffObj
-    //    pSO->SetPageNumber(nNumPage);
-
-    //    // if barline, exit loop: end of measure reached
-    //    if (pSO->GetClass() == eSFOT_Barline) break;
-
-    //    pIT->MoveNext();
-    //}
-    //delete pIT;
-
-}
-
 void lmBoxSliceVStaff::UpdateXLeft(lmLUnits xLeft)
 {
 	// During layout there is a need to update initial computations about this
 	// box slice position. This update must be propagated to all contained boxes
 
 	SetXLeft(xLeft);
-
 }
 
 void lmBoxSliceVStaff::UpdateXRight(lmLUnits xRight)
@@ -186,23 +92,7 @@ void lmBoxSliceVStaff::UpdateXRight(lmLUnits xRight)
 	// box slice position. This update must be propagated to all contained boxes
 
 	SetXRight(xRight);
-
 }
-
-//void lmBoxSliceVStaff::SystemXRightUpdated(lmLUnits xRight)
-//{
-//	// During layout there is a need to update initial computations about this
-//	// box slice position. This method is invoked when the right x position of
-//	// the parent system has been updated. It is only invoked for the first
-//	// slice of the system in order to update the ShapeStaff final position
-//
-//    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-//    {
-//        m_ShapeStaff[i]->SetXRight(xRight);
-//    }
-//
-//
-//}
 
 void lmBoxSliceVStaff::CopyYBounds(lmBoxSliceVStaff* pBSV)
 {
@@ -213,7 +103,6 @@ void lmBoxSliceVStaff::CopyYBounds(lmBoxSliceVStaff* pBSV)
 
 	SetYTop(pBSV->GetYTop());
 	SetYBottom(pBSV->GetYBottom());
-
 }
 
 wxString lmBoxSliceVStaff::Dump(int nIndent)
@@ -235,26 +124,21 @@ wxString lmBoxSliceVStaff::Dump(int nIndent)
 	return sDump;
 }
 
-lmGMObject* lmBoxSliceVStaff::FindSelectableObjectAtPos(lmUPoint& pointL)
+lmGMObject* lmBoxSliceVStaff::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBoxSliceVStaff::FindShapeAtPosition] GMO %s - %d"), m_sGMOName.c_str(), m_nId);
     //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL);
+    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
     if (pShape) return pShape;
 
     // no object found. Verify if the point is in this object
-    if (IsSelectable() && SelRectContainsPoint(pointL))
+    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
+         (!fSelectable && SelRectContainsPoint(pointL)) )
         return this;
     else
         return (lmGMObject*)NULL;
 
 }
-
-//void lmBoxSliceVStaff::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-//                              lmLUnits uYMin, lmLUnits uYMax)
-//{
-//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//}
 
 void lmBoxSliceVStaff::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)

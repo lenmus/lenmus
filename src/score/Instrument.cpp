@@ -521,8 +521,10 @@ void lmInstrument::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabN
 	//pDlg->AddPanel( new lmInstrProperties(pDlg->GetNotebook(), this),
 	//			_("Instrument"));
 	//add pages to edit name and abbreviation
-	m_pName->OnEditProperties(pDlg, _("Name"));
-	//m_pAbbreviation->>OnEditProperties(pDlg, _("Abbreviation"));
+    if (m_pName)
+	    m_pName->OnEditProperties(pDlg, _("Name"));
+	if (m_pAbbreviation)
+        m_pAbbreviation->OnEditProperties(pDlg, _("Abbreviation"));
 
 	//change dialog title
 	pDlg->SetTitle(_("Instrument properties"));

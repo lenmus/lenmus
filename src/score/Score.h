@@ -111,7 +111,7 @@ enum lmESpacingMethod
 //options for Play() method
 #define lmVISUAL_TRACKING           true        //highligth notes on the score as they are played
 #define lmNO_VISUAL_TRACKING        false
-#define NO_MARCAR_COMPAS_PREVIO     false
+#define lmNO_COUNTOFF     false
 
 #define lmLDP_INDENT_STEP   3       //indent step for Source LDP generation
 #define lmXML_INDENT_STEP   3       //indent step for MusicXML generation
@@ -169,7 +169,6 @@ class lmHandler;
 #include "Chord.h"
 #include "ColStaffObjs.h"   //for lmVCursorState;
 #include "../app/Paper.h"
-#include "../sound/SoundManager.h"
 
 
 
@@ -189,8 +188,8 @@ public:
 
     //positioning
     void ResetCursor();
-    void MoveRight(bool fNextObject = true);
-    void MoveLeft(bool fPrevObject = true);
+    void MoveRight(bool fAlsoChordNotes = true);
+    void MoveLeft(bool fAlsoChordNotes = true);
     void MoveToInitialPosition();
     void MoveUp();
     void MoveDown();
@@ -359,7 +358,7 @@ public:
 
     // play methods
     void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING,
-              bool fMarcarCompasPrevio = NO_MARCAR_COMPAS_PREVIO,
+              bool fCountOff = lmNO_COUNTOFF,
               lmEPlayMode nPlayMode = ePM_NormalInstrument,
               long nMM = 0,
               wxWindow* pWindow = (wxWindow*)NULL );

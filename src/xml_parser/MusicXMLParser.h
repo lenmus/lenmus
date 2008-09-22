@@ -33,8 +33,8 @@
 
 
 //to give a name to ParseMusicXMLFile optional flags
-#define sbDO_NOT_START_NEW_LOG    false
-#define sbDO_NOT_SHOW_LOG_TO_USER    false
+#define lmDO_NOT_START_NEW_LOG      false
+#define lmDO_NOT_SHOW_LOG_TO_USER   false
 
 class lmMusicXMLParser
 {

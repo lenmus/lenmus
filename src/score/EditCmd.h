@@ -185,6 +185,51 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
+class lmECmdDeleteClef : public lmEditCmd
+{
+public:
+    lmECmdDeleteClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmClef* pClef);
+    ~lmECmdDeleteClef() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pClef != (lmClef*)NULL); }
+
+protected:
+    lmClef*     m_pClef;        //deleted clef
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmECmdDeleteKeySignature : public lmEditCmd
+{
+public:
+    lmECmdDeleteKeySignature(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmKeySignature* pKS);
+    ~lmECmdDeleteKeySignature() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pKS != (lmKeySignature*)NULL); }
+
+protected:
+    lmKeySignature*     m_pKS;          //deleted Key Signature
+
+};
+
+//---------------------------------------------------------------------------------------
+class lmECmdDeleteTimeSignature : public lmEditCmd
+{
+public:
+    lmECmdDeleteTimeSignature(lmVStaff* pVStaff, lmUndoItem* pUndoItem, lmTimeSignature* pTS);
+    ~lmECmdDeleteTimeSignature() {}
+
+    void RollBack(lmUndoItem* pUndoItem);
+    inline bool Success() { return (m_pTS != (lmTimeSignature*)NULL); }
+
+protected:
+    lmTimeSignature*    m_pTS;          //deleted time signature
+
+};
+
+//---------------------------------------------------------------------------------------
 class lmECmdDeleteTie : public lmEditCmd
 {
 public:
