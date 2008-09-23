@@ -381,7 +381,8 @@ void lmScoreObj::OnProperties(lmController* pController, lmGMObject* pGMO)
 
 		//prepare dialog and show it
 		dlg.Layout();
-		dlg.ShowModal();
+		if (dlg.ShowModal() == wxID_OK)
+            OnPropertiesChanged();      //inform object
 	}
 }
 

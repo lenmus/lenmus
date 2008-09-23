@@ -41,7 +41,7 @@ public:
     lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
                  wxString sName, wxString sAbbrev);
     lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-                 lmTextItem* pName, lmTextItem* pAbbrev);
+                 lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
     ~lmInstrument();
 
 	//---- virtual methods of base class -------------------------
@@ -98,34 +98,35 @@ public:
 
 	//interactive edition
 	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
+    void OnPropertiesChanged();
 
 
 private:
     void Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-                lmTextItem* pName, lmTextItem* pAbbrev);
+                lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
+    void AddName(wxString& sName);
+    void AddAbbreviation(wxString& sAbbrev);
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
-	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmTextItem* pName);
+	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmInstrNameAbbrev* pName);
     bool RenderBraket();
 
-    lmScore*        m_pScore;           //score to whith this instrument belongs
-	lmVStaff*		m_pVStaff;			//VStaff for this instrument
-    int             m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
-    int             m_nMidiChannel;     //MIDI channel to use
+    lmScore*            m_pScore;           //score to whith this instrument belongs
+	lmVStaff*		    m_pVStaff;			//VStaff for this instrument
+    int                 m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
+    int                 m_nMidiChannel;     //MIDI channel to use
 
-    lmLUnits        m_uIndentFirst;     //indentation for first system
-    lmLUnits        m_uIndentOther;     //indentation for other systems
-    lmTextItem*    m_pName;            //instrument name
-    lmTextItem*    m_pAbbreviation;    //instrument abbreviated name
+    lmLUnits            m_uIndentFirst;     //indentation for first system
+    lmLUnits            m_uIndentOther;     //indentation for other systems
+    lmInstrNameAbbrev*  m_pName;            //instrument name
+    lmInstrNameAbbrev*  m_pAbbreviation;    //instrument abbreviated name
 
-    lmEBracketSymbol    m_nBracket;     //in case in has more that one staff
-    lmInstrGroup*       m_pGroup;       //NULL if instrument not in group
+    lmEBracketSymbol    m_nBracket;         //in case in has more that one staff
+    lmInstrGroup*       m_pGroup;           //NULL if instrument not in group
     lmLUnits            m_uBracketWidth;    //to render the bracket
     lmLUnits            m_uBracketGap;      //to render the bracket
 
-
-
     // variables related to MusicXML import/export
-    wxString    m_xmlId;            // part id
+    wxString            m_xmlId;            // part id
 };
 
 

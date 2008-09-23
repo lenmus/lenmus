@@ -210,6 +210,7 @@ public:
 	//handlers for contextual menu and related methods
 	virtual void OnProperties(lmController* pController, lmGMObject* pGMO);
 	virtual void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
+    virtual void OnPropertiesChanged() {}
 
 	//font to use to render the ScoreObj
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);

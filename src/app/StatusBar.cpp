@@ -86,7 +86,7 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
 	int nWidth, nHeight;
 	GetTextExtent(_T(" "), &nWidth, &nHeight);
 	size_t nSpaces = size_t(0.5f + ((4.0f + float(size.x)) / (float)nWidth) );
-	wxLogMessage(wxString::Format(_T("nSpaces=%d"), nSpaces));
+	//wxLogMessage(wxString::Format(_T("nSpaces=%d"), nSpaces));
 	m_sIconSpace.insert(size_t(0), nSpaces, _T(' '));
 
 	//add bitmap for time

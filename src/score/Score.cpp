@@ -761,7 +761,7 @@ lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
-									 lmTextItem* pName, lmTextItem* pAbbrev,
+									 lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev,
                                      lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
@@ -1622,10 +1622,11 @@ void lmScore::PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint&
 	pCanvas->ShowContextualMenu(this, pGMO, pMenu, vPos.x, vPos.y);
 }
 
-void lmScore::OnInstrProperties(int nInstr)
+bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 {
 	//Shows the Instruments properties dialog for the selected instrumnet (0..n).
 	//If nInst == -1 shows a selction dialog first
+    //Returns true if dialog end by clicking on 'Accept' button
 
 	if (nInstr == -1)
 	{
@@ -1647,13 +1648,18 @@ void lmScore::OnInstrProperties(int nInstr)
 											  _("Instrument selection"), aChoices);
 	}
 
-	if (nInstr == -1) return;		//cancel button
+	if (nInstr == -1) return false;		//cancel button
 
 	//Instrument selected. Show properties dialog
-	lmDlgProperties dlg((lmController*)NULL);
-	GetInstrument(nInstr+1)->OnEditProperties(&dlg);		//add specific panels
+	lmDlgProperties dlg(pController);
+	lmInstrument* pInstr = GetInstrument(nInstr+1);
+    pInstr->OnEditProperties(&dlg);		//add specific panels
 	dlg.Layout();
-	dlg.ShowModal();
+	if (dlg.ShowModal() != wxID_OK)
+        return false;
+
+    pInstr->OnPropertiesChanged();
+    return true;
 }	
 
 //-------------------------------------------------------------------------------------

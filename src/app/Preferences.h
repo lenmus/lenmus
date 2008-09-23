@@ -95,8 +95,8 @@ enum lmOptionId
     //------------------------------------------------------
     lm_DO_FIRST_EDIT = lm_EO_LAST_ENGRAVING,    //marker
     //
-    lm_DO_CLEF_INSERT,              //what to do when clef added?: 0=ask, 1=keep pitch, 2=keep position
-    lm_DO_KS_INSERT,                //what to do when key added?: 0=ask, 1=keep pitch, 2=add accidentals
+    lm_DO_CLEF_CHANGE,              //what to do when clef changed?: 0=ask, 1=keep pitch, 2=keep position
+    lm_DO_KS_CHANGE,                //what to do when key changed?: 0=ask, 1=keep pitch, 2=add accidentals
     lm_DO_AUTOBAR,                  //AutoBar: automatically insert a barline when a measure is full
     //
     lm_DO_LAST_EDIT,

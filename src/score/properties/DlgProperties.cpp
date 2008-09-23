@@ -114,7 +114,7 @@ void lmDlgProperties::OnAccept(wxCommandEvent& WXUNUSED(event))
 {
     //apply changes
 
-    //Editing and existing objects. Do changes by issuing edit commands
+    //Editing an existing object. Do changes by issuing edit commands
     std::list<lmPropertiesPage*>::iterator it;
     for (it = m_pPages.begin(); it != m_pPages.end(); ++it)
         (*it)->OnAcceptChanges(m_pController);

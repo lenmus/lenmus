@@ -2426,7 +2426,18 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
 	AssignVoice(pNewSO, nSegment);
 
 	//store new object in the collection
+    lmStaffObj* pCursorObj = m_pVCursor->GetStaffObj();
 	Store(pNewSO, fClefKeepPosition, fKeyKeepPitch);
+
+    //if pNewSO is a time signature, Store() could call Autorebar, and this will
+    //invalidate pSgement in VCursor. We have to update it
+    if (pNewSO->IsTimeSignature())
+    {
+        if (pCursorObj)
+            m_pVCursor->MoveCursorToObject(pCursorObj);
+        else
+            ;   //TODO
+    }
 
     //advance cursor
 	lmStaffObj* pCursorSO = m_pVCursor->GetStaffObj();
@@ -2550,11 +2561,26 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     //leave cursor positioned on object after object to remove
     m_pVCursor->MoveCursorToObject(pSO);
     m_pVCursor->MoveRight(true);
+    lmStaffObj* pCursorSO = m_pVCursor->GetStaffObj();
     lmVCursorState tVCState = m_pVCursor->GetState();
 
     //get segment and remove object
     lmSegment* pSegment = pSO->GetSegment();
 	pSegment->Remove(pSO, false, fClefKeepPosition, fKeyKeepPitch); //false -> do not delete object
+
+    //AWARE. If object to remove is a Time Signature, after removal the score could have
+    //been re-bar. Therefore, all segments might have been recreated and, therefore, all
+    //pointers to segments are invalid. Get them again
+    if (pSO->IsTimeSignature())
+    {
+        if (pCursorSO)
+        {
+            pSegment = pCursorSO->GetSegment();
+            //saved cursor information is no longer valid. Update it
+            tVCState.nSegment = pSegment->GetNumSegment();
+        }
+        //TODO: else case
+    }
 
     //if removed object is a barline:
     //  - merge current segment with next one

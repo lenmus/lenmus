@@ -942,8 +942,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     // create the instrument with one empty VStaff
-    lmTextItem* pName = (lmTextItem*)NULL;
-    lmTextItem* pAbbrev = (lmTextItem*)NULL;
+    lmInstrNameAbbrev* pName = (lmInstrNameAbbrev*)NULL;
+    lmInstrNameAbbrev* pAbbrev = (lmInstrNameAbbrev*)NULL;
     if (sInstrName != _T(""))
     {
         lmTextStyle* pTS;
@@ -952,7 +952,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else
             pTS = pScore->GetStyleName(tNameFont);
         wxASSERT(pTS);
-        pName = new lmTextItem(sInstrName, nNameAlign, pTS);
+        pName = new lmInstrNameAbbrev(sInstrName, pTS);
         //convert position to LUnits. As the text is not yet owned we must use the score 
 	    if (tNamePos.xUnits == lmTENTHS)
         {
@@ -974,7 +974,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else
             pTS = pScore->GetStyleName(tAbbrevFont);
         wxASSERT(pTS);
-        pAbbrev = new lmTextItem(sInstrAbbrev, nAbbrevAlign, pTS);
+        pAbbrev = new lmInstrNameAbbrev(sInstrAbbrev, pTS);
         //convert position to LUnits. As the text is not yet owned we must use the score 
 	    if (tAbbrevPos.xUnits == lmTENTHS)
         {

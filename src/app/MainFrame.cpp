@@ -2147,7 +2147,6 @@ void lmMainFrame::OnViewRulers(wxCommandEvent& event)
 {
     lmScoreView* pView = GetActiveScoreView();
     pView->SetRulersVisible(event.IsChecked());
-
 }
 
 void lmMainFrame::OnViewRulersUI(wxUpdateUIEvent &event)
@@ -2574,7 +2573,8 @@ void lmMainFrame::OnScoreTitles(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnInstrumentName(wxCommandEvent& WXUNUSED(event))
 {
-	this->GetActiveScore()->OnInstrProperties(-1);		//-1 = select instrument
+    lmController* pController = GetActiveScoreView()->GetController();
+    GetActiveScore()->OnInstrProperties(-1, pController);    //-1 = select instrument
 }
 
 void lmMainFrame::OnInstrumentMIDISettings(wxCommandEvent& WXUNUSED(event))

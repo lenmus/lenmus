@@ -150,7 +150,7 @@ public:
     //simple text constructor
     lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle);
 
-    ~lmTextItem() {}
+    virtual ~lmTextItem() {}
 
     //implementation of virtual methods defined in abstract base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
@@ -158,8 +158,8 @@ public:
     //implementation of virtual methods from base class
     inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextItem; }
     wxString Dump();
-    wxString SourceLDP(int nIndent);
-    wxString SourceXML(int nIndent);
+    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceXML(int nIndent);
 
     //layout
 	lmShape* CreateShape(lmPaper* pPaper, lmUPoint uPos);
@@ -169,6 +169,16 @@ private:
 
 };
 
+
+class lmInstrNameAbbrev :  public lmTextItem
+{
+public:
+    lmInstrNameAbbrev(wxString& sTitle, lmTextStyle* pStyle)
+                            : lmTextItem(sTitle, lmHALIGN_LEFT, pStyle) {};
+
+    //specific methods
+    wxString SourceLDP(wxString sTag);
+};
 
 //------------------------------------------------------------------------------------
 

@@ -320,7 +320,8 @@ private:
 								    float rTime, lmStaffObj* pSO);
     void XML_AddShitTimeTag(wxString& sSource, int nIndent, bool fFwd, float rTime);
 
-    //access
+    //operations
+    int AskUserAboutClef();
     bool CheckIfNotesAffectedByClef();
 
     //barlines

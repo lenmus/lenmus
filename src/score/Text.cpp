@@ -255,6 +255,7 @@ wxString lmTextItem::SourceLDP(int nIndent)
 
     //close element
     sSource += _T(")\n");
+
     return sSource;
 }
 
@@ -280,6 +281,37 @@ wxString lmTextItem::SourceXML(int nIndent)
 //
 }
 
+
+
+
+
+//==========================================================================================
+// lmInstrNameAbbrev implementation
+//==========================================================================================
+
+wxString lmInstrNameAbbrev::SourceLDP(wxString sTag)
+{
+    wxString sSource = _T("(");
+    sSource += sTag;
+
+    //text goes after main tag
+    sSource += _T(" \"");
+    sSource += m_sText;
+    sSource += _T("\"");
+
+    //style info
+    sSource += _T(" (style \"");
+    sSource += m_pStyle->sName;
+    sSource += _T("\")");
+
+	//base class info
+    sSource += lmAuxObj::SourceLDP(0);
+
+    //close element
+    sSource += _T(")");
+
+    return sSource;
+}
 
 
 

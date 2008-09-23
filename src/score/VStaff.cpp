@@ -128,8 +128,6 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
 
     m_sErrorMsg = _T("");
-
-
 }
 
 lmVStaff::~lmVStaff()
@@ -269,46 +267,15 @@ lmTimeSignature* lmVStaff::GetApplicableTimeSignature()
 lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
                                  bool fVisible)
 {
-    //When a clef is inserted it might be necessary to update note pitches, depending on user
-    //decision (maintain pitch->move notes, or change pitch->do not reposition notes). 
-    //We have to determine user desired behaviour. As user might choose to cancel the
-    //insertion, this is the first thing to.
-
-    bool fClefKeepPosition = true;      //what to do when a clef added?
-
     //if there are notes affected by new clef, get user desired behaviour
+    int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
     if (CheckIfNotesAffectedByClef())
-    {
-        lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
-        long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_INSERT);  //0=ask, 1=keep pitch, 2=keep position
-        if (nOptValue == 0)
-        {
-            lmQuestionBox oQB(
-                wxGetTranslation(
-                    _T("Notes after the clef will be affected by this insertion.\n")
-				    _T("Would you like to keep notes' pitch and, therefore, to change\n")
-                    _T("notes' positions on the staff? or,\n")
-                    _T("would you prefer to keep notes placed on their current staff\n")
-                    _T("positions? (implies pitch change)\n\n")
-                ),
-                //num buttons, and labels (2 per button: button text + explanation)
-                3,
-                _("Keep position"), _("Change notes' pitch and keep their current staff position."),
-                _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
-                _("Cancel"), _("The 'insert clef' command will be cancelled.") 
-            );
-            int nAnswer = oQB.ShowModal();
-    
-		    if (nAnswer == 0)       //'Keep position' button
-                fClefKeepPosition = true;
-            else if (nAnswer == 1)  //'Keep pitch' button
-                fClefKeepPosition = false;
-            else
-                return (lmClef*)NULL;       //Cancel clef insertion
-        }
-        else
-            fClefKeepPosition = (nOptValue == 2);
-    }
+        nAction = AskUserAboutClef();
+
+    if (nAction == 0)
+        return (lmClef*)NULL;       //Cancel clef insertion
+
+    bool fClefKeepPosition = (nAction == 2);
 
     //save answer for undo/redo
     lmUndoData* pUndoData = pUndoItem->GetUndoData();
@@ -740,94 +707,150 @@ void lmVStaff::UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 	//wxLogMessage(m_cStaffObjs.Dump());
 }
 
+int lmVStaff::AskUserAboutClef()
+{
+    //When a clef is inserted/deleted or changed it might be necessary to update
+    //following note pitches. If this is the case, this method ask user what to do:
+    //maintain pitch->move notes, or change pitch->do not reposition notes. 
+    //User might also choose to cancel the deletion.
+    //Returns:
+    //  0=Cancel operation, 1=keep pitch, 2=keep position
+
+    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+    long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_CHANGE);  //0=ask, 1=keep pitch, 2=keep position
+    if (nOptValue == 0)
+    {
+        lmQuestionBox oQB(
+            wxGetTranslation(
+                _T("Notes after the clef will be affected by this action.\n")
+				_T("Would you like to keep notes' pitch and, therefore, to change\n")
+                _T("notes' positions on the staff? or,\n")
+                _T("would you prefer to keep notes placed on their current staff\n")
+                _T("positions? (implies pitch change)\n\n")
+            ),
+            //num buttons, and labels (2 per button: button text + explanation)
+            3,
+            _("Keep position"), _("Change notes' pitch and keep their current staff position."),
+            _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
+            _("Cancel"), _("The 'insert clef' command will be cancelled.") 
+        );
+        int nAnswer = oQB.ShowModal();
+
+		if (nAnswer == 0)       //'Keep position' button
+            return 2;
+        else if (nAnswer == 1)  //'Keep pitch' button
+            return 1;
+        else
+            return 0;       //Cancel operation
+    }
+    else
+         return (int)nOptValue;
+}
+
 void lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
 {
-    ////--- Block: ask user about re-pitch
-    ////When a clef is inserted it might be necessary to update note pitches, depending on user
-    ////decision (maintain pitch->move notes, or change pitch->do not reposition notes). 
-    ////We have to determine user desired behaviour. As user might choose to cancel the
-    ////insertion, this is the first thing to.
-
-    bool fClefKeepPosition = true;      //what to do when a clef added?
-
-    ////if there are notes affected by new clef, get user desired behaviour
+    //if there are notes affected by deleting clef, get user desired behaviour
+    int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
+    //TODO: determine if it is necessary to ask user. For now, always ask
     //if (CheckIfNotesAffectedByClef())
-    {
-        lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
-        long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_INSERT);  //0=ask, 1=keep pitch, 2=keep position
-        if (nOptValue == 0)
-        {
-            lmQuestionBox oQB(
-                wxGetTranslation(
-                    _T("Notes after the clef will be affected by this insertion.\n")
-				    _T("Would you like to keep notes' pitch and, therefore, to change\n")
-                    _T("notes' positions on the staff? or,\n")
-                    _T("would you prefer to keep notes placed on their current staff\n")
-                    _T("positions? (implies pitch change)\n\n")
-                ),
-                //num buttons, and labels (2 per button: button text + explanation)
-                3,
-                _("Keep position"), _("Change notes' pitch and keep their current staff position."),
-                _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
-                _("Cancel"), _("The 'insert clef' command will be cancelled.") 
-            );
-            int nAnswer = oQB.ShowModal();
-    
-		    if (nAnswer == 0)       //'Keep position' button
-                fClefKeepPosition = true;
-            else if (nAnswer == 1)  //'Keep pitch' button
-                fClefKeepPosition = false;
-            else
-                return; // (lmClef*)NULL;       //Cancel clef insertion
-        }
-        else
-            fClefKeepPosition = (nOptValue == 2);
-    }
+        nAction = AskUserAboutClef();
 
-    ////save answer for undo/redo
-    //lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    //pUndoData->AddParam<bool>(fClefKeepPosition);
+    if (nAction == 0)
+        return;       //Cancel clef insertion
 
-    ////--End block -----------------------------------------------------------------
+    bool fClefKeepPosition = (nAction == 2);
+
+    //save answer for undo/redo
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    pUndoData->AddParam<bool>(fClefKeepPosition);
 
     //remove the contexts created by the clef
 	pClef->RemoveCreatedContexts();
 
     //now remove the clef from the staffobjs collection
-    m_cStaffObjs.Delete(pClef, true, fClefKeepPosition);        //true->invoke destructor
-
-    lmTODO(_T("TODO: lmVStaff::Cmd_DeleteClef"));
-    //Cmd_DeleteStaffObj(pUndoItem, pClef);
-}
-
-void lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
-{
-    lmTODO(_T("TODO: lmVStaff::Cmd_DeleteKeySignature"));
-    Cmd_DeleteStaffObj(pUndoItem, pKS);
-}
-
-void lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
-{
-    lmTODO(_T("TODO: lmVStaff::Cmd_DeleteTimeSignature"));
-    Cmd_DeleteStaffObj(pUndoItem, pTS);
+    m_cStaffObjs.Delete(pClef, false, fClefKeepPosition);        //false->do not invoke destructor
 }
 
 void lmVStaff::UndoCmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
 {
-    lmTODO(_T("TODO: lmVStaff::UndoCmd_DeleteClef"));
-    UndoCmd_DeleteStaffObj(pUndoItem, pClef);
+    //recover user option about keeping pitch or position
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    bool fClefKeepPosition = pUndoData->GetParam<bool>();
+
+    //prepare clef insertion
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    int nStaff = pClef->GetStaffNum();
+    lmStaff* pStaff = GetStaff(nStaff);
+    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
+    pContext = pStaff->NewContextAfter(pClef, pContext);
+
+	pClef->SetContext(pContext);
+
+    //proceed to insert the clef
+    m_cStaffObjs.Add(pClef, fClefKeepPosition);
+}
+
+void lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
+{
+    //TODO: As user about inserting accidentals in following notes
+
+    //remove the contexts created by the KS
+	pKS->RemoveCreatedContexts();
+
+    //now remove the KS from the staffobjs collection
+    m_cStaffObjs.Delete(pKS, false);        //false->do not invoke destructor
 }
 
 void lmVStaff::UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
 {
-    lmTODO(_T("TODO: lmVStaff::UndoCmd_DeleteKeySignature"));
-    UndoCmd_DeleteStaffObj(pUndoItem, pKS);
+    InsertKeyTimeSignature(pUndoItem, pKS);
+}
+
+void lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
+{
+    //TODO: As user about anything?
+
+ //   //delete the requested object, and log info to undo history
+ //   wxASSERT(pUndoItem);
+
+ //   //AWARE: Logged actions must be logged in the required order for re-construction.
+ //   //History works as a FIFO stack: first one logged will be the first one to be recovered
+
+ //   //save positioning information
+ //   m_cStaffObjs.LogObjectToDeletePosition(pUndoItem->GetUndoData(), pSO);
+
+ //   //Save info to re-create the object
+ //   pSO->Freeze(pUndoItem->GetUndoData());
+
+ //   //if object to remove is a clef, key or time signature, the contexts they created
+ //   //have to be removed
+	//pSO->RemoveCreatedContexts();
+
+ //   //Delete the object
+ //   m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
+
+    //remove the contexts created by the TS
+	pTS->RemoveCreatedContexts();
+
+    //now remove the TS from the staffobjs collection
+    m_cStaffObjs.Delete(pTS, false);        //false->do not invoke destructor
 }
 
 void lmVStaff::UndoCmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
 {
-    lmTODO(_T("TODO: lmVStaff::UndoCmd_DeleteTimeSignature"));
-    UndoCmd_DeleteStaffObj(pUndoItem, pTS);
+ //   //un-delete the object, according to info in history
+
+ //   //recover positioning info
+ //   lmStaffObj* pBeforeSO = pUndoItem->GetUndoData()->GetParam<lmStaffObj*>();
+
+ //   //unfreeze restored object
+ //   pSO->UnFreeze(pUndoItem->GetUndoData());
+
+	////re-insert the deleted object
+ //   m_cStaffObjs.Insert(pSO, pBeforeSO);
+
+	//wxLogMessage(m_cStaffObjs.Dump());
+    InsertKeyTimeSignature(pUndoItem, pTS);
 }
 
 void lmVStaff::Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)

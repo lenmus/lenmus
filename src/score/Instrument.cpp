@@ -57,7 +57,7 @@ lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, wxFONTSTYLE_N
 
 
 //--------------------------------------------------------------------------------------
-/// Class lmInstrProperties
+/// Class lmMidiProperties
 //--------------------------------------------------------------------------------------
 
 #include "defs.h"
@@ -67,11 +67,11 @@ class lmScoreObj;
 class lmController;
 class lmScore;
 
-//class lmInstrProperties : public lmPropertiesPage 
+//class lmMidiProperties : public lmPropertiesPage 
 //{
 //public:
-//	lmInstrProperties(wxWindow* parent, lmBarline* pBL);
-//	~lmInstrProperties();
+//	lmMidiProperties(wxWindow* parent, lmBarline* pBL);
+//	~lmMidiProperties();
 //
 //    //implementation of pure virtual methods in base class
 //    void OnAcceptChanges(lmController* pController);
@@ -94,7 +94,7 @@ class lmScore;
 //
 //
 ////--------------------------------------------------------------------------------------
-///// Implementation of lmInstrProperties
+///// Implementation of lmMidiProperties
 ////--------------------------------------------------------------------------------------
 //
 //#include "../app/ScoreCanvas.h"			//lmConroller
@@ -115,7 +115,7 @@ class lmScore;
 //	{ _T(""),					(lmEBarline)-1 }
 //};
 //
-//BEGIN_EVENT_TABLE(lmInstrProperties, lmPropertiesPage)
+//BEGIN_EVENT_TABLE(lmMidiProperties, lmPropertiesPage)
 //
 //END_EVENT_TABLE()
 //
@@ -124,7 +124,7 @@ class lmScore;
 ////wich the text is being created and is not yet included in the score. In this
 ////cases method GetScore() will fail, so we can not use it in the implementation
 ////of this class
-//lmInstrProperties::lmInstrProperties(wxWindow* parent, lmBarline* pBL)
+//lmMidiProperties::lmMidiProperties(wxWindow* parent, lmBarline* pBL)
 //    : lmPropertiesPage(parent)
 //{
 //    m_pBL = pBL;
@@ -133,7 +133,7 @@ class lmScore;
 //	SelectBarlineBitmapComboBox(m_pBarlinesList, m_pBL->GetBarlineType() );
 //}
 //
-//void lmInstrProperties::CreateControls()
+//void lmMidiProperties::CreateControls()
 //{
 //	wxBoxSizer* pMainSizer;
 //	pMainSizer = new wxBoxSizer( wxVERTICAL );
@@ -154,11 +154,11 @@ class lmScore;
 //	this->Layout();
 //}
 //
-//lmInstrProperties::~lmInstrProperties()
+//lmMidiProperties::~lmMidiProperties()
 //{
 //}
 //
-//void lmInstrProperties::OnAcceptChanges(lmController* pController)
+//void lmMidiProperties::OnAcceptChanges(lmController* pController)
 //{
 //	int iB = m_pBarlinesList->GetSelection();
 //    lmEBarline nType = g_tBarlinesDB[iB].nBarlineType;
@@ -190,21 +190,21 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
     : lmScoreObj(pScore)
 {
     //create objects for name and abbreviation
-    lmTextItem* pName = (lmTextItem*)NULL;
-    lmTextItem* pAbbreviation = (lmTextItem*)NULL;
+    lmInstrNameAbbrev* pName = (lmInstrNameAbbrev*)NULL;
+    lmInstrNameAbbrev* pAbbreviation = (lmInstrNameAbbrev*)NULL;
 
     if (sName != _T(""))
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pName = new lmTextItem(sName, lmHALIGN_LEFT, pStyle);
+        pName = new lmInstrNameAbbrev(sName, pStyle);
     }
 
     if (sAbbrev != _T(""))
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pAbbreviation = new lmTextItem(sAbbrev, lmHALIGN_LEFT, pStyle);
+        pAbbreviation = new lmInstrNameAbbrev(sAbbrev, pStyle);
     }
 
     //create the instrument
@@ -212,14 +212,14 @@ lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel,
 }
 
 lmInstrument::lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-						   lmTextItem* pName, lmTextItem* pAbbrev)
+						   lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev)
     : lmScoreObj(pScore)
 {
     Create(pScore, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
 }
 
 void lmInstrument::Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-						  lmTextItem* pName, lmTextItem* pAbbrev)
+						  lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev)
 {
     m_pScore = pScore;
     m_nMidiInstr = nMIDIInstr;
@@ -239,6 +239,28 @@ void lmInstrument::Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
     m_pAbbreviation = pAbbrev;
     if (pAbbrev)
         pAbbrev->SetOwner(this);
+}
+
+void lmInstrument::AddName(wxString& sName)
+{ 
+    if (m_pName)
+        delete m_pName;
+
+    lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
+    wxASSERT(pStyle);
+    m_pName = new lmInstrNameAbbrev(sName, pStyle);
+    m_pName->SetOwner(this);
+}
+
+void lmInstrument::AddAbbreviation(wxString& sAbbrev)
+{ 
+    if (m_pAbbreviation) 
+        delete m_pAbbreviation;
+
+    lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
+    wxASSERT(pStyle);
+    m_pAbbreviation = new lmInstrNameAbbrev(sAbbrev, pStyle);
+    m_pAbbreviation->SetOwner(this);
 }
 
 lmInstrument::~lmInstrument()
@@ -298,9 +320,16 @@ wxString lmInstrument::SourceLDP(int nIndent)
 	sSource += wxString::Format(_T(" (staves %d)"), m_pVStaff->GetNumStaves());
 
 	//MIDI info
-	sSource += wxString::Format(_T(" (infoMIDI %d %d)\n"), m_nMidiInstr, m_nMidiChannel);
+	sSource += wxString::Format(_T(" (infoMIDI %d %d)"), m_nMidiInstr, m_nMidiChannel);
+
+    //Name and abbreviation
+    if (m_pName)
+        sSource += m_pName->SourceLDP(_T("name"));
+    if (m_pAbbreviation)
+        sSource += m_pAbbreviation->SourceLDP(_T("abbrev"));
 
     //the music data (lmVStaff)
+    sSource += _T("\n");
 	nIndent++;
 	sSource += m_pVStaff->SourceLDP(nIndent);
 	nIndent--;
@@ -421,7 +450,7 @@ void lmInstrument::AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPap
                                     yTopGroup, pBSliceInstr->GetYBottom() );
 }
 
-void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmTextItem* pName)
+void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmInstrNameAbbrev* pName)
 {
     //get box position
     lmUPoint uBox(pBox->GetXLeft(), pBox->GetYTop() );
@@ -518,14 +547,34 @@ void lmInstrument::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabN
 {
 	//invoked to add specific panels to the dialog
 
-	//pDlg->AddPanel( new lmInstrProperties(pDlg->GetNotebook(), this),
-	//			_("Instrument"));
+	//pDlg->AddPanel( new lmMidiProperties(pDlg->GetNotebook(), this),
+	//			_("MIDI"));
+
 	//add pages to edit name and abbreviation
-    if (m_pName)
-	    m_pName->OnEditProperties(pDlg, _("Name"));
-	if (m_pAbbreviation)
-        m_pAbbreviation->OnEditProperties(pDlg, _("Abbreviation"));
+    wxString sEmpty = _T("");
+    if (!m_pName)
+        AddName(sEmpty);
+	if (!m_pAbbreviation)
+        AddAbbreviation(sEmpty);
+
+	m_pName->OnEditProperties(pDlg, _("Name"));
+    m_pAbbreviation->OnEditProperties(pDlg, _("Abbreviation"));
 
 	//change dialog title
 	pDlg->SetTitle(_("Instrument properties"));
+}
+
+void lmInstrument::OnPropertiesChanged()
+{
+    if (m_pName->GetText() == _T(""))
+    {
+        delete m_pName;
+        m_pName = (lmInstrNameAbbrev*)NULL;
+    }
+
+    if (m_pAbbreviation->GetText() == _T(""))
+    {
+        delete m_pAbbreviation;
+        m_pAbbreviation = (lmInstrNameAbbrev*)NULL;
+    }
 }

@@ -358,7 +358,7 @@ void SelectBarlineBitmapComboBox(wxBitmapComboBox* pCtrol, lmEBarline nType)
 	{
 		if (nType == ((lmBarlinesDBEntry*)pCtrol->GetClientData(iB))->nBarlineType)
 		{
-			wxLogMessage(_T("[SelectBarlineBitmapComboBox] nType=%d, iB=%d, nMax=%d"), nType, iB, nMax);
+			//wxLogMessage(_T("[SelectBarlineBitmapComboBox] nType=%d, iB=%d, nMax=%d"), nType, iB, nMax);
 			pCtrol->SetSelection(iB);
 			return;
 		}

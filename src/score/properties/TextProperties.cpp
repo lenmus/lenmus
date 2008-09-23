@@ -281,9 +281,21 @@ void lmTextProperties::OnAcceptChanges(lmController* pController)
 
     if (pController)
     {
-        //Editing and existing object. Do changes by issuing edit commands
+        //Editing an existing object. Do changes by issuing edit commands
+
+        // remove all cr/lf from the new string
+        wxString sNewText = m_pTxtCtrl->GetValue();
+        wxString sResult;
+        size_t len = sNewText.length();
+        sResult.Alloc(len);
+        for ( size_t n = 0; n < len; n++ )
+        {
+            if (sNewText[n] != _T('\x0d') && sNewText[n] != _T('\x0a'))
+                sResult += sNewText[n];
+        }
+
         pController->ChangeText(m_pParentText,
-                                m_pTxtCtrl->GetValue(),
+                                sResult,
                                 m_nHAlign,
                                 m_pParentText->GetLocation(),
                                 pStyle);    //, lmDELAY_RELAYOUT );

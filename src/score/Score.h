@@ -398,7 +398,8 @@ public:
                                 wxString sName, wxString sAbbrev=_T(""),
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                lmTextItem* pName, lmTextItem* pAbbrev,
+                                lmInstrNameAbbrev* pName,
+                                lmInstrNameAbbrev* pAbbrev,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
 
 
@@ -490,7 +491,7 @@ public:
     lmUPoint CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, int nPage, lmUPoint& uPos);
 
 	//call backs for edition
-	void OnInstrProperties(int nInstr);
+	bool OnInstrProperties(int nInstr, lmController* pController);
 
 private:
     friend class lmScoreCursor;
