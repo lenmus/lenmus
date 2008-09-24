@@ -279,21 +279,20 @@ void lmTextProperties::OnAcceptChanges(lmController* pController)
 {
     lmTextStyle* pStyle = m_pScore->GetStyleInfo( m_pCboTextStyle->GetStringSelection() );
 
+    // remove all cr/lf from the new string
+    wxString sNewText = m_pTxtCtrl->GetValue();
+    wxString sResult;
+    size_t len = sNewText.length();
+    sResult.Alloc(len);
+    for ( size_t n = 0; n < len; n++ )
+    {
+        if (sNewText[n] != _T('\x0d') && sNewText[n] != _T('\x0a'))
+            sResult += sNewText[n];
+    }
+
     if (pController)
     {
         //Editing an existing object. Do changes by issuing edit commands
-
-        // remove all cr/lf from the new string
-        wxString sNewText = m_pTxtCtrl->GetValue();
-        wxString sResult;
-        size_t len = sNewText.length();
-        sResult.Alloc(len);
-        for ( size_t n = 0; n < len; n++ )
-        {
-            if (sNewText[n] != _T('\x0d') && sNewText[n] != _T('\x0a'))
-                sResult += sNewText[n];
-        }
-
         pController->ChangeText(m_pParentText,
                                 sResult,
                                 m_nHAlign,
@@ -303,7 +302,7 @@ void lmTextProperties::OnAcceptChanges(lmController* pController)
     else
     {
         //Direct creation. Modify text object directly
-        m_pParentText->SetText( m_pTxtCtrl->GetValue() );
+        m_pParentText->SetText(sResult);
         m_pParentText->SetStyle(pStyle);
 		m_pParentText->SetAlignment(m_nHAlign);
     }

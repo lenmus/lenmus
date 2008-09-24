@@ -1601,7 +1601,8 @@ lmCmdAddNewTitle::lmCmdAddNewTitle(lmScoreDocument *pDoc)
 	lmDlgProperties dlg((lmController*)NULL);
 	m_pNewTitle->OnEditProperties(&dlg);
 	dlg.Layout();
-	dlg.ShowModal();
+	if (dlg.ShowModal() == wxID_OK)
+        pDoc->GetScore()->OnPropertiesChanged();
 
 	//dettach the text from the score
 	pDoc->GetScore()->DetachAuxObj(m_pNewTitle);

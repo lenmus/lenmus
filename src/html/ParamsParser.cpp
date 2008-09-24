@@ -77,10 +77,10 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
     }
 
     if (fError)
-        return wxString::Format( wxGetTranslation(
+        return wxString::Format( 
             _T("Invalid param value in:\n<param %s >\n")
             _T("Invalid value = %s \n")
-            _T("Acceptable format: list of key signatures or keyword 'all' \n")),
+            _T("Acceptable format: list of key signatures or keyword 'all' \n"),
             sFullParam.c_str(), sParamValue.c_str() );
     else
         return wxEmptyString;
@@ -133,10 +133,10 @@ wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidCho
     }
 
     if (fError)
-        return wxString::Format( wxGetTranslation(
+        return wxString::Format( 
             _T("Invalid param value in:\n<param %s >\n")
             _T("Invalid value = %s \n")
-            _T("Acceptable format: Keyword 'all' or a list of allowed chords.\n")),
+            _T("Acceptable format: Keyword 'all' or a list of allowed chords.\n"),
             sFullParam.c_str(), sParamValue.c_str() );
     else
         return wxEmptyString;

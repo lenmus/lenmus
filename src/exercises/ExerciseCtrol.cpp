@@ -201,7 +201,7 @@ void lmExerciseCtrol::CreateControls()
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
         lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, 
-             _("Settings") );
+             _("Exercise options") );
         pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
     // "Go back to theory" link

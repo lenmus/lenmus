@@ -898,8 +898,14 @@ int lmTheApp::FilterEvent(wxEvent& event)
 			lmController* pController = g_pMainFrame->GetActiveController();
 			if (pController)
 			{
-				g_pMainFrame->GetActiveToolBox()->ProcessEvent(event);
-				return true;	//true: the event had been already processed
+                lmToolBox* pTB = g_pMainFrame->GetActiveToolBox();
+                if (pTB)
+                {
+				    pTB->ProcessEvent(event);
+				    return true;	//true: the event had been already processed
+                }
+                else
+	                return -1;		//process the event normally
 			}
 
 			//g_pMainFrame->OnHelpF1( (wxKeyEvent&)event );

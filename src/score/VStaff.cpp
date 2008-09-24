@@ -492,14 +492,11 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     //if no Clef defined yet the context will be NULL
     if (!pContext || !pContext->GetClef())
     {
-        lmQuestionBox oQB(
-            wxGetTranslation(
-				_T("Error: No clef defined yet.\n\n")
-				_T("Would you like to have notes placed on the staff as if a G clef \n")
-				_T("has been defined?\n")
-            ),
-            //num buttons, and labels (2 per button: button text + explanation)
-            2,
+        wxString sQuestion = _("Error: No clef defined yet.");
+        sQuestion += _T("\n\n");
+        sQuestion += _("Would you like to have notes placed on the staff as if a G clef has been defined?");
+
+        lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
             _("Insert clef"), _("An invisible G clef will be inserted before the note."),
             _("Cancel"), _("The 'insert note' command will be cancelled.")
         );
@@ -720,19 +717,18 @@ int lmVStaff::AskUserAboutClef()
     long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_CHANGE);  //0=ask, 1=keep pitch, 2=keep position
     if (nOptValue == 0)
     {
-        lmQuestionBox oQB(
-            wxGetTranslation(
-                _T("Notes after the clef will be affected by this action.\n")
-				_T("Would you like to keep notes' pitch and, therefore, to change\n")
-                _T("notes' positions on the staff? or,\n")
-                _T("would you prefer to keep notes placed on their current staff\n")
-                _T("positions? (implies pitch change)\n\n")
-            ),
-            //num buttons, and labels (2 per button: button text + explanation)
-            3,
+        wxString sQuestion = _("Notes after the clef will be affected by this action.");
+        sQuestion += _T("\n\n");
+        sQuestion +=
+_("Would you like to keep notes' pitch and, therefore, to change \
+notes' positions on the staff? or, would you prefer to keep notes \
+placed on their current staff positions? (implies pitch change)");
+
+        lmQuestionBox oQB(sQuestion, 3,     //msge, num buttons,
+            //labels (2 per button: button text + explanation)
             _("Keep position"), _("Change notes' pitch and keep their current staff position."),
             _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
-            _("Cancel"), _("The 'insert clef' command will be cancelled.") 
+            _("Cancel"), _("The insert, delete or change clef command will be cancelled.") 
         );
         int nAnswer = oQB.ShowModal();
 

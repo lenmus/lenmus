@@ -158,7 +158,8 @@ void lmTheoMusicReadingCtrol::CreateControls()
 
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
-        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, _("Settings") );
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
+                                                         _("Exercise options") );
         m_pButtonsSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 

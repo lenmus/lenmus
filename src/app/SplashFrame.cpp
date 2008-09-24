@@ -100,7 +100,7 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
     pText3->SetBackgroundColour(color);
 
     // licence message
-    wxString sLicense = _("Free software under GNU General Public License, version 2 or later.");
+    wxString sLicense = _("Free software under GNU General Public License, version 3 or later.");
     wxStaticText* pText2 = new wxStaticText(this, wxID_ANY, sLicense, wxPoint(70, 310), 
 		wxDefaultSize);
     font.SetPointSize(7);

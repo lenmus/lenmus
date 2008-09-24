@@ -167,10 +167,10 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sMode == _T("both"))
             m_pConstrains->SetPlayMode(2);
         else {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
+            m_sParamErrors += wxString::Format(
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
-                _T("Acceptable values: 'ascending | descending | both'\n")),
+                _T("Acceptable values: 'ascending | descending | both'\n"),
                 tag.GetAllParams().c_str(), sMode.c_str() );
         }
     }

@@ -40,7 +40,6 @@
 #include "MsgBox.h"
 
 #define lmID_BUTTON 1000
-#define lmMAX_BUTTONS   10          //number of buttons allowed
 
 //------------------------------------------------------------------------------------
 // lmMsgBoxBase implementation
@@ -50,14 +49,13 @@ BEGIN_EVENT_TABLE(lmMsgBoxBase, wxDialog)
     EVT_COMMAND_RANGE (lmID_BUTTON, lmID_BUTTON+lmMAX_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmMsgBoxBase::OnRespButton)
 END_EVENT_TABLE()
 
-
-
 lmMsgBoxBase::lmMsgBoxBase(const wxString& sMessage, const wxString& sTitle)
 	: wxDialog((wxWindow*)NULL, wxID_ANY, sTitle, wxDefaultPosition,
-               wxSize(-1, -1), wxDEFAULT_DIALOG_STYLE, _T("MsgBox")),
+               wxSize(600, -1), wxDEFAULT_DIALOG_STYLE, _T("MsgBox")),
       m_sMessage(sMessage)
 {
     m_nNumButtons = 0;
+    m_nMaxButtonWidth = 0;
 }
 
 lmMsgBoxBase::~lmMsgBoxBase()
@@ -66,39 +64,56 @@ lmMsgBoxBase::~lmMsgBoxBase()
 
 void lmMsgBoxBase::CreateControls()
 {
-	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	this->SetSizeHints(wxSize(500, -1), wxSize( 500,-1 ));
+	m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 	
-	pMainSizer->Add( 0, 10, 0, wxALL, 5 );
+	m_pMainSizer->Add( 0, 10, 0, wxALL, 5 );
 	
 	wxBoxSizer* pMsgSizer;
 	pMsgSizer = new wxBoxSizer( wxHORIZONTAL );
 	
-	pMsgSizer->Add( 20, 0, 0, wxALL, 5 );
-	
 	m_pBitmap = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pMsgSizer->Add( m_pBitmap, 0, wxALL, 5 );
 	
-	m_pMessage = new wxStaticText( this, wxID_ANY, m_sMessage, wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	m_pMessage = new wxStaticText( this, wxID_ANY, m_sMessage, wxDefaultPosition, wxSize( -1,-1 ), wxALIGN_LEFT );
+	m_pMessage->Wrap( 400 );
 	pMsgSizer->Add( m_pMessage, 0, wxALL, 5 );
 	
-	pMsgSizer->Add( 0, 0, 1, wxALL, 5 );
+	m_pMainSizer->Add( pMsgSizer, 0, wxALIGN_CENTER_HORIZONTAL, 20 );
 	
-	pMainSizer->Add( pMsgSizer, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
-	wxBoxSizer* pTableSizer;
-	pTableSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	pTableSizer->Add( 20, 0, 0, wxALL, 5 );
+    m_pButtonsSizer = new wxBoxSizer( wxVERTICAL );
+	m_pMainSizer->Add( m_pButtonsSizer, 1, wxEXPAND|wxALL, 20 );
 
-	m_pButtonsSizer = new wxBoxSizer( wxVERTICAL );
-	pTableSizer->Add( m_pButtonsSizer, 0, 0, 5 );
-	
-	pTableSizer->Add( 20, 0, 0, wxALL, 5 );
+    //loop to add buttons
+    int nTextWrap = 500 - 2*25 - 10 - m_nMaxButtonWidth;
+    for (int i=0; i < m_nNumButtons; i++)
+    {
+        //sizer for the button and its explanation text
+        wxBoxSizer* pBtSizer = new wxBoxSizer( wxHORIZONTAL );
+        m_pButtonsSizer->Add( pBtSizer, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-	pMainSizer->Add( pTableSizer, 1, wxEXPAND|wxTOP, 20 );
-	
-	this->SetSizer( pMainSizer );
+        //the button
+	    m_pButton[i]->SetMinSize( wxSize(m_nMaxButtonWidth, -1) );
+        pBtSizer->Add(m_pButton[i], 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+        //the explanation
+	    m_pText[i]->Wrap(nTextWrap);
+        pBtSizer->Add(m_pText[i], 0, wxALL|wxEXPAND, 5 );
+    }
+
+	this->SetSizer( m_pMainSizer );
+    SetAutoLayout( true );
+    //m_pMainSizer->SetSizeHints( this );
+    m_pMainSizer->Fit( this );
+	this->Layout();
+    wxSize size( GetSize() );
+    if (size.x < 500)
+    {
+        size.x = 500;
+        SetSize( size );
+    }
+
+    Centre( wxBOTH | wxCENTER_FRAME);
 }
 
 void lmMsgBoxBase::AddButton(const wxString& sLabel, const wxString& sDescr)
@@ -109,23 +124,17 @@ void lmMsgBoxBase::AddButton(const wxString& sLabel, const wxString& sDescr)
         return;
     }
 
-    //size for the button and its explanation text
-    wxBoxSizer* pBtSizer = new wxBoxSizer( wxHORIZONTAL );
-    m_pButtonsSizer->Add( pBtSizer, 0, wxALIGN_CENTER_VERTICAL, 5 );
-
     //the button
-    wxButton* pButton = new wxButton( this, lmID_BUTTON + m_nNumButtons, sLabel,
+    m_pButton[m_nNumButtons] = new wxButton( this, lmID_BUTTON + m_nNumButtons, sLabel,
         wxDefaultPosition, wxDefaultSize);
-    pBtSizer->Add(pButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+    m_nMaxButtonWidth = wxMax(m_nMaxButtonWidth, m_pButton[m_nNumButtons]->GetSize().x );
 
     //the explanation
-    wxStaticText* pText = new wxStaticText( this, wxID_ANY, sDescr, 
-        wxDefaultPosition, wxDefaultSize, 0 );
-    pBtSizer->Add(pText, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+    m_pText[m_nNumButtons] = new wxStaticText( this, wxID_ANY, sDescr, 
+            wxDefaultPosition, wxDefaultSize, 0 );
+
     m_nNumButtons++;
 }
-
-
 
 void lmMsgBoxBase::OnRespButton(wxCommandEvent& event)
 {
@@ -151,7 +160,6 @@ lmQuestionBox::lmQuestionBox(const wxString& sMessage, int nNumButtons, ...)
 
     va_list pArg;
     va_start(pArg, nNumButtons);      //points pArg to first arg after 'nNumButtons'
-    CreateControls();
     for (int i=0;i < nNumButtons; i++)
     {
         wxString sLabel = wxString::Format(_T("%s"), va_arg(pArg, wxString*));
@@ -159,6 +167,7 @@ lmQuestionBox::lmQuestionBox(const wxString& sMessage, int nNumButtons, ...)
         AddButton(sLabel, sDescr);
     }
     va_end(pArg);
+    CreateControls();
 
     m_pBitmap->SetBitmap( wxArtProvider::GetBitmap(_T("msg_idea"), wxART_OTHER, wxSize(48, 48)) );
 	this->Layout();
@@ -172,10 +181,9 @@ lmQuestionBox::lmQuestionBox(const wxString& sMessage, int nNumButtons, ...)
 lmErrorBox::lmErrorBox(const wxString& sMessage, const wxString& sButtonText)
     : lmMsgBoxBase(sMessage, _("Error"))
 {
-    CreateControls();
-
     wxString sLabel = _T("Accept");
     AddButton(sLabel, sButtonText);
+    CreateControls();
 
     m_pBitmap->SetBitmap( wxArtProvider::GetBitmap(_T("msg_error"), wxART_OTHER, wxSize(32, 32)) );
 	this->Layout();

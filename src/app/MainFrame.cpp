@@ -192,8 +192,7 @@ enum
 	MENU_Score_Titles,
 
 	// Menu Instrument
-    MENU_Instr_Name,
-    MENU_Instr_MIDI,
+    MENU_Instr_Properties,
 	
     // Menu Debug
     MENU_Debug_ForceReleaseBehaviour,
@@ -332,10 +331,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_Score_Titles, lmMainFrame::OnEditUpdateUI)
 
 	// Instrument menu
-	EVT_MENU      (MENU_Instr_Name, lmMainFrame::OnInstrumentName)
-    EVT_UPDATE_UI (MENU_Instr_Name, lmMainFrame::OnEditUpdateUI)
-	EVT_MENU      (MENU_Instr_MIDI, lmMainFrame::OnInstrumentMIDISettings)
-    EVT_UPDATE_UI (MENU_Instr_MIDI, lmMainFrame::OnEditUpdateUI)
+	EVT_MENU      (MENU_Instr_Properties, lmMainFrame::OnInstrumentProperties)
+    EVT_UPDATE_UI (MENU_Instr_Properties, lmMainFrame::OnEditUpdateUI)
 
 	//Zoom menu/toolbar
     EVT_MENU (MENU_Zoom_100, lmMainFrame::OnZoom100)
@@ -1136,24 +1133,16 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     wxMenu *pInstrMenu = new wxMenu;
 #if defined(__WXMSW__) || defined(__WXGTK__)
     //bitmaps on menus are supported only on Windows and GTK+
-    pItem = new wxMenuItem(pInstrMenu, MENU_Instr_Name, _("Name and abbreviation"),
-						   _("Add/change name and abbreviation"), wxITEM_NORMAL);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"),
-										       wxART_TOOLBAR, nIconSize) );
-    pInstrMenu->Append(pItem);
-
-    pItem = new wxMenuItem(pInstrMenu, MENU_Instr_MIDI, _("MIDI settings"),
-						   _("Change instrument MIDI settings"), wxITEM_NORMAL);
+    pItem = new wxMenuItem(pInstrMenu, MENU_Instr_Properties, _("Properties"),
+						   _("Edit name, abbreviation, MIDI settings and other properties"), wxITEM_NORMAL);
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"),
 										       wxART_TOOLBAR, nIconSize) );
     pInstrMenu->Append(pItem);
 
 #else
     //No bitmaps on menus for other platforms different from Windows and GTK+
-    pInstrMenu->Append(MENU_Instr_Name, _("Name and abbreviation"),
-					   _("Add/change name and abbreviation"), wxITEM_NORMAL);
-    pInstrMenu->Append(MENU_Instr_MIDI, _("MIDI settings"),
-					   _("Change instrument MIDI settings"), wxITEM_NORMAL);
+    pInstrMenu->Append(MENU_Instr_Properties, _("Properties"),
+					   _("Edit name, abbreviation, MIDI settings and other properties"), wxITEM_NORMAL);
 
 #endif
 
@@ -2571,15 +2560,10 @@ void lmMainFrame::OnScoreTitles(wxCommandEvent& WXUNUSED(event))
     pView->GetController()->AddTitle();
 }
 
-void lmMainFrame::OnInstrumentName(wxCommandEvent& WXUNUSED(event))
+void lmMainFrame::OnInstrumentProperties(wxCommandEvent& WXUNUSED(event))
 {
     lmController* pController = GetActiveScoreView()->GetController();
     GetActiveScore()->OnInstrProperties(-1, pController);    //-1 = select instrument
-}
-
-void lmMainFrame::OnInstrumentMIDISettings(wxCommandEvent& WXUNUSED(event))
-{
-	//TODO
 }
 
 void lmMainFrame::OnMetronomeTimer(wxTimerEvent& event)

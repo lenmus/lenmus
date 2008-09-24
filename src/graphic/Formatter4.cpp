@@ -662,8 +662,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         //verify that program limits are observed
         if (pInstr->GetNumStaves() > MAX_STAVES_PER_SYSTEM) {
             //TODO log and display message properly
-            wxLogMessage(
-                _("[lmFormatter4::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."));
+            wxMessageBox(
+                _("Program limitation: Maximum number of staves per system has been exceeded."));
             wxASSERT(false);
         }
 

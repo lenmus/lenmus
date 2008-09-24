@@ -51,11 +51,19 @@ protected:
     void CreateControls();
     void AddButton(const wxString& sLabel, const wxString& sDescr);
 
+    enum {
+        lmMAX_BUTTONS = 10,     //max number of buttons allowed
+    };
+
+	wxBoxSizer*         m_pMainSizer;
 	wxStaticBitmap*     m_pBitmap;
 	wxStaticText*       m_pMessage;
 	const wxString&     m_sMessage;
 	wxBoxSizer*         m_pButtonsSizer;
     int                 m_nNumButtons;
+    wxButton*           m_pButton[lmMAX_BUTTONS];
+    wxStaticText*       m_pText[lmMAX_BUTTONS];
+    int                 m_nMaxButtonWidth;
 
     DECLARE_EVENT_TABLE()
 };

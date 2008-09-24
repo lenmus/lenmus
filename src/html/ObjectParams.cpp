@@ -146,10 +146,10 @@ void lmExerciseParams::AddParam(const wxHtmlTag& tag)
         else if (sMode == _T("earTraining"))
             pOptions->SetTheoryMode(false);
         else {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
+            m_sParamErrors += wxString::Format( 
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
-                _T("Acceptable values:  'theory | earTraining'\n")),
+                _T("Acceptable values:  'theory | earTraining'\n"),
                 tag.GetAllParams().c_str(), sMode.c_str() );
         }
     }

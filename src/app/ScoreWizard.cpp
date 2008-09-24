@@ -405,12 +405,13 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         //if template load failure, inform user
         if(m_nSelTemplate != m_nEmptyTemplate)
         {
-            wxString sMsg = wxString::Format(
-                wxGetTranslation(
-				    _T("Error: Template '%s' not found\n\n")
-                    _T("Posible causes:\n")
-                    _T("- An error during lenmus installation.\n")
-                    _T("- An accidental deletion of the required template.") ), sFile.c_str());
+            wxString sMsg = wxString::Format(_("Error: Template '%s' not found."), sFile.c_str());
+            sMsg += _T("\n\n");
+            sMsg += _("Posible causes:");
+            sMsg += _T("\n");
+            sMsg += _("- An error during lenmus installation.");
+            sMsg += _T("\n");
+            sMsg += _("- An accidental deletion of the required template.");
 
             lmErrorBox oEB(sMsg, _("An empty score will be created."));
             oEB.ShowModal();

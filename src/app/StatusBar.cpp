@@ -112,7 +112,7 @@ void lmStatusBar::SetMsgText(const wxString& sMsg)
 void lmStatusBar::SetNumPage(int nPage)
 {
     if (nPage > 0)
-        SetStatusText(wxString::Format(_("%s%d"), m_sIconSpace, nPage), lm_Field_NumPage);
+        SetStatusText(wxString::Format(_T("%s%d"), m_sIconSpace, nPage), lm_Field_NumPage);
     else
         SetStatusText(_T(""), lm_Field_NumPage);
 }

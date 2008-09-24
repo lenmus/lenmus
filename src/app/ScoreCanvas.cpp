@@ -758,14 +758,11 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
 void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 {
     //We are processing a Key Down event
-	lmEToolPage nTool = lmPAGE_NONE;
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	if (!pToolBox) {
-		wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] No ToolBox!"));
-	}
-	else
-		nTool = pToolBox->GetSelectedToolPage();
+	if (!pToolBox)
+        return;
 
+	lmEToolPage nTool = pToolBox->GetSelectedToolPage();
     int nKeyCode = event.GetKeyCode();
 	bool fUnknown = false;
 
@@ -1240,7 +1237,7 @@ wxString lmScoreCanvas::KeyCodeToName(int nKeyCode)
             if ( wxIsprint((int)nKeyCode) )
                 sKey.Printf(_T("'%c'"), (char)nKeyCode);
             else if ( nKeyCode > 0 && nKeyCode < 27 )
-                sKey.Printf(_("Ctrl-%c"), _T('A') + nKeyCode - 1);
+                sKey.Printf(_T("Ctrl-%c"), _T('A') + nKeyCode - 1);
             else
                 sKey.Printf(_T("unknown (%d)"), nKeyCode);
         }

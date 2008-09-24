@@ -257,7 +257,7 @@ void lmWizard::OnPageButton(wxCommandEvent& event)
     {
         pNextPage = (lmWizardPage*)m_pCurPage->GetPrev();
 
-        wxASSERT_MSG( pNextPage, _("\"<Back\" button should have been disabled") );
+        wxASSERT_MSG( pNextPage, _T("\"<Back\" button should have been disabled") );
     }
 
     // just pass to the new page (or maybe not - but we don't care here)

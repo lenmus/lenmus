@@ -118,8 +118,7 @@ public:
 	void OnScoreTitles(wxCommandEvent& WXUNUSED(event));
 
 	// Instrument menu events
-	void OnInstrumentName(wxCommandEvent& WXUNUSED(event));
-	void OnInstrumentMIDISettings(wxCommandEvent& WXUNUSED(event));
+	void OnInstrumentProperties(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
         // general options, always enabled

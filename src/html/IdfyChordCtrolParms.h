@@ -181,10 +181,10 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sMode == _T("descending"))
             m_pConstrains->SetModeAllowed(2, true);
         else {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
+            m_sParamErrors += wxString::Format( 
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
-                _T("Acceptable values: 'chord | ascending | descending'\n")),
+                _T("Acceptable values: 'chord | ascending | descending'\n"),
                 tag.GetAllParams().c_str(), sMode.c_str() );
         }
     }
