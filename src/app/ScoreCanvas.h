@@ -84,6 +84,8 @@ public:
 
         //change/move commands
     virtual void AddTie(lmNote* pStartNote, lmNote* pEndNote) {}
+    virtual void ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel,
+                                    int nMidiInstr) {}
 	virtual void ChangeNotePitch(int nSteps) {}
 	virtual void ChangeNoteAccidentals(int nAcc) {}
 	virtual void ChangeNoteDots(int nDots) {}
@@ -194,6 +196,7 @@ public:
 
         //change/move commands
     void AddTie(lmNote* pStartNote, lmNote* pEndNote);
+    void ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel, int nMidiInstr);
 	void ChangeNotePitch(int nSteps);
 	void ChangeNoteAccidentals(int nAcc);
 	void ChangeNoteDots(int nDots);

@@ -61,10 +61,10 @@ public:
     int GetNumStaves();
 
     //layout
-    void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_uIndentFirst, pPos); }
-    void SetIndentOther(lmLocation* pPos) { SetIndent(&m_uIndentOther, pPos); }
-    lmLUnits GetIndentFirst() { return m_uIndentFirst; }
-    lmLUnits GetIndentOther() { return m_uIndentOther; }
+    inline void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_uIndentFirst, pPos); }
+    inline void SetIndentOther(lmLocation* pPos) { SetIndent(&m_uIndentOther, pPos); }
+    inline lmLUnits GetIndentFirst() { return m_uIndentFirst; }
+    inline lmLUnits GetIndentOther() { return m_uIndentOther; }
 
     void MeasureNames(lmPaper* pPaper);
     void AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPaper* pPaper, int nSystem);
@@ -89,12 +89,14 @@ public:
     wxString SourceXML(int nIndent);
 
     //MIDI configuration
-    int GetMIDIChannel() { return m_nMidiChannel; }
-    int GetMIDIInstrument() { return m_nMidiInstr; }
+    inline int GetMIDIChannel() { return m_nMidiChannel; }
+    inline int GetMIDIInstrument() { return m_nMidiInstr; }
+    inline void SetMIDIChannel(int nMidiChannel) { m_nMidiChannel = nMidiChannel; }
+    inline void SetMIDIInstrument(int nMidiInstr) { m_nMidiInstr = nMidiInstr; }
 
     // methods related to MusicXML import/export
-    void XML_SetId(const wxString sId) { m_xmlId = sId; }
-    const wxString XML_GetId() { return m_xmlId; }
+    inline void XML_SetId(const wxString sId) { m_xmlId = sId; }
+    inline const wxString XML_GetId() { return m_xmlId; }
 
 	//interactive edition
 	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);

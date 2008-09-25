@@ -70,6 +70,7 @@ public:
     virtual ~lmPropertiesPage() {}
 
     virtual void OnAcceptChanges(lmController* pController)=0;
+    virtual void OnCancelChanges() {}
 
 protected:
     lmPropertiesPage(wxWindow* parent) : 

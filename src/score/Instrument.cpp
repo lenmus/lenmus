@@ -63,122 +63,222 @@ lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, wxFONTSTYLE_N
 #include "defs.h"
 #include "properties/DlgProperties.h"
 
-class lmScoreObj;
 class lmController;
-class lmScore;
 
-//class lmMidiProperties : public lmPropertiesPage 
-//{
-//public:
-//	lmMidiProperties(wxWindow* parent, lmBarline* pBL);
-//	~lmMidiProperties();
-//
-//    //implementation of pure virtual methods in base class
-//    void OnAcceptChanges(lmController* pController);
-//
-//    // event handlers
-//
-//protected:
-//    void CreateControls();
-//
-//    //controls
-//	wxStaticText*		m_pTxtBarline;
-//	wxBitmapComboBox*	m_pBarlinesList;
-//
-//    //other variables
-//    lmBarline*			m_pBL;
-//
-//
-//    DECLARE_EVENT_TABLE()
-//};
-//
-//
-////--------------------------------------------------------------------------------------
-///// Implementation of lmMidiProperties
-////--------------------------------------------------------------------------------------
-//
-//#include "../app/ScoreCanvas.h"			//lmConroller
-//
-//enum {
-//    lmID_BARLINE = 2600,
-//};
-//
-//lmBarlinesDBEntry g_tBarlinesDB[] = {
-//    { _("Simple barline"),		lm_eBarlineSimple },
-//    { _("Double barline"),		lm_eBarlineDouble },
-//    { _("Final barline"),		lm_eBarlineEnd },
-//    { _("Start repetition"),	lm_eBarlineStartRepetition },
-//    { _("End repetition"),		lm_eBarlineEndRepetition },
-//    { _("Star barline"),		lm_eBarlineStart },
-//    { _("Double repetition"),	lm_eBarlineDoubleRepetition },
-//	//End of table item
-//	{ _T(""),					(lmEBarline)-1 }
-//};
-//
-//BEGIN_EVENT_TABLE(lmMidiProperties, lmPropertiesPage)
-//
-//END_EVENT_TABLE()
-//
-//
-////AWARE: pScore is needed as parameter in the constructor for those cases in
-////wich the text is being created and is not yet included in the score. In this
-////cases method GetScore() will fail, so we can not use it in the implementation
-////of this class
-//lmMidiProperties::lmMidiProperties(wxWindow* parent, lmBarline* pBL)
-//    : lmPropertiesPage(parent)
-//{
-//    m_pBL = pBL;
-//    CreateControls();
-//	LoadBarlinesBitmapComboBox(m_pBarlinesList, g_tBarlinesDB);
-//	SelectBarlineBitmapComboBox(m_pBarlinesList, m_pBL->GetBarlineType() );
-//}
-//
-//void lmMidiProperties::CreateControls()
-//{
-//	wxBoxSizer* pMainSizer;
-//	pMainSizer = new wxBoxSizer( wxVERTICAL );
-//	
-//	m_pTxtBarline = new wxStaticText( this, wxID_ANY, wxT("Barline type"), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_pTxtBarline->Wrap( -1 );
-//	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
-//	
-//	pMainSizer->Add( m_pTxtBarline, 0, wxALL, 5 );
-//	
-//	wxArrayString m_pBarlinesListChoices;
-//    m_pBarlinesList = new wxBitmapComboBox();
-//    m_pBarlinesList->Create(this, lmID_BARLINE, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
-//							0, NULL, wxCB_READONLY);
-//	pMainSizer->Add( m_pBarlinesList, 0, wxALL, 5 );
-//	
-//	this->SetSizer( pMainSizer );
-//	this->Layout();
-//}
-//
-//lmMidiProperties::~lmMidiProperties()
-//{
-//}
-//
-//void lmMidiProperties::OnAcceptChanges(lmController* pController)
-//{
-//	int iB = m_pBarlinesList->GetSelection();
-//    lmEBarline nType = g_tBarlinesDB[iB].nBarlineType;
-//	if (nType == m_pBL->GetBarlineType())
-//		return;		//nothing to change
-//
-//    if (pController)
-//    {
-//        //Editing and existing object. Do changes by issuing edit commands
-//        pController->ChangeBarline(m_pBL, nType, m_pBL->IsVisible());
-//    }
-//  //  else
-//  //  {
-//  //      //Direct creation. Modify text object directly
-//  //      m_pParentText->SetText( m_pTxtCtrl->GetValue() );
-//  //      m_pParentText->SetStyle(pStyle);
-//		//m_pParentText->SetAlignment(m_nHAlign);
-//  //  }
-//}
-//
+class lmMidiProperties : public lmPropertiesPage 
+{
+public:
+	lmMidiProperties(wxWindow* parent, lmInstrument* pInstr);
+	~lmMidiProperties();
+
+    //implementation of pure virtual methods in base class
+    void OnAcceptChanges(lmController* pController);
+
+    //overrides
+    void OnCancelChanges();
+
+    //event handlers
+    void OnComboGroup(wxCommandEvent& event);
+    void OnComboInstrument(wxCommandEvent& event);
+    void OnButtonTestSoundClick(wxCommandEvent& event);
+
+protected:
+    void CreateControls();
+    void DoProgramChange();
+
+    //controls
+	wxStaticText*   m_pTxtChannel;
+	wxChoice*       m_pVoiceChannelCombo;
+	wxStaticText*   m_pTxtGroup;
+	wxChoice*       m_pGroupCombo;
+	wxStaticText*   m_pTxtInstrument;
+	wxChoice*       m_pInstrCombo;
+	wxButton*       m_pBtnTestSound;
+
+    //other variables
+    lmInstrument*       m_pInstr;
+    int                 m_nMidiInstr;   //to save Midi data
+    int                 m_nMidiChannel;
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+//--------------------------------------------------------------------------------------
+/// Implementation of lmMidiProperties
+//--------------------------------------------------------------------------------------
+
+#include "../app/ScoreCanvas.h"			    //lmController
+#include "../../wxMidi/include/wxMidi.h"    // MIDI support throgh Portmidi lib
+#include "../sound/MidiManager.h"           //access to Midi configuration
+
+//event identifiers
+enum
+{
+    lmID_COMBO_GROUP = 2600,
+    lmID_COMBO_INSTRUMENT,
+    lmID_COMBO_CHANNEL,
+    lmID_BUTTON_TEST_SOUND,
+};
+
+
+BEGIN_EVENT_TABLE(lmMidiProperties, lmPropertiesPage)
+    EVT_CHOICE  (lmID_COMBO_GROUP, lmMidiProperties::OnComboGroup)
+    EVT_CHOICE  (lmID_COMBO_INSTRUMENT, lmMidiProperties::OnComboInstrument)
+    EVT_BUTTON  (lmID_BUTTON_TEST_SOUND, lmMidiProperties::OnButtonTestSoundClick)
+
+END_EVENT_TABLE()
+
+
+lmMidiProperties::lmMidiProperties(wxWindow* parent, lmInstrument* pInstr)
+    : lmPropertiesPage(parent)
+{
+    m_pInstr = pInstr;
+    CreateControls();
+
+    //save Midi data as it will be modified during sound testing
+    m_nMidiInstr = g_pMidi->VoiceInstr();
+    m_nMidiChannel = g_pMidi->VoiceChannel();
+
+    //populate channel combo
+    m_pVoiceChannelCombo->Clear();
+    for(int i=1; i <= 16; i++)
+    {
+        m_pVoiceChannelCombo->Append(wxString::Format(_T("%d"), i));
+    }
+    m_pVoiceChannelCombo->SetSelection( pInstr->GetMIDIChannel() );
+
+    //populate sections and instruments combos
+    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
+    int nInstr = pInstr->GetMIDIInstrument();
+    int nSect = pMidiGM->PopulateWithSections((wxControlWithItems*)m_pGroupCombo, nInstr );
+    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, nInstr);
+}
+
+void lmMidiProperties::CreateControls()
+{
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* pChannelSizer;
+	pChannelSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_pTxtChannel = new wxStaticText( this, wxID_ANY, _("Channel:"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_pTxtChannel->Wrap( -1 );
+	pChannelSizer->Add( m_pTxtChannel, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	wxArrayString m_pVoiceChannelComboChoices;
+	m_pVoiceChannelCombo = new wxChoice( this, lmID_COMBO_CHANNEL, wxDefaultPosition, wxSize( 70,-1 ), m_pVoiceChannelComboChoices, 0 );
+	m_pVoiceChannelCombo->SetSelection( 0 );
+	pChannelSizer->Add( m_pVoiceChannelCombo, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+	
+	pMainSizer->Add( pChannelSizer, 0, wxTOP|wxLEFT, 20 );
+	
+	wxBoxSizer* pInstrSizer;
+	pInstrSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pTxtGroup = new wxStaticText( this, wxID_ANY, _("Group:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtGroup->Wrap( -1 );
+	pInstrSizer->Add( m_pTxtGroup, 0, wxRIGHT|wxLEFT, 5 );
+	
+	wxArrayString m_pGroupComboChoices;
+	m_pGroupCombo = new wxChoice( this, lmID_COMBO_GROUP, wxDefaultPosition, wxSize( 250,-1 ), m_pGroupComboChoices, 0 );
+	m_pGroupCombo->SetSelection( 0 );
+	pInstrSizer->Add( m_pGroupCombo, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+	
+	m_pTxtInstrument = new wxStaticText( this, wxID_ANY, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtInstrument->Wrap( -1 );
+	pInstrSizer->Add( m_pTxtInstrument, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	wxArrayString m_pInstrComboChoices;
+	m_pInstrCombo = new wxChoice( this, lmID_COMBO_INSTRUMENT, wxDefaultPosition, wxSize( 250,-1 ), m_pInstrComboChoices, 0 );
+	m_pInstrCombo->SetSelection( 0 );
+	pInstrSizer->Add( m_pInstrCombo, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+	
+	pMainSizer->Add( pInstrSizer, 1, wxEXPAND|wxTOP|wxLEFT, 20 );
+	
+	wxBoxSizer* pButtonSizer;
+	pButtonSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pBtnTestSound = new wxButton( this, lmID_BUTTON_TEST_SOUND, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonSizer->Add( m_pBtnTestSound, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	pMainSizer->Add( pButtonSizer, 0, wxEXPAND, 5 );
+	
+	this->SetSizer( pMainSizer );
+	this->Layout();
+}
+
+lmMidiProperties::~lmMidiProperties()
+{
+}
+
+void lmMidiProperties::OnAcceptChanges(lmController* pController)
+{
+    int nMidiInstr = g_pMidi->VoiceInstr();
+    int nMidiChannel = g_pMidi->VoiceChannel();
+	if (nMidiInstr == m_pInstr->GetMIDIInstrument() 
+        && nMidiChannel == m_pInstr->GetMIDIChannel())
+		return;		//nothing to change
+
+    if (pController)
+    {
+        //Changing an existing object. Do changes by issuing edit commands
+        pController->ChangeMidiSettings(m_pInstr, nMidiChannel, nMidiInstr);
+    }
+    else
+    {
+        //Direct creation. Modify lmInstrument object directly
+        m_pInstr->SetMIDIChannel( nMidiChannel );
+        m_pInstr->SetMIDIInstrument( nMidiInstr );
+    }
+
+    //restore MIDI controller settings
+    g_pMidi->VoiceChange(m_nMidiChannel, m_nMidiInstr);
+}
+
+void lmMidiProperties::OnCancelChanges()
+{
+    //restore MIDI controller settings
+    g_pMidi->VoiceChange(m_nMidiChannel, m_nMidiInstr);
+}
+
+void lmMidiProperties::DoProgramChange()
+{
+    //Change Midi instrument to the one selected in combo Instruments
+    int nInstr = m_pInstrCombo->GetSelection();
+    int nSect = m_pGroupCombo->GetSelection();
+    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
+    int nVoiceInstr = pMidiGM->GetInstrFromSection(nSect, nInstr);
+    int nVoiceChannel = m_pVoiceChannelCombo->GetSelection();
+    g_pMidi->VoiceChange(nVoiceChannel, nVoiceInstr);
+}
+
+void lmMidiProperties::OnComboGroup(wxCommandEvent& event)
+{
+    // A new section selected. Reload Instruments combo with the instruments in the
+    //selected section
+
+    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
+    int nSect = m_pGroupCombo->GetSelection();
+    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect);
+    DoProgramChange();
+}
+
+void lmMidiProperties::OnComboInstrument(wxCommandEvent& event)
+{
+    // A new instrument selected. Change Midi program
+    DoProgramChange();
+}
+
+void lmMidiProperties::OnButtonTestSoundClick(wxCommandEvent& event)
+{
+    //play a scale
+    g_pMidi->TestOut();
+}
+
+
 
 
 //=======================================================================================
@@ -547,8 +647,8 @@ void lmInstrument::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabN
 {
 	//invoked to add specific panels to the dialog
 
-	//pDlg->AddPanel( new lmMidiProperties(pDlg->GetNotebook(), this),
-	//			_("MIDI"));
+	pDlg->AddPanel( new lmMidiProperties(pDlg->GetNotebook(), this),
+				_("MIDI"));
 
 	//add pages to edit name and abbreviation
     wxString sEmpty = _T("");

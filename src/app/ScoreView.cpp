@@ -2317,11 +2317,6 @@ void lmScoreView::UpdateCaret()
     //Hide cursor at old position
 	m_pCaret->Hide();
 
- //   //update status bar: page number
-	//int nNumPage = m_graphMngr.GetBoxScore()->GetPageNumber();
- //   //int nNumPage = m_pScoreCursor->GetPageNumber();
- //   m_pMainFrame->SetStatusBarNumPage(nNumPage);
-
 	//status bar: timepos
 	m_pMainFrame->SetStatusBarCursorRelPos( m_pScoreCursor->GetCursorTime() );
 

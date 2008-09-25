@@ -1686,6 +1686,50 @@ bool lmCmdChangeBarline::UndoCommand()
 
 
 //----------------------------------------------------------------------------------------
+// lmCmdChangeMidiSettings implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdChangeMidiSettings::lmCmdChangeMidiSettings(lmScoreDocument *pDoc,
+                                                 lmInstrument* pInstr,
+                                                 int nMidiChannel,
+                                                 int nMidiInstr)
+	: lmScoreCommand(_("change MIDI settings"), pDoc, (lmVStaffCursor*)NULL )
+{
+    m_pInstr = pInstr;
+    m_nMidiChannel = nMidiChannel;
+    m_nMidiInstr = nMidiInstr;
+    m_nOldMidiChannel = pInstr->GetMIDIChannel();
+    m_nOldMidiInstr = pInstr->GetMIDIInstrument();
+}
+
+lmCmdChangeMidiSettings::~lmCmdChangeMidiSettings()
+{
+}
+
+bool lmCmdChangeMidiSettings::Do()
+{
+    //Direct command. NO UNDO LOG
+
+    m_pInstr->SetMIDIChannel(m_nMidiChannel);
+    m_pInstr->SetMIDIInstrument(m_nMidiInstr);
+	return CommandDone(lmSCORE_MODIFIED);
+}
+
+bool lmCmdChangeMidiSettings::UndoCommand()
+{
+    //Direct command. NO UNDO LOG
+
+    m_pInstr->SetMIDIChannel(m_nOldMidiChannel);
+    m_pInstr->SetMIDIInstrument(m_nOldMidiInstr);
+
+	m_pDoc->Modify(m_fDocModified);
+    m_pDoc->UpdateAllViews();
+    return true;
+}
+
+
+
+//----------------------------------------------------------------------------------------
 // lmCmdMoveNote implementation
 //----------------------------------------------------------------------------------------
 

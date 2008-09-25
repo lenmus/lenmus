@@ -107,9 +107,7 @@ void lmGraphicManager::Layout()
     //lmFormatter4 oFormatter;   //the formatter object
     //m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper);
     m_pBoxScore = m_pScore->Layout(m_pPaper);
-    wxASSERT(m_pBoxScore);
     m_fReLayout = false;
-
 }
 
 wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
@@ -186,7 +184,7 @@ bool lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmL
 
     //returns true if a re-alyout has been forced. This implies that the graphical
     //model has been rebuild and, therefore, all pointers to lmGMObjects are no
-    //longer valid
+    //longer valid.
 
 
 

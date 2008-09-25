@@ -35,11 +35,11 @@
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
+#else
+#include <wx/debug.h>
+#include <wx/list.h>
+#include <wx/numdlg.h>      // for ::wxGetNumberFromUser
 #endif
-
-#include "wx/debug.h"
-#include "wx/list.h"
-#include "wx/numdlg.h"      // for ::wxGetNumberFromUser
 
 #include "../score/Score.h"
 #include "../score/Context.h"
@@ -607,10 +607,16 @@ bool lmFormatter4::SplitMeasureColumn()
     m_oTimepos[1].DumpTimeposTable();
     //dbg ---------------
 
-    //TODO
-    wxMessageBox(_T("[lmFormatter4::RenderJustified] The line width is not enough for drawing just one bar!!!."));
-    return true;        //abort rederization
+    wxString sMsg = _("Program failure: not enough space for drawing just one bar.");
+    sMsg += _T("\n\n");
+    sMsg += _("Posible causes:");
+    sMsg += _T("\n");
+    sMsg += _("- No time signature specified.");
+    sMsg += _T("\n");
+    sMsg += _("- Paper width is not enough for drawing just one bar.");
 
+    ::wxLogFatalError(sMsg);
+    return true;        //abort rederization
 }
 
 lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,

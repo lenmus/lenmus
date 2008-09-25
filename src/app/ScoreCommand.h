@@ -584,6 +584,30 @@ protected:
 };
 
 
+// Change MIDI settings for a given instrument
+//------------------------------------------------------------------------------------
+class lmCmdChangeMidiSettings: public lmScoreCommand
+{
+public:
+
+    lmCmdChangeMidiSettings(lmScoreDocument *pDoc, lmInstrument* pInstr,
+                            int nMidiChannel, int nMidiInstr);
+    ~lmCmdChangeMidiSettings();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool UndoCommand();
+
+protected:
+    lmInstrument*       m_pInstr;
+    int			        m_nMidiChannel;
+    int			        m_nMidiInstr;
+    int			        m_nOldMidiChannel;
+    int			        m_nOldMidiInstr;
+
+};
+
+
 // Move note and change its pitch command
 //------------------------------------------------------------------------------------
 class lmCmdMoveNote: public lmScoreCommand

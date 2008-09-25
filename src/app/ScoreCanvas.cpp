@@ -610,6 +610,14 @@ void lmScoreCanvas::ChangeBarline(lmBarline* pBL, lmEBarline nType, bool fVisibl
 	pCP->Submit(new lmCmdChangeBarline(m_pDoc, pBL, nType, fVisible) );
 }
 
+void lmScoreCanvas::ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel,
+                                       int nMidiInstr)
+{
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdChangeMidiSettings(m_pDoc, pInstr, nMidiChannel,
+                                            nMidiInstr) );
+}
+
 void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();

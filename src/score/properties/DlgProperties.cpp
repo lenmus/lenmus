@@ -124,6 +124,11 @@ void lmDlgProperties::OnAccept(wxCommandEvent& WXUNUSED(event))
 
 void lmDlgProperties::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
+    //inform all panels
+    std::list<lmPropertiesPage*>::iterator it;
+    for (it = m_pPages.begin(); it != m_pPages.end(); ++it)
+        (*it)->OnCancelChanges();
+
     EndDialog(wxID_CANCEL);
 }
 
