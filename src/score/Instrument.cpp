@@ -110,7 +110,7 @@ protected:
 //--------------------------------------------------------------------------------------
 
 #include "../app/ScoreCanvas.h"			    //lmController
-#include "../../wxMidi/include/wxMidi.h"    // MIDI support throgh Portmidi lib
+#include "wxMidi.h"                         // MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
 
 //event identifiers
@@ -147,13 +147,13 @@ lmMidiProperties::lmMidiProperties(wxWindow* parent, lmInstrument* pInstr)
     {
         m_pVoiceChannelCombo->Append(wxString::Format(_T("%d"), i));
     }
-    m_pVoiceChannelCombo->SetSelection( pInstr->GetMIDIChannel() );
+    m_pVoiceChannelCombo->SetSelection( pInstr->GetMIDIChannel() - 1 );
 
     //populate sections and instruments combos
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nInstr = pInstr->GetMIDIInstrument();
     int nSect = pMidiGM->PopulateWithSections((wxControlWithItems*)m_pGroupCombo, nInstr );
-    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, nInstr);
+    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, nInstr, true);
 }
 
 void lmMidiProperties::CreateControls()
@@ -216,12 +216,18 @@ lmMidiProperties::~lmMidiProperties()
 
 void lmMidiProperties::OnAcceptChanges(lmController* pController)
 {
-    int nMidiInstr = g_pMidi->VoiceInstr();
-    int nMidiChannel = g_pMidi->VoiceChannel();
+    int nInstr = m_pInstrCombo->GetSelection();
+    int nSect = m_pGroupCombo->GetSelection();
+    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
+    int nMidiInstr = pMidiGM->GetInstrFromSection(nSect, nInstr);
+    int nMidiChannel = m_pVoiceChannelCombo->GetSelection() + 1;
+
+    //check if anything changed
 	if (nMidiInstr == m_pInstr->GetMIDIInstrument() 
         && nMidiChannel == m_pInstr->GetMIDIChannel())
 		return;		//nothing to change
 
+    //proceed to do changes
     if (pController)
     {
         //Changing an existing object. Do changes by issuing edit commands
@@ -262,7 +268,7 @@ void lmMidiProperties::OnComboGroup(wxCommandEvent& event)
 
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nSect = m_pGroupCombo->GetSelection();
-    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect);
+    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, 0, true);
     DoProgramChange();
 }
 
@@ -666,6 +672,9 @@ void lmInstrument::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabN
 
 void lmInstrument::OnPropertiesChanged()
 {
+    //AWARE: This method is invoked AFTER issuing the edit commands. Therefore, cannot
+    //be used to prevent issuing the commands
+
     if (m_pName->GetText() == _T(""))
     {
         delete m_pName;

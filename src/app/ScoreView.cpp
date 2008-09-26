@@ -2954,7 +2954,7 @@ void lmScoreView::SelectionDone(bool fRedraw)
 
     //redraw the view to show the selection
     if (fRedraw)
-        OnUpdate(this, new lmUpdateHint(lmREDRAW));
+        OnUpdate(this, new lmUpdateHint(lmDO_ONLY_REDRAW));
 
     //synchronize toolbox selected options with current selected object properties
     GetController()->SynchronizeToolBox();
@@ -2966,7 +2966,7 @@ void lmScoreView::DeselectAllGMObjects(bool fRedraw)
     {
         m_graphMngr.ClearSelection();
         if (fRedraw)
-            OnUpdate(this, new lmUpdateHint(lmREDRAW));
+            OnUpdate(this, new lmUpdateHint(lmDO_ONLY_REDRAW));
     }
 
     //restore toolbox selected options to those previously selected by user

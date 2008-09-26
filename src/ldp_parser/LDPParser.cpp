@@ -163,16 +163,9 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
     lmScore* pScore = (lmScore*) NULL;
 	m_pLastNoteRest = (lmNoteRest*)NULL;
 
-    //disable edition options that could interfere with direct score creation
-    bool fAutoBeam = g_fAutoBeam;
-    g_fAutoBeam = false;
-
     //proceed to create the score
     if (pRoot)
         pScore = AnalyzeScore(pRoot);
-
-    //restore edition options
-    g_fAutoBeam = fAutoBeam;
 
     // report errors
     bool fShowLog = true;
@@ -196,8 +189,8 @@ lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
     m_fFromString = true;                //parsing a string, not a file
     m_fStartingTextAnalysis = true;        //signal the start of a new analysis
     m_sLastBuffer = sSource + sEOF;        //load string to parse into buffer
-    return LexicalAnalysis();            // and proceed with the analysis
 
+    return LexicalAnalysis();            // and proceed with the analysis
 }
 
 bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
@@ -548,6 +541,10 @@ bool lmLDPParser::PopNode()
 
 lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
 {
+    //disable edition options that could interfere with direct score creation
+    bool fAutoBeam = g_fAutoBeam;
+    g_fAutoBeam = false;
+
     lmScore* pScore = (lmScore*) NULL;
     int i;
 
@@ -598,8 +595,10 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
             return pScore;
     }
 
-     return pScore;
+    //restore edition options
+    g_fAutoBeam = fAutoBeam;
 
+     return pScore;
 }
 
 lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)

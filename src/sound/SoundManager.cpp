@@ -157,10 +157,13 @@ void lmSoundManager::CloseTable()
 
     //Create the table of measures
     int nM = -1;
-    for (int i=0; i < (int)m_aEvents.GetCount(); i++) {
-        if (m_aEvents.Item(i)->Measure != nM) {
+    for (int i=0; i < (int)m_aEvents.GetCount(); i++)
+    {
+        if (m_aEvents.Item(i)->Measure != nM)
+        {
             m_aMeasures.Add(i);
             nM++;
+            //check that objects are in sequence
             wxASSERT(nM == m_aEvents.Item(i)->Measure || 0 == m_aEvents.Item(i)->Measure);
         }
     }

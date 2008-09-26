@@ -262,7 +262,8 @@ void lmShapeNote::DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPap
 	int nStaff = ((lmNote*)m_pOwner)->GetStaffNum();
     lmLUnits uThick = pVStaff->GetStaffLineThick(nStaff);
     uxLine -= pVStaff->TenthsToLogical(4, nStaff);
-    lmLUnits uLineLength = this->GetWidth() + pVStaff->TenthsToLogical(8, nStaff);
+    lmShape* pNoteHead = GetNoteHead();
+    lmLUnits uLineLength = pNoteHead->GetWidth() + pVStaff->TenthsToLogical(8, nStaff);
 
 	//force to paint lines of at least 1 px
 	lmLUnits uOnePixel = pPaper->DeviceToLogicalY(1);

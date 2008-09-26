@@ -240,7 +240,8 @@ enum
     MENU_WindowPrev,
 
     // Menu Help
-    MENU_OpenHelp,
+    MENU_Help_Open,
+    MENU_Help_QuickGuide,
     MENU_VisitWebsite,
 
     // Menu Print
@@ -372,9 +373,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU (MENU_WindowPrev, lmMainFrame::OnWindowPrev)
 
     // Help menu
-    EVT_MENU (MENU_Help_About, lmMainFrame::OnAbout)
-    EVT_MENU      (MENU_OpenHelp, lmMainFrame::OnOpenHelp)
-    EVT_UPDATE_UI (MENU_OpenHelp, lmMainFrame::OnOpenHelpUI)
+    EVT_MENU      (MENU_Help_About, lmMainFrame::OnAbout)
+    EVT_MENU      (MENU_Help_Open, lmMainFrame::OnHelpOpen)
+    EVT_MENU      (MENU_Help_QuickGuide, lmMainFrame::OnHelpQuickGuide)
     EVT_MENU      (lmMENU_CheckForUpdates, lmMainFrame::OnCheckForUpdates)
     EVT_MENU      (MENU_VisitWebsite, lmMainFrame::OnVisitWebsite)
 
@@ -628,7 +629,7 @@ void lmMainFrame::CreateMyToolBar()
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pToolbar->SetToolBitmapSize(nSize);
     m_pToolbar->AddTool(MENU_Preferences, _T("Preferences"), wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nSize), _("Set user preferences"));
-    m_pToolbar->AddTool(MENU_OpenHelp, _T("Help"), wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"));
+    m_pToolbar->AddTool(MENU_Help_Open, _T("Help"), wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"));
     m_pToolbar->Realize();
 
     //File toolbar
@@ -1266,18 +1267,20 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 
     wxMenu *help_menu = new wxMenu;
 #if defined(__WXMSW__) || defined(__WXGTK__)
-	pItem = new wxMenuItem(help_menu, MENU_Help_About, _("&About\tF1"),
+	pItem = new wxMenuItem(help_menu, MENU_Help_About, _("&About"),
 							_("Display information about program version and credits") );
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     help_menu->Append(pItem);
 
     help_menu->AppendSeparator();
 
-    pItem = new wxMenuItem(help_menu, MENU_OpenHelp,  _("&Content\tCtrl+Alt+F1"),
-                            _("Open help book"), wxITEM_CHECK);
-    #if !defined(__WXGTK__)
+    pItem = new wxMenuItem(help_menu, MENU_Help_QuickGuide,  _("Editor quick guide"),
+                            _("Show editor reference card") );
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
+    help_menu->Append(pItem);
+    
+    pItem = new wxMenuItem(help_menu, MENU_Help_Open,  _("&Content"), _("Open help book") );
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize) );
-    #endif
     help_menu->Append(pItem);
 
     help_menu->AppendSeparator();
@@ -1293,11 +1296,12 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     help_menu->Append(pItem);
 
 #else
-    help_menu->Append(MENU_Help_About, _("&About\tF1"),
+    help_menu->Append(MENU_Help_About, _("&About"),
                 _("Display information about program version and credits") );
     help_menu->AppendSeparator();
-    help_menu->Append(MENU_OpenHelp, _("&Content\tCtrl+Alt+F1"),
-        _("Open help book"), wxITEM_CHECK);
+    help_menu->Append(MENU_Help_QuickGuide, _("Editor quick guide"),
+                _("Show editor reference card") );
+    help_menu->Append(MENU_Help_Open, _("&Content"), _("Open help book") );
     help_menu->AppendSeparator();
     help_menu->Append(lmMENU_CheckForUpdates, _("Check now for &updates"),
         _("Connect to the Internet and check for program updates") );
@@ -1626,6 +1630,21 @@ void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
    dlg.ShowModal();
 }
 
+void lmMainFrame::OnHelpQuickGuide(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sPath = g_pPaths->GetLocalePath();
+    wxFileName oFile(sPath, _T("editor_quick_guide.htm"), wxPATH_NATIVE);
+	if (!oFile.FileExists())
+	{
+		//use english version
+		sPath = g_pPaths->GetLocaleRootPath();
+		oFile.AssignDir(sPath);
+		oFile.AppendDir(_T("en"));
+		oFile.SetFullName(_T("editor_quick_guide.htm"));
+	}
+    ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
+}
+
 void lmMainFrame::OnExportMusicXML(wxCommandEvent& WXUNUSED(event))
 {
 	//TODO
@@ -1688,7 +1707,7 @@ void lmMainFrame::ExportAsImage(int nImgType)
 
 }
 
-void lmMainFrame::OnOpenHelp(wxCommandEvent& event)
+void lmMainFrame::OnHelpOpen(wxCommandEvent& event)
 {
     if (m_fHelpOpened) {
         //The help is open. Close it.
@@ -1717,11 +1736,6 @@ void lmMainFrame::OnOpenHelp(wxCommandEvent& event)
         m_fHelpOpened = true;
     }
 
-}
-
-void lmMainFrame::OnOpenHelpUI(wxUpdateUIEvent &event)
-{
-    event.Check (m_fHelpOpened);
 }
 
 void lmMainFrame::SetOpenHelpButton(bool fPressed)

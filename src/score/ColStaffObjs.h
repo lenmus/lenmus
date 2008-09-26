@@ -63,6 +63,7 @@ enum ETraversingOrder
     eTR_ByTime,				//ordered by timepos
 };
 
+#define lmNO_TIME_LIMIT     100000000.0f        //a too big measure duration
 
 #define lmItMeasure		std::list<lmSegmentData*>::iterator
 #define lmItCSO			std::list<lmStaffObj*>::iterator
@@ -90,10 +91,16 @@ public:
 
     //info
 	inline int GetNumSegment() { return m_nNumSegment; }
-    int GetNumVoices();
-    bool IsVoiceUsed(int nVoice);
+    bool IsSegmentFull();
     inline float GetDuration() { return m_rMaxTime; }
+    float GetMaximumTime();
     inline bool IsEmpty() { return m_StaffObjs.size() == 0; }
+    bool HasBarline();
+
+    //voices
+    int GetNumVoices();
+    int StartNewVoice();
+    bool IsVoiceUsed(int nVoice);
 
     //access to staffobjs
     lmBarline* GetBarline();
@@ -214,11 +221,11 @@ private:
 	void UpdateSegmentContexts(lmSegment* pSegment);
     lmSegment* GetNextSegment(int nCurSegment);
 
-    //segments management: AutoReBar
+    //AutoReBar
     void AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO, lmTimeSignature* pNewTS);
 
 	//voices management
-	void AssignVoice(lmStaffObj* pSO, int nSegment);
+	int AssignVoice(lmStaffObj* pSO, int nSegment);
 
 	//timepos management
     void AssignTime(lmStaffObj* pSO);

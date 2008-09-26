@@ -36,7 +36,7 @@
 #include "MidiWizard.h"
 
 // MIDI support throgh Portmidi lib
-#include "../../wxMidi/include/wxMidi.h"
+#include "wxMidi.h"
 
 //access to Midi configuration
 #include "../sound/MidiManager.h"

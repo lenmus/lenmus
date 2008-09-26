@@ -188,15 +188,17 @@ public:
     // Voice events
     void OnComboVoice(wxCommandEvent& event);
 
+    //Help menu
+    void OnAbout(wxCommandEvent& WXUNUSED(event));
+    void OnHelpQuickGuide(wxCommandEvent& WXUNUSED(event));
+    void OnHelpOpen(wxCommandEvent& event);
+    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
+    void OnVisitWebsite(wxCommandEvent& WXUNUSED(event));
+
     // Other menu items events
     void OnOptions(wxCommandEvent& WXUNUSED(event));
     void OnOpenBook(wxCommandEvent& event);
     void OnOpenBookUI(wxUpdateUIEvent& event);
-    void OnAbout(wxCommandEvent& WXUNUSED(event));
-    void OnOpenHelp(wxCommandEvent& event);
-    void OnOpenHelpUI(wxUpdateUIEvent& event);
-    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
-    void OnVisitWebsite(wxCommandEvent& WXUNUSED(event));
 
     //other even managers
     void OnMetronomeTimer(wxTimerEvent& event);

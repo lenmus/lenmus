@@ -290,6 +290,14 @@ void lmTextProperties::OnAcceptChanges(lmController* pController)
             sResult += sNewText[n];
     }
 
+    //if text not changed and is empty or nothing else changed, return. Nothing to do
+    if (sResult == m_pParentText->GetText()
+        && (sResult == _T("")
+            || (m_nHAlign == m_pParentText->GetAlignment()
+                && pStyle == m_pParentText->GetStyle() )))
+        return;
+
+    //Proceed to do the changes
     if (pController)
     {
         //Editing an existing object. Do changes by issuing edit commands

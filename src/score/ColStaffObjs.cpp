@@ -1566,6 +1566,19 @@ void lmSegment::VoiceUsed(int nVoice)
     m_bVoices |= bMask;
 }
 
+int lmSegment::StartNewVoice()
+{
+    //starts a new voice in the range 1..lmMAX_VOICE (voice 0 is reserved).
+    //returns new voice number
+    for (int i=1; i <= lmMAX_VOICE; i++)
+    {
+        if (!IsVoiceUsed(i))
+            return i;
+    }
+    wxASSERT(false);    //not enough voices!!
+    return 0;
+}
+
 void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
                        bool fKeyKeepPitch)
 {
@@ -1697,6 +1710,11 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 			//and sort the collection by timepos
 			m_StaffObjs.sort(SortCompare);
 		}
+
+        //update barline timepos, to allow for irregular measures
+        lmBarline* pBL = GetBarline();
+        if (pBL)
+            pBL->SetTimePos(m_rMaxTime);
 	}
 
 	////DBG  ------------------------------------------------------------------
@@ -1898,6 +1916,42 @@ void lmSegment::UpdateDuration()
         m_rMaxTime = 0.0f;          //segment is empty 
     else
         m_rMaxTime = (*it)->GetTimePos() + (*it)->GetTimePosIncrement();
+}
+
+float lmSegment::GetMaximumTime()
+{
+    //returns theoretical segment duration for current time signature
+
+    //get last SO in this segment
+	lmItCSO it = m_StaffObjs.end();
+    --it;
+    if (it == m_StaffObjs.end())
+        return lmNO_TIME_LIMIT;
+
+    //get applicable time signature
+    lmTimeSignature* pTS = (*it)->GetApplicableTimeSignature();
+    if (!pTS)
+        return lmNO_TIME_LIMIT;   //no time signature -> infinite segment
+
+    return pTS->GetMeasureDuration();
+}
+
+bool lmSegment::HasBarline()
+{
+    //get last SO in this segment
+	lmItCSO it = m_StaffObjs.end();
+    --it;
+    if (it == m_StaffObjs.end())
+        return false;
+
+    return (*it)->IsBarline();
+}
+
+bool lmSegment::IsSegmentFull()
+{
+    //determine if segment is full
+    float rMeasureDuration = GetMaximumTime();
+    return !IsLowerTime(m_rMaxTime, rMeasureDuration);
 }
 
 wxString lmSegment::Dump()
@@ -2309,39 +2363,42 @@ void lmColStaffObjs::AddStaff()
     m_nNumStaves++;
 }
 
-void lmColStaffObjs::AssignVoice(lmStaffObj* pSO, int nSegment)
+int lmColStaffObjs::AssignVoice(lmStaffObj* pSO, int nSegment)
 {
-    //assigns voice (1..n) to the staffobj
+    //assigns voice (1..n) to the staffobj.
 
-    // if it is not a note/rest, return: only note/rests have voice
-    if (!pSO->IsNoteRest()) return;
+    wxASSERT(pSO->IsNoteRest());     //only note/rests have voice
 
-    //if voice already assigned, return: nothing to do
-    if (((lmNoteRest*)pSO)->GetVoice() != 0) return;
+    //Auto-voice algorithm. Rules:
+    //  1. if a measure is not full do not change from voice 1 (from voice assigned to this staff)
+    //  2. if a note is in staff 1 assign voice 1 (assign voice = num.staff if possible)
+    //  3. if in staff 2 do not use voice 1 (do not use voices assigned to other staves)
 
-    //No voice assigned. Auto-voice algorithm:
-    // we have to assign it a voice. Let's determine if there are note/rests
-    // in timepos range [timepos, timepos+object_duration)
-
-    // First, lets check if default staff voice is suitable
+    //rule 1: if measure is not full do not change from voice assigned to this staff
     int iV = pSO->GetStaffNum();
+    if (!m_Segments[nSegment]->IsSegmentFull())
+        return iV;  
+
+    //Determine if there are note/rests in timepos range [timepos, timepos+object_duration)
+
+    //Check if default staff voice is suitable
     bool fOccupied = IsTimePosOccupied(m_Segments[nSegment], pSO->GetTimePos(),
                                     pSO->GetTimePosIncrement(), iV);
 
-    // else, loop to find empty voice in this timepos range
-    int nNumVoices = m_Segments[nSegment]->GetNumVoices() - 1;  //AWARE: substract 1 because voice #0 is counted in GetNumVoices()
-    for(iV=1; fOccupied && iV <= nNumVoices; iV++)
+    //else, loop to find empty voice in this timepos range
+    for(; fOccupied && iV <= lmMAX_VOICE; iV++)
     {
-        fOccupied = IsTimePosOccupied(m_Segments[nSegment], pSO->GetTimePos(),
+        if (m_Segments[nSegment]->IsVoiceUsed(iV))
+            fOccupied = IsTimePosOccupied(m_Segments[nSegment], pSO->GetTimePos(),
                                     pSO->GetTimePosIncrement(), iV);
     }
 
-    // if no empty voice found, start a new voice.
+    //if no empty voice found, start a new voice.
     if (fOccupied)
-        iV = ++nNumVoices;
+        iV = m_Segments[nSegment]->StartNewVoice();
 
-    // done. set the voice
-    ((lmNoteRest*)pSO)->SetVoice(iV);
+    //done
+    return iV;
 }
 
 bool lmColStaffObjs::IsTimePosOccupied(lmSegment* pSegment, float rTime, float rDuration,
@@ -2423,7 +2480,13 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
 
     //assign timepos and voice to the StaffObj
 	AssignTime(pNewSO);
-	AssignVoice(pNewSO, nSegment);
+
+    // if it is a note/rest without voice assigned, assign it a voice
+    if (pNewSO->IsNoteRest() && ((lmNoteRest*)pNewSO)->GetVoice() == 0)
+    {
+	    int iV = AssignVoice(pNewSO, nSegment);
+        ((lmNoteRest*)pNewSO)->SetVoice(iV);
+    }
 
 	//store new object in the collection
     lmStaffObj* pCursorObj = m_pVCursor->GetStaffObj();
@@ -2451,8 +2514,10 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
             m_pVCursor->AdvanceToNextSegment();
         }
         else
-            //Advance cursor to time t + duration of inserted object
-            m_pVCursor->AdvanceToTime(pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement() );
+        {
+            //We are at end of score. Advance cursor to time t + duration of inserted object
+            m_pVCursor->AdvanceToTime( pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement() );
+        }
     }
     else
     {
@@ -2464,10 +2529,18 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
             m_pVCursor->MoveCursorToObject( pCursorSO );
         }
         else
+        {
             //Cursor is pointing to object after the inserted one but could be of different
             //voice. And cursor timepos is not updated as the collection has been altered.
             //So we have to reposition cursor at right time and right object.
-            m_pVCursor->MoveToTime( pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement() );
+            //Advance cursor to time t + duration of inserted object or to next measure
+            //if we are at end of measure
+            float rTime = pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement();
+            if (!IsLowerTime(rTime, m_Segments[nSegment]->GetMaximumTime()) )
+                m_pVCursor->AdvanceToNextSegment();
+            else
+                m_pVCursor->MoveToTime(rTime);
+        }
     }
 
 }
@@ -2689,7 +2762,10 @@ void lmColStaffObjs::LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj
 
 int lmColStaffObjs::GetNumMeasures()
 {
-    //returns the number of measures in the collection
+    //AWARE This method returns the number of segments but the last one is empty 
+    //if the score ends with a barline.
+    //TODO. Create a new method GetNumRealMeasures and change name of this method
+    //to GetNumSegments
     return m_Segments.size();
 }
 

@@ -1,18 +1,18 @@
 //--------------------------------------------------------------------------------------
 //    LenMus project: free software for music theory and language
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2008 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
+//    either version 3 of the License, or (at your option) any later version.
 //
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
-//    Fifth Floor, Boston, MA  02110-1301, USA.
+//    program. If not, see <http://www.gnu.org/licenses/>. 
+//
 //
 //    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
@@ -1309,7 +1309,7 @@ void lmEbookProcessor::CreateBookCover()
     //    _T("<body bgcolor='#808080'>\n")
     //    _T("\n")
     //    _T("<center>\n")
-    //    _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+    //    _T("<table width='720' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
     //    _T("<tr><td bgcolor='#ffffff'>\n")
     //    _T("\n")
     //    _T("<!-- banner -->\n")
@@ -1356,7 +1356,7 @@ void lmEbookProcessor::CreateBookCover()
     WriteToHtml(
         _T("<body bgcolor='#808080'>\n")
         _T("<center>\n")
-        _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+        _T("<table width='720' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#ffffff'>\n")
         _T("\n")
         _T("<!-- banner -->\n")
@@ -1371,7 +1371,7 @@ void lmEbookProcessor::CreateBookCover()
         _T("<tr><td>\n")
 	    _T("    <br /><br /><br /><br />\n")
 	    _T("    <br /><br /><br /><br />\n")
-        _T("</td><td width='30px'>&nbsp;</td></tr>\n")
+        _T("</td><td width='30'>&nbsp;</td></tr>\n")
         _T("<tr><td><h1>") + m_sBookTitle + _T("</h1></td><td>&nbsp;</td></tr>\n")
         _T("<tr><td><h3>") + m_sAuthorName + _T("</h3></td><td>&nbsp;</td></tr>\n")
         _T("<tr><td>\n") + m_sBookAbstract +
@@ -1395,7 +1395,7 @@ void lmEbookProcessor::CreateBookCover()
     //    _T("<body bgcolor='#808080'>\n")
     //    _T("\n")
     //    _T("<center>\n")
-    //    _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+    //    _T("<table width='720' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
     //    _T("<tr><td bgcolor='#ffffff'>\n")
     //    _T("\n")
     //    _T("<!-- banner -->\n")
@@ -1555,7 +1555,7 @@ void lmEbookProcessor::TerminateHtmlFile()
 
     // Write footer
     WriteToHtml(
-        _T("</td><td bgcolor='#ffffff' width='10px'></td></tr></table>\n")
+        _T("</td><td bgcolor='#ffffff' width='20'></td></tr></table>\n")
         _T("\n")
         _T("<br /><br /><br /><br />\n")
         _T("<br /><br /><br /><br />\n")
@@ -1695,7 +1695,7 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
         _T("<body bgcolor='#808080'>\n")
         _T("\n")
         _T("<center>\n")
-        _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+        _T("<table width='720' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#ffffff'>\n")
         _T("\n")
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
@@ -1714,7 +1714,7 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
         _T("\n")
         _T("<br />\n")
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-        _T("<tr><td bgcolor='#ffffff' width='14px'></td>\n")
+        _T("<tr><td bgcolor='#ffffff' width='30'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n")
         _T("<td>\n") );
 
 }

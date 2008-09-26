@@ -169,8 +169,9 @@ void lmScoreCtrol::CreateControls()
 	//the v2.0 behaviour
     if (m_pOptions->fMeasuresCtrol)
     {
-        int nNumMeasures = wxMin(m_pScore->GetNumMeasures(), 10);
-		wxMessageBox(wxString::Format(_T("nNumMeasures=%d"), nNumMeasures));
+        //GetNumMeasures returns the number of segments but the last one is empty 
+        //if the score ends with a barline. Therefore, we need to substract 1
+        int nNumMeasures = wxMin(m_pScore->GetNumMeasures() - 1, 10);
         for (int i=0; i < nNumMeasures; i++) {
             m_pMeasureLink[i] =
                 new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, rScale,

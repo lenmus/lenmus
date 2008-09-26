@@ -46,6 +46,7 @@
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeBeam.h"
 #include "../graphic/GMObject.h"
+#include "../app/Preferences.h"         //g_fAutoBeam
 
 
 //global static variables common to all notes
@@ -241,6 +242,10 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 
     // Generate beaming information -----------------------------------------------------
     CreateBeam(fBeamed, BeamInfo);
+
+    //if this is last note of beam and AutoBeam enabled, do auto-beam
+    if (m_pBeam && g_fAutoBeam && m_BeamInfo[0].Type == eBeamEnd)
+            m_pBeam->AutoSetUp();
 
     //initializations for renderization
     m_uSpacePrev = 0;
@@ -529,11 +534,11 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
 
 
-    //if this is the first note/rest of a beam, create the beam
+    //if this is the first note/rest of a beam, create the beam shape
     //AWARE This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
-    if (m_pBeam && m_BeamInfo[0].Type == eBeamBegin) {
-        m_pBeam->AutoSetUp();
+    if (m_pBeam && m_BeamInfo[0].Type == eBeamBegin)
+    {
         m_pBeam->CreateShape();
     }
 
@@ -566,9 +571,13 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         //TODO user selectable
         lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         lmLUnits uyPos = uyTop;
-        if (nPosOnStaff % 2 == 0) {
-            // notehead is over a line. Shift up the dots by half line
-            uyPos -= m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+        if (nPosOnStaff % 2 == 0)
+        {
+            // notehead is place on a line. Shift up/down the dots by half line
+            if (m_fStemDown)
+                uyPos -= m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+            else
+                uyPos += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         }
         for (int i = 0; i < m_nNumDots; i++)
         {

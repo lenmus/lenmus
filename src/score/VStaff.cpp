@@ -552,7 +552,12 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 
     //if this note fills up a measure and AutoBar option is enabled, insert a simple barline
     if (fAutoBar)
-        CheckAndDoAutoBar(pUndoItem, pNt);
+    {
+        //AutoBar is only applied when we are at end of score
+        lmSegment* pSegment = pNt->GetSegment();
+        if (!pSegment->HasBarline())
+            CheckAndDoAutoBar(pUndoItem, pNt);
+    }
 
     return pNt;
 }

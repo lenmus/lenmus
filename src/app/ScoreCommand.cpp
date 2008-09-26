@@ -629,7 +629,7 @@ bool lmCmdUserMoveScoreObj::Do()
 
     m_tOldPos = m_pSO->SetUserLocation(m_tPos, m_nShapeIdx);
 
-	return CommandDone(lmSCORE_MODIFIED);  //, lmREDRAW);
+	return CommandDone(lmSCORE_MODIFIED);  //, lmDO_ONLY_REDRAW);
 }
 
 bool lmCmdUserMoveScoreObj::UndoCommand()
@@ -1472,7 +1472,7 @@ bool lmCmdChangePageMargin::Do()
     //Direct command. NO UNDO LOG
 
     ChangeMargin(m_uNewPos);
-	return CommandDone(lmSCORE_MODIFIED);  //, lmREDRAW);
+	return CommandDone(lmSCORE_MODIFIED);  //, lmDO_ONLY_REDRAW);
 }
 
 bool lmCmdChangePageMargin::UndoCommand()
@@ -1559,7 +1559,7 @@ bool lmCmdAttachNewText::Do()
 
     m_pAnchor->AttachAuxObj(m_pNewText);
     m_fDeleteText = false;
-	return CommandDone(lmSCORE_MODIFIED);  //, lmREDRAW);
+	return CommandDone(lmSCORE_MODIFIED);  //, lmDO_ONLY_REDRAW);
 }
 
 bool lmCmdAttachNewText::UndoCommand()
@@ -1712,7 +1712,7 @@ bool lmCmdChangeMidiSettings::Do()
 
     m_pInstr->SetMIDIChannel(m_nMidiChannel);
     m_pInstr->SetMIDIInstrument(m_nMidiInstr);
-	return CommandDone(lmSCORE_MODIFIED);
+	return CommandDone(lmSCORE_MODIFIED, lmDO_ONLY_REDRAW);
 }
 
 bool lmCmdChangeMidiSettings::UndoCommand()

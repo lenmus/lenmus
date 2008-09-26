@@ -47,12 +47,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib wxmidiud.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus_d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;"
+				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
@@ -1310,6 +1310,9 @@
 			</File>
 			<File
 				RelativePath="..\..\packages\wxMidi\src\wxMidi.cpp">
+			</File>
+			<File
+				RelativePath="..\..\packages\wxMidi\include\wxMidi.h">
 			</File>
 			<File
 				RelativePath="..\..\packages\wxMidi\src\wxMidiDatabase.cpp">

@@ -117,7 +117,7 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
 
     //get options
     bool fUseBitmaps = !(nOptions & lmNO_BITMAPS);
-    bool fReDraw = nOptions & lmREDRAW;
+    bool fReDraw = nOptions & lmDO_ONLY_REDRAW;
 
     wxBitmap* pBitmap = (wxBitmap*)NULL;
     if (fUseBitmaps)
@@ -195,7 +195,7 @@ bool lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmL
     // - if paper size has changed and not re-layout prevented (option lmNO_RELAYOUT_ON_PAPER_RESIZE)
     // - if explicitly requested (option lmFORCE_RELAYOUT)
     bool fLayoutScore = !m_pScore || m_fReLayout || m_nLastScoreID != pScore->GetID()
-				|| ( m_pScore->IsModified() && !(nOptions & lmREDRAW) )
+				|| ( m_pScore->IsModified() && !(nOptions & lmDO_ONLY_REDRAW) )
                 || (nOptions & lmFORCE_RELAYOUT)
                 || ( (m_xPageSize != paperWidth || m_yPageSize != paperHeight) &&
                      !(nOptions & lmNO_RELAYOUT_ON_PAPER_RESIZE) );
