@@ -1,0 +1,21 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (group symbol:brace joinBarlines:no
+       (instrument (name "Trumpet")(abbrev "Tpt.")(infoMIDI 56 1)
+          (musicData
+             (clef treble)
+          )
+       )
+       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 1)
+          (musicData
+             (clef treble)
+          )
+       )
+       (instrument (name "Trombone")(abbrev "Tbn.")(infoMIDI 57 1)
+          (musicData
+             (clef bass)
+          )
+       )
+   )
+)
+

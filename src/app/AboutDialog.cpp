@@ -45,7 +45,7 @@ extern bool g_fReleaseBehaviour;    // This flag is only used to force release b
                                     // in debug mode, and only for some functions (the ones using this flag)
 
 //to get wxMidi version
-#include "../../wxMidi/include/wxMidi.h"
+#include "wxMidi.h"
 
 #include "TheApp.h"         //to get access to locale info.
 

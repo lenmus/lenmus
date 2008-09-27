@@ -125,23 +125,25 @@ typedef struct lmTemplateDataStruct
 } lmTemplateData;
 
 static lmTemplateData m_Templates[] = {
-        //    Displayed name                Template                Portrait
-        { _("Empty (manuscript paper)"),    _T(""),                 true },
-        { _("Choir 4 voices (SATB)"),       _T("choir_SATB.lms"),   false },
-        { _("Choir SATB + piano"),          _T("x"),                true },
-        { _("Choir 3 voices (SSA)"),        _T("x"),                true },
-        { _("Choir SSA + piano"),           _T("x"),                true },
-        { _("Flute"),                       _T("flute.lms"),        true },
-        { _("Guitar"),                      _T("guitar.lms"),       true },
-        { _("Jazz quartet"),                _T("x"),                true },
-        { _("Lead sheet"),                  _T("x"),                true },
-        { _("Piano"),                       _T("piano.lms"),        true },
-        { _("Voice + keyboard"),            _T("voice_keyboard.lms"), true },
-        { _("String quartet"),              _T("x"),                true },
-        { _("String trio"),                 _T("x"),                true },
-        { _("Violin"),                      _T("violin.lms"),       true },
-        { _("Woodwind trio"),               _T("x"),                true },
-        { _("Woodwind quartet"),            _T("x"),                true },
+        //    Displayed name                Template                    Portrait
+        { _("Empty (manuscript paper)"),    _T(""),                     true },
+        { _("Brass quintet"),               _T("brass_quintet.lms"),    true },
+        { _("Brass trio"),                  _T("brass_trio.lms"),       true },
+        { _("Choir 4 voices (SATB)"),       _T("choir_SATB.lms"),       true },
+        { _("Choir SATB + piano"),          _T("choir_SATB_piano.lms"), true },
+        { _("Choir 3 voices (SSA)"),        _T("choir_SSA.lms"),        true },
+        { _("Choir SSA + piano"),           _T("choir_SSA_piano.lms"),  true },
+        { _("Flute"),                       _T("flute.lms"),            true },
+        { _("Guitar"),                      _T("guitar.lms"),           true },
+        { _("Piano"),                       _T("piano.lms"),            true },
+        { _("Violin and piano"),            _T("violin_piano.lms"),     true },
+        { _("Viola and piano"),             _T("viola_piano.lms"),      true },
+        { _("Cello and piano"),             _T("cello_piano.lms"),      true },
+        { _("String quartet"),              _T("string_quartet.lms"),   true },
+        { _("Violin"),                      _T("violin.lms"),           true },
+        { _("Trio sonata"),                 _T("trio_sonata.lms"),      true },
+        { _("Woodwind trio"),               _T("woodwind_trio.lms"),    true },
+        { _("Woodwind quintet"),            _T("woodwind_quintet.lms"), true },
 };
 
 //template to use

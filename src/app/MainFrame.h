@@ -273,6 +273,11 @@ protected:
     void LoadRecentFiles();
     void SaveRecentFiles();
 
+    //menu bar
+    void AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,
+                     const wxString& sToolTip = _T(""),
+                     wxItemKind nKind = wxITEM_NORMAL,
+                     const wxString& sIconName = _T("empty") );
 
     //status bar
     void CreateTheStatusBar(int nType=0);

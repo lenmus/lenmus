@@ -243,10 +243,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     // Generate beaming information -----------------------------------------------------
     CreateBeam(fBeamed, BeamInfo);
 
-    //if this is last note of beam and AutoBeam enabled, do auto-beam
-    if (m_pBeam && g_fAutoBeam && m_BeamInfo[0].Type == eBeamEnd)
-            m_pBeam->AutoSetUp();
-
     //initializations for renderization
     m_uSpacePrev = 0;
 
@@ -539,6 +535,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //change stem direction if it is not determined for some/all the notes in the beam
     if (m_pBeam && m_BeamInfo[0].Type == eBeamBegin)
     {
+        m_pBeam->AutoSetUp();
         m_pBeam->CreateShape();
     }
 

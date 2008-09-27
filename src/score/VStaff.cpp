@@ -343,6 +343,20 @@ lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFif
 {
     //It must return NULL if not succedeed
 
+    //if there are notes affected by new key, get user desired behaviour
+    int nAction = 1;        //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
+    if (CheckIfNotesAffectedByKey())
+        nAction = AskUserAboutKey();
+
+    if (nAction == 0)
+        return (lmKeySignature*)NULL;       //Cancel clef insertion
+
+    //bool fClefKeepPosition = (nAction == 2);
+
+    ////save answer for undo/redo
+    //lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    //pUndoData->AddParam<bool>(fClefKeepPosition);
+
     lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
     if ( InsertKeyTimeSignature(pUndoItem, pKS) )
         return pKS;
@@ -714,7 +728,48 @@ int lmVStaff::AskUserAboutClef()
     //When a clef is inserted/deleted or changed it might be necessary to update
     //following note pitches. If this is the case, this method ask user what to do:
     //maintain pitch->move notes, or change pitch->do not reposition notes. 
-    //User might also choose to cancel the deletion.
+    //User might also choose to cancel the operation.
+    //Returns:
+    //  0=Cancel operation, 1=keep pitch, 2=keep position
+
+    lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
+    long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_CHANGE);  //0=ask, 1=keep pitch, 2=keep position
+    if (nOptValue == 0)
+    {
+        wxString sQuestion = _("Notes after the clef will be affected by this action.");
+        sQuestion += _T("\n\n");
+        sQuestion +=
+_("Would you like to keep notes' pitch and, therefore, to change \
+notes' positions on the staff? or, would you prefer to keep notes \
+placed on their current staff positions? (implies pitch change)");
+
+        lmQuestionBox oQB(sQuestion, 3,     //msge, num buttons,
+            //labels (2 per button: button text + explanation)
+            _("Keep position"), _("Change notes' pitch and keep their current staff position."),
+            _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
+            _("Cancel"), _("The insert, delete or change clef command will be cancelled.") 
+        );
+        int nAnswer = oQB.ShowModal();
+
+		if (nAnswer == 0)       //'Keep position' button
+            return 2;
+        else if (nAnswer == 1)  //'Keep pitch' button
+            return 1;
+        else
+            return 0;       //Cancel operation
+    }
+    else
+         return (int)nOptValue;
+}
+
+
+int lmVStaff::AskUserAboutKey()
+{
+    //When a key is inserted/deleted or changed it might be necessary to update
+    //following notes. If this is the case, this method ask user what to do:
+    //maintain note's pitch (=> add/remove accidentals), or change pitch of affected notes
+    //(do not add/remove accidentals). 
+    //User might also choose to cancel the operation.
     //Returns:
     //  0=Cancel operation, 1=keep pitch, 2=keep position
 
@@ -2568,6 +2623,12 @@ bool lmVStaff::CheckIfNotesAffectedByClef()
     //clef found before finding a note or no note found
     delete pIter;
     return false;
+}
+
+bool lmVStaff::CheckIfNotesAffectedByKey()
+{
+    //TODO
+    return true;
 }
 
 bool lmVStaff::ShiftTime(float rTimeShift)

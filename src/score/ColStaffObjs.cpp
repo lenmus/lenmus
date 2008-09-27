@@ -2162,7 +2162,7 @@ void lmSegment::AutoBeam(int nVoice)
     int nBeatType = pTS->GetBeatType();
     int nBeats = pTS->GetNumBeats();
 
-    //Explore all segment (only involved voice) and select notes/rests that should be beamed
+    //Explore all segment (only involved voice) and select notes/rests that could be beamed
 	for (; it != m_StaffObjs.end(); ++it)
 	{
 		if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == nVoice)
@@ -2172,7 +2172,7 @@ void lmSegment::AutoBeam(int nVoice)
             int nPos = GetNoteBeatPosition(pNR->GetTimePos(), nBeats, nBeatType);
             if (nPos != lmOFF_BEAT)     //nPos = lmOFF_BEAT or number of beat (0..n)
             {
-                //A new beat starts. Terminate previous beam and start a new one
+                //A new beat could start. Terminate previous beam and start a new one
                 AutoBeam_CreateBeam(cBeamedNotes);
                 cBeamedNotes.clear();
             }
@@ -2180,6 +2180,12 @@ void lmSegment::AutoBeam(int nVoice)
             //add note to current beam if smaller than an eighth
             if (pNR->GetNoteType() > eQuarter)
                 cBeamedNotes.push_back(pNR);
+            else
+            {
+                //current note connot be beamed. Crete the beam with previous notes
+                AutoBeam_CreateBeam(cBeamedNotes);
+                cBeamedNotes.clear();
+            }
         }
 	}
 

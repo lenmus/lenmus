@@ -322,7 +322,9 @@ private:
 
     //operations
     int AskUserAboutClef();
+    int AskUserAboutKey();
     bool CheckIfNotesAffectedByClef();
+    bool CheckIfNotesAffectedByKey();
 
     //barlines
     void CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR);

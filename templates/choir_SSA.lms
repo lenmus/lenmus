@@ -1,0 +1,21 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (group symbol:brace joinBarlines:no
+       (instrument (name "Soprano")(abbrev "S")(infoMIDI 40 1)  //40 - Violin
+          (musicData
+             (clef treble)
+          )
+       )
+       (instrument (name "Soprano")(abbrev "S")(infoMIDI 62 1)  //62 - Saxo alto
+          (musicData
+             (clef treble)
+          )
+       )
+       (instrument (name "Alto")(abbrev "A")(infoMIDI 71 1)    //71 - Clarinet
+          (musicData
+             (clef treble)
+          )
+       )
+   )
+)
+

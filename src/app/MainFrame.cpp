@@ -262,9 +262,11 @@ enum
 
   // special IDs
 
-    // it is important for the id corresponding to the "About" command to have
-    // this standard value as otherwise it won't be handled properly under Mac
-    // (where it is special and put into the "Apple" menu)
+    //wxID_ABOUT and wxID_EXIT are predefined by wxWidgets and have a special meaning
+    //since entries using these IDs will be taken out of the normal menus under MacOS X 
+    //and will be inserted into the system menu (following the appropriate MacOS X 
+    //interface guideline). On PalmOS wxID_EXIT is disabled according to Palm OS 
+    //Companion guidelines.
     MENU_Help_About = wxID_ABOUT,
 
 
@@ -966,348 +968,239 @@ void lmMainFrame::DeleteTheStatusBar()
     SendSizeEvent();
 }
 
+void lmMainFrame::AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,
+                              const wxString& sToolTip, wxItemKind nKind,
+                              const wxString& sIconName)
+{
+    //Create a menu item and add it to the received menu
+
+    wxMenuItem* pItem = new wxMenuItem(pMenu, nId, sItemName, sToolTip, nKind);
+
+    //icons are supported only in Windows and Linux
+    #if defined(__WXMSW__) || defined(__WXGTK__)
+    pItem->SetBitmap( wxArtProvider::GetBitmap(sIconName, wxART_TOOLBAR, wxSize(16, 16)) );
+    #endif
+
+    pMenu->Append(pItem);
+}
 
 wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 {
     //Centralized code to create the menu bar
+    //bitmaps on menus are supported only on Windows and GTK+
 
 	bool fDebug = !g_fReleaseVersion;
-
-    // file menu
-    wxMenu* file_menu = new wxMenu;
-    wxMenu* pExportMenu = new wxMenu;
-
-#if defined(__WXMSW__) || defined(__WXGTK__)
-    //bitmaps on menus are supported only on Windows and GTK+
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
 
-    pItem = new wxMenuItem(file_menu, MENU_File_New, _("&New\tCtrl+N"), _("New blank score"), wxITEM_NORMAL);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
+    // file menu --------------------------------------------------------------------------
+    wxMenu* pMenuFile = new wxMenu;
+    wxMenu* pSubmenuExport = new wxMenu;
 
-    pItem = new wxMenuItem(file_menu, wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
+    AddMenuItem(pMenuFile, MENU_File_New, _("&New\tCtrl+N"),
+                _("Open new blank score"), wxITEM_NORMAL, _T("tool_new"));
+    AddMenuItem(pMenuFile, wxID_OPEN, _("&Open ...\tCtrl+O"),
+                _("Open a score"), wxITEM_NORMAL, _T("tool_open"));
+    AddMenuItem(pMenuFile, MENU_OpenBook, _("Open &books"),
+                _("Hide/show eMusicBooks"), wxITEM_NORMAL, _T("tool_open_ebook"));
+    AddMenuItem(pMenuFile, MENU_File_Import, _("&Import..."), 
+                _("Open a MusicXML score"), wxITEM_NORMAL);
 
-    pItem = new wxMenuItem(file_menu, MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
+    //-- export submenu --
+    AddMenuItem(pSubmenuExport, MENU_File_Export_MusicXML, _("MusicXML format"), 
+                _("Save score as a MusicXML file"), wxITEM_NORMAL);
+    AddMenuItem(pSubmenuExport, MENU_File_Export_bmp, _("As &bmp image"), 
+                _("Save score as BMP images"), wxITEM_NORMAL, _T("tool_save_as_bmp"));
+    AddMenuItem(pSubmenuExport, MENU_File_Export_jpg, _("As &jpg image"), 
+                _("Save score as JPG images"), wxITEM_NORMAL, _T("tool_save_as_jpg"));
 
-    pItem = new wxMenuItem(file_menu, MENU_File_Import, _("&Import..."), _("Open a MusicXML score"), wxITEM_NORMAL);
+    pItem = new wxMenuItem(pMenuFile, MENU_File_Export, _("&Export ..."), 
+                          _("Save score in other formats"), wxITEM_NORMAL, pSubmenuExport);
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
+    pMenuFile->Append(pItem);
 
-    //export submenu -----------------------------------------------
-    pItem = new wxMenuItem(pExportMenu, MENU_File_Export_MusicXML, _("MusicXML format"), _("Save score as a MusicXML file"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    pExportMenu->Append(pItem);
+    //-- end of export submenu --
 
-    pItem = new wxMenuItem(pExportMenu, MENU_File_Export_bmp, _("As &bmp image"), _("Save score as BMP images"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save_as_bmp"), wxART_TOOLBAR, nIconSize) );
-    pExportMenu->Append(pItem);
+    AddMenuItem(pMenuFile, wxID_SAVE, _("&Save\tCtrl+S"),
+                _T(""), wxITEM_NORMAL, _T("tool_save"));
+    AddMenuItem(pMenuFile, wxID_SAVEAS, _("Save &as ..."),
+                _T(""), wxITEM_NORMAL);
+    AddMenuItem(pMenuFile, wxID_CLOSE, _("&Close\tCtrl+W"), 
+                _("Close a score"), wxITEM_NORMAL);
+    pMenuFile->AppendSeparator();
 
-    pItem = new wxMenuItem(pExportMenu, MENU_File_Export_jpg, _("As &jpg image"), _("Save score as JPG images"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save_as_jpg"), wxART_TOOLBAR, nIconSize) );
-    pExportMenu->Append(pItem);
+    AddMenuItem(pMenuFile, MENU_Print, _("&Print ...\tCtrl+P"),
+                _T(""), wxITEM_NORMAL, _T("tool_print"));
+    AddMenuItem(pMenuFile, wxID_PRINT_SETUP, _("Print &Setup..."), 
+                _("Configure printer options"), wxITEM_NORMAL );
+    AddMenuItem(pMenuFile, MENU_Print_Preview, _("Print Pre&view"),
+                _T(""), wxITEM_NORMAL);
+    pMenuFile->AppendSeparator();
 
-    //end of export submenu ----------------------------------------
+    AddMenuItem(pMenuFile, wxID_EXIT, _("&Quit\tCtrl+Q"),
+                _("Exit program"), wxITEM_NORMAL, _T("tool_exit"));
 
-    pItem = new wxMenuItem(file_menu, MENU_File_Export, _("&Export ..."), _("Save score in other formats"),
-						   wxITEM_NORMAL, pExportMenu);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-    pItem = new wxMenuItem(file_menu, wxID_SAVE, _("&Save\tCtrl+S"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-    pItem = new wxMenuItem(file_menu, wxID_SAVEAS, _("Save &as ..."));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-    pItem = new wxMenuItem(file_menu, wxID_CLOSE, _("&Close\tCtrl+W"), _("Close a score"), wxITEM_NORMAL );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-    file_menu->AppendSeparator();
-
-    pItem = new wxMenuItem(file_menu, MENU_Print, _("&Print ...\tCtrl+P"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_print"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-    pItem = new wxMenuItem(file_menu, wxID_PRINT_SETUP, _("Print &Setup..."), _("Configure printer options"), wxITEM_NORMAL );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-    pItem = new wxMenuItem(file_menu, MENU_Print_Preview, _("Print Pre&view") );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-    file_menu->AppendSeparator();
-
-    pItem = new wxMenuItem(file_menu, wxID_EXIT, _("&Quit\tCtrl+Q") );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem);
-
-#else
-    //No bitmaps on menus for other plattforms different from Windows and GTK+
-
-    file_menu->Append(MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
-    file_menu->Append(wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
-    file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
-    file_menu->Append(MENU_File_Import, _("&Import..."));
-    //export submenu -----------------------------------------------
-    pExportMenu->Append(MENU_File_Export_MusicXML, _("MusicXML format"), _("Save score as a MusicXML file"));
-    pExportMenu->Append(MENU_File_Export_bmp, _("As &bmp image"), _("Save score as BMP images"));
-    pExportMenu->Append(MENU_File_Export_jpg, _("As &jpg image"), _("Save score as JPG images"));
-    pExportMenu->Append(pItem);
-    //end of export submenu ----------------------------------------
-    file_menu->Append(MENU_File_Export, _("&Export ..."), pExportMenu,
-                           _("Save score in other formats") );
-
-    file_menu->Append(wxID_SAVE, _("&Save\tCtrl+S"));
-    file_menu->Append(wxID_SAVEAS, _("Save &as ..."));
-    file_menu->Append(wxID_CLOSE, _("&Close\tCtrl+W"));
-    file_menu->AppendSeparator();
-    file_menu->Append(MENU_Print, _("&Print ...\tCtrl+P"));
-    file_menu->Append(wxID_PRINT_SETUP, _("Print &Setup..."));
-    file_menu->Append(MENU_Print_Preview, _("Print Pre&view"));
-    file_menu->AppendSeparator();
-    file_menu->Append(wxID_EXIT, _("&Quit\tCtrl+Q"));
-
-#endif
 
     // history of files visited.
-    m_pRecentFiles->UseMenu(file_menu);
-    m_pRecentFiles->AddFilesToMenu(file_menu);
+    m_pRecentFiles->UseMenu(pMenuFile);
+    m_pRecentFiles->AddFilesToMenu(pMenuFile);
 
 
     // edit menu -------------------------------------------------------------------
 
     m_pMenuEdit = new wxMenu;
-    m_pMenuEdit->Append(wxID_UNDO, _("&Undo"));
-    m_pMenuEdit->Append(wxID_REDO, _("&Redo"));
-    //m_pMenuEdit->AppendSeparator();
-    //doc->GetCommandProcessor()->SetEditMenu(m_pMenuEdit);
+    AddMenuItem(m_pMenuEdit, wxID_UNDO, _("&Undo"),
+                _("Undo"), wxITEM_NORMAL, _T("tool_undo"));
+    AddMenuItem(m_pMenuEdit, wxID_REDO, _("&Redo"),
+                _("Redo"), wxITEM_NORMAL, _T("tool_redo"));
 
 
     // View menu -------------------------------------------------------------------
 
-    wxMenu *view_menu = new wxMenu;
-    view_menu->Append(MENU_View_ToolBar, _("Tool &bar"), _("Hide/show the tools bar"), wxITEM_CHECK);
-    view_menu->Append(MENU_View_StatusBar, _("&Status bar"), _("Hide/show the status bar"), wxITEM_CHECK);
-    view_menu->AppendSeparator();
-    view_menu->Append(MENU_View_Tools, _("&Tool box"), _("Hide/show edition tool box window"), wxITEM_CHECK);
-    view_menu->Append(MENU_View_Rulers, _("&Rulers"), _("Hide/show rulers"), wxITEM_CHECK);
-    view_menu->Append(MENU_View_Welcome_Page, _("&Welcome page"), _("Hide/show welcome page"));
+    wxMenu* pMenuView = new wxMenu;
+    AddMenuItem(pMenuView, MENU_View_ToolBar, _("Tool &bar"), 
+                _("Hide/show the tools bar"), wxITEM_CHECK);
+    AddMenuItem(pMenuView, MENU_View_StatusBar, _("&Status bar"), 
+                _("Hide/show the status bar"), wxITEM_CHECK);
+    pMenuView->AppendSeparator();
+    AddMenuItem(pMenuView, MENU_View_Tools, _("&Tool box"), 
+                _("Hide/show edition tool box window"), wxITEM_CHECK);
+    AddMenuItem(pMenuView, MENU_View_Rulers, _("&Rulers"), 
+                _("Hide/show rulers"), wxITEM_CHECK);
+    AddMenuItem(pMenuView, MENU_View_Welcome_Page, _("&Welcome page"), 
+                _("Hide/show welcome page"));
 
 
     // score menu ------------------------------------------------------------------
 
-    wxMenu *pScoreMenu = new wxMenu;
-#if defined(__WXMSW__) || defined(__WXGTK__)
-    //bitmaps on menus are supported only on Windows and GTK+
-    pItem = new wxMenuItem(pScoreMenu, MENU_Score_Titles, _("Add title"),
-						   _("Add a title to the score"), wxITEM_NORMAL);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_add_text"),
-										       wxART_TOOLBAR, nIconSize) );
-    pScoreMenu->Append(pItem);
-
-    pItem = new wxMenuItem(pScoreMenu, MENU_View_Page_Margins, _("Margins and spacers"),
-						   _("Show/hide page margins and spacers"), wxITEM_CHECK);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_page_margins"),
-										       wxART_TOOLBAR, nIconSize) );
-    pScoreMenu->Append(pItem);
-
-#else
-    //No bitmaps on menus for other platforms different from Windows and GTK+
-    pScoreMenu->Append(MENU_Score_Titles, _("Add title"), _("Add a title to the score"));
-    pScoreMenu->Append(MENU_View_Page_Margins, _("Margins and spacers"),
-					   _("Show/hide page margins and spacers"), wxITEM_CHECK);
-
-#endif
+    wxMenu* pMenuScore = new wxMenu;
+    AddMenuItem(pMenuScore, MENU_Score_Titles, _("Add title"),
+				_("Add a title to the score"), wxITEM_NORMAL, _T("tool_add_text"));
+    AddMenuItem(pMenuScore, MENU_View_Page_Margins, _("Margins and spacers"),
+				_("Show/hide page margins and spacers"), wxITEM_CHECK, _T("tool_page_margins"));
 
 
     // instrument menu ------------------------------------------------------------------
 
-    wxMenu *pInstrMenu = new wxMenu;
-#if defined(__WXMSW__) || defined(__WXGTK__)
-    //bitmaps on menus are supported only on Windows and GTK+
-    pItem = new wxMenuItem(pInstrMenu, MENU_Instr_Properties, _("Properties"),
-						   _("Edit name, abbreviation, MIDI settings and other properties"), wxITEM_NORMAL);
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"),
-										       wxART_TOOLBAR, nIconSize) );
-    pInstrMenu->Append(pItem);
-
-#else
-    //No bitmaps on menus for other platforms different from Windows and GTK+
-    pInstrMenu->Append(MENU_Instr_Properties, _("Properties"),
-					   _("Edit name, abbreviation, MIDI settings and other properties"), wxITEM_NORMAL);
-
-#endif
+    wxMenu* pMenuInstr = new wxMenu;
+    AddMenuItem(pMenuInstr, MENU_Instr_Properties, _("Properties"),
+				_("Edit name, abbreviation, MIDI settings and other properties"), wxITEM_NORMAL);
 
 
     // debug menu --------------------------------------------------------------------
 
     // Debug strings will not be translatable. It is mandatory that all development is
     // in English
-    wxMenu* debug_menu;
+    wxMenu* pMenuDebug;
     if (fDebug)
 	{
-        debug_menu = new wxMenu;
-        debug_menu->Append(MENU_Debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
+        pMenuDebug = new wxMenu;
+        AddMenuItem(pMenuDebug, MENU_Debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
             _T("Force release behaviour for certain functions"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_ShowDebugLinks, _T("&Include debug links"),
+        AddMenuItem(pMenuDebug, MENU_Debug_ShowDebugLinks, _T("&Include debug links"),
             _T("Include debug controls in exercises"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_ShowBorderOnScores, _T("&Border on ScoreAuxCtrol"),
+        AddMenuItem(pMenuDebug, MENU_Debug_ShowBorderOnScores, _T("&Border on ScoreAuxCtrol"),
             _T("Show border on ScoreAuxCtrol"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_recSelec, _T("&Draw recSelec"),
+        AddMenuItem(pMenuDebug, MENU_Debug_recSelec, _T("&Draw recSelec"),
             _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_DrawBounds, _T("&Draw bounds"),
+        AddMenuItem(pMenuDebug, MENU_Debug_DrawBounds, _T("&Draw bounds"),
             _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"),
+        AddMenuItem(pMenuDebug, MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"),
             _T("Use anti-aliasing for screen renderization"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
-        debug_menu->Append(MENU_Debug_PatternEditor, _T("Test Pattern Editor") );
-        debug_menu->Append(MENU_Debug_DumpStaffObjs, _T("&Dump of score") );
-		debug_menu->Append(MENU_Debug_DumpGMObjects, _T("&Dump of graphical model") );
-        debug_menu->Append(MENU_Debug_SeeSource, _T("See &LDP source") );
-        debug_menu->Append(MENU_Debug_SeeXML, _T("See &XML") );
-        debug_menu->Append(MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
-        debug_menu->Append(MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
-        debug_menu->Append(MENU_Debug_UnitTests, _T("Unit Tests") );
+        AddMenuItem(pMenuDebug, MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
+        AddMenuItem(pMenuDebug, MENU_Debug_PatternEditor, _T("Test Pattern Editor") );
+        AddMenuItem(pMenuDebug, MENU_Debug_DumpStaffObjs, _T("&Dump of score") );
+		AddMenuItem(pMenuDebug, MENU_Debug_DumpGMObjects, _T("&Dump of graphical model") );
+        AddMenuItem(pMenuDebug, MENU_Debug_SeeSource, _T("See &LDP source") );
+        AddMenuItem(pMenuDebug, MENU_Debug_SeeXML, _T("See &XML") );
+        AddMenuItem(pMenuDebug, MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
+        AddMenuItem(pMenuDebug, MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
+        AddMenuItem(pMenuDebug, MENU_Debug_UnitTests, _T("Unit Tests") );
     }
 
 
     // Zoom menu -----------------------------------------------------------------------
 
-    wxMenu *zoom_menu = new wxMenu;
-    zoom_menu->Append(MENU_Zoom_100, _("Actual size"));
-    zoom_menu->Append(MENU_Zoom_Fit_Full, _("Fit page full"));
-    zoom_menu->Append(MENU_Zoom_Fit_Width, _("Fit page width"));
-    zoom_menu->Append(MENU_Zoom_Other, _("Zoom to ..."));
+    wxMenu* pMenuZoom = new wxMenu;
+    AddMenuItem(pMenuZoom, MENU_Zoom_100, _("Actual size"), 
+                _T("Zoom to real print size"), wxITEM_NORMAL, _T("tool_zoom_actual"));
+    AddMenuItem(pMenuZoom, MENU_Zoom_Fit_Full, _("Fit page full"),
+                _("Zoom so that the full page is displayed"), wxITEM_NORMAL, 
+                _T("tool_zoom_fit_full"));
+    AddMenuItem(pMenuZoom, MENU_Zoom_Fit_Width, _("Fit page width"),
+                _("Zoom so that page width equals window width"), wxITEM_NORMAL,
+                _T("tool_zoom_fit_width"));
+    AddMenuItem(pMenuZoom, MENU_Zoom_Increase, _T("Zoom in"),
+                _("Enlarge image size"), wxITEM_NORMAL, _T("tool_zoom_in"));
+    AddMenuItem(pMenuZoom, MENU_Zoom_Decrease, _T("Zoom out"),
+                _("Reduce image size"), wxITEM_NORMAL, _T("tool_zoom_out"));
+    AddMenuItem(pMenuZoom, MENU_Zoom_Other, _("Zoom to ..."));
 
 
     //Sound menu -------------------------------------------------------------------------
 
-    wxMenu *sound_menu = new wxMenu;
-#if defined(__WXMSW__) || defined(__WXGTK__)
+    wxMenu* pMenuSound = new wxMenu;
 
-    pItem = new wxMenuItem(sound_menu, MENU_Play_Start, _("&Play"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nIconSize) );
-    sound_menu->Append(pItem);
+    AddMenuItem(pMenuSound, MENU_Play_Start, _("&Play"),
+                _("Start/resume play back. From selection of full score"), wxITEM_NORMAL,
+                _T("tool_play"));
+    AddMenuItem(pMenuSound, MENU_Play_Cursor_Start, _("Play from cursor"),
+                _("Start/resume play back. From cursor measure"), wxITEM_NORMAL,
+                _T("tool_play_cursor"));
+    AddMenuItem(pMenuSound, MENU_Play_Stop, _("S&top"),
+                _("Stop playing back"), wxITEM_NORMAL, _T("tool_stop"));
+    AddMenuItem(pMenuSound, MENU_Play_Pause, _("P&ause"),
+                _("Pause playing back"), wxITEM_NORMAL, _T("tool_pause"));
+    pMenuSound->AppendSeparator();
 
-    pItem = new wxMenuItem(sound_menu, MENU_Play_Cursor_Start, _("Play from cursor"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_play_cursor"), wxART_TOOLBAR, nIconSize) );
-    sound_menu->Append(pItem);
+    AddMenuItem(pMenuSound, MENU_Sound_MidiWizard, _("&Run Midi wizard"),
+                _("MIDI configuration wizard"), wxITEM_NORMAL, _T("tool_midi_wizard"));
+	pMenuSound->AppendSeparator();
 
-    pItem = new wxMenuItem(sound_menu, MENU_Play_Stop, _("S&top"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nIconSize) );
-    sound_menu->Append(pItem);
-
-    pItem = new wxMenuItem(sound_menu, MENU_Play_Pause, _("P&ause"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_pause"), wxART_TOOLBAR, nIconSize) );
-    sound_menu->Append(pItem);
-
-    sound_menu->AppendSeparator();
-
-    pItem = new wxMenuItem(sound_menu, MENU_Sound_MidiWizard, _("&Run Midi wizard"), _("Midi configuration wizard"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    sound_menu->Append(pItem);
-
-	sound_menu->AppendSeparator();
-
-    pItem = new wxMenuItem(sound_menu, MENU_Sound_test, _("&Test sound"), _("Play an scale to test sound"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    sound_menu->Append(pItem);
-
-    pItem = new wxMenuItem(sound_menu, MENU_Sound_AllSoundsOff, _("&All sounds off"), _("Stop inmediatly all sounds"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    sound_menu->Append(pItem);
-
-#else
-    sound_menu->Append(MENU_Play_Start, _("&Play"));
-    sound_menu->Append(MENU_Play_Cursor_Start, _("Play from cursor"));
-    sound_menu->Append(MENU_Play_Stop, _("S&top"));
-    sound_menu->Append(MENU_Play_Pause, _("P&ause"));
-    sound_menu->AppendSeparator();
-    sound_menu->Append(MENU_Sound_MidiWizard, _("&Run Midi wizard"),
-                        _("Midi configuration wizard"));
-    sound_menu->AppendSeparator();
-    sound_menu->Append(MENU_Sound_test, _("&Test sound"), _("Play an scale to test sound"));
-    sound_menu->Append(MENU_Sound_AllSoundsOff, _("&All sounds off"),
-                        _("Stop inmediatly all sounds"));
-
-#endif
+    AddMenuItem(pMenuSound, MENU_Sound_test, _("&Test sound"),
+                _("Play an scale to test sound"), wxITEM_NORMAL, _("tool_test_sound"));
+    AddMenuItem(pMenuSound, MENU_Sound_AllSoundsOff, _("&All sounds off"),
+                _("Stop inmediatly all sounds"), wxITEM_NORMAL, _T("tool_stop_sounds"));
 
 
     // Options menu ---------------------------------------------------------------------
 
-    wxMenu* options_menu = new wxMenu;
-#if defined(__WXMSW__) || defined(__WXGTK__)
-    pItem = new wxMenuItem(options_menu, MENU_Preferences,  _("&Preferences"), _("Open help book"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) );
-    options_menu->Append(pItem);
-#else
-    options_menu->Append(MENU_Preferences, _("&Preferences"));
-#endif
+    wxMenu* pMenuOptions = new wxMenu;
+    AddMenuItem(pMenuOptions, MENU_Preferences,  _("&Preferences"),
+                _("Open help book"), wxITEM_NORMAL, _T("tool_options"));
 
 
     // Window menu -----------------------------------------------------------------------
-    wxMenu* pWindowMenu = new wxMenu;
-    pWindowMenu->Append(MENU_WindowClose,    _("Cl&ose"));
-    pWindowMenu->Append(MENU_WindowCloseAll, _("Close All"));
-    pWindowMenu->AppendSeparator();
-    pWindowMenu->Append(MENU_WindowNext,     _("&Next"));
-    pWindowMenu->Append(MENU_WindowPrev,     _("&Previous"));
+    wxMenu* pMenuWindow = new wxMenu;
+    pMenuWindow->Append(MENU_WindowClose,    _("Cl&ose"));
+    pMenuWindow->Append(MENU_WindowCloseAll, _("Close All"));
+    pMenuWindow->AppendSeparator();
+
+    pMenuWindow->Append(MENU_WindowNext,     _("&Next"));
+    pMenuWindow->Append(MENU_WindowPrev,     _("&Previous"));
 
 
-    // help menu -------------------------------------------------------------------------
+    // Help menu -------------------------------------------------------------------------
 
-    wxMenu *help_menu = new wxMenu;
-#if defined(__WXMSW__) || defined(__WXGTK__)
-	pItem = new wxMenuItem(help_menu, MENU_Help_About, _("&About"),
-							_("Display information about program version and credits") );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    help_menu->Append(pItem);
+    wxMenu* pMenuHelp = new wxMenu;
 
-    help_menu->AppendSeparator();
+    AddMenuItem(pMenuHelp, MENU_Help_About, _("&About"),
+				_("Display information about program version and credits"), wxITEM_NORMAL,
+                _T("tool_about"));
+    pMenuHelp->AppendSeparator();
 
-    pItem = new wxMenuItem(help_menu, MENU_Help_QuickGuide,  _("Editor quick guide"),
-                            _("Show editor reference card") );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    help_menu->Append(pItem);
-    
-    pItem = new wxMenuItem(help_menu, MENU_Help_Open,  _("&Content"), _("Open help book") );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize) );
-    help_menu->Append(pItem);
+    AddMenuItem(pMenuHelp, MENU_Help_QuickGuide,  _("Editor quick guide"),
+                _("Show editor reference card"), wxITEM_NORMAL, _T("tool_quick_guide"));
+    AddMenuItem(pMenuHelp, MENU_Help_Open,  _("&Content"), 
+                _("Open help book"), wxITEM_NORMAL, _T("tool_help"));
+    pMenuHelp->AppendSeparator();
 
-    help_menu->AppendSeparator();
-
-	pItem = new wxMenuItem(help_menu, lmMENU_CheckForUpdates, _("Check now for &updates"),
-							_("Connect to the Internet and check for program updates") );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
-    help_menu->Append(pItem);
-
-    pItem = new wxMenuItem(help_menu, MENU_VisitWebsite,  _("&Visit LenMus website"),
-                            _("Open the Internet browser and go to LenMus website") );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize) );
-    help_menu->Append(pItem);
-
-#else
-    help_menu->Append(MENU_Help_About, _("&About"),
-                _("Display information about program version and credits") );
-    help_menu->AppendSeparator();
-    help_menu->Append(MENU_Help_QuickGuide, _("Editor quick guide"),
-                _("Show editor reference card") );
-    help_menu->Append(MENU_Help_Open, _("&Content"), _("Open help book") );
-    help_menu->AppendSeparator();
-    help_menu->Append(lmMENU_CheckForUpdates, _("Check now for &updates"),
-        _("Connect to the Internet and check for program updates") );
-    help_menu->Append(MENU_VisitWebsite, _("&Visit LenMus website"),
-        _("Open the Internet browser and go to LenMus website") );
-#endif
+	AddMenuItem(pMenuHelp, lmMENU_CheckForUpdates, _("Check now for &updates"),
+				_("Connect to the Internet and check for program updates"), wxITEM_NORMAL,
+                _T("tool_web_update"));
+    AddMenuItem(pMenuHelp, MENU_VisitWebsite,  _("&Visit LenMus website"),
+                _("Open the Internet browser and go to LenMus website"), wxITEM_NORMAL, 
+                _T("tool_website"));
 
 
     // set up the menubar ---------------------------------------------------------------
@@ -1317,17 +1210,17 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     // To suppress it (under MSWindows) it is necessary to add style wxFRAME_NO_WINDOW_MENU
     // in frame creation.
     wxMenuBar* pMenuBar = new wxMenuBar;
-    pMenuBar->Append(file_menu, _("&File"));
+    pMenuBar->Append(pMenuFile, _("&File"));
     pMenuBar->Append(m_pMenuEdit, _("&Edit"));
-    pMenuBar->Append(view_menu, _("&View"));
-	pMenuBar->Append(pScoreMenu, _("S&core"));
-	pMenuBar->Append(pInstrMenu, _("&Instrument"));
-    pMenuBar->Append(sound_menu, _("&Sound"));
-    if (fDebug) pMenuBar->Append(debug_menu, _T("&Debug"));     //DO NOT TRANSLATE
-    pMenuBar->Append(zoom_menu, _("&Zoom"));
-    pMenuBar->Append(options_menu, _("&Options"));
-    pMenuBar->Append(pWindowMenu, _("&Window"));
-    pMenuBar->Append(help_menu, _("&Help"));
+    pMenuBar->Append(pMenuView, _("&View"));
+	pMenuBar->Append(pMenuScore, _("S&core"));
+	pMenuBar->Append(pMenuInstr, _("&Instrument"));
+    pMenuBar->Append(pMenuSound, _("&Sound"));
+    if (fDebug) pMenuBar->Append(pMenuDebug, _T("&Debug"));     //DO NOT TRANSLATE
+    pMenuBar->Append(pMenuZoom, _("&Zoom"));
+    pMenuBar->Append(pMenuOptions, _("&Options"));
+    pMenuBar->Append(pMenuWindow, _("&Window"));
+    pMenuBar->Append(pMenuHelp, _("&Help"));
 
         //
         // items initially checked

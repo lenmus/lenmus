@@ -271,17 +271,17 @@ void lmDlgTextStyles::OnCancel(wxCommandEvent& WXUNUSED(event))
 
 void lmDlgTextStyles::OnAddNew(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(_T("OnAddNew"));
+    wxMessageBox(_("Not yet implemented"));
 }
 
 void lmDlgTextStyles::OnAddDefault(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(_T("OnAddDefault"));
+    wxMessageBox(_("Not yet implemented"));
 }
 
 void lmDlgTextStyles::OnRemove(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(_T("OnRemove"));
+    wxMessageBox(_("Not yet implemented"));
 }
 
 void lmDlgTextStyles::OnEdit(wxGridEvent& event)

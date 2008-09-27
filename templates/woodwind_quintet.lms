@@ -1,0 +1,31 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (group symbol:brace joinBarlines:no
+       (instrument (name "Flute")(abbrev "Fl.")(infoMIDI 73 1)
+          (musicData
+             (clef treble)
+          )
+       )
+       (instrument (name "Oboe")(abbrev "Ob.")(infoMIDI 68 1)
+          (musicData
+             (clef treble)
+          )
+       )
+       (instrument (name "Clarinet")(abbrev "Clar.")(infoMIDI 71 1)
+          (musicData
+             (clef C3)
+          )
+       )
+       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 1)
+          (musicData
+             (clef bass)
+          )
+       )
+       (instrument (name "Bassoon")(abbrev "Bsn.")(infoMIDI 70 1)
+          (musicData
+             (clef bass)
+          )
+       )
+   )
+)
+
