@@ -310,7 +310,8 @@ private:
     lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
 
     //common code for keys and time signatures
-    bool InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS);
+    bool InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
+                                bool fKeyKeepPitch = false);
 
 	//source LDP and MusicXML generation
 	void LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,

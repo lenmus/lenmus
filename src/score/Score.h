@@ -62,24 +62,6 @@ enum lmEPageScope
     lmSCOPE_SCORE,          //for the whole document
 };
 
-/*  Renderization options
-    ---------------------
-    eRenderJustified
-        Render a score justifying measures so that they fit exactly in the width of the
-        staff
-
-    eRenderSimple
-        Render a score without bar justification and without breaking it into systems.
-        That is, it draws all the score in a single system without taking into consideration
-        paper length limitations.
-        This very simple renderer is usefull for simple scores and in some rare occations
-*/
-enum ERenderizationType
-{
-    eRenderJustified = 1,
-    eRenderSimple
-};
-
 // Spacing methods for rendering scores
 // -------------------------------------
 //    Two basic methods:
@@ -425,12 +407,6 @@ public:
     void SetTopSystemDistance(lmLUnits nDistance) { m_nTopSystemDistance = nDistance; }
     void LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper);
 
-    //renderization options
-    void SetRenderizationType(ERenderizationType nType) { m_nRenderizationType = nType; }
-    //SetSpacingMethod(ESpacingMethod nMethod) { m_nSpacingMethod = nMethod; }
-        // accessors for lmFormatter only
-    ERenderizationType GetRenderizationType() const { return m_nRenderizationType; }
-    //ESpacingMethod GetSpacingMethod() const { return m_nSpacingMethod; }
 	inline void SetModified(bool fValue) { m_fModified = fValue; }
 	inline bool IsModified() { return m_fModified; }
 
@@ -522,7 +498,6 @@ private:
     lmVStaff*               m_pTenthsConverter;     //for lmTenths <-> lmLUnits conversion
 
     //renderization options
-    ERenderizationType      m_nRenderizationType;
 	bool				    m_fModified;            //to force a repaint
 
     //page size and margins information

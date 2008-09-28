@@ -520,9 +520,6 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL), m_SCursor(this)
     //TODO user options, not a constant
     m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
 
-    //default renderization options
-    m_nRenderizationType = eRenderJustified;
-
     //default ObjOptions
     SetOption(_T("Score.FillPageWithEmptyStaves"), false);
     SetOption(_T("StaffLines.StopAtFinalBarline"), true);
@@ -1667,7 +1664,7 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 lmBoxScore* lmScore::Layout(lmPaper* pPaper)
 {
     lmFormatter4 oFormatter;
-    lmBoxScore* pGMObj = oFormatter.Layout(this, pPaper);
+    lmBoxScore* pGMObj = oFormatter.LayoutScore(this, pPaper);
     StoreShape(pGMObj);
     return pGMObj;
 }

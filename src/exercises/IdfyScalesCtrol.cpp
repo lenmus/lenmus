@@ -355,9 +355,6 @@ wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lm
     }
     pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
 
-    //use simple renderer; otherwise chromatic scale does not fit in available space
-    (*pScore)->SetRenderizationType(eRenderSimple);
-
     //(*pScore)->Dump(_T("lmIdfyScalesCtrol.PrepareScore.ScoreDump.txt"));  //dbg
 
     //set metronome. As the problem score is built using whole notes, we will

@@ -349,16 +349,16 @@ lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFif
         nAction = AskUserAboutKey();
 
     if (nAction == 0)
-        return (lmKeySignature*)NULL;       //Cancel clef insertion
+        return (lmKeySignature*)NULL;       //Cancel key insertion
 
-    //bool fClefKeepPosition = (nAction == 2);
+    bool fKeyKeepPitch = (nAction == 1);
 
-    ////save answer for undo/redo
-    //lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    //pUndoData->AddParam<bool>(fClefKeepPosition);
+    //save answer for undo/redo
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    pUndoData->AddParam<bool>(fKeyKeepPitch);
 
     lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
-    if ( InsertKeyTimeSignature(pUndoItem, pKS) )
+    if ( InsertKeyTimeSignature(pUndoItem, pKS, fKeyKeepPitch) )
         return pKS;
     else
     {
@@ -371,17 +371,26 @@ void lmVStaff::UndoCmd_InsertKeySignature(lmUndoItem* pUndoItem, lmKeySignature*
 {
     //delete the requested object, and log info to undo history
 
+    //recover user option about adding/removing accidentals
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    bool fKeyKeepPitch = pUndoData->GetParam<bool>();
+
     //remove the contexts created by the KS
 	pKS->RemoveCreatedContexts();
 
     //now remove the KS from the staffobjs collection
-    m_cStaffObjs.Delete(pKS, true);        //true->invoke destructor
+    m_cStaffObjs.Delete(pKS, true, true, fKeyKeepPitch);        //1st true-> invoke destructor
+                                                                //2nd true-> doesn't matter if true or false
 }
 
-bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
+bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
+                                      bool fKeyKeepPitch)
 {
     //This method implements the common part of methods Cmd_InsertKeySignature() and
-    //Cmd_InsertTimeSignature. Object pKTS is the key/time signature to insert
+    //Cmd_InsertTimeSignature. Object pKTS is the key/time signature to insert.
+    //Parameter fKeyKeepPitch is only used for key signature insertion.
+    //If fKeyKeepPitch is true, forces to add/remove accidentals in the following notes
+    //so that their pitch doesn´t change with the insertion of the key.
     //It returns 'true' if succedeed
 
     wxASSERT(pKTS->IsKeySignature() || pKTS->IsTimeSignature());
@@ -392,10 +401,6 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
     //Check that we are at start of measure. Otherwise, insert a double barline
     if (!IsEqualTime(m_VCursor.GetTimepos(), 0.0f))
     {
-        //lmErrorBox oEB(_("Error: Key/time signature can only be inserted at start of measure"), _("Insertion will be cancelled."));
-        //oEB.ShowModal();
-        //return (lmTimeSignature*)NULL;
-
         //issue an 'insert barline' command
         lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
         lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
@@ -440,7 +445,7 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS)
     // insert the key/time signature object in first staff
     lmVStaffCursor* pAuxCursor = cAuxCursors.front();
     pAuxCursor->AttachToCollection(&m_cStaffObjs, false);   //false: do not reset cursor
-    m_cStaffObjs.Add(pKTS);
+    m_cStaffObjs.Add(pKTS, true, fKeyKeepPitch);            //true->fClefKeyPosition. Doesn't matter if true or false
 
     //restore cursor and reposition it at time signature insertion point
     m_VCursor.AttachToCollection(&m_cStaffObjs, false);    //false-> do not reset it
@@ -771,24 +776,23 @@ int lmVStaff::AskUserAboutKey()
     //(do not add/remove accidentals). 
     //User might also choose to cancel the operation.
     //Returns:
-    //  0=Cancel operation, 1=keep pitch, 2=keep position
+    //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
 
     lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
     long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_CHANGE);  //0=ask, 1=keep pitch, 2=keep position
     if (nOptValue == 0)
     {
-        wxString sQuestion = _("Notes after the clef will be affected by this action.");
+        wxString sQuestion = _("Notes after the key will be affected by this action.");
         sQuestion += _T("\n\n");
         sQuestion +=
-_("Would you like to keep notes' pitch and, therefore, to change \
-notes' positions on the staff? or, would you prefer to keep notes \
-placed on their current staff positions? (implies pitch change)");
+_("Would you like to keep notes' pitch and, therefore, to add/remove \
+accidentals to the affected notes?");
 
         lmQuestionBox oQB(sQuestion, 3,     //msge, num buttons,
             //labels (2 per button: button text + explanation)
-            _("Keep position"), _("Change notes' pitch and keep their current staff position."),
             _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
-            _("Cancel"), _("The insert, delete or change clef command will be cancelled.") 
+            _("Change pitch"), _("Do nothing. Notes' pitch will be affected by the change in key signature."),
+            _("Cancel"), _("The insert, delete or change key command will be cancelled.") 
         );
         int nAnswer = oQB.ShowModal();
 

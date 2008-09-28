@@ -2007,9 +2007,7 @@ void lmSegment::DoContextInsertion(lmStaffObj* pNewSO, lmStaffObj* pNextSO,
     }
     else if (fKeyKeepPitch)
     {
-        //TODO
-        //AddRemoveAccidentals((lmKeySignature*)pNewSO);
-        lmTODO(_T("[lmSegment::DoContextInsertion] TODO. Key: keep pitch"));
+        AddRemoveAccidentals((lmKeySignature*)pNewSO);
     }
 
     //determine staves affected by the context change and propagate context change
@@ -2092,9 +2090,8 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
     //Update current segment notes, if requested
     if (fKeyKeepPitch)
     {
-        //TODO
+        //TODO what is pNewSO?
         //AddRemoveAccidentals((lmKeySignature*)pNewSO);
-        lmTODO(_T("[lmSegment::PropagateContextChange] TODO Key keep Pitch"));
     }
 
     //propagate to next segment
@@ -2131,6 +2128,39 @@ void lmSegment::Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStart
         }
         ++itSO;
 	}
+}
+
+void lmSegment::AddRemoveAccidentals(lmKeySignature* pKey)
+{
+    //A key signature has been added/removed or changed. As a consequence, the pitch of
+    //notes after the key signature might be affected. User has requested to add/remove
+    //accidentals to those notes, so that their pitch doesn't change.
+    //This method iterates along the staffobjs of this segment and add/remove accidentals
+    //to the notes to maintain their pitch.
+
+    //TODO
+
+ //   //locate start point
+	//lmItCSO itSO;
+ //   if (pStartSO)
+ //   {
+	//    itSO = find(m_StaffObjs.begin(), m_StaffObjs.end(), pKey);
+ //       wxASSERT(itSO != m_StaffObjs.end());
+ //   }
+ //   else
+ //       itSO = m_StaffObjs.begin();
+
+ //   //iterate until end of segment or new key
+	//while (itSO != m_StaffObjs.end() && !(*itSO)->IsClef())
+	//{
+	//	if ((*itSO)->IsNoteRest() && (*itSO)->GetStaffNum() == nStaff &&
+ //           ((lmNote*)(*itSO))->IsNote())
+ //       {
+ //           //note in the affected staff. Re-pitch it to keep staff position
+ //           ((lmNote*)(*itSO))->ChangePitch(pOldClef, pNewClef);
+ //       }
+ //       ++itSO;
+	//}
 }
 
 void lmSegment::AutoBeam(int nVoice)
@@ -2294,9 +2324,7 @@ void lmSegment::DoContextRemoval(lmStaffObj* pOldSO, lmStaffObj* pNextSO, bool f
     }
     else if (fKeyKeepPitch)
     {
-        //TODO
-        //AddRemoveAccidentals((lmKeySignature*)pOldSO);
-        lmTODO(_T("[lmSegment::DoContextRemoval] TODO. Key: keep pitch"));
+        AddRemoveAccidentals((lmKeySignature*)pOldSO);
     }
 
     //determine staves affected by the context change and propagate context change
@@ -2542,7 +2570,8 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
             //Advance cursor to time t + duration of inserted object or to next measure
             //if we are at end of measure
             float rTime = pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement();
-            if (!IsLowerTime(rTime, m_Segments[nSegment]->GetMaximumTime()) )
+            if (!IsLowerTime(rTime, m_Segments[nSegment]->GetMaximumTime()) 
+                && nSegment < GetNumSegments()-1 )
                 m_pVCursor->AdvanceToNextSegment();
             else
                 m_pVCursor->MoveToTime(rTime);
@@ -2772,6 +2801,11 @@ int lmColStaffObjs::GetNumMeasures()
     //if the score ends with a barline.
     //TODO. Create a new method GetNumRealMeasures and change name of this method
     //to GetNumSegments
+    return m_Segments.size();
+}
+
+int lmColStaffObjs::GetNumSegments()
+{
     return m_Segments.size();
 }
 

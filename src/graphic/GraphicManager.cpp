@@ -36,7 +36,6 @@
 #include "../score/ObjOptions.h"
 #include "../app/ScoreDoc.h"
 #include "GraphicManager.h"
-//#include "Formatter4.h"
 #include "AggDrawer.h"
 #include "GMObject.h"
 #include "BoxScore.h"
@@ -104,8 +103,6 @@ void lmGraphicManager::Layout()
         delete m_pBoxScore;
         m_pBoxScore = (lmBoxScore*) NULL;
     }
-    //lmFormatter4 oFormatter;   //the formatter object
-    //m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper);
     m_pBoxScore = m_pScore->Layout(m_pPaper);
     m_fReLayout = false;
 }

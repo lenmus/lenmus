@@ -465,7 +465,7 @@ const wxString& lmInstrument::GetInstrName()
 
 void lmInstrument::MeasureNames(lmPaper* pPaper)
 {
-	// This method is invoked only from lmFormatter4::RenderJustified(), in order to
+	// This method is invoked only from lmFormatter4::LayoutScore(), in order to
 	// measure the indentation for each instrument, so that a suitable common indentation
     // value for the whole system can be computed.
     //

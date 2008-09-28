@@ -135,6 +135,7 @@ private:
 
     //staffobjs management
     void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO, int nStaff);
+    void AddRemoveAccidentals(lmKeySignature* pKey);
 
 
     //member variables
@@ -191,6 +192,9 @@ public:
     float GetMeasureDuration(int nMeasure);
 	int GetNumVoicesInMeasure(int nMeasure);
     bool IsVoiceUsedInMeasure(int nVoice, int nMeasure);
+
+    //info related to segments
+    int GetNumSegments();
 
 	//context management
 	lmContext* GetCurrentContext(lmStaffObj* pSO);

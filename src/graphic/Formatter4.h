@@ -25,6 +25,8 @@
 #pragma interface "Formatter4.cpp"
 #endif
 
+#include <vector>
+
 //constants to define some tables' size
 //! @limit a system can not have more than 30 staves
 //! @limit a system can not have more than 20 measures
@@ -38,6 +40,7 @@
 class lmBoxScore;
 class lmBoxSystem;
 class lmBoxSliceVStaff;
+class lmSystemCursor;
 
 class lmFormatter4
 {
@@ -46,29 +49,25 @@ public:
     ~lmFormatter4();
 
     //measure phase
-    lmBoxScore* Layout(lmScore* pScore, lmPaper* pPaper); 
+    lmBoxScore* LayoutScore(lmScore* pScore, lmPaper* pPaper); 
 
 
 private:
-    lmBoxScore* RenderJustified(lmPaper* pPaper);
-
-    lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, lmBoxSystem* pBoxSystem,
+    lmLUnits SizeMeasureColumn(int nSystem, lmBoxSystem* pBoxSystem,
                                lmPaper* pPaper, bool* pNewSystem, lmLUnits nSystemIndent);
-    void AddEmptyMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
-                               lmBoxSystem* pBoxSystem, lmPaper* pPaper);
+    void AddEmptyMeasureColumn(int nSystem, lmBoxSystem* pBoxSystem, lmPaper* pPaper);
     void RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);
-    bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nAbsMeasure,
-					 int nRelMeasure, int nInstr, lmPaper* pPaper);
+    bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nInstr, lmPaper* pPaper);
     lmLUnits ComputeSystemHeight(lmPaper* pPaper);
-	void ResetLocation(int nAbsMeasure);
+	void ResetLocation();
     bool SplitMeasureColumn();
-	void AddProlog(lmBoxSliceVStaff* pBSV, int nAbsMeasure, int nRelMeasure, bool fDrawTimekey,
-				   lmVStaff* pVStaff, int nInstr, lmPaper* pPaper);
+	void AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff* pVStaff, int nInstr,
+                   lmPaper* pPaper);
 	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmPaper* pPaper, lmVStaff* pVStaff,
-				int nInstr, int nRelMeasure);
+				int nInstr);
 	void AddTime(lmTimeSignature* pTime, lmBox* pBox, lmPaper* pPaper, lmVStaff* pVStaff,
-				 int nInstr, int nRelMeasure);
+				 int nInstr);
 
 
         // member variables
@@ -79,7 +78,7 @@ private:
     lmTimeposTable  m_oTimepos[MAX_MEASURES_PER_SYSTEM+1];      //timepos table for current measure column
     lmLUnits        m_uFreeSpace;                               //free space available on current system
     lmLUnits        m_uMeasureSize[MAX_STAVES_PER_SYSTEM+1];    //size of all measure columns of current system
-    int             m_nMeasuresInSystem;                        //the number of measures in current system
+    int             m_nColumnsInSystem;                         //the number of columns in current system
 
     // renderization options and parameters
     float               m_rSpacingFactor;           //for proportional spacing of notes
@@ -92,6 +91,13 @@ private:
 
     //for rendering the prolog
 	lmLUnits	m_uSpaceBeforeProlog;		//space between start of system and clef
+
+    //new global vars
+    lmPaper* m_pPaper;
+    int             m_nColumn;      //number of column in process, relative to current system
+    int             m_nAbsColumn;   //number of column in process, absolute 1..n
+    lmSystemCursor* m_pSysCursor;
+    bool            m_fFirstMeasureInSystem;
 
 };
 
