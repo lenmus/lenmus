@@ -95,6 +95,18 @@ lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmVSta
     m_fEndOfMeasure = false;
 }
 
+lmSOIterator::lmSOIterator(lmSOIterator* pIT)
+{
+    //Copy constructor
+
+    m_pColStaffObjs = pIT->m_pColStaffObjs;
+	m_nVoice = pIT->m_nVoice;
+	m_it = pIT->m_it;
+	m_nSegment = pIT->m_nSegment;
+	m_pSegment = pIT->m_pSegment;
+    m_fEndOfMeasure = pIT->m_fEndOfMeasure;    
+}
+
 void lmSOIterator::MoveFirst()
 {
     // move cursor to first lmStaffObj

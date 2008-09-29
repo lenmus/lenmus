@@ -36,12 +36,14 @@ public:
     lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, int nVoice);
     lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaffObj* pTargetSO);
     lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor);
+    lmSOIterator(lmSOIterator* pIT);
 	~lmSOIterator() {}
 
     bool EndOfList();
     bool StartOfList();
     bool EndOfMeasure();
 	inline lmStaffObj* GetCurrent() { return *m_it; }
+	inline int GetNumSegment() { return m_nSegment; }
     void AdvanceToMeasure(int nBar);
     void MoveFirst();
     void MoveNext();
@@ -50,9 +52,7 @@ public:
 
 private:
     lmColStaffObjs*		m_pColStaffObjs;    //object lmColStaffObjs that is being traversed
-    lmItCSO				m_pCurrentNode;     //cursor pointing to current node
 	int					m_nVoice;			//voice to recover. 0=all
-
 	lmItCSO				m_it;				//iterator pointing to current object
 	int					m_nSegment;			//current segment (0..n-1)
 	lmSegment*			m_pSegment;			//current segment
