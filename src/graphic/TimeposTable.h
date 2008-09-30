@@ -32,133 +32,11 @@ class lmStaffObj;
 class lmStaff;
 class lmVStaff;
 
-
-//entry types
-enum eTimeposEntryType
-{
-    eAlfa = 1,              //start of voice
-    eStaffobj,              //lmStaffObj inside bar
-    eOmega,                 //end of voice
-};
-
-class lmTimeposTable;
 class lmTimeLine;
+class lmTimeposEntry;
+class lmCriticalLine;
 
-// Definition of an entry of the timepos table
-class lmTimeposEntry
-{
-public:
-    // constructor and destructor
-    lmTimeposEntry(lmTimeLine* pOwner, eTimeposEntryType nType, lmStaffObj* pSO,
-                   lmShape* pShape, bool fProlog);
-    lmTimeposEntry(lmTimeLine* pOwner, lmTimeposEntry* pEntry);
-    ~lmTimeposEntry() {}
-
-	void AssignSpace(lmTimeposTable* pTT, float rFactor);
-	void SetNoteRestSpace(lmTimeposTable* pTT, float rFactor);
-	void Reposition(lmLUnits uxPos);
-    inline lmLUnits GetTotalSize() { return m_uSize + m_uFixedSpace + m_uVariableSpace; }
-
-    wxString Dump(int iEntry);
-    static wxString DumpHeader();
-
-
-
-    //member variables (one entry of the table)
-    //----------------------------------------------------------------------------
-    lmTimeLine*     m_pOwner;       //owner of this entry
-    eTimeposEntryType m_nType;      //type of entry
-    lmStaffObj*     m_pSO;          //ptr to the StaffObj
-    lmShape*        m_pShape;       //ptr to the shape
-	bool			m_fProlog;
-    float           m_rTimePos;     //timepos for this pSO or -1 if not anchored in time
-    lmLUnits        m_xInitialLeft; //initial position of the left border of the object
-    lmLUnits        m_xLeft;        //current position of the left border of the object
-    lmLUnits        m_uxAnchor;     //position of the anchor line
-    lmLUnits        m_xFinal;       //next position (right border position + trailing space)
-    //to redistribute objects we need to know:
-    lmLUnits        m_uSize;            //size of the shape (notehead, etc.)
-    lmLUnits        m_uTotalSize;       //total occupied space (=shape size + spacing)
-    lmLUnits        m_uFixedSpace;      //fixed space added after shape
-    lmLUnits        m_uVariableSpace;   //any variable added space we can adjust
-
-};
-
-
-//Helper class to contain a line
-class lmTimeposTable;
-
-class lmTimeLine
-{
-public:
-    lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart, lmLUnits uSpace);
-    virtual ~lmTimeLine();
-
-	lmTimeposEntry* AddEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
-							 bool fProlog);
-	lmLUnits ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart);
-    lmLUnits RepositionShapes(lmLUnits uNewBarSize, lmLUnits uNewStart, lmLUnits uOldBarSize);
-
-    lmLUnits GetMaxXFinal();
-	inline lmLUnits GetXStartLine() { return m_aMainTable[0]->m_xLeft; }	//xLeft of alpha entry
-
-    //methods for debugging
-    wxString DumpMainTable();
-
-	//spacing algorithm
-	lmLUnits IntitializeSpacingAlgorithm(float rFactor, bool fCreateCriticalLine);
-	float ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor,
-                         bool fCreateCriticalLine, lmLUnits* pMaxPos);
-	lmLUnits GetMinPossiblePosForTime(float rTime);
-    lmLUnits GetMinRequiredPosForTime(float rTime);
-    lmLUnits GetSpaceNonTimedForTime(float rTime);
-    lmLUnits GetAnchorForTime(float rTime);
-	lmLUnits GetLineWidth();
-    lmTimeposEntry* GetMinNoteRestForTime(float rTime);
-    void AssignSpace(float rFactor);
-    float ComputeRequiredSpacingFactor(lmLUnits uNewBarSize);
-	
-//private:
-    lmTimeposEntry*  NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
-							  bool fProlog, lmLUnits uSpace = 0.0f);
-
-	#define lmItEntries		std::vector<lmTimeposEntry*>::iterator
-
-	lmTimeposTable*					m_pOwner;		//the owner of this line
-	int								m_nInstr;		//instrument (0..n-1)
-	int								m_nVoice;		//voice (0=not yet defined)
-	std::vector<lmTimeposEntry*>	m_aMainTable;	//The main table
-
-	//temporary data for ComputeSpacing() and related methods
-	lmItEntries			m_it;           //point to current entry 
-	lmItEntries			m_itNote;       //point to first note/rest at rTime.
-	lmItEntries			m_itStart;      //point to start of rTime (possibly, a non-timed object)
-	lmLUnits			m_uxCurPos;
-
-    //data to recompute spacing factor
-    float               m_rBeta;
-
-protected:
-    lmTimeLine(lmTimeposTable* pMngr);      //constructor for lmCriticalLine
-
-
-};
-
-
-//derived class to implement the critical line
-class lmCriticalLine : public lmTimeLine
-{
-public:
-    lmCriticalLine(lmTimeposTable* pMngr) : lmTimeLine(pMngr) {}
-    ~lmCriticalLine() {}
-
-    void AddNonTimed(lmTimeLine* pLine, float rTime);
-    void AddTimed(lmTimeposEntry* pEntry);
-    void ComputeBeta(float rFactor);
-};
-
-
-//Finally let's define the class that implements the tables and the algoritms
+//define the class that implements the main table and the algoritms
 class lmTimeposTable
 {
 public:
@@ -180,6 +58,10 @@ public:
     lmLUnits DoSpacing(bool fTrace = false);
     lmLUnits RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart);
 
+    //break points computation and related
+    bool GetOptimumBreakPoint(lmLUnits uAvailable, float* prTime, lmLUnits* puWidth);
+    void TerminateTableAfter(float rTime, lmLUnits uxFinal);
+
     //access to info
     lmBarline* GetBarline();
 
@@ -198,6 +80,8 @@ private:
 	void AddEntry(int nInstr, int nVoice, lmStaffObj* pSO, lmShape* pShape, bool fProlog);
     void StartLine(int nInstr, int nVoice=0, lmLUnits uxStart = -1.0f, lmLUnits uSpace = 0.0f);
 	lmTimeLine* FindLine(int nInstr, int nVoice);
+    void ComputeBreaksTable();
+
 
 	#define lmItTimeLine	std::vector<lmTimeLine*>::iterator
 

@@ -58,10 +58,11 @@ private:
     bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nInstr);
     lmLUnits ComputeSystemHeight();
 	void ResetLocation();
-    bool SplitMeasureColumn(lmLUnits uAvailable);
+    void SplitMeasureColumn(lmLUnits uAvailable);
 	void AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff* pVStaff, int nInstr);
 	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmVStaff* pVStaff, int nInstr);
 	void AddTime(lmTimeSignature* pTime, lmBox* pBox, lmVStaff* pVStaff, int nInstr);
+    void AddColumnToSystem();
 
 
         // member variables
@@ -91,7 +92,6 @@ private:
     int             m_nColumn;      //number of column in process, relative to current system
     int             m_nAbsColumn;   //number of column in process, absolute 1..n
     lmSystemCursor* m_pSysCursor;
-    bool            m_fFirstColumnInSystem;
 
 };
 

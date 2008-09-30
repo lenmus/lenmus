@@ -47,18 +47,217 @@
 #include "../score/Notation.h"
 #include "TimeposTable.h"
 
+class lmTimeLine;
+class lmBreaksTable;
+
+
 //spacing function parameters
-//TODO: User options
+//-----------------------------------------------
+    //TODO: User options
 float				m_rDmin = 8.0f;				//Dmin: min. duration to consider
 lmTenths			m_rMinSpace = 10.0f;		//Smin: space for Dmin
 
-//TODO: User options
+    //TODO: User options
 lmTenths m_rSpaceAfterProlog = 25.0f;
 lmTenths m_rSpaceAfterIntermediateClef = 20.0f;
 lmTenths m_rMinSpaceBetweenNoteAndClef = 10.0f;
 
+
+
+
 //=====================================================================================
-//lmTimeposEntry
+//lmTimeposEntry definition: an entry of the lmTimePos table
+//=====================================================================================
+
+//entry types
+enum eTimeposEntryType
+{
+    eAlfa = 1,              //start of voice
+    eStaffobj,              //lmStaffObj inside bar
+    eOmega,                 //end of voice
+};
+
+class lmTimeposEntry
+{
+public:
+    // constructor and destructor
+    lmTimeposEntry(lmTimeLine* pOwner, eTimeposEntryType nType, lmStaffObj* pSO,
+                   lmShape* pShape, bool fProlog);
+    lmTimeposEntry(lmTimeLine* pOwner, lmTimeposEntry* pEntry);
+    ~lmTimeposEntry() {}
+
+	void AssignSpace(lmTimeposTable* pTT, float rFactor);
+	void SetNoteRestSpace(lmTimeposTable* pTT, float rFactor);
+	void Reposition(lmLUnits uxPos);
+    inline lmLUnits GetTotalSize() { return m_uSize + m_uFixedSpace + m_uVariableSpace; }
+
+    wxString Dump(int iEntry);
+    static wxString DumpHeader();
+
+
+
+    //member variables (one entry of the table)
+    //----------------------------------------------------------------------------
+    lmTimeLine*     m_pOwner;       //owner of this entry
+    eTimeposEntryType m_nType;      //type of entry
+    lmStaffObj*     m_pSO;          //ptr to the StaffObj
+    lmShape*        m_pShape;       //ptr to the shape
+	bool			m_fProlog;
+    float           m_rTimePos;     //timepos for this pSO or -1 if not anchored in time
+    lmLUnits        m_xInitialLeft; //initial position of the left border of the object
+    lmLUnits        m_xLeft;        //current position of the left border of the object
+    lmLUnits        m_uxAnchor;     //position of the anchor line
+    lmLUnits        m_xFinal;       //next position (right border position + trailing space)
+    //to redistribute objects we need to know:
+    lmLUnits        m_uSize;            //size of the shape (notehead, etc.)
+    lmLUnits        m_uTotalSize;       //total occupied space (=shape size + spacing)
+    lmLUnits        m_uFixedSpace;      //fixed space added after shape
+    lmLUnits        m_uVariableSpace;   //any variable added space we can adjust
+
+};
+
+
+
+//=====================================================================================
+//lmTimeLine definition: Helper class to contain a line
+//=====================================================================================
+
+class lmTimeLine
+{
+public:
+    lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits uxStart, lmLUnits uSpace);
+    virtual ~lmTimeLine();
+
+	lmTimeposEntry* AddEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
+							 bool fProlog);
+	lmLUnits ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart);
+    lmLUnits RepositionShapes(lmLUnits uNewBarSize, lmLUnits uNewStart, lmLUnits uOldBarSize);
+
+    lmLUnits GetMaxXFinal();
+	inline lmLUnits GetXStartLine() { return m_aMainTable[0]->m_xLeft; }	//xLeft of alpha entry
+
+    //methods for debugging
+    wxString DumpMainTable();
+
+	//spacing algorithm
+	lmLUnits IntitializeSpacingAlgorithm(float rFactor, bool fCreateCriticalLine);
+	float ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor,
+                         bool fCreateCriticalLine, lmLUnits* pMaxPos);
+	lmLUnits GetMinPossiblePosForTime(float rTime);
+    lmLUnits GetMinRequiredPosForTime(float rTime);
+    lmLUnits GetSpaceNonTimedForTime(float rTime);
+    lmLUnits GetAnchorForTime(float rTime);
+	lmLUnits GetLineWidth();
+    lmTimeposEntry* GetMinNoteRestForTime(float rTime);
+    void AssignSpace(float rFactor);
+    float ComputeRequiredSpacingFactor(lmLUnits uNewBarSize);
+
+    //break points
+    void TerminateLineAfter(float rTime, lmLUnits uxFinal);
+    void ComputeBreakPoints(lmBreaksTable* pBT);
+
+	
+//private:
+    lmTimeposEntry*  NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
+							  bool fProlog, lmLUnits uSpace = 0.0f);
+
+	#define lmItEntries		std::vector<lmTimeposEntry*>::iterator
+
+	lmTimeposTable*					m_pOwner;		//the owner of this line
+	int								m_nInstr;		//instrument (0..n-1)
+	int								m_nVoice;		//voice (0=not yet defined)
+	std::vector<lmTimeposEntry*>	m_aMainTable;	//The main table
+
+	//temporary data for ComputeSpacing() and related methods
+	lmItEntries			m_it;           //point to current entry 
+	lmItEntries			m_itNote;       //point to first note/rest at rTime.
+	lmItEntries			m_itStart;      //point to start of rTime (possibly, a non-timed object)
+	lmLUnits			m_uxCurPos;
+
+    //data to recompute spacing factor
+    float               m_rBeta;
+
+protected:
+    lmTimeLine(lmTimeposTable* pMngr);      //constructor for lmCriticalLine
+
+
+};
+
+
+//=====================================================================================
+//lmCriticalLine definition: derived class to implement the critical line
+//=====================================================================================
+
+class lmCriticalLine : public lmTimeLine
+{
+public:
+    lmCriticalLine(lmTimeposTable* pMngr) : lmTimeLine(pMngr) {}
+    ~lmCriticalLine() {}
+
+    void AddNonTimed(lmTimeLine* pLine, float rTime);
+    void AddTimed(lmTimeposEntry* pEntry);
+    void ComputeBeta(float rFactor);
+};
+
+
+//=====================================================================================
+//lmBreaksTable definition: table to contain possible break points
+//=====================================================================================
+
+//an entry of the BreaksTable
+typedef struct lmBreaksTimeEntry_Struct
+{
+    float       rTimepos;
+    lmLUnits    xPos;
+    float       rPriority;
+}
+lmBreaksTimeEntry;
+
+//the breaks table
+class lmBreaksTable
+{
+public:
+    lmBreaksTable();
+    ~lmBreaksTable() {}
+
+    void AddEntry();
+    void SetPriority();
+    void ChangePriority(int iEntry, float rMultiplier);
+
+private:
+
+    std::vector<lmBreaksTimeEntry*> m_BreaksTable;
+
+
+};
+
+
+//=====================================================================================
+//lmBreaksTable implementation
+//=====================================================================================
+
+
+lmBreaksTable::lmBreaksTable()
+{
+}
+
+void lmBreaksTable::AddEntry()
+{
+    //m_BreaksTable.push_back();
+}
+
+void lmBreaksTable::ChangePriority(int iEntry, float rMultiplier)
+{
+}
+
+
+
+
+
+
+
+//=====================================================================================
+//lmTimeposEntry implementation
 //=====================================================================================
 
 lmTimeposEntry::lmTimeposEntry(lmTimeLine* pOwner, eTimeposEntryType nType, lmStaffObj* pSO,
@@ -1004,6 +1203,82 @@ lmLUnits lmTimeLine::GetMaxXFinal()
 
 }
 
+void lmTimeLine::TerminateLineAfter(float rTime, lmLUnits uxFinal)
+{
+    //Current column has been splitted at time rTime. It is necessary to remove all entries
+    //placed at timepos > rTime and make any necessary adjustments.
+
+    wxLogMessage(_T("[lmTimeLine::TerminateTableAfter] Removing entries after time %.2f"), rTime);
+
+    //remove all entries except Omega entry, if exists
+    lmItEntries it;
+    for (it = m_aMainTable.begin(); it != m_aMainTable.end(); ++it)
+	{
+		if (IsHigherTime((*it)->m_rTimePos, rTime))
+            break;
+	}
+    wxASSERT(it != m_aMainTable.end());
+
+    //here 'it' is pointing to firts entry to remove.
+    //Proceed to remove entries, except the omega entry
+    lmItEntries itStart = it;
+    lmTimeposEntry* pOmega = (lmTimeposEntry*)NULL;
+    for (; it != m_aMainTable.end(); ++it)
+	{
+        if ((*it)->m_nType == eOmega)
+        {
+            pOmega = (*it);
+            break;
+        }
+		delete *it;
+	}
+    m_aMainTable.erase(itStart, m_aMainTable.end());
+
+    //if Omega entry exists, adjusts values in this entry
+    if (pOmega)
+    {
+        //re-insert omega entry
+        m_aMainTable.push_back(pOmega);
+
+        //adjust values
+        pOmega->m_xInitialLeft = uxFinal;
+        pOmega->m_xLeft = uxFinal;
+        pOmega->m_xFinal = uxFinal;
+    }
+}
+
+void lmTimeLine::ComputeBreakPoints(lmBreaksTable* pBT)
+{
+    //This method computes the break points for this line and adds them to received
+    //break points table.
+    //
+    //Algorithm:
+    //
+    //In a first approach, add an entry for each timepos at which there is an object placed.
+    //Assign priority 0.8 to all entries.
+    //
+    //Now lower or raise priority of some entries according to empiric rules:
+    //  
+    //  1. If there is a time signature, strongly penalize those timepos not in beat 
+    //     position (priority *= 0.5)
+    //    
+    //  2. Do not split notes/rests. Penalize those entries occupied in some 
+    //     line (priority *= 0.7).
+    //
+    //  3. Do not to break beams. Penalize those entries  in which, at some line, there
+    //     is a beam (priority *=0.9).
+    //
+    //Finally, when all priorities have been computed, sort the table by priority (high to
+    //low) and by space (max to min).
+    //
+    //In order to accelerate the computation of this table, LineTables must have all 
+    //necesary data so that it doesn't become necessary to traverse the StaffObjs
+    //colection again.
+
+    //TODO
+}
+
+
 
 
 //=====================================================================================
@@ -1583,6 +1858,88 @@ lmLUnits lmTimeposTable::TenthsToLogical(lmTenths rTenths, int nStaff)
 {
 	return m_pStaff[nStaff-1]->TenthsToLogical(rTenths);
 }
+
+bool lmTimeposTable::GetOptimumBreakPoint(lmLUnits uAvailable, float* prTime,
+                                          lmLUnits* puWidth)
+{
+    //returns true if no break point found (exceptional case). In all other cases
+    //returns the information (rTime, xPos) for the first entry with space <= uAvailable
+    //and with maximum priority
+
+    ComputeBreaksTable();
+
+    wxLogMessage( DumpTimeposTable() );
+
+    //TODO: This only takes into account one line !!!!
+
+    //select highest entry with space <= uAvailable
+    lmTimeLine* pTL = m_aLines.front();
+    int i=0;
+    lmTimeposEntry* pTE = pTL->m_aMainTable[i];
+    while (pTL->m_aMainTable[i]->m_xFinal <= uAvailable)
+    {
+        wxASSERT(i < (int)pTL->m_aMainTable.size());
+        pTE = pTL->m_aMainTable[i];
+        ++i;
+    }
+    wxLogMessage(_T("[lmTimeposTable::GetOptimumBreakPoint] uAvailable=%.2f, returned=%.2f"),
+                 uAvailable, pTE->m_xFinal);
+
+    //return information
+	*prTime = pTE->m_rTimePos;
+    *puWidth = pTE->m_xFinal;
+
+    return false;       //no problems. There are break points
+}
+
+void lmTimeposTable::TerminateTableAfter(float rTime, lmLUnits uxFinal)
+{
+    //Current column has been splitted at time rTime. It is necessary to remove all entries
+    //placed at timepos > rTime and make any necessary adjustments.
+
+    wxLogMessage(_T("[lmTimeposTable::TerminateTableAfter] Removing entries after time %.2f"), rTime);
+
+	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
+	{
+        (*it)->TerminateLineAfter(rTime, uxFinal);
+    }
+
+    wxLogMessage(_T("[lmTimeposTable::TerminateTableAfter] After removal:"));
+    wxLogMessage( DumpTimeposTable() );
+}
+
+void lmTimeposTable::ComputeBreaksTable()
+{
+    //This method computes the BreaksTable. This is a table sumarizing break points
+    //information, that is, suitable places through all staves and voices where it is
+    //possible to break a system and start a new one. The best break locations are
+    //usually are the bar lines common to all staves. But in certain rare cases (i.e.
+    //scores without time signature or having instrumens not sharing a common
+    //time signature, cases in which it is requested to render the score in very narrow
+    //paper, etc.) it is necessary to split music in unnusual points.
+
+    //Step 1. Build a table for each line
+    std::vector<lmBreaksTable*> partialTables;
+	for (lmItTimeLine itTL = m_aLines.begin(); itTL != m_aLines.end(); ++itTL)
+	{
+        lmBreaksTable* pBT = new lmBreaksTable();
+        (*itTL)->ComputeBreakPoints(pBT);
+        partialTables.push_back(pBT);
+    }
+
+
+    //Step 2. Combine the partial tables
+        //TODO
+
+
+    //Delete partial tables, no longer needed
+    std::vector<lmBreaksTable*>::iterator itBT;
+    for (itBT = partialTables.begin(); itBT != partialTables.end(); ++itBT)
+        delete *itBT;
+    partialTables.clear();
+
+}
+
 
 
 //-------------------------------------------------------------------------------------
