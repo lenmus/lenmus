@@ -58,9 +58,13 @@ class lmBoxScore;
 class lmGMSelection;
 class lmHandler;
 
+class lmShape;
+class lmBoxSystem;
+
 
 //------------------------------------------------------------------------------
 //the root object for the graphical model
+//------------------------------------------------------------------------------
 
 enum lmEGMOType
 {
@@ -260,11 +264,9 @@ protected:
 };
 
 //------------------------------------------------------------------------------
-//An abstract container for the score graphical model
+//lmBox definition: An abstract container for the score graphical model
 //abstract class to derive all lmBoxXXXXX objects
-
-class lmShape;
-class lmBoxSystem;
+//------------------------------------------------------------------------------
 
 class lmBox : public lmGMObject
 {
@@ -272,6 +274,7 @@ public:
     virtual ~lmBox();
 
     virtual void AddShape(lmShape* pShape);
+    virtual void RemoveShape(lmShape* pShape);
 
     //implementation of virtual methods from base class
     virtual wxString Dump(int nIndent)=0;
@@ -303,6 +306,7 @@ protected:
 // An abstract class representing any renderizable object, such as a line,
 // a glyph, a note head, an arch, etc.
 // From this class to derive all lmShapeXXXXX objects
+//------------------------------------------------------------------------------
 
 enum lmEAttachType
 {
@@ -463,7 +467,9 @@ protected:
 };
 
 
+//------------------------------------------------------------------------------
 // lmGMSelection is data holder with information about a selection.
+//------------------------------------------------------------------------------
 
 class lmGMSelection
 {

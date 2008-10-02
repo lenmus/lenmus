@@ -181,7 +181,7 @@ public:
     //current position info
     float GetCursorTime();
     lmStaffObj* GetCursorSO();
-    lmUPoint GetCursorPoint();
+    lmUPoint GetCursorPoint(int* pNumPage = NULL);
     lmStaff* GetCursorStaff();
     int GetCursorNumStaff();
     lmVStaff* GetVStaff();

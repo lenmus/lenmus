@@ -59,7 +59,8 @@ public:
 
 	int GetSystemNumber();
 
-    void SetNumMeasures(int nMeasures, lmScore* pScore);
+    void DeleteLastSlice();
+    void FixSlicesYBounds();
     int GetNumMeasures() { return m_nNumMeasures; }
 
     void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
@@ -84,8 +85,6 @@ public:
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
-    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-    //                   lmLUnits uYMin, lmLUnits uYMax);
 	int GetNumMeasureAt(lmLUnits uxPos);
 
     //selection

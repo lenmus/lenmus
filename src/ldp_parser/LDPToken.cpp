@@ -308,9 +308,10 @@ void lmLDPTokenBuilder::ParseNewToken()
         switch (nState) {
             case FT_Start:
                 GNC();
-                if (IsLetter(m_curChar) ||
-                    m_curChar == chOpenBracket || m_curChar == chBar ||
-                    m_curChar == chColon || m_curChar == chAsterisk)
+                if (IsLetter(m_curChar)
+                    || m_curChar == chOpenBracket || m_curChar == chBar
+                    || m_curChar == chColon || m_curChar == chAsterisk
+                    || m_curChar == chSharp )
                 {
                     nState = FT_ETQ01;
                 }
@@ -646,11 +647,12 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_pParser->ParseMsje(wxString::Format(_T("[lmLDPTokenBuilder::ParseNewToken.%d]: EOL found"),
                         nState));
                 } else {
-                    m_pParser->ParseMsje(wxString::Format(_T("[lmLDPTokenBuilder::ParseNewToken.%d]: Bad character found"),    // (Char:[%s], Dec:%s, Hex:%s). Token=<%s>"),
+                    m_pParser->ParseMsje(wxString::Format(_T("[lmLDPTokenBuilder::ParseNewToken]: Bad character %d found. File %s"),
+                        // (Char:[%s], Dec:%s, Hex:%s). Token=<%s>"),
                         //nState, Chr$(m_curChar), m_curChar, Hex$(m_curChar),
                         //nState, m_curChar, m_curChar, m_curChar,
                         //Extract(iStart, m_lastPos)) );
-                        m_curChar ));
+                        m_curChar, m_pParser->GetFilename() ));
                 }
                 nState = FT_Start;
                 break;

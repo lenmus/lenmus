@@ -163,11 +163,12 @@ typedef struct lmPaperSizeDataStruct
 
 //to avoid having to translate paper names, I will use the wxWidgets papers database, but only for
 //some applicable papers (i.e excluding, envelopes, ...). Using wxPAPER_NONE means that paper data
-//is in this table. Any other identifier means that paper data must be taken from wxWidgets DB
+//is in this table (i.e.- the first two commented entries). Any other identifier means that
+//paper data must be taken from wxWidgets DB
 static lmPaperSizeData m_Papers[] = {
     //                              Displayed name                  Size
-    { wxPAPER_NONE,                 _("DIN A3"),                    2970, 4200 },
-    { wxPAPER_NONE,                 _("DIN A4"),                    2100, 2970 },
+    //{ wxPAPER_NONE,                 _("DIN A3"),                    2970, 4200 },
+    //{ wxPAPER_NONE,                 _("DIN A4"),                    2100, 2970 },
     { wxPAPER_LETTER,               _T(""),   0,0 },  //"Letter, 8 1/2 x 11 in"), 2159, 2794);
     { wxPAPER_LEGAL,                _T(""),   0,0 },  //"Legal, 8 1/2 x 14 in"), 2159, 3556);
     { wxPAPER_A4,                   _T(""),   0,0 },  //"A4 sheet, 210 x 297 mm"), 2100, 2970);
@@ -239,7 +240,7 @@ static lmPaperSizeData m_Papers[] = {
 
 
 //paper to use
-static int m_nSelPaper = 1;     //DIN A4
+static int m_nSelPaper = 2;     //wxPAPER_A4
 
 
 //--------------------------------------------------------------------------------
@@ -293,6 +294,15 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
     m_ScoreData.fAddTime = false;
     m_ScoreData.nBeats = 4;         //initial time signature:  4/4
     m_ScoreData.nBeatType = 4;
+
+    //paper orientation and margins
+    m_ScoreData.fPortrait = true;          //Orientation (default: portrait)
+    m_ScoreData.nTopMargin = 20;                //20 mm
+    m_ScoreData.nBottomMargin = 20;             //20 mm;
+    m_ScoreData.nLeftMargin = 20;               //20 mm;
+    m_ScoreData.nRightMargin = 20;              //20 mm;
+    m_ScoreData.nBindingMargin = 0;             //no binding margin
+
 
     //titles
     m_ScoreData.fAddTitles = false;
@@ -350,6 +360,7 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
             m_Papers[i].nHeight = paper->GetHeight();
         }
     }
+
 
     //create the pages in the order of presentation
     lmScoreWizardLayout* pPageLayout = new lmScoreWizardLayout((wxWizard*)this);
@@ -434,14 +445,6 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
     // Modify score with user options (paper size, margins, etc.)
 
     //set paper settings
-    //m_ScoreData.nPageSize = wxSize(m_Papers[m_nSelPaper].nWidth / 10,
-    //                               m_Papers[m_nSelPaper].nHeight / 10 );
-    m_ScoreData.nTopMargin = 20;                //20 mm
-    m_ScoreData.nBottomMargin = 20;             //20 mm;
-    m_ScoreData.nLeftMargin = 20;               //20 mm;
-    m_ScoreData.nRightMargin = 20;              //20 mm;
-    m_ScoreData.nBindingMargin = 0;             //no binding margin
-
     pScore->SetPageLeftMargin( lmToLogicalUnits( m_ScoreData.nLeftMargin, lmMILLIMETERS) );
     pScore->SetPageRightMargin( lmToLogicalUnits( m_ScoreData.nRightMargin, lmMILLIMETERS) );
     pScore->SetPageTopMargin( lmToLogicalUnits( m_ScoreData.nTopMargin, lmMILLIMETERS) );
@@ -593,7 +596,10 @@ bool lmScoreWizardLayout::Create(wxWizard* parent)
     //paper size
     int nNumPapers = sizeof(m_Papers) / sizeof(lmPaperSizeData);
     for (int i=0; i < nNumPapers; i++)
-        m_pCboPaper->Append( m_Papers[i].sName );
+    {
+        if (m_Papers[i].nId != 0)
+            m_pCboPaper->Append(m_Papers[i].sName, (void *)i );
+    }
     m_pCboPaper->SetSelection(m_nSelPaper);
 
     //paper orientation
@@ -689,7 +695,9 @@ bool lmScoreWizardLayout::TransferDataFromWindow()
 
     if (m_nSelPaper != -1)
     {
-        wxPrintPaperType* paper = wxThePrintPaperDatabase->Item(m_nSelPaper);
+        int iP = (int)m_pCboPaper->GetClientData(m_nSelPaper);
+        wxPaperSize nPaperId = m_Papers[iP].nId;
+        wxPrintPaperType* paper = wxThePrintPaperDatabase->FindPaperType(nPaperId);
         if ( paper )
             m_ScoreData.nPageSize = wxSize(paper->GetWidth()/10, paper->GetHeight()/10 );
     }

@@ -313,7 +313,7 @@ public:
     lmStaffObj* GetPreviousStaffobj();
 
 
-    lmUPoint GetCursorPoint();
+    lmUPoint GetCursorPoint(int* pNumPage = NULL);
     lmStaff* GetCursorStaff();
     lmVStaff* GetVStaff();
 

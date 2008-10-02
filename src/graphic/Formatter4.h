@@ -53,7 +53,7 @@ public:
 private:
     lmLUnits SizeMeasureColumn(int nSystem, lmBoxSystem* pBoxSystem, bool* pNewSystem,
                                lmLUnits nSystemIndent);
-    void AddEmptyMeasureColumn(int nSystem, lmBoxSystem* pBoxSystem);
+    void AddEmptySystem(int nSystem, lmBoxSystem* pBoxSystem);
     void RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem);
     bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nInstr);
     lmLUnits ComputeSystemHeight();

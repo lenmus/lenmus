@@ -504,10 +504,10 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
     pPaper->SolidLine(uxStart, uyStart, uxEnd, uyEnd, uThickness, eEdgeVertical, color);
 
     //update bounds
-    m_uBoundsTop.x = wxMin(m_uBoundsTop.x, uxStart);
-    m_uBoundsTop.y = wxMin(m_uBoundsTop.y, uyStart-uThickness);
-    m_uBoundsBottom.x = wxMax(m_uBoundsBottom.x, uxEnd);
-    m_uBoundsBottom.y = wxMax(m_uBoundsBottom.y, uyEnd+uThickness);
+    m_uBoundsTop.x = wxMin(m_uBoundsTop.x, wxMin(uxStart, uxEnd));
+    m_uBoundsTop.y = wxMin(m_uBoundsTop.y, wxMin(uyStart, uyEnd) - uThickness);
+    m_uBoundsBottom.x = wxMax(m_uBoundsBottom.x, wxMax(uxStart, uxEnd));
+    m_uBoundsBottom.y = wxMax(m_uBoundsBottom.y, wxMax(uyStart, uyEnd) + uThickness);
 
     //wxLogMessage(_T("[lmShapeBeam::DrawBeamSegment] uxStart=%d, uyStart=%d, uxEnd=%d, uyEnd=%d, uThickness=%d, yStartIncr=%d, yEndIncr=%d, m_fStemsDown=%s"),
     //    uxStart, uyStart, uxEnd, uyEnd, uThickness, yStartIncr, yEndIncr, (m_fStemsDown ? _T("down") : _T("up")) );

@@ -132,21 +132,12 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     }
 }
 
-void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
+void lmBoxSystem::FixSlicesYBounds()
 {
-	// This method is only invoked during layout phase, when the number of measures in the
-	// system has been finally decided. We have to store this number, delete any addional
-	// slices added during measurements, and propagate 'y' coordinates from first slice to
-	// all others.
+	// This method is only invoked during layout phase, when the system is finished.
+    // We have to propagate 'y' coordinates from first slice to all others.
 
-    m_nNumMeasures = nMeasures;
-
-	//remove extra slices not needed
-	for(int i=nMeasures; i < (int)m_Slices.size(); i++)
-	{
-		delete m_Slices.back();
-		m_Slices.pop_back();
-	}
+    m_nNumMeasures = (int)m_Slices.size();
 
 	//propagate 'y' coordinates from first slice to all others
     for (int i=1; i < (int)m_Slices.size(); i++)
@@ -157,7 +148,14 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 	//update system yBottom position by copying yBottom from first slice
     if (m_Slices.size() > 0)
 	    SetYBottom(m_Slices[0]->GetYBottom());
+}
 
+void lmBoxSystem::DeleteLastSlice()
+{
+    //This method is used during laout phase, to delete a column when it is finally decided not
+    //to include it in current system
+	delete m_Slices.back();
+	m_Slices.pop_back();
 }
 
 lmLUnits lmBoxSystem::GetYTopFirstStaff()

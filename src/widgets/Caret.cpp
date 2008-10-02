@@ -98,12 +98,16 @@ void lmCaret::OnCaretTimer(wxTimerEvent& event)
 
 void lmCaret::Show(double rScale, lmUPoint uPos, lmStaff* pStaff)
 {
+    //wxLogMessage(_T("[lmCaret::Show] SetCaretPosition --> calls Show()"));
     SetCaretPosition(rScale, uPos, pStaff);
     Show();
 }
 
 void lmCaret::Show(bool fShow)
 {
+    //wxLogMessage(_T("[lmCaret::Show] fShow=%s, m_nCountVisible=%d"),
+    //            (fShow?_T("yes"):_T("no")), m_nCountVisible);
+
     //Shows or hides the caret.
     //AWARE:
     //  Note that Show() and Hide() operates on a counter. If you invoke Hide() N times 
@@ -124,12 +128,15 @@ void lmCaret::Show(bool fShow)
 
 void lmCaret::DoShow()
 {
+    m_nCountVisible = 1;
+    //wxLogMessage(_T("[lmCaret::DoShow] m_nCountVisible=%d"), m_nCountVisible);
     m_oCaretTimer.Start(m_nBlinkingRate, wxTIMER_ONE_SHOT);
     RenderCaret(lmVISIBLE);
 }
 
 void lmCaret::DoHide()
 {
+    //wxLogMessage(_T("[lmCaret::DoHide] m_nCountVisible=%d"), m_nCountVisible);
     m_oCaretTimer.Stop();
     RenderCaret(lmHIDDEN);
 }

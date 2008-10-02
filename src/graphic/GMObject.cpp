@@ -309,6 +309,14 @@ void lmBox::AddShape(lmShape* pShape)
 	pShape->SetOwnerBox(this);
 }
 
+void lmBox::RemoveShape(lmShape* pShape)
+{
+    std::vector<lmShape*>::iterator it;
+    it = std::find(m_Shapes.begin(), m_Shapes.end(), pShape);
+    wxASSERT(it != m_Shapes.end());
+    m_Shapes.erase(it);
+}
+
 lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId);

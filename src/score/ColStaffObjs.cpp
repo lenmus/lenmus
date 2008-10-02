@@ -1317,9 +1317,11 @@ lmStaff* lmVStaffCursor::GetCursorStaff()
 //    }
 //}
 //
-lmUPoint lmVStaffCursor::GetCursorPoint()
+lmUPoint lmVStaffCursor::GetCursorPoint(int* pNumPage)
 {
     //compute coordinate for placing cursor and return it
+    //Cursor knows nothing about the graphic model. So it is necessary to interact with
+    //it and get the necessary information.
 
     lmUPoint uPos(0.0f, 0.0f);
     lmStaffObj* pCursorSO = GetStaffObj();
@@ -1330,6 +1332,9 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     lmLUnits uxEnd1, uxEnd2;
     float rTime1, rTime2;
     float rTimeCursor = m_rTimepos;  //save it, as will be lost when MoveLeft(), etc.
+    int nMeasure;
+    int nColumn;
+    int nPage1=0, nPage2=0;
 
     //
     //collect information about staffobjs and shapes' positions
@@ -1345,22 +1350,11 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         //get info from cursor staffobj
         rTime2 = pCursorSO->GetTimePos();
         lmShape* pShape2 = pCursorSO->GetShape(m_nStaff);
-        if (pShape2)
-        {
-            uPos.y = GetStaffPosY(pCursorSO);
-            uxStart2 = pShape2->GetXLeft();
-            uxEnd2 = pShape2->GetXRight();
-        }
-        else
-        {
-            //End of score
-            //Or no shape! --> //TODO: All objects must have a shape, althought it can be not visible
-            wxASSERT(false);
-            lmTODO(_T("[lmVStaffCursor::GetCursorPoint] No shape for current sttafobj"));
-            uPos.y = 0.0f;  //TODO
-            uxStart2 = 0.0f;     //TODO
-            uxEnd2 = 0.0f;
-        }
+        wxASSERT(pShape2);      // No shape for current sttafobj !!!
+        uPos.y = GetStaffPosY(pCursorSO);
+        uxStart2 = pShape2->GetXLeft();
+        uxEnd2 = pShape2->GetXRight();
+        nPage2 = pShape2->GetPageNumber();
     }
 
     //get info from previous staffobj
@@ -1369,15 +1363,10 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     {
         rTime1 = pPrevSO->GetTimePos();
         lmShape* pShape1 = pPrevSO->GetShape(m_nStaff);
-	    if (!pShape1)
-            wxASSERT(false);
-            //NO shape! --> //TODO: All objects must have a shape, althought it can be not visible
-            //uxStart1 = 0.0f;     //TODO
-	    else
-        {
-		    uxStart1 = pShape1->GetXLeft();
-            uxEnd1 = pShape1->GetXRight();
-        }
+	    wxASSERT(pShape1);            // No shape for current sttafobj !!!
+		uxStart1 = pShape1->GetXLeft();
+        uxEnd1 = pShape1->GetXRight();
+        nPage1 = pShape1->GetPageNumber();
     }
 
 
@@ -1408,6 +1397,9 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
             //current cursor time > current staffobj time. Impossible!!
             wxASSERT(false);
 
+        if (pNumPage)
+            *pNumPage = nPage2;
+
         return uPos;
     }
 
@@ -1425,6 +1417,9 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
             //wxASSERT(false);
 		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
 
+        if (pNumPage)
+            *pNumPage = nPage2;
+
         return uPos;
     }
 
@@ -1435,6 +1430,9 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
         //Position cursor four lines (40 tenths) at the right of last staffobj
         uPos.y = GetStaffPosY(pPrevSO);
         uPos.x = uxEnd1 + pPrevSO->TenthsToLogical(40);
+
+        if (pNumPage)
+            *pNumPage = nPage1;
 
         return uPos;
     }
@@ -1448,8 +1446,12 @@ lmUPoint lmVStaffCursor::GetCursorPoint()
     lmBoxScore* pBS = (lmBoxScore*)pScore->GetGraphicObject();
     lmBoxPage* pBPage = pBS->GetPage(pBS->GetNumPages());
     lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
-    uPos.y = pBSystem->GetStaffShape(1)->GetYTop();
-    uPos.x = pBSystem->GetXLeft() + pScore->TenthsToLogical(10);
+    lmShape* pShape = pBSystem->GetStaffShape(1);
+    uPos.y = pShape->GetYTop();
+    uPos.x = pShape->GetXLeft() + pScore->TenthsToLogical(10);
+
+    if (pNumPage)
+        *pNumPage = pBPage->GetPageNumber();
 
     return uPos;
 }

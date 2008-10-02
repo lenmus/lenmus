@@ -35,6 +35,7 @@ class lmVStaff;
 class lmTimeLine;
 class lmTimeposEntry;
 class lmCriticalLine;
+class lmBreaksTable;
 
 //define the class that implements the main table and the algoritms
 class lmTimeposTable
@@ -80,7 +81,7 @@ private:
 	void AddEntry(int nInstr, int nVoice, lmStaffObj* pSO, lmShape* pShape, bool fProlog);
     void StartLine(int nInstr, int nVoice=0, lmLUnits uxStart = -1.0f, lmLUnits uSpace = 0.0f);
 	lmTimeLine* FindLine(int nInstr, int nVoice);
-    void ComputeBreaksTable();
+    lmBreaksTable* ComputeBreaksTable();
 
 
 	#define lmItTimeLine	std::vector<lmTimeLine*>::iterator

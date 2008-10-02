@@ -107,7 +107,7 @@ public:
     // error and logging
     void AnalysisError(const wxChar* szFormat, ...);
     void ParseMsje(wxString sMsg);
-
+    inline wxString& GetFilename() { return m_sFileName; }
 
     // auxiliary methods
     static float GetDefaultDuration(lmENoteType nNoteType, int nDots, int nActualNotes,
@@ -192,6 +192,7 @@ private:
     wxString        m_sLastBuffer;        // to keep line under analysis
     long            m_nErrors;            // numebr of serious errors during parsing
     long            m_nWarnings;          // number of warnings during parsing
+    wxString        m_sFileName;
     wxFileInputStream*    m_pFile;        // file being parsed
     wxTextInputStream*    m_pTextFile;    // file being parsed
 

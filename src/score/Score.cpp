@@ -427,10 +427,10 @@ void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
     m_pVCursor->MoveCursorToObject(pSO);
 }
 
-lmUPoint lmScoreCursor::GetCursorPoint()
+lmUPoint lmScoreCursor::GetCursorPoint(int* pNumPage)
 {
     if (m_pVCursor)
-        return m_pVCursor->GetCursorPoint();
+        return m_pVCursor->GetCursorPoint(pNumPage);
     else
         return lmUPoint(0.0f, 0.0f);
 }

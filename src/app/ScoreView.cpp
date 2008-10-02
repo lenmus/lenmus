@@ -495,6 +495,7 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     if (!m_pFrame) return;
 
     //re-paint the score if option not lmDELAY_RELAYOUT
+    //wxLogMessage(_T("[lmScoreView::OnUpdate] Calls HideCaret()"));
     HideCaret();
     lmUpdateHint* pHints = (lmUpdateHint*)hint;
     if (pHints && (pHints->Options() & lmDELAY_RELAYOUT))
@@ -517,7 +518,9 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
         int nSel = ((lmBoxScore*)pScore->GetGraphicObject())->GetNumObjectsSelected();
         //wxLogMessage(_T("[lmScoreView::OnUpdate] NumSelected = %d"), nSel);
         m_pCaret->SetInvisible(((lmBoxScore*)pScore->GetGraphicObject())->GetNumObjectsSelected() > 0);
+    //wxLogMessage(_T("[lmScoreView::OnUpdate] Calls UpdateCaret()"));
         UpdateCaret();
+    //wxLogMessage(_T("[lmScoreView::OnUpdate] Calls ShowCaret()"));
         ShowCaret();
 
         //delete the MIDI event table
@@ -997,7 +1000,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     //update status bar: mouse position, and num page
     m_pMainFrame->SetStatusBarMousePos((float)uPagePos.x, (float)uPagePos.y);
-    m_pMainFrame->SetStatusBarNumPage(m_nNumPage);
+    //m_pMainFrame->SetStatusBarNumPage(m_nNumPage);
 
 	////for testing and debugging methods DeviceToLogical [ok] and LogicalToDevice [ok]
 	//lmDPoint tempPagePosD;
@@ -1761,6 +1764,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRe
     // The rectangle to redraw is in pixels and unscrolled
 
 	// hide the cursor so repaint doesn't interfere
+    //wxLogMessage(_T("[lmScoreView::RepaintScoreRectangle] Calls HideCaret()"));
     HideCaret();
 
     //if a full relayout is pending, change the repaint rectangle to full screen and
@@ -2020,6 +2024,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRe
     pDC->SetDeviceOrigin(0, 0);
 
 	//Restore caret
+    //wxLogMessage(_T("[lmScoreView::RepaintScoreRectangle] Calls ShowCaret()"));
     ShowCaret();
 
 	////DEBUG: draw cyan rectangle to show updated rectangle
@@ -2209,18 +2214,22 @@ void lmScoreView::SetInitialCaretPosition()
         lmScore* pScore = m_pDoc->GetScore();
         m_pScoreCursor = pScore->AttachCursor(this);
         m_pScoreCursor->MoveToInitialPosition();
+        m_nNumPage = 1;
 	}
-    UpdateCaret();
+    ////wxLogMessage(_T("[lmScoreView::SetInitialCaretPosition] Calls UpdateCaret()"));
+    //UpdateCaret();
 }
 
 void lmScoreView::HideCaret() 
 { 
+    //wxLogMessage(_T("[lmScoreView::HideCaret] Calls Caret::Hide()"));
     if (m_pCaret) 
         m_pCaret->Hide();
 }
 
 void lmScoreView::ShowCaret() 
 { 
+    //wxLogMessage(_T("[lmScoreView::ShowCaret] Calls Caret::Show()"));
     if (m_pCaret) 
         m_pCaret->Show(); 
     else
@@ -2245,9 +2254,12 @@ void lmScoreView::CaretRight(bool fAlsoChordNotes)
     if (!m_pCaret) return;
 
 	//advance to next staff obj.
+    //wxLogMessage(_T("[lmScoreView::CaretRight] Calls HideCaret()"));
     HideCaret();
     m_pScoreCursor->MoveRight(fAlsoChordNotes);
+    //wxLogMessage(_T("[lmScoreView::CaretRight] Calls UpdateCaret()"));
     UpdateCaret();
+    //wxLogMessage(_T("[lmScoreView::CaretRight] Calls ShowCaret()"));
     ShowCaret();
 }
 
@@ -2257,9 +2269,12 @@ void lmScoreView::CaretLeft(bool fPrevObject)
 
     if (!m_pCaret) return;
 
+    //wxLogMessage(_T("[lmScoreView::CaretLeft] Calls HideCaret()"));
     HideCaret();
     m_pScoreCursor->MoveLeft(fPrevObject);
+    //wxLogMessage(_T("[lmScoreView::CaretLeft] Calls UpdateCaret()"));
     UpdateCaret();
+    //wxLogMessage(_T("[lmScoreView::CaretLeft] Calls ShowCaret()"));
     ShowCaret();
 }
 
@@ -2291,6 +2306,7 @@ void lmScoreView::MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, 
 {
     if (!m_pCaret) return;
 
+    //wxLogMessage(_T("[lmScoreView::MoveCaretNearTo]"));
     HideCaret();
 	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
     UpdateCaret();
@@ -2301,6 +2317,7 @@ void lmScoreView::MoveCaretToObject(lmStaffObj* pSO)
 {
     if (!m_pCaret) return;
 
+    //wxLogMessage(_T("[lmScoreView::MoveCaretToObject]"));
     HideCaret();
 	m_pScoreCursor->MoveCursorToObject(pSO);
     UpdateCaret();
@@ -2315,6 +2332,7 @@ void lmScoreView::UpdateCaret()
     if (!m_pCaret) return;
 
     //Hide cursor at old position
+    //wxLogMessage(_T("[lmScoreView::UpdateCaret] Calls Caret::Hide()"));
 	m_pCaret->Hide();
 
 	//status bar: timepos
@@ -2339,9 +2357,21 @@ void lmScoreView::UpdateCaret()
     m_pMainFrame->SetStatusBarMsg(wxString::Format(_T("cursor pointing to %s"), sType));
     //END DBG --------------------------------------------------------------------------
 
-	//Display cursor in new position
+	//Get cursor new position
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
+    int nPage;
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+    m_pMainFrame->SetStatusBarNumPage(nPage);
+
+    //if new cursos position is out of currently displayed page/area it is necesary
+    //to adjust scrolling to ensure that cursor is visible and that it is displayed at
+    //right place.
+    //TODO
+    if (nPage != m_nNumPage)      //!IsPositionVisible(uPos))
+    {
+        wxMessageBox(_T("Cursor in another page"));
+        //ScrollTo(uPos);
+    }
     m_pCaret->Show(m_rScale, uPos, pStaff);
 
     //inform the controller, for updating other windows (i.e. toolsbox)

@@ -140,6 +140,7 @@ void lmLDPParser::Clear()
 
 lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 {
+    m_sFileName = filename;
     wxFileInputStream inFile(filename);
     if (!inFile.Ok())
     {
@@ -187,6 +188,7 @@ lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
     //now proceed
     Clear();                            //delete old allocated objects
     m_fFromString = true;                //parsing a string, not a file
+    m_sFileName = _T("'No file'");
     m_fStartingTextAnalysis = true;        //signal the start of a new analysis
     m_sLastBuffer = sSource + sEOF;        //load string to parse into buffer
 

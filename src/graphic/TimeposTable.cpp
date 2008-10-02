@@ -36,6 +36,8 @@
 #include "wx/wx.h"
 #endif
 
+#include <vector>
+#include <list>
 #include <algorithm>
 #include <math.h>
 
@@ -208,8 +210,11 @@ public:
 typedef struct lmBreaksTimeEntry_Struct
 {
     float       rTimepos;
-    lmLUnits    xPos;
     float       rPriority;
+    lmLUnits    uxStart;
+    lmLUnits    uxEnd;
+    bool        fInBeam;
+    lmLUnits    uxBeam;
 }
 lmBreaksTimeEntry;
 
@@ -218,15 +223,25 @@ class lmBreaksTable
 {
 public:
     lmBreaksTable();
-    ~lmBreaksTable() {}
+    ~lmBreaksTable();
 
-    void AddEntry();
+    void AddEntry(float rTime, lmLUnits uxStart, lmLUnits uWidth, bool fInBeam,
+                  lmLUnits uxBeam, float rPriority = 0.8f);
+    void AddEntry(lmBreaksTimeEntry* pBTE);
     void SetPriority();
     void ChangePriority(int iEntry, float rMultiplier);
+    wxString Dump();
+    inline bool IsEmpty() { return m_BreaksTable.empty(); }
+
+    //traversing the table
+    lmBreaksTimeEntry* GetFirst();
+    lmBreaksTimeEntry* GetNext();
+
 
 private:
 
-    std::vector<lmBreaksTimeEntry*> m_BreaksTable;
+    std::list<lmBreaksTimeEntry*>               m_BreaksTable;      //the table
+    std::list<lmBreaksTimeEntry*>::iterator     m_it;               //for GetFirst(), GetNext();
 
 
 };
@@ -241,15 +256,81 @@ lmBreaksTable::lmBreaksTable()
 {
 }
 
-void lmBreaksTable::AddEntry()
+lmBreaksTable::~lmBreaksTable()
 {
-    //m_BreaksTable.push_back();
+    std::list<lmBreaksTimeEntry*>::iterator it;
+    for (it = m_BreaksTable.begin(); it != m_BreaksTable.end(); ++it)
+        delete *it;
+    m_BreaksTable.clear();
+}
+
+void lmBreaksTable::AddEntry(float rTime, lmLUnits uxStart, lmLUnits uWidth, bool fInBeam,
+                             lmLUnits uxBeam, float rPriority)
+{
+    lmBreaksTimeEntry* pBTE = new lmBreaksTimeEntry;
+    pBTE->rPriority = rPriority;
+    pBTE->rTimepos = rTime;
+    pBTE->uxStart = uxStart;
+    pBTE->uxEnd = uxStart + uWidth;
+    pBTE->fInBeam = fInBeam;
+    pBTE->uxBeam = uxBeam;
+
+    m_BreaksTable.push_back(pBTE);
+}
+
+void lmBreaksTable::AddEntry(lmBreaksTimeEntry* pBTE)
+{
+    AddEntry(pBTE->rTimepos, pBTE->uxStart, pBTE->uxEnd - pBTE->uxStart, pBTE->fInBeam,
+             pBTE->uxBeam, pBTE->rPriority);
 }
 
 void lmBreaksTable::ChangePriority(int iEntry, float rMultiplier)
 {
 }
 
+wxString lmBreaksTable::Dump()
+{
+    wxString sMsg = _T("Breaks table\n");
+    sMsg += _T("===================================================================\n\n");
+
+    if (m_BreaksTable.size() == 0)
+    {
+        sMsg += _T("The table is empty.");
+        return sMsg;
+    }
+
+    //          +....... +....... +....... +....... +..... +....... 
+    sMsg += _T("Piority  TimePos  xStart   xEnd     InBeam xBeam\n");
+    sMsg += _T("-------- -------- -------- -------- ------ --------\n");
+    std::list<lmBreaksTimeEntry*>::iterator it;
+    for (it = m_BreaksTable.begin(); it != m_BreaksTable.end(); ++it)
+    {
+        sMsg += wxString::Format(_T("%8.2f %8.2f %8.2f %8.2f %6s %8.2f\n"),
+                    (*it)->rPriority, (*it)->rTimepos, (*it)->uxStart, (*it)->uxEnd,
+                    ((*it)->fInBeam ? _T("yes   ") : _T("no    ")), (*it)->uxBeam );
+    }
+    return sMsg;
+}
+
+lmBreaksTimeEntry* lmBreaksTable::GetFirst()
+{
+    m_it = m_BreaksTable.begin();
+    if (m_it == m_BreaksTable.end())
+        return (lmBreaksTimeEntry*)NULL;
+
+    return *m_it;
+}
+
+lmBreaksTimeEntry* lmBreaksTable::GetNext()
+{
+    //advance to next one
+    ++m_it;
+    if (m_it != m_BreaksTable.end())
+        return *m_it;
+
+    //no more items
+    return (lmBreaksTimeEntry*)NULL;
+}
 
 
 
@@ -1207,8 +1288,12 @@ void lmTimeLine::TerminateLineAfter(float rTime, lmLUnits uxFinal)
 {
     //Current column has been splitted at time rTime. It is necessary to remove all entries
     //placed at timepos > rTime and make any necessary adjustments.
+    //Also, all created shapes must be removed from its box containers and deleted
 
-    wxLogMessage(_T("[lmTimeLine::TerminateTableAfter] Removing entries after time %.2f"), rTime);
+    //THIS METHOD IS NO LONGER USED. BUT IT WORKS.
+    //Leaved just in case there is a need to use it again
+
+    //wxLogMessage(_T("[lmTimeLine::TerminateTableAfter] Removing entries after time %.2f"), rTime);
 
     //remove all entries except Omega entry, if exists
     lmItEntries it;
@@ -1225,11 +1310,23 @@ void lmTimeLine::TerminateLineAfter(float rTime, lmLUnits uxFinal)
     lmTimeposEntry* pOmega = (lmTimeposEntry*)NULL;
     for (; it != m_aMainTable.end(); ++it)
 	{
+        //if this is the omega entry, break loop
         if ((*it)->m_nType == eOmega)
         {
             pOmega = (*it);
             break;
         }
+
+        //remove the shape, if there is one
+        if ((*it)->m_pShape)
+        {
+            lmBox* pBox = (*it)->m_pShape->GetOwnerBox();
+            wxASSERT(pBox);
+            pBox->RemoveShape( (*it)->m_pShape );
+            delete (*it)->m_pShape;
+        }
+
+        //remove this entry
 		delete *it;
 	}
     m_aMainTable.erase(itStart, m_aMainTable.end());
@@ -1275,7 +1372,76 @@ void lmTimeLine::ComputeBreakPoints(lmBreaksTable* pBT)
     //necesary data so that it doesn't become necessary to traverse the StaffObjs
     //colection again.
 
-    //TODO
+    //TODO: Add filters for priority
+    const lmItEntries itEnd = m_aMainTable.end();
+	lmItEntries it = m_aMainTable.begin();
+
+    //skip initial non-timed entries
+	for (it = m_aMainTable.begin(); it != itEnd && IsLowerTime((*it)->m_rTimePos, 0.0f); ++it);
+    if (it == itEnd) return;
+
+    //process current time
+    float rTime = (*it)->m_rTimePos;
+    lmLUnits uxStart = (*it)->m_xFinal;
+    lmLUnits uxWidth = (*it)->m_uSize;
+    lmLUnits uxBeam = 0.0f;
+    bool fInBeam = false;
+    lmStaffObj* pSO = (*it)->m_pSO;
+    if (pSO && pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsBeamed())
+    {
+        fInBeam = true;
+        lmStaffObj* pSOEnd = ((lmNoteRest*)pSO)->GetBeam()->GetEndNoteRest();
+        lmShape* pShape = pSOEnd->GetShape();
+        uxBeam = pShape->GetXLeft() + pShape->GetWidth();
+    }
+
+	while (it != itEnd)
+    {
+		if (IsEqualTime((*it)->m_rTimePos, rTime) || IsLowerTime((*it)->m_rTimePos, 0.0f))
+        {
+		    //skip any not-timed entry
+            if (IsEqualTime((*it)->m_rTimePos, rTime))
+            {
+                uxWidth = wxMax(uxWidth, (*it)->m_uSize);
+                lmStaffObj* pSO = (*it)->m_pSO;
+                if (pSO && pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsBeamed())
+                {
+                    fInBeam = true;
+                    lmStaffObj* pSOEnd = ((lmNoteRest*)pSO)->GetBeam()->GetEndNoteRest();
+                    lmShape* pShape = pSOEnd->GetShape();
+                    uxBeam = wxMax(uxBeam, pShape->GetXLeft() + pShape->GetWidth());
+                }
+            }
+        }
+        else
+        {
+            //new timepos. Add entry for previous timepos
+            pBT->AddEntry(rTime, uxStart, uxWidth, fInBeam, uxBeam);
+
+            //start collecting data for new timepos
+            rTime = (*it)->m_rTimePos;
+            uxStart = (*it)->m_xFinal;
+            uxWidth = (*it)->m_uSize;
+            lmStaffObj* pSO = (*it)->m_pSO;
+            if (pSO && pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsBeamed())
+            {
+                fInBeam = true;
+                lmStaffObj* pSOEnd = ((lmNoteRest*)pSO)->GetBeam()->GetEndNoteRest();
+                lmShape* pShape = pSOEnd->GetShape();
+                uxBeam = pShape->GetXLeft() + pShape->GetWidth();
+            }
+            else
+            {
+                uxBeam = 0.0f;
+                fInBeam = false;
+            }
+       }
+		++it;
+    }
+
+    pBT->AddEntry(rTime, uxStart, uxWidth, fInBeam, uxBeam);
+
+    wxLogMessage( pBT->Dump() );
 }
 
 
@@ -1866,28 +2032,30 @@ bool lmTimeposTable::GetOptimumBreakPoint(lmLUnits uAvailable, float* prTime,
     //returns the information (rTime, xPos) for the first entry with space <= uAvailable
     //and with maximum priority
 
-    ComputeBreaksTable();
+    lmBreaksTable* pBreaks = ComputeBreaksTable();
 
     wxLogMessage( DumpTimeposTable() );
 
-    //TODO: This only takes into account one line !!!!
-
     //select highest entry with space <= uAvailable
-    lmTimeLine* pTL = m_aLines.front();
-    int i=0;
-    lmTimeposEntry* pTE = pTL->m_aMainTable[i];
-    while (pTL->m_aMainTable[i]->m_xFinal <= uAvailable)
+    lmBreaksTimeEntry* pBTE = pBreaks->GetFirst();
+    lmBreaksTimeEntry* pSel = (lmBreaksTimeEntry*)NULL;
+    while (pBTE && pBTE->uxEnd <= uAvailable)
     {
-        wxASSERT(i < (int)pTL->m_aMainTable.size());
-        pTE = pTL->m_aMainTable[i];
-        ++i;
+        pSel = pBTE;
+        pBTE = pBreaks->GetNext();
     }
-    wxLogMessage(_T("[lmTimeposTable::GetOptimumBreakPoint] uAvailable=%.2f, returned=%.2f"),
-                 uAvailable, pTE->m_xFinal);
+    if (!pSel)
+        return true;        //big problem: no break points!
+
+    wxLogMessage(_T("[lmTimeposTable::GetOptimumBreakPoint] uAvailable=%.2f, returned=%.2f, time=%.2f"),
+                 uAvailable, pSel->uxEnd, pSel->rTimepos);
 
     //return information
-	*prTime = pTE->m_rTimePos;
-    *puWidth = pTE->m_xFinal;
+	*prTime = pSel->rTimepos;
+    *puWidth = pSel->uxEnd;
+
+    //breaks table no longer needed. Delete it
+    delete pBreaks;
 
     return false;       //no problems. There are break points
 }
@@ -1895,20 +2063,24 @@ bool lmTimeposTable::GetOptimumBreakPoint(lmLUnits uAvailable, float* prTime,
 void lmTimeposTable::TerminateTableAfter(float rTime, lmLUnits uxFinal)
 {
     //Current column has been splitted at time rTime. It is necessary to remove all entries
-    //placed at timepos > rTime and make any necessary adjustments.
+    //placed at timepos > rTime and make any necessary adjustments. Also, all created shapes
+    //must be removed from its box containers and deleted
 
-    wxLogMessage(_T("[lmTimeposTable::TerminateTableAfter] Removing entries after time %.2f"), rTime);
+    //THIS METHOD IS NO LONGER USED. BUT IT WORKS.
+    //Leaved just in case there is a need to use it again
+
+    //wxLogMessage(_T("[lmTimeposTable::TerminateTableAfter] Removing entries after time %.2f"), rTime);
 
 	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
 	{
         (*it)->TerminateLineAfter(rTime, uxFinal);
     }
 
-    wxLogMessage(_T("[lmTimeposTable::TerminateTableAfter] After removal:"));
-    wxLogMessage( DumpTimeposTable() );
+    //wxLogMessage(_T("[lmTimeposTable::TerminateTableAfter] After removal:"));
+    //wxLogMessage( DumpTimeposTable() );
 }
 
-void lmTimeposTable::ComputeBreaksTable()
+lmBreaksTable* lmTimeposTable::ComputeBreaksTable()
 {
     //This method computes the BreaksTable. This is a table sumarizing break points
     //information, that is, suitable places through all staves and voices where it is
@@ -1917,6 +2089,7 @@ void lmTimeposTable::ComputeBreaksTable()
     //scores without time signature or having instrumens not sharing a common
     //time signature, cases in which it is requested to render the score in very narrow
     //paper, etc.) it is necessary to split music in unnusual points.
+    //Returns the breaks table. CALLER MUST DELETE the table when no longer needed
 
     //Step 1. Build a table for each line
     std::vector<lmBreaksTable*> partialTables;
@@ -1929,15 +2102,45 @@ void lmTimeposTable::ComputeBreaksTable()
 
 
     //Step 2. Combine the partial tables
-        //TODO
+    lmBreaksTable* pTotalBT = new lmBreaksTable();
+    std::vector<lmBreaksTable*>::iterator itBT;
+    for (itBT = partialTables.begin(); itBT != partialTables.end(); ++itBT)
+    {
+        if (pTotalBT->IsEmpty())
+        {
+            //just copy entries
+            lmBreaksTimeEntry* pEP = (*itBT)->GetFirst();       //pEP Entry from Partial list
+            while (pEP)
+            {
+                pTotalBT->AddEntry(pEP);
+                pEP = (*itBT)->GetNext();
+            }
+        }
+        else
+        {
+            //merge current table with total table
+            //lmBreaksTimeEntry* pEP = (*itBT)->GetFirst();       //pEP Entry from Partial list
+            //while (pEP)
+            //{
+            //    pTotalBT->AddEntry(pEP);
+            //    pEP = (*itBT)->GetNext();
+            //}
+        }
+    }
 
 
     //Delete partial tables, no longer needed
-    std::vector<lmBreaksTable*>::iterator itBT;
     for (itBT = partialTables.begin(); itBT != partialTables.end(); ++itBT)
         delete *itBT;
     partialTables.clear();
 
+    wxLogMessage(_T("Total Breaks Table:"));
+    wxLogMessage( pTotalBT->Dump() );
+
+    //Step 3. Sort breaks table by priority and final x position
+    //TODO
+
+    return pTotalBT;
 }
 
 
