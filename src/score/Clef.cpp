@@ -187,7 +187,7 @@ wxString lmClef::Dump()
     //contexts
     int nIndent = 5;
     if (m_pContext)
-        sDump += m_pContext->Dump(nIndent);
+        sDump += m_pContext->DumpContext(nIndent);
     else
     {
         sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));

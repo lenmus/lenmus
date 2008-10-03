@@ -83,6 +83,10 @@ public:
 
     //debug
     wxString Dump();
+#if defined(__WXDEBUG__)
+    wxString DumpContextsChain();
+#endif
+
 
 private:
 	//contexts management

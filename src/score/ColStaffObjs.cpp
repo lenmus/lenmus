@@ -1332,8 +1332,6 @@ lmUPoint lmVStaffCursor::GetCursorPoint(int* pNumPage)
     lmLUnits uxEnd1, uxEnd2;
     float rTime1, rTime2;
     float rTimeCursor = m_rTimepos;  //save it, as will be lost when MoveLeft(), etc.
-    int nMeasure;
-    int nColumn;
     int nPage1=0, nPage2=0;
 
     //
@@ -1448,7 +1446,7 @@ lmUPoint lmVStaffCursor::GetCursorPoint(int* pNumPage)
     lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
     lmShape* pShape = pBSystem->GetStaffShape(1);
     uPos.y = pShape->GetYTop();
-    uPos.x = pShape->GetXLeft() + pScore->TenthsToLogical(10);
+    uPos.x = pShape->GetXLeft() + pScore->TenthsToLogical(20);
 
     if (pNumPage)
         *pNumPage = pBPage->GetPageNumber();
@@ -1622,22 +1620,29 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
     //current segments and creating new ones, all needed context propagation and update is
     //done at the same time. Therefore, no later steps are necessary for this
     //If there are no objects after the removed TS, nothing to re-bar
-    if (pSO->IsTimeSignature() && pNextSO)
+    if (pSO->IsTimeSignature())
     {
-        //we have to re-bar from current segment to next time signature.
-        lmTimeSignature* pNewTS = pNextSO->GetApplicableTimeSignature();
-        lmStaffObj* pLastSO = m_pOwner->FindFwdTimeSignature(pNextSO);
-        if (pLastSO)
-            pLastSO = m_pOwner->FindPrevStaffObj(pLastSO);
+        if (pNextSO)
+        {
+            //we have to re-bar from current segment to next time signature.
+            lmTimeSignature* pNewTS = pNextSO->GetApplicableTimeSignature();
+            lmStaffObj* pLastSO = m_pOwner->FindFwdTimeSignature(pNextSO);
+            if (pLastSO)
+                pLastSO = m_pOwner->FindPrevStaffObj(pLastSO);
 
-        m_pOwner->AutoReBar(pNextSO, pLastSO, pNewTS);
+            m_pOwner->AutoReBar(pNextSO, pLastSO, pNewTS);
+        }
     }
-
-    //If removed staffobj created contexts (clef, TS or KS) the contexts are already
-    //unchained from the staves context chain. But it is necessary:
-    //- to update pointers to contexts at start of segment; and
-    //- to update staffobjs in segment, if affected by the context change
-    DoContextRemoval(pSO, pNextSO, fClefKeepPosition, fKeyKeepPitch);
+    else
+    {
+        //If removed staffobj created contexts (clef, TS or KS) the contexts are already
+        //unchained from the staves context chain. This was acomplished at
+        //VStaff::Cmd_DeleteXxxxx method, when invoking pSO->RemoveCreatedContexts();
+        //But it is necessary:
+        //- to update pointers to contexts at start of segment; and
+        //- to update staffobjs in segment, if affected by the context change
+        DoContextRemoval(pSO, pNextSO, fClefKeepPosition, fKeyKeepPitch);
+    }
 
     //finally, if requested, invoke destructor for removed staffobj
     if (fDelete) delete pSO;
@@ -1962,7 +1967,7 @@ wxString lmSegment::Dump()
     for (int i=0; i < lmMAX_STAFF; i++)
     {
         if (m_pContext[i]) {
-            sDump += m_pContext[i]->Dump();
+            sDump += m_pContext[i]->DumpContext();
         }
         else
             sDump += _T("Context: NULL\n");
@@ -2300,11 +2305,6 @@ void lmSegment::DoContextRemoval(lmStaffObj* pOldSO, lmStaffObj* pNextSO, bool f
     //- to update staffobjs in segment, if affected by the context change
 
 
-    //AWARE: For time signatures, all needed context propagation and update, is done when
-    //doing the Re-Bar operation. So no need to do anything here.
-    if (!(pOldSO->IsClef() || pOldSO->IsKeySignature()) )
-        return;     //nothing to do
-
     //invalidate not applicable flags, so that at maximum, only one of the flags
     //will be true
     if (!pOldSO->IsClef())
@@ -2348,18 +2348,45 @@ void lmSegment::DoContextRemoval(lmStaffObj* pOldSO, lmStaffObj* pNextSO, bool f
         }
         else
         {
-            //key signature: all staves
+            //key signature / time signature: all staves
             for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
             {
                 //determine context for current staff at end of segment
                 lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
 
                 //inform next segment
-                pNextSegment->PropagateContextChange(pLastContext, nStaff,
-                                                     fKeyKeepPitch);
+                pNextSegment->PropagateContextChange(pLastContext, nStaff, fKeyKeepPitch);
             }
         }
     }
+    //else
+    //{
+    //    //there are no more segments. This is the last one. Therefore, the deleted object
+    //    //was the creator of the last context and it is necessary to update it.
+    //    lmVStaff* pVStaff = pOldSO->GetVStaff();
+    //    int nStaff = pOldSO->GetStaffNum();
+    //    if (pOldSO->IsClef())
+    //    {
+    //        //just one staff
+    //        lmContext* pLastContext = pVStaff->GetLastContext(nStaff);
+    //        pVStaff->SetL
+
+    //        //inform next segment
+    //        pNextSegment->PropagateContextChange(pLastContext, nStaff, pNewClef,
+    //                                             (lmClef*)pOldSO, fClefKeepPosition);
+    //    }
+    //    else
+    //    {
+    //        //key signature / time signature: all staves
+    //        for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
+    //        {
+    //            //determine context for current staff at end of segment
+    //            lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
+
+    //            //inform next segment
+    //            pNextSegment->PropagateContextChange(pLastContext, nStaff, fKeyKeepPitch);
+    //        }
+    //}
 }
 
 
@@ -2952,15 +2979,17 @@ wxString lmColStaffObjs::Dump()
 {
     wxString sDump = wxString::Format(_T("Num.segments = %d"), m_Segments.size());
 
+#if defined(__WXDEBUG__)
 	//dump segments
 	std::vector<lmSegment*>::iterator itS;
 	for (itS = m_Segments.begin(); itS != m_Segments.end(); itS++)
 	{
 		sDump += (*itS)->Dump();
     }
-
+#endif
     return sDump;
 }
+
 
 
 
@@ -3293,7 +3322,17 @@ void lmColStaffObjs::AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO,
         pCurSegment->Store(pBar, (lmVStaffCursor*)NULL);
 
         //propagate contexts and update segment pointers after last inserted segment
-        lmTODO(_T("[lmColStaffObjs::AutoReBar] propagate contexts and update segment pointers after last inserted segment"));
+        //This is necessary so that segments can update pointers to start of segment 
+        //applicable contexts.
+        for (int nStaff=0; nStaff < lmMAX_STAFF; nStaff++)
+        {
+            wxLogMessage( m_pOwner->Dump() );
+            //determine context for current staff at end of segment
+            lmContext* pLastContext = pCurSegment->FindEndOfSegmentContext(nStaff);
+
+            //inform next segment
+            pCurSegment->PropagateContextChange(pLastContext, nStaff, true);
+        }
     }
 
     //clear the source list. StaffObjs in it can not be deleted as they have been included

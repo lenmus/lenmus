@@ -32,6 +32,9 @@
 #include "Score.h"
 #include "Context.h"
 
+#if defined(__WXDEBUG__)
+static int m_nIdCounter = 0;
+#endif
 
 //access to global functions
 extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
@@ -51,6 +54,11 @@ lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime
     InitializeAccidentals();
 	m_pPrev = (lmContext*) NULL;
 	m_pNext = (lmContext*) NULL;
+
+#if defined(__WXDEBUG__)
+    m_nId = ++m_nIdCounter;
+#endif
+
 }
 
 lmContext::lmContext(lmContext* pContext)
@@ -62,6 +70,11 @@ lmContext::lmContext(lmContext* pContext)
     CopyAccidentals(pContext);
 	m_pPrev = (lmContext*) NULL;
 	m_pNext = (lmContext*) NULL;
+
+#if defined(__WXDEBUG__)
+    m_nId = ++m_nIdCounter;
+#endif
+
 }
 
 void lmContext::SetKey(lmKeySignature* pKey)
@@ -89,17 +102,20 @@ void lmContext::CopyAccidentals(lmContext* pContext)
     }
 }
 
-wxString lmContext::Dump(int nIndent)
+wxString lmContext::DumpContext(int nIndent)
 {
     wxString sDump = _T("");
+#if defined(__WXDEBUG__)
     sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sDump += wxString::Format(_T("Context: clef: %s, key: %s, time: %s, acc=%d,%d,%d,%d,%d,%d,%d\n"),
+    sDump += wxString::Format(_T("Context %d: clef: %s, key: %s, time: %s, acc=%d,%d,%d,%d,%d,%d,%d\n"),
+         m_nId,
         (m_pClef ? GetClefLDPNameFromType(m_pClef->GetClefType()).c_str() : _T("No")),
         (m_pKey ? GetKeyLDPNameFromType(m_pKey->GetKeyType()).c_str() : _T("No")),
         (m_pTime ? wxString::Format(_T("%d/%d"),
             m_pTime->GetNumBeats(), m_pTime->GetBeatType()).c_str() : _T("No")),
          m_nAccidentals[0], m_nAccidentals[1], m_nAccidentals[2], m_nAccidentals[3],
          m_nAccidentals[4], m_nAccidentals[5], m_nAccidentals[6] );
+#endif
     return sDump;
 }
 

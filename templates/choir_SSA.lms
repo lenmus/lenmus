@@ -6,12 +6,12 @@
              (clef treble)
           )
        )
-       (instrument (name "Soprano")(abbrev "S")(infoMIDI 62 1)  //62 - Saxo alto
+       (instrument (name "Soprano")(abbrev "S")(infoMIDI 62 2)  //62 - Saxo alto
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Alto")(abbrev "A")(infoMIDI 71 1)    //71 - Clarinet
+       (instrument (name "Alto")(abbrev "A")(infoMIDI 71 3)    //71 - Clarinet
           (musicData
              (clef treble)
           )

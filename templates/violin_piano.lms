@@ -5,7 +5,7 @@
          (clef treble)
       )
    )
-   (instrument (staves 2) (infoMIDI 0 1)    //0 - Acoustic Grand Piano
+   (instrument (staves 2) (infoMIDI 0 2)    //0 - Acoustic Grand Piano
       (musicData
          (clef treble p1)
          (clef bass p2)

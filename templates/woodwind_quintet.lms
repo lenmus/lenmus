@@ -6,22 +6,22 @@
              (clef treble)
           )
        )
-       (instrument (name "Oboe")(abbrev "Ob.")(infoMIDI 68 1)
+       (instrument (name "Oboe")(abbrev "Ob.")(infoMIDI 68 2)
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Clarinet")(abbrev "Clar.")(infoMIDI 71 1)
+       (instrument (name "Clarinet")(abbrev "Clar.")(infoMIDI 71 3)
           (musicData
              (clef C3)
           )
        )
-       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 1)
+       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 4)
           (musicData
              (clef bass)
           )
        )
-       (instrument (name "Bassoon")(abbrev "Bsn.")(infoMIDI 70 1)
+       (instrument (name "Bassoon")(abbrev "Bsn.")(infoMIDI 70 5)
           (musicData
              (clef bass)
           )

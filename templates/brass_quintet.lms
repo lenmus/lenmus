@@ -6,22 +6,22 @@
              (clef treble)
           )
        )
-       (instrument (name "Trumpet II")(abbrev "Tpt.II")(infoMIDI 56 1)
+       (instrument (name "Trumpet II")(abbrev "Tpt.II")(infoMIDI 56 2)
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 1)
+       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 3)
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Trombone")(abbrev "Tbn.")(infoMIDI 57 1)
+       (instrument (name "Trombone")(abbrev "Tbn.")(infoMIDI 57 4)
           (musicData
              (clef bass)
           )
        )
-       (instrument (name "Tuba")(abbrev "Tb.")(infoMIDI 58 1)
+       (instrument (name "Tuba")(abbrev "Tb.")(infoMIDI 58 5)
           (musicData
              (clef bass)
           )

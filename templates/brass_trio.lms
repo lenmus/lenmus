@@ -6,12 +6,12 @@
              (clef treble)
           )
        )
-       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 1)
+       (instrument (name "Horn")(abbrev "Hn.")(infoMIDI 60 2)
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Trombone")(abbrev "Tbn.")(infoMIDI 57 1)
+       (instrument (name "Trombone")(abbrev "Tbn.")(infoMIDI 57 3)
           (musicData
              (clef bass)
           )

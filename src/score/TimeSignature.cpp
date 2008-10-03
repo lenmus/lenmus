@@ -142,7 +142,7 @@ wxString lmTimeSignature::Dump()
     for (int i=0; i < lmMAX_STAFF; i++)
     {
         if (m_pContext[i])
-            sDump += m_pContext[i]->Dump(nIndent);
+            sDump += m_pContext[i]->DumpContext(nIndent);
         else
         {
             sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
@@ -340,7 +340,7 @@ void lmTimeSignature::RemoveCreatedContexts()
 	{
         if (m_pContext[iS])
         {
-            lmStaff* pStaff = m_pVStaff->GetStaff(iS);
+            lmStaff* pStaff = m_pVStaff->GetStaff(iS+1);
             pStaff->RemoveContext(m_pContext[iS], this);
             delete m_pContext[iS];
             m_pContext[iS] = (lmContext*)NULL;

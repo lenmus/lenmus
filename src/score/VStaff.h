@@ -161,10 +161,10 @@ public:
 
 
         //--- deleting StaffObjs
-    void Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
-    void Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef);
-    void Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
-    void Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
+    bool Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
+    bool Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef);
+    bool Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
+    bool Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
     void Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
     void Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
 

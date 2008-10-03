@@ -6,23 +6,23 @@
              (clef treble)
           )
        )
-       (instrument (name "Alto")(abbrev "A")(infoMIDI 41 1)     //41 - Viola
+       (instrument (name "Alto")(abbrev "A")(infoMIDI 41 2)     //41 - Viola
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Tenor")(abbrev "T")(infoMIDI 71 1)    //71 - Clarinet
+       (instrument (name "Tenor")(abbrev "T")(infoMIDI 71 3)    //71 - Clarinet
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Bass")(abbrev "B")(infoMIDI 32 1)     //32 - Acoustic Bass
+       (instrument (name "Bass")(abbrev "B")(infoMIDI 32 4)     //32 - Acoustic Bass
           (musicData
              (clef bass)
           )
        )
    )
-   (instrument (name "Piano")(staves 2) (infoMIDI 0 1)
+   (instrument (name "Piano")(staves 2) (infoMIDI 0 5)
       (musicData
          (clef treble p1)
          (clef bass p2)

@@ -82,6 +82,42 @@ lmLUnits lmStaff::GetHeight()
     return (m_nNumLines - 1) * m_uSpacing;
 }
 
+
+
+//----------------------------------------------------------------------------------------
+// debug
+//----------------------------------------------------------------------------------------
+#if defined(__WXDEBUG__)
+
+wxString lmStaff::DumpContextsChain()
+{
+    wxString sDump = wxString::Format(_T("\nStaff. Contexts: First: %d, Last: %d\n"),
+        (m_pFirstContext ? m_pFirstContext->GetContextId() : 0),
+        (m_pLastContext ? m_pLastContext->GetContextId() : 0) );
+
+    sDump += _T("Fwd chain: ");
+    lmContext* pContext = m_pFirstContext;
+    while (pContext)
+    {
+        sDump += wxString::Format(_T("%d, "), pContext->GetContextId() );
+        pContext = pContext->GetNext();
+    }
+    sDump += _T("\n");
+
+    sDump += _T("Bwd chain: ");
+    pContext = m_pLastContext;
+    while (pContext)
+    {
+        sDump += wxString::Format(_T("%d, "), pContext->GetContextId() );
+        pContext = pContext->GetPrev();
+    }
+    sDump += _T("\n\n");
+
+    return sDump;
+}
+
+#endif
+
 wxString lmStaff::Dump()
 {
     wxString sDump = _T("Staff\n");

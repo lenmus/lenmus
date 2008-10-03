@@ -188,7 +188,8 @@ lmECmdDeleteStaffObj::lmECmdDeleteStaffObj(lmVStaff* pVStaff, lmUndoItem* pUndoI
     : lmEditCmd(pVStaff)
 {
     m_pSO = pSO;
-    pVStaff->Cmd_DeleteStaffObj(pUndoItem, pSO);
+    if (pVStaff->Cmd_DeleteStaffObj(pUndoItem, pSO))
+        m_pSO = (lmStaffObj*)NULL;
 }
 
 void lmECmdDeleteStaffObj::RollBack(lmUndoItem* pUndoItem)
@@ -207,7 +208,8 @@ lmECmdDeleteClef::lmECmdDeleteClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
     : lmEditCmd(pVStaff)
 {
     m_pClef = pClef;
-    pVStaff->Cmd_DeleteClef(pUndoItem, pClef);
+    if (pVStaff->Cmd_DeleteClef(pUndoItem, pClef))
+        m_pClef = (lmClef*)NULL;
 }
 
 void lmECmdDeleteClef::RollBack(lmUndoItem* pUndoItem)
@@ -226,7 +228,8 @@ lmECmdDeleteKeySignature::lmECmdDeleteKeySignature(lmVStaff* pVStaff, lmUndoItem
     : lmEditCmd(pVStaff)
 {
     m_pKS = pKS;
-    pVStaff->Cmd_DeleteKeySignature(pUndoItem, pKS);
+    if (pVStaff->Cmd_DeleteKeySignature(pUndoItem, pKS))
+        m_pKS = (lmKeySignature*)NULL;
 }
 
 void lmECmdDeleteKeySignature::RollBack(lmUndoItem* pUndoItem)
@@ -245,7 +248,8 @@ lmECmdDeleteTimeSignature::lmECmdDeleteTimeSignature(lmVStaff* pVStaff, lmUndoIt
     : lmEditCmd(pVStaff)
 {
     m_pTS = pTS;
-    pVStaff->Cmd_DeleteTimeSignature(pUndoItem, pTS);
+    if (pVStaff->Cmd_DeleteTimeSignature(pUndoItem, pTS))
+        m_pTS = (lmTimeSignature*)NULL;
 }
 
 void lmECmdDeleteTimeSignature::RollBack(lmUndoItem* pUndoItem)

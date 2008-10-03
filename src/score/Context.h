@@ -68,7 +68,10 @@ public:
     void PropagateNewWhileInherited(lmStaffObj* pNewSO);
 
     //debug
-    wxString Dump(int nIndent = 0);
+#if defined(__WXDEBUG__)
+    inline int GetContextId() { return m_nId; }
+#endif
+    wxString DumpContext(int nIndent = 0);
 
 
 
@@ -93,6 +96,10 @@ private:
 	//Contexts are organized as a double linked list. Here are the links
 	lmContext*		m_pNext;		//pointer to next context 
 	lmContext*		m_pPrev;		//pointer to previous context 
+
+    #if defined(__WXDEBUG__)
+    int             m_nId;
+    #endif
 
 };
 

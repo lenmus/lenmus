@@ -691,8 +691,10 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
     }
 }
 
-void lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
+bool lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 {
+    //returns true if deletion cancelled
+
     //delete the requested object, and log info to undo history
     wxASSERT(pUndoItem);
 
@@ -711,6 +713,8 @@ void lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
 
     //Delete the object
     m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
+
+    return false;       //false->deletion OK
 }
 
 void lmVStaff::UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
@@ -807,8 +811,10 @@ accidentals to the affected notes?");
          return (int)nOptValue;
 }
 
-void lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
+bool lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
 {
+    //returns true if deletion cancelled
+
     //if there are notes affected by deleting clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
     //TODO: determine if it is necessary to ask user. For now, always ask
@@ -816,7 +822,7 @@ void lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
         nAction = AskUserAboutClef();
 
     if (nAction == 0)
-        return;       //Cancel clef insertion
+        return true;       //Cancel clef insertion
 
     bool fClefKeepPosition = (nAction == 2);
 
@@ -829,6 +835,8 @@ void lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
 
     //now remove the clef from the staffobjs collection
     m_cStaffObjs.Delete(pClef, false, fClefKeepPosition);        //false->do not invoke destructor
+
+    return false;       //false->deletion OK
 }
 
 void lmVStaff::UndoCmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
@@ -850,8 +858,10 @@ void lmVStaff::UndoCmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
     m_cStaffObjs.Add(pClef, fClefKeepPosition);
 }
 
-void lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
+bool lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
 {
+    //returns true if deletion cancelled
+
     //TODO: As user about inserting accidentals in following notes
 
     //remove the contexts created by the KS
@@ -859,6 +869,8 @@ void lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS
 
     //now remove the KS from the staffobjs collection
     m_cStaffObjs.Delete(pKS, false);        //false->do not invoke destructor
+
+    return false;       //false->deletion OK
 }
 
 void lmVStaff::UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
@@ -866,8 +878,10 @@ void lmVStaff::UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature*
     InsertKeyTimeSignature(pUndoItem, pKS);
 }
 
-void lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
+bool lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
 {
+    //returns true if deletion cancelled
+
     //TODO: As user about anything?
 
  //   //delete the requested object, and log info to undo history
@@ -894,6 +908,8 @@ void lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* p
 
     //now remove the TS from the staffobjs collection
     m_cStaffObjs.Delete(pTS, false);        //false->do not invoke destructor
+
+    return false;       //false->deletion OK
 }
 
 void lmVStaff::UndoCmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
@@ -1889,7 +1905,22 @@ lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 
 wxString lmVStaff::Dump()
 {
-    return m_cStaffObjs.Dump();
+    wxString sDump = _T("");
+
+#if defined(__WXDEBUG__)
+
+    //iterate over the collection of staves to dump contexts chains
+    for (int iS=1; iS <= m_nNumStaves; iS++)
+	{
+        sDump += GetStaff(iS)->DumpContextsChain();
+    }
+
+    //dump staffobjs
+    sDump += m_cStaffObjs.Dump();
+
+#endif
+
+    return sDump;
 }
 
 wxString lmVStaff::SourceLDP(int nIndent)

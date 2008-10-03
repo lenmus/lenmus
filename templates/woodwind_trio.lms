@@ -6,12 +6,12 @@
              (clef treble)
           )
        )
-       (instrument (name "Oboe")(abbrev "Ob.")(infoMIDI 68 1)
+       (instrument (name "Oboe")(abbrev "Ob.")(infoMIDI 68 2)
           (musicData
              (clef treble)
           )
        )
-       (instrument (name "Bassoon")(abbrev "Bsn.")(infoMIDI 70 1)
+       (instrument (name "Bassoon")(abbrev "Bsn.")(infoMIDI 70 3)
           (musicData
              (clef bass)
           )

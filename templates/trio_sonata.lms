@@ -5,12 +5,12 @@
          (clef treble)
       )
    )
-   (instrument (name "Violin")(abbrev "Vln.")(infoMIDI 40 1)              //40 - Violin
+   (instrument (name "Violin")(abbrev "Vln.")(infoMIDI 40 2)              //40 - Violin
       (musicData
          (clef treble)
       )
    )
-   (instrument (name "Piano")(abbrev "Pno.")(staves 2) (infoMIDI 0 1)
+   (instrument (name "Piano")(abbrev "Pno.")(staves 2) (infoMIDI 0 3)
       (musicData
          (clef treble p1)
          (clef bass p2)
