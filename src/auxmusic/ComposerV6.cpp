@@ -305,17 +305,21 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
         }
 
         //While (there are segments in the current fragment and the measure is not full) {
-        while (pSegment && rOccupiedDuration < rMeasureDuration) {
+        while (pSegment && rOccupiedDuration < rMeasureDuration)
+        {
             //check if segment fits in. A segment S will fit in the measure
             //only when (tr >= ts && tcb <= tab)
 
             rTimeRemaining =rMeasureDuration - rOccupiedDuration;
             rSegmentDuration = pSegment->GetSegmentDuration();
             rConsumedBeatTime = rOccupiedDuration;  //this line and next two ones compute tcb = tc % tb;
-            while (rConsumedBeatTime > 0.0) rConsumedBeatTime -= rBeatDuration;
-            if (rConsumedBeatTime < 0.0) rConsumedBeatTime += rBeatDuration;
+            while (IsHigherTime(rConsumedBeatTime, 0.0f))
+                rConsumedBeatTime -= rBeatDuration;
+            if (rConsumedBeatTime < 0.0)
+                rConsumedBeatTime += rBeatDuration;
             rSegmentAlignBeatTime = pSegment->GetTimeAlignBeat();
-            fFits = (rTimeRemaining >= rSegmentDuration && rConsumedBeatTime <= rSegmentAlignBeatTime);
+            fFits = (!IsLowerTime(rTimeRemaining, rSegmentDuration) 
+                     && !IsHigherTime(rConsumedBeatTime, rSegmentAlignBeatTime));
 
             g_pLogger->LogTrace(_T("lmComposer6"), _T("[GenerateScore] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
                     sMeasure.c_str(),
@@ -328,7 +332,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
             if (fFits) {
                 //it fits. Add it to current measure
                 float rNoteTime = rSegmentAlignBeatTime - rConsumedBeatTime;
-                if (rNoteTime > 0.0) {
+                if (IsHigherTime(rNoteTime, 0.0f)) {
                     if (rConsumedBeatTime > 0)
                         sMeasure += CreateNote((int)rNoteTime);
                     else

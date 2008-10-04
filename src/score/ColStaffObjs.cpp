@@ -1108,7 +1108,7 @@ void lmVStaffCursor::AdvanceToTime(float rTime)
     wxASSERT(m_it == m_pSegment->m_StaffObjs.end());
 
     float rSegmentDuration = m_pSegment->GetDuration();
-    if (rTime > rSegmentDuration)
+    if (IsHigherTime(rTime, rSegmentDuration))
     {
         //advance to next segment
 	    m_nSegment++;
@@ -2202,9 +2202,14 @@ void lmSegment::AutoBeam(int nVoice)
     //Explore all segment (only involved voice) and select notes/rests that could be beamed
 	for (; it != m_StaffObjs.end(); ++it)
 	{
-		if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == nVoice)
+        //ignore notes in chord that are not base of chord
+		if ((*it)->IsNoteRest() 
+            && ((lmNoteRest*)(*it))->GetVoice() == nVoice
+            && ( ((lmNoteRest*)(*it))->IsRest() 
+                 || !((lmNote*)(*it))->IsInChord()
+                 || ((lmNote*)(*it))->IsBaseOfChord() ))
         {
-            //note in the affected voice
+            //note/rest in the affected voice
             lmNoteRest* pNR = (lmNoteRest*)(*it);
             int nPos = GetNoteBeatPosition(pNR->GetTimePos(), nBeats, nBeatType);
             if (nPos != lmOFF_BEAT)     //nPos = lmOFF_BEAT or number of beat (0..n)
@@ -2214,12 +2219,13 @@ void lmSegment::AutoBeam(int nVoice)
                 cBeamedNotes.clear();
             }
 
-            //add note to current beam if smaller than an eighth
+            //add note to current beam if smaller than an eighth.
+            //if note, it must not be in chord or must be base of chord. 
             if (pNR->GetNoteType() > eQuarter)
                 cBeamedNotes.push_back(pNR);
             else
             {
-                //current note connot be beamed. Crete the beam with previous notes
+                //current note/rest cannot be beamed. Crete the beam with previous notes
                 AutoBeam_CreateBeam(cBeamedNotes);
                 cBeamedNotes.clear();
             }

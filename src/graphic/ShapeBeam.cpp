@@ -36,6 +36,7 @@
 #include "ShapeRest.h"
 #include "ShapeBeam.h"
 #include "../score/Score.h"
+#include "../score/VStaff.h"
 #include "../app/Preferences.h"
 
 
@@ -516,44 +517,38 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
 
 lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyShift)
 {
-    return pShapeStem->GetYEndStem() + uyShift;
+    lmLUnits uyPos;
+    lmNote* pNote = (lmNote*)m_pOwner;
 
- //   lmLUnits uyPos;
- //   lmNote* pNote = (lmNote*)m_pOwner;
-	//if ( pNote->IsInChord() )
-	//{
-	//    if (m_fStemsDown)
-	//	{
- //           //PROBLEM: During layout only the stem in base note exists. All other stem shapes
- //           //are deleted.
- //           //lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
- //           //uyPos = pMinNote->GetYStartStem() + pNote->GetStemLength();
- //           lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
- //           lmShapeStem* pStem = ((lmShapeNote*)pMinNote->GetShape())->GetStem();
- //           uyPos = pStem->GetYEndStem();
- //       }
- //       else
-	//	{
- //   //        lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
- //   //        uyPos = pMaxNote->GetYStartStem() - pNote->GetStemLength();
- //           //wxLogMessage(_T("[lmShapeBeam::ComputeYPosOfSegment] uyPos=%.2f, yStem=%.2f, stemLength=%.2f"),
- //           //    uyPos, pMaxNote->GetYStartStem(), pNote->GetStemLength());
- //           lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
- //           lmShapeStem* pStem = ((lmShapeNote*)pMaxNote->GetShape())->GetStem();
- //           uyPos = pStem->GetYEndStem();
- //       }
- //   }
- //   else
-	//{
-	//	wxASSERT(pShapeStem);
-	//	if (m_fStemsDown)
-	//		uyPos = pShapeStem->GetYBottom();
-	//	else
-	//		uyPos = pShapeStem->GetYTop();
- //   }
- //   uyPos += uyShift;
+    //if note is in chord, the stem length is determined by the lowest pitch note (stem down) or
+    //the highest pith note (stem up)
+    //AWARE: During layout only the stem in base note exists. All other stem shapes are
+    //deleted. Therefore, to determine position, we must ask the note to compute the stem
+    //position again.
+	if ( pNote->IsInChord() )
+	{
+        lmNote* pRefNote;
+        lmLUnits uStartStem; 
+        lmVStaff* pVStaff = pNote->GetVStaff();
+	    if (m_fStemsDown)
+		{
+            pRefNote = (pNote->GetChord())->GetMinNote();       //use the highest pitch note
+            uStartStem = pVStaff->TenthsToLogical(51, pNote->GetStaffNum());
+        }
+        else
+		{
+            pRefNote = (pNote->GetChord())->GetMaxNote();       //use the lowest pitch note
+            uStartStem = pVStaff->TenthsToLogical(49, pNote->GetStaffNum());
+        }
+        lmShape* pNoteHead = ((lmShapeNote*)(pRefNote->GetShape()))->GetNoteHead();
+        uyPos = pNoteHead->GetYTop() + uStartStem - pNote->GetStemLength();
+    }
+    else
+		uyPos = pShapeStem->GetYEndStem();
 
- //   return uyPos;
+    uyPos += uyShift;
+
+    return uyPos;
 
 }
 

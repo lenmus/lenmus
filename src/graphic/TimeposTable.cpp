@@ -1776,7 +1776,7 @@ lmLUnits lmTimeposTable::DoSpacing(bool fTrace)
 //		{
 //            lmLUnits uxObjMaxPos;
 //			float rNewTime = (*it)->ProcessTimepos(rTime, uxPos, rFactor, &uxObjMaxPos);
-//			if (rNewTime > 0.0f)
+//			if (IsHigherTime(rNewTime, 0.0f))
 //			{
 //				fContinue = true;
 //				rNextTime = wxMin(rNextTime, rNewTime);
@@ -1907,7 +1907,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
             lmLUnits uxObjMaxPos;
 			float rNewTime = (*it)->ProcessTimepos(rTime, uxPos, rFactor,
                                                    fCreateCriticalLine, &uxObjMaxPos);
-			if (rNewTime > 0.0f)
+			if (IsHigherTime(rNewTime, 0.0f))
 			{
 				fContinue = true;
 				rNextTime = wxMin(rNextTime, rNewTime);
