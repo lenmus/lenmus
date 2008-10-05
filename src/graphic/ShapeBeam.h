@@ -74,7 +74,6 @@ protected:
 	void AdjustStems();
 	lmShapeStem* GetStem(int iParentNote);
 	int FindNoteShape(lmShapeNote* pShape);
-	lmLUnits ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyShift);
 	void SetStemLength(lmShapeStem* pStem, lmLUnits uLength);
 	void DrawBeamSegment(lmPaper* pPaper, 
                          lmLUnits uxStart, lmLUnits uyStart,

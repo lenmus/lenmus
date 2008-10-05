@@ -183,33 +183,40 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 
     lmNote* pBaseNote = GetBaseNote();
     lmLUnits uxStem = pBaseNote->GetXStemCenter();
-    lmLUnits uyStemStart=0, uyStemEnd=0;
+    lmLUnits uyStartStem=0.0f, uExtraLenght=0.0f, uyStemEnd=0.0f;
 
     if (!pBaseNote->IsBeamed()) {
         //compute y positions
-        if (m_fStemDown) {
-            uyStemStart = GetMaxNote()->GetYStartStem();
+        if (m_fStemDown) 
+        {
+            uyStartStem = GetMaxNote()->GetYStartStem();
             uyStemEnd = GetMinNote()->GetYEndStem();
         }
-        else {
-            uyStemStart = GetMinNote()->GetYStartStem();
+        else 
+        {
+            uyStartStem = GetMinNote()->GetYStartStem();
             uyStemEnd = GetMaxNote()->GetYEndStem();
         }
 
     }
-    else {
-        // If the chord is beamed, the stem length was computed during beam computation and
-        // stored in the base note
-        if (pBaseNote->StemGoesDown()) {
+    else 
+    {
+        //If the chord is beamed, the stem length must be increased with the distance from
+        //min note to max note.
+        if (pBaseNote->StemGoesDown())
+        {
             //stem down: line at left of noteheads
-            uyStemStart = GetMaxNote()->GetYStartStem();
+            uyStartStem = GetMaxNote()->GetYStartStem();
             uyStemEnd = GetMinNote()->GetYStartStem() + pBaseNote->GetStemLength();
-        } else {
+        }
+        else 
+        {
             //stem up: line at right of noteheads
-            uyStemStart = GetMinNote()->GetYStartStem();
+            uyStartStem = GetMinNote()->GetYStartStem();
             uyStemEnd = GetMaxNote()->GetYStartStem() - pBaseNote->GetStemLength();
         }
     }
+    uExtraLenght = GetMinNote()->GetYStartStem() - GetMaxNote()->GetYStartStem();
 
 	//proceed to create the stem and the flag shapes. If the flag must be added we
 	//need to create a compoite shape as container for flag and stem. Otherwise we
@@ -223,7 +230,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     if (fFlagNeeded)
 	{
 		nGlyph = pBaseNote->GetGlyphForFlag();
-        //lmLUnits uStemLength = fabs(uyStemStart - uyStemEnd);
+        //lmLUnits uStemLength = fabs(uyStartStem - uyStemEnd);
 
         // to measure flag and stem I am going to use some glyph data. These
         // data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
@@ -257,10 +264,10 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
 	//wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
-	//	uxStem, uyStemStart, uyStemEnd, uyFlag, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
+	//	uxStem, uyStartStem, uyStemEnd, uyFlag, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
     lmShapeStem* pStem =
-        new lmShapeStem(pShapeNote->GetScoreOwner(), uxStem, uyStemStart, uyStemEnd,
-						pBaseNote->StemGoesDown(), uStemThickness, colorC);
+        new lmShapeStem(pShapeNote->GetScoreOwner(), uxStem, uyStartStem, uExtraLenght,
+                        uyStemEnd, pBaseNote->StemGoesDown(), uStemThickness, colorC);
 
 	// if beamed, the stem shape will be owned by the beam; otherwise by the note
 	if (pBaseNote->IsBeamed()) {

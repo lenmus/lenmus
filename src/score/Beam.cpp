@@ -68,12 +68,12 @@ lmBeam::~lmBeam()
 {
 }
 
-void lmBeam::AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo)
+void lmBeam::AddNoteAndStem(lmShapeStem* pStemShape, lmShapeNote* pNoteShape, lmTBeamInfo* pBeamInfo)
 {
-	m_pBeamShape->AddNoteRest(pStem, pNote, pBeamInfo);
+	m_pBeamShape->AddNoteRest(pStemShape, pNoteShape, pBeamInfo);
 
 	//attach the beam to the note
-	pNote->Attach(m_pBeamShape);
+	pNoteShape->Attach(m_pBeamShape);
 }
 
 void lmBeam::AddRestShape(lmShape* pRestShape)

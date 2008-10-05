@@ -504,7 +504,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     m_uStemThickness = m_pVStaff->TenthsToLogical(STEM_WIDTH, m_nStaffNum) / 10;
 	bool fStemAdded = false;
-	m_pStemShape = new lmShapeStem(this, 0.0, 0.0, 0.0,
+	m_pStemShape = new lmShapeStem(this, 0.0f, 0.0f, 0.0f, 0.0f,
                                    m_fStemDown, m_uStemThickness, colorC);
 
 

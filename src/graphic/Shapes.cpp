@@ -327,13 +327,14 @@ lmUPoint lmShapeGlyph::GetObjectOrigin()
 //========================================================================================
 
 lmShapeStem::lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart,
-						 lmLUnits yEnd, bool fStemDown,
-						 lmLUnits uWidth, wxColour nColor)
+                         lmLUnits uExtraLength, lmLUnits yEnd, bool fStemDown,
+                         lmLUnits uWidth, wxColour nColor)
 	: lmShapeLine(pOwner, xPos, yStart, xPos, yEnd, uWidth, 0.0, nColor,
 				  _T("Stem"), eEdgeHorizontal)
 {
     m_nType = eGMO_ShapeStem;
 	m_fStemDown = fStemDown;
+    m_uExtraLength = uExtraLength;
 }
 
 void lmShapeStem::SetLength(lmLUnits uLenght, bool fModifyTop)

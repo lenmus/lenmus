@@ -204,7 +204,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 
                 //compute current position to optimize
                 uxCur = pShapeStem->GetXLeft();
-                uyCur = ComputeYPosOfSegment(pShapeStem, uyShift);
+                uyCur = pShapeStem->GetYEndStem() + uyShift;
 
                 //Let's check if we have to finish a forward hook in prev. note
                 if (fForwardPending)
@@ -376,15 +376,19 @@ void lmShapeBeam::AdjustStems()
     for(int i=0; i < nNumNotes; i++)
     {
 		lmShapeStem* pShapeStem = GetStem(i);
-
         if (pShapeStem)
 		{
             yEnd[i] = yEnd[0] + (Ay * (pShapeStem->GetXLeft() - x1)) / Ax;
+
+            //compute stem length. For chords we have to substract the stem segment joining
+            //all chord notes. This extra lenght is zero for notes not in chord
+            lmLUnits uStemLength = fabs(yStart[i] - yEnd[i]) - pShapeStem->GetExtraLenght();
+
             //save the shortest stem
             if (i==0)
-                uMinStem = fabs(yStart[0] - yEnd[0]);
+                uMinStem = uStemLength;
             else
-                uMinStem = wxMin(uMinStem, fabs(yStart[i] - yEnd[i]));
+                uMinStem = wxMin(uMinStem, uStemLength);
         }
     }
 
@@ -401,35 +405,35 @@ void lmShapeBeam::AdjustStems()
 
     // compare the shortest with this minimun required
     lmLUnits uyIncr;
-    if (uMinStem < dyMin) {
+    if (uMinStem < dyMin)
+    {
         // a stem is smaller than dyMin. Increment all stems.
         uyIncr = dyMin - uMinStem;
         fAdjust = true;
     }
-  //  else if (uMinStem > dyStem) {
-  //      // all stems are greater than the standard size. Reduce them.
-		////AWARE. For chords the size must be measured from highest/lowest pitch note
-        //// but this is not now possible as the only stem we have is the one for the
-        //// chord. All others were deleted during layout phase. Moreover. this trimming
-        //// is no longer necessary as stem length is properly computed in the note layout
-        //// method.
-  //      uyIncr = -(uMinStem - dyStem);
-  //      fAdjust = true;
-  //  }
-    else {
+    else if (uMinStem > dyStem)
+    {
+        // all stems are greater than the standard size. Reduce them.
+        //I'm not sure if this case is passible. But it is simple to deal with it
+        uyIncr = -(uMinStem - dyStem);
+        fAdjust = true;
+    }
+    else
+    {
         fAdjust = false;
     }
     //wxLogMessage(_T("[lmShapeBeam::AdjustStems] dyMin=%d, nMinStem=%d, dyStem=%d, yIncr=%d"),
     //    dyMin, nMinStem, dyStem, yIncr);
 
-    if (fAdjust) {
-        for (int i = 0; i < nNumNotes; i++) {
+    if (fAdjust)
+    {
+        for (int i = 0; i < nNumNotes; i++)
+        {
             //wxLogMessage(_T("[lmShapeBeam::AdjustStems] before yEnd[%d]=%d"), i, yEnd[i]);
-           if (yStart[i] < yEnd[i]) {
+            if (yStart[i] < yEnd[i])
                 yEnd[i] += uyIncr;
-            } else {
+             else
                 yEnd[i] -= uyIncr;
-            }
             //wxLogMessage(_T("[lmShapeBeam::AdjustStems] after yEnd[%d]=%d"), i, yEnd[i]);
         }
     }
@@ -512,43 +516,6 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
 
     //wxLogMessage(_T("[lmShapeBeam::DrawBeamSegment] uxStart=%d, uyStart=%d, uxEnd=%d, uyEnd=%d, uThickness=%d, yStartIncr=%d, yEndIncr=%d, m_fStemsDown=%s"),
     //    uxStart, uyStart, uxEnd, uyEnd, uThickness, yStartIncr, yEndIncr, (m_fStemsDown ? _T("down") : _T("up")) );
-
-}
-
-lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyShift)
-{
-    lmLUnits uyPos;
-    lmNote* pNote = (lmNote*)m_pOwner;
-
-    //if note is in chord, the stem length is determined by the lowest pitch note (stem down) or
-    //the highest pith note (stem up)
-    //AWARE: During layout only the stem in base note exists. All other stem shapes are
-    //deleted. Therefore, to determine position, we must ask the note to compute the stem
-    //position again.
-	if ( pNote->IsInChord() )
-	{
-        lmNote* pRefNote;
-        lmLUnits uStartStem; 
-        lmVStaff* pVStaff = pNote->GetVStaff();
-	    if (m_fStemsDown)
-		{
-            pRefNote = (pNote->GetChord())->GetMinNote();       //use the highest pitch note
-            uStartStem = pVStaff->TenthsToLogical(51, pNote->GetStaffNum());
-        }
-        else
-		{
-            pRefNote = (pNote->GetChord())->GetMaxNote();       //use the lowest pitch note
-            uStartStem = pVStaff->TenthsToLogical(49, pNote->GetStaffNum());
-        }
-        lmShape* pNoteHead = ((lmShapeNote*)(pRefNote->GetShape()))->GetNoteHead();
-        uyPos = pNoteHead->GetYTop() + uStartStem - pNote->GetStemLength();
-    }
-    else
-		uyPos = pShapeStem->GetYEndStem();
-
-    uyPos += uyShift;
-
-    return uyPos;
 
 }
 

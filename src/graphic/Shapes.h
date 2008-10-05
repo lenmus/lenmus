@@ -142,8 +142,8 @@ protected:
 class lmShapeStem : public lmShapeLine
 {
 public:
-    lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd,
-				bool fStemDown, lmLUnits uWidth, wxColour nColor);
+    lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart, lmLUnits uExtraLength,
+                lmLUnits yEnd, bool fStemDown, lmLUnits uWidth, wxColour nColor);
     ~lmShapeStem() {}
 
 	//specific methods
@@ -153,9 +153,10 @@ public:
 	lmLUnits GetYStartStem();
 	lmLUnits GetYEndStem();
 	lmLUnits GetXCenterStem();
-
+    inline lmLUnits GetExtraLenght() { return m_uExtraLength; }
 private:
-	bool	m_fStemDown;
+	bool	    m_fStemDown;
+    lmLUnits    m_uExtraLength;
 
 };
 
