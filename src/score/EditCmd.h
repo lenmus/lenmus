@@ -94,7 +94,7 @@ class lmECmdInsertRest : public lmEditCmd
 {
 public:
     lmECmdInsertRest(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
-                     lmENoteType nNoteType, float rDuration, int nDots);
+                     lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     ~lmECmdInsertRest() {}
 
     void RollBack(lmUndoItem* pUndoItem);

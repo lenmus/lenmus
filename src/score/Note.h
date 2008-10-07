@@ -149,7 +149,7 @@ public:
 	void CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
 
     //other methods
-    bool OnContextUpdated(int nStep, int nNewAccidentals, lmContext* pNewContext);
+    bool OnAccidentalsUpdated(int nNewAccidentals);
 
     // methods oriented to score processing
     int GetPositionInBeat();

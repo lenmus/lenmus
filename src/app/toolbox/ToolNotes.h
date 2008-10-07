@@ -49,6 +49,7 @@ public:
 	//access to options
 	inline int GetOctave() { return m_nSelButton; }
 	inline void SetOctave(int nOctave) { SelectButton(nOctave); }
+    void SetOctave(bool fUp);
 
 };
 
@@ -69,6 +70,7 @@ public:
 	//access to options
 	inline int GetVoice() { return m_nSelButton; }
 	inline void SetVoice(int nVoice) { SelectButton(nVoice); }
+    void SetVoice(bool fUp);
 
 };
 
@@ -217,9 +219,13 @@ public:
 
     //interface with Octave group
 	inline int GetOctave() { return m_pGrpOctave->GetOctave(); }
+    inline void SetOctave(bool fUp) { return m_pGrpOctave->SetOctave(fUp); }
+    inline void SetOctave(int nOctave) { return m_pGrpOctave->SetOctave(nOctave); }
 
     //interface with voice group
 	inline int GetVoice() { return m_pGrpVoice->GetVoice(); }
+    inline void SetVoice(bool fUp) { return m_pGrpVoice->SetVoice(fUp); }
+    inline void SetVoice(int nVoice) { return m_pGrpVoice->SetVoice(nVoice); }
 
     //interface with NoteDuration group
     inline void EnableGrpNoteDuration(bool fEnabled) { m_pGrpNoteDuration->EnableGroup(fEnabled); }

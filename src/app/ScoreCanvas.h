@@ -72,7 +72,7 @@ public:
 					lmNote* pBaseOfChord = (lmNote*)NULL,
 					bool fTiedPrev = false) {}
 
-    virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots) {}
+    virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
     virtual void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true) {}
 
@@ -184,7 +184,7 @@ public:
 					lmNote* pBaseOfChord = (lmNote*)NULL,
 					bool fTiedPrev = false);
 
-    void InsertRest(lmENoteType nNoteType, float rDuration, int nDots);
+    void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
     void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 
@@ -247,6 +247,10 @@ private:
     void SelectNoteDuration(int iButton);
     void SelectNoteAccidentals(bool fNext);
     void SelectNoteDots(bool fNext);
+    void SelectOctave(bool fUp);
+    void SelectOctave(int nOctave);
+    void SelectVoice(bool fUp);
+    void SelectVoice(int nVoice);
 
     //managing selections and cursor pointed objects
     bool IsSelectionValidForTies(lmNote** ppStartNote = NULL, lmNote** ppEndNote = NULL);

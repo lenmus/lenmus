@@ -84,8 +84,14 @@ bool IsHigherTime(float t1, float t2)
 }
 
 
-//Global variables used for default initialization
+//Global variables 
+//---------------------------------------------------------------------------------------
+
+//location: default initialization
 lmLocation g_tDefaultPos = {0.0, 0.0, lmLOCATION_DEFAULT,lmLOCATION_DEFAULT,lmTENTHS,lmTENTHS};
+
+//Empty string
+wxString lmEmptyString = _T("");
 
 //-------------------------------------------------------------------------------------
 // implementation of class lmURect code. A real rectangle (lmLUnits). Based on wxRect

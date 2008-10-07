@@ -2756,7 +2756,9 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
         //re-compute segment duration
         pSegment->UpdateDuration();
 
-        //remove next segment and renumber segments
+        //remove next segment and renumber segments. Notice that if we removed last barline
+        //there will be no next segment
+        //if 
         RemoveSegment( pNextSegment->m_nNumSegment );
 
         //As a consequence of joining segments, saved cursor information is no longer
@@ -3516,10 +3518,10 @@ lmContext* lmColStaffObjs::GetCurrentContext(lmStaffObj* pTargetSO)
 	return pCT;
 }
 
-lmContext* lmColStaffObjs::NewUpdatedContext(lmStaffObj* pThisSO)
+lmContext* lmColStaffObjs::NewUpdatedContext(int nStaff, lmStaffObj* pThisSO)
 {
-	//returns the applicable context for this StaffObj, updated with all
-	//accidentals introduced by previous notes.
+	//returns the applicable context for staff nStaff and the timepos of object pThisSO,
+    //updated with all accidentals introduced by previous notes in staff nStaff.
 	//AWARE: context ownership is transferred to the caller.
 	//       The returned context MUST BE deleted by the invoking method.
 
@@ -3535,7 +3537,6 @@ lmContext* lmColStaffObjs::NewUpdatedContext(lmStaffObj* pThisSO)
         --it;
 
     //go backwards to see if in this segment there is a previous clef, time or key signature
-    int nStaff = pThisSO->GetStaffNum();
     lmContext* pCT = (lmContext*)NULL;
     while(it != pSegment->m_StaffObjs.end())
 	{
@@ -3568,13 +3569,13 @@ lmContext* lmColStaffObjs::NewUpdatedContext(lmStaffObj* pThisSO)
 	//Now we have to go forward, updating accidentals until we reach target SO
 
 	lmContext* pUpdated = new lmContext(pCT);
-    while(*it != pThisSO && it != pSegment->m_StaffObjs.end())
+    float rTime = pThisSO->GetTimePos();
+    while(it != pSegment->m_StaffObjs.end() && IsLowerTime((*it)->GetTimePos(), rTime))
 	{
-        lmStaffObj* pSO = *it;
-		if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
+		if ((*it)->GetStaffNum() == nStaff && (*it)->IsNoteRest() && ((lmNote*)(*it))->IsNote())
 		{
 			//Note found. Update context
-			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
+			lmAPitch apPitch = ((lmNote*)(*it))->GetAPitch();
 			pUpdated->SetAccidental(apPitch.Step(), apPitch.Accidentals());
 		}
 		++it;

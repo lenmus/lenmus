@@ -711,4 +711,14 @@ extern wxString DoubleToStr(double rNumber, int nDecimalDigits);
 
 
 
+//---------------------------------------------------------------------------------------
+//Empty string
+// Some methods return a const reference to a wxString.
+// It is usefull to have an emty string defined.
+//---------------------------------------------------------------------------------------
+
+extern wxString lmEmptyString;
+
+
+
 #endif    // __LM_DEFS_H__

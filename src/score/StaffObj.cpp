@@ -810,7 +810,7 @@ lmContext* lmStaffObj::NewUpdatedContext()
 {
 	//returns the applicable context for this StaffObj, updated with all
 	//accidentals introduced by previous notes
-	return m_pVStaff->NewUpdatedContext(this);
+	return m_pVStaff->NewUpdatedContext(this->GetStaffNum(), this);
 }
 
 lmClef* lmStaffObj::GetApplicableClef()

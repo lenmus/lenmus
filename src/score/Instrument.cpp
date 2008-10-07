@@ -460,7 +460,7 @@ const wxString& lmInstrument::GetInstrName()
     if (m_pName)
 		return m_pName->GetText();
 
-	return wxEmptyString;
+	return lmEmptyString;
 }
 
 void lmInstrument::MeasureNames(lmPaper* pPaper)

@@ -536,7 +536,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
                                     nVoice, pBaseOfChord, fTiedPrev) );
 }
 
-void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots)
+void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice)
 {
 	//insert a rest at current cursor position
 
@@ -548,7 +548,8 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert rest");
 
-	pCP->Submit(new lmCmdInsertRest(pVCursor, sName, m_pDoc, nNoteType, rDuration, nDots) );
+	pCP->Submit(new lmCmdInsertRest(pVCursor, sName, m_pDoc, nNoteType, rDuration,
+                                    nDots, nVoice) );
 }
 
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
@@ -746,7 +747,8 @@ void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
             //This is by design of wxWidgets and enables the programs that handle both types of
             //events to be a bit simpler.
 
-            event.Skip();       //to generate Key char event
+            //event.Skip();       //to generate Key char event
+            ProcessKey(event);
     }
 }
 
@@ -760,7 +762,7 @@ void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
     //        (m_fShift ? _T('S') : _T('-') ),
     //        (event.MetaDown() ? _T('M') : _T('-') )
     //        );
-    ProcessKey(event);
+    //ProcessKey(event);
 }
 
 void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
@@ -938,7 +940,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                 if (nKeyCode == int(' '))
                 {
                     //do insert rest
-                    InsertRest(nNoteType, rDuration, nDots);
+                    InsertRest(nNoteType, rDuration, nDots, nVoice);
 
                     fUnknown = false;
                 }
@@ -946,12 +948,42 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                 //commands to change options in Tool Box
 
 
-                //select note duration: digits 0..9
+                //Select note duration:     digits 0..9
+                //Select octave:            ctrl + digits 0..9
+                //Select voice:             alt + digits 0..9
                 if (fUnknown && nKeyCode >= int('0') && nKeyCode <= int('9'))
 			    {
-					SelectNoteDuration(nKeyCode - int('0'));
+                    if (event.CmdDown())
+                        //octave: ctrl + digits 0..9
+					    SelectOctave(nKeyCode - int('0'));
+
+                    else if (event.AltDown())
+                        //Voice: alt + digits 0..9
+ 					    SelectVoice(nKeyCode - int('0'));
+
+                    else                    
+                        //Note duration: digits 0..9
+					    SelectNoteDuration(nKeyCode - int('0'));
+
                     fUnknown = false;
                 }
+
+                //increment/decrement octave: up (ctrl +), down (ctrl -)
+                else if (fUnknown && event.CmdDown() 
+                         && (nKeyCode == int('+') || nKeyCode == int('-')) )
+			    {
+					SelectOctave(nKeyCode == int('+'));
+                    fUnknown = false;
+                }
+
+                //increment/decrement voice: up (alt +), down (alt -)
+                else if (fUnknown && event.AltDown() 
+                         && (nKeyCode == int('+') || nKeyCode == int('-')) )
+			    {
+					SelectVoice(nKeyCode == int('+'));
+                    fUnknown = false;
+                }
+
 
 #if 0   //old code, to select accidentals and dots
            //     if (fUnknown)
@@ -1380,6 +1412,34 @@ void lmScoreCanvas::SelectNoteDuration(int iButton)
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	if (pToolBox)
 		((lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SetNoteDurationButton(iButton);
+}
+
+void lmScoreCanvas::SelectOctave(bool fUp)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (pToolBox)
+		((lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SetOctave(fUp);
+}
+
+void lmScoreCanvas::SelectOctave(int nOctave)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (pToolBox)
+		((lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SetOctave(nOctave);
+}
+
+void lmScoreCanvas::SelectVoice(bool fUp)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (pToolBox)
+		((lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SetVoice(fUp);
+}
+
+void lmScoreCanvas::SelectVoice(int nVoice)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (pToolBox)
+		((lmToolPageNotes*)pToolBox->GetToolPanel(lmPAGE_NOTES))->SetVoice(nVoice);
 }
 
 void lmScoreCanvas::SelectNoteAccidentals(bool fNext)

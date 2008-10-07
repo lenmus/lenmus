@@ -208,14 +208,32 @@ lmLUnits lmVStaff::GetStaffLineThick(int nStaff)
 // contexts related
 //----------------------------------------------------------------------------------------
 
-void lmVStaff::OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
-                           int nNewAccidentals, lmContext* pCurrentContext)
+void lmVStaff::OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep,
+                           int nNewAccidentals)
 {
     // Note pStartNote (whose diatonic name is nStep) has accidentals that must be
 	// propagated to the context and to the following notes until the end of the measure
 	// or until a new accidental for the same step is found
     
-    lmTODO(_T("[lmVStaff::OnContextUpdated] All code in this method"));
+    //define iterator from start note
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorTo(eTR_ByTime, pStartNote);
+    wxASSERT(!pIter->EndOfList());
+    pIter->MoveNext();              //skip start note
+    while(!pIter->EndOfMeasure())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote()
+            && pSO->GetStaffNum() == nStaff 
+            && ((lmNote*)pSO)->GetStep() == nStep)
+        {
+            //note in the same staff and the same step found.
+            if ( ((lmNote*)pSO)->OnAccidentalsUpdated(nNewAccidentals) )
+                //the note has accidentals. Break loop as no more changes are needed.
+                break;
+        }
+        pIter->MoveNext();
+    }
+    delete pIter;
 }
 
 int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
@@ -223,7 +241,7 @@ int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
 	//returns the current context, updated with the accidentals for step nStep,
     //applicable to StaffObj pThisSO.
 
-	lmContext* pContext = m_cStaffObjs.NewUpdatedContext(pThisSO);
+	lmContext* pContext = m_cStaffObjs.NewUpdatedContext(pThisSO->GetStaffNum(), pThisSO);
 	if (pContext)
 	{
 		int nAcc = pContext->GetAccidentals(nStep);
@@ -269,7 +287,7 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
 {
     //if there are notes affected by new clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
-    if (CheckIfNotesAffectedByClef())
+    if (CheckIfNotesAffectedByClef(false))
         nAction = AskUserAboutClef();
 
     if (nAction == 0)
@@ -345,7 +363,7 @@ lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFif
 
     //if there are notes affected by new key, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
-    if (CheckIfNotesAffectedByKey())
+    if (CheckIfNotesAffectedByKey(false))
         nAction = AskUserAboutKey();
 
     if (nAction == 0)
@@ -504,7 +522,7 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
     lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
     lmContext* pContext;
     if (pCursorSO)
-	    pContext = NewUpdatedContext(pCursorSO);    //TODO 1: pointed SO could be in different staff
+	    pContext = NewUpdatedContext(nStaff, pCursorSO);
     else
         pContext = NewUpdatedLastContext(nStaff);
 
@@ -532,7 +550,7 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
 
 			//re-compute context
 			if (pCursorSO)
-				pContext = NewUpdatedContext(pCursorSO);
+				pContext = NewUpdatedContext(nStaff, pCursorSO);
 			else
 				pContext = NewUpdatedLastContext(nStaff);
 			if (!pContext)
@@ -591,7 +609,7 @@ void lmVStaff::UndoCmd_InsertNote(lmUndoItem* pUndoItem, lmNote* pNote)
 
 lmRest* lmVStaff::Cmd_InsertRest(lmUndoItem* pUndoItem,
                                  lmENoteType nNoteType, float rDuration, int nDots,
-                                 bool fAutoBar)
+                                 int nVoice, bool fAutoBar)
 {
     int nStaff = m_VCursor.GetNumStaff();
 
@@ -600,10 +618,6 @@ lmRest* lmVStaff::Cmd_InsertRest(lmUndoItem* pUndoItem,
         BeamInfo[i].Repeat = false;
         BeamInfo[i].Type = eBeamNone;
     }
-
-	//TODO: For now, only auto-voice. It is necessary to get info from GUI about
-	//user selected voice. Need to change this command parameter list to include voice
-	int nVoice = 0;     //auto-voice
 
     lmRest* pRest = new lmRest(this, nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
                              false, BeamInfo);
@@ -634,7 +648,7 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
     lmTimeSignature* pTime = GetApplicableTimeSignature();
     if (!pTime)
         return;         //no time signature. Do not add barlines
-    //TODO: When no TS, we could try to insert hidden barlines to deal with no time
+    //THINK: When no TS, we could try to insert hidden barlines to deal with no time
     //signature scores
 
     float rMeasure = pTime->GetMeasureDuration();
@@ -817,12 +831,11 @@ bool lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
 
     //if there are notes affected by deleting clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
-    //TODO: determine if it is necessary to ask user. For now, always ask
-    //if (CheckIfNotesAffectedByClef())
+    if (CheckIfNotesAffectedByClef(true))
         nAction = AskUserAboutClef();
 
     if (nAction == 0)
-        return true;       //Cancel clef insertion
+        return true;       //Cancel clef deletion
 
     bool fClefKeepPosition = (nAction == 2);
 
@@ -862,7 +875,19 @@ bool lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS
 {
     //returns true if deletion cancelled
 
-    //TODO: As user about inserting accidentals in following notes
+    //if there are notes affected by key removal, get user desired behaviour
+    int nAction = 1;    //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
+    if (CheckIfNotesAffectedByKey(true))        //true->skip this key
+        nAction = AskUserAboutKey();
+
+    if (nAction == 0)
+        return true;       //Cancel key deletion
+
+    bool fKeyKeepPitch = (nAction == 1);
+
+    //save answer for undo/redo
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    pUndoData->AddParam<bool>(fKeyKeepPitch);
 
     //remove the contexts created by the KS
 	pKS->RemoveCreatedContexts();
@@ -875,14 +900,17 @@ bool lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS
 
 void lmVStaff::UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
 {
-    InsertKeyTimeSignature(pUndoItem, pKS);
+    //recover user option about keeping pitch
+    lmUndoData* pUndoData = pUndoItem->GetUndoData();
+    bool fKeyKeepPitch = pUndoData->GetParam<bool>();
+
+    //proceed to insert the key signature
+    InsertKeyTimeSignature(pUndoItem, pKS, fKeyKeepPitch);
 }
 
 bool lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
 {
     //returns true if deletion cancelled
-
-    //TODO: As user about anything?
 
  //   //delete the requested object, and log info to undo history
  //   wxASSERT(pUndoItem);
@@ -2626,18 +2654,20 @@ lmNote* lmVStaff::FindPossibleEndOfTie(lmNote* pStartNote)
     return (lmNote*)NULL;        //no suitable note found
 }
 
-bool lmVStaff::CheckIfNotesAffectedByClef()
+bool lmVStaff::CheckIfNotesAffectedByClef(bool fSkip)
 {
-    //AWARE:
-    //  This method is used when a clef is going to be inserted, to verify if the new
-    //  clef affects any subsequent note.
+    //  This method is used when a clef is going to be added/changed/deleted, to verify
+    //  if the clef change affects any subsequent note.
     //  
-    //  This method returns true if, starting from current position, no note
-    //  is found or a clef is found before finding a note.
+    //  Returns true if, starting from current position, no note is found or a clef is
+    //  found before finding a note. Flag fSkip request to skip current pointed SO, as it is
+    //  the clef to be changed/deleted
 
 
     //define iterator from current cursor position
     lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, &m_VCursor);
+    if(fSkip && !pIter->EndOfList())
+        pIter->MoveNext();
     while(!pIter->EndOfList())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
@@ -2660,10 +2690,40 @@ bool lmVStaff::CheckIfNotesAffectedByClef()
     return false;
 }
 
-bool lmVStaff::CheckIfNotesAffectedByKey()
+bool lmVStaff::CheckIfNotesAffectedByKey(bool fSkip)
 {
-    //TODO
-    return true;
+    //  This method is used when a key signature is going to be added/removed/changed, to
+    //  verify if the key signature change affects any subsequent note.
+    //  
+    //  Returns true if, starting from current position, no note is found or a key signature
+    //  is found before finding a note. Flag fSkip request to skip current pointed SO, as it is
+    //  the key to be changed/deleted
+
+
+    //define iterator from current cursor position
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, &m_VCursor);
+    if(fSkip && !pIter->EndOfList())
+        pIter->MoveNext();
+    while(!pIter->EndOfList())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsKeySignature())
+            break;              //key found before finding a note. No notes affected
+        else if (pSO->IsNoteRest())
+        {
+            if ( ((lmNoteRest*)pSO)->IsNote() )
+            {
+                //note found
+                delete pIter;
+                return true;
+            }
+        }
+        pIter->MoveNext();
+    }
+
+    //key found before finding a note or no note found
+    delete pIter;
+    return false;
 }
 
 bool lmVStaff::ShiftTime(float rTimeShift)

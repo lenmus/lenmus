@@ -912,13 +912,14 @@ bool lmCmdInsertNote::UndoCommand()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertRest::lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& sName,
-                                 lmScoreDocument *pDoc,
-								 lmENoteType nNoteType, float rDuration, int nDots)
+                                 lmScoreDocument *pDoc, lmENoteType nNoteType,
+                                 float rDuration, int nDots, int nVoice)
 	: lmScoreCommand(sName, pDoc, pVCursor)
 {
 	m_nNoteType = nNoteType;
     m_nDots = nDots;
 	m_rDuration = rDuration;
+    m_nVoice = nVoice;
 }
 
 lmCmdInsertRest::~lmCmdInsertRest()
@@ -933,7 +934,7 @@ bool lmCmdInsertRest::Do()
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
 
     lmEditCmd* pECmd = new lmECmdInsertRest(m_pVStaff, pUndoItem, m_nNoteType,
-                                              m_rDuration, m_nDots);
+                                            m_rDuration, m_nDots, m_nVoice);
 
     if (pECmd->Success())
     {

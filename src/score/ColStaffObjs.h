@@ -198,7 +198,7 @@ public:
 
 	//context management
 	lmContext* GetCurrentContext(lmStaffObj* pSO);
-	lmContext* NewUpdatedContext(lmStaffObj* pSO);
+	lmContext* NewUpdatedContext(int nStaff, lmStaffObj* pSO);
 	lmContext* NewUpdatedLastContext(int nStaff);
 	lmContext* GetLastContext(int nStaff);
     lmContext* GetStartOfSegmentContext(int nMeasure, int nStaff);

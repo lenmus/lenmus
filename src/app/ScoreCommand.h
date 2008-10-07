@@ -309,7 +309,7 @@ class lmCmdInsertRest: public lmScoreCommand
 public:
 
     lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
-					lmENoteType nNoteType, float rDuration, int nDots);
+					lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     ~lmCmdInsertRest();
 
     //implementation of pure virtual methods in base class
@@ -319,6 +319,7 @@ public:
 protected:
 	lmENoteType		    m_nNoteType;
     int                 m_nDots;
+    int                 m_nVoice;
 	float			    m_rDuration;
 
     lmVStaff*           m_pVStaff;      //affected VStaff

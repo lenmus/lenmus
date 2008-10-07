@@ -354,22 +354,22 @@ int lmNote::GetContextAccidentals(int nStep)
 	return m_pVStaff->GetUpdatedContextAccidentals(this, nStep);
 }
 
-bool lmNote::OnContextUpdated(int nStep, int nNewAccidentals, lmContext* pNewContext)
+bool lmNote::OnAccidentalsUpdated(int nNewAccidentals)
 {
-    // A previous note has updated the context. It is necessary to verify if this note is
-    // affected and, if it is affected, to update context dependent information.
-    // Returns true if no modification was needed.
+    // A previous note of the same step than this one and in the same measure has updated
+    // the context (has modified the accidentals for this step). It is necessary to verify
+    // if this note is affected and, in that case, to update context dependent information.
+    // Returns true if the note has accidentals and no modification was needed. This will
+    // signal the end of the context propagation.
 
-    ////get context accidentals for the modified step
-    //int nAccidentals = pNewContext->GetAccidentals(nStep);
+    //if the note has displayed accidentals the modification doesn't affect it.
+    if (m_pAccidentals)
+        return true;
 
-    ////compare context accidentals for modified step with new accidentals
-    //if (nAccidentals == nNewAccidentals) return true;
+    //here we have determined that the note is affected. Proceed to change its pitch
+    m_anPitch.SetAccidentals(nNewAccidentals);
 
-    ////update pitch
-    //m_anPitch.SetAccidentals(nNewAccidentals);
-    //return false;
-    return true;	//TODO
+    return false;
 }
 
 void lmNote::RemoveTie(lmTie* pTie)
@@ -1434,10 +1434,6 @@ void lmNote::ChangeAccidentals(int nAcc)
 	if (m_anPitch.Accidentals() == nAcc) return;     //nothing to change
 
     int nStep = m_anPitch.Step();
-	//if (nAccSteps == 0)
-	//	nAcc = 0;		//remove accidentals
-	//else
-	//	nAcc += nAccSteps;		//increment/decrement accidentals
 	m_anPitch.SetAccidentals(nAcc);
 	OnAccidentalsChanged(nStep, nAcc);
 }
@@ -1449,25 +1445,25 @@ void lmNote::OnAccidentalsChanged(int nStep, int nNewAcc)
 
 	lmContext* pContext = NewUpdatedContext();
 	int nCurAcc = pContext->GetAccidentals(nStep);
+	delete pContext;
+
+    //change displayed accidental, if necessary
+    if (m_pAccidentals)
+        delete m_pAccidentals;
     if (nCurAcc == nNewAcc)
 	{
-        //Accidentals already included. Remove any possible displayed accidental
-        if (m_pAccidentals) {
-            delete m_pAccidentals;
-            m_pAccidentals = (lmAccidental*)NULL;
-        }
+        //Accidentals already included. Nothing to display
+        m_pAccidentals = (lmAccidental*)NULL;
     }
     else
 	{
-        // need to add/change displayed accidentals
-        if (m_pAccidentals) delete m_pAccidentals;
+        // need to add displayed accidentals
         lmEAccidentals nAlter = ComputeAccidentalsToDisplay(nCurAcc, nNewAcc);
         m_pAccidentals = new lmAccidental(this, nAlter);
-
-        // propagate accidentals to other notes in this measure
-        m_pVStaff->OnContextUpdated(this, GetStaffNum(), nStep, nAlter, pContext);
     }
-	delete pContext;
+
+    // propagate accidentals to other notes in this measure
+    m_pVStaff->OnAccidentalsUpdated(this, GetStaffNum(), nStep, nNewAcc);
 }
 
 

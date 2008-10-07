@@ -88,14 +88,15 @@ void lmECmdInsertNote::RollBack(lmUndoItem* pUndoItem)
 //----------------------------------------------------------------------------------------
 
 lmECmdInsertRest::lmECmdInsertRest(lmVStaff* pVStaff, lmUndoItem* pUndoItem, 
-                                   lmENoteType nNoteType, float rDuration, int nDots)
+                                   lmENoteType nNoteType, float rDuration, int nDots,
+                                   int nVoice)
     : lmEditCmd(pVStaff)
 {
     lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
     bool fAutoBar = pPgmOpt->GetBoolValue(lm_DO_AUTOBAR);
 
     m_pNewRest = pVStaff->Cmd_InsertRest(pUndoItem, nNoteType,
-                                         rDuration, nDots, fAutoBar);
+                                         rDuration, nDots, nVoice, fAutoBar);
 }
 
 void lmECmdInsertRest::RollBack(lmUndoItem* pUndoItem)

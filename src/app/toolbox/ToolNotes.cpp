@@ -195,7 +195,7 @@ lmGrpOctave::lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpOctave::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Octave"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Octave (Ctrl)"));
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(16, 16);
@@ -208,6 +208,7 @@ void lmGrpOctave::CreateControls(wxBoxSizer* pMainSizer)
 
 		wxString sBtName = wxString::Format(_T("opt_num%1d"), iB);
 		wxString sToolTip = wxString::Format(_("Select octave %d"), iB);
+        sToolTip += _T(". (Ctrl + num/+/-)");
 		m_pButton[iB] = new lmCheckButton(this, lmID_BT_Octave+iB, wxBitmap(16, 16));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
@@ -220,6 +221,19 @@ void lmGrpOctave::CreateControls(wxBoxSizer* pMainSizer)
 	SelectButton(4);	//select octave 4
 }
 
+void lmGrpOctave::SetOctave(bool fUp)
+{
+    if (fUp)
+    {
+        if (m_nSelButton < 9)
+            SelectButton(++m_nSelButton);
+    }
+    else
+    {
+        if (m_nSelButton > 0)
+            SelectButton(--m_nSelButton);
+    }
+}
 
 
 //--------------------------------------------------------------------------------
@@ -236,7 +250,7 @@ lmGrpVoice::lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpVoice::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Voice"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Voice (Alt)"));
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(16, 16);
@@ -259,7 +273,9 @@ void lmGrpVoice::CreateControls(wxBoxSizer* pMainSizer)
 		{
 			sBtName = wxString::Format(_T("opt_num%1d"), iB);
 			m_pButton[iB] = new lmCheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
-			m_pButton[iB]->SetToolTip( wxString::Format(_("Select voice %d"), iB) );
+            wxString sTip = wxString::Format(_("Select voice %d"), iB);
+            sTip += _T(". (Alt + num/+/-)");
+			m_pButton[iB]->SetToolTip(sTip);
 		}
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
@@ -268,9 +284,23 @@ void lmGrpVoice::CreateControls(wxBoxSizer* pMainSizer)
 	}
 	this->Layout();
 
-	SelectButton(0);	//select voice 1
+	SelectButton(0);	//select voice auto
 }
 
+
+void lmGrpVoice::SetVoice(bool fUp)
+{
+    if (fUp)
+    {
+        if (m_nSelButton < 8)
+            SelectButton(++m_nSelButton);
+    }
+    else
+    {
+        if (m_nSelButton > 0)
+            SelectButton(--m_nSelButton);
+    }
+}
 
 
 

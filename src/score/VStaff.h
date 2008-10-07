@@ -154,7 +154,7 @@ public:
                            int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
 
 	lmRest* Cmd_InsertRest(lmUndoItem* pUndoItem, lmENoteType nNoteType,
-                           float rDuration, int nDots, bool fAutoBar);
+                           float rDuration, int nDots, int nVoice, bool fAutoBar);
 
     lmTimeSignature* Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
                                     int nBeatType, bool fVisible);
@@ -259,8 +259,8 @@ public:
     //context management
 	inline lmContext* GetCurrentContext(lmStaffObj* pSO)
                             { return m_cStaffObjs.GetCurrentContext(pSO); }
-	inline lmContext* NewUpdatedContext(lmStaffObj* pSO)
-                            { return m_cStaffObjs.NewUpdatedContext(pSO); }
+	inline lmContext* NewUpdatedContext(int nStaff, lmStaffObj* pSO)
+                            { return m_cStaffObjs.NewUpdatedContext(nStaff, pSO); }
 	inline lmContext* NewUpdatedLastContext(int nStaff)
                             { return m_cStaffObjs.NewUpdatedLastContext(nStaff); }
 	inline lmContext* GetLastContext(int nStaff)
@@ -269,8 +269,7 @@ public:
                             { return m_cStaffObjs.GetStartOfSegmentContext(nMeasure, nStaff); }
 
     //contexts related
-    void OnContextUpdated(lmNote* pStartNote, int nStaff, int nStep,
-                       int nNewAccidentals, lmContext* pCurrentContext);
+    void OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep, int nNewAccidentals);
 	int GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep);
     lmTimeSignature* GetApplicableTimeSignature();
 
@@ -324,8 +323,8 @@ private:
     //operations
     int AskUserAboutClef();
     int AskUserAboutKey();
-    bool CheckIfNotesAffectedByClef();
-    bool CheckIfNotesAffectedByKey();
+    bool CheckIfNotesAffectedByClef(bool fSkip);
+    bool CheckIfNotesAffectedByKey(bool fSkip);
 
     //barlines
     void CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR);
