@@ -62,7 +62,7 @@ public:
     wxString SourceXML(int nIndent);
 
 	//edit properties
-	void OnEditProperties(lmDlgProperties* pDlg);
+	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
 
 
 private:

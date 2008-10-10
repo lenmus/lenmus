@@ -159,6 +159,8 @@ lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
 
 lmStaff* lmVStaff::GetStaff(int nStaff)
 {
+    wxASSERT(nStaff > 0);
+
     return m_cStaves[nStaff-1];
 }
 
@@ -184,6 +186,8 @@ lmStaff* lmVStaff::GetLastStaff()
 
 lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths, int nStaff)
 {
+    wxASSERT(nStaff > 0);
+
     lmStaff* pStaff = GetStaff(nStaff);
     wxASSERT(pStaff);
     return pStaff->TenthsToLogical(nTenths);
@@ -191,6 +195,8 @@ lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths, int nStaff)
 
 lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits, int nStaff)
 {
+    wxASSERT(nStaff > 0);
+
     lmStaff* pStaff = GetStaff(nStaff);
     wxASSERT(pStaff);
     return pStaff->LogicalToTenths(uUnits);
@@ -198,6 +204,8 @@ lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits, int nStaff)
 
 lmLUnits lmVStaff::GetStaffLineThick(int nStaff)
 {
+    wxASSERT(nStaff > 0);
+
     lmStaff* pStaff = GetStaff(nStaff);
     wxASSERT(pStaff);
     return pStaff->GetLineThick();
@@ -215,6 +223,8 @@ void lmVStaff::OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep,
 	// propagated to the context and to the following notes until the end of the measure
 	// or until a new accidental for the same step is found
     
+    wxASSERT(nStaff > 0);
+
     //define iterator from start note
     lmSOIterator* pIter = m_cStaffObjs.CreateIteratorTo(eTR_ByTime, pStartNote);
     wxASSERT(!pIter->EndOfList());
@@ -285,6 +295,8 @@ lmTimeSignature* lmVStaff::GetApplicableTimeSignature()
 lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
                                  bool fVisible)
 {
+    wxASSERT(nStaff > 0);
+
     //if there are notes affected by new clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
     if (CheckIfNotesAffectedByClef(false))
@@ -435,25 +447,25 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
     std::list<lmVStaffCursor*> cAuxCursors;
     int nNumMeasure = m_VCursor.GetSegment();
     bool fIsTime = pKTS->IsTimeSignature();
-    for (int iStaff=1; iStaff <= m_nNumStaves; iStaff++)
+    for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
         // Create an auxiliary cursor and position it at start of desired measure
         lmVStaffCursor* pAuxCursor = new lmVStaffCursor();
         pAuxCursor->AttachToCollection(&m_cStaffObjs);
-        pAuxCursor->AdvanceToStartOfSegment(nNumMeasure, iStaff);
+        pAuxCursor->AdvanceToStartOfSegment(nNumMeasure, nStaff);
 
         // Advance aux cursor, if necessary, to skip clef and, if applicable, key signature.
         pAuxCursor->SkipClefKey(fIsTime);           //true -> skip key
 
         //Add a new context at found insertion point
         lmStaffObj* pCursorSO = pAuxCursor->GetStaffObj();
-        lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(iStaff));
-        lmStaff* pStaff = GetStaff(iStaff);
+        lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
+        lmStaff* pStaff = GetStaff(nStaff);
         if (fIsTime)
-            ((lmTimeSignature*)pKTS)->SetContext(iStaff, 
+            ((lmTimeSignature*)pKTS)->SetContext(nStaff, 
                                         pStaff->NewContextAfter((lmTimeSignature*)pKTS, pContext) );
         else
-            ((lmKeySignature*)pKTS)->SetContext(iStaff,
+            ((lmKeySignature*)pKTS)->SetContext(nStaff,
 	                                pStaff->NewContextAfter((lmKeySignature*)pKTS, pContext) );
 
         // save pointer to insertion point for this staff
@@ -797,7 +809,7 @@ int lmVStaff::AskUserAboutKey()
     //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
 
     lmPgmOptions* pPgmOpt = lmPgmOptions::GetInstance();
-    long nOptValue = pPgmOpt->GetLongValue(lm_DO_CLEF_CHANGE);  //0=ask, 1=keep pitch, 2=keep position
+    long nOptValue = pPgmOpt->GetLongValue(lm_DO_KS_CHANGE);  //0=ask, 1=keep pitch, 2=do nothing
     if (nOptValue == 0)
     {
         wxString sQuestion = _("Notes after the key will be affected by this action.");
@@ -808,16 +820,16 @@ accidentals to the affected notes?");
 
         lmQuestionBox oQB(sQuestion, 3,     //msge, num buttons,
             //labels (2 per button: button text + explanation)
-            _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
+            _("Keep pitch"), _("Keep pitch by adding/removing accidentals when necessary."),
             _("Change pitch"), _("Do nothing. Notes' pitch will be affected by the change in key signature."),
             _("Cancel"), _("The insert, delete or change key command will be cancelled.") 
         );
         int nAnswer = oQB.ShowModal();
 
-		if (nAnswer == 0)       //'Keep position' button
-            return 2;
-        else if (nAnswer == 1)  //'Keep pitch' button
+		if (nAnswer == 0)       //'Keep pitch' button
             return 1;
+        else if (nAnswer == 1)  //'do nothing' button
+            return 2;
         else
             return 0;       //Cancel operation
     }
@@ -1604,6 +1616,7 @@ void lmVStaff::UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR)
 // adds a clef to the end of current StaffObjs collection
 lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
 {
+    wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= GetNumStaves());
 
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
@@ -1637,7 +1650,6 @@ lmStaffObj* lmVStaff::AddAnchorObj()
     return pAnchor;
 }
 
-// returns a pointer to the lmNote object just created
 lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                     int nStep, int nOctave, int nAlter,
                     lmEAccidentals nAccidentals,
@@ -1648,8 +1660,11 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                     bool fTie,
                     lmEStemType nStem)
 {
+    // Creates a note. Returns a pointer to the lmNote object just created
 
+    wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= GetNumStaves() );
+
     lmContext* pContext = NewUpdatedLastContext(nStaff);
 
     lmNote* pNt = new lmNote(this, nPitchType,
@@ -1663,11 +1678,12 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
     return pNt;
 }
 
-// returns a pointer to the lmRest object just created
 lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
                       int nStaff, int nVoice, bool fVisible,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
 {
+    // returns a pointer to the lmRest object just created
+    wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= GetNumStaves() );
 
     lmRest* pR = new lmRest(this, nNoteType, rDuration, nDots, nStaff,
@@ -1916,7 +1932,10 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
 lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 {
     //returns the Y offset to staff nStaff (1..n)
+
+    wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= m_nNumStaves );
+
     lmLUnits yOffset = m_topMargin;
 
     // iterate over the collection of Staves (lmStaff Objects) to add up the

@@ -216,7 +216,7 @@ private:
     void UpdateCaret();
     void HideCaret();
     void ShowCaret();
-	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
+	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
     void MoveCaretToObject(lmStaffObj* pSO);
 
 	//Mouse commands

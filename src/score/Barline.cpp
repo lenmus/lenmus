@@ -318,9 +318,11 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
 
 }
 
-void lmBarline::OnEditProperties(lmDlgProperties* pDlg)
+void lmBarline::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
 {
 	//invoked to add specific panels to the dialog
+
+    WXUNUSED(sTabName)
 
 	pDlg->AddPanel( new lmBarlineProperties(pDlg->GetNotebook(), this),
 				_("Barline"));

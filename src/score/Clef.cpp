@@ -129,8 +129,7 @@ lmUPoint lmClef::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	lmUPoint uPos = uOrg;
 
 	// get the shift to the staff on which the clef must be drawn
-	uPos.y += m_pVStaff->GetStaffOffset(m_nStaffNum) +
-			  m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+	uPos.y += m_pVStaff->GetStaffOffset(m_nStaffNum);
 
 	return uPos;
 }
@@ -142,33 +141,27 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // Paper cursor must be used as the base for positioning.
 
     //create the shape object
-    int nIdx = NewShapeIndex();
-    lmShapeClef* pShape = new lmShapeClef(this, nIdx, GetGlyphIndex(), GetSuitableFont(pPaper),
-										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
-	pBox->AddShape(pShape);
-    StoreShape(pShape);
+    lmShape* pShape = CreateShape(pBox, pPaper, uPos, m_color);
 
 	// set total width (incremented in one line for after space)
 	lmLUnits nWidth = pShape->GetWidth();
 	return nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
 }
 
-lmShape* lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					  wxColour colorC)
+lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-    // This method is, primarely, to be used when rendering the prolog
-    // Returns the width of the draw
-
+    int nIdx = NewShapeIndex();
+    if (!m_fVisible)
+        return CreateInvisibleShape(pBox, uPos, nIdx);
 
     // get the shift to the staff on which the clef must be drawn
-	lmLUnits yPos = uPos.y;	// + m_pVStaff->GetStaffOffset(m_nStaffNum);
+	lmLUnits yPos = uPos.y;
     yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object
-    int nIdx = NewShapeIndex();
     lmShapeClef* pShape = new lmShapeClef(this, nIdx, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, lmUPoint(uPos.x, yPos), 
-										  _T("Clef"), lmDRAGGABLE);
+										  _T("Clef"), lmDRAGGABLE, colorC);
     StoreShape(pShape);
 	pBox->AddShape(pShape);
     return pShape;

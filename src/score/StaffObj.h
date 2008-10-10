@@ -68,6 +68,7 @@ public:
     virtual void StoreShape(lmGMObject* pGMObj) { m_pGMObj = pGMObj; }
     virtual int NewShapeIndex() { return 0; }
     virtual void Init() {}
+    virtual bool IsMultishaped() { return false; }
 
 protected:
     lmGMObject*		m_pGMObj;		//shape/box that renders this object
@@ -89,7 +90,7 @@ public:
     void StoreShape(lmGMObject* pGMObj);
     inline int NewShapeIndex() { return m_nNextIdx++; }
     void Init();
-
+    inline bool IsMultishaped() { return true; }
 
 protected:
 
@@ -190,6 +191,7 @@ public:
 
     //other shapes related methods
     virtual inline bool IsMainShape(int nShapeIdx) { return nShapeIdx == 0; }
+    inline bool IsMultishaped() { return m_pShapesMngr->IsMultishaped(); }
 
 	//positioning
     virtual void StoreOriginAndShiftShapes(lmLUnits uLeft, int nShapeIdx = 0);
@@ -392,7 +394,8 @@ public:
     // methods related to positioning
     virtual lmLUnits GetAnchorPos() {return GetShape()->GetXLeft(); }
 
-	//highligh
+	//layout and highligh
+    virtual lmShape* CreateInvisibleShape(lmBox* pBox, lmUPoint uPos, int nShapeIdx);
 	virtual void PlaybackHighlight(lmPaper* pPaper, wxColour colorC) {}
 
     // methods related to staff ownership

@@ -2302,13 +2302,13 @@ void lmScoreView::CaretDown()
     ShowCaret();
 }
 
-void lmScoreView::MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
+void lmScoreView::MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure)
 {
     if (!m_pCaret) return;
 
     //wxLogMessage(_T("[lmScoreView::MoveCaretNearTo]"));
     HideCaret();
-	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
+	m_pScoreCursor->MoveNearTo(uPos, pVStaff, iStaff, nMeasure);
     UpdateCaret();
     ShowCaret();
 }

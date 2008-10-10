@@ -72,17 +72,19 @@ public:
     float GetMeasureDuration();
 
 	//context management
-    inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }
-    inline lmContext* GetContext(int nStaff) { return m_pContext[nStaff-1]; }
+    inline void SetContext(int nStaff, lmContext* pContext)
+                            { wxASSERT(nStaff > 0); m_pContext[nStaff-1] = pContext; }
+    inline lmContext* GetContext(int nStaff) 
+                        { wxASSERT(nStaff > 0); return m_pContext[nStaff-1]; }
     void RemoveCreatedContexts();
 
 
 private:
     void Create();
-    lmCompositeShape* CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPaper, wxColour colorC,
-                                  wxString& sTopGlyphs, lmLUnits uxPosTop, lmLUnits uyPosTop,
-                                  wxString& sBottomGlyphs,
-                                  lmLUnits uxPosBottom, lmLUnits uyPosBottom);
+    lmShape* CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+                         wxString& sTopGlyphs, lmLUnits uxPosTop, lmLUnits uyPosTop,
+                         wxString& sBottomGlyphs,
+                         lmLUnits uxPosBottom, lmLUnits uyPosBottom);
 
     // member variables
 

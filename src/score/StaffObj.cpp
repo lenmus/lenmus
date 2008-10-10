@@ -418,6 +418,8 @@ lmShape* lmScoreObj::GetShape(int nStaff)
     //This is the basic implementation, is valid for single shape ScoreObjs and for
     //time & key signatures. Therfore, it is overriden by Clefs
 
+    wxASSERT(nStaff > 0);
+
     return (lmShape*)m_pShapesMngr->GetGraphicObject(nStaff - 1);
 }
 
@@ -716,6 +718,8 @@ lmStaffObj::lmStaffObj(lmScoreObj* pParent, EStaffObjType nType, lmVStaff* pStaf
                    bool fVisible, bool fIsDraggable) :
     lmComponentObj(pParent, lm_eStaffObj, &g_tDefaultPos, fIsDraggable)
 {
+    wxASSERT(nStaff > 0);
+
     // store parameters
     m_fVisible = fVisible;
     m_nClass = nType;
@@ -742,20 +746,16 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 	lmUPoint uOrg = SetReferencePos(pPaper);
 	m_uComputedPos = ComputeObjectLocation(pPaper);			// compute location
 
-	lmLUnits uWidth;
-    if (m_fVisible)
-	{
-		//SetFont(pPaper);										// set the font
-		// layout derived object
+	lmLUnits uWidth = 0;
+    if (m_fVisible || IsMultishaped())
+    {
+        //create the objects shapes
         uWidth = LayoutObject(pBox, pPaper, m_uComputedPos, colorC);
-	}
+    }
 	else
 	{
-		//Create an invisible shape, to store the StaffObj position
-		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg, lmUSize(0.0, 0.0) );
-		pBox->AddShape(pShape);
-		StoreShape(pShape);
-		uWidth = 0;
+		//Create invisible shapes, to store the StaffObj position
+        CreateInvisibleShape(pBox, uOrg, 0);
 	}
 
 	////if user defined position shift the shape
@@ -777,6 +777,16 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 
     // update paper cursor position
     pPaper->SetCursorX(uOrg.x + uWidth);
+}
+
+lmShape* lmStaffObj::CreateInvisibleShape(lmBox* pBox, lmUPoint uPos, int nShapeIdx)
+{
+    //create an invisible shape
+
+	lmShapeInvisible* pShape = new lmShapeInvisible(this, nShapeIdx, uPos, lmUSize(0.0, 0.0) );
+	pBox->AddShape(pShape);
+	StoreShape(pShape);
+    return pShape;
 }
 
 wxFont* lmStaffObj::GetSuitableFont(lmPaper* pPaper)

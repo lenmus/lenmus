@@ -45,6 +45,8 @@ lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nStaff, int nNumLines, lmLUnits 
 						   lmLUnits xRight, wxColour color)
 	: lmSimpleShape(eGMO_ShapeStaff, pStaff, 0, _T("Staff"))
 {
+    wxASSERT(nStaff > 0);
+
 	m_nStaff = nStaff;
 	m_nNumLines = nNumLines;
 	m_uLineWidth = uLineWidth;

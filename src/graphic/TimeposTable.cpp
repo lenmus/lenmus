@@ -2022,6 +2022,8 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 
 lmLUnits lmTimeposTable::TenthsToLogical(lmTenths rTenths, int nStaff)
 {
+    wxASSERT(nStaff > 0);
+
 	return m_pStaff[nStaff-1]->TenthsToLogical(rTenths);
 }
 

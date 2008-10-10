@@ -83,10 +83,10 @@ public:
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
 	inline lmContext* GetContext(int iStaff) { return m_pContext[iStaff]; }
-    void DoContextInsertion(lmStaffObj* pNewSO, lmStaffObj* pNextSO, bool fClefKeepPosition,
-                            bool fKeyKeepPitch);
-    void DoContextRemoval(lmStaffObj* pOldSO, lmStaffObj* pNextSO, bool fClefKeepPosition,
-                          bool fKeyKeepPitch);
+    void DoContextInsertion(lmKeySignature* pNewKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
+    void DoContextInsertion(lmClef* pNewClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
+    void DoContextRemoval(lmKeySignature* pOldKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
+    void DoContextRemoval(lmClef* pOldClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
 
 
     //info
@@ -128,14 +128,17 @@ private:
     //context management
     lmContext* FindEndOfSegmentContext(int nStaff);
     void PropagateContextChange(lmContext* pStartContext, int nStaff,
+                                lmKeySignature* pNewKey, lmKeySignature* pOldKey,
                                 bool fKeyKeepPitch);
     void PropagateContextChange(lmContext* pStartContext, int nStaff, lmClef* pNewClef,
                                 lmClef* pOldClef, bool fClefKeepPosition);
+    void PropagateContextChange(lmContext* pStartContext, int nStaff);
     lmSegment* GetNextSegment();
 
     //staffobjs management
     void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO, int nStaff);
-    void AddRemoveAccidentals(lmKeySignature* pKey);
+    void AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStartSO);
+    void ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey, lmStaffObj* pStartSO);
 
 
     //member variables
@@ -283,7 +286,7 @@ public:
 	void MoveLeft(bool fAlsoChordNotes = true);
     void MoveToTime(float rNewTime);
     void MoveToFirst(int nStaff=0);
-	void MoveToSegment(int nSegment, int nStaff, lmUPoint uPos);
+	void MoveToSegment(int nSegment, int iStaff, lmUPoint uPos);
     void MoveCursorToObject(lmStaffObj* pSO);
 
 

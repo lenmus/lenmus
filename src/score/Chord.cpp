@@ -181,6 +181,8 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	// shape for the stem and the flag of the chord.
 	// The stem position is stored in the base note.
 
+    wxASSERT(nStaff > 0);
+
     lmNote* pBaseNote = GetBaseNote();
     lmLUnits uxStem = pBaseNote->GetXStemCenter();
     lmLUnits uyStartStem=0.0f, uExtraLenght=0.0f, uyStemEnd=0.0f;
@@ -332,6 +334,8 @@ lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
                                  lmVStaff* pVStaff, int nStaff)
 {
     //Draws the flag using a glyph. Returns the flag width
+
+    wxASSERT(nStaff > 0);
 
     lmENoteType nNoteType = pBaseNote->GetNoteType();
     bool fStemDown = pBaseNote->StemGoesDown();

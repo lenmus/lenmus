@@ -157,22 +157,15 @@ lmContext* lmSystemCursor::GetStartOfColumnContext(int iInstr, int nStaff)
 
     lmSOIterator* pIT = new lmSOIterator( GetIterator(iInstr) );
     lmStaffObj* pSO = (lmStaffObj*)NULL;
-    if (!pIT->EndOfList())
+    //AWARE: if we are in an empty segment (last segment) and we move back to previous
+    //segment, it doesn't matter. In any case the context applying to found SO is the
+    //right context!
+    while(!pIT->EndOfList())
     {
         pSO = pIT->GetCurrent();
-    }
-    else
-    {
-        //iterator pointing to end of list.
-        //move backwards to try to find an object in current segment
+        if (pSO->GetStaffNum() == nStaff)
+            break;
         pIT->MovePrev();
-        if (!pIT->EndOfList())
-        {
-            //Question: how do we ensure that we were not in an empty segment (last segment)
-            //and we have moved back to previous segment?
-            //A: It doesn't matter. In any case this is the right context!
-            pSO = pIT->GetCurrent();
-        }
     }
     delete pIT;
 
@@ -1250,7 +1243,7 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff
 				if (pClef->IsVisible())
                 {
 					lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
-					lmShape* pShape = pClef->AddShape(pBSV, m_pPaper, uPos);
+					lmShape* pShape = pClef->CreateShape(pBSV, m_pPaper, uPos);
 					xPos += pShape->GetWidth();
 					m_oTimepos[m_nColumn].AddEntry(nInstr, pClef, pShape, true);
 				}

@@ -50,8 +50,8 @@
 //----------------------------------------------------------------------------------------
 // lmScoreCommand abstract class implementation
 //
-// Do() method will return true to indicate that the action has taken place, false 
-// otherwise. Returning false will indicate to the command processor that the action is 
+// Do() method will return true to indicate that the action has taken place, false
+// otherwise. Returning false will indicate to the command processor that the action is
 // not undoable and should not be added to the command history.
 //----------------------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ lmScoreCommand::~lmScoreCommand()
 
 bool lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
 {
-    //common code after executing a command: 
+    //common code after executing a command:
     //- save document current modification status flag, to restore it if command undo
     //- set document as 'modified'
     //- update the views with the changes
@@ -169,6 +169,8 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                             sCmdName = _T("Delete note");       break;
                         case eGMO_ShapeRest:
                             sCmdName = _T("Delete rest");       break;
+                        default:
+                            wxASSERT(false);
                     }
                }
                 break;
@@ -244,7 +246,7 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
             default:
                 wxMessageBox(
                     wxString::Format(_T("TODO: Code in lmCmdDeleteSelection to delete %s (type %d)"),
-                    pGMO->GetName(), pGMO->GetType() )); 
+                    pGMO->GetName().c_str(), pGMO->GetType() ));
         }
         pGMO = pSelection->GetNext();
     }
@@ -745,7 +747,7 @@ bool lmCmdInsertClef::UndoCommand()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& sName,
-                             lmScoreDocument *pDoc,  int nBeats, int nBeatType, 
+                             lmScoreDocument *pDoc,  int nBeats, int nBeatType,
                              bool fVisible, bool fHistory)
 	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
 {
@@ -794,7 +796,7 @@ bool lmCmdInsertTimeSignature::UndoCommand()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertKeySignature::lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& sName,
-                             lmScoreDocument *pDoc, int nFifths, bool fMajor, 
+                             lmScoreDocument *pDoc, int nFifths, bool fMajor,
                              bool fVisible, bool fHistory)
 	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
 {
@@ -876,7 +878,7 @@ bool lmCmdInsertNote::Do()
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
 
     lmEditCmd* pECmd = new lmECmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_nStep,
-                                             m_nOctave, m_nNoteType, m_rDuration, m_nDots, 
+                                             m_nOctave, m_nNoteType, m_rDuration, m_nDots,
                                              m_nNotehead, m_nAcc, m_nVoice, m_pBaseOfChord,
 											 m_fTiedPrev);
 
@@ -1233,7 +1235,7 @@ bool lmCmdAddTuplet::Do()
     //Proceed to create the tuplet
     lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
     lmVStaff* pVStaff = m_NotesRests.front()->GetVStaff();
-    lmEditCmd* pECmd = 
+    lmEditCmd* pECmd =
         new lmECmdAddTuplet(pVStaff, pUndoItem, m_NotesRests,  m_fShowNumber, m_nNumber,
                             m_fBracket, m_nAbove, m_nActual, m_nNormal);
 
@@ -1328,7 +1330,7 @@ lmCmdJoinBeam::lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name,
         {
             lmNoteRest* pNR = (lmNoteRest*)pGMO->GetScoreOwner();
             //exclude notes in chord
-            if (pNR->IsRest() || (pNR->IsNote() && 
+            if (pNR->IsRest() || (pNR->IsNote() &&
                                   (!((lmNote*)pNR)->IsInChord() ||
                                    ((lmNote*)pNR)->IsBaseOfChord() )) )
                 m_NotesRests.push_back(pNR);
@@ -1382,14 +1384,14 @@ bool lmCmdJoinBeam::UndoCommand()
 
 lmCmdChangeText::lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
                                  lmScoreDocument *pDoc, lmScoreText* pST,
-                                 wxString& sText, lmEHAlign nHAlign, 
+                                 wxString& sText, lmEHAlign nHAlign,
                                  lmLocation tPos, lmTextStyle* pStyle,
                                  int nHintOptions)
 	: lmScoreCommand(name, pDoc, pVCursor, true, nHintOptions)
 {
     m_pST = pST;
     m_sText = sText;
-    m_nHAlign = nHAlign; 
+    m_nHAlign = nHAlign;
     m_tPos = tPos;
     m_pStyle = pStyle;
 }
@@ -1623,7 +1625,7 @@ bool lmCmdAddNewTitle::Do()
     {
 		m_pDoc->GetScore()->AttachAuxObj(m_pNewTitle);
 		m_fDeleteTitle = false;
-		return CommandDone(lmSCORE_MODIFIED); 
+		return CommandDone(lmSCORE_MODIFIED);
     }
     else
     {

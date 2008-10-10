@@ -50,6 +50,7 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+    lmLUnits LayoutObjectAsInvisible(lmBox* pBox, lmUPoint uPos);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
     //debugging
@@ -59,8 +60,8 @@ public:
 
     //rendering related methods
     inline lmShape* GetShape(int nStaff=1) { return lmScoreObj::GetShape(1); }
-    lmShape* AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					  wxColour colorC = *wxBLACK);
+    lmShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+					     wxColour colorC = *wxBLACK);
 
     //methods for hiding the clef in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }

@@ -114,6 +114,8 @@ lmECmdInsertClef::lmECmdInsertClef(lmVStaff* pVStaff, lmUndoItem* pUndoItem,
                                    lmEClefType nClefType, int nStaff, bool fVisible)
     : lmEditCmd(pVStaff)
 {
+    wxASSERT(nStaff > 0);
+
     m_pNewClef = pVStaff->Cmd_InsertClef(pUndoItem, nClefType, nStaff, fVisible);
 }
 

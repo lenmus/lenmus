@@ -242,13 +242,17 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
 
 }
 
-lmCompositeShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPaper,
+lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPaper,
                                       wxColour colorC,
                                       wxString& sTopGlyphs,
                                       lmLUnits uxPosTop, lmLUnits uyPosTop,
                                       wxString& sBottomGlyphs,
                                       lmLUnits uxPosBottom, lmLUnits uyPosBottom)
 {
+    if (!m_fVisible)
+        return CreateInvisibleShape(pBox, lmUPoint(uxPosTop, uyPosTop), nShapeIdx);
+
+
 	//create the shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, nShapeIdx, _T("Time signature"),
                                                     lmDRAGGABLE);
@@ -312,23 +316,6 @@ void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
  //   //Take into account that this method can be invoked several times for the
  //   //same ScoreObj, when the auto-layout algorithm refines the final position.
 
- //   WXUNUSED(nShapeIdx);
-
-	//m_uComputedPos.x += uxShift;
- //   for (int nStaff=0; nStaff < m_pVStaff->GetNumStaves(); nStaff++)
- //   {
- //       if (m_pShapes[nStaff])
- //           m_pShapes[nStaff]->ShiftOrigin(m_uComputedPos + m_uUserShift);
- //   }
-
-	//// inform about the change to AuxObjs attached to this StaffObj
- //   if (m_pAuxObjs)
- //   {
- //       for (int i=0; i < (int)m_pAuxObjs->size(); i++)
- //       {
- //           (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(uxShift, 0.0f);
- //       }
- //   }
     lmStaffObj::StoreOriginAndShiftShapes(uxShift, nShapeIdx);
 
 }

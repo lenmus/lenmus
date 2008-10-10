@@ -88,12 +88,12 @@ public:
     inline bool StemGoesDown() { return m_fStemDown; }
 
 	//stems: methods related to layout phase
-    lmLUnits    GetXStemLeft();
-	lmLUnits	GetXStemCenter();
-    lmLUnits    GetXStemRight();
-    lmLUnits    GetYStartStem();
-    lmLUnits    GetYEndStem();
-	void		DeleteStemShape();
+    lmLUnits GetXStemLeft();
+	lmLUnits GetXStemCenter();
+    lmLUnits GetXStemRight();
+    lmLUnits GetYStartStem();
+    lmLUnits GetYEndStem();
+	void DeleteStemShape();
 
 
     // methods related to chords
@@ -108,6 +108,7 @@ public:
     //methods related to accidentals
     inline bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
     inline lmAccidental* GetAccidentals() { return m_pAccidentals; }
+    void ComputeAccidentalsToKeepPitch(int nNewAcc);
 
     //methods related to ties
     bool CanBeTied(lmAPitch anPitch);
@@ -129,16 +130,17 @@ public:
     lmDPitch GetDPitch();
     lmMPitch GetMPitch();
     inline lmAPitch GetAPitch() { return m_anPitch; }
-    bool    IsPitchDefined();
-    void    ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies); 
-    void    ChangePitch(lmAPitch nAPitch, bool fRemoveTies);
-    void    ChangePitch(lmClef* pOldClef, lmClef* pNewClef);
-    void    PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward);
+    bool IsPitchDefined();
+    void ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies); 
+    void ChangePitch(lmAPitch nAPitch, bool fRemoveTies);
+    void PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward);
+    void ModifyPitch(lmClef* pOldClef, lmClef* pNewClef);
+    void ModifyPitch(int nAlterIncr);
     inline int GetStep() { return m_anPitch.Step(); }      //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
     inline int GetOctave() { return m_anPitch.Octave(); }
     inline int GetVolume() { return m_nVolume; }
     inline void SetVolume(int nVolume) { m_nVolume = nVolume; }
-    void    ComputeVolume();
+    void ComputeVolume();
 
     // methods used during layout phase
     bool AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxLeft,

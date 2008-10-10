@@ -183,7 +183,7 @@ public:
 class lmShapeInvisible : public lmSimpleShape
 {
 public:
-    lmShapeInvisible(lmScoreObj* pOwner, lmUPoint uPos, lmUSize uSize,
+    lmShapeInvisible(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uPos, lmUSize uSize,
                      wxString sName=_T("Invisible")); 
     ~lmShapeInvisible() {}
 

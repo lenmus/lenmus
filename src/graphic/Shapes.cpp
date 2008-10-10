@@ -437,9 +437,9 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 // lmShapeInvisible
 //========================================================================================
 
-lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, lmUPoint uPos, lmUSize uSize,
+lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uPos, lmUSize uSize,
                                    wxString sName)
-	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, 0, sName, lmNO_DRAGGABLE, lmNO_SELECTABLE)
+	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, nShapeIdx, sName, lmNO_DRAGGABLE, lmNO_SELECTABLE)
 {
     m_uBoundsTop.x = uPos.x;
     m_uBoundsTop.y = uPos.y;

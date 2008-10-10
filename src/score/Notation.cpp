@@ -38,6 +38,8 @@
 lmNotation::lmNotation(lmVStaff* pVStaff, int nStaff, bool fVisible, bool fIsDraggable)
     : lmStaffObj(pVStaff, eSFOT_Notation, pVStaff, nStaff, fVisible, fIsDraggable)
 {
+    wxASSERT(nStaff > 0);
+
 }
 
 
@@ -59,14 +61,13 @@ lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
 	return uPos;
 }
 
 lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     lmLUnits uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
-    lmShape* pShape = new lmShapeInvisible(this, uPos, lmUSize(uWidth, 0.0), _T("spacer")); 
+    lmShape* pShape = new lmShapeInvisible(this, 0, uPos, lmUSize(uWidth, 0.0), _T("spacer")); 
 	pBox->AddShape(pShape);
     StoreShape(pShape);
 
@@ -128,27 +129,26 @@ lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
 	return uPos;
 }
 
 lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-    //DBG ------------------------------------------------------------------------------
-    //compute position
-    lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
-    lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
-    lmLUnits uWidth = m_pParent->TenthsToLogical(1);
-    lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
+ //   //DBG ------------------------------------------------------------------------------
+ //   //compute position
+ //   lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
+ //   lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
+ //   lmLUnits uWidth = m_pParent->TenthsToLogical(1);
+ //   lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
 
-    //create the shape
-    lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
-                                          uWidth, uBoundsExtraWidth, *wxRED,
-                                          _T("Anchor"), eEdgeNormal);
-	pBox->AddShape(pShape);
-    StoreShape(pShape);
+ //   //create the shape
+ //   lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
+ //                                         uWidth, uBoundsExtraWidth, *wxRED,
+ //                                         _T("Anchor"), eEdgeNormal);
+	//pBox->AddShape(pShape);
+ //   StoreShape(pShape);
 
-    //END DBG --------------------------------------------------------------------------
+ //   //END DBG --------------------------------------------------------------------------
 
     // set total width
     return 0;

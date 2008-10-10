@@ -74,7 +74,7 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
 	for (int i=0; i < lmMAX_STAFF; i++)
 	{
         m_pContext[i] = (lmContext*)NULL;
-	    m_pShapes[i] = (lmCompositeShape*)NULL;
+	    m_pShapes[i] = (lmShape*)NULL;
 	}
 
     DefineAsMultiShaped();      //define clef as multi-shaped ScoreObj
@@ -193,13 +193,18 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
 	return uWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);;
 }
 
-lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					              lmEClefType nClef, lmStaff* pStaff, wxColour colorC)
+lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+					                 lmEClefType nClef, lmStaff* pStaff, wxColour colorC)
 {
     // This method is also used when rendering the prolog
 
     //create the container shape object
     int nIdx = NewShapeIndex();
+
+    if (!m_fVisible)
+        return CreateInvisibleShape(pBox, uPos, nIdx);
+
+
     lmCompositeShape* pShape = new lmCompositeShape(this, nIdx, _T("Key signature"), lmDRAGGABLE);
     StoreShape(pShape);
 	pBox->AddShape(pShape);

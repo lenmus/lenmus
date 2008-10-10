@@ -60,15 +60,17 @@ public:
     wxString SourceXML(int nIndent);
 
     //renderization
-    lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					              lmEClefType nClef, lmStaff* pStaff, wxColour colorC=*wxBLACK);
+    lmShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, lmEClefType nClef,
+                         lmStaff* pStaff, wxColour colorC = *wxBLACK);
 
     //methods for hiding the key in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }
 
 	//context management
-    inline void SetContext(int nStaff, lmContext* pContext) { m_pContext[nStaff-1] = pContext; }
-    inline lmContext* GetContext(int nStaff) { return m_pContext[nStaff-1]; }
+    inline void SetContext(int nStaff, lmContext* pContext)
+                                { wxASSERT(nStaff > 0); m_pContext[nStaff-1] = pContext; }
+    inline lmContext* GetContext(int nStaff) 
+                            { wxASSERT(nStaff > 0); return m_pContext[nStaff-1]; }
     void RemoveCreatedContexts();
 
 
@@ -86,7 +88,7 @@ private:
     lmEKeySignatures	m_nKeySignature;
     int					m_nFifths;
     lmContext*          m_pContext[lmMAX_STAFF];    //ptr to current context for each staff
-    lmCompositeShape*	m_pShapes[lmMAX_STAFF];		//a shape for each staff
+    lmShape*	        m_pShapes[lmMAX_STAFF];		//a shape for each staff
 
 };
 

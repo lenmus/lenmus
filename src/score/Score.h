@@ -175,7 +175,7 @@ public:
     void MoveToInitialPosition();
     void MoveUp();
     void MoveDown();
-	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
+	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
     void MoveCursorToObject(lmStaffObj* pSO);
 
     //current position info

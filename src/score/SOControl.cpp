@@ -20,7 +20,6 @@
 
 // class lmSOControl
 //    This object represents a control operation, currently:
-//      - a timepos shift.
 //      - a 'new system' tag
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)

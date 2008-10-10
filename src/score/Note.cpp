@@ -450,7 +450,6 @@ lmUPoint lmNote::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
 	return uPos;
 }
 
@@ -937,6 +936,8 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
                                lmLUnits uyStaffTopLine, lmLUnits uxPos, lmLUnits uWidth,
                                int nStaff)
 {
+    wxASSERT(nStaff > 0);
+
     if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
 
     lmLUnits uThick = m_pVStaff->GetStaffLineThick(nStaff);
@@ -1300,6 +1301,69 @@ const lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int
 
 }
 
+void lmNote::ComputeAccidentalsToKeepPitch(int nNewAcc)
+{
+    //Due to a change in key signature, or other situations, the applicable context alterations
+    //are now nNewAcc. But we would like to keep pitch. Therefore we have to add/remove
+    //accidentals. This method computes the new accidentals to display
+
+    int nTotalAcc = m_anPitch.Accidentals();
+    lmEAccidentals nDisplayAcc;
+
+    //Compute new necessary accidentals
+    switch (nTotalAcc - nNewAcc)
+    {
+        case -2:    nDisplayAcc = lm_eFlatFlat;         break;
+        case -1:    nDisplayAcc = lm_eFlat;             break;
+        case 0:     nDisplayAcc = lm_eNoAccidentals;    break;
+        case 1:     nDisplayAcc = lm_eSharp;            break;
+        case 2:     nDisplayAcc = lm_eDoubleSharp;      break;
+        default:
+            wxLogMessage(_T("[lmNote::ComputeAccidentalsToKeepPitch] Non programmed case: nNewAcc=%d, nTotalAcc=%d"),
+                nNewAcc, nTotalAcc );
+            wxASSERT(false);
+    }
+
+    //change displayed accidentals
+    if (m_pAccidentals)
+        delete m_pAccidentals;
+    if (nDisplayAcc == lm_eNoAccidentals)
+        m_pAccidentals = (lmAccidental*)NULL;
+    else
+        m_pAccidentals = new lmAccidental(this, nDisplayAcc);
+}
+
+/*
+    //compute increment/decrement of pitch (old key acc - new key acc)
+    //change pitch by the difference
+    //compute accidentals to display
+*/
+
+void lmNote::ModifyPitch(int nAlterIncr)
+{
+    // This method changes the note pitch by increasing/decreasing the accidentals.
+    // AWARE: It does not take care of any other issue (tied notes, propagation, contexts, etc.)
+
+    //update pitch
+    m_anPitch.Set(GetStep(), GetOctave(), m_anPitch.Accidentals() + nAlterIncr);
+}
+
+void lmNote::ModifyPitch(lmClef* pOldClef, lmClef* pNewClef)
+{
+    //The clef for this note has been chaged from pOldClef to pNewClef.
+    //This method changes the note pitch to keep the note position on staff. For
+    //example, if this note is B4, old clef was G and new clef is F4, note will be
+    //re-pitched to D3, so that it will remain on third line.
+    // AWARE: It does not take care of any other issue (tied notes, propagation, contexts, etc.)
+
+    // if pitch is not yet defined, nothing to do
+    if (!IsPitchDefined()) return;
+
+    int nOldPos = PitchToPosOnStaff(pOldClef->GetClefType(), m_anPitch);
+    lmDPitch nNewDPitch = PosOnStaffToPitch(pNewClef->GetClefType(), nOldPos);
+    m_anPitch.Set(DPitch_Step(nNewDPitch), DPitch_Octave(nNewDPitch), m_anPitch.Accidentals());
+}
+
 lmDPitch lmNote::GetDPitch()
 {
     if (IsPitchDefined())
@@ -1319,21 +1383,6 @@ lmMPitch lmNote::GetMPitch()
 bool lmNote::IsPitchDefined()
 {
     return (m_anPitch.ToDPitch() != -1);
-}
-
-void lmNote::ChangePitch(lmClef* pOldClef, lmClef* pNewClef)
-{
-    //The clef for this note has been chaged from pOldClef to pNewClef.
-    //This method changes the note pitch to keep the note position on staff. For
-    //example, if this note is B4, old clef was G and new clef is F4, note will be
-    //re-pitched to D3, so that it will remain on third line.
-
-    // if pitch is not yet defined, nothing to do
-    if (!IsPitchDefined()) return;
-
-    int nOldPos = PitchToPosOnStaff(pOldClef->GetClefType(), m_anPitch);
-    lmDPitch nNewDPitch = PosOnStaffToPitch(pNewClef->GetClefType(), nOldPos);
-    ChangePitch(lmAPitch(nNewDPitch, m_anPitch.Accidentals()), false);     //false->propagate pitch change to tied notes
 }
 
 void lmNote::ChangePitch(lmAPitch nPitch, bool fRemoveTies)

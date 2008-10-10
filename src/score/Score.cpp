@@ -385,7 +385,7 @@ void lmScoreCursor::MoveDown()
 	//else, remain at current position
 }
 
-void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
+void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure)
 {
 	if ((m_pScore->m_cInstruments).empty()) return;
 
@@ -402,7 +402,7 @@ void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int
 
 	//get cursor and position it at required segment and position
     SelectCursorFromInstr(i);
-	m_pVCursor->MoveToSegment(nMeasure - 1, nStaff, uPos);
+	m_pVCursor->MoveToSegment(nMeasure - 1, iStaff, uPos);
 }
 
 void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
