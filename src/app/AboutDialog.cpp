@@ -395,6 +395,9 @@ gave their time for free to the project. Thanks to all them.") +
         //
     _T("<tr><td colspan='3'><b>") +
         _("Translation:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Basque") + _T("</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<td>Karlos del Olmo Serna</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Dutch") + _T("</td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
         _T("<td>Jack Van Handenhove</td></tr>")
@@ -403,6 +406,9 @@ gave their time for free to the project. Thanks to all them.") +
         _T("<td>Carlos Alarcia</td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
         _T("<td>Christophe Marcoux</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Italian") + _T("</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<td>Mauro Giubileo</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Spanish") + _T("</td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
         _T("<td>Cecilio Salmer&oacute;n</td></tr>")

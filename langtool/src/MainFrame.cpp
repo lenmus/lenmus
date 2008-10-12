@@ -66,25 +66,6 @@ enum
 
 };
 
-// supported languages table
-typedef struct lmLangDataStruct {
-    wxString sLang;
-    wxString sLangName;
-    wxString sCharCode;
-} lmLangData;
-
-#define lmNUM_LANGUAGES 6
-//table must be ordered by language name (in English) to
-//ensure correspondence with table in DlgCompileBook.h
-static const lmLangData tLanguages[lmNUM_LANGUAGES] = { 
-    { _T("en"), _T("English"), _T("iso-8859-1") }, 
-    { _T("fr"), _T("French"), _T("iso-8859-1") }, 
-    { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
-    { _T("tr"), _T("Turkish"), _T("iso-8859-9") }, 
-    { _T("nl"), _T("Dutch"), _T("iso-8859-9") }, 
-    { _T("eu"), _T("Basque"), _T("utf-8") }, 
-};
-
 // ----------------------------------------------------------------------------
 // event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
@@ -235,15 +216,15 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
     LogMessage(_T("Creating PO files:\n"));
     for (int i=0; i < lmNUM_LANGUAGES; i++)
     {
-        wxString sLang =  tLanguages[i].sLang;
+        wxString sLang =  g_tLanguages[i].sLang;
         wxFileName oFDest( g_pPaths->GetLocalePath() );
         oFDest.AppendDir(sLang);
         oFDest.SetName( oFSrc.GetName() + _T("_") + sLang );
         oFDest.SetExt(_T("po"));
         if (!oFDest.FileExists()) {     //if file does not exist
             LogMessage(_T("Creating PO file %s\n"), oFDest.GetFullName());
-            wxString sCharset = tLanguages[i].sCharCode;
-            wxString sLangName = tLanguages[i].sLangName;
+            wxString sCharset = g_tLanguages[i].sCharCode;
+            wxString sLangName = g_tLanguages[i].sLangName;
             if (!oEBP.CreatePoFile(oFDest.GetFullPath(), sCharset, sLangName, sLang, sFolder)) {
                 LogMessage(_T("Error: PO file can not be created\n"));
             }
@@ -261,8 +242,8 @@ void ltMainFrame::GenerateLanguage(int i)
 {
     wxLocale* pLocale = new wxLocale();
     wxString sNil = _T("");
-    wxString sLang = tLanguages[i].sLang;
-    wxString sLangName = tLanguages[i].sLangName;
+    wxString sLang = g_tLanguages[i].sLang;
+    wxString sLangName = g_tLanguages[i].sLangName;
 
     pLocale->Init(_T(""), sLang, _T(""), true, true);
     wxString sPath = g_pPaths->GetLenMusLocalePath();
@@ -324,12 +305,12 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
     {
         if (rOptions.fLanguage[i]) {
             wxLocale* pLocale = (wxLocale*)NULL;
-            wxString sLang = tLanguages[i].sLang;
-            wxString sCharCode = tLanguages[i].sCharCode;
+            wxString sLang = g_tLanguages[i].sLang;
+            wxString sCharCode = g_tLanguages[i].sCharCode;
             if (i != 0) {
                 pLocale = new wxLocale();
                 wxString sNil = _T("");
-                wxString sLangName = tLanguages[i].sLangName;
+                wxString sLangName = g_tLanguages[i].sLangName;
 
                 pLocale->Init(_T(""), sLang, _T(""), true, true);
                 pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );

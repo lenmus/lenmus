@@ -60,9 +60,9 @@ lmDlgProperties::lmDlgProperties(lmController* pController)
 void lmDlgProperties::CreateControls()
 {
     this->SetSizeHints( 500,350 );
-    
+
     m_pMainSizer = new wxBoxSizer( wxVERTICAL );
-    
+
     m_pNotebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
     //m_pPages[0] = new wxPanel( m_pNotebook, wxID_ANY, wxDefaultPosition, wxSize( 500,350 ), wxTAB_TRAVERSAL );
     //wxBoxSizer* bSizer3;
@@ -76,29 +76,29 @@ void lmDlgProperties::CreateControls()
     //m_pNotebook->AddPage( m_pPages[0], _("a page"), false );
     //m_pPages[1] = new wxPanel( m_pNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     //m_pNotebook->AddPage( m_pPages[1], _("a page"), false );
-    
+
     m_pMainSizer->Add( m_pNotebook, 1, wxEXPAND | wxALL, 5 );
-    
+
     wxBoxSizer* pButtonsSizer;
     pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
-    
-    
+
+
     pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-    
+
     m_pBtAccept = new wxButton( this, wxID_OK, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add( m_pBtAccept, 0, wxALL, 5 );
-    
-    
+
+
     pButtonsSizer->Add( 0, 0, 1, 0, 5 );
-    
+
     m_pBtCancel = new wxButton( this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add( m_pBtCancel, 0, wxALL, 5 );
-    
-    
+
+
     pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-    
+
     m_pMainSizer->Add( pButtonsSizer, 0, wxEXPAND, 5 );
-    
+
     this->SetSizer( m_pMainSizer );
     this->Layout();
     m_pMainSizer->Fit( this );
@@ -140,3 +140,4 @@ void lmDlgProperties::AddPanel(lmPropertiesPage* pPanel, const wxString& sTabNam
     this->Layout();
     m_pMainSizer->Fit( this );
 }
+

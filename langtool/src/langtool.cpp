@@ -114,16 +114,16 @@ bool MyApp::OnInit()
     g_pPaths = new lmPaths(sHomeDir);
 
 
-    // Load all of the XRC files that will be used. You can put everything
-    // into one giant XRC file if you wanted, but then they become more
-    // difficult to manage, and harder to reuse in later projects.
-    wxFileName oFN(oRootPath);
-    oFN.AppendDir(_T("xrc"));
-        // Initialize all the XRC handlers.
-    wxXmlResource::Get()->InitAllHandlers();
-        // The score generation settings dialog
-    oFN.SetFullName(_T("DlgCompileBook.xrc"));
-    wxXmlResource::Get()->Load( oFN.GetFullPath() );
+    //// Load all of the XRC files that will be used. You can put everything
+    //// into one giant XRC file if you wanted, but then they become more
+    //// difficult to manage, and harder to reuse in later projects.
+    //wxFileName oFN(oRootPath);
+    //oFN.AppendDir(_T("xrc"));
+    //    // Initialize all the XRC handlers.
+    //wxXmlResource::Get()->InitAllHandlers();
+    //    // The score generation settings dialog
+    //oFN.SetFullName(_T("DlgCompileBook.xrc"));
+    //wxXmlResource::Get()->Load( oFN.GetFullPath() );
 
     // get and process command line
     //m_fnames = new wxArrayString();

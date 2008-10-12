@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ enum EOptionsPanels {
     eOptInternet,
     eOptOther,
     //TO_ADD: Add, before this line, a new eOptXXXXXX code for the new options panel
-    eOptMaxValue    // end of table 
+    eOptMaxValue    // end of table
 };
 
 
@@ -81,7 +81,7 @@ private:
 // lmOptionsDlg class declaration
 
 class lmOptionsDlg: public wxDialog
-{    
+{
     DECLARE_EVENT_TABLE()
 
 public:
@@ -90,7 +90,7 @@ public:
         const wxString& caption = _("Configuration options"),
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxSize(640, 480),
-        long style = wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxDIALOG_MODAL );
+        long style = wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX );
     ~lmOptionsDlg();
 
     // event handler declarations

@@ -86,7 +86,7 @@ typedef wxPoint lmDPoint;           // a point in device units
 #if defined(__WXDEBUG__)
 #define lmTODO(s)   wxLogMessage(s);
 #else
-#define lmTODO(s)   
+#define lmTODO(s)
 #endif
 
 
@@ -673,7 +673,7 @@ enum lmEPlacement
 //Font data
 //---------------------------------------------------------------------------------------
 
-typedef struct {
+typedef struct lmFontInfoStruct {
     wxString        sFontName;
     int             nFontSize;      //in points
     int             nFontStyle;     //can be wxFONTSTYLE_NORMAL or wxFONTSTYLE_ITALIC

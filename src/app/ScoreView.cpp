@@ -78,7 +78,7 @@ enum
 // global variables. Used for debugging
 bool g_fDrawSelRect = false;    //draw selection rectangles around staff objects
 bool g_fDrawBounds = false;     //draw bounds rectangles around staff objects
-bool g_fShowMargins = false;    //draw margins in scores, so user can change them 
+bool g_fShowMargins = false;    //draw margins in scores, so user can change them
 
 
 // Dragging states
@@ -1064,7 +1064,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
     //check for mouse moving over selectable objects
     if (nEventType==wxEVT_MOTION && !fDragging)
     {
-		//find the object pointed with the mouse. 
+		//find the object pointed with the mouse.
 		lmGMObject* pGMO = m_graphMngr.FindObjectAtPagePos(m_nNumPage, uPagePos, true);
 		if (pGMO)
         {
@@ -1749,7 +1749,7 @@ int lmScoreView::CalcScrollInc(wxScrollEvent& event)
         else
             nScrollInc = pos - m_yScrollPosition;
 
-    } else if (event.GetEventType() == wxEVT_SCROLL_ENDSCROLL) {
+    } else if (event.GetEventType() == wxEVT_SCROLL_CHANGED) {
         // Move focus to canvas
         m_pCanvas->SetFocus();
     }
@@ -2084,7 +2084,7 @@ void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSlice
 
 void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
 {
-	//Click on an score obj staffobj. 
+	//Click on an score obj staffobj.
     //if it is a staffobj move cursor to it. Else do nothing
 	//uPos: click point, referred to current page origin
 
@@ -2220,18 +2220,18 @@ void lmScoreView::SetInitialCaretPosition()
     //UpdateCaret();
 }
 
-void lmScoreView::HideCaret() 
-{ 
+void lmScoreView::HideCaret()
+{
     //wxLogMessage(_T("[lmScoreView::HideCaret] Calls Caret::Hide()"));
-    if (m_pCaret) 
+    if (m_pCaret)
         m_pCaret->Hide();
 }
 
-void lmScoreView::ShowCaret() 
-{ 
+void lmScoreView::ShowCaret()
+{
     //wxLogMessage(_T("[lmScoreView::ShowCaret] Calls Caret::Show()"));
-    if (m_pCaret) 
-        m_pCaret->Show(); 
+    if (m_pCaret)
+        m_pCaret->Show();
     else
     {
 		//initialise caret position
@@ -2354,7 +2354,7 @@ void lmScoreView::UpdateCaret()
             sType += FPitch_ToRelLDPName(fp, nKey);
         }
     }
-    m_pMainFrame->SetStatusBarMsg(wxString::Format(_T("cursor pointing to %s"), sType));
+    m_pMainFrame->SetStatusBarMsg(wxString::Format(_T("cursor pointing to %s"), sType.c_str()));
     //END DBG --------------------------------------------------------------------------
 
 	//Get cursor new position
@@ -2481,7 +2481,7 @@ lmLUnits lmScoreView::GetMouseTolerance()
     if (!m_pDoc) return 1.0f;
 	lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return 1.0f;
-    
+
     return pScore->TenthsToLogical(5.0f);
 }
 
@@ -3005,7 +3005,7 @@ void lmScoreView::DeselectAllGMObjects(bool fRedraw)
 
 bool lmScoreView::SomethingSelected()
 {
-    //returns true if there are objects currently selected 
+    //returns true if there are objects currently selected
 
     return m_graphMngr.GetNumObjectsSelected() > 0;
 }

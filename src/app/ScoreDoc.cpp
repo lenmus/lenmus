@@ -37,6 +37,11 @@
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!
 #endif
+//#if wxUSE_STD_IOSTREAM
+//#error "You must set wxUSE_STD_IOSTREAM to 0 in setup.h!"
+//#endif
+
+
 
 #include "wx/filedlg.h"            // for File Selector Dialog
 #include "wx/filename.h"
@@ -85,7 +90,7 @@ bool lmScoreDocument::OnNewDocument()
     m_pScore = new lmScore();
     m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
 
-    //In scores created in the score editor, we should render a full page, 
+    //In scores created in the score editor, we should render a full page,
     //with empty staves. To this end, we need to change some options default value
     m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
     m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
@@ -98,8 +103,6 @@ bool lmScoreDocument::OnNewDocument()
 
     return true;
 }
-
-
 
 bool lmScoreDocument::OnOpenDocument(const wxString& filename)
 {
@@ -159,7 +162,7 @@ bool lmScoreDocument::OnImportDocument(const wxString& filename)
 
 bool lmScoreDocument::OnNewScoreWithWizard()
 {
-    m_pScore = GetMainFrame()->GetWizardScore();       
+    m_pScore = GetMainFrame()->GetWizardScore();
     if (!m_pScore) return false;
 
     //Assign the score a default name
@@ -188,13 +191,17 @@ void lmScoreDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
 	wxDocument::UpdateAllViews((wxView*)NULL, pHints);
 }
 
-
+#if wxUSE_STD_IOSTREAM
+wxSTD ostream& lmScoreDocument::SaveObject(wxSTD ostream& stream)
+#else
 wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
+#endif
+//wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
 {
 	wxDocument::SaveObject(stream);
 
-	wxTextOutputStream oTextStream(stream);
-	oTextStream << m_pScore->SourceLDP();
+//	wxTextOutputStream oTextStream(stream);
+//	oTextStream << m_pScore->SourceLDP();
 
 	return stream;
 }

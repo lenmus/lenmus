@@ -44,11 +44,11 @@
 
 
 #include "StatusBar.h"
-#include "ArtProvider.h" 
+#include "ArtProvider.h"
 
 
 //Status bar fields
-enum lmEStatusBarField 
+enum lmEStatusBarField
 {
     lm_Field_Message = 0,
     lm_Field_MousePos,
@@ -90,11 +90,11 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
 	m_sIconSpace.insert(size_t(0), nSpaces, _T(' '));
 
 	//add bitmap for time
-    m_pBmpClock = new wxStaticBitmap(this, wxID_ANY, 
+    m_pBmpClock = new wxStaticBitmap(this, wxID_ANY,
 									 wxArtProvider::GetIcon(_T("status_time"), wxART_TOOLBAR, size) );
 
 	//add bitmap for page num
-    m_pBmpPage = new wxStaticBitmap(this, wxID_ANY, 
+    m_pBmpPage = new wxStaticBitmap(this, wxID_ANY,
 									 wxArtProvider::GetIcon(_T("status_page"), wxART_TOOLBAR, size) );
 
 	SetMinHeight(size.y);
@@ -112,7 +112,7 @@ void lmStatusBar::SetMsgText(const wxString& sMsg)
 void lmStatusBar::SetNumPage(int nPage)
 {
     if (nPage > 0)
-        SetStatusText(wxString::Format(_T("%s%d"), m_sIconSpace, nPage), lm_Field_NumPage);
+        SetStatusText(wxString::Format(_T("%s%d"), m_sIconSpace.c_str(), nPage), lm_Field_NumPage);
     else
         SetStatusText(_T(""), lm_Field_NumPage);
 }
@@ -124,13 +124,13 @@ void lmStatusBar::SetMousePos(float x, float y)
 
 void lmStatusBar::SetCursorRelPos(float rTime)
 {
-    SetStatusText(wxString::Format(_T("%s%.2f"), m_sIconSpace, rTime), lm_Field_RelTime);
+    SetStatusText(wxString::Format(_T("%s%.2f"), m_sIconSpace.c_str(), rTime), lm_Field_RelTime);
 }
 
 void lmStatusBar::OnSize(wxSizeEvent& event)
 {
 	//position bitmaps in the appropiate field area
-    
+
 	//page
 	wxRect rect;
     GetFieldRect(lm_Field_NumPage, rect);

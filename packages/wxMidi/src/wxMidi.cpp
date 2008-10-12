@@ -680,7 +680,7 @@ wxString wxMidiSystem::GetHostErrorText()
 	//TODO: review this
 	char msg[1000];
 	Pm_GetHostErrorText(&msg[0], 1000);
-	return wxString( (const wxChar *)&msg[0], wxSTRING_MAXLEN );
+	return wxString( (const wxChar *)&msg[0], wxString::npos );
 }
 
 wxMidiSystem* wxMidiSystem::GetInstance()

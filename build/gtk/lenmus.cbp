@@ -16,14 +16,14 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=yes --cflags`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=yes --cflags`" />
 					<Add option="-D_DEBUG" />
 					<Add option="-D__WXGTK__" />
 					<Add option="-D__WXDEBUG__" />
 					<Add option="-D_UNICODE" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=yes --libs`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=yes --libs`" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -35,18 +35,18 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=no --cflags`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=no --cflags`" />
 					<Add option="-D__WXGTK__" />
 					<Add option="-D_UNICODE" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.7 --debug=no --libs`" />
+					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=no --libs`" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
+			<Add option="-W" />
 			<Add directory="../../packages/agg/include" />
 			<Add directory="../../packages/wxMidi/include" />
 		</Compiler>
@@ -369,6 +369,16 @@
 		<Unit filename="../../src/score/VStaff.h" />
 		<Unit filename="../../src/score/defs.cpp" />
 		<Unit filename="../../src/score/defs.h" />
+		<Unit filename="../../src/score/properties/DlgEditText.cpp" />
+		<Unit filename="../../src/score/properties/DlgEditText.h" />
+		<Unit filename="../../src/score/properties/DlgProperties.cpp" />
+		<Unit filename="../../src/score/properties/DlgProperties.h" />
+		<Unit filename="../../src/score/properties/DlgTextStyles.cpp" />
+		<Unit filename="../../src/score/properties/DlgTextStyles.h" />
+		<Unit filename="../../src/score/properties/GeneralProperties.cpp" />
+		<Unit filename="../../src/score/properties/GeneralProperties.h" />
+		<Unit filename="../../src/score/properties/TextProperties.cpp" />
+		<Unit filename="../../src/score/properties/TextProperties.h" />
 		<Unit filename="../../src/sound/Metronome.cpp" />
 		<Unit filename="../../src/sound/Metronome.h" />
 		<Unit filename="../../src/sound/MidiManager.cpp" />

@@ -26,20 +26,47 @@
     #pragma interface "DlgCompileBook.h"
 #endif
 
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#else
+#include <wx/string.h>
+#include <wx/stattext.h>
+#include <wx/gdicmn.h>
+#include <wx/font.h>
+#include <wx/colour.h>
+#include <wx/settings.h>
+#include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/sizer.h>
+#include <wx/checkbox.h>
+#include <wx/statbox.h>
+#include <wx/dialog.h>
+#endif
+
 // headers
 #include "wx/dialog.h"
 
+// supported languages table
+typedef struct lmLangDataStruct {
+    wxString sLang;
+    wxString sLangName;
+    wxString sCharCode;
+} lmLangData;
+
+#define lmNUM_LANGUAGES 7
+extern const lmLangData g_tLanguages[lmNUM_LANGUAGES];
 
 //table must be ordered by language name (in English) to ensure
-//correspondence with table in MainFrame.cpp
+//correspondence with table in DlgCompileBook.cpp
 enum ELanguages
 {   
-    eLangEnglish = 0,
+    eLangBasque = 0,
+    eLangDutch,
+    eLangEnglish,
     eLangFrench,
+    eLangItalian,
     eLangSpanish,
     eLangTurkish,
-    eLangDutch,
-    eLangBasque,
     eLangLast
 };
 
@@ -69,9 +96,17 @@ public:
 
 
 private:
+    void Create();
     bool VerifyData();
 
     //controls
+	wxButton*       pBtBrowseSrc;
+	wxButton*       pBtBrowseDest;
+	wxButton*       btOK;
+	wxButton*       btCancel;
+	wxStaticText*   pLblSrcPath;
+    wxStaticText*   pLblDestPath;
+
     wxCheckBox*     m_pChkLang[eLangLast+1];        //the last one is for option 'All languages'
     wxTextCtrl*     m_pTxtSrcPath;
     wxTextCtrl*     m_pTxtDestPath;

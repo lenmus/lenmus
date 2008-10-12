@@ -34,7 +34,7 @@
 #define lmSCORE_NOT_MODIFIED    false
 
 //------------------------------------------------------------------------------------
-// lmUpdateHint helper class: data to optimize window re-paintings 
+// lmUpdateHint helper class: data to optimize window re-paintings
 //------------------------------------------------------------------------------------
 
 //options to control renderization
@@ -77,7 +77,12 @@ public:
 	void UpdateAllViews(wxView* sender=(wxView*)NULL, wxObject* hint=(wxObject*)NULL);
     bool OnOpenDocument(const wxString& filename);
     bool OnNewDocument();
-	wxOutputStream& SaveObject(wxOutputStream& stream);
+#if wxUSE_STD_IOSTREAM
+    wxSTD ostream& SaveObject(wxSTD ostream& stream);
+#else
+    wxOutputStream& SaveObject(wxOutputStream& stream);
+#endif
+	//wxOutputStream& SaveObject(wxOutputStream& stream);
 
     //specific methods
 

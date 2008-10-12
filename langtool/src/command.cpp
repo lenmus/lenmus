@@ -77,14 +77,14 @@ void CmdCompileBook(wxString sBook, wxString sOut, wxString sLangs, wxString sLo
         //if (fLanguage[i]) {
         if (true) {
             wxLocale* pLocale = (wxLocale*)NULL;
-            //wxString sLang = tLanguages[i].sLang;
-            //wxString sCharCode = tLanguages[i].sCharCode;
+            //wxString sLang = g_tLanguages[i].sLang;
+            //wxString sCharCode = g_tLanguages[i].sCharCode;
             wxString sLang = _T("es");
             wxString sCharCode = _T("iso-8859-1");
             if (i != 0) {
                 pLocale = new wxLocale();
                 wxString sNil = _T("");
-                //wxString sLangName = tLanguages[i].sLangName;
+                //wxString sLangName = g_tLanguages[i].sLangName;
                 wxString sLangName = _T("Spanish");
 
                 pLocale->Init(_T(""), sLang, _T(""), true, true);

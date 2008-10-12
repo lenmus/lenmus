@@ -193,7 +193,7 @@ enum
 
 	// Menu Instrument
     MENU_Instr_Properties,
-	
+
     // Menu Debug
     MENU_Debug_ForceReleaseBehaviour,
     MENU_Debug_ShowDebugLinks,
@@ -263,9 +263,9 @@ enum
   // special IDs
 
     //wxID_ABOUT and wxID_EXIT are predefined by wxWidgets and have a special meaning
-    //since entries using these IDs will be taken out of the normal menus under MacOS X 
-    //and will be inserted into the system menu (following the appropriate MacOS X 
-    //interface guideline). On PalmOS wxID_EXIT is disabled according to Palm OS 
+    //since entries using these IDs will be taken out of the normal menus under MacOS X
+    //and will be inserted into the system menu (following the appropriate MacOS X
+    //interface guideline). On PalmOS wxID_EXIT is disabled according to Palm OS
     //Companion guidelines.
     MENU_Help_About = wxID_ABOUT,
 
@@ -781,7 +781,7 @@ void lmMainFrame::CreateMyToolBar()
 
     // add the toolbars to the manager
 	const int ROW_1 = 0;
-	const int ROW_2 = 1;
+	//const int ROW_2 = 1;
 #if defined(__WXGTK__)
     //In gtk reverse creation order
         // row 1
@@ -1003,18 +1003,18 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
                 _("Open a score"), wxITEM_NORMAL, _T("tool_open"));
     AddMenuItem(pMenuFile, MENU_OpenBook, _("Open &books"),
                 _("Hide/show eMusicBooks"), wxITEM_NORMAL, _T("tool_open_ebook"));
-    AddMenuItem(pMenuFile, MENU_File_Import, _("&Import..."), 
+    AddMenuItem(pMenuFile, MENU_File_Import, _("&Import..."),
                 _("Open a MusicXML score"), wxITEM_NORMAL);
 
     //-- export submenu --
-    AddMenuItem(pSubmenuExport, MENU_File_Export_MusicXML, _("MusicXML format"), 
+    AddMenuItem(pSubmenuExport, MENU_File_Export_MusicXML, _("MusicXML format"),
                 _("Save score as a MusicXML file"), wxITEM_NORMAL);
-    AddMenuItem(pSubmenuExport, MENU_File_Export_bmp, _("As &bmp image"), 
+    AddMenuItem(pSubmenuExport, MENU_File_Export_bmp, _("As &bmp image"),
                 _("Save score as BMP images"), wxITEM_NORMAL, _T("tool_save_as_bmp"));
-    AddMenuItem(pSubmenuExport, MENU_File_Export_jpg, _("As &jpg image"), 
+    AddMenuItem(pSubmenuExport, MENU_File_Export_jpg, _("As &jpg image"),
                 _("Save score as JPG images"), wxITEM_NORMAL, _T("tool_save_as_jpg"));
 
-    pItem = new wxMenuItem(pMenuFile, MENU_File_Export, _("&Export ..."), 
+    pItem = new wxMenuItem(pMenuFile, MENU_File_Export, _("&Export ..."),
                           _("Save score in other formats"), wxITEM_NORMAL, pSubmenuExport);
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     pMenuFile->Append(pItem);
@@ -1025,13 +1025,13 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
                 _T(""), wxITEM_NORMAL, _T("tool_save"));
     AddMenuItem(pMenuFile, wxID_SAVEAS, _("Save &as ..."),
                 _T(""), wxITEM_NORMAL);
-    AddMenuItem(pMenuFile, wxID_CLOSE, _("&Close\tCtrl+W"), 
+    AddMenuItem(pMenuFile, wxID_CLOSE, _("&Close\tCtrl+W"),
                 _("Close a score"), wxITEM_NORMAL);
     pMenuFile->AppendSeparator();
 
     AddMenuItem(pMenuFile, MENU_Print, _("&Print ...\tCtrl+P"),
                 _T(""), wxITEM_NORMAL, _T("tool_print"));
-    AddMenuItem(pMenuFile, wxID_PRINT_SETUP, _("Print &Setup..."), 
+    AddMenuItem(pMenuFile, wxID_PRINT_SETUP, _("Print &Setup..."),
                 _("Configure printer options"), wxITEM_NORMAL );
     AddMenuItem(pMenuFile, MENU_Print_Preview, _("Print Pre&view"),
                 _T(""), wxITEM_NORMAL);
@@ -1058,16 +1058,16 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     // View menu -------------------------------------------------------------------
 
     wxMenu* pMenuView = new wxMenu;
-    AddMenuItem(pMenuView, MENU_View_ToolBar, _("Tool &bar"), 
+    AddMenuItem(pMenuView, MENU_View_ToolBar, _("Tool &bar"),
                 _("Hide/show the tools bar"), wxITEM_CHECK);
-    AddMenuItem(pMenuView, MENU_View_StatusBar, _("&Status bar"), 
+    AddMenuItem(pMenuView, MENU_View_StatusBar, _("&Status bar"),
                 _("Hide/show the status bar"), wxITEM_CHECK);
     pMenuView->AppendSeparator();
-    AddMenuItem(pMenuView, MENU_View_Tools, _("&Tool box"), 
+    AddMenuItem(pMenuView, MENU_View_Tools, _("&Tool box"),
                 _("Hide/show edition tool box window"), wxITEM_CHECK);
-    AddMenuItem(pMenuView, MENU_View_Rulers, _("&Rulers"), 
+    AddMenuItem(pMenuView, MENU_View_Rulers, _("&Rulers"),
                 _("Hide/show rulers"), wxITEM_CHECK);
-    AddMenuItem(pMenuView, MENU_View_Welcome_Page, _("&Welcome page"), 
+    AddMenuItem(pMenuView, MENU_View_Welcome_Page, _("&Welcome page"),
                 _("Hide/show welcome page"));
 
 
@@ -1122,10 +1122,10 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     // Zoom menu -----------------------------------------------------------------------
 
     wxMenu* pMenuZoom = new wxMenu;
-    AddMenuItem(pMenuZoom, MENU_Zoom_100, _("Actual size"), 
+    AddMenuItem(pMenuZoom, MENU_Zoom_100, _("Actual size"),
                 _T("Zoom to real print size"), wxITEM_NORMAL, _T("tool_zoom_actual"));
     AddMenuItem(pMenuZoom, MENU_Zoom_Fit_Full, _("Fit page full"),
-                _("Zoom so that the full page is displayed"), wxITEM_NORMAL, 
+                _("Zoom so that the full page is displayed"), wxITEM_NORMAL,
                 _T("tool_zoom_fit_full"));
     AddMenuItem(pMenuZoom, MENU_Zoom_Fit_Width, _("Fit page width"),
                 _("Zoom so that page width equals window width"), wxITEM_NORMAL,
@@ -1191,7 +1191,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 
     AddMenuItem(pMenuHelp, MENU_Help_QuickGuide,  _("Editor quick guide"),
                 _("Show editor reference card"), wxITEM_NORMAL, _T("tool_quick_guide"));
-    AddMenuItem(pMenuHelp, MENU_Help_Open,  _("&Content"), 
+    AddMenuItem(pMenuHelp, MENU_Help_Open,  _("&Content"),
                 _("Open help book"), wxITEM_NORMAL, _T("tool_help"));
     pMenuHelp->AppendSeparator();
 
@@ -1199,7 +1199,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 				_("Connect to the Internet and check for program updates"), wxITEM_NORMAL,
                 _T("tool_web_update"));
     AddMenuItem(pMenuHelp, MENU_VisitWebsite,  _("&Visit LenMus website"),
-                _("Open the Internet browser and go to LenMus website"), wxITEM_NORMAL, 
+                _("Open the Internet browser and go to LenMus website"), wxITEM_NORMAL,
                 _T("tool_website"));
 
 
@@ -2106,11 +2106,11 @@ void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
     // ask for the file to import
     wxString sFilter = wxT("*.*");
     wxString sFilename = ::wxFileSelector(_("Choose the file to import"),
-                                        wxT(""),    //default path
-                                        wxT(""),    //default filename
-                                        wxT("txt"),    //default_extension
+                                        wxT(""),        //default path
+                                        wxT(""),        //default filename
+                                        wxT("txt"),     //default_extension
                                         sFilter,
-                                        wxOPEN,        //flags
+                                        wxFD_OPEN,      //flags
                                         this);
     if ( !sFilename.IsEmpty() )
     {

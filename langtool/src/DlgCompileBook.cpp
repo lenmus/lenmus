@@ -41,6 +41,27 @@
 
 #include "DlgCompileBook.h"
 
+enum {
+    lmID_SOURCE = 2600,
+    lmID_BTN_BROWSE_SRC,
+    lmID_DESTINATION,
+    lmID_BTN_BROWSE_DEST,
+    lmID_CHK_DUMP_TREE,
+    lmID_CHK_LOG_TREE,
+    lmID_LANG,
+};
+
+//table must be ordered by language name (in English) to
+//ensure correspondence with table in DlgCompileBook.h
+const lmLangData g_tLanguages[lmNUM_LANGUAGES] = { 
+    { _T("eu"), _T("Basque"), _T("utf-8") }, 
+    { _T("nl"), _T("Dutch"), _T("iso-8859-9") }, 
+    { _T("en"), _T("English"), _T("iso-8859-1") }, 
+    { _T("fr"), _T("French"), _T("iso-8859-1") }, 
+    { _T("it"), _T("Italian"), _T("utf-8") }, 
+    { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
+    { _T("tr"), _T("Turkish"), _T("iso-8859-9") }, 
+};
 
 
 //-----------------------------------------------------------------------------
@@ -48,49 +69,31 @@
 //-----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(lmDlgCompileBook, wxDialog)
-    EVT_BUTTON( XRCID( "btOK" ), lmDlgCompileBook::OnAcceptClicked )
-    EVT_BUTTON( XRCID( "btCancel" ), lmDlgCompileBook::OnCancelClicked )
+    EVT_BUTTON(wxID_OK, lmDlgCompileBook::OnAcceptClicked )
+    EVT_BUTTON(wxID_CANCEL, lmDlgCompileBook::OnCancelClicked )
 
     // Language check boxes
-    EVT_CHECKBOX( XRCID( "chkLangEnglish" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkLangFrench" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkLangSpanish" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkLangTurkish" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkLangDutch" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkLangBasque" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkLangAll" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkDumpTree" ), lmDlgCompileBook::OnDataChanged )
-    EVT_CHECKBOX( XRCID( "chkLogTree" ), lmDlgCompileBook::OnDataChanged )
+    EVT_COMMAND_RANGE(lmID_LANG, lmID_LANG+eLangLast, wxEVT_COMMAND_CHECKBOX_CLICKED , lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX(lmID_CHK_LOG_TREE, lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX(lmID_CHK_DUMP_TREE, lmDlgCompileBook::OnDataChanged )
 
-
-    EVT_BUTTON( XRCID( "btBrowseSrc" ), lmDlgCompileBook::OnBrowseSrc )
+    EVT_BUTTON(lmID_BTN_BROWSE_SRC, lmDlgCompileBook::OnBrowseSrc )
 
 END_EVENT_TABLE()
 
 
 
 lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOptions)
+    : wxDialog(parent, wxID_ANY, wxT("eMusicBook compilation"), wxDefaultPosition,
+               wxSize( 530,400 ), wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX )
 {
+    WXUNUSED(parent)
+
     //save parameters
     m_pOptions = pOptions;
 
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("DlgCompileBook"));
-
-    //get pointers to all controls
-    m_pChkLang[eLangEnglish] = XRCCTRL(*this, "chkLangEnglish", wxCheckBox);
-    m_pChkLang[eLangFrench] = XRCCTRL(*this, "chkLangFrench", wxCheckBox);
-    m_pChkLang[eLangSpanish] = XRCCTRL(*this, "chkLangSpanish", wxCheckBox);
-    m_pChkLang[eLangTurkish] = XRCCTRL(*this, "chkLangTurkish", wxCheckBox);
-    m_pChkLang[eLangDutch] = XRCCTRL(*this, "chkLangDutch", wxCheckBox);
-    m_pChkLang[eLangBasque]  = XRCCTRL(*this, "chkLangBasque", wxCheckBox);
-    m_pChkLang[eLangLast] = XRCCTRL(*this, "chkLangAll", wxCheckBox);
-    m_pTxtSrcPath = XRCCTRL(*this, "txtSrcPath", wxTextCtrl);     
-    m_pTxtDestPath = XRCCTRL(*this, "txtDestPath", wxTextCtrl); 
-    //debug options
-    m_pChkDumpTree = XRCCTRL(*this, "chkDumpTree", wxCheckBox);
-    m_pChkLogTree = XRCCTRL(*this, "chkLogTree", wxCheckBox);
-
+    Create();
 
     // initialize all controls with current data
     for(int i=0; i < eLangLast; i++) {
@@ -105,6 +108,102 @@ lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOpti
     //center dialog on screen
     CentreOnScreen();
 
+}
+
+void lmDlgCompileBook::Create()
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	this->SetExtraStyle( wxWS_EX_BLOCK_EVENTS );
+	
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* pSourceSizer;
+	pSourceSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	pLblSrcPath = new wxStaticText( this, wxID_ANY, wxT("Source xml file"), wxDefaultPosition, wxSize( 100,-1 ), 0 );
+	pLblSrcPath->Wrap( -1 );
+	pSourceSizer->Add( pLblSrcPath, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	
+	m_pTxtSrcPath = new wxTextCtrl( this, lmID_SOURCE, wxEmptyString, wxDefaultPosition, wxSize( 300,-1 ), 0 );
+	pSourceSizer->Add( m_pTxtSrcPath, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	pBtBrowseSrc = new wxButton( this, lmID_BTN_BROWSE_SRC, wxT("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+	pBtBrowseSrc->SetDefault(); 
+	pSourceSizer->Add( pBtBrowseSrc, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	pMainSizer->Add( pSourceSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	
+	wxBoxSizer* pDestSizer;
+	pDestSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	pLblDestPath = new wxStaticText( this, wxID_ANY, wxT("Destination folder"), wxDefaultPosition, wxSize( 100,-1 ), 0 );
+	pLblDestPath->Wrap( -1 );
+	pDestSizer->Add( pLblDestPath, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	
+	m_pTxtDestPath = new wxTextCtrl( this, lmID_DESTINATION, wxEmptyString, wxDefaultPosition, wxSize( 300,-1 ), 0 );
+	pDestSizer->Add( m_pTxtDestPath, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	pBtBrowseDest = new wxButton( this, lmID_BTN_BROWSE_DEST, wxT("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+	pBtBrowseDest->SetDefault(); 
+	pDestSizer->Add( pBtBrowseDest, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	pMainSizer->Add( pDestSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	
+	wxBoxSizer* pOptionsSizer;
+	pOptionsSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxStaticBoxSizer* pLangsSizer;
+	pLangsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Languages") ), wxVERTICAL );
+	
+	
+
+    //Create languages check boxes
+    for (int i=0; i < eLangLast; i++)
+    {
+        m_pChkLang[i] = new wxCheckBox( this, lmID_LANG+i, g_tLanguages[i].sLangName, wxDefaultPosition, wxDefaultSize, 0 );
+	    pLangsSizer->Add( m_pChkLang[i], 0, wxALIGN_LEFT|wxALL, 5 );
+    }	
+	pLangsSizer->Add( 5, 5, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	m_pChkLang[eLangLast] = new wxCheckBox( this, lmID_LANG+eLangLast, wxT("All languages"), wxDefaultPosition, wxDefaultSize, 0 );
+	pLangsSizer->Add( m_pChkLang[eLangLast], 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+
+
+	pOptionsSizer->Add( pLangsSizer, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	wxStaticBoxSizer* pDbgSizer;
+	pDbgSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Debug options") ), wxVERTICAL );
+	
+	m_pChkDumpTree = new wxCheckBox( this, lmID_CHK_DUMP_TREE, wxT("Dump tree"), wxDefaultPosition, wxDefaultSize, 0 );
+	
+	pDbgSizer->Add( m_pChkDumpTree, 0, wxALIGN_LEFT|wxALL, 5 );
+	
+	m_pChkLogTree = new wxCheckBox( this, lmID_CHK_LOG_TREE, wxT("Log tree analysis"), wxDefaultPosition, wxDefaultSize, 0 );
+	
+	pDbgSizer->Add( m_pChkLogTree, 0, wxALIGN_LEFT|wxALL, 5 );
+	
+	pOptionsSizer->Add( pDbgSizer, 0, wxALIGN_TOP|wxALL, 5 );
+	
+	pMainSizer->Add( pOptionsSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
+	
+	btOK = new wxButton( this, wxID_OK, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+	btOK->SetDefault(); 
+	bSizer5->Add( btOK, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	btCancel = new wxButton( this, wxID_CANCEL, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	btCancel->SetDefault(); 
+	bSizer5->Add( btCancel, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	pMainSizer->Add( bSizer5, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	
+	this->SetSizer( pMainSizer );
+	this->Layout();
+	
+	this->Centre( wxBOTH );
 }
 
 lmDlgCompileBook::~lmDlgCompileBook()
