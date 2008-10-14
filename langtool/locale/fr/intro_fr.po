@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-18 21:20+0100\n"
-"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"PO-Revision-Date: 2008-10-13 14:58+0100\n"
+"Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,7 +13,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: intro\n"
 
 #: intro/intro.cpp:2
-msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
+#, fuzzy
+msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.org)"
 
 #: intro/intro.cpp:3
@@ -37,7 +38,8 @@ msgid "LenMus Phonascus presentation"
 msgstr "Présentation de LenMus Phonascus"
 
 #: intro/intro.cpp:8
-msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 3.1 it includes new functions that, I hope, will end up with full support for the creation, display, printing, play back and interactive edition of music scores. Visit the LenMus web site for more information about the current status of the score editor."
+#, fuzzy
+msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 4.0 it includes a score editor with full support for the creation, display, printing, play back and interactive edition of music scores."
 msgstr "Phonascus, en latin « Le professeur de musique », est un logiciel d'éducation musicale qui améliore votre lecture musicale, développe votre écoute ou qui vous donne, tout simplement, les bases de la théorie musicale.  Depuis sa version 3.1, Phonascus inclut de nouvelles fonctionnalités qui, nous l'espérons, vous fourniront tous les éléments nécessaires à la création, l'impression, la lecture et l'édition interactive de partitions. Visitez le site Web de LenMus pour plus d'informations sur les évolutions de son éditeur de partitions."
 
 #: intro/intro.cpp:9
@@ -65,6 +67,6 @@ msgid "We hope that LenMus become a useful tool in your studies."
 msgstr "Nous souhaitons que LenMus vous apporte toute l'aide nécessaire à votre apprentissage."
 
 #: intro/intro.cpp:15
-msgid "The LenMus team."
-msgstr "L'équipe LenMus."
+msgid "Enjoy!"
+msgstr ""
 

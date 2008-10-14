@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MUsicReading_L2 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-07-21 22:29+0100\n"
-"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"PO-Revision-Date: 2008-10-13 15:00+0100\n"
+"Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,7 +13,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: L2_MusicReading\n"
 
 #: L2_MusicReading/L2_MusicReading.cpp:2
-msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
+#, fuzzy
+msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "Envía tus comentarios y sugerencias al equipo de LenMus (www.lenmus.org)"
 
 #: L2_MusicReading/L2_MusicReading.cpp:3
@@ -37,8 +38,8 @@ msgid "This eMusicBook is intended to help one improve one's reading skills, pro
 msgstr "Este eMusicBook está orientado a la práctica de la lectura rítmica, proporcionando explicaciones y ejercicios adecuados para ir avanzando progresivamente y dominar la lectura rítmica."
 
 #: L2_MusicReading/L2_MusicReading.cpp:8
-msgid "Cecilio Salmeron"
-msgstr "Cecilio Salmerón"
+msgid "LenMus project"
+msgstr ""
 
 #: L2_MusicReading/L2_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"

@@ -2452,7 +2452,10 @@ void lmSegment::DoContextRemoval(lmClef* pOldClef, lmStaffObj* pNextSO, bool fCl
         if (pNewClef)
             Transpose(pNewClef, (lmClef*)pOldClef, pNextSO, nStaff);
         //else
-            //TODO: No clef in the score. What to do with existing notes?
+            //THINK: No clef in the score. Anything to do with existing notes? -> if
+            //we do nothing, notes will remain at current staff position. But it is
+            //going to be impossible to re-pitch them, as method ChangePitch(OldClef, NewClef)
+            //will know nothing about OldClef
     }
 
     //determine staves affected by the context change and propagate context change
@@ -2841,7 +2844,6 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
 
         //remove next segment and renumber segments. Notice that if we removed last barline
         //there will be no next segment
-        //if 
         RemoveSegment( pNextSegment->m_nNumSegment );
 
         //As a consequence of joining segments, saved cursor information is no longer
@@ -3248,18 +3250,21 @@ lmSegment* lmColStaffObjs::GetNextSegment(int nCurSegment)
 
 void lmColStaffObjs::RemoveSegment(int nSegment, bool fDeleteStaffObjs)
 {
-	//      Remove segment nSegment (0..n) and renumber all remaining segments
+	// Remove segment nSegment (0..n) and renumber all remaining segments.
     // No need to update staffobjs in remaining segments, as they contain pointers
     // the their container segment.
-    //      The removed segment is deleted. Contained staffobjs are deleted or not,
-    //  depending on flag.
+    // The removed segment is deleted. Contained staffobjs are deleted or not,
+    // depending on flag fDeleteStaffObjs.
 
-    //
-    //AWARE: Contexts in remaining segments are not updated.
-    //TODO: When removing a segment, if contexts at start of segment to remove are
-    //different from contexts at start of next segment, implies that the segment to
-    //remove has clefs, time signatures and/or key signatures. Therefore, the procedures
-    //to remove these context creator objects should be applied.
+    //AWARE: Contexts in remaining segments are not updated. 
+    //  When removing a segment, if contexts at start of segment to remove are
+    //  different from contexts at start of next segment, implies that the segment to
+    //  remove has clefs, time signatures and/or key signatures. Therefore, the procedures
+    //  to remove these context creator objects should be applied.
+    //  Nevertheless, this method is internal, oriented to delete a segment when deleting
+    //  a barline or when reorgainizing segments (Auto-Rebar). And in this cases it is not
+    //  necessary to take care of context as the content of segment to remove has been 
+    //  added into another segment.
 
 
 	//remove the segment

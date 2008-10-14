@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-18 21:13+0100\n"
-"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"PO-Revision-Date: 2008-10-13 15:01+0100\n"
+"Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,7 +13,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: GeneralExercises\n"
 
 #: GeneralExercises/GeneralExercises.cpp:2
-msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
+#, fuzzy
+msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.org)"
 
 #: GeneralExercises/GeneralExercises.cpp:3
@@ -37,8 +38,8 @@ msgid "General exercises, customizable to suit your needs at any moment."
 msgstr "Exercices généraux, personnalisables à tout moment."
 
 #: GeneralExercises/GeneralExercises.cpp:8
-msgid "Cecilio Salmeron"
-msgstr "Cecilio Salmerón"
+msgid "LenMus project"
+msgstr ""
 
 #: GeneralExercises/GeneralExercises.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
@@ -65,89 +66,108 @@ msgid "Exercises for aural training"
 msgstr "Exercices pour l'entrainement oral"
 
 #: GeneralExercises/GeneralExercises.cpp:15
-#: GeneralExercises/GeneralExercises.cpp:27
+#: GeneralExercises/GeneralExercises.cpp:29
 msgid "Intervals' comparison"
 msgstr "Comparaison d'intervalles"
 
 #: GeneralExercises/GeneralExercises.cpp:16
-#: GeneralExercises/GeneralExercises.cpp:29
+#: GeneralExercises/GeneralExercises.cpp:31
 msgid "Intervals' identification"
 msgstr "Identification d'intervalles"
 
 #: GeneralExercises/GeneralExercises.cpp:17
 #: GeneralExercises/GeneralExercises.cpp:23
-#: GeneralExercises/GeneralExercises.cpp:31
-#: GeneralExercises/GeneralExercises.cpp:41
+#: GeneralExercises/GeneralExercises.cpp:33
+#: GeneralExercises/GeneralExercises.cpp:43
 msgid "Chords' identification"
 msgstr "Identification d'accords"
 
 #: GeneralExercises/GeneralExercises.cpp:18
-#: GeneralExercises/GeneralExercises.cpp:22
-#: GeneralExercises/GeneralExercises.cpp:33
-#: GeneralExercises/GeneralExercises.cpp:39
+#: GeneralExercises/GeneralExercises.cpp:24
+#: GeneralExercises/GeneralExercises.cpp:35
+#: GeneralExercises/GeneralExercises.cpp:45
 msgid "Scales' identification"
 msgstr "Identification de gammes"
 
 #: GeneralExercises/GeneralExercises.cpp:19
+#: GeneralExercises/GeneralExercises.cpp:25
+#: GeneralExercises/GeneralExercises.cpp:37
+#: GeneralExercises/GeneralExercises.cpp:47
+#, fuzzy
+msgid "Cadences' identification"
+msgstr "Identification d'accords"
+
+#: GeneralExercises/GeneralExercises.cpp:20
 msgid "Exercises to practise theory"
 msgstr "Exercices théoriques"
 
-#: GeneralExercises/GeneralExercises.cpp:20
-#: GeneralExercises/GeneralExercises.cpp:36
+#: GeneralExercises/GeneralExercises.cpp:21
+#: GeneralExercises/GeneralExercises.cpp:40
 msgid "Key signatures' identification"
 msgstr "Identification des tonalités"
 
-#: GeneralExercises/GeneralExercises.cpp:21
-#: GeneralExercises/GeneralExercises.cpp:38
+#: GeneralExercises/GeneralExercises.cpp:22
+#: GeneralExercises/GeneralExercises.cpp:42
 msgid "Interval's identification and construction"
 msgstr "Identification et construction d'intervalles"
 
-#: GeneralExercises/GeneralExercises.cpp:24
-#: GeneralExercises/GeneralExercises.cpp:43
+#: GeneralExercises/GeneralExercises.cpp:26
+#: GeneralExercises/GeneralExercises.cpp:49
 msgid "Other exercises"
 msgstr "Autres exercices"
 
-#: GeneralExercises/GeneralExercises.cpp:25
+#: GeneralExercises/GeneralExercises.cpp:27
 msgid "Clefs reading"
 msgstr "Lecture de clefs"
 
-#: GeneralExercises/GeneralExercises.cpp:26
+#: GeneralExercises/GeneralExercises.cpp:28
 msgid "Aural training exercises"
 msgstr "Exercices oraux"
 
-#: GeneralExercises/GeneralExercises.cpp:28
+#: GeneralExercises/GeneralExercises.cpp:30
 msgid "Exercise: Lesson two intervals and identify which one is greater"
 msgstr "Exercice : écoutez deux intervalles et déterminez lequel est plus grand"
 
-#: GeneralExercises/GeneralExercises.cpp:30
+#: GeneralExercises/GeneralExercises.cpp:32
 msgid "Exercise: Lesson an interval and identify it"
 msgstr "Exercice : écoutez un intervalle et identifiez le"
 
-#: GeneralExercises/GeneralExercises.cpp:32
+#: GeneralExercises/GeneralExercises.cpp:34
 msgid "Exercise: Lesson a chord and identify its type"
 msgstr "Exercice : écoutez un accord et identifiez son mode"
 
-#: GeneralExercises/GeneralExercises.cpp:34
-msgid "Exercise: Lesson a scale and identify its type"
+#: GeneralExercises/GeneralExercises.cpp:36
+#, fuzzy
+msgid "Exercise: Listen a scale and identify its type"
 msgstr "Exercice : écoutez une gamme et identifiez son mode"
 
-#: GeneralExercises/GeneralExercises.cpp:35
+#: GeneralExercises/GeneralExercises.cpp:38
+#, fuzzy
+msgid "Exercise: Listen a cadence and identify its type"
+msgstr "Exercice : écoutez une gamme et identifiez son mode"
+
+#: GeneralExercises/GeneralExercises.cpp:39
 msgid "Theory exercises"
 msgstr "Exercices théoriques"
 
-#: GeneralExercises/GeneralExercises.cpp:37
+#: GeneralExercises/GeneralExercises.cpp:41
 msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
 msgstr "Exercice : identifiez une tonalité ou indiquez son nombre d'altérations"
 
-#: GeneralExercises/GeneralExercises.cpp:40
-msgid "Exercise: Identify the scale shown"
-msgstr "Exercice : identifiez la gamme montrée"
-
-#: GeneralExercises/GeneralExercises.cpp:42
+#: GeneralExercises/GeneralExercises.cpp:44
 msgid "Exercise: Identify the type of the shown chord"
 msgstr "Exercice : identifiez le mode de l'accord montré"
 
-#: GeneralExercises/GeneralExercises.cpp:44
+#: GeneralExercises/GeneralExercises.cpp:46
+msgid "Exercise: Identify the scale shown"
+msgstr "Exercice : identifiez la gamme montrée"
+
+#: GeneralExercises/GeneralExercises.cpp:48
+#, fuzzy
+msgid "Exercise: Identify the cadence shown"
+msgstr "Exercice : identifiez la gamme montrée"
+
+#: GeneralExercises/GeneralExercises.cpp:50
 msgid "Clefs Reading"
 msgstr "Lecture de clés"
 
