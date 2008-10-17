@@ -2737,9 +2737,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     lmEHAlign nAlign = m_nTitleAlignment;
     lmFontInfo tFont = {m_sTitleFontName, m_nTitleFontSize, m_nTitleStyle, m_nTitleWeight};
     lmLocation tPos;
-    tPos.xType = lmLOCATION_DEFAULT;
     tPos.xUnits = lmTENTHS;
-    tPos.yType = lmLOCATION_DEFAULT;
     tPos.yUnits = lmTENTHS;
     tPos.x = 0.0f;
     tPos.y = 0.0f;
@@ -2793,11 +2791,11 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
                 AnalysisError( _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
             sStyle = (pX->GetParameter(1))->GetName();
         }
-        else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) )
+        else if (sName == m_pTags->TagName(_T("dx")) )
         {
             AnalysisError( _T("Obsolete: x location is not allowed in titles.") );
         }
-        else if (sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
+        else if (sName == m_pTags->TagName(_T("dy")) )
         {
             AnalyzeLocation(pX, &tPos);
         }
@@ -3150,9 +3148,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     bool fHasWidth = false;
     lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
     lmLocation tPos;
-    tPos.xType = lmLOCATION_DEFAULT;
     tPos.xUnits = lmTENTHS;
-    tPos.yType = lmLOCATION_DEFAULT;
     tPos.yUnits = lmTENTHS;
     tPos.x = 0.0f;
     tPos.y = 0.0f;
@@ -3556,7 +3552,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
 
 void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUnits)
 {
-    // <location> = (x num) | (y num) | (dx num) | (dy num)
+    // <location> = { (dx num) | (dy num) }
     // <num> = number [units]
 
     //returns, in variables pointed by pValue and pUnits the
@@ -3575,21 +3571,23 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUn
     wxString sUnits = sParm.Right(2);
 	if (sUnits.at(0) != _T('.') && !sUnits.IsNumber() )
 	{
-		sValue = sParm.Left(sParm.length() - 2);
-        if (sUnits == _T("mm")) {
-            *pUnits = lmMILLIMETERS;
-        }
-        else if (sUnits == _T("cm")) {
-            *pUnits = lmCENTIMETERS;
-        }
-        else if (sUnits == _T("in")) {
-            *pUnits = lmINCHES;
-        }
-        else {
-            AnalysisError( _T("Element '%s': Invalid units '%s'. Ignored"),
-                pNode->GetName().c_str(), sUnits.c_str() );
-            return;
-        }
+        AnalysisError( _T("Element '%s' has units '%s'. Units no longer supported. Ignored"),
+            pNode->GetName().c_str(), sUnits.c_str() );
+		//sValue = sParm.Left(sParm.length() - 2);
+  //      if (sUnits == _T("mm")) {
+  //          *pUnits = lmMILLIMETERS;
+  //      }
+  //      else if (sUnits == _T("cm")) {
+  //          *pUnits = lmCENTIMETERS;
+  //      }
+  //      else if (sUnits == _T("in")) {
+  //          *pUnits = lmINCHES;
+  //      }
+  //      else {
+  //          AnalysisError( _T("Element '%s': Invalid units '%s'. Ignored"),
+  //              pNode->GetName().c_str(), sUnits.c_str() );
+  //          return;
+  //      }
     }
 
 	double rNumberDouble;
@@ -3610,34 +3608,19 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
     //analyze location
     wxString sName = pNode->GetName();
 
-    wxASSERT(sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
-        sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) );
+    wxASSERT(sName == m_pTags->TagName(_T("dx")) || sName == m_pTags->TagName(_T("dy")) );
 
     float rValue;
     lmEUnits nUnits = lmTENTHS;     //default value
     AnalyzeLocation(pNode, &rValue, &nUnits);
-    if (sName == m_pTags->TagName(_T("x")) ) {
-        //x
-        pPos->x = rValue;
-        pPos->xType = lmLOCATION_USER_ABSOLUTE;
-        pPos->xUnits = nUnits;
-    }
-    else if (sName == m_pTags->TagName(_T("dx")) ) {
+    if (sName == m_pTags->TagName(_T("dx")) ) {
         //dx
         pPos->x = rValue;
-        pPos->xType = lmLOCATION_USER_RELATIVE;
         pPos->xUnits = nUnits;
-    }
-    else if (sName == m_pTags->TagName(_T("y")) ) {
-        //y
-        pPos->y = rValue;
-        pPos->yType = lmLOCATION_USER_ABSOLUTE;
-        pPos->yUnits = nUnits;
     }
     else {
         //dy
         pPos->y = rValue;
-        pPos->yType = lmLOCATION_USER_RELATIVE;
         pPos->yUnits = nUnits;
     }
 
@@ -4005,7 +3988,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
         }
 
 		// X location
-        else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) )
+        else if (sName == m_pTags->TagName(_T("dx")) )
         {
 			if (VerifyAllowed(lm_eTag_Location_x, sName)) {
 				m_pParser->AnalyzeLocation(pX, pLocation);
@@ -4014,7 +3997,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 		}
 
 		// Y location
-        else if (sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
+        else if (sName == m_pTags->TagName(_T("dy")) )
         {
 			if (VerifyAllowed(lm_eTag_Location_y, sName)) {
 				m_pParser->AnalyzeLocation(pX, pLocation);

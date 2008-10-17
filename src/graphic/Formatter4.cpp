@@ -501,9 +501,6 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
                 //restore cursors to re-process this column
                 m_pSysCursor->GoBackPrevPosition();
 
-				////for this measure ScoreObjs, remove 'position computed' mark
-                //ResetLocation();
-
                 //if no column added to system, the line width is not enough for drawing
                 //just one measure or no measures in score (i.e. no time signature).
                 //We have to split the current column and reprocess it
@@ -929,29 +926,6 @@ void lmFormatter4::AddEmptySystem(int nSystem, lmBoxSystem* pBoxSystem)
         pInstr = m_pScore->GetNextInstrument();
     }
 }
-
-void lmFormatter4::ResetLocation()
-{
-  //  // explore all instruments in the score
-  //  lmInstrument* pInstr;
-  //  for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
-  //  {
-  //      //For current instrument, explore its VStaff
-  //      lmVStaff* pVStaff = pInstr->GetVStaff();
-
-		////loop to process all StaffObjs in this measure
-		//lmSOIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
-		//pIT->AdvanceToMeasure( m_pSysCursor->GetAbsMeasure() );
-		//while(!pIT->EndOfMeasure())
-		//{
-		//	lmStaffObj* pSO = pIT->GetCurrent();
-		//	pSO->ResetObjectLocation();
-		//	pIT->MoveNext();
-		//}
-		//delete pIT;
-  //  }
-}
-
 
 void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
 {

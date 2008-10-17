@@ -64,6 +64,7 @@ public:
     lmShape* GetShape(int nShapeIdx) { return (lmShape*)GetGraphicObject(nShapeIdx); }
     virtual lmGMObject* GetGraphicObject(int nShapeIdx);
 	virtual void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx);
+	void SaveUserXLocation(lmLUnits xPos, int nShapeIdx);
 	virtual lmUPoint GetUserShift(int nShapeIdx);
     virtual void StoreShape(lmGMObject* pGMObj) { m_pGMObj = pGMObj; }
     virtual int NewShapeIndex() { return 0; }
@@ -86,6 +87,7 @@ public:
     //implementation of virtual methods
     lmGMObject* GetGraphicObject(int nShapeIdx);
 	void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx);
+	void SaveUserXLocation(lmLUnits xPos, int nShapeIdx);
 	lmUPoint GetUserShift(int nShapeIdx);
     void StoreShape(lmGMObject* pGMObj);
     inline int NewShapeIndex() { return m_nNextIdx++; }
@@ -186,6 +188,10 @@ public:
 	inline void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0) {
                 m_pShapesMngr->SaveUserLocation(xPos, yPos, nShapeIdx); 
             }
+	inline void SaveUserXLocation(lmLUnits xPos, int nShapeIdx = 0) {
+                m_pShapesMngr->SaveUserXLocation(xPos, nShapeIdx); 
+            }
+
     inline lmUPoint GetUserShift(int nShapeIdx = 0) { return m_pShapesMngr->GetUserShift(nShapeIdx); }
     int NewShapeIndex() { return m_pShapesMngr->NewShapeIndex(); }
 
@@ -196,6 +202,7 @@ public:
 	//positioning
     virtual void StoreOriginAndShiftShapes(lmLUnits uLeft, int nShapeIdx = 0);
 	virtual lmLocation SetUserLocation(lmLocation tPos, int nShapeIdx = 0);
+	virtual lmLUnits SetUserXLocation(lmLUnits uxPos, int nShapeIdx = 0);
     virtual lmUPoint& GetReferencePaperPos() { return m_uPaperPos; }
     int GetPageNumber();
     inline lmUPoint GetLayoutRefPos() { return m_uComputedPos; }
@@ -203,7 +210,6 @@ public:
 
 	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 	virtual void SetReferencePos(lmUPoint& uPos);
-	void ResetObjectLocation();
 
     //contextual menu
 	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
@@ -243,8 +249,6 @@ protected:
 	//information only valid for rendering as score: position and shape
     //These variables are only valid for the Formatter algorithm and, therefore, are not
 	//valid for other views using different formats.
-    lmLocation      m_tPos;         //desired position for this object
-	lmLocation		m_tSrcPos;		//position specified in source code
     lmUPoint		m_uPaperPos;	//relative origin to render this object: paper position
 
     lmUPoint        m_uComputedPos; //absolute (referenced to top-left paper margin corner)
@@ -291,21 +295,18 @@ public:
     // graphical model
     virtual void Layout(lmBox* pBox, lmPaper* pPaper,
 						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
-	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)=0;
+    virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
 
 
 
 protected:
-    lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, lmLocation* pPos = &g_tDefaultPos,
-                   bool fIsDraggable = false);
-
-	lmUPoint ComputeObjectLocation(lmPaper* pPaper);
+    lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, bool fIsDraggable = false);
 
 
-    lmEComponentObjType   m_nType;        //type of ComponentObj
-    int             m_nId;          //unique number, to identify each lmComponentObj
-    bool            m_fIsDraggable;
+    lmEComponentObjType     m_nType;        //type of ComponentObj
+    int                     m_nId;          //unique number, to identify each lmComponentObj
+    bool                    m_fIsDraggable;
 
 
 };

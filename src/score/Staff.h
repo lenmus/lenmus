@@ -70,8 +70,11 @@ public:
     lmLUnits GetLineThick() { return m_uLineThickness; }
     int GetNumLines() { return m_nNumLines; }
 
+    //font to draw music symbols on this staff
     wxFont* GetFontDraw() { return m_pFontDraw; }
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
+    inline void SetMusicFontSize(double rPointSize) { m_rFontPoints = rPointSize; }
+    inline double GetMusicFontSize() { return m_rFontPoints; }
 
     //context management
     lmContext* NewContextAfter(lmClef* pClef, lmContext* pPrevContext);
@@ -96,11 +99,14 @@ private:
     lmLUnits    m_uLineThickness;	// in logical units
     int         m_nNumLines;
     lmLUnits    m_uSpacing;			// in logical units (thousandths of a mm.,microns)
-    wxFont*     m_pFontDraw;        // font to use for drawing on this staff
 
     lmLUnits    m_uLeftMargin;       // lmStaff margins (logical units))
     lmLUnits    m_uRightMargin;
     lmLUnits    m_uAfterSpace;
+
+    //info about font to use to draw music glyphs 
+    wxFont*     m_pFontDraw;        //font to use for drawing on this staff
+    double      m_rFontPoints;      //font size
 
 
 	//Contexts are organized as a double linked list. First and last nodes:

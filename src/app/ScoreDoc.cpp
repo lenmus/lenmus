@@ -192,16 +192,25 @@ void lmScoreDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
 }
 
 #if wxUSE_STD_IOSTREAM
+//For Linux I can not manage to use wxStreams. Therefore, I include both alternatives
 wxSTD ostream& lmScoreDocument::SaveObject(wxSTD ostream& stream)
-#else
-wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
-#endif
-//wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
 {
 	wxDocument::SaveObject(stream);
 
+    //TODO: Recode next sentences using std streams
 //	wxTextOutputStream oTextStream(stream);
 //	oTextStream << m_pScore->SourceLDP();
 
 	return stream;
 }
+#else
+wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
+{
+	wxDocument::SaveObject(stream);
+
+	wxTextOutputStream oTextStream(stream);
+	oTextStream << m_pScore->SourceLDP();
+
+	return stream;
+}
+#endif

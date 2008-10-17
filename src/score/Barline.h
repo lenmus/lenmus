@@ -45,16 +45,12 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
         //specific methods for barline
 
     //info
     inline lmEBarline GetBarlineType() { return m_nBarlineType; }
 	inline void SetBarlineType(lmEBarline nType) { m_nBarlineType = nType; }
-
-    //positioning
-    lmELocationType GetLocationType() { return m_xUserPosType; }
 
     //source code and debugging
     wxString Dump();
@@ -67,8 +63,6 @@ public:
 
 private:
     lmEBarline          m_nBarlineType;             //type of barline
-    lmLUnits            m_uxUserPos;
-    lmELocationType     m_xUserPosType;
 
 };
 

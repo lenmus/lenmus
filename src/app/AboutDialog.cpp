@@ -291,14 +291,9 @@ void lmAboutDialog::OnSoftwareCredits(wxCommandEvent& WXUNUSED(event))
         _T("<center>")
         _T("<h3>") + _("Software credits") + _T("</h3></center><p>") +
         _("LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library \
-(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross \
-Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
+(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright © 1999-2000 Ross \
+Bencina and Phil Burk and copyright © 2001 Roger B. Dannenberg. Its licence permits \
 free use.") +
-        _T("</p><p>") +
-        _("LenMus Phonascus is built using the <b>wxWidgets</b> application framework \
-(http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
-ease to learn and extend, it has a helpful community, and also has the possibility \
-to use it in commercial products without licencing.") +
         _T("</p><p>") +
         _("This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) \
 software developed by Maxim Shemanarev. AGG is an excellent open source, \
@@ -308,6 +303,16 @@ in memory from vectorial data and it supports anti-aliasing, \
 has very high performance, it is platform independent, very \
 flexible and extensible, with a light weight design, and very good \
 reliability and stability.") +
+        _T("</p><p>") +
+        _("This program uses the <b>FreeType 2</b> \
+software. It is a free, open source, high-quality, and portable font engine \
+developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is \
+copyright © 1996-2002 The FreeType Project (http://www.freetype.org).") +
+        _T("</p><p>") +
+        _("LenMus Phonascus is built using the <b>wxWidgets</b> application framework \
+(http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
+ease to learn and extend, it has a helpful community, and also has the possibility \
+to use it in commercial products without licencing.") +
         _T("</p><p>") +
         _("Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project \
 (http://lilypond.org), Feta font.") +

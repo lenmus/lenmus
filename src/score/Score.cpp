@@ -881,122 +881,112 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmTextBlock* pTitle,
 								   lmLUnits nPrevTitleHeight)
 {
-    // Creates the shape for the title and adds it to the box.
-	// Returns height of title
+ //   // Creates the shape for the title and adds it to the box.
+	//// Returns height of title
 
-    lmLUnits nWidth, nHeight;
-	lmShape* pShape = (lmShape*)NULL;
+ //   lmLUnits nWidth, nHeight;
+	//lmShape* pShape = (lmShape*)NULL;
 
-    //// if not yet measured and positioned do it
-    //if (!pTitle->IsFixed())
-    //{
-        lmEHAlign nAlign = pTitle->GetAlignment();
-        lmLUnits xInitPaperPos = pPaper->GetCursorX();
-        lmLUnits xPaperPos = xInitPaperPos;
-        lmLUnits yPaperPos = pPaper->GetCursorY();
+ //   //// if not yet measured and positioned do it
+ //   //if (!pTitle->IsFixed())
+ //   //{
+ //       lmEHAlign nAlign = pTitle->GetAlignment();
+ //       lmLUnits xInitPaperPos = pPaper->GetCursorX();
+ //       lmLUnits xPaperPos = xInitPaperPos;
+ //       lmLUnits yPaperPos = pPaper->GetCursorY();
 
-        //if need to reposition paper, convert units to tenths
-        lmLUnits xPos, yPos;
-        lmLocation tPos = pTitle->GetLocation();
-        if (tPos.xType != lmLOCATION_DEFAULT) {
-            if (tPos.xUnits == lmTENTHS)
-                xPos = tPos.x;
-            else
-                xPos = lmToLogicalUnits(tPos.x, tPos.xUnits);
-        }
+ //       //if need to reposition paper, convert units to tenths
+ //       lmLUnits xPos, yPos;
+ //       lmLocation tPos = pTitle->GetLocation();
 
-        if (tPos.yType != lmLOCATION_DEFAULT) {
-            if (tPos.yUnits == lmTENTHS)
-                yPos = tPos.y;
-            else
-                yPos = lmToLogicalUnits(tPos.y, tPos.yUnits);
-        }
+ //       if (tPos.xUnits == lmTENTHS)
+ //           xPos = tPos.x;
+ //       else
+ //           xPos = lmToLogicalUnits(tPos.x, tPos.xUnits);
 
-        //reposition paper according text required positioning info
-        if (tPos.xType == lmLOCATION_USER_RELATIVE) {
-            xPaperPos += xPos;
-        }
-        else if (tPos.xType == lmLOCATION_USER_ABSOLUTE) {
-            xPaperPos = xPos + GetLeftMarginXPos();
-        }
+ //       if (tPos.yUnits == lmTENTHS)
+ //           yPos = tPos.y;
+ //       else
+ //           yPos = lmToLogicalUnits(tPos.y, tPos.yUnits);
 
-        if (tPos.yType == lmLOCATION_USER_RELATIVE) {
-            yPaperPos += yPos;
-        }
-        else if (tPos.yType == lmLOCATION_USER_ABSOLUTE) {
-            yPaperPos = yPos + GetPageTopMargin();
-        }
-        pPaper->SetCursorY( yPaperPos );
+ //       xPaperPos += xPos;
+ //       yPaperPos += yPos;
 
-        //measure the text so that it can be properly positioned
-        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-        pShape = pTitle->CreateShape(pPaper, uPos);
-        pPaper->SetCursorX(xInitPaperPos);      //restore values altered by CreateShape
-        pPaper->SetCursorY(yPaperPos);
-        nWidth = pShape->GetWidth();
-        nHeight = pShape->GetHeight();
+ //       pPaper->SetCursorY( yPaperPos );
 
-        //Force new line if no space in current line
-        lmLUnits xSpace = GetRightMarginXPos() - xInitPaperPos;
-        if (xSpace < nWidth) {
-            pPaper->SetCursorX(GetLeftMarginXPos());
-            pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
-        }
+ //       //measure the text so that it can be properly positioned
+ //       lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+ //       pShape = pTitle->CreateShape(pPaper, uPos);
+ //       pPaper->SetCursorX(xInitPaperPos);      //restore values altered by CreateShape
+ //       pPaper->SetCursorY(yPaperPos);
+ //       nWidth = pShape->GetWidth();
+ //       nHeight = pShape->GetHeight();
 
-        if (nAlign == lmHALIGN_CENTER)
-        {
-            // 'center' alignment forces to center the string in current line,
-            // without taking into account the space consumed by any posible existing
-            // left title. That is, 'center' always means 'centered in the line'
+ //       //Force new line if no space in current line
+ //       lmLUnits xSpace = GetRightMarginXPos() - xInitPaperPos;
+ //       if (xSpace < nWidth) {
+ //           pPaper->SetCursorX(GetLeftMarginXPos());
+ //           pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
+ //       }
 
-            if (tPos.xType == lmLOCATION_DEFAULT) {
-                xPos = (GetRightMarginXPos() - GetLeftMarginXPos() - nWidth)/2;
-                //force new line if not enough space
-                if (pPaper->GetCursorX() > xPos)
-                    pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
-                pPaper->SetCursorX(GetLeftMarginXPos() + xPos);
-            }
-            else {
-                pPaper->SetCursorX( xPaperPos );
-            }
-        }
+ //       if (nAlign == lmHALIGN_CENTER)
+ //       {
+ //           // 'center' alignment forces to center the string in current line,
+ //           // without taking into account the space consumed by any posible existing
+ //           // left title. That is, 'center' always means 'centered in the line'
 
-        else if (nAlign == lmHALIGN_LEFT)
-        {
-            //align left.
-            if (tPos.xType == lmLOCATION_DEFAULT)
-                pPaper->SetCursorX( GetLeftMarginXPos() );
-            else
-                pPaper->SetCursorX( xPaperPos );
-        }
+ //           //if (tPos.xType == lmLOCATION_DEFAULT)
+ //           //{
+ //           //    xPos = (GetRightMarginXPos() - GetLeftMarginXPos() - nWidth)/2;
+ //           //    //force new line if not enough space
+ //           //    if (pPaper->GetCursorX() > xPos)
+ //           //        pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
+ //           //    pPaper->SetCursorX(GetLeftMarginXPos() + xPos);
+ //           //}
+ //           //else
+ //           {
+ //               pPaper->SetCursorX( xPaperPos );
+ //           }
+ //       }
 
-        else
-        {
-            //align right
-            if (tPos.xType == lmLOCATION_DEFAULT)
-                pPaper->SetCursorX(GetRightMarginXPos() - nWidth);
-            else
-                pPaper->SetCursorX(xPaperPos - nWidth);
-        }
-    //}
+ //       else if (nAlign == lmHALIGN_LEFT)
+ //       {
+ //           //align left.
+ //           //if (tPos.xType == lmLOCATION_DEFAULT)
+ //           //    pPaper->SetCursorX( GetLeftMarginXPos() );
+ //           //else
+ //               pPaper->SetCursorX( xPaperPos );
+ //       }
 
-	//the position has been computed. Create the shape if not yet created or
-	//update it, if its was created during measurements 
-	if (pShape) delete pShape;
-	pShape = pTitle->CreateShape(pPaper, lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()) );
+ //       else
+ //       {
+ //           //align right
+ //           //if (tPos.xType == lmLOCATION_DEFAULT)
+ //           //    pPaper->SetCursorX(GetRightMarginXPos() - nWidth);
+ //           //else
+ //               pPaper->SetCursorX(xPaperPos - nWidth);
+ //       }
+ //   //}
 
-	//add shape to the box
-	pBox->AddShape(pShape);
+	////the position has been computed. Create the shape if not yet created or
+	////update it, if its was created during measurements 
+	//if (pShape) delete pShape;
+	//pShape = pTitle->CreateShape(pPaper, lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()) );
 
-    nHeight = pShape->GetHeight();
+	////add shape to the box
+	//pBox->AddShape(pShape);
 
-    //if rigth aligned, advance new line
-    if (pTitle->GetAlignment() == lmHALIGN_RIGHT) {
-        pPaper->SetCursorX( GetLeftMarginXPos() );
-        pPaper->IncrementCursorY( nHeight );
-    }
+ //   nHeight = pShape->GetHeight();
 
-    return nHeight;
+ //   //if rigth aligned, advance new line
+ //   if (pTitle->GetAlignment() == lmHALIGN_RIGHT) {
+ //       pPaper->SetCursorX( GetLeftMarginXPos() );
+ //       pPaper->IncrementCursorY( nHeight );
+ //   }
+
+ //   return nHeight;
+
+return 0.0f;
 
 }
 

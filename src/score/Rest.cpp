@@ -91,18 +91,6 @@ lmEGlyphIndex lmRest::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-lmUPoint lmRest::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
-{
-	// if no location is specified in LDP source file, this method is invoked from
-	// base class to ask derived object to compute a suitable position to
-	// place itself.
-	// uOrg is the assigned paper position for this object.
-
-	lmUPoint uPos = uOrg;
-	//TODO
-	return uPos;
-}
-
 lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for

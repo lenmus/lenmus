@@ -79,11 +79,24 @@ public:
     virtual void SetPen(wxColour color, lmLUnits uWidth) = 0;
 
 
-    //text
+    //text (platform native rederization)
     virtual void DrawText(const wxString& text, lmLUnits x, lmLUnits y) = 0;
     virtual void SetTextForeground(const wxColour& colour) = 0;
     virtual void SetTextBackground(const wxColour& colour) = 0;
     virtual void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h) = 0;
+
+    //text (FreeType with AGG rederization)
+    //default implementation does nothing and returns error value
+    virtual bool FtLoadFont(wxString sFontName) { return false; }
+    virtual int FtDrawChar(unsigned int nChar) { return 0; }
+    virtual int FtDrawText(wxString& sText) { return 0; }
+    virtual int FtDrawText(unsigned int* pText, size_t nLength) { return 0; }
+    virtual void FtSetFontSize(double rPoints) {}
+    virtual void FtSetFontHeight(double rPoints) {}
+    virtual void FtSetFontWidth(double rPoints) {}
+    virtual void FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos) {}
+    virtual void FtGetTextExtent(const wxString& sText, lmLUnits* pWidth, lmLUnits* pHeight,
+                         lmLUnits* pDescender = NULL, lmLUnits* pAscender = NULL) {}
 
     // units conversion
     virtual lmLUnits DeviceToLogicalX(lmPixels x) = 0;

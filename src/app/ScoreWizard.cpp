@@ -309,9 +309,7 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
     for (int i=0; i < lmNUM_TITLES; ++i)
     {
         m_Titles[i].sTitle = _T("");
-        m_Titles[i].tPos.xType = lmLOCATION_DEFAULT;
         m_Titles[i].tPos.xUnits = lmTENTHS;
-        m_Titles[i].tPos.yType = lmLOCATION_DEFAULT;
         m_Titles[i].tPos.yUnits = lmTENTHS;
         m_Titles[i].tPos.x = 0.0f;
         m_Titles[i].tPos.y = 0.0f;
@@ -473,7 +471,6 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                 if (i > lmSUBTITLE && fFirstLR)
                 {
                     fFirstLR = false;
-                    m_Titles[i].tPos.yType = lmLOCATION_USER_RELATIVE;
                     m_Titles[i].tPos.yUnits = lmMILLIMETERS;
                     m_Titles[i].tPos.y = 10.0f;
                 }
@@ -515,7 +512,6 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                     {
                         //reposition title in the same line than previous one
                         m_Titles[i].tPos.y = - pScore->LogicalToTenths((lmLUnits)nHeight);
-                        m_Titles[i].tPos.yType = lmLOCATION_USER_RELATIVE;
                         m_Titles[i].tPos.yUnits = lmTENTHS;
                     }
                 }
@@ -1177,19 +1173,7 @@ bool lmScoreWizardTitles::TransferDataFromWindow()
     m_ScoreData.fAddTitles = true;
 
 	if (m_pTxtTitle->GetValue() != _T(""))
-    {
         m_Titles[lmTITLE].sTitle = m_pTxtTitle->GetValue();
-        //m_Titles[i].nHAlign = lmHALIGN_CENTER;
-        //m_Titles[i].tPos.xType = lmLOCATION_DEFAULT;
-        //m_Titles[i].tPos.xUnits = lmTENTHS;
-        //m_Titles[i].tPos.yType = lmLOCATION_DEFAULT;
-        //m_Titles[i].tPos.yUnits = lmTENTHS;
-        //m_Titles[i].tPos.x = 0.0f;
-        //m_Titles[i].tPos.y = 0.0f;
-        //m_Titles[i].sFontName = _T("Times New Roman");
-        //m_Titles[i].nFontSize = 14;
-        //m_Titles[i].nStyle = lmTEXT_BOLD;
-    }
 
 	if (m_pTxtSubtitle->GetValue() != _T(""))
         m_Titles[lmSUBTITLE].sTitle = m_pTxtSubtitle->GetValue();

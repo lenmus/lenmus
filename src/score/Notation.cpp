@@ -134,25 +134,28 @@ lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
- //   //DBG ------------------------------------------------------------------------------
- //   //compute position
- //   lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
- //   lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
- //   lmLUnits uWidth = m_pParent->TenthsToLogical(1);
- //   lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
+#if 0       //Set to 1 for debug
+    //DBG ------------------------------------------------------------------------------
+    //compute position
+    lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
+    lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
+    lmLUnits uWidth = m_pParent->TenthsToLogical(1);
+    lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
 
- //   //create the shape
- //   lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
- //                                         uWidth, uBoundsExtraWidth, *wxRED,
- //                                         _T("Anchor"), eEdgeNormal);
-	//pBox->AddShape(pShape);
- //   StoreShape(pShape);
+    //create the shape
+    lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
+                                          uWidth, uBoundsExtraWidth, *wxRED,
+                                          _T("Anchor"), eEdgeNormal);
+	pBox->AddShape(pShape);
+    StoreShape(pShape);
 
- //   //END DBG --------------------------------------------------------------------------
+    //END DBG --------------------------------------------------------------------------
+#else
 
-    // set total width
-    return 0;
+    CreateInvisibleShape(pBox, uPos, 0);
+#endif
 
+    return 0.0f;        //returns total width
 }
 
 wxString lmAnchor::Dump()

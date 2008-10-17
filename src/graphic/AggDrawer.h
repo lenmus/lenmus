@@ -50,7 +50,7 @@
 #include "agg_renderer_primitives.h"    //for rendering aliassed lines
 #include "agg_renderer_markers.h"       //for rendering markers
 #include "agg_scanline_bin.h"
-//#include "agg_font_freetype.h"
+#include "agg_font_freetype.h"          //font renderization using FreeType
 
 
 //basic types
@@ -63,7 +63,7 @@ class lmAggDrawer : public lmDrawer
 {
 public:
     //Constructor, allocating a new bitmap as rendering buffer
-    lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int stride=0);
+    lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, double rScale = 1.0, int nStride=0);
 
 	//Constructor, allocating a copy of the received bitmap as rendering buffer
 	lmAggDrawer(wxDC* pDC, wxBitmap* pBitmap, int stride=0);
@@ -102,6 +102,18 @@ public:
     void SetTextBackground(const wxColour& colour);
     void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h);
 
+    //text (FreeType with AGG rederization)
+    bool FtLoadFont(wxString& sFontName);
+    int FtDrawChar(unsigned int nChar);
+    int FtDrawText(wxString& sText);
+    int FtDrawText(unsigned int* pText, size_t nLength);
+    void FtSetFontSize(double rPoints);
+    void FtSetFontHeight(double rPoints);
+    void FtSetFontWidth(double rPoints);
+    void FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos);
+    void FtGetTextExtent(const wxString& sText, lmLUnits* pWidth, lmLUnits* pHeight,
+                         lmLUnits* pDescender = NULL, lmLUnits* pAscender = NULL);
+
     // units conversion
     lmLUnits DeviceToLogicalX(lmPixels x);
     lmLUnits DeviceToLogicalY(lmPixels y);
@@ -110,9 +122,11 @@ public:
 
 private:
     void Initialize();
-	void Create(int stride);
+	void Create(double rScale, int stride);
     inline double WorldToDeviceX(lmLUnits x) const { return m_xDevicePixelsPerLU * (double)x; }
     inline double WorldToDeviceY(lmLUnits y) const { return m_yDevicePixelsPerLU * (double)y; }
+    inline lmLUnits DeviceToWorldX(double x) const { return (lmLUnits)(x / m_xDevicePixelsPerLU); }
+    inline lmLUnits DeviceToWorldY(double y) const { return (lmLUnits)(y / m_yDevicePixelsPerLU); }
     lmColor_rgba8 lmToRGBA8(wxColour color);
     wxColour lmToWxColor(lmColor_rgba8 color);
 
@@ -161,6 +175,27 @@ private:
 
     wxBitmap* m_pDummyBitmap;
 
+    //FreeType fonts: font engine and font cache management
+
+    typedef agg::font_engine_freetype_int32 font_engine_type;
+    font_engine_type    m_feng;
+
+    typedef agg::font_cache_manager<font_engine_type> font_manager_type;
+    font_manager_type   m_fman;
+
+    bool m_fFlip_y;
+
+    //font related variables
+    double  m_rScale;           //view scale, to compute font size for glyphs
+    double  m_rFontHeight;
+    double  m_rFontWidth;
+    bool    m_fHinting;
+    bool    m_fKerning;
+    bool    m_fValidFont;       //there is a font loaded
+
+    //current buffer font position (pixels, with decimals)
+    double     m_vCursorX;
+    double     m_vCursorY;
 };
 
 

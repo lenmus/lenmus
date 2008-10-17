@@ -622,8 +622,8 @@ public:
     bool UndoCommand();
 
 protected:
-    lmLocation      m_tPos;
-    lmLocation		m_tOldPos;        // for Undo
+    lmLUnits        m_uxPos;
+    lmLUnits        m_uxOldPos;        // for Undo
 	lmNote*			m_pNote;
     int             m_nSteps;
 };

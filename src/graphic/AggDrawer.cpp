@@ -76,10 +76,10 @@
 #define BYTES_PP 3      // Bytes per pixel
 
 
-lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int stride)
+lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, double rScale, int nStride)
 	: lmDrawer(pDC)
-    //, m_feng()
-    //, m_fman(m_feng)
+    , m_feng()
+    , m_fman(m_feng)
 {
     // Constructor, allocating a new bitmap as rendering buffer
 
@@ -91,11 +91,13 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
     m_nBufHeight = heightPixels;
     m_buffer = wxImage(widthPixels, heightPixels);
 
-	Create(stride);
+	Create(rScale, nStride);
 }
 
 lmAggDrawer::lmAggDrawer(wxDC* pDC, wxBitmap* pBitmap, int stride)
 	: lmDrawer(pDC)
+    , m_feng()
+    , m_fman(m_feng)
 {
 	//Constructor, allocating a copy of the received bitmap as rendering buffer
 
@@ -106,12 +108,14 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, wxBitmap* pBitmap, int stride)
 	m_nBufHeight = pBitmap->GetHeight();
     m_buffer = pBitmap->ConvertToImage();
 
-	Create(stride);
+	Create(1.0, stride);
 }
 
-void lmAggDrawer::Create(int stride)
+void lmAggDrawer::Create(double rScale, int stride)
 {
-    // allocate a rendering buffer
+    // allocate a rendering buffer and initialize
+
+    m_rScale = rScale;
 
     if (stride==0)
         m_nStride = m_nBufWidth * BYTES_PP;
@@ -130,8 +134,8 @@ void lmAggDrawer::Create(int stride)
     m_pRenSolid = new lmRendererSolidType(*m_pRenBase);
     m_pRenBase->clear(agg::rgba8(255,255,255));
 
-    ////font settings
-    //m_feng.gamma(agg::gamma_none());
+    //font settings
+    m_feng.gamma(agg::gamma_none());
 
     //the renderer_marker, for aliased drawing.
     //Renderer_marker is a specialization of renderer_primitives so it
@@ -144,7 +148,6 @@ void lmAggDrawer::Create(int stride)
 
 lmAggDrawer::~lmAggDrawer()
 {
-    //wxLogMessage(_T("[lmAggDrawer::~lmAggDrawer]"));
     delete m_pDummyBitmap;
     delete m_pRenMarker;
     delete m_pRenSolid;
@@ -154,15 +157,27 @@ lmAggDrawer::~lmAggDrawer()
 
 void lmAggDrawer::Initialize()
 {
-    //m_nCursorX = 0;
-    //m_nCursorY = 0;
+    m_vCursorX = 0;
+    m_vCursorY = 0;
 
-    ////font
-    //m_fValidFont = false;
-    //m_rFontHeight = 14;
-    //m_rFontWidth = 14;
-    //m_fHinting = true;
-    //m_fKerning = true;
+    //font defaults (FreeType)
+    m_fValidFont = false;
+    m_rFontHeight = 14;
+    m_rFontWidth = 14;
+    m_fKerning = true;
+    m_fHinting = false;     //hinting is pantented by Apple. Can not be used without license
+    //AWARE:
+    //Apple Computer, Inc., owns three patents that are related to the 
+    //hinting process of glyph outlines within TrueType fonts. Hinting (also named 
+    //grid-fitting) is used to enhance the quality of glyphs at small bitmap sizes.
+    //Therefore, you can not use hinting unless you are authorized (you purchased 
+    //a license from Apple, or because you are in a country where the patents do
+    //not apply, etc.). Nevertheless lenmus font doesn't include hinting information
+    //and, so, previous flag value doesn't matter. But its value is important
+    //if I finally use FreeType for all fonts.
+
+
+    m_fFlip_y = true;       //TODO: Apparently the behaviour is reversed !!! Investigate this
 
     //allocate something to paint on it
     m_pDummyBitmap = new wxBitmap(1, 1);
@@ -173,8 +188,8 @@ void lmAggDrawer::Initialize()
     m_xDevicePixelsPerLU = (double)m_pDC->LogicalToDeviceXRel(100000) / 100000.0;
     m_yDevicePixelsPerLU = (double)m_pDC->LogicalToDeviceYRel(100000) / 100000.0;
 
-    //wxLogMessage(_T("[lmAggDrawer::Initialize] m_xDevicePixelsPerLU=%f, m_yDevicePixelsPerLU=%f"),
-    //    m_xDevicePixelsPerLU, m_yDevicePixelsPerLU);
+    wxLogMessage(_T("[lmAggDrawer::Initialize] m_xDevicePixelsPerLU=%f, m_yDevicePixelsPerLU=%f"),
+        m_xDevicePixelsPerLU, m_yDevicePixelsPerLU);
 
     // set default colours
     m_textColorF = agg::rgba8(0,0,0);
@@ -249,7 +264,6 @@ void lmAggDrawer::SolidCircle(lmLUnits xCenter, lmLUnits yCenter, lmLUnits radiu
 
 void lmAggDrawer::SolidPolygon(int n, lmUPoint points[], wxColor color)
 {
-    //wxLogMessage(_T("[lmAggDrawer::SolidPolygon]"));
     m_ras.reset();
     m_ras.move_to_d( WorldToDeviceX(points[0].x), WorldToDeviceY(points[0].y) );
     int i;
@@ -257,12 +271,10 @@ void lmAggDrawer::SolidPolygon(int n, lmUPoint points[], wxColor color)
         m_ras.line_to_d( WorldToDeviceX(points[i].x), WorldToDeviceY(points[i].y) );
     }
     agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, lmToRGBA8(color));
-
 }
 
 void lmAggDrawer::SolidShape(lmShape* pShape, wxColor color)
 {
-    
     //get vertices from shape
     lmLUnits ux;
     lmLUnits uy;
@@ -353,19 +365,19 @@ void lmAggDrawer::SetPen(wxColour color, lmLUnits uWidth)
 
 void lmAggDrawer::SetFont(wxFont& font)
 {
-    //wxLogMessage(_T("[lmAggDrawer::SetFont]"));
     m_pDC->SetFont(font);
 }
 
 void lmAggDrawer::SetLogicalFunction(int function)
 {
-    //TODO
-    //wxLogMessage(_T("[lmAggDrawer::SetLogicalFunction]"));
     m_pDC->SetLogicalFunction(function);
 }
 
 
-//text
+//------------------------------------------------------------------------------------------
+//text. Platform native renderization
+//------------------------------------------------------------------------------------------
+
 void lmAggDrawer::DrawText(const wxString& text, lmLUnits x, lmLUnits y)
 {
     //wxLogMessage(_T("[lmAggDrawer::DrawText]"));
@@ -448,22 +460,18 @@ void lmAggDrawer::DrawText(const wxString& text, lmLUnits x, lmLUnits y)
 
 void lmAggDrawer::SetTextForeground(const wxColour& colour)
 {
-    //TODO
-    //wxLogMessage(_T("[lmAggDrawer::SetTextForeground]"));
     m_pDC->SetTextForeground(colour);
+    m_textColorF = lmToRGBA8(colour);
 }
 
 void lmAggDrawer::SetTextBackground(const wxColour& colour)
 {
-    //TODO
-    //wxLogMessage(_T("[lmAggDrawer::SetTextBackground]"));
     m_pDC->SetTextBackground(colour);
+    m_textColorB = lmToRGBA8(colour);
 }
 
 void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)
 {
-    //TODO
-    //wxLogMessage(_T("[lmAggDrawer::GetTextExtent]"));
     wxCoord width, height;
     m_pDC->GetTextExtent(string, &width, &height);
     *w = (lmLUnits)width;
@@ -471,7 +479,196 @@ void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h
 }
 
 
+//------------------------------------------------------------------------------------------
+//text. FreeType with AGG rederization
+//------------------------------------------------------------------------------------------
+
+bool lmAggDrawer::FtLoadFont(wxString& sFontName)
+{
+    //load the requested font. It must be in /bin folder
+    //Returns true if any error
+
+    //wxString sFullFileName = GetFontFullFileName(sFontName);
+
+    wxMBConvUTF8 oConv;
+    wxCharBuffer str = sFontName.mb_str(oConv);
+
+    agg::glyph_rendering gren = agg::glyph_ren_agg_gray8;
+    if(! m_feng.load_font(str.data(), 0, gren))
+    {
+        m_fValidFont = false;
+        return true;    //error
+    }
+
+    //set curren values for renderization
+    m_feng.hinting(m_fHinting);
+    m_feng.height(m_rFontHeight);
+    m_feng.width(m_rFontWidth);
+    m_feng.flip_y(m_fFlip_y);
+
+    //un-comment this to rotate/skew/translate the text
+    //agg::trans_affine mtx;
+    //mtx *= agg::trans_affine_rotation(agg::deg2rad(-4.0));
+    ////mtx *= agg::trans_affine_skewing(-0.4, 0);
+    ////mtx *= agg::trans_affine_translation(1, 0);
+    //m_feng.transform(mtx);
+
+    //wxLogMessage(_T("[lmAggDrawer::FtLoadFont] font asc: %.2lf, desc:%.2lf\n"),
+    //             m_feng.ascender(), m_feng.descender() );
+
+    m_fValidFont = true;
+    return false;   
+}
+
+int lmAggDrawer::FtDrawText(wxString& sText)
+{
+    //render text (FreeType) at current position, using current settings for font.
+    //Returns the number of chars drawn
+
+    if (!m_fValidFont) return 0;
+
+    //convert text to utf-32
+    size_t nLength = sText.Length();
+    wxMBConvUTF32 oConv32;
+    wxCharBuffer s32Text = sText.mb_str(oConv32);
+
+    return FtDrawText((unsigned int*)s32Text.data(), nLength);
+}
+
+int lmAggDrawer::FtDrawChar(unsigned int nChar)
+{
+    //render char (FreeType) at current position, using current settings for font
+    //Returns 0 if error. 1 if ok
+
+    if (nChar == 0x0041)
+    {
+        wxLogMessage(_T("[lmAggDrawer::FtDrawChar] nChar = %x, scale=%.2f"),
+            nChar, m_rScale);
+    }
+
+    return FtDrawText(&nChar, 1);
+}
+
+int lmAggDrawer::FtDrawText(unsigned int* pText, size_t nLength)
+{
+    //returns the number of chars drawn
+
+    if (!m_fValidFont) return 0;
+
+    int num_glyphs = 0;
+
+    double x  = m_vCursorX;
+    double y  = m_vCursorY;
+
+    const unsigned int* p = pText;
+
+    while(*p && nLength--)
+    {
+        const agg::glyph_cache* glyph = m_fman.glyph(*p);
+        if(glyph)
+        {
+            if(m_fKerning)
+            {
+                m_fman.add_kerning(&x, &y);
+            }
+
+            m_fman.init_embedded_adaptors(glyph, x, y);
+
+            //render the glyph using method agg::glyph_ren_agg_gray8
+            m_pRenSolid->color(m_textColorF);               //agg::rgba8(0, 0, 0));
+            agg::render_scanlines(m_fman.gray8_adaptor(), 
+                                    m_fman.gray8_scanline(), 
+                                    *m_pRenSolid);
+
+            // increment pen position
+            x += glyph->advance_x;
+            ++num_glyphs;
+        }
+        ++p;
+    }
+    return num_glyphs;
+}
+
+void lmAggDrawer::FtSetFontSize(double rPoints)
+{
+        m_rFontHeight = m_rFontWidth = rPoints * m_rScale;
+        m_feng.height(m_rFontHeight);
+        m_feng.width(m_rFontWidth);
+}
+
+void lmAggDrawer::FtSetFontHeight(double rPoints) 
+{ 
+    m_rFontHeight = rPoints, m_feng.height(rPoints); 
+}
+
+void lmAggDrawer::FtSetFontWidth(double rPoints) 
+{ 
+    m_rFontWidth = rPoints, m_feng.width(rPoints);
+}
+
+void lmAggDrawer::FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos)
+{ 
+    m_vCursorX = WorldToDeviceX(uxPos);
+    m_vCursorY = WorldToDeviceY(uyPos);
+}
+
+void lmAggDrawer::FtGetTextExtent(const wxString& sText, 
+                                  lmLUnits* pWidth, lmLUnits* pHeight,
+                                  lmLUnits* pDescender, lmLUnits* pAscender)
+{
+    //Gets the dimensions of the string using the currently selected font.
+    //Parameters:
+    //  sText is the text string to measure,
+    //  descent is the dimension from the baseline of the font to the bottom of
+    //          the descender,
+    //  externalLeading is any extra vertical space added to the font by the
+    //          font designer (usually is zero).
+    //
+    //The text extent is returned in w and h pointers.
+    //
+    //The currently selected font is used to compute dimensions.
+    //Note that this function only works with single-line strings.
+
+    //convert text to utf-32
+    size_t nLength = sText.Length();
+    wxMBConvUTF32 oConv32;
+    wxCharBuffer s32Text = sText.mb_str(oConv32);
+
+    double x  = 0.0;
+    double y  = m_rFontHeight;
+    const unsigned int* p = (unsigned int*)s32Text.data();
+
+    while(*p && nLength--)
+    {
+        const agg::glyph_cache* glyph = m_fman.glyph(*p);
+        if(glyph)
+        {
+            if(m_fKerning)
+                m_fman.add_kerning(&x, &y);
+
+            m_fman.init_embedded_adaptors(glyph, x, y);
+
+            // extend
+            x += glyph->advance_x;
+        }
+        ++p;
+    }
+
+    //return results
+    *pWidth = DeviceToWorldX(x);
+    *pHeight = DeviceToWorldY(y);
+
+    if (pAscender)
+        *pAscender = DeviceToWorldY(m_feng.ascender());
+
+    if (pDescender)
+        *pDescender = DeviceToWorldY(m_feng.descender());
+}
+
+//------------------------------------------------------------------------------------------
 // units conversion
+//------------------------------------------------------------------------------------------
+
 lmLUnits lmAggDrawer::DeviceToLogicalX(lmPixels x)
 {
     return m_pDC->DeviceToLogicalXRel(x);
@@ -503,151 +700,3 @@ wxColour lmAggDrawer::lmToWxColor(lmColor_rgba8 color)
     return wxColor(color.r, color.g, color.b);
 }
 
-/*
-
-void lmAggDrawer::Clear()
-{
-    memset(m_pdata, 255, m_nBufWidth * m_nBufHeight * BYTES_PP);
-}
-
-unsigned int lmAggDrawer::DrawText(wxString& sText)
-{
-    //render text (FreeType) at current position, using current settings for font
-    //returns the number of glyphs rendered
-
-    if (!m_fValidFont) return 0;
-
-    //convert text to utf-32
-    size_t nLength = sText.length();
-    wxMBConvUTF32 oConv32;
-    wxCharBuffer s32Text = sText.mb_str(oConv32);
-
-    return DrawText((unsigned int*)s32Text.data(), nLength);
-}
-
-bool lmAggDrawer::LoadFont(wxString sFontName)
-{
-    //load the requested font. Returns true if any error
-
-    wxMBConvUTF8 oConv;
-    wxCharBuffer str = sFontName.mb_str(oConv);
-
-    agg::glyph_rendering gren = agg::glyph_ren_agg_gray8;
-    if(! m_feng.load_font(str.data(), 0, gren)) {
-        m_fValidFont = false;
-        return true;    //error
-    }
-
-    //set curren values for renderization
-    m_feng.hinting(m_fHinting);
-    m_feng.height(m_rFontHeight);
-    m_feng.width(m_rFontWidth);
-    m_feng.flip_y(m_fFlip_y);
-
-    //un-comment this to rotate/skew/translate the text
-    //agg::trans_affine mtx;
-    //mtx *= agg::trans_affine_rotation(agg::deg2rad(-4.0));
-    ////mtx *= agg::trans_affine_skewing(-0.4, 0);
-    ////mtx *= agg::trans_affine_translation(1, 0);
-    //m_feng.transform(mtx);
-
-    m_fValidFont = true;
-    return false;
-}
-
-unsigned int lmAggDrawer::DrawText(unsigned int* pText, size_t nLength)
-{
-    //returns the number of glyphs rendered
-
-    if (!m_fValidFont) return 0;
-
-    unsigned num_glyphs = 0;
-
-    double x  = (double)m_nCursorX;
-    double y0 = m_rFontHeight + 10.0;
-    double y  = (double)m_nCursorY;
-
-    const unsigned int* p = pText;
-
-    while(*p && nLength--)
-    {
-        const agg::glyph_cache* glyph = m_fman.glyph(*p);
-        if(glyph)
-        {
-            if(m_fKerning)
-            {
-                m_fman.add_kerning(&x, &y);
-            }
-
-            if(x >= m_nBufWidth - m_rFontHeight)
-            {
-                x = 10.0;
-                y0 += m_rFontHeight;
-                //if(y0 <= 120) break;
-                y = y0;
-            }
-
-            m_fman.init_embedded_adaptors(glyph, x, y);
-
-            //render the glyph using method agg::glyph_ren_agg_gray8
-            m_pRenSolid->color(agg::rgba8(0, 0, 0));
-            agg::render_scanlines(m_fman.gray8_adaptor(),
-                                    m_fman.gray8_scanline(),
-                                    *m_pRenSolid);
-
-            // increment pen position
-            x += glyph->advance_x;
-            y += glyph->advance_y;
-            ++num_glyphs;
-        }
-        ++p;
-    }
-    return num_glyphs;
-
-}
-
-//--------------------------------------------------------------------------------------
-// methods to draw aliased objects using renderer_primitives / renderer_marker
-//--------------------------------------------------------------------------------------
-
-void lmAggDrawer::DrawLine(int x1, int y1, int x2, int y2, bool fIncludeLast)
-{
-    m_pRenMarker->line(x1, y1, x2, y2, fIncludeLast);
-}
-
-void lmAggDrawer::MoveTo(int x, int y)
-{
-    m_pRenMarker->move_to(x, y);
-}
-
-void lmAggDrawer::LineTo(int x, int y, bool fIncludeLast)
-{
-    m_pRenMarker->line_to(x, y, fIncludeLast);
-}
-
-void lmAggDrawer::SetLineColor(const lmColor_rgba8& c)
-{
-    m_pRenMarker->line_color(c);
-}
-
-void lmAggDrawer::SetFillColor(const lmColor_rgba8& c)
-{
-    m_pRenMarker->fill_color(c);
-}
-
-const lmColor_rgba8& lmAggDrawer::GetFillColor()
-{
-    return m_pRenMarker->fill_color();
-}
-
-const lmColor_rgba8& lmAggDrawer::GetLineColor()
-{
-    return m_pRenMarker->line_color();
-}
-
-void lmAggDrawer::DrawEllipse(int x, int y, int rx, int ry)
-{
-    m_pRenMarker->ellipse(x, y, rx, ry);
-}
-
-*/

@@ -113,6 +113,18 @@ public:
     void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)
             { m_pDrawer->GetTextExtent(string, w, h); }
 
+    //text (FreeType with AGG rederization)
+    bool FtLoadFont(wxString sFontName) { return m_pDrawer->FtLoadFont(sFontName); }
+    int FtDrawChar(unsigned int nChar) { return m_pDrawer->FtDrawChar(nChar); }
+    int FtDrawText(wxString& sText) { return m_pDrawer->FtDrawText(sText); }
+    int FtDrawText(unsigned int* pText, size_t nLength) { return m_pDrawer->FtDrawText(pText, nLength); }
+    void FtSetFontSize(double rPoints) { m_pDrawer->FtSetFontSize(rPoints); }
+    void FtSetFontHeight(double rPoints) { m_pDrawer->FtSetFontHeight(rPoints); }
+    void FtSetFontWidth(double rPoints) { m_pDrawer->FtSetFontWidth(rPoints); }
+    void FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos) { m_pDrawer->FtSetTextPosition(uxPos, uyPos); }
+    void FtGetTextExtent(const wxString& sText, lmLUnits* pWidth, lmLUnits* pHeight,
+                         lmLUnits* pDescender = NULL, lmLUnits* pAscender = NULL) 
+            { m_pDrawer->FtGetTextExtent(sText, pWidth, pHeight, pDescender, pAscender); }
 
 
 private:

@@ -202,11 +202,6 @@ lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) 
     m_uThickLineWidth = m_pVStaff->TenthsToLogical(6, 1);   // thick line width
     m_uSpacing = m_pVStaff->TenthsToLogical(4, 1);          // space between lines: 4 tenths
     m_uRadius = m_pVStaff->TenthsToLogical(2, 1);           // dots radius: 2 tenths
-
-    //default location (auto-layout)
-    m_xUserPosType = lmLOCATION_DEFAULT;
-    m_uxUserPos = 0;
-
 }
 
 lmBarline::~lmBarline()
@@ -283,18 +278,6 @@ wxString lmBarline::SourceXML(int nIndent)
     sSource += _T("</barline>\n");
 
     return sSource;
-}
-
-lmUPoint lmBarline::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
-{
-	// if no location is specified in LDP source file, this method is invoked from
-	// base class to ask derived object to compute a suitable position to
-	// place itself.
-	// uOrg is the assigned paper position for this object.
-
-	lmUPoint uPos = uOrg;
-	//TODO
-	return uPos;
 }
 
 lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)

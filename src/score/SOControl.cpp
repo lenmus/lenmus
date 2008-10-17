@@ -95,17 +95,6 @@ wxString lmSOControl::SourceLDP(int nIndent)
     return sSource;
 }
 
-lmUPoint lmSOControl::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
-{
-	// if no location is specified in LDP source file, this method is invoked from
-	// base class to ask derived object to compute a suitable position to
-	// place itself.
-	// uOrg is the assigned paper position for this object.
-
-	lmUPoint uPos = uOrg;
-	return uPos;
-}
-
 lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
  //   //DBG ------------------------------------------------------------------------------
@@ -125,7 +114,7 @@ lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
  //   return 0.0;
  //   //END DBG --------------------------------------------------------------------------
 	
-	return 0.0;
+	return 0.0f;
 
 }
 

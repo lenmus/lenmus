@@ -88,7 +88,7 @@ bool IsHigherTime(float t1, float t2)
 //---------------------------------------------------------------------------------------
 
 //location: default initialization
-lmLocation g_tDefaultPos = {0.0, 0.0, lmLOCATION_DEFAULT,lmLOCATION_DEFAULT,lmTENTHS,lmTENTHS};
+lmLocation g_tDefaultPos = {0.0f, 0.0f, lmTENTHS, lmTENTHS};
 
 //Empty string
 wxString lmEmptyString = _T("");

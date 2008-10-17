@@ -32,6 +32,8 @@
 #include "Shapes.h"
 #include "../score/Glyph.h"      //access to glyphs table
 #include "../score/Score.h"
+#include "../score/VStaff.h"
+#include "../score/Staff.h"
 #include "../app/ScoreCanvas.h"
 
 
@@ -183,10 +185,26 @@ void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
 {
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
 
-    pPaper->SetFont(*m_pFont);
-    pPaper->SetTextForeground(color);
-    pPaper->DrawText(sGlyph, m_uGlyphPos.x, m_uGlyphPos.y);
+    const bool lmUSE_FREETYPE = true;   //false = Platform native renderization,
+                                        //true = FreeType with AGG renderization
 
+    if (!lmUSE_FREETYPE || pPaper->IsDirectDrawer())
+    {
+        pPaper->SetFont(*m_pFont);
+        pPaper->SetTextForeground(color);
+        pPaper->DrawText(sGlyph, m_uGlyphPos.x, m_uGlyphPos.y);
+    }
+    else
+    {
+        lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
+        lmStaff* pStaff = pSO->GetVStaff()->GetStaff(pSO->GetStaffNum());
+        double rPointSize = pStaff->GetMusicFontSize();
+
+        pPaper->FtSetFontSize(rPointSize);
+        pPaper->SetTextForeground(color);
+        pPaper->FtSetTextPosition(m_uGlyphPos.x, m_uGlyphPos.y + pSO->TenthsToLogical(60) );
+        pPaper->FtDrawChar( (unsigned int)sGlyph.GetChar(0) );
+    }
     lmSimpleShape::Render(pPaper, color);
 }
 

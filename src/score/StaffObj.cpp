@@ -62,7 +62,6 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
 
     // initializations: positioning related info
     m_uPaperPos.y = 0.0f,   m_uPaperPos.x = 0.0f;
-	m_tSrcPos = g_tDefaultPos;
     m_uComputedPos.x = 0.0f,   m_uComputedPos.y = 0.0f;
 	m_fModified = false;
     m_pShapesMngr = new lmShapesMngr();     //default behaviour: only one shape
@@ -209,12 +208,16 @@ int lmScoreObj::DetachAuxObj(lmAuxObj* pAO)
 
 lmLocation lmScoreObj::SetUserLocation(lmLocation tPos, int nShapeIdx)
 {
+    //Returns previous location
+    //AWARE: Review method SetUserXLocation when doing changes in this one
+
 	//convert location to logical units
 	if (tPos.xUnits == lmTENTHS)
 		tPos.x = TenthsToLogical(tPos.x);
 	if (tPos.yUnits == lmTENTHS)
 		tPos.y = TenthsToLogical(tPos.y);
 
+    lmLocation tOldPos = {0.0f, 0.0f, lmLUNITS, lmLUNITS };
     lmGMObject* pGMObj = GetGraphicObject(nShapeIdx);
     if (pGMObj)
     {
@@ -222,6 +225,8 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos, int nShapeIdx)
 	    lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
         lmUPoint uShift(tPos.x - uShapePos.x, tPos.y - uShapePos.y);
         lmUPoint uUserShift = GetUserShift(nShapeIdx);
+        tOldPos.x = uShapePos.x;
+        tOldPos.y = uShapePos.y;
 		uUserShift.x += uShift.x;
 		uUserShift.y += uShift.y;
         this->SaveUserLocation(uUserShift.x, uUserShift.y, nShapeIdx);
@@ -253,43 +258,37 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos, int nShapeIdx)
         this->SaveUserLocation(tPos.x, tPos.y, nShapeIdx);
 	}
 
-	m_tSrcPos = m_tPos;
-	//m_tPos = tPos;
-	return m_tSrcPos;
+    //store new position and return previous one
+	return tOldPos;
 }
 
-void lmScoreObj::ResetObjectLocation()
+lmLUnits lmScoreObj::SetUserXLocation(lmLUnits uxPos, int nShapeIdx)
 {
-	m_tPos = m_tSrcPos;
+    //Returns previous y location.
+    //AWARE: Review method SetUserLocation when doing changes in this one
+    //This method is only used during interactive edition. Therefore, the code to be used
+    //during file load has been deleted
 
- //   // X position
- //   wxString sType = _T("");
-	//switch (m_tPos.xType) {
-	//	case lmLOCATION_DEFAULT:		sType = _T("LOCATION_DEFAULT"); break;
-	//	case lmLOCATION_COMPUTED:		sType = _T("LOCATION_COMPUTED"); break;
-	//	case lmLOCATION_USER_RELATIVE:	sType = _T("LOCATION_USER_RELATIVE"); break;
-	//	case lmLOCATION_USER_ABSOLUTE:	sType = _T("LOCATION_USER_ABSOLUTE"); break;
-	//	default:
-	//		sType = wxString::Format(_T("LOCATION %d"), m_tPos.xType);
-	//}
+    lmGMObject* pGMObj = GetGraphicObject(nShapeIdx);
+    wxASSERT(pGMObj);
 
-	//wxString sSource = wxString::Format(_T("x: %.2f %.2f - "), m_tPos.x, m_tPos.xUnits);
-	//sSource += sType;
+    lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
+    lmLUnits uxShift = uxPos - uShapePos.x;
+    lmLUnits uxUserShift = GetUserShift(nShapeIdx).x + uxShift;
+    lmLUnits uxOldPos = uShapePos.x;
+    this->SaveUserXLocation(uxUserShift, nShapeIdx);
 
-	//// Y position
- //   sType = _T("");
-	//switch (m_tPos.yType) {
-	//	case lmLOCATION_DEFAULT:		sType = _T("LOCATION_DEFAULT"); break;
-	//	case lmLOCATION_COMPUTED:		sType = _T("LOCATION_COMPUTED"); break;
-	//	case lmLOCATION_USER_RELATIVE:	sType = _T("LOCATION_USER_RELATIVE"); break;
-	//	case lmLOCATION_USER_ABSOLUTE:	sType = _T("LOCATION_USER_ABSOLUTE"); break;
-	//	default:
-	//		sType = wxString::Format(_T("LOCATION %d"), m_tPos.yType);
-	//}
+	//Move also attached AuxObjs to this ScoreObj
+	if (m_pAuxObjs && IsMainShape(nShapeIdx))
+	{
+		for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+		{
+			(*m_pAuxObjs)[i]->OnParentMoved(uxShift, 0.0f);
+		}
+	}
 
-	//sSource += wxString::Format(_T("  /  y: %.2f %.2f - %s\n"), m_tPos.y, m_tPos.yUnits, sType.c_str());
-
-	//wxLogMessage(sSource);
+    //return previous y position
+	return uxOldPos;
 }
 
 void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
@@ -486,7 +485,7 @@ wxString lmScoreObj::SourceLDP(int nIndent)
 
 wxString lmScoreObj::SourceXML(int nIndent)
 {
-    //TODO
+    //TODO: Code for SourceXML
 	wxString sSource = _T("");
 	return sSource;
 }
@@ -507,13 +506,11 @@ WX_DEFINE_LIST(AuxObjsList);
 
 static int m_IdCounter = 0;        //to assign unique IDs to ComponentObjs
 
-lmComponentObj::lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, lmLocation* pPos,
-                               bool fIsDraggable)
+lmComponentObj::lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, bool fIsDraggable)
     : lmScoreObj(pParent)
 {
     m_nId = m_IdCounter++;      // give it an ID
     m_nType = nType;            // save type
-    m_tPos = *pPos;
 
     // behaviour
     m_fIsDraggable = fIsDraggable;
@@ -523,191 +520,15 @@ lmComponentObj::~lmComponentObj()
 {
 }
 
-//wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
-//{
-//    wxString sSource = _T("");
-//
-  //  // X position
-  //  wxString sPosX = _T("");
-  //  if (m_tPos.xType != lmLOCATION_DEFAULT && m_tPos.xType != lmLOCATION_COMPUTED)
-  //  {
-  //      //value
-  //      if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
-		//{
-		//	if (m_tPos.xUnits == lmLUNITS)
-		//		sPosX = wxString::Format(_T("dx:%s"),
-		//					DoubleToStr((double)LogicalToTenths(m_tPos.x), 4).c_str() );
-		//	else if (m_tPos.xUnits == lmTENTHS)
-		//		sPosX = wxString::Format(_T("dx:%s"), DoubleToStr((double)m_tPos.x, 4).c_str() );
-		//}
-  //      else
-		//{
-		//	//absolute. Convert to relative
-		//	if (m_tPos.xUnits == lmLUNITS)
-		//		sPosX = wxString::Format(_T("dx:%s"),
-		//					DoubleToStr((double)LogicalToTenths(m_tPos.x - uPaperPos.x), 4).c_str() );
-		//	else if (m_tPos.xUnits == lmTENTHS)
-		//		sPosX = wxString::Format(_T("dx:%.4f"),
-		//					DoubleToStr((double)(m_tPos.x - LogicalToTenths(uPaperPos.x)), 4).c_str() );
-		//}
-
-  //      //units
-  //      wxString sUnits = _T("");
-  //      if (m_tPos.xUnits != lmTENTHS)
-  //      {
-  //      }
-  //      sPosX += sUnits;
-  //  }
-
-  //  if (sPosX != _T(""))
-  //  {
-  //      sSource += _T(" ");
-  //      sSource += sPosX;
-  //      sSource += _T("");
-  //  }
-
-  //  // Y position
-  //  wxString sPosY = _T("");
-  //  if (m_tPos.yType != lmLOCATION_DEFAULT && m_tPos.yType != lmLOCATION_COMPUTED)
-  //  {
-  //      //value
-  //      if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
-		//{
-		//	if (m_tPos.xUnits == lmLUNITS)
-		//		sPosY = wxString::Format(_T("dy:%s"),
-		//						DoubleToStr((double)LogicalToTenths(m_tPos.y), 4).c_str() );
-		//	else if (m_tPos.xUnits == lmTENTHS)
-		//		sPosY = wxString::Format(_T("dy:%s"), DoubleToStr((double)m_tPos.y, 4).c_str() );
-		//}
-  //      else
-		//{
-		//	//absolute. Convert to relative
-		//	if (m_tPos.yUnits == lmLUNITS)
-		//		sPosY = wxString::Format(_T("dy:%s"),
-		//					DoubleToStr((double)LogicalToTenths(m_tPos.y - uPaperPos.y), 4).c_str() );
-		//	else if (m_tPos.yUnits == lmTENTHS)
-		//		sPosY = wxString::Format(_T("dy:%s"),
-		//					DoubleToStr((double)(m_tPos.y - LogicalToTenths(uPaperPos.y)), 4).c_str() );
-		//}
-
-  //      //units
-  //      wxString sUnits = _T("");
-  //      if (m_tPos.yUnits != lmTENTHS)
-  //      {
-  //      }
-  //      sPosY += sUnits;
-  //  }
-
-  //  if (sPosY != _T(""))
-  //  {
-  //      sSource += _T(" ");
-  //      sSource += sPosY;
-  //      sSource += _T("");
-  //  }
-//
-//    return sSource;
-//}
-
-lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
+lmUPoint lmComponentObj::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
-	lmUPoint uPos = GetReferencePaperPos();
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-#if 1
-	return ComputeBestLocation(uPos, pPaper);
-
-#else
-
-	////if default location, ask derived object to compute the best position for itself
- //   if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
-	//	uPos = ComputeBestLocation(uPos, pPaper);
-	//else if (m_tPos.xType == lmLOCATION_COMPUTED || m_tPos.yType == lmLOCATION_COMPUTED)
-	//{
-	//	m_tPos = m_tSrcPos;
-	//	uPos = ComputeBestLocation(uPos, pPaper);
-	//}
-
-
- //   if (m_tPos.xType == lmLOCATION_DEFAULT)
-	//{
-	//	//use the computed best location
-	//	m_tPos.x = uPos.x;
-	//	m_tPos.xType = lmLOCATION_COMPUTED;
-	//	m_tPos.xUnits = lmLUNITS;
- //   }
-
-	//else if (m_tPos.xType == lmLOCATION_COMPUTED)
-	//{
-	//	//the default position was computed in a previous invocation. Use it
-	//	//The computed location is always absolute, in tenths
-	//	uPos.x = m_tPos.x;
- //   }
-
-	//else if (m_tPos.xType == lmLOCATION_USER_ABSOLUTE)
-	//{
-	//	//the position was fixed by user (either in source file or by dragging object)
-	//	//Use it
-	//	if (m_tPos.xUnits == lmLUNITS)
-	//		uPos.x = m_tPos.x;
-	//	else if (m_tPos.xUnits == lmTENTHS)
-	//		uPos.x = TenthsToLogical( m_tPos.x );
-	//}
-
-	//else if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
-	//{
-	//	//the position was fixed by user (either in source file or by dragging object)
-	//	//Use it
-	//	if (m_tPos.xUnits == lmLUNITS)
-	//		uPos.x += m_tPos.x;
-	//	else if (m_tPos.xUnits == lmTENTHS)
-	//		uPos.x += TenthsToLogical( m_tPos.x );
-	//}
-	//else
-	//	wxASSERT(false);
-
-
- //   if (m_tPos.yType == lmLOCATION_DEFAULT)
-	//{
-	//	//use the computed best location
-	//	m_tPos.y = uPos.y;
-	//	m_tPos.yType = lmLOCATION_COMPUTED;
-	//	m_tPos.yUnits = lmLUNITS;
- //   }
-
-	//else if (m_tPos.yType == lmLOCATION_COMPUTED)
-	//{
-	//	//the position was computed in a previous invocation or was fixed by user.
-	//	//Use it
-	//	//The computed location is always absolute, in tenths
-	//	uPos.y = m_tPos.y;
- //   }
-
-	//else if (m_tPos.yType == lmLOCATION_USER_ABSOLUTE)
-	//{
-	//	//the position was fixed by user (either in source file or by dragging object)
-	//	//Use it
-	//	if (m_tPos.yUnits == lmLUNITS)
-	//		uPos.y = m_tPos.y;
-	//	else if (m_tPos.yUnits == lmTENTHS)
-	//		uPos.y = TenthsToLogical( m_tPos.y );
-	//}
-
-	//else if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
-	//{
-	//	//the position was fixed by user (either in source file or by dragging object)
-	//	//Use it
-	//	if (m_tPos.yUnits == lmLUNITS)
-	//		uPos.y += m_tPos.y;
-	//	else if (m_tPos.xUnits == lmTENTHS)
-	//		uPos.y += TenthsToLogical( m_tPos.y );
-	//}
-	//else
-	//	wxASSERT(false);
-
-	//return uPos;
-#endif
-
+	return uOrg;
 }
-
 
 
 //-------------------------------------------------------------------------------------------------
@@ -716,7 +537,7 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 
 lmStaffObj::lmStaffObj(lmScoreObj* pParent, EStaffObjType nType, lmVStaff* pStaff, int nStaff,
                    bool fVisible, bool fIsDraggable) :
-    lmComponentObj(pParent, lm_eStaffObj, &g_tDefaultPos, fIsDraggable)
+    lmComponentObj(pParent, lm_eStaffObj, fIsDraggable)
 {
     wxASSERT(nStaff > 0);
 
@@ -743,8 +564,11 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 {
     PrepareToCreateShapes();
 
-	lmUPoint uOrg = SetReferencePos(pPaper);
-	m_uComputedPos = ComputeObjectLocation(pPaper);			// compute location
+    //save current paper position in m_uPaperPos and returns it
+	lmUPoint uOrg = SetReferencePos(pPaper);        //here uPos == m_uPaperPos
+
+    //ask object to compute a suitable positio. Normally it returns m_uPaperPos
+    m_uComputedPos = ComputeBestLocation(m_uPaperPos, pPaper);
 
 	lmLUnits uWidth = 0;
     if (m_fVisible || IsMultishaped())
@@ -957,6 +781,15 @@ void lmShapesMngr::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)
 	m_uUserShift.y = yPos;
 }
 
+void lmShapesMngr::SaveUserXLocation(lmLUnits xPos, int nShapeIdx)
+{
+    //default implementation for virtual method.
+    //It assumes that ScoreObj only has a shape. 
+
+    WXUNUSED(nShapeIdx);
+	m_uUserShift.x = xPos;
+}
+
 
 lmUPoint lmShapesMngr::GetUserShift(int nShapeIdx)
 {
@@ -1044,6 +877,22 @@ void lmMultiShapesMngr::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShap
 
     //save new user position
     m_ShapesInfo[nShapeIdx]->uUserShift = lmUPoint(xPos, yPos);
+}
+
+void lmMultiShapesMngr::SaveUserXLocation(lmLUnits xPos, int nShapeIdx)
+{
+    //if necessary, create empty shapes info entries
+    int nToAdd = nShapeIdx - (int)m_ShapesInfo.size() + 1;
+    for (int i=0; i < nToAdd; ++i)
+    {
+        lmShapeInfo* pShapeInfo = new lmShapeInfo;
+        pShapeInfo->pGMObj = (lmGMObject*)NULL;
+        pShapeInfo->uUserShift = lmUPoint(0.0f, 0.0f);
+        m_ShapesInfo.push_back(pShapeInfo);
+    }
+
+    //save new user position
+    m_ShapesInfo[nShapeIdx]->uUserShift.x = xPos;
 }
 
 lmUPoint lmMultiShapesMngr::GetUserShift(int nShapeIdx)

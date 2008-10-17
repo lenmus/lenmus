@@ -1878,11 +1878,11 @@ void lmVStaff::SetUpFonts(lmPaper* pPaper)
     // to use on that staff
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
-        SetFont(GetStaff(nStaff), pPaper);
+        SetFontData(GetStaff(nStaff), pPaper);
     }
 }
 
-void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
+void lmVStaff::SetFontData(lmStaff* pStaff, lmPaper* pPaper)
 {
     // Font "LeMus Notas" has been designed to draw on a staff whose interline
     // space is of 512 FUnits. This gives an optimal rendering on VGA displays (96 pixels per inch)
@@ -1916,8 +1916,8 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
         lmLUnits uWidth, uHeight;
         pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
         rScale = 2.0f * (4.0f * uLineSpacing) / uHeight;
-        //wxLogMessage(_T("[lmVStaff::SetFont] Staff height = %.2f, uHeight = %.2f, scale = %.4f, g_rScreenDPI=%.2f"),
-        //    (4.0f * uLineSpacing), uHeight, rScale, g_rScreenDPI);
+        wxLogMessage(_T("[lmVStaff::SetFont] Staff height = %.2f, uHeight = %.2f, scale = %.4f, g_rScreenDPI=%.2f"),
+            (4.0f * uLineSpacing), uHeight, rScale, g_rScreenDPI);
     }
 
     // the font for drawing will be scaled by the DC.
@@ -1927,6 +1927,27 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     //// place dealing with device units
     //int dyLinesD = pPaper->LogicalToDeviceY(100 * dyLinesL);
     //pStaff->SetFontDrag( pPaper->GetFont((3 * dyLinesD) / 100) );
+
+    //New code cor FreeType with AGG
+    //Font "LeMus Notas" has been designed to draw on a staff whose interline space
+    //is 512 FUnits.
+    //
+    //The algorithm consists in determining the font point size so that the C clef 
+    //music symbol will  have the same height than the staff height. So the algorithm
+    //is just a regla de tres: si con 100 pt ocupa uHeight, con rPointSize ocupará 
+    //4 x LineSpacing. Therefore:
+    //
+    //                   100 x (4 x LineSpacing)
+    //    rPointSize =  -------------------------
+    //                            uHeight
+
+    wxString sGlyph( aGlyphsInfo[GLYPH_C_CLEF].GlyphChar );
+    lmLUnits uWidth, uHeight;
+    pPaper->FtSetFontSize(100.0);
+    pPaper->FtGetTextExtent(sGlyph, &uWidth, &uHeight);
+    double rPointSize = (400.0f * uLineSpacing) / uHeight;
+
+    pStaff->SetMusicFontSize(rPointSize);
 }
 
 lmLUnits lmVStaff::GetStaffOffset(int nStaff)

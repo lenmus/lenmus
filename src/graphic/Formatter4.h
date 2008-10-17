@@ -57,7 +57,6 @@ private:
     void RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem);
     bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nInstr);
     lmLUnits ComputeSystemHeight();
-	void ResetLocation();
     void SplitMeasureColumn(lmLUnits uAvailable);
 	void AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff* pVStaff, int nInstr);
 	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmVStaff* pVStaff, int nInstr);

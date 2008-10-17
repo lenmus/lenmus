@@ -45,7 +45,7 @@
 //-----------------------------------------------------------------------------------------
 
 lmAuxObj::lmAuxObj(bool fIsDraggable) :
-    lmComponentObj((lmComponentObj*)NULL, lm_eAuxObj, &g_tDefaultPos, fIsDraggable)
+    lmComponentObj((lmComponentObj*)NULL, lm_eAuxObj, fIsDraggable)
 {
 }
 
@@ -55,7 +55,7 @@ void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
 	//assign AuxObj reference position: the parent's m_uComputedPos value
 	SetReferencePos(pPaper);
 
-	m_uComputedPos = ComputeObjectLocation(pPaper);
+    m_uComputedPos = ComputeBestLocation(m_uPaperPos, pPaper);
     LayoutObject(pBox, pPaper, m_uComputedPos, colorC);
 }
 

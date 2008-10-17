@@ -1661,9 +1661,7 @@ void lmMusicXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
         pElement = pNode;
     }
 
-    lmLocation tPos;
-    tPos.xType = lmLOCATION_DEFAULT;
-    tPos.yType = lmLOCATION_DEFAULT;
+    lmLocation tPos = g_tDefaultPos;
 
     if (sTitle == _T(""))
     {
@@ -1922,30 +1920,24 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
     pPos->y = 0;
     pPos->xUnits = lmTENTHS;
     pPos->yUnits = lmTENTHS;
-    pPos->xType = lmLOCATION_USER_RELATIVE;
-    pPos->yType = lmLOCATION_USER_RELATIVE;
 
     // default-x (Absolute position)
-    if (sXDef != _T("NoData")) {
-        pPos->xType = lmLOCATION_USER_ABSOLUTE;
-        fError = !sXDef.ToLong(&nValue);
-        //TODO control error and range
-        wxASSERT(!fError);
-        pPos->x = (int)nValue;
+    if (sXDef != _T("NoData"))
+    {
+        //TODO: not yet supported
+        wxASSERT(false);
     }
 
     // default-y  (Absolute position)
-    if (sYDef != _T("NoData")) {
-        pPos->yType = lmLOCATION_USER_ABSOLUTE;
-        fError = !sYDef.ToLong(&nValue);
-        //TODO control error and range
-        wxASSERT(!fError);
-        pPos->y = (int)nValue;
+    if (sYDef != _T("NoData"))
+    {
+        //TODO: not yet supported
+        wxASSERT(false);
     }
 
     // relative-x (relative position)
-    if (sXRel != _T("NoData")) {
-        pPos->xType = lmLOCATION_USER_RELATIVE;
+    if (sXRel != _T("NoData"))
+    {
         fError = !sXRel.ToLong(&nValue);
         //TODO control error and range
         wxASSERT(!fError);
@@ -1953,8 +1945,8 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
     }
 
     // relative-y (relative position)
-    if (sYRel != _T("NoData")) {
-        pPos->yType = lmLOCATION_USER_RELATIVE;
+    if (sYRel != _T("NoData"))
+    {
         fError = !sYRel.ToLong(&nValue);
         //TODO control error and range
         wxASSERT(!fError);

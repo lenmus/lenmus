@@ -184,8 +184,6 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("time")] = _T("time");
         m_Tags[0][_T("title")] = _T("title");
         m_Tags[0][_T("up")] = _T("up");
-        m_Tags[0][_T("x")] = _T("x");
-        m_Tags[0][_T("y")] = _T("y");
         m_Tags[0][_T("yes")] = _T("yes");
 
         //special context: note durations
@@ -355,8 +353,6 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("time")] = _T("metrica");
         m_Tags[0][_T("title")] = _T("titulo");
         m_Tags[0][_T("up")] = _T("arriba");
-        m_Tags[0][_T("x")] = _T("x");
-        m_Tags[0][_T("y")] = _T("y");
         m_Tags[0][_T("yes")] = _T("yes");
 
         //special context: note durations

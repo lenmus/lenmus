@@ -614,8 +614,6 @@ lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocum
 	m_tPos.x = uPos.x;
 	m_tPos.y = uPos.y;
     //wxLogMessage(_T("[lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj] User pos (%.2f, %.2f)"), uPos.x, uPos.y );
-	m_tPos.xType = lmLOCATION_USER_RELATIVE;
-	m_tPos.yType = lmLOCATION_USER_RELATIVE;
 	m_tPos.xUnits = lmLUNITS;
 	m_tPos.yUnits = lmLUNITS;
 
@@ -1740,21 +1738,15 @@ lmCmdMoveNote::lmCmdMoveNote(lmScoreDocument *pDoc, lmNote* pNote, const lmUPoin
 							 int nSteps)
 	: lmScoreCommand(_("move note"), pDoc, (lmVStaffCursor*)NULL )
 {
-	m_tPos.x = uPos.x;
-	m_tPos.xType = lmLOCATION_USER_RELATIVE;
-	m_tPos.xUnits = lmLUNITS;
-	m_tPos.y = uPos.y;	//(g_fFreeMove ? uPos.y : pNote->GetUserShift().y);
-	m_tPos.yType = lmLOCATION_USER_RELATIVE;
-	m_tPos.yUnits = lmLUNITS;
-
+	m_uxPos = uPos.x;	//(g_fFreeMove ? uPos.y : pNote->GetUserShift().y);
 	m_pNote = pNote;
     m_nSteps = nSteps;
 }
 
 bool lmCmdMoveNote::Do()
 {
-    //m_tOldPos = m_pNote->SetUserLocation(m_tPos);
 	m_pNote->ChangePitch(m_nSteps);
+    m_uxOldPos = m_pNote->SetUserXLocation(m_uxPos);
 
 	return CommandDone(lmSCORE_MODIFIED);
 }
@@ -1763,7 +1755,7 @@ bool lmCmdMoveNote::UndoCommand()
 {
     //Direct command. NO UNDO LOG
 
-	//m_pNote->SetUserLocation(m_tOldPos);
+	m_pNote->SetUserXLocation(m_uxOldPos);
 	m_pNote->ChangePitch(-m_nSteps);
 
 	m_pDoc->Modify(m_fDocModified);

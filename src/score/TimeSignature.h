@@ -54,7 +54,6 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 	wxString GetName() const { return _T("time signature"); }
     void StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx=0);
 

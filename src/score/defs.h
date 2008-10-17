@@ -603,22 +603,14 @@ public:
 //Location data
 //---------------------------------------------------------------------------------------
 
-enum lmELocationType
+typedef struct lmLocationStruct
 {
-	lmLOCATION_DEFAULT = 0,			//user didn't specify location
-	lmLOCATION_USER_RELATIVE,		//user specified a relative location
-    lmLOCATION_USER_ABSOLUTE,		//user specified an absolute location
-	lmLOCATION_COMPUTED,			//computed default location
-};
-
-typedef struct lmLocationStruct {
     float x;
     float y;
-    lmELocationType xType;
-    lmELocationType yType;
     lmEUnits xUnits;
     lmEUnits yUnits;
-} lmLocation;
+}
+lmLocation;
 
 //global variables used as default initializators
 extern lmLocation g_tDefaultPos;          // defined in defs.cpp

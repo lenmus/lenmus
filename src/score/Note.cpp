@@ -442,17 +442,6 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-lmUPoint lmNote::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
-{
-	// if no location is specified in LDP source file, this method is invoked from
-	// base class to ask derived object to compute a suitable position to
-	// place itself.
-	// uOrg is the assigned paper position for this object.
-
-	lmUPoint uPos = uOrg;
-	return uPos;
-}
-
 lmLUnits lmNote::CheckNoteNewPosition(lmLUnits uyOldPos, lmLUnits uyNewPos, int* pnSteps)
 {
     // A note only can be moved in discrete vertical steps (staff lines/spaces).
@@ -1057,90 +1046,6 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
 	pNoteShape->AddNoteHead(m_pNoteheadShape);
 
 }
-
-//void lmNote::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-//                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
-//{
-//    //Constraint: A note must stay on staff lines or spaces
-//
-//    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-//
-//    lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
-//    lmUPoint nShiftVector = pagePosL - uDragStartPos;    // the displacement
-//    int nSteps = (int)(nShiftVector.y / dyHalfLine);        // trim the displacement to half line steps
-//    nShiftVector.y -= nSteps;
-//    lmUPoint newPaperPos = uPaperPos + nShiftVector;
-//    // then the shape must be drawn at:
-//    lmDPoint ptNewD;
-//    ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_uGlyphPos.x) + offsetD.x;
-//    ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_uGlyphPos.y) + offsetD.y;
-//    pDragImage->Move(ptNewD);
-//
-//    //// compute new pitch
-//    //int nNewPitch = PosOnStaffToPitch(nSteps);
-//    //SetUpPitchRelatedVariables(nNewPitch);
-//}
-//
-//lmUPoint lmNote::EndDrag(const lmUPoint& uPos)
-//{
-//    lmUPoint uOldPos(m_uPaperPos + m_uGlyphPos);
-//
-//    /*
-//    Notes can not freely moved. They must stay on staff lines or spaces
-//    */
-//    lmLUnits udyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
-//    lmLUnits uShift = - (uPos.y - GetGlyphPosition().y);
-//    int nSteps = (int)(uShift / udyHalfLine);        // trim the displacement to half line steps
-//
-//    // compute new pitch
-//    int nNewPitch = PosOnStaffToPitch(nSteps);
-//    SetUpPitchRelatedVariables(nNewPitch);
-//
-//    //wxLogMessage( wxString::Format(wxT("EndDrag: nShift=%d, nSteps=%d, nNewPitch=%d"),
-//    //    nShift, nSteps, nNewPitch ) );
-//
-//    //ojo: estas dos líneas son el comportamiento de la clase base. Hay que dejarlas
-//    //de momento porque el flag m_fFixedPos impide que se actualice la posición
-//    // ¿Llevarlo a SetUpPitchRelatedVariables() ?
-//    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
-//    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
-//
-//
-//    return lmUPoint(uOldPos);
-//
-//}
-
-//int lmNote::PosOnStaffToPitch(int nSteps)
-//{
-//    // When the note is dragged it is necessary to compute the new pitch from the
-//    // its new position on the paper. From the paper displacement it is computed how
-//    // many half line steps the note has been moved. This method receives the steps
-//    // and computes the new pitch
-//
-//    int nPos = GetPosOnStaff() + nSteps;
-//    switch (GetClefType()) {
-//        case lmE_Sol :
-//            return nPos + lmC4_DPITCH;
-//        case lmE_Fa4 :
-//            return nPos + lmC4_DPITCH - 12;
-//        case lmE_Fa3 :
-//            return nPos + lmC4_DPITCH - 10;
-//        case lmE_Do1 :
-//            return nPos + lmC4_DPITCH - 2;
-//        case lmE_Do2 :
-//            return nPos + lmC4_DPITCH - 4;
-//        case lmE_Do3 :
-//            return nPos + lmC4_DPITCH - 6;
-//        case lmE_Do4 :
-//            return nPos + lmC4_DPITCH - 8;
-//        case lmE_Undefined:
-//            return nPos + lmC4_DPITCH;      //TODO: review this value
-//        default:
-//            wxASSERT(false);
-//            return 0;    //to get the compiler happy
-//    }
-//
-//}
 
 void lmNote::SetUpPitchRelatedVariables(lmDPitch nNewPitch)
 {

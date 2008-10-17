@@ -299,8 +299,8 @@ public:
 private:
     friend class lmColStaffObjs;
 
-	//seetings
-    void SetFont(lmStaff* pStaff, lmPaper* pPaper);
+	//settings
+    void SetFontData(lmStaff* pStaff, lmPaper* pPaper);
 
     //error management
     inline void SetError(wxString sMsge) { m_sErrorMsg = sMsge; }
