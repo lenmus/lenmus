@@ -51,28 +51,28 @@ public:
 	//---- specific methods of this class ------------------------
 
 	// margins
-    lmLUnits GetAfterSpace() { return m_uAfterSpace; }
-    lmLUnits GetLeftMargin() { return m_uLeftMargin; }
-    lmLUnits GetRightMargin() { return m_uRightMargin; }
-    void SetAfterSpace(lmLUnits nLogicalUnits) { m_uAfterSpace = nLogicalUnits; }
-    void SetLeftMargin(lmLUnits nLogicalUnits) { m_uLeftMargin = nLogicalUnits; }
-    void SetRightMargin(lmLUnits nLogicalUnits) { m_uRightMargin = nLogicalUnits; }
-    void SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nAfter) {
-                m_uAfterSpace = nAfter;
-                m_uLeftMargin = nLeft;
-                m_uRightMargin = nRight;
-    }
+    inline lmLUnits GetAfterSpace() { return m_uAfterSpace; }
+    inline lmLUnits GetLeftMargin() { return m_uLeftMargin; }
+    inline lmLUnits GetRightMargin() { return m_uRightMargin; }
+    inline void SetAfterSpace(lmLUnits nLogicalUnits) { m_uAfterSpace = nLogicalUnits; }
+    inline void SetLeftMargin(lmLUnits nLogicalUnits) { m_uLeftMargin = nLogicalUnits; }
+    inline void SetRightMargin(lmLUnits nLogicalUnits) { m_uRightMargin = nLogicalUnits; }
+    inline void SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nAfter) {
+                        m_uAfterSpace = nAfter;
+                        m_uLeftMargin = nLeft;
+                        m_uRightMargin = nRight;
+            }
 
     // sizes
     lmLUnits GetHeight();
 
-    lmLUnits GetLineSpacing() { return m_uSpacing; }
-    lmLUnits GetLineThick() { return m_uLineThickness; }
-    int GetNumLines() { return m_nNumLines; }
+    inline lmLUnits GetLineSpacing() { return m_uSpacing; }
+    inline lmLUnits GetLineThick() { return m_uLineThickness; }
+    inline int GetNumLines() { return m_nNumLines; }
 
     //font to draw music symbols on this staff
-    wxFont* GetFontDraw() { return m_pFontDraw; }
-    void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
+    inline wxFont* GetFontDraw() { return m_pFontDraw; }
+    inline void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
     inline void SetMusicFontSize(double rPointSize) { m_rFontPoints = rPointSize; }
     inline double GetMusicFontSize() { return m_rFontPoints; }
 
@@ -82,7 +82,7 @@ public:
     lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext);
     inline lmContext* GetLastContext() { return m_pLastContext; }
     void RemoveContext(lmContext* pContext, lmStaffObj* pSO = (lmStaffObj*)NULL);
-
+    inline lmEClefType GetPreviousFirstClefType() const { return m_nPreviousFirstClef; }
 
     //debug
     wxString Dump();
@@ -112,6 +112,7 @@ private:
 	//Contexts are organized as a double linked list. First and last nodes:
 	lmContext*		m_pFirstContext;
 	lmContext*		m_pLastContext;
+    lmEClefType     m_nPreviousFirstClef;   //to know previous clef when clef is deleted
 
     //cursor (for edition). Points to current insertion position for this staff
 

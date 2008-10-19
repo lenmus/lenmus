@@ -38,6 +38,7 @@
 
 #include "Score.h"
 #include "VStaff.h"
+#include "Staff.h"
 #include "Context.h"
 #include "Glyph.h"
 #include "UndoRedo.h"
@@ -313,17 +314,15 @@ lmEClefType lmNote::GetClefType()
 
 	//during note construction we have the context. use it
 	if (m_fBeingBuilt)
-		return m_pContext->GetClef()->GetClefType();
+		return m_pContext->GetClefType();
 
-	//in other cases, get the context
+	//in other cases, get the context clef
 	lmContext* pContext = GetCurrentContext();
-    if (pContext)
-    {
-        lmClef* pClef = pContext->GetClef();
-        return (pClef ? pClef->GetClefType() : lmE_Undefined);
-    }
-	else
-		return lmE_Undefined;
+    lmEClefType nType = (pContext ? pContext->GetClefType() : lmE_Undefined);
+    if (nType == lmE_Undefined)
+        nType = m_pVStaff->GetStaff(m_nStaffNum)->GetPreviousFirstClefType();
+
+    return nType;
 }
 
 lmTimeSignature* lmNote::GetTimeSignature()
@@ -1253,7 +1252,7 @@ void lmNote::ModifyPitch(int nAlterIncr)
     m_anPitch.Set(GetStep(), GetOctave(), m_anPitch.Accidentals() + nAlterIncr);
 }
 
-void lmNote::ModifyPitch(lmClef* pOldClef, lmClef* pNewClef)
+void lmNote::ModifyPitch(lmEClefType nNewClefType, lmEClefType nOldClefType)
 {
     //The clef for this note has been chaged from pOldClef to pNewClef.
     //This method changes the note pitch to keep the note position on staff. For
@@ -1264,8 +1263,8 @@ void lmNote::ModifyPitch(lmClef* pOldClef, lmClef* pNewClef)
     // if pitch is not yet defined, nothing to do
     if (!IsPitchDefined()) return;
 
-    int nOldPos = PitchToPosOnStaff(pOldClef->GetClefType(), m_anPitch);
-    lmDPitch nNewDPitch = PosOnStaffToPitch(pNewClef->GetClefType(), nOldPos);
+    int nOldPos = PitchToPosOnStaff(nOldClefType, m_anPitch);
+    lmDPitch nNewDPitch = PosOnStaffToPitch(nNewClefType, nOldPos);
     m_anPitch.Set(DPitch_Step(nNewDPitch), DPitch_Octave(nNewDPitch), m_anPitch.Accidentals());
 }
 
@@ -1952,6 +1951,7 @@ int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch)
 
 	// pitch is defined. Position will depend on key
     switch (nClef) {
+        case lmE_Undefined :
         case lmE_Sol :
             return aPitch.ToDPitch() - lmC4_DPITCH;
         case lmE_Fa4 :
@@ -1972,7 +1972,6 @@ int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch)
             return aPitch.ToDPitch() - lmC4_DPITCH + 10;
         default:
             // no clef, assume lmE_Sol
-            wxLogMessage(_T("[PitchToPosOnStaff] Clef %d not defined "), nClef);
             return aPitch.ToDPitch() - lmC4_DPITCH;
     }
 }
@@ -1990,6 +1989,7 @@ lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos)
     //        etc.
 
     switch (nClef) {
+        case lmE_Undefined :
         case lmE_Sol :
             return (lmDPitch)(nPos + lmC4_DPITCH);
         case lmE_Fa4 :
@@ -2010,7 +2010,6 @@ lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos)
             return (lmDPitch)(nPos + lmC4_DPITCH - 10);
         default:
             // no clef, assume lmE_Sol
-            wxLogMessage(_T("[PosOnStaffToPitch] Clef %d not defined "), nClef);
             return (lmDPitch)(nPos + lmC4_DPITCH);
     }
 }

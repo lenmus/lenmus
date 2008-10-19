@@ -305,8 +305,11 @@ flexible and extensible, with a light weight design, and very good \
 reliability and stability.") +
         _T("</p><p>") +
         _("This program uses the <b>FreeType 2</b> \
-software. It is a free, open source, high-quality, and portable font engine \
-developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is \
+software. It is a free open source font engine, designed to be small, efficient, \
+highly customizable and portable, while capable of producing high-quality output \
+(glyph images). It can be used in graphics libraries, display servers, font \
+conversion tools, text image generation tools, and many other products as well. \
+It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is \
 copyright © 1996-2002 The FreeType Project (http://www.freetype.org).") +
         _T("</p><p>") +
         _("LenMus Phonascus is built using the <b>wxWidgets</b> application framework \
@@ -319,7 +322,6 @@ to use it in commercial products without licencing.") +
         _T("</p></body></html>");
 
         m_pHtmlWindow->SetPage(sContent);
-
 }
 
 void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))

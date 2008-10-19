@@ -130,26 +130,34 @@ private:
     void PropagateContextChange(lmContext* pStartContext, int nStaff,
                                 lmKeySignature* pNewKey, lmKeySignature* pOldKey,
                                 bool fKeyKeepPitch);
-    void PropagateContextChange(lmContext* pStartContext, int nStaff, lmClef* pNewClef,
-                                lmClef* pOldClef, bool fClefKeepPosition);
+    void PropagateContextChange(lmContext* pStartContext, int nStaff,
+                                lmEClefType nNewClefType, lmEClefType nOldClefType,
+                                bool fClefKeepPosition);
     void PropagateContextChange(lmContext* pStartContext, int nStaff);
     lmSegment* GetNextSegment();
 
     //staffobjs management
-    void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO, int nStaff);
+    void Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
+                   lmStaffObj* pStartSO, int nStaff);
     void AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStartSO);
     void ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey, lmStaffObj* pStartSO);
 
 
     //member variables
 
+    //To remove
     std::list<lmStaffObj*>	m_StaffObjs;		//list of StaffObjs in this segment
     lmColStaffObjs* m_pOwner;
-    int				m_nNumSegment;				//0..n-1
-    lmContext*		m_pContext[lmMAX_STAFF];	//ptr to current context for each staff
-    int             m_bVoices;                  //voices in this segment. One bit per used voice
-    float	        m_rMaxTime;                 //occupied time from start of the measure
 
+    //To keep
+    int			m_nNumSegment;				//0..n-1
+    lmContext*	m_pContext[lmMAX_STAFF];	//ptr to current context for each staff
+    int         m_bVoices;                  //voices in this segment. One bit per used voice
+    float	    m_rMaxTime;                 //occupied time from start of the measure
+
+    //new
+    lmItCSO     m_itFirstSO;                //first SO in this measure (NULL, pSO)
+    lmItCSO     m_itLastSO;                 //last SO in this measure (barline, NULL, pSO)
 };
 
 
@@ -243,6 +251,9 @@ private:
 	std::vector<lmSegment*>		m_Segments;			//segments collection
     int                         m_nNumStaves;       //num staves in the collection
 	lmVStaffCursor*          	m_pVCursor;			//cursor
+
+    //New implementation in a single list
+    std::list<lmStaffObj*>	    m_TheSOList;    //list of StaffObjs in the collection
 
 };
 

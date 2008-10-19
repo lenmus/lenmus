@@ -162,7 +162,6 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
             memDC.SetUserScale( m_rScale, m_rScale );
             lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, m_xPageSize, m_yPageSize, m_rScale);
 #if lmUSE_FREETYPE
-            //TODO: During layout phase we need the font to compute glyph path and save it in the shape
             pDrawer->FtLoadFont(m_sMusicFont);
 #endif
             m_pPaper->SetDrawer(pDrawer);

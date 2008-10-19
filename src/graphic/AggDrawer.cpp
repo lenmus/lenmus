@@ -188,8 +188,8 @@ void lmAggDrawer::Initialize()
     m_xDevicePixelsPerLU = (double)m_pDC->LogicalToDeviceXRel(100000) / 100000.0;
     m_yDevicePixelsPerLU = (double)m_pDC->LogicalToDeviceYRel(100000) / 100000.0;
 
-    wxLogMessage(_T("[lmAggDrawer::Initialize] m_xDevicePixelsPerLU=%f, m_yDevicePixelsPerLU=%f"),
-        m_xDevicePixelsPerLU, m_yDevicePixelsPerLU);
+    //wxLogMessage(_T("[lmAggDrawer::Initialize] m_xDevicePixelsPerLU=%f, m_yDevicePixelsPerLU=%f"),
+    //    m_xDevicePixelsPerLU, m_yDevicePixelsPerLU);
 
     // set default colours
     m_textColorF = agg::rgba8(0,0,0);
@@ -539,12 +539,6 @@ int lmAggDrawer::FtDrawChar(unsigned int nChar)
 {
     //render char (FreeType) at current position, using current settings for font
     //Returns 0 if error. 1 if ok
-
-    if (nChar == 0x0041)
-    {
-        wxLogMessage(_T("[lmAggDrawer::FtDrawChar] nChar = %x, scale=%.2f"),
-            nChar, m_rScale);
-    }
 
     return FtDrawText(&nChar, 1);
 }

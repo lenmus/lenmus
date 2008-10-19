@@ -56,6 +56,7 @@ public:
     inline lmClef* GetClef() const { return m_pClef; }
     inline lmKeySignature* GetKey() const { return m_pKey; }
     inline lmTimeSignature* GetTime() const { return m_pTime; }
+    lmEClefType GetClefType() const;
 
 	//navigation and list management
 	inline lmContext* GetPrev() const { return m_pPrev; }
@@ -66,6 +67,9 @@ public:
     //Updating values
     void PropagateValueWhileInherited(lmStaffObj* pSO);
     void PropagateNewWhileInherited(lmStaffObj* pNewSO);
+    inline bool IsModified() const { return m_fModified; }
+    inline void SetModified(bool fValue) { m_fModified = fValue; }
+
 
     //debug
 #if defined(__WXDEBUG__)
@@ -88,6 +92,9 @@ private:
     bool                m_fClefInherited;
     bool                m_fKeyInherited;
     bool                m_fTimeInherited;
+
+    //the context has been modified. This flag is used to propagate actions
+    bool                m_fModified;
 
     //the next array keeps information about the accidentals applicable to each
     //note. Each element refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si

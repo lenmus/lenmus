@@ -243,13 +243,17 @@ wxString GetClefLDPNameFromType(lmEClefType nType)
         _T("C5"),
         _T("F5"),
         _T("G1"),
+        _T("G+8va"),    //8 above
+        _T("G-8va"),    //8 below
+        _T("F+8va"),    //8 above
+        _T("F-8va"),    //8 below
+        _T("G+15ma"),   //15 above
+        _T("G-15ma"),   //15 below
+        _T("F+15ma"),   //15 above
+        _T("F-15ma"),   //15 below
     };
 
     //TODO: Not yet included in LDP
-    //lmE_8Sol,       //8 above
-    //lmE_Sol8,       //8 below
-    //lmE_8Fa,        //8 above
-    //lmE_Fa8,        //8 below
 
     wxASSERT(nType <= lmE_Sol1);
     return sName[nType];

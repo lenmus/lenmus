@@ -130,6 +130,10 @@ enum lmEClefType
     lmE_Sol8,       //8 below
     lmE_8Fa,        //8 above
     lmE_Fa8,        //8 below
+    lmE_15Sol,      //15 above
+    lmE_Sol15,      //15 below
+    lmE_15Fa,       //15 above
+    lmE_Fa15,       //15 below
 
 };
 // AWARE enum constats lmEClefType are going to be ramdomly generated in object

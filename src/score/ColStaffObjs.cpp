@@ -60,14 +60,6 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-////binary function predicate. I is used to sort the staffobjs list by time
-////returns whether a staffobj SO1 has lower timepos than another staffobj SO2
-//bool TimeCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
-//{
-//    return IsLowerTime(pSO1->GetTimePos(), pSO2->GetTimePos());
-//}
-
-
 //-------------------------------------------------------------------------------------
 //Binary function predicate, that replace '<' (lower than) function for sort algorithm.
 //It must return true if the first element has to go before the second one in the
@@ -95,34 +87,46 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
     else if (IsLowerTime(pSO1->GetTimePos(), pSO2->GetTimePos()))
         fValue = true, nCheck=1;
 
-    //SO1 has lower or equal time than SO2. Now order by duration.
+    //SO1 has lower or equal time than SO2. If equal time order by duration.
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
-             && IsLowerTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement()))
+             && IsLowerTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
         fValue = true, nCheck=2;
+
+    //ordered by timepos and duration. Chords: Ensure that all notes
+    //of a chord go in sequence
+    else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
+             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+             && ((lmNote*)pSO1)->GetChord() < ((lmNote*)pSO2)->GetChord() )
+        fValue = true, nCheck=3;
 
     //here they are ordered by timepos and duration. Chords: Ensure base note precedence
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
              && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
              && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
              && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
-        fValue = true, nCheck=3;
+        fValue = true, nCheck=4;
 
     //If chord and right ordering, do not make more checks
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
              && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
-             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+             && ( ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord() )
              && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsBaseOfChord() )
-        fValue = false, nCheck=4;
+        fValue = false, nCheck=5;
 
     //elements of same type ordered by staff number
     else if (pSO1->GetClass() == pSO2->GetClass()
              && IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
-             && !IsHigherTime(pSO2->GetTimePosIncrement(), pSO1->GetTimePosIncrement())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
              && pSO1->GetStaffNum() < pSO2->GetStaffNum())
-        fValue = true, nCheck=5;
+        fValue = true, nCheck=6;
 
     else
-        fValue = false, nCheck=6;
+        fValue = false, nCheck=7;
 
     wxLogMessage(_T("[SortCompare] SO1=%d (%s at t=%.2f), SO2=%d (%s at t=%.2f) %s (check %d)"),
                  pSO1->GetID(), pSO1->GetName(), pSO1->GetTimePos(),
@@ -146,8 +150,18 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
         && IsLowerTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement()))
         return true;
 
+    //here they are ordered by timepos and duration. Chords: Ensure that all notes
+    //of a chord go in sequence
+    if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+        && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+        && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
+        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+        && ((lmNote*)pSO1)->GetChord() < ((lmNote*)pSO2)->GetChord() )
+        return true;
+
     //here they are ordered by timepos and duration. Chords: Ensure base note precedence
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+        && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
         && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
         && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
         && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
@@ -155,15 +169,17 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
 
     //If chord and right ordering, do not make more checks
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+        && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
         && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
-        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+        && ( ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord() )
         && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsBaseOfChord() )
         return false;
 
     //elements of same type ordered by staff number
     if (pSO1->GetClass() == pSO2->GetClass()
         && IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
-        && !IsHigherTime(pSO2->GetTimePosIncrement(), pSO1->GetTimePosIncrement())
+        && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
         && pSO1->GetStaffNum() < pSO2->GetStaffNum())
         return true;
 
@@ -1091,7 +1107,7 @@ void lmVStaffCursor::MoveToFirst(int nStaff)
 
 lmStaffObj* lmVStaffCursor::GetStaffObj()
 {
-	if (m_it != m_pColStaffObjs->m_Segments[m_nSegment]->m_StaffObjs.end())
+	if (m_it != m_pSegment->m_StaffObjs.end())
 		return *m_it;
 	else
 		return (lmStaffObj*)NULL;
@@ -1590,7 +1606,6 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
     //  - Shift left all note/rests in this voice and sort the collection
 	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote() && !((lmNote*)pSO)->IsInChord())
     {
-        //ShiftLeftTimepos((lmNoteRest*)pSO, itNext, ((lmNoteRest*)pSO)->GetTimePosIncrement() );
         ShiftLeftTimepos(itNext,
                          ((lmNoteRest*)pSO)->GetDuration(), 
                          ((lmNoteRest*)pSO)->GetTimePos() + ((lmNoteRest*)pSO)->GetDuration(),
@@ -1706,7 +1721,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 		{
 			ShiftRightTimepos(itNewCSO, ((lmNoteRest*)pNewSO)->GetDuration() );
 			//and sort the collection by timepos
-			m_StaffObjs.sort(SortCompare);
+			//m_StaffObjs.sort(SortCompare);
 		}
 
         //update barline timepos, to allow for irregular measures
@@ -1714,6 +1729,11 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
         if (pBL)
             pBL->SetTimePos(m_rMaxTime);
 	}
+
+	//ensure right ordering
+	if (pNewSO->IsNoteRest())
+		m_StaffObjs.sort(SortCompare);
+
 
 	////DBG  ------------------------------------------------------------------
 	//wxLogMessage(_T("[lmSegment::Store] After insertion of %s"),
@@ -2032,10 +2052,20 @@ void lmSegment::DoContextInsertion(lmClef* pNewClef, lmStaffObj* pNextSO,
     //if pNextSO is NULL it means that we are at end of segment and, therefore, there are
     //no notes in this segment after the inserted clef
     lmClef* pOldClef = pNewClef->GetApplicableClef();
+    lmEClefType nOldClefType;
+    if (!pOldClef)
+    {
+        int nStaff = pNewClef->GetStaffNum();
+        lmStaff* pStaff = m_pOwner->m_pOwner->GetStaff(nStaff);
+        nOldClefType = pStaff->GetPreviousFirstClefType();
+    }
+    else
+        nOldClefType = pOldClef->GetClefType();
+
     if (pNextSO && fClefKeepPosition)
     {
         int nStaff = pNewClef->GetStaffNum();
-        Transpose(pNewClef, pOldClef, pNextSO, nStaff);
+        Transpose(pNewClef->GetClefType(), nOldClefType, pNextSO, nStaff);
     }
 
     //determine staves affected by the context change and propagate context change
@@ -2045,18 +2075,19 @@ void lmSegment::DoContextInsertion(lmClef* pNewClef, lmStaffObj* pNextSO,
     lmSegment* pNextSegment = GetNextSegment();
     if (pNextSegment)
     {
-        //just one staff. Determine context for this staff at end of segment
+        //just one staff. Determine context for this staff (end of previous segment context)
         int nStaff = pNewClef->GetStaffNum();
         lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
 
         //inform next segment
-        pNextSegment->PropagateContextChange(pLastContext, nStaff, pNewClef,
-                                             pOldClef, fClefKeepPosition);
+        pNextSegment->PropagateContextChange(pLastContext, nStaff, pNewClef->GetClefType(),
+                                             nOldClefType, fClefKeepPosition);
     }
 }
 
-void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff, lmClef* pNewClef,
-                                       lmClef* pOldClef, bool fClefKeepPosition)
+void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
+                                       lmEClefType nNewClefType, lmEClefType nOldClefType,
+                                       bool fClefKeepPosition)
 {
     //The context for staff nStaff at start of this segment has changed because a clef has been
     //added or removed.
@@ -2067,20 +2098,23 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff, lmC
 
     wxASSERT(nStaff > 0);
 
-    if (m_pContext[nStaff-1] == pStartContext)
+    if (!m_pContext[nStaff-1]->IsModified())
         return;     //nothing to do. Context are updated
 
     //update context pointer
     m_pContext[nStaff-1] = pStartContext;
 
     //Update current segment notes, if requested
-    if (fClefKeepPosition)
-        Transpose(pNewClef, pOldClef, (lmStaffObj*)NULL, nStaff);
+    if (fClefKeepPosition && nNewClefType != lmE_Undefined)
+        Transpose(nNewClefType, nOldClefType, (lmStaffObj*)NULL, nStaff);
+
+    //mark context as processed (not modified)
+    m_pContext[nStaff-1]->SetModified(false);
 
     //propagate to next segment
     lmSegment* pNextSegment = GetNextSegment();
     if (pNextSegment)
-        pNextSegment->PropagateContextChange(pStartContext, nStaff, pNewClef, pOldClef,
+        pNextSegment->PropagateContextChange(pStartContext, nStaff, nNewClefType, nOldClefType,
                                              fClefKeepPosition);
 }
 
@@ -2097,7 +2131,7 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
 
     wxASSERT(nStaff > 0);
 
-    if (m_pContext[nStaff-1] == pStartContext)
+    if (!m_pContext[nStaff-1]->IsModified())
         return;     //nothing to do. Context are updated
 
     //update context pointer
@@ -2108,6 +2142,9 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
         AddRemoveAccidentals(pNewKey, (lmStaffObj*)NULL);
     else
         ChangePitch(pOldKey, pNewKey, (lmStaffObj*)NULL);
+
+    //mark context as processed (not modified)
+    m_pContext[nStaff-1]->SetModified(false);
 
     //propagate to next segment
     lmSegment* pNextSegment = GetNextSegment();
@@ -2137,8 +2174,8 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff)
         pNextSegment->PropagateContextChange(pStartContext, nStaff);
 }
 
-void lmSegment::Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO,
-                          int nStaff)
+void lmSegment::Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
+                          lmStaffObj* pStartSO, int nStaff)
 {
     //A clef has been inserted. Iterate along the staffobjs of this segment and re-pitch
     //the notes to maintain its staff position.
@@ -2162,7 +2199,7 @@ void lmSegment::Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStart
             ((lmNote*)(*itSO))->IsNote())
         {
             //note in the affected staff. Re-pitch it to keep staff position
-            ((lmNote*)(*itSO))->ModifyPitch(pOldClef, pNewClef);
+            ((lmNote*)(*itSO))->ModifyPitch(nNewClefType, nOldClefType);
         }
         ++itSO;
 	}
@@ -2446,16 +2483,12 @@ void lmSegment::DoContextRemoval(lmClef* pOldClef, lmStaffObj* pNextSO, bool fCl
     //if pNextSO is NULL it means that we are at end of segment and, therefore, there are
     //no notes in this segment after the deleted clef
     lmClef* pNewClef = pOldClef->GetApplicableClef();
+    lmEClefType nNewClefType = pOldClef->GetApplicableClefType();
     if (pNextSO && fClefKeepPosition)
     {
         int nStaff = pNextSO->GetStaffNum();
-        if (pNewClef)
-            Transpose(pNewClef, (lmClef*)pOldClef, pNextSO, nStaff);
-        //else
-            //THINK: No clef in the score. Anything to do with existing notes? -> if
-            //we do nothing, notes will remain at current staff position. But it is
-            //going to be impossible to re-pitch them, as method ChangePitch(OldClef, NewClef)
-            //will know nothing about OldClef
+        if (nNewClefType != lmE_Undefined)
+            Transpose(nNewClefType, pOldClef->GetClefType(), pNextSO, nStaff);
     }
 
     //determine staves affected by the context change and propagate context change
@@ -2470,10 +2503,12 @@ void lmSegment::DoContextRemoval(lmClef* pOldClef, lmStaffObj* pNextSO, bool fCl
         lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
 
         //inform next segment
-        pNextSegment->PropagateContextChange(pLastContext, nStaff, pNewClef,
-                                             pOldClef, fClefKeepPosition);
+        pNextSegment->PropagateContextChange(pLastContext, nStaff, nNewClefType,
+                                             pOldClef->GetClefType(), fClefKeepPosition);
     }
 }
+
+
 
 
 //====================================================================================================
@@ -3484,7 +3519,7 @@ void lmColStaffObjs::UpdateSegmentContexts(lmSegment* pSegment)
         if (pSO->GetClass() == eSFOT_Clef)
         {
             int nStaff = pSO->GetStaffNum();
-            if (!fStaffDone[nStaff]-1)
+            if (!fStaffDone[nStaff-1])
             {
                 pCT = ((lmClef*)pSO)->GetContext();
 	            pSegment->SetContext(nStaff-1, pCT);

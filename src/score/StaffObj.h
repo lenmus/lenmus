@@ -412,6 +412,7 @@ public:
 	lmContext* GetCurrentContext();
 	lmContext* NewUpdatedContext();
     virtual void RemoveCreatedContexts() {}
+    lmEClefType GetApplicableClefType();
     lmClef* GetApplicableClef();
     lmTimeSignature* GetApplicableTimeSignature();
     lmKeySignature* GetApplicableKeySignature();

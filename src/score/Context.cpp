@@ -46,6 +46,7 @@ lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime
     m_pClef = pClef;
     m_pKey = pKey;
     m_pTime = pTime;
+    m_fModified = false;
 
     m_fClefInherited = fClefInherited;
     m_fKeyInherited = fKeyInherited;
@@ -66,6 +67,7 @@ lmContext::lmContext(lmContext* pContext)
     m_pClef = pContext->GetClef();
     m_pKey = pContext->GetKey();
     m_pTime = pContext->GetTime();
+    m_fModified = false;
 
     CopyAccidentals(pContext);
 	m_pPrev = (lmContext*) NULL;
@@ -75,6 +77,14 @@ lmContext::lmContext(lmContext* pContext)
     m_nId = ++m_nIdCounter;
 #endif
 
+}
+
+lmEClefType lmContext::GetClefType() const 
+{
+    if (m_pClef)
+        return m_pClef->GetClefType();
+    else
+        return lmE_Undefined;
 }
 
 void lmContext::SetKey(lmKeySignature* pKey)
@@ -136,6 +146,7 @@ void lmContext::PropagateValueWhileInherited(lmStaffObj* pSO)
         return;     //no inherited
 
     //propagate to next one
+    m_fModified = true;
     if (m_pNext)
         m_pNext->PropagateValueWhileInherited(pSO);
 }
@@ -147,7 +158,7 @@ void lmContext::PropagateNewWhileInherited(lmStaffObj* pNewSO)
     //from the new context.
 
     if (pNewSO->IsClef() && m_fClefInherited)
-        m_pClef = (lmClef*)pNewSO;
+        m_pClef = (m_pPrev ? m_pPrev->GetClef() : (lmClef*)NULL);
     else if (pNewSO->IsTimeSignature() && m_fTimeInherited)
         m_pTime = (lmTimeSignature*)pNewSO;
     else if (pNewSO->IsKeySignature() && m_fKeyInherited)
@@ -156,6 +167,7 @@ void lmContext::PropagateNewWhileInherited(lmStaffObj* pNewSO)
         return;     //no inherited
 
     //propagate to next one
+    m_fModified = true;
     if (m_pNext)
         m_pNext->PropagateNewWhileInherited(pNewSO);
 }

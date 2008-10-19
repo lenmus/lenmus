@@ -1653,6 +1653,8 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 
 lmBoxScore* lmScore::Layout(lmPaper* pPaper)
 {
+    //wxLogMessage(this->Dump());
+
     lmFormatter4 oFormatter;
     lmBoxScore* pGMObj = oFormatter.LayoutScore(this, pPaper);
     StoreShape(pGMObj);

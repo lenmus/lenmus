@@ -133,7 +133,7 @@ public:
     void ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies); 
     void ChangePitch(lmAPitch nAPitch, bool fRemoveTies);
     void PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward);
-    void ModifyPitch(lmClef* pOldClef, lmClef* pNewClef);
+    void ModifyPitch(lmEClefType nNewClefType, lmEClefType nOldClefType);
     void ModifyPitch(int nAlterIncr);
     inline int GetStep() { return m_anPitch.Step(); }      //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
     inline int GetOctave() { return m_anPitch.Octave(); }

@@ -60,6 +60,7 @@ lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits uUnits)
 	//contexts
 	m_pFirstContext = (lmContext*)NULL;
 	m_pLastContext = (lmContext*)NULL;
+    m_nPreviousFirstClef = lmE_Undefined;
 }
 
 lmStaff::~lmStaff()
@@ -91,9 +92,10 @@ lmLUnits lmStaff::GetHeight()
 
 wxString lmStaff::DumpContextsChain()
 {
-    wxString sDump = wxString::Format(_T("\nStaff. Contexts: First: %d, Last: %d\n"),
+    wxString sDump = wxString::Format(_T("\nStaff. Contexts: First: %d, Last: %d, Previous clef = %s\n"),
         (m_pFirstContext ? m_pFirstContext->GetContextId() : 0),
-        (m_pLastContext ? m_pLastContext->GetContextId() : 0) );
+        (m_pLastContext ? m_pLastContext->GetContextId() : 0),
+        GetClefLDPNameFromType(m_nPreviousFirstClef).c_str() );
 
     sDump += _T("Fwd chain: ");
     lmContext* pContext = m_pFirstContext;
@@ -148,6 +150,8 @@ lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
 	//chain it in the list and update following contexts in the context chain
     lmContext* pNextContext = (pPrevContext ? pPrevContext->GetNext() : m_pFirstContext);
     InsertContextAfter(pNewContext, pPrevContext, pNextContext, pNewClef);
+
+    //wxLogMessage(this->DumpContextsChain());
 
 	return pNewContext;
 }
@@ -240,7 +244,13 @@ void lmStaff::RemoveContext(lmContext* pContext, lmStaffObj* pSO)
         m_pLastContext = pPrev;
 
     if (pContext == m_pFirstContext)
+    {
         m_pFirstContext = pNext;
+
+        //removed context was the first context. If it was created by a clef save the clef type
+        if (pSO->IsClef())
+            m_nPreviousFirstClef = ((lmClef*)pSO)->GetClefType();
+    }
 
     //update following contexts in the context chain. If following context inherited a value
     //form removed context, we have to update these inherited values. An example: if we are 

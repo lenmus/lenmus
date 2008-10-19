@@ -1,17 +1,23 @@
 (score
    (vers 1.5)(language en iso-8859-1)
    
-   (title center "Prelude" (font "Trebuchet MS" bold 21))
-   (title center "Op. 28, No. 20" (font bold 12))
-   (title right "F. Chopin" (dy 10mm) (font normal 10))
+   (defineStyle "Title" (font "Trebuchet MS" 21pt bold) (color #000000))
+   (defineStyle "Subtitle" (font "Trebuchet MS" 12pt bold) (color #000000))
+   (defineStyle "Composer" (font "Times New Roman" 12pt normal) (color #000000))
+   (defineStyle "Instruments" (font "Times New Roman" 14pt bold) (color #000000))
+   (defineStyle "Notations" (font "Times New Roman" 10pt bold) (color #000000))
+   
+   (title center "Prelude" (style "Title"))
+   (title center "Op. 28, No. 20" (style "Subtitle"))
+   (title right "F. Chopin" (dy 30) (style "Composer"))
 
-   (instrument (name "Piano") (staves 2)
+   (instrument (name "Piano" (style "Instruments"))(staves 2)
       (musicData 
         (clef treble p1)
         (clef bass p2)
         (key c)
         (time 4 4)
-        (text "Largo" (font bold)(dx -20)(dy -45))
+        (text "Largo" (style "Notations")(dx -20)(dy -45))
         (clef bass p1)
         (chord (n g3 q p1)(n c4 q)(n e4 q)(n g4 q))
         (chord (n a3 q)(n c4 q)(n e4 q)(n a4 q))
@@ -37,7 +43,7 @@
         (chord (n c3 q)(n e3 q)(n a3 q)(n c4 q))
 
         (goBack 2q)    //second voice
-        (chord (n c4 e. (stem up) g+)(n e4 e))(chord (n -b3 s g- (stem up))(n d4 s))
+        (chord (n c4 e. (stem up) g+)(n e4 e.))(chord (n -b3 s g- (stem up))(n d4 s))
         
         // left hand
         (goBack start)
