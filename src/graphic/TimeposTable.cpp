@@ -52,6 +52,7 @@
 class lmTimeLine;
 class lmBreaksTable;
 
+#define lmDUMP_TABLES   0
 
 //spacing function parameters
 //-----------------------------------------------
@@ -206,6 +207,7 @@ public:
 
     void InitializeToGetTimepos();
     lmLUnits GetTimepos(float rTime);
+    lmLUnits GetPosForStaffobj(lmStaffObj* pSO);
 
 
 protected:
@@ -213,8 +215,9 @@ protected:
     //table of positions and timepos
     typedef struct lmPosTimeEntry_Struct
     {
-        float       rTimepos;
-        lmLUnits    uxPos;
+        lmTimeposEntry* pTPE;
+        float           rTimepos;
+        lmLUnits        uxPos;
     }
     lmPosTimeEntry;
 
@@ -657,8 +660,8 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
     if (it == m_aMainTable.end())
          return uBarPosition;
      
-	wxLogMessage(_T("[lmTimeLine::RepositionShapes] Reposition: uNewBarSize=%.2f  uNewStart=%.2f  uOldBarSize=%.2f"),
-				 uNewBarSize, uNewStart, uOldBarSize );
+	//wxLogMessage(_T("[lmTimeLine::RepositionShapes] Reposition: uNewBarSize=%.2f  uNewStart=%.2f  uOldBarSize=%.2f"),
+	//			 uNewBarSize, uNewStart, uOldBarSize );
 
     //first timed entry marks the start point for repositioning.
     pCriticalLine->InitializeToGetTimepos();
@@ -667,15 +670,18 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
 
     for (; it != m_aMainTable.end(); ++it)
 	{
-        if (!IsEqualTime((*it)->m_rTimePos, rCurTime) && !((*it)->m_rTimePos < 0.0f))
+        lmTimeposEntry* pTPE = *it;
+        if (!IsEqualTime(pTPE->m_rTimePos, rCurTime) && !(pTPE->m_rTimePos < 0.0f))
         {
             //advance to next time
-            rCurTime = (*it)->m_rTimePos;
+            rCurTime = pTPE->m_rTimePos;
             uxCurPos = pCriticalLine->GetTimepos(rCurTime);
         }
+        else if (pTPE->m_rTimePos < 0.0f && pTPE->m_nType == eStaffobj)
+        {
+            uxCurPos = pCriticalLine->GetPosForStaffobj(pTPE->m_pSO);
+        }
 
-
-        lmTimeposEntry* pTPE = *it;
         if (pTPE->m_nType == eStaffobj)
         {
             lmLUnits uShift = uxCurPos - pTPE->m_xLeft + (*it)->m_uxAnchor;
@@ -769,7 +775,7 @@ lmLUnits lmTimeLine::GetMinPossiblePosForTime(float rTime)
 	//If next entry time is rTime, returns its xLeft position. Else returns 0
 
 	if (m_it != m_aMainTable.end() && IsEqualTime((*m_it)->m_rTimePos, rTime) )
-		return (*m_it)->m_xLeft;
+		return (*m_it)->m_xLeft- (*m_it)->m_uxAnchor;
 	else
 		return 0.0f;
 }
@@ -1369,9 +1375,11 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 {
     //Creates the Pos<->Time table (m_PosTimes)
 
+#if lmDUMP_TABLES
     wxLogMessage(_T("[lmCriticalLine::RedistributeSpace] Before space redistribution. uNewBarSize=%.2f, uNewStart=%.2f, uOldBarSize=%.2f"),
                  uNewBarSize, uNewStart, uOldBarSize );
     wxLogMessage( DumpMainTable() );
+#endif
 
     lmLUnits uBarPosition = 0.0f;
     lmLUnits uOldStart = m_aMainTable.front()->m_xLeft;
@@ -1395,7 +1403,6 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     float rProp = (uNewBarSize-uDiscount) / (uOldBarSize-uDiscount);
     
 	//Reposition the remainder entries
-    //++it;
     for (; it != m_aMainTable.end(); ++it)
 	{
         lmTimeposEntry* pTPE = *it;
@@ -1403,9 +1410,8 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
         {
             lmLUnits uOldPos = pTPE->m_xLeft - pTPE->m_uxAnchor;
             lmLUnits uShift = uDiscount + (uNewStart + (uOldPos - uStartPos) * rProp) - uOldPos;
-            lmPosTimeEntry tPosTime = {pTPE->m_rTimePos, pTPE->m_xLeft + uShift};  
+            lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft + uShift};  
             m_PosTimes.push_back(tPosTime);
-            //pTPE->m_xLeft += uShift;
         }
         else if (pTPE->m_nType == eOmega)
         {
@@ -1414,18 +1420,18 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
             {
                 uBarPosition = uNewStart + uNewBarSize - pTPE->m_uSize;
                 lmLUnits uShiftBar = uBarPosition - pTPE->m_xLeft;
-                lmPosTimeEntry tPosTime = {pTPE->m_rTimePos, pTPE->m_xLeft + uShiftBar};  
+                lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft + uShiftBar};  
                 m_PosTimes.push_back(tPosTime);
-                //pTPE->m_xLeft += uShiftBar;
 				//wxLogMessage(_T("[lmCriticalLine::RedistributeSpace] Reposition bar: uBarPosition=%.2f, uShiftBar=%.2f"),
 				//			uBarPosition, uShiftBar );
             }
         }
     }
 
-
+#if lmDUMP_TABLES
     wxLogMessage(_T("Critical line. After space redistribution"));
     wxLogMessage( DumpMainTable() );
+#endif
 
     return uBarPosition;
 }
@@ -1434,6 +1440,17 @@ void lmCriticalLine::InitializeToGetTimepos()
 {
     m_rLastTimepos = -1.0f;
     m_it = m_PosTimes.begin();       
+}
+
+lmLUnits lmCriticalLine::GetPosForStaffobj(lmStaffObj* pSO)
+{
+    for (; m_it != m_PosTimes.end(); ++m_it)
+	{
+        if ((*m_it).pTPE->m_pSO == pSO)
+            return (*m_it).uxPos;
+    }
+    wxASSERT(false);
+    return 0.0f;       //compiler happy
 }
 
 lmLUnits lmCriticalLine::GetTimepos(float rTime)
@@ -1675,9 +1692,16 @@ void lmTimeposTable::EndOfData()
 
 lmLUnits lmTimeposTable::DoSpacing(bool fTrace)
 {
-    //wxLogMessage( DumpTimeposTable() );
+#if lmDUMP_TABLES
+    wxLogMessage( DumpTimeposTable() );
+#endif
+
     lmLUnits uSize = ComputeSpacing(m_rSpacingFactor);
-    //wxLogMessage( DumpTimeposTable() );
+
+#if lmDUMP_TABLES
+    wxLogMessage( DumpTimeposTable() );
+#endif
+
     return uSize;
 }
 
@@ -1895,8 +1919,13 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 		(*it)->RepositionShapes(m_pCriticalLine, uNewBarSize, uNewStart, uOldBarSize);
     }
 
-    wxLogMessage(_T("[New lmTimeposTable::RedistributeSpace] uNewBarSize=%.2f, uNewStart=%.2f, uOldBarSize=%.2f"),
-                 uNewBarSize, uNewStart, uOldBarSize );
+    //wxLogMessage(_T("[lmTimeposTable::RedistributeSpace] uNewBarSize=%.2f, uNewStart=%.2f, uOldBarSize=%.2f"),
+    //             uNewBarSize, uNewStart, uOldBarSize );
+
+#if lmDUMP_TABLES
+    wxLogMessage(_T("[lmTimeposTable::RedistributeSpace] After repositioning shapes"));
+    wxLogMessage( DumpTimeposTable() );
+#endif
 
     return uNewStart + uNewBarSize;
 }

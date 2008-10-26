@@ -305,7 +305,7 @@ void lmTextProperties::OnAcceptChanges(lmController* pController)
                                 sResult,
                                 m_nHAlign,
                                 m_pParentText->GetLocation(),
-                                pStyle);    //, lmDELAY_RELAYOUT );
+                                pStyle);
     }
     else
     {

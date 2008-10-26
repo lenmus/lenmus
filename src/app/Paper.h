@@ -41,8 +41,9 @@ public:
     lmPaper();
     ~lmPaper();
 
-    //settings
+    //drawer
     void SetDrawer(lmDrawer* pDrawer);
+    inline lmDrawer* GetDrawer() { return m_pDrawer; }
     bool IsDirectDrawer();
 
     // page cursors positioning
@@ -114,7 +115,7 @@ public:
             { m_pDrawer->GetTextExtent(string, w, h); }
 
     //text (FreeType with AGG rederization)
-    bool FtLoadFont(wxString sFontName) { return m_pDrawer->FtLoadFont(sFontName); }
+    bool FtLoadFont(wxString sFontName) { return false; }
     int FtDrawChar(unsigned int nChar) { return m_pDrawer->FtDrawChar(nChar); }
     int FtDrawText(wxString& sText) { return m_pDrawer->FtDrawText(sText); }
     int FtDrawText(unsigned int* pText, size_t nLength) { return m_pDrawer->FtDrawText(pText, nLength); }

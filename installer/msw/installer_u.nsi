@@ -9,7 +9,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2007 Cecilio Salmeron
+;    Copyright (c) 2002-2008 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -39,11 +39,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.6"
+  !define APP_VERSION "4.0b0"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.6"     ;product name displayed by the installer
+  Name "lenmus v4.0 beta 0"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -53,9 +53,9 @@
   !include "FileFunc.nsh"
   !insertmacro un.GetParent
   
-;support to install fonts
-  !include "FontRegAdv.nsh"
-  !include "FontName.nsh"
+;;support to install fonts
+;  !include "FontRegAdv.nsh"
+;  !include "FontName.nsh"
   
 ;support to remove files and subdirs in one step
   !include "RemoveFilesAndSubDirs.nsh"
@@ -128,11 +128,13 @@
 
   ;available languages
   ; ADD_LANG
-  !insertmacro MUI_LANGUAGE "English"
-  !insertmacro MUI_LANGUAGE "Spanish"
-  !insertmacro MUI_LANGUAGE "French"         
-  !insertmacro MUI_LANGUAGE "Turkish"
+  !insertmacro MUI_LANGUAGE "Basque"
   !insertmacro MUI_LANGUAGE "Dutch"
+  !insertmacro MUI_LANGUAGE "English"
+  !insertmacro MUI_LANGUAGE "French"         
+  !insertmacro MUI_LANGUAGE "Italian"
+  !insertmacro MUI_LANGUAGE "Spanish"
+  !insertmacro MUI_LANGUAGE "Turkish"
 
   ;reserve files for languages
     ;These files should be inserted before other files in the data block
@@ -172,6 +174,8 @@
   !include "fr.nsh"
   !include "tr.nsh"
   !include "nl.nsh"
+;  !include "eu.nsh"
+;  !include "it.nsh"
 
 
 
@@ -214,7 +218,7 @@ Section  "-" "MainSection"
   ; vars initialization
   StrCpy "$STEP" "Nil" 
 
-  ;If a previous version exits delete old installed files, but no scores
+  ;If a previous version exits delete old installed files, but no scores nor templates
   ;-----------------------------------------------------------------------------------
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\bin"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\books"
@@ -239,11 +243,13 @@ Section  "-" "MainSection"
      File ".\locale\license_fr.txt"
      File ".\locale\license_tr.txt"
      File ".\locale\license_nl.txt"
+     File ".\locale\license_eu.txt"
+     File ".\locale\license_it.txt"
      
-     File "..\..\docs\html\licence.htm"
-     File "..\..\docs\html\installation.htm"
-     File "..\..\docs\html\release_notes.htm"
-     File "..\..\docs\html\singledoc.css"
+     File "..\..\docs\html\license_v3.htm"
+;     File "..\..\docs\html\installation.htm"
+;     File "..\..\docs\html\*.htm"
+;     File "..\..\docs\html\singledoc.css"
      File "..\..\docs\html\GNU_Free_doc_license_FDL.htm"
      
      SetOutPath "$INSTDIR\docs\images"
@@ -251,10 +257,12 @@ Section  "-" "MainSection"
 
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus.exe"
-     File "..\..\fonts\lmbasic.ttf"
+     File "..\..\packages\freetype\bin\freetype6.dll"
+     File "..\..\packages\freetype\bin\zlib1.dll"
+;     File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
+     File "..\..\fonts\lmbasic2.ttf"
      File "msvcr71.dll"
      File "msvcp71.dll"
-     ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\books\en"
@@ -267,18 +275,48 @@ Section  "-" "MainSection"
      File "..\..\books\tr\*.lmb"
      SetOutPath "$INSTDIR\books\nl"
      File "..\..\books\nl\*.lmb"
+     SetOutPath "$INSTDIR\books\eu"
+     File "..\..\books\eu\*.lmb"
+     SetOutPath "$INSTDIR\books\it"
+     File "..\..\books\it\*.lmb"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en"
-     File "..\..\locale\en\*.*"
+     File "..\..\locale\en\*.mo"
+     File "..\..\locale\en\*.htm"
+     File "..\..\locale\en\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\es"
-     File "..\..\locale\es\*.*"
+     File "..\..\locale\es\*.mo"
+     File "..\..\locale\es\*.htm"
+     File "..\..\locale\es\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\fr"
-     File "..\..\locale\fr\*.*"
+     File "..\..\locale\fr\*.mo"
+     File "..\..\locale\fr\*.htm"
+     File "..\..\locale\fr\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\tr"
-     File "..\..\locale\tr\*.*"
+     File "..\..\locale\tr\*.mo"
+     File "..\..\locale\tr\*.htm"
+     File "..\..\locale\tr\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\nl"
-     File "..\..\locale\nl\*.*"
+     File "..\..\locale\nl\*.mo"
+     File "..\..\locale\nl\*.htm"
+     File "..\..\locale\nl\help.htb"
+     File "..\..\locale\common\singledoc.css"
+     SetOutPath "$INSTDIR\locale\eu"
+     File "..\..\locale\eu\*.mo"
+     File "..\..\locale\eu\*.htm"
+     File "..\..\locale\eu\help.htb"
+     File "..\..\locale\common\singledoc.css"
+     SetOutPath "$INSTDIR\locale\it"
+     File "..\..\locale\it\*.mo"
+     File "..\..\locale\it\*.htm"
+     File "..\..\locale\it\help.htb"
+     File "..\..\locale\common\singledoc.css"
+
 
      SetOutPath "$INSTDIR\res\bitmaps"
      File "..\..\res\bitmaps\*.*"
@@ -286,10 +324,17 @@ Section  "-" "MainSection"
      File "..\..\res\icons\*.*"
      SetOutPath "$INSTDIR\res\sounds"
      File "..\..\res\sounds\*.*"
+     SetOutPath "$INSTDIR\res\keys"
+     File "..\..\res\keys\*.png"
+     SetOutPath "$INSTDIR\res\figures"
+;     File "..\..\res\figures\*.png"
 
      SetOutPath "$INSTDIR\xrc"
      File "..\..\xrc\*.xrc"
-
+     
+     SetOutPath "$INSTDIR\templates"
+     File "..\..\templates\*.lms"
+     
      SetOutPath "$INSTDIR\temp"
 
      SetOutPath "$INSTDIR\logs"
@@ -313,23 +358,22 @@ Section  "-" "MainSection"
 
 
 
-
-  ;install font
-  ;-----------------------------------------------------------------------------------
-  InstallFonts:
-     ClearErrors
-     StrCpy $FONT_DIR $FONTS
-     !insertmacro InstallTTF '..\..\fonts\lmbasic.ttf'
-     SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
-     IfErrors +1 EndInstallFonts
-        StrCmp $STEP "ErrorInstallingFonts" "Error_InstallFonts"
-        StrCpy "$STEP" "ErrorInstallingFonts" 
-      Goto InstallFonts
-        Error_InstallFonts:
-          MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION $(ERROR_InstallFonts) IDRETRY InstallFonts
-          MessageBox MB_YESNO|MB_ICONQUESTION $(MSG_CONTINUE) IDYES +2
-      Abort "$(MSG_ABORT)"
-     EndInstallFonts:
+;  ;install font
+;  ;-----------------------------------------------------------------------------------
+;  InstallFonts:
+;     ClearErrors
+;     StrCpy $FONT_DIR $FONTS
+;     !insertmacro InstallTTF '..\..\fonts\lmbasic.ttf'
+;     SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
+;     IfErrors +1 EndInstallFonts
+;        StrCmp $STEP "ErrorInstallingFonts" "Error_InstallFonts"
+;        StrCpy "$STEP" "ErrorInstallingFonts" 
+;      Goto InstallFonts
+;        Error_InstallFonts:
+;          MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION $(ERROR_InstallFonts) IDRETRY InstallFonts
+;          MessageBox MB_YESNO|MB_ICONQUESTION $(MSG_CONTINUE) IDYES +2
+;      Abort "$(MSG_ABORT)"
+;     EndInstallFonts:
 
   ;create entries in Start Menu folder
   ;-----------------------------------------------------------------------------------
@@ -377,9 +421,9 @@ Section $(TITLE_Scores) Scores
      ClearErrors
      SetOverwrite on
      SetOutPath "$INSTDIR\scores\MusicXML"
-     File "..\..\scores\MusicXML\*.*"
+     File "..\..\scores\MusicXML\*.xml"
      SetOutPath "$INSTDIR\scores\samples"
-     File "..\..\scores\samples\*.*"
+     File "..\..\scores\samples\*.lms"
      IfErrors +1 EndCopyScores
         StrCmp $STEP "ErrorCopyingScores" "Error_CopyScores"
         StrCpy "$STEP" "ErrorCopyingScores" 
@@ -447,7 +491,7 @@ FunctionEnd
 */
 
 Section un.Install
-  ;the font will not be uninstalled as it might have been used by other applications
+;;;;;;;  ;the font will not be uninstalled as it might have been used by other applications
   
   ; move to root directory and delete all folders and files
   ${un.GetParent} "$INSTDIR" $LENMUS_DIR

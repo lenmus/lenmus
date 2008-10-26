@@ -169,7 +169,7 @@ lmLUnits lmMetronomeMark::AddSymbolShape(lmCompositeShape* pShape, lmPaper* pPap
 
 	//create the shape
     lmShapeGlyph* pSG = 
-		new lmShapeGlyph(this, -1, nGlyph, pFont, pPaper, uPos, _T("metronome mark symbol"),
+		new lmShapeGlyph(this, -1, nGlyph, pPaper, uPos, _T("metronome mark symbol"),
 				         lmDRAGGABLE, colorC);
 
 	//add the shape to the composite parent shape

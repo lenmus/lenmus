@@ -49,9 +49,6 @@ extern lmColors* g_pColors;
 extern bool g_fUseAntiAliasing;         // in TheApp.cpp
 
 
-#define lmUSE_FREETYPE  1
-
-wxString m_sMusicFont = _T("lmbasic2.ttf");
 
 //-----------------------------------------------------------------------------------------
 
@@ -106,22 +103,10 @@ void lmGraphicManager::Layout()
         delete m_pBoxScore;
         m_pBoxScore = (lmBoxScore*) NULL;
     }
-#if lmUSE_FREETYPE
-    wxMemoryDC memDC;
-    wxBitmap* pBitmap = new wxBitmap(1, 1);     //allocate something to paint on it
-    memDC.SelectObject(*pBitmap);
-    memDC.SetMapMode(lmDC_MODE);
-    memDC.SetUserScale( m_rScale, m_rScale );
-    lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, m_xPageSize, m_yPageSize, m_rScale);
-    pDrawer->FtLoadFont(m_sMusicFont);
+    lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
     m_pPaper->SetDrawer(pDrawer);
-#endif
     m_pBoxScore = m_pScore->Layout(m_pPaper);
     m_fReLayout = false;
-#if lmUSE_FREETYPE
-    memDC.SelectObject(wxNullBitmap);
-    delete pBitmap;
-#endif
 }
 
 wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
@@ -155,21 +140,10 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
         else
         {
             // anti-aliased renderization
-            wxMemoryDC memDC;
-            pBitmap = new wxBitmap(1, 1);     //allocate something to paint on it
-            memDC.SelectObject(*pBitmap);
-            memDC.SetMapMode(lmDC_MODE);
-            memDC.SetUserScale( m_rScale, m_rScale );
-            lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, m_xPageSize, m_yPageSize, m_rScale);
-#if lmUSE_FREETYPE
-            pDrawer->FtLoadFont(m_sMusicFont);
-#endif
+            lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
             m_pPaper->SetDrawer(pDrawer);
             wxASSERT(m_pBoxScore);  //Layout phase omitted?
             m_pBoxScore->RenderPage(nPage, m_pPaper);
-
-            memDC.SelectObject(wxNullBitmap);
-            delete pBitmap;
 
             //Make room for the new bitmap
             //TODO

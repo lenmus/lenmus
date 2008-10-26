@@ -130,27 +130,25 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
             wxASSERT(false);
     }
 
-    wxFont* pFont = m_pOwner->GetSuitableFont(pPaper);
-
 	//if two shapes, create a composite shape, else it is enough with one shape
 	if (nGlyph[1] != -1)
 	{
 		//two shapes
         lmLUnits yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[0]].GlyphOffset);
 		m_pShape = new lmCompositeShape(m_pOwner, 0, _T("Note accidentals"));
-		lmShapeGlyph* pSh1 = new lmShapeGlyph(m_pOwner, -1, nGlyph[0], pFont, pPaper,
+		lmShapeGlyph* pSh1 = new lmShapeGlyph(m_pOwner, -1, nGlyph[0], pPaper,
 										      lmUPoint(uxPos, yPos), _T("Accidental"));
 		((lmCompositeShape*)m_pShape)->Add(pSh1);
         lmLUnits uWidth = pSh1->GetWidth();
         yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[1]].GlyphOffset);
         ((lmCompositeShape*)m_pShape)->Add(
-				new lmShapeGlyph(m_pOwner, -1, nGlyph[1], pFont, pPaper,
+				new lmShapeGlyph(m_pOwner, -1, nGlyph[1], pPaper,
 								lmUPoint(uxPos+uWidth, yPos), _T("Accidental")) );
 	}
 	else
 	{
         lmLUnits yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[0]].GlyphOffset);
-        m_pShape = new lmShapeGlyph(m_pOwner, 0, nGlyph[0], pFont, pPaper,
+        m_pShape = new lmShapeGlyph(m_pOwner, 0, nGlyph[0], pPaper,
 									lmUPoint(uxPos, yPos), _T("Accidental"));
 	}
 

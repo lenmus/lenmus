@@ -104,8 +104,8 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     lmLUnits uyTop = uPaperPos.y + GetStaffOffset();
     lmLUnits uxLeft = uPaperPos.x;
 
-    // prepare DC
-    pPaper->SetFont(*GetSuitableFont(pPaper));
+    //// prepare DC
+    //pPaper->SetFont(*GetSuitableFont(pPaper));
 
     //create the container shape and add it to the box
     lmShapeRest* pRestShape = new lmShapeRest(this, lmDRAGGABLE, m_fVisible);
@@ -115,8 +115,8 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // create shape for the rest symbol
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper),
-                                            pPaper, lmUPoint(uxLeft, yPos), _T("RestGlyph"));
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxLeft, yPos),
+                                            _T("RestGlyph"));
 	pRestShape->Add(pShape);
     uxLeft += pShape->GetWidth();
 
@@ -139,6 +139,14 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 		m_pBeam->AddRestShape(pRestShape);
 
 	return GetShape()->GetWidth();
+}
+
+void lmRest::PlaybackHighlight(wxDC* pDC, wxColour colorC)
+{
+	//FIX_ME: there can be many views. Should only the active view be higlighted?
+	//FIX_ME: m_pShape is only valid during layout. And there can be many views!!
+
+	GetShape()->RenderHighlighted(pDC, colorC);
 }
 
 wxString lmRest::Dump()

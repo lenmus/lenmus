@@ -61,7 +61,7 @@ public:
     //rendering related methods
     inline lmShape* GetShape(int nStaff=1) { return lmScoreObj::GetShape(1); }
     lmShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					     wxColour colorC = *wxBLACK);
+					     wxColour colorC = *wxBLACK, bool fSmallClef = false);
 
     //methods for hiding the clef in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }

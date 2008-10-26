@@ -54,19 +54,88 @@
 
 
 //basic types
-typedef agg::rgba8 lmColor_rgba8;           //rgba, 8 bits per channel (four bytes)
-typedef agg::rgba  lmColor_rgba;            //internal rgba, double value per channel
+typedef agg::rgba8      lmColor_rgba8;      //rgba, 8 bits per channel (four bytes)
+typedef agg::rgba       lmColor_rgba;       //internal rgba, double value per channel
+
+#define pix_format                                      agg::pix_format_rgb24
+typedef agg::pixfmt_rgb24                               lmPixelsBuffer;
+typedef agg::renderer_base<lmPixelsBuffer>              base_ren_type;
+typedef agg::renderer_scanline_aa_solid<base_ren_type>  lmRendererSolidType;
+
+typedef agg::font_engine_freetype_int32             font_engine_type;
+typedef agg::font_cache_manager<font_engine_type>   font_manager_type;
+
+typedef agg::font_cache_manager<font_engine_type>::gray8_adaptor_type   lmGray8AdaptorType;
+typedef agg::font_cache_manager<font_engine_type>::gray8_scanline_type  lmGary8ScanlineType;
+
+//-----------------------------------------------------------------------------------------
+// Helper class to manage music font
+// This class is a singleton
+//-----------------------------------------------------------------------------------------
+
+class lmMusicFontManager
+{
+public:
+    ~lmMusicFontManager();
+
+    static void DeleteInstance();
+    static lmMusicFontManager* GetInstance();
+
+    bool LoadFont(wxString& sFontName);
+    inline bool IsFontValid() { return m_fValidFont; }
+    inline void SetScale(double rScale) { m_rScale = rScale; }
+
+    inline const agg::glyph_cache* GetGlyphCache(unsigned int nChar) { return m_fman.glyph(nChar); }
+    inline void AddKerning(double* x, double* y) { m_fman.add_kerning(x, y); }
+    inline void InitAdaptors(const agg::glyph_cache* glyph, double x, double y)
+                    { m_fman.init_embedded_adaptors(glyph, x, y); }
+    inline lmGray8AdaptorType& GetGray8AdaptorType() { return m_fman.gray8_adaptor(); }
+    inline lmGary8ScanlineType& GetGray8ScanlineType() { return m_fman.gray8_scanline(); }
 
 
+    inline double GetFontHeight() { return m_rFontHeight; }
+    inline double GetAscender() { return m_feng.ascender(); }
+    inline double GetDescender() { return m_feng.descender(); }
+
+    void SetFontSize(double rPoints);
+    void SetFontHeight(double rPoints);
+    void SetFontWidth(double rPoints);
+
+protected:
+    lmMusicFontManager();
+
+private:
+
+    static lmMusicFontManager*  m_pInstance;    //the only instance of this class
+
+    font_engine_type            m_feng;
+    font_manager_type           m_fman;
+
+    bool m_fFlip_y;
+
+    //font related variables
+    double  m_rScale;           //view scale, to compute font size for glyphs
+    double  m_rFontHeight;
+    double  m_rFontWidth;
+    bool    m_fHinting;
+    bool    m_fValidFont;       //there is a font loaded
+
+};
+
+
+
+//-----------------------------------------------------------------------------------------
 // AggDrawer is an anti-aliased drawer using the AGG library (Anti-Grain Geometry)
+//-----------------------------------------------------------------------------------------
+
 class lmAggDrawer : public lmDrawer
 {
 public:
     //Constructor, allocating a new bitmap as rendering buffer
-    lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, double rScale = 1.0, int nStride=0);
+    lmAggDrawer(int widthPixels, int heightPixels, double rScale = 1.0, int nStride=0);
 
 	//Constructor, allocating a copy of the received bitmap as rendering buffer
-	lmAggDrawer(wxDC* pDC, wxBitmap* pBitmap, int stride=0);
+	lmAggDrawer(wxBitmap* pBitmap, double rScale, int stride=0);
 
     ~lmAggDrawer();
 
@@ -89,6 +158,9 @@ public:
     void SetFont(wxFont& font);
     void SetLogicalFunction(int function);
 
+    //general operations
+    void Clear();
+
     wxColour GetFillColor();
     void SetFillColor(wxColour color);
     wxColour GetLineColor();
@@ -107,12 +179,17 @@ public:
     int FtDrawChar(unsigned int nChar);
     int FtDrawText(wxString& sText);
     int FtDrawText(unsigned int* pText, size_t nLength);
-    void FtSetFontSize(double rPoints);
-    void FtSetFontHeight(double rPoints);
-    void FtSetFontWidth(double rPoints);
+
+    inline void FtSetFontSize(double rPoints) { return m_pMFM->SetFontSize(rPoints); }
+    inline void FtSetFontHeight(double rPoints) { return m_pMFM->SetFontHeight(rPoints); }
+    inline void FtSetFontWidth(double rPoints) { return m_pMFM->SetFontWidth(rPoints); }
+
     void FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos);
+    void FtSetTextPositionPixels(lmPixels vxPos, lmPixels vyPos);
     void FtGetTextExtent(const wxString& sText, lmLUnits* pWidth, lmLUnits* pHeight,
                          lmLUnits* pDescender = NULL, lmLUnits* pAscender = NULL);
+    lmURect FtGetGlyphBounds(unsigned int nGlyph);
+    wxRect FtGetGlyphBoundsInPixels(unsigned int nGlyph);
 
     // units conversion
     lmLUnits DeviceToLogicalX(lmPixels x);
@@ -120,15 +197,17 @@ public:
     lmPixels LogicalToDeviceX(lmLUnits x);
     lmPixels LogicalToDeviceY(lmLUnits y);
 
-private:
-    void Initialize();
-	void Create(double rScale, int stride);
+    //conversion
     inline double WorldToDeviceX(lmLUnits x) const { return m_xDevicePixelsPerLU * (double)x; }
     inline double WorldToDeviceY(lmLUnits y) const { return m_yDevicePixelsPerLU * (double)y; }
     inline lmLUnits DeviceToWorldX(double x) const { return (lmLUnits)(x / m_xDevicePixelsPerLU); }
     inline lmLUnits DeviceToWorldY(double y) const { return (lmLUnits)(y / m_yDevicePixelsPerLU); }
     lmColor_rgba8 lmToRGBA8(wxColour color);
     wxColour lmToWxColor(lmColor_rgba8 color);
+
+private:
+    void Initialize(double rScale);
+	void Create(int stride);
 
 
         // member variables
@@ -141,16 +220,12 @@ private:
     int                         m_nStride;               //the row step
 
     //the rendering buffer as pixels
-    #define pix_format agg::pix_format_rgb24
-    typedef agg::pixfmt_rgb24 lmPixelsBuffer;
     lmPixelsBuffer*     m_pPixelsBuffer;
 
     //the base renderer
-    typedef agg::renderer_base<lmPixelsBuffer> base_ren_type;
     base_ren_type*      m_pRenBase;
 
     //anti-aliased rendered
-    typedef agg::renderer_scanline_aa_solid<base_ren_type> lmRendererSolidType;
     lmRendererSolidType*     m_pRenSolid;
 
 
@@ -173,25 +248,25 @@ private:
     lmColor_rgba8   m_fillColor;        //brush color
 
 
-    wxBitmap* m_pDummyBitmap;
+    //the dummy DC used for units conversion
+    wxMemoryDC      m_DummyDC;
+    wxBitmap*       m_pDummyBitmap;
 
     //FreeType fonts: font engine and font cache management
+    lmMusicFontManager*     m_pMFM;
 
-    typedef agg::font_engine_freetype_int32 font_engine_type;
-    font_engine_type    m_feng;
+    //font_engine_type    m_feng;
+    //font_manager_type   m_fman;
 
-    typedef agg::font_cache_manager<font_engine_type> font_manager_type;
-    font_manager_type   m_fman;
+    //bool m_fFlip_y;
 
-    bool m_fFlip_y;
-
-    //font related variables
-    double  m_rScale;           //view scale, to compute font size for glyphs
-    double  m_rFontHeight;
-    double  m_rFontWidth;
-    bool    m_fHinting;
+    ////font related variables
+    //double  m_rScale;           //view scale, to compute font size for glyphs
+    //double  m_rFontHeight;
+    //double  m_rFontWidth;
+    //bool    m_fHinting;
     bool    m_fKerning;
-    bool    m_fValidFont;       //there is a font loaded
+    //bool    m_fValidFont;       //there is a font loaded
 
     //current buffer font position (pixels, with decimals)
     double     m_vCursorX;

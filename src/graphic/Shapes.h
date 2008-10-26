@@ -68,6 +68,7 @@ protected:
 				lmLUnits uWidth, lmLUnits uBoundsExtraWidth, wxColour nColor,
 				lmELineEdges nEdge);
 
+
     lmLUnits		m_xStart, m_yStart;
     lmLUnits		m_xEnd, m_yEnd;
     lmLUnits		m_uWidth;
@@ -111,13 +112,15 @@ protected:
 class lmShapeGlyph : public lmSimpleShape
 {
 public:
-    lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, wxFont* pFont,
+    lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, 
                  lmPaper* pPaper, lmUPoint offset, wxString sName=_T("ShapeGlyph"),
 				 bool fDraggable = false, wxColour color = *wxBLACK);
     virtual ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
     virtual void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    void RenderHighlighted(wxDC* pDC, wxColour colorC);
+
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
@@ -126,13 +129,11 @@ public:
 	lmUPoint GetObjectOrigin();
 
 
-    //specific methods
-    void SetFont(wxFont *pFont);
-
-
 protected:
+    wxBitmap* GetBitmapFromShape(double rScale, wxColour colorF, wxColour colorB = *wxWHITE);
+    virtual double GetPointSize();
+
     int         m_nGlyph;
-    wxFont*     m_pFont;
     lmUPoint    m_uGlyphPos;   //glyph position
 
 };
@@ -165,17 +166,18 @@ private:
 class lmShapeClef : public lmShapeGlyph
 {
 public:
-    lmShapeClef(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, wxFont* pFont,
-                lmPaper* pPaper, lmUPoint offset, wxString sName=_T("Clef"),
-				bool fDraggable = false, wxColour color = *wxBLACK) 
-				: lmShapeGlyph(pOwner, nShapeIdx, nGlyph, pFont, pPaper, offset, sName,
-				               fDraggable, color) { m_nType = eGMO_ShapeClef; }
+    lmShapeClef(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, lmPaper* pPaper,
+                lmUPoint offset, bool fSmallClef, wxString sName=_T("Clef"),
+				bool fDraggable = false, wxColour color = *wxBLACK); 
     ~lmShapeClef() {}
 
 	//overrides
     lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
     void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+    double GetPointSize();
 
+protected:
+    bool        m_fSmallClef;
 };
 
 //------------------------------------------------------------------------------------

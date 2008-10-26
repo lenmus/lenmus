@@ -45,9 +45,12 @@ public:
     float GetTimePosIncrement() { return 0; }
     virtual lmENotationType GetNotationType() = 0;
 
+    //classification
+    inline bool IsAnchor() { return GetNotationType() == eNT_Anchor; }
+    inline bool IsScoreAnchor() { return GetNotationType() == eNT_ScoreAnchor; }
+    inline bool IsSpacer() { return GetNotationType() == eNT_Spacer; }
+
 	wxString GetName() const { return _T("notation"); }
-
-
 
 protected:
     lmNotation(lmVStaff* pVStaff, int nStaff=1,

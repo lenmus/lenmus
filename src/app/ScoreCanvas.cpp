@@ -174,11 +174,14 @@ void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 
     // iterate to redraw each damaged rectangle
     // The rectangles are in pixels, referred to the client area, and are unscrolled
-    while (upd) {
+    m_pView->PrepareForRepaint(&dc);
+    while (upd)
+    {
         wxRect rect = upd.GetRect();
         m_pView->RepaintScoreRectangle(&dc, rect);
         upd++;
     }
+    m_pView->TerminateRepaint(&dc);
 }
 
 void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)

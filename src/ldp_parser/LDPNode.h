@@ -36,7 +36,7 @@ class lmLDPNode;
 class lmLDPNode
 {
 public:
-    lmLDPNode(wxString sData);
+    lmLDPNode(wxString sData, long nNumLine);
     ~lmLDPNode();
 
 	void DumpNode(wxString sIndent=_T(""));
@@ -47,6 +47,7 @@ public:
     inline void SetProcessed(bool fValue) { m_fProcessed = fValue; }
 
     inline wxString GetName() const { return m_sName; }
+    inline long GetNumLine() { return m_nNumLine; }
     int GetNumParms();
 
     //random access
@@ -63,6 +64,7 @@ public:
 
 private:
     wxString        m_sName;            //node name
+    long            m_nNumLine;         //LDP source file: line number
     bool            m_fIsSimple;        //the node is simple (just a string)
     bool            m_fProcessed;       //the node has been processed
 	std::vector<lmLDPNode*> m_cNodes;	//Parameters of this node

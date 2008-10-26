@@ -1121,7 +1121,8 @@ void lmVStaffCursor::AdvanceToTime(float rTime)
     //Else, if required time is greater than segment duration, moves to next segment, at
     //the time resulting from discounting segment duration.
 
-    wxASSERT(m_it == m_pSegment->m_StaffObjs.end());
+    //wxASSERT(m_it == m_pSegment->m_StaffObjs.end());
+    m_it = m_pSegment->m_StaffObjs.end();
 
     float rSegmentDuration = m_pSegment->GetDuration();
     if (IsHigherTime(rTime, rSegmentDuration))

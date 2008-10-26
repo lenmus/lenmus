@@ -624,6 +624,17 @@ void lmCompositeShape::Render(lmPaper* pPaper,  wxColour color)
     }
 }
 
+void lmCompositeShape::RenderHighlighted(wxDC* pDC, wxColour color) 
+{
+    lmShape::RenderHighlighted(pDC, color);
+
+	//Default behaviour: render all components
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        m_Components[i]->RenderHighlighted(pDC, color);
+    }
+}
+
 bool lmCompositeShape::BoundsContainsPoint(lmUPoint& pointL)
 {
     for (int i=0; i < (int)m_Components.size(); i++)

@@ -470,8 +470,8 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     bool fDrawStem = true;            // assume stem
     bool fInChord = IsInChord();
 
-    //prepare paper for measurements
-    pPaper->SetFont(*GetSuitableFont(pPaper));
+    ////prepare paper for measurements
+    //pPaper->SetFont(*GetSuitableFont(pPaper));
 
     // move to right staff
     lmLUnits uyStaffTopLine = uPos.y + GetStaffOffset();   // staff y position (top line)
@@ -723,12 +723,12 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
 }
 
-void lmNote::PlaybackHighlight(lmPaper* pPaper, wxColour colorC)
+void lmNote::PlaybackHighlight(wxDC* pDC, wxColour colorC)
 {
 	//FIX_ME: there can be many views. Should only the active view be higlighted?
 	//FIX_ME: m_pNoteheadShape is only valid during layout. And there can be many views!!
 
-	m_pNoteheadShape->Render(pPaper, colorC);
+	m_pNoteheadShape->RenderHighlighted(pDC, colorC);
 }
 
 lmLUnits lmNote::GetPitchShift()
@@ -886,7 +886,7 @@ lmEGlyphIndex lmNote::AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmU
     lmEGlyphIndex nGlyph = GetGlyphForFlag();
 
     lmLUnits yPos = uPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, pPaper,
                                             lmUPoint(uPos.x, yPos), _T("Flag"));
 	pNoteShape->AddFlag(pShape);
     return nGlyph;
@@ -999,7 +999,7 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENot
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, pPaper,
                                             lmUPoint(uxLeft, yPos), _T("NoteSingle"));
 	pNoteShape->AddNoteInBlock(pShape);
 
@@ -1039,7 +1039,7 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
     lmLUnits yPos = uyTop - m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
-    m_pNoteheadShape = new lmShapeGlyph(this, -1, nGlyph, GetSuitableFont(pPaper), pPaper,
+    m_pNoteheadShape = new lmShapeGlyph(this, -1, nGlyph, pPaper,
                                         lmUPoint(uxLeft, yPos), _T("Notehead"),
 										lmDRAGGABLE, colorC);
 	pNoteShape->AddNoteHead(m_pNoteheadShape);

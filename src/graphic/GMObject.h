@@ -175,6 +175,7 @@ public:
 
     //rendering
 	virtual void Render(lmPaper* pPaper, wxColour color);
+    virtual void RenderHighlighted(wxDC* pDC, wxColour colorC) {}
     virtual void DrawBounds(lmPaper* pPaper, wxColour color);
 	virtual void DrawHandlers(lmPaper* pPaper);
 
@@ -447,6 +448,7 @@ public:
     virtual wxString Dump(int nIndent);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual void Render(lmPaper* pPaper, wxColour color);
+    virtual void RenderHighlighted(wxDC* pDC, wxColour colorC);
 
 	//overrides
     bool BoundsContainsPoint(lmUPoint& pointL);

@@ -140,15 +140,20 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // creating the shape object and adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
 
+    //if not prolog clef its size must be smaller. We know that it is a prolog clef because
+    //there is no previous context
+    bool fSmallClef = (m_pContext->GetPrev() != (lmContext*)NULL);
+
     //create the shape object
-    lmShape* pShape = CreateShape(pBox, pPaper, uPos, m_color);
+    lmShape* pShape = CreateShape(pBox, pPaper, uPos, m_color, fSmallClef);
 
 	// set total width (incremented in one line for after space)
 	lmLUnits nWidth = pShape->GetWidth();
 	return nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
 }
 
-lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
+lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
+                             wxColour colorC, bool fSmallClef)
 {
     int nIdx = NewShapeIndex();
     if (!m_fVisible)
@@ -158,10 +163,14 @@ lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
 	lmLUnits yPos = uPos.y;
     yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
+    //if small clef add additional shift to compensate small size
+    if (fSmallClef)
+        yPos -= m_pVStaff->TenthsToLogical(10.0);
+
     //create the shape object
-    lmShapeClef* pShape = new lmShapeClef(this, nIdx, GetGlyphIndex(), GetSuitableFont(pPaper),
-										  pPaper, lmUPoint(uPos.x, yPos), 
-										  _T("Clef"), lmDRAGGABLE, colorC);
+    lmShapeClef* pShape = 
+        new lmShapeClef(this, nIdx, GetGlyphIndex(), pPaper, lmUPoint(uPos.x, yPos), 
+						fSmallClef, _T("Clef"), lmDRAGGABLE, colorC);
     StoreShape(pShape);
 	pBox->AddShape(pShape);
     return pShape;

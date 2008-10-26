@@ -397,7 +397,7 @@ public:
 
 	//layout and highligh
     virtual lmShape* CreateInvisibleShape(lmBox* pBox, lmUPoint uPos, int nShapeIdx);
-	virtual void PlaybackHighlight(lmPaper* pPaper, wxColour colorC) {}
+	virtual void PlaybackHighlight(wxDC* pDC, wxColour colorC) {}
 
     // methods related to staff ownership
     inline int GetStaffNum() { return m_nStaffNum; }

@@ -1337,17 +1337,17 @@ void lmScore::WaitForTermination()
 
 }
 
-void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, lmEHighlightType nHighlightType)
+void lmScore::ScoreHighlight(lmStaffObj* pSO, wxDC* pDC, lmEHighlightType nHighlightType)
 {
     switch (nHighlightType) {
         case eVisualOn:
             m_cHighlighted.push_back(pSO);
-            pSO->PlaybackHighlight(pPaper, g_pColors->ScoreHighlight());
+            pSO->PlaybackHighlight(pDC, g_pColors->ScoreHighlight());
             break;
 
         case eVisualOff:
 			m_cHighlighted.erase( std::find(m_cHighlighted.begin(), m_cHighlighted.end(), pSO) );
-            RemoveHighlight(pSO, pPaper);
+            RemoveHighlight(pSO, pDC);
             break;
 
         case eRemoveAllHighlight:
@@ -1373,18 +1373,14 @@ void lmScore::RemoveAllHighlight(wxWindow* pCanvas)
     }
 }
 
-void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
+void lmScore::RemoveHighlight(lmStaffObj* pSO, wxDC* pDC)
 {
-    //TODO
     // If we paint in black it remains a red aureole around
-    // the note. By painting it first in white the size of the aureole
-    // is smaller but still visible. A posible better solution is to
-    // modify Render method to accept an additional parameter: a flag
-    // to signal that XOR draw mode in RED followed by a normal
-    // draw in BLACK must be done.
+    // the note. 
+    // A posible solution is to paint the highlight using XOR draw mode in RED and
+    // to remove it using again XOR draw mode in RED
 
-    pSO->PlaybackHighlight(pPaper, *wxWHITE);
-    pSO->PlaybackHighlight(pPaper, g_pColors->ScoreNormal());
+    pSO->PlaybackHighlight(pDC, g_pColors->ScoreHighlight());   //g_pColors->ScoreNormal());
 }
 
 void lmScore::DeleteMidiEvents()

@@ -41,7 +41,7 @@
 	"../score/Score.h"
 	"Constrains.h"
 
-1223621132 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.h
+1224580478 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.h
 	<vector>
 	<list>
 	"wx/debug.h"
@@ -67,7 +67,7 @@
 	"ColStaffObjs.h"
 	"../app/Paper.h"
 
-1223802234 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
+1224411192 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>
@@ -84,7 +84,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1223655650 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
+1224580416 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
 	<vector>
 	"../app/TheApp.h"
 	"../graphic/Shapes.h"
@@ -115,7 +115,7 @@
 	"../app/Paper.h"
 	"wx/list.h"
 
-1220623404 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Paper.h
+1224598364 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Paper.h
 	<wx/dc.h>
 	"FontManager.h"
 	"../score/defs.h"
@@ -127,7 +127,7 @@
 1221546038 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/FontManager.h
 	"wx/list.h"
 
-1220623026 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Drawer.h
+1224257132 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Drawer.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"
@@ -136,12 +136,12 @@
 	"StaffObj.h"
 	"ColStaffObjs.h"
 
-1223670686 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/ColStaffObjs.h
+1224433380 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/ColStaffObjs.h
 	<vector>
 	<list>
 	"StaffObj.h"
 
-1221385860 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/SOControl.h
+1223968970 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/SOControl.h
 
 1222178120 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Text.h
 	"wx/wxprec.h"
@@ -159,7 +159,7 @@
 	"defs.h"
 	"StaffObj.h"
 
-1223390942 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
+1224225878 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
 	"StaffObjIterator.h"
 	"Score.h"
 
@@ -169,7 +169,7 @@
 
 1196585634 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Direction.h
 
-1223672930 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Barline.h
+1223993894 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Barline.h
 	"wx/dc.h"
 
 1223654690 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Clef.h
@@ -182,9 +182,9 @@
 	"wx/wx.h"
 	"defs.h"
 
-1223654690 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TimeSignature.h
+1223968970 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TimeSignature.h
 
-1223654690 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/KeySignature.h
+1223968970 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/KeySignature.h
 	<vector>
 
 1221385860 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/NoteRest.h
@@ -197,13 +197,13 @@
 	"NotesRelationship.h"
 	"../graphic/ShapeTuplet.h"
 
-1223672204 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.h
+1224580414 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.h
 	"defs.h"
 
-1221385860 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Rest.h
+1224580414 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Rest.h
 	"Glyph.h"
 
-1221385860 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Chord.h
+1224599740 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Chord.h
 	<list>
 
 1210487590 /media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundManager.h
@@ -2367,7 +2367,7 @@
 	"GMObject.h"
 	"BoxSystem.h"
 
-1223360636 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.h
+1224061450 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.h
 	<list>
 	"wx/cmdproc.h"
 	"ScoreView.h"
@@ -2465,14 +2465,14 @@
 	"MainFrame.h"
 	"../app/Logger.h"
 
-1223653176 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Shapes.h
+1224599842 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Shapes.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"
 	"../app/Paper.h"
 	"GMObject.h"
 
-1222841496 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.h
+1224584594 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/generic/dragimgg.h"
@@ -5152,7 +5152,7 @@
 	"defs.h"
 	"StaffObj.h"
 
-1223802234 /media/sdb1/usr/Desarrollo_wx/lenmus/src/Score/defs.h
+1224411192 /media/sdb1/usr/Desarrollo_wx/lenmus/src/Score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>

@@ -3,7 +3,7 @@
    
    (title center "Moonlight Sonata" (font "Trebuchet MS" bold 21))
    (title center "Op. 27, No. 2 (fragment)" (font bold 12))
-   (title left "To the Countess JULIA GUICCIARDI" (dy 10mm) (font normal 10))
+   (title left "To the Countess JULIA GUICCIARDI" (dy 60) (font normal 10))
    (title right "L. van BEETHOVEN")
 
    (opt Render.SpacingFactor 0.4)

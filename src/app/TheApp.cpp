@@ -116,10 +116,13 @@
 #include "Logger.h"                     //access to error's logger
 #include "../ldp_parser/LDPTags.h"      //to delete the LDP tags table
 #include "../options/Languages.h"       //to check config_ini.txt stored language
+#include "../graphic/AggDrawer.h"       //to delete lmMusicFontManager singleton
 
 //access to global objects
 #include "../globals/Paths.h"
 #include "../globals/Colors.h"
+
+
 
 //-------------------------------------------------------------------------------------------
 // global variables
@@ -694,6 +697,10 @@ int lmTheApp::OnExit(void)
 
     // single instance checker
     if (m_pInstanceChecker) delete m_pInstanceChecker;
+
+    //music font manager
+    lmMusicFontManager::DeleteInstance();
+
 
 	return 0;
 }

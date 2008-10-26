@@ -426,7 +426,7 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 
     //do the highlight / unhighlight
     lmStaffObj* pSO = event.GetStaffObj();
-    m_pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
+    m_pScore->ScoreHighlight(pSO, &dc, nHighlightType);
 
 }
 

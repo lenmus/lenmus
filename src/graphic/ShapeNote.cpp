@@ -187,13 +187,9 @@ lmUPoint lmShapeNote::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	//	m_nOldSteps, m_uxOldPos, nSteps, uPos.x );
 	//remove old ledger lines
 	if (m_uxOldPos != -100000.0f)
-	{
-		wxLogMessage(_T("[lmShapeNote::OnDrag] Erasing lines ..."));
 		DrawLegerLines(m_nPosOnStaff + m_nOldSteps, m_uxOldPos, pPaper, colorC);
-	}
 
 	//draw new ledger lines
-	wxLogMessage(_T("[lmShapeNote::OnDrag] Drawing lines ..."));
 	DrawLegerLines(m_nPosOnStaff + nSteps, uPos.x, pPaper, colorC);
 
 	//save data for next time

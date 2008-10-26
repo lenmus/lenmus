@@ -60,7 +60,7 @@ public:
     //implementation of virtual methods of base classes
         // lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	void PlaybackHighlight(lmPaper* pPaper, wxColour colorC);
+	void PlaybackHighlight(wxDC* pDC, wxColour colorC);
 	inline wxString GetName() const { return _T("note"); }
 
     wxString    Dump();

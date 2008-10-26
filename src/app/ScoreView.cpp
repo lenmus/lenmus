@@ -36,6 +36,8 @@
 
 #include <vector>
 
+#include "../score/score.h"
+#include "../score/staff.h"
 #include "global.h"
 #include "TheApp.h"
 #include "ScoreDoc.h"
@@ -111,6 +113,10 @@ static bool         m_fDraggingObject;  //we were dragging an object
 static bool         m_fCheckTolerance;  //to control false dargging starts
 
 
+// To draw a cast shadow for each page we need the shadow sizes
+const lmPixels m_nRightShadowWidth = 3;       //pixels
+const lmPixels m_nBottomShadowHeight = 3;     //pixels
+
 
 IMPLEMENT_DYNAMIC_CLASS(lmScoreView, lmView)
 
@@ -181,6 +187,16 @@ lmScoreView::~lmScoreView()
 {
     if (m_pCaret)
         delete m_pCaret;
+
+    ClearVisiblePagesInfo();
+}
+
+void lmScoreView::ClearVisiblePagesInfo()
+{
+    std::vector<lmVisiblePageInfo*>::iterator it;
+    for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
+        delete *it;
+    m_VisiblePages.clear();
 }
 
 bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
@@ -494,21 +510,19 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
 	WXUNUSED(sender)
     if (!m_pFrame) return;
 
-    //re-paint the score if option not lmDELAY_RELAYOUT
+    //re-paint the score
     //wxLogMessage(_T("[lmScoreView::OnUpdate] Calls HideCaret()"));
     HideCaret();
     lmUpdateHint* pHints = (lmUpdateHint*)hint;
-    if (pHints && (pHints->Options() & lmDELAY_RELAYOUT))
-        m_fRelayoutPending = true;
-    else
-    {
-        //do repaint now
-        wxClientDC dc(m_pCanvas);
-        int width, height;
-        m_pCanvas->GetClientSize(&width, &height);
-        wxRect rect(0, 0, width, height);
-        RepaintScoreRectangle(&dc, rect, (pHints ? pHints->Options() : 0) );
-    }
+
+    //do repaint now
+    wxClientDC dc(m_pCanvas);
+    int width, height;
+    m_pCanvas->GetClientSize(&width, &height);
+    wxRect rect(0, 0, width, height);
+    PrepareForRepaint(&dc, (pHints ? pHints->Options() : 0) );
+    RepaintScoreRectangle(&dc, rect, (pHints ? pHints->Options() : 0) );
+    TerminateRepaint(&dc);
 
     //get the score
     lmScore* pScore = m_pDoc->GetScore();
@@ -723,12 +737,11 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 
     //AWARE: Only eVisualOff and eVisualOn events reach this point
 
-    //prepare paper DC
+    //prepare DC
     wxClientDC dc(m_pCanvas);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
-    //m_Paper.SetDC(&dc);
-    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+    //m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
 	//Obtain the StaffObject
 	//For events of type eRemoveAllHighlight the pSO is NULL
@@ -739,8 +752,7 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 	dc.SetDeviceOrigin(org.x, org.y);
 
 	//do the requested action:  highlight (eVisualOn) / unhighlight (eVisualOff)
-	pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
-
+	pScore->ScoreHighlight(pSO, &dc, nHighlightType);
 }
 
 wxPoint lmScoreView::GetDCOriginForPage(int nNumPage)
@@ -1757,34 +1769,93 @@ int lmScoreView::CalcScrollInc(wxScrollEvent& event)
     return nScrollInc;
 }
 
-void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRepaintOptions)
+void lmScoreView::PrepareForRepaint(wxDC* pDC, int nRepaintOptions)
+{
+    // This method is invoked by lmScoreCanvas::OnPaint to inform that one or
+    // more screen rectangles are damaged and need repaint. After this call, 
+    // one or more RepaintScoreRectangle invocations will follow.
+    // The DC is a wxPaintDC and is neither scaled nor scrolled.
+
+
+	// hide the cursor so repaint doesn't interfere
+    //wxLogMessage(_T("[lmScoreView::PrepareForRepaint] Calls HideCaret()"));
+    HideCaret();
+
+    // allocate a DC in memory for using the offscreen bitmaps
+    wxMemoryDC memoryDC;
+
+    // inform the paper that we are going to use it, and get the number of
+    // pages needed to draw the score
+    lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return;
+    m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
+    if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD,
+                                    m_rScale, &m_Paper, nRepaintOptions) )
+        OnNewGraphicalModel();
+
+    int nTotalPages = m_graphMngr.GetNumPages();
+
+    if (nTotalPages != m_numPages) {
+        // number of pages has changed. Adjust scrollbars
+        m_numPages = nTotalPages;
+        AdjustScrollbars();
+    }
+    ComputeVisiblePagesInfo();
+
+    //prepare colours, brushes and pens
+    wxBrush bgBrush(m_colorBg, wxSOLID);
+    wxPen bgPen(m_colorBg);
+    pDC->SetBrush(bgBrush);
+    pDC->SetPen(bgPen);
+
+}
+
+void lmScoreView::TerminateRepaint(wxDC* pDC)
+{
+    // This method is invoked by lmScoreCanvas::OnPaint to inform there are no
+    // more screen rectangles to repaint.
+    // The DC is a wxPaintDC and is neither scaled nor scrolled.
+
+
+    //Get canvas offset
+    wxPoint canvasOffset = GetScrollOffset();
+
+    //set a DirectDrawer
+    m_Paper.SetDrawer(new lmDirectDrawer(pDC));
+    pDC->SetMapMode(lmDC_MODE);
+    pDC->SetUserScale( m_rScale, m_rScale );
+
+    //paint handlers on modified pages
+    std::vector<lmVisiblePageInfo*>::iterator it;
+    for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
+    {
+        if ((*it)->fRepainted)
+        {
+            lmBoxPage* pBP = m_graphMngr.GetBoxScore()->GetPage((*it)->nNumPage + 1);
+
+            //set origin on page origin
+            pDC->SetDeviceOrigin((*it)->vPageRect.x - canvasOffset.x,
+                                 (*it)->vPageRect.y - canvasOffset.y );
+
+            //draw the handlers
+            pBP->DrawHandlers(&m_Paper);
+        }
+    }
+
+	//Restore caret
+    //wxLogMessage(_T("[lmScoreView::TerminateRepaint] Calls ShowCaret()"));
+    ShowCaret();
+}
+
+void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRepaintOptions)
 {
     // This method is invoked by lmScoreCanvas::OnPaint to repaint a rectangle of the score
     // The DC is a wxPaintDC and is neither scaled nor scrolled.
     // The rectangle to redraw is in pixels and unscrolled
 
-	// hide the cursor so repaint doesn't interfere
-    //wxLogMessage(_T("[lmScoreView::RepaintScoreRectangle] Calls HideCaret()"));
-    HideCaret();
-
-    //if a full relayout is pending, change the repaint rectangle to full screen and
-    //force a re-build of graphic model
-    wxRect repaintRect;
-    if (m_fRelayoutPending)
-    {
-        int width, height;
-        m_pCanvas->GetClientSize(&width, &height);
-        repaintRect = wxRect(0, 0, width, height);
-        m_fRelayoutPending = false;
-        nRepaintOptions |= lmFORCE_RELAYOUT;
-    }
-    else
-        repaintRect = oRepaintRect;
-
-
-    // To draw a cast shadow for each page we need the shadow sizes
-    lmPixels nRightShadowWidth = 3;      //pixels
-    lmPixels nBottomShadowHeight = 3;      //pixels
+    //if no score, it should'n have arrived here !!
+    lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return;
 
     // Here in OnPaint we want to know which page
     // to redraw so that we prevent redrawing pages that don't
@@ -1808,23 +1879,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRe
     // allocate a DC in memory for using the offscreen bitmaps
     wxMemoryDC memoryDC;
 
-    // inform the paper that we are going to use it, and get the number of
-    // pages needed to draw the score
-    lmScore* pScore = m_pDoc->GetScore();
-    if (!pScore) return;
-    m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-    if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD,
-                                    m_rScale, &m_Paper, nRepaintOptions) )
-        OnNewGraphicalModel();
-
-    int nTotalPages = m_graphMngr.GetNumPages();
-
-    if (nTotalPages != m_numPages) {
-        // number of pages has changed. Adjust scrollbars
-        m_numPages = nTotalPages;
-        AdjustScrollbars();
-    }
-
     std::vector<bool> fModifiedPages( m_numPages, false );
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
@@ -1835,12 +1889,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRe
     //wxLogMessage(_T("Repainting rectangle (%d, %d, %d, %d), drawRect=(%d, %d, %d, %d)"),
     //    repaintRect.x, repaintRect.y, repaintRect.width, repaintRect.height,
     //    drawRect.x, drawRect.y, drawRect.width, drawRect.height );
-
-	//let's prepare colours, brushes and pens
-    wxBrush bgBrush(m_colorBg, wxSOLID);
-    wxPen bgPen(m_colorBg);
-    pDC->SetBrush(bgBrush);
-    pDC->SetPen(bgPen);
 
     //verify if left background needs repaint
     if (drawRect.x < m_xBorder)
@@ -1880,32 +1928,22 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRe
     }
 
     // loop to verify if page nPag (0..n-1) is visible and needs redrawing.
-    // To optimize, the loop is exited as soon as we find a non-visible page after
-    // a visible one.
-    bool fPreviousPageVisible = false;
     int nPag=0;
-    for (nPag=0; nPag < m_numPages; nPag++)
+    std::vector<lmVisiblePageInfo*>::iterator it;
+    for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
     {
-        // Let's compute this page rectangle, referred to view origin (0,0)
-        wxRect pageRect(m_xBorder,
-                        m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap),
-                        m_xPageSizeD,
-                        m_yPageSizeD);
-        //wxLogStatus(wxT("pageRect(%d,%d, %d, %d)"),
-        //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
-
-        // Lets intersect pageRect with drawRect to verify if this page is affected
-        wxRect interRect(pageRect.x,
-                         pageRect.y,
-                         pageRect.width + nRightShadowWidth,
-                         pageRect.height + nBottomShadowHeight);
+        wxRect pageRect = (*it)->vPageRect;
+        wxRect interRect = (*it)->vVisibleRect;
         interRect.Intersect(drawRect);
 
         // if intersection is not null this page needs repainting.
         if (interRect.width > 0 && interRect.height > 0)
         {
+            nPag = (*it)->nNumPage;
+
             //mark page as repainted
             fModifiedPages[nPag] = true;
+            (*it)->fRepainted = true;
 
             // ask paper for the offscreen bitmap of this page
             wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPag+1, nRepaintOptions);
@@ -1950,10 +1988,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRe
             //    yBottom = pageRect.y + pageRect.height - canvasOffset.y;
             //pDC->SetBrush(*wxBLACK_BRUSH);
             //pDC->SetPen(*wxBLACK_PEN);
-            //pDC->DrawRectangle(xRight, yTop + nBottomShadowHeight,
-            //                   nRightShadowWidth, pageRect.height);
-            //pDC->DrawRectangle(xLeft + nRightShadowWidth, yBottom,
-            //                   pageRect.width, nBottomShadowHeight);
+            //pDC->DrawRectangle(xRight, yTop + m_nBottomShadowHeight,
+            //                   m_nRightShadowWidth, pageRect.height);
+            //pDC->DrawRectangle(xLeft + m_nRightShadowWidth, yBottom,
+            //                   pageRect.width, m_nBottomShadowHeight);
 
         }
 
@@ -1977,55 +2015,11 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& oRepaintRect, int nRe
 			bgRect.y -= canvasOffset.y;
 
 			//and paint it
-			pDC->SetBrush(bgBrush);
-			pDC->SetPen(bgPen);
+			//pDC->SetBrush(bgBrush);
+			//pDC->SetPen(bgPen);
 			pDC->DrawRectangle(bgRect);
 		}
-
-        //verify if we should finish the loop
-        if (fPreviousPageVisible) break;
     }
-
-    //save DC status, to be modified for painting handlers
-    int nDcMode = pDC->GetMapMode();
-    double rxDcScale, ryDcScale;
-    pDC->GetUserScale(&rxDcScale, &ryDcScale);
-
-    //paint handlers on modified pages
-    for (nPag=0; nPag < m_numPages; nPag++)
-    {
-        if (fModifiedPages[nPag])
-        {
-            lmBoxPage* pBP = m_graphMngr.GetBoxScore()->GetPage(nPag+1);
-
-            //compute this page rectangle, referred to view origin (0,0)
-            wxRect pageRect(m_xBorder,
-                            m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap),
-                            m_xPageSizeD,
-                            m_yPageSizeD);
-
-            //set a DirectDrawer
-            m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-            pDC->SetMapMode(lmDC_MODE);
-            pDC->SetUserScale( m_rScale, m_rScale );
-
-            //set origin on page origin
-            pDC->SetDeviceOrigin(pageRect.x - canvasOffset.x,
-                                 pageRect.y - canvasOffset.y );
-
-            //draw the handlers
-            pBP->DrawHandlers(&m_Paper);
-        }
-    }
-
-    //restore DC options
-    pDC->SetMapMode(nDcMode);
-    pDC->SetUserScale( rxDcScale, ryDcScale );
-    pDC->SetDeviceOrigin(0, 0);
-
-	//Restore caret
-    //wxLogMessage(_T("[lmScoreView::RepaintScoreRectangle] Calls ShowCaret()"));
-    ShowCaret();
 
 	////DEBUG: draw cyan rectangle to show updated rectangle
     //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
@@ -2052,7 +2046,6 @@ void lmScoreView::SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType)
 
     //Now proceed to export images
     m_graphMngr.ExportAsImage(sFilename, sExt, nImgType);
-
 }
 
 void lmScoreView::DumpBitmaps()
@@ -2133,19 +2126,12 @@ void lmScoreView::OnPaperStartDrag(wxDC* pDC, lmDPoint vCanvasOffset)
 #if 0		//1-AggDrawer, 0-DirectDrawer
 
     // anti-aliased renderization
-    wxMemoryDC memDC;
-    pBitmap = new wxBitmap(1, 1);     //allocate something to satisfy the memDC
-    memDC.SelectObject(*pBitmap);
-    memDC.SetMapMode(lmDC_MODE);
-    memDC.SetUserScale( m_rScale, m_rScale );
 
 	//get bitmap for current page
 	wxBitmap* pPageBitmap = m_graphMngr.GetPageBitmap(m_nNumPage);
 
-    lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, pPageBitmap);
+    lmAggDrawer* pDrawer = new lmAggDrawer(pPageBitmap, m_rScale);
     m_pPaper->SetDrawer(pDrawer);
-    memDC.SelectObject(wxNullBitmap);
-    delete pBitmap;
 
 #else
 	//OnDrag method expects logical units referred to current page origin. Therefore,
@@ -2358,7 +2344,6 @@ void lmScoreView::UpdateCaret()
     //END DBG --------------------------------------------------------------------------
 
 	//Get cursor new position
-    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     int nPage;
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
     m_pMainFrame->SetStatusBarNumPage(nPage);
@@ -2366,12 +2351,17 @@ void lmScoreView::UpdateCaret()
     //if new cursos position is out of currently displayed page/area it is necesary
     //to adjust scrolling to ensure that cursor is visible and that it is displayed at
     //right place.
-    //TODO
-    if (nPage != m_nNumPage)      //!IsPositionVisible(uPos))
-    {
-        wxMessageBox(_T("Cursor in another page"));
-        //ScrollTo(uPos);
-    }
+    //cursorRect is the area that should be visible. 
+    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmLUnits uStaffHeight = pStaff->GetHeight();
+    lmURect cursorRect(wxMax(0.0f, uPos.x - 2.0f * uStaffHeight),
+                       wxMax(0.0f, uPos.y - uStaffHeight / 2.0f),
+                       4.0f * uStaffHeight,                         //width
+                       2.0f * uStaffHeight );                       //height
+    if (!IsPositionVisible(nPage, cursorRect))
+        ScrollTo(nPage, cursorRect);
+
+    //now we can safely display the caret
     m_pCaret->Show(m_rScale, uPos, pStaff);
 
     //inform the controller, for updating other windows (i.e. toolsbox)
@@ -3015,3 +3005,180 @@ lmGMSelection* lmScoreView::GetSelection()
     return m_graphMngr.GetBoxScore()->GetSelection();
 }
 
+
+void lmScoreView::ComputeVisiblePagesInfo()
+{
+    //We want to know which pages are displayed and the page rectangle displayed.
+    //All this information is going to be stored in m_VisiblePages array
+
+    //clear previous info
+    ClearVisiblePagesInfo();
+
+    //prepare a DC for units conversion
+    wxClientDC dc(m_pCanvas);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    // We need to know how much the window has been scrolled (in pixels)
+    wxPoint canvasOffset = GetScrollOffset();
+
+    //and the width and height of the canvas (the visible area)
+    int width, height;
+    m_pCanvas->GetClientSize(&width, &height);
+    wxRect displayedRect = wxRect(0, 0, width, height);
+
+    // displayedRect is referred to canvas window origin and is unscrolled.
+    // To refer it to view origin it is necessary to add scrolling origin
+    displayedRect.x += canvasOffset.x;
+    displayedRect.y += canvasOffset.y;
+
+
+    // Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
+    // There is a gap between pages of  m_yInterpageGap  pixels.
+    // There is a left margin:  m_xBorder  pixels
+    // And there is a top margin before the first page:  m_yBorder pixels
+
+    //First page at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
+    //Second page at (m_xBorder, m_yBorder + m_yPageSizeD + m_yInterpageGap)
+    //...
+    //Page n+1 at (m_xBorder, m_yBorder + n * (m_yPageSizeD + m_yInterpageGap))
+    // all this coordinates are referred to view origin (0,0), a virtual infinite
+    // paper on which all pages are rendered one after the other.
+
+    //loop to verify if page nPag (0..n-1) is visible.
+    std::vector<bool> fVisiblePages( m_numPages, false );
+    int nPag=0;
+    for (nPag=0; nPag < m_numPages; nPag++)
+    {
+        //compute this page rectangle, referred to view origin (0,0)
+        wxRect pageRect(m_xBorder,
+                        m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap),
+                        m_xPageSizeD,
+                        m_yPageSizeD);
+
+        //intersect pageRect with displayedRect to verify if this page is displayed
+        wxRect interRect(pageRect.x,
+                         pageRect.y,
+                         pageRect.width + m_nRightShadowWidth,
+                         pageRect.height + m_nBottomShadowHeight);
+        interRect.Intersect(displayedRect);
+
+        // if intersection is not null this page is displayed.
+        if (interRect.width > 0 && interRect.height > 0)
+        {
+            //mark page as displayed
+            fVisiblePages[nPag] = true;
+
+            ////intersection rectangle is referred to view origin. To refer it
+            ////to bitmap coordinates we need to substract page origin
+            //int xBitmap = interRect.x - pageRect.x,
+            //    yBitmap = interRect.y - pageRect.y;
+
+            //// and to refer it to canvas window coordinates we need to
+            //// substract scroll origin
+            //int xCanvas = interRect.x - canvasOffset.x,
+            //    yCanvas = interRect.y - canvasOffset.y;
+
+            //intersection rectangle is referred to view origin. We have to refer it
+            //to page origin and convert to logical units
+            lmURect uVisibleRect(dc.DeviceToLogicalXRel(interRect.x - pageRect.x),
+                                 dc.DeviceToLogicalYRel(interRect.y - pageRect.y),
+                                 dc.DeviceToLogicalXRel(interRect.width),
+                                 dc.DeviceToLogicalYRel(interRect.height));
+
+            //wxLogMessage(_T("nPag=%d, canvasOrg (%d,%d), bitmapOrg (%d, %d), interRec (%d, %d, %d, %d), pageRect (%d, %d, %d, %d), uVisible(%.2f, %.2f, %.2f, %.2f)"),
+            //    nPag, xCanvas, yCanvas, xBitmap, yBitmap,
+            //    interRect.x, interRect.y, interRect.width, interRect.height,
+            //    pageRect.x, pageRect.y, pageRect.width, pageRect.height,
+            //    uVisibleRect.x, uVisibleRect.y, uVisibleRect.width, uVisibleRect.height);
+
+            //store info about this page
+            lmVisiblePageInfo* pInfo = new lmVisiblePageInfo;
+            pInfo->nNumPage = nPag;
+            pInfo->vVisibleRect = interRect;
+            pInfo->uVisibleRect = uVisibleRect;
+            pInfo->vPageRect = pageRect;
+            pInfo->fRepainted = false;
+            m_VisiblePages.push_back(pInfo);
+        }
+
+        //to optimize, we will exit the loop as soon as we find a non-visible page after
+        //a visible one.
+        if (nPag > 0 
+            && fVisiblePages[nPag-1]
+            && !fVisiblePages[nPag] )    break;
+    }
+}
+
+bool lmScoreView::IsPositionVisible(int nNumPage, lmURect uVisibleRect)
+{
+    //return true if rectangle uVisibleRect is fully displayed
+
+    if (nNumPage != m_nNumPage) return false;
+
+    //locate this page info
+    std::vector<lmVisiblePageInfo*>::iterator it;
+    for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
+    {
+        if ((*it)->nNumPage == nNumPage-1)
+            break;
+    }
+    wxASSERT(it != m_VisiblePages.end());
+
+    lmURect uDisplayedRect = (*it)->uVisibleRect;
+    uDisplayedRect.Intersect(uVisibleRect);
+    return (uDisplayedRect.width == uVisibleRect.width
+            && uDisplayedRect.height == uVisibleRect.height);
+}
+
+void lmScoreView::ScrollTo(int nNumPage, lmURect uVisibleRect)
+{
+    //scroll to make uVisibleRectangle visible
+
+    //prepare a DC for units conversion
+    wxClientDC dc(m_pCanvas);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    int nStepsDown = (nNumPage - m_nNumPage) * m_yScrollStepsPerPage;
+
+    //locate this page info
+    std::vector<lmVisiblePageInfo*>::iterator it;
+    for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
+    {
+        if ((*it)->nNumPage == nNumPage-1)
+            break;
+    }
+
+    lmLUnits uDown = uVisibleRect.y;
+    if (it == m_VisiblePages.end())
+    {
+        //desired page is not visible
+    }
+    else
+    {
+        lmURect uDisplayedRect = (*it)->uVisibleRect;
+        if (uVisibleRect.y > uDisplayedRect.y + uDisplayedRect.height)
+        {
+            //rectangle to display is after displayed area
+            uDown -= (uDisplayedRect.y + uDisplayedRect.height);
+            uDown += wxMin(uVisibleRect.height, uDisplayedRect.height);
+        }
+    }
+
+
+    //check if 
+    //rectangle to display is after displayed area
+    lmPixels vDown = dc.LogicalToDeviceYRel(uDown);
+    nStepsDown += vDown / m_pixelsPerStepY;
+    DoScroll(wxVERTICAL, nStepsDown);
+
+//
+//int         m_pixelsPerStepX, m_pixelsPerStepY;             // pixels per scroll unit
+//int         m_xMaxScrollSteps, m_yMaxScrollSteps;           // num of scroll units to scroll the full view
+//int         m_xScrollStepsPerPage, m_yScrollStepsPerPage;   // scroll units to scroll a page
+//
+//
+//
+//    lmTODO(_T("TDO: lmScoreView::ScrollTo"));
+}

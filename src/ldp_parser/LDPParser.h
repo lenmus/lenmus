@@ -98,14 +98,14 @@ public:
     void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
 
 	//analyze options
-    int         AnalyzeNumStaff(const wxString& sNotation, long nNumStaves);
-	int			AnalyzeVoiceNumber(const wxString& sNotation);
+    int         AnalyzeNumStaff(const wxString& sNotation, lmLDPNode* pNode, long nNumStaves);
+	int			AnalyzeVoiceNumber(const wxString& sNotation, lmLDPNode* pNode);
 
     // for lmLDPToken
     const wxString& GetNewBuffer();
 
     // error and logging
-    void AnalysisError(const wxChar* szFormat, ...);
+    void AnalysisError(lmLDPNode* pNode, const wxChar* szFormat, ...);
     void ParseMsje(wxString sMsg);
     inline wxString& GetFilename() { return m_sFileName; }
 
@@ -138,7 +138,7 @@ private:
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
                                   lmEHAlign* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont, bool* pHasWidth);
-    bool        AnalyzeTimeExpression(const wxString& sData, float* pValue);
+    bool        AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode, float* pValue);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
@@ -146,7 +146,8 @@ private:
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
-	bool		GetFloatNumber(wxString& sValue, wxString& nodeName, float* pValue);
+	bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
+                               float* pValue);
 
 
     void Clear();
@@ -172,7 +173,7 @@ private:
     lmTupletBracket*	m_pTuplet;      //tuplet being analyzed
 	lmNoteRest*			m_pLastNoteRest;	//last rest or note not in chord or base of chord
 
-
+    long                m_nNumLine;         //number of line read
 
     lmLDPTokenBuilder*  m_pTokenizer;       //ptr to token builder object
     lmLDPToken*         m_pTk;              //current token
@@ -239,7 +240,7 @@ public:
 							  bool* pfVisible, int* pStaffNum, lmLocation* pLocation);
 
 private:
-	bool VerifyAllowed(lmETagLDP nTag, wxString sName);
+	bool VerifyAllowed(lmETagLDP nTag, wxString sName, lmLDPNode* pNode);
 
 	lmLDPParser*		m_pParser;					//owner parser
     lmLdpTagsTable*     m_pTags;

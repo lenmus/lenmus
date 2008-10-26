@@ -124,6 +124,8 @@ public:
     void GetViewStart (int* x, int* y) const;
     void GetScrollPixelsPerUnit (int* x_unit, int* y_unit) const;
     void RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRepaintOptions=0);
+    void PrepareForRepaint(wxDC* pDC, int nRepaintOptions=0);
+    void TerminateRepaint(wxDC* pDC);
 	wxPoint GetDCOriginForPage(int nNumPage);
 
 
@@ -210,6 +212,8 @@ private:
     // Auxiliary for scrolling
     int CalcScrollInc(wxScrollEvent& event);
     void DoScroll(int orientation, int nScrollSteps);
+    bool IsPositionVisible(int nNumPage, lmURect visibleRect);
+    void ScrollTo(int nNumPage, lmURect visibleRect);
 
 	//caret management
     void SetInitialCaretPosition();
@@ -237,6 +241,9 @@ private:
 	void OnPaperStartDrag(wxDC* pDC, lmDPoint vCanvasOffset);
 	void OnPaperEndDrag();
 
+    //housekeeping
+    void ComputeVisiblePagesInfo();
+    void ClearVisiblePagesInfo();
 
 
 	//-- variables ---
@@ -300,6 +307,21 @@ private:
 
     //repaint control
     bool                m_fRelayoutPending;     //to delay relayouts
+
+    //information about currently displayed pages
+    typedef struct
+    {
+        int     nNumPage;       //0..n-1
+        wxRect  vPageRect;      //full page rectangle (pixels, referred to view org)
+        wxRect  vVisibleRect;   //displayed page rectangle (pixels, referred to view org)
+        lmURect uVisibleRect;   //displayed page rectangle (LUnits, referred to page org)
+        bool    fRepainted;     //during repaint, a rectangle in this page has been repainted
+    }
+    lmVisiblePageInfo;
+
+    std::vector<lmVisiblePageInfo*>   m_VisiblePages;
+
+
 
 
     DECLARE_EVENT_TABLE()

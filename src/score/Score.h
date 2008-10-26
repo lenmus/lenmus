@@ -360,7 +360,7 @@ public:
     void DeleteMidiEvents();
 
     // serving highlight events
-    void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, lmEHighlightType nHighlightType);
+    void ScoreHighlight(lmStaffObj* pSO, wxDC* pDC, lmEHighlightType nHighlightType);
 	void RemoveAllHighlight(wxWindow* pCanvas);
 
 
@@ -474,7 +474,7 @@ private:
 
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
-    void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
+    void RemoveHighlight(lmStaffObj* pSO, wxDC* pDC);
 	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmTextBlock* pTitle,
 							  lmLUnits nPrevTitleHeight);
 	void DoAddInstrument(lmInstrument* pInstr, lmInstrGroup* pGroup);

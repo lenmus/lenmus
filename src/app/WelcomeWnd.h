@@ -58,6 +58,7 @@ public:
     //event handlers
     void OnNewInLenmus(wxHyperlinkEvent& event);
     void OnNewScore(wxHyperlinkEvent& event);
+    void OnQuickGuide(wxHyperlinkEvent& event);
     void OnOpenEBooks(wxHyperlinkEvent& event);
     void OnOpenRecent(wxHyperlinkEvent& event);
     void OnCloseWindow(wxCloseEvent& event);
@@ -65,6 +66,7 @@ public:
 
 private:
     void CreateControls(int nRecentFiles, wxFileHistory* pHistory);
+    void ShowDocument(wxString& sDocName);
 
     //controls on dialog
 	wxStaticBitmap*     m_pBmpLeftBanner;
@@ -78,6 +80,7 @@ private:
 	wxStaticText*       m_pPhonascusTitle;
 	wxStaticBitmap*     m_pPhonascusIcon;
 	wxHyperlinkCtrl*    m_pLinkOpenEBooks;
+    wxHyperlinkCtrl*    m_pLinkQuickGuide;
 	wxStaticText*       m_pScoreTitle;
 	wxStaticBitmap*     m_pScoreIcon;
 	wxHyperlinkCtrl*    m_pLinkNewScore;

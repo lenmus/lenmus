@@ -134,7 +134,14 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     //Normal case. Open a score from LDP file
     lmLDPParser parser;
     m_pScore = parser.ParseFile(filename);
-    if (!m_pScore) return false;
+    if (!m_pScore)
+    {
+        m_pScore = new lmScore();
+        m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+        m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
+        m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
+        //return false;
+    }
 
     GetMainFrame()->AddFileToHistory(filename);
     wxFileName oFN(filename);

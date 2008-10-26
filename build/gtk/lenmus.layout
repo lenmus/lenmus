@@ -8,13 +8,13 @@
 		<Cursor position="0" topLine="0" />
 	</File>
 	<File name="../../packages/wxMidi/src/wxMidi.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="19924" topLine="672" />
+		<Cursor position="19924" topLine="663" />
 	</File>
 	<File name="../../packages/wxMidi/src/wxMidiDatabase.cpp" open="1" top="0" tabpos="2">
 		<Cursor position="1033" topLine="18" />
 	</File>
 	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="13881" topLine="317" />
+		<Cursor position="13617" topLine="300" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="34" />
@@ -95,7 +95,7 @@
 		<Cursor position="3096" topLine="69" />
 	</File>
 	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="16">
-		<Cursor position="22378" topLine="607" />
+		<Cursor position="77601" topLine="2104" />
 	</File>
 	<File name="../../src/app/ScoreView.h" open="0" top="0" tabpos="2">
 		<Cursor position="9724" topLine="171" />
@@ -232,8 +232,8 @@
 	<File name="../../src/graphic/AggDrawer.cpp" open="0" top="0" tabpos="67">
 		<Cursor position="6763" topLine="170" />
 	</File>
-	<File name="../../src/graphic/AggDrawer.h" open="0" top="0" tabpos="9">
-		<Cursor position="1596" topLine="33" />
+	<File name="../../src/graphic/AggDrawer.h" open="1" top="1" tabpos="23">
+		<Cursor position="3505" topLine="77" />
 	</File>
 	<File name="../../src/graphic/BoxPage.cpp" open="0" top="0" tabpos="79">
 		<Cursor position="5032" topLine="143" />

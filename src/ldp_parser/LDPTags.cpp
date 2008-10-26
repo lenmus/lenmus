@@ -216,6 +216,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[3][_T("G")] = _T("G");
         m_Tags[3][_T("F")] = _T("F");
         m_Tags[3][_T("F3")] = _T("F3");
+        m_Tags[3][_T("F4")] = _T("F4");
         m_Tags[3][_T("C1")] = _T("C1");
         m_Tags[3][_T("C2")] = _T("C2");
         m_Tags[3][_T("C3")] = _T("C3");
@@ -385,6 +386,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[3][_T("G")] = _T("Sol");
         m_Tags[3][_T("F")] = _T("Fa4");
         m_Tags[3][_T("F3")] = _T("Fa3");
+        m_Tags[3][_T("F4")] = _T("Fa4");
         m_Tags[3][_T("C1")] = _T("Do1");
         m_Tags[3][_T("C2")] = _T("Do2");
         m_Tags[3][_T("C3")] = _T("Do3");

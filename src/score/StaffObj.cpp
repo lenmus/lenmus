@@ -38,6 +38,7 @@
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
+#include "Notation.h"
 #include "Context.h"
 #include "ObjOptions.h"
 #include "UndoRedo.h"
@@ -696,16 +697,22 @@ wxString lmStaffObj::SourceLDP(int nIndent)
 {
 	wxString sSource = _T("");
 
-    //staff num
-    if (m_pVStaff->GetNumStaves() > 1
-        && !IsKeySignature()
-        && !IsTimeSignature())
+    //Anchor notations doesn't have a source LDP element. Therefore, only attached AuxObjs must
+    //be generated
+    if (!IsNotation() || !( ((lmNotation*)this)->IsAnchor() || ((lmNotation*)this)->IsScoreAnchor() ))
     {
-        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+        //staff num
+        if (m_pVStaff->GetNumStaves() > 1
+            && !IsKeySignature()            //KS, TS & barlines are common to all staves.
+            && !IsTimeSignature()
+            && !IsBarline() )
+        {
+            sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+        }
+        
+        //visible?
+        if (!m_fVisible) { sSource += _T(" noVisible"); }
     }
-    
-    //visible?
-    if (!m_fVisible) { sSource += _T(" noVisible"); }
 
     // Generate source code for AuxObjs attached to this StaffObj
     if (m_pAuxObjs)

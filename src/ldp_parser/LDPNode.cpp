@@ -44,9 +44,10 @@
 //	Compound nodes are (node ... node)
 
 
-lmLDPNode::lmLDPNode(wxString sData)
+lmLDPNode::lmLDPNode(wxString sData, long nNumLine)
 {
     m_sName = sData;
+    m_nNumLine = nNumLine;
     m_fIsSimple = true;
     m_fProcessed = false;
 }
@@ -62,7 +63,7 @@ lmLDPNode::~lmLDPNode()
 
 void lmLDPNode::AddParameter(wxString sData)
 {
-    lmLDPNode* pNode = new lmLDPNode(sData);
+    lmLDPNode* pNode = new lmLDPNode(sData, m_nNumLine);
     AddNode(pNode);
 }
 

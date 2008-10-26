@@ -49,6 +49,7 @@ extern lmPaths* g_pPaths;
 //IDs for controls
 const int lmLINK_NewInLenmus = wxNewId();
 const int lmLINK_NewScore = wxNewId();
+const int lmLINK_QuickGuide = wxNewId();
 const int lmLINK_OpenEBooks = wxNewId();
 const int lmLINK_Recent1 = wxNewId();
 const int lmLINK_Recent2 = wxNewId();
@@ -64,6 +65,7 @@ const int lmLINK_Recent9 = wxNewId();
 BEGIN_EVENT_TABLE(lmWelcomeWnd, lmMDIChildFrame)
     EVT_HYPERLINK   (lmLINK_NewInLenmus, lmWelcomeWnd::OnNewInLenmus)
     EVT_HYPERLINK   (lmLINK_NewScore, lmWelcomeWnd::OnNewScore)
+    EVT_HYPERLINK   (lmLINK_QuickGuide, lmWelcomeWnd::OnQuickGuide)
     EVT_HYPERLINK   (lmLINK_OpenEBooks, lmWelcomeWnd::OnOpenEBooks)
     EVT_HYPERLINK   (lmLINK_Recent1, lmWelcomeWnd::OnOpenRecent)
     EVT_HYPERLINK   (lmLINK_Recent2, lmWelcomeWnd::OnOpenRecent)
@@ -94,6 +96,7 @@ lmWelcomeWnd::lmWelcomeWnd(wxWindow* parent, wxWindowID id)
 	m_pLinkNewInLenmus->SetBackgroundColour(*wxWHITE);
 	m_pLinkVisitWebsite->SetBackgroundColour(*wxWHITE);
 	m_pLinkOpenEBooks->SetBackgroundColour(*wxWHITE);
+    m_pLinkQuickGuide->SetBackgroundColour(*wxWHITE);    
 	m_pLinkNewScore->SetBackgroundColour(*wxWHITE);
     for (int i=0; i < nRecentFiles; i++)
 	    m_pLinkRecent[i]->SetBackgroundColour(*wxWHITE);
@@ -214,7 +217,7 @@ void lmWelcomeWnd::CreateControls(int nRecentFiles, wxFileHistory* pHistory)
 	wxBoxSizer* pScoreSizer;
 	pScoreSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_pScoreTitle = new wxStaticText( this, wxID_ANY, _("Create and edit music scores"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pScoreTitle = new wxStaticText( this, wxID_ANY, _("Create and edit music scores (beta 0 version)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pScoreTitle->Wrap( -1 );
 	m_pScoreTitle->SetFont( wxFont( 10, 74, 90, 92, false, wxT("Tahoma") ) );
 
@@ -231,6 +234,9 @@ void lmWelcomeWnd::CreateControls(int nRecentFiles, wxFileHistory* pHistory)
 
 	m_pLinkNewScore = new wxHyperlinkCtrl( this, lmLINK_NewScore, _("New score ..."), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	pScoreLinksSizer->Add( m_pLinkNewScore, 0, wxRIGHT|wxLEFT, 5 );
+
+	m_pLinkQuickGuide = new wxHyperlinkCtrl( this, lmLINK_QuickGuide, _("Editor quick guide"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	pScoreLinksSizer->Add( m_pLinkQuickGuide, 0, wxRIGHT|wxLEFT, 5 );
 
 	wxBoxSizer* pRecentScoresSizer;
 	pRecentScoresSizer = new wxBoxSizer( wxVERTICAL );
@@ -288,15 +294,27 @@ lmWelcomeWnd::~lmWelcomeWnd()
 
 void lmWelcomeWnd::OnNewInLenmus(wxHyperlinkEvent& event)
 {
+    wxString sDoc = _T("release_notes.htm");
+    ShowDocument(sDoc);
+}
+
+void lmWelcomeWnd::OnQuickGuide(wxHyperlinkEvent& event)
+{
+    wxString sDoc = _T("editor_quick_guide.htm");
+    ShowDocument(sDoc);
+}
+
+void lmWelcomeWnd::ShowDocument(wxString& sDocName)
+{
     wxString sPath = g_pPaths->GetLocalePath();
-    wxFileName oFile(sPath, _T("release_notes.htm"), wxPATH_NATIVE);
+    wxFileName oFile(sPath, sDocName, wxPATH_NATIVE);
 	if (!oFile.FileExists())
 	{
 		//use english version
 		sPath = g_pPaths->GetLocaleRootPath();
 		oFile.AssignDir(sPath);
 		oFile.AppendDir(_T("en"));
-		oFile.SetFullName(_T("release_notes.htm"));
+		oFile.SetFullName(sDocName);
 	}
     ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
 }

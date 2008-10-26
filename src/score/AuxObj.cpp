@@ -180,8 +180,7 @@ lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
     int nGlyphIndex = (fAbove ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShape* pPS = m_pParent->GetShape();
     lmShapeGlyph* pFS =
-		new lmShapeGlyph(this, -1, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
-						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE);
+		new lmShapeGlyph(this, -1, nGlyphIndex, pPaper, uPos, _T("Fermata"), lmDRAGGABLE);
 
 	//center it on the owner
 	lmLUnits uCenterPos;
@@ -234,8 +233,7 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     //create the shape object
     int nGlyphIndex = (IsAbove() ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShapeGlyph* pShape =
-		new lmShapeGlyph(this, 0, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
-						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
+		new lmShapeGlyph(this, 0, nGlyphIndex, pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
 	pBox->AddShape(pShape);
     StoreShape(pShape);
 

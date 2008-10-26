@@ -159,8 +159,8 @@ lmPaths::lmPaths(wxString sBinPath)
 
     path = oRootG4;
     path.AppendDir(_T("scores"));
-    path.AppendDir(_T("samples"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    path.AppendDir(_T("samples"));
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 

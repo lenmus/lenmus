@@ -30,11 +30,14 @@
 #endif
 
 #include "Shapes.h"
+#include "AggDrawer.h"
 #include "../score/Glyph.h"      //access to glyphs table
 #include "../score/Score.h"
 #include "../score/VStaff.h"
 #include "../score/Staff.h"
 #include "../app/ScoreCanvas.h"
+
+
 
 
 //========================================================================================
@@ -154,63 +157,52 @@ void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
 // lmShapeGlyph object implementation
 //========================================================================================
 
-lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, wxFont* pFont,
+lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, 
                            lmPaper* pPaper, lmUPoint uPos, wxString sName, bool fDraggable,
                            wxColour color)
     : lmSimpleShape(eGMO_ShapeGlyph, pOwner, nShapeIdx, sName, fDraggable, lmSELECTABLE, color)
 {
     m_nGlyph = nGlyph;
-    m_pFont = pFont;
 
     // compute and store position
     m_uGlyphPos.x = uPos.x;
     m_uGlyphPos.y = uPos.y; // - pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset, nStaff);
 
     // store boundling rectangle position and size
-    lmLUnits uWidth, uHeight;
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
-    pPaper->SetFont(*m_pFont);
-    pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
+    lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
+    lmStaff* pStaff = pSO->GetVStaff()->GetStaff(pSO->GetStaffNum());
+    double rPointSize = pStaff->GetMusicFontSize();
+    pPaper->FtSetFontSize(rPointSize);
+    lmURect bbox = ((lmAggDrawer*)(pPaper->GetDrawer()))->FtGetGlyphBounds( (unsigned int)sGlyph.GetChar(0) );
 
-	m_uBoundsTop.x = m_uGlyphPos.x;
-	m_uBoundsTop.y = m_uGlyphPos.y + ((lmStaffObj*)m_pOwner)->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
-	m_uBoundsBottom.x = m_uBoundsTop.x + uWidth;
-	m_uBoundsBottom.y = m_uBoundsTop.y + ((lmStaffObj*)m_pOwner)->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
+	m_uBoundsTop.x = m_uGlyphPos.x + bbox.x;
+	m_uBoundsTop.y = m_uGlyphPos.y + bbox.y + pSO->TenthsToLogical(60);
+	m_uBoundsBottom.x = m_uBoundsTop.x + bbox.width;
+	m_uBoundsBottom.y = m_uBoundsTop.y + bbox.height;
 
     // store selection rectangle position and size
 	m_uSelRect = GetBounds();
+}
+
+double lmShapeGlyph::GetPointSize()
+{
+    lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
+    lmStaff* pStaff = pSO->GetVStaff()->GetStaff(pSO->GetStaffNum());
+    return pStaff->GetMusicFontSize();
 }
 
 void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
 {
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
 
-    const bool lmUSE_FREETYPE = true;   //false = Platform native renderization,
-                                        //true = FreeType with AGG renderization
+    pPaper->FtSetFontSize(GetPointSize());
+    pPaper->SetTextForeground(color);
+    lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
+    pPaper->FtSetTextPosition(m_uGlyphPos.x, m_uGlyphPos.y + pSO->TenthsToLogical(60) );
+    pPaper->FtDrawChar( (unsigned int)sGlyph.GetChar(0) );
 
-    if (!lmUSE_FREETYPE || pPaper->IsDirectDrawer())
-    {
-        pPaper->SetFont(*m_pFont);
-        pPaper->SetTextForeground(color);
-        pPaper->DrawText(sGlyph, m_uGlyphPos.x, m_uGlyphPos.y);
-    }
-    else
-    {
-        lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
-        lmStaff* pStaff = pSO->GetVStaff()->GetStaff(pSO->GetStaffNum());
-        double rPointSize = pStaff->GetMusicFontSize();
-
-        pPaper->FtSetFontSize(rPointSize);
-        pPaper->SetTextForeground(color);
-        pPaper->FtSetTextPosition(m_uGlyphPos.x, m_uGlyphPos.y + pSO->TenthsToLogical(60) );
-        pPaper->FtDrawChar( (unsigned int)sGlyph.GetChar(0) );
-    }
     lmSimpleShape::Render(pPaper, color);
-}
-
-void lmShapeGlyph::SetFont(wxFont *pFont)
-{
-    m_pFont = pFont;
 }
 
 wxString lmShapeGlyph::Dump(int nIndent)
@@ -241,67 +233,8 @@ wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale, wxDC* pDC)
 {
 	// A dragging operation is started. The view invokes this method to request the
 	// bitmap to be used as drag image. No other action is required.
-	// If no bitmap is returned drag is cancelled.
-	//
-	// So this method returns the bitmap to use with the drag image.
 
-    wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
-
-	// Get size of glyph, in logical units
-    wxCoord wText, hText;
-    wxScreenDC dc;
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale(rScale, rScale);
-    dc.SetFont(*m_pFont);
-    dc.GetTextExtent(sGlyph, &wText, &hText);
-    dc.SetFont(wxNullFont);
-
-    // allocate the bitmap
-    // convert size to pixels
-    int wD = (int)pDC->LogicalToDeviceXRel(wText);
-    int hD = (int)pDC->LogicalToDeviceYRel(hText);
-    wxBitmap bitmap(wD+2, hD+2);
-
-     // allocate a memory DC for drawing into a bitmap
-    wxMemoryDC dc2;
-    dc2.SelectObject(bitmap);
-    dc2.SetMapMode(lmDC_MODE);
-    dc2.SetUserScale(rScale, rScale);
-    dc2.SetFont(*m_pFont);
-
-    // draw onto the bitmap
-    dc2.SetBackground(* wxWHITE_BRUSH);
-    dc2.Clear();
-    dc2.SetBackgroundMode(wxTRANSPARENT);
-    dc2.SetTextForeground(g_pColors->ScoreSelected());
-    dc2.DrawText(sGlyph, 0, 0);
-
-    dc2.SelectObject(wxNullBitmap);
-
-    //cut out the image, to discard the outside out of the bounding box
-    lmPixels vxLeft = dc2.LogicalToDeviceYRel((wxCoord)(GetXLeft() - m_uGlyphPos.x));
-    lmPixels vyTop = dc2.LogicalToDeviceYRel((wxCoord)(GetYTop() - m_uGlyphPos.y));
-    lmPixels vWidth = wxMin(bitmap.GetWidth() - vxLeft,
-                            dc2.LogicalToDeviceXRel((wxCoord)GetWidth()) );
-    lmPixels vHeight = wxMin(bitmap.GetHeight() - vyTop,
-                             dc2.LogicalToDeviceYRel((wxCoord)GetHeight()) );
-    const wxRect rect(vxLeft, vyTop, vWidth, vHeight);
-    //wxLogMessage(_T("[lmShapeGlyph::OnBeginDrag] bitmap size w=%d, h=%d. Cut x=%d, y=%d, w=%d, h=%d"),
-    //    bitmap.GetWidth(), bitmap.GetHeight(), vxLeft, vyTop, vWidth, vHeight);
-    wxBitmap oShapeBitmap = bitmap.GetSubBitmap(rect);
-    wxASSERT(oShapeBitmap.IsOk());
-
-    // Make the bitmap masked
-    wxImage image = oShapeBitmap.ConvertToImage();
-    image.SetMaskColour(255, 255, 255);
-    wxBitmap* pBitmap = new wxBitmap(image);
-
-    ////DBG -----------
-    //wxString sFileName = _T("ShapeGlyp2.bmp");
-    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
-    ////END DBG -------
-
-    return pBitmap;
+    return GetBitmapFromShape(rScale, g_pColors->ScoreSelected());
 }
 
 lmUPoint lmShapeGlyph::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
@@ -318,7 +251,6 @@ lmUPoint lmShapeGlyph::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	// and referred to page origin.
 
 	return uPos;
-
 }
 
 void lmShapeGlyph::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
@@ -332,13 +264,96 @@ void lmShapeGlyph::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 	pCanvas->MoveObject(this, uPos);
 }
 
-
 lmUPoint lmShapeGlyph::GetObjectOrigin()
 {
 	//returns the origin of this shape
 	return m_uBoundsTop;    //m_uGlyphPos;
 }
 
+wxBitmap* lmShapeGlyph::GetBitmapFromShape(double rScale, wxColour colorF, wxColour colorB)
+{
+    //Returns a bitmap with the glyph. The bitmap is only the bounding box.
+    //Ownership of bitmap is transferred to caller method. It must delete it.
+
+
+    //allocate an empty drawer for measurements
+    wxBitmap dummyBitmap(1, 1);
+    lmAggDrawer* pDrawer = new lmAggDrawer(&dummyBitmap, rScale);
+    
+    // Get size of glyph, in logical units
+    wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
+    double rPointSize = GetPointSize();
+    pDrawer->FtSetFontSize(rPointSize);
+    wxRect vBox = pDrawer->FtGetGlyphBoundsInPixels( (unsigned int)sGlyph.GetChar(0) );
+
+    //allocate a bitmap for the glyph
+    wxBitmap bitmap(vBox.width + 1, vBox.height + 1);
+
+     //use this bitmap as rendering buffer
+    delete pDrawer;
+    pDrawer = new lmAggDrawer(&bitmap, rScale);
+    pDrawer->FtSetFontSize(rPointSize);
+
+    //render the glyph
+    pDrawer->SetTextForeground(colorF);
+    pDrawer->SetTextBackground(colorB);
+    pDrawer->Clear();
+    pDrawer->FtSetTextPositionPixels(- vBox.x, - vBox.y);
+    pDrawer->FtDrawChar( (unsigned int)sGlyph.GetChar(0) );
+
+    //get the image buffer and create a bitmap from it
+    wxImage& image = pDrawer->GetImageBuffer();
+
+    // Make the bitmap masked
+    image.SetMaskColour(colorB.Red(), colorB.Green(), colorB.Blue());
+    wxBitmap* pBitmap = new wxBitmap(image);
+    delete pDrawer;
+
+    ////DBG -----------
+    //wxString sFileName = _T("ShapeGlyp.bmp");
+    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    ////END DBG -------
+
+    return pBitmap;
+}
+
+void lmShapeGlyph::RenderHighlighted(wxDC* pDC, wxColour colorC)
+{
+    //The DC is scaled and its origin is positioned according current scrolling and
+    //page origin in the view
+
+    //get the bitmap
+    double rScaleX, rScaleY; 
+    pDC->GetUserScale(&rScaleX, &rScaleY);
+    wxBitmap* pBitmap = GetBitmapFromShape(rScaleX, colorC, *wxBLACK);
+
+    //blend it with current displayed page
+    lmPixels vxDest = pDC->LogicalToDeviceX(m_uBoundsTop.x), 
+             vyDest = pDC->LogicalToDeviceY(m_uBoundsTop.y);
+    const wxBitmap& bitmap = *pBitmap;
+
+    ////DBG -----------
+    //wxString sFileName = _T("draw.bmp");
+    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    ////END DBG -------
+
+    pDC->SetUserScale(1.0, 1.0);
+    pDC->SetMapMode(wxMM_TEXT);
+	pDC->SetDeviceOrigin(0, 0);
+    //pDC->SetLogicalFunction(wxINVERT);
+    //pDC->DrawBitmap(bitmap, vxDest, vyDest, true);     //true -> transparent
+
+    wxMemoryDC dc;
+    dc.SetMapMode(wxMM_TEXT);
+    dc.SelectObject(*pBitmap);
+    pDC->Blit(vxDest, vyDest, pBitmap->GetWidth(), pBitmap->GetHeight(), &dc, 0, 0, wxXOR, true);
+
+
+    //TODO: During playback the bitmap for the black notehead is constantly used. It could save
+    //a lot of processing time if this particular bitmap is cached.
+
+    delete pBitmap;
+}
 
 //========================================================================================
 // lmShapeStem object implementation: a vertical line
@@ -410,6 +425,22 @@ lmLUnits lmShapeStem::GetXCenterStem()
 //========================================================================================
 // lmShapeClef
 //========================================================================================
+
+lmShapeClef::lmShapeClef(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, lmPaper* pPaper,
+                         lmUPoint offset, bool fSmallClef, wxString sName,
+				         bool fDraggable, wxColour color) 
+	: lmShapeGlyph(pOwner, nShapeIdx, nGlyph, pPaper, offset, sName, fDraggable, color)
+    , m_fSmallClef(fSmallClef)
+{
+    m_nType = eGMO_ShapeClef;
+}
+
+double lmShapeClef::GetPointSize()
+{
+    lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
+    lmStaff* pStaff = pSO->GetVStaff()->GetStaff(pSO->GetStaffNum());
+    return (m_fSmallClef ? pStaff->GetMusicFontSize() * 0.8 : pStaff->GetMusicFontSize());
+}
 
 lmUPoint lmShapeClef::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 {
