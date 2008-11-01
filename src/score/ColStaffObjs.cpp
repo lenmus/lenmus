@@ -89,30 +89,31 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
 
     //SO1 has lower or equal time than SO2. If equal time order by duration.
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
-             && IsLowerTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && IsLowerTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement()))
         fValue = true, nCheck=2;
 
     //ordered by timepos and duration. Chords: Ensure that all notes
     //of a chord go in sequence
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-             && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
-             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+             && pSO1->IsNoteRest() && pSO2->IsNoteRest()
+             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
              && ((lmNote*)pSO1)->GetChord() < ((lmNote*)pSO2)->GetChord() )
         fValue = true, nCheck=3;
 
     //here they are ordered by timepos and duration. Chords: Ensure base note precedence
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-             && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
-             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+             && pSO1->IsNoteRest() && pSO2->IsNoteRest()
+             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+             && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
              && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
         fValue = true, nCheck=4;
 
     //If chord and right ordering, do not make more checks
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-             && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
+             && pSO1->IsNoteRest() && pSO2->IsNoteRest()
              && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
              && ( ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord() )
              && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsBaseOfChord() )
@@ -151,28 +152,30 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
         return true;
 
     //here they are ordered by timepos and duration. Chords: Ensure that all notes
-    //of a chord go in sequence
+    //of a chord go in sequence. Chord address is used to identify the chord and, thus,
+    //avoiding to mix notes from different chords
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
         && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-        && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
-        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+        && pSO1->IsNoteRest() && pSO2->IsNoteRest()
+        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
         && ((lmNote*)pSO1)->GetChord() < ((lmNote*)pSO2)->GetChord() )
         return true;
 
     //here they are ordered by timepos and duration. Chords: Ensure base note precedence
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
         && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-        && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
-        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote() 
+        && pSO1->IsNoteRest() && pSO2->IsNoteRest()
+        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+        && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
         && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
         return true;
 
     //If chord and right ordering, do not make more checks
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
         && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-        && pSO1->IsNoteRest() && pSO2->IsNoteRest() 
+        && pSO1->IsNoteRest() && pSO2->IsNoteRest()
         && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
-        && ( ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord() )
+        && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
         && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsBaseOfChord() )
         return false;
 
@@ -203,29 +206,26 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
 //=======================================================================================
 
 //global variable used as default initializator
-lmVCursorState g_tNoVCursorState = { -1, -1, 0.0f, (lmStaffObj*)NULL };
+lmVCursorState g_tNoVCursorState = { -1, 0.0f, (lmStaffObj*)NULL };
 
 
 
 lmVStaffCursor::lmVStaffCursor()
 {
 	m_nStaff = 1;
-	m_nSegment = -1;
-	m_pSegment = (lmSegment*)NULL;
 	m_rTimepos = 0.0f;
 	m_pColStaffObjs = (lmColStaffObjs*)NULL;
     m_pScoreCursor = (lmScoreCursor*)NULL;
+    m_pIt = (lmSOIterator*)NULL;
 }
 
 lmVStaffCursor::lmVStaffCursor(lmVStaffCursor& oVCursor)
 {
 	m_nStaff = oVCursor.GetNumStaff();
-	m_nSegment = oVCursor.GetSegment();
 	m_rTimepos = oVCursor.GetTimepos();
 	m_pColStaffObjs = (lmColStaffObjs*)NULL;
     m_pScoreCursor = oVCursor.GetScoreCursor();
-    m_it = oVCursor.GetCurIt();
-	m_pSegment = (lmSegment*)NULL;
+    m_pIt = new lmSOIterator(oVCursor.m_pIt);
 }
 
 void lmVStaffCursor::AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fReset)
@@ -233,10 +233,10 @@ void lmVStaffCursor::AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fRes
 	m_pColStaffObjs = pColStaffObjs;
 	m_pColStaffObjs->AttachCursor(this);		//link back
 
-    if (m_nSegment != -1)
-        m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-    else
-	    m_pSegment = (lmSegment*)NULL;
+    //create iterator
+    if (m_pIt)
+        delete m_pIt;
+    m_pIt = new lmSOIterator(pColStaffObjs, (lmStaffObj*)NULL);
 
     if (fReset)
 	    ResetCursor();
@@ -250,48 +250,52 @@ void lmVStaffCursor::SetNewCursorState(lmScoreCursor* pSCursor, lmVCursorState* 
     //  - cursor must be already attached to the collection of staffobjs
 
     wxASSERT(m_pColStaffObjs);
-    wxASSERT(pState->nSegment < (int)(m_pColStaffObjs->m_Segments.size()));
 
     m_pScoreCursor = (lmScoreCursor*)NULL;   //supress visual feedback
     m_nStaff = pState->nStaff;
-    m_nSegment = pState->nSegment;
-    m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
     m_rTimepos = pState->rTimepos;
+    m_pIt->MoveTo(pState->pSO);
 
-    //position m_it to point to staffobj
-    if (pState->pSO)
+    //update timepos, if requested
+    if (fUpdateTimepos)
     {
-        //Pointing to an staffobj. Locate it 
-        m_it = m_pSegment->m_StaffObjs.begin();
-        while(m_it != m_pSegment->m_StaffObjs.end() && *m_it != pState->pSO)
-            ++m_it;
-        //update timepos
-        if (fUpdateTimepos)
+        if (pState->pSO)
             m_rTimepos = pState->pSO->GetTimePos();
-    }
-    else
-    {
-        //Not pointing to an staffobj. Cursor is at end of collection
-        m_it = m_pSegment->m_StaffObjs.end();
-        if (fUpdateTimepos)
-            m_rTimepos = m_pSegment->GetDuration();
+        else
+        {
+            //Not pointing to an staffobj. Cursor is at end of collection
+            int nSegment = m_pIt->GetNumSegment();
+            m_rTimepos = m_pColStaffObjs->GetSegment(nSegment)->GetDuration();
+        }
     }
 
-    //point to segment and restore ScoreCursor
-	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
+    //restore ScoreCursor
     m_pScoreCursor = pSCursor;
-
 }
 
 lmVCursorState lmVStaffCursor::GetState()
 {
-    lmVCursorState tState = { m_nStaff, m_nSegment, m_rTimepos, GetStaffObj()};
+    lmVCursorState tState = { m_nStaff, m_rTimepos, m_pIt->GetCurrent() };
     return tState;
+}
+
+lmStaffObj* lmVStaffCursor::GetStaffObj() 
+{ 
+    wxASSERT(m_pIt);
+    return m_pIt->GetCurrent();
+}
+
+int lmVStaffCursor::GetSegment()
+{ 
+    //return number of sgment 0..n-1
+
+    wxASSERT(m_pIt);
+    return m_pIt->GetNumSegment();
 }
 
 lmVStaff* lmVStaffCursor::GetVStaff()
 {
-    return m_pSegment->m_pOwner->m_pOwner;
+    return m_pColStaffObjs->GetOwnerVStaff();
 }
 
 lmVStaffCursor* lmVStaffCursor::AttachCursor(lmScoreCursor* pSCursor)
@@ -308,46 +312,47 @@ void lmVStaffCursor::DetachCursor()
 void lmVStaffCursor::MoveRightToNextTime()
 {
     //Cursor movement by occupied timepos in current staff and at end of score.
-    //When an empty measure is found, cursor will stop in at begining (timepos 0)
+    //When an empty measure is found, cursor will stop at begining (timepos 0)
     //and before the barline, and then move to next measure.
 
 
     //(**1) if at end of collection remain there
-	if (IsAtEnd()) return;      //Done. Case [e1]
-    wxASSERT(m_it != m_pSegment->m_StaffObjs.end());
+	if (m_pIt->EndOfCollection()) return;      //Done. Case [e1]
+
+    lmStaffObj* pCurSO = m_pIt->GetCurrent();
+    wxASSERT(pCurSO);
 
     //cursor could be placed at lower time than current object (i.e. if caret has been
     //positioned by time increment). Check if current object could be the target place
-    if ((*m_it)->GetStaffNum() == m_nStaff 
-        || (*m_it)->IsBarline()
-        || (*m_it)->IsKeySignature()
-        || (*m_it)->IsTimeSignature() )
+    if (pCurSO->IsOnStaff(m_nStaff))
     {
-        if ( IsLowerTime(m_rTimepos, (*m_it)->GetTimePos()) )
+        if ( IsLowerTime(m_rTimepos, pCurSO->GetTimePos()) )
         {
             //we are at right place. Just advance cursor time
-            m_rTimepos = (*m_it)->GetTimePos();
+            m_rTimepos = pCurSO->GetTimePos();
             return;     //Done. Case [n1]
         }
         else
         {
             //same timepos than CursorObj
-            if ((*m_it)->IsBarline())
+            if (pCurSO->IsBarline())
             {
                 //Advance to next segment.
                 //As there is a barline, there also exist a next segment
-                AdvanceToNextSegment();
-    
+                m_pIt->MoveNext();
+                pCurSO = m_pIt->GetCurrent();
+
                 //move at timepos 0, at right place for TargetStaff
-                while (m_it != m_pSegment->m_StaffObjs.end()
-                       && IsEqualTime((*m_it)->GetTimePos(), 0.0f)
-                       && (*m_it)->GetStaffNum() < m_nStaff
-                       && !( (*m_it)->IsBarline()
-                             || (*m_it)->IsKeySignature()
-                             || (*m_it)->IsTimeSignature() )
+                while (pCurSO
+                       && IsEqualTime(pCurSO->GetTimePos(), 0.0f)
+                       && pCurSO->GetStaffNum() < m_nStaff
+                       && !( pCurSO->IsBarline()
+                             || pCurSO->IsKeySignature()
+                             || pCurSO->IsTimeSignature() )
                       )
                 {
-                    ++m_it;
+                    m_pIt->MoveNext();
+                    pCurSO = m_pIt->GetCurrent();
                 }
 
                 m_rTimepos = 0.0f;
@@ -362,62 +367,43 @@ void lmVStaffCursor::MoveRightToNextTime()
     //CursorObjTimepos + CursorObj.Duration. Otherwise, we do not have a target
     //timepos but the first valid position we find.
     float rTargetTimepos;
-    if ((*m_it)->GetStaffNum() == m_nStaff 
-        || (*m_it)->IsKeySignature()
-        || (*m_it)->IsTimeSignature() )
-        rTargetTimepos = (*m_it)->GetTimePos() + (*m_it)->GetTimePosIncrement();
+    if (pCurSO->IsOnStaff(m_nStaff))
+        rTargetTimepos = pCurSO->GetTimePos() + pCurSO->GetTimePosIncrement();
     else
         rTargetTimepos = -1.0f;      //to stop at next valid position
-        
+
     //advance to first position in this staff with timepos >= TargetTime.
-    lmStaffObj* pLastSO = *m_it;        //save current object
-    ++m_it;         //increment iterator
-    while (m_it != m_pSegment->m_StaffObjs.end()
-           && ( IsHigherTime(rTargetTimepos, (*m_it)->GetTimePos())
-                || ( (*m_it)->GetStaffNum() != m_nStaff 
-                        && !( (*m_it)->IsBarline()
-                            || (*m_it)->IsKeySignature()
-                            || (*m_it)->IsTimeSignature() )
-                    )
-              )
-           )
+    lmStaffObj* pLastSO = pCurSO;        //save current object
+    m_pIt->MoveNext();               //increment iterator
+    pCurSO = m_pIt->GetCurrent();
+    while (pCurSO
+           && ( IsHigherTime(rTargetTimepos, pCurSO->GetTimePos())
+                || !pCurSO->IsOnStaff(m_nStaff)))
     {
-        ++m_it;
+        m_pIt->MoveNext();
+        pCurSO = m_pIt->GetCurrent();
     }
 
     //(**2)
-    //if we reach end of segment is because we have not reached a barline
-    //Therefore, we are at end of collection. Remain there
-    if (m_it == m_pSegment->m_StaffObjs.end())
+    //if we reach end of collection is because there is no barline in last segment. Remain there
+    if (!pCurSO)
     {
         //We are at end of collection.
         //Get last staffobj and assign its timepos plus its duration
-        if (pLastSO && pLastSO->GetStaffNum() == m_nStaff)
+        if (pLastSO && pLastSO->IsOnStaff(m_nStaff))
             m_rTimepos = pLastSO->GetTimePos() + pLastSO->GetTimePosIncrement();
-        return;     //Done. Case [e2] 
+        return;     //Done. Case [e2]
     }
 
     //Set new cursor timepos
     if (IsEqualTime(rTargetTimepos, -1.0f))
         //no target time. New cursor timepos is object timepos
-        m_rTimepos = (*m_it)->GetTimePos();
+        m_rTimepos = pCurSO->GetTimePos();
     else
         //New cursor timepos at target timepos
         m_rTimepos = rTargetTimepos;
 
     return;     //Done. Case [n3]
-}
-
-void lmVStaffCursor::MoveRightIncrementingTime(float rTimeincr)
-{
-    //Caret movement by occupied timepos in current staff and to end of
-    //score (empty entry point)
-}
-
-void lmVStaffCursor::MoveRightToNextObject(float rTimeincr)
-{
-    //Advance to next object in current time (i.e. stopping in every chord note).
-    //If no more objects in current time advance to next occupied timepos.
 }
 
 void lmVStaffCursor::MoveLeftToPrevTime()
@@ -428,23 +414,16 @@ void lmVStaffCursor::MoveLeftToPrevTime()
 
 
     //(**1) if at beginning of collection remain there. Done. Case [e1]
-	if (IsAtBeginning()) return;        //Done. Case [e1]
-    
+	if (m_pIt->FirstOfCollection()) return;        //Done. Case [e1]
+
     //determine target timepos
     //move back to previous object in target staff
-    bool fPrevObjFound = false;     
-    while(m_it != m_pSegment->m_StaffObjs.begin())
+    bool fPrevObjFound = false;
+    m_pIt->MovePrev();
+    while(!m_pIt->ChangeOfMeasure())
     {
-		//move back
-		--m_it;
-
         //check if staffobj is in current staff; otherwise we have to continue moving back
-        //This check has to be ignored for objects applicable to all staffs (barlines,
-        //KS & TS), as they are always in first staff but are applicable to all.
-        if ((*m_it)->GetStaffNum() == m_nStaff || 
-            (*m_it)->IsBarline() ||
-            (*m_it)->IsKeySignature() ||
-            (*m_it)->IsTimeSignature() )
+        if (m_pIt->GetCurrent()->IsOnStaff(m_nStaff))
         {
             //it is in current staff. PrevObj found. Finish loop
             fPrevObjFound = true;
@@ -454,85 +433,64 @@ void lmVStaffCursor::MoveLeftToPrevTime()
 
     if (fPrevObjFound)
     {
-        ////PrevObj found
-        //float rTargetTimepos = (*m_it)->GetTimePos() + (*m_it)->GetTimePosIncrement();
-        //if (IsLowerTime(rTargetTimepos, m_rTimepos))
-        //{
-        //    //cursor has to be positioned after PrevObj, at timepos TargetTimepos,
-        //    //at appropiate position for current staff
-        //    ++m_it;     //set iterator after PrevObj
-
-        //    //move at timepos TargetTimepos, at right place for TargetStaff
-        //    PositionAt(rTargetTimepos);
-        //    return;     //Done. Case [n1]
-        //}
-        //else
+        //Cursor has to be positioned at timepos PrevObj.Timepos
+        //if PrevObj is not note in chord
+        lmStaffObj* pSO = m_pIt->GetCurrent();
+        if (!pSO->IsNoteRest()
+            || !((lmNoteRest*)pSO)->IsNote()
+            || !((lmNote*)pSO)->IsInChord()
+            || ((lmNote*)pSO)->IsBaseOfChord() )
         {
-            //Cursor has to be positioned at timepos PrevObj.Timepos
-            //if PrevObj is not note in chord
-            if (!(*m_it)->IsNoteRest()
-                || !((lmNoteRest*)(*m_it))->IsNote()
-                || !((lmNote*)(*m_it))->IsInChord()
-                || ((lmNote*)(*m_it))->IsBaseOfChord() )
+            //Done. Place cursor at PrevObj
+            m_rTimepos = pSO->GetTimePos();
+            return;     //Done. Case [n2]
+        }
+        else
+        {
+            //place cursor at base note of chord
+            //while (PrevObj is note in chord and is not base note)
+            while (pSO->IsNoteRest()
+                    && ((lmNoteRest*)pSO)->IsNote()
+                    && ((lmNote*)pSO)->IsInChord()
+                    && !((lmNote*)pSO)->IsBaseOfChord() )
             {
-                //Done. Place cursor at PrevObj
-                m_rTimepos = (*m_it)->GetTimePos();
-                return;     //Done. Case [n2]
+                m_pIt->MovePrev();
+                pSO = m_pIt->GetCurrent();
             }
-            else
-            {
-                //place cursor at base note of chord
-                //while (PrevObj is note in chord and is not base note)
-                while ((*m_it)->IsNoteRest()
-                        && ((lmNoteRest*)(*m_it))->IsNote()
-                        && ((lmNote*)(*m_it))->IsInChord()
-                        && !((lmNote*)(*m_it))->IsBaseOfChord() )
-                {
-                    --m_it;
-                }
-                //Done. Place cursor at base note of chord
-                m_rTimepos = (*m_it)->GetTimePos();
-                return;     //Done. Case [n3]
-            }
+            //Done. Place cursor at base note of chord
+            m_rTimepos = pSO->GetTimePos();
+            return;     //Done. Case [n3]
         }
     }
     else
     {
-        //PrevObj not found. We are at beginning of segment
-        //if CursorTime > 0 or this is first segment
-        if (IsHigherTime(m_rTimepos, 0.0f) || m_nSegment == 0) 
+        //PrevObj not found. We have moved to prev segment or we are at start of collection.
+        //If current time is > 0 or we are at start of collection we should position at 
+        //start of segment
+        if (IsHigherTime(m_rTimepos, 0.0f) || m_pIt->FirstOfCollection())
         {
+            //set at begin of segment
+            if (!m_pIt->FirstOfCollection())
+                m_pIt->MoveNext();
+
             //move to position 0 in this segment
-            m_it = m_pSegment->m_StaffObjs.begin();     //set iterator at begin of segment
-            PositionAt(0.0f);                           //move at timepos 0, at right place for TargetStaff
-            return;                                     //Done. Case [n3]
+            PositionAt(0.0f);
+            return;                                 //Done. Case [n3]
         }
         else
         {
-            //move to end of previous segment
+            //we have to move to end of previous segment but
+            //as we are not at start of collection we are already there
 
-            //set iterator at end of previous segment
-            --m_nSegment;
-		    m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-		    m_it = m_pSegment->m_StaffObjs.end();
-
-            //Move iterator to barline (it MUST exist)
-            --m_it;
-            wxASSERT(m_it != m_pSegment->m_StaffObjs.end());
+            //current SO must be the barline (it MUST exist)
+            lmStaffObj* pSO = m_pIt->GetCurrent();
+            wxASSERT(pSO && pSO->IsBarline());
 
             //done
-            m_rTimepos = (*m_it)->GetTimePos();
+            m_rTimepos = pSO->GetTimePos();
             return;     //Done. Case [n4]
         }
     }
-}
-
-void lmVStaffCursor::MoveLeftDecrementingTime(float rTimeincr)
-{
-}
-
-void lmVStaffCursor::MoveLeftToPrevObject(float rTimeincr)
-{
 }
 
 void lmVStaffCursor::PositionAt(float rTargetTimepos)
@@ -544,30 +502,26 @@ void lmVStaffCursor::PositionAt(float rTargetTimepos)
     //or any position after it.
     //we are not at end of segment
 
-    wxASSERT(m_it != m_pSegment->m_StaffObjs.end());
+    wxASSERT(m_pIt && m_pIt->GetCurrent());
 
     //advance to first position in this staff with timepos >= TargetTime.
-    lmStaffObj* pLastSO = *m_it;        //save current object
-    while (m_it != m_pSegment->m_StaffObjs.end()
-           && ( IsHigherTime(rTargetTimepos, (*m_it)->GetTimePos())
-                || ( (*m_it)->GetStaffNum() != m_nStaff 
-                        && !( (*m_it)->IsBarline()
-                            || (*m_it)->IsKeySignature()
-                            || (*m_it)->IsTimeSignature() )
-                    )
-              )
-           )
+    lmStaffObj* pLastSO = m_pIt->GetCurrent();        //save current object
+    lmStaffObj* pSO = pLastSO;
+    while (pSO
+           && ( IsHigherTime(rTargetTimepos, pSO->GetTimePos())
+                || !pSO->IsOnStaff(m_nStaff)))
     {
-        ++m_it;
+        m_pIt->MoveNext();
+        pSO = m_pIt->GetCurrent();
     }
 
-    //if we reach end of segment is because we have not reached a barline
-    //Therefore, we are at end of collection. Remain there
-    if (m_it == m_pSegment->m_StaffObjs.end())
+    //if we reach end of collection is because we have not reached a barline.
+    //Remain there
+    if (!pSO)
     {
         //We are at end of collection.
         //Get last staffobj and assign its timepos plus its duration
-        if (pLastSO && !pLastSO->GetStaffNum() == m_nStaff)
+        if (pLastSO && pLastSO->IsOnStaff(m_nStaff))
             m_rTimepos = pLastSO->GetTimePos() + pLastSO->GetTimePosIncrement();
         return;
     }
@@ -580,352 +534,11 @@ void lmVStaffCursor::PositionAt(float rTargetTimepos)
 void lmVStaffCursor::MoveRight(bool fAlsoChordNotes)
 {
     MoveRightToNextTime();
-    
- //   //Advance cursor constrained by staff.
- //   //Cursor should advance to next timepos in current staff.
- //   //If flag fAlsoChordNotes is true, stops in every chord note; otherwise, chords are
- //   //treated as a single object
-
- //   //(**1) if at end of collection remain there
-	//if (IsAtEnd()) return;
- //   wxASSERT(m_it != m_pSegment->m_StaffObjs.end());
-
- //   //determine target timepos
- //   //------------------------
- //   float rTargetTimepos;
- //   if (IsLowerTime(m_rTimepos, (*m_it)->GetTimePos()))
- //   {
- //       //we are before CursorObj, so next timepos is CursorObj timepos
- //       rTargetTimepos = (*m_it)->GetTimePos();
- //   }
- //   else
- //   {
- //       //same timepos than CursorObj. Target is next available time
- //       if ((*m_it)->IsBarline())
- //       {
- //           rTargetTimepos = 0.0f;
- //           //(**2)
- //           //Advance to next segment.
- //           //As there is a barline, there also exist a next segment
- //           AdvanceToNextSegment();
- //           //But next segment could be empty and, in that case, we are
- //           //finished
- //           if (m_it == m_pSegment->m_StaffObjs.end())
- //           {
- //               m_rTimepos = rTargetTimepos;
- //               return;     //Done. Case [9]
- //           }
- //       }
- //       else
- //       {
- //           //TargetTimepos will be the next available timepos in the collection.
- //           //As the collection is ordered by timepos and duration, next available
- //           //timepos is just current obj + its duration
- //           rTargetTimepos = (*m_it)->GetTimePos() + (*m_it)->GetTimePosIncrement();
-
- //           //if TargetTimepos is greater than Barline timepos move to next segment
- //           if (IsHigherTime(rTargetTimepos, m_pSegment->GetDuration()))
- //           {
- //               rTargetTimepos = 0.0f; 
- //               //(**3)
- //               //if next segment exists move to it. Otherwise we are at end of collection,
- //               //we have surpassed measure duration and user has no entered a barline. Anyway,
- //               //remain at end of collection
- //               if (m_nSegment < (int)m_pColStaffObjs->m_Segments.size() - 1)
- //               {
- //                   //next segment exists
- //                   AdvanceToNextSegment();
- //                   //But next segment could be empty and, in that case, we are
- //                   //finished
- //                   if (m_it == m_pSegment->m_StaffObjs.end())
- //                   {
- //                       m_rTimepos = rTargetTimepos;
- //                       return;     //Done. Case [8]
- //                   }
- //               }
- //               else
- //               {
- //                   //move to end of collection
- //                   m_it = m_pSegment->m_StaffObjs.end();
- //                   m_rTimepos = rTargetTimepos;
- //                   return;     //Done. Case [4]
- //               }
- //           }
- //       }
- //   }
-
-	//////save current position
-	////int nPrevSegment = m_nSegment;          //current segment
-	////lmSegment* pPrevSegment = m_pSegment;   //current segment
-	////float rPrevTimepos = m_rTimepos;        //timepos
-	////lmItCSO itPrev = m_it;
-
-
- //   //advance to target timepos
- //   //-------------------------
- //   //here if CursorTimepos == TargetTimepos is because current staffobj has no
- //   //duration, Therefore we has to skep current staffobj
- //   if (IsEqualTime(m_rTimepos, rTargetTimepos) && 
- //       IsEqualTime((*m_it)->GetTimePosIncrement(), 0.0f))
- //   {
- //       //advance cursor, unless currently pointed object has been deleted.
- //       AdvanceIterator();
- //       UpdateTimepos();
- //       //(**4)
- //       //if we arrive to end of segment is because we have not reached a barline.
- //       //Therefore, we are at end of collection. Remain there
- //       if (m_it == m_pSegment->m_StaffObjs.end())
- //       {
- //           //end of segment reached
- //           m_rTimepos = rTargetTimepos;
- //           return;     //Done. Case [5] 
- //       }
- //   }
- //   
- //   while (IsLowerTime((*m_it)->GetTimePos(), rTargetTimepos))
- //   {
- //       AdvanceIterator();
- //       UpdateTimepos();
- //       //(**5)
- //       //if we arrive to end of segment is because we have not reached a barline
- //       //(remember that TargetTimepos is at maximum Barline timepos)
- //       //Therefore, we are at end of collection. Remain there
- //       if (m_it == m_pSegment->m_StaffObjs.end())
- //       {
- //           //end of segment reached
- //           m_rTimepos = rTargetTimepos;
- //           return;     //Done. Case [6] 
- //       }
- //   }
- //       
- //       
- //   //here CursorObjTiempos is equal or greater than target timepos.
- //   //If it is greater, we are done. We should stay pointing to this object
- //   //but at target time. If times are equal, we should move to right staff
- //   //------------------------
- //   if (IsHigherTime(m_rTimepos, rTargetTimepos))
- //   {
- //       m_rTimepos = rTargetTimepos;
- //       return;     //Done. Case [1]
- //   }
- //   else
- //   {
- //       //CursorObjTiempos == TargetTimepos. Move to right staff
- //       while (IsEqualTime(m_rTimepos, rTargetTimepos)
- //              && (*m_it)->GetStaffNum() < m_nStaff
- //              && !( (*m_it)->IsBarline()
- //                    || (*m_it)->IsKeySignature()
- //                    || (*m_it)->IsTimeSignature() )
- //             )
- //       {
- //           AdvanceIterator();
- //           UpdateTimepos();
- //           //(**6)
- //            //if we reach end of segment is because we have not reached a barline
- //           //(remember that TargetTimepos is at maximum Barline timepos)
- //           //Therefore, we are at end of collection. Remain there
- //           if (m_it == m_pSegment->m_StaffObjs.end())
- //           {
- //               //end of segment reached
- //               m_rTimepos = rTargetTimepos;
- //               return;     //Done. Case [7] 
- //           }
- //      }
- //           
- //       //here we are either at a greater timepos or at right position. In both
- //       //cases we are at the right staffobj
- //       m_rTimepos = rTargetTimepos;
- //       return;     //Done. Case [2]
- //   }
- //           
-
-
-
-
-
- //  // //loop to advance to next segment, if necessary, and to advance to next valid position
- //  // while(true)
- //  // {
-	//  //  //if end of segment reached, advance to next segment
-	//  //  if (m_it == m_pSegment->m_StaffObjs.end())
-	//  //  {
-	//		//m_nSegment++;
-	//	 //   if (m_nSegment < (int)m_pColStaffObjs->m_Segments.size())
-	//	 //   {
-	//		//    m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	//		//    m_it = m_pSegment->m_StaffObjs.begin();
-	//	 //   }
-	//	 //   else
-	//		//{
-	//		//	m_nSegment--;
- //  //             UpdateTimepos();
- //  //             return;      //end of collection reached
-	//		//}
-	//  //  }
-
- //  //     //end of collection reached
-	//  //  if (m_it == m_pSegment->m_StaffObjs.end())
- //  //     {
- //  //         UpdateTimepos();
- //  //         return;
- //  //     }
-
- //  //     //check if staffobj is in current staff or we passed target timepos;
- //  //     //otherwise we have to continue advancing
- //  //     //This check has to be ignored for objects applicable to all staffs (barlines,
- //  //     //KS & TS), as they are always in first staff but are applicable to all.
- //  //     if ((*m_it)->GetStaffNum() == m_nStaff || 
- //  //         (*m_it)->IsBarline() ||
- //  //         (*m_it)->IsKeySignature() ||
- //  //         (*m_it)->IsTimeSignature() ||
- //  //         IsHigherTime((*m_it)->GetTimePos(), rTargetTimepos) )
- //  //     {
- //  //         //it is in current staff or we passed target timepos.
- //  //         if (IsHigherTime((*m_it)->GetTimePos(), rTargetTimepos))
- //  //         {
- //  //             //we passed target timepos. If previous object was at target timepos
- //  //             //move to it; otherwise previous object was at a lower timepos, so we
- //  //             //must remain here but at target timepos
- //  //             if (IsEqualTime((*itPrev)->GetTimePos(), rTargetTimepos))
- //  //             {
-	//  //              m_nSegment = nPrevSegment;
-	//  //              m_pSegment = pPrevSegment;
-	//  //              m_rTimepos = rTargetTimepos;
-	//  //              m_it = itPrev;
- //  //                 return;
- //  //             }
- //  //             else
- //  //             {
-	//  //              m_rTimepos = rTargetTimepos;
- //  //                 return;
- //  //             }
- //  //         }
- //  //         else
- //  //         {
- //  //             //it is in current staff
- //  //             //if requested to stop in every chord note, we can finish
- //  //             if (fAlsoChordNotes)
- //  //                 break;
- //  //             //else we have to skip notes in chord except base note
- //  //             if (!(*m_it)->IsNoteRest() ||
- //  //                 (*m_it)->IsNoteRest() && ((lmNoteRest*)(*m_it))->IsNote() &&
- //  //                 ( !((lmNote*)(*m_it))->IsInChord() ||
- //  //                   ((lmNote*)(*m_it))->IsBaseOfChord() ))
- //  //                 break;
- //  //         }
- //  //     }
-
-	//  //  //save current position
-	//  //  nPrevSegment = m_nSegment;
-	//  //  pPrevSegment = m_pSegment;
-	//  //  rPrevTimepos = m_rTimepos;
-	//  //  itPrev = m_it;
-
- //  //     //advance to next staffobj
- //  //     ++m_it;
- //  // }
-
- //   ////update cursor timepos
- //   //UpdateTimepos();
-}
-
-void lmVStaffCursor::AdvanceIterator()
-{
-    //increment internal iterator m_it. If at end of segment, reposition at
-    //start of next segment. If at end of collection, remain there.
-
-	if (m_it == m_pSegment->m_StaffObjs.end())
-	{
-        //at end segment, advance to next segment
-		m_nSegment++;
-		if (m_nSegment < (int)m_pColStaffObjs->m_Segments.size())
-		{
-			m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-			m_it = m_pSegment->m_StaffObjs.begin();
-		}
-		else
-			m_nSegment--;   //end of collection reached
-	}
-    else    //not at end of segment/collection: increment iterator
-        ++m_it;
 }
 
 void lmVStaffCursor::MoveLeft(bool fAlsoChordNotes)
 {
     MoveLeftToPrevTime();
-
- //   //Move back cursor constrained by staff.
- //   //If flag fAlsoChordNotes is true, stops in every chord note; otherwise, chords are
- //   //treated as a single object
-
- //   //AWARE: If you change anything in this method verify if the same change should
- //   //be applied to method GetPreviousStaffobj()
-
-	//if (IsAtBeginning()) return;
-
-	////save current position
-	//int nSegment = m_nSegment;			//current segment
-	//lmSegment* pSegment = m_pSegment;   //current segment
-	//float rTimepos = m_rTimepos;        //timepos
-	//lmItCSO it = m_it;
-
-
- //   while(true)
- //   {
- //       //if at start of segment, move back to last SO of previous segment
-	//    if (m_it == m_pSegment->m_StaffObjs.begin())
-	//    {
-	//	    if (m_nSegment > 0)
- //           {
- //               --m_nSegment;
-	//	        m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	//	        m_it = m_pSegment->m_StaffObjs.end();
- //           }
-	//	    else
- //           {
- //               //start of collection reached
- //               break;
- //           }
-	//    }
-
-	//	//move back
-	//	--m_it;
-
- //       //if start of collection reached, finish
-	//    if (m_it == m_pSegment->m_StaffObjs.end()) break;
-
- //       //check if staffobj is in current staff; otherwise we have to continue moving back
- //       //This check has to be ignored for objects applicable to all staffs (barlines,
- //       //KS & TS), as they are always in first staff but are applicable to all.
- //       if ((*m_it)->GetStaffNum() == m_nStaff || 
- //           (*m_it)->IsBarline() ||
- //           (*m_it)->IsKeySignature() ||
- //           (*m_it)->IsTimeSignature() )
- //       {
- //           //it is in current staff.
- //           //if requested to stop in every chord note, we can finish
- //           if (fAlsoChordNotes) break;
- //           //else we have to skip notes in chord except base note
- //           if (!(*m_it)->IsNoteRest() ||
- //               (*m_it)->IsNoteRest() && ((lmNoteRest*)(*m_it))->IsNote() &&
- //               ( !((lmNote*)(*m_it))->IsInChord() || ((lmNote*)(*m_it))->IsBaseOfChord())
- //              ) break;
- //       }
- //   }
-
- //   //if start of collection reached, previous object was the first one in current staff.
-	////Remain there
-	//if (IsAtBeginning())
-	//{
-	//	m_nSegment = nSegment;
-	//	m_pSegment = pSegment;
-	//	m_rTimepos = rTimepos;
-	//	m_it = it;
-	//	return;
-	//}
-
- //   //update cursor timepos
- //   UpdateTimepos();
 }
 
 lmStaffObj* lmVStaffCursor::GetPreviousStaffobj()
@@ -933,102 +546,78 @@ lmStaffObj* lmVStaffCursor::GetPreviousStaffobj()
     //Method to get previous staffobj in current staff and skipping notes in chord.
     //This method does not interfere with cursor position
 
-    //AWARE: If you change anything in this method verify if the same change should
-    //be applied to method MoveLeft()
+    if (m_pIt->FirstOfCollection())
+        return (lmStaffObj*)NULL;
 
-    if (IsAtBeginning()) return (lmStaffObj*)NULL;
-
-	//save current position
-	int nSegment = m_nSegment;			//current segment
-	lmSegment* pSegment = m_pSegment;   //current segment
-	lmItCSO it = m_it;
-
-	//move back
-    while(true)
+    lmSOIterator it(m_pColStaffObjs, m_pIt->GetCurrent()); 
+    it.MovePrev();
+    while(!it.FirstOfCollection() && !it.EndOfCollection())
     {
-        //if at start of segment, move back to last SO of previous segment
-	    if (it == pSegment->m_StaffObjs.begin())
-	    {
-		    if (nSegment > 0)
-            {
-                --nSegment;
-		        pSegment = m_pColStaffObjs->m_Segments[nSegment];
-		        it = pSegment->m_StaffObjs.end();
-            }
-		    else
-            {
-                //start of collection reached
-                break;
-            }
-	    }
-
-		//move back
-		--it;
-
-        //if start of collection reached, finish
-	    if (it == pSegment->m_StaffObjs.end()) break;
+        lmStaffObj* pSO = it.GetCurrent();
 
         //check if staffobj is in current staff; otherwise we have to continue moving back
-        //This check has to be ignored for objects applicable to all staffs (barlines,
-        //KS & TS), as they are always in first staff but are applicable to all.
-        if ((*it)->GetStaffNum() == m_nStaff || 
-            (*it)->IsBarline() ||
-            (*it)->IsKeySignature() ||
-            (*it)->IsTimeSignature() )
+        if (pSO->IsOnStaff(m_nStaff))
         {
             //it is in current staff.
             //We have to skip notes in chord except base note
-            if (!(*it)->IsNoteRest() ||
-                (*it)->IsNoteRest() && ((lmNoteRest*)(*it))->IsNote() &&
-                ( !((lmNote*)(*it))->IsInChord() || ((lmNote*)(*it))->IsBaseOfChord())
-            ) break;
+            if (!pSO->IsNoteRest()
+                || pSO->IsNoteRest() 
+                && ((lmNoteRest*)pSO)->IsNote() 
+                     && ( !((lmNote*)pSO)->IsInChord() || ((lmNote*)pSO)->IsBaseOfChord())
+                
+                )
+                break;
         }
+        it.MovePrev();
     }
 
     //return staffobj
-	if (IsAtBeginning())
+	if (m_pIt->FirstOfCollection())
 	{
 		//if start of collection reached, previous object was the first one in current staff.
 		//So no previous staffobj
 		return (lmStaffObj*)NULL;
 	}
-	else if (it != m_pColStaffObjs->m_Segments[nSegment]->m_StaffObjs.end())
-	{
-		//if pointing to a staffobj, return it
-		return *it;
-	}
 	else
-	    return (lmStaffObj*)NULL;
+	    return it.GetCurrent();
 }
 
 void lmVStaffCursor::MoveToTime(float rNewTime)
 {
-    //Within the limits of current segment,
-    //move cursor to first object with time > rNewTime in staff m_nStaff.
+    //Within the limits of current segment, move cursor to first object
+    //with time > rNewTime in staff m_nStaff.
     //If no object found, cursor is moved to end of segment, with time rNewTime
 
-    m_it = m_pSegment->m_StaffObjs.begin();
+    //Move to start of current segment
+    lmSegment* pSegment = m_pColStaffObjs->GetSegment(m_pIt->GetNumSegment());
+    m_pIt->MoveTo(pSegment->GetFirstSO());
     m_rTimepos = rNewTime;
-
-	if (m_it == m_pSegment->m_StaffObjs.end()) return;      //the segment is empty
+	if (m_pIt->EndOfCollection()) 
+        return;      //the segment is empty. We are at end and time has been updated to rNewTime
 
     //skip staffobjs with time lower than rNewTime
-	while (m_it != m_pSegment->m_StaffObjs.end() && IsLowerTime((*m_it)->GetTimePos(), rNewTime))
-        ++m_it;
+    while (!m_pIt->ChangeOfMeasure() && !m_pIt->EndOfCollection()
+	       && IsLowerTime(m_pIt->GetCurrent()->GetTimePos(), rNewTime) )
+        m_pIt->MoveNext();
 
-    if (m_it != m_pSegment->m_StaffObjs.end() && IsEqualTime((*m_it)->GetTimePos(), rNewTime))
+    if (!m_pIt->ChangeOfMeasure() && !m_pIt->EndOfCollection()
+        && IsEqualTime(m_pIt->GetCurrent()->GetTimePos(), rNewTime))
     {
         //time found. Advance to first object at this time and in current staff
-	    while (m_it != m_pSegment->m_StaffObjs.end() && 
-               IsEqualTime((*m_it)->GetTimePos(), rNewTime) &&
-               (*m_it)->GetStaffNum() != m_nStaff )
+
+        lmStaffObj* pSO = m_pIt->GetCurrent();
+	    while (pSO
+               && IsEqualTime(pSO->GetTimePos(), rNewTime)
+               && !pSO->IsOnStaff(m_nStaff) )
         {
-                ++m_it;
+            m_pIt->MoveNext();
+            pSO = m_pIt->GetCurrent();
         }
+
         //if object found, return.
-	    if (m_it != m_pSegment->m_StaffObjs.end() &&  
-            IsEqualTime((*m_it)->GetTimePos(), rNewTime) &&
-            (*m_it)->GetStaffNum() == m_nStaff )
+	    if (pSO
+            && IsEqualTime(pSO->GetTimePos(), rNewTime)
+            && pSO->IsOnStaff(m_nStaff) )
         {
             //object found.
             return;
@@ -1036,48 +625,28 @@ void lmVStaffCursor::MoveToTime(float rNewTime)
 
         //No object satisfying the constrains is found.
         //If we are not at end of segment, advance to first object with time > rNewTime.
-	    while (m_it != m_pSegment->m_StaffObjs.end() &&
-                IsEqualTime((*m_it)->GetTimePos(), rNewTime))
+	    while (pSO && IsEqualTime(pSO->GetTimePos(), rNewTime))
         {
-            ++m_it;
+            m_pIt->MoveNext();
+            pSO = m_pIt->GetCurrent();
         }
     }
-    else
-    {
+    //else
         //time does not exist. Cursor is now at first object > rNewTime
-        ;
-    }
-}
-
-bool lmVStaffCursor::IsAtEnd()
-{
-	//return true if iterator is at end of score: after last SO in last segment
-
-	return (m_it == m_pSegment->m_StaffObjs.end()
-			&& m_nSegment == (int)m_pColStaffObjs->m_Segments.size() - 1);
-}
-
-bool lmVStaffCursor::IsAtBeginning()
-{
-	//return true if iterator is at begining of score: pointing to first SO in first segment
-
-	return (m_nSegment == 0 && m_it == m_pSegment->m_StaffObjs.begin());
 }
 
 void lmVStaffCursor::ResetCursor()
 {
-    //Move cursor to first object in first segment. No constarins on staff.
+    //Move cursor to first object in first segment. No constrains on staff.
     //No visual feedback provided.
     //If visual feedback needed use MoveToFirst() instead. It also takes staff into account
 
 	m_nStaff = 1;
 	m_rTimepos = 0.0f;
-	wxASSERT(m_pColStaffObjs->m_Segments.size() > 0);
+	wxASSERT(m_pColStaffObjs->GetNumMeasures() > 0);
 
-	//position in first segment
-	m_nSegment = 0;
-	m_pSegment = m_pColStaffObjs->m_Segments[0];
-	m_it = m_pSegment->m_StaffObjs.begin();
+	//position in first object
+	m_pIt->MoveFirst();
     UpdateTimepos();
 }
 
@@ -1090,27 +659,20 @@ void lmVStaffCursor::MoveToFirst(int nStaff)
 		m_nStaff = nStaff;
 
 	m_rTimepos = 0.0f;
-	wxASSERT(m_pColStaffObjs->m_Segments.size() > 0);
+	wxASSERT(m_pColStaffObjs->GetNumMeasures() > 0);
 
 	//position in first segment
-	m_nSegment = 0;
-	m_pSegment = m_pColStaffObjs->m_Segments[0];
-	m_it = m_pSegment->m_StaffObjs.begin();
-    if (m_it != m_pSegment->m_StaffObjs.end() && (*m_it)->GetStaffNum() == m_nStaff)
+	m_pIt->MoveFirst();
+    if (m_nStaff != 0)
     {
-        //found. Update time
-        UpdateTimepos();
+        while(!m_pIt->EndOfCollection()
+              && !m_pIt->GetCurrent()->IsOnStaff(m_nStaff))
+        {
+            m_pIt->MoveNext();
+        }
     }
-    else
-        MoveRight();
-}
-
-lmStaffObj* lmVStaffCursor::GetStaffObj()
-{
-	if (m_it != m_pSegment->m_StaffObjs.end())
-		return *m_it;
-	else
-		return (lmStaffObj*)NULL;
+    //found. Update time
+    UpdateTimepos();
 }
 
 void lmVStaffCursor::AdvanceToTime(float rTime)
@@ -1121,32 +683,28 @@ void lmVStaffCursor::AdvanceToTime(float rTime)
     //Else, if required time is greater than segment duration, moves to next segment, at
     //the time resulting from discounting segment duration.
 
-    //wxASSERT(m_it == m_pSegment->m_StaffObjs.end());
-    m_it = m_pSegment->m_StaffObjs.end();
+	m_rTimepos = rTime;
+    if (m_pIt->EndOfCollection())
+        return;
 
-    float rSegmentDuration = m_pSegment->GetDuration();
+    float rSegmentDuration = m_pIt->GetCurrent()->GetSegment()->GetDuration();
     if (IsHigherTime(rTime, rSegmentDuration))
     {
         //advance to next segment
-	    m_nSegment++;
-	    m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	    m_it = m_pSegment->m_StaffObjs.begin();
+	    m_pIt->MoveNext();
+        wxASSERT(m_pIt->ChangeOfMeasure() || m_pIt->EndOfCollection());
         m_rTimepos = rTime - rSegmentDuration;
     }
-    else
-	    m_rTimepos = rTime;
 
 }
 
 void lmVStaffCursor::AdvanceToNextSegment()
 {
-    //Cursor is positioned at end of segment. So no need to advance iterator,
-    //but just to advance timepos.
+    //Cursor is positioned at end of segment. 
     //Advances cursor to time 0 in next segment
 
-    m_nSegment++;
-	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	m_it = m_pSegment->m_StaffObjs.begin();
+	m_pIt->MoveNext();
+    wxASSERT(m_pIt->ChangeOfMeasure() || m_pIt->EndOfCollection());
 	m_rTimepos = 0.0f;
 }
 
@@ -1155,50 +713,53 @@ void lmVStaffCursor::SkipClefKey(bool fSkipKey)
     //First advance after last clef. Then, if fSkipKey, advance after last key
 
     //ensure that cursor is at start of segment
-	m_it = m_pSegment->m_StaffObjs.begin();
+    lmSegment* pSegment = m_pColStaffObjs->GetSegment(m_pIt->GetNumSegment());
+    m_pIt->MoveTo(pSegment->GetFirstSO());
 
-    lmItCSO it = m_it;          //it will be used to save the last valid position
+    lmStaffObj* pLast = m_pIt->GetCurrent();      //it will be used to save the last valid position
     bool fFound = false;
 
     //locate last clef
-	while (m_it != m_pSegment->m_StaffObjs.end())
+	while (!m_pIt->EndOfCollection())
 	{
-        if ((*m_it)->IsClef())
+        lmStaffObj* pSO = m_pIt->GetCurrent();
+        if (pSO->IsClef())
         {
-            it = m_it;
+            pLast = pSO;
             fFound = true;
         }
-        else if ((*m_it)->IsKeySignature())
+        else if (pSO->IsKeySignature())
             break;
-        else if (!IsEqualTime((*m_it)->GetTimePos(), 0.0f))
+        else if (!IsEqualTime(pSO->GetTimePos(), 0.0f))
             break;
-        ++m_it;
+        m_pIt->MoveNext();
     }
 
-    //here 'it' points to last clef, if any, or to start of segment
+    //here pLast points to last clef, if any, or to start of segment
     //if requested, advance to last key
     if (fSkipKey)
     {
         //locate last key
-	    while (m_it != m_pSegment->m_StaffObjs.end())
+	    while (!m_pIt->EndOfCollection())
 	    {
-            if ((*m_it)->IsKeySignature())
+            lmStaffObj* pSO = m_pIt->GetCurrent();
+            if (pSO->IsKeySignature())
             {
-                it = m_it;
+                pLast = pSO;
                 fFound = true;
             }
-            else if (!IsEqualTime((*m_it)->GetTimePos(), 0.0f))
+            else if (!IsEqualTime(pSO->GetTimePos(), 0.0f))
                 break;
-            ++m_it;
+            m_pIt->MoveNext();
         }
     }
 
-    //here 'it' is pointing to last clef/key (fFound == true) or to start of collection if
+    //here pLast is pointing to last clef/key (fFound == true) or to start of collection if
     //no clef/key (fFound==false)
     //reposition cursor iterator and advance after last clef/key
-    m_it = it;
-    if (fFound && m_it != m_pSegment->m_StaffObjs.end())
-        ++m_it;
+    m_pIt->MoveTo(pLast);
+    if (fFound)
+        m_pIt->MoveNext();
 }
 
 void lmVStaffCursor::AdvanceToStartOfSegment(int nSegment, int nStaff)
@@ -1206,83 +767,80 @@ void lmVStaffCursor::AdvanceToStartOfSegment(int nSegment, int nStaff)
     //move cursor to start of segment. Set staff
 
     wxASSERT(nStaff > 0);
-    wxASSERT(nSegment < (int)(m_pColStaffObjs->m_Segments.size()));
+    wxASSERT(nSegment < m_pColStaffObjs->GetNumMeasures());
 
-    m_nStaff = nStaff;
-    m_nSegment = nSegment;
-	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	m_it = m_pSegment->m_StaffObjs.begin();
+	m_pIt->MoveTo(m_pColStaffObjs->GetSegment(nSegment)->GetFirstSO());
 	m_rTimepos = 0.0f;
-
-	return;
 }
 
 void lmVStaffCursor::AdvanceToStartOfTimepos()
 {
-    //move cursor to the first object at current timepos. Ignore clefs, key and time signatures
+    //This methods moves the cursor to the first SO at current timepos.
+    //For example, barline is going to be inserted at current position. Assume a
+    //piano grand staff with a C note on first staff and a G note on second staff.
+    //Also assume that cursor is pointing to second staff, G note. As both notes
+    //C & G are at the same timepos, it would be wrong to insert the barline before
+    //the G note. This method will move the cursor to the C note.
 
-	if (m_it == m_pSegment->m_StaffObjs.begin())
+    lmStaffObj* pSO = m_pIt->GetCurrent();
+    if (pSO && pSO == pSO->GetSegment()->GetFirstSO())
         return;         //cursor is at start of segment. Nothing to do
 
-    lmItCSO itPrev;
-    lmItCSO itFinalPos = m_it;
-	while (m_it != m_pSegment->m_StaffObjs.begin())
+    lmStaffObj* pFinalPos = pSO;
+    m_pIt->MovePrev();
+    lmStaffObj* pPrev = m_pIt->GetCurrent();
+	while (!m_pIt->ChangeOfMeasure())
 	{
-        //get previous object
-        itPrev = m_it;
-        --itPrev;
-
         //check if we are at current tiempos
-        if ((*itPrev)->GetTimePos() != m_rTimepos)
+        if (pPrev->GetTimePos() != m_rTimepos)
             break;      //done
 
         //check if it is a clef, key or time signature
-        if (!( (*itPrev)->IsClef() || (*itPrev)->IsKeySignature() || (*itPrev)->IsTimeSignature()) )
-            itFinalPos = itPrev;
+        if (!( pPrev->IsClef() || pPrev->IsKeySignature() || pPrev->IsTimeSignature()) )
+            pFinalPos = pPrev;
 
         //move back
-        m_it = itPrev;
+        m_pIt->MovePrev();
     }
-    m_it = itFinalPos;
+    m_pIt->MoveTo(pFinalPos);
 }
 
 void lmVStaffCursor::MoveToSegment(int nSegment, int iStaff, lmUPoint uPos)
 {
-    //move cursor to nearest object to uPos, constrained to specified segment and staff
+    //move cursor to nearest object to uPos, constrained to specified segment and staff.
 
-    wxASSERT(nSegment < (int)(m_pColStaffObjs->m_Segments.size()));
+    wxASSERT(nSegment < m_pColStaffObjs->GetNumMeasures());
 
     m_nStaff = iStaff;
-    m_nSegment = nSegment;
-	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	m_it = m_pSegment->m_StaffObjs.begin();
+	m_pIt->MoveTo(m_pColStaffObjs->GetSegment(nSegment)->GetFirstSO());
 	m_rTimepos = 0.0f;
 
 	//if segment empty finish. We are at start of segment
-	if (m_it == m_pSegment->m_StaffObjs.end()) return;      //the segment is empty
+	if (m_pIt->EndOfCollection())
+        return;      //the segment is empty
 
     //move cursor to nearest object to uPos, constrained to this segment and staff
 	lmLUnits uMinDist = 1000000.0f;	//any too big value
-    lmItCSO it = m_pSegment->m_StaffObjs.end();
-	while (m_it != m_pSegment->m_StaffObjs.end())
+	lmStaffObj* pFoundSO = (lmStaffObj*)NULL;
+	while (!m_pIt->EndOfCollection() && !m_pIt->ChangeOfMeasure())
 	{
-		lmStaffObj* pSO = GetStaffObj();
-        if (pSO->GetStaffNum() == m_nStaff)
+        lmStaffObj* pSO = m_pIt->GetCurrent();
+        if (pSO->IsOnStaff(m_nStaff))
         {
 		    lmLUnits xPos = pSO->GetShape()->GetXLeft();
 		    lmLUnits uDist = xPos - uPos.x;
 		    if (uDist > 0.0f && uDist < uMinDist)
             {
-                it = m_it;
+                pFoundSO = pSO;
 		        uMinDist = uDist;
             }
         }
-		++m_it;
+		m_pIt->MoveNext();
 	}
 
 	//object found or end of segment reached
-	if (it != m_pSegment->m_StaffObjs.end())
-        m_it = it;
+	if (pFoundSO)
+        m_pIt->MoveTo(pFoundSO);
     UpdateTimepos();
 }
 
@@ -1291,35 +849,14 @@ void lmVStaffCursor::MoveCursorToObject(lmStaffObj* pSO)
     //Move cursor to required staffobj
     //Precondition: the staffobj is in current instrument
 
-    if (!pSO)
-    {
-        //No object. Move to end of score
-        m_nSegment = m_pColStaffObjs->m_Segments.size() - 1;
-	    m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	    m_it = m_pSegment->m_StaffObjs.end();
-    }
-    else
-    {
-        //Object exists. Restore cursor info to point to that object
-        m_nStaff = pSO->GetStaffNum();
-	    m_pSegment = pSO->GetSegment();
-        m_nSegment = m_pSegment->m_nNumSegment;
-	    m_it = m_pSegment->m_StaffObjs.begin();
-
-        //locate the object
-        while(m_it != m_pSegment->m_StaffObjs.end() && *m_it != pSO)
-            ++m_it;
-
-	    //object found
-	    wxASSERT(m_it != m_pSegment->m_StaffObjs.end());
-    }
+    m_pIt->MoveTo(pSO);
     UpdateTimepos();
 }
 
 lmStaff* lmVStaffCursor::GetCursorStaff()
 {
     //return pointer to staff in which cursor is located
-    return m_pColStaffObjs->m_pOwner->GetStaff(m_nStaff);
+    return m_pColStaffObjs->GetOwnerVStaff()->GetStaff(m_nStaff);
 }
 
 lmUPoint lmVStaffCursor::GetCursorPoint(int* pNumPage)
@@ -1343,7 +880,7 @@ lmUPoint lmVStaffCursor::GetCursorPoint(int* pNumPage)
     //collect information about staffobjs and shapes' positions
     //
 
-    lmScore* pScore = m_pColStaffObjs->m_pOwner->GetScore();
+    lmScore* pScore = m_pColStaffObjs->GetOwnerVStaff()->GetScore();
     wxASSERT(pScore->GetGraphicObject()->IsBox());
     lmLUnits uCaretSpace = pScore->TenthsToLogical(5.0f);   //distance between caret and object
 
@@ -1487,32 +1024,39 @@ float lmVStaffCursor::GetStaffPosY(lmStaffObj* pSO)
 
 void lmVStaffCursor::UpdateTimepos()
 {
-    if (m_it != m_pSegment->m_StaffObjs.end())
-        m_rTimepos = (*m_it)->GetTimePos();
+    lmStaffObj* pSO = m_pIt->GetCurrent();
+    if (pSO)
+        m_rTimepos = pSO->GetTimePos();
     else
     {
         //We are at end of collection.
         //Get last staffobj and assign its timepos plus its duration
-        lmStaffObj* pSO = GetPreviousStaffobj();
-        if (pSO && !pSO->IsBarline())
-            m_rTimepos = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+        pSO = GetPreviousStaffobj();
+        if (pSO)
+        { 
+            //segment is not empty
+            if (pSO->IsBarline())
+            {
+                wxASSERT(false);        //we cannot be after the barline !!
+                m_rTimepos = pSO->GetTimePos();
+            }
+            else
+                m_rTimepos = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+        }
         else
+            //segment is empty. Place cursor at start of segment
             m_rTimepos = 0.0f;
     }
 }
 
-void lmVStaffCursor::RefreshInternalInfo()
-{
-    //during insert/remove operations, although m_it is correctly pointing to
-    //current object, all other VCursor information could be wrong. So, it
-    //is necessary to syncronize all this information.
+bool lmVStaffCursor::IsAtEnd() 
+{ 
+    return m_pIt->EndOfCollection(); 
+}
 
-    //FIX_ME: this is a bad design. Each VCursor method must ensure this coherence before
-    //using an internal member variable. If value can not be maintained automatically, it
-    //would be better to remove those member variables and to compute the needed
-    //information when required
-
-    UpdateTimepos();
+bool lmVStaffCursor::IsAtBeginning() 
+{ 
+    return m_pIt->FirstOfCollection(); 
 }
 
 
@@ -1530,17 +1074,15 @@ lmSegment::lmSegment(lmColStaffObjs* pOwner, int nSegment)
 
     m_bVoices = 0x00;
     m_rMaxTime = 0.0f;
+
+    //initialize this segment's collection
+    m_pFirstSO = (lmStaffObj*)NULL;
+    m_pLastSO = (lmStaffObj*)NULL;
+    m_nNumSO = 0;
 }
 
 lmSegment::~lmSegment()
 {
-	//delete staffobjs collection
-	lmItCSO itSO;
-	for (itSO = m_StaffObjs.begin(); itSO != m_StaffObjs.end(); itSO++)
-	{
-		delete *itSO;
-	}
-    m_StaffObjs.clear();
 }
 
 lmSegment* lmSegment::GetNextSegment()
@@ -1592,33 +1134,33 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
     //VCursor is neither used nor updated
 
 
-    //find object to remove
-	lmItCSO itDel = find(m_StaffObjs.begin(), m_StaffObjs.end(), pSO);
-    wxASSERT(itDel != m_StaffObjs.end());
+    wxASSERT(pSO->GetSegment() == this);
 
-    //save an iterator pointing to object after object to remove
-    lmItCSO itNext = itDel;
-    ++itNext;
+	//remove the staffobj from the collection
+    lmStaffObj* pNext = pSO->GetNextSO();
+    lmStaffObj* pPrev = pSO->GetPrevSO();
+    if (pPrev)
+        pPrev->SetNextSO(pNext);
+    if (pNext)
+        pNext->SetPrevSO(pPrev);
+    if (m_pFirstSO == pSO)
+        m_pFirstSO = pNext;
+    if (m_pLastSO == pSO)
+        m_pLastSO = pPrev;
+    --m_nNumSO;
 
-	//remove the staffobj from the collection. After removal, iterator 'itDel' is invalid
-	m_StaffObjs.erase(itDel);
 
     //if removed object is a note not in chord:
     //  - Shift left all note/rests in this voice and sort the collection
 	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote() && !((lmNote*)pSO)->IsInChord())
     {
-        ShiftLeftTimepos(itNext,
-                         ((lmNoteRest*)pSO)->GetDuration(), 
+        ShiftLeftTimepos(pNext,
+                         ((lmNoteRest*)pSO)->GetDuration(),
                          ((lmNoteRest*)pSO)->GetTimePos() + ((lmNoteRest*)pSO)->GetDuration(),
                          ((lmNoteRest*)pSO)->GetVoice()  );
 
-        m_StaffObjs.sort(SortCompare);
+        SortMeasure();
     }
-
-    //get object after the removed one
-    lmStaffObj* pNextSO = (lmStaffObj*)NULL;
-    if (itNext != m_StaffObjs.end())
-        pNextSO = *itNext;
 
     //if removed object is a time signature, re-bar the collection. As this implies removing
     //current segments and creating new ones, all needed context propagation and update is
@@ -1626,15 +1168,15 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
     //If there are no objects after the removed TS, nothing to re-bar
     if (pSO->IsTimeSignature())
     {
-        if (pNextSO)
+        if (pNext)
         {
             //we have to re-bar from current segment to next time signature.
-            lmTimeSignature* pNewTS = pNextSO->GetApplicableTimeSignature();
-            lmStaffObj* pLastSO = m_pOwner->FindFwdTimeSignature(pNextSO);
+            lmTimeSignature* pNewTS = pNext->GetApplicableTimeSignature();
+            lmStaffObj* pLastSO = m_pOwner->FindFwdTimeSignature(pNext);
             if (pLastSO)
                 pLastSO = m_pOwner->FindPrevStaffObj(pLastSO);
 
-            m_pOwner->AutoReBar(pNextSO, pLastSO, pNewTS);
+            m_pOwner->AutoReBar(pNext, pLastSO, pNewTS);
         }
     }
     else
@@ -1646,9 +1188,9 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
         //- to update pointers to contexts at start of segment; and
         //- to update staffobjs in segment, if affected by the context change
         if (pSO->IsClef())
-            DoContextRemoval((lmClef*)pSO, pNextSO, fClefKeepPosition);
+            DoContextRemoval((lmClef*)pSO, pNext, fClefKeepPosition);
         else if (pSO->IsKeySignature())
-            DoContextRemoval((lmKeySignature*)pSO, pNextSO, fKeyKeepPitch);
+            DoContextRemoval((lmKeySignature*)pSO, pNext, fKeyKeepPitch);
     }
 
     //finally, if requested, invoke destructor for removed staffobj
@@ -1664,30 +1206,36 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
     //after the inserted one
     //Cursor points to the insertion point (the new object will be inserted before it).
     //If it is a note in chord, it is inserted after object pointed by cursor.
-    //If not object is pointed by cursor, new object is inserted at the end
+    //If no cursor received or pointed object is null (en of collection) the new object
+    //is inserted at the end
 
-    lmItCSO itNewCSO;			//iterator to point to the new inserted object
+    lmStaffObj* pNextSO;        //ptr to next SO in the collection
     lmStaffObj* pCursorSO = (pCursor ? pCursor->GetStaffObj() : (lmStaffObj*)NULL);
 
     //notes in chord must be added after note pointed by cursor
-    bool fAfter = pNewSO->IsNoteRest() && ((lmNoteRest*)pNewSO)->IsNote() && 
+    bool fAfter = pNewSO->IsNoteRest() && ((lmNoteRest*)pNewSO)->IsNote() &&
                   ((lmNote*)pNewSO)->IsInChord();
 
     //add staffobj to the collection
     if (pCursorSO)
     {
-        //Insert pNewSO before pCursorSO
-        itNewCSO = pCursor->GetCurIt();
+        //cursor must be pointing to an object in this segment. Otherwise cursor is
+        //at end of collection
+        wxASSERT(pCursorSO->GetSegment() == this);
+
+        //Insert pNewSO before/after pCursorSO
+        pNextSO = pCursorSO;
         if (fAfter)
-            ++itNewCSO;
-        m_StaffObjs.insert(itNewCSO, pNewSO);	//insert pNewSO before item pointed by cursor
-	    --itNewCSO;		                        //now points to the new inserted object
+            pNextSO = pNextSO->GetNextSO();
+
+        AddToCollection(pNewSO, pNextSO);     //insert pNewSO before item pNextSO
     }
     else
     {
-        //push_back pNewSO in the collection
-        m_StaffObjs.push_back(pNewSO);		//insert at the end
-	    itNewCSO = --m_StaffObjs.end();		//point to inserted object
+        //Collection is empty. Add at the end of segment.
+        //This code is only used when reorganizing the collection (AutoRebar) or
+        //during edition, when adding objects at the end
+        AddToCollection(pNewSO, (lmStaffObj*)NULL);     //insert pNewSO at the end
     }
 
     //Update pNewSO information (the pointer to this segment)
@@ -1720,9 +1268,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 		//shift timepos of all objects in this voice after the inserted one
 		if (pCursorSO && pNewSO->IsNoteRest())
 		{
-			ShiftRightTimepos(itNewCSO, ((lmNoteRest*)pNewSO)->GetDuration() );
-			//and sort the collection by timepos
-			//m_StaffObjs.sort(SortCompare);
+			ShiftRightTimepos(pNewSO, ((lmNoteRest*)pNewSO)->GetDuration() );
 		}
 
         //update barline timepos, to allow for irregular measures
@@ -1733,7 +1279,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 
 	//ensure right ordering
 	if (pNewSO->IsNoteRest())
-		m_StaffObjs.sort(SortCompare);
+        SortMeasure();
 
 
 	////DBG  ------------------------------------------------------------------
@@ -1743,91 +1289,42 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmVStaffCursor* pCursor)
 	////END DBG ---------------------------------------------------------------
 }
 
+void lmSegment::AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO)
+{
+    //insert pNewSO before item pNextSO. If pNewSO is NULL, inserts it at the end
+
+    m_pOwner->AddToCollection(pNewSO, pNextSO);
+
+    //update ptrs to first and last nodes of segment
+    lmStaffObj* pPrev = pNewSO->GetPrevSO();
+    lmStaffObj* pNext = pNewSO->GetNextSO();
+	if(!pPrev || !m_pFirstSO || pNext == m_pFirstSO)
+		m_pFirstSO = pNewSO;
+    if (!pNext || !m_pLastSO || pPrev == m_pLastSO)
+		m_pLastSO = pNewSO;
+    ++m_nNumSO;         //increment objects count
+}
+
 void lmSegment::RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr)
 {
     //Duration of note/rest pNR has been changed. Therefore it could be necessary to recompute
     //segment duration and reposition (in time) all objects after pNR.
 
-    //find pNR
-	lmItCSO itNR = find(m_StaffObjs.begin(), m_StaffObjs.end(), pNR);
-    wxASSERT(itNR != m_StaffObjs.end());
-
     if (IsHigherTime(rTimeIncr, 0.0f))
-        ShiftRightTimepos(itNR, rTimeIncr);
+        ShiftRightTimepos(pNR, rTimeIncr);
     else
     {
-        ++itNR;
-        ShiftLeftTimepos(itNR, -rTimeIncr, pNR->GetTimePos() + pNR->GetDuration() - rTimeIncr,
+        lmStaffObj* pSO = pNR->GetNextSO();
+        ShiftLeftTimepos(pSO, -rTimeIncr, pNR->GetTimePos() + pNR->GetDuration() - rTimeIncr,
                          pNR->GetVoice() );
     }
 }
 
-void lmSegment::ShiftRightTimepos(lmItCSO itStart, float rTimeShift)
-{
-    //Either, the note/rest pointed by itStart has been inserted, or its duration has been
-    //increased.
-    //In both cases, we must shift the timepos af all next objects in this voice, starting with
-    //staffobj after itStart, and up to the barline (included).
-    //The amount of time to shift objects right is rTimeShift. This value is either the duration
-    //of the inserted note (if a note inserted) or the increment in duration (positive) if 
-    //the duration of itStart note/rest has been modified.
-
-    //Algorithm:
-    //  Parameters: pStartSO (inserted/modified object)
-    //
-    //    1 Asign: iV = Voice(pStartSO)
-    //             pCurrentSO = take next object in voice iV after pStartSO
-    //
-    //    2 While not end of segment
-    //        - Assign: t = Timepos(pCurrentSO)
-    //                  d = Duration(pCurrentSO)
-    //        - if Interval(t, t+d) is occupied by object in voice iV:
-    //            - Assign: Timepos(pCurrentSO) += TimeIncr
-    //        else
-    //            - break
-    //        - Assign: pCurrentSO = take next object in voice iV after pCurrentSO
-
-
-    if (IsEqualTime(rTimeShift, 0.0f)) return;       //nothing to do
-
-    //increment in duration must be always positive
-    wxASSERT(IsHigherTime(rTimeShift, 0.0f));
-
-    bool fChanges = false;
-    int iV = ((lmNoteRest*)(*itStart))->GetVoice();
-	lmItCSO it = itStart;
-    ++it;
-	while (it != m_StaffObjs.end())
-	{
-        if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == iV)
-        {
-            float rTime = (*it)->GetTimePos();
-            float rDuration = (*it)->GetTimePosIncrement();
-            if (m_pOwner->IsTimePosOccupied(this, rTime, rDuration, iV))
-            {
-                (*it)->SetTimePos(rTime + rTimeShift);
-                fChanges = true;
-            }
-            else
-                break;
-        }
-        ++it;
-	}
-
-    //if any change, update measure duration and review AutoBeam
-    if (fChanges)
-    {
-        UpdateMeasureDuration();
-        //if (g_fAutoBeam)
-        //    AutoBeam(iV);
-    }
-}
-
-void lmSegment::ShiftLeftTimepos(lmItCSO itStart, float rTimeShift, float rStartTimepos,
+void lmSegment::ShiftLeftTimepos(lmStaffObj* pStartSO, float rTimeShift, float rStartTimepos,
                                  int nVoice)
 {
-    //The timepos of all consecutive notes/rests, in voice nVoice, starting with the one 
-    //pointed by itStart must be modified, because either the previous note/rest has been
+    //The timepos of all consecutive notes/rests, in voice nVoice, starting with the one
+    //pointed by pStartSO must be modified, because either the previous note/rest has been
     //deleted or its duration has been decreased.
     //
     //To check that next note/rest is consecutive, we need to know what was the next timepos
@@ -1858,24 +1355,24 @@ void lmSegment::ShiftLeftTimepos(lmItCSO itStart, float rTimeShift, float rStart
 
 
     float rNextTime = rStartTimepos;
-	lmItCSO it = itStart;
+	lmStaffObj* pSO = pStartSO;
     bool fChanges = false;
 
-	while (it != m_StaffObjs.end())
+	while (pSO)
 	{
-        if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == nVoice)
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
         {
-            float rTime = (*it)->GetTimePos();
+            float rTime = pSO->GetTimePos();
             if (IsEqualTime(rTime, rNextTime))
             {
-                (*it)->SetTimePos(rTime - rTimeShift);
-                rNextTime = rTime + (*it)->GetTimePosIncrement();
+                pSO->SetTimePos(rTime - rTimeShift);
+                rNextTime = rTime + pSO->GetTimePosIncrement();
                 fChanges = true;
             }
             else
                 break;
         }
-        ++it;
+        pSO = pSO->GetNextSO();
 	}
 
 
@@ -1883,7 +1380,7 @@ void lmSegment::ShiftLeftTimepos(lmItCSO itStart, float rTimeShift, float rStart
     if (fChanges)
     {
         UpdateMeasureDuration();
-        //if (g_fAutoBeam)
+        //if (g_fAutoBeam)              //TODO
         //    AutoBeam(nVoice);
     }
 }
@@ -1893,25 +1390,31 @@ void lmSegment::UpdateMeasureDuration()
     //determines the new duration of this segment, and updates barline timepos, if
     //barline exists
 
-	lmItCSO it = m_StaffObjs.end();
-    --it;
-    while (it != m_StaffObjs.end() && (*it)->IsBarline())
-        --it;
-
-    float rDuration = 0.0f;
-    if (it != m_StaffObjs.end())
+    //if segment is empty, duration is zero
+    if (!m_pLastSO)
     {
-        rDuration = (*it)->GetTimePos() + (*it)->GetTimePosIncrement();
+        m_rMaxTime = 0.0f;
+        return;
     }
 
-    //if segment's duration is irregular attach a warning tag to it
-    //IMPROVE: if segment's duration is irregular attach a warning tag to it"));
+    //move backwards form last object to skip barline, if exists
+    float rDuration = 0.0f;
+    if (m_pLastSO->IsBarline())
+    {
+        lmSOIterator it(m_pOwner, m_pLastSO);
+        it.MovePrev();
+        lmStaffObj* pSO = it.GetCurrent();
+	    if (!it.ChangeOfMeasure() && pSO != m_pLastSO)
+            rDuration = pSO->GetTimePos() + pSO->GetTimePosIncrement();
+    }
     m_rMaxTime = rDuration;
 
+    //if segment's duration is irregular attach a warning tag to it
+    //TODO: if segment's duration is irregular attach a warning tag to it"));
+
     //Update barline timepos if barline exists.
-	lmBarline* pBL = GetBarline();
-    if (pBL)
-        pBL->SetTimePos( m_rMaxTime );
+    if (m_pLastSO->IsBarline())
+        m_pLastSO->SetTimePos( m_rMaxTime );
 }
 
 lmBarline* lmSegment::GetBarline()
@@ -1919,22 +1422,18 @@ lmBarline* lmSegment::GetBarline()
     //returns the barline of the segment, if exists, or null
     //The barline is always the last staffobj in the segment's collection
 
-	lmItCSO it = m_StaffObjs.end();
-    --it;
-    if (it != m_StaffObjs.end() && (*it)->IsBarline())
-        return (lmBarline*)(*it);
+    if (m_pLastSO && m_pLastSO->IsBarline())
+        return (lmBarline*)m_pLastSO;
     else
         return (lmBarline*)NULL;
 }
 
 void lmSegment::UpdateDuration()
 {
-	lmItCSO it = m_StaffObjs.end();
-    --it;
-    if (it == m_StaffObjs.end())
-        m_rMaxTime = 0.0f;          //segment is empty 
+    if (!m_pLastSO)
+        m_rMaxTime = 0.0f;          //segment is empty
     else
-        m_rMaxTime = (*it)->GetTimePos() + (*it)->GetTimePosIncrement();
+        m_rMaxTime = m_pLastSO->GetTimePos() + m_pLastSO->GetTimePosIncrement();
 }
 
 float lmSegment::GetMaximumTime()
@@ -1942,13 +1441,11 @@ float lmSegment::GetMaximumTime()
     //returns theoretical segment duration for current time signature
 
     //get last SO in this segment
-	lmItCSO it = m_StaffObjs.end();
-    --it;
-    if (it == m_StaffObjs.end())
+    if (!m_pLastSO)
         return lmNO_TIME_LIMIT;
 
     //get applicable time signature
-    lmTimeSignature* pTS = (*it)->GetApplicableTimeSignature();
+    lmTimeSignature* pTS = m_pLastSO->GetApplicableTimeSignature();
     if (!pTS)
         return lmNO_TIME_LIMIT;   //no time signature -> infinite segment
 
@@ -1957,13 +1454,7 @@ float lmSegment::GetMaximumTime()
 
 bool lmSegment::HasBarline()
 {
-    //get last SO in this segment
-	lmItCSO it = m_StaffObjs.end();
-    --it;
-    if (it == m_StaffObjs.end())
-        return false;
-
-    return (*it)->IsBarline();
+    return (m_pLastSO ? m_pLastSO->IsBarline() : false);
 }
 
 bool lmSegment::IsSegmentFull()
@@ -1986,11 +1477,22 @@ wxString lmSegment::Dump()
     }
     sDump += _T("\n");
 
-	lmItCSO itSO;
-	for (itSO = m_StaffObjs.begin(); itSO != m_StaffObjs.end(); itSO++)
-	{
-		sDump += (*itSO)->Dump();
-	}
+    lmSOIterator it(m_pOwner, m_pFirstSO);
+    while(!it.EndOfCollection() && !it.ChangeOfMeasure())
+    {
+        lmStaffObj* pSO = it.GetCurrent();
+        sDump += pSO->Dump();
+        it.MoveNext();
+    }
+
+    sDump += wxString::Format(_T("\nNum. objects %d. Bwd chain:\n"), m_nNumSO);
+    it.MoveTo(m_pLastSO);
+    while(!it.EndOfCollection() && !it.ChangeOfMeasure())
+    {
+        lmStaffObj* pSO = it.GetCurrent();
+        sDump += wxString::Format(_T("%d, "), pSO->GetID());
+        it.MovePrev();
+    }
 	return sDump;
 }
 
@@ -2031,7 +1533,7 @@ void lmSegment::DoContextInsertion(lmKeySignature* pNewKey, lmStaffObj* pNextSO,
             lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
 
             //inform next segment
-            pNextSegment->PropagateContextChange(pLastContext, nStaff, 
+            pNextSegment->PropagateContextChange(pLastContext, nStaff,
                                                  pNewKey, pOldKey, fKeyKeepPitch);
         }
     }
@@ -2057,7 +1559,7 @@ void lmSegment::DoContextInsertion(lmClef* pNewClef, lmStaffObj* pNextSO,
     if (!pOldClef)
     {
         int nStaff = pNewClef->GetStaffNum();
-        lmStaff* pStaff = m_pOwner->m_pOwner->GetStaff(nStaff);
+        lmStaff* pStaff = m_pOwner->GetOwnerVStaff()->GetStaff(nStaff);
         nOldClefType = pStaff->GetPreviousFirstClefType();
     }
     else
@@ -2184,25 +1686,21 @@ void lmSegment::Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
     wxASSERT(nStaff > 0);
 
     //locate start point
-	lmItCSO itSO;
-    if (pStartSO)
-    {
-	    itSO = find(m_StaffObjs.begin(), m_StaffObjs.end(), pStartSO);
-        wxASSERT(itSO != m_StaffObjs.end());
-    }
-    else
-        itSO = m_StaffObjs.begin();
+    lmStaffObj* pFirst = (pStartSO ? pStartSO : m_pFirstSO);
+    if (!pFirst) return;
 
     //iterate until end of segment or new cleft
-	while (itSO != m_StaffObjs.end() && !(*itSO)->IsClef())
+    lmSOIterator it(m_pOwner, pFirst);
+	while (!it.ChangeOfMeasure() && !it.EndOfCollection() && !it.GetCurrent()->IsClef())
 	{
-		if ((*itSO)->IsNoteRest() && (*itSO)->GetStaffNum() == nStaff &&
-            ((lmNote*)(*itSO))->IsNote())
+        lmStaffObj* pSO = it.GetCurrent();
+		if (pSO->IsNoteRest() && pSO->GetStaffNum() == nStaff &&
+            ((lmNote*)pSO)->IsNote())
         {
             //note in the affected staff. Re-pitch it to keep staff position
-            ((lmNote*)(*itSO))->ModifyPitch(nNewClefType, nOldClefType);
+            ((lmNote*)pSO)->ModifyPitch(nNewClefType, nOldClefType);
         }
-        ++itSO;
+        it.MoveNext();
 	}
 }
 
@@ -2226,35 +1724,31 @@ void lmSegment::AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStart
     ComputeAccidentals(pNewKey->GetKeyType(), nAccidentals);
 
     //locate start point
-	lmItCSO itSO;
-    if (pStartSO)
-    {
-	    itSO = find(m_StaffObjs.begin(), m_StaffObjs.end(), pStartSO);
-        wxASSERT(itSO != m_StaffObjs.end());
-    }
-    else
-        itSO = m_StaffObjs.begin();
+    lmStaffObj* pFirst = (pStartSO ? pStartSO : m_pFirstSO);
+    if (!pFirst) return;
 
     //iterate until end of segment or new key
-	while (itSO != m_StaffObjs.end() && !(*itSO)->IsKeySignature())
+    lmSOIterator it(m_pOwner, pFirst);
+	while (!it.ChangeOfMeasure() && !it.EndOfCollection() && !it.GetCurrent()->IsKeySignature())
 	{
-		if ((*itSO)->IsNoteRest() && ((lmNote*)(*itSO))->IsNote())
+        lmStaffObj* pSO = it.GetCurrent();
+		if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
         {
             //note. Review displayed accidentals
-            int nStep = ((lmNote*)(*itSO))->GetStep();
-            ((lmNote*)(*itSO))->ComputeAccidentalsToKeepPitch(nAccidentals[nStep]);
+            int nStep = ((lmNote*)pSO)->GetStep();
+            ((lmNote*)pSO)->ComputeAccidentalsToKeepPitch(nAccidentals[nStep]);
         }
-        ++itSO;
+        it.MoveNext();
 	}
 }
 
-void lmSegment::ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey, 
+void lmSegment::ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
                             lmStaffObj* pStartSO)
 {
     //A key signature has been added/removed or changed. As a consequence, the pitch of
     //notes after the key signature might be affected. User has requested to change the
     //pitch of affected notes, as specified by the new key signature
-    //This method iterates along the staffobjs of this segment and changes pitch of 
+    //This method iterates along the staffobjs of this segment and changes pitch of
     //affected notes.
 
     // we need to know:
@@ -2272,30 +1766,26 @@ void lmSegment::ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
         nPitchDiff[i] = nNewAcc[i] - nOldAcc[i];
 
     //locate start point
-	lmItCSO itSO;
-    if (pStartSO)
-    {
-	    itSO = find(m_StaffObjs.begin(), m_StaffObjs.end(), pStartSO);
-        wxASSERT(itSO != m_StaffObjs.end());
-    }
-    else
-        itSO = m_StaffObjs.begin();
+    lmStaffObj* pFirst = (pStartSO ? pStartSO : m_pFirstSO);
+    if (!pFirst) return;
 
     //iterate until end of segment or new key
-	while (itSO != m_StaffObjs.end() && !(*itSO)->IsKeySignature())
+    lmSOIterator it(m_pOwner, pFirst);
+	while (!it.ChangeOfMeasure() && !it.EndOfCollection() && !it.GetCurrent()->IsKeySignature())
 	{
-		if ((*itSO)->IsNoteRest() && ((lmNote*)(*itSO))->IsNote())
+        lmStaffObj* pSO = it.GetCurrent();
+		if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
         {
             //note. Review displayed accidentals
-            int nStep = ((lmNote*)(*itSO))->GetStep();
+            int nStep = ((lmNote*)pSO)->GetStep();
             if (nPitchDiff[nStep] != 0)
             {
                 //change pitch by the difference and compute new accidentals to display
-                ((lmNote*)(*itSO))->ModifyPitch(nPitchDiff[nStep]);
-                ((lmNote*)(*itSO))->ComputeAccidentalsToKeepPitch(nNewAcc[nStep]);
+                ((lmNote*)pSO)->ModifyPitch(nPitchDiff[nStep]);
+                ((lmNote*)pSO)->ComputeAccidentalsToKeepPitch(nNewAcc[nStep]);
             }
         }
-        ++itSO;
+        it.MoveNext();
 	}
 }
 
@@ -2305,41 +1795,49 @@ void lmSegment::AutoBeam(int nVoice)
     //in specified voice
 
     //vector to store notes that form a beam
-    std::vector<lmNoteRest*> cBeamedNotes;
+    std::list<lmNoteRest*> cBeamedNotes;
 
     //find first note in voice nVoice in this segment
-	lmItCSO it = m_StaffObjs.begin();
-	for (; it != m_StaffObjs.end(); ++it)
+    if (!m_pFirstSO) return;
+
+    lmSOIterator it(m_pOwner, m_pFirstSO);
+    lmStaffObj* pSO = (lmStaffObj*)NULL;
+    while (!it.ChangeOfMeasure() && !it.EndOfCollection())
 	{
-		if ((*it)->IsNoteRest() && 
-            ((lmNoteRest*)(*it))->IsNote() &&
-            ((lmNoteRest*)(*it))->GetVoice() == nVoice)
+        pSO = it.GetCurrent();
+		if (pSO->IsNoteRest() &&
+            ((lmNoteRest*)pSO)->IsNote() &&
+            ((lmNoteRest*)pSO)->GetVoice() == nVoice)
             break;
+        it.MoveNext();
     }
-    if (it == m_StaffObjs.end())
+
+    if (!pSO)
         //no notes in voice nVoice. Only rests. Nothing to do
         return;
 
     //get context and get current time signature.
-    lmContext* pContext = (*it)->GetCurrentContext();
+    lmContext* pContext = pSO->GetCurrentContext();
     if (!pContext) return;           //no context yet
     lmTimeSignature* pTS = pContext->GetTime();
     if (!pTS) return;               //no time signature defined yet
     int nBeatType = pTS->GetBeatType();
     int nBeats = pTS->GetNumBeats();
 
-    //Explore all segment (only involved voice) and select notes/rests that could be beamed
-	for (; it != m_StaffObjs.end(); ++it)
+   //Explore all segment (only involved voice) and select notes/rests that could be beamed
+    while (!it.ChangeOfMeasure() && !it.EndOfCollection())
 	{
+        pSO = it.GetCurrent();
+
         //ignore notes in chord that are not base of chord
-		if ((*it)->IsNoteRest() 
-            && ((lmNoteRest*)(*it))->GetVoice() == nVoice
-            && ( ((lmNoteRest*)(*it))->IsRest() 
-                 || !((lmNote*)(*it))->IsInChord()
-                 || ((lmNote*)(*it))->IsBaseOfChord() ))
+		if (pSO->IsNoteRest()
+            && ((lmNoteRest*)pSO)->GetVoice() == nVoice
+            && ( ((lmNoteRest*)pSO)->IsRest()
+                 || !((lmNote*)pSO)->IsInChord()
+                 || ((lmNote*)pSO)->IsBaseOfChord() ))
         {
             //note/rest in the affected voice
-            lmNoteRest* pNR = (lmNoteRest*)(*it);
+            lmNoteRest* pNR = (lmNoteRest*)pSO;
             int nPos = GetNoteBeatPosition(pNR->GetTimePos(), nBeats, nBeatType);
             if (nPos != lmOFF_BEAT)     //nPos = lmOFF_BEAT or number of beat (0..n)
             {
@@ -2349,9 +1847,11 @@ void lmSegment::AutoBeam(int nVoice)
             }
 
             //add note to current beam if smaller than an eighth.
-            //if note, it must not be in chord or must be base of chord. 
+            //if note, it must not be in chord or must be base of chord.
             if (pNR->GetNoteType() > eQuarter)
+            {
                 cBeamedNotes.push_back(pNR);
+            }
             else
             {
                 //current note/rest cannot be beamed. Crete the beam with previous notes
@@ -2359,6 +1859,7 @@ void lmSegment::AutoBeam(int nVoice)
                 cBeamedNotes.clear();
             }
         }
+        it.MoveNext();
 	}
 
     //terminate last beam
@@ -2366,9 +1867,9 @@ void lmSegment::AutoBeam(int nVoice)
     cBeamedNotes.clear();
 }
 
-void lmSegment::AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes)
+void lmSegment::AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes)
 {
-    //When this method is invoked, vector cBeamedNotes contains the notes/rests that should
+    //When this method is invoked, list cBeamedNotes contains the notes/rests that should
     //be beamed toghether. Review current beam information and modify it so that they
     //form a beamed group.
 
@@ -2376,8 +1877,8 @@ void lmSegment::AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes)
 
     //remove rests at the end
     int nLastNote = (int)cBeamedNotes.size() - 1;       //0..n-1
-    while (cBeamedNotes[nLastNote]->IsRest() && nLastNote > 0)
-        --nLastNote;
+    std::list<lmNoteRest*>::iterator it = cBeamedNotes.end();
+    for (--it; nLastNote > 0 && (*it)->IsRest(); --it, --nLastNote);
 
     if (nLastNote < 1) return;      //only one note. No beam possible
 
@@ -2386,8 +1887,8 @@ void lmSegment::AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes)
     //create the beam and to add the notes to the beam.
 
     lmBeam* pBeam = (lmBeam*)NULL;
-    std::vector<lmNoteRest*>::iterator it = cBeamedNotes.begin();
-    for (int i=0; it != cBeamedNotes.end(); ++it, ++i)
+    it = cBeamedNotes.begin();
+    for (int i=0; it != cBeamedNotes.end() && i <= nLastNote; ++it, ++i)
     {
         //remove old beam
         //OPTIMIZATION: preserve current beam information when beam exists and is correct.
@@ -2415,18 +1916,18 @@ lmContext* lmSegment::FindEndOfSegmentContext(int nStaff)
 
     wxASSERT(nStaff > 0);
 
-	lmItCSO it = m_StaffObjs.end();
-    --it;
-    while (it != m_StaffObjs.end())
-    {
-        if ((*it)->IsClef() && (*it)->GetStaffNum() == nStaff)
-            return ((lmClef*)(*it))->GetContext();
-        else if ((*it)->IsTimeSignature())
-            return ((lmTimeSignature*)(*it))->GetContext(nStaff);
-        else if ((*it)->IsKeySignature())
-            return ((lmKeySignature*)(*it))->GetContext(nStaff);
+    lmSOIterator it(m_pOwner, m_pLastSO);
+    while (!it.ChangeOfMeasure() && !it.EndOfCollection())
+	{
+        lmStaffObj* pSO = it.GetCurrent();
+        if (pSO->IsClef() && pSO->GetStaffNum() == nStaff)
+            return ((lmClef*)pSO)->GetContext();
+        else if (pSO->IsTimeSignature())
+            return ((lmTimeSignature*)pSO)->GetContext(nStaff);
+        else if (pSO->IsKeySignature())
+            return ((lmKeySignature*)pSO)->GetContext(nStaff);
         else
-            --it;
+            it.MovePrev();
     }
 
     return m_pContext[nStaff-1];
@@ -2434,7 +1935,7 @@ lmContext* lmSegment::FindEndOfSegmentContext(int nStaff)
 
 void lmSegment::DoContextRemoval(lmKeySignature* pOldKey, lmStaffObj* pNextSO, bool fKeyKeepPitch)
 {
-    //When a key signature is removed from the collection, the contexts that it created 
+    //When a key signature is removed from the collection, the contexts that it created
     //has been removed from the staves contexts chain. But it is necessary:
     //- to update pointers to contexts at start of segment; and
     //- to update staffobjs in segment, if affected by the context change
@@ -2509,7 +2010,259 @@ void lmSegment::DoContextRemoval(lmClef* pOldClef, lmStaffObj* pNextSO, bool fCl
     }
 }
 
+void lmSegment::SortMeasure()
+{
+    //Sort measure to ensure right order
+    //Bubble method. Optimized algorithm (from http://en.wikipedia.org/wiki/Bubble_sort)
+    //
+    //  procedure bubbleSort( A : list of sortable items ) defined as:
+    //  n := length( A )
+    //  do
+    //      swapped := false
+    //      n := n - 1
+    //      for each i in 0 to n  do:
+    //      if A[ i ] > A[ i + 1 ] then
+    //          swap( A[ i ], A[ i + 1 ] )
+    //          swapped := true
+    //      end if
+    //      end for
+    //  while swapped
+    //  end procedure
 
+    bool fSwapped = true;
+    bool fUpdateFirstInCollection = (m_pFirstSO == m_pOwner->GetFirstSO());
+    bool fUpdateLastInCollection = (m_pLastSO == m_pOwner->GetLastSO());
+    int n = m_nNumSO;
+    while(fSwapped)
+    {
+        fSwapped = false;
+        --n;
+        lmStaffObj* pSO1 = m_pFirstSO;
+        for (int i=0; i < n; i++)
+        {
+            lmStaffObj* pSO2 = pSO1->GetNextSO();
+            if (SortCompare(pSO2, pSO1))
+            {
+                //Swap(pSO1, pSO2);
+                lmStaffObj* pPrev = pSO1->GetPrevSO();
+                lmStaffObj* pNext = pSO2->GetNextSO();
+                if (m_pFirstSO == pSO1)
+                {
+                    m_pFirstSO = pSO2;
+                    if (fUpdateFirstInCollection)
+                        m_pOwner->SetFirstSO(pSO2);
+                }
+                if (pPrev)
+                    pPrev->SetNextSO(pSO2);
+                pSO2->SetPrevSO(pPrev);
+                pSO2->SetNextSO(pSO1);
+                pSO1->SetPrevSO(pSO2);
+                pSO1->SetNextSO(pNext);
+                if (pNext)
+                    pNext->SetPrevSO(pSO1);
+                if (m_pLastSO == pSO2)
+                {
+                    m_pLastSO = pSO1;
+                    if (fUpdateLastInCollection)
+                        m_pOwner->SetLastSO(pSO1);
+                }
+
+                fSwapped = true;
+            }
+            else
+                pSO1 = pSO2;
+        }
+    }
+}
+
+void lmSegment::ShiftRightTimepos(lmStaffObj* pStartSO, float rTimeShift)
+{
+    //Either, the note/rest pointed by pStartSO has been inserted, or its duration has been
+    //increased.
+    //In both cases, we must shift the timepos af all next objects in this voice, starting with
+    //staffobj after pStartSO, and up to the barline (included).
+    //The amount of time to shift objects right is rTimeShift. This value is either the duration
+    //of the inserted note (if a note inserted) or the increment in duration (positive) if
+    //the duration of pStartSO note/rest has been modified.
+
+    //Algorithm:
+    //  Parameters: pStartSO (inserted/modified object)
+    //
+    //    1 Asign: iV = Voice(pStartSO)
+    //             pCurrentSO = take next object in voice iV after pStartSO
+    //
+    //    2 While not end of segment
+    //        - Assign: t = Timepos(pCurrentSO)
+    //                  d = Duration(pCurrentSO)
+    //        - if Interval(t, t+d) is occupied by object in voice iV:
+    //            - Assign: Timepos(pCurrentSO) += TimeIncr
+    //        else
+    //            - break
+    //        - Assign: pCurrentSO = take next object in voice iV after pCurrentSO
+
+
+    if (IsEqualTime(rTimeShift, 0.0f)) return;       //nothing to do
+
+    //increment in duration must be always positive
+    wxASSERT(IsHigherTime(rTimeShift, 0.0f));
+    //StartSO must be a NoteRest
+    wxASSERT(pStartSO->IsNoteRest());
+
+    bool fChanges = false;
+    int iV = ((lmNoteRest*)pStartSO)->GetVoice();
+    lmSOIterator it(m_pOwner, pStartSO);
+    it.MoveNext();
+    it.ResetFlags();
+	while (!it.ChangeOfMeasure() && !it.EndOfCollection())
+	{
+        lmStaffObj* pSO = it.GetCurrent();
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == iV)
+        {
+            float rTime = pSO->GetTimePos();
+            float rDuration = pSO->GetTimePosIncrement();
+            if (m_pOwner->IsTimePosOccupied(this, rTime, rDuration, iV))
+            {
+                pSO->SetTimePos(rTime + rTimeShift);
+                fChanges = true;
+            }
+            else
+                break;
+        }
+        it.MoveNext();
+	}
+
+    //if any change, update measure duration and review AutoBeam
+    if (fChanges)
+    {
+        UpdateMeasureDuration();
+        //if (g_fAutoBeam)          //TODO
+        //    AutoBeam(iV);
+    }
+}
+
+void lmSegment::SetCollection(lmStaffObj* pFirstSO, lmStaffObj* pLastSO)
+{
+    //A barline is added to the collection. As consequence, the segment is splitted. This
+    //method on the new created segment is invoked to do whatever is necessary. 
+    //All staffobjs, from pFirstSO to pLastSO are already chained and ordered.
+
+    wxASSERT(pFirstSO);
+    wxASSERT(pLastSO);
+
+    m_pFirstSO = pFirstSO;
+    m_pLastSO = pLastSO;
+    CountObjects();
+
+    //compute segment duration
+    UpdateDuration();
+
+    //Re-assign time to all objects and update segment pointer.
+    float rTime = pFirstSO->GetTimePos();
+    if (IsHigherTime(rTime, 0.0f))
+    {
+        lmStaffObj* pSO = m_pFirstSO;
+        while(pSO)
+        {
+            pSO->SetTimePos( pSO->GetTimePos() - rTime );
+            pSO->SetSegment(this);
+            pSO = pSO->GetNextSO();
+        }
+    }
+}
+
+void lmSegment::FinishSegmentAt(lmStaffObj* pLastSO)
+{
+    //A barline is added to the collection. As consequence, the segment is splitted. This
+    //method on the old segment (the one in which the barline has been inserted) is 
+    //invoked to do whatever is necessary. 
+
+    wxASSERT(pLastSO);
+
+    m_pLastSO = pLastSO;
+    CountObjects();
+
+    //compute segment duration
+    UpdateDuration();
+}
+
+float lmSegment::JoinSegment(lmSegment* pSegment)
+{
+    //A barline is removed from the collection. As consequence, this segment must be
+    //joined with next one (pSegment). This method is invoked to do whatever is necessary.
+    //All staffobjs are already chained and ordered.
+    //Returns the time increment added to first object of appended segment
+
+
+    lmStaffObj* pFirst = pSegment->GetFirstSO();
+    lmStaffObj* pStart = m_pLastSO;
+    m_pLastSO = pSegment->GetLastSO();
+    CountObjects();
+
+    //Adjust timepos and update segment pointer in all moved objects
+	//Re-assign time to all appended objects and chage ptr to segment.
+    float rTime = pStart->GetTimePos() + pStart->GetTimePosIncrement();
+    while(pFirst)
+    {
+        pFirst->SetTimePos( pFirst->GetTimePos() + rTime );
+        pFirst->SetSegment(this);
+        pFirst = pFirst->GetNextSO();
+    }
+
+    //re-compute segment duration
+    UpdateDuration();
+
+    return rTime;
+}
+
+void lmSegment::CountObjects()
+{
+    //count the number of objects in the collection
+
+    m_nNumSO = 0;
+    if (!m_pFirstSO) return;
+
+    lmSOIterator it(m_pOwner, m_pFirstSO);
+	while (!it.ChangeOfMeasure() && !it.EndOfCollection())
+	{
+        ++m_nNumSO;
+        it.MoveNext();
+    }
+}
+
+bool lmSegment::IsTimePosOccupied(float rTime, float rDuration, int nVoice)
+{
+    //returns true if there is any note/rest in voice nVoice sounding in semi-open interval
+    //[timepos, timepos+duration), in current measure.
+
+    if (!m_pFirstSO) return false;
+
+    //Is time occupied if
+    //  coincides:      pSO(timepos) == rTime or
+    //  start before:   pSO(timepos) < rTime && pSO(timepos+duration) > rTime
+    //  start after:    pSO(timepos) > rTime && pSO(timepos) < (rTime+rDuration)
+
+    lmSOIterator it(m_pOwner, m_pFirstSO);
+	while (!it.ChangeOfMeasure() && !it.EndOfCollection())
+	{
+    	lmStaffObj* pSO = m_pFirstSO;
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
+        {
+            float rTimeSO = pSO->GetTimePos();
+            if (IsEqualTime(rTimeSO, rTime)) return true;      //start coincides
+
+            float rDurSO = pSO->GetTimePosIncrement();
+            if (rTimeSO < rTime && (rTimeSO + rDurSO - 0.1f) > rTime) return true;
+
+            if (rTimeSO > rTime && rTimeSO < (rTime + rDuration)) return true;
+
+            if (rTimeSO > rTime && (rTimeSO + rDurSO) > rTime) return false;
+
+        }
+        it.MoveNext();
+    }
+
+    return false;
+}
 
 
 //====================================================================================================
@@ -2524,6 +2277,10 @@ lmColStaffObjs::lmColStaffObjs(lmVStaff* pOwner, int nNumStaves)
 
 	m_pOwner = pOwner;
 	m_nNumStaves = nNumStaves;
+
+    //initialize the collection
+    m_pFirstSO = (lmStaffObj*)NULL;
+    m_pLastSO = (lmStaffObj*)NULL;
 
 	//create a first segment
 	CreateNewSegment(0);
@@ -2543,7 +2300,7 @@ lmColStaffObjs::~lmColStaffObjs()
 void lmColStaffObjs::AddStaff()
 {
     //collection must be empty
-    wxASSERT((int)m_Segments.size()==1 && m_Segments[0]->m_StaffObjs.size() == 0);
+    wxASSERT((int)m_Segments.size()==1 && m_Segments[0]->GetNumObjects() == 0);
 
     m_nNumStaves++;
 }
@@ -2562,7 +2319,7 @@ int lmColStaffObjs::AssignVoice(lmStaffObj* pSO, int nSegment)
     //rule 1: if measure is not full do not change from voice assigned to this staff
     int iV = pSO->GetStaffNum();
     if (!m_Segments[nSegment]->IsSegmentFull())
-        return iV;  
+        return iV;
 
     //Determine if there are note/rests in timepos range [timepos, timepos+object_duration)
 
@@ -2592,31 +2349,7 @@ bool lmColStaffObjs::IsTimePosOccupied(lmSegment* pSegment, float rTime, float r
     //returns true if there is any note/rest in voice nVoice sounding in semi-open interval
     //[timepos, timepos+duration), in current measure.
 
-	lmItCSO it = pSegment->m_StaffObjs.begin();
-
-    //Is time occupied if
-    //  coincides:      pSO(timepos) == rTime or
-    //  start before:   pSO(timepos) < rTime && pSO(timepos+duration) > rTime
-    //  start after:    pSO(timepos) > rTime && pSO(timepos) < (rTime+rDuration)
-    while(it != pSegment->m_StaffObjs.end())
-    {
-        if ((*it)->IsNoteRest() && ((lmNoteRest*)(*it))->GetVoice() == nVoice)
-        {
-            float rTimeSO = (*it)->GetTimePos();
-            if (IsEqualTime(rTimeSO, rTime)) return true;      //start coincides
-
-            float rDurSO = (*it)->GetTimePosIncrement();
-            if (rTimeSO < rTime && (rTimeSO + rDurSO - 0.1f) > rTime) return true;
-
-            if (rTimeSO > rTime && rTimeSO < (rTime + rDuration)) return true;
-
-            if (rTimeSO > rTime && (rTimeSO + rDurSO) > rTime) return false;
-
-        }
-        ++it;
-    }
-
-    return false;
+	return pSegment->IsTimePosOccupied(rTime, rDuration, nVoice);
 }
 
 void lmColStaffObjs::AssignTime(lmStaffObj* pSO)
@@ -2683,8 +2416,8 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
     {
         if (pCursorObj)
             m_pVCursor->MoveCursorToObject(pCursorObj);
-        else
-            ;   //TODO
+        //else
+            //TODO
     }
 
     //advance cursor
@@ -2721,14 +2454,13 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
             //Advance cursor to time t + duration of inserted object or to next measure
             //if we are at end of measure
             float rTime = pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement();
-            if (!IsLowerTime(rTime, m_Segments[nSegment]->GetMaximumTime()) 
+            if (!IsLowerTime(rTime, m_Segments[nSegment]->GetMaximumTime())
                 && nSegment < GetNumSegments()-1 )
                 m_pVCursor->AdvanceToNextSegment();
             else
                 m_pVCursor->MoveToTime(rTime);
         }
     }
-
 }
 
 void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
@@ -2833,20 +2565,6 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     lmSegment* pSegment = pSO->GetSegment();
 	pSegment->Remove(pSO, false, fClefKeepPosition, fKeyKeepPitch); //false -> do not delete object
 
-    //AWARE. If object to remove is a Time Signature, after removal the score could have
-    //been re-bar. Therefore, all segments might have been recreated and, therefore, all
-    //pointers to segments are invalid. Get them again
-    if (pSO->IsTimeSignature())
-    {
-        if (pCursorSO)
-        {
-            pSegment = pCursorSO->GetSegment();
-            //saved cursor information is no longer valid. Update it
-            tVCState.nSegment = pSegment->GetNumSegment();
-        }
-        //TODO: else case
-    }
-
     //if removed object is a barline:
     //  - merge current segment with next one
     //  - Adjust timepos of all moved objects
@@ -2855,36 +2573,16 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
 	if (pSO->IsBarline())
     {
         //merge current segment with next one
-	    //As we are dealing with lists this is just to cut and append the lists (this
-        //is done with an 'splice' operation in STL)
-        lmSegment* pNextSegment = m_Segments[pSegment->m_nNumSegment + 1];
-	    lmItCSO it = pNextSegment->m_StaffObjs.begin();    //point to first object to move
-        lmItCSO itLast = (pSegment->m_StaffObjs).end();    //save ptr to last object
-        --itLast;
-        (pSegment->m_StaffObjs).splice(pSegment->m_StaffObjs.end(),
-                    pNextSegment->m_StaffObjs, it, pNextSegment->m_StaffObjs.end() );
-
-        //Adjust timepos and update segment pointer in all moved objects
-	    //Re-assign time to all objects in new segment.
-        //As objects ordering will not change this is just udating all staffobjs timepos, by
-	    //adding timepos of deleted barline
-        float rTime = pSO->GetTimePos();
-        for(it = ++itLast; it != pSegment->m_StaffObjs.end(); ++it)
-        {
-            (*it)->SetTimePos( (*it)->GetTimePos() + rTime );
-            (*it)->SetSegment(pSegment);
-        }
-
-        //re-compute segment duration
-        pSegment->UpdateDuration();
+	    //As we are dealing with lists this is just to cut and append the lists
+        lmSegment* pNextSegment = m_Segments[pSegment->GetNumSegment() + 1];
+        float rTime = pSegment->JoinSegment(pNextSegment);
 
         //remove next segment and renumber segments. Notice that if we removed last barline
         //there will be no next segment
-        RemoveSegment( pNextSegment->m_nNumSegment );
+        RemoveSegment( pNextSegment->GetNumSegment());
 
         //As a consequence of joining segments, saved cursor information is no longer
-        //valid. In particular we have to fix rTimePos and nSegment.
-        --tVCState.nSegment;
+        //valid. In particular we have to fix rTimePos.
         tVCState.rTimepos += rTime;
     }
 
@@ -2905,21 +2603,44 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     //#endif
 }
 
+
+void lmColStaffObjs::AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO)
+{
+    //insert pNewSO before item pNextSO. If pNextSO is NULL, inserts it at the end
+
+    //Get ptr to previous SO
+    lmStaffObj* pPrevSO = (pNextSO ? pNextSO->GetPrevSO() : m_pLastSO);
+
+    //Chain the new SO
+	pNewSO->SetPrevSO(pPrevSO);
+	pNewSO->SetNextSO(pNextSO);
+
+    //update links in prev and next nodes
+	if (pPrevSO)
+		pPrevSO->SetNextSO(pNewSO);
+    if (pNextSO) 
+        pNextSO->SetPrevSO(pNewSO);
+
+    //update ptrs to first and last nodes
+	if(!pPrevSO)
+		m_pFirstSO = pNewSO;
+    if (!pNextSO)
+		m_pLastSO = pNewSO;
+}
+
 void lmColStaffObjs::LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj* pSO)
 {
     //log info to locate insertion point when undoing delete command
 
-    //get segment and find object
+    //get segment
     lmSegment* pSegment = pSO->GetSegment();
-	lmItCSO it = find(pSegment->m_StaffObjs.begin(), pSegment->m_StaffObjs.end(), pSO);
-    wxASSERT(it != pSegment->m_StaffObjs.end());        //object to delete must exists
 
     //advance to next object
-    ++it;
-    if (it != pSegment->m_StaffObjs.end())
+    pSO = pSO->GetNextSO();
+    if (pSO)
     {
         //not at end of segment. done
-        pUndoData->AddParam<lmStaffObj*>(*it);
+        pUndoData->AddParam<lmStaffObj*>(pSO);
         return;
     }
 
@@ -2929,12 +2650,12 @@ void lmColStaffObjs::LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj
         //advance to first object of next segment
         pSegment = pSegment->GetNextSegment();
         if (pSegment)
-            it = pSegment->m_StaffObjs.begin();
+            pSO = pSegment->GetFirstSO();
 
-        if (pSegment && it != pSegment->m_StaffObjs.end())
+        if (pSegment && pSO)
         {
             //deleting a barline and there is an object in next segment. done
-            pUndoData->AddParam<lmStaffObj*>(*it);
+            pUndoData->AddParam<lmStaffObj*>(pSO);
         }
         else
         {
@@ -2955,7 +2676,7 @@ void lmColStaffObjs::LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj
 
 int lmColStaffObjs::GetNumMeasures()
 {
-    //AWARE This method returns the number of segments but the last one is empty 
+    //AWARE This method returns the number of segments but the last one is empty
     //if the score ends with a barline.
     //TODO. Create a new method GetNumRealMeasures and change name of this method
     //to GetNumSegments
@@ -2990,8 +2711,7 @@ lmBarline* lmColStaffObjs::GetBarlineOfMeasure(int nMeasure)
     //return the barline in segment nMeasure (1..n)
 
     wxASSERT(nMeasure <= (int)m_Segments.size());
-    lmSegment* pSegment = m_Segments[nMeasure-1];
-    return pSegment->GetBarline();
+    return m_Segments[nMeasure-1]->GetBarline();
 }
 
 lmBarline* lmColStaffObjs::GetBarlineOfLastNonEmptyMeasure()
@@ -3013,21 +2733,19 @@ lmStaffObj* lmColStaffObjs::FindFwdStaffObj(lmStaffObj* pCurSO, EStaffObjType nT
     //Find next staffobj of type nType, starting from pCurSO (including it).
 
     //define iterator from current StaffObj
-    lmSOIterator* pIter = CreateIteratorFrom(eTR_ByTime, pCurSO);
-    while(!pIter->EndOfList())
+    lmSOIterator it(this, pCurSO);
+    while(!it.EndOfCollection())
     {
-        lmStaffObj* pSO = pIter->GetCurrent();
+        lmStaffObj* pSO = it.GetCurrent();
         if (pSO->GetClass() == nType)
         {
             //object found
-            delete pIter;
             return pSO;
         }
-        pIter->MoveNext();
+        it.MoveNext();
     }
 
     //not found
-    delete pIter;
     return (lmStaffObj*)NULL;
 }
 
@@ -3054,21 +2772,13 @@ lmStaffObj* lmColStaffObjs::FindNextStaffObj(lmStaffObj* pCurSO)
         return (lmStaffObj*)NULL;
 
     //define iterator from current StaffObj
-    lmSOIterator* pIter = CreateIteratorFrom(eTR_ByTime, pCurSO);
-    wxASSERT(!pIter->EndOfList());
-    pIter->MoveNext();
+    lmSOIterator it(this, pCurSO);
+    it.MoveNext();
 
-    if(!pIter->EndOfList())
-    {
-        lmStaffObj* pSO = pIter->GetCurrent();
-        delete pIter;
-        return pSO;
-    }
+    if(!it.EndOfCollection())
+        return it.GetCurrent();
     else
-    {
-        delete pIter;
         return (lmStaffObj*)NULL;
-    }
 }
 
 lmStaffObj* lmColStaffObjs::FindPrevStaffObj(lmStaffObj* pCurSO)
@@ -3079,21 +2789,13 @@ lmStaffObj* lmColStaffObjs::FindPrevStaffObj(lmStaffObj* pCurSO)
         return (lmStaffObj*)NULL;
 
     //define iterator from current StaffObj
-    lmSOIterator* pIter = CreateIteratorFrom(eTR_ByTime, pCurSO);
-    wxASSERT(!pIter->StartOfList());
-    pIter->MovePrev();
+    lmSOIterator it(this, pCurSO);
+    it.MovePrev();
 
-    if(!pIter->StartOfList())
-    {
-        lmStaffObj* pSO = pIter->GetCurrent();
-        delete pIter;
-        return pSO;
-    }
+    if(!it.FirstOfCollection())
+        return it.GetCurrent();
     else
-    {
-        delete pIter;
         return (lmStaffObj*)NULL;
-    }
 }
 
 
@@ -3108,14 +2810,14 @@ wxString lmColStaffObjs::Dump()
 {
     wxString sDump = wxString::Format(_T("Num.segments = %d"), m_Segments.size());
 
-#if defined(__WXDEBUG__)
+//#if defined(__WXDEBUG__)
 	//dump segments
 	std::vector<lmSegment*>::iterator itS;
 	for (itS = m_Segments.begin(); itS != m_Segments.end(); itS++)
 	{
 		sDump += (*itS)->Dump();
     }
-#endif
+//#endif
     return sDump;
 }
 
@@ -3128,33 +2830,33 @@ wxString lmColStaffObjs::Dump()
 // Traversing the staffobjs collection: iterators
 //====================================================================================================
 
-lmSOIterator* lmColStaffObjs::CreateIterator(ETraversingOrder nOrder, int nVoice)
+lmSOIterator* lmColStaffObjs::CreateIterator()
 {
-    //creates and returns an iterator pointing to the first staffobj
-	return new lmSOIterator(nOrder, this, nVoice);
+    lmSOIterator* pIter = new lmSOIterator(this);
+    return pIter;
 }
 
-lmSOIterator* lmColStaffObjs::CreateIteratorTo(ETraversingOrder nOrder, lmStaffObj* pSO)
+lmSOIterator* lmColStaffObjs::CreateIteratorTo(lmStaffObj* pSO)
 {
     //creates and returns an iterator pointing to staffobj pSO
 
-    lmSOIterator* pIter = new lmSOIterator(nOrder, this, pSO);
+    lmSOIterator* pIter = new lmSOIterator(this, pSO);
     return pIter;
 }
 
-lmSOIterator* lmColStaffObjs::CreateIteratorFrom(ETraversingOrder nOrder, lmVStaffCursor* pVCursor)
+lmSOIterator* lmColStaffObjs::CreateIteratorFrom(lmVStaffCursor* pVCursor)
 {
     //creates an iterator pointing to received cursor position
 
-    lmSOIterator* pIter = new lmSOIterator(nOrder, this, pVCursor);
+    lmSOIterator* pIter = new lmSOIterator(this, pVCursor);
     return pIter;
 }
 
-lmSOIterator* lmColStaffObjs::CreateIteratorFrom(ETraversingOrder nOrder, lmStaffObj* pSO)
+lmSOIterator* lmColStaffObjs::CreateIteratorFrom(lmStaffObj* pSO)
 {
     //creates an iterator pointing to received staffobj
 
-    lmSOIterator* pIter = new lmSOIterator(nOrder, this, pSO);
+    lmSOIterator* pIter = new lmSOIterator(this, pSO);
     return pIter;
 }
 
@@ -3185,29 +2887,9 @@ void lmColStaffObjs::SplitSegment(int nSegment, lmStaffObj* pLastSO)
     //wxLogMessage(_T("[lmColStaffObjs::SplitSegment] Before splitting:"));
     //wxLogMessage(pOldSegment->Dump());
 
-    //find last staffobj and move to new segment all staffobjs after it
-	//As we are dealing with lists this is just to cut first list and
-	//append the cutted part to the new list (splice operation in STL)
-	lmItCSO it = find((pOldSegment->m_StaffObjs).begin(), (pOldSegment->m_StaffObjs).end(),
-                      pLastSO);
-    ++it;   //point to first object to move
-    wxASSERT(it != (pOldSegment->m_StaffObjs).end());
-    (pNewSegment->m_StaffObjs).splice((pNewSegment->m_StaffObjs).begin(),
-                pOldSegment->m_StaffObjs, it, (pOldSegment->m_StaffObjs).end() );
-
-	//Re-assign time to all objects in new segment, and update segment pointer.
-    //As ordering will not change this is just udating all staffobjs timepos, by
-	//substracting timepos of pLastSO
-    float rTime = pLastSO->GetTimePos();
-    for(it = (pNewSegment->m_StaffObjs).begin(); it != (pNewSegment->m_StaffObjs).end(); ++it)
-    {
-        (*it)->SetTimePos( (*it)->GetTimePos() - rTime );
-        (*it)->SetSegment(pNewSegment);
-    }
-
-    //re-compute segment duration for both segments
-    pOldSegment->UpdateDuration();
-    pNewSegment->UpdateDuration();
+    //Split the list: cut first list and append the cutted part to the new list
+    pNewSegment->SetCollection(pLastSO->GetNextSO(), pOldSegment->GetLastSO());
+    pOldSegment->FinishSegmentAt(pLastSO);
 
 	//Update contexts in new segment
     UpdateSegmentContexts(pNewSegment);
@@ -3266,7 +2948,7 @@ void lmColStaffObjs::CreateNewSegment(int nSegment)
 
         //renumber all following segments
         for (++itS; itS != m_Segments.end(); ++itS)
-            (*itS)->m_nNumSegment++;
+            (*itS)->IncrementNumber();
     }
 
     //Set contexts at start of this new segment.
@@ -3284,22 +2966,21 @@ lmSegment* lmColStaffObjs::GetNextSegment(int nCurSegment)
         return (lmSegment*) NULL;
 }
 
-void lmColStaffObjs::RemoveSegment(int nSegment, bool fDeleteStaffObjs)
+void lmColStaffObjs::RemoveSegment(int nSegment)
 {
 	// Remove segment nSegment (0..n) and renumber all remaining segments.
     // No need to update staffobjs in remaining segments, as they contain pointers
     // the their container segment.
-    // The removed segment is deleted. Contained staffobjs are deleted or not,
-    // depending on flag fDeleteStaffObjs.
+    // The removed segment is deleted. Contained staffobjs are not deleted.
 
-    //AWARE: Contexts in remaining segments are not updated. 
+    //AWARE: Contexts in remaining segments are not updated.
     //  When removing a segment, if contexts at start of segment to remove are
     //  different from contexts at start of next segment, implies that the segment to
     //  remove has clefs, time signatures and/or key signatures. Therefore, the procedures
     //  to remove these context creator objects should be applied.
     //  Nevertheless, this method is internal, oriented to delete a segment when deleting
     //  a barline or when reorgainizing segments (Auto-Rebar). And in this cases it is not
-    //  necessary to take care of context as the content of segment to remove has been 
+    //  necessary to take care of context as the content of segment to remove has been
     //  added into another segment.
 
 
@@ -3308,8 +2989,6 @@ void lmColStaffObjs::RemoveSegment(int nSegment, bool fDeleteStaffObjs)
     itS = find(m_Segments.begin(), m_Segments.end(), m_Segments[nSegment]);
 
     //delete the segment
-    if (!fDeleteStaffObjs)
-        (*itS)->m_StaffObjs.clear();
     delete *itS;
 
     //remove segmentt from segments' vector
@@ -3318,167 +2997,167 @@ void lmColStaffObjs::RemoveSegment(int nSegment, bool fDeleteStaffObjs)
     //renumber all following segments
     for (int i=nSegment; i < (int)m_Segments.size(); i++)
     {
-        m_Segments[i]->m_nNumSegment--;
+        m_Segments[i]->DecrementNumber();
     }
 }
 
 void lmColStaffObjs::AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO,
                                lmTimeSignature* pNewTS)
 {
-    //determine involved segments
-    int nFirstSegment = pFirstSO->GetSegment()->m_nNumSegment;
-    int nLastSegment = (pLastSO ? pLastSO->GetSegment()->m_nNumSegment :
-                                  m_Segments.size()-1 );
+    ////determine involved segments
+    //int nFirstSegment = pFirstSO->GetSegment()->m_nNumSegment;
+    //int nLastSegment = (pLastSO ? pLastSO->GetSegment()->m_nNumSegment :
+    //                              m_Segments.size()-1 );
 
-    //define a list to contain all staffobjs in the segments to re-bar
-    std::list<lmStaffObj*> oSource;
+    ////define a list to contain all staffobjs in the segments to re-bar
+    //std::list<lmStaffObj*> oSource;
 
-    //loop to fill the list with the objects in the segments to re-bar
-    float rTimeIncr = 0.0f;
-    for (int i=nFirstSegment; i <= nLastSegment; i++)
-    {
-        //copy objects in list, except barlines. Delete the barlines.
-        //TODO: what if barlines have AuxObjs attached? They will be lost.
-        std::list<lmStaffObj*>::iterator it = m_Segments[i]->m_StaffObjs.begin();
-        while(it != m_Segments[i]->m_StaffObjs.end())
-        {
-            if (!(*it)->IsBarline())
-            {
-                //When deleting a barline all staffobjs timepos in next segments must be
-                //incremented by current barline timepos. So, we need to adjust current
-                //staffobj timepos
-                (*it)->SetTimePos( (*it)->GetTimePos() + rTimeIncr );
-                oSource.push_back(*it);     //copy object in list
-            }
-            else
-            {
-                rTimeIncr += (*it)->GetTimePos();
-                delete *it;                 //delete barline
-            }
-            ++it;
-        }
-    }
-
-
-    //At this point we have all staffobjs included in the auxiliary list. We can
-    //proceed to remove the segments to re-bar from the collection
-
-    //remove the segments, but do not delete its staffobjs.
-    //All but contexts will be updated in RemoveSegment() method
-    for (int iS=nFirstSegment; iS <= nLastSegment; iS++)
-    {
-        //when removing a segment, all remaining segments get renumbered. For instance,
-        //after deleting segment 3, segment 4 will be segment 3. Therefore, we have
-        //always to delete first segments as all others will, consecutively, occupy
-        //its place.
-        RemoveSegment(nFirstSegment, false);       //false->do not delete staffobjs
-    }
+    ////loop to fill the list with the objects in the segments to re-bar
+    //float rTimeIncr = 0.0f;
+    //for (int i=nFirstSegment; i <= nLastSegment; i++)
+    //{
+    //    //copy objects in list, except barlines. Delete the barlines.
+    //    //TODO: what if barlines have AuxObjs attached? They will be lost.
+    //    std::list<lmStaffObj*>::iterator it = m_Segments[i]->m_StaffObjs.begin();
+    //    while(it != m_Segments[i]->m_StaffObjs.end())
+    //    {
+    //        if (!(*it)->IsBarline())
+    //        {
+    //            //When deleting a barline all staffobjs timepos in next segments must be
+    //            //incremented by current barline timepos. So, we need to adjust current
+    //            //staffobj timepos
+    //            (*it)->SetTimePos( (*it)->GetTimePos() + rTimeIncr );
+    //            oSource.push_back(*it);     //copy object in list
+    //        }
+    //        else
+    //        {
+    //            rTimeIncr += (*it)->GetTimePos();
+    //            delete *it;                 //delete barline
+    //        }
+    //        ++it;
+    //    }
+    //}
 
 
-    //At this point the collection is ready for including the new segments. We are
-    //going to proceed to prepare the new segments.
+    ////At this point we have all staffobjs included in the auxiliary list. We can
+    ////proceed to remove the segments to re-bar from the collection
 
-    //determine the new required measure duration
-    float rMeasureDuration;
-    if (!pNewTS)
-    {
-        //no time signature. Do not add barlines, but create one segment. To get
-        //it done, I will set a too big measure duration
-        rMeasureDuration = 10000000000000000.0f;
-        //THINK: When no TS, we could try to insert hidden barlines to deal with no time
-        //      signature scores
-    }
-    else
-        rMeasureDuration = pNewTS->GetMeasureDuration();
+    ////remove the segments, but do not delete its staffobjs.
+    ////All but contexts will be updated in RemoveSegment() method
+    //for (int iS=nFirstSegment; iS <= nLastSegment; iS++)
+    //{
+    //    //when removing a segment, all remaining segments get renumbered. For instance,
+    //    //after deleting segment 3, segment 4 will be segment 3. Therefore, we have
+    //    //always to delete first segments as all others will, consecutively, occupy
+    //    //its place.
+    //    RemoveSegment(nFirstSegment);
+    //}
 
-    //loop to create new segments.
 
-    //insert the first segment. It will occupy the place of first removed segment
-    int nCurSegment = nFirstSegment-1;
-    CreateNewSegment(nCurSegment++);                        //it is inserted after segment nFirstSegment-1
-    lmSegment* pCurSegment = m_Segments[nCurSegment];       //get the new segment
+    ////At this point the collection is ready for including the new segments. We are
+    ////going to proceed to prepare the new segments.
 
-    std::list<lmStaffObj*>::iterator it = oSource.begin();
-    while(it != oSource.end())
-    {
-        //checking if a segment is full is tricky. It is not enough just to check,
-        //after adding a new SO, that the measure duration has been reached.
-        //Next objects to add could be on a different voice or be a goBack ctrol object.
-        //Therefore, we have can not be sure if a measure is full until we add a staffobj
-        //and its assigned timepos results equal or greater than the required measure duration.
+    ////determine the new required measure duration
+    //float rMeasureDuration;
+    //if (!pNewTS)
+    //{
+    //    //no time signature. Do not add barlines, but create one segment. To get
+    //    //it done, I will set a too big measure duration
+    //    rMeasureDuration = 10000000000000000.0f;
+    //    //THINK: When no TS, we could try to insert hidden barlines to deal with no time
+    //    //      signature scores
+    //}
+    //else
+    //    rMeasureDuration = pNewTS->GetMeasureDuration();
 
-        //add staffobj to segment
-        lmStaffObj* pSO = *it;
-        pCurSegment->Store(pSO, (lmVStaffCursor*)NULL);
+    ////loop to create new segments.
 
-        //now we can reliable check if measure is full
-        if (IsHigherTime(pSO->GetTimePos(), rMeasureDuration) ||
-            IsEqualTime(pSO->GetTimePos(), rMeasureDuration) )
-        {
-            //segment was full. Remove added staffobj
-            pCurSegment->Remove(pSO, false, false, false);  //false -> do not delete object
-                                                            //false -> fClefKeepPosition
-                                                            //false -> fKeyKeepPitch
+    ////insert the first segment. It will occupy the place of first removed segment
+    //int nCurSegment = nFirstSegment-1;
+    //CreateNewSegment(nCurSegment++);                        //it is inserted after segment nFirstSegment-1
+    //lmSegment* pCurSegment = m_Segments[nCurSegment];       //get the new segment
 
-            //add barline
-            lmBarline* pBar = new lmBarline(lm_eBarlineSimple, m_pOwner, lmVISIBLE);
-            pBar->SetTimePos( pSO->GetTimePos() );
-            pCurSegment->Store(pBar, (lmVStaffCursor*)NULL);
+    //std::list<lmStaffObj*>::iterator it = oSource.begin();
+    //while(it != oSource.end())
+    //{
+    //    //checking if a segment is full is tricky. It is not enough just to check,
+    //    //after adding a new SO, that the measure duration has been reached.
+    //    //Next objects to add could be on a different voice or be a goBack ctrol object.
+    //    //Therefore, we have can not be sure if a measure is full until we add a staffobj
+    //    //and its assigned timepos results equal or greater than the required measure duration.
 
-            //adjust timepos of remaining staffobjs
-            float rTime = pSO->GetTimePos();
-            std::list<lmStaffObj*>::iterator itAux = it;
-            while(itAux != oSource.end())
-            {
-                (*itAux)->SetTimePos( (*itAux)->GetTimePos() - rTime );
-                ++itAux;
-            }
+    //    //add staffobj to segment
+    //    lmStaffObj* pSO = *it;
+    //    pCurSegment->Store(pSO, (lmVStaffCursor*)NULL);       << NULL means add at the end
 
-            //insert a new segment and add the removed staffobj to it
-            CreateNewSegment(nCurSegment++);                    //it is inserted after segment nCurSegment
-            pCurSegment = m_Segments[nCurSegment];              //get the new segment
-            pCurSegment->Store(pSO, (lmVStaffCursor*)NULL);
-        }
+    //    //now we can reliable check if measure is full
+    //    if (IsHigherTime(pSO->GetTimePos(), rMeasureDuration) ||
+    //        IsEqualTime(pSO->GetTimePos(), rMeasureDuration) )
+    //    {
+    //        //segment was full. Remove added staffobj
+    //        pCurSegment->Remove(pSO, false, false, false);  //false -> do not delete object
+    //                                                        //false -> fClefKeepPosition
+    //                                                        //false -> fKeyKeepPitch
 
-        //get next staffobj to add
-        ++it;
-    }
+    //        //add barline
+    //        lmBarline* pBar = new lmBarline(lm_eBarlineSimple, m_pOwner, lmVISIBLE);
+    //        pBar->SetTimePos( pSO->GetTimePos() );
+    //        pCurSegment->Store(pBar, (lmVStaffCursor*)NULL);
 
-    //At this point all new segments have been created and inserted in the collection.
-    //But last inserted segment has no barline.
-    //If there are more segments after last inserted one, it is necessary:
-    //1. to add a barline, and in that case, if it is not full, fill it with rests.
-    //2. propagate contexts and update segment pointers after last inserted segment
+    //        //adjust timepos of remaining staffobjs
+    //        float rTime = pSO->GetTimePos();
+    //        std::list<lmStaffObj*>::iterator itAux = it;
+    //        while(itAux != oSource.end())
+    //        {
+    //            (*itAux)->SetTimePos( (*itAux)->GetTimePos() - rTime );
+    //            ++itAux;
+    //        }
 
-    if (nCurSegment < (int)m_Segments.size()-1)
-    {
-        //There are more segments.
+    //        //insert a new segment and add the removed staffobj to it
+    //        CreateNewSegment(nCurSegment++);                    //it is inserted after segment nCurSegment
+    //        pCurSegment = m_Segments[nCurSegment];              //get the new segment
+    //        pCurSegment->Store(pSO, (lmVStaffCursor*)NULL);
+    //    }
 
-        //Fill with rests
-        lmTODO(_T("[lmColStaffObjs::AutoReBar] Fill last segment with rests"));
+    //    //get next staffobj to add
+    //    ++it;
+    //}
 
-        //and add barline
-        lmBarline* pBar = new lmBarline(lm_eBarlineSimple, m_pOwner, lmVISIBLE);
-        pBar->SetTimePos( rMeasureDuration );
-        pCurSegment->Store(pBar, (lmVStaffCursor*)NULL);
+    ////At this point all new segments have been created and inserted in the collection.
+    ////But last inserted segment has no barline.
+    ////If there are more segments after last inserted one, it is necessary:
+    ////1. to add a barline, and in that case, if it is not full, fill it with rests.
+    ////2. propagate contexts and update segment pointers after last inserted segment
 
-        //propagate contexts and update segment pointers after last inserted segment
-        //This is necessary so that segments can update pointers to start of segment 
-        //applicable contexts.
-        for (int nStaff=1; nStaff <= lmMAX_STAFF; nStaff++)
-        {
-            wxLogMessage( m_pOwner->Dump() );
-            //determine context for current staff at end of segment
-            lmContext* pLastContext = pCurSegment->FindEndOfSegmentContext(nStaff);
+    //if (nCurSegment < (int)m_Segments.size()-1)
+    //{
+    //    //There are more segments.
 
-            //inform next segment
-            pCurSegment->PropagateContextChange(pLastContext, nStaff);
-        }
-    }
+    //    //Fill with rests
+    //    lmTODO(_T("[lmColStaffObjs::AutoReBar] Fill last segment with rests"));
 
-    //clear the source list. StaffObjs in it can not be deleted as they have been included
-    //in the new segments
-    oSource.clear();
+    //    //and add barline
+    //    lmBarline* pBar = new lmBarline(lm_eBarlineSimple, m_pOwner, lmVISIBLE);
+    //    pBar->SetTimePos( rMeasureDuration );
+    //    pCurSegment->Store(pBar, (lmVStaffCursor*)NULL);
+
+    //    //propagate contexts and update segment pointers after last inserted segment
+    //    //This is necessary so that segments can update pointers to start of segment
+    //    //applicable contexts.
+    //    for (int nStaff=1; nStaff <= lmMAX_STAFF; nStaff++)
+    //    {
+    //        wxLogMessage( m_pOwner->Dump() );
+    //        //determine context for current staff at end of segment
+    //        lmContext* pLastContext = pCurSegment->FindEndOfSegmentContext(nStaff);
+
+    //        //inform next segment
+    //        pCurSegment->PropagateContextChange(pLastContext, nStaff);
+    //    }
+    //}
+
+    ////clear the source list. StaffObjs in it can not be deleted as they have been included
+    ////in the new segments
+    //oSource.clear();
 }
 
 void lmColStaffObjs::UpdateSegmentContexts(lmSegment* pSegment)
@@ -3487,7 +3166,7 @@ void lmColStaffObjs::UpdateSegmentContexts(lmSegment* pSegment)
 	//start of that segment and to store them in the segment. This method
     //does it. nNewSegment (0..n-1) is the number of the segment to update.
 
-	int nNewSegment = pSegment->m_nNumSegment;
+	int nNewSegment = pSegment->GetNumSegment();
 
     //first segment never has contexts (as it is the first one, no StaffObjs yet)
     if (nNewSegment == 0)
@@ -3511,12 +3190,11 @@ void lmColStaffObjs::UpdateSegmentContexts(lmSegment* pSegment)
 	}
 
     //get last StaffObj of previous segment and start backwards iterator
-	lmItCSO it = --(pPrevSegment->m_StaffObjs.end());
+	lmStaffObj* pSO = pPrevSegment->GetLastSO();
     bool fDone = false;
-    while(!fDone && it != pPrevSegment->m_StaffObjs.end())
+    while(!fDone && pSO)
 	{
         lmContext* pCT = (lmContext*)NULL;
-        lmStaffObj* pSO = *it;
         if (pSO->GetClass() == eSFOT_Clef)
         {
             int nStaff = pSO->GetStaffNum();
@@ -3550,11 +3228,11 @@ void lmColStaffObjs::UpdateSegmentContexts(lmSegment* pSegment)
         }
 
         //check if we can finish
-		if(it == pPrevSegment->m_StaffObjs.begin())
+		if(pSO == pPrevSegment->GetFirstSO())
 			break;
 		else
 		{
-			--it;
+			pSO = pSO->GetPrevSO();
 			fDone = true;
 			for (int iS=0; iS < m_nNumStaves; iS++)
 				fDone &= fStaffDone[iS];
@@ -3635,18 +3313,18 @@ lmContext* lmColStaffObjs::GetCurrentContext(lmStaffObj* pTargetSO)
 
     //look for any clef, KS or TS changing the context
     int nStaff = pTargetSO->GetStaffNum();
-	lmItCSO it = pSegment->m_StaffObjs.begin();
-    while(it != pSegment->m_StaffObjs.end() && *it != pTargetSO)
+    lmSOIterator it(this, pSegment->GetFirstSO());
+    while(!it.EndOfCollection() && !it.ChangeOfMeasure() && it.GetCurrent() != pTargetSO)
 	{
-        lmStaffObj* pSO = *it;
-		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
+        lmStaffObj* pSO = it.GetCurrent();
+		if (pSO->IsClef() && nStaff == pSO->GetStaffNum())
             pCT = ((lmClef*)pSO)->GetContext();
-		else if (pSO->GetClass() == eSFOT_KeySignature)
+		else if (pSO->IsKeySignature())
             pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_TimeSignature)
+		else if (pSO->IsTimeSignature())
             pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
 
-        ++it;
+        it.MoveNext();
     }
 	return pCT;
 }
@@ -3666,16 +3344,14 @@ lmContext* lmColStaffObjs::NewUpdatedContext(int nStaff, lmStaffObj* pThisSO)
 	//as they define the last context. Otherwise, we will take context at
     //start of segment
 	lmSegment* pSegment = pThisSO->GetSegment();
-	lmItCSO it = --(pSegment->m_StaffObjs.end());
-    //find this SO
-    while(*it != pThisSO)
-        --it;
 
     //go backwards to see if in this segment there is a previous clef, time or key signature
+    lmStaffObj* pSO;
     lmContext* pCT = (lmContext*)NULL;
-    while(it != pSegment->m_StaffObjs.end())
+    lmSOIterator it(this, pThisSO);
+    while(!it.EndOfCollection() && !it.ChangeOfMeasure())
 	{
-        lmStaffObj* pSO = *it;
+        pSO = it.GetCurrent();
 		if (pSO->IsClef() && nStaff == pSO->GetStaffNum())
             pCT = ((lmClef*)pSO)->GetContext();
 		else if (pSO->IsKeySignature())
@@ -3685,10 +3361,10 @@ lmContext* lmColStaffObjs::NewUpdatedContext(int nStaff, lmStaffObj* pThisSO)
 
         if (pCT)
 		{
-			it++;	//point to staffobj after clef, TS or KS
+			it.MoveNext();      //point to staffobj after clef, TS or KS
 			break;
 		}
-		--it;
+		it.MovePrev();
 	}
 
 	if (!pCT)
@@ -3697,23 +3373,25 @@ lmContext* lmColStaffObjs::NewUpdatedContext(int nStaff, lmStaffObj* pThisSO)
 		//found. Therefore take context at start of segment and point iterator to
         //first staffobj of this segment
 		pCT = pSegment->GetContext(nStaff - 1);
-		it = pSegment->m_StaffObjs.begin();
+		pSO = pSegment->GetFirstSO();
 	}
 
-	//Here, iterator 'it' is pointing to the first staffobj able to modify current context.
+	//Here, pSO is pointing to the first staffobj able to modify current context.
 	//Now we have to go forward, updating accidentals until we reach target SO
 
 	lmContext* pUpdated = new lmContext(pCT);
     float rTime = pThisSO->GetTimePos();
-    while(it != pSegment->m_StaffObjs.end() && IsLowerTime((*it)->GetTimePos(), rTime))
+    it.MoveTo(pSO);
+    while(pSO && IsLowerTime(pSO->GetTimePos(), rTime))
 	{
-		if ((*it)->GetStaffNum() == nStaff && (*it)->IsNoteRest() && ((lmNote*)(*it))->IsNote())
+		if (pSO->GetStaffNum() == nStaff && pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
 		{
 			//Note found. Update context
-			lmAPitch apPitch = ((lmNote*)(*it))->GetAPitch();
+			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
 			pUpdated->SetAccidental(apPitch.Step(), apPitch.Accidentals());
 		}
-		++it;
+		it.MoveNext();
+        pSO = it.GetCurrent();
 	}
 
 	return pUpdated;
@@ -3733,10 +3411,11 @@ lmContext* lmColStaffObjs::NewUpdatedLastContext(int nStaff)
 	//as they define the last context
     lmContext* pCT = (lmContext*)NULL;
 	lmSegment* pSegment = m_Segments.back();
-	lmItCSO it = --(pSegment->m_StaffObjs.end());
-    while(it != pSegment->m_StaffObjs.end())
+	lmStaffObj* pSO = pSegment->GetLastSO();
+    lmSOIterator it(this, pSO);
+    while(!it.EndOfCollection() && !it.ChangeOfMeasure())
 	{
-        lmStaffObj* pSO = *it;
+        pSO = it.GetCurrent();
 		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
             pCT = ((lmClef*)pSO)->GetContext();
 		else if (pSO->GetClass() == eSFOT_KeySignature)
@@ -3746,10 +3425,11 @@ lmContext* lmColStaffObjs::NewUpdatedLastContext(int nStaff)
 
         if (pCT)
 		{
-			it++;	//point to staffobj after clef, TS or KS
+		    it.MoveNext();
+            pSO = it.GetCurrent();
 			break;
 		}
-		--it;
+		it.MovePrev();
 	}
 
 	if (!pCT)
@@ -3758,27 +3438,28 @@ lmContext* lmColStaffObjs::NewUpdatedLastContext(int nStaff)
 		//found. Therefore take last context and point it to first staffobj of
 		//last segment
 		pCT = m_pOwner->GetLastContext(nStaff);
-		it = pSegment->m_StaffObjs.begin();
+		pSO = pSegment->GetFirstSO();
 
         //if the score is empty there is no context yet. Return NULL
         if (!pCT)
             return pCT;
 	}
 
-	//Here, iterator 'it' is pointing to the first staffobj able to modify current context.
+	//Here, pSO is pointing to the first staffobj able to modify current context.
 	//Now we have to go forward, updating accidentals until we reach end of collection
 
 	lmContext* pUpdated = new lmContext(pCT);
-    while(it != pSegment->m_StaffObjs.end())
+    it.MoveTo(pSO);
+    while(pSO)
 	{
-        lmStaffObj* pSO = *it;
 		if (pSO->GetClass() == eSFOT_NoteRest && ((lmNote*)pSO)->IsNote())
 		{
 			//Note found. Update context
 			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
 			pUpdated->SetAccidental(apPitch.Step(), apPitch.Accidentals());
 		}
-		++it;
+		it.MoveNext();
+        pSO = it.GetCurrent();
 	}
 
 	return pUpdated;

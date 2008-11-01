@@ -393,8 +393,8 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     lmNoteRest* pNR = (lmNoteRest*)NULL;
     lmNote* pNote = (lmNote*)NULL;
     bool fOnlyQuarterNotes = true;
-    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_AsStored);
-    while(!pIter->EndOfList()) {
+    lmSOIterator* pIter = pVStaff->CreateIterator();
+    while(!pIter->EndOfCollection()) {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest) {
             pNR = (lmNoteRest*)pSO;
@@ -667,9 +667,9 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     lmNote* pLastNote = (lmNote*)NULL;
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     lmVStaff* pVStaff = pInstr->GetVStaff();
-    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    lmSOIterator* pIter = pVStaff->CreateIterator();
     int nNumPoints = 0;
-    while(!pIter->EndOfList())
+    while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         EStaffObjType nType = pSO->GetClass();
@@ -719,8 +719,8 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     int iPt = 0;
     lmAPitch apPitchNew;
     wxString sDbg = _T("");
-    pIter = pVStaff->CreateIterator(eTR_ByTime);
-    while(!pIter->EndOfList())
+    pIter = pVStaff->CreateIterator();
+    while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest)
@@ -1340,8 +1340,8 @@ void lmComposer6::InstantiateWithNote(lmScore* pScore, lmAPitch anPitch)
     // Loop to instantiate notes
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     lmVStaff* pVStaff = pInstr->GetVStaff();
-    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
-    while(!pIter->EndOfList())
+    lmSOIterator* pIter = pVStaff->CreateIterator();
+    while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         EStaffObjType nType = pSO->GetClass();

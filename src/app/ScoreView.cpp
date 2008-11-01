@@ -628,8 +628,8 @@ void lmScoreView::SetScale(double rScale)
         lmUSize uPageSize;
         if (pScore)
             uPageSize = pScore->GetPaperSize();
-        else
-            ; //posible problem?
+        //else
+            //TODO: posible problem?
         m_xPageSizeD = dc.LogicalToDeviceXRel((int)uPageSize.GetWidth());
         m_yPageSizeD = dc.LogicalToDeviceYRel((int)uPageSize.GetHeight());
 
@@ -917,10 +917,10 @@ lmDPoint lmScoreView::GetScrollOffset()
     return lmDPoint(xOrg, yOrg);
 }
 
-void lmScoreView::LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice)
+void lmScoreView::LogicalToDevice(lmUPoint& posLogical, int nPage, lmDPoint& posDevice)
 {
-	//converts a logical position (lmLUnits), referred to current page origin to
-	//a device position (pixels), referred to the lmScoreCanvas window,
+	//converts a logical position (lmLUnits), referred to nPage (1..n) origin to
+	//a device position (pixels), referred to the lmScoreCanvas virtual window.
 
     // Set DC in logical units and scaled, so that
     // transformations logical/device and viceversa can be computed
@@ -928,20 +928,23 @@ void lmScoreView::LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice)
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
 
-    // We need to know how much the window has been scrolled (in pixels)
+    //We need to know how much the window has been scrolled (in pixels)
     lmDPoint canvasOrgD = GetScrollOffset();
 
 	//convert logical point to pixels, referred to start of first page origin
 	lmDPoint pointRelD(dc.LogicalToDeviceXRel((int)posLogical.x),
                      dc.LogicalToDeviceYRel((int)posLogical.y));
 
-	// the origin of first page is at (pixels)
+	//the origin of first page is at (pixels)
     lmDPoint pageOrgD(m_xBorder, m_yBorder);
 
-	//therefore the point, referred to canvas origin is at
+	//therefore the point, referred to canvas origin and first page, is at
 	lmDPoint pointAbsD(pointRelD.x + pageOrgD.x, pointRelD.y + pageOrgD.y);
 
-	//now lets discount canvas scrolling
+    //add the displacement to current page
+    pointAbsD.y += (nPage - 1) * (m_yInterpageGap + m_yPageSizeD);
+
+	//substract canvas scrolling
 	posDevice.x = pointAbsD.x - canvasOrgD.x;
 	posDevice.y = pointAbsD.y - canvasOrgD.y;
 
@@ -949,15 +952,12 @@ void lmScoreView::LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice)
     //// For transformations from page to canvas and viceversa we need to combine both origins
     //lmDPoint vCanvasOffset(pageOrgD.x - canvasOrgD.x, pageOrgD.y - canvasOrgD.y);
 
-  //  wxLogMessage(_T("[lmScoreView::LogicalToDevice] coverting logical point (%.2f, %.2f) lmLUnits\n")
+  //  wxLogMessage(_T("[lmScoreView::LogicalToDevice] coverting logical point (%.2f, %.2f), nPage %d\n")
 		//		 _T("     Point referred to first paper page origin (%d, %d) pixels\n")
 		//		 _T("     Point referred to view origin (%d, %d) pixels\n")
 		//		 _T("     Point referred to canvas origin (%d, %d) pixels\n"),
-  //      posLogical.x, posLogical.y, pointRelD.x, pointRelD.y, pointAbsD.x, pointAbsD.y,
+  //      posLogical.x, posLogical.y, nPage, pointRelD.x, pointRelD.y, pointAbsD.x, pointAbsD.y,
 		//posDevice.x, posDevice.y );
-
-
-
 }
 
 void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
@@ -1630,47 +1630,50 @@ void lmScoreView::OnMouseWheel(wxMouseEvent& event)
 void lmScoreView::OnScroll(wxScrollEvent& event)
 {
     int nScrollSteps = CalcScrollInc(event);
-    if ( nScrollSteps == 0 ) return;        // can't scroll further
-    DoScroll(event.GetOrientation(), nScrollSteps);
+    if (nScrollSteps == 0)
+        return;        // can't scroll further
+
+    if (event.GetOrientation() == wxHORIZONTAL)
+        DoScroll(nScrollSteps, 0);
+    else
+        DoScroll(0, nScrollSteps);
 }
 
-void lmScoreView::DoScroll(int orientation, int nScrollSteps)
+void lmScoreView::DoScroll(int xScrollSteps, int yScrollSteps)
 {
     // verify limits
-    int newPos;
-    int xMaxSteps = m_xMaxScrollSteps - m_thumbX,
-            yMaxSteps = m_yMaxScrollSteps - m_thumbY;
+    int xNewPos = m_xScrollPosition;
+    int yNewPos = m_yScrollPosition;
+    int xMaxSteps = m_xMaxScrollSteps - m_thumbX;
+    int yMaxSteps = m_yMaxScrollSteps - m_thumbY;
 
-    if (orientation == wxHORIZONTAL) {
-        newPos = nScrollSteps + m_xScrollPosition;
-        nScrollSteps = (newPos < 0 ? -m_xScrollPosition :
-            ((newPos > xMaxSteps) ? (xMaxSteps - m_xScrollPosition) : nScrollSteps) );
-    } else {
-        newPos = nScrollSteps + m_yScrollPosition;
-        nScrollSteps = (newPos < 0 ? -m_yScrollPosition :
-            ((newPos > yMaxSteps) ? (yMaxSteps - m_yScrollPosition) : nScrollSteps) );
+    if (xScrollSteps != 0)
+    {
+        xNewPos += xScrollSteps;
+        xScrollSteps = (xNewPos < 0 ? -m_xScrollPosition :
+            ((xNewPos > xMaxSteps) ? (xMaxSteps - m_xScrollPosition) : xScrollSteps) );
+    }
+    if (yScrollSteps != 0)
+    {
+        yNewPos += yScrollSteps;
+        yScrollSteps = (yNewPos < 0 ? -m_yScrollPosition :
+            ((yNewPos > yMaxSteps) ? (yMaxSteps - m_yScrollPosition) : yScrollSteps) );
     }
 
-    if (nScrollSteps == 0) return;        // can't scroll further
+    if (xScrollSteps == 0 && yScrollSteps == 0)
+        return;        // can't scroll further
 
 
     //hide caret
     HideCaret();
 
     // save data and transform steps into pixels
-    if (orientation == wxHORIZONTAL) {
-        m_xScrollPosition += nScrollSteps;
-    } else {
-        m_yScrollPosition += nScrollSteps;
-    }
+    m_xScrollPosition += xScrollSteps;
+    m_yScrollPosition += yScrollSteps;
 
     // compute scroll displacement in pixels
-    int dx = 0, dy = 0;
-    if (orientation == wxHORIZONTAL) {
-        dx = -m_pixelsPerStepX * nScrollSteps;
-    } else {
-        dy = -m_pixelsPerStepY * nScrollSteps;
-    }
+    int dx = -m_pixelsPerStepX * xScrollSteps;
+    int dy = -m_pixelsPerStepY * yScrollSteps;
 
     // reposition scrollbars
     m_pHScroll->SetThumbPosition(m_xScrollPosition);
@@ -1689,8 +1692,9 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
 
     //Restore caret
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-    m_pCaret->Show(m_rScale, uPos, pStaff);
+    int nPage;
+    lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+    m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
 }
 
 
@@ -1772,7 +1776,7 @@ int lmScoreView::CalcScrollInc(wxScrollEvent& event)
 void lmScoreView::PrepareForRepaint(wxDC* pDC, int nRepaintOptions)
 {
     // This method is invoked by lmScoreCanvas::OnPaint to inform that one or
-    // more screen rectangles are damaged and need repaint. After this call, 
+    // more screen rectangles are damaged and need repaint. After this call,
     // one or more RepaintScoreRectangle invocations will follow.
     // The DC is a wxPaintDC and is neither scaled nor scrolled.
 
@@ -2105,10 +2109,8 @@ void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
             if (pParent->GetScoreObjType() == lmSOT_ComponentObj &&
                 ((lmComponentObj*)pParent)->GetType() ==  lm_eStaffObj)
                 pSO = (lmStaffObj*)pParent;
-            else
+            //else
                 //TODO: should we do anything when owner is an instrument or the score?
-                ;
-
         }
 
         //if staffobj identified, move cursor to it
@@ -2227,8 +2229,9 @@ void lmScoreView::ShowCaret()
         SetInitialCaretPosition();
 
         lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-        lmUPoint uPos = m_pScoreCursor->GetCursorPoint();
-        m_pCaret->Show(m_rScale, uPos, pStaff);
+        int nPage;
+        lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+        m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
     }
 }
 
@@ -2351,18 +2354,18 @@ void lmScoreView::UpdateCaret()
     //if new cursos position is out of currently displayed page/area it is necesary
     //to adjust scrolling to ensure that cursor is visible and that it is displayed at
     //right place.
-    //cursorRect is the area that should be visible. 
+    //cursorRect is the area that should be visible.
     lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
     lmLUnits uStaffHeight = pStaff->GetHeight();
     lmURect cursorRect(wxMax(0.0f, uPos.x - 2.0f * uStaffHeight),
-                       wxMax(0.0f, uPos.y - uStaffHeight / 2.0f),
+                       wxMax(0.0f, uPos.y - uStaffHeight),
                        4.0f * uStaffHeight,                         //width
-                       2.0f * uStaffHeight );                       //height
-    if (!IsPositionVisible(nPage, cursorRect))
-        ScrollTo(nPage, cursorRect);
+                       3.0f * uStaffHeight );                       //height
+
+    ScrollTo(nPage, cursorRect);
 
     //now we can safely display the caret
-    m_pCaret->Show(m_rScale, uPos, pStaff);
+    m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
 
     //inform the controller, for updating other windows (i.e. toolsbox)
     GetController()->SynchronizeToolBox();
@@ -2626,33 +2629,39 @@ void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool 
     // If mouse outside of canvas window let's force autoscrolling.
     bool fDoScroll = false;
     wxSize canvasSize = m_pCanvas->GetSize();
-    int nUnits=0, orientation=0;
+    int xUnits=0, yUnits=0;
 
-    if (vCanvasPos.x < 0) {
+    if (vCanvasPos.x < 0)
+    {
         fDoScroll = true;
-        nUnits = -1;
-        orientation = wxHORIZONTAL;
-    } else if (vCanvasPos.y < 0) {
+        xUnits = -1;
+    }
+    else if (vCanvasPos.y < 0)
+    {
         fDoScroll = true;
-        nUnits = -1;
-        orientation = wxVERTICAL;
-    } else if (vCanvasPos.x > canvasSize.GetWidth()) {
+        yUnits = -1;
+    }
+    else if (vCanvasPos.x > canvasSize.GetWidth())
+    {
         fDoScroll = true;
-        nUnits = 1;
-        orientation = wxHORIZONTAL;
-    } else if (vCanvasPos.y > canvasSize.GetHeight()) {
+        xUnits = 1;
+    }
+    else if (vCanvasPos.y > canvasSize.GetHeight())
+    {
         fDoScroll = true;
-        nUnits = 1;
-        orientation = wxVERTICAL;
+        yUnits = 1;
     }
 
     if (fDoScroll)
 	{
 	    if (m_pDragImage)
             m_pDragImage->Hide();
-        DoScroll(orientation, nUnits);
+
+        DoScroll(xUnits, yUnits);
+
 	    if (m_pDragImage)
             m_pDragImage->Show();
+
         //wxLogStatus(_T("Scrolling(%d), vCanvasPos=(%d, %d), canvasSize=(%d, %d)"),
         //    nUnits, vCanvasPos.x, vCanvasPos.y,
         //    canvasSize.GetWidth(), canvasSize.GetHeight());
@@ -2833,8 +2842,7 @@ void lmScoreView::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmU
 		lmShapeStaff* pSS = pBS->FindStaffAtPosition(uPagePos);
 		if (pSS)
 			OnClickOnStaff(pBS, pSS, (lmBoxSliceVStaff*)pGMO, uPagePos);
-		else
-			;
+		//else
 			//Clicking on a VStaffSlice but out of any shape
 			//TODO: Is this possible?
 	}
@@ -3069,6 +3077,14 @@ void lmScoreView::ComputeVisiblePagesInfo()
             //mark page as displayed
             fVisiblePages[nPag] = true;
 
+            //intersection rectangle is referred to view origin. We have to refer it
+            //to page origin and convert to logical units
+            lmURect uVisibleRect(dc.DeviceToLogicalXRel(interRect.x - pageRect.x),
+                                 dc.DeviceToLogicalYRel(interRect.y - pageRect.y),
+                                 dc.DeviceToLogicalXRel(interRect.width),
+                                 dc.DeviceToLogicalYRel(interRect.height));
+
+            ////DBG --------------------------------
             ////intersection rectangle is referred to view origin. To refer it
             ////to bitmap coordinates we need to substract page origin
             //int xBitmap = interRect.x - pageRect.x,
@@ -3079,18 +3095,12 @@ void lmScoreView::ComputeVisiblePagesInfo()
             //int xCanvas = interRect.x - canvasOffset.x,
             //    yCanvas = interRect.y - canvasOffset.y;
 
-            //intersection rectangle is referred to view origin. We have to refer it
-            //to page origin and convert to logical units
-            lmURect uVisibleRect(dc.DeviceToLogicalXRel(interRect.x - pageRect.x),
-                                 dc.DeviceToLogicalYRel(interRect.y - pageRect.y),
-                                 dc.DeviceToLogicalXRel(interRect.width),
-                                 dc.DeviceToLogicalYRel(interRect.height));
-
             //wxLogMessage(_T("nPag=%d, canvasOrg (%d,%d), bitmapOrg (%d, %d), interRec (%d, %d, %d, %d), pageRect (%d, %d, %d, %d), uVisible(%.2f, %.2f, %.2f, %.2f)"),
             //    nPag, xCanvas, yCanvas, xBitmap, yBitmap,
             //    interRect.x, interRect.y, interRect.width, interRect.height,
             //    pageRect.x, pageRect.y, pageRect.width, pageRect.height,
             //    uVisibleRect.x, uVisibleRect.y, uVisibleRect.width, uVisibleRect.height);
+            ////END DBG ----------------------------
 
             //store info about this page
             lmVisiblePageInfo* pInfo = new lmVisiblePageInfo;
@@ -3104,81 +3114,161 @@ void lmScoreView::ComputeVisiblePagesInfo()
 
         //to optimize, we will exit the loop as soon as we find a non-visible page after
         //a visible one.
-        if (nPag > 0 
+        if (nPag > 0
             && fVisiblePages[nPag-1]
             && !fVisiblePages[nPag] )    break;
     }
 }
 
-bool lmScoreView::IsPositionVisible(int nNumPage, lmURect uVisibleRect)
-{
-    //return true if rectangle uVisibleRect is fully displayed
-
-    if (nNumPage != m_nNumPage) return false;
-
-    //locate this page info
-    std::vector<lmVisiblePageInfo*>::iterator it;
-    for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
-    {
-        if ((*it)->nNumPage == nNumPage-1)
-            break;
-    }
-    wxASSERT(it != m_VisiblePages.end());
-
-    lmURect uDisplayedRect = (*it)->uVisibleRect;
-    uDisplayedRect.Intersect(uVisibleRect);
-    return (uDisplayedRect.width == uVisibleRect.width
-            && uDisplayedRect.height == uVisibleRect.height);
-}
-
-void lmScoreView::ScrollTo(int nNumPage, lmURect uVisibleRect)
+void lmScoreView::ScrollTo(int nNumPage, lmURect uNewRect)
 {
     //scroll to make uVisibleRectangle visible
+    //Remember that view layout is as follows:
+    //  Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
+    //  There is a gap between pages of  m_yInterpageGap  pixels.
+    //  There is a left margin:  m_xBorder  pixels
+    //  And there is a top margin before the first page:  m_yBorder pixels
+    //
+    //  First page at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
+    //  Second page at (m_xBorder, m_yBorder + m_yPageSizeD + m_yInterpageGap)
+    //      ...
+    //  Page n+1 at (m_xBorder, m_yBorder + n * (m_yPageSizeD + m_yInterpageGap))
+    //  all this coordinates are referred to view origin (0,0), a virtual infinite
+    //  paper on which all pages are rendered one after the other.
+
+
+    //refer nNumPage to zero (0..n-1)
+    --nNumPage;
 
     //prepare a DC for units conversion
     wxClientDC dc(m_pCanvas);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
 
-    int nStepsDown = (nNumPage - m_nNumPage) * m_yScrollStepsPerPage;
+    //convert new rectangle to pixels
+    wxRect vNewRect(dc.LogicalToDeviceXRel(uNewRect.x),
+                    dc.LogicalToDeviceYRel(uNewRect.y),
+                    dc.LogicalToDeviceXRel(uNewRect.width),
+                    dc.LogicalToDeviceYRel(uNewRect.height) );
 
-    //locate this page info
+    //locate relevant page info
+    int nVisiblePage;
     std::vector<lmVisiblePageInfo*>::iterator it;
     for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
     {
-        if ((*it)->nNumPage == nNumPage-1)
-            break;
-    }
-
-    lmLUnits uDown = uVisibleRect.y;
-    if (it == m_VisiblePages.end())
-    {
-        //desired page is not visible
-    }
-    else
-    {
-        lmURect uDisplayedRect = (*it)->uVisibleRect;
-        if (uVisibleRect.y > uDisplayedRect.y + uDisplayedRect.height)
+        nVisiblePage = (*it)->nNumPage;
+        if (nVisiblePage > nNumPage)
         {
-            //rectangle to display is after displayed area
-            uDown -= (uDisplayedRect.y + uDisplayedRect.height);
-            uDown += wxMin(uVisibleRect.height, uDisplayedRect.height);
+            //new rectangle is above first displayed page. 'it' points to first page
+            break;
+        }
+        else if  (nVisiblePage == nNumPage)
+        {
+            //new rectangle is in displayed page. 'it' points to the page
+            break;
         }
     }
 
+    if (it == m_VisiblePages.end())
+    {
+        //new rectangle is after last displayed page. 
+        --it;       // 'it' points to last displayed page
+    }
 
-    //check if 
-    //rectangle to display is after displayed area
-    lmPixels vDown = dc.LogicalToDeviceYRel(uDown);
-    nStepsDown += vDown / m_pixelsPerStepY;
-    DoScroll(wxVERTICAL, nStepsDown);
+    //here 'it' points to the relevant page, and nVisiblePage contains its number (0..n-1)
+    wxRect vPageRect = (*it)->vPageRect;
+    wxRect vVisibleRect = (*it)->vVisibleRect;
+    lmURect uDisplayedRect = (*it)->uVisibleRect;
 
-//
-//int         m_pixelsPerStepX, m_pixelsPerStepY;             // pixels per scroll unit
-//int         m_xMaxScrollSteps, m_yMaxScrollSteps;           // num of scroll units to scroll the full view
-//int         m_xScrollStepsPerPage, m_yScrollStepsPerPage;   // scroll units to scroll a page
-//
-//
-//
-//    lmTODO(_T("TDO: lmScoreView::ScrollTo"));
+    //refer vNewRect to the same origin (canvas) than vPageRect and vVisibleRect
+    vNewRect.x += vPageRect.x;
+    vNewRect.y += vPageRect.y;
+
+    //analyze case
+    lmPixels vxRight=0, vyDown=0;           //amount to scroll (pixels)
+
+    //Compute vertical scroll
+    if (nNumPage > nVisiblePage)
+    {
+        //new rectangle is in another page, after visible one
+        //case V1B
+
+        //advance to start of next page
+        vyDown = (vPageRect.y + vPageRect.height) - (vVisibleRect.y + vVisibleRect.height);
+
+        //add page intergap and page sizes
+        int nPages = nNumPage - (m_nNumPage-1);
+        vyDown += m_yInterpageGap * nPages + vPageRect.height * (nPages - 1);
+
+        //add displacement to end of new rectangle
+        vyDown += vNewRect.y + vNewRect.height;
+    }
+
+    else if (nNumPage == nVisiblePage)
+    {
+        //new rectangle is in the same page
+
+        //if new rectangle is inside visible rectangle, nothing to do
+        if (vNewRect.y < vVisibleRect.y ||
+            uNewRect.y + uNewRect.height > (uDisplayedRect.y + uDisplayedRect.height) )
+        {
+            lmLUnits uDown;
+            if (vNewRect.y > vVisibleRect.y)
+            {
+                //new rectangle is below visible rectangle. Vertical scroll, down
+                //case V2B
+                uDown = uNewRect.y + uNewRect.height - (uDisplayedRect.y + uDisplayedRect.height);
+            }
+            else
+            {
+                //new rectangle is above visible rectangle. Vertical scroll, up
+                //case V2A
+                uDown = uNewRect.y - uDisplayedRect.y;
+            }
+            vyDown = dc.LogicalToDeviceYRel(uDown);
+        }
+    }
+
+    else
+    {
+        //new rectangle is in another page, before visible one
+        //case V1A
+
+        //advance to start of next page
+        vyDown = (vPageRect.y + vPageRect.height) - (vNewRect.y + vNewRect.height);
+
+        //add page intergap and page sizes
+        int nPages = nNumPage - (m_nNumPage-1);
+        vyDown += m_yInterpageGap * nPages + vPageRect.height * (nPages - 1);
+
+        //add displacement to start of displayed rectangle
+        vyDown += vVisibleRect.y;
+        vyDown = - vyDown;          //change sign to do up scroll
+    }
+
+
+    //Compute horizontal scroll
+    //if new rectangle is inside visible rectangle, nothing to do
+    if (vNewRect.x < vVisibleRect.x ||
+        uNewRect.x + uNewRect.width > (uDisplayedRect.x + uDisplayedRect.width) )
+    {
+        lmLUnits uRight;
+        if (vNewRect.x > vVisibleRect.x)
+        {
+            //new rectangle is at right of visible rectangle. Horizontal scroll, right
+            //case V1R
+            uRight = uNewRect.x + uNewRect.width - (uDisplayedRect.x + uDisplayedRect.width);
+        }
+        else
+        {
+            //new rectangle is at left of visible rectangle. Horizontal scroll, left
+            //case V1L
+            uRight = uNewRect.x - uDisplayedRect.x;
+        }
+        vxRight = dc.LogicalToDeviceYRel(uRight);
+    }
+
+    //finally, do scroll
+    if (vxRight != 0 || vyDown != 0)
+        DoScroll(vxRight / m_pixelsPerStepX, vyDown / m_pixelsPerStepY);
 }

@@ -96,10 +96,10 @@ void lmCaret::OnCaretTimer(wxTimerEvent& event)
     }
 }
 
-void lmCaret::Show(double rScale, lmUPoint uPos, lmStaff* pStaff)
+void lmCaret::Show(double rScale, int nPage, lmUPoint uPos, lmStaff* pStaff)
 {
     //wxLogMessage(_T("[lmCaret::Show] SetCaretPosition --> calls Show()"));
-    SetCaretPosition(rScale, uPos, pStaff);
+    SetCaretPosition(rScale, nPage, uPos, pStaff);
     Show();
 }
 
@@ -141,15 +141,20 @@ void lmCaret::DoHide()
     RenderCaret(lmHIDDEN);
 }
 
-void lmCaret::SetCaretPosition(double rScale, lmUPoint uPos, lmStaff* pStaff) 
+void lmCaret::SetCaretPosition(double rScale, int nPage, lmUPoint uPos, lmStaff* pStaff) 
 { 
+    //nPage (1..n)
+
+
     //if position and scale don't change, return. Nothing to do.
-    if (!pStaff || (uPos == m_oCaretPos && rScale == m_rScale)) return;
+    if (!pStaff || (uPos == m_oCaretPos && rScale == m_rScale && nPage == m_oCaretPage))
+        return;
 
     Hide();
 
     //set new position
     m_rScale = rScale;
+    m_oCaretPage = nPage;
     m_oCaretPos = uPos;
     m_oCaretPos.y -= pStaff->TenthsToLogical(10.0);
 
@@ -192,7 +197,7 @@ void lmCaret::Refresh()
 	//caret geometry
 	lmDPoint pointD;
 	lmUPoint cursorPos(m_oCaretPos.x, m_oCaretPos.y);
-	((lmScoreView*)m_pView)->LogicalToDevice(cursorPos, pointD);
+	((lmScoreView*)m_pView)->LogicalToDevice(cursorPos, m_oCaretPage, pointD);
 	lmPixels vxLine = pointD.x;
 	lmPixels vyTop = pointD.y;
 

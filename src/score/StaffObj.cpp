@@ -550,6 +550,9 @@ lmStaffObj::lmStaffObj(lmScoreObj* pParent, EStaffObjType nType, lmVStaff* pStaf
     m_pVStaff = pStaff;
     m_nStaffNum = (pStaff ? nStaff : 0);
 
+    //VStaff collection
+	m_pPrevSO = (lmStaffObj*) NULL;
+	m_pNextSO = (lmStaffObj*) NULL;
 }
 
 lmStaffObj::~lmStaffObj()

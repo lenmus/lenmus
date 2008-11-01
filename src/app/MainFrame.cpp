@@ -785,6 +785,16 @@ void lmMainFrame::CreateMyToolBar()
 #if defined(__WXGTK__)
     //In gtk reverse creation order
         // row 1
+    CreateTextBooksToolBar(style, nSize, ROW_1);
+
+    m_mgrAUI.AddPane(m_pTbMtr, wxAuiPaneInfo().
+                Name(wxT("Metronome")).Caption(_("Metronome tools")).
+                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbPlay, wxAuiPaneInfo().
+                Name(wxT("Play")).Caption(_("Play tools")).
+                ToolbarPane().Top().Row(ROW_1).
+                LeftDockable(false).RightDockable(false));
     m_mgrAUI.AddPane(m_pToolbar, wxAuiPaneInfo().
                 Name(wxT("toolbar")).Caption(_("Main tools")).
                 ToolbarPane().Top().
@@ -800,18 +810,10 @@ void lmMainFrame::CreateMyToolBar()
     m_mgrAUI.AddPane(m_pTbFile, wxAuiPaneInfo().
                 Name(wxT("File tools")).Caption(_("File tools")).
                 ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_mgrAUI.AddPane(m_pTbMtr, wxAuiPaneInfo().
-                Name(wxT("Metronome")).Caption(_("Metronome tools")).
-                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
-                LeftDockable(false).RightDockable(false));
-    m_mgrAUI.AddPane(m_pTbPlay, wxAuiPaneInfo().
-                Name(wxT("Play")).Caption(_("Play tools")).
-                ToolbarPane().Top().Row(ROW_1).
                 LeftDockable(false).RightDockable(false));
 
 #else
-        // row 1
+    // row 1
     m_mgrAUI.AddPane(m_pTbFile, wxAuiPaneInfo().
                 Name(wxT("File tools")).Caption(_("File tools")).
                 ToolbarPane().Top().
@@ -837,8 +839,9 @@ void lmMainFrame::CreateMyToolBar()
                 ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
                 LeftDockable(false).RightDockable(false));
 
-#endif
     CreateTextBooksToolBar(style, nSize, ROW_1);
+
+#endif
 
     // tell the manager to "commit" all the changes just made
     m_mgrAUI.Update();
@@ -976,9 +979,11 @@ void lmMainFrame::AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,
 
     wxMenuItem* pItem = new wxMenuItem(pMenu, nId, sItemName, sToolTip, nKind);
 
-    //icons are supported only in Windows and Linux
+
+    //icons are supported only in Windows and Linux, and only in wxITEM_NORMAL items
     #if defined(__WXMSW__) || defined(__WXGTK__)
-    pItem->SetBitmap( wxArtProvider::GetBitmap(sIconName, wxART_TOOLBAR, wxSize(16, 16)) );
+    if (nKind == wxITEM_NORMAL)
+        pItem->SetBitmap( wxArtProvider::GetBitmap(sIconName, wxART_TOOLBAR, wxSize(16, 16)) );
     #endif
 
     pMenu->Append(pItem);

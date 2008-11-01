@@ -30,33 +30,44 @@
 
 
 
+//lmSOIterator encapsulates access and traverse of a collection of StaffObjs (lmColStaffObjs
+//object) without exposing the internal structure of the collection. This lets us
+//define different traversal algorithms and allows us to change the internal representation
+//of a StaffObjs collection without affecting the rest of the program.
+
+
 class lmSOIterator
 {
 public:
-    lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, int nVoice);
-    lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaffObj* pTargetSO);
-    lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor);
-    lmSOIterator(lmSOIterator* pIT);
+    lmSOIterator(lmColStaffObjs* pCSO);
+    lmSOIterator(lmColStaffObjs* pCSO, lmStaffObj* pTargetSO);
+    lmSOIterator(lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor);
+    lmSOIterator(lmSOIterator* pIT);    //Copy constructor
 	~lmSOIterator() {}
 
-    bool EndOfList();
-    bool StartOfList();
-    bool EndOfMeasure();
-	inline lmStaffObj* GetCurrent() { return *m_it; }
-	inline int GetNumSegment() { return m_nSegment; }
+    inline bool FirstOfCollection() { return (m_pSO && m_pSO == m_pColStaffObjs->GetFirstSO()); }
+    inline bool LastOfCollection() { return (m_pSO && m_pSO == m_pColStaffObjs->GetLastSO()); }
+    inline bool EndOfCollection() { return (m_pSO == (lmStaffObj*)NULL 
+                                            || (FirstOfCollection() && m_fEnd)); }
+    inline bool ChangeOfMeasure() { return m_fChangeOfMeasure; }
+	inline lmStaffObj* GetCurrent() { return m_pSO; }
+    inline int GetNumSegment() { return (m_pSO ? m_pSO->GetSegment()->GetNumSegment() 
+                                               : m_pColStaffObjs->GetNumSegments()-1 ); }
+    inline void ResetFlags() { m_fChangeOfMeasure = false; }
+
+
     void AdvanceToMeasure(int nBar);
     void MoveFirst();
     void MoveNext();
     void MovePrev();
     void MoveLast();
+    void MoveTo(lmStaffObj* pSO);
 
 private:
     lmColStaffObjs*		m_pColStaffObjs;    //object lmColStaffObjs that is being traversed
-	int					m_nVoice;			//voice to recover. 0=all
-	lmItCSO				m_it;				//iterator pointing to current object
-	int					m_nSegment;			//current segment (0..n-1)
-	lmSegment*			m_pSegment;			//current segment
-    bool                m_fEndOfMeasure;    
+	lmStaffObj*         m_pSO;				//points to current object
+    bool                m_fChangeOfMeasure;
+    bool                m_fEnd;             //we are at end of collection
 };
 
 

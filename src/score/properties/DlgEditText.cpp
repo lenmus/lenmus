@@ -84,11 +84,11 @@ lmDlgEditText::lmDlgEditText(lmController* pController, lmScoreText* pParentText
 void lmDlgEditText::CreateControls()
 {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-	
+
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
-	m_pToolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL ); 
+
+	m_pToolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL );
     wxSize nSize(16, 16);
     m_pToolBar->SetToolBitmapSize(nSize);
     m_pToolBar->AddTool(lmEDIT_COPY, _T("Copy"),
@@ -121,7 +121,7 @@ void lmDlgEditText::CreateControls()
 
 	m_pColourPicker = new wxColourPickerCtrl( m_pToolBar, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
 	m_pColourPicker->SetToolTip( _("Text color selector") );
-	
+
 	m_pToolBar->AddControl( m_pColourPicker );
 	m_pToolBar->AddSeparator();
 	wxArrayString m_pCboFontNameChoices;
@@ -134,32 +134,32 @@ void lmDlgEditText::CreateControls()
 	m_pToolBar->AddControl( m_pCboFontSize );
 
 	m_pToolBar->Realize();
-	
+
 	pMainSizer->Add( m_pToolBar, 0, wxEXPAND, 5 );
-	
+
 	m_pTxtCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pMainSizer->Add( m_pTxtCtrl, 1, wxALL|wxEXPAND, 5 );
-	
+
 	wxBoxSizer* pButtonsSizer;
 	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	m_pBtAccept = new wxButton( this, wxID_OK, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtAccept, 0, wxALL, 5 );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 2, wxEXPAND, 5 );
-	
+
 	m_pBtCancel = new wxButton( this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtCancel, 0, wxALL, 5 );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	pMainSizer->Add( pButtonsSizer, 0, wxEXPAND, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 }
 
@@ -216,7 +216,7 @@ void lmDlgEditText::OnAccept(wxCommandEvent& WXUNUSED(event))
                                   m_pTxtCtrl->GetValue(),
                                   m_pParentText->GetAlignment(),
                                   m_pParentText->GetLocation(),
-                                  m_pParentText->GetFontInfo(),
+                                  m_pParentText->GetStyle(),
                                   m_pParentText->GetColour() );
 
     EndModal(wxID_OK);
@@ -350,7 +350,7 @@ void lmDlgEditText::OnCancel(wxCommandEvent& WXUNUSED(event))
 //        wxASSERT_MSG(!font.Ok(), _T("The font should now be invalid"));
 //        wxMessageBox(_T("There is no font with such face name..."),
 //                     _T("Invalid face name"), wxID_OK|wxICON_ERROR, this);
-//    }    
+//    }
 //}
 //
 //void lmDlgEditText::OnSetNativeUserDesc(wxCommandEvent& WXUNUSED(event))

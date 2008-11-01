@@ -233,12 +233,12 @@ wxString FPitch_ToRelLDPName(lmFPitch fp, lmEKeySignatures nKey)
             sAnswer = _T("");   //replace note accidental by key accidental
         else if (nAbsAcc == 0)
             sAnswer = _T("=");  //force a natural
-        else
-            ;   //leave note accidentals
+        //else
+            //leave note accidentals
     }
 
     // add step letter and octave number
-    sAnswer += m_sNoteName[nStep];      
+    sAnswer += m_sNoteName[nStep];
     sAnswer += wxString::Format(_T("%d"), FPitch_Octave(fp));
 
     return sAnswer;
@@ -278,7 +278,7 @@ lmMPitch FPitch_ToMPitch(lmFPitch fp)
 
 }
 
-lmDPitch FPitch_ToDPitch(lmFPitch fp) 
+lmDPitch FPitch_ToDPitch(lmFPitch fp)
 {
     return DPitch(FPitch_Step(fp), FPitch_Octave(fp));
 }
@@ -433,7 +433,7 @@ lmAPitch::lmAPitch(const wxString& sNote)
 
     //split the string: accidentals and name
     wxString sAccidentals;
-    int iStepPos; 
+    int iStepPos;
     switch (sNote.length()) {
         case 2:
             sAccidentals = _T("");
@@ -455,7 +455,7 @@ lmAPitch::lmAPitch(const wxString& sNote)
     }
 
     //compute step
-    wxChar sStep = sNote.at(iStepPos); 
+    wxChar sStep = sNote.at(iStepPos);
     int nStep;
     if (sStep == _T('c')) nStep = 0;
     else if (sStep == _T('d')) nStep =  1;

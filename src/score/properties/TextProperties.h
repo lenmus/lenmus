@@ -32,6 +32,8 @@
 #pragma hdrstop
 #endif
 
+class wxRichTextCtrl;
+
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 
@@ -67,7 +69,7 @@ class lmScoreText;
 class lmController;
 class lmScore;
 
-class lmTextProperties : public lmPropertiesPage 
+class lmTextProperties : public lmPropertiesPage
 {
 public:
 	lmTextProperties(wxWindow* parent, lmScoreText* pParentText);
@@ -104,7 +106,7 @@ protected:
 	wxChoice*           m_pCboTextStyle;
     wxButton*           m_pBtnChangeStyles;
 	wxRichTextCtrl*		m_pTxtCtrl;
-	
+
     //other variables
     lmScoreText*        m_pParentText;
     lmScore*            m_pScore;

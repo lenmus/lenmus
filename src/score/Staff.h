@@ -86,9 +86,9 @@ public:
 
     //debug
     wxString Dump();
-#if defined(__WXDEBUG__)
+//#if defined(__WXDEBUG__)
     wxString DumpContextsChain();
-#endif
+//#endif
 
 
 private:

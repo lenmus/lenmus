@@ -505,7 +505,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
 
     //The score is built. Traverse it to get total duration
     lmStaffObj* pSO;
-    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    lmSOIterator* pIter = pVStaff->CreateIterator();
     pIter->MoveLast();
     pSO = pIter->GetCurrent();
     wxASSERT(pSO->GetClass() == eSFOT_Barline);
@@ -557,11 +557,11 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     //The score is built. Traverse it to get total duration
     lmStaffObj* pSO;
     lmNoteRest* pNR;
-    lmSOIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    lmSOIterator* pIter = pVStaff->CreateIterator();
 
     // compute initial rests duration
     float rRestsDuration = 0.0;
-    while(!pIter->EndOfList()) {
+    while(!pIter->EndOfCollection()) {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest) {
             pNR = (lmNoteRest*) pSO;

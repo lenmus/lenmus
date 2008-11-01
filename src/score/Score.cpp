@@ -74,7 +74,7 @@ static long m_nCounterID = 0;
 
 lmPageInfo::lmPageInfo(int nLeftMargin, int nRightMargin, int nTopMargin,
                        int nBottomMargin, int nBindingMargin, wxSize nPageSize,
-                       bool fPortrait)          
+                       bool fPortrait)
 {
     //constructor: all data in milimeters
     //default paper size: DIN A4 (210.0 x 297.0 mm)
@@ -108,7 +108,7 @@ lmPageInfo::lmPageInfo(lmPageInfo* pPageInfo)
 
 void lmPageInfo::SetPageSizeMillimeters(wxSize nSize)
 {
-    m_uPageSize.SetHeight(lmToLogicalUnits(nSize.GetHeight(), lmMILLIMETERS));        
+    m_uPageSize.SetHeight(lmToLogicalUnits(nSize.GetHeight(), lmMILLIMETERS));
     m_uPageSize.SetWidth(lmToLogicalUnits(nSize.GetWidth(), lmMILLIMETERS));
 }
 
@@ -340,13 +340,13 @@ void lmScoreCursor::MoveDown()
 	//get current paper position and current staff
     lmUPoint uPos = m_pVCursor->GetCursorPoint();
 	int nStaff = m_pVCursor->GetNumStaff();
-	int nMeasure = m_pVCursor->GetSegment();
+	int nSegment = m_pVCursor->GetSegment();
 
 	//if current instrument has more staves, keep instrument and increment staff
 	lmInstrument* pInstr = m_pScore->GetInstrument(m_nCursorInstr);
 	if (pInstr->GetNumStaves() > nStaff)
 	{
-		m_pVCursor->MoveToSegment(nMeasure, ++nStaff, uPos);
+		m_pVCursor->MoveToSegment(nSegment, ++nStaff, uPos);
 		return;
 	}
 
@@ -354,7 +354,7 @@ void lmScoreCursor::MoveDown()
 	else if (m_nCursorInstr < m_pScore->GetNumInstruments())
 	{
 		SelectCursorFromInstr(m_nCursorInstr + 1);
-		m_pVCursor->MoveToSegment(nMeasure, 1, uPos);
+		m_pVCursor->MoveToSegment(nSegment, 1, uPos);
 		return;
 	}
 
@@ -371,11 +371,11 @@ void lmScoreCursor::MoveDown()
 			if (nSystem < pBScore->GetNumSystems())
 			{
 				pSystem = pBScore->GetSystem(++nSystem);
-				nMeasure = pSystem->GetNumMeasureAt(uPos.x);
-				if (nMeasure > 0)
+				nSegment = pSystem->GetNumMeasureAt(uPos.x) - 1;
+				if (nSegment >= 0)
 				{
 					SelectCursorFromInstr(1);
-					m_pVCursor->MoveToSegment(nMeasure, 1, uPos);
+					m_pVCursor->MoveToSegment(nSegment, 1, uPos);
 					return;
 				}
 			}
@@ -459,8 +459,8 @@ float lmScoreCursor::GetCursorTime()
         return 0.0f;;
 }
 
-lmVStaff* lmScoreCursor::GetVStaff() 
-{ 
+lmVStaff* lmScoreCursor::GetVStaff()
+{
     if (m_pVCursor)
         return m_pScore->GetInstrument(m_nCursorInstr)->GetVStaff();
     else
@@ -470,7 +470,7 @@ lmVStaff* lmScoreCursor::GetVStaff()
 void lmScoreCursor::SelectCursor(lmVStaffCursor* pVCursor)
 {
     //Replace current cursor by the one received as parameter.
-    //PRECONDITION: The received cursor must be one of the active cursors in current 
+    //PRECONDITION: The received cursor must be one of the active cursors in current
     //              instruments
     //It is assumed that the Score and View don't change.
 
@@ -543,7 +543,7 @@ lmScore::~lmScore()
     {
         this->Stop();
         while (m_pSoundMngr->IsPlaying())
-            ::wxMilliSleep(100);    
+            ::wxMilliSleep(100);
     }
 	for(int i=0; i < (int)m_cInstruments.size(); i++)
 	{
@@ -562,7 +562,7 @@ lmScore::~lmScore()
     //delete list of title indexes
     m_nTitles.clear();
 
-    //delete pages info 
+    //delete pages info
     std::list<lmPageInfo*>::iterator it;
     for (it = m_PagesInfo.begin(); it != m_PagesInfo.end(); ++it)
         delete *it;
@@ -608,34 +608,34 @@ void lmScore::SetPageInfo(int nPage)
 	}
 }
 
-lmLUnits lmScore::GetPageTopMargin(int nPage) 
-{ 
-	SetPageInfo(nPage);
-	return m_pPageInfo->TopMargin(); 
-}
-
-lmLUnits lmScore::GetPageLeftMargin(int nPage) 
-{ 
-	SetPageInfo(nPage);
-	return m_pPageInfo->LeftMargin(m_nNumPage); 
-}
-
-lmLUnits lmScore::GetPageRightMargin(int nPage) 
-{ 
-	SetPageInfo(nPage);
-	return m_pPageInfo->RightMargin(m_nNumPage); 
-}
-
-lmUSize lmScore::GetPaperSize(int nPage) 
-{ 
-	SetPageInfo(nPage);
-	return lmUSize(m_pPageInfo->PageWidth(), m_pPageInfo->PageHeight()); 
-}
-
-lmLUnits lmScore::GetMaximumY(int nPage) 
+lmLUnits lmScore::GetPageTopMargin(int nPage)
 {
 	SetPageInfo(nPage);
-	return m_pPageInfo->GetUsableHeight() + m_pPageInfo->TopMargin(); 
+	return m_pPageInfo->TopMargin();
+}
+
+lmLUnits lmScore::GetPageLeftMargin(int nPage)
+{
+	SetPageInfo(nPage);
+	return m_pPageInfo->LeftMargin(m_nNumPage);
+}
+
+lmLUnits lmScore::GetPageRightMargin(int nPage)
+{
+	SetPageInfo(nPage);
+	return m_pPageInfo->RightMargin(m_nNumPage);
+}
+
+lmUSize lmScore::GetPaperSize(int nPage)
+{
+	SetPageInfo(nPage);
+	return lmUSize(m_pPageInfo->PageWidth(), m_pPageInfo->PageHeight());
+}
+
+lmLUnits lmScore::GetMaximumY(int nPage)
+{
+	SetPageInfo(nPage);
+	return m_pPageInfo->GetUsableHeight() + m_pPageInfo->TopMargin();
 }
 
 lmLUnits lmScore::GetLeftMarginXPos(int nPage)
@@ -650,52 +650,52 @@ lmLUnits lmScore::GetRightMarginXPos(int nPage)
     return GetPaperSize().GetWidth() - GetPageRightMargin();
 }
 
-void lmScore::SetPageTopMargin(lmLUnits uValue, int nPage) 
-{ 
+void lmScore::SetPageTopMargin(lmLUnits uValue, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetTopMargin(uValue); 
+	m_pPageInfo->SetTopMargin(uValue);
 }
 
-void lmScore::SetPageLeftMargin(lmLUnits uValue, int nPage) 
-{ 
+void lmScore::SetPageLeftMargin(lmLUnits uValue, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetLeftMargin(uValue); 
+	m_pPageInfo->SetLeftMargin(uValue);
 }
 
-void lmScore::SetPageRightMargin(lmLUnits uValue, int nPage) 
-{ 
+void lmScore::SetPageRightMargin(lmLUnits uValue, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetRightMargin(uValue); 
+	m_pPageInfo->SetRightMargin(uValue);
 }
 
-void lmScore::SetPageBottomMargin(lmLUnits uValue, int nPage) 
-{ 
+void lmScore::SetPageBottomMargin(lmLUnits uValue, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetBottomMargin(uValue); 
+	m_pPageInfo->SetBottomMargin(uValue);
 }
 
-void lmScore::SetPageBindingMargin(lmLUnits uValue, int nPage) 
-{ 
+void lmScore::SetPageBindingMargin(lmLUnits uValue, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetBindingMargin(uValue); 
+	m_pPageInfo->SetBindingMargin(uValue);
 }
 
-void lmScore::SetPageSize(lmLUnits uWidth, lmLUnits uHeight, int nPage) 
-{ 
+void lmScore::SetPageSize(lmLUnits uWidth, lmLUnits uHeight, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetPageSize(uWidth, uHeight); 
+	m_pPageInfo->SetPageSize(uWidth, uHeight);
 }
 
-void lmScore::SetPageOrientation(bool fPortrait, int nPage) 
-{ 
+void lmScore::SetPageOrientation(bool fPortrait, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetOrientation(fPortrait); 
+	m_pPageInfo->SetOrientation(fPortrait);
 }
 
-void lmScore::SetPageNewSection(bool fNewSection, int nPage) 
-{ 
+void lmScore::SetPageNewSection(bool fNewSection, int nPage)
+{
 	SetPageInfo(nPage);
-	m_pPageInfo->SetNewSection(fNewSection); 
+	m_pPageInfo->SetNewSection(fNewSection);
 }
 
 lmLUnits lmScore::TenthsToLogical(lmTenths nTenths)
@@ -716,7 +716,7 @@ lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
 
 lmTextBlock* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
 {
-    lmTextBlock* pTitle = 
+    lmTextBlock* pTitle =
         new lmTextBlock(sTitle, lmBLOCK_ALIGN_BOTH, nHAlign, lmVALIGN_TOP, pStyle);
 
     m_nTitles.push_back( AttachAuxObj(pTitle) );
@@ -969,7 +969,7 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmTextBlock* pT
  //   //}
 
 	////the position has been computed. Create the shape if not yet created or
-	////update it, if its was created during measurements 
+	////update it, if its was created during measurements
 	//if (pShape) delete pShape;
 	//pShape = pTitle->CreateShape(pPaper, lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()) );
 
@@ -1253,9 +1253,9 @@ wxString lmScore::SourceXML(wxString sFilename)
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += wxString::Format(_T("<score-part id='P%d'>\n"), i);
 		sSource.append((nIndent+1) * lmXML_INDENT_STEP, _T(' '));
-		sSource += _T("<part-name>"); 
+		sSource += _T("<part-name>");
         sSource += m_cInstruments[i]->GetInstrName();
-		sSource += _T("</part-name>\n"); 
+		sSource += _T("</part-name>\n");
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += _T("</score-part>\n");
     }
@@ -1376,7 +1376,7 @@ void lmScore::RemoveAllHighlight(wxWindow* pCanvas)
 void lmScore::RemoveHighlight(lmStaffObj* pSO, wxDC* pDC)
 {
     // If we paint in black it remains a red aureole around
-    // the note. 
+    // the note.
     // A posible solution is to paint the highlight using XOR draw mode in RED and
     // to remove it using again XOR draw mode in RED
 
@@ -1440,7 +1440,7 @@ void lmScore::SetMeasureModified(int nMeasure, bool fModified)
 		//Add the element to the list, if it not yet included
 		std::list<int>::iterator itWhere =
 			std::find(m_aMeasureModified.begin(), m_aMeasureModified.end(), nMeasure);
-		if (itWhere == m_aMeasureModified.end() ) 
+		if (itWhere == m_aMeasureModified.end() )
 		{
 			//not found. Insert it
 			m_aMeasureModified.push_back(nMeasure);
@@ -1453,7 +1453,7 @@ void lmScore::SetMeasureModified(int nMeasure, bool fModified)
 		//Remove the element from the list
 		std::list<int>::iterator itWhere =
 			std::find(m_aMeasureModified.begin(), m_aMeasureModified.end(), nMeasure);
-		if (itWhere != m_aMeasureModified.end() ) 
+		if (itWhere != m_aMeasureModified.end() )
 			m_aMeasureModified.erase(itWhere);
 	}
 }
@@ -1462,7 +1462,7 @@ bool lmScore::IsMeasureModified(int nMeasure)
 {
 	std::list<int>::iterator itWhere =
 		std::find(m_aMeasureModified.begin(), m_aMeasureModified.end(), nMeasure);
-	return (itWhere != m_aMeasureModified.end() ); 
+	return (itWhere != m_aMeasureModified.end() );
 }
 
 void lmScore::ResetMeasuresModified()
@@ -1470,15 +1470,15 @@ void lmScore::ResetMeasuresModified()
 	m_aMeasureModified.clear();
 }
 
-lmScoreCursor* lmScore::AttachCursor(lmScoreView* pView) 
-{ 
+lmScoreCursor* lmScore::AttachCursor(lmScoreView* pView)
+{
     m_SCursor.AttachCursor(pView);
 	m_SCursor.ResetCursor();
     return &m_SCursor;
 }
 
-void lmScore::DetachCursor() 
-{ 
+void lmScore::DetachCursor()
+{
     m_SCursor.DetachCursor();
 }
 
@@ -1619,7 +1619,7 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 		lmInstrument* pInstr = this->GetFirstInstrument();
 		while(pInstr)
 		{
-			aChoices.Add( wxString::Format(_T("%d - %s"), iN, pInstr->GetInstrName()) );
+			aChoices.Add( wxString::Format(_T("%d - %s"), iN, pInstr->GetInstrName().c_str()) );
 			pInstr = this->GetNextInstrument();
 			iN++;
 		}
@@ -1643,7 +1643,7 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 
     pInstr->OnPropertiesChanged();
     return true;
-}	
+}
 
 //-------------------------------------------------------------------------------------
 
@@ -1676,7 +1676,7 @@ lmStylesCollection::~lmStylesCollection()
         delete *it;
     m_aTextStyles.clear();
 }
-    
+
 lmTextStyle* lmStylesCollection::GetStyleInfo(const wxString& sStyleName)
 {
     //Returns the TextStyle info for the requested style name

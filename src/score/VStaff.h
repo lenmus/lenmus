@@ -53,7 +53,6 @@ class lmUndoItem;
 //lmEPitchType
 //lmEStemType
 //lmEHAlign
-//ETraversingOrder
 
 
 //----------------------------------------------------------------------------------------
@@ -240,15 +239,14 @@ public:
     lmLUnits GetYBottom();
 
 
-    //Debug methods
-    wxString Dump();
+    //Source code methods
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
 
     // restricted methods
-    lmSOIterator* CreateIterator(ETraversingOrder nOrder);    //for lmFormatter objects
-    inline lmSOIterator* CreateIteratorTo(ETraversingOrder nOrder, lmStaffObj* pSO) 
-                                        { return m_cStaffObjs.CreateIteratorTo(nOrder, pSO); }
+    lmSOIterator* CreateIterator();    //for lmFormatter objects
+    inline lmSOIterator* CreateIteratorTo(lmStaffObj* pSO) 
+                                        { return m_cStaffObjs.CreateIteratorTo(pSO); }
 
     //for navigation along staves
     inline int GetNumStaves() const { return m_nNumStaves; }
@@ -294,6 +292,9 @@ public:
     //cursor management
 	inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }
     inline void ResetCursor() { m_VCursor.ResetCursor(); }
+
+    //Debug methods
+    wxString Dump();
 
 
 private:

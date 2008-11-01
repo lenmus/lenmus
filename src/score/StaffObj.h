@@ -399,11 +399,17 @@ public:
     virtual lmShape* CreateInvisibleShape(lmBox* pBox, lmUPoint uPos, int nShapeIdx);
 	virtual void PlaybackHighlight(wxDC* pDC, wxColour colorC) {}
 
-    // methods related to staff ownership
+    // methods related to staff
     inline int GetStaffNum() { return m_nStaffNum; }
     inline lmVStaff* GetVStaff() { return m_pVStaff; }
 	inline void SetSegment(lmSegment* pSegment) { m_pSegment = pSegment; }
 	inline lmSegment* GetSegment() { return m_pSegment; }
+    inline bool IsOnStaff(int nStaff) { return (m_nStaffNum == nStaff
+                                                || IsKeySignature()
+                                                || IsTimeSignature()
+                                                || IsBarline() ); 
+                                      }
+
 
     // methods related to AuxObj/GraphObj ownership
     virtual bool IsComposite() { return false; }
@@ -421,6 +427,12 @@ public:
     //undo/redo
     virtual void Freeze(lmUndoData* pUndoData) {};
     virtual void UnFreeze(lmUndoData* pUndoData) {};
+
+	//navigation in the VStaff collection and collection management
+	inline lmStaffObj* GetPrevSO() const { return m_pPrevSO; }
+	inline lmStaffObj* GetNextSO() const { return m_pNextSO; }
+	inline void SetPrevSO(lmStaffObj* pPrevSO) { m_pPrevSO = pPrevSO; }
+	inline void SetNextSO(lmStaffObj* pNextSO) { m_pNextSO = pNextSO; }
 
 
 
@@ -446,6 +458,10 @@ protected:
     lmVStaff*		m_pVStaff;		// lmVStaff owning this lmStaffObj
     int				m_nStaffNum;	// lmStaff (1..n) on which this object is located
 	lmSegment* 		m_pSegment;		// ptr to segment including this staffobj
+
+    //info for chaining StaffObjs in the VStaff collection
+    lmStaffObj*     m_pNextSO;
+    lmStaffObj*     m_pPrevSO;
 
 
 };

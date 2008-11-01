@@ -88,7 +88,7 @@ lmLUnits lmStaff::GetHeight()
 //----------------------------------------------------------------------------------------
 // debug
 //----------------------------------------------------------------------------------------
-#if defined(__WXDEBUG__)
+//#if defined(__WXDEBUG__)
 
 wxString lmStaff::DumpContextsChain()
 {
@@ -118,7 +118,7 @@ wxString lmStaff::DumpContextsChain()
     return sDump;
 }
 
-#endif
+//#endif
 
 wxString lmStaff::Dump()
 {

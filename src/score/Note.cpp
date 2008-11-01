@@ -545,6 +545,15 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 	{
         fDrawStem = AddNoteShape(pNoteShape, pPaper, uxLeft, uyTop, colorC);
     }
+    //DBG-----------------------------------------------------------------
+    if (!m_pNoteheadShape)
+    {
+        wxMessageBox(_T("AHHHGGGG! The Bug is here again!"));
+        wxLogMessage(_T("The Bug is here again! Note Id = %d"), this->GetID());
+        wxLogMessage(m_pVStaff->Dump());
+        fDrawStem = AddNoteShape(pNoteShape, pPaper, uxLeft, uyTop, *wxRED);
+    }
+    //DBG-----------------------------------------------------------------
     uxLeft += m_pNoteheadShape->GetWidth();
     //lmLUnits uxNote = uxLeft;
 
@@ -1432,7 +1441,7 @@ wxString lmNote::Dump()
     sDump = wxString::Format(
         _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, TimePos=%.2f, ")
         _T("rDuration=%.2f, StemType=%d"),
-        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, 
+        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume,
 		m_rTimePos, m_rDuration, m_nStemType);
 
     if (m_pTieNext) sDump += _T(", TiedNext");

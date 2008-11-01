@@ -219,12 +219,12 @@ void lmGMObject::OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int n
     m_pOwner->PopupMenu(pCanvas, this, vPos);
 }
 
-void lmGMObject::SetSelected(bool fValue) 
-{ 
+void lmGMObject::SetSelected(bool fValue)
+{
     if (m_fSelected == fValue) return;      //nothing to do
 
     //change selection status
-    m_fSelected = fValue;       
+    m_fSelected = fValue;
 
     //add/remove object from global list
     lmBoxScore* pBS = this->GetOwnerBoxScore();
@@ -386,7 +386,10 @@ lmShape::~lmShape()
 
     //restore mouse cursor if necessary
     if (m_pMouseCursorWindow)
-        OnMouseOut(m_pMouseCursorWindow, lmUPoint(0.0f, 0.0f));
+    {
+        lmUPoint anyPoint(0.0f, 0.0f);
+        OnMouseOut(m_pMouseCursorWindow, anyPoint);
+    }
 }
 
 bool lmShape::Collision(lmShape* pShape)
@@ -493,7 +496,7 @@ lmBoxScore* lmShape::GetOwnerBoxScore()
 //========================================================================================
 
 lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmScoreObj* pOwner, int nOwnerIdx,
-                             wxString sName, bool fDraggable, bool fSelectable, 
+                             wxString sName, bool fDraggable, bool fSelectable,
                              wxColour color, bool fVisible)
 	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, fSelectable, color, fVisible)
 {
@@ -624,7 +627,7 @@ void lmCompositeShape::Render(lmPaper* pPaper,  wxColour color)
     }
 }
 
-void lmCompositeShape::RenderHighlighted(wxDC* pDC, wxColour color) 
+void lmCompositeShape::RenderHighlighted(wxDC* pDC, wxColour color)
 {
     lmShape::RenderHighlighted(pDC, color);
 

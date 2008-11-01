@@ -18,13 +18,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-/* Encapsulates access and traverse of a collection of StaffObjs
-
-    lmSOIterator encapsulates access and traverse of a collection of StaffObjs (lmColStaffObjs
-    object) without exposing the internal structure of the collection. This lets us
-    define different traversal algorithms and allows us to change the internal representation
-    of a StaffObjs collection without affecting the rest of the program.
-*/
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "StaffObjIterator.h"
 #endif
@@ -48,51 +41,28 @@
 // lmSOIterator implementation
 //========================================================================================
 
-lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, int nVoice)
+lmSOIterator::lmSOIterator(lmColStaffObjs* pCSO)
 {
-    // Currently, StaffObjs are stored in a list, always ordered by time.
-    // Therefore all three types of ETraversingOrder are the equivalent
-	// I will keep parameter ETraversingOrder for documentation purposes about
-	// the inded usage, and just in case in future it become necessary.
-
     m_pColStaffObjs = pCSO;
-	m_nVoice = nVoice;
-	m_pSegment = (lmSegment*)NULL;
-
-	//move to first staffobj
-    MoveFirst();
-    m_fEndOfMeasure = false;
+	MoveFirst(); 
 }
 
-lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmStaffObj* pTargetSO)
+lmSOIterator::lmSOIterator(lmColStaffObjs* pCSO, lmStaffObj* pTargetSO)
 {
-    // Currently, StaffObjs are stored in a list, always ordered by time.
-    // Therefore all three types of ETraversingOrder are the equivalent
-	// I will keep parameter ETraversingOrder for documentation purposes about
-	// the inded usage, and just in case in future it become necessary.
-
     m_pColStaffObjs = pCSO;
-    m_nVoice = (pTargetSO->IsNoteRest() ? ((lmNoteRest*)pTargetSO)->GetVoice() : -1);
-	m_pSegment = pTargetSO->GetSegment();
-	m_nSegment = m_pSegment->m_nNumSegment;
-	m_it = --(m_pSegment->m_StaffObjs.end());
-    m_fEndOfMeasure = false;
-
-    //find target SO
-    while(*m_it != pTargetSO) 
-        --m_it;
+	m_pSO = pTargetSO; 
+    m_fChangeOfMeasure = false;
+    m_fEnd = false;
 }
 
-lmSOIterator::lmSOIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor)
+lmSOIterator::lmSOIterator(lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor)
 {
     //creates an iterator pointing to received cursor position
 
     m_pColStaffObjs = pCSO;
-    m_nVoice = 0;       //voice to recover. 0=all
-	m_nSegment = pVCursor->GetSegment();
-	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	m_it = pVCursor->GetCurIt();
-    m_fEndOfMeasure = false;
+	m_pSO = pVCursor->GetStaffObj();
+    m_fChangeOfMeasure = false;
+    m_fEnd = false;
 }
 
 lmSOIterator::lmSOIterator(lmSOIterator* pIT)
@@ -100,106 +70,89 @@ lmSOIterator::lmSOIterator(lmSOIterator* pIT)
     //Copy constructor
 
     m_pColStaffObjs = pIT->m_pColStaffObjs;
-	m_nVoice = pIT->m_nVoice;
-	m_it = pIT->m_it;
-	m_nSegment = pIT->m_nSegment;
-	m_pSegment = pIT->m_pSegment;
-    m_fEndOfMeasure = pIT->m_fEndOfMeasure;    
+	m_pSO = pIT->m_pSO;
+    m_fChangeOfMeasure = pIT->m_fChangeOfMeasure;
+    m_fEnd = false;
 }
 
 void lmSOIterator::MoveFirst()
 {
     // move cursor to first lmStaffObj
 
-	m_nSegment = 0;
-	m_pSegment = m_pColStaffObjs->m_Segments[0];
-	m_it = m_pSegment->m_StaffObjs.begin();
+	m_pSO = m_pColStaffObjs->GetFirstSO();
+    m_fChangeOfMeasure = false;
+    m_fEnd = false;
 }
 
 void lmSOIterator::MoveNext()
 {
-    // advance cursor to next lmStaffObj
+    // advance cursor to next lmStaffObj. If already at end of collection remains there
+    
+    m_fEnd = false;
 
-    if (EndOfList()) {
-        m_fEndOfMeasure = true;
-        return;
-    }
+    //If already at end of collection remains there
+    if (!m_pSO)
+        return;     //we are at end
 
-	++m_it;
-	if (m_it == m_pSegment->m_StaffObjs.end())
-	{
-		//advance to next segment
-        m_fEndOfMeasure = true;
-		if (++m_nSegment < (int)m_pColStaffObjs->m_Segments.size())
-		{
-			m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-			m_it = m_pSegment->m_StaffObjs.begin();
-		}
-        else
-		    //End of collection reached. Restore num segment
-            --m_nSegment;
-	}
-    else
-        m_fEndOfMeasure = false;
+	lmStaffObj* pNext = m_pSO->GetNextSO();
+    m_fChangeOfMeasure = (pNext ? m_pSO->IsBarline() : true);
+    m_pSO = pNext;
 }
 
 void lmSOIterator::MovePrev()
 {
-    // move cursor back to previous lmStaffObj
+    //move cursor back to previous lmStaffObj. If already at start of collection
+    //remains there but raises EndOfCollection condition
 
-	if (StartOfList()) return;
+    //if at start, remain there and set EndOfCollection condition
+    if (FirstOfCollection())
+    {
+        m_fEnd = true;
+        return;
+    }
 
-	if (m_it == m_pSegment->m_StaffObjs.begin())
-	{
-		//currently pointing to first SO of this segment. Move to last SO of previous segment
-		m_nSegment--;
-		m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-		m_it = --(m_pSegment->m_StaffObjs.end());
-	}
-	else
-	{
-		//move back
-		--m_it;
-	}
+    //if at end, move to last
+    if (!m_pSO)
+    {
+        //move to last object
+        m_pSO = m_pColStaffObjs->GetLastSO();
+        m_fChangeOfMeasure = true;
+        m_fEnd = false;
+        return;     
+    }
+
+    //otherwise, move back
+    m_pSO = m_pSO->GetPrevSO();
+    wxASSERT(m_pSO);
+    if (m_pSO->IsBarline())
+        m_fChangeOfMeasure = true;
+    m_fEnd = false;
 }
 
 void lmSOIterator::MoveLast()
 {
     // move cursor to last lmStaffObj
 
-	m_nSegment = m_pColStaffObjs->m_Segments.size() - 1;
-	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	m_it = m_pSegment->m_StaffObjs.end();
-    MovePrev();
+	m_pSO = m_pColStaffObjs->GetLastSO();
+    m_fChangeOfMeasure = false;
+    m_fEnd = false;
 }
 
-bool lmSOIterator::EndOfList()
+void lmSOIterator::MoveTo(lmStaffObj* pSO)
 {
-	//return true if iterator is at end of score: after last SO in last segment
+    //Move cursor to point to received SO
 
-	return (m_it == m_pSegment->m_StaffObjs.end() 
-			&& m_nSegment == (int)m_pColStaffObjs->m_Segments.size() - 1);
-}
-
-bool lmSOIterator::StartOfList()
-{
-    // returns true if cursor points to first item
-
-	return (m_nSegment == 0 && m_it == m_pSegment->m_StaffObjs.begin());
-}
-
-bool lmSOIterator::EndOfMeasure()
-{
-    //returns true if last MoveNext() call crossed a segment boundary
-    return m_fEndOfMeasure;
+    m_pSO = pSO;
+    m_fChangeOfMeasure = false;
+    m_fEnd = false;
 }
 
 void lmSOIterator::AdvanceToMeasure(int nMeasure)
 {
     // advance cursor to first lmStaffObj in measure number nMeasure (1..n)
 
-	m_nSegment = nMeasure - 1;
-	m_pSegment = m_pColStaffObjs->m_Segments[m_nSegment];
-	m_it = m_pSegment->m_StaffObjs.begin();
-    m_fEndOfMeasure = (m_it == m_pSegment->m_StaffObjs.end() );
+	m_pSO = m_pColStaffObjs->GetSegment(nMeasure - 1)->GetFirstSO();
+    m_fChangeOfMeasure = false;
+    m_fEnd = false;
 }
+

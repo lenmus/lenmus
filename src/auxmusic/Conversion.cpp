@@ -140,8 +140,8 @@ wxString lmConverter::NoteBitsToName(lmNoteBits& tBits, lmEKeySignatures nKey)
             sResult = _T("");   //replace note accidental by key accidental
         else if (tBits.nAccidentals == 0)
             sResult = _T("=");  //force a natural
-        else
-            ;   //leave note accidentals
+        //else
+            //leave note accidentals
     }
 
     // compute step letter

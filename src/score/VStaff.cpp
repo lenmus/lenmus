@@ -226,12 +226,11 @@ void lmVStaff::OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep,
     wxASSERT(nStaff > 0);
 
     //define iterator from start note
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorTo(eTR_ByTime, pStartNote);
-    wxASSERT(!pIter->EndOfList());
-    pIter->MoveNext();              //skip start note
-    while(!pIter->EndOfMeasure())
+    lmSOIterator it(&m_cStaffObjs, pStartNote);
+    it.MoveNext();              //skip start note
+    while(!it.ChangeOfMeasure() && !it.EndOfCollection())
     {
-        lmStaffObj* pSO = pIter->GetCurrent();
+        lmStaffObj* pSO = it.GetCurrent();
         if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote()
             && pSO->GetStaffNum() == nStaff 
             && ((lmNote*)pSO)->GetStep() == nStep)
@@ -241,9 +240,8 @@ void lmVStaff::OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep,
                 //the note has accidentals. Break loop as no more changes are needed.
                 break;
         }
-        pIter->MoveNext();
+        it.MoveNext();
     }
-    delete pIter;
 }
 
 int lmVStaff::GetUpdatedContextAccidentals(lmStaffObj* pThisSO, int nStep)
@@ -686,9 +684,9 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
     else
     {
         //check if more notes/rest with greater timepos in current measure
-        lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, pNR);
+        lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom(pNR);
         pIT->MoveNext();        //skip pNR
-        while(!pIT->EndOfMeasure())
+        while(!pIT->ChangeOfMeasure() && !pIT->EndOfCollection())
         {
             lmStaffObj* pSO = pIT->GetCurrent();
 			if (pSO->IsNoteRest())
@@ -1934,26 +1932,6 @@ lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 
 }
 
-wxString lmVStaff::Dump()
-{
-    wxString sDump = _T("");
-
-#if defined(__WXDEBUG__)
-
-    //iterate over the collection of staves to dump contexts chains
-    for (int iS=1; iS <= m_nNumStaves; iS++)
-	{
-        sDump += GetStaff(iS)->DumpContextsChain();
-    }
-
-    //dump staffobjs
-    sDump += m_cStaffObjs.Dump();
-
-#endif
-
-    return sDump;
-}
-
 wxString lmVStaff::SourceLDP(int nIndent)
 {
 	wxString sSource = _T("");
@@ -1983,9 +1961,9 @@ wxString lmVStaff::SourceLDP(int nIndent)
 		float rTime = 0.0f;
         while (true)
         {
-            lmSOIterator* pIT = m_cStaffObjs.CreateIterator(eTR_ByTime, nVoice);
+            lmSOIterator* pIT = m_cStaffObjs.CreateIterator();
             pIT->AdvanceToMeasure(nMeasure);
-            while(!pIT->EndOfMeasure())
+            while(!pIT->ChangeOfMeasure() && !pIT->EndOfCollection())
             {
                 lmStaffObj* pSO = pIT->GetCurrent();
                 //voice 0 staffobjs go with first voice if more than one voice
@@ -2148,9 +2126,9 @@ wxString lmVStaff::SourceXML(int nIndent)
 		float rTime = 0.0f;
         while (true)
         {
-            lmSOIterator* pIT = m_cStaffObjs.CreateIterator(eTR_ByTime, nVoice);
+            lmSOIterator* pIT = m_cStaffObjs.CreateIterator();
             pIT->AdvanceToMeasure(nMeasure);
-            while(!pIT->EndOfMeasure())
+            while(!pIT->ChangeOfMeasure() && !pIT->EndOfCollection())
             {
                 lmStaffObj* pSO = pIT->GetCurrent();
                 //voice 0 staffobjs go with first voice if more than one voice
@@ -2300,13 +2278,13 @@ lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
 //    // of variable pointed by pPos with the right x position of last barline
 //    // This method is only used by Formatter, in order to not justify the last system
 //    lmStaffObj* pSO = (lmStaffObj*) NULL;
-//    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+//    lmSOIterator* pIter = m_cStaffObjs.CreateIterator();
 //    pIter->MoveLast();
 //    while(true)
 //    {
 //        pSO = pIter->GetCurrent();
 //        if (pSO->GetClass() == eSFOT_Barline) break;
-//		if(pIter->StartOfList()) break;
+//		if(pIter->FirstOfCollection()) break;
 //        pIter->MovePrev();
 //    }
 //    delete pIter;
@@ -2415,9 +2393,9 @@ void lmVStaff::NewLine(lmPaper* pPaper)
 //
 //        //locate first context for this staff
 //        pContext = (lmContext*)NULL;
-//        lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+//        lmSOIterator* pIter = m_cStaffObjs.CreateIterator();
 //        pIter->AdvanceToMeasure(nMeasure);
-//        while(!pIter->EndOfList())
+//        while(!pIter->EndOfCollection())
 //		{
 //            pSO = pIter->GetCurrent();
 //            if (pSO->GetClass() == eSFOT_NoteRest) {
@@ -2513,8 +2491,8 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     lmStaffObj* pSO;
     lmNoteRest* pNR;
     lmTimeSignature* pTS;
-    lmSOIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-    while(!pIter->EndOfList())
+    lmSOIterator* pIter = m_cStaffObjs.CreateIterator();
+    while(!pIter->EndOfCollection())
     {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest)
@@ -2560,17 +2538,17 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
     lmSOIterator* pIter;
     if (fNotAdded) 
     {
-        pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+        pIter = m_cStaffObjs.CreateIterator();
         pIter->MoveLast();
     }
     else
     {
-        pIter = m_cStaffObjs.CreateIteratorTo(eTR_ByTime, pEndNote);
+        pIter = m_cStaffObjs.CreateIteratorTo(pEndNote);
         pIter->MovePrev();
     }
 
     //do search
-    while(!pIter->EndOfList() && ! pIter->StartOfList())
+    while(!pIter->EndOfCollection() && ! pIter->FirstOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
@@ -2597,7 +2575,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
             }
         }
 
-		if(pIter->StartOfList()) break;
+		if(pIter->FirstOfCollection()) break;
         pIter->MovePrev();
     }
     delete pIter;
@@ -2619,12 +2597,12 @@ lmNote* lmVStaff::FindPossibleEndOfTie(lmNote* pStartNote)
     int nVoice = pStartNote->GetVoice();
 
     //define a forwards iterator
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorTo(eTR_ByTime, pStartNote);
-    if (!pIter->EndOfList())
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorTo(pStartNote);
+    if (!pIter->EndOfCollection())
         pIter->MoveNext();
 
     //do search
-    while(!pIter->EndOfList())
+    while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
@@ -2668,10 +2646,10 @@ bool lmVStaff::CheckIfNotesAffectedByClef(bool fSkip)
 
 
     //define iterator from current cursor position
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, &m_VCursor);
-    if(fSkip && !pIter->EndOfList())
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(&m_VCursor);
+    if(fSkip && !pIter->EndOfCollection())
         pIter->MoveNext();
-    while(!pIter->EndOfList())
+    while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsClef())
@@ -2704,10 +2682,10 @@ bool lmVStaff::CheckIfNotesAffectedByKey(bool fSkip)
 
 
     //define iterator from current cursor position
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(eTR_ByTime, &m_VCursor);
-    if(fSkip && !pIter->EndOfList())
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(&m_VCursor);
+    if(fSkip && !pIter->EndOfCollection())
         pIter->MoveNext();
-    while(!pIter->EndOfList())
+    while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsKeySignature())
@@ -2752,8 +2730,33 @@ lmSOControl* lmVStaff::AddNewSystem()
     return pControl;
 }
 
-lmSOIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
+lmSOIterator* lmVStaff::CreateIterator()
 {
-    return m_cStaffObjs.CreateIterator(nOrder);
+    return m_cStaffObjs.CreateIterator();
 }
 
+
+
+//-------------------------------------------------------------------------------------
+// Debug methods
+//-------------------------------------------------------------------------------------
+
+wxString lmVStaff::Dump()
+{
+    wxString sDump = _T("");
+
+//#if defined(__WXDEBUG__)
+
+    //iterate over the collection of staves to dump contexts chains
+    for (int iS=1; iS <= m_nNumStaves; iS++)
+	{
+        sDump += GetStaff(iS)->DumpContextsChain();
+    }
+
+    //dump staffobjs
+    sDump += m_cStaffObjs.Dump();
+
+//#endif
+
+    return sDump;
+}

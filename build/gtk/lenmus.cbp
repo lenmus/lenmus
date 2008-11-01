@@ -49,11 +49,17 @@
 			<Add option="-W" />
 			<Add directory="../../packages/agg/include" />
 			<Add directory="../../packages/wxMidi/include" />
+			<Add directory="/home/cecilio/software/freetype-2.3.7/include" />
+			<Add directory="/media/sdb1/usr/Desarrollo_wx/lenmus/packages/freetype/include/freetype2" />
+			<Add directory="../../packages/agg/font_freetype" />
 		</Compiler>
 		<Linker>
 			<Add library="/usr/lib/libportmidi.so" />
 			<Add library="/usr/lib/libporttime.so" />
+			<Add library="/usr/local/lib/libfreetype.so" />
 		</Linker>
+		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.cpp" />
+		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.h" />
 		<Unit filename="../../packages/agg/src/agg_curves.cpp" />
 		<Unit filename="../../packages/agg/src/agg_trans_affine.cpp" />
 		<Unit filename="../../packages/wxMidi/include/wxMidi.h" />
@@ -97,8 +103,6 @@
 		<Unit filename="../../src/app/MainFrame.h" />
 		<Unit filename="../../src/app/MidiWizard.cpp" />
 		<Unit filename="../../src/app/MidiWizard.h" />
-		<Unit filename="../../src/app/Page.cpp" />
-		<Unit filename="../../src/app/Page.h" />
 		<Unit filename="../../src/app/Paper.cpp" />
 		<Unit filename="../../src/app/Paper.h" />
 		<Unit filename="../../src/app/Preferences.cpp" />
@@ -126,6 +130,8 @@
 		<Unit filename="../../src/app/global.h" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.cpp" />
 		<Unit filename="../../src/app/toolbox/ColorScheme.h" />
+		<Unit filename="../../src/app/toolbox/ToolBarlines.cpp" />
+		<Unit filename="../../src/app/toolbox/ToolBarlines.h" />
 		<Unit filename="../../src/app/toolbox/ToolBoxEvents.cpp" />
 		<Unit filename="../../src/app/toolbox/ToolBoxEvents.h" />
 		<Unit filename="../../src/app/toolbox/ToolClef.cpp" />
@@ -144,8 +150,6 @@
 		<Unit filename="../../src/auxmusic/ChordManager.h" />
 		<Unit filename="../../src/auxmusic/Composer.cpp" />
 		<Unit filename="../../src/auxmusic/Composer.h" />
-		<Unit filename="../../src/auxmusic/ComposerV5.cpp" />
-		<Unit filename="../../src/auxmusic/ComposerV5.h" />
 		<Unit filename="../../src/auxmusic/ComposerV6.cpp" />
 		<Unit filename="../../src/auxmusic/ComposerV6.h" />
 		<Unit filename="../../src/auxmusic/Conversion.cpp" />
@@ -229,6 +233,8 @@
 		<Unit filename="../../src/graphic/GMObject.h" />
 		<Unit filename="../../src/graphic/GraphicManager.cpp" />
 		<Unit filename="../../src/graphic/GraphicManager.h" />
+		<Unit filename="../../src/graphic/Handlers.cpp" />
+		<Unit filename="../../src/graphic/Handlers.h" />
 		<Unit filename="../../src/graphic/ShapeArch.cpp" />
 		<Unit filename="../../src/graphic/ShapeArch.h" />
 		<Unit filename="../../src/graphic/ShapeBarline.cpp" />
@@ -243,6 +249,8 @@
 		<Unit filename="../../src/graphic/ShapeRest.h" />
 		<Unit filename="../../src/graphic/ShapeStaff.cpp" />
 		<Unit filename="../../src/graphic/ShapeStaff.h" />
+		<Unit filename="../../src/graphic/ShapeText.cpp" />
+		<Unit filename="../../src/graphic/ShapeText.h" />
 		<Unit filename="../../src/graphic/ShapeTuplet.cpp" />
 		<Unit filename="../../src/graphic/ShapeTuplet.h" />
 		<Unit filename="../../src/graphic/Shapes.cpp" />
@@ -322,6 +330,8 @@
 		<Unit filename="../../src/score/ColStaffObjs.h" />
 		<Unit filename="../../src/score/Context.cpp" />
 		<Unit filename="../../src/score/Context.h" />
+		<Unit filename="../../src/score/EditCmd.cpp" />
+		<Unit filename="../../src/score/EditCmd.h" />
 		<Unit filename="../../src/score/Glyph.cpp" />
 		<Unit filename="../../src/score/Glyph.h" />
 		<Unit filename="../../src/score/InstrGroup.cpp" />
@@ -369,8 +379,6 @@
 		<Unit filename="../../src/score/VStaff.h" />
 		<Unit filename="../../src/score/defs.cpp" />
 		<Unit filename="../../src/score/defs.h" />
-		<Unit filename="../../src/score/properties/DlgEditText.cpp" />
-		<Unit filename="../../src/score/properties/DlgEditText.h" />
 		<Unit filename="../../src/score/properties/DlgProperties.cpp" />
 		<Unit filename="../../src/score/properties/DlgProperties.h" />
 		<Unit filename="../../src/score/properties/DlgTextStyles.cpp" />

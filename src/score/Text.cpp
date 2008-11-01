@@ -148,8 +148,10 @@ void lmScoreText::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabNa
 {
 	//invoked to add specific panels to the dialog
 
-	pDlg->AddPanel( new lmTextProperties(pDlg->GetNotebook(), this),
-										 (sTabName == wxEmptyString ? _("Text") : sTabName) );
+	if (sTabName == wxEmptyString)
+        pDlg->AddPanel( new lmTextProperties(pDlg->GetNotebook(), this), _("Text"));
+    else
+        pDlg->AddPanel( new lmTextProperties(pDlg->GetNotebook(), this), sTabName);
 }
 
 void lmScoreText::Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEHAlign nAlign,

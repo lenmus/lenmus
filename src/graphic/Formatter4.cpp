@@ -118,7 +118,7 @@ lmSystemCursor::lmSystemCursor(lmScore* pScore)
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     for (; pInstr; pInstr = pScore->GetNextInstrument())
     {
-        lmSOIterator* pIT = pInstr->GetVStaff()->CreateIterator(eTR_ByTime);
+        lmSOIterator* pIT = pInstr->GetVStaff()->CreateIterator();
         pIT->AdvanceToMeasure(1);
         m_Iterators.push_back(pIT);
         m_SavedIterators.push_back( new lmSOIterator(pIT) );
@@ -145,7 +145,7 @@ bool lmSystemCursor::ThereAreObjects()
 
     for (int i=0; i < (int)m_Iterators.size(); i++)
     {
-        if (!m_Iterators[i]->EndOfList())
+        if (!m_Iterators[i]->EndOfCollection())
             return true;
     }
     return false;
@@ -160,10 +160,10 @@ lmContext* lmSystemCursor::GetStartOfColumnContext(int iInstr, int nStaff)
     //AWARE: if we are in an empty segment (last segment) and we move back to previous
     //segment, it doesn't matter. In any case the context applying to found SO is the
     //right context!
-    while(!pIT->EndOfList())
+    while(!pIT->EndOfCollection())
     {
         pSO = pIT->GetCurrent();
-        if (pSO->GetStaffNum() == nStaff)
+        if (pSO->IsOnStaff(nStaff))
             break;
         pIT->MovePrev();
     }
@@ -208,10 +208,10 @@ lmBarline* lmSystemCursor::GetPreviousBarline(int iInstr)
 {
     lmSOIterator* pIT = new lmSOIterator( GetIterator(iInstr) );
     lmStaffObj* pSO = (lmStaffObj*)NULL;
-    while (!pIT->EndOfList())
+    while (!pIT->EndOfCollection())
     {
         pSO = pIT->GetCurrent();
-        if (pSO->IsBarline() || pIT->StartOfList())
+        if (pSO->IsBarline() || pIT->FirstOfCollection())
             break;
 
         pIT->MovePrev();
@@ -242,7 +242,8 @@ void lmSystemCursor::AdvanceAfterTimepos(float rTimepos)
     for (int i=0; i < (int)m_Iterators.size(); ++i)
     {
         lmSOIterator* pIT = m_Iterators[i];
-        while (!pIT->EndOfMeasure() && !pIT->EndOfList())
+        pIT->ResetFlags();
+        while (!pIT->ChangeOfMeasure() && !pIT->EndOfCollection())
         {
             lmStaffObj* pSO = pIT->GetCurrent();
             if (IsHigherTime(pSO->GetTimePos(), rTimepos))
@@ -1091,7 +1092,8 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff,
     bool fNewSystem = false;                //newSystem tag found
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmSOIterator* pIT = m_pSysCursor->GetIterator(nInstr);
-    while(!pIT->EndOfList())
+    pIT->ResetFlags();
+    while(!pIT->EndOfCollection() && !pIT->ChangeOfMeasure())
     {
         pSO = pIT->GetCurrent();
         EStaffObjType nType = pSO->GetClass();

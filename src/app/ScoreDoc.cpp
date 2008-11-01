@@ -136,11 +136,15 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     m_pScore = parser.ParseFile(filename);
     if (!m_pScore)
     {
+        //return false;
+        //BUG_BYPASS: if open file fails the program crashes. The process of closing the
+        //view is not correctly implemented in lmScoreView. This requires detailed 
+        //investigation. Meanwhile, instead of returning 'false', lets create an empty
+        //score.
         m_pScore = new lmScore();
         m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
         m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
         m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
-        //return false;
     }
 
     GetMainFrame()->AddFileToHistory(filename);

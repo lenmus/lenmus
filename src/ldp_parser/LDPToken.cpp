@@ -652,7 +652,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                         //nState, Chr$(m_curChar), m_curChar, Hex$(m_curChar),
                         //nState, m_curChar, m_curChar, m_curChar,
                         //Extract(iStart, m_lastPos)) );
-                        m_curChar, m_pParser->GetFilename() ));
+                        m_curChar, m_pParser->GetFilename().c_str() ));
                 }
                 nState = FT_Start;
                 break;

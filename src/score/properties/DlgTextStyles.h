@@ -32,23 +32,25 @@
 #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
+class wxGrid;
 
-#else
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
+//#ifndef WX_PRECOMP
+//#include "wx/wx.h"
+//
+//#else
+//#include <wx/string.h>
+//#include <wx/stattext.h>
+//#include <wx/gdicmn.h>
+//#include <wx/font.h>
+//#include <wx/colour.h>
+//#include <wx/settings.h>
 #include <wx/grid.h>
-#include <wx/sizer.h>
-#include <wx/radiobox.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
-
-#endif
+//#include <wx/sizer.h>
+//#include <wx/radiobox.h>
+//#include <wx/button.h>
+//#include <wx/dialog.h>
+//
+//#endif
 
 
 class lmScore;
@@ -57,10 +59,10 @@ class lmScore;
 /// Class lmDlgTextStyles
 //--------------------------------------------------------------------------------------
 
-class lmDlgTextStyles : public wxDialog 
+class lmDlgTextStyles : public wxDialog
 {
 	private:
-	
+
 	protected:
 		wxStaticText* m_staticText1;
 		wxGrid* m_pGrid;
@@ -69,12 +71,12 @@ class lmDlgTextStyles : public wxDialog
 		wxButton* m_pBtRemove;
 		wxButton* m_pBtAddDefault;
 		wxButton* m_pBtEdit;
-		
+
 		wxButton* m_pBtAccept;
-		
+
 		wxButton* m_pBtCancel;
-		
-	
+
+
 	public:
 		lmDlgTextStyles( wxWindow* parent, lmScore* pScore);
 		~lmDlgTextStyles();
@@ -93,7 +95,7 @@ private:
     void CreateControls();
     void LoadStyles();
 
-	
+
     lmScore*        m_pScore;
 
     DECLARE_EVENT_TABLE()

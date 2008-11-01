@@ -104,7 +104,7 @@ public:
 private:
 
     lmBoxSystem*	m_pBSystem;			//parent system box
-    int             m_nAbsMeasure;		//number of this measure (absolute)
+    int             m_nAbsMeasure;		//number of this measure (absolute, 1..n)
 	int				m_nNumInSystem;		//number of slice for this system (0..n-1)
 
     std::vector<lmBoxSliceInstr*>   m_SliceInstr;   //collection of instr. slices

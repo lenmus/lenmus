@@ -30,10 +30,23 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
+#else
+    #include <wx/string.h>
+    #include <wx/stattext.h>
+    #include <wx/gdicmn.h>
+    #include <wx/font.h>
+    #include <wx/colour.h>
+    #include <wx/settings.h>
+    #include <wx/grid.h>
+    #include <wx/sizer.h>
+    #include <wx/radiobox.h>
+    #include <wx/button.h>
+    #include <wx/dialog.h>
 #endif
 
 #include <wx/fontdlg.h>
+
 
 
 #include "DlgTextStyles.h"
@@ -76,7 +89,7 @@ enum {
     lmCOLOR,
 };
 
-lmDlgTextStyles::lmDlgTextStyles(wxWindow* parent, lmScore* pScore) 
+lmDlgTextStyles::lmDlgTextStyles(wxWindow* parent, lmScore* pScore)
     : wxDialog(parent, wxID_ANY, _("Styles defined in current score"),
                wxDefaultPosition, wxSize( 630,400 ), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
@@ -113,29 +126,29 @@ lmDlgTextStyles::lmDlgTextStyles(wxWindow* parent, lmScore* pScore)
 void lmDlgTextStyles::CreateControls()
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-	
+
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* pMainCtrolsSizer;
 	pMainCtrolsSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* pGridSizer;
 	pGridSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_staticText1 = new wxStaticText( this, wxID_ANY, wxT("Defined text styles"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	pGridSizer->Add( m_staticText1, 0, wxALL, 5 );
-	
+
 	m_pGrid = new wxGrid( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	
+
 	// Grid
 	m_pGrid->CreateGrid( 8, 6 );
 	m_pGrid->EnableEditing( false );
 	m_pGrid->EnableGridLines( true );
 	m_pGrid->EnableDragGridSize( false );
 	m_pGrid->SetMargins( 0, 0 );
-	
+
 	// Columns
 	m_pGrid->EnableDragColMove( false );
 	m_pGrid->EnableDragColSize( true );
@@ -147,70 +160,70 @@ void lmDlgTextStyles::CreateControls()
 	m_pGrid->SetColLabelValue( 4, wxT("Italic") );
 	m_pGrid->SetColLabelValue( 5, wxT("colour") );
 	m_pGrid->SetColLabelAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
-	
+
 	// Rows
 	m_pGrid->EnableDragRowSize( true );
 	m_pGrid->SetRowLabelSize( 30 );
 	m_pGrid->SetRowLabelAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
-	
+
 	// Label Appearance
-	
+
 	// Cell Defaults
 	m_pGrid->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
 	pGridSizer->Add( m_pGrid, 0, wxALL|wxEXPAND, 5 );
-	
+
 	pMainCtrolsSizer->Add( pGridSizer, 1, wxEXPAND, 5 );
-	
+
 	wxBoxSizer* pActionsSizer;
 	pActionsSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	wxString m_pRadShowChoices[] = { wxT("Show all defined text styles"), wxT("Show not used text styles"), wxT("Show styles using fonts not available") };
 	int m_pRadShowNChoices = sizeof( m_pRadShowChoices ) / sizeof( wxString );
 	m_pRadShow = new wxRadioBox( this, lmID_SHOW, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_pRadShowNChoices, m_pRadShowChoices, 1, wxRA_SPECIFY_COLS );
 	m_pRadShow->SetSelection( 2 );
 	pActionsSizer->Add( m_pRadShow, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
+
 	wxGridSizer* m_pGrid;
 	m_pGrid = new wxGridSizer( 2, 2, 0, 0 );
-	
+
 	m_pBtAddNew = new wxButton( this, lmID_ADD_NEW, wxT("Add new"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pGrid->Add( m_pBtAddNew, 0, wxALL|wxEXPAND, 5 );
-	
+
 	m_pBtRemove = new wxButton( this, lmID_REMOVE, wxT("Remove selected"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pGrid->Add( m_pBtRemove, 0, wxALL|wxEXPAND, 5 );
-	
+
 	m_pBtAddDefault = new wxButton( this, lmID_ADD_DEFAULT, wxT("Add default set"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pGrid->Add( m_pBtAddDefault, 0, wxALL|wxEXPAND, 5 );
-	
+
 	m_pBtEdit = new wxButton( this, lmID_EDIT, wxT("Edit selected"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pGrid->Add( m_pBtEdit, 0, wxALL|wxEXPAND, 5 );
-	
+
 	pActionsSizer->Add( m_pGrid, 1, 0, 5 );
-	
+
 	pMainCtrolsSizer->Add( pActionsSizer, 0, wxEXPAND, 5 );
-	
+
 	pMainSizer->Add( pMainCtrolsSizer, 1, wxEXPAND, 5 );
-	
+
 	wxBoxSizer* pButtonsSizer;
 	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	m_pBtAccept = new wxButton( this, wxID_OK, wxT("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtAccept, 0, wxALL, 5 );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 2, wxEXPAND, 5 );
-	
+
 	m_pBtCancel = new wxButton( this, wxID_CANCEL, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtCancel, 0, wxALL, 5 );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	pMainSizer->Add( pButtonsSizer, 0, wxEXPAND, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 	this->Layout();
 }
@@ -295,7 +308,7 @@ void lmDlgTextStyles::OnEdit(wxGridEvent& event)
     wxFontData data;
     data.SetInitialFont(font);
     data.SetColour(color);
-          
+
     wxFontDialog dialog(this, data);
     if (dialog.ShowModal() != wxID_OK)
         return;

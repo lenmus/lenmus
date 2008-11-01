@@ -72,9 +72,9 @@ public:
 
 
     //debug
-#if defined(__WXDEBUG__)
+//#if defined(__WXDEBUG__)
     inline int GetContextId() { return m_nId; }
-#endif
+//#endif
     wxString DumpContext(int nIndent = 0);
 
 
@@ -104,9 +104,9 @@ private:
 	lmContext*		m_pNext;		//pointer to next context 
 	lmContext*		m_pPrev;		//pointer to previous context 
 
-    #if defined(__WXDEBUG__)
+    //#if defined(__WXDEBUG__)
     int             m_nId;
-    #endif
+    //#endif
 
 };
 

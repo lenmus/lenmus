@@ -50,11 +50,11 @@ public:
 	void OnCaretTimer(wxTimerEvent& event);
 
     //operations
-    void SetCaretPosition(double rScale, lmUPoint uPos, lmStaff* pStaff);
+    void SetCaretPosition(double rScale, int nPage, lmUPoint uPos, lmStaff* pStaff);
         //Hide/show the caret. If the caret is hidden N times, it must be shown
         //also N times to reappear again on the screen.
     void Show(bool fShow = true);
-	void Show(double rScale, lmUPoint uPos, lmStaff* pStaff);
+	void Show(double rScale, int nPage, lmUPoint uPos, lmStaff* pStaff);
     inline void Hide() { Show(false); }
         //When shown, the caret can be made invisible
     void SetInvisible(bool fInvisible);
@@ -97,6 +97,7 @@ private:
 
     //caret position
     lmUPoint        m_oCaretPos;        //caret position on screen
+    int             m_oCaretPage;       //page (1..n)
 
     //caret layout
     wxColour        m_color;            //caret colour

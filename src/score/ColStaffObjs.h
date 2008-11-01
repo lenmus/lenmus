@@ -47,26 +47,9 @@ class lmKeySignature;
 #include "StaffObj.h"   //EStaffObjType
 
 
-// To simplify future modifications of this class (i.e changing the data structures to implement it)
-// when an iterator is requested we will force to specify the intended usage so that
-// this class can optimize it. The defined codes are:
-//
-//	eTR_ByTime:
-//		The StaffObjs must be recovered ordered by increasing time position.
-//
-//	eTR_AsStored:
-//		Order is not important. Items are recovered as it is faster.
-
-enum ETraversingOrder
-{
-    eTR_AsStored = 1,		//no order, as it is more fast
-    eTR_ByTime,				//ordered by timepos
-};
-
 #define lmNO_TIME_LIMIT     100000000.0f        //a too big measure duration
 
 #define lmItMeasure		std::list<lmSegmentData*>::iterator
-#define lmItCSO			std::list<lmStaffObj*>::iterator
 
 class lmSegment
 {
@@ -79,6 +62,14 @@ public:
     void Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition, bool fKeyKeepPitch);
     void UpdateDuration();
     void AutoBeam(int nVoice);
+    void SetCollection(lmStaffObj* pFirstSO, lmStaffObj* pLastSO);
+    void FinishSegmentAt(lmStaffObj* pLastSO);
+    float JoinSegment(lmSegment* pSegment);
+    bool IsTimePosOccupied(float rTime, float rDuration, int nVoice);
+    lmSegment* GetNextSegment();
+    inline void IncrementNumber() { m_nNumSegment++; }
+    inline void DecrementNumber() { m_nNumSegment--; }
+    void RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr);
 
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
@@ -88,14 +79,14 @@ public:
     void DoContextRemoval(lmKeySignature* pOldKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
     void DoContextRemoval(lmClef* pOldClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
 
-
     //info
 	inline int GetNumSegment() { return m_nNumSegment; }
     bool IsSegmentFull();
     inline float GetDuration() { return m_rMaxTime; }
     float GetMaximumTime();
-    inline bool IsEmpty() { return m_StaffObjs.size() == 0; }
+    inline bool IsEmpty() { return m_nNumSO == 0; }
     bool HasBarline();
+    inline int GetNumObjects() { return m_nNumSO; }
 
     //voices
     int GetNumVoices();
@@ -104,26 +95,28 @@ public:
 
     //access to staffobjs
     lmBarline* GetBarline();
+    inline lmStaffObj* GetFirstSO() { return m_pFirstSO; }
+    inline lmStaffObj* GetLastSO() { return m_pLastSO; }
 
 	//debug
 	wxString Dump();
 
 
+
 private:
-	friend class lmVStaffCursor;
-	friend class lmColStaffObjs;
-	friend class lmSOIterator;
 
     void VoiceUsed(int nVoice);
-    void RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr);
-    void ShiftRightTimepos(lmItCSO itStart, float rTimeShift);
-    void ShiftLeftTimepos(lmItCSO itStart, float rTimeShift, float rStartTimepos, int nVoice);
+    void SortMeasure();
+    void ShiftRightTimepos(lmStaffObj* pStartSO, float rTimeShift);
+    void AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO);
+    void ShiftLeftTimepos(lmStaffObj* pStartSO, float rTimeShift, float rStartTimepos, int nVoice);
+    void CountObjects();
 
     //segment management
     void UpdateMeasureDuration();
 
     //auto beam
-    void AutoBeam_CreateBeam(std::vector<lmNoteRest*>& cBeamedNotes);
+    void AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes);
 
     //context management
     lmContext* FindEndOfSegmentContext(int nStaff);
@@ -134,7 +127,6 @@ private:
                                 lmEClefType nNewClefType, lmEClefType nOldClefType,
                                 bool fClefKeepPosition);
     void PropagateContextChange(lmContext* pStartContext, int nStaff);
-    lmSegment* GetNextSegment();
 
     //staffobjs management
     void Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
@@ -145,19 +137,18 @@ private:
 
     //member variables
 
-    //To remove
-    std::list<lmStaffObj*>	m_StaffObjs;		//list of StaffObjs in this segment
-    lmColStaffObjs* m_pOwner;
+    lmColStaffObjs*         m_pOwner;
 
-    //To keep
+    //info about this segment
     int			m_nNumSegment;				//0..n-1
     lmContext*	m_pContext[lmMAX_STAFF];	//ptr to current context for each staff
     int         m_bVoices;                  //voices in this segment. One bit per used voice
     float	    m_rMaxTime;                 //occupied time from start of the measure
 
-    //new
-    lmItCSO     m_itFirstSO;                //first SO in this measure (NULL, pSO)
-    lmItCSO     m_itLastSO;                 //last SO in this measure (barline, NULL, pSO)
+    //info about StaffObjs in this segments:
+    lmStaffObj*     m_pFirstSO;         //first SO in this measure (NULL, pSO)
+    lmStaffObj*     m_pLastSO;          //last SO in this measure (barline, NULL, pSO)
+    int             m_nNumSO;           //num of objects in this measure
 };
 
 
@@ -175,6 +166,8 @@ public:
     void Add(lmStaffObj* pNewSO, bool fClefKeepPosition=true, bool fKeyKeepPitch=true);
 	void Delete(lmStaffObj* pCursorSO, bool fDelete = true, bool fClefKeepPosition = true,
                 bool fKeyKeepPitch=true);
+    void AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO);
+
 
 	void Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO);
     bool ShiftTime(float rTimeShift);
@@ -191,21 +184,28 @@ public:
     lmStaffObj* FindFwdStaffObj(lmStaffObj* pCurSO, EStaffObjType nType);
     lmStaffObj* FindNextStaffObj(lmStaffObj* pCurSO);
     lmStaffObj* FindPrevStaffObj(lmStaffObj* pCurSO);
+    inline lmStaffObj* GetFirstSO() { return m_pFirstSO; }
+    inline lmStaffObj* GetLastSO() { return m_pLastSO; }
 
-    //iterator related methods
-    lmSOIterator* CreateIterator(ETraversingOrder nOrder, int nVoice=-1);
-	lmSOIterator* CreateIteratorTo(ETraversingOrder nOrder, lmStaffObj* pSO);
-	lmSOIterator* CreateIteratorFrom(ETraversingOrder nOrder, lmVStaffCursor* pVCursor);
-	lmSOIterator* CreateIteratorFrom(ETraversingOrder nOrder, lmStaffObj* pSO);
+    //collection access and iterator related methods
+	lmSOIterator* CreateIterator();
+	lmSOIterator* CreateIteratorTo(lmStaffObj* pSO);
+	lmSOIterator* CreateIteratorFrom(lmVStaffCursor* pVCursor);
+	lmSOIterator* CreateIteratorFrom(lmStaffObj* pSO);
 
 	//info related to measures
     int GetNumMeasures();
     float GetMeasureDuration(int nMeasure);
 	int GetNumVoicesInMeasure(int nMeasure);
     bool IsVoiceUsedInMeasure(int nVoice, int nMeasure);
+    lmSegment* GetNextSegment(int nCurSegment);
 
     //info related to segments
     int GetNumSegments();
+    inline lmSegment* GetSegment(int nSegment) { return m_Segments[nSegment]; }
+
+    //other info
+    inline lmVStaff* GetOwnerVStaff() { return m_pOwner; }
 
 	//context management
 	lmContext* GetCurrentContext(lmStaffObj* pSO);
@@ -220,31 +220,32 @@ public:
     //undo/redo related methods
     void LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj* pSO);
 
+    //AutoReBar
+    void AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO, lmTimeSignature* pNewTS);
+
+	//timepos management
+    bool IsTimePosOccupied(lmSegment* pSegment, float rTime, float rDuration, int nVoice);
+
+    //These two methos are only to be used by lmSegment::SortMeasure
+    inline void SetFirstSO(lmStaffObj* pSO) { m_pFirstSO = pSO; }
+    inline void SetLastSO(lmStaffObj* pSO) { m_pLastSO = pSO; }
+
 
 private:
-	friend class lmSOIterator;
-	friend class lmVStaffCursor;
-	friend class lmSegment;
-
 	//general management
     void Store(lmStaffObj* pNewSO, bool fClefKeepPosition=true, bool fKeyKeepPitch=true);
 
 	//segments management
 	void SplitSegment(int nSegment, lmStaffObj* pLastSO);
     void CreateNewSegment(int nSegment);
-    void RemoveSegment(int nSegment, bool fDeleteStaffObjs = true);
+    void RemoveSegment(int nSegment);
 	void UpdateSegmentContexts(lmSegment* pSegment);
-    lmSegment* GetNextSegment(int nCurSegment);
-
-    //AutoReBar
-    void AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO, lmTimeSignature* pNewTS);
 
 	//voices management
 	int AssignVoice(lmStaffObj* pSO, int nSegment);
 
 	//timepos management
     void AssignTime(lmStaffObj* pSO);
-    bool IsTimePosOccupied(lmSegment* pSegment, float rTime, float rDuration, int nVoice);
 
 
     lmVStaff*                   m_pOwner;           //owner VStaff
@@ -252,8 +253,9 @@ private:
     int                         m_nNumStaves;       //num staves in the collection
 	lmVStaffCursor*          	m_pVCursor;			//cursor
 
-    //New implementation in a single list
-    std::list<lmStaffObj*>	    m_TheSOList;    //list of StaffObjs in the collection
+    //The collection is implemented as a doubled linked list:
+    lmStaffObj*     m_pFirstSO;         //first SO in the collection (NULL, pSO)
+    lmStaffObj*     m_pLastSO;          //last SO in the collection (last barline, NULL, pSO)
 
 };
 
@@ -264,10 +266,10 @@ private:
 //cursor state
 typedef struct lmVCursorState_Struct {
 	int         nStaff;         //staff (1..n)
-	int         nSegment;       //current segment (0..n-1)
 	float       rTimepos;       //timepos
 	lmStaffObj* pSO;			//current pointed staffobj
-} lmVCursorState;
+}
+lmVCursorState;
 
 //global variable used as default initializator
 extern lmVCursorState g_tNoVCursorState;
@@ -316,14 +318,12 @@ public:
     bool IsAtBeginning();
 
 	//access to cursor info
-	inline int GetSegment() { return m_nSegment; }
+	int GetSegment();
     inline float GetTimepos() { return m_rTimepos; }
     inline int GetNumStaff() { return m_nStaff; }
-    inline lmItCSO GetCurIt() { return m_it; }
+    lmStaffObj* GetStaffObj();
     lmVCursorState GetState();
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
-    //int GetPageNumber();
-	lmStaffObj* GetStaffObj();
     lmStaffObj* GetPreviousStaffobj();
 
 
@@ -331,20 +331,14 @@ public:
     lmStaff* GetCursorStaff();
     lmVStaff* GetVStaff();
 
-    void RefreshInternalInfo();
 
 private:
     void UpdateTimepos();
     float GetStaffPosY(lmStaffObj* pSO);
-    void AdvanceIterator();
 
     //cursor
     void MoveRightToNextTime();
-    void MoveRightIncrementingTime(float rTimeincr);
-    void MoveRightToNextObject(float rTimeincr);
     void MoveLeftToPrevTime();
-    void MoveLeftDecrementingTime(float rTimeincr);
-    void MoveLeftToPrevObject(float rTimeincr);
 
     //helper, for cursor common operations
     void PositionAt(float rTargetTimepos);
@@ -354,13 +348,11 @@ private:
 
 	lmColStaffObjs*		m_pColStaffObjs;	//collection pointed by this cursor
     lmScoreCursor*      m_pScoreCursor;     //ScoreCursor using this VCursor
-	lmSegment*			m_pSegment;			//current segment
 
     //state variables
     int					m_nStaff;			//staff (1..n)
-	int					m_nSegment;			//current segment (0..n-1)
 	float				m_rTimepos;			//timepos
-	lmItCSO				m_it;				//iterator, to speed up cursor moves
+    lmSOIterator*       m_pIt;              //iterator pointing to current SO
 
 };
 

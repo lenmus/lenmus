@@ -32,6 +32,7 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+#include <wx/richtext/richtextctrl.h>
 
 #include "TextProperties.h"
 #include "DlgTextStyles.h"
@@ -113,68 +114,68 @@ void lmTextProperties::CreateControls()
 {
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* pToolbarSizer;
 	pToolbarSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
     wxSize btSize(16, 16);
 	m_pBtCut = new wxBitmapButton( this, lmEDIT_CUT,
                             wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
 	pToolbarSizer->Add( m_pBtCut, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pBtCopy = new wxBitmapButton( this, lmEDIT_COPY,
                             wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
 	pToolbarSizer->Add( m_pBtCopy, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pBtPaste = new wxBitmapButton( this, lmEDIT_PASTE,
                             wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
 	pToolbarSizer->Add( m_pBtPaste, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	
+
+
 	pToolbarSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	m_pBtLeft = new wxBitmapButton( this, lmEDIT_LEFT,
                             wxArtProvider::GetBitmap(_T("tool_text_left"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
 	pToolbarSizer->Add( m_pBtLeft, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pBtCenter = new wxBitmapButton( this, lmEDIT_CENTER,
                             wxArtProvider::GetBitmap(_T("tool_text_center"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
 	pToolbarSizer->Add( m_pBtCenter, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pBtRight = new wxBitmapButton( this, lmEDIT_RIGHT,
                             wxArtProvider::GetBitmap(_T("tool_text_right"), wxART_TOOLBAR, btSize),
                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
 	pToolbarSizer->Add( m_pBtRight, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	
+
+
 	pToolbarSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	m_pTxtStyle = new wxStaticText( this, wxID_ANY, _("Text style:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtStyle->Wrap( -1 );
 	pToolbarSizer->Add( m_pTxtStyle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	wxArrayString m_pCboTextStyleChoices;
 	m_pCboTextStyle = new wxChoice( this, lmEDIT_STYLE, wxDefaultPosition, wxSize( 250,-1 ), m_pCboTextStyleChoices, 0 );
 	m_pCboTextStyle->SetSelection( 0 );
 	pToolbarSizer->Add( m_pCboTextStyle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pBtnChangeStyles = new wxButton( this, lmEDIT_CHANGE_STYLE, _("Add/change styles"), wxDefaultPosition, wxDefaultSize, 0 );
 	pToolbarSizer->Add( m_pBtnChangeStyles, 0, wxALL, 5 );
-	
+
 	pMainSizer->Add( pToolbarSizer, 0, wxEXPAND, 5 );
-	
+
 	//m_pTxtCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtCtrl = new wxRichTextCtrl(this, wxID_ANY, wxEmptyString);
 	m_pTxtCtrl->SetMinSize( wxSize( 550,150 ) );
 
 
 	pMainSizer->Add( m_pTxtCtrl, 1, wxALL|wxEXPAND, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 	this->Layout();
 	pMainSizer->Fit( this );

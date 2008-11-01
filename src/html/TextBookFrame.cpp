@@ -38,17 +38,18 @@
 #pragma hdrstop
 #endif
 
-#ifndef WXPRECOMP
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#else
     #include "wx/intl.h"
     #include "wx/log.h"
-
     #include "wx/object.h"
     #include "wx/sizer.h"
-
     #include "wx/bmpbuttn.h"
     #include "wx/statbox.h"
     #include "wx/radiobox.h"
-#endif // WXPRECOMP
+    #include "wx/filedlg.h"
+#endif
 
 #ifdef __WXMAC__
     #include "wx/menu.h"
@@ -1160,7 +1161,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                                             wxEmptyString,
                                             wxEmptyString,
                                             filemask,
-                                            wxOPEN | wxFILE_MUST_EXIST,
+                                            wxFD_OPEN | wxFD_FILE_MUST_EXIST,
                                             this);
                 if (!s.empty())
                 {

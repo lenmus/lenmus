@@ -150,7 +150,7 @@ public:
 	void CaretDown();
     lmVStaffCursor* GetVCursor();
 
-	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
+	void LogicalToDevice(lmUPoint& posLogical, int nPage, lmDPoint& posDevice);
 
 	//selections
     bool SomethingSelected();
@@ -211,8 +211,7 @@ private:
 
     // Auxiliary for scrolling
     int CalcScrollInc(wxScrollEvent& event);
-    void DoScroll(int orientation, int nScrollSteps);
-    bool IsPositionVisible(int nNumPage, lmURect visibleRect);
+    void DoScroll(int xScrollSteps, int yScrollSteps);
     void ScrollTo(int nNumPage, lmURect visibleRect);
 
 	//caret management

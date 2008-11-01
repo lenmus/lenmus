@@ -50,7 +50,8 @@
 #endif
 
 #include "wx/gdicmn.h"
-
+#include "wx/font.h"
+#include "wx/colour.h"
 
 
 //// Types used for portability and legibility

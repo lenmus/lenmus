@@ -789,7 +789,7 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
     lmEBracketSymbol nGrpSymbol = lm_eBrace;
 
     //parse elements until <Instrument> tag found
-    bool fInstrFound = false;               
+    bool fInstrFound = false;
     for (; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
 
@@ -962,7 +962,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             pTS = pScore->GetStyleName(tNameFont);
         wxASSERT(pTS);
         pName = new lmInstrNameAbbrev(sInstrName, pTS);
-        //convert position to LUnits. As the text is not yet owned we must use the score 
+        //convert position to LUnits. As the text is not yet owned we must use the score
 	    if (tNamePos.xUnits == lmTENTHS)
         {
 		    tNamePos.x = pScore->TenthsToLogical(tNamePos.x);
@@ -984,7 +984,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             pTS = pScore->GetStyleName(tAbbrevFont);
         wxASSERT(pTS);
         pAbbrev = new lmInstrNameAbbrev(sInstrAbbrev, pTS);
-        //convert position to LUnits. As the text is not yet owned we must use the score 
+        //convert position to LUnits. As the text is not yet owned we must use the score
 	    if (tAbbrevPos.xUnits == lmTENTHS)
         {
 		    tAbbrevPos.x = pScore->TenthsToLogical(tAbbrevPos.x);
@@ -3181,7 +3181,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     tPos.x = 0.0f;
     tPos.y = 0.0f;
 
-    if (AnalyzeTextString(pNode, &sText, &sStyle, &nAlign, &tPos, &tFont, &fHasWidth)) 
+    if (AnalyzeTextString(pNode, &sText, &sStyle, &nAlign, &tPos, &tFont, &fHasWidth))
         return true;
 
     //no error:
@@ -3314,8 +3314,8 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sElmName = pNode->GetName();
 
     //check that the width is specified
-    if(pNode->GetNumParms() < 1) {
-        pNode,
+    if(pNode->GetNumParms() < 1)
+    {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
             sElmName.c_str());
         return;
@@ -3344,8 +3344,8 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
     int nNumParms = pNode->GetNumParms();
 
     //check that type is specified
-    if(nNumParms < 2) {
-        pNode,
+    if(nNumParms < 2)
+    {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             sElmName.c_str());
         return;
@@ -3363,8 +3363,8 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
         // colour (optional parameter). Default: black
 
         // get parameters
-        if(nNumParms < 5) {
-            pNode,
+        if(nNumParms < 5)
+        {
             AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
                 sElmName.c_str());
             return;
