@@ -169,9 +169,10 @@ lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph,
     m_uGlyphPos.y = uPos.y; // - pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset, nStaff);
 
     // store boundling rectangle position and size
+    wxASSERT(pOwner->IsComponentObj());
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
-    lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
-    lmStaff* pStaff = pSO->GetVStaff()->GetStaff(pSO->GetStaffNum());
+    lmComponentObj* pSO = ((lmComponentObj*)m_pOwner);
+    lmStaff* pStaff = pSO->GetStaff();
     double rPointSize = pStaff->GetMusicFontSize();
     pPaper->FtSetFontSize(rPointSize);
     lmURect bbox = ((lmAggDrawer*)(pPaper->GetDrawer()))->FtGetGlyphBounds( (unsigned int)sGlyph.GetChar(0) );
@@ -187,9 +188,8 @@ lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph,
 
 double lmShapeGlyph::GetPointSize()
 {
-    lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
-    lmStaff* pStaff = pSO->GetVStaff()->GetStaff(pSO->GetStaffNum());
-    return pStaff->GetMusicFontSize();
+    lmComponentObj* pSO = ((lmComponentObj*)m_pOwner);
+    return pSO->GetStaff()->GetMusicFontSize();
 }
 
 void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
@@ -198,7 +198,7 @@ void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
 
     pPaper->FtSetFontSize(GetPointSize());
     pPaper->SetTextForeground(color);
-    lmStaffObj* pSO = ((lmStaffObj*)m_pOwner);
+    lmComponentObj* pSO = ((lmComponentObj*)m_pOwner);
     pPaper->FtSetTextPosition(m_uGlyphPos.x, m_uGlyphPos.y + pSO->TenthsToLogical(60) );
     pPaper->FtDrawChar( (unsigned int)sGlyph.GetChar(0) );
 

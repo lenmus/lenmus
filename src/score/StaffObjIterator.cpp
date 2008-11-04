@@ -124,8 +124,7 @@ void lmSOIterator::MovePrev()
     //otherwise, move back
     m_pSO = m_pSO->GetPrevSO();
     wxASSERT(m_pSO);
-    if (m_pSO->IsBarline())
-        m_fChangeOfMeasure = true;
+    m_fChangeOfMeasure = m_pSO->IsBarline();
     m_fEnd = false;
 }
 

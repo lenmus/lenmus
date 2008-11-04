@@ -167,6 +167,7 @@ public:
     //--- a ScoreObj can own other ScoreObjs -----------------------
     inline lmScoreObj* GetParentScoreObj() { return m_pParent; }
     virtual lmScore* GetScore()=0;
+    virtual lmStaff* GetStaff() { return (lmStaff*)NULL; }
 
 
     //provide units conversion
@@ -299,7 +300,6 @@ public:
 
 
 
-
 protected:
     lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, bool fIsDraggable = false);
 
@@ -350,6 +350,7 @@ public:
                         bool fHighlight = false);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
     lmScore* GetScore();
+    lmStaff* GetStaff();
 
 
     // units conversion
@@ -497,6 +498,7 @@ public:
 						wxColour colorC = *wxBLACK, bool fHighlight = false);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
     inline lmScore* GetScore() { return m_pParent->GetScore(); }
+    inline lmStaff* GetStaff() { return m_pParent->GetStaff(); }
 
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);

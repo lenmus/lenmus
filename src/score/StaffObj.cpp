@@ -531,6 +531,12 @@ lmUPoint lmComponentObj::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	return uOrg;
 }
 
+lmStaff* lmComponentObj::GetStaff() 
+{ 
+    return m_pVStaff->GetStaff(m_nStaffNum);
+}
+
+
 
 //-------------------------------------------------------------------------------------------------
 // lmStaffObj implementation

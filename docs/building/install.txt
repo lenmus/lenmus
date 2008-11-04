@@ -1,7 +1,7 @@
 LenMus building documentation
 ==============================
 
-Last updated: May/2008
+Last updated: 3/Nov/2008
 
 
 Table of content
@@ -19,36 +19,54 @@ Table of content
 
  
 ====================================================================================
-1. Requirements and supported platforms
+1. Supported platforms and requirements
 ====================================================================================
 
-1.1 Dependencies
------------------
 
-- wxWidgets
-    Building LenMus requires to install and build wxWidgets (http://www.wxwidgets.org/). There is a couple of fixes to add to wxWidgets source code. One of them is critical; without it LenMus will not build. This fixes are listed in file wxwidgets_patches.txt
-    
-    Currently LenMus can be built with wxMSW (Windows) or wxGTK (Linux). You should download the wxWidgets sources for the appropriate platform (http://www.wxWidgets.org/downloads/).
-
-LenMus depends on other software packages (Portmidi and agg 2.4) but they are already included in the LenMus source code package. Therefore, you have nothing to do about these dependencies. These packages are for:
-
-    - Portmidi
-        LenMus require Portmidi for sound generation. Portmidi is used through wrapper wxMidi (http://wxcode.sourceforge.net).
-
-    - agg 2.4
-        For anti-alised renderization LenMus uses AGG 2.4.
-
-
-1.2 Supported platforms
+1.1 Supported platforms
 ------------------------
 
-Currently, LenMus has been tested and build in the following platforms:
+Currently, LenMus has been tested and built in the following platforms:
 
 - Windows XP with MS VisualStudio .NET 2003
 
 - Linux Ubuntu, with Code::Blocks and g++
 
 Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
+
+
+
+1.2 Dependencies
+-----------------
+
+LenMus depends on the following software packages (installation instructions for these dependencies are given later):
+
+- wxWidgets (http://www.wxwidgets.org/)
+    LenMus is programmed using the wxWidgets framework. Therefore, building LenMus requires to install and build wxWidgets. There is a couple of fixes to add to wxWidgets source code. One of them is critical; without it LenMus will not build. This fixes are listed in file wxwidgets_patches.txt
+    
+    Currently LenMus can be built with wxMSW (Windows) or wxGTK (Linux). You have to download the wxWidgets sources for the appropriate platform (http://www.wxWidgets.org/downloads/) and build it.
+
+
+- FreeType (http://www.freetype.org/)
+    Renderization of music symbols is done using the FreeType library. Therefore, it is required to have installed:
+    
+    - For Windows: freetype.dll, freetype.lib
+    - For Linux: libfreetype.o
+    
+    Also, for both systems, the include files (.h) for the Freetype version you are installing are required. 
+
+
+- Portmidi (http://?)
+    LenMus require Portmidi for sound generation. Therefore, it is required to have:
+    
+    - For Windows: portmidi.lib, porttime.lib and portmidi.dll
+    - For Linux: ibportmidi.o, libporttime.o
+    
+
+- Agg 2.4 (http://www.anti-grain.com/)
+    For anti-alised renderization LenMus uses AGG 2.4. It is a collection of source files, that are already included in the LenMus source code. So you don't need to do anything to about this package.
+
+Detailed instructions about how to install these packages are given in separate files.
 
 
 
@@ -81,7 +99,8 @@ To compile LenMus, wxWidgets should be build with the following options:
     __WXDEBUG__
     
     
-Install libportmidi & libporttime
+    
+Install PortMidi libraries
 ---------------------------------
 
 LenMus require the Portmidi libraries for sound generation. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
@@ -91,6 +110,22 @@ sudo aptitude install libportmidi       //install libportmidi
 sudo aptitude install libporttime       //install libporttime
 sudo updatedb                           //updates databases used by GNU locate
 ls /usr/lib/libport*                    //verify that the libraries are there
+
+
+    
+    
+Install FreeType (libraries and include files)
+-------------------------------------------------------
+
+LenMus require the FreeType package for renderization of music symbols. appart of the libraries, the include files (.h) for the FreeType version you are installing are also required to compile LenMus. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
+
+sudo aptitude update                    //update the list of available packages
+sudo aptitude install libportmidi       //install libportmidi
+sudo aptitude install libporttime       //install libporttime
+sudo updatedb                           //updates databases used by GNU locate
+ls /usr/lib/libfreetype                 //verify that the libraries are there
+
+The include files have to be accesible from LenMus makefile.
 
 
 Compile and build LenMus
@@ -133,6 +168,27 @@ Install wxWidgets (wxMSW)
 
 3. Build wxWidgets. For this please refer to wxWidgets documentation. A quick guide is included in file windows_install_wxwidgets.txt for your convenience, and it should be enough in most cases.
 
+
+    
+Install PortMidi libraries
+---------------------------------
+
+LenMus require the Portmidi libraries for sound generation. The libraries are already included in the LenMus source code package, so you have nothing to do.
+
+Nevertheless, if you prefer to use a later version or to build this library by yourself, you will have to download the portmidi package and follow the instructions in this package.
+
+    
+Install FreeType (libraries and include files)
+-------------------------------------------------------
+
+LenMus require the FreeType package for renderization of music symbols. appart of the libraries, the include files (.h) for the FreeType version you are installing are also required to compile LenMus. All of them are already included in the LenMus source code package, so you have nothing to do.
+
+Nevertheless, if you prefer to use a later version or to build this library by yourself, you will have to download the FreeType package and follow the instructions in this package to build the library. Once built, copy the following folders and replace those in lenmus/packages/freetype:
+    - freetype/include
+    - freetype/bin
+    - freetype/lib
+
+    
 
 
 Compile and build LenMus

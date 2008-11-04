@@ -54,6 +54,7 @@ public:
     inline int GetNumSegment() { return (m_pSO ? m_pSO->GetSegment()->GetNumSegment() 
                                                : m_pColStaffObjs->GetNumSegments()-1 ); }
     inline void ResetFlags() { m_fChangeOfMeasure = false; }
+    inline bool IsManagingCollection(lmColStaffObjs* pCSO) { return pCSO == m_pColStaffObjs; }
 
 
     void AdvanceToMeasure(int nBar);

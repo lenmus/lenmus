@@ -233,11 +233,19 @@ void lmVStaffCursor::AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fRes
 	m_pColStaffObjs = pColStaffObjs;
 	m_pColStaffObjs->AttachCursor(this);		//link back
 
-    //create iterator
+    //create iterator if necessary
     if (m_pIt)
-        delete m_pIt;
-    m_pIt = new lmSOIterator(pColStaffObjs, (lmStaffObj*)NULL);
+    {
+        if (!m_pIt->IsManagingCollection(pColStaffObjs))
+        {
+            delete m_pIt;
+            m_pIt = new lmSOIterator(pColStaffObjs, (lmStaffObj*)NULL);
+        }
+    }
+    else
+        m_pIt = new lmSOIterator(pColStaffObjs, (lmStaffObj*)NULL);
 
+    //reset cursor if requested
     if (fReset)
 	    ResetCursor();
 }
@@ -429,6 +437,7 @@ void lmVStaffCursor::MoveLeftToPrevTime()
             fPrevObjFound = true;
             break;
         }
+        m_pIt->MovePrev();
     }
 
     if (fPrevObjFound)
@@ -1139,14 +1148,24 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
 	//remove the staffobj from the collection
     lmStaffObj* pNext = pSO->GetNextSO();
     lmStaffObj* pPrev = pSO->GetPrevSO();
+    bool fUpdateFirstInCollection = (m_pFirstSO == m_pOwner->GetFirstSO());
+    bool fUpdateLastInCollection = (m_pLastSO == m_pOwner->GetLastSO());
     if (pPrev)
         pPrev->SetNextSO(pNext);
     if (pNext)
         pNext->SetPrevSO(pPrev);
     if (m_pFirstSO == pSO)
+    {
         m_pFirstSO = pNext;
+        if (fUpdateFirstInCollection)
+            m_pOwner->SetFirstSO(pNext);
+    }
     if (m_pLastSO == pSO)
+    {
         m_pLastSO = pPrev;
+        if (fUpdateLastInCollection)
+            m_pOwner->SetLastSO(pPrev);
+    }
     --m_nNumSO;
 
 
@@ -1601,8 +1620,8 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
 
     wxASSERT(nStaff > 0);
 
-    if (!m_pContext[nStaff-1]->IsModified())
-        return;     //nothing to do. Context are updated
+    if (m_pContext[nStaff-1] == pStartContext && !fClefKeepPosition)
+        return;     //nothing to do. Context is updated and no need to transpose notes
 
     //update context pointer
     m_pContext[nStaff-1] = pStartContext;
@@ -1611,8 +1630,8 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
     if (fClefKeepPosition && nNewClefType != lmE_Undefined)
         Transpose(nNewClefType, nOldClefType, (lmStaffObj*)NULL, nStaff);
 
-    //mark context as processed (not modified)
-    m_pContext[nStaff-1]->SetModified(false);
+    ////mark context as processed (not modified)
+    //m_pContext[nStaff-1]->SetModified(false);
 
     //propagate to next segment
     lmSegment* pNextSegment = GetNextSegment();
@@ -1634,8 +1653,8 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
 
     wxASSERT(nStaff > 0);
 
-    if (!m_pContext[nStaff-1]->IsModified())
-        return;     //nothing to do. Context are updated
+    //if (!m_pContext[nStaff-1]->IsModified())
+    //    return;     //nothing to do. Context are updated
 
     //update context pointer
     m_pContext[nStaff-1] = pStartContext;
@@ -1646,8 +1665,8 @@ void lmSegment::PropagateContextChange(lmContext* pStartContext, int nStaff,
     else
         ChangePitch(pOldKey, pNewKey, (lmStaffObj*)NULL);
 
-    //mark context as processed (not modified)
-    m_pContext[nStaff-1]->SetModified(false);
+    ////mark context as processed (not modified)
+    //m_pContext[nStaff-1]->SetModified(false);
 
     //propagate to next segment
     lmSegment* pNextSegment = GetNextSegment();
