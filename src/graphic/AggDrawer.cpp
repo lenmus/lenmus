@@ -589,8 +589,8 @@ void lmAggDrawer::DrawText(const wxString& text, lmLUnits x, lmLUnits y)
 
 void lmAggDrawer::SetTextForeground(const wxColour& colour)
 {
-    //m_pDC->SetTextForeground(colour);
-    m_textColorF = lmToRGBA8(colour);
+    m_pDC->SetTextForeground(colour);       //for texts
+    m_textColorF = lmToRGBA8(colour);       //for music font
     m_textColorF.r = colour.Red();
     m_textColorF.g = colour.Green();
     m_textColorF.b = colour.Blue();
@@ -599,8 +599,8 @@ void lmAggDrawer::SetTextForeground(const wxColour& colour)
 
 void lmAggDrawer::SetTextBackground(const wxColour& colour)
 {
-    m_pDC->SetTextBackground(colour);
-    m_textColorB = lmToRGBA8(colour);
+    m_pDC->SetTextBackground(colour);       //for texts
+    m_textColorB = lmToRGBA8(colour);       //for music font
 }
 
 void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)

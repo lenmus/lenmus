@@ -402,58 +402,6 @@ lmSegmentEntry* lmFragmentsTable::GetNextSegment()
 
 }
 
-//wxString lmFragmentsTable::Old_GetFirstSegmentDuracion(wxString sSegment,
-//                                float* pSegmentDuration, float* pTimeAlignBeat)
-//{
-//    /*
-//        - Removes any rests at the beginig of the segment and returns the
-//            remaining elements.
-//        - Computes the duration of the removed rests and updates with this
-//            value variable pointed by pTimeAlignBeat
-//        - Computes the duration of the remaining elements and updates with this
-//            value variable pointed by pSegmentDuration
-//    */
-//    int iEnd;
-//    wxString sElement;
-//    float rSegmentDuration = 0.0;
-//    float rTimeToBeatAlign = 0.0;
-//    float rElementDuration = 0.0;
-//    bool fIsInitialRest;
-//    bool fProcessingInitialRests = true;
-//    wxString sFirstSegment = _T("");
-//
-//    wxString sSource = sSegment;
-//    while (sSource != _T("") )
-//    {
-//        //extract the element and remove it from source
-//        iEnd = SrcSplitPattern(sSource) + 1;
-//        sElement = sSource.substr(0, iEnd);
-//        sSource = sSource.substr(iEnd);
-//
-//        //compute element's duration
-//        rElementDuration = SrcGetElementDuracion(sElement);
-//
-//        //determine element type
-//        fIsInitialRest = (fProcessingInitialRests ? SrcIsRest(sElement) : false);
-//
-//        // accumulate element duration
-//        if (fIsInitialRest) {
-//            rTimeToBeatAlign += rElementDuration;
-//        }
-//        else {
-//            fProcessingInitialRests = false;
-//            sFirstSegment += sElement;
-//            rSegmentDuration += rElementDuration;
-//        }
-//    }
-//
-//    //return results
-//    *pSegmentDuration = rSegmentDuration;
-//    *pTimeAlignBeat = rTimeToBeatAlign;
-//    return sFirstSegment;
-//
-//}
-
 int lmFragmentsTable::SplitFragment(wxString sSource)
 {
     int i;                  //index to character being explored
@@ -485,6 +433,9 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
         return the total duration of the pattern
     */
 
+    if (sPattern.Contains(_T("(n b")))
+        wxLogMessage(_T("[lmFragmentsTable::GetPatternDuracion] Invalid pattern %s"), sPattern.c_str());
+
     //prepare source with a measure and instatiate note pitches
     wxString sSource = _T("(c 1 ") + sPattern;
     sSource += _T("(Barra Final))");
@@ -501,6 +452,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     pVStaff->AddKeySignature(earmDo);
     //pVStaff->AddTimeSignature( m_nTimeSign );
     pNode = parserLDP.ParseText(sSource);
+    wxLogMessage(_T("[lmFragmentsTable::GetPatternDuracion] %s"), sSource.c_str());
     parserLDP.AnalyzeMeasure(pNode, pVStaff);
 
     //The score is built. Traverse it to get total duration

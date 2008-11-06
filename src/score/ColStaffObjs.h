@@ -279,7 +279,7 @@ class lmVStaffCursor
 {
 public:
 	lmVStaffCursor();
-	~lmVStaffCursor() {}
+	~lmVStaffCursor();
 
     //copy constructor
 	lmVStaffCursor(lmVStaffCursor& oVCursor);

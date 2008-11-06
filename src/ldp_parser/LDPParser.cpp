@@ -1659,6 +1659,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
 				m_pLastNoteRest = pVStaff->AddRest(nNoteType, rDuration, nDots,
 										m_nCurStaff, m_nCurVoice, fVisible);
+                return m_pLastNoteRest;
             }
         }
         else
@@ -1674,6 +1675,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 											   fTie, nStem);
 				if (!fInChord || pNt->IsBaseOfChord())
 					m_pLastNoteRest = pNt;
+                return pNt;
             }
         }
 

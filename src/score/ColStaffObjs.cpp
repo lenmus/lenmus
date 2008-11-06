@@ -228,6 +228,12 @@ lmVStaffCursor::lmVStaffCursor(lmVStaffCursor& oVCursor)
     m_pIt = new lmSOIterator(oVCursor.m_pIt);
 }
 
+lmVStaffCursor::~lmVStaffCursor()
+{
+    if (m_pIt)
+        delete m_pIt;
+}
+
 void lmVStaffCursor::AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fReset)
 {
 	m_pColStaffObjs = pColStaffObjs;
@@ -2307,6 +2313,15 @@ lmColStaffObjs::lmColStaffObjs(lmVStaff* pOwner, int nNumStaves)
 
 lmColStaffObjs::~lmColStaffObjs()
 {
+    //delete StaffObjs in the collection
+    lmStaffObj* pSO = m_pFirstSO;
+    while(pSO)
+    {
+        lmStaffObj* pNextSO = pSO->GetNextSO();
+        delete pSO;
+        pSO = pNextSO;
+    }
+
 	//delete segments
 	std::vector<lmSegment*>::iterator itS;
 	for (itS = m_Segments.begin(); itS != m_Segments.end(); itS++)

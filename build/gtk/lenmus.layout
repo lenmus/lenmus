@@ -202,8 +202,8 @@
 	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="0" top="0" tabpos="28">
 		<Cursor position="9597" topLine="243" />
 	</File>
-	<File name="../../src/exercises/ScoreConstrains.cpp" open="0" top="0" tabpos="26">
-		<Cursor position="18131" topLine="505" />
+	<File name="../../src/exercises/ScoreConstrains.cpp" open="1" top="1" tabpos="2">
+		<Cursor position="16180" topLine="444" />
 	</File>
 	<File name="../../src/exercises/ScoreConstrains.h" open="0" top="0" tabpos="51">
 		<Cursor position="0" topLine="228" />
@@ -448,7 +448,7 @@
 	<File name="../../src/score/Clef.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="5745" topLine="153" />
 	</File>
-	<File name="../../src/score/ColStaffObjs.cpp" open="1" top="1" tabpos="1">
+	<File name="../../src/score/ColStaffObjs.cpp" open="1" top="0" tabpos="1">
 		<Cursor position="96366" topLine="2676" />
 	</File>
 	<File name="../../src/score/ColStaffObjs.h" open="0" top="0" tabpos="6">

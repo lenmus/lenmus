@@ -531,11 +531,6 @@ lmUPoint lmComponentObj::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	return uOrg;
 }
 
-lmStaff* lmComponentObj::GetStaff() 
-{ 
-    return m_pVStaff->GetStaff(m_nStaffNum);
-}
-
 
 
 //-------------------------------------------------------------------------------------------------
@@ -568,6 +563,11 @@ lmStaffObj::~lmStaffObj()
 lmScore* lmStaffObj::GetScore()
 { 
     return m_pVStaff->GetScore(); 
+}
+
+lmStaff* lmStaffObj::GetStaff() 
+{ 
+    return m_pVStaff->GetStaff(m_nStaffNum);
 }
 
 void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
