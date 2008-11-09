@@ -46,8 +46,11 @@
 	<File name="../../src/app/EditFrame.cpp" open="0" top="0" tabpos="16">
 		<Cursor position="2778" topLine="71" />
 	</File>
-	<File name="../../src/app/FontManager.cpp" open="0" top="0" tabpos="80">
-		<Cursor position="4448" topLine="105" />
+	<File name="../../src/app/FontManager.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="2265" topLine="39" />
+	</File>
+	<File name="../../src/app/FontManager.h" open="1" top="1" tabpos="3">
+		<Cursor position="1417" topLine="15" />
 	</File>
 	<File name="../../src/app/Logger.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="4822" topLine="88" />
@@ -202,7 +205,7 @@
 	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="0" top="0" tabpos="28">
 		<Cursor position="9597" topLine="243" />
 	</File>
-	<File name="../../src/exercises/ScoreConstrains.cpp" open="1" top="1" tabpos="2">
+	<File name="../../src/exercises/ScoreConstrains.cpp" open="1" top="0" tabpos="2">
 		<Cursor position="16180" topLine="444" />
 	</File>
 	<File name="../../src/exercises/ScoreConstrains.h" open="0" top="0" tabpos="51">

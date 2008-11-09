@@ -683,7 +683,7 @@
 	"BookData.h"
 	"BookContentsBox.h"
 
-1221724438 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/HtmlWindow.h
+1226143208 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/HtmlWindow.h
 	"wx/html/htmlwin.h"
 
 1221724438 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/BookContentsBox.h
@@ -1180,7 +1180,7 @@
 	"wx/wxprec.h"
 	"EarIntvalConstrains.h"
 
-1219336422 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreConstrains.cpp
+1226006258 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreConstrains.cpp
 	"wx/wxprec.h"
 	"ScoreConstrains.h"
 	"../score/VStaff.h"
@@ -1350,7 +1350,7 @@
 	"../score/Score.h"
 	<wx/listimpl.cpp>
 
-1224844190 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/TimeposTable.cpp
+1226040778 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/TimeposTable.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<vector>
@@ -5243,8 +5243,8 @@
 	"wx/wx.h"
 	"KbdCmdParser.h"
 
-1221059138 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/KbdCmdParser.h
-	"../Score/defs.h"
+1226143206 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/KbdCmdParser.h
+	"../score/defs.h"
 
 1224963098 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/WelcomeWnd.h
 	"wx/wxprec.h"

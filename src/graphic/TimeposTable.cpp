@@ -52,7 +52,7 @@
 class lmTimeLine;
 class lmBreaksTable;
 
-#define lmDUMP_TABLES   0
+#define lmDUMP_TABLES   1
 
 //spacing function parameters
 //-----------------------------------------------

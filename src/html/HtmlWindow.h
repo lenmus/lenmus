@@ -56,6 +56,7 @@ public:
     // to deal with scale for scores
     void SetScale(double rScale) { m_rScale = rScale; }
     double GetScale() { return m_rScale; }
+    void SetPixelScalingFactor(double rScale) {}
 
 
 private:

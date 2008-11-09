@@ -36,8 +36,8 @@
 
 #include <vector>
 
-#include "../score/score.h"
-#include "../score/staff.h"
+#include "../score/Score.h"
+#include "../score/Staff.h"
 #include "global.h"
 #include "TheApp.h"
 #include "ScoreDoc.h"

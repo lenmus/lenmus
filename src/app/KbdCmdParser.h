@@ -25,7 +25,7 @@
 #pragma interface "KbdCmdParser.cpp"
 #endif
 
-#include "../Score/defs.h"      //for lmEAccidentals
+#include "../score/defs.h"      //for lmEAccidentals
 
 
 class lmKbdCmdParser

@@ -31,7 +31,7 @@
 
 #include "GMObject.h"
 #include "../score/Score.h"
-#include "../Score/Staff.h"
+#include "../score/Staff.h"
 
 #include "ShapeStaff.h"
 

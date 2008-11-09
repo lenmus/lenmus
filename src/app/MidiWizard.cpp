@@ -187,10 +187,8 @@ void lmMidiWizard::OnWizardCancel( wxWizardEvent& event )
 //  WizardDevicesPage implementation
 //--------------------------------------------------------------------------------
 
-// WizardDevicesPage type definition
 IMPLEMENT_DYNAMIC_CLASS( WizardDevicesPage, wxWizardPageSimple )
 
-// WizardDevicesPage event table definition
 BEGIN_EVENT_TABLE( WizardDevicesPage, wxWizardPageSimple )
     //
 END_EVENT_TABLE()
@@ -203,10 +201,6 @@ WizardDevicesPage::WizardDevicesPage( wxWizard* parent )
 {
     Create( parent );
 }
-
-/*!
- * WizardPage creator
- */
 
 bool WizardDevicesPage::Create( wxWizard* parent )
 {
@@ -224,9 +218,11 @@ bool WizardDevicesPage::Create( wxWizard* parent )
     //int nInput=0;
     int nItem, nOutput=0;
     int nNumDevices = g_pMidi->CountDevices();
-    for (int i = 0; i < nNumDevices; i++) {
+    for (int i = 0; i < nNumDevices; i++)
+    {
         wxMidiOutDevice* pMidiDev = new wxMidiOutDevice(i);
-        if (pMidiDev->IsOutputPort()) {
+        if (pMidiDev->IsOutputPort())
+        {
             nOutput++;
             nItem = m_pOutCombo->Append( pMidiDev->DeviceName() );
             m_pOutCombo->SetClientData(nItem, (void *)i);
@@ -335,7 +331,9 @@ bool WizardDevicesPage::TransferDataFromWindow()
     //get number of Midi device to use for output
     int nIndex = m_pOutCombo->GetSelection();
     int nOutDevId = (int) m_pOutCombo->GetClientData(nIndex);
-    g_pMidi->SetOutDevice(nOutDevId);
+    //FIX_ME
+    //  /home/jboonen/work/lenmus/trunk/src/app/MidiWizard.cpp|337|error: cast
+    //  from 'void*' to 'int' loses precision|    g_pMidi->SetOutDevice(nOutDevId);
 
     //open input device
     int nInDevId = -1;

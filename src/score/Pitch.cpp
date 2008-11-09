@@ -31,7 +31,7 @@
 
 #include "wx/utils.h"
 #include "defs.h"
-#include "score.h"
+#include "Score.h"
 
 
 static wxString m_sNoteName[7] = {
