@@ -134,7 +134,8 @@ lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-#if 0       //Set to 1 for debug
+#if 1       //Set to 1 for debug. This will draw a red line to show anchor position
+        //TODO: draw an small anchor and change show/hide anchor as an user option
     //DBG ------------------------------------------------------------------------------
     //compute position
     lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);

@@ -150,6 +150,8 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     GetMainFrame()->AddFileToHistory(filename);
     wxFileName oFN(filename);
     m_pScore->SetScoreName(oFN.GetFullName());
+    //wxLogMessage(_T("[lmScoreDocument::OnOpenDocument] Dump of score: ---------------------------"));
+    //wxLogMessage( m_pScore->Dump() );
     SetFilename(filename, true);
     SetDocumentSaved(true);
     Modify(false);

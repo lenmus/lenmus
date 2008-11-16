@@ -101,16 +101,16 @@ public:
 
     //member variables (one entry of the table)
     //----------------------------------------------------------------------------
-    lmTimeLine*     m_pOwner;       //owner of this entry
-    eTimeposEntryType m_nType;      //type of entry
-    lmStaffObj*     m_pSO;          //ptr to the StaffObj
-    lmShape*        m_pShape;       //ptr to the shape
-	bool			m_fProlog;
-    float           m_rTimePos;     //timepos for this pSO or -1 if not anchored in time
-    lmLUnits        m_xInitialLeft; //initial position of the left border of the object
-    lmLUnits        m_xLeft;        //current position of the left border of the object
-    lmLUnits        m_uxAnchor;     //position of the anchor line
-    lmLUnits        m_xFinal;       //next position (right border position + trailing space)
+    lmTimeLine*     m_pOwner;           //owner of this entry
+    eTimeposEntryType m_nType;          //type of entry
+    lmStaffObj*     m_pSO;              //ptr to the StaffObj
+    lmShape*        m_pShape;           //ptr to the shape
+	bool			m_fProlog;          //this shape is a prolog object (clef, KS, TS at start of system)
+    float           m_rTimePos;         //timepos for this pSO or -1 if not anchored in time
+    lmLUnits        m_xInitialLeft;     //initial position of the left border of the object
+    lmLUnits        m_xLeft;            //current position of the left border of the object
+    lmLUnits        m_uxAnchor;         //position of the anchor line
+    lmLUnits        m_xFinal;           //next position (right border position + trailing space)
     //to redistribute objects we need to know:
     lmLUnits        m_uSize;            //size of the shape (notehead, etc.)
     lmLUnits        m_uTotalSize;       //total occupied space (=shape size + spacing)
@@ -207,7 +207,8 @@ public:
 
     void InitializeToGetTimepos();
     lmLUnits GetTimepos(float rTime);
-    lmLUnits GetPosForStaffobj(lmStaffObj* pSO);
+    lmLUnits GetPosForStaffobj(lmStaffObj* pSO, float rTime);
+    wxString DumpPosTimes();
 
 
 protected:
@@ -521,17 +522,11 @@ void lmTimeposEntry::Reposition(lmLUnits uxPos)
 {
 	//reposition Shape
     //wxLogMessage(_T("Reposition: old xLeft=%.2f, new xLeft=%.2f"), m_xInitialLeft, uxPos);
-    //lmLUnits uShift = uxPos - m_xInitialLeft + m_uxAnchor;
     lmLUnits uShift = uxPos - m_xInitialLeft;
-	//if (!m_fProlog)
-	//	if (m_pSO) m_pSO->StoreOriginAndShiftShapes( uShift );
-	//else
-	//	if (m_pShape) m_pShape->Shift(uShift, 0.0);
     if (m_pSO && m_pShape)
         m_pSO->StoreOriginAndShiftShapes( uShift, m_pShape->GetOwnerIDX() );
 
 	//update entry data
-	//m_xLeft = uxPos + m_uxAnchor;
 	m_xLeft = uxPos;
 	m_xInitialLeft = m_xLeft;
 	m_xFinal = uxPos + GetTotalSize();
@@ -647,13 +642,18 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
     lmTimeposEntry* pTPE = m_aMainTable.front();
     lmLUnits uOldStart = pTPE->m_xLeft;
 
-    //all non-timed entries at beginning are only re-located
+    //all non-timed entries, at beginning, marked as fProlog must be only re-located
     lmLUnits uShiftReloc = uNewStart - uOldStart;
     lmItEntries it = m_aMainTable.begin();
     while (it != m_aMainTable.end() && (*it)->m_rTimePos < 0.0f)
     {
         if ((*it)->m_pShape)
-			(*it)->m_pSO->StoreOriginAndShiftShapes( uShiftReloc, (*it)->m_pShape->GetOwnerIDX() );
+        {
+            if ((*it)->m_fProlog)
+			    (*it)->m_pSO->StoreOriginAndShiftShapes( uShiftReloc, (*it)->m_pShape->GetOwnerIDX() );
+            else
+			    break;
+        }
         ++it;
     } 
 
@@ -663,10 +663,15 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
 	//wxLogMessage(_T("[lmTimeLine::RepositionShapes] Reposition: uNewBarSize=%.2f  uNewStart=%.2f  uOldBarSize=%.2f"),
 	//			 uNewBarSize, uNewStart, uOldBarSize );
 
-    //first timed entry marks the start point for repositioning.
+    //we are at the start point for repositioning shapes
     pCriticalLine->InitializeToGetTimepos();
     float rCurTime = (*it)->m_rTimePos;
-    lmLUnits uxCurPos = uxCurPos = pCriticalLine->GetTimepos(rCurTime);
+    lmLUnits uxCurPos;
+    if (rCurTime != -1.00f)
+        uxCurPos = pCriticalLine->GetTimepos(rCurTime);
+    else
+        uxCurPos = pCriticalLine->GetPosForStaffobj((*it)->m_pSO, rCurTime);
+
 
     for (; it != m_aMainTable.end(); ++it)
 	{
@@ -679,12 +684,14 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
         }
         else if (pTPE->m_rTimePos < 0.0f && pTPE->m_nType == eStaffobj)
         {
-            uxCurPos = pCriticalLine->GetPosForStaffobj(pTPE->m_pSO);
+            if (pTPE->m_pSO->GetID() > 62)
+                wxLogMessage(_T("DBG"));
+            uxCurPos = pCriticalLine->GetPosForStaffobj(pTPE->m_pSO, rCurTime);
         }
 
         if (pTPE->m_nType == eStaffobj)
         {
-            lmLUnits uShift = uxCurPos - pTPE->m_xLeft + (*it)->m_uxAnchor;
+            lmLUnits uShift = uxCurPos - pTPE->m_xLeft + pTPE->m_uxAnchor;
             //wxLogMessage(_T("[lmTimeLine::RepositionShapes] rCurTime=%.2f, uxCurPos=%.2f, m_xLeft=%.2f, uShift=%.2f"),
             //             rCurTime, uxCurPos, pTPE->m_xLeft, uShift);
             if (pTPE->m_pShape)
@@ -723,8 +730,6 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
         pTPE = *it;
         if (uShift != 0.0f && pTPE->m_nType == eStaffobj)
         {
-			//if (!pTPE->m_fProlog)
-			//	pTPE->m_pSO->StoreOriginAndShiftShapes( uShift );
             if (pTPE->m_pShape)
 				pTPE->m_pSO->StoreOriginAndShiftShapes(uShift, pTPE->m_pShape->GetOwnerIDX() );
         }
@@ -1385,11 +1390,18 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     lmLUnits uOldStart = m_aMainTable.front()->m_xLeft;
 
     //all non-timed entries at beginning are only re-located
+    //all non-timed entries, at beginning, marked as fProlog must be only re-located
     lmLUnits uShiftReloc = uNewStart - uOldStart;
     lmItEntries it = m_aMainTable.begin();
     while (it != m_aMainTable.end() && (*it)->m_rTimePos < 0.0f)
     {
-        (*it)->m_xLeft += uShiftReloc;
+        if ((*it)->m_pShape)
+        {
+            if ((*it)->m_fProlog)
+                (*it)->m_xLeft += uShiftReloc;
+            else
+			    break;
+        }
         ++it;
     } 
 
@@ -1431,6 +1443,7 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 #if lmDUMP_TABLES
     wxLogMessage(_T("Critical line. After space redistribution"));
     wxLogMessage( DumpMainTable() );
+    wxLogMessage( DumpPosTimes() );
 #endif
 
     return uBarPosition;
@@ -1442,15 +1455,25 @@ void lmCriticalLine::InitializeToGetTimepos()
     m_it = m_PosTimes.begin();       
 }
 
-lmLUnits lmCriticalLine::GetPosForStaffobj(lmStaffObj* pSO)
+lmLUnits lmCriticalLine::GetPosForStaffobj(lmStaffObj* pSO, float rTime)
 {
-    for (; m_it != m_PosTimes.end(); ++m_it)
+    //find position for non-timed object pSO. 
+    //Iterator is pointing to non-timed object after time rTime
+
+    //save current entry (first non-timed object after time rTime)
+    std::vector<lmPosTimeEntry>::iterator itNonTimed = m_it;
+
+    //find object pSO
+    for (; m_it != m_PosTimes.end() && !IsHigherTime((*m_it).rTimepos, rTime); ++m_it)
 	{
         if ((*m_it).pTPE->m_pSO == pSO)
             return (*m_it).uxPos;
     }
-    wxASSERT(false);
-    return 0.0f;       //compiler happy
+
+    //the object is not in critical line.
+    //Return position for first non-timed object after current time
+    wxASSERT(itNonTimed != m_PosTimes.end());
+    return (*itNonTimed).uxPos;
 }
 
 lmLUnits lmCriticalLine::GetTimepos(float rTime)
@@ -1459,13 +1482,41 @@ lmLUnits lmCriticalLine::GetTimepos(float rTime)
 
     for (; m_it != m_PosTimes.end(); ++m_it)
 	{
-        if ( IsEqualTime((*m_it).rTimepos, rTime))
+        if (IsEqualTime((*m_it).rTimepos, rTime))
             return (*m_it).uxPos;
     }
     wxASSERT(false);
     return 0.0f;       //compiler happy
 }
 
+wxString lmCriticalLine::DumpPosTimes()
+{
+    //dump Pos-Times table
+
+    wxString sMsg = _T("Pos-Times table\n");
+    sMsg += _T("===============================\n\n");
+
+    if (m_PosTimes.size() == 0)
+    {
+        sMsg += _T("The table is empty.");
+        return sMsg;
+    }
+
+    //headers
+    //           .......+ .......+   ...+ ..+   +  ..........+........+........+........+........+........+........+........+........+......+
+    sMsg +=  _T(" TimePos    uxPos\n");
+
+    //loop to dump entries
+    int iE = 0;
+    std::vector<lmPosTimeEntry>::iterator itDbg;
+    for (itDbg = m_PosTimes.begin(); itDbg != m_PosTimes.end(); ++itDbg, ++iE)
+	{
+        sMsg += wxString::Format(_T("%8.2f %8.2f "), (*itDbg).rTimepos, (*itDbg).uxPos );
+        sMsg += (*itDbg).pTPE->Dump(iE);
+    }
+
+    return sMsg;
+}
 
 
 
@@ -1831,7 +1882,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
         //more space.
         if (fCreateCriticalLine)
         {
-	        lmLUnits udxNonTimed = 0.0f;
+	        lmLUnits udxNonTimed = -1.0f;   //any negative value
             pLongestNonTimedLine = (lmTimeLine*)NULL;
 		    for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
 		    {

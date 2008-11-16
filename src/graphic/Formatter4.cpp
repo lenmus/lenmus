@@ -1081,14 +1081,14 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff,
 	//is rendered as part as the normal lmStaffObj rendering process, so there is nothig
 	//special to do to render the prolog But for the other systems we must force the
 	//rendering of the prolog because there are no StaffObjs representing the prolog.
+    bool fProlog = (m_nColumn == 1);        //fProlog -> we are adding prolog objects
     if (m_nAbsColumn != 1 && m_nColumn == 1)
 	{
 		AddProlog(pBSV, false, pVStaff, nInstr);
+        fProlog = false;                    //prolog added
 	}
 
     //loop to process all StaffObjs in this measure
-	//int nCurVoice = 0;
-    //bool fNoteRestFound = false;
     bool fNewSystem = false;                //newSystem tag found
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmSOIterator* pIT = m_pSysCursor->GetIterator(nInstr);
@@ -1096,15 +1096,13 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff,
     while(!pIT->EndOfCollection() && !pIT->ChangeOfMeasure())
     {
         pSO = pIT->GetCurrent();
-        EStaffObjType nType = pSO->GetClass();
 
-        if (nType == eSFOT_Barline 
-            || IsHigherTime(pSO->GetTimePos(), m_pSysCursor->GetBreakTime()) )
+        if (pSO->IsBarline() || IsHigherTime(pSO->GetTimePos(), m_pSysCursor->GetBreakTime()) )
         {
              break;         //End of measure: exit loop.
         }
 
-        else if (nType == eSFOT_Control)
+        else if (pSO->IsControl())
         {
             ESOCtrolType nCtrolType = ((lmSOControl*)pSO)->GetCtrolType();
             if(lmNEW_SYSTEM == nCtrolType)
@@ -1118,25 +1116,37 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff,
 			}
         }
 
-        else if (nType == eSFOT_KeySignature)
+        else if (pSO->IsClef())
 		{
 			m_pPaper->SetCursorX(uxStart);
-			AddKey((lmKeySignature*)pSO, pBSV, pVStaff, nInstr);
+			pSO->Layout(pBSV, m_pPaper);
+			lmShape* pShape = pSO->GetShape();
+			m_oTimepos[m_nColumn].AddEntry(nInstr, pSO, pShape, fProlog);
+		}
+        else if (pSO->IsKeySignature())
+		{
+			m_pPaper->SetCursorX(uxStart);
+			AddKey((lmKeySignature*)pSO, pBSV, pVStaff, nInstr, fProlog);
         }
 
-        else if (nType == eSFOT_TimeSignature)
+        else if (pSO->IsTimeSignature())
 		{
 			m_pPaper->SetCursorX(uxStart);
-			AddTime((lmTimeSignature*)pSO, pBSV, pVStaff, nInstr);
+			AddTime((lmTimeSignature*)pSO, pBSV, pVStaff, nInstr, fProlog);
 		}
 
 		else
 		{
+            //it is neither clef, key signature nor time signature.
+            //Prolog will be finished when finding the first timed object (note/rest)
+            if (fProlog && pSO->IsNoteRest())
+                fProlog = false;
+
 			//create this lmStaffObj shape and add to table
 			m_pPaper->SetCursorX(uxStart);
 			pSO->Layout(pBSV, m_pPaper);
 			lmShape* pShape = pSO->GetShape();
-			m_oTimepos[m_nColumn].AddEntry(nInstr, pSO, pShape, false);
+			m_oTimepos[m_nColumn].AddEntry(nInstr, pSO, pShape, fProlog);
         }
 
         pIT->MoveNext();
@@ -1251,7 +1261,7 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff
 }
 
 void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox,
-						  lmVStaff* pVStaff, int nInstr)
+						  lmVStaff* pVStaff, int nInstr, bool fProlog)
 {
     // This method is responsible for creating the key signature shapes for 
     // all staves of this instrument. And also, of adding them to the graphical 
@@ -1265,15 +1275,14 @@ void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox,
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
         lmShape* pShape = pKey->GetShape(nStaff);
-		m_oTimepos[m_nColumn].AddEntry(nInstr, pKey, pShape,
-										 (pShape != pMainShape), nStaff);
+		m_oTimepos[m_nColumn].AddEntry(nInstr, pKey, pShape, fProlog, nStaff);
     }
 
 }
 
 
 void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox,
-						   lmVStaff* pVStaff, int nInstr)
+						   lmVStaff* pVStaff, int nInstr, bool fProlog)
 {
     // This method is responsible for creating the time signature shapes for 
     // all staves of this instrument. And also, of adding them to the graphical 
@@ -1287,8 +1296,7 @@ void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox,
     for (int nStaff=1; nStaff <= pVStaff->GetNumStaves(); nStaff++)
     {
         lmShape* pShape = pTime->GetShape(nStaff);
-		m_oTimepos[m_nColumn].AddEntry(nInstr, pTime, pShape,
-										 (pShape != pMainShape), nStaff);
+		m_oTimepos[m_nColumn].AddEntry(nInstr, pTime, pShape, fProlog, nStaff);
     }
 
 }

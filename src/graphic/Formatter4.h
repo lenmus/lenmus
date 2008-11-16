@@ -59,8 +59,8 @@ private:
     lmLUnits ComputeSystemHeight();
     void SplitMeasureColumn(lmLUnits uAvailable);
 	void AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff* pVStaff, int nInstr);
-	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmVStaff* pVStaff, int nInstr);
-	void AddTime(lmTimeSignature* pTime, lmBox* pBox, lmVStaff* pVStaff, int nInstr);
+	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmVStaff* pVStaff, int nInstr, bool fProlog);
+	void AddTime(lmTimeSignature* pTime, lmBox* pBox, lmVStaff* pVStaff, int nInstr, bool fProlog);
     void AddColumnToSystem();
 
 

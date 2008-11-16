@@ -90,19 +90,17 @@ void lmAuxObj::OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShif
     lmShape* pGMObj = GetShape();
 	if (pGMObj)
     {
-		////DBG--------------------------------------------------------------------------------
-		//if (GetID()==4)
-		//{
-		//	lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
-	    //  lmUPoint uShapePos = m_pGMObj->GetBounds().GetTopLeft();
-		//	wxLogMessage(_T("[lmAuxObj::OnParentComputedPositionShifted] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ShapePos=(%.2f, %.2f), ComputedPos=(%.2f, %.2f), UserShift=(%.2f, %.2f), NewOrg=(%.2f, %.2f)"),
-		//				uxShift,
-		//				m_pGMObj->GetOrigin().x, m_pGMObj->GetOrigin().y,
-		//				uShapePos.x, uShapePos.y,
-		//				m_uComputedPos.x, m_uComputedPos.y, m_uUserShift.x, m_uUserShift.y,
-		//				uNewOrg.x, uNewOrg.y );
-		//}
-		////END DBG----------------------------------------------------------------------------
+		//DBG--------------------------------------------------------------------------------
+		if (GetID()==63 || GetID()==64)
+		{
+	        lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
+			wxLogMessage(_T("[lmAuxObj::OnParentComputedPositionShifted] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ShapePos=(%.2f, %.2f), ComputedPos=(%.2f, %.2f)"),
+						uxShift,
+						pGMObj->GetObjectOrigin().x, pGMObj->GetObjectOrigin().y,
+						uShapePos.x, uShapePos.y,
+						m_uComputedPos.x, m_uComputedPos.y );
+		}
+		//END DBG----------------------------------------------------------------------------
         pGMObj->Shift(uxShift, uyShift);
         pGMObj->ApplyUserShift( this->GetUserShift() );
     }
@@ -460,7 +458,6 @@ lmUPoint lmScoreLine::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
 	return uPos;
 }
 
