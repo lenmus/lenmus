@@ -16,7 +16,7 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=yes --cflags`" />
+					<Add option="`/home/cecilio/wxWidgets/wxGTK-2.8.9/build-debug/wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=yes --cflags`" />
 					<Add option="-D_DEBUG" />
 					<Add option="-D__WXGTK__" />
 					<Add option="-D__WXDEBUG__" />
@@ -49,14 +49,14 @@
 			<Add option="-W" />
 			<Add directory="../../packages/agg/include" />
 			<Add directory="../../packages/wxMidi/include" />
-			<Add directory="/home/cecilio/software/freetype-2.3.7/include" />
-			<Add directory="/media/sdb1/usr/Desarrollo_wx/lenmus/packages/freetype/include/freetype2" />
+			<Add directory="../../packages/freetype/include" />
+			<Add directory="../../packages/freetype/include/freetype2" />
 			<Add directory="../../packages/agg/font_freetype" />
 		</Compiler>
 		<Linker>
-			<Add library="/usr/lib/libportmidi.so" />
-			<Add library="/usr/lib/libporttime.so" />
-			<Add library="/usr/local/lib/libfreetype.so" />
+			<Add library="/usr/lib/libportmidi.so.0" />
+			<Add library="/usr/lib/libporttime.so.0" />
+			<Add library="/usr/lib/libfreetype.so" />
 		</Linker>
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.cpp" />
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.h" />

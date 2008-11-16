@@ -7,8 +7,8 @@
 	<File name="../../packages/wxMidi/include/wxMidi.h" open="0" top="0" tabpos="4">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="../../packages/wxMidi/src/wxMidi.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="19924" topLine="663" />
+	<File name="../../packages/wxMidi/src/wxMidi.cpp" open="1" top="1" tabpos="5">
+		<Cursor position="16531" topLine="564" />
 	</File>
 	<File name="../../packages/wxMidi/src/wxMidiDatabase.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="1033" topLine="18" />
@@ -49,8 +49,8 @@
 	<File name="../../src/app/FontManager.cpp" open="1" top="0" tabpos="4">
 		<Cursor position="2265" topLine="39" />
 	</File>
-	<File name="../../src/app/FontManager.h" open="1" top="1" tabpos="3">
-		<Cursor position="1417" topLine="15" />
+	<File name="../../src/app/FontManager.h" open="1" top="0" tabpos="3">
+		<Cursor position="1417" topLine="0" />
 	</File>
 	<File name="../../src/app/Logger.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="4822" topLine="88" />

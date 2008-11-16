@@ -1,7 +1,7 @@
 LenMus building documentation
 ==============================
 
-Last updated: 3/Nov/2008
+Last updated: 16/Nov/2008
 
 
 Table of content
@@ -30,7 +30,7 @@ Currently, LenMus has been tested and built in the following platforms:
 
 - Windows XP with MS VisualStudio .NET 2003
 
-- Linux Ubuntu, with Code::Blocks and g++
+- Linux Ubuntu, with Code::Blocks and GNU GCC
 
 Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
 
@@ -105,27 +105,26 @@ Install PortMidi libraries
 
 LenMus require the Portmidi libraries for sound generation. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
 
-sudo aptitude update                    //update the list of available packages
-sudo aptitude install libportmidi       //install libportmidi
-sudo aptitude install libporttime       //install libporttime
-sudo updatedb                           //updates databases used by GNU locate
-ls /usr/lib/libport*                    //verify that the libraries are there
-
-
+sudo apt-get install libportmidi0
+ls /usr/lib/libport*                 //verify that the libraries lobportmidi and libporttime are there
     
     
 Install FreeType (libraries and include files)
 -------------------------------------------------------
 
-LenMus require the FreeType package for renderization of music symbols. appart of the libraries, the include files (.h) for the FreeType version you are installing are also required to compile LenMus. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
+LenMus require the FreeType package for renderization of music symbols. Apart of the libraries, the include files (.h) for the FreeType version you are installing are also required to compile LenMus.
 
-sudo aptitude update                    //update the list of available packages
-sudo aptitude install libportmidi       //install libportmidi
-sudo aptitude install libporttime       //install libporttime
-sudo updatedb                           //updates databases used by GNU locate
-ls /usr/lib/libfreetype                 //verify that the libraries are there
+The freetype libraries are normally already installed in linux. Verify this:
+
+ls /usr/lib/libfreetype*
+
+If they are not installed, do it:
+
+sudo apt-get install libfreetype6 libfreetype6-dev
+ls /usr/lib/libfreetype*                 //verify that the libraries are there
 
 The include files have to be accesible from LenMus makefile.
+
 
 
 Compile and build LenMus
@@ -133,12 +132,12 @@ Compile and build LenMus
 
 Once all previous pre-requisites are met, it is just a question of preparing a makefile and using your favourite compiler to compile and build LenMus. Makefiles are included for:
 
-- Linux Ubuntu, with Code::Blocks and g++
+- Linux Ubuntu, with Code::Blocks and GNU GCC
 
 Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
 
 
-a) Using Code::Blocks with g++
+a) Using Code::Blocks with GNU GCC
 
 The appropriate project file for Code::Blocks is in folder .../lenmus/build/gtk/lenmus.cbp.
 Open this file with Code::Blocks and build LenMus. 
