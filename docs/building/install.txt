@@ -1,7 +1,7 @@
 LenMus building documentation
 ==============================
 
-Last updated: 16/Nov/2008
+Last updated: 22/Nov/2008
 
 
 Table of content
@@ -86,19 +86,6 @@ Install wxWidgets (wxGTK)
 
 3. Build wxWidgets. For this please refer to wxWidgets documentation. A quick guide is included in file linux_install_wxwidgets.txt for your convenience, and it should be enough in most cases.
 
-To compile LenMus, wxWidgets should be build with the following options:
-
-- define symbols:
-    __WXGTK__
-    _UNICODE
-    
-  and, for debug version:
-    __WXGTK__
-    _UNICODE
-    _DEBUG
-    __WXDEBUG__
-    
-    
     
 Install PortMidi libraries
 ---------------------------------
