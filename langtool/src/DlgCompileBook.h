@@ -53,9 +53,6 @@ typedef struct lmLangDataStruct {
     wxString sCharCode;
 } lmLangData;
 
-#define lmNUM_LANGUAGES 7
-extern const lmLangData g_tLanguages[lmNUM_LANGUAGES];
-
 //table must be ordered by language name (in English) to ensure
 //correspondence with table in DlgCompileBook.cpp
 enum ELanguages
@@ -64,11 +61,16 @@ enum ELanguages
     eLangDutch,
     eLangEnglish,
     eLangFrench,
+    eLangGalician,
     eLangItalian,
     eLangSpanish,
     eLangTurkish,
     eLangLast
 };
+
+#define lmNUM_LANGUAGES eLangLast
+extern const lmLangData g_tLanguages[lmNUM_LANGUAGES];
+
 
 typedef struct lmCompileBookOptionsStruct {
     wxString sSrcPath;

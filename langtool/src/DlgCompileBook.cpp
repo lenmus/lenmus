@@ -54,13 +54,14 @@ enum {
 //table must be ordered by language name (in English) to
 //ensure correspondence with table in DlgCompileBook.h
 const lmLangData g_tLanguages[lmNUM_LANGUAGES] = { 
-    { _T("eu"), _T("Basque"), _T("utf-8") }, 
-    { _T("nl"), _T("Dutch"), _T("iso-8859-9") }, 
-    { _T("en"), _T("English"), _T("iso-8859-1") }, 
-    { _T("fr"), _T("French"), _T("iso-8859-1") }, 
-    { _T("it"), _T("Italian"), _T("utf-8") }, 
-    { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
-    { _T("tr"), _T("Turkish"), _T("iso-8859-9") }, 
+    { _T("eu"),     _T("Basque"),   _T("utf-8") }, 
+    { _T("nl"),     _T("Dutch"),    _T("iso-8859-9") }, 
+    { _T("en"),     _T("English"),  _T("iso-8859-1") }, 
+    { _T("fr"),     _T("French"),   _T("iso-8859-1") },
+    { _T("gl_ES"),  _T("Galician"), _T("utf-8") },
+    { _T("it"),     _T("Italian"),  _T("utf-8") }, 
+    { _T("es"),     _T("Spanish"),  _T("iso-8859-1") }, 
+    { _T("tr"),     _T("Turkish"),  _T("iso-8859-9") }, 
 };
 
 
