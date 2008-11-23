@@ -1,12 +1,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-13 14:50+0100\n"
-"Last-Translator: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-23 16:11+0100\n"
+"PO-Revision-Date: 2008-11-23 17:18+0100\n"
+"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: ../../src\n"
@@ -28,7 +29,163 @@ msgstr ""
 "X-Poedit-SearchPath-15: ./app/toolbox\n"
 "X-Poedit-SearchPath-16: ./score/properties\n"
 
-#: score/AuxObj.cpp:305
+#: score/KeySignature.cpp:690
+#: ../xrc/xrc_strings.cpp:373
+msgid "C Major"
+msgstr "Do Mayor"
+
+#: score/KeySignature.cpp:691
+#: ../xrc/xrc_strings.cpp:374
+msgid "G Major"
+msgstr "Sol Mayor"
+
+#: score/KeySignature.cpp:692
+#: ../xrc/xrc_strings.cpp:375
+msgid "D Major"
+msgstr "Re Mayor"
+
+#: score/KeySignature.cpp:693
+#: ../xrc/xrc_strings.cpp:376
+msgid "A Major"
+msgstr "La Mayor"
+
+#: score/KeySignature.cpp:694
+#: ../xrc/xrc_strings.cpp:377
+msgid "E Major"
+msgstr "Mi Mayor"
+
+#: score/KeySignature.cpp:695
+#: ../xrc/xrc_strings.cpp:378
+msgid "B Major"
+msgstr "Si Mayor"
+
+#: score/KeySignature.cpp:696
+msgid "F # Major"
+msgstr "Fa # Mayor"
+
+#: score/KeySignature.cpp:697
+msgid "C # Major"
+msgstr "Do # Mayor"
+
+#: score/KeySignature.cpp:698
+msgid "C b Major"
+msgstr "Do b Mayor"
+
+#: score/KeySignature.cpp:699
+msgid "G b Major"
+msgstr "Sol b Mayor"
+
+#: score/KeySignature.cpp:700
+msgid "D b Major"
+msgstr "Re b Mayor"
+
+#: score/KeySignature.cpp:701
+msgid "A b Major"
+msgstr "La b Mayor"
+
+#: score/KeySignature.cpp:702
+msgid "E b Major"
+msgstr "Mi b Mayor"
+
+#: score/KeySignature.cpp:703
+msgid "B b Major"
+msgstr "Si b Mayor"
+
+#: score/KeySignature.cpp:704
+#: ../xrc/xrc_strings.cpp:387
+msgid "F Major"
+msgstr "Fa Mayor"
+
+#: score/KeySignature.cpp:705
+#: exercises/TheoKeySignCtrol.cpp:100
+#: exercises/TheoKeySignCtrol.cpp:423
+#: ../xrc/xrc_strings.cpp:388
+msgid "A minor"
+msgstr "La menor"
+
+#: score/KeySignature.cpp:706
+#: exercises/TheoKeySignCtrol.cpp:101
+#: exercises/TheoKeySignCtrol.cpp:417
+#: ../xrc/xrc_strings.cpp:389
+msgid "E minor"
+msgstr "Mi menor"
+
+#: score/KeySignature.cpp:707
+#: exercises/TheoKeySignCtrol.cpp:102
+#: exercises/TheoKeySignCtrol.cpp:426
+#: ../xrc/xrc_strings.cpp:390
+msgid "B minor"
+msgstr "Si menor"
+
+#: score/KeySignature.cpp:708
+#: exercises/TheoKeySignCtrol.cpp:103
+msgid "F # minor"
+msgstr "Fa # menor"
+
+#: score/KeySignature.cpp:709
+#: exercises/TheoKeySignCtrol.cpp:104
+msgid "C # minor"
+msgstr "Do # menor"
+
+#: score/KeySignature.cpp:710
+#: exercises/TheoKeySignCtrol.cpp:105
+msgid "G # minor"
+msgstr "Sol # menor"
+
+#: score/KeySignature.cpp:711
+#: exercises/TheoKeySignCtrol.cpp:106
+msgid "D # minor"
+msgstr "Re # menor"
+
+#: score/KeySignature.cpp:712
+#: exercises/TheoKeySignCtrol.cpp:107
+msgid "A # minor"
+msgstr "La # menor"
+
+#: score/KeySignature.cpp:713
+#: exercises/TheoKeySignCtrol.cpp:108
+msgid "A b minor"
+msgstr "La b menor"
+
+#: score/KeySignature.cpp:714
+#: exercises/TheoKeySignCtrol.cpp:109
+msgid "E b minor"
+msgstr "Mi b menor"
+
+#: score/KeySignature.cpp:715
+#: exercises/TheoKeySignCtrol.cpp:110
+msgid "B b minor"
+msgstr "Si b menor"
+
+#: score/KeySignature.cpp:716
+#: exercises/TheoKeySignCtrol.cpp:111
+#: exercises/TheoKeySignCtrol.cpp:418
+#: ../xrc/xrc_strings.cpp:399
+msgid "F minor"
+msgstr "Fa menor"
+
+#: score/KeySignature.cpp:717
+#: exercises/TheoKeySignCtrol.cpp:112
+#: exercises/TheoKeySignCtrol.cpp:412
+#: ../xrc/xrc_strings.cpp:400
+msgid "C minor"
+msgstr "Do menor"
+
+#: score/KeySignature.cpp:718
+#: exercises/TheoKeySignCtrol.cpp:113
+#: exercises/TheoKeySignCtrol.cpp:420
+#: ../xrc/xrc_strings.cpp:401
+msgid "G minor"
+msgstr "Sol menor"
+
+#: score/KeySignature.cpp:719
+#: exercises/TheoKeySignCtrol.cpp:114
+#: exercises/TheoKeySignCtrol.cpp:414
+#: ../xrc/xrc_strings.cpp:402
+msgid "D minor"
+msgstr "Re menor"
+
+#: score/AuxObj.cpp:301
 #: score/MetronomeMark.cpp:146
 #: score/Text.cpp:119
 #: score/TupletBracket.cpp:124
@@ -38,380 +195,212 @@ msgstr "Ha ocurrido un error al cargar el tipo de letra."
 
 #: score/Barline.cpp:107
 msgid "Simple barline"
-msgstr ""
+msgstr "Barra simple"
 
 #: score/Barline.cpp:108
-#, fuzzy
 msgid "Double barline"
-msgstr "Doble sostenido"
+msgstr "Línea divisoria doble"
 
 #: score/Barline.cpp:109
 msgid "Final barline"
-msgstr ""
+msgstr "Barra final"
 
 #: score/Barline.cpp:110
-#, fuzzy
 msgid "Start repetition"
-msgstr "estado fundamental"
+msgstr "Inicio de repetición"
 
 #: score/Barline.cpp:111
 msgid "End repetition"
-msgstr ""
+msgstr "Fin de repetición"
 
 #: score/Barline.cpp:112
-#, fuzzy
 msgid "Star barline"
-msgstr "Barra"
+msgstr "línea inicial"
 
 #: score/Barline.cpp:113
-#, fuzzy
 msgid "Double repetition"
-msgstr "Doble sostenido"
+msgstr "Doble repetición"
 
-#: score/Barline.cpp:328
+#: score/Barline.cpp:311
 #: ../xrc/xrc_strings.cpp:173
 msgid "Barline"
 msgstr "Barra"
 
-#: score/Barline.cpp:331
+#: score/Barline.cpp:314
 msgid "Barline properties"
-msgstr ""
+msgstr "Propiedades de línea divisoria"
 
-#: score/ColStaffObjs.cpp:3555
+#: score/ColStaffObjs.cpp:3303
 msgid "Move backwards: out of measure"
-msgstr ""
+msgstr "Desplazamiento atrás: fuera de compás"
 
-#: score/ColStaffObjs.cpp:3565
+#: score/ColStaffObjs.cpp:3313
 msgid "Move forward: out of measure"
-msgstr ""
+msgstr "Desplazamiento adelante: fuera de compás"
 
 #: score/Instrument.cpp:167
-#: app/MidiWizard.cpp:437
-#: app/MidiWizard.cpp:617
+#: app/MidiWizard.cpp:435
+#: app/MidiWizard.cpp:615
 msgid "Channel:"
 msgstr "Canal:"
 
 #: score/Instrument.cpp:181
 msgid "Group:"
-msgstr ""
+msgstr "Grupo:"
 
 #: score/Instrument.cpp:190
-#: app/MidiWizard.cpp:454
+#: app/MidiWizard.cpp:452
 msgid "Instrument:"
 msgstr "Instrumento:"
 
 #: score/Instrument.cpp:204
-#: app/MidiWizard.cpp:461
-#: app/MidiWizard.cpp:641
+#: app/MidiWizard.cpp:459
+#: app/MidiWizard.cpp:639
 msgid "Test sound"
 msgstr "Comprobar sonido"
 
 #: score/Instrument.cpp:657
 msgid "MIDI"
-msgstr ""
+msgstr "MIDI"
 
 #: score/Instrument.cpp:666
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: score/Instrument.cpp:667
-#, fuzzy
 msgid "Abbreviation"
-msgstr "Autenticación"
+msgstr "Abreviatura"
 
 #: score/Instrument.cpp:670
-#, fuzzy
 msgid "Instrument properties"
-msgstr "Instrumento:"
-
-#: score/KeySignature.cpp:702
-#: ../xrc/xrc_strings.cpp:373
-msgid "C Major"
-msgstr "Do Mayor"
-
-#: score/KeySignature.cpp:703
-#: ../xrc/xrc_strings.cpp:374
-msgid "G Major"
-msgstr "Sol Mayor"
-
-#: score/KeySignature.cpp:704
-#: ../xrc/xrc_strings.cpp:375
-msgid "D Major"
-msgstr "Re Mayor"
-
-#: score/KeySignature.cpp:705
-#: ../xrc/xrc_strings.cpp:376
-msgid "A Major"
-msgstr "La Mayor"
-
-#: score/KeySignature.cpp:706
-#: ../xrc/xrc_strings.cpp:377
-msgid "E Major"
-msgstr "Mi Mayor"
-
-#: score/KeySignature.cpp:707
-#: ../xrc/xrc_strings.cpp:378
-msgid "B Major"
-msgstr "Si Mayor"
-
-#: score/KeySignature.cpp:708
-msgid "F # Major"
-msgstr "Fa # Mayor"
-
-#: score/KeySignature.cpp:709
-msgid "C # Major"
-msgstr "Do # Mayor"
-
-#: score/KeySignature.cpp:710
-msgid "C b Major"
-msgstr "Do b Mayor"
-
-#: score/KeySignature.cpp:711
-msgid "G b Major"
-msgstr "Sol b Mayor"
-
-#: score/KeySignature.cpp:712
-msgid "D b Major"
-msgstr "Re b Mayor"
-
-#: score/KeySignature.cpp:713
-msgid "A b Major"
-msgstr "La b Mayor"
-
-#: score/KeySignature.cpp:714
-msgid "E b Major"
-msgstr "Mi b Mayor"
-
-#: score/KeySignature.cpp:715
-msgid "B b Major"
-msgstr "Si b Mayor"
-
-#: score/KeySignature.cpp:716
-#: ../xrc/xrc_strings.cpp:387
-msgid "F Major"
-msgstr "Fa Mayor"
-
-#: score/KeySignature.cpp:717
-#: exercises/TheoKeySignCtrol.cpp:100
-#: exercises/TheoKeySignCtrol.cpp:423
-#: ../xrc/xrc_strings.cpp:388
-msgid "A minor"
-msgstr "La menor"
-
-#: score/KeySignature.cpp:718
-#: exercises/TheoKeySignCtrol.cpp:101
-#: exercises/TheoKeySignCtrol.cpp:417
-#: ../xrc/xrc_strings.cpp:389
-msgid "E minor"
-msgstr "Mi menor"
-
-#: score/KeySignature.cpp:719
-#: exercises/TheoKeySignCtrol.cpp:102
-#: exercises/TheoKeySignCtrol.cpp:426
-#: ../xrc/xrc_strings.cpp:390
-msgid "B minor"
-msgstr "Si menor"
-
-#: score/KeySignature.cpp:720
-#: exercises/TheoKeySignCtrol.cpp:103
-msgid "F # minor"
-msgstr "Fa # menor"
-
-#: score/KeySignature.cpp:721
-#: exercises/TheoKeySignCtrol.cpp:104
-msgid "C # minor"
-msgstr "Do # menor"
-
-#: score/KeySignature.cpp:722
-#: exercises/TheoKeySignCtrol.cpp:105
-msgid "G # minor"
-msgstr "Sol # menor"
-
-#: score/KeySignature.cpp:723
-#: exercises/TheoKeySignCtrol.cpp:106
-msgid "D # minor"
-msgstr "Re # menor"
-
-#: score/KeySignature.cpp:724
-#: exercises/TheoKeySignCtrol.cpp:107
-msgid "A # minor"
-msgstr "La # menor"
-
-#: score/KeySignature.cpp:725
-#: exercises/TheoKeySignCtrol.cpp:108
-msgid "A b minor"
-msgstr "La b menor"
-
-#: score/KeySignature.cpp:726
-#: exercises/TheoKeySignCtrol.cpp:109
-msgid "E b minor"
-msgstr "Mi b menor"
-
-#: score/KeySignature.cpp:727
-#: exercises/TheoKeySignCtrol.cpp:110
-msgid "B b minor"
-msgstr "Si b menor"
-
-#: score/KeySignature.cpp:728
-#: exercises/TheoKeySignCtrol.cpp:111
-#: exercises/TheoKeySignCtrol.cpp:418
-#: ../xrc/xrc_strings.cpp:399
-msgid "F minor"
-msgstr "Fa menor"
-
-#: score/KeySignature.cpp:729
-#: exercises/TheoKeySignCtrol.cpp:112
-#: exercises/TheoKeySignCtrol.cpp:412
-#: ../xrc/xrc_strings.cpp:400
-msgid "C minor"
-msgstr "Do menor"
-
-#: score/KeySignature.cpp:730
-#: exercises/TheoKeySignCtrol.cpp:113
-#: exercises/TheoKeySignCtrol.cpp:420
-#: ../xrc/xrc_strings.cpp:401
-msgid "G minor"
-msgstr "Sol menor"
-
-#: score/KeySignature.cpp:731
-#: exercises/TheoKeySignCtrol.cpp:114
-#: exercises/TheoKeySignCtrol.cpp:414
-#: ../xrc/xrc_strings.cpp:402
-msgid "D minor"
-msgstr "Re menor"
+msgstr "Propiedades del instrumento"
 
 #: score/MetronomeMark.cpp:101
-#, fuzzy
 msgid "metronome mark"
-msgstr "Metrónomo"
+msgstr "Indicación de metrónomo"
 
-#: score/Note.cpp:1858
+#: score/Note.cpp:1771
 msgid "Delete tie &previous"
-msgstr ""
+msgstr "Quitar ligadura con &anterior"
 
-#: score/Note.cpp:2026
+#: score/Note.cpp:1939
 #, c-format
 msgid "c%d"
 msgstr "c%d"
 
-#: score/Note.cpp:2026
+#: score/Note.cpp:1939
 #, c-format
 msgid "d%d"
 msgstr "d%d"
 
-#: score/Note.cpp:2026
+#: score/Note.cpp:1939
 #, c-format
 msgid "e%d"
 msgstr "e%d"
 
-#: score/Note.cpp:2026
+#: score/Note.cpp:1939
 #, c-format
 msgid "f%d"
 msgstr "f%d"
 
-#: score/Note.cpp:2026
+#: score/Note.cpp:1939
 #, c-format
 msgid "g%d"
 msgstr "g%d"
 
-#: score/Note.cpp:2026
+#: score/Note.cpp:1939
 #, c-format
 msgid "a%d"
 msgstr "a%d"
 
-#: score/Note.cpp:2026
+#: score/Note.cpp:1939
 #, c-format
 msgid "b%d"
 msgstr "b%d"
 
-#: score/Score.cpp:1598
-#: score/Score.cpp:1613
-#: app/MainFrame.cpp:1077
-msgid "Add title"
-msgstr ""
-
+#: score/Score.cpp:1584
 #: score/Score.cpp:1599
-#: app/MainFrame.cpp:1078
+#: app/MainFrame.cpp:1082
+msgid "Add title"
+msgstr "Añadir título"
+
+#: score/Score.cpp:1585
+#: app/MainFrame.cpp:1083
 msgid "Add a title to the score"
-msgstr ""
+msgstr "Añadir un título a la partitura"
 
-#: score/Score.cpp:1604
-#: score/Score.cpp:1614
-#: app/MainFrame.cpp:1079
+#: score/Score.cpp:1590
+#: score/Score.cpp:1600
+#: app/MainFrame.cpp:1084
 msgid "Margins and spacers"
-msgstr ""
+msgstr "Márgenes y espaciados"
 
-#: score/Score.cpp:1644
-#, fuzzy
+#: score/Score.cpp:1630
 msgid "Select instrument:"
-msgstr "Instrumento:"
+msgstr "Seleccionar instrumento:"
 
-#: score/Score.cpp:1645
-#, fuzzy
+#: score/Score.cpp:1631
 msgid "Instrument selection"
-msgstr "Instrumento:"
+msgstr "Selección de Instrumento"
 
-#: score/Score.cpp:1705
-#: score/Score.cpp:1711
+#: score/Score.cpp:1693
+#: score/Score.cpp:1699
 #: xml_parser/MusicXMLParser.cpp:1422
-#, fuzzy
 msgid "Lyrics"
-msgstr "Licencia"
+msgstr "texto lírico"
 
-#: score/Score.cpp:1716
-#: score/Score.cpp:1722
-#: app/ScoreCommand.cpp:1532
+#: score/Score.cpp:1704
+#: score/Score.cpp:1710
+#: app/ScoreCommand.cpp:1530
 msgid "Normal text"
-msgstr ""
+msgstr "Texto normal"
 
-#: score/Score.cpp:1727
-#: score/Score.cpp:1733
-#: app/ScoreCommand.cpp:1591
-#: app/ScoreWizard.cpp:324
+#: score/Score.cpp:1715
+#: score/Score.cpp:1721
+#: app/ScoreCommand.cpp:1589
+#: app/ScoreWizard.cpp:322
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
-#: score/Score.cpp:1759
+#: score/Score.cpp:1747
 #, c-format
 msgid "Style%d"
-msgstr ""
+msgstr "Estilo%d"
 
 #: score/StaffObj.cpp:359
 #: score/StaffObj.cpp:365
 msgid "Attach text"
-msgstr ""
+msgstr "Asociar texto"
 
 #: score/StaffObj.cpp:392
-#, fuzzy
 msgid "General"
-msgstr "Intervalos"
+msgstr "General"
 
 #: score/Text.cpp:132
 #: score/Text.cpp:152
-#, fuzzy
 msgid "Text"
-msgstr "&Siguiente"
+msgstr "Texto"
+
+#: score/VStaff.cpp:542
+msgid "Error: No clef defined yet."
+msgstr "Error: No se ha definido todavía una clave."
 
 #: score/VStaff.cpp:544
-msgid "Error: No clef defined yet."
-msgstr ""
-
-#: score/VStaff.cpp:546
 msgid "Would you like to have notes placed on the staff as if a G clef has been defined?"
-msgstr ""
+msgstr "¿Quiere que las notas se coloquen como si se hubiera definido una clave de Sol?"
 
-#: score/VStaff.cpp:549
-#: app/ScoreCanvas.cpp:461
+#: score/VStaff.cpp:547
+#: app/ScoreCanvas.cpp:464
 msgid "Insert clef"
-msgstr ""
+msgstr "Insertar clave"
 
-#: score/VStaff.cpp:549
+#: score/VStaff.cpp:547
 msgid "An invisible G clef will be inserted before the note."
-msgstr ""
+msgstr "Se insertará una clave de Sol, invisible, delante de la nota."
 
-#: score/VStaff.cpp:550
-#: score/VStaff.cpp:785
-#: score/VStaff.cpp:825
+#: score/VStaff.cpp:548
+#: score/VStaff.cpp:783
+#: score/VStaff.cpp:823
 #: score/properties/DlgEditText.cpp:155
 #: score/properties/DlgProperties.cpp:94
 #: widgets/Wizard.cpp:137
@@ -424,68 +413,66 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: score/VStaff.cpp:550
+#: score/VStaff.cpp:548
 msgid "The 'insert note' command will be cancelled."
-msgstr ""
+msgstr "La orden de \"insertar nota\" será cancelada."
 
-#: score/VStaff.cpp:774
+#: score/VStaff.cpp:772
 msgid "Notes after the clef will be affected by this action."
-msgstr ""
+msgstr "Las notas que estén tras la clave se verán afectadas por esta acción."
 
-#: score/VStaff.cpp:777
+#: score/VStaff.cpp:775
 msgid "Would you like to keep notes' pitch and, therefore, to change notes' positions on the staff? or, would you prefer to keep notes placed on their current staff positions? (implies pitch change)"
-msgstr ""
+msgstr "¿Quiere mantener la altura de las notas y, por tanto, variar su posición en el pentagrama? o ¿prefiere mantener las notas en esas posiciones? (implica que variará su altura)."
 
-#: score/VStaff.cpp:783
-#, fuzzy
+#: score/VStaff.cpp:781
 msgid "Keep position"
-msgstr "estado fundamental"
+msgstr "Mantener posición"
+
+#: score/VStaff.cpp:781
+msgid "Change notes' pitch and keep their current staff position."
+msgstr "Cambiar la altura de las notas y mantener su posición en el pentagrama."
+
+#: score/VStaff.cpp:782
+#: score/VStaff.cpp:821
+msgid "Keep pitch"
+msgstr "Mantener altura"
+
+#: score/VStaff.cpp:782
+msgid "Keep pitch and move notes to new staff positions."
+msgstr "Mover las notas a otras posiciones del pentagrama para mantener la altura de las notas."
 
 #: score/VStaff.cpp:783
-msgid "Change notes' pitch and keep their current staff position."
-msgstr ""
-
-#: score/VStaff.cpp:784
-#: score/VStaff.cpp:823
-msgid "Keep pitch"
-msgstr ""
-
-#: score/VStaff.cpp:784
-msgid "Keep pitch and move notes to new staff positions."
-msgstr ""
-
-#: score/VStaff.cpp:785
 msgid "The insert, delete or change clef command will be cancelled."
-msgstr ""
+msgstr "La orden de inserción, borrado o modificación será cancelada."
 
-#: score/VStaff.cpp:815
+#: score/VStaff.cpp:813
 msgid "Notes after the key will be affected by this action."
-msgstr ""
+msgstr "Las notas tras la armadura se verán afectadas por esta acción."
 
-#: score/VStaff.cpp:818
+#: score/VStaff.cpp:816
 msgid "Would you like to keep notes' pitch and, therefore, to add/remove accidentals to the affected notes?"
-msgstr ""
+msgstr "¿Quiere mantener la altura de las notas y, por tanto, añadir/quitar alteraciones donde sea necesario?"
+
+#: score/VStaff.cpp:821
+msgid "Keep pitch by adding/removing accidentals when necessary."
+msgstr "Mantener la altura de las notas añadiendo o quitando alteraciones donde sea necesario."
+
+#: score/VStaff.cpp:822
+msgid "Change pitch"
+msgstr "Cambiar altura"
+
+#: score/VStaff.cpp:822
+msgid "Do nothing. Notes' pitch will be affected by the change in key signature."
+msgstr "No hacer nada. Las notas se verán afectadas por el cambio de armadura."
 
 #: score/VStaff.cpp:823
-msgid "Keep pitch by adding/removing accidentals when necessary."
-msgstr ""
-
-#: score/VStaff.cpp:824
-msgid "Change pitch"
-msgstr ""
-
-#: score/VStaff.cpp:824
-msgid "Do nothing. Notes' pitch will be affected by the change in key signature."
-msgstr ""
-
-#: score/VStaff.cpp:825
 msgid "The insert, delete or change key command will be cancelled."
-msgstr ""
+msgstr "Se cancelará la orden de insertar armadura, modificarla o borrarla."
 
 #: score/properties/DlgEditText.cpp:67
-#, fuzzy
 msgid "Edit text"
-msgstr "Herramientas de edición"
+msgstr "Editar texto"
 
 #: score/properties/DlgEditText.cpp:97
 #: app/MainFrame.cpp:666
@@ -507,7 +494,7 @@ msgstr "Pegar"
 
 #: score/properties/DlgEditText.cpp:123
 msgid "Text color selector"
-msgstr ""
+msgstr "Selector del color del texto"
 
 #: score/properties/DlgEditText.cpp:149
 #: score/properties/DlgProperties.cpp:88
@@ -523,27 +510,27 @@ msgid "Accept"
 msgstr "Aceptar"
 
 #: score/properties/DlgProperties.cpp:53
-#: app/MainFrame.cpp:1086
+#: app/MainFrame.cpp:1091
 msgid "Properties"
-msgstr ""
+msgstr "Propiedades"
 
-#: score/properties/DlgTextStyles.cpp:80
+#: score/properties/DlgTextStyles.cpp:93
 msgid "Styles defined in current score"
-msgstr ""
+msgstr "Estilos definidos en esta partitura"
 
-#: score/properties/DlgTextStyles.cpp:274
-#: score/properties/DlgTextStyles.cpp:279
-#: score/properties/DlgTextStyles.cpp:284
+#: score/properties/DlgTextStyles.cpp:287
+#: score/properties/DlgTextStyles.cpp:292
+#: score/properties/DlgTextStyles.cpp:297
 msgid "Not yet implemented"
-msgstr ""
+msgstr "Todavía no está implementado"
 
-#: score/properties/TextProperties.cpp:157
+#: score/properties/TextProperties.cpp:158
 msgid "Text style:"
-msgstr ""
+msgstr "Estilo del texto:"
 
-#: score/properties/TextProperties.cpp:166
+#: score/properties/TextProperties.cpp:167
 msgid "Add/change styles"
-msgstr ""
+msgstr "Añadir/cambiar estilos:"
 
 #: auxmusic/Cadence.cpp:1282
 #: auxmusic/Cadence.cpp:1283
@@ -925,14 +912,7 @@ msgstr "Por tonos"
 msgid "Chromatic"
 msgstr "Cromática"
 
-#: exercises/CadencesConstrains.cpp:149
-msgid "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
-msgstr "Error de programa: detectado bucle en lmCadencesConstrains::GetRandomCadence."
-
-#: exercises/ChordConstrains.cpp:175
-msgid "Program error: Loop detected in lmChordConstrains::GetRandomChordType."
-msgstr "Error de programa: detectado bucle en lmChordConstrains::GetRandomChordType."
-
+#: exercises/MusicReadingConstrains.cpp:51
 #: exercises/Constrains.cpp:159
 #: exercises/ExerciseCtrol.cpp:276
 #: exercises/ExerciseCtrol.cpp:633
@@ -941,28 +921,35 @@ msgstr "Error de programa: detectado bucle en lmChordConstrains::GetRandomChordT
 #: exercises/ExerciseCtrol.cpp:803
 #: exercises/ExerciseCtrol.cpp:974
 #: exercises/ExerciseCtrol.cpp:1028
-#: exercises/MusicReadingConstrains.cpp:51
 #: html/TheoMusicReadingCtrolParms.h:153
 msgid "Play"
 msgstr "Tocar"
 
+#: exercises/MusicReadingConstrains.cpp:52
+#: exercises/MusicReadingConstrains.cpp:54
 #: exercises/Constrains.cpp:160
 #: exercises/Constrains.cpp:162
 #: exercises/ExerciseCtrol.cpp:574
 #: exercises/ExerciseCtrol.cpp:784
 #: exercises/ExerciseCtrol.cpp:957
-#: exercises/MusicReadingConstrains.cpp:52
-#: exercises/MusicReadingConstrains.cpp:54
 #: html/TheoMusicReadingCtrolParms.h:154
 #: html/TheoMusicReadingCtrolParms.h:156
 msgid "Stop"
 msgstr "Parar"
 
-#: exercises/Constrains.cpp:161
 #: exercises/MusicReadingConstrains.cpp:53
+#: exercises/Constrains.cpp:161
 #: html/TheoMusicReadingCtrolParms.h:155
 msgid "Read"
 msgstr "Leer"
+
+#: exercises/CadencesConstrains.cpp:149
+msgid "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
+msgstr "Error de programa: detectado bucle en lmCadencesConstrains::GetRandomCadence."
+
+#: exercises/ChordConstrains.cpp:175
+msgid "Program error: Loop detected in lmChordConstrains::GetRandomChordType."
+msgstr "Error de programa: detectado bucle en lmChordConstrains::GetRandomChordType."
 
 #: exercises/Constrains.cpp:163
 #, c-format
@@ -1881,110 +1868,110 @@ msgstr "6 b"
 msgid "7 b"
 msgstr "7 b"
 
-#: html/TextBookFrame.cpp:356
+#: html/TextBookFrame.cpp:357
 msgid "eMusicBooks"
 msgstr "eMusicBooks"
 
-#: html/TextBookFrame.cpp:413
-#: html/TextBookFrame.cpp:928
-#: html/TextBookFrame.cpp:1428
+#: html/TextBookFrame.cpp:414
+#: html/TextBookFrame.cpp:929
+#: html/TextBookFrame.cpp:1429
 msgid "(bookmarks)"
 msgstr "(marcadores)"
 
-#: html/TextBookFrame.cpp:424
+#: html/TextBookFrame.cpp:425
 msgid "Add current page to bookmarks"
 msgstr "Añadir marcador a la página actual"
 
-#: html/TextBookFrame.cpp:425
+#: html/TextBookFrame.cpp:426
 msgid "Remove current page from bookmarks"
 msgstr "Quitar marcador de esta página"
 
-#: html/TextBookFrame.cpp:442
+#: html/TextBookFrame.cpp:443
 msgid "Contents"
 msgstr "Contenido"
 
-#: html/TextBookFrame.cpp:457
+#: html/TextBookFrame.cpp:458
 msgid "Find"
 msgstr "Buscar"
 
-#: html/TextBookFrame.cpp:459
+#: html/TextBookFrame.cpp:460
 msgid "Show all"
 msgstr "Mostrar todo"
 
-#: html/TextBookFrame.cpp:468
+#: html/TextBookFrame.cpp:469
 msgid "Display all index items that contain the given substring. The search is case insensitive."
 msgstr "Muestra todos los items del índice que contienen la cadena especificada. La búsqueda no distingue entre mayúsculas y minúsculas."
 
-#: html/TextBookFrame.cpp:469
+#: html/TextBookFrame.cpp:470
 msgid "Show all items in index"
 msgstr "Muestra todos los items del índice"
 
-#: html/TextBookFrame.cpp:480
+#: html/TextBookFrame.cpp:481
 msgid "Index"
 msgstr "Indice"
 
-#: html/TextBookFrame.cpp:498
+#: html/TextBookFrame.cpp:499
 msgid "Case sensitive"
 msgstr "Distinguir mayus/minusculas"
 
-#: html/TextBookFrame.cpp:499
+#: html/TextBookFrame.cpp:500
 msgid "Whole words only"
 msgstr "Sólo palabras completas"
 
-#: html/TextBookFrame.cpp:500
-#: html/TextBookFrame.cpp:513
+#: html/TextBookFrame.cpp:501
+#: html/TextBookFrame.cpp:514
 msgid "Search"
 msgstr "Buscar"
 
-#: html/TextBookFrame.cpp:501
+#: html/TextBookFrame.cpp:502
 msgid "Search contents of help book(s) for all occurrences of the text you typed above"
 msgstr "Busca en el contenido de todos los libros y muestra todas las ocurrencias del texto que se haya tecleado"
 
-#: html/TextBookFrame.cpp:700
+#: html/TextBookFrame.cpp:701
 msgid "Please choose the page to display:"
 msgstr "Por favor, escoge la página a mostrar:"
 
-#: html/TextBookFrame.cpp:701
+#: html/TextBookFrame.cpp:702
 msgid "Help Topics"
 msgstr "Help Topics"
 
-#: html/TextBookFrame.cpp:854
-#: html/TextBookFrame.cpp:856
-#: html/TextBookFrame.cpp:1367
-#: html/TextBookFrame.cpp:1400
+#: html/TextBookFrame.cpp:855
+#: html/TextBookFrame.cpp:857
+#: html/TextBookFrame.cpp:1368
+#: html/TextBookFrame.cpp:1401
 #, c-format
 msgid "%i of %i"
 msgstr "%i de %i"
 
-#: html/TextBookFrame.cpp:872
+#: html/TextBookFrame.cpp:873
 msgid "Search in all books"
 msgstr "Buscar en todos los libros"
 
-#: html/TextBookFrame.cpp:1142
+#: html/TextBookFrame.cpp:1143
 msgid "Help Printing"
 msgstr "Ayuda para imprimir"
 
-#: html/TextBookFrame.cpp:1144
+#: html/TextBookFrame.cpp:1145
 msgid "Cannot print an empty page."
 msgstr "No se puede imprimir una página vacia."
 
-#: html/TextBookFrame.cpp:1154
+#: html/TextBookFrame.cpp:1155
 msgid "HTML files (*.html;*.htm)|*.html;*.htm|"
 msgstr "Archivos HTML (*.html;*.htm)|*.html;*.htm|"
 
-#: html/TextBookFrame.cpp:1155
+#: html/TextBookFrame.cpp:1156
 msgid "Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|"
 msgstr "Archivos de ayuda (*.htb)|*.htb|Archivos de ayuda (*.zip)|*.zip|"
 
-#: html/TextBookFrame.cpp:1156
+#: html/TextBookFrame.cpp:1157
 msgid "HTML Help Project (*.hhp)|*.hhp|"
 msgstr "Proyecto de ayuda HTML (*.hhp)|*.hhp|"
 
-#: html/TextBookFrame.cpp:1157
+#: html/TextBookFrame.cpp:1158
 msgid "All files (*.*)|*"
 msgstr "Todos los archivos (*.*)|*"
 
-#: html/TextBookFrame.cpp:1158
+#: html/TextBookFrame.cpp:1159
 msgid "Open HTML document"
 msgstr "Abrir documento HTML"
 
@@ -2148,32 +2135,32 @@ msgstr "Analizando <note>.<accidental>: unknown type %s"
 msgid "Parsing <accidental>. Type=%s"
 msgstr "Analizando <accidental>. Type=%s"
 
-#: xml_parser/MusicXMLParser.cpp:1769
+#: xml_parser/MusicXMLParser.cpp:1767
 #, c-format
 msgid "Attribute \"%s\" not found in tag <%s>."
 msgstr "El atributo '%s' no aparece en la etiquta <%s>."
 
-#: xml_parser/MusicXMLParser.cpp:1787
+#: xml_parser/MusicXMLParser.cpp:1785
 #, c-format
 msgid "Yes-no attribute \"%s\" has an invalid value \"%s\"."
 msgstr "Atributo de tipo Yes-no '%s' tiene un valor no válido '%s'."
 
-#: xml_parser/MusicXMLParser.cpp:2042
+#: xml_parser/MusicXMLParser.cpp:2034
 #, c-format
 msgid "Parsing <duration>: duration=%s"
 msgstr "Analizando <duration>: duration=%s"
 
-#: xml_parser/MusicXMLParser.cpp:2067
+#: xml_parser/MusicXMLParser.cpp:2059
 #, c-format
 msgid "Parsing <divisions>: divisions=%s"
 msgstr "Analizando <divisions>: divisions=%s"
 
-#: xml_parser/MusicXMLParser.cpp:2093
+#: xml_parser/MusicXMLParser.cpp:2085
 #, c-format
 msgid "Parsing <placement>: placement='%s'>"
 msgstr "Analizando <placement>: placement='%s'>"
 
-#: xml_parser/MusicXMLParser.cpp:2100
+#: xml_parser/MusicXMLParser.cpp:2092
 #, c-format
 msgid "<placement> element has an invalid value \"%s\". Assumed 'above'"
 msgstr "Elemento <placement> tiene un valor no válido '%s'. Se utilizará 'above'"
@@ -2185,9 +2172,8 @@ msgstr "Un programa gratuito para el aprendizaje del lenguaje musical"
 
 #: app/AboutDialog.cpp:134
 #: app/AboutDialog.cpp:139
-#, fuzzy
 msgid "Arial"
-msgstr "Conclusiva"
+msgstr "Arial"
 
 #: app/AboutDialog.cpp:156
 #: app/AboutDialog.cpp:196
@@ -2199,7 +2185,7 @@ msgid "Licence"
 msgstr "Licencia"
 
 #: app/AboutDialog.cpp:162
-#: app/AboutDialog.cpp:371
+#: app/AboutDialog.cpp:378
 msgid "Project team"
 msgstr "Equipo del proyecto"
 
@@ -2232,18 +2218,16 @@ msgid "License"
 msgstr "Licencia"
 
 #: app/AboutDialog.cpp:226
-#, fuzzy
 msgid "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
-msgstr "Derechos reservados &copy; 2002-2007 Cecilio Salmer&oacute;n."
+msgstr "Derechos reservados &copy; 2002-2008 Cecilio Salmer&oacute;n."
 
 #: app/AboutDialog.cpp:228
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 msgstr "Este programa es 'Software Libre'. Está permitido redistribuirlo y/o modificarlo, siempre y cuando se haga bajo los términos y condiciones de la Licencia Pública General GNU publicada por la Free Software Foundation, ya sea en su versión 3 o cualquier otra de las posteriores a la misma."
 
 #: app/AboutDialog.cpp:233
-#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at "
-msgstr "Este programa se distribuye con la intención de que sea útil, sin embargo carece de garantía, ni siquiera tiene la garantía implícita de tipo comercial o inherente al propósito del mismo programa. Ver la Licencia Pública General GNU para más detalles, consultándola en http://www.gnu.org/licenses/licenses.html"
+msgstr "Este programa se distribuye con la intención de que sea útil, sin embargo carece de garantía, ni siquiera tiene la garantía implícita de tipo comercial o inherente al propósito del  programa. Ver la Licencia Pública General GNU para más detalles, consultándola en"
 
 #: app/AboutDialog.cpp:248
 msgid "Art desing credits"
@@ -2286,92 +2270,94 @@ msgid "LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library
 msgstr "LenMus Phonascus utiliza <b>PortMidi</b> (the Portable Real-Time MIDI Library) disponible en http://www.cs.cmu.edu/~music/portmusic/. PortMidi tiene copyright (c) 1999-2000 Ross Bencina y Phil Burk y copyright (c) 2001 Roger B. Dannenberg. Su licencia permite uso gratuito."
 
 #: app/AboutDialog.cpp:298
-msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
-msgstr "LenMus Phonascus está construido utilizando <b>wxWidgets</b>, un conjunto de clases C++ para desarrollo de aplicaciones multiplataforma (http://www.wxwidgets.org). wxWidgets es 'Open Source', es fácil de aprender, tiene una generosa comunidad de usuarios y puede usarse tambien en productos comerciales sin necesidad de licencia."
-
-#: app/AboutDialog.cpp:303
 msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a light weight design, and very good reliability and stability."
 msgstr "Este programa usa el software <b>Anti-Grain Geometry</b> (http://www.antigrain.com) , desarrollado por Maxim Shemanarev. AGG es una excelente librería gráfica y es  open source. Produce imágenes en memoria a partir de datos vectoriales y soporta anti-aliasing; tiene un alto rendimiento, es independiente de plataforma, extensible y muy flexible, con un peso ligero y muy buena fiabilidad y estabilidad."
 
-#: app/AboutDialog.cpp:312
+#: app/AboutDialog.cpp:307
+msgid "This program uses the <b>FreeType 2</b> software. It is a free open source font engine, designed to be small, efficient, highly customizable and portable, while capable of producing high-quality output (glyph images). It can be used in graphics libraries, display servers, font conversion tools, text image generation tools, and many other products as well. It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
+msgstr "Este programa utiliza el software <b>FreeType 2</b>. Es un motor de manejo y renderizado de fuentes, gratuito y open source, diseñado para ser pequeño, eficiente, altamente personalizable y portable. Permite generar imágenes de alta calidad. Puede utilizarse en paquetes gráficos, servidores de renderizado, herramientas de conversión de fonts y de renderizado de texto y en muchos otros productos. Ha sido desarrollado por David Turner, Robert Wilhelm, y Werner Lemberg. FreeType tiene todos los derechos reservados. Copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
+
+#: app/AboutDialog.cpp:315
+msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
+msgstr "LenMus Phonascus está construido utilizando <b>wxWidgets</b>, un conjunto de clases C++ para desarrollo de aplicaciones multiplataforma (http://www.wxwidgets.org). wxWidgets es 'Open Source', es fácil de aprender, tiene una generosa comunidad de usuarios y puede usarse tambien en productos comerciales sin necesidad de licencia."
+
+#: app/AboutDialog.cpp:320
 msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
 msgstr "Muchos de los glifos del font 'lmbasic.ttf' han sito tomados del projecto <b>LilyPond</b> (http://lilypond.org), del font Feta. Este proyecto tiene licencia GNU GPL."
 
-#: app/AboutDialog.cpp:348
+#: app/AboutDialog.cpp:355
 msgid "Build information"
 msgstr "Información de versión"
 
-#: app/AboutDialog.cpp:349
+#: app/AboutDialog.cpp:356
 msgid "Program build date:"
 msgstr "Fecha de construcción del programa:"
 
-#: app/AboutDialog.cpp:352
+#: app/AboutDialog.cpp:359
 msgid "wxMidi Version "
 msgstr "Versión de wxMidi "
 
-#: app/AboutDialog.cpp:353
-#, fuzzy
+#: app/AboutDialog.cpp:360
 msgid "Your computer information:"
 msgstr "Información del equipo:"
 
-#: app/AboutDialog.cpp:372
+#: app/AboutDialog.cpp:379
 msgid "(alphabetical order)"
 msgstr "(orden alfabético)"
 
-#: app/AboutDialog.cpp:374
+#: app/AboutDialog.cpp:381
 msgid "This program has been designed and developed by volunteers. Some of them devoted a few hours, others months or years. But all them gave their time for free to the project. Thanks to all them."
 msgstr "Este programa ha sido diseñado y desarrollado por voluntarios. Unos han dedicado unas cuantas horas, otros meses o años. Pero todos ellos han dedicado su tiempo gratuitamente a este proyecto. Gracias a todos ellos."
 
-#: app/AboutDialog.cpp:381
+#: app/AboutDialog.cpp:388
 msgid "Management and programming:"
 msgstr "Dirección y programación:"
 
-#: app/AboutDialog.cpp:386
+#: app/AboutDialog.cpp:393
 msgid "Music texts and exercises:"
 msgstr "Textos de música y ejercicios:"
 
-#: app/AboutDialog.cpp:392
+#: app/AboutDialog.cpp:399
 msgid "Package for Linux prepared by:"
-msgstr ""
+msgstr "Paquete GNU/Linux preparado por:"
 
-#: app/AboutDialog.cpp:397
+#: app/AboutDialog.cpp:404
 msgid "Translation:"
 msgstr "Traducción:"
 
-#: app/AboutDialog.cpp:398
+#: app/AboutDialog.cpp:405
 msgid "Basque"
-msgstr ""
+msgstr "Vascuence"
 
-#: app/AboutDialog.cpp:401
+#: app/AboutDialog.cpp:408
 msgid "Dutch"
 msgstr "Holandés"
 
-#: app/AboutDialog.cpp:404
+#: app/AboutDialog.cpp:411
 msgid "French"
 msgstr "Francés"
 
-#: app/AboutDialog.cpp:409
-#, fuzzy
+#: app/AboutDialog.cpp:416
 msgid "Italian"
-msgstr "Jónica"
+msgstr "Italiano"
 
-#: app/AboutDialog.cpp:412
+#: app/AboutDialog.cpp:419
 msgid "Spanish"
 msgstr "Español"
 
-#: app/AboutDialog.cpp:415
+#: app/AboutDialog.cpp:422
 msgid "Turkish"
 msgstr "Turco"
 
-#: app/AboutDialog.cpp:421
+#: app/AboutDialog.cpp:428
 msgid "Website maintenace:"
 msgstr "Mantenimiento de la web:"
 
-#: app/AboutDialog.cpp:427
+#: app/AboutDialog.cpp:434
 msgid "Thanks also to:"
 msgstr "Gracias también a:"
 
-#: app/AboutDialog.cpp:432
+#: app/AboutDialog.cpp:439
 msgid "If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
 msgstr "Si quieres unirte al proyecto y ayudar en la programación o de cualquier otra manera, eres bienvenido/a. Por favor, visita la web de LenMus en www.lenmus.org y déjame un mesaje en la página de 'contactar'. Muchas gracias y bienvenido/a."
 
@@ -2398,8 +2384,8 @@ msgid "Choose language to use:"
 msgstr "Elija el idima a utilizar:"
 
 #: app/Logger.cpp:159
-#: app/MainFrame.cpp:1977
 #: app/MainFrame.cpp:1982
+#: app/MainFrame.cpp:1987
 msgid "Error message"
 msgstr "Mensaje de error"
 
@@ -2420,7 +2406,7 @@ msgid "New score"
 msgstr "Nueva partitura"
 
 #: app/MainFrame.cpp:645
-#: app/MainFrame.cpp:1003
+#: app/MainFrame.cpp:1008
 msgid "Open a score"
 msgstr "Abrir una partitura"
 
@@ -2437,80 +2423,77 @@ msgid "Print document"
 msgstr "Imprimir documento"
 
 #: app/MainFrame.cpp:678
-#: app/MainFrame.cpp:1053
+#: app/MainFrame.cpp:1058
 #: ../xrc/xrc_strings.cpp:175
 msgid "Undo"
 msgstr "&Deshacer"
 
 #: app/MainFrame.cpp:682
-#: app/MainFrame.cpp:1055
+#: app/MainFrame.cpp:1060
 #: ../xrc/xrc_strings.cpp:176
 msgid "Redo"
 msgstr "Rehacer"
 
 #: app/MainFrame.cpp:687
-#: app/MainFrame.cpp:1080
-#, fuzzy
+#: app/MainFrame.cpp:1085
 msgid "Show/hide page margins and spacers"
-msgstr "Mostrar/ocultar el panel de navegación"
+msgstr "Mostrar/ocultar el margenes y espaciados"
 
 #: app/MainFrame.cpp:696
-#: app/MainFrame.cpp:1128
+#: app/MainFrame.cpp:1133
 msgid "Zoom so that the full page is displayed"
 msgstr "Ajustar escala para mostrar una página completa"
 
 #: app/MainFrame.cpp:700
-#: app/MainFrame.cpp:1131
+#: app/MainFrame.cpp:1136
 msgid "Zoom so that page width equals window width"
 msgstr "Ajustar escala para el ancho de la página"
 
 #: app/MainFrame.cpp:704
-#: app/MainFrame.cpp:1134
+#: app/MainFrame.cpp:1139
 msgid "Enlarge image size"
 msgstr "Incrementar tamaño de la imagen"
 
 #: app/MainFrame.cpp:708
-#: app/MainFrame.cpp:1136
+#: app/MainFrame.cpp:1141
 msgid "Reduce image size"
 msgstr "Reducir el tamaño de la imagen"
 
 #: app/MainFrame.cpp:726
-#: app/MainFrame.cpp:1125
-#: app/MainFrame.cpp:1967
+#: app/MainFrame.cpp:1130
+#: app/MainFrame.cpp:1972
 msgid "Actual size"
 msgstr "Tamaño real"
 
 #: app/MainFrame.cpp:727
-#: app/MainFrame.cpp:1127
-#: app/MainFrame.cpp:1961
+#: app/MainFrame.cpp:1132
+#: app/MainFrame.cpp:1966
 msgid "Fit page full"
 msgstr "Ajustar a página completa"
 
 #: app/MainFrame.cpp:728
-#: app/MainFrame.cpp:1130
-#: app/MainFrame.cpp:1964
+#: app/MainFrame.cpp:1135
+#: app/MainFrame.cpp:1969
 msgid "Fit page width"
 msgstr "Ajustar al ancho de página"
 
 #: app/MainFrame.cpp:739
-#: app/MainFrame.cpp:1145
-#, fuzzy
+#: app/MainFrame.cpp:1150
 msgid "Start/resume play back. From selection of full score"
-msgstr "Iniciar/continuar la ejecución de la partitura"
+msgstr "Iniciar/continuar la ejecución de la partitura. Completa."
 
 #: app/MainFrame.cpp:743
-#: app/MainFrame.cpp:1148
-#, fuzzy
+#: app/MainFrame.cpp:1153
 msgid "Start/resume play back. From cursor measure"
-msgstr "Iniciar/continuar la ejecución de la partitura"
+msgstr "Iniciar/continuar la ejecución. Desde la posición del cursor."
 
 #: app/MainFrame.cpp:747
-#: app/MainFrame.cpp:1151
+#: app/MainFrame.cpp:1156
 msgid "Stop playing back"
 msgstr "Detener la ejecución"
 
 #: app/MainFrame.cpp:751
-#: app/MainFrame.cpp:1153
+#: app/MainFrame.cpp:1158
 msgid "Pause playing back"
 msgstr "Pausa en la ejecución de la partitura"
 
@@ -2518,428 +2501,415 @@ msgstr "Pausa en la ejecución de la partitura"
 msgid "Turn metronome on/off"
 msgstr "Enceder / apagar el metrónomo"
 
-#: app/MainFrame.cpp:789
-#: app/MainFrame.cpp:828
-msgid "Main tools"
-msgstr "Herramientas principales"
-
-#: app/MainFrame.cpp:793
-#: app/MainFrame.cpp:824
-msgid "Zooming tools"
-msgstr "Herramientas de escala"
-
-#: app/MainFrame.cpp:797
-#: app/MainFrame.cpp:820
-msgid "Edit tools"
-msgstr "Herramientas de edición"
-
-#: app/MainFrame.cpp:801
-#: app/MainFrame.cpp:816
-msgid "File tools"
-msgstr "Herramientas de archivo"
-
-#: app/MainFrame.cpp:805
-#: app/MainFrame.cpp:836
+#: app/MainFrame.cpp:791
+#: app/MainFrame.cpp:838
 msgid "Metronome tools"
 msgstr "Herramientas de metrónomo"
 
-#: app/MainFrame.cpp:809
-#: app/MainFrame.cpp:832
+#: app/MainFrame.cpp:795
+#: app/MainFrame.cpp:834
 msgid "Play tools"
 msgstr "Herramientas de ejecución"
 
-#: app/MainFrame.cpp:911
+#: app/MainFrame.cpp:799
+#: app/MainFrame.cpp:830
+msgid "Main tools"
+msgstr "Herramientas principales"
+
+#: app/MainFrame.cpp:803
+#: app/MainFrame.cpp:826
+msgid "Zooming tools"
+msgstr "Herramientas de escala"
+
+#: app/MainFrame.cpp:807
+#: app/MainFrame.cpp:822
+msgid "Edit tools"
+msgstr "Herramientas de edición"
+
+#: app/MainFrame.cpp:811
+#: app/MainFrame.cpp:818
+msgid "File tools"
+msgstr "Herramientas de archivo"
+
+#: app/MainFrame.cpp:914
 msgid "Show/hide navigation panel"
 msgstr "Mostrar/ocultar el panel de navegación"
 
-#: app/MainFrame.cpp:918
+#: app/MainFrame.cpp:921
 msgid "Previous page of current eMusicBook"
 msgstr "Página anterior de este eMusicBook"
 
-#: app/MainFrame.cpp:922
+#: app/MainFrame.cpp:925
 msgid "Next page of current eMusicBook"
 msgstr "Siguiente página de este eMusicBook"
 
-#: app/MainFrame.cpp:927
+#: app/MainFrame.cpp:930
 msgid "Go to previous visited page"
 msgstr "Ir a la anterior página vista"
 
-#: app/MainFrame.cpp:930
+#: app/MainFrame.cpp:933
 msgid "Go to next visited page"
 msgstr "Ir a la siguiente página vista"
 
-#: app/MainFrame.cpp:935
+#: app/MainFrame.cpp:938
 msgid "eBooks navigation tools"
 msgstr "Herramientas de navegación"
 
-#: app/MainFrame.cpp:1000
+#: app/MainFrame.cpp:1005
 msgid "&New\tCtrl+N"
 msgstr "&Nueva\tCtrl+N"
 
-#: app/MainFrame.cpp:1001
+#: app/MainFrame.cpp:1006
 msgid "Open new blank score"
 msgstr "Abrir una partitura en blanco"
 
-#: app/MainFrame.cpp:1002
+#: app/MainFrame.cpp:1007
 msgid "&Open ...\tCtrl+O"
 msgstr "&Abrir ...\tCtrl+O"
 
-#: app/MainFrame.cpp:1004
+#: app/MainFrame.cpp:1009
 msgid "Open &books"
 msgstr "Abrir li&bros"
 
-#: app/MainFrame.cpp:1005
+#: app/MainFrame.cpp:1010
 msgid "Hide/show eMusicBooks"
 msgstr "Mostrar/ocultar libros"
 
-#: app/MainFrame.cpp:1006
+#: app/MainFrame.cpp:1011
 msgid "&Import..."
 msgstr "&Importar..."
 
-#: app/MainFrame.cpp:1007
-#, fuzzy
-msgid "Open a MusicXML score"
-msgstr "Abrir una partitura"
-
-#: app/MainFrame.cpp:1010
-msgid "MusicXML format"
-msgstr ""
-
-#: app/MainFrame.cpp:1011
-#, fuzzy
-msgid "Save score as a MusicXML file"
-msgstr "Guardar la partitura como imagenes BMP"
-
 #: app/MainFrame.cpp:1012
+msgid "Open a MusicXML score"
+msgstr "Abrir una partitura MusicXML"
+
+#: app/MainFrame.cpp:1015
+msgid "MusicXML format"
+msgstr "Formato MusicXML"
+
+#: app/MainFrame.cpp:1016
+msgid "Save score as a MusicXML file"
+msgstr "Guardar la partitura como archivo MusicXML"
+
+#: app/MainFrame.cpp:1017
 msgid "As &bmp image"
 msgstr "Como imagen &bmp"
 
-#: app/MainFrame.cpp:1013
+#: app/MainFrame.cpp:1018
 msgid "Save score as BMP images"
 msgstr "Guardar la partitura como imagenes BMP"
 
-#: app/MainFrame.cpp:1014
+#: app/MainFrame.cpp:1019
 msgid "As &jpg image"
 msgstr "Como imagen &jpg"
 
-#: app/MainFrame.cpp:1015
+#: app/MainFrame.cpp:1020
 msgid "Save score as JPG images"
 msgstr "Guardar la partitura como imágenes JPG"
 
-#: app/MainFrame.cpp:1017
+#: app/MainFrame.cpp:1022
 msgid "&Export ..."
 msgstr "&Exportar..."
 
-#: app/MainFrame.cpp:1018
+#: app/MainFrame.cpp:1023
 msgid "Save score in other formats"
 msgstr "Guardar la partitura en otros formatos"
 
-#: app/MainFrame.cpp:1024
+#: app/MainFrame.cpp:1029
 msgid "&Save\tCtrl+S"
 msgstr "&Guardar\tCtrl+S"
 
-#: app/MainFrame.cpp:1026
+#: app/MainFrame.cpp:1031
 msgid "Save &as ..."
 msgstr "&Guardar como..."
 
-#: app/MainFrame.cpp:1028
+#: app/MainFrame.cpp:1033
 msgid "&Close\tCtrl+W"
 msgstr "&Cerrar\tCtrl+W"
 
-#: app/MainFrame.cpp:1029
-#, fuzzy
+#: app/MainFrame.cpp:1034
 msgid "Close a score"
-msgstr "Abrir una partitura"
+msgstr "Cerrar una partitura"
 
-#: app/MainFrame.cpp:1032
+#: app/MainFrame.cpp:1037
 msgid "&Print ...\tCtrl+P"
 msgstr "&Imprimir ...\tCtrl+P"
 
-#: app/MainFrame.cpp:1034
+#: app/MainFrame.cpp:1039
 msgid "Print &Setup..."
 msgstr "Configurar impresora..."
 
-#: app/MainFrame.cpp:1035
-#, fuzzy
+#: app/MainFrame.cpp:1040
 msgid "Configure printer options"
-msgstr "Opciones de configuración"
+msgstr "Configrar las opciones de impresión"
 
-#: app/MainFrame.cpp:1036
+#: app/MainFrame.cpp:1041
 msgid "Print Pre&view"
 msgstr "Imprimir: pre&visualizar"
 
-#: app/MainFrame.cpp:1040
+#: app/MainFrame.cpp:1045
 msgid "&Quit\tCtrl+Q"
 msgstr "&Salir\tCtrl+Q"
 
-#: app/MainFrame.cpp:1041
+#: app/MainFrame.cpp:1046
 msgid "Exit program"
-msgstr ""
+msgstr "Terminar el programa"
 
-#: app/MainFrame.cpp:1052
+#: app/MainFrame.cpp:1057
 msgid "&Undo"
 msgstr "&Deshacer"
 
-#: app/MainFrame.cpp:1054
+#: app/MainFrame.cpp:1059
 msgid "&Redo"
 msgstr "Rehacer"
 
-#: app/MainFrame.cpp:1061
+#: app/MainFrame.cpp:1066
 msgid "Tool &bar"
 msgstr "&Barra de herramientas"
 
-#: app/MainFrame.cpp:1062
+#: app/MainFrame.cpp:1067
 msgid "Hide/show the tools bar"
 msgstr "Mostrar/ocultar la barra de herramientas"
 
-#: app/MainFrame.cpp:1063
+#: app/MainFrame.cpp:1068
 msgid "&Status bar"
 msgstr "&Barra de estado"
 
-#: app/MainFrame.cpp:1064
+#: app/MainFrame.cpp:1069
 msgid "Hide/show the status bar"
 msgstr "Mostrar/ocultar barra de estado"
 
-#: app/MainFrame.cpp:1066
-#, fuzzy
+#: app/MainFrame.cpp:1071
 msgid "&Tool box"
 msgstr "&Barra de herramientas"
 
-#: app/MainFrame.cpp:1067
-#, fuzzy
+#: app/MainFrame.cpp:1072
 msgid "Hide/show edition tool box window"
 msgstr "Mostrar/ocultar la barra de herramientas"
 
-#: app/MainFrame.cpp:1068
+#: app/MainFrame.cpp:1073
 msgid "&Rulers"
 msgstr "&Reglas"
 
-#: app/MainFrame.cpp:1069
+#: app/MainFrame.cpp:1074
 msgid "Hide/show rulers"
 msgstr "Mostrar/ocultar reglas"
 
-#: app/MainFrame.cpp:1070
+#: app/MainFrame.cpp:1075
 msgid "&Welcome page"
-msgstr ""
+msgstr "Página de bienvenida"
 
-#: app/MainFrame.cpp:1071
-#, fuzzy
+#: app/MainFrame.cpp:1076
 msgid "Hide/show welcome page"
-msgstr "Mostrar/ocultar reglas"
+msgstr "Mostrar/ocultar página de bienvenida"
 
-#: app/MainFrame.cpp:1087
+#: app/MainFrame.cpp:1092
 msgid "Edit name, abbreviation, MIDI settings and other properties"
-msgstr ""
+msgstr "Editar nombre, abreviatura, opciones MIDI y otras propiedades."
 
-#: app/MainFrame.cpp:1137
+#: app/MainFrame.cpp:1142
 msgid "Zoom to ..."
 msgstr "Ampliar/reducir ..."
 
-#: app/MainFrame.cpp:1144
+#: app/MainFrame.cpp:1149
 msgid "&Play"
 msgstr "Tocar"
 
-#: app/MainFrame.cpp:1147
-#, fuzzy
+#: app/MainFrame.cpp:1152
 msgid "Play from cursor"
-msgstr "Tocar un &acorde de tónica"
+msgstr "Tocar desde el cursor"
 
-#: app/MainFrame.cpp:1150
+#: app/MainFrame.cpp:1155
 msgid "S&top"
 msgstr "Parar"
 
-#: app/MainFrame.cpp:1152
+#: app/MainFrame.cpp:1157
 msgid "P&ause"
 msgstr "P&ausa"
 
-#: app/MainFrame.cpp:1156
+#: app/MainFrame.cpp:1161
 msgid "&Run Midi wizard"
 msgstr "&Asistente MIDI"
 
-#: app/MainFrame.cpp:1157
+#: app/MainFrame.cpp:1162
 #: app/MidiWizard.cpp:75
 msgid "MIDI configuration wizard"
 msgstr "Asistente para configurar MIDI"
 
-#: app/MainFrame.cpp:1160
+#: app/MainFrame.cpp:1165
 msgid "&Test sound"
 msgstr "&Comprobar el sonido"
 
-#: app/MainFrame.cpp:1161
+#: app/MainFrame.cpp:1166
 msgid "Play an scale to test sound"
 msgstr "Tocar una escala para comprobar el sonido"
 
-#: app/MainFrame.cpp:1161
-#, fuzzy
+#: app/MainFrame.cpp:1166
 msgid "tool_test_sound"
 msgstr "Comprobar sonido"
 
-#: app/MainFrame.cpp:1162
+#: app/MainFrame.cpp:1167
 msgid "&All sounds off"
 msgstr "&Detener sonidos"
 
-#: app/MainFrame.cpp:1163
+#: app/MainFrame.cpp:1168
 msgid "Stop inmediatly all sounds"
 msgstr "&Denere inmediatamente todos los sonidos"
 
-#: app/MainFrame.cpp:1169
+#: app/MainFrame.cpp:1174
 msgid "&Preferences"
 msgstr "&Preferencias"
 
-#: app/MainFrame.cpp:1170
-#: app/MainFrame.cpp:1195
+#: app/MainFrame.cpp:1175
+#: app/MainFrame.cpp:1200
 msgid "Open help book"
 msgstr "Abrir ayuda"
 
-#: app/MainFrame.cpp:1175
+#: app/MainFrame.cpp:1180
 msgid "Cl&ose"
 msgstr "Cerrar"
 
-#: app/MainFrame.cpp:1176
+#: app/MainFrame.cpp:1181
 msgid "Close All"
 msgstr "&Cerrar todas"
 
-#: app/MainFrame.cpp:1179
+#: app/MainFrame.cpp:1184
 msgid "&Next"
 msgstr "&Siguiente"
 
-#: app/MainFrame.cpp:1180
+#: app/MainFrame.cpp:1185
 msgid "&Previous"
 msgstr "&Anterior"
 
-#: app/MainFrame.cpp:1187
-#, fuzzy
+#: app/MainFrame.cpp:1192
 msgid "&About"
-msgstr "&Acerca de\tF1"
+msgstr "&Acerca de"
 
-#: app/MainFrame.cpp:1188
+#: app/MainFrame.cpp:1193
 msgid "Display information about program version and credits"
 msgstr "Mostrar información sobre versión y créditos"
 
-#: app/MainFrame.cpp:1192
+#: app/MainFrame.cpp:1197
+#: app/WelcomeWnd.cpp:238
 msgid "Editor quick guide"
-msgstr ""
-
-#: app/MainFrame.cpp:1193
-#, fuzzy
-msgid "Show editor reference card"
-msgstr "Cambiar preferencias de usuario"
-
-#: app/MainFrame.cpp:1194
-#, fuzzy
-msgid "&Content"
-msgstr "Contenido"
+msgstr "Guía rápida del editor"
 
 #: app/MainFrame.cpp:1198
+msgid "Show editor reference card"
+msgstr "Mostrar la guía rápidad del editor"
+
+#: app/MainFrame.cpp:1199
+msgid "&Content"
+msgstr "&Contenido"
+
+#: app/MainFrame.cpp:1203
 msgid "Check now for &updates"
 msgstr "Buscar &actualizaciones"
 
-#: app/MainFrame.cpp:1199
+#: app/MainFrame.cpp:1204
 msgid "Connect to the Internet and check for program updates"
 msgstr "Conectar a internet y comprobar si hay actualizaciones"
 
-#: app/MainFrame.cpp:1201
+#: app/MainFrame.cpp:1206
 msgid "&Visit LenMus website"
 msgstr "&Ver la web de LenMus"
 
-#: app/MainFrame.cpp:1202
+#: app/MainFrame.cpp:1207
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "Abrir el navegador de internet y visitar la web de LenMus"
 
-#: app/MainFrame.cpp:1213
+#: app/MainFrame.cpp:1218
 msgid "&File"
 msgstr "&Archivo"
 
-#: app/MainFrame.cpp:1214
+#: app/MainFrame.cpp:1219
 msgid "&Edit"
 msgstr "&Editar"
 
-#: app/MainFrame.cpp:1215
+#: app/MainFrame.cpp:1220
 msgid "&View"
 msgstr "&Ver"
 
-#: app/MainFrame.cpp:1216
+#: app/MainFrame.cpp:1221
 msgid "S&core"
-msgstr ""
+msgstr "&Partitura"
 
-#: app/MainFrame.cpp:1217
-#, fuzzy
+#: app/MainFrame.cpp:1222
 msgid "&Instrument"
-msgstr "Instrumento:"
+msgstr "&Instrumento"
 
-#: app/MainFrame.cpp:1218
+#: app/MainFrame.cpp:1223
 msgid "&Sound"
 msgstr "&Sonido"
 
-#: app/MainFrame.cpp:1220
+#: app/MainFrame.cpp:1225
 msgid "&Zoom"
 msgstr "&Zoom"
 
-#: app/MainFrame.cpp:1221
+#: app/MainFrame.cpp:1226
 msgid "&Options"
 msgstr "&Opciones"
 
-#: app/MainFrame.cpp:1222
+#: app/MainFrame.cpp:1227
 msgid "&Window"
 msgstr "&Ventana"
 
-#: app/MainFrame.cpp:1223
+#: app/MainFrame.cpp:1228
 #: options/OptionsDlg.cpp:261
 msgid "&Help"
 msgstr "&Ayuda"
 
-#: app/MainFrame.cpp:1319
+#: app/MainFrame.cpp:1324
 msgid "LenMus help"
 msgstr "Ayuda de LenMus"
 
-#: app/MainFrame.cpp:1325
+#: app/MainFrame.cpp:1330
 msgid "Test mode: using .hhp help file"
 msgstr "Modo test: se usa el archivo de ayuda .hhp"
 
-#: app/MainFrame.cpp:1332
-#: app/MainFrame.cpp:1419
-#: app/MainFrame.cpp:1427
-#: app/MainFrame.cpp:1444
+#: app/MainFrame.cpp:1337
+#: app/MainFrame.cpp:1424
+#: app/MainFrame.cpp:1432
+#: app/MainFrame.cpp:1449
 #, c-format
 msgid "Failed adding book %s"
 msgstr "Problemas al añadir el libro %s"
 
-#: app/MainFrame.cpp:1347
+#: app/MainFrame.cpp:1352
 msgid "Available books"
 msgstr "Libros disponibles"
 
-#: app/MainFrame.cpp:1410
+#: app/MainFrame.cpp:1415
 #, c-format
 msgid "Error when trying to move to folder %s"
 msgstr "Error al tratar de cambiar a la carpeta %s"
 
-#: app/MainFrame.cpp:1583
+#: app/MainFrame.cpp:1588
 msgid "Name for the exported file"
 msgstr "Nombre para el archivo exportado"
 
-#: app/MainFrame.cpp:1939
+#: app/MainFrame.cpp:1944
 msgid "Zooming? (10 to 800)"
 msgstr "¿Escala? (10 a 800)"
 
-#: app/MainFrame.cpp:1976
+#: app/MainFrame.cpp:1981
 #, c-format
 msgid "Invalid zooming factor '%s'"
 msgstr "Factor de escala no válido '%s'"
 
-#: app/MainFrame.cpp:1981
+#: app/MainFrame.cpp:1986
 msgid "Zooming factor must be greater that 10% and lower than 800%"
 msgstr "El factor de escala debe ser mayor que 10% y menor que 800%"
 
-#: app/MainFrame.cpp:2021
-#, fuzzy
+#: app/MainFrame.cpp:2026
 msgid "Edit tool box"
 msgstr "Herramientas de edición"
 
-#: app/MainFrame.cpp:2108
+#: app/MainFrame.cpp:2113
 msgid "Choose the file to import"
-msgstr ""
+msgstr "Elija el archivo a importar"
 
-#: app/MainFrame.cpp:2152
+#: app/MainFrame.cpp:2157
 msgid ""
 "There is a problem previewing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -2947,18 +2917,18 @@ msgstr ""
 "Hay un problema para generar la vista previa.\n"
 "Compruebe que la impresora está configurada correctamente."
 
-#: app/MainFrame.cpp:2152
+#: app/MainFrame.cpp:2157
 msgid "Previewing"
 msgstr "Previsualizando"
 
-#: app/MainFrame.cpp:2156
-#: app/ScoreWizard.cpp:661
-#: app/ScoreWizard.cpp:823
-#: app/ScoreWizard.cpp:1028
+#: app/MainFrame.cpp:2161
+#: app/ScoreWizard.cpp:657
+#: app/ScoreWizard.cpp:819
+#: app/ScoreWizard.cpp:1024
 msgid "Preview"
 msgstr "Previsualizar"
 
-#: app/MainFrame.cpp:2205
+#: app/MainFrame.cpp:2210
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -2966,539 +2936,442 @@ msgstr ""
 "Hay algún problema para imprimir.\n"
 "Compruebe que la impresora está configurada correctamente."
 
-#: app/MainFrame.cpp:2205
-#: app/MainFrame.cpp:2207
-#, fuzzy
+#: app/MainFrame.cpp:2210
+#: app/MainFrame.cpp:2212
 msgid "Printing"
-msgstr "Imprimir"
+msgstr "Imprimiendo"
 
-#: app/MainFrame.cpp:2207
+#: app/MainFrame.cpp:2212
 msgid "Printing cancelled"
 msgstr "Impresión cancelada"
 
-#: app/MidiWizard.cpp:248
+#: app/MidiWizard.cpp:244
 msgid "None"
 msgstr "Ninguno"
 
-#: app/MidiWizard.cpp:266
+#: app/MidiWizard.cpp:262
 msgid "Midi devices to use"
 msgstr "Dispositivos Midi a utilizar"
 
-#: app/MidiWizard.cpp:276
+#: app/MidiWizard.cpp:272
 msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
 msgstr "Para generar los sonidos el programa necesita un dispositivo sintetizador MIDI. Normalmente uno de estos dispositivos está incluido en la tarjeta de sonido del PC, pero puede haber más de uno."
 
-#: app/MidiWizard.cpp:279
+#: app/MidiWizard.cpp:275
 msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
 msgstr "SI tu PC tiene más de uno, elige el que prefieras. Puedes probar los que existan y elegir luego el que proporcione el sonido que más te guste."
 
-#: app/MidiWizard.cpp:288
+#: app/MidiWizard.cpp:284
 msgid "Output device:"
 msgstr "Dispositivo de salida:"
 
-#: app/MidiWizard.cpp:415
+#: app/MidiWizard.cpp:413
 msgid "Voice channel and instrument"
 msgstr "Canal e instrumento para las melodías:"
 
-#: app/MidiWizard.cpp:425
+#: app/MidiWizard.cpp:423
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
 msgstr "Los canales 10 y 16 están especializados en sonidos de percusión. Por ello, se recomienda elegir cualquier otro canal distinto de estos. No importa cual."
 
-#: app/MidiWizard.cpp:428
+#: app/MidiWizard.cpp:426
 msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
 msgstr "Para facilitar la localización de los distintos instrumentos se han agrupado en secciones. Elije primero una sección y luego el instrumento."
 
-#: app/MidiWizard.cpp:447
+#: app/MidiWizard.cpp:445
 msgid "Section:"
 msgstr "Sección:"
 
-#: app/MidiWizard.cpp:595
+#: app/MidiWizard.cpp:593
 msgid "lmMetronome channel and sounds"
 msgstr "Canal y sonidos para el metrónomo"
 
-#: app/MidiWizard.cpp:605
+#: app/MidiWizard.cpp:603
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
 msgstr "Los canales 10 y 16 están especializados en sonidos de percusión. SE recomienda elegir uno de ellos (no importa cual de los dos)."
 
-#: app/MidiWizard.cpp:608
+#: app/MidiWizard.cpp:606
 msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."
 msgstr "Para identificar mejor el primer tiempo de cada compás es posible asignar un sodido diferente al primer golpe. No obstante, también puede elegir el mismo sonido que para los restantes."
 
-#: app/MidiWizard.cpp:627
+#: app/MidiWizard.cpp:625
 msgid "Sound for first beat of each measure:"
 msgstr "Sonido para el primer tiempo de cada compás:"
 
-#: app/MidiWizard.cpp:634
+#: app/MidiWizard.cpp:632
 msgid "Sound for other beats of each measure:"
 msgstr "Sonido para los restantes tiempos:"
 
-#: app/ScoreCanvas.cpp:256
+#: app/ScoreCanvas.cpp:259
 msgid "attach text"
-msgstr ""
+msgstr "Asociar texto"
 
-#: app/ScoreCanvas.cpp:273
+#: app/ScoreCanvas.cpp:276
 #, c-format
 msgid "Move %s"
-msgstr ""
+msgstr "Mover %s"
 
-#: app/ScoreCanvas.cpp:290
+#: app/ScoreCanvas.cpp:293
 msgid "Change margin"
-msgstr ""
+msgstr "Cambiar márgen"
 
-#: app/ScoreCanvas.cpp:311
-#: app/ScoreCanvas.cpp:326
-#, fuzzy, c-format
+#: app/ScoreCanvas.cpp:314
+#: app/ScoreCanvas.cpp:329
+#, c-format
 msgid "Delete %s"
-msgstr "Quitar ritmo"
+msgstr "Quitar %s"
 
-#: app/ScoreCanvas.cpp:350
+#: app/ScoreCanvas.cpp:353
 msgid "Delete selection"
-msgstr ""
+msgstr "Borrar selección"
 
-#: app/ScoreCanvas.cpp:368
+#: app/ScoreCanvas.cpp:371
 msgid "Break a beam"
-msgstr ""
+msgstr "Cortar una barra"
 
-#: app/ScoreCanvas.cpp:384
+#: app/ScoreCanvas.cpp:387
 msgid "Add beam"
-msgstr ""
+msgstr "Añadir barra"
 
-#: app/ScoreCanvas.cpp:404
-#, fuzzy
+#: app/ScoreCanvas.cpp:407
 msgid "Delete tie"
-msgstr "Quitar ritmo"
+msgstr "Quitar ligadura"
 
-#: app/ScoreCanvas.cpp:414
+#: app/ScoreCanvas.cpp:417
 msgid "Add tie"
-msgstr ""
+msgstr "Añadir ligadura"
 
-#: app/ScoreCanvas.cpp:432
+#: app/ScoreCanvas.cpp:435
 msgid "Add tuplet"
-msgstr ""
+msgstr "Añadir tupla"
 
-#: app/ScoreCanvas.cpp:447
-#, fuzzy
+#: app/ScoreCanvas.cpp:450
 msgid "Delete tuplet"
-msgstr "Quitar ritmo"
+msgstr "Quitar tupla"
 
-#: app/ScoreCanvas.cpp:477
-#, fuzzy
+#: app/ScoreCanvas.cpp:480
 msgid "Insert time signature"
-msgstr "métrica 2 4"
+msgstr "Insertar métrica"
 
-#: app/ScoreCanvas.cpp:495
-#, fuzzy
+#: app/ScoreCanvas.cpp:498
 msgid "Insert key signature"
-msgstr "Mostar la armadura"
+msgstr "Insertar armadura"
 
-#: app/ScoreCanvas.cpp:509
+#: app/ScoreCanvas.cpp:512
 msgid "Insert barline"
-msgstr ""
+msgstr "Añadir linea divisoria"
 
-#: app/ScoreCanvas.cpp:528
-#, fuzzy
+#: app/ScoreCanvas.cpp:531
 msgid "Insert note"
-msgstr "Internet"
+msgstr "Insertar nota"
 
-#: app/ScoreCanvas.cpp:549
-#, fuzzy
+#: app/ScoreCanvas.cpp:552
 msgid "Insert rest"
-msgstr "Instrumento:"
+msgstr "Insertar silencio"
 
-#: app/ScoreCanvas.cpp:564
+#: app/ScoreCanvas.cpp:567
 msgid "Change note pitch"
-msgstr ""
+msgstr "Cambiar altura de nota"
 
-#: app/ScoreCanvas.cpp:576
-#, fuzzy
+#: app/ScoreCanvas.cpp:579
 msgid "Change note accidentals"
-msgstr "Sin alteraciones"
+msgstr "Cambiar alteraciones de una nota"
 
-#: app/ScoreCanvas.cpp:589
+#: app/ScoreCanvas.cpp:592
 msgid "Change note dots"
-msgstr ""
+msgstr "Cambiar puntillos"
 
-#: app/ScoreCanvas.cpp:603
+#: app/ScoreCanvas.cpp:606
 msgid "Change text"
-msgstr ""
+msgstr "Cambiar texto"
 
-#: app/ScoreCanvas.cpp:1312
-#: app/ScoreCanvas.cpp:1338
-#, fuzzy
+#: app/ScoreCanvas.cpp:1315
+#: app/ScoreCanvas.cpp:1341
 msgid "&Cut"
-msgstr "Cortar"
+msgstr "&Cortar"
 
-#: app/ScoreCanvas.cpp:1330
-#: app/ScoreCanvas.cpp:1343
-#, fuzzy
+#: app/ScoreCanvas.cpp:1333
+#: app/ScoreCanvas.cpp:1346
 msgid "Edit"
-msgstr "&Editar"
+msgstr "Editar"
 
-#: app/ScoreCommand.cpp:1586
+#: app/ScoreCommand.cpp:1584
 msgid "add title"
-msgstr ""
+msgstr "añadir título"
 
-#: app/ScoreCommand.cpp:1656
+#: app/ScoreCommand.cpp:1654
 msgid "change barline"
-msgstr ""
+msgstr "cambiar línea divisoria"
 
-#: app/ScoreCommand.cpp:1699
-#, fuzzy
+#: app/ScoreCommand.cpp:1697
 msgid "change MIDI settings"
-msgstr "Opciones de cadencias"
+msgstr "Cambiar opciones MIDI"
 
-#: app/ScoreCommand.cpp:1741
-#, fuzzy
+#: app/ScoreCommand.cpp:1739
 msgid "move note"
-msgstr "Redonda"
+msgstr "Mover nota"
 
 #: app/ScoreWizard.cpp:129
 msgid "Empty (manuscript paper)"
-msgstr ""
+msgstr "Sin nada (papel pautado)"
 
 #: app/ScoreWizard.cpp:130
 msgid "Brass quintet"
-msgstr ""
+msgstr "Quinteto de metal"
 
 #: app/ScoreWizard.cpp:131
 msgid "Brass trio"
-msgstr ""
+msgstr "Trio de metal"
 
 #: app/ScoreWizard.cpp:132
 msgid "Choir 4 voices (SATB)"
-msgstr ""
+msgstr "Coro de 4 voces (SATB)"
 
 #: app/ScoreWizard.cpp:133
 msgid "Choir SATB + piano"
-msgstr ""
+msgstr "Coro SATB + piano"
 
 #: app/ScoreWizard.cpp:134
 msgid "Choir 3 voices (SSA)"
-msgstr ""
+msgstr "Coro de 3 voces (SSA)"
 
 #: app/ScoreWizard.cpp:135
 msgid "Choir SSA + piano"
-msgstr ""
+msgstr "Coro SSA + piano"
 
 #: app/ScoreWizard.cpp:136
-#, fuzzy
 msgid "Flute"
-msgstr "Bemol"
+msgstr "Flauta"
 
 #: app/ScoreWizard.cpp:137
 msgid "Guitar"
-msgstr ""
+msgstr "Guitarra"
 
 #: app/ScoreWizard.cpp:138
-#, fuzzy
 msgid "Piano"
-msgstr "Frigia"
+msgstr "Piano"
 
 #: app/ScoreWizard.cpp:139
 msgid "Violin and piano"
-msgstr ""
+msgstr "Violín y piano"
 
 #: app/ScoreWizard.cpp:140
 msgid "Viola and piano"
-msgstr ""
+msgstr "Viola y piano"
 
 #: app/ScoreWizard.cpp:141
 msgid "Cello and piano"
-msgstr ""
+msgstr "Violonchelo y piano"
 
 #: app/ScoreWizard.cpp:142
 msgid "String quartet"
-msgstr ""
+msgstr "Cuarteto de cuerda"
 
 #: app/ScoreWizard.cpp:143
-#, fuzzy
 msgid "Violin"
-msgstr "Mixolidio"
+msgstr "Violín"
 
 #: app/ScoreWizard.cpp:144
 msgid "Trio sonata"
-msgstr ""
+msgstr "Trio (sonata)"
 
 #: app/ScoreWizard.cpp:145
 msgid "Woodwind trio"
-msgstr ""
+msgstr "Trio de viento"
 
 #: app/ScoreWizard.cpp:146
 msgid "Woodwind quintet"
-msgstr ""
+msgstr "Quinteto de viento"
 
 #: app/ScoreWizard.cpp:280
-#, fuzzy
 msgid "Score configuration wizard"
-msgstr "Asistente para configurar MIDI"
+msgstr "Asistente para configurar una partitura"
+
+#: app/ScoreWizard.cpp:323
+msgid "Subtitle"
+msgstr "Subtítulo"
+
+#: app/ScoreWizard.cpp:324
+msgid "Composer"
+msgstr "Compositor"
 
 #: app/ScoreWizard.cpp:325
-msgid "Subtitle"
-msgstr ""
+msgid "Arranger"
+msgstr "Arreglista"
 
 #: app/ScoreWizard.cpp:326
-msgid "Composer"
-msgstr ""
-
-#: app/ScoreWizard.cpp:327
-msgid "Arranger"
-msgstr ""
-
-#: app/ScoreWizard.cpp:328
 msgid "Lyricist"
-msgstr ""
+msgstr "Poeta"
 
-#: app/ScoreWizard.cpp:421
+#: app/ScoreWizard.cpp:419
 #, c-format
 msgid "Error: Template '%s' not found."
-msgstr ""
+msgstr "Error: No se encuentra la plantilla '%s'."
+
+#: app/ScoreWizard.cpp:421
+msgid "Posible causes:"
+msgstr "Causas posibles:"
 
 #: app/ScoreWizard.cpp:423
-msgid "Posible causes:"
-msgstr ""
+msgid "- An error during lenmus installation."
+msgstr "- Un error durante la instalación de lenmus."
 
 #: app/ScoreWizard.cpp:425
-msgid "- An error during lenmus installation."
-msgstr ""
+msgid "- An accidental deletion of the required template."
+msgstr "- Un borrado accidental de la plantilla necesaria."
 
 #: app/ScoreWizard.cpp:427
-msgid "- An accidental deletion of the required template."
-msgstr ""
-
-#: app/ScoreWizard.cpp:429
 msgid "An empty score will be created."
-msgstr ""
+msgstr "Se creará una partitura vacía."
 
-#: app/ScoreWizard.cpp:623
+#: app/ScoreWizard.cpp:619
 msgid "Select instruments and style"
-msgstr ""
+msgstr "Seleccionar instrumentos y estilo"
 
-#: app/ScoreWizard.cpp:631
+#: app/ScoreWizard.cpp:627
 msgid "Select paper size and orientation"
-msgstr ""
+msgstr "Seleccionar tamaño del papel y orientación"
 
-#: app/ScoreWizard.cpp:636
+#: app/ScoreWizard.cpp:632
 msgid "Paper size"
-msgstr ""
+msgstr "Tamaño del papel"
 
-#: app/ScoreWizard.cpp:647
+#: app/ScoreWizard.cpp:643
 msgid "Landscape"
-msgstr ""
+msgstr "Paisaje"
 
-#: app/ScoreWizard.cpp:647
-#, fuzzy
+#: app/ScoreWizard.cpp:643
 msgid "Portrait"
-msgstr "Imprimir"
+msgstr "Retrato"
+
+#: app/ScoreWizard.cpp:798
+msgid "Select a key signature"
+msgstr "Seleccionar una armadura"
+
+#: app/ScoreWizard.cpp:800
+#: app/toolbox/ToolClef.cpp:295
+msgid "Major"
+msgstr "Mayor"
+
+#: app/ScoreWizard.cpp:800
+msgid "minor"
+msgstr "menor"
 
 #: app/ScoreWizard.cpp:802
-#, fuzzy
-msgid "Select a key signature"
-msgstr "Mostar la armadura"
-
-#: app/ScoreWizard.cpp:804
-#: app/toolbox/ToolClef.cpp:295
-#, fuzzy
-msgid "Major"
-msgstr "Perfecto mayor"
-
-#: app/ScoreWizard.cpp:804
-#, fuzzy
-msgid "minor"
-msgstr " menor"
-
-#: app/ScoreWizard.cpp:806
 msgid "Key type"
-msgstr ""
+msgstr "Tipo de armadura"
 
-#: app/ScoreWizard.cpp:918
-#: app/toolbox/PropTimeSignature.cpp:54
-#, fuzzy
+#: app/ScoreWizard.cpp:914
 msgid "none"
 msgstr "Ninguno"
 
-#: app/ScoreWizard.cpp:972
-#, fuzzy
+#: app/ScoreWizard.cpp:968
 msgid "Select time signature"
-msgstr "métrica 2 4"
+msgstr "Seleccionar métrica"
 
-#: app/ScoreWizard.cpp:977
-#: app/toolbox/PropTimeSignature.cpp:57
-#, fuzzy
+#: app/ScoreWizard.cpp:973
 msgid "Time signature"
-msgstr "Métricas"
+msgstr "Métrica"
 
-#: app/ScoreWizard.cpp:983
-#, fuzzy
+#: app/ScoreWizard.cpp:979
 msgid "Other time signatures"
-msgstr "Métricas"
+msgstr "Otras métricas"
 
-#: app/ScoreWizard.cpp:992
+#: app/ScoreWizard.cpp:988
 msgid "Numerator"
-msgstr ""
+msgstr "Numerador"
 
-#: app/ScoreWizard.cpp:1004
-#, fuzzy
+#: app/ScoreWizard.cpp:1000
 msgid "Denominator"
-msgstr "Re menor"
+msgstr "Denominador"
 
-#: app/ScoreWizard.cpp:1126
+#: app/ScoreWizard.cpp:1122
 msgid "Add titles"
-msgstr ""
+msgstr "Añadir títulos"
 
-#: app/ScoreWizard.cpp:1128
+#: app/ScoreWizard.cpp:1124
 msgid "Title:"
-msgstr ""
+msgstr "Título:"
 
-#: app/ScoreWizard.cpp:1135
+#: app/ScoreWizard.cpp:1131
 msgid "Subtitle:"
-msgstr ""
+msgstr "Subtítulo:"
 
-#: app/ScoreWizard.cpp:1142
+#: app/ScoreWizard.cpp:1138
 msgid "Composer:"
-msgstr ""
+msgstr "Compositor:"
 
-#: app/ScoreWizard.cpp:1149
+#: app/ScoreWizard.cpp:1145
 msgid "Arranger:"
-msgstr ""
+msgstr "Arreglista:"
 
-#: app/ScoreWizard.cpp:1156
+#: app/ScoreWizard.cpp:1152
 msgid "Lyricist:"
-msgstr ""
+msgstr "Poeta:"
 
 #: app/SplashFrame.cpp:103
 msgid "Free software under GNU General Public License, version 3 or later."
-msgstr ""
+msgstr "Software libre bajo licencia GNU GPL (General Public License), versión 3 o superior."
 
-#: app/TheApp.cpp:229
+#: app/TheApp.cpp:232
 msgid "Another instance of LenMus is already running."
 msgstr "Ya hay otra instancia de LenMus ejecutándose"
 
-#: app/TheApp.cpp:774
+#: app/TheApp.cpp:781
 msgid "LenMus First Run"
 msgstr "Primera ejecución de LenMus"
 
-#: app/WelcomeWnd.cpp:84
+#: app/WelcomeWnd.cpp:86
 msgid "Welcome"
-msgstr ""
+msgstr "Bienvenida"
 
-#: app/WelcomeWnd.cpp:146
-#, fuzzy
+#: app/WelcomeWnd.cpp:149
 msgid "Welcome to LenMus"
 msgstr "LenMus te da la bienvenida"
 
-#: app/WelcomeWnd.cpp:160
+#: app/WelcomeWnd.cpp:163
 msgid "Learn about LenMus"
-msgstr ""
-
-#: app/WelcomeWnd.cpp:175
-msgid "What's is new in LenMus"
-msgstr ""
+msgstr "Conocer el proyecto LenMus"
 
 #: app/WelcomeWnd.cpp:178
-#, fuzzy
+msgid "What's is new in LenMus"
+msgstr "Qué novedades hay en esta versión"
+
+#: app/WelcomeWnd.cpp:181
 msgid "Visit LenMus website"
-msgstr "&Ver la web de LenMus"
+msgstr "Visitar la web de LenMus"
 
-#: app/WelcomeWnd.cpp:190
+#: app/WelcomeWnd.cpp:193
 msgid "Learn and practise music theory"
-msgstr ""
+msgstr "Aprender y practicar teoría de la música"
 
-#: app/WelcomeWnd.cpp:205
-#, fuzzy
+#: app/WelcomeWnd.cpp:208
 msgid "Open eMusicBooks "
-msgstr "eMusicBooks"
+msgstr "Abrir eMusicBooks"
 
-#: app/WelcomeWnd.cpp:217
-#, fuzzy
-msgid "Create and edit music scores"
-msgstr "Ejemplos de partituras"
+#: app/WelcomeWnd.cpp:220
+msgid "Create and edit music scores (beta 0 version)"
+msgstr "Crear y editar partituras (versión beta 0)"
 
-#: app/WelcomeWnd.cpp:232
-#, fuzzy
+#: app/WelcomeWnd.cpp:235
 msgid "New score ..."
-msgstr "Nueva partitura"
+msgstr "Nueva partitura ..."
 
-#: app/WelcomeWnd.cpp:238
-#, fuzzy
+#: app/WelcomeWnd.cpp:244
 msgid "Recent scores"
-msgstr "Poner contadores a cero"
-
-#: app/toolbox/PropTimeSignature.cpp:51
-#, fuzzy
-msgid "2/2"
-msgstr "2 2"
-
-#: app/toolbox/PropTimeSignature.cpp:51
-msgid "2/4"
-msgstr ""
-
-#: app/toolbox/PropTimeSignature.cpp:51
-msgid "6/8"
-msgstr ""
-
-#: app/toolbox/PropTimeSignature.cpp:51
-#, fuzzy
-msgid "2/8"
-msgstr "2 8"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
-msgid "3/2"
-msgstr "3 2"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
-msgid "3/4"
-msgstr "3 4"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
-msgid "9/8"
-msgstr "9 8"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
-msgid "3/8"
-msgstr "3 8"
-
-#: app/toolbox/PropTimeSignature.cpp:53
-msgid "4/2"
-msgstr ""
-
-#: app/toolbox/PropTimeSignature.cpp:53
-#, fuzzy
-msgid "4/4"
-msgstr "4 4"
-
-#: app/toolbox/PropTimeSignature.cpp:53
-#, fuzzy
-msgid "12/8"
-msgstr "12 8"
-
-#: app/toolbox/PropTimeSignature.cpp:53
-msgid "4/8"
-msgstr ""
-
-#: app/toolbox/PropTimeSignature.cpp:54
-#, fuzzy
-msgid "other"
-msgstr "Otros"
+msgstr "Partituras recientes"
 
 #: app/toolbox/ToolBarlines.cpp:115
 #: app/toolbox/ToolBarlines.cpp:125
-#, fuzzy
 msgid "Add barline"
-msgstr "Barra"
+msgstr "Añadir línea divisoria"
 
 #: app/toolbox/ToolClef.cpp:118
-#, fuzzy
 msgid "G clef on 2nd line"
-msgstr "Fa en 3ª línea"
+msgstr "Sol en 2ª línea"
 
 #: app/toolbox/ToolClef.cpp:119
-#, fuzzy
 msgid "F clef on 4th line"
-msgstr "Fa en 4ª línea (Bajo)"
+msgstr "Fa en 4ª línea"
 
 #: app/toolbox/ToolClef.cpp:120
 #: ../xrc/xrc_strings.cpp:75
@@ -3507,133 +3380,123 @@ msgid "F clef on 3rd line"
 msgstr "Fa en 3ª línea"
 
 #: app/toolbox/ToolClef.cpp:121
-#, fuzzy
 msgid "C clef on 1st line"
-msgstr "Do en 1º línea (soprano)"
+msgstr "Do en 1º línea"
 
 #: app/toolbox/ToolClef.cpp:122
-#, fuzzy
 msgid "C clef on 2nd line"
-msgstr "Fa en 3ª línea"
+msgstr "Do en 2ª línea"
 
 #: app/toolbox/ToolClef.cpp:123
-#, fuzzy
 msgid "C clef on 3rd line"
-msgstr "Fa en 3ª línea"
+msgstr "Do en 3ª línea"
 
 #: app/toolbox/ToolClef.cpp:124
-#, fuzzy
 msgid "C clef on 4th line"
-msgstr "Do en 4º línea (tenor)"
+msgstr "Do en 4ª línea"
 
 #: app/toolbox/ToolClef.cpp:125
 msgid "Percussion clef"
-msgstr ""
+msgstr "Clave de percusión"
 
 #: app/toolbox/ToolClef.cpp:138
 #: app/toolbox/ToolClef.cpp:148
 msgid "Add clef"
-msgstr ""
+msgstr "Añadir clave"
 
 #: app/toolbox/ToolClef.cpp:216
-#, fuzzy
 msgid "Add a time signature"
-msgstr "métrica 2 4"
+msgstr "Añadir métrica"
 
 #: app/toolbox/ToolClef.cpp:289
-#, fuzzy
 msgid "Add a key signature"
-msgstr "Mostar la armadura"
+msgstr "Añadir armadura"
 
 #: app/toolbox/ToolClef.cpp:296
-#, fuzzy
 msgid "Minor"
-msgstr "Perfecto menor"
+msgstr "Menor"
 
 #: app/toolbox/ToolClef.cpp:309
 msgid "Add key"
-msgstr ""
+msgstr "Añadir armadura"
 
 #: app/toolbox/ToolNotes.cpp:140
 msgid "Note/rest duration"
-msgstr ""
+msgstr "Duración nota/silencio"
 
 #: app/toolbox/ToolNotes.cpp:198
-#, fuzzy
 msgid "Octave (Ctrl)"
-msgstr "octava"
+msgstr "Octava (Ctrl)"
 
 #: app/toolbox/ToolNotes.cpp:210
 #, c-format
 msgid "Select octave %d"
-msgstr ""
+msgstr "Selección de octava %d"
 
 #: app/toolbox/ToolNotes.cpp:253
 msgid "Voice (Alt)"
-msgstr ""
+msgstr "Voz (Alt)"
 
 #: app/toolbox/ToolNotes.cpp:270
 msgid "Automatic voice assignment"
-msgstr ""
+msgstr "Asignación automática de voz"
 
 #: app/toolbox/ToolNotes.cpp:276
 #, c-format
 msgid "Select voice %d"
-msgstr ""
+msgstr "Selección de voz %d"
 
 #: app/toolbox/ToolNotes.cpp:321
-#, fuzzy
 msgid "Note accidentals"
-msgstr "Sin alteraciones"
+msgstr "Alteraciones"
 
 #: app/toolbox/ToolNotes.cpp:374
 msgid "Dots"
-msgstr ""
+msgstr "Puntillos"
 
 #: app/toolbox/ToolNotes.cpp:430
 msgid "Modifiers"
-msgstr ""
+msgstr "Modificadores"
 
 #: app/toolbox/ToolNotes.cpp:443
 msgid "Add/remove a tie to/from selected notes"
-msgstr ""
+msgstr "Añador/quitar ligadura entre las notas seleccionadas"
 
 #: app/toolbox/ToolNotes.cpp:452
 msgid "Add/remove tuplet to/from selected notes"
-msgstr ""
+msgstr "Añadir/quitar tupla en las notas seleccionadas"
 
 #: app/toolbox/ToolNotes.cpp:545
-#, fuzzy
 msgid "Beams"
-msgstr "Equipo"
+msgstr "Barras"
 
 #: app/toolbox/ToolNotes.cpp:558
 msgid "Break beam at current cursor position"
-msgstr ""
+msgstr "Cortar barra en la posición del cursor"
 
 #: app/toolbox/ToolNotes.cpp:567
 msgid "Beam together all selected notes"
-msgstr ""
+msgstr "Agrupar con una barra todas las notas seleccionadas"
 
 #: app/toolbox/ToolNotes.cpp:576
 msgid "Subdivide beamed group at current cursor position"
-msgstr ""
+msgstr "Subdividir un grupo en la posición del cursor"
 
 #: app/toolbox/ToolNotes.cpp:585
 msgid "Adjust selected beam to draw it horizontal"
-msgstr ""
+msgstr "Ajustar la barra seleccionada para dibujarla horizantal"
 
 #: app/toolbox/ToolsBox.cpp:96
 msgid "Select clef, key and time signature edit tools"
-msgstr ""
+msgstr "Seleccionar la herramienta de edición de clave, armadura y métrica"
 
 #: app/toolbox/ToolsBox.cpp:97
 msgid "Select notes / rests edit tools"
-msgstr ""
+msgstr "Seleccionar la herramienta de edición de notas y silencios"
 
 #: app/toolbox/ToolsBox.cpp:101
 msgid "Select barlines and rehearsal marks edit tools"
-msgstr ""
+msgstr "Seleccionar la herramienta de líneas divisorias y símbolos de repetición"
 
 #: options/ColorsOptPanel.cpp:60
 msgid "Choose colors to use:"
@@ -3659,7 +3522,7 @@ msgstr "Mensualmente"
 #: options/LangOptionsPanel.cpp:106
 #, c-format
 msgid "Language '%s' will be used the next time you run LenMus."
-msgstr ""
+msgstr "El idioma %s será usado la próxima vez que arranque LenMus."
 
 #: options/OptionsDlg.cpp:173
 msgid "Preferences"
@@ -3705,11 +3568,12 @@ msgid "Can't start the thread!"
 msgstr "No puede iniciarse el thread"
 
 #: widgets/MsgBox.cpp:154
-#, fuzzy
+#: widgets/MusicSymbolList.cpp:140
 msgid "Question"
-msgstr "Sección:"
+msgstr "Pregunta"
 
 #: widgets/MsgBox.cpp:182
+#: widgets/MusicSymbolList.cpp:168
 #: updater/Updater.cpp:105
 msgid "Error"
 msgstr "Error"
@@ -3719,24 +3583,20 @@ msgid "Help"
 msgstr "Ayuda"
 
 #: widgets/Wizard.cpp:122
-#, fuzzy
 msgid "< Previous"
-msgstr "&Anterior"
+msgstr "< Anterior"
 
 #: widgets/Wizard.cpp:126
-#, fuzzy
 msgid "Next >"
-msgstr "&Siguiente"
+msgstr "Siguiente >"
 
 #: widgets/Wizard.cpp:130
-#, fuzzy
 msgid "Finish"
-msgstr "Español"
+msgstr "Terminar"
 
 #: widgets/Wizard.cpp:231
-#, fuzzy
 msgid "unknown button"
-msgstr "Botones de respuesta"
+msgstr "Botón desconocido"
 
 #: ../xrc/xrc_strings.cpp:1
 msgid "Configuration: Intervals - identification by ear"
@@ -4759,22 +4619,21 @@ msgstr "Error en análisis del archivo XML "
 
 #: graphic/BoxPage.cpp:46
 msgid "page"
-msgstr ""
+msgstr "página"
 
 #: graphic/BoxScore.cpp:39
-#, fuzzy
 msgid "score"
-msgstr "Nueva partitura"
+msgstr "partitura"
 
 #: graphic/BoxSystem.cpp:50
 msgid "system"
-msgstr ""
+msgstr "sistema"
 
-#: graphic/Formatter4.cpp:794
+#: graphic/Formatter4.cpp:792
 msgid "Program failure: not enough space for drawing just one bar."
-msgstr ""
+msgstr "Fallo de programa: no hay bastante espacio para dibujar un compas."
 
-#: graphic/GraphicManager.cpp:283
+#: graphic/GraphicManager.cpp:277
 msgid "Sorry, not enough memory to create a Bitmap to display the page."
 msgstr "Lo siento, no hay suficiente memoria para crear un bitmap para mostrar la página."
 
@@ -4846,11 +4705,47 @@ msgstr "Errores"
 msgid "Configuration options"
 msgstr "Opciones de configuración"
 
-#: graphic/GMObject.h:226
+#: graphic/GMObject.h:227
 msgid "Object"
-msgstr ""
+msgstr "Objeto"
 
-#: graphic/GMObject.h:293
+#: graphic/GMObject.h:294
 msgid "Box"
-msgstr ""
+msgstr "Caja"
+
+#, fuzzy
+#~ msgid "2/2"
+#~ msgstr "2 2"
+
+#, fuzzy
+#~ msgid "2/8"
+#~ msgstr "2 8"
+
+#, fuzzy
+#~ msgid "3/2"
+#~ msgstr "3 2"
+
+#, fuzzy
+#~ msgid "3/4"
+#~ msgstr "3 4"
+
+#, fuzzy
+#~ msgid "9/8"
+#~ msgstr "9 8"
+
+#, fuzzy
+#~ msgid "3/8"
+#~ msgstr "3 8"
+
+#, fuzzy
+#~ msgid "4/4"
+#~ msgstr "4 4"
+
+#, fuzzy
+#~ msgid "12/8"
+#~ msgstr "12 8"
+
+#, fuzzy
+#~ msgid "other"
+#~ msgstr "Otros"
 

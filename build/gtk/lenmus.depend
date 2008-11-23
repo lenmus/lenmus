@@ -12222,7 +12222,7 @@
 	<vector>
 	"../score/defs.h"
 
-1226847783 /datos/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
+1227365982 /datos/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
 	<vector>
 	"../score/Score.h"
 	"TimeposTable.h"
