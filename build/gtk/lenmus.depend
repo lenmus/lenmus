@@ -707,7 +707,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1222449568 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MidiWizard.cpp
+1226143208 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MidiWizard.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"MidiWizard.h"
@@ -760,7 +760,7 @@
 	"../graphic/GMObject.h"
 	"../score/VStaff.h"
 
-1225115468 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
+1226565730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/txtstrm.h"
@@ -1350,7 +1350,7 @@
 	"../score/Score.h"
 	<wx/listimpl.cpp>
 
-1226040778 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/TimeposTable.cpp
+1226486062 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/TimeposTable.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<vector>
@@ -1368,7 +1368,7 @@
 	<vector>
 	"../score/defs.h"
 
-1225530200 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
+1226480088 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/debug.h>
@@ -1389,7 +1389,7 @@
 	"BoxSliceVStaff.h"
 	"../app/Logger.h"
 
-1223990148 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
+1226473568 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
 	<vector>
 	"../score/Score.h"
 	"TimeposTable.h"
@@ -1900,7 +1900,7 @@
 	"Context.h"
 	"../app/Logger.h"
 
-1223973280 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.cpp
+1226392234 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.cpp
 	"wx/wxprec.h"
 	"Score.h"
 	"Notation.h"
@@ -2350,11 +2350,11 @@
 	"ParamsParser.h"
 	"../exercises/TheoIntervalsConstrains.h"
 
-1225055668 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Pitch.cpp
+1226145752 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Pitch.cpp
 	"wx/wxprec.h"
 	"wx/utils.h"
 	"defs.h"
-	"score.h"
+	"Score.h"
 
 1221724550 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/EarTunningCtrol.h
 	"wx/wxprec.h"
@@ -2490,12 +2490,12 @@
 	"../graphic/ShapeBeam.h"
 	"../graphic/ShapeText.h"
 
-1225191664 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreView.cpp
+1226143206 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreView.cpp
 	"wx/wxprec.h"
 	"wx/scrolbar.h"
 	<vector>
-	"../score/score.h"
-	"../score/staff.h"
+	"../score/Score.h"
+	"../score/Staff.h"
 	"global.h"
 	"TheApp.h"
 	"ScoreDoc.h"
@@ -2709,11 +2709,11 @@
 	"../score/VStaff.h"
 	"ShapeBarline.h"
 
-1223624732 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeStaff.cpp
+1226143206 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeStaff.cpp
 	"wx/wxprec.h"
 	"GMObject.h"
 	"../score/Score.h"
-	"../Score/Staff.h"
+	"../score/Staff.h"
 	"ShapeStaff.h"
 
 1221724962 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeTuplet.cpp
@@ -2761,7 +2761,7 @@
 	<vector>
 	<list>
 
-1224603340 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/AuxObj.cpp
+1226393376 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/AuxObj.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -7932,7 +7932,7 @@
 	"wx/msw/gccpriv.h"
 	<AvailabilityMacros.h>
 
-1226747798 /home/cecilio/wxWidgets/wxGTK-2.8.9/build-debug/lib/wx/include/gtk2-unicode-debug-static-2.8/wx/setup.h
+1223733688 /home/cecilio/wxWidgets/wxGTK-2.8.9/build-debug/lib/wx/include/gtk2-unicode-debug-static-2.8/wx/setup.h
 
 1221471273 /home/cecilio/wxWidgets/wxGTK-2.8.9/include/wx/chkconf.h
 	"wx/palmos/chkconf.h"
@@ -9891,7 +9891,7 @@
 	<wx/button.h>
 	<wx/html/htmlwin.h>
 
-1221471280 /home/cecilio/wxWidgets/wxGTK-2.8.9/include/wx/html/htmlwin.h
+1223666740 /home/cecilio/wxWidgets/wxGTK-2.8.9/include/wx/html/htmlwin.h
 	"wx/defs.h"
 	"wx/window.h"
 	"wx/scrolwin.h"
