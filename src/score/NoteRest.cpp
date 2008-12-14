@@ -652,7 +652,7 @@ float LDPNoteTypeToDuration(const wxString& sNoteType)
 float NoteTypeToDuration(lmENoteType nNoteType, int nDots)
 {
     //compute duration without modifiers
-    float rDuration = pow(2, (10 - nNoteType));
+    float rDuration = pow(2.0f, (10 - nNoteType));
 
     //take dots into account
     switch (nDots)
@@ -678,7 +678,7 @@ float NoteTypeToDuration(lmENoteType nNoteType, int nDots)
 float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted)
 {
     //compute duration without modifiers
-    float rDuration = pow(2, (10 - nNoteType));
+    float rDuration = pow(2.0f, (10 - nNoteType));
 
    //take dots into account
     if (fDotted) { rDuration *= 1.5; }

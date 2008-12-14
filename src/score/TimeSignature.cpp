@@ -429,15 +429,15 @@ float GetBeatDuration(int nBeatType)
 {
     switch(nBeatType) {
         case 1:
-            return pow(2, (10 - eWhole));
+            return pow(2.0f, (10 - eWhole));
         case 2:
-            return pow(2, (10 - eHalf));
+            return pow(2.0f, (10 - eHalf));
         case 4:
-            return pow(2, (10 - eQuarter));
+            return pow(2.0f, (10 - eQuarter));
         case 8:
-            return pow(2, (10 - eEighth));
+            return pow(2.0f, (10 - eEighth));
         case 16:
-            return pow(2, (10 - e16th));
+            return pow(2.0f, (10 - e16th));
         default:
             wxASSERT(false);
             return 0;     //compiler happy

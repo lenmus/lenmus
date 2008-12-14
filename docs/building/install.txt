@@ -152,7 +152,7 @@ Install wxWidgets (wxMSW)
 
 2. Apply the two required patches to the wxWidgtes sources. These patches are detailed in file wxwidgets_patches.txt
 
-3. Build wxWidgets. For this please refer to wxWidgets documentation. A quick guide is included in file windows_install_wxwidgets.txt for your convenience, and it should be enough in most cases.
+3. Build wxWidgets. To build LenMus it is enough to generate the 'Unicode Debug' and/or the 'Unicode release' versions of wxWidgets. To build wxWidgets please refer to wxWidgets documentation. A quick guide is included in file windows_install_wxwidgets.txt for your convenience, and it should be enough in most cases.
 
 
     
@@ -182,17 +182,26 @@ Compile and build LenMus
 
 Once wxWidgets is installed, it is just a question of preparing a makefile and using your favourite compiler to compile and build LenMus. Makefiles and project files are included only for:
 
-- MS VisualStudio
+- MS VisualStudio V6.0
+
+- MS Visual C++ Express 2008
 
 Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
 
 
-a) Using MS VisualStudio
+a) Using MS VisualStudio / MS Visual C++
 
-The appropriate project file for MS VisualStudio is in folder .../lenmus/build/msw/lenmus.sln.
-Open this file with MS VisualStudio and build LenMus. 
+The appropriate project file for MS VisualStudio V6.0 is in folder .../lenmus/build/msw/lenmus.sln, and for MS Visual C++ Express 2008 is in folder .../lenmus/build/msw2008/lenmus.sln.
 
-That's all.
+Before opening the project file, you have to define system environment variable WXWIN. To do it:
+
+    1. From the Start button, select Control Panel. Double click on System.
+    2. Click on the 'Advanced options' tab and click on button 'Environment Variables'.
+    3  Define a new user variavle, named WXWIN, pointing to the wxWidgets installation root folder.
+
+Now, open the project file with MS VisualStudio and build LenMus. 
+
+That should be all.
 
 
 
