@@ -434,10 +434,6 @@ wxString lmNoteRest::SourceLDP(int nIndent)
             sSource += _T(" t-");
     }
 
-    //staff num
-    if (m_pVStaff->GetNumStaves() > 1)
-        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
-
     //Voice
     sSource += wxString::Format(_T(" v%d"), m_nVoice);
 

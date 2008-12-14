@@ -348,13 +348,15 @@ enum lmEPitchType
 // barlines
 enum lmEBarline
 {
-    lm_eBarlineSimple = 1,          //thin line
+    lm_eBarlineSimple = 0,          //thin line
     lm_eBarlineDouble,              //two thin lines
     lm_eBarlineEnd,                 //thin-thick lines
     lm_eBarlineStartRepetition,     //thick-thin-two dots
     lm_eBarlineEndRepetition,       //two dots-thin-thick
     lm_eBarlineStart,               //thick-thin
     lm_eBarlineDoubleRepetition,    //two dots-thin-thin-two dots
+    //
+    lm_eMaxBarline              //MUST BE the last item
 };
 
 // brace/bracket for grouping instruments

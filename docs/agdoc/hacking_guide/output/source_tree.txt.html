@@ -1,0 +1,185 @@
+
+<html>
+<head>
+<title>Program structure and source code organization</title>
+<meta http-equiv="Content-Type" content="text/html" />
+<link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
+</head>
+<body>
+
+
+
+
+<h1 class='article'>Program structure and source code organization
+</h1>
+
+<p class="copyright">
+LenMus project (http://www.lenmus.org/)<br />
+<a href="#legal_notice">GNU Free Documentation License</a>
+</p>
+
+
+<a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
+    <a class='toc_level1' href="#toc0001">Program structure and source code organization</a><br />
+        <a class='toc_level2' href="#toc0002">Program structure</a><br />
+            <a class='toc_level3' href="#toc0003">The score representation subsystem</a><br />
+            <a class='toc_level3' href="#toc0004">eBooks subsystem</a><br />
+            <a class='toc_level3' href="#toc0005">The application subsystem and auxiliary classes</a><br />
+        <a class='toc_level2' href="#toc0006">Source code organization</a><br />
+        <a class='toc_level2' href="#toc0007">How to start learning the code?</a><br />
+            <a class='toc_level3' href="#toc0008">To start hacking</a><br />
+                <a class='toc_level4' href="#toc0009">GUI: score renderization & edition windows</a><br />
+                <a class='toc_level4' href="#toc0010">Internal score representation</a><br />
+
+ 
+
+
+<h2 class='article'>Program structure and source code organization<a name="toc0001"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+
+<h3 class='article'>Program structure<a name="toc0002"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+<p class='justified'>The program can be broken into three main parts, each of it with several sub-parts:</p>
+
+<p class='justified'>a) Score representation subsystem:
+<div class="itemizedlist"><ul type="disc">
+<li>Internal score representation. </li>
+<li>Score renderization</li>
+<li>LDP parser</li>
+<li>MusicXML parser</li></ul><div></p>
+ 
+<p class='justified'>b) eBooks subsystem:
+<div class="itemizedlist"><ul type="disc">
+<li>eBooks management and renderization</li>
+<li>Exercises for ebooks</li></ul><div></p>
+ 
+<p class='justified'>c) GUI and auxiliary:
+<div class="itemizedlist"><ul type="disc">
+<li>Application management and GUI</li>
+<li>Sound management</li>
+<li>Other auxiliary parts</li></ul><div></p> 
+ 
+
+
+<h4 class='article'>The score representation subsystem<a name="toc0003"></a></h4>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>Externally, scores are represented as text, either in MusicXML or LDP format. In future, it would be possible to add support to import/export more formats, being MIDI the first candidate.</p>
+
+<p class='justified'>A file, in MusicXML or LDP, must be parsed and transformed into an internal representation, more suitable for processing. The score representation subsystems takes care of all this: parsing files, building and maintaining an internal model of the score, and exporting the internal model to one of the external supported formats.</p>
+
+
+
+<h4 class='article'>eBooks subsystem<a name="toc0004"></a></h4>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>eBooks are a totally different type of information that the program must deal with. They are a collection of texts, scores, images and exercises, organized into chapters and themes. Again, there are two representations for an eBook: an external one, to be contained in a file, and an internal one, more suitable for processing.</p>
+
+<p class='justified'>The eBooks subsystem takes care of reading the external representation, rendering the eBooks and reacting to user input to make eBooks interactive (that is, moving through the book and controlling interaction with scores and exercises to make them &#039;live&#039;).</p>
+
+
+<h4 class='article'>The application subsystem and auxiliary classes<a name="toc0005"></a></h4>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>The application materializes to the user as a main window with menus, toolbars, auxiliary windows, a main tabbed interface, etc. The renderization and control of all these windows is managed by the GUI subsystem.</p>
+
+<p class='justified'>Finally, although non related to the GUI and application management, for description purposes we will we include in this block some additional auxiliary classes, such as those to manage sound (MIDI, wave).</p> 
+
+
+
+<h3 class='article'>Source code organization<a name="toc0006"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+<p class='justified'>Since project start, I&#039;ve tried to have source code organized by subsystems (as previously described), subdividing each subsystem into parts, as necessary, for better comprehension and management. This objective is not yet totally achieved, as some times it is difficult to put clear lines between subsystems. Currently, source code is organized in these folders:</p> 
+
+<A name="TAB1"><B></B></A><table class="simpletable">
+<th class="simpletable">Folder</th><th class="simpletable">Subfolder</th><th class="simpletable">Subsystem</th><th class="simpletable">Content</th>
+<tr class="simpletable"><td class="simpletable">app</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">Classes related with main GUI, the MVC model and windows for exercise options (These will be moved, in future, to the same folder than exercises classes)</td></tr>
+<tr class="simpletable"><td class="simpletable">&#160;</td><td class="simpletable">toolbox</td><td class="simpletable">GUI</td><td class="simpletable">Classes related with score edition toolbox</td></tr>
+<tr class="simpletable"><td class="simpletable">auxmusic</td><td class="simpletable"></td><td class="simpletable">eBook</td><td class="simpletable">Auxiliary classes, mainly used in exercises: chords, intervals, etc.</td></tr>
+<tr class="simpletable"><td class="simpletable">exercises</td><td class="simpletable"></td><td class="simpletable">eBook</td><td class="simpletable">Code related with the implementation of exercises</td></tr>
+<tr class="simpletable"><td class="simpletable">globals</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">A few global classes: paths, colours</td></tr>
+<tr class="simpletable"><td class="simpletable">graphic</td><td class="simpletable"></td><td class="simpletable">score</td><td class="simpletable">All classes related to score renderization: the graphic motor</td></tr>
+<tr class="simpletable"><td class="simpletable">html</td><td class="simpletable"></td><td class="simpletable">eBook</td><td class="simpletable">Code related to rendering eBooks</td></tr>
+<tr class="simpletable"><td class="simpletable">ldp_parser</td><td class="simpletable"></td><td class="simpletable">score</td><td class="simpletable">Code related to LDP parser</td></tr>
+<tr class="simpletable"><td class="simpletable">mdi</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">Classes for GUI: MDI model implemented as a tabbed window</td></tr>
+<tr class="simpletable"><td class="simpletable">options</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">Program global options</td></tr>
+<tr class="simpletable"><td class="simpletable">score</td><td class="simpletable"></td><td class="simpletable">score</td><td class="simpletable">Classes for internal score representation</td></tr>
+<tr class="simpletable"><td class="simpletable">&#160;</td><td class="simpletable">properties</td><td class="simpletable">GUI/score</td><td class="simpletable">classes for score edition: properties of each score object</td></tr>
+<tr class="simpletable"><td class="simpletable">sound</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">classes related to sound: MIDI manager, VAW manager</td></tr>
+<tr class="simpletable"><td class="simpletable">updater</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">classes to check for program updates, and related</td></tr>
+<tr class="simpletable"><td class="simpletable">widgets</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">classes to implement GUI program widgets: buttons, caret, rules, etc.</td></tr>
+<tr class="simpletable"><td class="simpletable">xml_parser</td><td class="simpletable"></td><td class="simpletable">score</td><td class="simpletable">parser for MusicXML files</td></tr>
+</table><FONT style="margin-left:1em"><I>Table 1. Source code tree</I></FONT>
+
+
+<h3 class='article'>How to start learning the code?<a name="toc0007"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>That will depend on your main purpose to study the code: to get a global general idea or to start hacking, as soon as possible, on a certain program area. Lets describe each one of these approaches.</p>
+
+
+
+<h4 class='article'>To start hacking<a name="toc0008"></a></h4>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<h5 class='article'>GUI: score renderization & edition windows<a name="toc0009"></a></h5>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Read chapter on the <a href="model_view_controller.txt.html">model-view-controller</a> architecture and how is it implemented in LenMus</li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Start with the MVC model, classes app/ScoreDoc, app/ScoreView, app/ScoreCanvas, app/ScoreController.</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>See other classes used to display scores in exercises: exercises/ScoreAuxCtrol.</li></ul><div></p>
+
+
+
+<h5 class='article'>Internal score representation<a name="toc0010"></a></h5>
+
+
+<p class='justified'>[To be continued <SPAN class="larger">&#133;</SPAN> ]</p>
+
+
+
+
+
+
+ 
+
+
+<hr class='copyright' />
+<a name="legal_notice">&nbsp;</a>
+<p class="copyright">
+Copyright &copy; 2008-2009 LenMus project
+</p>
+<p class="justified">
+This document is part of the LenMus project. LenMus endorses the ideas of free software, free
+education and free access to knowledge. Therefore,
+permission is granted to copy, distribute and/or modify this
+document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included with the program.
+</p>
+
+</body></html>

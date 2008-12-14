@@ -523,6 +523,7 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL), m_SCursor(this)
     //default ObjOptions
     SetOption(_T("Score.FillPageWithEmptyStaves"), false);
     SetOption(_T("StaffLines.StopAtFinalBarline"), true);
+    SetOption(_T("Score.JustifyFinalBarline"), false);
     SetOption(_T("StaffLines.Hide"), false);
     SetOption(_T("Staff.DrawLeftBarline"), true);
     SetOption(_T("Staff.UpperLegerLines.Displacement"), 0L);

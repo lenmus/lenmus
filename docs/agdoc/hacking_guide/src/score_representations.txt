@@ -1,0 +1,100 @@
+\title{Scores: internal representation}
+
+\toc
+
+\h1 {The 'Model' in the MVC architecture}
+
+In the MVC architecture the Model is the document object. The Document encapsulates the domain-specific representation of the information on which the application operates, as well as its functionality (domain logic). And the Document must be independent: it cannot hold direct instance variables that refer to a view or a controller.
+
+The LenMus program is, among others, a score editor. So the Documents are music scores. The Document must contain all the necessary information to render a score as it will be printed. Thus it must contain all positioning information, sizes, fonts, etc.
+
+A design constraint was that the external representation of the Document should be human readible. Therefore, the Document has two representations:
+
+ a) External representation\br
+    The score is represented using the LDP language. Human readable. Easy to enter with a QWERTY keyboard.
+
+ b) Internal representation\br
+    The Document contains an internal representation, the lmScore, with all the information present in a LDP score but in a flexible and powerful format more suitable for processing.
+    \br
+    Following the MVC architecture, this internal representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed. It is not oriented to any particular use (renderization, play back, ...) but try to serve all them equally.   In this way the document can serve to the purpose of any View: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in an lmScore object.
+    \br
+    When a particular use is intended, the corresponding optimized representaion is derived from the lmScore. The following figure shows the application dependent representations currently managed by the program:
+
+\as_is
+{
+     lmScore ---+---- Interchange (MusicXML, LDP)
+                |
+                +---- Renderization (lmBoxScore and related classes)
+                |
+                +---- PlayBack (lmSoundEvents object Table )
+                |
+               ....
+}
+
+In order to optimize computer resources compsumtion (memory and processing time) the lmScore internal representation has hooks and data holders to structure and tie up the existing application dependent representation objects.
+    
+\note
+{
+    TODO: Verify and remove any limitation to have two or more simultaneous application representations of the same type (i.e. the score being simultaneously edited from two different windows)
+}
+    
+
+
+
+\h1 {Score internal representation}
+
+The score is represented by an object of class lmScore. The approach followed has been to capture the score structure by spliting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:
+
+ * A lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
+
+ * A lmInstrunent is a collection of VStaves plus some data (instrument name, MIDI assignement, ...)
+ 
+ * A lmVStaff is a collection of lmStaffObjs and a list of lmStaff
+
+ * A lmStaff is a set of consecutive lines and spaces. It is represented by just some data
+    (num lines, spacing information, etc.) about how to render the VStaff. So the only
+    'real' object is the VStaff and all StaffObjs belong to it. 
+
+
+\h2 {The Collection of StaffObjs (lmColStaffObjs)}
+
+Bars are not modelled by objects. They are just the collection of lmStaffObj found between
+two lmStaffObj of type 'barline' (and between the start of the score and the first barline).
+Nevertheless, tha concept of bar is very important at least in two situations:
+
+    1. In interpretation (playing back the score). For example:  play from bar #7
+    
+    2. When rendering the score, as all the objects in a bar must be rendered together in
+       the same paper line.
+       
+Due to this, althoug the bar is not modelled as an object, there exits methods in the
+VStaff object to deal with bars.
+
+The collection is composed mainly by two variables: a list containing the StaffObjs that
+form the collection and an array containing pointers to the StaffObjsList nodes
+where each measure start:
+
+\code
+{
+    StaffObjsList   m_cStaffobjs;       //list of StaffObjs that belongs to this collection
+    wxArrayNodes    m_aStartMeasure;    //Node (lmStaffObj list) in which each measure starts
+
+}
+
+\h1 {Application dependent representations}
+
+
+\h2 {Graphical: lmBoxes and lmShapes}
+
+For renderization the score is represented by an object of class lmBoxScore. The approach followed has been, again, to capture the structure by spliting the representation in containers (lmBoxes) and visible objects (lmShapes). For example, usually, a score is printed on several pages. A page contains lines of music (called "systems"). A system contains one or more staves. Finally, a staff contains objects (notes, rests, barlines, etc.).
+
+This model is described in chapter \href0 [graphical_model] {'The Graphical model'}.  
+
+\h2 {Play back}
+
+It is represented by a lmSoundEvents table.
+
+
+
+
+

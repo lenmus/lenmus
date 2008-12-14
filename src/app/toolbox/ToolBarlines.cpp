@@ -100,12 +100,25 @@ BEGIN_EVENT_TABLE(lmGrpBarlines, lmToolGroup)
     EVT_BUTTON      (lmID_BARLINE_ADD, lmGrpBarlines::OnAddBarline)
 END_EVENT_TABLE()
 
+static lmBarlinesDBEntry tBarlinesDB[lm_eMaxBarline+1];
+
 
 lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent)
 {
+    //To avoid having to translate again barline names, we are going to load them
+    //by using global function GetBarlineName()
+    for (int i = 0; i < lm_eMaxBarline; i++)
+    {
+        tBarlinesDB[i].nBarlineType = (lmEBarline)i;
+        tBarlinesDB[i].sBarlineName = GetBarlineName((lmEBarline)i);
+    }
+    //End of table item
+    tBarlinesDB[i].nBarlineType = (lmEBarline)-1;
+    tBarlinesDB[i].sBarlineName = _T("");
+
     CreateControls(pMainSizer);
-	LoadBarlinesBitmapComboBox(m_pBarlinesList, g_tBarlinesDB);
+	LoadBarlinesBitmapComboBox(m_pBarlinesList, tBarlinesDB);
 	SelectBarlineBitmapComboBox(m_pBarlinesList, lm_eBarlineSimple);
 }
 
@@ -134,7 +147,7 @@ void lmGrpBarlines::OnAddBarline(wxCommandEvent& event)
 	WXUNUSED(event);
 	int iB = m_pBarlinesList->GetSelection();
     lmController* pSC = GetMainFrame()->GetActiveController();
-    pSC->InsertBarline(g_tBarlinesDB[iB].nBarlineType);
+    pSC->InsertBarline(tBarlinesDB[iB].nBarlineType);
 
     //return focus to active view
     GetMainFrame()->SetFocusOnActiveView();

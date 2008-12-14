@@ -103,22 +103,13 @@ enum {
     lmID_BARLINE = 2600,
 };
 
-lmBarlinesDBEntry g_tBarlinesDB[] = {
-    { _("Simple barline"),		lm_eBarlineSimple },
-    { _("Double barline"),		lm_eBarlineDouble },
-    { _("Final barline"),		lm_eBarlineEnd },
-    { _("Start repetition"),	lm_eBarlineStartRepetition },
-    { _("End repetition"),		lm_eBarlineEndRepetition },
-    { _("Star barline"),		lm_eBarlineStart },
-    { _("Double repetition"),	lm_eBarlineDoubleRepetition },
-	//End of table item
-	{ _T(""),					(lmEBarline)-1 }
-};
+static wxString m_sBarlineName[lm_eMaxBarline];
 
 BEGIN_EVENT_TABLE(lmBarlineProperties, lmPropertiesPage)
 
 END_EVENT_TABLE()
 
+static lmBarlinesDBEntry tBarlinesDB[lm_eMaxBarline+1];
 
 //AWARE: pScore is needed as parameter in the constructor for those cases in
 //wich the text is being created and is not yet included in the score. In this
@@ -128,8 +119,20 @@ lmBarlineProperties::lmBarlineProperties(wxWindow* parent, lmBarline* pBL)
     : lmPropertiesPage(parent)
 {
     m_pBL = pBL;
+
+    //To avoid having to translate again barline names, we are going to load them
+    //by using global function GetBarlineName()
+    for (int i = 0; i < lm_eMaxBarline; i++)
+    {
+        tBarlinesDB[i].nBarlineType = (lmEBarline)i;
+        tBarlinesDB[i].sBarlineName = GetBarlineName((lmEBarline)i);
+    }
+    //End of table item
+    tBarlinesDB[i].nBarlineType = (lmEBarline)-1;
+    tBarlinesDB[i].sBarlineName = _T("");
+
     CreateControls();
-	LoadBarlinesBitmapComboBox(m_pBarlinesList, g_tBarlinesDB);
+	LoadBarlinesBitmapComboBox(m_pBarlinesList, tBarlinesDB);
 	SelectBarlineBitmapComboBox(m_pBarlinesList, m_pBL->GetBarlineType() );
 }
 
@@ -161,7 +164,7 @@ lmBarlineProperties::~lmBarlineProperties()
 void lmBarlineProperties::OnAcceptChanges(lmController* pController)
 {
 	int iB = m_pBarlinesList->GetSelection();
-    lmEBarline nType = g_tBarlinesDB[iB].nBarlineType;
+    lmEBarline nType = tBarlinesDB[iB].nBarlineType;
 	if (nType == m_pBL->GetBarlineType())
 		return;		//nothing to change
 
@@ -374,3 +377,25 @@ wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType)
     }
 
 }
+
+const wxString& GetBarlineName(lmEBarline nBarlineType)
+{
+    static bool fStringsLoaded = false;
+
+    if (!fStringsLoaded)
+    {
+        //language dependent strings. Can not be statically initiallized because
+        //then they do not get translated
+        m_sBarlineName[lm_eBarlineSimple] = _("Simple barline");
+        m_sBarlineName[lm_eBarlineDouble]= _("Double barline");
+        m_sBarlineName[lm_eBarlineEnd] = _("Final barline");
+        m_sBarlineName[lm_eBarlineStartRepetition] = _("Start repetition");
+        m_sBarlineName[lm_eBarlineEndRepetition] = _("End repetition");
+        m_sBarlineName[lm_eBarlineStart] = _("Star barline");
+        m_sBarlineName[lm_eBarlineDoubleRepetition] = _("Double repetition");
+        fStringsLoaded = true;
+    }
+
+    return m_sBarlineName[nBarlineType];
+}
+

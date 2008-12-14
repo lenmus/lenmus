@@ -307,6 +307,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
 
     // get options for renderization
     bool fStopStaffLinesAtFinalBarline = m_pScore->GetOptionBool(_T("StaffLines.StopAtFinalBarline"));
+    bool fJustifyFinalBarline = m_pScore->GetOptionBool(_T("Score.JustifyFinalBarline"));
     m_rSpacingFactor = (float) m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
     m_nSpacingMethod = (lmESpacingMethod) m_pScore->GetOptionLong(_T("Render.SpacingMethod"));
     m_nSpacingValue = (lmTenths) m_pScore->GetOptionLong(_T("Render.SpacingValue"));
@@ -561,10 +562,10 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
         }
         //dbg ---------------
 
-        //To justify systems, divide up the remaining space
-        //between all bars, except if this is the last bar and options flag
-        //"StopStaffLinesAtFinalBar" is set or no barline.
-        if (!(fThisIsLastSystem && fStopStaffLinesAtFinalBarline))
+        //To justify systems, divide up the remaining space between all bars, except
+        //if this is the last bar and options flag "JustifyFinalBarline" is not set or
+        //no barline.
+        if (!fThisIsLastSystem || (fThisIsLastSystem && fJustifyFinalBarline))
             RedistributeFreeSpace(m_uFreeSpace, fThisIsLastSystem);
 
         //dbg --------------

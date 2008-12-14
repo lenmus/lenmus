@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-13 14:48+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2008-12-13 15:32+0100\n"
+"Last-Translator: jahan <jahan@telenet.be>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -40,35 +40,31 @@ msgstr "Er heeft zich een fout voorgedaan bij de toekenning van het font."
 
 #: score/Barline.cpp:107
 msgid "Simple barline"
-msgstr ""
+msgstr "Enkelvoudige maatstreep"
 
 #: score/Barline.cpp:108
-#, fuzzy
 msgid "Double barline"
-msgstr "Dubbel Kruis"
+msgstr "Dubbele maatstreep"
 
 #: score/Barline.cpp:109
 msgid "Final barline"
-msgstr ""
+msgstr "Finale maatstreep"
 
 #: score/Barline.cpp:110
-#, fuzzy
 msgid "Start repetition"
-msgstr "grondligging"
+msgstr "Herhaling starten"
 
 #: score/Barline.cpp:111
 msgid "End repetition"
-msgstr ""
+msgstr "Eindherhaling"
 
 #: score/Barline.cpp:112
-#, fuzzy
 msgid "Star barline"
-msgstr "Maatstreep"
+msgstr "Maatstreep starten"
 
 #: score/Barline.cpp:113
-#, fuzzy
 msgid "Double repetition"
-msgstr "Dubbel Kruis"
+msgstr "Dubbele herhaling"
 
 #: score/Barline.cpp:328
 #: ../xrc/xrc_strings.cpp:173
@@ -77,15 +73,15 @@ msgstr "Maatstreep"
 
 #: score/Barline.cpp:331
 msgid "Barline properties"
-msgstr ""
+msgstr "Maatstreep eigenschappen"
 
 #: score/ColStaffObjs.cpp:3555
 msgid "Move backwards: out of measure"
-msgstr ""
+msgstr "Terugkeren: buiten de maat"
 
 #: score/ColStaffObjs.cpp:3565
 msgid "Move forward: out of measure"
-msgstr ""
+msgstr "Verder: buiten de maat"
 
 #: score/Instrument.cpp:167
 #: app/MidiWizard.cpp:437
@@ -95,7 +91,7 @@ msgstr "Kanaal:"
 
 #: score/Instrument.cpp:181
 msgid "Group:"
-msgstr ""
+msgstr "Groep:"
 
 #: score/Instrument.cpp:190
 #: app/MidiWizard.cpp:454
@@ -110,21 +106,19 @@ msgstr "Test geluid"
 
 #: score/Instrument.cpp:657
 msgid "MIDI"
-msgstr ""
+msgstr "MIDI"
 
 #: score/Instrument.cpp:666
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 #: score/Instrument.cpp:667
-#, fuzzy
 msgid "Abbreviation"
-msgstr "Authenticatie"
+msgstr "afkorting"
 
 #: score/Instrument.cpp:670
-#, fuzzy
 msgid "Instrument properties"
-msgstr "Instrument:"
+msgstr "Instrument eigenschappen"
 
 #: score/KeySignature.cpp:702
 #: ../xrc/xrc_strings.cpp:373
@@ -283,13 +277,12 @@ msgid "D minor"
 msgstr "re klein"
 
 #: score/MetronomeMark.cpp:101
-#, fuzzy
 msgid "metronome mark"
-msgstr "Metronoom"
+msgstr "Metronoom markering"
 
 #: score/Note.cpp:1858
 msgid "Delete tie &previous"
-msgstr ""
+msgstr "Verbinding verwijderen &vorige"
 
 #: score/Note.cpp:2026
 #, c-format
@@ -330,86 +323,81 @@ msgstr "si%d"
 #: score/Score.cpp:1613
 #: app/MainFrame.cpp:1077
 msgid "Add title"
-msgstr ""
+msgstr "Titel toevoegen"
 
 #: score/Score.cpp:1599
 #: app/MainFrame.cpp:1078
 msgid "Add a title to the score"
-msgstr ""
+msgstr "Een titel aan de partitiuur toevoegen"
 
 #: score/Score.cpp:1604
 #: score/Score.cpp:1614
 #: app/MainFrame.cpp:1079
 msgid "Margins and spacers"
-msgstr ""
+msgstr "grenzen en spacers"
 
 #: score/Score.cpp:1644
-#, fuzzy
 msgid "Select instrument:"
-msgstr "Instrument:"
+msgstr "Instrument selecteren:"
 
 #: score/Score.cpp:1645
-#, fuzzy
 msgid "Instrument selection"
-msgstr "Instrument:"
+msgstr "Instrument selectie"
 
 #: score/Score.cpp:1705
 #: score/Score.cpp:1711
 #: xml_parser/MusicXMLParser.cpp:1422
-#, fuzzy
 msgid "Lyrics"
-msgstr "Licentie"
+msgstr "Tekst"
 
 #: score/Score.cpp:1716
 #: score/Score.cpp:1722
 #: app/ScoreCommand.cpp:1532
 msgid "Normal text"
-msgstr ""
+msgstr "Normale tekst"
 
 #: score/Score.cpp:1727
 #: score/Score.cpp:1733
 #: app/ScoreCommand.cpp:1591
 #: app/ScoreWizard.cpp:324
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: score/Score.cpp:1759
 #, c-format
 msgid "Style%d"
-msgstr ""
+msgstr "Stijl%d"
 
 #: score/StaffObj.cpp:359
 #: score/StaffObj.cpp:365
 msgid "Attach text"
-msgstr ""
+msgstr "Tekst als bijlage"
 
 #: score/StaffObj.cpp:392
-#, fuzzy
 msgid "General"
-msgstr "Intervallen"
+msgstr "Algemeen"
 
 #: score/Text.cpp:132
 #: score/Text.cpp:152
-#, fuzzy
 msgid "Text"
-msgstr "&Volgende"
+msgstr "Tekst"
 
 #: score/VStaff.cpp:544
 msgid "Error: No clef defined yet."
-msgstr ""
+msgstr "Fout: nog geen sleutel geselecteerd."
 
 #: score/VStaff.cpp:546
 msgid "Would you like to have notes placed on the staff as if a G clef has been defined?"
-msgstr ""
+msgstr "Will u de noten op de balk plaatsen in de Sol Sleutel?"
 
 #: score/VStaff.cpp:549
 #: app/ScoreCanvas.cpp:461
 msgid "Insert clef"
-msgstr ""
+msgstr "Sleutel invoegen"
 
 #: score/VStaff.cpp:549
 msgid "An invisible G clef will be inserted before the note."
-msgstr ""
+msgstr "Een onzichtbare Sol Sleutel zal ingevoegd worden voor de noot."
 
 #: score/VStaff.cpp:550
 #: score/VStaff.cpp:785
@@ -428,66 +416,64 @@ msgstr "Annuleren"
 
 #: score/VStaff.cpp:550
 msgid "The 'insert note' command will be cancelled."
-msgstr ""
+msgstr "De actie 'noot toevoegen' wordt geannuleerd"
 
 #: score/VStaff.cpp:774
 msgid "Notes after the clef will be affected by this action."
-msgstr ""
+msgstr "De noten na de sleutel zullen beïnvloed worden door deze aktie."
 
 #: score/VStaff.cpp:777
 msgid "Would you like to keep notes' pitch and, therefore, to change notes' positions on the staff? or, would you prefer to keep notes placed on their current staff positions? (implies pitch change)"
-msgstr ""
+msgstr "WIlt u de toonhoogte behouden en aldus de positie van de noten wijzigen op de notenbalk, of verkiest u de positie te behouden, met een wijziging in toonhoogte als gevolg?"
 
 #: score/VStaff.cpp:783
-#, fuzzy
 msgid "Keep position"
-msgstr "grondligging"
+msgstr "positie behouden"
 
 #: score/VStaff.cpp:783
 msgid "Change notes' pitch and keep their current staff position."
-msgstr ""
+msgstr "Verander de toonhoogte en behoud te positie op de notenbalk."
 
 #: score/VStaff.cpp:784
 #: score/VStaff.cpp:823
 msgid "Keep pitch"
-msgstr ""
+msgstr "Behoud de toonhoogte"
 
 #: score/VStaff.cpp:784
 msgid "Keep pitch and move notes to new staff positions."
-msgstr ""
+msgstr "Behoud de toonhoogte en wijzig de positie van de noten."
 
 #: score/VStaff.cpp:785
 msgid "The insert, delete or change clef command will be cancelled."
-msgstr ""
+msgstr "De invoeg, verwijder of wijzig sleutel opdrachten worden geannuleerd."
 
 #: score/VStaff.cpp:815
 msgid "Notes after the key will be affected by this action."
-msgstr ""
+msgstr "De noten na de toonaard worden beïnvloed door deze aktie."
 
 #: score/VStaff.cpp:818
 msgid "Would you like to keep notes' pitch and, therefore, to add/remove accidentals to the affected notes?"
-msgstr ""
+msgstr "Wilt u de toonhoogte behouden en daardoor wijzigingstekens toevoegen/verwijderen voor de betrokken noten?"
 
 #: score/VStaff.cpp:823
 msgid "Keep pitch by adding/removing accidentals when necessary."
-msgstr ""
+msgstr "Behoud de toonhoogte door toevallige wijzigingstekens toe te voegen of te verwijderen."
 
 #: score/VStaff.cpp:824
 msgid "Change pitch"
-msgstr ""
+msgstr "Verander de toonhoogte"
 
 #: score/VStaff.cpp:824
 msgid "Do nothing. Notes' pitch will be affected by the change in key signature."
-msgstr ""
+msgstr "Doe niets. De toonhoogte wordt gewijzigd door de verandering van de toonaard."
 
 #: score/VStaff.cpp:825
 msgid "The insert, delete or change key command will be cancelled."
-msgstr ""
+msgstr "De invoeg, verwijder of wijzig toonaard opdrachten worden geannuleerd."
 
 #: score/properties/DlgEditText.cpp:67
-#, fuzzy
 msgid "Edit text"
-msgstr "Editeer hulpmiddelen"
+msgstr "Tekst wijzigen"
 
 #: score/properties/DlgEditText.cpp:97
 #: app/MainFrame.cpp:666
@@ -509,7 +495,7 @@ msgstr "Plakken"
 
 #: score/properties/DlgEditText.cpp:123
 msgid "Text color selector"
-msgstr ""
+msgstr "Tekst kleur selector"
 
 #: score/properties/DlgEditText.cpp:149
 #: score/properties/DlgProperties.cpp:88
@@ -527,25 +513,25 @@ msgstr "Aanvaarden"
 #: score/properties/DlgProperties.cpp:53
 #: app/MainFrame.cpp:1086
 msgid "Properties"
-msgstr ""
+msgstr "Eigenschappen"
 
 #: score/properties/DlgTextStyles.cpp:80
 msgid "Styles defined in current score"
-msgstr ""
+msgstr "Stijlen gedefinieerd in de huidige partituur"
 
 #: score/properties/DlgTextStyles.cpp:274
 #: score/properties/DlgTextStyles.cpp:279
 #: score/properties/DlgTextStyles.cpp:284
 msgid "Not yet implemented"
-msgstr ""
+msgstr "Nog niet geïmplementeerd"
 
 #: score/properties/TextProperties.cpp:157
 msgid "Text style:"
-msgstr ""
+msgstr "Tekst stijl:"
 
 #: score/properties/TextProperties.cpp:166
 msgid "Add/change styles"
-msgstr ""
+msgstr "Stijl toevoegen/verwijderen"
 
 #: auxmusic/Cadence.cpp:1282
 #: auxmusic/Cadence.cpp:1283
@@ -1115,9 +1101,8 @@ msgstr "twee oktaven"
 
 #: exercises/ExerciseCtrol.cpp:204
 #: exercises/TheoMusicReadingCtrol.cpp:162
-#, fuzzy
 msgid "Exercise options"
-msgstr "Oefeningen"
+msgstr "Opties oefeningen"
 
 #: exercises/ExerciseCtrol.cpp:210
 #: exercises/TheoMusicReadingCtrol.cpp:117
@@ -2188,9 +2173,8 @@ msgstr "Een vrij programma voor het leren van muziektaal"
 
 #: app/AboutDialog.cpp:134
 #: app/AboutDialog.cpp:139
-#, fuzzy
 msgid "Arial"
-msgstr "Terminaal"
+msgstr "Arial"
 
 #: app/AboutDialog.cpp:156
 #: app/AboutDialog.cpp:196
@@ -2235,17 +2219,14 @@ msgid "License"
 msgstr "Licentie"
 
 #: app/AboutDialog.cpp:226
-#, fuzzy
 msgid "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
-msgstr "Copyright &copy; 2002-2007 Cecilio Salmer&oacute;n."
+msgstr "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
 
 #: app/AboutDialog.cpp:228
-#, fuzzy
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
-msgstr " Dit Programma is vrije software; U kan het verspreiden en/of wijzigen onder de bepalingen van de GNU Algemene Publieke Licentie, zoals uitgegeven door de Free Software Foundation; ofwel versie 2 van de Licentie, of (naar vrije keuze) een latere versie."
+msgstr " Dit Programma is vrije software; U kan het verspreiden en/of wijzigen onder de bepalingen van de GNU Algemene Publieke Licentie, zoals uitgegeven door de Free Software Foundation; ofwel versie 3 van de Licentie, of (naar vrije keuze) een latere versie."
 
 #: app/AboutDialog.cpp:233
-#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at "
 msgstr "Dit Programma is verspreid in de hoop dat het nuttig zal zijn maar ZONDER EENDER WELKE GARANTIE; zelfs zonder de impliciete garantie van VERKOOPBAARHEID of GESCHIKTHEID VOOR EEN BEPAALD DOEL. Zie de GNU Algemene Publieke Licentie voor meer details op http://www.gnu.org/licenses/licenses.html"
 
@@ -2314,9 +2295,8 @@ msgid "wxMidi Version "
 msgstr "wxMidi Version "
 
 #: app/AboutDialog.cpp:353
-#, fuzzy
 msgid "Your computer information:"
-msgstr "Hulpmiddelen:"
+msgstr "Uw computer specificaties:"
 
 #: app/AboutDialog.cpp:372
 msgid "(alphabetical order)"
@@ -2336,7 +2316,7 @@ msgstr "Muziekteksten en -uoefeningen:"
 
 #: app/AboutDialog.cpp:392
 msgid "Package for Linux prepared by:"
-msgstr ""
+msgstr "Linux Pakket gemaakt door:"
 
 #: app/AboutDialog.cpp:397
 msgid "Translation:"
@@ -2344,7 +2324,7 @@ msgstr "Vertaling:"
 
 #: app/AboutDialog.cpp:398
 msgid "Basque"
-msgstr ""
+msgstr "Baskisch"
 
 #: app/AboutDialog.cpp:401
 msgid "Dutch"
@@ -2355,9 +2335,8 @@ msgid "French"
 msgstr "Frans"
 
 #: app/AboutDialog.cpp:409
-#, fuzzy
 msgid "Italian"
-msgstr "Ionisch"
+msgstr "Italiaans"
 
 #: app/AboutDialog.cpp:412
 msgid "Spanish"
@@ -2454,9 +2433,8 @@ msgstr "Herhalen"
 
 #: app/MainFrame.cpp:687
 #: app/MainFrame.cpp:1080
-#, fuzzy
 msgid "Show/hide page margins and spacers"
-msgstr "Toon/verberg navigatiepaneel"
+msgstr "Toon/verberg grenzen en spacers"
 
 #: app/MainFrame.cpp:696
 #: app/MainFrame.cpp:1128
@@ -2498,15 +2476,13 @@ msgstr "Aan paginabreedte aanpassen"
 
 #: app/MainFrame.cpp:739
 #: app/MainFrame.cpp:1145
-#, fuzzy
 msgid "Start/resume play back. From selection of full score"
-msgstr "Start/herneem afspelen van de partituur"
+msgstr "Afspelen starten/hernemen"
 
 #: app/MainFrame.cpp:743
 #: app/MainFrame.cpp:1148
-#, fuzzy
 msgid "Start/resume play back. From cursor measure"
-msgstr "Start/herneem afspelen van de partituur"
+msgstr "Start/herneem het afspelen vanaf de cursor positie"
 
 #: app/MainFrame.cpp:747
 #: app/MainFrame.cpp:1151
@@ -2601,18 +2577,16 @@ msgid "&Import..."
 msgstr "&Importeer..."
 
 #: app/MainFrame.cpp:1007
-#, fuzzy
 msgid "Open a MusicXML score"
-msgstr "Open een partituur"
+msgstr "Een MusicXML partituur openen"
 
 #: app/MainFrame.cpp:1010
 msgid "MusicXML format"
-msgstr ""
+msgstr "MuziekXML formaat"
 
 #: app/MainFrame.cpp:1011
-#, fuzzy
 msgid "Save score as a MusicXML file"
-msgstr "Bewaar partituur als bmp afbeeldingen"
+msgstr "Partituur opslaan als een MusicXML bestand"
 
 #: app/MainFrame.cpp:1012
 msgid "As &bmp image"
@@ -2651,9 +2625,8 @@ msgid "&Close\tCtrl+W"
 msgstr "&Sluiten\tCtrl+W"
 
 #: app/MainFrame.cpp:1029
-#, fuzzy
 msgid "Close a score"
-msgstr "Open een partituur"
+msgstr "Partituur sluiten"
 
 #: app/MainFrame.cpp:1032
 msgid "&Print ...\tCtrl+P"
@@ -2664,9 +2637,8 @@ msgid "Print &Setup..."
 msgstr "Afdruk &Instellingen..."
 
 #: app/MainFrame.cpp:1035
-#, fuzzy
 msgid "Configure printer options"
-msgstr "Configuratie opties"
+msgstr "Printer opties configureren"
 
 #: app/MainFrame.cpp:1036
 msgid "Print Pre&view"
@@ -2678,7 +2650,7 @@ msgstr "B&eëindigen\tCtrl+Q"
 
 #: app/MainFrame.cpp:1041
 msgid "Exit program"
-msgstr ""
+msgstr "Programma afsluiten"
 
 #: app/MainFrame.cpp:1052
 msgid "&Undo"
@@ -2705,14 +2677,12 @@ msgid "Hide/show the status bar"
 msgstr "Verberg/toon de statusbalk"
 
 #: app/MainFrame.cpp:1066
-#, fuzzy
 msgid "&Tool box"
-msgstr "Werk&balk"
+msgstr "&Gereedschapskist"
 
 #: app/MainFrame.cpp:1067
-#, fuzzy
 msgid "Hide/show edition tool box window"
-msgstr "Verberg/toon de werkbalken"
+msgstr "Verberg/toon het  editeergereeschapsvenster"
 
 #: app/MainFrame.cpp:1068
 msgid "&Rulers"
@@ -2724,16 +2694,15 @@ msgstr "Verberg/toon linialen"
 
 #: app/MainFrame.cpp:1070
 msgid "&Welcome page"
-msgstr ""
+msgstr "&Welkom pagina"
 
 #: app/MainFrame.cpp:1071
-#, fuzzy
 msgid "Hide/show welcome page"
-msgstr "Verberg/toon linialen"
+msgstr "Verberg/toon welkompagina"
 
 #: app/MainFrame.cpp:1087
 msgid "Edit name, abbreviation, MIDI settings and other properties"
-msgstr ""
+msgstr "Naam, afkorting, MIDI instellingen en andere eigenschappen veranderen"
 
 #: app/MainFrame.cpp:1137
 msgid "Zoom to ..."
@@ -2744,9 +2713,8 @@ msgid "&Play"
 msgstr "&Play"
 
 #: app/MainFrame.cpp:1147
-#, fuzzy
 msgid "Play from cursor"
-msgstr "Speel een &tonica akkoord"
+msgstr "Vanaf de cursor afspelen"
 
 #: app/MainFrame.cpp:1150
 msgid "S&top"
@@ -2774,9 +2742,8 @@ msgid "Play an scale to test sound"
 msgstr "Speel een notenbalk als geluidstest"
 
 #: app/MainFrame.cpp:1161
-#, fuzzy
 msgid "tool_test_sound"
-msgstr "Test geluid"
+msgstr "test_geluid_gereedschap"
 
 #: app/MainFrame.cpp:1162
 msgid "&All sounds off"
@@ -2812,9 +2779,8 @@ msgid "&Previous"
 msgstr "V&orige"
 
 #: app/MainFrame.cpp:1187
-#, fuzzy
 msgid "&About"
-msgstr "Info &over\tF1"
+msgstr "Info &over"
 
 #: app/MainFrame.cpp:1188
 msgid "Display information about program version and credits"
@@ -2822,17 +2788,15 @@ msgstr "Informatie over de programmaversie en credits weergeven"
 
 #: app/MainFrame.cpp:1192
 msgid "Editor quick guide"
-msgstr ""
+msgstr "Editor snelgids"
 
 #: app/MainFrame.cpp:1193
-#, fuzzy
 msgid "Show editor reference card"
-msgstr "Gebruiksvoorkeuren instellen"
+msgstr "Editor referentiekaart tonen"
 
 #: app/MainFrame.cpp:1194
-#, fuzzy
 msgid "&Content"
-msgstr "Inhoud"
+msgstr "&Inhoud"
 
 #: app/MainFrame.cpp:1198
 msgid "Check now for &updates"
@@ -2864,12 +2828,11 @@ msgstr "&Beeld"
 
 #: app/MainFrame.cpp:1216
 msgid "S&core"
-msgstr ""
+msgstr "P&artituur"
 
 #: app/MainFrame.cpp:1217
-#, fuzzy
 msgid "&Instrument"
-msgstr "Instrument:"
+msgstr "&Instrument"
 
 #: app/MainFrame.cpp:1218
 msgid "&Sound"
@@ -2935,13 +2898,12 @@ msgid "Zooming factor must be greater that 10% and lower than 800%"
 msgstr "Zoom factor moet groter zijn dan 10% en lager dan 800%"
 
 #: app/MainFrame.cpp:2021
-#, fuzzy
 msgid "Edit tool box"
-msgstr "Editeer hulpmiddelen"
+msgstr "Editeer gereedschap"
 
 #: app/MainFrame.cpp:2108
 msgid "Choose the file to import"
-msgstr ""
+msgstr "Te importeren file selecteren"
 
 #: app/MainFrame.cpp:2152
 msgid ""
@@ -2972,9 +2934,8 @@ msgstr ""
 
 #: app/MainFrame.cpp:2205
 #: app/MainFrame.cpp:2207
-#, fuzzy
 msgid "Printing"
-msgstr "Afdrukken"
+msgstr "Bezig met afdrukken"
 
 #: app/MainFrame.cpp:2207
 msgid "Printing cancelled"
@@ -3038,340 +2999,316 @@ msgstr "Geluid voor de overige slagen van elke maat:"
 
 #: app/ScoreCanvas.cpp:256
 msgid "attach text"
-msgstr ""
+msgstr "tekst aanhangen"
 
 #: app/ScoreCanvas.cpp:273
 #, c-format
 msgid "Move %s"
-msgstr ""
+msgstr "Verplaatsen &s"
 
 #: app/ScoreCanvas.cpp:290
 msgid "Change margin"
-msgstr ""
+msgstr "Begrenzing verplaatsen"
 
 #: app/ScoreCanvas.cpp:311
 #: app/ScoreCanvas.cpp:326
-#, fuzzy, c-format
+#, c-format
 msgid "Delete %s"
-msgstr "Ritme verwijderen"
+msgstr "%s verwijderen"
 
 #: app/ScoreCanvas.cpp:350
 msgid "Delete selection"
-msgstr ""
+msgstr "Selectie verwijderen"
 
 #: app/ScoreCanvas.cpp:368
 msgid "Break a beam"
-msgstr ""
+msgstr "Verbinding verbreken"
 
 #: app/ScoreCanvas.cpp:384
 msgid "Add beam"
-msgstr ""
+msgstr "Verbinding toevoegen"
 
 #: app/ScoreCanvas.cpp:404
-#, fuzzy
 msgid "Delete tie"
-msgstr "Ritme verwijderen"
+msgstr "Overbinding verwijderen"
 
 #: app/ScoreCanvas.cpp:414
 msgid "Add tie"
-msgstr ""
+msgstr "Overbinding toevoegen"
 
 #: app/ScoreCanvas.cpp:432
 msgid "Add tuplet"
-msgstr ""
+msgstr "Triool toevoegen"
 
 #: app/ScoreCanvas.cpp:447
-#, fuzzy
 msgid "Delete tuplet"
-msgstr "Ritme verwijderen"
+msgstr "Antimetrische figuur verwijderen"
 
 #: app/ScoreCanvas.cpp:477
-#, fuzzy
 msgid "Insert time signature"
-msgstr "2 4 maatsoort"
+msgstr "maatsoort invoegen"
 
 #: app/ScoreCanvas.cpp:495
-#, fuzzy
 msgid "Insert key signature"
-msgstr "Voortekening weergeven"
+msgstr "Voortekening invoegen"
 
 #: app/ScoreCanvas.cpp:509
 msgid "Insert barline"
-msgstr ""
+msgstr "Maatstreep invoegen"
 
 #: app/ScoreCanvas.cpp:528
-#, fuzzy
 msgid "Insert note"
-msgstr "Internet"
+msgstr "noot invoegen"
 
 #: app/ScoreCanvas.cpp:549
-#, fuzzy
 msgid "Insert rest"
-msgstr "Instrument:"
+msgstr "rust invoegen"
 
 #: app/ScoreCanvas.cpp:564
 msgid "Change note pitch"
-msgstr ""
+msgstr "Toonhoogte veranderen"
 
 #: app/ScoreCanvas.cpp:576
-#, fuzzy
 msgid "Change note accidentals"
-msgstr "Geen voortekens"
+msgstr "voortekening wijzigen"
 
 #: app/ScoreCanvas.cpp:589
 msgid "Change note dots"
-msgstr ""
+msgstr "Nootpunten veranderen"
 
 #: app/ScoreCanvas.cpp:603
 msgid "Change text"
-msgstr ""
+msgstr "Tekst wijzigen"
 
 #: app/ScoreCanvas.cpp:1312
 #: app/ScoreCanvas.cpp:1338
-#, fuzzy
 msgid "&Cut"
-msgstr "Knippen"
+msgstr "&Knippen"
 
 #: app/ScoreCanvas.cpp:1330
 #: app/ScoreCanvas.cpp:1343
-#, fuzzy
 msgid "Edit"
-msgstr "&Editeer"
+msgstr "Editeer"
 
 #: app/ScoreCommand.cpp:1586
 msgid "add title"
-msgstr ""
+msgstr "titel toevoegen"
 
 #: app/ScoreCommand.cpp:1656
 msgid "change barline"
-msgstr ""
+msgstr "maatstreep wijzigen"
 
 #: app/ScoreCommand.cpp:1699
-#, fuzzy
 msgid "change MIDI settings"
-msgstr "Cadens instellingen"
+msgstr "MIDI instellingen wijzigen"
 
 #: app/ScoreCommand.cpp:1741
-#, fuzzy
 msgid "move note"
-msgstr "Hele noot"
+msgstr "noot verplaatsen"
 
 #: app/ScoreWizard.cpp:129
 msgid "Empty (manuscript paper)"
-msgstr ""
+msgstr "Leeg (blad)"
 
 #: app/ScoreWizard.cpp:130
 msgid "Brass quintet"
-msgstr ""
+msgstr "Brass quintet"
 
 #: app/ScoreWizard.cpp:131
 msgid "Brass trio"
-msgstr ""
+msgstr "Brass trio"
 
 #: app/ScoreWizard.cpp:132
 msgid "Choir 4 voices (SATB)"
-msgstr ""
+msgstr "Vierstemmig koort (SATB)"
 
 #: app/ScoreWizard.cpp:133
 msgid "Choir SATB + piano"
-msgstr ""
+msgstr "Koor SATB en piano"
 
 #: app/ScoreWizard.cpp:134
 msgid "Choir 3 voices (SSA)"
-msgstr ""
+msgstr "driestemmig koor (SSA)"
 
 #: app/ScoreWizard.cpp:135
 msgid "Choir SSA + piano"
-msgstr ""
+msgstr "Koor SSA en piano"
 
 #: app/ScoreWizard.cpp:136
-#, fuzzy
 msgid "Flute"
-msgstr "Mol"
+msgstr "Fluit"
 
 #: app/ScoreWizard.cpp:137
 msgid "Guitar"
-msgstr ""
+msgstr "Gitaar"
 
 #: app/ScoreWizard.cpp:138
-#, fuzzy
 msgid "Piano"
-msgstr "Phrygisch"
+msgstr "Piano"
 
 #: app/ScoreWizard.cpp:139
 msgid "Violin and piano"
-msgstr ""
+msgstr "VIool en piano"
 
 #: app/ScoreWizard.cpp:140
 msgid "Viola and piano"
-msgstr ""
+msgstr "Viola en piano"
 
 #: app/ScoreWizard.cpp:141
 msgid "Cello and piano"
-msgstr ""
+msgstr "Cello en piano"
 
 #: app/ScoreWizard.cpp:142
 msgid "String quartet"
-msgstr ""
+msgstr "Strijkkwartet"
 
 #: app/ScoreWizard.cpp:143
-#, fuzzy
 msgid "Violin"
-msgstr "Mixolydisch"
+msgstr "Viool"
 
 #: app/ScoreWizard.cpp:144
 msgid "Trio sonata"
-msgstr ""
+msgstr "Trio Sonata"
 
 #: app/ScoreWizard.cpp:145
 msgid "Woodwind trio"
-msgstr ""
+msgstr "houtblazers trio"
 
 #: app/ScoreWizard.cpp:146
 msgid "Woodwind quintet"
-msgstr ""
+msgstr "houtblazers kwintet"
 
 #: app/ScoreWizard.cpp:280
-#, fuzzy
 msgid "Score configuration wizard"
-msgstr "Midi configuratie wizard"
+msgstr "Partituurconfiguratie wizard"
 
 #: app/ScoreWizard.cpp:325
 msgid "Subtitle"
-msgstr ""
+msgstr "ondertitel"
 
 #: app/ScoreWizard.cpp:326
 msgid "Composer"
-msgstr ""
+msgstr "Componist"
 
 #: app/ScoreWizard.cpp:327
 msgid "Arranger"
-msgstr ""
+msgstr "Bewerker"
 
 #: app/ScoreWizard.cpp:328
 msgid "Lyricist"
-msgstr ""
+msgstr "Tekstdichter"
 
 #: app/ScoreWizard.cpp:421
 #, c-format
 msgid "Error: Template '%s' not found."
-msgstr ""
+msgstr "Fout: Template '%s' niet gevonden."
 
 #: app/ScoreWizard.cpp:423
 msgid "Posible causes:"
-msgstr ""
+msgstr "Mogelijke oorzaken:"
 
 #: app/ScoreWizard.cpp:425
 msgid "- An error during lenmus installation."
-msgstr ""
+msgstr "- Een fout is opgetreden tijdens de installatie van LenMus."
 
 #: app/ScoreWizard.cpp:427
 msgid "- An accidental deletion of the required template."
-msgstr ""
+msgstr "- Een ongewenste verwijdering van het vereiste template."
 
 #: app/ScoreWizard.cpp:429
 msgid "An empty score will be created."
-msgstr ""
+msgstr "Een lege blad wordt aangemaakt."
 
 #: app/ScoreWizard.cpp:623
 msgid "Select instruments and style"
-msgstr ""
+msgstr "Selecteer de instrumenten en stijl"
 
 #: app/ScoreWizard.cpp:631
 msgid "Select paper size and orientation"
-msgstr ""
+msgstr "Selecteer de papier grootte en oriëntatie"
 
 #: app/ScoreWizard.cpp:636
 msgid "Paper size"
-msgstr ""
+msgstr "Papier grootte"
 
 #: app/ScoreWizard.cpp:647
 msgid "Landscape"
-msgstr ""
+msgstr "Landschap"
 
 #: app/ScoreWizard.cpp:647
-#, fuzzy
 msgid "Portrait"
-msgstr "Afdrukken"
+msgstr "Portret"
 
 #: app/ScoreWizard.cpp:802
-#, fuzzy
 msgid "Select a key signature"
-msgstr "Voortekening weergeven"
+msgstr "Voortekening selecteren"
 
 #: app/ScoreWizard.cpp:804
 #: app/toolbox/ToolClef.cpp:295
-#, fuzzy
 msgid "Major"
 msgstr "Majeur"
 
 #: app/ScoreWizard.cpp:804
-#, fuzzy
 msgid "minor"
-msgstr " klein"
+msgstr "mineur"
 
 #: app/ScoreWizard.cpp:806
 msgid "Key type"
-msgstr ""
+msgstr "Sleutel type"
 
 #: app/ScoreWizard.cpp:918
 #: app/toolbox/PropTimeSignature.cpp:54
-#, fuzzy
 msgid "none"
-msgstr "Geen"
+msgstr "geen"
 
 #: app/ScoreWizard.cpp:972
-#, fuzzy
 msgid "Select time signature"
-msgstr "2 4 maatsoort"
+msgstr "Maatsoort selecteren"
 
 #: app/ScoreWizard.cpp:977
 #: app/toolbox/PropTimeSignature.cpp:57
-#, fuzzy
 msgid "Time signature"
-msgstr "maatsoorten"
+msgstr "Maatsoort"
 
 #: app/ScoreWizard.cpp:983
-#, fuzzy
 msgid "Other time signatures"
-msgstr "maatsoorten"
+msgstr "Andere maatsoorten"
 
 #: app/ScoreWizard.cpp:992
 msgid "Numerator"
-msgstr ""
+msgstr "Nummering"
 
 #: app/ScoreWizard.cpp:1004
-#, fuzzy
 msgid "Denominator"
-msgstr "re klein"
+msgstr "noemer"
 
 #: app/ScoreWizard.cpp:1126
 msgid "Add titles"
-msgstr ""
+msgstr "Betiteling toevoegen"
 
 #: app/ScoreWizard.cpp:1128
 msgid "Title:"
-msgstr ""
+msgstr "Titel:"
 
 #: app/ScoreWizard.cpp:1135
 msgid "Subtitle:"
-msgstr ""
+msgstr "Ondertitel:"
 
 #: app/ScoreWizard.cpp:1142
 msgid "Composer:"
-msgstr ""
+msgstr "Componist"
 
 #: app/ScoreWizard.cpp:1149
 msgid "Arranger:"
-msgstr ""
+msgstr "Bewerker:"
 
 #: app/ScoreWizard.cpp:1156
 msgid "Lyricist:"
-msgstr ""
+msgstr "tekstdicher:"
 
 #: app/SplashFrame.cpp:103
 msgid "Free software under GNU General Public License, version 3 or later."
-msgstr ""
+msgstr "Vrije Software onder de GNU General Public License. version 3 of later."
 
 #: app/TheApp.cpp:229
 msgid "Another instance of LenMus is already running."
@@ -3383,126 +3320,108 @@ msgstr "Eerste opstart LenMus"
 
 #: app/WelcomeWnd.cpp:84
 msgid "Welcome"
-msgstr ""
+msgstr "Welkom"
 
 #: app/WelcomeWnd.cpp:146
-#, fuzzy
 msgid "Welcome to LenMus"
-msgstr "Welkom bij LenMus!"
+msgstr "Welkom bij LenMus"
 
 #: app/WelcomeWnd.cpp:160
 msgid "Learn about LenMus"
-msgstr ""
+msgstr "Leer meer over LenMus"
 
 #: app/WelcomeWnd.cpp:175
 msgid "What's is new in LenMus"
-msgstr ""
+msgstr "Wat is nieuw in LenMus"
 
 #: app/WelcomeWnd.cpp:178
-#, fuzzy
 msgid "Visit LenMus website"
-msgstr "&Bezoek LenMus website"
+msgstr "Bezoek de LenMus website"
 
 #: app/WelcomeWnd.cpp:190
 msgid "Learn and practise music theory"
-msgstr ""
+msgstr "Leer en beoefen de muziektheorie"
 
 #: app/WelcomeWnd.cpp:205
-#, fuzzy
 msgid "Open eMusicBooks "
-msgstr "eMuziekBoeken"
+msgstr "eMuziekBoeken openen"
 
 #: app/WelcomeWnd.cpp:217
-#, fuzzy
 msgid "Create and edit music scores"
-msgstr "Voorbeelden van partituren"
+msgstr "Partituren openen en bewerken"
 
 #: app/WelcomeWnd.cpp:232
-#, fuzzy
 msgid "New score ..."
-msgstr "Nieuwe partituur"
+msgstr "Nieuwe partituur..."
 
 #: app/WelcomeWnd.cpp:238
-#, fuzzy
 msgid "Recent scores"
-msgstr "Tellers op nul zetten"
+msgstr "Recente partituren"
 
 #: app/toolbox/PropTimeSignature.cpp:51
-#, fuzzy
 msgid "2/2"
-msgstr "2 2"
+msgstr "2/2"
 
 #: app/toolbox/PropTimeSignature.cpp:51
 msgid "2/4"
-msgstr ""
+msgstr "2/4"
 
 #: app/toolbox/PropTimeSignature.cpp:51
 msgid "6/8"
-msgstr ""
+msgstr "6/8"
 
 #: app/toolbox/PropTimeSignature.cpp:51
-#, fuzzy
 msgid "2/8"
-msgstr "2 8"
+msgstr "2/8"
 
 #: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
 msgid "3/2"
-msgstr "3 2"
+msgstr "3/2"
 
 #: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
 msgid "3/4"
-msgstr "3 4"
+msgstr "3/4"
 
 #: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
 msgid "9/8"
-msgstr "9 8"
+msgstr "9/8"
 
 #: app/toolbox/PropTimeSignature.cpp:52
-#, fuzzy
 msgid "3/8"
-msgstr "3 8"
+msgstr "3/8"
 
 #: app/toolbox/PropTimeSignature.cpp:53
 msgid "4/2"
-msgstr ""
+msgstr "4/2"
 
 #: app/toolbox/PropTimeSignature.cpp:53
-#, fuzzy
 msgid "4/4"
-msgstr "4 4"
+msgstr "4/4"
 
 #: app/toolbox/PropTimeSignature.cpp:53
-#, fuzzy
 msgid "12/8"
-msgstr "12 8"
+msgstr "12/8"
 
 #: app/toolbox/PropTimeSignature.cpp:53
 msgid "4/8"
-msgstr ""
+msgstr "4/8"
 
 #: app/toolbox/PropTimeSignature.cpp:54
-#, fuzzy
 msgid "other"
-msgstr "Andere"
+msgstr "andere"
 
 #: app/toolbox/ToolBarlines.cpp:115
 #: app/toolbox/ToolBarlines.cpp:125
-#, fuzzy
 msgid "Add barline"
-msgstr "Maatstreep"
+msgstr "Maatstreep invoegen"
 
 #: app/toolbox/ToolClef.cpp:118
-#, fuzzy
 msgid "G clef on 2nd line"
-msgstr "Fa sleutel op de 3de lijn"
+msgstr "Sol sleutel op de 2de lijn"
 
 #: app/toolbox/ToolClef.cpp:119
-#, fuzzy
 msgid "F clef on 4th line"
-msgstr "Fa sleutel op de 4de lijn (bas)"
+msgstr "Fa sleutel op de 4de lijn"
 
 #: app/toolbox/ToolClef.cpp:120
 #: ../xrc/xrc_strings.cpp:75
@@ -3511,132 +3430,123 @@ msgid "F clef on 3rd line"
 msgstr "Fa sleutel op de 3de lijn"
 
 #: app/toolbox/ToolClef.cpp:121
-#, fuzzy
 msgid "C clef on 1st line"
-msgstr "Do sleutel op de 1ste lijn (soprano)"
+msgstr "Do sleutel op de 1ste lijn"
 
 #: app/toolbox/ToolClef.cpp:122
-#, fuzzy
 msgid "C clef on 2nd line"
-msgstr "Fa sleutel op de 3de lijn"
+msgstr "Do sleutel op de 2de lijn"
 
 #: app/toolbox/ToolClef.cpp:123
-#, fuzzy
 msgid "C clef on 3rd line"
-msgstr "Fa sleutel op de 3de lijn"
+msgstr "Do sleutel op de 3de lijn"
 
 #: app/toolbox/ToolClef.cpp:124
-#, fuzzy
 msgid "C clef on 4th line"
-msgstr "Do sleutel op de 4de lijn (tenor)"
+msgstr "Do sleutel op de 4de lijn"
 
 #: app/toolbox/ToolClef.cpp:125
 msgid "Percussion clef"
-msgstr ""
+msgstr "Slagwerk sleutel"
 
 #: app/toolbox/ToolClef.cpp:138
 #: app/toolbox/ToolClef.cpp:148
 msgid "Add clef"
-msgstr ""
+msgstr "Sleutel toevoegen"
 
 #: app/toolbox/ToolClef.cpp:216
-#, fuzzy
 msgid "Add a time signature"
-msgstr "2 4 maatsoort"
+msgstr "maatsoort toevoegen"
 
 #: app/toolbox/ToolClef.cpp:289
-#, fuzzy
 msgid "Add a key signature"
-msgstr "Voortekening weergeven"
+msgstr "Toonaard toevoegen"
 
 #: app/toolbox/ToolClef.cpp:296
-#, fuzzy
 msgid "Minor"
 msgstr "Mineur"
 
 #: app/toolbox/ToolClef.cpp:309
 msgid "Add key"
-msgstr ""
+msgstr "Toonaard toevoegen"
 
 #: app/toolbox/ToolNotes.cpp:140
 msgid "Note/rest duration"
-msgstr ""
+msgstr "Noot/rust duratie"
 
 #: app/toolbox/ToolNotes.cpp:198
 msgid "Octave (Ctrl)"
-msgstr ""
+msgstr "Oktaaf (Ctrl)"
 
 #: app/toolbox/ToolNotes.cpp:210
 #, c-format
 msgid "Select octave %d"
-msgstr ""
+msgstr "Oktaaf selecteren %d"
 
 #: app/toolbox/ToolNotes.cpp:253
 msgid "Voice (Alt)"
-msgstr ""
+msgstr "Stem (Alt)"
 
 #: app/toolbox/ToolNotes.cpp:270
 msgid "Automatic voice assignment"
-msgstr ""
+msgstr "Automatische partij assignatie"
 
 #: app/toolbox/ToolNotes.cpp:276
 #, c-format
 msgid "Select voice %d"
-msgstr ""
+msgstr "Partij selecteren %d"
 
 #: app/toolbox/ToolNotes.cpp:321
-#, fuzzy
 msgid "Note accidentals"
-msgstr "Geen voortekens"
+msgstr "toevallige voortekens"
 
 #: app/toolbox/ToolNotes.cpp:374
 msgid "Dots"
-msgstr ""
+msgstr "Punteringen"
 
 #: app/toolbox/ToolNotes.cpp:430
 msgid "Modifiers"
-msgstr ""
+msgstr "Wijzigingen"
 
 #: app/toolbox/ToolNotes.cpp:443
 msgid "Add/remove a tie to/from selected notes"
-msgstr ""
+msgstr "een overbinding toevoegen/verwijderen van de geselecteerde noten"
 
 #: app/toolbox/ToolNotes.cpp:452
 msgid "Add/remove tuplet to/from selected notes"
-msgstr ""
+msgstr "Een antimetrische figuur toevoegen/verwijderen van de geselecteerde noten"
 
 #: app/toolbox/ToolNotes.cpp:545
-#, fuzzy
 msgid "Beams"
-msgstr "Team"
+msgstr "Overbindingen"
 
 #: app/toolbox/ToolNotes.cpp:558
 msgid "Break beam at current cursor position"
-msgstr ""
+msgstr "waardestreep toevoegen onder de cursorpositie"
 
 #: app/toolbox/ToolNotes.cpp:567
 msgid "Beam together all selected notes"
-msgstr ""
+msgstr "geselecteerde noten verbinden"
 
 #: app/toolbox/ToolNotes.cpp:576
 msgid "Subdivide beamed group at current cursor position"
-msgstr ""
+msgstr "gebonde notengroep opsplitsen onder de cursorpositie"
 
 #: app/toolbox/ToolNotes.cpp:585
 msgid "Adjust selected beam to draw it horizontal"
-msgstr ""
+msgstr "waardestreep aanpassen en horizontaal weergeven"
 
 #: app/toolbox/ToolsBox.cpp:96
 msgid "Select clef, key and time signature edit tools"
-msgstr ""
+msgstr "Sleutel, toonaard en maatsoort gereedschap"
 
 #: app/toolbox/ToolsBox.cpp:97
 msgid "Select notes / rests edit tools"
-msgstr ""
+msgstr "Noot- en rustselectie gereedschap"
 
 #: app/toolbox/ToolsBox.cpp:101
 msgid "Select barlines and rehearsal marks edit tools"
-msgstr ""
+msgstr "Maatstreep- en herhalingstekensgereedschap"
 
 #: options/ColorsOptPanel.cpp:60
 msgid "Choose colors to use:"
@@ -3662,7 +3572,7 @@ msgstr "Maandelijks"
 #: options/LangOptionsPanel.cpp:106
 #, c-format
 msgid "Language '%s' will be used the next time you run LenMus."
-msgstr ""
+msgstr "'%s' wordt gebruikt de volgende keer dat u LenMus opstart."
 
 #: options/OptionsDlg.cpp:173
 msgid "Preferences"
@@ -3708,9 +3618,8 @@ msgid "Can't start the thread!"
 msgstr "Kan geen thread opstarten!"
 
 #: widgets/MsgBox.cpp:154
-#, fuzzy
 msgid "Question"
-msgstr "Sectie:"
+msgstr "Vraag"
 
 #: widgets/MsgBox.cpp:182
 #: updater/Updater.cpp:105
@@ -3722,24 +3631,20 @@ msgid "Help"
 msgstr "Help"
 
 #: widgets/Wizard.cpp:122
-#, fuzzy
 msgid "< Previous"
-msgstr "V&orige"
+msgstr " < Vorige"
 
 #: widgets/Wizard.cpp:126
-#, fuzzy
 msgid "Next >"
-msgstr "&Volgende"
+msgstr "Volgende >"
 
 #: widgets/Wizard.cpp:130
-#, fuzzy
 msgid "Finish"
-msgstr "Spaans"
+msgstr "Voltooien"
 
 #: widgets/Wizard.cpp:231
-#, fuzzy
 msgid "unknown button"
-msgstr "Antwoordknoppen"
+msgstr "onbekende knop"
 
 #: ../xrc/xrc_strings.cpp:1
 msgid "Configuration: Intervals - identification by ear"
@@ -4765,20 +4670,19 @@ msgstr "Fout bij het laden van XML bestand"
 
 #: graphic/BoxPage.cpp:46
 msgid "page"
-msgstr ""
+msgstr "pagina"
 
 #: graphic/BoxScore.cpp:39
-#, fuzzy
 msgid "score"
-msgstr "Nieuwe partituur"
+msgstr "partituur"
 
 #: graphic/BoxSystem.cpp:50
 msgid "system"
-msgstr ""
+msgstr "systeem"
 
 #: graphic/Formatter4.cpp:794
 msgid "Program failure: not enough space for drawing just one bar."
-msgstr ""
+msgstr "Programmafout: niet genoeg ruimte om slechts een maatstreep te tekenen."
 
 #: graphic/GraphicManager.cpp:283
 msgid "Sorry, not enough memory to create a Bitmap to display the page."
@@ -4854,9 +4758,9 @@ msgstr "Configuratie opties"
 
 #: graphic/GMObject.h:226
 msgid "Object"
-msgstr ""
+msgstr "Voorwerp"
 
 #: graphic/GMObject.h:293
 msgid "Box"
-msgstr ""
+msgstr "Box"
 

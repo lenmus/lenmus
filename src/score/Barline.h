@@ -72,14 +72,17 @@ private:
 //-----------------------------------------------------------------------------------------
 
 //info about barlines, to centralize data about barlines
-typedef struct
+class lmBarlinesDBEntry
 {
+public:
+    lmBarlinesDBEntry() {}
+    lmBarlinesDBEntry(wxString name, lmEBarline type)
+        : sBarlineName(name), nBarlineType(type) {}
+
+
     wxString		sBarlineName;
     lmEBarline		nBarlineType;
-} lmBarlinesDBEntry;
-
-extern lmBarlinesDBEntry g_tBarlinesDB[];
-
+};
 
 // Utility global functions to use a wxBitmapComboBox control to display barlines
 extern void LoadBarlinesBitmapComboBox(wxBitmapComboBox* pCtrol, lmBarlinesDBEntry tBarlines[]);
@@ -87,6 +90,7 @@ extern void SelectBarlineBitmapComboBox(wxBitmapComboBox* pCtrol, lmEBarline nTy
 
 // other global functions
 extern wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType);
+extern const wxString& GetBarlineName(lmEBarline nBarlineType);
 
 
 #endif    // __LM_BARLINE_H__

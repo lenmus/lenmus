@@ -1,0 +1,266 @@
+
+<html>
+<head>
+<title>The Model-View-Controller architecture</title>
+<meta http-equiv="Content-Type" content="text/html" />
+<link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
+</head>
+<body>
+
+<h1 class='article'>The Model-View-Controller architecture
+</h1>
+
+<p class="copyright">
+LenMus project (http://www.lenmus.org/)<br />
+<a href="#legal_notice">GNU Free Documentation License</a>
+</p>
+
+
+<a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
+    <a class='toc_level1' href="#toc0001">Program design</a><br />
+        <a class='toc_level2' href="#toc0002">The Model-View-Controller architecture</a><br />
+            <a class='toc_level3' href="#toc0003">Description</a><br />
+            <a class='toc_level3' href="#toc0004">wxWidgerts classes for supporting the MVC model</a><br />
+            <a class='toc_level3' href="#toc0005">LenMus implementation of the MVC model</a><br />
+    <a class='toc_level1' href="#toc0006">Miscellaneous notes</a><br />
+        <a class='toc_level2' href="#toc0007">Where to place the controller</a><br />
+        <a class='toc_level2' href="#toc0008">Problems to separate the View from the Controller</a><br />
+        <a class='toc_level2' href="#toc0009">lmScoreCommands</a><br />
+        <a class='toc_level2' href="#toc0010">Design tips</a><br />
+
+
+
+
+<h2 class='article'>Program design<a name="toc0001"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<h3 class='article'>The Model-View-Controller architecture<a name="toc0002"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<h4 class='article'>Description<a name="toc0003"></a></h4>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+<p class='justified'>The Model-View-Controller (MVC) architecture uses three kinds of objects:</p>
+
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li>The Model is the document object, that is, encapsulates the domain-specific representation of the information on which the application operates, as well as its functionality (domain logic).</li>
+<li>The View is its screen representation. Obtains data from the model and presents it to the user.</li>
+<li>The controller defines the way the user interface reacts to user input. Receives and translates input to requests on the model or the view.</li></ol><div></p>
+
+<p class='justified'>MVC decouples these parts to reduce the complexity in architectural design and to increase flexibility and reuse. The control flow generally works as follows:</p>
+
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li>The user interacts with the GUI in some way (e.g., presses a button).</li>
+<li>A controller handles the input events from the user interface.</li>
+<li>The controller accesses the model, possibly updating it in a way appropriate to the user&#039;s action.</li>
+<li>A view uses the model (indirectly) to generate an appropriate user interface. The view gets its own data from the model. The model has no direct knowledge of the view. </li>
+<li>The user interface waits for further user interactions, which begins the cycle anew.</li></ol><div></p>
+    
+<p class='justified'>The views and the model are coupled by establishing a subscribe/notify protocol between them.</p>
+
+<p class='justified'>A view must ensure that its appearance reflects the state of the model. Whenever the model&#039;s data changes, the model notifies views that depend on it. In response, each view gets an opportunity to update itself. This approach lets you attach multiple views to a model to provide different presentations. You can also create new views for a model without rewriting it.</p>
+
+
+
+<h4 class='article'>wxWidgerts classes for supporting the MVC model<a name="toc0004"></a></h4>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>The wxWidgets framework doesn&#039;t implement the MVC model but the Document-View (DV) model. The DC model is similar to the MVC model. The Document is equivalent to the Model and the View and the Controller are merged into a single object: the View. wxWidgets has several classes to support the doc/view model:</p>
+
+<p class='justified'>wxDocument
+    The&#039; document&#039;. Models an application&#039;s file-based data. A range of menu commands -* such as open, save, save as -* are supported automatically. The concept of multiple views onto the same data is supported.</p>
+  
+<p class='justified'>wxView
+    The &#039;View-Controller&#039;. Models the viewing and editing component of an application&#039;s file-based data.</p>
+    
+<p class='justified'>wxDocTemplate
+    Models the relationship between a document class and a view class. The application creates a document template object for each document/view pair. The list of document templates managed by the wxDocManager instance is used to create documents and views. Each document template knows what file filters and default extension are appropriate for a document/view combination, and how to create a document or view. If you had two views of the data -* graphical, and a list of the segments -* then you would create one document class DoodleDocument, and two view classes (DoodleGraphicView and DoodleListView). You would also need two document templates, one for the graphical view and another for the list view.</p>
+
+<p class='justified'>wxDocManager
+    Coordinates documents, views and document templates.</p> 
+    
+<p class='justified'>wxCommand
+    It is a base class for modelling an application command, which is an action usually performed by selecting a menu item, pressing a toolbar button or any other means provided by the application to change the data or view.</p>
+
+    <p class='justified'>Instead of the application functionality being scattered around switch statements and functions in a way that may be hard to read and maintain, the functionality for a command is explicitly represented as an object which can be manipulated by a framework or application. When a user interface event occurs, the application submits a command to a wxCommandProcessor object to execute and store.</p>
+
+<p class='justified'>wxCommandProcessor
+    It is a class that maintains a history of wxCommand instances, with undo/redo functionality built-in. The wxWidgets framework takes care of calling Undo and Do functions as appropriate, so long as the wxID_UNDO and wxID_REDO menu items are defined in the view menu.</p>
+    
+<p class='justified'>wxFileHistory
+    Encapsulates functionality to record the last few files visited, and to allow the user to quickly load these files using the list appended to the File menu. It is used by wxDocManager,</p> 
+
+
+
+<h4 class='article'>LenMus implementation of the MVC model<a name="toc0005"></a></h4>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>LenMus follows the traditional Model-View-Controller design pattern. It is modelled by three abstract classes:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><b>lmView</b> (wxView) <br />
+      Abstract class from which all views must derive</li>
+<li><b>lmController</b> (wxWindow) <br />
+      Abstract class from which all controllers must derive. It is defined in file app/ScoreCanvas.h</li>
+<li><b>wxDocument</b> <br />
+      wxWidgets abstract class from which all models (documents) must derive</li></ul><div></p>
+
+
+<p class='justified'>For score edition, the following specific classes are created:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>The View is <b>lmScoreView</b> (derived from lmView). To render the view two more classes are involved:</li>
+<div class="itemizedlist"><ul type="disc">
+<li>lmEditFrame <SPAN class="larger">&#8594;</SPAN> (lmMDIChildFrame <SPAN class="larger">&#8594;</SPAN> wxPanel)
+            The frame on which we are going to place all windows an controls to render the view. There are several controls (scroll bars and rules) and a window (the lmScoreCanvas).</li>
+<li>lmScoreCanvas (lmController) <SPAN class="larger">&#8594;</SPAN> 
+            The window on which the score is going to be rendered.</li></ul><div></ul><div></p>
+            
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>The Model is <b>lmScoreDoc</b>. It contains the score to be rendered and a few additional data. [This class will be, in a near future, removed and replaced directly by lmScore].</li></ul><div></p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>The Controller is <b>lmScoreCanvas</b>. Derives from lmController. All interaction with the document takes place by issuing &#039;commands&#039; modelled by class <b>lmScoreCommand</b>.
+    Class lmScoreCommand derives from wxCommand).</li></ul><div></p>
+
+
+<p class='justified'>For exercises, the involved classes are:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>The View is <b>lmScoreAuxCtrol</b>: A window on which a music score is rendered. No direct interaction with the score is allowed (except Play/Stop/Zoom), that is, it is just a display control.</li></ul><div></p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>The Model is <b>lmScore</b>: the score to be rendered.</li></ul><div></p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>User interaction takes place through the lmHtmlWindow (the container of the lmScoreAuxCtrol), so the controller is in it or in its containers classes (lmBookFrame, lmTextBookContrller).</li></ul><div></p>
+
+<p class='justified'>For future exercises, in which user must interact with the score to add notes (i.e. harmony exercises), this model has to be changed as follows:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Probably, this is the right time to join lmScoreDoc and lmScore. to have a single &#039;Document&#039; object.</li>
+<li>Transform lmScoreAuxCtrol into a canvas</li>
+<li>Modify lmScoreView to be an abstract View. Derive two classes:
+        lmPaperScoreView (current lmScoreView functionality: scroll bars, paper image)
+        lmExerciseScoreView (current lmScoreAuxCtrol: no scrolling, no paper image)</li>
+<li>For each specific exercise use a different controller to limit interaction as necessary for the exercise.</li></ul><div></p>
+
+
+
+
+
+
+
+<h2 class='article'>Miscellaneous notes<a name="toc0006"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+
+
+<h3 class='article'>Where to place the controller<a name="toc0007"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+    <p class='justified'>User interacts with the GUI: the score canvas, any of its containers (lmEditFrame, lmMainFrame), other windows on the GUI (lmToolsBox), hardware devices (keyboard, MIDI devices), mouse interaction with the GUI (menubars, toolbars, tools box, etc), mouse interaction with the view, etc.</p>
+    
+    <p class='justified'>All events coming from all these sources should be send to a single point: the controller. But the problem is where to place it. In the view? In the canvas? In a specific controller class?</p>
+    
+    <p class='justified'>By analysing how user events are processed, we can see that interaction (except mouse interaction with the view) can be managed by a an external controller who will receive all events. For mouse interaction with the view it is necessary to deal with it in the view, since only the view can give meaning to the interaction, and get information about the affected objects and the type of interaction. Once we have this information two strategies are possible:</p>
+    
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li>The view sends a command to the CommanProcessor, or</li>
+<li>The view asks the controller to sent the command.</li></ol><div></p>
+    
+    <p class='justified'>The first alternative leads to the combined ViewController class. Therefore, the second alternative is better as it is up to the particular controller instance to process the command (by sending it) or to ignore it.</p>
+    
+    <p class='justified'>Now the question is: create a controller class or use the canvas as controller? I experimented by creating a specific controller class but after creating it I realized that:</p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>all events from the canvas will have to be redirected to the controller</li>
+<li>the controller needs an event handler but, as it is not a window, it doesn&#039;t have one. So to give a handler it will have to be derived fro wxEvtHandler.</li>
+<li>the canvas has nothing to do but to redirect events to the controller. Moreover, the canvas is a window and therefore, has an event controller without having to define it and to place it in the handlers chain.</li></ul><div></p>
+        
+   <p class='justified'>If we add to this list that creating an specific class controller means another class to create an manage, the conclusion taken was to use the canvas as controller.</p>
+   
+   <p class='justified'>Therefore, the controller plays an additional role: it is the window used by the view to render the document.</p>
+   
+   
+   
+
+<h3 class='article'>Problems to separate the View from the Controller<a name="toc0008"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>wxDocManager knows nothing about the controller. It only informs about the view. Therefore, it must be the view who informs about the controller in use. And the controller to use should be a parameter in the view constructor.</li></ul><div></p>
+
+
+
+<h3 class='article'>lmScoreCommands<a name="toc0009"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>Two types of commands: those that affect the document (score) and those that affect only the graphical model (i.e. select an object).</p>
+
+
+
+
+<h3 class='article'>Design tips<a name="toc0010"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Model <br />
+      Since the model must be independent, it cannot hold direct instance variables that refer to the view or the controller. It passively supplies its services and data to the other layers of the application.<br /><br />
+      The model must define a change notification mechanism, typically using the Observer pattern. This allows unrelated view and controller components to be notified when the model has changed. Because these components register themselves with the model and the model has no knowledge of any specific view or controller, this does not break the independence of the model. </li>
+<li>View
+      The view has free access to the model, but should not change the state of the model. Views are read only representations of the state of the model. The view reads data from the model using query methods provided by the model.<br /><br /> 
+      The view should register itself to receive notifications when the model changes, and the view can then present a more up to date version of the model.</li>
+<li>Controller<br />
+      The controllers are typically responsible for calling methods on the model that change the state of the model. This state change is then reflected in the view via the change propagation mechanism.<br /><br />
+      The controller is NOT a mediator between the view and the model. The controller does not sit in between the model and the view. Both the controller and the view have equal opportunity to access the model. The controller does not copy data values from the model to the view, although it may place values in the model and tell the view that the model has changed.<br /><br />
+      MVC also lets you change the way a view responds to user input without changing its visual presentation. You might want to change the way it responds to the keyboard, for example, or have it use a pop-up menu instead of command keys. MVC encapsulates the response mechanism in a Controller object. There is a class hierarchy of controllers, making it easy to create a new controller as a variation on an existing one.<br /><br />
+      A view uses an instance of a Controller subclass to implement a particular response strategy; to implement a different strategy, simply replace the instance with a different kind of controller. It&#039;s even possible to change a view&#039;s controller at run-time to let the view change the way it responds to user input. For example, a view can be disabled so that it doesn&#039;t accept input simply by giving it a controller that ignores input events.</li></ul><div></p>
+
+<p class='justified'>In practice, the controllers are usually closely related to the view and there are difficulties for separating the view and the controller. This leads to the Document-View model, in which the View includes also the controller functionality. The task of separating the view and controller from a combined ViewController is not as crucial for a clean program.</p>
+
+<p class='justified'>The Command Pattern pattern is often used to structure the controller. A specific set of model/view interactions is encapsulated into a command object.</p>
+
+
+
+
+
+<hr class='copyright' />
+<a name="legal_notice">&nbsp;</a>
+<p class="copyright">
+Copyright &copy; 2008-2009 LenMus project
+</p>
+<p class="justified">
+This document is part of the LenMus project. LenMus endorses the ideas of free software, free
+education and free access to knowledge. Therefore,
+permission is granted to copy, distribute and/or modify this
+document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included with the program.
+</p>
+
+</body></html>

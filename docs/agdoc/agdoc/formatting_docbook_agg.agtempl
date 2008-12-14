@@ -1,0 +1,383 @@
+========== Variables ===============
+\tabwidth                [640px]
+
+\main_color              [#160801]
+\main_background         [#ffffff]
+\hr_color                [#583927]
+\toc_color               [#583927]
+\table_header_background [#d4d4d4]
+\table_background        [#f4f4f4]
+\code_background         [#f4f4f4]
+\code_main_color         [#130f00]
+\code_rem_color          [#4c8d00]
+\code_kw1_color          [#000d8e]
+\code_kw2_color          [#0075ca]
+\code_kw3_color          [#004645]
+\code_kw4_color          [#673517]
+\code_op_color           [#4a006d]
+\code_str_color          [#ab2500]
+\code_num_color          [#a74c3f]
+\mono_color              [#000070]
+\warning_background      [#fcf6f6]
+\warning_color           [#d05555]
+ote_background         [#f0fafa]
+ote_color              [#506580]
+\tip_background          [#fbfff6]
+\tip_color               [#68771e]
+\href_color              [#700000]
+\href_visited_color      [#85585d]
+
+\main_font               [verdana,tahoma]
+\mono_font               ["courier new", courier,mono]
+\main_font_size          [12px]
+\larger_font_size        [14px]
+\title_font_size         [28px]
+\subtitle_font_size      [20px]
+\h1_font_size            [26px]
+\h2_font_size            [20px]
+\h3_font_size            [16px]
+\h4_font_size            [14px]
+
+\main_padding            [5px]
+\less_padding            [3px]
+\table_margin            [5px]
+\cell_padding            [5px]
+\cell_spacing            [1px]
+
+
+
+
+
+================== Common Formatting ==============
+\singletons
+[ 
+    ----  hr
+    --    emdash
+    (C)   copy 
+    (R)   reg 
+    (TM)  trade
+    ...   hellip
+    ^o    deg
+    ^1    sup1
+    ^2    sup2
+    ^3    sup3
+    ~_    nbsp
+    +-    plusmn
+    <->   harr
+    <-    larr
+    ->    rarr
+]
+
+\pair_quotes
+[
+    '' sq
+    "" dq
+    << aq
+    >> aq
+    $$ m
+    ### code
+    ** b
+    ~~ i
+    *~ em
+    ~* em
+    __ u
+    ^^ sup
+    vv sub
+    == nobr
+    @@ label
+    @_ label0
+    _@ label0
+]
+
+\formatless_elements [code code0 m]
+
+\linking_keywords [http https ftp mailto]
+
+
+
+
+=========== Paragraph structurizer =========================
+\paragraph_structure_elements [root h1 h2 h3 h4 leftcolimg leftcol]
+\paragraphless_elements       [hr toc code code0 as_is imgc table title subtitle]
+\paragraph_br_style_elements  [p pl pr pc note tip warning]
+
+
+
+
+
+
+======== Mark-up Elements ==========
+\output_specific_replacements
+[
+    & amp
+    < lt
+    > gt
+    ' apos
+    " quot
+]
+
+
+\page_open 
+[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article lang="">
+]
+
+\page_close
+[
+</article>
+]
+
+\title_open     [<title>]
+\title_close    [</title>]
+
+\subtitle_open  [<subtitle>]
+\subtitle_close [<subtitle>]
+
+=========== Elelemts not supposed to appear in the output stream ========
+\suppress_output_elements [toc toc0 toc1 toc2 toc3 toc4]
+
+========= Formatting
+
+==== Paragraph (Justified by default)
+\p_open         [<para>]
+\p_close        [</para>]
+
+==== Paragraph Left
+\pl_open        [<para>]
+\pl_close       [</para>]
+
+==== Paragraph Right
+\pr_open        [<para>]
+\pr_close       [</para>]
+
+==== Paragraph Center
+\pc_open        [<para>]
+\pc_close       [</para>]
+
+\b_open         [<B>]          ==== Bold
+\b_close        [</B>]
+
+\i_open         [<I>]          ==== Italic
+\i_close        [</I>]
+
+\em_open        [<emphasis>]       ==== Emphasized
+\em_close       [</emphasis>]
+
+\u_open         [<U>]          ==== Underline
+\u_close        [</U>]
+
+\sq_open        [&#145;]       ==== Single quotes
+\sq_close       [&#146;]
+
+\dq_open        [&#147;]       ==== Double quotes
+\dq_close       [&#148;]
+
+\aq_open        [&#171;]       ==== Angle quotes
+\aq_close       [&#187;]
+
+\m_open         [<literal>]       ==== Monospaced
+\m_close        [</literal>]
+
+\sub_open       [<SUB>]        ==== Subscript
+\sub_close      [</SUB>]
+
+\sup_open       [<SUP>]        ==== Superscript
+\sup_close      [</SUP>]
+
+\nobr_open      [<NOBR>]       ==== No break
+\nobr_close     [</NOBR>]
+
+==== Simple formatting elements
+
+\amp_open       [&amp;]        
+\lt_open        [&lt;]
+\gt_open        [&gt;]
+\apos_open      [&#039;]
+\quot_open      [&quot;]
+\br_open        []
+\hr_open        [<TABLE width="$(tabwidth)"><TR><TD><HR color="#3399ff"/></TD></TR></TABLE>]
+\emdash_open    [<SPAN class="larger">&#151;</SPAN>]
+\copy_open      [<SPAN class="larger">&#169;</SPAN>]
+\reg_open       [<SPAN class="larger">&#174;</SPAN>]
+\trade_open     [<SPAN class="larger">&#153;</SPAN>]
+\hellip_open    [<SPAN class="larger">&#133;</SPAN>]
+\deg_open       [<SPAN class="larger">&#176;</SPAN>]
+\sup1_open      [<SUP>1</SUP>]
+\sup2_open      [<SUP>2</SUP>]
+\sup3_open      [<SUP>3</SUP>]
+\nbsp_open      [&#160;]
+\plusmn_open    [&#177;]
+\larr_open      [&#8592;] leftwards arrow,  U+2190 ISOnum
+\rarr_open      [&#8594;] rightwards arrow, U+2192 ISOnum
+\harr_open      [&#8596;] left right arrow, U+2194 ISOamsa
+
+\label_open     [<A name="$(this.attr)"><B>] ==== Label
+\label_close    [</B></A>]
+
+\label0_open    [<A name="$(this.attr)"><B>] ==== Invisible label
+\label0_close   [</B></A>]
+
+\href0_open     [<A href="$(this.attr)">] ==== External reference
+\href0_close    [</A>]
+
+\href_open      [<A href="$(this.attr)"><IMG src="$(root_rel)/link2.gif" border="0"/>] ==== External reference
+\href_close     [</A>]
+
+\download_open  [<A href="$(this.attr)"><IMG src="$(root_rel)/download.gif" border="0"/>] ==== Download reference
+\download_close [($(this.attr)) </A>]
+
+\toc_open       []
+\toc_close      []
+
+\toc0_open      []
+\toc0_close     []
+
+\toc1_open      []
+\toc1_close     []
+\h1_open        [<sect1><title>$(this.attr)</title>]
+\h1_close       [</sect1>]
+
+\toc2_open      []
+\toc2_close     []
+\h2_open        [<sect2><title>$(this.attr)</title>]
+\h2_close       [</sect2>]
+
+\toc3_open      []
+\toc3_close     []
+\h3_open        [<sect3><title>$(this.attr)</title>]
+\h3_close       [</sect3>]
+
+\toc4_open      []
+\toc4_close     []
+\h4_open        [<sect4><title>$(this.attr)</title>]
+\h4_close       [</sect4>]
+
+\code0_open     [<PRE>]
+\code0_close    [</PRE>]
+
+\code_open
+[
+<informalexample><programlisting>
+]
+\code_close
+[
+</programlisting></informalexample>
+]
+
+\as_is_open     [<TABLE width="$(tabwidth)" border="0" cellspacing="0" cellpadding="0"><TR><TD><PRE>]
+\as_is_close    [</PRE></TD></TR></TABLE>]
+
+\note_open      [<note>]
+\note_close     [</note>]
+
+\warning_open   [<warning>]
+\warning_close  [</warning>]
+
+\tip_open       [<TABLE class="tip" width="$(tabwidth)"><TR><TD><B>TIP</B><BR/>]
+\tip_close      [</TD></TR></TABLE>]
+
+\ul_open        [<itemizedlist>]
+\ul_close       [</itemizedlist>]
+
+\ol_open        [<orderedlist>]
+\ol_close       [</orderedlist>]
+
+\li_open        [<listitem>]
+\li_close       [</listitem>]
+
+\table_open     [<TABLE class="tbl" width="$(tabwidth)" border="0" cellspacing="$(cell_spacing)" cellpadding="$(cell_padding)">]
+\table_close    [</TABLE><FONT style="margin-left:1em"><I>$(this.attr)</I></FONT>]
+
+\tr_open        [<TR>]
+\tr_close       [</TR>]
+
+\thr_open       [<TR>]
+\thr_close      [</TR>]
+
+\th_open        [<TH>]
+\th_close       [</TH>]
+
+\td_open        [<TD>]
+\td_close       [</TD>]
+
+\tdr_open       [<TD style="text-align:right">]
+\tdr_close      [</TD>]
+
+\tdc_open       [<TD style="text-align:center">]
+\tdc_close      [</TD>]
+
+\tdj_open       [<TD style="text-align:justify">]
+\tdj_close      [</TD>]
+
+========= Images =============
+\img_open       
+[
+<imageobject>
+    <imagedata fileref="../figures/$(this.attr)" format="JPG"/>
+]
+\img_close
+[
+</imageobject>
+]
+
+
+\imgc_open      [<TABLE width="$(tabwidth)"><TR><TD><CENTER><IMG src="$(this.attr)" title="$(this.content)" border="0"/><BR/><I>]
+\imgc_close     [</I></CENTER></TD></TR></TABLE>]
+
+\imgl0_open     [<IMG src="$(this.attr)" title="$(this.content)" align="left" border="4" style="border-color:#FFFFFF"/><!--]
+\imgl0_close    [-->]
+
+\imgl_open      [<TABLE align="left"><TR><TD><CENTER><IMG src="$(this.attr)" title="$(this.content)" border="0"/></CENTER></TD></TR><TR><TD><I><CENTER>]
+\imgl_close     [</CENTER></I></TD></TR></TABLE>]
+
+\imgr0_open     [<IMG src="$(this.attr)" title="$(this.content)" align="right" border="4" style="border-color:#FFFFFF"/><!--]
+\imgr0_close    [-->]
+
+\imgr_open      [<TABLE align="right"><TR><TD><CENTER><IMG src="$(this.attr)" title="$(this.content)" border="0"/></CENTER></TD></TR><TR><TD><I><CENTER>]
+\imgr_close     [</CENTER></I></TD></TR></TABLE>]
+
+========= References =============
+\iref_file_open     [<A href="$(this.attr.file)">]
+\iref_file_close    [</A>]
+
+\iref_table_open    [<A href="$(this.attr.file)#$(this.attr.anchor)"><IMG src="$(root_rel)/table.gif" border="0"/>]
+\iref_table_close   [</A>]
+
+\iref_listing_open  [<A href="$(this.attr.file)#$(this.attr.anchor)">]
+\iref_listing_close [</A>]
+
+\iref_index_open    [<A href="$(this.attr.file)#$(this.attr.anchor)">]
+\iref_index_close   [</A>]
+
+\iref_figure_open   [<A href="$(this.attr.file)#$(this.attr.anchor)"><IMG src="$(root_rel)/figure.gif" border="0"/>]
+\iref_figure_close  [</A>]
+
+========= Code colorer elements =============
+\rem_open       []
+\rem_close      []
+
+\kw1_open       []
+\kw1_close      []
+
+\kw2_open       []
+\kw2_close      []
+
+\kw3_open       []
+\kw3_close      []
+
+\kw4_open       []
+\kw4_close      []
+
+\op_open        [] 
+\op_close       [] 
+
+\str_open       []
+\str_close      []
+
+\num_open       []
+\num_close      []
+
+\include [syntax_highlighting.agtempl]

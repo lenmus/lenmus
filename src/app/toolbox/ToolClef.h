@@ -38,6 +38,19 @@ class wxListBox;
 //--------------------------------------------------------------------------------
 // Group for clef type
 //--------------------------------------------------------------------------------
+
+//aux. class to contain clefs data
+class lmClefData
+{
+public:
+    lmClefData() {}
+    lmClefData(wxString name, lmEClefType type) : sClefName(name), nClefType(type) {}
+
+    wxString		sClefName;
+    lmEClefType		nClefType;
+};
+
+//class to implement to tool group
 class lmGrpClefType: public lmToolGroup
 {
 public:
@@ -49,15 +62,6 @@ public:
 
 	//event handlers
     void OnAddClef(wxCommandEvent& event);
-
-    //clefs data
-    typedef struct
-    {
-        wxString		sClefName;
-        lmEClefType		nClefType;
-
-    } lmClefData;
-
 
 private:
     void CreateControls(wxBoxSizer* m_pMainSizer);

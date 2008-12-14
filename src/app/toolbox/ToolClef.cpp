@@ -114,21 +114,33 @@ BEGIN_EVENT_TABLE(lmGrpClefType, lmToolGroup)
     EVT_BUTTON      (lmID_CLEF_ADD, lmGrpClefType::OnAddClef)
 END_EVENT_TABLE()
 
-static lmGrpClefType::lmClefData m_tClefs[] = {
-    { _("G clef on 2nd line"), lmE_Sol },
-    { _("F clef on 4th line"), lmE_Fa4 },
-    { _("F clef on 3rd line"), lmE_Fa3 },
-    { _("C clef on 1st line"), lmE_Do1 },
-    { _("C clef on 2nd line"), lmE_Do2 },
-    { _("C clef on 3rd line"), lmE_Do3 },
-    { _("C clef on 4th line"), lmE_Do4 },
-    { _("Percussion clef"), lmE_Percussion },
+enum {
+    lm_eNUM_CLEFS = 8,
 };
 
+static lmClefData m_tClefs[lm_eNUM_CLEFS];
+static bool m_fStringsInitialized = false;
 
 lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent)
 {
+    //load language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized)
+    {
+        //AWARE: When addign more clefs, update lm_eNUM_CLEFS;
+        m_tClefs[0] = lmClefData( _("G clef on 2nd line"), lmE_Sol );
+        m_tClefs[1] = lmClefData( _("F clef on 4th line"), lmE_Fa4 );
+        m_tClefs[2] = lmClefData( _("F clef on 3rd line"), lmE_Fa3 );
+        m_tClefs[3] = lmClefData( _("C clef on 1st line"), lmE_Do1 );
+        m_tClefs[4] = lmClefData( _("C clef on 2nd line"), lmE_Do2 );
+        m_tClefs[5] = lmClefData( _("C clef on 3rd line"), lmE_Do3 );
+        m_tClefs[6] = lmClefData( _("C clef on 4th line"), lmE_Do4 );
+        m_tClefs[7] = lmClefData( _("Percussion clef"), lmE_Percussion );
+        //
+        m_fStringsInitialized = true;
+    }
+
     CreateControls(pMainSizer);
 }
 
@@ -166,9 +178,8 @@ void lmGrpClefType::OnAddClef(wxCommandEvent& event)
 
 void lmGrpClefType::LoadClefList()
 {
-	int nMaxClefs = int( sizeof(m_tClefs) / sizeof(lmClefData) );
     m_pClefList->Clear();
-    for (int i=0; i < nMaxClefs; i++)
+    for (int i=0; i < lm_eNUM_CLEFS; i++)
     {
         m_pClefList->Append(wxEmptyString, 
                             GenerateBitmapForClefCtrol(m_tClefs[i].sClefName,

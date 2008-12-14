@@ -1,0 +1,47 @@
+=========== List of languages for coloring ==========
+\code [cpp vb js sql idl cs pas msil java perl xsl makefile]
+
+=========== cpp colorer syntax and keywords ==============
+\cpp_line_comments  [ // ]
+\cpp_block_comments [ /* */ ]
+\cpp_strings        [ " ' ]
+\cpp_string_mask    [ \ ]
+
+========== List of operators. Must be ordered by decreasing length of operators.
+========== Operators :: and : are excluded in order to collect labels and set cross-references
+\cpp_operators
+[ 
+    <<= >>=                                                   %%% Three-character operators
+    <= << >= >> == != &= && |= || += ++ -= -- *= /= %= ^=     %%% Two-character operators
+    = ! & | + - * / % ^ ( ) < > { } [ ] . , ; \               %%% Single-character operators
+] 
+
+\cpp_kw1 [align enum mutable struct __alignof __except naked __super allocate 
+explicit namespace super __asm extern new switch __assume false noinline template auto 
+__fastcall __noop this __based __finally noreturn thread  bool float nothrow throw break 
+for novtable true case __forceinline operator __try catch friends private try __cdecl goto 
+property typedef char if protected typeid class __inline __ptr64 typename const inline public 
+union const_cast __int16 register unsigned continue __int32 reinterpret_cast using declaration
+using directive __declspec __int64 return uuid default __int8 selectany __uuidof delete int 
+short virtual dllexport __interface signed __virtual_inheritance dllimport interface 
+__single_inheritance void do __leave sizeof volatile double long static_cast while 
+dynamic_cast __multiple_inheritance static wmain _tmain else main __stdcall asm auto bad_cast 
+bad_typeid bool break case catch char class const const_cast continue default delete do 
+double dynamic_cast else enum except explicit extern false finally float for friend goto if 
+inline int long mutable namespace new operator private protected public register 
+reinterpret_cast return short signed sizeof static static_cast struct switch template this 
+throw true try type_info typedef typeid typename union unsigned using virtual void volatile 
+while allocate __forceinline property __asm __inline selectany __based __int8 
+__single_inheritance __cdecl __int16 __stdcall __declspec __int32 thread dllexport __int64 
+__try dllimport __leave uuid __except __multiple_inheritance __uuidof __fastcall naked3 
+__virtual_inheritance __finally nothrow __asm __based __cdecl __declspec __except __fastcall 
+__finally __inline __int8 b__int16 __int32 __int64 __leave __multiple_inheritance 
+__single_inheritance __stdcall __try __uuidof __virtual_inheritance __abstract __box 
+__delegate __event __gc __identifier __interface __nogc __pin __property __sealed __try_cast 
+__typeof __value]
+
+\cpp_kw2 [#define #elif #else #endif #error #if #ifdef #ifndef #include #line #pragma #undef]
+
+\cpp_kw3 [] %%% The third group of keywords, highlighted with another style
+
+\cpp_kw4 [] %%% The fourth group of keywords, highlighted with another style

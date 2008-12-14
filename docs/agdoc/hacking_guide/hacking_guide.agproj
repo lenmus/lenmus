@@ -1,0 +1,10 @@
+\ext[.html]
+\outdir[output]
+\config[../agdoc/hacking_guide.agtempl]
+
+\process_dir[./; src=./src]
+{
+    \process_files [*.txt]
+}
+
+

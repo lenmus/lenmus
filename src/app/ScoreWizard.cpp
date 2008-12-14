@@ -116,35 +116,23 @@ static lmTitleData  m_Titles[lmNUM_TITLES];
 
 
 //info about templates ---------------------------
-typedef struct lmTemplateDataStruct
+class lmTemplateData
 {
+public:
+
+    lmTemplateData() {}
+    lmTemplateData(wxString name, wxString tpl, bool portrait) :
+        sName(name), sTemplate(tpl), fPortrait(portrait) {}
+
     wxString    sName;          //name to display
     wxString    sTemplate;      //associated template file
     bool        fPortrait;      //default paper orientation
-
-} lmTemplateData;
-
-static lmTemplateData m_Templates[] = {
-        //    Displayed name                Template                    Portrait
-        { _("Empty (manuscript paper)"),    _T(""),                     true },
-        { _("Brass quintet"),               _T("brass_quintet.lms"),    true },
-        { _("Brass trio"),                  _T("brass_trio.lms"),       true },
-        { _("Choir 4 voices (SATB)"),       _T("choir_SATB.lms"),       true },
-        { _("Choir SATB + piano"),          _T("choir_SATB_piano.lms"), true },
-        { _("Choir 3 voices (SSA)"),        _T("choir_SSA.lms"),        true },
-        { _("Choir SSA + piano"),           _T("choir_SSA_piano.lms"),  true },
-        { _("Flute"),                       _T("flute.lms"),            true },
-        { _("Guitar"),                      _T("guitar.lms"),           true },
-        { _("Piano"),                       _T("piano.lms"),            true },
-        { _("Violin and piano"),            _T("violin_piano.lms"),     true },
-        { _("Viola and piano"),             _T("viola_piano.lms"),      true },
-        { _("Cello and piano"),             _T("cello_piano.lms"),      true },
-        { _("String quartet"),              _T("string_quartet.lms"),   true },
-        { _("Violin"),                      _T("violin.lms"),           true },
-        { _("Trio sonata"),                 _T("trio_sonata.lms"),      true },
-        { _("Woodwind trio"),               _T("woodwind_trio.lms"),    true },
-        { _("Woodwind quintet"),            _T("woodwind_quintet.lms"), true },
 };
+
+#define lmNUM_TEMPLATES 18
+static lmTemplateData m_Templates[lmNUM_TEMPLATES];
+static bool m_fStringsInitialized = false;
+
 
 //template to use
 static const int m_nEmptyTemplate = 0;          //index to empty template (manuscript paper)
@@ -282,6 +270,35 @@ lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
     SetExtraStyle(GetExtraStyle() | wxWIZARD_EX_HELPBUTTON);
 
     m_pPtrScore = pPtrScore;
+
+    //load language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized)
+    {
+        //AWARE: When addign more templates, update lmNUM_TEMPLATES;
+        //                                  Displayed name                  Template                    Portrait
+        m_Templates[0] =  lmTemplateData( _("Empty (manuscript paper)"),    _T(""),                     true );
+        m_Templates[1] =  lmTemplateData( _("Brass quintet"),               _T("brass_quintet.lms"),    true );
+        m_Templates[2] =  lmTemplateData( _("Brass trio"),                  _T("brass_trio.lms"),       true );
+        m_Templates[3] =  lmTemplateData( _("Choir 4 voices (SATB)"),       _T("choir_SATB.lms"),       true );
+        m_Templates[4] =  lmTemplateData( _("Choir SATB + piano"),          _T("choir_SATB_piano.lms"), true );
+        m_Templates[5] =  lmTemplateData( _("Choir 3 voices (SSA)"),        _T("choir_SSA.lms"),        true );
+        m_Templates[6] =  lmTemplateData( _("Choir SSA + piano"),           _T("choir_SSA_piano.lms"),  true );
+        m_Templates[7] =  lmTemplateData( _("Flute"),                       _T("flute.lms"),            true );
+        m_Templates[8] =  lmTemplateData( _("Guitar"),                      _T("guitar.lms"),           true );
+        m_Templates[9] =  lmTemplateData( _("Piano"),                       _T("piano.lms"),            true );
+        m_Templates[10] = lmTemplateData( _("Violin and piano"),            _T("violin_piano.lms"),     true );
+        m_Templates[11] = lmTemplateData( _("Viola and piano"),             _T("viola_piano.lms"),      true );
+        m_Templates[12] = lmTemplateData( _("Cello and piano"),             _T("cello_piano.lms"),      true );
+        m_Templates[13] = lmTemplateData( _("String quartet"),              _T("string_quartet.lms"),   true );
+        m_Templates[14] = lmTemplateData( _("Violin"),                      _T("violin.lms"),           true );
+        m_Templates[15] = lmTemplateData( _("Trio sonata"),                 _T("trio_sonata.lms"),      true );
+        m_Templates[16] = lmTemplateData( _("Woodwind trio"),               _T("woodwind_trio.lms"),    true );
+        m_Templates[17] = lmTemplateData( _("Woodwind quintet"),            _T("woodwind_quintet.lms"), true );
+        //AWARE: When addign more templates, update lmNUM_TEMPLATES;
+        m_fStringsInitialized = true;
+    }
+
 
     //initialize default score configuration
 
@@ -438,6 +455,7 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
     }
     pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
+    pScore->SetOption(_T("Score.JustifyFinalBarline"), false);
 
 
     // Modify score with user options (paper size, margins, etc.)
@@ -584,8 +602,7 @@ bool lmScoreWizardLayout::Create(wxWizard* parent)
         // populate controls
 
     //available layouts
-    int nNumTemplates = sizeof(m_Templates) / sizeof(lmTemplateData);
-    for (int i=0; i < nNumTemplates; i++)
+    for (int i=0; i < lmNUM_TEMPLATES; i++)
         m_pLstEnsemble->Append( m_Templates[i].sName );
     m_pLstEnsemble->SetSelection(m_nSelTemplate);
 

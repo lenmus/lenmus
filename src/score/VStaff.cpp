@@ -526,6 +526,19 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
                                  int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
 								 bool fAutoBar)
 {
+    //some previous checks.
+    //
+    //if note in chord, its duration must be the same than the base note
+    if (pBaseOfChord && pBaseOfChord->GetNoteType() != nNoteType)
+    {
+        wxString sMsg = _("Error: Notes in a chord must have the same duration.");
+        lmErrorBox oEB(sMsg, _("Note insertion ignored."));
+        oEB.ShowModal();
+        return (lmNote*)NULL;
+    }
+
+
+    
     int nStaff = m_VCursor.GetNumStaff();
 
 	//get the applicable context

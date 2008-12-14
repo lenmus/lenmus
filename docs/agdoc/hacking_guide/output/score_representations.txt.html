@@ -1,0 +1,181 @@
+
+<html>
+<head>
+<title>Scores: internal representation</title>
+<meta http-equiv="Content-Type" content="text/html" />
+<link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
+</head>
+<body>
+
+<h1 class='article'>Scores: internal representation
+</h1>
+
+<p class="copyright">
+LenMus project (http://www.lenmus.org/)<br />
+<a href="#legal_notice">GNU Free Documentation License</a>
+</p>
+
+
+<a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
+    <a class='toc_level1' href="#toc0001">The 'Model' in the MVC architecture</a><br />
+    <a class='toc_level1' href="#toc0002">Score internal representation</a><br />
+        <a class='toc_level2' href="#toc0003">The Collection of StaffObjs (lmColStaffObjs)</a><br />
+    <a class='toc_level1' href="#toc0004">Application dependent representations</a><br />
+        <a class='toc_level2' href="#toc0005">Graphical: lmBoxes and lmShapes</a><br />
+        <a class='toc_level2' href="#toc0006">Play back</a><br />
+
+
+
+
+<h2 class='article'>The 'Model' in the MVC architecture<a name="toc0001"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>In the MVC architecture the Model is the document object. The Document encapsulates the domain-specific representation of the information on which the application operates, as well as its functionality (domain logic). And the Document must be independent: it cannot hold direct instance variables that refer to a view or a controller.</p>
+
+<p class='justified'>The LenMus program is, among others, a score editor. So the Documents are music scores. The Document must contain all the necessary information to render a score as it will be printed. Thus it must contain all positioning information, sizes, fonts, etc.</p>
+
+<p class='justified'>A design constraint was that the external representation of the Document should be human readible. Therefore, the Document has two representations:</p>
+
+ <p class='justified'>a) External representation<br />
+    The score is represented using the LDP language. Human readable. Easy to enter with a QWERTY keyboard.</p>
+
+ <p class='justified'>b) Internal representation<br />
+    The Document contains an internal representation, the lmScore, with all the information present in a LDP score but in a flexible and powerful format more suitable for processing.
+    <br />
+    Following the MVC architecture, this internal representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed. It is not oriented to any particular use (renderization, play back, <SPAN class="larger">&#133;</SPAN>) but try to serve all them equally.   In this way the document can serve to the purpose of any View: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in an lmScore object.
+    <br />
+    When a particular use is intended, the corresponding optimized representaion is derived from the lmScore. The following figure shows the application dependent representations currently managed by the program:</p>
+
+<TABLE width="640px" border="0" cellspacing="0" cellpadding="0"><TR><TD><pre>
+     lmScore ---+---- Interchange (MusicXML, LDP)
+                |
+                +---- Renderization (lmBoxScore and related classes)
+                |
+                +---- PlayBack (lmSoundEvents object Table )
+                |
+               ....
+</pre></TD></TR></TABLE>
+
+<p class='justified'>In order to optimize computer resources compsumtion (memory and processing time) the lmScore internal representation has hooks and data holders to structure and tie up the existing application dependent representation objects.</p>
+    
+
+<div class="important" style="margin-left: 0.5in; margin-right: 0.5in;">
+<table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25">
+<img alt="[Important]" src="images/important.png"></td>
+<th align="left">Important</th>
+</tr>
+<tr><td align="left" valign="top">
+
+    TODO: Verify and remove any limitation to have two or more simultaneous application representations of the same type (i.e. the score being simultaneously edited from two different windows)
+
+</td></tr>
+</table></div>
+
+    
+
+
+
+
+<h2 class='article'>Score internal representation<a name="toc0002"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>The score is represented by an object of class lmScore. The approach followed has been to capture the score structure by spliting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>A lmScore is, mainly, a collection of Instruments plus some data (composer, title, <SPAN class="larger">&#133;</SPAN>)</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>A lmInstrunent is a collection of VStaves plus some data (instrument name, MIDI assignement, <SPAN class="larger">&#133;</SPAN>)</li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>A lmVStaff is a collection of lmStaffObjs and a list of lmStaff</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>A lmStaff is a set of consecutive lines and spaces. It is represented by just some data
+    (num lines, spacing information, etc.) about how to render the VStaff. So the only
+    &#039;real&#039; object is the VStaff and all StaffObjs belong to it.</li></ul><div></p> 
+
+
+
+<h3 class='article'>The Collection of StaffObjs (lmColStaffObjs)<a name="toc0003"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>Bars are not modelled by objects. They are just the collection of lmStaffObj found between
+two lmStaffObj of type &#039;barline&#039; (and between the start of the score and the first barline).
+Nevertheless, tha concept of bar is very important at least in two situations:</p>
+
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li>In interpretation (playing back the score). For example:  play from bar #7</li></ol><div></p>
+    
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li>When rendering the score, as all the objects in a bar must be rendered together in
+       the same paper line.</li></ol><div></p>
+       
+<p class='justified'>Due to this, althoug the bar is not modelled as an object, there exits methods in the
+VStaff object to deal with bars.</p>
+
+<p class='justified'>The collection is composed mainly by two variables: a list containing the StaffObjs that
+form the collection and an array containing pointers to the StaffObjsList nodes
+where each measure start:</p>
+
+<div class="informalexample"><pre class="programlisting">
+    StaffObjsList   m_cStaffobjs;       //list of StaffObjs that belongs to this collection
+    wxArrayNodes    m_aStartMeasure;    //Node (lmStaffObj list) in which each measure starts
+
+</pre></div>
+
+
+<h2 class='article'>Application dependent representations<a name="toc0004"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+
+<h3 class='article'>Graphical: lmBoxes and lmShapes<a name="toc0005"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>For renderization the score is represented by an object of class lmBoxScore. The approach followed has been, again, to capture the structure by spliting the representation in containers (lmBoxes) and visible objects (lmShapes). For example, usually, a score is printed on several pages. A page contains lines of music (called &quot;systems&quot;). A system contains one or more staves. Finally, a staff contains objects (notes, rests, barlines, etc.).</p>
+
+<p class='justified'>This model is described in chapter <a href="graphical_model.txt.html">&#039;The Graphical model&#039;</a>.</p>  
+
+
+<h3 class='article'>Play back<a name="toc0006"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+<p class='justified'>It is represented by a lmSoundEvents table.</p>
+
+
+
+
+
+
+
+<hr class='copyright' />
+<a name="legal_notice">&nbsp;</a>
+<p class="copyright">
+Copyright &copy; 2008-2009 LenMus project
+</p>
+<p class="justified">
+This document is part of the LenMus project. LenMus endorses the ideas of free software, free
+education and free access to knowledge. Therefore,
+permission is granted to copy, distribute and/or modify this
+document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included with the program.
+</p>
+
+</body></html>
