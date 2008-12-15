@@ -147,8 +147,11 @@ void lmGrpBarlines::OnAddBarline(wxCommandEvent& event)
 	WXUNUSED(event);
 	int iB = m_pBarlinesList->GetSelection();
     lmController* pSC = GetMainFrame()->GetActiveController();
-    pSC->InsertBarline(tBarlinesDB[iB].nBarlineType);
+    if (pSC)
+    {
+        pSC->InsertBarline(tBarlinesDB[iB].nBarlineType);
 
-    //return focus to active view
-    GetMainFrame()->SetFocusOnActiveView();
+        //return focus to active view
+        GetMainFrame()->SetFocusOnActiveView();
+    }
 }

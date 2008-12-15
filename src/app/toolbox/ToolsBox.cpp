@@ -216,7 +216,8 @@ void lmToolBox::OnButtonClicked(wxCommandEvent& event)
 	SelectToolPage((lmEToolPage)(event.GetId() - ID_BUTTON));
 
 	//lmController* pController = g_pTheApp->GetActiveController();
-	//pController->SetCursor(*wxCROSS_CURSOR);
+    //if (pController)
+	//  pController->SetCursor(*wxCROSS_CURSOR);
     //wxLogMessage(_T("[lmToolBox::OnButtonClicked] Tool %d selected"), m_nSelTool);
 }
 

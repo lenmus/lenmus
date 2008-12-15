@@ -391,7 +391,7 @@ const wxString& GetBarlineName(lmEBarline nBarlineType)
         m_sBarlineName[lm_eBarlineEnd] = _("Final barline");
         m_sBarlineName[lm_eBarlineStartRepetition] = _("Start repetition");
         m_sBarlineName[lm_eBarlineEndRepetition] = _("End repetition");
-        m_sBarlineName[lm_eBarlineStart] = _("Star barline");
+        m_sBarlineName[lm_eBarlineStart] = _("Start barline");
         m_sBarlineName[lm_eBarlineDoubleRepetition] = _("Double repetition");
         fStringsLoaded = true;
     }

@@ -170,10 +170,13 @@ void lmGrpClefType::OnAddClef(wxCommandEvent& event)
 	WXUNUSED(event);
 	int iC = m_pClefList->GetSelection();
     lmController* pSC = GetMainFrame()->GetActiveController();
-    pSC->InsertClef(m_tClefs[iC].nClefType);
+    if (pSC)
+    {
+        pSC->InsertClef(m_tClefs[iC].nClefType);
 
-    //return focus to active view
-    GetMainFrame()->SetFocusOnActiveView();
+        //return focus to active view
+        GetMainFrame()->SetFocusOnActiveView();
+    }
 }
 
 void lmGrpClefType::LoadClefList()
@@ -247,7 +250,8 @@ void lmGrpTimeType::OnButton(wxCommandEvent& event)
 {
 	int iB = event.GetId() - lmID_BT_TimeType;
     lmController* pSC = GetMainFrame()->GetActiveController();
-    pSC->InsertTimeSignature(m_tButtons[iB].nBeats, m_tButtons[iB].nBeatType);
+    if (pSC)
+        pSC->InsertTimeSignature(m_tButtons[iB].nBeats, m_tButtons[iB].nBeatType);
 }
 
 
@@ -356,10 +360,13 @@ void lmGrpKeyType::OnAddKey(wxCommandEvent& event)
         nFifths = m_tMinorKeys[iK].nFifths;
 
     lmController* pSC = GetMainFrame()->GetActiveController();
-    pSC->InsertKeySignature(nFifths, fMajor);
+    if (pSC)
+    {
+        pSC->InsertKeySignature(nFifths, fMajor);
 
-    //return focus to active view
-    GetMainFrame()->SetFocusOnActiveView();
+        //return focus to active view
+        GetMainFrame()->SetFocusOnActiveView();
+    }
 }
 
 void lmGrpKeyType::LoadKeyList(int nType)
