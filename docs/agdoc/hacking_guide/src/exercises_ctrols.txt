@@ -1,0 +1,328 @@
+\include ../../agdoc/replacements
+
+\title    {eBooks: Including scores and exercises}
+
+\toc 
+
+\h1 {eBooks: Including scores and exercises}
+%%%-----------------------------------------------------
+
+Currently, all eBook pages are html pages (but this is going to be changed in a near future). Usual html tags, such as table, p or h1, are directly processed and managed by class %%lmHtmlWindow%% (html/HtmlWindow.cpp), derived from %%wxHtmlWindow%%. See documentation in wxWidgets manual, article 'wxHTML overview', for information about wxHtmlWindow.
+ 
+Exercises and scores are included in the html source code by using <object> tags. As standard html renderization of an <object> tag generates nothing (html knows nothing about 'objects') the content of these <object> tags must be processed and rendered by 'plug-ins' added to the html parser and renderer. This section explain how exercises are implemented and how to implement a new exercise. 
+
+
+\h2 {Html embedded controls}
+%%%--------------------------------
+
+As said, exercises and scores are included in an html page by using <object> tags. To process these tags a 'tag handler' must be defined. This is coded in file html/Tags.cpp. When the html parser finds an <object> tag, control is passed to the corresponding tag handler and it takes responsibilitity for parsing the <object> tag parameters and generating the output.
+
+Exercises and scores (and in general any other 'widget' we would like to embed in an html page) will be named, in this documentation, as \i{html embedded controls} or, simply, as \i{Ctrols}. Each Ctrol is implemented by one specific class (whose name normally ends as 'Ctrol'), enclosing all the knowledge about redering the control and managing all user interaction with it.
+
+There is a terminology issue that you should know becuase it causes confussion at the beginning. 
+There are some auxiliary classes, whose name ends as 'Ctrol'. These classes doesn't implement Ctrols to be included in html code with an <object> tag. These AuxCtrol classes are in fact 'widgets' to be used to render Ctrols. Currently there are three:
+
+ 1. %%lmUrlAuxCtrol%% (in exercises/UrlAuxCtrol.cpp & .h): it is a class to display a URL link to be used in exercises and other Ctrols.
+ 
+ 2. %%lmCountersCtrol%% (in exercises/CounterCtrol.cpp & .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.
+ 
+ 3. %%lmScoreAuxCtrol%% (in exercises/ScoreAuxCtrol.cpp & .h): it is a widget to display a score, to be used in exercises.
+ 
+\tip
+{
+    To implement an exercise in which the user must interact with a score (i.e. entering notes) you should implement a class, similar to %%lmScoreAuxCtrol%%, but allowing score edition. Copy this class (with another name!) and start modifying and playing with it.
+}
+
+
+From an implementation point of view, a Ctrol is the main window that encloses all texts, buttons, links, etc. that form an exercise. And a AuxCtrol is one of these widgets. AuxCtrols generate events that must be processed by the main Ctrol window. Therefore, an AuxCtrol can not be included directly in html by using an <object> directive. It only can be included programatically inside a Ctrol.
+
+
+\h1 {Classes to implement a Ctrol}
+%%%-------------------------------
+
+All HTML embbedded controls derive from class %%lmEBookCtrol%% (in exercises/ExerciseCtrol.h). Currently there are two derived classes: %%lmExerciseCtrol%% (abstract) and %%lmScoreCtrol%%:
+
+ * Class %%lmExerciseCtrol%% is the base class for all exercises. It implements the common features that all exercises have and provides a common API to create new exercises.
+ 
+ * Class %%lmScoreCtrol%% is a very specific control to display a score in a text.
+ 
+ 
+The current hierarchy of HTML embbedded controls is as follows:
+
+\as_is
+{
+    lmEBookCtrol
+        |
+        +---lmExerciseCtrol
+        |       |
+        |       +---lmOneScoreCtrol (lmIdfyChord, lmIdfyScale, lmTheoInterval, 
+        |       |                    lmEarInterval,lmIdfyCadences)
+        |       |
+        |       +---lmCompareCtrol 
+        |               |
+        |               +---lmCompareScoresCtrol (lmEarCompareIntv)
+        |               |
+        |               +---lmCompareMidiCtrol (lmEarTunning)
+        |
+        +---lmScoreCtrol
+    
+}
+
+Class %%lmOneScoreCtrol%% is used for exercises that display an score and user must enter an answer. And class lmCompareCtrol is used in those exercises that have to display two scores and the user must choose one of them as the right answer.
+
+\tip
+{
+    To implement a new exercise control, you should analyse if you can derive it from %%lmOneScoreCtrol%% or from %%lmCompareCtrol%%. If the intended exercise doesn't fit on one of these two generic exercise types, you should create a new class derived from %%lmExerciseCtrol%%.
+}
+
+
+\h2 {object tag: classid and parameters}
+%%%--------------------------------------
+
+As said, a Ctrol gets included in an html page by usign an <object> tag. For example, study the following code taken from an eBook. This code includes in a text an exercise to identify cadences by ear:
+
+\code
+{
+<p>As an exercise you will hear a cadence and based on the sensation it provokes, 
+try to identify if the cadence is terminal or transient.</p>
+
+<p></p>
+
+<object type="Application/LenMus" classid="IdfyCadences" width="100%" height="300" border="0">
+   <param name="cadences" value="all">
+   <param name="cadence_buttons" value="terminal,transient">
+   <param name="mode" value="earTraining">
+</object>
+}
+
+Looking at <object> tag attributes you can notice the \i{classid} attribute. It defines the type of Ctrol to generate by the <object> tag. When implementinmg a new Ctrol, it is necessary to define a unique id for it. This id strings are defined in file html/Tags.cpp, in the TAG_HANDLER_PROC code. Currently, the following Ctrols are defined:
+
+\vbar_table[Table 1. classid for object tags; anchor=TAB1; class=simpletable]
+{
+\th{Ctrol                   || classid              }           
+    lmScoreCtrol            || Score
+    lmTheoIntervalsCtrol    || TheoIntervals
+    lmTheoKeySignCtrol      || TheoKeySignatures
+    lmEarIntervalsCtrol     || EarIntervals
+    lmEarCompareIntvCtrol   || EarCompareIntervals
+    lmIdfyChordCtrol        || IdfyChord   
+    lmIdfyScalesCtrol       || IdfyScales
+    lmIdfyCadencesCtrol     || IdfyCadences
+    lmTheoMusicReadingCtrol || TheoMusicReading
+}
+
+
+Parameters for the Ctrol are included by using <param> tags. Param tags have two attributes: name and value. Names and values are specific for each exercise but there are some that are common to all Ctrols. They are defined in class %%lmEBookCtrolParams%%, defined in html/ObjectParams.h & cpp.
+
+
+\h2 {Parsing and storing the parameters}
+%%%----------------------------------------
+
+During html parsing all parameters for a %%lmEBookCtrol%% are stored in an object derived from %%lmEBookCtrolParams%%:
+
+\as_is
+{
+    lmEBookCtrolParams
+        |
+        +---lmExerciseParams
+
+}
+
+Each Ctrol **must have** an associated class (the rule to name it is to add 'Parms' to the name of the Ctrol class. For instance, the Parms class associated to %%lmIdfyChordCtrol%% is %%lmIdfyChordCtrolParms%%).
+
+Base class %%lmEBookCtrolParams%% parses parameters common to all Ctrols, and derived class takes responsibility for parsing the specific parameters for that Ctrols. The Parms class also takes responsibility for storing all parameters and their values, assigning default values if no to non-specified options.
+
+
+\h2 {Generating the Ctrol}
+%%%-----------------------------------------------------------
+
+As said, there must exist a correspondence between Ctrol objects and CtrolParams objects.
+
+A Parm class have to implement two main methods:
+
+\code
+{
+    void AddParam(const wxHtmlTag& tag);
+    void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
+}
+
+The instance of the appropriate Parm class is created in TAG_HANDLER_PROC code. Once created and parameters parsed, TAG_HANDLER_PROC code invokes method %%CreateHtmlCell()%%. This method **must** be implemented on each Parm class and is responsible for creating and displaying the Ctrol.
+
+
+
+\h2 {Options and dialogs for exercise user options}
+%%%-------------------------------------------------
+
+Finally, to configure an exercise, it is possible to create a dialog to be displayed when the user clicks on the 'exercises options' link. There is no special abstract class to derive the dialog from and all of them derive from %%wxDialog%%.
+
+Options for the exercise are normally stored in an 'Options' class, derived from %%lmEBookCtrolOptions%%: 
+
+\as_is
+{
+    lmEBookCtrolOptions
+        |
+        +---lmExerciseOptions
+        |
+        +---lmScoreCtrolOptions
+
+}
+
+
+
+    
+\h1 {Guidelines to implement a new exercise Ctrol}
+%%%----------------------------------------------------
+    
+Let's assume that a new exercise type, named 'New Exercise', is going to be programmed. These are the steps to follow:
+
+ a) Create the needed files
+
+    * In /src/exercises/ create the exercises control files NewExerciseCtrol.cpp and .h.
+
+    * In /src/exercises/ create the constrains class NewExerciseConstrains.cpp and .h.
+
+    * In /src/html/ create the exercises params object NewExerciseCtrolParms.h
+        * Include the new control in /scr/html/Tags.cpp 
+        * Add #include "../exercises/NewExerciseCtrol.h" 
+        * Add #include "NewExerciseCtrolParms.h" 
+        * Modify enum EHtmlObjectTypes (located just before TAG_HANDLER_PROC(tag) ) to add a new item       eHO_Exercise_NewExercise 
+        * Modify TAG_HANDLER_PROC(tag) to take into account the new exercise (in two points) 
+        * Update documentation 
+
+    b) Create a page in an eBook to test the new control
+
+        * To test the new control you have to add a test page to a book, and define in it an <object> tag of the appropriate classid.
+
+
+    c) Design and implement code for the new exercise
+
+        * If necessary, design the GUI for the Ctrol using wxFormBuilder, but do not use the XRC subsystems to display the dialog. The preferred way is to generate the dialog using C++ code.
+
+
+
+\h1 {Annex: Brief description of current Ctrol classes}
+%%%---------------------------------------------------------------------
+
+\h2 {lmEBookCtrol class}
+%%%---------------------
+
+An abstract class for any kind of Ctrol included in an eBook. It just defines a generic interface.
+
+\code
+{
+     Event handlers for:
+        (opt)Button link:    (ID_LINK_GO_BACK, OnGoBackButton)
+        (opt)Button link:    (ID_LINK_PLAY, OnPlay)
+        (opt)Button link:    (ID_LINK_SETTINGS, OnSettingsButton)
+        Button link:    (ID_LINK_SEE_SOURCE, OnDebugShowSourceScore)
+        Button link:    (ID_LINK_DUMP, OnDebugDumpScore)
+        Button link:    (ID_LINK_MIDI_EVENTS, OnDebugShowMidiEvents)
+
+    Virtual pure:
+        CreateControls
+}
+
+\h2 {lmExerciseCtrol : public lmEBookCtrol}
+%%%--------------------------------------------------
+
+An abstract class for any kind of exercise included in an eBook. It adds event handlers to generate a new problem and to display the solution.
+    
+\code
+{
+    Event handlers for:
+        Button link:    (ID_LINK_NEW_PROBLEM, OnNewProblem)
+        (opt)Button link:    (ID_LINK_SOLUTION, OnDisplaySolution)
+   
+    Implements:
+        'CreateControls'
+} 
+   
+
+
+\h2 {lmStandardExercise : public lmExerciseCtrol}
+%%%--------------------------------------------------
+
+An abstract class to implement a typical exercise, having a window box to display the problem,  links to generate a new problem and to show the solution. Optionally, it can include an array of buttons to enter the answer and a counters aux.ctrol to show the score marks got by the user.
+
+\code
+{
+    - Standard layout:
+        Debug links
+        problem box (wxWindow)
+        (opt) counters
+        new problem, play, show solution links
+        (opt)answer buttons
+
+    Implements:
+        'CreateControls'
+        
+    Virtual pure:
+        'CreateAnswerButtons'
+        'CreateDebugLinks'
+}
+
+
+\h2 {lmOneScoreCtrol : public lmStandardExercise}
+%%%--------------------------------------------------
+
+Abstract class to implement exercises in which the problem is a score, ether displayed (theory exercises) or played back (aural training exercises)
+
+\code
+{
+    - One score, buttons to give the anser
+    - Problem box is lmScoreAuxCtrol
+    
+    Implements:
+        'CreateAnswerButtons'
+        'CreateDebugLinks'
+}
+    
+    
+\h2 {lmCompareCtrol : public lmStandardExercise}
+%%%--------------------------------------------------
+
+Abstract class to implement exercises in which the problem is two compare two scores, ether displayed (theory exercises) or played back (aural training exercises). It displays three buttons for answers.
+
+\code
+{
+    - An exercise to compare two things, usually two sounds.
+    - Three anser buttons: Fistr greater, Second greater, Both equal
+
+    Implements:
+        'CreateAnswerButtons'
+}
+
+
+\h2 {lmCompareScoresCtrol : public lmCompareCtrol}
+%%%--------------------------------------------------
+
+Similar to previous one, but having a third score to display the solution.
+
+\code
+{
+    - Two scores + optional solution score
+    - Problem box is lmScoreAuxCtrol
+
+    Implements:
+        'CreateDebugLinks'
+    
+    Event handlers for:
+        Button link:    (ID_LINK_SEE_SOURCE, OnDebugShowSourceScore)
+        Button link:    (ID_LINK_DUMP, OnDebugDumpScore)
+        Button link:    (ID_LINK_MIDI_EVENTS, OnDebugShowMidiEvents)
+}
+    
+    
+\h2 {lmCompareMidiCtrol : public lmCompareCtrol}
+%%%--------------------------------------------------
+
+This class is not yet finished. I started to develop it to include new autral training exercises and, in particular, a new exercise on tunning.
+
+\code
+{
+    - Two Midi sounds + problem text + solution text
+    - Problem box is wxStaticText
+    
+    Implements:
+        'CreateDebugLinks'
+}

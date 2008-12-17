@@ -699,9 +699,9 @@ table#translations_details  {
     font-weight: bold
 }
 
-/******************************/
-/***   Articles             ***/
-/******************************/
+/*****************************************/
+/***   Articles & agdoc generated code ***/
+/*****************************************/
 P.credits {
     margin-top: 1em;
     margin-bottom: 3em;
@@ -719,32 +719,41 @@ P.toc {
     font-weight: bold;
 }
 
-A.toc_level1 {
+a.toc_level1 {
+    display: block;
     margin-left: 5em;
     margin-top: 1em;
     margin-bottom: 0em;
     text-align: left;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 A.toc_level2 {
+    display: block;
     margin-left: 8em;
     margin-top: 0.5em;
     margin-bottom: 0em;
     text-align: left;
+    text-decoration: none;
 }
 
 A.toc_level3 {
+    display: block;
     margin-left: 11em;
     margin-top: 0em;
     margin-bottom: 0em;
     text-align: left;
+    text-decoration: none;
 }
 
 A.toc_level4 {
+    display: block;
     margin-left: 14em;
     margin-top: 0em;
     margin-bottom: 0em;
     text-align: left;
+    text-decoration: none;
 }
 
 HR.copyright {
@@ -809,9 +818,11 @@ P.justified {
     text-align:justify;
 }
 
-
 span.rem  {color:#4c8d00;}
-span.kw1  {color:#000d8e; font-weight: bold;}
+span.kw1  {
+    color:#000;
+    font-family: Courier, "Courier New", monospace;
+}
 span.kw2  {color:#0075ca;}
 span.kw3  {color:#004645;}
 span.kw4  {color:#673517;}

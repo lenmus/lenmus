@@ -1,0 +1,441 @@
+
+<html>
+<head>
+<title>eBooks: Including scores and exercises</title>
+<meta http-equiv="Content-Type" content="text/html" />
+<link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
+</head>
+<body>
+
+
+
+
+<h1 class='article'>eBooks: Including scores and exercises
+</h1>
+
+<p class="copyright">
+LenMus project (http://www.lenmus.org/)<br />
+<a href="#legal_notice">GNU Free Documentation License</a>
+</p>
+
+
+<a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
+    <a class='toc_level1' href="#toc0001">eBooks: Including scores and exercises</a>
+        <a class='toc_level2' href="#toc0002">Html embedded controls</a>
+    <a class='toc_level1' href="#toc0003">Classes to implement a Ctrol</a>
+        <a class='toc_level2' href="#toc0004">object tag: classid and parameters</a>
+        <a class='toc_level2' href="#toc0005">Parsing and storing the parameters</a>
+        <a class='toc_level2' href="#toc0006">Generating the Ctrol</a>
+        <a class='toc_level2' href="#toc0007">Options and dialogs for exercise user options</a>
+    <a class='toc_level1' href="#toc0008">Guidelines to implement a new exercise Ctrol</a>
+    <a class='toc_level1' href="#toc0009">Annex: Brief description of current Ctrol classes</a>
+        <a class='toc_level2' href="#toc0010">lmEBookCtrol class</a>
+        <a class='toc_level2' href="#toc0011">lmExerciseCtrol : public lmEBookCtrol</a>
+        <a class='toc_level2' href="#toc0012">lmStandardExercise : public lmExerciseCtrol</a>
+        <a class='toc_level2' href="#toc0013">lmOneScoreCtrol : public lmStandardExercise</a>
+        <a class='toc_level2' href="#toc0014">lmCompareCtrol : public lmStandardExercise</a>
+        <a class='toc_level2' href="#toc0015">lmCompareScoresCtrol : public lmCompareCtrol</a>
+        <a class='toc_level2' href="#toc0016">lmCompareMidiCtrol : public lmCompareCtrol</a>
+
+ 
+
+
+<h2 class='article'>eBooks: Including scores and exercises<a name="toc0001"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>Currently, all eBook pages are html pages (but this is going to be changed in a near future). Usual html tags, such as table, p or h1, are directly processed and managed by class <span class="kw1">lmHtmlWindow</span> (html/HtmlWindow.cpp), derived from <span class="kw1">wxHtmlWindow</span>. See documentation in wxWidgets manual, article &#039;wxHTML overview&#039;, for information about wxHtmlWindow.</p>
+ 
+<p class='justified'>Exercises and scores are included in the html source code by using &lt;object&gt; tags. As standard html renderization of an &lt;object&gt; tag generates nothing (html knows nothing about &#039;objects&#039;) the content of these &lt;object&gt; tags must be processed and rendered by &#039;plug-ins&#039; added to the html parser and renderer. This section explain how exercises are implemented and how to implement a new exercise.</p> 
+
+
+
+<h3 class='article'>Html embedded controls<a name="toc0002"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>As said, exercises and scores are included in an html page by using &lt;object&gt; tags. To process these tags a &#039;tag handler&#039; must be defined. This is coded in file html/Tags.cpp. When the html parser finds an &lt;object&gt; tag, control is passed to the corresponding tag handler and it takes responsibilitity for parsing the &lt;object&gt; tag parameters and generating the output.</p>
+
+<p class='justified'>Exercises and scores (and in general any other &#039;widget&#039; we would like to embed in an html page) will be named, in this documentation, as <i>html embedded controls</i> or, simply, as <i>Ctrols</i>. Each Ctrol is implemented by one specific class (whose name normally ends as &#039;Ctrol&#039;), enclosing all the knowledge about redering the control and managing all user interaction with it.</p>
+
+<p class='justified'>There is a terminology issue that you should know becuase it causes confussion at the beginning. 
+There are some auxiliary classes, whose name ends as &#039;Ctrol&#039;. These classes doesn&#039;t implement Ctrols to be included in html code with an &lt;object&gt; tag. These AuxCtrol classes are in fact &#039;widgets&#039; to be used to render Ctrols. Currently there are three:</p>
+
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li><span class="kw1">lmUrlAuxCtrol</span> (in exercises/UrlAuxCtrol.cpp &amp; .h): it is a class to display a URL link to be used in exercises and other Ctrols.</li></ol><div></p>
+ 
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li><span class="kw1">lmCountersCtrol</span> (in exercises/CounterCtrol.cpp &amp; .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.</li></ol><div></p>
+ 
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li><span class="kw1">lmScoreAuxCtrol</span> (in exercises/ScoreAuxCtrol.cpp &amp; .h): it is a widget to display a score, to be used in exercises.</li></ol><div></p>
+ 
+<TABLE class="tip" width="640px"><TR><TD><B>TIP</B><BR/>
+    To implement an exercise in which the user must interact with a score (i.e. entering notes) you should implement a class, similar to <span class="kw1">lmScoreAuxCtrol</span>, but allowing score edition. Copy this class (with another name!) and start modifying and playing with it.
+</TD></TR></TABLE>
+
+
+<p class='justified'>From an implementation point of view, a Ctrol is the main window that encloses all texts, buttons, links, etc. that form an exercise. And a AuxCtrol is one of these widgets. AuxCtrols generate events that must be processed by the main Ctrol window. Therefore, an AuxCtrol can not be included directly in html by using an &lt;object&gt; directive. It only can be included programatically inside a Ctrol.</p>
+
+
+
+<h2 class='article'>Classes to implement a Ctrol<a name="toc0003"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>All HTML embbedded controls derive from class <span class="kw1">lmEBookCtrol</span> (in exercises/ExerciseCtrol.h). Currently there are two derived classes: <span class="kw1">lmExerciseCtrol</span> (abstract) and <span class="kw1">lmScoreCtrol</span>:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Class <span class="kw1">lmExerciseCtrol</span> is the base class for all exercises. It implements the common features that all exercises have and provides a common API to create new exercises.</li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Class <span class="kw1">lmScoreCtrol</span> is a very specific control to display a score in a text.</li></ul><div></p>
+ 
+ 
+<p class='justified'>The current hierarchy of HTML embbedded controls is as follows:</p>
+
+<TABLE width="640px" border="0" cellspacing="0" cellpadding="0"><TR><TD><pre>
+    lmEBookCtrol
+        |
+        +---lmExerciseCtrol
+        |       |
+        |       +---lmOneScoreCtrol (lmIdfyChord, lmIdfyScale, lmTheoInterval, 
+        |       |                    lmEarInterval,lmIdfyCadences)
+        |       |
+        |       +---lmCompareCtrol 
+        |               |
+        |               +---lmCompareScoresCtrol (lmEarCompareIntv)
+        |               |
+        |               +---lmCompareMidiCtrol (lmEarTunning)
+        |
+        +---lmScoreCtrol
+    
+</pre></TD></TR></TABLE>
+
+<p class='justified'>Class <span class="kw1">lmOneScoreCtrol</span> is used for exercises that display an score and user must enter an answer. And class lmCompareCtrol is used in those exercises that have to display two scores and the user must choose one of them as the right answer.</p>
+
+<TABLE class="tip" width="640px"><TR><TD><B>TIP</B><BR/>
+    To implement a new exercise control, you should analyse if you can derive it from <span class="kw1">lmOneScoreCtrol</span> or from <span class="kw1">lmCompareCtrol</span>. If the intended exercise doesn&#039;t fit on one of these two generic exercise types, you should create a new class derived from <span class="kw1">lmExerciseCtrol</span>.
+</TD></TR></TABLE>
+
+
+
+<h3 class='article'>object tag: classid and parameters<a name="toc0004"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>As said, a Ctrol gets included in an html page by usign an &lt;object&gt; tag. For example, study the following code taken from an eBook. This code includes in a text an exercise to identify cadences by ear:</p>
+
+<div class="informalexample"><pre class="programlisting">
+&lt;p&gt;As an exercise you will hear a cadence and based on the sensation it provokes, 
+try to identify if the cadence is terminal or transient.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;object type=&quot;Application/LenMus&quot; classid=&quot;IdfyCadences&quot; width=&quot;100%&quot; height=&quot;300&quot; border=&quot;0&quot;&gt;
+   &lt;param name=&quot;cadences&quot; value=&quot;all&quot;&gt;
+   &lt;param name=&quot;cadence_buttons&quot; value=&quot;terminal,transient&quot;&gt;
+   &lt;param name=&quot;mode&quot; value=&quot;earTraining&quot;&gt;
+&lt;/object&gt;
+</pre></div>
+
+<p class='justified'>Looking at &lt;object&gt; tag attributes you can notice the <i>classid</i> attribute. It defines the type of Ctrol to generate by the &lt;object&gt; tag. When implementinmg a new Ctrol, it is necessary to define a unique id for it. This id strings are defined in file html/Tags.cpp, in the TAG_HANDLER_PROC code. Currently, the following Ctrols are defined:</p>
+
+<A name="TAB1"><B></B></A><table class="simpletable">
+<th class="simpletable">Ctrol</th><th class="simpletable">classid</th>
+<tr class="simpletable"><td class="simpletable">lmScoreCtrol</td><td class="simpletable">Score</td></tr>
+<tr class="simpletable"><td class="simpletable">lmTheoIntervalsCtrol</td><td class="simpletable">TheoIntervals</td></tr>
+<tr class="simpletable"><td class="simpletable">lmTheoKeySignCtrol</td><td class="simpletable">TheoKeySignatures</td></tr>
+<tr class="simpletable"><td class="simpletable">lmEarIntervalsCtrol</td><td class="simpletable">EarIntervals</td></tr>
+<tr class="simpletable"><td class="simpletable">lmEarCompareIntvCtrol</td><td class="simpletable">EarCompareIntervals</td></tr>
+<tr class="simpletable"><td class="simpletable">lmIdfyChordCtrol</td><td class="simpletable">IdfyChord</td></tr>
+<tr class="simpletable"><td class="simpletable">lmIdfyScalesCtrol</td><td class="simpletable">IdfyScales</td></tr>
+<tr class="simpletable"><td class="simpletable">lmIdfyCadencesCtrol</td><td class="simpletable">IdfyCadences</td></tr>
+<tr class="simpletable"><td class="simpletable">lmTheoMusicReadingCtrol</td><td class="simpletable">TheoMusicReading</td></tr>
+</table><FONT style="margin-left:1em"><I>Table 1. classid for object tags</I></FONT>
+
+
+<p class='justified'>Parameters for the Ctrol are included by using &lt;param&gt; tags. Param tags have two attributes: name and value. Names and values are specific for each exercise but there are some that are common to all Ctrols. They are defined in class <span class="kw1">lmEBookCtrolParams</span>, defined in html/ObjectParams.h &amp; cpp.</p>
+
+
+
+<h3 class='article'>Parsing and storing the parameters<a name="toc0005"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>During html parsing all parameters for a <span class="kw1">lmEBookCtrol</span> are stored in an object derived from <span class="kw1">lmEBookCtrolParams</span>:</p>
+
+<TABLE width="640px" border="0" cellspacing="0" cellpadding="0"><TR><TD><pre>
+    lmEBookCtrolParams
+        |
+        +---lmExerciseParams
+
+</pre></TD></TR></TABLE>
+
+<p class='justified'>Each Ctrol <b>must have</b> an associated class (the rule to name it is to add &#039;Parms&#039; to the name of the Ctrol class. For instance, the Parms class associated to <span class="kw1">lmIdfyChordCtrol</span> is <span class="kw1">lmIdfyChordCtrolParms</span>).</p>
+
+<p class='justified'>Base class <span class="kw1">lmEBookCtrolParams</span> parses parameters common to all Ctrols, and derived class takes responsibility for parsing the specific parameters for that Ctrols. The Parms class also takes responsibility for storing all parameters and their values, assigning default values if no to non-specified options.</p>
+
+
+
+<h3 class='article'>Generating the Ctrol<a name="toc0006"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>As said, there must exist a correspondence between Ctrol objects and CtrolParams objects.</p>
+
+<p class='justified'>A Parm class have to implement two main methods:</p>
+
+<div class="informalexample"><pre class="programlisting">
+    void AddParam(const wxHtmlTag&amp; tag);
+    void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
+</pre></div>
+
+<p class='justified'>The instance of the appropriate Parm class is created in TAG_HANDLER_PROC code. Once created and parameters parsed, TAG_HANDLER_PROC code invokes method <span class="kw1">CreateHtmlCell()</span>. This method <b>must</b> be implemented on each Parm class and is responsible for creating and displaying the Ctrol.</p>
+
+
+
+
+<h3 class='article'>Options and dialogs for exercise user options<a name="toc0007"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>Finally, to configure an exercise, it is possible to create a dialog to be displayed when the user clicks on the &#039;exercises options&#039; link. There is no special abstract class to derive the dialog from and all of them derive from <span class="kw1">wxDialog</span>.</p>
+
+<p class='justified'>Options for the exercise are normally stored in an &#039;Options&#039; class, derived from <span class="kw1">lmEBookCtrolOptions</span>:</p> 
+
+<TABLE width="640px" border="0" cellspacing="0" cellpadding="0"><TR><TD><pre>
+    lmEBookCtrolOptions
+        |
+        +---lmExerciseOptions
+        |
+        +---lmScoreCtrolOptions
+
+</pre></TD></TR></TABLE>
+
+
+
+    
+
+<h2 class='article'>Guidelines to implement a new exercise Ctrol<a name="toc0008"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+    
+<p class='justified'>Let&#039;s assume that a new exercise type, named &#039;New Exercise&#039;, is going to be programmed. These are the steps to follow:</p>
+
+ <p class='justified'>a) Create the needed files</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>In /src/exercises/ create the exercises control files NewExerciseCtrol.cpp and .h.</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>In /src/exercises/ create the constrains class NewExerciseConstrains.cpp and .h.</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>In /src/html/ create the exercises params object NewExerciseCtrolParms.h</li>
+<div class="itemizedlist"><ul type="disc">
+<li>Include the new control in /scr/html/Tags.cpp </li>
+<li>Add #include &quot;../exercises/NewExerciseCtrol.h&quot; </li>
+<li>Add #include &quot;NewExerciseCtrolParms.h&quot; </li>
+<li>Modify enum EHtmlObjectTypes (located just before TAG_HANDLER_PROC(tag) ) to add a new item       eHO_Exercise_NewExercise </li>
+<li>Modify TAG_HANDLER_PROC(tag) to take into account the new exercise (in two points) </li>
+<li>Update documentation</li></ul><div></ul><div></p> 
+
+    <p class='justified'>b) Create a page in an eBook to test the new control</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>To test the new control you have to add a test page to a book, and define in it an &lt;object&gt; tag of the appropriate classid.</li></ul><div></p>
+
+
+    <p class='justified'>c) Design and implement code for the new exercise</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>If necessary, design the GUI for the Ctrol using wxFormBuilder, but do not use the XRC subsystems to display the dialog. The preferred way is to generate the dialog using C++ code.</li></ul><div></p>
+
+
+
+
+<h2 class='article'>Annex: Brief description of current Ctrol classes<a name="toc0009"></a></h2>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+
+<h3 class='article'>lmEBookCtrol class<a name="toc0010"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>An abstract class for any kind of Ctrol included in an eBook. It just defines a generic interface.</p>
+
+<div class="informalexample"><pre class="programlisting">
+     Event handlers for:
+        (opt)Button link:    (ID_LINK_GO_BACK, OnGoBackButton)
+        (opt)Button link:    (ID_LINK_PLAY, OnPlay)
+        (opt)Button link:    (ID_LINK_SETTINGS, OnSettingsButton)
+        Button link:    (ID_LINK_SEE_SOURCE, OnDebugShowSourceScore)
+        Button link:    (ID_LINK_DUMP, OnDebugDumpScore)
+        Button link:    (ID_LINK_MIDI_EVENTS, OnDebugShowMidiEvents)
+
+    Virtual pure:
+        CreateControls
+</pre></div>
+
+
+<h3 class='article'>lmExerciseCtrol : public lmEBookCtrol<a name="toc0011"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>An abstract class for any kind of exercise included in an eBook. It adds event handlers to generate a new problem and to display the solution.</p>
+    
+<div class="informalexample"><pre class="programlisting">
+    Event handlers for:
+        Button link:    (ID_LINK_NEW_PROBLEM, OnNewProblem)
+        (opt)Button link:    (ID_LINK_SOLUTION, OnDisplaySolution)
+   
+    Implements:
+        &#039;CreateControls&#039;
+</pre></div> 
+   
+
+
+
+<h3 class='article'>lmStandardExercise : public lmExerciseCtrol<a name="toc0012"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>An abstract class to implement a typical exercise, having a window box to display the problem,  links to generate a new problem and to show the solution. Optionally, it can include an array of buttons to enter the answer and a counters aux.ctrol to show the score marks got by the user.</p>
+
+<div class="informalexample"><pre class="programlisting">
+    - Standard layout:
+        Debug links
+        problem box (wxWindow)
+        (opt) counters
+        new problem, play, show solution links
+        (opt)answer buttons
+
+    Implements:
+        &#039;CreateControls&#039;
+        
+    Virtual pure:
+        &#039;CreateAnswerButtons&#039;
+        &#039;CreateDebugLinks&#039;
+</pre></div>
+
+
+
+<h3 class='article'>lmOneScoreCtrol : public lmStandardExercise<a name="toc0013"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>Abstract class to implement exercises in which the problem is a score, ether displayed (theory exercises) or played back (aural training exercises)</p>
+
+<div class="informalexample"><pre class="programlisting">
+    - One score, buttons to give the anser
+    - Problem box is lmScoreAuxCtrol
+    
+    Implements:
+        &#039;CreateAnswerButtons&#039;
+        &#039;CreateDebugLinks&#039;
+</pre></div>
+    
+    
+
+<h3 class='article'>lmCompareCtrol : public lmStandardExercise<a name="toc0014"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>Abstract class to implement exercises in which the problem is two compare two scores, ether displayed (theory exercises) or played back (aural training exercises). It displays three buttons for answers.</p>
+
+<div class="informalexample"><pre class="programlisting">
+    - An exercise to compare two things, usually two sounds.
+    - Three anser buttons: Fistr greater, Second greater, Both equal
+
+    Implements:
+        &#039;CreateAnswerButtons&#039;
+</pre></div>
+
+
+
+<h3 class='article'>lmCompareScoresCtrol : public lmCompareCtrol<a name="toc0015"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>Similar to previous one, but having a third score to display the solution.</p>
+
+<div class="informalexample"><pre class="programlisting">
+    - Two scores + optional solution score
+    - Problem box is lmScoreAuxCtrol
+
+    Implements:
+        &#039;CreateDebugLinks&#039;
+    
+    Event handlers for:
+        Button link:    (ID_LINK_SEE_SOURCE, OnDebugShowSourceScore)
+        Button link:    (ID_LINK_DUMP, OnDebugDumpScore)
+        Button link:    (ID_LINK_MIDI_EVENTS, OnDebugShowMidiEvents)
+</pre></div>
+    
+    
+
+<h3 class='article'>lmCompareMidiCtrol : public lmCompareCtrol<a name="toc0016"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>This class is not yet finished. I started to develop it to include new autral training exercises and, in particular, a new exercise on tunning.</p>
+
+<div class="informalexample"><pre class="programlisting">
+    - Two Midi sounds + problem text + solution text
+    - Problem box is wxStaticText
+    
+    Implements:
+        &#039;CreateDebugLinks&#039;
+</pre></div>
+
+
+<hr class='copyright' />
+<a name="legal_notice">&nbsp;</a>
+<p class="copyright">
+Copyright &copy; 2008-2009 LenMus project
+</p>
+<p class="justified">
+This document is part of the LenMus project. LenMus endorses the ideas of free software, free
+education and free access to knowledge. Therefore,
+permission is granted to copy, distribute and/or modify this
+document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included with the program.
+</p>
+
+</body></html>

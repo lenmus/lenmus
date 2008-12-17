@@ -17,16 +17,16 @@ LenMus project (http://www.lenmus.org/)<br />
 
 
 <a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
-    <a class='toc_level1' href="#toc0001">Program design</a><br />
-        <a class='toc_level2' href="#toc0002">The Model-View-Controller architecture</a><br />
-            <a class='toc_level3' href="#toc0003">Description</a><br />
-            <a class='toc_level3' href="#toc0004">wxWidgerts classes for supporting the MVC model</a><br />
-            <a class='toc_level3' href="#toc0005">LenMus implementation of the MVC model</a><br />
-    <a class='toc_level1' href="#toc0006">Miscellaneous notes</a><br />
-        <a class='toc_level2' href="#toc0007">Where to place the controller</a><br />
-        <a class='toc_level2' href="#toc0008">Problems to separate the View from the Controller</a><br />
-        <a class='toc_level2' href="#toc0009">lmScoreCommands</a><br />
-        <a class='toc_level2' href="#toc0010">Design tips</a><br />
+    <a class='toc_level1' href="#toc0001">Program design</a>
+        <a class='toc_level2' href="#toc0002">The Model-View-Controller architecture</a>
+            <a class='toc_level3' href="#toc0003">Description</a>
+            <a class='toc_level3' href="#toc0004">wxWidgerts classes for supporting the MVC model</a>
+            <a class='toc_level3' href="#toc0005">LenMus implementation of the MVC model</a>
+    <a class='toc_level1' href="#toc0006">Miscellaneous notes</a>
+        <a class='toc_level2' href="#toc0007">Commands to change an score</a>
+        <a class='toc_level2' href="#toc0008">Where to place the controller</a>
+        <a class='toc_level2' href="#toc0009">Problems to separate the View from the Controller</a>
+        <a class='toc_level2' href="#toc0010">Tips to separate the view from the controller</a>
 
 
 
@@ -123,9 +123,9 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>The View is <b>lmScoreView</b> (derived from lmView). To render the view two more classes are involved:</li>
 <div class="itemizedlist"><ul type="disc">
-<li>lmEditFrame <SPAN class="larger">&#8594;</SPAN> (lmMDIChildFrame <SPAN class="larger">&#8594;</SPAN> wxPanel)
+<li>lmEditFrame <span class="larger">&#8594;</span> (lmMDIChildFrame <span class="larger">&#8594;</span> wxPanel)
             The frame on which we are going to place all windows an controls to render the view. There are several controls (scroll bars and rules) and a window (the lmScoreCanvas).</li>
-<li>lmScoreCanvas (lmController) <SPAN class="larger">&#8594;</SPAN> 
+<li>lmScoreCanvas (lmController) <span class="larger">&#8594;</span> 
             The window on which the score is going to be rendered.</li></ul><div></ul><div></p>
             
 <p class='justified'><div class="itemizedlist"><ul type="disc">
@@ -171,7 +171,46 @@ LenMus project (http://www.lenmus.org/)<br />
 
 
 
-<h3 class='article'>Where to place the controller<a name="toc0007"></a></h3>
+<h3 class='article'>Commands to change an score<a name="toc0007"></a></h3>
+<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
+    hspace="2em" vspace="0"></a></p>
+
+
+
+<p class='justified'>Two types of commands: those that affect the document (score) and those that affect only the graphical model (i.e. select an object).</p>
+
+<p class='justified'>LenMus implementation requires that all edition commands are issued through an <span class="kw1">lmController</span>. If the view (<span class="kw1">lmScoreView</span>) or other class would like to change anything on a score, it must ask its associated <span class="kw1">lmController</span> to issue the necessary commands. This is a requirement imposed by the model-view-controller architecture.</p>
+    
+<p class='justified'>Therefore, <span class="kw1">lmScoreCanvas</span> (the controller) is responsible for issuing all score edition commands. For each specific command to execute, the controller creates a <span class="kw1">lmScoreCommand</span> derived class (<span class="kw1">lmCmdXxxxxxxxx</span>) implementing the desired command.</p>
+
+<p class='justified'><span class="kw1">lmScoreCommand</span> methods <span class="kw1">Do()</span> and <span class="kw1">Undo()</span> are then invoked by different mechanisms controlled by <span class="kw1">wxDocManager</span> and <span class="kw1">wxDocument</span> classes. For example, when issuing a <span class="kw1">wxCommnad</span>, method <span class="kw1">Do()</span> is invoked. This design is for supporting the implementation of undo/redo functionalities.</p>
+
+<p class='justified'>Methods <span class="kw1">Do()</span> and <span class="kw1">Undo()</span> interact with the score by issuing undoable commands (modelled by <span class="kw1">lmEditCmdXxxxxx</span> classes, all derived from <span class="kw1">lmEditCmd</span>). An <span class="kw1">lmEditCmd</span> can invoke others <span class="kw1">lmEditCmd</span>, and as long as the login order is correctly preserved, undo is automatic.</p>
+
+<p class='justified'>On its constructor, <span class="kw1">lmEditCmd</span> invokes the necessary methods to perform the desired action. In order to easily identify those methods designed to support the undo/redo mechanism, the name of all methods <b>in any class</b> are prefixed with &#145;Cmd_&#146; and &#145;UndoCmd_&#146;. <span class="kw1">lmEditCmd</span> classes must use only these methods supporting automatic undo/redo.</p>
+
+<p class='justified'>To specify the objects affected by a command the following alternatives are possible:</p>
+
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li>No need to specify object (i.e. changing paper size)</li>
+<li>To use current caret position.</li>
+<li>To specify a cursor.</li>
+<li>To use current selection</li>
+<li>To specify a selection</li>
+<li>To specify an object</li></ol><div></p>
+    
+<p class='justified'>Therefore, score commands could be classified in three gropus:</p>
+
+<p class='justified'><div class="orderedlist"><ol type="1">
+<li>No need to specify object (1)</li>
+<li>Operating on an object (2, 3, 4)</li>
+<li>Operating on a selection (5, 6)</li></ol><div></p>
+
+
+
+
+
+<h3 class='article'>Where to place the controller<a name="toc0008"></a></h3>
 <p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
     hspace="2em" vspace="0"></a></p>
 
@@ -202,7 +241,7 @@ LenMus project (http://www.lenmus.org/)<br />
    
    
 
-<h3 class='article'>Problems to separate the View from the Controller<a name="toc0008"></a></h3>
+<h3 class='article'>Problems to separate the View from the Controller<a name="toc0009"></a></h3>
 <p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
     hspace="2em" vspace="0"></a></p>
 
@@ -212,17 +251,7 @@ LenMus project (http://www.lenmus.org/)<br />
 
 
 
-<h3 class='article'>lmScoreCommands<a name="toc0009"></a></h3>
-<p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
-    hspace="2em" vspace="0"></a></p>
-
-
-<p class='justified'>Two types of commands: those that affect the document (score) and those that affect only the graphical model (i.e. select an object).</p>
-
-
-
-
-<h3 class='article'>Design tips<a name="toc0010"></a></h3>
+<h3 class='article'>Tips to separate the view from the controller<a name="toc0010"></a></h3>
 <p><a href="#TOC"><img src="images/top.png" width="35" height="19" align="right" border="0"
     hspace="2em" vspace="0"></a></p>
 

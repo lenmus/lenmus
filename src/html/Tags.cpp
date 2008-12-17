@@ -18,55 +18,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------------------
-/*  Controls embedded in HTML pages
-
-    Two types of embedded controls: html (Ctrol) and auxiliary (AuxCtrol).
-
-    A Ctrol can be included directly in html by using an <object> directive. Therefore
-    there must exist a correspondence between Ctrol objects and CtrolParams objects.
-    An AuxCtrol can not be included directly in html by using an <object> directive. It
-    only can be included programatically, either inside a Ctrol or by direct usage during
-    the construction of an HtmlCell.
-
-    Html controls enclose all the functionality. Are implemented as windows with all its
-    controls on it. So commnads for html controls are processed as events on that windows
-    (see TheoIntervalCtrol.cpp as an example) and there is no need to respond to
-    external commands.
-
-    Auxiliary controls implement sub-controls in html controls. They generate events to
-    be processed in the parent window.
-
-    @verbatim
-
-    Html Ctrols                                     AuxCtrols
-    ---------------------------------------         -------------------------------------
-    lmScoreCtrol : public wxWindow                  lmScoreAuxCtrol : public wxWindow
-    lmTheoIntervalsCtrol : public wxWindow          lmUrlAuxCtrol : public wxStaticText
-    lmTheoKeySignCtrol : public wxWindow            lmCountersCtrol : public wxWindow
-    lmEarIntervalsCtrol : public lmExerciseCtrol
-    lmEarCompareIntvCtrol : public lmExerciseCtrol
-    lmIdfyChordCtrol : public lmExerciseCtrol
-    lmTheoMusicReadingCtrol : public wxWindow
-    lmIdfyScalesCtrol : public wxWindow
-
-
-    <object type="Application/LenMus"> directives and param classes
-    -------------------------------------------------------------------------------------
-                                     lmEBookCtrolParams
-    classid="Score"                  lmScoreCtrolParams : public lmExerciseParams
-    classid="TheoIntervals"          lmTheoIntervalsCtrolParms : public lmExerciseParams
-    classid="TheoScales"             lmTheoScalesCtrolParms : public lmExerciseParams
-    classid="TheoKeySignatures"      lmTheoKeySignCtrolParms : public lmExerciseParams
-    classid="EarIntervals"           lmEarIntervalsCtrolParms : public lmExerciseParams
-    classid="EarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmExerciseParams
-    classid="IdfyChord"              lmIdfyChordCtrolParms : public lmExerciseParams
-    classid="IdfyScales"             lmIdfyScalesCtrolParms : public lmExerciseParams
-    classid="IdfyCadences"           lmIdfyCadencesCtrolParms : public lmExerciseParams
-
-*/
-
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 

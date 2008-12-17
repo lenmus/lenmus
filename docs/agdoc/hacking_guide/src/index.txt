@@ -26,5 +26,8 @@ Any help to structure, review, improve, etc. this document is welcome!.
     * \href0 [source_tree] {Program structure and source code organization}
     * \href0 [model_view_controller] {Model-View-Controller architecture}
     * \href0 [score_representations] {Scores: internal representation}
+    
+    * \href0 [exercises_ctrols] {eBooks: Including scores and exercises}
+    
 %%%    * \href0 [cursors] {Cursors and caret}
 

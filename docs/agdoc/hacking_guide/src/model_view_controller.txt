@@ -107,6 +107,39 @@ For future exercises, in which user must interact with the score to add notes (i
 
 
 
+\h2 {Commands to change an score}
+%%%-------------------------------------------
+
+Two types of commands: those that affect the document (score) and those that affect only the graphical model (i.e. select an object).
+
+LenMus implementation requires that all edition commands are issued through an %%lmController%%. If the view (%%lmScoreView%%) or other class would like to change anything on a score, it must ask its associated %%lmController%% to issue the necessary commands. This is a requirement imposed by the model-view-controller architecture.
+    
+Therefore, %%lmScoreCanvas%% (the controller) is responsible for issuing all score edition commands. For each specific command to execute, the controller creates a %%lmScoreCommand%% derived class (%%lmCmdXxxxxxxxx%%) implementing the desired command.
+
+%%lmScoreCommand%% methods %%Do()%% and %%Undo()%% are then invoked by different mechanisms controlled by %%wxDocManager%% and %%wxDocument%% classes. For example, when issuing a %%wxCommnad%%, method %%Do()%% is invoked. This design is for supporting the implementation of undo/redo functionalities.
+
+Methods %%Do()%% and %%Undo()%% interact with the score by issuing undoable commands (modelled by %%lmEditCmdXxxxxx%% classes, all derived from %%lmEditCmd%%). An %%lmEditCmd%% can invoke others %%lmEditCmd%%, and as long as the login order is correctly preserved, undo is automatic.
+
+On its constructor, %%lmEditCmd%% invokes the necessary methods to perform the desired action. In order to easily identify those methods designed to support the undo/redo mechanism, the name of all methods **in any class** are prefixed with ''Cmd_'' and ''UndoCmd_''. %%lmEditCmd%% classes must use only these methods supporting automatic undo/redo.
+
+To specify the objects affected by a command the following alternatives are possible:
+
+    1. No need to specify object (i.e. changing paper size)
+    2. To use current caret position.
+    3. To specify a cursor.
+    4. To use current selection
+    5. To specify a selection
+    6. To specify an object
+    
+Therefore, score commands could be classified in three gropus:
+
+    1. No need to specify object (1)
+    2. Operating on an object (2, 3, 4)
+    3. Operating on a selection (5, 6)
+
+
+
+
 \h2 {Where to place the controller}
 
     User interacts with the GUI: the score canvas, any of its containers (lmEditFrame, lmMainFrame), other windows on the GUI (lmToolsBox), hardware devices (keyboard, MIDI devices), mouse interaction with the GUI (menubars, toolbars, tools box, etc), mouse interaction with the view, etc.
@@ -137,13 +170,7 @@ For future exercises, in which user must interact with the score to add notes (i
  * wxDocManager knows nothing about the controller. It only informs about the view. Therefore, it must be the view who informs about the controller in use. And the controller to use should be a parameter in the view constructor.
 
 
-\h2 {lmScoreCommands}
-
-Two types of commands: those that affect the document (score) and those that affect only the graphical model (i.e. select an object).
-
-
-
-\h2 {Design tips}
+\h2 {Tips to separate the view from the controller}
 
     * Model \br
       Since the model must be independent, it cannot hold direct instance variables that refer to the view or the controller. It passively supplies its services and data to the other layers of the application.\br\br

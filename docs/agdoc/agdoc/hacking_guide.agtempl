@@ -92,6 +92,7 @@
     @@ label
     @_ label0
     _@ label0
+    %% kw1          ==== code keywords
 ]
 
 
@@ -170,8 +171,8 @@ LenMus project (http://www.lenmus.org/)<br />
 </p>
 ]
 
-\subtitle_open  [<SPAN class="subtitle"><BR/>]
-\subtitle_close [</SPAN>]
+\subtitle_open  [<span class="subtitle"><BR/>]
+\subtitle_close [</span>]
 
 ========= Formatting
 
@@ -231,20 +232,20 @@ LenMus project (http://www.lenmus.org/)<br />
 \quot_open      [&quot;]
 \br_open        [<br />]
 \hr_open        [<hr />]
-\emdash_open    [<SPAN class="larger">&#151;</SPAN>]
-\copy_open      [<SPAN class="larger">&#169;</SPAN>]
-\reg_open       [<SPAN class="larger">&#174;</SPAN>]
-\trade_open     [<SPAN class="larger">&#153;</SPAN>]
-\hellip_open    [<SPAN class="larger">&#133;</SPAN>]
-\deg_open       [<SPAN class="larger">&#176;</SPAN>]
+\emdash_open    [<span class="larger">&#151;</span>]
+\copy_open      [<span class="larger">&#169;</span>]
+\reg_open       [<span class="larger">&#174;</span>]
+\trade_open     [<span class="larger">&#153;</span>]
+\hellip_open    [<span class="larger">&#133;</span>]
+\deg_open       [<span class="larger">&#176;</span>]
 \sup1_open      [<SUP>1</SUP>]
 \sup2_open      [<SUP>2</SUP>]
 \sup3_open      [<SUP>3</SUP>]
 \nbsp_open      [&#160;]
-\plusmn_open    [<SPAN class="larger">&#177;</SPAN>]
-\larr_open      [<SPAN class="larger">&#8592;</SPAN>] leftwards arrow,  U+2190 ISOnum
-\rarr_open      [<SPAN class="larger">&#8594;</SPAN>] rightwards arrow, U+2192 ISOnum
-\harr_open      [<SPAN class="larger">&#8596;</SPAN>] left right arrow, U+2194 ISOamsa
+\plusmn_open    [<span class="larger">&#177;</span>]
+\larr_open      [<span class="larger">&#8592;</span>] leftwards arrow,  U+2190 ISOnum
+\rarr_open      [<span class="larger">&#8594;</span>] rightwards arrow, U+2192 ISOnum
+\harr_open      [<span class="larger">&#8596;</span>] left right arrow, U+2194 ISOamsa
 
 \label_open     [<A name="$(this.attr)"><B>] ==== Label
 \label_close    [</B></A>]
@@ -267,16 +268,16 @@ LenMus project (http://www.lenmus.org/)<br />
 \toc0_open      [<DIV style="margin-left:2em; padding:$(less_padding); font-size:$(larger_font_size);"><A href="$(this.attr.file)#$(this.attr.anchor)"><B>$(this.attr)</B></A>]
 \toc0_close     [</DIV>]
 
-\toc1_open      [<a class='toc_level1' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a><br />]
+\toc1_open      [<a class='toc_level1' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a>]
 \toc1_close     []
 
-\toc2_open      [<a class='toc_level2' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a><br />]
+\toc2_open      [<a class='toc_level2' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a>]
 \toc2_close     []
 
-\toc3_open      [<a class='toc_level3' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a><br />]
+\toc3_open      [<a class='toc_level3' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a>]
 \toc3_close     []
 
-\toc4_open      [<a class='toc_level4' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a><br />]
+\toc4_open      [<a class='toc_level4' href="$(this.attr.file)#$(this.attr.anchor)">$(this.attr)</a>]
 \toc4_close     []
 
 \h1_open        
@@ -434,31 +435,30 @@ LenMus project (http://www.lenmus.org/)<br />
 \iref_figure_close  [</A>]
 
 ========= Code colorer elements =============
-\rem_open       [<SPAN class="rem">]
-\rem_close      [</SPAN>]
+\rem_open       [<span class="rem">]
+\rem_close      [</span>]
 
-\kw1_open       [<SPAN class="kw1">]
-\kw1_close      [</SPAN>]
+\kw1_open       [<span class="kw1">]
+\kw1_close      [</span>]
 
-\kw2_open       [<SPAN class="kw2">]
-\kw2_close      [</SPAN>]
+\kw2_open       [<span class="kw2">]
+\kw2_close      [</span>]
 
-\kw3_open       [<SPAN class="kw3">]
-\kw3_close      [</SPAN>]
+\kw3_open       [<span class="kw3">]
+\kw3_close      [</span>]
 
-\kw4_open       [<SPAN class="kw4">]
-\kw4_close      [</SPAN>]
+\kw4_open       [<span class="kw4">]
+\kw4_close      [</span>]
 
-\op_open        [<SPAN class="op">] 
-\op_close       [</SPAN>] 
+\op_open        [<span class="op">] 
+\op_close       [</span>] 
 
-\str_open       [<SPAN class="str">]
-\str_close      [</SPAN>]
+\str_open       [<span class="str">]
+\str_close      [</span>]
 
-\num_open       [<SPAN class="num">]
-\num_close      [</SPAN>]
+\num_open       [<span class="num">]
+\num_close      [</span>]
 
-\include [syntax_highlighting.agtempl]
 
 
 
@@ -472,3 +472,4 @@ LenMus project (http://www.lenmus.org/)<br />
 \figure_open    [<img class="key" title="$(this.content)" src="images/]
 \figure_close   [" />]
 
+\include [syntax_highlighting.agtempl]
