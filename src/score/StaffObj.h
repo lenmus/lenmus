@@ -416,7 +416,7 @@ public:
     virtual bool IsComposite() { return false; }
 
 	//contexts
-	lmContext* GetCurrentContext();
+	lmContext* GetCurrentContext(int nStaff = -1);
 	lmContext* NewUpdatedContext();
     virtual void RemoveCreatedContexts() {}
     lmEClefType GetApplicableClefType();

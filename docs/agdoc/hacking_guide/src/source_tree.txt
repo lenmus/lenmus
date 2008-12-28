@@ -77,6 +77,12 @@ Since project start, I've tried to have source code organized by subsystems (as 
 That will depend on your main purpose to study the code: to get a global general idea or to start hacking, as soon as possible, on a certain program area. Lets describe each one of these approaches.
 
 
+\h3 {To study the code, in general}
+
+Well, it is difficult to give guidelines here. But sure, start section on
+\href0 [app_overview] {application overview} and from there explore other sections 
+according to your main interests.
+
 \h3 {To start hacking}
 
 \h4 {GUI: score renderization & edition windows}

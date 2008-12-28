@@ -39,11 +39,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.0b0"
+  !define APP_VERSION "4.0b2"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.0 beta 0"     ;product name displayed by the installer
+  Name "lenmus v4.0 beta 2"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -132,6 +132,7 @@
   !insertmacro MUI_LANGUAGE "Dutch"
   !insertmacro MUI_LANGUAGE "English"
   !insertmacro MUI_LANGUAGE "French"         
+  !insertmacro MUI_LANGUAGE "Galician"
   !insertmacro MUI_LANGUAGE "Italian"
   !insertmacro MUI_LANGUAGE "Spanish"
   !insertmacro MUI_LANGUAGE "Turkish"
@@ -176,6 +177,7 @@
   !include "nl.nsh"
 ;  !include "eu.nsh"
 ;  !include "it.nsh"
+;  !include "gl_ES.nsh"
 
 
 
@@ -245,6 +247,7 @@ Section  "-" "MainSection"
      File ".\locale\license_nl.txt"
      File ".\locale\license_eu.txt"
      File ".\locale\license_it.txt"
+     File ".\locale\license_gl.txt"
      
      File "..\..\docs\html\license_v3.htm"
 ;     File "..\..\docs\html\installation.htm"
@@ -279,6 +282,8 @@ Section  "-" "MainSection"
      File "..\..\books\eu\*.lmb"
      SetOutPath "$INSTDIR\books\it"
      File "..\..\books\it\*.lmb"
+     SetOutPath "$INSTDIR\books\gl_ES"
+     File "..\..\books\gl_ES\*.lmb"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en"
@@ -316,6 +321,11 @@ Section  "-" "MainSection"
      File "..\..\locale\it\*.htm"
      File "..\..\locale\it\help.htb"
      File "..\..\locale\common\singledoc.css"
+     SetOutPath "$INSTDIR\locale\gl_ES"
+     File "..\..\locale\gl_ES\*.mo"
+     File "..\..\locale\gl_ES\*.htm"
+     File "..\..\locale\gl_ES\help.htb"
+     File "..\..\locale\common\singledoc.css"
 
 
      SetOutPath "$INSTDIR\res\bitmaps"
@@ -352,7 +362,7 @@ Section  "-" "MainSection"
   ; Save install options
   ;-----------------------------------------------------------------------------------
      SetOutPath "$INSTDIR\bin"
-     Push "$(OTHER_LangName)"                               ;text to write to file 
+     Push "$(OTHER_LangName)"                   ;text to write to file 
      Push "$INSTDIR\\bin\config_ini.txt"        ;file to write to 
      Call WriteToFile
 

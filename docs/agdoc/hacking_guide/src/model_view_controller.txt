@@ -131,7 +131,7 @@ To specify the objects affected by a command the following alternatives are poss
     5. To specify a selection
     6. To specify an object
     
-Therefore, score commands could be classified in three gropus:
+Therefore, score commands could be classified in three groups:
 
     1. No need to specify object (1)
     2. Operating on an object (2, 3, 4)

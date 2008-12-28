@@ -255,8 +255,8 @@ public:
     lmStaff* GetLastStaff();
 
     //context management
-	inline lmContext* GetCurrentContext(lmStaffObj* pSO)
-                            { return m_cStaffObjs.GetCurrentContext(pSO); }
+	inline lmContext* GetCurrentContext(lmStaffObj* pSO, int nStaff = -1)
+                            { return m_cStaffObjs.GetCurrentContext(pSO, nStaff); }
 	inline lmContext* NewUpdatedContext(int nStaff, lmStaffObj* pSO)
                             { return m_cStaffObjs.NewUpdatedContext(nStaff, pSO); }
 	inline lmContext* NewUpdatedLastContext(int nStaff)

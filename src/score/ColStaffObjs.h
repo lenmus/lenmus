@@ -208,7 +208,7 @@ public:
     inline lmVStaff* GetOwnerVStaff() { return m_pOwner; }
 
 	//context management
-	lmContext* GetCurrentContext(lmStaffObj* pSO);
+	lmContext* GetCurrentContext(lmStaffObj* pSO, int nStaff = -1);
 	lmContext* NewUpdatedContext(int nStaff, lmStaffObj* pSO);
 	lmContext* NewUpdatedLastContext(int nStaff);
 	lmContext* GetLastContext(int nStaff);

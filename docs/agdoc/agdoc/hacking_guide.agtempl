@@ -282,33 +282,33 @@ LenMus project (http://www.lenmus.org/)<br />
 
 \h1_open        
 [
-<h2 class='article'>$(this.attr)<a name="$(this.attr.anchor)"></a></h2>
-<p><a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" align="right" border="0"
-    hspace="2em" vspace="0"></a></p>
+<h2 class='article'><a name="$(this.attr.anchor)"></a>
+<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
+align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h2>
 ]
 \h1_close       []
 
 \h2_open
 [
-<h3 class='article'>$(this.attr)<a name="$(this.attr.anchor)"></a></h3>
-<p><a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" align="right" border="0"
-    hspace="2em" vspace="0"></a></p>
+<h3 class='article'><a name="$(this.attr.anchor)"></a>
+<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
+align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h3>
 ]
 \h2_close       []
 
 \h3_open
 [
-<h4 class='article'>$(this.attr)<a name="$(this.attr.anchor)"></a></h4>
-<p><a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" align="right" border="0"
-    hspace="2em" vspace="0"></a></p>
+<h4 class='article'><a name="$(this.attr.anchor)"></a>
+<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
+align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h4>
 ]
 \h3_close       []
 
 \h4_open        
 [
-<h5 class='article'>$(this.attr)<a name="$(this.attr.anchor)"></a></h5>]
-<p><a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" align="right" border="0"
-    hspace="2em" vspace="0"></a></p>
+<h5 class='article'><a name="$(this.attr.anchor)"></a>
+<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
+align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h5>
 ]
 \h4_close       []
 
@@ -318,8 +318,8 @@ LenMus project (http://www.lenmus.org/)<br />
 \code_open      [<div class="informalexample"><pre class="programlisting">]
 \code_close     [</pre></div>]
 
-\as_is_open     [<TABLE width="$(tabwidth)" border="0" cellspacing="0" cellpadding="0"><TR><TD><pre>]
-\as_is_close    [</pre></TD></TR></TABLE>]
+\as_is_open     [<table width="$(tabwidth)" border="0" cellspacing="0" cellpadding="0"><tr><td><pre>]
+\as_is_close    [</pre></td></tr></table>]
 
 \ignore_open    []
 \ignore_close   []

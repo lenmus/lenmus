@@ -427,8 +427,8 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     wxASSERT(nEvStart >= 0 && nEvEnd < (int)m_aEvents.GetCount() );
     if (m_aEvents.GetCount() == 0) return;                  //tabla empty
 
-    #define EIGHT_DURATION    64        //duration (LDP units) of an eight note (to convert to milliseconds)
-    #define SOLFA_NOTE        60        //pitch for sight reading with percussion sound
+    #define lmQUARTER_DURATION  64        //duration (LDP units) of a quarter note (to convert to milliseconds)
+    #define lmSOLFA_NOTE        60        //pitch for sight reading with percussion sound
     int nPercussionChannel = g_pMidi->MtrChannel();        //channel to use for percussion
 
     //OK. We start playing. 
@@ -436,7 +436,6 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 
     //prepare metronome settings
     lmMetronome* pMtr = g_pMainFrame->GetMetronome();
-    long nMtrClickIntval = (nMM == 0 ? 0 : 60000/nMM);
     bool fPlayWithMetronome = pMtr->IsRunning();
     bool fMetronomeEnabled = pMtr->IsEnabled();
     pMtr->Enable(false);    //mute sound
@@ -461,7 +460,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     //default beat and metronome information. It is going to be properly set
     //when a eSET_RhythmChange event is found (a time signature object). So these
     //default settings will be used when no time signature in the score.
-    long nMtrBeatDuration = EIGHT_DURATION;                         //a beat duration
+    long nMtrBeatDuration = lmQUARTER_DURATION;                     //a beat duration
     long nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
     long nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
     long nMeasureDuration = nMtrBeatDuration * 4;                   //assume 4/4 time signature
@@ -511,11 +510,14 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     //Here i points to the first event of desired measure that is not a control event.
     //Here i points to the first event of desired measure that is not a control event.
 
+   // metronome interval in milliseconds
+   long nMtrClickIntval = (nMM == 0 ? pMtr->GetInterval() : 60000/nMM) * nMtrBeatDuration / lmQUARTER_DURATION;
+
     //Define and initialize time counter. If playback starts not at the begining but 
 	//in another measure, advance time counter to that measure
     long nTime = 0;
 	if (nEvStart > 1) {
-		nTime = (pMtr->GetInterval() * m_aEvents[nEvStart]->DeltaTime) / nMtrBeatDuration; //EIGHT_DURATION;
+		nTime = (pMtr->GetInterval() * m_aEvents[nEvStart]->DeltaTime) / nMtrBeatDuration; //lmQUARTER_DURATION;
 	}
 
 
@@ -529,10 +531,10 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     */
 //////    if (Not (fPlayWithMetronome && fCountOff)) {
 //////        if (m_nTiempoIni = nMeasureDuration) {
-//////            nTime = (nSpeed * m_nTiempoIni) / EIGHT_DURATION;
+//////            nTime = (nSpeed * m_nTiempoIni) / lmQUARTER_DURATION;
 //////        } else {
 //////            nTime = (m_nTiempoIni Mod nMtrBeatDuration) * nMtrBeatDuration    //coge partes completas
-//////            nTime = (nSpeed * nTime) / EIGHT_DURATION;
+//////            nTime = (nSpeed * nTime) / lmQUARTER_DURATION;
 //////        }
 //////        //localiza el primer evento de figsil (los eventos de control están en compas 0)
 //////        for (i = nEvStart To nEvEnd
@@ -558,10 +560,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         if (fPlayWithMetronome && nMtrEvDeltaTime <= m_aEvents[i]->DeltaTime)
         {
             //Next event shoul be a metronome click or the click off event for the previous metronome click
-             if (nMM==0)
-                nEvTime = (pMtr->GetInterval() * nMtrEvDeltaTime) / nMtrBeatDuration;   //EIGHT_DURATION;
-            else
-                nEvTime = (nMtrClickIntval * nMtrEvDeltaTime) / nMtrBeatDuration; //EIGHT_DURATION;
+            nEvTime = (nMtrClickIntval * nMtrEvDeltaTime) / nMtrBeatDuration;
             if (nTime < nEvTime) {
                 //::wxMilliSleep(nEvTime - nTime);
                 wxThread::Sleep((unsigned long)(nEvTime - nTime));
@@ -601,10 +600,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
          else
         {
             //next even comes from the table. Usually it will be a note on/off
-             if (nMM==0)
-                nEvTime = (pMtr->GetInterval() * m_aEvents[i]->DeltaTime) / nMtrBeatDuration; //EIGHT_DURATION;
-            else
-                nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / nMtrBeatDuration;   //EIGHT_DURATION;
+            nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / nMtrBeatDuration;   //lmQUARTER_DURATION;
             if (nTime < nEvTime) {
                 //::wxMilliSleep((unsigned long)(nEvTime - nTime));
                 wxThread::Sleep((unsigned long)(nEvTime - nTime));
@@ -620,11 +616,11 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                                           m_aEvents[i]->Volume);
                         break;
                     case ePM_RhythmInstrument:
-                        g_pMidiOut->NoteOn(m_aEvents[i]->Channel, SOLFA_NOTE,
+                        g_pMidiOut->NoteOn(m_aEvents[i]->Channel, lmSOLFA_NOTE,
                                           m_aEvents[i]->Volume);
                         break;
                     case ePM_RhythmPercussion:
-                        g_pMidiOut->NoteOn(nPercussionChannel, SOLFA_NOTE,
+                        g_pMidiOut->NoteOn(nPercussionChannel, lmSOLFA_NOTE,
                                           m_aEvents[i]->Volume);
                         break;
                     case ePM_RhythmHumanVoice:
@@ -648,9 +644,9 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                     case ePM_NormalInstrument:
                         g_pMidiOut->NoteOff(m_aEvents[i]->Channel, m_aEvents[i]->NotePitch, 127);
                     case ePM_RhythmInstrument:
-                        g_pMidiOut->NoteOff(m_aEvents[i]->Channel, SOLFA_NOTE, 127);
+                        g_pMidiOut->NoteOff(m_aEvents[i]->Channel, lmSOLFA_NOTE, 127);
                     case ePM_RhythmPercussion:
-                        g_pMidiOut->NoteOff(nPercussionChannel, SOLFA_NOTE, 127);
+                        g_pMidiOut->NoteOff(nPercussionChannel, lmSOLFA_NOTE, 127);
                     case ePM_RhythmHumanVoice:
                         //WaveOff
                         break;

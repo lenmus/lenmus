@@ -1163,7 +1163,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 	pMenuSound->AppendSeparator();
 
     AddMenuItem(pMenuSound, MENU_Sound_test, _("&Test sound"),
-                _("Play an scale to test sound"), wxITEM_NORMAL, _("tool_test_sound"));
+                _("Play an scale to test sound"), wxITEM_NORMAL, _T("tool_test_sound"));
     AddMenuItem(pMenuSound, MENU_Sound_AllSoundsOff, _("&All sounds off"),
                 _("Stop inmediatly all sounds"), wxITEM_NORMAL, _T("tool_stop_sounds"));
 

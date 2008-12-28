@@ -69,7 +69,7 @@ lmToolPageBarlines::lmToolPageBarlines(wxWindow* parent)
 
     //create groups
     m_pGrpBarlines = new lmGrpBarlines(this, pMainSizer);
-    
+
 	CreateLayout();
 }
 
@@ -108,7 +108,8 @@ lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 {
     //To avoid having to translate again barline names, we are going to load them
     //by using global function GetBarlineName()
-    for (int i = 0; i < lm_eMaxBarline; i++)
+    int i;
+    for (i = 0; i < lm_eMaxBarline; i++)
     {
         tBarlinesDB[i].nBarlineType = (lmEBarline)i;
         tBarlinesDB[i].sBarlineName = GetBarlineName((lmEBarline)i);

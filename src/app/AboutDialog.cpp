@@ -120,66 +120,66 @@ void lmAboutDialog::CreateControls()
 {
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* pHeadersSizer;
 	pHeadersSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	m_pBmpLogo = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pHeadersSizer->Add( m_pBmpLogo, 0, wxALIGN_TOP|wxALL, 5 );
-	
+
 	wxBoxSizer* pTitlesSizer;
 	pTitlesSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _("Arial") ) );
-	
+
 	pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
-	
+
 	m_pTxtSubtitle = new wxStaticText( this, wxID_ANY, _("A free program for music language learning"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtSubtitle->SetFont( wxFont( 10, 74, 90, 90, false, _("Arial") ) );
-	
+
 	pTitlesSizer->Add( m_pTxtSubtitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
-	
+
 	pHeadersSizer->Add( pTitlesSizer, 1, wxEXPAND|wxALL, 5 );
-	
+
 	pMainSizer->Add( pHeadersSizer, 0, wxEXPAND|wxALL, 5 );
-	
+
 	wxBoxSizer* pInfoSizer;
 	pInfoSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	m_pHtmlWindow = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 200,150 ), wxHW_SCROLLBAR_AUTO|wxBORDER_SUNKEN|wxHSCROLL|wxVSCROLL);
 	pInfoSizer->Add( m_pHtmlWindow, 1, wxEXPAND|wxBOTTOM, 5 );
-	
+
 	wxBoxSizer* pButtonsSizer;
 	pButtonsSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pBtnPurpose = new wxButton( this, lmID_BTN_PURPOSE, _("Purpose"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnPurpose, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pBtnLicense = new wxButton( this, lmID_BTN_LICENCE, _("Licence"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnLicense, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-	
+
 	m_pBtnDevelopers = new wxButton( this, lmID_BTN_DEVELOPERS, _("Project team"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnDevelopers, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-	
+
 	m_pBtnArtCredits = new wxButton( this, lmID_BTN_ART_CREDITS, _("Art design"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnArtCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-	
+
 	m_pBtnSoftwareCredits = new wxButton( this, lmID_BTN_SOFTWARE_CREDITS, _("Software used"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnSoftwareCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-	
+
 	m_pBtnBuildInfo = new wxButton( this, lmID_BTN_BUILD_INFO, _("Build info."), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnBuildInfo, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-	
+
 	pButtonsSizer->Add( 5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
-	
+
 	m_pBtnAccept = new wxButton( this, lmID_BTN_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnAccept, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-	
+
 	pInfoSizer->Add( pButtonsSizer, 0, wxEXPAND|wxLEFT|wxBOTTOM, 5 );
-	
+
 	pMainSizer->Add( pInfoSizer, 1, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 	this->Layout();
 }
@@ -291,8 +291,8 @@ void lmAboutDialog::OnSoftwareCredits(wxCommandEvent& WXUNUSED(event))
         _T("<center>")
         _T("<h3>") + _("Software credits") + _T("</h3></center><p>") +
         _("LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library \
-(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright © 1999-2000 Ross \
-Bencina and Phil Burk and copyright © 2001 Roger B. Dannenberg. Its licence permits \
+(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross \
+Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
 free use.") +
         _T("</p><p>") +
         _("This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) \
@@ -310,7 +310,7 @@ highly customizable and portable, while capable of producing high-quality output
 (glyph images). It can be used in graphics libraries, display servers, font \
 conversion tools, text image generation tools, and many other products as well. \
 It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is \
-copyright © 1996-2002 The FreeType Project (http://www.freetype.org).") +
+copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org).") +
         _T("</p><p>") +
         _("LenMus Phonascus is built using the <b>wxWidgets</b> application framework \
 (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
@@ -326,7 +326,7 @@ to use it in commercial products without licencing.") +
 
 void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
-   #if defined(__WXMSW__)
+#if defined(__WXMSW__)
     // Get screen information
     wxScreenDC dc;
     wxSize ppiScreen = dc.GetPPI();     //logical pixels per inch of screen
@@ -344,10 +344,10 @@ void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
         sFontInfo = wxString::Format(_T("Char size (px): (w=%d, h=%d), rScale=%.4f"),
                         nCharWidth, nCharHeight, rHtmlWinScale );
     }
-    #else
+#else
     wxString sFontInfo = _T("No info available");
     wxString sScreenPPI = _T("No info available");
-    #endif
+#endif
 
     //Prepare build info message
     wxString sContent = m_sHeader +
@@ -358,16 +358,14 @@ void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
         wxVERSION_STRING + _T("<br>") +
         _("wxMidi Version ") + wxMIDI_VERSION + _T("<br><br><br>") +
         _("Your computer information:") +
-        _T("<br>Charset encoding: ") + wxLocale::GetSystemEncodingName() + 
-        _T("<br>System locale name: ") + wxGetApp().GetLocaleSysName() + 
-        _T("<br>Canonical locale name: ") + wxGetApp().GetLanguageCanonicalName() + 
-        _T("<br><br>Display: ") + sScreenPPI + 
-        _T("<br>eBook window: ") + sFontInfo + 
+        _T("<br>Charset encoding: ") + wxLocale::GetSystemEncodingName() +
+        _T("<br>System locale name: ") + wxGetApp().GetLocaleSysName() +
+        _T("<br>Canonical locale name: ") + wxGetApp().GetLanguageCanonicalName() +
+        _T("<br><br>Display: ") + sScreenPPI +
+        _T("<br>eBook window: ") + sFontInfo +
         _T("<br></body></html>");
 
-
-
-        m_pHtmlWindow->SetPage(sContent);
+    m_pHtmlWindow->SetPage(sContent);
 
 }
 

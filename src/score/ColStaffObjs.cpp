@@ -3334,19 +3334,22 @@ void lmColStaffObjs::RecomputeSegmentDuration(lmNoteRest* pNR, float rTimeIncr)
 // lmColStaffObjs: contexts management
 //====================================================================================================
 
-lmContext* lmColStaffObjs::GetCurrentContext(lmStaffObj* pTargetSO)
+lmContext* lmColStaffObjs::GetCurrentContext(lmStaffObj* pTargetSO, int nStaff)
 {
 	// Returns the context that is applicable to the received StaffObj.
 	// AWARE: This method does not return a context with updated accidentals;
     // the returned context is valid only for clef, key signature and time signature.
     // To get applicable accidentals use NewUpdatedContext() instead.
 
+    //if no staff specified use pTargetSO staff
+    if (nStaff == -1)
+        nStaff = pTargetSO->GetStaffNum();
+
     //get start of segment context
 	lmSegment* pSegment = pTargetSO->GetSegment();
-	lmContext* pCT = pSegment->GetContext(pTargetSO->GetStaffNum() - 1);
+	lmContext* pCT = pSegment->GetContext(nStaff - 1);
 
     //look for any clef, KS or TS changing the context
-    int nStaff = pTargetSO->GetStaffNum();
     lmSOIterator it(this, pSegment->GetFirstSO());
     while(!it.EndOfCollection() && !it.ChangeOfMeasure() && it.GetCurrent() != pTargetSO)
 	{

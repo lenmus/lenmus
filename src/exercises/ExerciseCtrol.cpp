@@ -500,7 +500,7 @@ void lmCompareCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font
     // the buttons 
     for (int iB=0; iB < m_NUM_COLS; iB++) {
         m_pAnswerButton[iB] = new wxButton( this, m_ID_BUTTON + iB, m_sButtonLabel[iB],
-            wxDefaultPosition, wxSize(27*nSpacing, nHeight));
+            wxDefaultPosition, wxSize(38*nSpacing, nHeight));
         m_pAnswerButton[iB]->SetFont(font);
 
         m_pKeyboardSizer->Add(

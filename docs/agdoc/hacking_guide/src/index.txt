@@ -24,8 +24,11 @@ Any help to structure, review, improve, etc. this document is welcome!.
 **Table of content**
 
     * \href0 [source_tree] {Program structure and source code organization}
+    * \href0 [app_overview] {Application overview and main control flow}
     * \href0 [model_view_controller] {Model-View-Controller architecture}
+    
     * \href0 [score_representations] {Scores: internal representation}
+        * \href0 [pitch-representation] {How pitch is represented}
     
     * \href0 [exercises_ctrols] {eBooks: Including scores and exercises}
     

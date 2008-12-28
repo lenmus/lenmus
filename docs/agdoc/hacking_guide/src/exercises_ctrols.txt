@@ -15,11 +15,11 @@ Exercises and scores are included in the html source code by using <object> tags
 \h2 {Html embedded controls}
 %%%--------------------------------
 
-As said, exercises and scores are included in an html page by using <object> tags. To process these tags a 'tag handler' must be defined. This is coded in file html/Tags.cpp. When the html parser finds an <object> tag, control is passed to the corresponding tag handler and it takes responsibilitity for parsing the <object> tag parameters and generating the output.
+As said, exercises and scores are included in an html page by using <object> tags. To process these tags a 'tag handler' must be defined. This is coded in file html/Tags.cpp. When the html parser finds an <object> tag, control is passed to the corresponding tag handler and it takes responsibility for parsing the <object> tag parameters and generating the output.
 
-Exercises and scores (and in general any other 'widget' we would like to embed in an html page) will be named, in this documentation, as \i{html embedded controls} or, simply, as \i{Ctrols}. Each Ctrol is implemented by one specific class (whose name normally ends as 'Ctrol'), enclosing all the knowledge about redering the control and managing all user interaction with it.
+Exercises and scores (and in general any other 'widget' we would like to embed in an html page) will be named, in this documentation, as \i{html embedded controls} or, simply, as \i{Ctrols}. Each Ctrol is implemented by one specific class (whose name normally ends as 'Ctrol'), enclosing all the knowledge about rendering the control and managing all user interaction with it.
 
-There is a terminology issue that you should know becuase it causes confussion at the beginning. 
+There is a terminology issue that you should know because it causes confusion at the beginning. 
 There are some auxiliary classes, whose name ends as 'Ctrol'. These classes doesn't implement Ctrols to be included in html code with an <object> tag. These AuxCtrol classes are in fact 'widgets' to be used to render Ctrols. Currently there are three:
 
  1. %%lmUrlAuxCtrol%% (in exercises/UrlAuxCtrol.cpp & .h): it is a class to display a URL link to be used in exercises and other Ctrols.
@@ -34,20 +34,20 @@ There are some auxiliary classes, whose name ends as 'Ctrol'. These classes does
 }
 
 
-From an implementation point of view, a Ctrol is the main window that encloses all texts, buttons, links, etc. that form an exercise. And a AuxCtrol is one of these widgets. AuxCtrols generate events that must be processed by the main Ctrol window. Therefore, an AuxCtrol can not be included directly in html by using an <object> directive. It only can be included programatically inside a Ctrol.
+From an implementation point of view, a Ctrol is the main window that encloses all texts, buttons, links, etc. that form an exercise. And a AuxCtrol is one of these widgets. AuxCtrols generate events that must be processed by the main Ctrol window. Therefore, an AuxCtrol can not be included directly in html by using an <object> directive. It only can be included programmatically inside a Ctrol.
 
 
 \h1 {Classes to implement a Ctrol}
 %%%-------------------------------
 
-All HTML embbedded controls derive from class %%lmEBookCtrol%% (in exercises/ExerciseCtrol.h). Currently there are two derived classes: %%lmExerciseCtrol%% (abstract) and %%lmScoreCtrol%%:
+All HTML embedded controls derive from class %%lmEBookCtrol%% (in exercises/ExerciseCtrol.h). Currently there are two derived classes: %%lmExerciseCtrol%% (abstract) and %%lmScoreCtrol%%:
 
  * Class %%lmExerciseCtrol%% is the base class for all exercises. It implements the common features that all exercises have and provides a common API to create new exercises.
  
  * Class %%lmScoreCtrol%% is a very specific control to display a score in a text.
  
  
-The current hierarchy of HTML embbedded controls is as follows:
+The current hierarchy of HTML embedded controls is as follows:
 
 \as_is
 {
@@ -79,7 +79,7 @@ Class %%lmOneScoreCtrol%% is used for exercises that display an score and user m
 \h2 {object tag: classid and parameters}
 %%%--------------------------------------
 
-As said, a Ctrol gets included in an html page by usign an <object> tag. For example, study the following code taken from an eBook. This code includes in a text an exercise to identify cadences by ear:
+As said, a Ctrol gets included in an html page by using an <object> tag. For example, study the following code taken from an eBook. This code includes in a text an exercise to identify cadences by ear:
 
 \code
 {
@@ -95,7 +95,7 @@ try to identify if the cadence is terminal or transient.</p>
 </object>
 }
 
-Looking at <object> tag attributes you can notice the \i{classid} attribute. It defines the type of Ctrol to generate by the <object> tag. When implementinmg a new Ctrol, it is necessary to define a unique id for it. This id strings are defined in file html/Tags.cpp, in the TAG_HANDLER_PROC code. Currently, the following Ctrols are defined:
+Looking at <object> tag attributes you can notice the \i{classid} attribute. It defines the type of Ctrol to generate by the <object> tag. When implementing a new Ctrol, it is necessary to define a unique id for it. This id strings are defined in file html/Tags.cpp, in the TAG_HANDLER_PROC code. Currently, the following Ctrols are defined:
 
 \vbar_table[Table 1. classid for object tags; anchor=TAB1; class=simpletable]
 {
@@ -200,7 +200,7 @@ Let's assume that a new exercise type, named 'New Exercise', is going to be prog
 
 
 
-\h1 {Annex: Brief description of current Ctrol classes}
+\h1 {Annexe: Brief description of current Ctrol classes}
 %%%---------------------------------------------------------------------
 
 \h2 {lmEBookCtrol class}
@@ -251,7 +251,7 @@ An abstract class to implement a typical exercise, having a window box to displa
         problem box (wxWindow)
         (opt) counters
         new problem, play, show solution links
-        (opt)answer buttons
+        (opt) answer buttons
 
     Implements:
         'CreateControls'
@@ -269,7 +269,7 @@ Abstract class to implement exercises in which the problem is a score, ether dis
 
 \code
 {
-    - One score, buttons to give the anser
+    - One score, buttons to give the answer
     - Problem box is lmScoreAuxCtrol
     
     Implements:
@@ -286,7 +286,7 @@ Abstract class to implement exercises in which the problem is two compare two sc
 \code
 {
     - An exercise to compare two things, usually two sounds.
-    - Three anser buttons: Fistr greater, Second greater, Both equal
+    - Three answer buttons: First greater, Second greater, Both equal
 
     Implements:
         'CreateAnswerButtons'
@@ -316,7 +316,7 @@ Similar to previous one, but having a third score to display the solution.
 \h2 {lmCompareMidiCtrol : public lmCompareCtrol}
 %%%--------------------------------------------------
 
-This class is not yet finished. I started to develop it to include new autral training exercises and, in particular, a new exercise on tunning.
+This class is not yet finished. I started to develop it to include new aural training exercises and, in particular, a new exercise on tunning.
 
 \code
 {

@@ -315,6 +315,9 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, EChordType nType, lmS
     //create the chord
     lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
 
+    //wxLogMessage(_T("[lmIdfyChordCtrol::PrepareScore] sRootNote=%s, nType=%d, nInversion=%d, nKey=%d, name='%s'"),
+    //    m_sRootNote.c_str(), nType, m_nInversion, m_nKey, oChordMngr.GetNameFull().c_str() );
+
     //delete the previous score
     if (*pScore) {
         delete *pScore;

@@ -126,13 +126,13 @@ void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
     {
         if (nIntval[2] == lmNIL) {
             nNewIntv[0] = lm_p8 - nIntval[1];   //invert the interval
-            nNewIntv[1] = lm_p8 - nIntval[0];   //invert the interval
+            nNewIntv[1] = lm_p8 + nIntval[0] - nIntval[1];
             nNewIntv[2] = lmNIL;
         }
         else {
             nNewIntv[0] = nIntval[2] - nIntval[1];
             nNewIntv[1] = lm_p8 - nIntval[1];   //invert the interval
-            nNewIntv[2] = lm_p8 - nIntval[0];   //invert the interval
+            nNewIntv[2] = lm_p8 + nIntval[0] - nIntval[1];
         }
     }
     else if (m_nInversion == 3)

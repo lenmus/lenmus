@@ -7,14 +7,14 @@
 	<File name="../../packages/wxMidi/include/wxMidi.h" open="1" top="0" tabpos="6">
 		<Cursor position="4558" topLine="0" />
 	</File>
-	<File name="../../packages/wxMidi/src/wxMidi.cpp" open="1" top="1" tabpos="5">
-		<Cursor position="627" topLine="0" />
+	<File name="../../packages/wxMidi/src/wxMidi.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="672" topLine="18" />
 	</File>
 	<File name="../../packages/wxMidi/src/wxMidiDatabase.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="1033" topLine="18" />
 	</File>
-	<File name="../../src/app/AboutDialog.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="13617" topLine="300" />
+	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="8">
+		<Cursor position="12556" topLine="282" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="34" />
@@ -91,8 +91,8 @@
 	<File name="../../src/app/ScoreCommand.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="2616" topLine="57" />
 	</File>
-	<File name="../../src/app/ScoreDoc.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="7313" topLine="214" />
+	<File name="../../src/app/ScoreDoc.cpp" open="1" top="0" tabpos="7">
+		<Cursor position="7313" topLine="197" />
 	</File>
 	<File name="../../src/app/ScoreDoc.h" open="0" top="0" tabpos="7">
 		<Cursor position="3096" topLine="68" />
@@ -103,8 +103,8 @@
 	<File name="../../src/app/ScoreView.h" open="0" top="0" tabpos="2">
 		<Cursor position="9724" topLine="171" />
 	</File>
-	<File name="../../src/app/ScoreWizard.cpp" open="0" top="0" tabpos="20">
-		<Cursor position="1387" topLine="28" />
+	<File name="../../src/app/ScoreWizard.cpp" open="1" top="0" tabpos="11">
+		<Cursor position="1387" topLine="449" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
@@ -127,6 +127,9 @@
 	<File name="../../src/app/WelcomeWnd.h" open="0" top="0" tabpos="21">
 		<Cursor position="2293" topLine="62" />
 	</File>
+	<File name="../../src/app/toolbox/ToolBarlines.cpp" open="1" top="0" tabpos="12">
+		<Cursor position="3395" topLine="95" />
+	</File>
 	<File name="../../src/app/toolbox/ToolGroup.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="1688" topLine="54" />
 	</File>
@@ -145,8 +148,8 @@
 	<File name="../../src/auxmusic/Cadence.cpp" open="0" top="0" tabpos="44">
 		<Cursor position="46767" topLine="1104" />
 	</File>
-	<File name="../../src/auxmusic/ChordManager.cpp" open="0" top="0" tabpos="39">
-		<Cursor position="7805" topLine="196" />
+	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="13">
+		<Cursor position="7805" topLine="160" />
 	</File>
 	<File name="../../src/auxmusic/Composer.cpp" open="0" top="0" tabpos="19">
 		<Cursor position="1556" topLine="20" />
@@ -193,8 +196,8 @@
 	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="0" top="0" tabpos="37">
 		<Cursor position="9867" topLine="289" />
 	</File>
-	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="0" top="0" tabpos="33">
-		<Cursor position="9888" topLine="247" />
+	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="1" top="1" tabpos="14">
+		<Cursor position="11704" topLine="335" />
 	</File>
 	<File name="../../src/exercises/IdfyScalesCtrol.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="10090" topLine="98" />
@@ -253,8 +256,8 @@
 	<File name="../../src/graphic/Drawer.h" open="0" top="0" tabpos="3">
 		<Cursor position="4590" topLine="111" />
 	</File>
-	<File name="../../src/graphic/Formatter4.cpp" open="0" top="0" tabpos="54">
-		<Cursor position="46001" topLine="1108" />
+	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="10">
+		<Cursor position="22527" topLine="551" />
 	</File>
 	<File name="../../src/graphic/GMObject.cpp" open="0" top="0" tabpos="25">
 		<Cursor position="11604" topLine="380" />
@@ -430,8 +433,8 @@
 	<File name="../../src/score/AuxObj.cpp" open="0" top="0" tabpos="6">
 		<Cursor position="12315" topLine="378" />
 	</File>
-	<File name="../../src/score/Barline.cpp" open="0" top="0" tabpos="29">
-		<Cursor position="4955" topLine="152" />
+	<File name="../../src/score/Barline.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="3734" topLine="120" />
 	</File>
 	<File name="../../src/score/Barline.h" open="0" top="0" tabpos="30">
 		<Cursor position="1350" topLine="17" />

@@ -642,12 +642,12 @@ lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
     return m_pVStaff->LogicalToTenths(uUnits, m_nStaffNum);
 }
 
-lmContext* lmStaffObj::GetCurrentContext()
+lmContext* lmStaffObj::GetCurrentContext(int nStaff)
 {
 	// Returns the context that is applicable to the this StaffObj.
 	// AWARE: Only Clef, key signature and time signature are updated. To get
 	//	applicable accidentals use NewUpdatedContext() instead.
-	return m_pVStaff->GetCurrentContext(this);
+	return m_pVStaff->GetCurrentContext(this, nStaff);
 }
 
 lmContext* lmStaffObj::NewUpdatedContext()

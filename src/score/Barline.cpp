@@ -66,7 +66,7 @@ class lmScoreObj;
 class lmController;
 class lmScore;
 
-class lmBarlineProperties : public lmPropertiesPage 
+class lmBarlineProperties : public lmPropertiesPage
 {
 public:
 	lmBarlineProperties(wxWindow* parent, lmBarline* pBL);
@@ -122,7 +122,8 @@ lmBarlineProperties::lmBarlineProperties(wxWindow* parent, lmBarline* pBL)
 
     //To avoid having to translate again barline names, we are going to load them
     //by using global function GetBarlineName()
-    for (int i = 0; i < lm_eMaxBarline; i++)
+    int i;
+    for (i = 0; i < lm_eMaxBarline; i++)
     {
         tBarlinesDB[i].nBarlineType = (lmEBarline)i;
         tBarlinesDB[i].sBarlineName = GetBarlineName((lmEBarline)i);
@@ -140,19 +141,19 @@ void lmBarlineProperties::CreateControls()
 {
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pTxtBarline = new wxStaticText( this, wxID_ANY, wxT("Barline type"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtBarline->Wrap( -1 );
 	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
-	
+
 	pMainSizer->Add( m_pTxtBarline, 0, wxALL, 5 );
-	
+
 	wxArrayString m_pBarlinesListChoices;
     m_pBarlinesList = new wxBitmapComboBox();
     m_pBarlinesList->Create(this, lmID_BARLINE, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
 							0, NULL, wxCB_READONLY);
 	pMainSizer->Add( m_pBarlinesList, 0, wxALL, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 	this->Layout();
 }
@@ -286,7 +287,7 @@ wxString lmBarline::SourceXML(int nIndent)
 lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object and adding it to the graphical model. 
+    // creating the shape object and adding it to the graphical model.
     // Paper cursor must be used as the base for positioning.
 
 	lmEBarline nType = m_nBarlineType;
@@ -295,7 +296,7 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
 
     //create the shape
 
-    lmShapeBarline* pShape = 
+    lmShapeBarline* pShape =
         new lmShapeBarline(this, nType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
 	pBox->AddShape(pShape);
@@ -328,7 +329,7 @@ void LoadBarlinesBitmapComboBox(wxBitmapComboBox* pCtrol, lmBarlinesDBEntry tBar
     int i=0;
 	while ((int)tBarlines[i].nBarlineType != -1)
     {
-        pCtrol->Append(wxEmptyString, 
+        pCtrol->Append(wxEmptyString,
                        GenerateBitmapForBarlineCtrol(tBarlines[i].sBarlineName,
                                                      tBarlines[i].nBarlineType ),
 					   (void*)(&tBarlines[i]) );

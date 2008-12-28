@@ -1,5 +1,51 @@
 \outdir[../hacking_guide/output]
 \dir[.]{
+\file[app_overview.txt; ext=.html;]{
+\toc
+{
+    \toc1[The application object (class lmTheApp); anchor="toc0001";]{}
+    \toc1[The main frame window (class lmMainFrame); anchor="toc0002";]{}
+}
+
+\title{Application overview and main control flow}
+
+}
+\file[beams_auto_setup.txt; ext=.html;]{
+\toc
+{
+    \toc1[Purpose; anchor="toc0001";]{
+        \toc2[Beam types; anchor="toc0002";]{}}
+    \toc1[Algorithm; anchor="toc0003";]{}
+    \toc1[Test cases; anchor="toc0004";]{}
+}
+
+\title{Beamed groups of notes}
+\label[category="table"; anchor="table1";]{Table 1. Levels required by a note}
+\label[category="table"; anchor="table1";]{Table 2. Information about beam levels stored in each note for example in figure 1}
+
+}
+\file[cursors.txt; ext=.html;]{
+\toc
+{
+    \toc1[Cursors and caret; anchor="toc0001";]{}
+    \toc1[The caret; anchor="toc0002";]{
+        \toc2[User perceived behaviour; anchor="toc0003";]{}
+        \toc2[Caret movement; anchor="toc0004";]{}
+        \toc2[Updating caret position; anchor="toc0005";]{}}
+    \toc1[The Score Cursor (lmScoreCursor); anchor="toc0006";]{}
+    \toc1[The VStaff Cursor (lmVCursor); anchor="toc0007";]{
+        \toc2[Updating VCursor position; anchor="toc0008";]{}
+        \toc2[VCursor movement; anchor="toc0009";]{}
+        \toc2[Notifying about VCursor movements; anchor="toc0010";]{}
+        \toc2[VCursor implementation. API description; anchor="toc0011";]{}
+        \toc2[Attaching/dettaching a cursor to a StaffObjsCollection; anchor="toc0012";]{}
+        \toc2[Positioning a VCursor; anchor="toc0013";]{}}
+    \toc1[Edition commands and cursors; anchor="toc0014";]{}
+}
+
+\title{Cursors and caret}
+
+}
 \file[exercises_ctrols.txt; ext=.html;]{
 \toc
 {
@@ -11,7 +57,7 @@
         \toc2[Generating the Ctrol; anchor="toc0006";]{}
         \toc2[Options and dialogs for exercise user options; anchor="toc0007";]{}}
     \toc1[Guidelines to implement a new exercise Ctrol; anchor="toc0008";]{}
-    \toc1[Annex: Brief description of current Ctrol classes; anchor="toc0009";]{
+    \toc1[Annexe: Brief description of current Ctrol classes; anchor="toc0009";]{
         \toc2[lmEBookCtrol class; anchor="toc0010";]{}
         \toc2[lmExerciseCtrol : public lmEBookCtrol; anchor="toc0011";]{}
         \toc2[lmStandardExercise : public lmExerciseCtrol; anchor="toc0012";]{}
@@ -51,6 +97,32 @@
 \title{The Model-View-Controller architecture}
 
 }
+\file[pitch-representation.txt; ext=.html;]{
+\toc
+{
+    \toc1[How pitch is represented; anchor="toc0001";]{
+        \toc2[Requirements; anchor="toc0002";]{}
+        \toc2[How pitch is currently represented; anchor="toc0003";]{}}
+}
+
+\title{How pitch is represented}
+\label[category="table"; anchor="TAB1";]{Table 1. Pitch values in different representations}
+
+}
+\file[score_representations.txt; ext=.html;]{
+\toc
+{
+    \toc1[The 'Model' in the MVC architecture; anchor="toc0001";]{}
+    \toc1[Score internal representation; anchor="toc0002";]{
+        \toc2[The Collection of StaffObjs (lmColStaffObjs); anchor="toc0003";]{}}
+    \toc1[Application dependent representations; anchor="toc0004";]{
+        \toc2[Graphical: lmBoxes and lmShapes; anchor="toc0005";]{}
+        \toc2[Play back; anchor="toc0006";]{}}
+}
+
+\title{Scores: internal representation}
+
+}
 \file[source_tree.txt; ext=.html;]{
 \toc
 {
@@ -61,9 +133,10 @@
             \toc3[The application subsystem and auxiliary classes; anchor="toc0005";]{}}
         \toc2[Source code organization; anchor="toc0006";]{}
         \toc2[How to start learning the code?; anchor="toc0007";]{
-            \toc3[To start hacking; anchor="toc0008";]{
-                \toc4[GUI: score renderization & edition windows; anchor="toc0009";]{}
-                \toc4[Internal score representation; anchor="toc0010";]{}}}}
+            \toc3[To study the code, in general; anchor="toc0008";]{}
+            \toc3[To start hacking; anchor="toc0009";]{
+                \toc4[GUI: score renderization & edition windows; anchor="toc0010";]{}
+                \toc4[Internal score representation; anchor="toc0011";]{}}}}
 }
 
 \title{Program structure and source code organization}

@@ -1,0 +1,39 @@
+\include ../../agdoc/replacements
+
+\title    {Application overview and main control flow}
+
+\toc 
+
+\h1 {The application object (class lmTheApp)}
+%%%-----------------------------------------------
+
+
+All classes related to related to the main GUI and the MVC model are in folder \i{app}.
+
+The main class is %%lmTheApp%% (in files app/TheApp.h & .cpp). It represents the lenmus application itself. Execution of the program starts in method %%OnInit()%%. In this method, after several initializations, the work starts by creating the document manager (an object of class %%wxDocManager%%; see wxWidgets documentation). The document manager is part of the MVC model and is responsible for relating documents (Models) to their Views.
+
+Then, it proceeds to create the Splash window and the main frame of the application. In order to support dynamically changing the language, the creation of the main frame is encapsulated in method %%RecreateGUI()%%.
+
+After the main frame is created an visible, some additional initializations takes place, the Welcome windows is opened and, if enabled, proceeds to check for available program updates. After all this initializations, method %%lmTheApp::OnInit()%% finishes, and the application enters in the main event processing loop, waiting for events and dispatching them as they arrive.
+
+The normal source of events, at this point, is user interaction with the main frame window.
+
+
+\h1 {The main frame window (class lmMainFrame)}
+%%%---------------------------------------------
+
+The main frame window is modelled by class %%lmMainFrame%% (in files app/MainFrame.h & .cpp). It manages the main window of the application.
+
+At creation time (class constructor) it creates the main menu and the status bar. The constructor is invoked from method %%lmTheApp::RecreateGUI()%%. The, this method invokes %%lmMainFrame::CreateControls()%% to create all other windows inside the main frame: the toolbar and the notebook window to be used to display the welcome window, the scores to edit and the eBooks. The management of all this windows is done by class %%wxAUI%%. This class is framework to manage all user interface (AUI stands for Advanced User Interface. See wxWidgets documentation).
+
+The important thing to know is not how wxAUI works, but that the main window is a notebook implementing the MDI model (Multiple Document Interface). To adapt the wxWidgets MDI model (similar to MS Windows model: each document view is open in an independent windows, and all view windows are enclosed and restricted to be inside a main windows) to a notebook MDI model (each View is a tab in a notebook) some modifications had to be done. All the code for this is enclose in files contained in folder \i{mdi}: mdi/DocViewMIDI.h & .cpp, mdi/ParentFrame.h & .cpp, mdi/ChildFrame.h & .cpp, mdi/ClientWindow.h & .cpp.
+
+Again, the knowledge of all these classes and how do they work is irrelevant, unless you are going to hack something related to all this.
+
+The most important think to know about %%lmMainFrame%% class is that it deals with all user interaction. Each time the user clicks on a menu item or in a toolbar button, an event is generated and the event is processes in a method in %%lmMainFrame%%. For example, when user press button 'Play' to play back an score, an event with id ''MENU_Play_Start'' is generated and this event is processed by method %%lmMainFrame::OnPlayStart()%%. 
+
+Most event identifiers are defined at the beginning of file app/MainFrame.cpp, in an \i{enum}  (**At this point I recommend you to open MainFrame.cpp file and explore the code as you read this description**). The event handler methods that will process those events are defined in the events table (macro %%BEGIN_EVENT_TABLE%%) immediately after this enum.
+
+Continuing with the 'Play' button example, method %%lmMainFrame::OnPlayStart()%% takes control. There, it is just an issue of getting the currently displayed score and asking it to play back itself. This is the way most events are processed: The main frame identifies the currently active view or the relevant score passes the process to it. Explore other event handler methods to get see how control flow is re-directed to the appropriate object.
+
+From this point, all knowledge about how thinks work is distributed along the different classes and objects that form the program. But the MVC model and the %%lmMainFrame%% class are the keys to quickly identify where the action is taking place.

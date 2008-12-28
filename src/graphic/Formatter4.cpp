@@ -170,7 +170,7 @@ lmContext* lmSystemCursor::GetStartOfColumnContext(int iInstr, int nStaff)
     delete pIT;
 
     if (pSO)
-        return pSO->GetCurrentContext();
+        return pSO->GetCurrentContext(nStaff);
     else
         return (lmContext*)NULL;
 }
@@ -1219,13 +1219,15 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff
         //locate context for first note in this staff
         pContext = m_pSysCursor->GetStartOfColumnContext(nInstr, nStaff);
 
-        if (pContext) {
+        if (pContext)
+        {
             pClef = pContext->GetClef();
             pKey = pContext->GetKey();
             pTime = pContext->GetTime();
 
             //render clef
-            if (pClef) {
+            if (pClef)
+            {
                 nClef = pClef->GetClefType();
 				if (pClef->IsVisible())
                 {

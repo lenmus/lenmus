@@ -98,11 +98,12 @@ void lmWaveManager::SaveUserPreferences()
 void lmWaveManager::WrongAnswerSound()
 {
     if (m_oWrong.IsOk())
-    m_oWrong.Play();
+        m_oWrong.Play(wxSOUND_SYNC);
 }
 
 void lmWaveManager::RightAnswerSound()
 {
-    if (m_oRight.IsOk()) m_oRight.Play();
+    if (m_oRight.IsOk()) 
+        m_oRight.Play(wxSOUND_SYNC);
 }
 

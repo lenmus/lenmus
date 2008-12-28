@@ -1,0 +1,340 @@
+
+<html>
+<head>
+<title>How pitch is represented</title>
+<meta http-equiv="Content-Type" content="text/html" />
+<link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
+</head>
+<body>
+
+
+
+
+<h1 class='article'>How pitch is represented
+</h1>
+
+<p class="copyright">
+LenMus project (http://www.lenmus.org/)<br />
+<a href="#legal_notice">GNU Free Documentation License</a>
+</p>
+
+
+<a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
+    <a class='toc_level1' href="#toc0001">How pitch is represented</a>
+        <a class='toc_level2' href="#toc0002">Requirements</a>
+        <a class='toc_level2' href="#toc0003">How pitch is currently represented</a>
+
+ 
+
+
+<h2 class='article'><a name="toc0001"></a>
+<a href="#TOC"><img src="images/top.png" width="35" height="19" 
+align="absmiddle" border="0"></a>&nbsp;How pitch is represented</h2>
+
+
+
+
+<h3 class='article'><a name="toc0002"></a>
+<a href="#TOC"><img src="images/top.png" width="35" height="19" 
+align="absmiddle" border="0"></a>&nbsp;Requirements</h3>
+
+
+
+<p class='justified'>As new exercises are designed and implemented, new pitch representation requirements started to appear.</p>
+
+<p class='justified'>Frequently the issue of whether or not to represent explicitly the key signature accidentals by adding them to the note pitch, reappears. My current opinion is that it seems better to always include the accidentals in the representation (absolute pitch) and filter them out at layout phase.</p>
+
+<p class='justified'>Additional features, such as:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>To support microtonality and melismatic intonation</li>
+<li>To support &#039;no-pitch defined yet&#039; value</li></ul><div></p>
+ 
+<p class='justified'>also have to be taken into account.</p>
+
+<p class='justified'>For efficiency and to simplify computations, it would be very nice if the pitch representation could combine the diatonic pitch (step and octave) and accidentals in a single number.</p>
+
+<p class='justified'>An important requirement for music analysis is that it would be desirable that by subtracting two pitch representations we could easily get the interval, without more computations. After experimenting with several representations, I found on the web an <a href=".txt.html">#r1</a> [article]<SUP>[1]</SUP>, from Walter B. Hewlett describing representation systems with these properties. So I decided to test the proposed base-40 representation system. It has been, in fact, the best solution I fount to represent pitch for music analysis applications.</p>
+
+<p class='justified'>[1] - Walter B. Hewlett, &quot;A Base-40 Number-line Representation of Musical Pitch Notation&quot;, Stanford, California, <A href="http://www.ccarh.org/publications/reprints/base40">http://www.ccarh.org/publications/reprints/base40</A>/</p>
+
+
+
+<h3 class='article'><a name="toc0003"></a>
+<a href="#TOC"><img src="images/top.png" width="35" height="19" 
+align="absmiddle" border="0"></a>&nbsp;How pitch is currently represented</h3>
+
+
+
+<p class='justified'>All above mentioned issues are currently, except microtonality, have been currently  taken into account. Microtonality representation is yet an open issue to be solved in order to include new exercises, such as the planned &#039;Tunning exercise&#039;.</p>
+
+<p class='justified'><b>1. External representations</b></p>
+
+    <p class='justified'>a) Absolute pitch (MusicXML style)
+<div class="itemizedlist"><ul type="disc">
+<li>The pitch is represented by combining the note name, the octave and the accidentals.</li>
+<li>The pitch is absolute, that is, it is not influenced by key signature accidentals,          accidentals in previous note, etc.</li>
+<li>Accidentals are represented by the number of semitones (i.e. -1 for a flat, + 1 for a sharp). Decimal values can be used to represent microtones (i.e. +0.5 = a quarter of a tone).</li></ul><div></p>
+    
+    <p class='justified'>b) Relative pitch (LDP style)
+<div class="itemizedlist"><ul type="disc">
+<li>The pitch is also represented by combining the note name, the octave and the accidentals.</li>
+<li>Contrary to &#039;Absolute pitch&#039; method, accidentals are relative to the context. That is, you have to write only those accidentals that are not implied by the key signature or that are not implied by a previous accidental in the same measure.</li>
+<li>Microtonality is not allowed (yet).</li></ul><div></p>
+
+
+<p class='justified'>To deal with external representations, when a note is going to be created and the note constructor has to assign meaning to the received parameters, three possibilities are currently defined in the program:</p>
+
+<div class="informalexample"><pre class="programlisting">
+// pitch type
+enum lmEPitchType
+{
+    lm_ePitchAbsolute = 0,  // absolute pitch (MusicXML style), equal temperament tuning system
+    lm_ePitchRelative,      // relative pitch (LDP style), equal temperament tuning system
+    lm_ePitchNotDefined,    // pitch value is not yet defined
+};
+
+</pre></div>
+
+<p class='justified'>This enum is defined in file score/defs.h. The meaning of each value is as follows:</p>
+
+    <p class='justified'>lm_ePitchAbsolute
+<div class="itemizedlist"><ul type="disc">
+<li>Absolute pitch (MusicXML style), equal temperament tuning system.
+        Sound and look information totally independent:</li>
+<li>Pitch is absolute, and is implied by combining Step, Octave and Alter.</li>
+<li>Accidentals are just for rendering.</li></ul><div></p>
+        
+    <p class='justified'>lm_ePitchRelative
+<div class="itemizedlist"><ul type="disc">
+<li>Relative pitch (LDP style), equal temperament tuning system</li>
+<li>Notes defined as in hand writing; pitch depends on context (key signature
+        and accidentals introduced by a previous note in the same measure) and its own
+        accidentals:</li>
+<li>Pitch is computed from Step, Octave, Accidentals and Context.</li>
+<li>Alter is not used.</li></ul><div></p>
+        
+    <p class='justified'>lm_ePitchNotDefined
+<div class="itemizedlist"><ul type="disc">
+<li>Pitch value is not yet defined. If it would be necessary to render or play back the note, program should assign it an arbitrary pitch and, if possible, add something (i.e. a change in colour) to show that the note has not yet pitch assigned.</li></ul><div></p>
+        
+
+
+<p class='justified'><b>2. Internal representations</b></p>
+
+<p class='justified'>All issue and methods to deal with internal pitch representation are coded in files score/Pitch.cpp &amp; .h.</p>
+
+<p class='justified'>Currently, four different ways to encode pitch, and methods to translate from one representation into any other one, are defined:</p>
+
+<p class='justified'>a) Midi pitch (typedef <span class="kw1">lmMPitch</span>)
+<div class="itemizedlist"><ul type="disc">
+<li>A number representing the pitch in a chromatic scale. It is the same as the MIDI key number used in MIDI for representing pitch.</li>
+<li>Equal temperament tunning assumed. This implies that there is no possibility to differentiate between enharmonic sounds, for instance, C sharp and D flat.</li>
+<li>Intended to be used only for sound generation.</li>
+<li>Usable for sweeps along the equal temperament sounds.</li></ul><div></p>
+                
+<p class='justified'>b) Diatonic pitch (typedef <span class="kw1">lmDPitch</span>)
+<div class="itemizedlist"><ul type="disc">
+<li>A number (int) representing the note in a diatonic scale. Only Step and Octave information.</li>
+<li>Accidentals not represented <span class="larger">&#8594;</span> Incomplete information.</li>
+<li>Usable for sweeps along the diatonic note range.</li>
+<li>TODO: Efficient conversion to lmNotePitch required.</li></ul><div></p>
+
+<p class='justified'>c) Absolute pitch (class <span class="kw1">lmAPitch</span>)
+<div class="itemizedlist"><ul type="disc">
+<li>Chromatic absolute pitch implied by combining Diatonic pitch and Accidentals. No enharmonies assumed (i.e. C sharp is a different representation from D flat).</li>
+<li>Currently implemented as a class with two int members (DPitch, Accidentals). A better alternative could be combining DPitch + Accidentals in a long: 16bits will be for DPitch and the other 16bits for accidentals</li>
+<li>Optimal use: sweeps along the diatonic note range</li></ul><div></p>
+                
+<p class='justified'>d) Base-40 pitch (typedef <span class="kw1">lmFPitch</span>)
+<div class="itemizedlist"><ul type="disc">
+<li>(F stands for <i>Fourty</i>). It is an absolute pitch representation, with an interesting property: is interval-invariant, that is, the number obtained by subtracting two pitches represents the interval between them. Therefore, this representation is specially useful to deal with intervals.</li>
+<li>Each octave requires an range of 40 values. So to represent 10 octaves (C0-B9) a range of 400 is required. An <span class="kw1">int</span> is enough.</li></ul><div></p>
+
+<TABLE class="tip" width="640px"><TR><TD><B>TIP</B><BR/>
+    lmFPitch representation has shown to be optimal for representing pitch in cases where music analysis is an objective, as it greatly simplifies analysing intervals and chords.
+</TD></TR></TABLE>
+
+
+<p class='justified'><b> 3. Intervals representation</b>
+    Intervals (typedef <span class="kw1">lmFIntval</span>)      // Intervals, in FPitch mode.</p>
+
+
+<p class='justified'><b>3. Open issues</b></p>
+
+    <p class='justified'>ePitchNoteCents
+<div class="itemizedlist"><ul type="disc">
+<li>Absolute pitch + cents deviation.</li></ul><div></p>
+
+      
+<p class='justified'>new (HCHord):                
+                Internal: DPitch + Accidentals
+<div class="itemizedlist"><ul type="disc">
+<li>Better usability for sweeps along the diatonic note range</li></ul><div></p>
+                
+ <p class='justified'>lmUPitch:      Microtonal pitch:
+                - CPitch + cents deviation?
+                - A previous operation to set up scale intervals and number of keys? 
+                    Then lmUpitch could be just the key+octave</p>
+                
+                
+ <p class='justified'>LDP source:    String &quot;accidentals-step-octave&quot; (i.e. &#039;=+c3&#039;). Relative to context.
+<div class="itemizedlist"><ul type="disc">
+<li>Difficult to manage.</li>
+<li>Uncertainty about meaning as in some methods it is used as an
+                  absolute pitch.</li>
+<li>Incomplete information or complex to analyse, as at least key signature
+                  must be taken into account.</li></ul><div></p>
+ 
+                
+ <p class='justified'>lmNoteBits:    A lmNotePitch equivalent but less compact. StepSemitones is redundant
+ </p><div class="informalexample"><pre class="programlisting">
+     int nStep;              // &#039;c&#039;=0, &#039;d&#039;=1, &#039;e&#039;=2, &#039;f&#039;=3, &#039;g&#039;=4, &#039;a&#039;=5, &#039;b&#039;=6
+     int nOctave;            // 0..9
+     int nAccidentals;       // &#039;--&#039;=-1, &#039;-&#039;=-1, &#039;&#039;=0, &#039;+&#039;=+1, &#039;++&#039;=+2
+     int nStepSemitones;     // &#039;c&#039;=0, &#039;d&#039;=2, &#039;e&#039;=4, &#039;f&#039;=5, &#039;g&#039;=7, &#039;a&#039;=9, &#039;b&#039;=11
+ </pre></div>
+               
+                
+ <p class='justified'>nStep:         Diatonic step 0..6: 0=C, 1=D, 2=E, 3=F, 4=G, 5=A, 6=B
+ nOctave:       Octave number 0..9. Same meaning as in MIDI but the lowest MIDI octave (-1)
+                possible to represent.
+ nAlter
+ nAccidentals</p>
+
+ <p class='justified'>- A pitch value of 0 (zero) represents a rest.
+ - A -1 value (both for Diatonic Pitch and MIDI Pitch) would imply &#039;no pitch defined yet&#039;</p>
+ 
+ 
+ 
+<A name="TAB1"><B></B></A><table class="simpletable">
+<th class="simpletable">name</th><th class="simpletable">Octave</th><th class="simpletable">MIDI</th><th class="simpletable">DPitch</th><th class="simpletable">Observations</th>
+<tr class="simpletable"><td class="simpletable">rest</td><td class="simpletable" style="text-align:right">any</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable">Any&#160;rest</td></tr>
+<tr class="simpletable"><td class="simpletable">(c-1)</td><td class="simpletable" style="text-align:right">-1</td><td class="simpletable" style="text-align:right">1</td></tr>
+<tr class="simpletable"><td class="simpletable">c0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">12</td><td class="simpletable" style="text-align:right">1</td><td class="simpletable">Do2&#160;de&#160;la&#160;subcontraoctava&#160;(16.35&#160;Hz)</td></tr>
+<tr class="simpletable"><td class="simpletable">d0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">14</td><td class="simpletable" style="text-align:right">2</td></tr>
+<tr class="simpletable"><td class="simpletable">e0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">16</td><td class="simpletable" style="text-align:right">3</td></tr>
+<tr class="simpletable"><td class="simpletable">f0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">17</td><td class="simpletable" style="text-align:right">4</td></tr>
+<tr class="simpletable"><td class="simpletable">g0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">19</td><td class="simpletable" style="text-align:right">5</td></tr>
+<tr class="simpletable"><td class="simpletable">a0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">21</td><td class="simpletable" style="text-align:right">6</td></tr>
+<tr class="simpletable"><td class="simpletable">b0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">23</td><td class="simpletable" style="text-align:right">7</td></tr>
+<tr class="simpletable"><td class="simpletable">c1</td><td class="simpletable" style="text-align:right">1</td><td class="simpletable" style="text-align:right">24</td><td class="simpletable" style="text-align:right">8</td><td class="simpletable">Do1&#160;de&#160;la&#160;contraoctava</td></tr>
+<tr class="simpletable"><td class="simpletable">c2</td><td class="simpletable" style="text-align:right">2</td><td class="simpletable" style="text-align:right">36</td><td class="simpletable" style="text-align:right">15</td><td class="simpletable">Do&#160;de&#160;la&#160;gran&#160;octava</td></tr>
+<tr class="simpletable"><td class="simpletable">c3</td><td class="simpletable" style="text-align:right">3</td><td class="simpletable" style="text-align:right">48</td><td class="simpletable" style="text-align:right">22</td><td class="simpletable">do&#160;de&#160;la&#160;pequena&#160;octava</td></tr>
+<tr class="simpletable"><td class="simpletable">c4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">60</td><td class="simpletable" style="text-align:right">29</td><td class="simpletable">do1&#160;de&#160;la&#160;octava&#160;primera&#160;(a4&#160;=&#160;440Hz)</td></tr>
+<tr class="simpletable"><td class="simpletable">d4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">62</td><td class="simpletable" style="text-align:right">30</td></tr>
+<tr class="simpletable"><td class="simpletable">e4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">64</td><td class="simpletable" style="text-align:right">31</td></tr>
+<tr class="simpletable"><td class="simpletable">f4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">65</td><td class="simpletable" style="text-align:right">32</td></tr>
+<tr class="simpletable"><td class="simpletable"><span class="larger">&#133;</span></td></tr>
+<tr class="simpletable"><td class="simpletable">c5</td><td class="simpletable" style="text-align:right">5</td><td class="simpletable" style="text-align:right">72</td><td class="simpletable" style="text-align:right">36</td><td class="simpletable">do2&#160;de&#160;la&#160;octava&#160;segunda</td></tr>
+<tr class="simpletable"><td class="simpletable">c6</td><td class="simpletable" style="text-align:right">6</td><td class="simpletable" style="text-align:right">84</td><td class="simpletable" style="text-align:right">43</td><td class="simpletable">do3&#160;de&#160;la&#160;octava&#160;tercera</td></tr>
+<tr class="simpletable"><td class="simpletable">c7</td><td class="simpletable" style="text-align:right">7</td><td class="simpletable" style="text-align:right">96</td><td class="simpletable" style="text-align:right">50</td><td class="simpletable">do4&#160;de&#160;la&#160;octava&#160;cuarta</td></tr>
+<tr class="simpletable"><td class="simpletable">c8</td><td class="simpletable" style="text-align:right">8</td><td class="simpletable" style="text-align:right">108</td><td class="simpletable" style="text-align:right">57</td><td class="simpletable">do5&#160;de&#160;la&#160;octava&#160;quinta&#160;(4,186&#160;Hz)</td></tr>
+<tr class="simpletable"><td class="simpletable">c9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">120</td><td class="simpletable" style="text-align:right">64</td></tr>
+<tr class="simpletable"><td class="simpletable">d9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">122</td><td class="simpletable" style="text-align:right">65</td></tr>
+<tr class="simpletable"><td class="simpletable">e9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">124</td><td class="simpletable" style="text-align:right">66</td></tr>
+<tr class="simpletable"><td class="simpletable">f9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">125</td><td class="simpletable" style="text-align:right">67</td></tr>
+<tr class="simpletable"><td class="simpletable">g9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">127</td><td class="simpletable" style="text-align:right">68</td></tr>
+</table><FONT style="margin-left:1em"><I>Table 1. Pitch values in different representations</I></FONT>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<hr class='copyright' />
+<a name="legal_notice">&nbsp;</a>
+<p class="copyright">
+Copyright &copy; 2008-2009 LenMus project
+</p>
+<p class="justified">
+This document is part of the LenMus project. LenMus endorses the ideas of free software, free
+education and free access to knowledge. Therefore,
+permission is granted to copy, distribute and/or modify this
+document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included with the program.
+</p>
+
+</body></html>
