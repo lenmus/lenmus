@@ -115,8 +115,8 @@
 	<File name="../../src/app/StatusBar.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="3958" topLine="116" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="0" top="0" tabpos="15">
-		<Cursor position="3684" topLine="57" />
+	<File name="../../src/app/TheApp.cpp" open="1" top="1" tabpos="18">
+		<Cursor position="31161" topLine="796" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="89">
 		<Cursor position="2598" topLine="40" />
@@ -142,8 +142,8 @@
 	<File name="../../src/app/toolbox/ToolPage.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="0" topLine="41" />
 	</File>
-	<File name="../../src/app/toolbox/ToolsBox.cpp" open="0" top="0" tabpos="42">
-		<Cursor position="7251" topLine="193" />
+	<File name="../../src/app/toolbox/ToolsBox.cpp" open="1" top="0" tabpos="15">
+		<Cursor position="5844" topLine="138" />
 	</File>
 	<File name="../../src/auxmusic/Cadence.cpp" open="0" top="0" tabpos="44">
 		<Cursor position="46767" topLine="1104" />
@@ -196,7 +196,7 @@
 	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="0" top="0" tabpos="37">
 		<Cursor position="9867" topLine="289" />
 	</File>
-	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="1" top="1" tabpos="14">
+	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="1" top="0" tabpos="14">
 		<Cursor position="11704" topLine="335" />
 	</File>
 	<File name="../../src/exercises/IdfyScalesCtrol.cpp" open="0" top="0" tabpos="4">
@@ -472,6 +472,9 @@
 	<File name="../../src/score/MetronomeMark.cpp" open="0" top="0" tabpos="25">
 		<Cursor position="11056" topLine="283" />
 	</File>
+	<File name="../../src/score/Notation.cpp" open="1" top="0" tabpos="17">
+		<Cursor position="4399" topLine="207" />
+	</File>
 	<File name="../../src/score/Note.cpp" open="0" top="0" tabpos="44">
 		<Cursor position="19594" topLine="577" />
 	</File>
@@ -487,8 +490,8 @@
 	<File name="../../src/score/Rest.cpp" open="0" top="0" tabpos="77">
 		<Cursor position="6594" topLine="170" />
 	</File>
-	<File name="../../src/score/SOControl.cpp" open="0" top="0" tabpos="61">
-		<Cursor position="3047" topLine="78" />
+	<File name="../../src/score/SOControl.cpp" open="1" top="0" tabpos="16">
+		<Cursor position="3047" topLine="0" />
 	</File>
 	<File name="../../src/score/Score.cpp" open="0" top="0" tabpos="31">
 		<Cursor position="24157" topLine="833" />

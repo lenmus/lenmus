@@ -35,16 +35,12 @@ LenMus project (http://www.lenmus.org/)<br />
  
 
 
-<h2 class='article'><a name="toc0001"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Program structure and source code organization</h2>
+<h2 class='article'><a name="toc0001"></a>Program structure and source code organization</h2>
 
 
 
 
-<h3 class='article'><a name="toc0002"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Program structure</h3>
+<h3 class='article'><a name="toc0002"></a>Program structure</h3>
 
 <p class='justified'>The program can be broken into three main parts, each of it with several sub-parts:</p>
 
@@ -68,9 +64,7 @@ align="absmiddle" border="0"></a>&nbsp;Program structure</h3>
  
 
 
-<h4 class='article'><a name="toc0003"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;The score representation subsystem</h4>
+<h4 class='article'><a name="toc0003"></a>The score representation subsystem</h4>
 
 
 <p class='justified'>Externally, scores are represented as text, either in MusicXML or LDP format. In future, it would be possible to add support to import/export more formats, being MIDI the first candidate.</p>
@@ -79,9 +73,7 @@ align="absmiddle" border="0"></a>&nbsp;The score representation subsystem</h4>
 
 
 
-<h4 class='article'><a name="toc0004"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;eBooks subsystem</h4>
+<h4 class='article'><a name="toc0004"></a>eBooks subsystem</h4>
 
 
 <p class='justified'>eBooks are a totally different type of information that the program must deal with. They are a collection of texts, scores, images and exercises, organized into chapters and themes. Again, there are two representations for an eBook: an external one, to be contained in a file, and an internal one, more suitable for processing.</p>
@@ -89,9 +81,7 @@ align="absmiddle" border="0"></a>&nbsp;eBooks subsystem</h4>
 <p class='justified'>The eBooks subsystem takes care of reading the external representation, rendering the eBooks and reacting to user input to make eBooks interactive (that is, moving through the book and controlling interaction with scores and exercises to make them &#039;live&#039;).</p>
 
 
-<h4 class='article'><a name="toc0005"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;The application subsystem and auxiliary classes</h4>
+<h4 class='article'><a name="toc0005"></a>The application subsystem and auxiliary classes</h4>
 
 
 <p class='justified'>The application materializes to the user as a main window with menus, toolbars, auxiliary windows, a main tabbed interface, etc. The renderization and control of all these windows is managed by the GUI subsystem.</p>
@@ -100,13 +90,11 @@ align="absmiddle" border="0"></a>&nbsp;The application subsystem and auxiliary c
 
 
 
-<h3 class='article'><a name="toc0006"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Source code organization</h3>
+<h3 class='article'><a name="toc0006"></a>Source code organization</h3>
 
 <p class='justified'>Since project start, I&#039;ve tried to have source code organized by subsystems (as previously described), subdividing each subsystem into parts, as necessary, for better comprehension and management. This objective is not yet totally achieved, as some times it is difficult to put clear lines between subsystems. Currently, source code is organized in these folders:</p> 
 
-<A name="TAB1"><B></B></A><table class="simpletable">
+<A name="TAB1"><B></B></A><p>&nbsp;</p><table class="simpletable">
 <th class="simpletable">Folder</th><th class="simpletable">Subfolder</th><th class="simpletable">Subsystem</th><th class="simpletable">Content</th>
 <tr class="simpletable"><td class="simpletable">app</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">Classes related with main GUI, the MVC model and windows for exercise options (These will be moved, in future, to the same folder than exercises classes)</td></tr>
 <tr class="simpletable"><td class="simpletable">&#160;</td><td class="simpletable">toolbox</td><td class="simpletable">GUI</td><td class="simpletable">Classes related with score edition toolbox</td></tr>
@@ -124,21 +112,17 @@ align="absmiddle" border="0"></a>&nbsp;Source code organization</h3>
 <tr class="simpletable"><td class="simpletable">updater</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">classes to check for program updates, and related</td></tr>
 <tr class="simpletable"><td class="simpletable">widgets</td><td class="simpletable"></td><td class="simpletable">GUI</td><td class="simpletable">classes to implement GUI program widgets: buttons, caret, rules, etc.</td></tr>
 <tr class="simpletable"><td class="simpletable">xml_parser</td><td class="simpletable"></td><td class="simpletable">score</td><td class="simpletable">parser for MusicXML files</td></tr>
-</table><FONT style="margin-left:1em"><I>Table 1. Source code tree</I></FONT>
+</table><center><p><FONT style="margin-left:1em"><I>Table 1. Source code tree</I></FONT></p></center><p>&nbsp;</p>
 
 
-<h3 class='article'><a name="toc0007"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;How to start learning the code?</h3>
+<h3 class='article'><a name="toc0007"></a>How to start learning the code?</h3>
 
 
 <p class='justified'>That will depend on your main purpose to study the code: to get a global general idea or to start hacking, as soon as possible, on a certain program area. Lets describe each one of these approaches.</p>
 
 
 
-<h4 class='article'><a name="toc0008"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;To study the code, in general</h4>
+<h4 class='article'><a name="toc0008"></a>To study the code, in general</h4>
 
 
 <p class='justified'>Well, it is difficult to give guidelines here. But sure, start section on
@@ -146,15 +130,11 @@ align="absmiddle" border="0"></a>&nbsp;To study the code, in general</h4>
 according to your main interests.</p>
 
 
-<h4 class='article'><a name="toc0009"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;To start hacking</h4>
+<h4 class='article'><a name="toc0009"></a>To start hacking</h4>
 
 
 
-<h5 class='article'><a name="toc0010"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;GUI: score renderization & edition windows</h5>
+<h5 class='article'><a name="toc0010"></a>GUI: score renderization & edition windows</h5>
 
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
@@ -168,9 +148,7 @@ align="absmiddle" border="0"></a>&nbsp;GUI: score renderization & edition window
 
 
 
-<h5 class='article'><a name="toc0011"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Internal score representation</h5>
+<h5 class='article'><a name="toc0011"></a>Internal score representation</h5>
 
 
 
@@ -190,9 +168,8 @@ align="absmiddle" border="0"></a>&nbsp;Internal score representation</h5>
 Copyright &copy; 2008-2009 LenMus project
 </p>
 <p class="justified">
-This document is part of the LenMus project. LenMus endorses the ideas of free software, free
-education and free access to knowledge. Therefore,
-permission is granted to copy, distribute and/or modify this
+This document is part of the LenMus project. 
+Permission is granted to copy, distribute and/or modify this
 document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
 Version 1.3 or any later version published by the Free Software
 Foundation; with no Invariant Sections, no Front-Cover Texts and

@@ -589,7 +589,7 @@ table, td, tr {
     border: 0px;
 }
 
-/* elementos con class para paginas específicas */
+/* elementos con class para paginas especï¿½ficas */
 h1.TituloPagina {
     COLOR: #7f8bdc; MARGIN: 0em; FONT: bold 160% Verdana;
 }
@@ -853,4 +853,5 @@ th.simpletable {
     padding-top : 0.2em;
     padding-bottom : 0.2em;
 }
+
 

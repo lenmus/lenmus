@@ -40,9 +40,7 @@ LenMus project (http://www.lenmus.org/)<br />
  
 
 
-<h2 class='article'><a name="toc0001"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;eBooks: Including scores and exercises</h2>
+<h2 class='article'><a name="toc0001"></a>eBooks: Including scores and exercises</h2>
 
 
 
@@ -52,9 +50,7 @@ align="absmiddle" border="0"></a>&nbsp;eBooks: Including scores and exercises</h
 
 
 
-<h3 class='article'><a name="toc0002"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Html embedded controls</h3>
+<h3 class='article'><a name="toc0002"></a>Html embedded controls</h3>
 
 
 
@@ -83,9 +79,7 @@ There are some auxiliary classes, whose name ends as &#039;Ctrol&#039;. These cl
 
 
 
-<h2 class='article'><a name="toc0003"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Classes to implement a Ctrol</h2>
+<h2 class='article'><a name="toc0003"></a>Classes to implement a Ctrol</h2>
 
 
 
@@ -126,9 +120,7 @@ align="absmiddle" border="0"></a>&nbsp;Classes to implement a Ctrol</h2>
 
 
 
-<h3 class='article'><a name="toc0004"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;object tag: classid and parameters</h3>
+<h3 class='article'><a name="toc0004"></a>object tag: classid and parameters</h3>
 
 
 
@@ -149,7 +141,7 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
 
 <p class='justified'>Looking at &lt;object&gt; tag attributes you can notice the <i>classid</i> attribute. It defines the type of Ctrol to generate by the &lt;object&gt; tag. When implementing a new Ctrol, it is necessary to define a unique id for it. This id strings are defined in file html/Tags.cpp, in the TAG_HANDLER_PROC code. Currently, the following Ctrols are defined:</p>
 
-<A name="TAB1"><B></B></A><table class="simpletable">
+<A name="TAB1"><B></B></A><p>&nbsp;</p><table class="simpletable">
 <th class="simpletable">Ctrol</th><th class="simpletable">classid</th>
 <tr class="simpletable"><td class="simpletable">lmScoreCtrol</td><td class="simpletable">Score</td></tr>
 <tr class="simpletable"><td class="simpletable">lmTheoIntervalsCtrol</td><td class="simpletable">TheoIntervals</td></tr>
@@ -160,16 +152,14 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
 <tr class="simpletable"><td class="simpletable">lmIdfyScalesCtrol</td><td class="simpletable">IdfyScales</td></tr>
 <tr class="simpletable"><td class="simpletable">lmIdfyCadencesCtrol</td><td class="simpletable">IdfyCadences</td></tr>
 <tr class="simpletable"><td class="simpletable">lmTheoMusicReadingCtrol</td><td class="simpletable">TheoMusicReading</td></tr>
-</table><FONT style="margin-left:1em"><I>Table 1. classid for object tags</I></FONT>
+</table><center><p><FONT style="margin-left:1em"><I>Table 1. classid for object tags</I></FONT></p></center><p>&nbsp;</p>
 
 
 <p class='justified'>Parameters for the Ctrol are included by using &lt;param&gt; tags. Param tags have two attributes: name and value. Names and values are specific for each exercise but there are some that are common to all Ctrols. They are defined in class <span class="kw1">lmEBookCtrolParams</span>, defined in html/ObjectParams.h &amp; cpp.</p>
 
 
 
-<h3 class='article'><a name="toc0005"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Parsing and storing the parameters</h3>
+<h3 class='article'><a name="toc0005"></a>Parsing and storing the parameters</h3>
 
 
 
@@ -188,9 +178,7 @@ align="absmiddle" border="0"></a>&nbsp;Parsing and storing the parameters</h3>
 
 
 
-<h3 class='article'><a name="toc0006"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Generating the Ctrol</h3>
+<h3 class='article'><a name="toc0006"></a>Generating the Ctrol</h3>
 
 
 
@@ -208,9 +196,7 @@ align="absmiddle" border="0"></a>&nbsp;Generating the Ctrol</h3>
 
 
 
-<h3 class='article'><a name="toc0007"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Options and dialogs for exercise user options</h3>
+<h3 class='article'><a name="toc0007"></a>Options and dialogs for exercise user options</h3>
 
 
 
@@ -231,9 +217,7 @@ align="absmiddle" border="0"></a>&nbsp;Options and dialogs for exercise user opt
 
     
 
-<h2 class='article'><a name="toc0008"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Guidelines to implement a new exercise Ctrol</h2>
+<h2 class='article'><a name="toc0008"></a>Guidelines to implement a new exercise Ctrol</h2>
 
 
     
@@ -271,16 +255,12 @@ align="absmiddle" border="0"></a>&nbsp;Guidelines to implement a new exercise Ct
 
 
 
-<h2 class='article'><a name="toc0009"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;Annexe: Brief description of current Ctrol classes</h2>
+<h2 class='article'><a name="toc0009"></a>Annexe: Brief description of current Ctrol classes</h2>
 
 
 
 
-<h3 class='article'><a name="toc0010"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;lmEBookCtrol class</h3>
+<h3 class='article'><a name="toc0010"></a>lmEBookCtrol class</h3>
 
 
 
@@ -300,9 +280,7 @@ align="absmiddle" border="0"></a>&nbsp;lmEBookCtrol class</h3>
 </pre></div>
 
 
-<h3 class='article'><a name="toc0011"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;lmExerciseCtrol : public lmEBookCtrol</h3>
+<h3 class='article'><a name="toc0011"></a>lmExerciseCtrol : public lmEBookCtrol</h3>
 
 
 
@@ -320,9 +298,7 @@ align="absmiddle" border="0"></a>&nbsp;lmExerciseCtrol : public lmEBookCtrol</h3
 
 
 
-<h3 class='article'><a name="toc0012"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;lmStandardExercise : public lmExerciseCtrol</h3>
+<h3 class='article'><a name="toc0012"></a>lmStandardExercise : public lmExerciseCtrol</h3>
 
 
 
@@ -346,9 +322,7 @@ align="absmiddle" border="0"></a>&nbsp;lmStandardExercise : public lmExerciseCtr
 
 
 
-<h3 class='article'><a name="toc0013"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;lmOneScoreCtrol : public lmStandardExercise</h3>
+<h3 class='article'><a name="toc0013"></a>lmOneScoreCtrol : public lmStandardExercise</h3>
 
 
 
@@ -365,9 +339,7 @@ align="absmiddle" border="0"></a>&nbsp;lmOneScoreCtrol : public lmStandardExerci
     
     
 
-<h3 class='article'><a name="toc0014"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;lmCompareCtrol : public lmStandardExercise</h3>
+<h3 class='article'><a name="toc0014"></a>lmCompareCtrol : public lmStandardExercise</h3>
 
 
 
@@ -383,9 +355,7 @@ align="absmiddle" border="0"></a>&nbsp;lmCompareCtrol : public lmStandardExercis
 
 
 
-<h3 class='article'><a name="toc0015"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;lmCompareScoresCtrol : public lmCompareCtrol</h3>
+<h3 class='article'><a name="toc0015"></a>lmCompareScoresCtrol : public lmCompareCtrol</h3>
 
 
 
@@ -406,9 +376,7 @@ align="absmiddle" border="0"></a>&nbsp;lmCompareScoresCtrol : public lmCompareCt
     
     
 
-<h3 class='article'><a name="toc0016"></a>
-<a href="#TOC"><img src="images/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;lmCompareMidiCtrol : public lmCompareCtrol</h3>
+<h3 class='article'><a name="toc0016"></a>lmCompareMidiCtrol : public lmCompareCtrol</h3>
 
 
 
@@ -429,9 +397,8 @@ align="absmiddle" border="0"></a>&nbsp;lmCompareMidiCtrol : public lmCompareCtro
 Copyright &copy; 2008-2009 LenMus project
 </p>
 <p class="justified">
-This document is part of the LenMus project. LenMus endorses the ideas of free software, free
-education and free access to knowledge. Therefore,
-permission is granted to copy, distribute and/or modify this
+This document is part of the LenMus project. 
+Permission is granted to copy, distribute and/or modify this
 document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
 Version 1.3 or any later version published by the Free Software
 Foundation; with no Invariant Sections, no Front-Cover Texts and

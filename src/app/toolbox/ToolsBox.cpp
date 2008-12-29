@@ -76,7 +76,7 @@ const int ID_BUTTON = 2200;
 BEGIN_EVENT_TABLE(lmToolBox, wxPanel)
 	EVT_CHAR (lmToolBox::OnKeyPress)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmToolBox::OnButtonClicked)
-    EVT_SIZE (lmToolBox::OnResize) 
+    EVT_SIZE (lmToolBox::OnResize)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmToolBox, wxPanel)
@@ -139,7 +139,7 @@ void lmToolBox::CreateControls()
     pSelectPanel->SetBackgroundColour(m_colors.Normal());
 
 	wxBoxSizer* pSelectSizer = new wxBoxSizer( wxVERTICAL );
-	
+
     wxGridSizer* pButtonsSizer = new wxGridSizer(NUM_COLUMNS);
     int iMax = sizeof(m_aToolsData)/sizeof(lmToolsData);
     wxSize btSize(BUTTON_SIZE, BUTTON_SIZE);
@@ -151,7 +151,7 @@ void lmToolBox::CreateControls()
         m_pButton[iB]->SetBitmapUp(m_aToolsData[iB].sBitmap, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(m_aToolsData[iB].sBitmap, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(m_aToolsData[iB].sBitmap, _T("button_over_flat"), btSize);
-        m_pButton[iB]->SetToolTip(m_aToolsData[iB].sToolTip);
+        m_pButton[iB]->SetToolTip(wxGetTranslation(m_aToolsData[iB].sToolTip));
 		int sides = 0;
 		if (iB > 0) sides |= wxLEFT;
 		if (iB < iMax-1) sides |= wxRIGHT;
@@ -160,24 +160,24 @@ void lmToolBox::CreateControls()
 	}
 
     pSelectSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALL, SPACING );
-	
+
 	pSelectPanel->SetSizer( pSelectSizer );
 	pSelectPanel->Layout();
 	pSelectSizer->Fit( pSelectPanel );
 	pMainSizer->Add( pSelectPanel, 0, 0, SPACING );
-	
+
     //the pages
 	m_pPageSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	int nWidth = NUM_COLUMNS * BUTTON_SIZE + 2*(NUM_COLUMNS-1)*BUTTON_SPACING + 2*SPACING;
     m_pEmptyPage = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(-1, 800),
 							   wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
     m_pEmptyPage->SetBackgroundColour(m_colors.Bright());
 	m_pCurPage = m_pEmptyPage;
 	m_pPageSizer->Add( m_pCurPage, 1, wxEXPAND, SPACING );
-	
+
 	pMainSizer->Add( m_pPageSizer, 1, wxEXPAND, SPACING );
-	
+
 	SetSizer( pMainSizer );
     pMainSizer->SetSizeHints(this);
 	Layout();
@@ -223,7 +223,7 @@ void lmToolBox::OnButtonClicked(wxCommandEvent& event)
 
 void lmToolBox::SelectToolPage(lmEToolPage nTool)
 {
-	if (!(nTool > lmPAGE_NONE && nTool < lmPAGE_MAX)) 
+	if (!(nTool > lmPAGE_NONE && nTool < lmPAGE_MAX))
         return;
 
     SelectButton((int)nTool);
@@ -236,7 +236,7 @@ void lmToolBox::SelectToolPage(lmEToolPage nTool)
     //show new one
     m_pCurPage = (m_cPanels[nTool] ? m_cPanels[nTool] : m_pEmptyPage);
     m_pCurPage->Show();
-    m_pPageSizer->Replace(pOldPage, m_pCurPage); 
+    m_pPageSizer->Replace(pOldPage, m_pCurPage);
     m_pCurPage->SetFocus();
     GetSizer()->Layout();
 

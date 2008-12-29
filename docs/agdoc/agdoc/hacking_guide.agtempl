@@ -148,9 +148,8 @@
 Copyright &copy; 2008-2009 LenMus project
 </p>
 <p class="justified">
-This document is part of the LenMus project. LenMus endorses the ideas of free software, free
-education and free access to knowledge. Therefore,
-permission is granted to copy, distribute and/or modify this
+This document is part of the LenMus project. 
+Permission is granted to copy, distribute and/or modify this
 document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
 Version 1.3 or any later version published by the Free Software
 Foundation; with no Invariant Sections, no Front-Cover Texts and
@@ -282,33 +281,25 @@ LenMus project (http://www.lenmus.org/)<br />
 
 \h1_open        
 [
-<h2 class='article'><a name="$(this.attr.anchor)"></a>
-<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h2>
+<h2 class='article'><a name="$(this.attr.anchor)"></a>$(this.attr)</h2>
 ]
 \h1_close       []
 
 \h2_open
 [
-<h3 class='article'><a name="$(this.attr.anchor)"></a>
-<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h3>
+<h3 class='article'><a name="$(this.attr.anchor)"></a>$(this.attr)</h3>
 ]
 \h2_close       []
 
 \h3_open
 [
-<h4 class='article'><a name="$(this.attr.anchor)"></a>
-<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h4>
+<h4 class='article'><a name="$(this.attr.anchor)"></a>$(this.attr)</h4>
 ]
 \h3_close       []
 
 \h4_open        
 [
-<h5 class='article'><a name="$(this.attr.anchor)"></a>
-<a href="#TOC"><img src="$(css_figures)/top.png" width="35" height="19" 
-align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h5>
+<h5 class='article'><a name="$(this.attr.anchor)"></a>$(this.attr)</h5>
 ]
 \h4_close       []
 
@@ -375,8 +366,8 @@ align="absmiddle" border="0"></a>&nbsp;$(this.attr)</h5>
 \li_open        [<li>]
 \li_close       [</li>]
 
-\table_open     [<table class="$(this.attr.class)">]
-\table_close    [</table><FONT style="margin-left:1em"><I>$(this.attr)</I></FONT>]
+\table_open     [<p>&nbsp;</p><table class="$(this.attr.class)">]
+\table_close    [</table><center><p><FONT style="margin-left:1em"><I>$(this.attr)</I></FONT></p></center><p>&nbsp;</p>]
 
 \tr_open        [<tr class="$(table.attr.class)">]
 \tr_close       [</tr>]

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-12-13 15:32+0100\n"
+"PO-Revision-Date: 2008-12-29 12:50+0100\n"
 "Last-Translator: jahan <jahan@telenet.be>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -40,15 +40,15 @@ msgstr "Er heeft zich een fout voorgedaan bij de toekenning van het font."
 
 #: score/Barline.cpp:107
 msgid "Simple barline"
-msgstr "Enkelvoudige maatstreep"
+msgstr "Enkelvoudige"
 
 #: score/Barline.cpp:108
 msgid "Double barline"
-msgstr "Dubbele maatstreep"
+msgstr "Dubbele"
 
 #: score/Barline.cpp:109
 msgid "Final barline"
-msgstr "Finale maatstreep"
+msgstr "Finale"
 
 #: score/Barline.cpp:110
 msgid "Start repetition"
@@ -56,11 +56,11 @@ msgstr "Herhaling starten"
 
 #: score/Barline.cpp:111
 msgid "End repetition"
-msgstr "Eindherhaling"
+msgstr "Herhaling eindigen"
 
 #: score/Barline.cpp:112
 msgid "Star barline"
-msgstr "Maatstreep starten"
+msgstr "Begin"
 
 #: score/Barline.cpp:113
 msgid "Double repetition"
@@ -3054,15 +3054,15 @@ msgstr "Voortekening invoegen"
 
 #: app/ScoreCanvas.cpp:509
 msgid "Insert barline"
-msgstr "Maatstreep invoegen"
+msgstr "Maatstrepen"
 
 #: app/ScoreCanvas.cpp:528
 msgid "Insert note"
-msgstr "noot invoegen"
+msgstr "Noot invoegen"
 
 #: app/ScoreCanvas.cpp:549
 msgid "Insert rest"
-msgstr "rust invoegen"
+msgstr "Rust invoegen"
 
 #: app/ScoreCanvas.cpp:564
 msgid "Change note pitch"
@@ -3070,7 +3070,7 @@ msgstr "Toonhoogte veranderen"
 
 #: app/ScoreCanvas.cpp:576
 msgid "Change note accidentals"
-msgstr "voortekening wijzigen"
+msgstr "Voortekening wijzigen"
 
 #: app/ScoreCanvas.cpp:589
 msgid "Change note dots"
@@ -3120,7 +3120,7 @@ msgstr "Brass trio"
 
 #: app/ScoreWizard.cpp:132
 msgid "Choir 4 voices (SATB)"
-msgstr "Vierstemmig koort (SATB)"
+msgstr "Vierstemmig koor (SATB)"
 
 #: app/ScoreWizard.cpp:133
 msgid "Choir SATB + piano"
@@ -3128,7 +3128,7 @@ msgstr "Koor SATB en piano"
 
 #: app/ScoreWizard.cpp:134
 msgid "Choir 3 voices (SSA)"
-msgstr "driestemmig koor (SSA)"
+msgstr "Driestemmig koor (SSA)"
 
 #: app/ScoreWizard.cpp:135
 msgid "Choir SSA + piano"
@@ -3148,7 +3148,7 @@ msgstr "Piano"
 
 #: app/ScoreWizard.cpp:139
 msgid "Violin and piano"
-msgstr "VIool en piano"
+msgstr "Viool en piano"
 
 #: app/ScoreWizard.cpp:140
 msgid "Viola and piano"
@@ -3172,11 +3172,11 @@ msgstr "Trio Sonata"
 
 #: app/ScoreWizard.cpp:145
 msgid "Woodwind trio"
-msgstr "houtblazers trio"
+msgstr "Houtblazers trio"
 
 #: app/ScoreWizard.cpp:146
 msgid "Woodwind quintet"
-msgstr "houtblazers kwintet"
+msgstr "Houtblazers kwintet"
 
 #: app/ScoreWizard.cpp:280
 msgid "Score configuration wizard"
@@ -3184,7 +3184,7 @@ msgstr "Partituurconfiguratie wizard"
 
 #: app/ScoreWizard.cpp:325
 msgid "Subtitle"
-msgstr "ondertitel"
+msgstr "Ondertitel"
 
 #: app/ScoreWizard.cpp:326
 msgid "Composer"
@@ -3498,7 +3498,7 @@ msgstr "Partij selecteren %d"
 
 #: app/toolbox/ToolNotes.cpp:321
 msgid "Note accidentals"
-msgstr "toevallige voortekens"
+msgstr "Toevallige voortekens"
 
 #: app/toolbox/ToolNotes.cpp:374
 msgid "Dots"
@@ -3522,19 +3522,19 @@ msgstr "Overbindingen"
 
 #: app/toolbox/ToolNotes.cpp:558
 msgid "Break beam at current cursor position"
-msgstr "waardestreep toevoegen onder de cursorpositie"
+msgstr "Waardestreep verwijderen onder de cursorpositie"
 
 #: app/toolbox/ToolNotes.cpp:567
 msgid "Beam together all selected notes"
-msgstr "geselecteerde noten verbinden"
+msgstr "Geselecteerde noten verbinden"
 
 #: app/toolbox/ToolNotes.cpp:576
 msgid "Subdivide beamed group at current cursor position"
-msgstr "gebonde notengroep opsplitsen onder de cursorpositie"
+msgstr "Gebonden notengroep opsplitsen onder de cursorpositie"
 
 #: app/toolbox/ToolNotes.cpp:585
 msgid "Adjust selected beam to draw it horizontal"
-msgstr "waardestreep aanpassen en horizontaal weergeven"
+msgstr "Waardestreep aanpassen en horizontaal weergeven"
 
 #: app/toolbox/ToolsBox.cpp:96
 msgid "Select clef, key and time signature edit tools"
