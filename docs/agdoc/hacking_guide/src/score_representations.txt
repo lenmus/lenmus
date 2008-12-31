@@ -45,15 +45,13 @@ In order to optimise computer resources consumption (memory and processing time)
 
 The score is represented by an object of class lmScore. The approach followed has been to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:
 
- * A lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
+ * An score is, mainly, a collection of instruments plus some data (composer, title, ...)
 
- * A lmInstrunent is a collection of VStaves plus some data (instrument name, MIDI assignment, ...)
+ * An instrunent is a collection of staves plus some data (instrument name, MIDI assignment, ...)
  
- * A lmVStaff is a collection of lmStaffObjs and a list of lmStaff
+ * An staff is a collection of musical symbols: notes, rests, clefs, etc. (StaffObjs).
 
- * A lmStaff is a set of consecutive lines and spaces. It is represented by just some data
-    (number of lines, spacing information, etc.) about how to render the VStaff. So the only
-    'real' object is the VStaff and all StaffObjs belong to it. 
+The internal model is described in chapter \href0 [objects_model] {'The Internal model'}.  
 
 
 \h2 {The Collection of StaffObjs (lmColStaffObjs)}

@@ -68,7 +68,7 @@ const wxString sEOF = _T("<<$$EOF$$>>");
 
 lmLDPParser::lmLDPParser()
 {
-    Create(_T("es"), _T("iso-8859-1"));     //default tags in Spanish
+    Create(_T("en"), _T("utf-8"));     //default tags in English
 }
 
 lmLDPParser::lmLDPParser(wxString sLanguage, wxString sCharset)

@@ -6,7 +6,7 @@
 LicenseLangString license ${LANG_Spanish} ".\locale\license_es.txt"
 
 ;strings to customize MUI pages
-LangString MSG_OptionalComponents   ${LANG_Spanish} "Please choose the optional components you would like to install"
+LangString MSG_OptionalComponents   ${LANG_Spanish} "Por favor, elija los componentes adicionales a instalar"
 
 
 ;section titles, what user sees to select components for installation

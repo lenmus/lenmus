@@ -491,7 +491,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
         return true;
      }
     // verify fragment to avoid program failures
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     //TODO strong verification
     //lmLDPNode* pRoot = parserLDP.ParseText(sFragment);
     //if (! pRoot) {

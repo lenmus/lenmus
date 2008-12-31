@@ -339,7 +339,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
     //create a score with the chord
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -456,7 +456,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
         pVStaff->AddSpacer(20);
         pVStaff->AddBarline(lm_eBarlineEnd);
     }
-    
+
     //return cadence name
     return  oCad.GetName();
 

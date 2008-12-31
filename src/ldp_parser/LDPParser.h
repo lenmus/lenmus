@@ -81,6 +81,7 @@ public:
     void        AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos);
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmNoteRest* AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
@@ -93,8 +94,8 @@ public:
     lmEStemType   AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
+    void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
-    void        AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
 
 	//analyze options
@@ -139,7 +140,6 @@ private:
                                   lmEHAlign* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont, bool* pHasWidth);
     bool        AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode, float* pValue);
-    void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);

@@ -500,54 +500,33 @@ il materiale che aggiungi ad un'opera coperta da questa Licenza, puoi
 materiale) aggiungere alle condizioni di questa Licenza delle condizioni
 che:
 
-
-
-<ol type="a">
-<li>    Negano la garanzia o limitano la responsabilità del Programma in
+  - Negano la garanzia o limitano la responsabilità del Programma in
     maniera differente da quanto riportato nelle sezioni 15 e 16 di questa
     Licenza; oppure
 
-</li>
-
-<li>
-    Richiedono il mantenimento di specifiche e circostanziate informative
+  - Richiedono il mantenimento di specifiche e circostanziate informative
     legali o di note di attribuzione ad autori nel materiale o assieme
     alle Adeguate Informazioni Legali mostrate dal Programma che lo
     contiene; oppure
 
-</li>
-
-<li>
-    Proibiscono di fornire informazioni errate o ingannevoli sull'origine
+  - Proibiscono di fornire informazioni errate o ingannevoli sull'origine
     e la provenienza del materiale in oggetto, o richiedono che versioni
     modificate di tale materiale siano appositamente marcate in maniera
     differente rispetto alla versione originale; oppure
 
-</li>
-
-<li>
-    Limitano l'utilizzo per scopi pubblicitari del nome dei detentori del
+  - Limitano l'utilizzo per scopi pubblicitari del nome dei detentori del
     copyright o degli autori del materiale; oppure
 
-</li>
-
-<li>
-    Rifiutano di garantire diritti secondo le leggi sulla proprietà
+  - Rifiutano di garantire diritti secondo le leggi sulla proprietà
     intellettuale circa l'uso di nomi, marchi di fabbrica o similari;
     oppure
 
-</li>
-
-<li>
-    Richiedono l'indennizzo dei detentori del copyright o degli autori del
+  - Richiedono l'indennizzo dei detentori del copyright o degli autori del
     materiale in oggetto da parte di chi distribuisce il materiale (o
     versioni modificate dello stesso) con impegni contrattuali circa la
     responsabilità nei confronti del destinatario, per qualunque
     responsabilità che questi impegni contrattuali dovessero imporre
     direttamente ai suddetti detentori del copyright e autori.
-
-</li>
-</ol>
 
 
 Tutte le altre condizioni addizionali non-permissive sono considerate
@@ -575,10 +554,8 @@ essere espresse nella forma di una licenza scritta e separata, o
 espresse esplicitamente come eccezioni; in entrambi i casi valgono le
 condizioni succitate.
 
-</li>
-
-<li> Cessazione di Licenza
-
+Cessazione di Licenza
+---------------------
 
 Non puoi propagare o modificare un programma coperto da questa Licenza
 in maniera diversa da quanto espressamente consentito da questa
@@ -586,7 +563,6 @@ Licenza. Qualunque tentativo di propagare o modificare altrimenti il
 Programma è nullo, e provoca l'immediata cessazione dei diritti
 garantiti da questa Licenza (compresi tutte le eventuali licenze di
 brevetto garantite ai sensi del terzo paragrafo della sezione 11).
-
 
 In ogni caso, se cessano tutte le violazioni di questa Licenza, allora
 la tua licenza da parte di un dato detentore del copyright viene
@@ -596,7 +572,6 @@ tua licenza, e (b) in via permanente se il detentore del copyright non
 ti notifica in alcun modo la violazione entro 60 giorni dalla cessazione
 della licenza.
 
-
 Inoltre, la tua licenza da parte di un dato detentore del copyright
 viene ripristinata in maniera permanente se il detentore del copyright ti
 notifica la violazione in maniera adeguata, se questa è la prima volta
@@ -605,7 +580,6 @@ Programma) dallo stesso detentore di copyright, e se rimedi alla
 violazione entro 30 giorni dalla data di ricezione della notifica di
 violazione.
 
-
 La cessazione dei tuoi diritti come specificato in questa sezione non
 provoca la cessazione delle licenze di terze parti che abbiano ricevuto
 copie o diritti da te secondo questa Licenza. Se i tuoi diritti cessano
@@ -613,10 +587,9 @@ e non sono ristabiliti in via permanente, non hai diritto di ricevere
 nuove licenze per lo stesso materiale, secondo quanto stabilito nella
 sezione 10.
 
-</li>
 
-<li> L'ottenimento di copie non richiede l'accettazione della Licenza
-
+L'ottenimento di copie non richiede l'accettazione della Licenza
+----------------------------------------------------------------
 
 Non sei obbligato ad accettare i termini di questa Licenza al solo fine
 di ottenere o eseguire una copia del Programma. Similmente, propagazioni
@@ -630,17 +603,15 @@ non accetti questa Licenza. Pertanto, modificando o propagando un
 programma coperto da questa Licenza, indichi implicitamente la tua
 accettazione della Licenza.
 
-</li>
 
-<li> Licenza Automatica per i successivi destinatari
-
+Licenza Automatica per i successivi destinatari
+-----------------------------------------------
 
 Ogni qual volta distribuisci un programma coperto da questa Licenza, il
 destinatario riceve automaticamente una licenza, dal detentore
 originario del copyright, di eseguire, modificare e propagare il
 programma, nel rispetto di questa Licenza. Non sei ritenuto responsabile
 del rispetto di questa Licenza da parte di terze parti.
-
 
 Una "transazione d' entità" è una transazione che trasferisce il
 controllo di una organizzazione, o sostanzialmente di tutti i suoi beni,
@@ -654,7 +625,6 @@ e in più il diritto di possesso del Sorgente Corrispondente del
 programma dal predecessore in interesse, se il predecessore lo possiede
 o se può ottenerlo senza troppe difficoltà.
 
-
 Non puoi imporre nessuna ulteriore restrizione sull'esercizio dei
 diritti garantiti o affermati da questa Licenza. Per esempio, non puoi
 imporre un prezzo di licenza, una royalty, o altri costi per
@@ -664,10 +634,8 @@ difesa in cause legali) affermando che siano stati violati dei
 brevetti a causa della produzione, dell'uso, della vendita, della
 messa in vendita o dell'importazione del Programma o di sue parti.
 
-</li>
-
-<li> Brevetti.
-
+Brevetti.
+--------
 
 Un "contribuente" è un detentore di copyright che autorizza l'uso
 secondo questa Licenza di un Programma o di un'opera basata sul

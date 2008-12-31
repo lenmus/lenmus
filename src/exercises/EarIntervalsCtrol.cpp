@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmEarIntervalsCtrol, lmOneScoreCtrol)
 
-lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id, 
+lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
                            lmEarIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmOneScoreCtrol(parent, id, pConstrains, wxSize(360,150), pos, size, style )
@@ -133,7 +133,7 @@ void lmEarIntervalsCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont&
     {
         for (int iCol=0; iCol < m_NUM_COLS; iCol++)
         {
-            int iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 24         
+            int iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 24
             m_pAnswerButton[iB] = new wxButton( this, m_ID_BUTTON + iB, _T("Undefined"),
                 wxDefaultPosition, wxSize(26*nSpacing, nHeight));
             m_pAnswerButton[iB]->SetFont(font);
@@ -242,7 +242,7 @@ wxString lmEarIntervalsCtrol::SetNewProblem()
 
     //choose if harmonic or melodic
     lmRandomGenerator oGenerator;
-    if (m_pConstrains->IsTypeAllowed(0) && 
+    if (m_pConstrains->IsTypeAllowed(0) &&
         !(m_pConstrains->IsTypeAllowed(1) || m_pConstrains->IsTypeAllowed(2)))
     {
         // if only harmonic (harmonic && !(melodic ascending or descending))
@@ -316,7 +316,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     //create a score with the interval
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     *pScore = new lmScore();
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);

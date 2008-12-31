@@ -97,6 +97,26 @@
 \title{The Model-View-Controller architecture}
 
 }
+\file[objects_model.txt; ext=.html;]{
+\toc
+{
+    \toc1[Scores: The Internal model; anchor="toc0001";]{
+        \toc2[Creating a score; anchor="toc0002";]{}
+        \toc2[Analysing a score; anchor="toc0003";]{}
+        \toc2[Objects model; anchor="toc0004";]{
+            \toc3[Container classes; anchor="toc0005";]{}
+            \toc3[Component classes; anchor="toc0006";]{
+                \toc4[lmStaffObj; anchor="toc0007";]{}
+                \toc4[lmAuxObj; anchor="toc0008";]{}
+                \toc4[Owning AuxObjs; anchor="toc0009";]{}}
+            \toc3[Auxiliary classes; anchor="toc0010";]{}}
+        \toc2[Objects model: history and evolution; anchor="toc0011";]{
+            \toc3[How is music represented in MusicXML; anchor="toc0012";]{}}}
+}
+
+\title{Scores: The Internal model}
+
+}
 \file[pitch-representation.txt; ext=.html;]{
 \toc
 {

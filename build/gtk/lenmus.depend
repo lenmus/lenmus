@@ -772,7 +772,7 @@
 	"../ldp_parser/LDPParser.h"
 	"../xml_parser/MusicXMLParser.h"
 
-1224666464 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
+1230639470 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
 	<vector>
 	"wx/txtstrm.h"
 	"wx/wfstream.h"
@@ -850,7 +850,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1230463876 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1230582876 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -956,7 +956,7 @@
 	"../sound/WaveManager.h"
 	"../app/Preferences.h"
 
-1221724550 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/EarCompareIntvCtrol.cpp
+1230641730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/EarCompareIntvCtrol.cpp
 	"wx/wxprec.h"
 	"../score/VStaff.h"
 	"EarCompareIntvCtrol.h"
@@ -976,7 +976,7 @@
 	"../score/Score.h"
 	"ExerciseCtrol.h"
 
-1221724550 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/EarIntervalsCtrol.cpp
+1230641730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/EarIntervalsCtrol.cpp
 	"wx/wxprec.h"
 	"../score/VStaff.h"
 	"EarIntervalsCtrol.h"
@@ -995,7 +995,7 @@
 	"../auxmusic/Interval.h"
 	"ExerciseCtrol.h"
 
-1230208400 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyChordCtrol.cpp
+1230641730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyChordCtrol.cpp
 	"wx/wxprec.h"
 	"../score/VStaff.h"
 	"IdfyChordCtrol.h"
@@ -1058,7 +1058,7 @@
 	"../sound/SoundEvents.h"
 	"ExerciseCtrol.h"
 
-1221724620 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoIntervalsCtrol.cpp
+1230641731 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoIntervalsCtrol.cpp
 	"wx/wxprec.h"
 	"../score/VStaff.h"
 	"TheoIntervalsCtrol.h"
@@ -1148,7 +1148,7 @@
 	"Generators.h"
 	"../score/KeySignature.h"
 
-1222603832 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyScalesCtrol.cpp
+1230641730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyScalesCtrol.cpp
 	"wx/wxprec.h"
 	"IdfyScalesCtrol.h"
 	"../score/VStaff.h"
@@ -1180,7 +1180,7 @@
 	"wx/wxprec.h"
 	"EarIntvalConstrains.h"
 
-1226006258 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreConstrains.cpp
+1230641731 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreConstrains.cpp
 	"wx/wxprec.h"
 	"ScoreConstrains.h"
 	"../score/VStaff.h"
@@ -1485,7 +1485,7 @@
 	"EarTunningCtrolParms.h"
 	"../app/MainFrame.h"
 
-1221724498 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TheoMusicReadingCtrolParms.h
+1230641731 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TheoMusicReadingCtrolParms.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/html/htmlwin.h"
@@ -1494,7 +1494,7 @@
 	"../exercises/MusicReadingConstrains.h"
 	"../ldp_parser/AuxString.h"
 
-1222067116 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
+1230641731 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ObjectParams.h"
@@ -1900,7 +1900,7 @@
 	"Context.h"
 	"../app/Logger.h"
 
-1230582845 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.cpp
+1230582844 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.cpp
 	"wx/wxprec.h"
 	"Score.h"
 	"Notation.h"
@@ -2258,7 +2258,7 @@
 	"CadencesConstrains.h"
 	"Generators.h"
 
-1221724618 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.cpp
+1230641730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.cpp
 	"wx/wxprec.h"
 	"IdfyCadencesCtrol.h"
 	"../score/VStaff.h"
@@ -2578,7 +2578,7 @@
 1221549736 /media/sdb1/usr/Desarrollo_wx/lenmus/src/widgets/Button.h
 	<wx/wx.h>
 
-1230582707 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.cpp
+1230582706 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/cursor.h"
@@ -5049,7 +5049,7 @@
 	"../widgets/Wizard.h"
 	"../score/defs.h"
 
-1229256282 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreWizard.cpp
+1230641305 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreWizard.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<vector>

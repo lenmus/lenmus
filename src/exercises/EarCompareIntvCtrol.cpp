@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
 IMPLEMENT_CLASS(lmEarCompareIntvCtrol, lmCompareScoresCtrol)
 
-lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id, 
+lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
                            lmEarIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmCompareScoresCtrol(parent, id, pConstrains, wxSize(400,150), pos, size, style )
@@ -88,7 +88,7 @@ wxDialog* lmEarCompareIntvCtrol::GetSettingsDlg()
 
 wxString lmEarCompareIntvCtrol::SetNewProblem()
 {
-    
+
     //
     //generate the two intervals to compare
     //
@@ -98,7 +98,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     // select interval type: ascending, descending or both
     lmRandomGenerator oGenerator;
     bool fAscending;
-    if (m_pConstrains->IsTypeAllowed(0) || 
+    if (m_pConstrains->IsTypeAllowed(0) ||
         (m_pConstrains->IsTypeAllowed(1) && m_pConstrains->IsTypeAllowed(2)))
     {
         // if harmonic scale or melodic ascending and descending,
@@ -152,7 +152,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     //
 
     lmNote* pNote[2];
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -212,7 +212,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[1][1] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddSpacer(30);      
+    pVStaff->AddSpacer(30);
     pVStaff->AddBarline(lm_eBarlineEnd);
 
     //compute the right answer

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-12 14:45+0100\n"
+"PO-Revision-Date: 2008-12-31 13:28+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,40 +10,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Italian\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: ..\\src\n"
+"X-Poedit-Basepath: ../src\n"
 "X-Poedit-SearchPath-0: GeneralExercises\n"
 
 #: GeneralExercises/GeneralExercises.cpp:2
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr ""
+msgstr "Invia i tuoi commenti e suggerimenti al team LenMus (www.lenmus.org)"
 
 #: GeneralExercises/GeneralExercises.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
-msgstr ""
+msgstr "Concesso in licenza d'uso secondo i termini della GNU Free Documentation License v1.2"
 
 #: GeneralExercises/GeneralExercises.cpp:4
 msgid "the teacher of music"
-msgstr ""
+msgstr "l'insegnante di musica"
 
 #: GeneralExercises/GeneralExercises.cpp:5
 msgid "Cover page"
-msgstr ""
+msgstr "Copertina"
 
 #: GeneralExercises/GeneralExercises.cpp:6
 msgid "General exercises"
-msgstr ""
+msgstr "Esercizi generali"
 
 #: GeneralExercises/GeneralExercises.cpp:7
 msgid "General exercises, customizable to suit your needs at any moment."
-msgstr ""
+msgstr "Esercizi generali, adattabili alle specifiche esigenze dell'utente"
 
 #: GeneralExercises/GeneralExercises.cpp:8
 msgid "LenMus project"
-msgstr ""
+msgstr "Progetto LenMus"
 
 #: GeneralExercises/GeneralExercises.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr ""
+msgstr "E' consentito copiare, distribuire e/o modificare questo documento secondo i termini della GNU Free Documentation License, versione 1.2 o qualsiasi altra versione successiva pubblicata dalla Free Software Foundation senza aggiunta di Sezioni Invarianti o altri testi all'inizio e/o alla fine. Una copia della licenza è inclusa nella documentazione ricevuta con questo programma ed è anche disponibile a"
 
 #: GeneralExercises/GeneralExercises.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
@@ -51,119 +51,119 @@ msgstr "http://www.gnu.org/licenses/fdl.html"
 
 #: GeneralExercises/GeneralExercises.cpp:11
 msgid "Contents"
-msgstr ""
+msgstr "Contenuti"
 
 #: GeneralExercises/GeneralExercises.cpp:12
 msgid "Introduction to general exercises"
-msgstr ""
+msgstr "Introduzione agli esercizi generali"
 
 #: GeneralExercises/GeneralExercises.cpp:13
 msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
-msgstr ""
+msgstr "A parte gli esercizi inclusi negli eBook, sono disponibili i seguenti esercizi generali (adattabili in ogni momento alle tue esigenze):"
 
 #: GeneralExercises/GeneralExercises.cpp:14
 msgid "Exercises for aural training"
-msgstr ""
+msgstr "Esercizi per allenamento uditivo"
 
 #: GeneralExercises/GeneralExercises.cpp:15
 #: GeneralExercises/GeneralExercises.cpp:29
 msgid "Intervals' comparison"
-msgstr ""
+msgstr "Confronto di Intervalli"
 
 #: GeneralExercises/GeneralExercises.cpp:16
 #: GeneralExercises/GeneralExercises.cpp:31
 msgid "Intervals' identification"
-msgstr ""
+msgstr "Identificazione di Intervalli"
 
 #: GeneralExercises/GeneralExercises.cpp:17
 #: GeneralExercises/GeneralExercises.cpp:23
 #: GeneralExercises/GeneralExercises.cpp:33
 #: GeneralExercises/GeneralExercises.cpp:43
 msgid "Chords' identification"
-msgstr ""
+msgstr "Identificazione di Accordi"
 
 #: GeneralExercises/GeneralExercises.cpp:18
 #: GeneralExercises/GeneralExercises.cpp:24
 #: GeneralExercises/GeneralExercises.cpp:35
 #: GeneralExercises/GeneralExercises.cpp:45
 msgid "Scales' identification"
-msgstr ""
+msgstr "Identificazione di Scale"
 
 #: GeneralExercises/GeneralExercises.cpp:19
 #: GeneralExercises/GeneralExercises.cpp:25
 #: GeneralExercises/GeneralExercises.cpp:37
 #: GeneralExercises/GeneralExercises.cpp:47
 msgid "Cadences' identification"
-msgstr ""
+msgstr "Identificazione di Cadenze"
 
 #: GeneralExercises/GeneralExercises.cpp:20
 msgid "Exercises to practise theory"
-msgstr ""
+msgstr "Esercizi per fare pratica dei concetti teorici"
 
 #: GeneralExercises/GeneralExercises.cpp:21
 #: GeneralExercises/GeneralExercises.cpp:40
 msgid "Key signatures' identification"
-msgstr ""
+msgstr "Identificazione delle Armature di Chiave"
 
 #: GeneralExercises/GeneralExercises.cpp:22
 #: GeneralExercises/GeneralExercises.cpp:42
 msgid "Interval's identification and construction"
-msgstr ""
+msgstr "Identificazione e costruzione degli Intervalli"
 
 #: GeneralExercises/GeneralExercises.cpp:26
 #: GeneralExercises/GeneralExercises.cpp:49
 msgid "Other exercises"
-msgstr ""
+msgstr "Altri esercizi"
 
 #: GeneralExercises/GeneralExercises.cpp:27
 msgid "Clefs reading"
-msgstr ""
+msgstr "Lettura delle Chiavi"
 
 #: GeneralExercises/GeneralExercises.cpp:28
 msgid "Aural training exercises"
-msgstr ""
+msgstr "Esercizi di allenamento uditivo"
 
 #: GeneralExercises/GeneralExercises.cpp:30
 msgid "Exercise: Lesson two intervals and identify which one is greater"
-msgstr ""
+msgstr "Esercizio: ascolta due intervalli e identifica quello più grande"
 
 #: GeneralExercises/GeneralExercises.cpp:32
 msgid "Exercise: Lesson an interval and identify it"
-msgstr ""
+msgstr "Esercizio: ascolta un intervallo e identificalo"
 
 #: GeneralExercises/GeneralExercises.cpp:34
 msgid "Exercise: Lesson a chord and identify its type"
-msgstr ""
+msgstr "Esercizio: ascolta un accordo e identificane il tipo"
 
 #: GeneralExercises/GeneralExercises.cpp:36
 msgid "Exercise: Listen a scale and identify its type"
-msgstr ""
+msgstr "Esercizio: ascolta una scala e identificane il tipo"
 
 #: GeneralExercises/GeneralExercises.cpp:38
 msgid "Exercise: Listen a cadence and identify its type"
-msgstr ""
+msgstr "Esercizio: ascolta una cadenza e identificane il tipo"
 
 #: GeneralExercises/GeneralExercises.cpp:39
 msgid "Theory exercises"
-msgstr ""
+msgstr "Esercizi di teoria"
 
 #: GeneralExercises/GeneralExercises.cpp:41
 msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
-msgstr ""
+msgstr "Esercizio: identifica un'armatura di chiave oppure indica il numero di alterazioni che possiede"
 
 #: GeneralExercises/GeneralExercises.cpp:44
 msgid "Exercise: Identify the type of the shown chord"
-msgstr ""
+msgstr "Esercizio: identifica il tipo di un accordo visualizzato"
 
 #: GeneralExercises/GeneralExercises.cpp:46
 msgid "Exercise: Identify the scale shown"
-msgstr ""
+msgstr "Esercizio: identifica la scala mostrata"
 
 #: GeneralExercises/GeneralExercises.cpp:48
 msgid "Exercise: Identify the cadence shown"
-msgstr ""
+msgstr "Esercizio: identifica la cadenza mostrata"
 
 #: GeneralExercises/GeneralExercises.cpp:50
 msgid "Clefs Reading"
-msgstr ""
+msgstr "Lettura di Chiavi"
 

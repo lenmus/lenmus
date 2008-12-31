@@ -323,7 +323,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lm
     //create a score with the scale
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -378,7 +378,7 @@ void lmIdfyScalesCtrol::DisableGregorianMajorMinor(EScaleType nType)
     if ((m_pConstrains->IsValidGroup(esg_Major) || m_pConstrains->IsValidGroup(esg_Minor)) &&
          m_pConstrains->IsValidGroup(esg_Gregorian) )
     {
-        EScaleType nDisable; 
+        EScaleType nDisable;
         if (nType == est_GreekIonian && m_pConstrains->IsScaleValid(est_MajorNatural))
         {
             //disable major natural

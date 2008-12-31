@@ -6,7 +6,7 @@
 LicenseLangString license ${LANG_Turkish} ".\locale\license_tr.txt"
 
 ;strings to customize MUI pages
-LangString MSG_OptionalComponents   ${LANG_Turkish} "Please choose the optional components you would like to install"
+LangString MSG_OptionalComponents   ${LANG_Turkish} "Lütfen, kurmak istediğiniz isteğe bağlı parçaları seç"
 
 
 ;section titles, what user sees to select components for installation

@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2008 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ END_EVENT_TABLE()
 
 
 
-lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id, 
+lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
                            lmTheoIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmOneScoreCtrol(parent, id, pConstrains, wxSize(380, 150), pos, size, style )
@@ -107,7 +107,7 @@ void lmTheoIntervalsCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont
 
     int iB;
     for (iB=0; iB < m_NUM_BUTTONS; iB++) {
-        m_pAnswerButton[iB] = (wxButton*)NULL; 
+        m_pAnswerButton[iB] = (wxButton*)NULL;
     }
 
     m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 0, 0);
@@ -138,7 +138,7 @@ void lmTheoIntervalsCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont
 
         // the buttons for this row
         for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
-            iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 41            
+            iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 41
             m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB],
                 wxDefaultPosition, wxSize(11*nSpacing, nHeight));
             m_pAnswerButton[iB]->SetFont(font);
@@ -231,7 +231,7 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
             m_fIntervalKnown = oGenerator.FlipCoin();
             break;
     }
-    
+
     //Generate two random note-pos in range -1 to 7 (from two ledge lines down to two up)
     m_nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
     m_DPitch[0] = oGenerator.GenerateRandomDPitch(0, 8, false, m_nClef);
@@ -239,7 +239,7 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
     //while (m_DPitch[0] == m_DPitch[1]) {
     //    m_DPitch[1] = oGenerator.GenerateRandomDPitch(0, 8, false, m_nClef);
     //}
-    
+
     //Decide accidentals
     wxString sPattern[2];
     wxString sAlter[2];
@@ -275,14 +275,14 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
     if (!m_fIntervalKnown) {
         sNoteName = (DPitch_GetEnglishNoteName(m_DPitch[1])).Left(1);
     }
-    
+
     ////DEBUG: un-comment and modify values for testing a certain interval
     //sPattern[0] = _T("(n -e4 r)");
     //sPattern[1] = _T("(n e4 r)");
 
     //create the score with the interval
     lmNote* pNote[2];
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -305,15 +305,15 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
 
     //compute the interval name
     lmInterval oIntv(pNote[0], pNote[1], earmDo);
-    m_sAnswer = oIntv.GetIntervalName() + (oIntv.IsAscending() ? _(", ascending") : _(", descending") ); 
+    m_sAnswer = oIntv.GetIntervalName() + (oIntv.IsAscending() ? _(", ascending") : _(", descending") );
 
     //amendments for unisons
     if (m_DPitch[0] == m_DPitch[1]) {
         if (sAlter[0] == sAlter[1])
-            m_sAnswer = _("Unison"); 
+            m_sAnswer = _("Unison");
         else {
             m_sAnswer = _("Chromatic semitone");
-            m_sAnswer += (oIntv.IsAscending() ? _(", ascending") : _(", descending") ); 
+            m_sAnswer += (oIntv.IsAscending() ? _(", ascending") : _(", descending") );
         }
     }
 
@@ -364,10 +364,10 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
             switch (oIntv.GetIntervalType()) {
                 case eti_Perfect:
                     m_nRespIndex = 42;       //unison
-                    break;                
+                    break;
                 case eti_Augmented:
                     m_nRespIndex = 43;      //chromatic semitone
-                    break;                
+                    break;
                 default:
                     wxLogMessage(_T("[lmTheoIntervalsCtrol::NewProblem] nInterval=%d, nType=%d"),
                                 oIntv.GetIntervalNum(), oIntv.GetIntervalType() );
@@ -389,7 +389,7 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
         else if (sNoteName==_T("g"))    iCol = 4;
         else if (sNoteName==_T("a"))    iCol = 5;
         else if (sNoteName==_T("b"))    iCol = 6;
-        else 
+        else
             wxASSERT(false);
 
         if (sAlter[1]==_T("--"))        iRow = 0;
@@ -398,12 +398,12 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
         else if (sAlter[1]==_T("="))    iRow = 2;
         else if (sAlter[1]==_T("+"))    iRow = 3;
         else if (sAlter[1]==_T("++"))   iRow = 4;
-        else 
+        else
             wxASSERT(false);
 
         m_nRespIndex = iCol + iRow * m_NUM_COLS;
     }
-    
+
     //prepare appropriate answer buttons for the problem type
     if (m_fIntervalKnown)
     {
@@ -418,12 +418,12 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
         m_sAnswer = _("Build a ") + m_sAnswer;
         return m_sAnswer;
     }
-    
+
 }
 
 void lmTheoIntervalsCtrol::PrepareAuxScore(int nButton)
 {
-    // No problem is presented and the user press the button to play a specific 
+    // No problem is presented and the user press the button to play a specific
     // sound (chord, interval, scale, etc.)
     // This method is then invoked to prepare the score with the requested sound.
     // At return, base class will play it
@@ -458,7 +458,7 @@ void lmTheoIntervalsCtrol::SetButtonsForNotes()
     int iB;
     for (int iRow=0; iRow < 5; iRow++) {
         for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
-            iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 34            
+            iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 34
             m_pAnswerButton[iB]->Show(true);
             m_pAnswerButton[iB]->Enable(true);
             m_pAnswerButton[iB]->SetLabel(m_sNotesButtonLabel[iB]);
@@ -469,7 +469,7 @@ void lmTheoIntervalsCtrol::SetButtonsForNotes()
     //hide un-used buttons
     for (int iRow=5; iRow < m_NUM_ROWS; iRow++) {
         for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
-            iB = iCol + iRow * m_NUM_COLS;    // button index: 35 .. 41            
+            iB = iCol + iRow * m_NUM_COLS;    // button index: 35 .. 41
             m_pAnswerButton[iB]->Show(false);
             m_pAnswerButton[iB]->Enable(false);
         }
@@ -621,7 +621,7 @@ void lmTheoIntervalsCtrol::InitializeStrings()
 
         //button labels (for notes)
     m_sNotesButtonLabel[0] = _("bb C");
-    m_sNotesButtonLabel[1] = _("bb D");     
+    m_sNotesButtonLabel[1] = _("bb D");
     m_sNotesButtonLabel[2] = _("bb E");
     m_sNotesButtonLabel[3] = _("bb F");;
     m_sNotesButtonLabel[4] = _("bb G");

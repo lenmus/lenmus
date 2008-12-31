@@ -250,7 +250,7 @@ wxDialog* lmIdfyChordCtrol::GetSettingsDlg()
 
 void lmIdfyChordCtrol::PrepareAuxScore(int nButton)
 {
-    // No problem is presented and the user press the button to play a specific 
+    // No problem is presented and the user press the button to play a specific
     // sound (chord, interval, scale, etc.)
     // This method is then invoked to prepare the score with the requested sound.
     // At return, base class will play it
@@ -327,7 +327,7 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, EChordType nType, lmS
     //create a score with the chord
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 

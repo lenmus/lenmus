@@ -1,12 +1,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-12-29 12:50+0100\n"
-"Last-Translator: jahan <jahan@telenet.be>\n"
-"Language-Team:  <cecilios@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-30 22:25+0100\n"
+"PO-Revision-Date: 2008-12-30 22:25+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"Language-Team:  <jvanhan@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
@@ -30,62 +31,57 @@ msgstr ""
 "X-Poedit-SearchPath-15: ./app/toolbox\n"
 "X-Poedit-SearchPath-16: ./score/properties\n"
 
-#: score/AuxObj.cpp:305
-#: score/MetronomeMark.cpp:146
-#: score/Text.cpp:119
-#: score/TupletBracket.cpp:124
-#: app/FontManager.cpp:117
-msgid "Sorry, an error has occurred while allocating the font."
-msgstr "Er heeft zich een fout voorgedaan bij de toekenning van het font."
+#: score/StaffObj.cpp:359
+#: score/StaffObj.cpp:365
+msgid "Attach text"
+msgstr "Tekst als bijlage"
 
-#: score/Barline.cpp:107
-msgid "Simple barline"
-msgstr "Enkelvoudige"
+#: score/StaffObj.cpp:392
+msgid "General"
+msgstr "Algemeen"
 
-#: score/Barline.cpp:108
-msgid "Double barline"
-msgstr "Dubbele"
+#: score/Note.cpp:1771
+msgid "Delete tie &previous"
+msgstr "Verbinding verwijderen &vorige"
 
-#: score/Barline.cpp:109
-msgid "Final barline"
-msgstr "Finale"
+#: score/Note.cpp:1939
+#, c-format
+msgid "c%d"
+msgstr "do%d"
 
-#: score/Barline.cpp:110
-msgid "Start repetition"
-msgstr "Herhaling starten"
+#: score/Note.cpp:1939
+#, c-format
+msgid "d%d"
+msgstr "re%d"
 
-#: score/Barline.cpp:111
-msgid "End repetition"
-msgstr "Herhaling eindigen"
+#: score/Note.cpp:1939
+#, c-format
+msgid "e%d"
+msgstr "mi%d"
 
-#: score/Barline.cpp:112
-msgid "Star barline"
-msgstr "Begin"
+#: score/Note.cpp:1939
+#, c-format
+msgid "f%d"
+msgstr "fa%d"
 
-#: score/Barline.cpp:113
-msgid "Double repetition"
-msgstr "Dubbele herhaling"
+#: score/Note.cpp:1939
+#, c-format
+msgid "g%d"
+msgstr "sol%d"
 
-#: score/Barline.cpp:328
-#: ../xrc/xrc_strings.cpp:173
-msgid "Barline"
-msgstr "Maatstreep"
+#: score/Note.cpp:1939
+#, c-format
+msgid "a%d"
+msgstr "la%d"
 
-#: score/Barline.cpp:331
-msgid "Barline properties"
-msgstr "Maatstreep eigenschappen"
-
-#: score/ColStaffObjs.cpp:3555
-msgid "Move backwards: out of measure"
-msgstr "Terugkeren: buiten de maat"
-
-#: score/ColStaffObjs.cpp:3565
-msgid "Move forward: out of measure"
-msgstr "Verder: buiten de maat"
+#: score/Note.cpp:1939
+#, c-format
+msgid "b%d"
+msgstr "si%d"
 
 #: score/Instrument.cpp:167
-#: app/MidiWizard.cpp:437
-#: app/MidiWizard.cpp:617
+#: app/MidiWizard.cpp:435
+#: app/MidiWizard.cpp:615
 msgid "Channel:"
 msgstr "Kanaal:"
 
@@ -94,13 +90,13 @@ msgid "Group:"
 msgstr "Groep:"
 
 #: score/Instrument.cpp:190
-#: app/MidiWizard.cpp:454
+#: app/MidiWizard.cpp:452
 msgid "Instrument:"
 msgstr "Instrument:"
 
 #: score/Instrument.cpp:204
-#: app/MidiWizard.cpp:461
-#: app/MidiWizard.cpp:641
+#: app/MidiWizard.cpp:459
+#: app/MidiWizard.cpp:639
 msgid "Test sound"
 msgstr "Test geluid"
 
@@ -120,290 +116,306 @@ msgstr "afkorting"
 msgid "Instrument properties"
 msgstr "Instrument eigenschappen"
 
-#: score/KeySignature.cpp:702
+#: score/Score.cpp:1585
+#: score/Score.cpp:1600
+#: app/MainFrame.cpp:1082
+msgid "Add title"
+msgstr "Titel toevoegen"
+
+#: score/Score.cpp:1586
+#: app/MainFrame.cpp:1083
+msgid "Add a title to the score"
+msgstr "Een titel aan de partitiuur toevoegen"
+
+#: score/Score.cpp:1591
+#: score/Score.cpp:1601
+#: app/MainFrame.cpp:1084
+msgid "Margins and spacers"
+msgstr "grenzen en spacers"
+
+#: score/Score.cpp:1631
+msgid "Select instrument:"
+msgstr "Instrument selecteren:"
+
+#: score/Score.cpp:1632
+msgid "Instrument selection"
+msgstr "Instrument selectie"
+
+#: score/Score.cpp:1694
+#: score/Score.cpp:1700
+#: xml_parser/MusicXMLParser.cpp:1422
+msgid "Lyrics"
+msgstr "Tekst"
+
+#: score/Score.cpp:1705
+#: score/Score.cpp:1711
+#: app/ScoreCommand.cpp:1530
+msgid "Normal text"
+msgstr "Normale tekst"
+
+#: score/Score.cpp:1716
+#: score/Score.cpp:1722
+#: app/ScoreWizard.cpp:339
+#: app/ScoreCommand.cpp:1589
+msgid "Title"
+msgstr "Titel"
+
+#: score/Score.cpp:1748
+#, c-format
+msgid "Style%d"
+msgstr "Stijl%d"
+
+#: score/KeySignature.cpp:690
 #: ../xrc/xrc_strings.cpp:373
 msgid "C Major"
 msgstr "Do Groot"
 
-#: score/KeySignature.cpp:703
+#: score/KeySignature.cpp:691
 #: ../xrc/xrc_strings.cpp:374
 msgid "G Major"
 msgstr "Sol Groot"
 
-#: score/KeySignature.cpp:704
+#: score/KeySignature.cpp:692
 #: ../xrc/xrc_strings.cpp:375
 msgid "D Major"
 msgstr "Re Groot"
 
-#: score/KeySignature.cpp:705
+#: score/KeySignature.cpp:693
 #: ../xrc/xrc_strings.cpp:376
 msgid "A Major"
 msgstr "La Groot"
 
-#: score/KeySignature.cpp:706
+#: score/KeySignature.cpp:694
 #: ../xrc/xrc_strings.cpp:377
 msgid "E Major"
 msgstr "Mi Groot"
 
-#: score/KeySignature.cpp:707
+#: score/KeySignature.cpp:695
 #: ../xrc/xrc_strings.cpp:378
 msgid "B Major"
 msgstr "Si Groot"
 
-#: score/KeySignature.cpp:708
+#: score/KeySignature.cpp:696
 msgid "F # Major"
 msgstr "Fa # Groot"
 
-#: score/KeySignature.cpp:709
+#: score/KeySignature.cpp:697
 msgid "C # Major"
 msgstr "Do # Groot"
 
-#: score/KeySignature.cpp:710
+#: score/KeySignature.cpp:698
 msgid "C b Major"
 msgstr "Do b Groot"
 
-#: score/KeySignature.cpp:711
+#: score/KeySignature.cpp:699
 msgid "G b Major"
 msgstr "Sol b Groot"
 
-#: score/KeySignature.cpp:712
+#: score/KeySignature.cpp:700
 msgid "D b Major"
 msgstr "Re b Groot"
 
-#: score/KeySignature.cpp:713
+#: score/KeySignature.cpp:701
 msgid "A b Major"
 msgstr "La b Groot"
 
-#: score/KeySignature.cpp:714
+#: score/KeySignature.cpp:702
 msgid "E b Major"
 msgstr "Mi b Groot"
 
-#: score/KeySignature.cpp:715
+#: score/KeySignature.cpp:703
 msgid "B b Major"
 msgstr "Si b Groot"
 
-#: score/KeySignature.cpp:716
+#: score/KeySignature.cpp:704
 #: ../xrc/xrc_strings.cpp:387
 msgid "F Major"
 msgstr "Fa Groot"
 
-#: score/KeySignature.cpp:717
+#: score/KeySignature.cpp:705
 #: exercises/TheoKeySignCtrol.cpp:100
 #: exercises/TheoKeySignCtrol.cpp:423
 #: ../xrc/xrc_strings.cpp:388
 msgid "A minor"
 msgstr "la klein"
 
-#: score/KeySignature.cpp:718
+#: score/KeySignature.cpp:706
 #: exercises/TheoKeySignCtrol.cpp:101
 #: exercises/TheoKeySignCtrol.cpp:417
 #: ../xrc/xrc_strings.cpp:389
 msgid "E minor"
 msgstr "mi klein"
 
-#: score/KeySignature.cpp:719
+#: score/KeySignature.cpp:707
 #: exercises/TheoKeySignCtrol.cpp:102
 #: exercises/TheoKeySignCtrol.cpp:426
 #: ../xrc/xrc_strings.cpp:390
 msgid "B minor"
 msgstr "si klein"
 
-#: score/KeySignature.cpp:720
+#: score/KeySignature.cpp:708
 #: exercises/TheoKeySignCtrol.cpp:103
 msgid "F # minor"
 msgstr "fa # klein"
 
-#: score/KeySignature.cpp:721
+#: score/KeySignature.cpp:709
 #: exercises/TheoKeySignCtrol.cpp:104
 msgid "C # minor"
 msgstr "do # klein"
 
-#: score/KeySignature.cpp:722
+#: score/KeySignature.cpp:710
 #: exercises/TheoKeySignCtrol.cpp:105
 msgid "G # minor"
 msgstr "sol # klein"
 
-#: score/KeySignature.cpp:723
+#: score/KeySignature.cpp:711
 #: exercises/TheoKeySignCtrol.cpp:106
 msgid "D # minor"
 msgstr "re # klein"
 
-#: score/KeySignature.cpp:724
+#: score/KeySignature.cpp:712
 #: exercises/TheoKeySignCtrol.cpp:107
 msgid "A # minor"
 msgstr "la # klein"
 
-#: score/KeySignature.cpp:725
+#: score/KeySignature.cpp:713
 #: exercises/TheoKeySignCtrol.cpp:108
 msgid "A b minor"
 msgstr "la b klein"
 
-#: score/KeySignature.cpp:726
+#: score/KeySignature.cpp:714
 #: exercises/TheoKeySignCtrol.cpp:109
 msgid "E b minor"
 msgstr "mi b klein"
 
-#: score/KeySignature.cpp:727
+#: score/KeySignature.cpp:715
 #: exercises/TheoKeySignCtrol.cpp:110
 msgid "B b minor"
 msgstr "si b klein"
 
-#: score/KeySignature.cpp:728
+#: score/KeySignature.cpp:716
 #: exercises/TheoKeySignCtrol.cpp:111
 #: exercises/TheoKeySignCtrol.cpp:418
 #: ../xrc/xrc_strings.cpp:399
 msgid "F minor"
 msgstr "fa klein"
 
-#: score/KeySignature.cpp:729
+#: score/KeySignature.cpp:717
 #: exercises/TheoKeySignCtrol.cpp:112
 #: exercises/TheoKeySignCtrol.cpp:412
 #: ../xrc/xrc_strings.cpp:400
 msgid "C minor"
 msgstr "do klein"
 
-#: score/KeySignature.cpp:730
+#: score/KeySignature.cpp:718
 #: exercises/TheoKeySignCtrol.cpp:113
 #: exercises/TheoKeySignCtrol.cpp:420
 #: ../xrc/xrc_strings.cpp:401
 msgid "G minor"
 msgstr "sol klein"
 
-#: score/KeySignature.cpp:731
+#: score/KeySignature.cpp:719
 #: exercises/TheoKeySignCtrol.cpp:114
 #: exercises/TheoKeySignCtrol.cpp:414
 #: ../xrc/xrc_strings.cpp:402
 msgid "D minor"
 msgstr "re klein"
 
+#: score/TupletBracket.cpp:124
+#: score/MetronomeMark.cpp:146
+#: score/Text.cpp:119
+#: score/AuxObj.cpp:301
+#: app/FontManager.cpp:117
+msgid "Sorry, an error has occurred while allocating the font."
+msgstr "Er heeft zich een fout voorgedaan bij de toekenning van het font."
+
+#: score/Barline.cpp:315
+#: ../xrc/xrc_strings.cpp:173
+msgid "Barline"
+msgstr "Maatstreep"
+
+#: score/Barline.cpp:318
+msgid "Barline properties"
+msgstr "Maatstreep eigenschappen"
+
+#: score/Barline.cpp:390
+msgid "Simple barline"
+msgstr "Enkelvoudige"
+
+#: score/Barline.cpp:391
+msgid "Double barline"
+msgstr "Dubbele"
+
+#: score/Barline.cpp:392
+msgid "Final barline"
+msgstr "Finale"
+
+#: score/Barline.cpp:393
+msgid "Start repetition"
+msgstr "Herhaling starten"
+
+#: score/Barline.cpp:394
+msgid "End repetition"
+msgstr "Herhaling eindigen"
+
+#: score/Barline.cpp:395
+#, fuzzy
+msgid "Start barline"
+msgstr "Begin"
+
+#: score/Barline.cpp:396
+msgid "Double repetition"
+msgstr "Dubbele herhaling"
+
+#: score/ColStaffObjs.cpp:3303
+#: score/ColStaffObjs_old.cpp:3591
+msgid "Move backwards: out of measure"
+msgstr "Terugkeren: buiten de maat"
+
+#: score/ColStaffObjs.cpp:3313
+#: score/ColStaffObjs_old.cpp:3601
+msgid "Move forward: out of measure"
+msgstr "Verder: buiten de maat"
+
 #: score/MetronomeMark.cpp:101
 msgid "metronome mark"
 msgstr "Metronoom markering"
-
-#: score/Note.cpp:1858
-msgid "Delete tie &previous"
-msgstr "Verbinding verwijderen &vorige"
-
-#: score/Note.cpp:2026
-#, c-format
-msgid "c%d"
-msgstr "do%d"
-
-#: score/Note.cpp:2026
-#, c-format
-msgid "d%d"
-msgstr "re%d"
-
-#: score/Note.cpp:2026
-#, c-format
-msgid "e%d"
-msgstr "mi%d"
-
-#: score/Note.cpp:2026
-#, c-format
-msgid "f%d"
-msgstr "fa%d"
-
-#: score/Note.cpp:2026
-#, c-format
-msgid "g%d"
-msgstr "sol%d"
-
-#: score/Note.cpp:2026
-#, c-format
-msgid "a%d"
-msgstr "la%d"
-
-#: score/Note.cpp:2026
-#, c-format
-msgid "b%d"
-msgstr "si%d"
-
-#: score/Score.cpp:1598
-#: score/Score.cpp:1613
-#: app/MainFrame.cpp:1077
-msgid "Add title"
-msgstr "Titel toevoegen"
-
-#: score/Score.cpp:1599
-#: app/MainFrame.cpp:1078
-msgid "Add a title to the score"
-msgstr "Een titel aan de partitiuur toevoegen"
-
-#: score/Score.cpp:1604
-#: score/Score.cpp:1614
-#: app/MainFrame.cpp:1079
-msgid "Margins and spacers"
-msgstr "grenzen en spacers"
-
-#: score/Score.cpp:1644
-msgid "Select instrument:"
-msgstr "Instrument selecteren:"
-
-#: score/Score.cpp:1645
-msgid "Instrument selection"
-msgstr "Instrument selectie"
-
-#: score/Score.cpp:1705
-#: score/Score.cpp:1711
-#: xml_parser/MusicXMLParser.cpp:1422
-msgid "Lyrics"
-msgstr "Tekst"
-
-#: score/Score.cpp:1716
-#: score/Score.cpp:1722
-#: app/ScoreCommand.cpp:1532
-msgid "Normal text"
-msgstr "Normale tekst"
-
-#: score/Score.cpp:1727
-#: score/Score.cpp:1733
-#: app/ScoreCommand.cpp:1591
-#: app/ScoreWizard.cpp:324
-msgid "Title"
-msgstr "Titel"
-
-#: score/Score.cpp:1759
-#, c-format
-msgid "Style%d"
-msgstr "Stijl%d"
-
-#: score/StaffObj.cpp:359
-#: score/StaffObj.cpp:365
-msgid "Attach text"
-msgstr "Tekst als bijlage"
-
-#: score/StaffObj.cpp:392
-msgid "General"
-msgstr "Algemeen"
 
 #: score/Text.cpp:132
 #: score/Text.cpp:152
 msgid "Text"
 msgstr "Tekst"
 
-#: score/VStaff.cpp:544
+#: score/VStaff.cpp:534
+msgid "Error: Notes in a chord must have the same duration."
+msgstr ""
+
+#: score/VStaff.cpp:535
+msgid "Note insertion ignored."
+msgstr ""
+
+#: score/VStaff.cpp:555
 msgid "Error: No clef defined yet."
 msgstr "Fout: nog geen sleutel geselecteerd."
 
-#: score/VStaff.cpp:546
+#: score/VStaff.cpp:557
 msgid "Would you like to have notes placed on the staff as if a G clef has been defined?"
 msgstr "Will u de noten op de balk plaatsen in de Sol Sleutel?"
 
-#: score/VStaff.cpp:549
-#: app/ScoreCanvas.cpp:461
+#: score/VStaff.cpp:560
+#: app/ScoreCanvas.cpp:464
 msgid "Insert clef"
 msgstr "Sleutel invoegen"
 
-#: score/VStaff.cpp:549
+#: score/VStaff.cpp:560
 msgid "An invisible G clef will be inserted before the note."
 msgstr "Een onzichtbare Sol Sleutel zal ingevoegd worden voor de noot."
 
-#: score/VStaff.cpp:550
-#: score/VStaff.cpp:785
-#: score/VStaff.cpp:825
-#: score/properties/DlgEditText.cpp:155
+#: score/VStaff.cpp:561
+#: score/VStaff.cpp:796
+#: score/VStaff.cpp:836
 #: score/properties/DlgProperties.cpp:94
+#: score/properties/DlgEditText.cpp:155
 #: widgets/Wizard.cpp:137
 #: ../xrc/xrc_strings.cpp:63
 #: ../xrc/xrc_strings.cpp:148
@@ -414,62 +426,98 @@ msgstr "Een onzichtbare Sol Sleutel zal ingevoegd worden voor de noot."
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: score/VStaff.cpp:550
+#: score/VStaff.cpp:561
 msgid "The 'insert note' command will be cancelled."
 msgstr "De actie 'noot toevoegen' wordt geannuleerd"
 
-#: score/VStaff.cpp:774
+#: score/VStaff.cpp:785
 msgid "Notes after the clef will be affected by this action."
 msgstr "De noten na de sleutel zullen beïnvloed worden door deze aktie."
 
-#: score/VStaff.cpp:777
+#: score/VStaff.cpp:788
 msgid "Would you like to keep notes' pitch and, therefore, to change notes' positions on the staff? or, would you prefer to keep notes placed on their current staff positions? (implies pitch change)"
 msgstr "WIlt u de toonhoogte behouden en aldus de positie van de noten wijzigen op de notenbalk, of verkiest u de positie te behouden, met een wijziging in toonhoogte als gevolg?"
 
-#: score/VStaff.cpp:783
+#: score/VStaff.cpp:794
 msgid "Keep position"
 msgstr "positie behouden"
 
-#: score/VStaff.cpp:783
+#: score/VStaff.cpp:794
 msgid "Change notes' pitch and keep their current staff position."
 msgstr "Verander de toonhoogte en behoud te positie op de notenbalk."
 
-#: score/VStaff.cpp:784
-#: score/VStaff.cpp:823
+#: score/VStaff.cpp:795
+#: score/VStaff.cpp:834
 msgid "Keep pitch"
 msgstr "Behoud de toonhoogte"
 
-#: score/VStaff.cpp:784
+#: score/VStaff.cpp:795
 msgid "Keep pitch and move notes to new staff positions."
 msgstr "Behoud de toonhoogte en wijzig de positie van de noten."
 
-#: score/VStaff.cpp:785
+#: score/VStaff.cpp:796
 msgid "The insert, delete or change clef command will be cancelled."
 msgstr "De invoeg, verwijder of wijzig sleutel opdrachten worden geannuleerd."
 
-#: score/VStaff.cpp:815
+#: score/VStaff.cpp:826
 msgid "Notes after the key will be affected by this action."
 msgstr "De noten na de toonaard worden beïnvloed door deze aktie."
 
-#: score/VStaff.cpp:818
+#: score/VStaff.cpp:829
 msgid "Would you like to keep notes' pitch and, therefore, to add/remove accidentals to the affected notes?"
 msgstr "Wilt u de toonhoogte behouden en daardoor wijzigingstekens toevoegen/verwijderen voor de betrokken noten?"
 
-#: score/VStaff.cpp:823
+#: score/VStaff.cpp:834
 msgid "Keep pitch by adding/removing accidentals when necessary."
 msgstr "Behoud de toonhoogte door toevallige wijzigingstekens toe te voegen of te verwijderen."
 
-#: score/VStaff.cpp:824
+#: score/VStaff.cpp:835
 msgid "Change pitch"
 msgstr "Verander de toonhoogte"
 
-#: score/VStaff.cpp:824
+#: score/VStaff.cpp:835
 msgid "Do nothing. Notes' pitch will be affected by the change in key signature."
 msgstr "Doe niets. De toonhoogte wordt gewijzigd door de verandering van de toonaard."
 
-#: score/VStaff.cpp:825
+#: score/VStaff.cpp:836
 msgid "The insert, delete or change key command will be cancelled."
 msgstr "De invoeg, verwijder of wijzig toonaard opdrachten worden geannuleerd."
+
+#: score/properties/DlgTextStyles.cpp:93
+msgid "Styles defined in current score"
+msgstr "Stijlen gedefinieerd in de huidige partituur"
+
+#: score/properties/DlgTextStyles.cpp:287
+#: score/properties/DlgTextStyles.cpp:292
+#: score/properties/DlgTextStyles.cpp:297
+msgid "Not yet implemented"
+msgstr "Nog niet geïmplementeerd"
+
+#: score/properties/TextProperties.cpp:158
+msgid "Text style:"
+msgstr "Tekst stijl:"
+
+#: score/properties/TextProperties.cpp:167
+msgid "Add/change styles"
+msgstr "Stijl toevoegen/verwijderen"
+
+#: score/properties/DlgProperties.cpp:53
+#: app/MainFrame.cpp:1091
+msgid "Properties"
+msgstr "Eigenschappen"
+
+#: score/properties/DlgProperties.cpp:88
+#: score/properties/DlgEditText.cpp:149
+#: app/AboutDialog.cpp:176
+#: ../xrc/xrc_strings.cpp:62
+#: ../xrc/xrc_strings.cpp:127
+#: ../xrc/xrc_strings.cpp:147
+#: ../xrc/xrc_strings.cpp:177
+#: ../xrc/xrc_strings.cpp:277
+#: ../xrc/xrc_strings.cpp:331
+#: ../xrc/xrc_strings.cpp:423
+msgid "Accept"
+msgstr "Aanvaarden"
 
 #: score/properties/DlgEditText.cpp:67
 msgid "Edit text"
@@ -497,41 +545,115 @@ msgstr "Plakken"
 msgid "Text color selector"
 msgstr "Tekst kleur selector"
 
-#: score/properties/DlgEditText.cpp:149
-#: score/properties/DlgProperties.cpp:88
-#: app/AboutDialog.cpp:176
-#: ../xrc/xrc_strings.cpp:62
-#: ../xrc/xrc_strings.cpp:127
-#: ../xrc/xrc_strings.cpp:147
-#: ../xrc/xrc_strings.cpp:177
-#: ../xrc/xrc_strings.cpp:277
-#: ../xrc/xrc_strings.cpp:331
-#: ../xrc/xrc_strings.cpp:423
-msgid "Accept"
-msgstr "Aanvaarden"
+#: auxmusic/ComposerV6.cpp:278
+msgid "[lmComposer6::GenerateScore] No usable fragments!"
+msgstr "[lmComposer6::GenerateScore] Geen bruikbare fragmenten!"
 
-#: score/properties/DlgProperties.cpp:53
-#: app/MainFrame.cpp:1086
-msgid "Properties"
-msgstr "Eigenschappen"
+#: auxmusic/ScalesManager.cpp:156
+msgid "Major natural"
+msgstr "Majeur natuurlijk"
 
-#: score/properties/DlgTextStyles.cpp:80
-msgid "Styles defined in current score"
-msgstr "Stijlen gedefinieerd in de huidige partituur"
+#: auxmusic/ScalesManager.cpp:157
+msgid "Major type II"
+msgstr "Majeur type II"
 
-#: score/properties/DlgTextStyles.cpp:274
-#: score/properties/DlgTextStyles.cpp:279
-#: score/properties/DlgTextStyles.cpp:284
-msgid "Not yet implemented"
-msgstr "Nog niet geïmplementeerd"
+#: auxmusic/ScalesManager.cpp:158
+msgid "Major type III"
+msgstr "Majeur Type III"
 
-#: score/properties/TextProperties.cpp:157
-msgid "Text style:"
-msgstr "Tekst stijl:"
+#: auxmusic/ScalesManager.cpp:159
+msgid "Major type IV"
+msgstr "Majeur type IV"
 
-#: score/properties/TextProperties.cpp:166
-msgid "Add/change styles"
-msgstr "Stijl toevoegen/verwijderen"
+#: auxmusic/ScalesManager.cpp:162
+msgid "Minor natural"
+msgstr "Mineur natuurlijk"
+
+#: auxmusic/ScalesManager.cpp:163
+msgid "Minor Dorian"
+msgstr "Mineur Dorisch"
+
+#: auxmusic/ScalesManager.cpp:164
+msgid "Minor Harmonic"
+msgstr "Mineur Harmonisch"
+
+#: auxmusic/ScalesManager.cpp:165
+msgid "Minor Melodic"
+msgstr "Mineur Melodisch"
+
+#: auxmusic/ScalesManager.cpp:168
+#: exercises/IdfyScalesCtrol.cpp:155
+#: ../xrc/xrc_strings.cpp:293
+msgid "Ionian"
+msgstr "Ionisch"
+
+#: auxmusic/ScalesManager.cpp:169
+#: exercises/IdfyScalesCtrol.cpp:150
+#: exercises/IdfyScalesCtrol.cpp:156
+#: ../xrc/xrc_strings.cpp:289
+#: ../xrc/xrc_strings.cpp:295
+msgid "Dorian"
+msgstr "Dorisch"
+
+#: auxmusic/ScalesManager.cpp:170
+#: exercises/IdfyScalesCtrol.cpp:157
+#: ../xrc/xrc_strings.cpp:297
+msgid "Phrygian"
+msgstr "Phrygisch"
+
+#: auxmusic/ScalesManager.cpp:171
+#: exercises/IdfyScalesCtrol.cpp:158
+#: ../xrc/xrc_strings.cpp:299
+msgid "Lydian"
+msgstr "Lydisch"
+
+#: auxmusic/ScalesManager.cpp:172
+#: exercises/IdfyScalesCtrol.cpp:159
+#: ../xrc/xrc_strings.cpp:294
+msgid "Mixolydian"
+msgstr "Mixolydisch"
+
+#: auxmusic/ScalesManager.cpp:173
+#: exercises/IdfyScalesCtrol.cpp:160
+#: ../xrc/xrc_strings.cpp:296
+msgid "Aeolian"
+msgstr "Aolisch"
+
+#: auxmusic/ScalesManager.cpp:174
+#: exercises/IdfyScalesCtrol.cpp:161
+#: ../xrc/xrc_strings.cpp:298
+msgid "Locrian"
+msgstr "Locrisch"
+
+#: auxmusic/ScalesManager.cpp:177
+#: exercises/IdfyScalesCtrol.cpp:164
+#: ../xrc/xrc_strings.cpp:302
+msgid "Pentatonic minor"
+msgstr "Pentatonisch mineur"
+
+#: auxmusic/ScalesManager.cpp:178
+#: exercises/IdfyScalesCtrol.cpp:165
+#: ../xrc/xrc_strings.cpp:301
+msgid "Pentatonic major"
+msgstr "Pentatonisch majeur"
+
+#: auxmusic/ScalesManager.cpp:179
+#: exercises/IdfyScalesCtrol.cpp:166
+#: ../xrc/xrc_strings.cpp:304
+msgid "Blues"
+msgstr "Blues"
+
+#: auxmusic/ScalesManager.cpp:180
+#: exercises/IdfyScalesCtrol.cpp:167
+#: ../xrc/xrc_strings.cpp:303
+msgid "Whole tones"
+msgstr "Hele noten"
+
+#: auxmusic/ScalesManager.cpp:181
+#: exercises/IdfyScalesCtrol.cpp:168
+#: ../xrc/xrc_strings.cpp:305
+msgid "Chromatic"
+msgstr "Chromatisch"
 
 #: auxmusic/Cadence.cpp:1282
 #: auxmusic/Cadence.cpp:1283
@@ -583,6 +705,116 @@ msgstr "Bedrieglijke"
 #: ../xrc/xrc_strings.cpp:420
 msgid "Half cadence"
 msgstr "Halve cadens"
+
+#: auxmusic/Interval.cpp:188
+msgid "It is not possible to generate an interval satisfying the constraints imposed by the chosen settings."
+msgstr "Het is niet mogelijk een interval te genereren dat voldoet aan de gekozen instellingen."
+
+#: auxmusic/Interval.cpp:375
+#: auxmusic/Interval.cpp:817
+msgid " diminished"
+msgstr " verminderd"
+
+#: auxmusic/Interval.cpp:376
+#: auxmusic/Interval.cpp:818
+msgid " minor"
+msgstr " klein"
+
+#: auxmusic/Interval.cpp:377
+#: auxmusic/Interval.cpp:819
+msgid " mayor"
+msgstr " groot"
+
+#: auxmusic/Interval.cpp:378
+#: auxmusic/Interval.cpp:820
+msgid " augmented"
+msgstr " verhoogd"
+
+#: auxmusic/Interval.cpp:379
+#: auxmusic/Interval.cpp:821
+msgid " perfect"
+msgstr " rein"
+
+#: auxmusic/Interval.cpp:380
+#: auxmusic/Interval.cpp:822
+msgid " double augmented"
+msgstr " overmatig"
+
+#: auxmusic/Interval.cpp:381
+#: auxmusic/Interval.cpp:823
+msgid " double diminished"
+msgstr " verminderd"
+
+#: auxmusic/Interval.cpp:400
+#: exercises/TheoIntervalsCtrol.cpp:313
+#: exercises/TheoIntervalsCtrol.cpp:618
+#: exercises/EarIntervalsCtrol.cpp:90
+#: ../xrc/xrc_strings.cpp:4
+msgid "Unison"
+msgstr "prime"
+
+#: auxmusic/Interval.cpp:401
+#: exercises/TheoIntervalsCtrol.cpp:553
+msgid "2nd"
+msgstr "secunde"
+
+#: auxmusic/Interval.cpp:402
+#: exercises/TheoIntervalsCtrol.cpp:554
+msgid "3rd"
+msgstr "terts"
+
+#: auxmusic/Interval.cpp:403
+#: exercises/TheoIntervalsCtrol.cpp:555
+msgid "4th"
+msgstr "kwart"
+
+#: auxmusic/Interval.cpp:404
+#: exercises/TheoIntervalsCtrol.cpp:556
+msgid "5th"
+msgstr "kwint"
+
+#: auxmusic/Interval.cpp:405
+#: exercises/TheoIntervalsCtrol.cpp:557
+msgid "6th"
+msgstr "sext"
+
+#: auxmusic/Interval.cpp:406
+#: exercises/TheoIntervalsCtrol.cpp:558
+msgid "7th"
+msgstr "septiem"
+
+#: auxmusic/Interval.cpp:407
+msgid "octave"
+msgstr "oktaaf"
+
+#: auxmusic/Interval.cpp:408
+msgid "9th"
+msgstr "none"
+
+#: auxmusic/Interval.cpp:409
+msgid "10th"
+msgstr "decime"
+
+#: auxmusic/Interval.cpp:410
+msgid "11th"
+msgstr "undecime"
+
+#: auxmusic/Interval.cpp:411
+msgid "12th"
+msgstr "duodecime"
+
+#: auxmusic/Interval.cpp:412
+msgid "13th"
+msgstr "tredecime"
+
+#: auxmusic/Interval.cpp:413
+msgid "14th"
+msgstr "quattordecime"
+
+#: auxmusic/Interval.cpp:414
+#: ../xrc/xrc_strings.cpp:28
+msgid "Two octaves"
+msgstr "Twee oktaven"
 
 #: auxmusic/ChordManager.cpp:252
 msgid "root position"
@@ -693,274 +925,9 @@ msgstr "kleine Sixt"
 msgid "Augmented 6th"
 msgstr "Verhoogde Sixt"
 
-#: auxmusic/ComposerV6.cpp:278
-msgid "[lmComposer6::GenerateScore] No usable fragments!"
-msgstr "[lmComposer6::GenerateScore] Geen bruikbare fragmenten!"
-
-#: auxmusic/Interval.cpp:188
-msgid "It is not possible to generate an interval satisfying the constraints imposed by the chosen settings."
-msgstr "Het is niet mogelijk een interval te genereren dat voldoet aan de gekozen instellingen."
-
-#: auxmusic/Interval.cpp:375
-#: auxmusic/Interval.cpp:817
-msgid " diminished"
-msgstr " verminderd"
-
-#: auxmusic/Interval.cpp:376
-#: auxmusic/Interval.cpp:818
-msgid " minor"
-msgstr " klein"
-
-#: auxmusic/Interval.cpp:377
-#: auxmusic/Interval.cpp:819
-msgid " mayor"
-msgstr " groot"
-
-#: auxmusic/Interval.cpp:378
-#: auxmusic/Interval.cpp:820
-msgid " augmented"
-msgstr " verhoogd"
-
-#: auxmusic/Interval.cpp:379
-#: auxmusic/Interval.cpp:821
-msgid " perfect"
-msgstr " rein"
-
-#: auxmusic/Interval.cpp:380
-#: auxmusic/Interval.cpp:822
-msgid " double augmented"
-msgstr " overmatig"
-
-#: auxmusic/Interval.cpp:381
-#: auxmusic/Interval.cpp:823
-msgid " double diminished"
-msgstr " verminderd"
-
-#: auxmusic/Interval.cpp:400
-#: exercises/EarIntervalsCtrol.cpp:90
-#: exercises/TheoIntervalsCtrol.cpp:313
-#: exercises/TheoIntervalsCtrol.cpp:618
-#: ../xrc/xrc_strings.cpp:4
-msgid "Unison"
-msgstr "prime"
-
-#: auxmusic/Interval.cpp:401
-#: exercises/TheoIntervalsCtrol.cpp:553
-msgid "2nd"
-msgstr "secunde"
-
-#: auxmusic/Interval.cpp:402
-#: exercises/TheoIntervalsCtrol.cpp:554
-msgid "3rd"
-msgstr "terts"
-
-#: auxmusic/Interval.cpp:403
-#: exercises/TheoIntervalsCtrol.cpp:555
-msgid "4th"
-msgstr "kwart"
-
-#: auxmusic/Interval.cpp:404
-#: exercises/TheoIntervalsCtrol.cpp:556
-msgid "5th"
-msgstr "kwint"
-
-#: auxmusic/Interval.cpp:405
-#: exercises/TheoIntervalsCtrol.cpp:557
-msgid "6th"
-msgstr "sext"
-
-#: auxmusic/Interval.cpp:406
-#: exercises/TheoIntervalsCtrol.cpp:558
-msgid "7th"
-msgstr "septiem"
-
-#: auxmusic/Interval.cpp:407
-msgid "octave"
-msgstr "oktaaf"
-
-#: auxmusic/Interval.cpp:408
-msgid "9th"
-msgstr "none"
-
-#: auxmusic/Interval.cpp:409
-msgid "10th"
-msgstr "decime"
-
-#: auxmusic/Interval.cpp:410
-msgid "11th"
-msgstr "undecime"
-
-#: auxmusic/Interval.cpp:411
-msgid "12th"
-msgstr "duodecime"
-
-#: auxmusic/Interval.cpp:412
-msgid "13th"
-msgstr "tredecime"
-
-#: auxmusic/Interval.cpp:413
-msgid "14th"
-msgstr "quattordecime"
-
-#: auxmusic/Interval.cpp:414
-#: ../xrc/xrc_strings.cpp:28
-msgid "Two octaves"
-msgstr "Twee oktaven"
-
-#: auxmusic/ScalesManager.cpp:156
-msgid "Major natural"
-msgstr "Majeur natuurlijk"
-
-#: auxmusic/ScalesManager.cpp:157
-msgid "Major type II"
-msgstr "Majeur type II"
-
-#: auxmusic/ScalesManager.cpp:158
-msgid "Major type III"
-msgstr "Majeur Type III"
-
-#: auxmusic/ScalesManager.cpp:159
-msgid "Major type IV"
-msgstr "Majeur type IV"
-
-#: auxmusic/ScalesManager.cpp:162
-msgid "Minor natural"
-msgstr "Mineur natuurlijk"
-
-#: auxmusic/ScalesManager.cpp:163
-msgid "Minor Dorian"
-msgstr "Mineur Dorisch"
-
-#: auxmusic/ScalesManager.cpp:164
-msgid "Minor Harmonic"
-msgstr "Mineur Harmonisch"
-
-#: auxmusic/ScalesManager.cpp:165
-msgid "Minor Melodic"
-msgstr "Mineur Melodisch"
-
-#: auxmusic/ScalesManager.cpp:168
-#: exercises/IdfyScalesCtrol.cpp:155
-#: ../xrc/xrc_strings.cpp:293
-msgid "Ionian"
-msgstr "Ionisch"
-
-#: auxmusic/ScalesManager.cpp:169
-#: exercises/IdfyScalesCtrol.cpp:150
-#: exercises/IdfyScalesCtrol.cpp:156
-#: ../xrc/xrc_strings.cpp:289
-#: ../xrc/xrc_strings.cpp:295
-msgid "Dorian"
-msgstr "Dorisch"
-
-#: auxmusic/ScalesManager.cpp:170
-#: exercises/IdfyScalesCtrol.cpp:157
-#: ../xrc/xrc_strings.cpp:297
-msgid "Phrygian"
-msgstr "Phrygisch"
-
-#: auxmusic/ScalesManager.cpp:171
-#: exercises/IdfyScalesCtrol.cpp:158
-#: ../xrc/xrc_strings.cpp:299
-msgid "Lydian"
-msgstr "Lydisch"
-
-#: auxmusic/ScalesManager.cpp:172
-#: exercises/IdfyScalesCtrol.cpp:159
-#: ../xrc/xrc_strings.cpp:294
-msgid "Mixolydian"
-msgstr "Mixolydisch"
-
-#: auxmusic/ScalesManager.cpp:173
-#: exercises/IdfyScalesCtrol.cpp:160
-#: ../xrc/xrc_strings.cpp:296
-msgid "Aeolian"
-msgstr "Aolisch"
-
-#: auxmusic/ScalesManager.cpp:174
-#: exercises/IdfyScalesCtrol.cpp:161
-#: ../xrc/xrc_strings.cpp:298
-msgid "Locrian"
-msgstr "Locrisch"
-
-#: auxmusic/ScalesManager.cpp:177
-#: exercises/IdfyScalesCtrol.cpp:164
-#: ../xrc/xrc_strings.cpp:302
-msgid "Pentatonic minor"
-msgstr "Pentatonisch mineur"
-
-#: auxmusic/ScalesManager.cpp:178
-#: exercises/IdfyScalesCtrol.cpp:165
-#: ../xrc/xrc_strings.cpp:301
-msgid "Pentatonic major"
-msgstr "Pentatonisch majeur"
-
-#: auxmusic/ScalesManager.cpp:179
-#: exercises/IdfyScalesCtrol.cpp:166
-#: ../xrc/xrc_strings.cpp:304
-msgid "Blues"
-msgstr "Blues"
-
-#: auxmusic/ScalesManager.cpp:180
-#: exercises/IdfyScalesCtrol.cpp:167
-#: ../xrc/xrc_strings.cpp:303
-msgid "Whole tones"
-msgstr "Hele noten"
-
-#: auxmusic/ScalesManager.cpp:181
-#: exercises/IdfyScalesCtrol.cpp:168
-#: ../xrc/xrc_strings.cpp:305
-msgid "Chromatic"
-msgstr "Chromatisch"
-
-#: exercises/CadencesConstrains.cpp:149
-msgid "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
-msgstr "Programma fout: Loop vastgesteld in ImCadencesConstrains::GetRandomCadence."
-
 #: exercises/ChordConstrains.cpp:175
 msgid "Program error: Loop detected in lmChordConstrains::GetRandomChordType."
 msgstr "Programma fout: loep gedetecteerd in ImChordConstraints::GetRandomChordType"
-
-#: exercises/Constrains.cpp:159
-#: exercises/ExerciseCtrol.cpp:276
-#: exercises/ExerciseCtrol.cpp:633
-#: exercises/ExerciseCtrol.cpp:640
-#: exercises/ExerciseCtrol.cpp:654
-#: exercises/ExerciseCtrol.cpp:803
-#: exercises/ExerciseCtrol.cpp:974
-#: exercises/ExerciseCtrol.cpp:1028
-#: exercises/MusicReadingConstrains.cpp:51
-#: html/TheoMusicReadingCtrolParms.h:153
-msgid "Play"
-msgstr "Afspelen"
-
-#: exercises/Constrains.cpp:160
-#: exercises/Constrains.cpp:162
-#: exercises/ExerciseCtrol.cpp:574
-#: exercises/ExerciseCtrol.cpp:784
-#: exercises/ExerciseCtrol.cpp:957
-#: exercises/MusicReadingConstrains.cpp:52
-#: exercises/MusicReadingConstrains.cpp:54
-#: html/TheoMusicReadingCtrolParms.h:154
-#: html/TheoMusicReadingCtrolParms.h:156
-msgid "Stop"
-msgstr "Stoppen"
-
-#: exercises/Constrains.cpp:161
-#: exercises/MusicReadingConstrains.cpp:53
-#: html/TheoMusicReadingCtrolParms.h:155
-msgid "Read"
-msgstr "Lezen"
-
-#: exercises/Constrains.cpp:163
-#, c-format
-msgid "Measure %d"
-msgstr "Maat %d"
-
-#: exercises/Constrains.cpp:164
-#, c-format
-msgid "Stop %d"
-msgstr "Stop %d"
 
 #: exercises/CountersCtrol.cpp:74
 msgid "Two teams competition"
@@ -991,114 +958,6 @@ msgstr "Score"
 msgid "Team's %d turn"
 msgstr "Teams %d beurt"
 
-#: exercises/EarIntervalsCtrol.cpp:91
-#: ../xrc/xrc_strings.cpp:5
-msgid "minor 2nd"
-msgstr "kleine secunde"
-
-#: exercises/EarIntervalsCtrol.cpp:92
-msgid "major 2nd"
-msgstr "grote secunde"
-
-#: exercises/EarIntervalsCtrol.cpp:93
-#: ../xrc/xrc_strings.cpp:7
-msgid "minor 3rd"
-msgstr "kleine terts"
-
-#: exercises/EarIntervalsCtrol.cpp:94
-msgid "major 3rd"
-msgstr "grote terts"
-
-#: exercises/EarIntervalsCtrol.cpp:95
-msgid "4th perfect"
-msgstr "reine kwart"
-
-#: exercises/EarIntervalsCtrol.cpp:96
-msgid "aug.4th/dim.5th"
-msgstr "vergr kwart/verkl kwint"
-
-#: exercises/EarIntervalsCtrol.cpp:97
-#: ../xrc/xrc_strings.cpp:11
-msgid "perfect 5th"
-msgstr "reine kwint"
-
-#: exercises/EarIntervalsCtrol.cpp:98
-#: ../xrc/xrc_strings.cpp:12
-msgid "minor 6th"
-msgstr "kleine sixt"
-
-#: exercises/EarIntervalsCtrol.cpp:99
-msgid "major 6th"
-msgstr "grote sixt"
-
-#: exercises/EarIntervalsCtrol.cpp:100
-#: ../xrc/xrc_strings.cpp:14
-msgid "minor 7th"
-msgstr "klein septiem"
-
-#: exercises/EarIntervalsCtrol.cpp:101
-msgid "major 7th"
-msgstr "groot septiem"
-
-#: exercises/EarIntervalsCtrol.cpp:102
-#: ../xrc/xrc_strings.cpp:16
-msgid "perfect 8th"
-msgstr "oktaaf"
-
-#: exercises/EarIntervalsCtrol.cpp:103
-#: ../xrc/xrc_strings.cpp:17
-msgid "minor 9th"
-msgstr "kleine none"
-
-#: exercises/EarIntervalsCtrol.cpp:104
-msgid "major 9th"
-msgstr "grote none"
-
-#: exercises/EarIntervalsCtrol.cpp:105
-#: ../xrc/xrc_strings.cpp:19
-msgid "minor 10th"
-msgstr "kleine decime"
-
-#: exercises/EarIntervalsCtrol.cpp:106
-msgid "major 10th"
-msgstr "grote decime"
-
-#: exercises/EarIntervalsCtrol.cpp:107
-#: ../xrc/xrc_strings.cpp:21
-msgid "perfect 11th"
-msgstr "reine undecime"
-
-#: exercises/EarIntervalsCtrol.cpp:108
-msgid "aug.11th / dim.12th"
-msgstr "vergr. undecime/verkl. duodecime"
-
-#: exercises/EarIntervalsCtrol.cpp:109
-#: ../xrc/xrc_strings.cpp:23
-msgid "perfect 12th"
-msgstr "reine duodecime"
-
-#: exercises/EarIntervalsCtrol.cpp:110
-#: ../xrc/xrc_strings.cpp:24
-msgid "minor 13th"
-msgstr "kleine tredecime"
-
-#: exercises/EarIntervalsCtrol.cpp:111
-msgid "major 13th"
-msgstr "grote tredecime"
-
-#: exercises/EarIntervalsCtrol.cpp:112
-#: ../xrc/xrc_strings.cpp:26
-msgid "minor 14th"
-msgstr "kleine quattordecime"
-
-#: exercises/EarIntervalsCtrol.cpp:113
-msgid "major 14th"
-msgstr "grote quattordecime"
-
-#: exercises/EarIntervalsCtrol.cpp:114
-msgid "two octaves"
-msgstr "twee oktaven"
-
 #: exercises/ExerciseCtrol.cpp:204
 #: exercises/TheoMusicReadingCtrol.cpp:162
 msgid "Exercise options"
@@ -1110,20 +969,20 @@ msgid "Go back to theory"
 msgstr "Ga terug naar theorie"
 
 #: exercises/ExerciseCtrol.cpp:219
-#: exercises/ScoreCtrol.cpp:192
 #: exercises/TheoMusicReadingCtrol.cpp:144
+#: exercises/ScoreCtrol.cpp:192
 msgid "See source score"
 msgstr "Inspecteer broncode"
 
 #: exercises/ExerciseCtrol.cpp:224
-#: exercises/ScoreCtrol.cpp:196
 #: exercises/TheoMusicReadingCtrol.cpp:148
+#: exercises/ScoreCtrol.cpp:196
 msgid "Dump score"
 msgstr "Dump score"
 
 #: exercises/ExerciseCtrol.cpp:229
-#: exercises/ScoreCtrol.cpp:200
 #: exercises/TheoMusicReadingCtrol.cpp:152
+#: exercises/ScoreCtrol.cpp:200
 msgid "See MIDI events"
 msgstr "Zie MIDI events"
 
@@ -1131,6 +990,19 @@ msgstr "Zie MIDI events"
 #: exercises/TheoMusicReadingCtrol.cpp:123
 msgid "New problem"
 msgstr "Nieuw probleem"
+
+#: exercises/ExerciseCtrol.cpp:276
+#: exercises/ExerciseCtrol.cpp:633
+#: exercises/ExerciseCtrol.cpp:640
+#: exercises/ExerciseCtrol.cpp:654
+#: exercises/ExerciseCtrol.cpp:803
+#: exercises/ExerciseCtrol.cpp:974
+#: exercises/ExerciseCtrol.cpp:1028
+#: exercises/Constrains.cpp:159
+#: exercises/MusicReadingConstrains.cpp:51
+#: html/TheoMusicReadingCtrolParms.h:153
+msgid "Play"
+msgstr "Afspelen"
 
 #: exercises/ExerciseCtrol.cpp:284
 msgid "Show solution"
@@ -1152,17 +1024,37 @@ msgstr "Tweede is groter"
 msgid "Both are equal"
 msgstr "Beide zijn gelijk"
 
-#: exercises/Generators.cpp:67
-msgid "Program error: Loop detected in lmRandomGenerator::GenerateClef."
-msgstr "Programma fout: Loep gedetecteerd in lmRandomGenerator::GenerateClef."
+#: exercises/ExerciseCtrol.cpp:574
+#: exercises/ExerciseCtrol.cpp:784
+#: exercises/ExerciseCtrol.cpp:957
+#: exercises/Constrains.cpp:160
+#: exercises/Constrains.cpp:162
+#: exercises/MusicReadingConstrains.cpp:52
+#: exercises/MusicReadingConstrains.cpp:54
+#: html/TheoMusicReadingCtrolParms.h:154
+#: html/TheoMusicReadingCtrolParms.h:156
+msgid "Stop"
+msgstr "Stoppen"
 
-#: exercises/Generators.cpp:82
-msgid "Program error: Loop detected in lmRandomGenerator::GenerateKey."
-msgstr "Programma fout: Loop gedetecteerd in lmRandomGenerator::GenerateKey."
+#: exercises/ScalesConstrains.cpp:159
+msgid "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
+msgstr "Programma fout: loop vastgesteld in ImScalesScalesConstrains::GetRandomChordType."
 
-#: exercises/Generators.cpp:102
-msgid "Program error: Loop detected in lmRandomGenerator::GenerateTime."
-msgstr "Programma fout: Loop gedetecteerd in lmRandomGenerator::GenerateTime."
+#: exercises/Constrains.cpp:161
+#: exercises/MusicReadingConstrains.cpp:53
+#: html/TheoMusicReadingCtrolParms.h:155
+msgid "Read"
+msgstr "Lezen"
+
+#: exercises/Constrains.cpp:163
+#, c-format
+msgid "Measure %d"
+msgstr "Maat %d"
+
+#: exercises/Constrains.cpp:164
+#, c-format
+msgid "Stop %d"
+msgstr "Stop %d"
 
 #: exercises/IdfyCadencesCtrol.cpp:147
 #: ../xrc/xrc_strings.cpp:336
@@ -1192,65 +1084,6 @@ msgstr "Een tonica akkoord zal afgespeeld worden voordat de cadens begint. "
 
 #: exercises/IdfyCadencesCtrol.cpp:315
 msgid "Press 'Play' to hear the problem again."
-msgstr "Klik op 'Afspelen' om de oefening te herhalen"
-
-#: exercises/IdfyChordCtrol.cpp:99
-msgid "Major "
-msgstr "Majeur"
-
-#: exercises/IdfyChordCtrol.cpp:100
-msgid "Minor "
-msgstr "Mineur"
-
-#: exercises/IdfyChordCtrol.cpp:101
-msgid "Augmented "
-msgstr "Verhoogd"
-
-#: exercises/IdfyChordCtrol.cpp:102
-msgid "Diminished "
-msgstr "Verlaagd"
-
-#: exercises/IdfyChordCtrol.cpp:103
-#: ../xrc/xrc_strings.cpp:235
-msgid "Suspended (4th)"
-msgstr "Vertraagde kwart"
-
-#: exercises/IdfyChordCtrol.cpp:104
-#: ../xrc/xrc_strings.cpp:236
-msgid "Suspended (2nd)"
-msgstr "Vertraagd (2de)"
-
-#: exercises/IdfyChordCtrol.cpp:111
-msgid "Half dim. 7th"
-msgstr "Half verl. septiem"
-
-#: exercises/IdfyChordCtrol.cpp:112
-msgid "Aug. major 7th"
-msgstr "Verh. groot septiem"
-
-#: exercises/IdfyChordCtrol.cpp:114
-msgid "Minor-major 7th"
-msgstr "Naamloos septiem"
-
-#: exercises/IdfyChordCtrol.cpp:186
-msgid "Triads:"
-msgstr "Drieklanken:"
-
-#: exercises/IdfyChordCtrol.cpp:206
-msgid "Seventh chords:"
-msgstr "Septiem akkoorden:"
-
-#: exercises/IdfyChordCtrol.cpp:226
-msgid "Other chords:"
-msgstr "Andere akkoorden:"
-
-#: exercises/IdfyChordCtrol.cpp:305
-msgid "Identify the next chord:"
-msgstr "Identificeer het volgende akkoord:"
-
-#: exercises/IdfyChordCtrol.cpp:308
-#: exercises/IdfyScalesCtrol.cpp:301
-msgid "Press 'Play' to hear it again"
 msgstr "Klik op 'Afspelen' om de oefening te herhalen"
 
 #: exercises/IdfyScalesCtrol.cpp:143
@@ -1306,21 +1139,10 @@ msgstr "Andere toonaarden:"
 msgid "Identify the next scale:"
 msgstr "Identificeer de volgende toonaard:"
 
-#: exercises/ScalesConstrains.cpp:159
-msgid "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
-msgstr "Programma fout: loop vastgesteld in ImScalesScalesConstrains::GetRandomChordType."
-
-#: exercises/ScoreConstrains.cpp:212
-msgid "Global error: No clef constraints specified\n"
-msgstr "Algemene fout: Geen sleutel voorwaarde gespecifieerd\n"
-
-#: exercises/ScoreConstrains.cpp:222
-msgid "Global error: No time signature constraints specified\n"
-msgstr "Algemene fout: geen maatsoort beperking gespecifieerd\n"
-
-#: exercises/ScoreConstrains.cpp:232
-msgid "Global error: No key signature constraints specified\n"
-msgstr "Algemene fout: geen voortekening beperking gespecifieerd\n"
+#: exercises/IdfyScalesCtrol.cpp:301
+#: exercises/IdfyChordCtrol.cpp:308
+msgid "Press 'Play' to hear it again"
+msgstr "Klik op 'Afspelen' om de oefening te herhalen"
 
 #: exercises/TheoIntervalsCtrol.cpp:308
 #: exercises/TheoIntervalsCtrol.cpp:316
@@ -1869,110 +1691,300 @@ msgstr "6 b"
 msgid "7 b"
 msgstr "7 b"
 
-#: html/TextBookFrame.cpp:356
+#: exercises/EarIntervalsCtrol.cpp:91
+#: ../xrc/xrc_strings.cpp:5
+msgid "minor 2nd"
+msgstr "kleine secunde"
+
+#: exercises/EarIntervalsCtrol.cpp:92
+msgid "major 2nd"
+msgstr "grote secunde"
+
+#: exercises/EarIntervalsCtrol.cpp:93
+#: ../xrc/xrc_strings.cpp:7
+msgid "minor 3rd"
+msgstr "kleine terts"
+
+#: exercises/EarIntervalsCtrol.cpp:94
+msgid "major 3rd"
+msgstr "grote terts"
+
+#: exercises/EarIntervalsCtrol.cpp:95
+msgid "4th perfect"
+msgstr "reine kwart"
+
+#: exercises/EarIntervalsCtrol.cpp:96
+msgid "aug.4th/dim.5th"
+msgstr "vergr kwart/verkl kwint"
+
+#: exercises/EarIntervalsCtrol.cpp:97
+#: ../xrc/xrc_strings.cpp:11
+msgid "perfect 5th"
+msgstr "reine kwint"
+
+#: exercises/EarIntervalsCtrol.cpp:98
+#: ../xrc/xrc_strings.cpp:12
+msgid "minor 6th"
+msgstr "kleine sixt"
+
+#: exercises/EarIntervalsCtrol.cpp:99
+msgid "major 6th"
+msgstr "grote sixt"
+
+#: exercises/EarIntervalsCtrol.cpp:100
+#: ../xrc/xrc_strings.cpp:14
+msgid "minor 7th"
+msgstr "klein septiem"
+
+#: exercises/EarIntervalsCtrol.cpp:101
+msgid "major 7th"
+msgstr "groot septiem"
+
+#: exercises/EarIntervalsCtrol.cpp:102
+#: ../xrc/xrc_strings.cpp:16
+msgid "perfect 8th"
+msgstr "oktaaf"
+
+#: exercises/EarIntervalsCtrol.cpp:103
+#: ../xrc/xrc_strings.cpp:17
+msgid "minor 9th"
+msgstr "kleine none"
+
+#: exercises/EarIntervalsCtrol.cpp:104
+msgid "major 9th"
+msgstr "grote none"
+
+#: exercises/EarIntervalsCtrol.cpp:105
+#: ../xrc/xrc_strings.cpp:19
+msgid "minor 10th"
+msgstr "kleine decime"
+
+#: exercises/EarIntervalsCtrol.cpp:106
+msgid "major 10th"
+msgstr "grote decime"
+
+#: exercises/EarIntervalsCtrol.cpp:107
+#: ../xrc/xrc_strings.cpp:21
+msgid "perfect 11th"
+msgstr "reine undecime"
+
+#: exercises/EarIntervalsCtrol.cpp:108
+msgid "aug.11th / dim.12th"
+msgstr "vergr. undecime/verkl. duodecime"
+
+#: exercises/EarIntervalsCtrol.cpp:109
+#: ../xrc/xrc_strings.cpp:23
+msgid "perfect 12th"
+msgstr "reine duodecime"
+
+#: exercises/EarIntervalsCtrol.cpp:110
+#: ../xrc/xrc_strings.cpp:24
+msgid "minor 13th"
+msgstr "kleine tredecime"
+
+#: exercises/EarIntervalsCtrol.cpp:111
+msgid "major 13th"
+msgstr "grote tredecime"
+
+#: exercises/EarIntervalsCtrol.cpp:112
+#: ../xrc/xrc_strings.cpp:26
+msgid "minor 14th"
+msgstr "kleine quattordecime"
+
+#: exercises/EarIntervalsCtrol.cpp:113
+msgid "major 14th"
+msgstr "grote quattordecime"
+
+#: exercises/EarIntervalsCtrol.cpp:114
+msgid "two octaves"
+msgstr "twee oktaven"
+
+#: exercises/Generators.cpp:67
+msgid "Program error: Loop detected in lmRandomGenerator::GenerateClef."
+msgstr "Programma fout: Loep gedetecteerd in lmRandomGenerator::GenerateClef."
+
+#: exercises/Generators.cpp:82
+msgid "Program error: Loop detected in lmRandomGenerator::GenerateKey."
+msgstr "Programma fout: Loop gedetecteerd in lmRandomGenerator::GenerateKey."
+
+#: exercises/Generators.cpp:102
+msgid "Program error: Loop detected in lmRandomGenerator::GenerateTime."
+msgstr "Programma fout: Loop gedetecteerd in lmRandomGenerator::GenerateTime."
+
+#: exercises/CadencesConstrains.cpp:149
+msgid "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
+msgstr "Programma fout: Loop vastgesteld in ImCadencesConstrains::GetRandomCadence."
+
+#: exercises/IdfyChordCtrol.cpp:99
+msgid "Major "
+msgstr "Majeur"
+
+#: exercises/IdfyChordCtrol.cpp:100
+msgid "Minor "
+msgstr "Mineur"
+
+#: exercises/IdfyChordCtrol.cpp:101
+msgid "Augmented "
+msgstr "Verhoogd"
+
+#: exercises/IdfyChordCtrol.cpp:102
+msgid "Diminished "
+msgstr "Verlaagd"
+
+#: exercises/IdfyChordCtrol.cpp:103
+#: ../xrc/xrc_strings.cpp:235
+msgid "Suspended (4th)"
+msgstr "Vertraagde kwart"
+
+#: exercises/IdfyChordCtrol.cpp:104
+#: ../xrc/xrc_strings.cpp:236
+msgid "Suspended (2nd)"
+msgstr "Vertraagd (2de)"
+
+#: exercises/IdfyChordCtrol.cpp:111
+msgid "Half dim. 7th"
+msgstr "Half verl. septiem"
+
+#: exercises/IdfyChordCtrol.cpp:112
+msgid "Aug. major 7th"
+msgstr "Verh. groot septiem"
+
+#: exercises/IdfyChordCtrol.cpp:114
+msgid "Minor-major 7th"
+msgstr "Naamloos septiem"
+
+#: exercises/IdfyChordCtrol.cpp:186
+msgid "Triads:"
+msgstr "Drieklanken:"
+
+#: exercises/IdfyChordCtrol.cpp:206
+msgid "Seventh chords:"
+msgstr "Septiem akkoorden:"
+
+#: exercises/IdfyChordCtrol.cpp:226
+msgid "Other chords:"
+msgstr "Andere akkoorden:"
+
+#: exercises/IdfyChordCtrol.cpp:305
+msgid "Identify the next chord:"
+msgstr "Identificeer het volgende akkoord:"
+
+#: exercises/ScoreConstrains.cpp:212
+msgid "Global error: No clef constraints specified\n"
+msgstr "Algemene fout: Geen sleutel voorwaarde gespecifieerd\n"
+
+#: exercises/ScoreConstrains.cpp:222
+msgid "Global error: No time signature constraints specified\n"
+msgstr "Algemene fout: geen maatsoort beperking gespecifieerd\n"
+
+#: exercises/ScoreConstrains.cpp:232
+msgid "Global error: No key signature constraints specified\n"
+msgstr "Algemene fout: geen voortekening beperking gespecifieerd\n"
+
+#: html/TextBookFrame.cpp:357
 msgid "eMusicBooks"
 msgstr "eMuziekBoeken"
 
-#: html/TextBookFrame.cpp:413
-#: html/TextBookFrame.cpp:928
-#: html/TextBookFrame.cpp:1428
+#: html/TextBookFrame.cpp:414
+#: html/TextBookFrame.cpp:929
+#: html/TextBookFrame.cpp:1433
 msgid "(bookmarks)"
 msgstr "(bladwijzers)"
 
-#: html/TextBookFrame.cpp:424
+#: html/TextBookFrame.cpp:425
 msgid "Add current page to bookmarks"
 msgstr "Huidige pagina aan bladwijzers toevoegen"
 
-#: html/TextBookFrame.cpp:425
+#: html/TextBookFrame.cpp:426
 msgid "Remove current page from bookmarks"
 msgstr "Verwijder huidige pagina uit bladwijzers"
 
-#: html/TextBookFrame.cpp:442
+#: html/TextBookFrame.cpp:443
 msgid "Contents"
 msgstr "Inhoud"
 
-#: html/TextBookFrame.cpp:457
+#: html/TextBookFrame.cpp:458
 msgid "Find"
 msgstr "Zoeken"
 
-#: html/TextBookFrame.cpp:459
+#: html/TextBookFrame.cpp:460
 msgid "Show all"
 msgstr "Alles tonen"
 
-#: html/TextBookFrame.cpp:468
+#: html/TextBookFrame.cpp:469
 msgid "Display all index items that contain the given substring. The search is case insensitive."
 msgstr "Toon alle geïndexeerde items die de gegeven substring bevatten. De zoekopdracht is niet hoofdlettergevoelig."
 
-#: html/TextBookFrame.cpp:469
+#: html/TextBookFrame.cpp:470
 msgid "Show all items in index"
 msgstr "Alle items van de index tonen"
 
-#: html/TextBookFrame.cpp:480
+#: html/TextBookFrame.cpp:481
 msgid "Index"
 msgstr "Index"
 
-#: html/TextBookFrame.cpp:498
+#: html/TextBookFrame.cpp:499
 msgid "Case sensitive"
 msgstr "Hoofdlettergevoelig"
 
-#: html/TextBookFrame.cpp:499
+#: html/TextBookFrame.cpp:500
 msgid "Whole words only"
 msgstr "Enkel volledige woorden"
 
-#: html/TextBookFrame.cpp:500
-#: html/TextBookFrame.cpp:513
+#: html/TextBookFrame.cpp:501
+#: html/TextBookFrame.cpp:514
 msgid "Search"
 msgstr "Zoeken"
 
-#: html/TextBookFrame.cpp:501
+#: html/TextBookFrame.cpp:502
 msgid "Search contents of help book(s) for all occurrences of the text you typed above"
 msgstr "Zoek in de inhoud van de Help bestand(en) naar alle voorkomens van de hierboven getijpte tekst."
 
-#: html/TextBookFrame.cpp:700
+#: html/TextBookFrame.cpp:701
 msgid "Please choose the page to display:"
 msgstr "Kies een pagina om weer te geven:"
 
-#: html/TextBookFrame.cpp:701
+#: html/TextBookFrame.cpp:702
 msgid "Help Topics"
 msgstr "Help Onderwerpen"
 
-#: html/TextBookFrame.cpp:854
-#: html/TextBookFrame.cpp:856
-#: html/TextBookFrame.cpp:1367
-#: html/TextBookFrame.cpp:1400
+#: html/TextBookFrame.cpp:855
+#: html/TextBookFrame.cpp:857
+#: html/TextBookFrame.cpp:1372
+#: html/TextBookFrame.cpp:1405
 #, c-format
 msgid "%i of %i"
 msgstr "%i van %i"
 
-#: html/TextBookFrame.cpp:872
+#: html/TextBookFrame.cpp:873
 msgid "Search in all books"
 msgstr "In alle boeken zoeken"
 
-#: html/TextBookFrame.cpp:1142
+#: html/TextBookFrame.cpp:1147
 msgid "Help Printing"
 msgstr "Hulp bij het printen"
 
-#: html/TextBookFrame.cpp:1144
+#: html/TextBookFrame.cpp:1149
 msgid "Cannot print an empty page."
 msgstr "Kan geen lege pagina printen."
 
-#: html/TextBookFrame.cpp:1154
+#: html/TextBookFrame.cpp:1159
 msgid "HTML files (*.html;*.htm)|*.html;*.htm|"
 msgstr "HTML bestanden (*.html;*.htm)|*.html;*.htm|"
 
-#: html/TextBookFrame.cpp:1155
+#: html/TextBookFrame.cpp:1160
 msgid "Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|"
 msgstr "Help boeken (*.htb)|*.htb|Help boeken (*.zip)|*.zip|"
 
-#: html/TextBookFrame.cpp:1156
+#: html/TextBookFrame.cpp:1161
 msgid "HTML Help Project (*.hhp)|*.hhp|"
 msgstr "HTML Help Project (*.hhp)|*.hhp|"
 
-#: html/TextBookFrame.cpp:1157
+#: html/TextBookFrame.cpp:1162
 msgid "All files (*.*)|*"
 msgstr "Alle bestanden (*.*)|*"
 
-#: html/TextBookFrame.cpp:1158
+#: html/TextBookFrame.cpp:1163
 msgid "Open HTML document"
 msgstr "Open HTML document"
 
@@ -2136,35 +2148,435 @@ msgstr "Parsing <note>.<accidental>: onbekend type %s"
 msgid "Parsing <accidental>. Type=%s"
 msgstr "Parsing <accidental>. Type=%s"
 
-#: xml_parser/MusicXMLParser.cpp:1769
+#: xml_parser/MusicXMLParser.cpp:1767
 #, c-format
 msgid "Attribute \"%s\" not found in tag <%s>."
 msgstr "Attribuut \"%s\" niet gevonden in merkteken <%s>."
 
-#: xml_parser/MusicXMLParser.cpp:1787
+#: xml_parser/MusicXMLParser.cpp:1785
 #, c-format
 msgid "Yes-no attribute \"%s\" has an invalid value \"%s\"."
 msgstr "Ja-nee attribuut \"%s\" heeft een ongeldige waarde \"%s\"."
 
-#: xml_parser/MusicXMLParser.cpp:2042
+#: xml_parser/MusicXMLParser.cpp:2034
 #, c-format
 msgid "Parsing <duration>: duration=%s"
 msgstr "Parsing <duration>: duur=%s"
 
-#: xml_parser/MusicXMLParser.cpp:2067
+#: xml_parser/MusicXMLParser.cpp:2059
 #, c-format
 msgid "Parsing <divisions>: divisions=%s"
 msgstr "Parsing <divisions>: divisies=%s"
 
-#: xml_parser/MusicXMLParser.cpp:2093
+#: xml_parser/MusicXMLParser.cpp:2085
 #, c-format
 msgid "Parsing <placement>: placement='%s'>"
 msgstr "Parsing <placement>: placement='%s'>"
 
-#: xml_parser/MusicXMLParser.cpp:2100
+#: xml_parser/MusicXMLParser.cpp:2092
 #, c-format
 msgid "<placement> element has an invalid value \"%s\". Assumed 'above'"
 msgstr "<placement> element heeft een ongeldige waarde \"%s\". 'boven' verondersteld"
+
+#: app/ScoreWizard.cpp:268
+msgid "Score configuration wizard"
+msgstr "Partituurconfiguratie wizard"
+
+#: app/ScoreWizard.cpp:280
+msgid "Empty (manuscript paper)"
+msgstr "Leeg (blad)"
+
+#: app/ScoreWizard.cpp:281
+msgid "Brass quintet"
+msgstr "Brass quintet"
+
+#: app/ScoreWizard.cpp:282
+msgid "Brass trio"
+msgstr "Brass trio"
+
+#: app/ScoreWizard.cpp:283
+msgid "Choir 4 voices (SATB)"
+msgstr "Vierstemmig koor (SATB)"
+
+#: app/ScoreWizard.cpp:284
+msgid "Choir SATB + piano"
+msgstr "Koor SATB en piano"
+
+#: app/ScoreWizard.cpp:285
+msgid "Choir 3 voices (SSA)"
+msgstr "Driestemmig koor (SSA)"
+
+#: app/ScoreWizard.cpp:286
+msgid "Choir SSA + piano"
+msgstr "Koor SSA en piano"
+
+#: app/ScoreWizard.cpp:287
+msgid "Flute"
+msgstr "Fluit"
+
+#: app/ScoreWizard.cpp:288
+msgid "Guitar"
+msgstr "Gitaar"
+
+#: app/ScoreWizard.cpp:289
+msgid "Piano"
+msgstr "Piano"
+
+#: app/ScoreWizard.cpp:290
+msgid "Violin and piano"
+msgstr "Viool en piano"
+
+#: app/ScoreWizard.cpp:291
+msgid "Viola and piano"
+msgstr "Viola en piano"
+
+#: app/ScoreWizard.cpp:292
+msgid "Cello and piano"
+msgstr "Cello en piano"
+
+#: app/ScoreWizard.cpp:293
+msgid "String quartet"
+msgstr "Strijkkwartet"
+
+#: app/ScoreWizard.cpp:294
+msgid "Violin"
+msgstr "Viool"
+
+#: app/ScoreWizard.cpp:295
+msgid "Trio sonata"
+msgstr "Trio Sonata"
+
+#: app/ScoreWizard.cpp:296
+msgid "Woodwind trio"
+msgstr "Houtblazers trio"
+
+#: app/ScoreWizard.cpp:297
+msgid "Woodwind quintet"
+msgstr "Houtblazers kwintet"
+
+#: app/ScoreWizard.cpp:340
+msgid "Subtitle"
+msgstr "Ondertitel"
+
+#: app/ScoreWizard.cpp:341
+msgid "Composer"
+msgstr "Componist"
+
+#: app/ScoreWizard.cpp:342
+msgid "Arranger"
+msgstr "Bewerker"
+
+#: app/ScoreWizard.cpp:343
+msgid "Lyricist"
+msgstr "Tekstdichter"
+
+#: app/ScoreWizard.cpp:436
+#, c-format
+msgid "Error: Template '%s' not found."
+msgstr "Fout: Template '%s' niet gevonden."
+
+#: app/ScoreWizard.cpp:438
+msgid "Posible causes:"
+msgstr "Mogelijke oorzaken:"
+
+#: app/ScoreWizard.cpp:440
+msgid "- An error during lenmus installation."
+msgstr "- Een fout is opgetreden tijdens de installatie van LenMus."
+
+#: app/ScoreWizard.cpp:442
+msgid "- An accidental deletion of the required template."
+msgstr "- Een ongewenste verwijdering van het vereiste template."
+
+#: app/ScoreWizard.cpp:444
+msgid "An empty score will be created."
+msgstr "Een lege blad wordt aangemaakt."
+
+#: app/ScoreWizard.cpp:636
+msgid "Select instruments and style"
+msgstr "Selecteer de instrumenten en stijl"
+
+#: app/ScoreWizard.cpp:644
+msgid "Select paper size and orientation"
+msgstr "Selecteer de papier grootte en oriëntatie"
+
+#: app/ScoreWizard.cpp:649
+msgid "Paper size"
+msgstr "Papier grootte"
+
+#: app/ScoreWizard.cpp:660
+msgid "Landscape"
+msgstr "Landschap"
+
+#: app/ScoreWizard.cpp:660
+msgid "Portrait"
+msgstr "Portret"
+
+#: app/ScoreWizard.cpp:674
+#: app/ScoreWizard.cpp:836
+#: app/ScoreWizard.cpp:1041
+#: app/MainFrame.cpp:2161
+msgid "Preview"
+msgstr "Afdrukvoorbeeld"
+
+#: app/ScoreWizard.cpp:815
+msgid "Select a key signature"
+msgstr "Voortekening selecteren"
+
+#: app/ScoreWizard.cpp:817
+#: app/toolbox/ToolClef.cpp:310
+msgid "Major"
+msgstr "Majeur"
+
+#: app/ScoreWizard.cpp:817
+msgid "minor"
+msgstr "mineur"
+
+#: app/ScoreWizard.cpp:819
+msgid "Key type"
+msgstr "Sleutel type"
+
+#: app/ScoreWizard.cpp:931
+msgid "none"
+msgstr "geen"
+
+#: app/ScoreWizard.cpp:985
+msgid "Select time signature"
+msgstr "Maatsoort selecteren"
+
+#: app/ScoreWizard.cpp:990
+msgid "Time signature"
+msgstr "Maatsoort"
+
+#: app/ScoreWizard.cpp:996
+msgid "Other time signatures"
+msgstr "Andere maatsoorten"
+
+#: app/ScoreWizard.cpp:1005
+msgid "Numerator"
+msgstr "Nummering"
+
+#: app/ScoreWizard.cpp:1017
+msgid "Denominator"
+msgstr "noemer"
+
+#: app/ScoreWizard.cpp:1139
+msgid "Add titles"
+msgstr "Betiteling toevoegen"
+
+#: app/ScoreWizard.cpp:1141
+msgid "Title:"
+msgstr "Titel:"
+
+#: app/ScoreWizard.cpp:1148
+msgid "Subtitle:"
+msgstr "Ondertitel:"
+
+#: app/ScoreWizard.cpp:1155
+msgid "Composer:"
+msgstr "Componist"
+
+#: app/ScoreWizard.cpp:1162
+msgid "Arranger:"
+msgstr "Bewerker:"
+
+#: app/ScoreWizard.cpp:1169
+msgid "Lyricist:"
+msgstr "tekstdicher:"
+
+#: app/ScoreCanvas.cpp:259
+msgid "attach text"
+msgstr "tekst aanhangen"
+
+#: app/ScoreCanvas.cpp:276
+#, c-format
+msgid "Move %s"
+msgstr "Verplaatsen %s"
+
+#: app/ScoreCanvas.cpp:293
+msgid "Change margin"
+msgstr "Begrenzing verplaatsen"
+
+#: app/ScoreCanvas.cpp:314
+#: app/ScoreCanvas.cpp:329
+#, c-format
+msgid "Delete %s"
+msgstr "%s verwijderen"
+
+#: app/ScoreCanvas.cpp:353
+msgid "Delete selection"
+msgstr "Selectie verwijderen"
+
+#: app/ScoreCanvas.cpp:371
+msgid "Break a beam"
+msgstr "Verbinding verbreken"
+
+#: app/ScoreCanvas.cpp:387
+msgid "Add beam"
+msgstr "Verbinding toevoegen"
+
+#: app/ScoreCanvas.cpp:407
+msgid "Delete tie"
+msgstr "Overbinding verwijderen"
+
+#: app/ScoreCanvas.cpp:417
+msgid "Add tie"
+msgstr "Overbinding toevoegen"
+
+#: app/ScoreCanvas.cpp:435
+msgid "Add tuplet"
+msgstr "Triool toevoegen"
+
+#: app/ScoreCanvas.cpp:450
+msgid "Delete tuplet"
+msgstr "Antimetrische figuur verwijderen"
+
+#: app/ScoreCanvas.cpp:480
+msgid "Insert time signature"
+msgstr "maatsoort invoegen"
+
+#: app/ScoreCanvas.cpp:498
+msgid "Insert key signature"
+msgstr "Voortekening invoegen"
+
+#: app/ScoreCanvas.cpp:512
+msgid "Insert barline"
+msgstr "Maatstrepen"
+
+#: app/ScoreCanvas.cpp:531
+msgid "Insert note"
+msgstr "Noot invoegen"
+
+#: app/ScoreCanvas.cpp:552
+msgid "Insert rest"
+msgstr "Rust invoegen"
+
+#: app/ScoreCanvas.cpp:567
+msgid "Change note pitch"
+msgstr "Toonhoogte veranderen"
+
+#: app/ScoreCanvas.cpp:579
+msgid "Change note accidentals"
+msgstr "Voortekening wijzigen"
+
+#: app/ScoreCanvas.cpp:592
+msgid "Change note dots"
+msgstr "Nootpunten veranderen"
+
+#: app/ScoreCanvas.cpp:606
+msgid "Change text"
+msgstr "Tekst wijzigen"
+
+#: app/ScoreCanvas.cpp:1315
+#: app/ScoreCanvas.cpp:1341
+msgid "&Cut"
+msgstr "&Knippen"
+
+#: app/ScoreCanvas.cpp:1333
+#: app/ScoreCanvas.cpp:1346
+msgid "Edit"
+msgstr "Editeer"
+
+#: app/WelcomeWnd.cpp:86
+msgid "Welcome"
+msgstr "Welkom"
+
+#: app/WelcomeWnd.cpp:149
+msgid "Welcome to LenMus"
+msgstr "Welkom bij LenMus"
+
+#: app/WelcomeWnd.cpp:163
+msgid "Learn about LenMus"
+msgstr "Leer meer over LenMus"
+
+#: app/WelcomeWnd.cpp:178
+msgid "What's is new in LenMus"
+msgstr "Wat is nieuw in LenMus"
+
+#: app/WelcomeWnd.cpp:181
+msgid "Visit LenMus website"
+msgstr "Bezoek de LenMus website"
+
+#: app/WelcomeWnd.cpp:193
+msgid "Learn and practise music theory"
+msgstr "Leer en beoefen de muziektheorie"
+
+#: app/WelcomeWnd.cpp:208
+msgid "Open eMusicBooks "
+msgstr "eMuziekBoeken openen"
+
+#: app/WelcomeWnd.cpp:220
+#, fuzzy
+msgid "Create and edit music scores (beta 0 version)"
+msgstr "Partituren openen en bewerken"
+
+#: app/WelcomeWnd.cpp:235
+msgid "New score ..."
+msgstr "Nieuwe partituur..."
+
+#: app/WelcomeWnd.cpp:238
+#: app/MainFrame.cpp:1197
+msgid "Editor quick guide"
+msgstr "Editor snelgids"
+
+#: app/WelcomeWnd.cpp:244
+msgid "Recent scores"
+msgstr "Recente partituren"
+
+#: app/SplashFrame.cpp:103
+msgid "Free software under GNU General Public License, version 3 or later."
+msgstr "Vrije Software onder de GNU General Public License. version 3 of later."
+
+#: app/DlgCfgEarIntervals.cpp:449
+msgid "It is not possible to generate any interval. Selected notes' range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
+msgstr "Niet elk interval kan genegeerd worden. De intervalreikweidte (tab 'Andere instellingen') van de geselecteerde noten is lager dan het minimaal toegelaten interval (tab 'Intervallen')"
+
+#: app/DlgCfgEarIntervals.cpp:460
+msgid "It is nor possible to generate all the selected intervals. Selected notes range interval (tab 'Other settings') is lower than maximum allowed interval (tab 'Intervals')"
+msgstr "Niet elk interval kan genegeerd worden. De intervalreikweidte (tab 'Andere instellingen') van de geselercteede noten is lager dan het maximaal toegelaten interval (tab 'Intervallen')"
+
+#: app/ScoreCommand.cpp:1584
+msgid "add title"
+msgstr "titel toevoegen"
+
+#: app/ScoreCommand.cpp:1654
+msgid "change barline"
+msgstr "maatstreep wijzigen"
+
+#: app/ScoreCommand.cpp:1697
+msgid "change MIDI settings"
+msgstr "MIDI instellingen wijzigen"
+
+#: app/ScoreCommand.cpp:1739
+msgid "move note"
+msgstr "noot verplaatsen"
+
+#: app/DlgDebug.cpp:75
+#: app/LangChoiceDlg.cpp:95
+msgid "OK"
+msgstr "OK"
+
+#: app/DlgDebug.cpp:80
+msgid "Save"
+msgstr "Bewaren"
+
+#: app/Logger.cpp:159
+#: app/MainFrame.cpp:1982
+#: app/MainFrame.cpp:1987
+msgid "Error message"
+msgstr "Foutmelding"
+
+#: app/TheApp.cpp:232
+msgid "Another instance of LenMus is already running."
+msgstr "Een LenMus applicatie draait al."
+
+#: app/TheApp.cpp:781
+msgid "LenMus First Run"
+msgstr "Eerste opstart LenMus"
+
+#: app/LangChoiceDlg.cpp:73
+#: ../xrc/xrc_strings.cpp:181
+msgid "Choose language to use:"
+msgstr "Kies uw taal:"
 
 #: app/AboutDialog.cpp:105
 #: app/AboutDialog.cpp:138
@@ -2186,7 +2598,7 @@ msgid "Licence"
 msgstr "Licentie"
 
 #: app/AboutDialog.cpp:162
-#: app/AboutDialog.cpp:371
+#: app/AboutDialog.cpp:376
 msgid "Project team"
 msgstr "Project team"
 
@@ -2271,120 +2683,153 @@ msgid "LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library
 msgstr "LenMus Phonascus gebruikt <b>PortMidi</b> de Portable Real-Time MIDI Library(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Haar licentie laat vrij gebruik toe."
 
 #: app/AboutDialog.cpp:298
-msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
-msgstr "LenMus Phonascus maakt gebruik van het <b>wxWidgets</b> applicatie framework (http://www.wxwidgets.org). Dit is 'Open Source', en heeft een multi-platform support, het is makkeljk aan te leren en uit te breiden. Het heeft een behulpzame gebruikersgemeenschap en kan zonder licentie gebruikt worden in commerciële producten."
-
-#: app/AboutDialog.cpp:303
 msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a light weight design, and very good reliability and stability."
 msgstr "Dit progamma gebruikt de <b>Anti-Korrel Geometrie</b> ((http://www.antigrain.com) software ontwikkeld door Maxim Shemanarex. AGG is een excellente open source, gratis grafische codebibliotheek. Ze genereert in het geheugen pixelbeelden van vectoriële data en ondersteunt anti-aliasing, heeft een hoge performantie en is platformonafhankelijk, erg flexibel en uitbreidbaar, met een lichtgewicht ontwerp en een zeer goede stabiliteit en betrouwbaarheid."
 
-#: app/AboutDialog.cpp:312
+#: app/AboutDialog.cpp:307
+msgid "This program uses the <b>FreeType 2</b> software. It is a free open source font engine, designed to be small, efficient, highly customizable and portable, while capable of producing high-quality output (glyph images). It can be used in graphics libraries, display servers, font conversion tools, text image generation tools, and many other products as well. It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
+msgstr ""
+
+#: app/AboutDialog.cpp:315
+msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
+msgstr "LenMus Phonascus maakt gebruik van het <b>wxWidgets</b> applicatie framework (http://www.wxwidgets.org). Dit is 'Open Source', en heeft een multi-platform support, het is makkeljk aan te leren en uit te breiden. Het heeft een behulpzame gebruikersgemeenschap en kan zonder licentie gebruikt worden in commerciële producten."
+
+#: app/AboutDialog.cpp:320
 msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
 msgstr "De meeste van de 'lmbasic.ttf' font glyphs zijn ontleend aan <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
 
-#: app/AboutDialog.cpp:348
+#: app/AboutDialog.cpp:355
 msgid "Build information"
 msgstr "Build informatie"
 
-#: app/AboutDialog.cpp:349
+#: app/AboutDialog.cpp:356
 msgid "Program build date:"
 msgstr "Programma build datum:"
 
-#: app/AboutDialog.cpp:352
+#: app/AboutDialog.cpp:359
 msgid "wxMidi Version "
 msgstr "wxMidi Version "
 
-#: app/AboutDialog.cpp:353
+#: app/AboutDialog.cpp:360
 msgid "Your computer information:"
 msgstr "Uw computer specificaties:"
 
-#: app/AboutDialog.cpp:372
+#: app/AboutDialog.cpp:377
 msgid "(alphabetical order)"
 msgstr "(alfabetische volgorde)"
 
-#: app/AboutDialog.cpp:374
+#: app/AboutDialog.cpp:379
 msgid "This program has been designed and developed by volunteers. Some of them devoted a few hours, others months or years. But all them gave their time for free to the project. Thanks to all them."
 msgstr "Dit programma werd ontworpen en ontwikkeld door vrijwilligers. Sommigen besteedden er enkele uren aan, andere maanden of jaren. Allemaal hebbenze hun tijd belangeloos geïnvesteerd in het project. Dank aan hen allen."
 
-#: app/AboutDialog.cpp:381
+#: app/AboutDialog.cpp:386
 msgid "Management and programming:"
 msgstr "Management en ontwikkeling:"
 
-#: app/AboutDialog.cpp:386
+#: app/AboutDialog.cpp:391
 msgid "Music texts and exercises:"
 msgstr "Muziekteksten en -uoefeningen:"
 
-#: app/AboutDialog.cpp:392
-msgid "Package for Linux prepared by:"
-msgstr "Linux Pakket gemaakt door:"
-
-#: app/AboutDialog.cpp:397
+#: app/AboutDialog.cpp:402
 msgid "Translation:"
 msgstr "Vertaling:"
 
-#: app/AboutDialog.cpp:398
+#: app/AboutDialog.cpp:403
 msgid "Basque"
 msgstr "Baskisch"
 
-#: app/AboutDialog.cpp:401
+#: app/AboutDialog.cpp:406
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: app/AboutDialog.cpp:404
+#: app/AboutDialog.cpp:409
 msgid "French"
 msgstr "Frans"
 
-#: app/AboutDialog.cpp:409
+#: app/AboutDialog.cpp:414
 msgid "Italian"
 msgstr "Italiaans"
 
-#: app/AboutDialog.cpp:412
+#: app/AboutDialog.cpp:417
 msgid "Spanish"
 msgstr "Spaans"
 
-#: app/AboutDialog.cpp:415
+#: app/AboutDialog.cpp:420
 msgid "Turkish"
 msgstr "Turks"
 
-#: app/AboutDialog.cpp:421
+#: app/AboutDialog.cpp:426
 msgid "Website maintenace:"
 msgstr "Website onderhoud:"
 
-#: app/AboutDialog.cpp:427
+#: app/AboutDialog.cpp:432
 msgid "Thanks also to:"
 msgstr "Dank is ook verschuldigd aan:"
 
-#: app/AboutDialog.cpp:432
+#: app/AboutDialog.cpp:437
 msgid "If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
 msgstr "Dit programma is ontworpen en ontwikkeld door Cecilio Salmer&oacute;n. Als u zou willen helpen of op een andere manier wenst bij te dragen bij de ontwikking ervan bent u van harte welkom. Bezoek aub de LenMus website op www.lenmus.org en laat een boodschap achter op de contactpagina. Op voorhand bedankt en hartelijk welkom."
 
-#: app/DlgCfgEarIntervals.cpp:449
-msgid "It is not possible to generate any interval. Selected notes' range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
-msgstr "Niet elk interval kan genegeerd worden. De intervalreikweidte (tab 'Andere instellingen') van de geselecteerde noten is lager dan het minimaal toegelaten interval (tab 'Intervallen')"
+#: app/MidiWizard.cpp:75
+#: app/MainFrame.cpp:1162
+msgid "MIDI configuration wizard"
+msgstr "MIDI configuratie wizard"
 
-#: app/DlgCfgEarIntervals.cpp:460
-msgid "It is nor possible to generate all the selected intervals. Selected notes range interval (tab 'Other settings') is lower than maximum allowed interval (tab 'Intervals')"
-msgstr "Niet elk interval kan genegeerd worden. De intervalreikweidte (tab 'Andere instellingen') van de geselercteede noten is lager dan het maximaal toegelaten interval (tab 'Intervallen')"
+#: app/MidiWizard.cpp:244
+msgid "None"
+msgstr "Geen"
 
-#: app/DlgDebug.cpp:75
-#: app/LangChoiceDlg.cpp:95
-msgid "OK"
-msgstr "OK"
+#: app/MidiWizard.cpp:262
+msgid "Midi devices to use"
+msgstr "Te gebruiken Midi apparaten"
 
-#: app/DlgDebug.cpp:80
-msgid "Save"
-msgstr "Bewaren"
+#: app/MidiWizard.cpp:272
+msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
+msgstr "Om geluiden te genereren heeft het progamma een MIDI synthesizer apparaat nodig. Normaal is dit apparaat geïntegreerd in de geluidskaart van de PC, maar uw PC heeft misschien meer dan één kaart."
 
-#: app/LangChoiceDlg.cpp:73
-#: ../xrc/xrc_strings.cpp:181
-msgid "Choose language to use:"
-msgstr "Kies uw taal:"
+#: app/MidiWizard.cpp:275
+msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
+msgstr "Als uw PC meer dan een MIDI apparaat heeft, kies er dan een. U kan ze allemaal testen en vervolgens datgene met het beste geluid kiezen."
 
-#: app/Logger.cpp:159
-#: app/MainFrame.cpp:1977
-#: app/MainFrame.cpp:1982
-msgid "Error message"
-msgstr "Foutmelding"
+#: app/MidiWizard.cpp:284
+msgid "Output device:"
+msgstr "Output toestel:"
+
+#: app/MidiWizard.cpp:413
+msgid "Voice channel and instrument"
+msgstr "Stem kanaal en instrument"
+
+#: app/MidiWizard.cpp:423
+msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
+msgstr "Kanaal 10 en 16 zijn gespecialiseerd in percussie geluiden. Het is dus aanbevolen om een willekeurig ander kanaal te kiezen."
+
+#: app/MidiWizard.cpp:426
+msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
+msgstr "Om de toegang tot de instrumenten te vergemakkelijken zijn ze gegroepeerd in secties. Kies eerst een sectie en kies dan het gewenste instrument."
+
+#: app/MidiWizard.cpp:445
+msgid "Section:"
+msgstr "Sectie:"
+
+#: app/MidiWizard.cpp:593
+msgid "lmMetronome channel and sounds"
+msgstr "ImMetronoom kanaal en geluiden"
+
+#: app/MidiWizard.cpp:603
+msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
+msgstr "Kanaal 10 en 16 zijn gespecialiseerd in percussiegeluiden. Het is dus aanbevolen om een van deze kanalen te kiezen. Het maakt niet uit welk."
+
+#: app/MidiWizard.cpp:606
+msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."
+msgstr "Om de eerste slag van een maat beter te kunnen identificeren is het mogelijk om er een ander geluid aan toe te kennen. Maar hetzelfde geluid kan ook voor zowel de eerste slag als de volgende slagen gekozen worden."
+
+#: app/MidiWizard.cpp:625
+msgid "Sound for first beat of each measure:"
+msgstr "Geluid voor de eerste slag van elke maat:"
+
+#: app/MidiWizard.cpp:632
+msgid "Sound for other beats of each measure:"
+msgstr "Geluid voor de overige slagen van elke maat:"
 
 #: app/MainFrame.cpp:482
 msgid "Welcome to LenMus!"
@@ -2403,7 +2848,7 @@ msgid "New score"
 msgstr "Nieuwe partituur"
 
 #: app/MainFrame.cpp:645
-#: app/MainFrame.cpp:1003
+#: app/MainFrame.cpp:1008
 msgid "Open a score"
 msgstr "Open een partituur"
 
@@ -2420,77 +2865,77 @@ msgid "Print document"
 msgstr "Document afdrukken"
 
 #: app/MainFrame.cpp:678
-#: app/MainFrame.cpp:1053
+#: app/MainFrame.cpp:1058
 #: ../xrc/xrc_strings.cpp:175
 msgid "Undo"
 msgstr "Ongedaan maken"
 
 #: app/MainFrame.cpp:682
-#: app/MainFrame.cpp:1055
+#: app/MainFrame.cpp:1060
 #: ../xrc/xrc_strings.cpp:176
 msgid "Redo"
 msgstr "Herhalen"
 
 #: app/MainFrame.cpp:687
-#: app/MainFrame.cpp:1080
+#: app/MainFrame.cpp:1085
 msgid "Show/hide page margins and spacers"
 msgstr "Toon/verberg grenzen en spacers"
 
 #: app/MainFrame.cpp:696
-#: app/MainFrame.cpp:1128
+#: app/MainFrame.cpp:1133
 msgid "Zoom so that the full page is displayed"
 msgstr "Zoomen zodat de volledige pagina getoond wordt"
 
 #: app/MainFrame.cpp:700
-#: app/MainFrame.cpp:1131
+#: app/MainFrame.cpp:1136
 msgid "Zoom so that page width equals window width"
 msgstr "Zoomen zodat de pagina breedte gelijk is aan de venster breedte"
 
 #: app/MainFrame.cpp:704
-#: app/MainFrame.cpp:1134
+#: app/MainFrame.cpp:1139
 msgid "Enlarge image size"
 msgstr "Vergroot de beeldgrootte:"
 
 #: app/MainFrame.cpp:708
-#: app/MainFrame.cpp:1136
+#: app/MainFrame.cpp:1141
 msgid "Reduce image size"
 msgstr "Verklein de beeldgrootte:"
 
 #: app/MainFrame.cpp:726
-#: app/MainFrame.cpp:1125
-#: app/MainFrame.cpp:1967
+#: app/MainFrame.cpp:1130
+#: app/MainFrame.cpp:1972
 msgid "Actual size"
 msgstr "Actuele grootte"
 
 #: app/MainFrame.cpp:727
-#: app/MainFrame.cpp:1127
-#: app/MainFrame.cpp:1961
+#: app/MainFrame.cpp:1132
+#: app/MainFrame.cpp:1966
 msgid "Fit page full"
 msgstr "Volle pagina inpassen"
 
 #: app/MainFrame.cpp:728
-#: app/MainFrame.cpp:1130
-#: app/MainFrame.cpp:1964
+#: app/MainFrame.cpp:1135
+#: app/MainFrame.cpp:1969
 msgid "Fit page width"
 msgstr "Aan paginabreedte aanpassen"
 
 #: app/MainFrame.cpp:739
-#: app/MainFrame.cpp:1145
+#: app/MainFrame.cpp:1150
 msgid "Start/resume play back. From selection of full score"
 msgstr "Afspelen starten/hernemen"
 
 #: app/MainFrame.cpp:743
-#: app/MainFrame.cpp:1148
+#: app/MainFrame.cpp:1153
 msgid "Start/resume play back. From cursor measure"
 msgstr "Start/herneem het afspelen vanaf de cursor positie"
 
 #: app/MainFrame.cpp:747
-#: app/MainFrame.cpp:1151
+#: app/MainFrame.cpp:1156
 msgid "Stop playing back"
 msgstr "Stoppen met afspelen"
 
 #: app/MainFrame.cpp:751
-#: app/MainFrame.cpp:1153
+#: app/MainFrame.cpp:1158
 msgid "Pause playing back"
 msgstr "Afspelen pauzeren"
 
@@ -2498,414 +2943,401 @@ msgstr "Afspelen pauzeren"
 msgid "Turn metronome on/off"
 msgstr "Metronoom aan- of afzetten"
 
-#: app/MainFrame.cpp:789
-#: app/MainFrame.cpp:828
-msgid "Main tools"
-msgstr "Hoofdhulpmiddelen"
-
-#: app/MainFrame.cpp:793
-#: app/MainFrame.cpp:824
-msgid "Zooming tools"
-msgstr "Zoom hulpmiddelen"
-
-#: app/MainFrame.cpp:797
-#: app/MainFrame.cpp:820
-msgid "Edit tools"
-msgstr "Editeer hulpmiddelen"
-
-#: app/MainFrame.cpp:801
-#: app/MainFrame.cpp:816
-msgid "File tools"
-msgstr "Bestand hulpmiddelen"
-
-#: app/MainFrame.cpp:805
-#: app/MainFrame.cpp:836
+#: app/MainFrame.cpp:791
+#: app/MainFrame.cpp:838
 msgid "Metronome tools"
 msgstr "Metronoom hulpmiddelen"
 
-#: app/MainFrame.cpp:809
-#: app/MainFrame.cpp:832
+#: app/MainFrame.cpp:795
+#: app/MainFrame.cpp:834
 msgid "Play tools"
 msgstr "Afspeelhulpmiddelen"
 
-#: app/MainFrame.cpp:911
+#: app/MainFrame.cpp:799
+#: app/MainFrame.cpp:830
+msgid "Main tools"
+msgstr "Hoofdhulpmiddelen"
+
+#: app/MainFrame.cpp:803
+#: app/MainFrame.cpp:826
+msgid "Zooming tools"
+msgstr "Zoom hulpmiddelen"
+
+#: app/MainFrame.cpp:807
+#: app/MainFrame.cpp:822
+msgid "Edit tools"
+msgstr "Editeer hulpmiddelen"
+
+#: app/MainFrame.cpp:811
+#: app/MainFrame.cpp:818
+msgid "File tools"
+msgstr "Bestand hulpmiddelen"
+
+#: app/MainFrame.cpp:914
 msgid "Show/hide navigation panel"
 msgstr "Toon/verberg navigatiepaneel"
 
-#: app/MainFrame.cpp:918
+#: app/MainFrame.cpp:921
 msgid "Previous page of current eMusicBook"
 msgstr "Vorige pagina van het huidige eMuziekBoek"
 
-#: app/MainFrame.cpp:922
+#: app/MainFrame.cpp:925
 msgid "Next page of current eMusicBook"
 msgstr "Volgende pagina van het huidige eMuziekBoek"
 
-#: app/MainFrame.cpp:927
+#: app/MainFrame.cpp:930
 msgid "Go to previous visited page"
 msgstr "Ga naar de laatst bezochte pagina"
 
-#: app/MainFrame.cpp:930
+#: app/MainFrame.cpp:933
 msgid "Go to next visited page"
 msgstr "Ga naar de volgende bezochte pagina"
 
-#: app/MainFrame.cpp:935
+#: app/MainFrame.cpp:938
 msgid "eBooks navigation tools"
 msgstr "eBoek navigatiehulpmiddelen"
 
-#: app/MainFrame.cpp:1000
+#: app/MainFrame.cpp:1005
 msgid "&New\tCtrl+N"
 msgstr "&New\tCtrl+N"
 
-#: app/MainFrame.cpp:1001
+#: app/MainFrame.cpp:1006
 msgid "Open new blank score"
 msgstr "Open nieuwe blanko partituur"
 
-#: app/MainFrame.cpp:1002
+#: app/MainFrame.cpp:1007
 msgid "&Open ...\tCtrl+O"
 msgstr "&Open ...\tCtrl+O"
 
-#: app/MainFrame.cpp:1004
+#: app/MainFrame.cpp:1009
 msgid "Open &books"
 msgstr "O&pen boeken"
 
-#: app/MainFrame.cpp:1005
+#: app/MainFrame.cpp:1010
 msgid "Hide/show eMusicBooks"
 msgstr "Verberg/toon eMuziekBoeken"
 
-#: app/MainFrame.cpp:1006
+#: app/MainFrame.cpp:1011
 msgid "&Import..."
 msgstr "&Importeer..."
 
-#: app/MainFrame.cpp:1007
+#: app/MainFrame.cpp:1012
 msgid "Open a MusicXML score"
 msgstr "Een MusicXML partituur openen"
 
-#: app/MainFrame.cpp:1010
+#: app/MainFrame.cpp:1015
 msgid "MusicXML format"
 msgstr "MuziekXML formaat"
 
-#: app/MainFrame.cpp:1011
+#: app/MainFrame.cpp:1016
 msgid "Save score as a MusicXML file"
 msgstr "Partituur opslaan als een MusicXML bestand"
 
-#: app/MainFrame.cpp:1012
+#: app/MainFrame.cpp:1017
 msgid "As &bmp image"
 msgstr "Als &bmp beeld"
 
-#: app/MainFrame.cpp:1013
+#: app/MainFrame.cpp:1018
 msgid "Save score as BMP images"
 msgstr "Bewaar partituur als bmp afbeeldingen"
 
-#: app/MainFrame.cpp:1014
+#: app/MainFrame.cpp:1019
 msgid "As &jpg image"
 msgstr "Als &jpg beeld"
 
-#: app/MainFrame.cpp:1015
+#: app/MainFrame.cpp:1020
 msgid "Save score as JPG images"
 msgstr "Bewaar partituur als jpg figuren"
 
-#: app/MainFrame.cpp:1017
+#: app/MainFrame.cpp:1022
 msgid "&Export ..."
 msgstr "E&xporteer..."
 
-#: app/MainFrame.cpp:1018
+#: app/MainFrame.cpp:1023
 msgid "Save score in other formats"
 msgstr "Partituur in andere formaten bewaren"
 
-#: app/MainFrame.cpp:1024
+#: app/MainFrame.cpp:1029
 msgid "&Save\tCtrl+S"
 msgstr "&Bewaar\tCtrl+S"
 
-#: app/MainFrame.cpp:1026
+#: app/MainFrame.cpp:1031
 msgid "Save &as ..."
 msgstr "Bewaren &als"
 
-#: app/MainFrame.cpp:1028
+#: app/MainFrame.cpp:1033
 msgid "&Close\tCtrl+W"
 msgstr "&Sluiten\tCtrl+W"
 
-#: app/MainFrame.cpp:1029
+#: app/MainFrame.cpp:1034
 msgid "Close a score"
 msgstr "Partituur sluiten"
 
-#: app/MainFrame.cpp:1032
+#: app/MainFrame.cpp:1037
 msgid "&Print ...\tCtrl+P"
 msgstr "&Afdrukken..\tCtrl+P"
 
-#: app/MainFrame.cpp:1034
+#: app/MainFrame.cpp:1039
 msgid "Print &Setup..."
 msgstr "Afdruk &Instellingen..."
 
-#: app/MainFrame.cpp:1035
+#: app/MainFrame.cpp:1040
 msgid "Configure printer options"
 msgstr "Printer opties configureren"
 
-#: app/MainFrame.cpp:1036
+#: app/MainFrame.cpp:1041
 msgid "Print Pre&view"
 msgstr "Afdruk&voorbeeld"
 
-#: app/MainFrame.cpp:1040
+#: app/MainFrame.cpp:1045
 msgid "&Quit\tCtrl+Q"
 msgstr "B&eëindigen\tCtrl+Q"
 
-#: app/MainFrame.cpp:1041
+#: app/MainFrame.cpp:1046
 msgid "Exit program"
 msgstr "Programma afsluiten"
 
-#: app/MainFrame.cpp:1052
+#: app/MainFrame.cpp:1057
 msgid "&Undo"
 msgstr "&Ongedaan maken"
 
-#: app/MainFrame.cpp:1054
+#: app/MainFrame.cpp:1059
 msgid "&Redo"
 msgstr "&Herhalen"
 
-#: app/MainFrame.cpp:1061
+#: app/MainFrame.cpp:1066
 msgid "Tool &bar"
 msgstr "Werk&balk"
 
-#: app/MainFrame.cpp:1062
+#: app/MainFrame.cpp:1067
 msgid "Hide/show the tools bar"
 msgstr "Verberg/toon de werkbalken"
 
-#: app/MainFrame.cpp:1063
+#: app/MainFrame.cpp:1068
 msgid "&Status bar"
 msgstr "&Statusbalk"
 
-#: app/MainFrame.cpp:1064
+#: app/MainFrame.cpp:1069
 msgid "Hide/show the status bar"
 msgstr "Verberg/toon de statusbalk"
 
-#: app/MainFrame.cpp:1066
+#: app/MainFrame.cpp:1071
 msgid "&Tool box"
 msgstr "&Gereedschapskist"
 
-#: app/MainFrame.cpp:1067
+#: app/MainFrame.cpp:1072
 msgid "Hide/show edition tool box window"
 msgstr "Verberg/toon het  editeergereeschapsvenster"
 
-#: app/MainFrame.cpp:1068
+#: app/MainFrame.cpp:1073
 msgid "&Rulers"
 msgstr "&Linialen"
 
-#: app/MainFrame.cpp:1069
+#: app/MainFrame.cpp:1074
 msgid "Hide/show rulers"
 msgstr "Verberg/toon linialen"
 
-#: app/MainFrame.cpp:1070
+#: app/MainFrame.cpp:1075
 msgid "&Welcome page"
 msgstr "&Welkom pagina"
 
-#: app/MainFrame.cpp:1071
+#: app/MainFrame.cpp:1076
 msgid "Hide/show welcome page"
 msgstr "Verberg/toon welkompagina"
 
-#: app/MainFrame.cpp:1087
+#: app/MainFrame.cpp:1092
 msgid "Edit name, abbreviation, MIDI settings and other properties"
 msgstr "Naam, afkorting, MIDI instellingen en andere eigenschappen veranderen"
 
-#: app/MainFrame.cpp:1137
+#: app/MainFrame.cpp:1142
 msgid "Zoom to ..."
 msgstr "Zoom naar ..."
 
-#: app/MainFrame.cpp:1144
+#: app/MainFrame.cpp:1149
 msgid "&Play"
 msgstr "&Play"
 
-#: app/MainFrame.cpp:1147
+#: app/MainFrame.cpp:1152
 msgid "Play from cursor"
 msgstr "Vanaf de cursor afspelen"
 
-#: app/MainFrame.cpp:1150
+#: app/MainFrame.cpp:1155
 msgid "S&top"
 msgstr "S&top"
 
-#: app/MainFrame.cpp:1152
+#: app/MainFrame.cpp:1157
 msgid "P&ause"
 msgstr "P&auze"
 
-#: app/MainFrame.cpp:1156
+#: app/MainFrame.cpp:1161
 msgid "&Run Midi wizard"
 msgstr "MIDI &Wizard starten"
 
-#: app/MainFrame.cpp:1157
-#: app/MidiWizard.cpp:75
-msgid "MIDI configuration wizard"
-msgstr "MIDI configuratie wizard"
-
-#: app/MainFrame.cpp:1160
+#: app/MainFrame.cpp:1165
 msgid "&Test sound"
 msgstr "&Test geluid"
 
-#: app/MainFrame.cpp:1161
+#: app/MainFrame.cpp:1166
 msgid "Play an scale to test sound"
 msgstr "Speel een notenbalk als geluidstest"
 
-#: app/MainFrame.cpp:1161
-msgid "tool_test_sound"
-msgstr "test_geluid_gereedschap"
-
-#: app/MainFrame.cpp:1162
+#: app/MainFrame.cpp:1167
 msgid "&All sounds off"
 msgstr "Alle &geluid afzetten"
 
-#: app/MainFrame.cpp:1163
+#: app/MainFrame.cpp:1168
 msgid "Stop inmediatly all sounds"
 msgstr "Stop onmiddelijk alle geluid"
 
-#: app/MainFrame.cpp:1169
+#: app/MainFrame.cpp:1174
 msgid "&Preferences"
 msgstr "&Voorkeuren"
 
-#: app/MainFrame.cpp:1170
-#: app/MainFrame.cpp:1195
+#: app/MainFrame.cpp:1175
+#: app/MainFrame.cpp:1200
 msgid "Open help book"
 msgstr "Help boek openen"
 
-#: app/MainFrame.cpp:1175
+#: app/MainFrame.cpp:1180
 msgid "Cl&ose"
 msgstr "&Sluiten"
 
-#: app/MainFrame.cpp:1176
+#: app/MainFrame.cpp:1181
 msgid "Close All"
 msgstr "&Alles Sluiten"
 
-#: app/MainFrame.cpp:1179
+#: app/MainFrame.cpp:1184
 msgid "&Next"
 msgstr "&Volgende"
 
-#: app/MainFrame.cpp:1180
+#: app/MainFrame.cpp:1185
 msgid "&Previous"
 msgstr "V&orige"
 
-#: app/MainFrame.cpp:1187
+#: app/MainFrame.cpp:1192
 msgid "&About"
 msgstr "Info &over"
 
-#: app/MainFrame.cpp:1188
+#: app/MainFrame.cpp:1193
 msgid "Display information about program version and credits"
 msgstr "Informatie over de programmaversie en credits weergeven"
 
-#: app/MainFrame.cpp:1192
-msgid "Editor quick guide"
-msgstr "Editor snelgids"
-
-#: app/MainFrame.cpp:1193
+#: app/MainFrame.cpp:1198
 msgid "Show editor reference card"
 msgstr "Editor referentiekaart tonen"
 
-#: app/MainFrame.cpp:1194
+#: app/MainFrame.cpp:1199
 msgid "&Content"
 msgstr "&Inhoud"
 
-#: app/MainFrame.cpp:1198
+#: app/MainFrame.cpp:1203
 msgid "Check now for &updates"
 msgstr "Beschikbaarheid van &updates nu controleren"
 
-#: app/MainFrame.cpp:1199
+#: app/MainFrame.cpp:1204
 msgid "Connect to the Internet and check for program updates"
 msgstr "Connecteer met het Internet en controleer voor programma updates"
 
-#: app/MainFrame.cpp:1201
+#: app/MainFrame.cpp:1206
 msgid "&Visit LenMus website"
 msgstr "&Bezoek LenMus website"
 
-#: app/MainFrame.cpp:1202
+#: app/MainFrame.cpp:1207
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "Open de Internet browser en ga naar de LenMus website"
 
-#: app/MainFrame.cpp:1213
+#: app/MainFrame.cpp:1218
 msgid "&File"
 msgstr "&Bestand"
 
-#: app/MainFrame.cpp:1214
+#: app/MainFrame.cpp:1219
 msgid "&Edit"
 msgstr "&Editeer"
 
-#: app/MainFrame.cpp:1215
+#: app/MainFrame.cpp:1220
 msgid "&View"
 msgstr "&Beeld"
 
-#: app/MainFrame.cpp:1216
+#: app/MainFrame.cpp:1221
 msgid "S&core"
 msgstr "P&artituur"
 
-#: app/MainFrame.cpp:1217
+#: app/MainFrame.cpp:1222
 msgid "&Instrument"
 msgstr "&Instrument"
 
-#: app/MainFrame.cpp:1218
+#: app/MainFrame.cpp:1223
 msgid "&Sound"
 msgstr "&Geluid"
 
-#: app/MainFrame.cpp:1220
+#: app/MainFrame.cpp:1225
 msgid "&Zoom"
 msgstr "&Zoom"
 
-#: app/MainFrame.cpp:1221
+#: app/MainFrame.cpp:1226
 msgid "&Options"
 msgstr "&Opties"
 
-#: app/MainFrame.cpp:1222
+#: app/MainFrame.cpp:1227
 msgid "&Window"
 msgstr "&Venster"
 
-#: app/MainFrame.cpp:1223
+#: app/MainFrame.cpp:1228
 #: options/OptionsDlg.cpp:261
 msgid "&Help"
 msgstr "&Help"
 
-#: app/MainFrame.cpp:1319
+#: app/MainFrame.cpp:1324
 msgid "LenMus help"
 msgstr "LenMus help"
 
-#: app/MainFrame.cpp:1325
+#: app/MainFrame.cpp:1330
 msgid "Test mode: using .hhp help file"
 msgstr "Test mode: gebruik .hhp help bestand"
 
-#: app/MainFrame.cpp:1332
-#: app/MainFrame.cpp:1419
-#: app/MainFrame.cpp:1427
-#: app/MainFrame.cpp:1444
+#: app/MainFrame.cpp:1337
+#: app/MainFrame.cpp:1424
+#: app/MainFrame.cpp:1432
+#: app/MainFrame.cpp:1449
 #, c-format
 msgid "Failed adding book %s"
 msgstr "Toevoegen boek %s niet gelukt"
 
-#: app/MainFrame.cpp:1347
+#: app/MainFrame.cpp:1352
 msgid "Available books"
 msgstr "Beschikbare boeken"
 
-#: app/MainFrame.cpp:1410
+#: app/MainFrame.cpp:1415
 #, c-format
 msgid "Error when trying to move to folder %s"
 msgstr "Fout tijdens het trachten te verplaatsen van map %s"
 
-#: app/MainFrame.cpp:1583
+#: app/MainFrame.cpp:1588
 msgid "Name for the exported file"
 msgstr "Naam voor het geëxporteerd bestand"
 
-#: app/MainFrame.cpp:1939
+#: app/MainFrame.cpp:1944
 msgid "Zooming? (10 to 800)"
 msgstr "Zoomen? (10 to 800)"
 
-#: app/MainFrame.cpp:1976
+#: app/MainFrame.cpp:1981
 #, c-format
 msgid "Invalid zooming factor '%s'"
 msgstr "Ongelidge zoom factor '%s'"
 
-#: app/MainFrame.cpp:1981
+#: app/MainFrame.cpp:1986
 msgid "Zooming factor must be greater that 10% and lower than 800%"
 msgstr "Zoom factor moet groter zijn dan 10% en lager dan 800%"
 
-#: app/MainFrame.cpp:2021
+#: app/MainFrame.cpp:2026
 msgid "Edit tool box"
 msgstr "Editeer gereedschap"
 
-#: app/MainFrame.cpp:2108
+#: app/MainFrame.cpp:2113
 msgid "Choose the file to import"
 msgstr "Te importeren file selecteren"
 
-#: app/MainFrame.cpp:2152
+#: app/MainFrame.cpp:2157
 msgid ""
 "There is a problem previewing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -2913,18 +3345,11 @@ msgstr ""
 "Er is een probleem met het afdrukvoorbeeld.\n"
 " Misschien is uw printer niet correct ingesteld?"
 
-#: app/MainFrame.cpp:2152
+#: app/MainFrame.cpp:2157
 msgid "Previewing"
 msgstr "Afdrukvoorbeeld wordt getoond"
 
-#: app/MainFrame.cpp:2156
-#: app/ScoreWizard.cpp:661
-#: app/ScoreWizard.cpp:823
-#: app/ScoreWizard.cpp:1028
-msgid "Preview"
-msgstr "Afdrukvoorbeeld"
-
-#: app/MainFrame.cpp:2205
+#: app/MainFrame.cpp:2210
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -2932,543 +3357,86 @@ msgstr ""
 "Er is een probleem met het afdrukken.\n"
 "Misschien is uw huidige printer niet correct ingesteld?"
 
-#: app/MainFrame.cpp:2205
-#: app/MainFrame.cpp:2207
+#: app/MainFrame.cpp:2210
+#: app/MainFrame.cpp:2212
 msgid "Printing"
 msgstr "Bezig met afdrukken"
 
-#: app/MainFrame.cpp:2207
+#: app/MainFrame.cpp:2212
 msgid "Printing cancelled"
 msgstr "Afdrukken geannuleerd"
 
-#: app/MidiWizard.cpp:248
-msgid "None"
-msgstr "Geen"
-
-#: app/MidiWizard.cpp:266
-msgid "Midi devices to use"
-msgstr "Te gebruiken Midi apparaten"
-
-#: app/MidiWizard.cpp:276
-msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
-msgstr "Om geluiden te genereren heeft het progamma een MIDI synthesizer apparaat nodig. Normaal is dit apparaat geïntegreerd in de geluidskaart van de PC, maar uw PC heeft misschien meer dan één kaart."
-
-#: app/MidiWizard.cpp:279
-msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
-msgstr "Als uw PC meer dan een MIDI apparaat heeft, kies er dan een. U kan ze allemaal testen en vervolgens datgene met het beste geluid kiezen."
-
-#: app/MidiWizard.cpp:288
-msgid "Output device:"
-msgstr "Output toestel:"
-
-#: app/MidiWizard.cpp:415
-msgid "Voice channel and instrument"
-msgstr "Stem kanaal en instrument"
-
-#: app/MidiWizard.cpp:425
-msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
-msgstr "Kanaal 10 en 16 zijn gespecialiseerd in percussie geluiden. Het is dus aanbevolen om een willekeurig ander kanaal te kiezen."
-
-#: app/MidiWizard.cpp:428
-msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
-msgstr "Om de toegang tot de instrumenten te vergemakkelijken zijn ze gegroepeerd in secties. Kies eerst een sectie en kies dan het gewenste instrument."
-
-#: app/MidiWizard.cpp:447
-msgid "Section:"
-msgstr "Sectie:"
-
-#: app/MidiWizard.cpp:595
-msgid "lmMetronome channel and sounds"
-msgstr "ImMetronoom kanaal en geluiden"
-
-#: app/MidiWizard.cpp:605
-msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
-msgstr "Kanaal 10 en 16 zijn gespecialiseerd in percussiegeluiden. Het is dus aanbevolen om een van deze kanalen te kiezen. Het maakt niet uit welk."
-
-#: app/MidiWizard.cpp:608
-msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."
-msgstr "Om de eerste slag van een maat beter te kunnen identificeren is het mogelijk om er een ander geluid aan toe te kennen. Maar hetzelfde geluid kan ook voor zowel de eerste slag als de volgende slagen gekozen worden."
-
-#: app/MidiWizard.cpp:627
-msgid "Sound for first beat of each measure:"
-msgstr "Geluid voor de eerste slag van elke maat:"
-
-#: app/MidiWizard.cpp:634
-msgid "Sound for other beats of each measure:"
-msgstr "Geluid voor de overige slagen van elke maat:"
-
-#: app/ScoreCanvas.cpp:256
-msgid "attach text"
-msgstr "tekst aanhangen"
-
-#: app/ScoreCanvas.cpp:273
-#, c-format
-msgid "Move %s"
-msgstr "Verplaatsen &s"
-
-#: app/ScoreCanvas.cpp:290
-msgid "Change margin"
-msgstr "Begrenzing verplaatsen"
-
-#: app/ScoreCanvas.cpp:311
-#: app/ScoreCanvas.cpp:326
-#, c-format
-msgid "Delete %s"
-msgstr "%s verwijderen"
-
-#: app/ScoreCanvas.cpp:350
-msgid "Delete selection"
-msgstr "Selectie verwijderen"
-
-#: app/ScoreCanvas.cpp:368
-msgid "Break a beam"
-msgstr "Verbinding verbreken"
-
-#: app/ScoreCanvas.cpp:384
-msgid "Add beam"
-msgstr "Verbinding toevoegen"
-
-#: app/ScoreCanvas.cpp:404
-msgid "Delete tie"
-msgstr "Overbinding verwijderen"
-
-#: app/ScoreCanvas.cpp:414
-msgid "Add tie"
-msgstr "Overbinding toevoegen"
-
-#: app/ScoreCanvas.cpp:432
-msgid "Add tuplet"
-msgstr "Triool toevoegen"
-
-#: app/ScoreCanvas.cpp:447
-msgid "Delete tuplet"
-msgstr "Antimetrische figuur verwijderen"
-
-#: app/ScoreCanvas.cpp:477
-msgid "Insert time signature"
-msgstr "maatsoort invoegen"
-
-#: app/ScoreCanvas.cpp:495
-msgid "Insert key signature"
-msgstr "Voortekening invoegen"
-
-#: app/ScoreCanvas.cpp:509
-msgid "Insert barline"
-msgstr "Maatstrepen"
-
-#: app/ScoreCanvas.cpp:528
-msgid "Insert note"
-msgstr "Noot invoegen"
-
-#: app/ScoreCanvas.cpp:549
-msgid "Insert rest"
-msgstr "Rust invoegen"
-
-#: app/ScoreCanvas.cpp:564
-msgid "Change note pitch"
-msgstr "Toonhoogte veranderen"
-
-#: app/ScoreCanvas.cpp:576
-msgid "Change note accidentals"
-msgstr "Voortekening wijzigen"
-
-#: app/ScoreCanvas.cpp:589
-msgid "Change note dots"
-msgstr "Nootpunten veranderen"
-
-#: app/ScoreCanvas.cpp:603
-msgid "Change text"
-msgstr "Tekst wijzigen"
-
-#: app/ScoreCanvas.cpp:1312
-#: app/ScoreCanvas.cpp:1338
-msgid "&Cut"
-msgstr "&Knippen"
-
-#: app/ScoreCanvas.cpp:1330
-#: app/ScoreCanvas.cpp:1343
-msgid "Edit"
-msgstr "Editeer"
-
-#: app/ScoreCommand.cpp:1586
-msgid "add title"
-msgstr "titel toevoegen"
-
-#: app/ScoreCommand.cpp:1656
-msgid "change barline"
-msgstr "maatstreep wijzigen"
-
-#: app/ScoreCommand.cpp:1699
-msgid "change MIDI settings"
-msgstr "MIDI instellingen wijzigen"
-
-#: app/ScoreCommand.cpp:1741
-msgid "move note"
-msgstr "noot verplaatsen"
-
-#: app/ScoreWizard.cpp:129
-msgid "Empty (manuscript paper)"
-msgstr "Leeg (blad)"
-
-#: app/ScoreWizard.cpp:130
-msgid "Brass quintet"
-msgstr "Brass quintet"
-
-#: app/ScoreWizard.cpp:131
-msgid "Brass trio"
-msgstr "Brass trio"
-
-#: app/ScoreWizard.cpp:132
-msgid "Choir 4 voices (SATB)"
-msgstr "Vierstemmig koor (SATB)"
-
-#: app/ScoreWizard.cpp:133
-msgid "Choir SATB + piano"
-msgstr "Koor SATB en piano"
-
-#: app/ScoreWizard.cpp:134
-msgid "Choir 3 voices (SSA)"
-msgstr "Driestemmig koor (SSA)"
-
-#: app/ScoreWizard.cpp:135
-msgid "Choir SSA + piano"
-msgstr "Koor SSA en piano"
-
-#: app/ScoreWizard.cpp:136
-msgid "Flute"
-msgstr "Fluit"
-
-#: app/ScoreWizard.cpp:137
-msgid "Guitar"
-msgstr "Gitaar"
-
-#: app/ScoreWizard.cpp:138
-msgid "Piano"
-msgstr "Piano"
-
-#: app/ScoreWizard.cpp:139
-msgid "Violin and piano"
-msgstr "Viool en piano"
-
-#: app/ScoreWizard.cpp:140
-msgid "Viola and piano"
-msgstr "Viola en piano"
-
-#: app/ScoreWizard.cpp:141
-msgid "Cello and piano"
-msgstr "Cello en piano"
-
-#: app/ScoreWizard.cpp:142
-msgid "String quartet"
-msgstr "Strijkkwartet"
-
-#: app/ScoreWizard.cpp:143
-msgid "Violin"
-msgstr "Viool"
-
-#: app/ScoreWizard.cpp:144
-msgid "Trio sonata"
-msgstr "Trio Sonata"
-
-#: app/ScoreWizard.cpp:145
-msgid "Woodwind trio"
-msgstr "Houtblazers trio"
-
-#: app/ScoreWizard.cpp:146
-msgid "Woodwind quintet"
-msgstr "Houtblazers kwintet"
-
-#: app/ScoreWizard.cpp:280
-msgid "Score configuration wizard"
-msgstr "Partituurconfiguratie wizard"
-
-#: app/ScoreWizard.cpp:325
-msgid "Subtitle"
-msgstr "Ondertitel"
-
-#: app/ScoreWizard.cpp:326
-msgid "Composer"
-msgstr "Componist"
-
-#: app/ScoreWizard.cpp:327
-msgid "Arranger"
-msgstr "Bewerker"
-
-#: app/ScoreWizard.cpp:328
-msgid "Lyricist"
-msgstr "Tekstdichter"
-
-#: app/ScoreWizard.cpp:421
-#, c-format
-msgid "Error: Template '%s' not found."
-msgstr "Fout: Template '%s' niet gevonden."
-
-#: app/ScoreWizard.cpp:423
-msgid "Posible causes:"
-msgstr "Mogelijke oorzaken:"
-
-#: app/ScoreWizard.cpp:425
-msgid "- An error during lenmus installation."
-msgstr "- Een fout is opgetreden tijdens de installatie van LenMus."
-
-#: app/ScoreWizard.cpp:427
-msgid "- An accidental deletion of the required template."
-msgstr "- Een ongewenste verwijdering van het vereiste template."
-
-#: app/ScoreWizard.cpp:429
-msgid "An empty score will be created."
-msgstr "Een lege blad wordt aangemaakt."
-
-#: app/ScoreWizard.cpp:623
-msgid "Select instruments and style"
-msgstr "Selecteer de instrumenten en stijl"
-
-#: app/ScoreWizard.cpp:631
-msgid "Select paper size and orientation"
-msgstr "Selecteer de papier grootte en oriëntatie"
-
-#: app/ScoreWizard.cpp:636
-msgid "Paper size"
-msgstr "Papier grootte"
-
-#: app/ScoreWizard.cpp:647
-msgid "Landscape"
-msgstr "Landschap"
-
-#: app/ScoreWizard.cpp:647
-msgid "Portrait"
-msgstr "Portret"
-
-#: app/ScoreWizard.cpp:802
-msgid "Select a key signature"
-msgstr "Voortekening selecteren"
-
-#: app/ScoreWizard.cpp:804
-#: app/toolbox/ToolClef.cpp:295
-msgid "Major"
-msgstr "Majeur"
-
-#: app/ScoreWizard.cpp:804
-msgid "minor"
-msgstr "mineur"
-
-#: app/ScoreWizard.cpp:806
-msgid "Key type"
-msgstr "Sleutel type"
-
-#: app/ScoreWizard.cpp:918
-#: app/toolbox/PropTimeSignature.cpp:54
-msgid "none"
-msgstr "geen"
-
-#: app/ScoreWizard.cpp:972
-msgid "Select time signature"
-msgstr "Maatsoort selecteren"
-
-#: app/ScoreWizard.cpp:977
-#: app/toolbox/PropTimeSignature.cpp:57
-msgid "Time signature"
-msgstr "Maatsoort"
-
-#: app/ScoreWizard.cpp:983
-msgid "Other time signatures"
-msgstr "Andere maatsoorten"
-
-#: app/ScoreWizard.cpp:992
-msgid "Numerator"
-msgstr "Nummering"
-
-#: app/ScoreWizard.cpp:1004
-msgid "Denominator"
-msgstr "noemer"
-
-#: app/ScoreWizard.cpp:1126
-msgid "Add titles"
-msgstr "Betiteling toevoegen"
-
-#: app/ScoreWizard.cpp:1128
-msgid "Title:"
-msgstr "Titel:"
-
-#: app/ScoreWizard.cpp:1135
-msgid "Subtitle:"
-msgstr "Ondertitel:"
-
-#: app/ScoreWizard.cpp:1142
-msgid "Composer:"
-msgstr "Componist"
-
-#: app/ScoreWizard.cpp:1149
-msgid "Arranger:"
-msgstr "Bewerker:"
-
-#: app/ScoreWizard.cpp:1156
-msgid "Lyricist:"
-msgstr "tekstdicher:"
-
-#: app/SplashFrame.cpp:103
-msgid "Free software under GNU General Public License, version 3 or later."
-msgstr "Vrije Software onder de GNU General Public License. version 3 of later."
-
-#: app/TheApp.cpp:229
-msgid "Another instance of LenMus is already running."
-msgstr "Een LenMus applicatie draait al."
-
-#: app/TheApp.cpp:774
-msgid "LenMus First Run"
-msgstr "Eerste opstart LenMus"
-
-#: app/WelcomeWnd.cpp:84
-msgid "Welcome"
-msgstr "Welkom"
-
-#: app/WelcomeWnd.cpp:146
-msgid "Welcome to LenMus"
-msgstr "Welkom bij LenMus"
-
-#: app/WelcomeWnd.cpp:160
-msgid "Learn about LenMus"
-msgstr "Leer meer over LenMus"
-
-#: app/WelcomeWnd.cpp:175
-msgid "What's is new in LenMus"
-msgstr "Wat is nieuw in LenMus"
-
-#: app/WelcomeWnd.cpp:178
-msgid "Visit LenMus website"
-msgstr "Bezoek de LenMus website"
-
-#: app/WelcomeWnd.cpp:190
-msgid "Learn and practise music theory"
-msgstr "Leer en beoefen de muziektheorie"
-
-#: app/WelcomeWnd.cpp:205
-msgid "Open eMusicBooks "
-msgstr "eMuziekBoeken openen"
-
-#: app/WelcomeWnd.cpp:217
-msgid "Create and edit music scores"
-msgstr "Partituren openen en bewerken"
-
-#: app/WelcomeWnd.cpp:232
-msgid "New score ..."
-msgstr "Nieuwe partituur..."
-
-#: app/WelcomeWnd.cpp:238
-msgid "Recent scores"
-msgstr "Recente partituren"
-
-#: app/toolbox/PropTimeSignature.cpp:51
-msgid "2/2"
-msgstr "2/2"
-
-#: app/toolbox/PropTimeSignature.cpp:51
-msgid "2/4"
-msgstr "2/4"
-
-#: app/toolbox/PropTimeSignature.cpp:51
-msgid "6/8"
-msgstr "6/8"
-
-#: app/toolbox/PropTimeSignature.cpp:51
-msgid "2/8"
-msgstr "2/8"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-msgid "3/2"
-msgstr "3/2"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-msgid "3/4"
-msgstr "3/4"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-msgid "9/8"
-msgstr "9/8"
-
-#: app/toolbox/PropTimeSignature.cpp:52
-msgid "3/8"
-msgstr "3/8"
-
-#: app/toolbox/PropTimeSignature.cpp:53
-msgid "4/2"
-msgstr "4/2"
-
-#: app/toolbox/PropTimeSignature.cpp:53
-msgid "4/4"
-msgstr "4/4"
-
-#: app/toolbox/PropTimeSignature.cpp:53
-msgid "12/8"
-msgstr "12/8"
-
-#: app/toolbox/PropTimeSignature.cpp:53
-msgid "4/8"
-msgstr "4/8"
-
-#: app/toolbox/PropTimeSignature.cpp:54
-msgid "other"
-msgstr "andere"
-
-#: app/toolbox/ToolBarlines.cpp:115
-#: app/toolbox/ToolBarlines.cpp:125
-msgid "Add barline"
-msgstr "Maatstreep invoegen"
-
-#: app/toolbox/ToolClef.cpp:118
+#: app/toolbox/ToolClef.cpp:132
 msgid "G clef on 2nd line"
 msgstr "Sol sleutel op de 2de lijn"
 
-#: app/toolbox/ToolClef.cpp:119
+#: app/toolbox/ToolClef.cpp:133
 msgid "F clef on 4th line"
 msgstr "Fa sleutel op de 4de lijn"
 
-#: app/toolbox/ToolClef.cpp:120
+#: app/toolbox/ToolClef.cpp:134
 #: ../xrc/xrc_strings.cpp:75
 #: ../xrc/xrc_strings.cpp:134
 msgid "F clef on 3rd line"
 msgstr "Fa sleutel op de 3de lijn"
 
-#: app/toolbox/ToolClef.cpp:121
+#: app/toolbox/ToolClef.cpp:135
 msgid "C clef on 1st line"
 msgstr "Do sleutel op de 1ste lijn"
 
-#: app/toolbox/ToolClef.cpp:122
+#: app/toolbox/ToolClef.cpp:136
 msgid "C clef on 2nd line"
 msgstr "Do sleutel op de 2de lijn"
 
-#: app/toolbox/ToolClef.cpp:123
+#: app/toolbox/ToolClef.cpp:137
 msgid "C clef on 3rd line"
 msgstr "Do sleutel op de 3de lijn"
 
-#: app/toolbox/ToolClef.cpp:124
+#: app/toolbox/ToolClef.cpp:138
 msgid "C clef on 4th line"
 msgstr "Do sleutel op de 4de lijn"
 
-#: app/toolbox/ToolClef.cpp:125
+#: app/toolbox/ToolClef.cpp:139
 msgid "Percussion clef"
 msgstr "Slagwerk sleutel"
 
-#: app/toolbox/ToolClef.cpp:138
-#: app/toolbox/ToolClef.cpp:148
+#: app/toolbox/ToolClef.cpp:150
+#: app/toolbox/ToolClef.cpp:160
 msgid "Add clef"
 msgstr "Sleutel toevoegen"
 
-#: app/toolbox/ToolClef.cpp:216
+#: app/toolbox/ToolClef.cpp:230
 msgid "Add a time signature"
 msgstr "maatsoort toevoegen"
 
-#: app/toolbox/ToolClef.cpp:289
+#: app/toolbox/ToolClef.cpp:304
 msgid "Add a key signature"
 msgstr "Toonaard toevoegen"
 
-#: app/toolbox/ToolClef.cpp:296
+#: app/toolbox/ToolClef.cpp:311
 msgid "Minor"
 msgstr "Mineur"
 
-#: app/toolbox/ToolClef.cpp:309
+#: app/toolbox/ToolClef.cpp:324
 msgid "Add key"
 msgstr "Toonaard toevoegen"
+
+#: app/toolbox/ToolsBox.cpp:96
+msgid "Select clef, key and time signature edit tools"
+msgstr "Sleutel, toonaard en maatsoort gereedschap"
+
+#: app/toolbox/ToolsBox.cpp:97
+msgid "Select notes / rests edit tools"
+msgstr "Noot- en rustselectie gereedschap"
+
+#: app/toolbox/ToolsBox.cpp:101
+msgid "Select barlines and rehearsal marks edit tools"
+msgstr "Maatstreep- en herhalingstekensgereedschap"
+
+#: app/toolbox/ToolBarlines.cpp:129
+#: app/toolbox/ToolBarlines.cpp:139
+msgid "Add barline"
+msgstr "Maatstreep invoegen"
 
 #: app/toolbox/ToolNotes.cpp:140
 msgid "Note/rest duration"
@@ -3536,38 +3504,9 @@ msgstr "Gebonden notengroep opsplitsen onder de cursorpositie"
 msgid "Adjust selected beam to draw it horizontal"
 msgstr "Waardestreep aanpassen en horizontaal weergeven"
 
-#: app/toolbox/ToolsBox.cpp:96
-msgid "Select clef, key and time signature edit tools"
-msgstr "Sleutel, toonaard en maatsoort gereedschap"
-
-#: app/toolbox/ToolsBox.cpp:97
-msgid "Select notes / rests edit tools"
-msgstr "Noot- en rustselectie gereedschap"
-
-#: app/toolbox/ToolsBox.cpp:101
-msgid "Select barlines and rehearsal marks edit tools"
-msgstr "Maatstreep- en herhalingstekensgereedschap"
-
 #: options/ColorsOptPanel.cpp:60
 msgid "Choose colors to use:"
 msgstr "Kies de te gebruiken kleuren:"
-
-#: options/InternetOptPanel.cpp:111
-#: options/InternetOptPanel.cpp:137
-msgid "Never"
-msgstr "Nooit"
-
-#: options/InternetOptPanel.cpp:112
-msgid "Daily"
-msgstr "Dagelijks"
-
-#: options/InternetOptPanel.cpp:113
-msgid "Weekly"
-msgstr "Wekelijks"
-
-#: options/InternetOptPanel.cpp:114
-msgid "Monthly"
-msgstr "Maandelijks"
 
 #: options/LangOptionsPanel.cpp:106
 #, c-format
@@ -3609,6 +3548,23 @@ msgstr "&Annuleren"
 msgid "Please correct the errors before moving to another section."
 msgstr "Verbeter eerst de fouten alvorens naar een ander sectie te gaan."
 
+#: options/InternetOptPanel.cpp:111
+#: options/InternetOptPanel.cpp:137
+msgid "Never"
+msgstr "Nooit"
+
+#: options/InternetOptPanel.cpp:112
+msgid "Daily"
+msgstr "Dagelijks"
+
+#: options/InternetOptPanel.cpp:113
+msgid "Weekly"
+msgstr "Wekelijks"
+
+#: options/InternetOptPanel.cpp:114
+msgid "Monthly"
+msgstr "Maandelijks"
+
 #: sound/SoundManager.cpp:356
 msgid "Can't create a thread!"
 msgstr "Kan geen thread creëeren!"
@@ -3618,10 +3574,12 @@ msgid "Can't start the thread!"
 msgstr "Kan geen thread opstarten!"
 
 #: widgets/MsgBox.cpp:154
+#: widgets/MusicSymbolList.cpp:140
 msgid "Question"
 msgstr "Vraag"
 
 #: widgets/MsgBox.cpp:182
+#: widgets/MusicSymbolList.cpp:168
 #: updater/Updater.cpp:105
 msgid "Error"
 msgstr "Fout"
@@ -4672,21 +4630,21 @@ msgstr "Fout bij het laden van XML bestand"
 msgid "page"
 msgstr "pagina"
 
-#: graphic/BoxScore.cpp:39
-msgid "score"
-msgstr "partituur"
-
 #: graphic/BoxSystem.cpp:50
 msgid "system"
 msgstr "systeem"
 
-#: graphic/Formatter4.cpp:794
+#: graphic/GraphicManager.cpp:277
+msgid "Sorry, not enough memory to create a Bitmap to display the page."
+msgstr "Sorry, niet genoeg geheugen om een bitmap te creëeren. Kan de pagina niet weergeven."
+
+#: graphic/Formatter4.cpp:793
 msgid "Program failure: not enough space for drawing just one bar."
 msgstr "Programmafout: niet genoeg ruimte om slechts een maatstreep te tekenen."
 
-#: graphic/GraphicManager.cpp:283
-msgid "Sorry, not enough memory to create a Bitmap to display the page."
-msgstr "Sorry, niet genoeg geheugen om een bitmap te creëeren. Kan de pagina niet weergeven."
+#: graphic/BoxScore.cpp:39
+msgid "score"
+msgstr "partituur"
 
 #: ../langtool/src/installer.cpp:60
 msgid "Please choose the optional components you would like to install"
@@ -4756,11 +4714,42 @@ msgstr "Fouten"
 msgid "Configuration options"
 msgstr "Configuratie opties"
 
-#: graphic/GMObject.h:226
+#: graphic/GMObject.h:227
 msgid "Object"
 msgstr "Voorwerp"
 
-#: graphic/GMObject.h:293
+#: graphic/GMObject.h:294
 msgid "Box"
 msgstr "Box"
+
+#~ msgid "Package for Linux prepared by:"
+#~ msgstr "Linux Pakket gemaakt door:"
+#~ msgid "tool_test_sound"
+#~ msgstr "test_geluid_gereedschap"
+#~ msgid "2/2"
+#~ msgstr "2/2"
+#~ msgid "2/4"
+#~ msgstr "2/4"
+#~ msgid "6/8"
+#~ msgstr "6/8"
+#~ msgid "2/8"
+#~ msgstr "2/8"
+#~ msgid "3/2"
+#~ msgstr "3/2"
+#~ msgid "3/4"
+#~ msgstr "3/4"
+#~ msgid "9/8"
+#~ msgstr "9/8"
+#~ msgid "3/8"
+#~ msgstr "3/8"
+#~ msgid "4/2"
+#~ msgstr "4/2"
+#~ msgid "4/4"
+#~ msgstr "4/4"
+#~ msgid "12/8"
+#~ msgstr "12/8"
+#~ msgid "4/8"
+#~ msgstr "4/8"
+#~ msgid "other"
+#~ msgstr "andere"
 

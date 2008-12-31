@@ -9,19 +9,18 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2008 Cecilio Salmeron
+;    Copyright (c) 2002-2009 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
-;    either version 2 of the License, or (at your option) any later version.
+;    either version 3 of the License, or (at your option) any later version.
 ;
 ;    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 ;    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
 ;    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 ;
-;    You should have received a copy of the GNU General Public License along with this 
-;    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
-;    Fifth Floor, Boston, MA  02110-1301, USA.
+;    You should have received a copy of the GNU General Public License
+;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
 ;    For any comment, suggestion or feature request, please contact the manager of 
 ;    the project at cecilios@users.sourceforge.net
@@ -39,11 +38,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.0b2"
+  !define APP_VERSION "4.0b3"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.0 beta 2"     ;product name displayed by the installer
+  Name "lenmus v4.0 beta 3"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -175,9 +174,9 @@
   !include "fr.nsh"
   !include "tr.nsh"
   !include "nl.nsh"
-;  !include "eu.nsh"
-;  !include "it.nsh"
-;  !include "gl_ES.nsh"
+  !include "eu.nsh"
+  !include "it.nsh"
+  !include "gl_ES.nsh"
 
 
 
@@ -247,7 +246,7 @@ Section  "-" "MainSection"
      File ".\locale\license_nl.txt"
      File ".\locale\license_eu.txt"
      File ".\locale\license_it.txt"
-     File ".\locale\license_gl.txt"
+     File ".\locale\license_gl_ES.txt"
      
      File "..\..\docs\html\license_v3.htm"
 ;     File "..\..\docs\html\installation.htm"

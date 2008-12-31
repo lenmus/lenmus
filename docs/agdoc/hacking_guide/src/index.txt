@@ -29,6 +29,7 @@ Any help to structure, review, improve, etc. this document is welcome!.
     
     * \href0 [score_representations] {Scores: internal representation}
         * \href0 [pitch-representation] {How pitch is represented}
+        * \href0 [objects_model] {Scores: The Internal model}
     
     * \href0 [exercises_ctrols] {eBooks: Including scores and exercises}
     

@@ -1,16 +1,17 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.5\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-13 15:03+0100\n"
-"Last-Translator: \n"
+"Project-Id-Version: LenMus 4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-30 22:22+0100\n"
+"PO-Revision-Date: 2008-12-30 22:22+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: ..\\src\n"
+"X-Poedit-Basepath: ../src\n"
 "X-Poedit-SearchPath-0: L1_MusicReading\n"
 
 #: L1_MusicReading/L1_MusicReading.cpp:2
@@ -39,7 +40,7 @@ msgstr "Dit eMuziekBoek is een zelfstudie muziekleescursus, bedoeld om uw leesva
 
 #: L1_MusicReading/L1_MusicReading.cpp:8
 msgid "LenMus project"
-msgstr ""
+msgstr "LenMus project"
 
 #: L1_MusicReading/L1_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
@@ -392,9 +393,8 @@ msgid "Most music has a rhythm that you can perceive as a repetitive pattern of 
 msgstr "Muziek heeft meestal een ritme dat u kan opvatten als een repititief patroon van impulsen. Het is makkelijk om deze pulsen te herkennen: het is dat wat er gebeurt wanneer u ritmisch in uw handen klapt of met uw voeten stampt terwijl u naar een lied luistert. De pulsen zijn de slagen van de muziek en vormen de basis om geschreven muziek te organiseren."
 
 #: L1_MusicReading/L1_MusicReading.cpp:92
-#, fuzzy
 msgid "We said in previous lesson that written music is divided on the staff into parts named 'measures'. Although there are exceptions, in general all the measures of a piece of music have the same number of beats. Therefore, we must learn that written music is organized by dividing it into small groups of beats, and these groups are called 'measures'."
-msgstr "Eerder werd al gesteld dat geschreven muziek op de notenbalk onderverdeeld wordt in maten. Al de maten van hetzelfde muziekstuk zullen hetzelfde aantal slagen hebben. Geschreven muziek is dus georganiseerd door deze onder te verdelen in kleine groepen van slagen en deze groepen zijn dan de maten."
+msgstr "Eerder werd al gesteld dat geschreven muziek op de notenbalk onderverdeeld wordt in maten. Hoewel er uitzonderingen zijn, hebben alle maten van een muziekstuk hetzelfde aantal slagen. Geschreven muziek is dus georganiseerd door deze onder te verdelen in kleine groepen van slagen en deze groepen zijn dan de maten."
 
 #: L1_MusicReading/L1_MusicReading.cpp:93
 msgid "To know how many beats are there in a measure, a 'time signature' is placed at the beginning of the staff, after the clef. The time signature is the two numbers placed above and below the third line:"
@@ -410,7 +410,7 @@ msgstr "Het bovenste getal duidt het aantal slagen aan dat er in een maat passen
 
 #: L1_MusicReading/L1_MusicReading.cpp:96
 msgid "So the time signature is just an arbitary device to help us to understand and write the rhythm. But remeber that rhythm is something natural that exists by itsel in the music."
-msgstr ""
+msgstr "De maatsoort van een muziekstuk is dus slechts een hulpmiddel om het ritme te helpen begrijpen. Onthoud echter dat ritme een natuurlijk gegeven is dat op zichzelf bestaat in de muziek."
 
 #: L1_MusicReading/L1_MusicReading.cpp:97
 msgid "Not all beats in a measure are equal: there are strong beats (louder), medium and weak beats. The first beat of a measure is normally the strongest one and the other beats are weaker. The pattern of strong and weak beats is what makes rhythmic patterns different. It is important to learn to recognize the time signature when listening to a piece of music. This may take some practice but it is a useful practice for anyone who is learning music."
@@ -825,9 +825,8 @@ msgid "The eighth note"
 msgstr "De achtste noot"
 
 #: L1_MusicReading/L1_MusicReading.cpp:191
-#, fuzzy
 msgid "The next figure we are going to study is the eighth note (also called 'quaver' in British English). Its symbols are shown in the followig score, and are like a quarter note with a flag added to its stem:"
-msgstr "De volgende figuur die we zullen bestuderen is de achtste noot. Zijn symbolen worden getoond in de volgende partituur. Ze tonen als een kwartnoot met een vlag aan de nootstok. Ze worden doorgaans gebonden getekend:"
+msgstr "De volgende figuur die we zullen bestuderen is de achtste noot. Zijn symbolen worden getoond in de volgende partituur. Ze worden getoond als een kwartnoot met een vlag aan de nootstok:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:192
 msgid "Many times eighth notes are drawn beamed:"
@@ -835,7 +834,7 @@ msgstr "Achtste noten worden dikwijls met koppeling getekend:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:193
 msgid "Beaming is not done at random or by personal taste. The rules for beaming depend on the time signature."
-msgstr ""
+msgstr "Noten worden niet willekeurig of door persoonlijke voorkeur gebonden. De regels voor het binden van noten worden bepaald door de maatsoort."
 
 #: L1_MusicReading/L1_MusicReading.cpp:194
 msgid "One quarter note equals two eighth notes and one quarter rest equals two eighth rests. So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat."
@@ -972,12 +971,11 @@ msgstr "De voortekening vereenvoudigt niet enkel de notatie maar geeft ook infor
 
 #: L1_MusicReading/L1_MusicReading.cpp:222
 msgid "The accidentals on the key signature are named 'proper accidentals' whereas those added in addition to individual notes are named 'chromatic accidentals'."
-msgstr ""
+msgstr "De alteraties die voorkomen in de voortekening worden 'echte alteraties' genoemd, terwijl degene die tegevoegd worden 'chromatische alteraties' heten."
 
 #: L1_MusicReading/L1_MusicReading.cpp:224
-#, fuzzy
 msgid "In this lesson we will continue with exercises containing the rhythmic patterns of the previous lessons, but introducing the key signatures of G major and E minor (one sharp) and F major and D minor (one flat)."
-msgstr "In deze les wordt de voortekening van Sol groot en Mi klein (één kruis) en Si mol groot en Sol klein (één mol) geïntroduceerd. Daarbij worden de ritmische patronen uit de vorige lessen gebruikt."
+msgstr "In deze les wordt de voortekening van Sol groot en Mi klein (één kruis) en Fa groot en Re klein (één mol) geïntroduceerd. Daarbij worden de ritmische patronen uit de vorige lessen gebruikt."
 
 #: L1_MusicReading/L1_MusicReading.cpp:226
 msgid " - Read scores containing the rhythms studied."

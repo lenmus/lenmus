@@ -493,20 +493,20 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                     m_Titles[i].tPos.y = 10.0f;
                 }
 
-                //Fix y_location if a left aligned title is followed by a right 
+                //Fix y_location if a left aligned title is followed by a right
                 //aligned one. This last one must be repositioned in the same line
-                //than the left aligned title, unless it doesn't fit in the 
+                //than the left aligned title, unless it doesn't fit in the
                 //available line space.
 
-                if (iPrev != -1 && 
+                if (iPrev != -1 &&
                     m_Titles[iPrev].nHAlign == lmHALIGN_LEFT &&
-                    m_Titles[i].nHAlign == lmHALIGN_RIGHT ) 
+                    m_Titles[i].nHAlign == lmHALIGN_RIGHT )
                 {
                     //Adding a title automatically increments y-cursor by the height of
                     //the title. Therefore, it is only necessary to undo this increment
                     //if necessary
 
-                    lmLUnits uLineSpace = pScore->GetRightMarginXPos() - 
+                    lmLUnits uLineSpace = pScore->GetRightMarginXPos() -
                                           pScore->GetLeftMarginXPos();
 
                     int nWidth, nHeight;
@@ -541,7 +541,7 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                 tFont.nFontStyle = m_Titles[i].nFontStyle;
                 tFont.nFontWeight = m_Titles[i].nFontWeight;
                 tFont.sFontName = m_Titles[i].sFontName;
-                lmTextStyle* pStyle = 
+                lmTextStyle* pStyle =
                     pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
 
                 lmTextBlock* pTitle =
