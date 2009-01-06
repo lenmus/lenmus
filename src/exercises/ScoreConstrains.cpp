@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -452,7 +452,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     pVStaff->AddKeySignature(earmDo);
     //pVStaff->AddTimeSignature( m_nTimeSign );
     pNode = parserLDP.ParseText(sSource);
-    wxLogMessage(_T("[lmFragmentsTable::GetPatternDuracion] %s"), sSource.c_str());
+    //wxLogMessage(_T("[lmFragmentsTable::GetPatternDuracion] %s"), sSource.c_str());
     parserLDP.AnalyzeMeasure(pNode, pVStaff);
 
     //The score is built. Traverse it to get total duration

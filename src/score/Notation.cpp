@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -134,27 +134,26 @@ lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-#if 0       //Set to 1 for debug. This will draw a red line to show anchor position
+    if (g_fDrawAnchors)
+    {
+        //Draw a red line to show anchor position
         //TODO: draw an small anchor and change show/hide anchor as an user option
-    //DBG ------------------------------------------------------------------------------
-    //compute position
-    lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
-    lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
-    lmLUnits uWidth = m_pParent->TenthsToLogical(1);
-    lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
+        //compute position
+        lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
+        lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
+        lmLUnits uWidth = m_pParent->TenthsToLogical(1);
+        lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
 
-    //create the shape
-    lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
-                                          uWidth, uBoundsExtraWidth, *wxRED,
-                                          _T("Anchor"), eEdgeNormal);
-	pBox->AddShape(pShape);
-    StoreShape(pShape);
+        //create the shape
+        lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
+                                            uWidth, uBoundsExtraWidth, *wxRED,
+                                            _T("Anchor"), eEdgeNormal);
+	    pBox->AddShape(pShape);
+        StoreShape(pShape);
 
-    //END DBG --------------------------------------------------------------------------
-#else
-
-    CreateInvisibleShape(pBox, uPos, 0);
-#endif
+    }
+    else
+        CreateInvisibleShape(pBox, uPos, 0);
 
     return 0.0f;        //returns total width
 }

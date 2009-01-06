@@ -328,7 +328,7 @@ typedef struct lmVertexStruct {
     unsigned    cmd;
 } lmVertex;
     
-
+class lmAttachPoint;
 
 class lmShape : public lmGMObject
 {
@@ -346,7 +346,9 @@ public:
 
 	//shapes can be attached to other shapes
 	int Attach(lmShape* pShape, lmEAttachType nType = eGMA_Unknown);
-	void Detach(lmShape* pShape);
+	void Detach(lmShape* pShape, bool fInform=true);
+    void OnAttached(lmShape* pShape);
+    void OnDetached(lmShape* pShape);
 
     //Debug related methods
     virtual wxString Dump(int nIndent) = 0;
@@ -392,14 +394,12 @@ protected:
 	bool		m_fVisible;
     wxWindow*   m_pMouseCursorWindow;      //to optimize mouse cursor changes
 
-	typedef struct lmAtachPoint_Struct {
-		lmShape*		pShape;
-		lmEAttachType	nType;
-	} lmAtachPoint;
-
 	//list of shapes attached to this one
-	std::list<lmAtachPoint*>	m_cAttachments;
-	
+	std::list<lmAttachPoint*>	m_cAttachments;
+
+	//list of shapes to which this one is attached
+	std::list<lmShape*>	        m_cAttachedTo;
+
 	wxColour	m_color;
 
 	//for composite shapes

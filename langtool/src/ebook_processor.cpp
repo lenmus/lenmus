@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus project: free software for music theory and language
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -66,7 +66,7 @@ enum {
 static const wxString m_sFooter1 = 
     _T("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
 static const wxString m_sFooter2 = 
-    _T("Licensed under the terms of the GNU Free Documentation License v1.2");
+    _T("Licensed under the terms of the GNU Free Documentation License v1.3");
 static const wxString m_sPhonascus =
     _T("the teacher of music");
 static const wxString m_sCoverPage =
@@ -115,6 +115,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     m_fGenerateLmb = !m_fOnlyLangFile;
     m_sFilename = sFilename;
     m_sCharCode = sCharCode;
+    m_sLangCode = sLangCode;
 
     //add layout files
     m_aFilesToPack.Empty();
@@ -787,8 +788,10 @@ bool lmEbookProcessor::LeafletTag(const wxXml2Node& oNode, int nOptions, wxStrin
 
     m_fIsLeaflet = true;
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_left1.png"));
-    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("leaflet_banner_right.png"));
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_line_orange.png"));
+    //m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("leaflet_banner_right.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("leaflet_banner_right_") +
+        m_sLangCode + _T(".png"));
 
     //get book id and add it to the pages table. This id will be used for the
     //book cover page
@@ -1745,16 +1748,19 @@ void lmEbookProcessor::CreateLeafletHeaders(wxString sBookTitle, wxString sHeade
         _T("\n")
         _T("<!-- banner -->\n")
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-        _T("<tr><td width='42%' rowspan='2' bgcolor='#7f8adc'><img src='ebook_banner_left1.png'></td>\n")
-        _T("<td bgcolor='#7f8adc' rowspan='2'>&nbsp;</td>\n")
-        _T("<td width='28%' bgcolor='#7f8adc' align='right'><img src='leaflet_banner_right.png'></td>\n")
+        _T("<tr><td width='42%' bgcolor='#7f8adc'><img src='ebook_banner_left1.png'></td>\n")
+        _T("<td bgcolor='#7f8adc'>&nbsp;</td>\n")
+        _T("<td width='28%' bgcolor='#7f8adc' align='right'><img src='leaflet_banner_right_") );
+        WriteToHtml(m_sLangCode);
+        WriteToHtml(
+        _T(".png'></td>\n")
         _T("<td width='20' bgcolor='#7f8adc' rowspan='2'>&nbsp;</td>\n")
         _T("</tr>\n")
-        _T("<tr height='30'><td bgcolor='#7f8adc' align='right' valign='top'>\n")
-        _T("	<font color='#ffffff' size=5 face='Monotype Corsiva'>") );
-    WriteToHtml( ::wxGetTranslation(m_sPhonascus) );
-    WriteToHtml(
-        _T("</font></td></tr>\n")
+    //    _T("<tr height='30'><td bgcolor='#7f8adc' align='right' valign='top'>\n")
+    //    _T("	<font color='#ffffff' size=5 face='Monotype Corsiva'>") );
+    //WriteToHtml( ::wxGetTranslation(m_sPhonascus) );
+    //WriteToHtml(
+    //    _T("</font></td></tr>\n")
         _T("<tr><td bgcolor='#ff8800' colspan='4'>.</td></tr>\n")
         _T("</table>\n\n")
         _T("\n")

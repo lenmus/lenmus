@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -199,6 +199,7 @@ enum
     MENU_Debug_ShowDebugLinks,
     MENU_Debug_ShowBorderOnScores,
     MENU_Debug_recSelec,
+    MENU_Debug_DrawAnchors,
     MENU_Debug_DrawBounds,
     MENU_Debug_DumpStaffObjs,
 	MENU_Debug_DumpGMObjects,
@@ -389,6 +390,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU (MENU_Debug_PatternEditor, lmMainFrame::OnDebugPatternEditor)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
     EVT_MENU (MENU_Debug_DrawBounds, lmMainFrame::OnDebugDrawBounds)
+    EVT_MENU (MENU_Debug_DrawAnchors, lmMainFrame::OnDebugDrawAnchors)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
     EVT_MENU (MENU_Debug_UseAntiAliasing, lmMainFrame::OnDebugUseAntiAliasing)
         //debug events requiring a score to be enabled
@@ -1110,6 +1112,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
             _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_DrawBounds, _T("&Draw bounds"),
             _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
+        AddMenuItem(pMenuDebug, MENU_Debug_DrawAnchors, _T("Draw anchors"),
+            _T("Draw a red line to show anchor objects"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"),
             _T("Use anti-aliasing for screen renderization"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
@@ -1239,6 +1243,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         pMenuBar->Check(MENU_Debug_ShowDebugLinks, g_fShowDebugLinks);
         pMenuBar->Check(MENU_Debug_recSelec, g_fDrawSelRect);
         pMenuBar->Check(MENU_Debug_DrawBounds, g_fDrawBounds);
+        pMenuBar->Check(MENU_Debug_DrawAnchors, g_fDrawAnchors);
         pMenuBar->Check(MENU_Debug_UseAntiAliasing, g_fUseAntiAliasing);
     }
 
@@ -1723,6 +1728,12 @@ void lmMainFrame::OnDebugUseAntiAliasing(wxCommandEvent& event)
 void lmMainFrame::OnDebugRecSelec(wxCommandEvent& event)
 {
     g_fDrawSelRect = event.IsChecked();
+    GetActiveDoc()->UpdateAllViews();
+}
+
+void lmMainFrame::OnDebugDrawAnchors(wxCommandEvent& event)
+{
+    g_fDrawAnchors = event.IsChecked();
     GetActiveDoc()->UpdateAllViews();
 }
 

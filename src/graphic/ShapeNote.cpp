@@ -63,6 +63,30 @@ lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxCo
 
 lmShapeNote::~lmShapeNote()
 {
+    //TODO. If this note is deleted and it has attachements to any other note,
+    //the common attached shapes must also be deleted. This problem was detected 
+    //with ties, when the next note is in the next system. [000.00.error6]. But
+    //it will happen with beams [000.00.error7] and possibly with other objects. 
+    //BUG_BYPASS. Specific code to deal with ties
+ //   lmNote* pNote = (lmNote*)m_pOwner;
+ //   if (pNote->IsTiedToPrev())
+ //   {
+ //       //Delete the tie,
+ //       //When this note is re-layouted, the tie will be created again.
+	//    std::list<lmAttachPoint*>::iterator pItem;
+	//    for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
+	//    {
+	//	    if ( (*pItem)->pShape->IsShapeTie() )
+ //           {
+ //               //get 
+ //           }
+ //       }
+	//if (pItem != m_cAttachments.end())
+	//	m_cAttachments.erase(pItem);
+ //       void lmShape::Detach(lmShape* pShape)
+
+ //   }
+
 }
 
 void lmShapeNote::AddStem(lmShapeStem* pShape)

@@ -152,7 +152,7 @@ void lmBoxSystem::FixSlicesYBounds()
 
 void lmBoxSystem::DeleteLastSlice()
 {
-    //This method is used during laout phase, to delete a column when it is finally decided not
+    //This method is used during layout phase, to delete a column when it is finally decided not
     //to include it in current system
 	delete m_Slices.back();
 	m_Slices.pop_back();

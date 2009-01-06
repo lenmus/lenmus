@@ -116,7 +116,7 @@ void lmShapeBeam::AdjustStemsIfNeeded()
     //The beam and the stems are rendered *after* noteheads and rests are rendered.
     //Therefore, when rendering the beam there is no option to adjust rests positions
     //to fit gracefuly inside the beamed group. 
-    //Theis method is invoked when going to renter a rest that is included in the beam.
+    //This method is invoked when going to renter a rest that is included in the beam.
     //Its purpose is to adjust stems, if necessary, to adjust all rests' positions.
 
 	if (m_fLayoutPending)

@@ -373,19 +373,19 @@ int GetNumBeatsFromTimeSignType(lmETimeSignature nTimeSign)
         case emtr44:
             return 4;
         case emtr28:
-            return 1;
+            return 2;
         case emtr38:
-            return 1;
+            return 3;
         case emtr22:
             return 2;
         case emtr32:
             return 3;
         case emtr68:
-            return 2;
+            return 6;
         case emtr98:
-            return 3;
+            return 9;
         case emtr128:
-            return 4;
+            return 12;
         default:
             wxASSERT(false);
             return 4;

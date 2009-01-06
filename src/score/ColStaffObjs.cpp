@@ -1873,7 +1873,9 @@ void lmSegment::AutoBeam(int nVoice)
 
             //add note to current beam if smaller than an eighth.
             //if note, it must not be in chord or must be base of chord.
-            if (pNR->GetNoteType() > eQuarter)
+            //Ignore rests if cNeamedNotes is empty, as a beam cannot start by rest
+            if (pNR->GetNoteType() > eQuarter 
+                && (pNR->IsNote() || cBeamedNotes.size() > 0))
             {
                 cBeamedNotes.push_back(pNR);
             }
@@ -2269,7 +2271,7 @@ bool lmSegment::IsTimePosOccupied(float rTime, float rDuration, int nVoice)
     lmSOIterator it(m_pOwner, m_pFirstSO);
 	while (!it.ChangeOfMeasure() && !it.EndOfCollection())
 	{
-    	lmStaffObj* pSO = m_pFirstSO;
+    	lmStaffObj* pSO = it.GetCurrent();
         if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
         {
             float rTimeSO = pSO->GetTimePos();

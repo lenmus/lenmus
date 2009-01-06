@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -81,6 +81,7 @@ enum
 bool g_fDrawSelRect = false;    //draw selection rectangles around staff objects
 bool g_fDrawBounds = false;     //draw bounds rectangles around staff objects
 bool g_fShowMargins = false;    //draw margins in scores, so user can change them
+bool g_fDrawAnchors = false;    //draw anchors, to see them in the score
 
 
 // Dragging states

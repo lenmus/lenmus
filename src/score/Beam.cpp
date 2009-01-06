@@ -53,6 +53,7 @@ lmBeam::lmBeam(lmNote* pNote)
 	: lmMultipleRelationship<lmNoteRest>(lm_eBeamClass)
 {
 	m_pBeamShape = (lmShapeBeam*)NULL;
+    m_fNeedsSetUp = true;
     Include(pNote);
 }
 
@@ -256,7 +257,9 @@ void lmBeam::AutoSetUp()
     //This method determines the beam type for each note, based on time signature and note
     //types.
 
-	if (NumNotes() < 2) return;
+    m_fNeedsSetUp = false;
+	if (NumNotes() < 2)
+        return;
 
     //Filter out any rest in the beam
 	std::vector<lmNote*> cNotes;

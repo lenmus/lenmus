@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -143,19 +143,11 @@ void lmScoreAuxCtrol::ResizePaper()
     dc.GetSize(&xPixels, &yPixels);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
-    lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(xPixels);
-    lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(yPixels);
+    m_uPaperWidth = (lmLUnits)dc.DeviceToLogicalXRel(xPixels);
+    m_uPaperHeight = (lmLUnits)dc.DeviceToLogicalYRel(yPixels);
 
     //save new DC scaling factor to be used later for message positioning
-    m_yScalingFactor =(float)yPixels / (float)yLU;
-
-    if (m_pScore)
-    {
-        m_pScore->SetPageSize(xLU, yLU);
-        m_pScore->SetPageTopMargin(m_nTopMargin);
-        m_pScore->SetPageLeftMargin(m_nLeftMargin);
-        m_pScore->SetPageRightMargin(m_nRightMargin);
-    }
+    m_yScalingFactor =(float)yPixels / (float)m_uPaperHeight;
 
     if (g_pLogger->IsAllowedTraceMask(_T("lmScoreAuxCtrol"))) GetPixelsPerLU();
     g_pLogger->LogTrace(_T("lmScoreAuxCtrol"),
@@ -163,7 +155,7 @@ void lmScoreAuxCtrol::ResizePaper()
         _T("Paper size: px = (%d, %d), LU= (%.2f, %.2f)\n")
         _T("m_rScale=%f, scaling factor=%f, margins: left=%.2f, right=%.2f, top=%.2f"),
         xPixels, yPixels,
-        xLU, yLU, m_rScale, m_yScalingFactor,
+        m_uPaperWidth, m_uPaperHeight, m_rScale, m_yScalingFactor,
         m_nLeftMargin, m_nRightMargin, m_nTopMargin );
 }
 
@@ -261,10 +253,17 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
     // other windows will go wrong.
     wxPaintDC dc(this);
 
-    if (m_pScore && !m_fHidden) {
+    if (m_pScore && !m_fHidden)
+    {
         // Get size of window
         int dxBitmap, dyBitmap;
         dc.GetSize(&dxBitmap, &dyBitmap);        // size of the DC in pixels
+
+        //set score size and margins
+        m_pScore->SetPageSize(m_uPaperWidth, m_uPaperHeight);
+        m_pScore->SetPageTopMargin(m_nTopMargin);
+        m_pScore->SetPageLeftMargin(m_nLeftMargin);
+        m_pScore->SetPageRightMargin(m_nRightMargin);
 
         //wxLogMessage(wxString::Format(
         //    _T("[lmScoreAuxCtrol::OnPaint]dxyBitmap = (%d, %d)"), dxBitmap, dyBitmap));

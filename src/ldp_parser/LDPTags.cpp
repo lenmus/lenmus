@@ -299,7 +299,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         //no context
         m_Tags[0][_T("abbrev")] = _T("abrev");
         m_Tags[0][_T("above")] = _T("encima");
-        m_Tags[0][_T("barline")] = _T("barline");
+        m_Tags[0][_T("barline")] = _T("barra");
         m_Tags[0][_T("below")] = _T("debajo");
         m_Tags[0][_T("bold")] = _T("negrita");
         m_Tags[0][_T("bold_italic")] = _T("negrita-cursiva");

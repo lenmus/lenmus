@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -55,8 +55,7 @@ lmTie::~lmTie()
 
 lmShape* lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 {
-	// Create two arch shapes, one onwed by start note and the other one by 
-	// end note.
+	// Create two arch shapes
 	// Both notes' shapes will have attached both tie shapes.
 	// One of the tie shapes will be invisible
 

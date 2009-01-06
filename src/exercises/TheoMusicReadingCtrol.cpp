@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -179,9 +179,9 @@ void lmTheoMusicReadingCtrol::CreateControls()
 
     lmScoreAuxCtrol* pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pProblemScore,
         wxDefaultPosition, m_nDisplaySize, eNO_BORDER);
-    pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(10, lmMILLIMETERS));        //right=1cm, left=1cm, top=1cm
+    pScoreCtrol->SetMargins(lmToLogicalUnits(0, lmMILLIMETERS),         //left=0cm
+                              lmToLogicalUnits(0, lmMILLIMETERS),      //right=1cm
+                              lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
     pScoreCtrol->SetScale( pScoreCtrol->GetScale() * (float)m_rScale );
     pScoreSizer->Add(
         pScoreCtrol,

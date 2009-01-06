@@ -928,7 +928,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 					if (event.AltDown())
 					{
 						lmStaffObj* pSO = m_pView->GetVCursor()->GetStaffObj();
-						if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+						if (pSO && pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
 							pBaseOfChord = (lmNote*)pSO;
 					}
 

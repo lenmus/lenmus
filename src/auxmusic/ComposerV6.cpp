@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -690,6 +690,15 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     }
     delete pIter;
 
+    // If number of points is small (i.e < 8) forget about this. Instatiate notes
+    // with random pitch and finish. This bypasess the only problem found, when a
+    //score has rests in all beat positions (L2_musicReading, Lesson 17, exercise 1)
+    if (nNumPoints < 8)
+    {
+        InstantiateNotesRandom(pScore);
+        return false;       // no error
+    }
+
 
     // Now we are going to choose at random a contour curve and compute its points
     // The curve will always start and finish in the root note. Its amplitude will
@@ -795,6 +804,54 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
 
     return false;       // no error
 
+}
+
+void lmComposer6::InstantiateNotesRandom(lmScore* pScore)
+{
+    // Loop to process notes/rests in first staff of first instrument
+    lmInstrument* pInstr = pScore->GetFirstInstrument();
+    lmVStaff* pVStaff = pInstr->GetVStaff();
+    lmSOIterator* pIter = pVStaff->CreateIterator();
+    while(!pIter->EndOfCollection())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+        {
+            // Assign it a random pitch
+            lmAPitch apPitchNew = RandomPitch();
+            ((lmNote*)pSO)->ChangePitch(apPitchNew, lmCHANGE_TIED);
+        }
+
+        // get next note/rest
+        pIter->MoveNext();
+    }
+
+    delete pIter;
+}
+
+lmAPitch lmComposer6::RandomPitch()
+{
+    int nMinPitch = (int)m_nMinPitch.ToDPitch();
+    int nMaxPitch = (int)m_nMaxPitch.ToDPitch();
+    static int nLastPitch = 0;
+    
+    if (nLastPitch == 0)
+        nLastPitch = (nMinPitch + nMaxPitch) / 2;
+
+    lmRandomGenerator oGenerator;
+    int nRange = m_pConstrains->GetMaxInterval();
+    int nLowLimit = wxMax(nLastPitch - nRange, nMinPitch);
+    int nUpperLimit = wxMin(nLastPitch + nRange, nMaxPitch);
+    int nNewPitch;
+    if (nUpperLimit - nLowLimit < 2)
+        nNewPitch = nLowLimit;
+    else
+        nNewPitch = oGenerator.RandomNumber(nLowLimit, nUpperLimit);
+
+    // save value
+    nLastPitch = nNewPitch;
+
+    return lmAPitch((lmDPitch)nNewPitch, 0);
 }
 
 void lmComposer6::GetRandomHarmony(int nFunctions, std::vector<long>& aFunction)
@@ -1509,13 +1566,13 @@ void lmComposer6::NeightboringNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pO
 
     bool fUpStep = lmRandomGenerator::FlipCoin();
     lmAPitch ap = pOnChord1->GetAPitch();
+    //wxASSERT(ap.ToDPitch() != lmNO_NOTE);
     lmAPitch nFirstPitch = MoveByStep(fUpStep, ap, aScale);
     pNonChord[0]->ChangePitch(nFirstPitch, lmCHANGE_TIED);
     if (nNumNotes == 1) return;
     pNonChord[1]->ChangePitch(MoveByStep(!fUpStep, ap, aScale), lmCHANGE_TIED);
     if (nNumNotes == 2) return;
     pNonChord[2]->ChangePitch(nFirstPitch, lmCHANGE_TIED);
-
 }
 
 void lmComposer6::PassingNotes(bool fUp, int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,

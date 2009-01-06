@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -223,7 +223,7 @@ void lmAboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         _T("<center>")
         _T("<h3>") + _("License") + _T("</h3></center><p>")
         _T("LenMus ") + m_sVersionNumber + _T(" ") +
-        _("Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n.") +
+        _T("Copyright &copy; 2002-2009 Cecilio Salmer&oacute;n.") +
         _T("</p><p>") +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
@@ -384,7 +384,7 @@ gave their time for free to the project. Thanks to all them.") +
         //
     _T("<tr><td colspan='3'><b>") +
         _("Management and programming:") + _T("</b></td></tr>")
-    _T("  <tr><td width='40px'>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("  <tr><td width='40'>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +
@@ -400,25 +400,30 @@ gave their time for free to the project. Thanks to all them.") +
         //
     _T("<tr><td colspan='3'><b>") +
         _("Translation:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Basque") + _T("</td></tr>")
-        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Basque") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Karlos del Olmo Serna</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Dutch") + _T("</td></tr>")
-        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Dutch") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Jack Van Handenhove</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("French") + _T("</td></tr>")
-        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("French") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Carlos Alarcia</td></tr>")
-        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Christophe Marcoux</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Italian") + _T("</td></tr>")
-        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Galician") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
+        _T("<td>Emilio Mesías</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
+        _T("<td>Xema Sanxurxo Rodríguez</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Italian") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Mauro Giubileo</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Spanish") + _T("</td></tr>")
-        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Spanish") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Cecilio Salmer&oacute;n</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Turkish") + _T("</td></tr>")
-        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Turkish") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Elif &Ouml;zt&uuml;rk</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //

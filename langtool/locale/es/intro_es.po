@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.5\n"
+"Project-Id-Version: LenMus 4.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-13 14:58+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2008-12-31 16:13+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,7 +13,6 @@ msgstr ""
 "X-Poedit-SearchPath-0: intro\n"
 
 #: intro/intro.cpp:2
-#, fuzzy
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "Envía tus comentarios y sugerencias al equipo de LenMus (www.lenmus.org)"
 
@@ -38,9 +37,8 @@ msgid "LenMus Phonascus presentation"
 msgstr "LenMus Phonascus. Presentación."
 
 #: intro/intro.cpp:8
-#, fuzzy
 msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 4.0 it includes a score editor with full support for the creation, display, printing, play back and interactive edition of music scores."
-msgstr "Phonascus, en latín 'el profesor de música', es un software para el aprendizaje del lenguaje musical que te permitirá mejorar tus habilidades para la lectura de partituras, mejorar tu oído musical o, simplemente, aprender los principios fundamentales del lenguaje musical. Desde la versión 3.1 incluye nuevas funciones orientadas a la creación, visualización, impresión, reproducción (ejecución) y edición interactiva de partituras, que irán completándose en sucesivas versiones. Consulta la web de LenMus para más información sobre la situación del editor de partituras."
+msgstr "Phonascus, en latín 'el profesor de música', es un software para el aprendizaje del lenguaje musical que te permitirá mejorar tus habilidades para la lectura de partituras, mejorar tu oído musical o, simplemente, aprender los principios fundamentales del lenguaje musical. Desde la versión 4.0 incluye un editor de partituras que te permitirá crear, ver, tocar e imprimir tus propias partituras."
 
 #: intro/intro.cpp:9
 msgid "LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace."
@@ -68,5 +66,5 @@ msgstr "Esperamos que LenMus te resulte útil en tus estudios."
 
 #: intro/intro.cpp:15
 msgid "Enjoy!"
-msgstr ""
+msgstr "¡Disfruta!"
 

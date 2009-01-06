@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus project: free software for music theory and language
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -165,8 +165,9 @@ private:
     wxString        m_sTocFilename;
 
     // variables for html processing
-    wxString        m_sCharCode;            // charset code (i.e. 'utf-8', 'iso-8859-9') to use
-    int             m_nHtmlIndentLevel;     // to indent output
+    wxString        m_sCharCode;            //charset code (i.e. 'utf-8', 'iso-8859-9') to use
+    wxString        m_sLangCode;            //language code to use (i.e. 'es', 'nl', 'gl_ES')
+    int             m_nHtmlIndentLevel;     //to indent output
     wxString        m_sHtmlPagename;        
     int             m_nHeaderLevel;
 #define             lmMAX_TITLE_LEVEL  8

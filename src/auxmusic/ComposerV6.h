@@ -52,6 +52,7 @@ private:
 
     // pitch related methods
     bool InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey);
+    void InstantiateNotesRandom(lmScore* pScore);
     void GetRandomHarmony(int nFunctions, std::vector<long>& aFunction);
     void FunctionToChordNotes(lmEKeySignatures nKey, long nFunction, lmAPitch aNotes[4]);
 
@@ -73,6 +74,8 @@ private:
         // pitch
     lmAPitch NearestNoteOnChord(lmDPitch nPoint, lmNote* pNotePrev, lmNote* pNoteCur,
                                             std::vector<lmAPitch>& aOnChordPitch);
+    lmAPitch RandomPitch();
+
         // pitch for non-chord notes
     void AssignNonChordNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
                              lmNote* pNonChord[], lmAPitch aScale[7]);

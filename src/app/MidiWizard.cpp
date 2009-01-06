@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -333,7 +333,8 @@ bool WizardDevicesPage::TransferDataFromWindow()
     int nOutDevId = (int) m_pOutCombo->GetClientData(nIndex);
     //FIX_ME
     //  /home/jboonen/work/lenmus/trunk/src/app/MidiWizard.cpp|337|error: cast
-    //  from 'void*' to 'int' loses precision|    g_pMidi->SetOutDevice(nOutDevId);
+    //  from 'void*' to 'int' loses precision|    
+    g_pMidi->SetOutDevice(nOutDevId);
 
     //open input device
     int nInDevId = -1;

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -45,6 +45,19 @@
 extern lmColors* g_pColors;
 
 bool g_fFreeMove = false;		// the shapes can be dragged without restrictions
+
+//========================================================================================
+//helper class to represent an attached shape
+//========================================================================================
+class lmAttachPoint
+{
+public:
+    lmAttachPoint(lmShape* shape, lmEAttachType tag) : pShape(shape), nType(tag) {}
+    ~lmAttachPoint() {}
+
+	lmShape*		pShape;
+	lmEAttachType	nType;
+};
 
 
 //========================================================================================
@@ -378,10 +391,19 @@ lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, int nOwnerIdx, wxString s
 lmShape::~lmShape()
 {
 	//delete attachment data
-	std::list<lmAtachPoint*>::iterator pItem;
-	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
+	std::list<lmAttachPoint*>::iterator pItem;
+	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); ++pItem)
 	{
+		(*pItem)->pShape->OnDetached(this);     //inform: this attachment removed
 		delete *pItem;
+    }
+    m_cAttachments.clear();
+
+    //if this shape is attached to others, ask for removal
+	std::list<lmShape*>::iterator it;
+	for (it = m_cAttachedTo.begin(); it != m_cAttachedTo.end(); ++it)
+	{
+		(*it)->Detach(this, false);     //false: do not inform back this shape
     }
 
     //restore mouse cursor if necessary
@@ -439,35 +461,61 @@ wxString lmShape::DumpSelRect()
 
 int lmShape::Attach(lmShape* pShape, lmEAttachType nTag)
 {
-	lmAtachPoint* pData = new lmAtachPoint;
-	pData->nType = nTag;
-	pData->pShape = pShape;
-
+	lmAttachPoint* pData = new lmAttachPoint(pShape, nTag);
     m_cAttachments.push_back(pData);
+
+    //inform pShape that has been attached to this shape
+    pShape->OnAttached(this);
 
 	//return index to attached shape
 	return (int)m_cAttachments.size() - 1;
-
 }
 
-void lmShape::Detach(lmShape* pShape)
+void lmShape::Detach(lmShape* pShape, bool fInform)
 {
-	std::list<lmAtachPoint*>::iterator pItem;
-	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
+    //detach shape pShape. If flag fInform is true, inform pShape of the
+    //detachment
+
+	std::list<lmAttachPoint*>::iterator it;
+	for (it = m_cAttachments.begin(); it != m_cAttachments.end(); ++it)
 	{
-		if ( (*pItem)->pShape->GetID() == pShape->GetID() ) break;
+		if ( (*it)->pShape->GetID() == pShape->GetID() ) break;
     }
-	if (pItem != m_cAttachments.end())
-		m_cAttachments.erase(pItem);
+	if (it != m_cAttachments.end())
+    {
+        if (fInform)
+            (*it)->pShape->OnDetached(this);
+        lmAttachPoint* pData = *it;
+		m_cAttachments.erase(it);
+        delete pData;
+    }
 }
 
+void lmShape::OnAttached(lmShape* pShape)
+{
+    //this shape has been attached to shape pShape. Log it
+    m_cAttachedTo.push_back(pShape);
+}
+
+void lmShape::OnDetached(lmShape* pShape)
+{
+    //this shape has been detached from shape pShape. Remove from log
+
+	std::list<lmShape*>::iterator it;
+	for (it = m_cAttachedTo.begin(); it != m_cAttachedTo.end(); ++it)
+	{
+		if ( (*it)->GetID() == pShape->GetID() ) break;
+    }
+	if (it != m_cAttachedTo.end())
+		m_cAttachedTo.erase(it);
+}
 
 void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
 {
-	std::list<lmAtachPoint*>::iterator pItem;
+	std::list<lmAttachPoint*>::iterator pItem;
 	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
 	{
-		lmAtachPoint* pData = *pItem;
+		lmAttachPoint* pData = *pItem;
         pData->pShape->OnAttachmentPointMoved(this, pData->nType, ux, uy, nEvent);
     }
 }

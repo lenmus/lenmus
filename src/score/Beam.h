@@ -51,6 +51,8 @@ public:
 	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
     void AddRestShape(lmShape* pRestShape);
     void AutoSetUp();
+    void NeedsSetUp(bool fValue) { m_fNeedsSetUp = fValue; }
+    bool NeedsSetUp() { return m_fNeedsSetUp; }
 
 private:
     int GetBeamingLevel(lmNote* pNote);
@@ -58,6 +60,7 @@ private:
         //member variables
 
     bool            m_fStemsDown;
+    bool            m_fNeedsSetUp;
 	lmShapeBeam*	m_pBeamShape;
 
     //beam information to be transferred to each beamed note

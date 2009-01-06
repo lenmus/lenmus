@@ -751,6 +751,7 @@ bool lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
     //Delete the object
     m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
 
+    wxLogMessage(this->Dump());
     return false;       //false->deletion OK
 }
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -29,6 +29,7 @@ extern lmColors* g_pColors;
 
 // defined in lmScoreView.cpp
 extern bool g_fDrawSelRect;     //draw selection rectangles around staff objects
+extern bool g_fDrawAnchors;     //draw anchors, to see them in the score
 extern bool g_fDrawBounds;      //draw bounds rectangle
 extern bool g_fShowMargins;     //draw margins in scores, so user can change them 
 

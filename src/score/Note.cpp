@@ -520,7 +520,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //if this is the first note/rest of a beam, create the beam shape
     //AWARE This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
-    if (m_pBeam && m_BeamInfo[0].Type == eBeamBegin)
+    if (m_pBeam && (m_BeamInfo[0].Type == eBeamBegin || m_pBeam->NeedsSetUp()) )
     {
         m_pBeam->AutoSetUp();
         m_pBeam->CreateShape();
@@ -1653,6 +1653,10 @@ void lmNote::Freeze(lmUndoData* pUndoData)
     }
     else
         pUndoData->AddParam<lmNote*>( (lmNote*)NULL );
+
+    //mark beam as 'dirty'
+    if (m_pBeam)
+        m_pBeam->NeedsSetUp(true);
 
     //save accidentals
     pUndoData->AddParam<lmEAccidentals>(

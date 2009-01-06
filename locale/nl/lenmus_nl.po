@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-30 22:25+0100\n"
-"PO-Revision-Date: 2008-12-30 22:25+0100\n"
+"PO-Revision-Date: 2008-12-31 16:07+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <jvanhan@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -359,9 +359,8 @@ msgid "End repetition"
 msgstr "Herhaling eindigen"
 
 #: score/Barline.cpp:395
-#, fuzzy
 msgid "Start barline"
-msgstr "Begin"
+msgstr "Maatstreep starten"
 
 #: score/Barline.cpp:396
 msgid "Double repetition"
@@ -388,11 +387,11 @@ msgstr "Tekst"
 
 #: score/VStaff.cpp:534
 msgid "Error: Notes in a chord must have the same duration."
-msgstr ""
+msgstr "Fout: Noten in een akkoord moeten dezelfde duratie hebben."
 
 #: score/VStaff.cpp:535
 msgid "Note insertion ignored."
-msgstr ""
+msgstr "Noot insertie genegeerd."
 
 #: score/VStaff.cpp:555
 msgid "Error: No clef defined yet."
@@ -2505,9 +2504,8 @@ msgid "Open eMusicBooks "
 msgstr "eMuziekBoeken openen"
 
 #: app/WelcomeWnd.cpp:220
-#, fuzzy
 msgid "Create and edit music scores (beta 0 version)"
-msgstr "Partituren openen en bewerken"
+msgstr "Partituren openen en bewerken (beta 0 versie)"
 
 #: app/WelcomeWnd.cpp:235
 msgid "New score ..."
@@ -2688,7 +2686,7 @@ msgstr "Dit progamma gebruikt de <b>Anti-Korrel Geometrie</b> ((http://www.antig
 
 #: app/AboutDialog.cpp:307
 msgid "This program uses the <b>FreeType 2</b> software. It is a free open source font engine, designed to be small, efficient, highly customizable and portable, while capable of producing high-quality output (glyph images). It can be used in graphics libraries, display servers, font conversion tools, text image generation tools, and many other products as well. It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
-msgstr ""
+msgstr "Dit programma gebruikt de <b>FreeType 2</b> software. Het is een vrije open source font generator, ontworpen met het oog op efficiëntie, grootte, configureerbaarheid en portabiliteit. Het is geschikt om output van hoge kwaliteit te genereren (glyph beelden). Het kan gebruikt worden in grafische modules, display servers, font conversie tools, tekstbeeld generatie en vele andere produkten. Het is ontwikkeld dor David Turner, Robert Wilhelm en Werner Lemberg. FreeType is copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
 
 #: app/AboutDialog.cpp:315
 msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
@@ -4721,35 +4719,4 @@ msgstr "Voorwerp"
 #: graphic/GMObject.h:294
 msgid "Box"
 msgstr "Box"
-
-#~ msgid "Package for Linux prepared by:"
-#~ msgstr "Linux Pakket gemaakt door:"
-#~ msgid "tool_test_sound"
-#~ msgstr "test_geluid_gereedschap"
-#~ msgid "2/2"
-#~ msgstr "2/2"
-#~ msgid "2/4"
-#~ msgstr "2/4"
-#~ msgid "6/8"
-#~ msgstr "6/8"
-#~ msgid "2/8"
-#~ msgstr "2/8"
-#~ msgid "3/2"
-#~ msgstr "3/2"
-#~ msgid "3/4"
-#~ msgstr "3/4"
-#~ msgid "9/8"
-#~ msgstr "9/8"
-#~ msgid "3/8"
-#~ msgstr "3/8"
-#~ msgid "4/2"
-#~ msgstr "4/2"
-#~ msgid "4/4"
-#~ msgstr "4/4"
-#~ msgid "12/8"
-#~ msgstr "12/8"
-#~ msgid "4/8"
-#~ msgstr "4/8"
-#~ msgid "other"
-#~ msgstr "andere"
 
