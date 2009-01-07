@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: intro 4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-30 22:23+0100\n"
-"PO-Revision-Date: 2008-12-30 22:23+0100\n"
+"PO-Revision-Date: 2009-01-06 22:46+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "Stuur uw commentaar en suggesties naar het LenMus team (www.lenmus.org)"
 
 #: intro/intro.cpp:3
-msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
-msgstr "Gelicentieerd onder de voorwaarden van de GNU Vrije Documentatie Licentie v1.2"
+msgid "Licensed under the terms of the GNU Free Documentation License v1.3"
+msgstr "Gelicentieerd onder de voorwaarden van de GNU Vrije Documentatie Licentie v1.3"
 
 #: intro/intro.cpp:4
 msgid "the teacher of music"

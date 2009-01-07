@@ -38,17 +38,12 @@
 
 #include "ArtProvider.h"
 
-#include "../../res/bitmaps/null.xpm"
-//#include "error.xpm"
-//#include "warning.xpm"
-//#include "question.xpm"
-
 // access to paths
 #include "../globals/Paths.h"
 extern lmPaths* g_pPaths;
 
 // images to use when error in opening a PNG file
-static char *error_16_xpm[] = {
+static const char *error_16_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 2 1",
 "X c #000000",
@@ -70,6 +65,33 @@ static char *error_16_xpm[] = {
 "X X          X X",
 "XX            XX",
 "XXXXXXXXXXXXXXXX"
+};
+
+/* TODO: Can this be removed? */
+static const char *null_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 4 1",
+"  c None",
+". c Black",
+"X c #808080",
+"o c #000080",
+/* pixels */
+"                ",
+"                ",
+"  XXX           ",
+"                ",
+"  XXX           ",
+"                ",
+"  XXX           ",
+"                ",
+"  XXX           ",
+"                ",
+"  XXX           ",
+"                ",
+"  XXX           ",
+"                ",
+"                ",
+"                "
 };
 
 

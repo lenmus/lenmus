@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-30 22:25+0100\n"
-"PO-Revision-Date: 2008-12-31 16:07+0100\n"
+"PO-Revision-Date: 2009-01-06 22:49+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <jvanhan@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -40,48 +40,48 @@ msgstr "Tekst als bijlage"
 msgid "General"
 msgstr "Algemeen"
 
-#: score/Note.cpp:1771
+#: score/Note.cpp:1775
 msgid "Delete tie &previous"
 msgstr "Verbinding verwijderen &vorige"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "c%d"
 msgstr "do%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "d%d"
 msgstr "re%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "e%d"
 msgstr "mi%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "f%d"
 msgstr "fa%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "g%d"
 msgstr "sol%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "a%d"
 msgstr "la%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "b%d"
 msgstr "si%d"
 
 #: score/Instrument.cpp:167
-#: app/MidiWizard.cpp:435
-#: app/MidiWizard.cpp:615
+#: app/MidiWizard.cpp:436
+#: app/MidiWizard.cpp:616
 msgid "Channel:"
 msgstr "Kanaal:"
 
@@ -90,13 +90,13 @@ msgid "Group:"
 msgstr "Groep:"
 
 #: score/Instrument.cpp:190
-#: app/MidiWizard.cpp:452
+#: app/MidiWizard.cpp:453
 msgid "Instrument:"
 msgstr "Instrument:"
 
 #: score/Instrument.cpp:204
-#: app/MidiWizard.cpp:459
-#: app/MidiWizard.cpp:639
+#: app/MidiWizard.cpp:460
+#: app/MidiWizard.cpp:640
 msgid "Test sound"
 msgstr "Test geluid"
 
@@ -118,18 +118,18 @@ msgstr "Instrument eigenschappen"
 
 #: score/Score.cpp:1585
 #: score/Score.cpp:1600
-#: app/MainFrame.cpp:1082
+#: app/MainFrame.cpp:1084
 msgid "Add title"
 msgstr "Titel toevoegen"
 
 #: score/Score.cpp:1586
-#: app/MainFrame.cpp:1083
+#: app/MainFrame.cpp:1085
 msgid "Add a title to the score"
 msgstr "Een titel aan de partitiuur toevoegen"
 
 #: score/Score.cpp:1591
 #: score/Score.cpp:1601
-#: app/MainFrame.cpp:1084
+#: app/MainFrame.cpp:1086
 msgid "Margins and spacers"
 msgstr "grenzen en spacers"
 
@@ -366,12 +366,12 @@ msgstr "Maatstreep starten"
 msgid "Double repetition"
 msgstr "Dubbele herhaling"
 
-#: score/ColStaffObjs.cpp:3303
+#: score/ColStaffObjs.cpp:3305
 #: score/ColStaffObjs_old.cpp:3591
 msgid "Move backwards: out of measure"
 msgstr "Terugkeren: buiten de maat"
 
-#: score/ColStaffObjs.cpp:3313
+#: score/ColStaffObjs.cpp:3315
 #: score/ColStaffObjs_old.cpp:3601
 msgid "Move forward: out of measure"
 msgstr "Verder: buiten de maat"
@@ -411,8 +411,8 @@ msgid "An invisible G clef will be inserted before the note."
 msgstr "Een onzichtbare Sol Sleutel zal ingevoegd worden voor de noot."
 
 #: score/VStaff.cpp:561
-#: score/VStaff.cpp:796
-#: score/VStaff.cpp:836
+#: score/VStaff.cpp:797
+#: score/VStaff.cpp:837
 #: score/properties/DlgProperties.cpp:94
 #: score/properties/DlgEditText.cpp:155
 #: widgets/Wizard.cpp:137
@@ -429,56 +429,56 @@ msgstr "Annuleren"
 msgid "The 'insert note' command will be cancelled."
 msgstr "De actie 'noot toevoegen' wordt geannuleerd"
 
-#: score/VStaff.cpp:785
+#: score/VStaff.cpp:786
 msgid "Notes after the clef will be affected by this action."
 msgstr "De noten na de sleutel zullen beïnvloed worden door deze aktie."
 
-#: score/VStaff.cpp:788
+#: score/VStaff.cpp:789
 msgid "Would you like to keep notes' pitch and, therefore, to change notes' positions on the staff? or, would you prefer to keep notes placed on their current staff positions? (implies pitch change)"
 msgstr "WIlt u de toonhoogte behouden en aldus de positie van de noten wijzigen op de notenbalk, of verkiest u de positie te behouden, met een wijziging in toonhoogte als gevolg?"
 
-#: score/VStaff.cpp:794
+#: score/VStaff.cpp:795
 msgid "Keep position"
 msgstr "positie behouden"
 
-#: score/VStaff.cpp:794
+#: score/VStaff.cpp:795
 msgid "Change notes' pitch and keep their current staff position."
 msgstr "Verander de toonhoogte en behoud te positie op de notenbalk."
 
-#: score/VStaff.cpp:795
-#: score/VStaff.cpp:834
+#: score/VStaff.cpp:796
+#: score/VStaff.cpp:835
 msgid "Keep pitch"
 msgstr "Behoud de toonhoogte"
 
-#: score/VStaff.cpp:795
+#: score/VStaff.cpp:796
 msgid "Keep pitch and move notes to new staff positions."
 msgstr "Behoud de toonhoogte en wijzig de positie van de noten."
 
-#: score/VStaff.cpp:796
+#: score/VStaff.cpp:797
 msgid "The insert, delete or change clef command will be cancelled."
 msgstr "De invoeg, verwijder of wijzig sleutel opdrachten worden geannuleerd."
 
-#: score/VStaff.cpp:826
+#: score/VStaff.cpp:827
 msgid "Notes after the key will be affected by this action."
 msgstr "De noten na de toonaard worden beïnvloed door deze aktie."
 
-#: score/VStaff.cpp:829
+#: score/VStaff.cpp:830
 msgid "Would you like to keep notes' pitch and, therefore, to add/remove accidentals to the affected notes?"
 msgstr "Wilt u de toonhoogte behouden en daardoor wijzigingstekens toevoegen/verwijderen voor de betrokken noten?"
 
-#: score/VStaff.cpp:834
+#: score/VStaff.cpp:835
 msgid "Keep pitch by adding/removing accidentals when necessary."
 msgstr "Behoud de toonhoogte door toevallige wijzigingstekens toe te voegen of te verwijderen."
 
-#: score/VStaff.cpp:835
+#: score/VStaff.cpp:836
 msgid "Change pitch"
 msgstr "Verander de toonhoogte"
 
-#: score/VStaff.cpp:835
+#: score/VStaff.cpp:836
 msgid "Do nothing. Notes' pitch will be affected by the change in key signature."
 msgstr "Doe niets. De toonhoogte wordt gewijzigd door de verandering van de toonaard."
 
-#: score/VStaff.cpp:836
+#: score/VStaff.cpp:837
 msgid "The insert, delete or change key command will be cancelled."
 msgstr "De invoeg, verwijder of wijzig toonaard opdrachten worden geannuleerd."
 
@@ -501,7 +501,7 @@ msgid "Add/change styles"
 msgstr "Stijl toevoegen/verwijderen"
 
 #: score/properties/DlgProperties.cpp:53
-#: app/MainFrame.cpp:1091
+#: app/MainFrame.cpp:1093
 msgid "Properties"
 msgstr "Eigenschappen"
 
@@ -523,12 +523,12 @@ msgid "Edit text"
 msgstr "Tekst wijzigen"
 
 #: score/properties/DlgEditText.cpp:97
-#: app/MainFrame.cpp:666
+#: app/MainFrame.cpp:668
 msgid "Copy"
 msgstr "Kopïeren"
 
 #: score/properties/DlgEditText.cpp:101
-#: app/MainFrame.cpp:670
+#: app/MainFrame.cpp:672
 msgid "Cut"
 msgstr "Knippen"
 
@@ -536,7 +536,7 @@ msgstr "Knippen"
 #: score/properties/DlgEditText.cpp:111
 #: score/properties/DlgEditText.cpp:115
 #: score/properties/DlgEditText.cpp:119
-#: app/MainFrame.cpp:674
+#: app/MainFrame.cpp:676
 msgid "Paste"
 msgstr "Plakken"
 
@@ -2313,7 +2313,7 @@ msgstr "Portret"
 #: app/ScoreWizard.cpp:674
 #: app/ScoreWizard.cpp:836
 #: app/ScoreWizard.cpp:1041
-#: app/MainFrame.cpp:2161
+#: app/MainFrame.cpp:2172
 msgid "Preview"
 msgstr "Afdrukvoorbeeld"
 
@@ -2512,7 +2512,7 @@ msgid "New score ..."
 msgstr "Nieuwe partituur..."
 
 #: app/WelcomeWnd.cpp:238
-#: app/MainFrame.cpp:1197
+#: app/MainFrame.cpp:1201
 msgid "Editor quick guide"
 msgstr "Editor snelgids"
 
@@ -2558,8 +2558,8 @@ msgid "Save"
 msgstr "Bewaren"
 
 #: app/Logger.cpp:159
-#: app/MainFrame.cpp:1982
-#: app/MainFrame.cpp:1987
+#: app/MainFrame.cpp:1993
+#: app/MainFrame.cpp:1998
 msgid "Error message"
 msgstr "Foutmelding"
 
@@ -2627,10 +2627,6 @@ msgstr "Als u een bug tegenkomt of u een suggestie voor verbetering heeft, aarze
 #: app/AboutDialog.cpp:224
 msgid "License"
 msgstr "Licentie"
-
-#: app/AboutDialog.cpp:226
-msgid "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
-msgstr "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
 
 #: app/AboutDialog.cpp:228
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
@@ -2745,31 +2741,35 @@ msgid "French"
 msgstr "Frans"
 
 #: app/AboutDialog.cpp:414
+msgid "Galician"
+msgstr ""
+
+#: app/AboutDialog.cpp:419
 msgid "Italian"
 msgstr "Italiaans"
 
-#: app/AboutDialog.cpp:417
+#: app/AboutDialog.cpp:422
 msgid "Spanish"
 msgstr "Spaans"
 
-#: app/AboutDialog.cpp:420
+#: app/AboutDialog.cpp:425
 msgid "Turkish"
 msgstr "Turks"
 
-#: app/AboutDialog.cpp:426
+#: app/AboutDialog.cpp:431
 msgid "Website maintenace:"
 msgstr "Website onderhoud:"
 
-#: app/AboutDialog.cpp:432
+#: app/AboutDialog.cpp:437
 msgid "Thanks also to:"
 msgstr "Dank is ook verschuldigd aan:"
 
-#: app/AboutDialog.cpp:437
+#: app/AboutDialog.cpp:442
 msgid "If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
 msgstr "Dit programma is ontworpen en ontwikkeld door Cecilio Salmer&oacute;n. Als u zou willen helpen of op een andere manier wenst bij te dragen bij de ontwikking ervan bent u van harte welkom. Bezoek aub de LenMus website op www.lenmus.org en laat een boodschap achter op de contactpagina. Op voorhand bedankt en hartelijk welkom."
 
 #: app/MidiWizard.cpp:75
-#: app/MainFrame.cpp:1162
+#: app/MainFrame.cpp:1166
 msgid "MIDI configuration wizard"
 msgstr "MIDI configuratie wizard"
 
@@ -2793,549 +2793,549 @@ msgstr "Als uw PC meer dan een MIDI apparaat heeft, kies er dan een. U kan ze al
 msgid "Output device:"
 msgstr "Output toestel:"
 
-#: app/MidiWizard.cpp:413
+#: app/MidiWizard.cpp:414
 msgid "Voice channel and instrument"
 msgstr "Stem kanaal en instrument"
 
-#: app/MidiWizard.cpp:423
+#: app/MidiWizard.cpp:424
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
 msgstr "Kanaal 10 en 16 zijn gespecialiseerd in percussie geluiden. Het is dus aanbevolen om een willekeurig ander kanaal te kiezen."
 
-#: app/MidiWizard.cpp:426
+#: app/MidiWizard.cpp:427
 msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
 msgstr "Om de toegang tot de instrumenten te vergemakkelijken zijn ze gegroepeerd in secties. Kies eerst een sectie en kies dan het gewenste instrument."
 
-#: app/MidiWizard.cpp:445
+#: app/MidiWizard.cpp:446
 msgid "Section:"
 msgstr "Sectie:"
 
-#: app/MidiWizard.cpp:593
+#: app/MidiWizard.cpp:594
 msgid "lmMetronome channel and sounds"
 msgstr "ImMetronoom kanaal en geluiden"
 
-#: app/MidiWizard.cpp:603
+#: app/MidiWizard.cpp:604
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
 msgstr "Kanaal 10 en 16 zijn gespecialiseerd in percussiegeluiden. Het is dus aanbevolen om een van deze kanalen te kiezen. Het maakt niet uit welk."
 
-#: app/MidiWizard.cpp:606
+#: app/MidiWizard.cpp:607
 msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."
 msgstr "Om de eerste slag van een maat beter te kunnen identificeren is het mogelijk om er een ander geluid aan toe te kennen. Maar hetzelfde geluid kan ook voor zowel de eerste slag als de volgende slagen gekozen worden."
 
-#: app/MidiWizard.cpp:625
+#: app/MidiWizard.cpp:626
 msgid "Sound for first beat of each measure:"
 msgstr "Geluid voor de eerste slag van elke maat:"
 
-#: app/MidiWizard.cpp:632
+#: app/MidiWizard.cpp:633
 msgid "Sound for other beats of each measure:"
 msgstr "Geluid voor de overige slagen van elke maat:"
 
-#: app/MainFrame.cpp:482
+#: app/MainFrame.cpp:484
 msgid "Welcome to LenMus!"
 msgstr "Welkom bij LenMus!"
 
-#: app/MainFrame.cpp:633
+#: app/MainFrame.cpp:635
 msgid "Set user preferences"
 msgstr "Gebruiksvoorkeuren instellen"
 
-#: app/MainFrame.cpp:634
+#: app/MainFrame.cpp:636
 msgid "Help button"
 msgstr "Help knop"
 
-#: app/MainFrame.cpp:643
+#: app/MainFrame.cpp:645
 msgid "New score"
 msgstr "Nieuwe partituur"
 
-#: app/MainFrame.cpp:645
-#: app/MainFrame.cpp:1008
+#: app/MainFrame.cpp:647
+#: app/MainFrame.cpp:1010
 msgid "Open a score"
 msgstr "Open een partituur"
 
-#: app/MainFrame.cpp:649
+#: app/MainFrame.cpp:651
 msgid "Open the music books"
 msgstr "Open de muziekboeken"
 
-#: app/MainFrame.cpp:653
+#: app/MainFrame.cpp:655
 msgid "Save current score to disk"
 msgstr "Huidige partituur op schijf opslaan"
 
-#: app/MainFrame.cpp:657
+#: app/MainFrame.cpp:659
 msgid "Print document"
 msgstr "Document afdrukken"
 
-#: app/MainFrame.cpp:678
-#: app/MainFrame.cpp:1058
+#: app/MainFrame.cpp:680
+#: app/MainFrame.cpp:1060
 #: ../xrc/xrc_strings.cpp:175
 msgid "Undo"
 msgstr "Ongedaan maken"
 
-#: app/MainFrame.cpp:682
-#: app/MainFrame.cpp:1060
+#: app/MainFrame.cpp:684
+#: app/MainFrame.cpp:1062
 #: ../xrc/xrc_strings.cpp:176
 msgid "Redo"
 msgstr "Herhalen"
 
-#: app/MainFrame.cpp:687
-#: app/MainFrame.cpp:1085
+#: app/MainFrame.cpp:689
+#: app/MainFrame.cpp:1087
 msgid "Show/hide page margins and spacers"
 msgstr "Toon/verberg grenzen en spacers"
 
-#: app/MainFrame.cpp:696
-#: app/MainFrame.cpp:1133
+#: app/MainFrame.cpp:698
+#: app/MainFrame.cpp:1137
 msgid "Zoom so that the full page is displayed"
 msgstr "Zoomen zodat de volledige pagina getoond wordt"
 
-#: app/MainFrame.cpp:700
-#: app/MainFrame.cpp:1136
+#: app/MainFrame.cpp:702
+#: app/MainFrame.cpp:1140
 msgid "Zoom so that page width equals window width"
 msgstr "Zoomen zodat de pagina breedte gelijk is aan de venster breedte"
 
-#: app/MainFrame.cpp:704
-#: app/MainFrame.cpp:1139
+#: app/MainFrame.cpp:706
+#: app/MainFrame.cpp:1143
 msgid "Enlarge image size"
 msgstr "Vergroot de beeldgrootte:"
 
-#: app/MainFrame.cpp:708
-#: app/MainFrame.cpp:1141
+#: app/MainFrame.cpp:710
+#: app/MainFrame.cpp:1145
 msgid "Reduce image size"
 msgstr "Verklein de beeldgrootte:"
 
-#: app/MainFrame.cpp:726
-#: app/MainFrame.cpp:1130
-#: app/MainFrame.cpp:1972
+#: app/MainFrame.cpp:728
+#: app/MainFrame.cpp:1134
+#: app/MainFrame.cpp:1983
 msgid "Actual size"
 msgstr "Actuele grootte"
 
-#: app/MainFrame.cpp:727
-#: app/MainFrame.cpp:1132
-#: app/MainFrame.cpp:1966
+#: app/MainFrame.cpp:729
+#: app/MainFrame.cpp:1136
+#: app/MainFrame.cpp:1977
 msgid "Fit page full"
 msgstr "Volle pagina inpassen"
 
-#: app/MainFrame.cpp:728
-#: app/MainFrame.cpp:1135
-#: app/MainFrame.cpp:1969
+#: app/MainFrame.cpp:730
+#: app/MainFrame.cpp:1139
+#: app/MainFrame.cpp:1980
 msgid "Fit page width"
 msgstr "Aan paginabreedte aanpassen"
 
-#: app/MainFrame.cpp:739
-#: app/MainFrame.cpp:1150
+#: app/MainFrame.cpp:741
+#: app/MainFrame.cpp:1154
 msgid "Start/resume play back. From selection of full score"
 msgstr "Afspelen starten/hernemen"
 
-#: app/MainFrame.cpp:743
-#: app/MainFrame.cpp:1153
+#: app/MainFrame.cpp:745
+#: app/MainFrame.cpp:1157
 msgid "Start/resume play back. From cursor measure"
 msgstr "Start/herneem het afspelen vanaf de cursor positie"
 
-#: app/MainFrame.cpp:747
-#: app/MainFrame.cpp:1156
+#: app/MainFrame.cpp:749
+#: app/MainFrame.cpp:1160
 msgid "Stop playing back"
 msgstr "Stoppen met afspelen"
 
-#: app/MainFrame.cpp:751
-#: app/MainFrame.cpp:1158
+#: app/MainFrame.cpp:753
+#: app/MainFrame.cpp:1162
 msgid "Pause playing back"
 msgstr "Afspelen pauzeren"
 
-#: app/MainFrame.cpp:759
+#: app/MainFrame.cpp:761
 msgid "Turn metronome on/off"
 msgstr "Metronoom aan- of afzetten"
 
-#: app/MainFrame.cpp:791
-#: app/MainFrame.cpp:838
+#: app/MainFrame.cpp:793
+#: app/MainFrame.cpp:840
 msgid "Metronome tools"
 msgstr "Metronoom hulpmiddelen"
 
-#: app/MainFrame.cpp:795
-#: app/MainFrame.cpp:834
+#: app/MainFrame.cpp:797
+#: app/MainFrame.cpp:836
 msgid "Play tools"
 msgstr "Afspeelhulpmiddelen"
 
-#: app/MainFrame.cpp:799
-#: app/MainFrame.cpp:830
+#: app/MainFrame.cpp:801
+#: app/MainFrame.cpp:832
 msgid "Main tools"
 msgstr "Hoofdhulpmiddelen"
 
-#: app/MainFrame.cpp:803
-#: app/MainFrame.cpp:826
+#: app/MainFrame.cpp:805
+#: app/MainFrame.cpp:828
 msgid "Zooming tools"
 msgstr "Zoom hulpmiddelen"
 
-#: app/MainFrame.cpp:807
-#: app/MainFrame.cpp:822
+#: app/MainFrame.cpp:809
+#: app/MainFrame.cpp:824
 msgid "Edit tools"
 msgstr "Editeer hulpmiddelen"
 
-#: app/MainFrame.cpp:811
-#: app/MainFrame.cpp:818
+#: app/MainFrame.cpp:813
+#: app/MainFrame.cpp:820
 msgid "File tools"
 msgstr "Bestand hulpmiddelen"
 
-#: app/MainFrame.cpp:914
+#: app/MainFrame.cpp:916
 msgid "Show/hide navigation panel"
 msgstr "Toon/verberg navigatiepaneel"
 
-#: app/MainFrame.cpp:921
+#: app/MainFrame.cpp:923
 msgid "Previous page of current eMusicBook"
 msgstr "Vorige pagina van het huidige eMuziekBoek"
 
-#: app/MainFrame.cpp:925
+#: app/MainFrame.cpp:927
 msgid "Next page of current eMusicBook"
 msgstr "Volgende pagina van het huidige eMuziekBoek"
 
-#: app/MainFrame.cpp:930
+#: app/MainFrame.cpp:932
 msgid "Go to previous visited page"
 msgstr "Ga naar de laatst bezochte pagina"
 
-#: app/MainFrame.cpp:933
+#: app/MainFrame.cpp:935
 msgid "Go to next visited page"
 msgstr "Ga naar de volgende bezochte pagina"
 
-#: app/MainFrame.cpp:938
+#: app/MainFrame.cpp:940
 msgid "eBooks navigation tools"
 msgstr "eBoek navigatiehulpmiddelen"
 
-#: app/MainFrame.cpp:1005
+#: app/MainFrame.cpp:1007
 msgid "&New\tCtrl+N"
 msgstr "&New\tCtrl+N"
 
-#: app/MainFrame.cpp:1006
+#: app/MainFrame.cpp:1008
 msgid "Open new blank score"
 msgstr "Open nieuwe blanko partituur"
 
-#: app/MainFrame.cpp:1007
+#: app/MainFrame.cpp:1009
 msgid "&Open ...\tCtrl+O"
 msgstr "&Open ...\tCtrl+O"
 
-#: app/MainFrame.cpp:1009
+#: app/MainFrame.cpp:1011
 msgid "Open &books"
 msgstr "O&pen boeken"
 
-#: app/MainFrame.cpp:1010
+#: app/MainFrame.cpp:1012
 msgid "Hide/show eMusicBooks"
 msgstr "Verberg/toon eMuziekBoeken"
 
-#: app/MainFrame.cpp:1011
+#: app/MainFrame.cpp:1013
 msgid "&Import..."
 msgstr "&Importeer..."
 
-#: app/MainFrame.cpp:1012
+#: app/MainFrame.cpp:1014
 msgid "Open a MusicXML score"
 msgstr "Een MusicXML partituur openen"
 
-#: app/MainFrame.cpp:1015
+#: app/MainFrame.cpp:1017
 msgid "MusicXML format"
 msgstr "MuziekXML formaat"
 
-#: app/MainFrame.cpp:1016
+#: app/MainFrame.cpp:1018
 msgid "Save score as a MusicXML file"
 msgstr "Partituur opslaan als een MusicXML bestand"
 
-#: app/MainFrame.cpp:1017
+#: app/MainFrame.cpp:1019
 msgid "As &bmp image"
 msgstr "Als &bmp beeld"
 
-#: app/MainFrame.cpp:1018
+#: app/MainFrame.cpp:1020
 msgid "Save score as BMP images"
 msgstr "Bewaar partituur als bmp afbeeldingen"
 
-#: app/MainFrame.cpp:1019
+#: app/MainFrame.cpp:1021
 msgid "As &jpg image"
 msgstr "Als &jpg beeld"
 
-#: app/MainFrame.cpp:1020
+#: app/MainFrame.cpp:1022
 msgid "Save score as JPG images"
 msgstr "Bewaar partituur als jpg figuren"
 
-#: app/MainFrame.cpp:1022
+#: app/MainFrame.cpp:1024
 msgid "&Export ..."
 msgstr "E&xporteer..."
 
-#: app/MainFrame.cpp:1023
+#: app/MainFrame.cpp:1025
 msgid "Save score in other formats"
 msgstr "Partituur in andere formaten bewaren"
 
-#: app/MainFrame.cpp:1029
+#: app/MainFrame.cpp:1031
 msgid "&Save\tCtrl+S"
 msgstr "&Bewaar\tCtrl+S"
 
-#: app/MainFrame.cpp:1031
+#: app/MainFrame.cpp:1033
 msgid "Save &as ..."
 msgstr "Bewaren &als"
 
-#: app/MainFrame.cpp:1033
+#: app/MainFrame.cpp:1035
 msgid "&Close\tCtrl+W"
 msgstr "&Sluiten\tCtrl+W"
 
-#: app/MainFrame.cpp:1034
+#: app/MainFrame.cpp:1036
 msgid "Close a score"
 msgstr "Partituur sluiten"
 
-#: app/MainFrame.cpp:1037
+#: app/MainFrame.cpp:1039
 msgid "&Print ...\tCtrl+P"
 msgstr "&Afdrukken..\tCtrl+P"
 
-#: app/MainFrame.cpp:1039
+#: app/MainFrame.cpp:1041
 msgid "Print &Setup..."
 msgstr "Afdruk &Instellingen..."
 
-#: app/MainFrame.cpp:1040
+#: app/MainFrame.cpp:1042
 msgid "Configure printer options"
 msgstr "Printer opties configureren"
 
-#: app/MainFrame.cpp:1041
+#: app/MainFrame.cpp:1043
 msgid "Print Pre&view"
 msgstr "Afdruk&voorbeeld"
 
-#: app/MainFrame.cpp:1045
+#: app/MainFrame.cpp:1047
 msgid "&Quit\tCtrl+Q"
 msgstr "B&eëindigen\tCtrl+Q"
 
-#: app/MainFrame.cpp:1046
+#: app/MainFrame.cpp:1048
 msgid "Exit program"
 msgstr "Programma afsluiten"
 
-#: app/MainFrame.cpp:1057
+#: app/MainFrame.cpp:1059
 msgid "&Undo"
 msgstr "&Ongedaan maken"
 
-#: app/MainFrame.cpp:1059
+#: app/MainFrame.cpp:1061
 msgid "&Redo"
 msgstr "&Herhalen"
 
-#: app/MainFrame.cpp:1066
+#: app/MainFrame.cpp:1068
 msgid "Tool &bar"
 msgstr "Werk&balk"
 
-#: app/MainFrame.cpp:1067
+#: app/MainFrame.cpp:1069
 msgid "Hide/show the tools bar"
 msgstr "Verberg/toon de werkbalken"
 
-#: app/MainFrame.cpp:1068
+#: app/MainFrame.cpp:1070
 msgid "&Status bar"
 msgstr "&Statusbalk"
 
-#: app/MainFrame.cpp:1069
+#: app/MainFrame.cpp:1071
 msgid "Hide/show the status bar"
 msgstr "Verberg/toon de statusbalk"
 
-#: app/MainFrame.cpp:1071
+#: app/MainFrame.cpp:1073
 msgid "&Tool box"
 msgstr "&Gereedschapskist"
 
-#: app/MainFrame.cpp:1072
+#: app/MainFrame.cpp:1074
 msgid "Hide/show edition tool box window"
 msgstr "Verberg/toon het  editeergereeschapsvenster"
 
-#: app/MainFrame.cpp:1073
+#: app/MainFrame.cpp:1075
 msgid "&Rulers"
 msgstr "&Linialen"
 
-#: app/MainFrame.cpp:1074
+#: app/MainFrame.cpp:1076
 msgid "Hide/show rulers"
 msgstr "Verberg/toon linialen"
 
-#: app/MainFrame.cpp:1075
+#: app/MainFrame.cpp:1077
 msgid "&Welcome page"
 msgstr "&Welkom pagina"
 
-#: app/MainFrame.cpp:1076
+#: app/MainFrame.cpp:1078
 msgid "Hide/show welcome page"
 msgstr "Verberg/toon welkompagina"
 
-#: app/MainFrame.cpp:1092
+#: app/MainFrame.cpp:1094
 msgid "Edit name, abbreviation, MIDI settings and other properties"
 msgstr "Naam, afkorting, MIDI instellingen en andere eigenschappen veranderen"
 
-#: app/MainFrame.cpp:1142
+#: app/MainFrame.cpp:1146
 msgid "Zoom to ..."
 msgstr "Zoom naar ..."
 
-#: app/MainFrame.cpp:1149
+#: app/MainFrame.cpp:1153
 msgid "&Play"
 msgstr "&Play"
 
-#: app/MainFrame.cpp:1152
+#: app/MainFrame.cpp:1156
 msgid "Play from cursor"
 msgstr "Vanaf de cursor afspelen"
 
-#: app/MainFrame.cpp:1155
+#: app/MainFrame.cpp:1159
 msgid "S&top"
 msgstr "S&top"
 
-#: app/MainFrame.cpp:1157
+#: app/MainFrame.cpp:1161
 msgid "P&ause"
 msgstr "P&auze"
 
-#: app/MainFrame.cpp:1161
+#: app/MainFrame.cpp:1165
 msgid "&Run Midi wizard"
 msgstr "MIDI &Wizard starten"
 
-#: app/MainFrame.cpp:1165
+#: app/MainFrame.cpp:1169
 msgid "&Test sound"
 msgstr "&Test geluid"
 
-#: app/MainFrame.cpp:1166
+#: app/MainFrame.cpp:1170
 msgid "Play an scale to test sound"
 msgstr "Speel een notenbalk als geluidstest"
 
-#: app/MainFrame.cpp:1167
+#: app/MainFrame.cpp:1171
 msgid "&All sounds off"
 msgstr "Alle &geluid afzetten"
 
-#: app/MainFrame.cpp:1168
+#: app/MainFrame.cpp:1172
 msgid "Stop inmediatly all sounds"
 msgstr "Stop onmiddelijk alle geluid"
 
-#: app/MainFrame.cpp:1174
+#: app/MainFrame.cpp:1178
 msgid "&Preferences"
 msgstr "&Voorkeuren"
 
-#: app/MainFrame.cpp:1175
-#: app/MainFrame.cpp:1200
+#: app/MainFrame.cpp:1179
+#: app/MainFrame.cpp:1204
 msgid "Open help book"
 msgstr "Help boek openen"
 
-#: app/MainFrame.cpp:1180
+#: app/MainFrame.cpp:1184
 msgid "Cl&ose"
 msgstr "&Sluiten"
 
-#: app/MainFrame.cpp:1181
+#: app/MainFrame.cpp:1185
 msgid "Close All"
 msgstr "&Alles Sluiten"
 
-#: app/MainFrame.cpp:1184
+#: app/MainFrame.cpp:1188
 msgid "&Next"
 msgstr "&Volgende"
 
-#: app/MainFrame.cpp:1185
+#: app/MainFrame.cpp:1189
 msgid "&Previous"
 msgstr "V&orige"
 
-#: app/MainFrame.cpp:1192
+#: app/MainFrame.cpp:1196
 msgid "&About"
 msgstr "Info &over"
 
-#: app/MainFrame.cpp:1193
+#: app/MainFrame.cpp:1197
 msgid "Display information about program version and credits"
 msgstr "Informatie over de programmaversie en credits weergeven"
 
-#: app/MainFrame.cpp:1198
+#: app/MainFrame.cpp:1202
 msgid "Show editor reference card"
 msgstr "Editor referentiekaart tonen"
 
-#: app/MainFrame.cpp:1199
+#: app/MainFrame.cpp:1203
 msgid "&Content"
 msgstr "&Inhoud"
 
-#: app/MainFrame.cpp:1203
+#: app/MainFrame.cpp:1207
 msgid "Check now for &updates"
 msgstr "Beschikbaarheid van &updates nu controleren"
 
-#: app/MainFrame.cpp:1204
+#: app/MainFrame.cpp:1208
 msgid "Connect to the Internet and check for program updates"
 msgstr "Connecteer met het Internet en controleer voor programma updates"
 
-#: app/MainFrame.cpp:1206
+#: app/MainFrame.cpp:1210
 msgid "&Visit LenMus website"
 msgstr "&Bezoek LenMus website"
 
-#: app/MainFrame.cpp:1207
+#: app/MainFrame.cpp:1211
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "Open de Internet browser en ga naar de LenMus website"
 
-#: app/MainFrame.cpp:1218
+#: app/MainFrame.cpp:1222
 msgid "&File"
 msgstr "&Bestand"
 
-#: app/MainFrame.cpp:1219
+#: app/MainFrame.cpp:1223
 msgid "&Edit"
 msgstr "&Editeer"
 
-#: app/MainFrame.cpp:1220
+#: app/MainFrame.cpp:1224
 msgid "&View"
 msgstr "&Beeld"
 
-#: app/MainFrame.cpp:1221
+#: app/MainFrame.cpp:1225
 msgid "S&core"
 msgstr "P&artituur"
 
-#: app/MainFrame.cpp:1222
+#: app/MainFrame.cpp:1226
 msgid "&Instrument"
 msgstr "&Instrument"
 
-#: app/MainFrame.cpp:1223
+#: app/MainFrame.cpp:1227
 msgid "&Sound"
 msgstr "&Geluid"
 
-#: app/MainFrame.cpp:1225
+#: app/MainFrame.cpp:1229
 msgid "&Zoom"
 msgstr "&Zoom"
 
-#: app/MainFrame.cpp:1226
+#: app/MainFrame.cpp:1230
 msgid "&Options"
 msgstr "&Opties"
 
-#: app/MainFrame.cpp:1227
+#: app/MainFrame.cpp:1231
 msgid "&Window"
 msgstr "&Venster"
 
-#: app/MainFrame.cpp:1228
+#: app/MainFrame.cpp:1232
 #: options/OptionsDlg.cpp:261
 msgid "&Help"
 msgstr "&Help"
 
-#: app/MainFrame.cpp:1324
+#: app/MainFrame.cpp:1329
 msgid "LenMus help"
 msgstr "LenMus help"
 
-#: app/MainFrame.cpp:1330
+#: app/MainFrame.cpp:1335
 msgid "Test mode: using .hhp help file"
 msgstr "Test mode: gebruik .hhp help bestand"
 
-#: app/MainFrame.cpp:1337
-#: app/MainFrame.cpp:1424
-#: app/MainFrame.cpp:1432
-#: app/MainFrame.cpp:1449
+#: app/MainFrame.cpp:1342
+#: app/MainFrame.cpp:1429
+#: app/MainFrame.cpp:1437
+#: app/MainFrame.cpp:1454
 #, c-format
 msgid "Failed adding book %s"
 msgstr "Toevoegen boek %s niet gelukt"
 
-#: app/MainFrame.cpp:1352
+#: app/MainFrame.cpp:1357
 msgid "Available books"
 msgstr "Beschikbare boeken"
 
-#: app/MainFrame.cpp:1415
+#: app/MainFrame.cpp:1420
 #, c-format
 msgid "Error when trying to move to folder %s"
 msgstr "Fout tijdens het trachten te verplaatsen van map %s"
 
-#: app/MainFrame.cpp:1588
+#: app/MainFrame.cpp:1593
 msgid "Name for the exported file"
 msgstr "Naam voor het geëxporteerd bestand"
 
-#: app/MainFrame.cpp:1944
+#: app/MainFrame.cpp:1955
 msgid "Zooming? (10 to 800)"
 msgstr "Zoomen? (10 to 800)"
 
-#: app/MainFrame.cpp:1981
+#: app/MainFrame.cpp:1992
 #, c-format
 msgid "Invalid zooming factor '%s'"
 msgstr "Ongelidge zoom factor '%s'"
 
-#: app/MainFrame.cpp:1986
+#: app/MainFrame.cpp:1997
 msgid "Zooming factor must be greater that 10% and lower than 800%"
 msgstr "Zoom factor moet groter zijn dan 10% en lager dan 800%"
 
-#: app/MainFrame.cpp:2026
+#: app/MainFrame.cpp:2037
 msgid "Edit tool box"
 msgstr "Editeer gereedschap"
 
-#: app/MainFrame.cpp:2113
+#: app/MainFrame.cpp:2124
 msgid "Choose the file to import"
 msgstr "Te importeren file selecteren"
 
-#: app/MainFrame.cpp:2157
+#: app/MainFrame.cpp:2168
 msgid ""
 "There is a problem previewing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -3343,11 +3343,11 @@ msgstr ""
 "Er is een probleem met het afdrukvoorbeeld.\n"
 " Misschien is uw printer niet correct ingesteld?"
 
-#: app/MainFrame.cpp:2157
+#: app/MainFrame.cpp:2168
 msgid "Previewing"
 msgstr "Afdrukvoorbeeld wordt getoond"
 
-#: app/MainFrame.cpp:2210
+#: app/MainFrame.cpp:2221
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -3355,12 +3355,12 @@ msgstr ""
 "Er is een probleem met het afdrukken.\n"
 "Misschien is uw huidige printer niet correct ingesteld?"
 
-#: app/MainFrame.cpp:2210
-#: app/MainFrame.cpp:2212
+#: app/MainFrame.cpp:2221
+#: app/MainFrame.cpp:2223
 msgid "Printing"
 msgstr "Bezig met afdrukken"
 
-#: app/MainFrame.cpp:2212
+#: app/MainFrame.cpp:2223
 msgid "Printing cancelled"
 msgstr "Afdrukken geannuleerd"
 

@@ -13,14 +13,14 @@
 	<File name="../../packages/wxMidi/src/wxMidiDatabase.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="1033" topLine="18" />
 	</File>
-	<File name="../../src/app/AboutDialog.cpp" open="0" top="0" tabpos="8">
-		<Cursor position="12556" topLine="282" />
+	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="28">
+		<Cursor position="18606" topLine="405" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="34" />
 	</File>
-	<File name="../../src/app/ArtProvider.cpp" open="0" top="0" tabpos="10">
-		<Cursor position="3189" topLine="43" />
+	<File name="../../src/app/ArtProvider.cpp" open="1" top="1" tabpos="31">
+		<Cursor position="2111" topLine="72" />
 	</File>
 	<File name="../../src/app/DlgCfgIdfyCadence.cpp" open="0" top="0" tabpos="38">
 		<Cursor position="12986" topLine="264" />
@@ -115,8 +115,8 @@
 	<File name="../../src/app/StatusBar.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="3958" topLine="116" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="0" top="0" tabpos="18">
-		<Cursor position="31161" topLine="796" />
+	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="30">
+		<Cursor position="31161" topLine="790" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="89">
 		<Cursor position="2598" topLine="40" />
@@ -496,7 +496,7 @@
 	<File name="../../src/score/SOControl.cpp" open="0" top="0" tabpos="16">
 		<Cursor position="3047" topLine="0" />
 	</File>
-	<File name="../../src/score/SOControl.h" open="1" top="1" tabpos="27">
+	<File name="../../src/score/SOControl.h" open="1" top="0" tabpos="27">
 		<Cursor position="0" topLine="29" />
 	</File>
 	<File name="../../src/score/Score.cpp" open="1" top="0" tabpos="21">

@@ -245,11 +245,10 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 
 void lmBeam::OnRelationshipModified()
 {
-    //it is not ncessary to do anything. AutoSetUp() will be invoked when
-    //rendering the first note in the beam. So, user edition commands (add or
-    //remove note from beam) will adjust the beam there.
+    //mark that it is necessary to invoke AutoSetUp() when
+    //rendering the first note in the beam.
 
-    //AutoSetUp();
+    m_fNeedsSetUp = true;
 }
 
 void lmBeam::AutoSetUp()

@@ -1,12 +1,12 @@
 wxString sTxt;
 sTxt = _("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
-sTxt = _("Licensed under the terms of the GNU Free Documentation License v1.2");
+sTxt = _("Licensed under the terms of the GNU Free Documentation License v1.3");
 sTxt = _("the teacher of music");
 sTxt = _("Cover page");
 sTxt = _("Music reading. Level 1.");
 sTxt = _("This eMusicBook is a self-instruction music reading course, intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader.");
 sTxt = _("LenMus project");
-sTxt = _("Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at");
+sTxt = _("Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at");
 sTxt = _("http://www.gnu.org/licenses/fdl.html");
 sTxt = _("Presentation");
 sTxt = _("Presentation");
