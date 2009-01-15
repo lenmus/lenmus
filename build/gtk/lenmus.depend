@@ -529,7 +529,7 @@
 	"wx/wx.h"
 	"wx/wfstream.h"
 
-1231319113 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/AboutDialog.cpp
+1231319112 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/AboutDialog.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/dialog.h"
@@ -849,7 +849,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1231168582 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1231520378 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -1142,7 +1142,7 @@
 	"ChordConstrains.h"
 	"Generators.h"
 
-1221724550 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.cpp
+1231520677 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.cpp
 	"wx/wxprec.h"
 	"Generators.h"
 	"../score/KeySignature.h"

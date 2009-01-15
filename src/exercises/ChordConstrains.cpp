@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -164,19 +164,19 @@ void lmChordConstrains::LoadSettings()
 
 }
 
-EChordType lmChordConstrains::GetRandomChordType()
+lmEChordType lmChordConstrains::GetRandomChordType()
 {
     lmRandomGenerator oGenerator;
     int nWatchDog = 0;
     int nType = oGenerator.RandomNumber(0, ect_Max-1);
-    while (!IsChordValid((EChordType)nType)) {
+    while (!IsChordValid((lmEChordType)nType)) {
         nType = oGenerator.RandomNumber(0, ect_Max-1);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in lmChordConstrains::GetRandomChordType."));
-            return (EChordType)0;
+            return (lmEChordType)0;
         }
     }
-    return (EChordType)nType;
+    return (lmEChordType)nType;
 
 }
 

@@ -131,7 +131,7 @@ void lmScoreAuxCtrol::SetScale(float rScale)
     m_rZoom = rScale;
     m_rScale = rScale * lmSCALE;
 
-    wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
+    //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
     ResizePaper();
 }
 
@@ -225,8 +225,6 @@ void lmScoreAuxCtrol::SetBaseScale()
                 wScreenMM, hScreenMM );
 }
 
-
-
 void lmScoreAuxCtrol::OnSize(wxSizeEvent& WXUNUSED(event))
 {
     //The window has been resized. Adjust paper size and scale
@@ -241,7 +239,6 @@ void lmScoreAuxCtrol::OnSize(wxSizeEvent& WXUNUSED(event))
     ResizePaper();
     Refresh();
 }
-
 
 // Repainting behaviour
 void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))

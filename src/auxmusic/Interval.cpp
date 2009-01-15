@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -516,7 +516,7 @@ void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
 }
 
 void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode, lmEKeySignatures nKey,
-                               EIntervalDirection nDirection, lmNoteBits* pNewNote)
+                               lmEIntervalDirection nDirection, lmNoteBits* pNewNote)
 {
     // This function adds the requested semitones to note *pRoot and returns the resulting
     // note in *pNewNote.
@@ -749,7 +749,7 @@ wxString GetIntvName(lmIntvBits* pBits)
 {
     int nSemitones = pBits->nSemitones;
     int nNum = pBits->nNum;
-    EIntervalType nType;
+    lmEIntervalType nType;
 
     //trim to reduce intervals greater than one octave
     bool fMajor = (nNum > 8);

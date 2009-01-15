@@ -7,9 +7,20 @@ Software Foundation, e non stabilisce i termini legali di distribuzione
 del software che usa la GNU GPL - Soltanto la versione originale in
 inglese della GNU GPL fa ciò. Ciononostante, speriamo che questa
 traduzione possa aiutare gli utenti di lingua italiana a comprendere un
-po' meglio la GNU GPL. 
+po' meglio la GNU GPL.
 
 
+This is an unofficial translation of the GNU General Public License into
+Italian. It was not published by the Free Software Foundation, and does 
+not legally state the distribution terms for software that uses the GNU 
+GPL -- only the original English text of the GNU GPL does that. However, 
+we hope that this translation will help Italian speakers understand the
+GNU GPL better.
+
+
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+                                
 Copyright ©&nbsp;2007 Free Software Foundation, Inc. http://fsf.org/
 
 
@@ -642,7 +653,6 @@ secondo questa Licenza di un Programma o di un'opera basata sul
 Programma. L'opera così licenziata viene chiamata "versione del
 contribuente".
 
-
 I "diritti essenziali di brevetto" da parte di un contribuente sono
 tutti i diritti di brevetto che appartengono o che sono controllati dal
 contribuente, che siano già acquisiti o che saranno acquisiti in
@@ -654,13 +664,11 @@ contribuente. In relazione a questa definizione, il termine
 "controllo" include il diritto di garantire sottolicenze di brevetto
 in maniera consistente con le condizioni di questa Licenza.
 
-
 Ciascun contribuente ti garantisce la licenza di brevetto sui diritti
 essenziali di brevetto del contribuente stesso non-esclusiva, valida in
 tutto il mondo, esente da royalty, di creare, usare, vendere, offrire in
 vendita, importare e altrimenti eseguire, modificare e propagare i
 contenuti della versione del contribuente.
-
 
 Nei tre paragrafi successivi, con "licenza di brevetto" si intende
 qualunque accordo o contratto, comunque denominato, di non
@@ -669,7 +677,6 @@ utilizzare un brevetto o un accordo di rinuncia alla persecuzione per
 violazione di brevetto). "Garantire" una tale licenza di brevetto ad
 una parte significa portare a termine un tale accordo o contratto di non
 rivendicazione di brevetto contro la parte.
-
 
 Se distribuisci un programma coperto da questa Licenza, confidando
 consapevolmente su una licenza di brevetto, e il Sorgente Corrispondente
@@ -689,7 +696,6 @@ paese del programma coperto da questa Licenza da parte di un
 destinatario, può violare uno o più brevetti in quel paese che tu
 hai ragione di ritenere validi.
 
-
 Se, come conseguenza o in connessione con una singola transazione o
 con un dato accordo, distribuisci, o fai in modo di distribuire, un
 programma coperto da questa Licenza, e garantisci una licenza di
@@ -699,7 +705,6 @@ specifica copia del Programma, allora la licenza di brevetto che
 fornisci è automaticamente estesa a tutti i destinatari del
 Programma coperto da questa Licenza e delle opere basate sul
 Programma.
-
 
 Una licenza di brevetto è "discriminatoria" se non include
 nell'ambito della sua copertura, proibisce l'esercizio, o è vincolata
@@ -717,16 +722,13 @@ connessione con specifici prodotti o raccolte di prodotti che contengono
 il Programma, a meno che l'accordo non sia stato stipulato, o le licenze
 di brevetto non siano state rilasciate, prima del 28 Marzo 2007.
 
-
 Nessuna parte di questa Licenza può essere interpretata come atta ad
 escludere o limitare gli effetti di qualunque altra licenza o altri
 meccanismi di difesa dalla violazione che possano altrimenti essere resi
 disponibili dalla normativa vigente in materia di brevetti.
 
-</li>
 
-<li> Nessuna resa di libertà altrui
-
+Nessuna resa di libertà altrui
 
 Se ti vengono imposte delle condizioni (da un ordine giudiziario, da
 un accordo o da qualunque altra eventualità) che contraddicono le
@@ -741,10 +743,8 @@ successivamente effettuate da coloro ai quali hai distribuito il
 Programma, l'unico modo per soddisfare sia queste condizioni che
 questa Licenza è evitare del tutto la distribuzione del Programma.
 
-</li>
 
-<li> Utilizzo con la GNU Affero General Public License
-
+Utilizzo con la GNU Affero General Public License
 
 Indipendentemente da qualunque altra condizione espressa da questa
 Licenza, hai il permesso di collegare o combinare qualunque Programma
@@ -757,17 +757,14 @@ condizioni speciali della GNU Affero General Public License, sezione 13,
 riguardanti l'interazione mediante rete, saranno applicate al Programma
 così risultante.
 
-</li>
 
-<li> Versioni rivedute di questa Licenza
-
+Versioni rivedute di questa Licenza
 
 La Free Software Foundation può pubblicare delle versioni rivedute
 e/o delle nuove versioni della GNU General Public License di tanto in
 tanto. Tali versioni saranno simili, nello spirito, alla presente
 versione, ma potranno differire nei dettagli al fine di affrontare
 nuovi problemi e nuove situazioni.
-
 
 A ciascuna versione viene assegnato un numero identificativo di
 versione. Se il Programma specifica che si applica a sè stesso una
@@ -779,23 +776,19 @@ non specifica un numero di versione della GNU General Public License,
 puoi scegliere qualunque versione della GNU General Public License
 pubblicata dalla Free Software Foundation.
 
-
 Se il Programma specifica che un sostituto o un procuratore può
 decidere quali versioni future della GNU General Public License posso
 essere utilizzate, allora tale scelta di accettazione di una data
 versione ti autorizza, in maniera permanente, ad utilizzare quella
 versione della Licenza per il Programma.
 
-
 Versioni successive della Licenza possono garantire diritti aggiuntivi o
 leggermente differenti. Ad ogni modo, nessun obbligo aggiuntivo viene
 imposto agli autori o ai detentori di copyright come conseguenza della
 tua scelta di adottare una versione successiva della Licenza.
 
-</li>
 
-<li> Rinuncia alla Garanzia
-
+Rinuncia alla Garanzia
 
 NON C'E' NESSUNA GARANZIA PER IL PROGRAMMA, PER QUANTO CONSENTITO DALLE
 VIGENTI NORMATIVE. ECCETTO QUANDO ALTRIMENTI STABILITO PER ISCRITTO, I
@@ -808,28 +801,24 @@ LICENZIATARIO. SE IL PROGRAMMA DOVESSE RISULTARE DIFETTOSO, IL
 LICENZIATARIO SI ASSUME I COSTI DI MANUTENZIONE, RIPARAZIONE O
 CORREZIONE.
 
-</li>
 
-<li> Limitazione di Responsabilità
+Limitazione di Responsabilità
+
+IN NESSUN CASO, A MENO CHE NON SIA RICHIESTO DALLA NORMATIVA VIGENTE
+O CONCORDATO PER ISCRITTO, I DETENTORI DEL COPYRIGHT, O QUALUNQUE
+ALTRA PARTE CHE MODIICA E/O DISTRIBUISCE IL PROGRAMMA SECONDO LE
+CONDIZIONI PRECEDENTI, POSSONO ESSERE RITENUTI RESPONSABILI NEI
+CONFRONTI DEL LICENZIATARIO PER DANNI, INCLUSO QUALUNQUE
+DANNEGGIAMENTO GENERICO, SPECIALE, INCIDENTALE O CONSEQUENZIALE
+DOVUTO ALL'USO O ALL'IMPOSSIBILITA' D'USO DEL PROGRAMMA (INCLUSI, MA
+NON LIMITATI A, LE PERDITE DI DATI, LA CORRUZIONE DI DATI, LE
+PERDITE SOSTENUTE DAL LICENZIATARIO O DA TERZE PARTI O
+L'IMPOSSIBILITA' DEL PROGRAMMA A FUNZIONARE ASSIEME AD ALTRI
+PROGRAMMI), ANCHE NEL CASO IN CUI IL DETENTORE O LE ALTRE PARTI
+SIANO STATI AVVISATI CIRCA LA POSSIBILITA' DI TALI DANNEGGIAMENTI.
 
 
-  IN NESSUN CASO, A MENO CHE NON SIA RICHIESTO DALLA NORMATIVA VIGENTE
-  O CONCORDATO PER ISCRITTO, I DETENTORI DEL COPYRIGHT, O QUALUNQUE
-  ALTRA PARTE CHE MODIICA E/O DISTRIBUISCE IL PROGRAMMA SECONDO LE
-  CONDIZIONI PRECEDENTI, POSSONO ESSERE RITENUTI RESPONSABILI NEI
-  CONFRONTI DEL LICENZIATARIO PER DANNI, INCLUSO QUALUNQUE
-  DANNEGGIAMENTO GENERICO, SPECIALE, INCIDENTALE O CONSEQUENZIALE
-  DOVUTO ALL'USO O ALL'IMPOSSIBILITA' D'USO DEL PROGRAMMA (INCLUSI, MA
-  NON LIMITATI A, LE PERDITE DI DATI, LA CORRUZIONE DI DATI, LE
-  PERDITE SOSTENUTE DAL LICENZIATARIO O DA TERZE PARTI O
-  L'IMPOSSIBILITA' DEL PROGRAMMA A FUNZIONARE ASSIEME AD ALTRI
-  PROGRAMMI), ANCHE NEL CASO IN CUI IL DETENTORE O LE ALTRE PARTI
-  SIANO STATI AVVISATI CIRCA LA POSSIBILITA' DI TALI DANNEGGIAMENTI.
-
-</li>
-
-<li> Interpretazione delle Sezioni 15 e 16.
-
+Interpretazione delle Sezioni 15 e 16.
 
 Se la dichiarazione di garanzia e la limitazione di responsabilità
 fornite precedentemente non hanno effetto legale in un paese a causa
@@ -840,102 +829,8 @@ una assunzione di responsabilità scritta non accompagni una copia del
 programma ottenuta dietro pagamento.
 
 
-
-<center>  <font size="+2"> Fine dei Termini e delle Condizioni</font>
-
-
-  Come applicare questre condizioni di Licenza ai vostri programmi
-
-
-</center>Se sviluppi un nuovo programma, e vuoi che esso sia della massima
-utilità, il modo migliore è renderlo software libero in modo che
-chiunque possa ridistribuirlo e modificarlo secondo i termini di questa
-Licenza.
-
-
-Per fare ciò, allega le seguenti note informative al programma. Il
-modo migliore è inserirle all'inizio di ciascun file sorgente, al fine
-di rimarcare adeguatamente la mancanza di garanzia; ciascun file
-dovrebbe inoltre contenere la dichiarazione di copyright e un
-riferimento al posto in cui è possibile ottenere la versione completa
-delle note informative.
-
-
-
-<blockquote>  &lt;one line to give the program's name and a brief idea of what it does.&gt;
-
-
-  Copyright (C) &lt;year&gt;  &lt;name of author&gt;
-
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see
-  http://www.gnu.org/licenses/.
-
-
-</blockquote>Inoltre, aggiungi le informazioni necessarie a contattarti via posta
-ordinaria o via posta elettronica.
-
-
-Se il programma interagisce mediante terminale, fai in modo che
-visualizzi, quando viene avviato in modalità interattiva, un breve
-messaggio come quello che segue:
-
-
-
-<blockquote>  &lt;program&gt;  Copyright (C) &lt;year&gt;  &lt;name of author&gt;
-
-
-  This program comes with ABSOLUTELY NO WARRANTY; for details type
-<tt>show w</tt>.
-  This is free software, and you are welcome to redistribute it
-  under certain conditions; type <tt>show c</tt> for details.
-</blockquote>
-
-
-Gli ipotetici comandi <tt>show w</tt> e <tt>show c</tt> devono visualizzare le
-parti corrispondenti della GNU General Public License. Naturalmente i
-comandi del tuo programma potrebbero essere differenti; per una
-interfaccia di tipo GUI, dovresti usare un bottone "About" o
-"Info".
-
-
-Devi inoltre fare in modo che il tuo datore di lavoro (se lavori come
-programmatore presso terzi) o la tua scuola, eventualmente, firmino una
-"rinuncia al copyright" sul programma, se necessario. Per maggiori
-informazioni su questo punto, e su come applicare e rispettare la GNU
-GPL, consultare la pagina http://www.gnu.org/licenses/.
-
-
-La GNU General Public License non consente di incorporare il programma
-all'interno di software proprietario. Se il tuo programma è una
-libreria di funzioni, potresti ritenere più opportuno consentire il
-collegamento tra software proprietario e la tua libreria. Se è questo
-ciò che vuoi, allora utilizza la GNU Lesser General Public License
-anziché questa Licenza, ma prima leggi
-http://www.gnu.org/philosophy/why-not-lgpl.html.
-
-</li>
-</ol>
-
-
-
-<hr><small>File translated from
-T<sub><font size="-1">E</font></sub>X
-by <a href="http://hutchinson.belmont.ma.us/tth/">
-T<sub><font size="-1">T</font></sub>H</a>,
-version 3.67.On 15 Jul 2007, 11:58.</small>
-
-</body></html>
+              Fine dei Termini e delle Condizioni
+              
+---------------------------------------------------------------------
+File translated from TEX by <a href="http://hutchinson.belmont.ma.us/tth/">
+version 3.67.On 15 Jul 2007, 11:58.

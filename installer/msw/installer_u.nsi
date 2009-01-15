@@ -38,11 +38,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.0b3"
+  !define APP_VERSION "4.0"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.0 beta 3"     ;product name displayed by the installer
+  Name "lenmus v4.0"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -169,14 +169,14 @@
 ;languaje files to support different languages during installation
 ;---------------------------------------------------------------------------------------------------
   !addincludedir ".\locale"
-  !include "en.nsh"
-  !include "es.nsh"
-  !include "fr.nsh"
-  !include "tr.nsh"
-  !include "nl.nsh"
   !include "eu.nsh"
-  !include "it.nsh"
+  !include "nl.nsh"
+  !include "en.nsh"
+  !include "fr.nsh"
   !include "gl_ES.nsh"
+  !include "it.nsh"
+  !include "es.nsh"
+  !include "tr.nsh"
 
 
 
@@ -223,12 +223,12 @@ Section  "-" "MainSection"
   ;-----------------------------------------------------------------------------------
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\bin"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\books"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\locale"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\temp"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\logs"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\docs"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\locale"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\logs"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\temp"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
 
 
   ;install application files
@@ -247,12 +247,10 @@ Section  "-" "MainSection"
      File ".\locale\license_eu.txt"
      File ".\locale\license_it.txt"
      File ".\locale\license_gl_ES.txt"
+     File ".\locale\LICENSE*"
      
-     File "..\..\docs\html\license_v3.htm"
-;     File "..\..\docs\html\installation.htm"
-;     File "..\..\docs\html\*.htm"
-;     File "..\..\docs\html\singledoc.css"
-     File "..\..\docs\html\GNU_Free_doc_license_FDL.htm"
+     File "..\..\docs\html\LICENSE_GNU_GPL_1.3.txt"
+     File "..\..\docs\html\LICENSE_GNU_FDL_1.3.txt"
      
      SetOutPath "$INSTDIR\docs\images"
      File "..\..\docs\html\images\*.*"

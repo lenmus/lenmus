@@ -23,6 +23,12 @@ LenMus project (http://www.lenmus.org/)<br />
     <a class='toc_level1' href="#toc0001">How pitch is represented</a>
         <a class='toc_level2' href="#toc0002">Requirements</a>
         <a class='toc_level2' href="#toc0003">How pitch is currently represented</a>
+    <a class='toc_level1' href="#toc0004">Representing chords and intervals</a>
+        <a class='toc_level2' href="#toc0005">The lmChordManager class</a>
+        <a class='toc_level2' href="#toc0006">Representing intervals</a>
+        <a class='toc_level2' href="#toc0007">Intervals in FPitch: typedef lmFInvtal</a>
+        <a class='toc_level2' href="#toc0008">Classes lmInterval and lmNoteBits</a>
+        <a class='toc_level2' href="#toc0009">Annex. Pitch values in different representations</a>
 
  
 
@@ -150,86 +156,197 @@ enum lmEPitchType
 </TD></TR></TABLE>
 
 
-<p class='justified'><b> 3. Intervals representation</b>
-    Intervals (typedef <span class="kw1">lmFIntval</span>)      // Intervals, in FPitch mode.</p>
 
 
-<p class='justified'><b>3. Open issues</b></p>
+<h2 class='article'><a name="toc0004"></a>Representing chords and intervals</h2>
 
-    <p class='justified'>ePitchNoteCents
-<div class="itemizedlist"><ul type="disc">
-<li>Absolute pitch + cents deviation.</li></ul><div></p>
 
-      
-<p class='justified'>new (HCHord):                
-                Internal: DPitch + Accidentals
-<div class="itemizedlist"><ul type="disc">
-<li>Better usability for sweeps along the diatonic note range</li></ul><div></p>
-                
- <p class='justified'>lmUPitch:      Microtonal pitch:
-                - CPitch + cents deviation?
-                - A previous operation to set up scale intervals and number of keys? 
-                    Then lmUpitch could be just the key+octave</p>
-                
-                
- <p class='justified'>LDP source:    String &quot;accidentals-step-octave&quot; (i.e. &#039;=+c3&#039;). Relative to context.
-<div class="itemizedlist"><ul type="disc">
-<li>Difficult to manage.</li>
-<li>Uncertainty about meaning as in some methods it is used as an
-                  absolute pitch.</li>
-<li>Incomplete information or complex to analyse, as at least key signature
-                  must be taken into account.</li></ul><div></p>
+
+<p class='justified'>In the internal socre representation (<span class="kw1">lmScore</span>) chords do not have any special representation: they are just notes played at the same time. There exists an <span class="kw1">lmChord</span> class, but it is a helper class to render chords.</p>
+
+<p class='justified'>But in certain cases (i.e. for music analysis and in exercises) it is necessary to have a  specific representation and specific methods to deal with chords. For this purpose, class <span class="kw1">lmChordManager</span> (in auxmusic/ChordManager.h &amp; .cpp) has been created. The class was named <span class="kw1">lmChordManager</span> as name <span class="kw1">lmChord</span> was already used in the aforementioned helper class. Moreover, as this class has methods to deal with chords, the adjective &lt;i&gt;manager&lt;/i&gt; was considered not too bad.</p>
+
+
+
+<h3 class='article'><a name="toc0005"></a>The lmChordManager class</h3>
+
+
+
+<p class='justified'>Class <span class="kw1">lmChordManager</span> represents a chord. The chord is internally modelled by an array of note pitches.</p>
+
+<p class='justified'>Currently, <span class="kw1">lmChordManager</span> is only used in chords and cadences exercises. Therefore, only the methods needed for these exercises has been created. They are, basically:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>given a root note, the chord type, and the inversion create the chord.</li>
+<li>get the notes that form the chord</li></ul><div></p>
  
-                
- <p class='justified'>lmNoteBits:    A lmNotePitch equivalent but less compact. StepSemitones is redundant
- </p><div class="informalexample"><pre class="programlisting">
-     int nStep;              // &#039;c&#039;=0, &#039;d&#039;=1, &#039;e&#039;=2, &#039;f&#039;=3, &#039;g&#039;=4, &#039;a&#039;=5, &#039;b&#039;=6
-     int nOctave;            // 0..9
-     int nAccidentals;       // &#039;--&#039;=-1, &#039;-&#039;=-1, &#039;&#039;=0, &#039;+&#039;=+1, &#039;++&#039;=+2
-     int nStepSemitones;     // &#039;c&#039;=0, &#039;d&#039;=2, &#039;e&#039;=4, &#039;f&#039;=5, &#039;g&#039;=7, &#039;a&#039;=9, &#039;b&#039;=11
- </pre></div>
-               
-                
- <p class='justified'>nStep:         Diatonic step 0..6: 0=C, 1=D, 2=E, 3=F, 4=G, 5=A, 6=B
- nOctave:       Octave number 0..9. Same meaning as in MIDI but the lowest MIDI octave (-1)
-                possible to represent.
- nAlter
- nAccidentals</p>
+<p class='justified'>To encode chord type, enum <span class="kw1">lmEChordType</span> has been defined.</p>
 
- <p class='justified'>- A pitch value of 0 (zero) represents a rest.
- - A -1 value (both for Diatonic Pitch and MIDI Pitch) would imply &#039;no pitch defined yet&#039;</p>
+<div class="informalexample"><pre class="programlisting">
+enum lmEChordType
+{
+    // Triads
+    ect_MajorTriad = 0,
+    ect_MinorTriad,
+    ect_AugTriad,
+    ect_DimTriad,
+    ect_Suspended_4th,
+    ect_Suspended_2nd,
+    ect_LastTriad = ect_Suspended_2nd,
+
+    // Seventh chords
+    ect_MajorSeventh,
+    ect_DominantSeventh,
+    ect_MinorSeventh,
+    ect_DimSeventh,
+    ect_HalfDimSeventh,
+    ect_AugMajorSeventh,
+    ect_AugSeventh,
+    ect_MinorMajorSeventh,
+    ect_LastSeventh = ect_MinorMajorSeventh,
+
+    // Sixth chords
+    ect_MajorSixth,
+    ect_MinorSixth,
+    ect_AugSixth,
+    ect_LastSixth = ect_AugSixth,
+
+    //last element, to signal End Of Table
+    ect_Max
+};
+</pre></div>
+
+<p class='justified'>To add more chord types it is necessary to modify this enum and the table defined in <span class="kw1">lmChordManager</span> implementation:</p>
+
+<div class="informalexample"><pre class="programlisting">
+static lmChordInfo tData[ect_Max] = {
+    { 3, { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
+    { 3, { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
+    { 3, { lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
+    { 3, { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
+    { 3, { lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
+    { 3, { lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
+    { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
+    ...
+};
+</pre></div>
+
+<p class='justified'>This table encodes each chord type by specifying:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>the number of notes in the chord, and</li>
+<li>the intervals between the root note and the others when in root position.</li></ul><div></p>
  
+<p class='justified'>For example, line
+</p><div class="informalexample"><pre class="programlisting">
+{ 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
+</pre></div>
+<p class='justified'>says that a major seventh chord has four notes, and the intervals between them are a major third (<span class="kw1">lm_M3</span>), a perfect fifth (<span class="kw1">lm_p5</span>) and a major seventh (<span class="kw1">lm_M7</span>). Intervals are encoded using symbolic constants defined in score/Pitch.h.</p>
+
+
+
+<h3 class='article'><a name="toc0006"></a>Representing intervals</h3>
+
+
+
+
+<h3 class='article'><a name="toc0007"></a>Intervals in FPitch: typedef lmFInvtal</h3>
+
+
+
+<p class='justified'>Representing pitch using <span class="kw1">lmFPitch</span> is the best approach to represent intervals for computations. An <span class="kw1">lmFPitch</span> it is just an integer number, but it has an interesting property for computing intervals:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>The interval between two FPitches is just the difference between the two FPitches.</li></ul><div></p>
  
+<p class='justified'>The resulting number represents the interval. A typedef <span class="kw1">lmFIntval</span> is defined for this (in score/Pitch.h). <span class="kw1">lmFIntval</span> has interesting properties:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>FIntervals can be added/substracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.</li></ul><div></p>
  
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Intervals greater than one octave are computed by adding 40 (p8) for each octave.
+For example, a Major 10th is M3+p8 = 12+40 = 52.</li></ul><div></p>
+
+
+
+<h3 class='article'><a name="toc0008"></a>Classes lmInterval and lmNoteBits</h3>
+
+
+
+<p class='justified'>One of the first exercises added to LenMus program was &#039;intervals identification&#039;. When I coded it, I didn&#039;t pay much attention to the problem of managing intervals. I was only interested in some quick representation for that exercise. Due to time constrains, this initial representation  is still in use in the program and code using it has not yet be changed to use <span class="kw1">lmFIntval</span>. This deprecated class is <span class="kw1">lmInterval</span> (defined in auxmusic/Interval.h &amp; .cpp). There are also some global functions defined to compute intervals, but they should not be used. Any new code dealing with intervals should be based on <span class="kw1">lmFPitch</span> and <span class="kw1">lmFIntval</span>.</p>
+
+<p class='justified'>Associated to this class (and also deprecated) there is typedef <span class="kw1">lmNoteBits</span> (defined in auxmusic/Conversion.h). It is a pitch representation struct, used to compute intervals.  Any new code should use <span class="kw1">lmFPitch</span> or any of the other pitch representation classes defined previously in this chapter.</p>
+
+<p class='justified'><span class="kw1">lmNoteBits</span> is equivalent to <span class="kw1">lmAPitch</span> but it is a less compact representation. And member <span class="kw1">nStepSemitones</span> is redundant:</p>
+
+ <div class="informalexample"><pre class="programlisting">
+typedef struct lmNoteBitsStruct {
+    int nStep;              // &#039;c&#039;=0, &#039;d&#039;=1, &#039;e&#039;=2, &#039;f&#039;=3, &#039;g&#039;=4, &#039;a&#039;=5, &#039;b&#039;=6
+    int nOctave;            // 0..9
+    int nAccidentals;       // &#039;--&#039;=-1, &#039;-&#039;=-1, &#039;&#039;=0, &#039;+&#039;=+1, &#039;++&#039;=+2
+    int nStepSemitones;     // &#039;c&#039;=0, &#039;d&#039;=2, &#039;e&#039;=4, &#039;f&#039;=5, &#039;g&#039;=7, &#039;a&#039;=9, &#039;b&#039;=11
+} lmNoteBits;
+</pre></div>
+                               
+ 
+
+
+<h3 class='article'><a name="toc0009"></a>Annex. Pitch values in different representations</h3>
+
+
+
 <A name="TAB1"><B></B></A><p>&nbsp;</p><table class="simpletable">
-<th class="simpletable">name</th><th class="simpletable">Octave</th><th class="simpletable">MIDI</th><th class="simpletable">DPitch</th><th class="simpletable">Observations</th>
-<tr class="simpletable"><td class="simpletable">rest</td><td class="simpletable" style="text-align:right">any</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable">Any&#160;rest</td></tr>
-<tr class="simpletable"><td class="simpletable">(c-1)</td><td class="simpletable" style="text-align:right">-1</td><td class="simpletable" style="text-align:right">1</td></tr>
-<tr class="simpletable"><td class="simpletable">c0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">12</td><td class="simpletable" style="text-align:right">1</td><td class="simpletable">Do2&#160;de&#160;la&#160;subcontraoctava&#160;(16.35&#160;Hz)</td></tr>
-<tr class="simpletable"><td class="simpletable">d0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">14</td><td class="simpletable" style="text-align:right">2</td></tr>
-<tr class="simpletable"><td class="simpletable">e0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">16</td><td class="simpletable" style="text-align:right">3</td></tr>
-<tr class="simpletable"><td class="simpletable">f0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">17</td><td class="simpletable" style="text-align:right">4</td></tr>
-<tr class="simpletable"><td class="simpletable">g0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">19</td><td class="simpletable" style="text-align:right">5</td></tr>
-<tr class="simpletable"><td class="simpletable">a0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">21</td><td class="simpletable" style="text-align:right">6</td></tr>
-<tr class="simpletable"><td class="simpletable">b0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">23</td><td class="simpletable" style="text-align:right">7</td></tr>
-<tr class="simpletable"><td class="simpletable">c1</td><td class="simpletable" style="text-align:right">1</td><td class="simpletable" style="text-align:right">24</td><td class="simpletable" style="text-align:right">8</td><td class="simpletable">Do1&#160;de&#160;la&#160;contraoctava</td></tr>
-<tr class="simpletable"><td class="simpletable">c2</td><td class="simpletable" style="text-align:right">2</td><td class="simpletable" style="text-align:right">36</td><td class="simpletable" style="text-align:right">15</td><td class="simpletable">Do&#160;de&#160;la&#160;gran&#160;octava</td></tr>
-<tr class="simpletable"><td class="simpletable">c3</td><td class="simpletable" style="text-align:right">3</td><td class="simpletable" style="text-align:right">48</td><td class="simpletable" style="text-align:right">22</td><td class="simpletable">do&#160;de&#160;la&#160;pequena&#160;octava</td></tr>
-<tr class="simpletable"><td class="simpletable">c4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">60</td><td class="simpletable" style="text-align:right">29</td><td class="simpletable">do1&#160;de&#160;la&#160;octava&#160;primera&#160;(a4&#160;=&#160;440Hz)</td></tr>
-<tr class="simpletable"><td class="simpletable">d4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">62</td><td class="simpletable" style="text-align:right">30</td></tr>
-<tr class="simpletable"><td class="simpletable">e4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">64</td><td class="simpletable" style="text-align:right">31</td></tr>
-<tr class="simpletable"><td class="simpletable">f4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">65</td><td class="simpletable" style="text-align:right">32</td></tr>
-<tr class="simpletable"><td class="simpletable"><span class="larger">&#133;</span></td></tr>
-<tr class="simpletable"><td class="simpletable">c5</td><td class="simpletable" style="text-align:right">5</td><td class="simpletable" style="text-align:right">72</td><td class="simpletable" style="text-align:right">36</td><td class="simpletable">do2&#160;de&#160;la&#160;octava&#160;segunda</td></tr>
-<tr class="simpletable"><td class="simpletable">c6</td><td class="simpletable" style="text-align:right">6</td><td class="simpletable" style="text-align:right">84</td><td class="simpletable" style="text-align:right">43</td><td class="simpletable">do3&#160;de&#160;la&#160;octava&#160;tercera</td></tr>
-<tr class="simpletable"><td class="simpletable">c7</td><td class="simpletable" style="text-align:right">7</td><td class="simpletable" style="text-align:right">96</td><td class="simpletable" style="text-align:right">50</td><td class="simpletable">do4&#160;de&#160;la&#160;octava&#160;cuarta</td></tr>
-<tr class="simpletable"><td class="simpletable">c8</td><td class="simpletable" style="text-align:right">8</td><td class="simpletable" style="text-align:right">108</td><td class="simpletable" style="text-align:right">57</td><td class="simpletable">do5&#160;de&#160;la&#160;octava&#160;quinta&#160;(4,186&#160;Hz)</td></tr>
-<tr class="simpletable"><td class="simpletable">c9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">120</td><td class="simpletable" style="text-align:right">64</td></tr>
-<tr class="simpletable"><td class="simpletable">d9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">122</td><td class="simpletable" style="text-align:right">65</td></tr>
-<tr class="simpletable"><td class="simpletable">e9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">124</td><td class="simpletable" style="text-align:right">66</td></tr>
-<tr class="simpletable"><td class="simpletable">f9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">125</td><td class="simpletable" style="text-align:right">67</td></tr>
-<tr class="simpletable"><td class="simpletable">g9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">127</td><td class="simpletable" style="text-align:right">68</td></tr>
+<th class="simpletable">name</th><th class="simpletable">Octave</th><th class="simpletable">MIDI</th><th class="simpletable">DPitch</th><th class="simpletable">FPitch</th><th class="simpletable">Observations</th>
+<tr class="simpletable"><td class="simpletable">rest</td><td class="simpletable" style="text-align:right">any</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">Any&#160;rest</td></tr>
+<tr class="simpletable"><td class="simpletable">(c-1)</td><td class="simpletable" style="text-align:right">-1</td><td class="simpletable" style="text-align:right">1</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">c0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">12</td><td class="simpletable" style="text-align:right">1</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">Do2&#160;de&#160;la&#160;subcontraoctava&#160;(16.35&#160;Hz)</td></tr>
+<tr class="simpletable"><td class="simpletable">d0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">14</td><td class="simpletable" style="text-align:right">2</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">e0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">16</td><td class="simpletable" style="text-align:right">3</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">f0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">17</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">g0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">19</td><td class="simpletable" style="text-align:right">5</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">a0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">21</td><td class="simpletable" style="text-align:right">6</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">b0</td><td class="simpletable" style="text-align:right">0</td><td class="simpletable" style="text-align:right">23</td><td class="simpletable" style="text-align:right">7</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">c1</td><td class="simpletable" style="text-align:right">1</td><td class="simpletable" style="text-align:right">24</td><td class="simpletable" style="text-align:right">8</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">Do1&#160;de&#160;la&#160;contraoctava</td></tr>
+<tr class="simpletable"><td class="simpletable">c2</td><td class="simpletable" style="text-align:right">2</td><td class="simpletable" style="text-align:right">36</td><td class="simpletable" style="text-align:right">15</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">Do&#160;de&#160;la&#160;gran&#160;octava</td></tr>
+<tr class="simpletable"><td class="simpletable">c3</td><td class="simpletable" style="text-align:right">3</td><td class="simpletable" style="text-align:right">48</td><td class="simpletable" style="text-align:right">22</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">do&#160;de&#160;la&#160;pequena&#160;octava</td></tr>
+<tr class="simpletable"><td class="simpletable">c4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">60</td><td class="simpletable" style="text-align:right">29</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">do1&#160;de&#160;la&#160;octava&#160;primera&#160;(a4&#160;=&#160;440Hz)&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">d4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">62</td><td class="simpletable" style="text-align:right">30</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">e4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">64</td><td class="simpletable" style="text-align:right">31</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">f4</td><td class="simpletable" style="text-align:right">4</td><td class="simpletable" style="text-align:right">65</td><td class="simpletable" style="text-align:right">32</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable"><span class="larger">&#133;</span></td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">c5</td><td class="simpletable" style="text-align:right">5</td><td class="simpletable" style="text-align:right">72</td><td class="simpletable" style="text-align:right">36</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">do2&#160;de&#160;la&#160;octava&#160;segunda</td></tr>
+<tr class="simpletable"><td class="simpletable">c6</td><td class="simpletable" style="text-align:right">6</td><td class="simpletable" style="text-align:right">84</td><td class="simpletable" style="text-align:right">43</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">do3&#160;de&#160;la&#160;octava&#160;tercera</td></tr>
+<tr class="simpletable"><td class="simpletable">c7</td><td class="simpletable" style="text-align:right">7</td><td class="simpletable" style="text-align:right">96</td><td class="simpletable" style="text-align:right">50</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">do4&#160;de&#160;la&#160;octava&#160;cuarta</td></tr>
+<tr class="simpletable"><td class="simpletable">c8</td><td class="simpletable" style="text-align:right">8</td><td class="simpletable" style="text-align:right">108</td><td class="simpletable" style="text-align:right">57</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">do5&#160;de&#160;la&#160;octava&#160;quinta&#160;(4,186&#160;Hz)</td></tr>
+<tr class="simpletable"><td class="simpletable">c9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">120</td><td class="simpletable" style="text-align:right">64</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">d9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">122</td><td class="simpletable" style="text-align:right">65</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">e9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">124</td><td class="simpletable" style="text-align:right">66</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">f9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">125</td><td class="simpletable" style="text-align:right">67</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
+<tr class="simpletable"><td class="simpletable">g9</td><td class="simpletable" style="text-align:right">9</td><td class="simpletable" style="text-align:right">127</td><td class="simpletable" style="text-align:right">68</td><td class="simpletable" style="text-align:right">&#160;</td><td class="simpletable">&#160;</td></tr>
 </table><center><p><FONT style="margin-left:1em"><I>Table 1. Pitch values in different representations</I></FONT></p></center><p>&nbsp;</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -2,17 +2,15 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>3.5</version>
-    <package>LenMus Phonascus 3.5 (4.03 MB)</package>
+    <version>4.0</version>
+    <package>LenMus Phonascus 4.0 (6.02 MB)</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
-- A new eMusicBook included: Music Reading level 1
-- Dutch language translation now included
-- Playback: added rhythmic accent. Higher volume on stronger beats. 
-- Replaced MDI user interface by a notebook tabbed interface.
-- Improvements in the Score internal model and on LDP language
-   to support more features: graphical objects (arrows, lines, 
-   etc.); metronome marks; global, inheritable options.
+- Added a music score editor.
+- New Welcome page.
+- License changed to GNU GPL v3+.
+- Three more translations added: Basque, Galician and Italian.
+- All detected bugs fixed. 
     </description>
     <download_url>http://www.lenmus.org/sw/page.php?pid=paginas&amp;name=downloads</download_url>
 </platform>

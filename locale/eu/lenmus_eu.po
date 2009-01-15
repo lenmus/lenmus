@@ -1,12 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.7\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-12-03 17:39+0100\n"
+"Project-Id-Version: LenMus 4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-09 16:18+0100\n"
+"PO-Revision-Date: 2009-01-09 16:20+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Basque\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -30,137 +31,136 @@ msgstr ""
 #: score/StaffObj.cpp:359
 #: score/StaffObj.cpp:365
 msgid "Attach text"
-msgstr ""
+msgstr "Testua erantsi"
 
 #: score/StaffObj.cpp:392
 msgid "General"
-msgstr ""
+msgstr "Orokorra"
 
-#: score/Note.cpp:1771
+#: score/Note.cpp:1775
 msgid "Delete tie &previous"
-msgstr ""
+msgstr "Ezabatu ligatura &aurrekoa"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "c%d"
 msgstr "Do%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "d%d"
 msgstr "Re%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "e%d"
 msgstr "Mi%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "f%d"
 msgstr "Fa%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "g%d"
 msgstr "Sol%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "a%d"
 msgstr "La%d"
 
-#: score/Note.cpp:1939
+#: score/Note.cpp:1943
 #, c-format
 msgid "b%d"
 msgstr "Si%d"
 
 #: score/Instrument.cpp:167
-#: app/MidiWizard.cpp:435
-#: app/MidiWizard.cpp:615
+#: app/MidiWizard.cpp:436
+#: app/MidiWizard.cpp:616
 msgid "Channel:"
-msgstr ""
+msgstr "Kanala:"
 
 #: score/Instrument.cpp:181
 msgid "Group:"
-msgstr ""
+msgstr "Taldea:"
 
 #: score/Instrument.cpp:190
-#: app/MidiWizard.cpp:452
+#: app/MidiWizard.cpp:453
 msgid "Instrument:"
-msgstr ""
+msgstr "Instrumentua:"
 
 #: score/Instrument.cpp:204
-#: app/MidiWizard.cpp:459
-#: app/MidiWizard.cpp:639
+#: app/MidiWizard.cpp:460
+#: app/MidiWizard.cpp:640
 msgid "Test sound"
-msgstr ""
+msgstr "Soinu testa"
 
 #: score/Instrument.cpp:657
 msgid "MIDI"
-msgstr ""
+msgstr "MIDI"
 
 #: score/Instrument.cpp:666
 msgid "Name"
-msgstr ""
+msgstr "Izena"
 
 #: score/Instrument.cpp:667
 msgid "Abbreviation"
-msgstr ""
+msgstr "Laburtzapena"
 
 #: score/Instrument.cpp:670
 msgid "Instrument properties"
-msgstr ""
+msgstr "Instrumentu ezaugarriak"
 
 #: score/Score.cpp:1585
 #: score/Score.cpp:1600
-#: app/MainFrame.cpp:1082
+#: app/MainFrame.cpp:1084
 msgid "Add title"
-msgstr ""
+msgstr "Gehitu titulua"
 
 #: score/Score.cpp:1586
-#: app/MainFrame.cpp:1083
+#: app/MainFrame.cpp:1085
 msgid "Add a title to the score"
-msgstr ""
+msgstr "Gehitu titulua partiturari"
 
 #: score/Score.cpp:1591
 #: score/Score.cpp:1601
-#: app/MainFrame.cpp:1084
+#: app/MainFrame.cpp:1086
 msgid "Margins and spacers"
-msgstr ""
+msgstr "Marjinak eta bereizgailuak"
 
 #: score/Score.cpp:1631
 msgid "Select instrument:"
-msgstr ""
+msgstr "Aukeratu instrumentua:"
 
 #: score/Score.cpp:1632
 msgid "Instrument selection"
-msgstr ""
+msgstr "Instrumentu aukera"
 
 #: score/Score.cpp:1694
 #: score/Score.cpp:1700
 #: xml_parser/MusicXMLParser.cpp:1422
-#, fuzzy
 msgid "Lyrics"
-msgstr "Lizentzia"
+msgstr "Letrak"
 
 #: score/Score.cpp:1705
 #: score/Score.cpp:1711
 #: app/ScoreCommand.cpp:1530
 msgid "Normal text"
-msgstr ""
+msgstr "Testu normala"
 
 #: score/Score.cpp:1716
 #: score/Score.cpp:1722
-#: app/ScoreWizard.cpp:322
+#: app/ScoreWizard.cpp:339
 #: app/ScoreCommand.cpp:1589
 msgid "Title"
-msgstr ""
+msgstr "Izenburua"
 
 #: score/Score.cpp:1748
 #, c-format
 msgid "Style%d"
-msgstr ""
+msgstr "Estiloa%d"
 
 #: score/KeySignature.cpp:690
 #: ../xrc/xrc_strings.cpp:373
@@ -273,7 +273,7 @@ msgstr "Re # minorra"
 #: score/KeySignature.cpp:712
 #: exercises/TheoKeySignCtrol.cpp:107
 msgid "A # minor"
-msgstr "Si # minorra"
+msgstr "La # minorra"
 
 #: score/KeySignature.cpp:713
 #: exercises/TheoKeySignCtrol.cpp:108
@@ -326,55 +326,53 @@ msgstr "Re minorra"
 msgid "Sorry, an error has occurred while allocating the font."
 msgstr "Barkatu, huts bat izan da letra tipoa esleitzean."
 
-#: score/Barline.cpp:107
-msgid "Simple barline"
-msgstr ""
-
-#: score/Barline.cpp:108
-#, fuzzy
-msgid "Double barline"
-msgstr "Sostenitu bikoitza"
-
-#: score/Barline.cpp:109
-msgid "Final barline"
-msgstr ""
-
-#: score/Barline.cpp:110
-#, fuzzy
-msgid "Start repetition"
-msgstr "funtsezko posizioa"
-
-#: score/Barline.cpp:111
-msgid "End repetition"
-msgstr ""
-
-#: score/Barline.cpp:112
-msgid "Star barline"
-msgstr ""
-
-#: score/Barline.cpp:113
-#, fuzzy
-msgid "Double repetition"
-msgstr "Sostenitu bikoitza"
-
-#: score/Barline.cpp:311
+#: score/Barline.cpp:315
 #: ../xrc/xrc_strings.cpp:173
 msgid "Barline"
-msgstr ""
+msgstr "Barra"
 
-#: score/Barline.cpp:314
+#: score/Barline.cpp:318
 msgid "Barline properties"
-msgstr ""
+msgstr "Barra ezaugarriak"
 
-#: score/ColStaffObjs.cpp:3303
+#: score/Barline.cpp:390
+msgid "Simple barline"
+msgstr "Barra arrunta"
+
+#: score/Barline.cpp:391
+msgid "Double barline"
+msgstr "Barra bikoitza"
+
+#: score/Barline.cpp:392
+msgid "Final barline"
+msgstr "Amaiera barra"
+
+#: score/Barline.cpp:393
+msgid "Start repetition"
+msgstr "Hasi errepikapena"
+
+#: score/Barline.cpp:394
+msgid "End repetition"
+msgstr "Amaiera errepikatzea"
+
+#: score/Barline.cpp:395
+#, fuzzy
+msgid "Start barline"
+msgstr "Hasiera barra"
+
+#: score/Barline.cpp:396
+msgid "Double repetition"
+msgstr "Errepikapen bikoitza"
+
+#: score/ColStaffObjs.cpp:3305
 #: score/ColStaffObjs_old.cpp:3591
 msgid "Move backwards: out of measure"
-msgstr ""
+msgstr "Joan atzera: neurriz kanpo"
 
-#: score/ColStaffObjs.cpp:3313
+#: score/ColStaffObjs.cpp:3315
 #: score/ColStaffObjs_old.cpp:3601
 msgid "Move forward: out of measure"
-msgstr ""
+msgstr "Joan aurrera: neurriz kanpo"
 
 #: score/MetronomeMark.cpp:101
 msgid "metronome mark"
@@ -383,28 +381,36 @@ msgstr "metronomo marka"
 #: score/Text.cpp:132
 #: score/Text.cpp:152
 msgid "Text"
+msgstr "Testua"
+
+#: score/VStaff.cpp:534
+msgid "Error: Notes in a chord must have the same duration."
 msgstr ""
 
-#: score/VStaff.cpp:542
+#: score/VStaff.cpp:535
+msgid "Note insertion ignored."
+msgstr ""
+
+#: score/VStaff.cpp:555
 msgid "Error: No clef defined yet."
-msgstr ""
+msgstr "Errorea: Giltza oraindik definitu gabe."
 
-#: score/VStaff.cpp:544
+#: score/VStaff.cpp:557
 msgid "Would you like to have notes placed on the staff as if a G clef has been defined?"
-msgstr ""
+msgstr "Gustatuko litzaizuke notak pentagraman kokatzea Sol bat definitu bazenu bezala? "
 
-#: score/VStaff.cpp:547
+#: score/VStaff.cpp:560
 #: app/ScoreCanvas.cpp:464
 msgid "Insert clef"
-msgstr ""
+msgstr "Sartu giltza"
 
-#: score/VStaff.cpp:547
+#: score/VStaff.cpp:560
 msgid "An invisible G clef will be inserted before the note."
-msgstr ""
+msgstr "Programak Sol giltza ikusezin bat sartuko du nota aurretik."
 
-#: score/VStaff.cpp:548
-#: score/VStaff.cpp:783
-#: score/VStaff.cpp:823
+#: score/VStaff.cpp:561
+#: score/VStaff.cpp:797
+#: score/VStaff.cpp:837
 #: score/properties/DlgProperties.cpp:94
 #: score/properties/DlgEditText.cpp:155
 #: widgets/Wizard.cpp:137
@@ -415,88 +421,87 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:332
 #: ../xrc/xrc_strings.cpp:424
 msgid "Cancel"
-msgstr ""
+msgstr "Ezeztatu"
 
-#: score/VStaff.cpp:548
+#: score/VStaff.cpp:561
 msgid "The 'insert note' command will be cancelled."
-msgstr ""
+msgstr "'Sartu nota' agindua ezeztatuko da."
 
-#: score/VStaff.cpp:772
+#: score/VStaff.cpp:786
 msgid "Notes after the clef will be affected by this action."
-msgstr ""
+msgstr "Giltzaren ondoko notek ekintza honen eragina jasango dute."
 
-#: score/VStaff.cpp:775
+#: score/VStaff.cpp:789
 msgid "Would you like to keep notes' pitch and, therefore, to change notes' positions on the staff? or, would you prefer to keep notes placed on their current staff positions? (implies pitch change)"
-msgstr ""
+msgstr "Nahi duzu noten tonua gorde eta, beraz, noten kokalekua pentagraman aldatu edo gurago zenuke notak pentagraman dauden-daudenean utzi? (tonua aldatzea dakar)"
 
-#: score/VStaff.cpp:781
-#, fuzzy
+#: score/VStaff.cpp:795
 msgid "Keep position"
-msgstr "funtsezko posizioa"
+msgstr "Eutsi posizioari"
 
-#: score/VStaff.cpp:781
+#: score/VStaff.cpp:795
 msgid "Change notes' pitch and keep their current staff position."
-msgstr ""
+msgstr "Aldatu noten tonua eta utzi oraingo pentagrama kokalekuan."
 
-#: score/VStaff.cpp:782
-#: score/VStaff.cpp:821
+#: score/VStaff.cpp:796
+#: score/VStaff.cpp:835
 msgid "Keep pitch"
-msgstr ""
+msgstr "Eutsi tonuari"
 
-#: score/VStaff.cpp:782
+#: score/VStaff.cpp:796
 msgid "Keep pitch and move notes to new staff positions."
-msgstr ""
+msgstr "Tonuari eutsi eta notak pentagramako kokaleku berrietara mugitzea."
 
-#: score/VStaff.cpp:783
+#: score/VStaff.cpp:797
 msgid "The insert, delete or change clef command will be cancelled."
-msgstr ""
+msgstr "Giltza erantsi, ezabatu edo aldatzeko agindua bertan behera geratuko da."
 
-#: score/VStaff.cpp:813
+#: score/VStaff.cpp:827
 msgid "Notes after the key will be affected by this action."
-msgstr ""
+msgstr "Armaduraren ondoko notek ekintza honen eragina jasango dute."
 
-#: score/VStaff.cpp:816
+#: score/VStaff.cpp:830
 msgid "Would you like to keep notes' pitch and, therefore, to add/remove accidentals to the affected notes?"
-msgstr ""
+msgstr "Gustatuko litzaizuke noten azentuari eustea eta, ondorioz, eragindako notei akzidentalak erantsi edo jartzea?"
 
-#: score/VStaff.cpp:821
+#: score/VStaff.cpp:835
 msgid "Keep pitch by adding/removing accidentals when necessary."
-msgstr ""
+msgstr "Tonuari eustea akzidentalak gehituta edo kenduta beharrezkoa izanez gero."
 
-#: score/VStaff.cpp:822
+#: score/VStaff.cpp:836
 msgid "Change pitch"
-msgstr ""
+msgstr "Aldatu tonua."
 
-#: score/VStaff.cpp:822
+#: score/VStaff.cpp:836
 msgid "Do nothing. Notes' pitch will be affected by the change in key signature."
-msgstr ""
+msgstr "Ezer ez egin. Noten tonuak gako armaduraren aldaketa jasango du."
 
-#: score/VStaff.cpp:823
+#: score/VStaff.cpp:837
 msgid "The insert, delete or change key command will be cancelled."
-msgstr ""
+msgstr "Gakoa erantsi, ezabatu edo aldatzeko agindua bertan behera geratuko da."
 
 #: score/properties/DlgTextStyles.cpp:93
 msgid "Styles defined in current score"
-msgstr ""
+msgstr "Estiloak honako partitura honetan definiturik."
 
 #: score/properties/DlgTextStyles.cpp:287
 #: score/properties/DlgTextStyles.cpp:292
 #: score/properties/DlgTextStyles.cpp:297
 msgid "Not yet implemented"
-msgstr ""
+msgstr "Oraindik egin gabe"
 
 #: score/properties/TextProperties.cpp:158
 msgid "Text style:"
-msgstr ""
+msgstr "Testu estiloa:"
 
 #: score/properties/TextProperties.cpp:167
 msgid "Add/change styles"
-msgstr ""
+msgstr "Estiloak gehitu/aldatu"
 
 #: score/properties/DlgProperties.cpp:53
-#: app/MainFrame.cpp:1091
+#: app/MainFrame.cpp:1093
 msgid "Properties"
-msgstr ""
+msgstr "Propietateak"
 
 #: score/properties/DlgProperties.cpp:88
 #: score/properties/DlgEditText.cpp:149
@@ -509,33 +514,33 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:331
 #: ../xrc/xrc_strings.cpp:423
 msgid "Accept"
-msgstr ""
+msgstr "Onartu"
 
 #: score/properties/DlgEditText.cpp:67
 msgid "Edit text"
-msgstr ""
+msgstr "Testua editatzea"
 
 #: score/properties/DlgEditText.cpp:97
-#: app/MainFrame.cpp:666
+#: app/MainFrame.cpp:668
 msgid "Copy"
-msgstr ""
+msgstr "Kopiatzea"
 
 #: score/properties/DlgEditText.cpp:101
-#: app/MainFrame.cpp:670
+#: app/MainFrame.cpp:672
 msgid "Cut"
-msgstr ""
+msgstr "Moztea"
 
 #: score/properties/DlgEditText.cpp:105
 #: score/properties/DlgEditText.cpp:111
 #: score/properties/DlgEditText.cpp:115
 #: score/properties/DlgEditText.cpp:119
-#: app/MainFrame.cpp:674
+#: app/MainFrame.cpp:676
 msgid "Paste"
-msgstr ""
+msgstr "Itsastea"
 
 #: score/properties/DlgEditText.cpp:123
 msgid "Text color selector"
-msgstr ""
+msgstr "Testu kolorea aukeratzekoa"
 
 #: auxmusic/ComposerV6.cpp:278
 msgid "[lmComposer6::GenerateScore] No usable fragments!"
@@ -700,7 +705,7 @@ msgstr "Kadentzia erdia"
 
 #: auxmusic/Interval.cpp:188
 msgid "It is not possible to generate an interval satisfying the constraints imposed by the chosen settings."
-msgstr "Ezin da ganorazko interbalorik sortu aukeraturiko konfigurazioaren mugapenengatik."
+msgstr "Ezin da ganorazko bitarterik sortu aukeraturiko konfigurazioaren mugapenengatik."
 
 #: auxmusic/Interval.cpp:375
 #: auxmusic/Interval.cpp:817
@@ -919,7 +924,7 @@ msgstr "Seidun gehitua "
 
 #: exercises/ChordConstrains.cpp:175
 msgid "Program error: Loop detected in lmChordConstrains::GetRandomChordType."
-msgstr ""
+msgstr "Programa errorea: Begizta detektatua, lmChordConstrains::GetRandomChordType."
 
 #: exercises/CountersCtrol.cpp:74
 msgid "Two teams competition"
@@ -953,7 +958,7 @@ msgstr "Taldearen %d txanda"
 #: exercises/ExerciseCtrol.cpp:204
 #: exercises/TheoMusicReadingCtrol.cpp:162
 msgid "Exercise options"
-msgstr ""
+msgstr "Ariketa aukerak"
 
 #: exercises/ExerciseCtrol.cpp:210
 #: exercises/TheoMusicReadingCtrol.cpp:117
@@ -1030,7 +1035,7 @@ msgstr "Gelditu"
 
 #: exercises/ScalesConstrains.cpp:159
 msgid "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
-msgstr ""
+msgstr "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
 
 #: exercises/Constrains.cpp:161
 #: exercises/MusicReadingConstrains.cpp:53
@@ -1153,7 +1158,7 @@ msgstr "Tonuerdi kromatikoa"
 
 #: exercises/TheoIntervalsCtrol.cpp:412
 msgid "Identify the next interval:"
-msgstr "Identifikatu hurrengo interbaloa:"
+msgstr "Identifikatu hurrengo bitartea:"
 
 #: exercises/TheoIntervalsCtrol.cpp:418
 msgid "Build a "
@@ -1793,19 +1798,19 @@ msgstr "bi zortzidun"
 
 #: exercises/Generators.cpp:67
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateClef."
-msgstr ""
+msgstr "Program error: Loop detected in lmRandomGenerator::GenerateClef."
 
 #: exercises/Generators.cpp:82
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateKey."
-msgstr ""
+msgstr "Program error: Loop detected in lmRandomGenerator::GenerateKey."
 
 #: exercises/Generators.cpp:102
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateTime."
-msgstr ""
+msgstr "Program error: Loop detected in lmRandomGenerator::GenerateTime."
 
 #: exercises/CadencesConstrains.cpp:149
 msgid "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
-msgstr ""
+msgstr "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
 
 #: exercises/IdfyChordCtrol.cpp:99
 msgid "Major "
@@ -2030,7 +2035,7 @@ msgstr "<%s> analizatzen:  iraupena=%d,  denbora desplazamendua=%f "
 #: xml_parser/MusicXMLParser.cpp:459
 #, c-format
 msgid "Parsing <clef>: staff_number=%s, clef=%s, line=%s"
-msgstr "<clef> analizatzen: nota_kopurua=%s, klabea=%s, lerroa=%s"
+msgstr "<clef> analizatzen: nota_kopurua=%s, giltza=%s, lerroa=%s"
 
 #: xml_parser/MusicXMLParser.cpp:477
 #, c-format
@@ -2119,465 +2124,455 @@ msgstr "<fermata> analizatzen"
 #: xml_parser/MusicXMLParser.cpp:1290
 #, c-format
 msgid "Parsing <tuplet>. Type=%s, bracket=%s, above=%s, showNumber=%s, number=%d"
-msgstr ""
+msgstr "Parsing <tuplet>. Type=%s, bracket=%s, above=%s, showNumber=%s, number=%d"
 
 #: xml_parser/MusicXMLParser.cpp:1393
 #, c-format
 msgid "Parsing <note>.<lyric>: unknown syllabic value %s"
-msgstr ""
+msgstr "Parsing <note>.<lyric>: unknown syllabic value %s"
 
 #: xml_parser/MusicXMLParser.cpp:1430
 msgid "Parsing <lyric>"
-msgstr ""
+msgstr "<lyric> analizatzen"
 
 #: xml_parser/MusicXMLParser.cpp:1480
 #, c-format
 msgid "Parsing <note>.<accidental>: unknown type %s"
-msgstr ""
+msgstr "Parsing <note>.<accidental>: unknown type %s"
 
 #: xml_parser/MusicXMLParser.cpp:1484
 #, c-format
 msgid "Parsing <accidental>. Type=%s"
-msgstr ""
+msgstr "Parsing <accidental>. Type=%s"
 
 #: xml_parser/MusicXMLParser.cpp:1767
 #, c-format
 msgid "Attribute \"%s\" not found in tag <%s>."
-msgstr ""
+msgstr "Attribute \"%s\" not found in tag <%s>."
 
 #: xml_parser/MusicXMLParser.cpp:1785
 #, c-format
 msgid "Yes-no attribute \"%s\" has an invalid value \"%s\"."
-msgstr ""
+msgstr "Yes-no attribute \"%s\" has an invalid value \"%s\"."
 
 #: xml_parser/MusicXMLParser.cpp:2034
 #, c-format
 msgid "Parsing <duration>: duration=%s"
-msgstr ""
+msgstr "Parsing <duration>: duration=%s"
 
 #: xml_parser/MusicXMLParser.cpp:2059
 #, c-format
 msgid "Parsing <divisions>: divisions=%s"
-msgstr ""
+msgstr "Parsing <divisions>: divisions=%s"
 
 #: xml_parser/MusicXMLParser.cpp:2085
 #, c-format
 msgid "Parsing <placement>: placement='%s'>"
-msgstr ""
+msgstr "Parsing <placement>: placement='%s'>"
 
 #: xml_parser/MusicXMLParser.cpp:2092
 #, c-format
 msgid "<placement> element has an invalid value \"%s\". Assumed 'above'"
-msgstr ""
+msgstr "<placement> element has an invalid value \"%s\". Assumed 'above'"
 
-#: app/ScoreWizard.cpp:129
-msgid "Empty (manuscript paper)"
-msgstr ""
-
-#: app/ScoreWizard.cpp:130
-msgid "Brass quintet"
-msgstr ""
-
-#: app/ScoreWizard.cpp:131
-msgid "Brass trio"
-msgstr ""
-
-#: app/ScoreWizard.cpp:132
-msgid "Choir 4 voices (SATB)"
-msgstr ""
-
-#: app/ScoreWizard.cpp:133
-msgid "Choir SATB + piano"
-msgstr ""
-
-#: app/ScoreWizard.cpp:134
-msgid "Choir 3 voices (SSA)"
-msgstr ""
-
-#: app/ScoreWizard.cpp:135
-msgid "Choir SSA + piano"
-msgstr ""
-
-#: app/ScoreWizard.cpp:136
-#, fuzzy
-msgid "Flute"
-msgstr "Bemola"
-
-#: app/ScoreWizard.cpp:137
-msgid "Guitar"
-msgstr ""
-
-#: app/ScoreWizard.cpp:138
-#, fuzzy
-msgid "Piano"
-msgstr "Frigioa"
-
-#: app/ScoreWizard.cpp:139
-msgid "Violin and piano"
-msgstr ""
-
-#: app/ScoreWizard.cpp:140
-msgid "Viola and piano"
-msgstr ""
-
-#: app/ScoreWizard.cpp:141
-msgid "Cello and piano"
-msgstr ""
-
-#: app/ScoreWizard.cpp:142
-msgid "String quartet"
-msgstr ""
-
-#: app/ScoreWizard.cpp:143
-#, fuzzy
-msgid "Violin"
-msgstr "Mixolidioa"
-
-#: app/ScoreWizard.cpp:144
-msgid "Trio sonata"
-msgstr ""
-
-#: app/ScoreWizard.cpp:145
-msgid "Woodwind trio"
-msgstr ""
-
-#: app/ScoreWizard.cpp:146
-msgid "Woodwind quintet"
-msgstr ""
+#: app/ScoreWizard.cpp:268
+msgid "Score configuration wizard"
+msgstr "Partitura eratzeko morroia"
 
 #: app/ScoreWizard.cpp:280
-msgid "Score configuration wizard"
-msgstr ""
+msgid "Empty (manuscript paper)"
+msgstr "Hutsa (eskuizkribu papera)"
 
-#: app/ScoreWizard.cpp:323
+#: app/ScoreWizard.cpp:281
+msgid "Brass quintet"
+msgstr "Metal boskotea"
+
+#: app/ScoreWizard.cpp:282
+msgid "Brass trio"
+msgstr "Metal hirukotea"
+
+#: app/ScoreWizard.cpp:283
+msgid "Choir 4 voices (SATB)"
+msgstr "Koroa 4 ahots (SATB)"
+
+#: app/ScoreWizard.cpp:284
+msgid "Choir SATB + piano"
+msgstr "SATB koroa + pianoa"
+
+#: app/ScoreWizard.cpp:285
+msgid "Choir 3 voices (SSA)"
+msgstr "Koroa 3 ahots (SSA)"
+
+#: app/ScoreWizard.cpp:286
+msgid "Choir SSA + piano"
+msgstr "SSA koroa + pianoa"
+
+#: app/ScoreWizard.cpp:287
+msgid "Flute"
+msgstr "Flauta"
+
+#: app/ScoreWizard.cpp:288
+msgid "Guitar"
+msgstr "Gitarra"
+
+#: app/ScoreWizard.cpp:289
+msgid "Piano"
+msgstr "Pianoa"
+
+#: app/ScoreWizard.cpp:290
+msgid "Violin and piano"
+msgstr "Biolina eta pianoa"
+
+#: app/ScoreWizard.cpp:291
+msgid "Viola and piano"
+msgstr "Biola eta pianoa"
+
+#: app/ScoreWizard.cpp:292
+msgid "Cello and piano"
+msgstr "Txeloa eta pianoa"
+
+#: app/ScoreWizard.cpp:293
+msgid "String quartet"
+msgstr "Hari laukotea"
+
+#: app/ScoreWizard.cpp:294
+msgid "Violin"
+msgstr "Biolina"
+
+#: app/ScoreWizard.cpp:295
+msgid "Trio sonata"
+msgstr "Hirukote sonata"
+
+#: app/ScoreWizard.cpp:296
+msgid "Woodwind trio"
+msgstr "Zurezko haize hirukotea"
+
+#: app/ScoreWizard.cpp:297
+msgid "Woodwind quintet"
+msgstr "Zurezko haize boskotea"
+
+#: app/ScoreWizard.cpp:340
 msgid "Subtitle"
-msgstr ""
+msgstr "Azpititulua"
 
-#: app/ScoreWizard.cpp:324
+#: app/ScoreWizard.cpp:341
 msgid "Composer"
-msgstr ""
+msgstr "Konposatzailea"
 
-#: app/ScoreWizard.cpp:325
+#: app/ScoreWizard.cpp:342
 msgid "Arranger"
-msgstr ""
+msgstr "Moldatzailea"
 
-#: app/ScoreWizard.cpp:326
+#: app/ScoreWizard.cpp:343
 msgid "Lyricist"
-msgstr ""
+msgstr "Letragilea"
 
-#: app/ScoreWizard.cpp:419
+#: app/ScoreWizard.cpp:436
 #, c-format
 msgid "Error: Template '%s' not found."
-msgstr ""
+msgstr "Errorea: '%s' txantiloia ez da aurkitu."
 
-#: app/ScoreWizard.cpp:421
+#: app/ScoreWizard.cpp:438
 msgid "Posible causes:"
-msgstr ""
+msgstr "Zergatiko posibleak:"
 
-#: app/ScoreWizard.cpp:423
+#: app/ScoreWizard.cpp:440
 msgid "- An error during lenmus installation."
-msgstr ""
+msgstr "-Lenmus instalatzerakoan gertaturiko errorea."
 
-#: app/ScoreWizard.cpp:425
+#: app/ScoreWizard.cpp:442
 msgid "- An accidental deletion of the required template."
-msgstr ""
+msgstr "-Beharrezko txantiloia ezbeharrez ezabatu izana. "
 
-#: app/ScoreWizard.cpp:427
+#: app/ScoreWizard.cpp:444
 msgid "An empty score will be created."
-msgstr ""
+msgstr "Partitura zuri bat sortuko da. "
 
-#: app/ScoreWizard.cpp:620
+#: app/ScoreWizard.cpp:636
 msgid "Select instruments and style"
-msgstr ""
+msgstr "Instrumentuak eta estiloa aukeratzea"
 
-#: app/ScoreWizard.cpp:628
+#: app/ScoreWizard.cpp:644
 msgid "Select paper size and orientation"
-msgstr ""
+msgstr "Paper tamaina eta orientazioa aukeratzea"
 
-#: app/ScoreWizard.cpp:633
+#: app/ScoreWizard.cpp:649
 msgid "Paper size"
-msgstr ""
+msgstr "Paper tamaina"
 
-#: app/ScoreWizard.cpp:644
+#: app/ScoreWizard.cpp:660
 msgid "Landscape"
-msgstr ""
+msgstr "Horizontala"
 
-#: app/ScoreWizard.cpp:644
+#: app/ScoreWizard.cpp:660
 msgid "Portrait"
-msgstr ""
+msgstr "Bertikala"
 
-#: app/ScoreWizard.cpp:658
-#: app/ScoreWizard.cpp:820
-#: app/ScoreWizard.cpp:1025
-#: app/MainFrame.cpp:2161
+#: app/ScoreWizard.cpp:674
+#: app/ScoreWizard.cpp:836
+#: app/ScoreWizard.cpp:1041
+#: app/MainFrame.cpp:2172
 msgid "Preview"
-msgstr ""
+msgstr "Aurrebista"
 
-#: app/ScoreWizard.cpp:799
+#: app/ScoreWizard.cpp:815
 msgid "Select a key signature"
-msgstr ""
+msgstr "Aukeratu gako armadura bat"
 
-#: app/ScoreWizard.cpp:801
-#: app/toolbox/ToolClef.cpp:295
-#, fuzzy
+#: app/ScoreWizard.cpp:817
+#: app/toolbox/ToolClef.cpp:310
 msgid "Major"
 msgstr "Maiorra"
 
-#: app/ScoreWizard.cpp:801
-#, fuzzy
+#: app/ScoreWizard.cpp:817
 msgid "minor"
-msgstr " minorra"
+msgstr "minorra"
 
-#: app/ScoreWizard.cpp:803
+#: app/ScoreWizard.cpp:819
 msgid "Key type"
-msgstr ""
+msgstr "Gako mota"
 
-#: app/ScoreWizard.cpp:915
+#: app/ScoreWizard.cpp:931
 msgid "none"
-msgstr ""
+msgstr "bat ez"
 
-#: app/ScoreWizard.cpp:969
+#: app/ScoreWizard.cpp:985
 msgid "Select time signature"
-msgstr ""
+msgstr "Konpas armadura aukeratzea"
 
-#: app/ScoreWizard.cpp:974
+#: app/ScoreWizard.cpp:990
 msgid "Time signature"
-msgstr ""
+msgstr "Konpas armadura"
 
-#: app/ScoreWizard.cpp:980
+#: app/ScoreWizard.cpp:996
 msgid "Other time signatures"
-msgstr ""
+msgstr "Bestelako konpas armadurak"
 
-#: app/ScoreWizard.cpp:989
+#: app/ScoreWizard.cpp:1005
 msgid "Numerator"
-msgstr ""
+msgstr "Zenbakitzailea"
 
-#: app/ScoreWizard.cpp:1001
-#, fuzzy
+#: app/ScoreWizard.cpp:1017
 msgid "Denominator"
-msgstr "Re minorra"
-
-#: app/ScoreWizard.cpp:1123
-msgid "Add titles"
-msgstr ""
-
-#: app/ScoreWizard.cpp:1125
-msgid "Title:"
-msgstr ""
-
-#: app/ScoreWizard.cpp:1132
-msgid "Subtitle:"
-msgstr ""
+msgstr "Adierazlea"
 
 #: app/ScoreWizard.cpp:1139
+msgid "Add titles"
+msgstr "Gehitu tituluak"
+
+#: app/ScoreWizard.cpp:1141
+msgid "Title:"
+msgstr "Izenburua:"
+
+#: app/ScoreWizard.cpp:1148
+msgid "Subtitle:"
+msgstr "Azpititulua:"
+
+#: app/ScoreWizard.cpp:1155
 msgid "Composer:"
-msgstr ""
+msgstr "Konposatzailea:"
 
-#: app/ScoreWizard.cpp:1146
+#: app/ScoreWizard.cpp:1162
 msgid "Arranger:"
-msgstr ""
+msgstr "Moldatzailea:"
 
-#: app/ScoreWizard.cpp:1153
+#: app/ScoreWizard.cpp:1169
 msgid "Lyricist:"
-msgstr ""
+msgstr "Letragilea:"
 
 #: app/ScoreCanvas.cpp:259
 msgid "attach text"
-msgstr ""
+msgstr "erantsi testua"
 
 #: app/ScoreCanvas.cpp:276
 #, c-format
 msgid "Move %s"
-msgstr ""
+msgstr "Mugitu %s"
 
 #: app/ScoreCanvas.cpp:293
 msgid "Change margin"
-msgstr ""
+msgstr "Aldatu marjina"
 
 #: app/ScoreCanvas.cpp:314
 #: app/ScoreCanvas.cpp:329
 #, c-format
 msgid "Delete %s"
-msgstr ""
+msgstr "Ezabatu %s"
 
 #: app/ScoreCanvas.cpp:353
 msgid "Delete selection"
-msgstr ""
+msgstr "Ezabatu aukeratua"
 
 #: app/ScoreCanvas.cpp:371
 msgid "Break a beam"
-msgstr ""
+msgstr "Apurtu nota taldea"
 
 #: app/ScoreCanvas.cpp:387
 msgid "Add beam"
-msgstr ""
+msgstr "Gehitu nota taldea"
 
 #: app/ScoreCanvas.cpp:407
-#, fuzzy
 msgid "Delete tie"
-msgstr "Iruzurtia"
+msgstr "Ezabatu lotura"
 
 #: app/ScoreCanvas.cpp:417
 msgid "Add tie"
-msgstr ""
+msgstr "Gehitu ligatura"
 
 #: app/ScoreCanvas.cpp:435
 msgid "Add tuplet"
-msgstr ""
+msgstr "Gehitu hirukotxoa"
 
 #: app/ScoreCanvas.cpp:450
 msgid "Delete tuplet"
-msgstr ""
+msgstr "Ezabatu hirukotxoa"
 
 #: app/ScoreCanvas.cpp:480
 msgid "Insert time signature"
-msgstr ""
+msgstr "Sartu konpas mota"
 
 #: app/ScoreCanvas.cpp:498
 msgid "Insert key signature"
-msgstr ""
+msgstr "Sartu armadura"
 
 #: app/ScoreCanvas.cpp:512
 msgid "Insert barline"
-msgstr ""
+msgstr "Sartu barra"
 
 #: app/ScoreCanvas.cpp:531
 msgid "Insert note"
-msgstr ""
+msgstr "Sartu nota"
 
 #: app/ScoreCanvas.cpp:552
 msgid "Insert rest"
-msgstr ""
+msgstr "Sartu isilunea"
 
 #: app/ScoreCanvas.cpp:567
 msgid "Change note pitch"
-msgstr ""
+msgstr "Aldatu nota tonua"
 
 #: app/ScoreCanvas.cpp:579
-#, fuzzy
 msgid "Change note accidentals"
-msgstr "Zeinurik ez"
+msgstr "Aldatu nota akzidentalak"
 
 #: app/ScoreCanvas.cpp:592
 msgid "Change note dots"
-msgstr ""
+msgstr "Aldatu nota puntuak"
 
 #: app/ScoreCanvas.cpp:606
 msgid "Change text"
-msgstr ""
+msgstr "Aldatu testua"
 
 #: app/ScoreCanvas.cpp:1315
 #: app/ScoreCanvas.cpp:1341
 msgid "&Cut"
-msgstr ""
+msgstr "&Ebaki"
 
 #: app/ScoreCanvas.cpp:1333
 #: app/ScoreCanvas.cpp:1346
 msgid "Edit"
-msgstr ""
+msgstr "Editatu"
 
 #: app/WelcomeWnd.cpp:86
 msgid "Welcome"
-msgstr ""
+msgstr "Ongi etorri"
 
 #: app/WelcomeWnd.cpp:149
 msgid "Welcome to LenMus"
-msgstr ""
+msgstr "Ongi etorri LenMus programara"
 
 #: app/WelcomeWnd.cpp:163
 msgid "Learn about LenMus"
-msgstr ""
+msgstr "Ikasi Lenmusi buruz"
 
 #: app/WelcomeWnd.cpp:178
 msgid "What's is new in LenMus"
-msgstr ""
+msgstr "Zer berri Lenmusen?"
 
 #: app/WelcomeWnd.cpp:181
 msgid "Visit LenMus website"
-msgstr ""
+msgstr "Bisita ezazu Lenmus webgunea"
 
 #: app/WelcomeWnd.cpp:193
 msgid "Learn and practise music theory"
-msgstr ""
+msgstr "Ikasi eta landu musika teoria"
 
 #: app/WelcomeWnd.cpp:208
-#, fuzzy
 msgid "Open eMusicBooks "
-msgstr "eMusicBooks"
+msgstr "zabaldu eMusicBooks"
 
 #: app/WelcomeWnd.cpp:220
 msgid "Create and edit music scores (beta 0 version)"
-msgstr ""
+msgstr "Sortu eta editatu musika partiturak (beta 0 bertsioa)"
 
 #: app/WelcomeWnd.cpp:235
 msgid "New score ..."
-msgstr ""
+msgstr "Partitura berria…"
 
 #: app/WelcomeWnd.cpp:238
-#: app/MainFrame.cpp:1197
+#: app/MainFrame.cpp:1201
 msgid "Editor quick guide"
-msgstr ""
+msgstr "Editorerako gida arina"
 
 #: app/WelcomeWnd.cpp:244
-#, fuzzy
 msgid "Recent scores"
-msgstr "Kontagailuak zeroan jarri"
+msgstr "Partitura erabili berriak"
 
 #: app/SplashFrame.cpp:103
 msgid "Free software under GNU General Public License, version 3 or later."
-msgstr ""
+msgstr "GNU General Public License (3. bertsioa edo hurrengoa) lizentziapeko software askea"
 
 #: app/DlgCfgEarIntervals.cpp:449
 msgid "It is not possible to generate any interval. Selected notes' range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
-msgstr ""
+msgstr "Aukeraturiko noten barruti bitartea ('Bestelako ezaugarriak' atala) txikiagoa da zilegi den gutxienezko bitartea baino ('Bitarteak' atala)"
 
 #: app/DlgCfgEarIntervals.cpp:460
 msgid "It is nor possible to generate all the selected intervals. Selected notes range interval (tab 'Other settings') is lower than maximum allowed interval (tab 'Intervals')"
-msgstr ""
+msgstr "Ezin dira sortu aukeraturiko bitarte guztiak. Aukeraturiko noten barruti bitartea ('Bestelako ezaugarriak' atala) txikiagoa da zilegi den gehienezko bitartea baino ('Bitarteak' atala)"
 
 #: app/ScoreCommand.cpp:1584
 msgid "add title"
-msgstr ""
+msgstr "gehitu titulua"
 
 #: app/ScoreCommand.cpp:1654
 msgid "change barline"
-msgstr ""
+msgstr "aldatu barra"
 
 #: app/ScoreCommand.cpp:1697
 msgid "change MIDI settings"
-msgstr ""
+msgstr "aldatu MIDI ezarpenak"
 
 #: app/ScoreCommand.cpp:1739
 msgid "move note"
-msgstr ""
+msgstr "mugitu nota"
 
 #: app/DlgDebug.cpp:75
 #: app/LangChoiceDlg.cpp:95
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: app/DlgDebug.cpp:80
 msgid "Save"
-msgstr ""
+msgstr "Gorde"
 
 #: app/Logger.cpp:159
-#: app/MainFrame.cpp:1982
-#: app/MainFrame.cpp:1987
+#: app/MainFrame.cpp:1993
+#: app/MainFrame.cpp:1998
 msgid "Error message"
-msgstr ""
+msgstr "Errore mezua"
 
 #: app/TheApp.cpp:232
 msgid "Another instance of LenMus is already running."
-msgstr ""
+msgstr "LenMuseko beste atal bat dagoeneko abian da."
 
 #: app/TheApp.cpp:781
 msgid "LenMus First Run"
-msgstr ""
+msgstr "LenMusen lehen abioa"
 
 #: app/LangChoiceDlg.cpp:73
 #: ../xrc/xrc_strings.cpp:181
 msgid "Choose language to use:"
-msgstr ""
+msgstr "Aukeratu erabili beharreko hizkuntza:"
 
 #: app/AboutDialog.cpp:105
 #: app/AboutDialog.cpp:138
@@ -2586,9 +2581,8 @@ msgstr "Musika hizkuntza lantzeko doako programa"
 
 #: app/AboutDialog.cpp:134
 #: app/AboutDialog.cpp:139
-#, fuzzy
 msgid "Arial"
-msgstr "Terminala"
+msgstr "Arial"
 
 #: app/AboutDialog.cpp:156
 #: app/AboutDialog.cpp:196
@@ -2597,24 +2591,24 @@ msgstr "Helburua"
 
 #: app/AboutDialog.cpp:159
 msgid "Licence"
-msgstr ""
+msgstr "Lizentzia"
 
 #: app/AboutDialog.cpp:162
-#: app/AboutDialog.cpp:378
+#: app/AboutDialog.cpp:376
 msgid "Project team"
 msgstr "Proiektu lantaldea"
 
 #: app/AboutDialog.cpp:165
 msgid "Art design"
-msgstr ""
+msgstr "Arte diseinua"
 
 #: app/AboutDialog.cpp:168
 msgid "Software used"
-msgstr ""
+msgstr "Erabilitako softwarea"
 
 #: app/AboutDialog.cpp:171
 msgid "Build info."
-msgstr ""
+msgstr "Eraikitze informazioa"
 
 #: app/AboutDialog.cpp:198
 msgid "LenMus is a free program to help you in the study of music theory and  ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
@@ -2632,18 +2626,13 @@ msgstr "Akatsik topatuz edo iradokizunik egin nahi izanez gero, mesedez jar zait
 msgid "License"
 msgstr "Lizentzia"
 
-#: app/AboutDialog.cpp:226
-msgid "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
-msgstr "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
-
 #: app/AboutDialog.cpp:228
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 msgstr "Programa hau doako softwarea da; zilegi da hura kopiatu, banatu eta/edo aldatzea Free Software Foundation erakundeak argitaraturiko GNU Free Documentation License lizentziaren 3. edo hurrengo bertsioen arabera (gurago duzun moduan)."
 
 #: app/AboutDialog.cpp:233
-#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at "
-msgstr "Programa hau banatzen da erabilgarri izango delakoan, baina INOLAKO BERMERIK GABE; ezta berezko MERKATURATZE edo ERABILERA JAKINERAKO EGOKITASUN bermerik gabe ere. GNU General Public License lizentziaz gehiago jakin nahi izanez gero, erabili hau:  http://www.gnu.org/licenses/licenses.html"
+msgstr "Programa hau banatzen da erabilgarri izango delakoan, baina INOLAKO BERMERIK GABE; ezta berezko MERKATURATZE edo ERABILERA JAKINERAKO EGOKITASUN bermerik gabe ere. GNU General Public License lizentziaz gehiago jakin nahi izanez gero, erabili hau:  "
 
 #: app/AboutDialog.cpp:248
 msgid "Art desing credits"
@@ -2691,7 +2680,7 @@ msgstr "Programak Maxim Shemanarev-ek garaturiko <b>Anti-Grain Geometry</b> (htt
 
 #: app/AboutDialog.cpp:307
 msgid "This program uses the <b>FreeType 2</b> software. It is a free open source font engine, designed to be small, efficient, highly customizable and portable, while capable of producing high-quality output (glyph images). It can be used in graphics libraries, display servers, font conversion tools, text image generation tools, and many other products as well. It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
-msgstr ""
+msgstr "Letra tipoak sortzeko kode ireki libreko makina da, txikia, eraginkorra, guztiz moldagarria eta eramangarria izanda, kalitate handiko emaitzak (glyph irudiak) lortzeko diseinatua. Liburutegi grafikoetan, bistaratze zerbitzarietan, letra tipoak itzultzeko tresnetan, testu irudiak sortzeko tresnetan eta beste hainbat produktutan erabilgarria da. David Turner, Robert Wilhelm eta Werner Lembergek garatua. FreeTypek copyrighta  du (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
 
 #: app/AboutDialog.cpp:315
 msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
@@ -2714,958 +2703,951 @@ msgid "wxMidi Version "
 msgstr "wxMidi bertsioa"
 
 #: app/AboutDialog.cpp:360
-#, fuzzy
 msgid "Your computer information:"
-msgstr "Ekipamendu informazioa:"
+msgstr "Zure ordenagailuaren informazioa:"
 
-#: app/AboutDialog.cpp:379
+#: app/AboutDialog.cpp:377
 msgid "(alphabetical order)"
 msgstr "(alfabeto hurrenkera)"
 
-#: app/AboutDialog.cpp:381
+#: app/AboutDialog.cpp:379
 msgid "This program has been designed and developed by volunteers. Some of them devoted a few hours, others months or years. But all them gave their time for free to the project. Thanks to all them."
 msgstr "Programa hau borondatezkoek diseinatu eta garatu dute. Haietako batzuek zenbait ordu eman dituzte, beste batzuek, ordea, hilabeteak edo urteak. Baina guzti-guztiek doan eman diote beren denbora proiektuari. Eskerrik asko denei."
 
-#: app/AboutDialog.cpp:388
+#: app/AboutDialog.cpp:386
 msgid "Management and programming:"
 msgstr "Kudeaketa eta programazioa:"
 
-#: app/AboutDialog.cpp:393
+#: app/AboutDialog.cpp:391
 msgid "Music texts and exercises:"
 msgstr "Musika testu eta ariketak:"
 
-#: app/AboutDialog.cpp:399
-msgid "Package for Linux prepared by:"
-msgstr ""
-
-#: app/AboutDialog.cpp:404
+#: app/AboutDialog.cpp:402
 msgid "Translation:"
 msgstr "Itzulpena:"
 
-#: app/AboutDialog.cpp:405
+#: app/AboutDialog.cpp:403
 msgid "Basque"
-msgstr ""
+msgstr "Euskara"
 
-#: app/AboutDialog.cpp:408
+#: app/AboutDialog.cpp:406
 msgid "Dutch"
 msgstr "Alemana"
 
-#: app/AboutDialog.cpp:411
+#: app/AboutDialog.cpp:409
 msgid "French"
 msgstr "Frantsesa"
 
-#: app/AboutDialog.cpp:416
+#: app/AboutDialog.cpp:414
 #, fuzzy
-msgid "Italian"
-msgstr "Jonikoa"
+msgid "Galician"
+msgstr "Italiarra"
 
 #: app/AboutDialog.cpp:419
+msgid "Italian"
+msgstr "Italiarra"
+
+#: app/AboutDialog.cpp:422
 msgid "Spanish"
 msgstr "Espainiera"
 
-#: app/AboutDialog.cpp:422
+#: app/AboutDialog.cpp:425
 msgid "Turkish"
 msgstr "Turkiera"
 
-#: app/AboutDialog.cpp:428
+#: app/AboutDialog.cpp:431
 msgid "Website maintenace:"
-msgstr ""
+msgstr "Webgunea mantentzea:"
 
-#: app/AboutDialog.cpp:434
+#: app/AboutDialog.cpp:437
 msgid "Thanks also to:"
-msgstr ""
+msgstr "Eskertu beharrekoak ere:"
 
-#: app/AboutDialog.cpp:439
+#: app/AboutDialog.cpp:442
 msgid "If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
-msgstr ""
+msgstr "Programa hau garatzen laguntzeko edo bestelako laguntzarik emateko proiektuko kide izan nahi baduzu, pozik hartuko zaitugu; mesedez, bisita ezazu Lenmus webgunea   www.lenmus.org helbidean eta utz ezazu mezu bat 'Harremana' orrian. Eskerrik asko eta ondo etorri!"
 
 #: app/MidiWizard.cpp:75
-#: app/MainFrame.cpp:1162
+#: app/MainFrame.cpp:1166
 msgid "MIDI configuration wizard"
-msgstr ""
+msgstr "MIDIa eratzeko morroia"
 
 #: app/MidiWizard.cpp:244
 msgid "None"
-msgstr ""
+msgstr "Bat ere ez"
 
 #: app/MidiWizard.cpp:262
 msgid "Midi devices to use"
-msgstr ""
+msgstr "Erabili beharreko MIDI gailuak"
 
 #: app/MidiWizard.cpp:272
 msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
-msgstr ""
+msgstr "Soinuak sortzeko, programak MIDI sintetizadore bat behar du. Normalean, halako gailu bat egoten da ordenagailuko soinu txartelean, baina zureak bat baino gehiago eduki dezake."
 
 #: app/MidiWizard.cpp:275
 msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
-msgstr ""
+msgstr "Zure ordenagailuak gailu bat baino gehiago edukiz gero, aukeratu bat. Haietako guztiak saiatu eta nahiago duzun soinua sortzen duena erabil dezakezu."
 
 #: app/MidiWizard.cpp:284
 msgid "Output device:"
-msgstr ""
+msgstr "Irteera gailua:"
 
-#: app/MidiWizard.cpp:413
+#: app/MidiWizard.cpp:414
 msgid "Voice channel and instrument"
-msgstr ""
+msgstr "Ahots eta instrumentu kanala"
 
-#: app/MidiWizard.cpp:423
+#: app/MidiWizard.cpp:424
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
-msgstr ""
+msgstr "10. eta 16. kanalak batez perkusio soinuetarakoak dira. Beraz, gomendagarri da beste kanalen bat aukeratzea (berdin dio zein)."
 
-#: app/MidiWizard.cpp:426
+#: app/MidiWizard.cpp:427
 msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
-msgstr ""
+msgstr "Tresnak errazago eskuratzearren, atalka daude taldekatuta. Lehenik, aukeratu atal bat eta, gero, gura duzun instrumentua."
 
-#: app/MidiWizard.cpp:445
+#: app/MidiWizard.cpp:446
 msgid "Section:"
-msgstr ""
+msgstr "Atala:"
 
-#: app/MidiWizard.cpp:593
+#: app/MidiWizard.cpp:594
 msgid "lmMetronome channel and sounds"
-msgstr ""
+msgstr "lmMetronomo eta soinu kanalak"
 
-#: app/MidiWizard.cpp:603
+#: app/MidiWizard.cpp:604
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
-msgstr ""
+msgstr "10. eta 16. kanalak batez perkusio soinuetarakoak dira. Beraz, gomendagarri da hauetako kanalen bat aukeratzea (berdin dio zein)."
 
-#: app/MidiWizard.cpp:606
+#: app/MidiWizard.cpp:607
 msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."
-msgstr ""
+msgstr "Neurri bakoitzaren lehen taupada hobeto identifikatzearren, bakoitzari bere soinua izendatzeko aukera duzu. Baina soinu berbera aukeratu dezakezu lehenengo taupadarako zein besteetarako ere."
 
-#: app/MidiWizard.cpp:625
+#: app/MidiWizard.cpp:626
 msgid "Sound for first beat of each measure:"
-msgstr ""
+msgstr "Neurri bakoitzaren lehen taupadarako soinua:"
 
-#: app/MidiWizard.cpp:632
+#: app/MidiWizard.cpp:633
 msgid "Sound for other beats of each measure:"
-msgstr ""
+msgstr "Neurri bakoitzaren beste taupadetarako soinua:"
 
-#: app/MainFrame.cpp:482
+#: app/MainFrame.cpp:484
 msgid "Welcome to LenMus!"
-msgstr ""
+msgstr "Ongi etorri LenMus programara!"
 
-#: app/MainFrame.cpp:633
+#: app/MainFrame.cpp:635
 msgid "Set user preferences"
-msgstr ""
+msgstr "Ezarri erabiltzailearen hobespenak"
 
-#: app/MainFrame.cpp:634
+#: app/MainFrame.cpp:636
 msgid "Help button"
-msgstr ""
-
-#: app/MainFrame.cpp:643
-msgid "New score"
-msgstr ""
+msgstr "Laguntza botoia"
 
 #: app/MainFrame.cpp:645
-#: app/MainFrame.cpp:1008
+msgid "New score"
+msgstr "Partitura berria"
+
+#: app/MainFrame.cpp:647
+#: app/MainFrame.cpp:1010
 msgid "Open a score"
-msgstr ""
+msgstr "Zabaldu partitura"
 
-#: app/MainFrame.cpp:649
+#: app/MainFrame.cpp:651
 msgid "Open the music books"
-msgstr ""
+msgstr "Zabaldu musika liburuak"
 
-#: app/MainFrame.cpp:653
+#: app/MainFrame.cpp:655
 msgid "Save current score to disk"
-msgstr ""
+msgstr "Gorde partitura hau diskoan"
 
-#: app/MainFrame.cpp:657
+#: app/MainFrame.cpp:659
 msgid "Print document"
-msgstr ""
+msgstr "Inprimatu dokumentua"
 
-#: app/MainFrame.cpp:678
-#: app/MainFrame.cpp:1058
+#: app/MainFrame.cpp:680
+#: app/MainFrame.cpp:1060
 #: ../xrc/xrc_strings.cpp:175
 msgid "Undo"
-msgstr ""
+msgstr "Desegin"
 
-#: app/MainFrame.cpp:682
-#: app/MainFrame.cpp:1060
+#: app/MainFrame.cpp:684
+#: app/MainFrame.cpp:1062
 #: ../xrc/xrc_strings.cpp:176
 msgid "Redo"
-msgstr ""
+msgstr "Berregin"
 
-#: app/MainFrame.cpp:687
-#: app/MainFrame.cpp:1085
+#: app/MainFrame.cpp:689
+#: app/MainFrame.cpp:1087
 msgid "Show/hide page margins and spacers"
-msgstr ""
+msgstr "Erakutsi/ezkutatu marjinak eta zuriuneak"
 
-#: app/MainFrame.cpp:696
-#: app/MainFrame.cpp:1133
+#: app/MainFrame.cpp:698
+#: app/MainFrame.cpp:1137
 msgid "Zoom so that the full page is displayed"
-msgstr ""
+msgstr "Zooma orri osoa bistaratu arte"
 
-#: app/MainFrame.cpp:700
-#: app/MainFrame.cpp:1136
+#: app/MainFrame.cpp:702
+#: app/MainFrame.cpp:1140
 msgid "Zoom so that page width equals window width"
-msgstr ""
+msgstr "Zooma orria leihoaren zabalerakoa izateraino"
 
-#: app/MainFrame.cpp:704
-#: app/MainFrame.cpp:1139
+#: app/MainFrame.cpp:706
+#: app/MainFrame.cpp:1143
 msgid "Enlarge image size"
-msgstr ""
+msgstr "Handitu irudi tamaina"
 
-#: app/MainFrame.cpp:708
-#: app/MainFrame.cpp:1141
+#: app/MainFrame.cpp:710
+#: app/MainFrame.cpp:1145
 msgid "Reduce image size"
-msgstr ""
-
-#: app/MainFrame.cpp:726
-#: app/MainFrame.cpp:1130
-#: app/MainFrame.cpp:1972
-msgid "Actual size"
-msgstr ""
-
-#: app/MainFrame.cpp:727
-#: app/MainFrame.cpp:1132
-#: app/MainFrame.cpp:1966
-msgid "Fit page full"
-msgstr ""
+msgstr "Murriztu irudi tamaina"
 
 #: app/MainFrame.cpp:728
-#: app/MainFrame.cpp:1135
-#: app/MainFrame.cpp:1969
+#: app/MainFrame.cpp:1134
+#: app/MainFrame.cpp:1983
+msgid "Actual size"
+msgstr "Tamaina hau"
+
+#: app/MainFrame.cpp:729
+#: app/MainFrame.cpp:1136
+#: app/MainFrame.cpp:1977
+msgid "Fit page full"
+msgstr "Doitu orri osoa"
+
+#: app/MainFrame.cpp:730
+#: app/MainFrame.cpp:1139
+#: app/MainFrame.cpp:1980
 msgid "Fit page width"
-msgstr ""
+msgstr "Doitu orri zabalera"
 
-#: app/MainFrame.cpp:739
-#: app/MainFrame.cpp:1150
+#: app/MainFrame.cpp:741
+#: app/MainFrame.cpp:1154
 msgid "Start/resume play back. From selection of full score"
-msgstr ""
+msgstr "Hasi/berrekin joaldia. Aukeratutik partitura osora."
 
-#: app/MainFrame.cpp:743
-#: app/MainFrame.cpp:1153
+#: app/MainFrame.cpp:745
+#: app/MainFrame.cpp:1157
 msgid "Start/resume play back. From cursor measure"
-msgstr ""
+msgstr "Hasi/berrekin joaldia. Kurtsorearen neurritik"
 
-#: app/MainFrame.cpp:747
-#: app/MainFrame.cpp:1156
+#: app/MainFrame.cpp:749
+#: app/MainFrame.cpp:1160
 msgid "Stop playing back"
-msgstr ""
+msgstr "Gelditu joaldia"
 
-#: app/MainFrame.cpp:751
-#: app/MainFrame.cpp:1158
+#: app/MainFrame.cpp:753
+#: app/MainFrame.cpp:1162
 msgid "Pause playing back"
-msgstr ""
+msgstr "Eten joaldia"
 
-#: app/MainFrame.cpp:759
+#: app/MainFrame.cpp:761
 msgid "Turn metronome on/off"
-msgstr ""
+msgstr "Abiarazi/gelditu metronomoa"
 
-#: app/MainFrame.cpp:791
-#: app/MainFrame.cpp:838
+#: app/MainFrame.cpp:793
+#: app/MainFrame.cpp:840
 msgid "Metronome tools"
-msgstr ""
+msgstr "Metronomo tresnak"
 
-#: app/MainFrame.cpp:795
-#: app/MainFrame.cpp:834
+#: app/MainFrame.cpp:797
+#: app/MainFrame.cpp:836
 msgid "Play tools"
-msgstr ""
+msgstr "Jotzeko tresnak"
 
-#: app/MainFrame.cpp:799
-#: app/MainFrame.cpp:830
+#: app/MainFrame.cpp:801
+#: app/MainFrame.cpp:832
 msgid "Main tools"
-msgstr ""
+msgstr "Tresna nagusiak"
 
-#: app/MainFrame.cpp:803
-#: app/MainFrame.cpp:826
+#: app/MainFrame.cpp:805
+#: app/MainFrame.cpp:828
 msgid "Zooming tools"
-msgstr ""
+msgstr "Zoom tresnak"
 
-#: app/MainFrame.cpp:807
-#: app/MainFrame.cpp:822
+#: app/MainFrame.cpp:809
+#: app/MainFrame.cpp:824
 msgid "Edit tools"
-msgstr ""
+msgstr "Editatze tresnak"
 
-#: app/MainFrame.cpp:811
-#: app/MainFrame.cpp:818
+#: app/MainFrame.cpp:813
+#: app/MainFrame.cpp:820
 msgid "File tools"
-msgstr ""
+msgstr "Artxibo tresnak"
 
-#: app/MainFrame.cpp:914
+#: app/MainFrame.cpp:916
 msgid "Show/hide navigation panel"
-msgstr ""
+msgstr "Erakutsi/ezkutatu nabigazio panela"
 
-#: app/MainFrame.cpp:921
+#: app/MainFrame.cpp:923
 msgid "Previous page of current eMusicBook"
-msgstr ""
+msgstr "Honako eMusicBook honen aurreko orria"
 
-#: app/MainFrame.cpp:925
+#: app/MainFrame.cpp:927
 msgid "Next page of current eMusicBook"
-msgstr ""
+msgstr "Honako eMusicBook honen hurrengo orria"
 
-#: app/MainFrame.cpp:930
+#: app/MainFrame.cpp:932
 msgid "Go to previous visited page"
-msgstr ""
+msgstr "Joan lehen bisitaturiko orrira"
 
-#: app/MainFrame.cpp:933
+#: app/MainFrame.cpp:935
 msgid "Go to next visited page"
-msgstr ""
+msgstr "Joan hurrengo bisitaturiko orrira"
 
-#: app/MainFrame.cpp:938
+#: app/MainFrame.cpp:940
 msgid "eBooks navigation tools"
-msgstr ""
-
-#: app/MainFrame.cpp:1005
-msgid "&New\tCtrl+N"
-msgstr ""
-
-#: app/MainFrame.cpp:1006
-msgid "Open new blank score"
-msgstr ""
+msgstr "eBooks nabigazio tresnak"
 
 #: app/MainFrame.cpp:1007
-msgid "&Open ...\tCtrl+O"
-msgstr ""
+msgid "&New\tCtrl+N"
+msgstr "&Berria\tCtrl+B"
+
+#: app/MainFrame.cpp:1008
+msgid "Open new blank score"
+msgstr "Zabaldu partitura garbi berri bat"
 
 #: app/MainFrame.cpp:1009
-msgid "Open &books"
-msgstr ""
-
-#: app/MainFrame.cpp:1010
-msgid "Hide/show eMusicBooks"
-msgstr ""
+msgid "&Open ...\tCtrl+O"
+msgstr "&Zabaldu ...\tCtrl+Z"
 
 #: app/MainFrame.cpp:1011
-msgid "&Import..."
-msgstr ""
+msgid "Open &books"
+msgstr "Zabaldu &libururak"
 
 #: app/MainFrame.cpp:1012
+msgid "Hide/show eMusicBooks"
+msgstr "Ezkutatu/erakutsi eMusicBooks"
+
+#: app/MainFrame.cpp:1013
+msgid "&Import..."
+msgstr "&Importatu…"
+
+#: app/MainFrame.cpp:1014
 msgid "Open a MusicXML score"
-msgstr ""
-
-#: app/MainFrame.cpp:1015
-msgid "MusicXML format"
-msgstr ""
-
-#: app/MainFrame.cpp:1016
-msgid "Save score as a MusicXML file"
-msgstr ""
+msgstr "Zabaldu MusicXML partitura bat"
 
 #: app/MainFrame.cpp:1017
-msgid "As &bmp image"
-msgstr ""
+msgid "MusicXML format"
+msgstr "MusicXML formatua"
 
 #: app/MainFrame.cpp:1018
-msgid "Save score as BMP images"
-msgstr ""
+msgid "Save score as a MusicXML file"
+msgstr "Gorde partitura MusicXML artxibo moduan"
 
 #: app/MainFrame.cpp:1019
-msgid "As &jpg image"
-msgstr ""
+msgid "As &bmp image"
+msgstr "&bmp irudi moduan"
 
 #: app/MainFrame.cpp:1020
-msgid "Save score as JPG images"
-msgstr ""
+msgid "Save score as BMP images"
+msgstr "Gorde partitura BMP irudi moduan"
+
+#: app/MainFrame.cpp:1021
+msgid "As &jpg image"
+msgstr "&jpg irudi moduan"
 
 #: app/MainFrame.cpp:1022
+msgid "Save score as JPG images"
+msgstr "Gorde partitura JPG irudi moduan"
+
+#: app/MainFrame.cpp:1024
 msgid "&Export ..."
-msgstr ""
+msgstr "&Esportatu ..."
 
-#: app/MainFrame.cpp:1023
+#: app/MainFrame.cpp:1025
 msgid "Save score in other formats"
-msgstr ""
-
-#: app/MainFrame.cpp:1029
-msgid "&Save\tCtrl+S"
-msgstr ""
+msgstr "Gorde partitura bestelako formatuetan"
 
 #: app/MainFrame.cpp:1031
-msgid "Save &as ..."
-msgstr ""
+msgid "&Save\tCtrl+S"
+msgstr "&Gorde\tCtrl+G"
 
 #: app/MainFrame.cpp:1033
+msgid "Save &as ..."
+msgstr "Gorde &honela ..."
+
+#: app/MainFrame.cpp:1035
 msgid "&Close\tCtrl+W"
-msgstr ""
+msgstr "&Itxi\tCtrl+I"
 
-#: app/MainFrame.cpp:1034
+#: app/MainFrame.cpp:1036
 msgid "Close a score"
-msgstr ""
-
-#: app/MainFrame.cpp:1037
-msgid "&Print ...\tCtrl+P"
-msgstr ""
+msgstr "Itxi partitura"
 
 #: app/MainFrame.cpp:1039
-msgid "Print &Setup..."
-msgstr ""
-
-#: app/MainFrame.cpp:1040
-msgid "Configure printer options"
-msgstr ""
+msgid "&Print ...\tCtrl+P"
+msgstr "&Inprimatu ...\tCtrl+P"
 
 #: app/MainFrame.cpp:1041
+msgid "Print &Setup..."
+msgstr "Inprimatze &Ezarpenak…"
+
+#: app/MainFrame.cpp:1042
+msgid "Configure printer options"
+msgstr "Konfiguratu inprimagailu aukerak"
+
+#: app/MainFrame.cpp:1043
 msgid "Print Pre&view"
-msgstr ""
+msgstr "Inprimatze aurre&bistaratzea"
 
-#: app/MainFrame.cpp:1045
+#: app/MainFrame.cpp:1047
 msgid "&Quit\tCtrl+Q"
-msgstr ""
+msgstr "&Irten\tCtrl+Q"
 
-#: app/MainFrame.cpp:1046
+#: app/MainFrame.cpp:1048
 msgid "Exit program"
-msgstr ""
-
-#: app/MainFrame.cpp:1057
-msgid "&Undo"
-msgstr ""
+msgstr "Irten programatik"
 
 #: app/MainFrame.cpp:1059
+msgid "&Undo"
+msgstr "&Desegin"
+
+#: app/MainFrame.cpp:1061
 msgid "&Redo"
-msgstr ""
-
-#: app/MainFrame.cpp:1066
-msgid "Tool &bar"
-msgstr ""
-
-#: app/MainFrame.cpp:1067
-msgid "Hide/show the tools bar"
-msgstr ""
+msgstr "&Berregin"
 
 #: app/MainFrame.cpp:1068
-msgid "&Status bar"
-msgstr ""
+msgid "Tool &bar"
+msgstr "Tresna &barra"
 
 #: app/MainFrame.cpp:1069
-msgid "Hide/show the status bar"
-msgstr ""
+msgid "Hide/show the tools bar"
+msgstr "Ezkutatu/erakutsi tresna barra"
+
+#: app/MainFrame.cpp:1070
+msgid "&Status bar"
+msgstr "&Egoera barra"
 
 #: app/MainFrame.cpp:1071
-msgid "&Tool box"
-msgstr ""
-
-#: app/MainFrame.cpp:1072
-msgid "Hide/show edition tool box window"
-msgstr ""
+msgid "Hide/show the status bar"
+msgstr "Ezkutatu/erakutsi egoera barra"
 
 #: app/MainFrame.cpp:1073
-msgid "&Rulers"
-msgstr ""
+msgid "&Tool box"
+msgstr "&Tresna kutxa"
 
 #: app/MainFrame.cpp:1074
-msgid "Hide/show rulers"
-msgstr ""
+msgid "Hide/show edition tool box window"
+msgstr "Ezkutatu/erakutsi tresna kutxa editatzeko leihoa"
 
 #: app/MainFrame.cpp:1075
-msgid "&Welcome page"
-msgstr ""
+msgid "&Rulers"
+msgstr "&Erregelak"
 
 #: app/MainFrame.cpp:1076
+msgid "Hide/show rulers"
+msgstr "Ezkutatu/erakutsi erregelak"
+
+#: app/MainFrame.cpp:1077
+msgid "&Welcome page"
+msgstr "&Harrera orria"
+
+#: app/MainFrame.cpp:1078
 msgid "Hide/show welcome page"
-msgstr ""
+msgstr "Ezkutatu/erakutsi harrera orria"
 
-#: app/MainFrame.cpp:1092
+#: app/MainFrame.cpp:1094
 msgid "Edit name, abbreviation, MIDI settings and other properties"
-msgstr ""
+msgstr "Editore izena, laburtzapena, MIDI ezarpenak eta bestelako ezaugarriak"
 
-#: app/MainFrame.cpp:1142
+#: app/MainFrame.cpp:1146
 msgid "Zoom to ..."
-msgstr ""
+msgstr "Zooma honela …"
 
-#: app/MainFrame.cpp:1149
+#: app/MainFrame.cpp:1153
 msgid "&Play"
-msgstr ""
+msgstr "&Jo"
 
-#: app/MainFrame.cpp:1152
+#: app/MainFrame.cpp:1156
 msgid "Play from cursor"
-msgstr ""
+msgstr "Jo kurtsoretik"
 
-#: app/MainFrame.cpp:1155
+#: app/MainFrame.cpp:1159
 msgid "S&top"
-msgstr ""
-
-#: app/MainFrame.cpp:1157
-msgid "P&ause"
-msgstr ""
+msgstr "G&elditu"
 
 #: app/MainFrame.cpp:1161
-msgid "&Run Midi wizard"
-msgstr ""
+msgid "P&ause"
+msgstr "E&ten"
 
 #: app/MainFrame.cpp:1165
+msgid "&Run Midi wizard"
+msgstr "&Abiarazi Midi morroia"
+
+#: app/MainFrame.cpp:1169
 msgid "&Test sound"
-msgstr ""
+msgstr "&Saiatu soinua"
 
-#: app/MainFrame.cpp:1166
+#: app/MainFrame.cpp:1170
 msgid "Play an scale to test sound"
-msgstr ""
+msgstr "Jo eskala bat soinua saiatzeko"
 
-#: app/MainFrame.cpp:1166
-msgid "tool_test_sound"
-msgstr ""
-
-#: app/MainFrame.cpp:1167
+#: app/MainFrame.cpp:1171
 msgid "&All sounds off"
-msgstr ""
+msgstr "&Itzali soinu guztiak"
 
-#: app/MainFrame.cpp:1168
+#: app/MainFrame.cpp:1172
 msgid "Stop inmediatly all sounds"
-msgstr ""
+msgstr "Gelditu oraintxe bertan soinu guztiak"
 
-#: app/MainFrame.cpp:1174
+#: app/MainFrame.cpp:1178
 msgid "&Preferences"
-msgstr ""
+msgstr "&Hobespenak"
 
-#: app/MainFrame.cpp:1175
-#: app/MainFrame.cpp:1200
+#: app/MainFrame.cpp:1179
+#: app/MainFrame.cpp:1204
 msgid "Open help book"
-msgstr ""
-
-#: app/MainFrame.cpp:1180
-msgid "Cl&ose"
-msgstr ""
-
-#: app/MainFrame.cpp:1181
-msgid "Close All"
-msgstr ""
+msgstr "Zabaldu laguntza liburua"
 
 #: app/MainFrame.cpp:1184
-msgid "&Next"
-msgstr ""
+msgid "Cl&ose"
+msgstr "It&xi"
 
 #: app/MainFrame.cpp:1185
+msgid "Close All"
+msgstr "Itxi guztiak"
+
+#: app/MainFrame.cpp:1188
+msgid "&Next"
+msgstr "&Hurrengoa"
+
+#: app/MainFrame.cpp:1189
 msgid "&Previous"
-msgstr ""
+msgstr "&Aurrekoa"
 
-#: app/MainFrame.cpp:1192
+#: app/MainFrame.cpp:1196
 msgid "&About"
-msgstr ""
+msgstr "&Gaia"
 
-#: app/MainFrame.cpp:1193
+#: app/MainFrame.cpp:1197
 msgid "Display information about program version and credits"
-msgstr ""
+msgstr "Erakutsi programa bertsioari eta kredituei buruzko argibideak"
 
-#: app/MainFrame.cpp:1198
+#: app/MainFrame.cpp:1202
 msgid "Show editor reference card"
-msgstr ""
-
-#: app/MainFrame.cpp:1199
-#, fuzzy
-msgid "&Content"
-msgstr "Edukiak"
+msgstr "Erakutsi editorearen erreferentzi gutuna"
 
 #: app/MainFrame.cpp:1203
-msgid "Check now for &updates"
-msgstr ""
-
-#: app/MainFrame.cpp:1204
-msgid "Connect to the Internet and check for program updates"
-msgstr ""
-
-#: app/MainFrame.cpp:1206
-msgid "&Visit LenMus website"
-msgstr ""
+msgid "&Content"
+msgstr "&Edukia"
 
 #: app/MainFrame.cpp:1207
+msgid "Check now for &updates"
+msgstr "Bilatu orain &eguneraketak"
+
+#: app/MainFrame.cpp:1208
+msgid "Connect to the Internet and check for program updates"
+msgstr "Internetera jo eta begiratu programa eguneraketarik dagoen"
+
+#: app/MainFrame.cpp:1210
+msgid "&Visit LenMus website"
+msgstr "&Bisita ezazu Lenmus webgunea"
+
+#: app/MainFrame.cpp:1211
 msgid "Open the Internet browser and go to LenMus website"
-msgstr ""
-
-#: app/MainFrame.cpp:1218
-msgid "&File"
-msgstr ""
-
-#: app/MainFrame.cpp:1219
-msgid "&Edit"
-msgstr ""
-
-#: app/MainFrame.cpp:1220
-msgid "&View"
-msgstr ""
-
-#: app/MainFrame.cpp:1221
-msgid "S&core"
-msgstr ""
+msgstr "Zabaldu Internet arakatzailea eta joan LenMus webgunera"
 
 #: app/MainFrame.cpp:1222
-msgid "&Instrument"
-msgstr ""
+msgid "&File"
+msgstr "&Artxiboa"
 
 #: app/MainFrame.cpp:1223
-msgid "&Sound"
-msgstr ""
+msgid "&Edit"
+msgstr "&Editatu"
+
+#: app/MainFrame.cpp:1224
+msgid "&View"
+msgstr "&Bistaratu"
 
 #: app/MainFrame.cpp:1225
-msgid "&Zoom"
-msgstr ""
+msgid "S&core"
+msgstr "P&artitura"
 
 #: app/MainFrame.cpp:1226
-msgid "&Options"
-msgstr ""
+msgid "&Instrument"
+msgstr "&Instrumentua"
 
 #: app/MainFrame.cpp:1227
-msgid "&Window"
-msgstr ""
+msgid "&Sound"
+msgstr "&Soinua"
 
-#: app/MainFrame.cpp:1228
+#: app/MainFrame.cpp:1229
+msgid "&Zoom"
+msgstr "&Zooma"
+
+#: app/MainFrame.cpp:1230
+msgid "&Options"
+msgstr "&Aukerak"
+
+#: app/MainFrame.cpp:1231
+msgid "&Window"
+msgstr "&Leihoa"
+
+#: app/MainFrame.cpp:1232
 #: options/OptionsDlg.cpp:261
 msgid "&Help"
-msgstr ""
+msgstr "&Laguntza"
 
-#: app/MainFrame.cpp:1324
+#: app/MainFrame.cpp:1329
 msgid "LenMus help"
-msgstr ""
+msgstr "LenMus laguntza"
 
-#: app/MainFrame.cpp:1330
+#: app/MainFrame.cpp:1335
 msgid "Test mode: using .hhp help file"
-msgstr ""
+msgstr "Test modua: .hhp laguntza artxiboa erabiltzen"
 
-#: app/MainFrame.cpp:1337
-#: app/MainFrame.cpp:1424
-#: app/MainFrame.cpp:1432
-#: app/MainFrame.cpp:1449
+#: app/MainFrame.cpp:1342
+#: app/MainFrame.cpp:1429
+#: app/MainFrame.cpp:1437
+#: app/MainFrame.cpp:1454
 #, c-format
 msgid "Failed adding book %s"
-msgstr ""
+msgstr "Hutsa liburua gehitzerakoan %s"
 
-#: app/MainFrame.cpp:1352
+#: app/MainFrame.cpp:1357
 msgid "Available books"
-msgstr ""
+msgstr "Liburu eskuragarriak"
 
-#: app/MainFrame.cpp:1415
+#: app/MainFrame.cpp:1420
 #, c-format
 msgid "Error when trying to move to folder %s"
-msgstr ""
+msgstr "Errorea karpetara eramaten saiatzean %s"
 
-#: app/MainFrame.cpp:1588
+#: app/MainFrame.cpp:1593
 msgid "Name for the exported file"
-msgstr ""
+msgstr "Esportaturiko artxiborako izena"
 
-#: app/MainFrame.cpp:1944
+#: app/MainFrame.cpp:1955
 msgid "Zooming? (10 to 800)"
-msgstr ""
+msgstr "Zoomik? (10-800)"
 
-#: app/MainFrame.cpp:1981
+#: app/MainFrame.cpp:1992
 #, c-format
 msgid "Invalid zooming factor '%s'"
-msgstr ""
+msgstr "Zoom faktoreak ez du balio '%s'"
 
-#: app/MainFrame.cpp:1986
+#: app/MainFrame.cpp:1997
 msgid "Zooming factor must be greater that 10% and lower than 800%"
-msgstr ""
+msgstr "Zoom faktoreak % 10 baino handiagoa eta % 800 baino txikiagoa izan behar"
 
-#: app/MainFrame.cpp:2026
+#: app/MainFrame.cpp:2037
 msgid "Edit tool box"
-msgstr ""
+msgstr "Editatu tresna kutxa"
 
-#: app/MainFrame.cpp:2113
+#: app/MainFrame.cpp:2124
 msgid "Choose the file to import"
-msgstr ""
+msgstr "Aukeratu inportatu beharreko artxiboa"
 
-#: app/MainFrame.cpp:2157
+#: app/MainFrame.cpp:2168
 msgid ""
 "There is a problem previewing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr ""
+"Arazo bat dago aurrebistan.\n"
+"Beharbada aukeratu duzun inprimagailua ez dago ondo doituta?"
 
-#: app/MainFrame.cpp:2157
+#: app/MainFrame.cpp:2168
 msgid "Previewing"
-msgstr ""
+msgstr "Aurrebista"
 
-#: app/MainFrame.cpp:2210
+#: app/MainFrame.cpp:2221
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr ""
+"Inprimatze arazo bat dago.\n"
+"Beharbada aukeratu duzun inprimagailua ez dago ondo doituta?"
 
-#: app/MainFrame.cpp:2210
-#: app/MainFrame.cpp:2212
-#, fuzzy
+#: app/MainFrame.cpp:2221
+#: app/MainFrame.cpp:2223
 msgid "Printing"
-msgstr "Inprimatze laguntza"
+msgstr "Inprimatzen"
 
-#: app/MainFrame.cpp:2212
+#: app/MainFrame.cpp:2223
 msgid "Printing cancelled"
-msgstr ""
+msgstr "Inprimatzea ezereztuta"
 
-#: app/toolbox/ToolClef.cpp:118
+#: app/toolbox/ToolClef.cpp:132
 msgid "G clef on 2nd line"
-msgstr ""
+msgstr "Sol giltza 2. lerroan"
 
-#: app/toolbox/ToolClef.cpp:119
+#: app/toolbox/ToolClef.cpp:133
 msgid "F clef on 4th line"
-msgstr ""
+msgstr "Fa giltza 4. lerroan"
 
-#: app/toolbox/ToolClef.cpp:120
+#: app/toolbox/ToolClef.cpp:134
 #: ../xrc/xrc_strings.cpp:75
 #: ../xrc/xrc_strings.cpp:134
 msgid "F clef on 3rd line"
-msgstr ""
+msgstr "Fa giltza 3. lerroan"
 
-#: app/toolbox/ToolClef.cpp:121
+#: app/toolbox/ToolClef.cpp:135
 msgid "C clef on 1st line"
-msgstr ""
+msgstr "Do giltza 1. lerroan"
 
-#: app/toolbox/ToolClef.cpp:122
+#: app/toolbox/ToolClef.cpp:136
 msgid "C clef on 2nd line"
-msgstr ""
+msgstr "Do giltza 2. lerroan"
 
-#: app/toolbox/ToolClef.cpp:123
+#: app/toolbox/ToolClef.cpp:137
 msgid "C clef on 3rd line"
-msgstr ""
-
-#: app/toolbox/ToolClef.cpp:124
-msgid "C clef on 4th line"
-msgstr ""
-
-#: app/toolbox/ToolClef.cpp:125
-msgid "Percussion clef"
-msgstr ""
+msgstr "Do giltza 3. lerroan"
 
 #: app/toolbox/ToolClef.cpp:138
-#: app/toolbox/ToolClef.cpp:148
+msgid "C clef on 4th line"
+msgstr "Do giltza 4. lerroan"
+
+#: app/toolbox/ToolClef.cpp:139
+msgid "Percussion clef"
+msgstr "Perkusio giltza"
+
+#: app/toolbox/ToolClef.cpp:150
+#: app/toolbox/ToolClef.cpp:160
 msgid "Add clef"
-msgstr ""
+msgstr "Gehitu giltza"
 
-#: app/toolbox/ToolClef.cpp:216
+#: app/toolbox/ToolClef.cpp:230
 msgid "Add a time signature"
-msgstr ""
+msgstr "Gehitu konpas armadura"
 
-#: app/toolbox/ToolClef.cpp:289
+#: app/toolbox/ToolClef.cpp:304
 msgid "Add a key signature"
-msgstr ""
+msgstr "Gehitu nota armadura"
 
-#: app/toolbox/ToolClef.cpp:296
-#, fuzzy
+#: app/toolbox/ToolClef.cpp:311
 msgid "Minor"
 msgstr "Minorra"
 
-#: app/toolbox/ToolClef.cpp:309
+#: app/toolbox/ToolClef.cpp:324
 msgid "Add key"
-msgstr ""
+msgstr "Gehitu nota"
 
 #: app/toolbox/ToolsBox.cpp:96
 msgid "Select clef, key and time signature edit tools"
-msgstr ""
+msgstr "Aukeratu giltza, nota eta konpasa editatzeko tresnak"
 
 #: app/toolbox/ToolsBox.cpp:97
 msgid "Select notes / rests edit tools"
-msgstr ""
+msgstr "Aukeratu notak / isiluneak editatzeko tresnak"
 
 #: app/toolbox/ToolsBox.cpp:101
 msgid "Select barlines and rehearsal marks edit tools"
-msgstr ""
+msgstr "Aukeratu barrak eta berrikuste markak editatzeko tresnak"
 
-#: app/toolbox/ToolBarlines.cpp:115
-#: app/toolbox/ToolBarlines.cpp:125
+#: app/toolbox/ToolBarlines.cpp:129
+#: app/toolbox/ToolBarlines.cpp:139
 msgid "Add barline"
-msgstr ""
+msgstr "Gehitu barra"
 
 #: app/toolbox/ToolNotes.cpp:140
 msgid "Note/rest duration"
-msgstr ""
+msgstr "Note/rest duration"
 
 #: app/toolbox/ToolNotes.cpp:198
 msgid "Octave (Ctrl)"
-msgstr ""
+msgstr "Zortziduna (Ctrl)"
 
 #: app/toolbox/ToolNotes.cpp:210
 #, c-format
 msgid "Select octave %d"
-msgstr ""
+msgstr "Aukeratu zortziduna %d"
 
 #: app/toolbox/ToolNotes.cpp:253
 msgid "Voice (Alt)"
-msgstr ""
+msgstr "Ahotsa (Alt)"
 
 #: app/toolbox/ToolNotes.cpp:270
 msgid "Automatic voice assignment"
-msgstr ""
+msgstr "Ahotsa automatiko esleitzea "
 
 #: app/toolbox/ToolNotes.cpp:276
 #, c-format
 msgid "Select voice %d"
-msgstr ""
+msgstr "Aukeratu ahotsa %d"
 
 #: app/toolbox/ToolNotes.cpp:321
-#, fuzzy
 msgid "Note accidentals"
-msgstr "Zeinurik ez"
+msgstr "Nota akzidentalak"
 
 #: app/toolbox/ToolNotes.cpp:374
 msgid "Dots"
-msgstr ""
+msgstr "Puntuak"
 
 #: app/toolbox/ToolNotes.cpp:430
 msgid "Modifiers"
-msgstr ""
+msgstr "Eraldatzaileak"
 
 #: app/toolbox/ToolNotes.cpp:443
 msgid "Add/remove a tie to/from selected notes"
-msgstr ""
+msgstr "Gehitu/kendu ligatura bat aukeraturiko notetan"
 
 #: app/toolbox/ToolNotes.cpp:452
 msgid "Add/remove tuplet to/from selected notes"
-msgstr ""
+msgstr "Gehitu/kendu hirukotxoa aukeraturiko notetan"
 
 #: app/toolbox/ToolNotes.cpp:545
-#, fuzzy
 msgid "Beams"
-msgstr "Taldea"
+msgstr "Taldeak"
 
 #: app/toolbox/ToolNotes.cpp:558
 msgid "Break beam at current cursor position"
-msgstr ""
+msgstr "Apurtu nota taldea kurtsorea dagoen tokian"
 
 #: app/toolbox/ToolNotes.cpp:567
 msgid "Beam together all selected notes"
-msgstr ""
+msgstr "Taldekatu aukeraturiko nota guztiak"
 
 #: app/toolbox/ToolNotes.cpp:576
 msgid "Subdivide beamed group at current cursor position"
-msgstr ""
+msgstr "Zatitu nota taldea  kurtsorea dagoen tokian"
 
 #: app/toolbox/ToolNotes.cpp:585
 msgid "Adjust selected beam to draw it horizontal"
-msgstr ""
+msgstr "Doitu aukeraturiko taldea horizontalki marrazteko"
 
 #: options/ColorsOptPanel.cpp:60
 msgid "Choose colors to use:"
-msgstr ""
+msgstr "Aukeratu erabili beharreko koloreak:"
 
 #: options/LangOptionsPanel.cpp:106
 #, c-format
 msgid "Language '%s' will be used the next time you run LenMus."
-msgstr ""
+msgstr "%s' hizkuntza erabiliko du LenMusek berriro abiatzean"
 
 #: options/OptionsDlg.cpp:173
 msgid "Preferences"
-msgstr ""
+msgstr "Hobespenak"
 
 #: options/OptionsDlg.cpp:178
 msgid "Language"
-msgstr ""
+msgstr "Hizkuntza"
 
 #: options/OptionsDlg.cpp:188
 msgid "Toolbars"
-msgstr ""
+msgstr "Tresna barrak"
 
 #: options/OptionsDlg.cpp:193
 msgid "Internet"
-msgstr ""
+msgstr "Internet"
 
 #: options/OptionsDlg.cpp:198
 msgid "Other"
-msgstr ""
+msgstr "Bestelakoak"
 
 #: options/OptionsDlg.cpp:255
 msgid "&Accept"
-msgstr ""
+msgstr "&Onartu"
 
 #: options/OptionsDlg.cpp:258
 #: ../xrc/xrc_strings.cpp:128
 #: ../xrc/xrc_strings.cpp:220
 #: ../xrc/xrc_strings.cpp:226
 msgid "&Cancel"
-msgstr ""
+msgstr "&Ezereztatu"
 
 #: options/OptionsDlg.cpp:347
 msgid "Please correct the errors before moving to another section."
-msgstr ""
+msgstr "Mesedez, zuzendu hutsak beste atal batera joan aurretik"
 
 #: options/InternetOptPanel.cpp:111
 #: options/InternetOptPanel.cpp:137
 msgid "Never"
-msgstr ""
+msgstr "Inoiz ez"
 
 #: options/InternetOptPanel.cpp:112
 msgid "Daily"
-msgstr ""
+msgstr "Egunero"
 
 #: options/InternetOptPanel.cpp:113
 msgid "Weekly"
-msgstr ""
+msgstr "Astean behin"
 
 #: options/InternetOptPanel.cpp:114
 msgid "Monthly"
-msgstr ""
+msgstr "Hilean behin"
 
 #: sound/SoundManager.cpp:356
 msgid "Can't create a thread!"
-msgstr ""
+msgstr "Ezin haririk sortu!"
 
 #: sound/SoundManager.cpp:368
 msgid "Can't start the thread!"
-msgstr ""
+msgstr "Ezin haria hasi!"
 
 #: widgets/MsgBox.cpp:154
 #: widgets/MusicSymbolList.cpp:140
 msgid "Question"
-msgstr ""
+msgstr "Galdera"
 
 #: widgets/MsgBox.cpp:182
 #: widgets/MusicSymbolList.cpp:168
 #: updater/Updater.cpp:105
 msgid "Error"
-msgstr ""
+msgstr "Errorea"
 
 #: widgets/Wizard.cpp:115
 msgid "Help"
-msgstr ""
+msgstr "Laguntza"
 
 #: widgets/Wizard.cpp:122
 msgid "< Previous"
-msgstr ""
+msgstr "< Aurrekoa"
 
 #: widgets/Wizard.cpp:126
 msgid "Next >"
-msgstr ""
+msgstr "Hurrengoa >"
 
 #: widgets/Wizard.cpp:130
-#, fuzzy
 msgid "Finish"
-msgstr "Espainiera"
+msgstr "Amaiera"
 
 #: widgets/Wizard.cpp:231
 msgid "unknown button"
-msgstr ""
+msgstr "botoi ezezaguna"
 
 #: ../xrc/xrc_strings.cpp:1
 msgid "Configuration: Intervals - identification by ear"
-msgstr ""
+msgstr "Konfigurazioa: Bitarteak –  belarriz identifikatzea"
 
 #: ../xrc/xrc_strings.cpp:2
 msgid "Intervals"
-msgstr ""
+msgstr "Bitarteak"
 
 #: ../xrc/xrc_strings.cpp:3
 msgid "Intervals to practise"
-msgstr ""
+msgstr "Aritzeko bitartetak"
 
 #: ../xrc/xrc_strings.cpp:6
 msgid "Major 2nd"
-msgstr ""
+msgstr "Bidun maiorra"
 
 #: ../xrc/xrc_strings.cpp:8
 msgid "Major 3rd"
-msgstr ""
+msgstr "Hirudun maiorra"
 
 #: ../xrc/xrc_strings.cpp:9
 msgid "Perfect 4th"
-msgstr ""
+msgstr "laudun perfektua"
 
 #: ../xrc/xrc_strings.cpp:10
 msgid "augm.4th / dim. 5th"
-msgstr ""
+msgstr "audun geh./bostun gutx."
 
 #: ../xrc/xrc_strings.cpp:18
 msgid "Major 9th"
-msgstr ""
+msgstr "Bederatzidun maiorra"
 
 #: ../xrc/xrc_strings.cpp:20
 msgid "Major 10th"
-msgstr ""
+msgstr "Hamardun maiorra"
 
 #: ../xrc/xrc_strings.cpp:22
 msgid "augm. 11th / dim. 12th"
-msgstr ""
+msgstr "hamaikadun geh./hamabidun gutx."
 
 #: ../xrc/xrc_strings.cpp:25
 msgid "Major 13th"
-msgstr ""
+msgstr "Hamahirudun maiorra"
 
 #: ../xrc/xrc_strings.cpp:27
 msgid "Major 14th"
-msgstr ""
+msgstr "Hamalaudun maiorra"
 
 #: ../xrc/xrc_strings.cpp:29
 #: ../xrc/xrc_strings.cpp:60
@@ -3674,21 +3656,21 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:274
 #: ../xrc/xrc_strings.cpp:306
 msgid "You must choose one at least! "
-msgstr ""
+msgstr "Gutxienez, bat aukeratu behar duzu!"
 
 #: ../xrc/xrc_strings.cpp:30
 #: ../xrc/xrc_strings.cpp:31
 #: ../xrc/xrc_strings.cpp:140
 msgid "Accidentals"
-msgstr ""
+msgstr "Akzidentalak"
 
 #: ../xrc/xrc_strings.cpp:32
 msgid "&Use only notes from key signature"
-msgstr ""
+msgstr "%Erabili soilik armadurari dagozkion notak"
 
 #: ../xrc/xrc_strings.cpp:33
 msgid "&Allow chromatic accidentals"
-msgstr ""
+msgstr "&Onartu akzidental kromatikoak"
 
 #: ../xrc/xrc_strings.cpp:34
 #: ../xrc/xrc_strings.cpp:107
@@ -3699,21 +3681,21 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:371
 #: ../xrc/xrc_strings.cpp:372
 msgid "Key signatures"
-msgstr ""
+msgstr "Nota armadurak"
 
 #: ../xrc/xrc_strings.cpp:35
 #: ../xrc/xrc_strings.cpp:108
 #: ../xrc/xrc_strings.cpp:253
 #: ../xrc/xrc_strings.cpp:309
 msgid "C Major / A minor"
-msgstr ""
+msgstr "Do maiorra / La minorra"
 
 #: ../xrc/xrc_strings.cpp:36
 #: ../xrc/xrc_strings.cpp:109
 #: ../xrc/xrc_strings.cpp:254
 #: ../xrc/xrc_strings.cpp:310
 msgid "G Major / E minor"
-msgstr ""
+msgstr "Sol maiorra / Mi minorra"
 
 #: ../xrc/xrc_strings.cpp:37
 #: ../xrc/xrc_strings.cpp:45
@@ -3723,100 +3705,100 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:263
 #: ../xrc/xrc_strings.cpp:311
 msgid "D Major / B minor"
-msgstr ""
+msgstr "Re maiorra / Si minorra"
 
 #: ../xrc/xrc_strings.cpp:38
 #: ../xrc/xrc_strings.cpp:111
 #: ../xrc/xrc_strings.cpp:256
 #: ../xrc/xrc_strings.cpp:312
 msgid "A Major / F# minor"
-msgstr ""
+msgstr "La maiorra / Fa# minorra"
 
 #: ../xrc/xrc_strings.cpp:39
 #: ../xrc/xrc_strings.cpp:112
 #: ../xrc/xrc_strings.cpp:257
 #: ../xrc/xrc_strings.cpp:313
 msgid "E Major / C# minor"
-msgstr ""
+msgstr "Mi maiorra / Do# minorra"
 
 #: ../xrc/xrc_strings.cpp:40
 #: ../xrc/xrc_strings.cpp:113
 #: ../xrc/xrc_strings.cpp:258
 #: ../xrc/xrc_strings.cpp:314
 msgid "B Major / G# minor"
-msgstr ""
+msgstr "Si maiorra / Sol# minorra"
 
 #: ../xrc/xrc_strings.cpp:41
 #: ../xrc/xrc_strings.cpp:114
 #: ../xrc/xrc_strings.cpp:259
 #: ../xrc/xrc_strings.cpp:315
 msgid "F# Major / D# minor"
-msgstr ""
+msgstr "Fa# maiorra / Re# minorra"
 
 #: ../xrc/xrc_strings.cpp:42
 #: ../xrc/xrc_strings.cpp:115
 #: ../xrc/xrc_strings.cpp:260
 #: ../xrc/xrc_strings.cpp:316
 msgid "C# Major / A# minor"
-msgstr ""
+msgstr "Do# maiorra / La# minorra"
 
 #: ../xrc/xrc_strings.cpp:43
 #: ../xrc/xrc_strings.cpp:116
 #: ../xrc/xrc_strings.cpp:261
 #: ../xrc/xrc_strings.cpp:317
 msgid "Cb Major / Ab minor"
-msgstr ""
+msgstr "Do b maiorra / La b minorra"
 
 #: ../xrc/xrc_strings.cpp:44
 #: ../xrc/xrc_strings.cpp:117
 #: ../xrc/xrc_strings.cpp:262
 #: ../xrc/xrc_strings.cpp:318
 msgid "Gb Major / Eb minor"
-msgstr ""
+msgstr "Sol b maiorra / Mi b minorra"
 
 #: ../xrc/xrc_strings.cpp:46
 #: ../xrc/xrc_strings.cpp:119
 #: ../xrc/xrc_strings.cpp:264
 #: ../xrc/xrc_strings.cpp:320
 msgid "Ab Major / F minor"
-msgstr ""
+msgstr "La b maiorra / Fa minorra"
 
 #: ../xrc/xrc_strings.cpp:47
 #: ../xrc/xrc_strings.cpp:120
 #: ../xrc/xrc_strings.cpp:265
 #: ../xrc/xrc_strings.cpp:321
 msgid "Eb Major / C minor"
-msgstr ""
+msgstr "Mi b maiorra / Do minorra"
 
 #: ../xrc/xrc_strings.cpp:48
 #: ../xrc/xrc_strings.cpp:121
 #: ../xrc/xrc_strings.cpp:266
 #: ../xrc/xrc_strings.cpp:322
 msgid "Bb Major / G minor"
-msgstr ""
+msgstr "Si b maiorra / Sol minorra"
 
 #: ../xrc/xrc_strings.cpp:49
 #: ../xrc/xrc_strings.cpp:122
 #: ../xrc/xrc_strings.cpp:267
 #: ../xrc/xrc_strings.cpp:323
 msgid "F Major / D minor"
-msgstr ""
+msgstr "Fa maiorra / Re minorra"
 
 #: ../xrc/xrc_strings.cpp:50
 #: ../xrc/xrc_strings.cpp:268
 #: ../xrc/xrc_strings.cpp:324
 msgid "You must choose one key signature at least! "
-msgstr ""
+msgstr "Gutxienez, armadura bat aukeratu behar duzu!"
 
 #: ../xrc/xrc_strings.cpp:51
 #: ../xrc/xrc_strings.cpp:269
 #: ../xrc/xrc_strings.cpp:325
 msgid "Other settings"
-msgstr ""
+msgstr "Bestelako ezarpenak"
 
 #: ../xrc/xrc_strings.cpp:52
 msgid "Notes' range"
-msgstr ""
+msgstr "Nota tartea"
 
 #: ../xrc/xrc_strings.cpp:53
 #: ../xrc/xrc_strings.cpp:70
@@ -3827,7 +3809,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:85
 #: ../xrc/xrc_strings.cpp:88
 msgid "Min. note"
-msgstr ""
+msgstr "Gutx. nota"
 
 #: ../xrc/xrc_strings.cpp:54
 #: ../xrc/xrc_strings.cpp:71
@@ -3838,434 +3820,436 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:86
 #: ../xrc/xrc_strings.cpp:89
 msgid "Max. note"
-msgstr ""
+msgstr "Geh. nota"
 
 #: ../xrc/xrc_strings.cpp:55
 #: ../xrc/xrc_strings.cpp:91
 msgid "Minimum pitch must be lower than maximum pitch "
-msgstr ""
+msgstr "Tonu minimoak handienak baino apalago behar du"
 
 #: ../xrc/xrc_strings.cpp:56
 msgid "Intervals' types"
-msgstr ""
+msgstr "Bitarte motak"
 
 #: ../xrc/xrc_strings.cpp:57
 msgid "Harmonic (simultaneous notes)"
-msgstr ""
+msgstr "Harmonikoa  (baterako notak)"
 
 #: ../xrc/xrc_strings.cpp:58
 msgid "Melodic (ascending)"
-msgstr ""
+msgstr "Melodikoa (goranzkoa)"
 
 #: ../xrc/xrc_strings.cpp:59
 msgid "Melodic (descending)"
-msgstr ""
+msgstr "Melodikoa (beheranzkoa)"
 
 #: ../xrc/xrc_strings.cpp:61
 msgid "Start both intervals with the same note"
-msgstr ""
+msgstr "Hasi bi bitarteak nota berberaz"
 
 #: ../xrc/xrc_strings.cpp:64
 msgid "It is not possible to generate any interval. Selected notes range interval (see tab 'Other settings') is lower than minimun allowed interval (see tab 'Intervals')"
-msgstr ""
+msgstr "Ezin da inolako bitarterik sortu. Aukeraturiko noten barruti bitartea (ikus 'Bestelako ezaugarriak' atala) txikiagoa da zilegi den gutxienezko bitartea baino (ikus 'Bitarteak' atala)"
 
 #: ../xrc/xrc_strings.cpp:66
 msgid "Score generation settings"
-msgstr ""
+msgstr "Partiturak sortzeko ezarpenak"
 
 #: ../xrc/xrc_strings.cpp:67
 msgid "Clefs and Notes"
-msgstr ""
+msgstr "Giltzak eta notak"
 
 #: ../xrc/xrc_strings.cpp:68
 msgid ""
 "Mark the clefts to use and set up the minimun and\n"
 "maximum pitches for the notes to use with each selected clef."
 msgstr ""
+"Markatu erabili beharreko giltzak eta adierazi aukeraturiko giltza bakoitzarekin erabili beharreko noten gutxienezko eta\n"
+" gehienezko tonuak.  "
 
 #: ../xrc/xrc_strings.cpp:69
 #: ../xrc/xrc_strings.cpp:132
 msgid "G clef (violin)"
-msgstr ""
+msgstr "Sol giltza (biolina)"
 
 #: ../xrc/xrc_strings.cpp:72
 #: ../xrc/xrc_strings.cpp:133
 msgid "F clef on 4th line (bass)"
-msgstr ""
+msgstr "Fa giltza 4. lerroan (baxua)"
 
 #: ../xrc/xrc_strings.cpp:78
 #: ../xrc/xrc_strings.cpp:135
 msgid "C clef on 1st line (soprano)"
-msgstr ""
+msgstr "Do giltza 1.go lerroan (sopranoa)"
 
 #: ../xrc/xrc_strings.cpp:81
 #: ../xrc/xrc_strings.cpp:136
 msgid "C clef on 2nd line (mezzo soprano)"
-msgstr ""
+msgstr "Do giltza 2. lerroan (mezzo sopranoa)"
 
 #: ../xrc/xrc_strings.cpp:84
 #: ../xrc/xrc_strings.cpp:137
 msgid "C clef on 3rd line (contralto)"
-msgstr ""
+msgstr "Do giltza 3. lerroan (kontraltoa) "
 
 #: ../xrc/xrc_strings.cpp:87
 #: ../xrc/xrc_strings.cpp:138
 msgid "C clef on 4th line (tenor)"
-msgstr ""
+msgstr "Do giltza 3. lerroan (tenorra) "
 
 #: ../xrc/xrc_strings.cpp:90
 msgid "You must choose at least one clef! "
-msgstr ""
+msgstr "Gutxienez, giltza bat aukeratu behar duzu!"
 
 #: ../xrc/xrc_strings.cpp:92
 msgid "Maximum interval between two consecutive notes"
-msgstr ""
+msgstr "Elkarren ondoko bi notaren arteko gehienezko bitartea"
 
 #: ../xrc/xrc_strings.cpp:93
 msgid "Time signatures"
-msgstr ""
+msgstr "Konpas armadurak"
 
 #: ../xrc/xrc_strings.cpp:94
 msgid "Binary subdivision"
-msgstr ""
+msgstr "Azpibanatze bitarra"
 
 #: ../xrc/xrc_strings.cpp:95
 msgid "2 4 time signature"
-msgstr ""
+msgstr "2 4 konpasa"
 
 #: ../xrc/xrc_strings.cpp:96
 msgid "3 4"
-msgstr ""
+msgstr "3 4"
 
 #: ../xrc/xrc_strings.cpp:97
 msgid "4 4"
-msgstr ""
+msgstr "4 4"
 
 #: ../xrc/xrc_strings.cpp:98
 msgid "2 8"
-msgstr ""
+msgstr "2 8"
 
 #: ../xrc/xrc_strings.cpp:99
 msgid "2 2"
-msgstr ""
+msgstr "2 2"
 
 #: ../xrc/xrc_strings.cpp:100
 msgid "3 2"
-msgstr ""
+msgstr "3 2"
 
 #: ../xrc/xrc_strings.cpp:101
 msgid "Ternary subdivision"
-msgstr ""
+msgstr "Azpibanatze hirutarra"
 
 #: ../xrc/xrc_strings.cpp:102
 msgid "6 8 time signature"
-msgstr ""
+msgstr "6 8 konpasa"
 
 #: ../xrc/xrc_strings.cpp:103
 msgid "9 8"
-msgstr ""
+msgstr "9 8"
 
 #: ../xrc/xrc_strings.cpp:104
 msgid "12 8"
-msgstr ""
+msgstr "12 8"
 
 #: ../xrc/xrc_strings.cpp:105
 msgid "3 8"
-msgstr ""
+msgstr "3 8"
 
 #: ../xrc/xrc_strings.cpp:106
 msgid "You must choose at least one time signature! "
-msgstr ""
+msgstr "Gutxienez, konpas bat aukeratu behar duzu!"
 
 #: ../xrc/xrc_strings.cpp:123
 #: ../xrc/xrc_strings.cpp:405
 msgid "You must choose at least one key signature! "
-msgstr ""
+msgstr "Gutxienez, armadura bat aukeratu behar duzu!"
 
 #: ../xrc/xrc_strings.cpp:124
 msgid "Rhymths"
-msgstr ""
+msgstr "Erritmoak"
 
 #: ../xrc/xrc_strings.cpp:125
 msgid "Add rhythm"
-msgstr ""
+msgstr "Gehitu erritmoa"
 
 #: ../xrc/xrc_strings.cpp:126
 msgid "Delete rhythm"
-msgstr ""
+msgstr "Ezabatu erritmoa"
 
 #: ../xrc/xrc_strings.cpp:130
 msgid "Configuration: Theory exercises on intervals"
-msgstr ""
+msgstr "Konfigurazioa:  Bitarteen gaineko ariketa teorikoak"
 
 #: ../xrc/xrc_strings.cpp:131
 msgid "Clefs to use"
-msgstr ""
+msgstr "Erabili beharreko giltzak"
 
 #: ../xrc/xrc_strings.cpp:141
 msgid "Allow accidentals"
-msgstr ""
+msgstr "Onartu akzidentalak"
 
 #: ../xrc/xrc_strings.cpp:142
 msgid "Allow double accidentals"
-msgstr ""
+msgstr "Onartu akzidental bikoitzak"
 
 #: ../xrc/xrc_strings.cpp:143
 msgid "Problem type"
-msgstr ""
+msgstr "Arazo mota"
 
 #: ../xrc/xrc_strings.cpp:144
 msgid "&Show an interval and ask for its name"
-msgstr ""
+msgstr "&Bitarte bat erakutsi eta haren izenaz galdetzea "
 
 #: ../xrc/xrc_strings.cpp:145
 msgid "&Name an interval and ask to build it"
-msgstr ""
+msgstr "&Bitarte bat aipatu eta eraikitzeko eskatzea"
 
 #: ../xrc/xrc_strings.cpp:146
 msgid "&Both problem types"
-msgstr ""
+msgstr "&Bi ariketa motak"
 
 #: ../xrc/xrc_strings.cpp:150
 msgid "Pattern's editor"
-msgstr ""
+msgstr "Patroi editorea"
 
 #: ../xrc/xrc_strings.cpp:151
 msgid "Step 1. Choose attributes for next note/rest to enter:"
-msgstr ""
+msgstr "1. urratsa. Aukeratu ezaugarriak sartu beharreko hurrengo notarako/isilunerako:"
 
 #: ../xrc/xrc_strings.cpp:152
 msgid "Dotted"
-msgstr ""
+msgstr "Puntuduna"
 
 #: ../xrc/xrc_strings.cpp:153
 msgid "Tied next"
-msgstr ""
+msgstr "Hurrengoari lotua"
 
 #: ../xrc/xrc_strings.cpp:154
 msgid "Not beamed"
-msgstr ""
+msgstr "Elkartu gabe"
 
 #: ../xrc/xrc_strings.cpp:155
 msgid "Start of a beamed group"
-msgstr ""
+msgstr "Nota talde baten hasiera"
 
 #: ../xrc/xrc_strings.cpp:156
 msgid "Continue in beamed group"
-msgstr ""
+msgstr "Nota taldearen jarraipena"
 
 #: ../xrc/xrc_strings.cpp:157
 msgid "End of beamed group"
-msgstr ""
+msgstr "Nota taldearen amaiera"
 
 #: ../xrc/xrc_strings.cpp:158
 msgid "Step 2. Enter the the desired note/rest:"
-msgstr ""
+msgstr "2. urratsa. Sartu nahi duzun nota/isilunea:"
 
 #: ../xrc/xrc_strings.cpp:159
 msgid "Whole note"
-msgstr ""
+msgstr "Biribila"
 
 #: ../xrc/xrc_strings.cpp:160
 msgid "Half note"
-msgstr ""
+msgstr "Zuria"
 
 #: ../xrc/xrc_strings.cpp:161
 msgid "Quarter note"
-msgstr ""
+msgstr "Beltza"
 
 #: ../xrc/xrc_strings.cpp:162
 msgid "8th note"
-msgstr ""
+msgstr "Kortxea"
 
 #: ../xrc/xrc_strings.cpp:163
 msgid "16th note"
-msgstr ""
+msgstr "Kortxeaerdia"
 
 #: ../xrc/xrc_strings.cpp:164
 msgid "32th note"
-msgstr ""
+msgstr "Fusa"
 
 #: ../xrc/xrc_strings.cpp:165
 msgid "64th note"
-msgstr ""
+msgstr "Fusaerdia"
 
 #: ../xrc/xrc_strings.cpp:166
 msgid "Whole rest"
-msgstr ""
+msgstr "Biribil isilunea"
 
 #: ../xrc/xrc_strings.cpp:167
 msgid "Half rest"
-msgstr ""
+msgstr "Zuri isilunea"
 
 #: ../xrc/xrc_strings.cpp:168
 msgid "Quarter rest"
-msgstr ""
+msgstr "Beltz isilunea"
 
 #: ../xrc/xrc_strings.cpp:169
 msgid "8th rest"
-msgstr ""
+msgstr "Kortxea isilunea"
 
 #: ../xrc/xrc_strings.cpp:170
 msgid "16th rest"
-msgstr ""
+msgstr "Kortxeaerdi isilunea"
 
 #: ../xrc/xrc_strings.cpp:171
 msgid "32th rest"
-msgstr ""
+msgstr "Fusa isilunea"
 
 #: ../xrc/xrc_strings.cpp:172
 msgid "64th rest"
-msgstr ""
+msgstr "Fusaerdi isilunea"
 
 #: ../xrc/xrc_strings.cpp:174
 msgid "Clear all"
-msgstr ""
+msgstr "Garbitu dena"
 
 #: ../xrc/xrc_strings.cpp:180
 msgid "Language preferences"
-msgstr ""
+msgstr "Hizkuntz hobespenak"
 
 #: ../xrc/xrc_strings.cpp:183
 msgid "Preferences for toolbars"
-msgstr ""
+msgstr "Tresna barretarako hobespenak"
 
 #: ../xrc/xrc_strings.cpp:184
 msgid "Icons' size"
-msgstr ""
+msgstr "Ikono tamaina"
 
 #: ../xrc/xrc_strings.cpp:185
 msgid "&Small"
-msgstr ""
+msgstr "&Txikia"
 
 #: ../xrc/xrc_strings.cpp:186
 msgid "&Medium"
-msgstr ""
+msgstr "&Bitartekoa"
 
 #: ../xrc/xrc_strings.cpp:187
 msgid "&Large"
-msgstr ""
+msgstr "&Handia"
 
 #: ../xrc/xrc_strings.cpp:188
 msgid "Labels"
-msgstr ""
+msgstr "Etiketak"
 
 #: ../xrc/xrc_strings.cpp:189
 msgid "&No labels"
-msgstr ""
+msgstr "Etiketarik &ez"
 
 #: ../xrc/xrc_strings.cpp:190
 msgid "Labels &bottom"
-msgstr ""
+msgstr "Etiketak &goian"
 
 #: ../xrc/xrc_strings.cpp:191
 msgid "Labels &right"
-msgstr ""
+msgstr "Etiketak &eskuin"
 
 #: ../xrc/xrc_strings.cpp:193
 msgid "Internet connection options"
-msgstr ""
+msgstr "Internet loturaren aukerak"
 
 #: ../xrc/xrc_strings.cpp:194
 msgid "Software updates"
-msgstr ""
+msgstr "Softwarea eguneratzea"
 
 #: ../xrc/xrc_strings.cpp:195
 msgid "Check for updates"
-msgstr ""
+msgstr "Bilatu eguneraketak"
 
 #: ../xrc/xrc_strings.cpp:196
 msgid "Last successful check:"
-msgstr ""
+msgstr "Azken araketa arrakastatsua:"
 
 #: ../xrc/xrc_strings.cpp:197
 msgid "dd/mm/aaaa"
-msgstr ""
+msgstr "/aaaa/mm/dd"
 
 #: ../xrc/xrc_strings.cpp:198
 msgid "Use a proxy server to connect to Internet"
-msgstr ""
+msgstr "Erabili proxy zerbitzari bat Internetera jotzeko"
 
 #: ../xrc/xrc_strings.cpp:199
 msgid "Proxy settings"
-msgstr ""
+msgstr "Proxy ezarpena"
 
 #: ../xrc/xrc_strings.cpp:200
 msgid "Server settings"
-msgstr ""
+msgstr "Zerbitzari ezarpena"
 
 #: ../xrc/xrc_strings.cpp:201
 msgid "Host:"
-msgstr ""
+msgstr "Hosta:"
 
 #: ../xrc/xrc_strings.cpp:202
 msgid "Port number:"
-msgstr ""
+msgstr "Ataka zenbakia:"
 
 #: ../xrc/xrc_strings.cpp:203
 msgid "Please enter data for both, host name and port number"
-msgstr ""
+msgstr "Mesedez, sartu host izenaren eta ataka zenbakiaren datuak"
 
 #: ../xrc/xrc_strings.cpp:204
 msgid "Proxy server requires authentication"
-msgstr ""
+msgstr "Proxy zerbitzariak egiaztatzeko eskatzen du"
 
 #: ../xrc/xrc_strings.cpp:205
 msgid "Authentication"
-msgstr ""
+msgstr "Autentifikazioa"
 
 #: ../xrc/xrc_strings.cpp:206
 msgid "Username:"
-msgstr ""
+msgstr "Erabiltzaile izena:"
 
 #: ../xrc/xrc_strings.cpp:207
 msgid "Password:"
-msgstr ""
+msgstr "Pasahitza:"
 
 #: ../xrc/xrc_strings.cpp:208
 msgid "Please enter data for both, user name and password"
-msgstr ""
+msgstr "Mesedez sartu erabiltzaile izena eta pasahitza"
 
 #: ../xrc/xrc_strings.cpp:210
 msgid "Other options"
-msgstr ""
+msgstr "Bestelako aukerak"
 
 #: ../xrc/xrc_strings.cpp:211
 msgid "Exercises"
-msgstr ""
+msgstr "Ariketak"
 
 #: ../xrc/xrc_strings.cpp:212
 msgid "Generate right/wrong sounds when clicking an answer button"
-msgstr ""
+msgstr "Sortu ondo/txarto soinuak erantzun botoia sakatzean "
 
 #: ../xrc/xrc_strings.cpp:213
 msgid "Show two counters (for team competition)"
-msgstr ""
+msgstr "Erakutsi bi zenbakitzaile (talde lehiaketarako)"
 
 #: ../xrc/xrc_strings.cpp:214
 msgid "Do not show solution and generate new problem if answer is correct"
-msgstr ""
+msgstr "Ez erakutsi ebazpena eta sortu beste ariketa bat erantzuna zuzena bada"
 
 #: ../xrc/xrc_strings.cpp:216
 #: ../xrc/xrc_strings.cpp:222
 msgid "LenMus Phonascus updater"
-msgstr ""
+msgstr "LenMus Phonascus eguneratzekoa"
 
 #: ../xrc/xrc_strings.cpp:217
 msgid "Available updates"
-msgstr ""
+msgstr "Eguneraketak eskuragarri"
 
 #: ../xrc/xrc_strings.cpp:218
 msgid "Item description"
-msgstr ""
+msgstr "Item deskribapena"
 
 #: ../xrc/xrc_strings.cpp:219
 msgid "Download selected items"
-msgstr ""
+msgstr "Deskargatu aukeraturiko itemak"
 
 #: ../xrc/xrc_strings.cpp:223
 msgid "Checking for available updates"
-msgstr ""
+msgstr "Eguneraketa eskuragarri bila"
 
 #: ../xrc/xrc_strings.cpp:224
 msgid ""
@@ -4274,339 +4258,343 @@ msgid ""
 "\n"
 "Press 'Proceed' to start."
 msgstr ""
+"Programa LenMus webgunera joango da eta \n"
+" eguneraketa eskuragarriak \n"
+" bilatuko ditu.\n"
+"Sakatu 'Aurrera' hasteko."
 
 #: ../xrc/xrc_strings.cpp:225
 msgid "Proceed"
-msgstr ""
+msgstr "Aurrera"
 
 #: ../xrc/xrc_strings.cpp:228
 msgid "Configuration: Chords' identification"
-msgstr ""
+msgstr "Konfigurazioa: Akordeak identifikatzea"
 
 #: ../xrc/xrc_strings.cpp:229
 msgid "Chords"
-msgstr ""
+msgstr "Akordeak"
 
 #: ../xrc/xrc_strings.cpp:230
 msgid "Triads"
-msgstr ""
+msgstr "Triadak"
 
 #: ../xrc/xrc_strings.cpp:237
 msgid "Sevenths"
-msgstr ""
+msgstr "Zazpidunak"
 
 #: ../xrc/xrc_strings.cpp:246
 msgid "Other chords"
-msgstr ""
+msgstr "Beste akorde batzuk"
 
 #: ../xrc/xrc_strings.cpp:270
 msgid "Play modes"
-msgstr ""
+msgstr "Jotzeko moduak"
 
 #: ../xrc/xrc_strings.cpp:271
 msgid "Chord (simultaneous notes)"
-msgstr ""
+msgstr "Akordea (baterako notak)"
 
 #: ../xrc/xrc_strings.cpp:272
 msgid "Arpegiated (ascending)"
-msgstr ""
+msgstr "Arpegiatua (goranzkoa)"
 
 #: ../xrc/xrc_strings.cpp:273
 msgid "Arpegiated (descending)"
-msgstr ""
+msgstr "Arpegiatua (beheranzkoa)"
 
 #: ../xrc/xrc_strings.cpp:275
 msgid "Allow inversions"
-msgstr ""
+msgstr "Onartu inbertsioak"
 
 #: ../xrc/xrc_strings.cpp:276
 #: ../xrc/xrc_strings.cpp:330
 msgid "Display key signature"
-msgstr ""
+msgstr "Erakutsi armadura"
 
 #: ../xrc/xrc_strings.cpp:280
 msgid "Configuration: Scales' identification"
-msgstr ""
+msgstr "Konfigurazioa: Eskalak identifikatzea"
 
 #: ../xrc/xrc_strings.cpp:281
 msgid "Scales"
-msgstr ""
+msgstr "Eskalak"
 
 #: ../xrc/xrc_strings.cpp:282
 msgid "Major scales"
-msgstr ""
+msgstr "Eskala maiorrak"
 
 #: ../xrc/xrc_strings.cpp:287
 msgid "Minor scales"
-msgstr ""
+msgstr "Eskala minorrak"
 
 #: ../xrc/xrc_strings.cpp:292
 msgid "Gregorian scales"
-msgstr ""
+msgstr "Eskala gregorianoak"
 
 #: ../xrc/xrc_strings.cpp:300
 msgid "Other scales"
-msgstr ""
+msgstr "Bestelako eskalak"
 
 #: ../xrc/xrc_strings.cpp:319
 msgid "Db Major / Bb minor"
-msgstr ""
+msgstr "Re b maiorra / Si b minorra"
 
 #: ../xrc/xrc_strings.cpp:326
 msgid "Play mode"
-msgstr ""
+msgstr "Jotzeko modua"
 
 #: ../xrc/xrc_strings.cpp:327
 msgid "&Ascending"
-msgstr ""
+msgstr "&Goranzkoa"
 
 #: ../xrc/xrc_strings.cpp:328
 msgid "&Descending"
-msgstr ""
+msgstr "&Beheranzkoa"
 
 #: ../xrc/xrc_strings.cpp:329
 msgid "&Both"
-msgstr ""
+msgstr "&Biak"
 
 #: ../xrc/xrc_strings.cpp:334
 msgid "Cadence settings"
-msgstr ""
+msgstr "Kadentzia ezartzea"
 
 #: ../xrc/xrc_strings.cpp:335
 msgid "Cadences"
-msgstr ""
+msgstr "Kadentziak"
 
 #: ../xrc/xrc_strings.cpp:337
 #: ../xrc/xrc_strings.cpp:415
 msgid "Perfect authentic"
-msgstr ""
+msgstr "Benetako perfektua"
 
 #: ../xrc/xrc_strings.cpp:338
 msgid "V --> I"
-msgstr ""
+msgstr "V --> I"
 
 #: ../xrc/xrc_strings.cpp:339
 msgid "V7 --> I"
-msgstr ""
+msgstr "V7 --> I"
 
 #: ../xrc/xrc_strings.cpp:340
 msgid "V aug5 --> I"
-msgstr ""
+msgstr "V geh5 --> I"
 
 #: ../xrc/xrc_strings.cpp:341
 msgid "V dim5 --> I"
-msgstr ""
+msgstr "V gutx5 --> I"
 
 #: ../xrc/xrc_strings.cpp:342
 #: ../xrc/xrc_strings.cpp:350
 #: ../xrc/xrc_strings.cpp:361
 #: ../xrc/xrc_strings.cpp:370
 msgid "check/uncheck all"
-msgstr ""
+msgstr "egiaztatu/ez egiaztatu dena"
 
 #: ../xrc/xrc_strings.cpp:344
 msgid "V --> I (one or both with inversions)"
-msgstr ""
+msgstr "V --> I (bat edo biak, inbertsioekin)"
 
 #: ../xrc/xrc_strings.cpp:346
 msgid "IV --> I"
-msgstr ""
+msgstr "IV --> I"
 
 #: ../xrc/xrc_strings.cpp:347
 msgid "IVm --> I"
-msgstr ""
+msgstr "IVm --> I"
 
 #: ../xrc/xrc_strings.cpp:348
 msgid "II/6 --> I"
-msgstr ""
+msgstr "II/6 --> I"
 
 #: ../xrc/xrc_strings.cpp:349
 msgid "IIm/6 --> I"
-msgstr ""
+msgstr "IIm/6 --> I"
 
 #: ../xrc/xrc_strings.cpp:352
 msgid "Half cadences"
-msgstr ""
+msgstr "Kadentzia erdiak"
 
 #: ../xrc/xrc_strings.cpp:353
 msgid "IIm/6 --> V"
-msgstr ""
+msgstr "IIm/6 --> V"
 
 #: ../xrc/xrc_strings.cpp:354
 msgid "IV --> V"
-msgstr ""
+msgstr "IV --> V"
 
 #: ../xrc/xrc_strings.cpp:355
 msgid "I --> V"
-msgstr ""
+msgstr "I --> V"
 
 #: ../xrc/xrc_strings.cpp:356
 msgid "I/64 --> V"
-msgstr ""
+msgstr "I/64 --> V"
 
 #: ../xrc/xrc_strings.cpp:357
 msgid "IVm/6 --> V (Phrygian half cadence)"
-msgstr ""
+msgstr "IVm/6 --> V (Kadentzia erdi frigioa)"
 
 #: ../xrc/xrc_strings.cpp:358
 msgid "II --> V"
-msgstr ""
+msgstr "II --> V"
 
 #: ../xrc/xrc_strings.cpp:359
 msgid "Neapolitan sixth --> V"
-msgstr ""
+msgstr "6. napolitarra --> V"
 
 #: ../xrc/xrc_strings.cpp:360
 msgid "VI+ --> V"
-msgstr ""
+msgstr "VI+ --> V"
 
 #: ../xrc/xrc_strings.cpp:363
 msgid "V --> IV"
-msgstr ""
+msgstr "V --> IV"
 
 #: ../xrc/xrc_strings.cpp:364
 msgid "V --> IVm"
-msgstr ""
+msgstr "V --> IVm"
 
 #: ../xrc/xrc_strings.cpp:365
 msgid "V --> IIm"
-msgstr ""
+msgstr "V --> IIm"
 
 #: ../xrc/xrc_strings.cpp:366
 msgid "V --> III"
-msgstr ""
+msgstr "V --> III"
 
 #: ../xrc/xrc_strings.cpp:367
 msgid "V --> VII"
-msgstr ""
+msgstr "V --> VII"
 
 #: ../xrc/xrc_strings.cpp:368
 msgid "V --> VI"
-msgstr ""
+msgstr "V --> VI"
 
 #: ../xrc/xrc_strings.cpp:369
 msgid "V --> VIm"
-msgstr ""
+msgstr "V --> VIm"
 
 #: ../xrc/xrc_strings.cpp:379
 msgid "F# Major"
-msgstr ""
+msgstr "Fa # maiorra"
 
 #: ../xrc/xrc_strings.cpp:380
 msgid "C# Major"
-msgstr ""
+msgstr "Do # maiorra"
 
 #: ../xrc/xrc_strings.cpp:381
 msgid "Cb Major"
-msgstr ""
+msgstr "Do b maiorra"
 
 #: ../xrc/xrc_strings.cpp:382
 msgid "Gb Major"
-msgstr ""
+msgstr "Sol b maiorra"
 
 #: ../xrc/xrc_strings.cpp:383
 msgid "Db Major"
-msgstr ""
+msgstr "Re b maiorra"
 
 #: ../xrc/xrc_strings.cpp:384
 msgid "Ab Major"
-msgstr ""
+msgstr "La b maiorra"
 
 #: ../xrc/xrc_strings.cpp:385
 msgid "Eb Major"
-msgstr ""
+msgstr "Mi b maiorra"
 
 #: ../xrc/xrc_strings.cpp:386
 msgid "Bb Major"
-msgstr ""
+msgstr "Si b maiorra"
 
 #: ../xrc/xrc_strings.cpp:391
 msgid "F# minor"
-msgstr ""
+msgstr "Fa # minorra"
 
 #: ../xrc/xrc_strings.cpp:392
 msgid "C# minor"
-msgstr ""
+msgstr "Do # minorra"
 
 #: ../xrc/xrc_strings.cpp:393
 msgid "G# minor"
-msgstr ""
+msgstr "Sol # minorra"
 
 #: ../xrc/xrc_strings.cpp:394
 msgid "D# minor"
-msgstr ""
+msgstr "Re # minorra"
 
 #: ../xrc/xrc_strings.cpp:395
 msgid "A# minor"
-msgstr ""
+msgstr "La # minor"
 
 #: ../xrc/xrc_strings.cpp:396
 msgid "Ab minor"
-msgstr ""
+msgstr "La b minorra"
 
 #: ../xrc/xrc_strings.cpp:397
 msgid "Eb minor"
-msgstr ""
+msgstr "Mi b minorra"
 
 #: ../xrc/xrc_strings.cpp:398
 msgid "Bb minor"
-msgstr ""
+msgstr "Si b minorra"
 
 #: ../xrc/xrc_strings.cpp:403
 msgid "check/uncheck all major"
-msgstr ""
+msgstr "egiaztatu/ez egiaztatu dena maiorra"
 
 #: ../xrc/xrc_strings.cpp:404
 msgid "check/uncheck all minor"
-msgstr ""
+msgstr "egiaztatu/ez egiaztatu dena minorra"
 
 #: ../xrc/xrc_strings.cpp:406
 msgid "How to show key signature?"
-msgstr ""
+msgstr "Nola erakutsi armadura?"
 
 #: ../xrc/xrc_strings.cpp:407
 msgid "&Play A4 note"
-msgstr ""
+msgstr "&Jo La4 not"
 
 #: ../xrc/xrc_strings.cpp:408
 msgid "Play &tonic chord"
-msgstr ""
+msgstr "Jo akorde %tonikoa"
 
 #: ../xrc/xrc_strings.cpp:409
 msgid "Answer buttons"
-msgstr ""
+msgstr "Erantzuteko botoiak"
 
 #: ../xrc/xrc_strings.cpp:410
 msgid "Type of desired answer"
-msgstr ""
+msgstr "Nahi duzun erantzunaren mota"
 
 #: ../xrc/xrc_strings.cpp:411
 msgid "Identify cadence &group (terminal/transient)"
-msgstr ""
+msgstr "Identifikatu kadentzi &taldea (terminala/iragankorra)"
 
 #: ../xrc/xrc_strings.cpp:412
 msgid "Identify cadence &type"
-msgstr ""
+msgstr "Identifikatu kadentzi &mota"
 
 #: ../xrc/xrc_strings.cpp:413
 msgid "Cadence types"
-msgstr ""
+msgstr "Kadentzi motak"
 
 #: ../xrc/xrc_strings.cpp:414
 msgid "Terminal cadences"
-msgstr ""
+msgstr "Kadentzia terminalak"
 
 #: ../xrc/xrc_strings.cpp:418
 msgid "Transient cadences"
-msgstr ""
+msgstr "Kadentzia iragankorrak"
 
 #: ../xrc/xrc_strings.cpp:421
 msgid "You must choose al least two buttons! "
-msgstr ""
+msgstr "Gutxienez, bi botoi aukeratu behar!"
 
 #: ../xrc/xrc_strings.cpp:422
 msgid "You must choose at least one cadence in tab 'cadences'! "
-msgstr ""
+msgstr "Gutxienez, kadentzia bat aukeratu behar duzu \"Kadentziak' etiketan!"
 
 #: updater/Updater.cpp:105
 msgid ""
@@ -4615,112 +4603,123 @@ msgid ""
 " To check for updates LenMus needs internet connection. \n"
 " Please, connect to internet and then retry."
 msgstr ""
+"Ez zaude Interneti lotuta!\n"
+"\n"
+"LenMus eguneraketarik ote dagoen begiratzeko, Internet lotura behar duzu. \n"
+"Mesedez, ezarri lotura eta gero saiatu berriro."
 
 #: updater/Updater.cpp:191
 msgid "Error checking for updates"
-msgstr ""
+msgstr "Errorea eguneraketak bilatzerakoan"
 
 #: updater/Updater.cpp:192
 msgid "A connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems persists, the server may be down. Please, try again later."
-msgstr ""
+msgstr "Ezin izan zaio zerbitzariari lotu. Egiazta ezazu ea Interneti lotuta zauden eta suebakiak ez duela programa hau oztopatzen; gero saiatu berriro. Arazoak iraunez gero, zerbitzaria erorita egon daiteke. Mesedez, saia zaitez berriro beranduago."
 
 #: updater/Updater.cpp:202
 msgid "Error loading XML file "
-msgstr ""
+msgstr "Errorea XML fitxategia kargatzean"
 
 #: graphic/BoxPage.cpp:46
 msgid "page"
-msgstr ""
+msgstr "orria"
 
 #: graphic/BoxSystem.cpp:50
 msgid "system"
-msgstr ""
+msgstr "sistema"
 
 #: graphic/GraphicManager.cpp:277
 msgid "Sorry, not enough memory to create a Bitmap to display the page."
-msgstr ""
+msgstr "Barkatu, ez dago nahikoa memoriarik orria bistaratzeko Bitmapik sortzeko."
 
 #: graphic/Formatter4.cpp:793
 msgid "Program failure: not enough space for drawing just one bar."
-msgstr ""
+msgstr "Programaren hutsa: ez dago lekurik barra bat ere marrazteko."
 
 #: graphic/BoxScore.cpp:39
 msgid "score"
-msgstr ""
+msgstr "partitura"
 
 #: ../langtool/src/installer.cpp:60
 msgid "Please choose the optional components you would like to install"
-msgstr ""
+msgstr "Mesedez, aukeratu instalatu nahi zenituzkeen bestelako osagaia"
 
 #: ../langtool/src/installer.cpp:64
 msgid "Shorcut on desktop"
-msgstr ""
+msgstr "Idazmahaiko lasterbidea"
 
 #: ../langtool/src/installer.cpp:65
 msgid "Examples of music scores"
-msgstr ""
+msgstr "Partitura ereduak"
 
 #: ../langtool/src/installer.cpp:66
 msgid "Add to Control Panel (to 'Add/Remove Programs')"
-msgstr ""
+msgstr "Gehitu Kontrol Panelera ('Programa gehitu/kendu' aukera)"
 
 #: ../langtool/src/installer.cpp:69
 msgid "Create a shorcut icon on the desktop"
-msgstr ""
+msgstr "Sortu lasterbide bat idazmahaian"
 
 #: ../langtool/src/installer.cpp:70
 msgid "Create a folder containing some examples of music scores"
-msgstr ""
+msgstr "Sortu partitura eredu batzuk gordetzeko karpeta bat"
 
 #: ../langtool/src/installer.cpp:71
 msgid "Create keys in Windows Registry to add LenMus to 'Add/Remove Programs' in the Control Panel."
-msgstr ""
+msgstr "Sortu klabeak Windowsen Erregistroan,  LenMus Kontrol Paneleko 'Programa gehitu/kendu' aukera jartzeko."
 
 #: ../langtool/src/installer.cpp:75
 msgid "Error copying program files"
-msgstr ""
+msgstr "Errorea programa artxiboak kopiatzean"
 
 #: ../langtool/src/installer.cpp:76
 msgid "Error installing font"
-msgstr ""
+msgstr "Errorea letra tipoa instalatzean"
 
 #: ../langtool/src/installer.cpp:77
 msgid "Error creating shortcut on desktop"
-msgstr ""
+msgstr "Errorea lasterbidea idazmahaian sortzerakoan"
 
 #: ../langtool/src/installer.cpp:78
 msgid "Error copying examples of music scores"
-msgstr ""
+msgstr "Errorea partitura ereduak kopiatzean"
 
 #: ../langtool/src/installer.cpp:79
 msgid "Would you like to continue the installation?"
-msgstr ""
+msgstr "Aurrera jarraitu nahi duzu instalazioan?"
 
 #: ../langtool/src/installer.cpp:80
 msgid "Installation canceled"
-msgstr ""
+msgstr "Instalazioa bertan behera geratu da"
 
 #: ../langtool/src/installer.cpp:85
 msgid "Run"
-msgstr ""
+msgstr "Jarraitu"
 
 #: ../langtool/src/installer.cpp:86
 msgid "Uninstall"
-msgstr ""
+msgstr "Desinstalatu"
 
 #: app/Logger.h:116
 msgid "Errors"
-msgstr ""
+msgstr "Erroreak"
 
 #: options/OptionsDlg.h:90
 msgid "Configuration options"
-msgstr ""
+msgstr "Konfigurazio aukerak"
 
 #: graphic/GMObject.h:227
 msgid "Object"
-msgstr ""
+msgstr "Objektua"
 
 #: graphic/GMObject.h:294
 msgid "Box"
-msgstr ""
+msgstr "Kutxa"
+
+#~ msgid "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
+#~ msgstr "Copyright &copy; 2002-2008 Cecilio Salmer&oacute;n."
+#~ msgid "Package for Linux prepared by:"
+#~ msgstr "Linuxerako paketearen prestatzaile:"
+#~ msgid "tool_test_sound"
+#~ msgstr "tresna_soinu_saioa"
 

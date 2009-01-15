@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,7 +39,7 @@
 #include "Generators.h"
 #include "Constrains.h"
 
-enum EChordType
+enum lmEChordType
 {
     // Triads
     ect_MajorTriad = 0,
@@ -87,14 +87,14 @@ public:
     lmChordConstrains(wxString sSection);
     ~lmChordConstrains() {}
 
-    EChordType GetRandomChordType();
+    lmEChordType GetRandomChordType();
     int GetRandomMode();
 
     bool AreInversionsAllowed() { return m_fAllowInversions; }
     void SetInversionsAllowed(bool fValue) { m_fAllowInversions = fValue; }
 
-    bool IsChordValid(EChordType nType) { return m_fValidChords[nType]; }
-    void SetChordValid(EChordType nType, bool fValid) { m_fValidChords[nType] = fValid; }
+    bool IsChordValid(lmEChordType nType) { return m_fValidChords[nType]; }
+    void SetChordValid(lmEChordType nType, bool fValid) { m_fValidChords[nType] = fValid; }
     bool* GetValidChords() { return m_fValidChords; }
 
     bool IsValidGroup(EChordGroup nGroup);

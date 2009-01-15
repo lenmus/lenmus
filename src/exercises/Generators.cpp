@@ -111,29 +111,30 @@ lmETimeSignature lmRandomGenerator::RandomTimeSignature()
     return (lmETimeSignature)RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
 }
 
-
-
-/*! Generates a random pitch in the range nMinLine to nMinLine+nRange-1, both included.
-    If fRest==true also pitch = 0 (rest) can be generated.
-*/
 lmDPitch lmRandomGenerator::GenerateRandomDPitch(int nMinLine, int nRange, bool fRests,
                                      lmEClefType nClef)
 {
+    // Generates a random pitch in the range nMinLine to nMinLine+nRange-1,
+    // both included.
+    // If fRest==true also pitch = 0 (rest) can be generated.
+
     int nPitch;
 
-    if (fRests) {
-        //allow for generating rests
-        nRange++;
-        nPitch = ((nRange * rand())/RAND_MAX) + nMinLine - 1;
-        if (nPitch < nMinLine) nPitch = 0;
+    if (fRests)
+    {
+        //also generate rests
+        nPitch = RandomNumber(0, nRange);
+        nPitch = (nPitch == nRange ? 0 : nPitch + nMinLine);
     }
-    else {
+    else
+    {
         //do not generate rests
-        nPitch = ((nRange * rand())/RAND_MAX) + nMinLine;
+        nPitch = RandomNumber(0, nRange-1) + nMinLine;
     }
 
     //correct note pitch to suit key signature base line
-    switch (nClef) {
+    switch (nClef)
+    {
         case lmE_Sol:        nPitch += 29;    break;
         case lmE_Fa4:        nPitch += 17;    break;
         case lmE_Fa3:        nPitch += 19;    break;

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -35,7 +35,7 @@
 
 #include "ParamsParser.h"
 #include "../score/Score.h"                 //common enum types
-#include "../exercises/ChordConstrains.h"   //EChordType
+#include "../exercises/ChordConstrains.h"   //lmEChordType
 #include "../auxmusic/ChordManager.h"       //chord name conversion
 #include "../ldp_parser/AuxString.h"        //LDPInternalNameToKey
 
@@ -111,7 +111,7 @@ wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidCho
         //loop to get allowed chords
         int iColon;
         wxString sChord;
-        EChordType nType;
+        lmEChordType nType;
         while (sParamValue != _T("")) {
             //get chord
             iColon = sParamValue.Find(_T(","));
@@ -124,7 +124,7 @@ wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidCho
                 sParamValue = _T("");
             }
             nType = ChordShortNameToType(sChord);
-            if (nType == (EChordType)-1) {
+            if (nType == (lmEChordType)-1) {
                 fError = true;
                 break;
             }

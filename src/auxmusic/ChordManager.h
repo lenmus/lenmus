@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -43,9 +43,9 @@
 
 
 //declare global functions defined in this module
-extern wxString ChordTypeToName(EChordType nChordType);
-extern int NumNotesInChord(EChordType nChordType);
-extern EChordType ChordShortNameToType(wxString sName);
+extern wxString ChordTypeToName(lmEChordType nChordType);
+extern int NumNotesInChord(lmEChordType nChordType);
+extern lmEChordType ChordShortNameToType(wxString sName);
 
 
 //a chord is a sequence of up 6 notes. Change this for more notes in chord
@@ -57,18 +57,18 @@ public:
     //default constructor
     lmChordManager();
     //build a chord from root note and type
-    lmChordManager(wxString sRootNote, EChordType nChordType, int nInversion = 0,
+    lmChordManager(wxString sRootNote, lmEChordType nChordType, int nInversion = 0,
                    lmEKeySignatures nKey = earmDo);
     //destructor
     ~lmChordManager();
 
     //creation
-    void Create(wxString sRootNote, EChordType nChordType, int nInversion,
+    void Create(wxString sRootNote, lmEChordType nChordType, int nInversion,
                 lmEKeySignatures nKey);
     void Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
     void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], lmEKeySignatures nKey);
 
-    EChordType GetChordType() { return m_nType; }
+    lmEChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
     wxString GetName() { return ChordTypeToName( m_nType ); }
     int GetNumNotes();
@@ -91,7 +91,7 @@ private:
 
 //member variables
 
-    EChordType      m_nType;
+    lmEChordType      m_nType;
     lmEKeySignatures  m_nKey;
     int             m_nInversion;
     int             m_nNumNotes;                    //num notes in the chord

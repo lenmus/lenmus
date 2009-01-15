@@ -48,7 +48,7 @@ typedef struct lmChordInfoStruct {
 static wxString m_sChordName[ect_Max];
 static bool m_fStringsInitialized = false;
 
-// AWARE: Array indexes are in correspondence with enum EChordType
+// AWARE: Array indexes are in correspondence with enum lmEChordType
 // - intervals are from root note
 //      number + type:   m=minor, M=major, p=perfect, a=augmented, d=diminished
 #define lmNIL   lmNULL_FIntval
@@ -79,13 +79,13 @@ lmChordManager::lmChordManager()
 {
 }
 
-lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
+lmChordManager::lmChordManager(wxString sRootNote, lmEChordType nChordType,
                                int nInversion, lmEKeySignatures nKey)
 {
     Create(sRootNote, nChordType, nInversion, nKey);
 }
 
-void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
+void lmChordManager::Create(wxString sRootNote, lmEChordType nChordType,
                             int nInversion, lmEKeySignatures nKey)
 {
     //parameter 'nInversion' is encoded as follows:
@@ -336,7 +336,7 @@ void lmChordManager::UnitTests()
 //global functions
 //----------------------------------------------------------------------------------------
 
-wxString ChordTypeToName(EChordType nType)
+wxString ChordTypeToName(lmEChordType nType)
 {
     wxASSERT(nType < ect_Max);
 
@@ -373,14 +373,14 @@ wxString ChordTypeToName(EChordType nType)
 
 }
 
-int NumNotesInChord(EChordType nChordType)
+int NumNotesInChord(lmEChordType nChordType)
 {
     wxASSERT(nChordType < ect_Max);
     return tData[nChordType].nNumNotes;
 
 }
 
-EChordType ChordShortNameToType(wxString sName)
+lmEChordType ChordShortNameToType(wxString sName)
 {
     // returns -1 if error
     //
@@ -414,6 +414,6 @@ EChordType ChordShortNameToType(wxString sName)
     else if (sName == _T("m6")) return ect_MinorSixth;
     else if (sName == _T("a6")) return ect_AugSixth;
 
-    return (EChordType)-1;  //error
+    return (lmEChordType)-1;  //error
 
 }

@@ -64,7 +64,7 @@ protected:
     void ReconfigureButtons();
 
 private:
-    wxString PrepareScore(lmEClefType nClef, EChordType nType, lmScore** pScore);
+    wxString PrepareScore(lmEClefType nClef, lmEChordType nType, lmScore** pScore);
 
         // member variables
 

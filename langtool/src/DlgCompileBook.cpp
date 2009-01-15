@@ -53,15 +53,17 @@ enum {
 
 //table must be ordered by language name (in English) to
 //ensure correspondence with table in DlgCompileBook.h
+//English MUST BE first. All other in alphabetical order
 const lmLangData g_tLanguages[lmNUM_LANGUAGES] = { 
+    { _T("en"),     _T("English"),  _T("utf-8") }, 
     { _T("eu"),     _T("Basque"),   _T("utf-8") }, 
-    { _T("nl"),     _T("Dutch"),    _T("iso-8859-9") }, 
-    { _T("en"),     _T("English"),  _T("iso-8859-1") }, 
-    { _T("fr"),     _T("French"),   _T("iso-8859-1") },
+    { _T("nl"),     _T("Dutch"),    _T("utf-8") }, 
+    { _T("fr"),     _T("French"),   _T("utf-8") },
     { _T("gl_ES"),  _T("Galician"), _T("utf-8") },
     { _T("it"),     _T("Italian"),  _T("utf-8") }, 
-    { _T("es"),     _T("Spanish"),  _T("iso-8859-1") }, 
+    { _T("es"),     _T("Spanish"),  _T("utf-8") }, 
     { _T("tr"),     _T("Turkish"),  _T("iso-8859-9") }, 
+    { _T("xx"),     _T(""),         _T("utf-8") },     //for the language pack
 };
 
 
@@ -86,7 +88,7 @@ END_EVENT_TABLE()
 
 lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOptions)
     : wxDialog(parent, wxID_ANY, wxT("eMusicBook compilation"), wxDefaultPosition,
-               wxSize( 530,400 ), wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX )
+               wxSize( 530,500 ), wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX )
 {
     WXUNUSED(parent)
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -195,7 +195,7 @@ lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow* parent,
     //initialize check boxes for allowed chords with current settings
     int i;
     for (i=0; i < ect_Max; i++) {
-        m_pChkChord[i]->SetValue( m_pConstrains->IsChordValid((EChordType)i) );
+        m_pChkChord[i]->SetValue( m_pConstrains->IsChordValid((lmEChordType)i) );
     }
     
     //play modes
@@ -244,7 +244,7 @@ void lmDlgCfgIdfyChord::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     //save allowed chords
     int i;
     for (i=0; i < ect_Max; i++) {
-        m_pConstrains->SetChordValid((EChordType)i, m_pChkChord[i]->GetValue());
+        m_pConstrains->SetChordValid((lmEChordType)i, m_pChkChord[i]->GetValue());
     }
     
     // save selected key signatures

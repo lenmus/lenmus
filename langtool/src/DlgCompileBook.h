@@ -57,14 +57,15 @@ typedef struct lmLangDataStruct {
 //correspondence with table in DlgCompileBook.cpp
 enum ELanguages
 {   
-    eLangBasque = 0,
+    eLangEnglish = 0,       //English MUST BE first. All other in alphabetical order
+    eLangBasque,
     eLangDutch,
-    eLangEnglish,
     eLangFrench,
     eLangGalician,
     eLangItalian,
     eLangSpanish,
     eLangTurkish,
+    eLangXX,        //for language pack
     eLangLast
 };
 

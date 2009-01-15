@@ -114,9 +114,181 @@ d) Base-40 pitch (typedef %%lmFPitch%%)
 }
 
 
-** 3. Intervals representation**
-    Intervals (typedef %%lmFIntval%%)      // Intervals, in FPitch mode.
 
+\h1 {Representing chords and intervals}
+%%%-------------------------------------
+
+In the internal socre representation (%%lmScore%%) chords do not have any special representation: they are just notes played at the same time. There exists an %%lmChord%% class, but it is a helper class to render chords.
+
+But in certain cases (i.e. for music analysis and in exercises) it is necessary to have a  specific representation and specific methods to deal with chords. For this purpose, class %%lmChordManager%% (in auxmusic/ChordManager.h & .cpp) has been created. The class was named %%lmChordManager%% as name %%lmChord%% was already used in the aforementioned helper class. Moreover, as this class has methods to deal with chords, the adjective <i>manager</i> was considered not too bad.
+
+
+\h2 {The lmChordManager class}
+%%%--------------------------------
+
+Class %%lmChordManager%% represents a chord. The chord is internally modelled by an array of note pitches.
+
+Currently, %%lmChordManager%% is only used in chords and cadences exercises. Therefore, only the methods needed for these exercises has been created. They are, basically:
+
+ * given a root note, the chord type, and the inversion create the chord.
+ * get the notes that form the chord
+ 
+To encode chord type, enum %%lmEChordType%% has been defined.
+
+\code
+{
+enum lmEChordType
+{
+    // Triads
+    ect_MajorTriad = 0,
+    ect_MinorTriad,
+    ect_AugTriad,
+    ect_DimTriad,
+    ect_Suspended_4th,
+    ect_Suspended_2nd,
+    ect_LastTriad = ect_Suspended_2nd,
+
+    // Seventh chords
+    ect_MajorSeventh,
+    ect_DominantSeventh,
+    ect_MinorSeventh,
+    ect_DimSeventh,
+    ect_HalfDimSeventh,
+    ect_AugMajorSeventh,
+    ect_AugSeventh,
+    ect_MinorMajorSeventh,
+    ect_LastSeventh = ect_MinorMajorSeventh,
+
+    // Sixth chords
+    ect_MajorSixth,
+    ect_MinorSixth,
+    ect_AugSixth,
+    ect_LastSixth = ect_AugSixth,
+
+    //last element, to signal End Of Table
+    ect_Max
+};
+}
+
+To add more chord types it is necessary to modify this enum and the table defined in %%lmChordManager%% implementation:
+
+\code
+{
+static lmChordInfo tData[ect_Max] = {
+    { 3, { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
+    { 3, { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
+    { 3, { lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
+    { 3, { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
+    { 3, { lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
+    { 3, { lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
+    { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
+    ...
+};
+}
+
+This table encodes each chord type by specifying:
+
+ * the number of notes in the chord, and
+ * the intervals between the root note and the others when in root position.
+ 
+For example, line
+\code
+{
+{ 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
+}
+says that a major seventh chord has four notes, and the intervals between them are a major third (%%lm_M3%%), a perfect fifth (%%lm_p5%%) and a major seventh (%%lm_M7%%). Intervals are encoded using symbolic constants defined in score/Pitch.h.
+
+
+\h2 {Representing intervals}
+%%%-------------------------
+
+\h2 {Intervals in FPitch: typedef lmFInvtal}
+%%%-------------------------
+
+Representing pitch using %%lmFPitch%% is the best approach to represent intervals for computations. An %%lmFPitch%% it is just an integer number, but it has an interesting property for computing intervals:
+
+ * The interval between two FPitches is just the difference between the two FPitches.
+ 
+The resulting number represents the interval. A typedef %%lmFIntval%% is defined for this (in score/Pitch.h). %%lmFIntval%% has interesting properties:
+
+ * FIntervals can be added/substracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.
+ 
+ * Intervals greater than one octave are computed by adding 40 (p8) for each octave.
+For example, a Major 10th is M3+p8 = 12+40 = 52.
+
+
+\h2 {Classes lmInterval and lmNoteBits}
+%%%---------------------------------------
+
+One of the first exercises added to LenMus program was 'intervals identification'. When I coded it, I didn't pay much attention to the problem of managing intervals. I was only interested in some quick representation for that exercise. Due to time constrains, this initial representation  is still in use in the program and code using it has not yet be changed to use %%lmFIntval%%. This deprecated class is %%lmInterval%% (defined in auxmusic/Interval.h & .cpp). There are also some global functions defined to compute intervals, but they should not be used. Any new code dealing with intervals should be based on %%lmFPitch%% and %%lmFIntval%%.
+
+Associated to this class (and also deprecated) there is typedef %%lmNoteBits%% (defined in auxmusic/Conversion.h). It is a pitch representation struct, used to compute intervals.  Any new code should use %%lmFPitch%% or any of the other pitch representation classes defined previously in this chapter.
+
+%%lmNoteBits%% is equivalent to %%lmAPitch%% but it is a less compact representation. And member %%nStepSemitones%% is redundant:
+
+ \code
+ {
+typedef struct lmNoteBitsStruct {
+    int nStep;              // 'c'=0, 'd'=1, 'e'=2, 'f'=3, 'g'=4, 'a'=5, 'b'=6
+    int nOctave;            // 0..9
+    int nAccidentals;       // '--'=-1, '-'=-1, ''=0, '+'=+1, '++'=+2
+    int nStepSemitones;     // 'c'=0, 'd'=2, 'e'=4, 'f'=5, 'g'=7, 'a'=9, 'b'=11
+} lmNoteBits;
+}
+                               
+ 
+
+\h2 {Annex. Pitch values in different representations}
+%%%---------------------------------------
+
+\ssv_table[Table 1. Pitch values in different representations; anchor=TAB1; class=simpletable]
+{
+\th{ name || Octave || MIDI || DPitch   || FPitch   || Observations }
+\al{ <            >       >          >        >         <     }
+  rest      any         0            0        ~_       Any~_rest
+  (c-1)    -1           1            ~_       ~_        ~_
+  c0        0           12           1        ~_        Do2~_de~_la~_subcontraoctava~_(16.35~_Hz)
+  d0        0           14           2        ~_        ~_
+  e0        0           16           3        ~_        ~_
+  f0        0           17           4        ~_        ~_
+  g0        0           19           5        ~_        ~_
+  a0        0           21           6        ~_        ~_
+  b0        0           23           7        ~_        ~_
+  c1        1           24           8        ~_        Do1~_de~_la~_contraoctava
+  c2        2           36           15       ~_        Do~_de~_la~_gran~_octava
+  c3        3           48           22       ~_        do~_de~_la~_pequena~_octava
+  c4        4           60           29       ~_        do1~_de~_la~_octava~_primera~_(a4~_=~_440Hz)~_      
+  d4        4           62           30       ~_        ~_
+  e4        4           64           31       ~_        ~_
+  f4        4           65           32       ~_        ~_
+  ...       ~_          ~_           ~_       ~_        ~_
+  c5        5           72           36       ~_        do2~_de~_la~_octava~_segunda
+  c6        6           84           43       ~_        do3~_de~_la~_octava~_tercera
+  c7        7           96           50       ~_        do4~_de~_la~_octava~_cuarta
+  c8        8           108          57       ~_        do5~_de~_la~_octava~_quinta~_(4,186~_Hz)
+  c9        9           120          64       ~_        ~_
+  d9        9           122          65       ~_        ~_
+  e9        9           124          66       ~_        ~_
+  f9        9           125          67       ~_        ~_
+  g9        9           127          68       ~_        ~_
+}
+
+%%*
+
+  Accidentals are represented by minus (-) and plus (+) signs before the note name
+       -  : flat
+       +  : sharp
+       -- : double flat
+       ++ : sharp-sharp (two sharps)
+       =  : natural
+       =- : natural-flat
+       =+ : natural-sharp
+       x  : double sharp
+  i.e.:  ++c3, =+c3, +c3, =c3, -c3, --c3, =-c3, xc3
+
+---------------------------------------------------------------------------------------       
+  
+  
 
 **3. Open issues**
 
@@ -140,78 +312,6 @@ new (HCHord):
                   absolute pitch.
                 * Incomplete information or complex to analyse, as at least key signature
                   must be taken into account.
- 
-                
- lmNoteBits:    A lmNotePitch equivalent but less compact. StepSemitones is redundant
- \code
- {
-     int nStep;              // 'c'=0, 'd'=1, 'e'=2, 'f'=3, 'g'=4, 'a'=5, 'b'=6
-     int nOctave;            // 0..9
-     int nAccidentals;       // '--'=-1, '-'=-1, ''=0, '+'=+1, '++'=+2
-     int nStepSemitones;     // 'c'=0, 'd'=2, 'e'=4, 'f'=5, 'g'=7, 'a'=9, 'b'=11
- }
-               
-                
- nStep:         Diatonic step 0..6: 0=C, 1=D, 2=E, 3=F, 4=G, 5=A, 6=B
- nOctave:       Octave number 0..9. Same meaning as in MIDI but the lowest MIDI octave (-1)
-                possible to represent.
- nAlter
- nAccidentals
-
- - A pitch value of 0 (zero) represents a rest.
- - A -1 value (both for Diatonic Pitch and MIDI Pitch) would imply 'no pitch defined yet'
- 
- 
- 
-\ssv_table[Table 1. Pitch values in different representations; anchor=TAB1; class=simpletable]
-{
-\th{ name || Octave || MIDI || DPitch   || Observations }
-\al{ <            >       >          >        <     }
-  rest      any         0            0          Any~_rest
-  (c-1)    -1           1
-  c0        0           12           1          Do2~_de~_la~_subcontraoctava~_(16.35~_Hz)
-  d0        0           14           2
-  e0        0           16           3
-  f0        0           17           4
-  g0        0           19           5
-  a0        0           21           6
-  b0        0           23           7
-  c1        1           24           8          Do1~_de~_la~_contraoctava
-  c2        2           36           15         Do~_de~_la~_gran~_octava
-  c3        3           48           22         do~_de~_la~_pequena~_octava
-  c4        4           60           29         do1~_de~_la~_octava~_primera~_(a4~_=~_440Hz)
-  d4        4           62           30
-  e4        4           64           31
-  f4        4           65           32
-  ...
-  c5        5           72           36         do2~_de~_la~_octava~_segunda
-  c6        6           84           43         do3~_de~_la~_octava~_tercera
-  c7        7           96           50         do4~_de~_la~_octava~_cuarta
-  c8        8           108          57         do5~_de~_la~_octava~_quinta~_(4,186~_Hz)
-  c9        9           120          64
-  d9        9           122          65
-  e9        9           124          66
-  f9        9           125          67
-  g9        9           127          68
-}
-
-%%*
-
-  Accidentals are represented by minus (-) and plus (+) signs before the note name
-       -  : flat
-       +  : sharp
-       -- : double flat
-       ++ : sharp-sharp (two sharps)
-       =  : natural
-       =- : natural-flat
-       =+ : natural-sharp
-       x  : double sharp
-  i.e.:  ++c3, =+c3, +c3, =c3, -c3, --c3, =-c3, xc3
-
----------------------------------------------------------------------------------------       
-  
-  
-
 
 
 Microtonal representation

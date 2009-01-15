@@ -185,7 +185,7 @@ void lmIdfyChordCtrol::ReconfigureButtons()
         iR = 0;
         m_pRowLabel[iR]->SetLabel(_("Triads:"));
         for (iC=0; iC <= ect_LastTriad; iC++) {
-            if (m_pConstrains->IsChordValid((EChordType)iC)) {
+            if (m_pConstrains->IsChordValid((lmEChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
@@ -205,7 +205,7 @@ void lmIdfyChordCtrol::ReconfigureButtons()
         iR = iB / m_NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Seventh chords:"));
         for (iC=ect_LastTriad+1; iC <= ect_LastSeventh; iC++) {
-            if (m_pConstrains->IsChordValid((EChordType)iC)) {
+            if (m_pConstrains->IsChordValid((lmEChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
@@ -225,7 +225,7 @@ void lmIdfyChordCtrol::ReconfigureButtons()
         iR = iB / m_NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Other chords:"));
         for (iC=ect_LastSeventh+1; iC < ect_Max; iC++) {
-            if (m_pConstrains->IsChordValid((EChordType)iC)) {
+            if (m_pConstrains->IsChordValid((lmEChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
@@ -255,7 +255,7 @@ void lmIdfyChordCtrol::PrepareAuxScore(int nButton)
     // This method is then invoked to prepare the score with the requested sound.
     // At return, base class will play it
 
-    PrepareScore(lmE_Sol, (EChordType)m_nRealChord[nButton], &m_pAuxScore);
+    PrepareScore(lmE_Sol, (lmEChordType)m_nRealChord[nButton], &m_pAuxScore);
 }
 
 wxString lmIdfyChordCtrol::SetNewProblem()
@@ -284,7 +284,7 @@ wxString lmIdfyChordCtrol::SetNewProblem()
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, fAllowAccidentals);
 
     // generate a random chord
-    EChordType nChordType = m_pConstrains->GetRandomChordType();
+    lmEChordType nChordType = m_pConstrains->GetRandomChordType();
     m_nInversion = 0;
     if (m_pConstrains->AreInversionsAllowed())
         m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
@@ -310,7 +310,7 @@ wxString lmIdfyChordCtrol::SetNewProblem()
 
 }
 
-wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, EChordType nType, lmScore** pScore)
+wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, lmScore** pScore)
 {
     //create the chord
     lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);

@@ -1,71 +1,76 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.7\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-06 18:30+0100\n"
-"Last-Translator: Karlos del Olmo Serna <zumareus@yahoo.es>\n"
+"Project-Id-Version: LenMus 4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-08 11:18+0100\n"
+"PO-Revision-Date: 2009-01-15 16:58+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Basque\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: ..\\src\n"
+"X-Poedit-Basepath: ../src\n"
 "X-Poedit-SearchPath-0: intro\n"
 
 #: intro/intro.cpp:2
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr ""
+msgstr "Bidal iezazkiozu zeure iruzkin eta iradokizunak LenMus taldeari (www.lenmus.org)"
 
 #: intro/intro.cpp:3
-msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
-msgstr ""
+msgid "Licensed under the terms of the GNU Free Documentation License v1.3"
+msgstr "GNU Free Documentation License v1.3 lizentziaren arabera lizentziatua"
 
 #: intro/intro.cpp:4
 msgid "the teacher of music"
-msgstr ""
+msgstr "Musika irakaslea"
 
 #: intro/intro.cpp:5
 msgid "Cover page"
-msgstr ""
+msgstr "Azala"
 
 #: intro/intro.cpp:6
 msgid "LenMus presentation"
-msgstr ""
+msgstr "LenMus aurkezten"
 
 #: intro/intro.cpp:7
 msgid "LenMus Phonascus presentation"
-msgstr ""
+msgstr "LenMus Phonascus aurkezten "
 
 #: intro/intro.cpp:8
-msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 3.1 it includes new functions that, I hope, will end up with full support for the creation, display, printing, play back and interactive edition of music scores. Visit the LenMus web site for more information about the current status of the score editor."
-msgstr ""
+#, fuzzy
+msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 4.0 it includes a score editor with full support for the creation, display, printing, play back and interactive edition of music scores."
+msgstr "Phonascus, latinez 'musika irakaslea', musika hezkuntzarako softwarea da, eta erabiltzea duzu musika irakurmena lantzeko, entzumen trebetasunak hobetzeko edo, besterik gabe, musika teoriazko eta hizkerazko oinarrizko hastapenak ikasteko.  "
 
 #: intro/intro.cpp:9
 msgid "LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace."
-msgstr ""
+msgstr "LenMus Phonascus programaren bitartez areago fokatu dezakezu zeure lana trebetasun eta ariketa jakinetan ala bietan batera, teorian zein entzumen entrenamenduan. Ariketak noiznahi egokitu ditzakezu zeure beharren arabera, eta programak zeure erritmoan lan egiten utziko dizu. "
 
 #: intro/intro.cpp:10
 msgid "LenMus is structured as a collection of fully interactive textbooks (eMusicBooks), including theory and exercises. All exercises are fully integrated into the text. Music scores are not just images or pictures but fully interactive operational music scores that you can hear, in whole or just the measures you choose. This enables you to put concepts into practice with immediate feedback and makes the subject matter both more accessible and more rewarding, as you can hear, test and put in practise immediately any new concept introduced."
-msgstr ""
+msgstr "LenMus egituratuta dago testu liburu sorta guztiz elkarreragile moduan (eMusicBooks), teoria zein ariketak dituela.    Ariketa guztiak testuan erabat txertatuta daude. Musika partiturak ez dira irudi edo marrazki hutsak, musika partitura guztiz elkarreragileak baizik, osorik edo zeuk aukeraturiko konpasean entzun ditzakezunak. Hala, kontzeptuak praktikan landu ditzakezu eta feedbacka segituan jaso, ikasgaia eskuragarriago eta atseginago eginda, kontzeptu sartu berri guztiak entzun, saiatu eta berehalako batean praktikatu ditzakezunez gero."
 
 #: intro/intro.cpp:11
 msgid "Teaching material is organized into levels, and each level into lessons. Book"
-msgstr ""
+msgstr "Ikasmateriala mailatan dago antolatuta, eta maila bakoitza, ikasgaitan. Book"
 
 #: intro/intro.cpp:12
 msgid " General exercises"
-msgstr ""
+msgstr " Ariketa orokorrak"
 
 #: intro/intro.cpp:13
 msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
-msgstr ""
+msgstr " zenbait oinarrizko ariketa dauzka entzumena zein kontzeptu teorikoak lantzeko, esaterako, interbaloak eta eskalak. Beste liburu batzuetan sartutako ariketak ez bezala, liburu honetako ariketa guzti-guztiak egokitzea duzu. Hala, noiznahi zeure behar bereziak ase ditzakezu, baita eduki jakinak landu ere."
 
 #: intro/intro.cpp:14
 msgid "We hope that LenMus become a useful tool in your studies."
-msgstr ""
+msgstr "Benetan espero dugu LenMus tresna eraginkorra izatea zeure ikasketetan."
 
 #: intro/intro.cpp:15
-msgid "The LenMus team."
+msgid "Enjoy!"
 msgstr ""
+
+#~ msgid "The LenMus team."
+#~ msgstr "LenMus taldea."
 

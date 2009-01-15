@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-12-31 13:29+0100\n"
+"PO-Revision-Date: 2009-01-15 16:28+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,8 @@ msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "Invia i tuoi commenti e suggerimenti al team di LenMus (www.lenmus.org)"
 
 #: intro/intro.cpp:3
-msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
-msgstr "Concesso in licenza d'uso secondo i termini della GNU Free Documentation License v1.2"
+msgid "Licensed under the terms of the GNU Free Documentation License v1.3"
+msgstr "Concesso in licenza d'uso secondo i termini della GNU Free Documentation License v1.3"
 
 #: intro/intro.cpp:4
 msgid "the teacher of music"

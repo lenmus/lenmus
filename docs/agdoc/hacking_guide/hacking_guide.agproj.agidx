@@ -10,40 +10,16 @@
 \title{Application overview and main control flow}
 
 }
-\file[beams_auto_setup.txt; ext=.html;]{
+\file[chords.txt; ext=.html;]{
 \toc
 {
-    \toc1[Purpose; anchor="toc0001";]{
-        \toc2[Beam types; anchor="toc0002";]{}}
-    \toc1[Algorithm; anchor="toc0003";]{}
-    \toc1[Test cases; anchor="toc0004";]{}
+    \toc1[Representing chords and intervals; anchor="toc0001";]{
+        \toc2[The lmChordManager class; anchor="toc0002";]{}
+        \toc2[Representing intervals; anchor="toc0003";]{}
+        \toc2[Intervals in FPitch; anchor="toc0004";]{}
+        \toc2[Classes lmInterval and lmNoteBits; anchor="toc0005";]{}}
 }
 
-\title{Beamed groups of notes}
-\label[category="table"; anchor="table1";]{Table 1. Levels required by a note}
-\label[category="table"; anchor="table1";]{Table 2. Information about beam levels stored in each note for example in figure 1}
-
-}
-\file[cursors.txt; ext=.html;]{
-\toc
-{
-    \toc1[Cursors and caret; anchor="toc0001";]{}
-    \toc1[The caret; anchor="toc0002";]{
-        \toc2[User perceived behaviour; anchor="toc0003";]{}
-        \toc2[Caret movement; anchor="toc0004";]{}
-        \toc2[Updating caret position; anchor="toc0005";]{}}
-    \toc1[The Score Cursor (lmScoreCursor); anchor="toc0006";]{}
-    \toc1[The VStaff Cursor (lmVCursor); anchor="toc0007";]{
-        \toc2[Updating VCursor position; anchor="toc0008";]{}
-        \toc2[VCursor movement; anchor="toc0009";]{}
-        \toc2[Notifying about VCursor movements; anchor="toc0010";]{}
-        \toc2[VCursor implementation. API description; anchor="toc0011";]{}
-        \toc2[Attaching/dettaching a cursor to a StaffObjsCollection; anchor="toc0012";]{}
-        \toc2[Positioning a VCursor; anchor="toc0013";]{}}
-    \toc1[Edition commands and cursors; anchor="toc0014";]{}
-}
-
-\title{Cursors and caret}
 
 }
 \file[exercises_ctrols.txt; ext=.html;]{
@@ -123,6 +99,12 @@
     \toc1[How pitch is represented; anchor="toc0001";]{
         \toc2[Requirements; anchor="toc0002";]{}
         \toc2[How pitch is currently represented; anchor="toc0003";]{}}
+    \toc1[Representing chords and intervals; anchor="toc0004";]{
+        \toc2[The lmChordManager class; anchor="toc0005";]{}
+        \toc2[Representing intervals; anchor="toc0006";]{}
+        \toc2[Intervals in FPitch: typedef lmFInvtal; anchor="toc0007";]{}
+        \toc2[Classes lmInterval and lmNoteBits; anchor="toc0008";]{}
+        \toc2[Annex. Pitch values in different representations; anchor="toc0009";]{}}
 }
 
 \title{How pitch is represented}

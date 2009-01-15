@@ -130,7 +130,7 @@ void lmAboutDialog::CreateControls()
 	wxBoxSizer* pTitlesSizer;
 	pTitlesSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _("Arial") ) );
 
 	pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );

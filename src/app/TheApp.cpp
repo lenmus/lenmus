@@ -486,6 +486,15 @@ bool lmTheApp::OnInit(void)
         //Main frame created and visible. Proceed with initializations
         //
 
+#if defined(__WXDEBUG__) && defined(__WXGTK__)
+    //For Linux in Debug build, use a window to show wxLog messages. This is
+    //the only way I found to see wxLog messages with Code::Blocks
+    wxLogWindow* pMyLog = new wxLogWindow(g_pMainFrame, _T("Debug window: wxLogMessages"));
+    wxLog::SetActiveTarget(pMyLog);
+	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
+    pMyLog->Flush();
+#endif
+
     // create global data structures for printer settings
     g_pPrintData = new wxPrintData;
     g_pPaperSetupData = new wxPageSetupDialogData;

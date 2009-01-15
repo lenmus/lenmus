@@ -59,7 +59,7 @@ Since project start, I've tried to have source code organized by subsystems (as 
     auxmusic   ||         || eBook || Auxiliary classes, mainly used in exercises: chords, intervals, etc.
     exercises  ||         || eBook || Code related with the implementation of exercises
     globals    ||         || GUI || A few global classes: paths, colours
-    graphic    ||         || score || All classes related to score renderization: the graphic motor
+    graphic    ||         || score || All classes related to score renderization: the graphic engine
     html       ||         || eBook || Code related to rendering eBooks
     ldp_parser ||         || score || Code related to LDP parser
     mdi        ||         || GUI || Classes for GUI: MDI model implemented as a tabbed window

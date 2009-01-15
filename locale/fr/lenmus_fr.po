@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-06 22:21+0100\n"
+"PO-Revision-Date: 2009-01-15 17:25+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <calarcia@cyltel.com>\n"
 "MIME-Version: 1.0\n"
@@ -2777,16 +2777,15 @@ msgstr ""
 
 #: app/AboutDialog.cpp:406
 msgid "Dutch"
-msgstr "Allemand"
+msgstr "Néerlandais"
 
 #: app/AboutDialog.cpp:409
 msgid "French"
 msgstr "Français"
 
 #: app/AboutDialog.cpp:414
-#, fuzzy
 msgid "Galician"
-msgstr "Ionien"
+msgstr "Galicien"
 
 #: app/AboutDialog.cpp:419
 #, fuzzy

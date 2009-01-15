@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -47,7 +47,7 @@ typedef struct lmIntvBitsStruct {
 } lmIntvBits;
 
 
-enum EIntervalType
+enum lmEIntervalType
 {
     eti_Diminished = 0,
     eti_Minor,
@@ -58,7 +58,7 @@ enum EIntervalType
     eti_DoubleDiminished
 };
 
-enum EIntervalDirection
+enum lmEIntervalDirection
 {
     edi_Ascending = 0,
     edi_Descending,
@@ -72,7 +72,7 @@ extern void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
                             bool fAscending, lmNoteBits* pNewNote);
 extern void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode,
                                lmEKeySignatures nKey,
-                               EIntervalDirection nDirection,
+                               lmEIntervalDirection nDirection,
                                lmNoteBits* pNewNote);
 extern wxString IntervalBitsToCode(lmIntvBits& tIntv);
 extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
@@ -101,7 +101,7 @@ public:
 
     wxString GetIntervalName() { return m_sName; }
     int GetIntervalNum() { return m_nNumIntv; }
-    EIntervalType GetIntervalType() { return m_nType; }
+    lmEIntervalType GetIntervalType() { return m_nType; }
     wxString GetIntervalCode();
 
     //accsess to notes
@@ -131,7 +131,7 @@ private:
     lmDPitch          m_DPitch2;
 
     // results of the analysis
-    EIntervalType    m_nType;
+    lmEIntervalType    m_nType;
     int              m_nNumIntv;
     wxString         m_sName;
     wxString         m_sPattern[2];  //without key accidentals, but with own accidentals

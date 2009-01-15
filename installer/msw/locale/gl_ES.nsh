@@ -6,13 +6,13 @@
 LicenseLangString license ${LANG_Galician} ".\locale\license_gl_ES.txt"
 
 ;strings to customize MUI pages
-LangString MSG_OptionalComponents   ${LANG_Galician} "Por favor, elixa os compoÃ±entes adicionais que se van instalar"
+LangString MSG_OptionalComponents   ${LANG_Galician} "Por favor, elixa os compoñentes adicionais que se van instalar"
 
 
 ;section titles, what user sees to select components for installation
 LangString TITLE_CreateIcon     ${LANG_Galician} "Acceso directo no escritorio"
 LangString TITLE_Scores         ${LANG_Galician} "Exemplos de partituras"
-LangString TITLE_RegKeys        ${LANG_Galician} "IncluÃ­r en panel de control ('Agregar/quitar software')"
+LangString TITLE_RegKeys        ${LANG_Galician} "Incluír en panel de control ('Agregar/quitar software')"
 
 ;descriptions for the sections. Displayed to user when mouse hovers over a section
 LangString DESC_CreateIcon      ${LANG_Galician} "Crear un acceso directo no escritorio"
@@ -26,7 +26,7 @@ LangString ERROR_InstallFonts       ${LANG_Galician} "Erro instalando o font"
 LangString ERROR_CreateIcon         ${LANG_Galician} "Erro creando acceso directo no escritorio"
 LangString ERROR_CopyScores         ${LANG_Galician} "Erro ao copiar as partituras de exemplo "
 LangString MSG_CONTINUE             ${LANG_Galician} "Quere continuar instalando?"
-LangString MSG_ABORT                ${LANG_Galician} "InstalaciÃ³n cancelada"
+LangString MSG_ABORT                ${LANG_Galician} "Instalación cancelada"
 
 
 ;start menu & desktop descriptions

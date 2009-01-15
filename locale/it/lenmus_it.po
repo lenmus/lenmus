@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-30 20:55+0100\n"
-"PO-Revision-Date: 2008-12-30 20:57+0100\n"
+"PO-Revision-Date: 2009-01-15 17:31+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <s.cecilio@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -2734,9 +2734,8 @@ msgid "Translation:"
 msgstr "Traduzioni:"
 
 #: app/AboutDialog.cpp:403
-#, fuzzy
 msgid "Basque"
-msgstr "Quintetto di ottoni"
+msgstr "Basco"
 
 #: app/AboutDialog.cpp:406
 msgid "Dutch"
@@ -2747,9 +2746,8 @@ msgid "French"
 msgstr "Francese"
 
 #: app/AboutDialog.cpp:414
-#, fuzzy
 msgid "Italian"
-msgstr "Ionico"
+msgstr "Italiano"
 
 #: app/AboutDialog.cpp:417
 msgid "Spanish"
