@@ -6,103 +6,70 @@
 </head>
 <body>
 
-<h1>LenMus Phonascus 4.0 Release Notes</h1>
 
-<h2>What's new in 4.0</h2>
+<h1>LenMus. Notas da versión 4.0</h1>
 
-<p>After one year of work LenMus 4.0 is available. As the version number change suggests,
-release 4.0 is major update in the program code and functionality. The main changes are:<p>
+<h2>Novidades da versión 4.0</h2>
+
+<p>Despois dun ano de traballo a versión 4.0 de LenMus xa está dispoñible. Como suxire o cambio de número de versión, a 4.0 supón cambios importantes no código do programa, que engaden novas funcionalidades. Os principais cambios son:<p>
 
 <ul>
-    <li><a href="#editor">Inclusion of a score editor (beta status)</a></li>
-    <li><a href="#license">Change of license to GPL v3+</a></li>
-    <li><a href="#bugs">Bug fixes</a></li>
+    <li><a href="#0.1_editor">Inclusión dun editor de partituras, en probas (beta)</a></li>
+    <li><a href="#0.1_license">Cambio da licenza á GPL v3+</a></li>
+    <li><a href="#0.1_bugs">Corrección de erros</a></li>
 </ul>
 
-<p> A welcome page has been added to facilitate access to the different features and to
-have easily available on startup:</p>
+<p>Engadíuse unha páxina de benvida, para facilitar o acceso ás diferentes funcionalidades do programa:</p>
 <ul>
-  <li>eBooks</li>
-  <li>The score editor</li>
-  <li>Latest open scores</li>
-  <li>Useful links and documentation</li>
+  <li>os libros de música (eBooks)</li>
+  <li>O editor de partituras</li>
+  <li>As partituras recentemente abertas</li>
+  <li>A documentación do programa</li>
 </ul>
 
-<p>These changes are explained in the following sections.</p>
+<p>Estes cambios explícanse con máis detalle nas seguintes seccións.</p>
 
 
-<h3><a name="editor">Score creation and edition</a></h3>
+<h3><a name="0.1_editor">Creación e edición de partituras</a></h3>
 
-<p>The major change from previous release 3.6 is the inclusion of a score editor
-(althoug in beta status).
-The score editor is not yet finished, as much more features have to be added, but
-the included
-features are operational, and allows to create simple scores, even with several
-instruments and voices. Nevertheless, the editor is in a preliminary state (beta
-status) and it is mainly useful deal with simple scores with one
-voice per staff. Many voices per staff are also supported but facilities to automate
-layouting task and taking automated decisions, such as automatic voice assignment,
-automatically setting up stem direction in notes to avoid
-collisions between stems, and other facilities, are not
-fully operational and in some cases produce poor results.
-Also, at current development
-stage, it is not possible to deal with:</p>
+<p>O cambio principal con respecto á versión 4.0 é a inclusión dun editor de partituras (aínda que en fase de probas).
+O editor non está todavía rematado xa que lle faltan moitas funcionalidades desexables que se irán engadindo en próximas versións. Pero as existentes son plenamente operativas e permiten a creación de partituras sinxelas, ata con varios instrumentos e voces. Non entanto, o editor está todavía nas súas primeiras fases de desenvolvemento, polo que a súa principal utilidade será para realizar partituras sinxelas, cunha voz por instrumento.
+O editor soporta ata oito voces por instrumento pero carece de facilidades para realizar automáticamente moitas das tarefas necesaria para mostrar varias voces nun só pentagrama, tales como decidir automáticamente a dirección das plicas para evitar que se solapen, o que dá lugar a que o aspecto da partitura resultante sexa pobre.
+Tamén, no estado actual, carece de facilidades para incluír:</p>
 <ul>
-  <li>lyric lines</li>
-  <li>slurs</li>
-  <li>dynamics, articulations and other symbols</li>
-  <li>cue/grace notes</li>
-  <li>rehearsal marks, coda, segno and related symbols</li>
-  <li>nested tuples</li>
-  <li>figures: lines, boxes, circles, other</li>
+  <li>liñas líricas</li>
+  <li>ligaduras de expresión</li>
+  <li>símbolos de dinámica, articulacións e outros.</li>
+  <li>notas de adorno</li>
+  <li>marcas de repetición, símbolos de coda, segno e outros relacionados</li>
+  <li>tuplas engadidas</li>
+  <li>figuras xeométricas: liñas, recadros, círculos, chamadas, etc.</li>
 </ul>
 
-<p>These missing features will be added in coming releases. The basements are
-now there, so I expect to add much more features in short time.</p>
+<p>Todas estas funcionalidades iransen engadindo en próximas versións. Os alicerces do editor están xa construídos, polo que é previsible que estas facilidades esten dispoñibles en breve.</p>
 
 <p>
-One of the issues that has demanding me a lot of time is the user interface.
-I would like to find a simple and intuitive interface, but the complexities
-involved in editing a score makes this difficult to achieve. Therefore,
-do not assume the user interface is finished as I will continue experimenting
-with different approaches. Your suggestions are extremelly welcome,
-specially if you have experience in using other score editors.
+Un dos temas que está requerindo máis tempo é o diseño da interfaz de usuario. Gustaríame atopar unha interfaz sinxela e intuitiva, pero a complexidade inherente á edición de partituras fai que este obxectivo sexa difícil de lograr. A interfaz actual ten carácter experimental e continuaremos ensaiando novos métodos para interactuar coas partituras. Xa que logo, é previsible que cambien cousas na próxima versión. As túas suxestións a este respecto son benvidas, especialmente se tés experiencia usando outros editores de partituras.
 </p>
 
 
 
-<h3><a name="license">Change of license to GPL v3+</a></h3>
+<h3><a name="0.1_license">Cambio da licenza á GPL v3+</a></h3>
 
-<p>The extensive code re-writing required to include the score editor and the
-fact that including a score editor is a major change in program features are
-the main reasons to change release number to 4.0 instead of 3.7.</p>
+<p>Os profundos cambios no código do programa que houbo que facer para soportar un editor de partituras e o feito de que o editor supón un cambio moi importante, mouveunos a sacar esta versión como a 4.0 no canto de como a 3.7.</p>
 
-<p>With release 4.0 I also have changed the program license to the new Free
-Software Foundation GPL V3+. With this change, I expect to better ensure
-your rights to use LenMus for free, to have access to source code, and to be
-able to distribute it to others and to modify it. The change to GPL v3+ is
-also a reason to change the release number to 4.0. With this change it will
-be more identifiable which license applies to which lenmus version:</p>
+<p>Coa versión 4.0 cambiouse tamén a licenza do programa para actualizala á nova GPL v3+ da Free
+Software Foundation GPL V3+. Con este cambio, esperamos poder defender mellor os teus dereitos a usar software libre, a utilizar LenMus gratuitamente, a ter acceso ao código fonte, e a poder distribuílo a quen queiras e a cambiar o que desexes. O cambio á GPL v3+ é tamén unha das razóns para cambiar o número de versión á 4.0. Con iso, é máis sinxelo saber que licenza aplica a cada versión:</p>
 <ul>
-    <li>lenmus 1.x - freeware. Source code not available</li>
-    <li>lenmus 2.x & 3.x - GPL v2+</li>
+    <li>lenmus 1.x - freeware. Código fonte non dispoñible.</li>
+    <li>lenmus 2.x e 3.x - GPL v2+</li>
     <li>lenmus 4.x - GPL v3+</li>
 </ul>
 
 
-<h3><a name="bugs">Music eBooks, exercises and bugs</a></h3>
+<h3><a name="0.1_bugs">Libros de música (eBooks), exercicios e erros</a></h3>
 
-<p>Version 4.0 does not include new music eBooks or exercises. But bugs
-detected in previous versions have been fixed:</p>
-
-<ul>
-    <li>All code related to text and scores size, screen resolution, and
-    zooming in eBooks has been reviewed in depth. As a result some bugs were
-    discovered and fixed. I expect to have all problems related to this
-    issues definitively fixed.</li>
-</ul>
+<p>A versión 4.0 non inclúe novos eBooks nin novos exercicios. Pero correxíronse todos os erros detectados nas versións anteriores.</p>
 
 
-
-</body>
-</html>
+</body></html>
