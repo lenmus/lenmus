@@ -39,14 +39,14 @@
 #include "wx/xrc/xmlres.h"
 
 // access to paths
-#include "../globals/Paths.h"
+#include "../../globals/Paths.h"
 extern lmPaths* g_pPaths;
 
 
 
 #include "DlgCfgIdfyChord.h"
-#include "../ldp_parser/AuxString.h"
-#include "../auxmusic/Conversion.h"
+#include "../../ldp_parser/AuxString.h"
+#include "../../auxmusic/Conversion.h"
 
 
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -18,50 +18,51 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_DLGCFGTHEOINTERVALS_H__        //to avoid nested includes
-#define __LM_DLGCFGTHEOINTERVALS_H__
+#ifndef __LM_DLGCFGIDFYSCALE_H__        //to avoid nested includes
+#define __LM_DLGCFGIDFYSCALE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "DlgCfgTheoIntervals.cpp"
+#pragma interface "DlgCfgIdfyScale.cpp"
 #endif
 
 // headers
 #include "wx/dialog.h"
-#include "wx/spinctrl.h"        //to use wxSpinCtrl
 
-#include "../exercises/Constrains.h"
-#include "../exercises/TheoIntervalsConstrains.h"
+#include "../ScalesConstrains.h"
 
 // class definition
-class lmDlgCfgTheoIntervals : public wxDialog {
+class lmDlgCfgIdfyScale : public wxDialog {
 
 public:
-    lmDlgCfgTheoIntervals(wxWindow * parent, lmTheoIntervalsConstrains* pConstrains);
-    virtual ~lmDlgCfgTheoIntervals();
+    lmDlgCfgIdfyScale(wxWindow* parent, lmScalesConstrains* pConstrains,
+                      bool fTheoryMode);
+    virtual ~lmDlgCfgIdfyScale();
 
     // event handlers
     void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
     void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
-    void OnControlClicked(wxCommandEvent& WXUNUSED(event));
+    void OnDataChanged(wxCommandEvent& WXUNUSED(event));
+
 
 private:
     bool VerifyData();
 
-    lmTheoIntervalsConstrains*   m_pConstrains; // the constraints to set up
+    lmScalesConstrains*  m_pConstrains;          // the constraints to set up
+    bool                m_fTheoryMode;
 
     //controls
-    wxCheckBox*     m_pChkDoubleAccidentals;
-    wxCheckBox*     m_pChkAccidentals;
-    wxCheckBox*     m_pChkClef[7];              // Allowed clefs check boxes
+    wxCheckBox*     m_pChkScale[est_Max];       // Allowed chords check boxes
+    wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
+    wxRadioBox*     m_pBoxPlayModes;            // box with play mode radio buttons
+    wxCheckBox*     m_pChkDisplayKey;           // Display key signature check box
 
-    wxRadioBox*     m_radProblemType;
-
-    wxStaticBitmap* m_pBmpClefError;            // error icons and messages
-    wxStaticText*   m_pLblClefError;
-
+    wxStaticBitmap* m_pBmpKeySignError;
+    wxStaticText*   m_pLblKeySignError;
+    wxStaticBitmap* m_pBmpAllowedScalesError;
+    wxStaticText*   m_pLblAllowedScalesError;
 
 
     DECLARE_EVENT_TABLE()
 };
 
-#endif    // __LM_DLGCFGTHEOINTERVALS_H__
+#endif    // __LM_DLGCFGIDFYSCALE_H__

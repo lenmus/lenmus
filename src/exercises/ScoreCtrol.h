@@ -38,8 +38,8 @@
 
 #include "Constrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
+#include "auxctrols/ScoreAuxCtrol.h"
+#include "auxctrols/UrlAuxCtrol.h"
 #include "../sound/SoundEvents.h"
 #include "ExerciseCtrol.h"
 

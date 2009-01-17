@@ -416,42 +416,6 @@
 				RelativePath="..\..\src\app\ArtProvider.h">
 			</File>
 			<File
-				RelativePath="..\..\src\app\DlgCfgEarIntervals.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgEarIntervals.h">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyCadence.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyCadence.h">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyChord.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyChord.h">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyScale.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyScale.h">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgScoreReading.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgScoreReading.h">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgTheoIntervals.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgTheoIntervals.h">
-			</File>
-			<File
 				RelativePath="..\..\src\app\DlgDebug.cpp">
 			</File>
 			<File
@@ -758,6 +722,9 @@
 				RelativePath="..\..\src\html\TextBookFrame.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\TheoHarmonyCtrolParms.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\TheoIntervalsCtrolParams.h">
 			</File>
 			<File
@@ -784,12 +751,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\Constrains.h">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\CountersCtrol.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\CountersCtrol.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\EarCompareIntvCtrol.cpp">
@@ -828,6 +789,12 @@
 				RelativePath="..\..\src\exercises\Generators.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\HarmonyConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\HarmonyConstrains.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\IdfyCadencesCtrol.cpp">
 			</File>
 			<File
@@ -858,12 +825,6 @@
 				RelativePath="..\..\src\exercises\ScalesConstrains.h">
 			</File>
 			<File
-				RelativePath="..\..\src\exercises\ScoreAuxCtrol.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\ScoreAuxCtrol.h">
-			</File>
-			<File
 				RelativePath="..\..\src\exercises\ScoreConstrains.cpp">
 			</File>
 			<File
@@ -874,6 +835,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\ScoreCtrol.h">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TheoHarmonyCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TheoHarmonyCtrol.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\TheoIntervalsConstrains.cpp">
@@ -905,12 +872,74 @@
 			<File
 				RelativePath="..\..\src\exercises\TheoMusicReadingCtrol.h">
 			</File>
-			<File
-				RelativePath="..\..\src\exercises\UrlAuxCtrol.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\UrlAuxCtrol.h">
-			</File>
+			<Filter
+				Name="auxctrols"
+				Filter="">
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\CountersAuxCtrol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\CountersAuxCtrol.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\EditScoreAuxCtrol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\EditScoreAuxCtrol.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\ScoreAuxCtrol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\ScoreAuxCtrol.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\UrlAuxCtrol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\UrlAuxCtrol.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="dialogs"
+				Filter="">
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgEarIntervals.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgEarIntervals.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyCadence.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyCadence.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyChord.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyChord.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgScoreReading.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgScoreReading.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgTheoIntervals.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgTheoIntervals.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="auxmusic"

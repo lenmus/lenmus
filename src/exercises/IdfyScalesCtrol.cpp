@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,14 +32,14 @@
 #include "IdfyScalesCtrol.h"
 
 #include "../score/VStaff.h"
-#include "UrlAuxCtrol.h"
+#include "auxctrols/UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
 
 #include "../ldp_parser/LDPParser.h"
 #include "../auxmusic/Interval.h"
-#include "../app/DlgCfgIdfyScale.h"
+#include "dialogs/DlgCfgIdfyScale.h"
 #include "../auxmusic/ScalesManager.h"
 
 

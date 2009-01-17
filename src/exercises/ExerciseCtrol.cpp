@@ -30,7 +30,7 @@
 #endif
 
 #include "ExerciseCtrol.h"
-#include "UrlAuxCtrol.h"
+#include "auxctrols/UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../app/MainFrame.h"
@@ -151,7 +151,7 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_pConstrains = pConstrains;
 
     m_pDisplayCtrol =(wxWindow*)NULL;
-    m_pCounters = (lmCountersCtrol*)NULL;
+    m_pCounters = (lmCountersAuxCtrol*)NULL;
     m_pShowSolution = (lmUrlAuxCtrol*)NULL;
 
 }
@@ -231,7 +231,7 @@ void lmExerciseCtrol::CreateControls()
     }
 
 
-    // sizer for the scoreCtrol and the CountersCtrol
+    // sizer for the scoreCtrol and the CountersAuxCtrol
     wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
     m_pMainSizer->Add(
         pTopSizer,
@@ -242,7 +242,7 @@ void lmExerciseCtrol::CreateControls()
     pTopSizer->Add(m_pDisplayCtrol,
                    wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 2*nSpacing));
 
-    // sizer for the CountersCtrol and the settings link
+    // sizer for the CountersAuxCtrol and the settings link
     if (m_pConstrains->IsUsingCounters())
     {
         wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
@@ -251,7 +251,7 @@ void lmExerciseCtrol::CreateControls()
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing).Expand() );
 
         // right/wrong answers counters control
-        m_pCounters = new lmCountersCtrol(this, wxID_ANY, m_rScale);
+        m_pCounters = new lmCountersAuxCtrol(this, wxID_ANY, m_rScale);
         pCountersSizer->Add(
             m_pCounters,
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );

@@ -54,16 +54,18 @@ Since project start, I've tried to have source code organized by subsystems (as 
 \th{ Folder  ||  Subfolder || Subsystem || Content }
 \al{ <           <            <     }
 
-    app        ||         || GUI || Classes related with main GUI, the MVC model and windows for exercise options (These will be moved, in future, to the same folder than exercises classes)
-    ~_         ||toolbox  || GUI || Classes related with score edition toolbox
+    app        ||         || GUI   || Classes related with main GUI and the MVC model.
+    ~_         ||toolbox  || GUI   || Classes related with score edition toolbox
     auxmusic   ||         || eBook || Auxiliary classes, mainly used in exercises: chords, intervals, etc.
     exercises  ||         || eBook || Code related with the implementation of exercises
-    globals    ||         || GUI || A few global classes: paths, colours
+    ~_         ||auxctrols ||eBook || Widgets to include in Ctrol classes
+    ~_         ||dialogs  || eBook || Dialogs for exercise options.
+    globals    ||         || GUI   || A few global classes: paths, colours
     graphic    ||         || score || All classes related to score renderization: the graphic engine
     html       ||         || eBook || Code related to rendering eBooks
     ldp_parser ||         || score || Code related to LDP parser
-    mdi        ||         || GUI || Classes for GUI: MDI model implemented as a tabbed window
-    options    ||         || GUI || Program global options
+    mdi        ||         || GUI   || Classes for GUI: MDI model implemented as a tabbed window
+    options    ||         || GUI   || Program global options
     score      ||         || score || Classes for internal score representation
     ~_         ||properties || GUI/score || classes for score edition: properties of each score object
     sound      ||         || GUI || classes related to sound: MIDI manager, VAW manager

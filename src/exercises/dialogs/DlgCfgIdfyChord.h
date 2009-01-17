@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -18,25 +18,26 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_DLGCFGIDFYSCALE_H__        //to avoid nested includes
-#define __LM_DLGCFGIDFYSCALE_H__
+#ifndef __LM_DLGCFGIDFYCHORD_H__        //to avoid nested includes
+#define __LM_DLGCFGIDFYCHORD_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "DlgCfgIdfyScale.cpp"
+#pragma interface "DlgCfgIdfyChord.cpp"
 #endif
 
 // headers
 #include "wx/dialog.h"
+#include "wx/spinctrl.h"        //to use wxSpinCtrl
 
-#include "../exercises/ScalesConstrains.h"
+#include "../ChordConstrains.h"
 
 // class definition
-class lmDlgCfgIdfyScale : public wxDialog {
+class lmDlgCfgIdfyChord : public wxDialog {
 
 public:
-    lmDlgCfgIdfyScale(wxWindow* parent, lmScalesConstrains* pConstrains,
+    lmDlgCfgIdfyChord(wxWindow* parent, lmChordConstrains* pConstrains,
                       bool fTheoryMode);
-    virtual ~lmDlgCfgIdfyScale();
+    virtual ~lmDlgCfgIdfyChord();
 
     // event handlers
     void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
@@ -47,22 +48,26 @@ public:
 private:
     bool VerifyData();
 
-    lmScalesConstrains*  m_pConstrains;          // the constraints to set up
+    lmChordConstrains*  m_pConstrains;          // the constraints to set up
     bool                m_fTheoryMode;
 
     //controls
-    wxCheckBox*     m_pChkScale[est_Max];       // Allowed chords check boxes
+    wxCheckBox*     m_pChkAllowInversions;
+    wxCheckBox*     m_pChkDisplayKey;
+    wxCheckBox*     m_pChkPlayMode[3];          // allowed play modes
+    wxCheckBox*     m_pChkChord[ect_Max];       // Allowed chords check boxes
     wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
-    wxRadioBox*     m_pBoxPlayModes;            // box with play mode radio buttons
-    wxCheckBox*     m_pChkDisplayKey;           // Display key signature check box
+    wxStaticBox*    m_pBoxPlayModes;            // box with play mode check boxes
 
+    wxStaticBitmap* m_pBmpPlayModeError;        // error icons and messages      
+    wxStaticText*   m_pLblPlayModeError;
     wxStaticBitmap* m_pBmpKeySignError;
     wxStaticText*   m_pLblKeySignError;
-    wxStaticBitmap* m_pBmpAllowedScalesError;
-    wxStaticText*   m_pLblAllowedScalesError;
+    wxStaticBitmap* m_pBmpAllowedChordsError;
+    wxStaticText*   m_pLblAllowedChordsError;
 
 
     DECLARE_EVENT_TABLE()
 };
 
-#endif    // __LM_DLGCFGIDFYSCALE_H__
+#endif    // __LM_DLGCFGIDFYCHORD_H__

@@ -18,39 +18,35 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_SCOREAUXCTROL_H__        //to avoid nested includes
-#define __LM_SCOREAUXCTROL_H__
+#ifndef __LM_EDITSCOREAUXCTROL_H__        //to avoid nested includes
+#define __LM_EDITSCOREAUXCTROL_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ScoreAuxCtrol.cpp"
+#pragma interface "EditScoreAuxCtrol.cpp"
 #endif
 
-#include "../app/Paper.h"
-#include "../app/global.h"
-#include "../sound/SoundEvents.h"
-#include "../graphic/GraphicManager.h"
+#include "../../app/Paper.h"
+#include "../../app/global.h"
+#include "../../sound/SoundEvents.h"
+#include "../../graphic/GraphicManager.h"
 #include "wx/window.h"          //window styles
+#include "ScoreAuxCtrol.h"
 
 // ----------------------------------------------------------------------------
-// lmScoreAuxCtrol: a control which shows a music score
+// lmEditScoreAuxCtrol: a control which shows a music score
 // ----------------------------------------------------------------------------
 
-enum EScoreStyles {
-    eNO_BORDER = 0,
-    eSIMPLE_BORDER = wxBORDER_SIMPLE,
-};
-
-class lmScoreAuxCtrol : public wxWindow    
+class lmEditScoreAuxCtrol : public wxWindow    
 {
 
 public:
 
     // constructor and destructor    
-    lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
+    lmEditScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, EScoreStyles style = eNO_BORDER);
 
-    ~lmScoreAuxCtrol();
+    ~lmEditScoreAuxCtrol();
 
     // event handlers
     void OnPaint(wxPaintEvent& WXUNUSED(event));
@@ -130,5 +126,5 @@ private:
 
 
 
-#endif  // __LM_SCOREAUXCTROL_H__
+#endif  // __LM_EDITSCOREAUXCTROL_H__
 

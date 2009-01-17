@@ -32,14 +32,13 @@
 #include "wx/statline.h"
 
 #include "TheoMusicReadingCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "ScoreAuxCtrol.h"
-#include "CountersCtrol.h"
+#include "auxctrols/UrlAuxCtrol.h"
+#include "auxctrols/ScoreAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../score/Score.h"
 #include "../auxmusic/ComposerV6.h"
-#include "../app/DlgCfgScoreReading.h"
+#include "dialogs/DlgCfgScoreReading.h"
 #include "../html/TextBookController.h"
 #include "wx/html/htmlwin.h"
 
@@ -191,7 +190,7 @@ void lmTheoMusicReadingCtrol::CreateControls()
     SetSizer( m_pMainSizer );                // use the sizer for window layout
     m_pMainSizer->SetSizeHints( this );        // set size hints to honour minimum size
 
-    m_pCounters = (lmCountersCtrol*) NULL;
+    m_pCounters = (lmCountersAuxCtrol*) NULL;
 
     m_fControlsCreated = true;
 

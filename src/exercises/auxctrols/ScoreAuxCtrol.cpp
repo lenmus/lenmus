@@ -35,13 +35,13 @@
 
 #include "wx/font.h"
 
-#include "../score/Score.h"
-#include "../app/DlgDebug.h"
-#include "../app/ScoreDoc.h"
+#include "../../score/Score.h"
+#include "../../app/DlgDebug.h"
+#include "../../app/ScoreDoc.h"
 #include "ScoreAuxCtrol.h"
 
 //access to error's logger
-#include "../app/Logger.h"
+#include "../../app/Logger.h"
 extern lmLogger* g_pLogger;
 
 

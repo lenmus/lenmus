@@ -19,7 +19,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "CountersCtrol.h"
+#pragma implementation "CountersAuxCtrol.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -29,7 +29,7 @@
 #pragma hdrstop
 #endif
 
-#include "CountersCtrol.h"
+#include "CountersAuxCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "../sound/WaveManager.h"
 
@@ -40,11 +40,9 @@ extern bool g_fTeamCounters;
 
 
 
-/*! @class lmCountersCtrol
-    @ingroup html_controls
-    @brief  A control to embed in html exercises to display number
-            on right and wrong student answers, and the total score (percentage)
-*/
+// class lmCountersAuxCtrol
+// A control to embed in html exercises to display number
+// on right and wrong student answers, and the total score (percentage)
 
 //IDs for controls
 enum {
@@ -52,12 +50,12 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmCountersCtrol, wxWindow)
-    LM_EVT_URL_CLICK(ID_LINK_RESET_COUNTERS, lmCountersCtrol::OnResetCounters)
+BEGIN_EVENT_TABLE(lmCountersAuxCtrol, wxWindow)
+    LM_EVT_URL_CLICK(ID_LINK_RESET_COUNTERS, lmCountersAuxCtrol::OnResetCounters)
 END_EVENT_TABLE()
 
 
-lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id,  double rScale, 
+lmCountersAuxCtrol::lmCountersAuxCtrol(wxWindow* parent, wxWindowID id,  double rScale, 
                                  const wxPoint& pos)
     : wxWindow(parent, id, pos, wxDefaultSize, wxBORDER_NONE )
 {
@@ -99,11 +97,11 @@ lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id,  double rScale
 
 }
 
-lmCountersCtrol::~lmCountersCtrol()
+lmCountersAuxCtrol::~lmCountersAuxCtrol()
 {
 }
 
-void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, bool fTeam)
+void lmCountersAuxCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, bool fTeam)
 {
     //
     // Create the controls for counter group nTeam (0...n)
@@ -201,12 +199,12 @@ void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, boo
 }
 
 
-void lmCountersCtrol::OnResetCounters(wxCommandEvent& WXUNUSED(event))
+void lmCountersAuxCtrol::OnResetCounters(wxCommandEvent& WXUNUSED(event))
 {
     ResetCounters();
 }
 
-void lmCountersCtrol::ResetCounters()
+void lmCountersAuxCtrol::ResetCounters()
 {
     for (int i=0; i < m_nMaxTeam; i++) {
         m_nRight[i] = 0;
@@ -216,7 +214,7 @@ void lmCountersCtrol::ResetCounters()
     m_fStart = true;
 }
 
-void lmCountersCtrol::IncrementWrong()
+void lmCountersAuxCtrol::IncrementWrong()
 {
     m_nWrong[m_nCurrentTeam]++;
     UpdateDisplays(m_nCurrentTeam);
@@ -226,7 +224,7 @@ void lmCountersCtrol::IncrementWrong()
     }
 }
 
-void lmCountersCtrol::IncrementRight()
+void lmCountersAuxCtrol::IncrementRight()
 {
     m_nRight[m_nCurrentTeam]++;
     UpdateDisplays(m_nCurrentTeam);
@@ -236,7 +234,7 @@ void lmCountersCtrol::IncrementRight()
     }
 }
 
-void lmCountersCtrol::UpdateDisplays(int nTeam)
+void lmCountersAuxCtrol::UpdateDisplays(int nTeam)
 {
     //update display for right answers
     m_pRightCounter[nTeam]->SetLabel( wxString::Format(_T("%d"), m_nRight[nTeam]) );
@@ -255,7 +253,7 @@ void lmCountersCtrol::UpdateDisplays(int nTeam)
 
 }
 
-void lmCountersCtrol::NextTeam()
+void lmCountersAuxCtrol::NextTeam()
 {
     // move to next team
     if (m_nMaxTeam > 1) {

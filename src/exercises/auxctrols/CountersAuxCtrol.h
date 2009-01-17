@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,7 +22,7 @@
 #define __LM_COUNTERSCTROL_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "CountersCtrol.cpp"
+#pragma interface "CountersAuxCtrol.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -37,19 +37,19 @@
 #endif
 
 // ----------------------------------------------------------------------------
-//  lmCountersCtrol: a control to embed in html exercises to display number
+//  lmCountersAuxCtrol: a control to embed in html exercises to display number
 //  on right and wrong student answers, and the total score (percentage)
 // ----------------------------------------------------------------------------
-class lmCountersCtrol : public wxWindow    
+class lmCountersAuxCtrol : public wxWindow    
 {
 
 public:
 
     // constructor and destructor    
-    lmCountersCtrol(wxWindow* parent, wxWindowID id, double rScale,
+    lmCountersAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
                     const wxPoint& pos = wxDefaultPosition);
 
-    ~lmCountersCtrol();
+    ~lmCountersAuxCtrol();
 
     // event handlers
     void OnResetCounters(wxCommandEvent& WXUNUSED(event));

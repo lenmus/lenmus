@@ -56,6 +56,7 @@
 #include "../exercises/IdfyScalesCtrol.h"
 #include "../exercises/IdfyCadencesCtrol.h"
 #include "../exercises/EarTunningCtrol.h"
+#include "../exercises/TheoHarmonyCtrol.h"
 
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
@@ -65,6 +66,7 @@
 #include "IdfyCadencesCtrolParms.h"
 #include "TheoIntervalsCtrolParams.h"
 #include "EarTunningCtrolParms.h"
+#include "TheoHarmonyCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -538,6 +540,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_IdfyScales,
     eHO_Exercise_IdfyCadences,
     eHO_Exercise_EarTunning,
+    eHO_Exercise_TheoHarmony,
     eHO_Control
 };
 
@@ -596,6 +599,8 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_IdfyCadences;
                     else if (sClassid.Upper() == _T("EARTUNNING"))
                         nType = eHO_Exercise_EarTunning;
+                    else if (sClassid.Upper() == _T("THEOHARMONY"))
+                        nType = eHO_Exercise_TheoHarmony;
                     else
                     {
                         wxLogMessage(_T("[TAG_HANDLER_PROC] Object type 'Application/LenMus': classid '%s' is unknown."),
@@ -695,6 +700,11 @@ TAG_HANDLER_PROC(tag)
 
             case eHO_Exercise_EarTunning:
                 m_pObjectParams = new lmEarTunningCtrolParms(tag, nWidth, nHeight,
+                    nPercent, nStyle);
+                break;
+
+            case eHO_Exercise_TheoHarmony:
+                m_pObjectParams = new lmTheoHarmonyCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 

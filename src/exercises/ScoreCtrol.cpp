@@ -46,8 +46,8 @@
 #endif
 
 #include "ScoreCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "ScoreAuxCtrol.h"
+#include "auxctrols/UrlAuxCtrol.h"
+#include "auxctrols/ScoreAuxCtrol.h"
 #include "Constrains.h"
 
 // access to global external variables

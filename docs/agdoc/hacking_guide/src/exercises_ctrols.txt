@@ -19,20 +19,15 @@ As said, exercises and scores are included in an html page by using <object> tag
 
 Exercises and scores (and in general any other 'widget' we would like to embed in an html page) will be named, in this documentation, as \i{html embedded controls} or, simply, as \i{Ctrols}. Each Ctrol is implemented by one specific class (whose name normally ends as 'Ctrol'), enclosing all the knowledge about rendering the control and managing all user interaction with it.
 
-There is a terminology issue that you should know because it causes confusion at the beginning. 
-There are some auxiliary classes, whose name ends as 'Ctrol'. These classes doesn't implement Ctrols to be included in html code with an <object> tag. These AuxCtrol classes are in fact 'widgets' to be used to render Ctrols. Currently there are three:
+There is a terminology issue that you should know because it might cause confusion. 
+There are some auxiliary classes, whose name ends as 'AuxCtrol'. These classes doesn't implement Ctrols to be included in html code with an <object> tag. These AuxCtrol classes are in fact 'widgets' to be used to render Ctrols. Currently there are three:
 
  1. %%lmUrlAuxCtrol%% (in exercises/UrlAuxCtrol.cpp & .h): it is a class to display a URL link to be used in exercises and other Ctrols.
  
- 2. %%lmCountersCtrol%% (in exercises/CounterCtrol.cpp & .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.
+ 2. %%lmCountersAuxCtrol%% (in exercises/CounterCtrol.cpp & .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.
  
  3. %%lmScoreAuxCtrol%% (in exercises/ScoreAuxCtrol.cpp & .h): it is a widget to display a score, to be used in exercises.
  
-\tip
-{
-    To implement an exercise in which the user must interact with a score (i.e. entering notes) you should implement a class, similar to %%lmScoreAuxCtrol%%, but allowing score edition. Copy this class (with another name!) and start modifying and playing with it.
-}
-
 
 From an implementation point of view, a Ctrol is the main window that encloses all texts, buttons, links, etc. that form an exercise. And a AuxCtrol is one of these widgets. AuxCtrols generate events that must be processed by the main Ctrol window. Therefore, an AuxCtrol can not be included directly in html by using an <object> directive. It only can be included programmatically inside a Ctrol.
 

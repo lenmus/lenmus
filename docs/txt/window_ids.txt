@@ -26,4 +26,4 @@ Tool box: 2200-2299
 Html: Main Controls: 3000-3499
       Aux controls:
             ScoreCtrol: 35xx
-            CountersCtrol: 36xx
+            CountersAuxCtrol: 36xx
