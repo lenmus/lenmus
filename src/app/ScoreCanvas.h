@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -34,6 +34,7 @@ class lmScoreView;
 class lmScoreDocument;
 class lmGMSelection;
 class lmToolBoxEvent;
+class lmToolBox;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -133,7 +134,7 @@ protected:
 	wxMenu*			m_pMenu;			//contextual menu
 	lmScoreObj*		m_pMenuOwner;		//contextual menu owner
 	lmGMObject*		m_pMenuGMO;			//graphic object who displayed the contextual menu
-
+	lmToolBox*      m_pToolBox;         //the associated toolbox, if any
     int             m_nOctave;          //current octave for note insertion
 	int				m_nVoice;			//current voice for note insertion
 

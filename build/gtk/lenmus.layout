@@ -22,21 +22,6 @@
 	<File name="../../src/app/ArtProvider.cpp" open="1" top="0" tabpos="30">
 		<Cursor position="2111" topLine="99" />
 	</File>
-	<File name="../../src/app/DlgCfgEarIntervals.cpp" open="1" top="0" tabpos="33">
-		<Cursor position="0" topLine="210" />
-	</File>
-	<File name="../../src/app/DlgCfgIdfyCadence.cpp" open="0" top="0" tabpos="38">
-		<Cursor position="12986" topLine="264" />
-	</File>
-	<File name="../../src/app/DlgCfgIdfyScale.cpp" open="0" top="0" tabpos="35">
-		<Cursor position="11259" topLine="228" />
-	</File>
-	<File name="../../src/app/DlgCfgScoreReading.cpp" open="0" top="0" tabpos="13">
-		<Cursor position="7675" topLine="19" />
-	</File>
-	<File name="../../src/app/DlgCfgTheoIntervals.cpp" open="1" top="0" tabpos="32">
-		<Cursor position="7386" topLine="189" />
-	</File>
 	<File name="../../src/app/DlgDebugTrace.cpp" open="0" top="0" tabpos="23">
 		<Cursor position="1802" topLine="97" />
 	</File>
@@ -178,9 +163,6 @@
 	<File name="../../src/exercises/Constrains.h" open="0" top="0" tabpos="50">
 		<Cursor position="0" topLine="163" />
 	</File>
-	<File name="../../src/exercises/CountersCtrol.cpp" open="0" top="0" tabpos="42">
-		<Cursor position="8357" topLine="190" />
-	</File>
 	<File name="../../src/exercises/EarCompareIntvCtrol.cpp" open="1" top="0" tabpos="11">
 		<Cursor position="5333" topLine="150" />
 	</File>
@@ -193,8 +175,8 @@
 	<File name="../../src/exercises/EarIntvalConstrains.cpp" open="0" top="0" tabpos="27">
 		<Cursor position="5106" topLine="108" />
 	</File>
-	<File name="../../src/exercises/Generators.cpp" open="1" top="0" tabpos="34">
-		<Cursor position="4851" topLine="104" />
+	<File name="../../src/exercises/Generators.cpp" open="1" top="1" tabpos="32">
+		<Cursor position="4851" topLine="110" />
 	</File>
 	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="1" top="0" tabpos="1">
 		<Cursor position="11564" topLine="337" />
@@ -207,9 +189,6 @@
 	</File>
 	<File name="../../src/exercises/ScalesConstrains.cpp" open="0" top="0" tabpos="30">
 		<Cursor position="5306" topLine="140" />
-	</File>
-	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="1" top="1" tabpos="36">
-		<Cursor position="8969" topLine="435" />
 	</File>
 	<File name="../../src/exercises/ScoreConstrains.cpp" open="1" top="0" tabpos="15">
 		<Cursor position="17739" topLine="486" />

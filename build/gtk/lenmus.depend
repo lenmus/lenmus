@@ -242,7 +242,7 @@
 	"wx/spinctrl.h"
 	"../exercises/ChordConstrains.h"
 
-1221724550 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ChordConstrains.h
+1231750774 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ChordConstrains.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Generators.h"
@@ -426,7 +426,7 @@
 1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ToolsDlg.h
 	<wx/dialog.h>
 
-1223364236 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.h
+1232213202 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.h
 	"wx/docview.h"
 	"global.h"
 	"../sound/SoundEvents.h"
@@ -625,7 +625,7 @@
 	"wx/wx.h"
 	"wx/xml/xml.h"
 
-1221724678 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
+1231750774 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -633,7 +633,7 @@
 	"../exercises/ChordConstrains.h"
 	"Conversion.h"
 
-1221724678 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Interval.h
+1231759370 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Interval.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -1142,7 +1142,7 @@
 	"ChordConstrains.h"
 	"Generators.h"
 
-1231520677 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.cpp
+1231520676 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.cpp
 	"wx/wxprec.h"
 	"Generators.h"
 	"../score/KeySignature.h"
@@ -2238,7 +2238,7 @@
 	"../score/Score.h"
 	"ExerciseCtrol.h"
 
-1221724550 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/CadencesConstrains.h
+1232138126 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/CadencesConstrains.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Generators.h"
@@ -2308,14 +2308,14 @@
 
 1221389460 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Pitch.h
 
-1221724550 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.h
+1232208110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
 	"Constrains.h"
-	"ScoreAuxCtrol.h"
-	"UrlAuxCtrol.h"
-	"CountersCtrol.h"
+	"auxctrols/ScoreAuxCtrol.h"
+	"auxctrols/UrlAuxCtrol.h"
+	"auxctrols/CountersAuxCtrol.h"
 
 1221724620 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoIntervalsConstrains.h
 	"wx/wxprec.h"
@@ -2549,7 +2549,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1221061274 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.h
+1232213202 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<vector>
@@ -13541,4 +13541,19 @@
 	"wx/dir.h"
 	"wx/filename.h"
 	"XMLParser.h"
+
+1232207428 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/ScoreAuxCtrol.h
+	"../../app/Paper.h"
+	"../../app/global.h"
+	"../../sound/SoundEvents.h"
+	"../../graphic/GraphicManager.h"
+	"wx/window.h"
+
+1232208110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/UrlAuxCtrol.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+
+1232207428 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/CountersAuxCtrol.h
+	"wx/wxprec.h"
+	"wx/wx.h"
 
