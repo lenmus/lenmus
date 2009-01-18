@@ -217,11 +217,6 @@ public:
 
     virtual ~lmCompareCtrol();
 
-    ////virtual pure methods to be implemented by derived classes
-    //virtual void OnDebugShowSourceScore(wxCommandEvent& event)=0;
-    //virtual void OnDebugDumpScore(wxCommandEvent& event)=0;
-    //virtual void OnDebugShowMidiEvents(wxCommandEvent& event)=0;
-
     enum {
         m_NUM_ROWS = 1,
         m_NUM_COLS = 3,

@@ -55,7 +55,7 @@ class lmStatusBar;
 class lmToolBox;
 class lmWelcomeWnd;
 class lmScoreDocument;
-
+class lmEditorMode;
 
 
 // Class lmMainFrame defines the main MDI frame for the application
@@ -225,6 +225,7 @@ public:
     void SilentlyCheckForUpdates(bool fSilent);
 	inline wxMenu* GetEditMenu() {return m_pMenuEdit; }
     void OpenRecentFile(wxString sFile);      //call back from WelcomeDlg
+    void NewScoreWindow(lmEditorMode* pMode, lmScore* pScore);
 
     //options
     bool ShowRulers();
@@ -244,10 +245,10 @@ public:
     inline lmTextBookController* GetBookController() { return m_pBookController; }
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
 	bool IsToolBoxVisible();
-    inline lmScore* GetWizardScore() { return m_pWizardScore; }  
     lmController* GetActiveController();
     wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
     lmScoreDocument* GetActiveDoc();
+    lmScore* GetScoreToEdit(int nID);
 
 
 	// call backs
@@ -320,8 +321,8 @@ protected:
     bool    m_fSilentCheck;
 
     //other
-    lmScore*        m_pWizardScore;     //score created with the ScoreWizard
-    wxFileHistory*  m_pRecentFiles;     //list of rencently open files 
+    std::list<lmScore*> m_scoresToEdit;     //list of scores to display
+    wxFileHistory*      m_pRecentFiles;     //list of rencently open files 
 
     DECLARE_EVENT_TABLE()
 };

@@ -1750,6 +1750,28 @@ void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
 
 }
 
+lmScore* lmMainFrame::GetScoreToEdit(int nID)
+{
+    // Search for score nID in list of scores to edit. Remove it from the list
+    // and return it. The score MUST exist in the list.
+
+    std::list<lmScore*>::iterator it;
+    for (it=m_scoresToEdit.begin(); it != m_scoresToEdit.end(); ++it)
+    {
+        if ((*it)->GetID() == nID)
+        {
+            //found. Remove the score form the list and return it
+            lmScore* pScore = *it;
+            m_scoresToEdit.erase(it);
+            return pScore;
+        }
+    }
+
+    //not found!. There is a program error somewhere!
+    wxASSERT(false);
+    return (lmScore*)NULL;
+}
+
 lmScoreView* lmMainFrame::GetActiveScoreView()
 {
     // get the view
@@ -2115,8 +2137,6 @@ void lmMainFrame::OnStatusbarUI (wxUpdateUIEvent &event) {
     event.Check (m_pStatusBar != NULL);
 }
 
-
-
 void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
 {
     // ask for the file to import
@@ -2143,7 +2163,26 @@ void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
             pDocManager->OnOpenFileFailure();
         }
     }
+}
 
+void lmMainFrame::NewScoreWindow(lmEditorMode* pMode, lmScore* pScore)
+{
+    //Open a new score editor window in node pMode
+
+    //add score to list of scores to edit
+    wxASSERT(pScore);
+    m_scoresToEdit.push_back(pScore);       
+
+    //create the parameters string
+    wxString sPath = _T("\\<<LOAD>>//");
+    sPath += wxString::Format(_T("%06d.txt"), pScore->GetID());
+
+    //request doc manager to display it
+    wxDocManager* pDocManager = g_pTheApp->GetDocManager();
+    if ( !pDocManager->CreateDocument( sPath, wxDOC_SILENT) )
+        pDocManager->OnOpenFileFailure();
+
+    SetFocusOnActiveView();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -2430,19 +2469,15 @@ void lmMainFrame::DoRunMidiWizard()
 
 void lmMainFrame::OnScoreWizard(wxCommandEvent& WXUNUSED(event))
 {
-    m_pWizardScore = (lmScore*)NULL;
-    lmScoreWizard oWizard(this, &m_pWizardScore);
+    lmScore* pScore = (lmScore*)NULL;
+    lmScoreWizard oWizard(this, &pScore);
     oWizard.Run();
 
-    if (m_pWizardScore)
+    if (pScore)
     {
-        //Wizard finished successfully. A score has been defined. Create it
-        wxString sPath = _T("\\<<NEW_WIZARD>>//");
-        sPath += _T("new_wizard.txt");            //for DocumentManager
-        wxDocManager* pDocManager = g_pTheApp->GetDocManager();
-        if ( !pDocManager->CreateDocument( sPath, wxDOC_SILENT) )
-            pDocManager->OnOpenFileFailure();
-        SetFocusOnActiveView();
+        //Wizard finished successfully. A score has been defined. 
+        //Create a new score editor window and display it
+        NewScoreWindow((lmEditorMode*)NULL, pScore);
     }
 }
 

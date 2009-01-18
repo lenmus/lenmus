@@ -37,9 +37,6 @@
 #include "../auxmusic/Conversion.h"
 
 #include "../ldp_parser/LDPParser.h"
-#include "dialogs/DlgCfgIdfyCadence.h"
-#include "../auxmusic/ChordManager.h"
-#include "../auxmusic/Cadence.h"
 
 
 #include "../globals/Colors.h"
@@ -52,26 +49,21 @@ extern lmLogger* g_pLogger;
 //access to MIDI manager to get default settings for instrument to use
 #include "../sound/MidiManager.h"
 
+// access to main frame
+#include "../app/MainFrame.h"
+extern lmMainFrame* GetMainFrame();
+
+
+class lmEditorMode;
 
 //------------------------------------------------------------------------------------
 // Implementation of lmTheoHarmonyCtrol
-
-
-
-
-static wxString m_sButtonLabel[lm_eCadMaxCadence];
-
-//IDs for controls
-enum {
-    ID_BUTTON = 3010,
-};
-
+//------------------------------------------------------------------------------------
 
 IMPLEMENT_CLASS(lmTheoHarmonyCtrol, lmExerciseCtrol)
 
 BEGIN_EVENT_TABLE(lmTheoHarmonyCtrol, lmExerciseCtrol)
-    LM_EVT_END_OF_PLAY  (lmTheoHarmonyCtrol::OnEndOfPlay)
-    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmTheoHarmonyCtrol::OnRespButton)
+
 END_EVENT_TABLE()
 
 
@@ -83,540 +75,113 @@ lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
     //initializations
     m_pConstrains = pConstrains;
     m_pProblemScore = (lmScore*)NULL;
-	m_pSolutionScore = (lmScore*)NULL;
-    m_pAuxScore = (lmScore*)NULL;
-    m_nPlayMM = 320;    //it is assumed whole notes
-    m_fPlaying = false;
 
-    //initializatios to allow to play cadences when clicking on answer buttons
-    //TODO: Review this
-    m_nKey = earmDo;
-
-    CreateControls();
-    if (m_pConstrains->IsTheoryMode()) NewProblem();
-
+    SetNewProblem();
+    lmMainFrame* pMainFrame = GetMainFrame();
+    pMainFrame->NewScoreWindow((lmEditorMode*)NULL, m_pProblemScore);
 }
 
 lmTheoHarmonyCtrol::~lmTheoHarmonyCtrol()
 {
-    StopSounds();
-    DeleteScores();
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->SetScore((lmScore*)NULL);
-}
-
-void lmTheoHarmonyCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
-{
-    //create buttons for the answers, two rows
-    int iB = 0;
-    for (iB=0; iB < m_NUM_BUTTONS; iB++)
-        m_pAnswerButton[iB] = (wxButton*)NULL;
-
-    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 2*nSpacing, 0);
-    m_pMainSizer->Add(
-        m_pKeyboardSizer,
-        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
-
-    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
-        // the buttons for this row
-        for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
-            iB = iCol + iRow * m_NUM_COLS;    // button index
-            if (iB >= m_NUM_BUTTONS) break;
-            m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
-                wxDefaultPosition, wxSize(24*nSpacing, nHeight));
-            m_pAnswerButton[iB]->SetFont(font);
-
-            m_pKeyboardSizer->Add(
-                m_pAnswerButton[iB],
-                wxSizerFlags(0).Border(wxLEFT|wxRIGHT, nSpacing) );
-        }
-    }
-
-    //inform base class about the settings
-    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, ID_BUTTON);
-
-}
-
-void lmTheoHarmonyCtrol::InitializeStrings()
-{
-}
-
-void lmTheoHarmonyCtrol::ReconfigureButtons()
-{
-    //Reconfigure buttons keyboard depending on the required answers
-
-    int iB;     // button index: 0 .. m_NUM_BUTTONS-1
-
-    //hide all rows and buttons so that later we only have to enable the valid ones
-    for (iB=0; iB < m_NUM_BUTTONS; iB++) {
-        m_pAnswerButton[iB]->Show(false);
-        m_pAnswerButton[iB]->Enable(false);
-    }
-
-    //Terminal cadences
-    iB = 0;
-    if (m_pConstrains->IsValidButton(lm_eCadButtonTerminal)) {
-        iB = DisplayButton(iB, lm_eCadTerminal, lm_eCadLastTerminal, _("Terminal"));
-    }
-    //Transient cadences
-    if (m_pConstrains->IsValidButton(lm_eCadButtonTransient)) {
-         iB = DisplayButton(iB, lm_eCadTransient, lm_eCadLastTransient, _("Transient"));
-    }
-
-    //Perfect cadences
-    if (m_pConstrains->IsValidButton(lm_eCadButtonPerfect)) {
-         iB = DisplayButton(iB, lm_eCadPerfect, lm_eCadLastPerfect, _("Perfect"));
-    }
-    //Plagal cadences
-    if (m_pConstrains->IsValidButton(lm_eCadButtonPlagal)) {
-         iB = DisplayButton(iB, lm_eCadPlagal, lm_eCadLastPlagal, _("Plagal"));
-    }
-
-    //Imperfect cadences
-    if (m_pConstrains->IsValidButton(lm_eCadButtonImperfect)) {
-         iB = DisplayButton(iB, lm_eCadImperfect, lm_eCadLastImperfect, _("Imperfect"));
-    }
-
-    //Deceptive cadences
-    if (m_pConstrains->IsValidButton(lm_eCadButtonDeceptive)) {
-         iB = DisplayButton(iB, lm_eCadDeceptive, lm_eCadLastDeceptive, _("Deceptive"));
-    }
-
-    //Half cadences
-    if (m_pConstrains->IsValidButton(lm_eCadButtonHalf)) {
-         iB = DisplayButton(iB, lm_eCadHalf, lm_eCadLastHalf, _("Half cadence"));
-    }
-
-
-    m_pKeyboardSizer->Layout();
-}
-
-int lmTheoHarmonyCtrol::DisplayButton(int iBt, lmECadenceType iStartC,
-                                       lmECadenceType iEndC, wxString sButtonLabel)
-{
-    // Display a button
-    // iB: number of button to display
-    // iStartC-iEndC: range of cadences associated to this button
-    // sButtonLabel: label for this button
-
-
-    int iB;     // button index: 0 .. m_NUM_BUTTONS-1
-
-    iB = iBt;
-    m_nStartCadence[iB] = iStartC;
-    m_nEndCadence[iB] = iEndC;
-    m_pAnswerButton[iB]->SetLabel( sButtonLabel );
-    m_pAnswerButton[iB]->Show(true);
-    m_pAnswerButton[iB]->Enable(true);
-    iB++;
-    return iB;
-
+    //As score ownership is transferred to the Score Editor window, we should
+    //do nothing with the problem score.
 }
 
 wxDialog* lmTheoHarmonyCtrol::GetSettingsDlg()
 {
-    //wxDialog* pDlg = new lmDlgCfgIdfyCadence(this, m_pConstrains, m_pConstrains->IsTheoryMode());
+    //TODO: Create the dialog class and implement it
+    //wxDialog* pDlg = new lmDlgCfgTheoHarmony(this, m_pConstrains, m_pConstrains->IsTheoryMode());
     //return pDlg;
     return (wxDialog*)NULL;
 }
 
-void lmTheoHarmonyCtrol::PrepareAuxScore(int nButton)
-{
-    PrepareScore(lmE_Sol, m_nStartCadence[nButton], &m_pAuxScore);
-}
-
 wxString lmTheoHarmonyCtrol::SetNewProblem()
 {
-    //This method must prepare the problem score and set variables:
-    //  m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex and m_nPlayMM
+    //This method creates a problem score
 
-    // generate a random cadence
-    lmECadenceType nCadenceType = m_pConstrains->GetRandomCadence();
+    //TODO:
+    //Prepare a problem score. The score type will depend on the
+    //problem type. Following code is just an example. It prepares a score
+    //with a fixed bass.
 
-    // select a key signature
+    // select a random key signature
     lmRandomGenerator oGenerator;
     m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
-    //create the score
-    lmEClefType nClef = lmE_Sol;
-    if (m_pConstrains->IsTheoryMode())
-        m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
-    else
-        m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
-
-	// If it was not possible to create the cadence for this key signature, try
-	// again with another cadence
-	int nTimes = 0;
-	while (m_sAnswer == _T("")) {
-		nCadenceType = m_pConstrains->GetRandomCadence();
-        if (m_pConstrains->IsTheoryMode())
-            m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
-        else
-            m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
-		if (++nTimes == 1000) {
-			wxLogMessage(_T("[lmTheoHarmonyCtrol::SetNewProblem] Loop. Impossible to get a cadence."));
-			break;
-		}
-	}
-
-    //// For debugging and testing. Force to display and use the problem score for the
-    //// solution score; the tonic chord is then visible
-    //if (!m_pConstrains->IsTheoryMode()) {
-    //    delete m_pSolutionScore;
-    //    m_pSolutionScore = NULL;
-    //}
-
-
-	//compute the index for the button that corresponds to the right answer
-    if (m_pConstrains->IsValidButton(lm_eCadButtonTerminal)) {
-        //Terminal / transient cadences
-        if (nCadenceType >= lm_eCadTerminal && nCadenceType < lm_eCadLastTerminal)
-            m_nRespIndex = 0;
-        else
-            m_nRespIndex = 1;
-    }
-    else
-    {
-        //Perfect / Plagal cadences
-        m_nRespIndex = -1;      //not set
-        int iB = -1;
-        if (m_pConstrains->IsValidButton(lm_eCadButtonPerfect)) {
-            iB++;
-            if (nCadenceType >= lm_eCadPerfect && nCadenceType < lm_eCadLastPerfect)
-                m_nRespIndex = iB;
-        }
-        //Plagal cadences
-        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonPlagal)) {
-            iB++;
-            if (nCadenceType >= lm_eCadPlagal && nCadenceType < lm_eCadLastPlagal)
-                m_nRespIndex = iB;
-        }
-
-        //Imperfect cadences
-        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonImperfect)) {
-            iB++;
-            if (nCadenceType >= lm_eCadImperfect && nCadenceType < lm_eCadLastImperfect)
-                m_nRespIndex = iB;
-        }
-
-        //Deceptive cadences
-        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonDeceptive)) {
-            iB++;
-            if (nCadenceType >= lm_eCadDeceptive && nCadenceType < lm_eCadLastDeceptive)
-                m_nRespIndex = iB;
-        }
-
-        //Half cadences
-        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonHalf)) {
-            iB++;
-            if (nCadenceType >= lm_eCadHalf && nCadenceType < lm_eCadLastHalf)
-                m_nRespIndex = iB;
-        }
-    }
-
-    //return string to introduce the problem
-    if (m_pConstrains->IsTheoryMode()) {
-        return _("Identify the next cadence:");
-    } else {
-        //ear training
-		wxString sText;
-        if (m_pConstrains->GetKeyDisplayMode() == 0)
-            sText = _("An A4 note will be played before the cadence begins.");
-        else
-            sText = _("A tonic chord will be played before the cadence begins.");
-		sText += _T("\n");
-		sText += _("Press 'Play' to hear the problem again.");
-        return sText;
-    }
-
-}
-
-wxString lmTheoHarmonyCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nType,
-                                           lmScore** pProblemScore,
-                                           lmScore** pSolutionScore)
-{
-    //create the chords
-    lmCadence oCad;
-    if (!oCad.Create(nType, m_nKey, true)) return _T("");
-
-    //delete the previous score
-    if (*pProblemScore) {
-        delete *pProblemScore;
-        *pProblemScore = (lmScore*)NULL;
-    }
-    if (pSolutionScore) {
-        delete *pSolutionScore;
-        *pSolutionScore = (lmScore*)NULL;
-    }
-
-    //create a score with the chord
+    //create a score with a bass line
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
-    *pProblemScore = new lmScore();
-    (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    lmInstrument* pInstr = (*pProblemScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
-							g_pMidi->DefaultVoiceInstr(), _T(""));
+    m_pProblemScore = new lmScore();
+    lmInstrument* pInstr = m_pProblemScore->AddInstrument(
+                                g_pMidi->DefaultVoiceChannel(),
+							    g_pMidi->DefaultVoiceInstr(), _T(""));
+
     pVStaff = pInstr->GetVStaff();
-    (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-    pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
+    //m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
+    pVStaff->AddStaff(5);           //add second staff: five lines, standard size
     pVStaff->AddClef( lmE_Sol, 1 );
     pVStaff->AddClef( lmE_Fa4, 2 );
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(2 ,4);
 
-    //If ear training add A4/Tonic chord
-    if (!m_pConstrains->IsTheoryMode())
+    wxString sNotes[16] = {
+        _T("(n c3 q p2 v4 (stem down))"),
+        _T("(n e3 q p2 v4 (stem down))"),
+        _T("(n f3 q p2 v4 (stem down))"),
+        _T("(n a3 q p2 v4 (stem down))"),
+        _T("(n g3 q p2 v4 (stem down))"),
+        _T("(n e3 q p2 v4 (stem down))"),
+        _T("(n c3 q p2 v4 (stem down))"),
+        _T("(n b2 q p2 v4 (stem down))"),
+        _T("(n g2 q p2 v4 (stem down))"),
+        _T("(n a2 q p2 v4 (stem down))"),
+        _T("(n c3 q p2 v4 (stem down))"),
+        _T("(n e3 q p2 v4 (stem down))"),
+        _T("(n e3 q p2 v4 (stem down))"),
+        _T("(n d3 q p2 v4 (stem down))"),
+        _T("(n g2 q p2 v4 (stem down))"),
+        _T("(n c3 q p2 v4 (stem down))")
+    };
+
+    //loop the add notes
+    for (int iN=0; iN < 16; iN+=2)
     {
-        //it is ear training exercise
-        if (m_pConstrains->GetKeyDisplayMode() == 0) {
-            // Use A4 note
-            sPattern = _T("(n a4 r)");
+        //add barline for previous measure
+        if (iN != 0)
+            pVStaff->AddBarline(lm_eBarlineSimple);
+        else
+            pVStaff->AddSpacer(20);
+
+        //two chords per measure (time signature is 2 / 4)
+        for (int iM=0; iM < 2; iM++)
+        {
+            //bass note
+            sPattern = sNotes[iN + iM];
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }
-        else {
-            // Use tonic chord
-            lmChordManager* pChord = oCad.GetTonicChord();
-            int nNumNotes = pChord->GetNumNotes();
-            sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            for (int i=1; i < nNumNotes; i++) {
-                sPattern = _T("(na ");
-                sPattern += pChord->GetPattern(i);
-                sPattern +=  _T(" r)");
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            }
-        }
-        pVStaff->AddBarline(lm_eBarlineSimple);
-
-        sPattern = _T("(s r)");
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(lm_eBarlineSimple);
     }
-
-    // Loop to add chords
-    for (int iC=0; iC < oCad.GetNumChords(); iC++)
-    {
-        pVStaff->AddSpacer(15);
-        if (iC != 0) pVStaff->AddBarline(lm_eBarlineSimple);
-        // first and second notes on F4 clef staff
-        sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
-    //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" r p2)");
-    //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        // third and fourth notes on G clef staff
-        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" r p1)");
-    //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" r p1)");
-    //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-    }
-    pVStaff->AddSpacer(20);
+    //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
 
-    //Prepare Solution Score
-    if (pSolutionScore) {
-        *pSolutionScore = new lmScore();
-        (*pSolutionScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-        lmInstrument* pInstr = (*pSolutionScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
-							    g_pMidi->DefaultVoiceInstr(), _T(""));
-        pVStaff = pInstr->GetVStaff();
-        (*pSolutionScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-        pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-        pVStaff->AddClef( lmE_Sol, 1 );
-        pVStaff->AddClef( lmE_Fa4, 2 );
-        pVStaff->AddKeySignature( m_nKey );
-        pVStaff->AddTimeSignature(2 ,4);
+    //set the name and the title of the score
+    m_pProblemScore->SetScoreName(_("Harmony exercise"));
+    //m_pProblemScore->AddTitle(_("Harmony exercise"));
 
-        // Loop to add chords
-        for (int iC=0; iC < oCad.GetNumChords(); iC++)
-        {
-            pVStaff->AddSpacer(15);
-            if (iC != 0) pVStaff->AddBarline(lm_eBarlineSimple);
-            // first and second notes on F4 clef staff
-            sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
-        //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" r p2)");
-        //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            // third and fourth notes on G clef staff
-            sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" r p1)");
-        //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" r p1)");
-        //wxLogMessage(_T("[lmTheoHarmonyCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        }
-        pVStaff->AddSpacer(20);
-        pVStaff->AddBarline(lm_eBarlineEnd);
-    }
-
-    //return cadence name
-    return  oCad.GetName();
-
+    //return text to introduce the problem (not needed)
+    return wxEmptyString;
 }
 
-
-
-
-//------------------------------------------------------------------------------------
-// Methods copied from lmOneScoreCtrol
-//------------------------------------------------------------------------------------
-
-
-
-wxWindow* lmTheoHarmonyCtrol::CreateDisplayCtrol()
+void lmTheoHarmonyCtrol::DisplayScoreErrors()
 {
-    // Using scores and ScoreAuxCtrol
-    lmEditScoreAuxCtrol* pScoreCtrol = new lmEditScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition,
-                                        m_nDisplaySize, eSIMPLE_BORDER);
-    pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),     //left
-                            lmToLogicalUnits(5, lmMILLIMETERS),     //right
-                            lmToLogicalUnits(10, lmMILLIMETERS));   //top
-    pScoreCtrol->SetScale( pScoreCtrol->GetScale() * (float)m_rScale );
-    return pScoreCtrol;
+    //TODO: This method must check the score and show errors
 }
 
-void lmTheoHarmonyCtrol::Play()
+void lmTheoHarmonyCtrol::ClearErrors()
 {
-    if (!m_fPlaying)
-    {
-        // Play button pressed
-
-        //change link from "Play" to "Stop"
-        m_pPlayButton->SetLabel(_("Stop"));
-
-        //play the score
-        ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, lmNO_COUNTOFF, 
-                                ePM_NormalInstrument, m_nPlayMM);
-        m_fPlaying = true;
-
-        //! AWARE The link label is restored to "Play" when the EndOfPlay event is
-        //! received. Flag m_fPlaying is also reset there
-    }
-    else 
-    {
-        // "Stop" button pressed
-        ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->Stop();
-    }
+    //TODO: This method must remove all error markup from current score
 }
-
-void lmTheoHarmonyCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
-{
-    m_pPlayButton->SetLabel(_("Play"));
-    m_fPlaying = false;
-}
-
-void lmTheoHarmonyCtrol::PlaySpecificSound(int nButton)
-{
-    StopSounds();
-
-    //delete any previous score
-    if (m_pAuxScore) {
-        delete m_pAuxScore;
-        m_pAuxScore = (lmScore*)NULL;
-    }
-
-    //prepare the score with the requested sound and play it
-    PrepareAuxScore(nButton);
-    if (m_pAuxScore) {
-        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, lmNO_COUNTOFF,
-                            ePM_NormalInstrument, m_nPlayMM, (wxWindow*) NULL);
-    }
-}
-
-void lmTheoHarmonyCtrol::DisplaySolution()
-{
-    //show the score
-	if (m_pSolutionScore) {
-		//There is a solution score. Display it
-		((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->SetScore(m_pSolutionScore);
-	}
-	else {
-		//No solution score. Display problem score
-		((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->HideScore(false);
-	}
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
-
-}
-
-void lmTheoHarmonyCtrol::DisplayProblem()
-{
-    //load the problem score into the control
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->SetScore(m_pProblemScore, true);   //true: the score must be hidden
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(_T(""), 0, true);   //true: clear the canvas
-
-    if (m_pConstrains->IsTheoryMode())
-    {
-        //theory
-        ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->DisplayScore(m_pProblemScore);
-    } 
-    else {
-        //ear training
-        Play();
-    }
-}
-
-void lmTheoHarmonyCtrol::DeleteScores()
-{
-    if (m_pProblemScore) {
-        delete m_pProblemScore;
-        m_pProblemScore = (lmScore*)NULL;
-    }
-    if (m_pSolutionScore) {
-        delete m_pSolutionScore;
-        m_pSolutionScore = (lmScore*)NULL;
-    }
-    if (m_pAuxScore) {
-        delete m_pAuxScore;
-        m_pAuxScore = (lmScore*)NULL;
-    }
-}
-
-void lmTheoHarmonyCtrol::StopSounds()
-{
-    //Stop any possible chord being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pProblemScore) m_pProblemScore->Stop();
-    if (m_pSolutionScore) m_pSolutionScore->Stop();
-}
-
-void lmTheoHarmonyCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
-{
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP();
-}
-
-void lmTheoHarmonyCtrol::OnDebugDumpScore(wxCommandEvent& event)
-{
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->Dump();
-}
-
-void lmTheoHarmonyCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
-{
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
-}
-
-void lmTheoHarmonyCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
-{
-    ((lmEditScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(
-            sMsg, lmToLogicalUnits(5, lmMILLIMETERS), fClearDisplay);
-}
-

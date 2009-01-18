@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<theme id="TheoHarmony">
+<title>Theory. Four-parts harmony</title>
+
+<para>**** Meter una descripcion del ejercicio *****.</para>
+<para>**** Explicar lo que tiene que hacer el alumno *****.</para>
+<para>** Describir los enlaces en el ToolBox **</para>
+
+<para>
+The four-parts harmony exercise is oriented to learn and practice (write, 
+listen to) four-parts harmony. 
+Its main purpose is checking and explaining every error you've done in writing
+the harmony for the proposed score.
+</para>
+
+<para>
+It allows for two exercise types:
+</para>
+
+<itemizedlist>
+    <listitem>Given a bass you have to write the other three voices.</listitem>
+    <listitem>Given a soprano melody you have to write the harmony. </listitem>
+</itemizedlist>
+
+<para>
+The score can be saved so that later you can continue the exercise.
+It uses the score editor to display the problem and to accept the solution from the user.
+</para>
+
+<exercise type="TheoHarmony" width="100%" height="300" border="0">
+    <control_settings>TheoHarmony</control_settings>
+</exercise>
+
+</theme>

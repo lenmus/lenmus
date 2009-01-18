@@ -882,12 +882,6 @@
 					RelativePath="..\..\src\exercises\auxctrols\CountersAuxCtrol.h">
 				</File>
 				<File
-					RelativePath="..\..\src\exercises\auxctrols\EditScoreAuxCtrol.cpp">
-				</File>
-				<File
-					RelativePath="..\..\src\exercises\auxctrols\EditScoreAuxCtrol.h">
-				</File>
-				<File
 					RelativePath="..\..\src\exercises\auxctrols\ScoreAuxCtrol.cpp">
 				</File>
 				<File

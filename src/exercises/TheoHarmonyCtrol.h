@@ -39,7 +39,6 @@
 #include "HarmonyConstrains.h"
 #include "../score/Score.h"
 #include "ExerciseCtrol.h"
-#include "auxctrols/EditScoreAuxCtrol.h"
 
 
 
@@ -60,63 +59,42 @@ public:
     //event handlers
     void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
 
-    //implementation of virtual event handlers
-    virtual void OnDebugShowSourceScore(wxCommandEvent& event);
-    virtual void OnDebugDumpScore(wxCommandEvent& event);
-    virtual void OnDebugShowMidiEvents(wxCommandEvent& event);
-
-
-public:
-
-    //implementation of virtual methods
-    void InitializeStrings();
-    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-    void PrepareAuxScore(int nButton);
+    //implementation of virtual methods from base class
     wxString SetNewProblem();    
     wxDialog* GetSettingsDlg();
-    void ReconfigureButtons();
+
+    //implementation of not needed virtual methods
+    void PrepareAuxScore(int nButton) {}
+    void ReconfigureButtons() {}
+    void PlaySpecificSound(int nButton) {}
+    void DisplaySolution() {}
+    void OnDebugShowSourceScore(wxCommandEvent& event) {}
+    void OnDebugDumpScore(wxCommandEvent& event) {}
+    void OnDebugShowMidiEvents(wxCommandEvent& event) {}
+    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font) {}
+    void InitializeStrings() {}
+
+    //To be invoked by user
+    void DisplayScoreErrors();
+    void ClearErrors();
 
 
 private:
-    wxString PrepareScore(lmEClefType nClef, lmECadenceType nType, lmScore** pProblemScore,
-                          lmScore** pSolutionScore = NULL );
-    int DisplayButton(int iBt, lmECadenceType iStartC, lmECadenceType iEndC, wxString sButtonLabel);
 
-    void Play();
-    void PlaySpecificSound(int nButton);
-    void DisplaySolution();
-    void DisplayProblem();
-    void DeleteScores();
-    void StopSounds();
-    wxWindow* CreateDisplayCtrol();
-    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
+    //implementation of not needed virtual methods
+    void Play() {}
+    void DisplayProblem() {}
+    wxWindow* CreateDisplayCtrol() { return (wxWindow*)NULL; }
+    void DisplayMessage(wxString& sMsg, bool fClearDisplay) {}
 
 
         // member variables
 
-    enum {
-        m_NUM_COLS = 4,
-        m_NUM_ROWS = 2,
-        m_NUM_BUTTONS = 8,     // NUM_COLS * NUM_ROWS;
-    };
-
     lmHarmonyConstrains* m_pConstrains;       //constraints for the exercise
 
-    //problem asked
-    lmEKeySignatures  m_nKey;
-
-    //answer
-    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
-    //cadence that corresponds to each valid button
-    lmECadenceType  m_nStartCadence[m_NUM_BUTTONS];
-    lmECadenceType  m_nEndCadence[m_NUM_BUTTONS];
-
-    lmScore*    m_pProblemScore;    //score with the problem
-	lmScore*    m_pSolutionScore;	//if not NULL, score with the solution. If NULL
-                                    //   problem score will be used as solution score
-    lmScore*    m_pAuxScore;        //score to play user selected buttons
-    int         m_nPlayMM;          //metronome setting to play scores
-    bool        m_fPlaying;         //currently playing the score
+    //problem related
+    lmEKeySignatures    m_nKey;
+    lmScore*            m_pProblemScore;    //score with the problem
 
     DECLARE_EVENT_TABLE()
 };

@@ -95,6 +95,7 @@ enum lmEToolID
 class lmCheckButton;
 class lmToolPageNotes;
 class wxBoxSizer;
+class lmToolPage;
 
 class lmToolBox: public wxPanel
 {
@@ -115,16 +116,23 @@ public:
 	//current tool and its options
 	inline lmEToolPage GetSelectedToolPage() const { return m_nSelTool; }
 	void SelectToolPage(lmEToolPage nTool);
-	inline wxPanel* GetToolPanel(lmEToolPage nPanel) { return m_cPanels[nPanel]; }
+	inline wxPanel* GetToolPanel(lmEToolPage nPanel) { return (wxPanel*)m_cPages[nPanel]; }
 
 
-	inline lmToolPageNotes* GetNoteProperties() const { return (lmToolPageNotes*)m_cPanels[lmPAGE_NOTES]; }
+	inline lmToolPageNotes* GetNoteProperties() const { return (lmToolPageNotes*)m_cPages[lmPAGE_NOTES]; }
     //TO_ADD: Add, before this line, a new method to get new tool properties
+
+
+    //operations: adding/removing pages
+    void AddPage(lmToolPage* pPage, int nToolId);
+
+    //bool DeletePage(int nToolId);
+
 
 private:
 	void CreateControls();
 	void SelectButton(int nTool);
-    wxPanel* CreatePanel(lmEToolPage nPanel);
+    lmToolPage* CreatePage(lmEToolPage nPanel);
 
 	enum {
 		NUM_BUTTONS = 16,
@@ -137,7 +145,7 @@ private:
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
 
 	//panels for tools' options
-	std::vector<wxPanel*>	m_cPanels;		// tools' panels collection
+	std::vector<lmToolPage*>    m_cPages;		// tools' pages collection
 
 	lmColorScheme	m_colors;               //colors to use in this toolbox
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -81,13 +81,12 @@ public:
 #else
     wxOutputStream& SaveObject(wxOutputStream& stream);
 #endif
-	//wxOutputStream& SaveObject(wxOutputStream& stream);
 
     //specific methods
 
     void UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints);
     bool OnImportDocument(const wxString& filename);
-    bool OnNewScoreWithWizard();
+    bool OnDisplayCreatedScore(int nID);
     inline lmScore* GetScore() {return m_pScore; };
 
 private:

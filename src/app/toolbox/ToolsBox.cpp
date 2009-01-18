@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -81,28 +81,6 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmToolBox, wxPanel)
 
-// an entry for the tools buttons table
-typedef struct lmToolsDataStruct {
-    lmEToolPage nToolId;		// button ID
-    wxString    sBitmap;		// bitmap name
-	wxString	sToolTip;		// tool tip
-} lmToolsData;
-
-
-// Tools table
-static const lmToolsData m_aToolsData[] = {
-    //tool ID			bitmap name					tool tip
-    //-----------		-------------				-------------
-    {lmPAGE_CLEFS,		_T("tool_clefs"),			_("Select clef, key and time signature edit tools") },
-    {lmPAGE_NOTES,		_T("tool_notes"),			_("Select notes / rests edit tools") },
- //   {lmPAGE_SELECTION,	_T("tool_selection"),		_("Select objects") },
-	//{lmPAGE_KEY_SIGN,	_T("tool_key_signatures"),	_("Select key signature edit tools") },
-	//{lmPAGE_TIME_SIGN,	_T("tool_time_signatures"),	_("Select time signatures edit tools") },
-	{lmPAGE_BARLINES,	_T("tool_barlines"),		_("Select barlines and rehearsal marks edit tools") },
-	//TO_ADD: Add here information about the new tool
-	//NEXT ONE MUST BE THE LAST ONE
-	{lmPAGE_NONE,		_T(""), _T("") },
-};
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxBORDER_NONE)
@@ -113,15 +91,14 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
 	//set colors
 	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
 
-	CreateControls();
-
-	//initialize panel's array
+	//initialize pages's array
     for (int i=0; i < (int)lmPAGE_MAX; i++)
 	{
-        wxPanel* pPanel = CreatePanel((lmEToolPage)i);
-        if (pPanel) pPanel->Show(false);
-        m_cPanels.push_back(pPanel);
+        lmToolPage* pPage = CreatePage((lmEToolPage)i);
+        AddPage(pPage, (lmEToolPage)i);
     }
+
+	CreateControls();
 
 	SelectToolPage(lmPAGE_NOTES);
 
@@ -141,23 +118,24 @@ void lmToolBox::CreateControls()
 	wxBoxSizer* pSelectSizer = new wxBoxSizer( wxVERTICAL );
 
     wxGridSizer* pButtonsSizer = new wxGridSizer(NUM_COLUMNS);
-    int iMax = sizeof(m_aToolsData)/sizeof(lmToolsData);
-    wxSize btSize(BUTTON_SIZE, BUTTON_SIZE);
-	for (int iB=0; iB < iMax; iB++)
-	{
-		if (m_aToolsData[iB].nToolId == lmPAGE_NONE) break;
 
+    wxSize btSize(BUTTON_SIZE, BUTTON_SIZE);
+    int iB = 0;
+    int iMax = m_cPages.size();
+    std::vector<lmToolPage*>::iterator it;
+    for(it=m_cPages.begin(); it != m_cPages.end(); ++it, ++iB)
+    {
         m_pButton[iB] = new lmCheckButton(pSelectPanel, ID_BUTTON + iB, wxBitmap(btSize.x, btSize.y));
-        m_pButton[iB]->SetBitmapUp(m_aToolsData[iB].sBitmap, _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(m_aToolsData[iB].sBitmap, _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(m_aToolsData[iB].sBitmap, _T("button_over_flat"), btSize);
-        m_pButton[iB]->SetToolTip(wxGetTranslation(m_aToolsData[iB].sToolTip));
+        m_pButton[iB]->SetBitmapUp((*it)->GetPageBitmapName(), _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown((*it)->GetPageBitmapName(), _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver((*it)->GetPageBitmapName(), _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetToolTip((*it)->GetPageToolTip());
 		int sides = 0;
 		if (iB > 0) sides |= wxLEFT;
 		if (iB < iMax-1) sides |= wxRIGHT;
 		pButtonsSizer->Add(m_pButton[iB],
 						   wxSizerFlags(0).Border(sides, BUTTON_SPACING) );
-	}
+    }
 
     pSelectSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALL, SPACING );
 
@@ -187,17 +165,17 @@ lmToolBox::~lmToolBox()
 {
 }
 
-wxPanel* lmToolBox::CreatePanel(lmEToolPage nPanel)
+lmToolPage* lmToolBox::CreatePage(lmEToolPage nPanel)
 {
     switch(nPanel) {
 		case lmPAGE_SELECTION:
-            return (wxPanel*)NULL;
+            return (lmToolPage*)NULL;
         case lmPAGE_CLEFS:
             return new lmToolPageClefs(this);
 		case lmPAGE_KEY_SIGN:
-            return (wxPanel*)NULL;
+            return (lmToolPage*)NULL;
 		case lmPAGE_TIME_SIGN:
-            return (wxPanel*)NULL;
+            return (lmToolPage*)NULL;
         case lmPAGE_NOTES:
             return new lmToolPageNotes(this);
         case lmPAGE_BARLINES:
@@ -206,8 +184,17 @@ wxPanel* lmToolBox::CreatePanel(lmEToolPage nPanel)
         default:
             wxASSERT(false);
     }
-    return (wxPanel*)NULL;
+    return (lmToolPage*)NULL;
 
+}
+
+void lmToolBox::AddPage(lmToolPage* pPage, int nToolId)
+{
+    //Adds a page to the toolbox. 
+
+	//add the page to the panel's array
+    pPage->Show(false);
+    m_cPages.push_back(pPage);
 }
 
 void lmToolBox::OnButtonClicked(wxCommandEvent& event)
@@ -234,7 +221,7 @@ void lmToolBox::SelectToolPage(lmEToolPage nTool)
     pOldPage->Hide();
 
     //show new one
-    m_pCurPage = (m_cPanels[nTool] ? m_cPanels[nTool] : m_pEmptyPage);
+    m_pCurPage = (m_cPages[nTool] ? m_cPages[nTool] : m_pEmptyPage);
     m_pCurPage->Show();
     m_pPageSizer->Replace(pOldPage, m_pCurPage);
     m_pCurPage->SetFocus();

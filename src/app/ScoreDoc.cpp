@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -37,9 +37,6 @@
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!
 #endif
-//#if wxUSE_STD_IOSTREAM
-//#error "You must set wxUSE_STD_IOSTREAM to 0 in setup.h!"
-//#endif
 
 
 
@@ -62,13 +59,11 @@ lmScoreDocument::lmScoreDocument()
 {
     // default values
     m_pScore = (lmScore*) NULL;
-
 }
 
 lmScoreDocument::~lmScoreDocument()
 {
     delete m_pScore;
-
 }
 
 bool lmScoreDocument::OnNewDocument()
@@ -110,9 +105,9 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     // - Normal invocation from DocManager for opening an LDP document
     // - Special invocation from MainFrame:
     //  * For importing MusicXML files. In this case parameter filename will start
-    //      with "\\<<IMPORT>>//" follewed by the filename to open
-    //  * For displaying a new score created with the Score Wizard. In this case parameter
-    //      filename will start with "\\<<NEW_WIZARD>>//"
+    //    with "\\<<IMPORT>>//" follewed by the filename to open
+    //  * For displaying an already existing score created in the program (i.e.
+    //    exercises, score wizard). Filename will start with "\\<<LOAD>>//"
 
 
     //import a MusicXML score
@@ -124,11 +119,14 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
         return OnImportDocument(sPath.Left(nSize) );
     }
 
-    //Open a score created with the score wizard
-    if (filename.StartsWith( _T("\\<<NEW_WIZARD>>//") ))
+    //Open an already created score
+    if (filename.StartsWith( _T("\\<<LOAD>>//") ))
     {
+        wxString sID = filename.Mid(12, 6);
+        long nID = 0;
+        sID.ToLong(&nID);
         //wxLogMessage(_T("[lmScoreDocument::OnOpenDocument] New score with wizard"));
-        return OnNewScoreWithWizard();
+        return OnDisplayCreatedScore( (int)nID );
     }
 
     //Normal case. Open a score from LDP file
@@ -173,14 +171,19 @@ bool lmScoreDocument::OnImportDocument(const wxString& filename)
     return true;
 }
 
-bool lmScoreDocument::OnNewScoreWithWizard()
+bool lmScoreDocument::OnDisplayCreatedScore(int nID)
 {
-    m_pScore = GetMainFrame()->GetWizardScore();
+    //get the score to display
+    m_pScore = GetMainFrame()->GetScoreToEdit(nID);
     if (!m_pScore) return false;
 
-    //Assign the score a default name
-    wxString name;
-    GetDocumentManager()->MakeDefaultName(name);
+    //Assign the window a default name if no name assigned to the score;
+    //otherwise assign it the name of the score
+    wxString name = m_pScore->GetScoreName();
+    if (name == _T(""))
+    {
+        GetDocumentManager()->MakeDefaultName(name);
+    }
     SetTitle(name);
     SetFilename(name, true);
 

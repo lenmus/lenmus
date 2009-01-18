@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -74,6 +74,10 @@ lmToolPageClefs::lmToolPageClefs(wxWindow* parent)
 	: lmToolPage(parent)
 {
 	wxBoxSizer* pMainSizer = GetMainSizer();
+
+    //initialize data
+    m_sPageToolTip = _("Select clef, key and time signature edit tools");
+    m_sPageBitmapName = _T("tool_clefs");
 
     //create groups
     m_pGrpClefType = new lmGrpClefType(this, pMainSizer);
