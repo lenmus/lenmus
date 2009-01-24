@@ -3,7 +3,6 @@
 # Process the lenmus hacking guide
 #--------------------------------------------------------------------
 
-cd agdoc
+cd /media/sdb1/usr/Desarrollo_wx/lenmus/docs/agdoc/agdoc
 agdoc ../hacking_guide/hacking_guide.agproj
-exit 0
 

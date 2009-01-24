@@ -506,6 +506,12 @@
 				RelativePath="..\..\src\app\Printout.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\Processor.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\Processor.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\ScoreCanvas.cpp">
 			</File>
 			<File

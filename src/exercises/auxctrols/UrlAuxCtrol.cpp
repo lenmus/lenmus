@@ -76,6 +76,5 @@ void lmUrlAuxCtrol::OnClick(wxMouseEvent& event)
     wxCommandEvent eventCustom(lmEVT_URL_CLICK);
     eventCustom.SetId(event.GetId());
     GetParent()->GetEventHandler()->ProcessEvent( eventCustom );
-
 }
 

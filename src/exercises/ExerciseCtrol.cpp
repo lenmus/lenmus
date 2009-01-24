@@ -33,6 +33,7 @@
 #include "auxctrols/UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
+#include "../app/Processor.h"
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
 #include "../html/TextBookController.h"
@@ -88,7 +89,8 @@ lmEBookCtrol::lmEBookCtrol(wxWindow* parent, wxWindowID id,
 lmEBookCtrol::~lmEBookCtrol()
 {
     //delete objects
-    if (m_pOptions) delete m_pOptions;
+    if (m_pOptions) 
+        delete m_pOptions;
 }
 
 void lmEBookCtrol::OnSettingsButton(wxCommandEvent& event)
@@ -1028,3 +1030,111 @@ void lmCompareMidiCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
         m_pPlayButton->SetLabel(_("Play"));
     }
 }
+
+
+
+//------------------------------------------------------------------------------------
+// Implementation of lmFullEditorExercise:
+//------------------------------------------------------------------------------------
+
+
+BEGIN_EVENT_TABLE(lmFullEditorExercise, wxWindow)
+    EVT_SIZE            (lmFullEditorExercise::OnSize)
+    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmFullEditorExercise::OnSettingsButton)
+    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, lmFullEditorExercise::OnGoBackButton)
+    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmFullEditorExercise::OnNewProblem)
+
+END_EVENT_TABLE()
+
+IMPLEMENT_CLASS(lmFullEditorExercise, wxWindow)
+
+lmFullEditorExercise::lmFullEditorExercise(wxWindow* parent, wxWindowID id, 
+                           lmExerciseOptions* pConstrains, 
+                           const wxPoint& pos, const wxSize& size, int style)
+    : wxWindow(parent, id, pos, size, style )
+{
+    //initializations
+    SetBackgroundColour(*wxWHITE);
+    m_pConstrains = pConstrains;
+}
+
+lmFullEditorExercise::~lmFullEditorExercise()
+{
+    //delete objects
+    if (m_pConstrains) delete m_pConstrains;
+}
+
+void lmFullEditorExercise::OnSettingsButton(wxCommandEvent& event)
+{
+    wxDialog* pDlg = GetSettingsDlg(); 
+    if (pDlg) {
+        int retcode = pDlg->ShowModal();
+        if (retcode == wxID_OK) {
+            m_pConstrains->SaveSettings();
+            // When changing settings it could be necessary to review answer buttons
+            // or other issues. Give derived classes a chance to do it.
+            OnSettingsChanged();
+        }
+        delete pDlg;
+    }
+
+}
+
+void lmFullEditorExercise::OnGoBackButton(wxCommandEvent& event)
+{
+    lmMainFrame* pFrame = GetMainFrame();
+    lmTextBookController* pBookController = pFrame->GetBookController();
+    pBookController->Display( m_pConstrains->GetGoBackURL() );
+}
+
+void lmFullEditorExercise::OnSize(wxSizeEvent& event)
+{
+    Layout();
+}
+
+void lmFullEditorExercise::OnNewProblem(wxCommandEvent& event)
+{
+    SetNewProblem();
+    lmMainFrame* pMainFrame = GetMainFrame();
+    pMainFrame->NewScoreWindow((lmEditorMode*)NULL, m_pProblemScore);
+    m_pScoreProc->SetTools();
+}
+
+void lmFullEditorExercise::CreateControls()
+{
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    InitializeStrings();
+
+    // ensure that sizes are properly scaled
+    m_rScale = g_pMainFrame->GetHtmlWindow()->GetScale();
+
+    //the window contains just a sizer to add links 
+    m_pMainSizer = new wxBoxSizer( wxVERTICAL );
+
+    // settings link
+    if (m_pConstrains->IncludeSettingsLink()) {
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, 
+             _("Exercise options") );
+        m_pMainSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
+    }
+    // "Go back to theory" link
+    if (m_pConstrains->IncludeGoBackLink()) {
+        lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale,
+            _("Go back to theory") );
+        m_pMainSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
+    }
+
+    // "new problem" button
+    m_pMainSizer->Add(
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
+    
+    //finish creation
+    SetSizer( m_pMainSizer );                 // use the sizer for window layout
+    m_pMainSizer->SetSizeHints( this );       // set size hints to honour minimum size
+}
+
+
+
+

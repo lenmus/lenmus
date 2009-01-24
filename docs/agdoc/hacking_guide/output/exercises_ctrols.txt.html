@@ -58,22 +58,18 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'>Exercises and scores (and in general any other &#039;widget&#039; we would like to embed in an html page) will be named, in this documentation, as <i>html embedded controls</i> or, simply, as <i>Ctrols</i>. Each Ctrol is implemented by one specific class (whose name normally ends as &#039;Ctrol&#039;), enclosing all the knowledge about rendering the control and managing all user interaction with it.</p>
 
-<p class='justified'>There is a terminology issue that you should know because it causes confusion at the beginning. 
-There are some auxiliary classes, whose name ends as &#039;Ctrol&#039;. These classes doesn&#039;t implement Ctrols to be included in html code with an &lt;object&gt; tag. These AuxCtrol classes are in fact &#039;widgets&#039; to be used to render Ctrols. Currently there are three:</p>
+<p class='justified'>There is a terminology issue that you should know because it might cause confusion. 
+There are some auxiliary classes, whose name ends as &#039;AuxCtrol&#039;. These classes doesn&#039;t implement Ctrols to be included in html code with an &lt;object&gt; tag. These AuxCtrol classes are in fact &#039;widgets&#039; to be used to render Ctrols. Currently there are three:</p>
 
 <p class='justified'><div class="orderedlist"><ol type="1">
 <li><span class="kw1">lmUrlAuxCtrol</span> (in exercises/UrlAuxCtrol.cpp &amp; .h): it is a class to display a URL link to be used in exercises and other Ctrols.</li></ol><div></p>
  
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li><span class="kw1">lmCountersCtrol</span> (in exercises/CounterCtrol.cpp &amp; .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.</li></ol><div></p>
+<li><span class="kw1">lmCountersAuxCtrol</span> (in exercises/CounterCtrol.cpp &amp; .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.</li></ol><div></p>
  
 <p class='justified'><div class="orderedlist"><ol type="1">
 <li><span class="kw1">lmScoreAuxCtrol</span> (in exercises/ScoreAuxCtrol.cpp &amp; .h): it is a widget to display a score, to be used in exercises.</li></ol><div></p>
  
-<TABLE class="tip" width="640px"><TR><TD><B>TIP</B><BR/>
-    To implement an exercise in which the user must interact with a score (i.e. entering notes) you should implement a class, similar to <span class="kw1">lmScoreAuxCtrol</span>, but allowing score edition. Copy this class (with another name!) and start modifying and playing with it.
-</TD></TR></TABLE>
-
 
 <p class='justified'>From an implementation point of view, a Ctrol is the main window that encloses all texts, buttons, links, etc. that form an exercise. And a AuxCtrol is one of these widgets. AuxCtrols generate events that must be processed by the main Ctrol window. Therefore, an AuxCtrol can not be included directly in html by using an &lt;object&gt; directive. It only can be included programmatically inside a Ctrol.</p>
 

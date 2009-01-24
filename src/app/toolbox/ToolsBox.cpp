@@ -87,6 +87,8 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
 {
 	//Create the dialog
 	m_nSelTool = lmPAGE_NONE;
+    m_fShowFixedGroup = true;
+
 
 	//set colors
 	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
@@ -111,6 +113,11 @@ void lmToolBox::CreateControls()
     //the main sizer, to contain the three areas
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
 
+    //panel for the fixed group
+	m_pFixedGroup = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+	pMainSizer->Add( m_pFixedGroup, 0, wxEXPAND, 5 );
+    m_pFixedGroup->Show(false);
+	
     //the tool page buttons selection area
 	wxPanel* pSelectPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     pSelectPanel->SetBackgroundColour(m_colors.Normal());
@@ -197,6 +204,11 @@ void lmToolBox::AddPage(lmToolPage* pPage, int nToolId)
     m_cPages.push_back(pPage);
 }
 
+void lmToolBox::ShowFixedGroup(bool fValue)
+{
+    m_fShowFixedGroup = fValue;
+}
+
 void lmToolBox::OnButtonClicked(wxCommandEvent& event)
 {
     //identify button pressed
@@ -255,3 +267,19 @@ void lmToolBox::OnResize(wxSizeEvent& event)
     //wxLogMessage(_T("[lmToolBox::OnResize] New size: %d, %d"), newSize.x, newSize.y);
 }
 
+void lmToolBox::AddSpecialTools(wxPanel* pNewPanel, wxEvtHandler* pHandler)
+{
+    //Adds the special tools panel at top of ToolBox
+    
+    wxPanel* pOldPanel = m_pFixedGroup;
+    m_pFixedGroup->Show(false);
+
+    wxSizer* pMainSizer = GetSizer();
+    pMainSizer->Replace(pOldPanel, pNewPanel);
+
+    delete pOldPanel;
+    m_pFixedGroup = pNewPanel;
+    m_pFixedGroup->Show(true);
+    pMainSizer->Layout();
+	//Layout();
+}

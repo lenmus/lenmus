@@ -126,6 +126,10 @@ public:
     //operations: adding/removing pages
     void AddPage(lmToolPage* pPage, int nToolId);
 
+    //Special tools fixed group maganement
+    void AddSpecialTools(wxPanel* pPanel, wxEvtHandler* pHandler);
+    void ShowFixedGroup(bool fValue);
+
     //bool DeletePage(int nToolId);
 
 
@@ -138,11 +142,16 @@ private:
 		NUM_BUTTONS = 16,
 	};
 
+    //controls
+    wxPanel*        m_pFixedGroup;          //panel for the fixed group
     wxPanel*		m_pEmptyPage;           //an empty page
     wxPanel*		m_pCurPage;             //currently displayed page
     wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
     lmEToolPage		m_nSelTool;				//current selected tool
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
+
+    //variables
+    bool            m_fShowFixedGroup;
 
 	//panels for tools' options
 	std::vector<lmToolPage*>    m_cPages;		// tools' pages collection

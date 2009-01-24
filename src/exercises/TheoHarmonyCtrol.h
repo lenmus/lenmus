@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -42,7 +42,7 @@
 
 
 
-class lmTheoHarmonyCtrol : public lmExerciseCtrol   
+class lmTheoHarmonyCtrol : public lmFullEditorExercise   
 {
    DECLARE_DYNAMIC_CLASS(lmTheoHarmonyCtrol)
 
@@ -60,41 +60,19 @@ public:
     void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
 
     //implementation of virtual methods from base class
-    wxString SetNewProblem();    
+    void SetNewProblem();    
     wxDialog* GetSettingsDlg();
-
-    //implementation of not needed virtual methods
-    void PrepareAuxScore(int nButton) {}
-    void ReconfigureButtons() {}
-    void PlaySpecificSound(int nButton) {}
-    void DisplaySolution() {}
-    void OnDebugShowSourceScore(wxCommandEvent& event) {}
-    void OnDebugDumpScore(wxCommandEvent& event) {}
-    void OnDebugShowMidiEvents(wxCommandEvent& event) {}
-    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font) {}
-    void InitializeStrings() {}
-
-    //To be invoked by user
-    void DisplayScoreErrors();
-    void ClearErrors();
+    void InitializeStrings();
+    void OnSettingsChanged();
 
 
 private:
 
-    //implementation of not needed virtual methods
-    void Play() {}
-    void DisplayProblem() {}
-    wxWindow* CreateDisplayCtrol() { return (wxWindow*)NULL; }
-    void DisplayMessage(wxString& sMsg, bool fClearDisplay) {}
-
 
         // member variables
 
-    lmHarmonyConstrains* m_pConstrains;       //constraints for the exercise
-
-    //problem related
-    lmEKeySignatures    m_nKey;
-    lmScore*            m_pProblemScore;    //score with the problem
+    lmHarmonyConstrains*    m_pConstrains;      //constraints for the exercise
+    lmEKeySignatures        m_nKey;             //key to use for scores
 
     DECLARE_EVENT_TABLE()
 };

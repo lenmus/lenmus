@@ -194,8 +194,6 @@
 		<Unit filename="../../src/exercises/TheoMusicReadingCtrol.h" />
 		<Unit filename="../../src/exercises/auxctrols/CountersAuxCtrol.cpp" />
 		<Unit filename="../../src/exercises/auxctrols/CountersAuxCtrol.h" />
-		<Unit filename="../../src/exercises/auxctrols/EditScoreAuxCtrol.cpp" />
-		<Unit filename="../../src/exercises/auxctrols/EditScoreAuxCtrol.h" />
 		<Unit filename="../../src/exercises/auxctrols/ScoreAuxCtrol.cpp" />
 		<Unit filename="../../src/exercises/auxctrols/ScoreAuxCtrol.h" />
 		<Unit filename="../../src/exercises/auxctrols/UrlAuxCtrol.cpp" />
@@ -234,7 +232,6 @@
 		<Unit filename="../../src/graphic/Drawer.h" />
 		<Unit filename="../../src/graphic/Formatter4.cpp" />
 		<Unit filename="../../src/graphic/Formatter4.h" />
-		<Unit filename="../../src/graphic/Formatter4_old.h" />
 		<Unit filename="../../src/graphic/GMObject.cpp" />
 		<Unit filename="../../src/graphic/GMObject.h" />
 		<Unit filename="../../src/graphic/GraphicManager.cpp" />

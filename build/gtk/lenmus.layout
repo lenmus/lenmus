@@ -175,7 +175,7 @@
 	<File name="../../src/exercises/EarIntvalConstrains.cpp" open="0" top="0" tabpos="27">
 		<Cursor position="5106" topLine="108" />
 	</File>
-	<File name="../../src/exercises/Generators.cpp" open="1" top="1" tabpos="32">
+	<File name="../../src/exercises/Generators.cpp" open="1" top="0" tabpos="32">
 		<Cursor position="4851" topLine="110" />
 	</File>
 	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="1" top="0" tabpos="1">
@@ -198,6 +198,9 @@
 	</File>
 	<File name="../../src/exercises/ScoreCtrol.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="5355" topLine="117" />
+	</File>
+	<File name="../../src/exercises/TheoHarmonyCtrol.cpp" open="1" top="1" tabpos="33">
+		<Cursor position="6295" topLine="166" />
 	</File>
 	<File name="../../src/exercises/TheoIntervalsCtrol.cpp" open="1" top="0" tabpos="16">
 		<Cursor position="8245" topLine="220" />

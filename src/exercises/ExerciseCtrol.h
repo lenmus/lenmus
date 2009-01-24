@@ -42,6 +42,8 @@
 #include "auxctrols/UrlAuxCtrol.h"
 #include "auxctrols/CountersAuxCtrol.h"
 
+class lmScoreProcessor;
+
 
 //--------------------------------------------------------------------------------
 // An abstract class for any kind of Ctrol (wxHtmlWidgetsCell) included in an eBook.
@@ -426,6 +428,65 @@ protected:
 
     DECLARE_EVENT_TABLE()
 };
+
+
+//--------------------------------------------------------------------------------
+// An abstract class for any kind of exercise included in an eBook, that uses
+// the full score editor for the exercise
+//--------------------------------------------------------------------------------
+class lmFullEditorExercise : public wxWindow
+{
+   DECLARE_DYNAMIC_CLASS(lmFullEditorExercise)
+
+public:
+
+    // constructor and destructor    
+    lmFullEditorExercise(wxWindow* parent, wxWindowID id,
+               lmExerciseOptions* pConstrains, 
+               const wxPoint& pos = wxDefaultPosition, 
+               const wxSize& size = wxDefaultSize, int style = 0);
+
+    virtual ~lmFullEditorExercise();
+
+    //event handlers
+    void OnSize(wxSizeEvent& event);
+    void OnSettingsButton(wxCommandEvent& event);
+    void OnGoBackButton(wxCommandEvent& event);
+    void OnNewProblem(wxCommandEvent& event);
+
+protected:
+    //IDs for controls
+    enum {
+        ID_LINK_SETTINGS = 3000,
+        ID_LINK_GO_BACK,
+        ID_LINK_NEW_PROBLEM,
+    };
+
+    //virtual pure methods to be implemented by derived classes
+    virtual void InitializeStrings()=0;   
+    virtual wxDialog* GetSettingsDlg()=0;
+    virtual void OnSettingsChanged()=0;
+    virtual void SetNewProblem()=0;
+
+
+    //methods invoked from derived classes
+    virtual void CreateControls();
+
+
+    // member variables
+
+    lmScoreProcessor*   m_pScoreProc;       //score processor for the exercise
+    lmScore*            m_pProblemScore;    //score with the problem
+    wxBoxSizer*         m_pMainSizer;
+    lmExerciseOptions*  m_pConstrains;  //constraints for the exercise
+    double              m_rScale;           // Current scaling factor
+
+private:
+
+    DECLARE_EVENT_TABLE()
+};
+
+
 
 
 #endif  // __LM_EXERCISECTROL_H__
