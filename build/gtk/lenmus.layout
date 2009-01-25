@@ -31,8 +31,11 @@
 	<File name="../../src/app/DlgPatternEditor.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="1597" topLine="31" />
 	</File>
-	<File name="../../src/app/EditFrame.cpp" open="0" top="0" tabpos="16">
-		<Cursor position="2778" topLine="71" />
+	<File name="../../src/app/EditFrame.cpp" open="1" top="0" tabpos="37">
+		<Cursor position="1846" topLine="47" />
+	</File>
+	<File name="../../src/app/EditFrame.h" open="1" top="1" tabpos="36">
+		<Cursor position="1663" topLine="0" />
 	</File>
 	<File name="../../src/app/FontManager.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="2265" topLine="39" />
@@ -69,6 +72,9 @@
 	</File>
 	<File name="../../src/app/Printout.h" open="0" top="0" tabpos="14">
 		<Cursor position="1673" topLine="18" />
+	</File>
+	<File name="../../src/app/Processor.cpp" open="1" top="0" tabpos="35">
+		<Cursor position="4706" topLine="136" />
 	</File>
 	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="8">
 		<Cursor position="29772" topLine="889" />
@@ -199,8 +205,11 @@
 	<File name="../../src/exercises/ScoreCtrol.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="5355" topLine="117" />
 	</File>
-	<File name="../../src/exercises/TheoHarmonyCtrol.cpp" open="1" top="1" tabpos="33">
-		<Cursor position="6295" topLine="166" />
+	<File name="../../src/exercises/TheoHarmonyCtrol.cpp" open="1" top="0" tabpos="33">
+		<Cursor position="1960" topLine="49" />
+	</File>
+	<File name="../../src/exercises/TheoHarmonyCtrol.h" open="1" top="0" tabpos="34">
+		<Cursor position="0" topLine="27" />
 	</File>
 	<File name="../../src/exercises/TheoIntervalsCtrol.cpp" open="1" top="0" tabpos="16">
 		<Cursor position="8245" topLine="220" />
@@ -372,6 +381,12 @@
 	</File>
 	<File name="../../src/mdi/ClientWindow.cpp" open="0" top="0" tabpos="14">
 		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="../../src/mdi/DocViewMDI.cpp" open="1" top="0" tabpos="39">
+		<Cursor position="2713" topLine="69" />
+	</File>
+	<File name="../../src/mdi/DocViewMDI.h" open="1" top="0" tabpos="38">
+		<Cursor position="2470" topLine="55" />
 	</File>
 	<File name="../../src/options/ColorsOptPanel.cpp" open="0" top="0" tabpos="22">
 		<Cursor position="3366" topLine="30" />

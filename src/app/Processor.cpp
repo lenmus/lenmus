@@ -116,7 +116,7 @@ bool lmScoreProcessor::CreateToolsPanel(wxString sTitle, wxString sDoLink,
     lmToolBox* pToolbox = pMainFrame->GetActiveToolBox();
     if (!pToolbox) return false;        //false -> failure
 
-    m_pToolsPanel = new wxPanel(pToolbox, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
+    m_pToolsPanel = new wxPanel(pToolbox, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                 wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
 
 	m_pMainSizer = new wxBoxSizer( wxVERTICAL );
@@ -124,7 +124,7 @@ bool lmScoreProcessor::CreateToolsPanel(wxString sTitle, wxString sDoLink,
     AddStandardLinks(m_pMainSizer, sDoLink, sUndoLink);
 
     return true;
-}	
+}
 void lmScoreProcessor::AddStandardLinks(wxBoxSizer* pSizer, wxString sDoLink,
                                         wxString sUndoLink)
 {
@@ -133,9 +133,9 @@ void lmScoreProcessor::AddStandardLinks(wxBoxSizer* pSizer, wxString sDoLink,
     {
         m_pDoLink = new lmUrlAuxCtrol(m_pToolsPanel, lmID_DO_PROCESS, 1.0, sDoLink);
         pSizer->Add(m_pDoLink, 0, wxALL|wxEXPAND, 5);
-        m_pToolsPanel->Connect(lmID_DO_PROCESS, lmEVT_URL_CLICK, 
-                               wxObjectEventFunction(lmScoreProcessor::DoProcess),
-                               NULL, this); 
+        m_pToolsPanel->Connect(lmID_DO_PROCESS, lmEVT_URL_CLICK,
+                               wxObjectEventFunction(&lmScoreProcessor::DoProcess),
+                               NULL, this);
     }
 
     // 'Do process' link
@@ -143,9 +143,9 @@ void lmScoreProcessor::AddStandardLinks(wxBoxSizer* pSizer, wxString sDoLink,
     {
         m_pUndoLink = new lmUrlAuxCtrol(m_pToolsPanel, lmID_UNDO_PROCESS, 1.0, sUndoLink);
         pSizer->Add(m_pUndoLink, 0, wxALL|wxEXPAND, 5);
-        m_pToolsPanel->Connect(lmID_UNDO_PROCESS, lmEVT_URL_CLICK, 
-                               wxObjectEventFunction(lmScoreProcessor::UndoProcess),
-                               NULL, this); 
+        m_pToolsPanel->Connect(lmID_UNDO_PROCESS, lmEVT_URL_CLICK,
+                               wxObjectEventFunction(&lmScoreProcessor::UndoProcess),
+                               NULL, this);
     }
 }
 
@@ -189,7 +189,7 @@ bool lmHarmonyProcessor::SetTools()
 {
     //Create a panel with the exercise buttons, and place it on the ToolBox
     //Returns false if failure.
-    
+
     if (!CreateToolsPanel(_("Harmony exercise"),
                           _("Check harmony"),
                           _("Clear errors")) )

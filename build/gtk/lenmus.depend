@@ -85,7 +85,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1230408952 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
+1232819952 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
 	<vector>
 	"../app/TheApp.h"
 	"../graphic/Shapes.h"
@@ -214,7 +214,7 @@
 	"../score/Score.h"
 	"wx/dynarray.h"
 
-1221724550 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Constrains.h
+1232745038 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Constrains.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -396,7 +396,7 @@
 1221549638 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/DlgPatternEditor.h
 	"wx/dialog.h"
 
-1221549848 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.cpp
+1232281276 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"global.h"
@@ -465,7 +465,7 @@
 	"../graphic/GraphicManager.h"
 	"Printout.h"
 
-1232275730 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.h
+1232901800 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.h
 	"../mdi/DocViewMDI.h"
 	"wx/docview.h"
 
@@ -556,7 +556,7 @@
 
 1154356926 /media/sdb1/usr/Desarrollo_wx/wxMidi/src/portmidi/porttime/porttime.h
 
-1231072170 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
+1232280662 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -759,7 +759,7 @@
 	"../graphic/GMObject.h"
 	"../score/VStaff.h"
 
-1226565730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
+1232282104 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/txtstrm.h"
@@ -2026,7 +2026,7 @@
 	"Context.h"
 	"../app/global.h"
 
-1230408952 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.cpp
+1232819952 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<math.h>
@@ -2116,7 +2116,7 @@
 	"wx/wxprec.h"
 	"SoundEvents.h"
 
-1230462902 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundManager.cpp
+1232281276 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundManager.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"SoundManager.h"
@@ -2309,7 +2309,7 @@
 
 1221389460 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Pitch.h
 
-1232283846 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.h
+1232746030 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -2324,12 +2324,13 @@
 	"../score/Score.h"
 	"Constrains.h"
 
-1232207066 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.cpp
+1232814100 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.cpp
 	"wx/wxprec.h"
 	"ExerciseCtrol.h"
 	"auxctrols/UrlAuxCtrol.h"
 	"Constrains.h"
 	"Generators.h"
+	"../app/Processor.h"
 	"../app/MainFrame.h"
 	"../html/TextBookController.h"
 	"wx/html/htmlwin.h"
@@ -2550,7 +2551,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1232302162 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.h
+1232437736 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<vector>
@@ -2578,7 +2579,7 @@
 1221549736 /media/sdb1/usr/Desarrollo_wx/lenmus/src/widgets/Button.h
 	<wx/wx.h>
 
-1230582706 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.cpp
+1232437758 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolsBox.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/cursor.h"
@@ -4974,7 +4975,7 @@
 	"wx/settings.h"
 	"ColorScheme.h"
 
-1219334498 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolGroup.cpp
+1232280140 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolGroup.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ToolGroup.h"
@@ -4989,7 +4990,7 @@
 	<vector>
 	"ToolsBox.h"
 
-1223297610 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolNotes.cpp
+1232301048 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolNotes.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/xrc/xmlres.h"
@@ -5023,7 +5024,7 @@
 	"wx/button.h"
 	"wx/cmndata.h"
 
-1219334498 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolPage.cpp
+1232301050 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolPage.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/xrc/xmlres.h"
@@ -5101,12 +5102,12 @@
 	"EditCmd.h"
 	"UndoRedo.h"
 
-1229256732 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolClef.h
+1232301050 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolClef.h
 	"ToolGroup.h"
 	"ToolPage.h"
 	"../../score/defs.h"
 
-1229324920 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolClef.cpp
+1232301050 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolClef.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/xrc/xmlres.h"
@@ -7390,7 +7391,7 @@
 	"wx/button.h"
 	"wx/cmndata.h"
 
-1220889932 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolBarlines.h
+1232301050 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolBarlines.h
 	"ToolGroup.h"
 	"ToolPage.h"
 	"../../score/defs.h"
@@ -7749,7 +7750,7 @@
 	"../app/ScoreCanvas.h"
 	"Handlers.h"
 
-1230047208 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolBarlines.cpp
+1232301048 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/toolbox/ToolBarlines.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/xrc/xmlres.h>
@@ -13618,7 +13619,7 @@
 	"ScoreAuxCtrol.h"
 	"../../app/Logger.h"
 
-1232208110 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/UrlAuxCtrol.cpp
+1232695104 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/UrlAuxCtrol.cpp
 	"wx/wxprec.h"
 	"UrlAuxCtrol.h"
 	"../../html/HtmlWindow.h"
@@ -13692,18 +13693,49 @@
 	"../../ldp_parser/AuxString.h"
 	"../../auxmusic/Conversion.h"
 
-1232292288 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoHarmonyCtrol.h
+1232797004 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoHarmonyCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"HarmonyConstrains.h"
 	"../score/Score.h"
 	"ExerciseCtrol.h"
 
-1232144428 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TheoHarmonyCtrolParms.h
+1232745038 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TheoHarmonyCtrolParms.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ObjectParams.h"
 	"../ldp_parser/AuxString.h"
 	"ParamsParser.h"
 	"../exercises/HarmonyConstrains.h"
+
+1232818744 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Processor.h
+	<list>
+
+1232797004 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoHarmonyCtrol.cpp
+	"wx/wxprec.h"
+	"TheoHarmonyCtrol.h"
+	"../app/Processor.h"
+	"../score/VStaff.h"
+	"Constrains.h"
+	"Generators.h"
+	"../auxmusic/Conversion.h"
+	"../ldp_parser/LDPParser.h"
+	"../globals/Colors.h"
+	"../app/Logger.h"
+	"../sound/MidiManager.h"
+	"../app/MainFrame.h"
+	"../app/toolbox/ToolsBox.h"
+
+1232901374 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Processor.cpp
+	"wx/wxprec.h"
+	"wx/wx.h"
+	<wx/sizer.h>
+	<wx/panel.h>
+	"Processor.h"
+	"../app/MainFrame.h"
+	"toolbox/ToolsBox.h"
+	"ScoreDoc.h"
+	"../exercises/auxctrols/UrlAuxCtrol.h"
+	"../score/Score.h"
+	"../score/VStaff.h"
 

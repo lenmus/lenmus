@@ -98,9 +98,9 @@ leger lines.
     <key>Do</key>
     <key>Lam</key>
     <time>24</time>
-    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * n l)(n * n)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
     <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * b)</fragment>
-    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * n l)(n * n)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
     <fragment>24;(s n)(n * n),(n * n)(n * n),(n * b)</fragment>
     <fragment>24;(n * n)(n * n),(n * b),(s b)</fragment>
 </exercise>

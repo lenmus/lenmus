@@ -45,12 +45,21 @@
 #include "MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
 
+//---------------------------------------------------------------------------
+// Implementation of class lmEditorMode: Helper class to define editor modes
+//---------------------------------------------------------------------------
 
+// TODO: all
+
+
+//---------------------------------------------------------------------------
+// Implementation of class lmEditFrame
+//---------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(lmEditFrame, lmDocMDIChildFrame)
 	EVT_SIZE		(lmEditFrame::OnSize)
 	EVT_CLOSE		(lmEditFrame::OnClose)
-	EVT_CHAR        (lmEditFrame::OnKeyPress) 
+	EVT_CHAR        (lmEditFrame::OnKeyPress)
 END_EVENT_TABLE()
 
 

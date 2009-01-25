@@ -126,12 +126,12 @@ this rhythm.</para>
     <key>Solm</key>
     <key>Sim</key>
     <time>68</time>
-    <fragment>68;(n * n.)(n * c g+)(n * c)(n * c g-),(n * n)(n * c) c (n * n),(n * n.)(s n.)</fragment>
-    <fragment>68;(n * c)(n * n)(n * n.),(n * c g+)(n * c)(n * c g-)(n * n.)</fragment>
+    <fragment>68;(n * q.)(n * e g+)(n * e)(n * e g-),(n * q)(n * e) c (n * q),(n * q.)(r q.)</fragment>
+    <fragment>68;(n * e)(n * q)(n * q.),(n * e g+)(n * e)(n * e g-)(n * q.)</fragment>
     <fragment>68;(n * n.)(n * c)(n * n),(n * n.)(s n.)</fragment>
-    <fragment>68;(n * c)(n * n l)(n * c g+)(n * c)(n * c g-),(n * n)(n * c)(n * n.)</fragment>
-    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n.),(n * c)(n * n l)(n * n.)</fragment>
-    <fragment>68;(n * n)(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * c)(n * n),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * e)(n * q l)(n * e g+)(n * e)(n * e g-),(n * q)(n * e)(n * q.)</fragment>
+    <fragment>68;(n * e g+)(n * e)(n * e g-)(n * q.),(n * e)(n * q l)(n * q.)</fragment>
+    <fragment>68;(n * q)(n * e)(n * q)(n * e),(n * e g+)(n * e)(n * e g-)(n * e)(n * q),(n * q.)(r q.)</fragment>
 </exercise>
 
 </theme>

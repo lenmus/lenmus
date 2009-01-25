@@ -41,7 +41,6 @@ class lmScoreView;
 //---------------------------------------------------------------------------
 class lmEditorMode
 {
-    DECLARE_CLASS(lmEditorMode)
 public:
     lmEditorMode() {}
 };

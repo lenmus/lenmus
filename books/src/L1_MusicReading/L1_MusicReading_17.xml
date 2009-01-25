@@ -109,7 +109,7 @@ this rhythm.</para>
     <clef>Fa4;a2;f4</clef>
     <time>34</time>
     <key>Do</key>
-    <fragment>34;(n * n)(n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c g-)</fragment>
+    <fragment>34;(n * q)(n * s g+)(n * s)(n * s)(n * s g-)(n * e g+)(n * e g-)</fragment>
 </exercise>
 
 </theme>
@@ -142,14 +142,14 @@ this rhythm.</para>
     <key>Solm</key>
     <key>Sim</key>
     <time>24,34,44</time>
-    <fragment>24,44;(n * n)(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+    <fragment>24,44;(n * q)(n * e g+)(n * e g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * q)</fragment>
     <fragment>24,44;(s c)(n * c)(n * n),(n * s g+)(n * s)(n * s)(n * s g-)(n * c)(s c)</fragment>
     <fragment>24,44;(n * c)(n * n)(n * c),(n * n)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)</fragment>
-    <fragment>24,44;(s c)(n * c)(s c)(n * c),(n * n l)(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+    <fragment>24,44;(r e)(n * e)(r e)(n * e),(n * q l)(n * e g+)(n * e g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * q)</fragment>
     <fragment>34;(n * n)(s c)(n * c)(n * n),(n * c)(s c)(n * c)(s c)(n * s g+)(n * s)(n * s)(n * s g-),(n * b.)</fragment>
-    <fragment>34;(n * b)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s c)(n * c),(s c)(n * c)(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b.)</fragment>
-    <fragment>34;(n * c)(n * n)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * n l)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s n)</fragment>
-    <fragment>34;(n * n)(s c)(n * c) c (n * n)(n * c),(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-)(n * b)</fragment>
+    <fragment>34;(n * h)(n * s g+)(n * s)(n * s)(n * s g-),(n * h)(r e)(n * e),(r e)(n * e)(r e)(n * e)(n * e g+)(n * e g-),(n * e g+)(n * e g- l)(n * e g+)(n * e g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * h.)</fragment>
+    <fragment>34;(n * e)(n * q)(n * e)(n * s g+)(n * s)(n * s)(n * s g-),(n * q l)(n * e g+)(n * e g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * h)(r q)</fragment>
+    <fragment>34;(n * q)(r e)(n * e) c (n * q)(n * e),(n * e g+)(n * e g-)(n * s g+)(n * s)(n * s)(n * s g-)(n * h)</fragment>
 </exercise>
 
 </theme>

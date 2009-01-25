@@ -97,6 +97,8 @@
 		<Unit filename="../../src/app/Preferences.h" />
 		<Unit filename="../../src/app/Printout.cpp" />
 		<Unit filename="../../src/app/Printout.h" />
+		<Unit filename="../../src/app/Processor.cpp" />
+		<Unit filename="../../src/app/Processor.h" />
 		<Unit filename="../../src/app/ScoreCanvas.cpp" />
 		<Unit filename="../../src/app/ScoreCanvas.h" />
 		<Unit filename="../../src/app/ScoreCommand.cpp" />

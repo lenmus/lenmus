@@ -38,10 +38,10 @@ in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measu
     <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 2 4)
-        (n * n)(n * n)(Barra Simple)
-        (n * b)(Barra Simple)
-        (s b)(Barra Final))
+        (time 2 4)
+        (n * n)(n * n)(barline simple)
+        (n * b)(barline simple)
+        (s b)(barline end))
     </music>
 </score></para>
 
@@ -59,7 +59,7 @@ same pitch</emphasis>. For example:
     <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 2 4)(n * n l)(n * n)(Barra Final))
+        (time 2 4)(n * q l)(n * q)(barline end))
     </music>
 </score></para>
 
@@ -122,9 +122,9 @@ this rhythm.</para>
     <key>Do</key>
     <key>Lam</key>
     <time>24</time>
-    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * n l)(n * n)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
     <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * b)</fragment>
-    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * n l)(n * n)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
     <fragment>24;(s n)(n * n),(n * n)(n * n),(n * b)</fragment>
     <fragment>24;(n * n)(n * n),(n * b),(s b)</fragment>
 </exercise>

@@ -117,9 +117,9 @@ this rhythm.</para>
     <key>Do</key>
     <key>Lam</key>
     <time>24</time>
-    <fragment>24;(n * n)(n * c g+)(n * c g-)</fragment>
-    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-)</fragment>
-    <fragment>24;(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>24;(n * q)(n * e g+)(n * e g-)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-)</fragment>
+    <fragment>24;(n * e g+)(n * e g-)(n * q)</fragment>
 </exercise>
 
 </theme>
@@ -144,17 +144,17 @@ this rhythm.</para>
     <key>Do</key>
     <key>Lam</key>
     <time>24</time>
-    <fragment>24;(n * n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-)</fragment>
+    <fragment>24;(n * q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-)</fragment>
     <fragment>24;(n * n)(n * n),(n * n)(s n)</fragment>
-    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * c g+)(n * c g-),(n * b)</fragment>
-    <fragment>24;(s n)(n * n),(n * n)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
-    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * n),(s b)</fragment>
-    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
-    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g-)(n * n),(n * b)</fragment>
-    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n)</fragment>
-    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g-)(n * n),(n * n)(n * n)</fragment>
-    <fragment>24;(s n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
-    <fragment>24;(s n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n),(n * n l) n </fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * e g+)(n * e g-),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * e g+)(n * e g-),(n * q)(r q)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q l)(n * q),(r h)</fragment>
+    <fragment>24;(n * q)(n * e g+)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * h)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e g-)(n * q),(n * h)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e g-)(n * q),(n * q)(n * q)</fragment>
+    <fragment>24;(r q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q),(n * q l) n </fragment>
 </exercise>
 
 </theme>
