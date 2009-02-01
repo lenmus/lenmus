@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -185,7 +185,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
             if (sType == _T("SHORT")) {
                 m_nScoreType = eHST_short;
                 m_nVersion = 13;    //1.3
-                m_sLanguage = _T("es");
+                m_sLanguage = _T("en");
             }
             else {
                 if (sType.Left(6) != _T("SHORT_")) {
@@ -271,7 +271,7 @@ void lmScoreCtrolParams::PrepareScore()
 
     //create the score
     lmMusicXMLParser parserXML;
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
 
     switch(m_nScoreType) {
         case eHST_fileXML:

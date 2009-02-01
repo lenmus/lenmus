@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -316,7 +316,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     //create a score with the interval
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     *pScore = new lmScore();
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
@@ -329,7 +329,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 //    pVStaff->AddSpacer(30);       // 3 lines
     //First note
-    sPattern = _T("(n ") + lmConverter::NoteBitsToName(tBits[0], m_nKey) + _T(" r)");
+    sPattern = _T("(n ") + lmConverter::NoteBitsToName(tBits[0], m_nKey) + _T(" w)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     //second note
@@ -341,7 +341,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
         pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
         sPattern = _T("(n ");
     }
-    sPattern += lmConverter::NoteBitsToName(tBits[1], m_nKey) + _T(" r)");
+    sPattern += lmConverter::NoteBitsToName(tBits[1], m_nKey) + _T(" w)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddSpacer(60);

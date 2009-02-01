@@ -48,7 +48,7 @@ static lmLUnits m_uxOldPos;
 
 
 lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxColour color)
-	: lmCompositeShape(pOwner, 0, _T("Note"), lmDRAGGABLE, eGMO_ShapeNote)
+	: lmCompositeShape(pOwner, 0, color, _T("Note"), lmDRAGGABLE, eGMO_ShapeNote)
 {
     m_uxLeft = xLeft;
     m_uyTop = yTop;

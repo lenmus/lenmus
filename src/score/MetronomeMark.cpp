@@ -98,7 +98,7 @@ lmUPoint lmMetronomeMark::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
 	//create the container shape and add it to the box
-	lmCompositeShape* pShape = new lmCompositeShape(this, 0, _("metronome mark"), lmDRAGGABLE);
+	lmCompositeShape* pShape = new lmCompositeShape(this, 0, colorC, _("metronome mark"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
     StoreShape(pShape);
 

@@ -131,18 +131,18 @@ this rhythm.</para>
     <control_go_back>mr1_thm10</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Sol;c4;g5</clef>
-    <clef>Fa4;b2;d4</clef>
-    <key>Do</key>
-    <key>Lam</key>
-    <key>Sol</key>
-    <key>Mim</key>
-    <key>Fa</key>
-    <key>Rem</key>
-    <key>Re</key>
-    <key>Si-</key>
-    <key>Solm</key>
-    <key>Sim</key>
+    <clef>G;c4;g5</clef>
+    <clef>F;b2;d4</clef>
+    <key>C</key>
+    <key>a</key>
+    <key>G</key>
+    <key>e</key>
+    <key>F</key>
+    <key>d</key>
+    <key>D</key>
+    <key>b-</key>
+    <key>g</key>
+    <key>b</key>
     <time>44</time>
     <fragment>44;(n * q)(n * e g+)(n * e g-)(n * q.)(n * e),(n * h)(r q)(n * e g+)(n * e g-)</fragment>
     <fragment>44;(n * q)(n * e g+)(n * e g-)(n * e g+)(n * e g-)(n * q),(n * h l)(n * h)</fragment>

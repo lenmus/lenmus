@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -140,39 +140,81 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // creating the shape object and adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
 
-    //if not prolog clef its size must be smaller. We know that it is a prolog clef because
-    //there is no previous context
-    bool fSmallClef = (m_pContext->GetPrev() != (lmContext*)NULL);
+    if (lmPRESERVE_SHAPES && !IsDirty())
+    {
+        //Not dirty: just add existing shape (main shape) to the Box
+        lmShape* pOldShape = this->GetShape(1);
+        pBox->AddShape(pOldShape);
+        pOldShape->SetColour(colorC);       //change its colour to new desired colour
 
-    //create the shape object
-    lmShape* pShape = CreateShape(pBox, pPaper, uPos, m_color, fSmallClef);
+        //set shapes index counter so that first prolog shape will have index 1
+        SetShapesIndexCounter(1);    
+    }
+    else
+    {
+        //Dirty: create new shapes for this object
 
-	// set total width (incremented in one line for after space)
-	lmLUnits nWidth = pShape->GetWidth();
-	return nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+        //if not prolog clef its size must be smaller. We know that it is a prolog clef because
+        //there is no previous context
+        bool fSmallClef = (m_pContext->GetPrev() != (lmContext*)NULL);
+
+        //create the shape object
+        lmShape* pShape = CreateShape(pBox, pPaper, uPos, colorC, fSmallClef);
+    }
+
+    //return total width (incremented in one line for after space)
+	return GetShape()->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 }
 
 lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
                              wxColour colorC, bool fSmallClef)
 {
+    // This method MUST create the shape for the Clef and MUST add it to the received box
+    // AWARE: This method is also used when rendering the prolog (method lmFormatter4::AddProlog).
+    // Appart of the normal shape (the main one), we need additional shapes (prolog shapes) for
+    // each system affected by this clef.
+
+
+    // Event if we are preserving shapes, a new layout operation could require adding
+    // more shapes. For instance, if a new system is added at end of score. Let's check
+    // if the shape already exists. If not, create it.
     int nIdx = NewShapeIndex();
+    lmShape* pOldShape = GetShapeFromIdx(nIdx);
+    wxASSERT(!pOldShape);
+    if (pOldShape)
+    {
+	    pBox->AddShape(pOldShape);
+        pOldShape->SetColour(colorC);       //change its colour to new desired colour
+        return pOldShape;
+    }
+
+
+    // Create the shape
+
+    lmShape* pShape;
     if (!m_fVisible)
-        return CreateInvisibleShape(pBox, uPos, nIdx);
+    {
+        //return CreateInvisibleShape(pBox, uPos, nIdx);
+        pShape = new lmShapeInvisible(this, nIdx, uPos, lmUSize(0.0, 0.0) );
+    }
+    else
+    {
+        // get the shift to the staff on which the clef must be drawn
+	    lmLUnits yPos = uPos.y;
+        yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
-    // get the shift to the staff on which the clef must be drawn
-	lmLUnits yPos = uPos.y;
-    yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+        //if small clef add additional shift to compensate small size
+        if (fSmallClef)
+            yPos -= m_pVStaff->TenthsToLogical(10.0);
 
-    //if small clef add additional shift to compensate small size
-    if (fSmallClef)
-        yPos -= m_pVStaff->TenthsToLogical(10.0);
+        //create the shape object
+        pShape = new lmShapeClef(this, nIdx, GetGlyphIndex(), pPaper, lmUPoint(uPos.x, yPos), 
+						         fSmallClef, _T("Clef"), lmDRAGGABLE, colorC);
+    }
 
-    //create the shape object
-    lmShapeClef* pShape = 
-        new lmShapeClef(this, nIdx, GetGlyphIndex(), pPaper, lmUPoint(uPos.x, yPos), 
-						fSmallClef, _T("Clef"), lmDRAGGABLE, colorC);
     StoreShape(pShape);
 	pBox->AddShape(pShape);
+
     return pShape;
 }
 

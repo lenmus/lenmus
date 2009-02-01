@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -41,17 +41,17 @@
 #include "ExerciseCtrol.h"
 
 
-class lmTheoIntervalsCtrol : public lmOneScoreCtrol        
+class lmBuildIntervalCtrol : public lmOneScoreCtrol        
 {
 public:
 
     // constructor and destructor    
-    lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
+    lmBuildIntervalCtrol(wxWindow* parent, wxWindowID id,
                lmTheoIntervalsConstrains* pConstrains, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
-    ~lmTheoIntervalsCtrol();
+    ~lmBuildIntervalCtrol();
 
     //implementation of virtual methods
     void InitializeStrings();
@@ -62,31 +62,80 @@ public:
     void ReconfigureButtons();
 
     enum {
-        m_NUM_COLS = 7,
-        m_NUM_ROWS = 6,
-        m_NUM_BUTTONS = 44,     
+        lm_NUM_COLS = 7,
+        lm_NUM_ROWS = 5,
+        lm_NUM_BUTTONS = 35,     
     };
 
 
 private:
     void EnableButtons(bool fEnable);
-    void SetButtonsForNotes();
-    void SetButtonsForIntervals();
 
         // member variables
 
     lmTheoIntervalsConstrains* m_pConstrains;
     lmDPitch        m_DPitch[2];           //the pitch of the two notes
-    bool            m_fIntervalKnown;
-    int             m_nCurrentKeyboard;     //not avoid unnecessary redrawing 
 
-    //buttons for the answers: 6 rows, 7 cols + 2 extra buttons (Unisons) = 44 buttons
-    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];
-    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
-    wxStaticText*   m_pColumnLabel[m_NUM_COLS];
+    //buttons for the answers: 5 rows, 7 cols = 35 buttons
+    wxButton*       m_pAnswerButton[lm_NUM_BUTTONS];
+    wxStaticText*   m_pRowLabel[lm_NUM_ROWS];
+    wxStaticText*   m_pColumnLabel[lm_NUM_COLS];
 
     //to give the answer
     lmEClefType       m_nClef;
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+class lmIdfyIntervalCtrol : public lmOneScoreCtrol        
+{
+public:
+
+    // constructor and destructor    
+    lmIdfyIntervalCtrol(wxWindow* parent, wxWindowID id,
+               lmTheoIntervalsConstrains* pConstrains, 
+               const wxPoint& pos = wxDefaultPosition, 
+               const wxSize& size = wxDefaultSize, int style = 0);
+
+    ~lmIdfyIntervalCtrol();
+
+    //implementation of virtual methods
+    void InitializeStrings();
+    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
+    void PrepareAuxScore(int nButton);
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void ReconfigureButtons();
+
+    enum {
+        lm_NUM_COLS = 8,
+        lm_NUM_ROWS = 6,
+        lm_NUM_BUTTONS = 50,     
+    };
+
+
+private:
+    void EnableButtons(bool fEnable);
+    //lmInterval GenerateRandomInterval(lmTheoIntervalsConstrains* pConstrains,
+    //                                  lmEClefType nClef, lmEKeySignatures nKey);
+
+        // member variables
+
+    lmTheoIntervalsConstrains* m_pConstrains;
+    lmDPitch        m_DPitch[2];           //the pitch of the two notes
+
+    //buttons for the answers: 6 rows, 8 cols + 2 extra buttons = 50 buttons
+    wxButton*       m_pAnswerButton[lm_NUM_BUTTONS];
+    wxStaticText*   m_pRowLabel[lm_NUM_ROWS];
+    wxStaticText*   m_pColumnLabel[lm_NUM_COLS];
+
+    wxBoxSizer*     m_pUnisonSizer;
+
+    //to give the answer
+    int                 m_nFirstRow;
+    lmEClefType         m_nClef;
+    lmEKeySignatures    m_nKey;
 
     DECLARE_EVENT_TABLE()
 };

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -128,8 +128,6 @@ protected:
     lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
                int nNumDots, int nStaff, int nVoice, bool fVisible);
 
-    lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
-                     wxColour colorC, bool fUseFont);
     lmLUnits AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                          wxColour colorC);
 
@@ -161,8 +159,6 @@ protected:
 
 
 // global functions related to noterests
-extern int LDPNoteTypeToEnumNoteType(const wxString& sNoteType);
-extern float LDPNoteTypeToDuration(const wxString& sNoteType);
 extern float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted);
 extern float NoteTypeToDuration(lmENoteType nNoteType, int nDots);
 

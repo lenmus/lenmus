@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -52,6 +52,9 @@
 #include "wx/gdicmn.h"
 #include "wx/font.h"
 #include "wx/colour.h"
+
+//temporal: to maintain old behaviour while modifying the code to preserve shapes
+#define lmPRESERVE_SHAPES  false
 
 
 //// Types used for portability and legibility
@@ -114,7 +117,7 @@ extern double lmLogicalToUserUnits(double rValue, lmEUnits nUnits);
 
 enum lmEClefType
 {
-    lmE_Undefined = 0,
+    lmE_Undefined = -1,
     lmE_Sol,
     lmE_Fa4,
     lmE_Fa3,

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -159,7 +159,7 @@ extern lmPaths* g_pPaths;
 extern bool g_fReleaseVersion;          // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;          // in TheApp.cpp
-extern bool g_fUseAntiAliasing;         // in TheApp.cpp
+extern bool g_fShowDirtyObjects;         // in TheApp.cpp
 extern bool g_fBorderOnScores;          // in TheApp.cpp
 
 // IDs for menus and controls
@@ -210,7 +210,7 @@ enum
     MENU_Debug_PatternEditor,
     MENU_Debug_DumpBitmaps,
     MENU_Debug_UnitTests,
-    MENU_Debug_UseAntiAliasing,
+    MENU_Debug_ShowDirtyObjects,
 
     // Menu Zoom
     MENU_Zoom_100,
@@ -392,7 +392,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU (MENU_Debug_DrawBounds, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawAnchors, lmMainFrame::OnDebugDrawAnchors)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
-    EVT_MENU (MENU_Debug_UseAntiAliasing, lmMainFrame::OnDebugUseAntiAliasing)
+    EVT_MENU (MENU_Debug_ShowDirtyObjects, lmMainFrame::OnDebugShowDirtyObjects)
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
     EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
@@ -1114,8 +1114,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
             _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_DrawAnchors, _T("Draw anchors"),
             _T("Draw a red line to show anchor objects"), wxITEM_CHECK);
-        AddMenuItem(pMenuDebug, MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"),
-            _T("Use anti-aliasing for screen renderization"), wxITEM_CHECK);
+        AddMenuItem(pMenuDebug, MENU_Debug_ShowDirtyObjects, _T("&Show dirty objects"),
+            _T("Render 'dirty' objects in red colour"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
         AddMenuItem(pMenuDebug, MENU_Debug_PatternEditor, _T("Test Pattern Editor") );
         AddMenuItem(pMenuDebug, MENU_Debug_DumpStaffObjs, _T("&Dump of score") );
@@ -1244,7 +1244,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         pMenuBar->Check(MENU_Debug_recSelec, g_fDrawSelRect);
         pMenuBar->Check(MENU_Debug_DrawBounds, g_fDrawBounds);
         pMenuBar->Check(MENU_Debug_DrawAnchors, g_fDrawAnchors);
-        pMenuBar->Check(MENU_Debug_UseAntiAliasing, g_fUseAntiAliasing);
     }
 
     // view toolbar
@@ -1720,9 +1719,9 @@ void lmMainFrame::OnDebugShowBorderOnScores(wxCommandEvent& event)
     g_fBorderOnScores = event.IsChecked();
 }
 
-void lmMainFrame::OnDebugUseAntiAliasing(wxCommandEvent& event)
+void lmMainFrame::OnDebugShowDirtyObjects(wxCommandEvent& event)
 {
-    g_fUseAntiAliasing = event.IsChecked();
+    g_fShowDirtyObjects = event.IsChecked();
 }
 
 void lmMainFrame::OnDebugRecSelec(wxCommandEvent& event)

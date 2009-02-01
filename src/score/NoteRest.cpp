@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -156,6 +156,8 @@ lmBeam* lmNoteRest::IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam)
     //note/rest must be included on it. Previously, any current beam has been removed.
     //pBeam is only valid when nBeamType is not eBeamBegin
 
+    SetDirty(true);
+
     //set up basic beaming information
     for (int i=0; i < 6; i++) {
         m_BeamInfo[i].Repeat = false;
@@ -290,6 +292,8 @@ void lmNoteRest::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRel
 	//to delete the relationship it MUST invoke Remove(this) before deleting the 
 	//relationship object
 
+    SetDirty(true);
+
 	switch (nRelClass)
 	{
 		case lm_eBeamClass:
@@ -324,35 +328,6 @@ template <> lmBeam* lmNoteRest::GetRelationship<lmBeam>() { return m_pBeam; }
 template <> lmTupletBracket* lmNoteRest::GetRelationship<lmTupletBracket>() { return m_pTuplet; }
 
 
-
-lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,
-                             lmLUnits xPos, lmLUnits yPos,
-                             wxColour colorC, bool fUseFont)
-{
-    //lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-    yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
-
-    if (fUseFont) {
-        //Draw dot by using the font glyph
-        wxString sGlyph( aGlyphsInfo[GLYPH_DOT].GlyphChar );
-        yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum);
-        if (!fMeasuring) {
-            pPaper->SetTextForeground(colorC);
-            pPaper->DrawText(sGlyph, xPos, yPos);
-        }
-        lmLUnits nWidth, nHeight;
-        pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-        return nWidth;
-    }
-    else {
-        //Direct draw
-        lmLUnits uDotRadius = m_pVStaff->TenthsToLogical(22, m_nStaffNum) / 10;
-        if (!fMeasuring) pPaper->SolidCircle(xPos, yPos, uDotRadius);
-        return 2*uDotRadius;
-    }
-
-}
-
 lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
                                  lmLUnits xPos, lmLUnits yPos, wxColour colorC)
 {
@@ -361,8 +336,8 @@ lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
 
     yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
     yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum);
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, GLYPH_DOT, pPaper,
-                                            lmUPoint(xPos, yPos), _T("Dot"));
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, GLYPH_DOT, pPaper, lmUPoint(xPos, yPos),
+                                            _T("Dot"), lmDRAGGABLE, colorC);
 	pCS->Add(pShape);
     return pShape->GetBounds().GetWidth();
 
@@ -455,6 +430,8 @@ wxString lmNoteRest::SourceXML(int nIndent)
 //====================================================================================================
 lmFermata* lmNoteRest::AddFermata(const lmEPlacement nPlacement)
 {
+    SetDirty(true);
+
     if (!m_pNotations) m_pNotations = new AuxObjsList();
 
     lmFermata* pFermata = new lmFermata(nPlacement);
@@ -464,6 +441,8 @@ lmFermata* lmNoteRest::AddFermata(const lmEPlacement nPlacement)
 
 void lmNoteRest::AddLyric(lmLyric* pLyric)
 {
+    SetDirty(true);
+
     if (!m_pLyrics) m_pLyrics = new AuxObjsList();
 
     pLyric->SetOwner(this);
@@ -572,6 +551,8 @@ void lmNoteRest::ChangeDots(int nDots)
     //Now, compute the new duration with new dots
     m_nNumDots = nDots;
     m_rDuration = rFactor * NoteTypeToDuration(m_nNoteType, m_nNumDots);
+
+    SetDirty(true);
 }
 
 
@@ -581,73 +562,6 @@ void lmNoteRest::ChangeDots(int nDots)
 //==========================================================================================
 // Global functions related to NoteRests
 //==========================================================================================
-
-int LDPNoteTypeToEnumNoteType(const wxString& sNoteType)
-{
-    //OBSOLETE
-    wxASSERT(false);
-    return -1;
-
-    // Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
-    // dots ".". It is assumed the source is normalized (no spaces, lower case).
-    // Returns the enum value that corresponds to this note type, or -1 if error
-
-    //wxChar cNoteType = sNoteType.GetChar(0);
-    //switch (cNoteType) {
-    //    case _T('l'):
-    //        return eLonga;
-    //    case _T('d'):
-    //        return  eBreve;
-    //    case _T('r'):
-    //        return  eWhole;
-    //    case _T('b'):
-    //        return  eHalf;
-    //    case _T('n'):
-    //        return  eQuarter;
-    //    case _T('c'):
-    //        return  eEighth;
-    //    case _T('s'):
-    //        return  e16th;
-    //    case _T('f'):
-    //        return  e32th;
-    //    case _T('m'):
-    //        return  e64th;
-    //    case _T('g'):
-    //        return  e128th;
-    //    case _T('p'):
-    //        return  e256th;
-    //    default:
-    //        return  -1;     //error
-    //}
-}
-
-/*! Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
-    dots ".". It is assumed the source is normalized (no spaces, lower case)
-    @returns the duration or -1.0 if error
-*/
-float LDPNoteTypeToDuration(const wxString& sNoteType)
-{
-    //OBSOLETE
-    wxASSERT(false);
-    return 0;
-
-    //int nNoteType = LDPNoteTypeToEnumNoteType(sNoteType);
-    //if (nNoteType == -1) return -1.0;    //error
-
-    ////analyze dots
-    //bool fDotted=false, fDoubleDotted=false;
-    //if (sNoteType.length() > 1) {
-    //    if (sNoteType.substr(1) == _T("..") ) {
-    //        fDoubleDotted = true;
-    //    } else if (sNoteType.substr(1) ==  _T(".") ) {
-    //        fDotted = true;
-    //    } else {
-    //        return -1.0;    //error
-    //    }
-    //}
-
-    //return NoteTypeToDuration((lmENoteType)nNoteType, fDotted, fDoubleDotted);
-}
 
 float NoteTypeToDuration(lmENoteType nNoteType, int nDots)
 {

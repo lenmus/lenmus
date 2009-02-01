@@ -132,7 +132,7 @@ public:
     void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));
     void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));
     void OnDebugUnitTests(wxCommandEvent& event);
-    void OnDebugUseAntiAliasing(wxCommandEvent& event);
+    void OnDebugShowDirtyObjects(wxCommandEvent& event);
         // methods requiring a score
     void OnDebugDumpBitmaps(wxCommandEvent& event);
     void OnDebugDumpStaffObjs(wxCommandEvent& event);

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -142,8 +142,8 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     wxString sPattern[2][2];
     int i;
     for (i=0; i < 2; i++) {
-        sPattern[0][i] = _T("(n ") + oIntv0.GetPattern(i) + _T(" r)");
-        sPattern[1][i] = _T("(n ") + oIntv1.GetPattern(i) + _T(" r)");
+        sPattern[0][i] = _T("(n ") + oIntv0.GetPattern(i) + _T(" w)");
+        sPattern[1][i] = _T("(n ") + oIntv1.GetPattern(i) + _T(" w)");
     }
 
     //
@@ -152,7 +152,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     //
 
     lmNote* pNote[2];
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -186,7 +186,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     pVStaff->AddKeySignature(nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
         //fisrt interval
-    pNode = parserLDP.ParseText(_T("(texto ''") + oIntv0.GetIntervalName() +
+    pNode = parserLDP.ParseText(_T("(text ''") + oIntv0.GetIntervalName() +
                                 _T("'' dy:-40 (font ''Arial'' 6))"));
     parserLDP.AnalyzeText(pNode, pVStaff);
     pNode = parserLDP.ParseText( sPattern[0][0] );
@@ -197,14 +197,14 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     pVStaff->AddSpacer(30);       // 3 lines
     pVStaff->AddBarline(lm_eBarlineDouble);
         // two invisible rests to do a pause when playing the score
-    pNode = parserLDP.ParseText( _T("(s b noVisible)"));
+    pNode = parserLDP.ParseText( _T("(r h noVisible)"));
     parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
-    pNode = parserLDP.ParseText( _T("(s b noVisible)"));
+    pNode = parserLDP.ParseText( _T("(r h noVisible)"));
     parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
         //second interval
-    pNode = parserLDP.ParseText(_T("(texto ''") + oIntv1.GetIntervalName() +
+    pNode = parserLDP.ParseText(_T("(text ''") + oIntv1.GetIntervalName() +
                                 _T("'' dy:-40 (font ''Arial'' 6))"));
     parserLDP.AnalyzeText(pNode, pVStaff);
     pNode = parserLDP.ParseText( sPattern[1][0] );

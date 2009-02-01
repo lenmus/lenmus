@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -150,33 +150,53 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
     // Paper cursor must be used as the base for positioning.
 
 
-    //get the position on which the time signature must be drawn
-    lmLUnits uxLeft = uPos.x;
-	lmLUnits uyTop = uPos.y + m_pVStaff->GetStaffOffset(m_nStaffNum);
-
-    //Key signature is common to all lmVStaff staves of the instrument, but the lmStaffObj
-    //representing it is only present in the first staff. Therefore, for renderization, it
-    //is necessary to repeat the shape in each staff of the instrument
-    //So in the following loop we add the key signature shape for each VStaff of the
-    //instrument
     lmLUnits uWidth = 0.0f;
-    lmStaff* pStaff = m_pVStaff->GetFirstStaff();
-    for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+
+    if (lmPRESERVE_SHAPES && !IsDirty())
     {
-        //get current clef
-        lmClef* pClef = m_pContext[nStaff-1]->GetClef();
-        lmEClefType nClef = (pClef ? pClef->GetClefType() : lmE_Undefined);
-
-        // Add the shape for key signature
-        m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, pStaff,
-                                          colorC);
-        uWidth = wxMax(m_pShapes[nStaff-1]->GetWidth(), uWidth);
-
-        //compute vertical displacement for next staff
-        uyTop += pStaff->GetHeight();
-        uyTop += pStaff->GetAfterSpace();
+        //Not dirty: just add existing shapes to the Box
+        lmStaff* pStaff = m_pVStaff->GetFirstStaff();
+        int nStaff;
+        for (nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+        {
+            lmShape* pOldShape = this->GetShape(nStaff);
+	        pBox->AddShape(pOldShape);
+            pOldShape->SetColour(colorC);       //change its colour to new desired colour
+            uWidth = wxMax(pOldShape->GetWidth(), uWidth);
+        }
+        //set shapes index counter so that first prolog shape will have index = nStaff
+        SetShapesIndexCounter(nStaff);    
     }
-    //m_pGMObj = m_pShapes[0];
+    else
+    {
+        //Dirty: create new shapes for this object
+
+        //get the position on which the time signature must be drawn
+        lmLUnits uxLeft = uPos.x;
+	    lmLUnits uyTop = uPos.y + m_pVStaff->GetStaffOffset(m_nStaffNum);
+
+        //Key signature is common to all lmVStaff staves of the instrument, but the lmStaffObj
+        //representing it is only present in the first staff. Therefore, for renderization, it
+        //is necessary to repeat the shape in each staff of the instrument
+        //So in the following loop we add the key signature shape for each VStaff of the
+        //instrument
+        lmStaff* pStaff = m_pVStaff->GetFirstStaff();
+        for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+        {
+            //get current clef
+            lmClef* pClef = m_pContext[nStaff-1]->GetClef();
+            lmEClefType nClef = (pClef ? pClef->GetClefType() : lmE_Undefined);
+
+            // Add the shape for key signature
+            m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef,
+                                              pStaff, colorC);
+            uWidth = wxMax(m_pShapes[nStaff-1]->GetWidth(), uWidth);
+
+            //compute vertical displacement for next staff
+            uyTop += pStaff->GetHeight();
+            uyTop += pStaff->GetAfterSpace();
+        }
+    }
 
 	// set total width (incremented in one line for after space)
 	return uWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);;
@@ -185,16 +205,39 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
 lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					                 lmEClefType nClef, lmStaff* pStaff, wxColour colorC)
 {
-    // This method is also used when rendering the prolog
+    // This method MUST create the shape for the KS and MUST add it to the received box
+    // AWARE: This method is also used when rendering the prolog (method lmFormatter4::AddProlog).
+    // Appart of the normal shapes (the main one and the secondary shapes, one per staff), 
+    // we need additional shapes (prolog shapes) for each system.
 
-    //create the container shape object
+
+    // Event if we are preserving shapes, a new layout operation could require adding
+    // more shapes. For instance, if a new system is added at end of score. Let's check
+    // if the shape already exists. If not, create it.
     int nIdx = NewShapeIndex();
+    lmShape* pOldShape = GetShapeFromIdx(nIdx);
+    wxASSERT(!pOldShape);
+    if (pOldShape)
+    {
+	    pBox->AddShape(pOldShape);
+        pOldShape->SetColour(colorC);       //change its colour to new desired colour
+        return pOldShape;
+    }
+
+
+    // Create the shape
 
     if (!m_fVisible)
-        return CreateInvisibleShape(pBox, uPos, nIdx);
+    {
+        //return CreateInvisibleShape(pBox, uPos, nIdx);
+        lmShape* pShape = new lmShapeInvisible(this, nIdx, uPos, lmUSize(0.0, 0.0) );
+        StoreShape(pShape);
+	    pBox->AddShape(pShape);
+        return pShape;
+    }
 
-
-    lmCompositeShape* pShape = new lmCompositeShape(this, nIdx, _T("Key signature"), lmDRAGGABLE);
+    //create the container shape object
+    lmCompositeShape* pShape = new lmCompositeShape(this, nIdx, colorC, _T("Key signature"), lmDRAGGABLE);
     StoreShape(pShape);
 	pBox->AddShape(pShape);
 
@@ -361,7 +404,7 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
     {
         lmLUnits yPos = (fDrawSharps ? uSharpPos[i] : uFlatPos[i]);
         lmShape* pSA = AddAccidental(fDrawSharps, pPaper, lmUPoint(uPos.x+nWidth, yPos),
-                                     colorC, pStaff);
+                                    colorC, pStaff);
         pShape->Add(pSA);
         nWidth += pSA->GetWidth();
     }

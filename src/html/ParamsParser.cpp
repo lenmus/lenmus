@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -37,7 +37,7 @@
 #include "../score/Score.h"                 //common enum types
 #include "../exercises/ChordConstrains.h"   //lmEChordType
 #include "../auxmusic/ChordManager.h"       //chord name conversion
-#include "../ldp_parser/AuxString.h"        //LDPInternalNameToKey
+#include "../ldp_parser/AuxString.h"        //LDPNameToKey
 
 wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* pKeys)
 {
@@ -67,7 +67,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
                 sKey = sParamValue;
                 sParamValue = _T("");
             }
-            nKey = LDPInternalNameToKey(sKey);
+            nKey = LDPNameToKey(sKey);
             if (nKey == (lmEKeySignatures)-1) {
                 fError = true;
                 break;

@@ -54,21 +54,33 @@ public:
     lmTheoIntervalsConstrains(wxString sSection);
     ~lmTheoIntervalsConstrains() {}
 
-    bool IsValidClef(lmEClefType nClef) { return m_oClefs.IsValid(nClef); }
-    void SetClef(lmEClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+    inline bool IsValidClef(lmEClefType nClef) { return m_oClefs.IsValid(nClef); }
+    inline void SetClef(lmEClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
 
-    EProblemTheoIntervals GetProblemType() { return m_nProblemType; }
-    void SetProblemType(EProblemTheoIntervals nType) { m_nProblemType = nType; }
+    inline EProblemTheoIntervals GetProblemType() { return m_nProblemType; }
+    inline void SetProblemType(EProblemTheoIntervals nType) { m_nProblemType = nType; }
 
-    bool GetAccidentals() { return m_fAccidentals; }
-    void SetAccidentals(bool fValue) { m_fAccidentals = fValue; }
+    inline bool IsTypeAllowed(int nType) { return m_fTypeAllowed[nType]; }
+    inline void SetTypeAllowed(int nType, bool fValue) { m_fTypeAllowed[nType] = fValue; }
 
-    bool GetDoubleAccidentals() { return m_fDoubleAccidentals; }
-    void SetDoubleAccidentals(bool fValue) { m_fDoubleAccidentals = fValue; }
+    inline bool GetAccidentals() { return m_fAccidentals; }
+    inline void SetAccidentals(bool fValue) { m_fAccidentals = fValue; }
 
-    lmClefConstrain* GetClefConstrains() { return &m_oClefs; }
+    inline bool GetDoubleAccidentals() { return m_fDoubleAccidentals; }
+    inline void SetDoubleAccidentals(bool fValue) { m_fDoubleAccidentals = fValue; }
 
-    void SetSection(wxString sSection) {
+    inline lmClefConstrain* GetClefConstrains() { return &m_oClefs; }
+    inline lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+
+    inline int GetLedgerLinesAbove() { return m_nLedgerAbove; }
+    inline int GetLedgerLinesBelow() { return m_nLedgerBelow; }
+    inline void SetLedgerLinesAbove(int nLines) { m_nLedgerAbove = nLines; }
+    inline void SetLedgerLinesBelow(int nLines) { m_nLedgerBelow = nLines; }
+
+    inline int GetProblemLevel() { return m_nProblemLevel; }
+    inline void SetProblemLevel(int nLevel) { m_nProblemLevel = nLevel; }
+
+    inline void SetSection(wxString sSection) {
                 m_sSection = sSection;
                 LoadSettings();
             }
@@ -79,11 +91,22 @@ public:
 private:
     void LoadSettings();
 
-    lmClefConstrain         m_oClefs;
+    lmClefConstrain         m_oClefs;               //allowed clefs
+    lmKeyConstrains         m_oValidKeys;           //allowed key signatures
     EProblemTheoIntervals   m_nProblemType;
-    bool                    m_fAccidentals;             //allow accidentals
-    bool                    m_fDoubleAccidentals;       //allow double accidentals
-
+    int                     m_nLedgerAbove;         //ledger lines above
+    int                     m_nLedgerBelow;         //ledger lines below
+    int                     m_nProblemLevel;        //Problem level:        
+                                                    //  0-Just name the interval number
+                                                    //  1-Perfect, major and minor intervals
+                                                    //  2-Also augmented and diminished
+                                                    //  3-Also double augmented / diminished
+    bool                    m_fAccidentals;         //allow accidentals
+    bool                    m_fDoubleAccidentals;   //allow double accidentals
+    bool                    m_fTypeAllowed[3];      //intervals. Allowed types:
+                                                    //  0-harmonic
+                                                    //  1-melodic ascending
+                                                    //  2-melodic descending
 };
 
 

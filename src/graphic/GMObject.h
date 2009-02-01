@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -383,6 +383,9 @@ public:
     virtual void RewindVertices(int nPathId = 0) {}
     virtual unsigned GetVertex(lmLUnits* pux, lmLUnits* puy);
 
+    //properties
+    virtual void SetColour(wxColour color) { m_color = color; }
+
 protected:
     lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName=_T("Shape"),
 			bool fDraggable = false, bool fSelectable = false, wxColour color = *wxBLACK,
@@ -434,9 +437,9 @@ protected:
 class lmCompositeShape : public lmShape
 {
 public:
-    lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxString sName = _T("CompositeShape"),
-                     bool fDraggable = false, lmEGMOType nType = eGMO_ShapeComposite,
-					 bool fVisible = true);
+    lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxColour color = *wxBLACK, 
+                     wxString sName = _T("CompositeShape"), bool fDraggable = false,
+                     lmEGMOType nType = eGMO_ShapeComposite, bool fVisible = true);
     virtual ~lmCompositeShape();
 
     //dealing with components

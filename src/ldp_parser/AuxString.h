@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,14 +39,12 @@ extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName);
 extern bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
                            wxString* sStep, wxString* sOctave);
 
-extern float SrcGetPatternDuracion(wxString sPattern);
-extern float SrcGetElementDuracion(wxString sElement);
 extern int SrcSplitPattern(wxString sSource);
 extern bool SrcIsRest(wxString sElement);
 
 
 extern lmEClefType LDPNameToClef(wxString sClefName);
-extern lmEKeySignatures LDPInternalNameToKey(wxString sKeyName);
+extern lmEKeySignatures LDPNameToKey(wxString sKeyName);
 
 
 

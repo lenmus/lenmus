@@ -121,10 +121,10 @@ this rhythm.</para>
     <control_solfa></control_solfa>
     <fragment>24;(n * q l),(n * q)(n * q l),(n * q)(n * q l),(n * q)</fragment>
     <fragment>24;(n * q l),(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <clef>G;a3;a5</clef>
+    <clef>F;a2;f4</clef>
     <time>24</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 
 </theme>
@@ -145,17 +145,17 @@ this rhythm.</para>
     <control_go_back>mr1_thm11</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Sol;c4;b5</clef>
-    <key>Do</key>
-    <key>Lam</key>
-    <key>Sol</key>
-    <key>Mim</key>
-    <key>Fa</key>
-    <key>Rem</key>
-    <key>Re</key>
-    <key>Si-</key>
-    <key>Solm</key>
-    <key>Sim</key>
+    <clef>G;c4;b5</clef>
+    <key>C</key>
+    <key>a</key>
+    <key>G</key>
+    <key>e</key>
+    <key>F</key>
+    <key>d</key>
+    <key>D</key>
+    <key>b-</key>
+    <key>g</key>
+    <key>b</key>
     <time>24,34,44</time>
     <fragment>24;(n * q)(n * e g+)(n * e g-),(n * q)(n * q l)|(n * q),(r q)</fragment>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q l)|(n * e g+)(n * e g-)(n * q)</fragment>

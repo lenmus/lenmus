@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -327,7 +327,7 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, l
     //create a score with the chord
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -343,13 +343,13 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, l
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
     int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
-    sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" r)");
+    sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" w)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     for (i=1; i < nNumNotes; i++) {
         sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
         sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
-        sPattern +=  _T(" r)");
+        sPattern +=  _T(" w)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }

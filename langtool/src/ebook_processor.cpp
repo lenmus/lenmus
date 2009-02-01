@@ -442,6 +442,7 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
             || (sElement == _T("metronome"))
             || (sElement == _T("mode"))
             || (sElement == _T("music_border"))
+            || (sElement == _T("problem_level"))
             || (sElement == _T("problem_type"))
             || (sElement == _T("play_key"))
             || (sElement == _T("play_mode"))

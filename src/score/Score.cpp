@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -859,7 +859,7 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 			//layout object
 	        //std::vector<int>::iterator it = find(m_nTitles.begin(), m_nTitles.end(), i);
          //   if (it == m_nTitles.end())
-			(*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
+			(*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
 
             //force auxObjs to take user position into account
             (*m_pAuxObjs)[i]->OnParentComputedPositionShifted(0.0f, 0.0f);
@@ -1651,10 +1651,15 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 lmBoxScore* lmScore::Layout(lmPaper* pPaper)
 {
     //wxLogMessage(this->Dump());
-
+    wxStopWatch oTimer;
     lmFormatter4 oFormatter;
     lmBoxScore* pGMObj = oFormatter.LayoutScore(this, pPaper);
     StoreShape(pGMObj);
+
+    oTimer.Pause();
+    wxLogMessage(_T("[lmScore::Layout] %ld ms required for layouting score %d (%s)"),
+                 oTimer.Time(), m_nID, m_sScoreName.c_str() );
+
     return pGMObj;
 }
 

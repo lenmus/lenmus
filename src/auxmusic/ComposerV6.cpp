@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -216,7 +216,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
 
 
     // prepare and initialize the score
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
     lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
@@ -227,22 +227,22 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     pVStaff->AddKeySignature( m_nKey );
 #if 0   //useful for debugging and to generate scores with a chosen rhythm line to write documentation
     pVStaff->AddTimeSignature( emtr24 );
-    pNode = parserLDP.ParseText(_T("(c 1 (s c)(n * c)(n * c g+)(n * c l g-)(Barra Simple))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    pNode = parserLDP.ParseText(_T("(c 2 (n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g-)(Barra Simple))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    pNode = parserLDP.ParseText(_T("(c 3 (n * n)(s c)(n * c)(Barra Simple))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    pNode = parserLDP.ParseText(_T("(c 4 (n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c l g-)(Barra Simple))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    pNode = parserLDP.ParseText(_T("(c 5 (n * c g+)(n * s)(n * s g-)(n * s g+)(n * s)(n * s)(n * s g-)(Barra Simple))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    pNode = parserLDP.ParseText(_T("(c 6 (n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c l g-)(Barra Simple))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    pNode = parserLDP.ParseText(_T("(c 7 (n * n)(s c)(n * c)(Barra Simple))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    pNode = parserLDP.ParseText(_T("(c 8 (n * b)(Barra Final))"));
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (r e)(n * e)(n * e g+)(n * e l g-)(barline simple))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (n * e g+)(n * s)(n * s g-)(n * e g+)(n * e g-)(barline simple))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (n * q)(r e)(n * e)(barline simple))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (n * s g+)(n * s)(n * s)(n * s g-)(n * e g+)(n * e l g-)(barline simple))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (n * e g+)(n * s)(n * s g-)(n * s g+)(n * s)(n * s)(n * s g-)(barline simple))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (n * s g+)(n * s)(n * s)(n * s g-)(n * e g+)(n * e l g-)(barline simple))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (n * q)(r e)(n * e)(barline simple))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(musicData (n * b)(barline end))"));
+    parserLDP.AnalizeMusicData(pNode, pVStaff);
 
 #else
     pVStaff->AddTimeSignature( m_nTimeSign );
@@ -285,17 +285,19 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     //TODO: what if no fragment satisfies the constraints?
 
     int nSegmentLoopCounter = 0;
-    while (nNumMeasures < nMeasuresToGenerate) {
+    while (nNumMeasures < nMeasuresToGenerate)
+    {
         //If no measure is opened start a new measure
-        if (!fMeasure) {
-            sMeasure = wxString::Format(_T("(c %d "), nNumMeasures+1);
-            //NEW sMeasure = _T("(musicData ");
+        if (!fMeasure)
+        {
+            sMeasure = _T("(musicData ");
             rOccupiedDuration = 0.0;
             fMeasure = true;
         }
 
         //If there are no more segments in current fragment, choose a new fragment
-        if (!pSegment) {
+        if (!pSegment)
+        {
             //Randomly choose a new fragment satisfying the constraints
             pConstrains->ChooseRandomFragment();
             pSegment = pConstrains->GetNextSegment();
@@ -329,10 +331,12 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
                     (fFits ? _T("yes") : _T("no")) );
 
             //if segment fits add it to current measure
-            if (fFits) {
+            if (fFits)
+            {
                 //it fits. Add it to current measure
                 float rNoteTime = rSegmentAlignBeatTime - rConsumedBeatTime;
-                if (IsHigherTime(rNoteTime, 0.0f)) {
+                if (IsHigherTime(rNoteTime, 0.0f))
+                {
                     if (rConsumedBeatTime > 0)
                         sMeasure += CreateNote((int)rNoteTime);
                     else
@@ -349,15 +353,18 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
                 pSegment = pConstrains->GetNextSegment();
                 nSegmentLoopCounter = 0;
             }
-            else {
+            else 
+            {
                 //does not fit.
-                if (nSegmentLoopCounter++ > 100) {
+                if (nSegmentLoopCounter++ > 100)
+                {
                     //let's assume that no segment fits. Fill the measure with a note
                     sMeasure += CreateNote((int)rTimeRemaining);
                     rOccupiedDuration += rTimeRemaining;
                     nSegmentLoopCounter = 0;
                 }
-                else {
+                else
+                {
                     // Ignore segment and take a new one
                     pSegment = pConstrains->GetNextSegment();
                 }
@@ -365,12 +372,12 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
         }
 
         // if measure is full, close it and increment measures count
-       if (rOccupiedDuration >= rMeasureDuration) {
+       if (rOccupiedDuration >= rMeasureDuration)
+       {
 
             // close current measure
             fMeasure = false;   // no measure opened
-            sMeasure += _T("(Barra Simple))");
-            //NEW sMeasure += _T("(barline simple))");
+            sMeasure += _T("(barline simple))");
 
             // increment measures counter
             nNumMeasures++;
@@ -380,8 +387,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
             g_pLogger->LogTrace(_T("lmComposer6"),
                     _T("[GenerateScore] Adding measure = '%s')"), sMeasure.c_str());
             pNode = parserLDP.ParseText(sMeasure);
-            parserLDP.AnalyzeMeasure(pNode, pVStaff);
-            //NEW parserLDP.AnalyzeMusicData(pNode, pVStaff);
+            parserLDP.AnalyzeMusicData(pNode, pVStaff);
         }
 
     }
@@ -394,7 +400,8 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     lmNote* pNote = (lmNote*)NULL;
     bool fOnlyQuarterNotes = true;
     lmSOIterator* pIter = pVStaff->CreateIterator();
-    while(!pIter->EndOfCollection()) {
+    while(!pIter->EndOfCollection())
+    {
         pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest) {
             pNR = (lmNoteRest*)pSO;
@@ -418,8 +425,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     g_pLogger->LogTrace(_T("lmComposer6"),
             _T("[GenerateScore] Adding final measure = '%s')"), sMeasure.c_str());
     pNode = parserLDP.ParseText(sMeasure);
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    //NEW parserLDP.AnalyzeMusicData(pNode, pVStaff);
+    parserLDP.AnalyzeMusicData(pNode, pVStaff);
 #endif
 
     // Score is built but pitches are not yet defined.
@@ -538,37 +544,37 @@ wxString lmComposer6::CreateNoteRest(int nNoteRestDuration, bool fNote)
     int nTimeNeeded = nNoteRestDuration;
 
     while (nTimeNeeded > 0) {
-        sElement += (fNote ? _T("(n * ") : _T("(s ") );
+        sElement += (fNote ? _T("(n * ") : _T("(r ") );
         if (nTimeNeeded >= eWholeDottedDuration) {
-            sElement += _T("r.)");
+            sElement += _T("w.)");
             nDuration = eWholeDottedDuration;
         }
         else if (nTimeNeeded >= eWholeDuration) {
-            sElement += _T("r)");
+            sElement += _T("w)");
             nDuration = eWholeDuration;
         }
         else if (nTimeNeeded >= eHalfDottedDuration) {
-            sElement += _T("b.)");
+            sElement += _T("h.)");
             nDuration = eHalfDottedDuration;
         }
         else if (nTimeNeeded >= eHalfDuration) {
-            sElement += _T("b)");
+            sElement += _T("h)");
             nDuration = eHalfDuration;
         }
         else if (nTimeNeeded >= eQuarterDottedDuration) {
-            sElement += _T("n.)");
+            sElement += _T("q.)");
             nDuration = eQuarterDottedDuration;
         }
         else if (nTimeNeeded >= eQuarterDuration) {
-            sElement += _T("n)");
+            sElement += _T("q)");
             nDuration = eQuarterDuration;
         }
         else if (nTimeNeeded >= eEighthDottedDuration) {
-            sElement += _T("c.)");
+            sElement += _T("e.)");
             nDuration = eEighthDottedDuration;
         }
         else if (nTimeNeeded >= eEighthDuration) {
-            sElement += _T("c)");
+            sElement += _T("e)");
             nDuration = eEighthDuration;
         }
         else if (nTimeNeeded >= e16hDottedDuration) {
@@ -580,31 +586,31 @@ wxString lmComposer6::CreateNoteRest(int nNoteRestDuration, bool fNote)
             nDuration = e16thDuration;
         }
         else if (nTimeNeeded >= e32thDottedDuration) {
-            sElement += _T("f.)");
+            sElement += _T("t.)");
             nDuration = e32thDottedDuration;
         }
         else if (nTimeNeeded >= e32thDuration) {
-            sElement += _T("f)");
+            sElement += _T("t)");
             nDuration = e32thDuration;
         }
         else if (nTimeNeeded >= e64thDottedDuration) {
-            sElement += _T("m.)");
+            sElement += _T("i.)");
             nDuration = e64thDottedDuration;
         }
         else if (nTimeNeeded >= e64thDuration) {
-            sElement += _T("m)");
+            sElement += _T("i)");
             nDuration = e64thDuration;
         }
         else if (nTimeNeeded >= e128thDottedDuration) {
-            sElement += _T("g.)");
+            sElement += _T("o.)");
             nDuration = e128thDottedDuration;
         }
         else if (nTimeNeeded >= e128thDuration) {
-            sElement += _T("g)");
+            sElement += _T("o)");
             nDuration = e128thDuration;
         }
         else {
-            sElement += _T("p)");
+            sElement += _T("f)");
             nDuration = e256thDuration;
         }
 
@@ -623,11 +629,12 @@ wxString lmComposer6::CreateLastMeasure(int nNumMeasure, lmETimeSignature nTimeS
     // Returns a final meaure. This final measure has only a note, long enough, and
     // a final bar
 
-    wxString sMeasure = wxString::Format(_T("(c %d "), nNumMeasure);
+    wxString sMeasure = _T("(musicData ");
     float rMeasureDuration = GetMeasureDuration(nTimeSign);
     float rBeatDuration = GetBeatDuration(nTimeSign);
     float rNoteDuration = rBeatDuration;
-    if (!fOnlyQuarterNotes && rMeasureDuration / rBeatDuration >= 2.0) {
+    if (!fOnlyQuarterNotes && rMeasureDuration / rBeatDuration >= 2.0)
+    {
         //flip coin to randomly add a one-beat note or a two-beats note
         lmRandomGenerator oGenerator;
         if (oGenerator.FlipCoin()) rNoteDuration += rBeatDuration;
@@ -636,7 +643,7 @@ wxString lmComposer6::CreateLastMeasure(int nNumMeasure, lmETimeSignature nTimeS
     sMeasure += CreateNote((int)rNoteDuration);
     rNoteDuration = rMeasureDuration - rNoteDuration;
     if (rNoteDuration > 0.0) sMeasure += CreateRest((int)rNoteDuration);
-    sMeasure += _T("(Barra Final))");
+    sMeasure += _T("(barline end))");
     return sMeasure;
 }
 
@@ -673,7 +680,8 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     {
         lmStaffObj* pSO = pIter->GetCurrent();
         EStaffObjType nType = pSO->GetClass();
-        if (nType == eSFOT_NoteRest) {
+        if (nType == eSFOT_NoteRest)
+        {
             if ( ((lmNoteRest*)pSO)->IsNote() )
             {
                 // It is a note. Get its chord position
@@ -772,7 +780,8 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
                 else
                 {
                     // non-chord note. Save it to be processed
-                    if (!pNoteCur->IsPitchDefined()) {
+                    if (!pNoteCur->IsPitchDefined())
+                    {
                         pNonChord[nCount++] = pNoteCur;
                         sDbg += _T(",nc");
                     }
@@ -861,7 +870,8 @@ void lmComposer6::GetRandomHarmony(int nFunctions, std::vector<long>& aFunction)
 
     int nNumProgs = sizeof(m_aProgression) / (8 * sizeof(long));
     int iP = lmRandomGenerator::RandomNumber(0, nNumProgs-1);
-    for(int i=0; i < 8; i++) {
+    for(int i=0; i < 8; i++)
+    {
         aFunction[i] = m_aProgression[iP][i];
     }
 
@@ -881,9 +891,11 @@ void lmComposer6::FunctionToChordNotes(lmEKeySignatures nKey, long nFunction,
     int nStep = GetRootStep(nKey);
     lmAPitch aScale[15];
     int nOctave = lmOCTAVE_4;
-    for (int iN=0; iN < 15; iN++) {
+    for (int iN=0; iN < 15; iN++)
+    {
         aScale[iN].Set(nStep, nOctave, nAcc[nStep]);
-        if(++nStep == 7) {
+        if(++nStep == 7)
+        {
             nStep = 0;
             nOctave++;
         }

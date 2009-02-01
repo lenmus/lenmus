@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,6 +39,7 @@
 #include "../score/Score.h"
 #include "../xml_parser/XMLParser.h"
 #include "../ldp_parser/LDPParser.h"
+#include "../ldp_parser/AuxString.h"
 
 // for displaying exercises
 #include "../exercises/Constrains.h"
@@ -177,7 +178,7 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         -----------------------------------------------------------------------------
         max_accidentals     num (0..7)                                  [5]
         problem_type        DeduceKey | WriteKey | Both                 [Both]
-        clef*               Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1     [Sol]
+        clef*               G | F4 | F3 | C4 | C3 | C2 | C1             [G]
         mode                Major | Minor | Both                        [Both]
 
         Example
@@ -185,7 +186,7 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         <object type="Application/LenMusTheoKeySignatures" width="100%" height="300" border="0">
             <param  name="max_accidentals" value="7" />
             <param  name="problem_type" value="both" />
-            <param  name="clef" value="sol" />
+            <param  name="clef" value="G" />
             <param  name="mode" value="both" />
         </object>
 
@@ -209,9 +210,9 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         bool fOK = sAccidentals.ToLong(&nAccidentals);
         if (!fOK || nAccidentals < 0 || nAccidentals > 7) {
             LogError( wxString::Format(
-                _T("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: numeric, 0..7"),
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values: numeric, 0..7"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
         }
         else {
@@ -231,35 +232,23 @@ Acceptable values: numeric, 0..7"),
             m_pConstrains->SetProblemType( eBothKeySignProblems );
         else
             LogError(wxString::Format(
-_T("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: DeduceKey | WriteKey | Both"),
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values: DeduceKey | WriteKey | Both"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
-    // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1
+    // clef        G | F4 | F3 | C4 | C3 | C2 | C1
     else if ( sName == _T("CLEF") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
-        sClef.MakeUpper();
-        if (sClef == _T("SOL"))
-            m_pConstrains->SetClef(lmE_Sol, true);
-        else if (sClef == _T("FA4"))
-            m_pConstrains->SetClef(lmE_Fa4, true);
-        else if (sClef == _T("FA3"))
-            m_pConstrains->SetClef(lmE_Fa3, true);
-        else if (sClef == _T("DO4"))
-            m_pConstrains->SetClef(lmE_Do4, true);
-        else if (sClef == _T("DO3"))
-            m_pConstrains->SetClef(lmE_Do3, true);
-        else if (sClef == _T("DO2"))
-            m_pConstrains->SetClef(lmE_Do2, true);
-        else if (sClef == _T("DO1"))
-            m_pConstrains->SetClef(lmE_Do1, true);
+        lmEClefType nClef = LDPNameToClef(sClef);
+        if (nClef != -1)
+            m_pConstrains->SetClef(nClef, true);
         else
             LogError(wxString::Format(
-_T("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
@@ -275,9 +264,9 @@ Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
             m_pConstrains->SetScaleMode( eMayorAndMinorModes );
         else
             LogError(wxString::Format(
-_T("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: Major | Minor | Both"),
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values: Major | Minor | Both"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 

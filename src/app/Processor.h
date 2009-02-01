@@ -31,7 +31,8 @@ class wxPanel;
 class wxBoxSizer;
 
 class lmScore;
-class lmScoreObj;
+class lmStaffObj;
+class lmAuxObj;
 class lmUrlAuxCtrol;
 
 //--------------------------------------------------------------------------
@@ -86,8 +87,8 @@ public:
 
 protected:
 
-    //Error markup: the marked scoreobj and its markup attachment
-    typedef std::pair<lmScoreObj*, lmScoreObj*> lmMarkup;
+    //Error markup: the marked staffobj and its markup attachment
+    typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;
 
     //list of added markup objects
     std::list<lmMarkup*> m_markup;   

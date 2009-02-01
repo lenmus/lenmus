@@ -1259,6 +1259,7 @@ void lmNote::ModifyPitch(int nAlterIncr)
 
     //update pitch
     m_anPitch.Set(GetStep(), GetOctave(), m_anPitch.Accidentals() + nAlterIncr);
+    SetDirty(true);
 }
 
 void lmNote::ModifyPitch(lmEClefType nNewClefType, lmEClefType nOldClefType)
@@ -1275,6 +1276,7 @@ void lmNote::ModifyPitch(lmEClefType nNewClefType, lmEClefType nOldClefType)
     int nOldPos = PitchToPosOnStaff(nOldClefType, m_anPitch);
     lmDPitch nNewDPitch = PosOnStaffToPitch(nNewClefType, nOldPos);
     m_anPitch.Set(DPitch_Step(nNewDPitch), DPitch_Octave(nNewDPitch), m_anPitch.Accidentals());
+    SetDirty(true);
 }
 
 lmDPitch lmNote::GetDPitch()
@@ -1362,6 +1364,7 @@ void lmNote::ChangePitch(int nSteps)
 		}
 	}
     SetUpStemDirection();
+    SetDirty(true);
 }
 
 void lmNote::DoChangePitch(int nStep, int nOctave, int nAlter)
@@ -1374,6 +1377,7 @@ void lmNote::DoChangePitch(int nStep, int nOctave, int nAlter)
     //update all pitch related information
     m_anPitch.Set(nStep, nOctave, nAlter);
     SetUpStemDirection();
+    SetDirty(true);
 }
 
 void lmNote::PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward)
@@ -1398,6 +1402,7 @@ void lmNote::ChangeAccidentals(int nAcc)
     int nStep = m_anPitch.Step();
 	m_anPitch.SetAccidentals(nAcc);
 	OnAccidentalsChanged(nStep, nAcc);
+    SetDirty(true);
 }
 
 void lmNote::OnAccidentalsChanged(int nStep, int nNewAcc)
@@ -1426,6 +1431,7 @@ void lmNote::OnAccidentalsChanged(int nStep, int nNewAcc)
 
     // propagate accidentals to other notes in this measure
     m_pVStaff->OnAccidentalsUpdated(this, GetStaffNum(), nStep, nNewAcc);
+    SetDirty(true);
 }
 
 

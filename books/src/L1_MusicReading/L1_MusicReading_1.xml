@@ -86,15 +86,15 @@ this rhythm.</para>
     <control_go_back>mr1_thm1</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Sol;e4;g4</clef>
-    <key>Do</key>
-    <key>Lam</key>
+    <clef>G;e4;g4</clef>
+    <key>C</key>
+    <key>a</key>
     <time>24</time>
-    <fragment>24;(n * n)(n * n),(n * n)(n * n)</fragment>
-    <fragment>24;(n * n)(n * n),(n * n)(s n)</fragment>
-    <fragment>24;(n * n)(s n),(n * n)(s n)</fragment>
-    <fragment>24;(n * n)(s n),(s n)(n * n)</fragment>
-    <fragment>24;(n * n)(n * n),(s n)(n * n)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(r q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(r q)(n * q)</fragment>
 </exercise>
 
 </theme>

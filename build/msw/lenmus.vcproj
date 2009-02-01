@@ -1092,12 +1092,6 @@
 				RelativePath="..\..\src\ldp_parser\LDPParser.h">
 			</File>
 			<File
-				RelativePath="..\..\src\ldp_parser\LDPTags.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\ldp_parser\LDPTags.h">
-			</File>
-			<File
 				RelativePath="..\..\src\ldp_parser\LDPToken.cpp">
 			</File>
 			<File

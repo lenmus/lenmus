@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -160,6 +160,9 @@ public:
     //break points
     void TerminateLineAfter(float rTime, lmLUnits uxFinal);
     void ComputeBreakPoints(lmBreaksTable* pBT);
+
+    //other methods
+    void ClearDirtyFlags();
 
 	
 //private:
@@ -758,6 +761,17 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
     }
     return uBarPosition;
 
+}
+
+void lmTimeLine::ClearDirtyFlags()
+{
+    // Claer the 'Dirty' flag of all StaffObjs in this line
+
+    for (lmItEntries it = m_aMainTable.begin(); it != m_aMainTable.end(); ++it)
+	{
+        if ((*it)->m_pSO)
+		    (*it)->m_pSO->SetDirty(false, true);    //true-> propagate change
+    }
 }
 
 lmLUnits lmTimeLine::GetLineWidth()
@@ -2123,7 +2137,16 @@ lmBreaksTable* lmTimeposTable::ComputeBreaksTable()
     return pTotalBT;
 }
 
+void lmTimeposTable::ClearDirtyFlags()
+{
+    //Clear flag 'Dirty' in all StaffObjs of this table. This has nothing to do with TimePos 
+    //table purposes, but its is a convenient place to write a method for doing this.
 
+	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
+	{
+		(*it)->ClearDirtyFlags();
+	}
+}
 
 //-------------------------------------------------------------------------------------
 //  debug methods

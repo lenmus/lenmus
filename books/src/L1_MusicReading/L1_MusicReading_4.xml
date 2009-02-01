@@ -113,9 +113,9 @@ this rhythm.</para>
     <control_go_back>mr1_thm4</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Sol;c4;c5</clef>
-    <key>Do</key>
-    <key>Lam</key>
+    <clef>G;c4;c5</clef>
+    <key>C</key>
+    <key>a</key>
     <time>24</time>
     <fragment>24;(n * q)(n * e g+)(n * e g-)</fragment>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-)</fragment>
@@ -140,12 +140,12 @@ this rhythm.</para>
     <control_go_back>mr1_thm4</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Sol;c4;c5</clef>
-    <key>Do</key>
-    <key>Lam</key>
+    <clef>G;c4;c5</clef>
+    <key>C</key>
+    <key>a</key>
     <time>24</time>
     <fragment>24;(n * q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-)</fragment>
-    <fragment>24;(n * n)(n * n),(n * n)(s n)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(r q)</fragment>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * e g+)(n * e g-),(n * h)</fragment>
     <fragment>24;(r q)(n * q),(n * q)(n * e g+)(n * e g-),(n * q)(r q)</fragment>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q l)(n * q),(r h)</fragment>

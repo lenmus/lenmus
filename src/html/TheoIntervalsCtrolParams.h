@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -89,15 +89,14 @@ lmTheoIntervalsCtrolParms::~lmTheoIntervalsCtrolParms()
 
 void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
 {
-    //
-    //    accidentals        none | simple | double                        [none]
-    //    problem_type    DeduceInterval | BuildInterval | Both        [both]
-    //    clef*            Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1        [Sol]
-    //    control_settings    Value="[key for storing the settings]"
-    //                        By coding this param it is forced the inclusion of
-    //                        the 'settings' link. Its value will be used
-    //                        as the key for saving the user settings.
-    //
+    // problem_level     0 | 1 | 2 | 3                                  [2]
+    // accidentals       none | simple | double                         [none]
+    // problem_type      DeduceInterval | BuildInterval
+    // clef*             G | F4 | F3 | C4 | C3 | C2 | C1                [G]
+    // control_settings  Value="[key for storing the settings]"
+    //                      By coding this param it is forced the inclusion of
+    //                      the 'settings' link. Its value will be used
+    //                      as the key for saving the user settings.
 
     wxString sName = wxEmptyString;
     wxString sValue = wxEmptyString;
@@ -129,47 +128,49 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
-    //problem_type    DeduceInterval | BuildInterval | Both
-    else if ( sName == _T("PROBLEM_TYPE") ) {
+    //problem_type    DeduceInterval | BuildInterval
+    else if ( sName == _T("PROBLEM_TYPE") )
+    {
         wxString sProblem = tag.GetParam(_T("VALUE"));
         sProblem.MakeUpper();
         if (sProblem == _T("DEDUCEINTERVAL"))
             m_pConstrains->SetProblemType( ePT_DeduceInterval );
         else if (sProblem == _T("BUILDINTERVAL"))
             m_pConstrains->SetProblemType( ePT_BuildInterval );
-        else if (sProblem == _T("BOTH"))
-            m_pConstrains->SetProblemType( ePT_Both );
         else
             LogError(wxString::Format(
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
-                _T("Acceptable values: DeduceInterval | BuildInterval | Both"),
+                _T("Acceptable values: DeduceInterval | BuildInterval"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
-    // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1
+    //problem_level     0 | 1 | 2 | 3          
+    else if ( sName == _T("PROBLEM_LEVEL") )
+    {
+        int nLevel;
+        bool fOK = tag.GetParamAsInt(_T("VALUE"), &nLevel);
+        if (!fOK || nLevel < 0 || nLevel > 3)
+            LogError(wxString::Format(
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values: 0 | 1 | 2 | 3"),
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
+        else
+            m_pConstrains->SetProblemLevel( nLevel );
+    }
+
+    // clef        G | F4 | F3 | C4 | C3 | C2 | C1
     else if ( sName == _T("CLEF") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
-        sClef.MakeUpper();
-        if (sClef == _T("SOL"))
-            m_pConstrains->SetClef(lmE_Sol, true);
-        else if (sClef == _T("FA4"))
-            m_pConstrains->SetClef(lmE_Fa4, true);
-        else if (sClef == _T("FA3"))
-            m_pConstrains->SetClef(lmE_Fa3, true);
-        else if (sClef == _T("DO4"))
-            m_pConstrains->SetClef(lmE_Do4, true);
-        else if (sClef == _T("DO3"))
-            m_pConstrains->SetClef(lmE_Do3, true);
-        else if (sClef == _T("DO2"))
-            m_pConstrains->SetClef(lmE_Do2, true);
-        else if (sClef == _T("DO1"))
-            m_pConstrains->SetClef(lmE_Do1, true);
+        lmEClefType nClef = LDPNameToClef(sClef);
+        if (nClef != -1)
+            m_pConstrains->SetClef(nClef, true);
         else
             LogError(wxString::Format(
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
-                _T("Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
+                _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
@@ -192,11 +193,17 @@ void lmTheoIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmTheoIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-        m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+    wxWindow* wnd;
+    if (m_pConstrains->GetProblemType() == ePT_BuildInterval)
+        wnd = new lmBuildIntervalCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
+                                       m_pConstrains, wxPoint(0,0), 
+                                       wxSize(m_nWidth, m_nHeight), m_nWindowStyle);
+    else
+        wnd = new lmIdfyIntervalCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
+                                       m_pConstrains, wxPoint(0,0), 
+                                       wxSize(m_nWidth, m_nHeight), m_nWindowStyle);
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
-
 }
 
 

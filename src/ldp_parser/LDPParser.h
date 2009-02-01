@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -33,7 +33,6 @@
 
 #include "LDPNode.h"
 #include "LDPToken.h"
-#include "LDPTags.h"
 
 #include "../score/Score.h"
 
@@ -73,13 +72,13 @@ public:
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
     int         AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr);
-    void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
+    //void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr,
                                      lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUnit);
     void        AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos);
-    void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
+    //void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -96,7 +95,7 @@ public:
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
-    void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
+    //void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
 
 	//analyze options
     int         AnalyzeNumStaff(const wxString& sNotation, lmLDPNode* pNode, long nNumStaves);
@@ -134,7 +133,7 @@ private:
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
-    lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
+    //lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
                                   lmEHAlign* pAlign, lmLocation* pPos,
@@ -143,7 +142,7 @@ private:
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);
-    void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
+    //void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
 	bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
@@ -162,9 +161,6 @@ private:
     void ParseError(EParsingStates nState, lmLDPToken* pTk);
 
 
-
-    //LDP tags table
-    lmLdpTagsTable*     m_pTags;
 
     // variables to store temporary values as the file is being analized.
     int					m_nCurStaff;	//default staff num. for the lmNoteRest being processed
@@ -232,7 +228,7 @@ private:
 class lmLDPOptionalTags
 {
 public:
-	lmLDPOptionalTags(lmLDPParser* pParser, lmLdpTagsTable* pTags);
+	lmLDPOptionalTags(lmLDPParser* pParser);
 	~lmLDPOptionalTags();
 
 	void SetValid(lmETagLDP nTag, ...);
@@ -243,7 +239,6 @@ private:
 	bool VerifyAllowed(lmETagLDP nTag, wxString sName, lmLDPNode* pNode);
 
 	lmLDPParser*		m_pParser;					//owner parser
-    lmLdpTagsTable*     m_pTags;
 	std::vector<bool>	m_ValidTags;
 
 

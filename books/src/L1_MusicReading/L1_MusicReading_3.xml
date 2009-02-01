@@ -94,15 +94,15 @@ leger lines.
     <control_go_back>mr1_thm3</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Sol;c4;c5</clef>
-    <key>Do</key>
-    <key>Lam</key>
+    <clef>G;c4;c5</clef>
+    <key>C</key>
+    <key>a</key>
     <time>24</time>
     <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
-    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * h)</fragment>
     <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
-    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * b)</fragment>
-    <fragment>24;(n * n)(n * n),(n * b),(s b)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(n * q)(n * q),(n * h),(r h)</fragment>
 </exercise>
 
 </theme>

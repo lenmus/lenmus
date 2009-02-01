@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -1189,6 +1189,9 @@ void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
     }
     wxASSERT(pNR);          //pBeforeNR must be found!!
     wxASSERT(pPrevNR);      //pBeforeNR is not the first one in the beam
+
+    pPrevNR->SetDirty(true);
+    pBeforeNR->SetDirty(true);
 
     //save data for undoing the command: all note/rests before break point
     //AWARE: Logged actions must be logged in the required order for re-construction.

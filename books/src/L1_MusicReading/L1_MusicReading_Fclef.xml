@@ -228,15 +228,15 @@ bass clef.</para>
     <control_go_back>Fclef</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Fa4;a3;c4</clef>
-    <key>Do</key>
-    <key>Lam</key>
-    <key>Sol</key>
-    <key>Mim</key>
-    <key>Fa</key>
-    <key>Rem</key>
+    <clef>F;a3;c4</clef>
+    <key>C</key>
+    <key>a</key>
+    <key>G</key>
+    <key>e</key>
+    <key>F</key>
+    <key>d</key>
     <time>24</time>
-    <fragment>24;(n * b),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * h),(n * q)(n * q),(n * h)</fragment>
     <fragment>24;(n * q)(n * e g+)(n * e g-),(n * q l)(n * e g+)(n * e g-),(n * q)(r q)</fragment>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q.)(n * e),(n * q)(n * q),(n * h)</fragment>
     <fragment>24;(r q)(n * q),(n * e g+)(n * e g-)(n * q),(n * q.)(n * e),(n * q)(r q)</fragment>

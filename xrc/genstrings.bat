@@ -4,9 +4,6 @@ wxrc DlgCfgEarIntervals.xrc -g > xrc_strings.cpp
 echo //DlgCfgScoreReading.xrc >> xrc_strings.cpp
 wxrc DlgCfgScoreReading.xrc -g >> xrc_strings.cpp
 
-echo //DlgCfgTheoIntervals.xrc >> xrc_strings.cpp
-wxrc DlgCfgTheoIntervals.xrc -g >> xrc_strings.cpp
-
 echo //DlgPatternEditor.xrc >> xrc_strings.cpp
 wxrc DlgPatternEditor.xrc -g >> xrc_strings.cpp
 

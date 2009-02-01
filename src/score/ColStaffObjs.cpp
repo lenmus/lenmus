@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -2629,6 +2629,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fDelete, bool fClefKeepPositio
     m_pVCursor->SetNewCursorState(m_pVCursor->GetScoreCursor(), &tVCState, true);  //true->update timepos
 
     //finally, if requested, invoke destructor for removed staffobj
+    pSO->SetDirty(true);
     if (fDelete) delete pSO;
 
 

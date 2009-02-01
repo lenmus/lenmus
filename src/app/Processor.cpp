@@ -229,7 +229,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             ++nNote;
             if (nNote == 4)
             {
-                //fourth note. Put a red line pointing to it
+                //fourth note. Change its colour to red
+                pSO->SetColour(*wxRED);
+
+                //Put a red line pointing to it
                 //Remember: all 'y' positions are relative to top line (5th line of
                 //first staff). 'x' positions are relative to current object position.
                 lmScoreLine* pLine = new lmScoreLine(-30, -30, 5, 80, 2, *wxRED);
@@ -249,7 +252,8 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             }
             else if (nNote == 6)
             {
-                //sixth note. Put a text and finish loop
+                //sixth note. Change its colour to green, put a line and a text and finish loop
+                pSO->SetColour(*wxGREEN);
 
                 //green line pointing to the note
                 lmScoreLine* pLine = new lmScoreLine(40, -20, 5, 100, 2, *wxGREEN);
@@ -294,9 +298,10 @@ bool lmHarmonyProcessor::UndoChanges(lmScore* pScore)
     {
         //undo this markup
         lmMarkup* pError = *it;
-        lmScoreObj* pParent = pError->first;
-        lmScoreObj* pAttachment = pError->second;
-	    pParent->DetachAuxObj((lmAuxObj*)pAttachment);
+        lmStaffObj* pParent = pError->first;
+        lmAuxObj* pAttachment = pError->second;
+	    pParent->DetachAuxObj(pAttachment);
+	    pParent->SetColour(*wxBLACK);
         delete pAttachment;
 
         //remove used element and move to next item in list

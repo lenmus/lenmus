@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -40,6 +40,9 @@
 #include "../graphic/ShapeNote.h"
 
 
+extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
+
+
 //-----------------------------------------------------------------------------------------
 // lmAuxObj implementation
 //-----------------------------------------------------------------------------------------
@@ -49,14 +52,13 @@ lmAuxObj::lmAuxObj(bool fIsDraggable) :
 {
 }
 
-void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
-					  bool fHighlight)
+void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
 {
 	//assign AuxObj reference position: the parent's m_uComputedPos value
 	SetReferencePos(pPaper);
 
     m_uComputedPos = ComputeBestLocation(m_uPaperPos, pPaper);
-    LayoutObject(pBox, pPaper, m_uComputedPos, colorC);
+    LayoutObject(pBox, pPaper, m_uComputedPos, (g_fShowDirtyObjects && IsDirty() ? *wxRED : m_color));
 }
 
 lmLUnits lmAuxObj::TenthsToLogical(lmTenths nTenths)

@@ -6,7 +6,8 @@
     <!ENTITY chEarScales SYSTEM "GeneralExercises_EarScales.xml">
     <!ENTITY chEarCadences SYSTEM "GeneralExercises_EarCadences.xml">
     <!ENTITY chTheoKeySignatures SYSTEM "GeneralExercises_TheoKeySignatures.xml">
-    <!ENTITY chTheoIntervals SYSTEM "GeneralExercises_TheoIntervals.xml">
+    <!ENTITY chIdfyIntervals SYSTEM "GeneralExercises_IdfyIntervals.xml">
+    <!ENTITY chBuildIntervals SYSTEM "GeneralExercises_TheoIntervals.xml">
     <!ENTITY chTheoChords SYSTEM "GeneralExercises_TheoChords.xml">
     <!ENTITY chTheoScales SYSTEM "GeneralExercises_TheoScales.xml">
     <!ENTITY chTheoCadences SYSTEM "GeneralExercises_TheoCadences.xml">
@@ -62,7 +63,8 @@
 
 <itemizedlist>
 <listitem><link linkend="TheoKeySignatures">Key signatures' identification</link></listitem>
-<listitem><link linkend="TheoIntervals">Interval's identification and construction</link></listitem>
+<listitem><link linkend="IdfyIntervals">Interval's identification</link></listitem>
+<listitem><link linkend="TheoIntervals">Interval's construction</link></listitem>
 <listitem><link linkend="TheoChords">Chords' identification</link></listitem>
 <listitem><link linkend="TheoScales">Scales' identification</link></listitem>
 <listitem><link linkend="TheoCadences">Cadences' identification</link></listitem>
@@ -96,7 +98,8 @@
 <chapter id='theory'>
 <title>Theory exercises</title>
     &chTheoKeySignatures;
-    &chTheoIntervals;
+    &chIdfyIntervals;
+    &chBuildIntervals;
     &chTheoChords;
     &chTheoScales;
     &chTheoCadences;

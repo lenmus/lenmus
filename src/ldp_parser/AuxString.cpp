@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -239,85 +239,21 @@ int LetterToStep(wxChar cStep)
 
 }
 
-//! Receives an pattern (a group of elements) and returns its duration
-float SrcGetPatternDuracion(wxString sPattern)
-{
-    //OBSOLETE
-    ///*
-    //    split the segment into elements, coumpute the duration of
-    //    each element and return the total duration of the segment
-    //*/
-    //int iEnd;
-    //wxString sElement;
-    //float rPatternDuration=0.0;
-
-    //wxString sSource = sPattern;
-    //while (sSource != _T("") )
-    //{
-    //    //extract the element and remove it from source
-    //    iEnd = SrcSplitPattern(sSource) + 1;
-    //    sElement = sSource.substr(0, iEnd);
-    //    sSource = sSource.substr(iEnd);
-
-    //    //compute element's duration
-    //    rPatternDuration += SrcGetElementDuracion(sElement);
-    //}
-    //return rPatternDuration;
-
-    wxASSERT(false);
-    return 0;
-
-}
-
-//! Receives an element (note or rest) and returns its duration
-float SrcGetElementDuracion(wxString sElement)
-{
-    //OBSOLETE
-    wxASSERT(false);
-    return 0;
-
-    ////element is either (n ppp ddd ...) or (s ddd ...). We need the ddd
-
-    //int iStart, i;
-    //wxString sAux;
-    //wxString sElementType = sElement.substr(1, 1);
-    //if (sElementType == _T("n") ) {
-    //    //skip note pitch
-    //    sAux = sElement.substr(3);
-    //} else if (sElementType == _T("s") ) {
-    //    sAux = sElement;
-    //}
-
-    //// find NoteType
-    //iStart = sAux.Find(_T(" ")) + 1;
-
-    //// fin dots
-    //i = iStart + 1;
-    //while (sAux.substr(i, 1) == _T(".") ) i++;
-
-    ////extract NoteType and dots
-    //wxString sNoteType = sAux.substr(iStart, i - iStart);
-
-    //// compute duration
-    //return LDPNoteTypeToDuration(sNoteType);
-
-}
-
-/*! returns true if received element is a rest
-    sElement must be normalized (lower case, no extra spaces)
-*/
 bool SrcIsRest(wxString sElement)
 {
+    // returns true if received element is a rest.
+    // sElement must be normalized (lower case, no extra spaces)
+
     return (sElement.substr(1, 1) == _T("s") );
 }
 
-/*! Receives an string formed by concatenated elements, for example:
-    "(n * n)(n * s g+)(n * s)(n * c g-)"
-    sSource must be normalized (lower case, no extra spaces)
-    @return the index to the end (closing parenthesis) of first element
-*/
 int SrcSplitPattern(wxString sSource)
 {
+    // Receives an string formed by concatenated elements, for example:
+    // "(n * q)(n * s g+)(n * s)(n * e g-)"
+    // sSource must be normalized (lower case, no extra spaces)
+    // Return the index to the end (closing parenthesis) of first element
+
     int i;                  //index to character being explored
     int iMax;               //sSource length
     int nAPar;              //open parenthesis counter
@@ -446,69 +382,76 @@ bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
 
 }
 
-/// Returns -1 if error
 lmEClefType LDPNameToClef(wxString sClefName)
 {
-    if (sClefName == _T("Do1")) {
-        return lmE_Do1;
-    } else if (sClefName == _T("Do2")) {
-        return lmE_Do2;
-    } else if (sClefName == _T("Do3")) {
-        return lmE_Do3;
-    } else if (sClefName == _T("Do4")) {
-        return lmE_Do4;
-    } else if (sClefName == _T("Sol")) {
+    // Returns -1 if error
+
+    if (sClefName == _T("treble") || sClefName == _T("G") )
         return lmE_Sol;
-    } else if (sClefName == _T("Fa3")) {
-        return lmE_Fa3;
-    } else if (sClefName == _T("Fa4")) {
+    else if (sClefName == _T("bass") || sClefName == _T("F") )
         return lmE_Fa4;
-    } else if (sClefName == _T("SinClave")) {
+    else if (sClefName == _T("bass") || sClefName == _T("F4") )
+        return lmE_Fa4;
+    else if (sClefName == _T("baritone") || sClefName == _T("F3") )
+        return lmE_Fa3;
+    else if (sClefName == _T("soprano") || sClefName == _T("C1") )
+        return lmE_Do1;
+    else if (sClefName == _T("mezzosoprano") || sClefName == _T("C2") )
+        return lmE_Do2;
+    else if (sClefName == _T("alto") || sClefName == _T("C3") )
+        return lmE_Do3;
+    else if (sClefName == _T("tenor") || sClefName == _T("C4") )
+        return lmE_Do4;
+    else if (sClefName == _T("percussion") )
         return lmE_Percussion;
-    } else {
+    //else if (sClefName == _T("baritoneC") || sClefName == _T("C5") )
+    //    return lmE_Do5;
+    //else if (sClefName == _T("subbass") || sClefName == _T("F5") )
+    //    return lmE_Fa5;
+    //else if (sClefName == _T("french") || sClefName == _T("G1") )
+    //    return lmE_Sol1;
+    else
         return (lmEClefType)-1;
-    }
 }
 
-lmEKeySignatures LDPInternalNameToKey(wxString sKeyName)
+lmEKeySignatures LDPNameToKey(wxString sKeyName)
 {
-    //Internal names are the original Spanish tags
     static wxString m_sLDPKeyNames[lmMAX_KEY - lmMIN_KEY + 1];
     static bool m_fLDPNamesLoaded = false;
 
     if (!m_fLDPNamesLoaded) {
         //major key signatures
-        m_sLDPKeyNames[earmDo] = _T("Do");
-        m_sLDPKeyNames[earmSol] = _T("Sol");
-        m_sLDPKeyNames[earmRe] = _T("Re");
-        m_sLDPKeyNames[earmLa] = _T("La");
-        m_sLDPKeyNames[earmMi] = _T("Mi");
-        m_sLDPKeyNames[earmSi] = _T("Si");
-        m_sLDPKeyNames[earmFas] = _T("Fa+");
-        m_sLDPKeyNames[earmDos] = _T("Do+");
-        m_sLDPKeyNames[earmDob] = _T("Do-");
-        m_sLDPKeyNames[earmSolb] = _T("Sol-");
-        m_sLDPKeyNames[earmReb] = _T("Re-");
-        m_sLDPKeyNames[earmLab] = _T("La-");
-        m_sLDPKeyNames[earmMib] = _T("Mi-");
-        m_sLDPKeyNames[earmSib] = _T("Si-");
-        m_sLDPKeyNames[earmFa] = _T("Fa");
+        m_sLDPKeyNames[earmDo] = _T("C");
+        m_sLDPKeyNames[earmSol] = _T("G");
+        m_sLDPKeyNames[earmRe] = _T("D");
+        m_sLDPKeyNames[earmLa] = _T("A");
+        m_sLDPKeyNames[earmMi] = _T("E");
+        m_sLDPKeyNames[earmSi] = _T("B");
+        m_sLDPKeyNames[earmFas] = _T("F+");
+        m_sLDPKeyNames[earmDos] = _T("C+");
+        m_sLDPKeyNames[earmDob] = _T("C-");
+        m_sLDPKeyNames[earmSolb] = _T("G-");
+        m_sLDPKeyNames[earmReb] = _T("D-");
+        m_sLDPKeyNames[earmLab] = _T("A-");
+        m_sLDPKeyNames[earmMib] = _T("E-");
+        m_sLDPKeyNames[earmSib] = _T("B-");
+        m_sLDPKeyNames[earmFa] = _T("F");
         // minor key signatures
-        m_sLDPKeyNames[earmLam] = _T("Lam");
-        m_sLDPKeyNames[earmMim] = _T("Mim");
-        m_sLDPKeyNames[earmSim] = _T("Sim");
-        m_sLDPKeyNames[earmFasm] = _T("Fa+m");
-        m_sLDPKeyNames[earmDosm] = _T("Do+m");
-        m_sLDPKeyNames[earmSolsm] = _T("Sol+m");
-        m_sLDPKeyNames[earmResm] = _T("Re+m");
-        m_sLDPKeyNames[earmLasm] = _T("La+m");
-        m_sLDPKeyNames[earmLabm] = _T("La-m");
-        m_sLDPKeyNames[earmMibm] = _T("Mi-m");
-        m_sLDPKeyNames[earmSibm] = _T("Si-m");
-        m_sLDPKeyNames[earmFam] = _T("Fam");
-        m_sLDPKeyNames[earmDom] = _T("Dom");
-        m_sLDPKeyNames[earmSolm] = _T("Solm");
-        m_sLDPKeyNames[earmRem] = _T("Rem");
+        m_sLDPKeyNames[earmLam] = _T("a");
+        m_sLDPKeyNames[earmMim] = _T("e");
+        m_sLDPKeyNames[earmSim] = _T("b");
+        m_sLDPKeyNames[earmFasm] = _T("f+");
+        m_sLDPKeyNames[earmDosm] = _T("c+");
+        m_sLDPKeyNames[earmSolsm] = _T("g+");
+        m_sLDPKeyNames[earmResm] = _T("d+");
+        m_sLDPKeyNames[earmLasm] = _T("a+");
+        m_sLDPKeyNames[earmLabm] = _T("a-");
+        m_sLDPKeyNames[earmMibm] = _T("e-");
+        m_sLDPKeyNames[earmSibm] = _T("b-");
+        m_sLDPKeyNames[earmFam] = _T("f");
+        m_sLDPKeyNames[earmDom] = _T("c");
+        m_sLDPKeyNames[earmSolm] = _T("g");
+        m_sLDPKeyNames[earmRem] = _T("d");
         m_fLDPNamesLoaded = true;
     }
 

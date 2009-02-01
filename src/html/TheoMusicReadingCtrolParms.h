@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -273,10 +273,10 @@ Acceptable values: numeric, greater than 0\n"),
     }
 
     //fragments   the list of fragmens to use
-    //  <param name="fragment" value="68,98;(n * n)(n * c +l)(g (n * c)(n * c)(n * c))">
-	//  <param name="fragment" value="68,98;(n * c)(n * n +l)(g (n * c)(n * c)(n * c))">
-	//  <param name="fragment" value="68,98;(n * n)(n * c)">
-	//  <param name="fragment" value="68,98;(g (n * c)(n * c)(n * c))">
+    //  <param name="fragment" value="68,98;(n * q)(n * c +l)(n * e g+)(n * e)(n * e g-)">
+	//  <param name="fragment" value="68,98;(n * e)(n * n +l)(n * e g+)(n * e)(n * e g-)">
+	//  <param name="fragment" value="68,98;(n * q)(n * e)">
+	//  <param name="fragment" value="68,98;(n * e g+)(n * e)(n * e g-)">
 
     else if ( sName == _T("FRAGMENT") ) {
         wxString sFragments = tag.GetParam(_T("VALUE"));
@@ -379,7 +379,7 @@ void lmTheoMusicReadingCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 /// returns true if error
 bool lmTheoMusicReadingCtrolParms::AnalyzeClef(wxString sLine)
 {
-    //i.e.: "Sol;c4;c5"
+    //i.e.: "G;c4;c5"
 
     //get clef
     int iSemicolon = sLine.Find(_T(";"));
@@ -461,7 +461,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
                 sKey = sLine;
                 sLine = _T("");
             }
-            nKey = LDPInternalNameToKey(sKey);
+            nKey = LDPNameToKey(sKey);
             if (nKey == (lmEKeySignatures)-1) return true;
             pKeys->SetValid(nKey, true);
         }
@@ -491,7 +491,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
         return true;
      }
     // verify fragment to avoid program failures
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     //TODO strong verification
     //lmLDPNode* pRoot = parserLDP.ParseText(sFragment);
     //if (! pRoot) {

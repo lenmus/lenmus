@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -308,12 +308,15 @@ lmBox::lmBox(lmScoreObj* pOwner, lmEGMOType nType, wxString sName)
 
 lmBox::~lmBox()
 {
-    //delete shapes collection
-    for (int i=0; i < (int)m_Shapes.size(); i++)
+    if (!lmPRESERVE_SHAPES)
     {
-        delete m_Shapes[i];
+        //delete shapes collection
+        for (int i=0; i < (int)m_Shapes.size(); i++)
+        {
+            delete m_Shapes[i];
+        }
+        m_Shapes.clear();
     }
-    m_Shapes.clear();
 }
 
 void lmBox::AddShape(lmShape* pShape)
@@ -578,10 +581,9 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 
-lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxString sName,
-                                   bool fDraggable,
-                                   lmEGMOType nType, bool fVisible)
-	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, lmSELECTABLE, *wxBLACK, fVisible)
+lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxColour color,
+                                   wxString sName, bool fDraggable, lmEGMOType nType, bool fVisible)
+	: lmShape(nType, pOwner, nOwnerIdx, sName, fDraggable, lmSELECTABLE, color, fVisible)
 {
     m_fGrouped = true;	//by default all constituent shapes are grouped
 	m_fDoingShift = false;

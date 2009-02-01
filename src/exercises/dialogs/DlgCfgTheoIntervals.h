@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -26,11 +26,20 @@
 #endif
 
 // headers
-#include "wx/dialog.h"
-#include "wx/spinctrl.h"        //to use wxSpinCtrl
 
 #include "../Constrains.h"
 #include "../TheoIntervalsConstrains.h"
+
+
+class wxButton;
+class wxCheckBox;
+class wxComboBox;
+class wxNotebook;
+class wxPanel;
+class wxRadioBox;
+class wxStaticBitmap;
+class wxStaticText;
+
 
 // class definition
 class lmDlgCfgTheoIntervals : public wxDialog {
@@ -46,20 +55,38 @@ public:
 
 private:
     bool VerifyData();
+    void CreateControls();
 
     lmTheoIntervalsConstrains*   m_pConstrains; // the constraints to set up
 
-    //controls
-    wxCheckBox*     m_pChkDoubleAccidentals;
-    wxCheckBox*     m_pChkAccidentals;
-    wxCheckBox*     m_pChkClef[7];              // Allowed clefs check boxes
+    wxStaticBoxSizer*   m_pBoxIntvalTypes;
 
-    wxRadioBox*     m_radProblemType;
-
-    wxStaticBitmap* m_pBmpClefError;            // error icons and messages
-    wxStaticText*   m_pLblClefError;
-
-
+    // ATTENTION: Following code has been generated with wxFormBuider.
+    // Replaced m_pChkClef, m_pChkIntvalType and m_pChkKeySign by arrays
+		wxNotebook* noteBook;
+		wxPanel* m_pPanelOther;
+		wxRadioBox* m_pRadLevel;
+		wxRadioBox* m_pRadProblemType;
+		wxStaticText* wxID_STATIC2;
+		wxChoice* m_pCboAboveLines;
+		wxStaticText* wxID_STATIC3;
+		wxChoice* m_pCboBelowLines;
+		wxCheckBox* m_pChkIntvalType[3];
+		wxStaticBitmap* m_pBmpIntvalTypeError;
+		wxStaticText* wxID_STATIC4;
+		wxStaticText* m_pLblIntvalTypeError;
+		wxPanel* m_pPanelClefs;
+		wxCheckBox* m_pChkClef[7];
+		wxStaticBitmap* m_pBmpClefError;
+		wxStaticText* m_pLblClefError;
+		wxStaticText* m_pSpace5;
+		wxPanel* m_pPanelKeys;
+		wxCheckBox* m_pChkKeySign[15];
+		wxStaticBitmap* m_pBmpKeySignError;
+		wxStaticText* wxID_STATIC1;
+		wxStaticText* m_pLblKeySignError;
+		wxButton* m_pBtnAccept;
+		wxButton* m_pBtnCancel;
 
     DECLARE_EVENT_TABLE()
 };

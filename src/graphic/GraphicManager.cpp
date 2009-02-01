@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -44,9 +44,6 @@
 //access to colors
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
-
-// access to global some global flags
-extern bool g_fUseAntiAliasing;         // in TheApp.cpp
 
 
 
@@ -124,34 +121,18 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
 
     if (!pBitmap || fReDraw)
     {
-        if (!g_fUseAntiAliasing)
-        {
-            // standard DC renderization. Aliased.
-            pBitmap = NewBitmap(nPage);
-            wxMemoryDC memDC;   // Allocate a DC in memory for the offscreen bitmap
-            memDC.SelectObject(*pBitmap);
-            m_pPaper->SetDrawer(new lmDirectDrawer(&memDC));
-            memDC.Clear();
-            memDC.SetMapMode(lmDC_MODE);
-            memDC.SetUserScale( m_rScale, m_rScale );
-            m_pBoxScore->RenderPage(nPage, m_pPaper);
-            memDC.SelectObject(wxNullBitmap);
-        }
-        else
-        {
-            // anti-aliased renderization
-            lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
-            m_pPaper->SetDrawer(pDrawer);
-            wxASSERT(m_pBoxScore);  //Layout phase omitted?
-            m_pBoxScore->RenderPage(nPage, m_pPaper);
+        // anti-aliased renderization
+        lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
+        m_pPaper->SetDrawer(pDrawer);
+        wxASSERT(m_pBoxScore);  //Layout phase omitted?
+        m_pBoxScore->RenderPage(nPage, m_pPaper);
 
-            //Make room for the new bitmap
-            //TODO
+        //Make room for the new bitmap
+        //TODO
 
-            //Add bitmap to the offscreen collection
-            pBitmap = new wxBitmap(pDrawer->GetImageBuffer());
-            AddBitmap(nPage, pBitmap);
-        }
+        //Add bitmap to the offscreen collection
+        pBitmap = new wxBitmap(pDrawer->GetImageBuffer());
+        AddBitmap(nPage, pBitmap);
     }
     return pBitmap;
 }

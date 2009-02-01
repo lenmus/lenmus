@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -114,7 +114,6 @@
 #include "../sound/MidiManager.h"       //access to Midi configuration
 #include "../sound/WaveManager.h"       //access to Wave sound manager
 #include "Logger.h"                     //access to error's logger
-#include "../ldp_parser/LDPTags.h"      //to delete the LDP tags table
 #include "../options/Languages.h"       //to check config_ini.txt stored language
 #include "../graphic/AggDrawer.h"       //to delete lmMusicFontManager singleton
 
@@ -131,9 +130,9 @@ lmMainFrame *g_pMainFrame = (lmMainFrame*) NULL;
 lmTheApp* g_pTheApp = (lmTheApp*) NULL;
 
 #ifdef __WXDEBUG__
-bool g_fReleaseVersion = false;       // to enable/disable debug features
+bool g_fReleaseVersion = false;     // to enable/disable debug features
 #else
-bool g_fReleaseVersion = true;        // to enable/disable debug features
+bool g_fReleaseVersion = true;      // to enable/disable debug features
 #endif
 
 bool g_fReleaseBehaviour = false;   // This flag is only used to force release behaviour when
@@ -142,9 +141,7 @@ bool g_fReleaseBehaviour = false;   // This flag is only used to force release b
 bool g_fShowDebugLinks = false;     // force to add aditional debug ctrols in exercises.
                                     // only operative in debug mode.
 
-bool g_fUseAntiAliasing = true;     // for testing and comparison purposes. Changing the
-                                    // value of this flags forces to use standar aliased
-                                    // renderization in screen
+bool g_fShowDirtyObjects = false;   // for testing purposes. Forces to render dirty objects in red
 
 bool g_fBorderOnScores = false;     //to facilitate the height adjustement of
                                     //scores included on eMusicBooks.
@@ -413,10 +410,6 @@ bool lmTheApp::OnInit(void)
 
     // Ear Interval exercises: configuration dialog
     oXrcFile = wxFileName(sPath, _T("DlgCfgEarIntervals"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    // Theo Interval exercises: configuration dialog
-    oXrcFile = wxFileName(sPath, _T("DlgCfgTheoIntervals"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Chord identification exercises: configuration dialog
@@ -694,9 +687,6 @@ int lmTheApp::OnExit(void)
 
     // the error's logger
     delete g_pLogger;
-
-    // the LDP tags table
-    lmLdpTagsTable::DeleteInstance();
 
     //the program options object
     lmPgmOptions::DeleteInstance();

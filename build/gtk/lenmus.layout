@@ -34,7 +34,7 @@
 	<File name="../../src/app/EditFrame.cpp" open="1" top="0" tabpos="37">
 		<Cursor position="1846" topLine="47" />
 	</File>
-	<File name="../../src/app/EditFrame.h" open="1" top="1" tabpos="36">
+	<File name="../../src/app/EditFrame.h" open="1" top="0" tabpos="36">
 		<Cursor position="1663" topLine="0" />
 	</File>
 	<File name="../../src/app/FontManager.cpp" open="0" top="0" tabpos="4">
@@ -212,7 +212,7 @@
 		<Cursor position="0" topLine="27" />
 	</File>
 	<File name="../../src/exercises/TheoIntervalsCtrol.cpp" open="1" top="0" tabpos="16">
-		<Cursor position="8245" topLine="220" />
+		<Cursor position="28807" topLine="781" />
 	</File>
 	<File name="../../src/exercises/TheoKeySignCtrol.cpp" open="0" top="0" tabpos="30">
 		<Cursor position="0" topLine="197" />
@@ -222,6 +222,12 @@
 	</File>
 	<File name="../../src/exercises/TheoMusicReadingCtrol.h" open="0" top="0" tabpos="49">
 		<Cursor position="0" topLine="9" />
+	</File>
+	<File name="../../src/exercises/dialogs/DlgCfgTheoIntervals.cpp" open="1" top="0" tabpos="40">
+		<Cursor position="2156" topLine="49" />
+	</File>
+	<File name="../../src/exercises/dialogs/DlgCfgTheoIntervals.h" open="1" top="0" tabpos="41">
+		<Cursor position="1461" topLine="26" />
 	</File>
 	<File name="../../src/globals/Paths.cpp" open="0" top="0" tabpos="10">
 		<Cursor position="5574" topLine="145" />

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -97,46 +97,58 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // creating the shape object and adding it to the graphical model.
     // Paper cursor must be used as the base for positioning.
 
-    //get paper reference point
-    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-
-    // move to right staff
-    lmLUnits uyTop = uPaperPos.y + GetStaffOffset();
-    lmLUnits uxLeft = uPaperPos.x;
-
-    //// prepare DC
-    //pPaper->SetFont(*GetSuitableFont(pPaper));
-
-    //create the container shape and add it to the box
-    lmShapeRest* pRestShape = new lmShapeRest(this, lmDRAGGABLE, m_fVisible);
-	pBox->AddShape(pRestShape);
-    StoreShape(pRestShape);
-
-    // create shape for the rest symbol
-    lmEGlyphIndex nGlyph = GetGlyphIndex();
-    lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxLeft, yPos),
-                                            _T("RestGlyph"));
-	pRestShape->Add(pShape);
-    uxLeft += pShape->GetWidth();
-
-    //create shapes for dots if necessary
-    //------------------------------------------------------------
-    if (m_nNumDots > 0)
+    lmShape* pOldShape = this->GetShape();
+    if (lmPRESERVE_SHAPES && !IsDirty())
     {
-        //TODO user selectable
-        lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        lmLUnits uyPos = yPos - m_pVStaff->TenthsToLogical(GetDotShift(), m_nStaffNum);
-        for (int i = 0; i < m_nNumDots; i++)
-        {
-            uxLeft += uSpaceBeforeDot;
-            uxLeft += AddDotShape(pRestShape, pPaper, uxLeft, uyPos, colorC);
-        }
+        //Not dirty: just add existing shapes to the Box
+        pBox->AddShape(pOldShape);
+        pOldShape->SetColour(colorC);       //change its colour to new desired colour
     }
+    else
+    {
+        //Dirty: create new shapes for this object
 
-	// if rest in a beam, link the rest shape to the beam shape
-	if (m_pBeam)
-		m_pBeam->AddRestShape(pRestShape);
+        //get paper reference point
+        lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+
+        // move to right staff
+        lmLUnits uyTop = uPaperPos.y + GetStaffOffset();
+        lmLUnits uxLeft = uPaperPos.x;
+
+        //// prepare DC
+        //pPaper->SetFont(*GetSuitableFont(pPaper));
+
+        //create the container shape and add it to the box
+        lmShapeRest* pRestShape = new lmShapeRest(this, colorC, lmDRAGGABLE, m_fVisible);
+	    pBox->AddShape(pRestShape);
+        StoreShape(pRestShape);
+
+        // create shape for the rest symbol
+        lmEGlyphIndex nGlyph = GetGlyphIndex();
+        lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
+        lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxLeft, yPos),
+                                                _T("RestGlyph"), lmDRAGGABLE, colorC);
+	    pRestShape->Add(pShape);
+        uxLeft += pShape->GetWidth();
+
+        //create shapes for dots if necessary
+        //------------------------------------------------------------
+        if (m_nNumDots > 0)
+        {
+            //TODO user selectable
+            lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+            lmLUnits uyPos = yPos - m_pVStaff->TenthsToLogical(GetDotShift(), m_nStaffNum);
+            for (int i = 0; i < m_nNumDots; i++)
+            {
+                uxLeft += uSpaceBeforeDot;
+                uxLeft += AddDotShape(pRestShape, pPaper, uxLeft, uyPos, colorC);
+            }
+        }
+
+	    // if rest in a beam, link the rest shape to the beam shape
+	    if (m_pBeam)
+		    m_pBeam->AddRestShape(pRestShape);
+    }
 
 	return GetShape()->GetWidth();
 }

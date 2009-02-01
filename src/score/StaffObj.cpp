@@ -50,6 +50,8 @@
 #include "properties/DlgProperties.h"
 #include "properties/GeneralProperties.h"
 
+extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
+
 
 //-------------------------------------------------------------------------------------
 // lmScoreObj implementation
@@ -64,7 +66,7 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     // initializations: positioning related info
     m_uPaperPos.y = 0.0f,   m_uPaperPos.x = 0.0f;
     m_uComputedPos.x = 0.0f,   m_uComputedPos.y = 0.0f;
-	m_fModified = false;
+	SetDirty(true);                         //any new created object always needs re-layout!
     m_pShapesMngr = new lmShapesMngr();     //default behaviour: only one shape
 }
 
@@ -452,20 +454,6 @@ void lmScoreObj::SetReferencePos(lmUPoint& uPos)
     m_uPaperPos = uPos;
 }
 
-void lmScoreObj::RecordHistory(lmUndoData* pUndoData) 
-{
-	if (!m_fModified) return;
-
-	//once the changes are logged, consolidate new state
-	AcceptChanges();
-	m_fModified = false;
-}
-
-void lmScoreObj::AcceptChanges() 
-{
-	m_fModified = false;
-}
-
 wxString lmScoreObj::Dump()
 {
 	wxString sDump = _T("");
@@ -502,6 +490,24 @@ wxString lmScoreObj::SourceXML(int nIndent)
 	return sSource;
 }
 
+void lmScoreObj::SetDirty(bool fValue, bool fPropagate)
+{
+    m_fDirty = fValue;
+
+	// propagate to attached AuxObjs
+    if (fPropagate && m_pAuxObjs)
+    {
+	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+	    {
+		    (*m_pAuxObjs)[i]->SetDirty(fValue, fPropagate);
+	    }
+    }
+}
+
+void lmScoreObj::PrepareToCreateShapes() 
+{ 
+    m_pShapesMngr->Init( IsDirty() );
+}
 
 
 
@@ -526,6 +532,9 @@ lmComponentObj::lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, b
 
     // behaviour
     m_fIsDraggable = fIsDraggable;
+
+    //other
+    m_color = *wxBLACK;
 }
 
 lmComponentObj::~lmComponentObj()
@@ -581,7 +590,7 @@ lmStaff* lmStaffObj::GetStaff()
     return m_pVStaff->GetStaff(m_nStaffNum);
 }
 
-void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
 {
     PrepareToCreateShapes();
 
@@ -591,21 +600,19 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
     //ask object to compute a suitable positio. Normally it returns m_uPaperPos
     m_uComputedPos = ComputeBestLocation(m_uPaperPos, pPaper);
 
+    wxColour color = (g_fShowDirtyObjects && IsDirty() ? *wxRED : m_color);
+
 	lmLUnits uWidth = 0;
     if (m_fVisible || IsMultishaped())
     {
         //create the objects shapes
-        uWidth = LayoutObject(pBox, pPaper, m_uComputedPos, colorC);
+        uWidth = LayoutObject(pBox, pPaper, m_uComputedPos, color);
     }
 	else
 	{
 		//Create invisible shapes, to store the StaffObj position
         CreateInvisibleShape(pBox, uOrg, 0);
 	}
-
-	////if user defined position shift the shape
-	//if (m_pGMObj && m_uUserShift.x != 0.0f || m_uUserShift.y != 0.0f)
-	//	m_pGMObj->Shift(m_uUserShift.x, m_uUserShift.y);
 
 	// layout AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
@@ -616,7 +623,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 		    pPaper->SetCursorX(m_uComputedPos.x);
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
-		    (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
+		    (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
 	    }
     }
 
@@ -798,6 +805,14 @@ lmShapesMngr::lmShapesMngr()
 
 lmShapesMngr::~lmShapesMngr()
 {
+    if (lmPRESERVE_SHAPES && m_pGMObj)
+        delete m_pGMObj;
+}
+
+void lmShapesMngr::StoreShape(lmGMObject* pGMObj)
+{ 
+    if (lmPRESERVE_SHAPES && m_pGMObj) delete m_pGMObj;
+    m_pGMObj = pGMObj;
 }
 
 lmGMObject* lmShapesMngr::GetGraphicObject(int nShapeIdx)
@@ -848,7 +863,7 @@ lmUPoint lmShapesMngr::GetUserShift(int nShapeIdx)
 
 lmMultiShapesMngr::lmMultiShapesMngr()
 {
-    Init();
+    Init(false);
 }
 
 lmMultiShapesMngr::~lmMultiShapesMngr()
@@ -856,19 +871,36 @@ lmMultiShapesMngr::~lmMultiShapesMngr()
     std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
     while (it != m_ShapesInfo.end())
     {
+        if (lmPRESERVE_SHAPES)
+            delete (*it)->pGMObj;
         delete *it;
         ++it;
     }
+    m_ShapesInfo.clear();
 }
 
-void lmMultiShapesMngr::Init()
+void lmMultiShapesMngr::Init(bool fDeleteShapes)
 {
+    // AWARE. VERY IMPORTANT:
+    // Entries to shapes vector are also added when invoking SaveUserLocation().
+    // During LDP parsing, if a user position is specified, method [created object]->SaveUserLocation()
+    // is invoked and it, in turn, invokes lmShapesMngr::SaveUserLocation(). But at this point the
+    // shape is not yet created. Therefore, empty entries are added to the shapes table.
+    // This method (Init) is invoked from lmScoreObj::Layout, when preparing to create the shapes.
+    // Therefore, here we can not clear the vector, as it might contain valid information stored
+    // in uUserShift. 
+    // This method must JUST remove the unused shapes/shapes pointers and reset indexes counter.
+
     m_nNextIdx = 0;
 
-    //remove pointers to already deleted shapes
+    if (lmPRESERVE_SHAPES && !fDeleteShapes) return;
+
+    //delete shapes and remove pointers to them
     std::vector<lmShapeInfo*>::iterator it = m_ShapesInfo.begin();
     while (it != m_ShapesInfo.end())
     {
+        if (lmPRESERVE_SHAPES)
+            delete (*it)->pGMObj;
         (*it)->pGMObj = (lmGMObject*)NULL;
         ++it;
     }
@@ -877,6 +909,7 @@ void lmMultiShapesMngr::Init()
 void lmMultiShapesMngr::StoreShape(lmGMObject* pGMObj)
 {
     int nIdx = pGMObj->GetOwnerIDX();
+
     if (nIdx == (int)m_ShapesInfo.size())
     {
         lmShapeInfo* pShapeInfo = new lmShapeInfo;
@@ -886,19 +919,23 @@ void lmMultiShapesMngr::StoreShape(lmGMObject* pGMObj)
     }
     else
     {
-        wxASSERT(m_ShapesInfo[nIdx]->pGMObj == (lmGMObject*)NULL); 
+        lmGMObject* pShape = m_ShapesInfo[nIdx]->pGMObj;
+        wxASSERT(!lmPRESERVE_SHAPES && pShape == (lmGMObject*)NULL);
+        if (lmPRESERVE_SHAPES && pShape) delete pShape;
         m_ShapesInfo[nIdx]->pGMObj = pGMObj;
     }
 }
 
 lmGMObject* lmMultiShapesMngr::GetGraphicObject(int nShapeIdx)
 {
-    //For KeySignatures shape index is staff number (1..n) minus 1
+    //For prolog shapes, when object is not dirty, it might happen that a new sytem is added to
+    //the score. When trying to reuse the shapes, they will not exists for the new system. Therefore,
+    //if ndx >= vector.size it must return NULL and this will force to recreate it.
 
-    if (m_ShapesInfo.size() == 0) return (lmGMObject*)NULL;
-
-    wxASSERT(nShapeIdx < (int)m_ShapesInfo.size());
-    return m_ShapesInfo[nShapeIdx]->pGMObj;
+    if (nShapeIdx >= (int)m_ShapesInfo.size())
+        return (lmGMObject*)NULL;
+    else
+        return m_ShapesInfo[nShapeIdx]->pGMObj;
 }
 
 void lmMultiShapesMngr::SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx)

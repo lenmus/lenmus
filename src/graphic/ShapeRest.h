@@ -46,7 +46,7 @@ class lmPaper;
 class lmShapeRest : public lmCompositeShape
 {
 public:
-    lmShapeRest(lmScoreObj* pOwner, bool fDraggable = false, bool fVisible = true,
+    lmShapeRest(lmScoreObj* pOwner, wxColour color, bool fDraggable = false, bool fVisible = true,
                 lmEGMOType nType = eGMO_ShapeRest, wxString sName = _T("Rest"));
 
 

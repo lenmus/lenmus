@@ -5,7 +5,7 @@
 <book id="book">
 <bookinfo>
 <title>LenMus eMusicBooks' file format</title>
-<subtitle>Version 1.1. Revision: February 2007</subtitle>
+<subtitle>Version 1.2. Revision: February 2009</subtitle>
 
 <author>
 <surname>LenMus team</surname>
@@ -15,7 +15,7 @@
 
 <title>Legal Notice</title>
 <para>Permission is granted to copy, distribute, and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.2 or any later
+under the terms of the GNU Free Documentation License, Version 1.3 or any later
 version published by the Free Software Foundation; with no Invariant Sections, 
 no Front-Cover Texts, and no Back-Cover Texts. A copy of the license
 is available at 
@@ -32,7 +32,7 @@ and that you add no other conditions whatsoever to those of the GNU FDL.
 </legalnotice>
 
 <copyright>
-<year>2006-2007</year>
+<year>2006-2009</year>
 <holder>Cecilio Salmeron</holder>
 </copyright>
 </bookinfo>
@@ -687,9 +687,9 @@ the type of exercise:</para>
     assumed value is: "Both".</listitem></varlistentry>
     
 <varlistentry><term>&lt;clef&gt;</term>
-<listitem>Possible values: "Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1". 
+<listitem>Possible values: "G | F4 | F3 | C4 | C3 | C2 | C1". 
     If this param is not specified, default 
-    assumed value is: "Sol".</listitem></varlistentry>
+    assumed value is: "G".</listitem></varlistentry>
     
 <varlistentry><term>&lt;mode&gt;</term>
 <listitem>Possible values: "Major | Minor | Both". If this param is not specified, default 
@@ -721,14 +721,17 @@ the type of exercise:</para>
     assumed value is: "none".</listitem></varlistentry>
 
 <varlistentry><term>&lt;problem_type&gt;</term>
-<listitem>DPossible values: "DeduceInterval | BuildInterval | Both". If 
-    this param is not specified, default 
-    assumed value is: "Both".</listitem></varlistentry>
+<listitem>DPossible values: "DeduceInterval | BuildInterval".
+</listitem></varlistentry>
+
+<varlistentry><term>&lt;problem_level&gt;</term>
+<listitem>DPossible values: "0 | 1 | 2 | 3". Default: 2
+</listitem></varlistentry>
 
 <varlistentry><term>&lt;clef&gt;</term>
-<listitem>Possible values: "Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1". If 
+<listitem>Possible values: "G | F4 | F3 | C4 | C3 | C2 | C1". If 
     this param is not specified, default 
-    assumed value is: "Sol".</listitem></varlistentry>
+    assumed value is: "G".</listitem></varlistentry>
 
 </variablelist>
 
@@ -803,7 +806,7 @@ the type of exercise:</para>
 <variablelist>
 
 <varlistentry><term>&lt;keys&gt;</term>
-<listitem>Possible values: Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m"
+<listitem>Possible values: Keyword "all" or a list of allowed key signatures, i.e.: "C,F+,B-,a,g-"
                     Default: all.</listitem></varlistentry>
 
 <varlistentry><term>&lt;scales&gt;</term>
@@ -893,7 +896,7 @@ the type of exercise:</para>
 <listitem>a list of allowed time signatures, i.e.: "68,98,128".</listitem></varlistentry>
 
 <varlistentry><term>&lt;key&gt;</term>
-<listitem>keyword "all" or a list of allowed key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m".</listitem></varlistentry>
+<listitem>keyword "all" or a list of allowed key signatures, i.e.: "C,F+,B-,a,g-".</listitem></varlistentry>
 
 <varlistentry><term>&lt;max_interval&gt;</term>
 <listitem>a number indicating the maximum allowed interval for two 
@@ -908,11 +911,11 @@ the type of exercise:</para>
     &lt;control_go_back&gt;ch205&lt;/control_go_back&gt;
     &lt;control_play&gt;1&lt;/control_play&gt;
     &lt;control_solfa&gt;1&lt;/control_solfa&gt;
-    &lt;fragment&gt;24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-)&lt;/fragment&gt;
-    &lt;clef&gt;Sol;a3;a5&lt;/clef&gt;
-    &lt;clef&gt;Fa4;a2;f4&lt;/clef&gt;
+    &lt;fragment&gt;24;(n * e g+)(n * e l g-),(n * e g+)(n * s)(n * s g-)&lt;/fragment&gt;
+    &lt;clef&gt;G;a3;a5&lt;/clef&gt;
+    &lt;clef&gt;F4;a2;f4&lt;/clef&gt;
     &lt;time&gt;24&lt;/time&gt;
-    &lt;key&gt;Do&lt;/key&gt;
+    &lt;key&gt;C&lt;/key&gt;
 &lt;/lmobject&gt;
 </programlisting>
 
@@ -962,8 +965,8 @@ the described tag to each type of exercise, as listed here:</para>
 <row><entry>clef</entry>
     <entry>-</entry><entry>x</entry><entry>x</entry><entry>-</entry><entry>-</entry>
     <entry>-</entry><entry>-</entry><entry>x</entry>
-    <entry>The clefs to use in the exercise. Possible values: "Sol | Fa4 | Fa3 | Do4 
-    | Do3 | Do2 | Do1".</entry></row>
+    <entry>The clefs to use in the exercise. Possible values: "G | F4 | F3 | C4 
+    | C3 | C2 | C1".</entry></row>
     
 <row><entry>control_go_back</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
@@ -1004,13 +1007,13 @@ the described tag to each type of exercise, as listed here:</para>
 <row><entry>key</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
     <entry>-</entry><entry>-</entry><entry>x</entry>
-    <entry>Information to set up the score composer. Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m".</entry></row>
+    <entry>Information to set up the score composer. Keyword "all" or a list of allowed key signatures, i.e.: "C,F+,B-,a,g-".</entry></row>
     
 <row><entry>keys</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
     <entry>x</entry><entry>x</entry><entry>-</entry>
     <entry>Possible keys to use in the exercise. Possible values: Keyword "all" or a list of allowed 
-    key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m" Default: all.</entry></row>
+    key signatures, i.e.: "C,F+,B-,a,g-" Default: all.</entry></row>
     
 <row><entry>max_accidentals</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>

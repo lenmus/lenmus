@@ -45,7 +45,7 @@
 
 
 lmShapeBeam::lmShapeBeam(lmNoteRest* pOwner, bool fStemsDown, wxColour color)
-	: lmCompositeShape(pOwner, 0, _T("Beam"), lmNO_DRAGGABLE, eGMO_ShapeBeam)
+	: lmCompositeShape(pOwner, 0, color, _T("Beam"), lmNO_DRAGGABLE, eGMO_ShapeBeam)
 {
 	m_color = color;
 	m_fStemsDown = fStemsDown;

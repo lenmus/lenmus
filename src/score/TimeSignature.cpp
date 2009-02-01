@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -184,45 +184,64 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
     // creating the shape object and adding it to the graphical model. 
 
 
-    //get the position on which the time signature must be drawn
-    lmLUnits uxPosTop = uPos.x;
-    lmLUnits uxPosBottom = uPos.x;
-	lmLUnits uyPosTop = uPos.y + m_pVStaff->GetStaffOffset(m_nStaffNum)
-						- m_pVStaff->TenthsToLogical(20, m_nStaffNum);
-    lmLUnits uyPosBottom = uyPosTop + m_pVStaff->TenthsToLogical(20, m_nStaffNum);
-
-    //compute Beats and BeatsType positions so that one is centered on the other
-    wxString sTopGlyphs = wxString::Format(_T("%d"), m_nBeats );
-    wxString sBottomGlyphs = wxString::Format(_T("%d"), m_nBeatType );
-    lmLUnits uWidth1, uHeight1, uWidth2, uHeight2;
-    pPaper->GetTextExtent(sTopGlyphs, &uWidth1, &uHeight1);
-    pPaper->GetTextExtent(sBottomGlyphs, &uWidth2, &uHeight2);
-
-    if (uWidth2 > uWidth1) {
-        //bottom number wider
-        uxPosTop += (uWidth2 - uWidth1) / 2;
-    }
-    else {
-        //bottom number wider
-        uxPosBottom += (uWidth1 - uWidth2) / 2;
-    }
-
-    //Time signature is common to all lmVStaff staves of the instrument, but the lmStaffObj
-    //representing it is only present in the first staff. Therefore, for renderization, it
-    //is necessary to repeat the shape in each staff of the instrument
-    //So in the following loop we add a time signature shape for each VStaff of the
-    //instrument
-    lmLUnits yOffset = 0;
-    lmStaff* pStaff = m_pVStaff->GetFirstStaff();
-    for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+    if (lmPRESERVE_SHAPES && !IsDirty())
     {
-        // Add the shape for time signature
-        CreateShape(nStaff-1, pBox, pPaper, colorC, sTopGlyphs, uxPosTop, uyPosTop + yOffset,
-					sBottomGlyphs, uxPosBottom, uyPosBottom + yOffset);
+        //Not dirty: just add existing shapes to the Box
+        lmStaff* pStaff = m_pVStaff->GetFirstStaff();
+        for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+        {
+            lmShape* pOldShape = this->GetShape(nStaff);
+	        pBox->AddShape(pOldShape);
+            pOldShape->SetColour(colorC);       //change its colour to new desired colour
+        }
+    }
+    else
+    {
+        //Dirty: create new shapes for this object
 
-        //compute vertical displacement for next staff
-        yOffset += pStaff->GetHeight();
-        yOffset += pStaff->GetAfterSpace();
+        //get the position on which the time signature must be drawn
+        lmLUnits uxPosTop = uPos.x;
+        lmLUnits uxPosBottom = uPos.x;
+	    lmLUnits uyPosTop = uPos.y + m_pVStaff->GetStaffOffset(m_nStaffNum)
+						    - m_pVStaff->TenthsToLogical(20, m_nStaffNum);
+        lmLUnits uyPosBottom = uyPosTop + m_pVStaff->TenthsToLogical(20, m_nStaffNum);
+
+        //compute Beats and BeatsType positions so that one is centered on the other
+        wxString sTopGlyphs = wxString::Format(_T("%d"), m_nBeats );
+        wxString sBottomGlyphs = wxString::Format(_T("%d"), m_nBeatType );
+        lmLUnits uWidth1, uHeight1, uWidth2, uHeight2;
+        pPaper->GetTextExtent(sTopGlyphs, &uWidth1, &uHeight1);
+        pPaper->GetTextExtent(sBottomGlyphs, &uWidth2, &uHeight2);
+
+        if (uWidth2 > uWidth1) {
+            //bottom number wider
+            uxPosTop += (uWidth2 - uWidth1) / 2;
+        }
+        else {
+            //bottom number wider
+            uxPosBottom += (uWidth1 - uWidth2) / 2;
+        }
+
+        //Time signature is common to all lmVStaff staves of the instrument, but the lmStaffObj
+        //representing it is only present in the first staff. Therefore, for renderization, it
+        //is necessary to repeat the shape in each staff of the instrument
+        //So in the following loop we add a time signature shape for each VStaff of the
+        //instrument
+        lmLUnits yOffset = 0;
+        lmStaff* pStaff = m_pVStaff->GetFirstStaff();
+        for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+        {
+            // Add the shape for time signature
+            lmShape* pShape = CreateShape(nStaff-1, pBox, pPaper, colorC, sTopGlyphs, uxPosTop,
+                                        uyPosTop + yOffset, sBottomGlyphs, uxPosBottom, 
+                                        uyPosBottom + yOffset);
+	        pBox->AddShape(pShape);
+            StoreShape(pShape);
+
+            //compute vertical displacement for next staff
+            yOffset += pStaff->GetHeight();
+            yOffset += pStaff->GetAfterSpace();
+        }
     }
 
 	// set total width (incremented in one line for after space)
@@ -238,15 +257,13 @@ lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPape
                                       lmLUnits uxPosBottom, lmLUnits uyPosBottom)
 {
     if (!m_fVisible)
-        return CreateInvisibleShape(pBox, lmUPoint(uxPosTop, uyPosTop), nShapeIdx);
+        //return CreateInvisibleShape(pBox, lmUPoint(uxPosTop, uyPosTop), nShapeIdx);
+        return new lmShapeInvisible(this, nShapeIdx, lmUPoint(uxPosTop, uyPosTop), lmUSize(0.0, 0.0) );
 
 
 	//create the shape object
-    lmCompositeShape* pShape = new lmCompositeShape(this, nShapeIdx, _T("Time signature"),
+    lmCompositeShape* pShape = new lmCompositeShape(this, nShapeIdx, colorC, _T("Time signature"),
                                                     lmDRAGGABLE);
-	pBox->AddShape(pShape);
-    StoreShape(pShape);
-
 	//loop to create glyphs for the top number
 	long nDigit;
 	for (int i=0; i < (int)sTopGlyphs.length(); i++)
@@ -257,7 +274,7 @@ lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPape
 		lmLUnits uyPos = uyPosTop 
 						 + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
         pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosTop, uyPos), 
-									 _T("Beats"), lmNO_DRAGGABLE) );
+									 _T("Beats"), lmNO_DRAGGABLE, colorC) );
 		uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
 	}
 
@@ -270,7 +287,7 @@ lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPape
 		lmLUnits uyPos = uyPosBottom 
 						+ m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
 		pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosBottom, uyPos), 
-									 _T("BeatType"), lmNO_DRAGGABLE) );
+									 _T("BeatType"), lmNO_DRAGGABLE, colorC) );
 		uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
 	}
 
@@ -294,13 +311,13 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 
 void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
- //   //This method is invoked only from TimeposTable module, from methods 
- //   //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
- //   //computations.
- //   //By invoking this method, the auto-layout algorithm is informing about a change in
- //   //the computed final position for this ScoreObj.
- //   //Take into account that this method can be invoked several times for the
- //   //same ScoreObj, when the auto-layout algorithm refines the final position.
+    //This method is invoked only from TimeposTable module, from methods 
+    //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
+    //computations.
+    //By invoking this method, the auto-layout algorithm is informing about a change in
+    //the computed final position for this ScoreObj.
+    //Take into account that this method can be invoked several times for the
+    //same ScoreObj, when the auto-layout algorithm refines the final position.
 
     lmStaffObj::StoreOriginAndShiftShapes(uxShift, nShapeIdx);
 
@@ -417,16 +434,18 @@ int GetBeatTypeFromTimeSignType(lmETimeSignature nTimeSign)
     }
 }
 
-//! returns beat duration (in LDP notes duration units)
 float GetBeatDuration(lmETimeSignature nTimeSign)
 {
+    // returns beat duration (in LDP notes duration units)
+
     int nBeatType = GetBeatTypeFromTimeSignType(nTimeSign);
     return GetBeatDuration(nBeatType);
 }
 
-//! returns beat duration (in LDP notes duration units)
 float GetBeatDuration(int nBeatType)
 {
+    // returns beat duration (in LDP notes duration units)
+
     switch(nBeatType) {
         case 1:
             return pow(2.0f, (10 - eWhole));
@@ -444,28 +463,13 @@ float GetBeatDuration(int nBeatType)
     }
 }
 
-//! Returns the required duration for a measure in the received time signature
 float GetMeasureDuration(lmETimeSignature nTimeSign)
 {
+    // Returns the required duration for a measure in the received time signature
+
     float rNumBeats = (float)GetNumBeatsFromTimeSignType(nTimeSign);
     return rNumBeats * GetBeatDuration(nTimeSign);
 }
-
-//bool IsBinaryTimeSignature(lmETimeSignature nTimeSign)
-//{
-//    switch (nTimeSign) {
-//        case emtr24:
-//        case emtr34:
-//        case emtr44:
-//        case emtr28:
-//        case emtr22:
-//        case emtr32:
-//            return true;
-//        default:
-//            return false;
-//    }
-//
-//}
 
 int AssignVolume(float rTimePos, int nBeats, int nBeatType)
 {
@@ -490,7 +494,6 @@ int AssignVolume(float rTimePos, int nBeats, int nBeatType)
     return nVolume;
 
 }
-
 
 int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType)
 {

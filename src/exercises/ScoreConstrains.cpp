@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -433,16 +433,16 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
         return the total duration of the pattern
     */
 
-    if (sPattern.Contains(_T("(n b")))
+    if (sPattern.Contains(_T("(n h")))
         wxLogMessage(_T("[lmFragmentsTable::GetPatternDuracion] Invalid pattern %s"), sPattern.c_str());
 
     //prepare source with a measure and instatiate note pitches
-    wxString sSource = _T("(c 1 ") + sPattern;
-    sSource += _T("(Barra Final))");
+    wxString sSource = _T("(musicData ") + sPattern;
+    sSource += _T("(barline end))");
     sSource.Replace(_T("*"), _T("a4"));
 
     // prepare and initialize the score
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
     lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
@@ -453,7 +453,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     //pVStaff->AddTimeSignature( m_nTimeSign );
     pNode = parserLDP.ParseText(sSource);
     //wxLogMessage(_T("[lmFragmentsTable::GetPatternDuracion] %s"), sSource.c_str());
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    parserLDP.AnalyzeMusicData(pNode, pVStaff);
 
     //The score is built. Traverse it to get total duration
     lmStaffObj* pSO;
@@ -489,12 +489,12 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
             sSegment.c_str() );
 
     //prepare source with a measure and instatiate note pitches
-    wxString sSource = _T("(c 1 ") + sSegment;
-    sSource += _T("(Barra Final))");
+    wxString sSource = _T("(musicData ") + sSegment;
+    sSource += _T("(barline end))");
     sSource.Replace(_T("*"), _T("a4"));
 
     // prepare and initialize the score
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
     lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
@@ -504,7 +504,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     pVStaff->AddKeySignature(earmDo);
     //pVStaff->AddTimeSignature( m_nTimeSign );
     pNode = parserLDP.ParseText(sSource);
-    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    parserLDP.AnalyzeMusicData(pNode, pVStaff);
 
     //The score is built. Traverse it to get total duration
     lmStaffObj* pSO;

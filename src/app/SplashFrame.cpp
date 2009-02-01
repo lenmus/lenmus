@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -90,9 +90,7 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
     // copyright message
     wxString sCopy = _T("Copyright ");
     sCopy += 169;       //copyright symbol
-    sCopy += _T(" 2002-2008 Cecilio Salmer");
-    sCopy += 243;       //o acute symbol
-    sCopy += _T("n");
+    sCopy += _T(" 2002-2009 LenMus project");
     wxStaticText* pText3 = new wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 240), 
 		wxDefaultSize);
     font.SetWeight( wxFONTWEIGHT_BOLD );

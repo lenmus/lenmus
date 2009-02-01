@@ -66,9 +66,10 @@ public:
 	virtual void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx);
 	void SaveUserXLocation(lmLUnits xPos, int nShapeIdx);
 	virtual lmUPoint GetUserShift(int nShapeIdx);
-    virtual void StoreShape(lmGMObject* pGMObj) { m_pGMObj = pGMObj; }
+    virtual void StoreShape(lmGMObject* pGMObj);
     virtual int NewShapeIndex() { return 0; }
-    virtual void Init() {}
+    virtual void SetShapesIndexCounter(int nNextIndex) {}    
+    virtual void Init(bool fDeleteShapes) {}
     virtual bool IsMultishaped() { return false; }
 
 protected:
@@ -91,7 +92,8 @@ public:
 	lmUPoint GetUserShift(int nShapeIdx);
     void StoreShape(lmGMObject* pGMObj);
     inline int NewShapeIndex() { return m_nNextIdx++; }
-    void Init();
+    inline void SetShapesIndexCounter(int nNextIndex) { m_nNextIdx = nNextIndex; }    
+    void Init(bool fDeleteShapes);
     inline bool IsMultishaped() { return true; }
 
 protected:
@@ -181,9 +183,13 @@ public:
 
 	//--- a ScoreObj can be renderizable
 
+    //incremental renderization
+    virtual bool IsDirty() const { return m_fDirty; }
+    virtual void SetDirty(bool fValue, bool fPropagate=false);
+
     //interface with shapes manager
-    void StoreShape(lmGMObject* pGMObj) { m_pShapesMngr->StoreShape(pGMObj); }
-    lmShape* GetShapeFromIdx(int nShapeIdx=0) { return (lmShape*)GetGraphicObject(nShapeIdx); }
+    inline void StoreShape(lmGMObject* pGMObj) { m_pShapesMngr->StoreShape(pGMObj); }
+    inline lmShape* GetShapeFromIdx(int nShapeIdx=0) { return (lmShape*)GetGraphicObject(nShapeIdx); }
     virtual lmShape* GetShape(int nStaff=1);
     inline lmGMObject* GetGraphicObject(int nShapeIdx=0) { return m_pShapesMngr->GetGraphicObject(nShapeIdx); }
 	inline void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0) {
@@ -194,7 +200,10 @@ public:
             }
 
     inline lmUPoint GetUserShift(int nShapeIdx = 0) { return m_pShapesMngr->GetUserShift(nShapeIdx); }
-    int NewShapeIndex() { return m_pShapesMngr->NewShapeIndex(); }
+    inline int NewShapeIndex() { return m_pShapesMngr->NewShapeIndex(); }
+    inline void SetShapesIndexCounter(int nNextIdx) {
+                m_pShapesMngr->SetShapesIndexCounter(nNextIdx);
+            }
 
     //other shapes related methods
     virtual inline bool IsMainShape(int nShapeIdx) { return nShapeIdx == 0; }
@@ -233,20 +242,16 @@ public:
     virtual wxString SourceLDP(int nIndent);
     virtual wxString SourceXML(int nIndent);
 
-    //edit management
-	inline bool IsModified() { return m_fModified; }
-	virtual void RecordHistory(lmUndoData* pUndoData);
-	virtual void AcceptChanges();
 
 
 protected:
     lmScoreObj(lmScoreObj* pParent);
-    void PrepareToCreateShapes() { m_pShapesMngr->Init(); }
+    void PrepareToCreateShapes();
 
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
-	bool			m_fModified;		//the object has been modified, directly or indirectly, by a user edit operation
+    bool            m_fDirty;           //the object has been modified and needs layout recomputation
 
 	//information only valid for rendering as score: position and shape
     //These variables are only valid for the Formatter algorithm and, therefore, are not
@@ -295,9 +300,11 @@ public:
 	inline bool IsAuxObj() { return m_nType == lm_eAuxObj; }
 
     // graphical model
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper,
-						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight = false)=0;
     virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+
+    //properties
+    inline void SetColour(wxColour color) { m_color = color; }
 
 
 
@@ -308,7 +315,7 @@ protected:
     lmEComponentObjType     m_nType;        //type of ComponentObj
     int                     m_nId;          //unique number, to identify each lmComponentObj
     bool                    m_fIsDraggable;
-
+	wxColour		        m_color;        //object color
 
 };
 
@@ -347,12 +354,10 @@ public:
 
 	//---- virtual methods of base class -------------------------
 
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
-                        bool fHighlight = false);
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight = false);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
     lmScore* GetScore();
     lmStaff* GetStaff();
-
 
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
@@ -495,8 +500,7 @@ public:
 
 	//---- virtual methods of base class -------------------------
 
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper,
-						wxColour colorC = *wxBLACK, bool fHighlight = false);
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight = false);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
     inline lmScore* GetScore() { return m_pParent->GetScore(); }
     inline lmStaff* GetStaff() { return m_pParent->GetStaff(); }

@@ -81,7 +81,6 @@ private:
     //variables
     lmEClefType		m_nClefType;        //type of clef
     bool            m_fHidden;          //to hide it in system prolog
-	wxColour		m_color;			//clef color
 	lmContext*		m_pContext;			//context created by this clef
 
 };

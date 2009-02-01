@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -495,7 +495,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
                 m_oTimepos[m_nColumn].DumpTimeposTable());
             #endif
 
-            //check if there is enoogh space to add this column to current system
+            //check if there is enough space to add this column to current system
             if (m_uFreeSpace < m_uMeasureSize[m_nColumn])
 			{
                 //there is no enough space for this measure column.
@@ -735,10 +735,17 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
 
 void lmFormatter4::AddColumnToSystem()
 {
+    //A column has been processed, it has been checked that there is enough space to include it
+    //in current system and, finally, decided to include it. This method does whatever
+    //is necessary to include the column and consolidate the situation.
+
     //Add column to current system and discount the space that the measure will take
     m_uFreeSpace -= m_uMeasureSize[m_nColumn];
     m_nColumnsInSystem++;
     m_pSysCursor->CommitCursors();
+
+    //mark all objects in column as 'non dirty'
+    m_oTimepos[m_nColumn].ClearDirtyFlags();
 
     //prepare to create a new column
     m_nColumn++;

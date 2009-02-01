@@ -41,9 +41,9 @@
 // Implementation of lmShapeRest
 
 
-lmShapeRest::lmShapeRest(lmScoreObj* pOwner, bool fDraggable, bool fVisible,
+lmShapeRest::lmShapeRest(lmScoreObj* pOwner, wxColour color, bool fDraggable, bool fVisible,
                          lmEGMOType nType, wxString sName)
-	: lmCompositeShape(pOwner, 0, sName, fDraggable, nType, fVisible)
+	: lmCompositeShape(pOwner, 0, color, sName, fDraggable, nType, fVisible)
 {
     m_pBeamShape = (lmShapeBeam*)NULL;
 }

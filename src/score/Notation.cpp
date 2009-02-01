@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -134,6 +134,7 @@ lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
+    lmShape* pShape;
     if (g_fDrawAnchors)
     {
         //Draw a red line to show anchor position
@@ -145,15 +146,16 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
         lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
 
         //create the shape
-        lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
-                                            uWidth, uBoundsExtraWidth, *wxRED,
-                                            _T("Anchor"), eEdgeNormal);
-	    pBox->AddShape(pShape);
-        StoreShape(pShape);
+        pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd, uWidth, uBoundsExtraWidth,
+                                 *wxRED, _T("Anchor"), eEdgeNormal);
 
     }
     else
-        CreateInvisibleShape(pBox, uPos, 0);
+        //pShape = CreateInvisibleShape(pBox, uPos, 0);
+        pShape = new lmShapeInvisible(this, 0, uPos, lmUSize(0.0, 0.0) );
+
+    pBox->AddShape(pShape);
+    StoreShape(pShape);
 
     return 0.0f;        //returns total width
 }

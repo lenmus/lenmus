@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -323,7 +323,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lm
     //create a score with the scale
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -340,14 +340,14 @@ wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lm
 
 //    pVStaff->AddSpacer(30);       // 3 lines
     int i = (m_fAscending ? 0 : nNumNotes-1);
-    sPattern = _T("(n ") + oScaleMngr.GetPattern(i) + _T(" r)");
+    sPattern = _T("(n ") + oScaleMngr.GetPattern(i) + _T(" w)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddSpacer(10);       // 1 lines
     for (i=1; i < nNumNotes; i++) {
         sPattern = _T("(n ");
         sPattern += oScaleMngr.GetPattern((m_fAscending ? i : nNumNotes-1-i));
-        sPattern +=  _T(" r)");
+        sPattern +=  _T(" w)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         pVStaff->AddSpacer(10);       // 1 lines

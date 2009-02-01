@@ -39,9 +39,9 @@ in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measu
     <music_border>0</music_border>
     <music>
         (time 2 4)
-        (n * n)(n * n)(barline simple)
-        (n * b)(barline simple)
-        (s b)(barline end))
+        (n * q)(n * q)(barline simple)
+        (n * h)(barline simple)
+        (r h)(barline end))
     </music>
 </score></para>
 
@@ -118,15 +118,15 @@ this rhythm.</para>
     <control_go_back>mr1_thm2</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>Sol;d4;b4</clef>
-    <key>Do</key>
-    <key>Lam</key>
+    <clef>G;d4;b4</clef>
+    <key>C</key>
+    <key>a</key>
     <time>24</time>
     <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
-    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * h)</fragment>
     <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
-    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * b)</fragment>
-    <fragment>24;(n * n)(n * n),(n * b),(s b)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(n * q)(n * q),(n * h),(r h)</fragment>
 </exercise>
 
 </theme>
