@@ -165,13 +165,11 @@ lmDlgCfgTheoIntervals::lmDlgCfgTheoIntervals(wxWindow * parent,
     if (m_pConstrains->GetProblemType() == ePT_BuildInterval)
     {
         //build interval mode
-        m_pRadLevel->Show(false);
         m_pBoxIntvalTypes->Show(false);
     }
     else
     {
         //indentify interval mode
-        m_pRadLevel->Show(true);
         m_pBoxIntvalTypes->Show(true);
     }
 

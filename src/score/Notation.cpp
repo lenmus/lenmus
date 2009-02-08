@@ -67,13 +67,26 @@ lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     lmLUnits uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
-    lmShape* pShape = new lmShapeInvisible(this, 0, uPos, lmUSize(uWidth, 0.0), _T("spacer"));
+    lmShape* pShape;
+    if (g_fDrawAnchors)
+    {
+        //Draw a red rectangle to show spacer position
+        lmLUnits uyStart = uPos.y + m_pParent->TenthsToLogical(5);
+        lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(35);
+        lmLUnits uLineWidth = m_pParent->TenthsToLogical(1);
+
+        //create the shape
+        pShape = new lmShapeRectangle(this, uPos.x, uyStart, uPos.x + uWidth, uyEnd, uLineWidth,
+                                      *wxRED, _T("Spacer"), lmDRAGGABLE, lmSELECTABLE, lmVISIBLE);
+    }
+    else
+        pShape = new lmShapeInvisible(this, 0, uPos, lmUSize(uWidth, 0.0), _T("spacer"));
+
 	pBox->AddShape(pShape);
     StoreShape(pShape);
 
     // set total width
     return uWidth;
-
 }
 
 wxString lmSpacer::Dump()

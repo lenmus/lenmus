@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -67,7 +67,7 @@ lmFPitch FPitch(int nStep, int nOctave, int nAcc)
 {
     //  Cbb Cb  C   C#  C## -   Dbb Db  D   D#  D## -   Ebb Eb  E   E#  E## Fbb Fb  F   F#  F## -
     //  1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23
-    //  -       23
+    //  
     //  Gbb Gb  G   G#  G## -   Abb Ab  A   A#  A## -   Bbb Bb  B   B#  B##
     //  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40
     //
@@ -100,6 +100,14 @@ lmFPitch FPitch(int nStep, int nOctave, int nAcc)
     if (nStep < 3) fpPitch++;
     return fpPitch + nAcc;
 
+}
+
+bool FPitch_IsValid(lmFPitch fp)
+{
+    //returns false for invalid pitches (6, 12, 23, 29 & 35)
+
+    int x = ((fp - 1) % 40 ) + 1;
+    return !(x == 6 || x == 12 || x == 23 || x == 29 || x == 35);
 }
 
 lmFPitch FPitch(wxString& sNote)
@@ -187,6 +195,7 @@ int FPitch_Accidentals(lmFPitch fp)
 wxString FPitch_ToAbsLDPName(lmFPitch fp)
 {
     // The absolute LDP none name is returned
+    // If note is invalid (more than two accidentals) returns empty string
 
     wxString sAnswer;
     switch(FPitch_Accidentals(fp)) {
@@ -196,7 +205,7 @@ wxString FPitch_ToAbsLDPName(lmFPitch fp)
         case 1:  sAnswer =_T("+"); break;
         case 2:  sAnswer =_T("x"); break;
         default:
-            sAnswer = _T("");
+            return wxEmptyString;
     }
     sAnswer += m_sNoteName[FPitch_Step(fp)];
     sAnswer += wxString::Format(_T("%d"), FPitch_Octave(fp));
@@ -374,53 +383,6 @@ lmFPitch FPitch_AddSemitone(lmFPitch fpNote, bool fUseSharps)
 
 
 //-------------------------------------------------------------------------------------
-// FIntval
-//-------------------------------------------------------------------------------------
-
-lmFIntval FIntval(wxString& sName)
-{
-    // unison
-    if (sName == _T("p1")) return lm_p1;
-    if (sName == _T("a1")) return lm_a1;
-    // second
-    if (sName == _T("d2")) return lm_d2;
-    if (sName == _T("m2")) return lm_m2;
-    if (sName == _T("M2")) return lm_M2;
-    if (sName == _T("a2")) return lm_a2;
-    // third
-    if (sName == _T("d3")) return lm_d3;
-    if (sName == _T("m3")) return lm_m3;
-    if (sName == _T("M3")) return lm_M3;
-    if (sName == _T("a3")) return lm_a3;
-    // fourth
-    if (sName == _T("d4")) return lm_d4;
-    if (sName == _T("p4")) return lm_p4;
-    if (sName == _T("a4")) return lm_a4;
-    // fifth
-    if (sName == _T("d5")) return lm_d5;
-    if (sName == _T("p5")) return lm_p5;
-    if (sName == _T("a5")) return lm_a5;
-    //sixth
-    if (sName == _T("d6")) return lm_d6;
-    if (sName == _T("m6")) return lm_m6;
-    if (sName == _T("M6")) return lm_M6;
-    if (sName == _T("a6")) return lm_a6;
-    // seventh
-    if (sName == _T("d7")) return lm_d7;
-    if (sName == _T("m7")) return lm_m7;
-    if (sName == _T("M7")) return lm_M7;
-    if (sName == _T("a7")) return lm_a7;
-    // octave
-    if (sName == _T("d8")) return lm_d8;
-    if (sName == _T("p8")) return lm_p8;
-
-    return lmNULL_FIntval;
-
-}
-
-
-
-//-------------------------------------------------------------------------------------
 // implementation of class lmAPitch: Absoulte pitch
 //-------------------------------------------------------------------------------------
 
@@ -561,7 +523,7 @@ const lmMPitch lmAPitch::GetMPitch() const
 // lmDPitch: Diatonic pitch
 //---------------------------------------------------------------------------------------
 
-extern lmMPitch DPitch_ToMPitch(lmDPitch dp)
+lmMPitch DPitch_ToMPitch(lmDPitch dp)
 {
     int nOctave = (dp - 1) / 7;
     int nRemainder = dp % 7;
@@ -609,6 +571,17 @@ wxString DPitch_GetEnglishNoteName(lmDPitch dp)
 
 }
 
+lmFPitch DPitch_ToFPitch(lmDPitch dp, lmEKeySignatures nKey)
+{
+    // Get the accidentals implied by the key signature.
+    // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
+    // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
+    int nAccidentals[7];
+    ComputeAccidentals(nKey, nAccidentals);
+
+    int nStep = DPitch_Step(dp);
+    return FPitch(nStep, DPitch_Octave(dp), nAccidentals[nStep]);
+}
 
 
 //---------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,37 +36,75 @@
 #include "wx/wx.h"
 #endif
 
-// ----------------------------------------------------------------------------
-//  lmCountersAuxCtrol: a control to embed in html exercises to display number
-//  on right and wrong student answers, and the total score (percentage)
-// ----------------------------------------------------------------------------
-class lmCountersAuxCtrol : public wxWindow    
+
+class lmProblemManager;
+class lmLeitnerManager;
+class lmQuizManager;
+
+
+//----------------------------------------------------------------------------
+// lmCountersAuxCtrol: an abstract control to embed in html exercises to 
+// statistics about user performance in doing the exercise
+//----------------------------------------------------------------------------
+class lmCountersAuxCtrol : public wxPanel     
 {
 
 public:
 
     // constructor and destructor    
     lmCountersAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
-                    const wxPoint& pos = wxDefaultPosition);
+                       const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize);
 
-    ~lmCountersAuxCtrol();
+    virtual ~lmCountersAuxCtrol();
+
+    virtual void UpdateDisplay(bool fSuccess)=0;
+    virtual void OnNewQuestion() {}
+
+    //other
+    void RightWrongSound(bool fSuccess);
+
+
+protected:
+    double              m_rScale;           //current scaling factor
+
+
+};
+
+//----------------------------------------------------------------------------
+// lmQuizAuxCtrol: a control to embed in html exercises to display number
+// on right and wrong student answers, in a session, and the total score
+// (percentage)
+//----------------------------------------------------------------------------
+class lmQuizAuxCtrol : public lmCountersAuxCtrol    
+{
+public:
+
+    // constructor and destructor    
+    lmQuizAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
+                   lmQuizManager* pProblemMngr, 
+                   const wxPoint& pos = wxDefaultPosition);
+
+    ~lmQuizAuxCtrol();
+
+    //base class virtual methods implementation
+    void UpdateDisplay(bool fSuccess);
+
+    //overrides
+    void OnNewQuestion();
 
     // event handlers
     void OnResetCounters(wxCommandEvent& WXUNUSED(event));
 
     // settings
-    void IncrementWrong();
-    void IncrementRight();
     void ResetCounters();
     void NextTeam();
 
-private:
+protected:
     void UpdateDisplays(int nTeam);
     void CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, bool fTeam);
 
-    //counters for right and wrong answers
-    int         m_nRight[2];
-    int         m_nWrong[2];
+    lmQuizManager*   m_pProblemMngr;
 
     //displays
     wxStaticText*   m_pRightCounter[2];
@@ -76,13 +114,46 @@ private:
     //labels
     wxStaticText*   m_pTeamTxt;
     
-    //teams
-    int         m_nMaxTeam;             //num of teams (1..2)
-    int         m_nCurrentTeam;         //team currently playing (0..1)
-    bool        m_fStart;               //to ensure that first time we start with first team
+    DECLARE_EVENT_TABLE()
+};
 
-    // other
-    double      m_rScale;               //current scaling factor
+
+//----------------------------------------------------------------------------
+// lmLeitnerAuxCtrol: a control to embed in html exercises to display statistics
+// on user performance in learning the subject. It uses the Leitner system of
+// spaced repetitions
+//----------------------------------------------------------------------------
+class lmLeitnerAuxCtrol : public lmCountersAuxCtrol    
+{
+
+public:
+
+    // constructor and destructor    
+    lmLeitnerAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
+                      lmLeitnerManager* pProblemMngr, 
+                      const wxPoint& pos = wxDefaultPosition);
+
+    ~lmLeitnerAuxCtrol();
+
+    //event handlers
+    void OnExplainProgress(wxCommandEvent& WXUNUSED(event));
+
+    //base class virtual methods implementation
+    void UpdateDisplay(bool fSuccess);
+
+
+protected:
+    void CreateControls();
+
+    lmLeitnerManager*       m_pProblemMngr;
+
+	wxStaticText* m_pTxtPoor;
+	wxStaticText* m_pTxtFair;
+	wxStaticText* m_pTxtGood;
+	wxStaticText* m_pTxtAchieved;
+	wxStaticText* m_pLblProgress;
+	wxStaticText* m_pTxtProgress;
+
 
     DECLARE_EVENT_TABLE()
 };

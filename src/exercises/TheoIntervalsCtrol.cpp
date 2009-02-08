@@ -43,10 +43,172 @@
 extern lmColors* g_pColors;
 
 // access to global external variables
-extern bool g_fReleaseVersion;            // in TheApp.cpp
-extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-extern bool g_fShowDebugLinks;            // in TheApp.cpp
-extern bool g_fAutoNewProblem;          // in Preferences.cpp
+extern bool g_fReleaseVersion;      // in TheApp.cpp
+extern bool g_fReleaseBehaviour;    // in TheApp.cpp
+extern bool g_fShowDebugLinks;      // in TheApp.cpp
+extern bool g_fAutoNewProblem;      // in Preferences.cpp
+
+
+//Data about intervals to generate for each problem level
+static lmFIntval m_aProblemDataL0[] = {
+    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
+static lmFIntval m_aProblemDataL1[] = {
+    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
+static lmFIntval m_aProblemDataL2[] = {
+    lm_p1, lm_a1, lm_d2, lm_m2, lm_M2, lm_a2, lm_d3, lm_m3, lm_M3, lm_a3, lm_d4, lm_p4, lm_a4,
+    lm_d5, lm_p5, lm_a5, lm_d6, lm_m6, lm_M6, lm_a6, lm_d7, lm_m7, lm_M7, lm_a7, lm_d8, lm_p8 };
+static lmFIntval m_aProblemDataL3[] = {
+    lm_p1, lm_a1, lm_da1, lm_dd2, lm_d2, lm_m2, lm_M2, lm_a2, lm_da2, lm_dd3, lm_d3, lm_m3, lm_M3,
+    lm_a3, lm_da3, lm_dd4, lm_d4, lm_p4, lm_a4, lm_da4, lm_dd5, lm_d5, lm_p5, lm_a5, lm_da5, lm_dd6,
+    lm_d6, lm_m6, lm_M6, lm_a6, lm_da6, lm_dd7, lm_d7, lm_m7, lm_M7, lm_a7, lm_da7, lm_dd8, lm_d8,
+    lm_p8 };
+
+
+//----------------------------------------------------------------------------------
+// Implementation of lmTheoIntervalCtrol
+//----------------------------------------------------------------------------------
+
+
+lmTheoIntervalCtrol::lmTheoIntervalCtrol(wxWindow* parent, wxWindowID id,
+                           lmTheoIntervalsConstrains* pConstrains,
+                           const wxPoint& pos, const wxSize& size, int style)
+    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(380, 150), pos, size, style )
+{
+    //initializations
+    m_pConstrains = pConstrains;
+    m_nRespIndex = 0;
+
+    m_pConstrains->SetGenerationModeSupported(lm_eLearningMode, true);
+    ChangeGenerationMode(lm_eLearningMode);
+}
+
+lmTheoIntervalCtrol::~lmTheoIntervalCtrol()
+{
+}
+
+void lmTheoIntervalCtrol::PrepareAuxScore(int nButton)
+{
+    // No problem is presented and the user press the button to play a specific
+    // sound (chord, interval, scale, etc.)
+    // This method is then invoked to prepare the score with the requested sound.
+    // At return, base class will play it
+
+    // In theory interval exercises it is not allowed to play an interval so
+    // we return a Null score
+    m_pAuxScore = (lmScore*)NULL;
+}
+
+wxDialog* lmTheoIntervalCtrol::GetSettingsDlg()
+{
+    // 'Settings' link has been clicked. This method must return the dialog to invoke
+
+    wxDialog* pDlg = new lmDlgCfgTheoIntervals(this, m_pConstrains);
+    return pDlg;
+}
+
+void lmTheoIntervalCtrol::OnSettingsChanged()
+{
+    // The settings have been changed.
+
+    //if problem level has changed set up the new problem space
+    if (m_nProblemLevel != m_pConstrains->GetProblemLevel())
+    {
+        LoadProblemSpace();
+    }
+
+    //Reconfigure answer keyboard for the new settings
+    ReconfigureKeyboard();
+}
+
+void lmTheoIntervalCtrol::LoadProblemSpace()
+{
+    //save current problem space data
+    SaveProblemSpace();
+
+    //Update problem level and load problem space for new level
+    m_nProblemLevel = m_pConstrains->GetProblemLevel();
+    wxString sKey = m_sKeyPrefix + wxString::Format(_T("Level%d"), m_nProblemLevel);
+    if (m_sKeyPrefix == _T("") || !m_oProblemSpace.Load(sKey))
+    {
+        //Data not saved. Create new problem space
+        int nNumQuestions = 8;      //default for level 0
+        if (m_nProblemLevel == 1)
+            nNumQuestions = sizeof(m_aProblemDataL1)/sizeof(lmFIntval);
+        else if (m_nProblemLevel == 2)
+            nNumQuestions = sizeof(m_aProblemDataL2)/sizeof(lmFIntval);
+        else
+            nNumQuestions = sizeof(m_aProblemDataL3)/sizeof(lmFIntval);
+
+        m_oProblemSpace.Clear();
+        for (int i= 0; i < nNumQuestions; i++)
+        {
+            m_oProblemSpace.AddQuestion(0, 0, 0);       //assign all questions to group 0
+        }
+        wxLogMessage(_T("[lmTheoIntervalCtrol::LoadProblemSpace] Added %d questions"), nNumQuestions);
+    }
+
+    //Update problem manager
+    m_pProblemManager->SetProblemSpace(&m_oProblemSpace);
+}
+
+wxString lmTheoIntervalCtrol::SetNewProblem()
+{
+    // This method must prepare the interval for the problem and set variables:
+    // m_iQ, m_fpIntv, m_fpStart, m_fpEnd, m_sAnswer
+
+    m_iQ = m_pProblemManager->ChooseQuestion();
+    wxASSERT(m_iQ>= 0 && m_iQ < m_oProblemSpace.GetSpaceSize());
+
+    if (m_nProblemLevel <= 1)
+        m_fpIntv = m_aProblemDataL1[m_iQ];
+    else if (m_nProblemLevel == 2)
+        m_fpIntv = m_aProblemDataL2[m_iQ];
+    else
+        m_fpIntv = m_aProblemDataL3[m_iQ];
+
+    int nIntvNum = FIntval_GetNumber(m_fpIntv);           //get interval number
+
+    int nMinPos = 2 - (2 * m_pConstrains->GetLedgerLinesBelow());
+    int nMaxPos = 10 + (2 * m_pConstrains->GetLedgerLinesAbove());
+    nMaxPos -= nIntvNum - 1;
+
+    //Generate start note and end note
+    bool fValid = false;
+    lmRandomGenerator oGenerator;
+    m_nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
+    m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
+    while (!fValid)
+    {
+        lmDPitch dpStart = oGenerator.GenerateRandomDPitch(nMinPos, nMaxPos, false, m_nClef);
+        m_fpStart = DPitch_ToFPitch(dpStart, m_nKey);
+        m_fpEnd = m_fpStart + m_fpIntv;
+        fValid = FPitch_IsValid(m_fpEnd);
+        if (!fValid)
+            wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] INVALID: m_iQ=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d"),
+                 m_iQ, m_fpIntv, m_fpStart, m_fpEnd);
+    }
+
+    //compute the interval name
+    if (m_fpIntv == 0)
+        m_sAnswer = _("Unison");
+    else if (m_fpIntv == 1)
+        m_sAnswer = _("Chromatic semitone");
+    else if (m_fpIntv == 2)
+        m_sAnswer = _("Chromatic tone");
+    else
+        m_sAnswer = FIntval_GetName(m_fpIntv);
+
+    if (m_fpIntv > 0)
+        m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
+
+    wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] m_iQ=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
+                 m_iQ, FIntval_GetIntvCode(m_fpIntv).c_str(), m_fpIntv,
+                 FPitch_ToAbsLDPName(m_fpStart).c_str(), m_fpStart,
+                 FPitch_ToAbsLDPName(m_fpEnd).c_str(), m_fpEnd, m_sAnswer.c_str());
+
+    return PrepareScores();
+}
+
 
 
 //---------------------------------------------------------------------------------
@@ -72,22 +234,27 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmBuildIntervalCtrol, lmOneScoreCtrol)
+BEGIN_EVENT_TABLE(lmBuildIntervalCtrol, lmTheoIntervalCtrol)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+lm_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmBuildIntervalCtrol::OnRespButton)
 END_EVENT_TABLE()
 
 lmBuildIntervalCtrol::lmBuildIntervalCtrol(wxWindow* parent, wxWindowID id,
                            lmTheoIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(380, 150), pos, size, style )
+    : lmTheoIntervalCtrol(parent, id, pConstrains, pos, size, style )
 {
-    //initializations
-    m_pConstrains = pConstrains;
-    m_nRespIndex = 0;
-
+    //set key
+    m_sKeyPrefix = wxString::Format(_T("/UserData/BuildIntval/%s/"),
+                                    m_pConstrains->GetSection().c_str() );
+    //create controls
     CreateControls();
-    if (m_pConstrains->IsTheoryMode()) NewProblem();
 
+    //initialize problem space and update display
+    LoadProblemSpace();
+    if (m_pCounters) 
+        m_pCounters->UpdateDisplay(true);
+
+    if (m_pConstrains->IsTheoryMode()) NewProblem();
 }
 
 lmBuildIntervalCtrol::~lmBuildIntervalCtrol()
@@ -148,15 +315,9 @@ void lmBuildIntervalCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont
     SetButtons(m_pAnswerButton, lm_NUM_BUTTONS, ID_BUTTON);
 }
 
-void lmBuildIntervalCtrol::EnableButtons(bool fEnable)
+wxString lmBuildIntervalCtrol::PrepareScores()
 {
-    for (int iB=0; iB < lm_NUM_BUTTONS; iB++) {
-        m_pAnswerButton[iB]->Enable(fEnable);
-    }
-}
-
-wxString lmBuildIntervalCtrol::SetNewProblem()
-{
+    //The problem interval has been set.
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
     //  m_pSolutionScore - The score with the solution or NULL if it is the
@@ -167,50 +328,16 @@ wxString lmBuildIntervalCtrol::SetNewProblem()
     //
     //It must return the message to display to introduce the problem.
 
-    //Generate two random note-pos in range -1 to 7 (from two ledge lines down to two up)
-    lmRandomGenerator oGenerator;
-    m_nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
-    m_DPitch[0] = oGenerator.GenerateRandomDPitch(0, 8, false, m_nClef);
-    m_DPitch[1] = oGenerator.GenerateRandomDPitch(0, 8, false, m_nClef);
-
-    //Decide accidentals
-    wxString sPattern[2];
-    wxString sAlter[2];
-    lmConverter oConv;
-    for (int i=0; i < 2; i++) {
-        sAlter[i] = _T("");
-        if (m_pConstrains->GetAccidentals() && oGenerator.FlipCoin() ) {
-            sAlter[i] = (oGenerator.FlipCoin() ? _T("-") : _T("+"));
-        }
-    }
-
-    //amendments for unisons
-    if (m_DPitch[0] == m_DPitch[1]) {
-        //remove two accidentals in unison
-        if (sAlter[0] != _T("") && sAlter[1] != _T("")) {
-            sAlter[1] = _T("");
-        }
-        //add natural sign in second accidental for 'chromatic semitone'
-        if (sAlter[0] != _T("") && sAlter[1] == _T("")) {
-            sAlter[1] = _T("=");
-        }
-    }
-
     //prepare LDP pattern
-    for (int i=0; i < 2; i++) {
-        sPattern[i] = _T("(n ");
-        sPattern[i] += sAlter[i];
-        sPattern[i] += DPitch_GetEnglishNoteName(m_DPitch[i]) + _T(" w)");
-    }
+    wxString sPattern0 = _T("(n ");
+    sPattern0 += FPitch_ToRelLDPName(m_fpStart, m_nKey);
+    sPattern0 += _T(" w)");
 
-    //save information to identify answer button
-    wxString sNoteName = (DPitch_GetEnglishNoteName(m_DPitch[1])).Left(1);
+    wxString sPattern1 = _T("(n ");
+    sPattern1 += FPitch_ToRelLDPName(m_fpEnd, m_nKey);
+    sPattern1 += _T(" w)");
 
-    ////DEBUG: un-comment and modify values for testing a certain interval
-    //sPattern[0] = _T("(n -e4 r)");
-    //sPattern[1] = _T("(n e4 r)");
-
-    //create the score with the interval
+    //prepare solution score
     lmNote* pNote[2];
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
@@ -222,31 +349,16 @@ wxString lmBuildIntervalCtrol::SetNewProblem()
     pVStaff = pInstr->GetVStaff();
     pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( m_nClef );
-    pVStaff->AddKeySignature(0, true);                    // 0 fifths, major  ==> earmDo
+    pVStaff->AddKeySignature(m_nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
     pVStaff->AddSpacer(30);       // 3 lines
-    pNode = parserLDP.ParseText( sPattern[0] );
+    pNode = parserLDP.ParseText( sPattern0 );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
-    pNode = parserLDP.ParseText( sPattern[1] );
+    pNode = parserLDP.ParseText( sPattern1 );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddSpacer(75);       // 7.5 lines
+    pVStaff->AddSpacer(50);       // 5 lines
     pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
-
-    //compute the interval name
-    lmInterval oIntv(pNote[0], pNote[1], earmDo);
-    m_sAnswer = oIntv.GetIntervalName() + (oIntv.IsAscending() ? _(", ascending") : _(", descending") );
-
-    //amendments for unisons
-    if (m_DPitch[0] == m_DPitch[1]) {
-        if (sAlter[0] == sAlter[1])
-            m_sAnswer = _("Unison");
-        else {
-            m_sAnswer = _("Chromatic semitone");
-            m_sAnswer += (oIntv.IsAscending() ? _(", ascending") : _(", descending") );
-        }
-    }
-
 
     //for building intervals exercise the created score is the solution and
     //we need to create another score with the problem
@@ -256,67 +368,22 @@ wxString lmBuildIntervalCtrol::SetNewProblem()
     pVStaff = pInstr->GetVStaff();
     m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( m_nClef );
-    pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
+    pVStaff->AddKeySignature(m_nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
     pVStaff->AddSpacer(30);       // 3 lines
-    pNode = parserLDP.ParseText( sPattern[0] );
+    pNode = parserLDP.ParseText( sPattern0 );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
+    pVStaff->AddSpacer(75);       // 7.5 lines
     pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
 
     //cumpute right answer button index
-    int iRow, iCol;
-    if (sNoteName==_T("c"))         iCol = 0;
-    else if (sNoteName==_T("d"))    iCol = 1;
-    else if (sNoteName==_T("e"))    iCol = 2;
-    else if (sNoteName==_T("f"))    iCol = 3;
-    else if (sNoteName==_T("g"))    iCol = 4;
-    else if (sNoteName==_T("a"))    iCol = 5;
-    else if (sNoteName==_T("b"))    iCol = 6;
-    else
-        wxASSERT(false);
-
-    if (sAlter[1]==_T("--"))        iRow = 0;
-    else if (sAlter[1]==_T("-"))    iRow = 1;
-    else if (sAlter[1]==_T(""))     iRow = 2;
-    else if (sAlter[1]==_T("="))    iRow = 2;
-    else if (sAlter[1]==_T("+"))    iRow = 3;
-    else if (sAlter[1]==_T("++"))   iRow = 4;
-    else
-        wxASSERT(false);
-
+    int iCol = FPitch_Step(m_fpEnd);
+    int iRow = FPitch_Accidentals(m_fpEnd) + 2;
     m_nRespIndex = iCol + iRow * lm_NUM_COLS;
 
     //return question string
     m_sAnswer = _("Build a ") + m_sAnswer;
     return m_sAnswer;
-}
-
-void lmBuildIntervalCtrol::PrepareAuxScore(int nButton)
-{
-    // No problem is presented and the user press the button to play a specific
-    // sound (chord, interval, scale, etc.)
-    // This method is then invoked to prepare the score with the requested sound.
-    // At return, base class will play it
-
-    // In build intervals exercises it is not allowd to play an interval so
-    // we return a Null score
-    m_pAuxScore = (lmScore*)NULL;
-}
-
-wxDialog* lmBuildIntervalCtrol::GetSettingsDlg()
-{
-    // 'Settings' link has been clicked. This method must return the dialog to invoke
-
-    wxDialog* pDlg = new lmDlgCfgTheoIntervals(this, m_pConstrains);
-    return pDlg;
-}
-
-void lmBuildIntervalCtrol::ReconfigureButtons()
-{
-    // The settings has been changed. This method is invoked to reconfigure
-    // answer keyboard in case it is needed for new settings
-
-    // In build intervals exercises no reconfiguration is required
 }
 
 void lmBuildIntervalCtrol::InitializeStrings()
@@ -400,24 +467,29 @@ static wxString m_sIntvNumber[8];
 //index for special buttons
 #define lmIDX_UNISON        48
 #define lmIDX_SEMITONE      49
+#define lmIDX_TONE          50
 
 
-BEGIN_EVENT_TABLE(lmIdfyIntervalCtrol, lmOneScoreCtrol)
+BEGIN_EVENT_TABLE(lmIdfyIntervalCtrol, lmTheoIntervalCtrol)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+lm_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyIntervalCtrol::OnRespButton)
 END_EVENT_TABLE()
-
-
 
 lmIdfyIntervalCtrol::lmIdfyIntervalCtrol(wxWindow* parent, wxWindowID id,
                            lmTheoIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(380, 150), pos, size, style )
+    : lmTheoIntervalCtrol(parent, id, pConstrains, pos, size, style)
 {
-    //initializations
-    m_pConstrains = pConstrains;
-    m_nRespIndex = 0;
-
+    //set key
+    m_sKeyPrefix = wxString::Format(_T("/UserData/IdfyIntval/%s/"),
+                                    m_pConstrains->GetSection().c_str() );
+    //create controls
     CreateControls();
+
+    //initialize problem space and update display
+    LoadProblemSpace();
+    if (m_pCounters) 
+        m_pCounters->UpdateDisplay(true);
+
     if (m_pConstrains->IsTheoryMode()) NewProblem();
 }
 
@@ -454,6 +526,14 @@ void lmIdfyIntervalCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont&
 
         // "chromatic semitone" button
     iB = lmIDX_SEMITONE;
+    m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB] );
+    m_pAnswerButton[iB]->SetFont(font);
+    m_pUnisonSizer->Add(
+        m_pAnswerButton[iB],
+        wxSizerFlags(0).Border(wxLEFT|wxRIGHT, nSpacing) );
+
+        // "chromatic tone" button
+    iB = lmIDX_TONE;
     m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB] );
     m_pAnswerButton[iB]->SetFont(font);
     m_pUnisonSizer->Add(
@@ -531,8 +611,9 @@ void lmIdfyIntervalCtrol::EnableButtons(bool fEnable)
     }
 }
 
-wxString lmIdfyIntervalCtrol::SetNewProblem()
+wxString lmIdfyIntervalCtrol::PrepareScores()
 {
+    //The problem interval has been set.
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
     //  m_pSolutionScore - The score with the solution or NULL if it is the
@@ -543,49 +624,14 @@ wxString lmIdfyIntervalCtrol::SetNewProblem()
     //
     //It must return the message to display to introduce the problem.
 
-    //Generate two random note-pos in range -1 to 7 (from two ledge lines down to two up)
-    lmRandomGenerator oGenerator;
-    m_nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
-    m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
-    m_DPitch[0] = oGenerator.GenerateRandomDPitch(0, 8, false, m_nClef);
-    m_DPitch[1] = oGenerator.GenerateRandomDPitch(0, 8, false, m_nClef);
-
-    ////Generate a random interval
-    //lmInterval oRndIntv = GenerateRandomInterval(m_pConstrains, m_nClef, m_nKey);
-
-    //Decide accidentals
-    wxString sPattern[2];
-    wxString sAlter[2];
-    lmConverter oConv;
-    for (int i=0; i < 2; i++) {
-        sAlter[i] = _T("");
-        if (m_pConstrains->GetAccidentals() && oGenerator.FlipCoin() ) {
-            sAlter[i] = (oGenerator.FlipCoin() ? _T("-") : _T("+"));
-        }
-    }
-
-    //amendments for unisons
-    if (m_DPitch[0] == m_DPitch[1]) {
-        //remove two accidentals in unison
-        if (sAlter[0] != _T("") && sAlter[1] != _T("")) {
-            sAlter[1] = _T("");
-        }
-        //add natural sign in second accidental for 'chromatic semitone'
-        if (sAlter[0] != _T("") && sAlter[1] == _T("")) {
-            sAlter[1] = _T("=");
-        }
-    }
-
     //prepare LDP pattern
-    for (int i=0; i < 2; i++) {
-        sPattern[i] = _T("(n ");
-        sPattern[i] += sAlter[i];
-        sPattern[i] += DPitch_GetEnglishNoteName(m_DPitch[i]) + _T(" w)");
-    }
+    wxString sPattern0 = _T("(n ");
+    sPattern0 += FPitch_ToRelLDPName(m_fpStart, m_nKey);
+    sPattern0 += _T(" w)");
 
-    ////DEBUG: un-comment and modify values for testing a certain interval
-    //sPattern[0] = _T("(n -e4 r)");
-    //sPattern[1] = _T("(n e4 r)");
+    wxString sPattern1 = _T("(n ");
+    sPattern1 += FPitch_ToRelLDPName(m_fpEnd, m_nKey);
+    sPattern1 += _T(" w)");
 
     //create the score with the interval
     lmNote* pNote[2];
@@ -602,43 +648,26 @@ wxString lmIdfyIntervalCtrol::SetNewProblem()
     pVStaff->AddKeySignature(m_nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
     pVStaff->AddSpacer(30);       // 3 lines
-    pNode = parserLDP.ParseText( sPattern[0] );
+    pNode = parserLDP.ParseText( sPattern0 );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
-    pNode = parserLDP.ParseText( sPattern[1] );
+    pNode = parserLDP.ParseText( sPattern1 );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddSpacer(75);       // 7.5 lines
     pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
 
-    //compute the interval name
-    lmInterval oIntv(pNote[0], pNote[1], earmDo);
-    m_sAnswer = oIntv.GetIntervalName() + (oIntv.IsAscending() ? _(", ascending") : _(", descending") );
-
-    //amendments for unisons
-    if (m_DPitch[0] == m_DPitch[1]) {
-        if (sAlter[0] == sAlter[1])
-            m_sAnswer = _("Unison");
-        else {
-            m_sAnswer = _("Chromatic semitone");
-            m_sAnswer += (oIntv.IsAscending() ? _(", ascending") : _(", descending") );
-        }
-    }
-
-    //set score with the problem
-    m_pProblemScore = pScore;
-    m_pSolutionScore = (lmScore*)NULL;
-
-    //cumpute right answer button index
-    if (m_pConstrains->GetProblemLevel() == 0)
-    {
-        //only interval number
-        m_nRespIndex = oIntv.GetIntervalNum() - 1;
-    }
+    //compute button index for right answer
+    if (m_fpIntv == 0)
+        m_nRespIndex = lmIDX_UNISON;
+    else if (m_fpIntv == 1)
+        m_nRespIndex = lmIDX_SEMITONE;
+    else if (m_fpIntv == 2)
+        m_nRespIndex = lmIDX_TONE;
     else
     {
         int iRow, iCol;
-        iCol = oIntv.GetIntervalNum() - 2;
-        switch (oIntv.GetIntervalType()) {
+        iCol = FIntval_GetNumber(m_fpIntv) - 2;
+        switch (FIntval_GetType(m_fpIntv)) {
             case eti_DoubleDiminished:      iRow = 0;   break;
             case eti_Diminished:            iRow = 1;   break;
             case eti_Minor:                 iRow = 2;   break;
@@ -650,56 +679,22 @@ wxString lmIdfyIntervalCtrol::SetNewProblem()
                 wxASSERT(false);
         }
         m_nRespIndex = iCol + (iRow-m_nFirstRow) * lm_NUM_COLS;
-
-        //special cases: unison and related
-        if (oIntv.GetIntervalNum() == 1) {
-            switch (oIntv.GetIntervalType()) {
-                case eti_Perfect:
-                    m_nRespIndex = lmIDX_UNISON;       //unison
-                    break;
-                case eti_Augmented:
-                    m_nRespIndex = lmIDX_SEMITONE;      //chromatic semitone
-                    break;
-                default:
-                    wxLogMessage(_T("[lmIdfyIntervalCtrol::NewProblem] nInterval=%d, nType=%d"),
-                                oIntv.GetIntervalNum(), oIntv.GetIntervalType() );
-                    wxASSERT(false);
-            }
-        }
     }
+    //fix button index for level 0 (only numbers)
+    if (m_pConstrains->GetProblemLevel() == 0)
+        m_nRespIndex = FIntval_GetNumber(m_fpIntv) - 1;
 
-    //wxLogMessage(wxString::Format(
-    //    _T("[lmIdfyIntervalCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d"),
-    //    m_nRespIndex, oIntv.GetIntervalNum() ));
+    //set score with the problem
+    m_pProblemScore = pScore;
+    m_pSolutionScore = (lmScore*)NULL;
 
     //return question string
     return _("Identify the next interval:");
 }
 
-void lmIdfyIntervalCtrol::PrepareAuxScore(int nButton)
+void lmIdfyIntervalCtrol::ReconfigureKeyboard()
 {
-    // No problem is presented and the user press the button to play a specific
-    // sound (chord, interval, scale, etc.)
-    // This method is then invoked to prepare the score with the requested sound.
-    // At return, base class will play it
-
-    // In identify interval exercises it is not allowed to play an interval so
-    // we return a Null score
-    m_pAuxScore = (lmScore*)NULL;
-}
-
-wxDialog* lmIdfyIntervalCtrol::GetSettingsDlg()
-{
-    // 'Settings' link has been clicked. This method must return the dialog to invoke
-
-    wxDialog* pDlg = new lmDlgCfgTheoIntervals(this, m_pConstrains);
-    return pDlg;
-}
-
-void lmIdfyIntervalCtrol::ReconfigureButtons()
-{
-    // The settings have been changed. This method is invoked to reconfigure
-    // answer keyboard in case it is needed for new settings
+    // Reconfigure answer keyboard for the new settings
 
     if (m_pConstrains->GetProblemLevel() == 0)
     {
@@ -746,6 +741,7 @@ void lmIdfyIntervalCtrol::ReconfigureButtons()
         int nLastRow = lm_NUM_ROWS;
         bool fUnison = true;
         bool fSemitone = true;
+        bool fTone = true;
         if (m_pConstrains->GetProblemLevel() == 1)
         {
             //Only minor and perfect/major
@@ -753,6 +749,7 @@ void lmIdfyIntervalCtrol::ReconfigureButtons()
             nLastRow = 4;
             fUnison = true;
             fSemitone = false;
+            fTone = false;
         }
         else if (m_pConstrains->GetProblemLevel() == 2)
         {
@@ -761,6 +758,7 @@ void lmIdfyIntervalCtrol::ReconfigureButtons()
             nLastRow = 5;
             fUnison = true;
             fSemitone = true;
+            fTone = false;
         }
         else
         {
@@ -769,6 +767,7 @@ void lmIdfyIntervalCtrol::ReconfigureButtons()
             nLastRow = 6;
             fUnison = true;
             fSemitone = true;
+            fTone = true;
         }
 
         //show all buttons and change their labels
@@ -792,6 +791,8 @@ void lmIdfyIntervalCtrol::ReconfigureButtons()
         m_pAnswerButton[lmIDX_UNISON]->Enable(fUnison);
         m_pAnswerButton[lmIDX_SEMITONE]->Show(fSemitone);
         m_pAnswerButton[lmIDX_SEMITONE]->Enable(fSemitone);
+        m_pAnswerButton[lmIDX_TONE]->Show(fTone);
+        m_pAnswerButton[lmIDX_TONE]->Enable(fTone);
 
         //show row labels
         int iRow, iLBL;
@@ -837,7 +838,7 @@ void lmIdfyIntervalCtrol::InitializeStrings()
     m_sIntvButtonLabel[1] = _("dd3");
     m_sIntvButtonLabel[2] = _("dd4");
     m_sIntvButtonLabel[3] = _("dd5");
-    m_sIntvButtonLabel[4] = _("dd5");
+    m_sIntvButtonLabel[4] = _("dd6");
     m_sIntvButtonLabel[5] = _("dd7");
     m_sIntvButtonLabel[6] = _("dd8");
     m_sIntvButtonLabel[7] = _T("");
@@ -889,6 +890,7 @@ void lmIdfyIntervalCtrol::InitializeStrings()
 
     m_sIntvButtonLabel[48] = _("Unison");
     m_sIntvButtonLabel[49] = _("Chromatic semitone");
+    m_sIntvButtonLabel[50] = _("Chromatic tone");
 
     //Buttons for interval number
     m_sIntvNumber[0] = _("Unison");
@@ -901,84 +903,3 @@ void lmIdfyIntervalCtrol::InitializeStrings()
     m_sIntvNumber[7] = _("8ve");
 }
 
-/*
-lmInterval lmIdfyIntervalCtrol::GenerateRandomInterval(
-                        lmTheoIntervalsConstrains* pConstrains,
-                        lmEClefType nClef, lmEKeySignatures nKey)
-{
-    int nLedgerAbove = pConstrains->GetLedgerLinesAbove();
-    int nLedgerBelow = pConstrains->GetLedgerLinesBelow();
-    int nLevel = pConstrains->GetProblemLevel();
-
-    typedef struct {
-        lmFPitch  fpNote1;
-        lmFPitch  fpNote2;
-        lmFIntval nInterval;
-    } lmIntvalInfo;
-
-    //determine min. and max. notes
-    lmFPitch  fpMinNote = LineToFPitch(nLedgerBelow, nKey, nClef);
-    lmFPitch  fpMaxNote = LineToFPitch(nLedgerAbove, nKey, nClef);
-
-    //level 0: Name just the interval (number)
-    // Generate all natural intervals
-
-    //for(iStartNote = min_note; iStartNote <= max_note; iStartNote++)
-    //{
-    //    for(iEndNote = iStartNote; iEndNote <= max_note; iEndNote++)
-    //    {
-    //        AddInterval(iStartNote, iEndNote)
-    //    }
-    //}
-
-    //level 1: Only Perfect, Major and minor intervals.
-    // Generate as Level 0
-    // Add a sharp to all minor intervals
-    // Add a flat to all major intervals
-    if (nLevel > 0)
-    {
-
-        //for(it=intervals.begin(); it != intervals.end(); ++it)
-        //{
-        //    if ((*it)->IsMinor())
-        //        AddInterval( AddSharpEndNote of *it )
-        //    else if ((*it)->IsMajor())
-        //        AddInterval( AddFlatStartNote of *it )
-        //}
-    }
-
-    //level 2: Also augmented/diminished
-    // Generate as Level 1
-    // Add a sharp to all major intervals
-    // Add a flat to all minor intervals
-    if (nLevel > 1)
-    {
-        //for(it=intervals.begin(); it != intervals.end(); ++it)
-        //{
-        //    if ((*it)->IsMinor())
-        //        AddInterval( AddSharpEndNote of *it )
-        //    else if ((*it)->IsMajor())
-        //        AddInterval( AddFlatStartNote of *it )
-        //}
-    }
-
-    //level 3: Also double augmented/diminished
-    // Generate as level 2
-    // Add a sharp to augmented intervals
-    // Add a flat to diminished intervals
-    if (nLevel > 2)
-    {
-        //for(it=intervals.begin(); it != intervals.end(); ++it)
-        //{
-        //    if ((*it)->IsMinor())
-        //        AddInterval( AddSharpEndNote of *it )
-        //    else if ((*it)->IsMajor())
-        //        AddInterval( AddFlatStartNote of *it )
-        //}
-    }
-
-    //All valid intervals generated. Choose one at random
-
-    return oIntv;
-}
-*/

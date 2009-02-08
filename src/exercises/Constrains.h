@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -71,7 +71,17 @@ enum EIntervalName              // name of the intervals considered in exercises
 
 #define lmNUM_INTVALS  ein_Max_Item     //num intervals considered in constraints
 
-
+//problem generation & evaluation modes
+enum
+{
+    lm_eLearningMode = 0,
+    lm_eExamMode,
+    lm_eQuizMode,
+    //
+    lm_eNumGenerationModes
+};
+extern const wxString g_sGenerationModeName[lm_eNumGenerationModes];
+ 
 
 class lmClefConstrain
 {
@@ -147,6 +157,7 @@ public:
                 m_sSection = sSection;
                 LoadSettings();
             }
+    inline wxString& GetSection() { return m_sSection; }
 
     void SetGoBackLink(wxString sURL) { m_sGoBackURL = sURL; }
     bool IncludeGoBackLink() { return m_sGoBackURL != _T(""); }
@@ -175,19 +186,25 @@ public:
     lmExerciseOptions(wxString sSection);
     virtual ~lmExerciseOptions() {}
 
-    void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
-    bool IsTheoryMode() { return m_fTheoryMode; }
+    inline void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
+    inline bool IsTheoryMode() { return m_fTheoryMode; }
 
-    void SetButtonsEnabledAfterSolution(bool fValue) {
+    inline void SetButtonsEnabledAfterSolution(bool fValue) {
             m_fButtonsEnabledAfterSolution = fValue;
     }
-    bool ButtonsEnabledAfterSolution() { return m_fButtonsEnabledAfterSolution; }
+    inline bool ButtonsEnabledAfterSolution() { return m_fButtonsEnabledAfterSolution; }
 
-    void SetSolutionLink(bool fValue) { m_fSolutionLink = fValue; }
-    bool IncludeSolutionLink() { return m_fSolutionLink; }
+    inline void SetSolutionLink(bool fValue) { m_fSolutionLink = fValue; }
+    inline bool IncludeSolutionLink() { return m_fSolutionLink; }
 
-    void SetUsingCounters(bool fValue) { m_fUseCounters = fValue; }
-    bool IsUsingCounters() { return m_fUseCounters; }
+    inline void SetUsingCounters(bool fValue) { m_fUseCounters = fValue; }
+    inline bool IsUsingCounters() { return m_fUseCounters; }
+
+    inline void SetGenerationMode(long nMode) { m_nGenerationMode = nMode; }
+    inline long GetGenerationMode() { return m_nGenerationMode; }
+    inline bool IsGenerationModeSupported(long nMode) { return m_fSupportedMode[nMode]; }
+    inline void SetGenerationModeSupported(long nMode, bool fValue) {
+                                            m_fSupportedMode[nMode] = fValue; }
 
 
 protected:
@@ -200,8 +217,8 @@ protected:
     bool        m_fButtonsEnabledAfterSolution;
     bool        m_fUseCounters;     //option to not use counters
     bool        m_fSolutionLink;    //include 'show solution' link
-
-
+    long        m_nGenerationMode;  //problem generation & evaluation mode 
+    bool        m_fSupportedMode[lm_eNumGenerationModes];
 };
 
 

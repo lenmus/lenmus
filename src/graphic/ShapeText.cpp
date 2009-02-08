@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -183,8 +183,8 @@ wxBitmap* lmShapeText::OnBeginDrag(double rScale, wxDC* pDC)
 //lmShapeTextBlock::lmShapeTextBlock(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
 //                         lmPaper* pPaper, lmUPoint offset, wxString sName,
 //				         bool fDraggable, wxColour color)
-//    : lmShapeRectangle(pOwner, offset.x, offset.y, 0.0f, 0.0f, 0.0f, 
-//                       sName, fDraggable, true, color)
+//    : lmShapeRectangle(pOwner, offset.x, offset.y, 0.0f, 0.0f, 0.0f, color, 
+//                       sName, fDraggable, true)
 //{
 //    //measure text size
 //    lmLUnits uWidth, uHeight;
@@ -203,8 +203,8 @@ lmShapeTextBlock::lmShapeTextBlock(lmScoreObj* pOwner, const wxString& sText, wx
                          lmLUnits xRight, lmLUnits yBottom,
                          wxColour nColor, wxString sName,
 						 bool fDraggable)
-    : lmShapeRectangle(pOwner, xLeft, yTop, xRight, yBottom, 0.0f,
-                       sName, fDraggable, true, nColor)
+    : lmShapeRectangle(pOwner, xLeft, yTop, xRight, yBottom, 0.0f, nColor,
+                       sName, fDraggable, true)
 {
     Create(sText, pFont, pPaper, nBlockAlign, nHAlign, nVAlign, xLeft, yTop, xRight,
            yBottom);

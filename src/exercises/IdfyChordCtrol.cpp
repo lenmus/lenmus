@@ -159,11 +159,9 @@ void lmIdfyChordCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& fo
 
 }
 
-void lmIdfyChordCtrol::ReconfigureButtons()
+void lmIdfyChordCtrol::OnSettingsChanged()
 {
-    // The settings has been changed. This method is invoked to reconfigure
-    // answer keyboard in case it is needed for new settings
-
+    //The settings have been changed.
     //Reconfigure buttons keyboard depending on the chords allowed
 
     int iC;     // real chord. Correspondence to EChordTypes

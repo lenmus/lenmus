@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -84,9 +84,9 @@ class lmShapeRectangle : public lmSimpleShape
 public:
     lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits yTop,
                      lmLUnits xRight, lmLUnits yBottom, lmLUnits uWidth,
-                     wxString sName = _T("Rectangle"),
+                     wxColour color = *wxBLACK, wxString sName = _T("Rectangle"),
 				     bool fDraggable = true, bool fSelectable = true, 
-                     wxColour color = *wxBLACK, bool fVisible = true);
+                     bool fVisible = true);
     ~lmShapeRectangle() {}
 
     //implementation of virtual methods from base class

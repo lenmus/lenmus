@@ -129,9 +129,9 @@ void lmIdfyCadencesCtrol::InitializeStrings()
 {
 }
 
-void lmIdfyCadencesCtrol::ReconfigureButtons()
+void lmIdfyCadencesCtrol::OnSettingsChanged()
 {
-    //Reconfigure buttons keyboard depending on the required answers
+    // The settings have been changed. Reconfigure answer keyboard for the new settings
 
     int iB;     // button index: 0 .. m_NUM_BUTTONS-1
 

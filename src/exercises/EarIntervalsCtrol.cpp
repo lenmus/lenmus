@@ -152,10 +152,9 @@ lmEarIntervalsCtrol::~lmEarIntervalsCtrol()
 {
 }
 
-void lmEarIntervalsCtrol::ReconfigureButtons()
+void lmEarIntervalsCtrol::OnSettingsChanged()
 {
-    // The settings has been changed. This method is invoked to reconfigure
-    // answer keyboard in case it is needed for new settings
+    // The settings have been changed. Reconfigure answer keyboard for the new settings
 
     // compute interval associated to each button
     int j = 0;

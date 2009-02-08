@@ -41,6 +41,7 @@
 #include "auxctrols/ScoreAuxCtrol.h"
 #include "auxctrols/UrlAuxCtrol.h"
 #include "auxctrols/CountersAuxCtrol.h"
+#include "Generators.h"
 
 class lmScoreProcessor;
 
@@ -82,20 +83,19 @@ protected:
         ID_LINK_MIDI_EVENTS,
         ID_LINK_PLAY,
         ID_LINK_SETTINGS,
-        ID_LINK_GO_BACK
-
+        ID_LINK_GO_BACK,
     };
 
-    //virtual pure methods to be implemented by derived classes
+    //virtual methods to be implemented by derived classes
     virtual void InitializeStrings()=0;   
     virtual wxDialog* GetSettingsDlg()=0;
     virtual void Play()=0;
     virtual void StopSounds()=0;
-    virtual void OnSettingsChanged()=0;
+    virtual void OnSettingsChanged() {};
 
     //methods invoked from derived classes
     virtual void CreateControls()=0;
-    void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
+    virtual void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton)=0;
 
 
     // member variables
@@ -134,32 +134,30 @@ public:
     virtual void OnRespButton(wxCommandEvent& event);
     virtual void OnNewProblem(wxCommandEvent& event);
     virtual void OnDisplaySolution(wxCommandEvent& event);
+    virtual void OnModeChanged(wxCommandEvent& event);
+
+    //other
+    virtual void OnQuestionAnswered(int iQ, bool fSuccess);
 
 protected:
     //IDs for controls
     enum {
         ID_LINK_SOLUTION = 3006,
         ID_LINK_NEW_PROBLEM,
+        lmID_CBO_MODE,
     };
 
-    //implementation of virtual pure methods
-    void OnSettingsChanged() { ReconfigureButtons(); }
-
-
     //virtual pure methods to be implemented by derived classes
-    virtual void InitializeStrings()=0;   
     virtual void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)=0;
-    virtual void ReconfigureButtons()=0;
     virtual wxString SetNewProblem()=0;    
-    virtual wxDialog* GetSettingsDlg()=0;
     virtual wxWindow* CreateDisplayCtrol()=0;
     virtual void Play()=0;
     virtual void PlaySpecificSound(int nButton)=0;
     virtual void DisplaySolution()=0;
     virtual void DisplayProblem()=0;
     virtual void DisplayMessage(wxString& sMsg, bool fClearDisplay)=0;
-    virtual void DeleteScores() {}     //should be virtual pure but the linker complains !!!
-    virtual void StopSounds() {}     //should be virtual pure but the linker complains !!!
+    virtual void DeleteScores()=0;
+    virtual void StopSounds()=0;
 
     //methods that, normally, it is not necessary to implement
     virtual void SetButtonColor(int i, wxColour& color);
@@ -170,17 +168,24 @@ protected:
     //methods invoked from derived classes
     virtual void CreateControls();
     void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
+    void ChangeGenerationMode(int nMode);
+    void SaveProblemSpace();
 
+    //internal methods
+    lmCountersAuxCtrol* CreateCountersCtrol();
+    void CreateProblemManager();
 
 
         // member variables
 
     wxWindow*           m_pDisplayCtrol;    //TextCtrl or ScoreAuxCtrol
-    lmCountersAuxCtrol*    m_pCounters;
+    lmCountersAuxCtrol* m_pCounters;
     wxBoxSizer*         m_pMainSizer;
     wxFlexGridSizer*    m_pKeyboardSizer;
+    wxBoxSizer*         m_pAuxCtrolSizer;
+    wxChoice*           m_pCboMode;
 
-    lmExerciseOptions*   m_pConstrains;  //constraints for the exercise
+    lmExerciseOptions*  m_pConstrains;      //constraints for the exercise
     bool                m_fQuestionAsked;   //question asked but not yet answered
     int                 m_nRespIndex;       //index to the button with the right answer
     wxString            m_sAnswer;          //string with the right answer
@@ -192,6 +197,14 @@ protected:
     int                 m_nIdFirstButton;   //ID of first button; the others in sequence
 
     wxSize              m_nDisplaySize;     // DisplayCtrol size (pixels at 1:1)
+
+    //to generate problems
+    int                     m_nGenerationMode;
+    int                     m_nProblemLevel;
+    lmProblemManager*       m_pProblemManager;
+    lmProblemSpace          m_oProblemSpace;
+    int                     m_iQ;               //index of asked question
+    wxString                m_sKeyPrefix;
 
 private:
     void DoStopSounds();
@@ -228,22 +241,9 @@ public:
 
 
 protected:
-    //virtual pure methods to be implemented by derived classes
-    virtual wxString SetNewProblem()=0;    
-    virtual wxDialog* GetSettingsDlg()=0;
-    virtual wxWindow* CreateDisplayCtrol()=0;
-    virtual void Play()=0;
-    virtual void PlaySpecificSound(int nButton)=0;
-    virtual void DisplaySolution()=0;
-    virtual void DisplayProblem()=0;
-    virtual void DisplayMessage(wxString& sMsg, bool fClearDisplay)=0;
-    virtual void DeleteScores() {}     //should be virtual pure but the linker complains !!!
-    virtual void StopSounds() {}   //should be virtual pure but the linker complains !!!
-
     //virtual methods implemented in this class
     void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
     virtual void InitializeStrings();   
-    void ReconfigureButtons() {}
 
 protected:
     // member variables
@@ -282,10 +282,6 @@ public:
     virtual void OnDebugShowMidiEvents(wxCommandEvent& event);
 
 protected:
-    //virtual pure methods to be implemented by derived classes
-    virtual wxString SetNewProblem()=0;    
-    virtual wxDialog* GetSettingsDlg()=0;
-    
     //implementation of some virtual methods
     void Play();
     void PlaySpecificSound(int nButton) {}
@@ -342,9 +338,6 @@ protected:
     //virtual pure methods from parent class to be implemented by derived classes
     virtual wxString SetNewProblem() {return _T(""); }     //should be virtual pure but the linker doesn't do its job properly !!! 
     virtual wxDialog* GetSettingsDlg() {return NULL; }     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font) {}     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual void InitializeStrings() {}     //should be virtual pure but the linker doesn't do its job properly !!!   
-    virtual void ReconfigureButtons() {}     //should be virtual pure but the linker doesn't do its job properly !!! 
 
     //virtual pure methods defined in this class
     virtual void PrepareAuxScore(int nButton)=0;
@@ -397,10 +390,6 @@ public:
     virtual void OnDebugShowMidiEvents(wxCommandEvent& event) {}
 
 protected:
-    //virtual pure methods to be implemented by derived classes
-    virtual wxString SetNewProblem()=0;    
-    virtual wxDialog* GetSettingsDlg()=0;
-    
     //implementation of some virtual methods
     virtual void Play();
     void PlaySpecificSound(int nButton) {}

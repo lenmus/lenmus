@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -70,20 +70,88 @@ extern wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
                                 bool fAscending, lmEKeySignatures nKey = earmDo);
 extern void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
                             bool fAscending, lmNoteBits* pNewNote);
-extern void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode,
-                               lmEKeySignatures nKey,
-                               lmEIntervalDirection nDirection,
-                               lmNoteBits* pNewNote);
+//extern void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode,
+//                               lmEKeySignatures nKey,
+//                               lmEIntervalDirection nDirection,
+//                               lmNoteBits* pNewNote);
 extern wxString IntervalBitsToCode(lmIntvBits& tIntv);
 extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
+
+
+
+// Intervals in FPitch
+
+// Intervals are just the difference between the two FPitches.
+// Intervals can be added/substracted. For example: p5-3M = 3m (23-12=11)
+// Intervals greater than one octave are computed by adding 40 (p8) for each octave.
+// For example, a Major 10th is M3+p8 = 12+40 = 52
+
+
+    //unison
+#define lm_p1   0
+#define lm_a1   1
+#define lm_da1  2
+    //second
+#define lm_dd2  3
+#define lm_d2   4 
+#define lm_m2   5 
+#define lm_M2   6 
+#define lm_a2   7
+#define lm_da2  8
+    //third
+#define lm_dd3  9
+#define lm_d3   10 
+#define lm_m3   11 
+#define lm_M3   12 
+#define lm_a3   13
+#define lm_da3  14
+    //fourth
+#define lm_dd4  15
+#define lm_d4   16 
+#define lm_p4   17 
+#define lm_a4   18
+#define lm_da4  19
+    //fifth
+#define lm_dd5  21
+#define lm_d5   22 
+#define lm_p5   23 
+#define lm_a5   24
+#define lm_da5  25
+    //sixth
+#define lm_dd6  26
+#define lm_d6   27 
+#define lm_m6   28 
+#define lm_M6   29 
+#define lm_a6   30
+#define lm_da6  31
+    //seventh
+#define lm_dd7  32
+#define lm_d7   33 
+#define lm_m7   34 
+#define lm_M7   35 
+#define lm_a7   36
+#define lm_da7  37
+    //octave
+#define lm_dd8  38
+#define lm_d8   39 
+#define lm_p8   40
+
+// Lets define a 'NULL interval'. It is usefull to signal special situations such as
+// 'no interval defined', 'end of list', etc.
+#define lmNULL_FIntval  -1
+
+//lmFIntval methods
+extern lmFIntval FIntval(wxString& sName);              //interval constructor
+extern int FIntval_GetNumber(lmFIntval fi);             //get interval number. i.e. 1, 4
+extern wxString FIntval_GetIntvCode(lmFIntval fi);      //get code i.e. "m2", "p4", "da3"
+extern wxString FIntval_GetName(lmFIntval fi);          //get name. i.e. "Major 3rd"
+extern lmEIntervalType FIntval_GetType(lmFIntval fi);   //get type
 
 
 
 class lmInterval
 {
 public:
-    //build from two notes
-    lmInterval(lmNote* pNote1, lmNote* pNote2, lmEKeySignatures nKey = earmDo);
     //buid from constraints
     lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
              bool fAscending, lmEKeySignatures nKey = earmDo, int nMidiStartNote=0);

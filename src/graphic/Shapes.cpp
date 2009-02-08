@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -516,9 +516,9 @@ void lmShapeInvisible::Render(lmPaper* pPaper, wxColour color)
 
 lmShapeRectangle::lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits yTop,
                                    lmLUnits xRight, lmLUnits yBottom, lmLUnits uWidth,
-                                   wxString sName,
+                                   wxColour color, wxString sName,
 				                   bool fDraggable, bool fSelectable, 
-                                   wxColour color, bool fVisible)
+                                   bool fVisible)
     : lmSimpleShape(eGMO_ShapeRectangle, pOwner, 0, sName, fDraggable, fSelectable, 
                     color, fVisible)
 {

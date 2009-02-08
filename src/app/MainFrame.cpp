@@ -1727,19 +1727,22 @@ void lmMainFrame::OnDebugShowDirtyObjects(wxCommandEvent& event)
 void lmMainFrame::OnDebugRecSelec(wxCommandEvent& event)
 {
     g_fDrawSelRect = event.IsChecked();
-    GetActiveDoc()->UpdateAllViews();
+    if (GetActiveDoc())
+        GetActiveDoc()->UpdateAllViews();
 }
 
 void lmMainFrame::OnDebugDrawAnchors(wxCommandEvent& event)
 {
     g_fDrawAnchors = event.IsChecked();
-    GetActiveDoc()->UpdateAllViews();
+    if (GetActiveDoc())
+        GetActiveDoc()->UpdateAllViews();
 }
 
 void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
 {
     g_fDrawBounds = event.IsChecked();
-    GetActiveDoc()->UpdateAllViews();
+    if (GetActiveDoc())
+        GetActiveDoc()->UpdateAllViews();
 }
 
 void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
@@ -1791,8 +1794,10 @@ lmScore* lmMainFrame::GetActiveScore()
 lmScoreDocument* lmMainFrame::GetActiveDoc()
 {
     lmMDIChildFrame* pChild = GetActiveChild();
-	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-    return (lmScoreDocument*)((lmEditFrame*)pChild)->GetDocument();
+	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
+        return (lmScoreDocument*)((lmEditFrame*)pChild)->GetDocument();
+    else
+        return (lmScoreDocument*)NULL;
 }
 
 void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
@@ -2561,7 +2566,8 @@ void lmMainFrame::DumpScore(lmScore* pScore)
 void lmMainFrame::OnViewPageMargins(wxCommandEvent& event)
 {
     g_fShowMargins = event.IsChecked();
-    GetActiveDoc()->UpdateAllViews();
+    if (GetActiveDoc())
+        GetActiveDoc()->UpdateAllViews();
 }
 
 

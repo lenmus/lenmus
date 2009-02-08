@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -169,6 +169,7 @@ private:
 // conversion
 extern lmMPitch DPitch_ToMPitch(lmDPitch dp);
 //extern lmAPitch DPitch_ToAPitch(lmDPitch dp);
+extern lmFPitch DPitch_ToFPitch(lmDPitch dp, lmEKeySignatures nKey);
 extern wxString DPitch_GetEnglishNoteName(lmDPitch dp);
 extern wxString DPitch_ToLDPName(lmDPitch dp);
 
@@ -203,6 +204,9 @@ extern lmFPitch FPitch(lmDPitch dp, int nAcc);
 extern lmFPitch FPitch(int nStep, int nOctave, int nAcc);
 extern lmFPitch FPitch(wxString& sLDPNote);
 
+//validation
+extern bool FPitch_IsValid(lmFPitch fp);
+
 //components extraction
 #define FPitch_Step(fp) ((((fp - 1) % 40) + 1) / 6)
 #define FPitch_Octave(fp) ((fp - 1) / 40)
@@ -219,58 +223,6 @@ extern lmAPitch FPitch_ToAPitch(lmFPitch fp);
 extern lmFPitch FPitch_AddSemitone(lmFPitch fpNote, lmEKeySignatures nKey);
 extern lmFPitch FPitch_AddSemitone(lmFPitch fpNote, bool fUseSharps);
 
-
-
-
-// Intervals in FPitch
-
-// Intervals are just the difference between the two FPitches.
-// Intervals can be added/substracted. For example: p5-3M = 3m (23-12=11)
-// Intervals greater than one octave are computed by adding 40 (p8) for each octave.
-// For example, a Major 10th is M3+p8 = 12+40 = 52
-
-
-    //unison
-#define lm_p1   0
-#define lm_a1   1
-    //second
-#define lm_d2   4 
-#define lm_m2   5 
-#define lm_M2   6 
-#define lm_a2   7
-    //third
-#define lm_d3   10 
-#define lm_m3   11 
-#define lm_M3   12 
-#define lm_a3   13
-    //fourth
-#define lm_d4   16 
-#define lm_p4   17 
-#define lm_a4   18
-    //fifth
-#define lm_d5   22 
-#define lm_p5   23 
-#define lm_a5   24
-    //sixth
-#define lm_d6   27 
-#define lm_m6   28 
-#define lm_M6   29 
-#define lm_a6   30
-    //seventh
-#define lm_d7   33 
-#define lm_m7   34 
-#define lm_M7   35 
-#define lm_a7   36
-    //octave
-#define lm_d8   39 
-#define lm_p8   40
-
-// Lets define a 'NULL interval'. It is usefull to signal special situations such as
-// 'no interval defined', 'end of list', etc.
-#define lmNULL_FIntval  -1
-
-//interval constructors
-extern lmFIntval FIntval(wxString& sName);
 
 
 #endif    // __LM_PITCH_H__

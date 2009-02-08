@@ -169,7 +169,7 @@ void lmIdfyScalesCtrol::InitializeStrings()
 
 }
 
-void lmIdfyScalesCtrol::ReconfigureButtons()
+void lmIdfyScalesCtrol::OnSettingsChanged()
 {
     //Reconfigure buttons keyboard depending on the scales allowed
 

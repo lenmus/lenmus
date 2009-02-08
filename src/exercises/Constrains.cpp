@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -34,6 +34,10 @@
 // the config object
 extern wxConfigBase *g_pPrefs;
 
+
+//AWARE: In correspondence with enum
+const wxString g_sGenerationModeName[lm_eNumGenerationModes] 
+                        = {_("Learning"), _("Exam"), _("Quiz") };
 
 
 //-------------------------------------------------------------------------------------------
@@ -139,6 +143,13 @@ lmExerciseOptions::lmExerciseOptions(wxString sSection)
     m_fSolutionLink = true;
     m_fUseCounters = true;
 	m_fTheoryMode = true;
+    m_nGenerationMode = lm_eQuizMode;
+
+    //Default suppoted generation/evaluation modes: exam & quiz
+    for (long i=0; i < lm_eNumGenerationModes; i++)
+        m_fSupportedMode[i] = false;
+    m_fSupportedMode[lm_eExamMode] = true;
+    m_fSupportedMode[lm_eQuizMode] = true;
 }
 
 

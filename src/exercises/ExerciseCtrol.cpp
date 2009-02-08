@@ -135,7 +135,7 @@ void lmEBookCtrol::OnPlay(wxCommandEvent& event)
 BEGIN_EVENT_TABLE(lmExerciseCtrol, lmEBookCtrol)
     LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmExerciseCtrol::OnNewProblem)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmExerciseCtrol::OnDisplaySolution)
-
+    EVT_CHOICE          (lmID_CBO_MODE, lmExerciseCtrol::OnModeChanged)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmExerciseCtrol, lmEBookCtrol)
@@ -151,11 +151,37 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_nNumButtons = 0;
     m_fQuestionAsked = false;
     m_pConstrains = pConstrains;
+    m_pProblemManager = (lmProblemManager*)NULL;
+    m_sKeyPrefix = _T("");
 
     m_pDisplayCtrol =(wxWindow*)NULL;
     m_pCounters = (lmCountersAuxCtrol*)NULL;
     m_pShowSolution = (lmUrlAuxCtrol*)NULL;
+    m_pAuxCtrolSizer = (wxBoxSizer*)NULL;
 
+    m_nGenerationMode = m_pConstrains->GetGenerationMode();
+}
+
+
+lmExerciseCtrol::~lmExerciseCtrol()
+{
+    SaveProblemSpace();
+    if (m_pProblemManager)
+    {
+        m_pProblemManager->Statistics();
+        delete m_pProblemManager;
+    }
+}
+
+void lmExerciseCtrol::SaveProblemSpace()
+{
+    //save current problem space data
+
+    if (m_sKeyPrefix != _T("") && !m_oProblemSpace.IsEmpty())
+    {
+        wxString sKey = m_sKeyPrefix + wxString::Format(_T("Level%d"), m_nProblemLevel);
+        m_oProblemSpace.Save(sKey);
+    }
 }
 
 void lmExerciseCtrol::CreateControls()
@@ -178,6 +204,9 @@ void lmExerciseCtrol::CreateControls()
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
     InitializeStrings();
+
+    //Create the problem manager
+    CreateProblemManager();
 
     // ensure that sizes are properly scaled
     m_rScale = g_pMainFrame->GetHtmlWindow()->GetScale();
@@ -244,19 +273,43 @@ void lmExerciseCtrol::CreateControls()
     pTopSizer->Add(m_pDisplayCtrol,
                    wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 2*nSpacing));
 
-    // sizer for the CountersAuxCtrol and the settings link
+    // sizer for the CountersAuxCtrol
     if (m_pConstrains->IsUsingCounters())
     {
-        wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-        pTopSizer->Add(
-            pCountersSizer,
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing).Expand() );
+        wxStaticBoxSizer* pCountersSizer =
+	        new wxStaticBoxSizer( new wxStaticBox(this, wxID_ANY, wxEmptyString),
+                                  wxVERTICAL);
+    	
+	    wxBoxSizer* pModeSizer = new wxBoxSizer(wxHORIZONTAL);
+    	
+	    wxStaticText* pLblMode = new wxStaticText(
+            this, wxID_ANY, wxT("Mode:"), wxDefaultPosition, wxDefaultSize, 0);
+	    pLblMode->Wrap( -1 );
+	    pModeSizer->Add( pLblMode, 0, wxALL|wxALIGN_CENTER_VERTICAL, nSpacing);
+    	
+        //load strings for Mode combo
+        int nNumValidModes = 0;
+	    wxString sCboModeChoices[lm_eNumGenerationModes];
+        for (long i=0; i < lm_eNumGenerationModes; i++)
+        {
+            if (m_pConstrains->IsGenerationModeSupported(i))
+                sCboModeChoices[nNumValidModes++] = g_sGenerationModeName[i];
+        }
+	    m_pCboMode = new wxChoice(this, lmID_CBO_MODE, wxDefaultPosition,
+                                  wxDefaultSize, nNumValidModes, sCboModeChoices, 0);
+	    m_pCboMode->SetSelection( 0 );
 
-        // right/wrong answers counters control
-        m_pCounters = new lmCountersAuxCtrol(this, wxID_ANY, m_rScale);
-        pCountersSizer->Add(
-            m_pCounters,
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
+	    pModeSizer->Add( m_pCboMode, 1, wxALL|wxALIGN_CENTER_VERTICAL, nSpacing);
+    	
+	    pCountersSizer->Add( pModeSizer, 0, wxEXPAND, nSpacing);
+    	
+	    m_pAuxCtrolSizer = new wxBoxSizer( wxVERTICAL );
+    	
+        m_pCounters = CreateCountersCtrol();
+	    m_pAuxCtrolSizer->Add( m_pCounters, 0, wxALL, nSpacing);
+    	
+	    pCountersSizer->Add( m_pAuxCtrolSizer, 0, wxEXPAND, nSpacing);
+	    pTopSizer->Add( pCountersSizer, 0, wxLEFT, 3*nSpacing);
     }
 
         //
@@ -307,14 +360,76 @@ void lmExerciseCtrol::CreateControls()
     if (m_pPlayButton) m_pPlayButton->Enable(false);
     if (m_pShowSolution) m_pShowSolution->Enable(false);
 
-    ReconfigureButtons();     //reconfigure buttons in accordance with constraints
+    OnSettingsChanged();     //reconfigure buttons in accordance with constraints
 
     m_fControlsCreated = true;
-
 }
 
-lmExerciseCtrol::~lmExerciseCtrol()
+void lmExerciseCtrol::ChangeGenerationMode(int nMode)
 {
+    //set new generation mode
+    m_nGenerationMode = nMode;
+
+    //change problem manager
+    CreateProblemManager();
+
+    //replace current control if exists
+    if (m_fControlsCreated)
+    {
+        lmCountersAuxCtrol* pNewCtrol = CreateCountersCtrol();
+        m_pAuxCtrolSizer->Replace(m_pCounters, pNewCtrol);
+        delete m_pCounters;
+        m_pCounters = pNewCtrol;
+        m_pMainSizer->Layout();
+    }
+}
+
+void lmExerciseCtrol::CreateProblemManager()
+{
+    if (m_pProblemManager)
+    {
+        SaveProblemSpace();
+        delete m_pProblemManager;
+    }
+    switch(m_nGenerationMode)
+    {
+        case lm_eQuizMode:
+        case lm_eExamMode:
+            m_pProblemManager = new lmQuizManager();
+            break;
+
+        case lm_eLearningMode:
+            m_pProblemManager = new lmLeitnerManager();
+            break;
+        
+        default:
+            wxASSERT(false);
+    }
+}
+
+lmCountersAuxCtrol* lmExerciseCtrol::CreateCountersCtrol()
+{
+    lmCountersAuxCtrol* pNewCtrol = (lmCountersAuxCtrol*)NULL;
+    if (m_pConstrains->IsUsingCounters() )
+    {
+        switch(m_nGenerationMode)
+        {
+            case lm_eQuizMode:
+            case lm_eExamMode:
+                pNewCtrol = new lmQuizAuxCtrol(this, wxID_ANY, m_rScale,
+                                              (lmQuizManager*)m_pProblemManager);
+                break;
+
+            case lm_eLearningMode:
+                pNewCtrol = new lmLeitnerAuxCtrol(this, wxID_ANY, m_rScale,
+                                                 (lmLeitnerManager*)m_pProblemManager);
+                break;
+            
+            default:
+                wxASSERT(false);
+        }
+    }
+    return pNewCtrol;
 }
 
 void lmExerciseCtrol::OnNewProblem(wxCommandEvent& event)
@@ -322,13 +437,28 @@ void lmExerciseCtrol::OnNewProblem(wxCommandEvent& event)
     NewProblem();
 }
 
+void lmExerciseCtrol::OnModeChanged(wxCommandEvent& event)
+{
+    int nMode = m_pCboMode->GetSelection();
+    if (m_nGenerationMode != nMode)
+        this->ChangeGenerationMode(nMode);
+}
+
 void lmExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
     //First, stop any possible chord being played to avoid crashes
     StopSounds();
 
-    //now proceed
-    if (m_pCounters) m_pCounters->IncrementWrong();
+    //inform problem manager of the result
+    OnQuestionAnswered(m_iQ, false);
+
+    //produce feedback sound, and update statistics display
+    if (m_pCounters)
+    {
+        m_pCounters->UpdateDisplay(false);
+        m_pCounters->RightWrongSound(false);
+    }
+
     DoDisplaySolution();
 }
 
@@ -347,14 +477,14 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
         //verify if success or failure
         bool fSuccess = (nIndex == m_nRespIndex);
         
-        //produce feedback sound, and update counters
+        //inform problem manager of the result
+        OnQuestionAnswered(m_iQ, fSuccess);
+
+        //produce feedback sound, and update statistics display
         if (m_pCounters)
         {
-            if (fSuccess) {
-                m_pCounters->IncrementRight();
-            } else {
-                m_pCounters->IncrementWrong();
-            }
+            m_pCounters->UpdateDisplay(fSuccess);
+            m_pCounters->RightWrongSound(fSuccess);
         }
             
         //if failure or not auto-new problem, display the solution.
@@ -381,12 +511,20 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
 
 }
 
+void lmExerciseCtrol::OnQuestionAnswered(int iQ, bool fSuccess)
+{
+    //inform problem manager of the result
+    if (m_pProblemManager)
+        m_pProblemManager->UpdateQuestion(m_iQ, fSuccess);
+}
+
+
 void lmExerciseCtrol::NewProblem()
 {
     ResetExercise();
 
     //prepare answer buttons and counters
-    if (m_pCounters) m_pCounters->NextTeam();
+    if (m_pCounters) m_pCounters->OnNewQuestion();
     EnableButtons(true);
 
     //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM

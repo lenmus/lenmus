@@ -41,32 +41,20 @@ extern lmLogger* g_pLogger;
 
 
 
-static wxString sIntervalName[16];
-static bool fStringsInitialized = false;
+static wxString m_sIntervalName[16];
+static bool m_fStringsInitialized = false;
+//forward declaration
+void FIntval_InitializeStrings();
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmInterval class
 
 
-lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, lmEKeySignatures nKey)
-{
-    if (!fStringsInitialized) InitializeStrings();
-
-    //save parameters and compute the interval
-    m_MPitch1 = pNote1->GetMPitch();
-    m_MPitch2 = pNote2->GetMPitch();
-    m_DPitch1 = pNote1->GetDPitch();
-    m_DPitch2 = pNote2->GetDPitch();
-    m_nKey = nKey;
-    Analyze();
-
-}
-
 //Generate a random interval satisfying the received constraints.
 lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
              bool fAscending, lmEKeySignatures nKey, int nMidiStartNote)
 {
-    if (!fStringsInitialized) InitializeStrings();
+    if (!m_fStringsInitialized) FIntval_InitializeStrings();
 
     //dbg------------------------------------------------------
     g_pLogger->LogTrace(_T("lmInterval"), _T("Direction = %s, type = %s\n"),
@@ -369,7 +357,7 @@ void lmInterval::Analyze()
     }
 
     //prepare interval name
-    m_sName = sIntervalName[(fMajor ? m_nNumIntv + 7 : m_nNumIntv)];
+    m_sName = m_sIntervalName[(fMajor ? m_nNumIntv + 7 : m_nNumIntv)];
     if (m_nNumIntv != 1) {    //Exclude Unisons
         switch (m_nType) {
             case eti_Diminished:        m_sName += _(" diminished");          break;
@@ -391,31 +379,6 @@ void lmInterval::Analyze()
     }
 
 }
-
-void lmInterval::InitializeStrings()
-{
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
-    sIntervalName[0] = _T("");
-    sIntervalName[1] = _("Unison");
-    sIntervalName[2] = _("2nd");
-    sIntervalName[3] = _("3rd");
-    sIntervalName[4] = _("4th");
-    sIntervalName[5] = _("5th");
-    sIntervalName[6] = _("6th");
-    sIntervalName[7] = _("7th");
-    sIntervalName[8] = _("octave");
-    sIntervalName[9] = _("9th");
-    sIntervalName[10] = _("10th");
-    sIntervalName[11] = _("11th");
-    sIntervalName[12] = _("12th");
-    sIntervalName[13] = _("13th");
-    sIntervalName[14] = _("14th");
-    sIntervalName[15] = _("Two octaves");
-
-    fStringsInitialized = true;
-}
-
 wxString lmInterval::GetIntervalCode()
 {
     lmIntvBits tIntv;
@@ -512,127 +475,6 @@ void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
         if (pNewNote->nAccidentals < -5) pNewNote->nAccidentals += 12;
     }
 
-
-}
-
-void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode, lmEKeySignatures nKey,
-                               lmEIntervalDirection nDirection, lmNoteBits* pNewNote)
-{
-    // This function adds the requested semitones to note *pRoot and returns the resulting
-    // note in *pNewNote.
-    // Step and accidentals of new note are adjusted to fit 'naturally' in the key
-    // signature received: one accidental at maximum, of the same type than the
-    // accidentals in the key signature.
-    // sIntvCode is one of '1s', '2s', ..., '9s' meaning '1 semitone', '2 semitones' , etc.
-
-
-    //Determine what type of accidentals to use for semitones: flats or sharps
-    bool fUseSharps = (KeySignatureToNumFifths(nKey) >= 0);
-
-    //Get the number of semitones to add/substract
-    wxString sSemitones = sIntvCode.Left(1);
-    long nSemitones;
-    sSemitones.ToLong(&nSemitones);
-    if (nDirection == edi_Descending) nSemitones = -nSemitones;
-
-    // compute new note total semitones and octave
-    nSemitones += pRoot->nStepSemitones + pRoot->nAccidentals;
-    pNewNote->nOctave = pRoot->nOctave;
-    while (nSemitones > 11) {
-        nSemitones -= 12;
-        pNewNote->nOctave ++;
-    }
-    while (nSemitones < 0) {
-        nSemitones += 12;
-        pNewNote->nOctave --;
-    }
-    //here octave is adjusted and step semitones is >=0 and < 12.
-    //compute step and accidentals
-    switch (nSemitones) {
-        case 0:
-            pNewNote->nStep = 0;            // c
-            pNewNote->nAccidentals = 0;
-            break;
-        case 1:
-            if (fUseSharps) {
-                pNewNote->nStep = 0;        // +c
-                pNewNote->nAccidentals = 1;
-            }
-            else {
-                pNewNote->nStep = 1;        // -d
-                pNewNote->nAccidentals = -1;
-            }
-            break;
-        case 2:
-            pNewNote->nStep = 1;            // d
-            pNewNote->nAccidentals = 0;
-            break;
-        case 3:
-            if (fUseSharps) {
-                pNewNote->nStep = 1;        // +d
-                pNewNote->nAccidentals = 1;
-            }
-            else {
-                pNewNote->nStep = 2;        // -e
-                pNewNote->nAccidentals = -1;
-            }
-            break;
-        case 4:
-            pNewNote->nStep = 2;            // e
-            pNewNote->nAccidentals = 0;
-            break;
-        case 5:
-            pNewNote->nStep = 3;            // f
-            pNewNote->nAccidentals = 0;
-            break;
-        case 6:
-            if (fUseSharps) {
-                pNewNote->nStep = 3;        // +f
-                pNewNote->nAccidentals = 1;
-            }
-            else {
-                pNewNote->nStep = 4;        // -g
-                pNewNote->nAccidentals = -1;
-            }
-            break;
-        case 7:
-            pNewNote->nStep = 4;            // g
-            pNewNote->nAccidentals = 0;
-            break;
-        case 8:
-            if (fUseSharps) {
-                pNewNote->nStep = 4;        // +g
-                pNewNote->nAccidentals = 1;
-            }
-            else {
-                pNewNote->nStep = 5;        // -a
-                pNewNote->nAccidentals = -1;
-            }
-            break;
-        case 9:
-            pNewNote->nStep = 5;            // a
-            pNewNote->nAccidentals = 0;
-            break;
-        case 10:
-            if (fUseSharps) {
-                pNewNote->nStep = 5;        // +a
-                pNewNote->nAccidentals = 1;
-            }
-            else {
-                pNewNote->nStep = 6;        // -b
-                pNewNote->nAccidentals = -1;
-            }
-            break;
-        case 11:
-            pNewNote->nStep = 6;            // b
-            pNewNote->nAccidentals = 0;
-            break;
-    }
-
-    //compute step semitones
-    pNewNote->nStepSemitones = lmConverter::StepToSemitones(pNewNote->nStep);
-
-    //done
 
 }
 
@@ -743,77 +585,190 @@ wxString IntervalBitsToCode(lmIntvBits& tIntv)
 
 }
 
-#if 0
-//analize the interval and compute its name
-wxString GetIntvName(lmIntvBits* pBits)
-{
-    int nSemitones = pBits->nSemitones;
-    int nNum = pBits->nNum;
+
+
+
+//-------------------------------------------------------------------------------------
+// FIntval
+// Interval implementation based on FIntval.
+//-------------------------------------------------------------------------------------
+
+// an entry for the table of intervals data
+typedef struct {
     lmEIntervalType nType;
+    int             nNumIntv;
+} lmIntvalData;
 
-    //trim to reduce intervals greater than one octave
-    bool fMajor = (nNum > 8);
-    if (fMajor) {
-        nSemitones -= 12;
-        nNum -= 7;
+static const lmIntvalData m_aIntvData[40] =
+{
+    {/*  0 - lm_p1  */  eti_Perfect,            1 },   
+    {/*  1 - lm_a1  */  eti_Augmented,          1 },
+    {/*  2 - lm_da1 */  eti_DoubleAugmented,    1 },
+    {/*  3 - lm_dd2 */  eti_DoubleDiminished,   2 },
+    {/*  4 - lm_d2  */  eti_Diminished,         2 },
+    {/*  5 - lm_m2  */  eti_Minor,              2 },
+    {/*  6 - lm_M2  */  eti_Major,              2 },
+    {/*  7 - lm_a2  */  eti_Augmented,          2 },
+    {/*  8 - lm_da2 */  eti_DoubleAugmented,    2 },
+    {/*  9 - lm_dd3 */  eti_DoubleDiminished,   3 },
+    {/* 10 - lm_d3  */  eti_Diminished,         3 },
+    {/* 11 - lm_m3  */  eti_Minor,              3 },
+    {/* 12 - lm_M3  */  eti_Major,              3 },
+    {/* 13 - lm_a3  */  eti_Augmented,          3 },
+    {/* 14 - lm_da3 */  eti_DoubleAugmented,    3 },
+    {/* 15 - lm_dd4 */  eti_DoubleDiminished,   4 },
+    {/* 16 - lm_d4  */  eti_Diminished,         4 },
+    {/* 17 - lm_p4  */  eti_Perfect,            4 },
+    {/* 18 - lm_a4  */  eti_Augmented,          4 },
+    {/* 19 - lm_da4 */  eti_DoubleAugmented,    4 },
+    {/*empty*/          (lmEIntervalType)0,     0 },
+    {/* 21 - lm_dd5 */  eti_DoubleDiminished,   5 },
+    {/* 22 - lm_d5  */  eti_Diminished,         5 },
+    {/* 23 - lm_p5  */  eti_Perfect,            5 },
+    {/* 24 - lm_a5  */  eti_Augmented,          5 },
+    {/* 25 - lm_da5 */  eti_DoubleAugmented,    5 },
+    {/* 26 - lm_dd6 */  eti_DoubleDiminished,   6 },
+    {/* 27 - lm_d6  */  eti_Diminished,         6 },
+    {/* 28 - lm_m6  */  eti_Minor,              6 },
+    {/* 29 - lm_M6  */  eti_Major,              6 },
+    {/* 30 - lm_a6  */  eti_Augmented,          6 },
+    {/* 31 - lm_da6 */  eti_DoubleAugmented,    6 },
+    {/* 32 - lm_dd7 */  eti_DoubleDiminished,   7 },
+    {/* 33 - lm_d7  */  eti_Diminished,         7 },
+    {/* 34 - lm_m7  */  eti_Minor,              7 },
+    {/* 35 - lm_M7  */  eti_Major,              7 },
+    {/* 36 - lm_a7  */  eti_Augmented,          7 },
+    {/* 37 - lm_da7 */  eti_DoubleAugmented,    7 },
+    {/* 38 - lm_dd8 */  eti_DoubleDiminished,   8 },
+    {/* 39 - lm_d8  */  eti_Diminished,         8 },
+};
+
+
+void FIntval_InitializeStrings()
+{
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+
+    m_sIntervalName[0] = _T("");
+    m_sIntervalName[1] = _("Unison");
+    m_sIntervalName[2] = _("2nd");
+    m_sIntervalName[3] = _("3rd");
+    m_sIntervalName[4] = _("4th");
+    m_sIntervalName[5] = _("5th");
+    m_sIntervalName[6] = _("6th");
+    m_sIntervalName[7] = _("7th");
+    m_sIntervalName[8] = _("octave");
+    m_sIntervalName[9] = _("9th");
+    m_sIntervalName[10] = _("10th");
+    m_sIntervalName[11] = _("11th");
+    m_sIntervalName[12] = _("12th");
+    m_sIntervalName[13] = _("13th");
+    m_sIntervalName[14] = _("14th");
+    m_sIntervalName[15] = _("Two octaves");
+
+    m_fStringsInitialized = true;
+}
+
+lmFIntval FIntval(wxString& sName)
+{
+    // unison
+    if (sName == _T("p1")) return lm_p1;
+    if (sName == _T("a1")) return lm_a1;
+    // second
+    if (sName == _T("d2")) return lm_d2;
+    if (sName == _T("m2")) return lm_m2;
+    if (sName == _T("M2")) return lm_M2;
+    if (sName == _T("a2")) return lm_a2;
+    // third
+    if (sName == _T("d3")) return lm_d3;
+    if (sName == _T("m3")) return lm_m3;
+    if (sName == _T("M3")) return lm_M3;
+    if (sName == _T("a3")) return lm_a3;
+    // fourth
+    if (sName == _T("d4")) return lm_d4;
+    if (sName == _T("p4")) return lm_p4;
+    if (sName == _T("a4")) return lm_a4;
+    // fifth
+    if (sName == _T("d5")) return lm_d5;
+    if (sName == _T("p5")) return lm_p5;
+    if (sName == _T("a5")) return lm_a5;
+    //sixth
+    if (sName == _T("d6")) return lm_d6;
+    if (sName == _T("m6")) return lm_m6;
+    if (sName == _T("M6")) return lm_M6;
+    if (sName == _T("a6")) return lm_a6;
+    // seventh
+    if (sName == _T("d7")) return lm_d7;
+    if (sName == _T("m7")) return lm_m7;
+    if (sName == _T("M7")) return lm_M7;
+    if (sName == _T("a7")) return lm_a7;
+    // octave
+    if (sName == _T("d8")) return lm_d8;
+    if (sName == _T("p8")) return lm_p8;
+
+    return lmNULL_FIntval;
+
+}
+
+int FIntval_GetNumber(lmFIntval fi)
+{
+    //returns interval number: 1=unison, 2=2nd, ..., 8=8ve, 9=9th, ..., 15=2 octaves, ...
+
+    int nOctave = (fi / 40) * 7;
+    fi %= 40;
+    // Here fi= 0..39
+
+    return m_aIntvData[fi].nNumIntv + nOctave;
+}
+
+wxString FIntval_GetIntvCode(lmFIntval fi)
+{
+    //returns interval code
+
+    int nOctave = ((fi / 40) * 7);
+    fi %= 40;
+    // Here fi= 0..39
+    nOctave += m_aIntvData[fi].nNumIntv;
+
+    wxString sCode = _T("");
+    switch (m_aIntvData[fi].nType)
+    {
+        case eti_Diminished:        return wxString::Format(_T("d%d"), nOctave);
+        case eti_Minor:             return wxString::Format(_T("m%d"), nOctave);
+        case eti_Major:             return wxString::Format(_T("M%d"), nOctave);
+        case eti_Augmented:         return wxString::Format(_T("a%d"), nOctave);
+        case eti_Perfect:           return wxString::Format(_T("p%d"), nOctave);
+        case eti_DoubleAugmented:   return wxString::Format(_T("da%d"), nOctave);
+        case eti_DoubleDiminished:  return wxString::Format(_T("dd%d"), nOctave);
+        default:
+            wxASSERT(false);
     }
+    return wxEmptyString;
+}
 
-    //compute the number of semitones required to be perfect or major (p.84 Atlas)
-    int nPerfect = 2 * (nNum - 1);
-    if (nNum > 3) nPerfect--;            //intervals greater than 3rd loose a semitone
-    if (nNum == 8) nPerfect = 12;        //the octave has 12 semitones
+wxString FIntval_GetName(lmFIntval fi)
+{
+    //AWARE: This method is restricted to two octaves
 
-    //at this point:
-    //   nSemitones = num. of semitones in the interval
-    //   nNum = number of the interval
-    //   nPerfect = num. of semitones that should have to be perfect or major
+    wxASSERT(fi < 81);      // 80 = two octaves
 
-    //compute interval type
-    int i;
-    if (nNum == 1 || nNum == 4 || nNum == 5 || nNum == 8) {
-        //perfect intervals
-        i = abs(nSemitones - nPerfect);
-        if (nSemitones < nPerfect) {
-            if (i == 1) {
-                nType = eti_Diminished;
-            } else {
-                nType = eti_DoubleDiminished;
-            }
-        } else if (nSemitones > nPerfect) {
-            if (i == 1) {
-                nType = eti_Augmented;
-            } else {
-                nType = eti_DoubleAugmented;
-            }
-        } else {
-            nType = eti_Perfect;
-        }
-    } else {
-        if (nSemitones < nPerfect) {
-            i = nPerfect - nSemitones;
-            if (i == 1) {
-                nType = eti_Minor;
-            } else if (i == 2) {
-                nType = eti_Diminished;
-            } else {
-                nType = eti_DoubleDiminished;
-            }
-        } else {
-            i = nSemitones - nPerfect;
-            if (i == 0) {
-                nType = eti_Major;
-            } else if (i == 1) {
-                nType = eti_Augmented;
-            } else {
-                nType = eti_DoubleAugmented;
-            }
-        }
-    }
+    int nOctave = (fi / 40) * 7;
+    int fiIndex = fi % 40;
+    // Here fi= 0..39
 
-    //prepare interval name
-    wxString sName = sIntervalName[(fMajor ? nNum + 7 : nNum)];
-    if (nNum != 1) {    //Exclude Unisons
-        switch (nType) {
+    int nNumIntv = m_aIntvData[fiIndex].nNumIntv + nOctave;              // 0..15
+    if (!m_fStringsInitialized) FIntval_InitializeStrings();
+    wxString sName = m_sIntervalName[nNumIntv];
+    if (fi == 0)
+        sName = _("Unison");
+    else if (fi == 1)
+        sName = _("Chromatic semitone");
+    else if (fi == 2)
+        sName = _("Chromatic tone");
+    else
+    {    
+        switch (m_aIntvData[fiIndex].nType)
+        {
             case eti_Diminished:        sName += _(" diminished");          break;
             case eti_Minor:             sName += _(" minor");               break;
             case eti_Major:             sName += _(" mayor");               break;
@@ -825,37 +780,12 @@ wxString GetIntvName(lmIntvBits* pBits)
                 wxASSERT(false);
         }
     }
-
-    //rebuild intervals greater than a octave
-    if (fMajor) {
-        nSemitones += 12;
-        nNum += 7;
-    }
-
     return sName;
-
 }
 
-#endif
-
-// Interval implementation based on FIntval.
-// TODO: In current definitions double augmented and double diminished intervals are
-//       not defined. Aparently FPitch representation can deal with them but
-//       this mus be checked
-//
-//wxString& const FIntval_GetName(lmFIntval fi)
-//{
-//    return m_sIntvalNames[fi];
-//}
-//
-//int FIntval_GetIntervalNum(lmFIntval fi)
-//{
-//    return m_sIntvalNums[fi];
-//}
-//
-//int FIntval_GetIntervalType(lmFIntval fi)
-//{
-//    return m_sIntvalypes[fi];
-//}
-//
+lmEIntervalType FIntval_GetType(lmFIntval fi)
+{
+    fi %= 40;   //Now fi= 0..39
+    return m_aIntvData[fi].nType;
+}
 

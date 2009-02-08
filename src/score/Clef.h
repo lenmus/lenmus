@@ -89,6 +89,7 @@ private:
 // global functions related to clefs
 //
 wxString GetClefLDPNameFromType(lmEClefType nType);
+lmDPitch GetFirstLineDPitch(lmEClefType nClef);
 
 #endif    // __LM_CLEF_H__
 

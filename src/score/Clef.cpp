@@ -39,6 +39,7 @@
 #include "Staff.h"
 #include "Context.h"
 
+extern lmFPitch FPitch(int nStep, int nOctave, int nAcc);
 
 //-------------------------------------------------------------------------------------------------
 // lmClef object implementation
@@ -311,4 +312,35 @@ wxString GetClefLDPNameFromType(lmEClefType nType)
 
 }
 
+lmDPitch GetFirstLineDPitch(lmEClefType nClef)
+{
+    // Returns the diatonic pitch for first line, when using received clef.
+
+    switch(nClef)
+    {
+        case lmE_Sol:           return DPitch(lmSTEP_E, lmOCTAVE_4);  break;
+        case lmE_Fa4:           return DPitch(lmSTEP_G, lmOCTAVE_2);  break;
+        case lmE_Fa3:           return DPitch(lmSTEP_B, lmOCTAVE_2);  break;
+        case lmE_Do1:           return DPitch(lmSTEP_C, lmOCTAVE_4);  break;
+        case lmE_Do2:           return DPitch(lmSTEP_A, lmOCTAVE_3);  break;
+        case lmE_Do3:           return DPitch(lmSTEP_F, lmOCTAVE_3);  break;
+        case lmE_Do4:           return DPitch(lmSTEP_D, lmOCTAVE_3);  break;
+        case lmE_Do5:           return DPitch(lmSTEP_B, lmOCTAVE_2);  break;
+        case lmE_Fa5:           return DPitch(lmSTEP_E, lmOCTAVE_2);  break;
+        case lmE_Sol1:          return DPitch(lmSTEP_G, lmOCTAVE_4);  break;
+        case lmE_8Sol:          return DPitch(lmSTEP_E, lmOCTAVE_5);  break;  //8 above
+        case lmE_Sol8:          return DPitch(lmSTEP_E, lmOCTAVE_3);  break;  //8 below
+        case lmE_8Fa:           return DPitch(lmSTEP_G, lmOCTAVE_3);  break;  //8 above
+        case lmE_Fa8:           return DPitch(lmSTEP_G, lmOCTAVE_1);  break;  //8 below
+        case lmE_15Sol:         return DPitch(lmSTEP_E, lmOCTAVE_6);  break;  //15 above
+        case lmE_Sol15:         return DPitch(lmSTEP_E, lmOCTAVE_2);  break;  //15 below
+        case lmE_15Fa:          return DPitch(lmSTEP_G, lmOCTAVE_4);  break;  //15 above
+        case lmE_Fa15:          return DPitch(lmSTEP_G, lmOCTAVE_0);  break;  //15 below
+        case lmE_Undefined:
+        case lmE_Percussion:    return lmNO_DPITCH;  break;
+        default:
+            wxASSERT(false);
+    }
+    return lmNO_DPITCH;
+}
 
