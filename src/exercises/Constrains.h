@@ -75,6 +75,7 @@ enum EIntervalName              // name of the intervals considered in exercises
 enum
 {
     lm_eLearningMode = 0,
+    lm_ePractiseMode,
     lm_eExamMode,
     lm_eQuizMode,
     //

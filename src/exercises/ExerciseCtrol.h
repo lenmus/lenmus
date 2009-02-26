@@ -138,6 +138,10 @@ public:
 
     //other
     virtual void OnQuestionAnswered(int iQ, bool fSuccess);
+    void ChangeCountersCtrol();
+    void ChangeGenerationMode(int nMode);
+    void ChangeGenerationModeLabel(int nMode);
+
 
 protected:
     //IDs for controls
@@ -147,7 +151,7 @@ protected:
         lmID_CBO_MODE,
     };
 
-    //virtual pure methods to be implemented by derived classes
+    //virtual methods to be implemented by derived classes
     virtual void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)=0;
     virtual wxString SetNewProblem()=0;    
     virtual wxWindow* CreateDisplayCtrol()=0;
@@ -158,6 +162,7 @@ protected:
     virtual void DisplayMessage(wxString& sMsg, bool fClearDisplay)=0;
     virtual void DeleteScores()=0;
     virtual void StopSounds()=0;
+    virtual void SetProblemSpace();
 
     //methods that, normally, it is not necessary to implement
     virtual void SetButtonColor(int i, wxColour& color);
@@ -168,8 +173,6 @@ protected:
     //methods invoked from derived classes
     virtual void CreateControls();
     void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
-    void ChangeGenerationMode(int nMode);
-    void SaveProblemSpace();
 
     //internal methods
     lmCountersAuxCtrol* CreateCountersCtrol();
@@ -202,9 +205,11 @@ protected:
     int                     m_nGenerationMode;
     int                     m_nProblemLevel;
     lmProblemManager*       m_pProblemManager;
-    lmProblemSpace          m_oProblemSpace;
     int                     m_iQ;               //index of asked question
     wxString                m_sKeyPrefix;
+
+    //to measure times
+    wxDateTime              m_tmAsked;      //when was asked last question
 
 private:
     void DoStopSounds();

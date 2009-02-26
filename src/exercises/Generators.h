@@ -33,8 +33,11 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
+#else
+    #include <wx/datetime.h>
 #endif
+
 
 #include "Constrains.h"
 
@@ -73,6 +76,51 @@ public:
 // of question repetitions, tailored to user profile.
 //-------------------------------------------------------------------------------------------------
 
+class lmProblemSpace;
+class lmExerciseCtrol;
+
+#define lmNUM_GROUPS    16        //number of groups to classify questions
+
+
+class lmQuestion
+{
+public:
+    lmQuestion(int nGroup, int nAskedTotal, int nSuccessTotal, int nRepetitions,
+               wxTimeSpan tsLastAsked = wxTimeSpan::Days(-1),          //never asked
+               long nDaysRepIntv = (wxTimeSpan::Day()).GetDays()       //1 day
+               );
+    ~lmQuestion();
+
+    inline void SetIndex(int nIndex) { m_nIndex = nIndex; }
+    inline int GetIndex() { return m_nIndex; }
+    inline int GetGroup() { return m_nGroup; }
+    inline int GetRepetitions() { return m_nRepetitions; }
+    void SaveQuestion(int nProblemSpaceKey);
+    static void LoadQuestion(int nProblemSpaceKey, int iQ, lmProblemSpace* pPS);
+
+    void UpdateAsked(lmProblemSpace* pPS);
+    void UpdateSuccess(lmProblemSpace* pPS, bool fSuccess);
+
+    inline wxTimeSpan GetSheduledTimeSpan() { return m_tsLastAsked + m_tsDaysRepIntv; }
+    inline void SetRepetitionInterval(wxTimeSpan ts) { m_tsDaysRepIntv = ts; }
+
+
+
+
+protected:
+    int         m_nIndex;           //index (0..n) assigned to this question in the problem space
+    int         m_nGroup;           //0..n
+    int         m_nRepetitions;     //num times answered right without promotion
+    int         m_nAskedTotal;      //num times this question has been asked
+    int         m_nSuccessTotal;    //num times this question has been answered right
+    wxTimeSpan  m_tsLastAsked;      //last time this question was asked. Referred to problem space 
+                                    //  creation date (tmCreation). If never asked will be -1 day.
+    wxTimeSpan  m_tsDaysRepIntv;    //repetition interval (days). Default 1 day
+
+};
+
+
+// lmProblemSpace: The set of questions for an exercise
 class lmProblemSpace
 {
 public:
@@ -81,70 +129,110 @@ public:
 
     //creation / save
     bool Load(wxString& sKey);
-    void Save(wxString& sKey);
-    int AddQuestion(int nGroup, int nAskedGlobal, int nSuccessGlobal);
+    void SaveAndClear();
+    void NewSpace(int nNumQuestions, int nRepetitions, wxString& sKey);
+
+    int AddQuestion(int nGroup, int nAskedTotal, int nSuccessTotal, int nRepetitions,
+                    wxTimeSpan tsLastAsked = wxTimeSpan::Days(-36500),      //never asked (100 years)
+                    long nDaysRepIntv = (wxTimeSpan::Day()).GetDays()       //1 day
+                    );
 
     //accesors
     inline int GetSpaceSize() { return m_questions.size(); }
-    inline int GetGroup(int idx) { return m_questions[idx]->nGroup; }
+    inline int GetGroup(int iQ) { return m_questions[iQ]->GetGroup(); }
+    inline int RepetitionsThreshold() { return m_nRepetitions; }
+    lmQuestion* GetQuestion(int iQ);
+    inline wxDateTime CreationDate() { return m_tmCreation; }
+    inline wxTimeSpan GetTotalRespTime() { return m_tsTotalRespTime; }
+    inline int GetTotalAsked() { return m_nTotalAsked; }
 
     //operations
-    void UpdateQuestion(int iNdx, bool fSuccess);
-    void Clear();
+    void ClearQuestions();
+    inline void AddTotalRespTime(wxTimeSpan tsResponse) { m_tsTotalRespTime += tsResponse; }
+    inline void IncrementTotalAsked() { m_nTotalAsked++; }
 
     //info
     inline bool IsEmpty() { return m_questions.size() == 0; }
 
 
 private:
-    typedef struct {
-        int     nIndex;     // 0..n
-        int     nGroup;     // 0,1,2
-        int     nAskedSession;
-        int     nSuccessSession;
-        int     nAskedGlobal;
-        int     nSuccessGlobal;
-    } lmQuestion;
 
     std::vector<lmQuestion*>     m_questions;
+
+    //information to save
+    wxString        m_sKey;             //name for this problem space
+    wxDateTime      m_tmCreation;       //creation date 
+    wxDateTime      m_tmLastUsed;       //last date when this problem space was used
+    int             m_nRepetitions;     //num of repetitions to promote a question
+    wxTimeSpan      m_tsTotalRespTime;  //total time for answering questions
+    int             m_nTotalAsked;      //total num questions asked
 
 };
 
 
+//
+//// Questions manager. Abstract class from which all questions managers must derive
+//// Chooses a question and takes note of right/wrong user answer
+//class lmQuestionsManager
+//{
+//public:
+//    lmQuestionsManager();
+//    virtual ~lmQuestionsManager();
+//
+//    inline void UpdateProblemSpace(lmProblemSpace* pProblemSpace) { m_pProblemSpace = pProblemSpace; }
+//
+//    //Method to choose a question. Returns question index
+//    virtual int ChooseQuestion()=0;
+//
+//    //Method to account for the answer
+//    virtual void UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse)=0;
+//
+//protected:
+//    lmProblemSpace*     m_pProblemSpace;
+//
+//};
+
+
+
 // Problem manager. Abstract class from which all problem managers must derive
+// Chooses a QuestionsMngr and a CountersAuxCtrol suitable for the exercise mode
+// Load/Saves/Updates the problem space
 class lmProblemManager
 {
 public:
-    lmProblemManager(lmProblemSpace* pProblemSpace);
-    lmProblemManager();
+    lmProblemManager(lmExerciseCtrol* pOwnerExercise);
     virtual ~lmProblemManager();
 
-    virtual void SetProblemSpace(lmProblemSpace* pProblemSpace);
+    virtual void OnProblemSpaceChanged()=0;
+    bool LoadProblemSpace(wxString& sKey);
+    void SaveProblemSpace();
+    void SetNewSpace(int nNumQuestions, int nRepetitions, wxString sKey);
+    inline int GetSpaceSize() { return m_pProblemSpace->GetSpaceSize(); }
 
     //Method to choose a question. Returns question index
     virtual int ChooseQuestion()=0;
 
     //Method to account for the answer
-    virtual void UpdateQuestion(int iQ, bool fSuccess)=0;
+    virtual void UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse)=0;
 
-    //Method to get information about student performance
-    virtual void Statistics() {}
 
 protected:
-    lmProblemSpace*     m_pProblemSpace;
+    lmProblemSpace*         m_pProblemSpace;
+    lmExerciseCtrol*        m_pOwnerExercise;
+    //lmQuestionsManager*     m_pQuestionsMngr;
 };
 
 // Quiz manager. Generates questions at random.
 class lmQuizManager : public lmProblemManager
 {
 public:
-    lmQuizManager(lmProblemSpace* pProblemSpace);
-    lmQuizManager();
+    lmQuizManager(lmExerciseCtrol* pOwnerExercise);
     ~lmQuizManager();
 
     //implementation of virtual methods
     int ChooseQuestion();
-    void UpdateQuestion(int iQ, bool fSuccess);
+    void UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse);
+    void OnProblemSpaceChanged() {}
 
     //specific for this class
     void ResetCounters();
@@ -171,65 +259,66 @@ private:
 class lmLeitnerManager : public lmProblemManager
 {
 public:
-    lmLeitnerManager(lmProblemSpace* pProblemSpace);
-    lmLeitnerManager();
+    lmLeitnerManager(lmExerciseCtrol* pOwnerExercise, bool fLearningMode);
     ~lmLeitnerManager();
 
     //implementation of virtual methods
     int ChooseQuestion();
-    void UpdateQuestion(int iQ, bool fSuccess);
-
-    //overrides
-    void SetProblemSpace(lmProblemSpace* pProblemSpace);
-    void Statistics();
+    void UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse);
+    void OnProblemSpaceChanged();
 
     //specific for this class
-    float GetPoor();
-    float GetFair();
-    float GetGood();
-    float GetAchieved();
-    float GetProgress();
+    wxTimeSpan GetRepetitionInterval(int nGroup);
+    inline bool IsLearningMode() { return m_fLearningMode; }
+
+    //statistics for learning mode
+    int GetNew();
+    int GetExpired();
+    int GetTotal();
+    float GetGlobalProgress();
+    float GetSessionProgress();
+    wxTimeSpan GetEST();
+
+    //statistics for practise mode
+    inline int GetRight() { return m_nRight; }
+    inline int GetWrong() { return m_nWrong; }
+    void ResetPractiseCounters();
+
 
 private:
-    void ComputeProbabilities();
+    void UpdateProblemSpace();
+    void UpdateProblemSpaceForLearning();
+    void UpdateProblemSpaceForPractising();
+    int ChooseQuestionForLearning();
+    int ChooseQuestionForPractising();
+    void UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan tsResponse);
+    void UpdateQuestionForPractising(int iQ, bool fSuccess, wxTimeSpan tsResponse);
 
-    std::vector<int>    m_group[3];
-    float               m_range[3];     //probability range for each group. -1.0 means 'do not use'
+    bool        m_fLearningMode;            //true: learning mode, false: practise mode
+    bool        m_fThereWhereQuestions;     //to control change to Practise mode
+
+    //for learning mode
+
+    std::vector<int>                m_set0;                 //questions scheduled for today
+    std::vector<int>::iterator      m_it0;                  //points to next question to ask
+
+    //for practise mode
+
+    std::vector<int>    m_group[lmNUM_GROUPS];  //questions, splitted by group
+    double              m_range[lmNUM_GROUPS];  //probability range for each group. -1.0 means 'do not use'
+
+    //statistics
+    int     m_nUnlearned;
+    int     m_nToReview;
+    int     m_nTotal;
+    int     m_NumQuestions[lmNUM_GROUPS];   //num questions per group
+
+    //counters for right and wrong answers (practise mode)
+    int         m_nRight;
+    int         m_nWrong;
 
 };
 
 
-// Practise mode manager. As Leitner manager, it also adapts questions priorities
-// to user needs based on success/failures. But it doesn't schedule repetitions and
-// doesn't save performance data
-class lmPractiseManager : public lmProblemManager
-{
-public:
-    lmPractiseManager(lmProblemSpace* pProblemSpace);
-    lmPractiseManager();
-    ~lmPractiseManager();
-
-    //implementation of virtual methods
-    int ChooseQuestion();
-    void UpdateQuestion(int iQ, bool fSuccess);
-
-    //overrides
-    void SetProblemSpace(lmProblemSpace* pProblemSpace);
-    void Statistics();
-
-    //specific for this class
-    float GetPoor();
-    float GetFair();
-    float GetGood();
-    float GetAchieved();
-    float GetProgress();
-
-private:
-    void ComputeProbabilities();
-
-    std::vector<int>    m_group[3];
-    float               m_range[3];     //probability range for each group. -1.0 means 'do not use'
-
-};
 
 #endif  // __LM_GENERATORS_H__

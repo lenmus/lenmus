@@ -66,9 +66,8 @@ public:
 
 
 protected:
-    //virtual void EnableButtons(bool fEnable)=0;
     virtual void ReconfigureKeyboard() {};
-    void LoadProblemSpace();
+    void SetProblemSpace();
     virtual wxString PrepareScores()=0; 
 
         // member variables

@@ -52,11 +52,14 @@
 			<Add directory="../../packages/freetype/include" />
 			<Add directory="../../packages/freetype/include/freetype2" />
 			<Add directory="../../packages/agg/font_freetype" />
+			<Add directory="../../packages/wxSQLite3/include" />
+			<Add directory="../../packages/wxSQLite3/sqlite3/include" />
 		</Compiler>
 		<Linker>
 			<Add library="/usr/lib/libportmidi.so.0" />
 			<Add library="/usr/lib/libporttime.so.0" />
 			<Add library="/usr/lib/libfreetype.so" />
+			<Add library="/usr/local/lib/libsqlite3.so" />
 		</Linker>
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.cpp" />
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.h" />
@@ -65,6 +68,7 @@
 		<Unit filename="../../packages/wxMidi/include/wxMidi.h" />
 		<Unit filename="../../packages/wxMidi/src/wxMidi.cpp" />
 		<Unit filename="../../packages/wxMidi/src/wxMidiDatabase.cpp" />
+		<Unit filename="../../packages/wxSQLite3/src/wxsqlite3.cpp" />
 		<Unit filename="../../src/app/AboutDialog.cpp" />
 		<Unit filename="../../src/app/AboutDialog.h" />
 		<Unit filename="../../src/app/ArtProvider.cpp" />

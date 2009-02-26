@@ -79,6 +79,7 @@ lmTheoIntervalCtrol::lmTheoIntervalCtrol(wxWindow* parent, wxWindowID id,
     m_nRespIndex = 0;
 
     m_pConstrains->SetGenerationModeSupported(lm_eLearningMode, true);
+    m_pConstrains->SetGenerationModeSupported(lm_ePractiseMode, true);
     ChangeGenerationMode(lm_eLearningMode);
 }
 
@@ -113,24 +114,26 @@ void lmTheoIntervalCtrol::OnSettingsChanged()
     //if problem level has changed set up the new problem space
     if (m_nProblemLevel != m_pConstrains->GetProblemLevel())
     {
-        LoadProblemSpace();
+        SetProblemSpace();
     }
 
     //Reconfigure answer keyboard for the new settings
     ReconfigureKeyboard();
 }
 
-void lmTheoIntervalCtrol::LoadProblemSpace()
+void lmTheoIntervalCtrol::SetProblemSpace()
 {
+    if (m_sKeyPrefix == _T("")) return;     //Ctrol constructor not yet finished
+
     //save current problem space data
-    SaveProblemSpace();
+    m_pProblemManager->SaveProblemSpace();
 
     //Update problem level and load problem space for new level
     m_nProblemLevel = m_pConstrains->GetProblemLevel();
     wxString sKey = m_sKeyPrefix + wxString::Format(_T("Level%d"), m_nProblemLevel);
-    if (m_sKeyPrefix == _T("") || !m_oProblemSpace.Load(sKey))
+    if (!m_pProblemManager->LoadProblemSpace(sKey))
     {
-        //Data not saved. Create new problem space
+        //Couldn't load problem space data: it didn't exist. Create new problem space
         int nNumQuestions = 8;      //default for level 0
         if (m_nProblemLevel == 1)
             nNumQuestions = sizeof(m_aProblemDataL1)/sizeof(lmFIntval);
@@ -139,16 +142,8 @@ void lmTheoIntervalCtrol::LoadProblemSpace()
         else
             nNumQuestions = sizeof(m_aProblemDataL3)/sizeof(lmFIntval);
 
-        m_oProblemSpace.Clear();
-        for (int i= 0; i < nNumQuestions; i++)
-        {
-            m_oProblemSpace.AddQuestion(0, 0, 0);       //assign all questions to group 0
-        }
-        wxLogMessage(_T("[lmTheoIntervalCtrol::LoadProblemSpace] Added %d questions"), nNumQuestions);
+        m_pProblemManager->SetNewSpace(nNumQuestions, 3, sKey);
     }
-
-    //Update problem manager
-    m_pProblemManager->SetProblemSpace(&m_oProblemSpace);
 }
 
 wxString lmTheoIntervalCtrol::SetNewProblem()
@@ -157,7 +152,7 @@ wxString lmTheoIntervalCtrol::SetNewProblem()
     // m_iQ, m_fpIntv, m_fpStart, m_fpEnd, m_sAnswer
 
     m_iQ = m_pProblemManager->ChooseQuestion();
-    wxASSERT(m_iQ>= 0 && m_iQ < m_oProblemSpace.GetSpaceSize());
+    wxASSERT(m_iQ>= 0 && m_iQ < m_pProblemManager->GetSpaceSize());
 
     if (m_nProblemLevel <= 1)
         m_fpIntv = m_aProblemDataL1[m_iQ];
@@ -249,10 +244,9 @@ lmBuildIntervalCtrol::lmBuildIntervalCtrol(wxWindow* parent, wxWindowID id,
     //create controls
     CreateControls();
 
-    //initialize problem space and update display
-    LoadProblemSpace();
+    //update display
     if (m_pCounters) 
-        m_pCounters->UpdateDisplay(true);
+        m_pCounters->UpdateDisplay();
 
     if (m_pConstrains->IsTheoryMode()) NewProblem();
 }
@@ -485,10 +479,9 @@ lmIdfyIntervalCtrol::lmIdfyIntervalCtrol(wxWindow* parent, wxWindowID id,
     //create controls
     CreateControls();
 
-    //initialize problem space and update display
-    LoadProblemSpace();
+    //update display
     if (m_pCounters) 
-        m_pCounters->UpdateDisplay(true);
+        m_pCounters->UpdateDisplay();
 
     if (m_pConstrains->IsTheoryMode()) NewProblem();
 }

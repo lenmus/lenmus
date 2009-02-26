@@ -46,6 +46,9 @@
 #include "wx/stdpaths.h"		// to get executable path
 #include "wx/memory.h"			// to trace memory leaks
 
+#include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
+#include "wx/wxsqlite3.h"               //to initialize wxSQLite3 DB
+
 //#ifdef __WXMSW__
 ////Support for alpha channel on toolbar bitmaps
 //#include "wx/sysopt.h"      // to access wxSystemOptions.
@@ -110,6 +113,7 @@
 #include "wx/filename.h"
 
 #include "wx/fs_zip.h"                  //to use the zip file system
+
 #include "Preferences.h"                //access to user preferences
 #include "../sound/MidiManager.h"       //access to Midi configuration
 #include "../sound/WaveManager.h"       //access to Wave sound manager
@@ -165,6 +169,9 @@ lmLogger* g_pLogger = (lmLogger*)NULL;
 // Conversion factors
 double g_rScreenDPI = 96.0;
 double g_rPixelsPerLU = 1.0;
+
+//the database
+wxSQLite3Database* g_pDB;
 
 
 // Create a new application object: this macro will allow wxWindows to create
@@ -334,9 +341,26 @@ bool lmTheApp::OnInit(void)
 
 	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
 
-        //
-        // Set up current language
-        //
+    //initialize DataBase support and open database
+    try
+    {
+        //wxSQLite3Database::InitializeSQLite();
+        g_pDB = new wxSQLite3Database();
+        wxFileName oDBFile(g_pPaths->GetConfigPath(), _T("lenmus"), _T("db") );
+        wxLogMessage(_T("[lmTheApp::OnInit] SQLite3 Version: %s. DB file: '%s'"),
+                     g_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() );
+        g_pDB->Open(oDBFile.GetFullPath());
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("Error code: %d, Message: '%s'"),
+                    e.GetErrorCode(), e.GetMessage().c_str() );
+    }
+
+
+    //
+    // Set up current language
+    //
 
     wxString lang = g_pPrefs->Read(_T("/Locale/Language"), _T(""));
     if (lang == _T("")) {
@@ -372,9 +396,9 @@ bool lmTheApp::OnInit(void)
     //Include support for zip files
     wxFileSystem::AddHandler(new wxZipFSHandler);
 
-        //
-        // XRC resource system
-        //
+    //
+    // XRC resource system
+    //
 
     // Initialize all the XRC handlers.
     wxXmlResource::Get()->InitAllHandlers();
@@ -671,6 +695,11 @@ int lmTheApp::OnExit(void)
 
     //delete the docManager
     delete m_pDocManager;
+
+    //database
+    g_pDB->Close();
+    delete g_pDB;
+    wxSQLite3Database::ShutdownSQLite();
 
     // the printer setup data
     delete g_pPrintData;

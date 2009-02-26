@@ -109,8 +109,8 @@
 	<File name="../../src/app/StatusBar.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="3958" topLine="116" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="0" top="0" tabpos="29">
-		<Cursor position="20507" topLine="475" />
+	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="14881" topLine="352" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="89">
 		<Cursor position="2598" topLine="40" />
@@ -181,8 +181,11 @@
 	<File name="../../src/exercises/EarIntvalConstrains.cpp" open="0" top="0" tabpos="27">
 		<Cursor position="5106" topLine="108" />
 	</File>
-	<File name="../../src/exercises/Generators.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="4851" topLine="161" />
+	<File name="../../src/exercises/ExerciseCtrol.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="18781" topLine="522" />
+	</File>
+	<File name="../../src/exercises/Generators.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="12594" topLine="329" />
 	</File>
 	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="11564" topLine="337" />
@@ -223,7 +226,7 @@
 	<File name="../../src/exercises/TheoMusicReadingCtrol.h" open="0" top="0" tabpos="49">
 		<Cursor position="0" topLine="9" />
 	</File>
-	<File name="../../src/exercises/auxctrols/CountersAuxCtrol.cpp" open="1" top="1" tabpos="2">
+	<File name="../../src/exercises/auxctrols/CountersAuxCtrol.cpp" open="1" top="0" tabpos="2">
 		<Cursor position="16551" topLine="393" />
 	</File>
 	<File name="../../src/exercises/dialogs/DlgCfgTheoIntervals.cpp" open="0" top="0" tabpos="40">

@@ -37,7 +37,7 @@ extern wxConfigBase *g_pPrefs;
 
 //AWARE: In correspondence with enum
 const wxString g_sGenerationModeName[lm_eNumGenerationModes] 
-                        = {_("Learning"), _("Exam"), _("Quiz") };
+                        = {_("Learning"), _("Practise"), _("Exam"), _("Quiz") };
 
 
 //-------------------------------------------------------------------------------------------

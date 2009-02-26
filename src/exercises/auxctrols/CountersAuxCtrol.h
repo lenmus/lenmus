@@ -33,7 +33,23 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
+#else
+    #include <wx/intl.h>
+
+    #include <wx/bitmap.h>
+    #include <wx/image.h>
+    #include <wx/icon.h>
+    #include <wx/statbmp.h>
+    #include <wx/string.h>
+    #include <wx/stattext.h>
+    #include <wx/gdicmn.h>
+    #include <wx/font.h>
+    #include <wx/colour.h>
+    #include <wx/settings.h>
+    #include <wx/sizer.h>
+    #include <wx/gauge.h>
+    #include <wx/panel.h>
 #endif
 
 
@@ -58,7 +74,7 @@ public:
 
     virtual ~lmCountersAuxCtrol();
 
-    virtual void UpdateDisplay(bool fSuccess)=0;
+    virtual void UpdateDisplay()=0;
     virtual void OnNewQuestion() {}
 
     //other
@@ -88,7 +104,7 @@ public:
     ~lmQuizAuxCtrol();
 
     //base class virtual methods implementation
-    void UpdateDisplay(bool fSuccess);
+    void UpdateDisplay();
 
     //overrides
     void OnNewQuestion();
@@ -139,7 +155,7 @@ public:
     void OnExplainProgress(wxCommandEvent& WXUNUSED(event));
 
     //base class virtual methods implementation
-    void UpdateDisplay(bool fSuccess);
+    void UpdateDisplay();
 
 
 protected:
@@ -147,17 +163,60 @@ protected:
 
     lmLeitnerManager*       m_pProblemMngr;
 
-	wxStaticText* m_pTxtPoor;
-	wxStaticText* m_pTxtFair;
-	wxStaticText* m_pTxtGood;
-	wxStaticText* m_pTxtAchieved;
-	wxStaticText* m_pLblProgress;
-	wxStaticText* m_pTxtProgress;
-
+	wxStaticText* m_pTxtNumQuestions;
+	wxStaticText* m_pLblEST;
+	wxStaticText* m_pTxtTime;
+	wxStaticText* m_pLblSession;
+	wxStaticText* m_pTxtSession;
+	wxGauge* m_pGaugeSession;
+	wxStaticText* m_pLblGlobal;
+	wxStaticText* m_pTxtGlobal;
+	wxGauge* m_pGaugeGlobal;
 
     DECLARE_EVENT_TABLE()
 };
 
+
+
+//----------------------------------------------------------------------------
+// lmPractiseAuxCtrol: a control to embed in html exercises to display statistics
+// on user performance in learning the subject. It uses the Leitner system in
+// practise mode
+//----------------------------------------------------------------------------
+class lmPractiseAuxCtrol : public lmCountersAuxCtrol    
+{
+
+public:
+
+    // constructor and destructor    
+    lmPractiseAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
+                      lmLeitnerManager* pProblemMngr, 
+                      const wxPoint& pos = wxDefaultPosition);
+
+    ~lmPractiseAuxCtrol();
+
+    //event handlers
+    void OnResetCounters(wxCommandEvent& WXUNUSED(event));
+
+    //base class virtual methods implementation
+    void UpdateDisplay();
+
+
+protected:
+    void CreateControls();
+
+    lmLeitnerManager*       m_pProblemMngr;
+
+		wxStaticBitmap* m_pBmpWrong;
+		wxStaticText* m_pTxtWrong;
+		wxStaticBitmap* m_pBmpRight;
+		wxStaticText* m_pTxtRight;
+		wxStaticBitmap* m_pBmpTotal;
+		wxStaticText* m_pTxtTotal;
+
+
+    DECLARE_EVENT_TABLE()
+};
 
 
 #endif  // __LM_COUNTERSCTROL_H__

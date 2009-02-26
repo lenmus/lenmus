@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -72,8 +72,8 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmEBookCtrol, wxWindow)
 
-lmEBookCtrol::lmEBookCtrol(wxWindow* parent, wxWindowID id, 
-                           lmEBookCtrolOptions* pOptions, 
+lmEBookCtrol::lmEBookCtrol(wxWindow* parent, wxWindowID id,
+                           lmEBookCtrolOptions* pOptions,
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
 {
@@ -89,13 +89,13 @@ lmEBookCtrol::lmEBookCtrol(wxWindow* parent, wxWindowID id,
 lmEBookCtrol::~lmEBookCtrol()
 {
     //delete objects
-    if (m_pOptions) 
+    if (m_pOptions)
         delete m_pOptions;
 }
 
 void lmEBookCtrol::OnSettingsButton(wxCommandEvent& event)
 {
-    wxDialog* pDlg = GetSettingsDlg(); 
+    wxDialog* pDlg = GetSettingsDlg();
     if (pDlg) {
         int retcode = pDlg->ShowModal();
         if (retcode == wxID_OK) {
@@ -140,19 +140,20 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmExerciseCtrol, lmEBookCtrol)
 
-lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id, 
+lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
                            lmExerciseOptions* pConstrains, wxSize nDisplaySize,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmEBookCtrol(parent, id, pConstrains, pos, size, style)
+      , m_nDisplaySize(nDisplaySize)
+      , m_pConstrains(pConstrains)
 {
     //initializations
     SetBackgroundColour(*wxWHITE);
-    m_nDisplaySize = nDisplaySize;
     m_nNumButtons = 0;
     m_fQuestionAsked = false;
-    m_pConstrains = pConstrains;
     m_pProblemManager = (lmProblemManager*)NULL;
     m_sKeyPrefix = _T("");
+    m_pCboMode = (wxChoice*)NULL;
 
     m_pDisplayCtrol =(wxWindow*)NULL;
     m_pCounters = (lmCountersAuxCtrol*)NULL;
@@ -165,30 +166,15 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
 
 lmExerciseCtrol::~lmExerciseCtrol()
 {
-    SaveProblemSpace();
     if (m_pProblemManager)
-    {
-        m_pProblemManager->Statistics();
         delete m_pProblemManager;
-    }
-}
-
-void lmExerciseCtrol::SaveProblemSpace()
-{
-    //save current problem space data
-
-    if (m_sKeyPrefix != _T("") && !m_oProblemSpace.IsEmpty())
-    {
-        wxString sKey = m_sKeyPrefix + wxString::Format(_T("Level%d"), m_nProblemLevel);
-        m_oProblemSpace.Save(sKey);
-    }
 }
 
 void lmExerciseCtrol::CreateControls()
 {
     // This is an wxHtmlWidgetsCell. Therefore the window is first created (when the cell
     // is parsed and created) and later, it is displayed (when all html parsing is finished
-    // and the html page is rendered. 
+    // and the html page is rendered.
     // There is a broblem with this: as the control is buid on a wxWindow, the window
     // gets displayed as soon as it is created. This takes place at html parsing time,
     // when the lmExerciseCtrol is created. This early disply causes a flicker as
@@ -197,15 +183,15 @@ void lmExerciseCtrol::CreateControls()
     // but without succes.
     // TODO:
     // Probably the best solution would be to abandom the idea of inserting wxHtmlWidgetCell
-    // for the controls and creating my own html cells. 
-    
+    // for the controls and creating my own html cells.
+
 
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
     InitializeStrings();
 
-    //Create the problem manager
+    //Create the problem manager and the problem space
     CreateProblemManager();
 
     // ensure that sizes are properly scaled
@@ -220,7 +206,7 @@ void lmExerciseCtrol::CreateControls()
     int nSpacing = (int)(5.0 * m_rScale);       //5 pixels, scaled
 
     //the window is divided into two regions: top, for score on left and counters and links
-    //on the right, and bottom region, for answer buttons 
+    //on the right, and bottom region, for answer buttons
     m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 
         //
@@ -231,7 +217,7 @@ void lmExerciseCtrol::CreateControls()
 
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
-        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, 
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
              _("Exercise options") );
         pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
@@ -279,14 +265,14 @@ void lmExerciseCtrol::CreateControls()
         wxStaticBoxSizer* pCountersSizer =
 	        new wxStaticBoxSizer( new wxStaticBox(this, wxID_ANY, wxEmptyString),
                                   wxVERTICAL);
-    	
+
 	    wxBoxSizer* pModeSizer = new wxBoxSizer(wxHORIZONTAL);
-    	
+
 	    wxStaticText* pLblMode = new wxStaticText(
             this, wxID_ANY, wxT("Mode:"), wxDefaultPosition, wxDefaultSize, 0);
 	    pLblMode->Wrap( -1 );
 	    pModeSizer->Add( pLblMode, 0, wxALL|wxALIGN_CENTER_VERTICAL, nSpacing);
-    	
+
         //load strings for Mode combo
         int nNumValidModes = 0;
 	    wxString sCboModeChoices[lm_eNumGenerationModes];
@@ -297,23 +283,23 @@ void lmExerciseCtrol::CreateControls()
         }
 	    m_pCboMode = new wxChoice(this, lmID_CBO_MODE, wxDefaultPosition,
                                   wxDefaultSize, nNumValidModes, sCboModeChoices, 0);
-	    m_pCboMode->SetSelection( 0 );
+	    m_pCboMode->SetSelection( m_nGenerationMode );
 
 	    pModeSizer->Add( m_pCboMode, 1, wxALL|wxALIGN_CENTER_VERTICAL, nSpacing);
-    	
+
 	    pCountersSizer->Add( pModeSizer, 0, wxEXPAND, nSpacing);
-    	
+
 	    m_pAuxCtrolSizer = new wxBoxSizer( wxVERTICAL );
-    	
+
         m_pCounters = CreateCountersCtrol();
 	    m_pAuxCtrolSizer->Add( m_pCounters, 0, wxALL, nSpacing);
-    	
+
 	    pCountersSizer->Add( m_pAuxCtrolSizer, 0, wxEXPAND, nSpacing);
 	    pTopSizer->Add( pCountersSizer, 0, wxLEFT, 3*nSpacing);
     }
 
         //
-        // links 
+        // links
         //
 
     wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
@@ -325,7 +311,7 @@ void lmExerciseCtrol::CreateControls()
     pLinksSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
-    
+
     // "play" button
     if (m_pConstrains->IncludePlayLink()) {
         m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale, _("Play") );
@@ -333,7 +319,7 @@ void lmExerciseCtrol::CreateControls()
             m_pPlayButton,
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
     }
-    
+
     // "show solution" button
     if (m_pConstrains->IncludeSolutionLink()) {
         m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, m_rScale, _("Show solution") );
@@ -341,7 +327,7 @@ void lmExerciseCtrol::CreateControls()
             m_pShowSolution,
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 4*nSpacing) );
     }
-    
+
     //create buttons for the answers
     CreateAnswerButtons(nButtonsHeight, nSpacing, oButtonsFont);
 
@@ -367,12 +353,20 @@ void lmExerciseCtrol::CreateControls()
 
 void lmExerciseCtrol::ChangeGenerationMode(int nMode)
 {
-    //set new generation mode
+    m_nGenerationMode = nMode;          //set new generation mode
+    CreateProblemManager();             //change problem manager
+    ChangeCountersCtrol();              //replace statistics control
+}
+
+void lmExerciseCtrol::ChangeGenerationModeLabel(int nMode)
+{
     m_nGenerationMode = nMode;
+    if (m_pCboMode)
+        m_pCboMode->SetSelection( m_nGenerationMode );
+}
 
-    //change problem manager
-    CreateProblemManager();
-
+void lmExerciseCtrol::ChangeCountersCtrol()
+{
     //replace current control if exists
     if (m_fControlsCreated)
     {
@@ -381,30 +375,39 @@ void lmExerciseCtrol::ChangeGenerationMode(int nMode)
         delete m_pCounters;
         m_pCounters = pNewCtrol;
         m_pMainSizer->Layout();
+        m_pCounters->UpdateDisplay();
     }
 }
 
 void lmExerciseCtrol::CreateProblemManager()
 {
     if (m_pProblemManager)
-    {
-        SaveProblemSpace();
         delete m_pProblemManager;
-    }
+
     switch(m_nGenerationMode)
     {
         case lm_eQuizMode:
         case lm_eExamMode:
-            m_pProblemManager = new lmQuizManager();
+            m_pProblemManager = new lmQuizManager(this);
             break;
 
         case lm_eLearningMode:
-            m_pProblemManager = new lmLeitnerManager();
+            m_pProblemManager = new lmLeitnerManager(this, true);
             break;
-        
+
+        case lm_ePractiseMode:
+            m_pProblemManager = new lmLeitnerManager(this, false);
+            break;
+
         default:
             wxASSERT(false);
     }
+
+    SetProblemSpace();
+}
+
+void lmExerciseCtrol::SetProblemSpace()
+{
 }
 
 lmCountersAuxCtrol* lmExerciseCtrol::CreateCountersCtrol()
@@ -421,10 +424,19 @@ lmCountersAuxCtrol* lmExerciseCtrol::CreateCountersCtrol()
                 break;
 
             case lm_eLearningMode:
-                pNewCtrol = new lmLeitnerAuxCtrol(this, wxID_ANY, m_rScale,
+                if (((lmLeitnerManager*)m_pProblemManager)->IsLearningMode())
+                    pNewCtrol = new lmLeitnerAuxCtrol(this, wxID_ANY, m_rScale,
+                                                 (lmLeitnerManager*)m_pProblemManager);
+                else
+                    pNewCtrol = new lmPractiseAuxCtrol(this, wxID_ANY, m_rScale,
                                                  (lmLeitnerManager*)m_pProblemManager);
                 break;
-            
+
+            case lm_ePractiseMode:
+                pNewCtrol = new lmPractiseAuxCtrol(this, wxID_ANY, m_rScale,
+                                                (lmLeitnerManager*)m_pProblemManager);
+                break;
+
             default:
                 wxASSERT(false);
         }
@@ -455,7 +467,7 @@ void lmExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
     //produce feedback sound, and update statistics display
     if (m_pCounters)
     {
-        m_pCounters->UpdateDisplay(false);
+        m_pCounters->UpdateDisplay();
         m_pCounters->RightWrongSound(false);
     }
 
@@ -476,17 +488,17 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
 
         //verify if success or failure
         bool fSuccess = (nIndex == m_nRespIndex);
-        
+
         //inform problem manager of the result
         OnQuestionAnswered(m_iQ, fSuccess);
 
         //produce feedback sound, and update statistics display
         if (m_pCounters)
         {
-            m_pCounters->UpdateDisplay(fSuccess);
+            m_pCounters->UpdateDisplay();
             m_pCounters->RightWrongSound(fSuccess);
         }
-            
+
         //if failure or not auto-new problem, display the solution.
         //Else, if success and auto-new problem, generate a new problem
         if (!fSuccess || !g_fAutoNewProblem) {
@@ -504,7 +516,7 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
         }
     }
     else {
-        // No problem presented. The user press the button to play a specific 
+        // No problem presented. The user press the button to play a specific
         // sound (chord, interval, scale, etc.)
         PlaySpecificSound(nIndex);
     }
@@ -515,7 +527,12 @@ void lmExerciseCtrol::OnQuestionAnswered(int iQ, bool fSuccess)
 {
     //inform problem manager of the result
     if (m_pProblemManager)
-        m_pProblemManager->UpdateQuestion(m_iQ, fSuccess);
+    {
+        //determine user response time
+        wxTimeSpan tsResponse = wxDateTime::Now().Subtract( m_tmAsked );
+        wxASSERT(!tsResponse.IsNegative());
+        m_pProblemManager->UpdateQuestion(m_iQ, fSuccess, tsResponse);
+    }
 }
 
 
@@ -528,7 +545,7 @@ void lmExerciseCtrol::NewProblem()
     EnableButtons(true);
 
     //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM
-    wxString sProblemMessage = SetNewProblem();    
+    wxString sProblemMessage = SetNewProblem();
 
     //display the problem
     m_fQuestionAsked = true;
@@ -537,6 +554,8 @@ void lmExerciseCtrol::NewProblem()
     if (m_pPlayButton) m_pPlayButton->Enable(true);
     if (m_pShowSolution) m_pShowSolution->Enable(true);
 
+    //save time
+    m_tmAsked = wxDateTime::Now();
 }
 
 void lmExerciseCtrol::DoDisplaySolution()
@@ -546,7 +565,7 @@ void lmExerciseCtrol::DoDisplaySolution()
 
     // mark right button in green
     SetButtonColor(m_nRespIndex, g_pColors->Success());
-    
+
     if (m_pPlayButton) m_pPlayButton->Enable(true);
     if (m_pShowSolution) m_pShowSolution->Enable(false);
     m_fQuestionAsked = false;
@@ -597,6 +616,7 @@ void lmExerciseCtrol::SetButtonColor(int i, wxColour& color)
 
 
 
+
 //------------------------------------------------------------------------------------
 // Implementation of lmCompareCtrol
 //  A control with three answer buttons
@@ -612,7 +632,7 @@ END_EVENT_TABLE()
 
 
 lmCompareCtrol::lmCompareCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
                const wxPoint& pos, const wxSize& size, int style)
     : lmExerciseCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {
@@ -637,7 +657,7 @@ void lmCompareCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font
         m_pKeyboardSizer,
         wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 
-    // the buttons 
+    // the buttons
     for (int iB=0; iB < m_NUM_COLS; iB++) {
         m_pAnswerButton[iB] = new wxButton( this, m_ID_BUTTON + iB, m_sButtonLabel[iB],
             wxDefaultPosition, wxSize(38*nSpacing, nHeight));
@@ -673,7 +693,7 @@ BEGIN_EVENT_TABLE(lmCompareScoresCtrol, lmCompareCtrol)
 END_EVENT_TABLE()
 
 lmCompareScoresCtrol::lmCompareScoresCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
                const wxPoint& pos, const wxSize& size, int style)
     : lmCompareCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {
@@ -722,10 +742,10 @@ void lmCompareScoresCtrol::Play()
             //Introducing the problem. Play the first score
             PlayScore(0);
             //AWARE:
-            // when 1st score is finished an event will be generated. Then method 
+            // when 1st score is finished an event will be generated. Then method
             // OnEndOfPlay() will handle the event and play the second score.
             // It is programmed this way (asynchonously) to avoid crashes if program/exercise
-            // is closed. 
+            // is closed.
         }
         else
         {
@@ -749,7 +769,7 @@ void lmCompareScoresCtrol::PlayScore(int nIntv)
 
     //AWARE: As the intervals are built using whole notes, we will play them at
     // MM=320 so that real note rate will be 80.
-    m_pScore[nIntv]->Play(lmNO_VISUAL_TRACKING, lmNO_COUNTOFF, 
+    m_pScore[nIntv]->Play(lmNO_VISUAL_TRACKING, lmNO_COUNTOFF,
                              ePM_NormalInstrument, 320, this);
 
 }
@@ -812,7 +832,7 @@ void lmCompareScoresCtrol::DisplayProblem()
         //TODO
         ////theory
         //m_pDisplayCtrol->DisplayScore(m_pProblemScore);
-    } 
+    }
     else {
         //ear training
         Play();
@@ -883,7 +903,7 @@ END_EVENT_TABLE()
 
 
 lmOneScoreCtrol::lmOneScoreCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
                const wxPoint& pos, const wxSize& size, int style)
     : lmExerciseCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {
@@ -924,14 +944,14 @@ void lmOneScoreCtrol::Play()
         m_pPlayButton->SetLabel(_("Stop"));
 
         //play the score
-        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, lmNO_COUNTOFF, 
+        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, lmNO_COUNTOFF,
                                 ePM_NormalInstrument, m_nPlayMM);
         m_fPlaying = true;
 
         //! AWARE The link label is restored to "Play" when the EndOfPlay event is
         //! received. Flag m_fPlaying is also reset there
     }
-    else 
+    else
     {
         // "Stop" button pressed
         ((lmScoreAuxCtrol*)m_pDisplayCtrol)->Stop();
@@ -987,7 +1007,7 @@ void lmOneScoreCtrol::DisplayProblem()
     {
         //theory
         ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayScore(m_pProblemScore);
-    } 
+    }
     else {
         //ear training
         Play();
@@ -1042,7 +1062,7 @@ void lmOneScoreCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
 
 //------------------------------------------------------------------------------------
 // Implementation of lmCompareMidiCtrol
-//  An ExerciseCtrol without scores. It uses MIDI pitches for the problem and 
+//  An ExerciseCtrol without scores. It uses MIDI pitches for the problem and
 //  the solution.
 //------------------------------------------------------------------------------------
 
@@ -1053,7 +1073,7 @@ BEGIN_EVENT_TABLE(lmCompareMidiCtrol, lmCompareCtrol)
 END_EVENT_TABLE()
 
 lmCompareMidiCtrol::lmCompareMidiCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
                const wxPoint& pos, const wxSize& size, int style)
     : lmCompareCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {
@@ -1081,7 +1101,7 @@ wxWindow* lmCompareMidiCtrol::CreateDisplayCtrol()
 {
     // Using MIDI Pitches and Static Text box
     return new wxStaticText(this, -1, _T(""), wxDefaultPosition,
-                          m_nDisplaySize, 
+                          m_nDisplaySize,
                           wxBORDER_SIMPLE | wxST_NO_AUTORESIZE );
 
 }
@@ -1103,7 +1123,7 @@ void lmCompareMidiCtrol::Play()
         {
             //Introducing the problem. Play the first sound
             PlaySound(0);
-            //AWARE: method OnTimerEvent() will handle the event and play the 
+            //AWARE: method OnTimerEvent() will handle the event and play the
             //next sound.
         }
     }
@@ -1151,9 +1171,9 @@ void lmCompareMidiCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
     //wxLogMessage(_T("[lmCompareMidiCtrol::OnTimerEvent] m_nNowPlaying=%d"), m_nNowPlaying);
     m_oTimer.Stop();
     if (m_nNowPlaying == -1) return;
-    
+
     if (m_nNowPlaying == 0)
-    {   
+    {
         //play next sound
         //wxLogMessage(_T("Timer event: play(1)"));
         if (m_fStopPrev)
@@ -1186,8 +1206,8 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmFullEditorExercise, wxWindow)
 
-lmFullEditorExercise::lmFullEditorExercise(wxWindow* parent, wxWindowID id, 
-                           lmExerciseOptions* pConstrains, 
+lmFullEditorExercise::lmFullEditorExercise(wxWindow* parent, wxWindowID id,
+                           lmExerciseOptions* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
 {
@@ -1204,7 +1224,7 @@ lmFullEditorExercise::~lmFullEditorExercise()
 
 void lmFullEditorExercise::OnSettingsButton(wxCommandEvent& event)
 {
-    wxDialog* pDlg = GetSettingsDlg(); 
+    wxDialog* pDlg = GetSettingsDlg();
     if (pDlg) {
         int retcode = pDlg->ShowModal();
         if (retcode == wxID_OK) {
@@ -1247,12 +1267,12 @@ void lmFullEditorExercise::CreateControls()
     // ensure that sizes are properly scaled
     m_rScale = g_pMainFrame->GetHtmlWindow()->GetScale();
 
-    //the window contains just a sizer to add links 
+    //the window contains just a sizer to add links
     m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
-        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, 
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
              _("Exercise options") );
         m_pMainSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
     }
@@ -1267,7 +1287,7 @@ void lmFullEditorExercise::CreateControls()
     m_pMainSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
-    
+
     //finish creation
     SetSizer( m_pMainSizer );                 // use the sizer for window layout
     m_pMainSizer->SetSizeHints( this );       // set size hints to honour minimum size

@@ -64,6 +64,10 @@
 //      mp - lmMPitch
 //      fp - lmFPitch
 //
+//      Date/Time
+//      tm - Date/time (wxDateTime)
+//      ts - Time span (wxTimeSpan)
+//
 //
 
 

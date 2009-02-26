@@ -1,15 +1,15 @@
 LenMus building documentation
 ==============================
 
-Last updated: 22/Nov/2008
+Last updated: 25/Feb/2009
 
 
 Table of content
 -----------------
 
 1. Requirements and supported platforms
-1.1 Dependencies
-1.2 Supported platforms
+    1.1 Dependencies
+    1.2 Supported platforms
 
 2. Installing under Linux
 
@@ -28,11 +28,11 @@ Table of content
 
 Currently, LenMus has been tested and built in the following platforms:
 
-- Windows XP with MS VisualStudio .NET 2003
+- Windows XP, using MS VisualStudio .NET 2003
 
-- Linux Ubuntu, with Code::Blocks and GNU GCC
+- Linux Ubuntu, using Code::Blocks IDE and GNU GCC compiler
 
-Unfortunately we don't have instructions/makefiles for any other platforms/compilers yet. Please contact us if you would like to help us with creating one for the compiler/platform you use.
+Unfortunately I don't have instructions/makefiles for any other platforms/compilers yet. Please contact me if you would like to help with creating a build for the compiler/platform you use.
 
 
 
@@ -63,10 +63,16 @@ LenMus depends on the following software packages (installation instructions for
     - For Linux: ibportmidi.o, libporttime.o
     
 
+- sqlite3 (http://www.sqlite.org)
+    LenMus require sqlite3 database for storing user performance data on exercises. Therefore, it is required to sqlite3 libraries (version 3.6.10 or greater):
+    
+    - For Windows: sqlite3.dll 
+    - For Linux: libsqlite3.o
+    
+
 - Agg 2.4 (http://www.anti-grain.com/)
     For anti-alised renderization LenMus uses AGG 2.4. It is a collection of source files, that are already included in the LenMus source code. So you don't need to do anything to about this package.
 
-Detailed instructions about how to install these packages are given in separate files.
 
 
 
@@ -74,7 +80,7 @@ Detailed instructions about how to install these packages are given in separate 
 2. Installing under Linux
 ====================================================================================
 
-These are instructions on how to build LenMus under Linux. These instructions should work for all Linux distros, as we'll be installing from sources.
+These are instructions on how to build LenMus under Linux. These instructions should work for all Linux distros, as we will be installing from sources.
 
 
 Install wxWidgets (wxGTK)
@@ -82,7 +88,7 @@ Install wxWidgets (wxGTK)
 
 1. Download the wxGTK source archive from http://www.wxwidgets.org/downloads/ and expand it. If you intend to use it in place (not install it in system dirs) choose a place where it can stay forever because you won't be able to move it without breaking the build.
 
-2. Apply the two required patches to the wxWidgtes sources. These patches are detailed in file wxwidgets_patches.txt
+2. [Update: You can safely skip this step] Apply the two required patches to the wxWidgtes sources. These patches are detailed in file wxwidgets_patches.txt 
 
 3. Build wxWidgets. For this please refer to wxWidgets documentation. A quick guide is included in file linux_install_wxwidgets.txt for your convenience, and it should be enough in most cases.
 
@@ -93,7 +99,36 @@ Install PortMidi libraries
 LenMus require the Portmidi libraries for sound generation. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
 
 sudo apt-get install libportmidi0
-ls /usr/lib/libport*                 //verify that the libraries lobportmidi and libporttime are there
+ls /usr/lib/libport*                 ;# verify that the libraries are there now
+    
+    
+Install sqlite3 library
+---------------------------------
+
+You need libsqlite3.o library. At least version 3.6.10 is required. If it is not already on your system (sqlite3 version included in Ubuntu 8.04 is quite old (3.4.2), and it is not the one expected by the files included in LenMus proyect) do the following:
+
+1. Download the source (sqlite-amalgamation-3.6.11.tar.gz) from http://www.sqlite.org/download.html to a suitable location where you can build it, e.g. ~/install
+
+2. Extract the source:
+
+    cd install
+    tar zxvf sqlite-amalgamation-3.6.11.tar.gz
+
+3. Create a build directory:
+
+    mkdir build-sqlite3.6.11
+
+4. Configure it to build for your machine:
+
+    cd build-sqlite3.6.11
+    ../sqlite-3.6.11/configure --prefix=/usr/local
+
+5. Build the software:
+
+    make
+    sudo make install
+
+
     
     
 Install FreeType (libraries and include files)
@@ -175,6 +210,12 @@ Nevertheless, if you prefer to use a later version or to build this library by y
     - freetype/lib
 
     
+    
+Install sqlite3 library
+---------------------------------
+
+ The library is already included in the LenMus source code package. You only have to copy file "lenmus\packages\wxSQLite3\sqlite\lib\sqlite3.dll" to the project execution folder (z_bin). Nothing else has to be done.
+
 
 
 Compile and build LenMus
@@ -200,6 +241,16 @@ Before opening the project file, you have to define system environment variable 
     3  Define a new user variavle, named WXWIN, pointing to the wxWidgets installation root folder.
 
 Now, open the project file with MS VisualStudio and build LenMus. 
+
+Before running the project for the first time, you need to copy some files to certain folders, so that the application can access them from VisualStudio:
+
+    1. Copy file "lenmus\fonts\lmbasic2.ttf" to "lenmus/build/msw" or "lenmus/build/msw2008" folder, depending on your case.
+
+    2. Copy to the to the project execution folder (lenmus/build/z_bin) the following DLLs:
+        - lenmus\packages\freetype\bin\freetype6.dll
+        - lenmus\packages\freetype\bin\zlib1.dll
+        - lenmus\packages\wxSQLite3\sqlite\lib\sqlite3.dll
+
 
 That should be all.
 

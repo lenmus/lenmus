@@ -214,7 +214,7 @@
 	"../score/Score.h"
 	"wx/dynarray.h"
 
-1234113868 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Constrains.h
+1235576276 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Constrains.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -248,9 +248,10 @@
 	"Generators.h"
 	"Constrains.h"
 
-1234114974 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.h
+1235638156 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.h
 	"wx/wxprec.h"
 	"wx/wx.h"
+	<wx/datetime.h>
 	"Constrains.h"
 
 1221549780 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/DlgCfgIdfyScale.cpp
@@ -848,7 +849,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1233425652 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1235503476 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -859,6 +860,8 @@
 	"wx/txtstrm.h"
 	"wx/stdpaths.h"
 	"wx/memory.h"
+	<wx/arrstr.h>
+	"wx/wxsqlite3.h"
 	<stdlib.h>
 	<crtdbg.h>
 	"TheApp.h"
@@ -942,7 +945,7 @@
 	"../exercises/ScalesConstrains.h"
 	"Conversion.h"
 
-1234006822 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Constrains.cpp
+1235576276 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Constrains.cpp
 	"wx/wxprec.h"
 	"Constrains.h"
 
@@ -1055,7 +1058,7 @@
 	"../sound/SoundEvents.h"
 	"ExerciseCtrol.h"
 
-1234020086 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoIntervalsCtrol.cpp
+1235669178 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoIntervalsCtrol.cpp
 	"wx/wxprec.h"
 	"../score/VStaff.h"
 	"TheoIntervalsCtrol.h"
@@ -1067,7 +1070,7 @@
 	"dialogs/DlgCfgTheoIntervals.h"
 	"../globals/Colors.h"
 
-1234026918 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoIntervalsCtrol.h
+1235114862 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoIntervalsCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"TheoIntervalsConstrains.h"
@@ -1140,9 +1143,17 @@
 	"ChordConstrains.h"
 	"Generators.h"
 
-1234010702 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.cpp
+1235668914 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.cpp
 	"wx/wxprec.h"
+	<wx/longlong.h>
+	<wx/arrstr.h>
+	"wx/wxsqlite3.h"
+	<algorithm>
+	<numeric>
+	<vector>
+	<iterator>
 	"Generators.h"
+	"ExerciseCtrol.h"
 	"../score/KeySignature.h"
 
 1233584720 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyScalesCtrol.cpp
@@ -2207,7 +2218,7 @@
 	"DlgDebugTrace.h"
 	"../app/Logger.h"
 
-1223997494 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.cpp
+1234165816 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.cpp
 	"wx/wxprec.h"
 	<math.h>
 	"wx/utils.h"
@@ -2308,7 +2319,7 @@
 
 1233770750 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Pitch.h
 
-1234111852 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.h
+1235669178 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -2324,7 +2335,7 @@
 	"../score/Score.h"
 	"Constrains.h"
 
-1234008284 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.cpp
+1235679327 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ExerciseCtrol.cpp
 	"wx/wxprec.h"
 	"ExerciseCtrol.h"
 	"auxctrols/UrlAuxCtrol.h"
@@ -13555,9 +13566,23 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1234031842 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/CountersAuxCtrol.h
+1235669178 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/CountersAuxCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
+	<wx/intl.h>
+	<wx/bitmap.h>
+	<wx/image.h>
+	<wx/icon.h>
+	<wx/statbmp.h>
+	<wx/string.h>
+	<wx/stattext.h>
+	<wx/gdicmn.h>
+	<wx/font.h>
+	<wx/colour.h>
+	<wx/settings.h>
+	<wx/sizer.h>
+	<wx/gauge.h>
+	<wx/panel.h>
 
 1232208670 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/dialogs/DlgCfgEarIntervals.h
 	"wx/dialog.h"
@@ -13600,12 +13625,13 @@
 	"wx/notebook.h"
 	"../ScoreConstrains.h"
 
-1232207428 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/CountersAuxCtrol.cpp
+1235669178 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/CountersAuxCtrol.cpp
 	"wx/wxprec.h"
+	<wx/artprov.h>
 	"CountersAuxCtrol.h"
 	"UrlAuxCtrol.h"
 	"../../sound/WaveManager.h"
-	"../../app/Preferences.h"
+	"../Generators.h"
 
 1232207428 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/auxctrols/ScoreAuxCtrol.cpp
 	"wx/wxprec.h"
@@ -13756,4 +13782,39 @@
 	"../exercises/auxctrols/UrlAuxCtrol.h"
 	"../score/Score.h"
 	"../score/VStaff.h"
+
+1232044860 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/include/wx/wxsqlite3.h
+	<wx/buffer.h>
+	<wx/datetime.h>
+	"wx/wxsqlite3def.h"
+
+1232045214 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/include/wx/wxsqlite3def.h
+
+1232044842 source:/media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/src/wxsqlite3.cpp
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"wx/wxsqlite3.h"
+	"wx/wxsqlite3opt.h"
+	"sqlite3.h"
+	"wx/dynlib.h"
+	"wx/wxsqlite3dyn.h"
+	"wx/wxsqlite3dyn.h"
+	"wx/wxsqlite3dyn.h"
+
+1171233384 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/include/wx/wxsqlite3opt.h
+
+1232013640 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/sqlite3/include/sqlite3.h
+	<stdarg.h>
+
+1221471273 /home/cecilio/wxWidgets/wxGTK-2.8.9/include/wx/dynlib.h
+	"wx/defs.h"
+	"wx/string.h"
+	"wx/dynarray.h"
+	"wx/os2/private.h"
+	"wx/msw/private.h"
+	<dlfcn.h>
+	<dl.h>
+	<CodeFragments.h>
+
+1220474352 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/include/wx/wxsqlite3dyn.h
 
