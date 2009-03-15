@@ -40,10 +40,9 @@
 extern lmLogger* g_pLogger;
 
 
-typedef struct lmChordInfoStruct {
-    int nNumNotes;
-    lmFIntval nIntervals[3];
-} lmChordInfo;
+
+
+
 
 static wxString m_sChordName[ect_Max];
 static bool m_fStringsInitialized = false;
@@ -72,11 +71,164 @@ static lmChordInfo tData[ect_Max] = {
     { 3, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
 };
 
+
+
+
+
+
+/*@@ Carlos: moved to *.h
+typedef struct lmChordInfoStruct {
+    int nNumNotes;
+    lmFIntval nIntervals[3];
+} lmChordInfo;
+*/
+ void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo)
+ {
+     SortChordNotes(numNotes, inpChordNotes);
+     GetIntervalsFromNotes(numNotes, inpChordNotes, outChordInfo);
+ }
+ void SortChordNotes(
+    int numNotes
+    , lmNote** inpChordNotes)
+{
+    wxASSERT(numNotes < lmNOTES_IN_CHORD);
+    // Classic Bubble sort
+    int count, swapDone;
+    lmNote* auxNote;
+    do
+    {
+        swapDone = 0;
+        for (count = 0; count < numNotes - 1; count++)
+        {
+            wxASSERT(inpChordNotes[count] != NULL);
+            wxASSERT(inpChordNotes[count+1] != NULL);
+            if (inpChordNotes[count]->GetFPitch() > inpChordNotes[count+1]->GetFPitch() )
+            {
+	            auxNote = inpChordNotes[count];
+	            inpChordNotes[count] = inpChordNotes[count + 1];
+	            inpChordNotes[count + 1] = auxNote;
+	            swapDone = 1;
+            }
+        }
+    }while (swapDone);
+}
+void  GetIntervalsFromNotes(
+      int numNotes
+    , lmNote** inpChordNotes
+    , lmChordInfo* outChordInfo
+    )
+{
+    wxASSERT(numNotes < lmNOTES_IN_CHORD);
+    wxASSERT(inpChordNotes != NULL);
+    wxASSERT(outChordInfo != NULL);
+    wxASSERT(inpChordNotes[0] != NULL);
+
+    lmFIntval intv;
+    for (int count = 1; count < numNotes; count++)
+    {
+        wxASSERT(inpChordNotes[count] != NULL);
+        intv = (lmFIntval) (inpChordNotes[count]->GetFPitch() - inpChordNotes[0]->GetFPitch());
+#ifdef __WXDEBUG__
+        wxLogMessage(_T("[GetIntervalsFromNotes %d %d] INTERVAL: %d")
+            , intv, inpChordNotes[count]->GetFPitch(), inpChordNotes[0]->GetFPitch());
+#endif
+        // Update chord interval information
+        outChordInfo->nIntervals[count-1] = intv;
+    }
+    outChordInfo->nNumNotes = numNotes;
+
+}
+
+lmEChordType GetChordTypeFromIntervals( lmChordInfo chordInfo )
+{
+    for (int i = 0; i < ect_Max; i++)
+    {
+       if (    chordInfo.nNumNotes == tData[i].nNumNotes
+           && chordInfo.nIntervals[0] == tData[i].nIntervals[0]
+           && chordInfo.nIntervals[1] == tData[i].nIntervals[1]
+           && chordInfo.nIntervals[2] == tData[i].nIntervals[2]
+           )
+        return (lmEChordType) i;
+    }
+    return ect_Max; // not valid
+}
+
+wxString lmChordManager::toString()
+{
+    wxString retStr;
+    if ( ! this->IsCreated() )
+        retStr = _T(" NOT CREATED");
+    else
+    {
+        // @@@@@@@@@@@@ In LDP ???
+        int num = GetNumNotes();
+        retStr = wxString::Format(_T("[Chord: %s, %d notes, pattern: ")  
+            , GetNameFull().c_str()
+            , num);
+        for (int n=0; n<num; n++)
+        {
+            retStr += _T(" "); 
+            retStr += GetPattern(n); 
+        }
+        retStr += _T(" ]");
+    }
+    return retStr;
+}
+
+    void lmChordManager::Create(lmFPitch fpRootNote, lmChordInfo* chordInfo, lmEKeySignatures nKey)
+    {
+        Create(fpRootNote, chordInfo->nNumNotes, chordInfo->nIntervals, nKey);
+    }
+    void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* chordInfo)
+    {
+       lmKeySignature* pKey = pRootNote->GetApplicableKeySignature();
+       lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+
+        Create(
+            pRootNote->GetFPitch()
+            , chordInfo->nNumNotes
+            , chordInfo->nIntervals
+            , nKey);
+    }
+    void lmChordManager::Create(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo)
+    {
+        CreateChordInfo(numNotes, inpChordNotes, outChordInfo);
+        Create(inpChordNotes[0], outChordInfo);
+}
+    lmChordManager::lmChordManager(int numNotes, lmNote** inpChordNotes)
+    {
+        this->initialize(); // call basic constructor for initialization
+        lmChordInfo chordInfo;
+        chordInfo.Initalize();
+        Create(numNotes, inpChordNotes, &chordInfo);
+        m_nType = GetChordTypeFromIntervals( chordInfo );
+#ifdef __WXDEBUG__
+        wxLogMessage(_T(" CREATED chord: %s"), this->toString() );
+#endif
+    }
+void lmChordManager::initialize()
+{
+    m_nNumNotes = 0;
+    m_nInversion = 0;
+    m_nType =  ect_Max;
+    m_nKey = earmDo; // @@@ todo: initalize with invalid value
+}
+
+
+
+
+
+
+
+
+
+
 //-------------------------------------------------------------------------------------
 // Implementation of lmChordManager class
 
 lmChordManager::lmChordManager()
 {
+    this->initialize();
 }
 
 lmChordManager::lmChordManager(wxString sRootNote, lmEChordType nChordType,

@@ -84,6 +84,9 @@ public:
     bool ProcessScore(lmScore* pScore);
     bool UndoChanges(lmScore* pScore);
     bool SetTools();
+#ifdef __WXDEBUG__
+    void UnitTests();
+#endif
 
 protected:
 

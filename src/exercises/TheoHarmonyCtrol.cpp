@@ -141,6 +141,28 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     pVStaff->AddKeySignature( m_nKey ); //key signature
     pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
 
+
+        wxString sNotes[16] = {
+        _T("(n c3 q p2 v4 (stem down))"),
+        _T("(n e3 q p2 v4 (stem down))"),
+        _T("(n g3 q p2 v4 (stem down))"),
+        _T("(n d3 q p2 v4 (stem down))"),
+        _T("(n f3 q p2 v4 (stem down))"),
+        _T("(n a3 q p2 v4 (stem down))"),
+        _T("(n e3 q p2 v4 (stem down))"),
+        _T("(n g2 q p2 v4 (stem down))"),
+        _T("(n b2 q p2 v4 (stem down))"),
+        _T("(n f2 q p2 v4 (stem down))"),
+        _T("(n a3 q p2 v4 (stem down))"),
+        _T("(n c3 q p2 v4 (stem down))"),
+        _T("(n f3 q p2 v4 (stem down))"),
+        _T("(n f3 q p2 v4 (stem down))"),
+        _T("(n f2 q p2 v4 (stem down))"),
+        _T("(n f3 q p2 v4 (stem down))")
+    };
+
+
+/*@@@@@@@@@@@@@@@carlos*
     wxString sNotes[16] = {
         _T("(n c3 q p2 v4 (stem down))"),
         _T("(n e3 q p2 v4 (stem down))"),
@@ -159,7 +181,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         _T("(n g2 q p2 v4 (stem down))"),
         _T("(n c3 q p2 v4 (stem down))")
     };
-
+*/
     //loop the add notes
     for (int iN=0; iN < 16; iN+=2)
     {
@@ -178,6 +200,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }
     }
+/*************/
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
 

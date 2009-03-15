@@ -47,9 +47,27 @@ extern wxString ChordTypeToName(lmEChordType nChordType);
 extern int NumNotesInChord(lmEChordType nChordType);
 extern lmEChordType ChordShortNameToType(wxString sName);
 
-
 //a chord is a sequence of up 6 notes. Change this for more notes in chord
 #define lmNOTES_IN_CHORD  6
+
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2Carlos
+typedef struct lmChordInfoStruct {
+    int nNumNotes;
+    lmFIntval nIntervals[lmNOTES_IN_CHORD-1];
+    void Initalize()
+    {
+        for (int i=0; i<lmNOTES_IN_CHORD-1; i++)
+        {
+          nIntervals[i] = lmNULL_FIntval;
+        }
+    }
+} lmChordInfo;
+extern  void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
+extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
+extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
+extern lmEChordType GetChordTypeFromIntervals( lmChordInfo chordInfo );
+
+
 
 class lmChordManager
 {
@@ -67,6 +85,15 @@ public:
                 lmEKeySignatures nKey);
     void Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
     void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], lmEKeySignatures nKey);
+    //@@@Carlos
+    void Create(lmFPitch fpRootNote, lmChordInfo* chordInfo, lmEKeySignatures nKey);
+    void Create(lmNote* pRootNote, lmChordInfo* chordInfo);
+    void Create(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
+    lmChordManager(int numNotes, lmNote** inpChordNotes);
+    void initialize();
+
+    //@@@@@@@@@@@ For debugging
+    wxString toString();
 
     lmEChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
@@ -79,6 +106,8 @@ public:
     int GetStep(int i) { return FPitch_Step(m_fpNote[i]); }
     int GetOctave(int i) { return FPitch_Octave(m_fpNote[i]); }
     int GetAccidentals(int i) { return FPitch_Accidentals(m_fpNote[i]); }
+
+    boolean IsCreated(){ return m_nNumNotes > 0; };
 
 #ifdef __WXDEBUG__
     void UnitTests();
