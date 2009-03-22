@@ -79,8 +79,8 @@
 	<File name="../../src/app/Printout.h" open="0" top="0" tabpos="14">
 		<Cursor position="1673" topLine="18" />
 	</File>
-	<File name="../../src/app/Processor.cpp" open="0" top="0" tabpos="35">
-		<Cursor position="4706" topLine="136" />
+	<File name="../../src/app/Processor.cpp" open="1" top="0" tabpos="20">
+		<Cursor position="11244" topLine="316" />
 	</File>
 	<File name="../../src/app/ScoreCanvas.cpp" open="0" top="0" tabpos="8">
 		<Cursor position="29772" topLine="889" />
@@ -88,8 +88,11 @@
 	<File name="../../src/app/ScoreCanvas.h" open="1" top="0" tabpos="13">
 		<Cursor position="3529" topLine="77" />
 	</File>
-	<File name="../../src/app/ScoreCommand.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="2616" topLine="57" />
+	<File name="../../src/app/ScoreCommand.cpp" open="1" top="0" tabpos="22">
+		<Cursor position="12481" topLine="324" />
+	</File>
+	<File name="../../src/app/ScoreCommand.h" open="1" top="0" tabpos="23">
+		<Cursor position="15696" topLine="502" />
 	</File>
 	<File name="../../src/app/ScoreDoc.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="4554" topLine="139" />
@@ -103,8 +106,8 @@
 	<File name="../../src/app/ScoreView.h" open="0" top="0" tabpos="2">
 		<Cursor position="9724" topLine="171" />
 	</File>
-	<File name="../../src/app/ScoreWizard.cpp" open="1" top="1" tabpos="16">
-		<Cursor position="31242" topLine="729" />
+	<File name="../../src/app/ScoreWizard.cpp" open="1" top="0" tabpos="16">
+		<Cursor position="31242" topLine="0" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
@@ -148,8 +151,11 @@
 	<File name="../../src/auxmusic/Cadence.cpp" open="0" top="0" tabpos="44">
 		<Cursor position="46767" topLine="1104" />
 	</File>
-	<File name="../../src/auxmusic/ChordManager.cpp" open="0" top="0" tabpos="13">
-		<Cursor position="7805" topLine="160" />
+	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="21">
+		<Cursor position="7274" topLine="195" />
+	</File>
+	<File name="../../src/auxmusic/ChordManager.h" open="1" top="0" tabpos="19">
+		<Cursor position="2412" topLine="101" />
 	</File>
 	<File name="../../src/auxmusic/Composer.cpp" open="0" top="0" tabpos="19">
 		<Cursor position="1556" topLine="20" />
@@ -514,8 +520,8 @@
 	<File name="../../src/score/NoteRest.cpp" open="0" top="0" tabpos="71">
 		<Cursor position="6496" topLine="162" />
 	</File>
-	<File name="../../src/score/NotesRelationship.h" open="0" top="0" tabpos="25">
-		<Cursor position="3734" topLine="102" />
+	<File name="../../src/score/NotesRelationship.h" open="1" top="0" tabpos="17">
+		<Cursor position="7533" topLine="27" />
 	</File>
 	<File name="../../src/score/Pitch.cpp" open="0" top="0" tabpos="36">
 		<Cursor position="8548" topLine="226" />
@@ -541,8 +547,8 @@
 	<File name="../../src/score/StaffObj.cpp" open="0" top="0" tabpos="78">
 		<Cursor position="12408" topLine="390" />
 	</File>
-	<File name="../../src/score/StaffObj.h" open="0" top="0" tabpos="26">
-		<Cursor position="8985" topLine="229" />
+	<File name="../../src/score/StaffObj.h" open="1" top="1" tabpos="18">
+		<Cursor position="23109" topLine="616" />
 	</File>
 	<File name="../../src/score/StaffObjIterator.cpp" open="0" top="0" tabpos="19">
 		<Cursor position="3931" topLine="120" />

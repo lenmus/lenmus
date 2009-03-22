@@ -54,7 +54,7 @@ class lmTextItem;
 //---------------------------------------------------------------------------------------
 
 //an object that is renderized by using shapes. Default behaviour is to use one shape
-class lmShapesMngr       
+class lmShapesMngr
 {
 public:
     lmShapesMngr();
@@ -68,7 +68,7 @@ public:
 	virtual lmUPoint GetUserShift(int nShapeIdx);
     virtual void StoreShape(lmGMObject* pGMObj);
     virtual int NewShapeIndex() { return 0; }
-    virtual void SetShapesIndexCounter(int nNextIndex) {}    
+    virtual void SetShapesIndexCounter(int nNextIndex) {}
     virtual void Init(bool fDeleteShapes) {}
     virtual bool IsMultishaped() { return false; }
 
@@ -92,7 +92,7 @@ public:
 	lmUPoint GetUserShift(int nShapeIdx);
     void StoreShape(lmGMObject* pGMObj);
     inline int NewShapeIndex() { return m_nNextIdx++; }
-    inline void SetShapesIndexCounter(int nNextIndex) { m_nNextIdx = nNextIndex; }    
+    inline void SetShapesIndexCounter(int nNextIndex) { m_nNextIdx = nNextIndex; }
     void Init(bool fDeleteShapes);
     inline bool IsMultishaped() { return true; }
 
@@ -193,10 +193,10 @@ public:
     virtual lmShape* GetShape(int nStaff=1);
     inline lmGMObject* GetGraphicObject(int nShapeIdx=0) { return m_pShapesMngr->GetGraphicObject(nShapeIdx); }
 	inline void SaveUserLocation(lmLUnits xPos, lmLUnits yPos, int nShapeIdx = 0) {
-                m_pShapesMngr->SaveUserLocation(xPos, yPos, nShapeIdx); 
+                m_pShapesMngr->SaveUserLocation(xPos, yPos, nShapeIdx);
             }
 	inline void SaveUserXLocation(lmLUnits xPos, int nShapeIdx = 0) {
-                m_pShapesMngr->SaveUserXLocation(xPos, nShapeIdx); 
+                m_pShapesMngr->SaveUserXLocation(xPos, nShapeIdx);
             }
 
     inline lmUPoint GetUserShift(int nShapeIdx = 0) { return m_pShapesMngr->GetUserShift(nShapeIdx); }
@@ -417,7 +417,7 @@ public:
     inline bool IsOnStaff(int nStaff) { return (m_nStaffNum == nStaff
                                                 || IsKeySignature()
                                                 || IsTimeSignature()
-                                                || IsBarline() ); 
+                                                || IsBarline() );
                                       }
 
 
@@ -500,7 +500,7 @@ enum lmEAuxObjType
     //lmBinaryRelObj
     eAXOT_BinaryRelObj,
     eAXOT_Tie = eAXOT_BinaryRelObj,
-    
+
     //lmMultiRelObj
     eAXOT_MultiRelObj,
 
@@ -592,7 +592,7 @@ public:
     wxString SourceLDP(int nIndent);
 
 protected:
-	lmRelObj(lmEAuxObjType nRelObjType, bool fIsDraggable = true) 
+	lmRelObj(lmEAuxObjType nRelObjType, bool fIsDraggable = true)
         : lmAuxObj(fIsDraggable), m_nRelObjType(nRelObjType) {}
 
     lmEAuxObjType       m_nRelObjType;
@@ -624,41 +624,41 @@ protected:
 
 
 
-//An AuxObj relating more than two Notes/Rests
-class lmMultiRelObj : public lmRelObj
-{
-public:
-    virtual ~lmMultiRelObj() {}
-
-    //implementation of some lmRelObj pure virtual methods
-    virtual void Include(lmNoteRest* pNR, int nIndex = -1);
-    virtual void Remove(lmNoteRest* pNR);
-    inline int NumNotes() { return (int)m_Notes.size(); }
-    inline lmNoteRest* GetStartNoteRest() { return m_Notes.front(); }
-    inline lmNoteRest* GetEndNoteRest() { return m_Notes.back(); }
-
-        //specific methods
-
-    virtual int GetNoteIndex(lmNoteRest* pNR);
-
-    //access to notes/rests
-    lmNoteRest* GetFirstNoteRest();
-    lmNoteRest* GetNextNoteRest();
-    std::list<lmNoteRest*>& GetListOfNoteRests() { return m_Notes; }
-
-
-protected:
-    lmMultiRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pFirstNote, lmUndoData* pUndoData, 
-                  bool fIsDraggable = true)
-        : lmRelObj(nRelObjType, fIsDraggable) {}
-
-    lmMultiRelObj(lmEAuxObjType nRelObjType)
-        : lmRelObj(nRelObjType, true) {}
-
-    //notes/rests related by this lmRelObj
-    std::list<lmNoteRest*>   m_Notes; 
-    std::list<lmNoteRest*>::iterator m_it;   //for methods GetFirstNoteRest() and GetNextNoteRest()
-};
+////An AuxObj relating more than two Notes/Rests
+//class lmMultiRelObj : public lmRelObj
+//{
+//public:
+//    virtual ~lmMultiRelObj() {}
+//
+//    //implementation of some lmRelObj pure virtual methods
+//    virtual void Include(lmNoteRest* pNR, int nIndex = -1);
+//    virtual void Remove(lmNoteRest* pNR);
+//    inline int NumNotes() { return (int)m_Notes.size(); }
+//    inline lmNoteRest* GetStartNoteRest() { return m_Notes.front(); }
+//    inline lmNoteRest* GetEndNoteRest() { return m_Notes.back(); }
+//
+//        //specific methods
+//
+//    virtual int GetNoteIndex(lmNoteRest* pNR);
+//
+//    //access to notes/rests
+//    lmNoteRest* GetFirstNoteRest();
+//    lmNoteRest* GetNextNoteRest();
+//    std::list<lmNoteRest*>& GetListOfNoteRests() { return m_Notes; }
+//
+//
+//protected:
+//    lmMultiRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pFirstNote, lmUndoData* pUndoData,
+//                  bool fIsDraggable = true)
+//        : lmRelObj(nRelObjType, fIsDraggable) {}
+//
+//    lmMultiRelObj(lmEAuxObjType nRelObjType)
+//        : lmRelObj(nRelObjType, true) {}
+//
+//    //notes/rests related by this lmRelObj
+//    std::list<lmNoteRest*>   m_Notes;
+//    std::list<lmNoteRest*>::iterator m_it;   //for methods GetFirstNoteRest() and GetNextNoteRest()
+//};
 
 
 #endif    // __LM_STAFFOBJ_H__

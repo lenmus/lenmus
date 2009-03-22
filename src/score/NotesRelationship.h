@@ -96,6 +96,7 @@ public:
     inline int NumNotes() { return (int)m_Notes.size(); }
     inline T* GetStartNoteRest() { return m_Notes.front(); }
     inline T* GetEndNoteRest() { return m_Notes.back(); }
+    virtual void OnRelationshipModified() {};
 
         //specific methods
 

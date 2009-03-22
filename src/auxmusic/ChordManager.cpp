@@ -162,13 +162,13 @@ wxString lmChordManager::toString()
     {
         // @@@@@@@@@@@@ In LDP ???
         int num = GetNumNotes();
-        retStr = wxString::Format(_T("[Chord: %s, %d notes, pattern: ")  
+        retStr = wxString::Format(_T("[Chord: %s, %d notes, pattern: ")
             , GetNameFull().c_str()
             , num);
         for (int n=0; n<num; n++)
         {
-            retStr += _T(" "); 
-            retStr += GetPattern(n); 
+            retStr += _T(" ");
+            retStr += GetPattern(n);
         }
         retStr += _T(" ]");
     }
@@ -203,7 +203,7 @@ wxString lmChordManager::toString()
         Create(numNotes, inpChordNotes, &chordInfo);
         m_nType = GetChordTypeFromIntervals( chordInfo );
 #ifdef __WXDEBUG__
-        wxLogMessage(_T(" CREATED chord: %s"), this->toString() );
+        wxLogMessage(_T(" CREATED chord: %s"), this->toString().c_str() );
 #endif
     }
 void lmChordManager::initialize()

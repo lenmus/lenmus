@@ -299,8 +299,6 @@
 		<Unit filename="../../src/ldp_parser/LDPNode.h" />
 		<Unit filename="../../src/ldp_parser/LDPParser.cpp" />
 		<Unit filename="../../src/ldp_parser/LDPParser.h" />
-		<Unit filename="../../src/ldp_parser/LDPTags.cpp" />
-		<Unit filename="../../src/ldp_parser/LDPTags.h" />
 		<Unit filename="../../src/ldp_parser/LDPToken.cpp" />
 		<Unit filename="../../src/ldp_parser/LDPToken.h" />
 		<Unit filename="../../src/mdi/ChildFrame.cpp" />

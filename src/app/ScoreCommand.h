@@ -274,8 +274,8 @@ class lmCmdInsertNote: public lmScoreCommand
 public:
 
     lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
-					lmEPitchType nPitchType, int nStep, int nOctave, 
-					lmENoteType nNoteType, float rDuration, int nDots, 
+					lmEPitchType nPitchType, int nStep, int nOctave,
+					lmENoteType nNoteType, float rDuration, int nDots,
                     lmENoteHeads nNotehead, lmEAccidentals nAcc,
                     int nVoice, lmNote* pBaseOfChord, bool fTiedPrev);
     ~lmCmdInsertNote();
@@ -486,7 +486,7 @@ public:
 protected:
     lmScoreText*        m_pST;
     wxString            m_sText;
-    lmEHAlign           m_nHAlign; 
+    lmEHAlign           m_nHAlign;
     lmLocation          m_tPos;
     lmTextStyle*        m_pStyle;
 
@@ -514,27 +514,6 @@ protected:
 	lmLUnits        m_uOldPos;
     int             m_nIdx;
 	int				m_nPage;
-};
-
-
-// Change object properties
-//------------------------------------------------------------------------------------
-class lmCmdChangeLineStartEndPoints: public lmScoreCommand
-{
-public:
-    lmCmdChangeLineStartEndPoints(const wxString& name, lmScoreDocument *pDoc, lmScoreLine* pLine,
-				                  lmUPoint& uShiftStart, lmUPoint& uShiftEnd,
-                                  bool fUpdateViews = false);
-    ~lmCmdChangeLineStartEndPoints() {}
-
-    //implementation of pure virtual methods in base class
-    bool Do();
-    bool Undo();
-
-protected:
-    lmScoreLine*    m_pLine;
-    lmUPoint        m_uShiftStart;
-    lmUPoint        m_uShiftEnd;
 };
 
 

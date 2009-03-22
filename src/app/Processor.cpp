@@ -324,7 +324,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             wxLogMessage(_T("[ProcessScore] note %d: pitch: %d, pos: %d")
                 , nNote, currentNote->GetFPitch(), currentNotePos);
             wxLogMessage(_T("  LDP:%s")
-                ,  currentNote->SourceLDP(0));
+                ,  currentNote->SourceLDP(0).c_str());
 
             // Notes with beat position of lmNOT_ON_BEAT are ignored
             // New beat position means new chord
@@ -384,7 +384,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
                 } //  if (  currentNotePos != chordNotePos )
                 // else: in the same beat then add to chord
                 //   @@ also verify same duration?
-                else 
+                else
                 {
         			pChordNotes[chordNoteIndex] = currentNote;
                     wxLogMessage(_T("[ProcessScore] new %d chord note, pitch: %d")
@@ -395,10 +395,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
 
             }
             //  else [ currentNotePos == lmNOT_ON_BEAT]: ignore
-        } 
+        }
         // else [ not IsNote]: ignore
 
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@	
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@
 			if (nNote == 4)
             {
                 //fourth note. Change its colour to red
