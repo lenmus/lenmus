@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -59,14 +59,21 @@ lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
     lmLUnits uPageWidth = pScore->GetPaperSize().GetWidth();
     lmLUnits uPageHeight = pScore->GetPaperSize().GetHeight();
 	
-	AddHandler( new lmShapeMargin(pScore, lmMARGIN_TOP, m_nNumPage, lmHORIZONTAL, 
-                                  uyTopMargin, uPageWidth) );
-    AddHandler( new lmShapeMargin(pScore, lmMARGIN_BOTTOM, m_nNumPage, lmHORIZONTAL,
-                                  uyBottomMargin, uPageWidth) );
-    AddHandler( new lmShapeMargin(pScore, lmMARGIN_LEFT, m_nNumPage, lmVERTICAL,
-                                  uxLeftMargin, uPageHeight) );
-    AddHandler( new lmShapeMargin(pScore, lmMARGIN_RIGHT, m_nNumPage, lmVERTICAL,
-                                  uxRightMargin, uPageHeight) );
+    m_pMarginShapes[0] =
+        new lmShapeMargin(pScore, this, lmMARGIN_TOP, m_nNumPage, lmHORIZONTAL, 
+                          uyTopMargin, uPageWidth);
+
+    m_pMarginShapes[1] =
+        new lmShapeMargin(pScore, this, lmMARGIN_BOTTOM, m_nNumPage, lmHORIZONTAL,
+                          uyBottomMargin, uPageWidth);
+
+    m_pMarginShapes[2] =
+        new lmShapeMargin(pScore, this, lmMARGIN_LEFT, m_nNumPage, lmVERTICAL,
+                          uxLeftMargin, uPageHeight);
+
+    m_pMarginShapes[3] =
+        new lmShapeMargin(pScore, this, lmMARGIN_RIGHT, m_nNumPage, lmVERTICAL,
+                          uxRightMargin, uPageHeight);
 }
 
 lmBoxPage::~lmBoxPage()
@@ -77,6 +84,12 @@ lmBoxPage::~lmBoxPage()
         delete m_aSystems[i];
     }
     m_aSystems.clear();
+
+    m_GMObjsWithHandlers.clear();
+
+    //delete handlers
+    for (int i=0; i<4; i++)
+        delete m_pMarginShapes[i];
 }
 
 lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
@@ -89,12 +102,15 @@ lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
     lmBoxSystem* pSystem = new lmBoxSystem(this, m_nNumPage);
     m_aSystems.push_back(pSystem);
     return pSystem;
-
 }
 
 void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
 {
     if (m_nLastSystem == 0) return;
+
+    //clear lists with renderization information
+    m_ActiveHandlers.clear();
+    m_GMObjsWithHandlers.clear();
 
 	//render score titles
 	for (int i=0; i < (int)m_Shapes.size(); i++)
@@ -108,23 +124,35 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
     {
         m_aSystems[i]->Render(iSystem, pScore, pPaper);
     }
+
+    //if requested, book to render page margins
+    if (g_fShowMargins)
+        this->OnNeedToDrawHandlers(this);
 }
 
-void lmBoxPage::DrawHandlers(lmPaper* pPaper)
+void lmBoxPage::RenderWithHandlers(lmPaper* pPaper)
 {
-    //render page margins
-    if (g_fShowMargins && m_pHandlers)
-    {
-        wxColour color = *wxGREEN;      //TODO User options
-		std::list<lmHandler*>::iterator it;
-		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
-            (*it)->Render(pPaper, color);
-    }
+    //render page with margins
 
-	//propagate to childs
-	std::vector<lmBoxSystem*>::iterator it;
-	for(it = m_aSystems.begin(); it != m_aSystems.end(); ++it)
-        (*it)->DrawHandlers(pPaper);
+    wxColour color = *wxGREEN;      //TODO User options
+	//std::list<lmHandler*>::iterator it;
+	//for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
+ //       (*it)->Render(pPaper, color);
+    for (int i=0; i < 4; i++)
+    {
+        m_pMarginShapes[i]->Render(pPaper, color);
+        AddActiveHandler( m_pMarginShapes[i] );
+    }
+}
+
+void lmBoxPage::DrawAllHandlers(lmPaper* pPaper)
+{
+    //Inform all GMObjects that booked to draw handlers (during renderization) to do
+    //it now
+
+	std::vector<lmGMObject*>::iterator it;
+	for (it = m_GMObjsWithHandlers.begin(); it != m_GMObjsWithHandlers.end(); ++it)
+        (*it)->RenderWithHandlers(pPaper);
 }
 
 lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
@@ -170,6 +198,15 @@ void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
 lmGMObject* lmBoxPage::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+
+    //look up in active handlers
+	std::list<lmHandler*>::iterator it;
+	for (it = m_ActiveHandlers.begin(); it != m_ActiveHandlers.end(); ++it)
+    {
+		if ((*it)->BoundsContainsPoint(pointL))
+            return *it;
+    }
+
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
     if (pShape) return pShape;
@@ -182,16 +219,26 @@ lmGMObject* lmBoxPage::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
 			return pGMO;		//Object found
     }
 
-    //find in margins
-    if (g_fShowMargins && m_pHandlers)
-    {
-		std::list<lmHandler*>::iterator it;
-		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
-			if ((*it)->BoundsContainsPoint(pointL)) return *it;
-    }
-
     // no object found.
     return (lmGMObject*)NULL;
+}
+
+void lmBoxPage::AddActiveHandler(lmHandler* pHandler)
+{
+    m_ActiveHandlers.push_back(pHandler);
+}
+
+void lmBoxPage::OnNeedToDrawHandlers(lmGMObject* pGMO)
+{
+    //This method is invoked by objects contained in this BoxPage. 
+    //Handlers are not rendered during shapes renderization. Instead, if
+    //during renderization and object has the need to draw handlers (for instance,
+    //if the object is selected) if MUST inform its parent BoxPage by invoking this
+    //method. BoxPage mantains a list of objects having requested to draw handlers
+    //and, when appropriate, it will invoke method DrawHandlers for those objects, 
+    //so that they can do it.
+
+    m_GMObjsWithHandlers.push_back(pGMO);
 }
 
 wxString lmBoxPage::Dump(int nIndent)

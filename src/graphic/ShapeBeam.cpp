@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "GMObject.h"
+#include "ShapeLine.h"
 #include "ShapeNote.h"
 #include "ShapeRest.h"
 #include "ShapeBeam.h"

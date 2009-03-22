@@ -751,7 +751,7 @@ bool lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
     //Delete the object
     m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
 
-    wxLogMessage(this->Dump());
+    //wxLogMessage(this->Dump());
     return false;       //false->deletion OK
 }
 
@@ -1073,12 +1073,12 @@ void lmVStaff::UndoCmd_AddTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
     }
 
     //remove the tuplet
-    pNR = pTuplet->GetFirstNoteRest();
-    while (pNR)
-    {
-        pNR->OnRemovedFromTuplet();
-        pNR = pTuplet->GetNextNoteRest();
-    }
+    //pNR = pTuplet->GetFirstNoteRest();
+    //while (pNR)
+    //{
+    //    pNR->OnRemovedFromTuplet();
+    //    pNR = pTuplet->GetNextNoteRest();
+    //}
     delete pTuplet;
 }
 
@@ -1122,12 +1122,12 @@ void lmVStaff::Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
     pTuplet->Save(pUndoData);
 
     //remove the tuplet
-    pNR = pTuplet->GetFirstNoteRest();
-    while (pNR)
-    {
-        pNR->OnRemovedFromTuplet();
-        pNR = pTuplet->GetNextNoteRest();
-    }
+    //pNR = pTuplet->GetFirstNoteRest();
+    //while (pNR)
+    //{
+    //    pNR->OnRemovedFromTuplet();
+    //    pNR = pTuplet->GetNextNoteRest();
+    //}
     delete pTuplet;
 }
 
@@ -1225,8 +1225,8 @@ void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
     if (nNotesBefore == 1 && nNotesAfter == 1)
     {
         //just remove the beam
-	    pPrevNR->OnRemovedFromBeam();
-	    pBeforeNR->OnRemovedFromBeam();
+	    pPrevNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);   //OnRemovedFromBeam();
+	    pBeforeNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
         delete pBeam;
     }
     //cae b) single note + new beam
@@ -1234,7 +1234,7 @@ void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
     {
         //remove first note from beam
         pBeam->Remove(pPrevNR);
-	    pPrevNR->OnRemovedFromBeam();
+	    pPrevNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);   //OnRemovedFromBeam();
         pBeam->AutoSetUp();
     }
     //case c) new beam + new beam
@@ -1245,14 +1245,14 @@ void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
         std::vector<lmNoteRest*>::iterator it = notes.begin();
 
         pBeam->Remove(*it);
-	    (*it)->OnRemovedFromBeam();
+	    (*it)->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
         lmBeam* pBeam1 = new lmBeam((lmNote*)(*it));
 
         ++it;
         while (it != notes.end())
         {
             pBeam->Remove(*it);
-	        (*it)->OnRemovedFromBeam();
+	        (*it)->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
             pBeam1->Include((*it));
             ++it;
         }
@@ -1265,7 +1265,7 @@ void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
     {
         //remove last note from beam
         pBeam->Remove(pBeforeNR);
-	    pBeforeNR->OnRemovedFromBeam();
+	    pBeforeNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
         pBeam->AutoSetUp();
     }
     else
@@ -1319,7 +1319,7 @@ void lmVStaff::UndoCmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
         while (pNR)
         {
             pBeam2->Remove(pNR);
-	        pNR->OnRemovedFromBeam();
+	        pNR->OnRemovedFromRelationship(pBeam2, lm_eBeamClass);   //OnRemovedFromBeam();
             pBeam1->Include(pNR);
             //AWARE:  As we have removed the firts note, GetNextNoteRest() will fail because
             //the internal iterator is now invalid. Moreover, the next note is now the first one.
@@ -1403,7 +1403,7 @@ void lmVStaff::Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& not
                 while(pNR)
                 {
                     SaveBeamNoteInfo(pNR, oInvolvedNR, nBeamIdx);
-	                pNR->OnRemovedFromBeam();
+	                pNR->OnRemovedFromRelationship(pOldBeam, lm_eBeamClass);   //OnRemovedFromBeam();
                     pNewBeam->Include(pNR);
                     oldNotes.push_back(pNR);
                     pNR = pOldBeam->GetNextNoteRest();
@@ -1469,7 +1469,7 @@ void lmVStaff::UndoCmd_JoinBeam(lmUndoItem* pUndoItem)
         for(it = notes.begin(); it != notes.end(); ++it)
         {
             pBeam->Remove((*it).pNR);
-            (*it).pNR->OnRemovedFromBeam();
+            (*it).pNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
         }
 
         //delete the old beam
@@ -1566,7 +1566,7 @@ void lmVStaff::Cmd_DeleteBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeamedNR)
     for(it = oBeamNR.begin(); it != oBeamNR.end(); ++it)
     {
         pBeam->Remove((*it)->pNR);
-        (*it)->pNR->OnRemovedFromBeam();
+        (*it)->pNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);    //OnRemovedFromBeam();
     }
 
     //delete the beam

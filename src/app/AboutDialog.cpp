@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -38,6 +38,10 @@
 #include "wx/xrc/xmlres.h"
 
 #include "AboutDialog.h"
+
+#include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
+#include "wx/wxsqlite3.h"               //to access wxSQLite3 DB
+extern wxSQLite3Database* g_pDB;        //the database
 
 //to determine debug/release version
 extern bool g_fReleaseVersion;        // to enable/disable debug features
@@ -312,6 +316,15 @@ conversion tools, text image generation tools, and many other products as well. 
 It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is \
 copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org).") +
         _T("</p><p>") +
+        _("LenMus uses <b>sqlite3</b> (http://www.sqlite.org/), \
+with <b>wxSQLite3</b> wrapper (http://wxcode.sourceforge.net/components/wxsqlite3) for wxWidgets. \
+SQLite is a widely used library that implements a transactional SQL database engine. \
+Unlike client-server database management systems, the SQLite engine is not a standalone process \
+with which the program communicates. Instead, the SQLite library is linked with your program \
+and becomes an integral part of it. SQLite was created by D. Richard Hipp and the source code \
+is in the public domain and is thus free for use for any purpose, commercial or private. \
+software. Wrapper wxSQLite3 was written by Ulrich Telle.") +
+        _T("</p><p>") +
         _("LenMus Phonascus is built using the <b>wxWidgets</b> application framework \
 (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
 ease to learn and extend, it has a helpful community, and also has the possibility \
@@ -353,10 +366,10 @@ void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
     wxString sContent = m_sHeader +
         _T("<center>")
         _T("<h3>") + _("Build information") + _T("</h3></center><p>") +
-        _("Program build date:") +
-        _T(" ") __TDATE__ _T("<br>") +
+        _("Program build date:") + _T(" ") __TDATE__ _T("<br>") + 
         wxVERSION_STRING + _T("<br>") +
-        _("wxMidi Version ") + wxMIDI_VERSION + _T("<br><br><br>") +
+        _T("wxMidi ") + wxMIDI_VERSION + _T("<br>") +
+        _T("sqlite3 ") + g_pDB->GetVersion().c_str() + _T("<br><br><br>") +
         _("Your computer information:") +
         _T("<br>Charset encoding: ") + wxLocale::GetSystemEncodingName() +
         _T("<br>System locale name: ") + wxGetApp().GetLocaleSysName() +

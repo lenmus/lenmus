@@ -33,6 +33,7 @@
 #include "Score.h"
 #include "Notation.h"
 #include "VStaff.h"
+#include "../graphic/ShapeLine.h"
 
 
 lmNotation::lmNotation(lmVStaff* pVStaff, int nStaff, bool fVisible, bool fIsDraggable)
@@ -159,7 +160,7 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
         lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
 
         //create the shape
-        pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd, uWidth, uBoundsExtraWidth,
+        pShape = new lmShapeSimpleLine(this, uPos.x, uyStart, uPos.x, uyEnd, uWidth, uBoundsExtraWidth,
                                  *wxRED, _T("Anchor"), eEdgeNormal);
 
     }

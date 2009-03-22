@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -56,13 +56,16 @@
 //----------------------------------------------------------------------------------------
 
 lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc,
-                               lmVStaffCursor* pVCursor, bool fHistory, int nOptions)
+                               lmVStaffCursor* pVCursor, bool fHistory, int nOptions,
+                               bool fUpdateViews)
     : wxCommand(true, sName)
+      , m_pDoc(pDoc)
+	  , m_fDocModified(false)
+      , m_fHistory(fHistory)
+      , m_nOptions(nOptions)
+      , m_fUpdateViews(fUpdateViews)
+      , m_pSCO((lmScoreObj*)NULL)
 {
-    m_pDoc = pDoc;
-	m_fDocModified = false;
-    m_fHistory = fHistory;
-    m_nOptions = nOptions;
     if (pVCursor)
         m_tCursorState = pVCursor->GetState();
     else
@@ -71,6 +74,15 @@ lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc,
 
 lmScoreCommand::~lmScoreCommand()
 {
+}
+
+bool lmScoreCommand::Undo()
+{
+    //Default implementation valid for most commands using the undo log.
+
+    //undelete the actions
+    m_UndoLog.UndoAll();
+    return CommandUndone();
 }
 
 bool lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
@@ -84,16 +96,55 @@ bool lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
 
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(fScoreModified);
-    m_pDoc->UpdateAllViews(fScoreModified, new lmUpdateHint(m_nOptions | nOptions) );
+    //if (m_fUpdateViews)
+        m_pDoc->UpdateAllViews(fScoreModified, new lmUpdateHint(m_nOptions | nOptions) );
 
     return m_fHistory;
 }
 
-bool lmScoreCommand::Undo()
+bool lmScoreCommand::CommandUndone(int nOptions)
 {
-    return UndoCommand();
+    //common code after executing an Undo operation:
+    //- reset document to previous 'modified' state
+    //- update the views with the changes
+    //
+    //Returns true to indicate that the action has taken place, false otherwise.
+    //Returning false will indicate to the command processor that the action is
+    //not redoable and no change should be made to the command history.
+
+    //restore cursor
+    if (!IsEmptyState(m_tCursorState))
+        m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+
+    //update views
+    //if (m_fUpdateViews)
+    {
+        //re-built the graphic model
+        m_pDoc->UpdateAllViews(m_fDocModified, new lmUpdateHint(m_nOptions | nOptions));
+    }
+    //else
+    //{
+    //    //the model was not updated when issuing the Do command. Instead the object
+    //    //was selected and only that object was re-rendered. Do it in that way again.
+    //    //if (m_pSCO)
+    //    //{
+    //    //    //m_pSCO->->Select
+    //    //    m_pSCO->GetShapeFromIdx(m_nShapeIdx)->RenderWithHandlers(m_pPaper);
+    //    //}
+    //}
+
+    return true;
 }
 
+//void lmScoreCommand::SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx,
+//                                         lmPaper* pPaper)
+//{
+//    m_pSCO = pSCO;
+//    m_nShapeIdx = nShapeIdx
+//    m_pPaper = pPaper;
+//}
 
 
 
@@ -413,12 +464,12 @@ bool lmCmdDeleteSelection::Do()
     else
     {
         //undo command for the deleted ScoreObjs
-        UndoCommand();
+        Undo();
         return false;
     }
 }
 
-bool lmCmdDeleteSelection::UndoCommand()
+bool lmCmdDeleteSelection::Undo()
 {
     //undelete the object
     m_UndoLog.UndoAll();
@@ -430,12 +481,7 @@ bool lmCmdDeleteSelection::UndoCommand()
         (*it)->fObjDeleted = false;      //the Obj is again owned by the score
     }
 
-    //set cursor
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
 
 
@@ -491,18 +537,13 @@ bool lmCmdDeleteStaffObj::Do()
     }
 }
 
-bool lmCmdDeleteStaffObj::UndoCommand()
+bool lmCmdDeleteStaffObj::Undo()
 {
     //undelete the object
     m_UndoLog.UndoAll();
     m_fDeleteSO = false;                //m_pSO is again owned by the score
 
-    //set cursor
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
 
 
@@ -540,16 +581,6 @@ bool lmCmdDeleteTie::Do()
         delete pECmd;
         return false;
     }
-}
-
-bool lmCmdDeleteTie::UndoCommand()
-{
-    //undelete the tie
-    m_UndoLog.UndoAll();
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
 }
 
 
@@ -591,60 +622,40 @@ bool lmCmdAddTie::Do()
     }
 }
 
-bool lmCmdAddTie::UndoCommand()
-{
-    //undelete the tie
-    m_UndoLog.UndoAll();
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
 
 
 //----------------------------------------------------------------------------------------
-// lmCmdUserMoveScoreObj implementation
+// lmCmdMoveObject implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj(const wxString& sName, lmScoreDocument *pDoc,
-									         lmGMObject* pGMO, const lmUPoint& uPos)
-	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
+lmCmdMoveObject::lmCmdMoveObject(const wxString& sName, lmScoreDocument *pDoc,
+								 lmGMObject* pGMO, const lmUPoint& uPos,
+                                 bool fUpdateViews)
+	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL, true, 0, fUpdateViews)
 {
 	m_tPos.x = uPos.x;
 	m_tPos.y = uPos.y;
-    //wxLogMessage(_T("[lmCmdUserMoveScoreObj::lmCmdUserMoveScoreObj] User pos (%.2f, %.2f)"), uPos.x, uPos.y );
 	m_tPos.xUnits = lmLUNITS;
 	m_tPos.yUnits = lmLUNITS;
 
 	m_pSO = pGMO->GetScoreOwner();
     m_nShapeIdx = pGMO->GetOwnerIDX();
+    wxASSERT_MSG( m_pSO, _T("[lmCmdMoveObject::Do] No ScoreObj to move!"));
 }
 
-bool lmCmdUserMoveScoreObj::Do()
+bool lmCmdMoveObject::Do()
 {
     //Direct command. NO UNDO LOG
-
-    wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Do] No ScoreObj to move!"));
-
     m_tOldPos = m_pSO->SetUserLocation(m_tPos, m_nShapeIdx);
-
-	return CommandDone(lmSCORE_MODIFIED);  //, lmDO_ONLY_REDRAW);
+	return CommandDone(lmSCORE_MODIFIED, lmDO_ONLY_REDRAW);
 }
 
-bool lmCmdUserMoveScoreObj::UndoCommand()
+bool lmCmdMoveObject::Undo()
 {
     //Direct command. NO UNDO LOG
-
-    wxASSERT_MSG( m_pSO, _T("[lmCmdUserMoveScoreObj::Undo]: No ScoreObj to move!"));
-
     m_pSO->SetUserLocation(m_tOldPos, m_nShapeIdx);
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-
+    return CommandUndone(lmDO_ONLY_REDRAW);
 }
-
 
 
 
@@ -678,16 +689,6 @@ bool lmCmdInsertBarline::Do()
         delete pECmd;
         return false;
     }
-}
-
-bool lmCmdInsertBarline::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
 }
 
 
@@ -725,16 +726,6 @@ bool lmCmdInsertClef::Do()
         delete pECmd;
         return false;
     }
-}
-
-bool lmCmdInsertClef::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
 }
 
 
@@ -776,16 +767,6 @@ bool lmCmdInsertTimeSignature::Do()
     }
 }
 
-bool lmCmdInsertTimeSignature::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
 
 
 
@@ -823,16 +804,6 @@ bool lmCmdInsertKeySignature::Do()
         delete pECmd;
         return false;
     }
-}
-
-bool lmCmdInsertKeySignature::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
 }
 
 
@@ -894,17 +865,6 @@ bool lmCmdInsertNote::Do()
 
 }
 
-bool lmCmdInsertNote::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
-
 
 
 //----------------------------------------------------------------------------------------
@@ -950,17 +910,6 @@ bool lmCmdInsertRest::Do()
 
 }
 
-bool lmCmdInsertRest::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
-
 
 
 //----------------------------------------------------------------------------------------
@@ -984,16 +933,13 @@ bool lmCmdChangeNotePitch::Do()
 	return CommandDone(lmSCORE_MODIFIED);
 }
 
-bool lmCmdChangeNotePitch::UndoCommand()
+bool lmCmdChangeNotePitch::Undo()
 {
     //Direct command. NO UNDO LOG
 
 	m_pNote->ChangePitch(-m_nSteps);
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
-
 
 
 
@@ -1049,7 +995,7 @@ bool lmCmdChangeNoteAccidentals::Do()
 	return CommandDone(lmSCORE_MODIFIED);
 }
 
-bool lmCmdChangeNoteAccidentals::UndoCommand()
+bool lmCmdChangeNoteAccidentals::Undo()
 {
     //AWARE: Not using UndoLog. Direct execution of command
 
@@ -1059,14 +1005,8 @@ bool lmCmdChangeNoteAccidentals::UndoCommand()
         (*it)->pNote->ChangeAccidentals( (*it)->nAcc );
     }
 
-    //set cursor
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
-
 
 
 
@@ -1127,21 +1067,10 @@ bool lmCmdChangeNoteRestDots::Do()
     else
     {
         //undo command for the modified note/rests
-        UndoCommand();
+        Undo();
         return false;
     }
 }
-
-bool lmCmdChangeNoteRestDots::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
 
 
 
@@ -1179,17 +1108,6 @@ bool lmCmdDeleteTuplet::Do()
         return false;
     }
 }
-
-bool lmCmdDeleteTuplet::UndoCommand()
-{
-    //undelete the tuplet
-    m_UndoLog.UndoAll();
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
 
 
 
@@ -1250,17 +1168,6 @@ bool lmCmdAddTuplet::Do()
     }
 }
 
-bool lmCmdAddTuplet::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
-
 
 
 //----------------------------------------------------------------------------------------
@@ -1296,19 +1203,6 @@ bool lmCmdBreakBeam::Do()
         return false;
     }
 }
-
-bool lmCmdBreakBeam::UndoCommand()
-{
-    //undelete the object
-
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
 
 
 
@@ -1361,19 +1255,6 @@ bool lmCmdJoinBeam::Do()
     }
 }
 
-bool lmCmdJoinBeam::UndoCommand()
-{
-    //undelete the object
-
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-}
-
-
 
 
 //----------------------------------------------------------------------------------------
@@ -1415,16 +1296,6 @@ bool lmCmdChangeText::Do()
         delete pECmd;
         return false;
     }
-}
-
-bool lmCmdChangeText::UndoCommand()
-{
-    m_UndoLog.UndoAll();
-    m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
 }
 
 
@@ -1476,14 +1347,12 @@ bool lmCmdChangePageMargin::Do()
 	return CommandDone(lmSCORE_MODIFIED);  //, lmDO_ONLY_REDRAW);
 }
 
-bool lmCmdChangePageMargin::UndoCommand()
+bool lmCmdChangePageMargin::Undo()
 {
     //Direct command. NO UNDO LOG
 
     ChangeMargin(m_uOldPos);
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
 
 void lmCmdChangePageMargin::ChangeMargin(lmLUnits uPos)
@@ -1563,15 +1432,13 @@ bool lmCmdAttachNewText::Do()
 	return CommandDone(lmSCORE_MODIFIED);  //, lmDO_ONLY_REDRAW);
 }
 
-bool lmCmdAttachNewText::UndoCommand()
+bool lmCmdAttachNewText::Undo()
 {
     //Direct command. NO UNDO LOG
 
     m_pAnchor->DetachAuxObj(m_pNewText);
     m_fDeleteText = true;
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
 
 
@@ -1632,15 +1499,13 @@ bool lmCmdAddNewTitle::Do()
     }
 }
 
-bool lmCmdAddNewTitle::UndoCommand()
+bool lmCmdAddNewTitle::Undo()
 {
     //Direct command. NO UNDO LOG
 
     m_pDoc->GetScore()->DetachAuxObj(m_pNewTitle);
     m_fDeleteTitle = true;
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
 
 
@@ -1673,15 +1538,13 @@ bool lmCmdChangeBarline::Do()
 	return CommandDone(lmSCORE_MODIFIED);
 }
 
-bool lmCmdChangeBarline::UndoCommand()
+bool lmCmdChangeBarline::Undo()
 {
     //Direct command. NO UNDO LOG
 
     m_pBL->SetBarlineType(m_nOldType);
     m_pBL->SetVisible(m_fOldVisible);
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
 
 
@@ -1716,16 +1579,13 @@ bool lmCmdChangeMidiSettings::Do()
 	return CommandDone(lmSCORE_MODIFIED, lmDO_ONLY_REDRAW);
 }
 
-bool lmCmdChangeMidiSettings::UndoCommand()
+bool lmCmdChangeMidiSettings::Undo()
 {
     //Direct command. NO UNDO LOG
 
     m_pInstr->SetMIDIChannel(m_nOldMidiChannel);
     m_pInstr->SetMIDIInstrument(m_nOldMidiInstr);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
+    return CommandUndone();
 }
 
 
@@ -1751,16 +1611,56 @@ bool lmCmdMoveNote::Do()
 	return CommandDone(lmSCORE_MODIFIED);
 }
 
-bool lmCmdMoveNote::UndoCommand()
+bool lmCmdMoveNote::Undo()
 {
     //Direct command. NO UNDO LOG
 
 	m_pNote->SetUserXLocation(m_uxOldPos);
 	m_pNote->ChangePitch(-m_nSteps);
-
-	m_pDoc->Modify(m_fDocModified);
-    m_pDoc->UpdateAllViews();
-    return true;
-
+    return CommandUndone();
 }
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdMoveObjectPoints implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdMoveObjectPoints::lmCmdMoveObjectPoints(const wxString& name,
+                               lmScoreDocument *pDoc, lmGMObject* pGMO,
+                               lmUPoint uShift[], int nNumPoints, bool fUpdateViews)
+	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL, true, 0, fUpdateViews)
+      , m_nNumPoints(nNumPoints)
+{
+    wxASSERT(nNumPoints > 0);
+
+    //get additional info
+	m_pSCO = pGMO->GetScoreOwner();
+    m_nShapeIdx = pGMO->GetOwnerIDX();
+
+    //allocate a vector to save shifts
+    m_pShifts = new lmUPoint[m_nNumPoints];
+    for(int i=0; i < m_nNumPoints; i++)
+        *(m_pShifts+i) = uShift[i];
+}
+
+lmCmdMoveObjectPoints::~lmCmdMoveObjectPoints()
+{
+    delete[] m_pShifts;
+}
+
+bool lmCmdMoveObjectPoints::Do()
+{
+    //Direct command. NO UNDO LOG
+    m_pSCO->MoveObjectPoints(m_nNumPoints, m_nShapeIdx, m_pShifts, true);  //true->add shifts
+	return CommandDone(lmSCORE_MODIFIED, lmDO_ONLY_REDRAW);
+}
+
+bool lmCmdMoveObjectPoints::Undo()
+{
+    //Direct command. NO UNDO LOG
+    m_pSCO->MoveObjectPoints(m_nNumPoints, m_nShapeIdx, m_pShifts, false);  //false->substract shifts
+    return CommandUndone(lmDO_ONLY_REDRAW);
+}
+
 

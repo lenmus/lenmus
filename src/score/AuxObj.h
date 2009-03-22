@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -45,7 +45,7 @@ public:
     ~lmScoreLine() {}
 
     //implementation of virtual methods from base class
-    lmEAuxObjType GetAuxObjType() { return eAXOT_Line; }
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Line; }
 
     // source code related methods
     wxString SourceLDP(int nIndent);
@@ -56,6 +56,9 @@ public:
 
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+
+    //undoable edition commands
+    void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
 
 private:
     lmTenths    m_txStart;
@@ -82,10 +85,10 @@ public:
     lmFermata(lmEPlacement nPlacement);
     ~lmFermata() {}
 
-    // overrides for pure virtual methods of base class lmNoteRestObj
+    // overrides for pure virtual methods of base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-    lmEAuxObjType GetAuxObjType() { return eAXOT_Fermata; }
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Fermata; }
 
     // source code related methods
     wxString SourceLDP(int nIndent);
@@ -126,8 +129,7 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	wxFont* GetSuitableFont(lmPaper* pPaper);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-    lmEAuxObjType GetAuxObjType() { return eAXOT_Lyric; }
-
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Lyric; }
 
     // overrides for virtual methods of base class lmNoteRestObj
     void SetOwner(lmNoteRest* pOwner);

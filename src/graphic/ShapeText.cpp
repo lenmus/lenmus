@@ -484,7 +484,7 @@ lmUPoint lmShapeTextBlock::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
     }
 }
 
-void lmShapeTextBlock::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
+void lmShapeTextBlock::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).

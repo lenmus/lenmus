@@ -42,7 +42,7 @@ struct lmTBeamInfo
 
 class lmLyric;
 
-class lmNoteRest:  public lmStaffObj
+class lmNoteRest: public lmStaffObj
 {
 public:
     //ctors and dtor
@@ -77,7 +77,7 @@ public:
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
 	inline void OnIncludedInBeam(lmBeam* pBeam) { m_pBeam = pBeam; }
-	inline void OnRemovedFromBeam() { m_pBeam = (lmBeam*)NULL; }
+	//inline void OnRemovedFromBeam() { m_pBeam = (lmBeam*)NULL; }
     inline bool IsBeamed() const { return m_pBeam != (lmBeam*)NULL; }
     inline lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
     inline void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
@@ -96,7 +96,7 @@ public:
     inline bool IsInTuplet() { return m_pTuplet != (lmTupletBracket*)NULL; }
     inline lmTupletBracket* GetTuplet() { return m_pTuplet; }
 	inline void OnIncludedInTuplet(lmTupletBracket* pTuplet) { m_pTuplet = pTuplet; }
-	inline void OnRemovedFromTuplet() { m_pTuplet = (lmTupletBracket*)NULL; }
+	//inline void OnRemovedFromTuplet() { m_pTuplet = (lmTupletBracket*)NULL; }
 
     //methods related to sound
     void AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int nChannel,
@@ -121,6 +121,7 @@ public:
 	template <class T> T* GetRelationship();
 	void OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelClass);
 	void OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass);
+	void OnRemovedFromRelationship(lmRelObj* pRel);
 
 
 

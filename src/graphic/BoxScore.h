@@ -90,6 +90,7 @@ public:
 	//owners and related
 	lmBoxSystem* GetOwnerSystem() { return (lmBoxSystem*)NULL; }
     inline lmBoxScore* GetOwnerBoxScore() { return this; }
+    inline lmBoxPage* GetOwnerBoxPage() { return (lmBoxPage*)NULL; }
 
 
 private:

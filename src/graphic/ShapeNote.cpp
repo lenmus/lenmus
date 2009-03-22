@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -33,8 +33,8 @@
 #include "../score/Score.h"
 #include "../score/VStaff.h"
 #include "../app/ScoreCanvas.h"
-
 #include "ShapeNote.h"
+#include "ShapeLine.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ lmUPoint lmShapeNote::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	return pos;
 }
 
-void lmShapeNote::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
+void lmShapeNote::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).

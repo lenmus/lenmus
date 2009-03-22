@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 //AWARE: In correspondence with enum
-const wxString g_sGenerationModeName[lm_eNumGenerationModes] 
+const wxString g_sGenerationModeName[lm_eNumGenerationModes]
                         = {_("Learning"), _("Practise"), _("Exam"), _("Quiz") };
 
 
@@ -124,8 +124,8 @@ bool lmTimeSignConstrains::SetConstrains(wxString sTimeSign)
 // Implementation of abstract class lmEBookCtrolOptions
 //--------------------------------------------------------------------------------
 lmEBookCtrolOptions::lmEBookCtrolOptions(wxString sSection)
+    : m_sSection(sSection)
 {
-    m_sSection = sSection;
     m_fSettingsLink = false;
     m_sGoBackURL = _T("");
     m_fPlayLink = true;
@@ -143,7 +143,7 @@ lmExerciseOptions::lmExerciseOptions(wxString sSection)
     m_fSolutionLink = true;
     m_fUseCounters = true;
 	m_fTheoryMode = true;
-    m_nGenerationMode = lm_eQuizMode;
+    m_nGenerationMode = lm_eExamMode;
 
     //Default suppoted generation/evaluation modes: exam & quiz
     for (long i=0; i < lm_eNumGenerationModes; i++)

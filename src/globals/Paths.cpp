@@ -98,20 +98,21 @@ lmPaths::lmPaths(wxString sBinPath)
     wxFileName oRootG1 = m_root;
     wxFileName oRootG2 = m_root;
     wxFileName oRootG3 = m_root;
+    wxFileName oRootG4 = m_root;
     #if defined(__WXDEBUG__)
         #if defined(__WXMSW__)
-        oRootG3.AppendDir(_T("z_bin"));
+            oRootG3.AppendDir(_T("z_bin"));
         #else
-        oRootG3.AppendDir(_T("z_gtk_obj"));
+            oRootG3.AppendDir(_T("z_gtk_obj"));
         #endif
     #else
-    oRootG3.AppendDir(_T("bin"));
+        oRootG3.AppendDir(_T("bin"));
     #endif
-    wxFileName oRootG4 = m_root;
 #elif defined(__WXGTK__)
     wxFileName oRootG1 = m_root;
     wxFileName oRootG2(_T("~/lenmus")); //("/var/lenmus"));
     wxFileName oRootG3(_T("~/lenmus"));
+    wxFileName oRootG4(_T("~/lenmus"));
 #endif
 
     // Group 1. Software and essentials

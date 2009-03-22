@@ -208,6 +208,15 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
 //global variable used as default initializator
 lmVCursorState g_tNoVCursorState = { -1, 0.0f, (lmStaffObj*)NULL };
 
+//global function to compare with g_tNoVCursorState
+bool IsEmptyState(lmVCursorState& t)
+{
+    return (t.nStaff == g_tNoVCursorState.nStaff
+            && t.pSO == g_tNoVCursorState.pSO
+            && t.rTimepos == g_tNoVCursorState.rTimepos);
+}
+
+
 
 
 lmVStaffCursor::lmVStaffCursor()
@@ -2673,8 +2682,7 @@ void lmColStaffObjs::LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj
     lmSegment* pSegment = pSO->GetSegment();
 
     //advance to next object
-    pSO = pSO->GetNextSO();
-    if (pSO)
+    if (pSO->GetNextSO())
     {
         //not at end of segment. done
         pUndoData->AddParam<lmStaffObj*>(pSO);

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -101,7 +101,7 @@ protected:
 
 //------------------------------------------------------------------------------------
 
-class lmScoreText :  public lmAuxObj, public lmBasicText
+class lmScoreText : public lmAuxObj, public lmBasicText
 {
 public:
     virtual ~lmScoreText() {}
@@ -144,7 +144,7 @@ protected:
 
 //------------------------------------------------------------------------------------
 
-class lmTextItem :  public lmScoreText
+class lmTextItem : public lmScoreText
 {
 public:
     //simple text constructor
@@ -170,7 +170,7 @@ private:
 };
 
 
-class lmInstrNameAbbrev :  public lmTextItem
+class lmInstrNameAbbrev : public lmTextItem
 {
 public:
     lmInstrNameAbbrev(wxString& sTitle, lmTextStyle* pStyle)
@@ -182,7 +182,7 @@ public:
 
 //------------------------------------------------------------------------------------
 
-class lmTextBlock :  public lmScoreText
+class lmTextBlock : public lmScoreText
 {
 public:
     lmTextBlock(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
@@ -194,7 +194,7 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAOXT_TextBlock; }
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextBlock; }
     wxString Dump();
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);

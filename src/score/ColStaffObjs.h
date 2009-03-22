@@ -274,6 +274,9 @@ lmVCursorState;
 //global variable used as default initializator
 extern lmVCursorState g_tNoVCursorState;
 
+//global function to compare with g_tNoVCursorState
+extern bool IsEmptyState(lmVCursorState& t);
+
 
 class lmVStaffCursor
 {

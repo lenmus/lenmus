@@ -38,17 +38,18 @@
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
+#include "../graphic/ShapeLine.h"
 
 
 extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 
 
-//-----------------------------------------------------------------------------------------
+//========================================================================================
 // lmAuxObj implementation
-//-----------------------------------------------------------------------------------------
+//========================================================================================
 
-lmAuxObj::lmAuxObj(bool fIsDraggable) :
-    lmComponentObj((lmComponentObj*)NULL, lm_eAuxObj, fIsDraggable)
+lmAuxObj::lmAuxObj(bool fIsDraggable)
+    : lmComponentObj((lmComponentObj*)NULL, lm_eAuxObj, fIsDraggable)
 {
 }
 
@@ -58,7 +59,17 @@ void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
 	SetReferencePos(pPaper);
 
     m_uComputedPos = ComputeBestLocation(m_uPaperPos, pPaper);
-    LayoutObject(pBox, pPaper, m_uComputedPos, (g_fShowDirtyObjects && IsDirty() ? *wxRED : m_color));
+    if (lmPRESERVE_SHAPES && !IsDirty())
+    {
+        //Not dirty: just add existing shapes to the Box
+        lmShape* pOldShape = this->GetShape();
+        pBox->AddShape(pOldShape);
+        pOldShape->SetColour(*wxCYAN);//m_color);       //change its colour to new desired colour
+    }
+    else
+    {
+        LayoutObject(pBox, pPaper, m_uComputedPos, (g_fShowDirtyObjects && IsDirty() ? *wxRED : m_color));
+    }
 }
 
 lmLUnits lmAuxObj::TenthsToLogical(lmTenths nTenths)
@@ -92,17 +103,17 @@ void lmAuxObj::OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShif
     lmShape* pGMObj = GetShape();
 	if (pGMObj)
     {
-		//DBG--------------------------------------------------------------------------------
-		if (GetID()==63 || GetID()==64)
-		{
-	        lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
-			wxLogMessage(_T("[lmAuxObj::OnParentComputedPositionShifted] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ShapePos=(%.2f, %.2f), ComputedPos=(%.2f, %.2f)"),
-						uxShift,
-						pGMObj->GetObjectOrigin().x, pGMObj->GetObjectOrigin().y,
-						uShapePos.x, uShapePos.y,
-						m_uComputedPos.x, m_uComputedPos.y );
-		}
-		//END DBG----------------------------------------------------------------------------
+		////DBG--------------------------------------------------------------------------------
+		//if (GetID()==63 || GetID()==64)
+		//{
+	    //  lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
+		//	wxLogMessage(_T("[lmAuxObj::OnParentComputedPositionShifted] uxShift=%.2f, ShapeOrg=(%.2f, %.2f), ShapePos=(%.2f, %.2f), ComputedPos=(%.2f, %.2f)"),
+		//				uxShift,
+		//				pGMObj->GetObjectOrigin().x, pGMObj->GetObjectOrigin().y,
+		//				uShapePos.x, uShapePos.y,
+		//				m_uComputedPos.x, m_uComputedPos.y );
+		//}
+		////END DBG----------------------------------------------------------------------------
         pGMObj->Shift(uxShift, uyShift);
         pGMObj->ApplyUserShift( this->GetUserShift() );
     }
@@ -110,7 +121,7 @@ void lmAuxObj::OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShif
 
 void lmAuxObj::OnParentMoved(lmLUnits uxShift, lmLUnits uyShift)
 {
-	//TODO: specific flag to decouple from parent staffObj, so the user can 
+	//TODO: specific flag to decouple from parent staffObj, so the user can
 	//control if the attached AuxObj will be moved with the parent or not
 
     lmShape* pGMObj = GetShape();
@@ -146,6 +157,58 @@ wxString lmAuxObj::SourceLDP(int nIndent)
 wxString lmAuxObj::SourceXML(int nIndent)
 {
 	return lmComponentObj::SourceXML(nIndent);
+}
+
+
+
+//========================================================================================
+// lmRelObj implementation
+//========================================================================================
+
+wxString lmRelObj::SourceLDP(int nIndent)
+{
+    WXUNUSED(nIndent);
+	return wxEmptyString;
+}
+
+
+
+//========================================================================================
+// lmBinaryRelObj implementation
+//========================================================================================
+
+lmBinaryRelObj::lmBinaryRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pStartNR, lmNoteRest* pEndNR,
+                               bool fIsDraggable)
+    : lmRelObj(nRelObjType, fIsDraggable)
+    , m_pStartNR(pStartNR)
+    , m_pEndNR(pEndNR)
+{
+}
+
+lmBinaryRelObj::~lmBinaryRelObj()
+{
+    //AWARE: notes must not be deleted as they are part of a lmScore
+    //and will be deleted there.
+
+	//inform the notes
+    if (m_pStartNR)
+        m_pStartNR->OnRemovedFromRelationship(this);
+
+    if (m_pEndNR)
+        m_pEndNR->OnRemovedFromRelationship(this);
+}
+
+void lmBinaryRelObj::Remove(lmNoteRest* pNR)
+{
+    //remove note/rest.
+	//AWARE: This method is always invoked by a NoteRest. Therefore it will
+	//not inform back the NoteRest, as this is unnecessary and causes problems when
+	//deleting the relationship object
+
+    if (m_pStartNR == pNR)
+        m_pStartNR = (lmNoteRest*)NULL;
+    else if (m_pEndNR == pNR)
+        m_pEndNR = (lmNoteRest*)NULL;
 }
 
 
@@ -473,7 +536,7 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
     lmLUnits uxEnd = m_pParent->TenthsToLogical(m_txEnd) + pPaper->GetCursorX();
     lmLUnits uyEnd = m_pParent->TenthsToLogical(m_tyEnd) + pPaper->GetCursorY();
     lmLUnits uWidth = m_pParent->TenthsToLogical(m_tWidth);
-    lmLUnits uBoundsExtraWidth = 0.0;
+    lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);  //TODO user option?
 
     //create the shape
     lmShapeLine* pShape = new lmShapeLine(this, uxStart, uyStart, uxEnd, uyEnd,
@@ -485,4 +548,32 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 
 }
 
+void lmScoreLine::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
+                                   bool fAddShifts)
+{
+    //This method is only used during interactive edition.
+    //It receives a vector with the shifts for object points and a flag to signal
+    //whether to add or to substract shifts.
 
+    wxASSERT(nNumPoints == 2);
+
+    if (fAddShifts)
+    {
+        m_txStart += m_pParent->LogicalToTenths((*(pShifts)).x);
+        m_tyStart += m_pParent->LogicalToTenths((*(pShifts)).y);
+        m_txEnd += m_pParent->LogicalToTenths((*(pShifts+1)).x);
+        m_tyEnd += m_pParent->LogicalToTenths((*(pShifts+1)).y);
+    }
+    else
+    {
+        m_txStart -= m_pParent->LogicalToTenths((*(pShifts)).x);
+        m_tyStart -= m_pParent->LogicalToTenths((*(pShifts)).y);
+        m_txEnd -= m_pParent->LogicalToTenths((*(pShifts+1)).x);
+        m_tyEnd -= m_pParent->LogicalToTenths((*(pShifts+1)).y);
+    }
+
+    //inform the shape
+    lmShapeLine* pShape = (lmShapeLine*)GetGraphicObject(nShapeIdx);
+    wxASSERT(pShape);
+    pShape->MovePoints(nNumPoints, nShapeIdx, pShifts, fAddShifts);
+}

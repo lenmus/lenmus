@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -93,8 +93,11 @@ public:
     virtual void ChangeTie(lmNote* pStartNote, lmNote* pEndNote) {}
     virtual void AddTuplet() {}
     virtual void DeleteTuplet(lmNoteRest* pStartNote) {}
-	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps) {}
+	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos,
+                            bool fUpdateViews = true) {}
+    virtual void MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[], int nNumPoints,
+                                  bool fUpdateViews = true) {}
     virtual void BreakBeam() {}
     virtual void JoinBeam() {}
     virtual void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
@@ -204,8 +207,10 @@ public:
     void ChangeTie(lmNote* pStartNote, lmNote* pEndNote);
     void AddTuplet();
     void DeleteTuplet(lmNoteRest* pStartNR);
-	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 	void MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps);
+	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos, bool fUpdateViews = true);
+    void MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[], int nNumPoints,
+                          bool fUpdateViews = true);
     void BreakBeam();
     void JoinBeam();
     void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,

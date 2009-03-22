@@ -440,12 +440,6 @@
 				RelativePath="..\..\src\app\EditFrame.h">
 			</File>
 			<File
-				RelativePath="..\..\src\app\ErrorDlg.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\ErrorDlg.h">
-			</File>
-			<File
 				RelativePath="..\..\src\app\FontManager.cpp">
 			</File>
 			<File
@@ -1228,6 +1222,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\ShapeBracket.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeLine.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeLine.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\ShapeNote.cpp">

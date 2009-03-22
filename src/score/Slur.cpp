@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,77 +39,177 @@
 #include "../graphic/ShapeArch.h"
 
 
-//---------------------------------------------------------
-//   lmTie
-//---------------------------------------------------------
+
+//===================================================================================
+// lmBezier implementation
+//===================================================================================
+
+lmBezier::lmBezier()
+{
+}
+
+lmBezier::~lmBezier()
+{
+}
+
+void lmBezier::SetPoint(lmUPoint& uPoint, int nPointID)
+{
+    wxASSERT(nPointID >= 0 && nPointID < lmBEZIER_MAX);
+    m_tPoints[nPointID] = uPoint;
+}
+
+lmUPoint& lmBezier::GetPoint(int nPointID)
+{
+    wxASSERT(nPointID >= 0 && nPointID < lmBEZIER_MAX);
+    return m_tPoints[nPointID];
+}
+
+wxString lmBezier::SourceLDP(int nIndent)
+{
+    return wxEmptyString;
+}
+
+wxString lmBezier::SourceXML(int nIndent)
+{
+    return wxEmptyString;
+}
+
+
+
+//===================================================================================
+// lmTie implementation
+//===================================================================================
 
 lmTie::lmTie(lmNote* pStartNote, lmNote* pEndNote)
+    : lmBinaryRelObj(eAXOT_Tie, pStartNote, pEndNote, lmDRAGGABLE)
 {
-    m_pStartNote = pStartNote;
-    m_pEndNote   = pEndNote;
 }
 
 lmTie::~lmTie()
 {
 }
 
-lmShape* lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
+lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
 	// Create two arch shapes
 	// Both notes' shapes will have attached both tie shapes.
 	// One of the tie shapes will be invisible
 
-    //prepare information
-    lmShapeNote* pShapeStart = (lmShapeNote*)m_pStartNote->GetShape();
-    lmShapeNote* pShapeEnd = (lmShapeNote*)m_pEndNote->GetShape();
-    bool fTieUnderNote = !m_pStartNote->StemGoesDown();
+    WXUNUSED(uPos);
 
-	//create the first tie shape, attached to both notes' shapes
-    lmShapeTie* pShape1 = new lmShapeTie(m_pEndNote, pShapeStart, pShapeEnd,
-                                        fTieUnderNote, color, lmVISIBLE);
-	pBox->AddShape(pShape1);
-	pShapeStart->Attach(pShape1, eGMA_StartNote);
-	pShapeEnd->Attach(pShape1, eGMA_EndNote);
+    //prepare information
+    lmShapeNote* pShapeStart = (lmShapeNote*)m_pStartNR->GetShape();
+    lmShapeNote* pShapeEnd = (lmShapeNote*)m_pEndNR->GetShape();
+    bool fTieUnderNote = !((lmNote*)m_pStartNR)->StemGoesDown();
+
+	//create the first tie shape
+
+    //convert bezier displacements to logical units
+    lmUPoint uPoints[4];
+    for (int i=0; i < 4; i++)
+    {
+        uPoints[i].x = m_pParent->TenthsToLogical(m_tPoints[i].x) + pPaper->GetCursorX();
+        uPoints[i].y = m_pParent->TenthsToLogical(m_tPoints[i].y) + pPaper->GetCursorY();
+    }
+
+    //creat the shape
+    m_pShape1 = new lmShapeTie(this, (lmNote*)m_pEndNR, &uPoints[0], pShapeStart, pShapeEnd, fTieUnderNote, color, lmVISIBLE);
+    StoreShape(m_pShape1);
+	pBox->AddShape(m_pShape1);
+	pShapeStart->Attach(m_pShape1, eGMA_StartNote);
+	pShapeEnd->Attach(m_pShape1, eGMA_EndNote);
+
 
 	//create the second tie shape, attached to both notes' shapes
-    lmShapeTie* pShape2 = new lmShapeTie(m_pStartNote, pShapeStart, pShapeEnd,
-                                        fTieUnderNote, color, lmNO_VISIBLE);
-	pBox->AddShape(pShape2);
-	pShapeStart->Attach(pShape2, eGMA_StartNote);
-	pShapeEnd->Attach(pShape2, eGMA_EndNote);
+    m_pShape2 = new lmShapeTie(this, (lmNote*)m_pStartNR, &uPoints[0], pShapeStart, pShapeEnd, fTieUnderNote, color, lmNO_VISIBLE);
+    StoreShape(m_pShape2);
+	pBox->AddShape(m_pShape2);
+	pShapeStart->Attach(m_pShape2, eGMA_StartNote);
+	pShapeEnd->Attach(m_pShape2, eGMA_EndNote);
 
 	//link both ties
-	pShape1->SetBrotherTie(pShape2);
-	pShape2->SetBrotherTie(pShape1);
+	m_pShape1->SetBrotherTie(m_pShape2);
+	m_pShape2->SetBrotherTie(m_pShape1);
 
-	//return the visible shape
-	return pShape1;
-}
-
-void lmTie::Remove(lmNote* pNote)
-{
-    if (m_pStartNote == pNote) {
-        m_pStartNote = (lmNote*)NULL;
-        m_pEndNote->RemoveTie(this);
-        m_pEndNote = (lmNote*)NULL;
-    }
-    else if (m_pEndNote == pNote) {
-        m_pEndNote = (lmNote*)NULL;
-        m_pStartNote->RemoveTie(this);
-        m_pStartNote = (lmNote*)NULL;
-    }
+	//return the shape width
+    return m_pShape1->GetWidth();
 }
 
 void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int nAlter, bool fForward)
 {
-    if (pNote == m_pStartNote && fForward) {
+    if (pNote == m_pStartNR && fForward) {
         // propagate forwards
-        m_pEndNote->PropagateNotePitchChange(nStep, nOctave, nAlter, lmFORWARDS);
+        ((lmNote*)m_pEndNR)->PropagateNotePitchChange(nStep, nOctave, nAlter, lmFORWARDS);
     }
-    else if (pNote == m_pEndNote && !fForward) {
+    else if (pNote == m_pEndNR && !fForward) {
         // propagate backwards
-        m_pStartNote->PropagateNotePitchChange(nStep, nOctave, nAlter, lmBACKWARDS);
+        ((lmNote*)m_pStartNR)->PropagateNotePitchChange(nStep, nOctave, nAlter, lmBACKWARDS);
     }
     //other cases are for notes whose pitch is already changed 
 }
 
+void lmTie::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts)
+{
+    //This method is only used during interactive edition.
+    //It receives a vector with the shifts for object points and a flag to signal
+    //whether to add or to substract shifts.
+
+    wxASSERT(nNumPoints == GetNumPoints());
+ 
+    for (int i=0; i < nNumPoints; i++)
+    {
+        if (fAddShifts)
+        {
+            m_tPoints[i].x += m_pParent->LogicalToTenths((*(pShifts+i)).x);
+            m_tPoints[i].y += m_pParent->LogicalToTenths((*(pShifts+i)).y);
+        }
+        else
+        {
+            m_tPoints[i].x -= m_pParent->LogicalToTenths((*(pShifts+i)).x);
+            m_tPoints[i].y -= m_pParent->LogicalToTenths((*(pShifts+i)).y);
+        }
+    }
+
+    //inform the shape
+    lmShapeTie* pShape = (lmShapeTie*)GetGraphicObject(nShapeIdx);
+    wxASSERT(pShape);
+    pShape->MovePoints(nNumPoints, nShapeIdx, pShifts, fAddShifts);
+}
+
+lmUPoint lmTie::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
+{
+    return uOrg;
+}
+
+wxString lmTie::SourceLDP_First(int nIndent)
+{
+    WXUNUSED(nIndent);
+
+    //wxString sSource = _T(" l");
+    wxString sSource = wxString::Format(_T(" (tie %d start)"), GetID());
+    return sSource;
+}
+
+wxString lmTie::SourceLDP_Last(int nIndent)
+{
+    WXUNUSED(nIndent);
+
+    wxString sSource = wxString::Format(_T(" (tie %d end)"), GetID());
+    return wxEmptyString;       //sSource;
+}
+
+wxString lmTie::SourceXML(int nIndent)
+{
+    return _T("");
+}
+
+wxString lmTie::Dump()
+{
+    return _T("");
+}
+
+
+
+////===================================================================================
+//// lmSlur implementation
+////===================================================================================

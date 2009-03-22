@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -44,14 +44,14 @@
 
 //abstract class for intervals theory exercises
 
-class lmTheoIntervalCtrol : public lmOneScoreCtrol        
+class lmTheoIntervalCtrol : public lmOneScoreCtrol
 {
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmTheoIntervalCtrol(wxWindow* parent, wxWindowID id,
-               lmTheoIntervalsConstrains* pConstrains, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmTheoIntervalsConstrains* pConstrains,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmTheoIntervalCtrol();
@@ -61,14 +61,16 @@ public:
 
     wxDialog* GetSettingsDlg();
     void OnSettingsChanged();
-    wxString SetNewProblem(); 
+    wxString SetNewProblem();
 
 
 
 protected:
     virtual void ReconfigureKeyboard() {};
     void SetProblemSpace();
-    virtual wxString PrepareScores()=0; 
+    virtual wxString PrepareScores()=0;
+    void CreateQuestionsSet(wxString& sSetName, lmEKeySignatures nKey);
+    void SetSpaceLevel0();
 
         // member variables
 
@@ -83,14 +85,14 @@ protected:
 
 };
 
-class lmBuildIntervalCtrol : public lmTheoIntervalCtrol        
+class lmBuildIntervalCtrol : public lmTheoIntervalCtrol
 {
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmBuildIntervalCtrol(wxWindow* parent, wxWindowID id,
-               lmTheoIntervalsConstrains* pConstrains, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmTheoIntervalsConstrains* pConstrains,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     ~lmBuildIntervalCtrol();
@@ -102,11 +104,11 @@ public:
     enum {
         lm_NUM_COLS = 7,
         lm_NUM_ROWS = 5,
-        lm_NUM_BUTTONS = 35,     
+        lm_NUM_BUTTONS = 35,
     };
 
 protected:
-    wxString PrepareScores(); 
+    wxString PrepareScores();
 
 private:
     //buttons for the answers: 5 rows, 7 cols = 35 buttons
@@ -118,14 +120,14 @@ private:
 };
 
 
-class lmIdfyIntervalCtrol : public lmTheoIntervalCtrol        
+class lmIdfyIntervalCtrol : public lmTheoIntervalCtrol
 {
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmIdfyIntervalCtrol(wxWindow* parent, wxWindowID id,
-               lmTheoIntervalsConstrains* pConstrains, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmTheoIntervalsConstrains* pConstrains,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     ~lmIdfyIntervalCtrol();
@@ -137,7 +139,7 @@ public:
     enum {
         lm_NUM_COLS = 8,
         lm_NUM_ROWS = 6,
-        lm_NUM_BUTTONS = 51,     
+        lm_NUM_BUTTONS = 51,
     };
 
 
@@ -145,7 +147,7 @@ public:
     void ReconfigureKeyboard();
 
 protected:
-    wxString PrepareScores(); 
+    wxString PrepareScores();
 
         // member variables
 

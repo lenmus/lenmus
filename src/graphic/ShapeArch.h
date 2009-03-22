@@ -43,6 +43,8 @@ class lmPaper;
 class lmScoreObj;
 class lmStaff;
 class lmStaffObj;
+class lmHandlerSquare;
+class lmHandlerLine;
 
 
 class lmShapeArch : public lmSimpleShape
@@ -55,14 +57,15 @@ public:
     lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
                 wxColour nColor, wxString sName = _T("Arch"),
 				bool fDraggable = true, bool fVisible = true);
-    lmShapeArch(lmScoreObj* pOwner, bool fArchUnder, wxColour nColor,
-                wxString sName = _T("Arch"), bool fDraggable = true,
+    lmShapeArch(lmScoreObj* pOwner, lmUPoint* pPoints, bool fArchUnder,
+                wxColour nColor, wxString sName = _T("Arch"), bool fDraggable = true,
 				bool fVisible = true);
 
-    virtual ~lmShapeArch() {}
+    virtual ~lmShapeArch();
 
     //implementation of virtual methods from base class
     virtual void Render(lmPaper* pPaper, wxColour color);
+    virtual void RenderWithHandlers(lmPaper* pPaper);
     virtual wxString Dump(int nIndent);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -72,29 +75,40 @@ public:
     void SetCtrolPoint1(lmLUnits xPos, lmLUnits yPos);
     void SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos);
 
+    //shape dragging
+    wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
+	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+	void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
+
+    //handlers dragging
+    lmUPoint OnHandlerDrag(lmPaper* pPaper, const lmUPoint& uPos, long nHandlerID);
+    void OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos, long nHandlerID);
+
     //access to information
-    inline lmLUnits GetStartPosX() const { return m_uStart.x; }
-    inline lmLUnits GetStartPosY() const { return m_uStart.y; }
-    inline lmLUnits GetEndPosX() const { return m_uEnd.x; }
-    inline lmLUnits GetEndPosY() const { return m_uEnd.y; }
-    inline lmLUnits GetCtrol1PosX() const { return m_uCtrol1.x; }
-    inline lmLUnits GetCtrol1PosY() const { return m_uCtrol1.y; }
-    inline lmLUnits GetCtrol2PosX() const { return m_uCtrol2.x; }
-    inline lmLUnits GetCtrol2PosY() const { return m_uCtrol2.y; }
+    inline lmLUnits GetStartPosX() const { return m_uPoint[lmBEZIER_START].x; }
+    inline lmLUnits GetStartPosY() const { return m_uPoint[lmBEZIER_START].y; }
+    inline lmLUnits GetEndPosX() const { return m_uPoint[lmBEZIER_END].x; }
+    inline lmLUnits GetEndPosY() const { return m_uPoint[lmBEZIER_END].y; }
+    inline lmLUnits GetCtrol1PosX() const { return m_uPoint[lmBEZIER_CTROL1].x; }
+    inline lmLUnits GetCtrol1PosY() const { return m_uPoint[lmBEZIER_CTROL1].y; }
+    inline lmLUnits GetCtrol2PosX() const { return m_uPoint[lmBEZIER_CTROL2].x; }
+    inline lmLUnits GetCtrol2PosY() const { return m_uPoint[lmBEZIER_CTROL2].y; }
+
+    //call backs
+    void MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
 
 
 
 protected:
     void SetDefaultControlPoints();
     void Create();
-    void CubicBezier(double* x, double* y, int nNumPoints);
+    void Draw(lmPaper* pPaper, wxColour colorC, bool fSketch);
 
-    // start, end and control points coordinates, absolute paper position
-    lmUPoint        m_uStart;
-    lmUPoint        m_uEnd;
-    lmUPoint        m_uCtrol1;
-    lmUPoint        m_uCtrol2;
-    bool            m_fArchUnder;       //arch under notes (like an U)
+    bool                m_fArchUnder;                   //arch under notes (like a 'U')
+    lmUPoint            m_uPoint[lmBEZIER_MAX];         //start, end and control points coordinates, absolute paper position   
+    lmUPoint            m_uSavePoint[lmBEZIER_MAX];     //to save start, end and control points when dragging/moving 
+    lmHandlerSquare*    m_pHandler[lmBEZIER_MAX];       //handlers
+
 
 };
 
@@ -107,9 +121,9 @@ class lmStaff;
 class lmShapeTie : public lmShapeArch
 {
 public:
-    lmShapeTie(lmNote* pOwner, lmShapeNote* pShapeStart, lmShapeNote* pShapeEnd,
-                bool fTieUnderNote, wxColour color = *wxBLACK,
-				bool fVisible = true);
+    lmShapeTie(lmTie* pOwner, lmNote* pEndNote, lmUPoint* pPoints,
+               lmShapeNote* pShapeStart, lmShapeNote* pShapeEnd,
+               bool fTieUnderNote, wxColour color = *wxBLACK, bool fVisible = true);
 	~lmShapeTie();
 
 	//implementation of virtual methods in base class
@@ -131,6 +145,7 @@ public:
 private:
     bool			m_fTieUnderNote;
 	lmShapeTie*		m_pBrotherTie;		//when tie is splitted
+    lmNote*         m_pEndNote;
 
 };
 

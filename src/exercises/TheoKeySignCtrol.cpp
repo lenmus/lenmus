@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -51,7 +51,7 @@ enum {
 };
 
 BEGIN_EVENT_TABLE(lmTheoKeySignCtrol, lmOneScoreCtrol)
-    EVT_COMMAND_RANGE   (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmTheoKeySignCtrol::OnRespButton)
+    EVT_COMMAND_RANGE   (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmExerciseCtrol::OnRespButton)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmTheoKeySignCtrol, lmOneScoreCtrol)

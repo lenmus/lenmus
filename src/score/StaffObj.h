@@ -214,6 +214,9 @@ public:
 	virtual lmLocation SetUserLocation(lmLocation tPos, int nShapeIdx = 0);
     virtual lmLocation SetUserLocation(lmTenths xPos, lmTenths yPos, int nShapeIdx = 0);
 	virtual lmLUnits SetUserXLocation(lmLUnits uxPos, int nShapeIdx = 0);
+    virtual lmUPoint SetUserLocation(lmUPoint uNewPos, int nShapeIdx = 0);
+    virtual void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
+                                  bool fAddShifts);
     virtual lmUPoint& GetReferencePaperPos() { return m_uPaperPos; }
     int GetPageNumber();
     inline lmUPoint GetLayoutRefPos() { return m_uComputedPos; }
@@ -482,16 +485,27 @@ WX_DECLARE_LIST(lmStaffObj, StaffObjsList);
 //    lmAuxObj
 //-------------------------------------------------------------------------------------------
 
+class lmNoteRest;
+
+
 enum lmEAuxObjType
 {
     eAXOT_Fermata,
-    eAXOT_Lyric,
-    eAXOT_TextItem,
-	eAOXT_TextBlock,
-
-    //graphic objects
     eAXOT_Line,
+    eAXOT_Lyric,
+    eAXOT_Slur,
+    eAXOT_TextItem,
+	eAXOT_TextBlock,
+
+    //lmBinaryRelObj
+    eAXOT_BinaryRelObj,
+    eAXOT_Tie = eAXOT_BinaryRelObj,
+    
+    //lmMultiRelObj
+    eAXOT_MultiRelObj,
+
 };
+
 
 class lmAuxObj : public lmComponentObj
 {
@@ -504,6 +518,19 @@ public:
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
     inline lmScore* GetScore() { return m_pParent->GetScore(); }
     inline lmStaff* GetStaff() { return m_pParent->GetStaff(); }
+
+    //classification
+    inline bool IsFermata() { return GetAuxObjType() == eAXOT_Fermata; }
+    inline bool IsLine() { return GetAuxObjType() == eAXOT_Line; }
+    inline bool IsLyric() { return GetAuxObjType() == eAXOT_Lyric; }
+    inline bool IsTextItem() { return GetAuxObjType() == eAXOT_TextItem; }
+    inline bool IsTextBlock() { return GetAuxObjType() == eAXOT_TextBlock; }
+    inline bool IsTie() { return GetAuxObjType() == eAXOT_Tie; }
+
+    inline bool IsRelObj() { return GetAuxObjType() >= eAXOT_BinaryRelObj; }
+    inline bool IsBinaryRelObj() { return GetAuxObjType() >= eAXOT_BinaryRelObj
+                                          && GetAuxObjType() < eAXOT_MultiRelObj; }
+    inline bool IsMultiRelObj() { return GetAuxObjType() >= eAXOT_MultiRelObj; }
 
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
@@ -537,6 +564,101 @@ protected:
 // declare a list of AuxObjs
 #include "wx/list.h"
 WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
+
+
+//An AuxObj relating at least two Notes/Rests
+class lmRelObj : public lmAuxObj
+{
+public:
+	virtual ~lmRelObj() {}
+
+    //building/destroying the relationship
+    virtual void Include(lmNoteRest* pNR, int nIndex = -1)=0;
+    virtual void Remove(lmNoteRest* pNR)=0;
+    virtual void Save(lmUndoData* pUndoData)=0;
+	virtual void OnRelationshipModified()=0;
+
+    //information
+    virtual lmNoteRest* GetStartNoteRest()=0;
+    virtual lmNoteRest* GetEndNoteRest()=0;
+    lmEAuxObjType GetAuxObjType() { return m_nRelObjType; }
+
+    //source code generation
+    virtual wxString SourceLDP_First(int nIndent) { return wxEmptyString; }
+    virtual wxString SourceLDP_Middle(int nIndent) { return wxEmptyString; }
+    virtual wxString SourceLDP_Last(int nIndent) { return wxEmptyString; }
+
+    //overrides
+    wxString SourceLDP(int nIndent);
+
+protected:
+	lmRelObj(lmEAuxObjType nRelObjType, bool fIsDraggable = true) 
+        : lmAuxObj(fIsDraggable), m_nRelObjType(nRelObjType) {}
+
+    lmEAuxObjType       m_nRelObjType;
+
+};
+
+
+//An AuxObj relating two Notes/Rests
+class lmBinaryRelObj : public lmRelObj
+{
+public:
+    virtual ~lmBinaryRelObj();
+
+    //implementation of some lmRelObj pure virtual methods
+    virtual void Remove(lmNoteRest* pNR);
+    virtual inline lmNoteRest* GetStartNoteRest() { return m_pStartNR; }
+    virtual inline lmNoteRest* GetEndNoteRest() { return m_pEndNR; }
+    virtual void OnRelationshipModified() {};
+    virtual void Include(lmNoteRest* pNR, int nIndex = -1) {};
+
+
+protected:
+    lmBinaryRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pStartNR, lmNoteRest* pEndNR,
+                   bool fIsDraggable = true);
+
+    lmNoteRest*     m_pStartNR;     //notes/rests related by this lmRelObj
+    lmNoteRest*		m_pEndNR;
+};
+
+
+
+//An AuxObj relating more than two Notes/Rests
+class lmMultiRelObj : public lmRelObj
+{
+public:
+    virtual ~lmMultiRelObj() {}
+
+    //implementation of some lmRelObj pure virtual methods
+    virtual void Include(lmNoteRest* pNR, int nIndex = -1);
+    virtual void Remove(lmNoteRest* pNR);
+    inline int NumNotes() { return (int)m_Notes.size(); }
+    inline lmNoteRest* GetStartNoteRest() { return m_Notes.front(); }
+    inline lmNoteRest* GetEndNoteRest() { return m_Notes.back(); }
+
+        //specific methods
+
+    virtual int GetNoteIndex(lmNoteRest* pNR);
+
+    //access to notes/rests
+    lmNoteRest* GetFirstNoteRest();
+    lmNoteRest* GetNextNoteRest();
+    std::list<lmNoteRest*>& GetListOfNoteRests() { return m_Notes; }
+
+
+protected:
+    lmMultiRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pFirstNote, lmUndoData* pUndoData, 
+                  bool fIsDraggable = true)
+        : lmRelObj(nRelObjType, fIsDraggable) {}
+
+    lmMultiRelObj(lmEAuxObjType nRelObjType)
+        : lmRelObj(nRelObjType, true) {}
+
+    //notes/rests related by this lmRelObj
+    std::list<lmNoteRest*>   m_Notes; 
+    std::list<lmNoteRest*>::iterator m_it;   //for methods GetFirstNoteRest() and GetNextNoteRest()
+};
 
 
 #endif    // __LM_STAFFOBJ_H__

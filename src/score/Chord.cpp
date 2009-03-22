@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -52,9 +52,10 @@
 #include "VStaff.h"
 #include "Glyph.h"
 #include "UndoRedo.h"
+#include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
-#include "../graphic/GMObject.h"
+#include "../graphic/ShapeLine.h"
 
 int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 {

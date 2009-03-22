@@ -211,14 +211,19 @@ long GetAdditionalSeconds(wxTimeSpan& ts, long nDays)
 //helper functions to centralize DB operations
 //-------------------------------------------------------------------------------------------------
 
-void lmCreateTable_QuestionsData()
+void lmCreateTable_Questions()
 {
-    //Create QuestionsData table
+    //Create Questions table
 
-    wxLogMessage(_T("Creating QuestionsData table"));
-    g_pDB->ExecuteUpdate(_T("CREATE TABLE QuestionsData (")
-                            _T("SpaceKey INTEGER")
-                            _T(", Qi INTEGER")
+    g_pDB->ExecuteUpdate(_T("CREATE TABLE Questions (")
+                            _T("SpaceID INTEGER")
+                            _T(", SetID INTEGER")
+                            _T(", QuestionID INTEGER")
+                            _T(", Param0 INTEGER")
+                            _T(", Param1 INTEGER")
+                            _T(", Param2 INTEGER")
+                            _T(", Param3 INTEGER")
+                            _T(", Param4 INTEGER")
                             _T(", Grp INTEGER")
                             _T(", Asked INTEGER")
                             _T(", Success INTEGER")
@@ -228,48 +233,63 @@ void lmCreateTable_QuestionsData()
                             _T(");"));
 }
 
-void lmCreateTable_ProblemSpaceKeys()
+void lmCreateTable_Sets()
 {
-    //Create ProblemSpaceKeys table
+    //Create Sets table
 
-    wxLogMessage(_T("Creating ProblemSpaceKeys table"));
-    g_pDB->ExecuteUpdate(_T("CREATE TABLE ProblemSpaceKeys (")
-                            _T("SpaceKey INTEGER PRIMARY KEY AUTOINCREMENT")
-                            _T(", SpaceName char(200)  );"));
+    g_pDB->ExecuteUpdate(_T("CREATE TABLE Sets (")
+                            _T("SetID INTEGER PRIMARY KEY AUTOINCREMENT")
+                            _T(", SpaceID INTEGER")
+                            _T(", SetName char(200)")
+                            _T(");"));
 }
 
-void lmCreateTable_ProblemSpaceData()
-{
-    //Create ProblemSpaceData table
 
-    wxLogMessage(_T("Creating ProblemSpaceData table"));
-    g_pDB->ExecuteUpdate(_T("CREATE TABLE ProblemSpaceData (")
-                            _T("SpaceKey INTEGER")
-                            _T(", NumQuestions INTEGER")
+void lmCreateTable_Spaces()
+{
+    //Create Spaces table
+
+    g_pDB->ExecuteUpdate(_T("CREATE TABLE Spaces (")
+                            _T("SpaceID INTEGER PRIMARY KEY AUTOINCREMENT")
+                            _T(", SpaceName char(200)")
+                            _T(", User char(40)")
                             _T(", Repetitions INTEGER")
+                            _T(", MandatoryParams INTEGER")
                             _T(", LastUsed INTEGER")        //DateTime
                             _T(", Creation INTEGER")        //DateTime
-                            _T(", TotalRespTime INTEGER")     //TimeSpan
+                            _T(", TotalRespTime INTEGER")   //TimeSpan
                             _T(", TotalAsked INTEGER")
                             _T(");"));
 }
+
 
 //-------------------------------------------------------------------------------------------------
 // lmQuestion implementation
 //-------------------------------------------------------------------------------------------------
 
-lmQuestion::lmQuestion(int nGroup, int nAskedTotal, int nSuccessTotal, int nRepetitions,
-               wxTimeSpan tsLastAsked, long nDaysRepIntv)
+lmQuestion::lmQuestion(long nSpaceID, long nSetID, long nParam0, long nParam1,
+               long nParam2, long nParam3, long nParam4,
+               int nGroup, int nAskedTotal, int nSuccessTotal,
+               int nRepetitions, wxTimeSpan tsLastAsked, long nDaysRepIntv)
+    : m_nGroup(nGroup)
+      , m_nAskedTotal(nAskedTotal)
+      , m_nSuccessTotal(nSuccessTotal)
+      , m_nRepetitions(nRepetitions)
+      , m_tsLastAsked(tsLastAsked)
+      , m_nParam0(nParam0)
+      , m_nParam1(nParam1)
+      , m_nParam2(nParam2)
+      , m_nParam3(nParam3)
+      , m_nParam4(nParam4)
+      , m_nSpaceID(nSpaceID)
+      , m_nSetID(nSetID)
 {
     wxASSERT(nGroup >=0 && nGroup < lmNUM_GROUPS);
     wxASSERT(nAskedTotal >= 0);
     wxASSERT(nSuccessTotal >= 0 && nSuccessTotal <= nAskedTotal);
+    wxASSERT(nSpaceID > 0);
+    wxASSERT(nSetID > 0);
 
-    m_nGroup = nGroup;
-    m_nAskedTotal = nAskedTotal;
-    m_nSuccessTotal = nSuccessTotal;
-    m_nRepetitions = nRepetitions;
-    m_tsLastAsked = tsLastAsked;
     m_tsDaysRepIntv = wxTimeSpan::Days(nDaysRepIntv);
     m_nIndex = -1;      //not yet assigned
 }
@@ -278,89 +298,117 @@ lmQuestion::~lmQuestion()
 {
 }
 
-void lmQuestion::SaveQuestion(int nProblemSpaceKey)
+void lmQuestion::SaveQuestion(int nSpaceID)
 {
     //Save data to DB
 
-    //Create ProblemSpaceData table if it does not exist
-    if (!g_pDB->TableExists(_T("QuestionsData")))
-        lmCreateTable_QuestionsData();
+    //Create Questions table if it does not exist
+    if (!g_pDB->TableExists(_T("Questions")))
+        lmCreateTable_Questions();
 
     //Get row from database table
     wxString sSQL = wxString::Format(
-        _T("SELECT * FROM QuestionsData WHERE (SpaceKey = %d AND Qi = %d);"),
-        nProblemSpaceKey, m_nIndex);
+        _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);"),
+        nSpaceID, m_nSetID, m_nIndex);
     wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
     if (!q.NextRow())
     {
         //Didn't exits. Insert this question data
         wxSQLite3Statement stmt = g_pDB->PrepareStatement(
-            _T("INSERT INTO QuestionsData VALUES (?, ?, ?, ?, ?, ?, ?, ?);"));
-        stmt.Bind(1, nProblemSpaceKey);
-        stmt.Bind(2, m_nIndex);
-        stmt.Bind(3, m_nGroup);
-        stmt.Bind(4, m_nAskedTotal);
-        stmt.Bind(5, m_nSuccessTotal);
-        stmt.Bind(6, m_nRepetitions);
-        stmt.Bind(7, m_tsLastAsked.GetValue());
-        stmt.Bind(8, m_tsDaysRepIntv.GetValue());
+            _T("INSERT INTO Questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"));
+        stmt.Bind(1, nSpaceID);
+        stmt.Bind(2, (int)m_nSetID);
+        stmt.Bind(3, (int)m_nIndex);
+        stmt.Bind(4, (int)m_nParam0);
+        stmt.Bind(5, (int)m_nParam1);
+        stmt.Bind(6, (int)m_nParam2);
+        stmt.Bind(7, (int)m_nParam3);
+        stmt.Bind(8, (int)m_nParam4);
+        stmt.Bind(9, (int)m_nGroup);
+        stmt.Bind(10, m_nAskedTotal);
+        stmt.Bind(11, m_nSuccessTotal);
+        stmt.Bind(12, m_nRepetitions);
+        stmt.Bind(13, m_tsLastAsked.GetValue());
+        stmt.Bind(14, m_tsDaysRepIntv.GetValue());
         stmt.ExecuteUpdate();
     }
     else
     {
         //Update saved data
         wxSQLite3Statement stmt = g_pDB->PrepareStatement(
-            _T("UPDATE QuestionsData SET Grp = ?, Asked = ?, Success = ?, ")
+            _T("UPDATE Questions SET Param0 = ?, Param1 = ?, Param2 = ?, ")
+            _T("Param3 = ?, Param4 = ?, Grp = ?, Asked = ?, Success = ?, ")
             _T("Repetitions = ?, LastAsked = ?, DaysRepIntv = ? ")
-            _T("WHERE (SpaceKey = ? AND Qi = ?);"));
-        stmt.Bind(1, m_nGroup);
-        stmt.Bind(2, m_nAskedTotal);
-        stmt.Bind(3, m_nSuccessTotal);
-        stmt.Bind(4, m_nRepetitions);
-        stmt.Bind(5, m_tsLastAsked.GetValue());
-        stmt.Bind(6, m_tsDaysRepIntv.GetValue());
-        stmt.Bind(7, nProblemSpaceKey);
-        stmt.Bind(8, m_nIndex);
+            _T("WHERE (SpaceID = ? AND SetID = ? AND QuestionID = ?);"));
+        stmt.Bind(1, (int)m_nParam0);
+        stmt.Bind(2, (int)m_nParam1);
+        stmt.Bind(3, (int)m_nParam2);
+        stmt.Bind(4, (int)m_nParam3);
+        stmt.Bind(5, (int)m_nParam4);
+        stmt.Bind(6, (int)m_nGroup);
+        stmt.Bind(7, m_nAskedTotal);
+        stmt.Bind(8, m_nSuccessTotal);
+        stmt.Bind(9, m_nRepetitions);
+        stmt.Bind(10, m_tsLastAsked.GetValue());
+        stmt.Bind(11, m_tsDaysRepIntv.GetValue());
+        stmt.Bind(12, nSpaceID);
+        stmt.Bind(13, (int)m_nSetID);
+        stmt.Bind(14, m_nIndex);
         stmt.ExecuteUpdate();
     }
 }
 
-void lmQuestion::LoadQuestion(int nProblemSpaceKey, int iQ, lmProblemSpace* pPS)
+bool lmQuestion::LoadQuestions(long nSetID, lmProblemSpace* pPS)
 {
+    //Load all questions for requested problem space and set, and add the question
+    //to the problem space.
+    //Returns true if data loaded
+
     try
     {
-        //Get row from database table
+        //Get rows from database table
+        long nSpaceID = pPS->GetSpaceID();
         wxString sSQL = wxString::Format(
-            _T("SELECT * FROM QuestionsData WHERE (SpaceKey = %d AND Qi = %d);"),
-            nProblemSpaceKey, iQ);
+            _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);"),
+            nSpaceID, nSetID);
         wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
-        if (!q.NextRow())
+        bool fThereIsData = false;
+        while (q.NextRow())
         {
-            wxLogMessage(_T("[lmQuestion::LoadQuestion] Question not in DB!"));
-            wxASSERT(false);
+            long nQuestionID = (long)q.GetInt(_T("QuestionID"));
+            long nParam0 = (long)q.GetInt(_T("Param0"));
+            long nParam1 = (long)q.GetInt(_T("Param1"));
+            long nParam2 = (long)q.GetInt(_T("Param2"));
+            long nParam3 = (long)q.GetInt(_T("Param3"));
+            long nParam4 = (long)q.GetInt(_T("Param4"));
+            int nGroup = q.GetInt(_T("Grp"));
+            int nAsked = q.GetInt(_T("Asked"));
+            int nSuccess = q.GetInt(_T("Success"));
+            int nRepetitions = q.GetInt(_T("Repetitions"));
+            wxTimeSpan tsLastAsked = wxTimeSpan( q.GetInt64(_T("LastAsked")) );
+            long nDaysRepIntv = wxTimeSpan( q.GetInt64(_T("DaysRepIntv")) ).GetDays();
+
+            lmQuestion* pQ = pPS->AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4,
+                                              nGroup, nAsked, nSuccess, nRepetitions,
+                                              tsLastAsked, nDaysRepIntv);
+            pQ->SetIndex(nQuestionID);
+
+            fThereIsData = true;
         }
-
-        //data found in table
-        int nGroup = q.GetInt(_T("Grp"));
-        int nAsked = q.GetInt(_T("Asked"));
-        int nSuccess = q.GetInt(_T("Success"));
-        int nRepetitions = q.GetInt(_T("Repetitions"));
-        wxTimeSpan tsLastAsked = wxTimeSpan( q.GetInt64(_T("LastAsked")) );
-        long nDaysRepIntv = wxTimeSpan( q.GetInt64(_T("DaysRepIntv")) ).GetDays();
-
-        pPS->AddQuestion(nGroup, nAsked, nSuccess, nRepetitions, tsLastAsked, nDaysRepIntv);
+        return fThereIsData;    //Data loaded
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("[lmProblemSpace::Load] Error in DB. Error code: %d, Message: '%s'"),
+        wxLogMessage(_T("[lmProblemSpace::LoadSet] Error in DB. Error code: %d, Message: '%s'"),
                  e.GetErrorCode(), e.GetMessage().c_str() );
+        return false;       //error
     }
 }
 
 void lmQuestion::UpdateAsked(lmProblemSpace* pPS)
 {
     m_nAskedTotal++;
-    m_tsLastAsked = wxDateTime::Now() - pPS->CreationDate();
+    m_tsLastAsked = wxDateTime::Now() - pPS->GetCreationDate();
 }
 
 void lmQuestion::UpdateSuccess(lmProblemSpace* pPS, bool fSuccess)
@@ -386,6 +434,19 @@ void lmQuestion::UpdateSuccess(lmProblemSpace* pPS, bool fSuccess)
     }
 }
 
+long lmQuestion::GetParam(int nNumParam)
+{
+    wxASSERT(nNumParam >=0 && nNumParam < 5);
+    switch (nNumParam)
+    {
+        case 0: return m_nParam0;
+        case 1: return m_nParam1;
+        case 2: return m_nParam2;
+        case 3: return m_nParam3;
+        case 4: return m_nParam4;
+    }
+    return 0L;  //compiler happy
+}
 
 
 
@@ -397,139 +458,64 @@ lmProblemSpace::lmProblemSpace()
 {
     m_tmCreation = wxDateTime::Now();
     m_tmLastUsed = wxDateTime::Now();
-    m_sKey = _T("");
+    m_sSpaceName = _T("");
+    m_nSpaceID = 0;
     m_nRepetitions = 1;
+    m_nMandatoryParams = 0;
 }
 
 lmProblemSpace::~lmProblemSpace()
 {
-    ClearQuestions();
+    ClearSpace();
 }
 
-void lmProblemSpace::ClearQuestions()
+void lmProblemSpace::ClearSpace()
 {
     //delete all questions
     std::vector<lmQuestion*>::iterator it;
     for (it= m_questions.begin(); it != m_questions.end(); ++it)
         delete *it;
     m_questions.clear();
+
+    //delete other data
+    m_sets.clear();
+    m_sSpaceName = _T("");
+    m_nMandatoryParams = 0;
 }
 
-int lmProblemSpace::AddQuestion(int nGroup, int nAskedTotal, int nSuccessTotal,
-                                int nRepetitions, wxTimeSpan tsLastAsked,
-                                long nDaysRepIntv)
+bool lmProblemSpace::LoadSet(wxString& sSetName)
 {
-    //return assigned index: 0..n
+    //load from DB all question for current space and set sSetName.
+    //Returns false if error (data not found)
+    //AWARE: External representation of wxTimeSpan will be two
+    //       32 bits fields: Days+Seconds
 
-    lmQuestion* pQ = new lmQuestion(nGroup, nAskedTotal, nSuccessTotal, nRepetitions,
-                                    tsLastAsked, nDaysRepIntv);
-    m_questions.push_back(pQ);
-    pQ->SetIndex( (int)m_questions.size() - 1 );
+    wxASSERT (sSetName != _T(""));
 
-    return pQ->GetIndex();
-}
+    //get new set ID and save data
+    m_nSetID = GetSetID(m_nSpaceID, sSetName);
+    m_sSetName = sSetName;
 
-bool lmProblemSpace::Load(wxString& sKey)
-{
-    //load problem space from configuration file. Returns false if error (data not found)
-    //AWARE: External representation of wxTimeSpan will be two 32 bits fields: Days+Seconds
+    //Check if this set is already loaded
+    if (IsSetLoaded(m_nSetID))
+        return true;            //already loaded. Return no error.
 
-    wxASSERT (sKey != _T(""));
-
-    if (m_sKey == sKey && GetSpaceSize() > 0) return true;        //already loaded
-
-    m_sKey = sKey;
-    ClearQuestions();
-    m_tmLastUsed = wxDateTime::Now();
+    wxDateTime tmLastUsed = wxDateTime::Now();
 
     //load data from SQLite3 database
-    try
-    {
-        wxString sSQL;
+    bool fLoadOK = lmQuestion::LoadQuestions(m_nSetID, this);
+    if (fLoadOK)
+        m_sets.push_back(m_nSetID);
 
-        //Check if ProblemSpaceKeys table exists
-        if (!g_pDB->TableExists(_T("ProblemSpaceKeys")))
-            return false;           //no data found
-
-        //Get key for this problem space
-        int nKey;
-        sSQL = wxString::Format(
-            _T("SELECT * FROM ProblemSpaceKeys WHERE (SpaceName = '%s');"), m_sKey.c_str());
-        wxASSERT(m_sKey.Len() < 200);
-
-        wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
-        if (q.NextRow())
-        {
-            //key found in table
-            nKey = q.GetInt(0);
-            wxLogMessage(_T("Key '%s' found in table. Key: %d"), m_sKey.c_str(), nKey );
-        }
-        else
-        {
-            //the problem space name was never stored.
-            return false;           //no data found
-        }
-
-
-        //Get ProblemSpace global data
-        if (!g_pDB->TableExists(_T("ProblemSpaceData")))
-            return false;           //no data found
-
-        int nNumQuestions;
-        sSQL = wxString::Format(
-            _T("SELECT * FROM ProblemSpaceData WHERE (SpaceKey = %d);"), nKey);
-        wxLogMessage(sSQL.c_str());
-        q = g_pDB->ExecuteQuery(sSQL.c_str());
-        if (q.NextRow())
-        {
-            wxLogMessage(_T("data found in table"));
-            //data found in table
-            m_sKey = sKey;
-            nNumQuestions = q.GetInt(_T("NumQuestions"));
-            m_nRepetitions = q.GetInt(_T("Repetitions"));
-            m_tmLastUsed = q.GetDateTime(_T("LastUsed"));
-            m_tmCreation = q.GetDateTime(_T("Creation"));
-            m_tsTotalRespTime = wxTimeSpan( q.GetInt64(_T("TotalRespTime")) );
-            m_nTotalAsked = q.GetInt(_T("TotalAsked"));
-        }
-        else
-            return false;           //no data found
-
-        //load questions
-        for (int iQ=0; iQ < nNumQuestions; ++iQ)
-        {
-            lmQuestion::LoadQuestion(nKey, iQ, this);
-        }
-
-        return true;        //no error
-    }
-    catch (wxSQLite3Exception& e)
-    {
-        wxLogMessage(_T("[lmProblemSpace::Load] Error in DB. Error code: %d, Message: '%s'"),
-                 e.GetErrorCode(), e.GetMessage().c_str() );
-    }
-    return false;        //error
+    return fLoadOK;
 }
 
-void lmProblemSpace::NewSpace(int nNumQuestions, int nRepetitions, wxString& sKey)
+bool lmProblemSpace::IsSetLoaded(long nSetID)
 {
-    //Create a new empty problem space, that is, a problem space that has no data saved in DB.
-    //Previous problem space has been already saved if necessary, so here we have nothing to do
-    //about saving current data.
+    //returns true if set is already loaded in this space
 
-    ClearQuestions();
-
-    m_sKey = sKey;
-    m_tmCreation = wxDateTime::Now();
-    m_tmLastUsed = wxDateTime::Now();
-    m_nRepetitions = nRepetitions;
-    m_tsTotalRespTime = wxTimeSpan::Seconds(0);
-    m_nTotalAsked = 0;
-
-    for (int i= 0; i < nNumQuestions; i++)
-    {
-        AddQuestion(0, 0, 0, 0);
-    }
+    std::list<long>::iterator it = std::find(m_sets.begin(), m_sets.end(), m_nSetID);
+    return it != m_sets.end();
 }
 
 void lmProblemSpace::SaveAndClear()
@@ -537,9 +523,9 @@ void lmProblemSpace::SaveAndClear()
     //save problem space to configuration file
     //AWARE: External representation of wxTimeSpan will be two 32 bits fields: Days+Seconds
 
-    if (m_sKey == _T(""))
+    if (m_sSpaceName == _T(""))
     {
-        ClearQuestions();
+        ClearSpace();
         return;
     }
 
@@ -550,86 +536,61 @@ void lmProblemSpace::SaveAndClear()
 
         g_pDB->Begin();
 
-        //Create ProblemSpaceKeys table if it does not exist
-        if (!g_pDB->TableExists(_T("ProblemSpaceKeys")))
-            lmCreateTable_ProblemSpaceKeys();
+        //Create Spaces table if it does not exist
+        if (!g_pDB->TableExists(_T("Spaces")))
+            lmCreateTable_Spaces();
 
-        //Get key for this problem space
+        //save Space data
         int nKey;
         sSQL = wxString::Format(
-            _T("SELECT * FROM ProblemSpaceKeys WHERE (SpaceName = '%s');"), m_sKey.c_str());
-        wxASSERT(m_sKey.Len() < 200);
+            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
+            m_sSpaceName.c_str(), m_sUser.c_str() );
 
         wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
         if (q.NextRow())
         {
-            //key found in table
-            nKey = q.GetInt(0);
-            wxLogMessage(_T("Key '%s' found in table. Key: %d"), m_sKey.c_str(), nKey );
-        }
-        else
-        {
-            //the problem space name was never stored. Do it now and get its key
-            sSQL = wxString::Format(
-                _T("INSERT INTO ProblemSpaceKeys (SpaceName) VALUES ('%s');"), m_sKey.c_str());
-            g_pDB->ExecuteUpdate(sSQL.c_str());
-            nKey = g_pDB->GetLastRowId().ToLong();
-            wxLogMessage(_T("Key '%s' NOT found in table. Key: %d"), m_sKey.c_str(), nKey );
-        }
-
-
-        //Create ProblemSpaceData table if it does not exist
-        if (!g_pDB->TableExists(_T("ProblemSpaceData")))
-            lmCreateTable_ProblemSpaceData();
-
-        //save ProblemSpace global data
-        sSQL = wxString::Format(
-            _T("SELECT * FROM ProblemSpaceData WHERE (SpaceKey = %d);"), nKey);
-        q = g_pDB->ExecuteQuery(sSQL.c_str());
-        if (q.NextRow())
-        {
             //data found in table. Update data.
+            nKey = q.GetInt(0);
             wxSQLite3Statement stmt = g_pDB->PrepareStatement(
-                _T("UPDATE ProblemSpaceData SET NumQuestions = ?, Repetitions = ?, ")
+                _T("UPDATE Spaces SET User = ?, Repetitions = ?, MandatoryParams = ?, ")
                 _T("LastUsed = ?, Creation = ?, TotalRespTime = ?, TotalAsked = ? ")
-                _T("WHERE (SpaceKey = ?);"));
-            stmt.Bind(1, (int)m_questions.size());
+                _T("WHERE (SpaceID = ?);"));
+            stmt.Bind(1, m_sUser);
             stmt.Bind(2, (int)m_nRepetitions);
-            stmt.BindDateTime(3, m_tmLastUsed);
-            stmt.BindDateTime(4, m_tmCreation);
-            stmt.Bind(5, m_tsTotalRespTime.GetValue());
-            stmt.Bind(6, (int)m_nTotalAsked);
-            stmt.Bind(7, nKey);
-            stmt.ExecuteUpdate();
-        }
-        else
-        {
-            //new problem space. Insert data
-            wxSQLite3Statement stmt =
-                g_pDB->PrepareStatement(_T("INSERT INTO ProblemSpaceData VALUES (?, ?, ?, ?, ?, ?, ?)"));
-            stmt.Bind(1, nKey);
-            stmt.Bind(2, (int)m_questions.size());
-            stmt.Bind(3, (int)m_nRepetitions);
+            stmt.Bind(3, (int)m_nMandatoryParams);
             stmt.BindDateTime(4, m_tmLastUsed);
             stmt.BindDateTime(5, m_tmCreation);
             stmt.Bind(6, m_tsTotalRespTime.GetValue());
             stmt.Bind(7, (int)m_nTotalAsked);
+            stmt.Bind(8, nKey);
             stmt.ExecuteUpdate();
         }
+        else
+        {
+            //the problem space name was never stored. Do it now and get its key
+            wxSQLite3Statement stmt =
+                g_pDB->PrepareStatement(_T("INSERT INTO Spaces VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+            stmt.Bind(1, m_sSpaceName);
+            stmt.Bind(2, m_sUser);
+            stmt.Bind(3, (int)m_nRepetitions);
+            stmt.Bind(4, (int)m_nMandatoryParams);
+            stmt.BindDateTime(5, m_tmLastUsed);
+            stmt.BindDateTime(6, m_tmCreation);
+            stmt.Bind(7, m_tsTotalRespTime.GetValue());
+            stmt.Bind(8, (int)m_nTotalAsked);
+            stmt.ExecuteUpdate();
+            nKey = g_pDB->GetLastRowId().ToLong();
+        }
 
-        //save and delete questions
+        //save questions
         std::vector<lmQuestion*>::iterator it;
         for (it= m_questions.begin(); it != m_questions.end(); ++it)
-        {
             (*it)->SaveQuestion(nKey);
-            delete *it;
-        }
-        m_questions.clear();
-
-        //clear other data
-        m_sKey = _T("");
 
         g_pDB->Commit();
+
+        //clear space
+        ClearSpace();
     }
     catch (wxSQLite3Exception& e)
     {
@@ -644,8 +605,206 @@ lmQuestion* lmProblemSpace::GetQuestion(int iQ)
     return m_questions[iQ];
 }
 
+void lmProblemSpace::NewSpace(wxString& sSpaceName, int nRepetitionsThreshold,
+                              int nNumMandatoryParams)
+{
+    //Clear current data and prepares to load a new collection of questions. Loads Space from
+    //DB if exists. Otherwise, creates it in DB
 
+    ClearSpace();
 
+    LoadSpace(sSpaceName, nRepetitionsThreshold, nNumMandatoryParams);
+    m_sSetName = _T("");
+    m_tmLastUsed = wxDateTime::Now();
+}
+
+void lmProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
+                               int nNumMandatoryParams)
+{
+    //If exists, load space data
+    wxString sUser = wxGetApp().GetCurrentUser();
+    wxASSERT (sUser != _T("") && sUser.Len() < 40);
+    wxASSERT (sSpaceName != _T("") && sSpaceName.Len() < 200);
+
+    //load data from database
+    try
+    {
+        wxString sSQL;
+
+        //if Spaces table doesn't exist create it
+        if (!g_pDB->TableExists(_T("Spaces")))
+            lmCreateTable_Spaces();
+
+        //Get data for problem space
+        sSQL = wxString::Format(
+            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
+            sSpaceName.c_str(), sUser.c_str() );
+
+        wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
+        if (q.NextRow())
+        {
+            //data found in table
+            m_nSpaceID = q.GetInt(0);
+            m_sSpaceName = sSpaceName;
+            m_sUser = sUser;
+            m_nRepetitions = q.GetInt(_T("Repetitions"));
+            m_nMandatoryParams = q.GetInt(_T("MandatoryParams"));
+            m_tmLastUsed = q.GetDateTime(_T("LastUsed"));
+            m_tmCreation = q.GetDateTime(_T("Creation"));
+            m_tsTotalRespTime = wxTimeSpan( q.GetInt64(_T("TotalRespTime")) );
+            m_nTotalAsked = q.GetInt(_T("TotalAsked"));
+
+            wxASSERT(m_nRepetitions == nRepetitionsThreshold);
+            wxASSERT(m_nMandatoryParams == nNumMandatoryParams);
+       }
+        else
+        {
+            //the problem space name was never stored. Do it now
+
+            //Initialize problem space data
+            m_sSpaceName = sSpaceName;
+            m_sUser = sUser;
+            m_nRepetitions = nRepetitionsThreshold;
+            m_nMandatoryParams = nNumMandatoryParams;
+            m_tmLastUsed = wxDateTime::Now();
+            m_tmCreation = wxDateTime::Now();
+            m_tsTotalRespTime = wxTimeSpan::Seconds(0);
+            m_nTotalAsked = 0;
+
+            //Store Space in DB and get its key
+            wxSQLite3Statement stmt =
+                g_pDB->PrepareStatement(_T("INSERT INTO Spaces  (SpaceName, User, Repetitions, ")
+                                        _T("MandatoryParams, LastUsed, Creation, TotalRespTime, ")
+                                        _T("TotalAsked) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+
+            stmt.Bind(1, m_sSpaceName);
+            stmt.Bind(2, m_sUser);
+            stmt.Bind(3, (int)m_nRepetitions);
+            stmt.Bind(4, (int)m_nMandatoryParams);
+            stmt.BindDateTime(5, m_tmLastUsed);
+            stmt.BindDateTime(6, m_tmCreation);
+            stmt.Bind(7, m_tsTotalRespTime.GetValue());
+            stmt.Bind(8, (int)m_nTotalAsked);
+            stmt.ExecuteUpdate();
+            m_nSpaceID = g_pDB->GetLastRowId().ToLong();
+        }
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("[lmProblemSpace::LoadSpace] Error in DB. Error code: %d, Message: '%s'"),
+                 e.GetErrorCode(), e.GetMessage().c_str() );
+    }
+}
+
+long lmProblemSpace::GetSetID(long nSpaceID, wxString& sSetName)
+{
+    //Returns set ID. If set does not exist, create it in DB
+
+    wxASSERT(nSpaceID > 0L);
+    wxASSERT(sSetName != _T(""));
+    wxASSERT(sSetName.Len() < 200);
+
+    //load data from SQLite3 database
+    try
+    {
+        wxString sSQL;
+
+        //if Sets table doesn't exist create it
+        if (!g_pDB->TableExists(_T("Sets")))
+            lmCreateTable_Sets();
+
+        //Get SetID for this set
+        long nSetID;
+        sSQL = wxString::Format(
+            _T("SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);"),
+            sSetName.c_str(), nSpaceID);
+
+        wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
+        if (q.NextRow())
+        {
+            //key found in table
+            nSetID = q.GetInt(0);
+            wxLogMessage(_T("[lmProblemSpace::GetSetID] SpaceID %d: SetName '%s' found in table. nSetID: %d"),
+                         nSpaceID, sSetName.c_str(), nSetID );
+        }
+        else
+        {
+            //the set was never stored. Do it now and get its ID
+            sSQL = wxString::Format(
+                _T("INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');"),
+                nSpaceID, sSetName.c_str());
+            g_pDB->ExecuteUpdate(sSQL.c_str());
+            nSetID = g_pDB->GetLastRowId().ToLong();
+            wxLogMessage(_T("[lmProblemSpace::GetSetID] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
+                         nSpaceID, sSetName.c_str(), nSetID );
+        }
+        return nSetID;
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("[lmProblemSpace::GetSetID] Error in DB. Error code: %d, Message: '%s'"),
+                 e.GetErrorCode(), e.GetMessage().c_str() );
+    }
+    return 0;   //error. //TODO: Replace by trow ?
+}
+
+void lmProblemSpace::StartNewSet(wxString& sSetName)
+{
+    //Prepare to add new questions to new set
+
+    wxASSERT(sSetName != _T(""));
+
+    //Get ID and save data for current Set
+    m_nSetID = GetSetID(m_nSpaceID, sSetName);
+    m_sSetName = sSetName;
+    m_nSetQIndex = 0;
+    wxASSERT(!IsSetLoaded(m_nSetID));
+}
+
+lmQuestion* lmProblemSpace::AddQuestion(long nParam0, long nParam1,
+                                        long nParam2, long nParam3, long nParam4,
+                                        int nGroup, int nAskedTotal, int nSuccessTotal,
+                                        int nRepetitions, wxTimeSpan tsLastAsked,
+                                        long nDaysRepIntv)
+{
+    //Adds question to space, to current set. It does not save data as this will
+    //be done when saving the space
+
+    wxASSERT(m_nSetID > 0 && m_sSetName != _T(""));
+
+    lmQuestion* pQ = new lmQuestion(m_nSpaceID, m_nSetID, nParam0, nParam1,
+                                    nParam2, nParam3, nParam4, nGroup, nAskedTotal,
+                                    nSuccessTotal, nRepetitions, tsLastAsked,
+                                    nDaysRepIntv);
+    m_questions.push_back(pQ);
+    return pQ;
+}
+
+void lmProblemSpace::AddNewQuestion(long nParam0, long nParam1, long nParam2, long nParam3,
+                                    long nParam4)
+{
+    lmQuestion* pQ = AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4);
+    pQ->SetIndex( ++m_nSetQIndex );
+}
+
+long lmProblemSpace::GetQuestionParam(int iQ, int nNumParam)
+{
+    //Returns value for param nNumParam in question iQ
+
+    wxASSERT(iQ >= 0 && iQ < GetSpaceSize());
+    wxASSERT(nNumParam >= 0 && nNumParam < m_nMandatoryParams);
+    return m_questions[iQ]->GetParam(nNumParam);
+
+}
+
+bool lmProblemSpace::IsQuestionParamMandatory(int nNumParam)
+{
+    //Returns true if for current space value for param nNumParam must be taken
+    //from question params. Returns false in opposite case, that is, if value for
+    //param must be generated by the exercise Ctrol.
+
+    return nNumParam < m_nMandatoryParams;
+}
 
 
 //-------------------------------------------------------------------------------------------------
@@ -653,35 +812,50 @@ lmQuestion* lmProblemSpace::GetQuestion(int iQ)
 //-------------------------------------------------------------------------------------------------
 
 lmProblemManager::lmProblemManager(lmExerciseCtrol* pOwnerExercise)
+    : m_pOwnerExercise(pOwnerExercise)
 {
-    m_pProblemSpace = (lmProblemSpace*)NULL;
-    m_pProblemSpace = new lmProblemSpace();
-    m_pOwnerExercise = pOwnerExercise;
 }
 
 lmProblemManager::~lmProblemManager()
 {
-    m_pProblemSpace->SaveAndClear();
-    delete m_pProblemSpace;
-}
-
-bool lmProblemManager::LoadProblemSpace(wxString& sKey)
-{
-    bool fLoaded = m_pProblemSpace->Load(sKey);
-    if (fLoaded)
-        OnProblemSpaceChanged();
-    return fLoaded;
-}
-
-void lmProblemManager::SetNewSpace(int nNumQuestions, int nRepetitions, wxString sKey)
-{
-    m_pProblemSpace->NewSpace(nNumQuestions, nRepetitions, sKey);
-    OnProblemSpaceChanged();
+    m_ProblemSpace.SaveAndClear();
 }
 
 void lmProblemManager::SaveProblemSpace()
 {
-    m_pProblemSpace->SaveAndClear();
+    m_ProblemSpace.SaveAndClear();
+}
+
+bool lmProblemManager::LoadSet(wxString& sSetName)
+{
+    //Reads all questions from requested set and adds them to current problem space.
+    //Returns false space does not exist.
+
+    return m_ProblemSpace.LoadSet(sSetName);
+}
+
+void lmProblemManager::AddQuestionToSet(long nParam0, long nParam1, long nParam2, long nParam3,
+                                        long nParam4)
+{
+    //Adds a question to current set. It does not save data as this will be done when
+    //saving the space
+
+    m_ProblemSpace.AddNewQuestion(nParam0, nParam1, nParam2, nParam3, nParam4);
+}
+
+bool lmProblemManager::IsQuestionParamMandatory(int nNumParam)
+{
+    //Returns true if for current space value for param nNumParam must be taken
+    //from question params. Returns false in opposite case, that is, if value for
+    //param must be generated by the exercise Ctrol.
+
+    return m_ProblemSpace.IsQuestionParamMandatory(nNumParam);
+}
+
+long lmProblemManager::GetQuestionParam(int iQ, int nNumParam)
+{
+    //Returns value for param nNumParam in question iQ
+    return m_ProblemSpace.GetQuestionParam(iQ, nNumParam);
 }
 
 
@@ -734,12 +908,12 @@ void lmLeitnerManager::UpdateProblemSpaceForLearning()
     //Explore all questions, compute statistics and move to Set0 all those questions whose
     //sheduled time is <= Today
     m_set0.clear();
-    int nMaxQuestion = m_pProblemSpace->GetSpaceSize();
+    int nMaxQuestion = m_ProblemSpace.GetSpaceSize();
     for (int iQ=0; iQ < nMaxQuestion; iQ++)
     {
-        lmQuestion* pQ = m_pProblemSpace->GetQuestion(iQ);
+        lmQuestion* pQ = m_ProblemSpace.GetQuestion(iQ);
         int nGroup = pQ->GetGroup();
-        wxDateTime tsScheduled = m_pProblemSpace->CreationDate() + pQ->GetSheduledTimeSpan();
+        wxDateTime tsScheduled = m_ProblemSpace.GetCreationDate() + pQ->GetSheduledTimeSpan();
         if (tsScheduled <= wxDateTime::Today() || nGroup == 0)
         {
             //scheduled for today. Add to set
@@ -748,9 +922,9 @@ void lmLeitnerManager::UpdateProblemSpaceForLearning()
 
             //statistics
             if (nGroup == 0)
-                m_nUnlearned += m_pProblemSpace->RepetitionsThreshold() - pQ->GetRepetitions();
+                m_nUnlearned += m_ProblemSpace.RepetitionsThreshold() - pQ->GetRepetitions();
             else
-                m_nToReview += m_pProblemSpace->RepetitionsThreshold() - pQ->GetRepetitions();
+                m_nToReview += m_ProblemSpace.RepetitionsThreshold() - pQ->GetRepetitions();
         }
 
         //Create the groups
@@ -775,7 +949,6 @@ void lmLeitnerManager::UpdateProblemSpaceForLearning()
         m_pOwnerExercise->ChangeGenerationModeLabel(lm_ePractiseMode);
         m_pOwnerExercise->ChangeCountersCtrol();
         UpdateProblemSpaceForPractising();
-        //m_it0 = m_set0.begin();
         return;
     }
 
@@ -797,10 +970,10 @@ void lmLeitnerManager::UpdateProblemSpaceForPractising()
         m_group[iG].clear();
 
     //Compute the groups
-    int nMaxQuestion = m_pProblemSpace->GetSpaceSize();
+    int nMaxQuestion = m_ProblemSpace.GetSpaceSize();
     for (int iQ=0; iQ < nMaxQuestion; iQ++)
     {
-        int iG = m_pProblemSpace->GetGroup(iQ);
+        int iG = m_ProblemSpace.GetGroup(iQ);
         wxASSERT(iG >=0 && iG < lmNUM_GROUPS);
         m_group[iG].push_back(iQ);
     }
@@ -873,8 +1046,6 @@ int lmLeitnerManager::ChooseQuestion()
 
 int lmLeitnerManager::ChooseQuestionForLearning()
 {
-    wxASSERT(m_pProblemSpace);
-
     if (m_it0 == m_set0.end())
     {
         //end of set reached. Rebuild set
@@ -891,16 +1062,6 @@ int lmLeitnerManager::ChooseQuestionForLearning()
     int iQ = *m_it0;
     ++m_it0;
     return iQ;
-    //}
-    //else
-    //{
-    //    //No more questions scheduled for today. Move to 'Practise mode'
-    //    m_fLearningMode = false;     //change to practise mode
-    //    m_pOwnerExercise->ChangeGenerationModeLabel(lm_ePractiseMode);
-    //    m_pOwnerExercise->ChangeCountersCtrol();
-    //    UpdateProblemSpace();
-    //    return ChooseQuestionForPractising();
-    //}
 }
 
 int lmLeitnerManager::ChooseQuestionForPractising()
@@ -909,8 +1070,6 @@ int lmLeitnerManager::ChooseQuestionForPractising()
     //The algorithm to select a question is as follows:
     // 1. Select at random a question group, with group probabilities defined table m_range[iG]
     // 2. Select at random a question from selected group
-
-    wxASSERT(m_pProblemSpace);
 
     //select group
     float rG = (float)lmRandomGenerator::RandomNumber(0, 10000) / 10000.0f;
@@ -934,8 +1093,7 @@ void lmLeitnerManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsRespon
 {
     //Method to account for the answer
 
-    wxASSERT(m_pProblemSpace);
-    wxASSERT(iQ >= 0 && iQ < m_pProblemSpace->GetSpaceSize());
+    wxASSERT(iQ >= 0 && iQ < m_ProblemSpace.GetSpaceSize());
 
     if (m_fLearningMode)
         return UpdateQuestionForLearning(iQ, fSuccess, tsResponse);
@@ -946,20 +1104,20 @@ void lmLeitnerManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsRespon
 void lmLeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan tsResponse)
 {
     //update question data and promote/demote question
-    lmQuestion* pQ = m_pProblemSpace->GetQuestion(iQ);
+    lmQuestion* pQ = m_ProblemSpace.GetQuestion(iQ);
     int nOldGroup = pQ->GetGroup();
-    pQ->UpdateAsked(m_pProblemSpace);
-    pQ->UpdateSuccess(m_pProblemSpace, fSuccess);
+    pQ->UpdateAsked(&m_ProblemSpace);
+    pQ->UpdateSuccess(&m_ProblemSpace, fSuccess);
 
     //schedule next repetition and update statistics
     if (fSuccess)
     {
         //Question answered right. If repetition threshold reached, schedule it for
         //repetition after some time
-        if (pQ->GetRepetitions() >= m_pProblemSpace->RepetitionsThreshold())
+        if (pQ->GetRepetitions() >= m_ProblemSpace.RepetitionsThreshold())
         {
             wxTimeSpan tsDaysInvtal = GetRepetitionInterval(pQ->GetGroup());
-            pQ->SetRepetitionInterval( wxDateTime::Today() + tsDaysInvtal - m_pProblemSpace->CreationDate() );
+            pQ->SetRepetitionInterval( wxDateTime::Today() + tsDaysInvtal - m_ProblemSpace.GetCreationDate() );
         }
 
         //statistics
@@ -971,7 +1129,7 @@ void lmLeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSp
     else
     {
         //Question answered wrong. Schedule it for inmmediate repetition.
-        pQ->SetRepetitionInterval( wxDateTime::Today() - m_pProblemSpace->CreationDate() );
+        pQ->SetRepetitionInterval( wxDateTime::Today() - m_ProblemSpace.GetCreationDate() );
 
         //statistics
         if (nOldGroup > 0)
@@ -990,8 +1148,8 @@ void lmLeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSp
     }
 
     //update times
-    m_pProblemSpace->AddTotalRespTime( tsResponse );    //total response time since start
-    m_pProblemSpace->IncrementTotalAsked();             //total num questions asked since start
+    m_ProblemSpace.AddTotalRespTime( tsResponse );    //total response time since start
+    m_ProblemSpace.IncrementTotalAsked();             //total num questions asked since start
 }
 
 void lmLeitnerManager::UpdateQuestionForPractising(int iQ, bool fSuccess, wxTimeSpan tsResponse)
@@ -1091,15 +1249,46 @@ float lmLeitnerManager::GetGlobalProgress()
         nPoints  += iG * m_NumQuestions[iG];
         nTotal += m_NumQuestions[iG];
     }
-    return (float)(100 * nPoints) / (float)((lmNUM_GROUPS-1) * nTotal);
+    if (nTotal == 0)
+        return 0.0f;
+    else
+        return (float)(100 * nPoints) / (float)((lmNUM_GROUPS-1) * nTotal);
 }
 
 float lmLeitnerManager::GetSessionProgress()
 {
-    return (float)(100 * (m_nTotal - m_nUnlearned - m_nToReview)) / (float)m_nTotal;
+    if (m_nTotal == 0)
+        return 0.0f;
+    else
+        return (float)(100 * (m_nTotal - m_nUnlearned - m_nToReview)) / (float)m_nTotal;
 }
 
-wxTimeSpan lmLeitnerManager::GetEST()
+const wxString lmLeitnerManager::GetProgressReport()
+{
+    //get average user response time
+    wxString sAvrgRespTime = _T(" Unknown");
+    int nAsked = m_ProblemSpace.GetTotalAsked();
+    if (nAsked > 0)
+    {
+        double rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
+    }
+
+    //Prepare message
+    wxString m_sHeader = _T("<html><body>");
+    wxString sContent = m_sHeader +
+        _T("<center><h3>") + _("Session report") + _T("</h3></center><p>") +
+        _("New questions:") + wxString::Format(_T(" %d"), m_nUnlearned) + _T("<br>") +
+        _("Questions to review:") + wxString::Format(_T(" %d"), m_nToReview) + _T("<br>") +
+        _("Average answer time:") + sAvrgRespTime + _T("<br>") +
+       _T("</p><center><h3>") + _("Progress report") + _T("</h3></center><p>") +
+        _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
+        _("Your computer information:") +
+        _T("</p></body></html>");
+
+    return sContent;
+}
+
+wxTimeSpan lmLeitnerManager::GetEstimatedSessionTime()
 {
     //Return the estimated time span for answering all unknown + expired questions
     //After some testing using current session data for the estimation produces estimations that
@@ -1108,9 +1297,9 @@ wxTimeSpan lmLeitnerManager::GetEST()
 
     //get average user response time
     double rMillisecs;
-    int nAsked = m_pProblemSpace->GetTotalAsked();
+    int nAsked = m_ProblemSpace.GetTotalAsked();
     if (nAsked > 0)
-        rMillisecs = m_pProblemSpace->GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
+        rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
     else
         rMillisecs = 30000;          //assume 30 secs per question if no data available
 
@@ -1143,10 +1332,8 @@ int lmQuizManager::ChooseQuestion()
     //Method to choose a question. Returns question index
     //The algorithm to select a question is just to choose a question at random.
 
-    wxASSERT(m_pProblemSpace);
-
     //select question at random.
-    int nSize = m_pProblemSpace->GetSpaceSize();
+    int nSize = m_ProblemSpace.GetSpaceSize();
     wxASSERT(nSize > 0);
     return lmRandomGenerator::RandomNumber(0, nSize-1);
 }

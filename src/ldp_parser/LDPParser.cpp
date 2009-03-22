@@ -211,6 +211,7 @@ bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
 void lmLDPParser::FileParsingError(const wxString& sMsg)
 {
     wxMessageBox(sMsg, _T("Error"));
+    //TODO: replace by lmErrorBox. But for this I need to implement auto-wrap
     //lmErrorBox oEB(sMsg, _(""));
     //oEB.ShowModal();
 }
@@ -596,6 +597,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
         //    pScore = AnalyzeScoreV102(pNode);
         //    break;
         case 105:
+        case 106:
             pScore = AnalyzeScoreV105(pNode);
             break;
         default:
@@ -1921,6 +1923,15 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     else {          //end of tuplet
                         fEndTuplet = true;
                     }
+                }
+            }
+            if (sData == _T("tie"))     //start/end of tie
+            {       
+                if (fIsRest)
+                    AnalysisError(pX, _T("Rests can not be tied. Tie ignored."), sData.c_str());
+                else
+                {
+                    fTie = true;
                 }
             }
             else {

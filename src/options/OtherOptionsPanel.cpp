@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -33,7 +33,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/xrc/xmlres.h"
+#include <wx/artprov.h>
 
 #include "OtherOptionsPanel.h"
 
@@ -44,32 +44,75 @@ extern wxConfigBase* g_pPrefs;
 //access to global flag
 #include "../app/Preferences.h"
 extern bool g_fAnswerSoundsEnabled;
-extern bool g_fTeamCounters;
 extern bool g_fAutoNewProblem;
 
 
 
 lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
+    : lmOptionsPanel(parent)
 {
     // create the panel
-    wxXmlResource::Get()->LoadPanel(this, parent, _T("OtherOptionsPanel"));
+    CreateControls();
 
     //load icon
-    wxStaticBitmap* pBmpIcon = XRCCTRL(*this, "bmpIconTitle", wxStaticBitmap);
-    pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_other"), wxART_TOOLBAR, wxSize(24,24)) );
+    m_pBmpIconTitle->SetBitmap( wxArtProvider::GetIcon(_T("opt_other"), wxART_TOOLBAR, wxSize(24,24)) );
 
-    //store pointers to controls
-    m_pChkAnswerSounds = XRCCTRL(*this, "chkAnswerSounds", wxCheckBox);
-    m_pChkTeamCounters = XRCCTRL(*this, "chkTeamCounters", wxCheckBox);
-    m_pChkAutoNewProblem = XRCCTRL(*this, "chkAutoNewProblem", wxCheckBox);
+   //Select current settings
 
-        //Select current settings
-
-    // Exercises options
+    //Exercises options
     m_pChkAnswerSounds->SetValue(g_fAnswerSoundsEnabled);
-    m_pChkTeamCounters->SetValue(g_fTeamCounters);
     m_pChkAutoNewProblem->SetValue(g_fAutoNewProblem);
 
+}
+
+void lmOtherOptionsPanel::CreateControls()
+{
+	this->SetExtraStyle( wxWS_EX_BLOCK_EVENTS );
+	
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pHeaderPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
+	wxBoxSizer* pHeaderSizer;
+	pHeaderSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_pTxtTitle = new wxStaticText( m_pHeaderPanel, wxID_ANY, _("Other options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	m_pTxtTitle->Wrap( -1 );
+	m_pTxtTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
+	
+	pHeaderSizer->Add( m_pTxtTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
+	
+	
+	pHeaderSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	m_pBmpIconTitle = new wxStaticBitmap( m_pHeaderPanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	pHeaderSizer->Add( m_pBmpIconTitle, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	m_pHeaderPanel->SetSizer( pHeaderSizer );
+	m_pHeaderPanel->Layout();
+	pHeaderSizer->Fit( m_pHeaderPanel );
+	pMainSizer->Add( m_pHeaderPanel, 0, wxEXPAND|wxBOTTOM, 5 );
+	
+	wxBoxSizer* pOptionsSizer;
+	pOptionsSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* pChecksSizer;
+	pChecksSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Exercises") ), wxVERTICAL );
+	
+	m_pChkAnswerSounds = new wxCheckBox( this, wxID_ANY, _("Generate right/wrong sounds when clicking an answer button"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	
+	pChecksSizer->Add( m_pChkAnswerSounds, 0, wxEXPAND|wxALL, 5 );
+	
+	m_pChkAutoNewProblem = new wxCheckBox( this, wxID_ANY, _("Do not show solution and generate new problem if answer is correct"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	
+	pChecksSizer->Add( m_pChkAutoNewProblem, 0, wxEXPAND|wxALL, 5 );
+	
+	pOptionsSizer->Add( pChecksSizer, 0, wxEXPAND|wxALL, 5 );
+	
+	pMainSizer->Add( pOptionsSizer, 0, wxEXPAND|wxALL, 5 );
+	
+	this->SetSizer( pMainSizer );
+	this->Layout();
 }
 
 lmOtherOptionsPanel::~lmOtherOptionsPanel()
@@ -86,9 +129,6 @@ void lmOtherOptionsPanel::Apply()
     // Exercises options
     g_fAnswerSoundsEnabled = m_pChkAnswerSounds->GetValue();
     g_pPrefs->Write(_T("/Options/EnableAnswerSounds"), g_fAnswerSoundsEnabled);
-
-    g_fTeamCounters = m_pChkTeamCounters->GetValue();
-    g_pPrefs->Write(_T("/Options/TeamCounters"), g_fTeamCounters);
 
     g_fAutoNewProblem = m_pChkAutoNewProblem->GetValue();
     g_pPrefs->Write(_T("/Options/AutoNewProblem"), g_fAutoNewProblem);

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -61,6 +61,7 @@ lmColors::~lmColors()
 void lmColors::LoadUserPreferences()
 {
     //load settings form user congiguration data or default values
+
     wxString sColor;
     sColor = g_pPrefs->Read(_T("/Colors/Exercises/Success"), _T("000,255,031"));    //mid-light green
     UnpackColor(sColor, &m_oSuccess);
@@ -80,6 +81,8 @@ void lmColors::LoadUserPreferences()
     UnpackColor(sColor, &m_oScoreSelected);
     sColor = g_pPrefs->Read(_T("/Colors/Scores/Cursor"), _T("000,000,255") );    //blue
     UnpackColor(sColor, &m_oCursorColor);
+    sColor = g_pPrefs->Read(_T("/Colors/Scores/GhostObject"), _T("170,212,255") );    //faint blue
+    UnpackColor(sColor, &m_oGhostObject);
 
     //HTML controls
     sColor = g_pPrefs->Read(_T("/Colors/HTML/Links"), _T("000,000,255") );    //blue
@@ -91,9 +94,7 @@ void lmColors::LoadUserPreferences()
 
 void lmColors::SaveUserPreferences()
 {
-    /*
-    save colors settings in user congiguration data
-    */
+    //save colors settings in user congiguration data
 
     //colors for exercises
     g_pPrefs->Write(_T("/Colors/Exercises/Success"), PackColor(&m_oSuccess) );   
@@ -106,10 +107,10 @@ void lmColors::SaveUserPreferences()
     g_pPrefs->Write(_T("/Colors/Scores/Highlight"), PackColor(&m_oScoreHighlight) );   
     g_pPrefs->Write(_T("/Colors/Scores/Selected"), PackColor(&m_oScoreSelected) ); 
     g_pPrefs->Write(_T("/Colors/Scores/Cursor"), PackColor(&m_oCursorColor) ); 
+    g_pPrefs->Write(_T("/Colors/Scores/GhostObject"), PackColor(&m_oGhostObject) ); 
 
     //HTML controls
     g_pPrefs->Write(_T("/Colors/HTML/Links"), PackColor(&m_oHtmlLinks) ); 
-
 }
 
 wxString lmColors::PackColor(wxColor* pColor)

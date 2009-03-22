@@ -428,10 +428,6 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("InternetOptPanel"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
-    // Configuration options: other options panel
-    oXrcFile = wxFileName(sPath, _T("OtherOptionsPanel"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
     // Ear Interval exercises: configuration dialog
     oXrcFile = wxFileName(sPath, _T("DlgCfgEarIntervals"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
@@ -458,10 +454,6 @@ bool lmTheApp::OnInit(void)
 
     // Updater dialog: info
     oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    // Error dialog
-    oXrcFile = wxFileName(sPath, _T("ErrorDlg"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
 #ifdef __WXDEBUG__
@@ -838,11 +830,17 @@ void lmTheApp::FindOutScreenDPI()
 				 xPixelsPerLU, yPixelsPerLU, sizeDPI.x, sizeDPI.y );
 }
 
-wxString lmTheApp::GetVersionNumber()
+const wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
     wxString sVersion = _T("4.1a0");
     return sVersion;
+}
+
+const wxString lmTheApp::GetCurrentUser()
+{
+    wxString sUser = ::wxGetUserId();
+    return sUser;
 }
 
 lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)

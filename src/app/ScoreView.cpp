@@ -1842,8 +1842,8 @@ void lmScoreView::TerminateRepaint(wxDC* pDC)
             pDC->SetDeviceOrigin((*it)->vPageRect.x - canvasOffset.x,
                                  (*it)->vPageRect.y - canvasOffset.y );
 
-            //draw the handlers
-            pBP->DrawHandlers(&m_Paper);
+            //draw all the handlers booked to be drawn
+            pBP->DrawAllHandlers(&m_Paper);
         }
     }
 
@@ -2126,65 +2126,16 @@ void lmScoreView::OnPaperStartDrag(wxDC* pDC, lmDPoint vCanvasOffset)
 {
 	//prepare paper for direct drawing
 
-#if 0		//1-AggDrawer, 0-DirectDrawer
-
-    // anti-aliased renderization
-
-	//get bitmap for current page
-	wxBitmap* pPageBitmap = m_graphMngr.GetPageBitmap(m_nNumPage);
-
-    lmAggDrawer* pDrawer = new lmAggDrawer(pPageBitmap, m_rScale);
-    m_pPaper->SetDrawer(pDrawer);
-
-#else
 	//OnDrag method expects logical units referred to current page origin. Therefore,
 	//we must set DC origing according to current scrolling and page position
 	m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-    if (m_pDraggedGMO->IsHandler())
-        pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
-	else
+    //if (m_pDraggedGMO->IsHandler())
+    //    pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
+	//else
 	{
 		wxPoint org = GetDCOriginForPage(m_nNumPage);
 		pDC->SetDeviceOrigin(org.x, org.y);
 	}
-
-#endif
-}
-
-void lmScoreView::OnPaperEndDrag()
-{
-	//display the paper buffer
-
-#if 0		//1-AggDrawer, 0-DirectDrawer
-
-    lmAggDrawer* pDrawer = m_pPaper->GetDrawer();
-	wxBitmap* pPageBitmap = new wxBitmap(pDrawer->GetImageBuffer());
-    wxASSERT(pPageBitmap && pPageBitmap->Ok());
-    memoryDC.SelectObject(*pPageBitmap);
-
-    //we need to know the page rectangle that is currently displayed.
-
-    // to bitmap coordinates we need to substract page origin
-    int xBitmap = interRect.x - pageRect.x,
-        yBitmap = interRect.y - pageRect.y;
-    // and to refer it to canvas window coordinates we need to
-    // substract scroll origin
-    int xCanvas = interRect.x - canvasOffset.x,
-        yCanvas = interRect.y - canvasOffset.y;
-
-    //wxLogMessage(_T("nPag=%d, canvasOrg (%d,%d), bitmapOrg (%d, %d), interRec (%d, %d, %d, %d), pageRect (%d, %d, %d, %d)"),
-    //    nPag, xCanvas, yCanvas, xBitmap, yBitmap,
-    //    interRect.x, interRect.y, interRect.width, interRect.height,
-    //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
-
-    // Copy the modified bitmap onto the device DC
-    pDC->Blit(xCanvas, yCanvas, interRect.width, interRect.height,
-                &memoryDC, xBitmap, yBitmap);
-
-    // deselect the bitmap
-    memoryDC.SelectObject(wxNullBitmap);
-
-#endif
 }
 
 //------------------------------------------------------------------------------------------
@@ -2560,30 +2511,16 @@ void lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint
 	//2. The object receive a Drawer DC and can draw (XOR) any image
 	//Both mechanisms can be used simultaneously (i.e., in Notes, to draw leger lines)
 
-    if (m_pDraggedGMO->IsHandler())
+    // prepare the image to drag
+    if (m_pDragImage)
     {
-        //((lmShapeMargin*)m_pDraggedGMO)->OnLeftBeginDrag();
-
-        //((lmShapeMargin*)m_pDraggedGMO)->OnLeftDrag();
-
-		//prepare paper for direct drawing
-		OnPaperStartDrag(pDC, vCanvasOffset);
-        //m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-        //pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
-        m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift);
+		delete m_pDragImage;
+        m_pDragImage = (wxDragImage*) NULL;
     }
-    else
+
+    wxBitmap* pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
+    if (pBitmap)
     {
-        // prepare the image to drag
-        if (m_pDragImage)
-		    delete m_pDragImage;
-        wxBitmap* pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
-        if (!pBitmap)
-	    {
-            wxLogMessage(_T("No drag image for object"));
-            m_nDragState = lmDRAG_NONE;
-            return;
-        }
         m_pDragImage = new wxDragImage(*pBitmap);
         delete pBitmap;
 
@@ -2591,29 +2528,30 @@ void lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint
         bool fOK = m_pDragImage->BeginDrag(m_vDragHotSpot, m_pCanvas);
         if (!fOK)
 	    {
+            wxLogMessage(_T("[lmScoreView::OnObjectBeginDragLeft] m_pDragImage->BeginDrag returns error!"));
             delete m_pDragImage;
             m_pDragImage = (wxDragImage*) NULL;
             m_nDragState = lmDRAG_NONE;
 
         }
-	    else
-	    {
-            //drag image started OK. Move image to current cursor position
-            //and show it (was hidden until now)
+    }
 
-			//prepare paper for direct drawing
-			OnPaperStartDrag(pDC, vCanvasOffset);
+	//prepare paper for direct drawing
+	OnPaperStartDrag(pDC, vCanvasOffset);
 
-			//do drag
-            lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift)
-                                + m_uHotSpotShift;
-		    lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
-						    m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
-			OnPaperEndDrag();
+	//inform shape:
+    // - request the nearest valid position to current position
+    // - allow shape to draw (XOR) whatever it likes
+    lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift)
+                        + m_uHotSpotShift;
+	lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
+					m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
 
-		    m_pDragImage->Move(vNewPos);
-            m_pDragImage->Show();
-        }
+    //if exists, move drag image to received point
+    if (m_pDragImage)
+    {
+		m_pDragImage->Move(vNewPos);
+        m_pDragImage->Show();
     }
 }
 
@@ -2685,25 +2623,20 @@ void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool 
 		//prepare paper for direct drawing
 		OnPaperStartDrag(pDC, vCanvasOffset);
 
-        if (m_pDraggedGMO->IsHandler())
-        {
-            //((lmShapeMargin*)m_pDraggedGMO)->OnLeftDrag();
-            //m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-            //pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
-            m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift);
-			OnPaperEndDrag();
-        }
-        else
-        {
-	        if (!m_pDragImage) return;
+		//hide image to not interfere with direct drawing
+        if (m_pDragImage)
+            m_pDragImage->Hide();
 
-			//do drag
-            m_pDragImage->Hide();		//hide image to not interfere with direct drawing
-            lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift)
-                                    + m_uHotSpotShift;
-		    lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
-						    m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
-			OnPaperEndDrag();
+        //Give the shape the opportunity to change final pos and to draw (XOR)
+        //whatever it likes
+        lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift)
+                                + m_uHotSpotShift;
+		lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
+						m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
+
+        //move drag image to final point
+        if (m_pDragImage)
+        {
 		    m_pDragImage->Move(vNewPos);
             m_pDragImage->Show();
         }
@@ -2727,27 +2660,21 @@ void lmScoreView::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint v
 	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectEndDragLeft()"));
 	#endif
 
-    if (!m_pDraggedGMO) return;
-
-    //inform shape to do whatever it likes
-    if (m_pDraggedGMO->IsHandler())
+    // delete the image used for dragging
+    if (m_pDragImage)
     {
-        //((lmShapeMargin*)m_pDraggedGMO)->OnLeftEndDrag();
-	    lmUPoint finalPos = uPagePos - m_uHotSpotShift;
-	    m_pDraggedGMO->OnEndDrag(m_pCanvas, finalPos);
-    }
-    else
-    {
-        // delete the image used for dragging
         m_pDragImage->Hide();
         m_pDragImage->EndDrag();
         delete m_pDragImage;
         m_pDragImage = (wxDragImage*) NULL;
-
-	    lmUPoint finalPos = uPagePos - m_uHotSpotShift;
-	    m_pDraggedGMO->OnEndDrag(m_pCanvas, finalPos);
     }
-	ShowCaret();
+
+    //inform the shape. It must not render anything. It should only issue
+    //the necessary commands to move the dragged object to its new position.
+	lmUPoint finalPos = uPagePos - m_uHotSpotShift;
+	m_pDraggedGMO->OnEndDrag(&m_Paper, m_pCanvas, finalPos);
+
+    ShowCaret();
 }
 
 

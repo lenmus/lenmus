@@ -146,7 +146,7 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         //Not dirty: just add existing shape (main shape) to the Box
         lmShape* pOldShape = this->GetShape(1);
         pBox->AddShape(pOldShape);
-        pOldShape->SetColour(colorC);       //change its colour to new desired colour
+        pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
 
         //set shapes index counter so that first prolog shape will have index 1
         SetShapesIndexCounter(1);    
@@ -181,11 +181,10 @@ lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     // if the shape already exists. If not, create it.
     int nIdx = NewShapeIndex();
     lmShape* pOldShape = GetShapeFromIdx(nIdx);
-    wxASSERT(!pOldShape);
     if (pOldShape)
     {
 	    pBox->AddShape(pOldShape);
-        pOldShape->SetColour(colorC);       //change its colour to new desired colour
+        pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
         return pOldShape;
     }
 
@@ -282,8 +281,7 @@ void lmClef::RemoveCreatedContexts()
 wxString GetClefLDPNameFromType(lmEClefType nType)
 {
     //AWARE: indexes in correspondence with enum lmEClefType
-    static wxString sName[] = {
-        _T("Undefined"),
+    static const wxString sName[] = {
         _T("G"),
         _T("F"),
         _T("F3"),
@@ -304,12 +302,13 @@ wxString GetClefLDPNameFromType(lmEClefType nType)
         _T("F+15ma"),   //15 above
         _T("F-15ma"),   //15 below
     };
+    static const wxString sUndefined = _T("undefined");
 
-    //TODO: Not yet included in LDP
 
-    wxASSERT(nType <= lmE_Sol1);
-    return sName[nType];
-
+    if (nType == lmE_Undefined)
+        return sUndefined;
+    else
+        return sName[nType];
 }
 
 lmDPitch GetFirstLineDPitch(lmEClefType nClef)

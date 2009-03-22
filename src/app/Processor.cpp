@@ -320,16 +320,16 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
 
  //@@@CARLOS
 			currentNote = (lmNote*) pSO;
-			currentNotePos = currentNote->GetChordPosition();
+			currentNotePos = currentNote->GetBeatPosition();
             wxLogMessage(_T("[ProcessScore] note %d: pitch: %d, pos: %d")
                 , nNote, currentNote->GetFPitch(), currentNotePos);
             wxLogMessage(_T("  LDP:%s")
                 ,  currentNote->SourceLDP(0));
 
-            // Notes with beat position of lmNON_CHORD_NOTE are ignored
+            // Notes with beat position of lmNOT_ON_BEAT are ignored
             // New beat position means new chord
 
-            if (  currentNotePos != lmNON_CHORD_NOTE)
+            if (  currentNotePos != lmNOT_ON_BEAT)
             {
                 // Note candidate to chord
 
@@ -394,7 +394,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
 
 
             }
-            //  else [ currentNotePos == lmNON_CHORD_NOTE]: ignore
+            //  else [ currentNotePos == lmNOT_ON_BEAT]: ignore
         } 
         // else [ not IsNote]: ignore
 

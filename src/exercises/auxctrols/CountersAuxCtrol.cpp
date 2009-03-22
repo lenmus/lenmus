@@ -35,10 +35,10 @@
 #include "UrlAuxCtrol.h"
 #include "../../sound/WaveManager.h"
 #include "../Generators.h"
+#include "../../app/DlgDebug.h"
 
 //access to global flag
 extern bool g_fAnswerSoundsEnabled;
-extern bool g_fTeamCounters;
 
 
 //IDs for controls
@@ -56,10 +56,8 @@ enum {
 lmCountersAuxCtrol::lmCountersAuxCtrol(wxWindow* parent, wxWindowID id,  double rScale,
                                        const wxPoint& pos, const wxSize& size)
     : wxPanel(parent, id, pos, size, wxBORDER_NONE)
+      , m_rScale(rScale)
 {
-    //initializations
-    m_rScale = rScale;
-
     //set background white (needed in Linux)
     this->SetBackgroundColour(*wxWHITE);
 }
@@ -93,45 +91,48 @@ BEGIN_EVENT_TABLE(lmQuizAuxCtrol, lmCountersAuxCtrol)
 END_EVENT_TABLE()
 
 
-lmQuizAuxCtrol::lmQuizAuxCtrol(wxWindow* parent, wxWindowID id,  double rScale,
+lmQuizAuxCtrol::lmQuizAuxCtrol(wxWindow* parent, wxWindowID id, int nNumTeams, double rScale,
                                lmQuizManager* pProblemMngr, const wxPoint& pos)
     : lmCountersAuxCtrol(parent, id, rScale, pos)
+      , m_pProblemMngr(pProblemMngr)
+      , m_fTwoTeamsMode(nNumTeams == 2)
 {
-    //initializations
-    m_pProblemMngr = pProblemMngr;
+    wxASSERT(nNumTeams == 1 || nNumTeams == 2);
 
     // Create the controls
     this->SetBackgroundColour(*wxWHITE);
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
-    if (g_fTeamCounters)
+    m_pProblemMngr->SetNumTeams(nNumTeams);
+    for(int i=0; i < nNumTeams; i++)
+        CreateCountersGroup(i, pMainSizer);
+
+    //load icons
+    wxBitmap bmp = wxArtProvider::GetBitmap(_T("button_accept"), wxART_TOOLBAR, wxSize(24,24));
+    m_pBmpRight->SetBitmap(bmp);
+    bmp = wxArtProvider::GetBitmap(_T("button_cancel"), wxART_TOOLBAR, wxSize(24,24));
+    m_pBmpWrong->SetBitmap(bmp);
+    bmp = wxArtProvider::GetBitmap(_T("diploma_cap"), wxART_TOOLBAR, wxSize(35,24));
+    m_pBmpTotal->SetBitmap(bmp);
+    if (m_fTwoTeamsMode)
     {
-        m_pProblemMngr->SetNumTeams(2);
-        m_pTeamTxt = new wxStaticText( this, wxID_STATIC, _("Two teams competition"), wxDefaultPosition,
-                            wxSize(-1, -1),
-                            wxALIGN_CENTRE|wxBORDER_NONE|wxST_NO_AUTORESIZE );
-        m_pTeamTxt->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-        pMainSizer->Add(m_pTeamTxt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
-        CreateCountersGroup(0, pMainSizer, true);
-        CreateCountersGroup(1, pMainSizer, true);
-    }
-    else
-    {
-        m_pProblemMngr->SetNumTeams(1);
-        m_pTeamTxt = (wxStaticText*)NULL;
-        CreateCountersGroup(0, pMainSizer, false);
+        m_bmpRed = wxArtProvider::GetBitmap(_T("team_red"), wxART_TOOLBAR, wxSize(24,24));
+        m_pBmpTeam[0]->SetBitmap(m_bmpRed);
+        m_bmpBlue = wxArtProvider::GetBitmap(_T("team_blue"), wxART_TOOLBAR, wxSize(24,24));
+        m_pBmpTeam[1]->SetBitmap(m_bmpBlue);
+        m_bmpGrey = wxArtProvider::GetBitmap(_T("team_grey"), wxART_TOOLBAR, wxSize(24,24));
     }
 
     //'reset counters' link
     pMainSizer->Add(
         new lmUrlAuxCtrol(this, lmID_LINK_RESET_COUNTERS, rScale, _("Reset counters") ),
-        0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5);
+        0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5);
 
     //set main window sizer
     SetSizer( pMainSizer );                 // use the sizer for window layout
     pMainSizer->SetSizeHints( this );       // set size hints to honour minimum size
 
     Layout();
-    for (int i=0; i < m_pProblemMngr->GetNumTeams(); i++)
+    for (int i=0; i < nNumTeams; i++)
         UpdateDisplays(i);
 }
 
@@ -139,96 +140,95 @@ lmQuizAuxCtrol::~lmQuizAuxCtrol()
 {
 }
 
-void lmQuizAuxCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, bool fTeam)
+void lmQuizAuxCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer)
 {
     // Create the controls for counter group nTeam (0...n)
 
     wxBoxSizer* pCountersSizer = new wxBoxSizer(wxHORIZONTAL);
-    pMainSizer->Add(pCountersSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    pMainSizer->Add(pCountersSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
     // Font sizes
     int nNormalSize = (int)(m_rScale * 8.0);      // 8pt, scaled
-    int nBigSize = (int)(m_rScale * 18.0);      // 18pt, scaled
+    int nBigSize = (int)(m_rScale * 12.0);      // 12pt, scaled
 
     // Boxes sizes and spacing
     int nBoxSize = (int)(m_rScale * 50.0);      // 50px, scaled
     int nSpacing = (int)(m_rScale * 5.0);       // 5px, scaled
 
     // Team label
-    if (fTeam) {
+    if (m_fTwoTeamsMode)
+    {
         wxBoxSizer* pTeamSizer = new wxBoxSizer(wxVERTICAL);
-        pCountersSizer->Add(pTeamSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, nSpacing);
+        pCountersSizer->Add(pTeamSizer, 0, wxALIGN_CENTER_VERTICAL, nSpacing);
 
-        if (nTeam == 0) {
-            wxStaticText* pTxtRight = new wxStaticText( this, wxID_STATIC, _("Team"),
-				wxDefaultPosition, wxDefaultSize, 0 );
-            pTxtRight->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false,
-				_T("Arial")));
-            pTeamSizer->Add(pTxtRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE,
-				nSpacing);
-        }
-        wxStaticText* pTeamLabel = new wxStaticText( this, wxID_STATIC,
-                wxString::Format(_T("%d"), nTeam+1), wxDefaultPosition,
-                wxSize(nBoxSize, -1), wxALIGN_CENTRE|wxBORDER_NONE|wxST_NO_AUTORESIZE );
-        pTeamLabel->SetBackgroundColour(wxColour(255, 255, 255));
-        pTeamLabel->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
-        pTeamSizer->Add(pTeamLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
+        //if first team add headers (spacer)
+        if (nTeam == 0)
+	        pTeamSizer->Add( 0, 24, 0, wxEXPAND, nSpacing );       //spacer
+
+        //add team icon
+	    m_pBmpTeam[nTeam] = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	    pTeamSizer->Add( m_pBmpTeam[nTeam], 0, wxRIGHT, nSpacing );
+        m_pBmpTeam[nTeam]->SetToolTip(
+            (nTeam == 0 ? _("Counters for Team A") : _("Counters for Team B")) );
     }
 
     //display for right answers
     wxBoxSizer* pRightSizer = new wxBoxSizer(wxVERTICAL);
-    pCountersSizer->Add(pRightSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, nSpacing);
+    pCountersSizer->Add(pRightSizer, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM, nSpacing);
 
-    if (nTeam == 0) {
-        wxStaticText* pTxtRight = new wxStaticText( this, wxID_STATIC, _("Right"),
-			wxDefaultPosition, wxDefaultSize, 0 );
-        pTxtRight->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-        pRightSizer->Add(pTxtRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE,
-			nSpacing);
+    if (nTeam == 0)
+    {
+	    m_pBmpRight = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	    pRightSizer->Add( m_pBmpRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, nSpacing );
+        m_pBmpRight->SetToolTip(_("Right answers counter"));
     }
     m_pRightCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
 		wxDefaultPosition, wxSize(nBoxSize, -1),
-		wxALIGN_CENTRE|wxBORDER_SIMPLE|wxST_NO_AUTORESIZE );
+		wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxSIMPLE_BORDER );
+	m_pRightCounter[nTeam]->Wrap( -1 );
     m_pRightCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
-    m_pRightCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
+    m_pRightCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("")));
+    m_pRightCounter[nTeam]->SetToolTip(_("Right answers counter"));
     pRightSizer->Add(m_pRightCounter[nTeam], 0,
-		wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
+		wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE, 0);
 
     //display for wrong answers
     wxBoxSizer* pWrongSizer = new wxBoxSizer(wxVERTICAL);
-    pCountersSizer->Add(pWrongSizer, 0, wxALIGN_CENTER_VERTICAL|wxALL, nSpacing);
+    pCountersSizer->Add(pWrongSizer, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM, nSpacing);
 
-    if (nTeam == 0) {
-        wxStaticText* pTxtWrong = new wxStaticText( this, wxID_STATIC, _("Wrong"),
-			wxDefaultPosition, wxDefaultSize, 0 );
-        pTxtWrong->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-        pWrongSizer->Add(pTxtWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, nSpacing);
+    if (nTeam == 0)
+    {
+	    m_pBmpWrong = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	    pWrongSizer->Add( m_pBmpWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, nSpacing );
+        m_pBmpWrong->SetToolTip(_("Wrong answers counter"));
     }
     m_pWrongCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
 		wxDefaultPosition, wxSize(nBoxSize, -1),
 		wxALIGN_CENTRE|wxBORDER_SIMPLE|wxST_NO_AUTORESIZE );
     m_pWrongCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
-    m_pWrongCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
+    m_pWrongCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("")));
+    m_pWrongCounter[nTeam]->SetToolTip(_("Wrong answers counter"));
     pWrongSizer->Add(m_pWrongCounter[nTeam], 0,
-		wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM|wxADJUST_MINSIZE, 0);
+		wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE, 0);
 
     //display for total score
     wxBoxSizer* pTotalSizer = new wxBoxSizer(wxVERTICAL);
-    pCountersSizer->Add(pTotalSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, nSpacing);
+    pCountersSizer->Add(pTotalSizer, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM, nSpacing);
 
-    if (nTeam == 0) {
-        wxStaticText* pTxtTotal = new wxStaticText( this, wxID_STATIC, _("Mark"),
-			wxDefaultPosition, wxDefaultSize, 0 );
-        pTxtTotal->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-        pTotalSizer->Add(pTxtTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, nSpacing);
+    if (nTeam == 0)
+    {
+	    m_pBmpTotal = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	    pTotalSizer->Add( m_pBmpTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, nSpacing );
+        m_pBmpTotal->SetToolTip(_("Total: your marks"));
     }
     m_pTotalCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
 		wxDefaultPosition, wxSize(nBoxSize, -1),
 		wxALIGN_CENTRE|wxBORDER_SIMPLE|wxST_NO_AUTORESIZE );
     m_pTotalCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
-    m_pTotalCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("Arial")));
+    m_pTotalCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+    m_pTotalCounter[nTeam]->SetToolTip(_("Total: your marks"));
     pTotalSizer->Add(m_pTotalCounter[nTeam], 0,
-		wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxTOP|wxBOTTOM|wxADJUST_MINSIZE, 0);
+		wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE, 0);
 
 }
 
@@ -272,9 +272,19 @@ void lmQuizAuxCtrol::NextTeam()
     m_pProblemMngr->NextTeam();
 
     //update label
-    if (m_pTeamTxt)
-        m_pTeamTxt->SetLabel( wxString::Format(_("Team's %d turn"),
-                                               m_pProblemMngr->GetCurrentTeam() + 1) );
+    if (m_fTwoTeamsMode)
+    {
+        if (m_pProblemMngr->GetCurrentTeam() == 0)
+        {
+            m_pBmpTeam[0]->SetBitmap(m_bmpRed);
+            m_pBmpTeam[1]->SetBitmap(m_bmpGrey);
+        }
+        else
+        {
+            m_pBmpTeam[0]->SetBitmap(m_bmpGrey);
+            m_pBmpTeam[1]->SetBitmap(m_bmpBlue);
+        }
+    }
 }
 
 void lmQuizAuxCtrol::OnNewQuestion()
@@ -380,7 +390,7 @@ void lmLeitnerAuxCtrol::CreateControls()
 	
 	m_pGridSizer->Add( m_pTxtSession, 0, wxRIGHT|wxLEFT|wxALIGN_RIGHT, 5 );
 	
-	m_pGaugeSession = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL );
+	m_pGaugeSession = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
 	m_pGaugeSession->SetValue( 100 ); 
 	m_pGridSizer->Add( m_pGaugeSession, 0, 0, 5 );
 	
@@ -396,7 +406,7 @@ void lmLeitnerAuxCtrol::CreateControls()
 	
 	m_pGridSizer->Add( m_pTxtGlobal, 0, wxRIGHT|wxLEFT|wxALIGN_RIGHT, 5 );
 	
-	m_pGaugeGlobal = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL );
+	m_pGaugeGlobal = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
 	m_pGaugeGlobal->SetValue( 70 ); 
 	m_pGridSizer->Add( m_pGaugeGlobal, 0, 0, 5 );
 	
@@ -413,7 +423,7 @@ void lmLeitnerAuxCtrol::UpdateDisplay()
     int nTotal = m_pProblemMngr->GetTotal();
     float rSessionProgress = m_pProblemMngr->GetSessionProgress();
     float rGlobalProgress = m_pProblemMngr->GetGlobalProgress();
-    wxTimeSpan tsEST = m_pProblemMngr->GetEST();
+    wxTimeSpan tsEST = m_pProblemMngr->GetEstimatedSessionTime();
 
     //update display
     m_pTxtNumQuestions->SetLabel( wxString::Format(_T("%d / %d"), nNew, nExpired) );
@@ -428,7 +438,9 @@ void lmLeitnerAuxCtrol::UpdateDisplay()
 
 void lmLeitnerAuxCtrol::OnExplainProgress(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(_T("Click on link 'Explain'"));
+    lmHtmlDlg dlg(this, _("Progress report"));
+    dlg.SetContent( m_pProblemMngr->GetProgressReport() );
+    dlg.ShowModal();
 }
 
 
@@ -496,7 +508,7 @@ void lmPractiseAuxCtrol::CreateControls()
 	m_pTxtWrong->SetFont( wxFont( 12, 74, 90, 92, false, wxT("Arial") ) );
 	m_pTxtWrong->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 	
-	pWrongSizer->Add( m_pTxtWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE|wxTOP|wxBOTTOM, 0 );
+	pWrongSizer->Add( m_pTxtWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE|wxBOTTOM, 0 );
 	
 	pCountersSizer->Add( pWrongSizer, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT, 5 );
 	

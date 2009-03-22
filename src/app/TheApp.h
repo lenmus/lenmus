@@ -58,7 +58,8 @@ class lmTheApp: public wxApp
     wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
     wxString GetLocaleName() { return m_pLocale->GetLocale(); }
     wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
-    wxString GetVersionNumber();
+    const wxString GetVersionNumber();
+    const wxString GetCurrentUser();
 
 	//overrides
 	int FilterEvent(wxEvent& event);

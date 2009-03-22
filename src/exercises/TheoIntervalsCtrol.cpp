@@ -63,6 +63,12 @@ static lmFIntval m_aProblemDataL3[] = {
     lm_d6, lm_m6, lm_M6, lm_a6, lm_da6, lm_dd7, lm_d7, lm_m7, lm_M7, lm_a7, lm_da7, lm_dd8, lm_d8,
     lm_p8 };
 
+//Questions. Params to generate a question
+enum
+{
+    lmINTVAL_INDEX = 0,
+    lmKEY_SIGNATURE,
+};
 
 //----------------------------------------------------------------------------------
 // Implementation of lmTheoIntervalCtrol
@@ -112,10 +118,7 @@ void lmTheoIntervalCtrol::OnSettingsChanged()
     // The settings have been changed.
 
     //if problem level has changed set up the new problem space
-    if (m_nProblemLevel != m_pConstrains->GetProblemLevel())
-    {
-        SetProblemSpace();
-    }
+    SetProblemSpace();
 
     //Reconfigure answer keyboard for the new settings
     ReconfigureKeyboard();
@@ -128,22 +131,90 @@ void lmTheoIntervalCtrol::SetProblemSpace()
     //save current problem space data
     m_pProblemManager->SaveProblemSpace();
 
-    //Update problem level and load problem space for new level
+    //For ThoeIntervals exercises, question sets are defined by combination of
+    //problem level and key signature, except for level 0 (only interval names).
+    //For level 0 there is only one set
     m_nProblemLevel = m_pConstrains->GetProblemLevel();
-    wxString sKey = m_sKeyPrefix + wxString::Format(_T("Level%d"), m_nProblemLevel);
-    if (!m_pProblemManager->LoadProblemSpace(sKey))
+    if (m_nProblemLevel == 0)
     {
-        //Couldn't load problem space data: it didn't exist. Create new problem space
-        int nNumQuestions = 8;      //default for level 0
-        if (m_nProblemLevel == 1)
-            nNumQuestions = sizeof(m_aProblemDataL1)/sizeof(lmFIntval);
-        else if (m_nProblemLevel == 2)
-            nNumQuestions = sizeof(m_aProblemDataL2)/sizeof(lmFIntval);
-        else
-            nNumQuestions = sizeof(m_aProblemDataL3)/sizeof(lmFIntval);
-
-        m_pProblemManager->SetNewSpace(nNumQuestions, 3, sKey);
+        SetSpaceLevel0();
     }
+    else
+    {
+        //Problem Space: TheoIntervals
+        //Question params:
+        //  Param0 - Index on  m_aProblemDataLx[] to define interval
+        //  Param1 - Key signature
+        //  All others not used -> Mandatory params = 2
+        m_pProblemManager->NewSpace(m_sKeyPrefix, 3, 2);
+        lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+        for (int i=0; i < earmFa+1; i++)
+        {
+            if ( pKeyConstrains->IsValid((lmEKeySignatures)i) )
+            {
+                wxString sSetName = wxString::Format(_T("Level%d/Key%d"),
+                                                     m_nProblemLevel, i);
+                //ask problem manager to load this Set.
+                if ( !m_pProblemManager->LoadSet(sSetName) )
+                {
+                    //No questions saved for this set. Create the set
+                    CreateQuestionsSet(sSetName, (lmEKeySignatures)i);
+                }
+            }
+        }
+    }
+    //new space loaded. Inform problem manager
+    m_pProblemManager->OnProblemSpaceChanged();
+
+    //update counters
+    if (m_pCounters)
+        m_pCounters->UpdateDisplay();
+
+    //discard any currently formulated question
+    if (m_fQuestionAsked)
+        NewProblem();
+}
+
+void lmTheoIntervalCtrol::SetSpaceLevel0()
+{
+    //Problem Space: Initiation to intervals
+    //Question params:
+    //  Param0 - Index on  m_aProblemDataL0[] to define interval
+    //  All others not used -> Mandatory params = 1
+
+    wxString sSpaceName = m_sKeyPrefix + _T("/Level0");
+    m_pProblemManager->NewSpace(sSpaceName, 3, 1);
+    wxString sSetName = _T("Level0");
+    //ask problem manager to load the set.
+    if ( !m_pProblemManager->LoadSet(sSetName) )
+    {
+        //No questions saved for this set. Create the set
+        m_pProblemManager->StartNewSet(sSetName);
+        for (int i=0; i < 8; i++)
+            m_pProblemManager->AddQuestionToSet(i);
+
+        m_pProblemManager->EndOfNewSet();
+    }
+}
+
+void lmTheoIntervalCtrol::CreateQuestionsSet(wxString& sSetName,
+                                             lmEKeySignatures nKey)
+{
+    wxASSERT(m_nProblemLevel > 0 && m_nProblemLevel < 4);
+
+    int nNumQuestions;
+    if (m_nProblemLevel == 1)
+        nNumQuestions = sizeof(m_aProblemDataL1)/sizeof(lmFIntval);
+    else if (m_nProblemLevel == 2)
+        nNumQuestions = sizeof(m_aProblemDataL2)/sizeof(lmFIntval);
+    else
+        nNumQuestions = sizeof(m_aProblemDataL3)/sizeof(lmFIntval);
+
+    m_pProblemManager->StartNewSet(sSetName);
+    for (int i=0; i <nNumQuestions; i++)
+        m_pProblemManager->AddQuestionToSet(i, (long)nKey);
+
+    m_pProblemManager->EndOfNewSet();
 }
 
 wxString lmTheoIntervalCtrol::SetNewProblem()
@@ -151,17 +222,32 @@ wxString lmTheoIntervalCtrol::SetNewProblem()
     // This method must prepare the interval for the problem and set variables:
     // m_iQ, m_fpIntv, m_fpStart, m_fpEnd, m_sAnswer
 
+    //Get parameters controlled by problem space
+
+    //Param0: index to interval number
     m_iQ = m_pProblemManager->ChooseQuestion();
     wxASSERT(m_iQ>= 0 && m_iQ < m_pProblemManager->GetSpaceSize());
 
+    wxASSERT(m_pProblemManager->IsQuestionParamMandatory(lmINTVAL_INDEX));
+    long nIntvNdx = m_pProblemManager->GetQuestionParam(m_iQ, lmINTVAL_INDEX);
     if (m_nProblemLevel <= 1)
-        m_fpIntv = m_aProblemDataL1[m_iQ];
+        m_fpIntv = m_aProblemDataL1[nIntvNdx];
     else if (m_nProblemLevel == 2)
-        m_fpIntv = m_aProblemDataL2[m_iQ];
+        m_fpIntv = m_aProblemDataL2[nIntvNdx];
     else
-        m_fpIntv = m_aProblemDataL3[m_iQ];
+        m_fpIntv = m_aProblemDataL3[nIntvNdx];
 
     int nIntvNum = FIntval_GetNumber(m_fpIntv);           //get interval number
+
+    //Param1: key signature
+    lmRandomGenerator oGenerator;
+    if (m_pProblemManager->IsQuestionParamMandatory(lmKEY_SIGNATURE))
+        m_nKey = (lmEKeySignatures)m_pProblemManager->GetQuestionParam(m_iQ, lmKEY_SIGNATURE);
+    else
+        m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
+
+
+    //Get other parameters: selectable by the user
 
     int nMinPos = 2 - (2 * m_pConstrains->GetLedgerLinesBelow());
     int nMaxPos = 10 + (2 * m_pConstrains->GetLedgerLinesAbove());
@@ -169,9 +255,7 @@ wxString lmTheoIntervalCtrol::SetNewProblem()
 
     //Generate start note and end note
     bool fValid = false;
-    lmRandomGenerator oGenerator;
     m_nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
-    m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
     while (!fValid)
     {
         lmDPitch dpStart = oGenerator.GenerateRandomDPitch(nMinPos, nMaxPos, false, m_nClef);
@@ -179,8 +263,8 @@ wxString lmTheoIntervalCtrol::SetNewProblem()
         m_fpEnd = m_fpStart + m_fpIntv;
         fValid = FPitch_IsValid(m_fpEnd);
         if (!fValid)
-            wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] INVALID: m_iQ=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d"),
-                 m_iQ, m_fpIntv, m_fpStart, m_fpEnd);
+            wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] INVALID: m_iQ=%d, nIntvNdx=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d"),
+                 m_iQ, nIntvNdx, m_fpIntv, m_fpStart, m_fpEnd);
     }
 
     //compute the interval name
@@ -196,8 +280,8 @@ wxString lmTheoIntervalCtrol::SetNewProblem()
     if (m_fpIntv > 0)
         m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
 
-    wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] m_iQ=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
-                 m_iQ, FIntval_GetIntvCode(m_fpIntv).c_str(), m_fpIntv,
+    wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
+                 m_iQ, nIntvNdx, FIntval_GetIntvCode(m_fpIntv).c_str(), m_fpIntv,
                  FPitch_ToAbsLDPName(m_fpStart).c_str(), m_fpStart,
                  FPitch_ToAbsLDPName(m_fpEnd).c_str(), m_fpEnd, m_sAnswer.c_str());
 
@@ -239,13 +323,13 @@ lmBuildIntervalCtrol::lmBuildIntervalCtrol(wxWindow* parent, wxWindowID id,
     : lmTheoIntervalCtrol(parent, id, pConstrains, pos, size, style )
 {
     //set key
-    m_sKeyPrefix = wxString::Format(_T("/UserData/BuildIntval/%s/"),
+    m_sKeyPrefix = wxString::Format(_T("/BuildIntval/%s/"),
                                     m_pConstrains->GetSection().c_str() );
     //create controls
     CreateControls();
 
     //update display
-    if (m_pCounters) 
+    if (m_pCounters)
         m_pCounters->UpdateDisplay();
 
     if (m_pConstrains->IsTheoryMode()) NewProblem();
@@ -474,13 +558,13 @@ lmIdfyIntervalCtrol::lmIdfyIntervalCtrol(wxWindow* parent, wxWindowID id,
     : lmTheoIntervalCtrol(parent, id, pConstrains, pos, size, style)
 {
     //set key
-    m_sKeyPrefix = wxString::Format(_T("/UserData/IdfyIntval/%s/"),
+    m_sKeyPrefix = wxString::Format(_T("/IdfyIntval/%s/"),
                                     m_pConstrains->GetSection().c_str() );
     //create controls
     CreateControls();
 
     //update display
-    if (m_pCounters) 
+    if (m_pCounters)
         m_pCounters->UpdateDisplay();
 
     if (m_pConstrains->IsTheoryMode()) NewProblem();

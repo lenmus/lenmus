@@ -290,18 +290,32 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     // creating the shape object and adding it to the graphical model.
     // Paper cursor must be used as the base for positioning.
 
-	lmEBarline nType = m_nBarlineType;
     lmLUnits uyTop = m_pVStaff->GetYTop();
     lmLUnits uyBottom = m_pVStaff->GetYBottom();
 
-    //create the shape
+    if (false && lmPRESERVE_SHAPES && !IsDirty())
+    {
+        //Not dirty: just add existing shapes to the Box
+        lmShape* pOldShape = this->GetShape();
+        pBox->AddShape(pOldShape);
+        pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
 
-    lmShapeBarline* pShape =
-        new lmShapeBarline(this, nType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
-                           m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
-	pBox->AddShape(pShape);
-    StoreShape(pShape);
-    return pShape->GetBounds().GetWidth();
+        //reset position
+        //TODO. Meanwhile do not execute this code:    if (false && ...
+    }
+    else
+    {
+	    lmEBarline nType = m_nBarlineType;
+
+        //create the shape
+
+        lmShapeBarline* pShape =
+            new lmShapeBarline(this, nType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
+                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
+	    pBox->AddShape(pShape);
+        StoreShape(pShape);
+    }
+    return GetShape()->GetBounds().GetWidth();
 
 }
 

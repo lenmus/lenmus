@@ -126,8 +126,7 @@ Now it is just a question of creating an iterator and exploring the collection o
             if ( ((lmNote)pSO)->GetSttaffNum == 1)
             {
                 //ok. Note on staff 1. Let's check if it is on beat position
-                //uhm! the name of the check method is misleading! Sorry! I have to fix this!
-                if( ((lmNote*)pSO)->GetChordPosition() != lmNON_CHORD_NOTE)
+                if( ((lmNote*)pSO)->GetBeatPosition() != lmNOT_ON_BEAT)
                 {
                     // on beat note. Do something with it!
                     wxLogMessage(_T("Found note on beat position"));
@@ -146,7 +145,7 @@ Now it is just a question of creating an iterator and exploring the collection o
 \h2 {Objects model}
 %%%-----------------------------------------
 
-Now you have a general filling of how the score is internally represented. Let's see the model in detail. It is depicted if figure 2.
+Now you have a general feelling of how the score is internally represented. Let's see the model in detail. It is depicted if figure 2.
 
 \imgc [om_2_internal_model.jpg] { Figure 2. Hierarchy of score objects }
         

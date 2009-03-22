@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -37,12 +37,14 @@ public:
     void Apply();
 
 private:
+    void CreateControls();
 
     // controls
-        // Exercises
-    wxCheckBox*     m_pChkAnswerSounds;       // Enable right/wrong answer sounds
-    wxCheckBox*     m_pChkTeamCounters;       // Show two counters (for teams competition)
-    wxCheckBox*     m_pChkAutoNewProblem;     // Show two counters (for teams competition)
+	wxPanel*        m_pHeaderPanel;
+	wxStaticText*   m_pTxtTitle;
+	wxStaticBitmap* m_pBmpIconTitle;
+	wxCheckBox*     m_pChkAnswerSounds;
+	wxCheckBox*     m_pChkAutoNewProblem;
 
 };
 

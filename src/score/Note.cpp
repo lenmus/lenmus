@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -43,10 +43,10 @@
 #include "Glyph.h"
 #include "UndoRedo.h"
 #include "../ldp_parser/AuxString.h"
-#include "../graphic/Shapes.h"
+#include "../graphic/GMObject.h"
+#include "../graphic/ShapeLine.h"
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeBeam.h"
-#include "../graphic/GMObject.h"
 #include "../app/Preferences.h"         //g_fAutoBeam
 
 
@@ -264,14 +264,20 @@ lmNote::~lmNote()
         }
     }
 
-    //delete the Ties.
-    DeleteTiePrev();
-
-    if (m_pTieNext) {
-        m_pTieNext->Remove(this);
+    //delete the ties.
+    if (m_pTiePrev)
+        delete m_pTiePrev;
+    if (m_pTieNext)
         delete m_pTieNext;
-    }
-    m_pTieNext = (lmTie*)NULL;
+
+    ////delete the ties.
+    //DeleteTiePrev();
+
+    //if (m_pTieNext) {
+    //    m_pTieNext->Remove(this);
+    //    delete m_pTieNext;
+    //}
+    //m_pTieNext = (lmTie*)NULL;
 
     //delete accidentals
     if (m_pAccidentals) {
@@ -301,6 +307,9 @@ void lmNote::CreateTie(lmNote* pNtPrev, lmNote* pNtNext)
         lmTie* pTie = new lmTie(pNtPrev, pNtNext);
         pNtNext->SetTiePrev(pTie);
         pNtPrev->SetTieNext(pTie);
+
+        pNtPrev->AttachAuxObj(pTie);
+        pNtNext->AttachAuxObj(pTie);
     }
     else if (!pNtPrev)
         SetTiePrev((lmTie*)NULL);
@@ -384,7 +393,7 @@ void lmNote::RemoveTie(lmTie* pTie)
 void lmNote::DeleteTiePrev()
 {
     if (m_pTiePrev) {
-        m_pTiePrev->Remove(this);
+        //m_pTiePrev->Remove(this);
         delete m_pTiePrev;
     }
     m_pTiePrev = (lmTie*)NULL;
@@ -419,13 +428,13 @@ int lmNote::GetPositionInBeat()
         return lmUNKNOWN_BEAT;
 }
 
-int lmNote::GetChordPosition()
+int lmNote::GetBeatPosition()
 {
     lmTimeSignature* pTS = GetTimeSignature();
     if (pTS)
-        return ::GetChordPosition(m_rTimePos, m_rDuration, pTS->GetNumBeats(), pTS->GetBeatType());
+        return ::GetBeatPosition(m_rTimePos, m_rDuration, pTS->GetNumBeats(), pTS->GetBeatType());
     else
-        return lmNON_CHORD_NOTE;
+        return lmNOT_ON_BEAT;
 }
 
 void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
@@ -709,9 +718,9 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     if (m_pTuplet && (m_pTuplet->GetEndNoteRest())->GetID() == m_nId)
 		m_pTuplet->LayoutObject(pBox, pPaper, colorC);
 
-    //ties
-    if (m_pTiePrev)
-		m_pTiePrev->LayoutObject(pBox, pPaper, colorC);
+  //  //ties
+  //  if (m_pTiePrev)
+		//m_pTiePrev->LayoutObject(pBox, pPaper, colorC);
 
 	//if not used, delete stem shape created at start of this method.
     //For chords, stem will be deleted when invoking lmChord::AddStemShape in last note
@@ -951,8 +960,8 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
                 uyPos = uyStart - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                lmShapeLine* pLine =
-                    new lmShapeLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
+                lmShapeSimpleLine* pLine =
+                    new lmShapeSimpleLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                                     uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
 	            pNoteShape->Add(pLine);
            }
@@ -964,8 +973,8 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
             if (i % 2 == 0) {
                 nTenths = 5 * (10 - i);
                 uyPos = uyStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                lmShapeLine* pLine =
-                    new lmShapeLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
+                lmShapeSimpleLine* pLine =
+                    new lmShapeSimpleLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                                     uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
 	            pNoteShape->Add(pLine);
             }
@@ -1501,8 +1510,8 @@ wxString lmNote::SourceLDP(int nIndent)
     for (int i=0; i < m_nNumDots; i++)
         sSource += _T(".");
 
-    //tied ?
-    if (IsTiedToNext()) sSource += _T(" l");
+    ////tied ?
+    //if (IsTiedToNext()) sSource += _T(" l");
 
     //stem
     if (m_nStemType != lmSTEM_DEFAULT)   //default: as decided by program
@@ -1641,7 +1650,7 @@ void lmNote::Freeze(lmUndoData* pUndoData)
     //save and remove tie with previous note
     if (m_pTiePrev)
     {
-        pUndoData->AddParam<lmNote*>( m_pTiePrev->GetStartNote() );
+        pUndoData->AddParam<lmNote*>( (lmNote*)m_pTiePrev->GetStartNoteRest() );
         m_pTiePrev->Remove(this);
         delete m_pTiePrev;
         m_pTiePrev = (lmTie*)NULL;
@@ -1652,7 +1661,7 @@ void lmNote::Freeze(lmUndoData* pUndoData)
     //save and remove tie with next note
     if (m_pTieNext)
     {
-        pUndoData->AddParam<lmNote*>( m_pTieNext->GetEndNote() );
+        pUndoData->AddParam<lmNote*>( (lmNote*)m_pTieNext->GetEndNoteRest() );
         m_pTieNext->Remove(this);
         delete m_pTieNext;
         m_pTieNext = (lmTie*)NULL;
@@ -1781,6 +1790,60 @@ void lmNote::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
         pMenu->Append(lmPOPUP_DeleteTiePrev, _("Delete tie &previous"));
     }
 }
+
+void lmNote::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass)
+{ 
+	//AWARE: this method is invoked only when the relationship is being deleted and
+	//this deletion is not requested by this note/rest. If this note/rest would like
+	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//relationship object
+
+    SetDirty(true);
+
+	switch (nRelClass)
+	{
+		case lm_eTieClass:
+            if (m_pTiePrev && (lmBinaryRelationship<lmNote>*)m_pTiePrev == pRel)
+			    m_pTiePrev = (lmTie*)NULL;
+            else if (m_pTieNext && (lmBinaryRelationship<lmNote>*)m_pTieNext == pRel)
+			    m_pTieNext = (lmTie*)NULL;
+            else
+                wxASSERT(false);
+			return;
+
+		default:
+			lmNoteRest::OnRemovedFromRelationship(pRel, nRelClass);
+	}
+}
+
+void lmNote::OnRemovedFromRelationship(lmRelObj* pRel)
+{ 
+	//AWARE: this method is invoked only when the relationship is being deleted and
+	//this deletion is not requested by this note/rest. If this note/rest would like
+	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//relationship object
+
+    SetDirty(true);
+
+	if (pRel->IsTie())
+	{
+        if (m_pTiePrev && m_pTiePrev == pRel)
+        {
+            this->DetachAuxObj(m_pTiePrev);
+			m_pTiePrev = (lmTie*)NULL;
+        }
+        else if (m_pTieNext && m_pTieNext == pRel)
+        {
+            this->DetachAuxObj(m_pTieNext);
+			m_pTieNext = (lmTie*)NULL;
+        }
+        else
+            wxASSERT(false);
+    }
+    else
+        wxASSERT(false);
+}
+
 
 //==========================================================================================
 // Global functions related to notes

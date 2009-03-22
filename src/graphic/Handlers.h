@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,28 +39,105 @@
 #include "../score/defs.h"      // lmLUnits
 #include "../app/Paper.h"
 #include "GMObject.h"
+#include "Shapes.h"
 
 class lmController;
+class lmScoreObj;
+class wxColour;
+class lmScore;
+class lmPaper;
+
+
+//-------------------------------------------------------------------------------
 
 class lmHandler : public lmSimpleShape
 {
 public:
     virtual ~lmHandler() {}
 
+    //dragging the handler
+	virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+    virtual void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
+
 protected:
-    lmHandler(lmScoreObj* pOwner);
+    lmHandler(lmScoreObj* pOwner, lmGMObject* pOwnerGMO, long nHandlerID);
+
+    lmGMObject*     m_pOwnerGMO;    //GMObject that owns this handler
+    long            m_nHandlerID;   //handler ID (the owner assigns it)
+};
+
+
+//-------------------------------------------------------------------------------
+
+class lmHandlerLine : public lmHandler
+{
+public:
+    lmHandlerLine(lmScoreObj* pOwner, lmGMObject* pOwnerGMO, long nHandlerID);
+    virtual ~lmHandlerLine() {}
+
+	//implementation of pure virtual methods in base classes
+    void Render(lmPaper* pPaper, wxColour color);
+    wxString Dump(int nIndent);
+
+    //dragging the handler
+    void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
+
+    //operations
+    void SetHandlerPoints(lmLUnits xStart, lmLUnits yStart,
+						  lmLUnits xEnd, lmLUnits yEnd);
+    void SetHandlerPoints(lmUPoint uStart, lmUPoint uEnd);
+    inline lmUPoint GetHandlerStartPoint() { return lmUPoint(m_xStart, m_yStart); }
+    inline lmUPoint GetHandlerEndPoint() { return lmUPoint(m_xEnd, m_yEnd); }
+
+protected:
+    void OnPointsChanged();
+
+    lmLUnits		m_xStart, m_yStart;
+    lmLUnits		m_xEnd, m_yEnd;
 
 };
 
 
+//-------------------------------------------------------------------------------
+
+class lmHandlerSquare : public lmHandler
+{
+public:
+    lmHandlerSquare(lmScoreObj* pOwner, lmGMObject* pOwnerGMO, long nHandlerID);
+    virtual ~lmHandlerSquare() {}
+
+	//implementation of pure virtual methods in base classes
+    void Render(lmPaper* pPaper, wxColour color);
+    wxString Dump(int nIndent);
+
+    //dragging the handler
+    void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
+
+    //operations
+    void SetHandlerCenterPoint(lmLUnits uxPos, lmLUnits uyPos);
+    void SetHandlerCenterPoint(lmUPoint uPos);
+    void SetHandlerTopLeftPoint(lmUPoint uPos);
+    lmUPoint GetHandlerCenterPoint();
+    inline lmUPoint GetTopCenterDistance() { return lmUPoint(m_uSide/2.0, m_uSide/2.0); }
+
+protected:
+    void OnPointsChanged();
+
+    lmUPoint    m_uTopLeft;     //square top left point
+    lmLUnits    m_uSide;        //square side lenght
+
+};
+
+
+//-------------------------------------------------------------------------------
+
 #define lmVERTICAL      true
 #define lmHORIZONTAL    false
-
 
 class lmShapeMargin : public lmHandler
 {
 public:
-    lmShapeMargin(lmScore* pScore, int nIdx, int nPage, bool fVertical, lmLUnits uPos,
+    lmShapeMargin(lmScore* pScore, lmGMObject* pOwnerGMO, int nIdx, int nPage, bool fVertical, lmLUnits uPos,
                   lmLUnits uLenght, wxColour color = *wxBLACK);
 	~lmShapeMargin();
 
@@ -72,7 +149,7 @@ public:
     //call backs
     void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
 	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-    void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+    void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
 
 
 protected:

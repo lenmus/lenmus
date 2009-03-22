@@ -283,7 +283,7 @@ void lmExerciseCtrol::CreateControls()
         }
 	    m_pCboMode = new wxChoice(this, lmID_CBO_MODE, wxDefaultPosition,
                                   wxDefaultSize, nNumValidModes, sCboModeChoices, 0);
-	    m_pCboMode->SetSelection( m_nGenerationMode );
+	    ChangeGenerationModeLabel( m_nGenerationMode );
 
 	    pModeSizer->Add( m_pCboMode, 1, wxALL|wxALIGN_CENTER_VERTICAL, nSpacing);
 
@@ -362,7 +362,7 @@ void lmExerciseCtrol::ChangeGenerationModeLabel(int nMode)
 {
     m_nGenerationMode = nMode;
     if (m_pCboMode)
-        m_pCboMode->SetSelection( m_nGenerationMode );
+        m_pCboMode->SetStringSelection( g_sGenerationModeName[m_nGenerationMode] );
 }
 
 void lmExerciseCtrol::ChangeCountersCtrol()
@@ -418,8 +418,12 @@ lmCountersAuxCtrol* lmExerciseCtrol::CreateCountersCtrol()
         switch(m_nGenerationMode)
         {
             case lm_eQuizMode:
+                pNewCtrol = new lmQuizAuxCtrol(this, wxID_ANY, 2, m_rScale,
+                                              (lmQuizManager*)m_pProblemManager);
+                break;
+
             case lm_eExamMode:
-                pNewCtrol = new lmQuizAuxCtrol(this, wxID_ANY, m_rScale,
+                pNewCtrol = new lmQuizAuxCtrol(this, wxID_ANY, 1, m_rScale,
                                               (lmQuizManager*)m_pProblemManager);
                 break;
 
@@ -451,7 +455,16 @@ void lmExerciseCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmExerciseCtrol::OnModeChanged(wxCommandEvent& event)
 {
-    int nMode = m_pCboMode->GetSelection();
+    //locate new mode
+    wxString sMode = m_pCboMode->GetStringSelection();
+	int nMode;
+    for (nMode=0; nMode < lm_eNumGenerationModes; nMode++)
+    {
+        if (sMode == g_sGenerationModeName[nMode])
+            break;
+    }
+    wxASSERT(nMode < lm_eNumGenerationModes);
+
     if (m_nGenerationMode != nMode)
         this->ChangeGenerationMode(nMode);
 }

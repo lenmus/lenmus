@@ -192,7 +192,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
         {
             lmShape* pOldShape = this->GetShape(nStaff);
 	        pBox->AddShape(pOldShape);
-            pOldShape->SetColour(colorC);       //change its colour to new desired colour
+            pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
         }
     }
     else
@@ -528,12 +528,12 @@ int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType)
 
 }
 
-int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType) 
+int GetBeatPosition(float rTimePos, float rDuration, int nBeats, int nBeatType) 
 {
     // Some times it is necessary to know if a note/rest sounds in beat part.
     // This method receives the time for a note/rest and the current time signature
     // and returns the beat number if the note sounds in beat part (starts in beat or 
-    // is sounding at beat time, or returns -1 (lmNON_CHORD_NOTE) if non-chord note
+    // is sounding at beat time, or returns -1 (lmNOT_ON_BEAT) if non-chord note
 
     // coumpute beat duration
     int nBeatDuration;
@@ -580,6 +580,6 @@ int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType)
         return nStartBeat+1;    //AWARE: The note might last for many beats. So nEndBeat is
                                 // not the right answer.
     else
-        return lmNON_CHORD_NOTE;
+        return lmNOT_ON_BEAT;
 
 }

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,14 +25,22 @@
 #pragma interface "DlgDebug.cpp"
 #endif
 
+
 #include <wx/dialog.h>
 
+#include <wx/html/htmlwin.h>        //GCC complains of forward declaration of wxHtmlWindow !
+//class wxHtmlWindow;
+class wxButton;
+class wxTextCtrl;
+class wxWindow;
 
-class lmDlgDebug:public wxDialog {
+
+class lmDlgDebug:public wxDialog
+{
    DECLARE_DYNAMIC_CLASS(lmDlgDebug)
 
 public:
-    lmDlgDebug(wxWindow * parent, wxString sTitle, wxString sData);
+    lmDlgDebug(wxWindow* parent, wxString sTitle, wxString sData);
     virtual ~lmDlgDebug();
 
     void OnOK(wxCommandEvent& WXUNUSED(event));
@@ -45,5 +53,28 @@ private:
 
     DECLARE_EVENT_TABLE()
 };
+
+class lmHtmlDlg : public wxDialog
+{
+public:
+	lmHtmlDlg(wxWindow* pParent, const wxString& sTitle, bool fSaveButton = false);
+	~lmHtmlDlg();
+
+    void CreateControls(bool fSaveButton);
+    void SetContent(const wxString& sContent);
+
+    // event handlers
+    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
+    void OnSaveClicked(wxCommandEvent& WXUNUSED(event));
+
+
+private:
+	wxHtmlWindow*   m_pHtmlWnd;
+	wxButton*       m_pBtnAccept;
+	wxButton*       m_pBtnSave;
+
+    DECLARE_EVENT_TABLE()
+};
+
 
 #endif    // __LM_DLGDEBUG_H__

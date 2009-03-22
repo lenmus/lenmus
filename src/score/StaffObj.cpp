@@ -305,6 +305,67 @@ lmLUnits lmScoreObj::SetUserXLocation(lmLUnits uxPos, int nShapeIdx)
 	return uxOldPos;
 }
 
+lmUPoint lmScoreObj::SetUserLocation(lmUPoint uNewPos, int nShapeIdx)
+{
+    //Returns previous location.
+    //This method is only used during interactive edition
+    //AWARE: Review method SetUserLocation when doing changes in this one
+
+    lmGMObject* pGMObj = GetGraphicObject(nShapeIdx);
+    wxASSERT(pGMObj);
+
+	//interactive edition: user is moving an object
+	lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
+    lmUPoint uShift(uNewPos - uShapePos);
+    lmUPoint uUserShift = GetUserShift(nShapeIdx) + uShift;
+    lmUPoint uOldPos = uShapePos;
+    this->SaveUserLocation(uUserShift.x, uUserShift.y, nShapeIdx);
+
+	//Move also attached AuxObjs to this ScoreObj
+	if (m_pAuxObjs && IsMainShape(nShapeIdx))
+	{
+		for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+		{
+			(*m_pAuxObjs)[i]->OnParentMoved(uShift.x, uShift.y);
+		}
+	}
+
+    //return previous position
+	return uOldPos;
+}
+
+void lmScoreObj::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
+                                  bool fAddShifts)
+{
+    //This method is only used during interactive edition.
+    //It receives a vector with the shifts for object points and a flag to signal
+    //whether to add or to substract shifts.
+
+    //wxASSERT( nNumPoints == (int)pNewPoints->size() );
+
+    //lmGMObject* pGMObj = GetGraphicObject(nShapeIdx);
+    //wxASSERT(pGMObj);
+
+    //for(int i=0; i < nNumPoints; i++)
+    //{
+    //    if (fAddShifts)
+    //    {
+    //        m_tPoint[i].x += m_pParent->LogicalToTenths(pShifts->at(i).x);
+    //        m_tPoint[i].y += m_pParent->LogicalToTenths(pShifts->at(i).y);
+    //    }
+    //    else
+    //    {
+    //        m_tPoint[i].x -= m_pParent->LogicalToTenths(pShifts->at(i).x);
+    //        m_tPoint[i].y -= m_pParent->LogicalToTenths(pShifts->at(i).y);
+    //    }
+    //}
+
+    ////inform the shape
+    //lmShapeLine* pShape = (lmShapeLine*)GetShape(nShapeIdx);
+    //if (pShape)
+    //    pShape->UpdatePoints(nNumPoints, pShifts, fAddShifts);
+}
+
 void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
     //This method is invoked only from TimeposTable module, from methods 
@@ -605,8 +666,19 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
 	lmLUnits uWidth = 0;
     if (m_fVisible || IsMultishaped())
     {
-        //create the objects shapes
-        uWidth = LayoutObject(pBox, pPaper, m_uComputedPos, color);
+        if (lmPRESERVE_SHAPES && !IsDirty() && GetShape(1) &&
+            !IsClef() && !IsKeySignature() && !IsTimeSignature() )
+        {
+            //Not dirty: just add existing shapes to the Box
+            lmShape* pOldShape = this->GetShape();
+            pBox->AddShape(pOldShape);
+            pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
+        }
+        else
+        {
+            //add shapes for this object
+            uWidth = LayoutObject(pBox, pPaper, m_uComputedPos, color);
+        }
     }
 	else
 	{
@@ -623,7 +695,10 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
 		    pPaper->SetCursorX(m_uComputedPos.x);
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
-		    (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
+            if (!(*m_pAuxObjs)[i]->IsRelObj())
+		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
+            else if ((lmNoteRest*)this == ((lmBinaryRelObj*)(*m_pAuxObjs)[i])->GetEndNoteRest())
+		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
 	    }
     }
 
@@ -747,7 +822,18 @@ wxString lmStaffObj::SourceLDP(int nIndent)
 		nIndent++;
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         {
-            sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent);
+            if ( (*m_pAuxObjs)[i]->IsRelObj() )
+            {
+                lmRelObj* pRO = (lmRelObj*)(*m_pAuxObjs)[i];
+                if ( pRO->GetStartNoteRest() == (lmNoteRest*)this )
+                    sSource += pRO->SourceLDP_First(nIndent);
+                else if ( pRO->GetEndNoteRest() == (lmNoteRest*)this )
+                    sSource += pRO->SourceLDP_Last(nIndent);
+                else
+                    sSource += pRO->SourceLDP_Middle(nIndent);
+            }
+            else
+                sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent);
         }
 		nIndent--;
     }
@@ -920,7 +1006,7 @@ void lmMultiShapesMngr::StoreShape(lmGMObject* pGMObj)
     else
     {
         lmGMObject* pShape = m_ShapesInfo[nIdx]->pGMObj;
-        wxASSERT(!lmPRESERVE_SHAPES && pShape == (lmGMObject*)NULL);
+        //wxASSERT(!lmPRESERVE_SHAPES && pShape == (lmGMObject*)NULL);
         if (lmPRESERVE_SHAPES && pShape) delete pShape;
         m_ShapesInfo[nIdx]->pGMObj = pGMObj;
     }

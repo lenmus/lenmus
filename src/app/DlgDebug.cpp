@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -30,18 +30,30 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
+#else
+    #include <wx/intl.h>
+    #include <wx/html/htmlwin.h>
+    #include <wx/gdicmn.h>
+    #include <wx/font.h>
+    #include <wx/colour.h>
+    #include <wx/settings.h>
+    #include <wx/string.h>
+    #include <wx/button.h>
+    #include <wx/sizer.h>
+    #include <wx/dialog.h>
 #endif
-
-#include <wx/dialog.h>
-#include <wx/html/htmlwin.h>
-#include <wx/button.h>
-#include <wx/sizer.h>
-
 
 #include "DlgDebug.h"
 
-const int lmID_SAVE = wxNewId();
+// IDs for controls
+enum
+{
+	lmID_HTML_WND = 3010,
+	lmID_ACCEPT,
+	lmID_SAVE,
+};
+
 
 BEGIN_EVENT_TABLE(lmDlgDebug, wxDialog)
    EVT_BUTTON(wxID_OK, lmDlgDebug::OnOK)
@@ -107,7 +119,7 @@ void lmDlgDebug::AppendText(wxString sText)
 
 void lmDlgDebug::OnSave(wxCommandEvent& WXUNUSED(event))
 {
-	wxString sFilename = wxFileSelector(_T("File to save"));
+	wxString sFilename = wxFileSelector(_("File to save"));
 	if ( !sFilename.empty() )
 	{
 		// save the file
@@ -116,3 +128,88 @@ void lmDlgDebug::OnSave(wxCommandEvent& WXUNUSED(event))
 	//else: cancelled by user
 
 }
+
+
+
+//-------------------------------------------------------------------------------------------
+// lmHtmlDlg implementation
+//-------------------------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(lmHtmlDlg, wxDialog)
+    EVT_BUTTON(lmID_ACCEPT, lmHtmlDlg::OnAcceptClicked )
+    EVT_BUTTON(lmID_SAVE, lmHtmlDlg::OnSaveClicked )
+
+END_EVENT_TABLE()
+
+
+
+lmHtmlDlg::lmHtmlDlg(wxWindow* pParent, const wxString& sTitle, bool fSaveButton) 
+    : wxDialog(pParent, wxID_ANY, sTitle, wxDefaultPosition, wxSize(600,400),
+               wxDEFAULT_DIALOG_STYLE)
+{
+    // create the dialog controls
+    CreateControls(fSaveButton);
+    CentreOnScreen();
+}
+
+void lmHtmlDlg::CreateControls(bool fSaveButton)
+{
+    //AWARE: Code created with wxFormBuilder and copied here.
+    //Modifications:
+    // - near line 178: add 'if' to hide Save button
+
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pHtmlWnd = new wxHtmlWindow( this, lmID_HTML_WND, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO );
+	pMainSizer->Add( m_pHtmlWnd, 1, wxALL|wxEXPAND, 5 );
+	
+	wxBoxSizer* pButtonsSizer;
+	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_pBtnAccept = new wxButton( this, lmID_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtnAccept, 0, wxALL, 5 );
+	
+	
+	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+    if (fSaveButton)
+    {
+	    m_pBtnSave = new wxButton( this, lmID_SAVE, _("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	    pButtonsSizer->Add( m_pBtnSave, 0, wxALL, 5 );
+    }
+
+	pMainSizer->Add( pButtonsSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	this->SetSizer( pMainSizer );
+	this->Layout();
+}
+
+lmHtmlDlg::~lmHtmlDlg()
+{
+}
+
+void lmHtmlDlg::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
+{
+   EndModal(wxID_OK);
+}
+
+void lmHtmlDlg::OnSaveClicked(wxCommandEvent& WXUNUSED(event))
+{
+	wxString sFilename = wxFileSelector(_("File to save"));
+	if ( !sFilename.empty() )
+	{
+		// save the file
+		//m_pTxtData->SaveFile(sFilename);
+	}
+	//else: cancelled by user
+
+}
+
+void lmHtmlDlg::SetContent(const wxString& sContent)
+{
+    m_pHtmlWnd->SetPage(sContent);
+}
+

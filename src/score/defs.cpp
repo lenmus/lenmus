@@ -48,6 +48,7 @@
 //      n - integer, long
 //      s - string
 //      r - real (float, double)
+//      f - boolean
 //
 //  b) program specific types:
 //      u - logical units (lmLUnits)
@@ -68,6 +69,9 @@
 //      tm - Date/time (wxDateTime)
 //      ts - Time span (wxTimeSpan)
 //
+//  c) global and class member:
+//      g_ - global variables
+//      m_ - class members
 //
 
 

@@ -330,10 +330,14 @@ bool WizardDevicesPage::TransferDataFromWindow()
 
     //get number of Midi device to use for output
     int nIndex = m_pOutCombo->GetSelection();
-    int nOutDevId = (int) m_pOutCombo->GetClientData(nIndex);
-    //FIX_ME
-    //  /home/jboonen/work/lenmus/trunk/src/app/MidiWizard.cpp|337|error: cast
-    //  from 'void*' to 'int' loses precision|    
+    #if defined(__IA64__)
+        //In Linux 64bits next sentence produces a compilation error: cast from 'void*' to
+        //'int' loses precision. This double cast fixes the issue.
+        int nOutDevId = static_cast<int>(
+                reinterpret_cast<long long>(m_pOutCombo->GetClientData(nIndex) ) );
+    #else
+        int nOutDevId = (int) m_pOutCombo->GetClientData(nIndex);
+    #endif
     g_pMidi->SetOutDevice(nOutDevId);
 
     //open input device

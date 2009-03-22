@@ -75,8 +75,11 @@ void lmGraphicManager::Create(lmScore* pScore, lmPaper* pPaper)
 
 lmGraphicManager::~lmGraphicManager()
 {
-    if (m_pBoxScore)
-        delete m_pBoxScore;
+    if (!lmPRESERVE_SHAPES)     //BoxScore will be deleted when deleting the score
+    {
+        if (m_pBoxScore)      
+            delete m_pBoxScore;
+    }
     DeleteBitmaps();
     m_Selection.ClearSelection();
 }
@@ -96,9 +99,13 @@ void lmGraphicManager::Layout()
 	// it can be displayed or printed.
     // The result is a lmBoxScore object.
 
-    if (m_pBoxScore) {
-        delete m_pBoxScore;
-        m_pBoxScore = (lmBoxScore*) NULL;
+    if (!lmPRESERVE_SHAPES)     //BoxScore will be deleted when deleting the score
+    {
+        if(m_pBoxScore)
+        {
+            delete m_pBoxScore;
+            m_pBoxScore = (lmBoxScore*) NULL;
+        }
     }
     lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
     m_pPaper->SetDrawer(pDrawer);

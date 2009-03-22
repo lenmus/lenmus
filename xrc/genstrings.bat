@@ -16,9 +16,6 @@ wxrc ToolbarsOptPanel.xrc -g >> xrc_strings.cpp
 echo //InternetOptPanel.xrc >> xrc_strings.cpp
 wxrc InternetOptPanel.xrc -g >> xrc_strings.cpp
 
-echo //OtherOptionsPanel.xrc >> xrc_strings.cpp
-wxrc OtherOptionsPanel.xrc -g >> xrc_strings.cpp
-
 echo //UpdaterDlgInfo.xrc >> xrc_strings.cpp
 wxrc UpdaterDlgInfo.xrc -g >> xrc_strings.cpp
 

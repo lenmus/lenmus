@@ -49,14 +49,14 @@ class lmPaper;
 
 //------------------------------------------------------------------------------------
 
-class lmShapeLine : public lmSimpleShape
+class lmShapeSimpleLine : public lmSimpleShape
 {
 public:
-    lmShapeLine(lmScoreObj* pOwner, lmLUnits xStart, lmLUnits yStart,
+    lmShapeSimpleLine(lmScoreObj* pOwner, lmLUnits xStart, lmLUnits yStart,
                 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth,
 				lmLUnits uBoundsExtraWidth, wxColour nColor, wxString sName = _T("Line"),
 				lmELineEdges nEdge = eEdgeNormal);
-    ~lmShapeLine() {}
+    ~lmShapeSimpleLine() {}
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
@@ -125,7 +125,7 @@ public:
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-	virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+	virtual void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
 	lmUPoint GetObjectOrigin();
 
 
@@ -135,29 +135,6 @@ protected:
 
     int         m_nGlyph;
     lmUPoint    m_uGlyphPos;   //glyph position
-
-};
-
-//------------------------------------------------------------------------------------
-
-class lmShapeStem : public lmShapeLine
-{
-public:
-    lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart, lmLUnits uExtraLength,
-                lmLUnits yEnd, bool fStemDown, lmLUnits uWidth, wxColour nColor);
-    ~lmShapeStem() {}
-
-	//specific methods
-	void SetLength(lmLUnits uLenght, bool fModifyTop);
-	inline bool StemDown() const { return m_fStemDown; }
-	void Adjust(lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd, bool fStemDown);
-	lmLUnits GetYStartStem();
-	lmLUnits GetYEndStem();
-	lmLUnits GetXCenterStem();
-    inline lmLUnits GetExtraLenght() { return m_uExtraLength; }
-private:
-	bool	    m_fStemDown;
-    lmLUnits    m_uExtraLength;
 
 };
 
@@ -173,7 +150,7 @@ public:
 
 	//overrides
     lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-    void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+    void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
     double GetPointSize();
 
 protected:
@@ -195,6 +172,30 @@ public:
 
 
 };
+
+//------------------------------------------------------------------------------------
+
+class lmShapeStem : public lmShapeSimpleLine
+{
+public:
+    lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart, lmLUnits uExtraLength,
+                lmLUnits yEnd, bool fStemDown, lmLUnits uWidth, wxColour nColor);
+    ~lmShapeStem() {}
+
+	//specific methods
+	void SetLength(lmLUnits uLenght, bool fModifyTop);
+	inline bool StemDown() const { return m_fStemDown; }
+	void Adjust(lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd, bool fStemDown);
+	lmLUnits GetYStartStem();
+	lmLUnits GetYEndStem();
+	lmLUnits GetXCenterStem();
+    inline lmLUnits GetExtraLenght() { return m_uExtraLength; }
+private:
+	bool	    m_fStemDown;
+    lmLUnits    m_uExtraLength;
+
+};
+
 
 
 

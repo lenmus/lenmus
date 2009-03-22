@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -55,6 +55,7 @@ public:
     lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, int nMeasure);
     ~lmBoxSliceVStaff();
 
+    //renderization
     void Render(lmPaper* pPaper, lmUPoint uPos);
 
 	//positioning and bounds
@@ -80,6 +81,7 @@ public:
 	inline lmVStaff* GetCreatorVStaff() { return m_pVStaff; }
 	inline int GetNumMeasure() { return m_nMeasure; }
     lmBoxScore* GetOwnerBoxScore();
+    lmBoxPage* GetOwnerBoxPage();
 
 
 private:

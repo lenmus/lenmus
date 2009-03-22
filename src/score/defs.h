@@ -53,7 +53,9 @@
 #include "wx/font.h"
 #include "wx/colour.h"
 
-//temporal: to maintain old behaviour while modifying the code to preserve shapes
+//temporal, while implementing layout optimization to preserve shapes:
+//      true - New behaviour: preserve shapes if object is not dirty
+//      false - Maintain old behaviour: all shapes deleted at re-layout
 #define lmPRESERVE_SHAPES  false
 
 
@@ -66,10 +68,10 @@ typedef int lmPixels;               // Device units (usually pixels).  32 bits i
 
 typedef wxRealPoint lmUPoint;       // a point in logical units
 typedef wxPoint lmDPoint;           // a point in device units
-
+typedef wxRealPoint lmTPoint;       // a point in tenths (staff relative units)
 
 //some limits
-#define lmMAX_VOICE		8		//LIMIT: max. num of voices per instrument supported
+#define lmMAX_VOICE		8		//LIMIT: max. num of voices per instrument 
 #define lmMAX_STAFF     4		//LIMIT: max. staves in an instrument
 
 // DC user mode

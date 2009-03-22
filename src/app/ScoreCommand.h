@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -50,46 +50,52 @@ class lmScoreCommand: public wxCommand
 public:
     virtual ~lmScoreCommand();
 
-    bool Undo();
-
     virtual bool Do()=0;
-    virtual bool UndoCommand()=0;
+    virtual bool Undo();
 
 protected:
     lmScoreCommand(const wxString& name, lmScoreDocument *pDoc, lmVStaffCursor* pVCursor,
-                   bool fHistory = true, int nOptions=0);
+                   bool fHistory = true, int nOptions=0, bool fUpdateViews = true);
 
 
     //common methods
     bool CommandDone(bool fScoreModified, int nOptions=0);
+    bool CommandUndone(int nOptions=0);
 
     //access to UndoInfo object
     inline lmUndoLog* GetUndoInfo() { return &m_UndoLog; }
 
+    //save data for direct re-draw
+    //void SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx, lmPaper* pPaper);
 
     lmScoreDocument*    m_pDoc;
 	bool				m_fDocModified;
     bool                m_fHistory;         //include command in undo/redo history
+    bool                m_fUpdateViews;     //Update all views after doing/undoing the command
     int                 m_nOptions;         //repaint hint options
     lmUndoLog           m_UndoLog;          //collection of undo/redo items
     lmUndoItem*         m_pUndoItem;        //undo item for this command
     lmVCursorState      m_tCursorState;     //VCursor state when issuing the command
 
+    //data used only for direct re-draw, when the graphical model is not re-built
+    lmScoreObj*         m_pSCO;             //object affected by the command
+    int                 m_nShapeIdx;        //command affected shape
+    lmPaper*            m_pPaper;           //current DC;
 };
 
 
 // Move object command
 //------------------------------------------------------------------------------------
-class lmCmdUserMoveScoreObj: public lmScoreCommand
+class lmCmdMoveObject: public lmScoreCommand
 {
 public:
-    lmCmdUserMoveScoreObj(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO,
-					   const lmUPoint& uPos);
-    ~lmCmdUserMoveScoreObj() {}
+    lmCmdMoveObject(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO,
+					const lmUPoint& uPos, bool fUpdateViews = true);
+    ~lmCmdMoveObject() {}
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
     lmLocation      m_tPos;
@@ -110,7 +116,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
     lmVStaff*           m_pVStaff;      //affected VStaff
@@ -130,7 +136,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
 
@@ -158,7 +164,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     lmNote*     m_pEndNote;     //end of tie note
@@ -175,7 +180,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     lmNote*     m_pStartNote;   //start of tie
@@ -195,7 +199,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     lmEBarline	        m_nBarlineType;
@@ -214,7 +217,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     lmEClefType         m_nClefType;
@@ -235,7 +237,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     int                 m_nBeats;
@@ -257,7 +258,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     int                 m_nFifths;
@@ -282,7 +282,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
 	lmENoteType		    m_nNoteType;
@@ -314,7 +313,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
 	lmENoteType		    m_nNoteType;
@@ -338,7 +336,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
 	int				m_nSteps;
@@ -359,7 +357,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
 	int                 m_nAcc;
@@ -388,7 +386,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
 	int                     m_nDots;
@@ -406,7 +403,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     lmNoteRest*     m_pStartNR;
@@ -426,7 +422,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     bool                        m_fShowNumber;
@@ -450,7 +445,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     lmNoteRest*         m_pBeforeNR;
@@ -468,7 +462,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     std::vector<lmNoteRest*>    m_NotesRests;
@@ -489,7 +482,6 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
 
 protected:
     lmScoreText*        m_pST;
@@ -512,7 +504,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
     void ChangeMargin(lmLUnits uPos);
@@ -522,6 +514,27 @@ protected:
 	lmLUnits        m_uOldPos;
     int             m_nIdx;
 	int				m_nPage;
+};
+
+
+// Change object properties
+//------------------------------------------------------------------------------------
+class lmCmdChangeLineStartEndPoints: public lmScoreCommand
+{
+public:
+    lmCmdChangeLineStartEndPoints(const wxString& name, lmScoreDocument *pDoc, lmScoreLine* pLine,
+				                  lmUPoint& uShiftStart, lmUPoint& uShiftEnd,
+                                  bool fUpdateViews = false);
+    ~lmCmdChangeLineStartEndPoints() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+
+protected:
+    lmScoreLine*    m_pLine;
+    lmUPoint        m_uShiftStart;
+    lmUPoint        m_uShiftEnd;
 };
 
 
@@ -535,7 +548,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
 	lmComponentObj*     m_pAnchor;
@@ -554,7 +567,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
     lmTextBlock*		m_pNewTitle;
@@ -573,7 +586,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
     lmBarline*			m_pBL;
@@ -597,7 +610,7 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
     lmInstrument*       m_pInstr;
@@ -619,13 +632,35 @@ public:
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool UndoCommand();
+    bool Undo();
 
 protected:
     lmLUnits        m_uxPos;
     lmLUnits        m_uxOldPos;        // for Undo
 	lmNote*			m_pNote;
     int             m_nSteps;
+};
+
+
+// Move an object
+//------------------------------------------------------------------------------------
+class lmCmdMoveObjectPoints: public lmScoreCommand
+{
+public:
+    lmCmdMoveObjectPoints(const wxString& name, lmScoreDocument *pDoc,
+                          lmGMObject* pGMO, lmUPoint uShifts[],
+                          int nNumPoints, bool fUpdateViews);
+    ~lmCmdMoveObjectPoints();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+
+protected:
+    lmScoreObj*     m_pSCO;
+    int             m_nShapeIdx;
+    int             m_nNumPoints;
+    lmUPoint*       m_pShifts;
 };
 
 

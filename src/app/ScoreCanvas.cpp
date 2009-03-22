@@ -55,6 +55,9 @@
 extern bool g_fReleaseVersion;            // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 
+//do not re-draw the score after executing the command
+#define lmNO_REDRAW    false
+
 
 //-------------------------------------------------------------------------------------
 // implementation of lmController
@@ -268,13 +271,24 @@ void lmScoreCanvas::AddTitle()
 	pCP->Submit(new lmCmdAddNewTitle(m_pDoc));
 }
 
-void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
+void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos, bool fUpdateViews)
 {
 	//Generate move command to move the lmComponentObj and update the document
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_("Move %s"), pGMO->GetName().c_str() );
-	pCP->Submit(new lmCmdUserMoveScoreObj(sName, m_pDoc, pGMO, uPos));
+	pCP->Submit(new lmCmdMoveObject(sName, m_pDoc, pGMO, uPos, fUpdateViews));
+}
+
+void lmScoreCanvas::MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[],
+                                     int nNumPoints, bool fUpdateViews)
+{
+	//Generate move command to move the lmComponentObj and update the document
+
+	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+    wxString sName = wxString::Format(_("%s: move points"), pGMO->GetName().c_str() );
+	pCP->Submit(new lmCmdMoveObjectPoints(sName, m_pDoc, pGMO, uShifts, nNumPoints,
+                                          fUpdateViews) );
 }
 
 void lmScoreCanvas::MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps)

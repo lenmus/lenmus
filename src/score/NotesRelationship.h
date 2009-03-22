@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -38,6 +38,7 @@ enum lmERelationshipClass
 	lm_eBeamClass = 0,
 	lm_eChordClass,
 	lm_eTupletClass,
+    lm_eTieClass,
 };
 
 template <class T>      // T is either lmNote or lmNoteRest
@@ -66,26 +67,22 @@ template <class T>      // T is either lmNote or lmNoteRest
 class lmBinaryRelationship : public lmRelationship<T>
 {
 public:
-	virtual ~lmBinaryRelationship() {};
+	virtual ~lmBinaryRelationship();
 
 	//implementation of lmRelationship virtual methods
-    virtual void Include(T* pNR, int nIndex = -1)=0;
-    virtual void Remove(T* pNR)=0;
-    inline T* GetStartNoteRest() { return m_pStartNote; }
-    inline T* GetEndNoteRest() { return m_pEndNote; }
-    virtual void Save(lmUndoData* pUndoData)=0;
-	virtual void OnRelationshipModified() {};
+    virtual void Remove(T* pNR);
+    inline T* GetStartNoteRest() { return m_pStartNR; }
+    inline T* GetEndNoteRest() { return m_pEndNR; }
+    virtual void OnRelationshipModified() {};
 
 
 protected:
-    lmBinaryRelationship(lmERelationshipClass nClass, T* pStartNote, T* pEndNote)
-		: lmRelationship<T>(nClass) {}
+    lmBinaryRelationship(lmERelationshipClass nClass, T* pStartNR, T* pEndNR);
 
-
-    T*		m_pStartNote;        //notes related by this object
-    T*		m_pEndNote;
-
+    T*		m_pStartNR;     //notes/rests related by this object
+    T*		m_pEndNR;
 };
+
 
 template <class T>      // T is either lmNote or lmNoteRest
 class lmMultipleRelationship : public lmRelationship<T>
@@ -99,8 +96,6 @@ public:
     inline int NumNotes() { return (int)m_Notes.size(); }
     inline T* GetStartNoteRest() { return m_Notes.front(); }
     inline T* GetEndNoteRest() { return m_Notes.back(); }
-    virtual void Save(lmUndoData* pUndoData)=0;
-	virtual void OnRelationshipModified()=0;
 
         //specific methods
 
@@ -137,6 +132,56 @@ protected:
 // lmBinaryRelationship implementation
 //--------------------------------------------------------------------------------------------
 
+template <class T>
+lmBinaryRelationship<T>::lmBinaryRelationship(lmERelationshipClass nClass,
+                                              T* pStartNR, T* pEndNR)
+	: lmRelationship<T>(nClass)
+    , m_pStartNR(pStartNR)
+    , m_pEndNR(pEndNR)
+{
+}
+
+template <class T>
+lmBinaryRelationship<T>::~lmBinaryRelationship()
+{
+    //AWARE: notes must not be deleted as they are part of a lmScore
+    //and will be deleted there.
+
+	//inform the notes
+    if (m_pStartNR)
+        m_pStartNR->OnRemovedFromRelationship(this, lmRelationship<T>::GetClass());
+
+    if (m_pEndNR)
+        m_pEndNR->OnRemovedFromRelationship(this, lmRelationship<T>::GetClass());
+}
+
+template <class T>
+void lmBinaryRelationship<T>::Remove(T* pNR)
+{
+    //remove note/rest.
+	//AWARE: This method is always invoked by a NoteRest. Therefore it will
+	//not inform back the NoteRest, as this is unnecessary and causes problems when
+	//deleting the relationship object
+
+
+    if (m_pStartNR == pNR)
+    {
+        m_pStartNR = (lmNote*)NULL;
+        //m_pEndNR->RemoveTie(this);
+        //m_pEndNR = (lmNote*)NULL;
+    }
+    else if (m_pEndNR == pNR)
+    {
+        m_pEndNR = (lmNote*)NULL;
+        //m_pStartNR->RemoveTie(this);
+        //m_pStartNR = (lmNote*)NULL;
+    }
+}
+
+    //virtual void Include(T* pNR, int nIndex = -1)=0;
+    //virtual void Save(lmUndoData* pUndoData)=0;
+
+
 
 
 
@@ -167,7 +212,7 @@ lmMultipleRelationship<T>::~lmMultipleRelationship()
     typename std::list<T*>::iterator it;
     for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
 	{
-        (*it)->OnRemovedFromRelationship((void*)this, lmRelationship<T>::GetClass());
+        (*it)->OnRemovedFromRelationship(this, lmRelationship<T>::GetClass());
 	}
     m_Notes.clear();
 }
@@ -196,7 +241,7 @@ void lmMultipleRelationship<T>::Include(T* pNR, int nIndex)
 		}
 	}
 	//wxLogMessage(Dump());
-	pNR->OnIncludedInRelationship((void*)this, lmRelationship<T>::GetClass());
+	pNR->OnIncludedInRelationship(this, lmRelationship<T>::GetClass());
     OnRelationshipModified();
 }
 
@@ -243,7 +288,7 @@ void lmMultipleRelationship<T>::Remove(T* pNR)
     it = std::find(m_Notes.begin(), m_Notes.end(), pNR);
     m_Notes.erase(it);
     OnRelationshipModified();
-	//pNR->OnRemovedFromRelationship((void*)this, GetClass());
+	//pNR->OnRemovedFromRelationship(this, GetClass());
 }
 
 template <class T>

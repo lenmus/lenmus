@@ -285,7 +285,8 @@ void lmNoteRest::OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelC
 	}
 }
 
-void lmNoteRest::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass)
+void lmNoteRest::OnRemovedFromRelationship(void* pRel,
+                                           lmERelationshipClass nRelClass)
 { 
 	//AWARE: this method is invoked only when the relationship is being deleted and
 	//this deletion is not requested by this note/rest. If this note/rest would like
@@ -309,13 +310,23 @@ void lmNoteRest::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRel
 	}
 }
 
-//template <> void lmNoteRest::OnRemovedFromRelationship(lmMultipleRelationship<lmNoteRest>* pRel)
-//{ 
-//	if (lmBeam* pBeam = dynamic_cast<lmBeam*>(pRel))
-//		m_pBeam = (lmBeam*)NULL;
-//	else if (lmTupletBracket* pTuplet = dynamic_cast<lmTupletBracket*>(pRel))
-//		m_pTuplet = (lmTupletBracket*)NULL;
-//}
+void lmNoteRest::OnRemovedFromRelationship(lmRelObj* pRel)
+{
+	//AWARE: this method is invoked only when the relationship is being deleted and
+	//this deletion is not requested by this note/rest. If this note/rest would like
+	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//relationship object
+
+    SetDirty(true);
+
+	if ( pRel->GetAuxObjType() == eAXOT_Tie)
+	{
+        ((lmNote*)this)->OnRemovedFromRelationship(pRel);
+    }
+    else
+        wxASSERT(false);
+}
+
 
 //----------------------------------------------------------------------------------------
 //template specializations

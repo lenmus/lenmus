@@ -685,7 +685,7 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
             if ( ((lmNoteRest*)pSO)->IsNote() )
             {
                 // It is a note. Get its chord position
-                if( ((lmNote*)pSO)->GetChordPosition() != lmNON_CHORD_NOTE)
+                if( ((lmNote*)pSO)->GetBeatPosition() != lmNOT_ON_BEAT)
                 {
                     // on beat note
                     nNumPoints++;
@@ -747,7 +747,7 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
             {
                 // It is a note. Get its chord position
                 pNoteCur = (lmNote*)pSO;
-                if (pNoteCur->GetChordPosition() != lmNON_CHORD_NOTE)
+                if (pNoteCur->GetBeatPosition() != lmNOT_ON_BEAT)
                 {
                     // on beat note. Pitch must be on chord.
                     // Assign a pitch from nChords[iC].

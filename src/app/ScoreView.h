@@ -238,7 +238,6 @@ private:
 
 	//auxiliary for dragging
 	void OnPaperStartDrag(wxDC* pDC, lmDPoint vCanvasOffset);
-	void OnPaperEndDrag();
 
     //housekeeping
     void ComputeVisiblePagesInfo();

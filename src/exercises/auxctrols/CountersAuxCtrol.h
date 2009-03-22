@@ -97,7 +97,7 @@ class lmQuizAuxCtrol : public lmCountersAuxCtrol
 public:
 
     // constructor and destructor    
-    lmQuizAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
+    lmQuizAuxCtrol(wxWindow* parent, wxWindowID id, int nNumTeams, double rScale,
                    lmQuizManager* pProblemMngr, 
                    const wxPoint& pos = wxDefaultPosition);
 
@@ -118,9 +118,11 @@ public:
 
 protected:
     void UpdateDisplays(int nTeam);
-    void CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, bool fTeam);
+    void CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer);
 
     lmQuizManager*   m_pProblemMngr;
+
+    bool    m_fTwoTeamsMode;
 
     //displays
     wxStaticText*   m_pRightCounter[2];
@@ -128,7 +130,16 @@ protected:
     wxStaticText*   m_pTotalCounter[2];
 
     //labels
-    wxStaticText*   m_pTeamTxt;
+	wxStaticBitmap*     m_pBmpWrong;
+	wxStaticBitmap*     m_pBmpRight;
+	wxStaticBitmap*     m_pBmpTotal;
+	wxStaticBitmap*     m_pBmpTeam[2];
+    
+    //bitmaps for teams
+    wxBitmap            m_bmpRed;
+    wxBitmap            m_bmpBlue;
+    wxBitmap            m_bmpGrey;
+
     
     DECLARE_EVENT_TABLE()
 };
@@ -207,12 +218,12 @@ protected:
 
     lmLeitnerManager*       m_pProblemMngr;
 
-		wxStaticBitmap* m_pBmpWrong;
-		wxStaticText* m_pTxtWrong;
-		wxStaticBitmap* m_pBmpRight;
-		wxStaticText* m_pTxtRight;
-		wxStaticBitmap* m_pBmpTotal;
-		wxStaticText* m_pTxtTotal;
+	wxStaticBitmap*     m_pBmpWrong;
+	wxStaticText*       m_pTxtWrong;
+	wxStaticBitmap*     m_pBmpRight;
+	wxStaticText*       m_pTxtRight;
+	wxStaticBitmap*     m_pBmpTotal;
+	wxStaticText*       m_pTxtTotal;
 
 
     DECLARE_EVENT_TABLE()

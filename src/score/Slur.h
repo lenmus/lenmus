@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,9 +25,49 @@
 #pragma interface "Slur.cpp"
 #endif
 
-//---------------------------------------------------------
+#include "defs.h"
+#include "StaffObj.h"
+
+
+//===================================================================================
+// lmBezier: a helper class to manage the four points of a Bezier curve
+//===================================================================================
+
+//IDs for the points
+enum lmEBezierPoint
+{
+    lmBEZIER_START = 0,
+    lmBEZIER_END,
+    lmBEZIER_CTROL1,
+    lmBEZIER_CTROL2,
+    //
+    lmBEZIER_MAX
+};
+
+
+class lmBezier
+{
+public:
+    lmBezier();
+    ~lmBezier();
+
+    //points
+    void SetPoint(lmTPoint& yPoint, int nPointID);
+    lmTPoint& GetPoint(int nPointID);
+
+    // source code related methods
+    wxString SourceLDP(int nIndent);
+    wxString SourceXML(int nIndent);
+
+
+protected:
+    lmTPoint    m_tPoints[4];   //start, end, ctrol1, ctrol2
+};
+
+
+//===================================================================================
 //   lmTie
-//---------------------------------------------------------
+//===================================================================================
 
 //constants for PropagateNotePitchChange() method
 #define lmBACKWARDS false
@@ -38,27 +78,85 @@ class lmShape;
 class lmBox;
 class lmShapeTie;
 
-class lmTie
+//Rest are never tied (http://www.dolmetsch.com/musictheory2.htm)
+class lmTie: public lmBinaryRelObj
 {
 public:
     lmTie(lmNote* pStartNote, lmNote* pEndNote);
     ~lmTie();
 
-    void Remove(lmNote* pNote);
-    lmNote* GetStartNote() const { return m_pStartNote; }
-    lmNote* GetEndNote() const { return m_pEndNote; }
+    // overrides for pure virtual methods of base class
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+    int GetNumPoints() { return lmBEZIER_MAX; }
 
-    //layout
-	lmShape* LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
+    //implementation of pure virtual methods in lmBinaryRelObj
+    void Save(lmUndoData* pUndoData) {};
+
+    // source code related methods
+    wxString SourceLDP_First(int nIndent);
+    wxString SourceLDP_Last(int nIndent);
+    wxString SourceXML(int nIndent);
+
+    // debug methods
+    wxString Dump();
 
     void PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int nAlter, bool fForward);
 
+    //undoable edition commands
+    void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
 
 protected:
 
-    lmNote*     m_pStartNote;        //notes tied by this lmTie object
-    lmNote*     m_pEndNote;
+    lmShapeTie*     m_pShape1;      //main arch
+    lmShapeTie*     m_pShape2;      //secondary arch if tie is splitted
 
+    lmBezier        m_bezier1;      //main arch
+    lmBezier        m_bezier2;      //secondary arch if tie is splitted
+
+    lmTPoint        m_tPoints[4];   //main arch: start, end, ctrol1, ctrol2
 };
+
+
+
+//===================================================================================
+// lmSlur
+//===================================================================================
+
+//class lmSlur : public lmAuxObj
+//{
+//public:
+//    lmSlur(lmNoteRest* pStartNR, lmNoteRest* pEndNR);
+//    ~lmSlur();
+//
+//    // overrides for pure virtual methods of base class
+//    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+//    lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+//    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Slur; }
+//
+//    // source code related methods
+//    wxString SourceLDP(int nIndent);
+//    wxString SourceXML(int nIndent);
+//
+//    // debug methods
+//    wxString Dump();
+//
+//    //n-relationship methods
+//    void Remove(lmNoteRest* pNR);
+//    lmNoteRest* GetStartNoteRest() const { return m_pStartNR; }
+//    lmNoteRest* GetEndNoteRest() const { return m_pEndNR; }
+//
+//    //undoable edition commands
+//    void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
+//
+//protected:
+//
+//    lmNoteRest*     m_pStartNR;     //noteRests joined by this slur
+//    lmNoteRest*     m_pEndNR;
+//
+//    lmUPoint        m_Points[4];    //main arch bezier points (start, end, ctrol1, ctrol2)
+//    lmShapeArch*    m_pShape;       //main arch
+//
+//};
 
 #endif    // __LM_SLUR_H__

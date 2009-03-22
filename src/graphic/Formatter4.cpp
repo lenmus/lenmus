@@ -64,6 +64,7 @@
 #include "BoxSlice.h"
 #include "BoxSliceInstr.h"
 #include "BoxSliceVStaff.h"
+#include "ShapeLine.h"
 
 //access to logger
 #include "../app/Logger.h"
@@ -139,8 +140,8 @@ lmSystemCursor::~lmSystemCursor()
     m_SavedIterators.clear();
 }
 
-bool lmSystemCursor::ThereAreObjects() 
-{ 
+bool lmSystemCursor::ThereAreObjects()
+{
     //Returns true if there are any object not yet processed in any staff
 
     for (int i=0; i < (int)m_Iterators.size(); i++)
@@ -175,12 +176,12 @@ lmContext* lmSystemCursor::GetStartOfColumnContext(int iInstr, int nStaff)
         return (lmContext*)NULL;
 }
 
-void lmSystemCursor::CommitCursors() 
-{ 
+void lmSystemCursor::CommitCursors()
+{
     //A column has been processed and it has been verified that it will be included in
     //currente system. Therefore, SystemCursor is informed to consolidate current
     //cursors' positions.
-    //Old saved positions are no longer needed. Current position is going to be the 
+    //Old saved positions are no longer needed. Current position is going to be the
     //backup point, so save current cursors positions just in case we have to go back
 
     for (int i=0; i < (int)m_Iterators.size(); ++i)
@@ -193,7 +194,7 @@ void lmSystemCursor::CommitCursors()
 }
 
 void lmSystemCursor::GoBackPrevPosition()
-{ 
+{
     //A column has been processed but there is not enough space for it in current system.
     //This method is invoked to reposition cursors back to last saved positions
 
@@ -225,15 +226,15 @@ lmBarline* lmSystemCursor::GetPreviousBarline(int iInstr)
 }
 
 int lmSystemCursor::GetNumMeasure(int iInstr)
-{ 
+{
     //returns current absolute measure number (1..n) for VStaff
 
-    return m_Iterators[iInstr]->GetNumSegment() + 1; 
+    return m_Iterators[iInstr]->GetNumSegment() + 1;
 }
 
 void lmSystemCursor::AdvanceAfterTimepos(float rTimepos)
 {
-    //advance all iterators so that last processed timepos is rTimepos. That is, pointed 
+    //advance all iterators so that last processed timepos is rTimepos. That is, pointed
     //objects will be the firsts ones with timepos > rTimepos.
 
     //THIS METHOD IS NO LONGER USED. BUT IT WORKS.
@@ -374,7 +375,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
     //create new cursor and initialize it
     if (m_pSysCursor)
         delete m_pSysCursor;
-    m_pSysCursor = new lmSystemCursor(m_pScore);   
+    m_pSysCursor = new lmSystemCursor(m_pScore);
 
     nSystem = 1;
     pBoxPage = pBoxScore->GetCurrentPage();
@@ -441,9 +442,9 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
         bool fNewSystem = false;
         m_nColumn = 1;      //first column of this system
         //HERE Alloc tables' entries
-        //m_uMeasureSize.push_back(0);    
+        //m_uMeasureSize.push_back(0);
         //wxASSERT(m_nColumn == (int)m_uMeasureSize.size() - 1);
-        //m_oTimepos.push_back(0);  
+        //m_oTimepos.push_back(0);
         //wxASSERT(m_nColumn == (int)m_oTimepos.size() - 1);
         while (m_pSysCursor->ThereAreObjects())
         {
@@ -625,7 +626,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
         //when reaching this point all StaffObjs locations are their final locations.
 
         //Update positioning information about this system
-        pBoxSystem->FixSlicesYBounds(); 
+        pBoxSystem->FixSlicesYBounds();
         if (fThisIsLastSystem && fStopStaffLinesAtFinalBarline)
         {
             //this is the last system and it has been requested to stop staff lines
@@ -648,8 +649,8 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
 			lmLUnits uxPos = pBoxSystem->GetXLeft() +
 						     (nSystem == 1 ? nFirstSystemIndent : nOtherSystemIndent);
 		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm TODO user options
-            lmShapeLine* pLine =
-                new lmShapeLine(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
+            lmShapeSimpleLine* pLine =
+                new lmShapeSimpleLine(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
 						    uxPos, pBoxSystem->GetYBottom(),
 						    uLineThickness, 0.0, *wxBLACK, _T("System joining line"),
 							eEdgeHorizontal);
@@ -839,7 +840,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nSystem,
     lmLUnits yPaperPos = m_pPaper->GetCursorY();
 
     // create an empty BoxSlice to contain this measure column
-    lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(m_nAbsColumn);    
+    lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(m_nAbsColumn);
 	pBoxSlice->SetYTop( yPaperPos );
 	pBoxSlice->SetXLeft( xStartPos );
 
@@ -1042,7 +1043,7 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
 // Methods to deal with measures
 //=========================================================================================
 
-bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, 
+bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff,
 							   int nInstr)
 {
     // Compute the width of the current measure (or remaining part of it) of the lmVStaff
@@ -1273,8 +1274,8 @@ void lmFormatter4::AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff
 void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox,
 						  lmVStaff* pVStaff, int nInstr, bool fProlog)
 {
-    // This method is responsible for creating the key signature shapes for 
-    // all staves of this instrument. And also, of adding them to the graphical 
+    // This method is responsible for creating the key signature shapes for
+    // all staves of this instrument. And also, of adding them to the graphical
     // model and to the Timepos table
 
     //create the shapes
@@ -1294,8 +1295,8 @@ void lmFormatter4::AddKey(lmKeySignature* pKey, lmBox* pBox,
 void lmFormatter4::AddTime(lmTimeSignature* pTime, lmBox* pBox,
 						   lmVStaff* pVStaff, int nInstr, bool fProlog)
 {
-    // This method is responsible for creating the time signature shapes for 
-    // all staves of this instrument. And also, of adding them to the graphical 
+    // This method is responsible for creating the time signature shapes for
+    // all staves of this instrument. And also, of adding them to the graphical
     // model and to the Timepos table
 
     //create the shapes

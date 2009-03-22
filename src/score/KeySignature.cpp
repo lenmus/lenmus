@@ -161,7 +161,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
         {
             lmShape* pOldShape = this->GetShape(nStaff);
 	        pBox->AddShape(pOldShape);
-            pOldShape->SetColour(colorC);       //change its colour to new desired colour
+            pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
             uWidth = wxMax(pOldShape->GetWidth(), uWidth);
         }
         //set shapes index counter so that first prolog shape will have index = nStaff
@@ -216,11 +216,10 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
     // if the shape already exists. If not, create it.
     int nIdx = NewShapeIndex();
     lmShape* pOldShape = GetShapeFromIdx(nIdx);
-    wxASSERT(!pOldShape);
     if (pOldShape)
     {
 	    pBox->AddShape(pOldShape);
-        pOldShape->SetColour(colorC);       //change its colour to new desired colour
+        pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
         return pOldShape;
     }
 

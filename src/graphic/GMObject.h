@@ -55,6 +55,7 @@ class lmScoreObj;
 class lmStaffObj;
 class lmController;
 class lmBoxScore;
+class lmBoxPage;
 class lmGMSelection;
 class lmHandler;
 
@@ -170,20 +171,21 @@ public:
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
     void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxBLUE);
     lmURect GetSelRectangle() const { return m_uSelRect; }
-    virtual void DrawControlPoints(lmPaper* pPaper) {};
-
 
     //rendering
 	virtual void Render(lmPaper* pPaper, wxColour color);
     virtual void RenderHighlighted(wxDC* pDC, wxColour colorC) {}
     virtual void DrawBounds(lmPaper* pPaper, wxColour color);
-	virtual void DrawHandlers(lmPaper* pPaper);
+    virtual void RenderWithHandlers(lmPaper* pPaper) {}
 
     //handlers
-	virtual void AddHandler(lmHandler* pHandler);
-	virtual lmHandler* GetFirstHandler();
-	virtual lmHandler* GetNextHandler();
-	virtual int GetNumHandlers() { return (m_pHandlers ? (int)m_pHandlers->size() : 0); }
+    virtual lmUPoint GetPointForHandler(long nHandlerID) { return lmUPoint(0.0, 0.0); }
+
+    //handlers dragging and moving
+    virtual lmUPoint OnHandlerDrag(lmPaper* pPaper, const lmUPoint& uPos,
+                                   long nHandlerID) { return uPos; }
+    virtual void OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos,
+                                  long nHandlerID) {}
 
 	//debugging
     virtual wxString Dump(int nIndent)=0;
@@ -193,6 +195,7 @@ public:
     inline void SetSelectable(bool fValue) { m_fSelectable = fValue; }
     inline bool IsSelected() const { return m_fSelected; }
     void SetSelected(bool fValue);
+    virtual void OnSelectionStatusChanged() {}
 
 	//dragging and moving
     inline bool IsLeftDraggable() const { return m_fLeftDraggable; }
@@ -200,7 +203,7 @@ public:
 	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC) { return (wxBitmap*)NULL; }
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
 	virtual lmUPoint GetObjectOrigin();
-    virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+    virtual void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	void Shift(lmUPoint uPos) { Shift(uPos.x, uPos.y); }
 	void ShiftOrigin(lmUPoint uNewOrg);
@@ -212,6 +215,7 @@ public:
 
     //info
     virtual lmBoxScore* GetOwnerBoxScore() = 0;
+    virtual lmBoxPage* GetOwnerBoxPage() = 0;
     inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
     inline int GetOwnerIDX() { return m_nOwnerIdx; }
 	virtual int GetPageNumber() const { return 0; }
@@ -257,10 +261,6 @@ protected:
 
     //dragging
     bool			m_fLeftDraggable;		//this object is draggable
-
-	//list of handlers contained within this GMObject
-	std::list<lmHandler*>*	            m_pHandlers;
-    std::list<lmHandler*>::iterator		m_itHandler;	//for GetFirst(), GetNext() methods
 
 };
 
@@ -361,6 +361,7 @@ public:
     //info
 	virtual int GetPageNumber() const;
     lmBoxScore* GetOwnerBoxScore();
+    lmBoxPage* GetOwnerBoxPage();
 
 	//owners and related
 	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
@@ -428,7 +429,7 @@ public:
 protected:
     lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx,
                   wxString sName=_T("SimpleShape"),
-				  bool fDraggable = false, bool fSelectable = true, 
+				  bool fDraggable = true, bool fSelectable = true, 
                   wxColour color = *wxBLACK, bool fVisible = true);
 
 };

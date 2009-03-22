@@ -252,6 +252,8 @@
 		<Unit filename="../../src/graphic/ShapeBeam.h" />
 		<Unit filename="../../src/graphic/ShapeBracket.cpp" />
 		<Unit filename="../../src/graphic/ShapeBracket.h" />
+		<Unit filename="../../src/graphic/ShapeLine.cpp" />
+		<Unit filename="../../src/graphic/ShapeLine.h" />
 		<Unit filename="../../src/graphic/ShapeNote.cpp" />
 		<Unit filename="../../src/graphic/ShapeNote.h" />
 		<Unit filename="../../src/graphic/ShapeRest.cpp" />

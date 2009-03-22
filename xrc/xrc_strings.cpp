@@ -126,26 +126,6 @@ _("Add rhythm");
 _("Delete rhythm");
 _("Accept");
 _("&Cancel");
-//DlgCfgTheoIntervals.xrc 
-_("Configuration: Theory exercises on intervals");
-_("Clefs to use");
-_("G clef (violin)");
-_("F clef on 4th line (bass)");
-_("F clef on 3rd line");
-_("C clef on 1st line (soprano)");
-_("C clef on 2nd line (mezzo soprano)");
-_("C clef on 3rd line (contralto)");
-_("C clef on 4th line (tenor)");
-_("You must choose one at least! ");
-_("Accidentals");
-_("Allow accidentals");
-_("Allow double accidentals");
-_("Problem type");
-_("&Show an interval and ask for its name");
-_("&Name an interval and ask to build it");
-_("&Both problem types");
-_("Accept");
-_("Cancel");
 //DlgPatternEditor.xrc 
 _("Pattern's editor");
 _("Step 1. Choose attributes for next note/rest to enter:");
@@ -206,12 +186,6 @@ _("Authentication");
 _("Username:");
 _("Password:");
 _("Please enter data for both, user name and password");
-//OtherOptionsPanel.xrc 
-_("Other options");
-_("Exercises");
-_("Generate right/wrong sounds when clicking an answer button");
-_("Show two counters (for team competition)");
-_("Do not show solution and generate new problem if answer is correct");
 //UpdaterDlgInfo.xrc 
 _("LenMus Phonascus updater");
 _("Available updates");

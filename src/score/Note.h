@@ -121,9 +121,13 @@ public:
     void RemoveTie(lmTie* pTie); 
     inline bool IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
     inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
-    inline lmNote* GetTiedNotePrev() { return (m_pTiePrev ? m_pTiePrev->GetStartNote() : (lmNote*)NULL); } 
-    inline lmNote* GetTiedNoteNext() { return (m_pTieNext ? m_pTieNext->GetEndNote() : (lmNote*)NULL); } 
+    inline lmNote* GetTiedNotePrev() { return (m_pTiePrev ? (lmNote*)m_pTiePrev->GetStartNoteRest() : (lmNote*)NULL); } 
+    inline lmNote* GetTiedNoteNext() { return (m_pTieNext ? (lmNote*)m_pTieNext->GetEndNoteRest() : (lmNote*)NULL); } 
     void DeleteTiePrev(); 
+
+    //methods for relationships
+    void OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass);
+    void OnRemovedFromRelationship(lmRelObj* pRel);
 
     // methods related to sound
     lmDPitch GetDPitch();
@@ -157,7 +161,7 @@ public:
     int GetPositionInBeat();
 
     // methods for harmonic analisis
-    int GetChordPosition();
+    int GetBeatPosition();
 
 	//context related information
 	lmTimeSignature* GetTimeSignature();

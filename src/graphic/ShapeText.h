@@ -102,7 +102,7 @@ public:
     //call backs
     wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
 	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-	void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+	void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
 
 
 

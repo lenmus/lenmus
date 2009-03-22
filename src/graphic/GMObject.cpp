@@ -84,19 +84,10 @@ lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
 	m_fSelected = false;
     m_fSelectable = fSelectable;
 	m_fLeftDraggable = fDraggable;
-	m_pHandlers = (std::list<lmHandler*>*)NULL;
 }
 
 lmGMObject::~lmGMObject()
 {
-    //delete handlers
-	if (m_pHandlers)
-	{
-		std::list<lmHandler*>::iterator it;
-		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
-			delete *it;
-		delete m_pHandlers;
-	}
 }
 
 bool lmGMObject::BoundsContainsPoint(lmUPoint& pointL)
@@ -127,10 +118,6 @@ void lmGMObject::Render(lmPaper* pPaper, wxColour colorC)
 {
     // Code common to all shapes renderization. Must be invoked after specific code at
     // each shape renderization method
-
-    // if shape is 'selected' allow derived classes to draw control points
-    if (IsSelected())
-        DrawControlPoints(pPaper);
 
     // draw selection rectangle
     if (g_fDrawSelRect)
@@ -171,13 +158,14 @@ lmUPoint lmGMObject::GetObjectOrigin()
 	return m_uBoundsTop;
 }
 
-void lmGMObject::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
+void lmGMObject::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).
 	// This method must validate/adjust final position and, if ok, it must
 	// send a move object command to the controller.
 
+    WXUNUSED(pPaper);
 	pCanvas->MoveObject(this, uPos);
 }
 
@@ -238,6 +226,7 @@ void lmGMObject::SetSelected(bool fValue)
 
     //change selection status
     m_fSelected = fValue;
+    OnSelectionStatusChanged();         //inform derived class
 
     //add/remove object from global list
     lmBoxScore* pBS = this->GetOwnerBoxScore();
@@ -247,52 +236,6 @@ void lmGMObject::SetSelected(bool fValue)
     else
         pBS->RemoveFromSelection(this);
 }
-void lmGMObject::AddHandler(lmHandler* pHandler)
-{
-	if (!m_pHandlers)
-	{
-		m_pHandlers = new std::list<lmHandler*>();
-	    m_itHandler = m_pHandlers->begin();
-	}
-
-    m_pHandlers->push_back(pHandler);
-}
-
-lmHandler* lmGMObject::GetFirstHandler()
-{
-	wxASSERT(m_pHandlers);
-    m_itHandler = m_pHandlers->begin();
-    if (m_itHandler == m_pHandlers->end())
-        return (lmHandler*)NULL;
-
-    return *m_itHandler;
-}
-
-lmHandler* lmGMObject::GetNextHandler()
-{
-    //advance to next one
-    ++m_itHandler;
-    if (m_itHandler != m_pHandlers->end())
-        return *m_itHandler;
-
-    //no more items
-    return (lmHandler*)NULL;
-}
-
-void lmGMObject::DrawHandlers(lmPaper* pPaper)
-{
-    //render handlers for selected objects
-    if (m_pHandlers)	// && m_fSelected)
-    {
-        wxColour color = *wxRED;      //TODO User options
-		std::list<lmHandler*>::iterator it;
-		for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
-            (*it)->Render(pPaper, color);
-    }
-}
-
-
-
 
 
 
@@ -339,7 +282,7 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL, bool fSelectable)
     //loop to look up in the shapes collection
 	for(int i=0; i < (int)m_Shapes.size(); i++)
     {
-        if (m_Shapes[i]->IsSelectable() && m_Shapes[i]->SelRectContainsPoint(pointL))
+        if (m_Shapes[i]->IsVisible() && m_Shapes[i]->IsSelectable() && m_Shapes[i]->SelRectContainsPoint(pointL))
 			return m_Shapes[i];    //found
     }
 
@@ -541,6 +484,16 @@ lmBoxScore* lmShape::GetOwnerBoxScore()
     else
         return (lmBoxScore*)NULL;
 }
+
+lmBoxPage* lmShape::GetOwnerBoxPage()
+{
+    if (m_pOwnerBox)
+        return m_pOwnerBox->GetOwnerBoxPage();
+    else
+        return (lmBoxPage*)NULL;
+}
+
+
 
 //========================================================================================
 // Implementation of class lmSimpleShape
@@ -749,7 +702,6 @@ void lmCompositeShape::RecomputeBounds()
 
 }
 
-
 wxBitmap* lmCompositeShape::OnBeginDrag(double rScale, wxDC* pDC)
 {
 	// A dragging operation is started. The view invokes this method to request the
@@ -871,6 +823,7 @@ void lmGMSelection::ClearSelection()
     for (it = m_Selection.begin(); it != m_Selection.end(); ++it)
     {
         (*it)->DoSetSelected(false);
+        (*it)->OnSelectionStatusChanged();
     }
     m_Selection.clear();
 }

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,6 +46,7 @@ public:
     wxColour& ScoreHighlight() { return m_oScoreHighlight; }
     wxColour& ScoreNormal() { return m_oScoreNormal; }
     wxColour& ScoreSelected() { return m_oScoreSelected; }
+    wxColour& GhostObject() { return m_oGhostObject; }
     wxColour& CursorColor() { return m_oCursorColor; }
 
     //HTML controls
@@ -71,6 +72,7 @@ private:
     wxColour m_oScoreNormal;
     wxColour m_oScoreSelected;
     wxColour m_oCursorColor;
+    wxColour m_oGhostObject;
 
     //HTML controls
     wxColour m_oHtmlLinks;

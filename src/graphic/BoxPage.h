@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -72,8 +72,9 @@ public:
 	//operations
     lmBoxSystem* AddSystem(int nSystem);
     void Render(lmScore* pScore, lmPaper* pPaper);
-    void DrawHandlers(lmPaper* pPaper);
-
+    void RenderWithHandlers(lmPaper* pPaper);
+    void DrawAllHandlers(lmPaper* pPaper);
+    void OnNeedToDrawHandlers(lmGMObject* pGMO);
 
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
@@ -88,20 +89,31 @@ public:
 	lmBoxSystem* GetOwnerSystem() { return (lmBoxSystem*)NULL; }
     inline lmBoxScore* GetBoxScore() const { return m_pBScore; }
     inline lmBoxScore* GetOwnerBoxScore() { return m_pBScore; }
+    inline lmBoxPage* GetOwnerBoxPage() { return this; }
 
+    //active handlers
+	void AddActiveHandler(lmHandler* pHandler);
 
 
 private:
-    lmBoxScore*     m_pBScore;      //parent score box
-    int             m_nNumPage;     //this page number (1..n)
+    // a lmBoxPage is, mainly, a collection of lmBoxSystems
+
+    lmBoxScore*     m_pBScore;          //parent score box
+    int             m_nNumPage;         //this page number (1..n)
     int             m_nFirstSystem;
     int             m_nLastSystem;
+    lmUPoint        m_pageOrgL;         //page origin
+    lmShapeMargin*  m_pMarginShapes[4];
 
-    // a lmBoxPage is, mainly, a collection of lmBoxSystems
-	std::vector<lmBoxSystem*>	m_aSystems;		//array of ptrs to systems that form this page
+	//array of ptrs to systems that form this page
+    std::vector<lmBoxSystem*>	m_aSystems;		
 
-    //page origin
-    lmUPoint    m_pageOrgL;
+    //objects in this page to be rendered with handlers
+    std::vector<lmGMObject*>    m_GMObjsWithHandlers;
+
+	//list of active handlers contained within this page
+    std::list<lmHandler*>       m_ActiveHandlers;      
+
 
 
 };

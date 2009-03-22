@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -40,8 +40,8 @@
 
 
 #include "Updater.h"
-#include "../app/ErrorDlg.h"
 #include "../app/TheApp.h"         //to get access to version info.
+#include "../widgets/MsgBox.h"
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -100,12 +100,17 @@ bool lmUpdater::DoCheck(wxString sPlatform, bool fSilent)
         //Release behaviour. Access to internet
 
         //verify if internet is available
-        if (!CheckInternetConnection()) {
-            if (!fSilent) {
-                lmErrorDlg dlg(m_pParent, _("Error"), _("You are not connected to internet!\n\n \
-To check for updates LenMus needs internet connection. \n \
-Please, connect to internet and then retry."));
-                dlg.ShowModal();
+        if (!CheckInternetConnection())
+        {
+            if (!fSilent)
+            {
+                wxString sEmpty = _T("");
+                wxString sMsg = sEmpty +
+                        _("You are not connected to internet!") + _T("\n\n") +
+                        _("To check for updates LenMus needs internet connection.") + _T("\n") +
+                        _("Please, connect to internet and then retry.");
+                lmErrorBox oEB(sMsg, _T("Close this error window"));
+                oEB.ShowModal();
             }
             return true;
         }
@@ -188,12 +193,14 @@ Please, connect to internet and then retry."));
         if (!pInput || !pInput->IsOk()) {
             if (pInput) delete pInput;
             //wxLogMessage( oHttp.GetLastError() );
-            lmErrorDlg dlg(m_pParent, _("Error checking for updates"),
+            wxString sEmpty = _T("");
+            wxString sMsg = sEmpty + _("Error checking for updates") + _T("\n\n") +
 _("A connection with the server could not be established. \
 Check that you are connected to the internet and that no firewalls are blocking \
 this program; then try again. If problems persists, the server \
-may be down. Please, try again later."));
-            dlg.ShowModal();
+may be down. Please, try again later.");
+            lmErrorBox oEB(sMsg, _T("Close this error window"));
+            oEB.ShowModal();
             return true;
         }
 

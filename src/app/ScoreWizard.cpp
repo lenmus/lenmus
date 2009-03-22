@@ -708,7 +708,13 @@ bool lmScoreWizardLayout::TransferDataFromWindow()
 
     if (m_nSelPaper != -1)
     {
-        int iP = (int)m_pCboPaper->GetClientData(m_nSelPaper);
+        #if defined(__IA64__)
+            //In Linux 64bits next sentence produces a compilation error: cast from 'void*' to
+            //'int' loses precision. This double cast fixes the issue.
+            int iP = static_cast<int>(reinterpret_cast<long long>(m_pCboPaper->GetClientData(m_nSelPaper)));
+        #else
+            int iP = (int)m_pCboPaper->GetClientData(m_nSelPaper);
+        #endif
         wxPaperSize nPaperId = m_Papers[iP].nId;
         wxPrintPaperType* paper = wxThePrintPaperDatabase->FindPaperType(nPaperId);
         if ( paper )

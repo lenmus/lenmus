@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -109,7 +109,7 @@ private:
 //
 // global functions related to TimeSignatures, and some definitions used by them
 //
-#define lmNON_CHORD_NOTE    -1
+#define lmNOT_ON_BEAT    -1
 
 extern int GetNumUnitsFromTimeSignType(lmETimeSignature nTimeSign);
 extern int GetBeatTypeFromTimeSignType(lmETimeSignature nTimeSign);
@@ -120,7 +120,7 @@ extern float GetMeasureDuration(lmETimeSignature nTimeSign);
 //extern bool IsBinaryTimeSignature(lmETimeSignature nTimeSign);
 extern int AssignVolume(float rTimePos, int nBeats, int nBeatType);
 extern int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType);
-extern int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType);
+extern int GetBeatPosition(float rTimePos, float rDuration, int nBeats, int nBeatType);
 
 #endif    // __LM_TIMESIGNATURE_H__
 
