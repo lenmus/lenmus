@@ -48,7 +48,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GZ"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WXDEBUG__;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
 				RuntimeLibrary="3"
 				EnableEnhancedInstructionSet="0"
@@ -84,13 +84,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib freetype.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib freetype.lib sqlite3.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus_d.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib"
-				GenerateManifest="false"
+				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib;..\..\packages\wxSQLite3\sqlite3\lib"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib"
 				GenerateDebugInformation="true"
@@ -557,54 +556,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\app\DlgCfgEarIntervals.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgEarIntervals.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyCadence.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyCadence.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyChord.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyChord.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyScale.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgIdfyScale.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgScoreReading.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgScoreReading.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgTheoIntervals.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\DlgCfgTheoIntervals.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\app\DlgDebug.cpp"
 				>
 			</File>
@@ -634,14 +585,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\app\EditFrame.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\ErrorDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\app\ErrorDlg.h"
 				>
 			</File>
 			<File
@@ -722,6 +665,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\app\Printout.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\app\Processor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\app\Processor.h"
 				>
 			</File>
 			<File
@@ -1009,6 +960,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\html\TheoHarmonyCtrolParms.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\html\TheoIntervalsCtrolParams.h"
 				>
 			</File>
@@ -1042,14 +997,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\Constrains.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\CountersCtrol.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\CountersCtrol.h"
 				>
 			</File>
 			<File
@@ -1101,6 +1048,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\HarmonyConstrains.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\HarmonyConstrains.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\IdfyCadencesCtrol.cpp"
 				>
 			</File>
@@ -1141,14 +1096,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\exercises\ScoreAuxCtrol.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\ScoreAuxCtrol.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\exercises\ScoreConstrains.cpp"
 				>
 			</File>
@@ -1162,6 +1109,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\ScoreCtrol.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TheoHarmonyCtrol.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TheoHarmonyCtrol.h"
 				>
 			</File>
 			<File
@@ -1204,14 +1159,86 @@
 				RelativePath="..\..\src\exercises\TheoMusicReadingCtrol.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\exercises\UrlAuxCtrol.cpp"
+			<Filter
+				Name="auxctrols"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\UrlAuxCtrol.h"
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\CountersAuxCtrol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\CountersAuxCtrol.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\ScoreAuxCtrol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\ScoreAuxCtrol.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\UrlAuxCtrol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\auxctrols\UrlAuxCtrol.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dialogs"
 				>
-			</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgEarIntervals.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgEarIntervals.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyCadence.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyCadence.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyChord.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyChord.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgScoreReading.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgScoreReading.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgTheoIntervals.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgTheoIntervals.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="auxmusic"
@@ -1409,14 +1436,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\ldp_parser\LDPTags.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\ldp_parser\LDPTags.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\ldp_parser\LDPToken.cpp"
 				>
 			</File>
@@ -1597,6 +1616,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\ShapeLine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeLine.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\ShapeNote.cpp"
 				>
 			</File>
@@ -1734,6 +1761,10 @@
 			</File>
 			<File
 				RelativePath="..\..\packages\wxMidi\src\wxMidiDatabase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\packages\wxSQLite3\src\wxsqlite3.cpp"
 				>
 			</File>
 		</Filter>
