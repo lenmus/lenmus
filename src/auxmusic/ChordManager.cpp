@@ -260,7 +260,7 @@ void RemoveOneInversionFromChord( lmChordInfo* pInOutChordInfo)
 lmEChordType GetChordTypeAndInversionsFromIntervals( lmChordInfo &tChordInfo)
 {
     lmEChordType nType = lmINVALID_CHORD_TYPE;
-    int nNumPossibleInversions = tChordInfo.nNumNotes - 2;
+    int nNumPossibleInversions = tChordInfo.nNumNotes - 1;
     tChordInfo.nNumInversions = 0;
     do
     {
