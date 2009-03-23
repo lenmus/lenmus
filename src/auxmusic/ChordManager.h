@@ -47,16 +47,21 @@ extern wxString ChordTypeToName(lmEChordType nChordType);
 extern int NumNotesInChord(lmEChordType nChordType);
 extern lmEChordType ChordShortNameToType(wxString sName);
 
-//a chord is a sequence of up 6 notes. Change this for more notes in chord
+//a chord is a sequence of up to 6 notes. Change this for more notes in chord
 #define lmNOTES_IN_CHORD  6
+#define lmINTERVALS_IN_CHORD  (lmNOTES_IN_CHORD - 1)
 
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2Carlos
+#define lmINVALID_CHORD_TYPE ect_Max
+
 typedef struct lmChordInfoStruct {
     int nNumNotes;
-    lmFIntval nIntervals[lmNOTES_IN_CHORD-1];
-    void Initalize()
+    int nNumInversions;
+    lmFIntval nIntervals[lmINTERVALS_IN_CHORD];
+    void Initalize() //TODO @@pensar en mejorar... (un constructor??)
     {
-        for (int i=0; i<lmNOTES_IN_CHORD-1; i++)
+        nNumNotes = 0;
+        nNumInversions = 0;
+        for (int i=0; i<lmINTERVALS_IN_CHORD; i++)
         {
           nIntervals[i] = lmNULL_FIntval;
         }
@@ -67,6 +72,7 @@ extern  void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* 
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern lmEChordType GetChordTypeFromIntervals( lmChordInfo chordInfo );
+extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
 
 
 
@@ -78,6 +84,7 @@ public:
     //build a chord from root note and type
     lmChordManager(wxString sRootNote, lmEChordType nChordType, int nInversion = 0,
                    lmEKeySignatures nKey = earmDo);
+    lmChordManager(lmNote* pRootNote, lmChordInfo &chordInfo);
     //destructor
     ~lmChordManager();
 
@@ -85,16 +92,12 @@ public:
     void Create(wxString sRootNote, lmEChordType nChordType, int nInversion,
                 lmEKeySignatures nKey);
     void Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
-    void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], lmEKeySignatures nKey);
-    //@@@Carlos
-    void Create(lmFPitch fpRootNote, lmChordInfo* chordInfo, lmEKeySignatures nKey);
+ //@@ TODO: quitar si no se usa   void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], lmEKeySignatures nKey);
     void Create(lmNote* pRootNote, lmChordInfo* chordInfo);
-    void Create(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
-    lmChordManager(int numNotes, lmNote** inpChordNotes);
-    void initialize();
+    void Initialize();
 
-    //@@@@@@@@@@@ For debugging
-    wxString toString();
+    // For debugging
+    wxString ToString();
 
     lmEChordType GetChordType() { return m_nType; }
     wxString GetNameFull();

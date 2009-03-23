@@ -124,9 +124,8 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
     //create a score with a bass line
     wxString sPattern;
-    lmNote* pNote;
+   //TODO: dejar version final o quitar:  provlmNote* pNote; lmLDPNode* pNode;
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
-    lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
     m_pProblemScore = new lmScore();
@@ -162,7 +161,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     };
 
 
-/*@@@@@@@@@@@@@@@carlos*
+/*TODO: dejar version final o quitar  @@@@@@@@@@@@@@@carlos
     wxString sNotes[16] = {
         _T("(n c3 q p2 v4 (stem down))"),
         _T("(n e3 q p2 v4 (stem down))"),
@@ -191,6 +190,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         else
             pVStaff->AddSpacer(20);
 
+/*@@@@@@@@@@@@@@@@@@@@@ TODO: dejar version final o quitar 
         //two chords per measure (time signature is 2 / 4)
         for (int iM=0; iM < 2; iM++)
         {
@@ -199,8 +199,8 @@ void lmTheoHarmonyCtrol::SetNewProblem()
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }
+*************/
     }
-/*************/
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
 

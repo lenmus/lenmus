@@ -35,6 +35,8 @@ class lmStaffObj;
 class lmAuxObj;
 class lmUrlAuxCtrol;
 
+#include "../auxmusic/ChordManager.h"
+
 //--------------------------------------------------------------------------
 // lmScoreProcessor: An abstract class to create score processors
 //--------------------------------------------------------------------------
@@ -69,6 +71,21 @@ private:
     lmUrlAuxCtrol*      m_pUndoLink;
 };
 
+typedef struct lmChordDescriptorStruct {
+    lmChordManager*  pChord;
+    lmNote* pChordNotes[lmNOTES_IN_CHORD-1];
+    lmChordDescriptorStruct()
+    {
+        pChord = NULL;
+        for (int i = 0; i<lmNOTES_IN_CHORD-1; i++)
+        {
+            pChordNotes[i] = NULL;
+        }
+    }
+} lmChordDescriptor;
+#define lmMAX_NUM_CHORDS 50
+
+
 
 //--------------------------------------------------------------------------
 // A processor to check an score for harmony 'errors' and add markup to 
@@ -89,6 +106,14 @@ public:
 #endif
 
 protected:
+
+    bool ProccessChord(lmScore* pScore, int nNumChordNotes, lmChordDescriptor* ptChordDescriptor
+        , wxString &sStatusStr);
+    void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText);
+
+    lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
+    int nNumChords;
+
 
     //Error markup: the marked staffobj and its markup attachment
     typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;

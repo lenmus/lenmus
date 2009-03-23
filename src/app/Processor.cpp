@@ -49,7 +49,6 @@ extern lmMainFrame* GetMainFrame();
 #include "../score/Score.h"
 #include "../score/VStaff.h"
 
-//@@Carlos
 //access to error's logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
@@ -62,7 +61,6 @@ extern lmLogger* g_pLogger;
 //IDs for controls
 const int lmID_DO_PROCESS = wxNewId();
 const int lmID_UNDO_PROCESS = wxNewId();
-
 
 lmScoreProcessor::lmScoreProcessor()
     : wxEvtHandler()
@@ -187,6 +185,10 @@ lmHarmonyProcessor::~lmHarmonyProcessor()
         m_markup.erase(it++);
         delete pError;
     }
+
+    assert(nNumChords<lmMAX_NUM_CHORDS);
+    for (int i = 0; i <nNumChords; i++)
+        delete tChordDescriptor[i].pChord;
 }
 
 bool lmHarmonyProcessor::SetTools()
@@ -205,78 +207,87 @@ bool lmHarmonyProcessor::SetTools()
 }
 
 
-#ifdef __WXDEBUG__
-void lmHarmonyProcessor::UnitTests()
+void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct
+                                           , wxColour colour, wxString &sText)
 {
-    /******
-    int i, j;
+    //define the font to use for texts
+    lmFontInfo tFont = {_("Comic Sans MS"), 6, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+    lmTextStyle* pStyle = pScore->GetStyleName(tFont);
 
-    //lmConverter::NoteToBits and lmConverter::NoteBitsToName
-    wxLogMessage(_T("[lmChordManager::UnitTests] Test of lmConverter::NoteToBits() method:"));
-    wxString sNote[8] = { _T("a4"), _T("+a5"), _T("--b2"), _T("-a4"),
-        _T("+e4"), _T("++f6"), _T("b1"), _T("xc4") };
-    lmNoteBits tNote;
-    for(i=0; i < 8; i++) {
-        if (lmConverter::NoteToBits(sNote[i], &tNote))
-            wxLogMessage(_T("Unexpected error in lmConverter::NoteToBits()"));
-        else {
-            wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
-                sNote[i].c_str(), tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
-                lmConverter::NoteBitsToName(tNote, m_nKey).c_str() );
-        }
+    // Display chord info in score with a line and text
+    assert(pChordDsct != NULL);
+    assert(pChordDsct->pChord != NULL);
+    int nNumNotes = pChordDsct->pChord->GetNumNotes();
+    for (int i = 0; i<nNumNotes; i++)
+    {
+        pChordDsct->pChordNotes[i]->SetColour(colour);
     }
 
-    //ComputeInterval(): interval computation
-    wxString sIntv[8] = { _T("M3"), _T("m3"), _T("p8"), _T("p5"),
-        _T("a5"), _T("d7"), _T("M6"), _T("M2") };
-    for(i=0; i < 8; i++) {
-        for (j=0; j < 8; j++) {
-            wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
-            wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
-                         sNote[i].c_str(), sIntv[j].c_str(), sNewNote.c_str() );
-            wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], false, m_nKey);
-            wxLogMessage(_T("Note='%s' - Intv='%s' --> '%s'"),
-                         sNewNote.c_str(), sIntv[j].c_str(), sStartNote.c_str() );
-        }
+    // Green line pointing to the chord
+    // Remember: all 'y' positions are relative to top line (5th line of
+    //   first staff). 'x' positions are relative to current object position.
+    lmStaffObj* cpSO =pChordDsct->pChordNotes[2];
+    // Remember: lmScoreLine( xStart, yStart, xEnd,  yEnd, tWidth, nColor)
+    lmScoreLine* pLine = new lmScoreLine(40, -20, 5, 100, 2, colour);
+    cpSO->AttachAuxObj(pLine);
+    lmMarkup* pError = new lmMarkup(cpSO, pLine);
+    m_markup.push_back(pError);
+
+    // Text at top of the line
+    lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
+    cpSO->AttachAuxObj(pText);
+    pText->SetUserLocation(40.0f, -30.0f);
+    pError = new lmMarkup(cpSO, pText);
+    m_markup.push_back(pError);
+}
+// All chord processing:
+//  analysis of chord notes and intervals
+//  chord creation
+//  results: display messages...
+//  TODO: analyze harmonic progression...
+bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, int nNumChordNotes
+                                       , lmChordDescriptor* ptChordDescriptor, wxString &sStatusStr)
+{
+    bool fOk = false;
+    bool fCanBeCreated = false;
+
+    lmChordInfo tChordInfo;
+    tChordInfo.Initalize();
+
+    assert(ptChordDescriptor != NULL);
+    assert(ptChordDescriptor->pChordNotes != NULL);
+
+    // Create Chord
+    fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes, &tChordInfo,  sStatusStr);
+    
+    lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0]; //TODO @@@ (confirmar que aun con inversiones la primera nota es la fundamental)
+
+    wxColour colour;
+    int nLastChord = nNumChords;
+    if (fCanBeCreated)
+    {
+        ptChordDescriptor[nNumChords].pChord = new lmChordManager(pChordBaseNote, tChordInfo);
+        sStatusStr = ptChordDescriptor[nNumChords].pChord->ToString();
+        nNumChords++;
+        colour = *wxGREEN;
+        fOk = true;
+    }
+    else
+    {
+        // TODO: mejorar @@@@@@@ ahora aunque no sea valido, lo creamos solo para guardar los punteros a las notas
+        ptChordDescriptor[nNumChords].pChord = new lmChordManager(pChordBaseNote, tChordInfo);
+        nNumChords++;
+        colour = *wxRED;
+        fOk = false;
     }
 
-    //IntervalCodeToBits and IntervalBitsToCode
-    wxLogMessage(_T("[lmChordManager::UnitTests] Test of IntervalCodeToBits() method:"));
-    lmIntvBits tIntv;
-    for(i=0; i < 8; i++) {
-        if (IntervalCodeToBits(sIntv[i], &tIntv))
-            wxLogMessage(_T("Unexpected error in IntervalCodeToBits()"));
-        else {
-            wxLogMessage(_T("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'"),
-                sIntv[i].c_str(), tIntv.nNum,tIntv.nSemitones,
-                IntervalBitsToCode(tIntv).c_str() );
-        }
-    }
-    **/
+    wxLogMessage(sStatusStr);
 
-    ////SubstractIntervals
-    //wxLogMessage(_T("[lmChordManager::UnitTests] Test of SubstractIntervals() method:"));
-    //wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M7"), _T("M6"), _T("m6"), _T("M7"), _T("M6"), _T("p4") };
-    //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("p5"), _T("p5"), _T("a5"), _T("M3"), _T("m3"), _T("M2") };
-    //for(i=0; i < 8; i++) {
-    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> dif='%s'"),
-    //        sIntv1[i], sIntv2[i], SubstractIntervals(sIntv1[i], sIntv2[i]) );
-    //}
+    DisplayChordInfo(pScore, &ptChordDescriptor[nLastChord], colour, sStatusStr);
 
-    ////AddIntervals
-    //wxLogMessage(_T("[lmChordManager::UnitTests] Test of AddIntervals() method:"));
-    //wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M6"), _T("M3"), _T("M3"), _T("M6"), _T("d4"), _T("p8") };
-    //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
-    //for(i=0; i < 8; i++) {
-    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
-    //        sIntv1[i].c_str(), sIntv2[i].c_str(), AddIntervals(sIntv1[i], sIntv2[i]).c_str() );
-    //}
+    return fOk;
 
 }
-#endif  // __WXDEBUG__
-
-
-
 
 bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
 {
@@ -286,26 +297,17 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     //As an example, I will put red and a green lines pointing to fourth and
     //sixth notes, respectively, and add some texts
     bool fScoreModified = false;
-
-
-
-    //define the font to use for texts
-    lmFontInfo tFont = {_("Comic Sans MS"), 8, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-    lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+    nNumChords = 0;
 
     //Get the instrument
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     lmVStaff* pVStaff = pInstr->GetVStaff();
 
-    //@@@Carlos
-    const int MAX_CHORDS = 20;
-    int numChords = 0;
-    lmChordManager* pChords[MAX_CHORDS];
-
-	lmNote* pChordNotes[lmNOTES_IN_CHORD];
-	lmNote* currentNote;
-    int currentNotePos, chordNotePos = -2;
-    int chordNoteIndex = 0;
+	lmNote* pCurrentNote;
+    int nCurrentNotePos = -2;
+    int nChordNotePos = -2;
+    int nNumChordNotes = 0;
+    wxString sStatusStr;
 
     // Loop to process notes/rests in first staff of first instrument
     int nNote = 0;
@@ -318,78 +320,50 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             // It is a note. Count it
             ++nNote;
 
- //@@@CARLOS
-			currentNote = (lmNote*) pSO;
-			currentNotePos = currentNote->GetBeatPosition();
+			pCurrentNote  = (lmNote*) pSO;
+			nCurrentNotePos  = pCurrentNote->GetBeatPosition();
             wxLogMessage(_T("[ProcessScore] note %d: pitch: %d, pos: %d")
-                , nNote, currentNote->GetFPitch(), currentNotePos);
+                , nNote, pCurrentNote->GetFPitch(), nCurrentNotePos);
             wxLogMessage(_T("  LDP:%s")
-                ,  currentNote->SourceLDP(0).c_str());
+                ,  pCurrentNote->SourceLDP(0).c_str());
 
             // Notes with beat position of lmNOT_ON_BEAT are ignored
             // New beat position means new chord
 
-            if (  currentNotePos != lmNOT_ON_BEAT)
+            if (  nCurrentNotePos  != lmNOT_ON_BEAT)
             {
                 // Note candidate to chord
 
-                if (  currentNotePos != chordNotePos )
+                if (  nCurrentNotePos != nChordNotePos )
                 {
                    // Chord initialization
-                   wxLogMessage(_T("  New chord because: currentPos %d, prev: %d, index:%d")
-                        ,  currentNotePos,  chordNotePos, chordNoteIndex );
+                   wxLogMessage(_T("  New chord because: currentPos %d, prev: %d, nNumChordNotes:%d")
+                        ,  nCurrentNotePos,  nChordNotePos, nNumChordNotes );
 
                     // Different beat position: new chord
                     // If at least 3 notes: create chord
-                    if (chordNoteIndex > 3)
+                    if (nNumChordNotes > 2)
                     {
-                        // Create Chord
-                        wxLogMessage(_T("@@Creamos chord con %d notas"), chordNoteIndex-1);
-                        pChords[numChords++] = new lmChordManager(chordNoteIndex-1, pChordNotes);
-
-/*@@ provisional: display chord info in score with a line and text */
-                        for (int i = 0; i<chordNoteIndex-1; i++)
-                        {
-                            pChordNotes[i]->SetColour(*wxGREEN);
-                        }
-
-                        //green line pointing to the chord
-                        lmStaffObj* cpSO = pChordNotes[2];
-                        lmScoreLine* pLine = new lmScoreLine(40, -20, 5, 100, 2, *wxGREEN);
-                        cpSO->AttachAuxObj(pLine);
-                        lmMarkup* pError = new lmMarkup(cpSO, pLine);
-                        m_markup.push_back(pError);
-
-                        //text at top of the line
-                        wxString sText = pChords[numChords-1]->toString();
-                        lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
-                        cpSO->AttachAuxObj(pText);
-                        pText->SetUserLocation(40.0f, -30.0f);
-                        pError = new lmMarkup(cpSO, pText);
-                        m_markup.push_back(pError);
-
-                        fScoreModified = true;
-
-
-
+                        bool fChordOk = ProccessChord(pScore, nNumChordNotes, tChordDescriptor, sStatusStr);
                     }
 
-                    chordNoteIndex = 0;
-        			pChordNotes[0] = currentNote;
-                    chordNotePos = currentNotePos;
-                    chordNoteIndex++;
-                    wxLogMessage(_T("[ProcessScore] First chord note pitch: %d, pos: %d")
-                        , currentNote->GetFPitch(), chordNotePos);
+                    fScoreModified = true; // repaint
 
-                } //  if (  currentNotePos != chordNotePos )
+                    nNumChordNotes = 0;
+        			tChordDescriptor[nNumChords].pChordNotes[0] = pCurrentNote;
+                    nChordNotePos = nCurrentNotePos;
+                    nNumChordNotes++;
+                    wxLogMessage(_T("[ProcessScore] First chord note pitch: %d, pos: %d")
+                        , pCurrentNote->GetFPitch(), nNumChordNotes);
+
+                } //  if (  nCurrentNotePos != nNumChordNotes )
                 // else: in the same beat then add to chord
-                //   @@ also verify same duration?
+                //   TODO: @@ also verify same duration?
                 else
                 {
-        			pChordNotes[chordNoteIndex] = currentNote;
-                    wxLogMessage(_T("[ProcessScore] new %d chord note, pitch: %d")
-                        , chordNoteIndex, currentNote->GetFPitch());
-                    chordNoteIndex++;
+                    tChordDescriptor[nNumChords].pChordNotes[nNumChordNotes++] = pCurrentNote;
+                    wxLogMessage(_T("[ProcessScore] new chord note, nNumChordNotes: %d, pitch: %d")
+                        , nNumChordNotes, pCurrentNote->GetFPitch() );
                 }
 
 
@@ -398,64 +372,16 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
         }
         // else [ not IsNote]: ignore
 
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@
-			if (nNote == 4)
-            {
-                //fourth note. Change its colour to red
-                pSO->SetColour(*wxRED);
-
-                //Put a red line pointing to it
-                //Remember: all 'y' positions are relative to top line (5th line of
-                //first staff). 'x' positions are relative to current object position.
-                lmScoreLine* pLine = new lmScoreLine(-30, -30, 5, 80, 2, *wxRED);
-                pSO->AttachAuxObj(pLine);
-                lmMarkup* pError = new lmMarkup(pSO, pLine);
-                m_markup.push_back(pError);
-
-                //text at top of the line
-                wxString sText = _T("Bad !!!");
-                lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
-                pSO->AttachAuxObj(pText);
-                pText->SetUserLocation(-80.0f, -40.0f);
-                pError = new lmMarkup(pSO, pText);
-                m_markup.push_back(pError);
-
-                fScoreModified = true;
-            }
-            else if (nNote == 6)
-            {
-                //sixth note. Change its colour to green, put a line and a text and finish loop
-                pSO->SetColour(*wxGREEN);
-
-                //green line pointing to the note
-                lmScoreLine* pLine = new lmScoreLine(40, -20, 5, 100, 2, *wxGREEN);
-                pSO->AttachAuxObj(pLine);
-                lmMarkup* pError = new lmMarkup(pSO, pLine);
-                m_markup.push_back(pError);
-
-                //text at top of the line
-                wxString sText = _T("I like this note!");
-                lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
-                pSO->AttachAuxObj(pText);
-                pText->SetUserLocation(40.0f, -30.0f);
-                pError = new lmMarkup(pSO, pText);
-                m_markup.push_back(pError);
-
-                fScoreModified = true;
-                break;
-            }
-        }
-*****************************/
         pIter->MoveNext();
+
     } // while
     delete pIter;       //Do not forget this. We are not using smart pointers!
 
     // Last chord?
-    if (chordNoteIndex > 2)
+    if (nNumChordNotes > 2)
     {
-        // Create Chord
-        wxLogMessage(_T("@@Creamos chord con %d notas"), chordNoteIndex);
-        pChords[numChords++] = new lmChordManager(chordNoteIndex, pChordNotes);
+        if ( ProccessChord(pScore, nNumChordNotes, tChordDescriptor, sStatusStr) )
+            fScoreModified = true;
     }
 
     return fScoreModified;      //true -> score modified

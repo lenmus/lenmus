@@ -42,12 +42,12 @@
 enum lmEChordType
 {
     // Triads
-    ect_MajorTriad = 0,
-    ect_MinorTriad,
-    ect_AugTriad,
-    ect_DimTriad,
-    ect_Suspended_4th,
-    ect_Suspended_2nd,
+    ect_MajorTriad = 0, // 3M5p perfect major
+    ect_MinorTriad,     // 3m5p perfect minor
+    ect_AugTriad,       // 3M5A 5th augmented
+    ect_DimTriad,       // 3m5d 5th diminished
+    ect_Suspended_4th,  // p4p5
+    ect_Suspended_2nd,  // m4p5
     ect_LastTriad = ect_Suspended_2nd,
 
     // Seventh chords
