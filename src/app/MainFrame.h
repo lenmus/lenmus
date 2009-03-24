@@ -140,6 +140,7 @@ public:
     void OnDebugSeeSource(wxCommandEvent& event);
     void OnDebugSeeXML(wxCommandEvent& event);
     void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
+    void OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event));
     void OnDebugScoreUI(wxUpdateUIEvent& event);
 
     // Zoom events

@@ -52,7 +52,7 @@ public:
     ~lmBezier();
 
     //points
-    void SetPoint(lmTPoint& yPoint, int nPointID);
+    void SetPoint(int nPointID, lmTPoint& tPoint);
     lmTPoint& GetPoint(int nPointID);
 
     // source code related methods
@@ -85,6 +85,9 @@ public:
     lmTie(lmNote* pStartNote, lmNote* pEndNote);
     ~lmTie();
 
+    //creation
+    void SetBezierPoints(int nBezier, lmTPoint* ptPoints);
+
     // overrides for pure virtual methods of base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
@@ -107,12 +110,7 @@ public:
     void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
 
 protected:
-
-    lmShapeTie*     m_pShape1;      //main arch
-    lmShapeTie*     m_pShape2;      //secondary arch if tie is splitted
-
-    lmBezier        m_bezier1;      //main arch
-    lmBezier        m_bezier2;      //secondary arch if tie is splitted
+    lmBezier        m_Bezier[2];    //points for main and secondary archs
 
     lmTPoint        m_tPoints[4];   //main arch: start, end, ctrol1, ctrol2
 };

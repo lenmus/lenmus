@@ -50,14 +50,14 @@ class lmHandlerLine;
 class lmShapeArch : public lmSimpleShape
 {
 public:
-    lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
+    lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uStart, lmUPoint uEnd,
                 lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
                 wxString sName = _T("Arch"), bool fDraggable = true,
 				bool fVisible = true);
-    lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
-                wxColour nColor, wxString sName = _T("Arch"),
+    lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uStart, lmUPoint uEnd,
+                bool fArchUnder, wxColour nColor, wxString sName = _T("Arch"),
 				bool fDraggable = true, bool fVisible = true);
-    lmShapeArch(lmScoreObj* pOwner, lmUPoint* pPoints, bool fArchUnder,
+    lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint* pPoints, bool fArchUnder,
                 wxColour nColor, wxString sName = _T("Arch"), bool fDraggable = true,
 				bool fVisible = true);
 
@@ -121,7 +121,7 @@ class lmStaff;
 class lmShapeTie : public lmShapeArch
 {
 public:
-    lmShapeTie(lmTie* pOwner, lmNote* pEndNote, lmUPoint* pPoints,
+    lmShapeTie(lmTie* pOwner, int nShapeIdx, lmNote* pEndNote, lmUPoint* pPoints,
                lmShapeNote* pShapeStart, lmShapeNote* pShapeEnd,
                bool fTieUnderNote, wxColour color = *wxBLACK, bool fVisible = true);
 	~lmShapeTie();

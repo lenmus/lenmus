@@ -37,6 +37,7 @@
 #include "../score/Score.h"
 
 class lmInstrGroup;
+class lmTieInfo;
 
 enum lmETagLDP
 {
@@ -90,7 +91,7 @@ public:
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
-    lmEStemType   AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
+    lmEStemType AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
@@ -116,7 +117,7 @@ public:
     bool ParenthesisMatch(const wxString& sSource);
 
 
-private:
+protected:
     enum EParsingStates
     {
         A0_WaitingForStartOfElement = 0,
@@ -129,6 +130,8 @@ private:
 
     void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
+    void        AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints);
+    bool        AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints);
     wxColour    AnalyzeColor(lmLDPNode* pNode);
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
@@ -138,6 +141,7 @@ private:
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
                                   lmEHAlign* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont, bool* pHasWidth);
+    lmTieInfo*  AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode, float* pValue);
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
@@ -147,6 +151,10 @@ private:
     bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
 	bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
                                float* pValue);
+
+    //auxiliary
+    void AddTie(lmNote* pNote, lmTieInfo* pTieInfo);
+
 
 
     void Clear();
@@ -173,17 +181,21 @@ private:
 
     lmLDPTokenBuilder*  m_pTokenizer;       //ptr to token builder object
     lmLDPToken*         m_pTk;              //current token
-    EParsingStates      m_nState;           //estado actual del autómata
-    int                 m_nLevel;           //numero de nodos
-    wxArrayInt          m_stackStates;      //Nodo de retorno tras un PopNodo
+    EParsingStates      m_nState;           //current automata state
+    int                 m_nLevel;           //number of nodes
+    wxArrayInt          m_stackStates;      //returned node after PopNode
     std::vector<lmLDPNode*> m_StackNodes;   //satck of nodes
-    lmLDPNode*          m_pCurNode;         //nodo en proceso
-    wxString            m_sVersion;         //versión del lenguaje en que está la partitura en proceso
-    int                 m_nVersion;         //versión convertida a numerico 100*num+rev. Ej. 1.2 = 102
+    lmLDPNode*          m_pCurNode;         //node in process
+    wxString            m_sVersion;         //score in process: used LDP version (i.e. "1.2")
+    int                 m_nVersion;         //version in numeric format: 100*num+rev. (i.I.e. 1.2 = 102)
 
-    bool                m_fDebugMode;
+    //list of open ties, waiting for the second note.
+    std::list<lmTieInfo*>   m_PendingTies;   
+
+
 
     // parsing control and error variables
+    bool            m_fDebugMode;
     bool            m_fFromString;        // true: parsing a string. false: parsing a file
     bool            m_fStartingTextAnalysis;    //to signal the start of a new analysis
     wxString        m_sLastBuffer;        // to keep line under analysis

@@ -65,6 +65,28 @@ extern lmLogger* g_pLogger;
 
 const wxString sEOF = _T("<<$$EOF$$>>");
 
+
+//========================================================================================
+//helper class to keep info about a tie
+//========================================================================================
+class lmTieInfo
+{
+public:
+    lmTieInfo() {}
+    ~lmTieInfo() {}
+
+    bool        fStart;
+    long        nTieId;
+    lmNote*     pNote;
+    lmTPoint    tBezier[4];
+};
+
+
+
+//========================================================================================
+// lmLDPParser implementation
+//========================================================================================
+
 lmLDPParser::lmLDPParser()
 {
     Create(_T("en"), _T("utf-8"));     //default tags in English
@@ -126,10 +148,13 @@ void lmLDPParser::Clear()
 
     std::vector<lmLDPNode*>::iterator it;
     for(it=m_StackNodes.begin(); it != m_StackNodes.end(); ++it)
-    {
         delete *it;
-    }
     m_StackNodes.clear();
+
+    std::list<lmTieInfo*>::iterator itT;
+    for(itT=m_PendingTies.begin(); itT != m_PendingTies.end(); ++itT)
+        delete *itT;
+    m_PendingTies.clear();
 
     delete m_pCurNode;
     m_pCurNode = (lmLDPNode*) NULL;
@@ -278,7 +303,12 @@ void lmLDPParser::AnalysisError(lmLDPNode* pNode, const wxChar* szFormat, ...)
 
     va_list argptr;
     va_start(argptr, szFormat);
-    wxString sMsg = wxString::Format(_T("** LDP ERROR ** (line %d): "), pNode->GetNumLine());
+    wxString sMsg;
+    if (pNode)
+        sMsg = wxString::Format(_T("** LDP ERROR ** (line %d): "), pNode->GetNumLine());
+    else
+        sMsg = _T("** LDP ERROR **: ");
+
     sMsg += wxString::FormatV(szFormat, argptr);
     wxLogMessage(sMsg);
     if (m_fFromString)
@@ -1460,6 +1490,144 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
+lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    // <tie> = (tie num [start | stop] [<bezier>])
+
+    //returns a ptr. to a new lmTieInfo struct or NULL if any important error.
+
+    //check that there are parameters
+    if (pNode->GetNumParms() < 2 || pNode->GetNumParms() > 3)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
+            pNode->GetName().c_str() );
+        return (lmTieInfo*)NULL;    //error
+    }
+
+    //create the TieInfo struct to save Tie data
+    lmTieInfo* pTieInfo = new lmTieInfo;
+
+    //initialize points
+    for (int i=0; i < 4; i++)
+        pTieInfo->tBezier[i] = lmTPoint(0.0f, 0.0f);
+
+    //get tie number
+    wxString sNum = pNode->GetParameter(1)->GetName();
+    if (!sNum.IsNumber())
+    {
+        AnalysisError(pNode,
+            _T("Element 'tie': Number expected but found '%s'. Tie ignored."), sNum.c_str() );
+        delete pTieInfo;
+        return (lmTieInfo*)NULL;    //error;
+    }
+    sNum.ToLong(&(pTieInfo->nTieId));
+
+    //get tie type: start / end
+    wxString sType = pNode->GetParameter(2)->GetName();
+    if (!(sType == _T("start") || sType == _T("stop")) )
+    {
+        AnalysisError(pNode,
+            _T("Element 'tie': Type must be 'start' or 'stop' but found '%s'. Tie ignored."), sType.c_str() );
+        delete pTieInfo;
+        return (lmTieInfo*)NULL;    //error;
+    }
+    pTieInfo->fStart = (sType == _T("start"));
+
+    //get points values
+    if (pNode->GetNumParms() == 3)
+    {
+        if (pNode->GetParameter(3)->GetName() != _T("bezier"))
+            AnalysisError(pNode,
+                _T("Element 'tie': Expected 'bezier' element but found '%s'. Parameter ignored."),
+                pNode->GetParameter(3)->GetName().c_str() );
+        else
+            AnalyzeBezier(pNode->GetParameter(3), &(pTieInfo->tBezier[0]));
+    }
+
+    //end of analysis
+    return pTieInfo;
+}
+
+bool lmLDPParser::AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints)
+{
+    // <bezier-location> = { (start-x num) | (start-y num) | (end-x num) | (end-y num) |
+    //                       (ctrol1-x num) | (ctrol1-y num) | (ctrol2-x num) | (ctrol2-y num) }
+    // <num> = real number, in tenths
+
+    //Returns true if error.  As result of the analysis, the corresponding value of array of
+    //points pPoints is updated. 
+
+    //check that there is one parameter and only one
+    if (pNode->GetNumParms()!= 1)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
+            pNode->GetName().c_str() );
+        return true;    //error
+    }
+
+    //get point name
+    lmTenths* pTarget;
+    wxString sName = pNode->GetName();
+    if (sName == _T("start-x"))
+        pTarget = &((*(pPoints+lmBEZIER_START)).x);
+    else if (sName == _T("end-x"))
+        pTarget = &((*(pPoints+lmBEZIER_END)).x);
+    else if (sName == _T("ctrol1-x"))
+        pTarget = &((*(pPoints+lmBEZIER_CTROL1)).x);
+    else if (sName == _T("ctrol2-x"))
+        pTarget = &((*(pPoints+lmBEZIER_CTROL2)).x);
+    else if (sName == _T("start-y"))
+        pTarget = &((*(pPoints+lmBEZIER_START)).y);
+    else if (sName == _T("end-y"))
+        pTarget = &((*(pPoints+lmBEZIER_END)).y);
+    else if (sName == _T("ctrol1-y"))
+        pTarget = &((*(pPoints+lmBEZIER_CTROL1)).y);
+    else if (sName == _T("ctrol2-y"))
+        pTarget = &((*(pPoints+lmBEZIER_CTROL2)).y);
+    else
+    {
+        AnalysisError(pNode, _T("Element '%s' unknown. Ignored."), sName.c_str() );
+        return true;    //error
+    }
+
+    //get point value
+    wxString sValue = pNode->GetParameter(1)->GetName();
+	double rNumberDouble;
+	if (!StrToDouble(sValue, &rNumberDouble))
+	{
+        *pTarget = (float)rNumberDouble;
+    }
+    else
+    {
+        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
+            sName.c_str(), sValue.c_str() );
+        return true;    //error
+    }
+    return false;       //no error
+}
+
+void lmLDPParser::AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints)
+{
+    // <bezier> = (bezier [bezier-location]* )
+
+    //returns, in variable pPoints[4] the result of the analysis. If a point is not specified
+    //value (0, 0) is assigned.
+
+    //check that there are parameters
+    if (pNode->GetNumParms() < 1 || pNode->GetNumParms() > 8)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
+            pNode->GetName().c_str() );
+        return;
+    }
+
+    //get points values
+    for (int iP = 1; iP <= pNode->GetNumParms(); iP++)
+    {
+        AnalyzeBezierLocation(pNode->GetParameter(iP), pPoints);
+    }
+}
+
 bool lmLDPParser::AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode, float* pValue)
 {
     // receives an algebraic expression, formed by aditions and substractions of
@@ -1530,6 +1698,46 @@ bool lmLDPParser::AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode,
 
 }
 
+void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
+{
+    //Received a note with a tie of type 'stop' and the lmTieInfo for the stop tie element.
+    //This method must look for the matching start element and, if found, build the tie
+
+    //look for the matching start element
+    std::list<lmTieInfo*>::iterator itT;
+    for(itT=m_PendingTies.begin(); itT != m_PendingTies.end(); ++itT)
+    {
+         if ((*itT)->nTieId == pTieInfo->nTieId)
+             break;     //found
+    }
+    if (itT == m_PendingTies.end())
+    {
+        AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for tie num. %d. Tie ignored."),
+                      pTieInfo->nTieId );
+        delete pTieInfo;
+        return;
+    }
+
+    //element found. verify that it is of type 'start'
+    if (!(*itT)->fStart)
+    {
+        AnalysisError((lmLDPNode*)NULL, _T("Duplicated 'stop' element for tie num. %d. Tie ignored."),
+                      pTieInfo->nTieId );
+        delete pTieInfo;
+        delete *itT;
+        m_PendingTies.erase(itT);
+        return;
+    }
+
+    //create the tie
+    (*itT)->pNote->CreateTie(pNote, (*itT)->tBezier, pTieInfo->tBezier);
+
+    //remove and delete consumed lmTieInfo elements
+    delete pTieInfo;
+    delete *itT;
+    m_PendingTies.erase(itT);
+}
+
 lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
 {
     return (lmNote*)AnalyzeNoteRest(pNode, pVStaff, fChord);
@@ -1564,13 +1772,17 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     lmEStemType nStem = lmSTEM_DEFAULT;
     bool fBeamed = false;
-    bool fTie = false;
     bool fVisible = true;
     lmTBeamInfo BeamInfo[6];
-    for (int i=0; i < 6; i++) {
+    for (int i=0; i < 6; i++)
+    {
         BeamInfo[i].Repeat = false;
         BeamInfo[i].Type = eBeamNone;
     }
+
+    //tie
+    lmTieInfo* pTieInfo = (lmTieInfo*)NULL;
+    bool fTie = false;
 
     //Tuplet brakets
     bool fEndTuplet = false;
@@ -1925,14 +2137,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     }
                 }
             }
-            if (sData == _T("tie"))     //start/end of tie
+            else if (sData == _T("tie"))     //start/end of tie
             {       
                 if (fIsRest)
                     AnalysisError(pX, _T("Rests can not be tied. Tie ignored."), sData.c_str());
                 else
-                {
-                    fTie = true;
-                }
+                    pTieInfo = AnalyzeTie(pX, pVStaff);
             }
             else {
                 AnalysisError(pX, _T("Notation '%s' unknown or not implemented."), sData.c_str());
@@ -2007,7 +2217,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     // calculation of duration
     rDuration = GetDefaultDuration(nNoteType, nDots, nActualNotes, nNormalNotes);
 
-    //create the nore/rest
+    //create the note/rest
     lmNoteRest* pNR;
     if (fIsRest)
 	{
@@ -2017,7 +2227,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
     else
 	{
-        //TODO: Convert early to int
+        //TODO: Convert earlier to int
         int nStep = LetterToStep(sStep);
         long nAux;
         sOctave.ToLong(&nAux);
@@ -2034,6 +2244,22 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
 		pNR = pNt;
         m_sLastOctave = sOctave;
+
+        //tie
+        if (pTieInfo)
+        {
+            if (pTieInfo->fStart)
+            {
+                //start of tie. Save the information
+                pTieInfo->pNote = pNt; 
+                m_PendingTies.push_back(pTieInfo);
+            }
+            else
+            {
+                //end of tie. Add it to the internal model
+                AddTie(pNt, pTieInfo);
+            }
+        }
     }
 	pNR->SetUserLocation(tPos);
 

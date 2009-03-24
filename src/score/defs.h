@@ -59,7 +59,37 @@
 #define lmPRESERVE_SHAPES  false
 
 
-//// Types used for portability and legibility
+
+//-------------------------------------------------------------------------------------
+// class lmFloatPoint
+//-------------------------------------------------------------------------------------
+
+class lmFloatPoint
+{
+public:
+    // members are public to simplify.
+    float x, y;
+
+    // constructors
+    lmFloatPoint() : x(0.0f), y(0.0f) { }
+    lmFloatPoint(float rx, float ry) : x(rx), y(ry) { }
+
+    // no copy ctor or assignment operator - defaults are ok
+
+    bool operator==(const lmFloatPoint& pt) const { return x == pt.x && y == pt.y; }
+    bool operator!=(const lmFloatPoint& pt) const { return x != pt.x || y != pt.y; }
+
+    lmFloatPoint operator+(const lmFloatPoint& pt) const { return lmFloatPoint(x + pt.x, y + pt.y); }
+    lmFloatPoint operator-(const lmFloatPoint& pt) const { return lmFloatPoint(x - pt.x, y - pt.y); }
+
+    lmFloatPoint& operator+=(const lmFloatPoint& pt) { x += pt.x; y += pt.y; return *this; }
+    lmFloatPoint& operator-=(const lmFloatPoint& pt) { x -= pt.x; y -= pt.y; return *this; }
+};
+
+
+//-------------------------------------------------------------------------------------
+// Types used for portability and legibility
+//-------------------------------------------------------------------------------------
 
 //units
 typedef float lmLUnits;             // lmPaper logical units.
@@ -67,8 +97,8 @@ typedef float lmTenths;             // Staff relative units.
 typedef int lmPixels;               // Device units (usually pixels).  32 bits int
 
 typedef wxRealPoint lmUPoint;       // a point in logical units
+typedef lmFloatPoint lmTPoint;      // a point in tenths (staff relative units)
 typedef wxPoint lmDPoint;           // a point in device units
-typedef wxRealPoint lmTPoint;       // a point in tenths (staff relative units)
 
 //some limits
 #define lmMAX_VOICE		8		//LIMIT: max. num of voices per instrument 

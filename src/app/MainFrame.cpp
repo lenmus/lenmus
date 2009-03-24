@@ -69,6 +69,8 @@
 #include "../updater/Updater.h"
 #include "../graphic/BoxScore.h"
 
+#include "Processor.h"      //Debug: Harmony processor
+
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -199,6 +201,7 @@ enum
     MENU_Debug_ShowDebugLinks,
     MENU_Debug_ShowBorderOnScores,
     MENU_Debug_recSelec,
+    MENU_Debug_CheckHarmony,
     MENU_Debug_DrawAnchors,
     MENU_Debug_DrawBounds,
     MENU_Debug_DumpStaffObjs,
@@ -406,6 +409,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_DumpBitmaps, lmMainFrame::OnDebugDumpBitmaps)
     EVT_UPDATE_UI (MENU_Debug_DumpBitmaps, lmMainFrame::OnDebugScoreUI)
+    EVT_MENU      (MENU_Debug_CheckHarmony, lmMainFrame::OnDebugCheckHarmony)
+    EVT_UPDATE_UI (MENU_Debug_CheckHarmony, lmMainFrame::OnDebugScoreUI)
 
 
 
@@ -1125,6 +1130,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         AddMenuItem(pMenuDebug, MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         AddMenuItem(pMenuDebug, MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
         AddMenuItem(pMenuDebug, MENU_Debug_UnitTests, _T("Unit Tests") );
+        AddMenuItem(pMenuDebug, MENU_Debug_CheckHarmony, _T("Check harmony") );
     }
 
 
@@ -1837,6 +1843,23 @@ void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
     lmMDIChildFrame* pChild = GetActiveChild();
 	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     event.Enable(fEnable);
+}
+
+void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
+{
+    lmScore* pScore = GetActiveScore();
+    wxASSERT(pScore);
+
+    lmHarmonyProcessor oProc;
+    if (oProc.ProcessScore(pScore))
+    {
+        //changes done in the score, update views
+        if (GetActiveDoc())
+        {
+	        GetActiveDoc()->Modify(true);
+            GetActiveDoc()->UpdateAllViews(true, new lmUpdateHint() );
+        }
+    }
 }
 
 void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)

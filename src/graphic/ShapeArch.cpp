@@ -44,10 +44,10 @@
 //========================================================================================
 
 
-lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
+lmShapeArch::lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uStart, lmUPoint uEnd,
                          bool fArchUnder, wxColour nColor, wxString sName,
                          bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, lmSELECTABLE, nColor,
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, nShapeIdx, sName, fDraggable, lmSELECTABLE, nColor,
                     fVisible)
       , m_fArchUnder(fArchUnder)
 {
@@ -61,10 +61,10 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
     Create();
 }
 
-lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
+lmShapeArch::lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uStart, lmUPoint uEnd,
                          lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
                          wxString sName, bool fDraggable, bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, lmSELECTABLE, 
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, nShapeIdx, sName, fDraggable, lmSELECTABLE, 
                     nColor, fVisible)
       , m_fArchUnder(uStart.y < uCtrol1.y)
 {
@@ -77,10 +77,10 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
     Create();
 }
 
-lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint* pPoints, bool fArchUnder,
+lmShapeArch::lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint* pPoints, bool fArchUnder,
                          wxColour nColor, wxString sName, bool fDraggable,
                          bool fVisible)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, 0, sName, fDraggable, lmSELECTABLE,
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, nShapeIdx, sName, fDraggable, lmSELECTABLE,
                     nColor, fVisible)
       , m_fArchUnder(fArchUnder)
 {
@@ -323,7 +323,6 @@ void lmShapeArch::OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos, 
     //avoid double displacements.
     for (int i=0; i < lmBEZIER_MAX; i++)
         m_uPoint[i] = m_uSavePoint[i];
-    //UpdateBounds();
 
     pCanvas->MoveObjectPoints(this, uShifts, lmBEZIER_MAX, false);  //false-> do not update views
 }
@@ -350,7 +349,6 @@ lmUPoint lmShapeArch::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
         m_pHandler[i]->SetHandlerTopLeftPoint( uShift + m_pHandler[i]->GetBounds().GetLeftTop() );
         m_uPoint[i] = m_pHandler[i]->GetHandlerCenterPoint();
     }
-    //UpdateBounds();
 
     //draw at new position
     RenderWithHandlers(pPaper);
@@ -360,24 +358,6 @@ lmUPoint lmShapeArch::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 
 void lmShapeArch::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos)
 {
-    ////erase previous draw
-    //RenderWithHandlers(pPaper);
-
-    ////update all handler points and arch points
-    //lmUPoint uShift(uPos - this->GetBounds().GetTopLeft());
-    //for (int i=0; i < lmBEZIER_MAX; i++)
-    //{
-    //    m_pHandler[i]->SetHandlerTopLeftPoint( uShift + m_pHandler[i]->GetBounds().GetLeftTop() );
-    //    m_uPoint[i] = m_pHandler[i]->GetHandlerCenterPoint();
-    //}
-
-    ////draw at new position
-    //RenderWithHandlers(pPaper);
-
-    ////issue edit command
-    //pCanvas->ChangeBezier(this, m_uPoint[0], m_uPoint[1], m_uPoint[2], m_uPoint[3]);
-
-
     //erase previous draw
     RenderWithHandlers(pPaper);
 
@@ -388,7 +368,6 @@ void lmShapeArch::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoi
     //MoveObjectPoints() commands can apply shifts from original points.
     for (int i=0; i < lmBEZIER_MAX; i++)
         m_uPoint[i] = m_uSavePoint[i];
-    //UpdateBounds();
 
     //as this is an object defined by points, instead of MoveObject() command we have to issue
     //a MoveObjectPoints() command.
@@ -419,7 +398,6 @@ void lmShapeArch::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
 
         m_pHandler[i]->SetHandlerCenterPoint(m_uPoint[i]);
     }
-    //UpdateBounds();
 }
 
 
@@ -429,19 +407,28 @@ void lmShapeArch::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
 //========================================================================================
 
 
-lmShapeTie::lmShapeTie(lmTie* pOwner, lmNote* pEndNote, lmUPoint* pPoints,
+lmShapeTie::lmShapeTie(lmTie* pOwner, int nShapeIdx, lmNote* pEndNote, lmUPoint* pPoints,
                        lmShapeNote* pShapeStart, lmShapeNote* pShapeEnd,
                        bool fTieUnderNote, wxColour color, bool fVisible)
-    : lmShapeArch(pOwner, pPoints, fTieUnderNote, color, _T("Tie"), lmDRAGGABLE, fVisible)
+    : lmShapeArch(pOwner, nShapeIdx, pPoints, fTieUnderNote, color, _T("Tie"), lmDRAGGABLE, fVisible)
     , m_pEndNote(pEndNote)
     , m_fTieUnderNote(fTieUnderNote)
 	, m_pBrotherTie((lmShapeTie*)NULL)
 {
     m_nType = eGMO_ShapeTie;
 
-    //compute the arch
+
+    //compute the default arch
     OnAttachmentPointMoved(pShapeStart, eGMA_StartNote, 0.0, 0.0, lmSHIFT_EVENT);
     OnAttachmentPointMoved(pShapeEnd, eGMA_EndNote, 0.0, 0.0, lmSHIFT_EVENT);
+
+    //transfer bezier data
+    for (int i=0; i < 4; i++)
+    {
+        m_uPoint[i].x += (*(pPoints+i)).x;
+        m_uPoint[i].y += (*(pPoints+i)).y;
+    }
+    //MovePoints(4, nShapeIdx, pPoints, true);
 }
 
 lmShapeTie::~lmShapeTie()
@@ -460,13 +447,13 @@ void lmShapeTie::DrawControlPoints(lmPaper* pPaper)
 }
 
 void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
-								lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
+								lmLUnits uxShift, lmLUnits uyShift, lmEParentEvent nEvent)
 {
     //start or end note moved. Recompute start/end of tie and, if necessary, split
     //the tie.
 
-	//WXUNUSED(ux);
-	//WXUNUSED(uy);
+	//WXUNUSED(uxShift);
+	//WXUNUSED(uyShift);
 	//WXUNUSED(nEvent);
 
 	//get notehead shape

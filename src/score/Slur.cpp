@@ -52,13 +52,13 @@ lmBezier::~lmBezier()
 {
 }
 
-void lmBezier::SetPoint(lmUPoint& uPoint, int nPointID)
+void lmBezier::SetPoint(int nPointID, lmTPoint& uPoint)
 {
     wxASSERT(nPointID >= 0 && nPointID < lmBEZIER_MAX);
     m_tPoints[nPointID] = uPoint;
 }
 
-lmUPoint& lmBezier::GetPoint(int nPointID)
+lmTPoint& lmBezier::GetPoint(int nPointID)
 {
     wxASSERT(nPointID >= 0 && nPointID < lmBEZIER_MAX);
     return m_tPoints[nPointID];
@@ -66,7 +66,32 @@ lmUPoint& lmBezier::GetPoint(int nPointID)
 
 wxString lmBezier::SourceLDP(int nIndent)
 {
-    return wxEmptyString;
+    WXUNUSED(nIndent);
+
+	wxString sSource = _T(" (bezier");
+    bool fDefault = true;       //default bezier values
+    static wxString sPointNames[4] = { _T("start"), _T("end"), _T("ctrol1"), _T("ctrol2") };
+
+    for (int i=0; i < 4; i++)
+    {
+        if (m_tPoints[i].x != 0.0f || m_tPoints[i].y != 0.0f)
+        {
+            fDefault = false;
+            if (m_tPoints[i].x != 0.0f)
+		        sSource += wxString::Format(_T(" % s-x:%s"), sPointNames[i],
+                                    DoubleToStr((double)m_tPoints[i].x, 4).c_str() );
+            if (m_tPoints[i].y != 0.0f)
+		        sSource += wxString::Format(_T(" % s-y:%s"), sPointNames[i],
+                                    DoubleToStr((double)m_tPoints[i].y, 4).c_str() );
+        }
+    }
+    sSource += _T(")");
+
+    //if default values return empty string
+    if (fDefault)
+        return wxEmptyString;
+    else
+    	return sSource;
 }
 
 wxString lmBezier::SourceXML(int nIndent)
@@ -83,10 +108,21 @@ wxString lmBezier::SourceXML(int nIndent)
 lmTie::lmTie(lmNote* pStartNote, lmNote* pEndNote)
     : lmBinaryRelObj(eAXOT_Tie, pStartNote, pEndNote, lmDRAGGABLE)
 {
+    DefineAsMultiShaped();      //define a tie as a multi-shaped ScoreObj
 }
 
 lmTie::~lmTie()
 {
+}
+
+void lmTie::SetBezierPoints(int nBezier, lmTPoint* ptPoints)
+{
+    wxASSERT(nBezier == 0 || nBezier == 1);
+ 
+    for (int i=0; i < 4; i++)
+    {
+        m_Bezier[nBezier].SetPoint(i, *(ptPoints+i));
+    }
 }
 
 lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour color)
@@ -108,40 +144,53 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
     lmUPoint uPoints[4];
     for (int i=0; i < 4; i++)
     {
-        uPoints[i].x = m_pParent->TenthsToLogical(m_tPoints[i].x) + pPaper->GetCursorX();
-        uPoints[i].y = m_pParent->TenthsToLogical(m_tPoints[i].y) + pPaper->GetCursorY();
+        uPoints[i].x = m_pParent->TenthsToLogical(m_Bezier[0].GetPoint(i).x) + pPaper->GetCursorX();
+        uPoints[i].y = m_pParent->TenthsToLogical(m_Bezier[0].GetPoint(i).y) + pPaper->GetCursorY();
     }
 
     //creat the shape
-    m_pShape1 = new lmShapeTie(this, (lmNote*)m_pEndNR, &uPoints[0], pShapeStart, pShapeEnd, fTieUnderNote, color, lmVISIBLE);
-    StoreShape(m_pShape1);
-	pBox->AddShape(m_pShape1);
-	pShapeStart->Attach(m_pShape1, eGMA_StartNote);
-	pShapeEnd->Attach(m_pShape1, eGMA_EndNote);
+    lmShapeTie* pShape1 = new lmShapeTie(this, 0, (lmNote*)m_pEndNR, &uPoints[0], pShapeStart,
+                                         pShapeEnd, fTieUnderNote, color, lmVISIBLE);
+    StoreShape(pShape1);
+	pBox->AddShape(pShape1);
+	pShapeStart->Attach(pShape1, eGMA_StartNote);
+	pShapeEnd->Attach(pShape1, eGMA_EndNote);
 
 
-	//create the second tie shape, attached to both notes' shapes
-    m_pShape2 = new lmShapeTie(this, (lmNote*)m_pStartNR, &uPoints[0], pShapeStart, pShapeEnd, fTieUnderNote, color, lmNO_VISIBLE);
-    StoreShape(m_pShape2);
-	pBox->AddShape(m_pShape2);
-	pShapeStart->Attach(m_pShape2, eGMA_StartNote);
-	pShapeEnd->Attach(m_pShape2, eGMA_EndNote);
+	//create the second tie shape
+
+    //convert bezier displacements to logical units
+    for (int i=0; i < 4; i++)
+    {
+        uPoints[i].x = m_pParent->TenthsToLogical(m_Bezier[1].GetPoint(i).x) + pPaper->GetCursorX();
+        uPoints[i].y = m_pParent->TenthsToLogical(m_Bezier[1].GetPoint(i).y) + pPaper->GetCursorY();
+    }
+
+    //creat the shape
+    lmShapeTie* pShape2 = new lmShapeTie(this, 1, (lmNote*)m_pStartNR, &uPoints[0], pShapeStart,
+                                         pShapeEnd, fTieUnderNote, color, lmNO_VISIBLE);
+    StoreShape(pShape2);
+	pBox->AddShape(pShape2);
+	pShapeStart->Attach(pShape2, eGMA_StartNote);
+	pShapeEnd->Attach(pShape2, eGMA_EndNote);
 
 	//link both ties
-	m_pShape1->SetBrotherTie(m_pShape2);
-	m_pShape2->SetBrotherTie(m_pShape1);
+	pShape1->SetBrotherTie(pShape2);
+	pShape2->SetBrotherTie(pShape1);
 
 	//return the shape width
-    return m_pShape1->GetWidth();
+    return pShape1->GetWidth();
 }
 
 void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int nAlter, bool fForward)
 {
-    if (pNote == m_pStartNR && fForward) {
+    if (pNote == m_pStartNR && fForward)
+    {
         // propagate forwards
         ((lmNote*)m_pEndNR)->PropagateNotePitchChange(nStep, nOctave, nAlter, lmFORWARDS);
     }
-    else if (pNote == m_pEndNR && !fForward) {
+    else if (pNote == m_pEndNR && !fForward)
+    {
         // propagate backwards
         ((lmNote*)m_pStartNR)->PropagateNotePitchChange(nStep, nOctave, nAlter, lmBACKWARDS);
     }
@@ -155,18 +204,23 @@ void lmTie::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, b
     //whether to add or to substract shifts.
 
     wxASSERT(nNumPoints == GetNumPoints());
+    wxASSERT(nShapeIdx == 0 || nShapeIdx == 1);
  
     for (int i=0; i < nNumPoints; i++)
     {
         if (fAddShifts)
         {
-            m_tPoints[i].x += m_pParent->LogicalToTenths((*(pShifts+i)).x);
-            m_tPoints[i].y += m_pParent->LogicalToTenths((*(pShifts+i)).y);
+            lmTPoint tNew = m_Bezier[nShapeIdx].GetPoint(i);
+            tNew.x += m_pParent->LogicalToTenths((*(pShifts+i)).x);
+            tNew.y += m_pParent->LogicalToTenths((*(pShifts+i)).y);
+            m_Bezier[nShapeIdx].SetPoint(i, tNew);
         }
         else
         {
-            m_tPoints[i].x -= m_pParent->LogicalToTenths((*(pShifts+i)).x);
-            m_tPoints[i].y -= m_pParent->LogicalToTenths((*(pShifts+i)).y);
+            lmTPoint tNew = m_Bezier[nShapeIdx].GetPoint(i);
+            tNew.x -= m_pParent->LogicalToTenths((*(pShifts+i)).x);
+            tNew.y -= m_pParent->LogicalToTenths((*(pShifts+i)).y);
+            m_Bezier[nShapeIdx].SetPoint(i, tNew);
         }
     }
 
@@ -186,7 +240,9 @@ wxString lmTie::SourceLDP_First(int nIndent)
     WXUNUSED(nIndent);
 
     //wxString sSource = _T(" l");
-    wxString sSource = wxString::Format(_T(" (tie %d start)"), GetID());
+    wxString sSource = wxString::Format(_T(" (tie %d start"), GetID());
+    sSource += m_Bezier[0].SourceLDP(nIndent);
+    sSource += _T(")");
     return sSource;
 }
 
@@ -194,8 +250,10 @@ wxString lmTie::SourceLDP_Last(int nIndent)
 {
     WXUNUSED(nIndent);
 
-    wxString sSource = wxString::Format(_T(" (tie %d end)"), GetID());
-    return wxEmptyString;       //sSource;
+    wxString sSource = wxString::Format(_T(" (tie %d stop"), GetID());
+    sSource += m_Bezier[1].SourceLDP(nIndent);
+    sSource += _T(")");
+    return sSource;
 }
 
 wxString lmTie::SourceXML(int nIndent)

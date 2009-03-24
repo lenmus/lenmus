@@ -317,6 +317,24 @@ void lmNote::CreateTie(lmNote* pNtPrev, lmNote* pNtNext)
         SetTieNext((lmTie*)NULL);
 }
 
+void lmNote::CreateTie(lmNote* pNtNext, lmTPoint* pStartBezier, lmTPoint* pEndBezier)
+{
+    //Create a tie between this note (as start of tie) and received note (as end of tie).
+    //Bezier information is transferred to the created Tie.
+    //No checks so, before invoking this method you should have verified that:
+    //  - both notes have the same pitch
+    //  - there is no tie already created
+    //
+    //This method is intended to be used only during score creation from LDP file
+
+    wxASSERT(pNtNext && pNtNext->GetFPitch() == this->GetFPitch());
+    wxASSERT(!m_pTieNext);
+    
+    CreateTie(this, pNtNext);
+    m_pTieNext->SetBezierPoints(0, pStartBezier);
+    m_pTieNext->SetBezierPoints(1, pEndBezier);
+}
+
 lmEClefType lmNote::GetClefType()
 {
 	//returns the applicable clef for this note

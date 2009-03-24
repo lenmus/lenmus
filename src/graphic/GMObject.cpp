@@ -456,13 +456,15 @@ void lmShape::OnDetached(lmShape* pShape)
 		m_cAttachedTo.erase(it);
 }
 
-void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
+void lmShape::InformAttachedShapes(lmLUnits uxShift, lmLUnits uyShift, lmEParentEvent nEvent)
 {
+    //Parent shape has been shifted by (uxShift, uyShift). Inform attached shapes
+
 	std::list<lmAttachPoint*>::iterator pItem;
 	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
 	{
 		lmAttachPoint* pData = *pItem;
-        pData->pShape->OnAttachmentPointMoved(this, pData->nType, ux, uy, nEvent);
+        pData->pShape->OnAttachmentPointMoved(this, pData->nType, uxShift, uyShift, nEvent);
     }
 }
 

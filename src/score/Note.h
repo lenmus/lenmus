@@ -118,6 +118,7 @@ public:
                     m_fNeedToBeTied = false; 
                 }
     void CreateTie(lmNote* pNtPrev, lmNote* pNtNext);
+    void CreateTie(lmNote* pNtNext, lmTPoint* pStartBezier, lmTPoint* pEndBezier);
     void RemoveTie(lmTie* pTie); 
     inline bool IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
     inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
