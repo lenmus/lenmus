@@ -140,26 +140,24 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     pVStaff->AddKeySignature( m_nKey ); //key signature
     pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
 
+    lmLDPNode* pNode;
+    lmNote* pNote;
 
-        wxString sNotes[16] = {
-        _T("(n c3 q p2 v4 (stem down))"),
-        _T("(n e3 q p2 v4 (stem down))"),
-        _T("(n g3 q p2 v4 (stem down))"),
-        _T("(n d3 q p2 v4 (stem down))"),
-        _T("(n f3 q p2 v4 (stem down))"),
-        _T("(n a3 q p2 v4 (stem down))"),
-        _T("(n e3 q p2 v4 (stem down))"),
-        _T("(n g2 q p2 v4 (stem down))"),
-        _T("(n b2 q p2 v4 (stem down))"),
-        _T("(n f2 q p2 v4 (stem down))"),
-        _T("(n a3 q p2 v4 (stem down))"),
-        _T("(n c3 q p2 v4 (stem down))"),
-        _T("(n f3 q p2 v4 (stem down))"),
-        _T("(n f3 q p2 v4 (stem down))"),
-        _T("(n f2 q p2 v4 (stem down))"),
-        _T("(n f3 q p2 v4 (stem down))")
+  /*TODO: dejar version final o quitar  @@@@@@@@@@@@@@@carlos
+    wxString sNotes[] = {
+        _T("(n a4 q p1 v2) ( chord (n a4 q p1 v2) (n b4 q p1 v2) (n c5 q p1 v2) (n d5 q p1 v2) ) (barline)"),
+        _T("( chord (n b4 q p1 v1) (n d4 q p1 v1) (n f4 q p1 v1) (n a5 q p1 v1) ) (n a4 q p1 v2) (barline)"),
+        _T("(n a4 q p1 v2) ( chord (n a4 q p1 v2) (n c5 q p1 v2) (n e5 q p1 v2) (n g5 q p1 v2) ) (barline)"),
+        _T("( chord (n d4 q p1 v1) (n e4 q p1 v1) (n f4 q p1 v1) (n g4 q p1 v1) ) (n a4 q p1 v2) (barline)"),
+        _T("")
     };
-
+    int n = 0;
+    while (sNotes[n] != _T(""))
+    {
+        pNode = parserLDP.ParseText( sNotes[n] );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        n++;
+    } */
 
 /*TODO: dejar version final o quitar  @@@@@@@@@@@@@@@carlos
     wxString sNotes[16] = {
@@ -181,6 +179,8 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         _T("(n c3 q p2 v4 (stem down))")
     };
 */
+
+/*****
     //loop the add notes
     for (int iN=0; iN < 16; iN+=2)
     {
@@ -190,7 +190,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         else
             pVStaff->AddSpacer(20);
 
-/*@@@@@@@@@@@@@@@@@@@@@ TODO: dejar version final o quitar 
+//@@@@@@@@@@@@@@@@@@@@@ TODO: dejar version final o quitar 
         //two chords per measure (time signature is 2 / 4)
         for (int iM=0; iM < 2; iM++)
         {
@@ -199,10 +199,10 @@ void lmTheoHarmonyCtrol::SetNewProblem()
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }
-*************/
     }
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
+    */
 
     //set the name and the title of the score
     m_pProblemScore->SetScoreName(_("Harmony exercise"));

@@ -46,7 +46,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/GZ"
+				AdditionalOptions="/RTC1"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WXDEBUG__;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
@@ -66,7 +66,7 @@
 				WarnAsError="false"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -155,7 +155,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GZ"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\agg\font_freetype"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\agg\font_freetype;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WIN95__;__WIN32__;WINVER=0x0400;STRICT;_WINDOWS;wxUSE_GUI=1"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
@@ -187,12 +187,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw28u_adv.lib wxmsw28u_core.lib wxmsw28u_dbgrid.lib wxmsw28u_gl.lib wxmsw28u_html.lib wxmsw28u_media.lib wxmsw28u_qa.lib wxmsw28u_xrc.lib wxbase28u.lib wxbase28u_net.lib wxbase28u_odbc.lib wxbase28u_xml.lib wxexpat.lib wxzlib.lib wxmsw28u_aui.lib wxmsw28u_richtext.lib wxmidiu.lib freetype.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw28u_adv.lib wxmsw28u_core.lib wxmsw28u_dbgrid.lib wxmsw28u_gl.lib wxmsw28u_html.lib wxmsw28u_media.lib wxmsw28u_qa.lib wxmsw28u_xrc.lib wxbase28u.lib wxbase28u_net.lib wxbase28u_odbc.lib wxbase28u_xml.lib wxexpat.lib wxzlib.lib wxmsw28u_aui.lib wxmsw28u_richtext.lib wxmidiu.lib freetype.lib  sqlite3.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib"
+				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib;..\..\packages\wxSQLite3\sqlite3\lib"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib;msvcrtd.lib"
 				GenerateDebugInformation="false"

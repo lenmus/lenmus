@@ -206,29 +206,86 @@ bool lmHarmonyProcessor::SetTools()
     return true;
 }
 
+#ifdef __WXDEBUG__
+void  lmHarmonyProcessor::TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColour colour)
+{
+    // Remember: all 'y' positions are relative to top line (5th line of
+    //   first staff). 'x' positions are relative to current object position.
+     lmTenths nxStart = 0;  // fijo; relativo al usuario
+     static lmTenths nyStart = 40;  // relativo a top line; positivo: abajo
+     lmTenths nxEnd = -100; // fijo
+     static lmTenths nyEnd = -120;  // negativo: arriba. Se baja en cada uso
 
-void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct
+     lmTenths nTxPos = nxEnd + 10;
+     lmTenths nTyPos = nyEnd + 10;
+
+    wxString sText;
+
+    //define the font to use for texts
+    lmFontInfo tFont = {_("Comic Sans MS"), 6, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+    lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+
+    cpSO->SetColour(colour);
+
+    // Remember: all 'y' positions are relative to top line (5th line of
+    //   first staff). 'x' positions are relative to current object position.
+    // Remember: lmScoreLine( xStart, yStart, xEnd,  yEnd, tWidth, nColor)
+    lmScoreLine* pLine = new lmScoreLine(nxStart, nyStart, nxEnd, nyEnd, 2, colour);
+    cpSO->AttachAuxObj(pLine);
+    lmMarkup* pError = new lmMarkup(cpSO, pLine);
+    m_markup.push_back(pError);
+
+    // Text at top of the line
+    sText =   wxString::Format(_T("[xS:%f, yS:%f, xE:%f,yE:%f  xt%f yt%f ]")  
+        ,nxStart, nyStart, nxEnd, nyEnd,  nTxPos, nTyPos);
+    lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
+    cpSO->AttachAuxObj(pText);
+
+
+    pText->SetUserLocation(nTxPos, nTyPos);
+    pError = new lmMarkup(cpSO, pText);
+    m_markup.push_back(pError);
+
+    nyEnd +=15;
+
+}
+#endif
+
+void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, int nNumChordNotes
+                                       , lmChordDescriptor*  pChordDsct
                                            , wxColour colour, wxString &sText)
 {
+    // Remember: all 'y' positions are relative to top line (5th line of
+    //   first staff). 'x' positions are relative to current object position.
+    lmTenths nxStart = 0;  // fijo; relativo al usuario
+    static lmTenths nyStart = 40;  // relativo a top line; positivo: abajo
+    lmTenths nxEnd = -200; // fijo
+    static lmTenths nyEnd = -120;  // negativo: arriba. Se baja en cada uso
+
+    lmTenths nTxPos = nxEnd + 10;
+    lmTenths nTyPos = nyEnd + 10;
+
     //define the font to use for texts
     lmFontInfo tFont = {_("Comic Sans MS"), 6, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
     lmTextStyle* pStyle = pScore->GetStyleName(tFont);
 
     // Display chord info in score with a line and text
+    assert(nNumChordNotes > 0);
+    assert(nNumChordNotes < 20);
     assert(pChordDsct != NULL);
-    assert(pChordDsct->pChord != NULL);
-    int nNumNotes = pChordDsct->pChord->GetNumNotes();
-    for (int i = 0; i<nNumNotes; i++)
+
+    for (int i = 0; i<nNumChordNotes; i++)
     {
+        assert(pChordDsct->pChordNotes[i] != NULL);
         pChordDsct->pChordNotes[i]->SetColour(colour);
     }
 
     // Green line pointing to the chord
     // Remember: all 'y' positions are relative to top line (5th line of
     //   first staff). 'x' positions are relative to current object position.
-    lmStaffObj* cpSO =pChordDsct->pChordNotes[2];
+    lmStaffObj* cpSO =pChordDsct->pChordNotes[nNumChordNotes-1];
     // Remember: lmScoreLine( xStart, yStart, xEnd,  yEnd, tWidth, nColor)
-    lmScoreLine* pLine = new lmScoreLine(40, -20, 5, 100, 2, colour);
+    lmScoreLine* pLine = new lmScoreLine(nxStart, nyStart, nxEnd, nyEnd, 2, colour);
     cpSO->AttachAuxObj(pLine);
     lmMarkup* pError = new lmMarkup(cpSO, pLine);
     m_markup.push_back(pError);
@@ -236,9 +293,12 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor* p
     // Text at top of the line
     lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
     cpSO->AttachAuxObj(pText);
-    pText->SetUserLocation(40.0f, -30.0f);
+    pText->SetUserLocation(nTxPos, nTyPos);
     pError = new lmMarkup(cpSO, pText);
     m_markup.push_back(pError);
+
+    nyEnd +=15; // y positions is NOT relative to use; change each time
+
 }
 // All chord processing:
 //  analysis of chord notes and intervals
@@ -264,6 +324,8 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, int nNumChordNotes
 
     wxColour colour;
     int nLastChord = nNumChords;
+
+
     if (fCanBeCreated)
     {
         ptChordDescriptor[nNumChords].pChord = new lmChordManager(pChordBaseNote, tChordInfo);
@@ -275,7 +337,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, int nNumChordNotes
     else
     {
         // TODO: mejorar @@@@@@@ ahora aunque no sea valido, lo creamos solo para guardar los punteros a las notas
-        ptChordDescriptor[nNumChords].pChord = new lmChordManager(pChordBaseNote, tChordInfo);
+ //@@@TODO: quitar??       ptChordDescriptor[nNumChords].pChord = new lmChordManager(pChordBaseNote, tChordInfo);
         nNumChords++;
         colour = *wxRED;
         fOk = false;
@@ -283,7 +345,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, int nNumChordNotes
 
     wxLogMessage(sStatusStr);
 
-    DisplayChordInfo(pScore, &ptChordDescriptor[nLastChord], colour, sStatusStr);
+    DisplayChordInfo(pScore, nNumChordNotes, ptChordDescriptor, colour, sStatusStr);
 
     return fOk;
 
@@ -298,6 +360,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     //sixth notes, respectively, and add some texts
     bool fScoreModified = false;
     nNumChords = 0;
+    int nBarCount = 0;
 
     //Get the instrument
     lmInstrument* pInstr = pScore->GetFirstInstrument();
@@ -317,6 +380,9 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
         {
+#ifdef __WXDEBUG__
+  //          TestDisplay(pScore, pSO, *wxGREEN); //@@@@@@@@@@@
+#endif
             // It is a note. Count it
             ++nNote;
 
@@ -334,43 +400,71 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             {
                 // Note candidate to chord
 
-                if (  nCurrentNotePos != nChordNotePos )
+                // To belong the same chord, the note must be in the same beat position
+                //  and in the same bar, since 'beat position' is relative to the bar
+                if (  nCurrentNotePos != nChordNotePos || nBarCount > 0)
                 {
                    // Chord initialization
-                   wxLogMessage(_T("  New chord because: currentPos %d, prev: %d, nNumChordNotes:%d")
-                        ,  nCurrentNotePos,  nChordNotePos, nNumChordNotes );
+                    wxLogMessage(_T("Chords:%d,  New chord because: currentPos %d, prev: %d, nBarCount:%d, nNumChordNotes:%d")
+                        , nNumChords ,  nCurrentNotePos,  nChordNotePos, nBarCount , nNumChordNotes);
 
                     // Different beat position: new chord
                     // If at least 3 notes: create chord
                     if (nNumChordNotes > 2)
                     {
-                        bool fChordOk = ProccessChord(pScore, nNumChordNotes, tChordDescriptor, sStatusStr);
+                        wxLogMessage(_T("1ProccessChord:%d,  nNumChordNotes: %d")
+                            , nNumChords ,  nNumChordNotes);
+                        //@@@ DEBUG
+                        for (int i = 0; i < nNumChordNotes; i++)
+                        {
+                            if (tChordDescriptor[nNumChords].pChordNotes[i] != NULL)
+                            {
+                                wxLogMessage(_T("  CHORD NOTE[%d] : %s")
+                                ,i, tChordDescriptor[nNumChords].pChordNotes[i]->SourceLDP(0).c_str() );
+                            }
+                            else
+                            {
+                                wxLogMessage(_T("  CHORD NOTE[%d] : NULL!!") ,i );
+                            }
+                        }
+
+                        wxLogMessage(_T("ProccessChord %d, num CHORD NOTES: %d")
+                        , nNumChords, nNumChordNotes);
+                        bool fChordOk = ProccessChord(pScore, nNumChordNotes, &tChordDescriptor[nNumChords], sStatusStr);
                     }
 
                     fScoreModified = true; // repaint
 
+                    // Reset all
                     nNumChordNotes = 0;
         			tChordDescriptor[nNumChords].pChordNotes[0] = pCurrentNote;
                     nChordNotePos = nCurrentNotePos;
                     nNumChordNotes++;
-                    wxLogMessage(_T("[ProcessScore] First chord note pitch: %d, pos: %d")
-                        , pCurrentNote->GetFPitch(), nNumChordNotes);
+                    wxLogMessage(_T("[ProcessScore] Chord:%d, First chord note, pitch: %d, pos: %d")
+                        , nNumChords, pCurrentNote->GetFPitch(), nNumChordNotes);
+                    nBarCount = 0;
 
                 } //  if (  nCurrentNotePos != nNumChordNotes )
                 // else: in the same beat then add to chord
-                //   TODO: @@ also verify same duration?
                 else
                 {
                     tChordDescriptor[nNumChords].pChordNotes[nNumChordNotes++] = pCurrentNote;
-                    wxLogMessage(_T("[ProcessScore] new chord note, nNumChordNotes: %d, pitch: %d")
-                        , nNumChordNotes, pCurrentNote->GetFPitch() );
+                    wxLogMessage(_T("[ProcessScore] Chord:%d, NEW CHORD NOTE, nNumChordNotes: %d, pitch: %d")
+                        , nNumChords ,nNumChordNotes, pCurrentNote->GetFPitch() );
                 }
 
 
             }
             //  else [ currentNotePos == lmNOT_ON_BEAT]: ignore
         }
+        else
+        {
         // else [ not IsNote]: ignore
+        //  but count barlines
+            // bar count > 1 means that equal 'beat position' are no longer valid
+            if (pSO->IsBarline()) 
+                nBarCount++;
+        }
 
         pIter->MoveNext();
 
@@ -380,8 +474,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     // Last chord?
     if (nNumChordNotes > 2)
     {
-        if ( ProccessChord(pScore, nNumChordNotes, tChordDescriptor, sStatusStr) )
-            fScoreModified = true;
+        wxLogMessage(_T("2ProccessChord:%d,  nNumChordNotes: %d")
+           , nNumChords ,  nNumChordNotes);
+        bool fChordOk = ProccessChord(pScore, nNumChordNotes, &tChordDescriptor[nNumChords], sStatusStr);
+        fScoreModified = true;
     }
 
     return fScoreModified;      //true -> score modified

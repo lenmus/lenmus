@@ -310,17 +310,19 @@ wxString lmChordManager::ToString()
     }
     return sRetStr;
 }
-void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* tChordInfo)
+void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* pChordInfo)
 {
    lmKeySignature* pKey = pRootNote->GetApplicableKeySignature();
    lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
 
+    assert(pChordInfo != NULL);
+
     m_nKey = nKey;
-    m_nNumNotes = tChordInfo->nNumNotes;
-    m_nInversion = tChordInfo->nNumInversions;
+    m_nNumNotes = pChordInfo->nNumNotes;
+    m_nInversion = pChordInfo->nNumInversions;
     m_fpNote[0] = pRootNote->GetFPitch();
 
-    DoCreateChord(tChordInfo->nIntervals);
+    DoCreateChord(pChordInfo->nIntervals);
 
 }
 
@@ -401,8 +403,8 @@ lmChordManager::lmChordManager(lmNote* pRootNote, lmChordInfo &tChordInfo)
             ,  tData[0].nNumNotes, tData[0].nIntervals[0], tData[0].nIntervals[1]
              , tData[0].nIntervals[2]  );
     }
-    else
-        Create(pRootNote, &tChordInfo);
+//todo: @remove??    else
+    Create(pRootNote, &tChordInfo);
 
 
 #ifdef __WXDEBUG__

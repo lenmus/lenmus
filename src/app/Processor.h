@@ -103,13 +103,15 @@ public:
     bool SetTools();
 #ifdef __WXDEBUG__
     void UnitTests();
+    void  TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColour colour);
 #endif
 
 protected:
 
     bool ProccessChord(lmScore* pScore, int nNumChordNotes, lmChordDescriptor* ptChordDescriptor
         , wxString &sStatusStr);
-    void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText);
+    void  DisplayChordInfo(lmScore* pScore, int nNumChordNotes
+                           , lmChordDescriptor*  pChordDsct, wxColour colour, wxString &sText);
 
     lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
     int nNumChords;
