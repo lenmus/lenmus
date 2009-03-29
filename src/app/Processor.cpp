@@ -251,19 +251,31 @@ void  lmHarmonyProcessor::TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColou
 }
 #endif
 
+// TODO: ESTO ES SOLO PROVISIONAL!!!!!!!!!!!!!!!!!!!!!!
+static const int lmDisXstart = 0;
+static const int lmDisXend = -200;
+static const int lmDisYstart = 40;
+static const int lmDisYend = -120;
 void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, int nNumChordNotes
                                        , lmChordDescriptor*  pChordDsct
-                                           , wxColour colour, wxString &sText)
+                                           , wxColour colour, wxString &sText, bool reset)
 {
     // Remember: all 'y' positions are relative to top line (5th line of
     //   first staff). 'x' positions are relative to current object position.
-    lmTenths nxStart = 0;  // fijo; relativo al usuario
-    static lmTenths nyStart = 40;  // relativo a top line; positivo: abajo
-    lmTenths nxEnd = -200; // fijo
-    static lmTenths nyEnd = -120;  // negativo: arriba. Se baja en cada uso
+    lmTenths nxStart = lmDisXstart;  // fijo; relativo al usuario
+    lmTenths nxEnd = lmDisXend; // fijo
+    static lmTenths nyStart = lmDisYstart;  // relativo a top line; positivo: abajo
+    static lmTenths nyEnd = lmDisYend;  // negativo: arriba. Se baja en cada uso
 
     lmTenths nTxPos = nxEnd + 10;
     lmTenths nTyPos = nyEnd + 10;
+    if ( reset )
+    {
+        // only reset
+        nyStart = lmDisYstart;  
+        nyEnd = lmDisYend; 
+        return;
+    }
 
     //define the font to use for texts
     lmFontInfo tFont = {_("Comic Sans MS"), 6, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
@@ -371,6 +383,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     int nChordNotePos = -2;
     int nNumChordNotes = 0;
     wxString sStatusStr;
+
+    // TODO: QUITAR; PROVISIONAL
+    //  resetear el control de las indicaciones....
+    DisplayChordInfo(pScore, nNumChordNotes, &tChordDescriptor[0], *wxGREEN, sStatusStr, true);
 
     // Loop to process notes/rests in first staff of first instrument
     int nNote = 0;

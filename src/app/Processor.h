@@ -111,7 +111,8 @@ protected:
     bool ProccessChord(lmScore* pScore, int nNumChordNotes, lmChordDescriptor* ptChordDescriptor
         , wxString &sStatusStr);
     void  DisplayChordInfo(lmScore* pScore, int nNumChordNotes
-                           , lmChordDescriptor*  pChordDsct, wxColour colour, wxString &sText);
+                           , lmChordDescriptor*  pChordDsct, wxColour colour
+                           , wxString &sText, bool reset=false);
 
     lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
     int nNumChords;
