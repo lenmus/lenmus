@@ -55,10 +55,12 @@ extern lmEChordType ChordShortNameToType(wxString sName);
 
 typedef struct lmChordInfoStruct {
     int nNumNotes;
+    int nNumIntervals;
     int nNumInversions;
     lmFIntval nIntervals[lmINTERVALS_IN_CHORD];
     void Initalize() //TODO @@pensar en mejorar... (un constructor??)
     {
+        nNumIntervals = 0;
         nNumNotes = 0;
         nNumInversions = 0;
         for (int i=0; i<lmINTERVALS_IN_CHORD; i++)
@@ -73,6 +75,7 @@ extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern lmEChordType GetChordTypeFromIntervals( lmChordInfo chordInfo );
 extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
+extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
 
 
 
@@ -92,7 +95,6 @@ public:
     void Create(wxString sRootNote, lmEChordType nChordType, int nInversion,
                 lmEKeySignatures nKey);
     void Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
- //@@ TODO: quitar si no se usa   void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], lmEKeySignatures nKey);
     void Create(lmNote* pRootNote, lmChordInfo* chordInfo);
     void Initialize();
 
