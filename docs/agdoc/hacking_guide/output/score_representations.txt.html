@@ -1,13 +1,16 @@
 
 <html>
 <head>
-<title>Scores: internal representation</title>
+<title>Scores: the internal model</title>
 <meta http-equiv="Content-Type" content="text/html" />
 <link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
 </head>
 <body>
 
-<h1 class='article'>Scores: internal representation
+
+
+
+<h1 class='article'>Scores: the internal model
 </h1>
 
 <p class="copyright">
@@ -17,34 +20,41 @@ LenMus project (http://www.lenmus.org/)<br />
 
 
 <a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
-    <a class='toc_level1' href="#toc0001">The 'Model' in the MVC architecture</a>
-    <a class='toc_level1' href="#toc0002">Score internal representation</a>
-        <a class='toc_level2' href="#toc0003">The Collection of StaffObjs (lmColStaffObjs)</a>
-    <a class='toc_level1' href="#toc0004">Application dependent representations</a>
-        <a class='toc_level2' href="#toc0005">Graphical: lmBoxes and lmShapes</a>
-        <a class='toc_level2' href="#toc0006">Play back</a>
+    <a class='toc_level1' href="#toc0001">Score: The need for different representations</a>
+    <a class='toc_level1' href="#toc0002">Application dependent representations</a>
+        <a class='toc_level2' href="#toc0003">The graphical representation: lmBoxes and lmShapes</a>
+        <a class='toc_level2' href="#toc0004">The play back representation: events table</a>
+    <a class='toc_level1' href="#toc0005">The StaffObjs collection. Concepts and classes</a>
+        <a class='toc_level2' href="#toc0006">lmInstrument, lmVStaff and lmStaff classes</a>
+        <a class='toc_level2' href="#toc0007">lmColStaffObjs and lmSOIterator classes</a>
+        <a class='toc_level2' href="#toc0008">Bars/measures</a>
+        <a class='toc_level2' href="#toc0009">Segments</a>
+        <a class='toc_level2' href="#toc0010">Traversing the StaffObjs collection: Iterator interface</a>
+            <a class='toc_level3' href="#toc0011">Example 1: looking for notes on beat position</a>
 
 
 
 
-<h2 class='article'><a name="toc0001"></a>The 'Model' in the MVC architecture</h2>
+<h2 class='article'><a name="toc0001"></a>Score: The need for different representations</h2>
 
 
 <p class='justified'>In the MVC architecture the Model is the document object. The Document encapsulates the domain-specific representation of the information on which the application operates, as well as its functionality (domain logic). And the Document must be independent: it cannot hold direct instance variables that refer to a view or a controller.</p>
 
 <p class='justified'>The LenMus program is, among others, a score editor. So the Documents are music scores. The Document must contain all the necessary information to render a score as it will be printed. Thus it must contain all positioning information, sizes, fonts, etc.</p>
 
-<p class='justified'>A design constraint was that the external representation of the Document should be human readable. Therefore, the Document has two representations:</p>
+<p class='justified'>A design constraint was that the external representation of the Document had to be human readable and writable. This was necessary because I had to write the scores by hand!.</p> 
+
+<p class='justified'>Therefore, the Document has two representations:</p>
 
  <p class='justified'>a) External representation<br />
     The score is represented using the LDP language. Human readable. Easy to enter with a QWERTY keyboard.</p>
 
  <p class='justified'>b) Internal representation<br />
-    The Document contains an internal representation, the lmScore, with all the information present in a LDP score but in a flexible and powerful format more suitable for processing.
+    The Document contains an internal representation, the <span class="kw1">lmScore</span>, with all the information present in a LDP score but in a flexible and powerful format more suitable for processing.
     <br />
-    Following the MVC architecture, this internal representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed. It is not oriented to any particular use (renderization, play back, <span class="larger">&#133;</span>) but try to serve all them equally.   In this way the document can serve to the purpose of any View: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in an lmScore object.
+    Following the MVC architecture, this internal representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed. It is not oriented to any particular use (renderization, play back, music analysis, <span class="larger">&#133;</span>) but try to serve all them equally. In this way the document can serve to the purpose of any View: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in an <span class="kw1">lmScore</span> object.
     <br />
-    When a particular use is intended, the corresponding optimised representation is derived from the lmScore. The following figure shows the application dependent representations currently managed by the program:</p>
+    When a particular use is intended, the corresponding optimised representation is derived from the <span class="kw1">lmScore</span>. The following figure shows the application dependent representations currently managed by the program:</p>
 
 <table width="640px" border="0" cellspacing="0" cellpadding="0"><tr><td><pre>
      lmScore ---+---- Interchange (MusicXML, LDP)
@@ -56,91 +66,272 @@ LenMus project (http://www.lenmus.org/)<br />
                ....
 </pre></td></tr></table>
 
-<p class='justified'>In order to optimise computer resources consumption (memory and processing time) the lmScore internal representation has hooks and data holders to structure and tie up the existing application dependent representation objects.</p>
-    
-
-<div class="important" style="margin-left: 0.5in; margin-right: 0.5in;">
-<table border="0" summary="Important">
-<tr>
-<td rowspan="2" align="center" valign="top" width="25">
-<img alt="[Important]" src="images/important.png"></td>
-<th align="left">Important</th>
-</tr>
-<tr><td align="left" valign="top">
-
-    TODO: Verify and remove any limitation to have two or more simultaneous application representations of the same type (i.e. the score being simultaneously edited from two different windows)
-
-</td></tr>
-</table></div>
-
+<p class='justified'>In order to optimise computer resources consumption (memory and processing time) the <span class="kw1">lmScore</span> internal representation has hooks and data holders to structure and tie up the existing application dependent representation objects.</p>
     
 
 
+<h2 class='article'><a name="toc0002"></a>Application dependent representations</h2>
 
 
-<h2 class='article'><a name="toc0002"></a>Score internal representation</h2>
 
 
-<p class='justified'>The score is represented by an object of class lmScore. The approach followed has been to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:</p>
+<h3 class='article'><a name="toc0003"></a>The graphical representation: lmBoxes and lmShapes</h3>
+
+
+<p class='justified'>For renderization the score is represented by an object of class <span class="kw1">lmBoxScore</span>. The approach followed has been to capture the structure by splitting the representation in containers (<span class="kw1">lmBoxes</span>) and visible objects (<span class="kw1">lmShapes</span>). For example, usually a score is printed on several pages. A page contains lines of music (called &quot;systems&quot;). A system contains one or more staves. Finally, a staff contains objects (notes, rests, barlines, etc.).</p>
+
+<p class='justified'>This model is described in chapter <a href="graphical_model.txt.html">&#039;The Graphical model&#039;</a>.</p>  
+
+
+
+<h3 class='article'><a name="toc0004"></a>The play back representation: events table</h3>
+
+
+<p class='justified'>It is represented by a <span class="kw1">lmSoundEvents</span> table.</p>
+
+<p class='justified'>[TODO]: Describe it.</p>
+
+
+
+
+
+
+<h2 class='article'><a name="toc0005"></a>The StaffObjs collection. Concepts and classes</h2>
+
+
+
+<p class='justified'>As with the graphical model, the approach followed has been, again, to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>An score is, mainly, a collection of instruments plus some data (composer, title, <span class="larger">&#133;</span>)</li></ul><div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>An instrunent is a collection of staves plus some data (instrument name, MIDI assignment, <span class="larger">&#133;</span>)</li></ul><div></p>
+<li>An instrument is a collection of staves plus some data (instrument name, MIDI assignment, <span class="larger">&#133;</span>)</li></ul><div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>An staff is a collection of musical symbols: notes, rests, clefs, etc. (StaffObjs).</li></ul><div></p>
 
-<p class='justified'>The internal model is described in chapter <a href="objects_model.txt.html">&#039;The Internal model&#039;</a>.</p>  
+<p class='justified'>Let&#039;s see in some detail the main classes involved.</p> 
 
 
 
-<h3 class='article'><a name="toc0003"></a>The Collection of StaffObjs (lmColStaffObjs)</h3>
+<h3 class='article'><a name="toc0006"></a>lmInstrument, lmVStaff and lmStaff classes</h3>
 
 
-<p class='justified'>Bars are not modelled by objects. They are just the collection of lmStaffObj found between
-two lmStaffObj of type &#039;barline&#039; (and between the start of the score and the first barline).
-Nevertheless, the concept of bar is very important at least in two situations:</p>
+
+<p class='justified'>We know that the score is represented by an object of class <span class="kw1">lmScore</span> and that it is, mainly, a collection of instruments (objects of class <span class="kw1">lmInstrument</span>) plus some data (composer, title, <span class="larger">&#133;</span>).</p>
+
+<p class='justified'>In turn, a <span class="kw1">lmInstrument</span> is a collection of staves plus some data (instrument name, MIDI assignment, <span class="larger">&#133;</span>). When you see an score printed in paper the music for an instrument is splitted into several lines, and each of these lines is usually named an staff. But for the internal model the music is not splitted in lines; instead music is represented as if the staff had an infinite length, that is, as a single line. Therefore, an <span class="kw1">lmInstrument</span> only has one staff. But even representing the music on a single line, more than one staff could be required. Think for example in a piano score: it requires two staves!</p>
+
+<p class='justified'>If you think about the reason for this you will find that it is due to the wide range of notes the piano can produce. It would be very uncomfortable to use a five-line staff with a lot of ledger lines. But it would be perfectly possible, anyway!.</p>
+
+<p class='justified'>So, the approach followed has been to represent all the music for an instrument in a single staff (an object of class <span class="kw1">lmVStaff</span>), without making any assumption about how this &#039;staff&#039; will be printed: either as a single file-line staff with ledger lines, or as a piano grand-staff, or even as a single line staff for percussion instruments, etc.</p>
+
+<p class='justified'>The name <i>VStaff</i> stands for <i>Virtual staff</i>, to clearly identify that it is not a five-line staff but something more generic.</p>
+
+<p class='justified'>In summary:
+<div class="itemizedlist"><ul type="disc">
+<li>A <span class="kw1">lmInstrument</span> models the music for an instrument. Object <span class="kw1">lmInstrument</span> contains one object of class <span class="kw1">lmVStaff</span>, plus some additional data about the instrument, such as name, abbreviation, or MIDI settings.</li>
+<li>A <span class="kw1">lmVStaff</span> represents an infinite generic staff where all music symbols (mainly notes and rests) for the instrument are placed.</li></ul><div></p>
+
+<p class='justified'>Internally, object <span class="kw1">lmVStaff</span> contains one of more objects of a class <span class="kw1">lmStaff</span>. But these <span class="kw1">lmStaff</span> objects doesn&#039;t contain notes, rests or any other music symbols but only information about how the <span class="kw1">lmVStaff</span> will be printed: as a normal five-line staff, as a grand-staff, etc. as well as information about staff geometry (distance between lines, line thickness, etc.).</p>
+
+<p class='justified'>So, the design philosophy is that:
+<div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">lmVStaff</span> represents the music for an instrument and contains the notes, rests and other music symbols for the instrument.</li>
+<li>Class <span class="kw1">lmStaff</span>, controls how the <span class="kw1">lmVStaff</span> will be printed but does not contain music information.</li></ul><div></p>
+
+ 
+
+<h3 class='article'><a name="toc0007"></a>lmColStaffObjs and lmSOIterator classes</h3>
+
+
+
+<p class='justified'>As said, <span class="kw1">lmVStaff</span> represents the music for an instrument and contains the notes, rests and other music symbols for the instrument, that is, it contains a collection of <span class="kw1">lmStaffObjs</span>.</p>
+
+<p class='justified'>This collection is very important as it is the core of the representation. Due to this, it was decided to model it as an independent object of a new class: <span class="kw1">lmColStaffObjs</span>. By using an independent object I could have a standard interface with the collection and to experiment with different organizations for the collection without having to re-code class <span class="kw1">lmVStaff</span>.</p> 
+
+<p class='justified'>This standard interface for traversing a <span class="kw1">lmColStaffObjs</span> is modelled by class <span class="kw1">lmSOIterator</span>. It encapsulates access and traverse of a collection of StaffObjs (object <span class="kw1">lmColStaffObjs</span>) without exposing the internal structure of the collection. This lets us define different traversal algorithms and allows us to change the internal representation of a StaffObjs collection without affecting the rest of the program.</p>
+
+<p class='justified'>Class <span class="kw1">lmColStaffObjs</span> is defined in files <span class="kw1">score/ColStaffObjs.cpp &amp; .h</span>. And class <span class="kw1">lmSOIterator</span> is in files <span class="kw1">score/StaffObjeIterator.cpp &amp; .h</span></p> 
+
+
+
+
+<h3 class='article'><a name="toc0008"></a>Bars/measures</h3>
+
+
+
+<p class='justified'>You know that it is common practice to divide a piece of music into <i>bars</i> (U.K English) also named <i>measures</i> (United States English). In the program the term <i>measure</i> was chosen before I knew about the U.K. naming difference. So please for consistency, if you add code or documentation use the term &#039;measure&#039;. Thank you.</p>
+
+<p class='justified'>Measures are not modelled by objects. There are no containers modelling a measure. For the program, a measure is just the set of staff objects found in a <span class="kw1">lmColStaffObjs</span> between two <span class="kw1">lmStaffObj</span> of type &#039;barline&#039;. And also, in two particular cases: between the start of the collection and the first barline, and between the last barline and end of the collection.</p>
+
+<p class='justified'>Nevertheless, the concept of measure is very important, at least in two situations:</p>
 
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li>In interpretation (playing back the score). For example:  play from bar #7</li></ol><div></p>
+<li>In interpretation (playing back the score). For example:  &quot;play from measure #7&quot;.</li></ol><div></p>
     
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li>When rendering the score, as all the objects in a bar must be rendered together in
-       the same paper line.</li></ol><div></p>
+<li>When rendering the score, as all the objects in a measure must be rendered together in the same system (paper line).</li></ol><div></p>
        
-<p class='justified'>Due to this, although the bar is not modelled as an object, there exits methods in the
-VStaff object to deal with bars.</p>
+<p class='justified'>Due to this, although measures are not modelled by any object, there exits methods in the
+<span class="kw1">lmVStaff</span> object to deal with measures.</p>
 
-<p class='justified'>The collection is composed mainly by two variables: a list containing the StaffObjs that
-form the collection and an array containing pointers to the StaffObjsList nodes
-where each measure start:</p>
+
+
+<h3 class='article'><a name="toc0009"></a>Segments</h3>
+
+
+
+<p class='justified'>Scores usually have measures, and they play a fundamental role in music renderization, as it is expected that system breaks takes place always at the end of a measure. But not all scores have measures and there are other problems related to this:   
+<div class="itemizedlist"><ul type="disc">
+<li>Multimetric music, that is, pieces where some instruments use a different time signature from the others. For example, in Mozart, &#039;Don Giovanni&#039;, in the Menuetto in the first act (No. 13).</li>
+<li>Pieces that do not have time signatures or barlines, such as many piano pieces by Erik Satie.</li>
+<li>Another related problem to solve is that of breaking a very long measure that does not fit in a system. I don&#039;t know if this case is real in score publishing, but I know by experience (program crashes) that it happens when paper size is narrow!.</li></ul><div></p> 
+
+<p class='justified'>For multimetric music the layouting algorithms could place system breaks on common barlines in all instruments, those that will coincide because they are on a common multiple of the different time signatures.</p>
+
+<p class='justified'>But for the other two cases there is nothing to help in deciding about suitable places to insert system breaks.</p>
+
+<p class='justified'>The design of the LenMus program has been a constant evolution, un-doing and re-doing things as I learn about music and about the problems to represent it in a computer. So when I was aware of multimetric music and of the aforementioned problems I decided not to use measures as &#039;units&#039; for breaking systems, but to use a smaller vertical &#039;slice&#039; as organisational unit. I named these vertical slices as <i>segments</i>.</p>
+
+<p class='justified'>The LenMus program already deals with pieces that do not have time signatures and with breaking very long measures that do not fit in a system. But it does not deal yet with multimetric music. Therefore, currently a segment is practically a different name for a measure. But by using the name &#039;segment&#039; I have clear that, in future, this might not be true. Furthermore. methods and variables that refer to measures are truly referring to &#039;measures&#039; whereas for methods and variables that refer to &#039;segments&#039; you can not safety assume &#039;measures&#039;. You are warned!</p>
+
+
+
+
+<h3 class='article'><a name="toc0010"></a>Traversing the StaffObjs collection: Iterator interface</h3>
+
+
+
+<p class='justified'>As said, class <span class="kw1">lmSOIterator</span> encapsulates access and traversing of a collection of StaffObjs (object <span class="kw1">lmColStaffObjs</span>) without exposing the internal structure of the collection. This lets us define different traversal algorithms and allows us to change the internal representation of a StaffObjs collection without affecting the rest of the program.</p>
+
+<p class='justified'>Therefore, <b>it is highly recommended that unless it is really necessary, always traverse the StaffObjs collection using an iterator</b> of class <span class="kw1">lmSOIterator</span>. This will guarantee that your code will continue working properly if it is necessary to do changes in the inner part of the score internal representation.</p>
+
+<p class='justified'>Here is a description of the methods you have available. After this section you will find usage examples.</p>
+
+
+<p class='justified'><span class="kw1"><b>bool EndOfCollection()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Returns true if iterator is at end of collection: after last <span class="kw1">lmStaffObj</span> in last measure or in first <span class="kw1">lmStaffObj</span> and moving back (but remains in first <span class="kw1">lmStaffObj</span>)
+</div>
+
+<p class='justified'><span class="kw1"><b>bool FirstOfCollection()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Returns true if cursor is pointing to first item. First item must exists; otherwise the collection is empty and FirstOfCollection will return false. Be aware that if the collection only has one item, both FirstOfCollection() and  LastOfCollection() will be true when pointing to this only item
+</div>
+
+<p class='justified'><span class="kw1"><b>bool LastOfCollection()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Returns true if cursor is pointing to last item. Last item must exists; otherwise the collection is empty and LastOfCollection will return false. Be aware that if the collection only has one item, both FirstOfCollection() and  LastOfCollection() will be true when pointing to this only item
+</div>
+
+<p class='justified'><span class="kw1"><b>bool ChangeOfMeasure()</b></span></p>
+    
+<div style="margin-left: 4em;">
+    Returns true if last operation [ MoveNext() or MovePrev() ] crossed a segment boundary (that is, if MoveNext() move to first <span class="kw1">lmStaffObj</span> in next measure or is MovePrev() moved to a barline) Also when moving (MoveNext) from last <span class="kw1">lmStaffObj</span> to end of collection. But not when we are already at end of collection and do MoveNext() neither when we are at first <span class="kw1">lmStaffObj</span> and do MovePrev(). Be aware that if we are at end of collection and MovePrev to last <span class="kw1">lmStaffObj</span> and it is a barline, then ChangeOfMeasure will be true. Also returns true when we were at start of collection and do MovePrev
+</div>
+
+<p class='justified'><span class="kw1"><b>lmStaffObj* GetCurrent()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Returns current <span class="kw1">lmStaffObj</span>. It will be NULL if at end of collection
+</div>
+
+<p class='justified'><span class="kw1"><b>int GetNumSegment()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Returns number of segment (0..n-1).
+</div>
+
+<p class='justified'><span class="kw1"><b>void AdvanceToMeasure(int nBar)</b></span></p>  
+
+<div style="margin-left: 4em;">
+    Move cursor to first lmStaffObj in measure number nMeasure (1..n)
+</div>
+
+<p class='justified'><span class="kw1"><b>void MoveFirst()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Move cursor to first lmStaffObj
+</div>
+
+<p class='justified'><span class="kw1"><b>void MoveNext()</b></span></p>         
+
+<div style="margin-left: 4em;">
+    Advance cursor to next lmStaffObj. It will be NULL if we were at last object
+</div>
+
+<p class='justified'><span class="kw1"><b>void MovePrev()</b></span></p>      
+
+<div style="margin-left: 4em;">
+    Move cursor back to previous lmStaffObj. If already at start of collection remains there but raises EndOfCollection condition
+</div>
+
+<p class='justified'><span class="kw1"><b>void MoveLast()</b></span></p>            
+
+<div style="margin-left: 4em;">
+    Move cursor to last lmStaffObj in collection. It will be NULL only if collection empty
+</div>
+
+<p class='justified'><span class="kw1"><b>void MoveTo(lmStaffObj* pSO)</b></span></p>
+    
+<div style="margin-left: 4em;">
+    Move cursor to point to received <span class="kw1">lmStaffObj</span>. No flag updates
+</div>
+
+<p class='justified'><span class="kw1"><b>void ResetFlags()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Reset ChangeOfMeasure flag (this operation is only meaningful after a MoveNext / MovePrev operation).
+</div>
+
+
+
+
+<h4 class='article'><a name="toc0011"></a>Example 1: looking for notes on beat position</h4>
+
+
+
+<p class='justified'>Let&#039;s see an example. Assume we would like to analyse the notes entered on first staff of a piano score, and identify those placed on beat position (strong part). The score has only one instrument (the piano). Therefore, first thing to do is to access the <span class="kw1">lmVStaff</span> object for the instrument:</p>
 
 <div class="informalexample"><pre class="programlisting">
-    StaffObjsList   m_cStaffobjs;       //list of StaffObjs that belongs to this collection
-    wxArrayNodes    m_aStartMeasure;    //Node (lmStaffObj list) in which each measure starts
+    //Assume the score is pointed by pScore.
+    //Get the instrument
+    lmInstrument* pInstr = pScore-&gt;GetFirstInstrument();
+    lmVStaff* pVStaff = pInstr-&gt;GetVStaff();
+</pre></div>
+
+<p class='justified'>Now it is just a question of creating an iterator and exploring the collection of staff objects. Let&#039;s do it an extract all notes on beat position on first staff:</p>
+
+<div class="informalexample"><pre class="programlisting">
+    lmSOIterator* pIter = pVStaff-&gt;CreateIterator();
+    while(!pIter-&gt;EndOfCollection())
+    {
+        lmStaffObj* pSO = pIter-&gt;GetCurrent();
+        if (pSO-&gt;IsNoteRest() &amp;&amp; ((lmNoteRest*)pSO)-&gt;IsNote())
+        {
+            // It is a note. Discard notes not on staff 1
+            if ( ((lmNote)pSO)-&gt;GetSttaffNum == 1)
+            {
+                //ok. Note on staff 1. Let&#039;s check if it is on beat position
+                if( ((lmNote*)pSO)-&gt;GetBeatPosition() != lmNOT_ON_BEAT)
+                {
+                    // on beat note. Do something with it!
+                    wxLogMessage(_T(&quot;Found note on beat position&quot;));
+                }
+            }
+        }
+        pIter-&gt;MoveNext();
+    }
+    delete pIter;       //Do not forget this. We are not using smart pointers!
 
 </pre></div>
 
-
-<h2 class='article'><a name="toc0004"></a>Application dependent representations</h2>
-
-
-
-
-<h3 class='article'><a name="toc0005"></a>Graphical: lmBoxes and lmShapes</h3>
-
-
-<p class='justified'>For renderization the score is represented by an object of class lmBoxScore. The approach followed has been, again, to capture the structure by splitting the representation in containers (lmBoxes) and visible objects (lmShapes). For example, usually, a score is printed on several pages. A page contains lines of music (called &quot;systems&quot;). A system contains one or more staves. Finally, a staff contains objects (notes, rests, barlines, etc.).</p>
-
-<p class='justified'>This model is described in chapter <a href="graphical_model.txt.html">&#039;The Graphical model&#039;</a>.</p>  
-
-
-<h3 class='article'><a name="toc0006"></a>Play back</h3>
-
-
-<p class='justified'>It is represented by a lmSoundEvents table.</p>
+<p class='justified'>[To be continued with more details <span class="larger">&#133;</span>]</p>
 
 
 

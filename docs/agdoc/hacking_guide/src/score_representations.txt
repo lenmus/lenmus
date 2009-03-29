@@ -1,24 +1,28 @@
-\title{Scores: internal representation}
+\include ../../agdoc/replacements
+
+\title{Scores: the internal model}
 
 \toc
 
-\h1 {The 'Model' in the MVC architecture}
+\h1 {Score: The need for different representations}
 
 In the MVC architecture the Model is the document object. The Document encapsulates the domain-specific representation of the information on which the application operates, as well as its functionality (domain logic). And the Document must be independent: it cannot hold direct instance variables that refer to a view or a controller.
 
 The LenMus program is, among others, a score editor. So the Documents are music scores. The Document must contain all the necessary information to render a score as it will be printed. Thus it must contain all positioning information, sizes, fonts, etc.
 
-A design constraint was that the external representation of the Document should be human readable. Therefore, the Document has two representations:
+A design constraint was that the external representation of the Document had to be human readable and writable. This was necessary because I had to write the scores by hand!. 
+
+Therefore, the Document has two representations:
 
  a) External representation\br
     The score is represented using the LDP language. Human readable. Easy to enter with a QWERTY keyboard.
 
  b) Internal representation\br
-    The Document contains an internal representation, the lmScore, with all the information present in a LDP score but in a flexible and powerful format more suitable for processing.
+    The Document contains an internal representation, the %%lmScore%%, with all the information present in a LDP score but in a flexible and powerful format more suitable for processing.
     \br
-    Following the MVC architecture, this internal representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed. It is not oriented to any particular use (renderization, play back, ...) but try to serve all them equally.   In this way the document can serve to the purpose of any View: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in an lmScore object.
+    Following the MVC architecture, this internal representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed. It is not oriented to any particular use (renderization, play back, music analysis, ...) but try to serve all them equally. In this way the document can serve to the purpose of any View: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in an %%lmScore%% object.
     \br
-    When a particular use is intended, the corresponding optimised representation is derived from the lmScore. The following figure shows the application dependent representations currently managed by the program:
+    When a particular use is intended, the corresponding optimised representation is derived from the %%lmScore%%. The following figure shows the application dependent representations currently managed by the program:
 
 \as_is
 {
@@ -31,66 +35,259 @@ A design constraint was that the external representation of the Document should 
                ....
 }
 
-In order to optimise computer resources consumption (memory and processing time) the lmScore internal representation has hooks and data holders to structure and tie up the existing application dependent representation objects.
+In order to optimise computer resources consumption (memory and processing time) the %%lmScore%% internal representation has hooks and data holders to structure and tie up the existing application dependent representation objects.
     
-\note
-{
-    TODO: Verify and remove any limitation to have two or more simultaneous application representations of the same type (i.e. the score being simultaneously edited from two different windows)
-}
-    
-
-
-
-\h1 {Score internal representation}
-
-The score is represented by an object of class lmScore. The approach followed has been to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:
-
- * An score is, mainly, a collection of instruments plus some data (composer, title, ...)
-
- * An instrunent is a collection of staves plus some data (instrument name, MIDI assignment, ...)
- 
- * An staff is a collection of musical symbols: notes, rests, clefs, etc. (StaffObjs).
-
-The internal model is described in chapter \href0 [objects_model] {'The Internal model'}.  
-
-
-\h2 {The Collection of StaffObjs (lmColStaffObjs)}
-
-Bars are not modelled by objects. They are just the collection of lmStaffObj found between
-two lmStaffObj of type 'barline' (and between the start of the score and the first barline).
-Nevertheless, the concept of bar is very important at least in two situations:
-
-    1. In interpretation (playing back the score). For example:  play from bar #7
-    
-    2. When rendering the score, as all the objects in a bar must be rendered together in
-       the same paper line.
-       
-Due to this, although the bar is not modelled as an object, there exits methods in the
-VStaff object to deal with bars.
-
-The collection is composed mainly by two variables: a list containing the StaffObjs that
-form the collection and an array containing pointers to the StaffObjsList nodes
-where each measure start:
-
-\code
-{
-    StaffObjsList   m_cStaffobjs;       //list of StaffObjs that belongs to this collection
-    wxArrayNodes    m_aStartMeasure;    //Node (lmStaffObj list) in which each measure starts
-
-}
 
 \h1 {Application dependent representations}
 
 
-\h2 {Graphical: lmBoxes and lmShapes}
+\h2 {The graphical representation: lmBoxes and lmShapes}
 
-For renderization the score is represented by an object of class lmBoxScore. The approach followed has been, again, to capture the structure by splitting the representation in containers (lmBoxes) and visible objects (lmShapes). For example, usually, a score is printed on several pages. A page contains lines of music (called "systems"). A system contains one or more staves. Finally, a staff contains objects (notes, rests, barlines, etc.).
+For renderization the score is represented by an object of class %%lmBoxScore%%. The approach followed has been to capture the structure by splitting the representation in containers (%%lmBoxes%%) and visible objects (%%lmShapes%%). For example, usually a score is printed on several pages. A page contains lines of music (called "systems"). A system contains one or more staves. Finally, a staff contains objects (notes, rests, barlines, etc.).
 
 This model is described in chapter \href0 [graphical_model] {'The Graphical model'}.  
 
-\h2 {Play back}
 
-It is represented by a lmSoundEvents table.
+\h2 {The play back representation: events table}
+
+It is represented by a %%lmSoundEvents%% table.
+
+[TODO]: Describe it.
+
+
+
+
+
+\h1 {The StaffObjs collection. Concepts and classes}
+%%%---------------------------------------------------
+
+As with the graphical model, the approach followed has been, again, to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:
+
+ * An score is, mainly, a collection of instruments plus some data (composer, title, ...)
+
+ * An instrument is a collection of staves plus some data (instrument name, MIDI assignment, ...)
+ 
+ * An staff is a collection of musical symbols: notes, rests, clefs, etc. (StaffObjs).
+
+Let's see in some detail the main classes involved. 
+
+
+\h2 {lmInstrument, lmVStaff and lmStaff classes}
+%%%----------------------------------------------
+
+We know that the score is represented by an object of class %%lmScore%% and that it is, mainly, a collection of instruments (objects of class %%lmInstrument%%) plus some data (composer, title, ...).
+
+In turn, a %%lmInstrument%% is a collection of staves plus some data (instrument name, MIDI assignment, ...). When you see an score printed in paper the music for an instrument is splitted into several lines, and each of these lines is usually named an staff. But for the internal model the music is not splitted in lines; instead music is represented as if the staff had an infinite length, that is, as a single line. Therefore, an %%lmInstrument%% only has one staff. But even representing the music on a single line, more than one staff could be required. Think for example in a piano score: it requires two staves!
+
+If you think about the reason for this you will find that it is due to the wide range of notes the piano can produce. It would be very uncomfortable to use a five-line staff with a lot of ledger lines. But it would be perfectly possible, anyway!.
+
+So, the approach followed has been to represent all the music for an instrument in a single staff (an object of class %%lmVStaff%%), without making any assumption about how this 'staff' will be printed: either as a single file-line staff with ledger lines, or as a piano grand-staff, or even as a single line staff for percussion instruments, etc.
+
+The name \i{VStaff} stands for \i{Virtual staff}, to clearly identify that it is not a five-line staff but something more generic.
+
+In summary:
+    * A %%lmInstrument%% models the music for an instrument. Object %%lmInstrument%% contains one object of class %%lmVStaff%%, plus some additional data about the instrument, such as name, abbreviation, or MIDI settings.
+    * A %%lmVStaff%% represents an infinite generic staff where all music symbols (mainly notes and rests) for the instrument are placed.
+
+Internally, object %%lmVStaff%% contains one of more objects of a class %%lmStaff%%. But these %%lmStaff%% objects doesn't contain notes, rests or any other music symbols but only information about how the %%lmVStaff%% will be printed: as a normal five-line staff, as a grand-staff, etc. as well as information about staff geometry (distance between lines, line thickness, etc.).
+
+So, the design philosophy is that:
+    * %%lmVStaff%% represents the music for an instrument and contains the notes, rests and other music symbols for the instrument.
+    * Class %%lmStaff%%, controls how the %%lmVStaff%% will be printed but does not contain music information.
+
+ 
+\h2 {lmColStaffObjs and lmSOIterator classes}
+%%%--------------------------------------------------------
+
+As said, %%lmVStaff%% represents the music for an instrument and contains the notes, rests and other music symbols for the instrument, that is, it contains a collection of %%lmStaffObjs%%.
+
+This collection is very important as it is the core of the representation. Due to this, it was decided to model it as an independent object of a new class: %%lmColStaffObjs%%. By using an independent object I could have a standard interface with the collection and to experiment with different organizations for the collection without having to re-code class %%lmVStaff%%. 
+
+This standard interface for traversing a %%lmColStaffObjs%% is modelled by class %%lmSOIterator%%. It encapsulates access and traverse of a collection of StaffObjs (object %%lmColStaffObjs%%) without exposing the internal structure of the collection. This lets us define different traversal algorithms and allows us to change the internal representation of a StaffObjs collection without affecting the rest of the program.
+
+Class %%lmColStaffObjs%% is defined in files %%score/ColStaffObjs.cpp & .h%%. And class %%lmSOIterator%% is in files %%score/StaffObjeIterator.cpp & .h%% 
+
+
+
+\h2 {Bars/measures}
+%%%--------------------------------------
+
+You know that it is common practice to divide a piece of music into \i{bars} (U.K English) also named \i{measures} (United States English). In the program the term \i{measure} was chosen before I knew about the U.K. naming difference. So please for consistency, if you add code or documentation use the term 'measure'. Thank you.
+
+Measures are not modelled by objects. There are no containers modelling a measure. For the program, a measure is just the set of staff objects found in a %%lmColStaffObjs%% between two %%lmStaffObj%% of type 'barline'. And also, in two particular cases: between the start of the collection and the first barline, and between the last barline and end of the collection.
+
+Nevertheless, the concept of measure is very important, at least in two situations:
+
+    1. In interpretation (playing back the score). For example:  "play from measure #7".
+    
+    2. When rendering the score, as all the objects in a measure must be rendered together in the same system (paper line).
+       
+Due to this, although measures are not modelled by any object, there exits methods in the
+%%lmVStaff%% object to deal with measures.
+
+
+\h2 {Segments}
+%%%------------
+
+Scores usually have measures, and they play a fundamental role in music renderization, as it is expected that system breaks takes place always at the end of a measure. But not all scores have measures and there are other problems related to this:   
+    * Multimetric music, that is, pieces where some instruments use a different time signature from the others. For example, in Mozart, 'Don Giovanni', in the Menuetto in the first act (No. 13).
+    * Pieces that do not have time signatures or barlines, such as many piano pieces by Erik Satie.
+    * Another related problem to solve is that of breaking a very long measure that does not fit in a system. I don't know if this case is real in score publishing, but I know by experience (program crashes) that it happens when paper size is narrow!. 
+
+For multimetric music the layouting algorithms could place system breaks on common barlines in all instruments, those that will coincide because they are on a common multiple of the different time signatures.
+
+But for the other two cases there is nothing to help in deciding about suitable places to insert system breaks.
+
+The design of the LenMus program has been a constant evolution, un-doing and re-doing things as I learn about music and about the problems to represent it in a computer. So when I was aware of multimetric music and of the aforementioned problems I decided not to use measures as 'units' for breaking systems, but to use a smaller vertical 'slice' as organisational unit. I named these vertical slices as \i{segments}.
+
+The LenMus program already deals with pieces that do not have time signatures and with breaking very long measures that do not fit in a system. But it does not deal yet with multimetric music. Therefore, currently a segment is practically a different name for a measure. But by using the name 'segment' I have clear that, in future, this might not be true. Furthermore. methods and variables that refer to measures are truly referring to 'measures' whereas for methods and variables that refer to 'segments' you can not safety assume 'measures'. You are warned!
+
+
+
+\h2 {Traversing the StaffObjs collection: Iterator interface}
+%%%----------------------------------------------------------
+
+As said, class %%lmSOIterator%% encapsulates access and traversing of a collection of StaffObjs (object %%lmColStaffObjs%%) without exposing the internal structure of the collection. This lets us define different traversal algorithms and allows us to change the internal representation of a StaffObjs collection without affecting the rest of the program.
+
+Therefore, \b{it is highly recommended that unless it is really necessary, always traverse the StaffObjs collection using an iterator} of class %%lmSOIterator%%. This will guarantee that your code will continue working properly if it is necessary to do changes in the inner part of the score internal representation.
+
+Here is a description of the methods you have available. After this section you will find usage examples.
+
+
+%%\b{bool EndOfCollection()}%%
+
+\indent
+{
+    Returns true if iterator is at end of collection: after last %%lmStaffObj%% in last measure or in first %%lmStaffObj%% and moving back (but remains in first %%lmStaffObj%%)
+}
+
+%%\b{bool FirstOfCollection()}%%
+
+\indent
+{
+    Returns true if cursor is pointing to first item. First item must exists; otherwise the collection is empty and FirstOfCollection will return false. Be aware that if the collection only has one item, both FirstOfCollection() and  LastOfCollection() will be true when pointing to this only item
+}
+
+%%\b{bool LastOfCollection()}%%
+
+\indent
+{
+    Returns true if cursor is pointing to last item. Last item must exists; otherwise the collection is empty and LastOfCollection will return false. Be aware that if the collection only has one item, both FirstOfCollection() and  LastOfCollection() will be true when pointing to this only item
+}
+
+%%\b{bool ChangeOfMeasure()}%%
+    
+\indent
+{
+    Returns true if last operation [ MoveNext() or MovePrev() ] crossed a segment boundary (that is, if MoveNext() move to first %%lmStaffObj%% in next measure or is MovePrev() moved to a barline) Also when moving (MoveNext) from last %%lmStaffObj%% to end of collection. But not when we are already at end of collection and do MoveNext() neither when we are at first %%lmStaffObj%% and do MovePrev(). Be aware that if we are at end of collection and MovePrev to last %%lmStaffObj%% and it is a barline, then ChangeOfMeasure will be true. Also returns true when we were at start of collection and do MovePrev
+}
+
+%%\b{lmStaffObj* GetCurrent()}%%
+
+\indent
+{
+    Returns current %%lmStaffObj%%. It will be NULL if at end of collection
+}
+
+%%\b{int GetNumSegment()}%%
+
+\indent
+{
+    Returns number of segment (0..n-1).
+}
+
+%%\b{void AdvanceToMeasure(int nBar)}%%  
+
+\indent
+{
+    Move cursor to first lmStaffObj in measure number nMeasure (1..n)
+}
+
+%%\b{void MoveFirst()}%%
+
+\indent
+{
+    Move cursor to first lmStaffObj
+}
+
+%%\b{void MoveNext()}%%         
+
+\indent
+{
+    Advance cursor to next lmStaffObj. It will be NULL if we were at last object
+}
+
+%%\b{void MovePrev()}%%      
+
+\indent
+{
+    Move cursor back to previous lmStaffObj. If already at start of collection remains there but raises EndOfCollection condition
+}
+
+%%\b{void MoveLast()}%%            
+
+\indent
+{
+    Move cursor to last lmStaffObj in collection. It will be NULL only if collection empty
+}
+
+%%\b{void MoveTo(lmStaffObj* pSO)}%%
+    
+\indent
+{
+    Move cursor to point to received %%lmStaffObj%%. No flag updates
+}
+
+%%\b{void ResetFlags()}%%
+
+\indent
+{
+    Reset ChangeOfMeasure flag (this operation is only meaningful after a MoveNext / MovePrev operation).
+}
+
+
+
+\h3 {Example 1: looking for notes on beat position}
+%%%----------------------------------------------------
+
+Let's see an example. Assume we would like to analyse the notes entered on first staff of a piano score, and identify those placed on beat position (strong part). The score has only one instrument (the piano). Therefore, first thing to do is to access the %%lmVStaff%% object for the instrument:
+
+\code
+{
+    //Assume the score is pointed by pScore.
+    //Get the instrument
+    lmInstrument* pInstr = pScore->GetFirstInstrument();
+    lmVStaff* pVStaff = pInstr->GetVStaff();
+}
+
+Now it is just a question of creating an iterator and exploring the collection of staff objects. Let's do it an extract all notes on beat position on first staff:
+
+\code
+{
+    lmSOIterator* pIter = pVStaff->CreateIterator();
+    while(!pIter->EndOfCollection())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+        {
+            // It is a note. Discard notes not on staff 1
+            if ( ((lmNote)pSO)->GetSttaffNum == 1)
+            {
+                //ok. Note on staff 1. Let's check if it is on beat position
+                if( ((lmNote*)pSO)->GetBeatPosition() != lmNOT_ON_BEAT)
+                {
+                    // on beat note. Do something with it!
+                    wxLogMessage(_T("Found note on beat position"));
+                }
+            }
+        }
+        pIter->MoveNext();
+    }
+    delete pIter;       //Do not forget this. We are not using smart pointers!
+
+}
+
+[To be continued with more details ...]
 
 
 

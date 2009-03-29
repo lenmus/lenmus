@@ -1729,6 +1729,17 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
         return;
     }
 
+    //verify that both notes have the same pitch
+    if((*itT)->pNote->GetFPitch() != pNote->GetFPitch())
+    {
+        AnalysisError((lmLDPNode*)NULL, _T("Requesting to tie notes of different pitch. Tie %d ignored."),
+                      pTieInfo->nTieId );
+        delete pTieInfo;
+        delete *itT;
+        m_PendingTies.erase(itT);
+        return;
+    }
+
     //create the tie
     (*itT)->pNote->CreateTie(pNote, (*itT)->tBezier, pTieInfo->tBezier);
 
@@ -1957,18 +1968,17 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     {
         if (pX->IsProcessed())
             ;   //ignore it
-        else if (pX->IsSimple()) {
-            //
+        else if (pX->IsSimple())
+        {
             // Analysis of simple notations
-            //
+
             sData = pX->GetName();
-    //            case "AMR"       //Articulaciones y acentos: marca de respiración
-    //                cAnotaciones.Add sData
-    //
-            if (sData == _T("l") && !fIsRest) {       //Tied to the next one
+            if (sData == _T("l") && !fIsRest)       //Tied to the next one
+            {
+                //AWARE: This simple notation is needed for exercise patterns. Can not be removed!
                 fTie = true;
             }
-            else if (sData.Left(1) == _T("g"))
+            else if (sData.Left(1) == _T("g"))      //beamed group
             {
                 if (sData.substr(1,1) == _T("+")) {       //Start of beamed group. Simple parameter
                     //compute beaming level dependig on note type
@@ -2078,7 +2088,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
 
             else if (sData.Left(1) == _T("t"))
-            {   //start/end of tuplet. Simple parameter (tn / t-)
+            {
+                //start/end of tuplet. Simple parameter (tn / t-)
+
                 lmTupletBracket* pTuplet;
                 bool fOpenTuplet = (m_pTuplet ? false : true);
                 if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
@@ -2093,15 +2105,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         fEndTuplet = true;
                     }
                 }
-
             }
 
-            else if (sData.Left(1) == _T("v"))
-            {	//voice
+            else if (sData.Left(1) == _T("v"))      //voice
+            {	
 				m_nCurVoice = AnalyzeVoiceNumber(sData, pNode);
 			}
-            else if (sData == _T("fermata"))
-			{	//fermata
+            else if (sData == _T("fermata"))        //fermata
+			{	
                 fFermata = true;
             }
             else {
@@ -2113,13 +2124,16 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
        else     // Analysis of compound notations
        {
             sData = pX->GetName();
-            if (sData == _T("g")) {       //Start of group element
+            if (sData == _T("g"))       //Start of group element
+            {       
                 AnalysisError(pX, _T("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData.c_str());
             }
-            else if (sData == _T("stem")) {       //stem attributes
+            else if (sData == _T("stem"))       //stem attributes
+            {       
                 nStem = AnalyzeStem(pX, pVStaff);
             }
-            else if (sData == _T("fermata")) {   //fermata attributes
+            else if (sData == _T("fermata"))        //fermata attributes
+            {   
                 fFermata = true;
                 nFermataPlacement = AnalyzeFermata(pX, pVStaff, &tFermataPos);
             }
@@ -2154,30 +2168,38 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     //force beaming for notes between eBeamBegin and eBeamEnd (only for single notes
     //and chord base notes, not for secondary notes of a chord)
-    if (!fBeamed && !fInChord && nNoteType > eQuarter) {
-        if (m_pLastNoteRest) {
-            if (m_pLastNoteRest->IsBeamed()) {
+    if (!fBeamed && !fInChord && nNoteType > eQuarter)
+    {
+        if (m_pLastNoteRest)
+        {
+            if (m_pLastNoteRest->IsBeamed())
+            {
                 //it can be the end of a group. Let's verify that at least a beam is open
-                for (iLevel=0; iLevel <= 6; iLevel++) {
-                    if ((m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) ||
-                        (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue)) {
+                for (iLevel=0; iLevel <= 6; iLevel++)
+                {
+                    if ((m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin)
+                         || (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue))
+                    {
                             fBeamed = true;
                             break;
                     }
                 }
 
-                if (fBeamed) {
+                if (fBeamed)
+                {
                     int nCurLevel = GetBeamingLevel(nNoteType);
                     int nPrevLevel = GetBeamingLevel(m_pLastNoteRest->GetNoteType());
 
                     // continue common levels
-                    for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
+                    for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++)
+                    {
                         BeamInfo[iLevel].Type = eBeamContinue;
                         g_pLogger->LogTrace(_T("LDPParser_beams"),
                             _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamContinue"), iLevel);
                     }
 
-                    if (nCurLevel > nPrevLevel) {
+                    if (nCurLevel > nPrevLevel)
+                    {
                         // current level is grater than previous one, start new beams
                         for (; iLevel <= nCurLevel; iLevel++) {
                             BeamInfo[iLevel].Type = eBeamBegin;
@@ -2185,16 +2207,20 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                                 _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamBegin"), iLevel);
                         }
                     }
-                    else if  (nCurLevel < nPrevLevel) {
+                    else if  (nCurLevel < nPrevLevel)
+                    {
                         // current level is lower than previous one
                         // close common levels (done) and close deeper levels in previous note
-                        for (; iLevel <= nPrevLevel; iLevel++) {
-                            if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
+                        for (; iLevel <= nPrevLevel; iLevel++)
+                        {
+                            if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue)
+                            {
                                 m_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
                                     _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                             }
-                            else if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
+                            else if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin)
+                            {
                                 m_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
                                     _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
@@ -2208,10 +2234,11 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     //if not first note of tuple, tuple information is not present and need to be taken from
     //previous note
-    if (m_pTuplet) {
+    if (m_pTuplet)
+    {
         // a tuplet is open
-       nActualNotes = m_pTuplet->GetActualNotes();
-       nNormalNotes = m_pTuplet->GetNormalNotes();
+        nActualNotes = m_pTuplet->GetActualNotes();
+        nNormalNotes = m_pTuplet->GetNormalNotes();
     }
 
     // calculation of duration
@@ -2245,7 +2272,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 		pNR = pNt;
         m_sLastOctave = sOctave;
 
-        //tie
+        //add tie, if exists
         if (pTieInfo)
         {
             if (pTieInfo->fStart)

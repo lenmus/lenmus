@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -57,7 +57,7 @@ public:
     lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uStart, lmUPoint uEnd,
                 bool fArchUnder, wxColour nColor, wxString sName = _T("Arch"),
 				bool fDraggable = true, bool fVisible = true);
-    lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint* pPoints, bool fArchUnder,
+    lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, bool fArchUnder,
                 wxColour nColor, wxString sName = _T("Arch"), bool fDraggable = true,
 				bool fVisible = true);
 
@@ -130,9 +130,13 @@ public:
     void Render(lmPaper* pPaper, wxColour color);
     void DrawControlPoints(lmPaper* pPaper);
 
+    //overrides
+    void Shift(lmLUnits xIncr, lmLUnits yIncr) {}       //any shift is taken into account in method OnAttachmentPointMoved()
+
 	//layout changes
 	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 								lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
+    void ApplyUserShifts();
 
 	//splitting
 	void SetBrotherTie(lmShapeTie* pBrotherTie) { m_pBrotherTie = pBrotherTie; }
@@ -144,8 +148,10 @@ public:
 
 private:
     bool			m_fTieUnderNote;
-	lmShapeTie*		m_pBrotherTie;		//when tie is splitted
+    bool            m_fUserShiftsApplied;
+	lmShapeTie*		m_pBrotherTie;		    //when tie is splitted
     lmNote*         m_pEndNote;
+    lmUPoint        m_uUserShifts[4];
 
 };
 

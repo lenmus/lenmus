@@ -62,7 +62,7 @@ void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
     if (lmPRESERVE_SHAPES && !IsDirty())
     {
         //Not dirty: just add existing shapes to the Box
-        lmShape* pOldShape = this->GetShape();
+        lmShape* pOldShape = this->GetShape();      //TODO: Multi-shaped AuxObjs?
         pBox->AddShape(pOldShape);
         pOldShape->SetColour(*wxCYAN);//m_color);       //change its colour to new desired colour
     }

@@ -186,7 +186,7 @@ wxString lmShapeBarline::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: xPos=%.2f, yTop=%.2f, yBot=%.2f, "),
+	sDump += wxString::Format(_T("Idx: %d %s: xPos=%.2f, yTop=%.2f, yBot=%.2f, "),
 		m_nOwnerIdx, m_sGMOName.c_str(), m_uxPos, m_uyTop, m_uyBottom );
     sDump += DumpBounds();
     sDump += _T("\n");

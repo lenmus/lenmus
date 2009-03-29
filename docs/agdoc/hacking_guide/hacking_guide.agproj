@@ -4,7 +4,17 @@
 
 \process_dir[./; src=./src]
 {
-    \process_files [*.txt]
+    \process_files [app_overview.txt
+                    beams_auto_setup.txt
+                    exercises_ctrols.txt
+                    handlers-for-shapes.txt
+                    index.txt
+                    model_view_controller.txt
+                    objects_model.txt
+                    pitch-representation.txt
+                    score_representations.txt
+                    source_tree.txt
+                    ]
 }
 
 

@@ -35,6 +35,7 @@
 #include "../app/ScoreCanvas.h"
 #include "ShapeNote.h"
 #include "ShapeLine.h"
+#include "ShapeArch.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -58,7 +59,8 @@ lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxCo
 	m_nNoteHead = -1;		// -1 = no shape
 	m_pBeamShape = (lmShapeBeam*)NULL;
 	m_pStemShape = (lmShapeStem*)NULL;
-
+    m_pTieShape[0] = (lmShapeTie*)NULL;
+    m_pTieShape[1] = (lmShapeTie*)NULL;
 }
 
 lmShapeNote::~lmShapeNote()
@@ -169,6 +171,19 @@ lmLUnits lmShapeNote::GetStemThickness()
 bool lmShapeNote::StemGoesDown()
 {
 	return ((lmNote*)m_pOwner)->StemGoesDown();
+}
+
+void lmShapeNote::ApplyUserShiftsToTieShape()
+{
+    //This note is the end note of a tie. And the note has been moved, during layout,
+    //to its final position. Then, this method is invoked to inform the tie, so that
+    //it can to apply user shifts to bezier points
+
+    if (m_pTieShape[0])
+        m_pTieShape[0]->ApplyUserShifts();
+
+    if (m_pTieShape[1])
+        m_pTieShape[1]->ApplyUserShifts();
 }
 
 wxBitmap* lmShapeNote::OnBeginDrag(double rScale, wxDC* pDC)

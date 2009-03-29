@@ -96,6 +96,10 @@ public:
     //implementation of pure virtual methods in lmBinaryRelObj
     void Save(lmUndoData* pUndoData) {};
 
+    //overrides
+    void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift) {}
+    void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift) {}
+
     // source code related methods
     wxString SourceLDP_First(int nIndent);
     wxString SourceLDP_Last(int nIndent);

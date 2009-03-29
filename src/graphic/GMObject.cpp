@@ -607,7 +607,7 @@ wxString lmCompositeShape::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nOwnerIdx, m_sGMOName.c_str(),
+	sDump += wxString::Format(_T("Idx: %d %s: grouped=%s, "), m_nOwnerIdx, m_sGMOName.c_str(),
         (m_fGrouped ? _T("yes") : _T("no")) );
     sDump += DumpBounds();
     sDump += _T("\n");

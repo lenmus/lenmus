@@ -1,151 +1,15 @@
-\title {Scores: The Internal model}
+\include ../../agdoc/replacements
+
+\title {Scores: Objects model}
 
 \toc
 
 
 
-\h1 {Scores: The Internal model}
-%%%---------------------------------------------
-
-The score is represented by an object of class %%lmScore%%. The approach followed has been to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:
-
-    * A %%lmScore%% is, mainly, a collection of Instruments plus some data (composer, title, etc.)
-
-    * A %%lmInstrunent%% is a collection of staves (an object of class %%lmVStaff%%) and some data (instrument name, MIDI assignment, etc.)
-
-    * A %%lmVStaff%% is mainly a collection of %%lmStaffObj%%s.
-
-Let's introduce the model in a pragmatic way: Creating and analysing scores.
-
-
-\h2 {Creating a score}
+\h1 {Objects model}
 %%%-----------------------------------------
 
-Some times (i.e. in exercises) it is necessary to internally create an score. It is simple. As an example let's see how to create an score for piano (grand-staff) with some notes and chords. First create the score object:
-
-\code
-{
-    //create an empty score
-    lmScore* pScore = new lmScore();
-}
-
-Then add the instrument. The mandatory minimum parameters are, in order, the MIDI channel (0-15), the MIDI instrument (0-127) and the instrument name:
-
-\code
-{
-    //add the instrument
-    lmInstrument* pInstr = pScore->AddInstrument(0, 0, _T(""));     //MIDI channel 0, MIDI instr 0, no name
-}
-
-By default, instruments are created with one standard staff (five lines). As we would like to have two staves we need to add a second staff:
-
-\code
-{
-    //get the VStaff associated to the instrument and add a second staff to it
-    lmVStaff* pVStaff = pInstr->GetVStaff();
-    pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-}
-
-Now we can start adding objects. Lets add a G clef in staff 1 and an F clef in staff 2. Then a key signature and a time signature (as they are common to all staves, it is not necessary to specify staff number):
-
-\code
-{
-    pVStaff->AddClef( lmE_Sol, 1 );         // G clef in staff 1
-    pVStaff->AddClef( lmE_Fa4, 2 );         // F clef in staff 2
-    pVStaff->AddKeySignature( earmLam );    // A minor key signature
-    pVStaff->AddTimeSignature(2 ,4);        // 2/4 time signature
-}
-
-And now notes and barlines. As notes, rests and other staff objects have usually a lot of parameters, it is simpler to specify these objects in LDP source language and to create the object from the source. This is shown in following example:
-
-\code
-{
-
-    //define an LDP parser object
-    lmLDPParser parserLDP;
-
-    //add A4 note in staff 1, voice 1
-    lmLDPNode* pNode = parserLDP.ParseText( _T("(n a4 h v1 p1)") );     // parse the text
-    parserLDP.AnalyzeNote(pNode, pVStaff);                              // analyze result and add it to pVStaff
-
-    //add chord C3-E3-A3 in staff 2, voice 2
-    pNode = parserLDP.ParseText( _T("(n c3 q v2 p2)") );
-    parserLDP.AnalyzeNote(pNode, pVStaff);
-    pNode = parserLDP.ParseText( _T("(na e3 q p2)") );
-    parserLDP.AnalyzeNote(pNode, pVStaff);
-    pNode = parserLDP.ParseText( _T("(na a3 q p2)") );
-    parserLDP.AnalyzeNote(pNode, pVStaff);
-
-    //add C3 note in staff 2
-    pNode = parserLDP.ParseText( _T("(n c3 q p2)") );
-    parserLDP.AnalyzeNote(pNode, pVStaff);
-
-    //add barline
-    pVStaff->AddBarline(lm_eBarlineSimple);
-
-}
-
-That's all! The resulting score is shown in figure 1.
-
-\imgc [om_1.jpg] { Figure 1 }
-
-\tip
-{
-Would you like to play with this example and see the resulting score? Modify method %%lmScoreWizard::OnWizardFinished()%% in file app/ScoreWizard.cpp. Instead of creating an empty score (near line 450) you can create an score with your desired test content. The score will be shown on screen when creating an empty score (manuscript paper).
-}
-
-
-\h2 {Analysing a score}
-%%%-----------------------------------------
-
-Some times you would like to traverse an score, for example, for analysing the student answer to some exercise. How to do it?
-
-First, you should remember that an score is composed of instruments, and that instruments contains one %%lmVStaff%%. All notes, rests, barlines, and other staff objects are stored in the %%lmVStaff%% object, in an object of class %%lmColStaffObjs%% (\b{Col}lection of \b{Staff Obj}ects). To isolate its internal structure and implementation details from usage, an \i{iterator} object has been implemented: %%lmSOIterator%% (in score/StaffObjIterator.cpp & .h).
-
-Let's see an example. Assume we would like to analyse the notes entered on first staff of a piano score, and identify those placed on beat position (strong part). The score has only one instrument (the piano). Therefore, first thing to do is to access the %%lmVStaff%% object for the instrument:
-
-\code
-{
-    //Assume the score is pointed by pScore.
-    //Get the instrument
-    lmInstrument* pInstr = pScore->GetFirstInstrument();
-    lmVStaff* pVStaff = pInstr->GetVStaff();
-}
-
-Now it is just a question of creating an iterator and exploring the collection of staff objects. Let's do it an extract all notes on beat position on first staff:
-
-\code
-{
-    lmSOIterator* pIter = pVStaff->CreateIterator();
-    while(!pIter->EndOfCollection())
-    {
-        lmStaffObj* pSO = pIter->GetCurrent();
-        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
-        {
-            // It is a note. Discard notes not on staff 1
-            if ( ((lmNote)pSO)->GetSttaffNum == 1)
-            {
-                //ok. Note on staff 1. Let's check if it is on beat position
-                if( ((lmNote*)pSO)->GetBeatPosition() != lmNOT_ON_BEAT)
-                {
-                    // on beat note. Do something with it!
-                    wxLogMessage(_T("Found note on beat position"));
-                }
-            }
-        }
-        pIter->MoveNext();
-    }
-    delete pIter;       //Do not forget this. We are not using smart pointers!
-
-}
-
-[To be continued with more details ...]
-
-
-\h2 {Objects model}
-%%%-----------------------------------------
-
-Now you have a general feelling of how the score is internally represented. Let's see the model in detail. It is depicted if figure 2.
+In document \href0 [score_representations] {Scores: the internal model} there is a general description of main container classes and how they do relate between them. Here we are going to see the model in detail. It is depicted in figure 2.
 
 \imgc [om_2_internal_model.jpg] { Figure 2. Hierarchy of score objects }
         
@@ -163,7 +27,7 @@ The approach followed has been to capture the score structure by splitting the r
  * %%lmComponentObj%%: Anything that can appear in an score.
 
 
-\h3 {Container classes}
+\h2 {Container classes}
 %%%----------------------
 
 There are three container classes:
@@ -215,7 +79,7 @@ This object, that stands for \i{\b{V}irtual \b{Staff}}, represents any staff lay
 It contains the collection of staff objects (object of class %%lmColStaffObjs%%) and the collection of staff layouts(%%lmStaff%% objects).
 
 
-\h3 {Component classes}
+\h2 {Component classes}
 %%%----------------------
 
 %%lmComponentObj%% is any object modelling a renderizable (but not necessarily visible) thing that can appear on a score. 
@@ -234,7 +98,7 @@ As they are renderizable:
         
 There are two derived classes:
 
-\h4 {lmStaffObj}
+\h3 {lmStaffObj}
 
 An StaffObj is any object that must have an VStaff as owner (measure-attached objects). In this group we have the main musical elements, normally with duration (notes/rests) or time positioned (clef, key signature, time signature). They are in a staff/measure, so they are attached to an VStaff. They normally 'consume' time and so layout is controlled by time position.
 
@@ -250,7 +114,7 @@ An StaffObj is any object that must have an VStaff as owner (measure-attached ob
 Examples of derived objects: %%lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmNotation%% (Spacer, Anchor, ScoreAnchor), %%lmScoreText, lmSOControl%%(new system).
 
 
-\h4 {lmAuxObj}
+\h3 {lmAuxObj}
 
 An %%lmAuxObj%% is any object that is not attached to a staff but to one or more %%lmStaffObj%% (note-attached objects). For example:
 
@@ -270,7 +134,7 @@ As they do not consume time, the Layout phase is done by specific methods, contr
 As %%lmAuxObj%%s are not %%lmStaffObj%%s they can not be attached directly to an staff. In order to allow for placing %%lmAuxObj%%s on the staff it is necessary design a mechanism for this. The current solution is by using special StaffOjs (%%lmSpacer, lmAnchor, lmScoreAnchor%%).
 
 
-\h4 {Owning AuxObjs}
+\h3 {Owning AuxObjs}
 %%%--------------------
 
 It should be possible to have AuxObjs not attached only to StaffObjs but to many places. For example: assume a text box (AuxObj) owned by a fermata (AuxObj), owned by a note (StaffObj).
@@ -288,7 +152,7 @@ Therefore, the only restriction would be that the root of owners chain must not 
  * If its owner is a StaffObj, measurements can be in tenths, as can be converted to LUnits. Otherwise, if owner chain reaches a VStaff/Staff, measurements can also be in tenths and this grand-father VStaff will be used for units conversion. Otherwise, units must be absolute.
 
 
-\h3 {Auxiliary classes}
+\h2 {Auxiliary classes}
 %%%----------------------
 
 Finally, I have defined other auxiliary objects, non-derived from any other one:
@@ -305,12 +169,12 @@ Finally, I have defined other auxiliary objects, non-derived from any other one:
 
 
 
-\h2 {Objects model: history and evolution}
+\h1 {Objects model: history and evolution}
 %%%-----------------------------------------
 
 When I stated the LenMus program I didn't have any previous experience about modelling music. I googled for music representation and found \href [http://www.recordare.com/xml.html] {MusicXML}, then a starting project (version 0.7). It was inadequate to my purposes as I needed positioning information and MusicXML 0.7 didn't have plans to include this information. Therefore, to gain first hand experience about music representation problems I decided to design my own representation language: LDP (Lenguaje De Partituras, meaning 'Language For Scores'). But I also though it would be wise to have some reference and so I  started by following the MusicXML model. A second reason to follow it was that I liked to implement export/import MusicXML and so, to simplify this objective, my internal representation should allow for easy conversion to/from MusicXML.
 
-\h3 {How is music represented in MusicXML}
+\h2 {How is music represented in MusicXML}
 %%%-----------------------------------------
 
  * Score is a collection of instruments (%%<parts>%%). Titles are directly owned by the score:

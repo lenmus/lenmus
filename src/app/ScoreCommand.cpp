@@ -647,14 +647,20 @@ bool lmCmdMoveObject::Do()
 {
     //Direct command. NO UNDO LOG
     m_tOldPos = m_pSO->SetUserLocation(m_tPos, m_nShapeIdx);
-	return CommandDone(lmSCORE_MODIFIED, lmDO_ONLY_REDRAW);
+    if (m_fUpdateViews)
+	    return CommandDone(lmSCORE_MODIFIED);
+    else
+	    return CommandDone(lmSCORE_MODIFIED, lmDO_ONLY_REDRAW);
 }
 
 bool lmCmdMoveObject::Undo()
 {
     //Direct command. NO UNDO LOG
     m_pSO->SetUserLocation(m_tOldPos, m_nShapeIdx);
-    return CommandUndone(lmDO_ONLY_REDRAW);
+    if (m_fUpdateViews)
+	    return CommandDone(0);
+    else
+        return CommandUndone(lmDO_ONLY_REDRAW);
 }
 
 

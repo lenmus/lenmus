@@ -1,0 +1,185 @@
+
+<html>
+<head>
+<title>Handlers for shapes</title>
+<meta http-equiv="Content-Type" content="text/html" />
+<link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
+</head>
+<body>
+
+
+
+
+<h1 class='article'>Handlers for shapes
+</h1>
+
+<p class="copyright">
+LenMus project (http://www.lenmus.org/)<br />
+<a href="#legal_notice">GNU Free Documentation License</a>
+</p>
+
+
+<a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
+    <a class='toc_level1' href="#toc0001">Handlers</a>
+        <a class='toc_level2' href="#toc0002">Handlers renderization</a>
+        <a class='toc_level2' href="#toc0003">How handlers interact with the controlled shape</a>
+        <a class='toc_level2' href="#toc0004">What to do to add handlers to a shape</a>
+        <a class='toc_level2' href="#toc0005">Object points, object location, shapes and handlers</a>
+
+ 
+
+
+<h2 class='article'><a name="toc0001"></a>Handlers</h2>
+
+
+
+<p class='justified'>[in files &quot;graphic/Handlers.cpp &amp; .h&quot;]</p>
+
+
+
+<p class='justified'>Handlers are the small squares (or circles, diamonds or other marks) at specific points of a shape (the &#039;controlled shape&#039;), that are used to change its position or layout.</p>
+
+<p class='justified'>But when an object is selected and have handlers, apart of rendering the handlers themselves it could be necessary to render some handler related shapes, such as lines joining the handlers, lines joining a handler with its owner <span class="kw1">lmGMObject</span> (i.e., for ties, the handlers could draw small line segments joining the handler to the S-line) or lines surrounding the controlled shape. All these handler related lines are also handlers, as the user can point to them for dragging/moving the whole controlled shape.</p>
+
+<p class='justified'>Handlers are implemented as <span class="kw1">lmShape</span> objects, for several reasons. One of them is to simplify detecting when the mouse is over a handle and to simplify dragging, using the same architecture than for &#039;normal&#039; shapes.</p>
+
+
+
+
+<h3 class='article'><a name="toc0002"></a>Handlers renderization</h3>
+
+
+
+<p class='justified'>To render handlers some issues should be considered:</p>
+
+ <p class='justified'>a) When an object is selected and have handlers, apart of rendering the handlers themselves it could be necessary to render some handler related shapes, such as lines joining the handlers, lines joining a handler with its owner <span class="kw1">lmGMObject</span> (i.e., for ties, the handlers could draw small line segments joining the handler to the S-line) or lines surrounding the controlled shape. This implies that renderization is different when the object is selected.</p>
+
+ <p class='justified'>b) When a handler is dragged the controlled shape must be redrawn in the new resulting position/shape, and these dragging and moving operations should be very fast. This implies that we can not re-render the whole page and create new bitmaps at every small change.</p>
+ 
+<p class='justified'>Due to these considerations implementation is as follows:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Handlers are not rendered during shapes renderization. Instead, if during renderization an object has the need to draw handlers (for instance, if the object is selected) if MUST inform its parent <span class="kw1">lmBoxPage</span> by invoking method <span class="kw1">lmBoxPage::OnNeedToDrawHandlers()</span>.</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Each <span class="kw1">lmBoxPage</span> maintains a list of objects having requested to be rendered with handlers and, when appropriate, it will invoke method <span class="kw1">RenderWithHandlers()</span> for those objects, so that they can do it.</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Handlers are rendered in method <span class="kw1">lmScoreView::TerminateRepaint()</span>. This method is invoked by <span class="kw1">lmScoreCanvas::OnPaint()</span> to inform that there are no more screen rectangles to repaint. At that point the pages bitmaps are ready and then we can proceed to paint handlers , but not on the bitmaps themselves but by XOR over them (with no anti-aliasing). To request do it, method <span class="kw1">lmScoreView::TerminateRepaint()</span> invokes <span class="kw1">lmBoxPage::DrawAllHandlers()</span> for all visible pages.</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Any <span class="kw1">lmGMObject</span> with handlers must have two renderization methods:</li>
+<div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">Render()</span>: The usual normal anti-aliased renderization with no handlers.</li>
+<li><span class="kw1">RenderWithHandlers()</span>: A method to render the object selected, with handlers. Must used direct draw DC, instead of anti-aliased DC.</li></ul><div></ul><div></p>
+    
+
+<div class="important" style="margin-left: 0.5in; margin-right: 0.5in;">
+<table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25">
+<img alt="[Important]" src="images/important.png"></td>
+<th align="left">Important</th>
+</tr>
+<tr><td align="left" valign="top">
+
+To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#039;RenderSelected&#039;. Should we rename  <span class="kw1">RenderWithHandlers()</span> into <span class="kw1">RenderSelected()</span> and ask all <span class="kw1">lmGMOobj</span> to implement it? If the object has handlers it will implement it with direct draw DC. A default implementation for objects without handlers could be provided.
+
+</td></tr>
+</table></div>
+
+
+
+
+<h3 class='article'><a name="toc0003"></a>How handlers interact with the controlled shape</h3>
+
+
+
+<p class='justified'>When a handler is dragged the controlled shape is informed by invoking methods <span class="kw1">OnHandlerDrag()</span> and <span class="kw1">OnHandlerEndDrag()</span>.</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>During handler drag the controlled shape must:</li>
+<div class="itemizedlist"><ul type="disc">
+<li>store new handler coordinates and update shape points to take into account handler displacement.</li>
+<li>re-draw the shape at new position/geometry by invoking <span class="kw1">RenderWithHandlers()</span>.</li></ul><div></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>At end of handler drag, the controlled shape must:</li>
+<div class="itemizedlist"><ul type="disc">
+<li>compute shifts from start of drag points</li>
+<li>issue a <span class="kw1">MoveObjectPoints()</span> command. Before doing it, as handlers and shape points have been already displaced during drag, it is necessary to restore the original positions in the shape, to avoid double displacements.</li></ul><div></ul><div></p>
+
+
+
+
+<h3 class='article'><a name="toc0004"></a>What to do to add handlers to a shape</h3>
+
+
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Decide on object layout when selected (squared handlers, line handlers, aux lines) and add defines for handlers IDs.</li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Define pointers for the handlers and create the handlers at shape constructor.</li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Delete handlers at destructor</li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Modify <span class="kw1">Render()</span> method:
+    - if selected, book to be rendered with handlers when possible and update handlers position.</li></ul><div></p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Create method <span class="kw1">RenderWithHandlers()</span></li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Create method <span class="kw1">GetPointForHandler()</span></li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Create method <span class="kw1">OnHandlerDrag()</span></li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Create method <span class="kw1">OnHandlerEndDrag()</span></li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>If necessary, override method <span class="kw1">OnSelectionStatusChanged()</span> to hide or restore visibility of controlled shape while selected.</li></ul><div></p>
+
+
+
+
+<h3 class='article'><a name="toc0005"></a>Object points, object location, shapes and handlers</h3>
+
+
+
+<p class='justified'>ScoreObjects defined by points instead of by glyphs (lines, ties, etc.) will have member variables of type <span class="kw1">lmTPoint</span> (tenths). This points will be always relative to current object reference default point (<span class="kw1">m_paperPos</span> or any default computed position). As a consequence, LDP data is interpreted as &quot;user sift from the default reference point&quot; and object points are always initialised with (0, 0) unless LDP data exist. Therefore:</p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>LDP data about points can be mandatory (i.e. lines) or optional (i.e. ties).</li>
+<li>Object does not need to implement method <span class="kw1">ComputeBestLocation()</span>.</li>
+<li>Object can ignore parameter <span class="kw1">uPos</span> in method <span class="kw1">LayoutObject()</span>.</li></ul><div></p>
+
+
+
+
+
+
+
+
+
+
+
+<hr class='copyright' />
+<a name="legal_notice">&nbsp;</a>
+<p class="copyright">
+Copyright &copy; 2008-2009 LenMus project
+</p>
+<p class="justified">
+This document is part of the LenMus project. 
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included with the program.
+</p>
+
+</body></html>

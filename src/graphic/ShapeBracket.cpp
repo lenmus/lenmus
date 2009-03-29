@@ -184,7 +184,7 @@ wxString lmShapeBracketBrace::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: "),
+	sDump += wxString::Format(_T("Idx: %d %s: "),
 		m_nOwnerIdx, m_sGMOName.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");

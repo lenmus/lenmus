@@ -169,7 +169,7 @@ wxString lmHandlerLine::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-    sDump += wxString::Format(_T("%04d %s: HandlerID:%d"),
+    sDump += wxString::Format(_T("Idx: %d %s: HandlerID:%d"),
         m_nOwnerIdx, m_sGMOName.c_str(), m_nHandlerID );
     sDump += DumpBounds();
     sDump += _T("\n");
@@ -244,7 +244,7 @@ wxString lmHandlerSquare::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-    sDump += wxString::Format(_T("%04d %s: HandlerID:%d"),
+    sDump += wxString::Format(_T("Idx: %d %s: HandlerID:%d"),
 		m_nOwnerIdx, m_sGMOName.c_str(), m_nHandlerID );
     sDump += DumpBounds();
     sDump += _T("\n");
@@ -257,55 +257,6 @@ void lmHandlerSquare::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
     m_pMouseCursorWindow = pWindow;
 }
 
-//lmUPoint lmHandlerSquare::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
-//{
-//	// The view informs that the user continues dragging. We receive the new desired
-//	// shape position and we must return the new allowed shape position.
-//	//
-//	// The default behaviour is to return the received position, so the view redraws 
-//	// the drag image at that position. No action must be performed by the shape on 
-//	// the score and score objects.
-//	//
-//	// The received new desired shape position is in logical units and referred to page
-//	// origin. The returned new allowed shape position must also be in in logical units
-//	// and referred to page origin.
-//
-//    // A margin line only can be moved in vertical or horizontal
-//
-//    //limit margins movement to have at least 30% of page size for rendering the score
-//    //lmScore* pScore = (lmScore*)m_pOwner;
-//    //lmUPoint pos = uPos;
-//    //pos = pScore->CheckHandlerNewPosition(this, m_nIdx, m_nPage, pos);
-//
-//
-//    //received paper is a DirectDrawer DC
-//
-//    //erase previous draw
-//    //Render(pPaper, *wxGREEN);
-//    ((lmShapeLine*)m_pOwnerGMO)->RenderWithHandlers(pPaper);
-//
-//    //store new coordinates
-//    m_uTopLeft = uPos;
-//
-//    //draw at new position
-//    //Render(pPaper, *wxGREEN);
-//    ((lmShapeLine*)m_pOwnerGMO)->RenderWithHandlers(pPaper);
-//
-//    return uPos;
-//}
-
-//void lmHandlerSquare::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos)
-//{
-//	// End drag. Receives the command processor associated to the view and the
-//	// final position of the object (logical units referred to page origin).
-//	// This method must validate/adjust final position and, if ok, it must 
-//	// send a move object command to the controller.
-//
-//    //save new position and send the command to change margin position
-//    m_uTopLeft = uPos;
-//
-//    //pCanvas->ChangePageMargin(this, m_nIdx, m_nPage, m_uPos);
-//}
 
 
 //-------------------------------------------------------------------------------------
@@ -380,7 +331,7 @@ wxString lmShapeMargin::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: uPos=%.2f, uLenght=%.2f, fVertical=%s, "),
+	sDump += wxString::Format(_T("Idx: %d %s: uPos=%.2f, uLenght=%.2f, fVertical=%s, "),
 		m_nOwnerIdx, m_sGMOName.c_str(), m_uPos, m_uLenght, 
         (m_fVertical ? _T("yes") : _T("no")) );
     sDump += DumpBounds();

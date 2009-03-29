@@ -107,7 +107,7 @@
 
 \paragraphless_elements       [hr toc code code0 as_is imgc table title subtitle algorithm]
 
-\paragraph_br_style_elements  [p pl pr pc note tip warning algorithm figure]
+\paragraph_br_style_elements  [p pl pr pc note indent tip warning algorithm figure]
 
 
 
@@ -354,6 +354,9 @@ LenMus project (http://www.lenmus.org/)<br />
 </table></div>
 ]
 
+\indent_open    [<div style="margin-left: 4em;">]
+\indent_close   [</div>]
+
 \tip_open       [<TABLE class="tip" width="$(tabwidth)"><TR><TD><B>TIP</B><BR/>]
 \tip_close      [</TD></TR></TABLE>]
 
@@ -394,7 +397,7 @@ LenMus project (http://www.lenmus.org/)<br />
 \img_open       [<IMG src="$(this.attr)" title="$(this.content)" border="0"/><!--]
 \img_close      [-->]
 
-\imgc_open      [<img class='figure' src='images/$(this.attr)' title='$(this.content)' /><p class='FigureTitle'>]
+\imgc_open      [<center><img class='figure' src='images/$(this.attr)' title='$(this.content)' /></center><p class='FigureTitle'>]
 \imgc_close     [</p>]
 
 \imgl0_open     [<IMG src="$(this.attr)" title="$(this.content)" align="left" border="4" style="border-color:#FFFFFF"/><!--]

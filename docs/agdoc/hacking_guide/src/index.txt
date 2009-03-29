@@ -23,15 +23,24 @@ Any help to structure, review, improve, etc. this document is welcome!.
 
 **Table of content**
 
-    * \href0 [source_tree] {Program structure and source code organization}
-    * \href0 [app_overview] {Application overview and main control flow}
-    * \href0 [model_view_controller] {Model-View-Controller architecture}
+    * \b{Overview}
+        * \href0 [source_tree] {Program structure and source code organization}
+        * \href0 [app_overview] {Application overview and main control flow}
+        * \href0 [model_view_controller] {Model-View-Controller architecture}
     
-    * \href0 [score_representations] {Scores: internal representation}
+    * \b{Score internal representations}
+        * \href0 [score_representations] {Scores: the internal model}
+        * \href0 [objects_model] {Objects in the internal model}
         * \href0 [pitch-representation] {How pitch is represented}
-        * \href0 [objects_model] {Scores: The Internal model}
     
-    * \href0 [exercises_ctrols] {eBooks: Including scores and exercises}
+    * \b{Score edition model}
+        * \href0 [handlers-for-shapes] {Handlers}
+    
+    * \b{Exercises}
+        * \href0 [exercises_ctrols] {eBooks: Including scores and exercises}
+        
+    * \b{Algorithms}
+        * \href0 [beams_auto_setup] {Beamed groups of notes: How to determine beam info automatically
     
 %%%    * \href0 [cursors] {Cursors and caret}
 

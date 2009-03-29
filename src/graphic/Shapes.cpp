@@ -129,7 +129,7 @@ wxString lmShapeSimpleLine::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), line width=%.2f, "),
+	sDump += wxString::Format(_T("Idx: %d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), line width=%.2f, "),
                 m_nOwnerIdx, m_sGMOName.c_str(), m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth );
     sDump += DumpBounds();
     sDump += _T("\n");
@@ -209,7 +209,7 @@ wxString lmShapeGlyph::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: pos=(%.2f,%.2f), "),
+	sDump += wxString::Format(_T("Idx: %d %s: pos=(%.2f,%.2f), "),
         m_nOwnerIdx, m_sGMOName.c_str(), m_uGlyphPos.x, m_uGlyphPos.y);
     sDump += DumpBounds();
     sDump += _T("\n");
@@ -503,7 +503,7 @@ wxString lmShapeRectangle::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: left-top=(%.2f, %.2f), right-bottom=(%.2f, %.2f), line width=%.2f, "),
+	sDump += wxString::Format(_T("Idx: %d %s: left-top=(%.2f, %.2f), right-bottom=(%.2f, %.2f), line width=%.2f, "),
                 m_nOwnerIdx, m_sGMOName.c_str(), m_xLeft, m_yTop, m_xRight, m_yBottom, m_uWidth );
     sDump += DumpBounds();
     sDump += _T("\n");

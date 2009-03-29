@@ -48,6 +48,7 @@
 #include "../score/VStaff.h"
 #include "../score/Notation.h"
 #include "TimeposTable.h"
+#include "ShapeNote.h"
 
 class lmTimeLine;
 class lmBreaksTable;
@@ -76,9 +77,9 @@ lmTenths m_rMinSpaceBetweenNoteAndClef = 10.0f;
 //entry types
 enum eTimeposEntryType
 {
-    eAlfa = 1,              //start of voice
-    eStaffobj,              //lmStaffObj inside bar
-    eOmega,                 //end of voice
+    lm_eAlfa = 1,       //start of voice
+    lm_eStaffobj,       //lmStaffObj
+    lm_eOmega,          //end of voice
 };
 
 class lmTimeposEntry
@@ -137,6 +138,7 @@ public:
 	lmLUnits ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart);
     lmLUnits RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uNewBarSize,
                               lmLUnits uNewStart, lmLUnits uOldBarSize);
+    void InformAttachedObjs();
 
     lmLUnits GetMaxXFinal();
 	inline lmLUnits GetXStartLine() { return m_aMainTable[0]->m_xLeft; }	//xLeft of alpha entry
@@ -427,11 +429,11 @@ void lmTimeposEntry::AssignSpace(lmTimeposTable* pTT, float rFactor)
 
     switch (m_nType)
     {
-        case eAlfa:
+        case lm_eAlfa:
 			//already assigned. It was assigned when creating the entry.
 			break;
 
-        case eOmega:
+        case lm_eOmega:
 			if (m_pSO && m_pSO->IsBarline())    //if exists it must be a barline !!
                 ;
             else
@@ -547,11 +549,11 @@ wxString lmTimeposEntry::Dump(int iEntry)
     wxString sMsg = wxString::Format(_T("%4d: "), iEntry);
     switch (m_nType)
     {
-        case eAlfa:
+        case lm_eAlfa:
             sMsg += _T("  Alfa              ");
             break;
 
-        case eOmega:
+        case lm_eOmega:
             sMsg += _T("  Omega");
             if (m_pSO) {
                 sMsg += wxString::Format(_T("%3d          "), m_pSO->GetClass() );
@@ -592,7 +594,7 @@ lmTimeLine::lmTimeLine(lmTimeposTable* pMngr, int nInstr, int nVoice, lmLUnits u
 	m_pOwner = pMngr;
 	m_nInstr = nInstr;
 	m_nVoice = nVoice;
-    NewEntry(eAlfa, (lmStaffObj*)NULL, (lmShape*)NULL, false, uSpace);
+    NewEntry(lm_eAlfa, (lmStaffObj*)NULL, (lmShape*)NULL, false, uSpace);
     m_aMainTable.back()->m_uxAnchor = 0.0f;
     m_aMainTable.back()->m_xLeft = uxStart;
     m_aMainTable.back()->m_xInitialLeft = uxStart;
@@ -631,7 +633,7 @@ lmTimeposEntry* lmTimeLine::NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, l
 {
     lmTimeposEntry* pEntry = new lmTimeposEntry(this, nType, pSO, pShape, fProlog);
     m_aMainTable.push_back(pEntry);
-    if (nType == eAlfa)
+    if (nType == lm_eAlfa)
         pEntry->m_uFixedSpace = uSpace;
 	return pEntry;
 }
@@ -689,7 +691,7 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
             rCurTime = pTPE->m_rTimePos;
             uxCurPos = pCriticalLine->GetTimepos(rCurTime);
         }
-        else if (pTPE->m_rTimePos < 0.0f && pTPE->m_nType == eStaffobj)
+        else if (pTPE->m_rTimePos < 0.0f && pTPE->m_nType == lm_eStaffobj)
         {
             //if this SO is in critical line, take position from it.
             //Otherwise it should be right aligned to next timed SO
@@ -704,13 +706,13 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
         }
 
         //reposition this entry
-        if (pTPE->m_nType == eStaffobj)
+        if (pTPE->m_nType == lm_eStaffobj)
         {
             lmLUnits uShift = uxCurPos - pTPE->m_xLeft + pTPE->m_uxAnchor;
             if (pTPE->m_pShape)
 				pTPE->m_pSO->StoreOriginAndShiftShapes( uShift, pTPE->m_pShape->GetOwnerIDX() );
         }
-        else if (pTPE->m_nType == eOmega)
+        else if (pTPE->m_nType == lm_eOmega)
         {
             //there might be no barline.
             if (pTPE->m_pSO)
@@ -741,12 +743,12 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
     for (lmItEntries it = m_aMainTable.begin(); it != m_aMainTable.end(); ++it)
 	{
         pTPE = *it;
-        if (uShift != 0.0f && pTPE->m_nType == eStaffobj)
+        if (uShift != 0.0f && pTPE->m_nType == lm_eStaffobj)
         {
             if (pTPE->m_pShape)
 				pTPE->m_pSO->StoreOriginAndShiftShapes(uShift, pTPE->m_pShape->GetOwnerIDX() );
         }
-        else if (pTPE->m_nType == eOmega)
+        else if (pTPE->m_nType == lm_eOmega)
         {
             //there might be no barline.
             if (pTPE->m_pSO)
@@ -761,6 +763,27 @@ lmLUnits lmTimeLine::ShiftEntries(lmLUnits uNewBarSize, lmLUnits uNewStart)
     }
     return uBarPosition;
 
+}
+
+void lmTimeLine::InformAttachedObjs()
+{
+    //StaffObj shapes has been moved to their final positions. This method is invoked to inform
+    //some attached AuxObjs (i.e. ties) so that they can compute their positions.
+
+    for (lmItEntries it = m_aMainTable.begin(); it != m_aMainTable.end(); ++it)
+	{
+        if ((*it)->m_nType == lm_eStaffobj)
+        {
+            if ((*it)->m_pSO->IsNoteRest() 
+                && ((lmNoteRest*)(*it)->m_pSO)->IsNote()
+                && ((lmNote*)(*it)->m_pSO)->IsTiedToPrev() )
+            {
+                //End of tie note. Inform the tie shape.
+                wxASSERT((*it)->m_pShape);
+				((lmShapeNote*)(*it)->m_pShape)->ApplyUserShiftsToTieShape();
+            }
+        }
+    }
 }
 
 void lmTimeLine::ClearDirtyFlags()
@@ -779,7 +802,7 @@ lmLUnits lmTimeLine::GetLineWidth()
 	//Return the size of the measure represented by this line or 0 if
 	//no omega entry.
 
-	if (m_aMainTable.size() > 0 && m_aMainTable.back()->m_nType == eOmega)
+	if (m_aMainTable.size() > 0 && m_aMainTable.back()->m_nType == lm_eOmega)
 		return m_aMainTable.back()->m_xLeft
 			   + m_aMainTable.back()->GetTotalSize() - m_aMainTable.front()->m_xLeft;
 	else
@@ -1075,7 +1098,7 @@ float lmTimeLine::ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor,
         //we have arrived to the end of line, but it could be an omega entry without barline.
         //In that case, it is necessary to update its information
 		if (itLastNotTimed != m_aMainTable.end() &&
-            (*itLastNotTimed)->m_nType == eOmega &&
+            (*itLastNotTimed)->m_nType == lm_eOmega &&
             (*itLastNotTimed)->m_rTimePos < 0.0f )
 		{
 		    (*itLastNotTimed)->Reposition(m_uxCurPos);
@@ -1207,7 +1230,7 @@ void lmTimeLine::TerminateLineAfter(float rTime, lmLUnits uxFinal)
     for (; it != m_aMainTable.end(); ++it)
 	{
         //if this is the omega entry, break loop
-        if ((*it)->m_nType == eOmega)
+        if ((*it)->m_nType == lm_eOmega)
         {
             pOmega = (*it);
             break;
@@ -1382,7 +1405,7 @@ void lmCriticalLine::ComputeBeta(float rFactor)
     m_rBeta = 0.0f;
     for (lmItEntries it = m_aMainTable.begin(); it != m_aMainTable.end(); ++it)
 	{
-        if ((*it)->m_nType == eStaffobj &&
+        if ((*it)->m_nType == lm_eStaffobj &&
             (*it)->m_pSO->IsVisible() &&
             (*it)->m_pSO->IsNoteRest() )
         {
@@ -1443,14 +1466,14 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     for (; it != m_aMainTable.end(); ++it)
 	{
         lmTimeposEntry* pTPE = *it;
-        if (pTPE->m_nType == eStaffobj)
+        if (pTPE->m_nType == lm_eStaffobj)
         {
             lmLUnits uOldPos = pTPE->m_xLeft - pTPE->m_uxAnchor;
             lmLUnits uShift = uDiscount + (uNewStart + (uOldPos - uStartPos) * rProp) - uOldPos;
             lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft - pTPE->m_uxAnchor + uShift};  
             m_PosTimes.push_back(tPosTime);
         }
-        else if (pTPE->m_nType == eOmega)
+        else if (pTPE->m_nType == lm_eOmega)
         {
             //there might be no barline.
             if (pTPE->m_pSO)
@@ -1634,7 +1657,7 @@ void lmTimeposTable::CloseLine(lmStaffObj* pSO, lmShape* pShape, lmLUnits xStart
 {
 	//close current line.
 
-    m_pCurEntry = (*m_itCurLine)->AddEntry(eOmega, pSO, pShape, false);
+    m_pCurEntry = (*m_itCurLine)->AddEntry(lm_eOmega, pSO, pShape, false);
     m_pCurEntry->m_xLeft = xStart;
     m_pCurEntry->m_xInitialLeft = xStart;
 }
@@ -1695,7 +1718,7 @@ void lmTimeposTable::AddEntry(int nInstr, int nVoice, lmStaffObj* pSO, lmShape* 
 			if ( (*it)->m_nVoice == 0 || (*it)->m_nVoice == nVoice )
 			{	//voice found. Save current line and add entry
 				m_itCurLine = it;
-				m_pCurEntry = (*it)->AddEntry(eStaffobj, pSO, pShape, fProlog);
+				m_pCurEntry = (*it)->AddEntry(lm_eStaffobj, pSO, pShape, fProlog);
                 //wxLogMessage(_T("\tEntry added to line for voice=%d"), (*it)->m_nVoice);
 
 				//update voice
@@ -1710,7 +1733,7 @@ void lmTimeposTable::AddEntry(int nInstr, int nVoice, lmStaffObj* pSO, lmShape* 
 	//not found. Start new line
 	wxASSERT(itInstr != m_aLines.end());	//a line for the instrument must exist
 	StartLine(nInstr, nVoice);
-	m_pCurEntry = (*m_itCurLine)->AddEntry(eStaffobj, pSO, pShape, fProlog);
+	m_pCurEntry = (*m_itCurLine)->AddEntry(lm_eStaffobj, pSO, pShape, fProlog);
 }
 
 //-------------------------------------------------------------------------------------
@@ -1726,7 +1749,7 @@ lmBarline* lmTimeposTable::GetBarline()
         return (lmBarline*)NULL;
 
     lmTimeposEntry* pEntry = m_pCriticalLine->m_aMainTable.back();    //the omega entry
-    wxASSERT(pEntry->m_nType == eOmega);
+    wxASSERT(pEntry->m_nType == lm_eOmega);
     return (lmBarline*)pEntry->m_pSO;
 }
 
@@ -1755,7 +1778,7 @@ lmLUnits lmTimeposTable::GetStartOfBarPosition()
 
     //the bar starts at the xLeft of the alfa entry
     lmTimeposEntry* pEntry = m_aLines[0]->m_aMainTable.front();    //the alfa entry
-    wxASSERT(pEntry->m_nType == eAlfa);
+    wxASSERT(pEntry->m_nType == lm_eAlfa);
     return pEntry->m_xLeft;
 }
 
@@ -1955,7 +1978,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
         if (fCreateCriticalLine)
         {
             lmTimeposEntry* pOmega = (*it)->m_aMainTable.back();
-            if (pOmega->m_nType == eOmega && uOmegaSize < pOmega->GetTotalSize())
+            if (pOmega->m_nType == lm_eOmega && uOmegaSize < pOmega->GetTotalSize())
             {
                 uOmegaSize = pOmega->GetTotalSize();
                 pOmegaEntry = pOmega;
@@ -1999,6 +2022,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
 	{
 		(*it)->RepositionShapes(m_pCriticalLine, uNewBarSize, uNewStart, uOldBarSize);
+        (*it)->InformAttachedObjs();
     }
 
     //wxLogMessage(_T("[lmTimeposTable::RedistributeSpace] uNewBarSize=%.2f, uNewStart=%.2f, uOldBarSize=%.2f"),

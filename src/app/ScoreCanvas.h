@@ -126,6 +126,9 @@ public:
     virtual void OnAttachText(wxCommandEvent& event) {}
 	virtual void OnScoreTitles(wxCommandEvent& event) {}
 	virtual void OnViewPageMargins(wxCommandEvent& event) {}
+#ifdef __WXDEBUG__
+	virtual void OnDumpShape(wxCommandEvent& event) {}
+#endif
 
     //call backs
     virtual void SynchronizeToolBox() {}
@@ -237,7 +240,9 @@ public:
     void OnAttachText(wxCommandEvent& event);
     void OnScoreTitles(wxCommandEvent& event);
     void OnViewPageMargins(wxCommandEvent& event);
-
+#ifdef __WXDEBUG__
+	void OnDumpShape(wxCommandEvent& event);
+#endif
 
 private:
     void DeleteCaretOrSelected();

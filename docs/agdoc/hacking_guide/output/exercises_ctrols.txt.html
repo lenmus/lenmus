@@ -29,13 +29,14 @@ LenMus project (http://www.lenmus.org/)<br />
         <a class='toc_level2' href="#toc0007">Options and dialogs for exercise user options</a>
     <a class='toc_level1' href="#toc0008">Guidelines to implement a new exercise Ctrol</a>
     <a class='toc_level1' href="#toc0009">Annexe: Brief description of current Ctrol classes</a>
-        <a class='toc_level2' href="#toc0010">lmEBookCtrol class</a>
+        <a class='toc_level2' href="#toc0010">lmEBookCtrol root abstract class</a>
         <a class='toc_level2' href="#toc0011">lmExerciseCtrol : public lmEBookCtrol</a>
-        <a class='toc_level2' href="#toc0012">lmStandardExercise : public lmExerciseCtrol</a>
-        <a class='toc_level2' href="#toc0013">lmOneScoreCtrol : public lmStandardExercise</a>
-        <a class='toc_level2' href="#toc0014">lmCompareCtrol : public lmStandardExercise</a>
-        <a class='toc_level2' href="#toc0015">lmCompareScoresCtrol : public lmCompareCtrol</a>
-        <a class='toc_level2' href="#toc0016">lmCompareMidiCtrol : public lmCompareCtrol</a>
+        <a class='toc_level2' href="#toc0012">lmOneScoreCtrol : public lmExerciseCtrol</a>
+        <a class='toc_level2' href="#toc0013">lmCompareCtrol : public lmExerciseCtrol</a>
+        <a class='toc_level2' href="#toc0014">lmCompareScoresCtrol : public lmCompareCtrol</a>
+        <a class='toc_level2' href="#toc0015">lmCompareMidiCtrol : public lmCompareCtrol</a>
+        <a class='toc_level2' href="#toc0016">lmTheoIntervalCtrol : lmOneScoreCtrol</a>
+        <a class='toc_level2' href="#toc0017">lmFullEditorExercise root abstract class</a>
 
  
 
@@ -79,7 +80,7 @@ There are some auxiliary classes, whose name ends as &#039;AuxCtrol&#039;. These
 
 
 
-<p class='justified'>All HTML embedded controls derive from class <span class="kw1">lmEBookCtrol</span> (in exercises/ExerciseCtrol.h). Currently there are two derived classes: <span class="kw1">lmExerciseCtrol</span> (abstract) and <span class="kw1">lmScoreCtrol</span>:</p>
+<p class='justified'>Most of HTML embedded controls derive from class <span class="kw1">lmEBookCtrol</span> (in exercises/ExerciseCtrol.h). Currently there are two derived classes: <span class="kw1">lmExerciseCtrol</span> (abstract) and <span class="kw1">lmScoreCtrol</span>:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Class <span class="kw1">lmExerciseCtrol</span> is the base class for all exercises. It implements the common features that all exercises have and provides a common API to create new exercises.</li></ul><div></p>
@@ -87,24 +88,30 @@ There are some auxiliary classes, whose name ends as &#039;AuxCtrol&#039;. These
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Class <span class="kw1">lmScoreCtrol</span> is a very specific control to display a score in a text.</li></ul><div></p>
  
+<p class='justified'>Ther is also anotehr base class, <span class="kw1">lmFullEditorExercise</span>, to be used in exercises that takes benefit of the full score editor.</p>
  
 <p class='justified'>The current hierarchy of HTML embedded controls is as follows:</p>
 
 <table width="640px" border="0" cellspacing="0" cellpadding="0"><tr><td><pre>
-    lmEBookCtrol
-        |
-        +---lmExerciseCtrol
-        |       |
-        |       +---lmOneScoreCtrol (lmIdfyChord, lmIdfyScale, lmTheoInterval, 
-        |       |                    lmEarInterval,lmIdfyCadences)
-        |       |
-        |       +---lmCompareCtrol 
-        |               |
-        |               +---lmCompareScoresCtrol (lmEarCompareIntv)
-        |               |
-        |               +---lmCompareMidiCtrol (lmEarTunning)
-        |
-        +---lmScoreCtrol
+wxWindow
+    |
+    +--lmEBookCtrol (lmScoreCtrol)
+    |       |
+    |       +---lmExerciseCtrol
+    |               |
+    |               +---lmOneScoreCtrol (lmIdfyChordCtrol, lmIdfyScaleCtrol,
+    |               |       |            lmEarIntervalCtrol, lmIdfyCadencesCtrol,         |               |       |            lmTheoMusicReadingCtrol)
+    |               |       |
+    |               |       +---lmTheoIntervalCtrol (lmBuildIntervalCtrol,
+    |               |                                lmIdfyIntervalCtrol)
+    |               |
+    |               +---lmCompareCtrol 
+    |                       |
+    |                       +---lmCompareScoresCtrol (lmEarCompareIntvCtrol)
+    |                       |
+    |                       +---lmCompareMidiCtrol (lmEarTunningCtrol)
+    |       
+    +---lmFullEditorExercise (lmTheoHarmonyCtrol)
     
 </pre></td></tr></table>
 
@@ -144,10 +151,12 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
 <tr class="simpletable"><td class="simpletable">lmTheoKeySignCtrol</td><td class="simpletable">TheoKeySignatures</td></tr>
 <tr class="simpletable"><td class="simpletable">lmEarIntervalsCtrol</td><td class="simpletable">EarIntervals</td></tr>
 <tr class="simpletable"><td class="simpletable">lmEarCompareIntvCtrol</td><td class="simpletable">EarCompareIntervals</td></tr>
+<tr class="simpletable"><td class="simpletable">lmTheoMusicReadingCtrol</td><td class="simpletable">TheoMusicReading</td></tr>
 <tr class="simpletable"><td class="simpletable">lmIdfyChordCtrol</td><td class="simpletable">IdfyChord</td></tr>
 <tr class="simpletable"><td class="simpletable">lmIdfyScalesCtrol</td><td class="simpletable">IdfyScales</td></tr>
 <tr class="simpletable"><td class="simpletable">lmIdfyCadencesCtrol</td><td class="simpletable">IdfyCadences</td></tr>
-<tr class="simpletable"><td class="simpletable">lmTheoMusicReadingCtrol</td><td class="simpletable">TheoMusicReading</td></tr>
+<tr class="simpletable"><td class="simpletable">lmEarTunningCtrol</td><td class="simpletable">EarTunning     (in development)</td></tr>
+<tr class="simpletable"><td class="simpletable">lmTheoHarmonyCtrol</td><td class="simpletable">TheoHarmony    (in development)</td></tr>
 </table><center><p><FONT style="margin-left:1em"><I>Table 1. classid for object tags</I></FONT></p></center><p>&nbsp;</p>
 
 
@@ -256,69 +265,35 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
 
 
 
-<h3 class='article'><a name="toc0010"></a>lmEBookCtrol class</h3>
+<h3 class='article'><a name="toc0010"></a>lmEBookCtrol root abstract class</h3>
 
 
 
 <p class='justified'>An abstract class for any kind of Ctrol included in an eBook. It just defines a generic interface.</p>
 
-<div class="informalexample"><pre class="programlisting">
-     Event handlers for:
-        (opt)Button link:    (ID_LINK_GO_BACK, OnGoBackButton)
-        (opt)Button link:    (ID_LINK_PLAY, OnPlay)
-        (opt)Button link:    (ID_LINK_SETTINGS, OnSettingsButton)
-        Button link:    (ID_LINK_SEE_SOURCE, OnDebugShowSourceScore)
-        Button link:    (ID_LINK_DUMP, OnDebugDumpScore)
-        Button link:    (ID_LINK_MIDI_EVENTS, OnDebugShowMidiEvents)
-
-    Virtual pure:
-        CreateControls
-</pre></div>
 
 
 <h3 class='article'><a name="toc0011"></a>lmExerciseCtrol : public lmEBookCtrol</h3>
 
 
 
-<p class='justified'>An abstract class for any kind of exercise included in an eBook. It adds event handlers to generate a new problem and to display the solution.</p>
+<p class='justified'>An abstract class to implement a typical exercise, having a window box to display the problem, and links to generate a new problem and to show the solution. Optionally, it can include an array of buttons to enter the answer and a counters aux.ctrol to show the marks got by the user.</p>
+
+<p class='justified'>It has a score with the problem and, optionally, another one with the solution. The score can be displayes or just played back (ear trainig). It adds event handlers and methods to generate a new problem and to display the solution.</p>
     
 <div class="informalexample"><pre class="programlisting">
-    Event handlers for:
-        Button link:    (ID_LINK_NEW_PROBLEM, OnNewProblem)
-        (opt)Button link:    (ID_LINK_SOLUTION, OnDisplaySolution)
-   
-    Implements:
-        &#039;CreateControls&#039;
-</pre></div> 
-   
-
-
-
-<h3 class='article'><a name="toc0012"></a>lmStandardExercise : public lmExerciseCtrol</h3>
-
-
-
-<p class='justified'>An abstract class to implement a typical exercise, having a window box to display the problem,  links to generate a new problem and to show the solution. Optionally, it can include an array of buttons to enter the answer and a counters aux.ctrol to show the score marks got by the user.</p>
-
-<div class="informalexample"><pre class="programlisting">
-    - Standard layout:
+    Standard layout:
         Debug links
-        problem box (wxWindow)
+        problem box (wxWindow / AuxCtrol)
         (opt) counters
         new problem, play, show solution links
         (opt) answer buttons
 
-    Implements:
-        &#039;CreateControls&#039;
-        
-    Virtual pure:
-        &#039;CreateAnswerButtons&#039;
-        &#039;CreateDebugLinks&#039;
-</pre></div>
+</pre></div> 
+   
 
 
-
-<h3 class='article'><a name="toc0013"></a>lmOneScoreCtrol : public lmStandardExercise</h3>
+<h3 class='article'><a name="toc0012"></a>lmOneScoreCtrol : public lmExerciseCtrol</h3>
 
 
 
@@ -327,31 +302,24 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
 <div class="informalexample"><pre class="programlisting">
     - One score, buttons to give the answer
     - Problem box is lmScoreAuxCtrol
-    
-    Implements:
-        &#039;CreateAnswerButtons&#039;
-        &#039;CreateDebugLinks&#039;
 </pre></div>
     
     
 
-<h3 class='article'><a name="toc0014"></a>lmCompareCtrol : public lmStandardExercise</h3>
+<h3 class='article'><a name="toc0013"></a>lmCompareCtrol : public lmExerciseCtrol</h3>
 
 
 
 <p class='justified'>Abstract class to implement exercises in which the problem is two compare two scores, ether displayed (theory exercises) or played back (aural training exercises). It displays three buttons for answers.</p>
 
 <div class="informalexample"><pre class="programlisting">
-    - An exercise to compare two things, usually two sounds.
-    - Three answer buttons: First greater, Second greater, Both equal
-
-    Implements:
-        &#039;CreateAnswerButtons&#039;
+    - An exercise to compare two things, usually two pitches.
+    - Three answer buttons: &quot;First one greater&quot;, &quot;Second one greater&quot;, &quot;Both are equal&quot;
 </pre></div>
 
 
 
-<h3 class='article'><a name="toc0015"></a>lmCompareScoresCtrol : public lmCompareCtrol</h3>
+<h3 class='article'><a name="toc0014"></a>lmCompareScoresCtrol : public lmCompareCtrol</h3>
 
 
 
@@ -360,32 +328,37 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
 <div class="informalexample"><pre class="programlisting">
     - Two scores + optional solution score
     - Problem box is lmScoreAuxCtrol
-
-    Implements:
-        &#039;CreateDebugLinks&#039;
-    
-    Event handlers for:
-        Button link:    (ID_LINK_SEE_SOURCE, OnDebugShowSourceScore)
-        Button link:    (ID_LINK_DUMP, OnDebugDumpScore)
-        Button link:    (ID_LINK_MIDI_EVENTS, OnDebugShowMidiEvents)
 </pre></div>
     
     
 
-<h3 class='article'><a name="toc0016"></a>lmCompareMidiCtrol : public lmCompareCtrol</h3>
+<h3 class='article'><a name="toc0015"></a>lmCompareMidiCtrol : public lmCompareCtrol</h3>
 
 
 
-<p class='justified'>This class is not yet finished. I started to develop it to include new aural training exercises and, in particular, a new exercise on tunning.</p>
+<p class='justified'>This class is not yet finished. I started to develop it to include new aural training exercises and, in particular, a new exercise on tunning (lmEarTunningCtrol).</p>
 
 <div class="informalexample"><pre class="programlisting">
     - Two Midi sounds + problem text + solution text
     - Problem box is wxStaticText
-    
-    Implements:
-        &#039;CreateDebugLinks&#039;
 </pre></div>
 
+
+
+<h3 class='article'><a name="toc0016"></a>lmTheoIntervalCtrol : lmOneScoreCtrol</h3>
+
+
+
+<p class='justified'>TODO: To be described</p>
+
+
+
+<h3 class='article'><a name="toc0017"></a>lmFullEditorExercise root abstract class</h3>
+
+
+
+<p class='justified'>TODO: To be described
+</p>
 
 <hr class='copyright' />
 <a name="legal_notice">&nbsp;</a>

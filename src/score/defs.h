@@ -428,6 +428,8 @@ enum
 	lmPOPUP_Score_Titles,
 	lmPOPUP_View_Page_Margins,
 
+    lmPOPUP_DumpShape,
+
 
     lmMENU_Last_Public_ID
 };

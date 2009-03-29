@@ -224,7 +224,7 @@ wxString lmShapeLine::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), line width=%.2f, "),
+	sDump += wxString::Format(_T("Idx: %d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), line width=%.2f, "),
                 m_nOwnerIdx, m_sGMOName.c_str(), m_uPoint[lmID_START].x, m_uPoint[lmID_START].y, m_uPoint[lmID_END].x, m_uPoint[lmID_END].y,
                 m_uWidth );
     sDump += DumpBounds();

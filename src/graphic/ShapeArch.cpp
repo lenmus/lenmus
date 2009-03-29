@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -77,16 +77,12 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uStart, lmU
     Create();
 }
 
-lmShapeArch::lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, lmUPoint* pPoints, bool fArchUnder,
-                         wxColour nColor, wxString sName, bool fDraggable,
-                         bool fVisible)
+lmShapeArch::lmShapeArch(lmScoreObj* pOwner, int nShapeIdx, bool fArchUnder,
+                         wxColour nColor, wxString sName, bool fDraggable, bool fVisible)
     : lmSimpleShape(eGMO_ShapeArch, pOwner, nShapeIdx, sName, fDraggable, lmSELECTABLE,
                     nColor, fVisible)
       , m_fArchUnder(fArchUnder)
 {
-    for (int i=0; i < lmBEZIER_MAX; i++)
-        m_uPoint[lmBEZIER_START] = *(pPoints+i);
-
     m_color = nColor;
     Create();
 }
@@ -110,7 +106,7 @@ wxString lmShapeArch::Dump(int nIndent)
     //TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), ")
+	sDump += wxString::Format(_T("Idx: %d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), ")
                 _T("ctrol1=(%.2f, %.2f), ctrol2=(%.2f, %.2f), ")
                 _T("Arch under note = %s, "),
                 m_nOwnerIdx, m_sGMOName.c_str(), m_uPoint[lmBEZIER_START].x, m_uPoint[lmBEZIER_START].y, m_uPoint[lmBEZIER_END].x, m_uPoint[lmBEZIER_END].y,
@@ -220,8 +216,10 @@ void lmShapeArch::Draw(lmPaper* pPaper, wxColour colorC, bool fSketch)
         d = mu * mu * mu;
 
         // compute next point
-        x2 = a * m_uPoint[lmBEZIER_START].x + b * m_uPoint[lmBEZIER_CTROL1].x + c * m_uPoint[lmBEZIER_CTROL2].x + d * m_uPoint[lmBEZIER_END].x;
-        y2 = a * m_uPoint[lmBEZIER_START].y + b * m_uPoint[lmBEZIER_CTROL1].y + c * m_uPoint[lmBEZIER_CTROL2].y + d * m_uPoint[lmBEZIER_END].y;
+        x2 = a * m_uPoint[lmBEZIER_START].x + b * m_uPoint[lmBEZIER_CTROL1].x 
+             + c * m_uPoint[lmBEZIER_CTROL2].x + d * m_uPoint[lmBEZIER_END].x;
+        y2 = a * m_uPoint[lmBEZIER_START].y + b * m_uPoint[lmBEZIER_CTROL1].y 
+             + c * m_uPoint[lmBEZIER_CTROL2].y + d * m_uPoint[lmBEZIER_END].y;
 
         // draw segment line
         if (fSketch)
@@ -410,25 +408,21 @@ void lmShapeArch::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
 lmShapeTie::lmShapeTie(lmTie* pOwner, int nShapeIdx, lmNote* pEndNote, lmUPoint* pPoints,
                        lmShapeNote* pShapeStart, lmShapeNote* pShapeEnd,
                        bool fTieUnderNote, wxColour color, bool fVisible)
-    : lmShapeArch(pOwner, nShapeIdx, pPoints, fTieUnderNote, color, _T("Tie"), lmDRAGGABLE, fVisible)
+    : lmShapeArch(pOwner, nShapeIdx, fTieUnderNote, color, _T("Tie"), lmDRAGGABLE, fVisible)
     , m_pEndNote(pEndNote)
     , m_fTieUnderNote(fTieUnderNote)
 	, m_pBrotherTie((lmShapeTie*)NULL)
 {
     m_nType = eGMO_ShapeTie;
-
+    
+    //save user shifts
+    for (int i=0; i < 4; i++)
+        m_uUserShifts[i] = *(pPoints+i);
 
     //compute the default arch
     OnAttachmentPointMoved(pShapeStart, eGMA_StartNote, 0.0, 0.0, lmSHIFT_EVENT);
     OnAttachmentPointMoved(pShapeEnd, eGMA_EndNote, 0.0, 0.0, lmSHIFT_EVENT);
-
-    //transfer bezier data
-    for (int i=0; i < 4; i++)
-    {
-        m_uPoint[i].x += (*(pPoints+i)).x;
-        m_uPoint[i].y += (*(pPoints+i)).y;
-    }
-    //MovePoints(4, nShapeIdx, pPoints, true);
+    m_fUserShiftsApplied = false;
 }
 
 lmShapeTie::~lmShapeTie()
@@ -474,14 +468,11 @@ void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	else if (nTag == eGMA_EndNote)
         SetEndPoint(uxPos, uyPos);
 
-
-	//NormaliceBoundsRectangle();
-
     // check if the tie have to be splitted
-	if (!m_pBrotherTie) return;		//creating the tie. Not information yet
+	if (!m_pBrotherTie) return;		//creating the tie. No information yet
 
-    lmUPoint paperPosStart = m_pOwner->GetReferencePaperPos();
-    lmUPoint paperPosEnd = m_pBrotherTie->m_pOwner->GetReferencePaperPos();
+    lmUPoint paperPosEnd = GetEndNote()->GetReferencePaperPos();
+    lmUPoint paperPosStart = m_pBrotherTie->GetEndNote()->GetReferencePaperPos();
     if (paperPosEnd.y != paperPosStart.y)
 	{
         //if start note paperPos Y is not the same than end note paperPos Y the
@@ -531,3 +522,21 @@ lmNote* lmShapeTie::GetEndNote()
     //the owner of a tie is always the end note
     return m_pEndNote;
 }
+
+void lmShapeTie::ApplyUserShifts()
+{
+    //Start and end notes are now at their final positions. Therefore, default bezier curve is computed.
+    //This method is then invoked to apply user shifts to bezier arch.
+
+    if (!m_fUserShiftsApplied)
+    {
+        //transfer bezier data
+        for (int i=0; i < 4; i++)
+        {
+            m_uPoint[i].x += m_uUserShifts[i].x;
+            m_uPoint[i].y += m_uUserShifts[i].y;
+        }
+        m_fUserShiftsApplied = true;
+    }
+}
+

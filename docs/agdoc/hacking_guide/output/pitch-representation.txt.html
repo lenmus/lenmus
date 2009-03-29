@@ -28,7 +28,7 @@ LenMus project (http://www.lenmus.org/)<br />
         <a class='toc_level2' href="#toc0006">Representing intervals</a>
         <a class='toc_level2' href="#toc0007">Intervals in FPitch: typedef lmFInvtal</a>
         <a class='toc_level2' href="#toc0008">Classes lmInterval and lmNoteBits</a>
-        <a class='toc_level2' href="#toc0009">Annex. Pitch values in different representations</a>
+        <a class='toc_level2' href="#toc0009">Annexe. Pitch values in different representations</a>
 
  
 
@@ -56,7 +56,7 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'>For efficiency and to simplify computations, it would be very nice if the pitch representation could combine the diatonic pitch (step and octave) and accidentals in a single number.</p>
 
-<p class='justified'>An important requirement for music analysis is that it would be desirable that by subtracting two pitch representations we could easily get the interval, without more computations. After experimenting with several representations, I found on the web an <a href=".txt.html">#r1</a> [article]<SUP>[1]</SUP>, from Walter B. Hewlett describing representation systems with these properties. So I decided to test the proposed base-40 representation system. It has been, in fact, the best solution I fount to represent pitch for music analysis applications.</p>
+<p class='justified'>An important requirement for music analysis is that it would be desirable that by subtracting two pitch representations we could easily get the interval, without more computations. After experimenting with several representations, I found on the web an article<SUP>[1]</SUP>, from Walter B. Hewlett describing representation systems with these properties. So I decided to test the proposed base-40 representation system. It has been, in fact, the best solution I found to represent pitch for music analysis applications.</p>
 
 <p class='justified'>[1] - Walter B. Hewlett, &quot;A Base-40 Number-line Representation of Musical Pitch Notation&quot;, Stanford, California, <A href="http://www.ccarh.org/publications/reprints/base40">http://www.ccarh.org/publications/reprints/base40</A>/</p>
 
@@ -162,9 +162,9 @@ enum lmEPitchType
 
 
 
-<p class='justified'>In the internal socre representation (<span class="kw1">lmScore</span>) chords do not have any special representation: they are just notes played at the same time. There exists an <span class="kw1">lmChord</span> class, but it is a helper class to render chords.</p>
+<p class='justified'>In the internal score representation (<span class="kw1">lmScore</span>) chords do not have any special representation: they are just notes played at the same time. There exists an <span class="kw1">lmChord</span> class, but it is a helper class to render chords.</p>
 
-<p class='justified'>But in certain cases (i.e. for music analysis and in exercises) it is necessary to have a  specific representation and specific methods to deal with chords. For this purpose, class <span class="kw1">lmChordManager</span> (in auxmusic/ChordManager.h &amp; .cpp) has been created. The class was named <span class="kw1">lmChordManager</span> as name <span class="kw1">lmChord</span> was already used in the aforementioned helper class. Moreover, as this class has methods to deal with chords, the adjective &lt;i&gt;manager&lt;/i&gt; was considered not too bad.</p>
+<p class='justified'>But in certain cases (i.e. for music analysis and in exercises) it is necessary to have a  specific representation and specific methods to deal with chords. For this purpose, class <span class="kw1">lmChordManager</span> (in auxmusic/ChordManager.h &amp; .cpp) has been created. The class was named <span class="kw1">lmChordManager</span> as name <span class="kw1">lmChord</span> was already used in the aforementioned helper class. Moreover, as this class has methods to deal with chords, the word <i>manager</i> was considered not too bad.</p>
 
 
 
@@ -262,7 +262,7 @@ static lmChordInfo tData[ect_Max] = {
 <p class='justified'>The resulting number represents the interval. A typedef <span class="kw1">lmFIntval</span> is defined for this (in score/Pitch.h). <span class="kw1">lmFIntval</span> has interesting properties:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>FIntervals can be added/substracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.</li></ul><div></p>
+<li>FIntervals can be added/subtracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.</li></ul><div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Intervals greater than one octave are computed by adding 40 (p8) for each octave.
@@ -292,7 +292,7 @@ typedef struct lmNoteBitsStruct {
  
 
 
-<h3 class='article'><a name="toc0009"></a>Annex. Pitch values in different representations</h3>
+<h3 class='article'><a name="toc0009"></a>Annexe. Pitch values in different representations</h3>
 
 
 

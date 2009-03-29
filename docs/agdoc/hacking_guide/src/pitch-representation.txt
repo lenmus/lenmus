@@ -23,7 +23,7 @@ also have to be taken into account.
 
 For efficiency and to simplify computations, it would be very nice if the pitch representation could combine the diatonic pitch (step and octave) and accidentals in a single number.
 
-An important requirement for music analysis is that it would be desirable that by subtracting two pitch representations we could easily get the interval, without more computations. After experimenting with several representations, I found on the web an \href0 {#r1} [article]\sup{[1]}, from Walter B. Hewlett describing representation systems with these properties. So I decided to test the proposed base-40 representation system. It has been, in fact, the best solution I fount to represent pitch for music analysis applications.
+An important requirement for music analysis is that it would be desirable that by subtracting two pitch representations we could easily get the interval, without more computations. After experimenting with several representations, I found on the web an article\sup{[1]}, from Walter B. Hewlett describing representation systems with these properties. So I decided to test the proposed base-40 representation system. It has been, in fact, the best solution I found to represent pitch for music analysis applications.
 
 [1] - Walter B. Hewlett, "A Base-40 Number-line Representation of Musical Pitch Notation", Stanford, California, http://www.ccarh.org/publications/reprints/base40/
 
@@ -118,9 +118,9 @@ d) Base-40 pitch (typedef %%lmFPitch%%)
 \h1 {Representing chords and intervals}
 %%%-------------------------------------
 
-In the internal socre representation (%%lmScore%%) chords do not have any special representation: they are just notes played at the same time. There exists an %%lmChord%% class, but it is a helper class to render chords.
+In the internal score representation (%%lmScore%%) chords do not have any special representation: they are just notes played at the same time. There exists an %%lmChord%% class, but it is a helper class to render chords.
 
-But in certain cases (i.e. for music analysis and in exercises) it is necessary to have a  specific representation and specific methods to deal with chords. For this purpose, class %%lmChordManager%% (in auxmusic/ChordManager.h & .cpp) has been created. The class was named %%lmChordManager%% as name %%lmChord%% was already used in the aforementioned helper class. Moreover, as this class has methods to deal with chords, the adjective <i>manager</i> was considered not too bad.
+But in certain cases (i.e. for music analysis and in exercises) it is necessary to have a  specific representation and specific methods to deal with chords. For this purpose, class %%lmChordManager%% (in auxmusic/ChordManager.h & .cpp) has been created. The class was named %%lmChordManager%% as name %%lmChord%% was already used in the aforementioned helper class. Moreover, as this class has methods to deal with chords, the word \i{manager} was considered not too bad.
 
 
 \h2 {The lmChordManager class}
@@ -211,7 +211,7 @@ Representing pitch using %%lmFPitch%% is the best approach to represent interval
  
 The resulting number represents the interval. A typedef %%lmFIntval%% is defined for this (in score/Pitch.h). %%lmFIntval%% has interesting properties:
 
- * FIntervals can be added/substracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.
+ * FIntervals can be added/subtracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.
  
  * Intervals greater than one octave are computed by adding 40 (p8) for each octave.
 For example, a Major 10th is M3+p8 = 12+40 = 52.
@@ -238,7 +238,7 @@ typedef struct lmNoteBitsStruct {
                                
  
 
-\h2 {Annex. Pitch values in different representations}
+\h2 {Annexe. Pitch values in different representations}
 %%%---------------------------------------
 
 \ssv_table[Table 1. Pitch values in different representations; anchor=TAB1; class=simpletable]

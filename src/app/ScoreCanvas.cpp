@@ -50,6 +50,7 @@
 #include "../ldp_parser/AuxString.h"
 #include "../graphic/GMObject.h"
 #include "../score/VStaff.h"
+#include "DlgDebug.h"
 
 // access to global external variables (to disable mouse interaction with the score)
 extern bool g_fReleaseVersion;            // in TheApp.cpp
@@ -80,6 +81,9 @@ BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
     EVT_MENU	(lmPOPUP_AttachText, lmController::OnAttachText)
     EVT_MENU	(lmPOPUP_Score_Titles, lmController::OnScoreTitles)
     EVT_MENU	(lmPOPUP_View_Page_Margins, lmController::OnViewPageMargins)
+#ifdef __WXDEBUG__
+    EVT_MENU	(lmPOPUP_DumpShape, lmController::OnDumpShape)
+#endif
 
 END_EVENT_TABLE()
 
@@ -1363,6 +1367,10 @@ wxMenu* lmScoreCanvas::GetContextualMenu(bool fInitialize)
 
 #endif
 
+#ifdef __WXDEBUG__
+    m_pMenu->Append(lmPOPUP_DumpShape, _T("Dump shape"));
+#endif
+
 	return m_pMenu;
 }
 
@@ -1423,6 +1431,15 @@ void lmScoreCanvas::OnViewPageMargins(wxCommandEvent& event)
     g_fShowMargins = !g_fShowMargins;
     GetMainFrame()->GetActiveDoc()->UpdateAllViews();
 }
+
+#ifdef __WXDEBUG__
+void lmScoreCanvas::OnDumpShape(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+    lmDlgDebug dlg(this, _T("GMObject dump"), m_pMenuGMO->Dump(0));
+    dlg.ShowModal();
+}
+#endif
 
 void lmScoreCanvas::SelectNoteDuration(int iButton)
 {

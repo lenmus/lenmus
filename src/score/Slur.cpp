@@ -78,10 +78,10 @@ wxString lmBezier::SourceLDP(int nIndent)
         {
             fDefault = false;
             if (m_tPoints[i].x != 0.0f)
-		        sSource += wxString::Format(_T(" % s-x:%s"), sPointNames[i],
+		        sSource += wxString::Format(_T(" % s-x:%s"), sPointNames[i].c_str(),
                                     DoubleToStr((double)m_tPoints[i].x, 4).c_str() );
             if (m_tPoints[i].y != 0.0f)
-		        sSource += wxString::Format(_T(" % s-y:%s"), sPointNames[i],
+		        sSource += wxString::Format(_T(" % s-y:%s"), sPointNames[i].c_str(),
                                     DoubleToStr((double)m_tPoints[i].y, 4).c_str() );
         }
     }
@@ -118,7 +118,7 @@ lmTie::~lmTie()
 void lmTie::SetBezierPoints(int nBezier, lmTPoint* ptPoints)
 {
     wxASSERT(nBezier == 0 || nBezier == 1);
- 
+
     for (int i=0; i < 4; i++)
     {
         m_Bezier[nBezier].SetPoint(i, *(ptPoints+i));
@@ -144,8 +144,8 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
     lmUPoint uPoints[4];
     for (int i=0; i < 4; i++)
     {
-        uPoints[i].x = m_pParent->TenthsToLogical(m_Bezier[0].GetPoint(i).x) + pPaper->GetCursorX();
-        uPoints[i].y = m_pParent->TenthsToLogical(m_Bezier[0].GetPoint(i).y) + pPaper->GetCursorY();
+        uPoints[i].x = m_pParent->TenthsToLogical(m_Bezier[0].GetPoint(i).x);
+        uPoints[i].y = m_pParent->TenthsToLogical(m_Bezier[0].GetPoint(i).y);
     }
 
     //creat the shape
@@ -155,6 +155,8 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
 	pBox->AddShape(pShape1);
 	pShapeStart->Attach(pShape1, eGMA_StartNote);
 	pShapeEnd->Attach(pShape1, eGMA_EndNote);
+    pShapeEnd->OnTieAttached(0, pShape1);     //inform end note shape of this attachment
+
 
 
 	//create the second tie shape
@@ -162,8 +164,8 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
     //convert bezier displacements to logical units
     for (int i=0; i < 4; i++)
     {
-        uPoints[i].x = m_pParent->TenthsToLogical(m_Bezier[1].GetPoint(i).x) + pPaper->GetCursorX();
-        uPoints[i].y = m_pParent->TenthsToLogical(m_Bezier[1].GetPoint(i).y) + pPaper->GetCursorY();
+        uPoints[i].x = m_pParent->TenthsToLogical(m_Bezier[1].GetPoint(i).x);
+        uPoints[i].y = m_pParent->TenthsToLogical(m_Bezier[1].GetPoint(i).y);
     }
 
     //creat the shape
@@ -173,6 +175,7 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
 	pBox->AddShape(pShape2);
 	pShapeStart->Attach(pShape2, eGMA_StartNote);
 	pShapeEnd->Attach(pShape2, eGMA_EndNote);
+    pShapeEnd->OnTieAttached(1, pShape2);     //inform end note shape of this attachment
 
 	//link both ties
 	pShape1->SetBrotherTie(pShape2);
@@ -194,7 +197,7 @@ void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int 
         // propagate backwards
         ((lmNote*)m_pStartNR)->PropagateNotePitchChange(nStep, nOctave, nAlter, lmBACKWARDS);
     }
-    //other cases are for notes whose pitch is already changed 
+    //other cases are for notes whose pitch is already changed
 }
 
 void lmTie::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts)
@@ -205,7 +208,7 @@ void lmTie::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, b
 
     wxASSERT(nNumPoints == GetNumPoints());
     wxASSERT(nShapeIdx == 0 || nShapeIdx == 1);
- 
+
     for (int i=0; i < nNumPoints; i++)
     {
         if (fAddShifts)

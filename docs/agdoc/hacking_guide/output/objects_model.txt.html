@@ -1,0 +1,330 @@
+
+<html>
+<head>
+<title>Scores: Objects model</title>
+<meta http-equiv="Content-Type" content="text/html" />
+<link rel="stylesheet" type="text/css" href="screen3.css" type="text/css" />
+</head>
+<body>
+
+
+
+
+<h1 class='article'>Scores: Objects model
+</h1>
+
+<p class="copyright">
+LenMus project (http://www.lenmus.org/)<br />
+<a href="#legal_notice">GNU Free Documentation License</a>
+</p>
+
+
+<a name="TOC">&nbsp;</a><p class='toc'>Table of contents</p><p><a class='toc_level1' href='index.txt.html'>Hacking guide main TOC</a></p>
+    <a class='toc_level1' href="#toc0001">Objects model</a>
+        <a class='toc_level2' href="#toc0002">Container classes</a>
+        <a class='toc_level2' href="#toc0003">Component classes</a>
+            <a class='toc_level3' href="#toc0004">lmStaffObj</a>
+            <a class='toc_level3' href="#toc0005">lmAuxObj</a>
+            <a class='toc_level3' href="#toc0006">Owning AuxObjs</a>
+        <a class='toc_level2' href="#toc0007">Auxiliary classes</a>
+    <a class='toc_level1' href="#toc0008">Objects model: history and evolution</a>
+        <a class='toc_level2' href="#toc0009">How is music represented in MusicXML</a>
+
+
+
+
+
+
+<h2 class='article'><a name="toc0001"></a>Objects model</h2>
+
+
+
+<p class='justified'>In document <a href="score_representations.txt.html">Scores: the internal model</a> there is a general description of main container classes and how they do relate between them. Here we are going to see the model in detail. It is depicted in figure 2.</p>
+
+<center><img class='figure' src='images/om_2_internal_model.jpg' title=' Figure 2. Hierarchy of score objects ' /></center><p class='FigureTitle'> Figure 2. Hierarchy of score objects </p>
+        
+<p class='justified'>The approach followed has been to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests. The root class is <span class="kw1">lmScoreObj</span>, and represents any object related to the score model, including the score itself. <span class="kw1">lmScoreObj</span>s:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Can have options (<span class="kw1">lmObjOptions</span> object)</li>
+<li>Can own <span class="kw1">lmAuxObjs</span>. To this end they:</li>
+<div class="itemizedlist"><ul type="disc">
+<li>Must provide origin position</li>
+<li>Must provide TenthsToLogical conversion methods.</li></ul><div></ul><div></p>
+
+<p class='justified'><span class="kw1">lmScoreObj</span> has two specializations:</p> 
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">lmContainerObj</span>: main grouping elements, such as the score itself, instruments and vstaffs. To simplify the model, as they do not share common operations this class is not really created, and all container classes derive directly from <span class="kw1">lmScoreObj</span>.</li></ul><div></p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">lmComponentObj</span>: Anything that can appear in an score.</li></ul><div></p>
+
+
+
+<h3 class='article'><a name="toc0002"></a>Container classes</h3>
+
+
+
+<p class='justified'>There are three container classes:</p>
+
+<p class='justified'><b>1. lmScore</b></p>
+
+<p class='justified'>The top most container. A <span class="kw1">lmScore</span> is, mainly, a collection of <span class="kw1">lmInstruments</span> and the collection of <span class="kw1">lmAuxObjs</span> not tied to other containers, such as score titles. It is responsible for:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>score play back (Play, PlayMeasure, Pause, Stop, WaitForTermination)</li>
+<li>serving highlight events (ScoreHighlight)</li>
+<li>Debug and dump (Dump, DumpMidiEvents)</li>
+<li>Creating/exporting source code (SourceLDP, SourceXML)</li>
+<li>Manage instruments</li>
+<li>Manage score titles</li>
+<li>identification (score name, score ID)</li></ul><div></p>
+        
+<p class='justified'><b>2. lmInstrument</b></p>
+
+<p class='justified'>A container for all the information and objects related to an instrument. It contains the <span class="kw1">lmVStaff</span> object that represents a virtual infinite staff for the music symbols associated to the instrument. It is responsible for:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>VStaff management</li>
+<li>Debug and dump</li>
+<li>Source code methods (SourceLDP, SourceXML)</li>
+<li>MIDI configuration (m_nMidiInstr, m_nMidiChannel)</li>
+<li>Instrument name and indentation (m_nIndentFirst, m_nIndentOther, m_pName, m_pAbbreviation)</li></ul><div></p>
+
+
+<p class='justified'><b>3. lmVStaff</b></p>
+
+<p class='justified'>This object, that stands for <i><b>V</b>irtual <b>Staff</b></i>, represents any staff layout. It is a container for all the <span class="kw1">lmScoreObjs</span> (notes, rests, etc.) of its owner <span class="kw1">lmInstrument</span> and also contains all needed information about how the staff is rendered (number of staves, lines, etc.). It is responsible for:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Staff management</li>
+<li>Clef management</li>
+<li>Time signature management</li>
+<li>Key signature management</li>
+<li>notes and rests management</li>
+<li>barlines management</li>
+<li>control ScoreObjs management (AddNewSystem, ShiftTime)</li>
+<li>words directions management</li>
+<li>Measures management (GetNumMeasures)</li>
+<li>Rendering methods (DrawStaffLines, DrawProlog, NewLine, SetUpFonts, GetStaffLineThick)</li>
+<li>renderization helper methods (GetXPosFinalBarline)</li>
+<li>Units conversion (TenthsToLogical)</li>
+<li>Dump method</li>
+<li>Source code methods (SourceLDP, SourceXML)</li>
+<li>notes context management</li>
+<li>sound related methods (ComputeMidiEvents)</li></ul><div></p>
+    
+<p class='justified'>It contains the collection of staff objects (object of class <span class="kw1">lmColStaffObjs</span>) and the collection of staff layouts(<span class="kw1">lmStaff</span> objects).</p>
+
+
+
+<h3 class='article'><a name="toc0003"></a>Component classes</h3>
+
+
+
+<p class='justified'><span class="kw1">lmComponentObj</span> is any object modelling a renderizable (but not necessarily visible) thing that can appear on a score.</p> 
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>They have type and identification number (m_nType, m_nId)</li>
+<li>Could be draggable (m_fIsDraggable)</li>
+<li>They have positioning info: origin (m_paperPos), page num (m_nNumPage)</li>
+<li>Could be selected, so they have a selection rectangle (m_fSelected, m_selRect)</li>
+<li>can be rendered (methods: Draw, GetBitmap) Two phases draw. Invoke DrawObject.</li>
+<li>Can have Aux objects attached (m_pAuxObjs)</li>
+<li>Dump method</li></ul><div></p>
+    
+<p class='justified'>As they are renderizable:
+<div class="itemizedlist"><ul type="disc">
+<li>they can own shapes</li>
+<li>They know how to convert LUnits to Tenths, and viceversa</li></ul><div></p>
+        
+<p class='justified'>There are two derived classes:</p>
+
+
+<h4 class='article'><a name="toc0004"></a>lmStaffObj</h4>
+
+
+<p class='justified'>An StaffObj is any object that must have an VStaff as owner (measure-attached objects). In this group we have the main musical elements, normally with duration (notes/rests) or time positioned (clef, key signature, time signature). They are in a staff/measure, so they are attached to an VStaff. They normally &#039;consume&#039; time and so layout is controlled by time position.</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Have timePos information</li>
+<li>Have VStaff information</li>
+<li>Specific Layout methods</li>
+<li>Layout is controlled mainly by time position</li>
+<li>They can have duration (time positioned: m_rTimePos)</li>
+<li>They can own AuxObjs</li>
+<li>Source code methods (SourceLDP, SourceXML)</li>
+<li>They have staff information (m_pVStaff, m_nStaffNum, m_numMeasure)</li></ul><div></p>
+    
+<p class='justified'>Examples of derived objects: <span class="kw1">lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmNotation</span> (Spacer, Anchor, ScoreAnchor), <span class="kw1">lmScoreText, lmSOControl</span>(new system).</p>
+
+
+
+<h4 class='article'><a name="toc0005"></a>lmAuxObj</h4>
+
+
+<p class='justified'>An <span class="kw1">lmAuxObj</span> is any object that is not attached to a staff but to one or more <span class="kw1">lmStaffObj</span> (note-attached objects). For example:</p>
+
+    <p class='justified'>a) Attached to one <span class="kw1">lmStaffObj</span>: 
+<div class="itemizedlist"><ul type="disc">
+<li>a note plus its accidental symbol;</li>
+<li>caesura marks, texts, and some notations (i.e. articulations) attached to notes; </li>
+<li>repeat signs attached to barlines, etc.</li></ul><div></p>
+
+    <p class='justified'>b) Attached to two <span class="kw1">lmStaffObj</span>:
+<div class="itemizedlist"><ul type="disc">
+<li>ties attached to two notes, </li>
+<li>wedges for dynamics, etc.</li></ul><div></p> 
+    
+<p class='justified'>As they do not consume time, the Layout phase is done by specific methods, controlled by owner objects.</p>
+
+<p class='justified'><span class="kw1">lmAuxObj</span>s can be attached both to <span class="kw1">lmStaffObj</span> and to <span class="kw1">lmAuxObj</span>. For example: to put a coloured box around a caesura mark, with an arrow pointing to it and a text attached to the arrow. This can be achieved be drawing a box, an arrow and the text, positioning them as desired, grouping them to form a compound graphic object and attaching it to the caesura <span class="kw1">lmAuxObj</span>.</p>
+
+<p class='justified'>As <span class="kw1">lmAuxObj</span>s are not <span class="kw1">lmStaffObj</span>s they can not be attached directly to an staff. In order to allow for placing <span class="kw1">lmAuxObj</span>s on the staff it is necessary design a mechanism for this. The current solution is by using special StaffOjs (<span class="kw1">lmSpacer, lmAnchor, lmScoreAnchor</span>).</p>
+
+
+
+<h4 class='article'><a name="toc0006"></a>Owning AuxObjs</h4>
+
+
+
+<p class='justified'>It should be possible to have AuxObjs not attached only to StaffObjs but to many places. For example: assume a text box (AuxObj) owned by a fermata (AuxObj), owned by a note (StaffObj).</p>
+
+<p class='justified'>Another example: Score titles, Instrument names, etc are examples of AuxObjs not owned by StaffObjs.</p>
+
+<p class='justified'>This implies that AuxObjs can own other AuxObjs. But AuxObjs layout requires that:
+  a) the owner must provide positioning information. AuxObjs are relative positioned
+  b) the owner must be able to do TenthsToLogical conversions.</p>
+
+<p class='justified'>Therefore, the only restriction would be that the root of owners chain must not be an AuxObj. In summary:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>In order to own AuxObjs it is necessary to be able to do TenthsToLogical conversions.</li>
+<li>An AuxObj can own other AuxObjs but the root of owners chain must not be an AuxObj (otherwise it will never be rendered!). * At creation, an AuxObj has no owner. The owner must be set at attachment time, and must be updated at each attachment/detachment</li>
+<li>If its owner is a StaffObj, measurements can be in tenths, as can be converted to LUnits. Otherwise, if owner chain reaches a VStaff/Staff, measurements can also be in tenths and this grand-father VStaff will be used for units conversion. Otherwise, units must be absolute.</li></ul><div></p>
+
+
+
+<h3 class='article'><a name="toc0007"></a>Auxiliary classes</h3>
+
+
+
+<p class='justified'>Finally, I have defined other auxiliary objects, non-derived from any other one:</p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>lmBeam:  info about the beam for a group of notes</li>
+<li>lmChord: info about a chord</li>
+<li>lmArch: info to draw an arch</li>
+<li>lmContext: info about current accidentals </li>
+<li>lmBasicText: info for a text (font size, font family, ..)</li>
+<li>lmStaff: Properties for each staff on a VStaff (num.lines, spacing, <span class="larger">&#133;</span>)</li>
+<li>lmAccidental: accidentals in notes</li></ul><div></p>
+
+
+
+
+
+
+<h2 class='article'><a name="toc0008"></a>Objects model: history and evolution</h2>
+
+
+
+<p class='justified'>When I stated the LenMus program I didn&#039;t have any previous experience about modelling music. I googled for music representation and found <A href="http://www.recordare.com/xml.html">MusicXML</A>, then a starting project (version 0.7). It was inadequate to my purposes as I needed positioning information and MusicXML 0.7 didn&#039;t have plans to include this information. Therefore, to gain first hand experience about music representation problems I decided to design my own representation language: LDP (Lenguaje De Partituras, meaning &#039;Language For Scores&#039;). But I also though it would be wise to have some reference and so I  started by following the MusicXML model. A second reason to follow it was that I liked to implement export/import MusicXML and so, to simplify this objective, my internal representation should allow for easy conversion to/from MusicXML.</p>
+
+
+<h3 class='article'><a name="toc0009"></a>How is music represented in MusicXML</h3>
+
+
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Score is a collection of instruments (<span class="kw1">&lt;parts&gt;</span>). Titles are directly owned by the score:
+</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+    &lt;!ELEMENT score-partwise (%score-header;, part+)&gt;
+</pre></div>
+   
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">&lt;part&gt;</span> contains all measures for one instrument
+</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+        &lt;!ELEMENT part (measure+)&gt;
+</pre></div>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">&lt;measure&gt;</span> contains all the information:
+</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+        &lt;!ELEMENT measure (%music-data;)&gt;
+        &lt;!ENTITY % music-data
+            &quot;(note | backup | forward | direction | attributes |
+            harmony | figured-bass | print | sound | barline | 
+            grouping | link | bookmark)*&quot;&gt;
+</pre></div>
+
+        
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">&lt;notes&gt;</span> have additional elements, such as <span class="kw1">&lt;notations&gt; &lt;lyrics&gt; &lt;technical&gt; &lt;fermata&gt;</span> etc. Let me refer to all them by <span class="kw1">&lt;notations&gt;</span>:
+</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+        &lt;!ELEMENT note 
+        ( ( (grace, %full-note;, (tie, tie?)?) |
+               (cue, %full-note;, duration) |
+            (%full-note;, duration, (tie, tie?)?)),
+          instrument?, %editorial-voice;, type?, dot*, accidental?, time-modification?,
+          stem?, notehead?, staff?, beam*, notations*, lyric*)&gt;
+</pre></div>
+
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">&lt;notations&gt;</span> are musical notations, not other elements (directions):
+</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+        &lt;!ELEMENT notations
+            (%editorial;, 
+            (tied | slur | tuplet | glissando | slide | 
+            ornaments | technical | articulations | dynamics |
+            fermata | arpeggiate | non-arpeggiate | 
+            accidental-mark | other-notation)*)&gt;
+            
+        &lt;!ELEMENT articulations
+            ((accent | strong-accent | staccato | tenuto |
+              detached-legato | staccatissimo | spiccato |
+              scoop | plop | doit | falloff | breath-mark | 
+              caesura | stress | unstress | other-articulation)*)&gt;
+</pre></div>
+
+            
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">&lt;directions&gt;</span> are not note-specific, and therefore might attach to a
+    <span class="kw1">&lt;part&gt;</span> or the overall score. i.e. texts:
+</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+        &lt;!ELEMENT direction (direction-type+, offset?,
+            %editorial-voice;, staff?, sound?)&gt;
+        &lt;!ELEMENT direction-type (rehearsal+ | segno+ | words+ |
+            coda+ | wedge | dynamics+ | dashes | bracket | pedal | 
+            metronome | octave-shift | harp-pedals | damp | 
+            damp-all | eyeglasses | scordatura | image |
+            accordion-registration | other-direction)&gt;
+</pre></div>
+
+
+<p class='justified'>I also took into account that in the Sibelius model all objects are attached to an staff. As this was not in contradiction with the MusicXML model I started assuming that any object will be a <span class="kw1">lmStaffObj</span>, even if it does not consume time. <span class="kw1">&lt;directions&gt;</span> where the only exception but they can be considered as attached to the score, as well as titles: everything fitted perfectly.</p>
+
+<p class='justified'>When I started to implement <span class="kw1">&lt;notations&gt;</span> I found that as they are attached to <span class="kw1">&lt;notes&gt;</span> they did not fit in the <span class="kw1">lmStaffObj</span> model. So I created a new class for <span class="kw1">&lt;notations&gt;</span>: <span class="kw1">lmAuxObj</span></p>
+
+<p class='justified'>As I added more musical symbols the model became more and more complex. Finally I decided to revise it and to simplify it. The resulting model is the previously described one. Nevertheless, it needs refinements and changes.</p>
+
+
+
+
+<hr class='copyright' />
+<a name="legal_notice">&nbsp;</a>
+<p class="copyright">
+Copyright &copy; 2008-2009 LenMus project
+</p>
+<p class="justified">
+This document is part of the LenMus project. 
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the <a href='http://www.gnu.org/licenses/fdl.html'>GNU Free Documentation License</a>,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included with the program.
+</p>
+
+</body></html>

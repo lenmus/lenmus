@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -44,6 +44,7 @@ class lmNoteRest;
 class lmController;
 class lmShapeBeam;
 class lmShapeStem;
+class lmShapeTie;
 
 
 class lmShapeNote : public lmCompositeShape
@@ -64,12 +65,13 @@ public:
 	void AddAccidental(lmShape* pShape);
 	void AddNoteInBlock(lmShape* pShape);
 	void AddLegerLinesInfo(int nPosOnStaff, lmLUnits uyStaffTopLine);
-
+    void ApplyUserShiftsToTieShape();
 
 	//info about related shapes
 	inline void SetBeamShape(lmShapeBeam* pBeamShape) { m_pBeamShape = pBeamShape; }
 	inline lmShapeBeam* GetBeamShape() const { return m_pBeamShape; }
 	inline void SetStemShape(lmShapeStem* pStemShape) { m_pStemShape = pStemShape; }
+    inline void OnTieAttached(int nTie, lmShapeTie* pShapeTie) { m_pTieShape[nTie] = pShapeTie; }
 
 	//access to constituent shapes
 	lmShape* GetNoteHead();
@@ -104,6 +106,7 @@ protected:
 	//related shapes
 	lmShapeBeam*	m_pBeamShape;
 	lmShapeStem*	m_pStemShape;
+    lmShapeTie*     m_pTieShape[2];     //The two archs of a tie. This is the end note of the tie
 
 	//info to render leger lines
 	int				m_nPosOnStaff;		//line/space on staff on which this note is placed

@@ -539,8 +539,8 @@ public:
     // debug methods
     virtual wxString Dump();
 
-    void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift);
-	void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift);
+    virtual void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift);
+	virtual void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift);
 
 	//---- specific methods of this class ------------------------
 

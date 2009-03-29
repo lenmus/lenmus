@@ -24,40 +24,6 @@
 \label[category="table"; anchor="table1";]{Table 2. Information about beam levels stored in each note for example in figure 1}
 
 }
-\file[chords.txt; ext=.html;]{
-\toc
-{
-    \toc1[Representing chords and intervals; anchor="toc0001";]{
-        \toc2[The lmChordManager class; anchor="toc0002";]{}
-        \toc2[Representing intervals; anchor="toc0003";]{}
-        \toc2[Intervals in FPitch; anchor="toc0004";]{}
-        \toc2[Classes lmInterval and lmNoteBits; anchor="toc0005";]{}}
-}
-
-
-}
-\file[cursors.txt; ext=.html;]{
-\toc
-{
-    \toc1[Cursors and caret; anchor="toc0001";]{}
-    \toc1[The caret; anchor="toc0002";]{
-        \toc2[User perceived behaviour; anchor="toc0003";]{}
-        \toc2[Caret movement; anchor="toc0004";]{}
-        \toc2[Updating caret position; anchor="toc0005";]{}}
-    \toc1[The Score Cursor (lmScoreCursor); anchor="toc0006";]{}
-    \toc1[The VStaff Cursor (lmVCursor); anchor="toc0007";]{
-        \toc2[Updating VCursor position; anchor="toc0008";]{}
-        \toc2[VCursor movement; anchor="toc0009";]{}
-        \toc2[Notifying about VCursor movements; anchor="toc0010";]{}
-        \toc2[VCursor implementation. API description; anchor="toc0011";]{}
-        \toc2[Attaching/dettaching a cursor to a StaffObjsCollection; anchor="toc0012";]{}
-        \toc2[Positioning a VCursor; anchor="toc0013";]{}}
-    \toc1[Edition commands and cursors; anchor="toc0014";]{}
-}
-
-\title{Cursors and caret}
-
-}
 \file[exercises_ctrols.txt; ext=.html;]{
 \toc
 {
@@ -70,17 +36,31 @@
         \toc2[Options and dialogs for exercise user options; anchor="toc0007";]{}}
     \toc1[Guidelines to implement a new exercise Ctrol; anchor="toc0008";]{}
     \toc1[Annexe: Brief description of current Ctrol classes; anchor="toc0009";]{
-        \toc2[lmEBookCtrol class; anchor="toc0010";]{}
+        \toc2[lmEBookCtrol root abstract class; anchor="toc0010";]{}
         \toc2[lmExerciseCtrol : public lmEBookCtrol; anchor="toc0011";]{}
-        \toc2[lmStandardExercise : public lmExerciseCtrol; anchor="toc0012";]{}
-        \toc2[lmOneScoreCtrol : public lmStandardExercise; anchor="toc0013";]{}
-        \toc2[lmCompareCtrol : public lmStandardExercise; anchor="toc0014";]{}
-        \toc2[lmCompareScoresCtrol : public lmCompareCtrol; anchor="toc0015";]{}
-        \toc2[lmCompareMidiCtrol : public lmCompareCtrol; anchor="toc0016";]{}}
+        \toc2[lmOneScoreCtrol : public lmExerciseCtrol; anchor="toc0012";]{}
+        \toc2[lmCompareCtrol : public lmExerciseCtrol; anchor="toc0013";]{}
+        \toc2[lmCompareScoresCtrol : public lmCompareCtrol; anchor="toc0014";]{}
+        \toc2[lmCompareMidiCtrol : public lmCompareCtrol; anchor="toc0015";]{}
+        \toc2[lmTheoIntervalCtrol : lmOneScoreCtrol; anchor="toc0016";]{}
+        \toc2[lmFullEditorExercise root abstract class; anchor="toc0017";]{}}
 }
 
 \title{eBooks: Including scores and exercises}
 \label[category="table"; anchor="TAB1";]{Table 1. classid for object tags}
+
+}
+\file[handlers-for-shapes.txt; ext=.html;]{
+\toc
+{
+    \toc1[Handlers; anchor="toc0001";]{
+        \toc2[Handlers renderization; anchor="toc0002";]{}
+        \toc2[How handlers interact with the controlled shape; anchor="toc0003";]{}
+        \toc2[What to do to add handlers to a shape; anchor="toc0004";]{}
+        \toc2[Object points, object location, shapes and handlers; anchor="toc0005";]{}}
+}
+
+\title{Handlers for shapes}
 
 }
 \file[index.txt; ext=.html;]{
@@ -112,21 +92,18 @@
 \file[objects_model.txt; ext=.html;]{
 \toc
 {
-    \toc1[Scores: The Internal model; anchor="toc0001";]{
-        \toc2[Creating a score; anchor="toc0002";]{}
-        \toc2[Analysing a score; anchor="toc0003";]{}
-        \toc2[Objects model; anchor="toc0004";]{
-            \toc3[Container classes; anchor="toc0005";]{}
-            \toc3[Component classes; anchor="toc0006";]{
-                \toc4[lmStaffObj; anchor="toc0007";]{}
-                \toc4[lmAuxObj; anchor="toc0008";]{}
-                \toc4[Owning AuxObjs; anchor="toc0009";]{}}
-            \toc3[Auxiliary classes; anchor="toc0010";]{}}
-        \toc2[Objects model: history and evolution; anchor="toc0011";]{
-            \toc3[How is music represented in MusicXML; anchor="toc0012";]{}}}
+    \toc1[Objects model; anchor="toc0001";]{
+        \toc2[Container classes; anchor="toc0002";]{}
+        \toc2[Component classes; anchor="toc0003";]{
+            \toc3[lmStaffObj; anchor="toc0004";]{}
+            \toc3[lmAuxObj; anchor="toc0005";]{}
+            \toc3[Owning AuxObjs; anchor="toc0006";]{}}
+        \toc2[Auxiliary classes; anchor="toc0007";]{}}
+    \toc1[Objects model: history and evolution; anchor="toc0008";]{
+        \toc2[How is music represented in MusicXML; anchor="toc0009";]{}}
 }
 
-\title{Scores: The Internal model}
+\title{Scores: Objects model}
 
 }
 \file[pitch-representation.txt; ext=.html;]{
@@ -140,7 +117,7 @@
         \toc2[Representing intervals; anchor="toc0006";]{}
         \toc2[Intervals in FPitch: typedef lmFInvtal; anchor="toc0007";]{}
         \toc2[Classes lmInterval and lmNoteBits; anchor="toc0008";]{}
-        \toc2[Annex. Pitch values in different representations; anchor="toc0009";]{}}
+        \toc2[Annexe. Pitch values in different representations; anchor="toc0009";]{}}
 }
 
 \title{How pitch is represented}
@@ -150,15 +127,20 @@
 \file[score_representations.txt; ext=.html;]{
 \toc
 {
-    \toc1[The 'Model' in the MVC architecture; anchor="toc0001";]{}
-    \toc1[Score internal representation; anchor="toc0002";]{
-        \toc2[The Collection of StaffObjs (lmColStaffObjs); anchor="toc0003";]{}}
-    \toc1[Application dependent representations; anchor="toc0004";]{
-        \toc2[Graphical: lmBoxes and lmShapes; anchor="toc0005";]{}
-        \toc2[Play back; anchor="toc0006";]{}}
+    \toc1[Score: The need for different representations; anchor="toc0001";]{}
+    \toc1[Application dependent representations; anchor="toc0002";]{
+        \toc2[The graphical representation: lmBoxes and lmShapes; anchor="toc0003";]{}
+        \toc2[The play back representation: events table; anchor="toc0004";]{}}
+    \toc1[The StaffObjs collection. Concepts and classes; anchor="toc0005";]{
+        \toc2[lmInstrument, lmVStaff and lmStaff classes; anchor="toc0006";]{}
+        \toc2[lmColStaffObjs and lmSOIterator classes; anchor="toc0007";]{}
+        \toc2[Bars/measures; anchor="toc0008";]{}
+        \toc2[Segments; anchor="toc0009";]{}
+        \toc2[Traversing the StaffObjs collection: Iterator interface; anchor="toc0010";]{
+            \toc3[Example 1: looking for notes on beat position; anchor="toc0011";]{}}}
 }
 
-\title{Scores: internal representation}
+\title{Scores: the internal model}
 
 }
 \file[source_tree.txt; ext=.html;]{
