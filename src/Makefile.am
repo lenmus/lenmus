@@ -160,7 +160,6 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
 	score/NoteRest.cpp \
 	score/ObjOptions.cpp \
 	score/Pitch.cpp \
-	score/properties/DlgEditText.cpp \
 	score/properties/DlgProperties.cpp \
 	score/properties/DlgTextStyles.cpp \
 	score/properties/GeneralProperties.cpp \
@@ -187,10 +186,13 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
 	widgets/Button.cpp \
 	widgets/Caret.cpp \
 	widgets/MsgBox.cpp \
-	widgets/MusicSymbolList.cpp \
 	widgets/Ruler.cpp \
 	widgets/Wizard.cpp \
 	xml_parser/MusicXMLParser.cpp \
 	xml_parser/XMLParser.cpp
+
+# Removed. Produces a comiler error. cbp project file does not contains any reference to it.
+#	score/properties/DlgEditText.cpp 
+#	widgets/MusicSymbolList.cpp 
 
 
