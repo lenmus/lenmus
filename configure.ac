@@ -54,7 +54,8 @@ AC_CHECK_FUNCS([floor memset modf pow])
 ## !!!!!!!!!!! Libraries imported "by hand" ...
 MIF_LIBS="/usr/lib/libportmidi.so.0 \
        /usr/lib/libporttime.so.0 \
-       /usr/lib/libfreetype.so"
+       /usr/lib/libfreetype.so \
+       /usr/local/lib/libsqlite3.so"
 
 LIBS="$LIBS $MIF_LIBS"
 
