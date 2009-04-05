@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -53,20 +53,20 @@
 
 
 //implementation of lmScore Document
-IMPLEMENT_DYNAMIC_CLASS(lmScoreDocument, wxDocument)
+IMPLEMENT_DYNAMIC_CLASS(lmDocument, wxDocument)
 
-lmScoreDocument::lmScoreDocument()
+lmDocument::lmDocument()
 {
     // default values
     m_pScore = (lmScore*) NULL;
 }
 
-lmScoreDocument::~lmScoreDocument()
+lmDocument::~lmDocument()
 {
     delete m_pScore;
 }
 
-bool lmScoreDocument::OnNewDocument()
+bool lmDocument::OnNewDocument()
 {
     // The default implementation calls OnSaveModified and DeleteContents, makes a default
     // title for the document, and notifies the views that the filename (in fact, the title)
@@ -99,7 +99,7 @@ bool lmScoreDocument::OnNewDocument()
     return true;
 }
 
-bool lmScoreDocument::OnOpenDocument(const wxString& filename)
+bool lmDocument::OnOpenDocument(const wxString& filename)
 {
     //OnOpenDocument() is invoked in three cases:
     // - Normal invocation from DocManager for opening an LDP document
@@ -115,7 +115,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     {
         wxString sPath = filename.substr(15);
         size_t nSize = sPath.length() - 4;
-        //wxLogMessage(_T("[lmScoreDocument::OnOpenDocument]Importing <%s>"), sPath.Left(nSize).c_str());
+        //wxLogMessage(_T("[lmDocument::OnOpenDocument]Importing <%s>"), sPath.Left(nSize).c_str());
         return OnImportDocument(sPath.Left(nSize) );
     }
 
@@ -125,7 +125,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
         wxString sID = filename.Mid(12, 6);
         long nID = 0;
         sID.ToLong(&nID);
-        //wxLogMessage(_T("[lmScoreDocument::OnOpenDocument] New score with wizard"));
+        //wxLogMessage(_T("[lmDocument::OnOpenDocument] New score with wizard"));
         return OnDisplayCreatedScore( (int)nID );
     }
 
@@ -148,7 +148,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     GetMainFrame()->AddFileToHistory(filename);
     wxFileName oFN(filename);
     m_pScore->SetScoreName(oFN.GetFullName());
-    //wxLogMessage(_T("[lmScoreDocument::OnOpenDocument] Dump of score: ---------------------------"));
+    //wxLogMessage(_T("[lmDocument::OnOpenDocument] Dump of score: ---------------------------"));
     //wxLogMessage( m_pScore->Dump() );
     SetFilename(filename, true);
     SetDocumentSaved(true);
@@ -157,7 +157,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     return true;
 }
 
-bool lmScoreDocument::OnImportDocument(const wxString& filename)
+bool lmDocument::OnImportDocument(const wxString& filename)
 {
     lmMusicXMLParser parser;
     m_pScore = parser.ParseMusicXMLFile(filename);
@@ -171,7 +171,7 @@ bool lmScoreDocument::OnImportDocument(const wxString& filename)
     return true;
 }
 
-bool lmScoreDocument::OnDisplayCreatedScore(int nID)
+bool lmDocument::OnDisplayCreatedScore(int nID)
 {
     //get the score to display
     m_pScore = GetMainFrame()->GetScoreToEdit(nID);
@@ -192,7 +192,7 @@ bool lmScoreDocument::OnDisplayCreatedScore(int nID)
     return true;
 }
 
-void lmScoreDocument::UpdateAllViews(wxView* sender, wxObject* hint)
+void lmDocument::UpdateAllViews(wxView* sender, wxObject* hint)
 {
     //Updates all views. If sender is non-NULL, does not update this view.
     //hint represents optional information to allow a view to optimize its update.
@@ -201,7 +201,7 @@ void lmScoreDocument::UpdateAllViews(wxView* sender, wxObject* hint)
 	wxDocument::UpdateAllViews(sender, hint);
 }
 
-void lmScoreDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
+void lmDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
 {
 	m_pScore->SetModified(fScoreModified);
 	wxDocument::UpdateAllViews((wxView*)NULL, pHints);
@@ -209,7 +209,7 @@ void lmScoreDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
 
 #if wxUSE_STD_IOSTREAM
 //For Linux I can not manage to use wxStreams. Therefore, I include both alternatives
-wxSTD ostream& lmScoreDocument::SaveObject(wxSTD ostream& stream)
+wxSTD ostream& lmDocument::SaveObject(wxSTD ostream& stream)
 {
 	wxDocument::SaveObject(stream);
 
@@ -220,7 +220,7 @@ wxSTD ostream& lmScoreDocument::SaveObject(wxSTD ostream& stream)
 	return stream;
 }
 #else
-wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
+wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
 {
 	wxDocument::SaveObject(stream);
 

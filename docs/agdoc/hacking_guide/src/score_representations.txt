@@ -144,7 +144,7 @@ The LenMus program already deals with pieces that do not have time signatures an
 
 
 
-\h2 {Traversing the StaffObjs collection: Iterator interface}
+\h1 {Traversing the StaffObjs collection: Iterator interface}
 %%%----------------------------------------------------------
 
 As said, class %%lmSOIterator%% encapsulates access and traversing of a collection of StaffObjs (object %%lmColStaffObjs%%) without exposing the internal structure of the collection. This lets us define different traversal algorithms and allows us to change the internal representation of a StaffObjs collection without affecting the rest of the program.
@@ -247,10 +247,12 @@ Here is a description of the methods you have available. After this section you 
 
 
 
-\h3 {Example 1: looking for notes on beat position}
-%%%----------------------------------------------------
+\h1 {Iterators. Example 1: looking for notes on beat position}
+%%%----------------------------------------------------------------
 
-Let's see an example. Assume we would like to analyse the notes entered on first staff of a piano score, and identify those placed on beat position (strong part). The score has only one instrument (the piano). Therefore, first thing to do is to access the %%lmVStaff%% object for the instrument:
+Let's see an example. Assume we would like to analyse the notes entered on first staff of a piano score, and identify those placed on beat position (strong part). The score has only one instrument (the piano).
+
+The first thing to do is to access the %%lmVStaff%% object for the instrument:
 
 \code
 {
@@ -287,9 +289,57 @@ Now it is just a question of creating an iterator and exploring the collection o
 
 }
 
+
+\h1 {Time position and duration}
+%%%-------------------------------------
+
+
+All %%lmStaffObj%% have assigned a time and a duration.
+
+This 'time' is measured in arbitrary units. In fact, it is not really a time, as real time will depend on how fast the score is being played back. So, to not get confused, in documentation, names of varibles and methods the word 'timepos' (time position) is used instead of 'time'.
+
+Timepos is relative to the start of the measure in which the %%lmStaffObj%% is included.
+
+The only %%lmStaffObj%% having a non-zero duration are notes and rests. All other, such as clefs, barlines, key and time signatures. have a duration of zero.
+
+
+\h1 {notes in chord and base of chord}
+%%%-------------------------------------
+
+Chords has no special treatment: a chord is a set of notes that start at the same timepos. To identify those that must be rendered toghether, sharing the stem, the following rules apply:
+
+- the first note created in the timepos will be named the 'base note'.
+- all other notes that shere the stem with the base note are identified because method %%lmNote::IsInChord()%% will return true.
+- The base note is identified because the note is in chord and method %%lmNote::IsBaseOfChord()%% will return true. Be aware that for notes not in chord this method returns true. So the right way of finding the base note of a chord is by asking:
+\code
+{
+    if (note.IsInChord() && note.IsBaseOfChord())
+}
+When traversing the StaffObjs collection the base note of a chord precedes all other chord notes.
+
+
+
+\h1 {StaffObjs collection: ordering}
+%%%-------------------------------------
+
+Basically, %%lmStaffObj%% objects are stored ordered by timepos, that is, in the same order you will read the score to play it back. 
+
+More in detail: objects are always stored sorted by timepos and duration (shortest first). For objects at the same timepos the following rules apply: 
+ * Precedence of clef, key and time signatures over the notes they apply to.
+ * All notes of a chord go in sequence. First note is the base note.
+ * Objects of same type (i.e. two notes) are also ordered by staff number.
+ 
+Figure x shows an example.
+
+
+
+
+\h1 {Iterators. Example 2: looking for the absolute timepos of all notes}
+%%%-----------------------------------------------------------------------
+
+Let's traverse the whole collection, get the notes and print their absolute timepos:
+
+
+
 [To be continued with more details ...]
-
-
-
-
 

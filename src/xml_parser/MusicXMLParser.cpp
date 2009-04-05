@@ -1670,7 +1670,7 @@ void lmMusicXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
             lmFontInfo tFont = {_T("Times New Roman"), 14, wxFONTSTYLE_NORMAL,
                                 wxFONTWEIGHT_BOLD };
             lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-            lmTextBlock* pTitle = pScore->AddTitle(sNum, lmHALIGN_CENTER, pStyle);
+            lmScoreTitle* pTitle = pScore->AddTitle(sNum, lmHALIGN_CENTER, pStyle);
             pTitle->SetUserLocation(tPos);
 
         }
@@ -1682,7 +1682,7 @@ void lmMusicXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
         lmFontInfo tFont = {_T("Times New Roman"), 14, wxFONTSTYLE_NORMAL,
                             wxFONTWEIGHT_BOLD };
         lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-        lmTextBlock* pTitle = pScore->AddTitle(sTitle, lmHALIGN_CENTER, pStyle);
+        lmScoreTitle* pTitle = pScore->AddTitle(sTitle, lmHALIGN_CENTER, pStyle);
         pTitle->SetUserLocation(tPos);
     }
 

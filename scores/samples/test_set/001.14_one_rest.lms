@@ -1,0 +1,10 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef G noVisible)
+         (r q)
+      )
+   )
+)
+

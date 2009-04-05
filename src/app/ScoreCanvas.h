@@ -31,7 +31,7 @@ class lmScoreHighlightEvent;
 #include "../sound/SoundEvents.h"
 
 class lmScoreView;
-class lmScoreDocument;
+class lmDocument;
 class lmGMSelection;
 class lmToolBoxEvent;
 class lmToolBox;
@@ -46,7 +46,7 @@ class lmController : public wxWindow
    DECLARE_ABSTRACT_CLASS(lmController)
 
 public:
-    lmController(wxWindow *pParent, lmScoreView *pView, lmScoreDocument* pDoc,
+    lmController(wxWindow *pParent, lmScoreView *pView, lmDocument* pDoc,
 				 wxColor colorBg, wxWindowID id = wxID_ANY,
 				 const wxPoint& pos = wxDefaultPosition,
 				 const wxSize& size = wxDefaultSize, long style = 0);
@@ -158,7 +158,7 @@ class lmScoreCanvas : public lmController
 public:
 
     // constructors and destructor
-    lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocument* pDoc, 
+    lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* pDoc, 
                   const wxPoint& pos, const wxSize& size, long style, wxColor colorBg);
     ~lmScoreCanvas();
 
@@ -274,7 +274,7 @@ private:
 
     lmScoreView*        m_pView;        //owner view
     wxWindow*           m_pOwner;       //parent window
-    lmScoreDocument*    m_pDoc;         //the document rendered by the view
+    lmDocument*    m_pDoc;         //the document rendered by the view
 
     wxColour        m_colorBg;			//colour for background
 

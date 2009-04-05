@@ -474,9 +474,9 @@ bool lmTheApp::OnInit(void)
 
     // Create a template relating score documents to their views
     (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("LenMus score"), _T("lmScore View"),
-          CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView));
+          CLASSINFO(lmDocument), CLASSINFO(lmScoreView));
     (void) new wxDocTemplate(m_pDocManager, _T("MusicXML score"), _T("*.xml;*.*"), _T(""), _T("xml"), _T("MusicXML score"), _T("lmScore View"),
-          CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
+          CLASSINFO(lmDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
 //#ifdef __WXMAC__
 //    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("lms") , 'WXMB' , 'WXMA' ) ;
 //#endif

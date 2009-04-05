@@ -724,11 +724,12 @@ void lmVStaffCursor::AdvanceToTime(float rTime)
 
 void lmVStaffCursor::AdvanceToNextSegment()
 {
-    //Cursor is positioned at end of segment. 
     //Advances cursor to time 0 in next segment
 
 	m_pIt->MoveNext();
-    wxASSERT(m_pIt->ChangeOfMeasure() || m_pIt->EndOfCollection());
+    while(!(m_pIt->ChangeOfMeasure() || m_pIt->EndOfCollection()))
+	    m_pIt->MoveNext();
+
 	m_rTimepos = 0.0f;
 }
 

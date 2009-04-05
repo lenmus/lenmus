@@ -75,7 +75,7 @@ void lmScoreProcessor::DoProcess()
 {
     //get the score
     lmMainFrame* pMainFrame = GetMainFrame();
-    lmScoreDocument* pDoc = pMainFrame->GetActiveDoc();
+    lmDocument* pDoc = pMainFrame->GetActiveDoc();
     if (!pDoc) return;
     lmScore* pScore = pDoc->GetScore();
     if (!pScore) return;
@@ -95,7 +95,7 @@ void lmScoreProcessor::UndoProcess()
 {
     //get the score
     lmMainFrame* pMainFrame = GetMainFrame();
-    lmScoreDocument* pDoc = pMainFrame->GetActiveDoc();
+    lmDocument* pDoc = pMainFrame->GetActiveDoc();
     if (!pDoc) return;
     lmScore* pScore = pDoc->GetScore();
     if (!pScore) return;

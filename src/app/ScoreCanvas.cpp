@@ -90,7 +90,7 @@ END_EVENT_TABLE()
 IMPLEMENT_ABSTRACT_CLASS(lmController, wxWindow)
 
 
-lmController::lmController(wxWindow *pParent, lmScoreView *pView, lmScoreDocument* pDoc,
+lmController::lmController(wxWindow *pParent, lmScoreView *pView, lmDocument* pDoc,
 				 wxColor colorBg, wxWindowID id, const wxPoint& pos,
 				 const wxSize& size, long style)
         : wxWindow(pParent, -1, pos, size, style)
@@ -143,7 +143,7 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
-lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocument* pDoc,
+lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* pDoc,
         const wxPoint& pos, const wxSize& size, long style, wxColor colorBg)
         : lmController(pParent, pView, pDoc, colorBg, wxID_ANY, pos, size, style)
 {

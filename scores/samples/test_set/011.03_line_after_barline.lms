@@ -1,0 +1,13 @@
+(score (vers 1.5)(language en utf-8)
+  (instrument
+    (musicData
+      (clef G)(key C)(time 2 4)
+      (n c4 q)
+      (barline) 
+      (graphic line 5 5  80 -10)
+      (text "final barline" dx:80 dy:-10)
+      (barline end)
+    )
+  )
+)
+    

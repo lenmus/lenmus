@@ -34,7 +34,7 @@
 #include "../score/UndoRedo.h"
 #include "../score/ColStaffObjs.h"      //lmVCursorState
 class lmComponentObj;
-class lmScoreDocument;
+class lmDocument;
 class lmGMObject;
 class lmScoreObj;
 class lmVStaffCursor;
@@ -54,7 +54,7 @@ public:
     virtual bool Undo();
 
 protected:
-    lmScoreCommand(const wxString& name, lmScoreDocument *pDoc, lmVStaffCursor* pVCursor,
+    lmScoreCommand(const wxString& name, lmDocument *pDoc, lmVStaffCursor* pVCursor,
                    bool fHistory = true, int nOptions=0, bool fUpdateViews = true);
 
 
@@ -68,7 +68,7 @@ protected:
     //save data for direct re-draw
     //void SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx, lmPaper* pPaper);
 
-    lmScoreDocument*    m_pDoc;
+    lmDocument*    m_pDoc;
 	bool				m_fDocModified;
     bool                m_fHistory;         //include command in undo/redo history
     bool                m_fUpdateViews;     //Update all views after doing/undoing the command
@@ -89,7 +89,7 @@ protected:
 class lmCmdMoveObject: public lmScoreCommand
 {
 public:
-    lmCmdMoveObject(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO,
+    lmCmdMoveObject(const wxString& name, lmDocument *pDoc, lmGMObject* pGMO,
 					const lmUPoint& uPos, bool fUpdateViews = true);
     ~lmCmdMoveObject() {}
 
@@ -110,7 +110,7 @@ protected:
 class lmCmdDeleteStaffObj: public lmScoreCommand
 {
 public:
-    lmCmdDeleteStaffObj(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdDeleteStaffObj(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                         lmStaffObj* pSO);
     ~lmCmdDeleteStaffObj();
 
@@ -131,7 +131,7 @@ class lmCmdDeleteSelection: public lmScoreCommand
 {
 public:
     lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxString& name,
-                         lmScoreDocument *pDoc, lmGMSelection* pSelection);
+                         lmDocument *pDoc, lmGMSelection* pSelection);
     ~lmCmdDeleteSelection();
 
     //implementation of pure virtual methods in base class
@@ -159,7 +159,7 @@ protected:
 class lmCmdDeleteTie: public lmScoreCommand
 {
 public:
-    lmCmdDeleteTie(const wxString& name, lmScoreDocument *pDoc, lmNote* pEndNote);
+    lmCmdDeleteTie(const wxString& name, lmDocument *pDoc, lmNote* pEndNote);
     ~lmCmdDeleteTie();
 
     //implementation of pure virtual methods in base class
@@ -175,7 +175,7 @@ protected:
 class lmCmdAddTie: public lmScoreCommand
 {
 public:
-    lmCmdAddTie(const wxString& name, lmScoreDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
+    lmCmdAddTie(const wxString& name, lmDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
     ~lmCmdAddTie();
 
     //implementation of pure virtual methods in base class
@@ -193,7 +193,7 @@ class lmCmdInsertBarline: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                        lmEBarline nType);
     ~lmCmdInsertBarline() {}
 
@@ -211,7 +211,7 @@ class lmCmdInsertClef: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                     lmEClefType nClefType, bool fHistory=true);
     ~lmCmdInsertClef() {}
 
@@ -231,7 +231,7 @@ class lmCmdInsertTimeSignature: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                              int nBeats, int nBeatType, bool fVisible, bool fHistory=true);
     ~lmCmdInsertTimeSignature() {}
 
@@ -252,7 +252,7 @@ class lmCmdInsertKeySignature: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                             int nFifths, bool fMajor, bool fVisible, bool fHistory=true);
     ~lmCmdInsertKeySignature() {}
 
@@ -273,7 +273,7 @@ class lmCmdInsertNote: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
 					lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
                     lmENoteHeads nNotehead, lmEAccidentals nAcc,
@@ -307,7 +307,7 @@ class lmCmdInsertRest: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
 					lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     ~lmCmdInsertRest();
 
@@ -330,7 +330,7 @@ class lmCmdChangeNotePitch: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeNotePitch(const wxString& name, lmScoreDocument *pDoc, lmNote* pNote,
+    lmCmdChangeNotePitch(const wxString& name, lmDocument *pDoc, lmNote* pNote,
 					int nSteps);
     ~lmCmdChangeNotePitch() {}
 
@@ -351,7 +351,7 @@ class lmCmdChangeNoteAccidentals: public lmScoreCommand
 public:
 
     lmCmdChangeNoteAccidentals(lmVStaffCursor* pVCursor, const wxString& name,
-                               lmScoreDocument *pDoc, lmGMSelection* pSelection,
+                               lmDocument *pDoc, lmGMSelection* pSelection,
 					           int nAcc);
     ~lmCmdChangeNoteAccidentals();
 
@@ -380,7 +380,7 @@ class lmCmdChangeNoteRestDots: public lmScoreCommand
 public:
 
     lmCmdChangeNoteRestDots(lmVStaffCursor* pVCursor, const wxString& name,
-                               lmScoreDocument *pDoc, lmGMSelection* pSelection,
+                               lmDocument *pDoc, lmGMSelection* pSelection,
 					           int nDots);
     ~lmCmdChangeNoteRestDots();
 
@@ -398,7 +398,7 @@ protected:
 class lmCmdDeleteTuplet: public lmScoreCommand
 {
 public:
-    lmCmdDeleteTuplet(const wxString& name, lmScoreDocument *pDoc, lmNoteRest* pStartNR);
+    lmCmdDeleteTuplet(const wxString& name, lmDocument *pDoc, lmNoteRest* pStartNR);
     ~lmCmdDeleteTuplet();
 
     //implementation of pure virtual methods in base class
@@ -414,7 +414,7 @@ protected:
 class lmCmdAddTuplet: public lmScoreCommand
 {
 public:
-    lmCmdAddTuplet(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdAddTuplet(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                    lmGMSelection* pSelection, bool fShowNumber, int nNumber, bool fBracket,
                    lmEPlacement nAbove, int nActual, int nNormal);
 
@@ -439,7 +439,7 @@ protected:
 class lmCmdBreakBeam: public lmScoreCommand
 {
 public:
-    lmCmdBreakBeam(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdBreakBeam(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                    lmNoteRest* pBeforeNR);
     ~lmCmdBreakBeam();
 
@@ -456,7 +456,7 @@ protected:
 class lmCmdJoinBeam: public lmScoreCommand
 {
 public:
-    lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name, lmScoreDocument *pDoc,
+    lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
                   lmGMSelection* pSelection);
     ~lmCmdJoinBeam();
 
@@ -475,7 +475,7 @@ class lmCmdChangeText: public lmScoreCommand
 public:
 
     lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
-                    lmScoreDocument *pDoc, lmScoreText* pST, wxString& sText,
+                    lmDocument *pDoc, lmScoreText* pST, wxString& sText,
                     lmEHAlign nAlign, lmLocation tPos, lmTextStyle* pStyle,
                     int nHintOptions);
     ~lmCmdChangeText();
@@ -498,7 +498,7 @@ protected:
 class lmCmdChangePageMargin: public lmScoreCommand
 {
 public:
-    lmCmdChangePageMargin(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO,
+    lmCmdChangePageMargin(const wxString& name, lmDocument *pDoc, lmGMObject* pGMO,
 					      int nIdx, int nPage, lmLUnits uPos);
     ~lmCmdChangePageMargin() {}
 
@@ -522,7 +522,7 @@ protected:
 class lmCmdAttachNewText: public lmScoreCommand
 {
 public:
-    lmCmdAttachNewText(const wxString& name, lmScoreDocument *pDoc, lmComponentObj* pAnchor);
+    lmCmdAttachNewText(const wxString& name, lmDocument *pDoc, lmComponentObj* pAnchor);
     ~lmCmdAttachNewText();
 
     //implementation of pure virtual methods in base class
@@ -541,7 +541,7 @@ protected:
 class lmCmdAddNewTitle: public lmScoreCommand
 {
 public:
-    lmCmdAddNewTitle(lmScoreDocument *pDoc);
+    lmCmdAddNewTitle(lmDocument *pDoc);
     ~lmCmdAddNewTitle();
 
     //implementation of pure virtual methods in base class
@@ -549,7 +549,7 @@ public:
     bool Undo();
 
 protected:
-    lmTextBlock*		m_pNewTitle;
+    lmScoreTitle*		m_pNewTitle;
     bool                m_fDeleteTitle;
 };
 
@@ -560,7 +560,7 @@ class lmCmdChangeBarline: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeBarline(lmScoreDocument *pDoc, lmBarline* pBL, lmEBarline nType, bool fVisible);
+    lmCmdChangeBarline(lmDocument *pDoc, lmBarline* pBL, lmEBarline nType, bool fVisible);
     ~lmCmdChangeBarline();
 
     //implementation of pure virtual methods in base class
@@ -583,7 +583,7 @@ class lmCmdChangeMidiSettings: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeMidiSettings(lmScoreDocument *pDoc, lmInstrument* pInstr,
+    lmCmdChangeMidiSettings(lmDocument *pDoc, lmInstrument* pInstr,
                             int nMidiChannel, int nMidiInstr);
     ~lmCmdChangeMidiSettings();
 
@@ -606,7 +606,7 @@ protected:
 class lmCmdMoveNote: public lmScoreCommand
 {
 public:
-    lmCmdMoveNote(lmScoreDocument *pDoc, lmNote* pNote, const lmUPoint& uPos, int nSteps);
+    lmCmdMoveNote(lmDocument *pDoc, lmNote* pNote, const lmUPoint& uPos, int nSteps);
     ~lmCmdMoveNote() {}
 
     //implementation of pure virtual methods in base class
@@ -626,7 +626,7 @@ protected:
 class lmCmdMoveObjectPoints: public lmScoreCommand
 {
 public:
-    lmCmdMoveObjectPoints(const wxString& name, lmScoreDocument *pDoc,
+    lmCmdMoveObjectPoints(const wxString& name, lmDocument *pDoc,
                           lmGMObject* pGMO, lmUPoint uShifts[],
                           int nNumPoints, bool fUpdateViews);
     ~lmCmdMoveObjectPoints();

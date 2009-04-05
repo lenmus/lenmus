@@ -55,7 +55,7 @@
 // not undoable and should not be added to the command history.
 //----------------------------------------------------------------------------------------
 
-lmScoreCommand::lmScoreCommand(const wxString& sName, lmScoreDocument *pDoc,
+lmScoreCommand::lmScoreCommand(const wxString& sName, lmDocument *pDoc,
                                lmVStaffCursor* pVCursor, bool fHistory, int nOptions,
                                bool fUpdateViews)
     : wxCommand(true, sName)
@@ -171,7 +171,7 @@ enum        //type of object to delete
 };
 
 lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxString& name,
-                                           lmScoreDocument *pDoc, lmGMSelection* pSelection)
+                                           lmDocument *pDoc, lmGMSelection* pSelection)
         : lmScoreCommand(name, pDoc, pVCursor)
 {
     //loop to save objects to delete and its parameters
@@ -274,7 +274,7 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                     pSOData->nObjType = lm_eObjText;
                     pSOData->pObj = (void*)NULL;
                     pSOData->fObjDeleted = false;
-                    pSOData->pParm1 = (void*)( ((lmShapeTextBlock*)pGMO)->GetScoreOwner() );
+                    pSOData->pParm1 = (void*)( ((lmShapeTitle*)pGMO)->GetScoreOwner() );
                     pSOData->pParm2 = (void*)NULL;
 
                     m_ScoreObjects.push_back( pSOData );
@@ -492,7 +492,7 @@ bool lmCmdDeleteSelection::Undo()
 //----------------------------------------------------------------------------------------
 
 lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(lmVStaffCursor* pVCursor, const wxString& name,
-                                     lmScoreDocument *pDoc, lmStaffObj* pSO)
+                                     lmDocument *pDoc, lmStaffObj* pSO)
         : lmScoreCommand(name, pDoc, pVCursor)
 {
     m_pVStaff = pSO->GetVStaff();
@@ -553,7 +553,7 @@ bool lmCmdDeleteStaffObj::Undo()
 // lmCmdDeleteTie implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdDeleteTie::lmCmdDeleteTie(const wxString& name, lmScoreDocument *pDoc,
+lmCmdDeleteTie::lmCmdDeleteTie(const wxString& name, lmDocument *pDoc,
                                lmNote* pEndNote)
         : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
 {
@@ -590,7 +590,7 @@ bool lmCmdDeleteTie::Do()
 // lmCmdAddTie implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdAddTie::lmCmdAddTie(const wxString& name, lmScoreDocument *pDoc,
+lmCmdAddTie::lmCmdAddTie(const wxString& name, lmDocument *pDoc,
                          lmNote* pStartNote, lmNote* pEndNote)
         : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
 {
@@ -628,7 +628,7 @@ bool lmCmdAddTie::Do()
 // lmCmdMoveObject implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdMoveObject::lmCmdMoveObject(const wxString& sName, lmScoreDocument *pDoc,
+lmCmdMoveObject::lmCmdMoveObject(const wxString& sName, lmDocument *pDoc,
 								 lmGMObject* pGMO, const lmUPoint& uPos,
                                  bool fUpdateViews)
 	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL, true, 0, fUpdateViews)
@@ -670,7 +670,7 @@ bool lmCmdMoveObject::Undo()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertBarline::lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString& sName,
-                                       lmScoreDocument *pDoc, lmEBarline nType)
+                                       lmDocument *pDoc, lmEBarline nType)
 	: lmScoreCommand(sName, pDoc, pVCursor)
 {
     m_nBarlineType = nType;
@@ -705,7 +705,7 @@ bool lmCmdInsertBarline::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertClef::lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& sName,
-                                 lmScoreDocument *pDoc, lmEClefType nClefType,
+                                 lmDocument *pDoc, lmEClefType nClefType,
                                  bool fHistory)
 	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
 {
@@ -742,7 +742,7 @@ bool lmCmdInsertClef::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& sName,
-                             lmScoreDocument *pDoc,  int nBeats, int nBeatType,
+                             lmDocument *pDoc,  int nBeats, int nBeatType,
                              bool fVisible, bool fHistory)
 	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
 {
@@ -781,7 +781,7 @@ bool lmCmdInsertTimeSignature::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertKeySignature::lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& sName,
-                             lmScoreDocument *pDoc, int nFifths, bool fMajor,
+                             lmDocument *pDoc, int nFifths, bool fMajor,
                              bool fVisible, bool fHistory)
 	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
 {
@@ -820,7 +820,7 @@ bool lmCmdInsertKeySignature::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName,
-                                 lmScoreDocument *pDoc,
+                                 lmDocument *pDoc,
                                  lmEPitchType nPitchType,
 								 int nStep, int nOctave,
 								 lmENoteType nNoteType, float rDuration, int nDots,
@@ -878,7 +878,7 @@ bool lmCmdInsertNote::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertRest::lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& sName,
-                                 lmScoreDocument *pDoc, lmENoteType nNoteType,
+                                 lmDocument *pDoc, lmENoteType nNoteType,
                                  float rDuration, int nDots, int nVoice)
 	: lmScoreCommand(sName, pDoc, pVCursor)
 {
@@ -922,7 +922,7 @@ bool lmCmdInsertRest::Do()
 // lmCmdChangeNotePitch: Change pitch of note at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeNotePitch::lmCmdChangeNotePitch(const wxString& sName, lmScoreDocument *pDoc,
+lmCmdChangeNotePitch::lmCmdChangeNotePitch(const wxString& sName, lmDocument *pDoc,
                                  lmNote* pNote, int nSteps)
 	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
 {
@@ -955,7 +955,7 @@ bool lmCmdChangeNotePitch::Undo()
 
 lmCmdChangeNoteAccidentals::lmCmdChangeNoteAccidentals(
                                         lmVStaffCursor* pVCursor,
-                                        const wxString& name, lmScoreDocument *pDoc,
+                                        const wxString& name, lmDocument *pDoc,
                                         lmGMSelection* pSelection, int nAcc)
 	: lmScoreCommand(name, pDoc, pVCursor)
 {
@@ -1021,7 +1021,7 @@ bool lmCmdChangeNoteAccidentals::Undo()
 //----------------------------------------------------------------------------------------
 
 lmCmdChangeNoteRestDots::lmCmdChangeNoteRestDots(lmVStaffCursor* pVCursor,
-                                                 const wxString& name, lmScoreDocument *pDoc,
+                                                 const wxString& name, lmDocument *pDoc,
                                                  lmGMSelection* pSelection, int nDots)
 	: lmScoreCommand(name, pDoc, pVCursor)
 {
@@ -1084,7 +1084,7 @@ bool lmCmdChangeNoteRestDots::Do()
 // lmCmdDeleteTuplet implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdDeleteTuplet::lmCmdDeleteTuplet(const wxString& name, lmScoreDocument *pDoc,
+lmCmdDeleteTuplet::lmCmdDeleteTuplet(const wxString& name, lmDocument *pDoc,
                                      lmNoteRest* pStartNR)
         : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
 {
@@ -1122,7 +1122,7 @@ bool lmCmdDeleteTuplet::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdAddTuplet::lmCmdAddTuplet(lmVStaffCursor* pVCursor, const wxString& name,
-                               lmScoreDocument *pDoc, lmGMSelection* pSelection,
+                               lmDocument *pDoc, lmGMSelection* pSelection,
                                bool fShowNumber, int nNumber, bool fBracket,
                                lmEPlacement nAbove, int nActual, int nNormal)
 	: lmScoreCommand(name, pDoc, pVCursor)
@@ -1181,7 +1181,7 @@ bool lmCmdAddTuplet::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdBreakBeam::lmCmdBreakBeam(lmVStaffCursor* pVCursor, const wxString& name,
-                                     lmScoreDocument *pDoc, lmNoteRest* pBeforeNR)
+                                     lmDocument *pDoc, lmNoteRest* pBeforeNR)
         : lmScoreCommand(name, pDoc, pVCursor)
 {
     m_pBeforeNR = pBeforeNR;
@@ -1217,7 +1217,7 @@ bool lmCmdBreakBeam::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdJoinBeam::lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name,
-                                     lmScoreDocument *pDoc, lmGMSelection* pSelection)
+                                     lmDocument *pDoc, lmGMSelection* pSelection)
         : lmScoreCommand(name, pDoc, pVCursor)
 {
     //loop to save the note/rests to beam
@@ -1268,7 +1268,7 @@ bool lmCmdJoinBeam::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdChangeText::lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
-                                 lmScoreDocument *pDoc, lmScoreText* pST,
+                                 lmDocument *pDoc, lmScoreText* pST,
                                  wxString& sText, lmEHAlign nHAlign,
                                  lmLocation tPos, lmTextStyle* pStyle,
                                  int nHintOptions)
@@ -1310,7 +1310,7 @@ bool lmCmdChangeText::Do()
 // lmCmdChangePageMargin implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdChangePageMargin::lmCmdChangePageMargin(const wxString& name, lmScoreDocument *pDoc,
+lmCmdChangePageMargin::lmCmdChangePageMargin(const wxString& name, lmDocument *pDoc,
                                              lmGMObject* pGMO, int nIdx, int nPage,
 											 lmLUnits uPos)
 	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
@@ -1394,7 +1394,7 @@ void lmCmdChangePageMargin::ChangeMargin(lmLUnits uPos)
 // lmCmdAttachNewText implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdAttachNewText::lmCmdAttachNewText(const wxString& name, lmScoreDocument *pDoc,
+lmCmdAttachNewText::lmCmdAttachNewText(const wxString& name, lmDocument *pDoc,
                                        lmComponentObj* pAnchor)
 	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
 {
@@ -1453,7 +1453,7 @@ bool lmCmdAttachNewText::Undo()
 // lmCmdAddNewTitle implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdAddNewTitle::lmCmdAddNewTitle(lmScoreDocument *pDoc)
+lmCmdAddNewTitle::lmCmdAddNewTitle(lmDocument *pDoc)
 	: lmScoreCommand(_("add title"), pDoc, (lmVStaffCursor*)NULL )
 {
     m_fDeleteTitle = false;
@@ -1464,7 +1464,7 @@ lmCmdAddNewTitle::lmCmdAddNewTitle(lmScoreDocument *pDoc)
 
     //create the text object
     wxString sTitle = _T("");
-    m_pNewTitle = new lmTextBlock(sTitle, lmBLOCK_ALIGN_BOTH, lmHALIGN_DEFAULT,
+    m_pNewTitle = new lmScoreTitle(sTitle, lmBLOCK_ALIGN_BOTH, lmHALIGN_DEFAULT,
 								  lmVALIGN_DEFAULT, pStyle);
 
 	//This is dirty: To use OnEditProperties() the text must be on the score. so I will
@@ -1520,7 +1520,7 @@ bool lmCmdAddNewTitle::Undo()
 // lmCmdChangeBarline implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeBarline::lmCmdChangeBarline(lmScoreDocument *pDoc, lmBarline* pBL,
+lmCmdChangeBarline::lmCmdChangeBarline(lmDocument *pDoc, lmBarline* pBL,
 									   lmEBarline nType, bool fVisible)
 	: lmScoreCommand(_("change barline"), pDoc, (lmVStaffCursor*)NULL )
 {
@@ -1559,7 +1559,7 @@ bool lmCmdChangeBarline::Undo()
 // lmCmdChangeMidiSettings implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeMidiSettings::lmCmdChangeMidiSettings(lmScoreDocument *pDoc,
+lmCmdChangeMidiSettings::lmCmdChangeMidiSettings(lmDocument *pDoc,
                                                  lmInstrument* pInstr,
                                                  int nMidiChannel,
                                                  int nMidiInstr)
@@ -1600,7 +1600,7 @@ bool lmCmdChangeMidiSettings::Undo()
 // lmCmdMoveNote implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdMoveNote::lmCmdMoveNote(lmScoreDocument *pDoc, lmNote* pNote, const lmUPoint& uPos,
+lmCmdMoveNote::lmCmdMoveNote(lmDocument *pDoc, lmNote* pNote, const lmUPoint& uPos,
 							 int nSteps)
 	: lmScoreCommand(_("move note"), pDoc, (lmVStaffCursor*)NULL )
 {
@@ -1633,7 +1633,7 @@ bool lmCmdMoveNote::Undo()
 //----------------------------------------------------------------------------------------
 
 lmCmdMoveObjectPoints::lmCmdMoveObjectPoints(const wxString& name,
-                               lmScoreDocument *pDoc, lmGMObject* pGMO,
+                               lmDocument *pDoc, lmGMObject* pGMO,
                                lmUPoint uShift[], int nNumPoints, bool fUpdateViews)
 	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL, true, 0, fUpdateViews)
       , m_nNumPoints(nNumPoints)

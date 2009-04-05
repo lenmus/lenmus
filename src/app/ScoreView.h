@@ -53,7 +53,7 @@
 class lmComponentObj;
 class lmEditFrame;
 class lmScoreCanvas;
-class lmScoreDocument;
+class lmDocument;
 class lmRuler;
 class lmCaret;
 class lmMainFrame;
@@ -73,13 +73,13 @@ public:
 	virtual ~lmView() {}
 
 	virtual lmController* GetController()=0;
-    inline lmScoreDocument* GetDocument() { return m_pDoc; }
+    inline lmDocument* GetDocument() { return m_pDoc; }
     virtual void OnDraw(wxDC* dc)=0;
 
 
 protected:
     lmView() : wxView() {}
-    lmScoreDocument*    m_pDoc;             //the MVC document (M)
+    lmDocument*    m_pDoc;             //the MVC document (M)
 
 };
 
@@ -136,7 +136,7 @@ public:
 
     //access to components
     inline lmController* GetController() { return (lmController*)m_pCanvas; }
-    inline lmScoreDocument* GetDocument() { return m_pDoc; }
+    inline lmDocument* GetDocument() { return m_pDoc; }
 	inline lmBoxScore* GetBoxScore() { return m_graphMngr.GetBoxScore(); }
 
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -76,19 +76,74 @@ private:
 };
 
 //------------------------------------------------------------------------------------
+// lmShapeTitle: a primitive textbox. To be replaced, in future, by a lmShapeTextbox
 
-class lmShapeTextBlock : public lmShapeRectangle
+class lmShapeTitle : public lmShapeRectangle
 {
 public:
-    lmShapeTextBlock(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
+    lmShapeTitle(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
                      lmPaper* pPaper, lmEBlockAlign nBlockAlign,
                      lmEHAlign nHAlign, lmEVAlign nVAlign,
                      lmLUnits xLeft, lmLUnits yTop,
                      lmLUnits xRight, lmLUnits yBottom,
-                     wxColour nColor = *wxBLACK, wxString sName=_T("ShapeTextBlock"),
+                     wxColour nColor = *wxBLACK, wxString sName=_T("ShapeTitle"),
 					 bool fDraggable = true);
 
-    ~lmShapeTextBlock() {}
+    ~lmShapeTitle() {}
+
+    //implementation of virtual methods from base class
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    wxString Dump(int nIndent);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
+
+    //specific methods
+    void SetFont(wxFont *pFont);
+    wxString* GetText() { return &m_sText; }
+
+    //call backs
+    wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
+	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+	void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
+
+
+
+private:
+    void Create(const wxString& sText, wxFont* pFont, lmPaper* pPaper,
+                lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
+                lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
+
+    void ComputeTextPosition(lmPaper* pPaper);
+    void ComputeBlockBounds(lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
+
+    lmEBlockAlign   m_nBlockAlign;
+    lmEHAlign       m_nHAlign;
+    lmEVAlign       m_nVAlign;
+    wxString        m_sText;
+	wxString		m_sClippedText;
+    wxFont*         m_pFont;
+    lmUPoint        m_uTextPos;     // text position (relative to top-left of rectangle)
+    lmLUnits        m_uTextWidth;
+    lmLUnits        m_uTextHeight;
+    lmLUnits        m_uClippedTextWidth;
+    lmLUnits        m_uClippedTextHeight;
+
+};
+
+
+//------------------------------------------------------------------------------------
+
+class lmShapeTextbox : public lmShapeRectangle
+{
+public:
+    lmShapeTextbox(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
+                     lmPaper* pPaper, lmEBlockAlign nBlockAlign,
+                     lmEHAlign nHAlign, lmEVAlign nVAlign,
+                     lmLUnits xLeft, lmLUnits yTop,
+                     lmLUnits xRight, lmLUnits yBottom,
+                     wxColour nColor = *wxBLACK, wxString sName=_T("ShapeTextbox"),
+					 bool fDraggable = true);
+
+    ~lmShapeTextbox() {}
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);

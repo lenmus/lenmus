@@ -49,11 +49,12 @@
 //      s - string
 //      r - real (float, double)
 //      f - boolean
+//      t - struct
 //
 //  b) program specific types:
 //      u - logical units (lmLUnits)
 //      v - device units (lmPixels)
-//      t - tenths (lmTenths)
+//      nt - tenths (lmTenths)
 //      ux, uy - logical units. coordinates
 //      udx, udy - logical units. distances
 //      vx, vy - device units. coordinates

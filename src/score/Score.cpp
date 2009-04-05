@@ -713,10 +713,10 @@ lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
     return (10.0f * uUnits)/uSpacing;
 }
 
-lmTextBlock* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
+lmScoreTitle* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
 {
-    lmTextBlock* pTitle =
-        new lmTextBlock(sTitle, lmBLOCK_ALIGN_BOTH, nHAlign, lmVALIGN_TOP, pStyle);
+    lmScoreTitle* pTitle =
+        new lmScoreTitle(sTitle, lmBLOCK_ALIGN_BOTH, nHAlign, lmVALIGN_TOP, pStyle);
 
     m_nTitles.push_back( AttachAuxObj(pTitle) );
     return pTitle;
@@ -800,11 +800,11 @@ void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 {
  //   lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
 
- //   lmTextBlock* pTitle;
+ //   lmScoreTitle* pTitle;
  //   lmLUnits nPrevTitleHeight = 0;
  //   for (int i=0; i < (int)m_nTitles.size(); i++)
  //   {
- //       pTitle = (lmTextBlock*)(*m_pAuxObjs)[m_nTitles[i]];
+ //       pTitle = (lmScoreTitle*)(*m_pAuxObjs)[m_nTitles[i]];
 	//	nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
  //   }
 
@@ -815,7 +815,7 @@ void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 
     for (int i=0; i < (int)m_nTitles.size(); i++)
     {
-        lmTextBlock* pTitle = (lmTextBlock*)(*m_pAuxObjs)[m_nTitles[i]];
+        lmScoreTitle* pTitle = (lmScoreTitle*)(*m_pAuxObjs)[m_nTitles[i]];
         pTitle->Layout(pBox, pPaper);   //, colorC, fHighlight);
 
         //force auxObjs to take user position into account
@@ -877,7 +877,7 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 }
 
 
-lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmTextBlock* pTitle,
+lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreTitle* pTitle,
 								   lmLUnits nPrevTitleHeight)
 {
  //   // Creates the shape for the title and adds it to the box.

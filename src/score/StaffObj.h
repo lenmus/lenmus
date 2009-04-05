@@ -495,7 +495,8 @@ enum lmEAuxObjType
     eAXOT_Lyric,
     eAXOT_Slur,
     eAXOT_TextItem,
-	eAXOT_TextBlock,
+	eAXOT_ScoreTitle,
+    eAXOT_TextParagraph,        // a paragraph of text (lmScoreTextParagraph)
 
     //lmBinaryRelObj
     eAXOT_BinaryRelObj,
@@ -524,7 +525,7 @@ public:
     inline bool IsLine() { return GetAuxObjType() == eAXOT_Line; }
     inline bool IsLyric() { return GetAuxObjType() == eAXOT_Lyric; }
     inline bool IsTextItem() { return GetAuxObjType() == eAXOT_TextItem; }
-    inline bool IsTextBlock() { return GetAuxObjType() == eAXOT_TextBlock; }
+    inline bool IsTextBlock() { return GetAuxObjType() == eAXOT_ScoreTitle; }
     inline bool IsTie() { return GetAuxObjType() == eAXOT_Tie; }
 
     inline bool IsRelObj() { return GetAuxObjType() >= eAXOT_BinaryRelObj; }

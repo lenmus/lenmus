@@ -47,15 +47,9 @@ class lmPaper;
 class lmGMObject;
 class lmUndoItem;
 class lmShapeText;
-class lmShapeTextBlock;
+class lmShapeTitle;
 class lmBox;
 
-// lmTextItem types
-enum
-{
-    lmSIMPLE_TEXT = 0,
-    lmBLOCK_TEXT,
-};
 
 //------------------------------------------------------------------------------------
 
@@ -95,6 +89,138 @@ protected:
 
     // font
     lmTextStyle*    m_pStyle;
+
+};
+
+//------------------------------------------------------------------------------------
+// lmBaseText: Single piece of text plus its style
+
+class lmBaseText
+{
+public:
+    lmBaseText(const wxString& sText, lmTextStyle* pStyle);
+    virtual ~lmBaseText() {}
+
+    //text
+    inline void SetText(wxString& text) { m_sText = text; }
+	inline wxString& GetText() {return m_sText; }
+
+    //manage style
+    inline lmTextStyle* GetStyle() { return m_pStyle; }
+    inline void SetStyle(lmTextStyle* pStyle) { m_pStyle = pStyle; }
+
+    //style information
+    inline lmFontInfo GetFontInfo() { return m_pStyle->tFont; }
+    inline wxString& GetFontName() { return m_pStyle->tFont.sFontName; }
+    inline int GetFontSize() { return m_pStyle->tFont.nFontSize; }
+    inline bool IsBold() { return m_pStyle && m_pStyle->tFont.nFontWeight == wxFONTWEIGHT_BOLD; }
+    inline bool IsItalic() { return m_pStyle && m_pStyle->tFont.nFontStyle == wxFONTSTYLE_ITALIC; }
+    inline wxColour GetColour() { return m_pStyle->nColor; }
+
+    //layout related
+    wxFont* GetSuitableFont(lmPaper* pPaper);
+
+    // source code related methods
+    wxString SourceLDP(int nIndent);
+    wxString SourceXML(int nIndent);
+
+    // debug methods
+    wxString Dump();
+
+
+
+protected:
+    wxString        m_sText;
+    lmTextStyle*    m_pStyle;       //font and style
+
+};
+
+//------------------------------------------------------------------------------------
+// lmScoreBlock - An AuxObj modelling an abstract block: box (a rectangle) plus
+//      alligment attributes
+
+
+class lmScoreBlock : public lmAuxObj
+{
+public:
+    virtual ~lmScoreBlock() {}
+
+protected:
+    lmScoreBlock(lmTenths tWidth = 0.0f, lmTenths tHeight = 0.0f,
+                 lmTPoint tPos = lmTPoint(0.0f, 0.0f),
+                 lmEBlockAlign nBlockAlign = lmBLOCK_ALIGN_DEFAULT,
+                 lmEHAlign nHAlign = lmHALIGN_DEFAULT,
+                 lmEVAlign nVAlign = lmVALIGN_DEFAULT);
+
+    //block attributtes
+    lmEBlockAlign       m_nBlockAlign;
+    lmEHAlign           m_nHAlign;
+    lmEVAlign           m_nVAlign;
+
+    //block pos and size
+    lmTenths    m_tHeight;
+    lmTenths    m_tWidth;
+    lmTPoint    m_tPos;         //top-left corner 
+
+    //block looking 
+    wxColour    m_nBgColor;
+    lmTenths    m_tBorderSize;
+
+};
+
+//------------------------------------------------------------------------------------
+// lmScoreTextParagraph: box + alignment + collection of lmBaseText
+
+class lmScoreTextParagraph : public lmScoreBlock
+{
+public:
+    lmScoreTextParagraph();
+    virtual ~lmScoreTextParagraph();
+
+    //implementation of virtual methods from base class
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextParagraph; }
+
+    // source code related methods
+    wxString SourceLDP(int nIndent);
+    wxString SourceXML(int nIndent);
+
+    // debug methods
+    wxString Dump();
+
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+
+    //undoable edition commands
+    void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
+
+    //operations
+    void Defragment();
+    void InsertTextUnit(lmBaseText* pText);
+
+
+protected:
+    //collection of text units
+    std::list<lmBaseText*>      m_texts;
+
+};
+
+//------------------------------------------------------------------------------------
+// lmScoreTextBox: box + alignment + collection of lmScoreTextParagraph
+
+class lmScoreTextBox : public lmScoreBlock
+{
+public:
+    lmScoreTextBox();
+
+    virtual ~lmScoreTextBox();
+
+    //contents modification
+    //void AddText(wxString& sText, lmTextStyle* pStyle,
+    //             const wxString& sLanguage = _T("Unknown"));
+
+protected:
+    //collection of text paragraphs
+    std::list<lmScoreTextParagraph*>      m_paragraphs;
 
 };
 
@@ -182,19 +308,19 @@ public:
 
 //------------------------------------------------------------------------------------
 
-class lmTextBlock : public lmScoreText
+class lmScoreTitle : public lmScoreText
 {
 public:
-    lmTextBlock(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
+    lmScoreTitle(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
                 lmEVAlign nVAlign, lmTextStyle* pStyle);
 
-    ~lmTextBlock() {}
+    ~lmScoreTitle() {}
 
     //implementation of virtual methods defined in abstract base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextBlock; }
+    inline lmEAuxObjType GetAuxObjType() { return eAXOT_ScoreTitle; }
     wxString Dump();
     wxString SourceLDP(int nIndent);
     wxString SourceXML(int nIndent);
@@ -206,7 +332,6 @@ public:
 private:
 
 };
-
 
 //------------------------------------------------------------------------------------
 

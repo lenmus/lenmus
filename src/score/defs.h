@@ -668,9 +668,9 @@ extern lmLocation g_tDefaultPos;          // defined in defs.cpp
 enum lmEBlockAlign
 {
     lmBLOCK_ALIGN_DEFAULT = 0,  //alignment is not specified
-    lmBLOCK_ALIGN_LEFT,         //xLeft on left page margin
-    lmBLOCK_ALIGN_RIGHT,        //xRight on right page margin
-    lmBLOCK_ALIGN_BOTH,         //xLeft and xRight on respective page margins
+    lmBLOCK_ALIGN_LEFT,         //xLeft on left margin
+    lmBLOCK_ALIGN_RIGHT,        //xRight on right margin
+    lmBLOCK_ALIGN_BOTH,         //xLeft and xRight on respective margins
     lmBLOCK_ALIGN_NONE,         //Floating block: xLeft and xRight set by user
 };
 

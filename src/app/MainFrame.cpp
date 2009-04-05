@@ -1793,17 +1793,17 @@ lmScore* lmMainFrame::GetActiveScore()
     // get the score
     lmMDIChildFrame* pChild = GetActiveChild();
 	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-    lmScoreDocument* pDoc = (lmScoreDocument*)((lmEditFrame*)pChild)->GetDocument();
+    lmDocument* pDoc = (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
     return pDoc->GetScore();
 }
 
-lmScoreDocument* lmMainFrame::GetActiveDoc()
+lmDocument* lmMainFrame::GetActiveDoc()
 {
     lmMDIChildFrame* pChild = GetActiveChild();
 	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
-        return (lmScoreDocument*)((lmEditFrame*)pChild)->GetDocument();
+        return (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
     else
-        return (lmScoreDocument*)NULL;
+        return (lmDocument*)NULL;
 }
 
 void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)

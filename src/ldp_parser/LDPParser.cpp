@@ -130,6 +130,7 @@ void lmLDPParser::Create(const wxString& sLanguage, const wxString& sCharset)
 
 	//other initializations
 	m_pLastNoteRest = (lmNoteRest*)NULL;
+    m_pScore = (lmScore*) NULL;
 }
 
 lmLDPParser::~lmLDPParser()
@@ -642,65 +643,14 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
      return pScore;
 }
 
-//lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
-//{
-//    //<score> = (score <vers> [<credits>] <instrument>*)
-//
-//    lmLDPNode* pX;
-//    long i, iP;
-//    wxString sData;
-//    lmScore* pScore = (lmScore*) NULL;
-//
-//    //for version 1.3 or lower all tags in Spanish
-//
-//    //parse element <credits>
-//    wxString sTitle = _T("");
-//    iP = 2;      //first parameter is always the version and is already analyzed. So, skip it
-//    pX = pNode->GetParameter(iP);
-//    if (pX->GetName() == _T("Credits") ) {
-//        //TODO no treatment yet. Ignore
-//        iP++;
-//    }
-//
-//    // parse element <NumInstruments>
-//    long nInstruments = 0;
-//    pX = pNode->GetParameter(iP);
-//    if (pX->GetName() != _T("NumInstrumentos")) {
-//        AnalysisError(pX, _T("Element 'NumInstrumentos' expected but found element %s. Analysis stopped."),
-//            pX->GetName().c_str() );
-//        return pScore;
-//    } else {
-//        sData = pX->GetParameter(1)->GetName();
-//        if (sData.IsNumber()) {
-//            sData.ToLong(&nInstruments);
-//         }
-//        iP++;
-//    }
-//
-//    // build the score
-//    pScore = new lmScore();
-//
-//    //if (sTitulo != _T(""))pScore->Set.Title(sTitle);
-//
-//    // loop to parse elements <instrument>
-//    for (i=1; iP <= pNode->GetNumParms(); i++, iP++) {
-//        pX = pNode->GetParameter(iP);
-//        AnalyzeInstrument(pX, pScore, i);
-//    }
-//
-//    return pScore;
-//
-//}
-
 lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
     //<score> = (score <vers> [<language>][<styles>][<pageLayout>][<titles>] <instrument>*)
-    //<language> = (language LanguageCode Charset )
+    //<language> = (language LanguageCode Charset)
 
     lmLDPNode* pX;
     long i, iP;
     wxString sData;
-    lmScore* pScore = (lmScore*) NULL;
     int nNumParms = pNode->GetNumParms();
 
     //parse element <language>
@@ -719,13 +669,13 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     }
 
     // create the score
-    pScore = new lmScore();
+    m_pScore = new lmScore();
 
     //parse optional elements <defineStyle>
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == _T("defineStyle") &&  iP <= nNumParms)
     {
-        AnalyzeDefineStyle(pX, pScore);
+        AnalyzeDefineStyle(pX, m_pScore);
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
@@ -734,7 +684,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == _T("title") &&  iP <= nNumParms)
     {
-        AnalyzeTitle(pX, pScore);
+        AnalyzeTitle(pX, m_pScore);
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
@@ -743,7 +693,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == _T("pageLayout") &&  iP <= nNumParms)
     {
-        AnalyzePageLayout(pX, pScore);
+        AnalyzePageLayout(pX, m_pScore);
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
@@ -752,7 +702,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == _T("opt") &&  iP <= nNumParms)
     {
-        AnalyzeOption(pX, pScore);
+        AnalyzeOption(pX, m_pScore);
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
@@ -762,9 +712,9 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     while(iP <= nNumParms)
     {
         if ( pX->GetName() == _T("instrument") )
-            AnalyzeInstrument105(pX, pScore, i++);
+            AnalyzeInstrument105(pX, m_pScore, i++);
         else if ( pX->GetName() == _T("group") )
-            i += AnalyzeGroup(pX, pScore, i);
+            i += AnalyzeGroup(pX, m_pScore, i);
         else
         {
             AnalysisError(pX, _T("Elements <instrument> or <group> expected but found element %s. Analysis stopped."),
@@ -776,8 +726,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
             pX = pNode->GetParameter(iP);
     }
 
-    return pScore;
-
+    return m_pScore;
 }
 
 int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
@@ -1114,26 +1063,28 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
             AnalyzeNote(pX, pVStaff);
         } else if (sName == _T("r")) { // rest
             AnalyzeRest(pX, pVStaff);
-        } else if (sName == _T("clef")) {
-            AnalyzeClef(pVStaff, pX);
-        } else if (sName == _T("time")) {
-            AnalyzeTimeSignature(pVStaff, pX);
-        } else if (sName == _T("key")) {
-            AnalyzeKeySignature(pX, pVStaff);
         } else if (sName == _T("barline")) {
             AnalyzeBarline(pX, pVStaff);
         } else if (sName == _T("chord")) {
             AnalyzeChord(pX, pVStaff);
-        } else if (sName == _T("text")) {
-            AnalyzeText(pX, pVStaff);
+        } else if (sName == _T("clef")) {
+            AnalyzeClef(pVStaff, pX);
+        } else if (sName == _T("graphic")) {
+            AnalyzeGraphicObj(pX, pVStaff);
+        } else if (sName == _T("key")) {
+            AnalyzeKeySignature(pX, pVStaff);
+        } else if (sName == _T("metronome")) {
+            AnalyzeMetronome(pX, pVStaff);
         } else if (sName == _T("newSystem")) {
             AnalyzeNewSystem(pX, pVStaff);
         } else if (sName == _T("spacer")) {
             AnalyzeSpacer(pX, pVStaff);
-        } else if (sName == _T("graphic")) {
-            AnalyzeGraphicObj(pX, pVStaff);
-        } else if (sName == _T("metronome")) {
-            AnalyzeMetronome(pX, pVStaff);
+        } else if (sName == _T("text")) {
+            AnalyzeText(pX, pVStaff);
+        } else if (sName == _T("textbox")) {
+            AnalyzeTextbox(pX, pVStaff);
+        } else if (sName == _T("time")) {
+            AnalyzeTimeSignature(pVStaff, pX);
         }
         // abbreviated barlines
         else if (sName == _T("|") ) {
@@ -1216,215 +1167,6 @@ void lmLDPParser::AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
 }
-
-//
-//void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr)
-//{
-//    //<instrument> = (instrument [<instrName>][<infoMIDI>] <Parte>*)
-//
-//    //<NombreInstrumento string [string]) - nombre, [abreviatura]
-//    //<NumPartes> = (NumPartes num ) - num vstaffs
-//    //<InfoMIDI num [num]> - Num.Instrumento MIDI, [Num.Dispositivo MIDI]
-//    //<Parte> = (Parte num [num pentagramas] <compas>* )
-//
-//    // <Parte> represents an lmVStaff
-//    wxString sLabelNumVStaves;
-//    sLabelNumVStaves = (m_nVersion > 102 ? _T("NumPartes") : _T("NumPentagramas"));
-//
-//
-//    lmLDPNode* pX;
-//    wxString sData;
-//    long iP;
-//    iP = 1;
-//
-//    if (pNode->GetName() != _T("Instrumento") ) {
-//        AnalysisError(pNode, _T("Element '%s' expected but found element %s. Analysis stopped."),
-//            _T("Instrumento"), pNode->GetName().c_str() );
-//        return;
-//    }
-//
-//    // parse element [<NombreInstrumento> | num ]
-//    pX = pNode->GetParameter(iP);
-//    if (pX->GetName() = _T("NombreInstrumento")) {
-//        //TODO de momento no hay tratamiento
-//        iP++;
-//    } else {
-//        //if { IsNumeric(pX->GetName())) {
-//        //por ahora ignorar. No vale para nada
-//        iP++;
-//    }
-//
-//    // parse element <NumPartes>
-//    long nVStaves=0;
-//    pX = pNode->GetParameter(iP);
-//    if (pX->GetName() != sLabelNumVStaves) {
-//        AnalysisError(pX, _T("Element %s expected but found element %s. Analysis stopped."),
-//            sLabelNumVStaves.c_str(), pX->GetName().c_str() );
-//        return;
-//    } else {
-//        sData = (pX->GetParameter(1))->GetName();
-//        if (sData.IsNumber()) {
-//            sData.ToLong(&nVStaves);
-//         }
-//        iP++;
-//    }
-//
-////    // parse element <InfoMIDI>
-////    Set pX = pNode->GetParameter(iP)
-//	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
-//	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
-////
-////    if (pX->GetName() = "INFOMIDI") {
-////        AnalizarInfoMIDI pX, nMIDIChannel, nMIDIInstr
-////        iP = iP + 1
-////    }
-//
-//    // create the instrument
-//	//CSG: 19/jan/2008. Support for more than one VStaff removed
-//    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr, _T(""));
-//    pX = pNode->GetParameter(iP);
-//    AnalyzeVStaff(pX, pInstr->GetVStaff());
-//
-//}
-
-//void lmLDPParser::AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
-//{
-//    //v1.1  <Linea> = ("LINEA" <num> <Compas>* )
-//    //v1.2  <Pentagrama> = ("PENTAGRAMA" <num> <Compas>* )
-//    //v1.3  <Parte> = ("PARTE" <num> [<num_pentagramas>] <Compas>* )
-//
-//    wxString sLabel;
-//    if (m_nVersion <= 101) {
-//        sLabel = _T("Linea");
-//    } else if (m_nVersion == 102) {
-//        sLabel = _T("Pentagrama");
-//    } else {
-//        sLabel = _T("Parte");
-//    }
-//
-//    if (pNode->GetName() != sLabel) {
-//        AnalysisError(pNode, _T("Expected node '%s' but found node '%s'. Analysis ended."),
-//            sLabel.c_str(), pNode->GetName().c_str() );
-//        return;
-//    }
-//
-//    AnalyzeVStaff_V103(pNode, pVStaff);     //version 1.3
-//
-//}
-
-//void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
-//{
-//    //v1.3  <Parte> = ("PARTE" <num> [<num_pentagramas>] <Compas>* )
-//
-//    lmLDPNode* pX;
-//    long iP = 1;
-//
-//    //analyze first parameter: num of this lmVStaff
-//    wxString sData1 = (pNode->GetParameter(iP))->GetName();
-//    if (! sData1.IsNumber()) {
-//        AnalysisError(pNode, _T("Expected 'numero de parte' but found '%s'. Analysis stopped."),
-//            pNode->GetName().c_str() );
-//        return;
-//    }
-//    iP++;
-//
-//    //analyze second parameter (optional): number of staves of this lmVStaff
-//    wxString sNumStaves = _T("1");       //default value
-//    pX = pNode->GetParameter(iP);
-//    if (pX->IsSimple()) {
-//        sNumStaves = pX->GetName();
-//        if (!sNumStaves.IsNumber()) {
-//            AnalysisError(pX, _T("Number of staves expected but found '%s'. Analysis stopped."),
-//                pX->GetName().c_str() );
-//            return;
-//        } else {
-//            iP++;
-//        }
-//    }
-//    long nNumStaves;
-//    sNumStaves.ToLong(&nNumStaves);
-//    int i;
-//    //the VStaff already contains one staff. So we have to add nNumStaves - 1
-//    for(i=1; i < nNumStaves; i++) {
-//        pVStaff->AddStaff(5);    //five lines staff, standard size
-//    }
-//
-//    //analyze remaining parameters: bars
-//    for (; iP <= pNode->GetNumParms(); iP++) {
-//        pX = pNode->GetParameter(iP);
-//        AnalyzeMeasure(pX, pVStaff);
-//    }
-//}
-
-//void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
-//{
-////v1.1  <Compas> ::= ("C" [<Num>] {<Figura> | <Grupo> | <Atributo> | <Indicacion> |
-////                     <Barra> | <desplazamiento> | <opciones>}* )
-////v1.1  <Atributo> ::= (<Clave> | <Tonalidad> | <Metrica>)
-////v1.1  <Indicacion> ::= (<Metronomo>)
-////v1.1  <Metronomo> ::= ("Metronomo" <Valor_nota> {<Tics_minuto> | (<Valor_nota> )
-////v1.1  <Barra> ::= ("Barra" <Tipo_barra> [<posición>])
-////      <desplazamiento> ::= { ("retroceso" partes) | ("avance" partes) }
-//
-//    //analyze first parameter: measure number (optional)
-//    long iP = 1;
-//    wxString sNumBar = (pNode->GetParameter(iP))->GetName();
-//    if (sNumBar.IsNumber()) {
-//        iP++;
-//    } else {
-//    }
-//
-//    //analyze remaining parameters: {<Figura> | <Grupo> | <Atributo>}*
-//    bool fSomethingAdded = false, fBarline = false;
-//    //double rDesplz;
-//    wxString sName;
-//    lmLDPNode* pX;
-//    for(; iP <= pNode->GetNumParms(); iP++) {
-//        pX = pNode->GetParameter(iP);
-//        sName = pX->GetName();
-//        if (sName == _T("n") || sName == _T("na")) {    //nota simple, nota en acorde
-//                AnalyzeNote(pX, pVStaff);
-//                fSomethingAdded = true;
-//        } else if (sName == _T("s")) {        // rest
-//                AnalyzeRest(pX, pVStaff);
-//                fSomethingAdded = true;
-//            //case "G"        //<grupo>
-//            //    AnalizarGrupo pX, pVStaff
-//            //    fSomethingAdded = true
-//        } else if (sName == _T("Clave")) {
-//            fSomethingAdded = ! AnalyzeClef(pVStaff, pX);
-//        } else if (sName == _T("Metrica")) {
-//            fSomethingAdded = ! AnalyzeTimeSignature(pVStaff, pX);
-//        } else if (sName == _T("Tonalidad")) {
-//            fSomethingAdded = ! AnalyzeKeySignature(pX, pVStaff);
-//            //case "METRONOMO"
-//            //    fSomethingAdded = Not AnalizarMetronomo(pVStaff, pX)
-//        } else if (sName == _T("Barra")) {
-//                fBarline = !AnalyzeBarline(pX, pVStaff);
-//            //case "OPCIONES"
-//            //    AnalyzeOpt pVStaff, pX
-//            ////avances y retrocesos ----------------------------------------
-//            //case "AVANCE"
-//            //case "RETROCESO"
-//            //    rDesplz = AnalizarDesplazamiento(pX)
-//            //    pVStaff.ShiftTime rDesplz
-//            ////directivas ---------------------------------------------------
-//            //case "REPETICION"
-//            //    AnalizarDirectivaRepeticion pVStaff, pX
-//            //case "TEXTO"
-//            //    AnalizarDirectivaTexto pVStaff, pX
-//        } else {
-//            AnalysisError(pX, _T("[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."),
-//                sName.c_str() );
-//        }
-//    }
-//
-//    if (fSomethingAdded && !fBarline) {
-//        pVStaff->AddBarline(lm_eBarlineSimple);    //finish the bar
-//		m_nCurVoice = 1;
-//    }
-//
-//}
 
 void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
@@ -1895,10 +1637,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 lmNote* pNt = pVStaff->AddNote(lm_ePitchRelative, 0, 4, 0, nAccidentals,
 											   nNoteType, rDuration, nDots, m_nCurStaff,
 											   m_nCurVoice, fVisible, fBeamed, BeamInfo,
-											   (fInChord ? (lmNote*)m_pLastNoteRest : (lmNote*)NULL),
-											   fTie, nStem);
-				if (!fInChord || pNt->IsBaseOfChord())
-					m_pLastNoteRest = pNt;
+											   (lmNote*)NULL, fTie, nStem);
+				m_pLastNoteRest = pNt;
                 return pNt;
             }
         }
@@ -1917,7 +1657,6 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             iP = 3;
         }
     }
-
 
     //for notes: analyse pitch and accidentals
     if (!fIsRest) {
@@ -2243,6 +1982,16 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     // calculation of duration
     rDuration = GetDefaultDuration(nNoteType, nDots, nActualNotes, nNormalNotes);
+
+    //Verify if note in chord has the same duration than base note
+    if (fInChord && m_pLastNoteRest && m_pLastNoteRest->IsNote()
+        && !IsEqualTime(m_pLastNoteRest->GetDuration(), rDuration) )
+    {
+        AnalysisError(pNode, _T("Error: note in chord has different duration than base note. Duration changed."));
+		rDuration = m_pLastNoteRest->GetDuration();
+        nNoteType = m_pLastNoteRest->GetNoteType();
+        nDots = m_pLastNoteRest->GetNumDots();
+    }
 
     //create the note/rest
     lmNoteRest* pNR;
@@ -3038,7 +2787,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     if (!pStyle)
         pStyle = pScore->GetStyleName(tFont);
 
-    lmTextBlock* pTitle = pScore->AddTitle(sTitle, nAlign, pStyle);
+    lmScoreTitle* pTitle = pScore->AddTitle(sTitle, nAlign, pStyle);
 	pTitle->SetUserLocation(tPos);
 
     return false;
@@ -3053,6 +2802,7 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
     //such as location, font or alignment. This method parses these elements.
     //Default values for information not present must be initialized in return variables
     //before invoking this method.
+    //Optional parameters not allowed in a particular context should be NULL pointers.
     //Returns true if error; in this case return variables are not changed.
     //If no error all variables but pNode are loaded with parsed information
 
@@ -3071,10 +2821,25 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
     wxString sText;
     wxString sStyle = _T("");
     bool fFont = false;
-    lmEHAlign nAlign = *pAlign;
-    lmFontInfo tFont = {pFont->sFontName, pFont->nFontSize, pFont->nFontStyle, pFont->nFontWeight};
-    lmLocation tPos = *pPos;
-    bool fHasWidth = *pHasWidth;
+    lmEHAlign nAlign;
+    lmFontInfo tFont;
+    lmLocation tPos;
+    bool fHasWidth;
+
+    //load default values
+    if (pAlign)
+        nAlign = *pAlign;
+    if (pFont)
+    {
+        tFont.nFontSize = pFont->nFontSize;
+        tFont.nFontStyle = pFont->nFontStyle;
+        tFont.nFontWeight = pFont->nFontWeight;
+        tFont.sFontName = pFont->sFontName;
+    }
+    if (pPos)
+        tPos = *pPos;
+    if (pHasWidth)
+        fHasWidth = *pHasWidth;
 
     int iP = 1;
 
@@ -3129,13 +2894,18 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
 
     //return parsed values
     *pText = sText;
-    *pAlign = nAlign;
-    *pPos = tPos;
-    *pFont = tFont;
-    *pHasWidth = fHasWidth;
-    *pStyle = sStyle;
-    return false;
+    if (pAlign)
+        *pAlign = nAlign;
+    if (pPos)
+        *pPos = tPos;
+    if (pFont)
+        *pFont = tFont;
+    if (pHasWidth)
+        *pHasWidth = fHasWidth;
+    if (pStyle)
+        *pStyle = sStyle;
 
+    return false;
 }
 
 bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
@@ -3175,11 +2945,11 @@ bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
 
         if (sName == _T("font"))
         {
-                AnalyzeFont(pX, &tFont);
+            AnalyzeFont(pX, &tFont);
         }
         else if (sName == _T("color"))
         {
-                color = AnalyzeColor(pX);
+            color = AnalyzeColor(pX);
         }
         else
         {
@@ -3602,9 +3372,114 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
-//returns true if error; in this case nothing is added to the lmVStaff
+void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //<textbox> ::= (textbox <location>[<size>][<color>][<border>]<text>[<line>])
+    //<location> = { [(dx num) | (dy num)]+ }
+    //<size> ::= (size <width> <height>)
+    //<border> ::= (border <width><style><colour>)
+    //<width>,<height> ::= num        (tenths)
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(pNode->GetName() == _T("textbox"));
+    int nNumParms = pNode->GetNumParms();
+
+    ////check that type is specified
+    //if(nNumParms < 2)
+    //{
+    //    AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+    //        sElmName.c_str());
+    //    return;
+    //}
+
+    //parameters and their default values
+    wxColour nColor = *wxBLACK;
+	lmLocation tPos = g_tDefaultPos;
+    lmTenths ntWidth = 60.0f;
+    lmTenths ntHeight = 30.0f;
+    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
+    wxColour nColour(0, 0, 0);        //default: black
+    wxString sText = _("Error in text!");
+    wxString sStyle = _T("");
+
+    //loop to analyze parameters. Optional: color, border, line
+    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    {
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        if (sName == _T("dx") || sName == _T("dy"))
+        {
+            AnalyzeLocation(pX, &tPos);
+        }
+        else if(sName == _T("size"))
+        {
+            //TODO
+            //AnalyzeSize(pX, &ntWidth, &ntHeight);
+        }
+        else if(sName == _T("color"))
+        {
+            nColour = AnalyzeColor(pX);
+        }
+        else if(sName == _T("border"))
+        {
+            //TODO
+            //AnalyzeBorder(pX, ?);
+        }
+        else if(sName == _T("text"))
+        {
+            //(text string [<location>] [{<font> | <style>}] [<alingment>])
+            //mandatory: string. Optional: style. All others forbidden
+            if (AnalyzeTextString(pX, &sText, &sStyle, (lmEHAlign*)NULL,
+                                  (lmLocation*)NULL, (lmFontInfo*)NULL, (bool*)NULL))
+            {
+                //error in text element
+                //TODO
+            }
+        }
+        else if(sName == _T("line"))
+        {
+            //TODO
+        }
+        else
+        {
+            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                          _T("textbox"), sName.c_str() );
+        }
+    }
+
+    // create the AuxObj and attach it to the VStaff
+    lmScoreTextParagraph* pSTP = new lmScoreTextParagraph();
+    lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
+    pAnchor->AttachAuxObj(pSTP);
+
+    //apply values to created lmScoreTextParagraph
+    lmTextStyle* pStyle = GetTextStyle(pNode, sStyle);
+    lmBaseText* pBText = new lmBaseText(sText, pStyle);
+    pSTP->InsertTextUnit(pBText);
+}
+
+lmTextStyle* lmLDPParser::GetTextStyle(lmLDPNode* pNode, const wxString& sStyle)
+{
+    //Returns style for that style name or style for normal text if style name is not
+    //defined in the score
+
+    lmTextStyle* pStyle = (lmTextStyle*)NULL;
+    if (sStyle != _T(""))
+    {
+        pStyle = m_pScore->GetStyleInfo(sStyle);
+        if (!pStyle)
+            AnalysisError(pNode, _T("Style '%s' is not defined. Default style will be used."),
+                          sStyle.c_str());
+    }
+    if (!pStyle)
+        pStyle = m_pScore->GetStyleInfo(_("Normal text"));
+
+    return pStyle;
+}
+
 bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
+    //returns true if error; in this case nothing is added to the lmVStaff
     //<newSystem> ::= (newSystem}
 
     wxASSERT(pNode->GetName() == _T("newSystem"));

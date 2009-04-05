@@ -1,0 +1,40 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+
+   (title center "Two instruments, three staves" (font bold 14))
+
+   (instrument  (staves 2)
+      (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key D)
+            (time 2 4)
+            (n f4 h p1)
+            
+            (goBack h)
+            (n c3 e g+ p2)(n c3 e g-)(n d3 q)
+            (barline)
+      )
+   )
+   
+   (instrument (staves 2)
+      (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key D)
+            (time 2 4)
+            (n f4 q. p1)
+            (clef bass p1)
+            (n a3 e)
+            
+            (goBack h)
+            (n c3 q p2)(n c3 e)
+            (clef treble p2)
+            (clef bass p2)
+            (n c3 e)
+            (barline)
+      )
+   )
+   
+)
+

@@ -1,0 +1,14 @@
+(score
+  (vers 1.5)(language en utf-8)
+
+  (instrument (staves 2)
+     (musicData
+       (clef treble p1)
+       (clef bass p2)
+       (key a)
+       (time 2 4)
+       (chord (n a2 h p2) (n c3 q p1) (n e3 q p1)) 
+       (barline)
+    )
+  )
+)

@@ -1,0 +1,11 @@
+(score
+   (vers 1.5)(language en utf-8)
+   (instrument
+      (musicData
+         (clef treble)
+         (n f4 q (tie 1 start (bezier ctrol1-x:-25 ctrol1-y:55)))
+         (n f4 q (tie 1 stop))
+      )
+   )
+)
+

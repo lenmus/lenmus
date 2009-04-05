@@ -544,7 +544,7 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
                 lmTextStyle* pStyle =
                     pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
 
-                lmTextBlock* pTitle =
+                lmScoreTitle* pTitle =
                     pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nHAlign, pStyle);
 	            pTitle->SetUserLocation(m_Titles[i].tPos);
                 iPrev = i;

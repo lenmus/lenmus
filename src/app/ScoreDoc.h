@@ -61,16 +61,16 @@ protected:
 
 
 //------------------------------------------------------------------------------------
-// lmScoreDocument
+// lmDocument
 //------------------------------------------------------------------------------------
 
-class lmScoreDocument: public wxDocument
+class lmDocument: public wxDocument
 {
-  DECLARE_DYNAMIC_CLASS(lmScoreDocument)
+  DECLARE_DYNAMIC_CLASS(lmDocument)
 
 public:
-    lmScoreDocument();
-    ~lmScoreDocument();
+    lmDocument();
+    ~lmDocument();
 
 	//overrides for virtual methods in wxDocument
 	void UpdateAllViews(wxView* sender=(wxView*)NULL, wxObject* hint=(wxObject*)NULL);

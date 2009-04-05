@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -136,7 +136,7 @@ lmScoreView::lmScoreView()
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
     m_pFrame = (lmEditFrame*) NULL;
     m_pCanvas = (lmScoreCanvas*) NULL;
-    m_pDoc = (lmScoreDocument*) NULL;
+    m_pDoc = (lmDocument*) NULL;
     m_pHRuler = (lmRuler*) NULL;
     m_pVRuler = (lmRuler*) NULL;
     m_pHScroll = (wxScrollBar*) NULL;
@@ -213,7 +213,7 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     // method OnCreate() is invoked. Therefore, pScore will be always NULL at this point.
 
     //save the document
-    m_pDoc = (lmScoreDocument*)doc;
+    m_pDoc = (lmDocument*)doc;
 
     // create the frame and set its icon and default title
     m_pFrame = new lmEditFrame(doc, this, GetMainFrame());
@@ -403,7 +403,7 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
     wxMemoryDC mDC;
     //m_Paper.SetDC(&mDC);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&mDC));
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+    lmScore* pScore = ((lmDocument*)GetDocument())->GetScore();
     if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper))
         OnNewGraphicalModel();
 
@@ -426,7 +426,7 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     // Reader) that presents the same behaviour that LenMus.
 
 
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+    lmScore* pScore = ((lmDocument*)GetDocument())->GetScore();
 
     // Get paper size and real usable size of printer paper (in world units)
     lmUSize uPaperSize = pScore->GetPaperSize();     // in lmLUnits
@@ -2035,7 +2035,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
 void lmScoreView::SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType)
 {
     //compute required screen size (pixels) for 1:1 renderization
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+    lmScore* pScore = ((lmDocument*)GetDocument())->GetScore();
     wxClientDC dc(m_pCanvas);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( 1.0, 1.0 );
@@ -2472,7 +2472,7 @@ void lmScoreView::OnRightClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos, i
     WXUNUSED(nKeys);
     DeselectAllGMObjects(true);     //true: redraw view content
 
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+    lmScore* pScore = ((lmDocument*)GetDocument())->GetScore();
     pScore->PopupMenu(m_pCanvas, (lmGMObject*)NULL, vCanvasPos);
 }
 

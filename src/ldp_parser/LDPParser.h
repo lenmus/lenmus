@@ -73,13 +73,11 @@ public:
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
     int         AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr);
-    //void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr,
                                      lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUnit);
     void        AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos);
-    //void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -93,10 +91,10 @@ public:
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmEStemType AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
-    //void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
 
 	//analyze options
     int         AnalyzeNumStaff(const wxString& sNotation, lmLDPNode* pNode, long nNumStaves);
@@ -136,7 +134,6 @@ protected:
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
-    //lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
                                   lmEHAlign* pAlign, lmLocation* pPos,
@@ -146,11 +143,10 @@ protected:
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);
-    //void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
-
     bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
 	bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
                                float* pValue);
+    lmTextStyle* GetTextStyle(lmLDPNode* pNode, const wxString& sStyle);
 
     //auxiliary
     void AddTie(lmNote* pNote, lmTieInfo* pTieInfo);
@@ -171,6 +167,7 @@ protected:
 
 
     // variables to store temporary values as the file is being analized.
+    lmScore*            m_pScore;       //the score that is being created
     int					m_nCurStaff;	//default staff num. for the lmNoteRest being processed
     int					m_nCurVoice;	//default voice num. for the lmNoteRest being processed
     long				m_nNumStaves;	//number of staffs for the lmVStaff being processed

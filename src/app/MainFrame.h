@@ -54,7 +54,7 @@ class lmMDIChildFrame;
 class lmStatusBar;
 class lmToolBox;
 class lmWelcomeWnd;
-class lmScoreDocument;
+class lmDocument;
 class lmEditorMode;
 
 
@@ -248,7 +248,7 @@ public:
 	bool IsToolBoxVisible();
     lmController* GetActiveController();
     wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
-    lmScoreDocument* GetActiveDoc();
+    lmDocument* GetActiveDoc();
     lmScore* GetScoreToEdit(int nID);
 
 

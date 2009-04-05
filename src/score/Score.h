@@ -386,7 +386,7 @@ public:
 
 
     // titles related methods
-    lmTextBlock* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle);
+    lmScoreTitle* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle);
 	void LayoutTitles(lmBox* pBox, lmPaper *pPaper);
 
     // identification
@@ -475,7 +475,7 @@ private:
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, wxDC* pDC);
-	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmTextBlock* pTitle,
+	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreTitle* pTitle,
 							  lmLUnits nPrevTitleHeight);
 	void DoAddInstrument(lmInstrument* pInstr, lmInstrGroup* pGroup);
 

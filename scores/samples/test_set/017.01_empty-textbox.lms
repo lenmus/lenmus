@@ -1,0 +1,11 @@
+(score (vers 1.6)(language en iso-8859-1)
+   (defineStyle "Style0" (font "Times New Roman" 10pt bold) (color #000000))
+   (instrument
+     (musicData (clef G)(key C)(time 2 4)
+       (n c4 h) 
+       (textbox dx:5 dy:5  width:60 height:30 (text "textbox" (style "Style0")) )
+       (barline end)
+     )
+   )
+)
+    
