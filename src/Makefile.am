@@ -16,6 +16,7 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
 	../packages/wxMidi/src/wxMidi.cpp \
 	../packages/wxMidi/include/wxMidi.h \
 	../packages/wxMidi/src/wxMidiDatabase.cpp \
+	../packages/wxSQLite3/src/wxsqlite3.cpp \
 	app/AboutDialog.cpp \
 	app/ArtProvider.cpp \
 	app/DlgDebug.cpp \
@@ -193,6 +194,6 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
 
 # Removed. Produces a comiler error. cbp project file does not contains any reference to it.
 #	score/properties/DlgEditText.cpp 
-#	widgets/MusicSymbolList.cpp 
+#	widgets/MusicSymbolList.cpp cd 
 
 
