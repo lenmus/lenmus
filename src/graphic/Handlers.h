@@ -103,7 +103,10 @@ protected:
 class lmHandlerSquare : public lmHandler
 {
 public:
-    lmHandlerSquare(lmScoreObj* pOwner, lmGMObject* pOwnerGMO, long nHandlerID);
+    lmHandlerSquare(lmScoreObj* pOwner, lmGMObject* pOwnerGMO, long nHandlerID,
+                    wxStockCursor nCursorId = wxCURSOR_SIZENESW);
+    lmHandlerSquare(lmScoreObj* pOwner, lmGMObject* pOwnerGMO, long nHandlerID,
+                    wxCursor* pCursor);
     virtual ~lmHandlerSquare() {}
 
 	//implementation of pure virtual methods in base classes
@@ -125,7 +128,7 @@ protected:
 
     lmUPoint    m_uTopLeft;     //square top left point
     lmLUnits    m_uSide;        //square side lenght
-
+    wxCursor    m_cursor;       //mouse cursor to use in mouse over the handler
 };
 
 

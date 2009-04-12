@@ -1951,7 +1951,9 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
             (*it)->fRepainted = true;
 
             // ask paper for the offscreen bitmap of this page
-            wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPag+1, nRepaintOptions);
+            wxBitmap* pPageBitmap 
+                = m_graphMngr.RenderScore(nPag+1, nRepaintOptions,
+                                          m_pCanvas, (*it)->vPageRect.GetTopLeft());
             wxASSERT(pPageBitmap && pPageBitmap->Ok());
             memoryDC.SelectObject(*pPageBitmap);
 

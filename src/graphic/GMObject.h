@@ -84,6 +84,7 @@ enum lmEGMOType
     eGMO_Shape = eGMO_LastBox,
 	eGMO_ShapeStaff = eGMO_Shape,
     eGMO_ShapeArch,
+    eGMO_ShapeAttachedBox,
     eGMO_ShapeBarline,
 	eGMO_ShapeBeam,
     eGMO_ShapeBrace,
@@ -100,6 +101,7 @@ enum lmEGMOType
     eGMO_ShapeStem,
 	eGMO_ShapeText,
 	eGMO_ShapeTextBlock,
+	eGMO_ShapeTextbox,
     eGMO_ShapeTie,
 	eGMO_ShapeTuplet,
     eGMO_Handler,
@@ -194,7 +196,7 @@ public:
     inline bool IsSelectable() const { return m_fSelectable; }
     inline void SetSelectable(bool fValue) { m_fSelectable = fValue; }
     inline bool IsSelected() const { return m_fSelected; }
-    void SetSelected(bool fValue);
+    virtual void SetSelected(bool fValue);
     virtual void OnSelectionStatusChanged() {}
 
 	//dragging and moving
@@ -223,6 +225,8 @@ public:
 	//contextual menu
 	virtual void OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int nKeys);
 
+    //restricted. To be used only by lmCompositeShape
+    inline void Restricted_SetSelected(bool fValue) { m_fSelected = fValue; }
 
 protected:
     friend class lmGMSelection;
@@ -337,6 +341,7 @@ public:
 
 	void Render(lmPaper* pPaper);
     virtual void Render(lmPaper* pPaper, wxColour color) { lmGMObject::Render(pPaper, color); }
+    virtual void RenderWithHandlers(lmPaper* pPaper) {}
 
     virtual bool Collision(lmShape* pShape);
 
@@ -453,10 +458,12 @@ public:
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual void Render(lmPaper* pPaper, wxColour color);
     virtual void RenderHighlighted(wxDC* pDC, wxColour colorC);
+    virtual void RenderWithHandlers(lmPaper* pPaper);
 
 	//overrides
     bool BoundsContainsPoint(lmUPoint& pointL);
     bool Collision(lmShape* pShape);
+    virtual void SetSelected(bool fValue);
 
     //dragging
     virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);

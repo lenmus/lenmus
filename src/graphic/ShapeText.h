@@ -36,6 +36,8 @@
 #include "wx/wx.h"
 #endif
 
+#include <list>
+
 #include "../score/defs.h"      // lmLUnits
 #include "GMObject.h"
 #include "Shapes.h"             // lmShapeRectangle
@@ -132,55 +134,69 @@ private:
 
 //------------------------------------------------------------------------------------
 
+class lmTextLine;
+
 class lmShapeTextbox : public lmShapeRectangle
 {
 public:
-    lmShapeTextbox(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
-                     lmPaper* pPaper, lmEBlockAlign nBlockAlign,
-                     lmEHAlign nHAlign, lmEVAlign nVAlign,
-                     lmLUnits xLeft, lmLUnits yTop,
-                     lmLUnits xRight, lmLUnits yBottom,
-                     wxColour nColor = *wxBLACK, wxString sName=_T("ShapeTextbox"),
-					 bool fDraggable = true);
+    lmShapeTextbox(lmScoreObj* pOwner, int nShapeIdx, 
+            //text related
+            lmPaper* pPaper,
+            const wxString& sText, wxFont* pFont, wxColour nTxtColor, 
+            //block related
+            lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
+            lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom,
+            wxColour nBgColor = *wxWHITE,
+            //border
+            lmLUnits uBorderWidth = 1.0f,
+            wxColour nBorderColor = *wxBLACK,
+            lmELineStyle nBorderStyle = lm_eLine_None,             //no border
+            //other
+            wxString sName=_T("ShapeTextbox"),
+            bool fDraggable = true);
 
-    ~lmShapeTextbox() {}
+    ~lmShapeTextbox();
 
     //implementation of virtual methods from base class
+
+    //renderization
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    void RenderWithHandlers(lmPaper* pPaper);
+
+    //other
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
+
 
     //specific methods
     void SetFont(wxFont *pFont);
     wxString* GetText() { return &m_sText; }
 
-    //call backs
+    //shape dragging: overrides of lmShapeRectangle
     wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
-	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-	void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
-
+	//lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+	//void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
 
 
 private:
-    void Create(const wxString& sText, wxFont* pFont, lmPaper* pPaper,
-                lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
-                lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
-
     void ComputeTextPosition(lmPaper* pPaper);
-    void ComputeBlockBounds(lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom);
+    void DrawTextbox(lmPaper* pPaper, wxColour colorC, bool fSketch);
+    lmLUnits ApplyHAlign(lmLUnits uAvailableWidth, lmLUnits uLineWidth, lmEHAlign nHAlign);
+    void DeleteTextLines();
+
 
     lmEBlockAlign   m_nBlockAlign;
     lmEHAlign       m_nHAlign;
     lmEVAlign       m_nVAlign;
     wxString        m_sText;
-	wxString		m_sClippedText;
     wxFont*         m_pFont;
+    wxColour        m_nTxtColor;
     lmUPoint        m_uTextPos;     // text position (relative to top-left of rectangle)
     lmLUnits        m_uTextWidth;
     lmLUnits        m_uTextHeight;
-    lmLUnits        m_uClippedTextWidth;
-    lmLUnits        m_uClippedTextHeight;
 
+
+    std::list<lmTextLine*>   m_TextLines;
 };
 
 #endif    // __LM_SHAPETEXT_H__

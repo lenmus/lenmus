@@ -50,10 +50,17 @@ class lmHandlerLine;
 //line start/endings
 enum lmELineHead
 {
-    lmHEAD_NONE = 0,
-    lmHEAD_ARROW,
-    lmHEAD_DIAMOND,
-    lmHEAD_CIRCLE,
+    lmLINEHEAD_NONE = 0,
+    lmLINEHEAD_ARROW,
+    lmLINEHEAD_DIAMOND,
+    lmLINEHEAD_CIRCLE,
+};
+
+//line points
+enum lmELinePoint
+{
+    lmLINE_START = 0,
+    lmLINE_END,
 };
 
 //------------------------------------------------------------------------------------
@@ -94,12 +101,19 @@ private:
 class lmShapeLine : public lmSimpleShape
 {
 public:
-    lmShapeLine(lmScoreObj* pOwner, lmLUnits uxStart, lmLUnits uyStart,
-                lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uWidth,
-				lmLUnits uBoundsExtraWidth, wxColour nColor, wxString sName = _T("Line"),
-				lmELineEdges nEdge = eEdgeNormal);
+    lmShapeLine(lmScoreObj* pOwner, int nShapeIdx,
+                lmLUnits uxStart, lmLUnits uyStart, lmLUnits uxEnd, lmLUnits uyEnd,
+                lmLUnits uWidth, lmLUnits uBoundsExtraWidth, lmELineStyle nStyle,
+                wxColour nColor, lmELineEdges nEdge = eEdgeNormal,
+                wxString sName = _T("Line"));      
+
     lmShapeLine(lmScoreObj* pOwner);
-    ~lmShapeLine();
+
+    virtual ~lmShapeLine();
+
+    //properties and options
+    void SetAsControlled(lmELinePoint nPointID);
+    void FixPoint(lmELinePoint nPointID);
 
     //renderization
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
@@ -117,7 +131,6 @@ public:
     //handlers dragging
     lmUPoint OnHandlerDrag(lmPaper* pPaper, const lmUPoint& uPos, long nHandlerID);
     void OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos, long nHandlerID);
-    void OnSelectionStatusChanged();
 
     //call backs
     void MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
@@ -128,7 +141,7 @@ public:
         lmID_START = 0,
         lmID_END,
         //
-        lmNUM_HANDLERS
+        lmID_NUM_HANDLERS
     };
 
 
@@ -140,12 +153,15 @@ protected:
     void UpdateBounds();
 
 
-    lmUPoint            m_uPoint[lmNUM_HANDLERS];       //start and end points, absolute paper position   
-    lmUPoint            m_uSavePoint[lmNUM_HANDLERS];   //to save start and end points when dragging/moving 
-    lmHandlerSquare*    m_pHandler[lmNUM_HANDLERS];     //handlers
+    lmUPoint            m_uPoint[lmID_NUM_HANDLERS];       //start and end points, absolute paper position   
+    lmUPoint            m_uSavePoint[lmID_NUM_HANDLERS];   //to save start and end points when dragging/moving 
+    lmHandlerSquare*    m_pHandler[lmID_NUM_HANDLERS];     //handlers
+    bool                m_fIsControlled[lmID_NUM_HANDLERS];    //the point is controlled
+    bool                m_fIsFixed[lmID_NUM_HANDLERS];     //the point is fixed
     lmLUnits		    m_uWidth;
 	lmLUnits		    m_uBoundsExtraWidth;
 	lmELineEdges	    m_nEdge;
+    lmELineStyle        m_nStyle;
 
 };
 

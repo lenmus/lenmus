@@ -80,6 +80,11 @@ public:
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax);
 
+    //renderization related
+    inline wxWindow* GetRenderWindow() { return m_pRenderWindow; }
+    inline wxPoint& GetRenderWindowOffset() { return m_vOffset; }
+    inline void SetRenderWindow(wxWindow* pWindow) { m_pRenderWindow = pWindow; }
+    inline void SetRenderWindowOffset(wxPoint& vOffset) { m_vOffset = vOffset; }
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
@@ -104,6 +109,8 @@ private:
     int             m_nLastSystem;
     lmUPoint        m_pageOrgL;         //page origin
     lmShapeMargin*  m_pMarginShapes[4];
+    wxWindow*       m_pRenderWindow;    //the window on which the page is rendered
+    wxPoint         m_vOffset;          //page offset to apply.
 
 	//array of ptrs to systems that form this page
     std::vector<lmBoxSystem*>	m_aSystems;		

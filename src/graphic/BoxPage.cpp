@@ -44,12 +44,12 @@ extern lmColors* g_pColors;
 
 lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage, _("page"))
+    , m_nNumPage(nNumPage)
+    , m_nFirstSystem(0)
+    , m_nLastSystem(0)
+    , m_pBScore(pParent)
+    , m_pRenderWindow(NULL)
 {
-    m_nNumPage = nNumPage;
-    m_nFirstSystem = 0;
-    m_nLastSystem = 0;
-    m_pBScore = pParent;
-
     //create margin shapes
 	lmScore* pScore = (lmScore*)m_pOwner;
 	lmLUnits uxLeftMargin = pScore->GetLeftMarginXPos();

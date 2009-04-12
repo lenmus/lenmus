@@ -46,12 +46,15 @@ extern lmColors* g_pColors;
 //========================================================================================
 
 //Backwards compatibility contructor
-lmShapeLine::lmShapeLine(lmScoreObj* pOwner, lmLUnits xStart, lmLUnits yStart,
-                lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth, lmLUnits uBoundsExtraWidth,
-				wxColour nColor, wxString sName, lmELineEdges nEdge)
-    : lmSimpleShape(eGMO_ShapeLine, pOwner, 0, sName)
+lmShapeLine::lmShapeLine(lmScoreObj* pOwner, int nShapeIdx,
+                         lmLUnits uxStart, lmLUnits uyStart,
+                         lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uWidth,
+                         lmLUnits uBoundsExtraWidth, lmELineStyle nStyle,
+                         wxColour nColor, lmELineEdges nEdge, wxString sName)
+    : lmSimpleShape(eGMO_ShapeLine, pOwner, nShapeIdx, sName)
+    , m_nStyle(nStyle)
 {
-	Create(xStart, yStart, xEnd, yEnd, uWidth, uBoundsExtraWidth, nColor, nEdge);
+	Create(uxStart, uyStart, uxEnd, uyEnd, uWidth, uBoundsExtraWidth, nColor, nEdge);
 }
 
 //new constructor
@@ -84,10 +87,35 @@ void lmShapeLine::Create(lmLUnits xStart, lmLUnits yStart,
     UpdateBounds();
 
     //Create line handlers
-    m_pHandler[lmID_START] = new lmHandlerSquare(m_pOwner, this, lmID_START);
-    m_pHandler[lmID_END] = new lmHandlerSquare(m_pOwner, this, lmID_END);
-	//AddHandler(m_pHandler[lmID_START]);
-	//AddHandler(m_pHandler[lmID_END]);
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+    {
+        m_pHandler[i] = new lmHandlerSquare(m_pOwner, this, i);
+	    m_fIsControlled[i] = false;
+	    m_fIsFixed[i] = false;
+    }
+}
+
+void lmShapeLine::SetAsControlled(lmELinePoint nPointID)
+{
+    //The referenced point will be set as 'controlled', that is, it will be
+    //controlled by program (another shape) and therefore no handler will be
+    //created for it. Also, the shape can not be dragged by user, as one of its
+    //points is fixed.
+
+    wxASSERT(nPointID == lmLINE_START || nPointID == lmLINE_END);
+
+    m_fIsControlled[nPointID] = true;
+}
+
+void lmShapeLine::FixPoint(lmELinePoint nPointID)
+{
+    //The referenced point will be set as 'fixed', that is, it will not move
+    //when the shape is dragged by user. But it will have a handler so that
+    //user can drag the point to another location
+
+    wxASSERT(nPointID == lmLINE_START || nPointID == lmLINE_END);
+
+    m_fIsFixed[nPointID] = true;
 }
 
 void lmShapeLine::UpdateBounds()
@@ -144,22 +172,17 @@ void lmShapeLine::UpdateBounds()
 	m_uSelRect = GetBounds();
 }
 
-void lmShapeLine::OnSelectionStatusChanged()
-{
-    //hide or restore visibility of main shape
-
-    //SetVisible( !IsSelected() );
-}
-
 void lmShapeLine::Render(lmPaper* pPaper, wxColour color)
 {
+    WXUNUSED(color);
+
     //if selected, book to be rendered with handlers when posible
     if (IsSelected())
     {
         //book to be rendered with handlers
         GetOwnerBoxPage()->OnNeedToDrawHandlers(this);
 
-         for (int i=0; i < lmNUM_HANDLERS; i++)
+         for (int i=0; i < lmID_NUM_HANDLERS; i++)
          {
             //save points and update handlers position
             m_uSavePoint[i] = m_uPoint[i];
@@ -169,8 +192,8 @@ void lmShapeLine::Render(lmPaper* pPaper, wxColour color)
     else
     {
         //draw the line
-        DrawLine(pPaper, color, false);        //false -> anti-aliased
-        lmSimpleShape::Render(pPaper, color);
+        DrawLine(pPaper, m_color, false);        //false -> anti-aliased
+        lmSimpleShape::Render(pPaper, m_color);
     }
 }
 
@@ -188,10 +211,13 @@ void lmShapeLine::RenderWithHandlers(lmPaper* pPaper)
     pPaper->SetLogicalFunction(wxXOR);
 
     //draw the handlers
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
     {
-        m_pHandler[i]->Render(pPaper, colorC);
-        GetOwnerBoxPage()->AddActiveHandler(m_pHandler[i]);
+        if (!m_fIsControlled[i])
+        {
+            m_pHandler[i]->Render(pPaper, colorC);
+            GetOwnerBoxPage()->AddActiveHandler(m_pHandler[i]);
+        }
     }
 
     //draw the line
@@ -265,7 +291,7 @@ lmUPoint lmShapeLine::OnHandlerDrag(lmPaper* pPaper, const lmUPoint& uPos,
     RenderWithHandlers(pPaper);
 
     //store new handler coordinates and update all
-    wxASSERT(nHandlerID >= 0 && nHandlerID < lmNUM_HANDLERS);
+    wxASSERT(nHandlerID >= 0 && nHandlerID < lmID_NUM_HANDLERS);
     m_pHandler[nHandlerID]->SetHandlerTopLeftPoint(uPos);
     m_uPoint[nHandlerID] = m_pHandler[nHandlerID]->GetHandlerCenterPoint();
 
@@ -284,8 +310,8 @@ void lmShapeLine::OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos,
 	// send a move object command to the controller.
 
     //Compute shifts from start of drag points
-    lmUPoint uShifts[lmNUM_HANDLERS];
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    lmUPoint uShifts[lmID_NUM_HANDLERS];
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
         uShifts[i] = lmUPoint(0.0, 0.0);
     uShifts[nHandlerID] = uPos + m_pHandler[nHandlerID]->GetTopCenterDistance()
                          - m_uSavePoint[nHandlerID];
@@ -293,17 +319,17 @@ void lmShapeLine::OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos,
     //MoveObjectPoints() apply shifts computed from drag start points. As handlers and
     //shape points are already displaced, it is necesary to restore the original positions to
     //avoid double displacements.
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
         m_uPoint[i] = m_uSavePoint[i];
     UpdateBounds();
 
-    pCanvas->MoveObjectPoints(this, uShifts, lmNUM_HANDLERS, false);  //false-> do not update views
+    pCanvas->MoveObjectPoints(this, uShifts, lmID_NUM_HANDLERS, false);  //false-> do not update views
 }
 
 wxBitmap* lmShapeLine::OnBeginDrag(double rScale, wxDC* pDC)
 {
     //save all points position
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
         m_uSavePoint[i] = m_uPoint[i];
 
     //No bitmap needed as we are going to re-draw the line as it is moved.
@@ -317,7 +343,7 @@ lmUPoint lmShapeLine::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 
     //update all handler points and object points
     lmUPoint uShift(uPos - this->GetBounds().GetTopLeft());
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
     {
         m_pHandler[i]->SetHandlerTopLeftPoint( uShift + m_pHandler[i]->GetBounds().GetLeftTop() );
         m_uPoint[i] = m_pHandler[i]->GetHandlerCenterPoint();
@@ -340,16 +366,16 @@ void lmShapeLine::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoi
 
     //restore shape position to that of start of drag start so that MoveObject() or 
     //MoveObjectPoints() commands can apply shifts from original points.
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
         m_uPoint[i] = m_uSavePoint[i];
     UpdateBounds();
 
     //as this is an object defined by points, instead of MoveObject() command we have to issue
     //a MoveObjectPoints() command.
-    lmUPoint uShifts[lmNUM_HANDLERS];
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    lmUPoint uShifts[lmID_NUM_HANDLERS];
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
         uShifts[i] = uShift;
-    pCanvas->MoveObjectPoints(this, uShifts, lmNUM_HANDLERS, false);  //false-> do not update views
+    pCanvas->MoveObjectPoints(this, uShifts, lmID_NUM_HANDLERS, false);  //false-> do not update views
 }
 
 void lmShapeLine::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
@@ -358,7 +384,7 @@ void lmShapeLine::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
     //Each time a commnad is issued to change the line, we will receive a call
     //back to update the shape
 
-    for (int i=0; i < lmNUM_HANDLERS; i++)
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
     {
         if (fAddShifts)
         {

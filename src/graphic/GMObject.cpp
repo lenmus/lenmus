@@ -491,6 +491,8 @@ lmBoxPage* lmShape::GetOwnerBoxPage()
 {
     if (m_pOwnerBox)
         return m_pOwnerBox->GetOwnerBoxPage();
+    else if (IsChildShape())
+        return GetParentShape()->GetOwnerBoxPage();
     else
         return (lmBoxPage*)NULL;
 }
@@ -641,6 +643,36 @@ void lmCompositeShape::RenderHighlighted(wxDC* pDC, wxColour color)
     {
         m_Components[i]->RenderHighlighted(pDC, color);
     }
+}
+
+void lmCompositeShape::RenderWithHandlers(lmPaper* pPaper)
+{
+    lmShape::RenderWithHandlers(pPaper);
+
+	//Default behaviour: render all components
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        m_Components[i]->RenderWithHandlers(pPaper);
+    }
+}
+
+void lmCompositeShape::SetSelected(bool fValue)
+{
+    if (m_fSelected == fValue) return;      //nothing to do
+
+    //change selection status in components
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        m_Components[i]->Restricted_SetSelected(fValue);
+    }
+
+    //add/remove object from global list
+    lmBoxScore* pBS = this->GetOwnerBoxScore();
+    wxASSERT(pBS);
+    if (fValue)
+        pBS->AddToSelection(this);
+    else
+        pBS->RemoveFromSelection(this);
 }
 
 bool lmCompositeShape::BoundsContainsPoint(lmUPoint& pointL)

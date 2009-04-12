@@ -539,9 +539,9 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
     lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);  //TODO user option?
 
     //create the shape
-    lmShapeLine* pShape = new lmShapeLine(this, uxStart, uyStart, uxEnd, uyEnd,
-                                          uWidth, uBoundsExtraWidth, m_nColor,
-                                          _T("GraphLine"), eEdgeNormal);
+    lmShapeLine* pShape = new lmShapeLine(this, 0, uxStart, uyStart, uxEnd, uyEnd,
+                                          uWidth, uBoundsExtraWidth, lm_eLine_Solid,
+                                          m_nColor, eEdgeNormal, _T("GraphLine"));
 	pBox->AddShape(pShape);
     StoreShape(pShape);
     return pShape->GetBounds().GetWidth();

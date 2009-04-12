@@ -137,7 +137,7 @@ protected:
 
 //------------------------------------------------------------------------------------
 // lmScoreBlock - An AuxObj modelling an abstract block: box (a rectangle) plus
-//      alligment attributes
+//      alligment attributes + anchor line (optional)
 
 
 class lmScoreBlock : public lmAuxObj
@@ -145,9 +145,33 @@ class lmScoreBlock : public lmAuxObj
 public:
     virtual ~lmScoreBlock() {}
 
+    //operations
+    virtual void AddAnchorLine(lmLocation tPoint, lmTenths ntWidth,
+                               lmELineStyle nStyle, wxColour nColor);
+
+    //rectangle attributes
+    inline void SetWidth(lmTenths ntWidth) { m_ntWidth = ntWidth; }
+    inline void SetHeight(lmTenths ntHeight) { m_ntHeight = ntHeight; }
+    inline void SetBgColour(wxColour nColor) { m_nBgColor = nColor; }
+    //border
+    inline void SetBorderWidth(lmTenths ntBorderWidth) { m_ntBorderWidth = ntBorderWidth; }
+    inline void SetBorderColor(wxColour nBorderColor) { m_nBorderColor = nBorderColor; }
+    inline void SetBorderStyle(lmELineStyle nBorderStyle) { m_nBorderStyle = nBorderStyle; }
+    //anchor line
+    inline void SetAnchorLineStyle(lmELineStyle nAnchorLineStyle) { m_nAnchorLineStyle = nAnchorLineStyle; }
+    inline void SetAnchorLineColor(wxColour nAnchorLineColor) { m_nAnchorLineColor = nAnchorLineColor; }
+    inline void SetAnchorLineWidth(lmTenths ntAnchorLineWidth) { m_ntAnchorLineWidth = ntAnchorLineWidth; }
+
+    //undoable edition commands
+    void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
+
+    //lmAuxObj overrides for multi-shaped objects
+    void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift);
+    void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift);
+
 protected:
-    lmScoreBlock(lmTenths tWidth = 0.0f, lmTenths tHeight = 0.0f,
-                 lmTPoint tPos = lmTPoint(0.0f, 0.0f),
+    lmScoreBlock(lmTenths ntWidth = 160.0f, lmTenths ntHeight = 100.0f,
+                 lmTPoint ntPos = lmTPoint(0.0f, 0.0f),
                  lmEBlockAlign nBlockAlign = lmBLOCK_ALIGN_DEFAULT,
                  lmEHAlign nHAlign = lmHALIGN_DEFAULT,
                  lmEVAlign nVAlign = lmVALIGN_DEFAULT);
@@ -158,13 +182,31 @@ protected:
     lmEVAlign           m_nVAlign;
 
     //block pos and size
-    lmTenths    m_tHeight;
-    lmTenths    m_tWidth;
-    lmTPoint    m_tPos;         //top-left corner 
+    lmTenths    m_ntHeight;
+    lmTenths    m_ntWidth;
+    lmTPoint    m_ntPos;        //top-left corner 
 
     //block looking 
-    wxColour    m_nBgColor;
-    lmTenths    m_tBorderSize;
+    wxColour        m_nBgColor;
+    wxColour        m_nBorderColor;
+    lmTenths        m_ntBorderWidth;
+    lmELineStyle    m_nBorderStyle;
+
+    //anchor line
+    bool            m_fHasAnchorLine;
+    lmTPoint        m_ntAnchorPoint;
+    lmELineStyle    m_nAnchorLineStyle;
+    wxColour        m_nAnchorLineColor;
+    lmTenths        m_ntAnchorLineWidth;
+
+    //shapes
+    enum {
+        lmIDX_RECTANGLE = 0,
+        lmIDX_ANCHORLINE
+    };
+
+    lmShapeRectangle*       m_pShapeRectangle; 
+    lmShapeLine*            m_pShapeLine;
 
 };
 
@@ -174,7 +216,7 @@ protected:
 class lmScoreTextParagraph : public lmScoreBlock
 {
 public:
-    lmScoreTextParagraph();
+    lmScoreTextParagraph(lmTenths ntWidth, lmTenths ntHeight, lmTPoint tPos);
     virtual ~lmScoreTextParagraph();
 
     //implementation of virtual methods from base class
@@ -188,10 +230,6 @@ public:
     wxString Dump();
 
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-
-    //undoable edition commands
-    void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
 
     //operations
     void Defragment();

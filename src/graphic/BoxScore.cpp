@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -37,8 +37,8 @@
 
 lmBoxScore::lmBoxScore(lmScore* pScore) 
     : lmBox(pScore, eGMO_BoxScore, _("score"))
+    , m_pScore(pScore)
 {
-    m_pScore = pScore;
 }
 
 lmBoxScore::~lmBoxScore()
@@ -51,7 +51,8 @@ lmBoxScore::~lmBoxScore()
     m_aPages.clear();
 }
 
-void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
+void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper, wxWindow* pRenderWindow,
+                            wxPoint& vOffset)
 {
     // Render page nPage (1..n)
 	// This method is invoked from lmGraphicManager::Render()
@@ -67,8 +68,9 @@ void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
     }
 
     //render the requested page
+    m_aPages[nPage-1]->SetRenderWindow(pRenderWindow);
+    m_aPages[nPage-1]->SetRenderWindowOffset(vOffset);
     m_aPages[nPage-1]->Render(m_pScore, pPaper);
-
 }
 
 lmBoxPage* lmBoxScore::AddPage()

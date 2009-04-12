@@ -403,6 +403,17 @@ enum lmEBracketSymbol
     lm_eBracket,
 };
 
+//line styles, for lines, borders, etc.
+enum lmELineStyle
+{
+    lm_eLine_None = 0,
+    lm_eLine_Solid,
+    lm_eLine_LongDash,
+    lm_eLine_ShortDash,
+    lm_eLine_Dot,
+    lm_eLine_DotDash,
+};
+
 //IDs for events that must be public
 enum
 {

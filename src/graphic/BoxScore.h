@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -59,7 +59,8 @@ public:
     ~lmBoxScore();
 
     lmBoxPage* AddPage();
-    void RenderPage(int nPage, lmPaper* pPaper); 
+    void RenderPage(int nPage, lmPaper* pPaper, wxWindow* pRenderWindow,
+                    wxPoint& vOffset); 
 
     inline lmBoxPage* GetCurrentPage() const { return m_aPages.back(); }
     lmBoxPage* GetPage(int nPage);
@@ -83,7 +84,6 @@ public:
     inline int GetNumObjectsSelected() { return m_Selection.NumObjects(); }
     void ClearSelection();
 
-
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
 
@@ -94,7 +94,7 @@ public:
 
 
 private:
-    lmScore*        m_pScore;       //score to be rendered
+    lmScore*        m_pScore;           //score to be rendered
 
     // a lmBoxScore is, mainly, a collection of lmBoxPages
 	std::vector<lmBoxPage*>	   m_aPages;	//array of ptrs to pages that form this score

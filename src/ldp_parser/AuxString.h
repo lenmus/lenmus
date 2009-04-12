@@ -46,6 +46,7 @@ extern bool SrcIsRest(wxString sElement);
 extern lmEClefType LDPNameToClef(wxString sClefName);
 extern lmEKeySignatures LDPNameToKey(wxString sKeyName);
 
+extern wxString LineStyleToLDP(lmELineStyle nStyle);
 
 
 // MusicXML related

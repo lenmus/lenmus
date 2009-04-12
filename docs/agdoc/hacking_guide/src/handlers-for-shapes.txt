@@ -58,11 +58,17 @@ When a handler is dragged the controlled shape is informed by invoking methods %
  * At end of handler drag, the controlled shape must:
     * compute shifts from start of drag points
     * issue a %%MoveObjectPoints()%% command. Before doing it, as handlers and shape points have been already displaced during drag, it is necessary to restore the original positions in the shape, to avoid double displacements.
+    
+ * Command %%MoveObjectPoints()%% execution interacts with the owner of the shape (an %%lmStaffObj%% or an %%lmAuxObj%%) by invoking its member method %%MoveObjectPoints()%%.
+ 
+ * The owner %lmStaffObj%% or %%lmAuxObj%% updates its internal information and informs back the shape by invoking %%MovePoints()%% shape method. At first sight, this last step looks unnecesary. As the shape issued the move command, it would be enough if shape points were not restored before issuing the command. But it has been done this way in order to use the same mechanism when the move command is issued from any other part in the program.
 
 
 
 \h2 {What to do to add handlers to a shape}
 %%%-----------------------------------------------
+
+In the shape object:
 
  * Decide on object layout when selected (squared handlers, line handlers, aux lines) and add defines for handlers IDs.
  
@@ -80,10 +86,17 @@ When a handler is dragged the controlled shape is informed by invoking methods %
  * Create method %%OnHandlerDrag()%%
  
  * Create method %%OnHandlerEndDrag()%%
+ 
+  * Implement method %%MovePoints()%%
+
 
  * If necessary, override method %%OnSelectionStatusChanged()%% to hide or restore visibility of controlled shape while selected.
 
+In the owner %%lmScoreObj%%:
 
+ * Implement method %%MoveObjectPoints()%%
+ 
+ 
 
 \h2 {Object points, object location, shapes and handlers}
 %%%------------------------------------------------------

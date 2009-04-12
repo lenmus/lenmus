@@ -44,7 +44,9 @@ class lmScoreObj;
 class lmStaff;
 class lmStaffObj;
 class lmPaper;
-
+class lmHandlerSquare;
+class lmHandlerLine;
+class lmShapeLine;
 
 
 //------------------------------------------------------------------------------------
@@ -82,27 +84,92 @@ protected:
 class lmShapeRectangle : public lmSimpleShape
 {
 public:
+    //TODO: remove this backwards compatibility constructor
     lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits yTop,
                      lmLUnits xRight, lmLUnits yBottom, lmLUnits uWidth,
                      wxColour color = *wxBLACK, wxString sName = _T("Rectangle"),
 				     bool fDraggable = true, bool fSelectable = true, 
                      bool fVisible = true);
-    ~lmShapeRectangle() {}
+
+    //new rectangle constructor
+    lmShapeRectangle(lmScoreObj* pOwner,
+                     //position and size
+                     lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
+                     //border
+                     lmLUnits uBorderWidth, wxColour nBorderColor,
+                     //content
+                     wxColour nBgColor = *wxWHITE,
+                     //other
+                     int nShapeIdx = 0, wxString sName = _T("Rectangle"),
+				     bool fDraggable = true, bool fSelectable = true, 
+                     bool fVisible = true);
+
+    virtual ~lmShapeRectangle();
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+    void RenderNormal(lmPaper* pPaper, wxColour color);
+    void RenderWithHandlers(lmPaper* pPaper);
     wxString Dump(int nIndent);
-    void Shift(lmLUnits xIncr, lmLUnits yIncr);
+    void Shift(lmLUnits uxIncr, lmLUnits uyIncr);
+
+    //Handler IDs. AWARE: Used also as array indexes
+    enum
+    {
+        lmID_TOP_LEFT = 0,
+        lmID_TOP_RIGHT,
+        lmID_BOTTOM_RIGHT,
+        lmID_BOTTOM_LEFT,
+        //
+        lmID_LEFT_CENTER,
+        lmID_TOP_CENTER,
+        lmID_RIGHT_CENTER,
+        lmID_BOTTOM_CENTER,
+        //
+        lmID_NUM_HANDLERS
+    };
 
     //settings
     void SetCornerRadius(lmLUnits uRadius);
+    inline void SetBorderStyle(lmELineStyle nBorderStyle) { m_nBorderStyle = nBorderStyle; }
+
+    //shape dragging
+    wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
+	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+	void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
+
+    //handlers dragging
+    lmUPoint OnHandlerDrag(lmPaper* pPaper, const lmUPoint& uPos, long nHandlerID);
+    void OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos, long nHandlerID);
+
+    //call backs
+    void MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
 
 
 protected:
+    void Create(lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom,
+                lmLUnits uBorderWidth, wxColour nBorderColor, wxColour nBgColor);
+    void DrawRectangle(lmPaper* pPaper, wxColour colorC, bool fSketch);
+    void ComputeNewPointsAndHandlersPositions(const lmUPoint& uPos, long nHandlerID);
+    void ComputeCenterPoints();
+    void UpdateBounds();
+    void SavePoints();
+
+    //rectangle
     lmLUnits        m_xLeft, m_yTop;
     lmLUnits        m_xRight, m_yBottom;
-    lmLUnits        m_uWidth;
+    wxColour        m_nBgColor;
     lmLUnits        m_uCornerRadius;
+
+    //border
+    lmLUnits        m_uBorderWidth;
+    wxColour        m_nBorderColor;
+    lmELineStyle    m_nBorderStyle;
+
+    //rectangle points and handlers
+    lmUPoint            m_uPoint[lmID_NUM_HANDLERS];       //four corners + anchor point + centers of rectangle sides   
+    lmUPoint            m_uSavePoint[lmID_NUM_HANDLERS];   //to save start and end points when dragging/moving 
+    lmHandlerSquare*    m_pHandler[lmID_NUM_HANDLERS];     //handlers
 
 };
 
@@ -190,13 +257,40 @@ public:
 	lmLUnits GetYEndStem();
 	lmLUnits GetXCenterStem();
     inline lmLUnits GetExtraLenght() { return m_uExtraLength; }
+
 private:
 	bool	    m_fStemDown;
     lmLUnits    m_uExtraLength;
 
 };
 
+//------------------------------------------------------------------------------------
 
+class lmShapeWindow : public lmShapeRectangle
+{
+public:
+    lmShapeWindow(lmScoreObj* pOwner,
+                  //position and size
+                  lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
+                  //border
+                  lmLUnits uBorderWidth, wxColour nBorderColor,
+                  //content
+                  wxColour nBgColor = *wxWHITE,
+                  //other
+                  int nShapeIdx = 0, wxString sName = _T("Window"),
+				  bool fDraggable = true, bool fSelectable = true, 
+                  bool fVisible = true);
+    virtual ~lmShapeWindow() {}
+
+    //renderization
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
+
+	//specific methods
+
+protected:
+
+    wxWindow*       m_pWidget;      //the window to embbed
+};
 
 
 #endif    // __LM_SHAPES_H__

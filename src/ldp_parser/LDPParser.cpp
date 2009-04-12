@@ -1297,7 +1297,7 @@ bool lmLDPParser::AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints)
     // <num> = real number, in tenths
 
     //Returns true if error.  As result of the analysis, the corresponding value of array of
-    //points pPoints is updated. 
+    //points pPoints is updated.
 
     //check that there is one parameter and only one
     if (pNode->GetNumParms()!= 1)
@@ -1847,11 +1847,11 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
 
             else if (sData.Left(1) == _T("v"))      //voice
-            {	
+            {
 				m_nCurVoice = AnalyzeVoiceNumber(sData, pNode);
 			}
             else if (sData == _T("fermata"))        //fermata
-			{	
+			{
                 fFermata = true;
             }
             else {
@@ -1864,15 +1864,15 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
        {
             sData = pX->GetName();
             if (sData == _T("g"))       //Start of group element
-            {       
+            {
                 AnalysisError(pX, _T("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData.c_str());
             }
             else if (sData == _T("stem"))       //stem attributes
-            {       
+            {
                 nStem = AnalyzeStem(pX, pVStaff);
             }
             else if (sData == _T("fermata"))        //fermata attributes
-            {   
+            {
                 fFermata = true;
                 nFermataPlacement = AnalyzeFermata(pX, pVStaff, &tFermataPos);
             }
@@ -1891,7 +1891,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 }
             }
             else if (sData == _T("tie"))     //start/end of tie
-            {       
+            {
                 if (fIsRest)
                     AnalysisError(pX, _T("Rests can not be tied. Tie ignored."), sData.c_str());
                 else
@@ -2027,7 +2027,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             if (pTieInfo->fStart)
             {
                 //start of tie. Save the information
-                pTieInfo->pNote = pNt; 
+                pTieInfo->pNote = pNt;
                 m_PendingTies.push_back(pTieInfo);
             }
             else
@@ -2978,8 +2978,7 @@ wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
     if(pNode->GetNumParms() != 1) {
         AnalysisError(
             pNode,
-            _T("Element '%s' has less parameters than the minimum required. Color black will be used."),
-            pNode->GetName().c_str() );
+            _T("Element 'color' has less parameters than the minimum required. Color black will be used."));
         color.Set(0,0,0);
         return color;
     }
@@ -2987,7 +2986,7 @@ wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
     wxString sColor;
 
     //get the color in HTML-like syntax (i.e. "#" followed by 6 hexadecimal digits
-    //for red, green and blue components
+    //for red, green and blue components or 8 hexadecimal digits to include alpha channel
     sColor = (pNode->GetParameter(1))->GetName();
 
     //convert to color value
@@ -3110,7 +3109,7 @@ bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
 bool lmLDPParser::GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
                                  float* pValue)
 {
-	//returns true if error and send an error message
+	//if error, returns true, sets pValue to 0.0f and issues an error message
 
 	double rNumberDouble;
 	if (!StrToDouble(sValue, &rNumberDouble))
@@ -3122,13 +3121,34 @@ bool lmLDPParser::GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& n
 	{
         AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a float number."),
             nodeName.c_str(), sValue.c_str() );
+        *pValue = 0.0f;
         return true;
     }
 }
 
-//returns true if error; in this case nothing is added to the VStaff
+bool lmLDPParser::GetValueFloatNumber(lmLDPNode* pNode, float* pValue)
+{
+	//if error, returns true, sets pValue to 0.0f and issues an error message
+
+    wxString sValue = pNode->GetParameter(1)->GetName();
+	double rNumberDouble;
+	if (!StrToDouble(sValue, &rNumberDouble))
+	{
+        *pValue = (float)rNumberDouble;
+		return false;
+	}
+    else
+	{
+        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a float number."),
+            pNode->GetName().c_str(), sValue.c_str() );
+        *pValue = 0.0f;
+        return true;
+    }
+}
+
 bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
+    //returns true if error; in this case nothing is added to the VStaff
     // <text> = (text string <location>[<font><alingment>])
 
     wxASSERT(pNode->GetName() == _T("text"));
@@ -3374,33 +3394,31 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    //<textbox> ::= (textbox <location>[<size>][<color>][<border>]<text>[<line>])
-    //<location> = { [(dx num) | (dy num)]+ }
-    //<size> ::= (size <width> <height>)
-    //<border> ::= (border <width><style><colour>)
-    //<width>,<height> ::= num        (tenths)
+    //<textbox> ::= (textbox <location>[<size>][<color>][<border>]<text>[<anchorLine>])
 
     wxString sElmName = pNode->GetName();
-    wxASSERT(pNode->GetName() == _T("textbox"));
+    wxASSERT(sElmName == _T("textbox"));
     int nNumParms = pNode->GetNumParms();
 
-    ////check that type is specified
-    //if(nNumParms < 2)
-    //{
-    //    AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-    //        sElmName.c_str());
-    //    return;
-    //}
-
     //parameters and their default values
-    wxColour nColor = *wxBLACK;
+        //box
 	lmLocation tPos = g_tDefaultPos;
-    lmTenths ntWidth = 60.0f;
-    lmTenths ntHeight = 30.0f;
+    lmTenths ntWidth = 160.0f;
+    lmTenths ntHeight = 100.0f;
+    wxColour nBgColor(255, 255, 255);
+        //text
     lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
-    wxColour nColour(0, 0, 0);        //default: black
     wxString sText = _("Error in text!");
     wxString sStyle = _T("");
+        //border
+    lmELineStyle nBorderStyle = lm_eLine_Solid;
+    wxColour nBorderColor = *wxBLACK;
+    lmTenths ntBorderWidth = 1.0f;
+        //anchor line
+	lmLocation tAnchorPoint = g_tDefaultPos;
+    lmELineStyle nAnchorLineStyle = lm_eLine_Solid;
+    wxColour nAnchorLineColor = *wxBLACK;
+    lmTenths ntAnchorLineWidth = 1.0f;
 
     //loop to analyze parameters. Optional: color, border, line
     for(int iP=1; iP <= pNode->GetNumParms(); iP++)
@@ -3413,21 +3431,19 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
         else if(sName == _T("size"))
         {
-            //TODO
-            //AnalyzeSize(pX, &ntWidth, &ntHeight);
+            AnalyzeSize(pX, &ntWidth, &ntHeight);
         }
         else if(sName == _T("color"))
         {
-            nColour = AnalyzeColor(pX);
+            nBgColor = AnalyzeColor(pX);
         }
         else if(sName == _T("border"))
         {
-            //TODO
-            //AnalyzeBorder(pX, ?);
+            AnalyzeBorder(pX, &ntBorderWidth, &nBorderStyle, &nBorderColor);
         }
         else if(sName == _T("text"))
         {
-            //(text string [<location>] [{<font> | <style>}] [<alingment>])
+            //(text string [<location>] [{<font> | <style>}] [<alignment>])
             //mandatory: string. Optional: style. All others forbidden
             if (AnalyzeTextString(pX, &sText, &sStyle, (lmEHAlign*)NULL,
                                   (lmLocation*)NULL, (lmFontInfo*)NULL, (bool*)NULL))
@@ -3436,7 +3452,7 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
                 //TODO
             }
         }
-        else if(sName == _T("line"))
+        else if(sName == _T("anchorLine"))
         {
             //TODO
         }
@@ -3448,14 +3464,213 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     // create the AuxObj and attach it to the VStaff
-    lmScoreTextParagraph* pSTP = new lmScoreTextParagraph();
+    lmTPoint ntPos(tPos.x, tPos.y);
+    lmScoreTextParagraph* pSTP =
+        new lmScoreTextParagraph(ntWidth, ntHeight, ntPos);
     lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
     pAnchor->AttachAuxObj(pSTP);
 
     //apply values to created lmScoreTextParagraph
+
+    //background colour
+    pSTP->SetBgColour(nBgColor);
+
+    //border
+    pSTP->SetBorderWidth(ntBorderWidth);
+    pSTP->SetBorderColor(nBorderColor);
+    pSTP->SetBorderStyle(nBorderStyle);
+
+    //anchor line
+    tAnchorPoint.x = 0.0f;
+    tAnchorPoint.y = 0.0f;
+    pSTP->AddAnchorLine(tAnchorPoint, ntAnchorLineWidth, nAnchorLineStyle,
+                        nAnchorLineColor);
+
+    //text
     lmTextStyle* pStyle = GetTextStyle(pNode, sStyle);
     lmBaseText* pBText = new lmBaseText(sText, pStyle);
     pSTP->InsertTextUnit(pBText);
+}
+
+bool lmLDPParser::AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth,
+                                lmELineStyle* pLineStyle, wxColour* pColor)
+{
+    //returns true if error
+    //<border> ::= (border <width><lineStyle><color>)
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("border"));
+    int nNumParms = pNode->GetNumParms();
+
+    //parameters and their default values
+    wxColour nColor(0, 0, 0);           //default: black
+    lmTenths ntWidth = 1.0f;            //default: 1 tenth
+    lmELineStyle nLineStyle = lm_eLine_Solid;
+
+    //load default values
+    *ptWidth = ntWidth;
+    *pLineStyle = nLineStyle;
+    *pColor = nColor;
+
+    //check that type is specified
+    if(nNumParms < 3)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+                      _T("border") );
+        return true;    //error
+    }
+
+    //loop to analyze parameters: width & height
+    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    {
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        if (sName == _T("width"))
+            GetValueFloatNumber(pX, ptWidth);
+        else if (sName == _T("color"))
+            nColor = AnalyzeColor(pX);
+        else if (sName == _T("lineStyle"))
+            GetValueLineStyle(pX, &nLineStyle);
+        else
+            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                          _T("size"), sName.c_str() );
+    }
+
+    //return parsed values
+    *ptWidth = ntWidth;
+    *pLineStyle = nLineStyle;
+    *pColor = nColor;
+
+    return false;    //no error
+}
+
+bool lmLDPParser::GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle)
+{
+	//if error, returns true, sets pLineStyle to lm_eLine_Solid and issues an error message
+    //<lineStyle> = (lineStyle { none | solid | longDash | shortDash | dot | dotDash } )
+
+    wxString sValue = pNode->GetParameter(1)->GetName();
+    if (sValue == _T("none"))
+        *pLineStyle = lm_eLine_None;
+    else if (sValue == _T("solid"))
+        *pLineStyle = lm_eLine_Solid;
+    else if (sValue == _T("longDash"))
+        *pLineStyle = lm_eLine_LongDash;
+    else if (sValue == _T("shortDash"))
+        *pLineStyle = lm_eLine_ShortDash;
+    else if (sValue == _T("dot"))
+        *pLineStyle = lm_eLine_Dot;
+    else if (sValue == _T("dotDash"))
+        *pLineStyle = lm_eLine_DotDash;
+    else
+	{
+        AnalysisError(pNode, _T("Element 'lineStyle': Invalid value '%s'. Replaced by 'solid'"));
+        *pLineStyle = lm_eLine_Solid;
+        return true;
+    }
+    return false;       //no error
+}
+
+bool lmLDPParser::AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptHeight)
+{
+    //returns true if error
+    //<size> ::= (size <width><height>)
+    //<width> ::= (width num)
+    //<height> ::= (height num)
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("size"));
+    int nNumParms = pNode->GetNumParms();
+
+    //check that it has two more parameters
+    if(nNumParms != 2)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+                      _T("size"));
+        return true;    //error
+    }
+
+    //loop to analyze parameters: width & height
+    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    {
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        if (sName == _T("width"))
+            GetValueFloatNumber(pX, ptWidth);
+        else if (sName == _T("height"))
+            GetValueFloatNumber(pX, ptHeight);
+        else
+            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                          _T("size"), sName.c_str() );
+    }
+    return false;    //no error
+}
+
+void lmLDPParser::AnalyzeAnchorLine(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //<anchorLine> = (anchorLine <destination-point>[<width>][<lineStyle>][<color>]
+    //                           [<lineEndStyle>])
+    //<destination-point> = <location>
+    //<lineEndStyle> = (lineEndStyle { none | arrow | dot | square | diamond })
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("rectangle"));
+    int nNumParms = pNode->GetNumParms();
+
+    //parameters and their default values
+	lmLocation tPos = g_tDefaultPos;
+    lmTenths ntWidth = 160.0f;
+    lmTenths ntHeight = 100.0f;
+    wxColour nBgColor(255, 255, 255);
+    //border
+    lmELineStyle nBorderStyle = lm_eLine_Solid;
+    wxColour nBorderColor = *wxBLACK;
+    lmTenths ntBorderWidth = 1.0f;
+
+    //loop to analyze parameters. Optional: color, border
+    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    {
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        if (sName == _T("dx") || sName == _T("dy"))
+        {
+            AnalyzeLocation(pX, &tPos);
+        }
+        else if(sName == _T("size"))
+        {
+            AnalyzeSize(pX, &ntWidth, &ntHeight);
+        }
+        else if(sName == _T("color"))
+        {
+            nBgColor = AnalyzeColor(pX);
+        }
+        else if(sName == _T("border"))
+        {
+            AnalyzeBorder(pX, &ntBorderWidth, &nBorderStyle, &nBorderColor);
+        }
+        else
+        {
+            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                          _T("rectangle"), sName.c_str() );
+        }
+    }
+
+    //// create the AuxObj and attach it to the VStaff
+    //lmScoreTextParagraph* pSTP = new lmScoreTextParagraph();
+    //lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
+    //pAnchor->AttachAuxObj(pSTP);
+
+    ////apply values to created lmScoreTextParagraph
+
+    ////rectangle
+    //pSTP->SetWidth(ntWidth);
+    //pSTP->SetHeight(ntHeight);
+    //pSTP->SetBgColour(nBgColor);
+
+    ////border
+    //pSTP->SetBorderWidth(ntBorderWidth);
+    //pSTP->SetBorderColor(nBorderColor);
+    //pSTP->SetBorderStyle(nBorderStyle);
 }
 
 lmTextStyle* lmLDPParser::GetTextStyle(lmLDPNode* pNode, const wxString& sStyle)
@@ -3661,10 +3876,12 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUn
     //returns, in variables pointed by pValue and pUnits the
     //result of the analysis.
 
+    wxString sElement = pNode->GetName();
+
     //check that there are parameters
     if (pNode->GetNumParms()!= 1) {
         AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-            pNode->GetName().c_str() );
+            sElement.c_str() );
         return;
     }
 
@@ -3675,34 +3892,10 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUn
 	if (sUnits.at(0) != _T('.') && !sUnits.IsNumber() )
 	{
         AnalysisError(pNode, _T("Element '%s' has units '%s'. Units no longer supported. Ignored"),
-            pNode->GetName().c_str(), sUnits.c_str() );
-		//sValue = sParm.Left(sParm.length() - 2);
-  //      if (sUnits == _T("mm")) {
-  //          *pUnits = lmMILLIMETERS;
-  //      }
-  //      else if (sUnits == _T("cm")) {
-  //          *pUnits = lmCENTIMETERS;
-  //      }
-  //      else if (sUnits == _T("in")) {
-  //          *pUnits = lmINCHES;
-  //      }
-  //      else {
-  //          AnalysisError(pNode, _T("Element '%s': Invalid units '%s'. Ignored"),
-  //              pNode->GetName().c_str(), sUnits.c_str() );
-  //          return;
-  //      }
+            sElement.c_str(), sUnits.c_str() );
     }
 
-	double rNumberDouble;
-	if (!StrToDouble(sValue, &rNumberDouble))
-	{
-        *pValue = (float)rNumberDouble;
-    }
-    else {
-        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
-            pNode->GetName().c_str(), sParm.c_str() );
-        *pValue = 0.0;
-    }
+    GetFloatNumber(pNode, sValue, sElement, pValue);
 
 }
 

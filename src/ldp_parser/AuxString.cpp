@@ -543,3 +543,26 @@ void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName)
 
 }
 
+wxString LineStyleToLDP(lmELineStyle nStyle)
+{
+    switch(nStyle)
+    {
+        case lm_eLine_None:
+            return _T("none");
+        case lm_eLine_Solid:
+            return _T("solid");
+        case lm_eLine_LongDash:
+            return _T("longDash");
+        case lm_eLine_ShortDash:
+            return _T("shortDash");
+        case lm_eLine_Dot:
+            return _T("dot");
+        case lm_eLine_DotDash:
+            return _T("dotDash");
+        default:
+            wxLogMessage(_T("[LineStyleToLDP] Error: invalid line style %d"), nStyle);
+            wxASSERT(false);
+            return _T("");      //compiler happy
+    }
+};
+

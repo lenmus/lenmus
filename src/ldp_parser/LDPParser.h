@@ -87,6 +87,7 @@ public:
 	bool		AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore);
 	lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
+    bool        AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptHeight);
     void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmEStemType AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -128,8 +129,11 @@ protected:
 
     void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
+    void        AnalyzeAnchorLine(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints);
+    bool        AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth, lmELineStyle* pLineStyle,
+                              wxColour* pColor);
     wxColour    AnalyzeColor(lmLDPNode* pNode);
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
@@ -146,7 +150,9 @@ protected:
     bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
 	bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
                                float* pValue);
+    bool        GetValueFloatNumber(lmLDPNode* pNode, float* pValue);
     lmTextStyle* GetTextStyle(lmLDPNode* pNode, const wxString& sStyle);
+    bool        GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle);
 
     //auxiliary
     void AddTie(lmNote* pNote, lmTieInfo* pTieInfo);
@@ -187,7 +193,7 @@ protected:
     int                 m_nVersion;         //version in numeric format: 100*num+rev. (i.I.e. 1.2 = 102)
 
     //list of open ties, waiting for the second note.
-    std::list<lmTieInfo*>   m_PendingTies;   
+    std::list<lmTieInfo*>   m_PendingTies;
 
 
 

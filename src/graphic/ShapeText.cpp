@@ -30,6 +30,8 @@
 #endif
 
 #include "ShapeText.h"
+#include "ShapeLine.h"
+#include "BoxPage.h"
 #include "../score/Glyph.h"      //access to glyphs table
 #include "../score/Score.h"
 #include "../app/ScoreCanvas.h"
@@ -380,7 +382,7 @@ void lmShapeTitle::Render(lmPaper* pPaper, wxColour color)
     pPaper->SetTextForeground(color);
     pPaper->DrawText(m_sClippedText, m_uTextPos.x, m_uTextPos.y);
 
-    lmSimpleShape::Render(pPaper, color);
+    lmShapeRectangle::Render(pPaper, color);
 }
 
 void lmShapeTitle::SetFont(wxFont *pFont)
@@ -513,118 +515,99 @@ void lmShapeTitle::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPo
 // lmShapeTextbox object implementation
 //========================================================================================
 
-lmShapeTextbox::lmShapeTextbox(lmScoreObj* pOwner, const wxString& sText, wxFont* pFont,
-                         lmPaper* pPaper, lmEBlockAlign nBlockAlign,
-                         lmEHAlign nHAlign, lmEVAlign nVAlign,
-                         lmLUnits xLeft, lmLUnits yTop,
-                         lmLUnits xRight, lmLUnits yBottom,
-                         wxColour nColor, wxString sName,
-						 bool fDraggable)
-    : lmShapeRectangle(pOwner, xLeft, yTop, xRight, yBottom, 0.0f, nColor,
-                       sName, fDraggable, true)
+//helper class to contain a line of text (to distribute text inside the box)
+class lmTextLine
 {
-    Create(sText, pFont, pPaper, nBlockAlign, nHAlign, nVAlign, xLeft, yTop, xRight,
-           yBottom);
-}
+public:
+    lmTextLine(wxString text, lmLUnits width, lmLUnits height) 
+        : sText(text), uWidth(width), uHeight(height) {}
+    ~lmTextLine() {}
 
-void lmShapeTextbox::Create(const wxString& sText, wxFont* pFont, lmPaper* pPaper,
-                         lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
-                         lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom)
-{                         
-    //The simplest constructor: just a text using a single font. No break lines
+	wxString		sText;
+    lmLUnits        uWidth;
+    lmLUnits        uHeight;
+    lmUPoint        uPos;     // text position (relative to top-left of rectangle)
+};
 
-	m_nType = eGMO_ShapeTextBlock;
 
-    m_sText = sText;
-    m_pFont = pFont;
-    m_nBlockAlign = nBlockAlign;
-    m_nHAlign = nHAlign;
-    m_nVAlign = nVAlign;
+lmShapeTextbox::lmShapeTextbox(lmScoreObj* pOwner, int nShapeIdx, 
+                //text related
+                lmPaper* pPaper,
+                const wxString& sText, wxFont* pFont, wxColour nTxtColor,
+                //block related
+                lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
+                lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
+                wxColour nBgColor,
+                //border
+                lmLUnits uBorderWidth,
+                wxColour nBorderColor,
+                lmELineStyle nBorderStyle,
+                //other
+                wxString sName, bool fDraggable)
+    : lmShapeRectangle(pOwner, uxLeft, uyTop, uxRight, uyBottom,
+                       uBorderWidth, nBorderColor, nBgColor, nShapeIdx,
+                       sName, fDraggable, lmSELECTABLE, lmVISIBLE)
+    , m_sText(sText)
+    , m_pFont(pFont)
+    , m_nTxtColor(nTxtColor)
+    , m_nBlockAlign(nBlockAlign)
+    , m_nHAlign(nHAlign)
+    , m_nVAlign(nVAlign)
+{
+    m_nType = eGMO_ShapeTextbox;
+    SetBorderStyle(nBorderStyle);
 
-    //For now, behaviour wiil be that of a SimpleText object. Rectangle will be 
-    //adjusted to text
-
-    // store boundling rectangle position and size
+    //measure text
     pPaper->SetFont(*m_pFont);
     pPaper->GetTextExtent(m_sText, &m_uTextWidth, &m_uTextHeight);
 
-    //compute rectangle bounds
-    ComputeBlockBounds(xLeft, yTop, xRight, yBottom);
-
-    //Position the text within the box
+    //Adjust text within the box
     ComputeTextPosition(pPaper);
-
 }
 
-void lmShapeTextbox::ComputeBlockBounds(lmLUnits xLeft, lmLUnits yTop, lmLUnits xRight, lmLUnits yBottom)
+lmShapeTextbox::~lmShapeTextbox()
 {
-    //compute rectangle bounds
-    lmLUnits uxLeft, uxRight;
-    lmScore* pScore = m_pOwner->GetScore();
-    switch (m_nBlockAlign)
-    {
-        case lmBLOCK_ALIGN_DEFAULT:
-        case lmBLOCK_ALIGN_BOTH:
-            {
-                //xLeft and xRight on respective page margins
-                uxLeft = pScore->GetLeftMarginXPos();
-                uxRight = pScore->GetRightMarginXPos();
-            }
-            break;
+    DeleteTextLines();      //delete text lines
+}
 
-        case lmBLOCK_ALIGN_LEFT:
-            {
-                //xLeft on left page margin
-                uxLeft = pScore->GetLeftMarginXPos();
-                uxRight = xRight;
-            }
-            break;
-
-        case lmBLOCK_ALIGN_RIGHT:
-            {
-                //xRight on right page margin
-                uxLeft = xLeft;
-                uxRight = pScore->GetRightMarginXPos();
-            }
-            break;
-
-        case lmBLOCK_ALIGN_NONE:
-            {
-                //Floating block: xLeft and xRight set by user
-                uxLeft = xLeft;
-                uxRight = xRight;
-            }
-            break;
-
-        default:
-            wxASSERT(false);
-    }
-
-    m_uBoundsTop.x = uxLeft;
-    m_uBoundsTop.y = yTop;
-    m_uBoundsBottom.x = uxRight;
-    m_uBoundsBottom.y = m_uBoundsTop.y + m_uTextHeight;
-
-    // store selection rectangle position and size
-	m_uSelRect = GetBounds();
+void lmShapeTextbox::DeleteTextLines()
+{
+    //delete text lines
+    std::list<lmTextLine*>::iterator it;
+    for (it = m_TextLines.begin(); it != m_TextLines.end(); ++it)
+        delete *it;
+    m_TextLines.clear();
 }
 
 void lmShapeTextbox::ComputeTextPosition(lmPaper* pPaper)
 {
-    //Position the text within the box
-    lmLUnits uxLeft, uyTop;
-    lmLUnits uBoxAreaWidth = m_uBoundsBottom.x - m_uBoundsTop.x;
+    //Position the text within the box, splitting lines if necessary
 
-	//clip text if longer than available space
-	m_sClippedText = m_sText;
-    m_uClippedTextWidth = m_uTextWidth;
-    m_uClippedTextHeight = m_uTextHeight;
-	if (uBoxAreaWidth < m_uTextWidth)
+    //delete obsolete text arrangement
+    DeleteTextLines();
+
+    //compute box margin: the width of the 'l' letter
+    lmLUnits uxMargin, uyMargin;
+	pPaper->SetFont(*m_pFont);
+	pPaper->GetTextExtent(_T("l"), &uxMargin, &uyMargin);
+    uyMargin = uxMargin;
+
+    lmLUnits uBoxAreaWidth = m_uBoundsBottom.x - m_uBoundsTop.x - uxMargin - uxMargin;
+
+	//split text in lines
+    lmTextLine* pCurLine;
+    lmLUnits uxLine = uxMargin;
+    lmLUnits uyLine = uyMargin;      
+	if (uBoxAreaWidth >= m_uTextWidth)
+    {
+        //the text fits in one line
+        pCurLine = new lmTextLine(m_sText, m_uTextWidth, m_uTextHeight);
+    }
+    else
 	{
-		//we have to cut the text. Loop to add chars until line full
-		pPaper->SetFont(*m_pFont);
+		//we have to split the text. Loop to add chars until line full
 		lmLUnits uWidth, uHeight;
-		m_sClippedText = _T("");
+        pCurLine = new lmTextLine(_T(""), 0.0f, m_uTextHeight);
 		int iC = 0;
 		lmLUnits uAvailable = uBoxAreaWidth;
 		while(iC < (int)m_sText.Length())
@@ -632,72 +615,95 @@ void lmShapeTextbox::ComputeTextPosition(lmPaper* pPaper)
 			const wxString ch = m_sText.Mid(iC, 1);
 			pPaper->GetTextExtent(ch, &uWidth, &uHeight);
 			if (uAvailable < uWidth)
-				break;
+            {
+                //line full. Save it and start a new line
+                m_TextLines.push_back(pCurLine);
+                uxLine += ApplyHAlign(uBoxAreaWidth, pCurLine->uWidth, m_nHAlign);
+                pCurLine->uPos = lmUPoint(uxLine, uyLine);
+                uyLine += pCurLine->uHeight;
+
+                pCurLine = new lmTextLine(_T(""), 0.0f, m_uTextHeight);
+                uAvailable = uBoxAreaWidth;
+            }
 
 			//add char to clipped text
 			uAvailable -= uWidth;
-			m_sClippedText += ch;
+            pCurLine->sText += ch;
 			iC++;
 		}
-		pPaper->GetTextExtent(m_sClippedText, &m_uClippedTextWidth, &m_uClippedTextHeight);
+        pPaper->GetTextExtent(pCurLine->sText, &(pCurLine->uWidth), &(pCurLine->uHeight));
 	}
+    m_TextLines.push_back(pCurLine);
+    uxLine += ApplyHAlign(uBoxAreaWidth, pCurLine->uWidth, m_nHAlign);
+    pCurLine->uPos = lmUPoint(uxLine, uyLine);
+}
 
+lmLUnits lmShapeTextbox::ApplyHAlign(lmLUnits uAvailableWidth, lmLUnits uLineWidth,
+                                     lmEHAlign nHAlign)
+{
+    //Returns x shift to apply for desired aligment
 
-    switch (m_nHAlign)
+    switch (nHAlign)
     {
         case lmHALIGN_DEFAULT:
         case lmHALIGN_LEFT:
-            {
-                uxLeft = m_uBoundsTop.x;
-                uyTop = m_uBoundsTop.y;
-            }
-            break;
+            return 0.0f;
 
         case lmHALIGN_RIGHT:
-            {
-                uxLeft = m_uBoundsBottom.x - m_uClippedTextWidth;
-                uyTop = m_uBoundsTop.y;
-            }
-            break;
+            return uAvailableWidth - uLineWidth;
 
         case lmHALIGN_JUSTIFY:
-            {
-                //TODO
-                uxLeft = m_uBoundsTop.x;
-                uyTop = m_uBoundsTop.y;
-            }
-            break;
+            //TODO
+            return 0.0f;
 
         case lmHALIGN_CENTER:
-            {
-                uxLeft = m_uBoundsTop.x + (uBoxAreaWidth - m_uClippedTextWidth) / 2.0f;
-                uyTop = m_uBoundsTop.y;
-            }
-            break;
+            return (uAvailableWidth - uLineWidth) / 2.0f;
 
         default:
             wxASSERT(false);
+            return 0.0f;    //compiler happy
     }
-    m_uTextPos.x = uxLeft;
-    m_uTextPos.y = uyTop;
-
-    // store selection rectangle position and size
-	m_uSelRect.SetLeftTop(m_uTextPos);
-    m_uSelRect.SetWidth(m_uClippedTextWidth);
-    m_uSelRect.SetHeight(m_uClippedTextHeight);
-
 }
 
 void lmShapeTextbox::Render(lmPaper* pPaper, wxColour color)
 {
-    //ensure measures are ok
+    //if selected, book to be rendered with handlers when posible
+    if (IsSelected())
+    {
+        //book to be rendered with handlers
+        GetOwnerBoxPage()->OnNeedToDrawHandlers(this);
+        SavePoints();
+    }
+
+    //render it normally (anti-aliased)
+    RenderNormal(pPaper, color);
+    DrawTextbox(pPaper, color, false);        //false -> anti-aliased
+}
+
+void lmShapeTextbox::RenderWithHandlers(lmPaper* pPaper)
+{
+    //render only the rectangle and its handlers. Text and background will not move
+
+    lmShapeRectangle::RenderWithHandlers(pPaper);
+}
+
+void lmShapeTextbox::DrawTextbox(lmPaper* pPaper, wxColour color, bool fSketch)
+{
+    //ensure text is properly splitted for current box size
     ComputeTextPosition(pPaper);
 
     pPaper->SetFont(*m_pFont);
-    pPaper->SetTextForeground(color);
-    pPaper->DrawText(m_sClippedText, m_uTextPos.x, m_uTextPos.y);
+    pPaper->SetTextForeground(m_nTxtColor);
 
-    lmSimpleShape::Render(pPaper, color);
+    lmLUnits uySpace = m_uBoundsBottom.y - m_uBoundsTop.y;
+    std::list<lmTextLine*>::iterator it;
+    for (it = m_TextLines.begin(); it != m_TextLines.end(); ++it)
+    {
+        lmLUnits uySpaceLeft = uySpace - (*it)->uPos.y - (*it)->uHeight;
+        if (uySpaceLeft < 0.0f) break; 
+        pPaper->DrawText((*it)->sText, (*it)->uPos.x + m_uBoundsTop.x,
+                         (*it)->uPos.y + m_uBoundsTop.y);
+    }
 }
 
 void lmShapeTextbox::SetFont(wxFont *pFont)
@@ -709,24 +715,17 @@ wxString lmShapeTextbox::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-    sDump += wxString::Format(_T("Textbox: pos=(%.2f,%.2f), text=%s, "),
-        m_uTextPos.x, m_uTextPos.y, m_sText.c_str() );
+    //sDump += wxString::Format(_T("Textbox: pos=(%.2f,%.2f), text=%s, "),
+    //    m_uTextPos.x, m_uTextPos.y, m_sText.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
 
 	return sDump;
 }
 
-void lmShapeTextbox::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeTextbox::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
 {
-    m_uTextPos.x += xIncr;
-    m_uTextPos.y += yIncr;
-
-    ShiftBoundsAndSelRec(xIncr, yIncr);
-
-	//if included in a composite shape update parent bounding and selection rectangles
-	if (this->IsChildShape())
-		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
+    lmShapeRectangle::Shift(uxIncr, uyIncr);
 }
 
 wxBitmap* lmShapeTextbox::OnBeginDrag(double rScale, wxDC* pDC)
@@ -738,10 +737,15 @@ wxBitmap* lmShapeTextbox::OnBeginDrag(double rScale, wxDC* pDC)
 	// So this method returns the bitmap to use with the drag image.
 
 
+    //as this is a shape defined by points: save all points position
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+        m_uSavePoint[i] = m_uPoint[i];
+
     // allocate a bitmap whose size is that of the box area
     // convert size to pixels
+    lmLUnits uySpace = m_uBoundsBottom.y - m_uBoundsTop.y;
     int wD = (int)pDC->LogicalToDeviceXRel( m_uBoundsBottom.x - m_uBoundsTop.x );
-    int hD = (int)pDC->LogicalToDeviceYRel( m_uBoundsBottom.y - m_uBoundsTop.y );
+    int hD = (int)pDC->LogicalToDeviceYRel( uySpace );
     wxBitmap bitmap(wD+2, hD+2);
 
     // allocate a memory DC for drawing into a bitmap
@@ -755,8 +759,17 @@ wxBitmap* lmShapeTextbox::OnBeginDrag(double rScale, wxDC* pDC)
     dc2.SetBackground(* wxWHITE_BRUSH);
     dc2.Clear();
     dc2.SetBackgroundMode(wxTRANSPARENT);
+    dc2.SetPen(*wxBLACK_PEN);
+    dc2.DrawRectangle(0, 0, GetBounds().GetWidth(), GetBounds().GetHeight() );
     dc2.SetTextForeground(g_pColors->ScoreSelected());
-    dc2.DrawText(m_sClippedText, m_uTextPos.x - m_uBoundsTop.x, m_uTextPos.y - m_uBoundsTop.y);
+
+    std::list<lmTextLine*>::iterator it;
+    for (it = m_TextLines.begin(); it != m_TextLines.end(); ++it)
+    {
+        lmLUnits uySpaceLeft = uySpace - (*it)->uPos.y - (*it)->uHeight;
+        if (uySpaceLeft < 0.0f) break; 
+        dc2.DrawText((*it)->sText, (*it)->uPos.x, (*it)->uPos.y);
+    }
     dc2.SelectObject(wxNullBitmap);
 
     // Make the bitmap masked
@@ -773,53 +786,3 @@ wxBitmap* lmShapeTextbox::OnBeginDrag(double rScale, wxDC* pDC)
 
 }
 
-lmUPoint lmShapeTextbox::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
-{
-	// The view informs that the user continues dragging. We receive the new desired
-	// shape position and we must return the new allowed shape position.
-	//
-	// The default behaviour is to return the received position, so the view redraws 
-	// the drag image at that position. No action must be performed by the shape on 
-	// the score and score objects.
-	//
-	// The received new desired shape position is in logical units and referred to page
-	// origin. The returned new allowed shape position must also be in in logical units
-	// and referred to page origin.
-
-
-    // A Textbox can only be vertically moved, unless it is a floating block
-    if (m_nBlockAlign == lmBLOCK_ALIGN_NONE)
-    {
-        //floating block
-        //TODO
-        return lmUPoint(uPos.x, uPos.y);
-    }
-    else
-    {
-        //move only in vertical
-        return lmUPoint(m_uBoundsTop.x, uPos.y);
-    }
-}
-
-void lmShapeTextbox::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos)
-{
-	// End drag. Receives the command processor associated to the view and the
-	// final position of the object (logical units referred to page origin).
-	// This method must validate/adjust final position and, if ok, it must 
-	// send a move object command to the controller.
-
-	lmUPoint uFinalPos(uPos.x, uPos.y);
-    if (m_nBlockAlign == lmBLOCK_ALIGN_NONE)
-    {
-        //floating block
-        //TODO
-    }
-    else
-    {
-        //move only in vertical
-        uFinalPos.x = m_uBoundsTop.x;
-    }
-
-	//send a move object command to the controller
-	pCanvas->MoveObject(this, uFinalPos);
-}

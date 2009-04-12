@@ -30,6 +30,8 @@
 #endif
 
 #include "Shapes.h"
+#include "Handlers.h"
+#include "BoxPage.h"
 #include "AggDrawer.h"
 #include "../score/Glyph.h"      //access to glyphs table
 #include "../score/Score.h"
@@ -449,28 +451,88 @@ void lmShapeInvisible::Render(lmPaper* pPaper, wxColour color)
 // lmShapeRectangle: a rectangle with optional rounded corners
 //========================================================================================
 
-lmShapeRectangle::lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits yTop,
-                                   lmLUnits xRight, lmLUnits yBottom, lmLUnits uWidth,
+//TODO: remove this backwards compatibility constructor
+lmShapeRectangle::lmShapeRectangle(lmScoreObj* pOwner, lmLUnits uxLeft, lmLUnits uyTop,
+                                   lmLUnits uxRight, lmLUnits uyBottom, lmLUnits uWidth,
                                    wxColour color, wxString sName,
 				                   bool fDraggable, bool fSelectable, 
                                    bool fVisible)
-    : lmSimpleShape(eGMO_ShapeRectangle, pOwner, 0, sName, fDraggable, fSelectable, 
-                    color, fVisible)
+	: lmSimpleShape(eGMO_ShapeRectangle, pOwner, 0, sName, fDraggable, fSelectable,
+                    fVisible)
+{
+    Create(uxLeft, uyTop, uxRight, uyBottom, uWidth, color, *wxWHITE);
+}
+
+lmShapeRectangle::lmShapeRectangle(lmScoreObj* pOwner,
+                     //position and size
+                     lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
+                     //border
+                     lmLUnits uBorderWidth, wxColour nBorderColor,
+                     //content
+                     wxColour nBgColor,
+                     //other
+                     int nShapeIdx, wxString sName,
+				     bool fDraggable, bool fSelectable, bool fVisible)
+	: lmSimpleShape(eGMO_ShapeRectangle, pOwner, nShapeIdx, sName, fDraggable,
+                    fSelectable, fVisible)
+{
+    Create(uxLeft, uyTop, uxRight, uyBottom, uBorderWidth, nBorderColor, nBgColor);
+}
+
+void lmShapeRectangle::Create(lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight,
+                              lmLUnits uyBottom, lmLUnits uBorderWidth,
+                              wxColour nBorderColor, wxColour nBgColor)
 {
     m_uCornerRadius = 0.0f;
-    m_xLeft = xLeft;
-    m_yTop = yTop;
-    m_xRight = xRight;
-    m_yBottom = yBottom;
-    m_uWidth = uWidth;
+    m_uBorderWidth = uBorderWidth;
+    m_nBorderColor = nBorderColor;
+    m_nBorderStyle = lm_eLine_None;
+    m_nBgColor = nBgColor;
 
+    //store rectangle points and compute centers of sides
+    m_uPoint[lmID_TOP_LEFT].x = uxLeft;
+    m_uPoint[lmID_TOP_LEFT].y = uyTop;
+    m_uPoint[lmID_TOP_RIGHT].x = uxRight;
+    m_uPoint[lmID_TOP_RIGHT].y = uyTop;
+    m_uPoint[lmID_BOTTOM_RIGHT].x = uxRight;
+    m_uPoint[lmID_BOTTOM_RIGHT].y = uyBottom;
+    m_uPoint[lmID_BOTTOM_LEFT].x = uxLeft;
+    m_uPoint[lmID_BOTTOM_LEFT].y = uyBottom;
+    ComputeCenterPoints();
+
+    //m_uPoint[lmID_ANCHOR_POINT].x = uxLeft;
+    //m_uPoint[lmID_ANCHOR_POINT].y = uyTop;
+
+    //Create the handlers
+    m_pHandler[lmID_TOP_LEFT] = new lmHandlerSquare(m_pOwner, this, lmID_TOP_LEFT, wxCURSOR_SIZENWSE);
+    m_pHandler[lmID_TOP_RIGHT] = new lmHandlerSquare(m_pOwner, this, lmID_TOP_RIGHT, wxCURSOR_SIZENESW);
+    m_pHandler[lmID_BOTTOM_RIGHT] = new lmHandlerSquare(m_pOwner, this, lmID_BOTTOM_RIGHT, wxCURSOR_SIZENWSE);
+    m_pHandler[lmID_BOTTOM_LEFT] = new lmHandlerSquare(m_pOwner, this, lmID_BOTTOM_LEFT, wxCURSOR_SIZENESW);
+    m_pHandler[lmID_LEFT_CENTER] = new lmHandlerSquare(m_pOwner, this, lmID_LEFT_CENTER, wxCURSOR_SIZEWE);
+    m_pHandler[lmID_TOP_CENTER] = new lmHandlerSquare(m_pOwner, this, lmID_TOP_CENTER, wxCURSOR_SIZENS);
+    m_pHandler[lmID_RIGHT_CENTER] = new lmHandlerSquare(m_pOwner, this, lmID_RIGHT_CENTER, wxCURSOR_SIZEWE);
+    m_pHandler[lmID_BOTTOM_CENTER] = new lmHandlerSquare(m_pOwner, this, lmID_BOTTOM_CENTER, wxCURSOR_SIZENS);
+
+    UpdateBounds();
+}
+
+lmShapeRectangle::~lmShapeRectangle()
+{
+    //delete handlers
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+    {
+        if (m_pHandler[i])
+            delete m_pHandler[i];
+    }
+}
+
+void lmShapeRectangle::UpdateBounds()
+{
     // store boundling rectangle position and size
-    lmLUnits uWidthRect = m_uWidth / 2.0;
+    lmLUnits uWidthRect = m_uBorderWidth / 2.0;
     
-    m_uBoundsTop.x = xLeft - uWidthRect;
-    m_uBoundsTop.y = yTop - uWidthRect;
-    m_uBoundsBottom.x = xRight + uWidthRect;
-    m_uBoundsBottom.y = yBottom + uWidthRect;
+    m_uBoundsTop = m_uPoint[lmID_TOP_LEFT];
+    m_uBoundsBottom = m_uPoint[lmID_BOTTOM_RIGHT];
 
     NormaliceBoundsRectangle();
 
@@ -478,18 +540,92 @@ lmShapeRectangle::lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits 
     m_uSelRect = GetBounds();
 }
 
+void lmShapeRectangle::SavePoints()
+{
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+    {
+        //save points and update handlers position
+        m_uSavePoint[i] = m_uPoint[i];
+        m_pHandler[i]->SetHandlerCenterPoint(m_uPoint[i].x, m_uPoint[i].y);
+    }
+}
+
 void lmShapeRectangle::Render(lmPaper* pPaper, wxColour color)
 {
-    lmELineEdges nEdge = eEdgeNormal;
+    //if selected, book to be rendered with handlers when posible
+    if (IsSelected())
+    {
+        //book to be rendered with handlers
+        GetOwnerBoxPage()->OnNeedToDrawHandlers(this);
+        SavePoints();
+    }
+    else
+    {
+        //draw the rectangle
+        DrawRectangle(pPaper, color, false);        //false -> anti-aliased
+    }
+}
 
-    //top side
-    pPaper->SolidLine(m_xLeft, m_yTop, m_xRight, m_yTop, m_uWidth, nEdge, color);
-    //right side
-    pPaper->SolidLine(m_xRight, m_yTop, m_xRight, m_yBottom, m_uWidth, nEdge, color);
-    //bottom side
-    pPaper->SolidLine(m_xLeft, m_yBottom, m_xRight, m_yBottom, m_uWidth, nEdge, color);
-    //left side
-    pPaper->SolidLine(m_xLeft, m_yTop, m_xLeft, m_yBottom, m_uWidth, nEdge, color);
+void lmShapeRectangle::RenderNormal(lmPaper* pPaper, wxColour color)
+{
+        //draw the rectangle
+        DrawRectangle(pPaper, color, false);        //false -> anti-aliased
+}
+
+void lmShapeRectangle::RenderWithHandlers(lmPaper* pPaper)
+{
+    //render the textbox and its handlers
+
+    //as painting uses XOR we need the complementary color
+    wxColour color = *wxBLUE;      //TODO User options
+    wxColour colorC = wxColour(255 - (int)color.Red(),
+                               255 - (int)color.Green(),
+                               255 - (int)color.Blue() );
+
+    //prepare to render
+    pPaper->SetLogicalFunction(wxXOR);
+
+    //draw the handlers
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+    {
+        m_pHandler[i]->Render(pPaper, colorC);
+        GetOwnerBoxPage()->AddActiveHandler(m_pHandler[i]);
+    }
+
+    //draw the rectangle
+    DrawRectangle(pPaper, colorC, true);        //true -> Sketch
+
+    //terminate renderization
+    pPaper->SetLogicalFunction(wxCOPY);
+}
+
+void lmShapeRectangle::DrawRectangle(lmPaper* pPaper, wxColour color, bool fSketch)
+{
+    //draw backgroung only if not selected 
+    if (!fSketch)
+        pPaper->SolidPolygon(4, m_uPoint, m_nBgColor);
+
+    //draw borders
+    lmELineEdges nEdge = eEdgeNormal;
+    //m_nBorderStyle = lm_eLine_None;
+    pPaper->SolidLine(m_uPoint[lmID_TOP_LEFT].x, m_uPoint[lmID_TOP_LEFT].y,
+                      m_uPoint[lmID_TOP_RIGHT].x, m_uPoint[lmID_TOP_RIGHT].y,
+                      m_uBorderWidth, nEdge, m_nBorderColor);
+    pPaper->SolidLine(m_uPoint[lmID_TOP_RIGHT].x, m_uPoint[lmID_TOP_RIGHT].y,
+                      m_uPoint[lmID_BOTTOM_RIGHT].x, m_uPoint[lmID_BOTTOM_RIGHT].y,
+                      m_uBorderWidth, nEdge, m_nBorderColor);
+    pPaper->SolidLine(m_uPoint[lmID_BOTTOM_RIGHT].x, m_uPoint[lmID_BOTTOM_RIGHT].y,
+                      m_uPoint[lmID_BOTTOM_LEFT].x, m_uPoint[lmID_BOTTOM_LEFT].y,
+                      m_uBorderWidth, nEdge, m_nBorderColor);
+    pPaper->SolidLine(m_uPoint[lmID_BOTTOM_LEFT].x, m_uPoint[lmID_BOTTOM_LEFT].y,
+                      m_uPoint[lmID_TOP_LEFT].x, m_uPoint[lmID_TOP_LEFT].y,
+                      m_uBorderWidth, nEdge, m_nBorderColor);
+
+    ////draw anchor line
+    //if (m_nAnchorLineStyle != lm_eLine_None)
+    //    pPaper->SolidLine(m_uPoint[lmID_TOP_LEFT].x, m_uPoint[lmID_TOP_LEFT].y,
+    //                    m_uPoint[lmID_ANCHOR_POINT].x, m_uPoint[lmID_ANCHOR_POINT].y,
+    //                    m_uAnchorLineWidth, nEdge, m_nAnchorLineColor);
 
     lmSimpleShape::Render(pPaper, color);
 }
@@ -504,25 +640,337 @@ wxString lmShapeRectangle::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("Idx: %d %s: left-top=(%.2f, %.2f), right-bottom=(%.2f, %.2f), line width=%.2f, "),
-                m_nOwnerIdx, m_sGMOName.c_str(), m_xLeft, m_yTop, m_xRight, m_yBottom, m_uWidth );
+                m_nOwnerIdx, m_sGMOName.c_str(),
+                m_uPoint[lmID_TOP_LEFT].x, m_uPoint[lmID_TOP_LEFT].y,
+                m_uPoint[lmID_BOTTOM_RIGHT].x, m_uPoint[lmID_BOTTOM_RIGHT].y,
+                m_uBorderWidth );
     sDump += DumpBounds();
     sDump += _T("\n");
 
 	return sDump;
 }
 
-void lmShapeRectangle::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeRectangle::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
 {
-    m_xLeft += xIncr;
-    m_yTop += yIncr;
-    m_xRight += xIncr;
-    m_yBottom += yIncr;
+    m_uPoint[lmID_TOP_LEFT].x += uxIncr;
+    m_uPoint[lmID_TOP_LEFT].y += uyIncr;
+    m_uPoint[lmID_TOP_RIGHT].x += uxIncr;
+    m_uPoint[lmID_TOP_RIGHT].y += uyIncr;
+    m_uPoint[lmID_BOTTOM_RIGHT].x += uxIncr;
+    m_uPoint[lmID_BOTTOM_RIGHT].y += uyIncr;
+    m_uPoint[lmID_BOTTOM_LEFT].x += uxIncr;
+    m_uPoint[lmID_BOTTOM_LEFT].y += uyIncr;
 
-    ShiftBoundsAndSelRec(xIncr, yIncr);
+    //m_uPoint[lmID_ANCHOR_POINT].x += uxIncr;
+    //m_uPoint[lmID_ANCHOR_POINT].y += uyIncr;
+
+    ComputeCenterPoints();
+
+    ShiftBoundsAndSelRec(uxIncr, uyIncr);
 
 	//if included in a composite shape update parent bounding and selection rectangles
 	if (this->IsChildShape())
 		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
+}
+
+void lmShapeRectangle::ComputeCenterPoints()
+{
+    m_uPoint[lmID_TOP_CENTER].x = (m_uPoint[lmID_TOP_LEFT].x + m_uPoint[lmID_TOP_RIGHT].x) / 2.0f;
+    m_uPoint[lmID_TOP_CENTER].y = m_uPoint[lmID_TOP_LEFT].y;
+
+    m_uPoint[lmID_RIGHT_CENTER].x = m_uPoint[lmID_TOP_RIGHT].x;
+    m_uPoint[lmID_RIGHT_CENTER].y = (m_uPoint[lmID_TOP_RIGHT].y + m_uPoint[lmID_BOTTOM_RIGHT].y) / 2.0f;
+
+    m_uPoint[lmID_BOTTOM_CENTER].x = m_uPoint[lmID_TOP_CENTER].x;
+    m_uPoint[lmID_BOTTOM_CENTER].y = m_uPoint[lmID_BOTTOM_RIGHT].y;
+
+    m_uPoint[lmID_LEFT_CENTER].x = m_uPoint[lmID_TOP_LEFT].x;
+    m_uPoint[lmID_LEFT_CENTER].y = m_uPoint[lmID_RIGHT_CENTER].y;
+}
+
+wxBitmap* lmShapeRectangle::OnBeginDrag(double rScale, wxDC* pDC)
+{
+	// A dragging operation is started. The view invokes this method to request the
+	// bitmap to be used as drag image. No other action is required.
+	// If no bitmap is returned drag is cancelled.
+	//
+	// So this method returns the bitmap to use with the drag image.
+
+    //as this is a shape defined by points: save all points position
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+        m_uSavePoint[i] = m_uPoint[i];
+
+    // allocate a bitmap whose size is that of the box area
+    // convert size to pixels
+    int wD = (int)pDC->LogicalToDeviceXRel( m_uBoundsBottom.x - m_uBoundsTop.x );
+    int hD = (int)pDC->LogicalToDeviceYRel( m_uBoundsBottom.y - m_uBoundsTop.y );
+    wxBitmap bitmap(wD+2, hD+2);
+
+    // allocate a memory DC for drawing into a bitmap
+    wxMemoryDC dc2;
+    dc2.SelectObject(bitmap);
+    dc2.SetMapMode(lmDC_MODE);
+    dc2.SetUserScale(rScale, rScale);
+    //dc2.SetFont(*m_pFont);
+
+    // draw onto the bitmap
+    dc2.SetBackground(* wxWHITE_BRUSH);
+    dc2.Clear();
+    dc2.SetBackgroundMode(wxTRANSPARENT);
+    dc2.SetPen(*wxBLACK_PEN);
+    dc2.DrawRectangle(m_uBoundsTop.x, m_uBoundsTop.y, GetBounds().GetWidth(), 
+                      GetBounds().GetHeight() );
+    //dc2.SetTextForeground(g_pColors->ScoreSelected());
+    //dc2.DrawText(m_sClippedText, m_uTextPos.x - m_uBoundsTop.x, m_uTextPos.y - m_uBoundsTop.y);
+    dc2.SelectObject(wxNullBitmap);
+
+    // Make the bitmap masked
+    wxImage image = bitmap.ConvertToImage();
+    image.SetMaskColour(255, 255, 255);
+    wxBitmap* pBitmap = new wxBitmap(image);
+
+    ////DBG -----------
+    //wxString sFileName = _T("lmShapeTextbox.bmp");
+    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    ////END DBG -------
+
+    return pBitmap;
+
+}
+
+lmUPoint lmShapeRectangle::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
+{
+	// The view informs that the user continues dragging. We receive the new desired
+	// shape position and we must return the new allowed shape position.
+	//
+	// The default behaviour is to return the received position, so the view redraws 
+	// the drag image at that position. No action must be performed by the shape on 
+	// the score and score objects.
+	//
+	// The received new desired shape position is in logical units and referred to page
+	// origin. The returned new allowed shape position must also be in in logical units
+	// and referred to page origin.
+
+    //this is a shape defined by points. Therefore it is necessary to
+    //update all handler points and object points
+    lmUPoint uShift(uPos - this->GetBounds().GetTopLeft());
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+    {
+        m_pHandler[i]->SetHandlerTopLeftPoint( uShift + m_pHandler[i]->GetBounds().GetLeftTop() );
+        m_uPoint[i] = m_pHandler[i]->GetHandlerCenterPoint();
+    }
+    UpdateBounds();
+
+    return lmUPoint(uPos.x, uPos.y);
+}
+
+void lmShapeRectangle::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos)
+{
+	// End drag. Receives the command processor associated to the view and the
+	// final position of the object (logical units referred to page origin).
+	// This method must validate/adjust final position and, if ok, it must 
+	// send a move object command to the controller.
+
+	//lmUPoint uFinalPos(uPos.x, uPos.y);
+
+	////send a move object command to the controller
+	//pCanvas->MoveObject(this, uFinalPos);
+
+    //compute shift from start of drag point
+    lmUPoint uShift = uPos - m_uSavePoint[0];
+
+    //restore shape position to that of start of drag start so that MoveObject() or 
+    //MoveObjectPoints() commands can apply shifts from original points.
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+        m_uPoint[i] = m_uSavePoint[i];
+    UpdateBounds();
+
+    //as this is an object defined by points, instead of MoveObject() command we have to issue
+    //a MoveObjectPoints() command.
+    lmUPoint uShifts[lmID_NUM_HANDLERS];
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+        uShifts[i] = uShift;
+    pCanvas->MoveObjectPoints(this, uShifts, 4, false);  //false-> do not update views
+}
+
+lmUPoint lmShapeRectangle::OnHandlerDrag(lmPaper* pPaper, const lmUPoint& uPos,
+                                    long nHandlerID)
+{
+	// The view informs that the user continues dragging. We receive the new desired
+	// shape position and we must return the new allowed shape position.
+	//
+	// The default behaviour is to return the received position, so the view redraws
+	// the drag image at that position. No action must be performed by the shape on
+	// the score and score objects.
+	//
+	// The received new desired shape position is in logical units and referred to page
+	// origin. The returned new allowed shape position must also be in in logical units
+	// and referred to page origin.
+
+    //erase previous draw
+    RenderWithHandlers(pPaper);
+
+    //compute new rectangle and handlers positions
+    ComputeNewPointsAndHandlersPositions(uPos, nHandlerID);
+
+    //draw at new position
+    RenderWithHandlers(pPaper);
+
+    return uPos;
+}
+
+void lmShapeRectangle::ComputeNewPointsAndHandlersPositions(const lmUPoint& uPos,
+                                                            long nHandlerID)
+{
+    //Common code to OnHandlerDrag and OnHandlerEndDrag to compute new coordinares
+    //for rectangle and handlers points
+
+    //aux. to compute new rectangle coordinates
+    lmLUnits xLeft = m_uPoint[lmID_TOP_LEFT].x;
+    lmLUnits yTop = m_uPoint[lmID_TOP_LEFT].y;
+    lmLUnits xRight = m_uPoint[lmID_BOTTOM_RIGHT].x;
+    lmLUnits yBottom = m_uPoint[lmID_BOTTOM_RIGHT].y;
+
+    //maintain coherence in points, so that the shape continues being a rectangle
+    lmUPoint point;
+    switch(nHandlerID)
+    {
+        case lmID_TOP_LEFT:
+            //free movement
+            m_pHandler[lmID_TOP_LEFT]->SetHandlerTopLeftPoint(uPos);
+            point = m_pHandler[lmID_TOP_LEFT]->GetHandlerCenterPoint();
+            xLeft = point.x;
+            yTop = point.y;
+            break;
+
+        case lmID_TOP_RIGHT:
+            //free movement
+            m_pHandler[lmID_TOP_RIGHT]->SetHandlerTopLeftPoint(uPos);
+            point = m_pHandler[lmID_TOP_RIGHT]->GetHandlerCenterPoint();
+            xRight = point.x;
+            yTop = point.y;
+            break;
+
+        case lmID_BOTTOM_RIGHT:
+            //free movement
+            m_pHandler[lmID_BOTTOM_RIGHT]->SetHandlerTopLeftPoint(uPos);
+            point = m_pHandler[lmID_BOTTOM_RIGHT]->GetHandlerCenterPoint();
+            xRight = point.x;
+            yBottom = point.y;
+            break;
+
+        case lmID_BOTTOM_LEFT:
+            //free movement
+            m_pHandler[lmID_BOTTOM_LEFT]->SetHandlerTopLeftPoint(uPos);
+            point = m_pHandler[lmID_BOTTOM_LEFT]->GetHandlerCenterPoint();
+            xLeft = point.x;
+            yBottom = point.y;
+            break;
+
+        case lmID_LEFT_CENTER:
+            //clip horizontally
+            m_pHandler[lmID_LEFT_CENTER]->SetHandlerTopLeftPoint(uPos);
+            xLeft = m_pHandler[lmID_LEFT_CENTER]->GetHandlerCenterPoint().x;
+            break;
+
+        case lmID_TOP_CENTER:
+            //clip vertically
+            m_pHandler[lmID_TOP_CENTER]->SetHandlerTopLeftPoint(uPos);
+            yTop = m_pHandler[lmID_TOP_CENTER]->GetHandlerCenterPoint().y;
+            break;
+
+        case lmID_RIGHT_CENTER:
+            //clip horizontally
+            m_pHandler[lmID_RIGHT_CENTER]->SetHandlerTopLeftPoint(uPos);
+            xRight = m_pHandler[lmID_RIGHT_CENTER]->GetHandlerCenterPoint().x;
+            break;
+
+        case lmID_BOTTOM_CENTER:
+            //clip vertically
+            m_pHandler[lmID_BOTTOM_CENTER]->SetHandlerTopLeftPoint(uPos);
+            yBottom = m_pHandler[lmID_BOTTOM_CENTER]->GetHandlerCenterPoint().y;
+            break;
+
+        //case lmID_ANCHOR_POINT:
+        //    //free movement
+        //    m_pHandler[lmID_ANCHOR_POINT]->SetHandlerTopLeftPoint(uPos);
+        //    m_uPoint[lmID_ANCHOR_POINT] = m_pHandler[lmID_ANCHOR_POINT]->GetHandlerCenterPoint();
+        //    break;
+
+        default:
+            wxASSERT(false);
+    }
+
+    //store rectangle points and compute centers of sides
+    m_uPoint[lmID_TOP_LEFT].x = xLeft;
+    m_uPoint[lmID_TOP_LEFT].y = yTop;
+    m_uPoint[lmID_TOP_RIGHT].x = xRight;
+    m_uPoint[lmID_TOP_RIGHT].y = yTop;
+    m_uPoint[lmID_BOTTOM_RIGHT].x = xRight;
+    m_uPoint[lmID_BOTTOM_RIGHT].y = yBottom;
+    m_uPoint[lmID_BOTTOM_LEFT].x = xLeft;
+    m_uPoint[lmID_BOTTOM_LEFT].y = yBottom;
+    ComputeCenterPoints();
+
+    //set handlers
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+    {
+        m_pHandler[i]->SetHandlerCenterPoint(m_uPoint[i].x, m_uPoint[i].y);
+    }
+}
+
+void lmShapeRectangle::OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& uPos,
+                                   long nHandlerID)
+{
+	// End drag. Receives the command processor associated to the view and the
+	// final position of the object (logical units referred to page origin).
+	// This method must validate/adjust final position and, if ok, it must
+	// send a move object command to the controller.
+
+    //compute new rectangle and handlers positions
+    ComputeNewPointsAndHandlersPositions(uPos, nHandlerID);
+
+    //Compute shifts from start of drag points
+    lmUPoint uShifts[lmID_NUM_HANDLERS];
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+    {
+        uShifts[i] = m_uPoint[i] - m_uSavePoint[i];
+    }
+
+    //MoveObjectPoints() apply shifts computed from drag start points. As handlers and
+    //shape points are already displaced, it is necesary to restore the original positions to
+    //avoid double displacements.
+    for (int i=0; i < lmID_NUM_HANDLERS; i++)
+        m_uPoint[i] = m_uSavePoint[i];
+    
+    UpdateBounds();
+
+    pCanvas->MoveObjectPoints(this, uShifts, 4, false);  //false-> do not update views
+}
+
+void lmShapeRectangle::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
+                                  bool fAddShifts)
+{
+    //Each time a commnad is issued to change the rectangle, we will receive a call
+    //back to update the shape
+
+    for (int i=0; i < nNumPoints; i++)
+    {
+        if (fAddShifts)
+        {
+            m_uPoint[i].x += (*(pShifts+i)).x;
+            m_uPoint[i].y += (*(pShifts+i)).y;
+        }
+        else
+        {
+            m_uPoint[i].x -= (*(pShifts+i)).x;
+            m_uPoint[i].y -= (*(pShifts+i)).y;
+        }
+
+        m_pHandler[i]->SetHandlerCenterPoint(m_uPoint[i]);
+    }
+    ComputeCenterPoints();
+    UpdateBounds();
 }
 
 
@@ -593,3 +1041,43 @@ lmLUnits lmShapeStem::GetXCenterStem()
 	return m_xStart;
 }
 
+
+
+//========================================================================================
+// lmShapeWindow object implementation: an auxiliary shape to embbed any wxWindow
+//  (Button, TextCtrol, etc.) on the score
+//========================================================================================
+
+lmShapeWindow::lmShapeWindow(lmScoreObj* pOwner,
+                  //position and size
+                  lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
+                  //border
+                  lmLUnits uBorderWidth, wxColour nBorderColor,
+                  //content
+                  wxColour nBgColor,
+                  //other
+                  int nShapeIdx, wxString sName,
+				  bool fDraggable, bool fSelectable, bool fVisible)
+    : lmShapeRectangle(pOwner, uxLeft, uyTop, uxRight, uyBottom, uBorderWidth,
+                       nBorderColor, nBgColor, nShapeIdx, sName,
+                       fDraggable, fSelectable, fVisible)
+    , m_pWidget((wxWindow*)NULL)
+{
+}
+
+void lmShapeWindow::Render(lmPaper* pPaper, wxColour color)
+{
+    lmBoxPage* pBPage = this->GetOwnerBoxPage();
+    wxWindow* pWindow = pBPage->GetRenderWindow();
+    wxPoint& vOffset = pBPage->GetRenderWindowOffset();
+
+    wxPoint pos(pPaper->LogicalToDeviceX(m_uBoundsTop.x) + vOffset.x,
+                pPaper->LogicalToDeviceY(m_uBoundsTop.y) + vOffset.y );
+    wxSize size(pPaper->LogicalToDeviceX(GetBounds().GetWidth()),
+                pPaper->LogicalToDeviceX(GetBounds().GetHeight()) );
+
+    m_pWidget =
+        new wxTextCtrl(pWindow, wxID_ANY,
+                       _T("This is a text using a wxTextCtrl window!"),
+                       pos, size );
+}

@@ -188,10 +188,18 @@ void lmHandlerLine::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
 // Implementation of lmHandlerSquare
 //-------------------------------------------------------------------------------------
 
+lmHandlerSquare::lmHandlerSquare(lmScoreObj* pOwner, lmGMObject* pOwnerGMO,
+                                 long nHandlerID, wxStockCursor nCursorId)
+	: lmHandler(pOwner, pOwnerGMO, nHandlerID)
+    , m_cursor(wxCursor(nCursorId))
+{
+    m_uSide = m_pOwner->TenthsToLogical(10.0);
+}
 
 lmHandlerSquare::lmHandlerSquare(lmScoreObj* pOwner, lmGMObject* pOwnerGMO,
-                                 long nHandlerID)
+                                 long nHandlerID, wxCursor* pCursor)
 	: lmHandler(pOwner, pOwnerGMO, nHandlerID)
+    , m_cursor(*pCursor)
 {
     m_uSide = m_pOwner->TenthsToLogical(10.0);
 }
@@ -253,7 +261,7 @@ wxString lmHandlerSquare::Dump(int nIndent)
 
 void lmHandlerSquare::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
 {
-    pWindow->SetCursor( wxCursor(wxCURSOR_SIZENESW) );
+    pWindow->SetCursor(m_cursor);
     m_pMouseCursorWindow = pWindow;
 }
 

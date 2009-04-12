@@ -36,10 +36,12 @@
 #include "Score.h"
 #include "Text.h"
 #include "UndoRedo.h"
-#include "../graphic/GMObject.h"
-#include "../graphic/ShapeText.h"
 #include "properties/DlgProperties.h"
 #include "properties/TextProperties.h"
+#include "../graphic/GMObject.h"
+#include "../graphic/ShapeText.h"
+#include "../graphic/ShapeLine.h"
+#include "../ldp_parser/AuxString.h"
 
 
 //Aux. function to convert font pointsize to lmLUnits
@@ -475,17 +477,153 @@ wxString lmBaseText::Dump()
 //      rectangle) plus alligment attributes
 //==========================================================================================
 
-lmScoreBlock::lmScoreBlock(lmTenths tWidth, lmTenths tHeight, lmTPoint tPos,
+lmScoreBlock::lmScoreBlock(lmTenths ntWidth, lmTenths ntHeight, lmTPoint ntPos,
                            lmEBlockAlign nBlockAlign,
                            lmEHAlign nHAlign, lmEVAlign nVAlign)
     : lmAuxObj(lmDRAGGABLE)
-    , m_tWidth(tWidth)
-    , m_tHeight(tHeight)
-    , m_tPos(tPos)
+    , m_ntWidth(ntWidth)
+    , m_ntHeight(ntHeight)
+    , m_ntPos(ntPos)
     , m_nBlockAlign(nBlockAlign)
     , m_nHAlign(nHAlign)
     , m_nVAlign(nVAlign)
+    //anchor line
+    , m_fHasAnchorLine(false)
+    , m_nAnchorLineStyle(lm_eLine_None)
+    , m_nAnchorLineColor(*wxBLACK)
+    , m_ntAnchorLineWidth(1.0f)
+    //default block looking 
+    , m_nBgColor(*wxWHITE)
+    , m_nBorderColor(*wxBLACK)
+    , m_ntBorderWidth(1.0f)
+    , m_nBorderStyle(lm_eLine_None)
 {
+}
+
+void lmScoreBlock::AddAnchorLine(lmLocation tPoint, lmTenths ntWidth,
+                                 lmELineStyle nStyle, wxColour nColor)
+{
+    m_fHasAnchorLine = true;
+    m_ntAnchorPoint = lmTPoint(tPoint.x, tPoint.y);
+    m_nAnchorLineStyle = nStyle;
+    m_nAnchorLineColor = nColor;
+    m_ntAnchorLineWidth = ntWidth;
+}
+
+void lmScoreBlock::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
+                                    bool fAddShifts)
+{
+    //This method is only used during interactive edition.
+    //It receives a vector with the shifts for object points and a flag to signal
+    //whether to add or to substract shifts.
+
+    if (nShapeIdx == lmIDX_RECTANGLE)
+    {
+        //moved points belongs to the rectangle
+        //receives 4 points: top-left, top-right, bottom-right and bottom-left
+        wxASSERT(nNumPoints == 4);
+
+        lmUPoint uTopLeftShift = *pShifts;
+        lmUPoint uBottomRightShift = *(pShifts+2);
+        lmLUnits uWidthShift = uBottomRightShift.x - uTopLeftShift.x;
+        lmLUnits uHeightShift = uBottomRightShift.y - uTopLeftShift.y;
+        if (fAddShifts)
+        {
+            m_ntPos.x += m_pParent->LogicalToTenths(uTopLeftShift.x);
+            m_ntPos.y += m_pParent->LogicalToTenths(uTopLeftShift.y);
+            m_ntWidth += m_pParent->LogicalToTenths(uWidthShift);
+            m_ntHeight += m_pParent->LogicalToTenths(uHeightShift);
+        }
+        else
+        {
+            m_ntPos.x -= m_pParent->LogicalToTenths(uTopLeftShift.x);
+            m_ntPos.y -= m_pParent->LogicalToTenths(uTopLeftShift.y);
+            m_ntWidth -= m_pParent->LogicalToTenths(uWidthShift);
+            m_ntHeight -= m_pParent->LogicalToTenths(uHeightShift);
+        }
+
+        //inform the rectangle shape
+        m_pShapeRectangle->MovePoints(nNumPoints, nShapeIdx, pShifts, fAddShifts);
+
+        //If there is an anchor line, move also line point attached to rectangle
+        if (m_fHasAnchorLine)
+        {
+            wxASSERT(m_pShapeLine);
+            lmUPoint uLineShifs[2];
+            uLineShifs[0] = lmUPoint(0.0f, 0.0f);
+            uLineShifs[1] = *pShifts;
+            m_pShapeLine->MovePoints(2, lmIDX_ANCHORLINE, &uLineShifs[0], fAddShifts);
+        }
+    }
+    else
+    {
+        //moved points belong to the anchor line
+        //receives 2 points: start, end.
+        //As end point is fixed only start point can be moved
+        wxASSERT(nShapeIdx == lmIDX_ANCHORLINE);
+        wxASSERT(nNumPoints == 2);
+        wxASSERT(m_fHasAnchorLine);
+
+        if (fAddShifts)
+        {
+            m_ntAnchorPoint.x += m_pParent->LogicalToTenths((*pShifts).x);
+            m_ntAnchorPoint.y += m_pParent->LogicalToTenths((*pShifts).y);
+        }
+        else
+        {
+            m_ntAnchorPoint.x -= m_pParent->LogicalToTenths((*pShifts).x);
+            m_ntAnchorPoint.y -= m_pParent->LogicalToTenths((*(pShifts)).y);
+        }
+
+        //inform the shape
+        wxASSERT(m_pShapeLine);
+        m_pShapeLine->MovePoints(nNumPoints, nShapeIdx, pShifts, fAddShifts);
+    }
+}
+
+void lmScoreBlock::OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift)
+{
+    //This method is invoked only from lmScoreObj::StoreOriginAndShiftShapes() to inform
+    //about a change in the computed final position for parent ScoreObj. Therefore, it
+    //is necessary to update this AuxObj reference pos and both shapes.
+
+	m_uComputedPos.x += uxShift;
+	m_uComputedPos.y += uyShift;
+
+    //shift shapes
+    if (m_pShapeRectangle)
+    {
+        m_pShapeRectangle->Shift(uxShift, uyShift);
+        m_pShapeRectangle->ApplyUserShift( this->GetUserShift() );
+    }
+	if (m_pShapeLine)
+    {
+        m_pShapeLine->Shift(uxShift, uyShift);
+        m_pShapeLine->ApplyUserShift( this->GetUserShift() );
+    }
+}
+
+void lmScoreBlock::OnParentMoved(lmLUnits uxShift, lmLUnits uyShift)
+{
+	//TODO: specific flag to decouple from parent staffObj, so the user can
+	//control if the attached AuxObj will be moved with the parent or not
+
+	if (m_pShapeRectangle)
+    {
+        lmUPoint uUserShift = GetUserShift(lmIDX_RECTANGLE);
+	    uUserShift.x += uxShift;
+	    uUserShift.y += uyShift;
+        this->SaveUserLocation(uUserShift.x, uUserShift.y, 0);
+        m_pShapeRectangle->ApplyUserShift(uUserShift);
+    }
+	if (m_pShapeLine)
+    {
+        lmUPoint uUserShift = GetUserShift(lmIDX_ANCHORLINE);
+	    uUserShift.x += uxShift;
+	    uUserShift.y += uyShift;
+        this->SaveUserLocation(uUserShift.x, uUserShift.y, 0);
+        m_pShapeLine->ApplyUserShift(uUserShift);
+    }
 }
 
 
@@ -494,9 +632,11 @@ lmScoreBlock::lmScoreBlock(lmTenths tWidth, lmTenths tHeight, lmTPoint tPos,
 // lmScoreTextParagraph implementation: box + alignment + collection of lmBaseText
 //==========================================================================================
 
-lmScoreTextParagraph::lmScoreTextParagraph()
-    : lmScoreBlock()
+lmScoreTextParagraph::lmScoreTextParagraph(lmTenths ntWidth, lmTenths ntHeight,
+                                           lmTPoint tPos)
+    : lmScoreBlock(ntWidth, ntHeight, tPos)
 {
+    DefineAsMultiShaped();      //multi-shaped: box (#0) + anchor line (#1)
 }
 
 lmScoreTextParagraph::~lmScoreTextParagraph()
@@ -533,17 +673,44 @@ wxString lmScoreTextParagraph::SourceLDP(int nIndent)
     //TODO
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(paragraph");
+    sSource += _T("(paragraph ");
 
-    //alignment
+    //location and alignment
+    sSource += _T("dx:");
+	sSource += DoubleToStr((double)m_ntPos.x, 4);
+    sSource += _T(" dy:");
+	sSource += DoubleToStr((double)m_ntPos.y, 4);
     if (m_nHAlign == lmHALIGN_CENTER)
         sSource += _T(" center");
     else if (m_nHAlign == lmHALIGN_LEFT)
         sSource += _T(" left");
     else
         sSource += _T(" right");
+    sSource += _T("\n");
 
+    //box
     ++nIndent;
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(size (width ");
+	sSource += DoubleToStr((double)m_ntWidth, 4);
+    sSource += _T(")(height ");
+	sSource += DoubleToStr((double)m_ntHeight, 4);
+    sSource += _T("))(color ");
+    sSource += m_nBgColor.GetAsString(wxC2S_HTML_SYNTAX);
+    sSource += _T(")\n");
+
+    //border
+    //<border> ::= (border <width><lineStyle><color>)
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(border (width ");
+	sSource += DoubleToStr((double)m_ntBorderWidth, 4);
+    sSource += _T(")(lineStyle ") + LineStyleToLDP(m_nBorderStyle);
+    sSource += _T(")");
+    sSource += _T("(color ");
+    sSource += m_nBorderColor.GetAsString(wxC2S_HTML_SYNTAX);
+    sSource += _T("))");
+
+    //text
     std::list<lmBaseText*>::iterator it;
     for (it = m_texts.begin(); it != m_texts.end(); ++it)
     {
@@ -554,6 +721,32 @@ wxString lmScoreTextParagraph::SourceLDP(int nIndent)
         sSource += _T(")");
     }
     --nIndent;
+
+    //anchor line
+    if (m_fHasAnchorLine)
+    {
+        ++nIndent;
+        std::list<lmBaseText*>::iterator it;
+        for (it = m_texts.begin(); it != m_texts.end(); ++it)
+        {
+            sSource += _T("\n");
+            sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+            sSource += _T("(anchorLine dx:");
+		    sSource += DoubleToStr((double)m_ntAnchorPoint.x, 4);
+            sSource += _T(" dy:");
+		    sSource += DoubleToStr((double)m_ntAnchorPoint.y, 4);
+            sSource += _T(" (lineStyle ") + LineStyleToLDP(m_nAnchorLineStyle);
+            sSource += _T(")");
+            sSource += _T("(color ");
+            sSource += m_nAnchorLineColor.GetAsString(wxC2S_HTML_SYNTAX);
+            sSource += _T(")");
+            sSource += _T("(width ");
+		    sSource += DoubleToStr((double)m_ntAnchorLineWidth, 4);
+            sSource += _T(")");
+            sSource += _T(")");
+        }
+        --nIndent;
+    }
 
 	//base class info
     sSource += _T("\n");
@@ -583,39 +776,47 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
 
     WXUNUSED(colorC);
 
-    ////compute position
-    lmLUnits uxStart = m_pParent->TenthsToLogical(m_tPos.x) + pPaper->GetCursorX();
-    lmLUnits uyStart = m_pParent->TenthsToLogical(m_tPos.y) + pPaper->GetCursorY();
-    //lmLUnits uxEnd = uxStart + m_pParent->TenthsToLogical(m_tWidth) + pPaper->GetCursorX();
-    //lmLUnits uyEnd = uyStart + m_pParent->TenthsToLogical(m_tHeight) + pPaper->GetCursorY();
-    //lmLUnits uWidth = m_pParent->TenthsToLogical(m_tWidth);
-    //lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);  //TODO user option?
+    //rectangle position
+    lmLUnits uxStart = m_pParent->TenthsToLogical(m_ntPos.x) + pPaper->GetCursorX();
+    lmLUnits uyStart = m_pParent->TenthsToLogical(m_ntPos.y) + pPaper->GetCursorY();
+    lmLUnits uxEnd = uxStart + m_pParent->TenthsToLogical(m_ntWidth);
+    lmLUnits uyEnd = uyStart + m_pParent->TenthsToLogical(m_ntHeight);
+    lmLUnits uBorderWidth = m_pParent->TenthsToLogical(m_ntBorderWidth);
 
-    //create the shape
+    //create the textbox shape
     std::list<lmBaseText*>::iterator it;
     //for (it = m_texts.begin(); it != m_texts.end(); ++it)
     it = m_texts.begin();
     wxFont* pFont = (*it)->GetSuitableFont(pPaper);
 
-    lmShape* pShape = new lmShapeTextbox(this, (*it)->GetText(), pFont, pPaper,
-                                         m_nBlockAlign, m_nHAlign, m_nVAlign,
-                                         uxStart, uyStart, 0.0f, 0.0f,
-                                         (*it)->GetColour());
+    //create the textbox shape (shape #0)
+    m_pShapeRectangle = 
+        new lmShapeTextbox(this, lmIDX_RECTANGLE, pPaper, (*it)->GetText(), pFont,
+                           (*it)->GetColour(), m_nBlockAlign, m_nHAlign, m_nVAlign,
+                           uxStart, uyStart, uxEnd, uyEnd,
+                           m_nBgColor, uBorderWidth, m_nBorderColor);
+	pBox->AddShape(m_pShapeRectangle);
+    StoreShape(m_pShapeRectangle);
 
-	pBox->AddShape(pShape);
-    StoreShape(pShape);
-    return pShape->GetBounds().GetWidth();
-}
+    //if it has anchor line create the line shape
+    if (m_fHasAnchorLine)
+    {
+        //anchor line (shape #1)
+        lmLUnits uxAnchor = m_pParent->TenthsToLogical(m_ntAnchorPoint.x) + pPaper->GetCursorX();
+        lmLUnits uyAnchor = m_pParent->TenthsToLogical(m_ntAnchorPoint.y) + pPaper->GetCursorY();
+        lmLUnits uAnchorLineWidth = m_pParent->TenthsToLogical(m_ntAnchorLineWidth);
+        lmLUnits uExtraWidth = m_pParent->TenthsToLogical(4);   //TODO: User options?
+        m_pShapeLine =
+            new lmShapeLine(this, lmIDX_ANCHORLINE, uxAnchor, uyAnchor, uxStart,
+                            uyStart, uAnchorLineWidth,
+                            uExtraWidth, m_nAnchorLineStyle, m_nAnchorLineColor);
+        m_pShapeLine->SetAsControlled(lmLINE_END);
+        m_pShapeLine->FixPoint(lmLINE_START);
 
-lmUPoint lmScoreTextParagraph::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
-{
-    //TODO
-    return uOrg;
-}
-
-void lmScoreTextParagraph::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts)
-{
-    //TODO
+	    pBox->AddShape(m_pShapeLine);
+        StoreShape(m_pShapeLine);
+    }
+    return m_pShapeRectangle->GetBounds().GetWidth();
 }
 
 

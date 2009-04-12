@@ -113,7 +113,8 @@ void lmGraphicManager::Layout()
     m_fReLayout = false;
 }
 
-wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
+wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions,
+                                        wxWindow* pRenderWindow, wxPoint vOffset)
 {
     //Renders page 1..n
     //Options are those defined for lmUpdateHint (see ScoreDoc.h)
@@ -132,7 +133,7 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions)
         lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
         m_pPaper->SetDrawer(pDrawer);
         wxASSERT(m_pBoxScore);  //Layout phase omitted?
-        m_pBoxScore->RenderPage(nPage, m_pPaper);
+        m_pBoxScore->RenderPage(nPage, m_pPaper, pRenderWindow, vOffset);
 
         //Make room for the new bitmap
         //TODO
