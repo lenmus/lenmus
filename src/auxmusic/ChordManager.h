@@ -57,6 +57,13 @@ typedef struct lmChordInfoStruct {
     int nNumNotes;
     int nNumIntervals;
     int nNumInversions;
+    //@ TODO: PENSAR EN LA ELISION DE NOTAS
+    //@   un mecanismo generico:
+    //@    bool fAllowedElidedIntervals[lmINTERVALS_IN_CHORD];
+    //@    bool fElidedIntervals[lmINTERVALS_IN_CHORD];
+    //@  pero si solo se permite la inversion de la quinta, no hacen falta estos arrays
+    //@ [TODO: confirmar que es mas adecuado hablar de INTERVALOS elididos en lugar de NOTAS]
+    int nFifthElided;
     lmFIntval nIntervals[lmINTERVALS_IN_CHORD];
     void Initalize() //TODO @@pensar en mejorar... (un constructor??)
     {
@@ -67,13 +74,14 @@ typedef struct lmChordInfoStruct {
         {
           nIntervals[i] = lmNULL_FIntval;
         }
+        nFifthElided = 0;  // Elision allowed only in second interval
     }
 } lmChordInfo;
 
 extern  void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
-extern lmEChordType GetChordTypeFromIntervals( lmChordInfo chordInfo );
+extern lmEChordType GetChordTypeFromIntervals( lmChordInfo chordInfo, bool fAllowFifthElided=false );
 extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
 extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
 
@@ -131,6 +139,7 @@ private:
     int             m_nInversion;
     int             m_nNumNotes;                    //num notes in the chord
     lmFPitch        m_fpNote[lmNOTES_IN_CHORD];     //the chord notes
+    int             m_nElision; // @@TODO: enum in ChordConstrains...
 
 };
 

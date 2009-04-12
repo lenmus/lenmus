@@ -140,10 +140,10 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     pVStaff->AddKeySignature( m_nKey ); //key signature
     pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
 
+  /*TODO: dejar version final o quitar  @@@@@@@@@@@@@@@carlos
     lmLDPNode* pNode;
     lmNote* pNote;
 
-  /*TODO: dejar version final o quitar  @@@@@@@@@@@@@@@carlos
     wxString sNotes[] = {
         _T("(n a4 q p1 v2) ( chord (n a4 q p1 v2) (n b4 q p1 v2) (n c5 q p1 v2) (n d5 q p1 v2) ) (barline)"),
         _T("( chord (n b4 q p1 v1) (n d4 q p1 v1) (n f4 q p1 v1) (n a5 q p1 v1) ) (n a4 q p1 v2) (barline)"),
