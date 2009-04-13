@@ -401,7 +401,12 @@ void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* pChordInfo)
     assert(pChordInfo != NULL);
 
     m_nKey = nKey;
-    m_nNumNotes = pChordInfo->nNumNotes;
+
+//  TODO: @ pensar si hay que guardar el número real de notas, incluyendo las duplicadas
+//            tener en cuenta que actualmente las notas se obtienen a partir de la fundamental
+//             simplemente sumando cada intervalo  
+//  m_nNumNotes = pChordInfo->nNumNotes;
+    m_nNumNotes = pChordInfo->nNumIntervals + 1;
     m_nInversion = pChordInfo->nNumInversions;
     m_fpNote[0] = pRootNote->GetFPitch();
     m_nElision = pChordInfo->nFifthElided;
