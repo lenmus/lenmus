@@ -66,7 +66,7 @@
 	"ColStaffObjs.h"
 	"../app/Paper.h"
 
-1239026584 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
+1239605292 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>
@@ -85,7 +85,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1238853250 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
+1239949292 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
 	<vector>
 	"../app/TheApp.h"
 	"../graphic/Shapes.h"
@@ -144,7 +144,7 @@
 
 1237358388 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/SOControl.h
 
-1239545784 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Text.h
+1239866628 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Text.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/font.h>
@@ -640,7 +640,7 @@
 	"wx/wx.h"
 	"wx/xml/xml.h"
 
-1238358940 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
+1239640594 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -787,7 +787,7 @@
 	"../ldp_parser/LDPParser.h"
 	"../xml_parser/MusicXMLParser.h"
 
-1239553971 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
+1239976606 /media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
 	<vector>
 	"wx/txtstrm.h"
 	"wx/wfstream.h"
@@ -1645,7 +1645,7 @@
 	<algorithm>
 	"LDPNode.h"
 
-1238936458 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
+1239977450 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<math.h>
@@ -1996,7 +1996,7 @@
 	"../graphic/ShapeRest.h"
 	"Glyph.h"
 
-1223969604 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/SOControl.cpp
+1239534992 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/SOControl.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -2039,7 +2039,7 @@
 	"ScoreCommand.h"
 	"../app/TheApp.h"
 
-1238347910 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Slur.cpp
+1239779208 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Slur.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -2055,7 +2055,7 @@
 	"Context.h"
 	"../app/global.h"
 
-1237567334 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.cpp
+1239949912 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<math.h>
@@ -2082,16 +2082,18 @@
 	"Score.h"
 	"VStaff.h"
 
-1238938534 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Text.cpp
+1239868058 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Text.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
 	"Text.h"
 	"UndoRedo.h"
-	"../graphic/GMObject.h"
-	"../graphic/ShapeText.h"
 	"properties/DlgProperties.h"
 	"properties/TextProperties.h"
+	"../graphic/GMObject.h"
+	"../graphic/ShapeText.h"
+	"../graphic/ShapeLine.h"
+	"../ldp_parser/AuxString.h"
 
 1237016990 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TimeSignature.cpp
 	"wx/wxprec.h"
@@ -2102,7 +2104,7 @@
 	"Context.h"
 	"../sound/SoundManager.h"
 
-1221455544 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TupletBracket.cpp
+1239779208 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TupletBracket.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<algorithm>
@@ -2549,14 +2551,14 @@
 	"MainFrame.h"
 	"../app/Logger.h"
 
-1239547648 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Shapes.h
+1239609214 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Shapes.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"
 	"../app/Paper.h"
 	"GMObject.h"
 
-1239467560 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.h
+1239780600 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/generic/dragimgg.h"
@@ -2666,7 +2668,7 @@
 	"BoxSliceVStaff.h"
 	"../globals/Colors.h"
 
-1239468062 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.cpp
+1239866302 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.cpp
 	"wx/wxprec.h"
 	<algorithm>
 	"../app/global.h"
@@ -2679,7 +2681,7 @@
 	"agg_basics.h"
 	"../globals/Colors.h"
 
-1238238818 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeArch.cpp
+1239779210 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeArch.cpp
 	"wx/wxprec.h"
 	"../score/Score.h"
 	"../app/ScoreCanvas.h"
@@ -2722,7 +2724,7 @@
 	"../app/Paper.h"
 	"GMObject.h"
 
-1238011564 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeNote.cpp
+1239862134 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeNote.cpp
 	"wx/wxprec.h"
 	"GMObject.h"
 	"../score/Score.h"
@@ -2753,7 +2755,7 @@
 	"../score/Staff.h"
 	"ShapeStaff.h"
 
-1238235644 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeTuplet.cpp
+1239779210 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeTuplet.cpp
 	"wx/wxprec.h"
 	"GMObject.h"
 	"../score/Score.h"
@@ -2761,7 +2763,7 @@
 	"ShapeNote.h"
 	"ShapeTuplet.h"
 
-1239548002 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Shapes.cpp
+1239866016 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Shapes.cpp
 	"wx/wxprec.h"
 	"Shapes.h"
 	"Handlers.h"
@@ -2801,7 +2803,7 @@
 	<vector>
 	<list>
 
-1238226158 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/AuxObj.cpp
+1239535050 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/AuxObj.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -7346,7 +7348,7 @@
 	"defs.h"
 	"Score.h"
 
-1239552656 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeText.h
+1239866016 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeText.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<list>
@@ -7769,7 +7771,7 @@
 	"wx/dynarray.h"
 	"wx/arrstr.h"
 
-1239552656 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeText.cpp
+1239866016 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeText.cpp
 	"wx/wxprec.h"
 	"ShapeText.h"
 	"ShapeLine.h"
@@ -13791,7 +13793,7 @@
 	<list>
 	"../auxmusic/ChordManager.h"
 
-1238358940 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoHarmonyCtrol.cpp
+1239640596 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/TheoHarmonyCtrol.cpp
 	"wx/wxprec.h"
 	"TheoHarmonyCtrol.h"
 	"../app/Processor.h"
@@ -13806,7 +13808,7 @@
 	"../app/MainFrame.h"
 	"../app/toolbox/ToolsBox.h"
 
-1238595492 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Processor.cpp
+1239899492 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Processor.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/sizer.h>
@@ -13856,7 +13858,7 @@
 
 1220470752 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/include/wx/wxsqlite3dyn.h
 
-1239552656 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeLine.h
+1239866016 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeLine.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"
@@ -13864,7 +13866,7 @@
 	"GMObject.h"
 	"Shapes.h"
 
-1239552656 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeLine.cpp
+1239866016 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeLine.cpp
 	"wx/wxprec.h"
 	"Handlers.h"
 	"ShapeLine.h"

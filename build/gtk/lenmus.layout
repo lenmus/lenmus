@@ -151,8 +151,8 @@
 	<File name="../../src/auxmusic/Cadence.cpp" open="0" top="0" tabpos="44">
 		<Cursor position="46767" topLine="1104" />
 	</File>
-	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="21">
-		<Cursor position="17347" topLine="447" />
+	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="1" tabpos="21">
+		<Cursor position="20694" topLine="515" />
 	</File>
 	<File name="../../src/auxmusic/ChordManager.h" open="1" top="0" tabpos="19">
 		<Cursor position="2412" topLine="101" />
@@ -400,10 +400,10 @@
 	<File name="../../src/ldp_parser/LDPNode.h" open="0" top="0" tabpos="86">
 		<Cursor position="2110" topLine="32" />
 	</File>
-	<File name="../../src/ldp_parser/LDPParser.cpp" open="1" top="1" tabpos="26">
-		<Cursor position="134786" topLine="3881" />
+	<File name="../../src/ldp_parser/LDPParser.cpp" open="1" top="0" tabpos="25">
+		<Cursor position="134786" topLine="3872" />
 	</File>
-	<File name="../../src/ldp_parser/LDPParser.h" open="1" top="0" tabpos="27">
+	<File name="../../src/ldp_parser/LDPParser.h" open="1" top="0" tabpos="26">
 		<Cursor position="7246" topLine="134" />
 	</File>
 	<File name="../../src/ldp_parser/LDPToken.cpp" open="0" top="0" tabpos="28">
