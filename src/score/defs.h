@@ -414,6 +414,16 @@ enum lmELineStyle
     lm_eLine_DotDash,
 };
 
+//line termination styles
+enum lmELineEndStyle
+{
+    lm_eEndLine_None = 0,
+    lm_eEndLine_Arrow,
+    lm_eEndLine_Dot,
+    lm_eEndLine_Square,
+    lm_eEndLine_Diamond,
+};
+
 //IDs for events that must be public
 enum
 {

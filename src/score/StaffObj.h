@@ -180,6 +180,12 @@ public:
     virtual int AttachAuxObj(lmAuxObj* pAO, int nIndex = -1);
     virtual int DetachAuxObj(lmAuxObj* pAO);
 
+    //wrapper methods to encapsulate and simplify operations related to score creation by program
+    lmAuxObj* AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxString& sText,
+                            lmTextStyle* pTextStyle, wxSize size = wxSize(160, 80),
+                            wxColour nBgColor = wxColour(_T("#fffeb0")) );
+
+
 
 	//--- a ScoreObj can be renderizable
 

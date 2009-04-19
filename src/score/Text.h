@@ -146,8 +146,8 @@ public:
     virtual ~lmScoreBlock() {}
 
     //operations
-    virtual void AddAnchorLine(lmLocation tPoint, lmTenths ntWidth,
-                               lmELineStyle nStyle, wxColour nColor);
+    virtual void AddAnchorLine(lmLocation tPoint, lmTenths ntWidth, lmELineStyle nStyle,
+                               lmELineEndStyle nEndStyle, wxColour nColor);
 
     //rectangle attributes
     inline void SetWidth(lmTenths ntWidth) { m_ntWidth = ntWidth; }
@@ -175,6 +175,8 @@ protected:
                  lmEBlockAlign nBlockAlign = lmBLOCK_ALIGN_DEFAULT,
                  lmEHAlign nHAlign = lmHALIGN_DEFAULT,
                  lmEVAlign nVAlign = lmVALIGN_DEFAULT);
+    bool ComputeAnchorJoinPoint(lmTPoint* ptAttachment);
+    void MoveJoinPoint();
 
     //block attributtes
     lmEBlockAlign       m_nBlockAlign;
@@ -195,7 +197,9 @@ protected:
     //anchor line
     bool            m_fHasAnchorLine;
     lmTPoint        m_ntAnchorPoint;
+    lmTPoint        m_ntAnchorJoinPoint;        //point on the rectangle
     lmELineStyle    m_nAnchorLineStyle;
+    lmELineEndStyle m_nAnchorLineEndStyle;
     wxColour        m_nAnchorLineColor;
     lmTenths        m_ntAnchorLineWidth;
 

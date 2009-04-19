@@ -107,17 +107,6 @@ void lmShapeLine::SetAsControlled(lmELinePoint nPointID)
     m_fIsControlled[nPointID] = true;
 }
 
-void lmShapeLine::FixPoint(lmELinePoint nPointID)
-{
-    //The referenced point will be set as 'fixed', that is, it will not move
-    //when the shape is dragged by user. But it will have a handler so that
-    //user can drag the point to another location
-
-    wxASSERT(nPointID == lmLINE_START || nPointID == lmLINE_END);
-
-    m_fIsFixed[nPointID] = true;
-}
-
 void lmShapeLine::UpdateBounds()
 {
 /*
@@ -381,7 +370,7 @@ void lmShapeLine::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoi
 void lmShapeLine::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
                              bool fAddShifts)
 {
-    //Each time a commnad is issued to change the line, we will receive a call
+    //Each time a command is issued to change the line, we will receive a call
     //back to update the shape
 
     for (int i=0; i < lmID_NUM_HANDLERS; i++)

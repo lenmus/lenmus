@@ -490,6 +490,7 @@ lmScoreBlock::lmScoreBlock(lmTenths ntWidth, lmTenths ntHeight, lmTPoint ntPos,
     //anchor line
     , m_fHasAnchorLine(false)
     , m_nAnchorLineStyle(lm_eLine_None)
+    , m_nAnchorLineEndStyle(lm_eEndLine_None)
     , m_nAnchorLineColor(*wxBLACK)
     , m_ntAnchorLineWidth(1.0f)
     //default block looking 
@@ -497,17 +498,21 @@ lmScoreBlock::lmScoreBlock(lmTenths ntWidth, lmTenths ntHeight, lmTPoint ntPos,
     , m_nBorderColor(*wxBLACK)
     , m_ntBorderWidth(1.0f)
     , m_nBorderStyle(lm_eLine_None)
+    //shapes
+    , m_pShapeRectangle((lmShapeRectangle*)NULL)
+    , m_pShapeLine((lmShapeLine*)NULL)
 {
 }
 
-void lmScoreBlock::AddAnchorLine(lmLocation tPoint, lmTenths ntWidth,
-                                 lmELineStyle nStyle, wxColour nColor)
+void lmScoreBlock::AddAnchorLine(lmLocation tPoint, lmTenths ntWidth, lmELineStyle nStyle,
+                                 lmELineEndStyle nEndStyle, wxColour nColor)
 {
     m_fHasAnchorLine = true;
     m_ntAnchorPoint = lmTPoint(tPoint.x, tPoint.y);
     m_nAnchorLineStyle = nStyle;
     m_nAnchorLineColor = nColor;
     m_ntAnchorLineWidth = ntWidth;
+    m_nAnchorLineEndStyle = nEndStyle;
 }
 
 void lmScoreBlock::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
@@ -519,6 +524,10 @@ void lmScoreBlock::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pSh
 
     if (nShapeIdx == lmIDX_RECTANGLE)
     {
+        //wxLogMessage(_T("[lmScoreBlock::MoveObjectPoints] Before. Rectangle: Left-top=(%.2f, %.2f), right-bottom=(%.2f, %.2f), join=(%.2f, %.2f)"),
+        //    m_ntPos.x, m_ntPos.y, m_ntPos.x + m_ntWidth, m_ntPos.y + m_ntHeight,
+        //    m_ntAnchorJoinPoint.x, m_ntAnchorJoinPoint.y );
+
         //moved points belongs to the rectangle
         //receives 4 points: top-left, top-right, bottom-right and bottom-left
         wxASSERT(nNumPoints == 4);
@@ -547,13 +556,7 @@ void lmScoreBlock::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pSh
 
         //If there is an anchor line, move also line point attached to rectangle
         if (m_fHasAnchorLine)
-        {
-            wxASSERT(m_pShapeLine);
-            lmUPoint uLineShifs[2];
-            uLineShifs[0] = lmUPoint(0.0f, 0.0f);
-            uLineShifs[1] = *pShifts;
-            m_pShapeLine->MovePoints(2, lmIDX_ANCHORLINE, &uLineShifs[0], fAddShifts);
-        }
+            MoveJoinPoint();
     }
     else
     {
@@ -578,6 +581,7 @@ void lmScoreBlock::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pSh
         //inform the shape
         wxASSERT(m_pShapeLine);
         m_pShapeLine->MovePoints(nNumPoints, nShapeIdx, pShifts, fAddShifts);
+        MoveJoinPoint();
     }
 }
 
@@ -626,6 +630,90 @@ void lmScoreBlock::OnParentMoved(lmLUnits uxShift, lmLUnits uyShift)
     }
 }
 
+void lmScoreBlock::MoveJoinPoint()
+{
+    //The rectangle or the anchor line start point has been moved. This method is then invoked
+    //to recompute the new join point between line and rectangle
+
+    wxASSERT(m_pShapeLine);
+    lmTPoint ntNewJoinPoint;
+    if (ComputeAnchorJoinPoint(&ntNewJoinPoint))
+    {
+        //anchor line is hidden. Move join point to top-left
+        ntNewJoinPoint = m_ntPos;
+        m_pShapeLine->SetVisible(false);
+    }
+    else
+        m_pShapeLine->SetVisible(true);
+
+    lmUPoint uLineShifs[2];
+    uLineShifs[0] = lmUPoint(0.0f, 0.0f);
+    uLineShifs[1].x = m_pParent->TenthsToLogical(ntNewJoinPoint.x - m_ntAnchorJoinPoint.x);
+    uLineShifs[1].y = m_pParent->TenthsToLogical(ntNewJoinPoint.y - m_ntAnchorJoinPoint.y);
+    m_ntAnchorJoinPoint = ntNewJoinPoint;
+    m_pShapeLine->MovePoints(2, lmIDX_ANCHORLINE, &uLineShifs[0], true);    //true -> add shifts
+}
+
+bool lmScoreBlock::ComputeAnchorJoinPoint(lmTPoint* ptJoin)
+{
+    //Anchor line join point (the point at which the anchor line is attached to
+    //the rectangle border) will be placed so that anchor line always passes
+    //through the center of rectangle.
+    //
+    //This method computes the rectangle join point as follows:
+    //  1. if anchor point is inside the rectangle, finish. Anchor point is hidden
+    //  2. Compute center point of rectangle.
+    //  3. Compute line anchor point to center point
+    //  4. Compute intersection point to nearest vertical side
+    //  5. if point is on side (line segment), finish. Anchor point is found
+    //  6. Compute intersection point to nearest horizontal side
+    //
+    // Returns true if anchor point is hidden by rectangle. Otherwise content of
+    // ptJoin is updated with found attachment point
+
+
+    //wxLogMessage(_T("[lmScoreBlock::ComputeAnchorJoinPoint] Before. join=(%.2f, %.2f)"),
+    //    m_ntAnchorJoinPoint.x, m_ntAnchorJoinPoint.y );
+
+    //Rectangle bottom-right point
+    lmTPoint ntRight(m_ntPos.x + m_ntWidth, m_ntPos.y + m_ntHeight);
+
+    //1. if anchor point is inside the rectangle, finish. Anchor point is hidden
+    if (m_ntAnchorPoint.x >= m_ntPos.x && m_ntAnchorPoint.x <= ntRight.x
+        && m_ntAnchorPoint.y >= m_ntPos.y && m_ntAnchorPoint.y <= ntRight.y)
+        return true;    //anchor point is inside the rectangle
+
+    //2. Compute center point of rectangle
+    lmTPoint ntCenter(m_ntPos.x + m_ntWidth/2.0f, m_ntPos.y + m_ntHeight/2.0f);
+    
+    //3. Compute slope of anchor line
+    float m = (ntCenter.y - m_ntAnchorPoint.y) / (ntCenter.x - m_ntAnchorPoint.x);
+
+    //4. Compute intersection point to nearest rectangle vertical side
+    lmTPoint ntIntersect(m_ntPos.x, 0.0f);       //assume left side is nearer
+    if (m_ntAnchorPoint.x > ntCenter.x)
+        ntIntersect.x = ntRight.x;
+    
+    ntIntersect.y = m * (ntIntersect.x - m_ntAnchorPoint.x) + m_ntAnchorPoint.y;
+
+    //5. if point is on side (line segment), finish. Anchor point is found
+    if (ntIntersect.y >= m_ntPos.y && ntIntersect.y <= ntRight.y)
+    {
+        //found
+        *ptJoin = ntIntersect;
+        return false;       //intersection found
+    }
+
+    // 6. Compute intersection point to nearest horizontal side
+    ntIntersect.y = m_ntPos.y;          //assume top side is nearer
+    if (m_ntAnchorPoint.y > ntCenter.y)
+        ntIntersect.y = ntRight.y;      //bottom side is nearer
+
+    ntIntersect.x = m_ntAnchorPoint.x + (ntIntersect.y - m_ntAnchorPoint.y) / m;
+
+    *ptJoin = ntIntersect;
+    return false;       //intersection found
+}
 
 
 //==========================================================================================
@@ -802,16 +890,24 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
     if (m_fHasAnchorLine)
     {
         //anchor line (shape #1)
-        lmLUnits uxAnchor = m_pParent->TenthsToLogical(m_ntAnchorPoint.x) + pPaper->GetCursorX();
-        lmLUnits uyAnchor = m_pParent->TenthsToLogical(m_ntAnchorPoint.y) + pPaper->GetCursorY();
+        m_ntAnchorJoinPoint = m_ntPos;
+        bool fHidden = ComputeAnchorJoinPoint(&m_ntAnchorJoinPoint);
+        //wxLogMessage(_T("[lmScoreTextParagraph::LayoutObject] Join=(%.2f, %.2f)"),
+        //    m_ntAnchorJoinPoint.x, m_ntAnchorJoinPoint.y );
+
+        lmLUnits uxStartAnchor = m_pParent->TenthsToLogical(m_ntAnchorPoint.x) + pPaper->GetCursorX();
+        lmLUnits uyStartAnchor = m_pParent->TenthsToLogical(m_ntAnchorPoint.y) + pPaper->GetCursorY();
+        lmLUnits uxEndAnchor = m_pParent->TenthsToLogical(m_ntAnchorJoinPoint.x) + pPaper->GetCursorX();
+        lmLUnits uyEndAnchor = m_pParent->TenthsToLogical(m_ntAnchorJoinPoint.y) + pPaper->GetCursorY();
         lmLUnits uAnchorLineWidth = m_pParent->TenthsToLogical(m_ntAnchorLineWidth);
         lmLUnits uExtraWidth = m_pParent->TenthsToLogical(4);   //TODO: User options?
         m_pShapeLine =
-            new lmShapeLine(this, lmIDX_ANCHORLINE, uxAnchor, uyAnchor, uxStart,
-                            uyStart, uAnchorLineWidth,
+            new lmShapeLine(this, lmIDX_ANCHORLINE,
+                            uxStartAnchor, uyStartAnchor, uxEndAnchor, uyEndAnchor, uAnchorLineWidth,
                             uExtraWidth, m_nAnchorLineStyle, m_nAnchorLineColor);
         m_pShapeLine->SetAsControlled(lmLINE_END);
-        m_pShapeLine->FixPoint(lmLINE_START);
+        m_pShapeLine->SetLeftDraggable(false);
+        m_pShapeLine->SetVisible(!fHidden);
 
 	    pBox->AddShape(m_pShapeLine);
         StoreShape(m_pShapeLine);

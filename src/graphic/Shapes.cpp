@@ -500,9 +500,6 @@ void lmShapeRectangle::Create(lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight,
     m_uPoint[lmID_BOTTOM_LEFT].y = uyBottom;
     ComputeCenterPoints();
 
-    //m_uPoint[lmID_ANCHOR_POINT].x = uxLeft;
-    //m_uPoint[lmID_ANCHOR_POINT].y = uyTop;
-
     //Create the handlers
     m_pHandler[lmID_TOP_LEFT] = new lmHandlerSquare(m_pOwner, this, lmID_TOP_LEFT, wxCURSOR_SIZENWSE);
     m_pHandler[lmID_TOP_RIGHT] = new lmHandlerSquare(m_pOwner, this, lmID_TOP_RIGHT, wxCURSOR_SIZENESW);
@@ -621,12 +618,6 @@ void lmShapeRectangle::DrawRectangle(lmPaper* pPaper, wxColour color, bool fSket
                       m_uPoint[lmID_TOP_LEFT].x, m_uPoint[lmID_TOP_LEFT].y,
                       m_uBorderWidth, nEdge, m_nBorderColor);
 
-    ////draw anchor line
-    //if (m_nAnchorLineStyle != lm_eLine_None)
-    //    pPaper->SolidLine(m_uPoint[lmID_TOP_LEFT].x, m_uPoint[lmID_TOP_LEFT].y,
-    //                    m_uPoint[lmID_ANCHOR_POINT].x, m_uPoint[lmID_ANCHOR_POINT].y,
-    //                    m_uAnchorLineWidth, nEdge, m_nAnchorLineColor);
-
     lmSimpleShape::Render(pPaper, color);
 }
 
@@ -660,9 +651,6 @@ void lmShapeRectangle::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
     m_uPoint[lmID_BOTTOM_RIGHT].y += uyIncr;
     m_uPoint[lmID_BOTTOM_LEFT].x += uxIncr;
     m_uPoint[lmID_BOTTOM_LEFT].y += uyIncr;
-
-    //m_uPoint[lmID_ANCHOR_POINT].x += uxIncr;
-    //m_uPoint[lmID_ANCHOR_POINT].y += uyIncr;
 
     ComputeCenterPoints();
 
@@ -735,7 +723,6 @@ wxBitmap* lmShapeRectangle::OnBeginDrag(double rScale, wxDC* pDC)
     ////END DBG -------
 
     return pBitmap;
-
 }
 
 lmUPoint lmShapeRectangle::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
@@ -770,11 +757,6 @@ void lmShapeRectangle::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const l
 	// final position of the object (logical units referred to page origin).
 	// This method must validate/adjust final position and, if ok, it must 
 	// send a move object command to the controller.
-
-	//lmUPoint uFinalPos(uPos.x, uPos.y);
-
-	////send a move object command to the controller
-	//pCanvas->MoveObject(this, uFinalPos);
 
     //compute shift from start of drag point
     lmUPoint uShift = uPos - m_uSavePoint[0];
@@ -890,12 +872,6 @@ void lmShapeRectangle::ComputeNewPointsAndHandlersPositions(const lmUPoint& uPos
             m_pHandler[lmID_BOTTOM_CENTER]->SetHandlerTopLeftPoint(uPos);
             yBottom = m_pHandler[lmID_BOTTOM_CENTER]->GetHandlerCenterPoint().y;
             break;
-
-        //case lmID_ANCHOR_POINT:
-        //    //free movement
-        //    m_pHandler[lmID_ANCHOR_POINT]->SetHandlerTopLeftPoint(uPos);
-        //    m_uPoint[lmID_ANCHOR_POINT] = m_pHandler[lmID_ANCHOR_POINT]->GetHandlerCenterPoint();
-        //    break;
 
         default:
             wxASSERT(false);
@@ -1048,7 +1024,7 @@ lmLUnits lmShapeStem::GetXCenterStem()
 //  (Button, TextCtrol, etc.) on the score
 //========================================================================================
 
-lmShapeWindow::lmShapeWindow(lmScoreObj* pOwner,
+lmShapeWindow::lmShapeWindow(lmScoreObj* pOwner, int nShapeIdx, 
                   //position and size
                   lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
                   //border
@@ -1056,7 +1032,7 @@ lmShapeWindow::lmShapeWindow(lmScoreObj* pOwner,
                   //content
                   wxColour nBgColor,
                   //other
-                  int nShapeIdx, wxString sName,
+                  wxString sName,
 				  bool fDraggable, bool fSelectable, bool fVisible)
     : lmShapeRectangle(pOwner, uxLeft, uyTop, uxRight, uyBottom, uBorderWidth,
                        nBorderColor, nBgColor, nShapeIdx, sName,

@@ -134,8 +134,8 @@ lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour co
 	pBox->AddShape(m_pShape);
 
 	//attach the tuplet to start and end notes
-	GetStartNoteRest()->GetShape()->Attach(m_pShape, eGMA_StartNote);
-	GetEndNoteRest()->GetShape()->Attach(m_pShape, eGMA_EndNote);
+	GetStartNoteRest()->GetShape()->Attach(m_pShape, lm_eGMA_StartNote);
+	GetEndNoteRest()->GetShape()->Attach(m_pShape, lm_eGMA_EndNote);
 
 	return m_pShape;
 }

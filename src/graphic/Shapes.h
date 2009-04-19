@@ -156,8 +156,6 @@ protected:
     void SavePoints();
 
     //rectangle
-    lmLUnits        m_xLeft, m_yTop;
-    lmLUnits        m_xRight, m_yBottom;
     wxColour        m_nBgColor;
     lmLUnits        m_uCornerRadius;
 
@@ -269,7 +267,7 @@ private:
 class lmShapeWindow : public lmShapeRectangle
 {
 public:
-    lmShapeWindow(lmScoreObj* pOwner,
+    lmShapeWindow(lmScoreObj* pOwner, int nShapeIdx, 
                   //position and size
                   lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
                   //border
@@ -277,7 +275,7 @@ public:
                   //content
                   wxColour nBgColor = *wxWHITE,
                   //other
-                  int nShapeIdx = 0, wxString sName = _T("Window"),
+                  wxString sName = _T("Window"),
 				  bool fDraggable = true, bool fSelectable = true, 
                   bool fVisible = true);
     virtual ~lmShapeWindow() {}

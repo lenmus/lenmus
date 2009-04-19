@@ -723,11 +723,6 @@ wxString lmShapeTextbox::Dump(int nIndent)
 	return sDump;
 }
 
-void lmShapeTextbox::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
-{
-    lmShapeRectangle::Shift(uxIncr, uyIncr);
-}
-
 wxBitmap* lmShapeTextbox::OnBeginDrag(double rScale, wxDC* pDC)
 {
 	// A dragging operation is started. The view invokes this method to request the

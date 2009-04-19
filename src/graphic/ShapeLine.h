@@ -113,7 +113,6 @@ public:
 
     //properties and options
     void SetAsControlled(lmELinePoint nPointID);
-    void FixPoint(lmELinePoint nPointID);
 
     //renderization
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);

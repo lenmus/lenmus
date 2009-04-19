@@ -165,7 +165,6 @@ public:
 
     //other
     wxString Dump(int nIndent);
-    void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 
     //specific methods
@@ -174,8 +173,6 @@ public:
 
     //shape dragging: overrides of lmShapeRectangle
     wxBitmap* OnBeginDrag(double rScale, wxDC* pDC);
-	//lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-	//void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
 
 
 private:

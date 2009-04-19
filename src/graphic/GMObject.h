@@ -200,6 +200,7 @@ public:
     virtual void OnSelectionStatusChanged() {}
 
 	//dragging and moving
+    inline void SetLeftDraggable(bool fValue) { m_fLeftDraggable = fValue; }
     inline bool IsLeftDraggable() const { return m_fLeftDraggable; }
     inline bool IsRightDraggable() const { return false; }
 	virtual wxBitmap* OnBeginDrag(double rScale, wxDC* pDC) { return (wxBitmap*)NULL; }
@@ -315,10 +316,10 @@ protected:
 
 enum lmEAttachType
 {
-	eGMA_Unknown,
-    eGMA_StartNote,
-	eGMA_MiddleNote,
-	eGMA_EndNote,
+	lm_eGMA_Simple,
+    lm_eGMA_StartNote,
+	lm_eGMA_MiddleNote,
+	lm_eGMA_EndNote,
 };
 
 enum lmEParentEvent {
@@ -350,7 +351,7 @@ public:
 										lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent) {}
 
 	//shapes can be attached to other shapes
-	int Attach(lmShape* pShape, lmEAttachType nType = eGMA_Unknown);
+	int Attach(lmShape* pShape, lmEAttachType nType = lm_eGMA_Simple);
 	void Detach(lmShape* pShape, bool fInform=true);
     void OnAttached(lmShape* pShape);
     void OnDetached(lmShape* pShape);

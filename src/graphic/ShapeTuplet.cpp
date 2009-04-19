@@ -56,8 +56,8 @@ lmShapeTuplet::lmShapeTuplet(lmNoteRest* pStartNR, lmNoteRest* pEndNR, int nNumN
 	m_pFont = pFont;
 
 	//compute positions and bounds
-	OnAttachmentPointMoved(pStartNR->GetShape(), eGMA_StartNote, 0.0, 0.0, lmMOVE_EVENT);
-	OnAttachmentPointMoved(pEndNR->GetShape(), eGMA_EndNote, 0.0, 0.0, lmMOVE_EVENT);
+	OnAttachmentPointMoved(pStartNR->GetShape(), lm_eGMA_StartNote, 0.0, 0.0, lmMOVE_EVENT);
+	OnAttachmentPointMoved(pEndNR->GetShape(), lm_eGMA_EndNote, 0.0, 0.0, lmMOVE_EVENT);
 
 }
 
@@ -73,7 +73,7 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	WXUNUSED(nEvent);
 
 	//if intermediate note moved, nothing to do
-	if (!(nTag == eGMA_StartNote || nTag == eGMA_EndNote)) return;
+	if (!(nTag == lm_eGMA_StartNote || nTag == lm_eGMA_EndNote)) return;
 
 	//computhe half notehead width
 	lmShapeNote* pNoteShape = (lmShapeNote*)pShape;
@@ -81,7 +81,7 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	wxASSERT(pSNH);
 	lmLUnits uHalfNH = (pSNH->GetXRight() - pSNH->GetXLeft()) / 2.0;
 
-	if (nTag == eGMA_StartNote)
+	if (nTag == lm_eGMA_StartNote)
 	{
 		//start note moved. Recompute start of shape
 		//Placed on center of notehead if above, or half notehead before if below
@@ -104,7 +104,7 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 		}
 	}
 
-	else if (nTag == eGMA_EndNote)
+	else if (nTag == lm_eGMA_EndNote)
 	{
 		//end note moved. Recompute end of shape
 		//Placed half notehead appart if above, or on center of notehead if below

@@ -570,6 +570,26 @@ void lmScoreObj::PrepareToCreateShapes()
     m_pShapesMngr->Init( IsDirty() );
 }
 
+lmAuxObj* lmScoreObj::AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxString& sText,
+                                    lmTextStyle* pTextStyle, wxSize size, wxColour nBgColor) 
+{ 
+    //wrapper method to encapsulate and simplify operations related to score creation by program.
+    //This method creates and attaches a textbox
+
+    lmScoreTextParagraph* pTextBox = new lmScoreTextParagraph(size.x, size.y, ntBoxPos);
+    this->AttachAuxObj(pTextBox);
+    lmBaseText* pBText = new lmBaseText(sText, pTextStyle);
+    pTextBox->InsertTextUnit(pBText);
+    pTextBox->SetBgColour(nBgColor);
+
+    lmLocation tPos;
+    tPos.x = ntLinePos.x;
+    tPos.y = ntLinePos.y;
+    pTextBox->AddAnchorLine(tPos, 1.0f, lm_eLine_Solid, lm_eEndLine_None, *wxBLACK);
+
+    return pTextBox;
+}
+
 
 
 //-------------------------------------------------------------------------------------------------

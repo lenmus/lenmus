@@ -802,7 +802,7 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
         }
         else if (pX->GetName() == _T("joinBarlines") )
         {
-            fJoinBarlines = GetYesNoValue(pX, fJoinBarlines);
+            fJoinBarlines = GetValueYesNo(pX, fJoinBarlines);
         }
         else
         {
@@ -1695,8 +1695,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &nStaff, &tPos);
 	m_nCurStaff = nStaff;
 
-    //analyze remaining parameters: annotations
+    //analyze remaining parameters: annotations and attachments
     bool fFermata = false;
+    bool fThereAreAttachments = false;
     lmEPlacement nFermataPlacement = ep_Default;
 	lmLocation tFermataPos = g_tDefaultPos;
 
@@ -1897,10 +1898,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 else
                     pTieInfo = AnalyzeTie(pX, pVStaff);
             }
-            else {
-                AnalysisError(pX, _T("Notation '%s' unknown or not implemented."), sData.c_str());
+            else
+            {
+                //All other parameters will be considered as attachments. Therefore, I will
+                //proceed to create the note/rest and after, I will continue the analysis and
+                //add each attachment to the note/rest
+                fThereAreAttachments = true;
+                break;
             }
-
         }
         pX = pNode->GetNextParameter();
     }
@@ -2053,8 +2058,24 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 		pFermata->SetUserLocation(tFermataPos);
 	}
 
-    return pNR;
+    //note/rest is created. Let's continue analyzing attachments and attaching them to the
+    //created note/rest
+    if (!fThereAreAttachments)
+        return pNR;
 
+    while (pX)
+    {
+        wxString sName = pX->GetName();
+        if (sName == _T("textbox"))
+            AnalyzeTextbox(pX, pVStaff, pNR);
+        //else if (sName == _T("text"))
+        //    AnalyzeText(pX, pVStaff);
+        else
+            AnalysisError(pX, _T("Notation '%s' unknown or not implemented."), sName.c_str());
+
+        pX = pNode->GetNextParameter();
+    }
+    return pNR;
 }
 
 bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
@@ -2553,7 +2574,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
-bool lmLDPParser::GetYesNoValue(lmLDPNode* pNode, bool fDefault)
+bool lmLDPParser::GetValueYesNo(lmLDPNode* pNode, bool fDefault)
 {
     wxString sValue = ((pNode->GetParameter(1))->GetName()).Lower();
     if (sValue == _T("true") || sValue == _T("yes"))
@@ -3392,7 +3413,8 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
-void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
+void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
+                                 lmStaffObj* pTarget)
 {
     //<textbox> ::= (textbox <location>[<size>][<color>][<border>]<text>[<anchorLine>])
 
@@ -3415,8 +3437,10 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxColour nBorderColor = *wxBLACK;
     lmTenths ntBorderWidth = 1.0f;
         //anchor line
+    bool fAnchorLine = false;       //assume no anchor line
 	lmLocation tAnchorPoint = g_tDefaultPos;
     lmELineStyle nAnchorLineStyle = lm_eLine_Solid;
+    lmELineEndStyle nAnchorLineEndStyle = lm_eEndLine_None;
     wxColour nAnchorLineColor = *wxBLACK;
     lmTenths ntAnchorLineWidth = 1.0f;
 
@@ -3454,7 +3478,9 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
         else if(sName == _T("anchorLine"))
         {
-            //TODO
+            AnalyzeAnchorLine(pX, &tAnchorPoint, &ntAnchorLineWidth, &nAnchorLineStyle,
+                              &nAnchorLineEndStyle, &nAnchorLineColor);
+            fAnchorLine = true;
         }
         else
         {
@@ -3463,12 +3489,13 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
     }
 
-    // create the AuxObj and attach it to the VStaff
+    // create the AuxObj and attach it to the anchor StaffObj
     lmTPoint ntPos(tPos.x, tPos.y);
     lmScoreTextParagraph* pSTP =
         new lmScoreTextParagraph(ntWidth, ntHeight, ntPos);
-    lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
-    pAnchor->AttachAuxObj(pSTP);
+    if (!pTarget)
+        pTarget = (lmStaffObj*) pVStaff->AddAnchorObj();
+    pTarget->AttachAuxObj(pSTP);
 
     //apply values to created lmScoreTextParagraph
 
@@ -3481,10 +3508,9 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff)
     pSTP->SetBorderStyle(nBorderStyle);
 
     //anchor line
-    tAnchorPoint.x = 0.0f;
-    tAnchorPoint.y = 0.0f;
-    pSTP->AddAnchorLine(tAnchorPoint, ntAnchorLineWidth, nAnchorLineStyle,
-                        nAnchorLineColor);
+    if (fAnchorLine)
+        pSTP->AddAnchorLine(tAnchorPoint, ntAnchorLineWidth, nAnchorLineStyle,
+                            nAnchorLineEndStyle, nAnchorLineColor);
 
     //text
     lmTextStyle* pStyle = GetTextStyle(pNode, sStyle);
@@ -3571,6 +3597,31 @@ bool lmLDPParser::GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle)
     return false;       //no error
 }
 
+bool lmLDPParser::GetValueLineEndStyle(lmLDPNode* pNode, lmELineEndStyle* pEndStyle)
+{
+	//if error, returns true, sets pEndStyle to lm_eEndLine_None and issues an error message
+    //<lineEndStyle> = (lineEndStyle { none | arrow | dot | square | diamond })
+
+    wxString sValue = pNode->GetParameter(1)->GetName();
+    if (sValue == _T("none"))
+        *pEndStyle = lm_eEndLine_None;
+    else if (sValue == _T("arrow"))
+        *pEndStyle = lm_eEndLine_Arrow;
+    else if (sValue == _T("dot"))
+        *pEndStyle = lm_eEndLine_Dot;
+    else if (sValue == _T("square"))
+        *pEndStyle = lm_eEndLine_Square;
+    else if (sValue == _T("diamond"))
+        *pEndStyle = lm_eEndLine_Diamond;
+    else
+	{
+        AnalysisError(pNode, _T("Element 'lineEndStyle': Invalid value '%s'. Replaced by 'solid'"));
+        *pEndStyle = lm_eEndLine_None;
+        return true;
+    }
+    return false;       //no error
+}
+
 bool lmLDPParser::AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptHeight)
 {
     //returns true if error
@@ -3606,71 +3657,40 @@ bool lmLDPParser::AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptH
     return false;    //no error
 }
 
-void lmLDPParser::AnalyzeAnchorLine(lmLDPNode* pNode, lmVStaff* pVStaff)
+void lmLDPParser::AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
+                                    lmELineStyle* pLineStyle, lmELineEndStyle* pEndStyle,
+                                    wxColour* pColor)
 {
+    //Received parameters must be initialized with default values
     //<anchorLine> = (anchorLine <destination-point>[<width>][<lineStyle>][<color>]
     //                           [<lineEndStyle>])
     //<destination-point> = <location>
-    //<lineEndStyle> = (lineEndStyle { none | arrow | dot | square | diamond })
 
     wxString sElmName = pNode->GetName();
-    wxASSERT(sElmName == _T("rectangle"));
+    wxASSERT(sElmName == _T("anchorLine"));
     int nNumParms = pNode->GetNumParms();
 
-    //parameters and their default values
-	lmLocation tPos = g_tDefaultPos;
-    lmTenths ntWidth = 160.0f;
-    lmTenths ntHeight = 100.0f;
-    wxColour nBgColor(255, 255, 255);
-    //border
-    lmELineStyle nBorderStyle = lm_eLine_Solid;
-    wxColour nBorderColor = *wxBLACK;
-    lmTenths ntBorderWidth = 1.0f;
-
-    //loop to analyze parameters. Optional: color, border
+    //loop to analyze parameters
     for(int iP=1; iP <= pNode->GetNumParms(); iP++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
         wxString sName = pX->GetName();
         if (sName == _T("dx") || sName == _T("dy"))
-        {
-            AnalyzeLocation(pX, &tPos);
-        }
-        else if(sName == _T("size"))
-        {
-            AnalyzeSize(pX, &ntWidth, &ntHeight);
-        }
+            AnalyzeLocation(pX, ptPos);
+        else if(sName == _T("width"))
+            GetValueFloatNumber(pX, ptWidth);
         else if(sName == _T("color"))
-        {
-            nBgColor = AnalyzeColor(pX);
-        }
-        else if(sName == _T("border"))
-        {
-            AnalyzeBorder(pX, &ntBorderWidth, &nBorderStyle, &nBorderColor);
-        }
+            *pColor = AnalyzeColor(pX);
+        else if(sName == _T("lineStyle"))
+            GetValueLineStyle(pX, pLineStyle);
+        else if(sName == _T("lineEndStyle"))
+            GetValueLineEndStyle(pX, pEndStyle);
         else
         {
             AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-                          _T("rectangle"), sName.c_str() );
+                          _T("anchorLine"), sName.c_str() );
         }
     }
-
-    //// create the AuxObj and attach it to the VStaff
-    //lmScoreTextParagraph* pSTP = new lmScoreTextParagraph();
-    //lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
-    //pAnchor->AttachAuxObj(pSTP);
-
-    ////apply values to created lmScoreTextParagraph
-
-    ////rectangle
-    //pSTP->SetWidth(ntWidth);
-    //pSTP->SetHeight(ntHeight);
-    //pSTP->SetBgColour(nBgColor);
-
-    ////border
-    //pSTP->SetBorderWidth(ntBorderWidth);
-    //pSTP->SetBorderColor(nBorderColor);
-    //pSTP->SetBorderStyle(nBorderStyle);
 }
 
 lmTextStyle* lmLDPParser::GetTextStyle(lmLDPNode* pNode, const wxString& sStyle)
@@ -4268,7 +4288,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
         const wxString sName = pX->GetName();
 
 		//number of staff on which the element is located
-        if (sName.Left(1) == _T("p"))
+        if (pX->IsSimple() && sName.Left(1) == _T("p"))
         {
 			if (VerifyAllowed(lm_eTag_StaffNum, sName, pNode)) {
 				*pStaffNum = m_pParser->AnalyzeNumStaff(sName, pNode, pVStaff->GetNumStaves());

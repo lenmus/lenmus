@@ -377,12 +377,13 @@ bool lmShape::IsInRectangle(lmURect& rect)
 
 void lmShape::Render(lmPaper* pPaper)
 {
-    Render(pPaper, (this->IsSelected() ? g_pColors->ScoreSelected() : m_color) );
+    if (IsVisible())
+        Render(pPaper, (IsSelected() ? g_pColors->ScoreSelected() : m_color) );
 }
 
 void lmShape::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
 {
-    if (m_fSelected)
+    if (IsSelected() && IsLeftDraggable())
     {
 	    pWindow->SetCursor( wxCursor(wxCURSOR_SIZING));
         m_pMouseCursorWindow = pWindow;

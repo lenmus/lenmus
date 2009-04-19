@@ -117,14 +117,14 @@ void lmShapeNote::AddNoteInBlock(lmShape* pShape)
 	Add(pShape);
 }
 
-void lmShapeNote::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeNote::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
 {
-	lmCompositeShape::Shift(xIncr, yIncr);
+	lmCompositeShape::Shift(uxIncr, uyIncr);
 
-	m_uxLeft += xIncr;
-    m_uyTop += yIncr;
+	m_uxLeft += uxIncr;
+    m_uyTop += uyIncr;
 
-	InformAttachedShapes(xIncr, yIncr, lmSHIFT_EVENT);
+	InformAttachedShapes(uxIncr, uyIncr, lmSHIFT_EVENT);
 
 	//if included in a composite shape update parent bounding and selection rectangles
 	if (this->IsChildShape())

@@ -92,7 +92,8 @@ public:
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmEStemType AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
-    void        AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
+                               lmStaffObj* pTarget = (lmStaffObj*)NULL);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
@@ -129,7 +130,9 @@ protected:
 
     void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
-    void        AnalyzeAnchorLine(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
+                                  lmELineStyle* pLineStyle, lmELineEndStyle* pEndStyle,
+                                  wxColour* pColor);
     void        AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth, lmELineStyle* pLineStyle,
@@ -147,12 +150,14 @@ protected:
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);
-    bool        GetYesNoValue(lmLDPNode* pNode, bool fDefault);
 	bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
                                float* pValue);
-    bool        GetValueFloatNumber(lmLDPNode* pNode, float* pValue);
     lmTextStyle* GetTextStyle(lmLDPNode* pNode, const wxString& sStyle);
-    bool        GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle);
+
+    bool GetValueLineEndStyle(lmLDPNode* pNode, lmELineEndStyle* pEndStyle);
+    bool GetValueFloatNumber(lmLDPNode* pNode, float* pValue);
+    bool GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle);
+    bool GetValueYesNo(lmLDPNode* pNode, bool fDefault);
 
     //auxiliary
     void AddTie(lmNote* pNote, lmTieInfo* pTieInfo);
