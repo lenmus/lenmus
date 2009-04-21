@@ -1,0 +1,16 @@
+
+To maintain the linux building files you need to maintain 3 main files:
+
+- configure.ac
+	This files contains references to:
+		- Libraries (currently these references include the full path, in the future we should change them to be more "automatic")
+- Makefile.am
+	This file contains a reference to src/Makefile and should contain other files or directories to add when deploying the App (make install)
+- src/Makefile.am
+	This file contains:
+		-the list of include directories
+		-the list of source files
+		-executable name and final location
+
+
+
