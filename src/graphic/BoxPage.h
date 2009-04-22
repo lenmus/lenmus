@@ -64,9 +64,6 @@ public:
 
 	//access to objects
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
-    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-    //                   lmLUnits uYMin, lmLUnits uYMax);
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
 
 	//operations
@@ -99,6 +96,9 @@ public:
     //active handlers
 	void AddActiveHandler(lmHandler* pHandler);
 
+    //overrides
+    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+
 
 private:
     // a lmBoxPage is, mainly, a collection of lmBoxSystems
@@ -112,16 +112,11 @@ private:
     wxWindow*       m_pRenderWindow;    //the window on which the page is rendered
     wxPoint         m_vOffset;          //page offset to apply.
 
-	//array of ptrs to systems that form this page
-    std::vector<lmBoxSystem*>	m_aSystems;		
-
     //objects in this page to be rendered with handlers
     std::vector<lmGMObject*>    m_GMObjsWithHandlers;
 
 	//list of active handlers contained within this page
     std::list<lmHandler*>       m_ActiveHandlers;      
-
-
 
 };
 

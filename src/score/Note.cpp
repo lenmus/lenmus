@@ -488,11 +488,11 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model.
 
- //   //DBG
- //   if (GetID() == 25)
+    ////DBG
+    //if (GetID() == 25)
 	//{
- //       int nDbg = 0;	// set break point here
- //   }
+    //    int nDbg = 0;	// set break point here
+    //}
 
     bool fDrawStem = true;            // assume stem
     bool fInChord = IsInChord();

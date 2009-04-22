@@ -66,15 +66,14 @@ public:
 
 	//render
 	void DrawSelRectangle(lmPaper* pPaper);
-    void Render(lmPaper* pPaper, lmUPoint uPos);
+    //void Render(lmPaper* pPaper, lmUPoint uPos);
 
     //info
     inline int GetNumMeasure() const { return m_nAbsMeasure; }
-	bool ContainsXPos(lmLUnits uxPos);
 
 	//access to objects
     lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
 
@@ -84,16 +83,16 @@ public:
 
 	//instrument slices
     lmBoxSliceInstr* AddInstrument(lmInstrument* pInstr);
-	lmBoxSliceInstr* GetSliceInstr(int i) const { return m_SliceInstr[i]; }
+	lmBoxSliceInstr* GetSliceInstr(int i) const { return (lmBoxSliceInstr*)m_Boxes[i]; }
 
 	//positioning and bounds
     void UpdateXLeft(lmLUnits xLeft);
-    void UpdateXRight(lmLUnits xRight);
+    //void UpdateXRight(lmLUnits xRight);
     void CopyYBounds(lmBoxSlice* pSlice);
 	//void SystemXRightUpdated(lmLUnits xRight);
 
     //implementation of virtual methods from base class
-    wxString Dump(int nIndent);
+    //wxString Dump(int nIndent);
 	int GetPageNumber() const;
 
 	//owners and related
@@ -107,8 +106,6 @@ private:
     lmBoxSystem*	m_pBSystem;			//parent system box
     int             m_nAbsMeasure;		//number of this measure (absolute, 1..n)
 	int				m_nNumInSystem;		//number of slice for this system (0..n-1)
-
-    std::vector<lmBoxSliceInstr*>   m_SliceInstr;   //collection of instr. slices
 
     //start and end positions
     lmLUnits    m_xStart;

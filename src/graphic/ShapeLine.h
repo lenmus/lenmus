@@ -143,6 +143,9 @@ public:
         lmID_NUM_HANDLERS
     };
 
+    //overrides
+    bool HitTest(lmUPoint& pointL);
+
 
 protected:
 	void Create(lmLUnits uxStart, lmLUnits uyStart, lmLUnits uxEnd, lmLUnits uyEnd,
@@ -150,6 +153,21 @@ protected:
 				lmELineEdges nEdge);
     void DrawLine(lmPaper* pPaper, wxColour colorC, bool fSketch);
     void UpdateBounds();
+    lmLUnits GetDistanceToLine(lmUPoint uPoint);
+
+
+    //some vector algebra
+
+    typedef struct lmUVectorStruct
+    {
+        lmLUnits x;
+        lmLUnits y;
+    }
+    lmUVector;
+
+    lmLUnits VectorDotProduct(lmUVector& v0, lmUVector& v1);
+    void SubtractVectors(lmUVector& v0, lmUVector& v1, lmUVector& v);
+    lmLUnits VectorMagnitude(lmUVector& v);
 
 
     lmUPoint            m_uPoint[lmID_NUM_HANDLERS];       //start and end points, absolute paper position   

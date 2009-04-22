@@ -57,33 +57,13 @@ lmBoxSliceInstr::lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr)
 
 lmBoxSliceInstr::~lmBoxSliceInstr()
 {
-    //delete VStaffs
-    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
-    {
-        delete m_SlicesVStaff[i];
-    }
-    m_SlicesVStaff.clear();
 }
 
 lmBoxSliceVStaff* lmBoxSliceInstr::AddVStaff(lmVStaff* pVStaff, int nMeasure)
 {
     lmBoxSliceVStaff* pBSV = new lmBoxSliceVStaff(this, pVStaff, nMeasure);
-    m_SlicesVStaff.push_back(pBSV);
+    AddBox(pBSV);
     return pBSV;
-}
-
-void lmBoxSliceInstr::Render(lmPaper* pPaper, lmUPoint uPos)
-{
-	//render instrument names, bracet/bracket
-	for (int i=0; i < (int)m_Shapes.size(); i++)
-	{
-		m_Shapes[i]->Render(pPaper);
-	}
-
-    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
-    {
-        m_SlicesVStaff[i]->Render(pPaper, uPos);
-    }
 }
 
 void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)
@@ -94,23 +74,9 @@ void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)
 	SetXLeft(xLeft);
 
 	//propagate change
-    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    for (int i=0; i < (int)m_Boxes.size(); i++)
     {
-        m_SlicesVStaff[i]->UpdateXLeft(xLeft);
-    }
-}
-
-void lmBoxSliceInstr::UpdateXRight(lmLUnits xRight)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This update must be propagated to all contained boxes
-
-	SetXRight(xRight);
-
-	//propagate change
-    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
-    {
-        m_SlicesVStaff[i]->UpdateXRight(xRight);
+        ((lmBoxSliceVStaff*)m_Boxes[i])->UpdateXLeft(xLeft);
     }
 }
 
@@ -125,67 +91,11 @@ void lmBoxSliceInstr::CopyYBounds(lmBoxSliceInstr* pBSI)
 	SetYBottom(pBSI->GetYBottom());
 
 	//propagate request
-    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    for (int i=0; i < (int)m_Boxes.size(); i++)
     {
-        m_SlicesVStaff[i]->CopyYBounds(pBSI->GetSliceVStaff(i));
+        ((lmBoxSliceVStaff*)m_Boxes[i])->CopyYBounds(pBSI->GetSliceVStaff(i));
     }
 }
-
-wxString lmBoxSliceInstr::Dump(int nIndent)
-{
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump.append(_T("lmBoxSliceInstr "));
-    sDump += DumpBounds();
-    sDump += _T("\n");
-
-    //loop to dump the systems in this page
-	nIndent++;
-    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
-    {
-        sDump += m_SlicesVStaff[i]->Dump(nIndent);
-    }
-
-	return sDump;
-}
-
-lmGMObject* lmBoxSliceInstr::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
-{
-	//wxLogMessage(_T("[lmBoxSliceInstr::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
-    //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
-    if (pShape) return pShape;
-
-    //loop to look up in the VStaff slices
-    std::vector<lmBoxSliceVStaff*>::iterator it;
-	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
-    {
-        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
-        if (pGMO)
-			return pGMO;    //found
-    }
-
-    // no object found. Verify if the point is in this object
-    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
-         (!fSelectable && SelRectContainsPoint(pointL)) )
-        return this;
-    else
-        return (lmGMObject*)NULL;
-
-}
-
-//void lmBoxSliceInstr::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-//                              lmLUnits uYMin, lmLUnits uYMax)
-//{
-//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//
-//    //loop to look up in the VStaff slices
-//    std::vector<lmBoxSliceVStaff*>::iterator it;
-//	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
-//    {
-//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//    }
-//}
 
 void lmBoxSliceInstr::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)
@@ -194,10 +104,10 @@ void lmBoxSliceInstr::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXM
     lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
     //loop to look up in the VStaff slices
-    std::vector<lmBoxSliceVStaff*>::iterator it;
-	for(it = m_SlicesVStaff.begin(); it != m_SlicesVStaff.end(); ++it)
+    std::vector<lmBox*>::iterator it;
+	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
     {
-        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
+        ((lmBoxSliceVStaff*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
 }
 

@@ -64,13 +64,9 @@ void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
     m_uSelRect = GetBounds();
 
 	//render shapes
-    for (int i=0; i < (int)m_Shapes.size(); i++)
-    {
-        m_Shapes[i]->Render(pPaper);
-    }
+	RenderShapes(pPaper);
 
     lmGMObject::Render(pPaper, *wxGREEN);
-    //this->DrawBounds(pPaper, *wxGREEN);
 }
 
 lmBoxSystem* lmBoxSliceVStaff::GetOwnerSystem()
@@ -86,13 +82,13 @@ void lmBoxSliceVStaff::UpdateXLeft(lmLUnits xLeft)
 	SetXLeft(xLeft);
 }
 
-void lmBoxSliceVStaff::UpdateXRight(lmLUnits xRight)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This update must be propagated to all contained boxes
-
-	SetXRight(xRight);
-}
+//void lmBoxSliceVStaff::UpdateXRight(lmLUnits xRight)
+//{
+//	// During layout there is a need to update initial computations about this
+//	// box slice position. This update must be propagated to all contained boxes
+//
+//	SetXRight(xRight);
+//}
 
 void lmBoxSliceVStaff::CopyYBounds(lmBoxSliceVStaff* pBSV)
 {
@@ -103,41 +99,6 @@ void lmBoxSliceVStaff::CopyYBounds(lmBoxSliceVStaff* pBSV)
 
 	SetYTop(pBSV->GetYTop());
 	SetYBottom(pBSV->GetYBottom());
-}
-
-wxString lmBoxSliceVStaff::Dump(int nIndent)
-{
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump.append(_T("lmBoxSliceVStaff "));
-    sDump += DumpBounds();
-    sDump += _T("\n");
-
-	nIndent++;
-
-    //dump the other shapes
-    for (int i=0; i < (int)m_Shapes.size(); i++)
-    {
-        sDump += m_Shapes[i]->Dump(nIndent);
-    }
-
-	return sDump;
-}
-
-lmGMObject* lmBoxSliceVStaff::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
-{
-	//wxLogMessage(_T("[lmBoxSliceVStaff::FindShapeAtPosition] GMO %s - %d"), m_sGMOName.c_str(), m_nId);
-    //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
-    if (pShape) return pShape;
-
-    // no object found. Verify if the point is in this object
-    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
-         (!fSelectable && SelRectContainsPoint(pointL)) )
-        return this;
-    else
-        return (lmGMObject*)NULL;
-
 }
 
 void lmBoxSliceVStaff::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,

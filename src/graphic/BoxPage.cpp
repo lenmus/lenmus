@@ -78,13 +78,6 @@ lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
 
 lmBoxPage::~lmBoxPage()
 {
-    //delete all systems
-    for (int i=0; i < (int)m_aSystems.size(); i++)
-    {
-        delete m_aSystems[i];
-    }
-    m_aSystems.clear();
-
     m_GMObjsWithHandlers.clear();
 
     //delete handlers
@@ -100,8 +93,40 @@ lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
 
     //create the system
     lmBoxSystem* pSystem = new lmBoxSystem(this, m_nNumPage);
-    m_aSystems.push_back(pSystem);
+    AddBox(pSystem);
     return pSystem;
+}
+
+lmGMObject* lmBoxPage::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
+{
+    //I override base class method to look also in handlers
+    //Remember: look up in opposite order than renderization
+
+	//wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+
+    //look up in active handlers
+	std::list<lmHandler*>::reverse_iterator it;
+	for (it = m_ActiveHandlers.rbegin(); it != m_ActiveHandlers.rend(); ++it)
+    {
+		if ((*it)->BoundsContainsPoint(pointL))
+            return *it;
+    }
+
+    return lmBox::FindObjectAtPos(pointL, fSelectable);
+ //   //loop to look up in the systems (boxes collection)
+	//for(int i=(int)m_Boxes.size() - 1; i >=0; i--)
+ //   {
+ //       lmGMObject* pGMO = ((lmBoxSystem*)m_Boxes[i])->FindObjectAtPos(pointL, fSelectable);
+ //       if (pGMO)
+	//		return pGMO;		//Object found
+ //   }
+
+ //   //look in shapes collection
+ //   lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
+ //   if (pShape) return pShape;
+
+ //   // no object found.
+ //   return (lmGMObject*)NULL;
 }
 
 void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
@@ -112,17 +137,15 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
     m_ActiveHandlers.clear();
     m_GMObjsWithHandlers.clear();
 
-	//render score titles
-	for (int i=0; i < (int)m_Shapes.size(); i++)
-	{
-		m_Shapes[i]->Render(pPaper);
-	}
+	//render shapes
+	RenderShapes(pPaper);
 
     //loop to render the systems in this page
+    //remeber: the boxes collection inside a lmBoxPage are lmBoxSytems
 	int iSystem = m_nFirstSystem;	//number of system in process
-    for(int i=0; i < (int)m_aSystems.size(); iSystem++, i++)
+    for(int i=0; i < (int)m_Boxes.size(); iSystem++, i++)
     {
-        m_aSystems[i]->Render(iSystem, pScore, pPaper);
+        ((lmBoxSystem*)m_Boxes[i])->Render(iSystem, pScore, pPaper);
     }
 
     //if requested, book to render page margins
@@ -157,29 +180,16 @@ void lmBoxPage::DrawAllHandlers(lmPaper* pPaper)
 
 lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
 {
-    //loop to look up in the systems
+    //loop to look up in the systems (Boxes collection)
 
-    for(int i=0; i < (int)m_aSystems.size(); i++)
+    for(int i=0; i < (int)m_Boxes.size(); i++)
     {
-        lmBoxSlice* pBSlice = m_aSystems[i]->FindSliceAtPosition(pointL);
+        lmBoxSlice* pBSlice = ((lmBoxSystem*)m_Boxes[i])->FindSliceAtPosition(pointL);
         if (pBSlice)
 			return pBSlice;    //found
     }
     return (lmBoxSlice*)NULL;;
 }
-
-//void lmBoxPage::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-//                              lmLUnits uYMin, lmLUnits uYMax)
-//{
-//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//
-//    //loop to look up in the systems
-//    std::vector<lmBoxSystem*>::iterator it;
-//	for(it = m_aSystems.begin(); it != m_aSystems.end(); ++it)
-//    {
-//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//    }
-//}
 
 void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)
@@ -187,40 +197,12 @@ void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
     //look up in this box
     lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
-    //loop to look up in the systems
-    std::vector<lmBoxSystem*>::iterator it;
-	for(it = m_aSystems.begin(); it != m_aSystems.end(); ++it)
+    //loop to look up in the systems (boxes collection)
+    std::vector<lmBox*>::iterator it;
+	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
     {
-        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
+        ((lmBoxSystem*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
-}
-
-lmGMObject* lmBoxPage::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
-{
-	//wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
-
-    //look up in active handlers
-	std::list<lmHandler*>::iterator it;
-	for (it = m_ActiveHandlers.begin(); it != m_ActiveHandlers.end(); ++it)
-    {
-		if ((*it)->BoundsContainsPoint(pointL))
-            return *it;
-    }
-
-    //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
-    if (pShape) return pShape;
-
-    //loop to look up in the systems
-	for(int i=0; i < (int)m_aSystems.size(); i++)
-    {
-        lmGMObject* pGMO = m_aSystems[i]->FindObjectAtPos(pointL, fSelectable);
-        if (pGMO)
-			return pGMO;		//Object found
-    }
-
-    // no object found.
-    return (lmGMObject*)NULL;
 }
 
 void lmBoxPage::AddActiveHandler(lmHandler* pHandler)
@@ -247,16 +229,8 @@ wxString lmBoxPage::Dump(int nIndent)
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("lmBoxPage %d (systems %d to %d), "),
 						m_nNumPage, m_nFirstSystem, m_nLastSystem);
-    sDump += DumpBounds();
-    sDump += _T("\n");
 
-    //loop to dump the systems in this page
-	nIndent++;
-	for(int i=0; i < (int)m_aSystems.size(); i++)
-    {
-        sDump += m_aSystems[i]->Dump(nIndent);
-    }
-
+    sDump += lmBox::Dump(nIndent);
 	return sDump;
 }
 
@@ -266,9 +240,9 @@ int lmBoxPage::GetSystemNumber(lmBoxSystem* pSystem)
 	//precondition: the system must be in this page
 
     //loop to look up in the systems collection
-	for(int i=0; i < (int)m_aSystems.size(); i++)
+	for(int i=0; i < (int)m_Boxes.size(); i++)
     {
-        if (m_aSystems[i] == pSystem)
+        if (((lmBoxSystem*)m_Boxes[i]) == pSystem)
 			return i + m_nFirstSystem;		//system found
     }
 	wxASSERT(false);	//system not in this page
@@ -284,7 +258,7 @@ lmBoxSystem* lmBoxPage::GetSystem(int nSystem)
 	if (i < 0)
 		return (lmBoxSystem*)NULL;		//the system is not in this page
 	else
-		return m_aSystems[i];
+		return (lmBoxSystem*)m_Boxes[i];
 }
 
 

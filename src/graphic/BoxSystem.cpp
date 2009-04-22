@@ -65,12 +65,12 @@ lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
 
 lmBoxSystem::~lmBoxSystem()
 {
-    //delete BoxSlices collection
-    for (int i=0; i < (int)m_Slices.size(); i++)
-    {
-        delete m_Slices[i];
-    }
-    m_Slices.clear();
+    ////delete BoxSlices collection
+    //for (int i=0; i < (int)m_Slices.size(); i++)
+    //{
+    //    delete m_Slices[i];
+    //}
+    //m_Slices.clear();
 
     //delete staff shapes
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
@@ -106,7 +106,6 @@ void lmBoxSystem::AddShape(lmShape* pShape)
 
 }
 
-
 void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 {
     //At this point paper position is not in the right place. Therefore, we move
@@ -119,17 +118,8 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
         m_ShapeStaff[i]->Render(pPaper);
     }
 
-	//for each lmBoxSlice
-    for (int i=0; i < (int)m_Slices.size(); i++)
-    {
-        m_Slices[i]->Render(pPaper, lmUPoint(m_xPos, m_yPos));
-    }
-
-	//render shapes
-    for (int i=0; i < (int)m_Shapes.size(); i++)
-    {
-        m_Shapes[i]->Render(pPaper);    //, lmUPoint(m_xPos, m_yPos));
-    }
+	//base class
+    lmBox::Render(pPaper, lmUPoint(m_xPos, m_yPos));
 }
 
 void lmBoxSystem::FixSlicesYBounds()
@@ -137,25 +127,26 @@ void lmBoxSystem::FixSlicesYBounds()
 	// This method is only invoked during layout phase, when the system is finished.
     // We have to propagate 'y' coordinates from first slice to all others.
 
-    m_nNumMeasures = (int)m_Slices.size();
+    m_nNumMeasures = (int)m_Boxes.size();
 
 	//propagate 'y' coordinates from first slice to all others
-    for (int i=1; i < (int)m_Slices.size(); i++)
+    for (int i=1; i < (int)m_Boxes.size(); i++)
     {
-        m_Slices[i]->CopyYBounds(m_Slices[0]);
+        ((lmBoxSlice*)m_Boxes[i])->CopyYBounds((lmBoxSlice*)m_Boxes[0]);
     }
 
 	//update system yBottom position by copying yBottom from first slice
-    if (m_Slices.size() > 0)
-	    SetYBottom(m_Slices[0]->GetYBottom());
+    if (m_Boxes.size() > 0)
+	    SetYBottom(((lmBoxSlice*)m_Boxes[0])->GetYBottom());
 }
 
 void lmBoxSystem::DeleteLastSlice()
 {
-    //This method is used during layout phase, to delete a column when it is finally decided not
+    //This method is used during layout phase, to delete a column when finally it is decided not
     //to include it in current system
-	delete m_Slices.back();
-	m_Slices.pop_back();
+
+	delete m_Boxes.back();
+	m_Boxes.pop_back();
 }
 
 lmLUnits lmBoxSystem::GetYTopFirstStaff()
@@ -170,11 +161,11 @@ lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
     if (BoundsContainsPoint(pointL))
     {
         //identify the measure
-        for (int iS=0; iS < (int)m_Slices.size(); iS++)
+        for (int iS=0; iS < (int)m_Boxes.size(); iS++)
         {
-            if (m_Slices[iS]->FindMeasureAt(pointL))
+            if (((lmBoxSlice*)m_Boxes[iS])->FindMeasureAt(pointL))
             {
-                return m_Slices[iS];
+                return ((lmBoxSlice*)m_Boxes[iS]);
             }
         }
         wxMessageBox( wxString::Format( _T("Page %d, measure not identified!!! Between measure %d and %d"),
@@ -184,46 +175,6 @@ lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;
 }
 
-lmGMObject* lmBoxSystem::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
-{
-    //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
-    if (pShape) return pShape;
-
-    std::vector<lmBoxSlice*>::iterator it;
-	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
-    {
-        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
-        if (pGMO)
-			return pGMO;    //found
-    }
-
-	//AWARE: It is useless to check here if it is an staff, as in that case
-	//as the staff area is inside an SliceVStaff, this method will finish in
-	//previous 'for' loop, returning an SliceVStaff
-
-    // no object found. Verify if the point is in this object
-    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
-         (!fSelectable && SelRectContainsPoint(pointL)) )
-        return this;
-    else
-        return (lmGMObject*)NULL;
-
-}
-
-//void lmBoxSystem::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-//                              lmLUnits uYMin, lmLUnits uYMax)
-//{
-//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//
-//    //loop to look up in the slices
-//    std::vector<lmBoxSlice*>::iterator it;
-//	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
-//    {
-//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//    }
-//}
-
 void lmBoxSystem::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)
 {
@@ -231,10 +182,10 @@ void lmBoxSystem::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
     lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
     //loop to look up in the slices
-    std::vector<lmBoxSlice*>::iterator it;
-	for(it = m_Slices.begin(); it != m_Slices.end(); ++it)
+    std::vector<lmBox*>::iterator it;
+	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
     {
-        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
+        ((lmBoxSlice*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
 }
 
@@ -251,19 +202,21 @@ lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
 
 lmBoxSlice* lmBoxSystem::AddSlice(int nAbsMeasure, lmLUnits xStart, lmLUnits xEnd)
 {
-    lmBoxSlice* pBSlice = new lmBoxSlice(this, nAbsMeasure, (int)m_Slices.size(),
+    lmBoxSlice* pBSlice = new lmBoxSlice(this, nAbsMeasure, (int)m_Boxes.size(),
 										 xStart, xEnd);
-    m_Slices.push_back(pBSlice);
+    AddBox(pBSlice);
     return pBSlice;
 }
 
 void lmBoxSystem::UpdateXRight(lmLUnits xPos)
 { 
+    //override to update only last slice of this system and the ShapeStaff final position 
+
 	SetXRight(xPos);
 
 	//propagate change to last slice of this system
-	if (m_Slices.size() > 0)
-		m_Slices.back()->UpdateXRight(xPos);
+	if (m_Boxes.size() > 0)
+		((lmBoxSlice*)m_Boxes.back())->UpdateXRight(xPos);
 
 	//update the ShapeStaff final position
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
@@ -274,33 +227,20 @@ void lmBoxSystem::UpdateXRight(lmLUnits xPos)
 
 wxString lmBoxSystem::Dump(int nIndent)
 {
+    //override to dump also the staff
+
 	wxString sDump = _T("\n");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("lmBoxSystem. %d measures starting at %d, "),
 						m_nNumMeasures, m_nFirstMeasure);
-    sDump += DumpBounds();
-    sDump += _T("\n");
-
 	nIndent++;
 
 	// dump the staff
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-    {
         sDump += m_ShapeStaff[i]->Dump(nIndent);
-    }
 
-	//dump the shapes in this system
-    for (int i=0; i < (int)m_Shapes.size(); i++)
-    {
-        sDump += m_Shapes[i]->Dump(nIndent);
-    }
-
-    //loop to dump the slices in this system
-    for (int i=0; i < (int)m_Slices.size(); i++)
-    {
-        sDump += m_Slices[i]->Dump(nIndent);
-    }
-
+	//base class
+    sDump += lmBox::Dump(nIndent);
 	return sDump;
 }
 
@@ -327,13 +267,7 @@ lmBoxSlice* lmBoxSystem::GetSliceAt(lmLUnits xPos)
 {
 	//return slice located at xPos
 
-    //locate the BoxSlice
-	for(int i=0; i < (int)m_Slices.size(); i++)
-    {
-        if (m_Slices[i]->ContainsXPos(xPos))
-			return m_Slices[i];		//found
-    }
-	return (lmBoxSlice*)NULL;
+	return (lmBoxSlice*)GetContainedBoxAt(xPos);
 }
 
 int lmBoxSystem::GetNumMeasureAt(lmLUnits uxPos)

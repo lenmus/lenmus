@@ -97,7 +97,7 @@ bool lmGMObject::BoundsContainsPoint(lmUPoint& pointL)
     return GetBounds().Contains(pointL);
 }
 
-bool lmGMObject::SelRectContainsPoint(lmUPoint& pointL)
+bool lmGMObject::HitTest(lmUPoint& pointL)
 {
     //returns true if point received is within the limits of this object
     //selection rectangle
@@ -260,12 +260,35 @@ lmBox::~lmBox()
         }
         m_Shapes.clear();
     }
+
+    //delete boxes
+    std::vector<lmBox*>::iterator itB;
+    for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+    {
+        delete *itB;
+    }
+    m_Boxes.clear();
 }
 
 void lmBox::AddShape(lmShape* pShape)
 {
     m_Shapes.push_back(pShape);
 	pShape->SetOwnerBox(this);
+}
+
+void lmBox::AddBox(lmBox* pBox)
+{
+    m_Boxes.push_back(pBox);
+}
+
+void lmBox::Render(lmPaper* pPaper, lmUPoint uPos)
+{
+    RenderShapes(pPaper);
+
+    //render contained boxes
+    std::vector<lmBox*>::iterator itB;
+    for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+        (*itB)->Render(pPaper, uPos);
 }
 
 void lmBox::RemoveShape(lmShape* pShape)
@@ -280,9 +303,10 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL, bool fSelectable)
 {
 	//wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId);
     //loop to look up in the shapes collection
-	for(int i=0; i < (int)m_Shapes.size(); i++)
+    //Remember: look up in opposite order than renderization
+	for(int i=(int)m_Shapes.size()-1; i >=0; i--)
     {
-        if (m_Shapes[i]->IsVisible() && m_Shapes[i]->IsSelectable() && m_Shapes[i]->SelRectContainsPoint(pointL))
+        if (m_Shapes[i]->IsVisible() && m_Shapes[i]->IsSelectable() && m_Shapes[i]->HitTest(pointL))
 			return m_Shapes[i];    //found
     }
 
@@ -290,18 +314,34 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL, bool fSelectable)
     return (lmShape*)NULL;
 }
 
-//void lmBox::AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-//                                 lmLUnits uYMin, lmLUnits uYMax)
-//{
-//    //loop to look up in the shapes collection
-//    lmURect selRect(uXMin, uYMin, uXMax-uXMin, uYMax-uYMin);
-//    std::vector<lmShape*>::iterator it;
-//    for(it = m_Shapes.begin(); it != m_Shapes.end(); ++it)
-//    {
-//        if ((*it)->IsInRectangle(selRect))
-//			pSelection->AddToSelection(*it);
-//    }
-//}
+lmGMObject* lmBox::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
+{
+    //Remember: look up in opposite order than renderization
+
+    //wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+
+    //loop to look up in the instrument slices
+    std::vector<lmBox*>::reverse_iterator it;
+	for(it = m_Boxes.rbegin(); it != m_Boxes.rend(); ++it)
+    {
+        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
+        if (pGMO)
+			return pGMO;    //found
+    }
+
+    //look in shapes collection
+    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
+    if (pShape) return pShape;
+
+    // no object found. Verify if the point is in this slice
+    if ( (fSelectable && IsSelectable() && HitTest(pointL)) ||
+         (!fSelectable && HitTest(pointL)) )
+        return this;
+    else
+        return (lmGMObject*)NULL;
+
+}
+
 void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                             lmLUnits uYMin, lmLUnits uYMax)
 {
@@ -313,6 +353,73 @@ void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
         if ((*it)->IsSelectable() && (*it)->IsInRectangle(selRect))
 			(*it)->SetSelected(fSelect);
     }
+}
+
+void lmBox::RenderShapes(lmPaper* pPaper)
+{
+	//render the shapes
+    std::vector<lmShape*>::iterator it;
+	for (it=m_Shapes.begin(); it != m_Shapes.end(); ++it)
+	{
+		(*it)->Render(pPaper);
+	}
+}
+
+wxString lmBox::Dump(int nIndent)
+{
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+    sDump += DumpBounds();
+    sDump += _T("\n");
+
+	nIndent++;
+
+	//dump the shapes in this box
+    std::vector<lmShape*>::iterator it;
+	for (it=m_Shapes.begin(); it != m_Shapes.end(); ++it)
+    {
+        sDump += (*it)->Dump(nIndent);
+    }
+
+    //loop to dump the boxes
+    std::vector<lmBox*>::iterator itB;
+	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+        sDump += (*itB)->Dump(nIndent);
+
+	return sDump;
+}
+
+bool lmBox::ContainsXPos(lmLUnits uxPos)
+{
+	//return true if position uxPos is within the limits of this Box
+
+	return (uxPos >= GetXLeft() && uxPos <= GetXRight());
+}
+
+lmBox* lmBox::GetContainedBoxAt(lmLUnits xPos)
+{
+	//return the first box located at xPos
+
+    std::vector<lmBox*>::iterator itB;
+	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+    {
+        if ((*itB)->ContainsXPos(xPos))
+			return *itB;		//found
+    }
+	return (lmBox*)NULL;
+}
+
+void lmBox::UpdateXRight(lmLUnits xRight)
+{
+	// During layout there is a need to update initial computations about this
+	// box position. This update must be propagated to all contained boxes
+
+	SetXRight(xRight);
+
+	//propagate change
+    std::vector<lmBox*>::iterator itB;
+	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+        (*itB)->UpdateXRight(xRight);
 }
 
 

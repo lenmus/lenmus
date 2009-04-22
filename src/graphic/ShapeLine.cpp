@@ -230,6 +230,21 @@ void lmShapeLine::DrawLine(lmPaper* pPaper, wxColour colorC, bool fSketch)
     UpdateBounds();
 }
 
+bool lmShapeLine::HitTest(lmUPoint& uPoint)
+{
+    //point is not within the limits of this object selection rectangle
+    if (!GetSelRectangle().Contains(uPoint))
+        return false;
+
+    //Find the distance from point to line
+    lmLUnits uDistance = GetDistanceToLine(uPoint);
+
+    lmLUnits uTolerance = m_uBoundsExtraWidth;
+
+    //return true if click point is within tolerance margin 
+    return (uDistance >= -uTolerance && uDistance <= uTolerance);
+}
+
 lmUPoint lmShapeLine::GetPointForHandler(long nHandlerID)
 {
     return m_uPoint[nHandlerID];
@@ -390,3 +405,53 @@ void lmShapeLine::MovePoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts,
     }
     UpdateBounds();
 }
+
+
+//------------------------------------------------------------------------------------------
+//Some vector computations
+//------------------------------------------------------------------------------------------
+
+lmLUnits lmShapeLine::GetDistanceToLine(lmUPoint uPoint)
+{
+    //define line vector
+    lmUVector uLineVector;
+    uLineVector.x = m_uPoint[lmID_END].x - m_uPoint[lmID_START].x;
+    uLineVector.y = m_uPoint[lmID_END].y - m_uPoint[lmID_START].y;
+
+    //vector for line through the point
+    lmUVector uPointVector;
+    uPointVector.x = uPoint.x - m_uPoint[lmID_START].x;
+    uPointVector.y = uPoint.y - m_uPoint[lmID_START].y;
+
+    //get its projection on the line.
+    //  uProjectionVector = uLineVector * factor;
+    //  factor = (uPointVector * uLineVector) / (|uLineVector|^2);
+    lmUVector uProjectionVector;
+    lmLUnits uFactor = VectorDotProduct(uPointVector, uLineVector) / VectorDotProduct(uLineVector, uLineVector);
+    uProjectionVector.x = uLineVector.x * uFactor;
+    uProjectionVector.y = uLineVector.y * uFactor;
+
+    //get normal vector: uNormalVector = uPointVector - uProjectionVector
+    lmUVector uNormalVector;
+    SubtractVectors(uPointVector, uProjectionVector, uNormalVector);
+
+    //return its magnitude
+    return VectorMagnitude(uNormalVector);
+}
+
+lmLUnits lmShapeLine::VectorDotProduct(lmUVector& v0, lmUVector& v1)
+{
+    return v0.x * v1.x + v0.y * v1.y;
+}
+
+void lmShapeLine::SubtractVectors(lmUVector& v0, lmUVector& v1, lmUVector& v)
+{
+    v.x = v0.x - v1.x;
+    v.y = v0.y - v1.y;
+}
+
+lmLUnits lmShapeLine::VectorMagnitude(lmUVector& v)
+{
+    return sqrt(v.x * v.x + v.y * v.y);
+}
+

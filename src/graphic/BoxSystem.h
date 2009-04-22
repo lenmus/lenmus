@@ -65,11 +65,10 @@ public:
 
     void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
     lmBoxSlice* AddSlice(int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
-    inline lmBoxSlice* GetSlice(int nRelMeasure) const { return m_Slices[nRelMeasure - 1]; }
-	inline int GetNumSlices() const { return (int)m_Slices.size(); }
+    inline lmBoxSlice* GetSlice(int nRelMeasure) const { return (lmBoxSlice*)m_Boxes[nRelMeasure - 1]; }
+	inline int GetNumSlices() const { return (int)m_Boxes.size(); }
 
     //positioning
-    void UpdateXRight(lmLUnits xPos);
     void SetPosition(lmLUnits xPos, lmLUnits yPos);
     inline lmLUnits GetPositionX() const { return m_xPos; }
     inline lmLUnits GetPositionY() const { return m_yPos; }
@@ -84,7 +83,7 @@ public:
 
     //pointing at
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
 	int GetNumMeasureAt(lmLUnits uxPos);
 
@@ -104,6 +103,7 @@ public:
 
 	//overrides
 	void AddShape(lmShape* pShape);
+    void UpdateXRight(lmLUnits xPos);
 
 	//owners and related
 	lmBoxSystem* GetOwnerSystem() { return this; }
@@ -121,8 +121,6 @@ private:
     lmLUnits    m_nIndent;          //indentation for this system
     int         m_nNumPage;         //page number (1..n) on which this system is included
 	lmShapeMargin*	m_pTopSpacer;	
-
-    std::vector<lmBoxSlice*>        m_Slices;   //collection of slices in this system
 
 	std::vector<lmShapeStaff*>		m_ShapeStaff;		//list of staff shapes, only in first vstaff.
 

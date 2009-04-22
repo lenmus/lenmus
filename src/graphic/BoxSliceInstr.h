@@ -59,14 +59,14 @@ public:
 
 	//vstaff slices
     lmBoxSliceVStaff* AddVStaff(lmVStaff* pVStaff, int nMeasure);
-	lmBoxSliceVStaff* GetSliceVStaff(int i) const { return m_SlicesVStaff[i]; }
+	lmBoxSliceVStaff* GetSliceVStaff(int i) const { return (lmBoxSliceVStaff*)m_Boxes[i]; }
 
 	//drawing
-    void Render(lmPaper* pPaper, lmUPoint uPos);
+    //void Render(lmPaper* pPaper, lmUPoint uPos);
 
     inline lmInstrument* GetInstrument() const { return m_pInstr; }
     inline int GetNumMeasure() const { return m_pSlice->GetNumMeasure(); }
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
 
@@ -76,12 +76,12 @@ public:
 
 	//positioning and bounds
     void UpdateXLeft(lmLUnits xLeft);
-    void UpdateXRight(lmLUnits xRight);
+    //void UpdateXRight(lmLUnits xRight);
 	//void SystemXRightUpdated(lmLUnits xRight);
     void CopyYBounds(lmBoxSliceInstr* pBSI);
 
     //implementation of virtual methods from base class
-    wxString Dump(int nIndent);
+    //wxString Dump(int nIndent);
 	int GetPageNumber() const;
 
 	//owners and related
@@ -89,14 +89,10 @@ public:
     inline lmBoxScore* GetOwnerBoxScore() { return m_pSlice->GetOwnerBoxScore(); }
     inline lmBoxPage* GetOwnerBoxPage() { return m_pSlice->GetOwnerBoxPage(); }
 
-
-
 private:
 
     lmBoxSlice*     m_pSlice;           //parent slice
     lmInstrument*   m_pInstr;           //instrument to which this slice belongs
-
-    std::vector<lmBoxSliceVStaff*>  m_SlicesVStaff;     //collection of VStaff slices
 
 };
 

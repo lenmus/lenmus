@@ -60,11 +60,11 @@ public:
 
 	//positioning and bounds
 	void UpdateXLeft(lmLUnits xLeft);
-    void UpdateXRight(lmLUnits xRight);
+    //void UpdateXRight(lmLUnits xRight);
 	void CopyYBounds(lmBoxSliceVStaff* pBSV);
 
     //info
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
     //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                   lmLUnits uYMin, lmLUnits uYMax);
 
@@ -73,7 +73,6 @@ public:
                          lmLUnits uYMin, lmLUnits uYMax);
 
     //implementation of virtual methods from base class
-    wxString Dump(int nIndent);
 	int GetPageNumber() const;
 
 	//owners and related

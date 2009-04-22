@@ -252,18 +252,21 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, int nNumChordNotes
     // Remember: all 'y' positions are relative to top line (5th line of
     //   first staff). 'x' positions are relative to current object position.
     lmStaffObj* cpSO =pChordDsct->pChordNotes[nNumChordNotes-1];
-    // Remember: lmScoreLine( xStart, yStart, xEnd,  yEnd, tWidth, nColor)
-    lmScoreLine* pLine = new lmScoreLine(ntxStart, ntyStart, ntxEnd, ntyEnd, 2, colour);
-    cpSO->AttachAuxObj(pLine);
-    lmMarkup* pError = new lmMarkup(cpSO, pLine);
+    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTPoint(nTxPos, nTyPos), lmTPoint(ntxStart, ntyStart),
+                                            sText, pStyle); 
+    //// Remember: lmScoreLine( xStart, yStart, xEnd,  yEnd, tWidth, nColor)
+    //lmScoreLine* pLine = new lmScoreLine(ntxStart, ntyStart, ntxEnd, ntyEnd, 2, colour);
+    //cpSO->AttachAuxObj(pLine);
+    //lmMarkup* pError = new lmMarkup(cpSO, pLine);
+    lmMarkup* pError = new lmMarkup(cpSO, pTxtBox);
     m_markup.push_back(pError);
 
-    // Text at top of the line
-    lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
-    cpSO->AttachAuxObj(pText);
-    pText->SetUserLocation(nTxPos, nTyPos);
-    pError = new lmMarkup(cpSO, pText);
-    m_markup.push_back(pError);
+    //// Text at top of the line
+    //lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
+    //cpSO->AttachAuxObj(pText);
+    //pText->SetUserLocation(nTxPos, nTyPos);
+    //pError = new lmMarkup(cpSO, pText);
+    //m_markup.push_back(pError);
 
     ntyEnd +=15; // y positions is NOT relative to use; change each time
 

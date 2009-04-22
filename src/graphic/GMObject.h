@@ -167,7 +167,7 @@ public:
     virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
     virtual bool BoundsContainsPoint(lmUPoint& pointL);
-    virtual bool SelRectContainsPoint(lmUPoint& pointL);
+    virtual bool HitTest(lmUPoint& pointL);
 
     // methods related to selection rectangle
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
@@ -283,8 +283,11 @@ public:
     virtual void RemoveShape(lmShape* pShape);
 
     //implementation of virtual methods from base class
-    virtual wxString Dump(int nIndent)=0;
+    wxString Dump(int nIndent);
 	virtual int GetPageNumber() const { return 0; }
+
+    //renderization
+    virtual void Render(lmPaper* pPaper, lmUPoint uPos);
 
 	//owners and related
 	virtual lmBoxSystem* GetOwnerSystem()=0;
@@ -295,15 +298,25 @@ public:
     //void AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
     //                          lmLUnits uYMin, lmLUnits uYMax);
 
+	//positioning and bounds
+    virtual void UpdateXRight(lmLUnits xRight);
+
+
 protected:
     lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _("Box"));
     lmShape* FindShapeAtPosition(lmUPoint& pointL, bool fSelectable);
+    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    bool ContainsXPos(lmLUnits uxPos);
+    lmBox* GetContainedBoxAt(lmLUnits xPos);
 
+    void AddBox(lmBox* pBox);
+    void RenderBoxes(lmPaper* pPaper, lmUPoint uPos);
+    void RenderShapes(lmPaper* pPaper);
 
-	std::vector<lmShape*>	m_Shapes;		//list of contained shapes
+    std::vector<lmBox*>     m_Boxes;        //contained boxes (systems, slices, etc.)
 
-
-
+private:
+	std::vector<lmShape*>	m_Shapes;		//contained shapes
 
 };
 

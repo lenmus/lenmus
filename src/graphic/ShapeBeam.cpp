@@ -530,13 +530,13 @@ bool lmShapeBeam::BoundsContainsPoint(lmUPoint& pointL)
     return lmCompositeShape::BoundsContainsPoint(pointL);
 }
 
-bool lmShapeBeam::SelRectContainsPoint(lmUPoint& pointL)
+bool lmShapeBeam::HitTest(lmUPoint& pointL)
 {
     //check if point is in beam segments
-    if (lmGMObject::SelRectContainsPoint(pointL))
+    if (lmGMObject::HitTest(pointL))
         return true;
 
     //check if point is in any of the stems
-    return lmCompositeShape::SelRectContainsPoint(pointL);
+    return lmCompositeShape::HitTest(pointL);
 }
 

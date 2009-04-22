@@ -57,26 +57,16 @@ lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, int nNumInSystem,
 
 }
 
-
 lmBoxSlice::~lmBoxSlice()
 {
-    //delete instrument slices
-    for (int i=0; i < (int)m_SliceInstr.size(); i++)
-    {
-        //lmBoxSliceInstr* pBSI = m_SliceInstr[i];
-        //delete pBSI;
-        delete m_SliceInstr[i];
-    }
-    m_SliceInstr.clear();
 }
 
 lmBoxSliceInstr* lmBoxSlice::AddInstrument(lmInstrument* pInstr)
 {
     lmBoxSliceInstr* pBSI = new lmBoxSliceInstr(this, pInstr);
-    m_SliceInstr.push_back(pBSI);
+    AddBox(pBSI);
     return pBSI;
 }
-
 
 lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 {
@@ -88,44 +78,6 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;
 }
 
-lmGMObject* lmBoxSlice::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
-{
-	//wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
-    //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
-    if (pShape) return pShape;
-
-    //loop to look up in the instrument slices
-    std::vector<lmBoxSliceInstr*>::iterator it;
-	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
-    {
-        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
-        if (pGMO)
-			return pGMO;    //found
-    }
-
-    // no object found. Verify if the point is in this slice
-    if ( (fSelectable && IsSelectable() && SelRectContainsPoint(pointL)) ||
-         (!fSelectable && SelRectContainsPoint(pointL)) )
-        return this;
-    else
-        return (lmGMObject*)NULL;
-
-}
-
-//void lmBoxSlice::AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-//                              lmLUnits uYMin, lmLUnits uYMax)
-//{
-//    AddShapesToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//
-//    //loop to look up in the intrument slices
-//    std::vector<lmBoxSliceInstr*>::iterator it;
-//	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
-//    {
-//        (*it)->AddToSelection(pSelection, uXMin, uXMax, uYMin, uYMax);
-//    }
-//}
-
 void lmBoxSlice::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)
 {
@@ -133,10 +85,10 @@ void lmBoxSlice::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
     lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 
     //loop to look up in the intrument slices
-    std::vector<lmBoxSliceInstr*>::iterator it;
-	for(it = m_SliceInstr.begin(); it != m_SliceInstr.end(); ++it)
+    std::vector<lmBox*>::iterator it;
+	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
     {
-        (*it)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
+        ((lmBoxSliceInstr*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
     }
 }
 
@@ -155,13 +107,13 @@ void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 
 }
 
-void lmBoxSlice::Render(lmPaper* pPaper, lmUPoint uPos)
-{
-    for (int i=0; i < (int)m_SliceInstr.size(); i++)
-    {
-        m_SliceInstr[i]->Render(pPaper, uPos);
-    }
-}
+//void lmBoxSlice::Render(lmPaper* pPaper, lmUPoint uPos)
+//{
+//    //for (int i=0; i < (int)m_Boxes.size(); i++)
+//    //{
+//    //    ((lmBoxSliceInstr*)m_Boxes[i])->Render(pPaper, uPos);
+//    //}
+//}
 
 void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
 {
@@ -171,25 +123,25 @@ void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
 	SetXLeft(xLeft);
 
 	//propagate change
-    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    for (int i=0; i < (int)m_Boxes.size(); i++)
     {
-        m_SliceInstr[i]->UpdateXLeft(xLeft);
+        ((lmBoxSliceInstr*)m_Boxes[i])->UpdateXLeft(xLeft);
     }
 }
 
-void lmBoxSlice::UpdateXRight(lmLUnits xRight)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This update must be propagated to all contained boxes
-
-	SetXRight(xRight);
-
-	//propagate change
-    for (int i=0; i < (int)m_SliceInstr.size(); i++)
-    {
-        m_SliceInstr[i]->UpdateXRight(xRight);
-    }
-}
+//void lmBoxSlice::UpdateXRight(lmLUnits xRight)
+//{
+//	// During layout there is a need to update initial computations about this
+//	// box slice position. This update must be propagated to all contained boxes
+//
+//	SetXRight(xRight);
+//
+//	//propagate change
+//    for (int i=0; i < (int)m_Boxes.size(); i++)
+//    {
+//        ((lmBoxSliceInstr*)m_Boxes[i])->UpdateXRight(xRight);
+//    }
+//}
 
 void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
 {
@@ -202,41 +154,34 @@ void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
 	SetYBottom(pSlice->GetYBottom());
 
 	//propagate request
-    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    for (int i=0; i < (int)m_Boxes.size(); i++)
     {
-        m_SliceInstr[i]->CopyYBounds(pSlice->GetSliceInstr(i));
+        ((lmBoxSliceInstr*)m_Boxes[i])->CopyYBounds(pSlice->GetSliceInstr(i));
     }
 }
 
-wxString lmBoxSlice::Dump(int nIndent)
-{
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("lmBoxSlice. measure %d, "),
-						m_nAbsMeasure);
-    sDump += DumpBounds();
-    sDump += _T("\n");
-
-    //loop to dump the systems in this page
-	nIndent++;
-    for (int i=0; i < (int)m_SliceInstr.size(); i++)
-    {
-        sDump += m_SliceInstr[i]->Dump(nIndent);
-    }
-
-	return sDump;
-}
+//wxString lmBoxSlice::Dump(int nIndent)
+//{
+//	wxString sDump = _T("");
+//	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+//	sDump += wxString::Format(_T("lmBoxSlice. measure %d, "),
+//						m_nAbsMeasure);
+//    sDump += DumpBounds();
+//    sDump += _T("\n");
+//
+//    //loop to dump the systems in this page
+//	nIndent++;
+//    for (int i=0; i < (int)m_Boxes.size(); i++)
+//    {
+//        sDump += ((lmBoxSliceInstr*)m_Boxes[i])->Dump(nIndent);
+//    }
+//
+//	return sDump;
+//}
 
 int lmBoxSlice::GetPageNumber() const
 { 
 	return m_pBSystem->GetPageNumber(); 
-}
-
-bool lmBoxSlice::ContainsXPos(lmLUnits uxPos)
-{
-	//return true if position uxPos is within the limits of this Slice
-
-	return (uxPos >= GetXLeft() && uxPos <= GetXRight());
 }
 
 lmBoxScore* lmBoxSlice::GetOwnerBoxScore() 
