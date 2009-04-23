@@ -212,10 +212,10 @@ static const int ntDisXstart = 0;
 static const int ntDisXend = -200;
 static const int ntDisYstart = 40;
 static const int ntDisYend = -120;
-void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, int nNumChordNotes
-                                       , lmChordDescriptor*  pChordDsct
+void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
                                            , wxColour colour, wxString &sText, bool reset)
 {
+    int nNumChordNotes  = pChordDsct->nNumChordNotes;
     // Remember: all 'y' positions are relative to top line (5th line of
     //   first staff). 'x' positions are relative to current object position.
     lmTenths ntxStart = ntDisXstart;  // fijo; relativo al usuario
@@ -223,7 +223,7 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, int nNumChordNotes
     static lmTenths ntyStart = ntDisYstart;  // relativo a top line; positivo: abajo
     static lmTenths ntyEnd = ntDisYend;  // negativo: arriba. Se baja en cada uso
 
-    lmTenths nTxPos = ntxEnd + 10;
+	lmTenths nTxPos = ntxEnd + 10;
     lmTenths nTyPos = ntyEnd + 10;
     if ( reset )
     {
@@ -253,22 +253,12 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, int nNumChordNotes
     //   first staff). 'x' positions are relative to current object position.
     lmStaffObj* cpSO =pChordDsct->pChordNotes[nNumChordNotes-1];
     lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTPoint(nTxPos, nTyPos), lmTPoint(ntxStart, ntyStart),
-                                            sText, pStyle); 
-    //// Remember: lmScoreLine( xStart, yStart, xEnd,  yEnd, tWidth, nColor)
-    //lmScoreLine* pLine = new lmScoreLine(ntxStart, ntyStart, ntxEnd, ntyEnd, 2, colour);
-    //cpSO->AttachAuxObj(pLine);
-    //lmMarkup* pError = new lmMarkup(cpSO, pLine);
-    lmMarkup* pError = new lmMarkup(cpSO, pTxtBox);
+                                            sText, pStyle,	wxSize(400, 60), colour);
+
+	lmMarkup* pError = new lmMarkup(cpSO, pTxtBox);
     m_markup.push_back(pError);
 
-    //// Text at top of the line
-    //lmTextItem* pText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
-    //cpSO->AttachAuxObj(pText);
-    //pText->SetUserLocation(nTxPos, nTyPos);
-    //pError = new lmMarkup(cpSO, pText);
-    //m_markup.push_back(pError);
-
-    ntyEnd +=15; // y positions is NOT relative to use; change each time
+    ntyEnd +=50; // y positions are NOT relative; change each time
 
 }
 // All chord processing:
@@ -276,17 +266,52 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, int nNumChordNotes
 //  chord creation
 //  results: display messages...
 //  TODO: analyze harmonic progression...
-bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, int nNumChordNotes
-                                       , lmChordDescriptor* ptChordDescriptor, wxString &sStatusStr)
+//  TODO: consider to improve return: status/reason
+bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptChordDescriptorArray
+                                       , int* pNumChords, wxString &sStatusStr)
 {
     bool fOk = false;
     bool fCanBeCreated = false;
+    lmChordDescriptor* ptChordDescriptor = &ptChordDescriptorArray[*pNumChords]; //2@@@ TODO MEJORAR...
+    int nNumChordNotes = ptChordDescriptor->nNumChordNotes;
+
+    if (nNumChordNotes < 3)
+       return false;
+
+
+     wxLogMessage(_T("1ProccessChord:%d,  nNumChordNotes: %d")
+        , *pNumChords ,  nNumChordNotes);
+
+
+    wxLogMessage(_T("ProccessChord %d, num CHORD NOTES: %d")
+    , *pNumChords, nNumChordNotes);
 
     lmChordInfo tChordInfo;
     tChordInfo.Initalize();
 
     assert(ptChordDescriptor != NULL);
     assert(ptChordDescriptor->pChordNotes != NULL);
+
+     //@@@ TODO: QUITAR, DEBUG
+     for (int i = 0; i < nNumChordNotes; i++)
+     {
+        if (ptChordDescriptor->pChordNotes[i] != NULL)
+        {
+            wxLogMessage(_T("  CHORD NOTE[%d] : %s")
+                ,i, NoteId( *ptChordDescriptor->pChordNotes[i] ).c_str() );
+
+        /*@@  TODO??: check beat position for every note of the chord???
+        if (  tChordDescriptor[*pNumChords].pChordNotes[i]->GetBeatPosition() == lmNOT_ON_BEAT)
+           wxLogMessage(_T("Warning note %d  (pitch %d) lmNOT_ON_BEAT")
+            , i, tChordDescriptor[*pNumChords].pChordNotes[i]->GetFPitch()); --*/
+
+
+        }
+        else
+        {
+            wxLogMessage(_T("  CHORD NOTE[%d] : NULL!!") ,i );
+        }
+     }
 
     // Create Chord
     fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes, &tChordInfo,  sStatusStr);
@@ -297,9 +322,9 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, int nNumChordNotes
 
     if (fCanBeCreated)
     {
-        ptChordDescriptor[nNumChords].pChord = new lmChordManager(pChordBaseNote, tChordInfo);
-        sStatusStr = ptChordDescriptor[nNumChords].pChord->ToString();
-        nNumChords++;
+        ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
+        sStatusStr = ptChordDescriptor->pChord->ToString();
+        *pNumChords++;
         colour = *wxGREEN;
         fOk = true;
     }
@@ -311,7 +336,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, int nNumChordNotes
 
     wxLogMessage(sStatusStr);
 
-    DisplayChordInfo(pScore, nNumChordNotes, ptChordDescriptor, colour, sStatusStr);
+    DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
 
     return fOk;
 
@@ -326,7 +351,6 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     //sixth notes, respectively, and add some texts
     bool fScoreModified = false;
     nNumChords = 0;
-    int nBarCount = 0;
 
     float rAbsTime = 0.0f;
     float rTimeAtStartOfMeasure = 0.0f;
@@ -336,130 +360,91 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     lmVStaff* pVStaff = pInstr->GetVStaff();
 
 	lmNote* pCurrentNote;
-    int nCurrentNotePos = -2;  //@@@@@@@@@@@ old TODO: remove?
     float rCurrentNoteAbsTime = -2.0f;
-    int nChordNotePos = -2;    //@@@@@@@@@@@ old TODO: remove?
-    float rChordAbsTime = -2.0f;
-    float rRelativeTime = 0.0f;
-    int nNumChordNotes = 0;
+    float rRelativeTime = -2.0f;
     wxString sStatusStr;
 
     // TODO: QUITAR; PROVISIONAL
     //  resetear el control de las indicaciones....
-    DisplayChordInfo(pScore, nNumChordNotes, &tChordDescriptor[0], *wxGREEN, sStatusStr, true);
+    DisplayChordInfo(pScore, &tChordDescriptor[0], *wxGREEN, sStatusStr, true);
 
-    // Loop to process notes/rests in first staff of first instrument
+    /*---
+
+      Algorithm of chord detection, keeping a list of "active notes"
+
+       When NEW NOTE
+	      if NEW TIME (i.e. higher) then
+             update current list of active notes: remove notes with end-time < TIME
+             analize possible chord in previous state: with current list of active notes
+             set new time
+          add new note to the list of active notes
+
+    ---*/
+
+    // loop to process notes/rests in first staff of first instrument
     int nNote = 0;
     lmSOIterator* pIter = pVStaff->CreateIterator();
     while(!pIter->EndOfCollection())
     {
-        //process only notes, rests and barlines
+        // process only notes, rests and barlines
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsBarline())
         {
-            //new measure starts. Update current time
+            // new measure starts. Update current time
             rTimeAtStartOfMeasure += pSO->GetTimePos();
             rAbsTime = rTimeAtStartOfMeasure;
-            wxLogMessage(_T("@rAbsTime:%f = rTimeAtStartOfMeasure:%f ")
+            wxLogMessage(_T(" NEW BAR @rAbsTime:%f = rTimeAtStartOfMeasure:%f ")
                     , rAbsTime, rTimeAtStartOfMeasure); 
-            nBarCount++;  //@@ TODO: si no necesario, quitar
-
         }
         else if (pSO->IsNoteRest())
         {
-            //we continue in previous measure. Update current time if necessary
+            // we continue in previous measure. Update current time if necessary
             rRelativeTime = pSO->GetTimePos();
-//@@@@ no funciona TODO: remove            wxASSERT(!IsLowerTime(rRelativeTime, rAbsTime));
-//@@@@ no funciona TODO: remove         rAbsTime = wxMax(rAbsTime, rRelativeTime);
             rAbsTime = rTimeAtStartOfMeasure + rRelativeTime;
 
-            wxLogMessage(_T("@@rAbsTime:%f = rTimeAtStartOfMeasure:%f + rRelativeTime:%f")
+            wxLogMessage(_T("@@ AbsTime:%f = SoM:%f + Rel:%f")
                     , rAbsTime, rTimeAtStartOfMeasure, rRelativeTime); 
 
-            //process notes
+            // process notes
             if (((lmNoteRest*)pSO)->IsNote())
             {
                 // It is a note. Count it
                 ++nNote;
-
 			    pCurrentNote  = (lmNote*) pSO;
 
-                //@@ old  no funciona TODO: remove??????
-			    nCurrentNotePos  = pCurrentNote->GetBeatPosition();
-                wxLogMessage(_T("[ProcessScore] note %d: pitch: %d, pos: %d")
-                    , nNote, pCurrentNote->GetFPitch(), nCurrentNotePos);
-                wxLogMessage(_T("  LDP:%s")
-                    ,  pCurrentNote->SourceLDP(0).c_str());
+                wxLogMessage(_T(" NEW note %d: %s")
+                    , nNote,  NoteId( *pCurrentNote ).c_str()  );
 
-                //
+                // calculate note's absolute time
                 rCurrentNoteAbsTime = rTimeAtStartOfMeasure + rRelativeTime;
 
-                if (  IsHigherTime(rCurrentNoteAbsTime, rChordAbsTime) )
+                // check new starting time (to analyze previous chord candidate) 
+                if (  IsHigherTime(rCurrentNoteAbsTime, ActiveNotesList.GetTime())  )
                 {
-                   // New chord:
-                   //   process previous chord (if any)
-                   //   chord initialization
-                    wxLogMessage(_T("Chords:%d,  New chord because: currentTime %f, prev: %f, nNumChordNotes:%d")
-                        , nNumChords ,  rCurrentNoteAbsTime,  rChordAbsTime, nNumChordNotes);
+                    /*-----
+                      if NEW-TIME (i.e. higher) then
+                         update current list of active notes: remove notes with end-time < CURRENT-TIME
+                         analize possible chord in previous state: with current list of active notes
+                         set new time
+                      add new note to the list of active notes
+                    ---*/
 
+               
+                    // analyze possible chord with current list of active notes
+                    ActiveNotesList.GetChordDescriptor(&tChordDescriptor[nNumChords]);
 
-                    // If at least 3 notes: create chord
-                    if (nNumChordNotes > 2)
-                    {
-                        wxLogMessage(_T("1ProccessChord:%d,  nNumChordNotes: %d")
-                            , nNumChords ,  nNumChordNotes);
-                        //@@@ TODO: QUITAR, DEBUG
-                        for (int i = 0; i < nNumChordNotes; i++)
-                        {
-                            if (tChordDescriptor[nNumChords].pChordNotes[i] != NULL)
-                            {
-                                wxLogMessage(_T("  CHORD NOTE[%d] : %s")
-                                ,i, tChordDescriptor[nNumChords].pChordNotes[i]->SourceLDP(0).c_str() );
-                            }
-                            else
-                            {
-                                wxLogMessage(_T("  CHORD NOTE[%d] : NULL!!") ,i );
-                            }
-                        }
+                    bool fChordOk = ProccessChord(pScore, tChordDescriptor, &nNumChords, sStatusStr);
 
-                        wxLogMessage(_T("ProccessChord %d, num CHORD NOTES: %d")
-                        , nNumChords, nNumChordNotes);
-                        bool fChordOk = ProccessChord(pScore, nNumChordNotes, &tChordDescriptor[nNumChords], sStatusStr);
-                    }
+                    // set new time and recalculate list of active notes
+                    ActiveNotesList.SetTime( rCurrentNoteAbsTime );
 
                     fScoreModified = true; // repaint
-
-                    // Reset all chord info
-                    nNumChordNotes = 0;
-    			    tChordDescriptor[nNumChords].pChordNotes[0] = pCurrentNote;
-                    nChordNotePos = nCurrentNotePos;
-                    rChordAbsTime = rCurrentNoteAbsTime;
-                    nNumChordNotes++;
-                    wxLogMessage(_T("[ProcessScore] Chord:%d, First chord note, pitch: %d, pos: %d")
-                        , nNumChords, pCurrentNote->GetFPitch(), nNumChordNotes);
-                    nBarCount = 0;
-
                 }
-                else  // must be equal time. Add note to chord.
-                {
-//@@@  TODO: COMPROBAR QUE NUNCA OCURRE       assert( IsLowerTime(rCurrentNoteAbsTime, rChordAbsTime) );  
-                    if ( IsLowerTime(rCurrentNoteAbsTime, rChordAbsTime) )
-                    {
-                       wxLogMessage(_T("@@IMPOSSIBLE rCurrentNoteAbsTime:%f < rChordAbsTime:%f ")
-                         , rCurrentNoteAbsTime, rChordAbsTime); 
-                       assert( false );
-                    }
+                else
+                   wxLogMessage(_T("    not higher ") );
 
-
-
-                    // Add note
-                    tChordDescriptor[nNumChords].pChordNotes[nNumChordNotes++] = pCurrentNote;
-                    wxLogMessage(_T("[ProcessScore] Chord:%d, NEW CHORD NOTE, nNumChordNotes: %d, pitch: %d")
-                        , nNumChords ,nNumChordNotes, pCurrentNote->GetFPitch() );
-
-                    // TODO: warning or error if not on beat???
-
-                } //  if (  IsHigherTime(rCurrentNoteAbsTime, rChordAbsTime) )
+                // add new note to the list of active notes
+                ActiveNotesList.AddNote(pCurrentNote, rCurrentNoteAbsTime + pCurrentNote->GetDuration());
 
             } //  if (((lmNoteRest*)pSO)->IsNote())
 
@@ -470,14 +455,13 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     } // while
     delete pIter;       //Do not forget this. We are not using smart pointers!
 
-    // Last chord?
-    if (nNumChordNotes > 2)
-    {
-        wxLogMessage(_T("2ProccessChord:%d,  nNumChordNotes: %d")
-           , nNumChords ,  nNumChordNotes);
-        bool fChordOk = ProccessChord(pScore, nNumChordNotes, &tChordDescriptor[nNumChords], sStatusStr);
-        fScoreModified = true;
-    }
+    // Analyze the remaining notes
+    // 
+    ActiveNotesList.RecalculateActiveNotes( );
+    ActiveNotesList.GetChordDescriptor(&tChordDescriptor[nNumChords]);
+    bool fChordOk = ProccessChord(pScore, tChordDescriptor, &nNumChords, sStatusStr);
+
+    fScoreModified = ( fScoreModified || fChordOk);
 
     return fScoreModified;      //true -> score modified
 }
@@ -511,4 +495,101 @@ bool lmHarmonyProcessor::UndoChanges(lmScore* pScore)
         delete pError;
     }
     return true;
+}
+
+
+//
+// lmActiveNotes class definitions
+//
+lmActiveNotes::lmActiveNotes()
+{
+    r_current_time = 0.0f;
+}
+lmActiveNotes::~lmActiveNotes()
+{
+    std::list<lmActiveNoteInfo*>::iterator it;
+    it=m_ActiveNotesInfo.begin();
+    while( it != m_ActiveNotesInfo.end())
+    {
+         delete *it;
+         it = m_ActiveNotesInfo.erase(it);
+    }
+}
+
+void lmActiveNotes::SetTime(float r_new_current_time)
+{
+    r_current_time = r_new_current_time;
+    RecalculateActiveNotes();
+}
+void lmActiveNotes::ResetNotes()
+{
+    m_ActiveNotesInfo.clear();
+}
+int lmActiveNotes::GetNumActiveNotes()
+{
+    return (int)m_ActiveNotesInfo.size();
+}
+void lmActiveNotes::GetChordDescriptor(lmChordDescriptor* ptChordDescriptor)
+{
+     std::list<lmActiveNoteInfo*>::iterator it;
+     int nCount = 0;
+     for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it, nCount++)
+     {
+         wxLogMessage(_T("   %d  [%s]  EndT: %f")
+          , nCount, NoteId( *(*it)->pNote ).c_str(), (*it)->rEndTime);
+         ptChordDescriptor->pChordNotes[nCount] = (*it)->pNote;
+     }
+     ptChordDescriptor->nNumChordNotes = nCount;
+}
+void lmActiveNotes::AddNote(lmNote* pNoteS, float rEndTimeS)
+{
+    lmActiveNoteInfo* plmActiveNoteInfo = new lmActiveNoteInfo(pNoteS, rEndTimeS); 
+	m_ActiveNotesInfo.push_back( plmActiveNoteInfo );
+
+    wxLogMessage(_T("AddNote Pitch:%d, EndT: %f , NUM:%d ")
+        , plmActiveNoteInfo->pNote->GetFPitch()
+        , plmActiveNoteInfo->rEndTime
+        , GetNumActiveNotes());
+
+}
+void lmActiveNotes::RecalculateActiveNotes()
+{
+     std::list<lmActiveNoteInfo*>::iterator it;
+     wxLogMessage(_T("RecalculateActiveNotes Before: N:%d")
+         , GetNumActiveNotes());
+     it=m_ActiveNotesInfo.begin();
+     while(it != m_ActiveNotesInfo.end())
+     {
+         // AWARE: EQUAL time considered as finished  (TODO @@CONFIRM)
+         if ( ! IsHigherTime(  (*it)->rEndTime, r_current_time ) )
+         {
+             wxLogMessage(_T("  DELETE note pitch:%d endT:%f")
+                , (*it)->pNote->GetFPitch(), (*it)->rEndTime );
+             delete *it;
+             it = m_ActiveNotesInfo.erase(it);  // aware: "it = " needed to avoid crash in loop....
+         }
+         else 
+             it++;
+     }
+     wxLogMessage(_T("RecalculateActiveNotes After: N:%d  %s")
+		 , GetNumActiveNotes(), this->ToString().c_str());
+}
+
+
+wxString lmActiveNotes::ToString()
+{
+    wxString sRetStr = _T("");
+    wxString auxStr = _T("");
+    int nNumNotes = GetNumActiveNotes();
+    sRetStr = wxString::Format(_T(" [Time: %f, %d ActNotes: ") , r_current_time, nNumNotes);
+
+    std::list<lmActiveNoteInfo*>::iterator it;
+    for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it)
+    {
+        auxStr = wxString::Format(_T(" %s  EndT: %f ")
+            , NoteId( *(*it)->pNote).c_str(), (*it)->rEndTime  );
+        sRetStr += auxStr; 
+    }
+    sRetStr += _T(" ]");
+    return sRetStr;
 }

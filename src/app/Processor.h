@@ -71,11 +71,14 @@ private:
     lmUrlAuxCtrol*      m_pUndoLink;
 };
 
+
 typedef struct lmChordDescriptorStruct {
     lmChordManager*  pChord;
     lmNote* pChordNotes[lmNOTES_IN_CHORD-1];
+    int nNumChordNotes;
     lmChordDescriptorStruct()
     {
+        nNumChordNotes = 0;
         pChord = NULL;
         for (int i = 0; i<lmNOTES_IN_CHORD-1; i++)
         {
@@ -85,7 +88,46 @@ typedef struct lmChordDescriptorStruct {
 } lmChordDescriptor;
 #define lmMAX_NUM_CHORDS 50
 
+//
+// Chord harmony types and classes
+//
+//--------------------------------------------------------------------------
+// A list of notes 
+//   with individual absolute end time
+//   with global absolute current time
+//--------------------------------------------------------------------------
+typedef struct lmActiveNoteInfoStruct {
+    lmNote*  pNote;
+    float    rEndTime;
+    lmActiveNoteInfoStruct(lmNote* pNoteS, float rEndTimeS)
+    {
+        pNote = pNoteS;
+        rEndTime = rEndTimeS;
+    }
+} lmActiveNoteInfo;
 
+class lmActiveNotes 
+{
+public:
+    lmActiveNotes();
+    ~lmActiveNotes();
+    
+    void SetTime(float r_new_current_time);
+    float GetTime() { return r_current_time; };
+    void GetChordDescriptor(lmChordDescriptor* ptChordDescriptor);
+    void AddNote(lmNote* pNote, float rEndTime);
+    void RecalculateActiveNotes();
+    int  GetNumActiveNotes();
+    // For debugging
+    wxString ToString();
+
+
+protected:
+    void ResetNotes();
+
+    float r_current_time;
+    std::list<lmActiveNoteInfo*> m_ActiveNotesInfo; 
+};
 
 //--------------------------------------------------------------------------
 // A processor to check an score for harmony 'errors' and add markup to 
@@ -108,14 +150,15 @@ public:
 
 protected:
 
-    bool ProccessChord(lmScore* pScore, int nNumChordNotes, lmChordDescriptor* ptChordDescriptor
-        , wxString &sStatusStr);
-    void  DisplayChordInfo(lmScore* pScore, int nNumChordNotes
-                           , lmChordDescriptor*  pChordDsct, wxColour colour
+    bool ProccessChord(lmScore* pScore, lmChordDescriptor* ptChordDescriptor
+        , int* pNumChords, wxString &sStatusStr);
+    void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct, wxColour colour
                            , wxString &sText, bool reset=false);
 
     lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
     int nNumChords;
+
+    lmActiveNotes ActiveNotesList;
 
 
     //Error markup: the marked staffobj and its markup attachment

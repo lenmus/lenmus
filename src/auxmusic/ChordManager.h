@@ -78,6 +78,9 @@ typedef struct lmChordInfoStruct {
     }
 } lmChordInfo;
 
+//TODO: @ aux para debug. Si sirve, meterlo en  lmNote
+extern wxString NoteId(lmNote &tNote);
+
 extern  void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);

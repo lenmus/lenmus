@@ -71,6 +71,17 @@ static lmChordInfo tData[ect_Max] = {
     { 3, 3, 0, 0,{ lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
 };
 
+//TODO: @ aux para debug. Si sirve, meterlo en  lmNote
+wxString NoteId(lmNote &tNote)
+{
+    //get pitch relative to key signature
+    lmFPitch fp = FPitch(tNote.GetAPitch());
+    lmKeySignature* pKey = tNote.GetApplicableKeySignature();
+    lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+    wxString sPitch = FPitch_ToRelLDPName(fp, nKey);
+    return sPitch;
+}
+
  void SortChordNotes(int nNumNotes, lmNote** pInpChordNotes)
 {
     wxASSERT(nNumNotes < lmNOTES_IN_CHORD);
@@ -404,7 +415,8 @@ void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* pChordInfo)
 
 //  TODO: @ pensar si hay que guardar el número real de notas, incluyendo las duplicadas
 //            tener en cuenta que actualmente las notas se obtienen a partir de la fundamental
-//             simplemente sumando cada intervalo
+//             simplemente sumando cada intervalo 
+//          De momento num notas = num intervalos + 1 
 //  m_nNumNotes = pChordInfo->nNumNotes;
     m_nNumNotes = pChordInfo->nNumIntervals + 1;
     m_nInversion = pChordInfo->nNumInversions;
@@ -415,7 +427,7 @@ void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* pChordInfo)
 
 }
 
-const bool CONSIDER_5TH_ELIDED = true; //@@ TODO: solo para pruebas
+const bool CONSIDER_5TH_ELIDED = true; //@ TODO: configurable?
 // TODO: @pensar mejora: TryChordCreation debería crear ya el ChordManager; ahora solo lo intenta
 //
 // Look for notes in the score that make up a valid chord
@@ -423,17 +435,10 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
 {
     bool fOk = false;
 
-    sOutStatusStr =  wxString::Format(_T("[Try: %d notes ") ,  nNumNotes);
+    sOutStatusStr =  wxString::Format(_T("[%d notes ") ,  nNumNotes);
     wxASSERT(pInpChordNotes != NULL);
 
     tOutChordInfo->Initalize();
-
-    for (int i=0; i<nNumNotes; i++)
-    {
-        wxASSERT(pInpChordNotes[i] != NULL);
-        sOutStatusStr +=  wxString::Format(_T("{%s, %d} ")
-                ,pInpChordNotes[i]->SourceLDP(0).c_str() ,  pInpChordNotes[i]->GetFPitch());
-    }
 
     if (nNumNotes < 3)
     {
@@ -446,8 +451,8 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
 
     for (int i=0; i<nNumNotes; i++)
     {
-        sOutStatusStr +=  wxString::Format(_T("{%d} ")
-                , pInpChordNotes[i]->GetFPitch());
+        sOutStatusStr +=  wxString::Format(_T("{%s %d} ") 
+            ,NoteId(*pInpChordNotes[i]).c_str() , pInpChordNotes[i]->GetFPitch());
     }
 
     // Get intervals and Create lmChordInfo from notes
@@ -477,8 +482,8 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
         if (nType != lmINVALID_CHORD_TYPE)
         {
             wxLogMessage(_T(" @TryChordCreation @@@  POSIBLE QUINTA ELIDIDA!!, type:%d"), nType);
-            //  TODO: pensar en mejorar comprobando nota raiz duplicada o triplicada...
-            //  TODO: pensar en mejorar comprobando otras posibles elisiones...
+            //@  TODO: pensar en mejorar comprobando nota raiz duplicada o triplicada...
+            //@  TODO: pensar en mejorar comprobando otras posibles elisiones...
             *tOutChordInfo = tOriOutChordInfo; // TODO: @mejorable.. debemos recuperar el original
             tOutChordInfo->nFifthElided = 1;
         }
@@ -494,12 +499,13 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
             ,  tData[0].nNumNotes, tData[0].nIntervals[0], tData[0].nIntervals[1]
              , tData[0].nIntervals[2]  );
         fOk = false;
+        sOutStatusStr +=  _T(", NOT A chord!] ");
     }
     else
     {
         fOk = true;
+        sOutStatusStr +=  _T(", chord OK] ");
     }
-    sOutStatusStr +=  _T("]");
     return fOk;
 }
 
