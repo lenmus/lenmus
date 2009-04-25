@@ -29,8 +29,12 @@ LenMus project (http://www.lenmus.org/)<br />
         <a class='toc_level2' href="#toc0007">lmColStaffObjs and lmSOIterator classes</a>
         <a class='toc_level2' href="#toc0008">Bars/measures</a>
         <a class='toc_level2' href="#toc0009">Segments</a>
-        <a class='toc_level2' href="#toc0010">Traversing the StaffObjs collection: Iterator interface</a>
-            <a class='toc_level3' href="#toc0011">Example 1: looking for notes on beat position</a>
+    <a class='toc_level1' href="#toc0010">Traversing the StaffObjs collection: Iterator interface</a>
+    <a class='toc_level1' href="#toc0011">Iterators. Example 1: looking for notes on beat position</a>
+    <a class='toc_level1' href="#toc0012">Time position and duration</a>
+    <a class='toc_level1' href="#toc0013">notes in chord and base of chord</a>
+    <a class='toc_level1' href="#toc0014">StaffObjs collection: ordering</a>
+    <a class='toc_level1' href="#toc0015">Iterators. Example 2: looking for the absolute timepos of all notes</a>
 
 
 
@@ -200,7 +204,7 @@ LenMus project (http://www.lenmus.org/)<br />
 
 
 
-<h3 class='article'><a name="toc0010"></a>Traversing the StaffObjs collection: Iterator interface</h3>
+<h2 class='article'><a name="toc0010"></a>Traversing the StaffObjs collection: Iterator interface</h2>
 
 
 
@@ -292,11 +296,13 @@ LenMus project (http://www.lenmus.org/)<br />
 
 
 
-<h4 class='article'><a name="toc0011"></a>Example 1: looking for notes on beat position</h4>
+<h2 class='article'><a name="toc0011"></a>Iterators. Example 1: looking for notes on beat position</h2>
 
 
 
-<p class='justified'>Let&#039;s see an example. Assume we would like to analyse the notes entered on first staff of a piano score, and identify those placed on beat position (strong part). The score has only one instrument (the piano). Therefore, first thing to do is to access the <span class="kw1">lmVStaff</span> object for the instrument:</p>
+<p class='justified'>Let&#039;s see an example. Assume we would like to analyse the notes entered on first staff of a piano score, and identify those placed on beat position (strong part). The score has only one instrument (the piano).</p>
+
+<p class='justified'>The first thing to do is to access the <span class="kw1">lmVStaff</span> object for the instrument:</p>
 
 <div class="informalexample"><pre class="programlisting">
     //Assume the score is pointed by pScore.
@@ -331,11 +337,67 @@ LenMus project (http://www.lenmus.org/)<br />
 
 </pre></div>
 
+
+
+<h2 class='article'><a name="toc0012"></a>Time position and duration</h2>
+
+
+
+
+<p class='justified'>All <span class="kw1">lmStaffObj</span> have assigned a time and a duration.</p>
+
+<p class='justified'>This &#039;time&#039; is measured in arbitrary units. In fact, it is not really a time, as real time will depend on how fast the score is being played back. So, to not get confused, in documentation, names of varibles and methods the word &#039;timepos&#039; (time position) is used instead of &#039;time&#039;.</p>
+
+<p class='justified'>Timepos is relative to the start of the measure in which the <span class="kw1">lmStaffObj</span> is included.</p>
+
+<p class='justified'>The only <span class="kw1">lmStaffObj</span> having a non-zero duration are notes and rests. All other, such as clefs, barlines, key and time signatures. have a duration of zero.</p>
+
+
+
+<h2 class='article'><a name="toc0013"></a>notes in chord and base of chord</h2>
+
+
+
+<p class='justified'>Chords has no special treatment: a chord is a set of notes that start at the same timepos. To identify those that must be rendered toghether, sharing the stem, the following rules apply:</p>
+
+<p class='justified'>- the first note created in the timepos will be named the &#039;base note&#039;.
+- all other notes that shere the stem with the base note are identified because method <span class="kw1">lmNote::IsInChord()</span> will return true.
+- The base note is identified because the note is in chord and method <span class="kw1">lmNote::IsBaseOfChord()</span> will return true. Be aware that for notes not in chord this method returns true. So the right way of finding the base note of a chord is by asking:
+</p><div class="informalexample"><pre class="programlisting">
+    if (note.IsInChord() &amp;&amp; note.IsBaseOfChord())
+</pre></div>
+<p class='justified'>When traversing the StaffObjs collection the base note of a chord precedes all other chord notes.</p>
+
+
+
+
+<h2 class='article'><a name="toc0014"></a>StaffObjs collection: ordering</h2>
+
+
+
+<p class='justified'>Basically, <span class="kw1">lmStaffObj</span> objects are stored ordered by timepos, that is, in the same order you will read the score to play it back.</p> 
+
+<p class='justified'>More in detail: objects are always stored sorted by timepos and duration (shortest first). For objects at the same timepos the following rules apply: 
+<div class="itemizedlist"><ul type="disc">
+<li>Precedence of clef, key and time signatures over the notes they apply to.</li>
+<li>All notes of a chord go in sequence. First note is the base note.</li>
+<li>Objects of same type (i.e. two notes) are also ordered by staff number.</li></ul><div></p>
+ 
+<p class='justified'>Figure x shows an example.</p>
+
+
+
+
+
+<h2 class='article'><a name="toc0015"></a>Iterators. Example 2: looking for the absolute timepos of all notes</h2>
+
+
+
+<p class='justified'>Let&#039;s traverse the whole collection, get the notes and print their absolute timepos:</p>
+
+
+
 <p class='justified'>[To be continued with more details <span class="larger">&#133;</span>]</p>
-
-
-
-
 
 
 

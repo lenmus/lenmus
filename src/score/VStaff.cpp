@@ -1879,7 +1879,7 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 				new lmShapeStaff(pStaff, nStaff, pStaff->GetNumLines(),
 								 pStaff->GetLineThick(), pStaff->GetLineSpacing(),
 								 xFrom, yCur, xTo, *wxBLACK );
-		pBox->AddShape(pShape);
+		pBox->AddShape(pShape, lm_eLayerStaff);
         yCur = pShape->GetYBottom() + pStaff->GetAfterSpace();
 		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();
         pShape->SetVisible(fVisible);

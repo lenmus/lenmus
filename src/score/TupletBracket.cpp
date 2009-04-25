@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -131,7 +131,7 @@ lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour co
 					!((lmNote*)m_Notes.front())->StemGoesDown() );
 	m_pShape = new lmShapeTuplet(GetStartNoteRest(), GetEndNoteRest(), NumNotes(), fAbove,
 								 m_fShowNumber, sNumber, pFont, color, lm_eSquared);
-	pBox->AddShape(m_pShape);
+	pBox->AddShape(m_pShape, GetStartNoteRest()->GetLayer());
 
 	//attach the tuplet to start and end notes
 	GetStartNoteRest()->GetShape()->Attach(m_pShape, lm_eGMA_StartNote);

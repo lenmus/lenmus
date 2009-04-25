@@ -40,7 +40,7 @@ lmNotation::lmNotation(lmVStaff* pVStaff, int nStaff, bool fVisible, bool fIsDra
     : lmStaffObj(pVStaff, eSFOT_Notation, pVStaff, nStaff, fVisible, fIsDraggable)
 {
     wxASSERT(nStaff > 0);
-
+    SetLayer(lm_eLayerNotes);
 }
 
 
@@ -83,7 +83,7 @@ lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
     else
         pShape = new lmShapeInvisible(this, 0, uPos, lmUSize(uWidth, 0.0), _T("spacer"));
 
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
     StoreShape(pShape);
 
     // set total width
@@ -168,7 +168,7 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
         //pShape = CreateInvisibleShape(pBox, uPos, 0);
         pShape = new lmShapeInvisible(this, 0, uPos, lmUSize(0.0, 0.0) );
 
-    pBox->AddShape(pShape);
+    pBox->AddShape(pShape, GetLayer());
     StoreShape(pShape);
 
     return 0.0f;        //returns total width

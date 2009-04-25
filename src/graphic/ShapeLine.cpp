@@ -109,32 +109,7 @@ void lmShapeLine::SetAsControlled(lmELinePoint nPointID)
 
 void lmShapeLine::UpdateBounds()
 {
-/*
-	//TODO
-    // if line is neither vertical nor horizontal, should we use a strait rectangle or a
-    // leaned rectangle sorrounding the line?
-
-    //width of rectangle = width of line + 2 pixels
-    uWidth += 2.0 / g_r;
-
-    //line angle
-    double alpha = atan((yEnd - yStart) / (xEnd - xStart));
-
-    //boundling rectangle
-    {
-    lmLUnits uIncrX = (lmLUnits)( (uWidth * sin(alpha)) / 2.0 );
-    lmLUnits uIncrY = (lmLUnits)( (uWidth * cos(alpha)) / 2.0 );
-    lmUPoint uPoints[] = {
-        lmUPoint(xStart+uIncrX, yStart-uIncrY),
-        lmUPoint(xStart-uIncrX, yStart+uIncrY),
-        lmUPoint(xEnd-uIncrX, yEnd+uIncrY),
-        lmUPoint(xEnd+uIncrX, yEnd-uIncrY)
-    };
-    SolidPolygon(4, uPoints, color);
-*/
-
 	//For now assume the line is either vertical or horizontal
-	//TODO
 
     // store boundling rectangle position and size
 	lmLUnits uWidthRect = (m_uWidth + m_uBoundsExtraWidth) / 2.0;

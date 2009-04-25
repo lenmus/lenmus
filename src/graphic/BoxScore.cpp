@@ -82,16 +82,16 @@ int lmBoxScore::GetNumPages()
     return (int)m_aPages.size();
 }
 
-bool lmBoxScore::FindSliceAtPosition(lmUPoint& pointL)
-{
-    //loop to look up in the pages
-    for (int i=0; i < (int)m_aPages.size(); i++)
-    {
-        if (m_aPages[i]->FindSliceAtPosition(pointL))
-            return true;    //found
-    }
-    return false;
-}
+//bool lmBoxScore::FindSliceAtPosition(lmUPoint& pointL)
+//{
+//    //loop to look up in the pages
+//    for (int i=0; i < (int)m_aPages.size(); i++)
+//    {
+//        if (m_aPages[i]->FindSliceAtPosition(pointL))
+//            return true;    //found
+//    }
+//    return false;
+//}
 
 wxString lmBoxScore::Dump(int nIndent)
 {
@@ -137,31 +137,18 @@ lmBoxSystem* lmBoxScore::GetSystem(int nSystem)
 	return m_aPages[i]->GetSystem(nSystem);
 }
 
-//void lmBoxScore::AddToSelection(lmGMSelection* pSelection)
-//{
-//    lmGMObject* pGMO = pSelection->GetFirst();
-//    while(pGMO)
-//    {
-//        m_Selection.AddToSelection(pGMO);
-//        pGMO = pSelection->GetNext();
-//    }
-//}
+void lmBoxScore::PopulateLayers()
+{
+    std::vector<lmBoxPage*>::iterator it;
+    for (it = m_aPages.begin(); it != m_aPages.end(); ++it)
+        (*it)->PopulateLayers();
+}
 
 void lmBoxScore::AddToSelection(lmGMObject* pGMO)
 {
     if (pGMO->IsSelectable())
         m_Selection.AddToSelection(pGMO);
 }
-
-//void lmBoxScore::RemoveFromSelection(lmGMSelection* pSelection)
-//{
-//    lmGMObject* pGMO = pSelection->GetFirst();
-//    while(pGMO)
-//    {
-//        m_Selection.RemoveFromSelection(pGMO);
-//        pGMO = pSelection->GetNext();
-//    }
-//}
 
 void lmBoxScore::RemoveFromSelection(lmGMObject* pGMO)
 {

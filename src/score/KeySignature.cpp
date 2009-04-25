@@ -60,14 +60,14 @@ static wxString m_sLDPKeyName[30] = {
 // lmKeySignature object implementation
 //-------------------------------------------------------------------------------------------------
 
-lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible) :
-    lmStaffObj(pVStaff, eSFOT_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible)
+    : lmStaffObj(pVStaff, eSFOT_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    , m_fHidden(false)
+    , m_fTraditional(true)
+    , m_nFifths(nFifths)
+    , m_fMajor(fMajor)
 {
-    m_fHidden = false;
-    m_fTraditional = true;
-    m_nFifths = nFifths;
-    m_fMajor = fMajor;
-
+    SetLayer(lm_eLayerNotes);
     SetKeySignatureType();
 
     //contexts and shapes
@@ -160,7 +160,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
         for (nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
         {
             lmShape* pOldShape = this->GetShape(nStaff);
-	        pBox->AddShape(pOldShape);
+	        pBox->AddShape(pOldShape, GetLayer());
             pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
             uWidth = wxMax(pOldShape->GetWidth(), uWidth);
         }
@@ -218,7 +218,7 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
     lmShape* pOldShape = GetShapeFromIdx(nIdx);
     if (pOldShape)
     {
-	    pBox->AddShape(pOldShape);
+	    pBox->AddShape(pOldShape, GetLayer());
         pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
         return pOldShape;
     }
@@ -231,14 +231,14 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
         //return CreateInvisibleShape(pBox, uPos, nIdx);
         lmShape* pShape = new lmShapeInvisible(this, nIdx, uPos, lmUSize(0.0, 0.0) );
         StoreShape(pShape);
-	    pBox->AddShape(pShape);
+	    pBox->AddShape(pShape, GetLayer());
         return pShape;
     }
 
     //create the container shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, nIdx, colorC, _T("Key signature"), lmDRAGGABLE);
     StoreShape(pShape);
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
 
     lmLUnits uSharpPos[8];      //sharps positions, in order of sharps appearance
     lmLUnits uFlatPos[8];       //flats positions, in order of flats appearance

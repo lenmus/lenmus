@@ -237,10 +237,9 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 
     //add the beam shape to graphical model
     m_pBeamShape->SetStemsDown(m_fStemsDown);
-    pBox->AddShape(m_pBeamShape);
+    pBox->AddShape(m_pBeamShape, m_Notes.front()->GetLayer());
 
 	return m_pBeamShape->GetWidth();
-
 }
 
 void lmBeam::OnRelationshipModified()

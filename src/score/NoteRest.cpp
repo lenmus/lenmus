@@ -51,21 +51,17 @@
 lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
                int nNumDots, int nStaff, int nVoice, bool fVisible)
 	: lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
+    , m_nNoteType(nNoteType)
+    , m_nNumDots(nNumDots)
+    , m_fIsRest(IsRest)
+	, m_nVoice(nVoice)
+    , m_pNotations((AuxObjsList*)NULL)
+    , m_pLyrics((AuxObjsList*)NULL)
+    , m_rDuration(rDuration)
+    , m_pTuplet((lmTupletBracket*)NULL)
+    , m_pBeam((lmBeam*)NULL)
 {
-    // initialize all atributes
-    m_nNoteType = nNoteType;
-    m_nNumDots = nNumDots;
-
-    m_fIsRest = IsRest;
-	m_nVoice = nVoice;
-
-    m_pNotations = (AuxObjsList*)NULL;
-    m_pLyrics = (AuxObjsList*)NULL;
-
-    m_rDuration = rDuration;
-    m_pTuplet = (lmTupletBracket*)NULL;
-
-    m_pBeam = (lmBeam*)NULL;
+    SetLayer(lm_eLayerNotes);
 }
 
 lmNoteRest::~lmNoteRest()

@@ -34,6 +34,7 @@
 #include "../app/global.h"
 #include "GMObject.h"
 #include "BoxScore.h"
+#include "BoxPage.h"
 #include "Handlers.h"
 #include "../app/Paper.h"
 #include "../score/StaffObj.h"
@@ -64,8 +65,8 @@ public:
 //Implementation of class lmGMObject: the root object for the graphical model
 //========================================================================================
 
-static int m_IdCounter = 0;        //to assign unique IDs to GMObjects
-
+static int m_IdCounter = 0;         //to assign unique IDs to GMObjects
+static long m_nShapeOrder = 0;       //to assign an ordering to shapes, when they are added to a box
 
 
 lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
@@ -270,10 +271,19 @@ lmBox::~lmBox()
     m_Boxes.clear();
 }
 
-void lmBox::AddShape(lmShape* pShape)
+void lmBox::AddShape(lmShape* pShape, long nLayer)
 {
+    //add shape to this box collection
     m_Shapes.push_back(pShape);
 	pShape->SetOwnerBox(this);
+    pShape->SetOrder(++m_nShapeOrder);
+    pShape->SetLayer(nLayer);
+    wxASSERT(nLayer >= lm_eLayerBackground && nLayer <= lm_eLayerTop);
+
+    ////add shape to layer
+    //lmBoxPage* pBoxPage = this->GetOwnerBoxPage();
+    //wxASSERT(pBoxPage);
+    //pBoxPage->AddShapeToLayer(pShape, nLayer);
 }
 
 void lmBox::AddBox(lmBox* pBox)
@@ -314,33 +324,33 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL, bool fSelectable)
     return (lmShape*)NULL;
 }
 
-lmGMObject* lmBox::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
-{
-    //Remember: look up in opposite order than renderization
-
-    //wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
-
-    //loop to look up in the instrument slices
-    std::vector<lmBox*>::reverse_iterator it;
-	for(it = m_Boxes.rbegin(); it != m_Boxes.rend(); ++it)
-    {
-        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
-        if (pGMO)
-			return pGMO;    //found
-    }
-
-    //look in shapes collection
-    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
-    if (pShape) return pShape;
-
-    // no object found. Verify if the point is in this slice
-    if ( (fSelectable && IsSelectable() && HitTest(pointL)) ||
-         (!fSelectable && HitTest(pointL)) )
-        return this;
-    else
-        return (lmGMObject*)NULL;
-
-}
+//lmGMObject* lmBox::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
+//{
+//    //Remember: look up in opposite order than renderization
+//
+//    //wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
+//
+//    //loop to look up in the instrument slices
+//    std::vector<lmBox*>::reverse_iterator it;
+//	for(it = m_Boxes.rbegin(); it != m_Boxes.rend(); ++it)
+//    {
+//        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
+//        if (pGMO)
+//			return pGMO;    //found
+//    }
+//
+//    //look in shapes collection
+//    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
+//    if (pShape) return pShape;
+//
+//    // no object found. Verify if the point is in this slice
+//    if ( (fSelectable && IsSelectable() && HitTest(pointL)) ||
+//         (!fSelectable && HitTest(pointL)) )
+//        return this;
+//    else
+//        return (lmGMObject*)NULL;
+//
+//}
 
 void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                             lmLUnits uYMin, lmLUnits uYMax)
@@ -363,6 +373,20 @@ void lmBox::RenderShapes(lmPaper* pPaper)
 	{
 		(*it)->Render(pPaper);
 	}
+}
+
+void lmBox::AddShapesToLayers(lmBoxPage* pBoxPage)
+{
+    //add shapes to box page layers
+
+    std::vector<lmShape*>::iterator it;
+    for (it = m_Shapes.begin(); it != m_Shapes.end(); ++it)
+        pBoxPage->AddShapeToLayer(*it, (*it)->GetLayer());
+
+    //add shapes to box page layers
+    std::vector<lmBox*>::iterator itB;
+    for (itB = m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+        (*itB)->AddShapesToLayers(pBoxPage);
 }
 
 wxString lmBox::Dump(int nIndent)
@@ -433,12 +457,13 @@ void lmBox::UpdateXRight(lmLUnits xRight)
 lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName,
                  bool fDraggable, bool fSelectable, wxColour color, bool fVisible)
 	: lmGMObject(pOwner, nType, fDraggable, fSelectable, sName, nOwnerIdx)
+    , m_pOwnerBox((lmBox*)NULL)
+	, m_color(color)
+	, m_fVisible(fVisible)
+	, m_pParentShape((lmShape*)NULL)
+    , m_pMouseCursorWindow((wxWindow*)NULL)
+    , m_nOrder(0)
 {
-	m_pOwnerBox = (lmBox*)NULL;
-	m_color = color;
-	m_fVisible = fVisible;
-	m_pParentShape = (lmShape*)NULL;
-    m_pMouseCursorWindow = (wxWindow*)NULL;
 }
 
 lmShape::~lmShape()

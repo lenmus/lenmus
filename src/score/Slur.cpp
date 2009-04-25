@@ -152,7 +152,7 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
     lmShapeTie* pShape1 = new lmShapeTie(this, 0, (lmNote*)m_pEndNR, &uPoints[0], pShapeStart,
                                          pShapeEnd, fTieUnderNote, color, lmVISIBLE);
     StoreShape(pShape1);
-	pBox->AddShape(pShape1);
+	pBox->AddShape(pShape1, m_pEndNR->GetLayer());
 	pShapeStart->Attach(pShape1, lm_eGMA_StartNote);
 	pShapeEnd->Attach(pShape1, lm_eGMA_EndNote);
     pShapeEnd->OnTieAttached(0, pShape1);     //inform end note shape of this attachment
@@ -172,7 +172,7 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
     lmShapeTie* pShape2 = new lmShapeTie(this, 1, (lmNote*)m_pStartNR, &uPoints[0], pShapeStart,
                                          pShapeEnd, fTieUnderNote, color, lmNO_VISIBLE);
     StoreShape(pShape2);
-	pBox->AddShape(pShape2);
+	pBox->AddShape(pShape2, m_pStartNR->GetLayer());
 	pShapeStart->Attach(pShape2, lm_eGMA_StartNote);
 	pShapeEnd->Attach(pShape2, lm_eGMA_EndNote);
     pShapeEnd->OnTieAttached(1, pShape2);     //inform end note shape of this attachment

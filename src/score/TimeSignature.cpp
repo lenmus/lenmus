@@ -191,7 +191,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
         {
             lmShape* pOldShape = this->GetShape(nStaff);
-	        pBox->AddShape(pOldShape);
+	        pBox->AddShape(pOldShape, GetLayer());
             pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
         }
     }
@@ -235,7 +235,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
             lmShape* pShape = CreateShape(nStaff-1, pBox, pPaper, colorC, sTopGlyphs, uxPosTop,
                                         uyPosTop + yOffset, sBottomGlyphs, uxPosBottom, 
                                         uyPosBottom + yOffset);
-	        pBox->AddShape(pShape);
+	        pBox->AddShape(pShape, GetLayer());
             StoreShape(pShape);
 
             //compute vertical displacement for next staff

@@ -459,7 +459,7 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
 {
     //create the container shape and add it to the box
     lmShapeNote* pNoteShape = new lmShapeNote(this, uxLeft, uyTop, colorC);
-	pBox->AddShape(pNoteShape);
+	pBox->AddShape(pNoteShape, GetLayer());
     StoreShape(pNoteShape);
 }
 

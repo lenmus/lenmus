@@ -33,14 +33,15 @@ Any help to structure, review, improve, etc. this document is welcome!.
         * \href0 [objects_model] {Objects in the internal model}
         * \href0 [pitch-representation] {How pitch is represented}
     
-    * \b{Score edition model}
+    * \b{Score graphical model}
+        * \href0 [hit_test] {Hit test, layers and shapes renderization order}
         * \href0 [handlers-for-shapes] {Handlers}
     
     * \b{Exercises}
         * \href0 [exercises_ctrols] {eBooks: Including scores and exercises}
         
     * \b{Algorithms}
-        * \href0 [beams_auto_setup] {Beamed groups of notes: How to determine beam info automatically
+        * \href0 [beams_auto_setup] {Beamed groups of notes: How to determine beam info automatically}
     
 %%%    * \href0 [cursors] {Cursors and caret}
 

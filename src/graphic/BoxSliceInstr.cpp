@@ -54,7 +54,6 @@ lmBoxSliceInstr::lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr)
     m_pInstr = pInstr;
 }
 
-
 lmBoxSliceInstr::~lmBoxSliceInstr()
 {
 }

@@ -33,7 +33,7 @@ LenMus project (http://www.lenmus.org/)<br />
 
 
 
-<p class='justified'>[in files &quot;graphic/Handlers.cpp &amp; .h&quot;]</p>
+<p class='justified'>[in files &quot;graphic/Handlers.cpp and .h&quot;]</p>
 
 
 
@@ -108,6 +108,12 @@ To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#0
 <div class="itemizedlist"><ul type="disc">
 <li>compute shifts from start of drag points</li>
 <li>issue a <span class="kw1">MoveObjectPoints()</span> command. Before doing it, as handlers and shape points have been already displaced during drag, it is necessary to restore the original positions in the shape, to avoid double displacements.</li></ul><div></ul><div></p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Command <span class="kw1">MoveObjectPoints()</span> execution interacts with the owner of the shape (an <span class="kw1">lmStaffObj</span> or an <span class="kw1">lmAuxObj</span>) by invoking its member method <span class="kw1">MoveObjectPoints()</span>.</li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>The owner <span class="kw1">lmStaffObj</span> or <span class="kw1">lmAuxObj</span> updates its internal information and informs back the shape by invoking <span class="kw1">MovePoints()</span> shape method. At first sight, this last step looks unnecesary. As the shape issued the move command, it would be enough if shape points were not restored before issuing the command. But it has been done this way in order to use the same mechanism when the move command is issued from any other part in the program.</li></ul><div></p>
 
 
 
@@ -115,6 +121,8 @@ To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#0
 <h3 class='article'><a name="toc0004"></a>What to do to add handlers to a shape</h3>
 
 
+
+<p class='justified'>In the shape object:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Decide on object layout when selected (squared handlers, line handlers, aux lines) and add defines for handlers IDs.</li></ul><div></p>
@@ -126,8 +134,9 @@ To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#0
 <li>Delete handlers at destructor</li></ul><div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Modify <span class="kw1">Render()</span> method:
-    - if selected, book to be rendered with handlers when possible and update handlers position.</li></ul><div></p>
+<li>Modify <span class="kw1">Render()</span> method:</li>
+<div class="itemizedlist"><ul type="disc">
+<li>if selected, book to be rendered with handlers when possible and update handlers position.</li></ul><div></ul><div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Create method <span class="kw1">RenderWithHandlers()</span></li></ul><div></p>
@@ -140,11 +149,20 @@ To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#0
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Create method <span class="kw1">OnHandlerEndDrag()</span></li></ul><div></p>
+ 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Implement method <span class="kw1">MovePoints()</span></li></ul><div></p>
+
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>If necessary, override method <span class="kw1">OnSelectionStatusChanged()</span> to hide or restore visibility of controlled shape while selected.</li></ul><div></p>
 
+<p class='justified'>In the owner <span class="kw1">lmScoreObj</span>:</p>
 
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Implement method <span class="kw1">MoveObjectPoints()</span></li></ul><div></p>
+ 
+ 
 
 
 <h3 class='article'><a name="toc0005"></a>Object points, object location, shapes and handlers</h3>

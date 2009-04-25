@@ -130,10 +130,14 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions,
     if (!pBitmap || fReDraw)
     {
         // anti-aliased renderization
+        wxStopWatch oTimer;
         lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
         m_pPaper->SetDrawer(pDrawer);
         wxASSERT(m_pBoxScore);  //Layout phase omitted?
         m_pBoxScore->RenderPage(nPage, m_pPaper, pRenderWindow, vOffset);
+        oTimer.Pause();
+        wxLogMessage(_T("[lmGraphicManager::RenderScore] %ld ms required for rendering page %d"),
+                    oTimer.Time(), nPage);
 
         //Make room for the new bitmap
         //TODO

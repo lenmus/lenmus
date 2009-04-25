@@ -50,15 +50,15 @@ extern lmFPitch FPitch(int nStep, int nOctave, int nAcc);
 //
 
 lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible,
-			   wxColour colorC) :
-    lmStaffObj(pStaff, eSFOT_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
+			   wxColour colorC)
+    : lmStaffObj(pStaff, eSFOT_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
+    , m_nClefType(nClefType)
+    , m_fHidden(false)
+    , m_pContext((lmContext*)NULL)
 {
-    m_nClefType = nClefType;
-    m_fHidden = false;
 	m_color = colorC;
-    m_pContext = (lmContext*)NULL;
-    
     DefineAsMultiShaped();      //define clef as multi-shaped ScoreObj
+    SetLayer(lm_eLayerNotes);
 }
 
 lmClef::~lmClef()
@@ -145,7 +145,7 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     {
         //Not dirty: just add existing shape (main shape) to the Box
         lmShape* pOldShape = this->GetShape(1);
-        pBox->AddShape(pOldShape);
+        pBox->AddShape(pOldShape, GetLayer());
         pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
 
         //set shapes index counter so that first prolog shape will have index 1
@@ -183,7 +183,7 @@ lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     lmShape* pOldShape = GetShapeFromIdx(nIdx);
     if (pOldShape)
     {
-	    pBox->AddShape(pOldShape);
+	    pBox->AddShape(pOldShape, GetLayer());
         pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
         return pOldShape;
     }
@@ -213,7 +213,7 @@ lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     }
 
     StoreShape(pShape);
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
 
     return pShape;
 }

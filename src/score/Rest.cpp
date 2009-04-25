@@ -99,7 +99,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     {
         //Not dirty: just add existing shapes to the Box
         lmShape* pOldShape = this->GetShape();
-        pBox->AddShape(pOldShape);
+        pBox->AddShape(pOldShape, GetLayer());
         pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
     }
     else
@@ -118,7 +118,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
         //create the container shape and add it to the box
         lmShapeRest* pRestShape = new lmShapeRest(this, colorC, lmDRAGGABLE, m_fVisible);
-	    pBox->AddShape(pRestShape);
+	    pBox->AddShape(pRestShape, GetLayer());
         StoreShape(pRestShape);
 
         // create shape for the rest symbol

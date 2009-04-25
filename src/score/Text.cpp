@@ -216,7 +216,7 @@ lmLUnits lmTextItem::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, w
     pShape->Shift(0.0f, -uHeight);
 
     //add shape to graphic model
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
 
 	// set total width
 	return pShape->GetWidth();
@@ -355,7 +355,7 @@ lmLUnits lmScoreTitle::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     lmShape* pShape = CreateShape(pPaper, uPos);
 
     //add shape to graphic model
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
 
 	// set total width
 	return pShape->GetWidth();
@@ -883,7 +883,7 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
                            (*it)->GetColour(), m_nBlockAlign, m_nHAlign, m_nVAlign,
                            uxStart, uyStart, uxEnd, uyEnd,
                            m_nBgColor, uBorderWidth, m_nBorderColor);
-	pBox->AddShape(m_pShapeRectangle);
+	pBox->AddShape(m_pShapeRectangle, GetLayer());
     StoreShape(m_pShapeRectangle);
 
     //if it has anchor line create the line shape
@@ -909,7 +909,7 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
         m_pShapeLine->SetLeftDraggable(false);
         m_pShapeLine->SetVisible(!fHidden);
 
-	    pBox->AddShape(m_pShapeLine);
+	    pBox->AddShape(m_pShapeLine, GetLayer());
         StoreShape(m_pShapeLine);
     }
     return m_pShapeRectangle->GetBounds().GetWidth();

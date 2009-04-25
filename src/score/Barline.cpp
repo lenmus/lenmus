@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -201,6 +201,7 @@ lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) 
     lmStaffObj(pVStaff, eSFOT_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
+    SetLayer(lm_eLayerBarlines);
 
     m_uThinLineWidth = m_pVStaff->TenthsToLogical(1.5, 1);  // thin line width
     m_uThickLineWidth = m_pVStaff->TenthsToLogical(6, 1);   // thick line width
@@ -297,7 +298,7 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     {
         //Not dirty: just add existing shapes to the Box
         lmShape* pOldShape = this->GetShape();
-        pBox->AddShape(pOldShape);
+        pBox->AddShape(pOldShape, GetLayer());
         pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
 
         //reset position
@@ -312,7 +313,7 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
         lmShapeBarline* pShape =
             new lmShapeBarline(this, nType, uPos.x, uyTop, uyBottom, m_uThinLineWidth,
                             m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
-	    pBox->AddShape(pShape);
+	    pBox->AddShape(pShape, GetLayer());
         StoreShape(pShape);
     }
     return GetShape()->GetBounds().GetWidth();

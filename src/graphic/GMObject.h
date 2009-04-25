@@ -107,6 +107,19 @@ enum lmEGMOType
     eGMO_Handler,
 };
 
+//standard layers identifiers
+enum lmELayerID
+{
+    lm_eLayerBackground = 0,
+    lm_eLayerStaff,
+    lm_eLayerBarlines,
+    lm_eLayerNotes,
+    lm_eLayerAuxObjs,
+    lm_eLayerTop,
+    lm_eLayerUser
+};
+
+
 #define lmSELECTABLE         true
 #define lmNO_SELECTABLE      false
 
@@ -279,7 +292,7 @@ class lmBox : public lmGMObject
 public:
     virtual ~lmBox();
 
-    virtual void AddShape(lmShape* pShape);
+    virtual void AddShape(lmShape* pShape, long nLayer);
     virtual void RemoveShape(lmShape* pShape);
 
     //implementation of virtual methods from base class
@@ -295,23 +308,20 @@ public:
     //selection
     virtual void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                                  lmLUnits uYMin, lmLUnits uYMax);
-    //void AddShapesToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-    //                          lmLUnits uYMin, lmLUnits uYMax);
 
 	//positioning and bounds
     virtual void UpdateXRight(lmLUnits xRight);
 
-
 protected:
     lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _("Box"));
     lmShape* FindShapeAtPosition(lmUPoint& pointL, bool fSelectable);
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
     bool ContainsXPos(lmLUnits uxPos);
     lmBox* GetContainedBoxAt(lmLUnits xPos);
 
     void AddBox(lmBox* pBox);
-    void RenderBoxes(lmPaper* pPaper, lmUPoint uPos);
     void RenderShapes(lmPaper* pPaper);
+    void AddShapesToLayers(lmBoxPage* pBoxPage);
 
     std::vector<lmBox*>     m_Boxes;        //contained boxes (systems, slices, etc.)
 
@@ -405,6 +415,10 @@ public:
 
     //properties
     virtual void SetColour(wxColour color) { m_color = color; }
+    inline void SetOrder(long nOrder) { m_nOrder = nOrder; }
+    inline long GetOrder() { return m_nOrder; }
+    inline void SetLayer(long nLayer) { m_nLayer = nLayer; }
+    inline long GetLayer() { return m_nLayer; }
 
 protected:
     lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx, wxString sName=_T("Shape"),
@@ -424,6 +438,8 @@ protected:
 	std::list<lmShape*>	        m_cAttachedTo;
 
 	wxColour	m_color;
+    long        m_nOrder;
+    long        m_nLayer;
 
 	//for composite shapes
 	lmShape*	m_pParentShape;

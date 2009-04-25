@@ -639,22 +639,17 @@ lmUPoint lmComponentObj::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 //-------------------------------------------------------------------------------------------------
 
 lmStaffObj::lmStaffObj(lmScoreObj* pParent, EStaffObjType nType, lmVStaff* pStaff, int nStaff,
-                   bool fVisible, bool fIsDraggable) :
-    lmComponentObj(pParent, lm_eStaffObj, fIsDraggable)
+                   bool fVisible, bool fIsDraggable)
+    : lmComponentObj(pParent, lm_eStaffObj, fIsDraggable)
+    , m_fVisible(fVisible)
+    , m_nClass(nType)
+    , m_pVStaff(pStaff)
+    , m_nStaffNum(pStaff ? nStaff : 0)
+	, m_pPrevSO((lmStaffObj*) NULL)
+	, m_pNextSO((lmStaffObj*) NULL)
 {
     wxASSERT(nStaff > 0);
-
-    // store parameters
-    m_fVisible = fVisible;
-    m_nClass = nType;
-
-    // initializations: staff ownership info
-    m_pVStaff = pStaff;
-    m_nStaffNum = (pStaff ? nStaff : 0);
-
-    //VStaff collection
-	m_pPrevSO = (lmStaffObj*) NULL;
-	m_pNextSO = (lmStaffObj*) NULL;
+    SetLayer(lm_eLayerNotes);
 }
 
 lmStaffObj::~lmStaffObj()
@@ -691,7 +686,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
         {
             //Not dirty: just add existing shapes to the Box
             lmShape* pOldShape = this->GetShape();
-            pBox->AddShape(pOldShape);
+            pBox->AddShape(pOldShape, GetLayer());
             pOldShape->SetColour(*wxCYAN);//colorC);       //change its colour to new desired colour
         }
         else
@@ -731,7 +726,7 @@ lmShape* lmStaffObj::CreateInvisibleShape(lmBox* pBox, lmUPoint uPos, int nShape
     //create an invisible shape
 
 	lmShapeInvisible* pShape = new lmShapeInvisible(this, nShapeIdx, uPos, lmUSize(0.0, 0.0) );
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
 	StoreShape(pShape);
     return pShape;
 }

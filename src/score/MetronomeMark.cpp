@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -40,22 +40,24 @@
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, lmENoteType nNoteType, int nDots,
                     int nTicksPerMinute, bool fParentheses, bool fVisible)
     : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+    , m_nMarkType(eMMT_Note_Value)
+    , m_nLeftNoteType(nNoteType)
+    , m_nLeftDots(nDots)
+    , m_nTicksPerMinute(nTicksPerMinute)
+    , m_fParentheses(fParentheses)
 {
-    m_nMarkType = eMMT_Note_Value;
-    m_nLeftNoteType = nNoteType;
-    m_nLeftDots = nDots;
-    m_nTicksPerMinute = nTicksPerMinute;
-    m_fParentheses = fParentheses;
+    SetLayer(lm_eLayerNotes);
 }
 
 // 'm.m. = 80'
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, int nTicksPerMinute,
                     bool fParentheses, bool fVisible)
     : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+    , m_nMarkType(eMMT_MM_Value)
+    , m_nTicksPerMinute(nTicksPerMinute)
+    , m_fParentheses(fParentheses)
 {
-    m_nMarkType = eMMT_MM_Value;
-    m_nTicksPerMinute = nTicksPerMinute;
-    m_fParentheses = fParentheses;
+    SetLayer(lm_eLayerNotes);
 }
 
 // 'note_symbol = note_symbol'
@@ -64,24 +66,20 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff,
                     lmENoteType nRightNoteType, int nRightDots,
                     bool fParentheses, bool fVisible)
     : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+    , m_nMarkType(eMMT_Note_Note)
+    , m_nLeftNoteType(nLeftNoteType)
+    , m_nLeftDots(nLeftDots)
+    , m_nRightNoteType(nRightNoteType)
+    , m_nRightDots(nRightDots)
+    , m_nTicksPerMinute(0)
+    , m_fParentheses(fParentheses)
 {
-    m_nMarkType = eMMT_Note_Note;
-    m_nLeftNoteType = nLeftNoteType;
-    m_nLeftDots = nLeftDots;
-    m_nRightNoteType = nRightNoteType;
-    m_nRightDots = nRightDots;
-    m_nTicksPerMinute = 0;
-    m_fParentheses = fParentheses;
+    SetLayer(lm_eLayerNotes);
 }
 
 lmMetronomeMark::~lmMetronomeMark()
 {
 }
-
-
-//-----------------------------------------------------------------------------------------
-// implementation of virtual methods defined in base abstract class lmStaffObj
-//-----------------------------------------------------------------------------------------
 
 lmUPoint lmMetronomeMark::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
@@ -99,7 +97,7 @@ lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
 {
 	//create the container shape and add it to the box
 	lmCompositeShape* pShape = new lmCompositeShape(this, 0, colorC, _("metronome mark"), lmDRAGGABLE);
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
     StoreShape(pShape);
 
 	wxFont* pFont = GetSuitableFont(pPaper);

@@ -214,6 +214,8 @@ public:
     //other shapes related methods
     virtual inline bool IsMainShape(int nShapeIdx) { return nShapeIdx == 0; }
     inline bool IsMultishaped() { return m_pShapesMngr->IsMultishaped(); }
+    inline void SetLayer(long nLayer) { m_nLayer = nLayer; }
+    inline long GetLayer() { return m_nLayer; }
 
 	//positioning
     virtual void StoreOriginAndShiftShapes(lmLUnits uLeft, int nShapeIdx = 0);
@@ -258,6 +260,7 @@ protected:
     void PrepareToCreateShapes();
 
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
+    long            m_nLayer;           //layer in which it will be rendered
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
     bool            m_fDirty;           //the object has been modified and needs layout recomputation

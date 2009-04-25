@@ -41,15 +41,103 @@
 extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
+// lmLayer: helper class. A collection of lmShapes
+//-----------------------------------------------------------------------------------------
+
+//to assign ID to user layers
+static long m_nLayerCounter = lm_eLayerUser;
+
+class lmLayer
+{
+public:
+    lmLayer(long nLayerID) : m_nLayerID(nLayerID) {}
+    ~lmLayer() {}
+
+    void InsertShapeInLayer(lmShape* pShape);
+    void RenderLayer(lmPaper* pPaper);
+    lmGMObject* FindObjectAtPos(lmUPoint& uPoint, bool fSelectable);
+
+    long                    m_nLayerID;
+    std::list<lmShape*>	    m_Shapes;		//contained shapes, ordered by creation order
+
+
+};
+
+void lmLayer::InsertShapeInLayer(lmShape* pShape)
+{
+    //Algorithm: the sorted list is traversed in order to find the element which is
+    //greater than or equal to the object to be inserted.
+    //In the worst case, when the object to be inserted is larger than all of the
+    //objects already present in the list, the entire list needs to be traversed
+    //before doing the insertion. Therefore, the total running time for the insert
+    //operation is O(n).
+    
+    //wxLogMessage(_T("[lmLayer::InsertShapeInLayer] Shape %d inserted in layer %d"),
+    //    pShape->GetID(), m_nLayerID);
+
+    if (m_Shapes.empty())
+    {
+        //this is going to be the first element.
+        m_Shapes.push_back(pShape);
+        return;
+    }
+
+    //there are elements. Find where to insert new item
+    std::list<lmShape*>::iterator itCur;
+    for (itCur = m_Shapes.begin(); itCur != m_Shapes.end(); ++itCur)
+    {
+        if ((*itCur)->GetOrder() < pShape->GetOrder())
+            break;      //insertion point found
+    }
+    
+    //position found: insert before itCur
+    if (itCur != m_Shapes.end())
+        m_Shapes.insert(itCur, pShape);
+    else
+        m_Shapes.push_back(pShape);
+        
+    return;
+}
+
+void lmLayer::RenderLayer(lmPaper* pPaper)
+{
+    std::list<lmShape*>::iterator it;
+    for (it = m_Shapes.begin(); it != m_Shapes.end(); ++it)
+    {
+        (*it)->Render(pPaper);
+    }
+}
+
+lmGMObject* lmLayer::FindObjectAtPos(lmUPoint& uPoint, bool fSelectable)
+{
+    std::list<lmShape*>::reverse_iterator it;
+    for (it = m_Shapes.rbegin(); it != m_Shapes.rend(); ++it)
+    {
+        bool fFound = (*it)->HitTest(uPoint);
+        if ( (fSelectable && (*it)->IsSelectable() && fFound) ||
+            (!fSelectable && fFound) )
+            return *it;
+    }
+    return (lmGMObject*)NULL;
+}
+
+
+
+
+//-----------------------------------------------------------------------------------------
+// lmBoxPage implementation
+//-----------------------------------------------------------------------------------------
 
 lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
-    : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage, _("page"))
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage, _T("page"))
     , m_nNumPage(nNumPage)
     , m_nFirstSystem(0)
     , m_nLastSystem(0)
     , m_pBScore(pParent)
     , m_pRenderWindow(NULL)
 {
+    CreateLayers();     //create standard layers
+
     //create margin shapes
 	lmScore* pScore = (lmScore*)m_pOwner;
 	lmLUnits uxLeftMargin = pScore->GetLeftMarginXPos();
@@ -83,6 +171,46 @@ lmBoxPage::~lmBoxPage()
     //delete handlers
     for (int i=0; i<4; i++)
         delete m_pMarginShapes[i];
+
+    //delete layers
+    std::list<lmLayer*>::iterator itL;
+    for (itL = m_Layers.begin(); itL != m_Layers.end(); ++itL)
+        delete *itL;
+}
+
+void lmBoxPage::CreateLayers()
+{
+    //create standard layers and layer indexes
+    m_Layers.push_back( new lmLayer(lm_eLayerBackground) );
+    m_Layers.push_back( new lmLayer(lm_eLayerStaff) );
+    m_Layers.push_back( new lmLayer(lm_eLayerBarlines) );
+    m_Layers.push_back( new lmLayer(lm_eLayerNotes) );
+    m_Layers.push_back( new lmLayer(lm_eLayerAuxObjs) );
+    m_Layers.push_back( new lmLayer(lm_eLayerTop) );
+}
+
+void lmBoxPage::AddShapeToLayer(lmShape* pShape, long nLayerID)
+{
+    wxASSERT(nLayerID >= lm_eLayerBackground && nLayerID < m_nLayerCounter);
+
+    //find requested layer
+    std::list<lmLayer*>::iterator it;
+    for (it = m_Layers.begin(); it != m_Layers.end(); ++it)
+    {
+        if ((*it)->m_nLayerID == nLayerID)
+            break;  //found
+    }
+    wxASSERT(it != m_Layers.end());
+
+    //add shape to layer
+    (*it)->InsertShapeInLayer(pShape);
+}
+
+void lmBoxPage::PopulateLayers()
+{
+    //reorganize shapes into layers
+
+	AddShapesToLayers(this);
 }
 
 lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
@@ -97,36 +225,25 @@ lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
     return pSystem;
 }
 
-lmGMObject* lmBoxPage::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
+lmGMObject* lmBoxPage::FindObjectAtPos(lmUPoint& uPoint, bool fSelectable)
 {
-    //I override base class method to look also in handlers
-    //Remember: look up in opposite order than renderization
-
-	//wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
-
     //look up in active handlers
 	std::list<lmHandler*>::reverse_iterator it;
 	for (it = m_ActiveHandlers.rbegin(); it != m_ActiveHandlers.rend(); ++it)
     {
-		if ((*it)->BoundsContainsPoint(pointL))
+		if ((*it)->BoundsContainsPoint(uPoint))
             return *it;
     }
 
-    return lmBox::FindObjectAtPos(pointL, fSelectable);
- //   //loop to look up in the systems (boxes collection)
-	//for(int i=(int)m_Boxes.size() - 1; i >=0; i--)
- //   {
- //       lmGMObject* pGMO = ((lmBoxSystem*)m_Boxes[i])->FindObjectAtPos(pointL, fSelectable);
- //       if (pGMO)
-	//		return pGMO;		//Object found
- //   }
-
- //   //look in shapes collection
- //   lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
- //   if (pShape) return pShape;
-
- //   // no object found.
- //   return (lmGMObject*)NULL;
+    //find in layers
+    std::list<lmLayer*>::reverse_iterator itL;
+    for (itL = m_Layers.rbegin(); itL != m_Layers.rend(); ++itL)
+    {
+        lmGMObject* pGMO = (*itL)->FindObjectAtPos(uPoint, fSelectable);
+        if (pGMO)
+			return pGMO;    //found
+    }
+    return (lmGMObject*)NULL;
 }
 
 void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
@@ -137,16 +254,10 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
     m_ActiveHandlers.clear();
     m_GMObjsWithHandlers.clear();
 
-	//render shapes
-	RenderShapes(pPaper);
-
-    //loop to render the systems in this page
-    //remeber: the boxes collection inside a lmBoxPage are lmBoxSytems
-	int iSystem = m_nFirstSystem;	//number of system in process
-    for(int i=0; i < (int)m_Boxes.size(); iSystem++, i++)
-    {
-        ((lmBoxSystem*)m_Boxes[i])->Render(iSystem, pScore, pPaper);
-    }
+    //render shapes in layers
+    std::list<lmLayer*>::iterator itL;
+    for (itL = m_Layers.begin(); itL != m_Layers.end(); ++itL)
+        (*itL)->RenderLayer(pPaper);
 
     //if requested, book to render page margins
     if (g_fShowMargins)
@@ -158,9 +269,6 @@ void lmBoxPage::RenderWithHandlers(lmPaper* pPaper)
     //render page with margins
 
     wxColour color = *wxGREEN;      //TODO User options
-	//std::list<lmHandler*>::iterator it;
-	//for (it = m_pHandlers->begin(); it != m_pHandlers->end(); ++it)
- //       (*it)->Render(pPaper, color);
     for (int i=0; i < 4; i++)
     {
         m_pMarginShapes[i]->Render(pPaper, color);
@@ -178,18 +286,18 @@ void lmBoxPage::DrawAllHandlers(lmPaper* pPaper)
         (*it)->RenderWithHandlers(pPaper);
 }
 
-lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
-{
-    //loop to look up in the systems (Boxes collection)
-
-    for(int i=0; i < (int)m_Boxes.size(); i++)
-    {
-        lmBoxSlice* pBSlice = ((lmBoxSystem*)m_Boxes[i])->FindSliceAtPosition(pointL);
-        if (pBSlice)
-			return pBSlice;    //found
-    }
-    return (lmBoxSlice*)NULL;;
-}
+//lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
+//{
+//    //loop to look up in the systems (Boxes collection)
+//
+//    for(int i=0; i < (int)m_Boxes.size(); i++)
+//    {
+//        lmBoxSlice* pBSlice = ((lmBoxSystem*)m_Boxes[i])->FindSliceAtPosition(pointL);
+//        if (pBSlice)
+//			return pBSlice;    //found
+//    }
+//    return (lmBoxSlice*)NULL;;
+//}
 
 void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)

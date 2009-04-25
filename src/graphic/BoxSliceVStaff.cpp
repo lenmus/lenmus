@@ -58,16 +58,16 @@ lmBoxSliceVStaff::~lmBoxSliceVStaff()
 {
 }
 
-void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
-{
-    //update selection rectangle
-    m_uSelRect = GetBounds();
-
-	//render shapes
-	RenderShapes(pPaper);
-
-    lmGMObject::Render(pPaper, *wxGREEN);
-}
+//void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
+//{
+//    //update selection rectangle
+//    m_uSelRect = GetBounds();
+//
+//	//render shapes
+//	RenderShapes(pPaper);
+//
+//    lmGMObject::Render(pPaper, *wxGREEN);
+//}
 
 lmBoxSystem* lmBoxSliceVStaff::GetOwnerSystem()
 {

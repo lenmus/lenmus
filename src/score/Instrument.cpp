@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -577,7 +577,7 @@ void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmInstrNameA
             pShape = new lmShapeBrace(this, xLeft, uBox.y, xRight, yBottom,
                                       dyHook, *wxBLACK);
         }
-        pBox->AddShape( pShape );
+        pBox->AddShape(pShape, lm_eLayerStaff);
     }
 
     //add shape for the name/abbreviation
@@ -586,7 +586,7 @@ void lmInstrument::AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmInstrNameA
         lmUPoint uPos(GetScore()->GetPageLeftMargin(), uBox.y);
         lmShape* pShape = pName->CreateShape(pPaper, uPos);
         pShape->Shift(0.0f, (pBox->GetHeight() - pShape->GetHeight())/2.0f );
-        pBox->AddShape( pShape );
+        pBox->AddShape(pShape, lm_eLayerStaff);
     }
 }
 

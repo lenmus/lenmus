@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -41,9 +41,6 @@ public:
     lmInstrGroup(lmEBracketSymbol nGrpSymbol, bool fJoinBarlines);
     ~lmInstrGroup();
 
-    //   inline void Save(lmUndoData* pUndoData) {}
-//   void CreateShape();
- //   lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
     inline int NumInstruments() { return (int)m_Instruments.size(); }
     inline lmInstrument* GetFirstInstrument() { return m_Instruments.front(); }
     inline lmInstrument* GetLastInstrument() { return m_Instruments.back(); }
@@ -70,8 +67,8 @@ private:
 
     lmLUnits            m_uIndentFirst;     //indentation for first system
     lmLUnits            m_uIndentOther;     //indentation for other systems
-    lmTextItem*        m_pName;            //group name
-    lmTextItem*        m_pAbbreviation;    //group abbreviated name
+    lmTextItem*         m_pName;            //group name
+    lmTextItem*         m_pAbbreviation;    //group abbreviated name
     lmEBracketSymbol    m_nBracket;         //bracket symbol
     lmLUnits            m_uBracketWidth;    //to render the bracket
     lmLUnits            m_uBracketGap;      //to render the bracket

@@ -7,7 +7,7 @@
 \h1 {Handlers}
 %%%------------
 
-[in files "graphic/Handlers.cpp & .h"]
+[in files "graphic/Handlers.cpp and .h"]
 
 
 
@@ -61,7 +61,7 @@ When a handler is dragged the controlled shape is informed by invoking methods %
     
  * Command %%MoveObjectPoints()%% execution interacts with the owner of the shape (an %%lmStaffObj%% or an %%lmAuxObj%%) by invoking its member method %%MoveObjectPoints()%%.
  
- * The owner %lmStaffObj%% or %%lmAuxObj%% updates its internal information and informs back the shape by invoking %%MovePoints()%% shape method. At first sight, this last step looks unnecesary. As the shape issued the move command, it would be enough if shape points were not restored before issuing the command. But it has been done this way in order to use the same mechanism when the move command is issued from any other part in the program.
+ * The owner %%lmStaffObj%% or %%lmAuxObj%% updates its internal information and informs back the shape by invoking %%MovePoints()%% shape method. At first sight, this last step looks unnecesary. As the shape issued the move command, it would be enough if shape points were not restored before issuing the command. But it has been done this way in order to use the same mechanism when the move command is issued from any other part in the program.
 
 
 
@@ -77,7 +77,7 @@ In the shape object:
  * Delete handlers at destructor
  
  * Modify %%Render()%% method:
-    - if selected, book to be rendered with handlers when possible and update handlers position.
+    * if selected, book to be rendered with handlers when possible and update handlers position.
     
  * Create method %%RenderWithHandlers()%%
  

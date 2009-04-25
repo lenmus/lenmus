@@ -8,6 +8,7 @@
                     beams_auto_setup.txt
                     exercises_ctrols.txt
                     handlers-for-shapes.txt
+                    hit_test.txt
                     index.txt
                     model_view_controller.txt
                     objects_model.txt

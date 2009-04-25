@@ -54,7 +54,6 @@ lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, int nNumInSystem,
 	m_nNumInSystem = nNumInSystem;
     m_xStart = xStart;
     m_xEnd = xEnd;
-
 }
 
 lmBoxSlice::~lmBoxSlice()
@@ -107,14 +106,6 @@ void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 
 }
 
-//void lmBoxSlice::Render(lmPaper* pPaper, lmUPoint uPos)
-//{
-//    //for (int i=0; i < (int)m_Boxes.size(); i++)
-//    //{
-//    //    ((lmBoxSliceInstr*)m_Boxes[i])->Render(pPaper, uPos);
-//    //}
-//}
-
 void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
 {
 	// During layout there is a need to update initial computations about this
@@ -128,20 +119,6 @@ void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
         ((lmBoxSliceInstr*)m_Boxes[i])->UpdateXLeft(xLeft);
     }
 }
-
-//void lmBoxSlice::UpdateXRight(lmLUnits xRight)
-//{
-//	// During layout there is a need to update initial computations about this
-//	// box slice position. This update must be propagated to all contained boxes
-//
-//	SetXRight(xRight);
-//
-//	//propagate change
-//    for (int i=0; i < (int)m_Boxes.size(); i++)
-//    {
-//        ((lmBoxSliceInstr*)m_Boxes[i])->UpdateXRight(xRight);
-//    }
-//}
 
 void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
 {
@@ -159,25 +136,6 @@ void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
         ((lmBoxSliceInstr*)m_Boxes[i])->CopyYBounds(pSlice->GetSliceInstr(i));
     }
 }
-
-//wxString lmBoxSlice::Dump(int nIndent)
-//{
-//	wxString sDump = _T("");
-//	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-//	sDump += wxString::Format(_T("lmBoxSlice. measure %d, "),
-//						m_nAbsMeasure);
-//    sDump += DumpBounds();
-//    sDump += _T("\n");
-//
-//    //loop to dump the systems in this page
-//	nIndent++;
-//    for (int i=0; i < (int)m_Boxes.size(); i++)
-//    {
-//        sDump += ((lmBoxSliceInstr*)m_Boxes[i])->Dump(nIndent);
-//    }
-//
-//	return sDump;
-//}
 
 int lmBoxSlice::GetPageNumber() const
 { 

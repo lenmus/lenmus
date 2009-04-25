@@ -56,17 +56,12 @@ public:
     ~lmBoxSliceVStaff();
 
     //renderization
-    void Render(lmPaper* pPaper, lmUPoint uPos);
+    //void Render(lmPaper* pPaper, lmUPoint uPos);
 
 	//positioning and bounds
 	void UpdateXLeft(lmLUnits xLeft);
     //void UpdateXRight(lmLUnits xRight);
 	void CopyYBounds(lmBoxSliceVStaff* pBSV);
-
-    //info
-    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
-    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-    //                   lmLUnits uYMin, lmLUnits uYMax);
 
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,

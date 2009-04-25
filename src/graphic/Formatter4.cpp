@@ -654,7 +654,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
 						    uxPos, pBoxSystem->GetYBottom(),
 						    uLineThickness, 0.0, *wxBLACK, _T("System joining line"),
 							eEdgeHorizontal);
-	        pBoxSystem->AddShape(pLine);
+	        pBoxSystem->AddShape(pLine, lm_eLayerBarlines);
 	    }
 
         //update lmBoxSlices with the final measures sizes, except for last
@@ -729,6 +729,9 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
             nSystem++;
         }
     }
+
+    //the BoxScore is ready. Reorganize shapes in layers for renderization
+    pBoxScore->PopulateLayers();
 
     return pBoxScore;
 

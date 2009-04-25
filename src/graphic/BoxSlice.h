@@ -73,9 +73,6 @@ public:
 
 	//access to objects
     lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
-    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
-    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-    //                   lmLUnits uYMin, lmLUnits uYMax);
 
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,

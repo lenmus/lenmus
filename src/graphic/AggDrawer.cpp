@@ -809,11 +809,11 @@ lmPixels lmAggDrawer::LogicalToDeviceY(lmLUnits y)
 
 lmColor_rgba8 lmAggDrawer::lmToRGBA8(wxColour color)
 {
-    return agg::rgba8(color.Red(), color.Green(), color.Blue());
+    return agg::rgba8(color.Red(), color.Green(), color.Blue(), color.Alpha());
 }
 
 wxColour lmAggDrawer::lmToWxColor(lmColor_rgba8 color)
 {
-    return wxColor(color.r, color.g, color.b);
+    return wxColor(color.r, color.g, color.b, color.a);
 }
 

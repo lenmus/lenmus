@@ -82,8 +82,7 @@ public:
                             { wxASSERT(nStaff > 0); return m_ShapeStaff[nStaff - 1]; }
 
     //pointing at
-    lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    //lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
 	int GetNumMeasureAt(lmLUnits uxPos);
 
@@ -92,7 +91,7 @@ public:
                          lmLUnits uYMin, lmLUnits uYMax);
 
     //rendering
-    void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
+    //void Render(lmPaper* pPaper);
 
 	//access to objects
 	lmBoxSlice* GetSliceAt(lmLUnits xPos);
@@ -102,7 +101,7 @@ public:
 	int GetPageNumber() const;
 
 	//overrides
-	void AddShape(lmShape* pShape);
+	void AddShape(lmShape* pShape, long nLayer);
     void UpdateXRight(lmLUnits xPos);
 
 	//owners and related

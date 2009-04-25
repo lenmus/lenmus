@@ -49,6 +49,7 @@ class lmScore;
 class lmPaper;
 class lmShapeMargin;
 class lmHandler;
+class lmLayer;
 
 
 class lmBoxPage : public lmBox
@@ -63,7 +64,7 @@ public:
 	int GetSystemNumber(lmBoxSystem* pSystem);
 
 	//access to objects
-    lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
+    //lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
 
 	//operations
@@ -76,6 +77,7 @@ public:
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax);
+    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
 
     //renderization related
     inline wxWindow* GetRenderWindow() { return m_pRenderWindow; }
@@ -96,11 +98,14 @@ public:
     //active handlers
 	void AddActiveHandler(lmHandler* pHandler);
 
-    //overrides
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    //layers and shapes
+    void AddShapeToLayer(lmShape* pShape, long nLayerID);
+    void PopulateLayers();
 
 
 private:
+    void CreateLayers();
+
     // a lmBoxPage is, mainly, a collection of lmBoxSystems
 
     lmBoxScore*     m_pBScore;          //parent score box
@@ -116,7 +121,10 @@ private:
     std::vector<lmGMObject*>    m_GMObjsWithHandlers;
 
 	//list of active handlers contained within this page
-    std::list<lmHandler*>       m_ActiveHandlers;      
+    std::list<lmHandler*>       m_ActiveHandlers;  
+
+    //layers and shapes
+	std::list<lmLayer*>	    m_Layers;		//contained shapes, ordered by layer
 
 };
 

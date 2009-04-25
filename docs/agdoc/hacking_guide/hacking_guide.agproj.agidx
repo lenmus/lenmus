@@ -63,6 +63,20 @@
 \title{Handlers for shapes}
 
 }
+\file[hit_test.txt; ext=.html;]{
+\toc
+{
+    \toc1[Hit test; anchor="toc0001";]{}
+    \toc1[Layers; anchor="toc0002";]{
+        \toc2[Moving an object below or above; anchor="toc0003";]{}
+        \toc2[Implementation details; anchor="toc0004";]{}}
+    \toc1[References; anchor="toc0005";]{}
+    \toc1[TODO; anchor="toc0006";]{}
+}
+
+\title{Hit test, layers and shapes renderization order}
+
+}
 \file[index.txt; ext=.html;]{
 \toc
 {
@@ -135,9 +149,13 @@
         \toc2[lmInstrument, lmVStaff and lmStaff classes; anchor="toc0006";]{}
         \toc2[lmColStaffObjs and lmSOIterator classes; anchor="toc0007";]{}
         \toc2[Bars/measures; anchor="toc0008";]{}
-        \toc2[Segments; anchor="toc0009";]{}
-        \toc2[Traversing the StaffObjs collection: Iterator interface; anchor="toc0010";]{
-            \toc3[Example 1: looking for notes on beat position; anchor="toc0011";]{}}}
+        \toc2[Segments; anchor="toc0009";]{}}
+    \toc1[Traversing the StaffObjs collection: Iterator interface; anchor="toc0010";]{}
+    \toc1[Iterators. Example 1: looking for notes on beat position; anchor="toc0011";]{}
+    \toc1[Time position and duration; anchor="toc0012";]{}
+    \toc1[notes in chord and base of chord; anchor="toc0013";]{}
+    \toc1[StaffObjs collection: ordering; anchor="toc0014";]{}
+    \toc1[Iterators. Example 2: looking for the absolute timepos of all notes; anchor="toc0015";]{}
 }
 
 \title{Scores: the internal model}

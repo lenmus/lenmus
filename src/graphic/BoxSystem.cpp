@@ -65,19 +65,6 @@ lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
 
 lmBoxSystem::~lmBoxSystem()
 {
-    ////delete BoxSlices collection
-    //for (int i=0; i < (int)m_Slices.size(); i++)
-    //{
-    //    delete m_Slices[i];
-    //}
-    //m_Slices.clear();
-
-    //delete staff shapes
-    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-    {
-        delete m_ShapeStaff[i];
-    }
-    m_ShapeStaff.clear();
 }
 
 void lmBoxSystem::SetPosition(lmLUnits xPos, lmLUnits yPos)
@@ -93,7 +80,7 @@ void lmBoxSystem::SetPosition(lmLUnits xPos, lmLUnits yPos)
 	}
 }
 
-void lmBoxSystem::AddShape(lmShape* pShape)
+void lmBoxSystem::AddShape(lmShape* pShape, long nLayer)
 {
 	//override to avoid adding the staff to the shapes list
 	if (pShape->GetType() == eGMO_ShapeStaff)
@@ -101,26 +88,25 @@ void lmBoxSystem::AddShape(lmShape* pShape)
 		m_ShapeStaff.push_back( (lmShapeStaff*)pShape );
         pShape->SetOwnerBox(this);
 	}
-	else
-		lmBox::AddShape(pShape);
 
+    lmBox::AddShape(pShape, nLayer);
 }
 
-void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
-{
-    //At this point paper position is not in the right place. Therefore, we move
-    //to the start of system position.
-    pPaper->SetCursorY( m_yPos );
-
-    //render staff lines
-    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-    {
-        m_ShapeStaff[i]->Render(pPaper);
-    }
-
-	//base class
-    lmBox::Render(pPaper, lmUPoint(m_xPos, m_yPos));
-}
+//void lmBoxSystem::Render(lmPaper* pPaper)
+//{
+//    //At this point paper position is not in the right place. Therefore, we move
+//    //to the start of system position.
+//    pPaper->SetCursorY( m_yPos );
+//
+//    //render staff lines
+//    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+//    {
+//        m_ShapeStaff[i]->Render(pPaper);
+//    }
+//
+//	//base class
+//    lmBox::Render(pPaper, lmUPoint(m_xPos, m_yPos));
+//}
 
 void lmBoxSystem::FixSlicesYBounds()
 {
@@ -145,6 +131,7 @@ void lmBoxSystem::DeleteLastSlice()
     //This method is used during layout phase, to delete a column when finally it is decided not
     //to include it in current system
 
+    //delete last slice
 	delete m_Boxes.back();
 	m_Boxes.pop_back();
 }
@@ -156,24 +143,24 @@ lmLUnits lmBoxSystem::GetYTopFirstStaff()
 	return m_ShapeStaff[0]->GetYTop();
 }
 
-lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
-{
-    if (BoundsContainsPoint(pointL))
-    {
-        //identify the measure
-        for (int iS=0; iS < (int)m_Boxes.size(); iS++)
-        {
-            if (((lmBoxSlice*)m_Boxes[iS])->FindMeasureAt(pointL))
-            {
-                return ((lmBoxSlice*)m_Boxes[iS]);
-            }
-        }
-        wxMessageBox( wxString::Format( _T("Page %d, measure not identified!!! Between measure %d and %d"),
-            m_nNumPage, m_nFirstMeasure, m_nFirstMeasure+m_nNumMeasures-1) );
-        return (lmBoxSlice*)NULL;
-    }
-    return (lmBoxSlice*)NULL;
-}
+//lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
+//{
+//    if (BoundsContainsPoint(pointL))
+//    {
+//        //identify the measure
+//        for (int iS=0; iS < (int)m_Boxes.size(); iS++)
+//        {
+//            if (((lmBoxSlice*)m_Boxes[iS])->FindMeasureAt(pointL))
+//            {
+//                return ((lmBoxSlice*)m_Boxes[iS]);
+//            }
+//        }
+//        wxMessageBox( wxString::Format( _T("Page %d, measure not identified!!! Between measure %d and %d"),
+//            m_nNumPage, m_nFirstMeasure, m_nFirstMeasure+m_nNumMeasures-1) );
+//        return (lmBoxSlice*)NULL;
+//    }
+//    return (lmBoxSlice*)NULL;
+//}
 
 void lmBoxSystem::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)

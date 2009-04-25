@@ -61,11 +61,12 @@ public:
     lmBoxPage* AddPage();
     void RenderPage(int nPage, lmPaper* pPaper, wxWindow* pRenderWindow,
                     wxPoint& vOffset); 
+    void PopulateLayers();
 
     inline lmBoxPage* GetCurrentPage() const { return m_aPages.back(); }
     lmBoxPage* GetPage(int nPage);
     int GetNumPages();
-    bool FindSliceAtPosition(lmUPoint& pointL);
+    //bool FindSliceAtPosition(lmUPoint& pointL);
 
 	//info
 	int GetNumSystems();
@@ -79,7 +80,6 @@ public:
     void AddToSelection(lmGMObject* pGMO);
     void AddToSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
                        lmLUnits uYMin, lmLUnits uYMax);
-    //void RemoveFromSelection(lmGMSelection* pSelection);
     void RemoveFromSelection(lmGMObject* pGMO);
     inline int GetNumObjectsSelected() { return m_Selection.NumObjects(); }
     void ClearSelection();

@@ -66,9 +66,6 @@ public:
 
     inline lmInstrument* GetInstrument() const { return m_pInstr; }
     inline int GetNumMeasure() const { return m_pSlice->GetNumMeasure(); }
-    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
-    //void AddToSelection(lmGMSelection* pSelection, lmLUnits uXMin, lmLUnits uXMax,
-    //                   lmLUnits uYMin, lmLUnits uYMax);
 
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,

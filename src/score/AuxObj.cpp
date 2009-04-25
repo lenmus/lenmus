@@ -51,6 +51,7 @@ extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 lmAuxObj::lmAuxObj(bool fIsDraggable)
     : lmComponentObj((lmComponentObj*)NULL, lm_eAuxObj, fIsDraggable)
 {
+    SetLayer(lm_eLayerAuxObjs);
 }
 
 void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
@@ -63,7 +64,7 @@ void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
     {
         //Not dirty: just add existing shapes to the Box
         lmShape* pOldShape = this->GetShape();      //TODO: Multi-shaped AuxObjs?
-        pBox->AddShape(pOldShape);
+        pBox->AddShape(pOldShape, GetLayer());
         pOldShape->SetColour(*wxCYAN);//m_color);       //change its colour to new desired colour
     }
     else
@@ -297,7 +298,7 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     int nGlyphIndex = (IsAbove() ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShapeGlyph* pShape =
 		new lmShapeGlyph(this, 0, nGlyphIndex, pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
     StoreShape(pShape);
 
 	return pShape->GetWidth();
@@ -542,7 +543,7 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
     lmShapeLine* pShape = new lmShapeLine(this, 0, uxStart, uyStart, uxEnd, uyEnd,
                                           uWidth, uBoundsExtraWidth, lm_eLine_Solid,
                                           m_nColor, eEdgeNormal, _T("GraphLine"));
-	pBox->AddShape(pShape);
+	pBox->AddShape(pShape, GetLayer());
     StoreShape(pShape);
     return pShape->GetBounds().GetWidth();
 
