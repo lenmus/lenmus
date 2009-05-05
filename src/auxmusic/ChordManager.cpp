@@ -122,7 +122,7 @@ void  GetIntervalsFromNotes(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo*
 
         if (fpIntv >= lm_p8)
         {
-              fpIntv = fpIntv % lm_p8;  // todo: @ confirmar reducción de intervalos
+              fpIntv = fpIntv % lm_p8;
         }
 #ifdef __WXDEBUG__
         wxLogMessage(_T("[GetIntervalsFromNotes nota %d: %d  nota 0: %d] INTERVAL: %d")
@@ -465,6 +465,9 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
     }
 
     lmChordInfo tOriOutChordInfo; //@@TODO: mejorar... necesitamos esta copia para probar "fifth elided"
+    // TODO: EN GENERAL SE PUEDE "RELAJAR" LA EXIGENCIAS PARA CREAR ACORDES VALIDOS
+    //        y DETECTAR LAS INCORRECIONES ANALIZANCO POSTERIORMENTE (mediante reglas)
+    //       o sea: MOVER EL ANALISIS DE LA QUINTA ELIDIDA: pasarlo a una regla más
     tOriOutChordInfo.Initalize();
     tOriOutChordInfo = *tOutChordInfo;
 
@@ -505,6 +508,7 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
     {
         fOk = true;
         sOutStatusStr +=  _T(", chord OK] ");
+
     }
     return fOk;
 }
@@ -537,7 +541,7 @@ void lmChordManager::Initialize()
     m_nNumNotes = 0;
     m_nInversion = 0;
     m_nType =  lmINVALID_CHORD_TYPE;
-    m_nKey = earmDo; // TODO: @@@initalize with invalid value
+    m_nKey = earmDo; // TODO: @@@initalize with invalid value?
     m_nElision = 0; // @@TODO: enum in ChordConstrains...
 }
 

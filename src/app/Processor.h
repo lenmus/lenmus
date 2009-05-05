@@ -36,6 +36,7 @@ class lmAuxObj;
 class lmUrlAuxCtrol;
 
 #include "../auxmusic/ChordManager.h"
+#include "../auxmusic/Harmony.h"
 
 //--------------------------------------------------------------------------
 // lmScoreProcessor: An abstract class to create score processors
@@ -72,63 +73,6 @@ private:
 };
 
 
-typedef struct lmChordDescriptorStruct {
-    lmChordManager*  pChord;
-    lmNote* pChordNotes[lmNOTES_IN_CHORD-1];
-    int nNumChordNotes;
-    lmChordDescriptorStruct()
-    {
-        nNumChordNotes = 0;
-        pChord = NULL;
-        for (int i = 0; i<lmNOTES_IN_CHORD-1; i++)
-        {
-            pChordNotes[i] = NULL;
-        }
-    }
-} lmChordDescriptor;
-#define lmMAX_NUM_CHORDS 50
-
-//
-// Chord harmony types and classes
-//
-//--------------------------------------------------------------------------
-// A list of notes 
-//   with individual absolute end time
-//   with global absolute current time
-//--------------------------------------------------------------------------
-typedef struct lmActiveNoteInfoStruct {
-    lmNote*  pNote;
-    float    rEndTime;
-    lmActiveNoteInfoStruct(lmNote* pNoteS, float rEndTimeS)
-    {
-        pNote = pNoteS;
-        rEndTime = rEndTimeS;
-    }
-} lmActiveNoteInfo;
-
-class lmActiveNotes 
-{
-public:
-    lmActiveNotes();
-    ~lmActiveNotes();
-    
-    void SetTime(float r_new_current_time);
-    float GetTime() { return r_current_time; };
-    void GetChordDescriptor(lmChordDescriptor* ptChordDescriptor);
-    void AddNote(lmNote* pNote, float rEndTime);
-    void RecalculateActiveNotes();
-    int  GetNumActiveNotes();
-    // For debugging
-    wxString ToString();
-
-
-protected:
-    void ResetNotes();
-
-    float r_current_time;
-    std::list<lmActiveNoteInfo*> m_ActiveNotesInfo; 
-};
-
 //--------------------------------------------------------------------------
 // A processor to check an score for harmony 'errors' and add markup to 
 // show them
@@ -141,6 +85,7 @@ public:
 
     //implementation of virtual methods
     bool ProcessScore(lmScore* pScore);
+    bool AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH);
     bool UndoChanges(lmScore* pScore);
     bool SetTools();
 #ifdef __WXDEBUG__

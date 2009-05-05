@@ -53,6 +53,7 @@ extern lmMainFrame* GetMainFrame();
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 #include "../auxmusic/ChordManager.h"
+//@@ TODO: remove, alredy in *.h #include "../auxmusic/Harmony.h"
 
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmScoreProcessor
@@ -261,11 +262,12 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  
     ntyEnd +=50; // y positions are NOT relative; change each time
 
 }
+
+
 // All chord processing:
 //  analysis of chord notes and intervals
 //  chord creation
 //  results: display messages...
-//  TODO: analyze harmonic progression...
 //  TODO: consider to improve return: status/reason
 bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptChordDescriptorArray
                                        , int* pNumChords, wxString &sStatusStr)
@@ -277,11 +279,6 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
 
     if (nNumChordNotes < 3)
        return false;
-
-
-     wxLogMessage(_T("1ProccessChord:%d,  nNumChordNotes: %d")
-        , *pNumChords ,  nNumChordNotes);
-
 
     wxLogMessage(_T("ProccessChord %d, num CHORD NOTES: %d")
     , *pNumChords, nNumChordNotes);
@@ -300,12 +297,6 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
             wxLogMessage(_T("  CHORD NOTE[%d] : %s")
                 ,i, NoteId( *ptChordDescriptor->pChordNotes[i] ).c_str() );
 
-        /*@@  TODO??: check beat position for every note of the chord???
-        if (  tChordDescriptor[*pNumChords].pChordNotes[i]->GetBeatPosition() == lmNOT_ON_BEAT)
-           wxLogMessage(_T("Warning note %d  (pitch %d) lmNOT_ON_BEAT")
-            , i, tChordDescriptor[*pNumChords].pChordNotes[i]->GetFPitch()); --*/
-
-
         }
         else
         {
@@ -316,16 +307,16 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     // Create Chord
     fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes, &tChordInfo,  sStatusStr);
     
-    lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0]; //TODO @@@ (confirmar que aun con inversiones la primera nota es la fundamental)
-
     wxColour colour;
 
     if (fCanBeCreated)
     {
+        lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0]; //TODO @@@ (confirmar que aun con inversiones la primera nota es la fundamental)
         ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
-        sStatusStr = ptChordDescriptor->pChord->ToString();
-        *pNumChords++;
-        colour = *wxGREEN;
+        sStatusStr = ptChordDescriptor->ToString();
+        (*pNumChords)++;
+//        colour = *wxGREEN;
+        colour = wxColour(10,255,0,128); // R, G, B, Transparency
         fOk = true;
     }
     else
@@ -461,10 +452,87 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     ActiveNotesList.GetChordDescriptor(&tChordDescriptor[nNumChords]);
     bool fChordOk = ProccessChord(pScore, tChordDescriptor, &nNumChords, sStatusStr);
 
+    wxLogMessage(_T("   Number of chords to alnayze:%d") , nNumChords );
+
+    AnalyzeChordsLinks(&tChordDescriptor[0], nNumChords);
+
     fScoreModified = ( fScoreModified || fChordOk);
 
     return fScoreModified;      //true -> score modified
 }
+
+bool lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH)
+{
+    wxLogMessage(_T("AnalyzeChordsLinks N:%d "), nNCH);
+
+    int nNumChordError[lmMAX_NUM_CHORDS]; // number of errors in each chord
+
+    lmRuleList tRules(pChordDescriptor, nNCH);
+
+    wxString sStr;
+    //////////////////// TODO: @@@ PRESINCIBLE; MOSTRAMOS LAS NOTAS
+    int nNotes;
+    for (int i=0; i<nNCH; i++)
+    {
+        sStr =  pChordDescriptor[i].ToString();
+
+        nNotes = pChordDescriptor[i].nNumChordNotes;
+        sStr += _T(" @@@@@@@@@NOTES IN CHORD:");
+        for (int nN = 0; nN<nNotes; nN++)
+        {
+            sStr += _T(" ");
+            sStr += NoteId( * pChordDescriptor[i].pChordNotes[nN] );
+        }
+        wxLogMessage(sStr) ;
+    }
+    ///////////////////////////////////////////////////
+
+    sStr.clear();
+
+    int nNumErros = 0; // TODO: @@decidir: num de errores o num de acordes con error
+    lmRule* pRule;
+    // TODO: crear metodo de la lista que evalue todas las reglas??
+    for (int nR = lmCVR_FirstChordValidationRule; nR<lmCVR_LastChordValidationRule; nR++)
+    {
+        pRule = tRules.GetRule(nR);
+        if ( pRule == NULL)
+            wxLogMessage(_T(" Rule %d is NULL !!!"), nR);
+        else
+        {
+            nNumErros = pRule->Evaluate(sStr, &nNumChordError[0]);
+            wxLogMessage(sStr);
+            wxLogMessage(_T("   RESULT of Rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
+            if (nNumErros > 0)
+            {
+                wxLogMessage(_T(" @@@Rule description: %s"), pRule->GetDescription().c_str());
+
+/*-- TODO: dejar una forma definitiva de mostrar los mensajes
+  esto fue un inento de mostarlos despues de aplicar cada regla,
+  pero parece mejor al momento de detectar cada error en la regla (puede haer varios)
+                //@@@ provisional TODO: mostrar correctamente los errores:
+                //     en una ventana o apuntando al acorde
+	            wxColour colour( 100, 150, 200 );
+                // wxColour colour = *wxRED;
+                for (int nE=0; nE<nNumChords; nE++)
+                {
+                    if ( nNumChordError[nE] > 0 )
+                    {
+                        DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
+                          , &pChordDescriptor[nE], colour, sStr);
+                    }
+                }
+----*/
+            }
+        }
+    }
+
+
+    return false;
+
+
+
+}
+
 
 bool lmHarmonyProcessor::UndoChanges(lmScore* pScore)
 {
@@ -498,98 +566,3 @@ bool lmHarmonyProcessor::UndoChanges(lmScore* pScore)
 }
 
 
-//
-// lmActiveNotes class definitions
-//
-lmActiveNotes::lmActiveNotes()
-{
-    r_current_time = 0.0f;
-}
-lmActiveNotes::~lmActiveNotes()
-{
-    std::list<lmActiveNoteInfo*>::iterator it;
-    it=m_ActiveNotesInfo.begin();
-    while( it != m_ActiveNotesInfo.end())
-    {
-         delete *it;
-         it = m_ActiveNotesInfo.erase(it);
-    }
-}
-
-void lmActiveNotes::SetTime(float r_new_current_time)
-{
-    r_current_time = r_new_current_time;
-    RecalculateActiveNotes();
-}
-void lmActiveNotes::ResetNotes()
-{
-    m_ActiveNotesInfo.clear();
-}
-int lmActiveNotes::GetNumActiveNotes()
-{
-    return (int)m_ActiveNotesInfo.size();
-}
-void lmActiveNotes::GetChordDescriptor(lmChordDescriptor* ptChordDescriptor)
-{
-     std::list<lmActiveNoteInfo*>::iterator it;
-     int nCount = 0;
-     for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it, nCount++)
-     {
-         wxLogMessage(_T("   %d  [%s]  EndT: %f")
-          , nCount, NoteId( *(*it)->pNote ).c_str(), (*it)->rEndTime);
-         ptChordDescriptor->pChordNotes[nCount] = (*it)->pNote;
-     }
-     ptChordDescriptor->nNumChordNotes = nCount;
-}
-void lmActiveNotes::AddNote(lmNote* pNoteS, float rEndTimeS)
-{
-    lmActiveNoteInfo* plmActiveNoteInfo = new lmActiveNoteInfo(pNoteS, rEndTimeS); 
-	m_ActiveNotesInfo.push_back( plmActiveNoteInfo );
-
-    wxLogMessage(_T("AddNote Pitch:%d, EndT: %f , NUM:%d ")
-        , plmActiveNoteInfo->pNote->GetFPitch()
-        , plmActiveNoteInfo->rEndTime
-        , GetNumActiveNotes());
-
-}
-void lmActiveNotes::RecalculateActiveNotes()
-{
-     std::list<lmActiveNoteInfo*>::iterator it;
-     wxLogMessage(_T("RecalculateActiveNotes Before: N:%d")
-         , GetNumActiveNotes());
-     it=m_ActiveNotesInfo.begin();
-     while(it != m_ActiveNotesInfo.end())
-     {
-         // AWARE: EQUAL time considered as finished  (TODO @@CONFIRM)
-         if ( ! IsHigherTime(  (*it)->rEndTime, r_current_time ) )
-         {
-             wxLogMessage(_T("  DELETE note pitch:%d endT:%f")
-                , (*it)->pNote->GetFPitch(), (*it)->rEndTime );
-             delete *it;
-             it = m_ActiveNotesInfo.erase(it);  // aware: "it = " needed to avoid crash in loop....
-         }
-         else 
-             it++;
-     }
-     wxLogMessage(_T("RecalculateActiveNotes After: N:%d  %s")
-		 , GetNumActiveNotes(), this->ToString().c_str());
-}
-
-
-wxString lmActiveNotes::ToString()
-{
-    wxString sRetStr = _T("");
-    wxString auxStr = _T("");
-    int nNumNotes = GetNumActiveNotes();
-    sRetStr = wxString::Format(_T(" [Time: %f, %d ActNotes: ") , r_current_time, nNumNotes);
-
-    std::list<lmActiveNoteInfo*>::iterator it;
-    for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it)
-    {
-        auxStr = wxString::Format(_T(" %s  EndT: %f ")
-            , NoteId( *(*it)->pNote).c_str(), (*it)->rEndTime  );
-        sRetStr += auxStr; 
-    }
-    sRetStr += _T(" ]");
-    return sRetStr;
-}

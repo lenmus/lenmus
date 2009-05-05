@@ -118,6 +118,8 @@ public:
     int GetNumNotes();
     lmMPitch GetMidiNote(int i);
     wxString GetPattern(int i);
+    int GetInversion() { return m_nInversion; }
+    int GetElision() { return m_nElision; }
 
     // access to note data
     int GetStep(int i) { return FPitch_Step(m_fpNote[i]); }
