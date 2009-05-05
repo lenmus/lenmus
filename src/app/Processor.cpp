@@ -253,8 +253,13 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  
     // Remember: all 'y' positions are relative to top line (5th line of
     //   first staff). 'x' positions are relative to current object position.
     lmStaffObj* cpSO =pChordDsct->pChordNotes[nNumChordNotes-1];
-    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTPoint(nTxPos, nTyPos), lmTPoint(ntxStart, ntyStart),
-                                            sText, pStyle,	wxSize(400, 60), colour);
+//not good for linux!    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTPoint(nTxPos, nTyPos), lmTPoint(ntxStart, ntyStart),
+//                                            sText, pStyle,	wxSize(400, 60), colour);
+    lmTPoint lmTP1(nTxPos, nTyPos);
+    lmTPoint lmTP2(ntxStart, ntyStart);
+    wxSize size(400, 60);
+    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTP1, lmTP2,
+                                            sText, pStyle,	size, colour);
 
 	lmMarkup* pError = new lmMarkup(cpSO, pTxtBox);
     m_markup.push_back(pError);
