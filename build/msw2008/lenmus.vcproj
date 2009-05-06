@@ -1284,6 +1284,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\auxmusic\Harmony.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\Harmony.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\auxmusic\Interval.cpp"
 				>
 			</File>
