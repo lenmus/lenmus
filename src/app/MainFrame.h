@@ -84,6 +84,10 @@ public:
     void SetStatusBarCursorRelPos(float rTime);
     void SetStatusBarNumPage(int nPage);
 
+    //ToolBox
+	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
+	bool IsToolBoxVisible();
+	void ShowToolBox(bool fShow);
 
     // menu bar
     wxMenuBar* CreateMenuBar(wxDocument* doc, wxView* view);
@@ -244,8 +248,6 @@ public:
 
 	//access to information
     inline lmTextBookController* GetBookController() { return m_pBookController; }
-	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
-	bool IsToolBoxVisible();
     lmController* GetActiveController();
     wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
     lmDocument* GetActiveDoc();
@@ -272,9 +274,9 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
-	void ShowEditTools(bool fShow);
     void LoadRecentFiles();
     void SaveRecentFiles();
+    void CustomizeController(lmEditorMode* pMode);
 
     //menu bar
     void AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,
@@ -320,6 +322,7 @@ protected:
     lmStatusBar*    m_pStatusBar;
 
     bool    m_fSilentCheck;
+    bool    m_fClosingAll;
 
     //other
     std::list<lmScore*> m_scoresToEdit;     //list of scores to display

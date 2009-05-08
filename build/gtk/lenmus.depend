@@ -85,7 +85,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1239949292 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
+1240556778 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.h
 	<vector>
 	"../app/TheApp.h"
 	"../graphic/Shapes.h"
@@ -153,7 +153,7 @@
 
 1180335110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/NoteRestObj.h
 
-1221385860 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Accidental.h
+1240558718 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Accidental.h
 
 1225205662 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Staff.h
 	<list>
@@ -164,7 +164,7 @@
 	"StaffObjIterator.h"
 	"Score.h"
 
-1222350302 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Instrument.h
+1240558718 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Instrument.h
 
 1238226158 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Slur.h
 	"defs.h"
@@ -307,13 +307,13 @@
 	"../score/defs.h"
 	"GMObject.h"
 
-1239373998 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxScore.h
+1240586796 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxScore.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"
 	"GMObject.h"
 
-1239373998 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxPage.h
+1240658958 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxPage.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<vector>
@@ -321,7 +321,7 @@
 	"../score/defs.h"
 	"GMObject.h"
 
-1236433142 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
+1240586796 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"vector"
@@ -640,7 +640,7 @@
 	"wx/wx.h"
 	"wx/xml/xml.h"
 
-1239640594 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
+1240507134 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -1671,7 +1671,7 @@
 	"StaffObj.h"
 	"wx/list.h"
 
-1221385860 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/MetronomeMark.h
+1240558720 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/MetronomeMark.h
 	"Glyph.h"
 
 1225051358 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPToken.cpp
@@ -2436,7 +2436,7 @@
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1236433142 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSlice.h
+1240585238 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSlice.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"vector"
@@ -2558,7 +2558,7 @@
 	"../app/Paper.h"
 	"GMObject.h"
 
-1239780600 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.h
+1240585238 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GMObject.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/generic/dragimgg.h"
@@ -2626,7 +2626,7 @@
 	"ToolClef.h"
 	"ToolBarlines.h"
 
-1236433142 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSliceInstr.h
+1240585238 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSliceInstr.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"vector"
@@ -2644,7 +2644,7 @@
 	"BoxSliceVStaff.h"
 	"../globals/Colors.h"
 
-1236433142 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSliceVStaff.h
+1240586796 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSliceVStaff.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"
@@ -2717,7 +2717,7 @@
 	"../score/VStaff.h"
 	"../app/Preferences.h"
 
-1223233948 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeBeam.h
+1240383588 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeBeam.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"
@@ -5182,7 +5182,7 @@
 	"../app/ArtProvider.h"
 	"MsgBox.h"
 
-1221385860 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/InstrGroup.h
+1240558718 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/InstrGroup.h
 	<list>
 	"defs.h"
 
@@ -13789,7 +13789,7 @@
 	"ParamsParser.h"
 	"../exercises/HarmonyConstrains.h"
 
-1238358940 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Processor.h
+1240652254 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Processor.h
 	<list>
 	"../auxmusic/ChordManager.h"
 
@@ -13858,7 +13858,7 @@
 
 1220470752 /media/sdb1/usr/Desarrollo_wx/lenmus/packages/wxSQLite3/include/wx/wxsqlite3dyn.h
 
-1239866016 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeLine.h
+1240384336 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/ShapeLine.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/defs.h"

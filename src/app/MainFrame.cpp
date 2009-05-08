@@ -64,6 +64,7 @@
 #include "wx/helpbase.h"		    //for wxHELP constants
 #include "../options/OptionsDlg.h"
 #include "toolbox/ToolsBox.h"
+#include "toolbox/ToolPage.h"
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "../updater/Updater.h"
@@ -429,17 +430,17 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
 END_EVENT_TABLE()
 
 lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
-    const wxPoint& pos, const wxSize& size, long style)
-:
-  lmDocMDIParentFrame(manager, frame, -1, title, pos, size, style, _T("myFrame"))
-{
-    m_pToolBox = (lmToolBox*) NULL;
-    m_pWelcomeWnd = (lmWelcomeWnd*)NULL;
-    m_pHelp = (lmHelpController*) NULL;
-    m_pBookController = (lmTextBookController*) NULL;
-	m_pTbTextBooks = (wxToolBar*) NULL;
-    m_pHtmlWin = (lmHtmlWindow*) NULL;
+                         const wxPoint& pos, const wxSize& size, long style)
+    : lmDocMDIParentFrame(manager, frame, -1, title, pos, size, style, _T("myFrame"))
+    , m_fClosingAll(false)
+    , m_pToolBox((lmToolBox*) NULL)
+    , m_pWelcomeWnd((lmWelcomeWnd*)NULL)
+    , m_pHelp((lmHelpController*) NULL)
+    , m_pBookController((lmTextBookController*) NULL)
+	, m_pTbTextBooks((wxToolBar*) NULL)
+    , m_pHtmlWin((lmHtmlWindow*) NULL)
 
+{
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
     #if defined(__WXMSW__)
@@ -1681,8 +1682,10 @@ void lmMainFrame::OnCloseWindow(wxCloseEvent& event)
     // Override default method in lmDocMDIParentFrame, as it will only close
     // the lmDocMDIChild windows (the scores) but no other windows (Welcome, eBooks)
 
+    m_fClosingAll = true;
     if (CloseAll())     //force to close all windows
         event.Skip();   //allow event to continue normal processing if all closed
+    m_fClosingAll = false;
 }
 
 void lmMainFrame::OnWindowClose(wxCommandEvent& WXUNUSED(event))
@@ -1696,7 +1699,9 @@ void lmMainFrame::OnWindowCloseAll(wxCommandEvent& WXUNUSED(event))
 {
     // Invoked from menu: Window > Close all
 
+    m_fClosingAll = true;
     CloseAll();
+    m_fClosingAll = false;
 }
 
 void lmMainFrame::OnWindowNext(wxCommandEvent& WXUNUSED(event))
@@ -1922,17 +1927,32 @@ void lmMainFrame::OnActiveChildChanged(lmMDIChildFrame* pFrame)
 {
 	// The active child frame has changed. Update things
 
+    //do nothing if closing all windows
+    if (m_fClosingAll) return;
+
 	// update zoom combo box
 	double rScale = pFrame->GetActiveViewScale();
     UpdateZoomControls(rScale);
     SetFocusOnActiveView();
+
+    wxLogMessage(_T("[lmMainFrame::OnActiveChildChanged] Is kind of lmDocMDIChildFrame: %s"),
+        pFrame->IsKindOf(CLASSINFO(lmDocMDIChildFrame)) ? _T("yes") : _T("No") );
+
+    //if score editor window activated customize ToolBox
+    if ( pFrame->IsKindOf(CLASSINFO(lmDocMDIChildFrame)) )
+    {
+        //the only lmDocMDIChildFrame is lmEditFrame
+        lmDocument* pDoc = (lmDocument*)((lmEditFrame*)pFrame)->GetDocument();
+        lmEditorMode* pMode = pDoc->GetEditMode();
+        CustomizeController(pMode);
+    }
 }
 
 void lmMainFrame::OnNewEditFrame()
 {
 	// A new EditFrame has been open. If this is the first one, open also
 	// the edit ToolBox panel
-	ShowEditTools(true);
+	ShowToolBox(true);
 }
 
 void lmMainFrame::UpdateZoomControls(double rScale)
@@ -1940,7 +1960,6 @@ void lmMainFrame::UpdateZoomControls(double rScale)
     //invoked from the view at score creation to inform about the scale used.
     //Also invoked internally to centralize code to update zoom controls
 
-	//m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
     if (m_pComboZoom)
         m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale * 100.0));
 }
@@ -2070,38 +2089,47 @@ bool lmMainFrame::IsToolBoxVisible()
 
 void lmMainFrame::OnViewTools(wxCommandEvent& event)
 {
-    ShowEditTools(event.IsChecked());
+    ShowToolBox(event.IsChecked());
 }
 
-void lmMainFrame::ShowEditTools(bool fShow)
+void lmMainFrame::ShowToolBox(bool fShow)
 {
+    //create the ToolBox
+    if (!m_pToolBox)
+    {
+        m_pToolBox =  new lmToolBox(this, wxID_ANY);
+        m_pToolBox->Hide();
+    }
+
     if (fShow)
     {
-        //show tools
-        if (!m_pToolBox)
-        {
-            //show tools
-            m_pToolBox =  new lmToolBox(this, wxID_ANY);
+        //if not added to AUI manager do it now
+        wxAuiPaneInfo panel = m_mgrAUI.GetPane(_T("ToolBox"));
+        if (!panel.IsOk())
             m_mgrAUI.AddPane(m_pToolBox, wxAuiPaneInfo(). Name(_T("ToolBox")).
-                             Caption(_("Edit tool box")).Left().
-							 Floatable(true).
-							 Resizable(false).
-							 TopDockable(true).
-							 BottomDockable(false).
-							 MaxSize(wxSize(m_pToolBox->GetWidth(), -1)).
-							 MinSize(wxSize(m_pToolBox->GetWidth(), -1)) );
-        }
-        else
-            m_mgrAUI.GetPane(_T("ToolBox")).Show(true);
+                                Caption(_("Edit tool box")).Left().
+							    Floatable(true).
+							    Resizable(false).
+							    TopDockable(true).
+							    BottomDockable(false).
+							    MaxSize(wxSize(m_pToolBox->GetWidth(), -1)).
+							    MinSize(wxSize(m_pToolBox->GetWidth(), -1)) );
 
-	    m_pToolBox->SetFocus();
+        //show ToolBox
+        m_mgrAUI.GetPane(_T("ToolBox")).Show(true);
+        m_mgrAUI.Update();
+        m_pToolBox->SetFocus();
     }
     else
     {
-        //hide tools
-        m_mgrAUI.GetPane(_T("ToolBox")).Show(false);
+        //if added to AUI manager hide ToolBox
+        wxAuiPaneInfo panel = m_mgrAUI.GetPane(_T("ToolBox"));
+        if (panel.IsOk())
+        {
+            m_mgrAUI.GetPane(_T("ToolBox")).Show(false);
+            m_mgrAUI.Update();
+        }
     }
-    m_mgrAUI.Update();
 }
 
 void lmMainFrame::OnViewRulers(wxCommandEvent& event)
@@ -2206,10 +2234,38 @@ void lmMainFrame::NewScoreWindow(lmEditorMode* pMode, lmScore* pScore)
 
     //request doc manager to display it
     wxDocManager* pDocManager = g_pTheApp->GetDocManager();
-    if ( !pDocManager->CreateDocument( sPath, wxDOC_SILENT) )
+    lmDocument* pDoc = (lmDocument*)pDocManager->CreateDocument(sPath, wxDOC_SILENT);
+    if (!pDoc)
         pDocManager->OnOpenFileFailure();
+    else
+        //save lmEditMode
+        pDoc->SetEditMode(pMode);
+
+    //use lmEditorMode information to create the environment
+    CustomizeController(pMode);
 
     SetFocusOnActiveView();
+}
+
+void lmMainFrame::CustomizeController(lmEditorMode* pMode)
+{
+    //The active edit frame has changed. Customize ToolBox as specified by received edit mode
+
+    //force ToolBox creation if doesn't exist yet
+    ShowToolBox(true);
+	lmToolBox* pToolBox = GetActiveToolBox();
+	wxASSERT(pToolBox);
+
+    //customize ToolBox
+    if (pMode)
+    {
+        pMode->CustomizeToolBoxPages(pToolBox);
+    }
+    else
+    {
+        //use standard mode
+        pToolBox->SetDefaultConfiguration();
+    }
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -61,6 +61,15 @@
 //TO_ADD: add here the new tool panel include file
 
 
+//-------------------------------------------------------------------------------------------------
+// lmToolBoxConfiguration: Helper class to define a ToolBox configuration
+//-------------------------------------------------------------------------------------------------
+
+
+
+//-------------------------------------------------------------------------------------------------
+// lmToolBox implementation
+//-------------------------------------------------------------------------------------------------
 
 //layout parameters
 const int SPACING = 4;          //spacing (pixels) around each sizer
@@ -84,20 +93,18 @@ IMPLEMENT_CLASS(lmToolBox, wxPanel)
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxBORDER_NONE)
+	, m_nSelTool(lmPAGE_NONE)
+    , m_fShowSpecialGroup(false)
 {
-	//Create the dialog
-	m_nSelTool = lmPAGE_NONE;
-    m_fShowFixedGroup = true;
-
-
 	//set colors
 	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
 
-	//initialize pages's array
+	//initialize pages's array with default standard pages
     for (int i=0; i < (int)lmPAGE_MAX; i++)
 	{
         lmToolPage* pPage = CreatePage((lmEToolPage)i);
         AddPage(pPage, (lmEToolPage)i);
+        m_cActivePages[i] = (int)m_cPages.size() - 1;
     }
 
 	CreateControls();
@@ -114,10 +121,10 @@ void lmToolBox::CreateControls()
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
 
     //panel for the fixed group
-	m_pFixedGroup = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-	pMainSizer->Add( m_pFixedGroup, 0, wxEXPAND, 5 );
-    m_pFixedGroup->Show(false);
-	
+	m_pSpecialGroup = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+	pMainSizer->Add( m_pSpecialGroup, 0, wxEXPAND, 5 );
+    m_pSpecialGroup->Show(false);
+
     //the tool page buttons selection area
 	wxPanel* pSelectPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     pSelectPanel->SetBackgroundColour(m_colors.Normal());
@@ -172,6 +179,47 @@ lmToolBox::~lmToolBox()
 {
 }
 
+void lmToolBox::GetConfiguration(lmToolBoxConfiguration& config)
+{
+    //Updates received config object with current configuration data
+
+    //active pages
+    for (int i=0; i < (int)lmPAGE_MAX; i++)
+        config.m_Pages[i] = m_cActivePages[i];
+
+    //other info
+    config.m_pSpecialGroup = m_pSpecialGroup;     //panel for the fixed group
+    config.m_nSelTool = m_nSelTool;           //selected tool
+    config.m_fShowSpecialGroup = m_fShowSpecialGroup;
+
+    //mark as valid
+    config.m_fIsValid = true;
+}
+
+void lmToolBox::SetConfiguration(lmToolBoxConfiguration& config)
+{
+    //Reconfigures ToolBox as specified by received pConfig parameter
+
+    wxASSERT(config.IsOk());
+
+    //active pages
+    for (int i=0; i < (int)lmPAGE_MAX; i++)
+        m_cActivePages[i] = config.m_Pages[i];
+
+    //other info
+    m_pSpecialGroup = config.m_pSpecialGroup;     //panel for the fixed group
+    m_nSelTool = config.m_nSelTool;           //selected tool
+    m_fShowSpecialGroup = config.m_fShowSpecialGroup;
+
+    //apply changes
+    //if (m_pSpecialGroup)
+    //    m_pSpecialGroup->Show(m_fShowSpecialGroup);
+
+    GetSizer()->Layout();
+
+    SelectToolPage(m_nSelTool);
+}
+
 lmToolPage* lmToolBox::CreatePage(lmEToolPage nPanel)
 {
     switch(nPanel) {
@@ -184,7 +232,12 @@ lmToolPage* lmToolBox::CreatePage(lmEToolPage nPanel)
 		case lmPAGE_TIME_SIGN:
             return (lmToolPage*)NULL;
         case lmPAGE_NOTES:
-            return new lmToolPageNotes(this);
+        {
+            lmToolPageNotes* pPage = new lmToolPageNotesStd(this);
+            pPage->CreateGroups();
+            return pPage;
+        }
+
         case lmPAGE_BARLINES:
             return new lmToolPageBarlines(this);
         //TO_ADD: Add a new case block for creating the new tool panel
@@ -197,16 +250,34 @@ lmToolPage* lmToolBox::CreatePage(lmEToolPage nPanel)
 
 void lmToolBox::AddPage(lmToolPage* pPage, int nToolId)
 {
-    //Adds a page to the toolbox. 
+    //Adds a page to the toolbox.
 
 	//add the page to the panel's array
     pPage->Show(false);
     m_cPages.push_back(pPage);
 }
 
-void lmToolBox::ShowFixedGroup(bool fValue)
+void lmToolBox::SetAsActive(lmToolPage* pPage, int nToolId)
 {
-    m_fShowFixedGroup = fValue;
+    //locate page pPage;
+    int nPage=0;
+    std::vector<lmToolPage*>::iterator it;
+    for (it = m_cPages.begin(); it != m_cPages.end(); ++it, ++nPage)
+    {
+        if (*it == pPage)
+            break;
+    }
+    wxASSERT(*it == pPage);
+
+    int nOldPage = m_cActivePages[nToolId];
+    m_cActivePages[nToolId] = nPage;
+
+    ////hide old page and show the new active one
+    //m_cPages[nOldPage]->Hide();
+    //pPage->Show();
+    //m_pPageSizer->Replace(m_cPages[nOldPage], pPage);
+    //pPage->SetFocus();
+    //GetSizer()->Layout();
 }
 
 void lmToolBox::OnButtonClicked(wxCommandEvent& event)
@@ -233,7 +304,8 @@ void lmToolBox::SelectToolPage(lmEToolPage nTool)
     pOldPage->Hide();
 
     //show new one
-    m_pCurPage = (m_cPages[nTool] ? m_cPages[nTool] : m_pEmptyPage);
+    int nActivePage = m_cActivePages[nTool];
+    m_pCurPage = (m_cPages[nActivePage] ? m_cPages[nActivePage] : m_pEmptyPage);
     m_pCurPage->Show();
     m_pPageSizer->Replace(pOldPage, m_pCurPage);
     m_pCurPage->SetFocus();
@@ -270,16 +342,30 @@ void lmToolBox::OnResize(wxSizeEvent& event)
 void lmToolBox::AddSpecialTools(wxPanel* pNewPanel, wxEvtHandler* pHandler)
 {
     //Adds the special tools panel at top of ToolBox
-    
-    wxPanel* pOldPanel = m_pFixedGroup;
-    m_pFixedGroup->Show(false);
+
+    wxPanel* pOldPanel = m_pSpecialGroup;
+    m_pSpecialGroup->Show(false);
 
     wxSizer* pMainSizer = GetSizer();
     pMainSizer->Replace(pOldPanel, pNewPanel);
 
-    delete pOldPanel;
-    m_pFixedGroup = pNewPanel;
-    m_pFixedGroup->Show(true);
+    m_cSpecialGroups.push_back(pNewPanel);
+
+    //delete pOldPanel;
+    m_pSpecialGroup = pNewPanel;
+    m_pSpecialGroup->Show(true);
     pMainSizer->Layout();
-	//Layout();
 }
+
+void lmToolBox::SetDefaultConfiguration()
+{
+    for (int i=0; i < (int)lmPAGE_MAX; i++)
+        SetAsActive(m_cPages[i], i);
+
+    ////hide fixed group if displayed
+    //if (m_pSpecialGroup && m_pSpecialGroup->IsShown())
+    //    m_pSpecialGroup->Show(false);
+
+    SelectToolPage(m_nSelTool);
+}
+

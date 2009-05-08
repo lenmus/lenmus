@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -72,36 +72,47 @@ enum {
 };
 
 
-lmToolPageNotes::lmToolPageNotes(wxWindow* parent)
-	: lmToolPage(parent)
-{
-    wxBoxSizer *pMainSizer = GetMainSizer();
 
-    //initialize data
+IMPLEMENT_ABSTRACT_CLASS(lmToolPageNotes, lmToolPage)
+
+
+lmToolPageNotes::lmToolPageNotes()
+{
+}
+
+lmToolPageNotes::lmToolPageNotes(wxWindow* parent)
+{
+    Create(parent);
+}
+
+void lmToolPageNotes::Create(wxWindow* parent)
+{
+    //base class
+    lmToolPage::Create(parent);
+
+    //members initialization
+    m_pGrpNoteDuration = (lmGrpNoteDuration*)NULL;
+    m_pGrpNoteAcc = (lmGrpNoteAcc*)NULL;
+    m_pGrpNoteDots = (lmGrpNoteDots*)NULL;
+    m_pGrpTieTuplet = (lmGrpTieTuplet*)NULL;
+    m_pGrpBeams = (lmGrpBeams*)NULL;
+	m_pGrpOctave = (lmGrpOctave*)NULL;
+	m_pGrpVoice = (lmGrpVoice*)NULL;
+
+    //other data initialization
     m_sPageToolTip = _("Select notes / rests edit tools");
     m_sPageBitmapName = _T("tool_notes");
-
-    //create groups
-	m_pGrpOctave = new lmGrpOctave(this, pMainSizer);
-	m_pGrpVoice = new lmGrpVoice(this, pMainSizer);
-    m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
-    m_pGrpNoteAcc = new lmGrpNoteAcc(this, pMainSizer);
-    m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
-    m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
-    m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
-
-	CreateLayout();
 }
 
 lmToolPageNotes::~lmToolPageNotes()
 {
-	delete m_pGrpOctave;
-	delete m_pGrpVoice;
-    delete m_pGrpNoteDuration;
-    delete m_pGrpNoteAcc;
-    delete m_pGrpNoteDots;
-    delete m_pGrpTieTuplet;
-    delete m_pGrpBeams;
+	if(m_pGrpOctave) delete m_pGrpOctave;
+	if(m_pGrpVoice) delete m_pGrpVoice;
+    if(m_pGrpNoteDuration) delete m_pGrpNoteDuration;
+    if(m_pGrpNoteAcc) delete m_pGrpNoteAcc;
+    if(m_pGrpNoteDots) delete m_pGrpNoteDots;
+    if(m_pGrpTieTuplet) delete m_pGrpTieTuplet;
+    if(m_pGrpBeams) delete m_pGrpBeams;
 }
 
 lmENoteHeads lmToolPageNotes::GetNoteheadType()
@@ -244,14 +255,37 @@ void lmGrpOctave::SetOctave(bool fUp)
 // lmGrpVoice implementation
 //--------------------------------------------------------------------------------
 
-lmGrpVoice::lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_VOICE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+lmGrpVoice::lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons)
+        : lmToolButtonsGroup(pParent, nNumButtons, lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_Voice)
+{
+}
+
+void lmGrpVoice::SetVoice(bool fUp)
+{
+    if (fUp)
+    {
+        if (m_nSelButton < 8)
+            SelectButton(++m_nSelButton);
+    }
+    else
+    {
+        if (m_nSelButton > 0)
+            SelectButton(--m_nSelButton);
+    }
+}
+
+
+//--------------------------------------------------------------------------------
+// Group for voice number: standard group
+//--------------------------------------------------------------------------------
+lmGrpVoiceStd::lmGrpVoiceStd(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmGrpVoice(pParent, pMainSizer, lm_NUM_VOICE_BUTTONS)
 {
     CreateControls(pMainSizer);
 }
 
-void lmGrpVoice::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpVoiceStd::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
     wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Voice (Alt)"));
@@ -292,18 +326,45 @@ void lmGrpVoice::CreateControls(wxBoxSizer* pMainSizer)
 }
 
 
-void lmGrpVoice::SetVoice(bool fUp)
+
+//--------------------------------------------------------------------------------
+// Group for voice number: for harmony exercises
+//--------------------------------------------------------------------------------
+lmGrpVoiceHarmony::lmGrpVoiceHarmony(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmGrpVoice(pParent, pMainSizer, 4)
 {
-    if (fUp)
-    {
-        if (m_nSelButton < 8)
-            SelectButton(++m_nSelButton);
-    }
-    else
-    {
-        if (m_nSelButton > 0)
-            SelectButton(--m_nSelButton);
-    }
+    CreateControls(pMainSizer);
+}
+
+void lmGrpVoiceHarmony::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //voice names
+    static const wxString sBtName[4] = { _T("opt_voice_S"), _T("opt_voice_A"),
+                                         _T("opt_voice_T"), _T("opt_voice_B") };
+    const wxString sTipStr[4] = { _("Select voice Soprano"), _("Select voice Alto"),
+                                  _("Select voice Tenor"), _("Select voice Bass") };
+
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Voice (Alt)"));
+
+    wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+    pCtrolsSizer->Add(pButtonsSizer);
+
+    wxSize btSize(16, 16);
+	for (int iB=0; iB < 4; iB++)
+	{
+		m_pButton[iB] = new lmCheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
+        wxString sTip = sTipStr[iB] + _T(". (Alt + num/+/-)");
+		m_pButton[iB]->SetToolTip(sTip);
+
+        m_pButton[iB]->SetBitmapUp(sBtName[iB], _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName[iB], _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName[iB], _T("button_over_flat"), btSize);
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
+	}
+	this->Layout();
+
+	SelectButton(0);	//select voice Soprano
 }
 
 
@@ -437,7 +498,7 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
 
     // Tie button
 	wxBoxSizer* pRow1Sizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
     wxSize btSize(24, 24);
 	m_pBtnTie = new lmCheckButton(this, lmID_BT_Tie, wxBitmap(24,24));
     m_pBtnTie->SetBitmapUp(_T("tie"), _T(""), btSize);
@@ -446,7 +507,7 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnTie->SetBitmapDisabled(_T("tie_dis"), _T(""), btSize);
     m_pBtnTie->SetToolTip(_("Add/remove a tie to/from selected notes"));
 	pRow1Sizer->Add( m_pBtnTie, wxSizerFlags(0).Border(wxALL, 2) );
-	
+
     // Tuplet button
 	m_pBtnTuplet = new lmCheckButton(this, lmID_BT_Tuplet, wxBitmap(24,24));
     m_pBtnTuplet->SetBitmapUp(_T("tuplet"), _T(""), btSize);
@@ -455,9 +516,9 @@ void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnTuplet->SetBitmapDisabled(_T("tuplet_dis"), _T(""), btSize);
     m_pBtnTuplet->SetToolTip(_("Add/remove tuplet to/from selected notes"));
 	pRow1Sizer->Add( m_pBtnTuplet, wxSizerFlags(0).Border(wxALL, 2) );
-	
+
 	pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
-	
+
 	this->Layout();
 }
 
@@ -485,13 +546,13 @@ void lmGrpTieTuplet::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
     }
 }
 
-void lmGrpTieTuplet::SetToolTie(bool fChecked) 
-{ 
+void lmGrpTieTuplet::SetToolTie(bool fChecked)
+{
     fChecked ? m_pBtnTie->Press() : m_pBtnTie->Release();
 }
 
-void lmGrpTieTuplet::SetToolTuplet(bool fChecked) 
-{ 
+void lmGrpTieTuplet::SetToolTuplet(bool fChecked)
+{
     fChecked ? m_pBtnTuplet->Press() : m_pBtnTuplet->Release();
 }
 
@@ -538,7 +599,7 @@ lmGrpBeams::lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 {
     CreateControls(pMainSizer);
 
-    //disable buttons not yet used 
+    //disable buttons not yet used
     m_pBtnBeamFlatten->Enable(false);
     m_pBtnBeamSubgroup->Enable(false);
 }
@@ -552,7 +613,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
 
     // cut beam button
 	wxBoxSizer* pRow1Sizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
     wxSize btSize(24, 24);
 	m_pBtnBeamCut = new lmBitmapButton(this, lmID_BT_Beam_Cut, wxBitmap(24,24));
     m_pBtnBeamCut->SetBitmapUp(_T("tool_beam_cut"), _T(""), btSize);
@@ -561,7 +622,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnBeamCut->SetBitmapDisabled(_T("tool_beam_cut_dis"), _T(""), btSize);
     m_pBtnBeamCut->SetToolTip(_("Break beam at current cursor position"));
 	pRow1Sizer->Add( m_pBtnBeamCut, wxSizerFlags(0).Border(wxALL, 2) );
-	
+
     // beam join button
 	m_pBtnBeamJoin = new lmBitmapButton(this, lmID_BT_Beam_Join, wxBitmap(24,24));
     m_pBtnBeamJoin->SetBitmapUp(_T("tool_beam_join"), _T(""), btSize);
@@ -570,7 +631,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnBeamJoin->SetBitmapDisabled(_T("tool_beam_join_dis"), _T(""), btSize);
     m_pBtnBeamJoin->SetToolTip(_("Beam together all selected notes"));
 	pRow1Sizer->Add( m_pBtnBeamJoin, wxSizerFlags(0).Border(wxALL, 2) );
-	
+
     // beam subgroup button
 	m_pBtnBeamSubgroup = new lmBitmapButton(this, lmID_BT_Beam_Subgroup, wxBitmap(24,24));
     m_pBtnBeamSubgroup->SetBitmapUp(_T("tool_beam_subgroup"), _T(""), btSize);
@@ -579,7 +640,7 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
     m_pBtnBeamSubgroup->SetBitmapDisabled(_T("tool_beam_subgroup_dis"), _T(""), btSize);
     m_pBtnBeamSubgroup->SetToolTip(_("Subdivide beamed group at current cursor position"));
 	pRow1Sizer->Add( m_pBtnBeamSubgroup, wxSizerFlags(0).Border(wxALL, 2) );
-	
+
     // beam flatten button
 	m_pBtnBeamFlatten = new lmBitmapButton(this, lmID_BT_Beam_Flatten, wxBitmap(24,24));
     m_pBtnBeamFlatten->SetBitmapUp(_T("tool_beam_flatten"), _T(""), btSize);
@@ -623,13 +684,13 @@ void lmGrpBeams::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
     }
 }
 
-//void lmGrpBeams::SetToolTie(bool fChecked) 
-//{ 
+//void lmGrpBeams::SetToolTie(bool fChecked)
+//{
 //    fChecked ? m_pBtnBeamCut->Press() : m_pBtnBeamCut->Release();
 //}
 //
-//void lmGrpBeams::SetToolTuplet(bool fChecked) 
-//{ 
+//void lmGrpBeams::SetToolTuplet(bool fChecked)
+//{
 //    fChecked ? m_pBtnBeamJoin->Press() : m_pBtnBeamJoin->Release();
 //}
 
@@ -663,3 +724,88 @@ void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)
     EnableGroup(fEnableGroup);
 }
 
+
+
+//-------------------------------------------------------------------------------------
+// lmToolPageNotesStd implementation
+//-------------------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS(lmToolPageNotesStd, lmToolPageNotes)
+
+
+lmToolPageNotesStd::lmToolPageNotesStd()
+{
+}
+
+lmToolPageNotesStd::lmToolPageNotesStd(wxWindow* parent)
+{
+    Create(parent);
+}
+
+void lmToolPageNotesStd::Create(wxWindow* parent)
+{
+    lmToolPageNotes::Create(parent);
+}
+
+lmToolPageNotesStd::~lmToolPageNotesStd()
+{
+}
+
+void lmToolPageNotesStd::CreateGroups()
+{
+    //Create the groups for this page
+
+    wxBoxSizer *pMainSizer = GetMainSizer();
+
+	m_pGrpOctave = new lmGrpOctave(this, pMainSizer);
+	m_pGrpVoice = new lmGrpVoiceStd(this, pMainSizer);
+    m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
+    m_pGrpNoteAcc = new lmGrpNoteAcc(this, pMainSizer);
+    m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
+    m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
+    m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
+
+	CreateLayout();
+}
+
+//-------------------------------------------------------------------------------------
+// lmToolPageNotesHarmony implementation
+//-------------------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS(lmToolPageNotesHarmony, lmToolPageNotes)
+
+
+lmToolPageNotesHarmony::lmToolPageNotesHarmony()
+{
+}
+
+lmToolPageNotesHarmony::lmToolPageNotesHarmony(wxWindow* parent)
+{
+    Create(parent);
+}
+
+void lmToolPageNotesHarmony::Create(wxWindow* parent)
+{
+    lmToolPageNotes::Create(parent);
+}
+
+lmToolPageNotesHarmony::~lmToolPageNotesHarmony()
+{
+}
+
+void lmToolPageNotesHarmony::CreateGroups()
+{
+    //Create the groups for this page
+
+    wxBoxSizer *pMainSizer = GetMainSizer();
+
+	m_pGrpOctave = new lmGrpOctave(this, pMainSizer);
+	m_pGrpVoice = new lmGrpVoiceHarmony(this, pMainSizer);
+    m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
+    m_pGrpNoteAcc = new lmGrpNoteAcc(this, pMainSizer);
+    m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
+    m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
+    m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
+
+	CreateLayout();
+}

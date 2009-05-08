@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -45,9 +45,25 @@
 #define lmPANEL_WIDTH 150
 
 
-lmToolPage::lmToolPage(wxWindow* parent)
-	: wxPanel(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1), wxBORDER_SUNKEN|wxTAB_TRAVERSAL )
+
+IMPLEMENT_ABSTRACT_CLASS(lmToolPage, wxPanel)
+
+
+lmToolPage::lmToolPage()
 {
+}
+
+lmToolPage::lmToolPage(wxWindow* parent)
+{
+    Create(parent);
+}
+
+void lmToolPage::Create(wxWindow* parent)
+{
+    //base class
+    wxPanel::Create(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1),
+                    wxBORDER_SUNKEN|wxTAB_TRAVERSAL);
+
 	//main sizer
     m_pMainSizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(m_pMainSizer);
@@ -58,7 +74,6 @@ lmToolPage::lmToolPage(wxWindow* parent)
     //initializations
     m_sPageToolTip = _T("");
     m_sPageBitmapName = _T("");
-
 }
 
 lmToolPage::~lmToolPage()

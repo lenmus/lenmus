@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,7 +36,7 @@ class lmBitmapButton;
 //--------------------------------------------------------------------------------
 // Group for octave number
 //--------------------------------------------------------------------------------
-class lmGrpOctave: public lmToolButtonsGroup
+class lmGrpOctave : public lmToolButtonsGroup
 {
 public:
     lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer);
@@ -55,16 +55,15 @@ public:
 
 
 //--------------------------------------------------------------------------------
-// Group for voice number
+// Group for voice number: base class
 //--------------------------------------------------------------------------------
-class lmGrpVoice: public lmToolButtonsGroup
+class lmGrpVoice : public lmToolButtonsGroup
 {
 public:
-    lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer);
     ~lmGrpVoice() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    //void CreateControls(wxBoxSizer* pMainSizer) = 0;
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Voice; }
 
 	//access to options
@@ -72,13 +71,43 @@ public:
 	inline void SetVoice(int nVoice) { SelectButton(nVoice); }
     void SetVoice(bool fUp);
 
+protected:
+    lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons);
+
 };
+
+//--------------------------------------------------------------------------------
+// Group for voice number: standard group
+//--------------------------------------------------------------------------------
+class lmGrpVoiceStd : public lmGrpVoice
+{
+public:
+    lmGrpVoiceStd(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpVoiceStd() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+};
+
+//--------------------------------------------------------------------------------
+// Group for voice number: for harmony exercises
+//--------------------------------------------------------------------------------
+class lmGrpVoiceHarmony : public lmGrpVoice
+{
+public:
+    lmGrpVoiceHarmony(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpVoiceHarmony() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+};
+
 
 
 //--------------------------------------------------------------------------------
 // Group for Note duration
 //--------------------------------------------------------------------------------
-class lmGrpNoteDuration: public lmToolButtonsGroup
+class lmGrpNoteDuration : public lmToolButtonsGroup
 {
 public:
     lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer);
@@ -99,7 +128,7 @@ public:
 //--------------------------------------------------------------------------------
 // Group for Note accidentals
 //--------------------------------------------------------------------------------
-class lmGrpNoteAcc: public lmToolButtonsGroup
+class lmGrpNoteAcc : public lmToolButtonsGroup
 {
 public:
     lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer);
@@ -118,7 +147,7 @@ public:
 //--------------------------------------------------------------------------------
 // Group for note dots
 //--------------------------------------------------------------------------------
-class lmGrpNoteDots: public lmToolButtonsGroup
+class lmGrpNoteDots : public lmToolButtonsGroup
 {
 public:
     lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer);
@@ -137,7 +166,7 @@ public:
 //--------------------------------------------------------------------------------
 // Group for tuplets, ties, ...
 //--------------------------------------------------------------------------------
-class lmGrpTieTuplet: public lmToolGroup
+class lmGrpTieTuplet : public lmToolGroup
 {
 public:
     lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer);
@@ -170,7 +199,7 @@ protected:
 //--------------------------------------------------------------------------------
 // Group for beams
 //--------------------------------------------------------------------------------
-class lmGrpBeams: public lmToolGroup
+class lmGrpBeams : public lmToolGroup
 {
 public:
     lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer);
@@ -203,14 +232,19 @@ protected:
 
 
 //--------------------------------------------------------------------------------
-// The panel
+// lmToolPageNotes: Abstract class to build specific Note tools pages
 //--------------------------------------------------------------------------------
 
-class lmToolPageNotes: public lmToolPage
+class lmToolPageNotes : public lmToolPage
 {
+	DECLARE_ABSTRACT_CLASS(lmToolPageNotes)
+
 public:
-    lmToolPageNotes(wxWindow* parent);
-    ~lmToolPageNotes();
+    virtual ~lmToolPageNotes();
+
+    //creation
+    virtual void CreateGroups() = 0;
+    virtual void Create(wxWindow* parent);
 
     //implementation of virtual methods
     lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
@@ -269,7 +303,9 @@ public:
     //inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
 
 
-private:
+protected:
+    lmToolPageNotes(wxWindow* parent);
+    lmToolPageNotes();
 
     //groups
     lmGrpNoteDuration*  m_pGrpNoteDuration;
@@ -284,5 +320,54 @@ private:
 	wxBitmapComboBox*	m_pCboNotehead;
 	wxBitmapComboBox*	m_pCboAccidentals;
 };
+
+
+
+//--------------------------------------------------------------------------------
+// lmToolPageNotesStd: Standard page for Notes tools
+//--------------------------------------------------------------------------------
+
+class lmToolPageNotesStd : public lmToolPageNotes
+{
+	DECLARE_DYNAMIC_CLASS(lmToolPageNotesStd)
+
+public:
+    lmToolPageNotesStd(wxWindow* parent);
+    lmToolPageNotesStd();
+    ~lmToolPageNotesStd();
+
+    //implementation of pure virtual base class methods
+    void Create(wxWindow* parent);
+    void CreateGroups();
+
+
+protected:
+
+};
+
+
+
+//--------------------------------------------------------------------------------
+// lmToolPageNotesHarmony: Notes tools page for harmony exercises
+//--------------------------------------------------------------------------------
+
+class lmToolPageNotesHarmony : public lmToolPageNotes
+{
+	DECLARE_DYNAMIC_CLASS(lmToolPageNotesHarmony)
+
+public:
+    lmToolPageNotesHarmony(wxWindow* parent);
+    lmToolPageNotesHarmony();                   //default, for dynamic creation
+    ~lmToolPageNotesHarmony();
+
+    //implementation of pure virtual base class methods
+    void CreateGroups();
+    void Create(wxWindow* parent);             //for dynamic creation
+
+
+protected:
+
+};
+
 
 #endif    // __LM_TOOLNOTES_H__

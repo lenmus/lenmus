@@ -32,6 +32,7 @@
 #include "TheoHarmonyCtrol.h"
 
 #include "../app/Processor.h"
+#include "../app/toolbox/ToolNotes.h"
 #include "../score/VStaff.h"
 #include "Constrains.h"
 #include "Generators.h"
@@ -85,18 +86,19 @@ lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
     //initializations
     m_pConstrains = pConstrains;
     m_pProblemScore = (lmScore*)NULL;
-    m_pScoreProc = new lmHarmonyProcessor();
+    //m_pScoreProc = new lmHarmonyProcessor();
 
     CreateControls();
+
+    //define editor customizations
+    m_pEditMode = new lmEditorMode( CLASSINFO(lmScoreCanvas), CLASSINFO(lmHarmonyProcessor) );
+    m_pEditMode->ChangeToolPage(lmPAGE_NOTES, CLASSINFO(lmToolPageNotesHarmony) );
 }
 
 lmTheoHarmonyCtrol::~lmTheoHarmonyCtrol()
 {
-    if (m_pScoreProc)
-        delete m_pScoreProc;
-
     //AWARE: As score ownership is transferred to the Score Editor window, the
-    //problem score MUST NOT be deleted.
+    //problem score MUST NOT be deleted. 
 }
 
 wxDialog* lmTheoHarmonyCtrol::GetSettingsDlg()

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -42,7 +42,7 @@
 
 
 //available tool pages
-enum lmEToolPage 
+enum lmEToolPage
 {
 	lmPAGE_NONE = -1,
 	lmPAGE_CLEFS =0,
@@ -92,6 +92,31 @@ enum lmEToolID
 
 };
 
+//-------------------------------------------------------------------------------------------------
+// lmToolBoxConfiguration: Helper class to define a ToolBox configuration
+//-------------------------------------------------------------------------------------------------
+
+class lmToolBoxConfiguration
+{
+public:
+    lmToolBoxConfiguration() : m_fIsValid(false) {}
+    ~lmToolBoxConfiguration() {}
+
+    inline bool IsOk() { return m_fIsValid; }
+
+
+    wxPanel*        m_pSpecialGroup;          //panel for the fixed group
+    lmEToolPage		m_nSelTool;				//selected tool
+    bool            m_fShowSpecialGroup;
+    bool            m_fIsValid;             //this object has valid data
+    int             m_Pages[lmPAGE_MAX];
+};
+
+
+//-------------------------------------------------------------------------------------------------
+// lmToolBox
+//-------------------------------------------------------------------------------------------------
+
 class lmCheckButton;
 class lmToolPageNotes;
 class wxBoxSizer;
@@ -109,6 +134,11 @@ public:
     void OnKeyPress(wxKeyEvent& event);
     void OnResize(wxSizeEvent& event);
 
+    //configuration
+    void GetConfiguration(lmToolBoxConfiguration& config);
+    void SetConfiguration(lmToolBoxConfiguration& config);
+    void SetDefaultConfiguration();
+
 	//info
 	int GetWidth() { return 150; }
 	inline lmColorScheme* GetColors() { return &m_colors; }
@@ -125,10 +155,10 @@ public:
 
     //operations: adding/removing pages
     void AddPage(lmToolPage* pPage, int nToolId);
+    void SetAsActive(lmToolPage* pPage, int nToolId);
 
     //Special tools fixed group maganement
     void AddSpecialTools(wxPanel* pPanel, wxEvtHandler* pHandler);
-    void ShowFixedGroup(bool fValue);
 
     //bool DeletePage(int nToolId);
 
@@ -143,7 +173,7 @@ private:
 	};
 
     //controls
-    wxPanel*        m_pFixedGroup;          //panel for the fixed group
+    wxPanel*        m_pSpecialGroup;        //current special group
     wxPanel*		m_pEmptyPage;           //an empty page
     wxPanel*		m_pCurPage;             //currently displayed page
     wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
@@ -151,10 +181,14 @@ private:
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
 
     //variables
-    bool            m_fShowFixedGroup;
+    bool            m_fShowSpecialGroup;
 
 	//panels for tools' options
-	std::vector<lmToolPage*>    m_cPages;		// tools' pages collection
+	std::vector<lmToolPage*>    m_cPages;		                // pages collection
+	int                         m_cActivePages[lmPAGE_MAX];		// active page for each PageID
+
+	//panels for the special group
+	std::vector<wxPanel*>       m_cSpecialGroups;
 
 	lmColorScheme	m_colors;               //colors to use in this toolbox
 

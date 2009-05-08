@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -70,23 +70,30 @@ enum {
 
 
 
-lmToolPageClefs::lmToolPageClefs(wxWindow* parent)
-	: lmToolPage(parent)
+IMPLEMENT_DYNAMIC_CLASS(lmToolPageClefs, lmToolPage)
+
+
+lmToolPageClefs::lmToolPageClefs()
 {
-	wxBoxSizer* pMainSizer = GetMainSizer();
+}
+
+lmToolPageClefs::lmToolPageClefs(wxWindow* parent)
+{
+	Create(parent);
+}
+
+void lmToolPageClefs::Create(wxWindow* parent)
+{
+    //base class
+    lmToolPage::Create(parent);
 
     //initialize data
     m_sPageToolTip = _("Select clef, key and time signature edit tools");
     m_sPageBitmapName = _T("tool_clefs");
 
     //create groups
-    m_pGrpClefType = new lmGrpClefType(this, pMainSizer);
-    m_pGrpTimeType = new lmGrpTimeType(this, pMainSizer);
-    m_pGrpKeyType = new lmGrpKeyType(this, pMainSizer);
-    
-	CreateLayout();
+    CreateGroups();
 }
-
 
 lmToolPageClefs::~lmToolPageClefs()
 {
@@ -106,6 +113,19 @@ lmToolGroup* lmToolPageClefs::GetToolGroup(lmEToolGroupID nGroupID)
             wxASSERT(false);
     }
     return (lmToolGroup*)NULL;      //compiler happy
+}
+
+void lmToolPageClefs::CreateGroups()
+{
+    //Create the groups for this page
+
+    wxBoxSizer *pMainSizer = GetMainSizer();
+
+    m_pGrpClefType = new lmGrpClefType(this, pMainSizer);
+    m_pGrpTimeType = new lmGrpTimeType(this, pMainSizer);
+    m_pGrpKeyType = new lmGrpKeyType(this, pMainSizer);
+    
+	CreateLayout();
 }
 
 

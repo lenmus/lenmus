@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -62,21 +62,30 @@ enum {
 
 
 
-lmToolPageBarlines::lmToolPageBarlines(wxWindow* parent)
-	: lmToolPage(parent)
+IMPLEMENT_DYNAMIC_CLASS(lmToolPageBarlines, lmToolPage)
+
+
+lmToolPageBarlines::lmToolPageBarlines()
 {
-	wxBoxSizer* pMainSizer = GetMainSizer();
+}
+
+lmToolPageBarlines::lmToolPageBarlines(wxWindow* parent)
+{
+    Create(parent);
+}
+
+void lmToolPageBarlines::Create(wxWindow* parent)
+{
+    //base class
+    lmToolPage::Create(parent);
 
     //initialize data
     m_sPageToolTip = _("Select barlines and rehearsal marks edit tools");
     m_sPageBitmapName = _T("tool_barlines");
 
     //create groups
-    m_pGrpBarlines = new lmGrpBarlines(this, pMainSizer);
-
-	CreateLayout();
+    CreateGroups();
 }
-
 
 lmToolPageBarlines::~lmToolPageBarlines()
 {
@@ -92,6 +101,17 @@ lmToolGroup* lmToolPageBarlines::GetToolGroup(lmEToolGroupID nGroupID)
             wxASSERT(false);
     }
     return (lmToolGroup*)NULL;      //compiler happy
+}
+
+void lmToolPageBarlines::CreateGroups()
+{
+    //Create the groups for this page
+
+    wxBoxSizer *pMainSizer = GetMainSizer();
+
+    m_pGrpBarlines = new lmGrpBarlines(this, pMainSizer);
+    
+	CreateLayout();
 }
 
 

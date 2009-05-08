@@ -36,17 +36,6 @@ class lmDocument;
 class lmScoreView;
 
 //---------------------------------------------------------------------------
-// Helper class to define editor modes
-// TODO: all
-//---------------------------------------------------------------------------
-class lmEditorMode
-{
-public:
-    lmEditorMode() {}
-};
-
-
-//---------------------------------------------------------------------------
 // lmEditFrame: the frame to edit an score
 //---------------------------------------------------------------------------
 class lmEditFrame: public lmDocMDIChildFrame

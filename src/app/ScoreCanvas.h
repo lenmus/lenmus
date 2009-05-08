@@ -29,12 +29,13 @@
 #include "global.h"
 class lmScoreHighlightEvent;
 #include "../sound/SoundEvents.h"
+#include "toolbox/ToolsBox.h"
 
 class lmScoreView;
 class lmDocument;
 class lmGMSelection;
 class lmToolBoxEvent;
-class lmToolBox;
+class lmToolPage;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -301,6 +302,33 @@ private:
 
     DECLARE_EVENT_TABLE()
 };
+
+
+//---------------------------------------------------------------------------
+// Helper class to define edition modes
+//---------------------------------------------------------------------------
+
+class lmEditorMode
+{
+public:
+    lmEditorMode(wxClassInfo* pControllerInfo, wxClassInfo* pScoreProcInfo);
+    ~lmEditorMode();
+
+    void CustomizeToolBoxPages(lmToolBox* pToolBox);
+
+    //ToolBox pages
+    void ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo);
+
+protected:
+
+    wxClassInfo*            m_pControllerInfo;
+    wxClassInfo*            m_pScoreProcInfo;
+    wxClassInfo*            m_ToolPagesInfo[lmPAGE_MAX];
+    lmToolBoxConfiguration  m_config;
+
+};
+
+
 
 
 #endif  // _LM_SCORECANVAS_H

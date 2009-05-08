@@ -226,8 +226,10 @@ bool lmMDIParentFrame::CloseAll()
     //loop to close all pages but not the active one. This is to avoid having
     //to activate (and repaint) a new page if we close the current active one.
     bool fAllClosed = true;     //assume it
-    for (int i=nNumPages-1; i >= 0; i--) {
-        if (i != iActive) {
+    for (int i=nNumPages-1; i >= 0; i--)
+    {
+        if (i != iActive)
+        {
             bool fClosed = m_pClientWindow->GetPage(i)->Close();
             if (fClosed)
                 m_pClientWindow->RemovePage(i);

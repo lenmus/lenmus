@@ -80,7 +80,7 @@
 		<Cursor position="1673" topLine="18" />
 	</File>
 	<File name="../../src/app/Processor.cpp" open="1" top="0" tabpos="20">
-		<Cursor position="11244" topLine="316" />
+		<Cursor position="8453" topLine="245" />
 	</File>
 	<File name="../../src/app/ScoreCanvas.cpp" open="0" top="0" tabpos="8">
 		<Cursor position="29772" topLine="889" />
@@ -151,7 +151,7 @@
 	<File name="../../src/auxmusic/Cadence.cpp" open="0" top="0" tabpos="44">
 		<Cursor position="46767" topLine="1104" />
 	</File>
-	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="1" tabpos="21">
+	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="21">
 		<Cursor position="20694" topLine="515" />
 	</File>
 	<File name="../../src/auxmusic/ChordManager.h" open="1" top="0" tabpos="19">

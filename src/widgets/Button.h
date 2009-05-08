@@ -47,7 +47,7 @@ class wxBitmap;
 class lmBitmapButton : public wxWindow
 {
 
-DECLARE_DYNAMIC_CLASS (lmBitmapButton)
+DECLARE_DYNAMIC_CLASS(lmBitmapButton)
 
 public:
 	lmBitmapButton(wxWindow* parent, wxWindowID id, const wxBitmap& bitmap, 

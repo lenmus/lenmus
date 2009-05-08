@@ -2,12 +2,9 @@
 
 \toc
 
-\h1 {Program design}
+\h1 {The Model-View-Controller architecture}
 
-\h2 {The Model-View-Controller architecture}
-
-\h3 {Description}
-The Model-View-Controller (MVC) architecture uses three kinds of objects:
+The Model-View-Controller (MVC) architecture is a well know design pattern that uses three kinds of objects:
 
     1. The Model is the document object, that is, encapsulates the domain-specific representation of the information on which the application operates, as well as its functionality (domain logic).
     2. The View is its screen representation. Obtains data from the model and presents it to the user.
@@ -26,22 +23,402 @@ The views and the model are coupled by establishing a subscribe/notify protocol 
 A view must ensure that its appearance reflects the state of the model. Whenever the model's data changes, the model notifies views that depend on it. In response, each view gets an opportunity to update itself. This approach lets you attach multiple views to a model to provide different presentations. You can also create new views for a model without rewriting it.
 
 
-\h3 {wxWidgerts classes for supporting the MVC model}
+\h2 {LenMus implementation of the MVC model}
+
+LenMus follows the traditional Model-View-Controller design pattern. It is modelled by three abstract classes:
+
+    * \b{lmView} (wxView) \br
+      Abstract class from which all views must derive
+    * \b{lmController} (wxWindow) \br
+      Abstract class from which all controllers must derive. It is defined in file app/ScoreCanvas.h
+    * \b{wxDocument} \br
+      wxWidgets abstract class from which all models (documents) must derive
+
+These abstract classes specialize for different purposes:
+
+ * For score edition, the following specific classes are created:
+
+    * The View is \b{lmScoreView} (derived from lmView). To render the view two more classes are involved:
+        * lmEditFrame -> (lmMDIChildFrame -> wxPanel)
+            The frame on which we are going to place all windows an controls to render the view. There are several controls (scroll bars and rulers) and a window (the lmScoreCanvas).
+        * lmScoreCanvas (lmController) -> 
+            The window on which the score is going to be rendered.
+            
+    * The Model is \b{lmDocument}. It contains the score to be rendered and a few additional data.
+    
+    * The Controller is \b{lmScoreCanvas}. Derives from lmController. All interaction with the document takes place by issuing 'commands' modelled by class \b{lmScoreCommand}.
+    Class lmScoreCommand derives from wxCommand).
 
 
-The wxWidgets framework doesn't implement the MVC model but the Document-View (DV) model. The DC model is similar to the MVC model. The Document is equivalent to the Model and the View and the Controller are merged into a single object: the View. wxWidgets has several classes to support the doc/view model:
+ * For exercises, the involved classes are:
 
-wxDocument
+    * The View is \b{lmScoreAuxCtrol}: A window on which a music score is rendered. No direct interaction with the score is allowed (except Play/Stop/Zoom), that is, it is just a display control.
+    
+    * The Model is \b{lmScore}: the score to be rendered.
+    
+    * User interaction takes place through the lmHtmlWindow (the container of the lmScoreAuxCtrol), so the controller is in it or in its containers classes (lmBookFrame, lmTextBookContrller).
+
+
+\h2 {Using the wxWidgets framework}
+%%%----------------------------------------
+
+Initially, when I started designing and coding the LenMus program, I had no idea of what to do and I had no knowledge of the wxWidgets framework.
+
+wxWidgets doesn't implement the MVC model but the Document-View (DV) model. The DV model is similar to the MVC model, where the Document is equivalent to the Model and the View and the Controller are merged into a single object: the View. wxWidgets has several classes to support the doc/view model, where the most important are:
+
+ * %%wxDocument%% \br
     The' document'. Models an application's file-based data. A range of menu commands -* such as open, save, save as -* are supported automatically. The concept of multiple views onto the same data is supported.
   
-wxView
+ * %%wxView%% \br
     The 'View-Controller'. Models the viewing and editing component of an application's file-based data.
     
-wxDocTemplate
-    Models the relationship between a document class and a view class. The application creates a document template object for each document/view pair. The list of document templates managed by the wxDocManager instance is used to create documents and views. Each document template knows what file filters and default extension are appropriate for a document/view combination, and how to create a document or view. If you had two views of the data -* graphical, and a list of the segments -* then you would create one document class DoodleDocument, and two view classes (DoodleGraphicView and DoodleListView). You would also need two document templates, one for the graphical view and another for the list view.
-
-wxDocManager
+ * %%wxDocTemplate%% \br
+    Models the relationship between a document class and a view class.
+    
+ * %%wxDocManager%% \br
     Coordinates documents, views and document templates. 
+
+I started by trying to use all these wxWidgets classes to implement the MVC model. The first problem I had was how to separate the controller from the view. Later, I found other problems that I also describe in these documentation. As it is very difficult to describe in LenMus program needs, wxWidgets behaviour, found problems and designed solutions, all in a linear way, I will jump from one issue to another, trying to enlarge the scope of the description, so that you, the reader, can better understand the code, the problems and the solutions.
+
+
+
+\h2 {Creating the document, the view and the controller. First renderization of lmScoreView}
+%%%--------------------------------------------------------------------------------
+
+The wxWidgets document/view architecture is used, and class %%wxDocManager%% orchestrates the creation of the document and the view.
+
+The process starts when an event wxID_NEW or wxID_OPEN is created (i.e. via main menu 'file > new'  or 'file > open').
+
+The wxWidgets framework first invokes %%wxDocManager::CreateDocument()%%, to create the lmDocument instace. But this instace is empty, that is, it doesn't contains any score yet! Therefore, %%m_pScore%% will be always %%NULL%% at this point.
+
+Next, %%wxDocManager%% proceeds to create the view. The invokation path for this complex but, finally, the following invocation takes place: %%wxDocTemplate::CreateView()%%. This invokes the view constructor followed by an invocation to %%wxWiew::OnCreate()%%.
+
+As wxWidgets doc/view framwork doesn't create a controller class, I'm putting the responsibility for creating the controller on the view. Method %%lmWiew::OnCreate()%% creates a new %%lmEditFrame%% (%%lmDocMDIChildFrame%%) and its associated %%lmScoreCanvas%% (the controller). 
+
+Creating the frame at this point has a drawback: the frame is created and painted. This causes and invokation to lmScoreView::OnSetFocus and when the canvas is going to be painted, to lmScoreView::RepaintScoreRectangle. But at this point the score is NULL and the method terminates doing nothing. Therefore, the canvas client area is not painted, and remains in grey color.
+
+Then the framework informs the document by invoking, either:
+
+     * lmDocument::OnOpenDocument() --> it invokes UpdateAllViews(). This, in turn, invokes lmScoreView::OnUpdate, and this causes the first lmScoreView repaint.
+
+     * lmDocument::OnNewDocument() --> it invokes lmScoreView::OnChangeFilename(). Next I don't know but it arrives directly to lmScoreView::RepaintScoreRectangle. This time the score is not null and the first repaint takes place.
+    
+Lets continue the description from %%lmDocument::OnOpenDocument()%% (the behaviour is similar when %%lmDocument::OnNewDocument()%% is instaed invoked).
+
+At this point, %%lmDocument %% receives control to load/create the document (the score). The expected standard behaviour would be to instantiate the document (i.e. by parsing a file containing the score to open), to assign a visible name to it (%%SetFilename()%%) and to display it (%%UpdateAllViews()%%).
+
+\important
+{
+%%lmDocument::SetFilename()%% invokes %%lmScoreView::OnChangeFilename()%% and this is the first point at which %%lmScoreView%% is invoked with a valid pointer to the score.
+}
+    
+
+The detailed invocation tree is as follows:
+\code
+{
+wxDocManager::OnFileNew
+    invokes CreateDocument( wxEmptyString, wxDOC_NEW );
+    |
+    |   wxDocManager::CreateDocument
+    |   |   invokes wxDocument *newDoc = temp->CreateDocument(path, flags);
+    |   |   |   wxDocTemplate::CreateDocument()
+    |   |   |   |   Creates a wxDocument (generic, not a lmDocument)
+    |   |   |   |   invokes InitDocument
+    |   |   |   |   wxDocTemplate::InitDocument([wxDocument])
+    |   |   |   |   |   invokes doc->OnCreate
+    |   |   |   |   |   wxDocument::OnCreate()
+    |   |   |   |   |   |   invokes GetDocumentTemplate()->CreateView([wxDocument], flags))
+    |   |   |   |   |   |   wxDocTemplate::CreateView([wxDocument])
+    |   |   |   |   |   |   |   scoreview constructor
+    |   |   |   |   |   |   |   invokes view->OnCreate(doc, flags))
+    |   |   |   |   |   |   |   |   m_pFrame = new lmEditFrame(doc, ..
+    |   |   |   |   |   |   |   |       EditFrame constructor
+    |   |   |   |   |   |   |   |   m_pCanvas = new lmScoreCanvas
+    |   |   |   |   |   |   |   |   m_pFrame->Show(true);
+    |   |   |   |   |   }    
+    |   |   |   |   }
+    |   |   |   }
+    |   |   invokes newDoc->OnNewDocument()
+    |   |   |   lmDocument::OnNewDocument()
+    |   |   }
+    |   }
+    }
+}    
+}
+
+    
+\important
+{
+%%lmScoreView::OnDraw()%% is a mandatory override of %%wxView%%. So we must define an %%OnDraw()%% method. But the repaint behaviour is controled by the %%OnPaint%% event on %%lmScoreCanvas%% and is redirected to %%lmScoreView::RepaintScoreRectangle()%%. So %%OnDraw()%% is empty. It is only invoked by the print/preview architecture, for print/preview the document.
+}
+
+
+\h1 {Changes for importing scores, using the score wizard and for exercises}
+%%%--------------------------------------------------------------------------------
+
+In the standard wxWidgets framework behaviour there are two possible methods to create a new document:
+ * method %%lmDocument::OnNewDocument()%% is invoked to create a new empty score.
+ * method %%lmDocument::OnOpenDocument()%% is invoked to open an existing file containing the document.
+ 
+But in LenMus program, we need the following possibilities:
+
+ * Open score (LDP file)
+ * Import score (MusicXML file)
+ * Open an score created internally, by program, and not saved yet to file (for example, a new score created with the wizard, or an score created by an exercise).
+ 
+An we don't need the 'File New' possibility (to ceate a totally empty new document) as when creating a new lmDocument, a wizard for page layout is always triggered. Therefore, no need to create an empty score. As a consequece, in no case method %%lmDocument::OnNewDocument()%% will be used. So, no need to define and create it. Another consequence of not using method OnNewDocument() is that standard identifier wxID_NEW must not be used. Instead, identifier %%MENU_File_New%% is used.
+
+To deal with these needs I decided to use %%lmDocument::OnOpenDocument()%%. As I can not add more parameters to the %%OnOpenDocument()%% method, I decide to use parameter 'filename' to pass additional information. To this end, the filename will be precedeed with a tag: 
+
+ * Tag "\\<<IMPORT>>//" followed by the filename to open:
+    For importing MusicXML files.
+    
+ * Tag "\\<<LOAD>>//" followed by filename:
+    For displaying an already existing score, created, for example, in the Score Wizard or in exercises. In this case parameter filename contains the ID of the score. The score is already created (by the wizard or by an exercise Ctrol) and can be obtained by invoking %%lmMainFrame::GetScoreToEdit()%%.    
+
+ * No tag, just a filename:
+    Normal invocation from DocManager for opening an LDP file document
+
+
+\h2 {Getting the score to open}
+%%%----------------------------
+
+When the score to edit/display has been created by the program and is not save to file, we need a mechanism to get it from method %%lmDocument::OnOpenDocument()%%. The solution has been to maintain, in %%lmMainFrame%%, a list of scores to open/display.
+
+When there is a need to open a new %%lmEditFrame%% to display/edit a program created score, method %%lmMainFrame::NewScoreWindow()%% is invoked, passing it the score to open. In this method, the score is added to the list of scores to display, and the docManager is asked to open a score of name "\\<<LOAD>>//[ID].txt", where [ID] is the Id.number of the score added to the list.
+
+Method %%lmDocument::OnOpenDocument()%% receives then, in parameter 'filename' all the information needed:
+ * Tag: \\<<LOAD>>//' that instructs it to load an existing score
+ * [ID]: the identification of the score to load
+ * '.txt': the file extension, used by the wxDocManager class to determine the document type.
+ 
+ Method %%lmDocument::OnOpenDocument()%% then gets the score by invoking %%lmMainFrame::GetScoreToEdit()%%.
+
+
+\h1 {More components to add to the MVC model}
+%%%----------------------------------------------------------
+
+
+\h2 {The ToolBox}
+%%%------------------
+
+All editor interaction with the score takes place through an %%lmController%%. To define controller response to user commands, each lmController could use any desired mechanism. A common way of doing this is by placing 'selection/option buttons' on the main toolbar. Then user actions are interpreted based on toolbar selected options.
+
+But I don't like the idea of using the toolbar as it will end up with too many buttons and also it is more difficult to include controls (comboxes, radio buttons, help texts, etc.). So I dedided to replace to toolbar with something better and more user-oriented. The toolbar normally ends up being a mess of buttons and controls with no apparent organization. And it takes too much space on top of the window. So, I decided to experiment with a palette of tools (the ToolBox) similar to that used in many CAD applications.
+
+As the tendency is to have wider screens (for multimedia) I though it would be better to place the toolbox on the left (right). Anyway user should be able to choose a horizontal layout and top/bottom placement.
+
+So, to define controller response to user commands %%lmScoreCanvas%% uses an associated ToolBox window (class %%lmToolBox%%). This main toolbox (%%lmToolBox%%) is built independly from the controller (%%lmScoreCanvas%%) because it is going to be shared by all open %%lmEditFrames%%. This main toolbox is owned and managed by %%lmMainFrame%% and it is assigned to each open %%lmScoreCanvas%%.
+
+
+\h2 {Score editor 'modes'}
+%%%--------------------------------
+
+For simple exercises there is no need for the user to interact with the score. For example, in an exercise to identify intervals, an score with an interval is presented to the user and the user just give her/his answer by clicking on a button.
+
+But for more advanced exercises the user must would need to use the score editor to elaborate the answer. For example: dictation exercises, harmony exercises, etc.
+
+To customize the score editor for the needs of a particular exercise, the score editor must support 'editor modes'. An 'editor mode' is a set of restrictions and customizations to force the score editor to behave in a predefined way. For example, for four-parts harmony exercises, the editor could be restricted to use only quarter notes, four voices, etc.
+
+
+\h2 {ToolBox customizations}
+%%%---------------------------
+
+Using the score editor for exercises not only requires to support editor editor mode but also creates the need to customize the ToolBox, for example to include special buttons and tools for the exercise.
+
+And this, in turns, requires specific customizations in the controller (%%lmScoreCanvas%% class) to deal with the added tools.
+
+Implementation of this idea is just a question of using specialized controllers and of dynamically configuring the toolbox.
+
+As the main toolbox is shared between all open editor windows and as each one them could be in a different 'edition mode', the tool box should allow for multiple configurations.
+
+
+\h2 {Score processors}
+%%%--------------------
+
+There is a need for tools to process (or alter) a full score. For example, a tool to transpose a score, to add colours to voices, to make a piano reduction, etc. All these tools will derive from abstract class %%lmScoreProcessor%%:  A class to process (or alter) a full score.
+
+It must have at least a method %%DoProcess()%% to perform the specific processing it represents. And can issue edit commands.
+
+It can also display windows, for example, to ask for the control parameters required by the process to perform, or to show the result of the process.
+
+From the MVC point of view an score processor is part of the controller: receives user interaction (perhaps just the command 'do process') and issues commands to alter the score.
+
+
+\h2 {Exercises using the full score editor}
+%%%-----------------------------------------
+
+The idea is to use the score editor for exercises. The problem is presented as a score that the student has to modify. As the full editor is used, the student can save the score so that he/she can later continue the exercise.
+
+For checking user answer (the edited score) score and adding markup to display errors and suggestions an score processor could be used. This also has the advantage of a possible re-usability of the score checking code to build a general purpose tool, usable not only in exercises.
+
+Independently of the solution chosen to check for errors in the user exercise (the score) there is a need to add special tools (i.e. 'check for errors' and 'remove all markup' buttons) to the toolbox.
+
+
+\h2 {Reloading an exercise score}
+%%%--------------------------------------------------------------------
+
+In order to be able to continue an exercise, we need to save meta-information with the score to know that the score was created by an exercise and what is the environment (toolbox customizations, editor mode, controller, etc) that must be setup to continue the exercise. Then, there is a need to orchestrate the creation of all that environment.
+
+
+
+\h2 {New issues to orchestrate in the MVC model}
+%%%----------------------------------------------
+
+In the initial MVC 'simple' model we had three components:
+
+    * the document (%%lmDocument%%): the score to display/edit.
+
+    * the view (%%lmScoreView): Responsible for rendering the document and for relating mouse positions to model objects.
+
+    * and the controller (%%lmScoreController%%): receives all user interaction (keyboard, mouse) and interacts with the score to edit it and with the view to update it (zoom, scroll).
+ 
+ 
+And all the three go always toghether. But now the situation is more complex:
+
+    * the controller has an associated ToolBox.
+    * the toolbox could be customized for each open score.
+    * the controller could be different for each open score.
+    * there is a fourth component (%%lmEditMode%%) that relates a controller with a toolbox customization.
+    * the document has information about the edit mode used to create it.
+    * the edit mode could also specify an score processor
+    * the score processor could also add special customizations to the tool box.
+ 
+In the simple MVC model the information needed to orchestrate model-view-controller creation was provided by the %%wxDocTemplate%% class. And this information was, basically, the type of document to open. Now, the key information is the edit mode, as it specifies:
+
+    * the controller class to use
+    * the customizations to add to the ToolBox
+    * the score processor to associate to certain toolbox buttons.
+
+
+So, time has arrived to replace the doc/view wxWidgets framework! But that will involve a lot of delays. So I would try first some workarounds.
+
+
+
+
+\h1 {lmMVCManager}
+%%%-----------------
+
+    * Relates Model (lmDocument) with Views, Controllers, ToolBox customizations and other related issues. Will replace wxDocManager
+
+    * Takes responsibility for creating them
+
+    * wxDocTemplate will be replaced by lmEditMode
+
+
+The lmDocument needs to have / save information about all these issues, so that the environment can be properly restored when loading a document
+
+The MVC model has now more components:
+
+    * The View: doesn't change
+    * The Controller:
+        * ScoreCanvas
+        * ToolBox
+        * ScoreProcessor (optional)
+    *The Document: dosn't change
+    
+    * wxDocTemplate will be replaced by lmEditMode
+
+
+
+\h1 {lmMainFrame}
+%%%---------------
+
+Derives from lmDocMDIParentFrame (in mdi/DocViewMDI.h) -> lmMDIParentFrame (in mdi/ParentFrame.h) -> wxFrame
+
+
+lmMDIParentFrame: An MDI (Multiple Document Interface) parent frame is a window which can contain MDI child frames in its own 'desktop'. Child windows are implemented as tabs in an wxAuiNotebook. Therefore the client Window is an wxAuiNotebook
+
+    lmMDIClientWindow : public wxAuiNotebook
+
+
+lmDocMDIParentFrame: Adds support to an lmMDIParentFrame for the Doc/View model by requiring a wxDocManager.
+The lmDocMDIParentFrame class provides a default top-level frame for applications using the document/view framework. This class can only be used for MDI parent frames.
+
+lmDocMDIChildFrame: public lmMDIChildFrame
+lmDocMDIChildFrame a Child frame with knowledge about the doc/view relationship: it knows :
+
+lmMainFrame is a lmMDIParentFrame. To display children windows it has a 
+Main interface is a wxAuiNotebook.
+A tab can be:
+    * A view in the MVC model (i.e. score to edit) (lmDocMDIChildFrame)
+    * A independent window (i.e. eBook, Welcome page) (lmMDIChildFrame)
+
+
+
+
+\h1 {Switching modes when viewing another score}
+%%%--------------------------------------------------
+
+There are two scores open. When activating one of them, how to set up the right ToolBox customizations?
+
+The lmMDIClientWindow will know about the switching event (%%OnPageChanged()%% event handler). and will inform the new child frame (lmMDIChildFrame) being activated 
+
+    child->OnChildFrameActivated();
+
+Default implementation does nothing. But this method is overriden in %%lmEditFrame%% and in %%lmTextBookFrame%% and in both, the behaviour is to inform %%lmMainFrame%%
+
+It would be better to change default implementation to inform %%lmMainFrame%%.
+
+
+In any case, method %%lmMainFrame::OnActiveChildChanged()%% is the right place to make the necessary ToolBox customizations.
+
+To do it we need to know:
+    * who has the mvc relationship info? where is the lmEditMode to apply?
+    * It should be in the lmDocMDIChildFrame itself! Now it only has the doc and the view!
+    
+    (The only existing lmDocMDIChildFrame is lmEditFrame)
+
+the frame (%%lmEditFrame%%) is created in %%lmScoreView::OnCreate()%% and this method only receives the doc. It should also receive all other information (the controller and the edit mode)
+
+=> Save the lmEditMode in the document. In any case, the edit mode must be exported to LDP source and loaded from there! Therefore, it is not a bad solution to have it there.
+
+
+
+\h1 {Continue in 'exercise mode' after reloading an exercise score}
+%%%--------------------------------------------------------------------
+
+We can save meta-information with the score to know that this score was created by an exercise. When the score is reloaded the editor will know about its origin and could ask the user wheter it would like to open it in normal mode or in exercise mode.
+    
+If answer is normal mode it will be open in normal mode. When saving a score (opened in normal mode) that contains meta-information the user will be asked about maintaining the meta-information or removing it.
+        
+The key information to restore all the edition environment
+    1. the lmScoreProcessor, to process the score to check for user errors
+    2. the ToolBox customizations
+    3. the controller class to create
+    3. the SpecialToolPanel
+is the %%lmEditorMode%%.
+
+Who will manage all this?
+    The lmDocument could be a good place to do this. Method %%OnOpenDocument()%% parses the score to open. After this, it can determine if the score comes from and exercise, and then ask what to do, and orchestrate all this.
+    
+Therefore, the procedure could be as follows: 
+    * an instance of the appropriate lmScoreProcessor will be created.
+    * the lmScoreProcessor will be requested to add a 'spacial tools' panel to the ToolBox. It will include only the links supported by the lmScoreProcessor .
+    * The score editor will be opened in appropriate mode, to edit the score.
+    
+Who will manage all this?
+    No idea. The wxDocManager? The lmDocument could be a good place to do this. Method OnOpenDocument() parses the score to open. After this, it can determine if the score comes from and exercise, and then ask what to do, and orchestrate all this.
+    
+    
+Therefore, a lmFullEditorExercise *is not* a class derived from lmScoreProcessor but a class  containing an instance of an lmScoreProcessor. This implies that the only  links that will be added to the 'special tools' panel in the ToolBox will be those required by the used lmScoreProcesor (i.e: 'Check solution'). Any other required control (i.e, 'New problem', 'Exercise options') will be displayed on the eBook control.
+
+NOOOOO!! Score processor is part of the controller and, therefore, must not be created/owned by the exercise!!
+    
+
+    
+\h1 {Things To Do)
+%%%-------------------
+
+    * Stop using wxWidgets doc/view framework and design and use something better suited for LenMus program needs.
+    
+    
+
+
+
+\h2 {Commands to change an score}
+%%%-------------------------------------------
+
     
 wxCommand
     It is a base class for modelling an application command, which is an action usually performed by selecting a menu item, pressing a toolbar button or any other means provided by the application to change the data or view.
@@ -55,60 +432,6 @@ wxFileHistory
     Encapsulates functionality to record the last few files visited, and to allow the user to quickly load these files using the list appended to the File menu. It is used by wxDocManager, 
 
 
-\h3 {LenMus implementation of the MVC model}
-
-LenMus follows the traditional Model-View-Controller design pattern. It is modelled by three abstract classes:
-
-    * \b{lmView} (wxView) \br
-      Abstract class from which all views must derive
-    * \b{lmController} (wxWindow) \br
-      Abstract class from which all controllers must derive. It is defined in file app/ScoreCanvas.h
-    * \b{wxDocument} \br
-      wxWidgets abstract class from which all models (documents) must derive
-
-
-For score edition, the following specific classes are created:
-
-    * The View is \b{lmScoreView} (derived from lmView). To render the view two more classes are involved:
-        * lmEditFrame -> (lmMDIChildFrame -> wxPanel)
-            The frame on which we are going to place all windows an controls to render the view. There are several controls (scroll bars and rules) and a window (the lmScoreCanvas).
-        * lmScoreCanvas (lmController) -> 
-            The window on which the score is going to be rendered.
-            
-    * The Model is \b{lmScoreDoc}. It contains the score to be rendered and a few additional data. [This class will be, in a near future, removed and replaced directly by lmScore].
-    
-    * The Controller is \b{lmScoreCanvas}. Derives from lmController. All interaction with the document takes place by issuing 'commands' modelled by class \b{lmScoreCommand}.
-    Class lmScoreCommand derives from wxCommand).
-
-
-For exercises, the involved classes are:
-
-    * The View is \b{lmScoreAuxCtrol}: A window on which a music score is rendered. No direct interaction with the score is allowed (except Play/Stop/Zoom), that is, it is just a display control.
-    
-    * The Model is \b{lmScore}: the score to be rendered.
-    
-    * User interaction takes place through the lmHtmlWindow (the container of the lmScoreAuxCtrol), so the controller is in it or in its containers classes (lmBookFrame, lmTextBookContrller).
-
-For future exercises, in which user must interact with the score to add notes (i.e. harmony exercises), this model has to be changed as follows:
-
-    * Probably, this is the right time to join lmScoreDoc and lmScore. to have a single 'Document' object.
-    * Transform lmScoreAuxCtrol into a canvas
-    * Modify lmScoreView to be an abstract View. Derive two classes:
-        lmPaperScoreView (current lmScoreView functionality: scroll bars, paper image)
-        lmExerciseScoreView (current lmScoreAuxCtrol: no scrolling, no paper image)
-    * For each specific exercise use a different controller to limit interaction as necessary for the exercise.
-
-
-
-
-
-
-\h1 {Miscellaneous notes}
-
-
-
-\h2 {Commands to change an score}
-%%%-------------------------------------------
 
 Two types of commands: those that affect the document (score) and those that affect only the graphical model (i.e. select an object).
 

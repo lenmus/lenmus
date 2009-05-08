@@ -41,7 +41,6 @@
 #include "ScoreDoc.h"
 #include "ScoreCommand.h"
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
-#include "toolbox/ToolsBox.h"
 #include "toolbox/ToolNotes.h"
 #include "toolbox/ToolBoxEvents.h"
 #include "global.h"
@@ -390,7 +389,7 @@ void lmScoreCanvas::BreakBeam()
 	pCP->Submit(new lmCmdBreakBeam(pVCursor, sName, m_pDoc, (lmNoteRest*)pCursorSO));
 }
 
-void lmScoreCanvas::JoinBeam() 
+void lmScoreCanvas::JoinBeam()
 {
     //depending on current selection content, either:
     // - create a beamed group with the selected notes,
@@ -982,7 +981,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                         //Voice: alt + digits 0..9
  					    SelectVoice(nKeyCode - int('0'));
 
-                    else                    
+                    else
                         //Note duration: digits 0..9
 					    SelectNoteDuration(nKeyCode - int('0'));
 
@@ -990,7 +989,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                 }
 
                 //increment/decrement octave: up (ctrl +), down (ctrl -)
-                else if (fUnknown && event.CmdDown() 
+                else if (fUnknown && event.CmdDown()
                          && (nKeyCode == int('+') || nKeyCode == int('-')) )
 			    {
 					SelectOctave(nKeyCode == int('+'));
@@ -998,7 +997,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                 }
 
                 //increment/decrement voice: up (alt +), down (alt -)
-                else if (fUnknown && event.AltDown() 
+                else if (fUnknown && event.AltDown()
                          && (nKeyCode == int('+') || nKeyCode == int('-')) )
 			    {
 					SelectVoice(nKeyCode == int('+'));
@@ -1322,7 +1321,7 @@ wxMenu* lmScoreCanvas::GetContextualMenu(bool fInitialize)
 	if (m_pMenu) delete m_pMenu;
 	m_pMenu = new wxMenu();
 
-	if (!fInitialize) 
+	if (!fInitialize)
 		return m_pMenu;
 
 #if defined(__WXMSW__) || defined(__WXGTK__)
@@ -1695,7 +1694,7 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
 
 
                     //Tuplets status
-                    fEnableTuplet = fNoteFound; 
+                    fEnableTuplet = fNoteFound;
                     if (fNoteFound)
                     {
                         lmNoteRest* pStartNR = IsSelectionValidForTuplet();
@@ -1706,14 +1705,14 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
                     }
 
                     //Join beams
-                    fEnableJoinBeam = fNoteFound; 
+                    fEnableJoinBeam = fNoteFound;
                     if (fNoteFound)
                         fEnableJoinBeam = IsSelectionValidToJoinBeam();
 
                 }
 
                 //enable/disable tools
-                
+
                 //Ties
                 lmGrpTieTuplet* pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
                 pGrp->EnableTool(lmTOOL_NOTE_TIE, fEnableTie);
@@ -1906,7 +1905,7 @@ lmNoteRest* lmScoreCanvas::IsSelectionValidForTuplet()
 
 bool lmScoreCanvas::IsCursorValidToCutBeam()
 {
-    //Returns TRUE if object pointed by cursor is valid for breaking a beam. 
+    //Returns TRUE if object pointed by cursor is valid for breaking a beam.
 
     //Conditions to be valid:
     //  The object must be a note/rest in a beam
@@ -1982,7 +1981,7 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
                 // verify voice, and that it is an eighth or shorter
                 pLast = (lmNoteRest*)pGMO->GetScoreOwner();
                 fValid &= pLast->GetNoteType() >= eEighth;
-                fValid &= nVoice == pLast->GetVoice() || 
+                fValid &= nVoice == pLast->GetVoice() ||
                           (pLast->IsNote() && ((lmNote*)pLast)->IsInChord());
 
                 //verify that if beamed, all selected note/rest must not be in the same beam
@@ -2000,3 +1999,61 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
 
     return fValid && !fAllBeamed && nNumNotes > 1;
 }
+
+
+
+//---------------------------------------------------------------------------
+// Implementation of class lmEditorMode: Helper class to define editor modes
+//---------------------------------------------------------------------------
+
+
+lmEditorMode::lmEditorMode(wxClassInfo* pControllerInfo, wxClassInfo* pScoreProcInfo)
+    : m_pControllerInfo(pControllerInfo)
+    , m_pScoreProcInfo(pScoreProcInfo)
+{
+    for (int i=0; i < lmPAGE_MAX; ++i)
+        m_ToolPagesInfo[i] = (wxClassInfo*)NULL;
+}
+
+lmEditorMode::~lmEditorMode()
+{
+}
+
+void lmEditorMode::ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo)
+{
+	wxASSERT(nPageID > lmPAGE_NONE && nPageID < lmPAGE_MAX);
+    m_ToolPagesInfo[nPageID] = pToolPageInfo;
+}
+
+void lmEditorMode::CustomizeToolBoxPages(lmToolBox* pToolBox)
+{
+    if (m_config.IsOk())
+    {
+        //if configuration already created, use it
+        pToolBox->SetConfiguration(m_config);
+    }
+    else
+    {
+        //create the configuration
+        for (int i=0; i < lmPAGE_MAX; ++i)
+        {
+            if (m_ToolPagesInfo[i])
+            {
+                lmToolPage* pPage = (lmToolPage*)m_ToolPagesInfo[i]->CreateObject();
+                pPage->Create(pToolBox);
+                pPage->CreateGroups();
+                pToolBox->AddPage(pPage, i);
+                pToolBox->SetAsActive(pPage, i);
+                pToolBox->SelectToolPage( pToolBox->GetSelectedToolPage() );
+            }
+        }
+
+        //save the created configuration
+        pToolBox->GetConfiguration(m_config);
+    }
+}
+
+
+
+
+

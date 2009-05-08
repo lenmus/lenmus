@@ -2068,8 +2068,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         wxString sName = pX->GetName();
         if (sName == _T("textbox"))
             AnalyzeTextbox(pX, pVStaff, pNR);
-        //else if (sName == _T("text"))
-        //    AnalyzeText(pX, pVStaff);
+        else if (sName == _T("text"))
+            AnalyzeText(pX, pVStaff);
         else
             AnalysisError(pX, _T("Notation '%s' unknown or not implemented."), sName.c_str());
 

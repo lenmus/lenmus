@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,10 +32,14 @@
 
 class lmToolPage: public wxPanel
 {
+	DECLARE_ABSTRACT_CLASS(lmToolPage)
+
 public:
     lmToolPage(wxWindow* parent);
+    lmToolPage();
     ~lmToolPage();
-	
+    void Create(wxWindow* parent);
+
 	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void CreateLayout();
 	inline lmColorScheme* GetColors() { return ((lmToolBox*)GetParent())->GetColors(); }
@@ -43,6 +47,9 @@ public:
 
     virtual wxString& GetPageToolTip() { return m_sPageToolTip; }
     virtual wxString& GetPageBitmapName() { return m_sPageBitmapName; }
+
+    virtual void CreateGroups() = 0;
+
 
 protected:
     wxString    m_sPageToolTip;         //tool tip text

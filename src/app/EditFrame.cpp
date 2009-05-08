@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -67,8 +67,8 @@ IMPLEMENT_CLASS(lmEditFrame, lmDocMDIChildFrame)
 
 
 lmEditFrame::lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame *pMainFrame,
-                     const wxPoint& uPos, const wxSize& size) :
-    lmDocMDIChildFrame(doc, view, pMainFrame, wxID_ANY, _T("EditFrame"), uPos, size,
+                     const wxPoint& uPos, const wxSize& size)
+    : lmDocMDIChildFrame(doc, view, pMainFrame, wxID_ANY, _T("EditFrame"), uPos, size,
                         wxDEFAULT_FRAME_STYLE ), m_pView((lmScoreView *)view)
 {
 }

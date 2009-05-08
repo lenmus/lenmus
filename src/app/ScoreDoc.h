@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,6 +32,8 @@
 //options for method UpdateAllViews
 #define lmSCORE_MODIFIED        true
 #define lmSCORE_NOT_MODIFIED    false
+
+class lmEditorMode;
 
 //------------------------------------------------------------------------------------
 // lmUpdateHint helper class: data to optimize window re-paintings
@@ -89,9 +91,14 @@ public:
     bool OnDisplayCreatedScore(int nID);
     inline lmScore* GetScore() {return m_pScore; };
 
+    //Edit mode
+    inline void SetEditMode(lmEditorMode* pMode) { m_pEditMode = pMode; }
+    inline lmEditorMode* GetEditMode() { return m_pEditMode; }
+
 private:
     // data to store
     lmScore*            m_pScore;		//the score this document represents
+    lmEditorMode*       m_pEditMode;
 
 };
 

@@ -56,9 +56,9 @@
 IMPLEMENT_DYNAMIC_CLASS(lmDocument, wxDocument)
 
 lmDocument::lmDocument()
+    : m_pEditMode((lmEditorMode*)NULL)
+    , m_pScore((lmScore*) NULL)
 {
-    // default values
-    m_pScore = (lmScore*) NULL;
 }
 
 lmDocument::~lmDocument()
@@ -68,33 +68,36 @@ lmDocument::~lmDocument()
 
 bool lmDocument::OnNewDocument()
 {
-    // The default implementation calls OnSaveModified and DeleteContents, makes a default
-    // title for the document, and notifies the views that the filename (in fact, the title)
-    // has changed.
+    //TODO: Remove this method. It is never used. For now keep it as reference just in case
+    //it could be necessary when widening the lmDocument model
+
+    //// The default implementation calls OnSaveModified and DeleteContents, makes a default
+    //// title for the document, and notifies the views that the filename (in fact, the title)
+    //// has changed.
 
 
-    if (!OnSaveModified())
-        return false;
+    //if (!OnSaveModified())
+    //    return false;
 
-    if (OnCloseDocument() == false) return false;
-    DeleteContents();
-    Modify(false);
-    SetDocumentSaved(false);
+    //if (OnCloseDocument() == false) return false;
+    //DeleteContents();
+    //Modify(false);
+    //SetDocumentSaved(false);
 
-    // create an empty score
-    m_pScore = new lmScore();
-    m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+    //// create an empty score
+    //m_pScore = new lmScore();
+    //m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
 
-    //In scores created in the score editor, we should render a full page,
-    //with empty staves. To this end, we need to change some options default value
-    m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
-    m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
+    ////In scores created in the score editor, we should render a full page,
+    ////with empty staves. To this end, we need to change some options default value
+    //m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
+    //m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
 
-    //Assign the score a default name
-    wxString name;
-    GetDocumentManager()->MakeDefaultName(name);
-    SetTitle(name);
-    SetFilename(name, true);
+    ////Assign the score a default name
+    //wxString name;
+    //GetDocumentManager()->MakeDefaultName(name);
+    //SetTitle(name);
+    //SetFilename(name, true);
 
     return true;
 }
