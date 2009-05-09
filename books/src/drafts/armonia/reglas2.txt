@@ -1,0 +1,54 @@
+Seguimos con el
+Enlace de acordes en estado fundamental con la fundamental duplicada
+=======================================================================
+
+Unisonos y cambios de posición
+---------------------------------
+
+A veces, al mover las voces, se produce un unísono entre dos de ellas (es decir que, por ejemplo, la contralto y el tenor dan la misma nota). Estos unísonos sólo son aceptables si se llega a ellos por movimiento contrario (es decir, de las dos voces que forman el únísono una ha bajado y la otra ha subido) o por movimiento oblicuo (una voz se ha mantenido y la otra ha subido/bajado). En otro caso (movimiento directo: las dos han subido/bajado) no es admisible.
+
+* Regla de validación [ToUnisonNotByDirectMovement]: Si hay un unísono se debe llegar a él por movimiento contrario u oblicuo.
+
+Para salir del unísono se aplica la misma regla: hay que salir por movimiento contrario u oblicuo.
+
+* Regla de validación [FromUnisonNotByDirectMovement]: Al salir de un unísono se debe salir por movimiento contrario u oblicuo.
+
+    ejemplo: 030.12_unison.lms
+             030.13_example_2.lms
+         
+         
+Para evitar llegar a un unísono se suele hacer un 'cambio de posición', es decir mover las voces de sitio sin cambiar el acorde (por eso se llama cambio de posición, porque es el mismo acorde pero cambiando las notas de sitio, por ejemplo, haciendo alguna inversión)
+
+    ejemplo: 030.14_cambio_posicion_1.lms
+
+El cabio de posición tambien se utiliza antes del acorde final de una pieza, para lograr que el acorde final esté completo (sin notas elididas) y acabe en mejor posición (estado fundamental).
+
+* Regla de validación [ChordPositionChanged]: Posiblemente haya que detectar que es el mismo acorde para evitar aplicar determinadas reglas de validación (¿cuales?) que podrían fallar en un cambio de posición. Hay otras (por ejemplo, lmCVR_NoVoicesCrossing y lmCVR_NoIntervalHigherThanOctave) que sí hay que aplicar.
+
+
+
+Otras excepciones a las reglas de enlace entre acordes en estado fundamental
+--------------------------------------------------------------------------------
+
+* En los finales en cadencia perfecta (V -> I) nos encontramos con un enlace de 4ª. Ello implica que las voces deberían moverse en la misma dirección en lo hace el bajo. Pero ello conduce a un acorde de I pobre. Entonces, para reforzar el final, se ignoran las reglas de enlace y se fuerza un acorde de I con todas sus notas.
+
+    ejemplo: 030.15_excepción_final_V_I.lms
+
+
+* Se puede duplicar la 3ª en vez de la fundamental. Se puede hacer en cualquier momento excepto cuando la 3ª es la sensible. LA SENSIBLE NUNCA SE DUPLICA, ni en este ni en ningun otro caso.
+
+Regla de validación [lmCVR_NoLeadingToneDoubled]: La sensible NUNCA se duplica.
+
+
+
+Modos menores:
+
+* necesidad de alterar el VII al resolver V->I. Si no se hace queda como 'inconcluso' ya que no tiene fuerza resolutoria
+
+    ejemplo: 030.16_resolucion_en_menor.lms
+
+* No se altera el VII al armonizar el III grado. Sólo se altera al armonizar el V y sólo es obligatorio en la cadencia final.
+
+* Al alterar el VII pueden aparecer saltos de 2ª aumentada. Hay que evitarlos. Para ello se duplica la 3ª en el VI grado
+
+
