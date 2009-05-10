@@ -298,7 +298,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     assert(ptChordDescriptor != NULL);
     assert(ptChordDescriptor->pChordNotes != NULL);
 
-     //@@@ TODO: QUITAR, DEBUG
+/* TODO: REMOVE
      for (int i = 0; i < nNumChordNotes; i++)
      {
         if (ptChordDescriptor->pChordNotes[i] != NULL)
@@ -312,6 +312,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
             wxLogMessage(_T("  CHORD NOTE[%d] : NULL!!") ,i );
         }
      }
+---*/
 
     // Create Chord
     fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes, &tChordInfo,  sStatusStr);
@@ -330,7 +331,13 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     }
     else
     {
-        colour = *wxRED;
+       // Even with errors, the chord is created and used for analysis of progression  (TODO: confirm this)
+        lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0];
+        ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
+        sStatusStr = ptChordDescriptor->ToString();
+        (*pNumChords)++;
+//        colour = *wxRED;
+        colour = wxColour(255,0,0,128); // R, G, B, Transparency
         fOk = false;
     }
 
@@ -364,8 +371,8 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     float rRelativeTime = -2.0f;
     wxString sStatusStr;
 
-    // TODO: QUITAR; PROVISIONAL
-    //  resetear el control de las indicaciones....
+    // TODO: MEJORAR ; PROVISIONAL
+    //  resetear el control de las indicaciones (reiniciar el espaciado)....
     DisplayChordInfo(pScore, &tChordDescriptor[0], *wxGREEN, sStatusStr, true);
 
     /*---
@@ -393,8 +400,6 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             // new measure starts. Update current time
             rTimeAtStartOfMeasure += pSO->GetTimePos();
             rAbsTime = rTimeAtStartOfMeasure;
-            wxLogMessage(_T(" NEW BAR @rAbsTime:%f = rTimeAtStartOfMeasure:%f ")
-                    , rAbsTime, rTimeAtStartOfMeasure); 
         }
         else if (pSO->IsNoteRest())
         {
@@ -402,18 +407,12 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             rRelativeTime = pSO->GetTimePos();
             rAbsTime = rTimeAtStartOfMeasure + rRelativeTime;
 
-            wxLogMessage(_T("@@ AbsTime:%f = SoM:%f + Rel:%f")
-                    , rAbsTime, rTimeAtStartOfMeasure, rRelativeTime); 
-
             // process notes
             if (((lmNoteRest*)pSO)->IsNote())
             {
                 // It is a note. Count it
                 ++nNote;
 			    pCurrentNote  = (lmNote*) pSO;
-
-                wxLogMessage(_T(" NEW note %d: %s")
-                    , nNote,  NoteId( *pCurrentNote ).c_str()  );
 
                 // calculate note's absolute time
                 rCurrentNoteAbsTime = rTimeAtStartOfMeasure + rRelativeTime;
@@ -440,8 +439,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
 
                     fScoreModified = true; // repaint
                 }
-                else
-                   wxLogMessage(_T("    not higher ") );
+//                else  wxLogMessage(_T("    not higher ") );
 
                 // add new note to the list of active notes
                 ActiveNotesList.AddNote(pCurrentNote, rCurrentNoteAbsTime + pCurrentNote->GetDuration());
@@ -461,8 +459,6 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     ActiveNotesList.GetChordDescriptor(&tChordDescriptor[nNumChords]);
     bool fChordOk = ProccessChord(pScore, tChordDescriptor, &nNumChords, sStatusStr);
 
-    wxLogMessage(_T("   Number of chords to alnayze:%d") , nNumChords );
-
     AnalyzeChordsLinks(&tChordDescriptor[0], nNumChords);
 
     fScoreModified = ( fScoreModified || fChordOk);
@@ -479,33 +475,18 @@ bool lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor,
     lmRuleList tRules(pChordDescriptor, nNCH);
 
     wxString sStr;
-    //////////////////// TODO: @@@ PRESINCIBLE; MOSTRAMOS LAS NOTAS
-    int nNotes;
-    for (int i=0; i<nNCH; i++)
-    {
-        sStr =  pChordDescriptor[i].ToString();
-
-        nNotes = pChordDescriptor[i].nNumChordNotes;
-        sStr += _T(" @@@@@@@@@NOTES IN CHORD:");
-        for (int nN = 0; nN<nNotes; nN++)
-        {
-            sStr += _T(" ");
-            sStr += NoteId( * pChordDescriptor[i].pChordNotes[nN] );
-        }
-        wxLogMessage(sStr) ;
-    }
-    ///////////////////////////////////////////////////
-
     sStr.clear();
 
     int nNumErros = 0; // TODO: @@decidir: num de errores o num de acordes con error
     lmRule* pRule;
-    // TODO: crear metodo de la lista que evalue todas las reglas??
+    // TODO: crear metodo de la lista que evalue TODAS las reglas??
     for (int nR = lmCVR_FirstChordValidationRule; nR<lmCVR_LastChordValidationRule; nR++)
     {
         pRule = tRules.GetRule(nR);
         if ( pRule == NULL)
-            wxLogMessage(_T(" Rule %d is NULL !!!"), nR);
+        {
+//            wxLogMessage(_T(" Rule %d is NULL !!!"), nR);
+        }
         else
         {
             nNumErros = pRule->Evaluate(sStr, &nNumChordError[0]);
@@ -513,7 +494,8 @@ bool lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor,
             wxLogMessage(_T("   RESULT of Rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
             if (nNumErros > 0)
             {
-                wxLogMessage(_T(" @@@Rule description: %s"), pRule->GetDescription().c_str());
+                wxLogMessage(_T(" Rule %d, description: %s")
+                    , pRule->GetRuleId(), pRule->GetDescription().c_str());
 
 /*-- TODO: dejar una forma definitiva de mostrar los mensajes
   esto fue un inento de mostarlos despues de aplicar cada regla,

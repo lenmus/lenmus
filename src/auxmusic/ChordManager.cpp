@@ -125,7 +125,7 @@ void  GetIntervalsFromNotes(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo*
               fpIntv = fpIntv % lm_p8;
         }
 #ifdef __WXDEBUG__
-        wxLogMessage(_T("[GetIntervalsFromNotes nota %d: %d  nota 0: %d] INTERVAL: %d")
+        wxLogMessage(_T("[GetIntervalsFromNotes note %d: %d  note 0: %d] INTERVAL: %d")
             , nCount, pInpChordNotes[nCount]->GetFPitch(), pInpChordNotes[0]->GetFPitch(), fpIntv);
 #endif
         // Update chord interval information
@@ -143,13 +143,10 @@ void  GetIntervalsFromNotes(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo*
         {
             if (fpIntv == 0)
             {
-                wxLogMessage(_T(" Ignored 0 Interval[%d]"), nExistingIntvIndex);
+  //@@TODO: remove          wxLogMessage(_T(" Ignored 0 Interval[%d]"), nExistingIntvIndex);
             }
             else
             {
-                wxLogMessage(_T(" Added Interval[%d]=%d")
-                , nExistingIntvIndex, fpIntv);
-
                 // Add interval
                 tOutChordInfo->nIntervals[nCurrentIntvIndex] = fpIntv;
                 nCurrentIntvIndex++;
@@ -231,13 +228,11 @@ lmEChordType GetChordTypeFromIntervals( lmChordInfo tChordInfo, bool fAllowFifth
                 {
                     if (tChordInfo.nIntervals[i] != tData[nIntv].nIntervals[i+1])
                     {
-                     wxLogMessage(_T(" @no hay QUINTA ELIDIDA, intervalo %d es %d != %d")
-                        , i,tChordInfo.nIntervals[i], tData[nIntv].nIntervals[i+1] );
+//TODO:remove  wxLogMessage(_T(" @no hay QUINTA ELIDIDA, intervalo %d es %d != %d"), i,tChordInfo.nIntervals[i], tData[nIntv].nIntervals[i+1] );
                       fDifferent = true;
                     }
-                    else
-                        wxLogMessage(_T(" @Check QUINTA ELIDIDA %d OK,  %d == %d, ITEM:%d")
-                        , i,tChordInfo.nIntervals[i], tData[nIntv].nIntervals[i+1], nIntv );
+//TODO:remove       else  wxLogMessage(_T(" @Check QUINTA ELIDIDA %d OK,  %d == %d, ITEM:%d")
+//                        , i,tChordInfo.nIntervals[i], tData[nIntv].nIntervals[i+1], nIntv );
                 }
                 if (!fDifferent)
                   return (lmEChordType) nIntv;  // found matching item
@@ -356,10 +351,6 @@ lmEChordType GetChordTypeAndInversionsFromIntervals( lmChordInfo &tChordInfo)
     {
         nType = GetChordTypeFromIntervals( tChordInfo );
 
-        wxLogMessage(_T(" @GTII T:%d num inv %d, max: %d, i0:%d i1:%d i2:%d")
-         , nType, tChordInfo.nNumInversions, nNumPossibleInversions
-         , tChordInfo.nIntervals[0], tChordInfo.nIntervals[1], tChordInfo.nIntervals[2] );
-
         if (nType != lmINVALID_CHORD_TYPE)
              return nType;
 
@@ -389,7 +380,7 @@ wxString lmChordManager::ToString()
     {
         //TODO: @@@In LDP ???
         int nNumNotes = GetNumNotes();
-        sRetStr = wxString::Format(_T("[Chord: %s, %d notes, %d invers, %d elis, pattern: ")
+        sRetStr = wxString::Format(_T("[Chord: %s, %d notes, %d invers., %d elis., pattern: ")
             , GetNameFull().c_str()
             , nNumNotes
             , m_nInversion
@@ -476,7 +467,6 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
     // Last resort: consider possible 5th elided
     if (CONSIDER_5TH_ELIDED && nType == lmINVALID_CHORD_TYPE)
     {
-            wxLogMessage(_T(" @@@@  COMPROBAR QUINTA ELIDIDA"));
         //@TODO: pensar en meter esto dentro de GetChordTypeAndInversionsFromIntervals
         //@TODO: pensar en hacer ANTES DE GetChordTypeAndInversionsFromIntervals
         //          (ahora GetChordTypeAndInversionsFromIntervals CAMBIA tOutChordInfo por las inversiones)
@@ -484,7 +474,7 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
         nType = GetChordTypeFromIntervals( tOriOutChordInfo, true );
         if (nType != lmINVALID_CHORD_TYPE)
         {
-            wxLogMessage(_T(" @TryChordCreation @@@  POSIBLE QUINTA ELIDIDA!!, type:%d"), nType);
+            wxLogMessage(_T(" Checking fifth ellided, type:%d"), nType);
             //@  TODO: pensar en mejorar comprobando nota raiz duplicada o triplicada...
             //@  TODO: pensar en mejorar comprobando otras posibles elisiones...
             *tOutChordInfo = tOriOutChordInfo; // TODO: @mejorable.. debemos recuperar el original
@@ -495,14 +485,16 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
 
     if (nType == lmINVALID_CHORD_TYPE )
     {
+#ifdef __WXDEBUG__
         wxLogMessage(_T(" @Try Invalid chord: Num notes %d, Ell:%d, i0:%d i1:%d i2:%d")
             ,  tOutChordInfo->nNumNotes, tOutChordInfo->nFifthElided, tOutChordInfo->nIntervals[0], tOutChordInfo->nIntervals[1]
         , tOutChordInfo->nIntervals[2] );
         wxLogMessage(_T(" @@Try tData[0]: Num notes %d, i0:%d i1:%d i2:%d")
             ,  tData[0].nNumNotes, tData[0].nIntervals[0], tData[0].nIntervals[1]
              , tData[0].nIntervals[2]  );
+#endif
         fOk = false;
-        sOutStatusStr +=  _T(", NOT A chord!] ");
+        sOutStatusStr +=  _T(", NOT A valid chord!] ");
     }
     else
     {
@@ -524,9 +516,11 @@ lmChordManager::lmChordManager(lmNote* pRootNote, lmChordInfo &tChordInfo)
         wxLogMessage(_T(" lmChordManager Invalid chord: Num notes %d, Num intv %d, 5thEllid %d, i0:%d i1:%d i2:%d")
             , tChordInfo.nNumNotes, tChordInfo.nNumIntervals, tChordInfo.nFifthElided
              , tChordInfo.nIntervals[0], tChordInfo.nIntervals[1], tChordInfo.nIntervals[2]  );
+#ifdef __WXDEBUG__
         wxLogMessage(_T(" @@@ tData[0]: Num notes %d, i0:%d i1:%d i2:%d")
             ,  tData[0].nNumNotes, tData[0].nIntervals[0], tData[0].nIntervals[1]
              , tData[0].nIntervals[2]  );
+#endif
     }
     else
       Create(pRootNote, &tChordInfo);
@@ -803,7 +797,9 @@ void lmChordManager::UnitTests()
 
 wxString ChordTypeToName(lmEChordType nType)
 {
-    wxASSERT(nType < ect_Max);
+    //@ todo: quitar wxASSERT(nType < ect_Max);
+    if (nType >= ect_Max)
+        return _T("Wrong Chord");
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated

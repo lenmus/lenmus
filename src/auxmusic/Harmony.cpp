@@ -92,7 +92,8 @@ void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
     for (int i = 0; i<nNumChordNotes; i++)
     {
         assert(pChordDsct->pChordNotes[i] != NULL);
-        pChordDsct->pChordNotes[i]->SetColour(colour);
+        if ( pChordDsct->pChordNotes[i]->GetComponentColour() == *wxGREEN )
+          pChordDsct->pChordNotes[i]->SetColour(colour);
     }
 
     // Green line pointing to the chord
@@ -103,7 +104,7 @@ void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
 //                                            sText, pStyle,	wxSize(500, 60), colour);
     lmTPoint lmTP1(nTxPos, nTyPos);
     lmTPoint lmTP2(ntxStart, ntyStart);
-    wxSize size(500, 60);
+    wxSize size(510, 60);
     lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTP1, lmTP2,
                                             sText, pStyle,	size, colour);
 
@@ -273,8 +274,7 @@ void lmChordError::SetError(int nBrokenRule, bool fVal)
 {
     assert ( nBrokenRule >= lmCVR_FirstChordValidationRule && nBrokenRule <= lmCVR_LastChordValidationRule);
     nErrList |= ( (fVal? 1:0) << nBrokenRule );
-    wxLogMessage(_T("SetError %d ,  ErrList:%u ,  %u")
-		 , nBrokenRule,  nErrList,   fVal );
+//TODO: remove?    wxLogMessage(_T("SetError %d ,  ErrList:%u ,  %u"), nBrokenRule,  nErrList,   fVal );
 }
 
 
@@ -313,7 +313,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
     // Analyze all chords
     for (int nC=1; nC<m_nNumChords; nC++) 
     {
-            wxLogMessage(_T("Check chord %d "), nC);
+            wxLogMessage(_T("Check chord %d "), (nC)+1);
 
         pNumFailuresInChord[nC] = 0;
 
@@ -322,50 +322,70 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
                      m_pChordDescriptor[nC].nNumChordNotes:  m_pChordDescriptor[nC-1].nNumChordNotes);
         for (int nN=0; nN<nNumNotes; nN++)
         {
-            nVoiceInterval[nN] = 
+/*----
+            nVoiceInterval[nN] = abs
               ( m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch() 
                 - m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch() ) % lm_p8 ;
-
-            wxLogMessage(_T(" Check parallel n:%d, chord %d: %d (%s),  chord %d: %d (%s),   intv:%d")
-		     , nN, nC, m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch(), NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
-             , nC-1, m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch(), NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN])
-                       , nVoiceInterval[nN]);
+---*/
+            nVoiceInterval[nN] =  ( m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch() 
+                - m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch() ) % lm_p8 ;
 
             // check if it is parallel with any previous note
             for (int i=0; i<nN; i++)
             {
                 if ( nVoiceInterval[i] == nVoiceInterval[nN])
                 {
-                    int nDistance = abs (
-                        ( m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
-                        - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() ) % lm_p8 );
-                    wxLogMessage(_T(" >>> Parallel motion in chord %d, notas:%d %d, intv:%d,   DIST:%d")
+                    int nDistance = m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
+                        - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() ;
+
+                     int nNormalizedDistance = abs(nDistance) % lm_p8;
+
+                    wxLogMessage(_T(" >>> Parallel motion in chord %d, notes:%d %d, intv:%d, DIST:%d")
 		               ,nC, i,  nN, nVoiceInterval[i],  nDistance );
-//                    if ( nVoiceInterval[i] == 0 || nVoiceInterval[i] == lm_p5 )
-                    if ( nDistance == 0 || nDistance == lm_p5 )
+
+                    if ( nNormalizedDistance == 0 || nNormalizedDistance == lm_p5 )
                     {
                         wxString sType =  ( nDistance == 0?  _T(" octave/unison"): _T(" fifth "));
                         pNumFailuresInChord[nC] = pNumFailuresInChord[nC]  +1;
+
+                        int nFullVoiceInterval = abs ( m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() 
+                              - m_pChordDescriptor[nC-1].pChordNotes[i]->GetFPitch() );
+
 //TODO: ¿ACUMULAR MENSAJES?                        sResultDetails += wxString::Format(
                         sResultDetails = wxString::Format(
-                            _T("Parallel motion of %s, chords: %d, %d, v%d %s to %s, v%d %s to %s, interval:%d")
-                            ,sType.c_str(),  nC-1, nC
-                            ,i,  NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]), NoteId(*m_pChordDescriptor[nC].pChordNotes[i])
-                            ,nN, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]),  NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
-                            , nVoiceInterval[i]
+                            _T("Parallel motion of %s, chords: %d, %d, v%d %s-->%s, v%d %s-->%s, Distance: %s(%d), Interval: %s(%d)")
+                            ,sType.c_str(),  (nC-1)+1, (nC)+1
+                            ,(i)+1,  NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]), NoteId(*m_pChordDescriptor[nC].pChordNotes[i])
+                            ,(nN)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]),  NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
+                            , FIntval_GetIntvCode(nDistance), nDistance
+                            , FIntval_GetIntvCode(nFullVoiceInterval), nVoiceInterval[i]
                             );
 
                         wxLogMessage( sResultDetails );
 
+
                         HDisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
                           , &m_pChordDescriptor[nC], colour, sResultDetails, false);
+
+
+                         // display failing notes in red   TODO: mejorar?
+  //                       if ( m_pChordDescriptor[nC].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
+                             m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxCYAN);
+  //                       if ( m_pChordDescriptor[nC].pChordNotes[i]->GetComponentColour() == *wxGREEN )
+                             m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxBLUE);
+  //                       if ( m_pChordDescriptor[nC-1].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
+                             m_pChordDescriptor[nC-1].pChordNotes[nN]->SetColour(*wxCYAN);
+  //                       if ( m_pChordDescriptor[nC-1].pChordNotes[i]->GetComponentColour() == *wxGREEN )
+                             m_pChordDescriptor[nC-1].pChordNotes[i]->SetColour(*wxBLUE);
+
+
 
                          m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
                          nErrCount++;
                     }
                 }
-                else wxLogMessage(_T("    not Parallel chord %d, n:%d n:%d, intv1:%d != intv2:%d")
-		               ,nC, i,  nN, nVoiceInterval[i] , nVoiceInterval[nN]);
+//todo:remove   else wxLogMessage(_T("    not Parallel chord %d, n:%d n:%d, intv1:%d != intv2:%d")
+//		               ,nC, i,  nN, nVoiceInterval[i] , nVoiceInterval[nN]);
 
             }
         }
@@ -415,18 +435,17 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFa
                   m_pChordDescriptor[nC-1].pChordNotes[i], m_pChordDescriptor[nC].pChordNotes[i]); 
 
                 nDistance  = abs (
-                        ( m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
-                        - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() ) % lm_p8 );
-
-                wxLogMessage(_T("Direct movement of voices:%d,%d  in chords:%d,%d; final DISTANCE:%d  ")
-                    ,nN, i, nC, nC-1, nDistance);
+                          m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
+                        - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() );
+//                wxLogMessage(_T("Direct movement of voices:%d,%d  in chords:%d,%d; final DISTANCE:%d  ")
+//                    ,nN, i, nC, nC-1, nDistance);
 
                 if ( nVoiceMovementType == lm_eDirectMovement && ( nDistance == 0 || nDistance == lm_p5 )  )
                 {
                     // Incorrect, unless: interval is 2th and voice is > 0 (not BASS)
                     nInterval  = abs (
-                        ( m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
-                        - m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch() ) % lm_p8 );
+                          m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
+                        - m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch() );
 
                     if (  (nInterval == lm_m2 || nInterval == lm_M2)
                           && nN > 0 )
@@ -438,13 +457,24 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFa
                         wxString sType =  ( nDistance == 0?  _T(" octave/unison"): _T(" fifth "));
 
                         sResultDetails = wxString::Format(
-                   _T("Direct movement resulting %s, chords:%d,%d, voices:%d,%d, final DISTANCE:%d")
-                   , sType.c_str(), nC, nC-1,  nN, i, nDistance );
+               _T("Direct movement resulting %s. Chords:%d,%d. Voices:%d (%s) and %d (%s). Distance: %s(%d), Interval: %s(%d)")
+               , sType.c_str(), (nC-1)+1, (nC)+1
+               , (nN)+1, NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
+               , (i)+1, NoteId(*m_pChordDescriptor[nC].pChordNotes[i])
+               , FIntval_GetIntvCode(nDistance), nDistance
+               , FIntval_GetIntvCode(nInterval), nInterval);
 
                         wxLogMessage( sResultDetails );
 
                         HDisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
                           , &m_pChordDescriptor[nC], colour, sResultDetails, false);
+
+                         // display failing notes in red  (TODO: mejorar indicacion de errores)
+   //                      if ( m_pChordDescriptor[nC].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
+                            m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
+   //                      if ( m_pChordDescriptor[nC].pChordNotes[i]->GetComponentColour() == *wxGREEN )
+                            m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxRED);
+
 
                         m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
                         nErrCount++;

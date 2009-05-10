@@ -317,6 +317,7 @@ public:
 
     //properties
     inline void SetColour(wxColour color) { m_color = color; }
+    inline wxColour GetComponentColour() { return m_color; }
 
 
 
