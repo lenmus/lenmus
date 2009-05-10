@@ -62,6 +62,8 @@ class lmShapeStaff;
 class lmBoxSliceVStaff;
 class lmGMObject;
 class lmGMSelection;
+class lmScoreProcessor;
+class lmToolBoxConfiguration;
 
 
 //Abstract class. All views must derive from it
@@ -93,6 +95,8 @@ class lmScoreView : public lmView
 public:
     lmScoreView();
     ~lmScoreView();
+
+    inline void SetScoreProcessor(lmScoreProcessor* pScoreProc) { m_pScoreProc = pScoreProc; }
 
 	//overrides of virtual methods in wxView
     bool OnClose(bool deleteWindow = true);
@@ -139,6 +143,9 @@ public:
     inline lmDocument* GetDocument() { return m_pDoc; }
 	inline lmBoxScore* GetBoxScore() { return m_graphMngr.GetBoxScore(); }
 
+    //controller related
+    void SaveToolBoxConfiguration();
+    void RestoreToolBoxConfiguration();
 
     // call backs: sound related methods
     void OnVisualHighlight(lmScoreHighlightEvent& event);
@@ -247,11 +254,12 @@ private:
 	//-- variables ---
 
     // parents, managers and related
-    lmScoreCanvas*      m_pCanvas;          //the MVC controller (C) and the window for rendering the view
-    lmGraphicManager    m_graphMngr;        //rederization manager
-    lmEditFrame*        m_pFrame;           //the frame for the view
-    lmMainFrame*        m_pMainFrame;       //for accesing StatusBar
-
+    lmScoreCanvas*          m_pCanvas;          //the MVC controller (C) and the window for rendering the view
+    lmScoreProcessor*       m_pScoreProc;       //the associated score processor, if exists
+    lmGraphicManager        m_graphMngr;        //rederization manager
+    lmEditFrame*            m_pFrame;           //the frame for the view
+    lmMainFrame*            m_pMainFrame;       //for accesing StatusBar
+    lmToolBoxConfiguration* m_pToolBoxConfig;   //to save ToolBox configuration
 
     // controls on the window
     lmRuler*        m_pHRuler;    //rulers

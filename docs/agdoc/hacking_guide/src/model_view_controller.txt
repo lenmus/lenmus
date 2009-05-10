@@ -89,6 +89,9 @@ The wxWidgets document/view architecture is used, and class %%wxDocManager%% orc
 
 The process starts when an event wxID_NEW or wxID_OPEN is created (i.e. via main menu 'file > new'  or 'file > open').
 
+In the wxWidgets doc/view architecture the MainFrame derives from wxDocManager. 
+wxDocManager is an EventHandler that deals with the most common commands related to documents: open, new, save, print, etc.
+
 The wxWidgets framework first invokes %%wxDocManager::CreateDocument()%%, to create the lmDocument instace. But this instace is empty, that is, it doesn't contains any score yet! Therefore, %%m_pScore%% will be always %%NULL%% at this point.
 
 Next, %%wxDocManager%% proceeds to create the view. The invokation path for this complex but, finally, the following invocation takes place: %%wxDocTemplate::CreateView()%%. This invokes the view constructor followed by an invocation to %%wxWiew::OnCreate()%%.
@@ -103,9 +106,7 @@ Then the framework informs the document by invoking, either:
 
      * lmDocument::OnNewDocument() --> it invokes lmScoreView::OnChangeFilename(). Next I don't know but it arrives directly to lmScoreView::RepaintScoreRectangle. This time the score is not null and the first repaint takes place.
     
-Lets continue the description from %%lmDocument::OnOpenDocument()%% (the behaviour is similar when %%lmDocument::OnNewDocument()%% is instaed invoked).
-
-At this point, %%lmDocument %% receives control to load/create the document (the score). The expected standard behaviour would be to instantiate the document (i.e. by parsing a file containing the score to open), to assign a visible name to it (%%SetFilename()%%) and to display it (%%UpdateAllViews()%%).
+Lets continue the description from %%lmDocument::OnOpenDocument()%% (the behaviour is similar when %%lmDocument::OnNewDocument()%% is instaed invoked). The expected standard behaviour would be to instantiate the document (i.e. by parsing a file containing the score to open), to assign a visible name to it (%%SetFilename()%%) and to display it (%%UpdateAllViews()%%).
 
 \important
 {
@@ -151,6 +152,51 @@ wxDocManager::OnFileNew
 {
 %%lmScoreView::OnDraw()%% is a mandatory override of %%wxView%%. So we must define an %%OnDraw()%% method. But the repaint behaviour is controled by the %%OnPaint%% event on %%lmScoreCanvas%% and is redirected to %%lmScoreView::RepaintScoreRectangle()%%. So %%OnDraw()%% is empty. It is only invoked by the print/preview architecture, for print/preview the document.
 }
+
+In summary:
+
+    * wxDocManager::CreateDocument is invoked.
+    * A new wxDocument is created
+    * method wxDocument::OnCreate() is invoked
+    * it invokes GetDocumentTemplate()->CreateView([wxDocument], flags))
+    * the View is created
+    * then view->OnCreate(doc, flags)) is invoked
+    * there the frame and the controller (canvas) are created (owned by the View)
+    
+Then the framework informs the document by invoking lmDocument::OnOpenDocument() and this causes:
+
+    * the score is transferred to the document
+    * the lmEditorMode is transferred to the document
+    * the lmEditorMode is instructed to create the Score Procesor. Ownership of lmScoreProcessor is transferred to the view
+    * the lmEditorMode is instructed to customize the ToolBox.
+
+    
+    
+Therefore:
+
+object          | created by                    | owned by
+
+%%%-M-----------+-------------------------------+----------------------------------
+the document    | wxDocManager::CreateDocument  | ?
+the score       | any object                    | transferred to the document
+lmEditorMode    | the score creator             | transferred to the document
+
+%%%-V-----------+-------------------------------+----------------------------------
+the View        | wxDocument::OnCreate()        | ?
+the Frame       | lmScoreView::OnCreate         | the view (lmScoreView)
+
+%%%-C-----------+-------------------------------+----------------------------------
+the Controller  | lmScoreView::OnCreate         | the view (lmScoreView)
+Score procesor  | lmEditorMode                  | transferred to the view
+ToolBox config  | the view (lmScoreView)        | the view (lmScoreView)
+the ToolBox     | lmMainFrame                   | lmMainFrame
+
+
+
+
+
+lmMainFrame::NewScoreWindow
+
 
 
 \h1 {Changes for importing scores, using the score wizard and for exercises}
@@ -306,7 +352,24 @@ So, time has arrived to replace the doc/view wxWidgets framework! But that will 
     * wxDocTemplate will be replaced by lmEditMode
 
 
-The lmDocument needs to have / save information about all these issues, so that the environment can be properly restored when loading a document
+The lmDocument needs to have / save information about all these issues, so that the environment can be properly restored when loading a document. Moreover, in wxWidgets, wxDocument is a class derived from wxEvtHandler. Internally it has the following member variables:
+
+    wxList                m_documentViews;
+    wxString              m_documentFile;
+    wxString              m_documentTitle;
+    wxString              m_documentTypeName;
+    wxDocTemplate*        m_documentTemplate;
+    bool                  m_documentModified;
+    wxDocument*           m_documentParent;
+    wxCommandProcessor*   m_commandProcessor;
+    bool                  m_savedYet;
+
+That is: it knows about the doc/view relationship (represented by wxDocTemplate) and knows about all the views displying it (m_documentViews).
+
+So, it doesn't seem a bad approach to add information about the edit mode and about all controllers.
+
+On the other hand, the wxDocManager (somethong owned by the main frame) only has info about     all open documents (m_docs) and about the current selected view (m_currentView)
+
 
 The MVC model has now more components:
 
@@ -318,6 +381,16 @@ The MVC model has now more components:
     *The Document: dosn't change
     
     * wxDocTemplate will be replaced by lmEditMode
+
+
+In the wxWidgets doc/view architecture the MainFrame derives from wxDocManager. 
+wxDocManager is an EventHandler that deals with the most common commands related to documents: open, new, save, print, etc.
+
+The wxDocManager is created by TheApp (line 470) as well as the wxDocTemplate.
+Then, when the lmMainFrame is created, the created wxDocManager is passed as parameter [ method lmTheApp::RecreateGUI() ]
+
+wxDocTemplate constructor receives the wxDocManager as parameter and, internally, the constructor invokes:
+    m_documentManager->AssociateTemplate(this);
 
 
 

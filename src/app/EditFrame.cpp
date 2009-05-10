@@ -102,12 +102,21 @@ void lmEditFrame::OnChildFrameActivated()
 {
 	//this frame is now the active frame. Inform main frame.
 	g_pMainFrame->OnActiveChildChanged(this);
+
+    //Restore ToolBox customization
+    m_pView->RestoreToolBoxConfiguration();
 }
 
 void lmEditFrame::OnChildFrameDeactivated()
 {
-    //this frame is going to be inactivated. Stop the score if playing back
+    //this frame is going to be inactivated. Stop the score if playing back and
+    //save current ToolBox configuration
+    
+    //Stop the score if playing back
     m_pView->GetController()->StopPlaying(true);     //true -> wait for termination
+
+    //save current ToolBox configuration
+    m_pView->SaveToolBoxConfiguration();
 }
 
 

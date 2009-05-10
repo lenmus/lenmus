@@ -36,6 +36,7 @@ class lmDocument;
 class lmGMSelection;
 class lmToolBoxEvent;
 class lmToolPage;
+class lmScoreProcessor;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -315,8 +316,9 @@ public:
     ~lmEditorMode();
 
     void CustomizeToolBoxPages(lmToolBox* pToolBox);
+    lmScoreProcessor* CreateScoreProcessor();
 
-    //ToolBox pages
+    //ToolBox reated
     void ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo);
 
 protected:
@@ -324,7 +326,7 @@ protected:
     wxClassInfo*            m_pControllerInfo;
     wxClassInfo*            m_pScoreProcInfo;
     wxClassInfo*            m_ToolPagesInfo[lmPAGE_MAX];
-    lmToolBoxConfiguration  m_config;
+    //lmToolBoxConfiguration  m_config;
 
 };
 

@@ -116,7 +116,7 @@ void lmSOIterator::MovePrev()
     {
         //move to last object
         m_pSO = m_pColStaffObjs->GetLastSO();
-        m_fChangeOfMeasure = true;
+        m_fChangeOfMeasure = (m_pSO ? m_pSO->IsBarline() : true);
         m_fEnd = false;
         return;     
     }

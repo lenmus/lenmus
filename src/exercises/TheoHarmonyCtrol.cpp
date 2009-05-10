@@ -97,8 +97,8 @@ lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
 
 lmTheoHarmonyCtrol::~lmTheoHarmonyCtrol()
 {
-    //AWARE: As score ownership is transferred to the Score Editor window, the
-    //problem score MUST NOT be deleted. 
+    //AWARE: As score and EditMode ownership is transferred to the Score Editor window,
+    //they MUST NOT be deleted here. 
 }
 
 wxDialog* lmTheoHarmonyCtrol::GetSettingsDlg()

@@ -43,10 +43,10 @@ class lmUrlAuxCtrol;
 //--------------------------------------------------------------------------
 class lmScoreProcessor : public wxEvtHandler
 {
-public:
-    lmScoreProcessor();
-    virtual ~lmScoreProcessor();
+	DECLARE_ABSTRACT_CLASS(lmScoreProcessor)
 
+public:
+    virtual ~lmScoreProcessor();
 
     virtual bool ProcessScore(lmScore* pScore) = 0;
     virtual bool UndoChanges(lmScore* pScore) = 0;
@@ -54,6 +54,7 @@ public:
 
 
 protected:
+    lmScoreProcessor();
     void DoProcess();
     void UndoProcess();
 
@@ -79,6 +80,8 @@ private:
 //--------------------------------------------------------------------------
 class lmHarmonyProcessor : public lmScoreProcessor
 {
+	DECLARE_DYNAMIC_CLASS(lmHarmonyProcessor)
+
 public:
     lmHarmonyProcessor();
     ~lmHarmonyProcessor();

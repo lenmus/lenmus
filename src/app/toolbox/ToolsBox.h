@@ -105,10 +105,10 @@ public:
     inline bool IsOk() { return m_fIsValid; }
 
 
-    wxPanel*        m_pSpecialGroup;          //panel for the fixed group
+    wxPanel*        m_pSpecialGroup;        //panel for the special group
     lmEToolPage		m_nSelTool;				//selected tool
-    bool            m_fShowSpecialGroup;
     bool            m_fIsValid;             //this object has valid data
+    bool            m_fSpecialGroupVisible;
     int             m_Pages[lmPAGE_MAX];
 };
 
@@ -135,8 +135,8 @@ public:
     void OnResize(wxSizeEvent& event);
 
     //configuration
-    void GetConfiguration(lmToolBoxConfiguration& config);
-    void SetConfiguration(lmToolBoxConfiguration& config);
+    void GetConfiguration(lmToolBoxConfiguration* pConfig);
+    void SetConfiguration(lmToolBoxConfiguration* pConfig);
     void SetDefaultConfiguration();
 
 	//info
@@ -179,9 +179,6 @@ private:
     wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
     lmEToolPage		m_nSelTool;				//current selected tool
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
-
-    //variables
-    bool            m_fShowSpecialGroup;
 
 	//panels for tools' options
 	std::vector<lmToolPage*>    m_cPages;		                // pages collection

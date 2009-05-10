@@ -40,6 +40,7 @@
 #include "ScoreView.h"
 #include "ScoreDoc.h"
 #include "ScoreCommand.h"
+#include "Processor.h"
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 #include "toolbox/ToolNotes.h"
 #include "toolbox/ToolBoxEvents.h"
@@ -2027,33 +2028,33 @@ void lmEditorMode::ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo)
 
 void lmEditorMode::CustomizeToolBoxPages(lmToolBox* pToolBox)
 {
-    if (m_config.IsOk())
+    //create the configuration
+    for (int i=0; i < lmPAGE_MAX; ++i)
     {
-        //if configuration already created, use it
-        pToolBox->SetConfiguration(m_config);
-    }
-    else
-    {
-        //create the configuration
-        for (int i=0; i < lmPAGE_MAX; ++i)
+        if (m_ToolPagesInfo[i])
         {
-            if (m_ToolPagesInfo[i])
-            {
-                lmToolPage* pPage = (lmToolPage*)m_ToolPagesInfo[i]->CreateObject();
-                pPage->Create(pToolBox);
-                pPage->CreateGroups();
-                pToolBox->AddPage(pPage, i);
-                pToolBox->SetAsActive(pPage, i);
-                pToolBox->SelectToolPage( pToolBox->GetSelectedToolPage() );
-            }
+            lmToolPage* pPage = (lmToolPage*)m_ToolPagesInfo[i]->CreateObject();
+            pPage->Create(pToolBox);
+            pPage->CreateGroups();
+            pToolBox->AddPage(pPage, i);
+            pToolBox->SetAsActive(pPage, i);
+            pToolBox->SelectToolPage( pToolBox->GetSelectedToolPage() );
         }
-
-        //save the created configuration
-        pToolBox->GetConfiguration(m_config);
     }
 }
 
-
+lmScoreProcessor* lmEditorMode::CreateScoreProcessor()
+{
+    if (m_pScoreProcInfo)
+    {
+        //create the score processor
+        lmScoreProcessor* pScoreProc =
+            (lmScoreProcessor*)m_pScoreProcInfo->CreateObject();
+        pScoreProc->SetTools();
+        return pScoreProc;
+    }
+    return (lmScoreProcessor*)NULL;
+}
 
 
 

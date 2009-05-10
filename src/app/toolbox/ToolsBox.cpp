@@ -94,7 +94,6 @@ IMPLEMENT_CLASS(lmToolBox, wxPanel)
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxBORDER_NONE)
 	, m_nSelTool(lmPAGE_NONE)
-    , m_fShowSpecialGroup(false)
 {
 	//set colors
 	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
@@ -179,41 +178,46 @@ lmToolBox::~lmToolBox()
 {
 }
 
-void lmToolBox::GetConfiguration(lmToolBoxConfiguration& config)
+void lmToolBox::GetConfiguration(lmToolBoxConfiguration* pConfig)
 {
     //Updates received config object with current configuration data
 
     //active pages
     for (int i=0; i < (int)lmPAGE_MAX; i++)
-        config.m_Pages[i] = m_cActivePages[i];
+        pConfig->m_Pages[i] = m_cActivePages[i];
 
     //other info
-    config.m_pSpecialGroup = m_pSpecialGroup;     //panel for the fixed group
-    config.m_nSelTool = m_nSelTool;           //selected tool
-    config.m_fShowSpecialGroup = m_fShowSpecialGroup;
+    pConfig->m_pSpecialGroup = m_pSpecialGroup;
+    pConfig->m_fSpecialGroupVisible = m_pSpecialGroup->IsShown();
+    pConfig->m_nSelTool = m_nSelTool;             //selected tool
 
     //mark as valid
-    config.m_fIsValid = true;
+    pConfig->m_fIsValid = true;
 }
 
-void lmToolBox::SetConfiguration(lmToolBoxConfiguration& config)
+void lmToolBox::SetConfiguration(lmToolBoxConfiguration* pConfig)
 {
     //Reconfigures ToolBox as specified by received pConfig parameter
 
-    wxASSERT(config.IsOk());
+    if (!pConfig)
+    {
+        SetDefaultConfiguration();
+        return;
+    }
+
+    wxASSERT(pConfig->IsOk());
 
     //active pages
     for (int i=0; i < (int)lmPAGE_MAX; i++)
-        m_cActivePages[i] = config.m_Pages[i];
+        m_cActivePages[i] = pConfig->m_Pages[i];
 
     //other info
-    m_pSpecialGroup = config.m_pSpecialGroup;     //panel for the fixed group
-    m_nSelTool = config.m_nSelTool;           //selected tool
-    m_fShowSpecialGroup = config.m_fShowSpecialGroup;
+    m_pSpecialGroup = pConfig->m_pSpecialGroup;   //panel for the special group
+    m_nSelTool = pConfig->m_nSelTool;             //selected tool
 
     //apply changes
-    //if (m_pSpecialGroup)
-    //    m_pSpecialGroup->Show(m_fShowSpecialGroup);
+    if (m_pSpecialGroup)
+        m_pSpecialGroup->Show(pConfig->m_fSpecialGroupVisible);
 
     GetSizer()->Layout();
 
@@ -362,9 +366,9 @@ void lmToolBox::SetDefaultConfiguration()
     for (int i=0; i < (int)lmPAGE_MAX; i++)
         SetAsActive(m_cPages[i], i);
 
-    ////hide fixed group if displayed
-    //if (m_pSpecialGroup && m_pSpecialGroup->IsShown())
-    //    m_pSpecialGroup->Show(false);
+    //hide fixed group if displayed
+    if (m_pSpecialGroup)
+        m_pSpecialGroup->Show(false);
 
     SelectToolPage(m_nSelTool);
 }

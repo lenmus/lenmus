@@ -1937,15 +1937,6 @@ void lmMainFrame::OnActiveChildChanged(lmMDIChildFrame* pFrame)
 
     wxLogMessage(_T("[lmMainFrame::OnActiveChildChanged] Is kind of lmDocMDIChildFrame: %s"),
         pFrame->IsKindOf(CLASSINFO(lmDocMDIChildFrame)) ? _T("yes") : _T("No") );
-
-    //if score editor window activated customize ToolBox
-    if ( pFrame->IsKindOf(CLASSINFO(lmDocMDIChildFrame)) )
-    {
-        //the only lmDocMDIChildFrame is lmEditFrame
-        lmDocument* pDoc = (lmDocument*)((lmEditFrame*)pFrame)->GetDocument();
-        lmEditorMode* pMode = pDoc->GetEditMode();
-        CustomizeController(pMode);
-    }
 }
 
 void lmMainFrame::OnNewEditFrame()
@@ -1953,6 +1944,9 @@ void lmMainFrame::OnNewEditFrame()
 	// A new EditFrame has been open. If this is the first one, open also
 	// the edit ToolBox panel
 	ShowToolBox(true);
+	lmToolBox* pToolBox = GetActiveToolBox();
+	wxASSERT(pToolBox);
+    pToolBox->SetDefaultConfiguration();
 }
 
 void lmMainFrame::UpdateZoomControls(double rScale)
@@ -2241,32 +2235,39 @@ void lmMainFrame::NewScoreWindow(lmEditorMode* pMode, lmScore* pScore)
         //save lmEditMode
         pDoc->SetEditMode(pMode);
 
-    //use lmEditorMode information to create the environment
-    CustomizeController(pMode);
+    //customize ToolBox
+    if (pMode)
+    {
+        //force ToolBox creation if doesn't exist yet
+        ShowToolBox(true);
+	    lmToolBox* pToolBox = GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        pMode->CustomizeToolBoxPages(pToolBox);
+    }
 
     SetFocusOnActiveView();
 }
 
-void lmMainFrame::CustomizeController(lmEditorMode* pMode)
-{
-    //The active edit frame has changed. Customize ToolBox as specified by received edit mode
-
-    //force ToolBox creation if doesn't exist yet
-    ShowToolBox(true);
-	lmToolBox* pToolBox = GetActiveToolBox();
-	wxASSERT(pToolBox);
-
-    //customize ToolBox
-    if (pMode)
-    {
-        pMode->CustomizeToolBoxPages(pToolBox);
-    }
-    else
-    {
-        //use standard mode
-        pToolBox->SetDefaultConfiguration();
-    }
-}
+//void lmMainFrame::CustomizeToolBox(lmEditorMode* pMode)
+//{
+//    //The active edit frame has changed. Customize ToolBox as specified by received edit mode
+//
+//    //force ToolBox creation if doesn't exist yet
+//    ShowToolBox(true);
+//	lmToolBox* pToolBox = GetActiveToolBox();
+//	wxASSERT(pToolBox);
+//
+//    //customize ToolBox
+//    if (pMode)
+//    {
+//        pMode->CustomizeToolBoxPages(pToolBox);
+//    }
+//    else
+//    {
+//        //use standard mode
+//        pToolBox->SetDefaultConfiguration();
+//    }
+//}
 
 //-----------------------------------------------------------------------------------------------
 // Print/preview
@@ -2477,37 +2478,12 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
             event.Enable(true);
     }
 
-    ////TODO
-    ////in spite of program logic, here I force to disable any unfinished feature
-    ////if this is a release version
-    ////   ----------------------------------------------------
-    ////   VERY IMPORTANT: READ THIS BEFORE REMOVING THIS CODE
-    ////   ----------------------------------------------------
-    ////This code does not work to disable wxID_NEW menu item
-    ////So I have replaced identifier:
-    ////          wxID_NEW -> MENU_File_New
-    ////The problem with this is that now this item doesn't work, as wxDocManager
-    ////has no knowledge about it.
-    ////WHEN REMOVING THIS CODE RESTORE wxID_NEW identifier
-    ////
     if (g_fReleaseVersion || g_fReleaseBehaviour) {
         switch (event.GetId())
         {
             case MENU_File_Export_MusicXML:
                 event.Enable(false);
                 break;
-    //        case MENU_File_New:
-    //            event.Enable(false);
-    //            break;
-    //        case MENU_File_Import:
-    //            event.Enable(false);
-    //            break;
-    //        case wxID_SAVE:
-    //            event.Enable(false);
-    //            break;
-    //        case wxID_SAVEAS:
-    //            event.Enable(false);
-    //            break;
         }
     }
 

@@ -233,3 +233,13 @@ wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
 	return stream;
 }
 #endif
+
+void lmDocument::SetEditMode(lmEditorMode* pMode) 
+{
+    //sets the edit mode and creates the score processor, if necessary
+
+    m_pEditMode = pMode;
+
+    if (pMode)
+        pMode->CreateScoreProcessor();
+}

@@ -63,6 +63,8 @@ extern lmLogger* g_pLogger;
 const int lmID_DO_PROCESS = wxNewId();
 const int lmID_UNDO_PROCESS = wxNewId();
 
+IMPLEMENT_ABSTRACT_CLASS(lmScoreProcessor, wxEvtHandler)
+
 lmScoreProcessor::lmScoreProcessor()
     : wxEvtHandler()
 {
@@ -170,6 +172,8 @@ void lmScoreProcessor::RealizePanel()
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmHarmonyProcessor
 //-------------------------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS(lmHarmonyProcessor, lmScoreProcessor)
 
 lmHarmonyProcessor::lmHarmonyProcessor()
     : lmScoreProcessor()

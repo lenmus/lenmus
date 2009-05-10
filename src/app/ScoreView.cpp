@@ -44,10 +44,12 @@
 #include "ScoreView.h"
 #include "ScoreCanvas.h"
 #include "EditFrame.h"
+#include "Processor.h"
+#include "FontManager.h"
+#include "toolbox/ToolsBox.h"
+#include "ArtProvider.h"
 #include "../widgets/Ruler.h"
 #include "../widgets/Caret.h"
-#include "FontManager.h"
-#include "ArtProvider.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/BoxScore.h"
 #include "../graphic/BoxPage.h"
@@ -132,19 +134,21 @@ END_EVENT_TABLE()
 
 
 lmScoreView::lmScoreView()
+    : m_pScoreProc((lmScoreProcessor*)NULL)
+    , m_pToolBoxConfig((lmToolBoxConfiguration*)NULL)
+    , m_pFrame((lmEditFrame*) NULL)
+    , m_pCanvas((lmScoreCanvas*) NULL)
+    , m_pHRuler((lmRuler*) NULL)
+    , m_pVRuler((lmRuler*) NULL)
+    , m_pHScroll((wxScrollBar*) NULL)
+    , m_pVScroll((wxScrollBar*) NULL)
+    , m_xScrollPosition(0)
+    , m_yScrollPosition(0)
+    , m_rScale(1.0 * lmSCALE)
+	, m_fCaretInit(false)
 {
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
-    m_pFrame = (lmEditFrame*) NULL;
-    m_pCanvas = (lmScoreCanvas*) NULL;
     m_pDoc = (lmDocument*) NULL;
-    m_pHRuler = (lmRuler*) NULL;
-    m_pVRuler = (lmRuler*) NULL;
-    m_pHScroll = (wxScrollBar*) NULL;
-    m_pVScroll = (wxScrollBar*) NULL;
-    m_xScrollPosition = 0;
-    m_yScrollPosition = 0;
-    m_rScale = 1.0 * lmSCALE;
-	m_fCaretInit = false;
 
     // drag state control initializations
     m_nDragState = lmDRAG_NONE;
@@ -188,6 +192,12 @@ lmScoreView::~lmScoreView()
 {
     if (m_pCaret)
         delete m_pCaret;
+
+    if (m_pScoreProc)
+        delete m_pScoreProc;
+
+    if (m_pToolBoxConfig)
+        delete m_pToolBoxConfig;
 
     ClearVisiblePagesInfo();
 }
@@ -382,6 +392,23 @@ void lmScoreView::SetRulersVisible(bool fVisible)
         ResizeControls();
     }
 
+}
+
+void lmScoreView::RestoreToolBoxConfiguration()
+{
+    m_pMainFrame->ShowToolBox(true);
+	lmToolBox* pToolBox = m_pMainFrame->GetActiveToolBox();
+	wxASSERT(pToolBox);
+    pToolBox->SetConfiguration(m_pToolBoxConfig);
+}
+
+void lmScoreView::SaveToolBoxConfiguration()
+{
+    lmToolBox* pToolBox = m_pMainFrame->GetActiveToolBox();
+	wxASSERT(pToolBox);
+    if (!m_pToolBoxConfig)
+        m_pToolBoxConfig = new lmToolBoxConfiguration();
+    pToolBox->GetConfiguration(m_pToolBoxConfig);
 }
 
 void lmScoreView::OnDraw(wxDC* pDC)

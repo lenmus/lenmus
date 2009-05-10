@@ -276,7 +276,6 @@ protected:
     void ScanForBooks(wxString sPath, wxString sPattern);
     void LoadRecentFiles();
     void SaveRecentFiles();
-    void CustomizeController(lmEditorMode* pMode);
 
     //menu bar
     void AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,

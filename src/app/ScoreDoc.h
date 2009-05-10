@@ -92,7 +92,7 @@ public:
     inline lmScore* GetScore() {return m_pScore; };
 
     //Edit mode
-    inline void SetEditMode(lmEditorMode* pMode) { m_pEditMode = pMode; }
+    void SetEditMode(lmEditorMode* pMode);
     inline lmEditorMode* GetEditMode() { return m_pEditMode; }
 
 private:
