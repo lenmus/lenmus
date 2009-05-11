@@ -31,23 +31,42 @@
 
 #include "Harmony.h"
 
+// return
+//  -1: negative, 0, 1: positive
+int GetHarmonicDirection(int nInterval)
+{
+    if (nInterval > 0)
+        return 1;
+    else  if (nInterval < 0)
+        return -1;
+    else
+        return 0;
+}
+
 //
 // Global functions
 //
 int GetHarmonicMovementType( lmNote* pVoice10, lmNote* pVoice11, lmNote* pVoice20, lmNote* pVoice21)
 {
-    int nD1 = (pVoice11->GetFPitch() - pVoice10->GetFPitch()) % 1;
-    int nD2 = (pVoice21->GetFPitch() - pVoice20->GetFPitch()) % 1;
+    int nMovType = -10;
+
+    int nD1 = GetHarmonicDirection(pVoice11->GetFPitch() - pVoice10->GetFPitch());
+    int nD2 = GetHarmonicDirection(pVoice21->GetFPitch() - pVoice20->GetFPitch());
 
     if (nD1 == nD2)
-        return lm_eDirectMovement;
+    {
+        nMovType =  lm_eDirectMovement;
+    }
     else if (nD1 == -nD2)
-        return lm_eContraryMovement;
+    {
+        nMovType = lm_eContraryMovement;
+    }
     else 
     {
         assert ( (nD1 == 0 && nD2 != 0)  ||  (nD2 == 0 && nD1 != 0) );
-        return lm_eObliqueMovement;
+        nMovType = lm_eObliqueMovement;
     }
+    return nMovType;
 }
 
 
@@ -322,11 +341,6 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
                      m_pChordDescriptor[nC].nNumChordNotes:  m_pChordDescriptor[nC-1].nNumChordNotes);
         for (int nN=0; nN<nNumNotes; nN++)
         {
-/*----
-            nVoiceInterval[nN] = abs
-              ( m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch() 
-                - m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch() ) % lm_p8 ;
----*/
             nVoiceInterval[nN] =  ( m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch() 
                 - m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch() ) % lm_p8 ;
 
@@ -353,7 +367,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
 
 //TODO: ¿ACUMULAR MENSAJES?                        sResultDetails += wxString::Format(
                         sResultDetails = wxString::Format(
-                            _T("Parallel motion of %s, chords: %d, %d, v%d %s-->%s, v%d %s-->%s, Distance: %s(%d), Interval: %s(%d)")
+                            _T("Parallel motion of %s, chords: %d, %d; v%d %s-->%s, v%d %s-->%s, Distance: %s(%d), Interval: %s(%d)")
                             ,sType.c_str(),  (nC-1)+1, (nC)+1
                             ,(i)+1,  NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]), NoteId(*m_pChordDescriptor[nC].pChordNotes[i])
                             ,(nN)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]),  NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
@@ -437,8 +451,11 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFa
                 nDistance  = abs (
                           m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
                         - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() );
-//                wxLogMessage(_T("Direct movement of voices:%d,%d  in chords:%d,%d; final DISTANCE:%d  ")
-//                    ,nN, i, nC, nC-1, nDistance);
+
+                wxLogMessage(_T(" Notes: %s-->%s %s-->%s Mov tpye:%d  distance:%d")
+ , NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]), NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
+ , NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]), NoteId(*m_pChordDescriptor[nC].pChordNotes[i])
+ ,nVoiceMovementType, nDistance);
 
                 if ( nVoiceMovementType == lm_eDirectMovement && ( nDistance == 0 || nDistance == lm_p5 )  )
                 {
@@ -457,10 +474,10 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFa
                         wxString sType =  ( nDistance == 0?  _T(" octave/unison"): _T(" fifth "));
 
                         sResultDetails = wxString::Format(
-               _T("Direct movement resulting %s. Chords:%d,%d. Voices:%d (%s) and %d (%s). Distance: %s(%d), Interval: %s(%d)")
+               _T("Direct movement resulting %s. Chords:%d,%d. Voices:%d %s-->%s and %d %s-->%s. Distance: %s(%d), Interval: %s(%d)")
                , sType.c_str(), (nC-1)+1, (nC)+1
-               , (nN)+1, NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
-               , (i)+1, NoteId(*m_pChordDescriptor[nC].pChordNotes[i])
+               , (nN)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]), NoteId(*m_pChordDescriptor[nC].pChordNotes[nN])
+               , (i)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]), NoteId(*m_pChordDescriptor[nC].pChordNotes[i])
                , FIntval_GetIntvCode(nDistance), nDistance
                , FIntval_GetIntvCode(nInterval), nInterval);
 

@@ -210,6 +210,9 @@ extern void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
                         , wxColour colour, wxString &sText, bool reset);
 
 --*/
+// return
+//  -1: negative, 0, 1: positive
+extern int GetHarmonicDirection(int nInterval);
 extern void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
                                            , wxColour colour, wxString &sText, bool reset);
 

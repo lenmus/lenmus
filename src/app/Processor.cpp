@@ -298,22 +298,6 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     assert(ptChordDescriptor != NULL);
     assert(ptChordDescriptor->pChordNotes != NULL);
 
-/* TODO: REMOVE
-     for (int i = 0; i < nNumChordNotes; i++)
-     {
-        if (ptChordDescriptor->pChordNotes[i] != NULL)
-        {
-            wxLogMessage(_T("  CHORD NOTE[%d] : %s")
-                ,i, NoteId( *ptChordDescriptor->pChordNotes[i] ).c_str() );
-
-        }
-        else
-        {
-            wxLogMessage(_T("  CHORD NOTE[%d] : NULL!!") ,i );
-        }
-     }
----*/
-
     // Create Chord
     fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes, &tChordInfo,  sStatusStr);
     
@@ -344,6 +328,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     wxLogMessage(sStatusStr);
 
     DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
+
 
     return fOk;
 
