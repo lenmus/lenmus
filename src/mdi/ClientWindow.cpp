@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -44,7 +44,7 @@
 
 
 //-----------------------------------------------------------------------------
-// lmMDIClientWindow
+// lmTDIClientWindow
 //    The client window is the area where MDI child windows exist. It doesn't 
 //    have to cover the whole parent frame; other windows such as toolbars and 
 //    a help window might coexist with it. There can be scrollbars on a client 
@@ -58,76 +58,76 @@
 
 #define lmID_NOTEBOOK wxID_HIGHEST + 100
 
-IMPLEMENT_DYNAMIC_CLASS(lmMDIClientWindow, wxAuiNotebook)
+IMPLEMENT_DYNAMIC_CLASS(lmTDIClientWindow, wxAuiNotebook)
 
-BEGIN_EVENT_TABLE(lmMDIClientWindow, wxAuiNotebook)
-    EVT_SIZE(lmMDIClientWindow::OnSize)
-    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, lmMDIClientWindow::OnChildClose)
-    EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, lmMDIClientWindow::OnPageChanged)
+BEGIN_EVENT_TABLE(lmTDIClientWindow, wxAuiNotebook)
+    EVT_SIZE(lmTDIClientWindow::OnSize)
+    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, lmTDIClientWindow::OnChildClose)
+    EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, lmTDIClientWindow::OnPageChanged)
 END_EVENT_TABLE()
 
 
-lmMDIClientWindow::lmMDIClientWindow()
+lmTDIClientWindow::lmTDIClientWindow()
 {
 }
 
-lmMDIClientWindow::lmMDIClientWindow( lmMDIParentFrame *parent, long style )
+lmTDIClientWindow::lmTDIClientWindow( lmTDIParentFrame *parent, long style )
 {
     //SetWindowStyleFlag(style);
     wxAuiNotebook::Create(parent, lmID_NOTEBOOK, wxPoint(0,0), 
         wxSize(100, 100), style);
 }
 
-lmMDIClientWindow::~lmMDIClientWindow()
+lmTDIClientWindow::~lmTDIClientWindow()
 {
 }
 
-int lmMDIClientWindow::SetSelection(size_t nPage)
+int lmTDIClientWindow::SetSelection(size_t nPage)
 {
     int oldSelection = wxAuiNotebook::SetSelection(nPage);
     return oldSelection;
 }
 
-void lmMDIClientWindow::OnPageChanged(wxAuiNotebookEvent& event)
+void lmTDIClientWindow::OnPageChanged(wxAuiNotebookEvent& event)
 {
 	int OldSelection = event.GetOldSelection();
 	int newSelection = event.GetSelection();
     if (OldSelection == newSelection) return;		//nothing to do
     if (newSelection != -1)
     {
-        lmMDIChildFrame* child;
+        lmTDIChildFrame* child;
         if (OldSelection != -1)
         {
-            child = (lmMDIChildFrame*)GetPage(OldSelection);
+            child = (lmTDIChildFrame*)GetPage(OldSelection);
             child->OnChildFrameDeactivated();
         }
-        child = (lmMDIChildFrame*)GetPage(newSelection);
+        child = (lmTDIChildFrame*)GetPage(newSelection);
 		child->OnChildFrameActivated();
     }
 }
 
-void lmMDIClientWindow::OnSize(wxSizeEvent& event)
+void lmTDIClientWindow::OnSize(wxSizeEvent& event)
 {
     wxAuiNotebook::OnSize(event);
 
     size_t pos;
     for (pos = 0; pos < GetPageCount(); pos++)
     {
-        ((lmMDIChildFrame *)GetPage(pos))->ApplyMDIChildFrameRect();
+        ((lmTDIChildFrame *)GetPage(pos))->ApplyMDIChildFrameRect();
     }
 }
 
-lmMDIChildFrame* lmMDIClientWindow::GetSelectedPage()
+lmTDIChildFrame* lmTDIClientWindow::GetSelectedPage()
 {
     if (GetPageCount() > 0)
-        return (lmMDIChildFrame*)GetPage(GetSelection());
+        return (lmTDIChildFrame*)GetPage(GetSelection());
     else
-        return (lmMDIChildFrame*) NULL;
+        return (lmTDIChildFrame*) NULL;
 }
 
-void lmMDIClientWindow::OnChildClose(wxAuiNotebookEvent& evt)
+void lmTDIClientWindow::OnChildClose(wxAuiNotebookEvent& evt)
 {    
-    //Do not allow direct closing of lmMDIChildFrame by wxAuiNotebook as it deletes
+    //Do not allow direct closing of lmTDIChildFrame by wxAuiNotebook as it deletes
     //the child frames and this causes problems with the view/doc model.
     //So lets veto page closing and proceed to a controlled close.
     evt.Veto();

@@ -106,6 +106,7 @@
 #include "LangChoiceDlg.h"
 #include "ArtProvider.h"
 #include "toolbox/ToolsBox.h"
+#include "../mdi/DocViewMDI.h"         //lmDocManager
 
 // to save config information into a file
 #include "wx/confbase.h"
@@ -195,8 +196,8 @@ bool lmTheApp::OnInit(void)
    //dlg.ShowModal();
 
     g_pTheApp = this;
-    m_pInstanceChecker = (wxSingleInstanceChecker*) NULL;
-    m_pDocManager = (wxDocManager *) NULL;
+    m_pInstanceChecker = (wxSingleInstanceChecker*)NULL;
+    m_pDocManager = (lmDocManager*)NULL;
     m_pLocale = (wxLocale*) NULL;
 
 //#ifdef __WXMSW__
@@ -467,7 +468,7 @@ bool lmTheApp::OnInit(void)
         //
 
     // Create a document manager
-    m_pDocManager = new wxDocManager;
+    m_pDocManager = new lmDocManager();
 
     // Sets the directory to be displayed to the user when opening a score.
     m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
@@ -857,7 +858,7 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
     wxRect wndRect;
     GetMainWindowPlacement(&wndRect, &fMaximized);
 
-    g_pMainFrame = new lmMainFrame((wxDocManager *) m_pDocManager, (wxFrame *) NULL,
+    g_pMainFrame = new lmMainFrame(m_pDocManager, (wxFrame*)NULL,
                       _T("LenMus"),                             // title
                       wxPoint(wndRect.x, wndRect.y),            // origin
                       wxSize(wndRect.width, wndRect.height),    // size

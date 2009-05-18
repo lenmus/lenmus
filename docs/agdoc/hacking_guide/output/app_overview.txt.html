@@ -33,11 +33,11 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'>All classes related to related to the main GUI and the MVC model are in folder <i>app</i>.</p>
 
-<p class='justified'>The main class is <span class="kw1">lmTheApp</span> (in files app/TheApp.h &amp; .cpp). It represents the lenmus application itself. Execution of the program starts in method <span class="kw1">OnInit()</span>. In this method, after several initializations, the work starts by creating the document manager (an object of class <span class="kw1">wxDocManager</span>; see wxWidgets documentation). The document manager is part of the MVC model and is responsible for relating documents (Models) to their Views.</p>
+<p class='justified'>The main class is <span class="kw1">lmTheApp</span> (in files app/TheApp.h &amp; .cpp). It represents the lenmus application itself. Execution of the program starts in method <span class="kw1">OnInit()</span>. In this method, after several initializations, the work starts by creating the document manager (an object of class <span class="kw1">lmDocManager</span>). The document manager is part of the Model-View-Controller (MVC) model and is responsible for relating documents (Models) to their Views.</p>
 
 <p class='justified'>Then, it proceeds to create the Splash window and the main frame of the application. In order to support dynamically changing the language, the creation of the main frame is encapsulated in method <span class="kw1">RecreateGUI()</span>.</p>
 
-<p class='justified'>After the main frame is created an visible, some additional initializations takes place, the Welcome windows is opened and, if enabled, proceeds to check for available program updates. After all this initializations, method <span class="kw1">lmTheApp::OnInit()</span> finishes, and the application enters in the main event processing loop, waiting for events and dispatching them as they arrive.</p>
+<p class='justified'>After the main frame is created and visible, some additional initializations takes place, the Welcome windows is opened and, if enabled, the program proceeds to check for available program updates. After all this initializations, method <span class="kw1">lmTheApp::OnInit()</span> finishes, and the application enters in the main event processing loop, waiting for events and dispatching them as they arrive.</p>
 
 <p class='justified'>The normal source of events, at this point, is user interaction with the main frame window.</p>
 
@@ -49,20 +49,30 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'>The main frame window is modelled by class <span class="kw1">lmMainFrame</span> (in files app/MainFrame.h &amp; .cpp). It manages the main window of the application.</p>
 
-<p class='justified'>At creation time (class constructor) it creates the main menu and the status bar. The constructor is invoked from method <span class="kw1">lmTheApp::RecreateGUI()</span>. The, this method invokes <span class="kw1">lmMainFrame::CreateControls()</span> to create all other windows inside the main frame: the toolbar and the notebook window to be used to display the welcome window, the scores to edit and the eBooks. The management of all this windows is done by class <span class="kw1">wxAUI</span>. This class is framework to manage all user interface (AUI stands for Advanced User Interface. See wxWidgets documentation).</p>
+<p class='justified'>At creation time (class constructor) it creates the main menu and the status bar. The constructor is invoked from method <span class="kw1">lmTheApp::RecreateGUI()</span>. Then, this method invokes <span class="kw1">lmMainFrame::CreateControls()</span> to create all other windows inside the main frame: the toolbar and the notebook window to be used to display the welcome window, the scores to edit and the eBooks. The management of all this windows is done by class <span class="kw1">wxAUI</span>. This class is a framework to manage all user interface (AUI stands for Advanced User Interface. See wxWidgets documentation).</p>
 
 <p class='justified'>The important thing to know is not how wxAUI works, but that the main window is a notebook implementing the MDI model (Multiple Document Interface). To adapt the wxWidgets MDI model (similar to MS Windows model: each document view is open in an independent windows, and all view windows are enclosed and restricted to be inside a main windows) to a notebook MDI model (each View is a tab in a notebook) some modifications had to be done. All the code for this is enclose in files contained in folder <i>mdi</i>: mdi/DocViewMIDI.h &amp; .cpp, mdi/ParentFrame.h &amp; .cpp, mdi/ChildFrame.h &amp; .cpp, mdi/ClientWindow.h &amp; .cpp.</p>
 
-<p class='justified'>Again, the knowledge of all these classes and how do they work is irrelevant, unless you are going to hack something related to all this.</p>
+<p class='justified'>The knowledge of all these classes and how do they work is irrelevant, unless you are going to hack something related to all this.</p>
 
-<p class='justified'>The most important think to know about <span class="kw1">lmMainFrame</span> class is that it deals with all user interaction. Each time the user clicks on a menu item or in a toolbar button, an event is generated and the event is processes in a method in <span class="kw1">lmMainFrame</span>. For example, when user press button &#039;Play&#039; to play back an score, an event with id &#145;MENU_Play_Start&#146; is generated and this event is processed by method <span class="kw1">lmMainFrame::OnPlayStart()</span>.</p> 
-
-<p class='justified'>Most event identifiers are defined at the beginning of file app/MainFrame.cpp, in an <i>enum</i>  (<b>At this point I recommend you to open MainFrame.cpp file and explore the code as you read this description</b>). The event handler methods that will process those events are defined in the events table (macro <span class="kw1">BEGIN_EVENT_TABLE</span>) immediately after this enum.</p>
+<p class='justified'><span class="kw1">lmMainFrame</span> deals with all user interaction with the menu and the toolbar. Each time the user clicks on a menu item or in a toolbar button, an event is generated and the event is processes in a method in <span class="kw1">lmMainFrame</span>. For example, when user press button &#039;Play&#039; to play back an score, an event with id &#145;MENU_Play_Start&#146; is generated and this event is processed by method <span class="kw1">lmMainFrame::OnPlayStart()</span>.</p> 
+    
+<p class='justified'>Most event identifiers are defined at the beginning of file app/MainFrame.cpp, in an <span class="kw1">enum</span>  (<b>At this point I recommend you to open MainFrame.cpp file and explore the code as you read this description</b>). The event handler methods that will process those events are defined in the events table (macro <span class="kw1">BEGIN_EVENT_TABLE</span>) immediately after this enum.</p>
 
 <p class='justified'>Continuing with the &#039;Play&#039; button example, method <span class="kw1">lmMainFrame::OnPlayStart()</span> takes control. There, it is just an issue of getting the currently displayed score and asking it to play back itself. This is the way most events are processed: The main frame identifies the currently active view or the relevant score passes the process to it. Explore other event handler methods to get see how control flow is re-directed to the appropriate object.</p>
 
-<p class='justified'>From this point, all knowledge about how thinks work is distributed along the different classes and objects that form the program. But the MVC model and the <span class="kw1">lmMainFrame</span> class are the keys to quickly identify where the action is taking place.
-</p>
+<p class='justified'>From this point, all knowledge about how thinks work is distributed along the different classes and objects that form the program. But the <span class="kw1">lmMainFrame</span> class is the key to quickly identify where the action is taking place.</p>
+
+<p class='justified'>The most important things you should remember about <span class="kw1">lmMainFrame</span> class are:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">lmMainFrame</span> deals with all user interaction with the menu and the toolbar.</li></ul><div></p> 
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li><span class="kw1">lmMainFrame</span> also controls (mainly through object <span class="kw1">lmDocManager</span>) all issues related to the managenment of the MVC model for score edition. See &#039;The Model-View-Controller architecture&#039; for a detailed description about score edition documents and windows creation and management.</li></ul><div></p>
+    
+
+
 
 <hr class='copyright' />
 <a name="legal_notice">&nbsp;</a>

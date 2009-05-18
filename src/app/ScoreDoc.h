@@ -75,9 +75,10 @@ public:
     ~lmDocument();
 
 	//overrides for virtual methods in wxDocument
+    bool OnCreate(const wxString& path, long flags);
 	void UpdateAllViews(wxView* sender=(wxView*)NULL, wxObject* hint=(wxObject*)NULL);
     bool OnOpenDocument(const wxString& filename);
-    bool OnNewDocument();
+    //bool OnNewDocument();
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
 #else
@@ -88,11 +89,11 @@ public:
 
     void UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints);
     bool OnImportDocument(const wxString& filename);
-    bool OnDisplayCreatedScore(int nID);
+    bool OnNewDocumentWithContent(lmScore* pScore);
     inline lmScore* GetScore() {return m_pScore; };
 
     //Edit mode
-    void SetEditMode(lmEditorMode* pMode);
+    void OnCustomizeController(lmEditorMode* pMode);
     inline lmEditorMode* GetEditMode() { return m_pEditMode; }
 
 private:

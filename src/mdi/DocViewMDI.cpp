@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is derived from file src/docmdi.cpp from wxWidgets 2.7.1 project.
 //    Author:       Julian Smart
@@ -38,68 +38,72 @@
 
 
 #include "DocViewMDI.h"
+#include "../app/ScoreDoc.h"
+//#include "../app/MainFrame.h"
+//#include "../app/ScoreCanvas.h"
+#include "../score/Score.h"
 
 /*
  * Docview MDI parent frame
  */
 
-IMPLEMENT_CLASS(lmDocMDIParentFrame, lmMDIParentFrame)
+IMPLEMENT_CLASS(lmDocTDIParentFrame, lmTDIParentFrame)
 
-BEGIN_EVENT_TABLE(lmDocMDIParentFrame, lmMDIParentFrame)
-    EVT_MENU(wxID_EXIT, lmDocMDIParentFrame::OnExit)
-    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, lmDocMDIParentFrame::OnMRUFile)
-    EVT_CLOSE(lmDocMDIParentFrame::OnCloseWindow)
+BEGIN_EVENT_TABLE(lmDocTDIParentFrame, lmTDIParentFrame)
+    EVT_MENU(wxID_EXIT, lmDocTDIParentFrame::OnExit)
+    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, lmDocTDIParentFrame::OnMRUFile)
+    EVT_CLOSE(lmDocTDIParentFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
-lmDocMDIParentFrame::lmDocMDIParentFrame()
+lmDocTDIParentFrame::lmDocTDIParentFrame()
 {
     Init();
 }
 
-lmDocMDIParentFrame::lmDocMDIParentFrame(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
+lmDocTDIParentFrame::lmDocTDIParentFrame(lmDocManager* pDocManager, wxFrame* pFrame, wxWindowID id, const wxString& title,
   const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 {
     Init();
-    Create(manager, frame, id, title, pos, size, style, name);
+    Create(pDocManager, pFrame, id, title, pos, size, style, name);
 }
 
-bool lmDocMDIParentFrame::Create(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
+bool lmDocTDIParentFrame::Create(lmDocManager* pDocManager, wxFrame* pFrame, wxWindowID id, const wxString& title,
   const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 {
-    m_docManager = manager;
-    return lmMDIParentFrame::Create(frame, id, title, pos, size, style, name);
+    m_pDocManager = pDocManager;
+    return lmTDIParentFrame::Create(pFrame, id, title, pos, size, style, name);
 }
 
-void lmDocMDIParentFrame::OnExit(wxCommandEvent& WXUNUSED(event))
+void lmDocTDIParentFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
     Close();
 }
 
-void lmDocMDIParentFrame::Init()
+void lmDocTDIParentFrame::Init()
 {
-    m_docManager = NULL;
+    m_pDocManager = NULL;
 }
 
-void lmDocMDIParentFrame::OnMRUFile(wxCommandEvent& event)
+void lmDocTDIParentFrame::OnMRUFile(wxCommandEvent& event)
 {
-    wxString f(m_docManager->GetHistoryFile(event.GetId() - wxID_FILE1));
+    wxString f(m_pDocManager->GetHistoryFile(event.GetId() - wxID_FILE1));
     if (!f.empty())
-        (void)m_docManager->CreateDocument(f, wxDOC_SILENT);
+        (void)m_pDocManager->CreateDocument(f, wxDOC_SILENT);
 }
 
 // Extend event processing to search the view's event table
-bool lmDocMDIParentFrame::ProcessEvent(wxEvent& event)
+bool lmDocTDIParentFrame::ProcessEvent(wxEvent& event)
 {
     // Try the document manager, then do default processing
-    if (!m_docManager || !m_docManager->ProcessEvent(event))
+    if (!m_pDocManager || !m_pDocManager->ProcessEvent(event))
         return wxEvtHandler::ProcessEvent(event);
     else
         return true;
 }
 
-void lmDocMDIParentFrame::OnCloseWindow(wxCloseEvent& event)
+void lmDocTDIParentFrame::OnCloseWindow(wxCloseEvent& event)
 {
-  if (m_docManager->Clear(!event.CanVeto()))
+  if (m_pDocManager->Clear(!event.CanVeto()))
   {
     this->Destroy();
   }
@@ -111,37 +115,37 @@ void lmDocMDIParentFrame::OnCloseWindow(wxCloseEvent& event)
  * Default document child frame for MDI children
  */
 
-IMPLEMENT_CLASS(lmDocMDIChildFrame, lmMDIChildFrame)
+IMPLEMENT_CLASS(lmDocTDIChildFrame, lmTDIChildFrame)
 
-BEGIN_EVENT_TABLE(lmDocMDIChildFrame, lmMDIChildFrame)
-    EVT_ACTIVATE(lmDocMDIChildFrame::OnActivate)
-    EVT_CLOSE(lmDocMDIChildFrame::OnCloseWindow)
+BEGIN_EVENT_TABLE(lmDocTDIChildFrame, lmTDIChildFrame)
+    EVT_ACTIVATE(lmDocTDIChildFrame::OnActivate)
+    EVT_CLOSE(lmDocTDIChildFrame::OnCloseWindow)
 END_EVENT_TABLE()
 
-void lmDocMDIChildFrame::Init()
+void lmDocTDIChildFrame::Init()
 {
     m_childDocument = (wxDocument*)  NULL;
     m_childView = (wxView*) NULL;
 }
 
-lmDocMDIChildFrame::lmDocMDIChildFrame()
+lmDocTDIChildFrame::lmDocTDIChildFrame()
 {
     Init();
 }
 
-lmDocMDIChildFrame::lmDocMDIChildFrame(wxDocument *doc, wxView *view, lmMDIParentFrame *frame, wxWindowID  id,
+lmDocTDIChildFrame::lmDocTDIChildFrame(wxDocument *doc, wxView *view, lmTDIParentFrame *frame, wxWindowID  id,
   const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 {
     Init();
     Create(doc, view, frame, id, title, pos, size, style, name);
 }
 
-bool lmDocMDIChildFrame::Create(wxDocument *doc, wxView *view, lmMDIParentFrame *frame, wxWindowID  id,
+bool lmDocTDIChildFrame::Create(wxDocument *doc, wxView *view, lmTDIParentFrame *frame, wxWindowID  id,
   const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 {
     m_childDocument = doc;
     m_childView = view;
-    if (lmMDIChildFrame::Create(frame, id, title, pos, size, style, name))
+    if (lmTDIChildFrame::Create(frame, id, title, pos, size, style, name))
     {
         if (view)
             view->SetFrame(this);
@@ -151,13 +155,13 @@ bool lmDocMDIChildFrame::Create(wxDocument *doc, wxView *view, lmMDIParentFrame 
     return false;
 }
 
-lmDocMDIChildFrame::~lmDocMDIChildFrame(void)
+lmDocTDIChildFrame::~lmDocTDIChildFrame(void)
 {
     m_childView = (wxView *) NULL;
 }
 
 // Extend event processing to search the view's event table
-bool lmDocMDIChildFrame::ProcessEvent(wxEvent& event)
+bool lmDocTDIChildFrame::ProcessEvent(wxEvent& event)
 {
     static wxEvent *ActiveEvent = NULL;
 
@@ -186,13 +190,13 @@ bool lmDocMDIChildFrame::ProcessEvent(wxEvent& event)
     return ret;
 }
 
-void lmDocMDIChildFrame::OnActivate(wxActivateEvent& event)
+void lmDocTDIChildFrame::OnActivate(wxActivateEvent& event)
 {
     if (event.GetActive() && m_childView)
         m_childView->Activate(event.GetActive());
 }
 
-void lmDocMDIChildFrame::OnCloseWindow(wxCloseEvent& event)
+void lmDocTDIChildFrame::OnCloseWindow(wxCloseEvent& event)
 {
   // Close view but don't delete the frame while doing so!
   // ...since it will be deleted by wxWidgets if we return true.
@@ -218,3 +222,155 @@ void lmDocMDIChildFrame::OnCloseWindow(wxCloseEvent& event)
     event.Veto();
 }
 
+
+
+//------------------------------------------------------------------------------------------------
+// lmDocManager implementation
+//------------------------------------------------------------------------------------------------
+
+enum 
+{
+    lmDOC_OPEN = 0,
+    lmDOC_LOAD,
+    lmDOC_IMPORT,
+};
+
+lmDocManager::lmDocManager(long nFlags, bool fInitialize)
+    : wxDocManager(nFlags, fInitialize)
+{
+}
+
+lmDocManager::~lmDocManager()
+{
+}
+
+void lmDocManager::ImportFile(wxString& sPath)
+{
+    lmDocument* pDoc = DoOpenDocument(sPath, lmDOC_IMPORT);
+    if (!pDoc)
+    {
+        OnOpenFileFailure();
+        return;
+    }
+
+    //customize controller
+    pDoc->OnCustomizeController( (lmEditorMode*)NULL );
+}
+
+void lmDocManager::OpenFile(wxString& sPath)
+{
+    lmDocument* pDoc = DoOpenDocument(sPath, lmDOC_OPEN);
+    if (!pDoc)
+    {
+        OnOpenFileFailure();
+        return;
+    }
+
+    //customize controller
+    pDoc->OnCustomizeController( (lmEditorMode*)NULL );
+}
+
+void lmDocManager::OpenDocument(lmEditorMode* pMode, lmScore* pScore)
+{
+    //Creates a new document (and its view/controller) in mode pMode
+
+    wxASSERT(pScore);
+
+    //create the document
+    lmDocument* pDoc = DoOpenDocument(wxEmptyString, lmDOC_LOAD, pScore);
+    if (!pDoc)
+    {
+        OnOpenFileFailure();
+        return;
+    }
+
+    //customize controller
+    pDoc->OnCustomizeController(pMode);
+}
+
+wxDocument* lmDocManager::CreateDocument(const wxString& path, long flags)
+{
+    //override to disable this method. lmDocument uses different methods so that we can:
+    //  - deal with specific import & load score cases
+    //  - deal with lmEditorMode, ToolBox and other MVC related issues
+
+    WXUNUSED(path);
+    WXUNUSED(flags);
+
+    wxMessageBox(_T("[lmDocManager::CreateDocument] It should never arrive here!"));
+    wxASSERT(false);
+
+    return (wxDocument*)NULL;
+}
+
+lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, lmScore* pScore)
+{
+    //Replacement for base class CreateDocument() to:
+    //  - deal with specific import & load score cases
+    //  - deal with lmEditorMode, ToolBox and other MVC related issues
+
+    //if file is already open, just activate its view and return the existing document
+    for (size_t i = 0; i < GetDocuments().GetCount(); ++i)
+    {
+        lmDocument* pCurDoc = (lmDocument*)(GetDocuments().Item(i)->GetData());
+#ifdef __WXMSW__
+        //file paths are case-insensitive on Windows
+        if (path.CmpNoCase(pCurDoc->GetFilename()) == 0)
+#else
+        if (path.Cmp(pCurDoc->GetFilename()) == 0)
+#endif
+        {
+            //file already open. Just activate it and return
+            if (pCurDoc->GetFirstView())
+            {
+                ActivateView(pCurDoc->GetFirstView(), true);
+                if (pCurDoc->GetDocumentWindow())
+                    pCurDoc->GetDocumentWindow()->SetFocus();
+                return pCurDoc;
+            }
+        }
+    }
+
+    //the file is not currently open. Open it.
+
+    //create a new document
+    lmDocument *pNewDoc = new lmDocument();
+    pNewDoc->SetFilename(path);
+    wxDocTemplate* pTemplate = FindTemplateForPath(path);
+    pNewDoc->SetDocumentTemplate(pTemplate);
+
+    AddDocument(pNewDoc);
+    pNewDoc->SetCommandProcessor( pNewDoc->OnCreateCommandProcessor() );
+
+    //Ask the document to create the View/Controller
+    if (!pNewDoc->OnCreate(path, nOperation))
+    {
+        //View/controller creation failed. Undo things
+        pNewDoc->DeleteAllViews();      //this also deletes pNewDoc
+        pNewDoc = (lmDocument*)NULL;
+    }
+
+    //Ask the document to open file and load content
+    if (pNewDoc)
+    {
+        pNewDoc->SetDocumentName(pTemplate->GetDocumentName());  //It's not the name! It is the 'Type name'
+        bool fOK = false;
+        if (nOperation == lmDOC_OPEN)
+            fOK = pNewDoc->OnOpenDocument(path);
+        else if (nOperation == lmDOC_LOAD)
+            fOK = pNewDoc->OnNewDocumentWithContent(pScore);
+        else if (nOperation == lmDOC_IMPORT)
+            fOK = pNewDoc->OnImportDocument(path);
+        else
+            wxASSERT(false);
+
+        if (!fOK)
+        {
+            pNewDoc->DeleteAllViews();
+            // delete pNewDoc; // Implicitly deleted by DeleteAllViews
+            return (lmDocument*)NULL;
+        }
+        AddFileToHistory(path);
+    }
+    return pNewDoc;
+}

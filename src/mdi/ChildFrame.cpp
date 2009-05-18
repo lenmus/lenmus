@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is derived from file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -71,22 +71,22 @@
 #include "wx/menu.h"
 
 //-----------------------------------------------------------------------------
-// lmMDIChildFrame implementation
+// lmTDIChildFrame implementation
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(lmMDIChildFrame, wxPanel)
+IMPLEMENT_DYNAMIC_CLASS(lmTDIChildFrame, wxPanel)
 
-BEGIN_EVENT_TABLE(lmMDIChildFrame, wxPanel)
-    EVT_CLOSE(lmMDIChildFrame::OnCloseWindow)
-    EVT_SIZE(lmMDIChildFrame::OnSize)
+BEGIN_EVENT_TABLE(lmTDIChildFrame, wxPanel)
+    EVT_CLOSE(lmTDIChildFrame::OnCloseWindow)
+    EVT_SIZE(lmTDIChildFrame::OnSize)
 END_EVENT_TABLE()
 
-lmMDIChildFrame::lmMDIChildFrame()
+lmTDIChildFrame::lmTDIChildFrame()
 {
     Init();
 }
 
-lmMDIChildFrame::lmMDIChildFrame( lmMDIParentFrame *parent,
+lmTDIChildFrame::lmTDIChildFrame( lmTDIParentFrame *parent,
       wxWindowID id, const wxString& title,
       const wxPoint& WXUNUSED(pos), const wxSize& size,
       long style, const wxString& name )
@@ -96,22 +96,22 @@ lmMDIChildFrame::lmMDIChildFrame( lmMDIParentFrame *parent,
     Create( parent, id, title, wxDefaultPosition, size, style, name );
 }
 
-lmMDIChildFrame::~lmMDIChildFrame()
+lmTDIChildFrame::~lmTDIChildFrame()
 {
     //The Child frame has been deleted by the view.
     //Inform the parent so that it can remove the tab form the Notebook
-    lmMDIParentFrame* pParentFrame = GetMDIParentFrame();
+    lmTDIParentFrame* pParentFrame = GetMDIParentFrame();
     if (pParentFrame)
         pParentFrame->RemoveChildFrame(this);
 
 }
 
-bool lmMDIChildFrame::Create( lmMDIParentFrame *parent,
+bool lmTDIChildFrame::Create( lmTDIParentFrame *parent,
       wxWindowID id, const wxString& title,
       const wxPoint& WXUNUSED(pos), const wxSize& size,
       long style, const wxString& name )
 {
-    lmMDIClientWindow* pClientWindow = parent->GetClientWindow();
+    lmTDIClientWindow* pClientWindow = parent->GetClientWindow();
 
     wxASSERT_MSG((pClientWindow != (wxWindow*) NULL), wxT("Missing MDI client window.") );
 
@@ -132,15 +132,15 @@ bool lmMDIChildFrame::Create( lmMDIParentFrame *parent,
 }
 
 
-void lmMDIChildFrame::SetTitle(const wxString& title)
+void lmTDIChildFrame::SetTitle(const wxString& title)
 {
     m_Title = title;
 
-    lmMDIParentFrame *pParentFrame = GetMDIParentFrame();
+    lmTDIParentFrame *pParentFrame = GetMDIParentFrame();
 
     if (pParentFrame != NULL)
     {
-        lmMDIClientWindow * pClientWindow = pParentFrame->GetClientWindow();
+        lmTDIClientWindow * pClientWindow = pParentFrame->GetClientWindow();
 
         if (pClientWindow != NULL)
         {
@@ -157,18 +157,18 @@ void lmMDIChildFrame::SetTitle(const wxString& title)
     }
 }
 
-wxString lmMDIChildFrame::GetTitle() const
+wxString lmTDIChildFrame::GetTitle() const
 {
     return m_Title;
 }
 
-void lmMDIChildFrame::Activate()
+void lmTDIChildFrame::Activate()
 {
-    lmMDIParentFrame *pParentFrame = GetMDIParentFrame();
+    lmTDIParentFrame *pParentFrame = GetMDIParentFrame();
 
     if (pParentFrame != NULL)
     {
-        lmMDIClientWindow * pClientWindow = pParentFrame->GetClientWindow();
+        lmTDIClientWindow * pClientWindow = pParentFrame->GetClientWindow();
 
         if (pClientWindow != NULL)
         {
@@ -188,7 +188,7 @@ void lmMDIChildFrame::Activate()
 /*** Copied from top level..! ***/
 // default resizing behaviour - if only ONE subwindow, resize to fill the
 // whole client area
-void lmMDIChildFrame::OnSize(wxSizeEvent& WXUNUSED(event))
+void lmTDIChildFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 {
     // if we're using constraints or sizers - do use them
     if ( GetAutoLayout() )
@@ -239,10 +239,10 @@ void lmMDIChildFrame::OnSize(wxSizeEvent& WXUNUSED(event))
     }
 }
 
-void lmMDIChildFrame::SetIcon(const wxIcon& icon)
+void lmTDIChildFrame::SetIcon(const wxIcon& icon)
 {
 
-    lmMDIClientWindow* pNotebook = m_pMDIParentFrame->GetClientWindow();
+    lmTDIClientWindow* pNotebook = m_pMDIParentFrame->GetClientWindow();
 
     //get index to this page
     size_t pos;
@@ -266,32 +266,32 @@ void lmMDIChildFrame::SetIcon(const wxIcon& icon)
 
 /*** Copied from top level..! ***/
 // The default implementation for the close window event.
-void lmMDIChildFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
+void lmTDIChildFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 {
     Destroy();
 }
 
-void lmMDIChildFrame::SetMDIParentFrame(lmMDIParentFrame* parentFrame)
+void lmTDIChildFrame::SetMDIParentFrame(lmTDIParentFrame* parentFrame)
 {
     m_pMDIParentFrame = parentFrame;
 }
 
-lmMDIParentFrame* lmMDIChildFrame::GetMDIParentFrame() const
+lmTDIParentFrame* lmTDIChildFrame::GetMDIParentFrame() const
 {
     return m_pMDIParentFrame;
 }
 
-void lmMDIChildFrame::Init()
+void lmTDIChildFrame::Init()
 {
-    m_pMDIParentFrame = (lmMDIParentFrame *) NULL;
+    m_pMDIParentFrame = (lmTDIParentFrame *) NULL;
 }
 
-void lmMDIChildFrame::DoMoveWindow(int x, int y, int width, int height)
+void lmTDIChildFrame::DoMoveWindow(int x, int y, int width, int height)
 {
     m_MDIRect = wxRect(x, y, width, height);
 }
 
-void lmMDIChildFrame::ApplyMDIChildFrameRect()
+void lmTDIChildFrame::ApplyMDIChildFrameRect()
 {
     wxPanel::DoMoveWindow(m_MDIRect.x, m_MDIRect.y, m_MDIRect.width, m_MDIRect.height);
 }

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is derived from file src/generic/mdig.h from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -35,18 +35,18 @@
 #include "wx/frame.h"
 
 
-class lmMDIClientWindow;
-class lmMDIChildFrame;
+class lmTDIClientWindow;
+class lmTDIChildFrame;
 
 //-----------------------------------------------------------------------------
-// lmMDIParentFrame
+// lmTDIParentFrame
 //-----------------------------------------------------------------------------
 
-class lmMDIParentFrame: public wxFrame
+class lmTDIParentFrame: public wxFrame
 {
 public:
-    lmMDIParentFrame();
-    lmMDIParentFrame(wxWindow *parent,
+    lmTDIParentFrame();
+    lmTDIParentFrame(wxWindow *parent,
                      wxWindowID winid,
                      const wxString& title,
                      const wxPoint& pos = wxDefaultPosition,
@@ -54,7 +54,7 @@ public:
                      long style = wxDEFAULT_FRAME_STYLE | wxVSCROLL | wxHSCROLL,
                      const wxString& name = wxFrameNameStr);
 
-    virtual ~lmMDIParentFrame();
+    virtual ~lmTDIParentFrame();
     bool Create( wxWindow *parent,
                  wxWindowID winid,
                  const wxString& title,
@@ -67,17 +67,17 @@ public:
     virtual void SetMenuBar(wxMenuBar *pMenuBar);
     virtual bool ProcessEvent(wxEvent& event);
 
-    lmMDIChildFrame *GetActiveChild() const;
-    inline void SetActiveChild(lmMDIChildFrame* pChildFrame);
+    lmTDIChildFrame *GetActiveChild() const;
+    inline void SetActiveChild(lmTDIChildFrame* pChildFrame);
 
-    lmMDIClientWindow *GetClientWindow() const;
+    lmTDIClientWindow *GetClientWindow() const;
 
     virtual void ActivateNext();
     virtual void ActivatePrevious();
     virtual bool CloseAll();
     virtual void CloseActive();
 
-    virtual void RemoveChildFrame(lmMDIChildFrame* pChild);
+    virtual void RemoveChildFrame(lmTDIChildFrame* pChild);
     void OnSize(wxSizeEvent& event);
 
 protected:
@@ -85,12 +85,12 @@ protected:
     virtual void DoGetClientSize(int *width, int *height) const;
 
 
-    lmMDIClientWindow   *m_pClientWindow;
-    lmMDIChildFrame     *m_pActiveChild;
+    lmTDIClientWindow   *m_pClientWindow;
+    lmTDIChildFrame     *m_pActiveChild;
     wxMenuBar           *m_pMyMenuBar;
 
 private:
-    DECLARE_DYNAMIC_CLASS(lmMDIParentFrame)
+    DECLARE_DYNAMIC_CLASS(lmTDIParentFrame)
     DECLARE_EVENT_TABLE()
 };
 

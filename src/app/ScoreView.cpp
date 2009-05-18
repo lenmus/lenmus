@@ -264,8 +264,6 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 
     SetScale(m_rScale / lmSCALE);            // to create the font and resize controls and scrollbars
 
-	m_pMainFrame->OnNewEditFrame();
-
     return true;
 }
 
@@ -429,7 +427,7 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
 
     wxMemoryDC mDC;
     //m_Paper.SetDC(&mDC);           //the layout phase requires a DC
-    m_Paper.SetDrawer(new lmDirectDrawer(&mDC));
+    //m_Paper.SetDrawer(new lmDirectDrawer(&mDC));
     lmScore* pScore = ((lmDocument*)GetDocument())->GetScore();
     if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper))
         OnNewGraphicalModel();
@@ -498,7 +496,7 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     if (fPreview) {
         // use anti-aliasing
         wxMemoryDC memoryDC;
-        m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
+        //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
         fNewModel = m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
         wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPage);
         wxASSERT(pPageBitmap && pPageBitmap->Ok());
@@ -1820,7 +1818,7 @@ void lmScoreView::PrepareForRepaint(wxDC* pDC, int nRepaintOptions)
     // pages needed to draw the score
     lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
-    m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
+    //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
     if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD,
                                     m_rScale, &m_Paper, nRepaintOptions) )
         OnNewGraphicalModel();
@@ -2074,7 +2072,7 @@ void lmScoreView::SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType)
 
     //Prepare the GraphicManager
     //m_Paper.SetDC(&dc);           //the layout phase requires a DC
-    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+    //m_Paper.SetDrawer(new lmDirectDrawer(&dc));
     if (m_graphMngr.PrepareToRender(pScore, paperWidth, paperHeight, 1.0, &m_Paper))
         OnNewGraphicalModel();
 

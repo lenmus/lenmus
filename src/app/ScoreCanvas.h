@@ -313,6 +313,7 @@ class lmEditorMode
 {
 public:
     lmEditorMode(wxClassInfo* pControllerInfo, wxClassInfo* pScoreProcInfo);
+    lmEditorMode(wxString& sCreationMode, wxString& sCreationVers);
     ~lmEditorMode();
 
     void CustomizeToolBoxPages(lmToolBox* pToolBox);
@@ -321,8 +322,16 @@ public:
     //ToolBox reated
     void ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo);
 
+    //Creation mode information
+    inline void SetModeName(const wxString& sName) { m_sCreationModeName = sName; }
+    inline void SetModeVers(const wxString& sVers) { m_sCreationModeVers = sVers; }
+    inline wxString& GetModeName() { return m_sCreationModeName; }
+    inline wxString& GetModeVers() { return m_sCreationModeVers; }
+
 protected:
 
+    wxString                m_sCreationModeName;
+    wxString                m_sCreationModeVers;
     wxClassInfo*            m_pControllerInfo;
     wxClassInfo*            m_pScoreProcInfo;
     wxClassInfo*            m_ToolPagesInfo[lmPAGE_MAX];

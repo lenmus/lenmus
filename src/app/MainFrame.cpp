@@ -88,6 +88,8 @@ extern lmLogger* g_pLogger;
 #include "../sound/Metronome.h"
 
 
+#define USE_WX_DOC_MANAGER      0
+
 //========================================================================================
 //AWARE
 //            Platform configuration defines. Change values as appropiate
@@ -171,6 +173,11 @@ enum
 {
     // Menu File
     MENU_File_New = lmMENU_Last_Public_ID,
+    MENU_File_Open,     //wxID_OPEN
+    MENU_File_Save,     //wxID_SAVE
+    MENU_File_SaveAs,   //wxID_SAVEAS
+    MENU_File_Close,    //wxID_CLOSE
+
     MENU_File_Import,
     MENU_File_Export,
     MENU_File_Export_MusicXML,
@@ -282,15 +289,24 @@ enum
 
 const wxString lmRECENT_FILES = _T("Recent Files/file");
 
-IMPLEMENT_CLASS(lmMainFrame, lmDocMDIParentFrame)
-BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
+IMPLEMENT_CLASS(lmMainFrame, lmDocTDIParentFrame)
+BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
 	EVT_CHAR(lmMainFrame::OnKeyPress)
 	EVT_MENU(lmID_F1_KEY, lmMainFrame::OnKeyF1)
 
 
     //File menu/toolbar
+    EVT_MENU      (MENU_File_Open, lmMainFrame::OnFileOpen)
+    EVT_UPDATE_UI (MENU_File_Open, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU      (MENU_File_Close, lmMainFrame::OnFileClose)
+    EVT_UPDATE_UI (MENU_File_Close, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU      (MENU_File_Save, lmMainFrame::OnFileSave)
+    EVT_UPDATE_UI (MENU_File_Save, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU      (MENU_File_SaveAs, lmMainFrame::OnFileSaveAs)
+    EVT_UPDATE_UI (MENU_File_SaveAs, lmMainFrame::OnFileUpdateUI)
+
     EVT_MENU      (MENU_File_New, lmMainFrame::OnScoreWizard)
-    EVT_MENU      (MENU_File_Import, lmMainFrame::OnImportFile)
+    EVT_MENU      (MENU_File_Import, lmMainFrame::OnFileImport)
     EVT_UPDATE_UI (MENU_File_Import, lmMainFrame::OnFileUpdateUI)
     EVT_UPDATE_UI (MENU_File_Export, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (MENU_File_Export_MusicXML, lmMainFrame::OnExportMusicXML)
@@ -429,9 +445,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
 
 END_EVENT_TABLE()
 
-lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
+lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxString& sTitle,
                          const wxPoint& pos, const wxSize& size, long style)
-    : lmDocMDIParentFrame(manager, frame, -1, title, pos, size, style, _T("myFrame"))
+    : lmDocTDIParentFrame(pDocManager, pFrame, -1, sTitle, pos, size, style, _T("myFrame"))
     , m_fClosingAll(false)
     , m_pToolBox((lmToolBox*) NULL)
     , m_pWelcomeWnd((lmWelcomeWnd*)NULL)
@@ -573,7 +589,7 @@ void lmMainFrame::CreateControls()
                  wxAUI_NB_SCROLL_BUTTONS |
                  wxAUI_NB_TAB_MOVE ;
 
-    m_pClientWindow = new lmMDIClientWindow(this, style);
+    m_pClientWindow = new lmTDIClientWindow(this, style);
 
     m_mgrAUI.AddPane(m_pClientWindow, wxAuiPaneInfo().Name(wxT("notebook")).
                   CenterPane().PaneBorder(false));
@@ -649,7 +665,7 @@ void lmMainFrame::CreateMyToolBar()
             wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_new_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("New score"));
-    m_pTbFile->AddTool(wxID_OPEN, _T("Open"), wxArtProvider::GetBitmap(_T("tool_open"),
+    m_pTbFile->AddTool(MENU_File_Open, _T("Open"), wxArtProvider::GetBitmap(_T("tool_open"),
             wxART_TOOLBAR, nSize), _("Open a score"));
     m_pTbFile->AddTool(MENU_OpenBook, _T("Books"),
             wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nSize),
@@ -1012,7 +1028,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 
     AddMenuItem(pMenuFile, MENU_File_New, _("&New\tCtrl+N"),
                 _("Open new blank score"), wxITEM_NORMAL, _T("tool_new"));
-    AddMenuItem(pMenuFile, wxID_OPEN, _("&Open ...\tCtrl+O"),
+    AddMenuItem(pMenuFile, MENU_File_Open, _("&Open ...\tCtrl+O"),
                 _("Open a score"), wxITEM_NORMAL, _T("tool_open"));
     AddMenuItem(pMenuFile, MENU_OpenBook, _("Open &books"),
                 _("Hide/show eMusicBooks"), wxITEM_NORMAL, _T("tool_open_ebook"));
@@ -1221,7 +1237,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 
     // set up the menubar ---------------------------------------------------------------
 
-    // AWARE: As lmMainFrame is derived from lmMDIParentFrame, in MSWindows build the menu
+    // AWARE: As lmMainFrame is derived from lmTDIParentFrame, in MSWindows build the menu
     // bar automatically inherits a "Window" menu inserted in the second last position.
     // To suppress it (under MSWindows) it is necessary to add style wxFRAME_NO_WINDOW_MENU
     // in frame creation.
@@ -1406,7 +1422,7 @@ void lmMainFrame::OnOpenRecentFile(wxCommandEvent &event)
 void lmMainFrame::OpenRecentFile(wxString sFile)
 {
     if (!sFile.empty())
-        (void)m_docManager->CreateDocument(sFile, wxDOC_SILENT);
+        m_pDocManager->OpenFile(sFile);
 }
 
 void lmMainFrame::OnCloseWelcomeWnd()
@@ -1475,7 +1491,7 @@ lmController* lmMainFrame::GetActiveController()
 {
 	//returns the controller associated to the active view
 
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) )
     {
         lmScoreView* pView = ((lmEditFrame*)pChild)->GetView();
@@ -1498,7 +1514,7 @@ void lmMainFrame::OnBookFrame(wxCommandEvent& event)
 void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
 {
     //enable only if current active view is TextBookFrame class
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
     bool fEnabled = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame)) &&
                     m_pBookController;
 
@@ -1679,8 +1695,8 @@ void lmMainFrame::OnOpenBookUI(wxUpdateUIEvent &event)
 void lmMainFrame::OnCloseWindow(wxCloseEvent& event)
 {
     // Invoked when the application is going to close the main window
-    // Override default method in lmDocMDIParentFrame, as it will only close
-    // the lmDocMDIChild windows (the scores) but no other windows (Welcome, eBooks)
+    // Override default method in lmDocTDIParentFrame, as it will only close
+    // the lmDocTDIChild windows (the scores) but no other windows (Welcome, eBooks)
 
     m_fClosingAll = true;
     if (CloseAll())     //force to close all windows
@@ -1763,32 +1779,10 @@ void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
 
 }
 
-lmScore* lmMainFrame::GetScoreToEdit(int nID)
-{
-    // Search for score nID in list of scores to edit. Remove it from the list
-    // and return it. The score MUST exist in the list.
-
-    std::list<lmScore*>::iterator it;
-    for (it=m_scoresToEdit.begin(); it != m_scoresToEdit.end(); ++it)
-    {
-        if ((*it)->GetID() == nID)
-        {
-            //found. Remove the score form the list and return it
-            lmScore* pScore = *it;
-            m_scoresToEdit.erase(it);
-            return pScore;
-        }
-    }
-
-    //not found!. There is a program error somewhere!
-    wxASSERT(false);
-    return (lmScore*)NULL;
-}
-
 lmScoreView* lmMainFrame::GetActiveScoreView()
 {
     // get the view
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     return ((lmEditFrame*)pChild)->GetView();
 }
@@ -1796,7 +1790,7 @@ lmScoreView* lmMainFrame::GetActiveScoreView()
 lmScore* lmMainFrame::GetActiveScore()
 {
     // get the score
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     lmDocument* pDoc = (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
     return pDoc->GetScore();
@@ -1804,7 +1798,7 @@ lmScore* lmMainFrame::GetActiveScore()
 
 lmDocument* lmMainFrame::GetActiveDoc()
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
         return (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
     else
@@ -1814,7 +1808,7 @@ lmDocument* lmMainFrame::GetActiveDoc()
 void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
 {
     // get the view
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     lmScoreView* pView = ((lmEditFrame*)pChild)->GetView();
 
@@ -1845,7 +1839,7 @@ void lmMainFrame::OnDebugDumpGMObjects(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     event.Enable(fEnable);
 }
@@ -1923,7 +1917,7 @@ void lmMainFrame::OnSoundTest(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void lmMainFrame::OnActiveChildChanged(lmMDIChildFrame* pFrame)
+void lmMainFrame::OnActiveChildChanged(lmTDIChildFrame* pFrame)
 {
 	// The active child frame has changed. Update things
 
@@ -1935,18 +1929,8 @@ void lmMainFrame::OnActiveChildChanged(lmMDIChildFrame* pFrame)
     UpdateZoomControls(rScale);
     SetFocusOnActiveView();
 
-    wxLogMessage(_T("[lmMainFrame::OnActiveChildChanged] Is kind of lmDocMDIChildFrame: %s"),
-        pFrame->IsKindOf(CLASSINFO(lmDocMDIChildFrame)) ? _T("yes") : _T("No") );
-}
-
-void lmMainFrame::OnNewEditFrame()
-{
-	// A new EditFrame has been open. If this is the first one, open also
-	// the edit ToolBox panel
-	ShowToolBox(true);
-	lmToolBox* pToolBox = GetActiveToolBox();
-	wxASSERT(pToolBox);
-    pToolBox->SetDefaultConfiguration();
+    wxLogMessage(_T("[lmMainFrame::OnActiveChildChanged] Is kind of lmDocTDIChildFrame: %s"),
+        pFrame->IsKindOf(CLASSINFO(lmDocTDIChildFrame)) ? _T("yes") : _T("No") );
 }
 
 void lmMainFrame::UpdateZoomControls(double rScale)
@@ -1960,7 +1944,7 @@ void lmMainFrame::UpdateZoomControls(double rScale)
 
 void lmMainFrame::OnZoom(wxCommandEvent& event, double rScale)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild)
 	{
 		if (pChild->SetActiveViewScale(rScale) )
@@ -1970,7 +1954,7 @@ void lmMainFrame::OnZoom(wxCommandEvent& event, double rScale)
 
 void lmMainFrame::OnZoomIncrease(wxCommandEvent& event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild)
 	{
 		double rScale = pChild->GetActiveViewScale() * 1.1;
@@ -1982,7 +1966,7 @@ void lmMainFrame::OnZoomIncrease(wxCommandEvent& event)
 
 void lmMainFrame::OnZoomDecrease(wxCommandEvent& event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild)
 	{
 		double rScale = pChild->GetActiveViewScale() / 1.1;
@@ -1995,7 +1979,7 @@ void lmMainFrame::OnZoomDecrease(wxCommandEvent& event)
 void lmMainFrame::OnZoomUpdateUI(wxUpdateUIEvent &event)
 {
 	int nId = event.GetId();
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild)
 	{
 		if ( pChild->IsKindOf(CLASSINFO(lmEditFrame)) )
@@ -2139,7 +2123,7 @@ void lmMainFrame::OnViewRulersUI(wxUpdateUIEvent &event)
         event.Enable(false);
     }
     else {
-        lmMDIChildFrame* pChild = GetActiveChild();
+        lmTDIChildFrame* pChild = GetActiveChild();
         event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
     }
 }
@@ -2186,88 +2170,13 @@ void lmMainFrame::OnStatusbarUI (wxUpdateUIEvent &event) {
     event.Check (m_pStatusBar != NULL);
 }
 
-void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
-{
-    // ask for the file to import
-    wxString sFilter = wxT("*.*");
-    wxString sFilename = ::wxFileSelector(_("Choose the file to import"),
-                                        wxT(""),        //default path
-                                        wxT(""),        //default filename
-                                        wxT("txt"),     //default_extension
-                                        sFilter,
-                                        wxFD_OPEN,      //flags
-                                        this);
-    if ( !sFilename.IsEmpty() )
-    {
-        wxString sPath = _T("\\<<IMPORT>>//");
-        sPath += sFilename;
-        sPath += _T(".txt");            //for DocumentManager
-        // get the document manager
-        wxDocManager* pDocManager = g_pTheApp->GetDocManager();
-
-        //WXDEP: The following code is a modified copy of wxDocManager::OnFileOpen taken
-        // form docview.cpp source file. Review each time a new version of wxWidgets is used.
-        if ( !pDocManager->CreateDocument( sPath, wxDOC_SILENT) )
-        {
-            pDocManager->OnOpenFileFailure();
-        }
-    }
-}
-
 void lmMainFrame::NewScoreWindow(lmEditorMode* pMode, lmScore* pScore)
 {
-    //Open a new score editor window in node pMode
+    //Open a new score editor window in mode pMode
 
-    //add score to list of scores to edit
     wxASSERT(pScore);
-    m_scoresToEdit.push_back(pScore);       
-
-    //create the parameters string
-    wxString sPath = _T("\\<<LOAD>>//");
-    sPath += wxString::Format(_T("%06d.txt"), pScore->GetID());
-
-    //request doc manager to display it
-    wxDocManager* pDocManager = g_pTheApp->GetDocManager();
-    lmDocument* pDoc = (lmDocument*)pDocManager->CreateDocument(sPath, wxDOC_SILENT);
-    if (!pDoc)
-        pDocManager->OnOpenFileFailure();
-    else
-        //save lmEditMode
-        pDoc->SetEditMode(pMode);
-
-    //customize ToolBox
-    if (pMode)
-    {
-        //force ToolBox creation if doesn't exist yet
-        ShowToolBox(true);
-	    lmToolBox* pToolBox = GetActiveToolBox();
-	    wxASSERT(pToolBox);
-        pMode->CustomizeToolBoxPages(pToolBox);
-    }
-
-    SetFocusOnActiveView();
+    m_pDocManager->OpenDocument(pMode, pScore);
 }
-
-//void lmMainFrame::CustomizeToolBox(lmEditorMode* pMode)
-//{
-//    //The active edit frame has changed. Customize ToolBox as specified by received edit mode
-//
-//    //force ToolBox creation if doesn't exist yet
-//    ShowToolBox(true);
-//	lmToolBox* pToolBox = GetActiveToolBox();
-//	wxASSERT(pToolBox);
-//
-//    //customize ToolBox
-//    if (pMode)
-//    {
-//        pMode->CustomizeToolBoxPages(pToolBox);
-//    }
-//    else
-//    {
-//        //use standard mode
-//        pToolBox->SetDefaultConfiguration();
-//    }
-//}
 
 //-----------------------------------------------------------------------------------------------
 // Print/preview
@@ -2275,7 +2184,7 @@ void lmMainFrame::NewScoreWindow(lmEditorMode* pMode, lmScore* pScore)
 
 void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
     bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
@@ -2327,7 +2236,7 @@ void lmMainFrame::OnPrintSetup(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPrint(wxCommandEvent& event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
     bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
@@ -2362,7 +2271,7 @@ void lmMainFrame::OnEditCut(wxCommandEvent& event)
 {
     //When invoked, current active child frame must be an lmEditFrame
 
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
     {
         ((lmEditFrame*)pChild)->GetView()->GetController()->DeleteSelection();
@@ -2373,7 +2282,7 @@ void lmMainFrame::OnEditCopy(wxCommandEvent& event)
 {
     //When invoked, current active child frame must be an lmEditFrame
 
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
     {
         lmTODO(_T("[lmMainFrame::OnEditCopy] All code in this method"));
@@ -2384,7 +2293,7 @@ void lmMainFrame::OnEditPaste(wxCommandEvent& event)
 {
     //When invoked, current active child frame must be an lmEditFrame
 
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
     {
         lmTODO(_T("[lmMainFrame::OnEditPaste] All code in this method"));
@@ -2393,7 +2302,7 @@ void lmMainFrame::OnEditPaste(wxCommandEvent& event)
 
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
 	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     if (!fEnable)
     {
@@ -2428,12 +2337,62 @@ void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
     }
 }
 
+void lmMainFrame::OnFileOpen(wxCommandEvent& event)
+{
+    // ask for the file to open
+    wxString sFilter = wxT("*.lms");
+    wxString sFilename = ::wxFileSelector(_("Choose the file to open"),
+                                        wxT(""),        //default path
+                                        wxT(""),        //default filename
+                                        wxT("lms"),     //default_extension
+                                        sFilter,
+                                        wxFD_OPEN,      //flags
+                                        this);
+    if ( !sFilename.IsEmpty() )
+        m_pDocManager->OpenFile(sFilename);
+}
+
+void lmMainFrame::OnFileImport(wxCommandEvent& WXUNUSED(event))
+{
+    // ask for the file to import
+    wxString sFilter = wxT("*.*");
+    wxString sFilename = ::wxFileSelector(_("Choose the file to import"),
+                                        wxT(""),        //default path
+                                        wxT(""),        //default filename
+                                        wxT("xml"),     //default_extension
+                                        sFilter,
+                                        wxFD_OPEN,      //flags
+                                        this);
+    if ( !sFilename.IsEmpty() )
+    {
+        //wxString sPath = _T("\\<<IMPORT>>//");
+        //sPath += sFilename;
+        //sPath += _T(".txt");
+        m_pDocManager->ImportFile(sFilename);   //sPath);
+    }
+}
+
+void lmMainFrame::OnFileClose(wxCommandEvent& event)
+{
+    m_pDocManager->OnFileClose(event);
+}
+
+void lmMainFrame::OnFileSave(wxCommandEvent& event)
+{
+    m_pDocManager->OnFileSave(event);
+}
+
+void lmMainFrame::OnFileSaveAs(wxCommandEvent& event)
+{
+    m_pDocManager->OnFileSaveAs(event);
+}
+
 void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
     bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
-    bool fEnableImport = fEditFrame && !(g_fReleaseVersion || g_fReleaseBehaviour);
+    bool fEnableImport = !(g_fReleaseVersion || g_fReleaseBehaviour);
 
     switch (event.GetId())
     {
@@ -2469,8 +2428,8 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
         case MENU_File_Export_jpg:
             event.Enable(fEditFrame);
             break;
-        case MENU_File_Import:          //Disabled until MusicXML ready
-            event.Enable( fEnableImport );      //fEditFrame);
+        case MENU_File_Import:
+            event.Enable(fEnableImport);
             break;
 
         // Other commnads: always enabled
@@ -2491,7 +2450,7 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
 
 void lmMainFrame::OnSoundUpdateUI(wxUpdateUIEvent &event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
     event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
 
 }
@@ -2499,7 +2458,7 @@ void lmMainFrame::OnSoundUpdateUI(wxUpdateUIEvent &event)
 void lmMainFrame::RedirectKeyPressEvent(wxKeyEvent& event)
 {
 	//Redirects a Key Press event to the active child
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
     if(pChild)
 		pChild->ProcessEvent(event);
 	else
@@ -2510,7 +2469,7 @@ void lmMainFrame::SetFocusOnActiveView()
 {
 	//Move the focus to the active child
 
-    lmMDIChildFrame* pChild = GetActiveChild();
+    lmTDIChildFrame* pChild = GetActiveChild();
     if(pChild)
 		pChild->SetFocus();
 }

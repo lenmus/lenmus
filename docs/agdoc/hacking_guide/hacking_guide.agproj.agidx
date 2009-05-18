@@ -88,19 +88,30 @@
 \file[model_view_controller.txt; ext=.html;]{
 \toc
 {
-    \toc1[Program design; anchor="toc0001";]{
-        \toc2[The Model-View-Controller architecture; anchor="toc0002";]{
-            \toc3[Description; anchor="toc0003";]{}
-            \toc3[wxWidgerts classes for supporting the MVC model; anchor="toc0004";]{}
-            \toc3[LenMus implementation of the MVC model; anchor="toc0005";]{}}}
-    \toc1[Miscellaneous notes; anchor="toc0006";]{
-        \toc2[Commands to change an score; anchor="toc0007";]{}
-        \toc2[Where to place the controller; anchor="toc0008";]{}
-        \toc2[Problems to separate the View from the Controller; anchor="toc0009";]{}
-        \toc2[Tips to separate the view from the controller; anchor="toc0010";]{}}
+    \toc1[The Model-View-Controller architecture; anchor="toc0001";]{}
+    \toc1[Where to place the controller; anchor="toc0002";]{}
+    \toc1[The wxWidgets framework; anchor="toc0003";]{}
+    \toc1[Basic LenMus classes for the MVC model; anchor="toc0004";]{}
+    \toc1[Special needs in LenMus program; anchor="toc0005";]{
+        \toc2[lmMainFrame: using a tabbed document interface (TDI); anchor="toc0006";]{}
+        \toc2[lmDocManager: More ways to create a document; anchor="toc0007";]{}
+        \toc2[The ToolBox; anchor="toc0008";]{}
+        \toc2[Score editor 'modes'; anchor="toc0009";]{}
+        \toc2[ToolBox customizations; anchor="toc0010";]{}
+        \toc2[Score processors; anchor="toc0011";]{}
+        \toc2[Exercises using the full score editor; anchor="toc0012";]{}
+        \toc2[Reloading an exercise score; anchor="toc0013";]{}}
+    \toc1[Dealing with all these needs; anchor="toc0014";]{
+        \toc2[Creating the document, the view/controller. First renderization of lmScoreView; anchor="toc0015";]{}}
+    \toc1[Switching modes when viewing another score; anchor="toc0016";]{}
+    \toc1[Continue in 'exercise mode' after reloading an exercise score; anchor="toc0017";]{}
+    \toc1[How is an score saved?; anchor="toc0018";]{}
+    \toc1[Commands to change an score; anchor="toc0019";]{}
+    \toc1[Things To Do; anchor="toc0020";]{}
 }
 
-\title{The Model-View-Controller architecture}
+\title{The LenMus Model-View-Controller architecture}
+\label[category="table"; anchor="TAB1";]{Table 1. MVC objects creation and ownership}
 
 }
 \file[objects_model.txt; ext=.html;]{

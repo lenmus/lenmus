@@ -56,19 +56,19 @@ extern lmMainFrame* g_pMainFrame;
 // Implementation of class lmEditFrame
 //---------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(lmEditFrame, lmDocMDIChildFrame)
+BEGIN_EVENT_TABLE(lmEditFrame, lmDocTDIChildFrame)
 	EVT_SIZE		(lmEditFrame::OnSize)
 	EVT_CLOSE		(lmEditFrame::OnClose)
 	EVT_CHAR        (lmEditFrame::OnKeyPress)
 END_EVENT_TABLE()
 
 
-IMPLEMENT_CLASS(lmEditFrame, lmDocMDIChildFrame)
+IMPLEMENT_CLASS(lmEditFrame, lmDocTDIChildFrame)
 
 
 lmEditFrame::lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame *pMainFrame,
                      const wxPoint& uPos, const wxSize& size)
-    : lmDocMDIChildFrame(doc, view, pMainFrame, wxID_ANY, _T("EditFrame"), uPos, size,
+    : lmDocTDIChildFrame(doc, view, pMainFrame, wxID_ANY, _T("EditFrame"), uPos, size,
                         wxDEFAULT_FRAME_STYLE ), m_pView((lmScoreView *)view)
 {
 }

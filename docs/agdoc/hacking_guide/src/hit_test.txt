@@ -1,0 +1,502 @@
+\include ../../agdoc/replacements
+
+\title    {Hit test, layers and shapes renderization order}
+
+\toc
+
+\h1 {Hit test}
+%%%-------------
+
+When the user points with the mouse to an object and clicks on it the program must determine which object has been pointed. This is the 'hit test' problem.
+
+For straight lines, hit test can be done by comparing the slope of the target line with that of the line formed by the start point of the target line and the click point (the test line). If both slopes match, the object line is hit. This is a good method only for exact click on the line. Otherwise the slope will not match.
+
+A better method is the vector distance method. It is just computing the distance from the click point to the line. If the distance is smaller than a certain tolerance value (i.e. 2 pixels) the line is hitted. This is the current implemented method.
+
+For a curved-line, it is more difficult to perform hit test. The best way to do this is by using paths. Renderization of a path takes place by flattening the path (converting it to line segments). Therefore the renderaization methods can be used to convert the curved-line to a series of connected straight lines and then the line hit test can be applied to each line segment. This it is not yet implemented in lenmus (see TODO list).
+
+Hit test has also to take into account if an object is in part or totally hidden by another object rendered on it. This is normally solved by exploring the objects, for hit test, in reverse order to the renderization order.
+
+
+
+\h1 {Layers}
+%%%-----------
+
+When objects overlap, to give the user the freedom to decide on which one will be partially hidden by the other, I decided to use a layers system. Layers are like transparencies stacked one on top of one another to create the final image you see. You can consider each layer as a piece of transparent paper (i.e. cellophane) on which something is drawn. All layers are then stacked each one on top of another. When the layers are stacked, the images appear as if they are all a single image. Top layer images could hide parts of bottom layers thus creating the final image you finally see.
+
+By default the following layers are defined:
+
+    * background layer: by default, nothing on it
+    * staff layer: staff lines, brackets, instrument name, etc.
+    * barlines layer: barlines, repetition signs and related (da capo, etc.)
+    * notes layer: staff objects
+    * annotations layer: aux objects
+    * top layer: by default, nothing on it.
+
+A layer is just the collection of shapes contained in that layer. Renderization will be done by traversing layers and shapes forwards. And hit test must be done traversing layers and shapes backwards.
+
+Each %%lmShape%% has an attribute that defines the layer on which it will be rendered.
+
+
+\h2 {Moving an object below or above}
+%%%------------------------------------
+
+Each %%lmScoreObj%% has information (methods %%SetLayer()%% and %%GetLayer()%%) about the layer ID in which its shapes must be included. 
+
+Moving an shape to a different layer is just a question of changing the layer ID attribute of its parent %%lmScoreObjs%%.
+
+In a layer, last added object will be placed on top of other objects in that layer. Each time the graphical model is re-created this ordering is automatically maintained.
+
+Therefore, a problem to consider is that of preserving ordering inside layers: if an object is moved by the user to another layer it is necessary to insert the moved object in the new layer preserving the graphical model creation order. Otherwise, the next time the layout algorithm re-creates the graphical model we will get different results.
+
+To illustrate this problem consider the following example:
+
+Assume the following shapes IDs are added in sequence (in parenthesis the layer number):
+\as_is
+{
+    Shape ID:  34(1), 24(2), 35(2), 68(1), 36(2), 38(2), 58(1), 78(1), 
+    order:      1      2      3      4      5      6      7      8
+}
+
+After adding the shapes to graphical model in that order, the contents of layers 1 & 2 will be:
+\as_is
+{
+    layer 1: 34, 68, 58, 78
+    layer 2: 24, 35, 36, 38
+}
+
+If user now moves shape 68 to layer 2 it should be placed after object 35, as that will be its place the next time the layout algorithm re-creates the graphical model:
+\as_is
+{
+
+    layer 1: 34, 58, 78
+    layer 2: 24, 35, 68, 36, 38
+}
+
+And if user decides to move it back to layer 1, for the same reason it must be placed after object 34, returning to its original position.
+
+To be able to preserve this ordering we need to know about the order in which a shape is added to the graphical model. The approach followed has been to save this order value in the shape (methods %%SetOrder()%% and %%GetOrder()%%) and assign the order value when the shape is added to the graphical model (method %%lmBox::AddShape()%%).
+
+\note
+{
+The user interface and internal methods to move objects between layers, to add and remove layers and to re-order layers are not yet implemented. But the support to add these features is already in coded.
+}
+
+
+
+\h2 {Implementation details}
+%%%-----------------------------
+
+When a shape is added to a box the %%lmScoreObj%% that creates the shape must provide layer information.
+
+%%m_nLayer%% is a property of the %%lmScoreObj%% instantiated at creation time with default information for that kind of score obj. The value is exported to LDP only if it does not coincide with the default value.
+
+Then, method %%lmBox::AddShape()%% assigns the shape the creation order number but doesn't add the shape to any layer, This is because in some cases (for example, when deciding if a measure fits in current system) a %%lmBoxSlice%% could be deleted and in that case all its shapes must be removed from the layers. To avoid having to remove shapes from the layers, the approach followed has been to populate layers when the lmBoxScore has been prepared. So, at end of method %%lmFormater4::LayoutScore()%%, before the %%return%% sentence, the is a line:
+
+\code
+{
+    pBoxScore->PopulateLayers();
+}
+
+The purpose of this method is to populate each page layers with the shapes contained in that page.
+
+
+The list of shapes in a layer must be maintained at page level (%%lmBoxPage%%); otherwise it would be impossible to promote an object out of the render order imposed by traversing the tree of boxes. Also it would be difficult for hit test to take z-order into account if the list is not global but local to each %%lmBox%%.
+
+But if the list of %%lmScoreObj%% is at page level then it is not possible to filter out by smaller boxes bounding rectangles (systems, slices, etc.) as the list has no the structure of an R-tree (http://en.wikipedia.org/wiki/R-tree). This implies that for hit tests, in the worst case all the layers must be traversed. Nevertheless, it is expected to have good response time. If that were not the case we should find methods to improve search.
+
+Layers in a %%lmBoxPage%% are organized in a list. You can add all layers you'd like, at any position. But neither under the background layer nor above the top layer.
+
+A layer is a collection of %%lmScoreObj%%. The first %%lmScoreObj%% is the bottom most object in that layer.
+
+By default, each %%lmBoxPage%% has six predefined layers:
+
+    * top layer: by default, nothing on it.
+    * annotations layer: aux objects
+    * notes layer: staff objects
+    * barlines layer: barlines, repetition signs and related (da capo, etc.)
+    * staff layer: staff lines, brackets, instrument name, etc.
+    * background layer: by default, nothing on it
+
+        
+Whenever the user defines a new layer, it will be inserted a appropriate location in this list (but restricted to be below top layer and above background layer). Layers are global to all pages, that is, if user creates a layer or moves a layer to another position in the layers stack, the operation affects to all the pages.
+
+Each layer has an ID number. Layer 'top' has ID=5 and layer 'backgound' has ID=0. All user layers have ID > 5 and the IDs are assigned in sequence. 
+
+Standard layers can not be deleted. A user layer can be deleted and removed but firts, it must be empty (the objects it contains deleted or moved to another layer). There is no need to re-number layers as long as the last used ID is saved.
+
+In LDP source the layer order and IDs are saved (once for all the score, as layers structure is common to all pages):
+
+\code
+{
+    (layers (last ID) ID* )
+}
+
+
+\h1 {References}
+%%%------------------
+
+
+    * [1] Hit testing (http://msdn.microsoft.com/en-us/library/ms969920.aspx)
+    Dennis Crain, Microsoft Developer Network Technology Group, February, 1994. Describes the problem and GDI Win32 methods that can be used to implement hit testing. 
+
+    * [2] R-tree (http://en.wikipedia.org/wiki/R-tree)
+
+
+\h1 {To do}
+%%%----------------
+
+    * Remove parameter ExtraWidth in lines.
+   
+    * Hit test: deal with horizontal/vertical lines.
+    
+    * Hit test: deal with other shapes (i.e. ties). Use paths and agg methods.
+    
+    * In some ScoreObjs, the layer can not be changed:
+        * InstrGroup.cpp
+        * Staff lines, in VStaff.cpp
+        
+    * Save layers information in LDP
+        
+    * Add to ScoreObjs contextual menu, and implement:
+        * Move top (to top layer)
+        * Move bottom (to backgrund layer)
+        * Move up (to next layer above)
+        * Move down (to next layer below)
+
+    * Show/hide layers
+    
+    * Insert/delete layers
+    
+    * Move layer to another position in the layers stack
+ 
+
+
+
+%%*
+[INTERNAL INFO]
+
+\h1 {Doing hit test in agg}
+%%%---------------------------
+
+Ref: Agg related
+http://www.nabble.com/Help--on:-restricted-drawing-for-hittesting-speedup-td20317034.html
+
+Help on: restricted drawing for hittesting speedup
+
+Hi
+
+ 
+
+I am new in using agg.
+
+I would like to accelerate hittesting functionality while drawing multiple shapes.
+
+In order to perform hittesting (determine which shapes is drawn at given coordinate) I redraw the entire stack of shapes and at each shape drawing I test if the pixel has been draw using hit_test()  function.
+
+This operation slows down while number of shapes increases.
+
+Is it possible to restrict the drawing to a single pixel (the given coordinate) when hittesting is needed?
+
+ 
+    //definitions
+    agg::rendering_buffer rbuf;
+    rbuf.attach((unsigned char*)buf, width, height, stride);
+    agg::pixfmt_bgra32 pixf(rbuf);
+    agg::renderer_base<agg::pixfmt_bgra32> renb(pixf);
+    renb.clear(agg::rgba8(255, 255, 255, 255));
+    agg::renderer_scanline_aa_solid<agg::renderer_base<agg::pixfmt_bgra32> > ren(renb);
+
+    // Rasterizer & scanline
+    agg::rasterizer_scanline_aa<> ras;
+    agg::scanline_p8 sl;
+    agg::path_storage path;
+    bool ht;
+
+    //draw a rectangle and do a hit test
+    agg::rounded_rect r(10, 10, 400, 400, 0);
+    path.concat_path(r);
+    ras.add_path(path);
+    ren.color(agg::rgba8(0, 0, 255, 255));
+    ht=ras.hit_test(100,100);
+    TRACE("HitTest on rect solid filled @ 100,100=%d\n", (int) ht);
+    agg::render_scanlines(ras, sl, ren);
+
+    //add a line and perform a second hit test
+    ras.reset();
+    ras.add_path(path);
+    ren.color(agg::rgba8(0, 0, 255, 0));
+    ht=ras.hit_test(100,100);
+    TRACE("HitTest on rect solid filled @ 100,100=%d\n", (int) ht);
+    agg::render_scanlines(ras, sl, ren);
+    ras.reset();
+
+ 
+
+ 
+
+Thanks
+Andrea Varesio
+
+
+https://lists.sourceforge.net/lists/listinfo/vector-agg-general
+
+    
+Re: Help on: restricted drawing for hittesting speedup
+
+
+ras.clip_box(ceil(x - 0.5), ceil(y - 0.5), ceil(x + 0.5), ceil(y + 0.5));
+
+Don't know if the rounding is correct, but that's the general idea. From
+the code, it looks like you don't have to apply the clipping again after
+calling ras.reset();
+
+Also, I would travers the shapes in top to bottom order and leave the loop
+as soon as you got a hit. If you are caching bounding boxes, you could also
+only look at shapes that include the pixel in their bounding box.
+
+Best regards,
+-Stephan
+
+_______________________________________________
+
+https://lists.sourceforge.net/lists/listinfo/vector-agg-general
+
+    
+> 1. Test whether the user has clicked on an element (polygon/line)
+
+what I'm currently doing in my
+application is this:
+I go through all elements from top to bottom, if their bounding box contains
+the hit test location, I render their alpha channel on just the pixel at the
+hit test location. The first element that has an alpha value greater than
+zero at that pixel is the hit. I have no idea if it is faster to calculate
+if that point is within the polygon of the element.
+
+
+Best regards,
+-Stephan
+
+
+______________________________________________
+
+
+    
+Re: [AGG] Hit-testing and changing svg elements' properties
+Click to flag this post
+
+by Maxim Shemanarev Aug 21, 2005; 02:11am :: Rate this Message: - Use ratings to moderate (?)
+
+
+Hi George,
+
+> Now, I need to be able to do the following:
+>
+> - Hit-testing on polygons/lines: when a user clicks on a polygon...
+
+You can use rasterizer_scanline_aa for that. It has method:
+
+bool hit_test(int x, int y);
+
+that you can use instead of calling render_scanlines(). Here x,y are integer
+coordinates in the destination buffer (that is, screen coordinates). It also
+perfectly works with strokes, because at the point of rasterization strokes are
+already converted into polygons.
+
+Of course, some pure vectorial algorithms (like PointInPoly) can work faster,
+but you often need to work with poly-polygons and it must be consistent with
+the visual results the rasterizer produces. In particular, "even-odd" or
+"non-zero" fill rules must be considered.
+
+It all is not that trivial, but there is a very good work by Eric Haines:
+http://www.acm.org/tog/editors/erich/ptinpoly/ 
+
+But my rationale of using the rasterizer is the following. You typically don't
+need the hit test work very fast. You can usually afford that it works in
+approximatelly the same time as rendering (or faster). But if you really need a
+very fast solution (millions of calls to PointInPoly), there should be much
+smarter algorithms than the rasterizer or simple vectorial PointInPoly test.
+
+
+McSeem
+
+
+---------------------------------------------------------------------------------
+
+http://www.nabble.com/Hit-testing-on-a-line-td2927844.html#a2928725
+
+Hit-testing on a line
+
+Hello dear McSeem,
+hello all agg users,
+
+In my tiny application using svg I needed to have a hit-testing feature on a
+polygon, when the user clicks on a drawing I need to be able to detect the
+polygon he clicked.
+I solved this by using the interactive_polygon class (included in the
+examples folder) and worked like a charm, since the algorithm is fast enough
+for my needs (ok, it's very fast :-) ).
+
+Now I need to do the same for a path and I'm stuck!
+
+Given this
+
+agg::path_storage path;
+unsigned p1 = path.start_new_path();
+path.move_to(70,70);
+path.line_to(80,70);
+path.line_to(90,100);
+path.command(agg::path_cmd_stop);
+
+how can I test if a point is on the path above? And better, can the
+algorithm provided support some kind of tollerace (e.g. if the point
+p(71,71) located on the path with a 1 pixel tollerance?). Ideally, the
+algorightm should be fast enough for hit-testing on several thousand paths
+comprised of 5 to 10 points; perhaps a bounding-box could help here?
+
+Thanking for your answers,
+George.
+
+
+
+Maxim Shemanarev-2 Feb 14, 2006
+
+Hi George,
+
+First of all, the problem of that "point-in-polygon" function is that it
+doesn't handle the non-zero fill rule, only even-odd. It can give you the
+wrong result. The following links can help:
+
+http://www.acm.org/tog/editors/erich/ptinpoly/
+http://softsurfer.com/Archive/algorithm_0103/algorithm_0103.htm
+
+In AGG the common way of hit-testing is to use the rasterizer. You do it as
+if you wanted to draw, but instead of calling agg::render_scanlines() you
+call ras.hit_test(x,y); where x,y are integer coordinates on the screen.
+Yes, it looks slow, but remember it isn't slower (actually faster) than
+drawing itself. If rendering of the scene is fairly fast, the hit-test will
+also be fast.
+
+The advantage is that it works identically with drawing. And it also works
+for strokes, considering line caps and line joins. Well, you may want to
+increase the sensible area with some tolerance. In this case you can simply
+increase the line width accordingly. The line width is set in the world
+coordinates, considering the viewport and the transformer. So that, you have
+to consider it. For example if you want to add exactly one pixel tolerance,
+you set something like this:
+
+    if(hit_test_mode)
+    {
+       double tolerance = 1.0;
+       tolerance /= m_affine.scale();
+       m_stroke.width(m_width + tolerance);
+    }
+
+Where m_affine contains viewport transformations. Or you can use
+tolerance /= m_affine.scale() * m_viewport.scale();
+If they are separate.
+
+It's also possible to use calc_line_point_distance(), but to restrict it to
+the line segments you check the line for the bounding box. Suppose,
+x1,y1,x2,y2 are the coordinates of the line segment, and x,y - the hit-test
+point. You do:
+
+    agg::rect_d bbox(x1,y1,x2,y2);
+    bbox.normalize(); // swap coordinates if necessary.
+    bbox.x1 -= tolerance;
+    bbox.y1 -= tolerance;
+    bbox.x2 += tolerance;
+    bbox.y2 += tolerance;
+    if(x >= bbox.x1 && x <= bbox.x2 && y >= bbox.y1 && y <= bbox.y2)
+    {
+        if(agg::calc_line_to_point_distance(x1,y1,x2,y2, x,y) <= tolerance)
+        {
+            ...the line segment is hit.
+        }
+    }
+
+But this method won't consider line caps and joins.
+
+McSeem
+
+
+
+
+\h1 {Distance from point to line}
+-------------------------------------
+
+
+The formula that gives the distance between a point (x0, y0) and a line ax + by + c = 0 is:
+
+    d = |a.x0 + b.y0 + c| / SQRT(a^2 + b^2)
+
+If the line is defined by two points P1(x1, y1) & P2(x2, y2).
+
+Then the line equation is:
+
+
+* Line eq. pasing by two points (x1, y1) and (x2, y2):
+
+
+
+                                                    + (x2, y2)
+                                                    |
+                                    +  (x, y)       |
+                                    |               | 
+                                    |               |
+   (x1, y1) +----------------------------------------
+   
+   
+   
+   We can establish the following relationship between both triangles:
+   
+    (y2 - y1)   (y - y1)
+    --------- = --------
+    (x2 - x1)   (x - x1) 
+    
+    
+    and isolating 'y' we get the line equation:
+
+
+        (y2 - y1)
+    y = --------- (x - x1) + y1         (1)
+        (x2 - x1)
+        
+
+                      (y2 - y1)
+    with slope:   m = ---------         (2)
+                      (x2 - x1)  
+                 
+
+    the line formula can also be written as:
+    
+    y(x2 - x1) = (y2 -y1)x - (y2-y1)x1 + y1(x2 - x1)
+    
+    or
+    
+    (y2 -y1)x - (x2 - x1)y + y1(x2 - x1) - (y2-y1)x1 = 0
+    
+    ax + by + c = 0
+    
+    a = (y2-y1)
+    b = - (x2 - x1)
+    c = y1(x2 - x1) - (y2-y1)x1
+    
+    
+    Therefore, distance is given by
+    
+    d = |a.x0 + b.y0 + c| / SQRT(a^2 + b^2)
+    
+    For speed, a, b, c and SQRT(a^2 + b^2) could be pre-computed and stored
+
+
+Alternative b)
+
+    http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/
+
+
+
+---------------------------------------------------------------------------------
+
+[END INTERNAL INFO]
+*%%

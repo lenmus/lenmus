@@ -47,7 +47,7 @@ class wxHyperlinkCtrl;
 class wxHyperlinkEvent;
 class wxFileHistory;
 
-class lmWelcomeWnd: public lmMDIChildFrame
+class lmWelcomeWnd: public lmTDIChildFrame
 {
    DECLARE_DYNAMIC_CLASS(lmWelcomeWnd)
 

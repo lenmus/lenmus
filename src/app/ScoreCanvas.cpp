@@ -2011,9 +2011,24 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
 lmEditorMode::lmEditorMode(wxClassInfo* pControllerInfo, wxClassInfo* pScoreProcInfo)
     : m_pControllerInfo(pControllerInfo)
     , m_pScoreProcInfo(pScoreProcInfo)
+    , m_sCreationModeName(wxEmptyString)
+    , m_sCreationModeVers(wxEmptyString)
 {
     for (int i=0; i < lmPAGE_MAX; ++i)
         m_ToolPagesInfo[i] = (wxClassInfo*)NULL;
+}
+
+lmEditorMode::lmEditorMode(wxString& sCreationMode, wxString& sCreationVers)
+    : m_pControllerInfo(CLASSINFO(lmScoreCanvas))
+    , m_pScoreProcInfo(CLASSINFO(lmHarmonyProcessor))
+    , m_sCreationModeName(sCreationMode)
+    , m_sCreationModeVers(sCreationVers)
+{
+    //TODO
+    for (int i=0; i < lmPAGE_MAX; ++i)
+        m_ToolPagesInfo[i] = (wxClassInfo*)NULL;
+
+    m_ToolPagesInfo[lmPAGE_NOTES] = CLASSINFO(lmToolPageNotesHarmony);
 }
 
 lmEditorMode::~lmEditorMode()

@@ -100,7 +100,7 @@ class TextBookHelpMergedIndex;
 
 class lmTextBookController;
 
-class lmTextBookFrame : public lmMDIChildFrame
+class lmTextBookFrame : public lmTDIChildFrame
 {
     DECLARE_DYNAMIC_CLASS(lmTextBookFrame)
 
@@ -174,7 +174,7 @@ public:
     bool IsNavPanelVisible() { return m_Cfg.navig_on; }
     double GetScale() { return m_rScale; }
 
-	//Overrides from lmMDIChildFrame: Call backs
+	//Overrides from lmTDIChildFrame: Call backs
 	double GetActiveViewScale() { return m_rScale; }
 	bool SetActiveViewScale(double rScale);
 	void OnChildFrameActivated();

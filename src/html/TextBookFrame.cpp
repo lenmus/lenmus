@@ -256,10 +256,10 @@ enum
 };
 
 
-IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmMDIChildFrame)
+IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmTDIChildFrame)
 
 
-BEGIN_EVENT_TABLE(lmTextBookFrame, lmMDIChildFrame)
+BEGIN_EVENT_TABLE(lmTextBookFrame, lmTDIChildFrame)
     EVT_TOOL_RANGE(lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmTextBookFrame::OnToolbar)
 
     EVT_BUTTON      (ID_BOOKMARKS_REMOVE, lmTextBookFrame::OnToolbar)
@@ -354,7 +354,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     if (m_Config)
         ReadCustomization(m_Config, m_ConfigRoot);
 
-    lmMDIChildFrame::Create((lmMDIParentFrame*)parent, id, _("eMusicBooks"),
+    lmTDIChildFrame::Create((lmTDIParentFrame*)parent, id, _("eMusicBooks"),
                     wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
                     wxDEFAULT_FRAME_STYLE, _T("TextBookFrame") );
 

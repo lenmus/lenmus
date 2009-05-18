@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is derived from file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -49,7 +49,7 @@
 #include "ClientWindow.h"
 
 //-----------------------------------------------------------------------------
-// lmMDIParentFrame
+// lmTDIParentFrame
 //  An MDI (Multiple Document Interface) parent frame is a window which can 
 //  contain MDI child frames in its own 'desktop'. It is a convenient way to 
 //  avoid window clutter.
@@ -63,19 +63,19 @@
 //
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(lmMDIParentFrame, wxFrame)
+IMPLEMENT_DYNAMIC_CLASS(lmTDIParentFrame, wxFrame)
 
-BEGIN_EVENT_TABLE(lmMDIParentFrame, wxFrame)
-    EVT_SIZE(lmMDIParentFrame::OnSize)
+BEGIN_EVENT_TABLE(lmTDIParentFrame, wxFrame)
+    EVT_SIZE(lmTDIParentFrame::OnSize)
 END_EVENT_TABLE()
 
 
-lmMDIParentFrame::lmMDIParentFrame()
+lmTDIParentFrame::lmTDIParentFrame()
 {
     Init();
 }
 
-lmMDIParentFrame::lmMDIParentFrame(wxWindow *parent,
+lmTDIParentFrame::lmTDIParentFrame(wxWindow *parent,
                                    wxWindowID id,
                                    const wxString& title,
                                    const wxPoint& pos,
@@ -88,7 +88,7 @@ lmMDIParentFrame::lmMDIParentFrame(wxWindow *parent,
     (void)Create(parent, id, title, pos, size, style, name);
 }
 
-lmMDIParentFrame::~lmMDIParentFrame()
+lmTDIParentFrame::~lmTDIParentFrame()
 {
 //    // Make sure the client window is destructed before the menu bars are!
 //    //wxDELETE(m_pClientWindow);
@@ -105,7 +105,7 @@ lmMDIParentFrame::~lmMDIParentFrame()
 //#endif // wxUSE_MENUS
 }
 
-bool lmMDIParentFrame::Create(wxWindow *parent,
+bool lmTDIParentFrame::Create(wxWindow *parent,
                               wxWindowID id,
                               const wxString& title,
                               const wxPoint& pos,
@@ -117,17 +117,17 @@ bool lmMDIParentFrame::Create(wxWindow *parent,
     wxFrame::Create( parent, id, title, pos, size, style, name );
 
     ////creates the client window on it
-    m_pClientWindow  = (lmMDIClientWindow*) NULL;
-    //m_pClientWindow = new lmMDIClientWindow( this, wxVSCROLL | wxHSCROLL );
+    m_pClientWindow  = (lmTDIClientWindow*) NULL;
+    //m_pClientWindow = new lmTDIClientWindow( this, wxVSCROLL | wxHSCROLL );
     return true;
 }
 
-void lmMDIParentFrame::SetMenuBar(wxMenuBar *pMenuBar)
+void lmTDIParentFrame::SetMenuBar(wxMenuBar *pMenuBar)
 {
     wxFrame::SetMenuBar(pMenuBar);
 }
 
-bool lmMDIParentFrame::ProcessEvent(wxEvent& event)
+bool lmTDIParentFrame::ProcessEvent(wxEvent& event)
 {
     /*
      * Redirect events to active child first.
@@ -173,25 +173,25 @@ bool lmMDIParentFrame::ProcessEvent(wxEvent& event)
     return res;
 }
 
-lmMDIChildFrame *lmMDIParentFrame::GetActiveChild() const
+lmTDIChildFrame *lmTDIParentFrame::GetActiveChild() const
 {
     if (m_pClientWindow)
         return m_pClientWindow->GetSelectedPage();
     else
-        return (lmMDIChildFrame*)NULL;
+        return (lmTDIChildFrame*)NULL;
 }
 
-void lmMDIParentFrame::SetActiveChild(lmMDIChildFrame* pChildFrame)
+void lmTDIParentFrame::SetActiveChild(lmTDIChildFrame* pChildFrame)
 {
     //m_pActiveChild = pChildFrame;
 }
 
-lmMDIClientWindow *lmMDIParentFrame::GetClientWindow() const
+lmTDIClientWindow *lmTDIParentFrame::GetClientWindow() const
 {
     return m_pClientWindow;
 }
 
-void lmMDIParentFrame::ActivateNext()
+void lmTDIParentFrame::ActivateNext()
 {
     if (m_pClientWindow && m_pClientWindow->GetSelection() != -1)
     {
@@ -203,7 +203,7 @@ void lmMDIParentFrame::ActivateNext()
     }
 }
 
-void lmMDIParentFrame::ActivatePrevious()
+void lmTDIParentFrame::ActivatePrevious()
 {
     if (m_pClientWindow && m_pClientWindow->GetSelection() != -1)
     {
@@ -215,7 +215,7 @@ void lmMDIParentFrame::ActivatePrevious()
     }
 }
 
-bool lmMDIParentFrame::CloseAll()
+bool lmTDIParentFrame::CloseAll()
 {
     //Returns true if all windows get closed
 
@@ -247,7 +247,7 @@ bool lmMDIParentFrame::CloseAll()
     return fAllClosed;
 }
 
-void lmMDIParentFrame::CloseActive()
+void lmTDIParentFrame::CloseActive()
 {
     if(!m_pClientWindow) return;
     int iActive = m_pClientWindow->GetSelection();
@@ -257,15 +257,15 @@ void lmMDIParentFrame::CloseActive()
 }
 
 
-void lmMDIParentFrame::Init()
+void lmTDIParentFrame::Init()
 {
-    m_pClientWindow = (lmMDIClientWindow *) NULL;
+    m_pClientWindow = (lmTDIClientWindow *) NULL;
 #if wxUSE_MENUS
     m_pMyMenuBar = (wxMenuBar*) NULL;
 #endif // wxUSE_MENUS
 }
 
-void lmMDIParentFrame::OnSize(wxSizeEvent& event)
+void lmTDIParentFrame::OnSize(wxSizeEvent& event)
 {
     if (m_pClientWindow)
         m_pClientWindow->OnSize(event);
@@ -273,12 +273,12 @@ void lmMDIParentFrame::OnSize(wxSizeEvent& event)
         event.Skip();      //continue processing the  event
 }
 
-void lmMDIParentFrame::DoGetClientSize(int *width, int *height) const
+void lmTDIParentFrame::DoGetClientSize(int *width, int *height) const
 {
     wxFrame::DoGetClientSize( width, height );
 }
 
-void lmMDIParentFrame::RemoveChildFrame(lmMDIChildFrame* pChild)
+void lmTDIParentFrame::RemoveChildFrame(lmTDIChildFrame* pChild)
 {
     //This code is no longer needed as wxAuiNotebook manages the removal of a tab
     //So here nothing else must be done
@@ -318,10 +318,10 @@ void lmMDIParentFrame::RemoveChildFrame(lmMDIChildFrame* pChild)
     //// if there are still pages, activate the choosen one
     //if (nNextPage != -1) {
     //    m_pClientWindow->SetSelection(nNextPage);
-    //    //SetActiveChild( (lmMDIChildFrame*)m_pClientWindow->GetCurrentPage() );
+    //    //SetActiveChild( (lmTDIChildFrame*)m_pClientWindow->GetCurrentPage() );
     //}
     ////else {
-    ////    SetActiveChild( (lmMDIChildFrame*) NULL );
+    ////    SetActiveChild( (lmTDIChildFrame*) NULL );
     ////}
 
 }

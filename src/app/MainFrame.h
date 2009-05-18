@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -50,7 +50,7 @@ class lmTextBookController;
 class lmHtmlWindow;
 class lmHelpController;
 class lmMetronome;
-class lmMDIChildFrame;
+class lmTDIChildFrame;
 class lmStatusBar;
 class lmToolBox;
 class lmWelcomeWnd;
@@ -59,7 +59,7 @@ class lmEditorMode;
 
 
 // Class lmMainFrame defines the main MDI frame for the application
-class lmMainFrame: public lmDocMDIParentFrame
+class lmMainFrame: public lmDocTDIParentFrame
 {
     DECLARE_DYNAMIC_CLASS(lmMainFrame)
 
@@ -67,7 +67,7 @@ public:
     wxLocale*   m_pLocale;            // locale for internationalization
 
     //constructors and destructor
-    lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
+    lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxString& sTitle,
             const wxPoint& pos, const wxSize& size, long type);
     ~lmMainFrame();
 
@@ -97,8 +97,12 @@ public:
     lmMetronome* GetMetronome() { return m_pMtr; }
 
     // File menu events
+    void OnFileOpen(wxCommandEvent& event);
+    void OnFileClose(wxCommandEvent& event);
+    void OnFileSave(wxCommandEvent& event);
+    void OnFileSaveAs(wxCommandEvent& event);
     void OnScoreWizard(wxCommandEvent& WXUNUSED(event));
-    void OnImportFile(wxCommandEvent& WXUNUSED(event));
+    void OnFileImport(wxCommandEvent& WXUNUSED(event));
 	void OnExportMusicXML(wxCommandEvent& WXUNUSED(event));
 	void OnExportBMP(wxCommandEvent& WXUNUSED(event));
     void OnExportJPG(wxCommandEvent& WXUNUSED(event));
@@ -251,12 +255,9 @@ public:
     lmController* GetActiveController();
     wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
     lmDocument* GetActiveDoc();
-    lmScore* GetScoreToEdit(int nID);
-
 
 	// call backs
-	void OnActiveChildChanged(lmMDIChildFrame* pFrame);
-    void OnNewEditFrame();
+	void OnActiveChildChanged(lmTDIChildFrame* pFrame);
 
 	//other
 	void RedirectKeyPressEvent(wxKeyEvent& event);
@@ -324,7 +325,6 @@ protected:
     bool    m_fClosingAll;
 
     //other
-    std::list<lmScore*> m_scoresToEdit;     //list of scores to display
     wxFileHistory*      m_pRecentFiles;     //list of rencently open files 
 
     DECLARE_EVENT_TABLE()

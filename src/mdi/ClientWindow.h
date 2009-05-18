@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is derived from file src/generic/mdig.h from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -34,21 +34,21 @@
 
 #include "wx/aui/auibook.h"
 
-class lmMDIParentFrame;
-class lmMDIChildFrame;
+class lmTDIParentFrame;
+class lmTDIChildFrame;
 
 //-----------------------------------------------------------------------------
-// lmMDIClientWindow
+// lmTDIClientWindow
 //-----------------------------------------------------------------------------
 
-class lmMDIClientWindow: public wxAuiNotebook
+class lmTDIClientWindow: public wxAuiNotebook
 {
 public:
-    lmMDIClientWindow();
-    lmMDIClientWindow( lmMDIParentFrame *parent, long style = 0 );
-    virtual ~lmMDIClientWindow();
+    lmTDIClientWindow();
+    lmTDIClientWindow( lmTDIParentFrame *parent, long style = 0 );
+    virtual ~lmTDIClientWindow();
 
-    lmMDIChildFrame* GetSelectedPage();
+    lmTDIChildFrame* GetSelectedPage();
     int SetSelection(size_t nPage);
     void OnSize(wxSizeEvent& event);
     void OnChildClose(wxAuiNotebookEvent& evt);
@@ -58,7 +58,7 @@ protected:
 	void OnPageChanged(wxAuiNotebookEvent& event);
 
 private:
-    DECLARE_DYNAMIC_CLASS(lmMDIClientWindow)
+    DECLARE_DYNAMIC_CLASS(lmTDIClientWindow)
     DECLARE_EVENT_TABLE()
 };
 

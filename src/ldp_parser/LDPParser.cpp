@@ -645,7 +645,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
 
 lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
-    //<score> = (score <vers> [<language>][<styles>][<pageLayout>][<titles>] <instrument>*)
+    //<score> = (score <vers><language>[<creationMode>][<styles>][<pageLayout>][<titles>] <instrument>*)
     //<language> = (language LanguageCode Charset)
 
     lmLDPNode* pX;
@@ -671,8 +671,20 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     // create the score
     m_pScore = new lmScore();
 
+    //parse optional element <creationMode>
+    if (iP <= nNumParms)
+    {
+        pX = pNode->GetParameter(iP);
+        if (pX->GetName() == _T("creationMode"))
+        {
+            AnalyzeCreationMode(pX, m_pScore);
+            iP++;
+        }
+    }
+
     //parse optional elements <defineStyle>
-    pX = pNode->GetParameter(iP);
+    if (iP <= nNumParms)
+        pX = pNode->GetParameter(iP);
     while(pX->GetName() == _T("defineStyle") &&  iP <= nNumParms)
     {
         AnalyzeDefineStyle(pX, m_pScore);
@@ -2982,6 +2994,33 @@ bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
     //register the style
     if (!sStyleName.IsEmpty())
         pScore->AddStyle(sStyleName, tFont, color);
+
+    return true;
+}
+
+bool lmLDPParser::AnalyzeCreationMode(lmLDPNode* pNode, lmScore* pScore)
+{
+    // <creationMode> = (creationMode <modeName><modeVersion>)
+
+    //Returns true if success.
+
+    wxASSERT(pNode->GetName() == _T("creationMode"));
+
+    //check that two parameters are specified
+    if(pNode->GetNumParms() != 2) {
+        AnalysisError(
+            pNode,
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+            pNode->GetName().c_str() );
+        return false;
+    }
+
+    //get the mode info
+    wxString sModeName = (pNode->GetParameter(1))->GetName();
+    wxString sModeVers = (pNode->GetParameter(2))->GetName();
+
+    //transfer to the score
+    pScore->SetCreationMode(sModeName, sModeVers);
 
     return true;
 }

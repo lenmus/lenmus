@@ -138,6 +138,7 @@ protected:
     bool        AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth, lmELineStyle* pLineStyle,
                               wxColour* pColor);
     wxColour    AnalyzeColor(lmLDPNode* pNode);
+    bool        AnalyzeCreationMode(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);

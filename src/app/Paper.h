@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -78,52 +78,70 @@ public:
         //methods to encapsulate the DC
 
     //solid shapes, anti-aliased when supported.
-    void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color,
-					int style = wxSOLID)
+    inline void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                    wxColour color, int style = wxSOLID)
 						{ m_pDrawer->SketchLine(x1, y1, x2, y2, color, style); }
-    void SketchRectangle(lmUPoint point, lmUSize uSize, wxColour color)
+    inline void SketchRectangle(lmUPoint point, lmUSize uSize, wxColour color)
 						{ m_pDrawer->SketchRectangle(point, uSize, color); }
 
     // Aliased shapes, even when anti-alising is supported.
-    void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius)
+    inline void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius)
             { m_pDrawer->SolidCircle(x, y, radius); }
-    void SolidPolygon(int n, lmUPoint points[], wxColor color)
+    inline void SolidPolygon(int n, lmUPoint points[], wxColor color)
             { m_pDrawer->SolidPolygon(n, points, color); }
-    void SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+    inline void SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
                   lmLUnits width, lmELineEdges nEdge, wxColour color)
             { m_pDrawer->SolidLine(x1, y1, x2, y2, width, nEdge, color); }
-    void SolidShape(lmShape* pShape, wxColor color)
+    inline void SolidShape(lmShape* pShape, wxColor color)
             { m_pDrawer->SolidShape(pShape, color); }
 
     //settings: line width, colors, fonts, ...
-    void SetFont(wxFont& font) {m_pDrawer->SetFont(font); }
-    void SetLogicalFunction(int function) { m_pDrawer->SetLogicalFunction(function); }
+    inline void SetFont(wxFont& font) { m_pDrawer->SetFont(font); }
+    inline void SetLogicalFunction(int function) { m_pDrawer->SetLogicalFunction(function); }
 
-    wxColour GetFillColor() {return m_pDrawer->GetFillColor(); };
-    void SetFillColor(wxColour color) {m_pDrawer->SetFillColor(color); };
-    wxColour GetLineColor() {return m_pDrawer->GetLineColor(); };
-    void SetLineColor(wxColour color) {m_pDrawer->SetLineColor(color); };
-    lmLUnits GetLineWidth() {return m_pDrawer->GetLineWidth(); };
-    void SetLineWidth(lmLUnits uWidth) {m_pDrawer->SetLineWidth(uWidth); };
-    void SetPen(wxColour color, lmLUnits uWidth) {m_pDrawer->SetPen(color, uWidth); };
+    inline wxColour GetFillColor() 
+            { return m_pDrawer->GetFillColor(); };
+    inline void SetFillColor(wxColour color)
+            { m_pDrawer->SetFillColor(color); };
+    inline wxColour GetLineColor() 
+            { return m_pDrawer->GetLineColor(); };
+    inline void SetLineColor(wxColour color)
+            { m_pDrawer->SetLineColor(color); };
+    inline lmLUnits GetLineWidth() 
+            { return m_pDrawer->GetLineWidth(); };
+    inline void SetLineWidth(lmLUnits uWidth) 
+            { m_pDrawer->SetLineWidth(uWidth); };
+    inline void SetPen(wxColour color, lmLUnits uWidth)
+            { m_pDrawer->SetPen(color, uWidth); };
 
     //text
-    void DrawText(const wxString& text, lmLUnits x, lmLUnits y) {m_pDrawer->DrawText(text, x, y); }
-    void SetTextForeground(const wxColour& colour) {m_pDrawer->SetTextForeground(colour); }
-    void SetTextBackground(const wxColour& colour) {m_pDrawer->SetTextBackground(colour); }
-    void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)
+    inline void DrawText(const wxString& text, lmLUnits x, lmLUnits y)
+            { m_pDrawer->DrawText(text, x, y); }
+    inline void SetTextForeground(const wxColour& colour)
+            { m_pDrawer->SetTextForeground(colour); }
+    inline void SetTextBackground(const wxColour& colour) 
+            { m_pDrawer->SetTextBackground(colour); }
+    inline void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)
             { m_pDrawer->GetTextExtent(string, w, h); }
 
     //text (FreeType with AGG rederization)
-    bool FtLoadFont(wxString sFontName) { return false; }
-    int FtDrawChar(unsigned int nChar) { return m_pDrawer->FtDrawChar(nChar); }
-    int FtDrawText(wxString& sText) { return m_pDrawer->FtDrawText(sText); }
-    int FtDrawText(unsigned int* pText, size_t nLength) { return m_pDrawer->FtDrawText(pText, nLength); }
-    void FtSetFontSize(double rPoints) { m_pDrawer->FtSetFontSize(rPoints); }
-    void FtSetFontHeight(double rPoints) { m_pDrawer->FtSetFontHeight(rPoints); }
-    void FtSetFontWidth(double rPoints) { m_pDrawer->FtSetFontWidth(rPoints); }
-    void FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos) { m_pDrawer->FtSetTextPosition(uxPos, uyPos); }
-    void FtGetTextExtent(const wxString& sText, lmLUnits* pWidth, lmLUnits* pHeight,
+    inline bool FtLoadFont(wxString sFontName) 
+            { return false; }
+    inline int FtDrawChar(unsigned int nChar) 
+            { return m_pDrawer->FtDrawChar(nChar); }
+    inline int FtDrawText(wxString& sText) 
+            { return m_pDrawer->FtDrawText(sText); }
+    inline int FtDrawText(unsigned int* pText, size_t nLength)
+            { return m_pDrawer->FtDrawText(pText, nLength); }
+    inline void FtSetFontSize(double rPoints) 
+            { m_pDrawer->FtSetFontSize(rPoints); }
+    inline void FtSetFontHeight(double rPoints) 
+            { m_pDrawer->FtSetFontHeight(rPoints); }
+    inline void FtSetFontWidth(double rPoints) 
+            { m_pDrawer->FtSetFontWidth(rPoints); }
+    inline void FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos) 
+            { m_pDrawer->FtSetTextPosition(uxPos, uyPos); }
+    inline void FtGetTextExtent(const wxString& sText, lmLUnits* pWidth, lmLUnits* pHeight,
                          lmLUnits* pDescender = NULL, lmLUnits* pAscender = NULL) 
             { m_pDrawer->FtGetTextExtent(sText, pWidth, pHeight, pDescender, pAscender); }
 

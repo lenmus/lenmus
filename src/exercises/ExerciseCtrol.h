@@ -470,12 +470,11 @@ protected:
 
     // member variables
 
-    //lmScoreProcessor*   m_pScoreProc;       //score processor for the exercise
     lmEditorMode*       m_pEditMode;        //editor mode for the exercise
     lmScore*            m_pProblemScore;    //score with the problem
     wxBoxSizer*         m_pMainSizer;
-    lmExerciseOptions*  m_pConstrains;  //constraints for the exercise
-    double              m_rScale;           // Current scaling factor
+    lmExerciseOptions*  m_pConstrains;      //constraints for the exercise
+    double              m_rScale;           //current scaling factor
 
 private:
 

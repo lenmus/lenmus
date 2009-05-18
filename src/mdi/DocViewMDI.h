@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is derived from file src/docmdi.cpp from wxWidgets 2.7.1 project.
 //    Author:       Julian Smart
@@ -34,23 +34,58 @@
 #include "ParentFrame.h"
 #include "ClientWindow.h"
 
+#include <list>
 
-class lmDocMDIParentFrame: public lmMDIParentFrame
+
+//------------------------------------------------------------------------------------------------
+// lmDocManager 
+//------------------------------------------------------------------------------------------------
+class lmEditorMode;
+class lmScore;
+class lmDocument;
+
+class lmDocManager : public wxDocManager
 {
 public:
-    lmDocMDIParentFrame();
-    lmDocMDIParentFrame(wxDocManager *manager, wxFrame *parent, wxWindowID id,
+    lmDocManager(long flags = wxDEFAULT_DOCMAN_FLAGS, bool initialize = true);
+    ~lmDocManager();
+
+    //overrides
+    wxDocument* CreateDocument(const wxString& path, long flags);
+
+
+    //specific methods
+
+    void ImportFile(wxString& sPath);
+    void OpenFile(wxString& sPath);
+    void OpenDocument(lmEditorMode* pMode, lmScore* pScore);
+
+protected:
+    lmDocument* DoOpenDocument(const wxString& path, long flags, lmScore* pScore=NULL);
+
+};
+
+
+
+//------------------------------------------------------------------------------------------------
+// lmDocTDIParentFrame: top window for a Tabbed Document Interface
+//------------------------------------------------------------------------------------------------
+class lmDocTDIParentFrame: public lmTDIParentFrame
+{
+public:
+    lmDocTDIParentFrame();
+    lmDocTDIParentFrame(lmDocManager* pDocManager, wxFrame* pParent, wxWindowID id,
         const wxString& title, const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame"));
 
-    bool Create(wxDocManager *manager, wxFrame *parent, wxWindowID id,
+    bool Create(lmDocManager* pDocManager, wxFrame* pParent, wxWindowID id,
         const wxString& title, const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame"));
 
     // Extend event processing to search the document manager's event table
     virtual bool ProcessEvent(wxEvent& event);
 
-    wxDocManager *GetDocumentManager(void) const { return m_docManager; }
+    lmDocManager* GetDocumentManager(void) const { return m_pDocManager; }
 
     void OnExit(wxCommandEvent& event);
     void OnMRUFile(wxCommandEvent& event);
@@ -60,27 +95,32 @@ public:
 
 protected:
     void Init();
-    wxDocManager *m_docManager;
+
+    lmDocManager*   m_pDocManager;
 
 private:
-    DECLARE_CLASS(lmDocMDIParentFrame)
+    DECLARE_CLASS(lmDocTDIParentFrame)
     DECLARE_EVENT_TABLE()
-    DECLARE_NO_COPY_CLASS(lmDocMDIParentFrame)
+    DECLARE_NO_COPY_CLASS(lmDocTDIParentFrame)
 };
 
 
-class lmDocMDIChildFrame: public lmMDIChildFrame
+
+//------------------------------------------------------------------------------------------------
+// lmDocTDIChildFrame 
+//------------------------------------------------------------------------------------------------
+class lmDocTDIChildFrame: public lmTDIChildFrame
 {
 public:
-    lmDocMDIChildFrame();
-    lmDocMDIChildFrame(wxDocument *doc, wxView *view, lmMDIParentFrame *frame, wxWindowID id,
+    lmDocTDIChildFrame();
+    lmDocTDIChildFrame(wxDocument *doc, wxView *view, lmTDIParentFrame *frame, wxWindowID id,
         const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
         long type = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame"));
-    virtual ~lmDocMDIChildFrame();
+    virtual ~lmDocTDIChildFrame();
 
     bool Create(wxDocument *doc,
                 wxView *view,
-                lmMDIParentFrame *frame,
+                lmTDIParentFrame *frame,
                 wxWindowID id,
                 const wxString& title,
                 const wxPoint& pos = wxDefaultPosition,
@@ -98,7 +138,7 @@ public:
     inline wxView *GetView(void) const { return m_childView; }
     inline void SetDocument(wxDocument *doc) { m_childDocument = doc; }
     inline void SetView(wxView *view) { m_childView = view; }
-    bool Destroy() { m_childView = (wxView *)NULL; return lmMDIChildFrame::Destroy(); }
+    bool Destroy() { m_childView = (wxView *)NULL; return lmTDIChildFrame::Destroy(); }
 
 protected:
     void Init();
@@ -107,8 +147,8 @@ protected:
 
 private:
     DECLARE_EVENT_TABLE()
-    DECLARE_CLASS(lmDocMDIChildFrame)
-    DECLARE_NO_COPY_CLASS(lmDocMDIChildFrame)
+    DECLARE_CLASS(lmDocTDIChildFrame)
+    DECLARE_NO_COPY_CLASS(lmDocTDIChildFrame)
 };
 
 #endif      // __LM_DOCVIEWMDI_H__

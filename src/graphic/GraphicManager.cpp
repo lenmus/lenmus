@@ -486,7 +486,7 @@ wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize sh
     pScore->SetPageTopMargin(0.0f);
     pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
     pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
-    oPaper.SetDrawer(new lmDirectDrawer(&dc));
+    //oPaper.SetDrawer(new lmDirectDrawer(&dc));
 
     lmGraphicManager oGraphMngr(pScore, &oPaper);
     oGraphMngr.PrepareToRender(pScore, size.x, size.y, rScale, &oPaper,

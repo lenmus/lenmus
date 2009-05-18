@@ -62,7 +62,7 @@ const int lmLINK_Recent8 = wxNewId();
 const int lmLINK_Recent9 = wxNewId();
 
 
-BEGIN_EVENT_TABLE(lmWelcomeWnd, lmMDIChildFrame)
+BEGIN_EVENT_TABLE(lmWelcomeWnd, lmTDIChildFrame)
     EVT_HYPERLINK   (lmLINK_NewInLenmus, lmWelcomeWnd::OnNewInLenmus)
     EVT_HYPERLINK   (lmLINK_NewScore, lmWelcomeWnd::OnNewScore)
     EVT_HYPERLINK   (lmLINK_QuickGuide, lmWelcomeWnd::OnQuickGuide)
@@ -79,11 +79,11 @@ BEGIN_EVENT_TABLE(lmWelcomeWnd, lmMDIChildFrame)
     EVT_CLOSE       (lmWelcomeWnd::OnCloseWindow)
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmWelcomeWnd, lmMDIChildFrame)
+IMPLEMENT_CLASS(lmWelcomeWnd, lmTDIChildFrame)
 
 
 lmWelcomeWnd::lmWelcomeWnd(wxWindow* parent, wxWindowID id)
-    : lmMDIChildFrame((lmMDIParentFrame*)parent, id, _("Welcome"))
+    : lmTDIChildFrame((lmTDIParentFrame*)parent, id, _("Welcome"))
 {
     //get recent open files history and get number of files saved
     wxFileHistory* pHistory = g_pMainFrame->GetFileHistory();

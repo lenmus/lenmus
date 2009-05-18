@@ -267,7 +267,7 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 
         // allocate a DC in memory for using the offscreen bitmaps
         wxMemoryDC memoryDC;
-        m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
+        //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
         m_graphMngr.PrepareToRender(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
                                     lmFORCE_RELAYOUT);
         wxBitmap* pPageBitmap = m_graphMngr.RenderScore(1);

@@ -44,11 +44,12 @@
 #include "wx/filename.h"
 
 #include "ScoreDoc.h"
-//#include "ScoreView.h"
+#include "ScoreView.h"
 #include "TheApp.h"                     //to access the main frame. Used in OnNewScoreWithWizard()
 #include "MainFrame.h"                  //to get the score created with the ScoreWizard
 #include "../ldp_parser/LDPParser.h"
 #include "../xml_parser/MusicXMLParser.h"
+#include "../widgets/MsgBox.h"
 
 
 
@@ -64,75 +65,32 @@ lmDocument::lmDocument()
 lmDocument::~lmDocument()
 {
     delete m_pScore;
+
+    if (m_pEditMode)
+        delete m_pEditMode;
 }
 
-bool lmDocument::OnNewDocument()
+bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
 {
-    //TODO: Remove this method. It is never used. For now keep it as reference just in case
-    //it could be necessary when widening the lmDocument model
+    //invoked from lmDocManager to do View creation. Returns true if no error
+    //Overrided here to deal with View/Controller creation issues
 
-    //// The default implementation calls OnSaveModified and DeleteContents, makes a default
-    //// title for the document, and notifies the views that the filename (in fact, the title)
-    //// has changed.
-
-
-    //if (!OnSaveModified())
-    //    return false;
-
-    //if (OnCloseDocument() == false) return false;
-    //DeleteContents();
-    //Modify(false);
-    //SetDocumentSaved(false);
-
-    //// create an empty score
-    //m_pScore = new lmScore();
-    //m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
-
-    ////In scores created in the score editor, we should render a full page,
-    ////with empty staves. To this end, we need to change some options default value
-    //m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
-    //m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
-
-    ////Assign the score a default name
-    //wxString name;
-    //GetDocumentManager()->MakeDefaultName(name);
-    //SetTitle(name);
-    //SetFilename(name, true);
-
+    wxView* pView = new lmScoreView();
+    pView->SetDocument(this);
+    if (!pView->OnCreate(this, flags))
+    {
+        delete pView;
+        return false;
+    }
     return true;
 }
 
 bool lmDocument::OnOpenDocument(const wxString& filename)
 {
-    //OnOpenDocument() is invoked in three cases:
-    // - Normal invocation from DocManager for opening an LDP document
-    // - Special invocation from MainFrame:
-    //  * For importing MusicXML files. In this case parameter filename will start
-    //    with "\\<<IMPORT>>//" follewed by the filename to open
-    //  * For displaying an already existing score created in the program (i.e.
-    //    exercises, score wizard). Filename will start with "\\<<LOAD>>//"
+    //Invoked from lmDocManager when creating a new document.
+    //This method assings contents to the created document by opening a LDP file.
+    //Parameter filename is the full path to LDP file to open.
 
-
-    //import a MusicXML score
-    if (filename.StartsWith( _T("\\<<IMPORT>>//") ))
-    {
-        wxString sPath = filename.substr(15);
-        size_t nSize = sPath.length() - 4;
-        //wxLogMessage(_T("[lmDocument::OnOpenDocument]Importing <%s>"), sPath.Left(nSize).c_str());
-        return OnImportDocument(sPath.Left(nSize) );
-    }
-
-    //Open an already created score
-    if (filename.StartsWith( _T("\\<<LOAD>>//") ))
-    {
-        wxString sID = filename.Mid(12, 6);
-        long nID = 0;
-        sID.ToLong(&nID);
-        //wxLogMessage(_T("[lmDocument::OnOpenDocument] New score with wizard"));
-        return OnDisplayCreatedScore( (int)nID );
-    }
-
-    //Normal case. Open a score from LDP file
     lmLDPParser parser;
     m_pScore = parser.ParseFile(filename);
     if (!m_pScore)
@@ -151,8 +109,6 @@ bool lmDocument::OnOpenDocument(const wxString& filename)
     GetMainFrame()->AddFileToHistory(filename);
     wxFileName oFN(filename);
     m_pScore->SetScoreName(oFN.GetFullName());
-    //wxLogMessage(_T("[lmDocument::OnOpenDocument] Dump of score: ---------------------------"));
-    //wxLogMessage( m_pScore->Dump() );
     SetFilename(filename, true);
     SetDocumentSaved(true);
     Modify(false);
@@ -162,6 +118,10 @@ bool lmDocument::OnOpenDocument(const wxString& filename)
 
 bool lmDocument::OnImportDocument(const wxString& filename)
 {
+    //Invoked from lmDocManager when creating a new document.
+    //This method assings contents to the created document by importing a MusicXML file.
+    //Parameter filename is the full path to MusicXML file to open.
+
     lmMusicXMLParser parser;
     m_pScore = parser.ParseMusicXMLFile(filename);
     if (!m_pScore) return false;
@@ -174,11 +134,14 @@ bool lmDocument::OnImportDocument(const wxString& filename)
     return true;
 }
 
-bool lmDocument::OnDisplayCreatedScore(int nID)
+bool lmDocument::OnNewDocumentWithContent(lmScore* pScore)
 {
-    //get the score to display
-    m_pScore = GetMainFrame()->GetScoreToEdit(nID);
-    if (!m_pScore) return false;
+    //Invoked from lmDocManager when creating a new document.
+    //This method assings contents to the created document by using the received score.
+
+    //save the score to load in the document
+    m_pScore = pScore;
+    wxASSERT(pScore);
 
     //Assign the window a default name if no name assigned to the score;
     //otherwise assign it the name of the score
@@ -193,6 +156,50 @@ bool lmDocument::OnDisplayCreatedScore(int nID)
     Modify(false);
     UpdateAllViews();
     return true;
+}
+
+void lmDocument::OnCustomizeController(lmEditorMode* pMode)
+{
+    wxASSERT(m_pScore);
+
+    if (!pMode && !m_pScore->GetCreationMode().empty())
+    {
+        wxString sQuestion = _("This score was created by an exercise.");
+        sQuestion += _T("\n\n");
+        sQuestion += _("Would you like to continue in exercise mode?");
+
+        lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
+            _("Exercise mode"), _("Continue in exercise mode. ToolBox will include the additional exercise tools required by the exercise"),
+            _("Normal mode"), _("Continue in normal mode. No special tools will be included.")
+        );
+        int nAnswer = oQB.ShowModal();
+
+		if (nAnswer == 0)   //'Exercise mode' button
+        {
+            pMode = new lmEditorMode( m_pScore->GetCreationMode(), m_pScore->GetCreationVers() );
+        }
+    }
+
+    //force ToolBox creation if doesn't exist yet
+    ((lmMainFrame*)GetMainFrame())->ShowToolBox(true);
+	lmToolBox* pToolBox = ((lmMainFrame*)GetMainFrame())->GetActiveToolBox();
+	wxASSERT(pToolBox);
+
+    //sets the edit mode and creates the score processor, if necessary
+    m_pEditMode = pMode;
+    if (pMode)
+    {
+        pMode->CreateScoreProcessor();
+        m_pScore->SetCreationMode(pMode->GetModeName(), pMode->GetModeVers());
+    }
+
+    //customize ToolBox
+    if (pMode)
+        pMode->CustomizeToolBoxPages(pToolBox);
+    else
+        pToolBox->SetDefaultConfiguration();
+
+    ((lmMainFrame*)GetMainFrame())->SetFocusOnActiveView();
 }
 
 void lmDocument::UpdateAllViews(wxView* sender, wxObject* hint)
@@ -233,13 +240,3 @@ wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
 	return stream;
 }
 #endif
-
-void lmDocument::SetEditMode(lmEditorMode* pMode) 
-{
-    //sets the edit mode and creates the score processor, if necessary
-
-    m_pEditMode = pMode;
-
-    if (pMode)
-        pMode->CreateScoreProcessor();
-}

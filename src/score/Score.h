@@ -393,6 +393,12 @@ public:
     wxString GetScoreName();
     void SetScoreName(wxString sName);
     inline long GetID() const { return m_nID; }
+    inline void SetCreationMode(wxString& sName, wxString& sVers) {
+                                    m_sCreationModeName = sName;
+                                    m_sCreationModeVers = sVers;
+                                }
+    inline wxString& GetCreationMode() { return m_sCreationModeName; }
+    inline wxString& GetCreationVers() { return m_sCreationModeVers; }
 
     // properties
     inline bool IsReadOnly() { return m_fReadOnly; }
@@ -517,7 +523,9 @@ private:
 	std::list<int>          m_aMeasureModified;		//list of measures modified
 
 	//for edition
-	lmScoreCursor		m_SCursor;			//Active cursor pointing to current position
+	lmScoreCursor		m_SCursor;			    //Active cursor pointing to current position
+    wxString            m_sCreationModeName;    //info about how the score was created
+    wxString            m_sCreationModeVers;    //info about how the score was created
 
 };
 

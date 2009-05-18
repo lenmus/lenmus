@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is derived from file src/generic/mdig.h from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -35,19 +35,19 @@
 #include "wx/panel.h"
 
 
-class lmMDIParentFrame;
-class lmMDIClientWindow;
+class lmTDIParentFrame;
+class lmTDIClientWindow;
 
 //-----------------------------------------------------------------------------
-// lmMDIChildFrame
+// lmTDIChildFrame
 // It is a panel on the Notebook (MDIParentFrame)
 //-----------------------------------------------------------------------------
 
-class lmMDIChildFrame: public wxPanel
+class lmTDIChildFrame: public wxPanel
 {
 public:
-    lmMDIChildFrame();
-    lmMDIChildFrame( lmMDIParentFrame *parent,
+    lmTDIChildFrame();
+    lmTDIChildFrame( lmTDIParentFrame *parent,
                      wxWindowID winid,
                      const wxString& title,
                      const wxPoint& pos = wxDefaultPosition,
@@ -55,8 +55,8 @@ public:
                      long style = wxDEFAULT_FRAME_STYLE,
                      const wxString& name = wxFrameNameStr );
 
-    virtual ~lmMDIChildFrame();
-    bool Create( lmMDIParentFrame *parent,
+    virtual ~lmTDIChildFrame();
+    bool Create( lmTDIParentFrame *parent,
                  wxWindowID winid,
                  const wxString& title,
                  const wxPoint& pos = wxDefaultPosition,
@@ -90,8 +90,8 @@ public:
     void OnCloseWindow(wxCloseEvent& event);
     void OnSize(wxSizeEvent& event);
 
-    void SetMDIParentFrame(lmMDIParentFrame* parentFrame);
-    lmMDIParentFrame* GetMDIParentFrame() const;
+    void SetMDIParentFrame(lmTDIParentFrame* parentFrame);
+    lmTDIParentFrame* GetMDIParentFrame() const;
 
 	//New mthods not in wxMDIChildFrame --------------------------
 	
@@ -99,13 +99,13 @@ public:
 	virtual	double GetActiveViewScale() { return 1.0; }
 	virtual bool SetActiveViewScale(double rScale) { return false; }
 
-	// call back from lmMDIClientWindow::PageChanged
+	// call back from lmTDIClientWindow::PageChanged
 	virtual void OnChildFrameActivated() {}
     virtual void OnChildFrameDeactivated() {}
 
 
 protected:
-    lmMDIParentFrame *m_pMDIParentFrame;
+    lmTDIParentFrame *m_pMDIParentFrame;
     wxRect            m_MDIRect;
     wxString          m_Title;
 
@@ -121,10 +121,10 @@ protected:
     void ApplyMDIChildFrameRect();
 
 private:
-    DECLARE_DYNAMIC_CLASS(lmMDIChildFrame)
+    DECLARE_DYNAMIC_CLASS(lmTDIChildFrame)
     DECLARE_EVENT_TABLE()
 
-    friend class lmMDIClientWindow;
+    friend class lmTDIClientWindow;
 };
 
 

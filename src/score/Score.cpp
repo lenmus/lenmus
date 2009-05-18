@@ -498,7 +498,11 @@ void lmScoreCursor::SetNewCursorState(lmVCursorState* pState)
 // lmScore implementation
 //=======================================================================================
 
-lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL), m_SCursor(this)
+lmScore::lmScore()
+    : lmScoreObj((lmScoreObj*)NULL)
+    , m_SCursor(this)
+    , m_sCreationModeName(wxEmptyString)
+    , m_sCreationModeVers(wxEmptyString)
 {
     //Set up an empty score, that is, without any lmInstrument.
 
@@ -1069,6 +1073,16 @@ wxString lmScore::SourceLDP(wxString sFilename)
 	sSource += _T(". Date: ");
 	sSource += (wxDateTime::Now()).Format(_T("%Y-%m-%d"));
     sSource += _T("\n");
+
+    //creation mode
+    if (!m_sCreationModeName.empty())
+    {
+        sSource += _T("   (creationMode ");
+        sSource += m_sCreationModeName;
+        sSource += _T(" ");
+        sSource += m_sCreationModeVers;
+        sSource += _T(")\n");
+    }
 
     //styles
     sSource += m_TextStyles.SourceLDP(1);

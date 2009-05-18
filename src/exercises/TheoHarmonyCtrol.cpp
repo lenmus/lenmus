@@ -93,6 +93,8 @@ lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
     //define editor customizations
     m_pEditMode = new lmEditorMode( CLASSINFO(lmScoreCanvas), CLASSINFO(lmHarmonyProcessor) );
     m_pEditMode->ChangeToolPage(lmPAGE_NOTES, CLASSINFO(lmToolPageNotesHarmony) );
+    m_pEditMode->SetModeName(_T("TheoHarmonyCtrol"));
+    m_pEditMode->SetModeVers(_T("1"));
 }
 
 lmTheoHarmonyCtrol::~lmTheoHarmonyCtrol()

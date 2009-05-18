@@ -38,7 +38,7 @@ class lmScoreView;
 //---------------------------------------------------------------------------
 // lmEditFrame: the frame to edit an score
 //---------------------------------------------------------------------------
-class lmEditFrame: public lmDocMDIChildFrame
+class lmEditFrame: public lmDocTDIChildFrame
 {
     DECLARE_CLASS(lmEditFrame)
 public:

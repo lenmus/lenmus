@@ -1226,7 +1226,6 @@ lmFullEditorExercise::lmFullEditorExercise(wxWindow* parent, wxWindowID id,
     : wxWindow(parent, id, pos, size, style )
     , m_pEditMode((lmEditorMode*)NULL)
     , m_pConstrains(pConstrains)
-    //, m_pScoreProc((lmScoreProcessor*)NULL)
     , m_pProblemScore((lmScore*)NULL)
     , m_rScale(1.0)
 {
@@ -1236,18 +1235,12 @@ lmFullEditorExercise::lmFullEditorExercise(wxWindow* parent, wxWindowID id,
 
 lmFullEditorExercise::~lmFullEditorExercise()
 {
-    //AWARE: As score ownership is transferred to the Score Editor window, the
-    //problem score MUST NOT be deleted.
+    //AWARE: As score and edit mode ownership is transferred to the Score Editor window. They
+    //MUST NOT be deleted.
 
     //delete objects
     if (m_pConstrains)
         delete m_pConstrains;
-
-    if (m_pEditMode)
-        delete m_pEditMode;
-
-    //if (m_pScoreProc)
-    //    delete m_pScoreProc;
 }
 
 void lmFullEditorExercise::OnSettingsButton(wxCommandEvent& event)
@@ -1283,7 +1276,6 @@ void lmFullEditorExercise::OnNewProblem(wxCommandEvent& event)
     SetNewProblem();
     lmMainFrame* pMainFrame = GetMainFrame();
     pMainFrame->NewScoreWindow(m_pEditMode, m_pProblemScore);
-    //m_pScoreProc->SetTools();
 }
 
 void lmFullEditorExercise::CreateControls()

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -34,10 +34,10 @@
 
 #include "SplashFrame.h"
 
-class wxDocManager;
 class lmMainFrame;
 class lmView;
 class lmController;
+class lmDocManager;
 
 
 // Class lmTheApp defines the lenmus application
@@ -54,7 +54,6 @@ class lmTheApp: public wxApp
 
     // Accessors
     wxBitmap& GetBackgroundBitmap() const { return (wxBitmap&) m_background; }
-    wxDocManager* GetDocManager() { return m_pDocManager; }
     wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
     wxString GetLocaleName() { return m_pLocale->GetLocale(); }
     wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
@@ -75,7 +74,7 @@ private:
 	void FindOutScreenDPI();
 
 
-    wxDocManager*	m_pDocManager;
+    lmDocManager*	m_pDocManager;
     wxLocale*       m_pLocale;          //locale we'll be using (user config)
     wxBitmap        m_background;       //background bitmap (user config)
 
