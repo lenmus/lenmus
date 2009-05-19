@@ -64,12 +64,14 @@ typedef struct lmChordInfoStruct {
     //@  pero si solo se permite la inversion de la quinta, no hacen falta estos arrays
     //@ [TODO: confirmar que es mas adecuado hablar de INTERVALOS elididos en lugar de NOTAS]
     int nFifthElided;
+    bool fRootIsDuplicated;
     lmFIntval nIntervals[lmINTERVALS_IN_CHORD];
     void Initalize() //TODO @@pensar en mejorar... (un constructor??)
     {
         nNumIntervals = 0;
         nNumNotes = 0;
         nNumInversions = 0;
+        fRootIsDuplicated = false;
         for (int i=0; i<lmINTERVALS_IN_CHORD; i++)
         {
           nIntervals[i] = lmNULL_FIntval;
@@ -120,6 +122,7 @@ public:
     wxString GetPattern(int i);
     int GetInversion() { return m_nInversion; }
     int GetElision() { return m_nElision; }
+    int IsRootDuplicated() { return m_fRootIsDuplicated; }
 
     // access to note data
     int GetStep(int i) { return FPitch_Step(m_fpNote[i]); }
@@ -145,6 +148,7 @@ private:
     int             m_nNumNotes;                    //num notes in the chord
     lmFPitch        m_fpNote[lmNOTES_IN_CHORD];     //the chord notes
     int             m_nElision; // @@TODO: enum in ChordConstrains...
+    bool            m_fRootIsDuplicated;
 
 };
 

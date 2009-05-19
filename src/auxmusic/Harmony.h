@@ -114,25 +114,25 @@ protected:
 
 enum  lmChordValidationRules 
 {
-    lmCVR_ChordHasAllSteps,  // 1. The chord is complete (has all note steps)
+    lmCVR_ChordHasAllSteps,  // The chord is complete (has all note steps)
     lmCVR_FirstChordValidationRule = lmCVR_ChordHasAllSteps,
-    lmCVR_ChordHasAllNotes,  // *2. lm_eFifthMissing - Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)
-    lmCVR_NoParallelMotion, // 3. No parallel motion of perfect octaves, perfect fifths, and unisons
+    lmCVR_ChordHasAllNotes,  // lm_eFifthMissing - Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)
+    lmCVR_NoParallelMotion, //  No parallel motion of perfect octaves, perfect fifths, and unisons
     lmCVR_NoResultingFifthOctaves,
-    // *4. lm_eResultantFifthOctves - No hacer 5ªs ni 8ªs resultantes, excepto:
+    // lm_eResultantFifthOctves - No hacer 5ªs ni 8ªs resultantes, excepto:
                                             //> a) la soprano se ha movido por segundas
                                             //> b) (para 5ªs) uno de los sonidos ya estaba
-    lmCVR_NoFifthDoubled, // 5. The fifth is not doubled
-	lmCVR_NoLeadingToneDoubled, // 6. The leading tone is never doubled
-    lmCVR_LeadingToneResolveToTonic, // 7. Scale degree seven (the leading tone) should resolve to tonic.
-    lmCVR_SeventhResolution, // *8.lm_eSeventhResolution - the seventh of a chord should always resolve down by second.
-    lmCVR_NoIntervalHigherThanOctave, // 9. voices interval not greater than one octave (except bass-tenor)
-    lmCVR_NoVoicesCrossing, // 10. Do not allow voices crossing. No duplicates
-    lmCVR_NoVoicesOverlap, // 11. Voice overlap: when a voice moves above or below a pitch previously sounded by another voice.
-    lmCVR_ChromaticAlterationsDirection, // 12. Resolve chromatic alterations by step in the same direction than the alteration.
-    lmCVR_NoIntervalHigherThanSixth, // *13.lm_eGreaterThanSixth - No es conveniente exceder el intervalo de sexta, exceptuando la octava justa
-    lmCVR_BassMovementByStep, // 14. If bass moves by step all other voices moves in opposite direction to bass
-    lmCVR_ThirdDoubledInBrokenCadence, // *15.lm_eNotDoubledThird - Cuando el bajo enlaza el V grado con el VI (cadencia rota), en el acorde de VI grado se duplica la tercera.
+    lmCVR_NoFifthDoubled, // The fifth is not doubled
+	lmCVR_NoLeadingToneDoubled, // The leading tone is never doubled
+    lmCVR_LeadingToneResolveToTonic, // Scale degree seven (the leading tone) should resolve to tonic.
+    lmCVR_SeventhResolution, // m_eSeventhResolution - the seventh of a chord should always resolve down by second.
+    lmCVR_NoIntervalHigherThanOctave, // voices interval not greater than one octave (except bass-tenor)
+    lmCVR_NoVoicesCrossing, // Do not allow voices crossing. No duplicates
+    lmCVR_NoVoicesOverlap, // Voice overlap: when a voice moves above or below a pitch previously sounded by another voice.
+    lmCVR_ChromaticAlterationsDirection, // Resolve chromatic alterations by step in the same direction than the alteration.
+    lmCVR_NoIntervalHigherThanSixth, // lm_eGreaterThanSixth - No es conveniente exceder el intervalo de sexta, exceptuando la octava justa
+    lmCVR_BassMovementByStep, // If bass moves by step all other voices moves in opposite direction to bass
+    lmCVR_ThirdDoubledInBrokenCadence, // lm_eNotDoubledThird - Cuando el bajo enlaza el V grado con el VI (cadencia rota), en el acorde de VI grado se duplica la tercera.
     lmCVR_LastChordValidationRule = lmCVR_ThirdDoubledInBrokenCadence,
 
 };

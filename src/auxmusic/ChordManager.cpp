@@ -52,23 +52,23 @@ static bool m_fStringsInitialized = false;
 //           UNIFICAR LA INICIALIZACION DE tData e Initialize
 static lmChordInfo tData[ect_Max] = {
 // remember : { NumNotes, NumIntervals, NumInversions, FifthElided { intervals } }
-    { 3, 2, 0, 0,{ lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
-    { 3, 2, 0, 0,{ lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
-    { 3, 2, 0, 0,{ lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
-    { 3, 2, 0, 0,{ lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
-    { 3, 2, 0, 0,{ lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
-    { 3, 2, 0, 0,{ lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
-    { 4, 3, 0, 0,{ lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
-    { 4, 3, 0, 0,{ lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
-    { 4, 3, 0, 0,{ lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
-    { 4, 3, 0, 0,{ lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
-    { 4, 3, 0, 0,{ lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
-    { 4, 3, 0, 0,{ lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
-    { 4, 3, 0, 0,{ lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
-    { 4, 3, 0, 0,{ lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
-    { 4, 3, 0, 0,{ lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
-    { 4, 3, 0, 0,{ lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
-    { 3, 3, 0, 0,{ lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
+    { 3, 2, 0, 0, false,{ lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
+    { 3, 2, 0, 0, false,{ lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
+    { 3, 2, 0, 0, false,{ lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
+    { 3, 2, 0, 0, false,{ lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
+    { 3, 2, 0, 0, false,{ lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
+    { 3, 2, 0, 0, false,{ lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
+    { 4, 3, 0, 0, false,{ lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
+    { 4, 3, 0, 0, false,{ lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
+    { 4, 3, 0, 0, false,{ lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
+    { 4, 3, 0, 0, false,{ lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
+    { 4, 3, 0, 0, false,{ lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
+    { 4, 3, 0, 0, false,{ lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
+    { 4, 3, 0, 0, false,{ lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
+    { 4, 3, 0, 0, false,{ lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
+    { 4, 3, 0, 0, false,{ lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
+    { 4, 3, 0, 0, false,{ lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
+    { 3, 3, 0, 0, false,{ lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
 };
 
 //TODO: @ aux para debug. Si sirve, meterlo en  lmNote
@@ -440,6 +440,14 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
     // Sort notes
     SortChordNotes(nNumNotes, pInpChordNotes);
 
+    // Check whether root not is duplicated
+    tOutChordInfo->fRootIsDuplicated = false;
+    for (int i=1; i<nNumNotes; i++)
+    {
+        if ( pInpChordNotes[i]->GetFPitch() == pInpChordNotes[i]->GetFPitch())
+            tOutChordInfo->fRootIsDuplicated = true;
+    }
+
     for (int i=0; i<nNumNotes; i++)
     {
         sOutStatusStr +=  wxString::Format(_T("{%s %d} ") 
@@ -508,6 +516,8 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
 lmChordManager::lmChordManager(lmNote* pRootNote, lmChordInfo &tChordInfo)
 {
     this->Initialize(); // call basic constructor for initialization
+
+    m_fRootIsDuplicated = tChordInfo.fRootIsDuplicated;
 
     m_nType = GetChordTypeFromIntervals( tChordInfo,  tChordInfo.nFifthElided > 0);
     if ( m_nType == lmINVALID_CHORD_TYPE )

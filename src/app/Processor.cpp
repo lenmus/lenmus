@@ -472,15 +472,15 @@ bool lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor,
         {
 //            wxLogMessage(_T(" Rule %d is NULL !!!"), nR);
         }
-        else
+        else if (pRule->IsEnabled())
         {
+            wxLogMessage(_T("Evaluating rule %d, description: %s")
+                , pRule->GetRuleId(), pRule->GetDescription().c_str());
             nNumErros = pRule->Evaluate(sStr, &nNumChordError[0]);
             wxLogMessage(sStr);
             wxLogMessage(_T("   RESULT of Rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
             if (nNumErros > 0)
             {
-                wxLogMessage(_T(" Rule %d, description: %s")
-                    , pRule->GetRuleId(), pRule->GetDescription().c_str());
 
 /*-- TODO: dejar una forma definitiva de mostrar los mensajes
   esto fue un inento de mostarlos despues de aplicar cada regla,
