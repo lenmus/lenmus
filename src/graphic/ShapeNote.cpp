@@ -315,7 +315,7 @@ void lmShapeNote::DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPap
                 lmLUnits uyPos = uyStart - pVStaff->TenthsToLogical(nTenths, nStaff);
 				//draw the line
 				pPaper->SolidLine(uxLine, uyPos, uxLine + uLineLength, uyPos,
-								  uThick, eEdgeNormal, color);
+								  uThick, lm_eEdgeNormal, color);
            }
         }
 
@@ -330,7 +330,7 @@ void lmShapeNote::DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPap
                 lmLUnits uyPos = m_uyStaffTopLine + pVStaff->TenthsToLogical(nTenths, nStaff);
 				//draw the line
 				pPaper->SolidLine(uxLine, uyPos, uxLine + uLineLength, uyPos,
-								  uThick, eEdgeNormal, color);
+								  uThick, lm_eEdgeNormal, color);
 				//wxLogMessage(_T("[lmShapeNote::DrawLegerLines] Line from (%.2f, %.2f) to (%.2f, %.2f)"),
 				//	uxLine, uyPos, uxLine + uLineLength, uyPos);
 

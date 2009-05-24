@@ -161,7 +161,7 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
 
         //create the shape
         pShape = new lmShapeSimpleLine(this, uPos.x, uyStart, uPos.x, uyEnd, uWidth, uBoundsExtraWidth,
-                                 *wxRED, _T("Anchor"), eEdgeNormal);
+                                 *wxRED, _T("Anchor"), lm_eEdgeNormal);
 
     }
     else

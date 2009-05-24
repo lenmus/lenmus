@@ -566,3 +566,26 @@ wxString LineStyleToLDP(lmELineStyle nStyle)
     }
 };
 
+wxString LineCapToLDP(lmELineCap nLineCap)
+{
+    switch(nLineCap)
+    {
+        case lm_eLineCap_None:
+            return _T("none");
+        case lm_eLineCap_Arrowhead:
+            return _T("arrowhead");
+        case lm_eLineCap_Arrowtail:
+            return _T("arrowtail");
+        case lm_eLineCap_Circle:
+            return _T("circle");
+        case lm_eLineCap_Square:
+            return _T("square");
+        case lm_eLineCap_Diamond:
+            return _T("diamond");
+        default:
+            wxLogMessage(_T("[LineCapToLDP] Error: invalid line cap %d"), nLineCap);
+            wxASSERT(false);
+            return _T("");      //compiler happy
+    }
+};
+

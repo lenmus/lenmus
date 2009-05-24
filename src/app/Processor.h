@@ -74,10 +74,33 @@ private:
 };
 
 
-//--------------------------------------------------------------------------
-// A processor to check an score for harmony 'errors' and add markup to 
+//----------------------------------------------------------------------------------------------
+// lmTestProcessor: A processor to do tests and prepare examples without affecting main code
+//----------------------------------------------------------------------------------------------
+class lmNote;
+
+class lmTestProcessor : public lmScoreProcessor
+{
+	DECLARE_DYNAMIC_CLASS(lmTestProcessor)
+
+public:
+    lmTestProcessor();
+    ~lmTestProcessor();
+
+    //implementation of virtual methods
+    bool ProcessScore(lmScore* pScore);
+    bool UndoChanges(lmScore* pScore);
+    bool SetTools();
+
+protected:
+    void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
+
+};
+
+//----------------------------------------------------------------------------------------------
+// lmHarmonyProcessor: A processor to check an score for harmony 'errors' and add markup to 
 // show them
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 class lmHarmonyProcessor : public lmScoreProcessor
 {
 	DECLARE_DYNAMIC_CLASS(lmHarmonyProcessor)
@@ -88,9 +111,11 @@ public:
 
     //implementation of virtual methods
     bool ProcessScore(lmScore* pScore);
-    bool AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH);
     bool UndoChanges(lmScore* pScore);
     bool SetTools();
+
+    //specific methods
+    bool AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH);
 #ifdef __WXDEBUG__
     void UnitTests();
     void  TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColour colour);

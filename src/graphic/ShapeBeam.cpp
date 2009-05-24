@@ -507,7 +507,7 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
     //}
 
     //draw the segment
-    pPaper->SolidLine(uxStart, uyStart, uxEnd, uyEnd, uThickness, eEdgeVertical, color);
+    pPaper->SolidLine(uxStart, uyStart, uxEnd, uyEnd, uThickness, lm_eEdgeVertical, color);
 
     //update bounds
     m_uBoundsTop.x = wxMin(m_uBoundsTop.x, wxMin(uxStart, uxEnd));

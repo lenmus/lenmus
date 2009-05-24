@@ -33,9 +33,12 @@
 #include "GMObject.h"
 #include "agg_basics.h"
 #include "agg_conv_curve.h"
+#include "agg_conv_stroke.h"
+#include "agg_conv_marker.h"
+#include "agg_conv_concat.h"
 #include "agg_path_storage.h"
+#include "agg_vcgen_markers_term.h"
 #include "agg_ellipse.h"
-
 
 //-----------------------------------------------------------------------------------------
 // lmMusicFontManager implementation
@@ -53,10 +56,10 @@ lmMusicFontManager::lmMusicFontManager()
     m_rFontWidth = 14;
     m_fHinting = false;     //hinting is pantented by Apple. Can not be used without license
     //AWARE:
-    //Apple Computer, Inc., owns three patents that are related to the 
-    //hinting process of glyph outlines within TrueType fonts. Hinting (also named 
+    //Apple Computer, Inc., owns three patents that are related to the
+    //hinting process of glyph outlines within TrueType fonts. Hinting (also named
     //grid-fitting) is used to enhance the quality of glyphs at small bitmap sizes.
-    //Therefore, you can not use hinting unless you are authorized (you purchased 
+    //Therefore, you can not use hinting unless you are authorized (you purchased
     //a license from Apple, or because you are in a country where the patents do
     //not apply, etc.). Nevertheless lenmus font doesn't include hinting information
     //and, so, previous flag value doesn't matter. But its value is important
@@ -127,7 +130,7 @@ bool lmMusicFontManager::LoadFont(wxString& sFontName)
     //             m_feng.ascender(), m_feng.descender() );
 
     m_fValidFont = true;
-    return false;   
+    return false;
 }
 
 void lmMusicFontManager::SetFontSize(double rPoints)
@@ -137,17 +140,251 @@ void lmMusicFontManager::SetFontSize(double rPoints)
     m_feng.width(m_rFontWidth);
 }
 
-void lmMusicFontManager::SetFontHeight(double rPoints) 
-{ 
-    m_rFontHeight = rPoints, m_feng.height(rPoints); 
+void lmMusicFontManager::SetFontHeight(double rPoints)
+{
+    m_rFontHeight = rPoints, m_feng.height(rPoints);
 }
 
-void lmMusicFontManager::SetFontWidth(double rPoints) 
-{ 
+void lmMusicFontManager::SetFontWidth(double rPoints)
+{
     m_rFontWidth = rPoints, m_feng.width(rPoints);
 }
 
 
+
+//-----------------------------------------------------------------------------------------
+// agg basic vertices sources
+//-----------------------------------------------------------------------------------------
+
+struct lmAggLineVS
+{
+    double x1, y1, x2, y2;
+    int f;
+
+    lmAggLineVS(double x1_, double y1_, double x2_, double y2_) :
+        x1(x1_), y1(y1_), x2(x2_), y2(y2_), f(0) {}
+
+    void rewind(unsigned) { f = 0; }
+    unsigned vertex(double* x, double* y)
+    {
+        if(f == 0) { ++f; *x = x1; *y = y1; return agg::path_cmd_move_to; }
+        if(f == 1) { ++f; *x = x2; *y = y2; return agg::path_cmd_line_to; }
+        return agg::path_cmd_stop;
+    }
+};
+
+
+//-----------------------------------------------------------------------------------------
+lmLineHeadVS::lmLineHeadVS() :
+    m_head_d1(1.0),
+    m_head_d2(1.0),
+    m_head_d3(1.0),
+    m_head_d4(0.0),
+    m_tail_d1(1.0),
+    m_tail_d2(1.0),
+    m_tail_d3(1.0),
+    m_tail_d4(0.0),
+    m_head_type(type_none),
+    m_tail_type(type_none),
+    m_curr_id(0),
+    m_curr_coord(0)
+{
+}
+
+void lmLineHeadVS::rewind(unsigned path_id)
+{
+    m_status = stop;
+    m_curr_id = path_id;
+    m_curr_coord = 0;
+
+    if(path_id == 0)
+    {
+        switch(m_head_type)
+        {
+        case type_none:
+            m_cmd[0] = agg::path_cmd_stop;
+            return;
+
+        case type_arrowhead_diamond:
+            m_status = arrow;
+            m_coord[0]  = -m_head_d1;            m_coord[1]  = 0.0;
+            m_coord[2]  = m_head_d2 + m_head_d4; m_coord[3]  = -m_head_d3;
+            m_coord[4]  = m_head_d2;             m_coord[5]  = 0.0;
+            m_coord[6]  = m_head_d2 + m_head_d4; m_coord[7]  = m_head_d3;
+
+            m_cmd[0] = agg::path_cmd_move_to;
+            m_cmd[1] = agg::path_cmd_line_to;
+            m_cmd[2] = agg::path_cmd_line_to;
+            m_cmd[3] = agg::path_cmd_line_to;
+            m_cmd[4] = agg::path_cmd_end_poly | agg::path_flags_close | agg::path_flags_ccw;
+            m_cmd[5] = agg::path_cmd_stop;
+            return;
+
+        case type_circle:
+            m_radius = m_head_d1;
+            m_status = circle_start;
+            return;
+        }
+        return;
+    }
+
+    if(path_id == 1)
+    {
+        switch(m_tail_type)
+        {
+        case type_none:
+            m_cmd[0] = agg::path_cmd_stop;
+            return;
+
+        case type_arrowhead_diamond:
+			m_status = arrow;
+            m_coord[0]  = -m_tail_d1;            m_coord[1]  = 0.0;
+            m_coord[2]  = m_tail_d2 + m_tail_d4; m_coord[3]  = -m_tail_d3;
+            m_coord[4]  = m_tail_d2;             m_coord[5]  = 0.0;
+            m_coord[6]  = m_tail_d2 + m_tail_d4; m_coord[7]  = m_tail_d3;
+
+            m_cmd[0] = agg::path_cmd_move_to;
+            m_cmd[1] = agg::path_cmd_line_to;
+            m_cmd[2] = agg::path_cmd_line_to;
+            m_cmd[3] = agg::path_cmd_line_to;
+            m_cmd[4] = agg::path_cmd_end_poly | agg::path_flags_close | agg::path_flags_ccw;
+            m_cmd[5] = agg::path_cmd_stop;
+			return;
+
+        case type_arrowtail:
+			m_status = arrow;
+			m_coord[0]  =  m_tail_d1;             m_coord[1]  =  0.0;
+			m_coord[2]  =  m_tail_d1 - m_tail_d4; m_coord[3]  =  m_tail_d3;
+			m_coord[4]  = -m_tail_d2 - m_tail_d4; m_coord[5]  =  m_tail_d3;
+			m_coord[6]  = -m_tail_d2;             m_coord[7]  =  0.0;
+			m_coord[8]  = -m_tail_d2 - m_tail_d4; m_coord[9]  = -m_tail_d3;
+			m_coord[10] =  m_tail_d1 - m_tail_d4; m_coord[11] = -m_tail_d3;
+
+			m_cmd[0] = agg::path_cmd_move_to;
+			m_cmd[1] = agg::path_cmd_line_to;
+			m_cmd[2] = agg::path_cmd_line_to;
+			m_cmd[3] = agg::path_cmd_line_to;
+			m_cmd[4] = agg::path_cmd_line_to;
+			m_cmd[5] = agg::path_cmd_line_to;
+			m_cmd[7] = agg::path_cmd_end_poly | agg::path_flags_close | agg::path_flags_ccw;
+			m_cmd[6] = agg::path_cmd_stop;
+			return;
+
+        case type_circle:
+            m_radius = m_tail_d1;
+            m_status = circle_start;
+            return;
+        }
+        return;
+    }
+}
+
+unsigned lmLineHeadVS::vertex(double* x, double* y)
+{
+    unsigned cmd = agg::path_cmd_stop;
+    switch(m_status)
+    {
+    case circle_start:
+        m_circle.init(0.0, 0.0, m_radius, m_radius);
+        m_circle.rewind(0);
+        m_status = circle_point;
+
+    case circle_point:
+        cmd = m_circle.vertex(x, y);
+        if(agg::is_stop(cmd)) m_status = stop;
+        else return cmd;
+
+    case arrow:
+        if(m_curr_id < 2)
+        {
+            unsigned curr_idx = m_curr_coord * 2;
+            *x = m_coord[curr_idx];
+            *y = m_coord[curr_idx + 1];
+            return m_cmd[m_curr_coord++];
+        }
+        return agg::path_cmd_stop;
+
+    case stop:
+    	return agg::path_cmd_stop;
+    }
+
+    return cmd;
+}
+
+
+
+//-----------------------------------------------------------------------------------------------
+// lmAggLineHeadConv is a conversion pipeline to add a stroke and a line head/tail. Internally it
+// has three converters:
+//      stroke_type [of type agg::conv_stroke] converts the path to the required stroke
+//      marker_type [of type agg::conv_marker, lmLineHeadVS>] adds an arrow head to the line.
+//      concat_type [of type agg::conv_concat] concats both converters
+//-----------------------------------------------------------------------------------------------
+template<class Source> struct lmAggLineHeadConv
+{
+    typedef agg::conv_stroke<Source, agg::vcgen_markers_term>                   stroke_type;
+    typedef agg::conv_marker<typename stroke_type::marker_type, lmLineHeadVS>   marker_type;
+    typedef agg::conv_concat<stroke_type, marker_type>                          concat_type;
+
+    stroke_type    s;
+    lmLineHeadVS   ah;
+    marker_type    m;
+    concat_type    c;
+
+    lmAggLineHeadConv(Source& src, double w, lmELineCap nStartCap, lmELineCap nEndCap) :
+        s(src),
+        ah(),
+        m(s.markers(), ah),
+        c(s, m)
+    {
+        s.width(w);
+
+        double k = ::pow(w, 0.7);
+        switch(nStartCap)
+        {
+            case lm_eLineCap_None:
+                break;
+
+            case lm_eLineCap_Arrowhead:
+                ah.head_arrowhead(0.0, 8*k, 3*k, 2*k);
+                break;
+
+            case lm_eLineCap_Diamond:
+                ah.head_arrowhead(6*k, 6*k, 6*k, -6*k);
+                break;
+
+            case lm_eLineCap_Circle:
+                ah.head_circle(4.0*k);
+                break;
+        }
+
+        switch(nEndCap)
+        {
+            case lm_eLineCap_None:
+                break;
+
+            case lm_eLineCap_Arrowhead:
+                ah.tail_arrowhead(0.0, 8*k, 3*k, 2*k);
+                break;
+
+            case lm_eLineCap_Arrowtail:
+                ah.tail_arrowtail(0, 2.5*k, 3*k, 5*k);
+                break;
+
+            case lm_eLineCap_Diamond:
+                ah.tail_arrowhead(6*k, 6*k, 6*k, -6*k);
+                break;
+
+            case lm_eLineCap_Circle:
+                ah.tail_circle(4.0*k);
+                break;
+        }
+        //s.shorten(w * 2.0);       //reduce el tamaño de la linea, recortando el final
+    }
+
+    void rewind(unsigned path_id) { c.rewind(path_id); }
+    unsigned vertex(double* x, double* y) { return c.vertex(x, y); }
+};
 
 
 
@@ -287,10 +524,10 @@ void lmAggDrawer::Initialize(double rScale)
     m_fKerning = true;
     //m_fHinting = false;     //hinting is pantented by Apple. Can not be used without license
     ////AWARE:
-    ////Apple Computer, Inc., owns three patents that are related to the 
-    ////hinting process of glyph outlines within TrueType fonts. Hinting (also named 
+    ////Apple Computer, Inc., owns three patents that are related to the
+    ////hinting process of glyph outlines within TrueType fonts. Hinting (also named
     ////grid-fitting) is used to enhance the quality of glyphs at small bitmap sizes.
-    ////Therefore, you can not use hinting unless you are authorized (you purchased 
+    ////Therefore, you can not use hinting unless you are authorized (you purchased
     ////a license from Apple, or because you are in a country where the patents do
     ////not apply, etc.). Nevertheless lenmus font doesn't include hinting information
     ////and, so, previous flag value doesn't matter. But its value is important
@@ -456,6 +693,19 @@ void lmAggDrawer::SolidShape(lmShape* pShape, wxColor color)
     agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, lmToRGBA8(color));
 }
 
+void lmAggDrawer::DecoratedLine(lmUPoint& start, lmUPoint& end, lmLUnits width,
+                                lmELineCap nStartCap, lmELineCap nEndCap, wxColor color)
+{
+    //antialiased line with stroke converter + lmLineHeadVS marker
+
+    m_ras.reset();
+    lmAggLineVS line( WorldToDeviceX(start.x), WorldToDeviceY(start.y),
+                      WorldToDeviceX(end.x), WorldToDeviceY(end.y) );
+
+    lmAggLineHeadConv<lmAggLineVS> stroke(line, WorldToDeviceY(width), nStartCap, nEndCap);
+    m_ras.add_path(stroke);
+    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, lmToRGBA8(color));
+}
 
 
 //brushes, colors, fonts, ...
@@ -675,8 +925,8 @@ int lmAggDrawer::FtDrawText(unsigned int* pText, size_t nLength)
 
             //render the glyph using method agg::glyph_ren_agg_gray8
             m_pRenSolid->color(m_textColorF);               //agg::rgba8(0, 0, 0));
-            agg::render_scanlines(m_pMFM->GetGray8AdaptorType(), 
-                                  m_pMFM->GetGray8ScanlineType(), 
+            agg::render_scanlines(m_pMFM->GetGray8AdaptorType(),
+                                  m_pMFM->GetGray8ScanlineType(),
                                   *m_pRenSolid);
 
             // increment pen position
@@ -689,7 +939,7 @@ int lmAggDrawer::FtDrawText(unsigned int* pText, size_t nLength)
 }
 
 void lmAggDrawer::FtSetTextPosition(lmLUnits uxPos, lmLUnits uyPos)
-{ 
+{
     m_vCursorX = WorldToDeviceX(uxPos);
     m_vCursorY = WorldToDeviceY(uyPos);
 }
@@ -731,7 +981,7 @@ lmURect lmAggDrawer::FtGetGlyphBounds(unsigned int nGlyph)
                    DeviceToLogicalX(vBox.width), DeviceToLogicalY(vBox.height) );
 }
 
-void lmAggDrawer::FtGetTextExtent(const wxString& sText, 
+void lmAggDrawer::FtGetTextExtent(const wxString& sText,
                                          lmLUnits* pWidth, lmLUnits* pHeight,
                                          lmLUnits* pDescender, lmLUnits* pAscender)
 {

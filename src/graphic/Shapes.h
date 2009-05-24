@@ -57,7 +57,7 @@ public:
     lmShapeSimpleLine(lmScoreObj* pOwner, lmLUnits xStart, lmLUnits yStart,
                 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth,
 				lmLUnits uBoundsExtraWidth, wxColour nColor, wxString sName = _T("Line"),
-				lmELineEdges nEdge = eEdgeNormal);
+				lmELineEdges nEdge = lm_eEdgeNormal);
     ~lmShapeSimpleLine() {}
 
     //implementation of virtual methods from base class

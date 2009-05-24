@@ -184,7 +184,9 @@ public:
     lmAuxObj* AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxString& sText,
                             lmTextStyle* pTextStyle, wxSize size = wxSize(160, 80),
                             wxColour nBgColor = wxColour(_T("#fffeb0")) );
-
+    lmAuxObj* AttachLine(lmTenths xtStart, lmTenths ytStart, lmTenths xtEnd, lmTenths ytEnd,
+                         lmTenths ntWidth, lmELineCap nStartCap, lmELineCap nEndCap,
+                         lmELineStyle nStyle, wxColour nColor);
 
 
 	//--- a ScoreObj can be renderizable
@@ -317,7 +319,6 @@ public:
 
     //properties
     inline void SetColour(wxColour color) { m_color = color; }
-    inline wxColour GetComponentColour() { return m_color; }
 
 
 

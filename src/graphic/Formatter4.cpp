@@ -653,7 +653,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
                 new lmShapeSimpleLine(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
 						    uxPos, pBoxSystem->GetYBottom(),
 						    uLineThickness, 0.0, *wxBLACK, _T("System joining line"),
-							eEdgeHorizontal);
+							lm_eEdgeHorizontal);
 	        pBoxSystem->AddShape(pLine, lm_eLayerBarlines);
 	    }
 

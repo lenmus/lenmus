@@ -47,6 +47,8 @@ extern lmEClefType LDPNameToClef(wxString sClefName);
 extern lmEKeySignatures LDPNameToKey(wxString sKeyName);
 
 extern wxString LineStyleToLDP(lmELineStyle nStyle);
+extern wxString LineCapToLDP(lmELineCap nLineCap);
+
 
 
 // MusicXML related

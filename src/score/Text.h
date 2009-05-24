@@ -147,7 +147,7 @@ public:
 
     //operations
     virtual void AddAnchorLine(lmLocation tPoint, lmTenths ntWidth, lmELineStyle nStyle,
-                               lmELineEndStyle nEndStyle, wxColour nColor);
+                               lmELineCap nEndStyle, wxColour nColor);
 
     //rectangle attributes
     inline void SetWidth(lmTenths ntWidth) { m_ntWidth = ntWidth; }
@@ -199,7 +199,7 @@ protected:
     lmTPoint        m_ntAnchorPoint;
     lmTPoint        m_ntAnchorJoinPoint;        //point on the rectangle
     lmELineStyle    m_nAnchorLineStyle;
-    lmELineEndStyle m_nAnchorLineEndStyle;
+    lmELineCap m_nAnchorLineEndStyle;
     wxColour        m_nAnchorLineColor;
     lmTenths        m_ntAnchorLineWidth;
 

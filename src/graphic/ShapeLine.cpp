@@ -41,6 +41,7 @@
 extern lmColors* g_pColors;
 
 
+
 //========================================================================================
 // lmShapeLine object implementation
 //========================================================================================
@@ -54,14 +55,15 @@ lmShapeLine::lmShapeLine(lmScoreObj* pOwner, int nShapeIdx,
     : lmSimpleShape(eGMO_ShapeLine, pOwner, nShapeIdx, sName)
     , m_nStyle(nStyle)
 {
-	Create(uxStart, uyStart, uxEnd, uyEnd, uWidth, uBoundsExtraWidth, nColor, nEdge);
+	Create(uxStart, uyStart, uxEnd, uyEnd, uWidth, uBoundsExtraWidth, nColor, nEdge,
+           lm_eLineCap_None, lm_eLineCap_None);
 }
 
 //new constructor
 lmShapeLine::lmShapeLine(lmScoreObj* pOwner)
     : lmSimpleShape(eGMO_ShapeLine, pOwner, 0, _T("Line"))
 {
-	Create(0, 0, 0, 0, 0, 0, *wxBLACK, eEdgeNormal);
+	Create(0, 0, 0, 0, 0, 0, *wxBLACK, lm_eEdgeNormal, lm_eLineCap_None, lm_eLineCap_None);
 }
 
 lmShapeLine::~lmShapeLine()
@@ -73,7 +75,7 @@ lmShapeLine::~lmShapeLine()
 void lmShapeLine::Create(lmLUnits xStart, lmLUnits yStart,
 						 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth,
 						 lmLUnits uBoundsExtraWidth, wxColour nColor,
-						 lmELineEdges nEdge)
+						 lmELineEdges nEdge, lmELineCap nStartCap, lmELineCap nEndCap)
 {
     m_uPoint[lmID_START].x = xStart;
     m_uPoint[lmID_START].y = yStart;
@@ -83,6 +85,8 @@ void lmShapeLine::Create(lmLUnits xStart, lmLUnits yStart,
     m_uWidth = uWidth;
 	m_uBoundsExtraWidth = uBoundsExtraWidth;
 	m_nEdge = nEdge;
+    m_nStartCap = nStartCap;
+    m_nEndCap = nEndCap;
 
     UpdateBounds();
 
@@ -199,8 +203,10 @@ void lmShapeLine::DrawLine(lmPaper* pPaper, wxColour colorC, bool fSketch)
         pPaper->SketchLine(m_uPoint[lmID_START].x, m_uPoint[lmID_START].y,
                            m_uPoint[lmID_END].x, m_uPoint[lmID_END].y, colorC, wxSOLID);
     else
-        pPaper->SolidLine(m_uPoint[lmID_START].x, m_uPoint[lmID_START].y,
-                          m_uPoint[lmID_END].x, m_uPoint[lmID_END].y, m_uWidth, m_nEdge, colorC);
+        //pPaper->SolidLine(m_uPoint[lmID_START].x, m_uPoint[lmID_START].y,
+        //                  m_uPoint[lmID_END].x, m_uPoint[lmID_END].y, m_uWidth, m_nEdge, colorC);
+        pPaper->DecoratedLine(m_uPoint[lmID_START], m_uPoint[lmID_END], m_uWidth, 
+                              m_nStartCap, m_nEndCap, colorC);
 
     UpdateBounds();
 }

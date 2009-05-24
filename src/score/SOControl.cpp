@@ -107,7 +107,7 @@ lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
  //   //create the shape
  //   lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
  //                                       uWidth, uBoundsExtraWidth, lm_eLine_Solid,
- //                                       *wxGREEN, eEdgeNormal, _T("EOS"));
+ //                                       *wxGREEN, lm_eEdgeNormal, _T("EOS"));
 	//pBox->AddShape(pShape);
  //   m_pGMObj = pShape;
 

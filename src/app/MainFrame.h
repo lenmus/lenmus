@@ -142,13 +142,14 @@ public:
     void OnDebugUnitTests(wxCommandEvent& event);
     void OnDebugShowDirtyObjects(wxCommandEvent& event);
         // methods requiring a score
+    void OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event));
     void OnDebugDumpBitmaps(wxCommandEvent& event);
-    void OnDebugDumpStaffObjs(wxCommandEvent& event);
     void OnDebugDumpGMObjects(wxCommandEvent& event);
+    void OnDebugDumpStaffObjs(wxCommandEvent& event);
+    void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
     void OnDebugSeeSource(wxCommandEvent& event);
     void OnDebugSeeXML(wxCommandEvent& event);
-    void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
-    void OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event));
+    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
     void OnDebugScoreUI(wxUpdateUIEvent& event);
 
     // Zoom events

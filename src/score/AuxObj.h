@@ -40,8 +40,8 @@ class lmPaper;
 class lmScoreLine : public lmAuxObj
 {
 public:
-    lmScoreLine(lmTenths xStart, lmTenths yStart, 
-                lmTenths xEnd, lmTenths yEnd, lmTenths nWidth, wxColour nColor);
+    lmScoreLine(lmTenths xStart, lmTenths yStart, lmTenths xEnd, lmTenths yEnd, lmTenths nWidth,
+                lmELineCap nStartCap, lmELineCap nEndCap, lmELineStyle nStyle, wxColour nColor);
     ~lmScoreLine() {}
 
     //implementation of virtual methods from base class
@@ -60,14 +60,20 @@ public:
     //undoable edition commands
     void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
 
-private:
-    lmTenths    m_txStart;
-    lmTenths    m_tyStart; 
-    lmTenths    m_txEnd;
-    lmTenths    m_tyEnd;
-    lmTenths    m_tWidth;
-    wxColour    m_nColor;
+	//edit properties
+	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
 
+private:
+    lmTenths        m_txStart;
+    lmTenths        m_tyStart; 
+    lmTenths        m_txEnd;
+    lmTenths        m_tyEnd;
+    lmTenths        m_tWidth;
+    wxColour        m_nColor;
+	lmELineEdges    m_nEdge;
+    lmELineStyle    m_nStyle;
+    lmELineCap     m_nStartCap;
+    lmELineCap     m_nEndCap;
 
 };
 

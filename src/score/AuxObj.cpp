@@ -39,6 +39,9 @@
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeLine.h"
+#include "../ldp_parser/AuxString.h"
+#include "properties/DlgProperties.h"
+#include "../app/ScoreCanvas.h"			//lmController
 
 
 extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
@@ -471,30 +474,188 @@ wxString lmLyric::Dump()
 
 }
 
+
+
+//========================================================================================
+// lmScoreLineProperties: helper class to edit lmScoreLine
+//========================================================================================
+
+class lmScoreLineProperties : public lmPropertiesPage
+{
+public:
+	lmScoreLineProperties(wxWindow* parent, lmScoreLine* pLine);
+	~lmScoreLineProperties();
+
+    //implementation of pure virtual methods in base class
+    void OnAcceptChanges(lmController* pController);
+
+    // event handlers
+
+protected:
+    void CreateControls();
+
+    //controls
+	wxStaticText*		m_pTxtBarline;
+	wxBitmapComboBox*	m_pBarlinesList;
+
+    //other variables
+    lmScoreLine*			m_pLine;
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+//--------------------------------------------------------------------------------------
+/// Implementation of lmScoreLineProperties
+//--------------------------------------------------------------------------------------
+
+
+enum {
+    lmID_SCORELINE = 2600,
+};
+
+
+BEGIN_EVENT_TABLE(lmScoreLineProperties, lmPropertiesPage)
+
+END_EVENT_TABLE()
+
+//static lmBarlinesDBEntry tBarlinesDB[lm_eMaxBarline+1];
+
+lmScoreLineProperties::lmScoreLineProperties(wxWindow* parent, lmScoreLine* pLine)
+    : lmPropertiesPage(parent)
+    , m_pLine(pLine)
+{
+
+    ////To avoid having to translate again barline names, we are going to load them
+    ////by using global function GetBarlineName()
+    //int i;
+    //for (i = 0; i < lm_eMaxBarline; i++)
+    //{
+    //    tBarlinesDB[i].nBarlineType = (lmEBarline)i;
+    //    tBarlinesDB[i].sBarlineName = GetBarlineName((lmEBarline)i);
+    //}
+    ////End of table item
+    //tBarlinesDB[i].nBarlineType = (lmEBarline)-1;
+    //tBarlinesDB[i].sBarlineName = _T("");
+
+    CreateControls();
+	//LoadBarlinesBitmapComboBox(m_pBarlinesList, tBarlinesDB);
+	//SelectBarlineBitmapComboBox(m_pBarlinesList, m_pLine->GetBarlineType() );
+}
+
+void lmScoreLineProperties::CreateControls()
+{
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+
+	m_pTxtBarline = new wxStaticText( this, wxID_ANY, wxT("Line type"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtBarline->Wrap( -1 );
+	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+
+	pMainSizer->Add( m_pTxtBarline, 0, wxALL, 5 );
+
+	//wxArrayString m_pBarlinesListChoices;
+ //   m_pBarlinesList = new wxBitmapComboBox();
+ //   m_pBarlinesList->Create(this, lmID_SCORELINE, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
+	//						0, NULL, wxCB_READONLY);
+	//pMainSizer->Add( m_pBarlinesList, 0, wxALL, 5 );
+
+	this->SetSizer( pMainSizer );
+	this->Layout();
+}
+
+lmScoreLineProperties::~lmScoreLineProperties()
+{
+}
+
+void lmScoreLineProperties::OnAcceptChanges(lmController* pController)
+{
+	//int iB = m_pBarlinesList->GetSelection();
+ //   lmEBarline nType = tBarlinesDB[iB].nBarlineType;
+	//if (nType == m_pLine->GetBarlineType())
+	//	return;		//nothing to change
+
+ //   if (pController)
+ //   {
+ //       //Editing and existing object. Do changes by issuing edit commands
+ //       pController->ChangeLine(m_pLine, nType, m_pLine->IsVisible());
+ //   }
+ // //  else
+ // //  {
+ // //      //Direct creation. Modify text object directly
+ // //      m_pParentText->SetText( m_pTxtCtrl->GetValue() );
+ // //      m_pParentText->SetStyle(pStyle);
+	//	//m_pParentText->SetAlignment(m_nHAlign);
+ // //  }
+}
+
 //========================================================================================
 // lmScoreLine object implementation
 //========================================================================================
 
-lmScoreLine::lmScoreLine(lmTenths xStart, lmTenths yStart,
-                         lmTenths xEnd, lmTenths yEnd,
-                         lmTenths tWidth, wxColour nColor)
+lmScoreLine::lmScoreLine(lmTenths xStart, lmTenths yStart, lmTenths xEnd, lmTenths yEnd,
+                         lmTenths nWidth, lmELineCap nStartCap, lmELineCap nEndCap,
+                         lmELineStyle nStyle, wxColour nColor)
     : lmAuxObj(lmDRAGGABLE)
+    , m_txStart(xStart)
+    , m_tyStart(yStart)
+    , m_txEnd(xEnd)
+    , m_tyEnd(yEnd)
+    , m_tWidth(nWidth)
+	, m_nColor(nColor)
+	, m_nEdge(lm_eEdgeNormal)
+    , m_nStyle(nStyle)
+    , m_nStartCap(nStartCap)
+    , m_nEndCap(nEndCap)
 {
-    m_txStart = xStart;
-    m_tyStart = yStart;
-    m_txEnd = xEnd;
-    m_tyEnd = yEnd;
-    m_tWidth = tWidth;
-	m_nColor = nColor;
 }
 
 wxString lmScoreLine::SourceLDP(int nIndent)
 {
+    //wxString sSource = _T("");
+    //sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+	//sSource += wxString::Format(_T("(graphic line %d %d %d %d)\n"),
+	//				(int)(m_txStart + 0.5), (int)(m_tyStart + 0.5),
+	//				(int)(m_txEnd + 0.5), (int)(m_tyEnd + 0.5) );
+
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-	sSource += wxString::Format(_T("(graphic line %d %d %d %d)\n"),
-					(int)(m_txStart + 0.5), (int)(m_tyStart + 0.5),
-					(int)(m_txEnd + 0.5), (int)(m_tyEnd + 0.5) );
+    sSource += _T("(line ");
+
+    //location
+    sSource += _T("(startPoint dx:");
+	sSource += DoubleToStr((double)m_txStart, 4);
+    sSource += _T(" dy:");
+	sSource += DoubleToStr((double)m_tyStart, 4);
+    sSource += _T(")(endPoint dx:");
+	sSource += DoubleToStr((double)m_txEnd, 4);
+    sSource += _T(" dy:");
+	sSource += DoubleToStr((double)m_tyEnd, 4);
+    sSource += _T(")");
+
+    //width and color
+    sSource += _T("(width ");
+	sSource += DoubleToStr((double)m_tWidth, 4);
+    sSource += _T(")(color ");
+    sSource += m_nColor.GetAsString(wxC2S_HTML_SYNTAX);
+    sSource += _T(")");
+
+    //line style and caps
+    sSource += _T("(lineStyle ") + LineStyleToLDP(m_nStyle);
+    sSource += _T(")");
+    sSource += _T("(lineCapStart ");
+    sSource += LineCapToLDP(m_nStartCap);
+    sSource += _T(")");
+    sSource += _T("(lineCapEnd ");
+    sSource += LineCapToLDP(m_nEndCap);
+    sSource += _T(")");
+
+	//base class info
+    sSource += lmAuxObj::SourceLDP(nIndent);
+
+    //close element
+    sSource += _T(")\n");
     return sSource;
 }
 
@@ -541,8 +702,10 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 
     //create the shape
     lmShapeLine* pShape = new lmShapeLine(this, 0, uxStart, uyStart, uxEnd, uyEnd,
-                                          uWidth, uBoundsExtraWidth, lm_eLine_Solid,
-                                          m_nColor, eEdgeNormal, _T("GraphLine"));
+                                          uWidth, uBoundsExtraWidth, m_nStyle,
+                                          m_nColor, m_nEdge, _T("GraphLine"));
+    pShape->SetHeadType(m_nStartCap);
+    pShape->SetTailType(m_nEndCap);
 	pBox->AddShape(pShape, GetLayer());
     StoreShape(pShape);
     return pShape->GetBounds().GetWidth();
@@ -578,3 +741,16 @@ void lmScoreLine::MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShi
     wxASSERT(pShape);
     pShape->MovePoints(nNumPoints, nShapeIdx, pShifts, fAddShifts);
 }
+
+void lmScoreLine::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
+{
+	//invoked to add specific panels to the dialog
+
+    WXUNUSED(sTabName)
+
+	pDlg->AddPanel( new lmScoreLineProperties(pDlg->GetNotebook(), this), _("Line"));
+
+	//change dialog title
+	pDlg->SetTitle(_("Line properties"));
+}
+

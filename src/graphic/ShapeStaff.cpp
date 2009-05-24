@@ -76,7 +76,7 @@ void lmShapeStaff::Render(lmPaper* pPaper, wxColour color)
     for (int iL=0; iL < m_nNumLines; iL++ )
 	{
         pPaper->SolidLine(m_uBoundsTop.x, yPos, m_uBoundsBottom.x, yPos,
-                          m_uLineWidth, eEdgeNormal, color);
+                          m_uLineWidth, lm_eEdgeNormal, color);
         yPos += m_uSpacing;
     }
     lmSimpleShape::Render(pPaper,color);

@@ -1085,6 +1085,8 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
             AnalyzeGraphicObj(pX, pVStaff);
         } else if (sName == _T("key")) {
             AnalyzeKeySignature(pX, pVStaff);
+        } else if (sName == _T("line")) {
+            AnalyzeLine(pX, pVStaff);
         } else if (sName == _T("metronome")) {
             AnalyzeMetronome(pX, pVStaff);
         } else if (sName == _T("newSystem")) {
@@ -2079,6 +2081,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     {
         wxString sName = pX->GetName();
         if (sName == _T("textbox"))
+            AnalyzeLine(pX, pVStaff, pNR);
+        else if (sName == _T("textbox"))
             AnalyzeTextbox(pX, pVStaff, pNR);
         else if (sName == _T("text"))
             AnalyzeText(pX, pVStaff);
@@ -3437,8 +3441,9 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
         wxColour nColor = *wxBLACK;
 
         // create the AuxObj and attach it to the VStaff
-        lmScoreLine* pLine = new lmScoreLine(rPos[0], rPos[1], rPos[2], rPos[3],
-                                       rWidth, nColor);
+        lmScoreLine* pLine 
+            = new lmScoreLine(rPos[0], rPos[1], rPos[2], rPos[3], rWidth,
+                              lm_eLineCap_Arrowhead, lm_eLineCap_None, lm_eLine_Solid, nColor);
         lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
         pAnchor->AttachAuxObj(pLine);
 
@@ -3450,6 +3455,68 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
             sElmName.c_str(), sType.c_str());
     }
 
+}
+
+void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget)
+{
+    //<line> = (line <startPoint><endPoint>[<width>][<startCap>][<endCap>][<lineStyle>][<color>])
+    //<startPoint> = (startPoint <location>)
+    //<endPoint> = (endPoint <location>)
+    //<startCap> = (lineCapStart value)
+    //<endCap> = (lineCapEnd value)
+
+    wxString sElmName = pNode->GetName();
+    int nNumParms = pNode->GetNumParms();
+
+    //check number of params.
+    if(nNumParms < 4)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+            sElmName.c_str());
+        return;
+    }
+
+    //parameters and their default values
+	lmLocation tStartPos = g_tDefaultPos;
+	lmLocation tEndPos = g_tDefaultPos;
+    lmTenths ntWidth = 1.0f;
+    lmELineStyle nLineStyle = lm_eLine_Solid;
+    wxColour nColor = *wxBLACK;
+    lmELineCap nStartCap = lm_eLineCap_None;
+    lmELineCap nEndCap = lm_eLineCap_None;
+
+    //loop to analyze parameters
+    for(int iP=1; iP <= nNumParms; iP++)
+    {
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        if (sName == _T("startPoint"))
+            AnalyzeLocationPoint(pX, &tStartPos);
+        else if (sName == _T("endPoint"))
+            AnalyzeLocationPoint(pX, &tEndPos);
+        else if(sName == _T("width"))
+            GetValueFloatNumber(pX, &ntWidth);
+        else if(sName == _T("color"))
+            nColor = AnalyzeColor(pX);
+        else if(sName == _T("lineStyle"))
+            GetValueLineStyle(pX, &nLineStyle);
+        else if(sName == _T("lineCapStart"))
+            GetValueLineCap(pX, &nStartCap);
+        else if(sName == _T("lineCapEnd"))
+            GetValueLineCap(pX, &nEndCap);
+        else
+        {
+            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                          _T("line"), sName.c_str() );
+        }
+    }
+
+    // create the line and attach it to the anchor StaffObj
+    lmScoreLine* pLine = new lmScoreLine(tStartPos.x, tStartPos.y, tEndPos.x, tEndPos.y, ntWidth,
+                                         nStartCap, nEndCap, nLineStyle, nColor);
+    if (!pTarget)
+        pTarget = (lmStaffObj*) pVStaff->AddAnchorObj();
+    pTarget->AttachAuxObj(pLine);
 }
 
 void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
@@ -3479,7 +3546,7 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
     bool fAnchorLine = false;       //assume no anchor line
 	lmLocation tAnchorPoint = g_tDefaultPos;
     lmELineStyle nAnchorLineStyle = lm_eLine_Solid;
-    lmELineEndStyle nAnchorLineEndStyle = lm_eEndLine_None;
+    lmELineCap nAnchorLineEndStyle = lm_eLineCap_None;
     wxColour nAnchorLineColor = *wxBLACK;
     lmTenths ntAnchorLineWidth = 1.0f;
 
@@ -3636,26 +3703,28 @@ bool lmLDPParser::GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle)
     return false;       //no error
 }
 
-bool lmLDPParser::GetValueLineEndStyle(lmLDPNode* pNode, lmELineEndStyle* pEndStyle)
+bool lmLDPParser::GetValueLineCap(lmLDPNode* pNode, lmELineCap* pEndCap)
 {
-	//if error, returns true, sets pEndStyle to lm_eEndLine_None and issues an error message
-    //<lineEndStyle> = (lineEndStyle { none | arrow | dot | square | diamond })
+	//if error, returns true, sets pEndCap to lm_eLineCap_None and issues an error message
+    //{ none | arrowhead | arrowtail | circle | square | diamond }
 
     wxString sValue = pNode->GetParameter(1)->GetName();
     if (sValue == _T("none"))
-        *pEndStyle = lm_eEndLine_None;
-    else if (sValue == _T("arrow"))
-        *pEndStyle = lm_eEndLine_Arrow;
-    else if (sValue == _T("dot"))
-        *pEndStyle = lm_eEndLine_Dot;
+        *pEndCap = lm_eLineCap_None;
+    else if (sValue == _T("arrowhead"))
+        *pEndCap = lm_eLineCap_Arrowhead;
+    else if (sValue == _T("arrowtail"))
+        *pEndCap = lm_eLineCap_Arrowtail;
+    else if (sValue == _T("circle"))
+        *pEndCap = lm_eLineCap_Circle;
     else if (sValue == _T("square"))
-        *pEndStyle = lm_eEndLine_Square;
+        *pEndCap = lm_eLineCap_Square;
     else if (sValue == _T("diamond"))
-        *pEndStyle = lm_eEndLine_Diamond;
+        *pEndCap = lm_eLineCap_Diamond;
     else
 	{
-        AnalysisError(pNode, _T("Element 'lineEndStyle': Invalid value '%s'. Replaced by 'solid'"));
-        *pEndStyle = lm_eEndLine_None;
+        AnalysisError(pNode, _T("Element 'lineCap': Invalid value '%s'. Replaced by 'none'"));
+        *pEndCap = lm_eLineCap_None;
         return true;
     }
     return false;       //no error
@@ -3697,12 +3766,12 @@ bool lmLDPParser::AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptH
 }
 
 void lmLDPParser::AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
-                                    lmELineStyle* pLineStyle, lmELineEndStyle* pEndStyle,
+                                    lmELineStyle* pLineStyle, lmELineCap* pEndCap,
                                     wxColour* pColor)
 {
     //Received parameters must be initialized with default values
     //<anchorLine> = (anchorLine <destination-point>[<width>][<lineStyle>][<color>]
-    //                           [<lineEndStyle>])
+    //                           [<lineCapEnd>])
     //<destination-point> = <location>
 
     wxString sElmName = pNode->GetName();
@@ -3722,8 +3791,8 @@ void lmLDPParser::AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenth
             *pColor = AnalyzeColor(pX);
         else if(sName == _T("lineStyle"))
             GetValueLineStyle(pX, pLineStyle);
-        else if(sName == _T("lineEndStyle"))
-            GetValueLineEndStyle(pX, pEndStyle);
+        else if(sName == _T("lineCapEnd"))
+            GetValueLineCap(pX, pEndCap);
         else
         {
             AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
@@ -3980,6 +4049,37 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
         pPos->yUnits = nUnits;
     }
 
+}
+
+void lmLDPParser::AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos)
+{
+    //analyze location point
+    //i.e.: (startPoint <location>)
+    //      (endPoint <location>)
+
+    wxString sElmName = pNode->GetName();       //i.e.: startPoint, endPoint, etc.
+    int nNumParms = pNode->GetNumParms();
+
+    //loop to analyze parameters
+    for(int iP=1; iP <= nNumParms; iP++)
+    {
+        float rValue;
+        lmEUnits nUnits = lmTENTHS;     //default value
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        AnalyzeLocation(pX, &rValue, &nUnits);
+        if (sName == _T("dx"))
+        {
+            //dx
+            pPos->x = rValue;
+            pPos->xUnits = nUnits;
+        }
+        else {
+            //dy
+            pPos->y = rValue;
+            pPos->yUnits = nUnits;
+        }
+    }
 }
 
 ////Devuelve true si hay error, es decir si no añade objeto al pentagrama

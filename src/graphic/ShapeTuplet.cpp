@@ -214,20 +214,20 @@ void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
 		lmLUnits y1 = yLineStart + (x1 - m_uxStart) * rTanAlpha;
 		lmLUnits x2 = xNumber + nNumberWidth + uxGap;
 		lmLUnits y2 = yLineStart + (x2 - m_uxStart) * rTanAlpha;
-		pPaper->SolidLine(m_uxStart, yLineStart, x1, y1, uThick, eEdgeVertical, color);
-		pPaper->SolidLine(x2, y2, m_uxEnd, yLineEnd, uThick, eEdgeVertical, color);
+		pPaper->SolidLine(m_uxStart, yLineStart, x1, y1, uThick, lm_eEdgeVertical, color);
+		pPaper->SolidLine(x2, y2, m_uxEnd, yLineEnd, uThick, lm_eEdgeVertical, color);
 	}
 	else
 	{
 		//horizontal line shape
-		pPaper->SolidLine(m_uxStart, yLineStart, m_uxEnd, yLineEnd, uThick, eEdgeVertical, color);
+		pPaper->SolidLine(m_uxStart, yLineStart, m_uxEnd, yLineEnd, uThick, lm_eEdgeVertical, color);
 	}
 
 	//vertical borders
     lmLUnits x1 = m_uxStart + uThick / 2;
     lmLUnits x2 = m_uxEnd - uThick / 2;
-    pPaper->SolidLine(x1, yLineStart, x1, yStartBorder, uThick, eEdgeNormal, color);
-    pPaper->SolidLine(x2, yLineEnd, x2, yEndBorder, uThick, eEdgeNormal, color);
+    pPaper->SolidLine(x1, yLineStart, x1, yStartBorder, uThick, lm_eEdgeNormal, color);
+    pPaper->SolidLine(x2, yLineEnd, x2, yEndBorder, uThick, lm_eEdgeNormal, color);
 
     pPaper->SetPen(oldColor, uOldThick);
 

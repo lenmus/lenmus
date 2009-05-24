@@ -225,7 +225,7 @@ void lmShapeArch::Draw(lmPaper* pPaper, wxColour colorC, bool fSketch)
         if (fSketch)
             pPaper->SketchLine(x1, y1, x2, y2, colorC);
         else
-            pPaper->SolidLine(x1, y1, x2, y2, uWidth, eEdgeNormal, colorC);
+            pPaper->SolidLine(x1, y1, x2, y2, uWidth, lm_eEdgeNormal, colorC);
 
         //update bounds
         xMin = wxMin(xMin, x2);

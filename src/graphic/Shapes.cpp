@@ -603,7 +603,7 @@ void lmShapeRectangle::DrawRectangle(lmPaper* pPaper, wxColour color, bool fSket
         pPaper->SolidPolygon(4, m_uPoint, m_nBgColor);
 
     //draw borders
-    lmELineEdges nEdge = eEdgeNormal;
+    lmELineEdges nEdge = lm_eEdgeNormal;
     //m_nBorderStyle = lm_eLine_None;
     pPaper->SolidLine(m_uPoint[lmID_TOP_LEFT].x, m_uPoint[lmID_TOP_LEFT].y,
                       m_uPoint[lmID_TOP_RIGHT].x, m_uPoint[lmID_TOP_RIGHT].y,
@@ -959,7 +959,7 @@ lmShapeStem::lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart,
                          lmLUnits uExtraLength, lmLUnits yEnd, bool fStemDown,
                          lmLUnits uWidth, wxColour nColor)
 	: lmShapeSimpleLine(pOwner, xPos, yStart, xPos, yEnd, uWidth, 0.0, nColor,
-				  _T("Stem"), eEdgeHorizontal)
+				  _T("Stem"), lm_eEdgeHorizontal)
 {
     m_nType = eGMO_ShapeStem;
 	m_fStemDown = fStemDown;

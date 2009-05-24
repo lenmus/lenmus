@@ -111,7 +111,7 @@ void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
     for (int i = 0; i<nNumChordNotes; i++)
     {
         assert(pChordDsct->pChordNotes[i] != NULL);
-        if ( pChordDsct->pChordNotes[i]->GetComponentColour() == *wxGREEN )
+        //if ( pChordDsct->pChordNotes[i]->GetComponentColour() == *wxGREEN )
           pChordDsct->pChordNotes[i]->SetColour(colour);
     }
 

@@ -415,14 +415,23 @@ enum lmELineStyle
 };
 
 //line termination styles
-enum lmELineEndStyle
+enum lmELineCap
 {
-    lm_eEndLine_None = 0,
-    lm_eEndLine_Arrow,
-    lm_eEndLine_Dot,
-    lm_eEndLine_Square,
-    lm_eEndLine_Diamond,
+    lm_eLineCap_None = 0,
+    lm_eLineCap_Arrowhead,
+    lm_eLineCap_Arrowtail,
+    lm_eLineCap_Circle,
+    lm_eLineCap_Square,
+    lm_eLineCap_Diamond,
 };
+
+enum lmELineEdges
+{
+    lm_eEdgeNormal = 0,        // edge line is perpendicular to line
+    lm_eEdgeVertical,          // edge is always a vertical line
+    lm_eEdgeHorizontal         // edge is always a horizontal line
+};
+
 
 //IDs for events that must be public
 enum

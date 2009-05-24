@@ -94,6 +94,9 @@ public:
             { m_pDrawer->SolidLine(x1, y1, x2, y2, width, nEdge, color); }
     inline void SolidShape(lmShape* pShape, wxColor color)
             { m_pDrawer->SolidShape(pShape, color); }
+    inline void DecoratedLine(lmUPoint& start, lmUPoint& end, lmLUnits width,
+                              lmELineCap nStartCap, lmELineCap nEndCap, wxColor color)
+            { m_pDrawer->DecoratedLine(start, end, width, nStartCap, nEndCap, color); }
 
     //settings: line width, colors, fonts, ...
     inline void SetFont(wxFont& font) { m_pDrawer->SetFont(font); }

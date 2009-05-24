@@ -75,6 +75,7 @@ public:
     lmLUnits GetAnchorPos();
     int GetPosOnStaff();        //line/space on which note is rendered
 	lmLUnits CheckNoteNewPosition(lmLUnits uyOldPos, lmLUnits uyNewPos, int* pnSteps);
+    lmLUnits GetShiftToNotehead();
 
     //methods related to stems
     inline lmEStemType GetStemType() { return m_nStemType; }

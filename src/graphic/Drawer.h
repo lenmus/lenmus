@@ -40,12 +40,6 @@
 
 class lmShape;
 
-enum lmELineEdges
-{
-    eEdgeNormal = 0,        // edge line is perpendicular to line
-    eEdgeVertical,          // edge is always a vertical line
-    eEdgeHorizontal         // edge is always a horizontal line
-};
 
 class lmDrawer
 {
@@ -65,6 +59,8 @@ public:
     virtual void SolidPolygon(int n, lmUPoint points[], wxColour color) = 0;
     virtual void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius) = 0;
     virtual void SolidShape(lmShape* pShape, wxColor color) = 0;
+    virtual void DecoratedLine(lmUPoint& start, lmUPoint& end, lmLUnits width,
+                               lmELineCap nStartCap, lmELineCap nEndCap, wxColor color)= 0;
 
     //settings: line width, colors, fonts, ...
     virtual void SetFont(wxFont& font) = 0;
@@ -131,6 +127,9 @@ public:
     void SolidPolygon(int n, lmUPoint points[], wxColour color);
     void SolidCircle(lmLUnits ux, lmLUnits uy, lmLUnits uRadius);
     void SolidShape(lmShape* pShape, wxColor color) {};     //not supported
+    inline void DecoratedLine(lmUPoint& start, lmUPoint& end, lmLUnits width,
+                              lmELineCap nStartCap, lmELineCap nEndCap, wxColor color)
+                { SolidLine(start.x, start.y, end.x, end.y, width, lm_eEdgeNormal, color); }     //not supported
 
 
     //settings: line width, colors, fonts, ...

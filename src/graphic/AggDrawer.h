@@ -51,6 +51,7 @@
 #include "agg_renderer_markers.h"       //for rendering markers
 #include "agg_scanline_bin.h"
 #include "agg_font_freetype.h"          //font renderization using FreeType
+#include "agg_ellipse.h"                //Circle line head/tail
 
 
 //basic types
@@ -125,6 +126,101 @@ private:
 
 
 //-----------------------------------------------------------------------------------------
+// lmLineHeadVS: Vertices Source for different line head/tails
+//-----------------------------------------------------------------------------------------
+
+class lmLineHeadVS
+{
+public:
+    lmLineHeadVS();
+
+    void head_arrowhead(double d1, double d2, double d3, double d4)
+    {
+        m_head_d1 = d1;
+        m_head_d2 = d2;
+        m_head_d3 = d3;
+        m_head_d4 = d4;
+        m_head_type = type_arrowhead_diamond;
+    }
+
+    void head_circle(double r1)
+    {
+        m_head_d1 = r1;
+        m_head_type = type_circle;
+    }
+
+    void no_head() { m_head_type = type_none; }
+
+    void tail_arrowhead(double d1, double d2, double d3, double d4)
+    {
+        m_tail_d1 = d1;
+        m_tail_d2 = d2;
+        m_tail_d3 = d3;
+        m_tail_d4 = d4;
+        m_tail_type = type_arrowhead_diamond;
+    }
+
+    void tail_arrowtail(double d1, double d2, double d3, double d4)
+    {
+        m_tail_d1 = d1;
+        m_tail_d2 = d2;
+        m_tail_d3 = d3;
+        m_tail_d4 = d4;
+        m_tail_type = type_arrowtail;
+    }
+
+    void tail_circle(double r1)
+    {
+        m_tail_d1 = r1;
+        m_tail_type = type_circle;
+    }
+
+    void no_tail() { m_tail_type = type_none; }
+
+    void rewind(unsigned path_id);
+    unsigned vertex(double* x, double* y);
+
+private:
+    double   m_head_d1;
+    double   m_head_d2;
+    double   m_head_d3;
+    double   m_head_d4;
+    double   m_tail_d1;
+    double   m_tail_d2;
+    double   m_tail_d3;
+    double   m_tail_d4;
+
+    enum type_e
+    {
+        type_none,
+        type_arrowhead_diamond,
+        type_arrowtail,
+        type_circle,
+    };
+    unsigned    m_head_type;
+    unsigned    m_tail_type;
+
+    double      m_coord[16];
+    unsigned    m_cmd[8];
+    unsigned    m_curr_id;
+    unsigned    m_curr_coord;
+
+    enum status_e
+    {
+        stop,
+        circle_start,
+        circle_point,
+        arrow,
+    };
+
+    unsigned        m_status;
+    agg::ellipse    m_circle;
+    double			m_radius;
+};
+
+
+
+//-----------------------------------------------------------------------------------------
 // AggDrawer is an anti-aliased drawer using the AGG library (Anti-Grain Geometry)
 //-----------------------------------------------------------------------------------------
 
@@ -153,6 +249,8 @@ public:
     void SolidPolygon(int n, lmUPoint uPoints[], wxColor color);
     void SolidCircle(lmLUnits ux, lmLUnits uy, lmLUnits uRadius);
     void SolidShape(lmShape* pShape, wxColor color);
+    void DecoratedLine(lmUPoint& start, lmUPoint& end, lmLUnits width,
+                       lmELineCap nStartCap, lmELineCap nEndCap, wxColor color);
 
     //brushes, colors, fonts, ...
     void SetFont(wxFont& font);

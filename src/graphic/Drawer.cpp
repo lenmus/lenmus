@@ -44,7 +44,7 @@ void lmDrawer::SolidLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2,
     double alpha = atan((uy2 - uy1) / (ux2 - ux1));
 
     switch(nEdge) {
-        case eEdgeNormal:
+        case lm_eEdgeNormal:
             // edge line is perpendicular to line
             {
             lmLUnits uIncrX = (lmLUnits)( (uWidth * sin(alpha)) / 2.0 );
@@ -59,7 +59,7 @@ void lmDrawer::SolidLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2,
             break;
             }
 
-        case eEdgeVertical:
+        case lm_eEdgeVertical:
             // edge is always a vertical line
             {
             lmLUnits uIncrY = (lmLUnits)( (uWidth / cos(alpha)) / 2.0 );
@@ -73,7 +73,7 @@ void lmDrawer::SolidLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2,
             break;
             }
 
-        case eEdgeHorizontal:
+        case lm_eEdgeHorizontal:
             // edge is always a horizontal line
             {
             lmLUnits uIncrX = (lmLUnits)( (uWidth / sin(alpha)) / 2.0 );

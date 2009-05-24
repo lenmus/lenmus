@@ -211,7 +211,7 @@ void lmShapeBarline::DrawThinLine(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyTo
 {
     pPaper->SolidLine(uxPos + m_uThinLineWidth/2, uyTop,
                       uxPos + m_uThinLineWidth/2, uyBottom,
-                      m_uThinLineWidth, eEdgeNormal, color);
+                      m_uThinLineWidth, lm_eEdgeNormal, color);
 
 }
 
@@ -220,7 +220,7 @@ void lmShapeBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits uyT
 {
     pPaper->SolidLine(xLeft + uWidth/2, uyTop,
                       xLeft + uWidth/2, uyTop + uHeight,
-                      uWidth, eEdgeNormal, color);
+                      uWidth, lm_eEdgeNormal, color);
 }
 
 void lmShapeBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)

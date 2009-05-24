@@ -786,6 +786,18 @@ lmLUnits lmNote::GetPitchShift()
 
 }
 
+lmLUnits lmNote::GetShiftToNotehead()
+{
+    //This method returns the distance (lmLUnits) from default object pos.
+    //to notehead center (staff line or center of staff space)
+
+    // move to right staff
+    lmLUnits uyTopLine = GetStaffOffset();   // staff y position (top line)
+    uyTopLine += 5 * m_pVStaff->TenthsToLogical(10.0f, m_nStaffNum);
+    lmLUnits uyPitchShift = GetPitchShift();
+    return uyTopLine - uyPitchShift;
+}
+
 bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxLeft,
                         lmLUnits uyTop, wxColour colorC)
 {
@@ -980,7 +992,7 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
                 uyPos = uyStart - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
                 lmShapeSimpleLine* pLine =
                     new lmShapeSimpleLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                                    uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
+                                    uBoundsThick, *wxBLACK, _T("Leger line"), lm_eEdgeVertical);
 	            pNoteShape->Add(pLine);
            }
         }
@@ -993,7 +1005,7 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
                 uyPos = uyStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
                 lmShapeSimpleLine* pLine =
                     new lmShapeSimpleLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                                    uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
+                                    uBoundsThick, *wxBLACK, _T("Leger line"), lm_eEdgeVertical);
 	            pNoteShape->Add(pLine);
             }
         }

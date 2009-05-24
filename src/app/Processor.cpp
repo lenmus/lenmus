@@ -48,6 +48,8 @@ extern lmMainFrame* GetMainFrame();
 #include "../exercises/auxctrols/UrlAuxCtrol.h"
 #include "../score/Score.h"
 #include "../score/VStaff.h"
+#include "../score/AuxObj.h"        //lmScoreLine
+#include "../graphic/ShapeNote.h"
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -168,6 +170,140 @@ void lmScoreProcessor::RealizePanel()
     //disable undo link
     m_pUndoLink->Enable(false);
 }
+
+
+
+//-------------------------------------------------------------------------------------------
+// Implementation of class lmTestProcessor
+//-------------------------------------------------------------------------------------------
+
+IMPLEMENT_DYNAMIC_CLASS(lmTestProcessor, lmScoreProcessor)
+
+lmTestProcessor::lmTestProcessor()
+    : lmScoreProcessor()
+{
+}
+
+lmTestProcessor::~lmTestProcessor()
+{
+}
+
+bool lmTestProcessor::SetTools()
+{
+    //Create a panel with the exercise buttons, and place it on the ToolBox
+    //Returns false if failure.
+
+    return true;
+}
+
+bool lmTestProcessor::ProcessScore(lmScore* pScore)
+{
+    //This method checks the score and show errors
+    //Returns true if it has done any change in the score
+
+	bool fScoreModified = false;
+
+	//Get the instrument
+	lmInstrument* pInstr = pScore->GetFirstInstrument();
+	lmVStaff* pVStaff = pInstr->GetVStaff();
+
+    //notes to join with arrows
+	int nNote = 0;
+    lmNote* pNote1;
+    lmNote* pNote2;
+    lmNote* pNote3;
+    lmNote* pNote4;
+    lmNote* pNote5;
+    lmNote* pNote6;
+
+	// Loop to process notes/rests in first staff of first instrument
+	lmSOIterator* pIter = pVStaff->CreateIterator();
+	while(!pIter->EndOfCollection())
+	{
+	  	lmStaffObj* pSO = pIter->GetCurrent();
+	  	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+	  	{
+            // It is a note. Count it
+			++nNote;
+            if (nNote == 2)
+                pNote1 = (lmNote*)pSO;
+            else if (nNote == 6)
+                pNote2 = (lmNote*)pSO;
+            else if (nNote == 3)
+                pNote3 = (lmNote*)pSO;
+            else if (nNote == 7)
+                pNote4 = (lmNote*)pSO;
+            else if (nNote == 5)
+                pNote5 = (lmNote*)pSO;
+            else if (nNote == 12)
+                pNote6 = (lmNote*)pSO;
+
+		}
+		pIter->MoveNext();
+	}
+	delete pIter;       //Do not forget this. We are not using smart pointers!
+
+    //Add line between pairs of notes
+
+    if (pNote1 && pNote2)
+    {
+        DrawArrow(pNote1, pNote2, *wxRED);
+	    fScoreModified = true;
+    }
+    if (pNote3 && pNote4)
+    {
+        DrawArrow(pNote3, pNote4, wxColour(0, 170, 0) );
+	    fScoreModified = true;
+    }
+    if (pNote5 && pNote6)
+    {
+        DrawArrow(pNote5, pNote6, wxColour(0, 0, 200) );
+	    fScoreModified = true;
+    }
+
+	return fScoreModified;      //true -> score modified
+}
+
+bool lmTestProcessor::UndoChanges(lmScore* pScore)
+{
+    //This method removes all error markup from the score
+
+    return true;
+}
+
+void lmTestProcessor::DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
+{
+    //get VStaff
+    lmVStaff* pVStaff = pNote1->GetVStaff();
+
+    //get note heads positions
+    lmURect uBounds1 = pNote1->GetNoteheadShape()->GetBounds();
+    lmURect uBounds2 = pNote2->GetNoteheadShape()->GetBounds();
+
+    //start point
+    lmUPoint uStart( uBounds1.GetWidth(), 0);
+    uStart.y = pNote1->GetShiftToNotehead();        //center of notehead
+
+    //end point
+    lmUPoint uEnd(uBounds2.GetRightTop() - uBounds1.GetRightTop());
+    uEnd.y += uStart.y;
+
+    //convert to tenths
+    lmTenths xtStart = pVStaff->LogicalToTenths(uStart.x) + 8.0;
+    lmTenths ytStart = pVStaff->LogicalToTenths(uStart.y);
+    lmTenths xtEnd = pVStaff->LogicalToTenths(uEnd.x) - 8.0;
+    lmTenths ytEnd = pVStaff->LogicalToTenths(uEnd.y);
+
+    //create arrow
+    lmScoreLine* pLine = new lmScoreLine(xtStart, ytStart, xtEnd, ytEnd, 2, lm_eLineCap_None,
+                                         lm_eLineCap_Arrowhead, lm_eLine_Solid,
+                                         color);
+    pNote1->SetColour(color);
+    pNote2->SetColour(color);
+	pNote1->AttachAuxObj(pLine);
+}
+
+
 
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmHarmonyProcessor

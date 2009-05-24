@@ -585,9 +585,23 @@ lmAuxObj* lmScoreObj::AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxS
     lmLocation tPos;
     tPos.x = ntLinePos.x;
     tPos.y = ntLinePos.y;
-    pTextBox->AddAnchorLine(tPos, 1.0f, lm_eLine_Solid, lm_eEndLine_None, *wxBLACK);
+    pTextBox->AddAnchorLine(tPos, 1.0f, lm_eLine_Solid, lm_eLineCap_None, *wxBLACK);
 
     return pTextBox;
+}
+
+lmAuxObj* lmScoreObj::AttachLine(lmTenths xtStart, lmTenths ytStart, lmTenths xtEnd, lmTenths ytEnd,
+                                 lmTenths ntWidth, lmELineCap nStartCap, lmELineCap nEndCap,
+                                 lmELineStyle nStyle, wxColour nColor)
+{ 
+    //wrapper method to encapsulate and simplify operations related to score creation by program.
+    //This method creates and attaches a decorated line
+
+    // create the AuxObj and attach it to this object
+    lmScoreLine* pLine = new lmScoreLine(xtStart, ytStart, xtEnd, ytEnd, ntWidth, nStartCap,
+                                         nEndCap, nStyle, nColor);
+    this->AttachAuxObj(pLine);
+    return pLine;
 }
 
 

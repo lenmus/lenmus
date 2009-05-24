@@ -37,7 +37,7 @@
 #endif
 
 #include "../score/defs.h"      // lmLUnits
-#include "../app/Paper.h"       // enum lmELineEdges
+#include "../app/Paper.h"       // enum lmELineEdges & line start/endings
 #include "GMObject.h"
 #include "Shapes.h"
 
@@ -46,15 +46,6 @@ class lmPaper;
 class lmHandlerSquare;
 class lmHandlerLine;
 
-
-//line start/endings
-enum lmELineHead
-{
-    lmLINEHEAD_NONE = 0,
-    lmLINEHEAD_ARROW,
-    lmLINEHEAD_DIAMOND,
-    lmLINEHEAD_CIRCLE,
-};
 
 //line points
 enum lmELinePoint
@@ -68,17 +59,12 @@ enum lmELinePoint
 class lmArrowHead
 {
  public:
-    lmArrowHead(lmLUnits uHeight = 0.0, lmLUnits uWidth = 0.0,
-                lmLUnits uNeck = 0.0, lmLUnits uLineWidth = 0.0,
-                double rotation = 0.0);
+    lmArrowHead(lmLUnits uHeight = 0.0, lmLUnits uWidth = 0.0);
     ~lmArrowHead();
 
 private:
     lmLUnits        m_uHeight;
     lmLUnits        m_uWidth;
-    lmLUnits        m_uNeck;
-    lmLUnits        m_uLineWidth;
-    double          m_rotation;
 };
 
 
@@ -104,7 +90,7 @@ public:
     lmShapeLine(lmScoreObj* pOwner, int nShapeIdx,
                 lmLUnits uxStart, lmLUnits uyStart, lmLUnits uxEnd, lmLUnits uyEnd,
                 lmLUnits uWidth, lmLUnits uBoundsExtraWidth, lmELineStyle nStyle,
-                wxColour nColor, lmELineEdges nEdge = eEdgeNormal,
+                wxColour nColor, lmELineEdges nEdge = lm_eEdgeNormal,
                 wxString sName = _T("Line"));      
 
     lmShapeLine(lmScoreObj* pOwner);
@@ -113,6 +99,8 @@ public:
 
     //properties and options
     void SetAsControlled(lmELinePoint nPointID);
+    inline void SetHeadType(lmELineCap nHeadType) { m_nStartCap = nHeadType; }
+    inline void SetTailType(lmELineCap nHeadType) { m_nEndCap = nHeadType; }
 
     //renderization
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
@@ -150,7 +138,7 @@ public:
 protected:
 	void Create(lmLUnits uxStart, lmLUnits uyStart, lmLUnits uxEnd, lmLUnits uyEnd,
 				lmLUnits uWidth, lmLUnits uBoundsExtraWidth, wxColour nColor,
-				lmELineEdges nEdge);
+				lmELineEdges nEdge, lmELineCap nStartCap, lmELineCap nEndCap);
     void DrawLine(lmPaper* pPaper, wxColour colorC, bool fSketch);
     void UpdateBounds();
     lmLUnits GetDistanceToLine(lmUPoint uPoint);
@@ -179,6 +167,8 @@ protected:
 	lmLUnits		    m_uBoundsExtraWidth;
 	lmELineEdges	    m_nEdge;
     lmELineStyle        m_nStyle;
+    lmELineCap         m_nStartCap;
+    lmELineCap         m_nEndCap;
 
 };
 

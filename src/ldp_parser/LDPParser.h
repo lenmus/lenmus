@@ -131,7 +131,7 @@ protected:
     void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
     void        AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
-                                  lmELineStyle* pLineStyle, lmELineEndStyle* pEndStyle,
+                                  lmELineStyle* pLineStyle, lmELineCap* pEndStyle,
                                   wxColour* pColor);
     void        AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints);
@@ -141,6 +141,8 @@ protected:
     bool        AnalyzeCreationMode(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
+    void        AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget = (lmStaffObj*)NULL);
+    void        AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
@@ -155,7 +157,7 @@ protected:
                                float* pValue);
     lmTextStyle* GetTextStyle(lmLDPNode* pNode, const wxString& sStyle);
 
-    bool GetValueLineEndStyle(lmLDPNode* pNode, lmELineEndStyle* pEndStyle);
+    bool GetValueLineCap(lmLDPNode* pNode, lmELineCap* pEndStyle);
     bool GetValueFloatNumber(lmLDPNode* pNode, float* pValue);
     bool GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle);
     bool GetValueYesNo(lmLDPNode* pNode, bool fDefault);

@@ -222,6 +222,7 @@ enum
     MENU_Debug_DumpBitmaps,
     MENU_Debug_UnitTests,
     MENU_Debug_ShowDirtyObjects,
+    MENU_Debug_TestProcessor,
 
     // Menu Zoom
     MENU_Zoom_100,
@@ -428,6 +429,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_UPDATE_UI (MENU_Debug_DumpBitmaps, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_CheckHarmony, lmMainFrame::OnDebugCheckHarmony)
     EVT_UPDATE_UI (MENU_Debug_CheckHarmony, lmMainFrame::OnDebugScoreUI)
+    EVT_MENU      (MENU_Debug_TestProcessor, lmMainFrame::OnDebugTestProcessor)
+    EVT_UPDATE_UI (MENU_Debug_TestProcessor, lmMainFrame::OnDebugScoreUI)
 
 
 
@@ -1148,6 +1151,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         AddMenuItem(pMenuDebug, MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
         AddMenuItem(pMenuDebug, MENU_Debug_UnitTests, _T("Unit Tests") );
         AddMenuItem(pMenuDebug, MENU_Debug_CheckHarmony, _T("Check harmony") );
+        AddMenuItem(pMenuDebug, MENU_Debug_TestProcessor, _T("Run test processor") );
     }
 
 
@@ -1850,6 +1854,23 @@ void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
     wxASSERT(pScore);
 
     lmHarmonyProcessor oProc;
+    if (oProc.ProcessScore(pScore))
+    {
+        //changes done in the score, update views
+        if (GetActiveDoc())
+        {
+	        GetActiveDoc()->Modify(true);
+            GetActiveDoc()->UpdateAllViews(true, new lmUpdateHint() );
+        }
+    }
+}
+
+void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
+{
+    lmScore* pScore = GetActiveScore();
+    wxASSERT(pScore);
+
+    lmTestProcessor oProc;
     if (oProc.ProcessScore(pScore))
     {
         //changes done in the score, update views

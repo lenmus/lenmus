@@ -490,7 +490,7 @@ lmScoreBlock::lmScoreBlock(lmTenths ntWidth, lmTenths ntHeight, lmTPoint ntPos,
     //anchor line
     , m_fHasAnchorLine(false)
     , m_nAnchorLineStyle(lm_eLine_None)
-    , m_nAnchorLineEndStyle(lm_eEndLine_None)
+    , m_nAnchorLineEndStyle(lm_eLineCap_None)
     , m_nAnchorLineColor(*wxBLACK)
     , m_ntAnchorLineWidth(1.0f)
     //default block looking 
@@ -505,7 +505,7 @@ lmScoreBlock::lmScoreBlock(lmTenths ntWidth, lmTenths ntHeight, lmTPoint ntPos,
 }
 
 void lmScoreBlock::AddAnchorLine(lmLocation tPoint, lmTenths ntWidth, lmELineStyle nStyle,
-                                 lmELineEndStyle nEndStyle, wxColour nColor)
+                                 lmELineCap nEndStyle, wxColour nColor)
 {
     m_fHasAnchorLine = true;
     m_ntAnchorPoint = lmTPoint(tPoint.x, tPoint.y);
@@ -908,6 +908,7 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
         m_pShapeLine->SetAsControlled(lmLINE_END);
         m_pShapeLine->SetLeftDraggable(false);
         m_pShapeLine->SetVisible(!fHidden);
+        m_pShapeLine->SetHeadType(lm_eLineCap_Arrowhead);    //TODO user option?
 
 	    pBox->AddShape(m_pShapeLine, GetLayer());
         StoreShape(m_pShapeLine);
