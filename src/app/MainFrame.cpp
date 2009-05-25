@@ -1867,6 +1867,7 @@ void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
 {
+    /* --- TODO: remove; only for test
     lmScore* pScore = GetActiveScore();
     wxASSERT(pScore);
 
@@ -1879,7 +1880,7 @@ void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
 	        GetActiveDoc()->Modify(true);
             GetActiveDoc()->UpdateAllViews(true, new lmUpdateHint() );
         }
-    }
+    } ---*/
 }
 
 void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
@@ -2514,7 +2515,7 @@ void lmMainFrame::OnScoreWizard(wxCommandEvent& WXUNUSED(event))
 
     if (pScore)
     {
-        //Wizard finished successfully. A score has been defined. 
+        //Wizard finished successfully. A score has been defined.
         //Create a new score editor window and display it
         NewScoreWindow((lmEditorMode*)NULL, pScore);
     }
