@@ -1760,6 +1760,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\packages\agg\src\agg_vcgen_markers_term.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\packages\agg\src\agg_vcgen_stroke.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\packages\wxMidi\src\wxMidi.cpp"
 				>
 			</File>

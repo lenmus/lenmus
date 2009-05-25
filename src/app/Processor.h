@@ -73,7 +73,7 @@ private:
     lmUrlAuxCtrol*      m_pUndoLink;
 };
 
-
+/*-------------- TODO: test only; remove!!!!!!!!!!
 //----------------------------------------------------------------------------------------------
 // lmTestProcessor: A processor to do tests and prepare examples without affecting main code
 //----------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ public:
 protected:
     void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
 
-};
+};  --*/
 
 //----------------------------------------------------------------------------------------------
 // lmHarmonyProcessor: A processor to check an score for harmony 'errors' and add markup to 
@@ -115,7 +115,7 @@ public:
     bool SetTools();
 
     //specific methods
-    bool AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH);
+    int AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH);
 #ifdef __WXDEBUG__
     void UnitTests();
     void  TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColour colour);

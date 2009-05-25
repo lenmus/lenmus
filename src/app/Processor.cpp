@@ -172,7 +172,7 @@ void lmScoreProcessor::RealizePanel()
 }
 
 
-
+/*------------ TODO: TEST ONLY; REMOVE!
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmTestProcessor
 //-------------------------------------------------------------------------------------------
@@ -302,7 +302,7 @@ void lmTestProcessor::DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
     pNote2->SetColour(color);
 	pNote1->AttachAuxObj(pLine);
 }
-
+-------------------*/
 
 
 //-------------------------------------------------------------------------------------------
@@ -371,6 +371,8 @@ void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  
         // only reset
         ntyStart = ntDisYstart;  
         ntyEnd = ntDisYend; 
+        wxLogMessage(_T("DisplayChordInfo: reset Y coord to  %d %d")
+            , ntDisYstart, ntDisYend);
         return;
     }
 
@@ -445,8 +447,9 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
         sStatusStr = ptChordDescriptor->ToString();
         (*pNumChords)++;
-//        colour = *wxGREEN;
+// todo: set definitive colour       colour = *wxGREEN;
         colour = wxColour(10,255,0,128); // R, G, B, Transparency
+        // no necessary to display:  DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
         fOk = true;
     }
     else
@@ -456,14 +459,14 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
         sStatusStr = ptChordDescriptor->ToString();
         (*pNumChords)++;
-//        colour = *wxRED;
+// todo: set definitive colour       colour = *wxRED;
         colour = wxColour(255,0,0,128); // R, G, B, Transparency
+        DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
         fOk = false;
     }
 
     wxLogMessage(sStatusStr);
 
-    DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
 
 
     return fOk;
@@ -580,14 +583,24 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     ActiveNotesList.GetChordDescriptor(&tChordDescriptor[nNumChords]);
     bool fChordOk = ProccessChord(pScore, tChordDescriptor, &nNumChords, sStatusStr);
 
-    AnalyzeChordsLinks(&tChordDescriptor[0], nNumChords);
+    int nNumErrors = AnalyzeChordsLinks(&tChordDescriptor[0], nNumChords);
 
-    fScoreModified = ( fScoreModified || fChordOk);
+    wxLogMessage(_T("ANALYSIS RESULT of %d chords:  ok: %d, Num Errors:%d ")
+        ,nNumChords, fChordOk, nNumErrors);
+
+    if (fChordOk && nNumErrors == 0)
+    {
+       wxString sOkMsg = _T(" OK!");
+       wxLogMessage( sOkMsg );
+       DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
+       fScoreModified = true; // repaint
+    }
 
     return fScoreModified;      //true -> score modified
 }
 
-bool lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH)
+// return: total number of errors
+int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH)
 {
     wxLogMessage(_T("AnalyzeChordsLinks N:%d "), nNCH);
 
@@ -612,14 +625,14 @@ bool lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor,
         {
             wxLogMessage(_T("Evaluating rule %d, description: %s")
                 , pRule->GetRuleId(), pRule->GetDescription().c_str());
-            nNumErros = pRule->Evaluate(sStr, &nNumChordError[0]);
+            nNumErros += pRule->Evaluate(sStr, &nNumChordError[0]);
             wxLogMessage(sStr);
             wxLogMessage(_T("   RESULT of Rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
             if (nNumErros > 0)
             {
 
 /*-- TODO: dejar una forma definitiva de mostrar los mensajes
-  esto fue un inento de mostarlos despues de aplicar cada regla,
+  esto fue un intento de mostrarlos despues de aplicar cada regla,
   pero parece mejor al momento de detectar cada error en la regla (puede haer varios)
                 //@@@ provisional TODO: mostrar correctamente los errores:
                 //     en una ventana o apuntando al acorde
@@ -638,10 +651,7 @@ bool lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor,
         }
     }
 
-
-    return false;
-
-
+    return nNumErros;
 
 }
 

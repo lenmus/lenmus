@@ -215,6 +215,7 @@ extern void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
 extern int GetHarmonicDirection(int nInterval);
 extern void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
                                            , wxColour colour, wxString &sText, bool reset);
+extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
 
 enum lmHarmonicMovementType {
     lm_eDirectMovement ,    // 2 voices with the same delta sign (cero included)

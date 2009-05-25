@@ -30,6 +30,7 @@
 #endif
 
 #include "Harmony.h"
+#include "../score/VStaff.h"
 
 // return
 //  -1: negative, 0, 1: positive
@@ -134,6 +135,39 @@ void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
     ntyEnd +=50; // y positions are NOT relative; change each time
 
 }
+
+void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
+{
+    //get VStaff
+    lmVStaff* pVStaff = pNote1->GetVStaff();
+
+    //get note heads positions
+    lmURect uBounds1 = pNote1->GetNoteheadShape()->GetBounds();
+    lmURect uBounds2 = pNote2->GetNoteheadShape()->GetBounds();
+
+    //start point
+    lmUPoint uStart( uBounds1.GetWidth(), 0);
+    uStart.y = pNote1->GetShiftToNotehead();        //center of notehead
+
+    //end point
+    lmUPoint uEnd(uBounds2.GetRightTop() - uBounds1.GetRightTop());
+    uEnd.y += uStart.y;
+
+    //convert to tenths
+    lmTenths xtStart = pVStaff->LogicalToTenths(uStart.x) + 8.0;
+    lmTenths ytStart = pVStaff->LogicalToTenths(uStart.y);
+    lmTenths xtEnd = pVStaff->LogicalToTenths(uEnd.x) - 8.0;
+    lmTenths ytEnd = pVStaff->LogicalToTenths(uEnd.y);
+
+    //create arrow
+    lmScoreLine* pLine = new lmScoreLine(xtStart, ytStart, xtEnd, ytEnd, 2, lm_eLineCap_None,
+                                         lm_eLineCap_Arrowhead, lm_eLine_Solid,
+                                         color);
+    pNote1->SetColour(color);
+    pNote2->SetColour(color);
+	pNote1->AttachAuxObj(pLine);
+}
+
 
 
 //
@@ -398,14 +432,20 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
   //                       if ( m_pChordDescriptor[nC-1].pChordNotes[i]->GetComponentColour() == *wxGREEN )
                              m_pChordDescriptor[nC-1].pChordNotes[i]->SetColour(*wxBLUE);
 
+                         DrawArrow(
+                             m_pChordDescriptor[nC-1].pChordNotes[nN],
+                             m_pChordDescriptor[nC].pChordNotes[nN],
+                             wxColour(*wxRED) );
+                         DrawArrow(
+                             m_pChordDescriptor[nC-1].pChordNotes[i],
+                             m_pChordDescriptor[nC].pChordNotes[i],
+                             wxColour(*wxRED) );
 
 
                          m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
                          nErrCount++;
                     }
                 }
-//todo:remove   else wxLogMessage(_T("    not Parallel chord %d, n:%d n:%d, intv1:%d != intv2:%d")
-//		               ,nC, i,  nN, nVoiceInterval[i] , nVoiceInterval[nN]);
 
             }
         }
@@ -487,6 +527,15 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFa
                , (i)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]).c_str(), NoteId(*m_pChordDescriptor[nC].pChordNotes[i]).c_str()
                , FIntval_GetIntvCode(nDistance).c_str(), nDistance
                , FIntval_GetIntvCode(nInterval).c_str(), nInterval);
+
+                        DrawArrow(
+                             m_pChordDescriptor[nC-1].pChordNotes[nN],
+                             m_pChordDescriptor[nC].pChordNotes[nN],
+                             wxColour(*wxCYAN) );
+                         DrawArrow(
+                             m_pChordDescriptor[nC-1].pChordNotes[i],
+                             m_pChordDescriptor[nC].pChordNotes[i],
+                             wxColour(*wxCYAN) );
 
                         wxLogMessage( sResultDetails );
 
@@ -584,7 +633,6 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
 //                      if ( m_pChordDescriptor[nC].pChordNotes[i]->GetComponentColour() == *wxGREEN )
                         m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxRED);
 
-
                      m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
                      nErrCount++;
                 }
@@ -669,6 +717,11 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
 //                      if ( m_pChordDescriptor[nC].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
                     m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
                     m_pChordDescriptor[nC].pChordNotes[nN-1]->SetColour(*wxRED);
+
+                    DrawArrow(
+                         m_pChordDescriptor[nC].pChordNotes[nN-1],
+                         m_pChordDescriptor[nC].pChordNotes[nN],
+                         wxColour(*wxBLUE) );
 
                  m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
                  nErrCount++;
