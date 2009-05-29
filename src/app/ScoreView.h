@@ -118,7 +118,7 @@ public:
     void DumpBitmaps();
 
 	//methods for dealing with user interaction
-    void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
+    //void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
     void OnMouseWheel(wxMouseEvent& event);
     void OnScroll(wxScrollEvent& event);
 
@@ -164,49 +164,13 @@ public:
     lmGMSelection* GetSelection();
     void DeselectAllGMObjects(bool fRedraw = false);
 
-private:
+    //on mouse event related--------------------------------------------------
 
-	//mouse behaviour
-	lmLUnits GetMouseTolerance();
-
-	//dragging on canvas with left button: selection
-	void OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnCanvasContinueDragLeft(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnCanvasEndDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void DrawSelectionArea(wxDC& dc, lmPixels vX1, lmPixels vY1, lmPixels vX2, lmPixels vY2);
-
-	//dragging on canvas with right button
-	void OnCanvasBeginDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnCanvasContinueDragRight(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnCanvasEndDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-
-	//dragging object with left button
-	void OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
-							   lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
-	void OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool fDraw,
-								  lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
-								  lmUPoint uPagePos, int nKeys);
-	void OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
-							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
-
-	//dragging object with right button
-	void OnObjectBeginDragRight(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
-							   lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
-	void OnObjectContinueDragRight(wxMouseEvent& event, wxDC* pDC, bool fDraw,
-								  lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
-								  lmUPoint uPagePos, int nKeys);
-	void OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
-							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
-
-	//non-dragging events: click on an object
-	void OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnRightDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-
-	//non-dragging events: click on canvas
-	void OnRightClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
-	void OnLeftClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+    //new
+    void ScaleDC(wxDC* pDC);
+    void UpdateRulerMarkers(lmDPoint vPagePos);
+    lmGMObject* FindObjectAt(int nNumPage, lmUPoint uPos, bool fSelectable);
+    void MoveCursorToObject(lmGMObject* pGMO);
 
 	// units conversion
 	lmDPoint GetScrollOffset();
@@ -216,6 +180,39 @@ private:
 						 lmDPoint* pPaperOrgD, lmDPoint* pOffsetD,
 						 int* pNumPage, bool* pfInInterpageGap);
 
+	//mouse behaviour
+	lmLUnits GetMouseTolerance();
+
+	//dragging object with left button
+	bool OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							   lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys,
+                               lmGMObject* pDraggedGMO, lmDPoint vDragHotSpot,
+                               lmUPoint uHotSpotShift);
+	void OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool fDraw,
+								  lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+								  lmUPoint uPagePos, int nKeys);
+	void OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+
+    //dealing with selections
+	void DrawSelectionArea(wxDC& dc, lmPixels vX1, lmPixels vY1, lmPixels vX2, lmPixels vY2);
+    void SelectionDone(bool fRedraw);
+    void SelectGMObject(lmGMObject* pGMO, bool fRedraw = false);
+    void SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
+                               lmLUnits uYMin, lmLUnits uYMax, bool fRedraw = false);
+
+	//caret management
+    void HideCaret();
+    void ShowCaret();
+
+	//Mouse commands
+	void OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
+						lmUPoint uPos);
+    void OnClickOnObject(lmGMObject* pGMO);
+
+
+private:
+
     // Auxiliary for scrolling
     int CalcScrollInc(wxScrollEvent& event);
     void DoScroll(int xScrollSteps, int yScrollSteps);
@@ -224,21 +221,8 @@ private:
 	//caret management
     void SetInitialCaretPosition();
     void UpdateCaret();
-    void HideCaret();
-    void ShowCaret();
 	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
     void MoveCaretToObject(lmStaffObj* pSO);
-
-	//Mouse commands
-	void OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
-						lmUPoint uPos);
-    void OnClickOnObject(lmGMObject* pGMO);
-
-    //dealing with selections
-    void SelectionDone(bool fRedraw);
-    void SelectGMObject(lmGMObject* pGMO, bool fRedraw = false);
-    void SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
-                               lmLUnits uYMin, lmLUnits uYMax, bool fRedraw = false);
 
     //internal call backs
     void OnNewGraphicalModel();
@@ -294,15 +278,10 @@ private:
     double        m_yDisplayPixelsPerLU;
 
     // dragging control variables
-    int             m_nDragState;
-    lmUPoint        m_uDragStartPos;
     lmDPoint        m_vDragHotSpot;			//absolute point (pixels)
     lmUPoint        m_uHotSpotShift;		//distance from shape origin
     wxDragImage*    m_pDragImage;
 	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
-
-    // mouse over objects
-	lmGMObject*		m_pMouseOverGMO;        //GMObject on which mouse is flying over
 
     //cursor
     lmCaret*            m_pCaret;

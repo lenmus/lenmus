@@ -331,7 +331,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
     g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
 	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
-    g_pLogger->DefineTraceMask(_T("lmScoreView::OnMouseEvent"));
+    g_pLogger->DefineTraceMask(_T("lmScoreCanvas::OnMouseEvent"));
 	g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
 #endif

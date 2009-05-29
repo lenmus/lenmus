@@ -172,10 +172,10 @@ void lmScoreProcessor::RealizePanel()
 }
 
 
-/*------------ TODO: TEST ONLY; REMOVE!
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmTestProcessor
 //-------------------------------------------------------------------------------------------
+#ifdef __WXDEBUG__
 
 IMPLEMENT_DYNAMIC_CLASS(lmTestProcessor, lmScoreProcessor)
 
@@ -302,7 +302,7 @@ void lmTestProcessor::DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
     pNote2->SetColour(color);
 	pNote1->AttachAuxObj(pLine);
 }
--------------------*/
+#endif
 
 
 //-------------------------------------------------------------------------------------------

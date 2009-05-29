@@ -793,7 +793,8 @@ void lmCompositeShape::SetSelected(bool fValue)
 {
     if (m_fSelected == fValue) return;      //nothing to do
 
-    //change selection status in components
+    //change selection status
+    m_fSelected = fValue;
     for (int i=0; i < (int)m_Components.size(); i++)
     {
         m_Components[i]->Restricted_SetSelected(fValue);

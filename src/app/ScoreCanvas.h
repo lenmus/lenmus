@@ -173,6 +173,8 @@ public:
     void OnKeyDown(wxKeyEvent& event);
     void OnToolBoxEvent(lmToolBoxEvent& event);
 
+    void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
+
 	//commands without Do/Undo support
     void PlayScore(bool fFromCursor=false);
     void StopPlaying(bool fWait=false);
@@ -228,6 +230,8 @@ public:
     //call backs
     void SynchronizeToolBox();
     void RestoreToolBoxSelections();
+    void OnViewUpdated();
+    void OnNewGraphicalModel();
 
 	//contextual menus
 	wxMenu* GetContextualMenu(bool fInitialize = true);
@@ -300,6 +304,54 @@ private:
     int             m_nTbDots;
     int             m_nTbDuration;
 
+    //new--------------------------------------------------------------
+	//dragging on canvas with left button: selection
+	void OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasContinueDragLeft(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasEndDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+
+	//dragging on canvas with right button
+	void OnCanvasBeginDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasContinueDragRight(bool fDraw, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnCanvasEndDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+
+	//dragging object with left button
+	void OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							   lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+	void OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool fDraw,
+								  lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+								  lmUPoint uPagePos, int nKeys);
+	void OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+
+	//dragging object with right button
+	void OnObjectBeginDragRight(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							   lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+	void OnObjectContinueDragRight(wxMouseEvent& event, wxDC* pDC, bool fDraw,
+								  lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+								  lmUPoint uPagePos, int nKeys);
+	void OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+							 lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys);
+
+	//non-dragging events: click on an object
+	void OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnRightDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+
+	//non-dragging events: click on canvas
+	void OnRightClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+	void OnLeftClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos, int nKeys);
+
+    // dragging control variables
+    int             m_nDragState;
+    lmUPoint        m_uDragStartPos;
+    lmDPoint        m_vDragHotSpot;			//absolute point (pixels)
+    lmUPoint        m_uHotSpotShift;		//distance from shape origin
+	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
+
+    // mouse over objects
+	lmGMObject*		m_pMouseOverGMO;        //GMObject on which mouse is flying over
 
     DECLARE_EVENT_TABLE()
 };

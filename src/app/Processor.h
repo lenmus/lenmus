@@ -73,10 +73,12 @@ private:
     lmUrlAuxCtrol*      m_pUndoLink;
 };
 
-/*-------------- TODO: test only; remove!!!!!!!!!!
+
 //----------------------------------------------------------------------------------------------
 // lmTestProcessor: A processor to do tests and prepare examples without affecting main code
 //----------------------------------------------------------------------------------------------
+#ifdef __WXDEBUG__
+
 class lmNote;
 
 class lmTestProcessor : public lmScoreProcessor
@@ -95,7 +97,8 @@ public:
 protected:
     void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
 
-};  --*/
+};
+#endif
 
 //----------------------------------------------------------------------------------------------
 // lmHarmonyProcessor: A processor to check an score for harmony 'errors' and add markup to 

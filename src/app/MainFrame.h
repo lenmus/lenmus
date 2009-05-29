@@ -129,7 +129,7 @@ public:
 	void OnInstrumentProperties(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
-        // general options, always enabled
+#ifdef __WXDEBUG__
     void OnDebugForceReleaseBehaviour(wxCommandEvent& event);
     void OnDebugShowDebugLinks(wxCommandEvent& event);
     void OnDebugShowBorderOnScores(wxCommandEvent& event);
@@ -151,6 +151,7 @@ public:
     void OnDebugSeeXML(wxCommandEvent& event);
     void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
     void OnDebugScoreUI(wxUpdateUIEvent& event);
+#endif
 
     // Zoom events
     void OnComboZoom(wxCommandEvent& event);

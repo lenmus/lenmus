@@ -49,8 +49,15 @@
 #include "../ldp_parser/LDPParser.h"
 #include "../ldp_parser/AuxString.h"
 #include "../graphic/GMObject.h"
+#include "../graphic/BoxSystem.h"
+#include "../graphic/ShapeStaff.h"
+#include "../graphic/BoxSliceVStaff.h"
 #include "../score/VStaff.h"
 #include "DlgDebug.h"
+
+//access to logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
 
 // access to global external variables (to disable mouse interaction with the score)
 extern bool g_fReleaseVersion;            // in TheApp.cpp
@@ -133,6 +140,35 @@ wxMenu* lmController::GetContextualMenu(bool fInitialize)
 IMPLEMENT_CLASS(lmScoreCanvas, lmController)
 
 
+//temporary data for OnMouseEvent method
+static lmDPoint     m_vStartDrag;       //initial point (pixels) of dragging area
+static lmDPoint     m_vEndDrag;         //last end point (pixels) of dragging area
+static lmUPoint     m_uStartDrag;       //initial point (logical, page origin) of dragging area
+static int          m_nNumPage;         //score page number (1..n) on which the mouse is placed
+static bool         m_fDraggingObject;  //we were dragging an object
+static bool         m_fCheckTolerance;  //to control false dargging starts
+
+// keys pressed when a mouse event
+enum {
+    lmKEY_NONE = 0x0000,
+    lmKEY_ALT = 0x0001,
+    lmKEY_CTRL = 0x0002,
+    lmKEY_SHIFT = 0x0004,
+};
+
+// Dragging states
+enum
+{
+	lmDRAG_NONE = 0,
+	lmDRAG_START_LEFT,
+	lmDRAG_CONTINUE_LEFT,
+	lmDRAG_START_RIGHT,
+	lmDRAG_CONTINUE_RIGHT,
+};
+
+
+
+
 BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
     EVT_ERASE_BACKGROUND(lmScoreCanvas::OnEraseBackground)
     EVT_MOUSE_EVENTS(lmScoreCanvas::OnMouseEvent)
@@ -162,6 +198,18 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* 
     m_fAlt = false;
     m_fShift = false;
     m_fToolBoxSavedOptions = false;
+
+    //new
+    // drag state control initializations
+    m_nDragState = lmDRAG_NONE;
+	m_vEndDrag = lmDPoint(0, 0);
+	m_vStartDrag.x = 0;
+	m_vStartDrag.y = 0;
+	m_fCheckTolerance = true;
+
+    //mouse over
+    m_pMouseOverGMO = (lmGMObject*)NULL;
+
 }
 
 lmScoreCanvas::~lmScoreCanvas()
@@ -198,7 +246,629 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
     if (!m_pView) return;
 
     wxClientDC dc(this);
-    m_pView->OnMouseEvent(event, &dc);
+    //m_pView->OnMouseEvent(event, &dc);
+    OnMouseEvent(event, &dc);
+}
+
+void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
+{
+    // Classifies a mouse event and invokes the handler method
+
+    //filter out non-treated events
+    wxEventType nEventType = event.GetEventType();
+    if (nEventType==wxEVT_MIDDLE_DOWN || nEventType==wxEVT_MIDDLE_UP ||
+        nEventType==wxEVT_MIDDLE_DCLICK)
+    {
+        return;
+    }
+
+    //filter out non-dragging mouse movements (moving without having a button pressed)
+	bool fDragging = event.Dragging();
+    wxLogMessage(_T("dragging = %s, m_nDragState =%d"),
+        (fDragging ? _T("yes") : _T("no")), m_nDragState);
+    //if (nEventType==wxEVT_MOTION && !fDragging)
+    //    return;
+
+	// get mouse point
+    lmDPoint vCanvasPos(event.GetPosition());
+	lmPixels vX = vCanvasPos.x;
+	lmPixels vY = vCanvasPos.y;
+
+    // As wxDragImage works with unscrolled device coordinates, we need current position
+    // in device units. All device coordinates are referred to the lmScoreCanvas window
+    // Also we need logical coordinates of point pointed by mouse
+	//
+    // vCanvasPos - mouse position (pixels) on canvas
+    // vCanvasOffset - canvas: offset referred to view origin
+    // vPageOrg - origin (pixels) of current page referred to view origin
+    // vPagePos - mouse position (pixels) referred to current page origin
+    // uPagePos - mouse position (lmLUnits) referred to current page origin
+
+    // Leave DC in logical units and scaled, so that
+    // transformations logical/device and viceversa can be computed
+    m_pView->ScaleDC(pDC);
+
+    //compute mouse point in logical units. Get also different origins and values
+    lmDPoint vPageOrg;     //the origin (pixels) of this page
+    lmDPoint vPagePos;     //the position (pixels) referred to current page origin
+    lmDPoint vCanvasOffset;      //offset from canvas origin
+	lmUPoint uPagePos;     //the position (logical) referred to current page origin
+    bool fInInterpageGap;  //mouse click out of page
+	m_pView->DeviceToLogical(vCanvasPos, uPagePos, &vPagePos, &vPageOrg, &vCanvasOffset,
+                    &m_nNumPage, &fInInterpageGap);
+
+	#ifdef __WXDEBUG__
+	bool fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmScoreCanvas::OnMouseEvent"));
+	#endif
+
+    //update status bar: mouse position, and num page
+    GetMainFrame()->SetStatusBarMousePos((float)uPagePos.x, (float)uPagePos.y);
+    //GetMainFrame()->SetStatusBarNumPage(m_nNumPage);
+
+	////for testing and debugging methods DeviceToLogical [ok] and LogicalToDevice [ok]
+	//lmDPoint tempPagePosD;
+	//LogicalToDevice(tempPagePosL, tempPagePosD);
+
+    // draw markers on the rulers
+    m_pView->UpdateRulerMarkers(vPagePos);
+
+    // check if a key is pressed
+    int nKeysPressed = lmKEY_NONE;
+    if (event.ShiftDown())
+        nKeysPressed |= lmKEY_SHIFT;
+    if (event.CmdDown())
+        nKeysPressed |= lmKEY_CTRL;
+    if (event.AltDown())
+        nKeysPressed |= lmKEY_ALT;
+
+    // check if dragging, and filter out mouse movements small than tolerance
+	if (fDragging && m_fCheckTolerance)
+	{
+		// Check if we're within the tolerance for mouse movements.
+		// If we're very close to the position we started dragging
+		// from, this may not be an intentional drag at all.
+		lmLUnits uAx = abs(pDC->DeviceToLogicalXRel((long)(vX - m_vStartDrag.x)));
+		lmLUnits uAy = abs(pDC->DeviceToLogicalYRel((long)(vY - m_vStartDrag.y)));
+        lmLUnits uTolerance = m_pView->GetMouseTolerance();
+		if (uAx <= uTolerance && uAy <= uTolerance)
+			return;
+		else
+            //I will not allow for a second involuntary small movement. Therefore
+			//if we have ignored a drag, smaller than tolerance, then do not check for
+            //tolerance the next time in this drag.
+			m_fCheckTolerance = false;
+	}
+
+    // check for mouse wheel events
+	if (nEventType == wxEVT_MOUSEWHEEL ) {
+        m_pView->OnMouseWheel(event);
+		return;
+    }
+
+    // check for mouse entering/leaving the window events
+	else if (event.Entering())    //wxEVT_ENTER_WINDOW
+	{
+		//the mouse is entering the window. Change cursor icon as appropriate
+		//TODO
+		return;
+	}
+	else if (event.Leaving())    //wxEVT_LEAVE_WINDOW
+	{
+		//the mouse is leaving the window. Change cursor icon as appropriate
+		//TODO
+		return;
+	}
+
+
+    //check for mouse moving over selectable objects
+    if (nEventType==wxEVT_MOTION && !fDragging)
+    {
+		//find the object pointed with the mouse.
+		lmGMObject* pGMO = m_pView->FindObjectAt(m_nNumPage, uPagePos, true);
+		if (pGMO)
+        {
+            if (m_pMouseOverGMO)
+                m_pMouseOverGMO->OnMouseOut(this, uPagePos);
+            m_pMouseOverGMO = pGMO;
+            pGMO->OnMouseIn(this, uPagePos);
+        }
+        else
+        {
+	        ////DBG --------------------------------------------------------------------------------
+	        //wxString sMsg = _T("");
+	        //m_pMainFrame->SetStatusBarMsg(sMsg);
+	        //// END DBG ---------------------------------------------------------------------------
+            if (m_pMouseOverGMO)
+            {
+                m_pMouseOverGMO->OnMouseOut(this, uPagePos);
+                m_pMouseOverGMO = (lmGMObject*)NULL;
+            }
+        }
+        return;
+    }
+
+	// now check for dragging and mouse click events
+
+	if (!fDragging)
+	{
+		// Non-dragging events. 
+        // In MS Windows the 'end of drag' event is a non-dragging event
+
+		m_fCheckTolerance = true;
+
+		#ifdef __WXDEBUG__
+		if(fDebugMode) g_pLogger->LogDebug(_T("Non-dragging event"));
+		#endif
+
+		if (event.IsButton())
+		{
+			#ifdef __WXDEBUG__
+			if(fDebugMode) g_pLogger->LogDebug(_T("button event"));
+			#endif
+
+			//find the object pointed with the mouse
+			lmGMObject* pGMO = m_pView->FindObjectAt(m_nNumPage, uPagePos, false);
+			if (pGMO) // Object event
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("button on object event"));
+				#endif
+
+				if (event.LeftDown())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftDown()"));
+					#endif
+
+					//Save data for a possible start of dragging
+					m_pDraggedGMO = pGMO;
+					m_nDragState = lmDRAG_START_LEFT;
+					m_vStartDrag.x = vX;
+					m_vStartDrag.y = vY;
+                    m_uStartDrag = uPagePos;
+
+					m_uDragStartPos = uPagePos;	// save mouse position (page logical coordinates)
+					// compute the location of the drag position relative to the upper-left
+					// corner of the image (pixels)
+					m_uHotSpotShift = uPagePos - m_pDraggedGMO->GetObjectOrigin();
+					m_vDragHotSpot.x = pDC->LogicalToDeviceXRel((int)m_uHotSpotShift.x);
+					m_vDragHotSpot.y = pDC->LogicalToDeviceYRel((int)m_uHotSpotShift.y);
+				}
+				else if (event.LeftUp())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftUp()"));
+					#endif
+
+			        if (m_nDragState == lmDRAG_CONTINUE_LEFT)
+			        {
+                        if (m_fDraggingObject)
+                        {
+                            //draggin. Finish left object dragging
+				            OnObjectContinueDragLeft(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				            OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                        }
+                        else
+                        {
+                            //draggin. Finish left canvas dragging
+				            OnCanvasContinueDragLeft(false, m_vEndDrag, uPagePos, nKeysPressed);
+				            OnCanvasEndDragLeft(vCanvasPos, uPagePos, nKeysPressed);
+                       }
+			        }
+                    else
+                    {
+					    //click on object. Only send a click event if the same object
+                        //was involved in 'down' and 'up' events
+					    if (pGMO == m_pDraggedGMO)
+						    OnLeftClickOnObject(pGMO, vCanvasPos, uPagePos, nKeysPressed);
+                    }
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_NONE;
+                    m_fCheckTolerance = true;
+				}
+				else if (event.LeftDClick())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftDClick()"));
+					#endif
+
+					OnLeftDoubleClickOnObject(pGMO, vCanvasPos, uPagePos, nKeysPressed);
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_NONE;
+				}
+				else if (event.RightDown())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightDown()"));
+					#endif
+
+					//Save data for a possible start of dragging
+					m_pDraggedGMO = pGMO;
+					m_nDragState = lmDRAG_START_RIGHT;
+					m_vStartDrag.x = vX;
+					m_vStartDrag.y = vY;
+                    m_uStartDrag = uPagePos;
+
+					m_uDragStartPos = uPagePos;	// save mouse position (page logical coordinates)
+					// compute the location of the drag position relative to the upper-left
+					// corner of the image (pixels)
+					m_uHotSpotShift = uPagePos - m_pDraggedGMO->GetObjectOrigin();
+					m_vDragHotSpot.x = pDC->LogicalToDeviceXRel((int)m_uHotSpotShift.x);
+					m_vDragHotSpot.y = pDC->LogicalToDeviceYRel((int)m_uHotSpotShift.y);
+				}
+				else if (event.RightUp())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightUp()"));
+					#endif
+
+			        if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
+			        {
+                        if (m_fDraggingObject)
+                        {
+                            //draggin. Finish right object dragging
+				            OnObjectContinueDragRight(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				            OnObjectEndDragRight(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                        }
+                        else
+                        {
+                            //draggin. Finish right canvas dragging
+				            OnCanvasContinueDragRight(false, m_vEndDrag, uPagePos, nKeysPressed);
+				            OnCanvasEndDragRight(vCanvasPos, uPagePos, nKeysPressed);
+                       }
+			        }
+                    else
+                    {
+					    //click on object. Only send a click event if the same object
+                        //was involved in 'down' and 'up' events
+					    if (pGMO == m_pDraggedGMO)
+						    OnRightClickOnObject(pGMO, vCanvasPos, uPagePos, nKeysPressed);
+                    }
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_NONE;
+                    m_fCheckTolerance = true;
+				}
+				else if (event.RightDClick())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightDClick()"));
+					#endif
+
+					OnRightDoubleClickOnObject(pGMO, vCanvasPos, uPagePos, nKeysPressed);
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_NONE;
+				}
+				else
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: no identified event"));
+					#endif
+				}
+
+			}
+			else // Canvas event (no pointed object)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas event"));
+				#endif
+
+				if (event.LeftDown())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.LeftDown()"));
+					#endif
+
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_START_LEFT;
+					m_vStartDrag.x = vX;
+					m_vStartDrag.y = vY;
+                    m_uStartDrag = uPagePos;
+				}
+				else if (event.LeftUp())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.LeftUp()"));
+					#endif
+
+			        if (m_nDragState == lmDRAG_CONTINUE_LEFT)
+			        {
+                        if (m_pDraggedGMO)
+                        {
+							#ifdef __WXDEBUG__
+							if(fDebugMode) g_pLogger->LogDebug(_T("dragging object: Finish left dragging"));
+							#endif
+
+	                            //draggin. Finish left dragging
+				            OnObjectContinueDragLeft(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				            OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                        }
+                        else
+                        {
+							#ifdef __WXDEBUG__
+							if(fDebugMode) g_pLogger->LogDebug(_T("dragging on canvas: Finish left dragging"));
+							#endif
+
+                            //draggin. Finish left dragging
+				            OnCanvasContinueDragLeft(false, m_vEndDrag, uPagePos, nKeysPressed);
+				            OnCanvasEndDragLeft(vCanvasPos, uPagePos, nKeysPressed);
+                        }
+			        }
+                    else
+                    {
+						#ifdef __WXDEBUG__
+						if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: non-dragging. Left click on object"));
+						#endif
+
+                        //non-dragging. Left click on object
+					    OnLeftClickOnCanvas(vCanvasPos, uPagePos, nKeysPressed);
+                    }
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_NONE;
+                    m_fCheckTolerance = true;
+				}
+				else if (event.RightDown())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.RightDown()"));
+					#endif
+
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_START_RIGHT;
+					m_vStartDrag.x = vX;
+					m_vStartDrag.y = vY;
+                    m_uStartDrag = uPagePos;
+				}
+				else if (event.RightUp())
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.RightUp()"));
+					#endif
+
+			        if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
+			        {
+                        if (m_pDraggedGMO)
+                        {
+							#ifdef __WXDEBUG__
+							if(fDebugMode) g_pLogger->LogDebug(_T("dragging object: Finish right dragging"));
+							#endif
+
+	                            //draggin. Finish right dragging
+				            OnObjectContinueDragRight(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				            OnObjectEndDragRight(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                        }
+                        else
+                        {
+							#ifdef __WXDEBUG__
+							if(fDebugMode) g_pLogger->LogDebug(_T("dragging on canvas: Finish right dragging"));
+							#endif
+
+                            //draggin. Finish right dragging
+				            OnCanvasContinueDragRight(false, m_vEndDrag, uPagePos, nKeysPressed);
+				            OnCanvasEndDragRight(vCanvasPos, uPagePos, nKeysPressed);
+                        }
+			        }
+                    else
+                    {
+						#ifdef __WXDEBUG__
+						if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: non-dragging. Right click on object"));
+						#endif
+
+                        //non-dragging. Right click on object
+					    OnRightClickOnCanvas(vCanvasPos, uPagePos, nKeysPressed);
+                    }
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					m_nDragState = lmDRAG_NONE;
+                    m_fCheckTolerance = true;
+				}
+                else
+				{
+					#ifdef __WXDEBUG__
+					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: no identified event"));
+					#endif
+				}
+			}
+		}
+        else
+		{
+			#ifdef __WXDEBUG__
+			if(fDebugMode) g_pLogger->LogDebug(_T("non-dragging: no button event"));
+			#endif
+		}
+	}
+
+	else	//dragging events
+	{
+		#ifdef __WXDEBUG__
+		if(fDebugMode) g_pLogger->LogDebug(_T("dragging event"));
+		#endif
+
+		if (m_pDraggedGMO)
+		{
+			#ifdef __WXDEBUG__
+			if(fDebugMode) g_pLogger->LogDebug(_T("draggin an object"));
+			#endif
+
+			//draggin an object
+			if (event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("object: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT"));
+				#endif
+
+				m_nDragState = lmDRAG_NONE;
+				m_fCheckTolerance = true;
+				OnObjectContinueDragLeft(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+				m_pDraggedGMO = (lmGMObject*)NULL;
+			}
+			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("object: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+				#endif
+
+				m_nDragState = lmDRAG_NONE;
+				m_fCheckTolerance = true;
+				OnObjectContinueDragRight(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				OnObjectEndDragRight(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+				m_pDraggedGMO = (lmGMObject*)NULL;
+			}
+			else if (m_nDragState == lmDRAG_START_LEFT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_START_LEFT"));
+				#endif
+
+				m_nDragState = lmDRAG_CONTINUE_LEFT;
+
+				if (m_pDraggedGMO->IsLeftDraggable())
+                {
+					OnObjectBeginDragLeft(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                }
+				else
+				{
+					//the object is not draggable: transfer message to canvas
+				    #ifdef __WXDEBUG__
+				    if(fDebugMode) g_pLogger->LogDebug(_T("object is not left draggable. Drag cancelled"));
+				    #endif
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					OnCanvasBeginDragLeft(m_vStartDrag, uPagePos, nKeysPressed);
+				}
+				m_vEndDrag = vCanvasPos;
+			}
+			else if (m_nDragState == lmDRAG_CONTINUE_LEFT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_CONTINUE_LEFT"));
+				#endif
+
+				// Continue dragging
+				OnObjectContinueDragLeft(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				OnObjectContinueDragLeft(event, pDC, true, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+				m_vEndDrag = vCanvasPos;
+			}
+			else if (m_nDragState == lmDRAG_START_RIGHT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_START_RIGHT"));
+				#endif
+
+				m_nDragState = lmDRAG_CONTINUE_RIGHT;
+
+				if (m_pDraggedGMO->IsRightDraggable())
+				{
+					OnObjectBeginDragRight(event, pDC, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+                }
+				else
+				{
+					//the object is not draggable: transfer message to canvas
+					m_pDraggedGMO = (lmGMObject*)NULL;
+					OnCanvasBeginDragRight(m_vStartDrag, uPagePos, nKeysPressed);
+				}
+				m_vEndDrag = vCanvasPos;
+			}
+			else if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+				#endif
+
+				// Continue dragging
+				OnObjectContinueDragRight(event, pDC, false, m_vEndDrag, vCanvasOffset, uPagePos, nKeysPressed);
+				OnObjectContinueDragRight(event, pDC, true, vCanvasPos, vCanvasOffset, uPagePos, nKeysPressed);
+				m_vEndDrag = vCanvasPos;
+			}
+            else
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("object: no identified event"));
+				#endif
+			}
+		}
+
+		else	// dragging but no object: events sent to canvas
+		{
+			#ifdef __WXDEBUG__
+			if(fDebugMode) g_pLogger->LogDebug(_T("dragging but no object: canvas"));
+			#endif
+
+			if (event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT"));
+				#endif
+
+				m_nDragState = lmDRAG_NONE;
+				m_fCheckTolerance = true;
+
+				OnCanvasContinueDragLeft(false, m_vEndDrag, uPagePos, nKeysPressed);
+				OnCanvasEndDragLeft(vCanvasPos, uPagePos, nKeysPressed);
+				m_pDraggedGMO = (lmGMObject*)NULL;
+			}
+			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+				#endif
+
+				m_nDragState = lmDRAG_NONE;
+				m_fCheckTolerance = true;
+
+				OnCanvasContinueDragRight(false, m_vEndDrag, uPagePos, nKeysPressed);
+				OnCanvasEndDragRight(vCanvasPos, uPagePos, nKeysPressed);
+				m_pDraggedGMO = (lmGMObject*)NULL;
+			}
+			else if (m_nDragState == lmDRAG_START_LEFT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_START_LEFT"));
+				#endif
+
+				m_nDragState = lmDRAG_CONTINUE_LEFT;
+				OnCanvasBeginDragLeft(m_vStartDrag, uPagePos, nKeysPressed);
+				m_vEndDrag = vCanvasPos;
+			}
+			else if (m_nDragState == lmDRAG_CONTINUE_LEFT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_CONTINUE_LEFT"));
+				#endif
+
+				// Continue dragging
+				OnCanvasContinueDragLeft(false, m_vEndDrag, uPagePos, nKeysPressed);
+				OnCanvasContinueDragLeft(true, vCanvasPos, uPagePos, nKeysPressed);
+				m_vEndDrag = vCanvasPos;
+			}
+			else if (m_nDragState == lmDRAG_START_RIGHT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_START_RIGHT"));
+				#endif
+
+				m_nDragState = lmDRAG_CONTINUE_RIGHT;
+				OnCanvasBeginDragRight(m_vStartDrag, uPagePos, nKeysPressed);
+				m_vEndDrag = vCanvasPos;
+			}
+			else if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+				#endif
+
+				// Continue dragging
+				OnCanvasContinueDragRight(false, m_vEndDrag, uPagePos, nKeysPressed);
+				OnCanvasContinueDragRight(true, vCanvasPos, uPagePos, nKeysPressed);
+				m_vEndDrag = vCanvasPos;
+			}
+            else
+			{
+				#ifdef __WXDEBUG__
+				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: no identified event"));
+				#endif
+			}
+		}
+	}
+
 }
 
 
@@ -2001,6 +2671,401 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
     return fValid && !fAllBeamed && nNumNotes > 1;
 }
 
+
+
+//dragging on canvas with left button: selection
+void lmScoreCanvas::OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos,
+                                          int nKeys)
+{
+    //Begin a selection with left button
+
+	WXUNUSED(nKeys);
+
+    wxClientDC dc(this);
+	dc.SetLogicalFunction(wxINVERT);
+    m_fDraggingObject = false;
+
+	m_pView->DrawSelectionArea(dc, m_vStartDrag.x, m_vStartDrag.y, vCanvasPos.x, vCanvasPos.y);
+    //m_pCanvas->CaptureMouse();
+}
+
+void lmScoreCanvas::OnCanvasContinueDragLeft(bool fDraw, lmDPoint vCanvasPos,
+                                             lmUPoint uPagePos, int nKeys)
+{
+    //Continue a selection with left button
+	//fDraw:  true -> draw a rectangle, false -> remove rectangle
+
+    WXUNUSED(fDraw);
+    WXUNUSED(nKeys);
+
+    wxClientDC dc(this);
+    dc.SetLogicalFunction(wxINVERT);
+    m_fDraggingObject = false;
+
+    m_pView->DrawSelectionArea(dc, m_vStartDrag.x, m_vStartDrag.y, vCanvasPos.x, vCanvasPos.y);
+}
+
+void lmScoreCanvas::OnCanvasEndDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos,
+                                        int nKeys)
+{
+    //End a selection with left button
+
+    WXUNUSED(nKeys);
+
+    //m_pCanvas->ReleaseMouse();
+
+    //wxClientDC dc(this);
+
+	//remove selection rectangle
+    //dc.SetLogicalFunction(wxINVERT);
+    //DrawSelectionArea(dc, m_vStartDrag.x, m_vStartDrag.y, vCanvasPos.x, vCanvasPos.y);
+    m_fDraggingObject = false;
+
+	//save final point
+	m_vEndDrag = vCanvasPos;
+
+    //select all objects within the selection area
+    lmLUnits uXMin, uXMax, uYMin, uYMax;
+    uXMin = wxMin(uPagePos.x, m_uStartDrag.x);
+    uXMax = wxMax(uPagePos.x, m_uStartDrag.x);
+    uYMin = wxMin(uPagePos.y, m_uStartDrag.y);
+    uYMax = wxMax(uPagePos.y, m_uStartDrag.y);
+
+    //find all objects whithin the selected area and create a selection
+    //
+    //TODO
+    //  The selected area could cross page boundaries. Therefore it is necessary
+    //  to locate the affected pages and invoke CreateSelection / AddToSelecction
+    //  for each affected page
+    //
+    if (nKeys == lmKEY_NONE)
+    {
+        m_pView->SelectGMObjectsInArea(m_nNumPage, uXMin, uXMax, uYMin, uYMax, true);     //true: redraw view content
+    }
+    //else if (nKeys & lmKEY_CTRL)
+    //{
+    //    //find all objects in drag area and add them to 'selection'
+    //    m_graphMngr.AddToSelection(m_nNumPage, uXMin, uXMax, uYMin, uYMax);
+    //    //mark as 'selected' all objects in the selection
+    //    m_pCanvas->SelectObjects(lmSELECT, m_graphMngr.GetSelection());
+    //}
+}
+
+//dragging on canvas with right button
+void lmScoreCanvas::OnCanvasBeginDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos,
+                                           int nKeys)
+{
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+    m_fDraggingObject = false;
+}
+
+void lmScoreCanvas::OnCanvasContinueDragRight(bool fDraw, lmDPoint vCanvasPos,
+                                              lmUPoint uPagePos, int nKeys)
+{
+    WXUNUSED(fDraw);
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+    m_fDraggingObject = false;
+}
+
+void lmScoreCanvas::OnCanvasEndDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos,
+                                         int nKeys)
+{
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+
+    m_fDraggingObject = false;
+    SetFocus();
+}
+
+
+//dragging object with left button
+void lmScoreCanvas::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
+                                          lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+                                          lmUPoint uPagePos, int nKeys)
+{
+    m_fDraggingObject = true;
+    if (!m_pView->OnObjectBeginDragLeft(event, pDC, vCanvasPos, vCanvasOffset,
+                                        uPagePos, nKeys, m_pDraggedGMO,
+                                        m_vDragHotSpot, m_uHotSpotShift) )
+    {
+        m_nDragState = lmDRAG_NONE;
+        m_fDraggingObject = false;
+    }
+}
+
+void lmScoreCanvas::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC,
+                                             bool fDraw, lmDPoint vCanvasPos,
+                                             lmDPoint vCanvasOffset, lmUPoint uPagePos,
+                                             int nKeys)
+{
+    m_fDraggingObject = true;
+    m_pView->OnObjectContinueDragLeft(event, pDC, fDraw, vCanvasPos,
+                                      vCanvasOffset, uPagePos, nKeys);
+}
+
+void lmScoreCanvas::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC,
+                                        lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+                                        lmUPoint uPagePos, int nKeys)
+{
+    m_pView->OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset,
+                                 uPagePos, nKeys);
+    m_fDraggingObject = false;
+}
+
+
+//dragging object with right button
+void lmScoreCanvas::OnObjectBeginDragRight(wxMouseEvent& event, wxDC* pDC,
+                                           lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+                                           lmUPoint uPagePos, int nKeys)
+{
+    WXUNUSED(event);
+    WXUNUSED(pDC);
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(vCanvasOffset);
+    WXUNUSED(nKeys);
+    WXUNUSED(uPagePos);
+
+    m_fDraggingObject = true;
+	m_pView->HideCaret();
+    SetFocus();
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreCanvas::OnMouseEvent"), _T("OnObjectBeginDragRight()"));
+	#endif
+
+}
+
+void lmScoreCanvas::OnObjectContinueDragRight(wxMouseEvent& event, wxDC* pDC,
+                                              bool fDraw, lmDPoint vCanvasPos,
+                                              lmDPoint vCanvasOffset,
+                                              lmUPoint uPagePos, int nKeys)
+{
+    WXUNUSED(event);
+    WXUNUSED(pDC);
+    WXUNUSED(fDraw);
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(vCanvasOffset);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreCanvas::OnMouseEvent"), _T("OnObjectContinueDragRight()"));
+	#endif
+
+    m_fDraggingObject = true;
+}
+
+void lmScoreCanvas::OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC,
+                                         lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+                                         lmUPoint uPagePos, int nKeys)
+{
+    WXUNUSED(event);
+    WXUNUSED(pDC);
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(vCanvasOffset);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreCanvas::OnMouseEvent"), _T("OnObjectEndDragRight()"));
+	#endif
+
+	m_pView->ShowCaret();
+    m_fDraggingObject = false;
+}
+
+
+//non-dragging events: click on an object
+void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
+                                        lmUPoint uPagePos, int nKeys)
+{
+    // mouse left click on object: move cursor to it
+
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(nKeys);
+
+	m_pView->HideCaret();
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreCanvas::OnMouseEvent"), _T("OnLeftClickOnObject()"));
+	#endif
+
+    m_pView->DeselectAllGMObjects(true);
+    SetFocus();
+
+    if (pGMO->IsShape())
+    {
+        //if it is a staffobj move cursor to it. Else do nothing
+        lmScoreObj* pSCO = pGMO->GetScoreOwner();
+        if (pSCO->GetScoreObjType() == lmSOT_ComponentObj)
+            m_pView->MoveCursorToObject(pGMO);
+	}
+	else if (pGMO->IsBoxSliceVStaff())
+	{
+		//pointing inside an VStaff. Check if it is a staff
+		lmBoxSystem* pBS = ((lmBoxSliceVStaff*)pGMO)->GetOwnerSystem();
+		lmShapeStaff* pSS = pBS->FindStaffAtPosition(uPagePos);
+		if (pSS)
+			m_pView->OnClickOnStaff(pBS, pSS, (lmBoxSliceVStaff*)pGMO, uPagePos);
+		//else
+			//Clicking on a VStaffSlice but out of any shape
+			//TODO: Is this possible?
+	}
+	else if (pGMO)
+	{
+		//pointing to a Box different to SliceVStaff
+		//TODO: Is this possible?
+	}
+	else
+	{
+		//no object pointed. Possible tool box insert command
+		//TODO
+	}
+	m_pView->ShowCaret();
+}
+
+void lmScoreCanvas::OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
+                                         lmUPoint uPagePos, int nKeys)
+{
+    // mouse right click on object: show contextual menu for that object
+
+    WXUNUSED(uPagePos);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreCanvas::OnMouseEvent"), _T("OnRightClickOnObject()"));
+	#endif
+
+	m_pView->HideCaret();
+    m_pView->DeselectAllGMObjects();
+    SetFocus();
+
+    if (pGMO->IsSelectable())
+        m_pView->SelectGMObject(pGMO, true);     //true: redraw view content
+    pGMO->OnRightClick(this, vCanvasPos, nKeys);
+	m_pView->ShowCaret();
+}
+
+void lmScoreCanvas::OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
+                                              lmUPoint uPagePos, int nKeys)
+{
+    // mouse left double click: Select/deselect the object pointed by mouse
+
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreCanvas::OnMouseEvent"), _T("OnLeftDoubleClickOnObject()"));
+	#endif
+
+	m_pView->HideCaret();
+    SetFocus();
+
+    //ComponentObjs and other score objects (lmBoxXXXX) has all its measurements
+    //relative to each page start position
+
+    //select/deselect the object
+    if (pGMO->IsSelectable())
+        m_pView->SelectGMObject(pGMO, true);     //true: redraw view content
+
+    ////DBG ---------------------------------------------------------------------
+    ////prepare paper DC to draw bounds rectangles
+    //wxClientDC dc(m_pCanvas);
+    //dc.SetMapMode(lmDC_MODE);
+    //dc.SetUserScale( m_rScale, m_rScale );
+    ////position DC origing at current page origin
+    //wxPoint org = GetDCOriginForPage(m_nNumPage);
+    //dc.SetDeviceOrigin(org.x, org.y);
+    ////set paper and draw selection rectangle
+    //m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+
+    //pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
+    ////END DBG ------------------------------------------------------------------
+
+    //if (pGMO->GetType() == eGMO_BoxSlice)
+    //{
+    //    lmBoxSlice* pBSlice = (lmBoxSlice*)pGMO;
+    //    //m_pMainFrame->SetStatusBarMsg(
+    //    //    wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
+    //    //        m_nNumPage, pBSlice->GetNumMeasure() ));
+    //}
+    //else if (pGMO->GetType() == eGMO_BoxPage)
+    //{
+    //    //m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), m_nNumPage ));
+    //}
+
+	m_pView->ShowCaret();
+}
+
+void lmScoreCanvas::OnRightDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
+                                               lmUPoint uPagePos, int nKeys)
+{
+    // mouse right double click: To be defined
+
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+
+	#ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreCanvas::OnMouseEvent"), _T("OnRightDoubleClickOnObject()"));
+	#endif
+
+	m_pView->HideCaret();
+    m_pView->DeselectAllGMObjects(true);
+    SetFocus();
+	m_pView->ShowCaret();
+}
+
+
+//non-dragging events: click on canvas
+void lmScoreCanvas::OnRightClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos,
+                                         int nKeys)
+{
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+
+    m_pView->DeselectAllGMObjects(true);     //true: redraw view content
+
+    lmScore* pScore = m_pDoc->GetScore();
+    pScore->PopupMenu(this, (lmGMObject*)NULL, vCanvasPos);
+}
+
+void lmScoreCanvas::OnLeftClickOnCanvas(lmDPoint vCanvasPos, lmUPoint uPagePos,
+                                        int nKeys)
+{
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(uPagePos);
+    WXUNUSED(nKeys);
+
+    m_pView->DeselectAllGMObjects(true);     //true: redraw view content
+    SetFocus();
+}
+
+void lmScoreCanvas::OnViewUpdated()
+{
+    //The view informs that it has updated the display
+
+    //clear mouse information
+    m_nDragState = lmDRAG_NONE;
+	m_vEndDrag = lmDPoint(0, 0);
+	m_vStartDrag.x = 0;
+	m_vStartDrag.y = 0;
+}
+
+void lmScoreCanvas::OnNewGraphicalModel()
+{
+    //Called by the view when the graphical model has been recreated. 
+    //This implies that any saved pointer to a lmObject is no longer valid.
+    //This method should deal with these pointer.
+
+	m_pDraggedGMO = (lmGMObject*)NULL;	    //object being dragged
+	m_pMouseOverGMO = (lmGMObject*)NULL;	//object on which mouse was flying over
+}
 
 
 //---------------------------------------------------------------------------

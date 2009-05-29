@@ -404,6 +404,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_MENU      (MENU_VisitWebsite, lmMainFrame::OnVisitWebsite)
 
         //general debug options. Always enabled
+#ifdef __WXDEBUG__
     EVT_MENU (MENU_Debug_ForceReleaseBehaviour, lmMainFrame::OnDebugForceReleaseBehaviour)
     EVT_MENU (MENU_Debug_ShowDebugLinks, lmMainFrame::OnDebugShowDebugLinks)
     EVT_MENU (MENU_Debug_ShowBorderOnScores, lmMainFrame::OnDebugShowBorderOnScores)
@@ -431,6 +432,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_UPDATE_UI (MENU_Debug_CheckHarmony, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_TestProcessor, lmMainFrame::OnDebugTestProcessor)
     EVT_UPDATE_UI (MENU_Debug_TestProcessor, lmMainFrame::OnDebugScoreUI)
+#endif
 
 
 
@@ -1734,6 +1736,37 @@ void lmMainFrame::OnWindowPrev(wxCommandEvent& WXUNUSED(event))
     ActivatePrevious();
 }
 
+lmScoreView* lmMainFrame::GetActiveScoreView()
+{
+    // get the view
+    lmTDIChildFrame* pChild = GetActiveChild();
+	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    return ((lmEditFrame*)pChild)->GetView();
+}
+
+lmScore* lmMainFrame::GetActiveScore()
+{
+    // get the score
+    lmTDIChildFrame* pChild = GetActiveChild();
+	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    lmDocument* pDoc = (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
+    return pDoc->GetScore();
+}
+
+lmDocument* lmMainFrame::GetActiveDoc()
+{
+    lmTDIChildFrame* pChild = GetActiveChild();
+	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
+        return (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
+    else
+        return (lmDocument*)NULL;
+}
+
+//------------------------------------------------------------------------------------
+// Methods only for the debug version
+//------------------------------------------------------------------------------------
+
+#ifdef __WXDEBUG__
 
 void lmMainFrame::OnDebugForceReleaseBehaviour(wxCommandEvent& event)
 {
@@ -1781,32 +1814,6 @@ void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
     lmDlgPatternEditor dlg(this);
     dlg.ShowModal();
 
-}
-
-lmScoreView* lmMainFrame::GetActiveScoreView()
-{
-    // get the view
-    lmTDIChildFrame* pChild = GetActiveChild();
-	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-    return ((lmEditFrame*)pChild)->GetView();
-}
-
-lmScore* lmMainFrame::GetActiveScore()
-{
-    // get the score
-    lmTDIChildFrame* pChild = GetActiveChild();
-	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-    lmDocument* pDoc = (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
-    return pDoc->GetScore();
-}
-
-lmDocument* lmMainFrame::GetActiveDoc()
-{
-    lmTDIChildFrame* pChild = GetActiveChild();
-	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
-        return (lmDocument*)((lmEditFrame*)pChild)->GetDocument();
-    else
-        return (lmDocument*)NULL;
 }
 
 void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
@@ -1867,7 +1874,6 @@ void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
 {
-    /* --- TODO: remove; only for test
     lmScore* pScore = GetActiveScore();
     wxASSERT(pScore);
 
@@ -1880,7 +1886,7 @@ void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
 	        GetActiveDoc()->Modify(true);
             GetActiveDoc()->UpdateAllViews(true, new lmUpdateHint() );
         }
-    } ---*/
+    }
 }
 
 void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
@@ -1925,6 +1931,10 @@ void lmMainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
     lmDlgDebugTrace dlg(this);
     dlg.ShowModal();
 }
+#endif
+
+// END OF DEBUG METHODS ------------------------------------------------------------
+//----------------------------------------------------------------------------------
 
 void lmMainFrame::OnAllSoundsOff(wxCommandEvent& WXUNUSED(event))
 {
