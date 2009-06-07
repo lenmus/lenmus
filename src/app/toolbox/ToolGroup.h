@@ -31,15 +31,41 @@
 #define lmTBG_ALLOW_NONE    true
 #define lmTBG_ONE_SELECTED  false
 
-#include "ToolsBox.h"        //enum lmEToolGroupID
 
 class lmToolPage;
 class lmCheckButton;
+class lmColorScheme;
+
+
+enum lmEToolGroupID
+{
+    //on ToolBox main panel
+    lmGRP_EntryMode,
+
+	//in lmPAGE_NOTES
+    lmGRP_Octave,
+    lmGRP_Voice,
+    lmGRP_NoteDuration,         //notes duration group
+    lmGRP_NoteAcc,              //Note accidentals group
+    lmGRP_NoteDots,             //Note dots group
+    lmGRP_TieTuplet,            //Ties and tuplets group
+    lmGRP_Beams,                //tools for beams
+
+	//in lmPAGE_CLEFS
+    lmGRP_ClefType,
+    lmGRP_TimeType,
+    lmGRP_KeyType,
+
+	//in lmPAGE_BARLINES,
+	lmGRP_BarlineType,			//barline type
+
+};
+
 
 class lmToolGroup: public wxPanel
 {    
 public:
-    lmToolGroup(lmToolPage* pParent);
+    lmToolGroup(wxPanel* pParent, lmColorScheme* pColours);
     virtual ~lmToolGroup();
 
     //creation
@@ -59,7 +85,7 @@ public:
 
 protected:
 	wxStaticBox*        m_pBoxTitle;    //the box and title
-	lmToolPage*		    m_pParent;      //owner ToolPage
+	wxPanel*		    m_pParent;      //owner ToolPage
 };
 
 
@@ -67,8 +93,8 @@ protected:
 class lmToolButtonsGroup: public lmToolGroup
 {    
 public:
-    lmToolButtonsGroup(lmToolPage* pParent, int nNumButtons, bool fAllowNone,
-                       wxBoxSizer* pMainSizer, int nFirstButtonID);
+    lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
+                       wxBoxSizer* pMainSizer, int nFirstButtonID, lmColorScheme* pColours);
     ~lmToolButtonsGroup();
 
     //event handlers

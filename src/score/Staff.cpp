@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -44,23 +44,24 @@
 //constructor
 lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits uUnits)
     : lmScoreObj(pScore)
+    //lines
+    , m_nNumLines(nNumLines)
+    , m_uLineThickness(lmToLogicalUnits(0.15, lmMILLIMETERS))     //TODO user option
+    // margins
+    , m_uTopMargin(lmToLogicalUnits(5, lmMILLIMETERS))
+    , m_uBottomMargin(lmToLogicalUnits(5, lmMILLIMETERS))
+    , m_uLeftMargin(0)
+    , m_uRightMargin(0)
+
+	//contexts
+	, m_pFirstContext((lmContext*)NULL)
+	, m_pLastContext((lmContext*)NULL)
+    , m_nPreviousFirstClef(lmE_Undefined)
 {
-    m_nNumLines = nNumLines;
-    m_uLineThickness = lmToLogicalUnits(0.15, lmMILLIMETERS);     //TODO user option
     if (uUnits == 0)
         m_uSpacing = lmToLogicalUnits(1.8, lmMILLIMETERS);   //Default 1.8 mm -> lmStaff height = 7.2 mm
     else
         m_uSpacing = uUnits;        // in logical units
-
-    // margins
-    m_uAfterSpace = lmToLogicalUnits(10, lmMILLIMETERS);    // 10 mm
-    m_uLeftMargin = 0;
-    m_uRightMargin = 0;
-
-	//contexts
-	m_pFirstContext = (lmContext*)NULL;
-	m_pLastContext = (lmContext*)NULL;
-    m_nPreviousFirstClef = lmE_Undefined;
 }
 
 lmStaff::~lmStaff()

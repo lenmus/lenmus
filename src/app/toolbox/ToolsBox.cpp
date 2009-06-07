@@ -79,7 +79,15 @@ const int NUM_COLUMNS = 4;      //number of buttons per row
 // ToolBox width = NUM_COLUMNS * BUTTON_SIZE + 2*(NUM_COLUMNS-1)*BUTTON_SPACING + 2*SPACING
 //				 = 4*32 + 2*3*4 + 2*4 = 128+24+8 = 160
 
-const int ID_BUTTON = 2200;
+//const int ID_BUTTON = 2200;
+#define lm_NUM_ENTRY_MODE_BUTTONS 2
+
+enum
+{
+    ID_BUTTON = 2200,
+    lmID_BT_EntryMode_Keyboard = ID_BUTTON + 16,    //+ NUM_BUTTONS,
+    lmID_BT_EntryMode_Mouse,
+};
 
 
 BEGIN_EVENT_TABLE(lmToolBox, wxPanel)
@@ -118,6 +126,9 @@ void lmToolBox::CreateControls()
 
     //the main sizer, to contain the three areas
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
+
+    //panel for the entry mode group
+    m_pEntryModeGroup = new lmGrpEntryMode(this, pMainSizer, &m_colors);
 
     //panel for the fixed group
 	m_pSpecialGroup = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
@@ -288,11 +299,6 @@ void lmToolBox::OnButtonClicked(wxCommandEvent& event)
 {
     //identify button pressed
 	SelectToolPage((lmEToolPage)(event.GetId() - ID_BUTTON));
-
-	//lmController* pController = g_pTheApp->GetActiveController();
-    //if (pController)
-	//  pController->SetCursor(*wxCROSS_CURSOR);
-    //wxLogMessage(_T("[lmToolBox::OnButtonClicked] Tool %d selected"), m_nSelTool);
 }
 
 void lmToolBox::SelectToolPage(lmEToolPage nTool)
@@ -317,6 +323,9 @@ void lmToolBox::SelectToolPage(lmEToolPage nTool)
 
     //return focus to active view
     GetMainFrame()->SetFocusOnActiveView();
+
+    //inform to any one interested to know
+
 }
 
 void lmToolBox::SelectButton(int nTool)
@@ -372,4 +381,50 @@ void lmToolBox::SetDefaultConfiguration()
 
     SelectToolPage(m_nSelTool);
 }
+
+
+
+//--------------------------------------------------------------------------------
+// lmGrpEntryMode implementation
+//--------------------------------------------------------------------------------
+
+lmGrpEntryMode::lmGrpEntryMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours)
+        : lmToolButtonsGroup(pParent, lm_NUM_ENTRY_MODE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+                             lmID_BT_EntryMode_Keyboard, pColours)
+{
+    CreateControls(pMainSizer);
+}
+
+void lmGrpEntryMode::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Data entry mode"));
+
+    wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+	pCtrolsSizer->Add(pButtonsSizer);
+    wxSize btSize(24, 24);
+
+    //keyboard entry mode
+	m_pButton[0] = new lmCheckButton(this, lmID_BT_EntryMode_Keyboard, wxBitmap(24, 24));
+    wxString sBtName = _T("data_entry_keyboard");
+    m_pButton[0]->SetBitmapUp(sBtName, _T(""), btSize);
+    m_pButton[0]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+    m_pButton[0]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+	m_pButton[0]->SetToolTip(_T("Use keyboard to enter notes/rests"));
+	pButtonsSizer->Add(m_pButton[0], wxSizerFlags(0).Border(wxALL, 0) );
+
+    //mouse entry mode
+	m_pButton[1] = new lmCheckButton(this, lmID_BT_EntryMode_Mouse, wxBitmap(24, 24));
+    sBtName = _T("data_entry_mouse");
+    m_pButton[1]->SetBitmapUp(sBtName, _T(""), btSize);
+    m_pButton[1]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+    m_pButton[1]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+	m_pButton[1]->SetToolTip(_T("Use mouse to enter notes/rests"));
+	pButtonsSizer->Add(m_pButton[1], wxSizerFlags(0).Border(wxALL, 0) );
+
+    this->Layout();
+
+	SelectButton(0);	//select keyboard data entry mode
+}
+
 

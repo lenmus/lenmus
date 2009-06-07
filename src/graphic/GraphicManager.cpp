@@ -347,15 +347,34 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
     }
 }
 
-lmGMObject* lmGraphicManager::FindObjectAtPagePos(int nNumPage, lmUPoint uPos, bool fSelectable)
+lmGMObject* lmGraphicManager::FindShapeAtPagePos(int nNumPage, lmUPoint uPos, bool fSelectable)
 {
 	if (!m_pBoxScore) return (lmGMObject*)NULL;
 
     lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
     if (pBPage)
-        return pBPage->FindObjectAtPos(uPos, fSelectable);
+        return pBPage->FindShapeAtPos(uPos, fSelectable);
     else
         return (lmGMObject*)NULL;
+}
+
+lmBox* lmGraphicManager::FindBoxAtPagePos(int nNumPage, lmUPoint uPos)
+{
+    //look for most inner box (minimal size box: i.e. BoxSliceVStaff) that contains received point.
+    //Returned box is smaller than lmBoxPage. If point is only found in lmBoxPage) NULL is returned.
+
+	if (!m_pBoxScore)
+        return (lmBox*)NULL;
+
+    lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
+    lmBox* pBox = (lmBox*)NULL;
+    if (pBPage)
+    {
+        pBox = pBPage->FindBoxAtPos(uPos);
+        if (pBox == pBPage)
+            return (lmBox*)NULL;
+    }
+    return pBox;
 }
 
 //lmGMSelection* lmGraphicManager::CreateSelection(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,

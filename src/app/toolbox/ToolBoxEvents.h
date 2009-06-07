@@ -37,28 +37,29 @@
 #endif
 
 #include "ToolsBox.h"
+#include "ToolGroup.h"
 
 //-----------------------------------------------------------------------------------------
 // An event to signal different actions related to selecting tools in the toolbox
 //-----------------------------------------------------------------------------------------
 
-DECLARE_EVENT_TYPE( lmEVT_TOOLBOX, -1 )
+DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_TOOL_SELECTED, -1 )
 
-class lmToolBoxEvent : public wxCommandEvent
+class lmToolBoxToolSelectedEvent : public wxCommandEvent
 {
 public:
-    lmToolBoxEvent(lmEToolGroupID nToolGroupID, lmEToolPage nToolPage, long nTool,
-                   bool fToolSelected, int id=0 ) 
-            : wxCommandEvent(lmEVT_TOOLBOX, id)
+    lmToolBoxToolSelectedEvent(lmEToolGroupID nToolGroupID, lmEToolPage nToolPage, long nTool,
+                               bool fToolSelected, int id=0 ) 
+            : wxCommandEvent(lmEVT_TOOLBOX_TOOL_SELECTED, id)
+            , m_nToolGroupID(nToolGroupID)
+            , m_nToolPage(nToolPage)
+            , m_nTool(nTool)
+            , m_fToolSelected(fToolSelected)
         {
-            m_nToolGroupID = nToolGroupID;
-            m_nToolPage = nToolPage;
-            m_nTool = nTool;
-            m_fToolSelected = fToolSelected;
         }
 
     // copy constructor
-    lmToolBoxEvent(const lmToolBoxEvent& event) : wxCommandEvent(event)
+    lmToolBoxToolSelectedEvent(const lmToolBoxToolSelectedEvent& event) : wxCommandEvent(event)
         {
             m_nToolGroupID = event.m_nToolGroupID;
             m_nToolPage = event.m_nToolPage;
@@ -67,7 +68,7 @@ public:
         }
 
     // clone constructor. Required for sending with wxPostEvent()
-    virtual wxEvent *Clone() const { return new lmToolBoxEvent(*this); }
+    virtual wxEvent *Clone() const { return new lmToolBoxToolSelectedEvent(*this); }
 
     // accessors
     inline lmEToolGroupID GetToolGroupID() { return m_nToolGroupID; }
@@ -84,13 +85,55 @@ private:
 
 
 //define a typedef for the event handler fuction
-typedef void (wxEvtHandler::*ToolBoxEventFunction)(lmToolBoxEvent&);
+typedef void (wxEvtHandler::*ToolBoxToolSelectedEventFunction)(lmToolBoxToolSelectedEvent&);
 
 //Define a table of event types for the individual events this event class supports
-#define LM_EVT_TOOLBOX(fn) \
-    DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX, wxID_ANY, -1, \
+#define LM_EVT_TOOLBOX_TOOL_SELECTED(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_TOOL_SELECTED, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( ToolBoxEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( ToolBoxToolSelectedEventFunction, & fn ), (wxObject *) NULL ),
+
+
+//-----------------------------------------------------------------------------------------
+// An event to notify that user has selected another page in the toolbox
+//-----------------------------------------------------------------------------------------
+
+DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_PAGE_CHANGED, -1 )
+
+class lmToolBoxPageChangedEvent : public wxCommandEvent
+{
+public:
+    lmToolBoxPageChangedEvent(lmEToolPage nToolPage, int id=0 ) 
+            : wxCommandEvent(lmEVT_TOOLBOX_PAGE_CHANGED, id)
+            , m_nToolPage(nToolPage)
+        {
+        }
+
+    // copy constructor
+    lmToolBoxPageChangedEvent(const lmToolBoxPageChangedEvent& event) : wxCommandEvent(event)
+        {
+            m_nToolPage = event.m_nToolPage;
+        }
+
+    // clone constructor. Required for sending with wxPostEvent()
+    virtual wxEvent *Clone() const { return new lmToolBoxPageChangedEvent(*this); }
+
+    // accessors
+    inline lmEToolPage GetToolPageType() { return m_nToolPage; }
+
+private:
+    lmEToolPage     m_nToolPage;        //page issuing the event
+};
+
+
+//define a typedef for the event handler fuction
+typedef void (wxEvtHandler::*ToolBoxPageChangedEventFunction)(lmToolBoxPageChangedEvent&);
+
+//Define a table of event types for the individual events this event class supports
+#define LM_EVT_TOOLBOX_PAGE_CHANGED(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_PAGE_CHANGED, wxID_ANY, -1, \
+    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+    wxStaticCastEvent( ToolBoxPageChangedEventFunction, & fn ), (wxObject *) NULL ),
 
 
 

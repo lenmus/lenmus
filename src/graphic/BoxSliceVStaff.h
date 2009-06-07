@@ -59,8 +59,6 @@ public:
     //void Render(lmPaper* pPaper, lmUPoint uPos);
 
 	//positioning and bounds
-	void UpdateXLeft(lmLUnits xLeft);
-    //void UpdateXRight(lmLUnits xRight);
 	void CopyYBounds(lmBoxSliceVStaff* pBSV);
 
     //selection

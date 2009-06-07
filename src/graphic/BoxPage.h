@@ -64,7 +64,6 @@ public:
 	int GetSystemNumber(lmBoxSystem* pSystem);
 
 	//access to objects
-    //lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
 
 	//operations
@@ -77,7 +76,8 @@ public:
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax);
-    lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    lmGMObject* FindShapeAtPos(lmUPoint& uPoint, bool fSelectable);
+
 
     //renderization related
     inline wxWindow* GetRenderWindow() { return m_pRenderWindow; }

@@ -71,9 +71,6 @@ public:
     //info
     inline int GetNumMeasure() const { return m_nAbsMeasure; }
 
-	//access to objects
-    lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
-
     //selection
     void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax);
@@ -83,8 +80,7 @@ public:
 	lmBoxSliceInstr* GetSliceInstr(int i) const { return (lmBoxSliceInstr*)m_Boxes[i]; }
 
 	//positioning and bounds
-    void UpdateXLeft(lmLUnits xLeft);
-    //void UpdateXRight(lmLUnits xRight);
+    //void UpdateXLeft(lmLUnits xLeft);
     void CopyYBounds(lmBoxSlice* pSlice);
 	//void SystemXRightUpdated(lmLUnits xRight);
 

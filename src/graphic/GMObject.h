@@ -48,7 +48,17 @@
 
 #include "../score/defs.h"
 
-extern bool g_fFreeMove;		// the shapes can be dragged without restrictions
+// global variables
+extern bool g_fDrawSelRect;     //draw selection rectangles around staff objects
+extern bool g_fDrawAnchors;     //draw anchors, to see them in the score
+extern bool g_fDrawBounds;      //draw bounds rectangle
+extern bool g_fShowMargins;     //draw margins in scores, so user can change them 
+extern bool g_fFreeMove;		//the shapes can be dragged without restrictions
+extern bool g_fDrawBoundsBoxSystem;         //draw bound rectangles for systems
+extern bool g_fDrawBoundsBoxSlice;          //draw bound rectangles for slices
+extern bool g_fDrawBoundsBoxSliceInstr;     //draw bound rectangles for SliceInstr
+extern bool g_fDrawBoundsBoxSliceVStaff;    //draw bound rectangles for SliceVStaff
+extern bool g_fDrawBoundsShapes;            //draw bound rectangles for non boxes
 
 class lmPaper;
 class lmScoreObj;
@@ -179,8 +189,8 @@ public:
     virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
     virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
-    virtual bool BoundsContainsPoint(lmUPoint& pointL);
-    virtual bool HitTest(lmUPoint& pointL);
+    virtual bool BoundsContainsPoint(lmUPoint& uPoint);
+    virtual bool HitTest(lmUPoint& uPoint);
 
     // methods related to selection rectangle
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
@@ -226,8 +236,8 @@ public:
     void ApplyUserShift(lmUPoint uUserShift);
 
     //call backs
-    virtual void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL) {}
-    virtual void OnMouseOut(wxWindow* pWindow, lmUPoint& pointL) {}
+    virtual void OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint) {}
+    virtual void OnMouseOut(wxWindow* pWindow, lmUPoint& uPoint) {}
 
     //info
     virtual lmBoxScore* GetOwnerBoxScore() = 0;
@@ -309,21 +319,39 @@ public:
     virtual void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                                  lmLUnits uYMin, lmLUnits uYMax);
 
+    //access to contained objects
+    virtual lmBox* FindBoxAtPos(lmUPoint& uPoint);
+
 	//positioning and bounds
     virtual void UpdateXRight(lmLUnits xRight);
+    virtual void UpdateXLeft(lmLUnits xLeft);
+
+    //limits box
+    inline void SetTopSpace(lmLUnits uyValue) { m_uTopSpace = uyValue; }
+    inline void SetBottomSpace(lmLUnits uyValue) { m_uBottomSpace = uyValue; }
+    inline void SetLeftSpace(lmLUnits uxValue) { m_uLeftSpace = uxValue; }
+    inline void SetRightSpace(lmLUnits uxValue) { m_uRightSpace = uxValue; }
+    inline void DrawLimits(lmPaper* pPaper, wxColour color);
+
 
 protected:
-    lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _("Box"));
-    lmShape* FindShapeAtPosition(lmUPoint& pointL, bool fSelectable);
-    //lmGMObject* FindObjectAtPos(lmUPoint& pointL, bool fSelectable);
+    lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _T("Box"));
+
     bool ContainsXPos(lmLUnits uxPos);
-    lmBox* GetContainedBoxAt(lmLUnits xPos);
+    lmBox* FindChildBoxAt(lmLUnits uxPos);
 
     void AddBox(lmBox* pBox);
     void RenderShapes(lmPaper* pPaper);
     void AddShapesToLayers(lmBoxPage* pBoxPage);
 
     std::vector<lmBox*>     m_Boxes;        //contained boxes (systems, slices, etc.)
+
+    //limits box: margins around bounding box
+    lmLUnits        m_uTopSpace;
+    lmLUnits        m_uBottomSpace;
+    lmLUnits        m_uLeftSpace;
+    lmLUnits        m_uRightSpace;
+
 
 private:
 	std::vector<lmShape*>	m_Shapes;		//contained shapes
@@ -406,8 +434,8 @@ public:
     bool IsInRectangle(lmURect& rect);
 
     //call backs
-    void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
-    void OnMouseOut(wxWindow* pWindow, lmUPoint& pointL);
+    void OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint);
+    void OnMouseOut(wxWindow* pWindow, lmUPoint& uPoint);
 
     //vertex source
     virtual void RewindVertices(int nPathId = 0) {}
@@ -491,7 +519,7 @@ public:
     virtual void RenderWithHandlers(lmPaper* pPaper);
 
 	//overrides
-    bool BoundsContainsPoint(lmUPoint& pointL);
+    bool BoundsContainsPoint(lmUPoint& uPoint);
     bool Collision(lmShape* pShape);
     virtual void SetSelected(bool fValue);
 

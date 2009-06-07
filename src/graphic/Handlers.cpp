@@ -176,7 +176,7 @@ wxString lmHandlerLine::Dump(int nIndent)
 	return sDump;
 }
 
-void lmHandlerLine::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
+void lmHandlerLine::OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint)
 {
     pWindow->SetCursor( wxCursor(wxCURSOR_SIZING) );
     m_pMouseCursorWindow = pWindow;
@@ -259,7 +259,7 @@ wxString lmHandlerSquare::Dump(int nIndent)
 	return sDump;
 }
 
-void lmHandlerSquare::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
+void lmHandlerSquare::OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint)
 {
     pWindow->SetCursor(m_cursor);
     m_pMouseCursorWindow = pWindow;
@@ -389,7 +389,7 @@ void lmShapeMargin::DrawHandlers(lmPaper* pPaper, wxColour color)
     }
 }
 
-void lmShapeMargin::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
+void lmShapeMargin::OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint)
 {
     if (m_fVertical)
 	    pWindow->SetCursor( wxCursor(wxCURSOR_SIZEWE) );

@@ -39,6 +39,7 @@
 #include <vector>
 
 #include "ColorScheme.h"
+#include "ToolGroup.h"
 
 
 //available tool pages
@@ -56,26 +57,27 @@ enum lmEToolPage
 	lmPAGE_TIME_SIGN,
 };
 
-enum lmEToolGroupID
-{
-	//lmPAGE_NOTES
-    lmGRP_Octave,
-    lmGRP_Voice,
-    lmGRP_NoteDuration,         //notes duration group
-    lmGRP_NoteAcc,              //Note accidentals group
-    lmGRP_NoteDots,             //Note dots group
-    lmGRP_TieTuplet,            //Ties and tuplets group
-    lmGRP_Beams,                //tools for beams
-
-	//lmPAGE_CLEFS
-    lmGRP_ClefType,
-    lmGRP_TimeType,
-    lmGRP_KeyType,
-
-	//lmPAGE_BARLINES,
-	lmGRP_BarlineType,			//barline type
-
-};
+//enum lmEToolGroupID
+//{
+//	//lmPAGE_NOTES
+//    lmGRP_EntryMode,
+//    lmGRP_Octave,
+//    lmGRP_Voice,
+//    lmGRP_NoteDuration,         //notes duration group
+//    lmGRP_NoteAcc,              //Note accidentals group
+//    lmGRP_NoteDots,             //Note dots group
+//    lmGRP_TieTuplet,            //Ties and tuplets group
+//    lmGRP_Beams,                //tools for beams
+//
+//	//lmPAGE_CLEFS
+//    lmGRP_ClefType,
+//    lmGRP_TimeType,
+//    lmGRP_KeyType,
+//
+//	//lmPAGE_BARLINES,
+//	lmGRP_BarlineType,			//barline type
+//
+//};
 
 // Only needed for groups needing an ID for each tool
 enum lmEToolID
@@ -91,6 +93,30 @@ enum lmEToolID
     lmTOOL_BEAMS_SUBGROUP,
 
 };
+
+//--------------------------------------------------------------------------------
+// Group for data entry mode
+//--------------------------------------------------------------------------------
+
+#define  lm_DATA_ENTRY_KEYBOARD     0x0000
+#define  lm_DATA_ENTRY_MOUSE        0x0001
+
+class lmGrpEntryMode : public lmToolButtonsGroup
+{
+public:
+    lmGrpEntryMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours);
+    ~lmGrpEntryMode() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_EntryMode; }
+
+	//access to options
+	inline int GetEntryMode() { return m_nSelButton; }
+	inline void SetEntryMode(int nEntryMode) { SelectButton(nEntryMode); }
+
+};
+
 
 //-------------------------------------------------------------------------------------------------
 // lmToolBoxConfiguration: Helper class to define a ToolBox configuration
@@ -160,7 +186,9 @@ public:
     //Special tools fixed group maganement
     void AddSpecialTools(wxPanel* pPanel, wxEvtHandler* pHandler);
 
-    //bool DeletePage(int nToolId);
+    //interface with EntryMode tools group
+	inline int GetEntryMode() { return m_pEntryModeGroup->GetEntryMode(); }
+    inline void SetEntryMode(int nEntryMode) { m_pEntryModeGroup->SetEntryMode(nEntryMode); }
 
 
 private:
@@ -173,6 +201,7 @@ private:
 	};
 
     //controls
+    lmGrpEntryMode* m_pEntryModeGroup;      //entry mode group
     wxPanel*        m_pSpecialGroup;        //current special group
     wxPanel*		m_pEmptyPage;           //an empty page
     wxPanel*		m_pCurPage;             //currently displayed page

@@ -103,3 +103,20 @@ void lmShapeStaff::Shift(lmLUnits xIncr, lmLUnits yIncr)
 		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
+int lmShapeStaff::GetLineSpace(lmLUnits uyPos)
+{
+    //returns the position (line/space number) for the received point. Position is 
+    //referred to the first ledger line of the staff:
+    //        0 - on first ledger line (C note in G clef)
+    //        1 - on next space (D in G clef)
+    //        2 - on first line (E not in G clef)
+    //        3 - on first space
+    //        4 - on second line
+    //        5 - on second space
+    //        etc.
+
+	lmLUnits uyTopLine = m_uBoundsTop.y;
+	lmLUnits uHalfLine = m_uSpacing / 2.0f;
+	return 10 - int(0.5f + (uyPos - uyTopLine)/uHalfLine );
+}
+

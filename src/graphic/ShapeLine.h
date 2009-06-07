@@ -132,7 +132,7 @@ public:
     };
 
     //overrides
-    bool HitTest(lmUPoint& pointL);
+    bool HitTest(lmUPoint& uPoint);
 
 
 protected:

@@ -72,8 +72,7 @@ public:
                          lmLUnits uYMin, lmLUnits uYMax);
 
 	//positioning and bounds
-    void UpdateXLeft(lmLUnits xLeft);
-    //void UpdateXRight(lmLUnits xRight);
+    //void UpdateXLeft(lmLUnits xLeft);
 	//void SystemXRightUpdated(lmLUnits xRight);
     void CopyYBounds(lmBoxSliceInstr* pBSI);
 

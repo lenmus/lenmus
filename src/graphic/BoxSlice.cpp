@@ -67,16 +67,6 @@ lmBoxSliceInstr* lmBoxSlice::AddInstrument(lmInstrument* pInstr)
     return pBSI;
 }
 
-lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
-{
-    if (m_xStart <= pointL.x && m_xEnd >= pointL.x)
-    {
-        //is in this measure
-        return this;
-    }
-    return (lmBoxSlice*)NULL;
-}
-
 void lmBoxSlice::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)
 {
@@ -106,19 +96,21 @@ void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 
 }
 
-void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This update must be propagated to all contained boxes
-
-	SetXLeft(xLeft);
-
-	//propagate change
-    for (int i=0; i < (int)m_Boxes.size(); i++)
-    {
-        ((lmBoxSliceInstr*)m_Boxes[i])->UpdateXLeft(xLeft);
-    }
-}
+//void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
+//{
+//	// During layout there is a need to update initial computations about this
+//	// box slice position. This update must be propagated to all contained boxes
+//
+//    lmLUnits uIncr = GetXLeft() - xLeft;
+//	SetXLeft(xLeft);
+//    m_uLimitsTop.x += uIncr;
+//
+//	//propagate change
+//    for (int i=0; i < (int)m_Boxes.size(); i++)
+//    {
+//        ((lmBoxSliceInstr*)m_Boxes[i])->UpdateXLeft(xLeft);
+//    }
+//}
 
 void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
 {

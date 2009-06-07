@@ -143,25 +143,6 @@ lmLUnits lmBoxSystem::GetYTopFirstStaff()
 	return m_ShapeStaff[0]->GetYTop();
 }
 
-//lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
-//{
-//    if (BoundsContainsPoint(pointL))
-//    {
-//        //identify the measure
-//        for (int iS=0; iS < (int)m_Boxes.size(); iS++)
-//        {
-//            if (((lmBoxSlice*)m_Boxes[iS])->FindMeasureAt(pointL))
-//            {
-//                return ((lmBoxSlice*)m_Boxes[iS]);
-//            }
-//        }
-//        wxMessageBox( wxString::Format( _T("Page %d, measure not identified!!! Between measure %d and %d"),
-//            m_nNumPage, m_nFirstMeasure, m_nFirstMeasure+m_nNumMeasures-1) );
-//        return (lmBoxSlice*)NULL;
-//    }
-//    return (lmBoxSlice*)NULL;
-//}
-
 void lmBoxSystem::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                          lmLUnits uYMin, lmLUnits uYMax)
 {
@@ -176,12 +157,12 @@ void lmBoxSystem::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
     }
 }
 
-lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
+lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& uPoint)
 {
 	//is it any staff?
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-        if (m_ShapeStaff[i]->BoundsContainsPoint(pointL))
+        if (m_ShapeStaff[i]->BoundsContainsPoint(uPoint))
 			return m_ShapeStaff[i];
     }
 	return (lmShapeStaff*)NULL;
@@ -195,20 +176,20 @@ lmBoxSlice* lmBoxSystem::AddSlice(int nAbsMeasure, lmLUnits xStart, lmLUnits xEn
     return pBSlice;
 }
 
-void lmBoxSystem::UpdateXRight(lmLUnits xPos)
+void lmBoxSystem::UpdateXRight(lmLUnits xRight)
 { 
     //override to update only last slice of this system and the ShapeStaff final position 
 
-	SetXRight(xPos);
+    SetXRight(xRight);
 
 	//propagate change to last slice of this system
 	if (m_Boxes.size() > 0)
-		((lmBoxSlice*)m_Boxes.back())->UpdateXRight(xPos);
+		((lmBoxSlice*)m_Boxes.back())->UpdateXRight(xRight);
 
 	//update the ShapeStaff final position
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-        m_ShapeStaff[i]->SetXRight(xPos);
+        m_ShapeStaff[i]->SetXRight(xRight);
     }
 }
 
@@ -250,16 +231,16 @@ lmBoxScore* lmBoxSystem::GetBoxScore()
 	return m_pBPage->GetBoxScore();
 }
 
-lmBoxSlice* lmBoxSystem::GetSliceAt(lmLUnits xPos)
+lmBoxSlice* lmBoxSystem::FindBoxSliceAt(lmLUnits uxPos)
 {
-	//return slice located at xPos
+	//return slice located at uxPos
 
-	return (lmBoxSlice*)GetContainedBoxAt(xPos);
+	return (lmBoxSlice*)FindChildBoxAt(uxPos);
 }
 
 int lmBoxSystem::GetNumMeasureAt(lmLUnits uxPos)
 {
-	lmBoxSlice* pSlice = GetSliceAt(uxPos);
+	lmBoxSlice* pSlice = FindBoxSliceAt(uxPos);
 	if (!pSlice)
 		return 0;
 	else

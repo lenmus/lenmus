@@ -33,6 +33,30 @@ class wxBitmapComboBox;
 class lmCheckButton;
 class lmBitmapButton;
 
+////--------------------------------------------------------------------------------
+//// Group for data entry mode
+////--------------------------------------------------------------------------------
+//
+//#define  lm_DATA_ENTRY_KEYBOARD     0x0000
+//#define  lm_DATA_ENTRY_MOUSE        0x0001
+//
+//class lmGrpEntryMode : public lmToolButtonsGroup
+//{
+//public:
+//    lmGrpEntryMode(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+//    ~lmGrpEntryMode() {}
+//
+//    //implement virtual methods
+//    void CreateControls(wxBoxSizer* pMainSizer);
+//    inline lmEToolGroupID GetToolGroupID() { return lmGRP_EntryMode; }
+//
+//	//access to options
+//	inline int GetEntryMode() { return m_nSelButton; }
+//	inline void SetEntryMode(int nEntryMode) { SelectButton(nEntryMode); }
+//
+//};
+//
+//
 //--------------------------------------------------------------------------------
 // Group for octave number
 //--------------------------------------------------------------------------------
@@ -253,17 +277,17 @@ public:
 
     //interface with Octave group
 	inline int GetOctave() { return m_pGrpOctave->GetOctave(); }
-    inline void SetOctave(bool fUp) { return m_pGrpOctave->SetOctave(fUp); }
-    inline void SetOctave(int nOctave) { return m_pGrpOctave->SetOctave(nOctave); }
+    inline void SetOctave(bool fUp) { m_pGrpOctave->SetOctave(fUp); }
+    inline void SetOctave(int nOctave) { m_pGrpOctave->SetOctave(nOctave); }
 
     //interface with voice group
 	inline int GetVoice() { return m_pGrpVoice->GetVoice(); }
-    inline void SetVoice(bool fUp) { return m_pGrpVoice->SetVoice(fUp); }
-    inline void SetVoice(int nVoice) { return m_pGrpVoice->SetVoice(nVoice); }
+    inline void SetVoice(bool fUp) { m_pGrpVoice->SetVoice(fUp); }
+    inline void SetVoice(int nVoice) { m_pGrpVoice->SetVoice(nVoice); }
 
     //interface with NoteDuration group
     inline void EnableGrpNoteDuration(bool fEnabled) { m_pGrpNoteDuration->EnableGroup(fEnabled); }
-    inline void SetNoteDuration(lmENoteType nNoteType) { return m_pGrpNoteDuration->SelectButton((int)nNoteType - 1); }
+    inline void SetNoteDuration(lmENoteType nNoteType) { m_pGrpNoteDuration->SelectButton((int)nNoteType - 1); }
     inline lmENoteType GetNoteDuration() { return m_pGrpNoteDuration->GetNoteDuration(); }
     inline int GetNoteDurationButton() { return m_pGrpNoteDuration->GetSelectedButton(); }
     inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
@@ -315,6 +339,7 @@ protected:
     lmGrpBeams*         m_pGrpBeams;
 	lmGrpOctave*		m_pGrpOctave;
 	lmGrpVoice*			m_pGrpVoice;
+	//lmGrpEntryMode*     m_pGrpEntryMode;
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;

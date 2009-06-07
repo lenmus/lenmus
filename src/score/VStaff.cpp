@@ -1868,19 +1868,24 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 
     //Set left position and lenght of lines, and save these values
     lmLUnits yCur = yPos + m_topMargin;
-    m_yLinTop = yCur;              //save y coord. for first line start point
 
     //iterate over the collection of Staves (lmStaff Objects)
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
         lmStaff* pStaff = GetStaff(nStaff);
+        yCur += pStaff->GetTopMargin();
+
+        //save y coord. for first line start point
+        if (nStaff == 1)
+            m_yLinTop = yCur;              
+
         //draw one staff
 		lmShapeStaff* pShape =
 				new lmShapeStaff(pStaff, nStaff, pStaff->GetNumLines(),
 								 pStaff->GetLineThick(), pStaff->GetLineSpacing(),
 								 xFrom, yCur, xTo, *wxBLACK );
 		pBox->AddShape(pShape, lm_eLayerStaff);
-        yCur = pShape->GetYBottom() + pStaff->GetAfterSpace();
+        yCur = pShape->GetYBottom() + pStaff->GetBottomMargin();
 		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();
         pShape->SetVisible(fVisible);
     }
@@ -1930,7 +1935,7 @@ void lmVStaff::SetFontData(lmStaff* pStaff, lmPaper* pPaper)
 
 lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 {
-    //returns the Y offset to staff nStaff (1..n)
+    //returns the Y offset (top line) to staff nStaff (1..n)
 
     wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= m_nNumStaves );
@@ -1939,14 +1944,17 @@ lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 
     // iterate over the collection of Staves (lmStaff Objects) to add up the
     // height and after space of all previous staves to the requested one
+    lmStaff* pStaff = GetFirstStaff();
     for (int iS=1; iS < nStaff; iS++)
 	{
-        lmStaff* pStaff = GetStaff(iS);
+        pStaff = GetStaff(iS);
+        yOffset += pStaff->GetTopMargin();
         yOffset += pStaff->GetHeight();
-        yOffset += pStaff->GetAfterSpace();
+        yOffset += pStaff->GetBottomMargin();
     }
-    return yOffset;
+    yOffset += pStaff->GetTopMargin();
 
+    return yOffset;
 }
 
 wxString lmVStaff::SourceLDP(int nIndent)
@@ -2272,8 +2280,9 @@ lmLUnits lmVStaff::GetVStaffHeight()
         for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
         {
             lmStaff* pStaff = GetStaff(nStaff);
+            m_nHeight += pStaff->GetTopMargin();
             m_nHeight += pStaff->GetHeight();
-            m_nHeight += pStaff->GetAfterSpace();
+            m_nHeight += pStaff->GetBottomMargin();
         }
     }
 
@@ -2466,7 +2475,7 @@ void lmVStaff::NewLine(lmPaper* pPaper)
 //
 //        //compute vertical displacement for next staff
 //        yOffset += pStaff->GetHeight();
-//        yOffset += pStaff->GetAfterSpace();
+//        yOffset += pStaff->GetBottomMargin();
 //
 //    }
 //

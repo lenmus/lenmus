@@ -45,7 +45,19 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
-bool g_fFreeMove = false;		// the shapes can be dragged without restrictions
+// global variables defined in this file
+bool g_fDrawSelRect = false;    //draw selection rectangles around staff objects
+bool g_fDrawBounds = false;     //draw bounds rectangles around staff objects
+bool g_fShowMargins = false;    //draw margins in scores, so user can change them
+bool g_fDrawAnchors = false;    //draw anchors, to see them in the score
+bool g_fFreeMove = false;		//the shapes can be dragged without restrictions
+
+bool g_fDrawBoundsBoxSystem = false;        //draw bound rectangles for systems
+bool g_fDrawBoundsBoxSlice = false;         //draw bound rectangles for slices
+bool g_fDrawBoundsBoxSliceInstr = false;    //draw bound rectangles for SliceInstr
+bool g_fDrawBoundsBoxSliceVStaff = false;   //draw bound rectangles for SliceVStaff
+bool g_fDrawBoundsShapes = false;           //draw bound rectangles for non boxes
+
 
 //========================================================================================
 //helper class to represent an attached shape
@@ -91,19 +103,19 @@ lmGMObject::~lmGMObject()
 {
 }
 
-bool lmGMObject::BoundsContainsPoint(lmUPoint& pointL)
+bool lmGMObject::BoundsContainsPoint(lmUPoint& uPoint)
 {
     //returns true if point received is within the limits of this object bounds
 
-    return GetBounds().Contains(pointL);
+    return GetBounds().Contains(uPoint);
 }
 
-bool lmGMObject::HitTest(lmUPoint& pointL)
+bool lmGMObject::HitTest(lmUPoint& uPoint)
 {
     //returns true if point received is within the limits of this object
     //selection rectangle
 
-    return GetSelRectangle().Contains(pointL);
+    return GetSelRectangle().Contains(uPoint);
 }
 
 void lmGMObject::DrawBounds(lmPaper* pPaper, wxColour color)
@@ -125,7 +137,18 @@ void lmGMObject::Render(lmPaper* pPaper, wxColour colorC)
         DrawSelRectangle(pPaper, g_pColors->ScoreSelected() );
 
     if (g_fDrawBounds)
-        DrawBounds(pPaper, *wxRED); //colorC);
+    {
+        if ( (g_fDrawBoundsBoxSystem && this->IsBoxSystem()) 
+             || (g_fDrawBoundsBoxSlice && this->IsBoxSlice()) 
+             || (g_fDrawBoundsBoxSliceInstr && this->IsBoxSliceInstr()) 
+             || (g_fDrawBoundsBoxSliceVStaff && this->IsBoxSliceVStaff()) 
+             || (g_fDrawBoundsShapes && this->IsShape()) )
+        {
+            if (this->IsBox())
+                ((lmBox*)this)->DrawLimits(pPaper, *wxGREEN);
+            DrawBounds(pPaper, *wxRED); //colorC);
+        }
+    }
 }
 
 wxString lmGMObject::DumpBounds()
@@ -247,6 +270,10 @@ void lmGMObject::SetSelected(bool fValue)
 
 lmBox::lmBox(lmScoreObj* pOwner, lmEGMOType nType, wxString sName)
 	: lmGMObject(pOwner, nType, lmNO_DRAGGABLE, lmNO_SELECTABLE, sName)
+    , m_uTopSpace(0.0f)
+    , m_uBottomSpace(0.0f)
+    , m_uLeftSpace(0.0f)
+    , m_uRightSpace(0.0f)
 {
 }
 
@@ -291,14 +318,27 @@ void lmBox::AddBox(lmBox* pBox)
     m_Boxes.push_back(pBox);
 }
 
+void lmBox::DrawLimits(lmPaper* pPaper, wxColour color)
+{
+    //draw a border around box limits
+
+    lmUPoint uTopLeft(m_uBoundsTop.x - m_uLeftSpace, m_uBoundsTop.y - m_uTopSpace);
+    lmUSize uSize( GetWidth() + m_uLeftSpace + m_uRightSpace,
+                   GetHeight() + m_uTopSpace + m_uBottomSpace );
+    pPaper->SketchRectangle(uTopLeft, uSize, color);
+}
+
 void lmBox::Render(lmPaper* pPaper, lmUPoint uPos)
 {
-    RenderShapes(pPaper);
+    //RenderShapes(pPaper);
 
     //render contained boxes
     std::vector<lmBox*>::iterator itB;
     for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
         (*itB)->Render(pPaper, uPos);
+
+    //base class
+    lmGMObject::Render(pPaper, *wxBLACK);
 }
 
 void lmBox::RemoveShape(lmShape* pShape)
@@ -309,48 +349,27 @@ void lmBox::RemoveShape(lmShape* pShape)
     m_Shapes.erase(it);
 }
 
-lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL, bool fSelectable)
+lmBox* lmBox::FindBoxAtPos(lmUPoint& uPoint)
 {
-	//wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId);
-    //loop to look up in the shapes collection
-    //Remember: look up in opposite order than renderization
-	for(int i=(int)m_Shapes.size()-1; i >=0; i--)
+    //look for most inner box (minimal size box: i.e. BoxSliceVStaff) that contains received point.
+    //If not box found returns NULL.
+
+    //loop to look up in the child boxes collection
+    std::vector<lmBox*>::iterator it;
+    for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
     {
-        if (m_Shapes[i]->IsVisible() && m_Shapes[i]->IsSelectable() && m_Shapes[i]->HitTest(pointL))
-			return m_Shapes[i];    //found
+        lmBox* pBox = (*it)->FindBoxAtPos(uPoint);
+        if (pBox)
+			return pBox;    //found
     }
 
-    // no shape found.
-    return (lmShape*)NULL;
-}
+    // no object found. Verify if the point is in this box
+    if (BoundsContainsPoint(uPoint))
+        return this;
+    else
+        return (lmBox*)NULL;
 
-//lmGMObject* lmBox::FindObjectAtPos(lmUPoint& pointL, bool fSelectable)
-//{
-//    //Remember: look up in opposite order than renderization
-//
-//    //wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
-//
-//    //loop to look up in the instrument slices
-//    std::vector<lmBox*>::reverse_iterator it;
-//	for(it = m_Boxes.rbegin(); it != m_Boxes.rend(); ++it)
-//    {
-//        lmGMObject* pGMO = (*it)->FindObjectAtPos(pointL, fSelectable);
-//        if (pGMO)
-//			return pGMO;    //found
-//    }
-//
-//    //look in shapes collection
-//    lmShape* pShape = FindShapeAtPosition(pointL, fSelectable);
-//    if (pShape) return pShape;
-//
-//    // no object found. Verify if the point is in this slice
-//    if ( (fSelectable && IsSelectable() && HitTest(pointL)) ||
-//         (!fSelectable && HitTest(pointL)) )
-//        return this;
-//    else
-//        return (lmGMObject*)NULL;
-//
-//}
+}
 
 void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                             lmLUnits uYMin, lmLUnits uYMax)
@@ -420,14 +439,14 @@ bool lmBox::ContainsXPos(lmLUnits uxPos)
 	return (uxPos >= GetXLeft() && uxPos <= GetXRight());
 }
 
-lmBox* lmBox::GetContainedBoxAt(lmLUnits xPos)
+lmBox* lmBox::FindChildBoxAt(lmLUnits uxPos)
 {
 	//return the first box located at xPos
 
     std::vector<lmBox*>::iterator itB;
 	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
     {
-        if ((*itB)->ContainsXPos(xPos))
+        if ((*itB)->ContainsXPos(uxPos))
 			return *itB;		//found
     }
 	return (lmBox*)NULL;
@@ -438,12 +457,25 @@ void lmBox::UpdateXRight(lmLUnits xRight)
 	// During layout there is a need to update initial computations about this
 	// box position. This update must be propagated to all contained boxes
 
-	SetXRight(xRight);
+    SetXRight(xRight);
 
 	//propagate change
     std::vector<lmBox*>::iterator itB;
 	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
         (*itB)->UpdateXRight(xRight);
+}
+
+void lmBox::UpdateXLeft(lmLUnits xLeft)
+{
+	// During layout there is a need to update initial computations about this
+	// box position. This update must be propagated to all contained boxes
+
+	SetXLeft(xLeft);
+
+	//propagate change
+    std::vector<lmBox*>::iterator itB;
+	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+        (*itB)->UpdateXLeft(xLeft);
 }
 
 
@@ -513,7 +545,7 @@ void lmShape::Render(lmPaper* pPaper)
         Render(pPaper, (IsSelected() ? g_pColors->ScoreSelected() : m_color) );
 }
 
-void lmShape::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
+void lmShape::OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint)
 {
     if (IsSelected() && IsLeftDraggable())
     {
@@ -522,7 +554,7 @@ void lmShape::OnMouseIn(wxWindow* pWindow, lmUPoint& pointL)
     }
 }
 
-void lmShape::OnMouseOut(wxWindow* pWindow, lmUPoint& pointL)
+void lmShape::OnMouseOut(wxWindow* pWindow, lmUPoint& uPoint)
 {
     if (m_pMouseCursorWindow)
     {
@@ -809,11 +841,11 @@ void lmCompositeShape::SetSelected(bool fValue)
         pBS->RemoveFromSelection(this);
 }
 
-bool lmCompositeShape::BoundsContainsPoint(lmUPoint& pointL)
+bool lmCompositeShape::BoundsContainsPoint(lmUPoint& uPoint)
 {
     for (int i=0; i < (int)m_Components.size(); i++)
     {
-        if (m_Components[i]->BoundsContainsPoint(pointL))
+        if (m_Components[i]->BoundsContainsPoint(uPoint))
 			return true;
     }
 	return false;

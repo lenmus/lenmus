@@ -56,6 +56,7 @@
 #define lm_NUM_DOT_BUTTONS  3
 #define lm_NUM_OCTAVE_BUTTONS 10
 #define lm_NUM_VOICE_BUTTONS 9
+//#define lm_NUM_ENTRY_MODE_BUTTONS 2
 
 enum {
 	lmID_BT_NoteDuration = 2600,
@@ -69,6 +70,8 @@ enum {
     lmID_BT_Beam_Subgroup,
 	lmID_BT_Octave,
 	lmID_BT_Voice = lmID_BT_Octave + lm_NUM_OCTAVE_BUTTONS,
+    //lmID_BT_EntryMode_Keyboard,
+    //lmID_BT_EntryMode_Mouse,
 };
 
 
@@ -98,6 +101,7 @@ void lmToolPageNotes::Create(wxWindow* parent)
     m_pGrpBeams = (lmGrpBeams*)NULL;
 	m_pGrpOctave = (lmGrpOctave*)NULL;
 	m_pGrpVoice = (lmGrpVoice*)NULL;
+	//m_pGrpEntryMode = (lmGrpEntryMode*)NULL;
 
     //other data initialization
     m_sPageToolTip = _("Select notes / rests edit tools");
@@ -106,6 +110,7 @@ void lmToolPageNotes::Create(wxWindow* parent)
 
 lmToolPageNotes::~lmToolPageNotes()
 {
+    //if(m_pGrpEntryMode) delete m_pGrpEntryMode;
 	if(m_pGrpOctave) delete m_pGrpOctave;
 	if(m_pGrpVoice) delete m_pGrpVoice;
     if(m_pGrpNoteDuration) delete m_pGrpNoteDuration;
@@ -124,6 +129,7 @@ lmToolGroup* lmToolPageNotes::GetToolGroup(lmEToolGroupID nGroupID)
 {
     switch(nGroupID)
     {
+        //case lmGRP_EntryMode:       return m_pGrpEntryMode;
         case lmGRP_Octave:			return m_pGrpOctave;
         case lmGRP_Voice:			return m_pGrpVoice;
         case lmGRP_NoteDuration:    return m_pGrpNoteDuration;
@@ -144,7 +150,7 @@ lmToolGroup* lmToolPageNotes::GetToolGroup(lmEToolGroupID nGroupID)
 
 lmGrpNoteDuration::lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_DUR_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_NoteDuration)
+                             lmID_BT_NoteDuration, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -202,7 +208,7 @@ lmENoteType lmGrpNoteDuration::GetNoteDuration()
 
 lmGrpOctave::lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_OCTAVE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Octave)
+                             lmID_BT_Octave, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -257,7 +263,7 @@ void lmGrpOctave::SetOctave(bool fUp)
 
 lmGrpVoice::lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons)
         : lmToolButtonsGroup(pParent, nNumButtons, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Voice)
+                             lmID_BT_Voice, pParent->GetColors())
 {
 }
 
@@ -375,7 +381,7 @@ void lmGrpVoiceHarmony::CreateControls(wxBoxSizer* pMainSizer)
 
 lmGrpNoteAcc::lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_ACC_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
-                             lmID_BT_NoteAcc)
+                             lmID_BT_NoteAcc, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -428,7 +434,7 @@ lmEAccidentals lmGrpNoteAcc::GetNoteAcc()
 
 lmGrpNoteDots::lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_DOT_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
-                             lmID_BT_NoteDots)
+                             lmID_BT_NoteDots, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -484,7 +490,7 @@ END_EVENT_TABLE()
 
 
 lmGrpTieTuplet::lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent)
+        : lmToolGroup(pParent, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -540,7 +546,7 @@ void lmGrpTieTuplet::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
     {
 	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	    wxASSERT(pToolBox);
-        lmToolBoxEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
                              fSelected);
         ::wxPostEvent( pWnd, event );
     }
@@ -595,7 +601,7 @@ END_EVENT_TABLE()
 
 
 lmGrpBeams::lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent)
+        : lmToolGroup(pParent, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 
@@ -678,7 +684,7 @@ void lmGrpBeams::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
     {
 	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	    wxASSERT(pToolBox);
-        lmToolBoxEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
                              fSelected);
         ::wxPostEvent( pWnd, event );
     }
@@ -726,6 +732,51 @@ void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)
 
 
 
+////--------------------------------------------------------------------------------
+//// lmGrpEntryMode implementation
+////--------------------------------------------------------------------------------
+//
+//lmGrpEntryMode::lmGrpEntryMode(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+//        : lmToolButtonsGroup(pParent, lm_NUM_ENTRY_MODE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+//                             lmID_BT_EntryMode_Keyboard, pParent->GetColors())
+//{
+//    CreateControls(pMainSizer);
+//}
+//
+//void lmGrpEntryMode::CreateControls(wxBoxSizer* pMainSizer)
+//{
+//    //create the common controls for a group
+//    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Data entry mode"));
+//
+//    wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+//	pCtrolsSizer->Add(pButtonsSizer);
+//    wxSize btSize(24, 24);
+//
+//    //keyboard entry mode
+//	m_pButton[0] = new lmCheckButton(this, lmID_BT_EntryMode_Keyboard, wxBitmap(24, 24));
+//    wxString sBtName = _T("data_entry_keyboard");
+//    m_pButton[0]->SetBitmapUp(sBtName, _T(""), btSize);
+//    m_pButton[0]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+//    m_pButton[0]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+//	m_pButton[0]->SetToolTip(_T("Use keyboard to enter notes/rests"));
+//	pButtonsSizer->Add(m_pButton[0], wxSizerFlags(0).Border(wxALL, 0) );
+//
+//    //mouse entry mode
+//	m_pButton[1] = new lmCheckButton(this, lmID_BT_EntryMode_Mouse, wxBitmap(24, 24));
+//    sBtName = _T("data_entry_mouse");
+//    m_pButton[1]->SetBitmapUp(sBtName, _T(""), btSize);
+//    m_pButton[1]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+//    m_pButton[1]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+//	m_pButton[1]->SetToolTip(_T("Use mouse to enter notes/rests"));
+//	pButtonsSizer->Add(m_pButton[1], wxSizerFlags(0).Border(wxALL, 0) );
+//
+//    this->Layout();
+//
+//	SelectButton(0);	//select keyboard data entry mode
+//}
+//
+//
+//
 //-------------------------------------------------------------------------------------
 // lmToolPageNotesStd implementation
 //-------------------------------------------------------------------------------------
@@ -757,6 +808,7 @@ void lmToolPageNotesStd::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
+	//m_pGrpEntryMode = new lmGrpEntryMode(this, pMainSizer);
 	m_pGrpOctave = new lmGrpOctave(this, pMainSizer);
 	m_pGrpVoice = new lmGrpVoiceStd(this, pMainSizer);
     m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
@@ -799,6 +851,7 @@ void lmToolPageNotesHarmony::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
+	//m_pGrpEntryMode = new lmGrpEntryMode(this, pMainSizer);
 	m_pGrpOctave = new lmGrpOctave(this, pMainSizer);
 	m_pGrpVoice = new lmGrpVoiceHarmony(this, pMainSizer);
     m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);

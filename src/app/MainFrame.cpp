@@ -212,6 +212,11 @@ enum
     MENU_Debug_CheckHarmony,
     MENU_Debug_DrawAnchors,
     MENU_Debug_DrawBounds,
+    MENU_Debug_DrawBounds_BoxSystem,
+    MENU_Debug_DrawBounds_BoxSlice,
+    MENU_Debug_DrawBounds_BoxSliceInstr,
+    MENU_Debug_DrawBounds_BoxSliceVStaff,
+    MENU_Debug_DrawBounds_BoundsShapes,
     MENU_Debug_DumpStaffObjs,
 	MENU_Debug_DumpGMObjects,
     MENU_Debug_SeeSource,
@@ -412,6 +417,11 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_MENU (MENU_Debug_PatternEditor, lmMainFrame::OnDebugPatternEditor)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
     EVT_MENU (MENU_Debug_DrawBounds, lmMainFrame::OnDebugDrawBounds)
+    EVT_MENU (MENU_Debug_DrawBounds_BoxSystem, lmMainFrame::OnDebugDrawBounds)
+    EVT_MENU (MENU_Debug_DrawBounds_BoxSlice, lmMainFrame::OnDebugDrawBounds)
+    EVT_MENU (MENU_Debug_DrawBounds_BoxSliceInstr, lmMainFrame::OnDebugDrawBounds)
+    EVT_MENU (MENU_Debug_DrawBounds_BoxSliceVStaff, lmMainFrame::OnDebugDrawBounds)
+    EVT_MENU (MENU_Debug_DrawBounds_BoundsShapes, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawAnchors, lmMainFrame::OnDebugDrawAnchors)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
     EVT_MENU (MENU_Debug_ShowDirtyObjects, lmMainFrame::OnDebugShowDirtyObjects)
@@ -1129,6 +1139,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     if (fDebug)
 	{
         pMenuDebug = new wxMenu;
+
         AddMenuItem(pMenuDebug, MENU_Debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
             _T("Force release behaviour for certain functions"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_ShowDebugLinks, _T("&Include debug links"),
@@ -1137,8 +1148,28 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
             _T("Show border on ScoreAuxCtrol"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_recSelec, _T("&Draw recSelec"),
             _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
-        AddMenuItem(pMenuDebug, MENU_Debug_DrawBounds, _T("&Draw bounds"),
-            _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
+
+        //-- Draw bounds submenu --
+        wxMenu* pSubmenuDrawBounds = new wxMenu;
+
+        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoxSystem, _T("BoxSystem bounds"),
+            _T("Force to draw bound rectangles around BoxSystem objects"), wxITEM_CHECK);
+        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoxSlice, _T("BoxSlice bounds"),
+            _T("Force to draw bound rectangles around BoxSlice objects"), wxITEM_CHECK);
+        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoxSliceInstr, _T("BoxSliceInstr bounds"),
+            _T("Force to draw bound rectangles around BoxSliceInstr objects"), wxITEM_CHECK);
+        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoxSliceVStaff, _T("BoxSliceVStaff bounds"),
+            _T("Force to draw bound rectangles around BoxSliceVStaff objects"), wxITEM_CHECK);
+        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoundsShapes, _("Non-boxes: shapes bounds"),
+            _T("Force to draw bound rectangles around shapes"), wxITEM_CHECK);
+
+        pItem = new wxMenuItem(pMenuDebug, MENU_Debug_DrawBounds, _("Draw bounds ..."),
+                            _("Force to draw bound rectangles"), wxITEM_NORMAL, pSubmenuDrawBounds);
+        pMenuDebug->Append(pItem);
+
+
+        //AddMenuItem(pMenuDebug, MENU_Debug_DrawBounds, _T("&Draw bounds"),
+        //    _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_DrawAnchors, _T("Draw anchors"),
             _T("Draw a red line to show anchor objects"), wxITEM_CHECK);
         AddMenuItem(pMenuDebug, MENU_Debug_ShowDirtyObjects, _T("&Show dirty objects"),
@@ -1271,7 +1302,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         pMenuBar->Check(MENU_Debug_ForceReleaseBehaviour, g_fReleaseBehaviour);
         pMenuBar->Check(MENU_Debug_ShowDebugLinks, g_fShowDebugLinks);
         pMenuBar->Check(MENU_Debug_recSelec, g_fDrawSelRect);
-        pMenuBar->Check(MENU_Debug_DrawBounds, g_fDrawBounds);
         pMenuBar->Check(MENU_Debug_DrawAnchors, g_fDrawAnchors);
     }
 
@@ -1804,7 +1834,20 @@ void lmMainFrame::OnDebugDrawAnchors(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
 {
-    g_fDrawBounds = event.IsChecked();
+    if (event.GetId() == MENU_Debug_DrawBounds_BoxSystem)
+        g_fDrawBoundsBoxSystem = event.IsChecked();
+    else if (event.GetId() == MENU_Debug_DrawBounds_BoxSlice)
+        g_fDrawBoundsBoxSlice = event.IsChecked();
+    else if (event.GetId() == MENU_Debug_DrawBounds_BoxSliceInstr)
+        g_fDrawBoundsBoxSliceInstr = event.IsChecked();
+    else if (event.GetId() == MENU_Debug_DrawBounds_BoxSliceVStaff)
+        g_fDrawBoundsBoxSliceVStaff = event.IsChecked();
+    else if (event.GetId() == MENU_Debug_DrawBounds_BoundsShapes)
+        g_fDrawBoundsShapes = event.IsChecked();
+
+    g_fDrawBounds = g_fDrawBoundsBoxSystem | g_fDrawBoundsBoxSlice | g_fDrawBoundsBoxSliceInstr
+                    | g_fDrawBoundsBoxSliceVStaff | g_fDrawBoundsShapes;
+
     if (GetActiveDoc())
         GetActiveDoc()->UpdateAllViews();
 }

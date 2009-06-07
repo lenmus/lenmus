@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,6 +36,7 @@
 
 #include "ToolGroup.h"
 #include "ToolPage.h"
+#include "ColorScheme.h"
 #include "ToolBoxEvents.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "../../widgets/Button.h"
@@ -50,14 +51,17 @@
 //-----------------------------------------------------------------------------------
 // lmToolGroup implementation
 //-----------------------------------------------------------------------------------
-lmToolGroup::lmToolGroup(lmToolPage* pParent)
+lmToolGroup::lmToolGroup(wxPanel* pParent, lmColorScheme* pColours)
 	: wxPanel(pParent, wxID_ANY, wxDefaultPosition, lmTOOLGROUP_SIZE)
 {
 	m_pParent = pParent;
 
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
-	SetForegroundColour(m_pParent->GetColors()->PrettyDark());
-	SetBackgroundColour(m_pParent->GetColors()->Bright());    //Normal());
+    if (pColours)
+    {
+        SetForegroundColour(pColours->PrettyDark());
+	    SetBackgroundColour(pColours->Bright());    //Normal());
+    }
 }
 
 lmToolGroup::~lmToolGroup()
@@ -69,7 +73,7 @@ wxBoxSizer* lmToolGroup::CreateGroup(wxBoxSizer* pMainSizer, wxString sTitle)
 	//create common controls for a lmToolGroup
     m_pBoxTitle = new wxStaticBox( this, wxID_ANY, sTitle );
 	wxStaticBoxSizer* pAuxSizer = new wxStaticBoxSizer(m_pBoxTitle, wxVERTICAL);
-	pMainSizer->Add( this, 0, wxALL|wxEXPAND, 5 );
+	pMainSizer->Add( this, 0, wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
 	wxBoxSizer* pCtrolsSizer = new wxBoxSizer( wxVERTICAL );
 	pAuxSizer->Add( pCtrolsSizer, 1, wxEXPAND, 5 );
@@ -108,9 +112,10 @@ void lmToolGroup::EnableGroup(bool fEnable)
 //  can have no button selected
 //-----------------------------------------------------------------------------------
 
-lmToolButtonsGroup::lmToolButtonsGroup(lmToolPage* pParent, int nNumButtons, bool fAllowNone,
-                                       wxBoxSizer* pMainSizer, int nFirstButtonID)
-	: lmToolGroup(pParent)
+lmToolButtonsGroup::lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
+                                       wxBoxSizer* pMainSizer, int nFirstButtonID,
+                                       lmColorScheme* pColours)
+	: lmToolGroup(pParent, pColours)
 {
 	m_nSelButton = -1;	            //none selected
     m_nFirstButtonID = nFirstButtonID;
@@ -131,7 +136,6 @@ void lmToolButtonsGroup::ConnectButtonEvents()
     m_pParent->Connect( m_nFirstButtonID, m_nFirstButtonID + m_nNumButtons - 1,
                         wxEVT_COMMAND_BUTTON_CLICKED,
                         (wxObjectEventFunction)& lmToolButtonsGroup::OnButton );
-                      //wxCommandEventHandler(lmToolButtonsGroup::OnButton) );
 }
 
 void lmToolButtonsGroup::SelectButton(int iB)
@@ -206,7 +210,7 @@ void lmToolButtonsGroup::OnButtonSelected(int nSelButton)
     {
 	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	    wxASSERT(pToolBox);
-        lmToolBoxEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(),
+        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(),
                              nSelButton, true);
         ::wxPostEvent( pWnd, event );
     }

@@ -146,7 +146,7 @@ static lmClefData m_tClefs[lm_eNUM_CLEFS];
 static bool m_fStringsInitialized = false;
 
 lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent)
+        : lmToolGroup(pParent, pParent->GetColors())
 {
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -242,7 +242,7 @@ static const lmGrpTimeType::lmButton m_tButtons[] = {
 };
 
 lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent)
+        : lmToolGroup(pParent, pParent->GetColors())
 {
     wxASSERT(sizeof(m_tButtons) / sizeof(lmButton) == lm_NUM_BUTTONS);
     CreateControls(pMainSizer);
@@ -301,7 +301,7 @@ static lmGrpKeyType::lmKeysData m_tMinorKeys[lmMAX_MINOR_KEYS];
 
 
 lmGrpKeyType::lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent)
+        : lmToolGroup(pParent, pParent->GetColors())
 {
     //To avoid having to translate again key signature names, we are going to load them
     //by using global function GetKeySignatureName()

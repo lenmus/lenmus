@@ -13,6 +13,8 @@ lenmusprg_PROGRAMS=lenmus
 lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     ../packages/agg/font_freetype/agg_font_freetype.cpp \
     ../packages/agg/src/agg_trans_affine.cpp \
+    ../packages/agg/src/agg_vcgen_markers_term.cpp \
+    ../packages/agg/src/agg_vcgen_stroke.cpp \
     ../packages/wxMidi/src/wxMidi.cpp \
     ../packages/wxMidi/include/wxMidi.h \
     ../packages/wxMidi/src/wxMidiDatabase.cpp \

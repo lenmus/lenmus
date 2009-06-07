@@ -82,17 +82,6 @@ int lmBoxScore::GetNumPages()
     return (int)m_aPages.size();
 }
 
-//bool lmBoxScore::FindSliceAtPosition(lmUPoint& pointL)
-//{
-//    //loop to look up in the pages
-//    for (int i=0; i < (int)m_aPages.size(); i++)
-//    {
-//        if (m_aPages[i]->FindSliceAtPosition(pointL))
-//            return true;    //found
-//    }
-//    return false;
-//}
-
 wxString lmBoxScore::Dump(int nIndent)
 {
 	wxString sDump = _T("");

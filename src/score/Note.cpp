@@ -502,11 +502,11 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
     // move to right staff
     lmLUnits uyStaffTopLine = uPos.y + GetStaffOffset();   // staff y position (top line)
-    lmLUnits uxLeft=0, uyTop=0;    // current pos. as positioning computation takes place
     int nPosOnStaff = GetPosOnStaff();
     lmLUnits uyPitchShift = GetPitchShift();
-    uyTop = uyStaffTopLine - uyPitchShift;
-    uxLeft = uPos.x;
+    // current pos. as positioning computation takes place
+    lmLUnits uyTop = uyStaffTopLine - uyPitchShift;
+    lmLUnits uxLeft = uPos.x;
 
 	// create the shape for the stem because it must be measured even if it must not be
 	// drawn. This is necessary, for example, to have information for positioning

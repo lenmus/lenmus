@@ -66,7 +66,6 @@ public:
     inline lmBoxPage* GetCurrentPage() const { return m_aPages.back(); }
     lmBoxPage* GetPage(int nPage);
     int GetNumPages();
-    //bool FindSliceAtPosition(lmUPoint& pointL);
 
 	//info
 	int GetNumSystems();

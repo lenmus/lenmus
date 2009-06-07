@@ -174,20 +174,21 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
     EVT_MOUSE_EVENTS(lmScoreCanvas::OnMouseEvent)
     EVT_PAINT(lmScoreCanvas::OnPaint)
     LM_EVT_SCORE_HIGHLIGHT(lmScoreCanvas::OnVisualHighlight)
-    LM_EVT_TOOLBOX(lmScoreCanvas::OnToolBoxEvent)
+    LM_EVT_TOOLBOX_TOOL_SELECTED(lmScoreCanvas::OnToolBoxEvent)
+    LM_EVT_TOOLBOX_PAGE_CHANGED(lmScoreCanvas::OnToolBoxPageChanged)
 
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
 lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* pDoc,
-        const wxPoint& pos, const wxSize& size, long style, wxColor colorBg)
-        : lmController(pParent, pView, pDoc, colorBg, wxID_ANY, pos, size, style)
+                             const wxPoint& pos, const wxSize& size, long style, wxColor colorBg)
+    : lmController(pParent, pView, pDoc, colorBg, wxID_ANY, pos, size, style)
+    , m_nEntryMode(lm_DATA_ENTRY_KEYBOARD)
+    , m_pView(pView)
+    , m_pOwner(pParent)
+    , m_pDoc(pDoc)
+    , m_colorBg(colorBg)
 {
-    m_pView = pView;
-    m_pOwner = pParent;
-    m_pDoc = pDoc;
-    m_colorBg = colorBg;
-
 	//attach the edit menu to the command processor
 	m_pDoc->GetCommandProcessor()->SetEditMenu( GetMainFrame()->GetEditMenu() );
 
@@ -262,12 +263,8 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         return;
     }
 
-    //filter out non-dragging mouse movements (moving without having a button pressed)
+    //identify non-dragging mouse movements (moving without having a button pressed)
 	bool fDragging = event.Dragging();
-    wxLogMessage(_T("dragging = %s, m_nDragState =%d"),
-        (fDragging ? _T("yes") : _T("no")), m_nDragState);
-    //if (nEventType==wxEVT_MOTION && !fDragging)
-    //    return;
 
 	// get mouse point
     lmDPoint vCanvasPos(event.GetPosition());
@@ -1310,20 +1307,42 @@ void lmScoreCanvas::ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel,
                                             nMidiInstr) );
 }
 
-void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
+void lmScoreCanvas::OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event)
+{
+    //TODO
+}
+
+void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	wxASSERT(pToolBox);
 
+    lmEToolPage nPage = event.GetToolPageType();
+    lmEToolGroupID nGroup = event.GetToolGroupID();
+
+    //verify if Data entry mode changed
+    if (nGroup == lmGRP_EntryMode)
+    {
+		m_nEntryMode = pToolBox->GetEntryMode();
+        if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
+	        SetCursor(*wxCROSS_CURSOR);
+        else
+	        SetCursor(wxCURSOR_ARROW);
+        return;
+    }
+
+    //get values for current page
+    GetToolBoxValuesForPage(nPage);
+
+    //specific actions on selected objects
     switch (event.GetToolGroupID())
     {
         case lmGRP_NoteAcc:
             //selection of accidentals ----------------------------------------------------
             if (m_pView->SomethingSelected())
             {
-			    lmToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
 			    int nAcc;
-                switch(pNoteOptions->GetNoteAccidentals())
+                switch(m_nSelAcc)
                 {
                     case lm_eNatural:       nAcc = 0;   break;
                     case lm_eFlat:          nAcc = -1;  break;
@@ -1344,8 +1363,7 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
             //selection of dots -----------------------------------------------------------
             if (m_pView->SomethingSelected())
             {
-			    lmToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
-			    ChangeNoteDots( pNoteOptions->GetNoteDots() );
+			    ChangeNoteDots(m_nSelDots);
             }
             break;
 
@@ -1413,8 +1431,30 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxEvent& event)
     }
 }
 
+void lmScoreCanvas::GetToolBoxValuesForPage(lmEToolPage nPage)
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (!pToolBox)
+        return;
 
-//--------------------------------------------------------------------------------------------
+	switch(nPage)
+	{
+        case lmPAGE_NOTES:
+        {
+			lmToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
+			m_nSelNoteType = pNoteOptions->GetNoteDuration();
+			m_nSelDots = pNoteOptions->GetNoteDots();
+			m_nSelNotehead = pNoteOptions->GetNoteheadType();
+			m_nSelAcc = pNoteOptions->GetNoteAccidentals();
+			m_nOctave = pNoteOptions->GetOctave();
+			m_nSelVoice = pNoteOptions->GetVoice();
+            break;
+        }
+
+        default:
+            ;
+    }
+}
 
 void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
 {
@@ -1558,12 +1598,12 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
             case lmPAGE_NOTES:	//---------------------------------------------------------
 		    {
 			    lmToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
-			    lmENoteType nNoteType = pNoteOptions->GetNoteDuration();
-			    int nDots = pNoteOptions->GetNoteDots();
-			    lmENoteHeads nNotehead = pNoteOptions->GetNoteheadType();
-			    lmEAccidentals nAcc = pNoteOptions->GetNoteAccidentals();
+			    m_nSelNoteType = pNoteOptions->GetNoteDuration();
+			    m_nSelDots = pNoteOptions->GetNoteDots();
+			    m_nSelNotehead = pNoteOptions->GetNoteheadType();
+			    m_nSelAcc = pNoteOptions->GetNoteAccidentals();
 				m_nOctave = pNoteOptions->GetOctave();
-				int nVoice = pNoteOptions->GetVoice();
+				m_nSelVoice = pNoteOptions->GetVoice();
 
                 bool fTiedPrev = false;
 
@@ -1577,15 +1617,15 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                         lmKbdCmdParser oCmdParser;
                         if (oCmdParser.ParserCommand(m_sCmd))
                         {
-                            nAcc = oCmdParser.GetAccidentals();
-                            nDots = oCmdParser.GetDots();
+                            m_nSelAcc = oCmdParser.GetAccidentals();
+                            m_nSelDots = oCmdParser.GetDots();
                             fTiedPrev = oCmdParser.GetTiedPrev();
                         }
                     }
                 }
 
                 //compute note/rest duration
-			    float rDuration = lmLDPParser::GetDefaultDuration(nNoteType, nDots, 0, 0);
+			    float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
 
                 //insert note
                 if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
@@ -1621,8 +1661,8 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 					}
 
                     //do insert note
-					InsertNote(lm_ePitchRelative, nStep, m_nOctave, nNoteType, rDuration,
-							   nDots, nNotehead, nAcc, nVoice, pBaseOfChord, fTiedPrev);
+					InsertNote(lm_ePitchRelative, nStep, m_nOctave, m_nSelNoteType, rDuration,
+							   m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord, fTiedPrev);
 
                     fUnknown = false;
                 }
@@ -1631,7 +1671,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
                 if (nKeyCode == int(' '))
                 {
                     //do insert rest
-                    InsertRest(nNoteType, rDuration, nDots, nVoice);
+                    InsertRest(m_nSelNoteType, rDuration, m_nSelDots, m_nSelVoice);
 
                     fUnknown = false;
                 }
@@ -2884,10 +2924,16 @@ void lmScoreCanvas::OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC,
 void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
                                         lmUPoint uPagePos, int nKeys)
 {
-    // mouse left click on object: move cursor to it
+    // mouse left click on object
+    // uPagePos: click point, referred to current page origin
 
     WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
+
+    //AWARE: pGMO must exist and it must be a shape. It can not be an lmBox as, since renderization
+    //of shapes is organized in layers, lmBoxes are no longer taken into account in hit testing.
+    wxASSERT(pGMO && pGMO->IsShape());
+
 
 	m_pView->HideCaret();
 
@@ -2898,35 +2944,59 @@ void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
     m_pView->DeselectAllGMObjects(true);
     SetFocus();
 
-    if (pGMO->IsShape())
+    if (pGMO->IsShapeStaff())
+    {
+        lmShapeStaff* pSS = (lmShapeStaff*)pGMO;
+        lmBox* pBox = m_pView->FindBoxAt(m_nNumPage, uPagePos);
+        wxASSERT(pBox && pBox->IsBoxSliceVStaff());
+        lmBoxSliceVStaff* pBSV = (lmBoxSliceVStaff*)pBox;
+
+        if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
+        {
+            wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Insert note"));
+            //Move caret
+	        lmVStaff* pVStaff = pBSV->GetCreatorVStaff();
+	        int nMeasure = pBSV->GetNumMeasure();
+	        int nStaff = pSS->GetNumStaff();
+	        m_pView->MoveCaretNearTo(uPagePos, pVStaff, nStaff, nMeasure);
+
+            GetToolBoxValuesForPage(lmPAGE_NOTES);
+            //compute note/rest duration
+			float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
+
+            //get step and octave from mouse position on staff
+            int nLineSpace = pSS->GetLineSpace(uPagePos.y);
+            int nOctave = 4 + nLineSpace / 8;
+            int nStep = nLineSpace % 8;      
+
+            //default values
+            lmNote* pBaseOfChord = (lmNote*)NULL;
+            bool fTiedPrev = false;
+
+            //do insert note
+			InsertNote(lm_ePitchRelative, nStep, nOctave, m_nSelNoteType, rDuration,
+						m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord, fTiedPrev);
+        }
+        else
+        {
+	        //Click on a staff. Move cursor to that staff and nearest note/rest to click point
+
+	        lmVStaff* pVStaff = pBSV->GetCreatorVStaff();
+	        int nMeasure = pBSV->GetNumMeasure();
+	        int nStaff = pSS->GetNumStaff();
+	        m_pView->MoveCaretNearTo(uPagePos, pVStaff, nStaff, nMeasure);
+        }
+    }
+    else
     {
         //if it is a staffobj move cursor to it. Else do nothing
+        wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Click on shape"));
         lmScoreObj* pSCO = pGMO->GetScoreOwner();
         if (pSCO->GetScoreObjType() == lmSOT_ComponentObj)
             m_pView->MoveCursorToObject(pGMO);
-	}
-	else if (pGMO->IsBoxSliceVStaff())
-	{
-		//pointing inside an VStaff. Check if it is a staff
-		lmBoxSystem* pBS = ((lmBoxSliceVStaff*)pGMO)->GetOwnerSystem();
-		lmShapeStaff* pSS = pBS->FindStaffAtPosition(uPagePos);
-		if (pSS)
-			m_pView->OnClickOnStaff(pBS, pSS, (lmBoxSliceVStaff*)pGMO, uPagePos);
-		//else
-			//Clicking on a VStaffSlice but out of any shape
-			//TODO: Is this possible?
-	}
-	else if (pGMO)
-	{
-		//pointing to a Box different to SliceVStaff
-		//TODO: Is this possible?
-	}
-	else
-	{
-		//no object pointed. Possible tool box insert command
-		//TODO
-	}
-	m_pView->ShowCaret();
+    }
+
+    m_pView->ShowCaret();
 }
 
 void lmScoreCanvas::OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,

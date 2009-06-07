@@ -27,12 +27,6 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
-// defined in lmScoreView.cpp
-extern bool g_fDrawSelRect;     //draw selection rectangles around staff objects
-extern bool g_fDrawAnchors;     //draw anchors, to see them in the score
-extern bool g_fDrawBounds;      //draw bounds rectangle
-extern bool g_fShowMargins;     //draw margins in scores, so user can change them 
-
 //some definitions for canvas->draw methods
 #define DO_MEASURE true
 #define DO_DRAW false

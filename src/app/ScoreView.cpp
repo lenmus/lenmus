@@ -79,13 +79,6 @@ enum
     lmID_VSCROLL,
 };
 
-// global variables. Used for debugging
-bool g_fDrawSelRect = false;    //draw selection rectangles around staff objects
-bool g_fDrawBounds = false;     //draw bounds rectangles around staff objects
-bool g_fShowMargins = false;    //draw margins in scores, so user can change them
-bool g_fDrawAnchors = false;    //draw anchors, to see them in the score
-
-
 // Dragging states
 enum
 {
@@ -1453,39 +1446,6 @@ void lmScoreView::DumpBitmaps()
     m_graphMngr.BitmapsToFile(sFilename, sExt, wxBITMAP_TYPE_JPEG);
 }
 
-void lmScoreView::OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
-								 lmUPoint uPos)
-{
-	//Click on a staff. Move cursor to that staff and nearest note/rest to click point
-	//uPos: click point, referred to current page origin
-
-	lmVStaff* pVStaff = pBSV->GetCreatorVStaff();
-	int nStaff = pSS->GetNumStaff();
-	int nMeasure = pBSV->GetNumMeasure();
-
-	////DBG --------------------------------------------------------------------------------
-	//wxString sMsg = wxString::Format(_T("[lmScoreView::OnClickOnStaff] Click on staff %d, on measure %d"),
-	//								 nStaff, nMeasure);
-	//m_pMainFrame->SetStatusBarMsg(sMsg);
-	//// END DBG ---------------------------------------------------------------------------
-
-	//Move to nearest note/rest to click point
-	MoveCaretNearTo(uPos, pVStaff, nStaff, nMeasure);
-}
-
-void lmScoreView::OnClickOnObject(lmGMObject* pGMO)
-{
-	//Click on an score obj staffobj.
-    //if it is a staffobj move cursor to it. Else do nothing
-	//uPos: click point, referred to current page origin
-
-    lmScoreObj* pSCO = pGMO->GetScoreOwner();
-    if (pSCO->GetScoreObjType() != lmSOT_ComponentObj)
-        return;
-    else
-        MoveCursorToObject(pGMO);
-}
-
 void lmScoreView::MoveCursorToObject(lmGMObject* pGMO)
 {
     //move cursor to object
@@ -2302,6 +2262,11 @@ void lmScoreView::UpdateRulerMarkers(lmDPoint vPagePos)
 
 lmGMObject* lmScoreView::FindObjectAt(int nNumPage, lmUPoint uPos, bool fSelectable)
 {
-    return m_graphMngr.FindObjectAtPagePos(m_nNumPage, uPos, fSelectable);
+    return m_graphMngr.FindShapeAtPagePos(m_nNumPage, uPos, fSelectable);
+}
+
+lmBox* lmScoreView::FindBoxAt(int nNumPage, lmUPoint uPos)
+{
+    return m_graphMngr.FindBoxAtPagePos(m_nNumPage, uPos);
 }
 

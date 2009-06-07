@@ -65,19 +65,21 @@ lmBoxSliceVStaff* lmBoxSliceInstr::AddVStaff(lmVStaff* pVStaff, int nMeasure)
     return pBSV;
 }
 
-void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This update must be propagated to all contained boxes
-
-	SetXLeft(xLeft);
-
-	//propagate change
-    for (int i=0; i < (int)m_Boxes.size(); i++)
-    {
-        ((lmBoxSliceVStaff*)m_Boxes[i])->UpdateXLeft(xLeft);
-    }
-}
+//void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)
+//{
+//	// During layout there is a need to update initial computations about this
+//	// box slice position. This update must be propagated to all contained boxes
+//
+//    lmLUnits uIncr = GetXLeft() - xLeft;
+//	SetXLeft(xLeft);
+//    m_uLimitsTop.x += uIncr;
+//
+//	//propagate change
+//    for (int i=0; i < (int)m_Boxes.size(); i++)
+//    {
+//        ((lmBoxSliceVStaff*)m_Boxes[i])->UpdateXLeft(xLeft);
+//    }
+//}
 
 void lmBoxSliceInstr::CopyYBounds(lmBoxSliceInstr* pBSI)
 {

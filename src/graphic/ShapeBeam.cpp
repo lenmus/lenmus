@@ -520,23 +520,23 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
 
 }
 
-bool lmShapeBeam::BoundsContainsPoint(lmUPoint& pointL)
+bool lmShapeBeam::BoundsContainsPoint(lmUPoint& uPoint)
 {
     //check if point is in beam segments
-    if (lmGMObject::BoundsContainsPoint(pointL))
+    if (lmGMObject::BoundsContainsPoint(uPoint))
         return true;
 
     //check if point is in any of the stems
-    return lmCompositeShape::BoundsContainsPoint(pointL);
+    return lmCompositeShape::BoundsContainsPoint(uPoint);
 }
 
-bool lmShapeBeam::HitTest(lmUPoint& pointL)
+bool lmShapeBeam::HitTest(lmUPoint& uPoint)
 {
     //check if point is in beam segments
-    if (lmGMObject::HitTest(pointL))
+    if (lmGMObject::HitTest(uPoint))
         return true;
 
     //check if point is in any of the stems
-    return lmCompositeShape::HitTest(pointL);
+    return lmCompositeShape::HitTest(uPoint);
 }
 

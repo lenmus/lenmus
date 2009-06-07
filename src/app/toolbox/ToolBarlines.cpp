@@ -128,7 +128,7 @@ static lmBarlinesDBEntry tBarlinesDB[lm_eMaxBarline+1];
 
 
 lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent)
+        : lmToolGroup(pParent, pParent->GetColors())
 {
     //To avoid having to translate again barline names, we are going to load them
     //by using global function GetBarlineName()

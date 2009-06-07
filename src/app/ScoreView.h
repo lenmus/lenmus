@@ -170,6 +170,7 @@ public:
     void ScaleDC(wxDC* pDC);
     void UpdateRulerMarkers(lmDPoint vPagePos);
     lmGMObject* FindObjectAt(int nNumPage, lmUPoint uPos, bool fSelectable);
+    lmBox* FindBoxAt(int nNumPage, lmUPoint uPos);
     void MoveCursorToObject(lmGMObject* pGMO);
 
 	// units conversion
@@ -204,11 +205,7 @@ public:
 	//caret management
     void HideCaret();
     void ShowCaret();
-
-	//Mouse commands
-	void OnClickOnStaff(lmBoxSystem* pBS, lmShapeStaff* pSS, lmBoxSliceVStaff* pBSV,
-						lmUPoint uPos);
-    void OnClickOnObject(lmGMObject* pGMO);
+	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
 
 
 private:
@@ -221,7 +218,6 @@ private:
 	//caret management
     void SetInitialCaretPosition();
     void UpdateCaret();
-	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
     void MoveCaretToObject(lmStaffObj* pSO);
 
     //internal call backs

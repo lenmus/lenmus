@@ -80,7 +80,7 @@ public:
     wxString Dump(int nIndent);
 
     //dragging the handler
-    void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
+    void OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint);
 
     //operations
     void SetHandlerPoints(lmLUnits xStart, lmLUnits yStart,
@@ -114,7 +114,7 @@ public:
     wxString Dump(int nIndent);
 
     //dragging the handler
-    void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
+    void OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint);
 
     //operations
     void SetHandlerCenterPoint(lmLUnits uxPos, lmLUnits uyPos);
@@ -150,7 +150,7 @@ public:
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
     //call backs
-    void OnMouseIn(wxWindow* pWindow, lmUPoint& pointL);
+    void OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint);
 	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
     void OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoint& uPos);
 

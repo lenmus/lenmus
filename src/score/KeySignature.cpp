@@ -171,7 +171,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
     {
         //Dirty: create new shapes for this object
 
-        //get the position on which the time signature must be drawn
+        //get the position on which the key signature must be drawn
         lmLUnits uxLeft = uPos.x;
 	    lmLUnits uyTop = uPos.y + m_pVStaff->GetStaffOffset(m_nStaffNum);
 
@@ -193,8 +193,9 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
             uWidth = wxMax(m_pShapes[nStaff-1]->GetWidth(), uWidth);
 
             //compute vertical displacement for next staff
+            uyTop += pStaff->GetTopMargin();
             uyTop += pStaff->GetHeight();
-            uyTop += pStaff->GetAfterSpace();
+            uyTop += pStaff->GetBottomMargin();
         }
     }
 

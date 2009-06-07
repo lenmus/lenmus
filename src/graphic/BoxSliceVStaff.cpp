@@ -58,36 +58,19 @@ lmBoxSliceVStaff::~lmBoxSliceVStaff()
 {
 }
 
-//void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
-//{
-//    //update selection rectangle
-//    m_uSelRect = GetBounds();
-//
-//	//render shapes
-//	RenderShapes(pPaper);
-//
-//    lmGMObject::Render(pPaper, *wxGREEN);
-//}
-
 lmBoxSystem* lmBoxSliceVStaff::GetOwnerSystem()
 {
 	return m_pSliceInstr->GetOwnerSystem();
 }
 
-void lmBoxSliceVStaff::UpdateXLeft(lmLUnits xLeft)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This update must be propagated to all contained boxes
-
-	SetXLeft(xLeft);
-}
-
-//void lmBoxSliceVStaff::UpdateXRight(lmLUnits xRight)
+//void lmBoxSliceVStaff::UpdateXLeft(lmLUnits xLeft)
 //{
 //	// During layout there is a need to update initial computations about this
 //	// box slice position. This update must be propagated to all contained boxes
 //
-//	SetXRight(xRight);
+//    lmLUnits uIncr = GetXLeft() - xLeft;
+//	SetXLeft(xLeft);
+//    m_uLimitsTop.x += uIncr;
 //}
 
 void lmBoxSliceVStaff::CopyYBounds(lmBoxSliceVStaff* pBSV)

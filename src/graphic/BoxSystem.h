@@ -82,8 +82,7 @@ public:
                             { wxASSERT(nStaff > 0); return m_ShapeStaff[nStaff - 1]; }
 
     //pointing at
-    //lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-	lmShapeStaff* FindStaffAtPosition(lmUPoint& pointL);
+	lmShapeStaff* FindStaffAtPosition(lmUPoint& uPoint);
 	int GetNumMeasureAt(lmLUnits uxPos);
 
     //selection
@@ -94,7 +93,7 @@ public:
     //void Render(lmPaper* pPaper);
 
 	//access to objects
-	lmBoxSlice* GetSliceAt(lmLUnits xPos);
+	lmBoxSlice* FindBoxSliceAt(lmLUnits uxPos);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);

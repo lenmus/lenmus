@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -51,17 +51,14 @@ public:
 	//---- specific methods of this class ------------------------
 
 	// margins
-    inline lmLUnits GetAfterSpace() { return m_uAfterSpace; }
+    inline lmLUnits GetTopMargin() { return m_uTopMargin; }
+    inline lmLUnits GetBottomMargin() { return m_uBottomMargin; }
     inline lmLUnits GetLeftMargin() { return m_uLeftMargin; }
     inline lmLUnits GetRightMargin() { return m_uRightMargin; }
-    inline void SetAfterSpace(lmLUnits nLogicalUnits) { m_uAfterSpace = nLogicalUnits; }
-    inline void SetLeftMargin(lmLUnits nLogicalUnits) { m_uLeftMargin = nLogicalUnits; }
-    inline void SetRightMargin(lmLUnits nLogicalUnits) { m_uRightMargin = nLogicalUnits; }
-    inline void SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nAfter) {
-                        m_uAfterSpace = nAfter;
-                        m_uLeftMargin = nLeft;
-                        m_uRightMargin = nRight;
-            }
+    inline void SetTopMargin(lmLUnits uSpace) { m_uTopMargin = uSpace; }
+    inline void SetBottomMargin(lmLUnits uSpace) { m_uBottomMargin = uSpace; }
+    inline void SetLeftMargin(lmLUnits uSpace) { m_uLeftMargin = uSpace; }
+    inline void SetRightMargin(lmLUnits uSpace) { m_uRightMargin = uSpace; }
 
     // sizes
     lmLUnits GetHeight();
@@ -102,7 +99,8 @@ private:
 
     lmLUnits    m_uLeftMargin;       // lmStaff margins (logical units))
     lmLUnits    m_uRightMargin;
-    lmLUnits    m_uAfterSpace;
+    lmLUnits    m_uTopMargin;
+    lmLUnits    m_uBottomMargin;
 
     //info about font to use to draw music glyphs 
     wxFont*     m_pFontDraw;        //font to use for drawing on this staff

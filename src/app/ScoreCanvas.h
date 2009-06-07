@@ -34,7 +34,8 @@ class lmScoreHighlightEvent;
 class lmScoreView;
 class lmDocument;
 class lmGMSelection;
-class lmToolBoxEvent;
+class lmToolBoxToolSelectedEvent;
+class lmToolBoxPageChangedEvent;
 class lmToolPage;
 class lmScoreProcessor;
 
@@ -171,7 +172,8 @@ public:
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 	void OnKeyPress(wxKeyEvent& event);
     void OnKeyDown(wxKeyEvent& event);
-    void OnToolBoxEvent(lmToolBoxEvent& event);
+    void OnToolBoxEvent(lmToolBoxToolSelectedEvent& event);
+    void OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event);
 
     void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
 
@@ -269,6 +271,10 @@ private:
     void SelectVoice(bool fUp);
     void SelectVoice(int nVoice);
 
+    //access to ToolBox
+    void GetToolBoxValuesForPage(lmEToolPage nPage);
+
+
     //managing selections and cursor pointed objects
     bool IsSelectionValidForTies(lmNote** ppStartNote = NULL, lmNote** ppEndNote = NULL);
     lmNoteRest* IsSelectionValidForTuplet();
@@ -278,11 +284,14 @@ private:
 
 
 
-    lmScoreView*        m_pView;        //owner view
-    wxWindow*           m_pOwner;       //parent window
-    lmDocument*    m_pDoc;         //the document rendered by the view
+    lmScoreView*    m_pView;            //owner view
+    wxWindow*       m_pOwner;           //parent window
+    lmDocument*     m_pDoc;             //the document rendered by the view
 
     wxColour        m_colorBg;			//colour for background
+
+    //data entry mode
+    int             m_nEntryMode;
 
 	//to control octave when inserting several consecutive notes
 	bool			m_fInsertionSequence;
@@ -303,6 +312,16 @@ private:
     int             m_nTbAcc;
     int             m_nTbDots;
     int             m_nTbDuration;
+
+    //current values selected in ToolBox
+    //PageNotes
+    lmENoteType     m_nSelNoteType;
+	int             m_nSelDots;
+	lmENoteHeads    m_nSelNotehead;
+	lmEAccidentals  m_nSelAcc;
+	int             m_nSelOctave;
+	int             m_nSelVoice;
+
 
     //new--------------------------------------------------------------
 	//dragging on canvas with left button: selection

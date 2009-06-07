@@ -61,6 +61,9 @@ public:
 	//ownership and related info
 	inline int GetNumStaff() { return m_nStaff; }
 
+    //other
+    int GetLineSpace(lmLUnits uyPos);
+
 protected:
 	int			m_nStaff;			//num of staff in the owner VStaff
 	int			m_nNumLines;		//how many staff lines
