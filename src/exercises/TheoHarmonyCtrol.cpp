@@ -118,18 +118,36 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     //This method creates a problem score, satisfiying the restrictions imposed
     //by exercise options and user customizations.
 
-    //TODO: all.
-    //Following code is just an example. It prepares a score
-    //with a fixed bass.
+    // Carlos  jun-09
+    //  Three types of problem
+    //   1) fixed bass 
+    //   2) TODO
+    //   3) TODO
+    int nExcerciseType = 1;  // TODO mejorar y completar
+
+    // Prepares a score with that meets the restrictions
 
     // select a random key signature
     lmRandomGenerator oGenerator;
     m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
+    //todo? if ( nExcerciseType == 1)   {
+//@    int nNumMeasures = oGenerator.RandomNumber(2, 3);
+    int nNumMeasures = 2;
+    wxString sExerciseDescription  = _T(" Fixed bass; root position. Complete the chord notes.");
+
+    // }
+
+    wxString sExerciseTitle = wxString::Format(_T(" Harmony Exercise %d : %s ")
+        , nExcerciseType, sExerciseDescription);
+
+
+
     //create a score with a bass line
     wxString sPattern;
-   //TODO: dejar version final o quitar:  provlmNote* pNote; lmLDPNode* pNode;
+    lmNote* pNote;
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
     m_pProblemScore = new lmScore();
@@ -144,26 +162,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     pVStaff->AddKeySignature( m_nKey ); //key signature
     pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
 
-  /*TODO: dejar version final o quitar  @@@@@@@@@@@@@@@carlos
-    lmLDPNode* pNode;
-    lmNote* pNote;
-
-    wxString sNotes[] = {
-        _T("(n a4 q p1 v2) ( chord (n a4 q p1 v2) (n b4 q p1 v2) (n c5 q p1 v2) (n d5 q p1 v2) ) (barline)"),
-        _T("( chord (n b4 q p1 v1) (n d4 q p1 v1) (n f4 q p1 v1) (n a5 q p1 v1) ) (n a4 q p1 v2) (barline)"),
-        _T("(n a4 q p1 v2) ( chord (n a4 q p1 v2) (n c5 q p1 v2) (n e5 q p1 v2) (n g5 q p1 v2) ) (barline)"),
-        _T("( chord (n d4 q p1 v1) (n e4 q p1 v1) (n f4 q p1 v1) (n g4 q p1 v1) ) (n a4 q p1 v2) (barline)"),
-        _T("")
-    };
-    int n = 0;
-    while (sNotes[n] != _T(""))
-    {
-        pNode = parserLDP.ParseText( sNotes[n] );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        n++;
-    } */
-
-/*TODO: dejar version final o quitar  @@@@@@@@@@@@@@@carlos
     wxString sNotes[16] = {
         _T("(n c3 q p2 v4 (stem down))"),
         _T("(n e3 q p2 v4 (stem down))"),
@@ -182,11 +180,9 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         _T("(n g2 q p2 v4 (stem down))"),
         _T("(n c3 q p2 v4 (stem down))")
     };
-*/
 
-/*****
     //loop the add notes
-    for (int iN=0; iN < 16; iN+=2)
+    for (int iN=0; iN < (nNumMeasures*2); iN+=2)
     {
         //add barline for previous measure
         if (iN != 0)
@@ -194,7 +190,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         else
             pVStaff->AddSpacer(20);
 
-//@@@@@@@@@@@@@@@@@@@@@ TODO: dejar version final o quitar 
         //two chords per measure (time signature is 2 / 4)
         for (int iM=0; iM < 2; iM++)
         {
@@ -206,11 +201,17 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     }
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
-    */
+
+/*@@@@@@@@
+    lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& oFontData,
+                        bool fHasWidth);
+    lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
+                        bool fHasWidth);
+--*/
+//    m_pProblemScore->se
 
     //set the name and the title of the score
-    m_pProblemScore->SetScoreName(_("Harmony exercise"));
-    //m_pProblemScore->AddTitle(_("Harmony exercise"));     //To implement !!
+    m_pProblemScore->SetScoreName( sExerciseTitle );
 }
 
 void lmTheoHarmonyCtrol::OnSettingsChanged()

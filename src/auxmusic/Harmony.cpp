@@ -71,70 +71,71 @@ int GetHarmonicMovementType( lmNote* pVoice10, lmNote* pVoice11, lmNote* pVoice2
 }
 
 
-// TODO: ESTO ES SOLO PROVISIONAL; PENSAR CÓMO MOSTRAR LA INFORMACION
-#include "../app/MainFrame.h"
-extern lmMainFrame* GetMainFrame();
-#include "../app/ScoreDoc.h"
-static const int ntDisXstart = 0;
-static const int ntDisXend = -200;
-static const int ntDisYstart = 40;
-static const int ntDisYend = -120;
-void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
-                                           , wxColour colour, wxString &sText, bool reset)
+//
+// Message box to display the results if the chord analysis
+// 
+// Remember:
+//      x: relative to object; positive: right
+//      y: relative to top line; positive: down
+ChordInfoBox::ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+                           , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement)
+{
+    Settings(pSize, pFontInfo, pMarkup, nBoxX, nBoxY, nLineX, nLineY, nBoxYIncrement);
+}
+void ChordInfoBox::Settings(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+                            , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement)
+{
+    m_ntConstBoxXstart = nBoxX;  
+    m_ntConstInitialBoxYStart = nBoxY;
+    m_ntConstLineXstart = nLineX; 
+    m_ntConstLineYStart = nLineY;
+    m_ntConstBoxYIncrement = nBoxYIncrement;
+    m_pMarkup = pMarkup;
+    m_pFontInfo = pFontInfo;
+    m_pSize = pSize;
+
+    assert(m_pMarkup != NULL);
+    assert(m_pFontInfo != NULL);
+    assert(m_pSize != NULL);
+
+    m_ntCurrentBoxYStart = m_ntConstInitialBoxYStart;
+}
+void ChordInfoBox::ResetPosition()
+{
+    m_ntCurrentBoxYStart = m_ntConstInitialBoxYStart;
+}
+void ChordInfoBox::SetYPosition(int nYpos)
+{
+    m_ntCurrentBoxYStart = nYpos;
+}
+void ChordInfoBox::DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText)
 {
     int nNumChordNotes  = pChordDsct->nNumChordNotes;
-    // Remember: all 'y' positions are relative to top line (5th line of
-    //   first staff). 'x' positions are relative to current object position.
-    lmTenths ntxStart = ntDisXstart;  // fijo; relativo al usuario
-    lmTenths ntxEnd = ntDisXend; // fijo
-    static lmTenths ntyStart = ntDisYstart;  // relativo a top line; positivo: abajo
-    static lmTenths ntyEnd = ntDisYend;  // negativo: arriba. Se baja en cada uso
-
-	lmTenths nTxPos = ntxEnd + 10;
-    lmTenths nTyPos = ntyEnd + 10;
-    if ( reset )
-    {
-        // only reset
-        ntyStart = ntDisYstart;  
-        ntyEnd = ntDisYend; 
-        return;
-    }
-
-    //define the font to use for texts
-    lmFontInfo tFont = {_("Comic Sans MS"), 6, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-    lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+    lmTextStyle* pStyle = pScore->GetStyleName(*m_pFontInfo);
 
     // Display chord info in score with a line and text
     assert(nNumChordNotes > 0);
     assert(nNumChordNotes < 20);
-    assert(pChordDsct != NULL);
 
     for (int i = 0; i<nNumChordNotes; i++)
     {
         assert(pChordDsct->pChordNotes[i] != NULL);
-        //if ( pChordDsct->pChordNotes[i]->GetComponentColour() == *wxGREEN )
-          pChordDsct->pChordNotes[i]->SetColour(colour);
+        pChordDsct->pChordNotes[i]->SetColour(colour);
     }
 
-    // Green line pointing to the chord
-    // Remember: all 'y' positions are relative to top line (5th line of
-    //   first staff). 'x' positions are relative to current object position.
-    lmStaffObj* cpSO =pChordDsct->pChordNotes[nNumChordNotes-1];
-//not good for linux!    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTPoint(nTxPos, nTyPos), lmTPoint(ntxStart, ntyStart),
-//                                            sText, pStyle,	wxSize(500, 60), colour);
-    lmTPoint lmTP1(nTxPos, nTyPos);
-    lmTPoint lmTP2(ntxStart, ntyStart);
-    wxSize size(510, 60);
-    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTP1, lmTP2,
-                                            sText, pStyle,	size, colour);
+    // Line end: the first note
+    lmStaffObj* cpSO = pChordDsct->pChordNotes[nNumChordNotes-1];
+    lmTPoint lmTBoxPos(m_ntConstBoxXstart, m_ntCurrentBoxYStart);
+    lmTPoint lmTLinePos(m_ntConstLineXstart, m_ntConstLineYStart);
+    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTBoxPos, lmTLinePos, sText, pStyle, *m_pSize, colour);
 
-/*---- TODO: que hacer con esto???
 	lmMarkup* pError = new lmMarkup(cpSO, pTxtBox);
-    m_markup.push_back(pError);
----*/
-    ntyEnd +=50; // y positions are NOT relative; change each time
+    m_pMarkup->push_back(pError);
 
+    // here increment the static variables
+    m_ntCurrentBoxYStart += m_ntConstBoxYIncrement;
 }
+
 
 void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
 {
@@ -246,7 +247,7 @@ void lmActiveNotes::RecalculateActiveNotes()
      it=m_ActiveNotesInfo.begin();
      while(it != m_ActiveNotesInfo.end())
      {
-         // AWARE: EQUAL time considered as finished  (TODO @@CONFIRM)
+         // AWARE: EQUAL time considered as finished  (TODO: CONFIRM by music expert)
          if ( ! IsHigherTime(  (*it)->rEndTime, r_current_time ) )
          {
              delete *it;
@@ -257,7 +258,7 @@ void lmActiveNotes::RecalculateActiveNotes()
      }
 }
 
-// TODO: usado para debug; ver si vale la pena dejarlo...
+// TODO: method used for debug. Keep it?
 wxString lmActiveNotes::ToString()
 {
     wxString sRetStr = _T("");
@@ -287,12 +288,14 @@ lmRuleList::lmRuleList(lmChordDescriptor* pChD, int nNumChords)
     SetChordDescriptor(pChD, nNumChords);
 };
 
-// TODO: COMPLETAR LA LISTA DE REGLAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        Para crear una regla:
-//        1) Crear la clase (recomendado usar la macro LM_CREATE_CHORD_RULE)
-//        2) Añadir una instancia en AddRule
-//        3) Implementar el metodo Evaluate
+// TODO: ADD MORE HARMONY RULES !!
+//        To add a rule:
+//        1) Create the class (recommended to use the macro LM_CREATE_CHORD_RULE)
+//        2) Add an instance in AddRule
+//        3) Implement the Evaluate method
 //////////////////////////////////////////////////////////////////////
+
+// Todo: select the applicable rules somehow?  use IsEnabled?
 
 //
 // Add rules
@@ -320,7 +323,7 @@ void lmRuleList::CreateRules()
 //
 // lmChordError
 //
-// TODO: VER SI ES PRACTICO ESTE SISTEMA DE REPRESENTAR CADA ERROR EN UN BIT
+// TODO: evaluate usability of this method of compressing each error in just a bit of information
 bool lmChordError::IncludesError(int nBrokenRule)
 {
     if ( nBrokenRule < lmCVR_FirstChordValidationRule || nBrokenRule > lmCVR_LastChordValidationRule)
@@ -333,7 +336,6 @@ void lmChordError::SetError(int nBrokenRule, bool fVal)
 {
     assert ( nBrokenRule >= lmCVR_FirstChordValidationRule && nBrokenRule <= lmCVR_LastChordValidationRule);
     nErrList |= ( (fVal? 1:0) << nBrokenRule );
-//TODO: remove?    wxLogMessage(_T("SetError %d ,  ErrList:%u ,  %u"), nBrokenRule,  nErrList,   fVal );
 }
 
 
@@ -356,7 +358,7 @@ lmRule::lmRule(int nRuleID, wxString sDescription)
 //
 
 // return number of errors
-int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[])
+int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )
 {
     sResultDetails = _T("lmRule5ThNotDoubled::Evaluate");
     if ( m_pChordDescriptor == NULL)
@@ -418,32 +420,27 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
                         wxLogMessage( sResultDetails );
 
 
-                        HDisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
-                          , &m_pChordDescriptor[nC], colour, sResultDetails, false);
+                        pBox->DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore(), &m_pChordDescriptor[nC], colour, sResultDetails);
 
 
-                         // display failing notes in red   TODO: mejorar?
-  //                       if ( m_pChordDescriptor[nC].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
-                             m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxCYAN);
-  //                       if ( m_pChordDescriptor[nC].pChordNotes[i]->GetComponentColour() == *wxGREEN )
-                             m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxBLUE);
-  //                       if ( m_pChordDescriptor[nC-1].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
-                             m_pChordDescriptor[nC-1].pChordNotes[nN]->SetColour(*wxCYAN);
-  //                       if ( m_pChordDescriptor[nC-1].pChordNotes[i]->GetComponentColour() == *wxGREEN )
-                             m_pChordDescriptor[nC-1].pChordNotes[i]->SetColour(*wxBLUE);
+                        // display failing notes in red   TODO: mejorar?
+                        m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxCYAN);
+                        m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxBLUE);
+                        m_pChordDescriptor[nC-1].pChordNotes[nN]->SetColour(*wxCYAN);
+                        m_pChordDescriptor[nC-1].pChordNotes[i]->SetColour(*wxBLUE);
 
-                         DrawArrow(
+                        DrawArrow(
                              m_pChordDescriptor[nC-1].pChordNotes[nN],
                              m_pChordDescriptor[nC].pChordNotes[nN],
                              wxColour(*wxRED) );
-                         DrawArrow(
+                        DrawArrow(
                              m_pChordDescriptor[nC-1].pChordNotes[i],
                              m_pChordDescriptor[nC].pChordNotes[i],
                              wxColour(*wxRED) );
 
 
-                         m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
-                         nErrCount++;
+                        m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
+                        nErrCount++;
                     }
                 }
 
@@ -455,7 +452,8 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
 }
 
 // return number of errors
-int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[])
+int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
+                                            , int pNumFailuresInChord[], ChordInfoBox* pBox)
 {
     // Forbidden to arrive to a fifth or octave by means of a direct movement ( both same delta sign)
     // exceptions:
@@ -539,14 +537,13 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFa
 
                         wxLogMessage( sResultDetails );
 
-                        HDisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
-                          , &m_pChordDescriptor[nC], colour, sResultDetails, false);
 
-                         // display failing notes in red  (TODO: mejorar indicacion de errores)
-   //                      if ( m_pChordDescriptor[nC].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
-                            m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
-   //                      if ( m_pChordDescriptor[nC].pChordNotes[i]->GetComponentColour() == *wxGREEN )
-                            m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxRED);
+                        pBox->DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
+                          , &m_pChordDescriptor[nC], colour, sResultDetails);
+
+                        // display failing notes in red  (TODO: mejorar indicacion de errores)
+                        m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
+                        m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxRED);
 
 
                         m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
@@ -563,7 +560,8 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails, int pNumFa
 
 
 // return number of errors
-int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[])
+int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[]
+                                     , ChordInfoBox* pBox)
 {
     sResultDetails = _T("lmRuleNoVoicesCrossing::Evaluate");
     if ( m_pChordDescriptor == NULL)
@@ -576,14 +574,11 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
     wxColour colour( 200, 20+nDifColour, 20+nDifColour, nTransp);
     int nErrCount = 0;
     int nNumNotes;
- //   int nVoiceMovementType, nDistance, nInterval;
     int nVoice[2];
     int nPitch[2];
     // Analyze all chords
     for (int nC=0; nC<m_nNumChords; nC++) 
     {
-        wxLogMessage(_T("Check chord %d "), nC);
-
         pNumFailuresInChord[nC] = 0;
         
         // Apply rule only if:
@@ -624,14 +619,12 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
 
                     wxLogMessage( sResultDetails );
 
-                    HDisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
-                      , &m_pChordDescriptor[nC], colour, sResultDetails, false);
+                    pBox->DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
+                      , &m_pChordDescriptor[nC], colour, sResultDetails);
 
                      // display failing notes in red  (TODO: mejorar indicacion de errores)
-//                      if ( m_pChordDescriptor[nC].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
-                        m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
-//                      if ( m_pChordDescriptor[nC].pChordNotes[i]->GetComponentColour() == *wxGREEN )
-                        m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxRED);
+                     m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
+                     m_pChordDescriptor[nC].pChordNotes[i]->SetColour(*wxRED);
 
                      m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
                      nErrCount++;
@@ -645,7 +638,8 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
 
 
 
-int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[])
+int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[]
+                                           , ChordInfoBox* pBox)
 {
     sResultDetails = _T("lmNoIntervalHigherThanOctave::Evaluate");
     if ( m_pChordDescriptor == NULL)
@@ -653,8 +647,8 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
         wxLogMessage(_T(" lmNoIntervalHigherThanOctave Rule %d  m_pChordDescriptor NULL "));
         return 0;
     }
-    int nDifColour = this->GetRuleId() * 2;   //todo: pensar forma de cambiar algo el color en cada regla?
-    int nTransp = 128; // todo: ¿usar transparencia?
+    int nDifColour = this->GetRuleId() * 2;   //todo: think: change color in each rule?
+    int nTransp = 128; // todo: use transparency?
     wxColour colour( 200, 20+nDifColour, 20+nDifColour, nTransp);
     int nErrCount = 0;
     int nNumNotes;
@@ -710,18 +704,17 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
 
                 wxLogMessage( sResultDetails );
 
-                HDisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
-                  , &m_pChordDescriptor[nC], colour, sResultDetails, false);
+                pBox->DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
+                  , &m_pChordDescriptor[nC], colour, sResultDetails);
 
                  // display failing notes in red  (TODO: mejorar indicacion de errores)
-//                      if ( m_pChordDescriptor[nC].pChordNotes[nN]->GetComponentColour() == *wxGREEN )
-                    m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
-                    m_pChordDescriptor[nC].pChordNotes[nN-1]->SetColour(*wxRED);
+                m_pChordDescriptor[nC].pChordNotes[nN]->SetColour(*wxRED);
+                m_pChordDescriptor[nC].pChordNotes[nN-1]->SetColour(*wxRED);
 
-                    DrawArrow(
-                         m_pChordDescriptor[nC].pChordNotes[nN-1],
-                         m_pChordDescriptor[nC].pChordNotes[nN],
-                         wxColour(*wxBLUE) );
+                DrawArrow(
+                     m_pChordDescriptor[nC].pChordNotes[nN-1],
+                     m_pChordDescriptor[nC].pChordNotes[nN],
+                     wxColour(*wxBLUE) );
 
                  m_pChordDescriptor[nC].tChordErrors.SetError( this->GetRuleId(), true);
                  nErrCount++;

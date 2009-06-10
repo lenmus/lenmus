@@ -119,6 +119,7 @@ public:
 
     //specific methods
     int AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH);
+
 #ifdef __WXDEBUG__
     void UnitTests();
     void  TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColour colour);
@@ -143,6 +144,11 @@ protected:
     //list of added markup objects
     std::list<lmMarkup*> m_markup;   
 
+    wxSize* pBoxSize;
+    lmFontInfo tFont;
+    ChordInfoBox* pInfoBox;
+    wxSize* pErrorBoxSize;
+    ChordInfoBox* pChordErrorBox;
 };
 
 #endif    // __LM_PROCESSOR_H__

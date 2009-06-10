@@ -112,6 +112,53 @@ protected:
 };
 
 
+
+//
+// Message box to display the results if the chord analysis
+// 
+#include "../app/MainFrame.h"
+extern lmMainFrame* GetMainFrame();
+#include "../app/ScoreDoc.h"
+//Error markup: the marked staffobj and its markup attachment
+typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;
+// Remember:
+//      x: relative to object; positive: right
+//      y: relative to top line; positive: down
+class ChordInfoBox 
+{
+public:
+    ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+        , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
+    ~ChordInfoBox() {};
+    
+    void Settings(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+        , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
+    void DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText);
+    void ResetPosition();
+    void SetYPosition(int nYpos);
+
+protected:
+
+ // Const values
+ int m_ntConstBoxXstart;
+ int m_ntConstLineXstart;
+ int m_ntConstLineYStart;
+
+ // Variable values: only Box Y position: incremented in each use
+ int m_ntConstInitialBoxYStart;
+ int m_ntConstBoxYIncrement;
+ int m_ntCurrentBoxYStart;
+
+ lmFontInfo* m_pFontInfo;
+ wxSize* m_pSize;
+ std::list<lmMarkup*>* m_pMarkup; 
+};
+
+
+
+
+
+
 enum  lmChordValidationRules 
 {
     lmCVR_ChordHasAllSteps,  // The chord is complete (has all note steps)
@@ -137,6 +184,7 @@ enum  lmChordValidationRules
 
 };
 
+
 //
 // Base virtual class of rules
 // 
@@ -147,7 +195,7 @@ public:
 
     lmRule(int nRuleID, wxString sDescription);
     virtual ~lmRule(){};
-    virtual int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[] )=0;
+    virtual int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )=0;
 //@@TODO QUITAR    virtual bool Evaluate(wxString& sResultDetails, lmChordDescriptor* pFailingChord)=0;
     void SetChordDescriptor(lmChordDescriptor* pChD, int nNumChords)
     {
@@ -197,8 +245,9 @@ class classname : public lmRule  \
 { \
 public: \
     classname() :lmRule(id, _T(text)) {}; \
-    int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[]); \
+    int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox); \
 };
+
 
 
 //

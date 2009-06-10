@@ -55,7 +55,6 @@ extern lmMainFrame* GetMainFrame();
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 #include "../auxmusic/ChordManager.h"
-//@@ TODO: remove, alredy in *.h #include "../auxmusic/Harmony.h"
 
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmScoreProcessor
@@ -314,6 +313,28 @@ IMPLEMENT_DYNAMIC_CLASS(lmHarmonyProcessor, lmScoreProcessor)
 lmHarmonyProcessor::lmHarmonyProcessor()
     : lmScoreProcessor()
 {
+  pBoxSize = new wxSize(400, 60);
+  pErrorBoxSize = new wxSize(510, 60);
+
+  tFont.sFontName = _("Comic Sans MS");
+  tFont.nFontSize = 6;
+  tFont.nFontStyle = wxFONTSTYLE_NORMAL;
+  tFont.nFontWeight = wxFONTWEIGHT_NORMAL;
+
+ // Text box for general information
+ // -200 --> Box X position shifted to left
+ //  400 --> Initial Box Y position at the bottom
+ //    0 --> Line X end position: centered with chord
+ //  100 --> Line Y end position: slightly shifted down
+  pInfoBox = new ChordInfoBox(pBoxSize, &tFont, &m_markup, -200, 500, 0, 100, -50);
+
+ // Text box for errror information
+ // -200 --> Box X position shifted to left
+ // -200 --> Initial Box Y position at the TOP
+ //    0 --> Line X end position: centered with chord
+ //  100 --> Line Y end position: slightly shifted down
+ //  +50 --> Increment y position after each use --> go downwards
+  pChordErrorBox = new ChordInfoBox(pErrorBoxSize, &tFont, &m_markup, -150, -200, 0, 100, +50);
 }
 
 lmHarmonyProcessor::~lmHarmonyProcessor()
@@ -330,6 +351,9 @@ lmHarmonyProcessor::~lmHarmonyProcessor()
     assert(nNumChords<lmMAX_NUM_CHORDS);
     for (int i = 0; i <nNumChords; i++)
         delete tChordDescriptor[i].pChord;
+
+    delete pBoxSize;
+    delete pInfoBox;
 }
 
 bool lmHarmonyProcessor::SetTools()
@@ -345,69 +369,6 @@ bool lmHarmonyProcessor::SetTools()
     //No more tools to add. Show panel in toolbox
     RealizePanel();
     return true;
-}
-
-
-// TODO: ESTO ES SOLO PROVISIONAL!!!!!!!!!!!!!!!!!!!!!!
-static const int ntDisXstart = 0;
-static const int ntDisXend = -200;
-static const int ntDisYstart = 40;
-static const int ntDisYend = -120;
-void  lmHarmonyProcessor::DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
-                                           , wxColour colour, wxString &sText, bool reset)
-{
-    int nNumChordNotes  = pChordDsct->nNumChordNotes;
-    // Remember: all 'y' positions are relative to top line (5th line of
-    //   first staff). 'x' positions are relative to current object position.
-    lmTenths ntxStart = ntDisXstart;  // fijo; relativo al usuario
-    lmTenths ntxEnd = ntDisXend; // fijo
-    static lmTenths ntyStart = ntDisYstart;  // relativo a top line; positivo: abajo
-    static lmTenths ntyEnd = ntDisYend;  // negativo: arriba. Se baja en cada uso
-
-	lmTenths nTxPos = ntxEnd + 10;
-    lmTenths nTyPos = ntyEnd + 10;
-    if ( reset )
-    {
-        // only reset
-        ntyStart = ntDisYstart;  
-        ntyEnd = ntDisYend; 
-        wxLogMessage(_T("DisplayChordInfo: reset Y coord to  %d %d")
-            , ntDisYstart, ntDisYend);
-        return;
-    }
-
-    //define the font to use for texts
-    lmFontInfo tFont = {_("Comic Sans MS"), 6, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-    lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-
-    // Display chord info in score with a line and text
-    assert(nNumChordNotes > 0);
-    assert(nNumChordNotes < 20);
-    assert(pChordDsct != NULL);
-
-    for (int i = 0; i<nNumChordNotes; i++)
-    {
-        assert(pChordDsct->pChordNotes[i] != NULL);
-        pChordDsct->pChordNotes[i]->SetColour(colour);
-    }
-
-    // Green line pointing to the chord
-    // Remember: all 'y' positions are relative to top line (5th line of
-    //   first staff). 'x' positions are relative to current object position.
-    lmStaffObj* cpSO =pChordDsct->pChordNotes[nNumChordNotes-1];
-//not good for linux!    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTPoint(nTxPos, nTyPos), lmTPoint(ntxStart, ntyStart),
-//                                            sText, pStyle,	wxSize(400, 60), colour);
-    lmTPoint lmTP1(nTxPos, nTyPos);
-    lmTPoint lmTP2(ntxStart, ntyStart);
-    wxSize size(400, 60);
-    lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTP1, lmTP2,
-                                            sText, pStyle,	size, colour);
-
-	lmMarkup* pError = new lmMarkup(cpSO, pTxtBox);
-    m_markup.push_back(pError);
-
-    ntyEnd +=50; // y positions are NOT relative; change each time
-
 }
 
 
@@ -449,7 +410,8 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         (*pNumChords)++;
 // todo: set definitive colour       colour = *wxGREEN;
         colour = wxColour(10,255,0,128); // R, G, B, Transparency
-        // no necessary to display:  DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
+        // todo: consider, no necessary to display good chords?
+        pInfoBox->DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
         fOk = true;
     }
     else
@@ -461,7 +423,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         (*pNumChords)++;
 // todo: set definitive colour       colour = *wxRED;
         colour = wxColour(255,0,0,128); // R, G, B, Transparency
-        DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
+        pInfoBox->DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
         fOk = false;
     }
 
@@ -495,9 +457,8 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     float rRelativeTime = -2.0f;
     wxString sStatusStr;
 
-    // TODO: MEJORAR ; PROVISIONAL
-    //  resetear el control de las indicaciones (reiniciar el espaciado)....
-    DisplayChordInfo(pScore, &tChordDescriptor[0], *wxGREEN, sStatusStr, true);
+    // TODO: improve postioning of the textbox...
+    pInfoBox->ResetPosition();
 
     /*---
 
@@ -563,7 +524,6 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
 
                     fScoreModified = true; // repaint
                 }
-//                else  wxLogMessage(_T("    not higher ") );
 
                 // add new note to the list of active notes
                 ActiveNotesList.AddNote(pCurrentNote, rCurrentNoteAbsTime + pCurrentNote->GetDuration());
@@ -592,7 +552,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     {
        wxString sOkMsg = _T(" OK!");
        wxLogMessage( sOkMsg );
-       DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
+       pInfoBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
        fScoreModified = true; // repaint
     }
 
@@ -611,9 +571,9 @@ int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, 
     wxString sStr;
     sStr.clear();
 
-    int nNumErros = 0; // TODO: @@decidir: num de errores o num de acordes con error
+    int nNumErros = 0; // TODO: decide: total num of errors or num of chords with error
     lmRule* pRule;
-    // TODO: crear metodo de la lista que evalue TODAS las reglas??
+    // TODO: create metho of the list to evaluate ALL the rules ?
     for (int nR = lmCVR_FirstChordValidationRule; nR<lmCVR_LastChordValidationRule; nR++)
     {
         pRule = tRules.GetRule(nR);
@@ -625,28 +585,12 @@ int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, 
         {
             wxLogMessage(_T("Evaluating rule %d, description: %s")
                 , pRule->GetRuleId(), pRule->GetDescription().c_str());
-            nNumErros += pRule->Evaluate(sStr, &nNumChordError[0]);
+            nNumErros += pRule->Evaluate(sStr, &nNumChordError[0], pChordErrorBox);
             wxLogMessage(sStr);
             wxLogMessage(_T("   RESULT of Rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
             if (nNumErros > 0)
             {
-
-/*-- TODO: dejar una forma definitiva de mostrar los mensajes
-  esto fue un intento de mostrarlos despues de aplicar cada regla,
-  pero parece mejor al momento de detectar cada error en la regla (puede haer varios)
-                //@@@ provisional TODO: mostrar correctamente los errores:
-                //     en una ventana o apuntando al acorde
-	            wxColour colour( 100, 150, 200 );
-                // wxColour colour = *wxRED;
-                for (int nE=0; nE<nNumChords; nE++)
-                {
-                    if ( nNumChordError[nE] > 0 )
-                    {
-                        DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
-                          , &pChordDescriptor[nE], colour, sStr);
-                    }
-                }
-----*/
+              // TODO: anything else here?
             }
         }
     }
