@@ -210,6 +210,15 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 --*/
 //    m_pProblemScore->se
 
+
+    lmFontInfo tFont = {_T("Times New Roman"), 12, wxFONTSTYLE_NORMAL,
+                                wxFONTWEIGHT_BOLD };
+    lmTextStyle* pStyle = m_pProblemScore->GetStyleName(tFont);
+    lmScoreTitle* pTitle = m_pProblemScore->AddTitle(sExerciseTitle, lmHALIGN_CENTER, pStyle);
+    lmLocation tPos = g_tDefaultPos;
+
+    pTitle->SetUserLocation(tPos);
+
     //set the name and the title of the score
     m_pProblemScore->SetScoreName( sExerciseTitle );
 }
