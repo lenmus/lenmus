@@ -57,16 +57,15 @@ typedef struct lmChordInfoStruct {
     int nNumNotes;
     int nNumIntervals;
     int nNumInversions;
-    //@ TODO: PENSAR EN LA ELISION DE NOTAS
-    //@   un mecanismo generico:
-    //@    bool fAllowedElidedIntervals[lmINTERVALS_IN_CHORD];
-    //@    bool fElidedIntervals[lmINTERVALS_IN_CHORD];
-    //@  pero si solo se permite la inversion de la quinta, no hacen falta estos arrays
-    //@ [TODO: confirmar que es mas adecuado hablar de INTERVALOS elididos en lugar de NOTAS]
+    // TODO: consider to improve the ellision with a generic mechanism
+    //    bool fAllowedElidedIntervals[lmINTERVALS_IN_CHORD];
+    //    bool fElidedIntervals[lmINTERVALS_IN_CHORD];
+    //    now (jun-2009) only 5th ellided is allowed; then, those arrays are not necessary
+    // TODO: confirm music theory: ellided INTERVALS instead of just NOTES
     int nFifthElided;
     bool fRootIsDuplicated;
     lmFIntval nIntervals[lmINTERVALS_IN_CHORD];
-    void Initalize() //TODO @@pensar en mejorar... (un constructor??)
+    void Initalize() //TODO: consider possible inmprovement: a constructor?
     {
         nNumIntervals = 0;
         nNumNotes = 0;
@@ -80,9 +79,10 @@ typedef struct lmChordInfoStruct {
     }
 } lmChordInfo;
 
-//TODO: @ aux para debug. Si sirve, meterlo en  lmNote
+//TODO: This method was used mainly for debug. Consider to put it inside lmNote
 extern wxString NoteId(lmNote &tNote);
 
+// TODO: global methods. They could probably be placed inside a class...
 extern  void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
@@ -104,14 +104,14 @@ public:
     //destructor
     ~lmChordManager();
 
-    //creation
+    // creation
     void Create(wxString sRootNote, lmEChordType nChordType, int nInversion,
                 lmEKeySignatures nKey);
     void Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
     void Create(lmNote* pRootNote, lmChordInfo* chordInfo);
     void Initialize();
 
-    // For debugging
+    // for debugging
     wxString ToString();
 
     lmEChordType GetChordType() { return m_nType; }
@@ -138,8 +138,6 @@ public:
 private:
     void DoCreateChord(lmFIntval nIntval[]);
 
-
-
 //member variables
 
     lmEChordType      m_nType;
@@ -147,7 +145,7 @@ private:
     int             m_nInversion;
     int             m_nNumNotes;                    //num notes in the chord
     lmFPitch        m_fpNote[lmNOTES_IN_CHORD];     //the chord notes
-    int             m_nElision; // @@TODO: enum in ChordConstrains...
+    int             m_nElision; // TODO: consider to make an enum in ChordConstrains...
     bool            m_fRootIsDuplicated;
 
 };

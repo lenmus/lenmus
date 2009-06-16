@@ -47,9 +47,8 @@ static bool m_fStringsInitialized = false;
 // - intervals are from root note
 //      number + type:   m=minor, M=major, p=perfect, a=augmented, d=diminished
 #define lmNIL   lmNULL_FIntval
-//TODO: @ CONSIDERAR AMPLIAR CON INVERSIONES....
-//TODO: @@@ MEJORAR CREACION DE TABLA Y DE lmChordInfo: LOS INTERVALOS DEL 4 AL 6 NO SE INCIALIZAN
-//           UNIFICAR LA INICIALIZACION DE tData e Initialize
+//TODO: consider to improve the creation of this table
+//        for example handle also intervals above 4
 static lmChordInfo tData[ect_Max] = {
 // remember : { NumNotes, NumIntervals, NumInversions, FifthElided { intervals } }
     { 3, 2, 0, 0, false,{ lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
@@ -74,7 +73,7 @@ static lmChordInfo tData[ect_Max] = {
 //TODO: @ aux para debug. Si sirve, meterlo en  lmNote
 wxString NoteId(lmNote &tNote)
 {
-    //get pitch relative to key signature
+    // Get pitch relative to key signature
     lmFPitch fp = FPitch(tNote.GetAPitch());
     lmKeySignature* pKey = tNote.GetApplicableKeySignature();
     lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
@@ -143,7 +142,7 @@ void  GetIntervalsFromNotes(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo*
         {
             if (fpIntv == 0)
             {
-  //@@TODO: remove          wxLogMessage(_T(" Ignored 0 Interval[%d]"), nExistingIntvIndex);
+                // Ignored 0 Interval
             }
             else
             {
@@ -223,16 +222,13 @@ lmEChordType GetChordTypeFromIntervals( lmChordInfo tChordInfo, bool fAllowFifth
                 else
                      wxLogMessage(_T(" @Check QUINTA ELIDIDA, %d intv,  %d == %d, ITEM:%d")
                         , tChordInfo.nNumIntervals, tChordInfo.nIntervals[0], tData[nIntv].nIntervals[0], nIntv );
-                // For the rest... what TODO:??  de momento: deben ser iguales también
+                // For the rest... what TODO:??  for the moment: they must also be the same
                 for (int i = 2; i < tData[nIntv].nNumIntervals && !fDifferent; i++)
                 {
                     if (tChordInfo.nIntervals[i] != tData[nIntv].nIntervals[i+1])
                     {
-//TODO:remove  wxLogMessage(_T(" @no hay QUINTA ELIDIDA, intervalo %d es %d != %d"), i,tChordInfo.nIntervals[i], tData[nIntv].nIntervals[i+1] );
                       fDifferent = true;
                     }
-//TODO:remove       else  wxLogMessage(_T(" @Check QUINTA ELIDIDA %d OK,  %d == %d, ITEM:%d")
-//                        , i,tChordInfo.nIntervals[i], tData[nIntv].nIntervals[i+1], nIntv );
                 }
                 if (!fDifferent)
                   return (lmEChordType) nIntv;  // found matching item
@@ -378,7 +374,6 @@ wxString lmChordManager::ToString()
         sRetStr = _T(" NOT CREATED");
     else
     {
-        //TODO: @@@In LDP ???
         int nNumNotes = GetNumNotes();
         sRetStr = wxString::Format(_T("[Chord: %s, %d notes, %d invers., %d elis., pattern: ")
             , GetNameFull().c_str()
@@ -397,18 +392,13 @@ wxString lmChordManager::ToString()
 }
 void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* pChordInfo)
 {
-   lmKeySignature* pKey = pRootNote->GetApplicableKeySignature();
-   lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+    lmKeySignature* pKey = pRootNote->GetApplicableKeySignature();
+    lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
 
     assert(pChordInfo != NULL);
 
     m_nKey = nKey;
 
-//  TODO: @ pensar si hay que guardar el número real de notas, incluyendo las duplicadas
-//            tener en cuenta que actualmente las notas se obtienen a partir de la fundamental
-//             simplemente sumando cada intervalo 
-//          De momento num notas = num intervalos + 1 
-//  m_nNumNotes = pChordInfo->nNumNotes;
     m_nNumNotes = pChordInfo->nNumIntervals + 1;
     m_nInversion = pChordInfo->nNumInversions;
     m_fpNote[0] = pRootNote->GetFPitch();
@@ -418,9 +408,8 @@ void lmChordManager::Create(lmNote* pRootNote, lmChordInfo* pChordInfo)
 
 }
 
-const bool CONSIDER_5TH_ELIDED = true; //@ TODO: configurable?
-// TODO: @pensar mejora: TryChordCreation debería crear ya el ChordManager; ahora solo lo intenta
-//
+const bool CONSIDER_5TH_ELIDED = true;
+// TODO: consider improvement: TryChordCreation may CREATE the ChordManager instead of just trying
 // Look for notes in the score that make up a valid chord
 bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutChordInfo, wxString &sOutStatusStr)
 {
@@ -463,10 +452,8 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
             , tOutChordInfo->nIntervals[i]);
     }
 
-    lmChordInfo tOriOutChordInfo; //@@TODO: mejorar... necesitamos esta copia para probar "fifth elided"
-    // TODO: EN GENERAL SE PUEDE "RELAJAR" LA EXIGENCIAS PARA CREAR ACORDES VALIDOS
-    //        y DETECTAR LAS INCORRECIONES ANALIZANCO POSTERIORMENTE (mediante reglas)
-    //       o sea: MOVER EL ANALISIS DE LA QUINTA ELIDIDA: pasarlo a una regla más
+    lmChordInfo tOriOutChordInfo; // TODO: might be improved; we need it to keep the original to check "fifth elided"
+    // TODO: IDEA: move the check "fifth elided" to a rule
     tOriOutChordInfo.Initalize();
     tOriOutChordInfo = *tOutChordInfo;
 
@@ -475,17 +462,17 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
     // Last resort: consider possible 5th elided
     if (CONSIDER_5TH_ELIDED && nType == lmINVALID_CHORD_TYPE)
     {
-        //@TODO: pensar en meter esto dentro de GetChordTypeAndInversionsFromIntervals
-        //@TODO: pensar en hacer ANTES DE GetChordTypeAndInversionsFromIntervals
-        //          (ahora GetChordTypeAndInversionsFromIntervals CAMBIA tOutChordInfo por las inversiones)
+        //TODO: consider to improve by placing this inside GetChordTypeAndInversionsFromIntervals
+        //TODO: consider to check eliision BEFORE GetChordTypeAndInversionsFromIntervals
+        //(now GetChordTypeAndInversionsFromIntervals changes tOutChordInfo a cause of the inversions)
         // Try with "fifth elided"
         nType = GetChordTypeFromIntervals( tOriOutChordInfo, true );
         if (nType != lmINVALID_CHORD_TYPE)
         {
             wxLogMessage(_T(" Checking fifth ellided, type:%d"), nType);
-            //@  TODO: pensar en mejorar comprobando nota raiz duplicada o triplicada...
-            //@  TODO: pensar en mejorar comprobando otras posibles elisiones...
-            *tOutChordInfo = tOriOutChordInfo; // TODO: @mejorable.. debemos recuperar el original
+            //  TODO: consider to improve by checking that root note is x2 or x3
+            //  TODO: consider to improve by checking  other possible ellisions
+            *tOutChordInfo = tOriOutChordInfo; // TODO: might be improved; we need it to keep the original
             tOutChordInfo->nFifthElided = 1;
         }
     }
@@ -494,12 +481,9 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
     if (nType == lmINVALID_CHORD_TYPE )
     {
 #ifdef __WXDEBUG__
-        wxLogMessage(_T(" @Try Invalid chord: Num notes %d, Ell:%d, i0:%d i1:%d i2:%d")
+        wxLogMessage(_T(" Invalid chord: Num notes %d, Ell:%d, i0:%d i1:%d i2:%d")
             ,  tOutChordInfo->nNumNotes, tOutChordInfo->nFifthElided, tOutChordInfo->nIntervals[0], tOutChordInfo->nIntervals[1]
         , tOutChordInfo->nIntervals[2] );
-        wxLogMessage(_T(" @@Try tData[0]: Num notes %d, i0:%d i1:%d i2:%d")
-            ,  tData[0].nNumNotes, tData[0].nIntervals[0], tData[0].nIntervals[1]
-             , tData[0].nIntervals[2]  );
 #endif
         fOk = false;
         sOutStatusStr +=  _T(", NOT A valid chord!] ");
@@ -522,7 +506,7 @@ lmChordManager::lmChordManager(lmNote* pRootNote, lmChordInfo &tChordInfo)
     m_nType = GetChordTypeFromIntervals( tChordInfo,  tChordInfo.nFifthElided > 0);
     if ( m_nType == lmINVALID_CHORD_TYPE )
     {
-        //TODO: @@@manage invalid chord...
+        //TODO: consider to improve the management of invalid chord...
         wxLogMessage(_T(" lmChordManager Invalid chord: Num notes %d, Num intv %d, 5thEllid %d, i0:%d i1:%d i2:%d")
             , tChordInfo.nNumNotes, tChordInfo.nNumIntervals, tChordInfo.nFifthElided
              , tChordInfo.nIntervals[0], tChordInfo.nIntervals[1], tChordInfo.nIntervals[2]  );
@@ -545,8 +529,8 @@ void lmChordManager::Initialize()
     m_nNumNotes = 0;
     m_nInversion = 0;
     m_nType =  lmINVALID_CHORD_TYPE;
-    m_nKey = earmDo; // TODO: @@@initalize with invalid value?
-    m_nElision = 0; // @@TODO: enum in ChordConstrains...
+    m_nKey = earmDo; // TODO: consider to initalize with invalid value?
+    m_nElision = 0;
 }
 
 
@@ -807,7 +791,6 @@ void lmChordManager::UnitTests()
 
 wxString ChordTypeToName(lmEChordType nType)
 {
-    //@ todo: quitar wxASSERT(nType < ect_Max);
     if (nType >= ect_Max)
         return _T("Wrong Chord");
 

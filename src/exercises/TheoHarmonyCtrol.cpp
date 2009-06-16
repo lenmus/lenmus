@@ -131,17 +131,20 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     lmRandomGenerator oGenerator;
     m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
-    //todo? if ( nExcerciseType == 1)   {
-//@    int nNumMeasures = oGenerator.RandomNumber(2, 3);
-    int nNumMeasures = 2;
-    wxString sExerciseDescription  = _T(" Fixed bass; root position. Complete the chord notes.");
+    wxString sExerciseDescription  = _T(" TODO:implement all exercise types");
+    int nNumMeasures = 1;
 
-    // }
+    if ( nExcerciseType == 1)
+    {
+        // TODO: create a method for each exercise type
+        // todo: possibility: random num. of measures: int nNumMeasures = oGenerator.RandomNumber(2, 3);
+        nNumMeasures = 2;
+        sExerciseDescription  = _T(" Fixed bass; root position. Complete the chord notes.");
 
-    wxString sExerciseTitle = wxString::Format(_T(" Harmony Exercise %d : %s ")
+    }
+
+    wxString sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
         , nExcerciseType, sExerciseDescription);
-
-
 
     //create a score with a bass line
     wxString sPattern;
@@ -162,24 +165,14 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     pVStaff->AddKeySignature( m_nKey ); //key signature
     pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
 
-    wxString sNotes[16] = {
-        _T("(n c3 q p2 v4 (stem down))"),
-        _T("(n e3 q p2 v4 (stem down))"),
-        _T("(n f3 q p2 v4 (stem down))"),
-        _T("(n a3 q p2 v4 (stem down))"),
-        _T("(n g3 q p2 v4 (stem down))"),
-        _T("(n e3 q p2 v4 (stem down))"),
-        _T("(n c3 q p2 v4 (stem down))"),
-        _T("(n b2 q p2 v4 (stem down))"),
-        _T("(n g2 q p2 v4 (stem down))"),
-        _T("(n a2 q p2 v4 (stem down))"),
-        _T("(n c3 q p2 v4 (stem down))"),
-        _T("(n e3 q p2 v4 (stem down))"),
-        _T("(n e3 q p2 v4 (stem down))"),
-        _T("(n d3 q p2 v4 (stem down))"),
-        _T("(n g2 q p2 v4 (stem down))"),
-        _T("(n c3 q p2 v4 (stem down))")
-    };
+
+    lmFontInfo tNumeralFont = {_T("Times New Roman"), 12, wxFONTSTYLE_NORMAL,
+                                wxFONTWEIGHT_BOLD };
+    lmTextStyle* pNumeralStyle = m_pProblemScore->GetStyleName(tNumeralFont);
+    wxString sNotes[7]    = {_T("a"), _T("b"), _T("c"), _T("d"), _T("e"), _T("f"), _T("g")};
+    // TODO: improve! (calculate numerals from chord info + key signature + mode)
+    wxString sNumeralsDegrees[7] = {_T("I"), _T("II"), _T("III"), _T("IV"), _T("V"), _T("VI"), _T("VII")};
+    wxString sNumerals;
 
     //loop the add notes
     for (int iN=0; iN < (nNumMeasures*2); iN+=2)
@@ -194,30 +187,29 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         for (int iM=0; iM < 2; iM++)
         {
             //bass note
-            sPattern = sNotes[iN + iM];
+            int nBassNote = oGenerator.RandomNumber(0, 6);
+            int nOctave = oGenerator.RandomNumber(2, 3);
+            sPattern = wxString::Format(_T("(n %s%d q p2 v4 (stem down))"), sNotes[nBassNote], nOctave);
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+
+            sNumerals = sNumeralsDegrees[nBassNote];
+            lmTextItem* pNumeralText = new lmTextItem(sNumeralsDegrees[nBassNote], lmHALIGN_DEFAULT, pNumeralStyle);
+            pNote->AttachAuxObj(pNumeralText);
+            pNumeralText->SetUserLocation(0.0f, 230.0f );
+   
         }
     }
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
 
-/*@@@@@@@@
-    lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& oFontData,
-                        bool fHasWidth);
-    lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
-                        bool fHasWidth);
---*/
-//    m_pProblemScore->se
-
-
-    lmFontInfo tFont = {_T("Times New Roman"), 12, wxFONTSTYLE_NORMAL,
+    lmFontInfo tTitleFont = {_T("Times New Roman"), 10, wxFONTSTYLE_NORMAL,
                                 wxFONTWEIGHT_BOLD };
-    lmTextStyle* pStyle = m_pProblemScore->GetStyleName(tFont);
-    lmScoreTitle* pTitle = m_pProblemScore->AddTitle(sExerciseTitle, lmHALIGN_CENTER, pStyle);
-    lmLocation tPos = g_tDefaultPos;
+    lmTextStyle* pTitleStyle = m_pProblemScore->GetStyleName(tTitleFont);
+    lmScoreTitle* pTitle = m_pProblemScore->AddTitle(sExerciseTitle, lmHALIGN_CENTER, pTitleStyle);
+    lmLocation tTitlePos = g_tDefaultPos;
+    pTitle->SetUserLocation(tTitlePos); // only necessary if wanted to be positioned at a specific point
 
-    pTitle->SetUserLocation(tPos);
 
     //set the name and the title of the score
     m_pProblemScore->SetScoreName( sExerciseTitle );
