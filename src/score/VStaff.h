@@ -35,7 +35,6 @@ class lmNote;
 class lmSOControl;
 class lmTextItem;
 class lmMetronomeMark;
-class lmBoxSliceVStaff;
 class lmScoreCommand;
 class lmUndoItem;
 
@@ -219,7 +218,6 @@ public:
 
     // rendering methods
     lmLUnits LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos);
-    void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);
     lmLUnits GetStaffLineThick(int nStaff);
@@ -283,15 +281,15 @@ public:
     lmBarline* GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos);
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
-	inline lmLUnits GetTopMargin() const { return m_topMargin; }
 
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
 	inline lmInstrument* GetOwnerInstrument() const { return m_pInstrument; }
 
-    //cursor management
+    //cursor management and cursor related
 	inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }
     inline void ResetCursor() { m_VCursor.ResetCursor(); }
+    inline lmContext* GetContextAtCursorPoint() { return m_VCursor.GetCurrentContext(); }
 
     //Debug methods
     wxString Dump();
@@ -366,11 +364,7 @@ private:
     lmLUnits            m_yLinTop;         //Y coord. of first line (line 5, first staff)
     lmLUnits            m_yLinBottom;      //Y coord. of last line (line 1, last staff)
 
-    lmLUnits            m_leftMargin;      // lmVStaff margins (logical units)
-    lmLUnits            m_topMargin;
-    lmLUnits            m_rightMargin;
-    lmLUnits            m_bottomMargin;
-    lmLUnits            m_nHeight;          //TopMargin + Staves height + BottomMargin
+    lmLUnits            m_uHeight;          //TopMargin + Staves height + BottomMargin
 
     //for drawing prolog
     lmLUnits            m_nSpaceBeforeClef;

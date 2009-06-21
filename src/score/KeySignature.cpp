@@ -180,6 +180,8 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
         //is necessary to repeat the shape in each staff of the instrument
         //So in the following loop we add the key signature shape for each VStaff of the
         //instrument
+        //At this point uyPosTop is correctly positioned for first staff, so no need to
+        //add StaffDistance for first staff
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
         {
@@ -187,15 +189,17 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
             lmClef* pClef = m_pContext[nStaff-1]->GetClef();
             lmEClefType nClef = (pClef ? pClef->GetClefType() : lmE_Undefined);
 
-            // Add the shape for key signature
+            //add top margin if not first staff
+            if (nStaff > 1)
+                uyTop += pStaff->GetStaffDistance();
+
+            //create the shape for key signature
             m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef,
                                               pStaff, colorC);
             uWidth = wxMax(m_pShapes[nStaff-1]->GetWidth(), uWidth);
 
-            //compute vertical displacement for next staff
-            uyTop += pStaff->GetTopMargin();
+            //add staff height
             uyTop += pStaff->GetHeight();
-            uyTop += pStaff->GetBottomMargin();
         }
     }
 

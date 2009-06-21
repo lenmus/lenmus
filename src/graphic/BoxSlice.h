@@ -45,7 +45,6 @@ class lmBoxSystem;
 class lmBoxSliceInstr;
 class lmInstrument;
 class lmBoxSystem;
-class lmBoxSliceVStaff;
 
 //
 // Class lmBoxSlice represents a sytem measure
@@ -66,26 +65,15 @@ public:
 
 	//render
 	void DrawSelRectangle(lmPaper* pPaper);
-    //void Render(lmPaper* pPaper, lmUPoint uPos);
 
     //info
     inline int GetNumMeasure() const { return m_nAbsMeasure; }
-
-    //selection
-    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax);
 
 	//instrument slices
     lmBoxSliceInstr* AddInstrument(lmInstrument* pInstr);
 	lmBoxSliceInstr* GetSliceInstr(int i) const { return (lmBoxSliceInstr*)m_Boxes[i]; }
 
-	//positioning and bounds
-    //void UpdateXLeft(lmLUnits xLeft);
-    void CopyYBounds(lmBoxSlice* pSlice);
-	//void SystemXRightUpdated(lmLUnits xRight);
-
     //implementation of virtual methods from base class
-    //wxString Dump(int nIndent);
 	int GetPageNumber() const;
 
 	//owners and related
@@ -93,6 +81,8 @@ public:
     lmBoxScore* GetOwnerBoxScore();
     lmBoxPage* GetOwnerBoxPage();
 
+    //overrides
+    void SetBottomSpace(lmLUnits uyValue);
 
 private:
 

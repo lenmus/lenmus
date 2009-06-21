@@ -54,13 +54,13 @@ class lmShapeMargin;
 class lmBoxSystem : public lmBox
 {
 public:
-    lmBoxSystem(lmBoxPage* pParent, int nNumPage);
+    lmBoxSystem(lmBoxPage* pParent, int nNumPage, int iSystem,
+                lmLUnits uxPos, lmLUnits uyPos, bool fFirstOfPage);
     ~lmBoxSystem();
 
 	int GetSystemNumber();
 
     void DeleteLastSlice();
-    void FixSlicesYBounds();
     int GetNumMeasures() { return m_nNumMeasures; }
 
     void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
@@ -85,13 +85,6 @@ public:
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& uPoint);
 	int GetNumMeasureAt(lmLUnits uxPos);
 
-    //selection
-    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax);
-
-    //rendering
-    //void Render(lmPaper* pPaper);
-
 	//access to objects
 	lmBoxSlice* FindBoxSliceAt(lmLUnits uxPos);
 
@@ -102,6 +95,7 @@ public:
 	//overrides
 	void AddShape(lmShape* pShape, long nLayer);
     void UpdateXRight(lmLUnits xPos);
+    void SetBottomSpace(lmLUnits uyValue);
 
 	//owners and related
 	lmBoxSystem* GetOwnerSystem() { return this; }

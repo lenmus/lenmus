@@ -29,11 +29,11 @@
 #pragma hdrstop
 #endif
 
+#include "BoxScore.h"
 #include "BoxPage.h"
 #include "BoxSystem.h"
 #include "BoxSlice.h"
 #include "BoxSliceInstr.h"
-#include "BoxSliceVStaff.h"
 #include "ShapeStaff.h"
 #include "Handlers.h"
 
@@ -46,21 +46,31 @@ extern lmColors* g_pColors;
 // Implementation of class lmBoxSystem: a system in the printed score. 
 //-----------------------------------------------------------------------------------------
 
-lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
+lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage, int iSystem,
+                         lmLUnits uxPos, lmLUnits uyPos, bool fFirstOfPage)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxSystem, _("system"))
 {
+    // iSystem: 0..n-1
+    // (uxPos, uyPos): top left corner of limits rectangle
+    // fFirstOfPage: this is the first system of a page
+
     m_nNumMeasures = 0;
     m_nNumPage = nNumPage;
     m_pBPage = pParent;
 	m_pTopSpacer = NULL;
 
-	//add handler for top spacer. It will be positioned in lmBoxSystem::SetPosition() method
-	//lmScore* pScore = (lmScore*)GetScoreOwner();
- //   lmLUnits uPageWidth = pScore->GetPaperSize().GetWidth();
-	//lmLUnits uyTopMargin = 0.0f;
-	//m_pTopSpacer = new lmShapeMargin((lmScore*)m_pOwner, lmMARGIN_TOP, lmHORIZONTAL, 
- //                                    uyTopMargin, uPageWidth);
-	//AddHandler(m_pTopSpacer);
+    //top border space
+    lmScore* pScore = (lmScore*)pParent->GetBoxScore()->GetScoreOwner();
+    lmLUnits uTopSpace = pScore->GetSystemDistance(iSystem, fFirstOfPage);
+    if (!fFirstOfPage)
+        uTopSpace /= 2.0;
+
+    //set system dimensions and spacing
+    SetLeftSpace(pScore->GetSystemLeftSpace(iSystem));
+    SetPosition(uxPos, uyPos + uTopSpace);
+    SetYTop( uyPos + uTopSpace );
+    SetXLeft(uxPos);
+    SetTopSpace(uTopSpace);
 }
 
 lmBoxSystem::~lmBoxSystem()
@@ -92,40 +102,6 @@ void lmBoxSystem::AddShape(lmShape* pShape, long nLayer)
     lmBox::AddShape(pShape, nLayer);
 }
 
-//void lmBoxSystem::Render(lmPaper* pPaper)
-//{
-//    //At this point paper position is not in the right place. Therefore, we move
-//    //to the start of system position.
-//    pPaper->SetCursorY( m_yPos );
-//
-//    //render staff lines
-//    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-//    {
-//        m_ShapeStaff[i]->Render(pPaper);
-//    }
-//
-//	//base class
-//    lmBox::Render(pPaper, lmUPoint(m_xPos, m_yPos));
-//}
-
-void lmBoxSystem::FixSlicesYBounds()
-{
-	// This method is only invoked during layout phase, when the system is finished.
-    // We have to propagate 'y' coordinates from first slice to all others.
-
-    m_nNumMeasures = (int)m_Boxes.size();
-
-	//propagate 'y' coordinates from first slice to all others
-    for (int i=1; i < (int)m_Boxes.size(); i++)
-    {
-        ((lmBoxSlice*)m_Boxes[i])->CopyYBounds((lmBoxSlice*)m_Boxes[0]);
-    }
-
-	//update system yBottom position by copying yBottom from first slice
-    if (m_Boxes.size() > 0)
-	    SetYBottom(((lmBoxSlice*)m_Boxes[0])->GetYBottom());
-}
-
 void lmBoxSystem::DeleteLastSlice()
 {
     //This method is used during layout phase, to delete a column when finally it is decided not
@@ -141,20 +117,6 @@ lmLUnits lmBoxSystem::GetYTopFirstStaff()
 	// Returns the Y top position of first staff
 
 	return m_ShapeStaff[0]->GetYTop();
-}
-
-void lmBoxSystem::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax)
-{
-    //look up in this box
-    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-
-    //loop to look up in the slices
-    std::vector<lmBox*>::iterator it;
-	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
-    {
-        ((lmBoxSlice*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-    }
 }
 
 lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& uPoint)
@@ -252,4 +214,15 @@ lmBoxScore* lmBoxSystem::GetOwnerBoxScore()
     return m_pBPage->GetOwnerBoxScore(); 
 }
 
+void lmBoxSystem::SetBottomSpace(lmLUnits uyValue) 
+{ 
+    //overrided. To propagate bottom space to slice boxes
+
+    m_uBottomSpace = uyValue;
+
+	//propagate change
+    std::vector<lmBox*>::iterator itB;
+	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+        (*itB)->SetBottomSpace(uyValue);
+}
 

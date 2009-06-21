@@ -54,7 +54,6 @@ public:
 
 private:
     ESOCtrolType    m_nCtrolType;
-    float           m_rTimeShift;        //the time shift (positive or negative) applied
 
 };
 

@@ -42,18 +42,14 @@
 // A lmStaff is a collection of consecutive lines and spaces.
 
 //constructor
-lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits uUnits)
-    : lmScoreObj(pScore)
-    //lines
+lmStaff::lmStaff(lmVStaff* pVStaff, int nNumLines, lmLUnits uUnits)
+    : lmScoreObj((lmScoreObj*)pVStaff)
+        //lines
     , m_nNumLines(nNumLines)
     , m_uLineThickness(lmToLogicalUnits(0.15, lmMILLIMETERS))     //TODO user option
-    // margins
-    , m_uTopMargin(lmToLogicalUnits(5, lmMILLIMETERS))
-    , m_uBottomMargin(lmToLogicalUnits(5, lmMILLIMETERS))
-    , m_uLeftMargin(0)
-    , m_uRightMargin(0)
-
-	//contexts
+        // margins
+    , m_uStaffDistance(lmToLogicalUnits(10, lmMILLIMETERS))
+	    //contexts
 	, m_pFirstContext((lmContext*)NULL)
 	, m_pLastContext((lmContext*)NULL)
     , m_nPreviousFirstClef(lmE_Undefined)

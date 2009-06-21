@@ -69,7 +69,9 @@ public:
     void MeasureNames(lmPaper* pPaper);
     void AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPaper* pPaper, int nSystem);
 
+    //properties
 	const wxString& GetInstrName();
+    bool IsFirstOfSystem();
 
 	//cursor methods
 	lmVStaffCursor* GetVCursor();

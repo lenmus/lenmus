@@ -227,21 +227,25 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
         //is necessary to repeat the shape in each staff of the instrument
         //So in the following loop we add a time signature shape for each VStaff of the
         //instrument
+        //At this point uyPosTop is correctly positioned for first staff, so no need to
+        //add StaffDistance for first staff
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();
         lmLUnits yOffset = 0;
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
         {
-            // Add the shape for time signature
+            //add top margin if not first staff
+            if (nStaff > 1)
+                yOffset += pStaff->GetStaffDistance();
+
+            //create the shape for time signature
             lmShape* pShape = CreateShape(nStaff-1, pBox, pPaper, colorC, sTopGlyphs, uxPosTop,
                                         uyPosTop + yOffset, sBottomGlyphs, uxPosBottom, 
                                         uyPosBottom + yOffset);
 	        pBox->AddShape(pShape, GetLayer());
             StoreShape(pShape);
 
-            //compute vertical displacement for next staff
-            yOffset += pStaff->GetTopMargin();
+            //move to next staff
             yOffset += pStaff->GetHeight();
-            yOffset += pStaff->GetBottomMargin();
         }
     }
 

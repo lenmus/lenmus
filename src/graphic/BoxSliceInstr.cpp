@@ -35,7 +35,6 @@
 #include "BoxSystem.h"
 #include "BoxSlice.h"
 #include "BoxSliceInstr.h"
-#include "BoxSliceVStaff.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -49,67 +48,13 @@ extern lmColors* g_pColors;
 
 lmBoxSliceInstr::lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceInstr, _T("SliceInstr"))
+    , m_pSlice(pParent)
+    , m_pInstr(pInstr)
 {
-    m_pSlice = pParent;
-    m_pInstr = pInstr;
 }
 
 lmBoxSliceInstr::~lmBoxSliceInstr()
 {
-}
-
-lmBoxSliceVStaff* lmBoxSliceInstr::AddVStaff(lmVStaff* pVStaff, int nMeasure)
-{
-    lmBoxSliceVStaff* pBSV = new lmBoxSliceVStaff(this, pVStaff, nMeasure);
-    AddBox(pBSV);
-    return pBSV;
-}
-
-//void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)
-//{
-//	// During layout there is a need to update initial computations about this
-//	// box slice position. This update must be propagated to all contained boxes
-//
-//    lmLUnits uIncr = GetXLeft() - xLeft;
-//	SetXLeft(xLeft);
-//    m_uLimitsTop.x += uIncr;
-//
-//	//propagate change
-//    for (int i=0; i < (int)m_Boxes.size(); i++)
-//    {
-//        ((lmBoxSliceVStaff*)m_Boxes[i])->UpdateXLeft(xLeft);
-//    }
-//}
-
-void lmBoxSliceInstr::CopyYBounds(lmBoxSliceInstr* pBSI)
-{
-	//This method is only invoked during layout phase, when the number of measures in the
-	//system has been finally decided. There is a need to copy 'y' coordinates from first
-	//slice to all others. This method receives the first instr.slice and must copy 'y'
-	//coordinates from there
-
-	SetYTop(pBSI->GetYTop());
-	SetYBottom(pBSI->GetYBottom());
-
-	//propagate request
-    for (int i=0; i < (int)m_Boxes.size(); i++)
-    {
-        ((lmBoxSliceVStaff*)m_Boxes[i])->CopyYBounds(pBSI->GetSliceVStaff(i));
-    }
-}
-
-void lmBoxSliceInstr::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax)
-{
-    //look up in this box
-    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-
-    //loop to look up in the VStaff slices
-    std::vector<lmBox*>::iterator it;
-	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
-    {
-        ((lmBoxSliceVStaff*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-    }
 }
 
 int lmBoxSliceInstr::GetPageNumber() const

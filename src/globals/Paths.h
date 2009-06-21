@@ -43,6 +43,7 @@ public:
     wxString GetXrcPath() { return m_sXrc; }
     wxString GetTempPath() { return m_sTemp; }
     wxString GetImagePath() { return m_sImages; }
+    wxString GetCursorsPath() { return m_sCursors; }
     wxString GetSoundsPath() { return m_sSounds; }
     wxString GetLocaleRootPath() { return m_sLocaleRoot; }
     wxString GetScoresPath() { return m_sScores; }
@@ -84,6 +85,7 @@ private:
     wxString    m_sBin;         //path for binaries
     wxString    m_sXrc;         //path for .xrc and .xrs resource files
     wxString    m_sImages;      //path for resource images
+    wxString    m_sCursors;     //path for resource cursors
     wxString    m_sSounds;      //path for wave sounds
     wxString    m_sConfig;      //path for user configuration file
     wxString    m_sLogs;        //path for logs and dumps

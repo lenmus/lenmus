@@ -56,7 +56,6 @@
 #include "../graphic/BoxSystem.h"
 #include "../graphic/BoxSlice.h"
 #include "../graphic/BoxSliceInstr.h"
-#include "../graphic/BoxSliceVStaff.h"
 #include "../graphic/ShapeStaff.h"
 #include "../graphic/Handlers.h"
 
@@ -101,12 +100,7 @@ enum {
 #define lmCURSOR_BLINKING_RATE  750		//cursor blinking rate = 750ms
 
 //temporary data for OnMouseEvent method
-static lmDPoint     m_vStartDrag;       //initial point (pixels) of dragging area
-static lmDPoint     m_vEndDrag;         //last end point (pixels) of dragging area
-static lmUPoint     m_uStartDrag;       //initial point (logical, page origin) of dragging area
 static int          m_nNumPage;         //score page number (1..n) on which the mouse is placed
-static bool         m_fDraggingObject;  //we were dragging an object
-static bool         m_fCheckTolerance;  //to control false dargging starts
 
 
 // To draw a cast shadow for each page we need the shadow sizes
@@ -1335,7 +1329,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
             (*it)->fRepainted = true;
 
             // ask paper for the offscreen bitmap of this page
-            wxBitmap* pPageBitmap 
+            wxBitmap* pPageBitmap
                 = m_graphMngr.RenderScore(nPag+1, nRepaintOptions,
                                           m_pCanvas, (*it)->vPageRect.GetTopLeft());
             wxASSERT(pPageBitmap && pPageBitmap->Ok());
@@ -1732,12 +1726,71 @@ bool lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
 	WXUNUSED(vCanvasPos);
     WXUNUSED(nKeys);
 
+    return OnImageBeginDrag(false, pDC, vCanvasOffset, uPagePos, pDraggedGMO, vDragHotSpot,
+                            uHotSpotShift, (wxBitmap*)NULL);
+
+}
+
+void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool fDraw,
+										   lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
+										   lmUPoint uPagePos, int nKeys)
+{
+    // We're currently dragging an object. Move the image
+
+    WXUNUSED(fDraw);
+    WXUNUSED(vCanvasPos);
+    WXUNUSED(nKeys);
+
+    OnImageContinueDrag(event, false, pDC, vCanvasOffset, uPagePos, vCanvasPos);
+}
+
+void lmScoreView::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
+									  lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys)
+{
+    // Left up & dragging: Finish dragging
+
+    WXUNUSED(event);
+    WXUNUSED(pDC);
+    WXUNUSED(vCanvasPos);
+	WXUNUSED(vCanvasOffset);
+    WXUNUSED(nKeys);
+
+	OnImageEndDrag(false, pDC, vCanvasOffset, uPagePos);
+}
+
+
+
+//-------------------------------------------------------------------------------------
+// Base methods for dragging an image
+//-------------------------------------------------------------------------------------
+
+bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
+						  lmDPoint vCanvasOffset, lmUPoint uPagePos,
+                          lmGMObject* pDraggedGMO, lmDPoint vDragHotSpot,
+                          lmUPoint uHotSpotShift, wxBitmap* pBitmap)
+{
+    //Start to drag an image. Returns false if error
+    //Parameters:
+    //  fMouseTool - flag to signal that we are not dragging a shape generated from an StaffObj,
+    //              but an image for a mouse tool.
+    //  pBitmap -   If starting to drag a mouse tool image pBitmap must point to the bitmap to
+    //              use to create the image to drag. This bitmap is deleted in this method,
+    //              once the wxImage is created from it.
+    //              When dragging a GMO, pBitmap must be NULL, and the necessary bitmap must be
+    //              obtained by invoking pDraggedGMO->OnBeginDrag()
+    // pDraggedGMO - When dragging a GMO, this parameter is the GMO to drag. When dragging a
+    //              mouse tool this parameter, if not NULL, is the GMO that will receive
+    //              OnMouseMove invokations to trim mouse position and/or to draw (XOR) additional
+    //              marks
+    //
+
+
 	HideCaret();
 	m_pCanvas->SetFocus();
 	//m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Starting dragging"));
 
 	#ifdef __WXDEBUG__
-	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectBeginDragLeft()"));
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnImageBeginDrag()"));
 	#endif
 
 	//to draw and move the drag image two mechanism are possible:
@@ -1756,7 +1809,14 @@ bool lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
         m_pDragImage = (wxDragImage*) NULL;
     }
 
-    wxBitmap* pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
+    if (fMouseTool)
+    {
+        if (m_pDraggedGMO)
+            m_pDraggedGMO->OnMouseStartMoving();
+    }
+    else
+        pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
+
     if (pBitmap)
     {
         m_pDragImage = new wxDragImage(*pBitmap);
@@ -1765,7 +1825,7 @@ bool lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
         // show drag image
         if (!m_pDragImage->BeginDrag(m_vDragHotSpot, m_pCanvas))
 	    {
-            //wxLogMessage(_T("[lmScoreView::OnObjectBeginDragLeft] m_pDragImage->BeginDrag returns error!"));
+            //wxLogMessage(_T("[lmScoreView::OnImageBeginDrag] m_pDragImage->BeginDrag returns error!"));
             delete m_pDragImage;
             m_pDragImage = (wxDragImage*) NULL;
             //m_nDragState = lmDRAG_NONE;
@@ -1778,9 +1838,16 @@ bool lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
 
 	//inform shape:
     // - request the nearest valid position to current position
-    // - allow shape to draw (XOR) whatever it likes
-    lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos- m_uHotSpotShift)
-                        + m_uHotSpotShift;
+    // - allow to draw (XOR) whatever it likes
+    lmUPoint uFinalPos = uPagePos - m_uHotSpotShift;
+    if (fMouseTool)
+    {
+        if (m_pDraggedGMO)
+            uFinalPos = m_pDraggedGMO->OnMouseMoving(&m_Paper, uFinalPos) + m_uHotSpotShift;
+    }
+    else
+        uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uFinalPos) + m_uHotSpotShift;
+
 	lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
 					m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
 
@@ -1794,15 +1861,11 @@ bool lmScoreView::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
     return true;        //no error
 }
 
-void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool fDraw,
-										   lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
-										   lmUPoint uPagePos, int nKeys)
+void lmScoreView::OnImageContinueDrag(wxMouseEvent& event, bool fMouseTool, wxDC* pDC,
+							          lmDPoint vCanvasOffset, lmUPoint uPagePos,
+                                      lmDPoint vCanvasPos)
 {
-    // We're currently dragging an object. Move the image
-
-    WXUNUSED(fDraw);
-    WXUNUSED(vCanvasPos);
-    WXUNUSED(nKeys);
+    // We're currently dragging an image. Do it
 
     // If mouse outside of canvas window let's force autoscrolling.
     bool fDoScroll = false;
@@ -1868,36 +1931,54 @@ void lmScoreView::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC, bool 
 
         //Give the shape the opportunity to change final pos and to draw (XOR)
         //whatever it likes
-        lmUPoint uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uPagePos - m_uHotSpotShift)
-                                + m_uHotSpotShift;
-		lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
-						m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
+        lmUPoint uFinalPos = uPagePos - m_uHotSpotShift;
+        if (fMouseTool)
+        {
+            if (m_pDraggedGMO)
+                uFinalPos = m_pDraggedGMO->OnMouseMoving(&m_Paper, uFinalPos) + m_uHotSpotShift;
+        }
+        else
+            uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uFinalPos) + m_uHotSpotShift;
 
         //move drag image to final point
         if (m_pDragImage)
         {
+            lmDPoint vNewPos( m_Paper.LogicalToDeviceX(uFinalPos.x) + vCanvasOffset.x,
+                              m_Paper.LogicalToDeviceY(uFinalPos.y) + vCanvasOffset.y );
 		    m_pDragImage->Move(vNewPos);
             m_pDragImage->Show();
         }
     }
 }
 
-void lmScoreView::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint vCanvasPos,
-									  lmDPoint vCanvasOffset, lmUPoint uPagePos, int nKeys)
+void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOffset,
+                                 lmUPoint uPagePos)
 {
     // Left up & dragging: Finish dragging
 
-    WXUNUSED(event);
-    WXUNUSED(pDC);
-    WXUNUSED(vCanvasPos);
-	WXUNUSED(vCanvasOffset);
-    WXUNUSED(nKeys);
+    //When dragging a mouse tool, the controller GMO must erase any XOR draw.
+    //When dragging a shpe, it must not render anything. It should only issue
+    //the necessary commands to move the dragged object to its new position.
 
-	//m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Finishing dragging"));
 
-	#ifdef __WXDEBUG__
-	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnObjectEndDragLeft()"));
+    #ifdef __WXDEBUG__
+	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnImageEndDrag()"));
 	#endif
+
+    //prepare paper for direct drawing
+    OnPaperStartDrag(pDC, vCanvasOffset);
+
+    //inform the shape. It must not render anything. It should only issue
+    //the necessary commands to move the dragged object to its new position.
+    lmUPoint uFinalPos = uPagePos - m_uHotSpotShift;
+    if (fMouseTool)
+    {
+        if (m_pDraggedGMO)
+            m_pDraggedGMO->OnMouseEndMoving(&m_Paper, uFinalPos);
+    }
+    else
+        m_pDraggedGMO->OnEndDrag(&m_Paper, m_pCanvas, uFinalPos);
+
 
     // delete the image used for dragging
     if (m_pDragImage)
@@ -1907,11 +1988,6 @@ void lmScoreView::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC, lmDPoint v
         delete m_pDragImage;
         m_pDragImage = (wxDragImage*) NULL;
     }
-
-    //inform the shape. It must not render anything. It should only issue
-    //the necessary commands to move the dragged object to its new position.
-	lmUPoint finalPos = uPagePos - m_uHotSpotShift;
-	m_pDraggedGMO->OnEndDrag(&m_Paper, m_pCanvas, finalPos);
 
     ShowCaret();
 }
@@ -2141,7 +2217,7 @@ void lmScoreView::ScrollTo(int nNumPage, lmURect uNewRect)
 
     if (it == m_VisiblePages.end())
     {
-        //new rectangle is after last displayed page. 
+        //new rectangle is after last displayed page.
         --it;       // 'it' points to last displayed page
     }
 
@@ -2260,7 +2336,7 @@ void lmScoreView::UpdateRulerMarkers(lmDPoint vPagePos)
     }
 }
 
-lmGMObject* lmScoreView::FindObjectAt(int nNumPage, lmUPoint uPos, bool fSelectable)
+lmGMObject* lmScoreView::FindShapeAt(int nNumPage, lmUPoint uPos, bool fSelectable)
 {
     return m_graphMngr.FindShapeAtPagePos(m_nNumPage, uPos, fSelectable);
 }

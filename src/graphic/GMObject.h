@@ -57,7 +57,6 @@ extern bool g_fFreeMove;		//the shapes can be dragged without restrictions
 extern bool g_fDrawBoundsBoxSystem;         //draw bound rectangles for systems
 extern bool g_fDrawBoundsBoxSlice;          //draw bound rectangles for slices
 extern bool g_fDrawBoundsBoxSliceInstr;     //draw bound rectangles for SliceInstr
-extern bool g_fDrawBoundsBoxSliceVStaff;    //draw bound rectangles for SliceVStaff
 extern bool g_fDrawBoundsShapes;            //draw bound rectangles for non boxes
 
 class lmPaper;
@@ -86,7 +85,6 @@ enum lmEGMOType
     eGMO_BoxSystem,
     eGMO_BoxSlice,
     eGMO_BoxSliceInstr,
-    eGMO_BoxSliceVStaff,
 
 	eGMO_LastBox,   //end of box objects
 
@@ -151,7 +149,6 @@ public:
     inline bool IsBoxSystem() const { return m_nType == eGMO_BoxSystem; }
     inline bool IsBoxSlice() const { return m_nType == eGMO_BoxSlice; }
     inline bool IsBoxSliceInstr() const { return m_nType == eGMO_BoxSliceInstr; }
-    inline bool IsBoxSliceVStaff() const { return m_nType == eGMO_BoxSliceVStaff; }
 		//shapes
 	inline bool IsShapeStaff() const { return m_nType == eGMO_ShapeStaff; }
     inline bool IsShapeArch() const { return m_nType == eGMO_ShapeArch; }
@@ -234,6 +231,11 @@ public:
 	void Shift(lmUPoint uPos) { Shift(uPos.x, uPos.y); }
 	void ShiftOrigin(lmUPoint uNewOrg);
     void ApplyUserShift(lmUPoint uUserShift);
+
+    //managing the drag image of mouse tools 
+    virtual void OnMouseStartMoving() {}
+    virtual lmUPoint OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; }
+    virtual void OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPagePos) {}
 
     //call backs
     virtual void OnMouseIn(wxWindow* pWindow, lmUPoint& uPoint) {}
@@ -318,6 +320,8 @@ public:
     //selection
     virtual void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
                                  lmLUnits uYMin, lmLUnits uYMax);
+    bool IsPointOnTopMargin(lmUPoint& uPoint);
+    bool IsPointOnBottomMargin(lmUPoint& uPoint);
 
     //access to contained objects
     virtual lmBox* FindBoxAtPos(lmUPoint& uPoint);
@@ -328,10 +332,14 @@ public:
 
     //limits box
     inline void SetTopSpace(lmLUnits uyValue) { m_uTopSpace = uyValue; }
-    inline void SetBottomSpace(lmLUnits uyValue) { m_uBottomSpace = uyValue; }
+    virtual void SetBottomSpace(lmLUnits uyValue) { m_uBottomSpace = uyValue; }
     inline void SetLeftSpace(lmLUnits uxValue) { m_uLeftSpace = uxValue; }
     inline void SetRightSpace(lmLUnits uxValue) { m_uRightSpace = uxValue; }
     inline void DrawLimits(lmPaper* pPaper, wxColour color);
+    inline lmLUnits GetTopSpace() { return m_uTopSpace; }
+    inline lmLUnits GetBottomSpace() { return m_uBottomSpace; }
+    inline lmLUnits GetLeftSpace() { return m_uLeftSpace; }
+    inline lmLUnits GetRightSpace() { return m_uRightSpace; }
 
 
 protected:

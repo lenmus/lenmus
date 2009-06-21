@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -448,7 +448,8 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         // create an empty score
 
         pScore = new lmScore();
-        pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
+        pScore->AddInstrument(0,0,_T(""));   //MIDI channel 0, MIDI instr 0
+        pScore->SetSystemDistance( lmToLogicalUnits(12, lmMILLIMETERS) );
 
         //In scores created in the score editor, we should render a full page,
         //with empty staves. To this end, we need to change some options default value

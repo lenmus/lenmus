@@ -329,7 +329,7 @@ void lmNote::CreateTie(lmNote* pNtNext, lmTPoint* pStartBezier, lmTPoint* pEndBe
 
     wxASSERT(pNtNext && pNtNext->GetFPitch() == this->GetFPitch());
     wxASSERT(!m_pTieNext);
-    
+
     CreateTie(this, pNtNext);
     m_pTieNext->SetBezierPoints(0, pStartBezier);
     m_pTieNext->SetBezierPoints(1, pEndBezier);
@@ -467,21 +467,6 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
 //====================================================================================================
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
-
-lmLUnits lmNote::CheckNoteNewPosition(lmLUnits uyOldPos, lmLUnits uyNewPos, int* pnSteps)
-{
-    // A note only can be moved in discrete vertical steps (staff lines/spaces).
-	// This method receives current notehead position and new intended position and
-	// returns the nearest valid yPosition. It also updates content of pnSteps with
-	// the number of steps (half lines) that the note has been moved.
-
-	//compute the number of steps (half lines) that the notehead has been moved
-	lmLUnits uHalfLine = m_pVStaff->TenthsToLogical(5.0f);
-	*pnSteps = int(0.5f + (uyOldPos - uyNewPos)/uHalfLine );
-
-	//compute the nearest valid discrete position
-	return uyOldPos - uHalfLine * float(*pnSteps);
-}
 
 lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
@@ -1017,7 +1002,7 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENot
         bool fStemDown, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
 {
     // Creates the shape for a note (including stem) using a single glyph.
-    // Adds it to the composite shape pCS.
+    // Adds it to the composite shape pNoteShape.
 
     lmEGlyphIndex nGlyph = GLYPH_EIGHTH_NOTE_UP;
     switch (nNoteType) {
@@ -1822,10 +1807,10 @@ void lmNote::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
 }
 
 void lmNote::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass)
-{ 
+{
 	//AWARE: this method is invoked only when the relationship is being deleted and
 	//this deletion is not requested by this note/rest. If this note/rest would like
-	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//to delete the relationship it MUST invoke Remove(this) before deleting the
 	//relationship object
 
     SetDirty(true);
@@ -1847,10 +1832,10 @@ void lmNote::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClas
 }
 
 void lmNote::OnRemovedFromRelationship(lmRelObj* pRel)
-{ 
+{
 	//AWARE: this method is invoked only when the relationship is being deleted and
 	//this deletion is not requested by this note/rest. If this note/rest would like
-	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//to delete the relationship it MUST invoke Remove(this) before deleting the
 	//relationship object
 
     SetDirty(true);
@@ -2125,4 +2110,21 @@ lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos)
             return (lmDPitch)(nPos + lmC4_DPITCH);
     }
 }
+
+lmLUnits lmCheckNoteNewPosition(lmStaff* pStaff, lmLUnits uyOldPos, lmLUnits uyNewPos,
+                                int* pnSteps)
+{
+    // A note only can be moved in discrete vertical steps (staff lines/spaces).
+	// This method receives current notehead position and new intended position and
+	// returns the nearest valid yPosition. It also updates content of pnSteps with
+	// the number of steps (half lines) that the note has been moved.
+
+	//compute the number of steps (half lines) that the notehead has been moved
+	lmLUnits uHalfLine = pStaff->TenthsToLogical(5.0f);
+	*pnSteps = int(0.5f + (uyOldPos - uyNewPos)/uHalfLine );
+
+	//compute the nearest valid discrete position
+	return uyOldPos - uHalfLine * float(*pnSteps);
+}
+
 

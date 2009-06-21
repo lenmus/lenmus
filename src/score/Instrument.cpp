@@ -396,6 +396,11 @@ lmTenths lmInstrument::LogicalToTenths(lmLUnits uUnits)
     return GetVStaff()->LogicalToTenths(uUnits, 1);
 }
 
+bool lmInstrument::IsFirstOfSystem() 
+{ 
+    return m_pScore->IsFirstInstrument(this);
+}
+
 void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
 {
     if (pPos->xUnits == lmTENTHS) {

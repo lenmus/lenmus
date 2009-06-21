@@ -47,6 +47,7 @@ class lmShapeStem;
 class lmShapeTie;
 
 
+
 class lmShapeNote : public lmCompositeShape
 {
 public:
@@ -113,6 +114,17 @@ protected:
 	lmLUnits		m_uyStaffTopLine;	//y pos. of top staff line (5th line)
 
 };
+
+
+//global functions defined in this module
+
+class lmVStaff;
+
+extern void lmDrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmVStaff* pVStaff, int nStaff, 
+                             lmLUnits uLineLength, lmLUnits uyStaffTopLine, lmPaper* pPaper,
+                             wxColour color);
+
+
 
 #endif    // __LM_SHAPENOTE_H__
 

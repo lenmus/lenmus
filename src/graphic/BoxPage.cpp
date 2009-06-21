@@ -213,15 +213,19 @@ void lmBoxPage::PopulateLayers()
 	AddShapesToLayers(this);
 }
 
-lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
+lmBoxSystem* lmBoxPage::AddSystem(int nSystem, lmLUnits uxPos, lmLUnits uyPos,
+                                  bool fFirstOfPage)
 {
     //Update references
-    if (m_nFirstSystem == 0) m_nFirstSystem = nSystem;
+    if (m_nFirstSystem == 0)
+        m_nFirstSystem = nSystem;
     m_nLastSystem = nSystem;
 
     //create the system
-    lmBoxSystem* pSystem = new lmBoxSystem(this, m_nNumPage);
+    lmBoxSystem* pSystem = 
+        new lmBoxSystem(this, m_nNumPage, nSystem-1, uxPos, uyPos, fFirstOfPage);
     AddBox(pSystem);
+
     return pSystem;
 }
 
@@ -288,20 +292,6 @@ void lmBoxPage::DrawAllHandlers(lmPaper* pPaper)
 	std::vector<lmGMObject*>::iterator it;
 	for (it = m_GMObjsWithHandlers.begin(); it != m_GMObjsWithHandlers.end(); ++it)
         (*it)->RenderWithHandlers(pPaper);
-}
-
-void lmBoxPage::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax)
-{
-    //look up in this box
-    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-
-    //loop to look up in the systems (boxes collection)
-    std::vector<lmBox*>::iterator it;
-	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
-    {
-        ((lmBoxSystem*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-    }
 }
 
 void lmBoxPage::AddActiveHandler(lmHandler* pHandler)

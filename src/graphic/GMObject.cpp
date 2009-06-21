@@ -55,7 +55,6 @@ bool g_fFreeMove = false;		//the shapes can be dragged without restrictions
 bool g_fDrawBoundsBoxSystem = false;        //draw bound rectangles for systems
 bool g_fDrawBoundsBoxSlice = false;         //draw bound rectangles for slices
 bool g_fDrawBoundsBoxSliceInstr = false;    //draw bound rectangles for SliceInstr
-bool g_fDrawBoundsBoxSliceVStaff = false;   //draw bound rectangles for SliceVStaff
 bool g_fDrawBoundsShapes = false;           //draw bound rectangles for non boxes
 
 
@@ -141,7 +140,6 @@ void lmGMObject::Render(lmPaper* pPaper, wxColour colorC)
         if ( (g_fDrawBoundsBoxSystem && this->IsBoxSystem()) 
              || (g_fDrawBoundsBoxSlice && this->IsBoxSlice()) 
              || (g_fDrawBoundsBoxSliceInstr && this->IsBoxSliceInstr()) 
-             || (g_fDrawBoundsBoxSliceVStaff && this->IsBoxSliceVStaff()) 
              || (g_fDrawBoundsShapes && this->IsShape()) )
         {
             if (this->IsBox())
@@ -349,9 +347,40 @@ void lmBox::RemoveShape(lmShape* pShape)
     m_Shapes.erase(it);
 }
 
+bool lmBox::IsPointOnTopMargin(lmUPoint& uPoint)
+{
+    //Returns true if point if in the top margin area (that is, above bounds rectangle and within
+    //limits rectangle)
+
+    //compute limits rectangle
+    lmURect uLimitsRect(m_uBoundsTop.x - m_uLeftSpace,                  //left
+                        m_uBoundsTop.y - m_uTopSpace,                   //top
+                        GetWidth() + m_uLeftSpace + m_uRightSpace,      //width
+                        GetHeight() + m_uTopSpace + m_uBottomSpace );   //height
+
+
+    return uPoint.y < m_uBoundsTop.y && uLimitsRect.Contains(uPoint);
+}
+
+bool lmBox::IsPointOnBottomMargin(lmUPoint& uPoint)
+{
+    //Returns true if point if in the bottom margin area (that is, below bounds rectangle and within
+    //limits rectangle)
+
+    //compute limits rectangle
+    lmURect uLimitsRect(m_uBoundsTop.x - m_uLeftSpace,                  //left
+                        m_uBoundsTop.y - m_uTopSpace,                   //top
+                        GetWidth() + m_uLeftSpace + m_uRightSpace,      //width
+                        GetHeight() + m_uTopSpace + m_uBottomSpace );   //height
+
+
+    return uPoint.y > m_uBoundsBottom.y && uLimitsRect.Contains(uPoint);
+}
+
 lmBox* lmBox::FindBoxAtPos(lmUPoint& uPoint)
 {
-    //look for most inner box (minimal size box: i.e. BoxSliceVStaff) that contains received point.
+    //look for most inner box (minimal size box: i.e. BoxSliceInstr) that contains received point
+    //within its limits rectangle.
     //If not box found returns NULL.
 
     //loop to look up in the child boxes collection
@@ -363,8 +392,16 @@ lmBox* lmBox::FindBoxAtPos(lmUPoint& uPoint)
 			return pBox;    //found
     }
 
-    // no object found. Verify if the point is in this box
-    if (BoundsContainsPoint(uPoint))
+    // no object found. Verify if the point is within the limits of this box
+
+    //compute limits rectangle
+    lmURect uLimitsRect(m_uBoundsTop.x - m_uLeftSpace,                  //left
+                        m_uBoundsTop.y - m_uTopSpace,                   //top
+                        GetWidth() + m_uLeftSpace + m_uRightSpace,      //width
+                        GetHeight() + m_uTopSpace + m_uBottomSpace );   //height
+
+    //check if point is within this rectangle
+    if (uLimitsRect.Contains(uPoint))
         return this;
     else
         return (lmBox*)NULL;
@@ -382,6 +419,11 @@ void lmBox::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
         if ((*it)->IsSelectable() && (*it)->IsInRectangle(selRect))
 			(*it)->SetSelected(fSelect);
     }
+
+    //loop to look up in the boxes collection
+    std::vector<lmBox*>::iterator itB;
+    for (itB = m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
+        (*itB)->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
 }
 
 void lmBox::RenderShapes(lmPaper* pPaper)

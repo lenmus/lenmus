@@ -84,7 +84,6 @@
 #include "../app/Preferences.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeStaff.h"
-#include "../graphic/BoxSliceVStaff.h"
 #include "../graphic/ShapeBarline.h"
 #include "../widgets/MsgBox.h"
 
@@ -105,11 +104,8 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     m_pInstrument = pInstr;
 
     // default lmVStaff margins (logical units = tenths of mm)
-    m_nHeight = 0;          //a value of 0 means 'compute it'
-    m_leftMargin = 0;
-    m_topMargin = 0;
-    m_rightMargin = 0;
-    m_bottomMargin = lmToLogicalUnits(1, lmCENTIMETERS);    // 1 cm
+    m_uHeight = 0;          //a value of 0 means 'compute it'
+    //m_bottomMargin = lmToLogicalUnits(1, lmCENTIMETERS);    // 1 cm
 
     //initialize staves
     m_nNumStaves = 1;
@@ -117,8 +113,9 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
         m_cStaves[i] = (lmStaff*)NULL;
 
     //create one standard staff (five lines, 7.2 mm height)
-    lmStaff* pStaff = new lmStaff(pScore);
+    lmStaff* pStaff = new lmStaff(this);
     m_cStaves[0] = pStaff;
+    pStaff->SetStaffDistance( lmToLogicalUnits(20, lmMILLIMETERS) );  //add separation from previous instr.
 
 	//link cursor to collection
 	m_VCursor.AttachToCollection(&m_cStaffObjs);
@@ -149,7 +146,7 @@ lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits)
 lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
 {
     wxASSERT(m_nNumStaves < lmMAX_STAFF);
-    lmStaff* pStaff = new lmStaff(m_pScore, nNumLines, nMicrons);
+    lmStaff* pStaff = new lmStaff(this, nNumLines, nMicrons);
     m_cStaves[m_nNumStaves] = pStaff;
     m_nNumStaves++;
     m_cStaffObjs.AddStaff();
@@ -1867,13 +1864,14 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
     bool fVisible = !HideStaffLines();
 
     //Set left position and lenght of lines, and save these values
-    lmLUnits yCur = yPos + m_topMargin;
+    lmLUnits yCur = yPos;
 
     //iterate over the collection of Staves (lmStaff Objects)
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
         lmStaff* pStaff = GetStaff(nStaff);
-        yCur += pStaff->GetTopMargin();
+        if (nStaff > 1)
+            yCur += pStaff->GetStaffDistance();
 
         //save y coord. for first line start point
         if (nStaff == 1)
@@ -1885,7 +1883,7 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 								 pStaff->GetLineThick(), pStaff->GetLineSpacing(),
 								 xFrom, yCur, xTo, *wxBLACK );
 		pBox->AddShape(pShape, lm_eLayerStaff);
-        yCur = pShape->GetYBottom() + pStaff->GetBottomMargin();
+        yCur = pShape->GetYBottom();
 		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();
         pShape->SetVisible(fVisible);
     }
@@ -1940,19 +1938,19 @@ lmLUnits lmVStaff::GetStaffOffset(int nStaff)
     wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= m_nNumStaves );
 
-    lmLUnits yOffset = m_topMargin;
+    lmLUnits yOffset = 0.0f;
 
     // iterate over the collection of Staves (lmStaff Objects) to add up the
     // height and after space of all previous staves to the requested one
     lmStaff* pStaff = GetFirstStaff();
-    for (int iS=1; iS < nStaff; iS++)
+    for (int iS=1; iS <= nStaff; iS++)
 	{
         pStaff = GetStaff(iS);
-        yOffset += pStaff->GetTopMargin();
-        yOffset += pStaff->GetHeight();
-        yOffset += pStaff->GetBottomMargin();
+        if (iS > 1)
+            yOffset += pStaff->GetStaffDistance();
+        if (iS < nStaff)
+            yOffset += pStaff->GetHeight();
     }
-    yOffset += pStaff->GetTopMargin();
 
     return yOffset;
 }
@@ -2273,21 +2271,26 @@ lmLUnits lmVStaff::GetYBottom()
 
 lmLUnits lmVStaff::GetVStaffHeight()
 {
-    if (m_nHeight == 0) {
-        m_nHeight = m_topMargin + m_bottomMargin;
+    //returns the height of all staves of this lmVStaff, that is, the distance
+    //from top line of first staff to bottom line of last staff
+
+    //To optimize, height is computed only once, and saved in m_uHeight
+
+    if (m_uHeight == 0.0f)
+    {
         // iterate over the collection of Staves (lmStaff Objects) to add up its
         // height and its after space
+        m_uHeight = 0.0f;
         for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
         {
             lmStaff* pStaff = GetStaff(nStaff);
-            m_nHeight += pStaff->GetTopMargin();
-            m_nHeight += pStaff->GetHeight();
-            m_nHeight += pStaff->GetBottomMargin();
+            if (nStaff > 1)
+                m_uHeight += pStaff->GetStaffDistance();
+            m_uHeight += pStaff->GetHeight();
         }
     }
 
-    return m_nHeight;
-
+    return m_uHeight;
 }
 
 lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
@@ -2365,124 +2368,6 @@ lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos)
 
     return pBarline;
 }
-
-void lmVStaff::NewLine(lmPaper* pPaper)
-{
-    //move x cursor to the left and advance y cursor the space
-    //height of all staves of this lmVStaff
-    pPaper->SetCursor( m_pScore->GetPageLeftMargin(),
-                       pPaper->GetCursorY() + GetVStaffHeight() );
-}
-
-//void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey,
-//							   lmPaper* pPaper)
-//{
-//    // The prolog (clef and key signature) must be rendered on each system,
-//    // but the matching StaffObjs only exist in the first system. Therefore, in the
-//    // normal staffobj rendering process, the prolog would be rendered only in
-//    // the first system.
-//    // So, for the other systems it is necessary to force the rendering
-//    // of the prolog because there are no StaffObjs representing it.
-//    // This method does it.
-//    //
-//    // To know what clef, key and time signature to draw we take this information from the
-//    // context associated to first note of the measure on each staff. If there are no notes,
-//    // the context is taken from the barline. If, finally, no context is found, no prolog
-//    // is drawn.
-//
-//    lmLUnits nPrologWidth = 0;
-//    lmClef* pClef = (lmClef*)NULL;
-//    lmEClefType nClef = lmE_Undefined;
-//    lmKeySignature* pKey = (lmKeySignature*)NULL;
-//    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-//
-//    //AWARE when this method is invoked the paper position must be at the left marging,
-//    //at the start of a new system.
-//    lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
-//    lmLUnits yStartPos = pPaper->GetCursorY();
-//
-//    //iterate over the collection of lmStaff objects to draw current clef and key signature
-//
-//    wxStaffListNode* pNode = m_cStaves.GetFirst();
-//    lmStaff* pStaff = (lmStaff*)NULL;
-//    lmLUnits yOffset = m_topMargin;
-//    lmLUnits xPos=0;
-//
-//    lmContext* pContext = (lmContext*)NULL;
-//    lmStaffObj* pSO = (lmStaffObj*) NULL;
-//    lmNoteRest* pNR = (lmNoteRest*)NULL;
-//    lmNote* pNote = (lmNote*)NULL;
-//    for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
-//    {
-//        pStaff = (lmStaff *)pNode->GetData();
-//        xPos = xStartPos;
-//
-//        //locate first context for this staff
-//        pContext = (lmContext*)NULL;
-//        lmSOIterator* pIter = m_cStaffObjs.CreateIterator();
-//        pIter->AdvanceToMeasure(nMeasure);
-//        while(!pIter->EndOfCollection())
-//		{
-//            pSO = pIter->GetCurrent();
-//            if (pSO->GetClass() == eSFOT_NoteRest) {
-//                pNR = (lmNoteRest*)pSO;
-//                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff)
-//				{
-//                    //OK. Note fount. Take context
-//                    pNote = (lmNote*)pSO;
-//                    pContext = pNote->GetCurrentContext();
-//                    break;
-//                }
-//            }
-//            else if (pSO->GetClass() == eSFOT_Barline)
-//			{
-//				//end of measure reached. Take content
-//                lmBarline* pBar = (lmBarline*)pSO;
-//                pContext = pBar->GetContext(nStaff);
-//                break;
-//            }
-//            pIter->MoveNext();
-//        }
-//        delete pIter;
-//
-//        if (pContext) {
-//            pClef = pContext->GetClef();
-//            pKey = pContext->GetKey();
-//            pTime = pContext->GetTime();
-//
-//            //render clef
-//            if (pClef) {
-//                nClef = pClef->GetClefType();
-//				if (pClef->IsVisible()) {
-//					lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-//					lmShape* pShape = pClef->AddShape(pBSV, pPaper, uPos);
-//					xPos += pShape->GetWidth();
-//				}
-//            }
-//
-//            //render key signature
-//            if (pKey && pKey->IsVisible()) {
-//                wxASSERT(nClef != lmE_Undefined);
-//                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-//                lmShape* pShape = pKey->AddShape(pBSV, pPaper, uPos, nClef, nStaff);
-//                xPos += pShape->GetWidth();
-//            }
-//
-//        }
-//
-//        //compute prolog width
-//        nPrologWidth = wxMax(nPrologWidth, xPos - xStartPos);
-//
-//        //compute vertical displacement for next staff
-//        yOffset += pStaff->GetHeight();
-//        yOffset += pStaff->GetBottomMargin();
-//
-//    }
-//
-//    // update paper cursor position
-//    pPaper->SetCursorX(xStartPos + nPrologWidth);
-//
-//}
 
 lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 {

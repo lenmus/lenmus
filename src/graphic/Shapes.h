@@ -88,7 +88,7 @@ public:
     lmShapeRectangle(lmScoreObj* pOwner, lmLUnits xLeft, lmLUnits yTop,
                      lmLUnits xRight, lmLUnits yBottom, lmLUnits uWidth,
                      wxColour color = *wxBLACK, wxString sName = _T("Rectangle"),
-				     bool fDraggable = true, bool fSelectable = true, 
+				     bool fDraggable = true, bool fSelectable = true,
                      bool fVisible = true);
 
     //new rectangle constructor
@@ -101,7 +101,7 @@ public:
                      wxColour nBgColor = *wxWHITE,
                      //other
                      int nShapeIdx = 0, wxString sName = _T("Rectangle"),
-				     bool fDraggable = true, bool fSelectable = true, 
+				     bool fDraggable = true, bool fSelectable = true,
                      bool fVisible = true);
 
     virtual ~lmShapeRectangle();
@@ -165,8 +165,8 @@ protected:
     lmELineStyle    m_nBorderStyle;
 
     //rectangle points and handlers
-    lmUPoint            m_uPoint[lmID_NUM_HANDLERS];       //four corners + anchor point + centers of rectangle sides   
-    lmUPoint            m_uSavePoint[lmID_NUM_HANDLERS];   //to save start and end points when dragging/moving 
+    lmUPoint            m_uPoint[lmID_NUM_HANDLERS];       //four corners + anchor point + centers of rectangle sides
+    lmUPoint            m_uSavePoint[lmID_NUM_HANDLERS];   //to save start and end points when dragging/moving
     lmHandlerSquare*    m_pHandler[lmID_NUM_HANDLERS];     //handlers
 
 };
@@ -177,7 +177,7 @@ protected:
 class lmShapeGlyph : public lmSimpleShape
 {
 public:
-    lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, 
+    lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph,
                  lmPaper* pPaper, lmUPoint offset, wxString sName=_T("ShapeGlyph"),
 				 bool fDraggable = false, wxColour color = *wxBLACK);
     virtual ~lmShapeGlyph() {}
@@ -210,7 +210,7 @@ class lmShapeClef : public lmShapeGlyph
 public:
     lmShapeClef(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, lmPaper* pPaper,
                 lmUPoint offset, bool fSmallClef, wxString sName=_T("Clef"),
-				bool fDraggable = false, wxColour color = *wxBLACK); 
+				bool fDraggable = false, wxColour color = *wxBLACK);
     ~lmShapeClef() {}
 
 	//overrides
@@ -228,7 +228,7 @@ class lmShapeInvisible : public lmSimpleShape
 {
 public:
     lmShapeInvisible(lmScoreObj* pOwner, int nShapeIdx, lmUPoint uPos, lmUSize uSize,
-                     wxString sName=_T("Invisible")); 
+                     wxString sName=_T("Invisible"));
     ~lmShapeInvisible() {}
 
 	//overrides
@@ -267,7 +267,7 @@ private:
 class lmShapeWindow : public lmShapeRectangle
 {
 public:
-    lmShapeWindow(lmScoreObj* pOwner, int nShapeIdx, 
+    lmShapeWindow(lmScoreObj* pOwner, int nShapeIdx,
                   //position and size
                   lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
                   //border
@@ -276,7 +276,7 @@ public:
                   wxColour nBgColor = *wxWHITE,
                   //other
                   wxString sName = _T("Window"),
-				  bool fDraggable = true, bool fSelectable = true, 
+				  bool fDraggable = true, bool fSelectable = true,
                   bool fVisible = true);
     virtual ~lmShapeWindow() {}
 
@@ -289,6 +289,10 @@ protected:
 
     wxWindow*       m_pWidget;      //the window to embbed
 };
+
+//global functions defined in this module
+extern wxBitmap* GetBitmapForGlyph(double rScale, int nGlyph, double rPointSize,
+                                   wxColour colorF, wxColour colorB);
 
 
 #endif    // __LM_SHAPES_H__

@@ -61,6 +61,12 @@ public:
 	//ownership and related info
 	inline int GetNumStaff() { return m_nStaff; }
 
+    //adding notes/rest with mouse
+    void OnMouseStartMoving();
+    lmUPoint OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos);
+	void OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPagePos);
+
+
     //other
     int GetLineSpace(lmLUnits uyPos);
 

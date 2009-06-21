@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -328,6 +328,7 @@ public:
     lmVCursorState GetState();
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
     lmStaffObj* GetPreviousStaffobj();
+    lmContext* GetCurrentContext();
 
 
     lmUPoint GetCursorPoint(int* pNumPage = NULL);

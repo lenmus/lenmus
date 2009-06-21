@@ -37,7 +37,7 @@ class lmStaff : public lmScoreObj
 {
 public:
     //ctor and dtor
-    lmStaff(lmScore* pScore, int nNumLines=5, lmLUnits nMicrons=0);
+    lmStaff(lmVStaff* pVStaff, int nNumLines=5, lmLUnits nMicrons=0);
     ~lmStaff();
 
 	//---- virtual methods of base class -------------------------
@@ -50,17 +50,11 @@ public:
 
 	//---- specific methods of this class ------------------------
 
-	// margins
-    inline lmLUnits GetTopMargin() { return m_uTopMargin; }
-    inline lmLUnits GetBottomMargin() { return m_uBottomMargin; }
-    inline lmLUnits GetLeftMargin() { return m_uLeftMargin; }
-    inline lmLUnits GetRightMargin() { return m_uRightMargin; }
-    inline void SetTopMargin(lmLUnits uSpace) { m_uTopMargin = uSpace; }
-    inline void SetBottomMargin(lmLUnits uSpace) { m_uBottomMargin = uSpace; }
-    inline void SetLeftMargin(lmLUnits uSpace) { m_uLeftMargin = uSpace; }
-    inline void SetRightMargin(lmLUnits uSpace) { m_uRightMargin = uSpace; }
+	//margins
+    inline lmLUnits GetStaffDistance() { return m_uStaffDistance; }
+    inline void SetStaffDistance(lmLUnits uSpace) { m_uStaffDistance = uSpace; }
 
-    // sizes
+    //sizes
     lmLUnits GetHeight();
 
     inline lmLUnits GetLineSpacing() { return m_uSpacing; }
@@ -93,14 +87,14 @@ private:
 	void InsertContextAfter(lmContext* pNew, lmContext* pPrev, lmContext* pNext,
                             lmStaffObj* pSO);
 
-    lmLUnits    m_uLineThickness;	// in logical units
+    //lines
+    lmLUnits    m_uLineThickness;
     int         m_nNumLines;
-    lmLUnits    m_uSpacing;			// in logical units (thousandths of a mm.,microns)
+    lmLUnits    m_uSpacing;			//between lines
 
-    lmLUnits    m_uLeftMargin;       // lmStaff margins (logical units))
-    lmLUnits    m_uRightMargin;
-    lmLUnits    m_uTopMargin;
-    lmLUnits    m_uBottomMargin;
+    //margins
+    lmLUnits    m_uStaffDistance;   //vertical distance from the bottom line of the previous
+                                    //staff. This value is ignored for the first staff in a system.
 
     //info about font to use to draw music glyphs 
     wxFont*     m_pFontDraw;        //font to use for drawing on this staff
@@ -111,10 +105,6 @@ private:
 	lmContext*		m_pFirstContext;
 	lmContext*		m_pLastContext;
     lmEClefType     m_nPreviousFirstClef;   //to know previous clef when clef is deleted
-
-    //cursor (for edition). Points to current insertion position for this staff
-
-
 
 };
 

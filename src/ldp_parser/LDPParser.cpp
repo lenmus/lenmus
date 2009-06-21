@@ -2723,9 +2723,10 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
 
 }
 
-//returns true if error; in this case nothing is added to the score
 bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
 {
+    //returns true if error; in this case nothing is added to the score
+    //
     //  (title <alignment> string [<font>][<location>])
 
     wxASSERT(pNode->GetName() == _T("title"));

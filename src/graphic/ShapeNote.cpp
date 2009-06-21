@@ -213,7 +213,7 @@ lmUPoint lmShapeNote::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
     //return lmUPoint(uPos.x, uPos.y);		//free movement
     lmUPoint pos = uPos;
 	int nSteps;
-    pos.y = ((lmNote*)m_pOwner)->CheckNoteNewPosition(GetYTop(), uPos.y, &nSteps);
+    pos.y = lmCheckNoteNewPosition(((lmNote*)m_pOwner)->GetStaff(), GetYTop(), uPos.y, &nSteps);
 
 		//draw leger lines
 
@@ -251,7 +251,8 @@ void lmShapeNote::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const lmUPoi
 	{
 		//free movement not allowed. The note must be moved in discrete 
 		//vertical steps (half lines)
-		uFinalPos.y = ((lmNote*)m_pOwner)->CheckNoteNewPosition(GetYTop(), uPos.y, &nSteps);
+		uFinalPos.y = lmCheckNoteNewPosition(((lmNote*)m_pOwner)->GetStaff(), GetYTop(), uPos.y,
+                                             &nSteps);
 	}
 
 	//send a move note command to the controller
@@ -276,29 +277,40 @@ void lmShapeNote::AddLegerLinesInfo(int nPosOnStaff, lmLUnits uyStaffTopLine)
 
 void lmShapeNote::DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPaper, wxColour color)
 {
-	//During note drag, it could be necessary to display new leger lines. This method
-	//overlays to drag image the necesary leger lines
-
-	//to draw leger lines we could use the same idea than for highlight: just invoke
-	//render method of the appropiate shape. That means that:
-	//1. the shape for leger lines
-	//should not be a fixed shape for each line but a generic shape to draw all leger
-	//lines of a note. The number of lines to draw should be dynamically computed by
-	//shape render method
-	//2. All notes must have a leger lines shape, even if no line is going to be drawn
-	//
-	//Therefore, it is note necessary to have leger lines shapes. They must be implicit
-	//in the note shape rendering methods. So we only need to have the necessary information
-	//in the note shape
-
-    if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
-
 	lmVStaff* pVStaff = ((lmNote*)m_pOwner)->GetVStaff();
 	int nStaff = ((lmNote*)m_pOwner)->GetStaffNum();
-    lmLUnits uThick = pVStaff->GetStaffLineThick(nStaff);
-    uxLine -= pVStaff->TenthsToLogical(4, nStaff);
     lmShape* pNoteHead = GetNoteHead();
     lmLUnits uLineLength = pNoteHead->GetWidth() + pVStaff->TenthsToLogical(8, nStaff);
+
+    lmDrawLegerLines(nPosOnStaff, uxLine, pVStaff, nStaff, uLineLength, m_uyStaffTopLine, 
+                     pPaper, color);
+}
+
+
+
+//-----------------------------------------------------------------------------------------------
+// global functions
+//-----------------------------------------------------------------------------------------------
+
+void lmDrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmVStaff* pVStaff, int nStaff, 
+                      lmLUnits uLineLength, lmLUnits uyStaffTopLine, lmPaper* pPaper,
+                      wxColour color)
+{
+	//During note drag or while entering notes with mouse, it is necessary to display new leger
+    //lines overlayed on the drag or mouse cursor image. This methos does it.
+    //Parameters:
+    //  nPosOnStaff - notehead position on staff (line/space: 0-first ledger line below staff)
+    //  uLineLength - lenght of ledger lines
+    //  uyStaffTopLine - y position of staff top line (5th line)
+
+    //if note is on staff, nothing to draw
+    if (nPosOnStaff > 0 && nPosOnStaff < 12)
+        return;
+
+    lmLUnits uThick = pVStaff->GetStaffLineThick(nStaff);
+    uxLine -= pVStaff->TenthsToLogical(4, nStaff);
+
+	wxLogMessage(_T("[lmDrawLegerLines] uxLine=%.2f"), uxLine );
 
 	//force to paint lines of at least 1 px
 	lmLUnits uOnePixel = pPaper->DeviceToLogicalY(1);
@@ -308,8 +320,9 @@ void lmShapeNote::DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPap
 	{
         // pos on staff > 11  ==> lines at top
         lmLUnits uDsplz = pVStaff->GetOptionLong(_T("Staff.UpperLegerLines.Displacement"));
-        lmLUnits uyStart = m_uyStaffTopLine - pVStaff->TenthsToLogical(uDsplz, nStaff);
-        for (int i=12; i <= nPosOnStaff; i++) {
+        lmLUnits uyStart = uyStaffTopLine - pVStaff->TenthsToLogical(uDsplz, nStaff);
+        for (int i=12; i <= nPosOnStaff; i++)
+        {
             if (i % 2 == 0) {
                 int nTenths = 5 * (i - 10);
                 lmLUnits uyPos = uyStart - pVStaff->TenthsToLogical(nTenths, nStaff);
@@ -323,17 +336,17 @@ void lmShapeNote::DrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmPaper* pPap
 	else
 	{
         // nPosOnStaff < 1  ==>  lines at bottom
-        for (int i=nPosOnStaff; i <= 0; i++) {
+        for (int i=nPosOnStaff; i <= 0; i++)
+        {
             if (i % 2 == 0)
 			{
                 int nTenths = 5 * (10 - i);
-                lmLUnits uyPos = m_uyStaffTopLine + pVStaff->TenthsToLogical(nTenths, nStaff);
+                lmLUnits uyPos = uyStaffTopLine + pVStaff->TenthsToLogical(nTenths, nStaff);
 				//draw the line
 				pPaper->SolidLine(uxLine, uyPos, uxLine + uLineLength, uyPos,
 								  uThick, lm_eEdgeNormal, color);
-				//wxLogMessage(_T("[lmShapeNote::DrawLegerLines] Line from (%.2f, %.2f) to (%.2f, %.2f)"),
+				//wxLogMessage(_T("[lmDrawLegerLines] Line from (%.2f, %.2f) to (%.2f, %.2f)"),
 				//	uxLine, uyPos, uxLine + uLineLength, uyPos);
-
             }
         }
     }

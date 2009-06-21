@@ -79,7 +79,7 @@ END_EVENT_TABLE()
 
 
 lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
-                            lmHarmonyConstrains* pConstrains, wxSize nDisplaySize, 
+                            lmHarmonyConstrains* pConstrains, wxSize nDisplaySize,
                             const wxPoint& pos, const wxSize& size, int style)
     : lmFullEditorExercise(parent, id, pConstrains, pos, size, style )
 {
@@ -100,7 +100,7 @@ lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
 lmTheoHarmonyCtrol::~lmTheoHarmonyCtrol()
 {
     //AWARE: As score and EditMode ownership is transferred to the Score Editor window,
-    //they MUST NOT be deleted here. 
+    //they MUST NOT be deleted here.
 }
 
 wxDialog* lmTheoHarmonyCtrol::GetSettingsDlg()
@@ -120,7 +120,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
     // Carlos  jun-09
     //  Three types of problem
-    //   1) fixed bass 
+    //   1) fixed bass
     //   2) TODO
     //   3) TODO
     int nExcerciseType = 1;  // TODO mejorar y completar
@@ -144,7 +144,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     }
 
     wxString sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
-        , nExcerciseType, sExerciseDescription);
+        , nExcerciseType, sExerciseDescription.c_str());
 
     //create a score with a bass line
     wxString sPattern;
@@ -189,7 +189,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
             //bass note
             int nBassNote = oGenerator.RandomNumber(0, 6);
             int nOctave = oGenerator.RandomNumber(2, 3);
-            sPattern = wxString::Format(_T("(n %s%d q p2 v4 (stem down))"), sNotes[nBassNote], nOctave);
+            sPattern = wxString::Format(_T("(n %s%d q p2 v4 (stem down))"), sNotes[nBassNote].c_str(), nOctave);
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 
@@ -197,7 +197,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
             lmTextItem* pNumeralText = new lmTextItem(sNumeralsDegrees[nBassNote], lmHALIGN_DEFAULT, pNumeralStyle);
             pNote->AttachAuxObj(pNumeralText);
             pNumeralText->SetUserLocation(0.0f, 230.0f );
-   
+
         }
     }
     //add final barline
@@ -221,7 +221,7 @@ void lmTheoHarmonyCtrol::OnSettingsChanged()
     //the exercise setting dialog. You receives control just in case
     //you would like to do something (i.e. reconfigure exercise displayed
     //buttons to take into account the new exercise options chosen by the user).
-    
+
     //In this exercise there is no needed to do anything
 }
 
@@ -232,6 +232,6 @@ void lmTheoHarmonyCtrol::InitializeStrings()
     //they are translated to the language chosen by user. Take into account
     //that those strings requiring translation can not be statically initialized,
     //as at compilation time we know nothing about desired language.
-    
+
     //In this exercise there is no needed to translate anything
 }

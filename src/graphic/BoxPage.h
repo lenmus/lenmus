@@ -67,15 +67,13 @@ public:
 	lmBoxSystem* GetSystem(int nSystem);		//nSystem = 1..n
 
 	//operations
-    lmBoxSystem* AddSystem(int nSystem);
+    lmBoxSystem* AddSystem(int nSystem, lmLUnits uxPos, lmLUnits uyPos, bool fFirstOfPage);
     void Render(lmScore* pScore, lmPaper* pPaper);
     void RenderWithHandlers(lmPaper* pPaper);
     void DrawAllHandlers(lmPaper* pPaper);
     void OnNeedToDrawHandlers(lmGMObject* pGMO);
 
     //selection
-    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax);
     lmGMObject* FindShapeAtPos(lmUPoint& uPoint, bool fSelectable);
 
 

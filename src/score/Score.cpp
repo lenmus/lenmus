@@ -134,6 +134,44 @@ wxString lmPageInfo::SourceLDP(int nIndent)
 
 
 
+//=======================================================================================
+// helper class lmSystemInfo implementation
+//=======================================================================================
+
+lmSystemInfo::lmSystemInfo(lmLUnits uLeftMargin, lmLUnits uRightMargin,
+                           lmLUnits uSystemDistance, lmLUnits uTopSystemDistance)
+    : m_uLeftMargin(uLeftMargin)
+    , m_uRightMargin(uRightMargin)
+    , m_uSystemDistance(uSystemDistance)
+    , m_uTopSystemDistance(uTopSystemDistance)
+{
+}
+
+lmSystemInfo::lmSystemInfo(lmSystemInfo* pSysInfo)
+{
+    m_uLeftMargin = pSysInfo->m_uLeftMargin;
+    m_uRightMargin = pSysInfo->m_uRightMargin;
+    m_uTopSystemDistance = pSysInfo->m_uTopSystemDistance;
+    m_uSystemDistance = pSysInfo->m_uSystemDistance;
+}
+
+wxString lmSystemInfo::SourceLDP(int nIndent)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(systemLayout ");
+
+	//margins: left,top,right,bottom, binding
+	sSource += wxString::Format(_T("(systemMargins %.0f %.0f %.0f %.0f)"),
+							    m_uLeftMargin, m_uRightMargin,
+								m_uSystemDistance, m_uTopSystemDistance);
+
+    //close element
+    sSource += _T(")\n");
+	return sSource;
+}
+
+
 
 //=======================================================================================
 // lmScoreCursor implementation
@@ -519,8 +557,13 @@ lmScore::lmScore()
     m_PagesInfo.push_back( m_pPageInfo );
     m_nNumPage = 1;
 
-    //TODO user options, not a constant
-    m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
+    //Default systems information (Left,Right,Top,Bottom margins)
+    lmLUnits uTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    //TODO user options
+    lmSystemInfo* pSysInfo = new lmSystemInfo(0.0f, 0.0f, 0.0f, uTopSystemDistance);    //First system
+    m_SystemsInfo.push_back(pSysInfo);
+    lmLUnits uSystemDistance = lmToLogicalUnits(3, lmCENTIMETERS);
+    pSysInfo = new lmSystemInfo(0.0f, 0.0f, uSystemDistance, uTopSystemDistance);    //Other systems
+    m_SystemsInfo.push_back(pSysInfo);
 
     //default ObjOptions
     SetOption(_T("Score.FillPageWithEmptyStaves"), false);
@@ -569,6 +612,41 @@ lmScore::~lmScore()
     std::list<lmPageInfo*>::iterator it;
     for (it = m_PagesInfo.begin(); it != m_PagesInfo.end(); ++it)
         delete *it;
+
+    //delete systems information
+    std::list<lmSystemInfo*>::iterator itSys;
+    for (itSys = m_SystemsInfo.begin(); itSys != m_SystemsInfo.end(); ++itSys)
+        delete *itSys;
+}
+
+lmLUnits lmScore::GetSystemLeftSpace(int iSystem)
+{ 
+    // iSystem (0..n-1)
+
+    if (iSystem == 0)
+        return m_SystemsInfo.front()->LeftMargin(); 
+    else
+        return m_SystemsInfo.back()->LeftMargin(); 
+}
+
+lmLUnits lmScore::GetSystemRightSpace(int iSystem)
+{ 
+    // iSystem (0..n-1)
+
+    if (iSystem == 0)
+        return m_SystemsInfo.front()->RightMargin(); 
+    else
+        return m_SystemsInfo.back()->RightMargin(); 
+}
+
+lmLUnits lmScore::GetSystemDistance(int iSystem, bool fStartOfPage)
+{
+    // iSystem (0..n-1)
+
+    if (iSystem == 0)
+        return m_SystemsInfo.front()->SystemDistance(fStartOfPage); 
+    else
+        return m_SystemsInfo.back()->SystemDistance(fStartOfPage); 
 }
 
 void lmScore::ClearPages()
@@ -800,40 +878,6 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
     return pInstr;
 }
 
-void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
-{
- //   lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
-
- //   lmScoreTitle* pTitle;
- //   lmLUnits nPrevTitleHeight = 0;
- //   for (int i=0; i < (int)m_nTitles.size(); i++)
- //   {
- //       pTitle = (lmScoreTitle*)(*m_pAuxObjs)[m_nTitles[i]];
-	//	nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
- //   }
-
-	//m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
-
-
-    lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
-
-    for (int i=0; i < (int)m_nTitles.size(); i++)
-    {
-        lmScoreTitle* pTitle = (lmScoreTitle*)(*m_pAuxObjs)[m_nTitles[i]];
-        pTitle->Layout(pBox, pPaper);   //, colorC, fHighlight);
-
-        //force auxObjs to take user position into account
-        pTitle->OnParentComputedPositionShifted(0.0f, 0.0f);
-
-        //get height of title and advance paper cursor
-        lmGMObject* pGMO = pTitle->GetGraphicObject();
-		lmLUnits uHeight = pGMO->GetHeight();
-		pPaper->SetCursorY( pPaper->GetCursorY() + uHeight);
-    }
-
-	m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
-}
-
 void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
 {
     //TODO: review these fixed values
@@ -843,11 +887,6 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
     lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
 	m_uComputedPos.x = pPaper->GetCursorX();
 	m_uComputedPos.y = pPaper->GetCursorY();
-
- //   //layout titles
- //   LayoutTitles(pBox, pPaper);
-	//m_uComputedPos.y += m_nHeadersHeight;
-
 
 	//layout other AuxObjs attached directly to the score
     if (m_pAuxObjs)
@@ -876,7 +915,7 @@ void lmScore::LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper)
     }
 
     // update paper cursor position
-    pPaper->SetCursorX(m_uComputedPos.x);
+    pPaper->SetCursor(m_uComputedPos.x, m_uComputedPos.y);
     m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
 }
 
@@ -1096,9 +1135,13 @@ wxString lmScore::SourceLDP(wxString sFilename)
 	    }
     }
 
-    //pfirst page layout info
+    //first page layout info
 	lmPageInfo* pPageInfo = m_PagesInfo.front();
     sSource += pPageInfo->SourceLDP(1);
+
+    //first system and other systems layout info
+    //sSource += m_SystemsInfo.front()->SourceLDP(1);
+    //sSource += m_SystemsInfo.back()->SourceLDP(1);
 
     //loop for each instrument
     for (int i=0; i < (int)m_cInstruments.size(); i++)
@@ -1862,3 +1905,4 @@ wxString lmStylesCollection::SourceLDP(int nIndent, lmTextStyle* pStyle)
     sSource += _T(")\n");
     return sSource;
 }
+

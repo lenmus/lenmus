@@ -128,6 +128,11 @@ lmPaths::lmPaths(wxString sBinPath)
 
     path = oRootG1;
     path.AppendDir(_T("res"));
+    path.AppendDir(_T("cursors"));
+    m_sCursors = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    path = oRootG1;
+    path.AppendDir(_T("res"));
     path.AppendDir(_T("sounds"));
     m_sSounds = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 

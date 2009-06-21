@@ -18,8 +18,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BOXSLICEVSTAFF_H__        //to avoid nested includes
-#define __LM_BOXSLICEVSTAFF_H__
+#ifndef __LM_BOXSLICESTAFF_H__          //to avoid nested includes
+#define __LM_BOXSLICESTAFF_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "BoxSliceVStaff.cpp"
@@ -42,28 +42,17 @@
 
 class lmVStaff;
 class lmBoxSliceInstr;
-class lmBoxSliceVStaff;
 class lmBoxSystem;
 
 //
-// Class lmBoxSliceVStaff represents a part of the VStaff of an instrument. 
+// Class lmBoxSliceStaff represents a part of a staff of an instrument. 
 //
 
-class lmBoxSliceVStaff : public lmBox
+class lmBoxSliceStaff : public lmBox
 {
 public:
-    lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, int nMeasure);
-    ~lmBoxSliceVStaff();
-
-    //renderization
-    //void Render(lmPaper* pPaper, lmUPoint uPos);
-
-	//positioning and bounds
-	void CopyYBounds(lmBoxSliceVStaff* pBSV);
-
-    //selection
-    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax);
+    lmBoxSliceStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, int nMeasure);
+    ~lmBoxSliceStaff();
 
     //implementation of virtual methods from base class
 	int GetPageNumber() const;
@@ -85,5 +74,5 @@ private:
 
 
 
-#endif  // __LM_BOXSLICEVSTAFF_H__
+#endif  // __LM_BOXSLICESTAFF_H__
 

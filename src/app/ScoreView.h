@@ -59,7 +59,6 @@ class lmCaret;
 class lmMainFrame;
 class lmBoxSystem;
 class lmShapeStaff;
-class lmBoxSliceVStaff;
 class lmGMObject;
 class lmGMSelection;
 class lmScoreProcessor;
@@ -169,7 +168,7 @@ public:
     //new
     void ScaleDC(wxDC* pDC);
     void UpdateRulerMarkers(lmDPoint vPagePos);
-    lmGMObject* FindObjectAt(int nNumPage, lmUPoint uPos, bool fSelectable);
+    lmGMObject* FindShapeAt(int nNumPage, lmUPoint uPos, bool fSelectable);
     lmBox* FindBoxAt(int nNumPage, lmUPoint uPos);
     void MoveCursorToObject(lmGMObject* pGMO);
 
@@ -206,6 +205,17 @@ public:
     void HideCaret();
     void ShowCaret();
 	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
+
+    //base methods for dragging an image
+    bool OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
+						  lmDPoint vCanvasOffset, lmUPoint uPagePos,
+                          lmGMObject* pDraggedGMO, lmDPoint vDragHotSpot,
+                          lmUPoint uHotSpotShift, wxBitmap* pBitmap);
+    void OnImageContinueDrag(wxMouseEvent& event, bool fMouseTool, wxDC* pDC,
+							 lmDPoint vCanvasOffset, lmUPoint uPagePos,
+                             lmDPoint vCanvasPos);
+	void OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOffset,
+                        lmUPoint uPagePos);
 
 
 private:

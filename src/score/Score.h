@@ -271,14 +271,14 @@ public:
 
     // Access
 
-    lmLUnits TopMargin() { return m_uTopMargin; }
-    lmLUnits BottomMargin() { return m_uBottomMargin; }
-    lmLUnits LeftMargin(int nNumPage) {
-        return (nNumPage % 2) ? m_uLeftMargin + m_uBindingMargin : m_uLeftMargin ;
-    }
-    lmLUnits RightMargin(int nNumPage) {
-        return (nNumPage % 2) ? m_uRightMargin : m_uRightMargin + m_uBindingMargin ;
-    }
+    inline lmLUnits TopMargin() { return m_uTopMargin; }
+    inline lmLUnits BottomMargin() { return m_uBottomMargin; }
+    inline lmLUnits LeftMargin(int nNumPage) {
+                return (nNumPage % 2) ? m_uLeftMargin + m_uBindingMargin : m_uLeftMargin ;
+            }
+    inline lmLUnits RightMargin(int nNumPage) {
+                return (nNumPage % 2) ? m_uRightMargin : m_uRightMargin + m_uBindingMargin ;
+            }
     inline lmLUnits PageWidth() { return (m_fPortrait ? m_uPageSize.Width() : m_uPageSize.Height()); }
     inline lmLUnits PageHeight() { return (m_fPortrait ? m_uPageSize.Height() : m_uPageSize.Width()); }
     inline lmLUnits GetUsableHeight() { return m_uPageSize.GetHeight() - m_uTopMargin - m_uBottomMargin; }
@@ -299,6 +299,49 @@ private:
     lmUSize         m_uPageSize; 
     bool            m_fPortrait;
     bool            m_fNewSection;
+};
+
+
+
+//=======================================================================================
+// helper class lmSystemInfo: Layout data for a system (margins, spacings, etc.)
+//=======================================================================================
+
+class lmSystemInfo
+{
+public:
+    //constructor: all data in logical units
+    lmSystemInfo(lmLUnits uLeftMargin=0.0f, lmLUnits uRightMargin=0.0f,
+                 lmLUnits uSystemDistance=0.0f, lmLUnits uTopSystemDistance=0.0f);
+    lmSystemInfo(lmSystemInfo* pSysInfo);            
+    ~lmSystemInfo() {}
+
+    //change settings
+    inline void SetTopSystemDistance(lmLUnits uValue) { m_uTopSystemDistance = uValue; }
+    inline void SetSystemDistance(lmLUnits uValue) { m_uSystemDistance = uValue; }
+    inline void SetLeftMargin(lmLUnits uValue) { m_uLeftMargin = uValue; }
+    inline void SetRightMargin(lmLUnits uValue) { m_uRightMargin = uValue; }
+
+    // Access
+
+    inline lmLUnits LeftMargin() { return m_uLeftMargin; }
+    inline lmLUnits RightMargin() { return m_uRightMargin; }
+    inline lmLUnits SystemDistance(bool fStartOfPage) 
+                { 
+                    return fStartOfPage ? m_uTopSystemDistance : m_uSystemDistance; 
+                }
+
+	//source code
+    wxString SourceLDP(int nIndent);
+
+
+private:
+    //margins, all in logical units
+    lmLUnits        m_uLeftMargin;
+    lmLUnits        m_uRightMargin;
+    lmLUnits        m_uSystemDistance;
+    lmLUnits        m_uTopSystemDistance;
+
 };
 
 
@@ -383,11 +426,11 @@ public:
                                 lmInstrNameAbbrev* pName,
                                 lmInstrNameAbbrev* pAbbrev,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
+    inline bool IsFirstInstrument(lmInstrument* pInstr) { return pInstr == m_cInstruments.front(); }
 
 
     // titles related methods
     lmScoreTitle* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle);
-	void LayoutTitles(lmBox* pBox, lmPaper *pPaper);
 
     // identification
     wxString GetScoreName();
@@ -409,9 +452,17 @@ public:
 
     //layout related methods
     lmBoxScore* Layout(lmPaper* pPaper);
-    lmLUnits TopSystemDistance() { return m_nTopSystemDistance + m_nHeadersHeight; }
-    void SetTopSystemDistance(lmLUnits nDistance) { m_nTopSystemDistance = nDistance; }
     void LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper);
+
+    //systems layout   iSystem: 0..n-1
+    lmLUnits GetSystemLeftSpace(int iSystem);
+    lmLUnits GetSystemRightSpace(int iSystem);
+    lmLUnits GetSystemDistance(int iSystem, bool fStartOfPage = false); 
+    inline lmLUnits GetHeadersHeight() { return m_nHeadersHeight; }
+    inline void SetTopSystemDistance(lmLUnits nDistance) 
+                { m_SystemsInfo.front()->SetTopSystemDistance(nDistance); }
+    inline void SetSystemDistance(lmLUnits nDistance) 
+                { m_SystemsInfo.back()->SetSystemDistance(nDistance); }
 
 	inline void SetModified(bool fValue) { m_fModified = fValue; }
 	inline bool IsModified() { return m_fModified; }
@@ -499,7 +550,6 @@ private:
     std::list<lmStaffObj*>	m_cHighlighted;     //list of highlighted staffobjs
 
     //Layout related variables
-    lmLUnits			    m_nTopSystemDistance;
     lmLUnits			    m_nHeadersHeight;
     lmVStaff*               m_pTenthsConverter;     //for lmTenths <-> lmLUnits conversion
 
@@ -510,6 +560,10 @@ private:
     lmPageInfo*             m_pPageInfo;    //for current page 
     int                     m_nNumPage;     //number of current page
 	std::list<lmPageInfo*>  m_PagesInfo;    //info for each score page
+
+    //systems information
+	std::list<lmSystemInfo*>  m_SystemsInfo;    //info for each system
+
 
 
     //other variables

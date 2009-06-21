@@ -360,7 +360,7 @@ lmGMObject* lmGraphicManager::FindShapeAtPagePos(int nNumPage, lmUPoint uPos, bo
 
 lmBox* lmGraphicManager::FindBoxAtPagePos(int nNumPage, lmUPoint uPos)
 {
-    //look for most inner box (minimal size box: i.e. BoxSliceVStaff) that contains received point.
+    //look for most inner box (minimal size box: i.e. BoxSliceInstr) that contains received point.
     //Returned box is smaller than lmBoxPage. If point is only found in lmBoxPage) NULL is returned.
 
 	if (!m_pBoxScore)

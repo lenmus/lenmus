@@ -327,6 +327,22 @@ lmVStaffCursor* lmVStaffCursor::AttachCursor(lmScoreCursor* pSCursor)
     return this;
 }
 
+lmContext* lmVStaffCursor::GetCurrentContext()
+{
+    //returns context at cursor point.
+	//AWARE: This method does not return a context with updated accidentals.
+    //       The returned context is valid only for clef, key signature and time 
+    //       signature.
+
+    lmStaffObj* pSO = GetStaffObj();
+    if (!pSO)
+        //Not pointing to an staffobj. Cursor is at end of collection
+        return m_pColStaffObjs->GetLastContext(m_nStaff);
+    else
+        //Pointing to an StaffObj. Get context for it.
+        return m_pColStaffObjs->GetCurrentContext(pSO);
+}
+
 void lmVStaffCursor::DetachCursor()
 {
     m_pScoreCursor = (lmScoreCursor*)NULL;

@@ -159,7 +159,7 @@ void lmShapeSimpleLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
 // lmShapeGlyph object implementation
 //========================================================================================
 
-lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, 
+lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nShapeIdx, int nGlyph,
                            lmPaper* pPaper, lmUPoint uPos, wxString sName, bool fDraggable,
                            wxColour color)
     : lmSimpleShape(eGMO_ShapeGlyph, pOwner, nShapeIdx, sName, fDraggable, lmSELECTABLE, color)
@@ -277,46 +277,7 @@ wxBitmap* lmShapeGlyph::GetBitmapFromShape(double rScale, wxColour colorF, wxCol
     //Returns a bitmap with the glyph. The bitmap is only the bounding box.
     //Ownership of bitmap is transferred to caller method. It must delete it.
 
-
-    //allocate an empty drawer for measurements
-    wxBitmap dummyBitmap(1, 1);
-    lmAggDrawer* pDrawer = new lmAggDrawer(&dummyBitmap, rScale);
-    
-    // Get size of glyph, in logical units
-    wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
-    double rPointSize = GetPointSize();
-    pDrawer->FtSetFontSize(rPointSize);
-    wxRect vBox = pDrawer->FtGetGlyphBoundsInPixels( (unsigned int)sGlyph.GetChar(0) );
-
-    //allocate a bitmap for the glyph
-    wxBitmap bitmap(vBox.width + 1, vBox.height + 1);
-
-     //use this bitmap as rendering buffer
-    delete pDrawer;
-    pDrawer = new lmAggDrawer(&bitmap, rScale);
-    pDrawer->FtSetFontSize(rPointSize);
-
-    //render the glyph
-    pDrawer->SetTextForeground(colorF);
-    pDrawer->SetTextBackground(colorB);
-    pDrawer->Clear();
-    pDrawer->FtSetTextPositionPixels(- vBox.x, - vBox.y);
-    pDrawer->FtDrawChar( (unsigned int)sGlyph.GetChar(0) );
-
-    //get the image buffer and create a bitmap from it
-    wxImage& image = pDrawer->GetImageBuffer();
-
-    // Make the bitmap masked
-    image.SetMaskColour(colorB.Red(), colorB.Green(), colorB.Blue());
-    wxBitmap* pBitmap = new wxBitmap(image);
-    delete pDrawer;
-
-    ////DBG -----------
-    //wxString sFileName = _T("ShapeGlyp.bmp");
-    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
-    ////END DBG -------
-
-    return pBitmap;
+    return GetBitmapForGlyph(rScale, m_nGlyph, GetPointSize(), colorF, colorB);
 }
 
 void lmShapeGlyph::RenderHighlighted(wxDC* pDC, wxColour colorC)
@@ -325,12 +286,12 @@ void lmShapeGlyph::RenderHighlighted(wxDC* pDC, wxColour colorC)
     //page origin in the view
 
     //get the bitmap
-    double rScaleX, rScaleY; 
+    double rScaleX, rScaleY;
     pDC->GetUserScale(&rScaleX, &rScaleY);
     wxBitmap* pBitmap = GetBitmapFromShape(rScaleX, colorC, *wxBLACK);
 
     //blend it with current displayed page
-    lmPixels vxDest = pDC->LogicalToDeviceX(m_uBoundsTop.x), 
+    lmPixels vxDest = pDC->LogicalToDeviceX(m_uBoundsTop.x),
              vyDest = pDC->LogicalToDeviceY(m_uBoundsTop.y);
     const wxBitmap& bitmap = *pBitmap;
 
@@ -365,7 +326,7 @@ void lmShapeGlyph::RenderHighlighted(wxDC* pDC, wxColour colorC)
 
 lmShapeClef::lmShapeClef(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, lmPaper* pPaper,
                          lmUPoint offset, bool fSmallClef, wxString sName,
-				         bool fDraggable, wxColour color) 
+				         bool fDraggable, wxColour color)
 	: lmShapeGlyph(pOwner, nShapeIdx, nGlyph, pPaper, offset, sName, fDraggable, color)
     , m_fSmallClef(fSmallClef)
 {
@@ -455,7 +416,7 @@ void lmShapeInvisible::Render(lmPaper* pPaper, wxColour color)
 lmShapeRectangle::lmShapeRectangle(lmScoreObj* pOwner, lmLUnits uxLeft, lmLUnits uyTop,
                                    lmLUnits uxRight, lmLUnits uyBottom, lmLUnits uWidth,
                                    wxColour color, wxString sName,
-				                   bool fDraggable, bool fSelectable, 
+				                   bool fDraggable, bool fSelectable,
                                    bool fVisible)
 	: lmSimpleShape(eGMO_ShapeRectangle, pOwner, 0, sName, fDraggable, fSelectable,
                     fVisible)
@@ -527,7 +488,7 @@ void lmShapeRectangle::UpdateBounds()
 {
     // store boundling rectangle position and size
     lmLUnits uWidthRect = m_uBorderWidth / 2.0;
-    
+
     m_uBoundsTop = m_uPoint[lmID_TOP_LEFT];
     m_uBoundsBottom = m_uPoint[lmID_BOTTOM_RIGHT];
 
@@ -598,7 +559,7 @@ void lmShapeRectangle::RenderWithHandlers(lmPaper* pPaper)
 
 void lmShapeRectangle::DrawRectangle(lmPaper* pPaper, wxColour color, bool fSketch)
 {
-    //draw backgroung only if not selected 
+    //draw backgroung only if not selected
     if (!fSketch)
         pPaper->SolidPolygon(4, m_uPoint, m_nBgColor);
 
@@ -706,7 +667,7 @@ wxBitmap* lmShapeRectangle::OnBeginDrag(double rScale, wxDC* pDC)
     dc2.Clear();
     dc2.SetBackgroundMode(wxTRANSPARENT);
     dc2.SetPen(*wxBLACK_PEN);
-    dc2.DrawRectangle(m_uBoundsTop.x, m_uBoundsTop.y, GetBounds().GetWidth(), 
+    dc2.DrawRectangle(m_uBoundsTop.x, m_uBoundsTop.y, GetBounds().GetWidth(),
                       GetBounds().GetHeight() );
     //dc2.SetTextForeground(g_pColors->ScoreSelected());
     //dc2.DrawText(m_sClippedText, m_uTextPos.x - m_uBoundsTop.x, m_uTextPos.y - m_uBoundsTop.y);
@@ -730,8 +691,8 @@ lmUPoint lmShapeRectangle::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	// The view informs that the user continues dragging. We receive the new desired
 	// shape position and we must return the new allowed shape position.
 	//
-	// The default behaviour is to return the received position, so the view redraws 
-	// the drag image at that position. No action must be performed by the shape on 
+	// The default behaviour is to return the received position, so the view redraws
+	// the drag image at that position. No action must be performed by the shape on
 	// the score and score objects.
 	//
 	// The received new desired shape position is in logical units and referred to page
@@ -755,13 +716,13 @@ void lmShapeRectangle::OnEndDrag(lmPaper* pPaper, lmController* pCanvas, const l
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).
-	// This method must validate/adjust final position and, if ok, it must 
+	// This method must validate/adjust final position and, if ok, it must
 	// send a move object command to the controller.
 
     //compute shift from start of drag point
     lmUPoint uShift = uPos - m_uSavePoint[0];
 
-    //restore shape position to that of start of drag start so that MoveObject() or 
+    //restore shape position to that of start of drag start so that MoveObject() or
     //MoveObjectPoints() commands can apply shifts from original points.
     for (int i=0; i < lmID_NUM_HANDLERS; i++)
         m_uPoint[i] = m_uSavePoint[i];
@@ -918,7 +879,7 @@ void lmShapeRectangle::OnHandlerEndDrag(lmController* pCanvas, const lmUPoint& u
     //avoid double displacements.
     for (int i=0; i < lmID_NUM_HANDLERS; i++)
         m_uPoint[i] = m_uSavePoint[i];
-    
+
     UpdateBounds();
 
     pCanvas->MoveObjectPoints(this, uShifts, 4, false);  //false-> do not update views
@@ -1024,7 +985,7 @@ lmLUnits lmShapeStem::GetXCenterStem()
 //  (Button, TextCtrol, etc.) on the score
 //========================================================================================
 
-lmShapeWindow::lmShapeWindow(lmScoreObj* pOwner, int nShapeIdx, 
+lmShapeWindow::lmShapeWindow(lmScoreObj* pOwner, int nShapeIdx,
                   //position and size
                   lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uxRight, lmLUnits uyBottom,
                   //border
@@ -1056,4 +1017,57 @@ void lmShapeWindow::Render(lmPaper* pPaper, wxColour color)
         new wxTextCtrl(pWindow, wxID_ANY,
                        _T("This is a text using a wxTextCtrl window!"),
                        pos, size );
+}
+
+
+//========================================================================================
+//global functions defined in this module
+//========================================================================================
+
+wxBitmap* GetBitmapForGlyph(double rScale, int nGlyph, double rPointSize, wxColour colorF, wxColour colorB)
+{
+    //Returns the bitmap for the glyph. The bitmap size is the bounding box.
+    //Ownership of bitmap is transferred to caller. It must delete it.
+
+
+    //allocate an empty drawer for measurements
+    wxBitmap dummyBitmap(1, 1);
+    lmAggDrawer* pDrawer = new lmAggDrawer(&dummyBitmap, rScale);
+
+    // Get size of glyph, in logical units
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
+    wxLogMessage(_T("[GetBitmapForGlyph] rPointSize=%.2f, rScale=%.2f, sGlyph='%s'"),
+                 rPointSize, rScale, sGlyph.c_str());
+    pDrawer->FtSetFontSize(rPointSize);
+    wxRect vBox = pDrawer->FtGetGlyphBoundsInPixels( (unsigned int)sGlyph.GetChar(0) );
+
+    //allocate a bitmap for the glyph
+    wxBitmap bitmap(vBox.width + 1, vBox.height + 1);
+
+     //use this bitmap as rendering buffer
+    delete pDrawer;
+    pDrawer = new lmAggDrawer(&bitmap, rScale);
+    pDrawer->FtSetFontSize(rPointSize);
+
+    //render the glyph
+    pDrawer->SetTextForeground(colorF);
+    pDrawer->SetTextBackground(colorB);
+    pDrawer->Clear();
+    pDrawer->FtSetTextPositionPixels(- vBox.x, - vBox.y);
+    pDrawer->FtDrawChar( (unsigned int)sGlyph.GetChar(0) );
+
+    //get the image buffer and create a bitmap from it
+    wxImage& image = pDrawer->GetImageBuffer();
+
+    // Make the bitmap masked
+    image.SetMaskColour(colorB.Red(), colorB.Green(), colorB.Blue());
+    wxBitmap* pBitmap = new wxBitmap(image);
+    delete pDrawer;
+
+    //DBG -----------
+    wxString sFileName = _T("BitmapGlyp.bmp");
+    pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    //END DBG -------
+
+    return pBitmap;
 }

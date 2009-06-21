@@ -65,6 +65,8 @@
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.h" />
 		<Unit filename="../../packages/agg/src/agg_curves.cpp" />
 		<Unit filename="../../packages/agg/src/agg_trans_affine.cpp" />
+		<Unit filename="../../packages/agg/src/agg_vcgen_markers_term.cpp" />
+		<Unit filename="../../packages/agg/src/agg_vcgen_stroke.cpp" />
 		<Unit filename="../../packages/wxMidi/include/wxMidi.h" />
 		<Unit filename="../../packages/wxMidi/src/wxMidi.cpp" />
 		<Unit filename="../../packages/wxMidi/src/wxMidiDatabase.cpp" />
@@ -148,6 +150,8 @@
 		<Unit filename="../../src/auxmusic/ComposerV6.h" />
 		<Unit filename="../../src/auxmusic/Conversion.cpp" />
 		<Unit filename="../../src/auxmusic/Conversion.h" />
+		<Unit filename="../../src/auxmusic/Harmony.cpp" />
+		<Unit filename="../../src/auxmusic/Harmony.h" />
 		<Unit filename="../../src/auxmusic/Interval.cpp" />
 		<Unit filename="../../src/auxmusic/Interval.h" />
 		<Unit filename="../../src/auxmusic/ScalesManager.cpp" />
@@ -230,8 +234,6 @@
 		<Unit filename="../../src/graphic/BoxSlice.h" />
 		<Unit filename="../../src/graphic/BoxSliceInstr.cpp" />
 		<Unit filename="../../src/graphic/BoxSliceInstr.h" />
-		<Unit filename="../../src/graphic/BoxSliceVStaff.cpp" />
-		<Unit filename="../../src/graphic/BoxSliceVStaff.h" />
 		<Unit filename="../../src/graphic/BoxSystem.cpp" />
 		<Unit filename="../../src/graphic/BoxSystem.h" />
 		<Unit filename="../../src/graphic/Drawer.cpp" />

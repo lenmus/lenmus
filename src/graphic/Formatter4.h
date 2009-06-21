@@ -37,7 +37,7 @@
 
 class lmBoxScore;
 class lmBoxSystem;
-class lmBoxSliceVStaff;
+class lmBoxSliceInstr;
 class lmSystemCursor;
 
 class lmFormatter4
@@ -53,12 +53,11 @@ public:
 private:
     lmLUnits SizeMeasureColumn(int nSystem, lmBoxSystem* pBoxSystem, bool* pNewSystem,
                                lmLUnits nSystemIndent);
-    void AddEmptySystem(int nSystem, lmBoxSystem* pBoxSystem);
+    lmLUnits AddEmptySystem(int nSystem, lmBoxSystem* pBoxSystem);
     void RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem);
-    bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nInstr);
-    lmLUnits ComputeSystemHeight();
+    bool SizeMeasure(lmBoxSliceInstr* pBSV, lmVStaff* pVStaff, int nInstr);
     void SplitMeasureColumn(lmLUnits uAvailable);
-	void AddProlog(lmBoxSliceVStaff* pBSV, bool fDrawTimekey, lmVStaff* pVStaff, int nInstr);
+	void AddProlog(lmBoxSliceInstr* pBSV, bool fDrawTimekey, lmVStaff* pVStaff, int nInstr);
 	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmVStaff* pVStaff, int nInstr, bool fProlog);
 	void AddTime(lmTimeSignature* pTime, lmBox* pBox, lmVStaff* pVStaff, int nInstr, bool fProlog);
     void AddColumnToSystem();

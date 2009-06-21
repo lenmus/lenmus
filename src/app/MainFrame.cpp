@@ -215,7 +215,6 @@ enum
     MENU_Debug_DrawBounds_BoxSystem,
     MENU_Debug_DrawBounds_BoxSlice,
     MENU_Debug_DrawBounds_BoxSliceInstr,
-    MENU_Debug_DrawBounds_BoxSliceVStaff,
     MENU_Debug_DrawBounds_BoundsShapes,
     MENU_Debug_DumpStaffObjs,
 	MENU_Debug_DumpGMObjects,
@@ -420,7 +419,6 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_MENU (MENU_Debug_DrawBounds_BoxSystem, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawBounds_BoxSlice, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawBounds_BoxSliceInstr, lmMainFrame::OnDebugDrawBounds)
-    EVT_MENU (MENU_Debug_DrawBounds_BoxSliceVStaff, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawBounds_BoundsShapes, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawAnchors, lmMainFrame::OnDebugDrawAnchors)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
@@ -1158,8 +1156,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
             _T("Force to draw bound rectangles around BoxSlice objects"), wxITEM_CHECK);
         AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoxSliceInstr, _T("BoxSliceInstr bounds"),
             _T("Force to draw bound rectangles around BoxSliceInstr objects"), wxITEM_CHECK);
-        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoxSliceVStaff, _T("BoxSliceVStaff bounds"),
-            _T("Force to draw bound rectangles around BoxSliceVStaff objects"), wxITEM_CHECK);
         AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoundsShapes, _("Non-boxes: shapes bounds"),
             _T("Force to draw bound rectangles around shapes"), wxITEM_CHECK);
 
@@ -1840,13 +1836,11 @@ void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
         g_fDrawBoundsBoxSlice = event.IsChecked();
     else if (event.GetId() == MENU_Debug_DrawBounds_BoxSliceInstr)
         g_fDrawBoundsBoxSliceInstr = event.IsChecked();
-    else if (event.GetId() == MENU_Debug_DrawBounds_BoxSliceVStaff)
-        g_fDrawBoundsBoxSliceVStaff = event.IsChecked();
     else if (event.GetId() == MENU_Debug_DrawBounds_BoundsShapes)
         g_fDrawBoundsShapes = event.IsChecked();
 
     g_fDrawBounds = g_fDrawBoundsBoxSystem | g_fDrawBoundsBoxSlice | g_fDrawBoundsBoxSliceInstr
-                    | g_fDrawBoundsBoxSliceVStaff | g_fDrawBoundsShapes;
+                    | g_fDrawBoundsShapes;
 
     if (GetActiveDoc())
         GetActiveDoc()->UpdateAllViews();

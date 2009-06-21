@@ -51,10 +51,9 @@
 
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
     : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmVISIBLE, lmNO_DRAGGABLE)
+    , m_nCtrolType(nType)
 {
     wxASSERT(nType == lmNEW_SYSTEM);
-    m_nCtrolType = nType;
-    m_rTimeShift = 0.0;
 }
 
 wxString lmSOControl::Dump()

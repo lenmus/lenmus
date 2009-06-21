@@ -67,20 +67,6 @@ lmBoxSliceInstr* lmBoxSlice::AddInstrument(lmInstrument* pInstr)
     return pBSI;
 }
 
-void lmBoxSlice::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax)
-{
-    //look up in this box
-    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-
-    //loop to look up in the intrument slices
-    std::vector<lmBox*>::iterator it;
-	for(it = m_Boxes.begin(); it != m_Boxes.end(); ++it)
-    {
-        ((lmBoxSliceInstr*)(*it))->SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-    }
-}
-
 void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 {
 	//draw system border in red
@@ -94,39 +80,6 @@ void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
                             lmUSize(m_xEnd - m_xStart, yBottom - yTop),
                             *wxCYAN);
 
-}
-
-//void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
-//{
-//	// During layout there is a need to update initial computations about this
-//	// box slice position. This update must be propagated to all contained boxes
-//
-//    lmLUnits uIncr = GetXLeft() - xLeft;
-//	SetXLeft(xLeft);
-//    m_uLimitsTop.x += uIncr;
-//
-//	//propagate change
-//    for (int i=0; i < (int)m_Boxes.size(); i++)
-//    {
-//        ((lmBoxSliceInstr*)m_Boxes[i])->UpdateXLeft(xLeft);
-//    }
-//}
-
-void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
-{
-	//This method is only invoked during layout phase, when the number of measures in the
-	//system has been finally decided. There is a need to copy 'y' coordinates from first
-	//slice to all others. This method receives the first slice and must copy 'y' coordinates
-	//from there
-
-	SetYTop(pSlice->GetYTop());
-	SetYBottom(pSlice->GetYBottom());
-
-	//propagate request
-    for (int i=0; i < (int)m_Boxes.size(); i++)
-    {
-        ((lmBoxSliceInstr*)m_Boxes[i])->CopyYBounds(pSlice->GetSliceInstr(i));
-    }
 }
 
 int lmBoxSlice::GetPageNumber() const
@@ -144,3 +97,12 @@ lmBoxPage* lmBoxSlice::GetOwnerBoxPage()
     return m_pBSystem->GetOwnerBoxPage(); 
 }
 
+void lmBoxSlice::SetBottomSpace(lmLUnits uyValue) 
+{ 
+    //overrided. To propagate bottom space to last instrument
+
+    m_uBottomSpace = uyValue;
+
+	//propagate change
+    m_Boxes.back()->SetBottomSpace(uyValue);
+}

@@ -74,7 +74,6 @@ public:
     lmLUnits GetPitchShift();
     lmLUnits GetAnchorPos();
     int GetPosOnStaff();        //line/space on which note is rendered
-	lmLUnits CheckNoteNewPosition(lmLUnits uyOldPos, lmLUnits uyNewPos, int* pnSteps);
     lmLUnits GetShiftToNotehead();
 
     //methods related to stems
@@ -255,11 +254,13 @@ private:
 
 // Global functions related to notes
 
-wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad, 
-                              lmDPitch* pPitch = (lmDPitch*)NULL);
-wxString GetNoteNamePhysicists(lmDPitch nPitch);
-int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch);
-lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos);
+extern wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad, 
+                                     lmDPitch* pPitch = (lmDPitch*)NULL);
+extern wxString GetNoteNamePhysicists(lmDPitch nPitch);
+extern int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch);
+extern lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos);
+extern lmLUnits lmCheckNoteNewPosition(lmStaff* pStaff, lmLUnits uyOldPos, lmLUnits uyNewPos,
+                                       int* pnSteps);
 
 
 #endif    // __LM_NOTE_H__

@@ -42,10 +42,10 @@
 extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
-// Implementation of class lmBoxSliceVStaff: a part (measure) of a VStaff of an instrument.
+// Implementation of class lmBoxSliceStaff: a part (measure) of a staff of an instrument.
 //
 
-lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, int nMeasure)
+lmBoxSliceStaff::lmBoxSliceStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, int nMeasure)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceVStaff, _T("SliceVStaff"))
 {
 	m_nMeasure = nMeasure;
@@ -54,54 +54,26 @@ lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff, 
 }
 
 
-lmBoxSliceVStaff::~lmBoxSliceVStaff()
+lmBoxSliceStaff::~lmBoxSliceStaff()
 {
 }
 
-lmBoxSystem* lmBoxSliceVStaff::GetOwnerSystem()
+lmBoxSystem* lmBoxSliceStaff::GetOwnerSystem()
 {
 	return m_pSliceInstr->GetOwnerSystem();
 }
 
-//void lmBoxSliceVStaff::UpdateXLeft(lmLUnits xLeft)
-//{
-//	// During layout there is a need to update initial computations about this
-//	// box slice position. This update must be propagated to all contained boxes
-//
-//    lmLUnits uIncr = GetXLeft() - xLeft;
-//	SetXLeft(xLeft);
-//    m_uLimitsTop.x += uIncr;
-//}
-
-void lmBoxSliceVStaff::CopyYBounds(lmBoxSliceVStaff* pBSV)
-{
-	//This method is only invoked during layout phase, when the number of measures in the
-	//system has been finally decided. There is a need to copy 'y' coordinates from first
-	//slice to all others. This method receives the first vstaff slice and must copy 'y'
-	//coordinates from there
-
-	SetYTop(pBSV->GetYTop());
-	SetYBottom(pBSV->GetYBottom());
-}
-
-void lmBoxSliceVStaff::SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax)
-{
-    //look up in this box
-    lmBox::SelectGMObjects(fSelect, uXMin, uXMax, uYMin, uYMax);
-}
-
-int lmBoxSliceVStaff::GetPageNumber() const
+int lmBoxSliceStaff::GetPageNumber() const
 {
 	return m_pSliceInstr->GetPageNumber();
 }
 
-lmBoxScore* lmBoxSliceVStaff::GetOwnerBoxScore() 
+lmBoxScore* lmBoxSliceStaff::GetOwnerBoxScore() 
 { 
     return m_pSliceInstr->GetOwnerBoxScore(); 
 }
 
-lmBoxPage* lmBoxSliceVStaff::GetOwnerBoxPage()
+lmBoxPage* lmBoxSliceStaff::GetOwnerBoxPage()
 { 
     return m_pSliceInstr->GetOwnerBoxPage(); 
 }

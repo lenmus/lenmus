@@ -68,7 +68,7 @@ public:
     virtual void AttachNewText(lmComponentObj* pCO) {}
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
     virtual void InsertClef(lmEClefType nClefType) {}
-	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
+	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
 					lmENoteHeads nNotehead,
                     lmEAccidentals nAcc = lm_eNoAccidentals,
@@ -154,6 +154,30 @@ private:
 
 
 
+//-----------------------------------------------------------------------------------------------
+// lmScoreCanvas: Controller for score edition
+//-----------------------------------------------------------------------------------------------
+
+//Valid areas for mouse interaction
+#define lmMOUSE_OnStaff         0x0001      //pointing to an staff shape
+#define lmMOUSE_OnAboveStaff    0x0002      //pointing to top margin of lmBoxSliceInstr
+#define lmMOUSE_OnBelowStaff    0x0004      //pointing to bottom margin of lmBoxSliceInstr
+#define lmMOUSE_OnOtherShape    0x0008      //pointing to a shape other than staff
+#define lmMOUSE_OnOtherBox      0x0010      //pointing to a box, other cases
+#define lmMOUSE_OnOther         0x0020      //pointing to other place (score paper)
+#define lmMOUSE_OnAny           0xFFFF      //pointing to any place (all score is valid)
+
+
+
+//enum to define function/tool assigned to the mouse
+enum lmEMouseFunction
+{
+    lm_eMouse_Select = 0,           //pointer: select, drag
+    lm_eMouse_Tool_Note,            //insert note
+};
+
+
+
 class lmScoreCanvas : public lmController
 {
 	DECLARE_DYNAMIC_CLASS(lmScoreCanvas)
@@ -161,7 +185,7 @@ class lmScoreCanvas : public lmController
 public:
 
     // constructors and destructor
-    lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* pDoc, 
+    lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* pDoc,
                   const wxPoint& pos, const wxSize& size, long style, wxColor colorBg);
     ~lmScoreCanvas();
 
@@ -175,8 +199,6 @@ public:
     void OnToolBoxEvent(lmToolBoxToolSelectedEvent& event);
     void OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event);
 
-    void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
-
 	//commands without Do/Undo support
     void PlayScore(bool fFromCursor=false);
     void StopPlaying(bool fWait=false);
@@ -189,7 +211,7 @@ public:
     void AttachNewText(lmComponentObj* pCO);
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
     void InsertClef(lmEClefType nClefType);
-	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave, 
+	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
 					lmENoteHeads nNotehead,
                     lmEAccidentals nAcc = lm_eNoAccidentals,
@@ -253,6 +275,28 @@ public:
 #endif
 
 private:
+
+    //mouse cursors
+    enum lmEMouseCursor        //AWARE: Must match LoadMouseCursors() implementation
+    {
+        lm_eCursor_Pointer = 0,
+        lm_eCursor_Note,
+        lm_eCursor_Note_Forbidden,
+        //
+        lm_eCursor_Max          //the last item.
+    };
+
+
+    //dealing with mouse events
+    //void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
+    void OnMouseMove(wxMouseEvent& event, wxDC* pDC);
+
+    //mouse cursors
+    wxCursor* LoadMouseCursor(wxString sFile, int nHotSpotX, int nHotSpotY);
+    void LoadAllMouseCursors();
+    wxCursor* GetMouseCursor(lmEMouseCursor nCursorID);
+    void ChangeMouseIcon();
+
     void DeleteCaretOrSelected();
     void SynchronizeToolBoxWithSelection(bool fEnable = true);
     void SynchronizeToolBoxWithCaret(bool fEnable = true);
@@ -292,6 +336,16 @@ private:
 
     //data entry mode
     int             m_nEntryMode;
+
+    //mouse cursors
+    std::vector<wxCursor*>  m_MouseCursors;             //array. Indexes are enum lmEMouseCursor
+    wxCursor*               m_pCursorOnSelectedObject;  //mouse cursors to use
+    wxCursor*               m_pCursorOnValidArea;
+    wxCursor*               m_pCursorElse;
+    wxCursor*               m_pCursorCurrent;           //current displayed mouse cursor
+    long                    m_nValidAreas;              //flags defining valid areas
+    wxBitmap*               m_pCursorDragImage;
+
 
 	//to control octave when inserting several consecutive notes
 	bool			m_fInsertionSequence;

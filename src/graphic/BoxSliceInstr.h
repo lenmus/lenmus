@@ -40,12 +40,12 @@
 
 #include "GMObject.h"
 #include "BoxSystem.h"
+#include "BoxSlice.h"
+
 
 class lmInstrument;
 class lmVStaff;
 class lmPaper;
-class lmBoxSystem;
-class lmBoxSliceVStaff;
 
 //
 // Class lmBoxSliceInstr represents a part (measure) of an instrument. 
@@ -57,27 +57,10 @@ public:
     lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr);
     ~lmBoxSliceInstr();
 
-	//vstaff slices
-    lmBoxSliceVStaff* AddVStaff(lmVStaff* pVStaff, int nMeasure);
-	lmBoxSliceVStaff* GetSliceVStaff(int i) const { return (lmBoxSliceVStaff*)m_Boxes[i]; }
-
-	//drawing
-    //void Render(lmPaper* pPaper, lmUPoint uPos);
-
     inline lmInstrument* GetInstrument() const { return m_pInstr; }
     inline int GetNumMeasure() const { return m_pSlice->GetNumMeasure(); }
 
-    //selection
-    void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
-                         lmLUnits uYMin, lmLUnits uYMax);
-
-	//positioning and bounds
-    //void UpdateXLeft(lmLUnits xLeft);
-	//void SystemXRightUpdated(lmLUnits xRight);
-    void CopyYBounds(lmBoxSliceInstr* pBSI);
-
     //implementation of virtual methods from base class
-    //wxString Dump(int nIndent);
 	int GetPageNumber() const;
 
 	//owners and related

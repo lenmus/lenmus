@@ -1164,12 +1164,6 @@
 				RelativePath="..\..\src\graphic\BoxSliceInstr.h">
 			</File>
 			<File
-				RelativePath="..\..\src\graphic\BoxSliceVStaff.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\BoxSliceVStaff.h">
-			</File>
-			<File
 				RelativePath="..\..\src\graphic\BoxSystem.cpp">
 			</File>
 			<File

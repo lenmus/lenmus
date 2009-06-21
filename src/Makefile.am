@@ -100,7 +100,6 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     graphic/BoxScore.cpp \
     graphic/BoxSlice.cpp \
     graphic/BoxSliceInstr.cpp \
-    graphic/BoxSliceVStaff.cpp \
     graphic/BoxSystem.cpp \
     graphic/Drawer.cpp \
     graphic/Formatter4.cpp \
