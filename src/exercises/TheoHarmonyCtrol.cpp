@@ -198,6 +198,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         int nOctave;
         int nVoice;
         int nFixedNote;
+        int nStaff;
         for (int iN=0; iN < (nNumMeasures*2); iN+=2)
         {
             //add barline for previous measure
@@ -215,14 +216,16 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 {
                     nOctave = oGenerator.RandomNumber(2, 3);
                     nVoice = 4;
+                    nStaff = 2;
                 }
                 else if (nHarmonyExcerciseType == 2 )  // soprano
                 {
                     nOctave = oGenerator.RandomNumber(3, 4);
                     nVoice = 1;
+                    nStaff = 1;
                 }
-                sPattern = wxString::Format(_T("(n %s%d q p2 v%d (stem down))")
-                    , sNotes[nFixedNote].c_str(), nOctave, nVoice);
+                sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem down))")
+                    , sNotes[nFixedNote].c_str(), nOctave, nStaff, nVoice);
                 pNode = parserLDP.ParseText( sPattern );
                 pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 
