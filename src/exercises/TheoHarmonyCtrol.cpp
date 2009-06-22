@@ -57,6 +57,7 @@ extern lmMainFrame* GetMainFrame();
 
 #include "../app/toolbox/ToolsBox.h"
 
+#include "../auxmusic/HarmonyExercisesData.h"
 
 class lmEditorMode;
 
@@ -121,85 +122,126 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     // Carlos  jun-09
     //  Three types of problem
     //   1) fixed bass
-    //   2) TODO
-    //   3) TODO
-    int nExcerciseType = 1;  // TODO mejorar y completar
-
-    // Prepares a score with that meets the restrictions
+    //   2) fixed soprano
+    //   3) chord notation
 
     // select a random key signature
     lmRandomGenerator oGenerator;
-    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
-
-    wxString sExerciseDescription  = _T(" TODO:implement all exercise types");
-    int nNumMeasures = 1;
-
-    if ( nExcerciseType == 1)
-    {
-        // TODO: create a method for each exercise type
-        // todo: possibility: random num. of measures: int nNumMeasures = oGenerator.RandomNumber(2, 3);
-        nNumMeasures = 2;
-        sExerciseDescription  = _T(" Fixed bass; root position. Complete the chord notes.");
-
-    }
-
-    wxString sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
-        , nExcerciseType, sExerciseDescription.c_str());
-
-    //create a score with a bass line
+    nHarmonyExcerciseType = oGenerator.RandomNumber(1, 2);
+    wxString sExerciseDescription;
     wxString sPattern;
     lmNote* pNote;
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
+    wxString sExerciseTitle;
 
-    m_pProblemScore = new lmScore();
-    lmInstrument* pInstr = m_pProblemScore->AddInstrument(
-                                g_pMidi->DefaultVoiceChannel(),
-							    g_pMidi->DefaultVoiceInstr(), _T(""));
-
-    pVStaff = pInstr->GetVStaff();
-    pVStaff->AddStaff(5);               //add second staff: five lines, standard size
-    pVStaff->AddClef( lmE_Sol, 1 );     //G clef on first staff
-    pVStaff->AddClef( lmE_Fa4, 2 );     //F clef on second staff
-    pVStaff->AddKeySignature( m_nKey ); //key signature
-    pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
-
-
-    lmFontInfo tNumeralFont = {_T("Times New Roman"), 12, wxFONTSTYLE_NORMAL,
-                                wxFONTWEIGHT_BOLD };
-    lmTextStyle* pNumeralStyle = m_pProblemScore->GetStyleName(tNumeralFont);
-    wxString sNotes[7]    = {_T("a"), _T("b"), _T("c"), _T("d"), _T("e"), _T("f"), _T("g")};
-    // TODO: improve! (calculate numerals from chord info + key signature + mode)
-    wxString sNumeralsDegrees[7] = {_T("I"), _T("II"), _T("III"), _T("IV"), _T("V"), _T("VI"), _T("VII")};
-    wxString sNumerals;
-
-    //loop the add notes
-    for (int iN=0; iN < (nNumMeasures*2); iN+=2)
+    if ( nHarmonyExcerciseType == 1 || nHarmonyExcerciseType == 2 )
     {
-        //add barline for previous measure
-        if (iN != 0)
-            pVStaff->AddBarline(lm_eBarlineSimple);
-        else
-            pVStaff->AddSpacer(20);
+        // Prepare a score with that meets the restrictions
+        // TODO: VER ESTA TONALIDAD
+        m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
-        //two chords per measure (time signature is 2 / 4)
-        for (int iM=0; iM < 2; iM++)
+        int nNumMeasures = 2;
+
+        sExerciseDescription  =  wxString::Format(
+            _T(" Fixed %s; root position. Complete the chord notes.")
+            , (nHarmonyExcerciseType == 1? _T("bass"): _T("soprano")) );
+
+        sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
+            , nHarmonyExcerciseType, sExerciseDescription.c_str());
+
+        //create a score with a bass line
+
+        //---- Harmonyexercisedata:
+        // Exercise 1 checks:
+        //   root note
+        //   chord type
+        // Root notes
+        for (int i=0; i < nMAX_E1BCHORDS; i++)
         {
-            //bass note
-            int nBassNote = oGenerator.RandomNumber(0, 6);
-            int nOctave = oGenerator.RandomNumber(2, 3);
-            sPattern = wxString::Format(_T("(n %s%d q p2 v4 (stem down))"), sNotes[nBassNote].c_str(), nOctave);
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-
-            sNumerals = sNumeralsDegrees[nBassNote];
-            lmTextItem* pNumeralText = new lmTextItem(sNumeralsDegrees[nBassNote], lmHALIGN_DEFAULT, pNumeralStyle);
-            pNote->AttachAuxObj(pNumeralText);
-            pNumeralText->SetUserLocation(0.0f, 230.0f );
-
+            nExercise1NotesDPitch[i] = 0;
+            nExercise1ChordType[i] = ect_Max;
         }
+
+        m_pProblemScore = new lmScore();
+        lmInstrument* pInstr = m_pProblemScore->AddInstrument(
+                                    g_pMidi->DefaultVoiceChannel(),
+						            g_pMidi->DefaultVoiceInstr(), _T(""));
+
+        pVStaff = pInstr->GetVStaff();
+        pVStaff->AddStaff(5);               //add second staff: five lines, standard size
+        pVStaff->AddClef( lmE_Sol, 1 );     //G clef on first staff
+        pVStaff->AddClef( lmE_Fa4, 2 );     //F clef on second staff
+        pVStaff->AddKeySignature( m_nKey ); //key signature
+        pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
+
+
+        lmFontInfo tNumeralFont = {_T("Times New Roman"), 12, wxFONTSTYLE_NORMAL,
+                                    wxFONTWEIGHT_BOLD };
+        lmTextStyle* pNumeralStyle = m_pProblemScore->GetStyleName(tNumeralFont);
+        wxString sNotes[7]    = {_T("a"), _T("b"), _T("c"), _T("d"), _T("e"), _T("f"), _T("g")};
+        // TODO: improve! (calculate numerals from chord info + key signature + mode)
+        //        this is provisional; only for key signature = C Major
+        wxString sNumeralsDegrees[7] =
+        {_T("VI"), _T("VII"), _T("I"), _T("II"), _T("III"), _T("IV"), _T("V"), };
+        wxString sNumerals;
+        lmEChordType nE1ChordTypes[7] =
+         // TODO: MAKE A GENERIC METHOD to get chord type from: root note + key sig
+        // example: key-sig: DoM
+        //      VI             VII             I             II              III              IV             V        
+        {ect_MinorTriad, ect_DimTriad, ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad};
+        // Flag to indicate to the score processor to check exercise
+
+        //loop the add notes
+        int nNoteCount = 0;
+        int nOctave;
+        int nVoice;
+        int nFixedNote;
+        for (int iN=0; iN < (nNumMeasures*2); iN+=2)
+        {
+            //add barline for previous measure
+            if (iN != 0)
+                pVStaff->AddBarline(lm_eBarlineSimple);
+            else
+                pVStaff->AddSpacer(20);
+
+            //two chords per measure (time signature is 2 / 4)
+            for (int iM=0; iM < 2; iM++)
+            {
+                //bass note
+                nFixedNote = oGenerator.RandomNumber(0, 6);
+                if ( nHarmonyExcerciseType == 1 )  // bass
+                {
+                    nOctave = oGenerator.RandomNumber(2, 3);
+                    nVoice = 4;
+                }
+                else if (nHarmonyExcerciseType == 2 )  // soprano
+                {
+                    nOctave = oGenerator.RandomNumber(3, 4);
+                    nVoice = 1;
+                }
+                sPattern = wxString::Format(_T("(n %s%d q p2 v%d (stem down))")
+                    , sNotes[nFixedNote].c_str(), nOctave, nVoice);
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+
+                sNumerals = sNumeralsDegrees[nFixedNote];
+                lmTextItem* pNumeralText = new lmTextItem(sNumeralsDegrees[nFixedNote], lmHALIGN_DEFAULT, pNumeralStyle);
+                pNote->AttachAuxObj(pNumeralText);
+                pNumeralText->SetUserLocation(0.0f, 230.0f );
+
+                nExercise1NotesDPitch[nNoteCount] = pNote->GetDPitch();
+                nExercise1ChordType[nNoteCount] = nE1ChordTypes[nFixedNote];
+                nNoteCount++;
+
+            }
+        }
+        nHarmonyExercise1ChordsToCheck = nNoteCount; 
     }
+
+
+
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
 
@@ -221,7 +263,7 @@ void lmTheoHarmonyCtrol::OnSettingsChanged()
     //the exercise setting dialog. You receives control just in case
     //you would like to do something (i.e. reconfigure exercise displayed
     //buttons to take into account the new exercise options chosen by the user).
-
+    
     //In this exercise there is no needed to do anything
 }
 
@@ -232,6 +274,6 @@ void lmTheoHarmonyCtrol::InitializeStrings()
     //they are translated to the language chosen by user. Take into account
     //that those strings requiring translation can not be statically initialized,
     //as at compilation time we know nothing about desired language.
-
+    
     //In this exercise there is no needed to translate anything
 }

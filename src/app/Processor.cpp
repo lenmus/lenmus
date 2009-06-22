@@ -55,6 +55,7 @@ extern lmMainFrame* GetMainFrame();
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 #include "../auxmusic/ChordManager.h"
+#include "../auxmusic/HarmonyExercisesData.h"
 
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmScoreProcessor
@@ -556,6 +557,77 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
        fScoreModified = true; // repaint
     }
 
+    // Exercise specific checks
+    if (nHarmonyExercise1ChordsToCheck)
+    {
+        wxLogMessage(_T(" *** EXERCISE 1 or 2 CHECK ***"));
+        lmEChordType nChordType;
+        int nNotePitch;
+        int nInversions;
+        // Check
+        for (int nChordCount=0;
+            nChordCount<nNumChords && nChordCount<nMAX_E1BCHORDS && nChordCount < nHarmonyExercise1ChordsToCheck; 
+            nChordCount++)
+        {
+            wxLogMessage(_T(" ** CHORD %d"), nChordCount);
+            nChordType = tChordDescriptor[nChordCount].pChord->GetChordType();
+            nInversions = tChordDescriptor[nChordCount].pChord->GetInversion();
+            wxString sMsg = wxString::Format(
+                _T("CHORD %d notation mismatch: Type:%d, %d inversions. Expected:%d,0")
+                ,nChordCount, nChordType, nInversions, nExercise1ChordType[nChordCount]);
+            wxLogMessage(sMsg );
+            // if chord is not valid, no need to say anything: the error message was already shown
+            if ( nChordType !=  lmINVALID_CHORD_TYPE )
+            {
+                if ( nChordType != nExercise1ChordType[nChordCount] || nInversions > 0)
+                {
+                    wxColour colour = wxColour(255,10,0,128); // R, G, B, Transparency: RED
+                    pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+                }
+               /*-- todo: remove this "else"; only for debugging 
+                else
+                {
+                    wxColour colour = wxColour(10,255,0,128); // R, G, B, Transparency: GREEN
+                    pInfoBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+                } --*/
+            }
+
+            int nVoiceIndex = 0;
+            if ( nHarmonyExcerciseType == 2 )
+            {
+                nVoiceIndex = 3; // soprano: 4th voice
+            }
+            wxString sVoice = (nHarmonyExcerciseType == 1? _T("bass") : _T("soprano"));
+            if (tChordDescriptor[nChordCount].nNumChordNotes <= nVoiceIndex)
+            {
+                sMsg = wxString::Format( _T("CHORD %d, %s VOICE IS MISSING")
+                    ,nChordCount, sVoice.c_str());
+            }
+            else
+            {
+                nNotePitch = tChordDescriptor[nChordCount].pChordNotes[nVoiceIndex]->GetDPitch();
+                sMsg = wxString::Format( _T("CHORD %d, %s note:%d (%s), expected:%d (%s)")
+                    ,nChordCount
+                    , sVoice.c_str()
+                    , nNotePitch, DPitch_GetEnglishNoteName(nNotePitch).c_str()
+                    , nExercise1NotesDPitch[nChordCount]
+                    , DPitch_GetEnglishNoteName(nExercise1NotesDPitch[nChordCount]).c_str()
+                        );
+            }
+            wxLogMessage(sMsg );
+            if ( nNotePitch !=  nExercise1NotesDPitch[nChordCount] )
+            {
+                wxColour colour = wxColour(255,10,0,128);
+                pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+            }
+            /*-- else  TODO: remove
+            {
+                wxColour colour = wxColour(10,255,0,128);
+                pInfoBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+            }--*/
+        }
+        nHarmonyExercise1ChordsToCheck = 0;
+    }
     return fScoreModified;      //true -> score modified
 }
 
