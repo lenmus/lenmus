@@ -38,6 +38,7 @@ class lmToolBoxToolSelectedEvent;
 class lmToolBoxPageChangedEvent;
 class lmToolPage;
 class lmScoreProcessor;
+class lmShapeStaff;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -198,6 +199,9 @@ public:
     void OnKeyDown(wxKeyEvent& event);
     void OnToolBoxEvent(lmToolBoxToolSelectedEvent& event);
     void OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event);
+#ifdef __WXMSW__
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+#endif
 
 	//commands without Do/Undo support
     void PlayScore(bool fFromCursor=false);
@@ -249,7 +253,9 @@ public:
     void ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos);
 	void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible);
 
-
+    //mouse processing
+    void DoCaptureMouse();
+    void DoReleaseMouse();
 
     //call backs
     void SynchronizeToolBox();
@@ -288,8 +294,14 @@ private:
 
 
     //dealing with mouse events
-    //void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
-    void OnMouseMove(wxMouseEvent& event, wxDC* pDC);
+    void OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC);
+    void OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC);
+    void StartToolDrag(wxDC* pDC, lmShapeStaff* pShapeStaff);
+    void TerminateToolDrag(wxDC* pDC);
+
+    //mouse tools operations
+    void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos);
+    void PrepareToolDragImages();
 
     //mouse cursors
     wxCursor* LoadMouseCursor(wxString sFile, int nHotSpotX, int nHotSpotY);

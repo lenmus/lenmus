@@ -209,6 +209,19 @@ lmLUnits lmVStaff::GetStaffLineThick(int nStaff)
 
 }
 
+int lmVStaff::GetNumberOfStaff(lmStaff* pStaff)
+{
+    //returns the number (1..n) of staff pStaff in the staves collection
+
+    for (int i=0; i < lmMAX_STAFF; i++)
+    {
+        if (m_cStaves[i] == pStaff)
+            return i+1;
+    }
+    wxASSERT(false);
+    return 1;           //compiler happy
+}
+
 //----------------------------------------------------------------------------------------
 // contexts related
 //----------------------------------------------------------------------------------------

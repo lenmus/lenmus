@@ -285,6 +285,7 @@ public:
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
 	inline lmInstrument* GetOwnerInstrument() const { return m_pInstrument; }
+    int GetNumberOfStaff(lmStaff* pStaff);       //1..n
 
     //cursor management and cursor related
 	inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }

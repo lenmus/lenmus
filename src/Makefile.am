@@ -59,6 +59,7 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     auxmusic/ComposerV6.cpp \
     auxmusic/Conversion.cpp \
     auxmusic/Harmony.cpp \
+    auxmusic/HarmonyExercisesData.cpp \
     auxmusic/Interval.cpp \
     auxmusic/ScalesManager.cpp \
     exercises/auxctrols/CountersAuxCtrol.cpp \

@@ -416,6 +416,7 @@ public:
 
 	// instrument related
     int GetNumInstruments() { return (int)m_cInstruments.size(); }
+    int GetNumberOfInstrument(lmInstrument* pInstr);
     lmInstrument* GetInstrument(int nInstr);
     lmInstrument* GetFirstInstrument();
     lmInstrument* GetNextInstrument();

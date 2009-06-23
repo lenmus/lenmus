@@ -1832,6 +1832,7 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
             return false;       //error
         }
     }
+    m_pCanvas->DoCaptureMouse();
 
 	//prepare paper for direct drawing
 	OnPaperStartDrag(pDC, vCanvasOffset);
@@ -1989,6 +1990,8 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
         m_pDragImage = (wxDragImage*) NULL;
     }
 
+    wxLogMessage(_T("[lmScoreView::OnImageEndDrag] will invoke DoReleaseMouse"));
+    m_pCanvas->DoReleaseMouse();
     ShowCaret();
 }
 

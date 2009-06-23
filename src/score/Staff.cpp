@@ -36,6 +36,7 @@
 
 #include "Staff.h"
 #include "Score.h"
+#include "VStaff.h"
 #include "Context.h"
 #include "../app/global.h"
 
@@ -71,6 +72,17 @@ lmStaff::~lmStaff()
 		pCT = pNext;
 	}
 
+}
+
+int lmStaff::GetNumberOfInstrument()
+{
+    lmInstrument* pInstr = ((lmVStaff*)m_pParent)->GetOwnerInstrument();
+    return ((lmVStaff*)m_pParent)->GetScore()->GetNumberOfInstrument(pInstr);
+}
+
+int lmStaff::GetNumberOfStaff()
+{
+    return ((lmVStaff*)m_pParent)->GetNumberOfStaff(this);
 }
 
 lmLUnits lmStaff::GetHeight()

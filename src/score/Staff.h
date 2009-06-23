@@ -50,6 +50,10 @@ public:
 
 	//---- specific methods of this class ------------------------
 
+    //reference info
+    int GetNumberOfInstrument();
+    int GetNumberOfStaff();
+
 	//margins
     inline lmLUnits GetStaffDistance() { return m_uStaffDistance; }
     inline void SetStaffDistance(lmLUnits uSpace) { m_uStaffDistance = uSpace; }

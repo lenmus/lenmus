@@ -152,7 +152,7 @@ IMPLEMENT_CLASS(lmScoreCanvas, lmController)
 static lmDPoint     m_vStartDrag;       //initial point (pixels) of dragging area
 static lmDPoint     m_vEndDrag;         //last end point (pixels) of dragging area
 static lmUPoint     m_uStartDrag;       //initial point (logical, page origin) of dragging area
-static bool         m_fDraggingObject;  //we were dragging an object
+static bool         m_fDraggingObject;  //dragging an object
 static bool         m_fCheckTolerance;  //to control false dragging starts
 
     // As wxDragImage works with unscrolled device coordinates, we need current
@@ -167,8 +167,14 @@ static lmDPoint     m_vCanvasOffset;        //canvas: offset referred to view or
 static lmDPoint     m_vPageOrg;             //origin (pixels) of current page referred to view origin
 
     //other information related to mouse pointed point
-static long         m_nMousePointedArea;    //type of area pointed by mouse
 static int          m_nNumPage;             //score page number (1..n) on which the mouse is placed
+
+    //dragging a tool
+static long         m_nMousePointedArea;    //type of area pointed by mouse
+static bool         m_fDraggingTool;        //dragging a tool
+static wxBitmap*    m_pToolBitmap;          //bitmap with the tool drag image
+static int          m_nInstrNumber;         //staff. Instrument number (1..n)
+static int          m_nStaffNumber;         //staff. Staff number (1..n)
 
 
 // keys pressed when a mouse event
@@ -200,6 +206,11 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
     LM_EVT_TOOLBOX_TOOL_SELECTED(lmScoreCanvas::OnToolBoxEvent)
     LM_EVT_TOOLBOX_PAGE_CHANGED(lmScoreCanvas::OnToolBoxPageChanged)
 
+#ifdef __WXMSW__
+    //This event is currently emitted under Windows only
+    EVT_MOUSE_CAPTURE_LOST(lmScoreCanvas::OnMouseCaptureLost)
+#endif
+
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
@@ -225,8 +236,8 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* 
     m_fShift = false;
     m_fToolBoxSavedOptions = false;
 
-    //new
     // drag state control initializations
+    m_fDraggingTool = false;
     m_nDragState = lmDRAG_NONE;
 	m_vEndDrag = lmDPoint(0, 0);
 	m_vStartDrag.x = 0;
@@ -239,6 +250,7 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* 
     //mouse over
     m_pMouseOverGMO = (lmGMObject*)NULL;
     m_nMousePointedArea = 0;
+    m_pToolBitmap = (wxBitmap*)NULL;
 }
 
 lmScoreCanvas::~lmScoreCanvas()
@@ -252,6 +264,26 @@ lmScoreCanvas::~lmScoreCanvas()
     if (m_pCursorDragImage)
         delete m_pCursorDragImage;
 }
+
+void lmScoreCanvas::DoCaptureMouse()
+{
+    wxLogMessage(_T("[lmScoreCanvas::DoCaptureMouse]"));
+    //CaptureMouse();
+}
+
+void lmScoreCanvas::DoReleaseMouse()
+{ 
+    wxLogMessage(_T("[lmScoreCanvas::DoReleaseMouse] HasCapture=%s"),
+                 (HasCapture() ? _T("yes") : _T("no")) );
+    //if (HasCapture()) 
+    //    ReleaseMouse();
+}
+
+#ifdef __WXMSW__
+void lmScoreCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+{
+}
+#endif
 
 void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
@@ -280,18 +312,10 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 {
     //transfer mouse event to the view
 
-    if (!m_pView) return;
+    if (!m_pView)
+        return;
 
     wxClientDC dc(this);
-    //m_pView->OnMouseEvent(event, &dc);
-    wxDC* pDC = &dc;
-//    OnMouseEvent(event, &dc);
-//}
-//
-//void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
-//{
-    // Deals with mouse events
-
 
         //First, for better performance, filter out non-used events
 
@@ -340,7 +364,7 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 
     // Set DC in logical units and scaled, so that
     // transformations logical/device and viceversa can be computed
-    m_pView->ScaleDC(pDC);
+    m_pView->ScaleDC(&dc);
 
     //compute mouse point in logical units. Get also different origins and values
     bool fInInterpageGap;           //mouse click out of page
@@ -363,15 +387,6 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
     // draw markers on the rulers
     m_pView->UpdateRulerMarkers(m_vMousePagePos);
 
-    // check if a key is pressed
-    int nKeysPressed = lmKEY_NONE;
-    if (event.ShiftDown())
-        nKeysPressed |= lmKEY_SHIFT;
-    if (event.CmdDown())
-        nKeysPressed |= lmKEY_CTRL;
-    if (event.AltDown())
-        nKeysPressed |= lmKEY_ALT;
-
     // check if dragging (moving with a button pressed), and filter out mouse movements small
     //than tolerance
 	bool fDragging = event.Dragging();
@@ -380,8 +395,8 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 		// Check if we're within the tolerance for mouse movements.
 		// If we're very close to the position we started dragging
 		// from, this may not be an intentional drag at all.
-		lmLUnits uAx = abs(pDC->DeviceToLogicalXRel((long)(m_vMouseCanvasPos.x - m_vStartDrag.x)));
-		lmLUnits uAy = abs(pDC->DeviceToLogicalYRel((long)(m_vMouseCanvasPos.y - m_vStartDrag.y)));
+		lmLUnits uAx = abs(dc.DeviceToLogicalXRel((long)(m_vMouseCanvasPos.x - m_vStartDrag.x)));
+		lmLUnits uAy = abs(dc.DeviceToLogicalYRel((long)(m_vMouseCanvasPos.y - m_vStartDrag.y)));
         lmLUnits uTolerance = m_pView->GetMouseTolerance();
 		if (uAx <= uTolerance && uAy <= uTolerance)
 			return;
@@ -393,21 +408,37 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 	}
 
 
-        //At this point it has been determined all mouse necessary information. Now we start
-        //dealing with mouse moving and dragging events.
+        //At this point it has been determined all mouse position information. Now we start
+        //dealing with mouse moving, mouse clicks and dragging events. Behaviour from this 
+        //point is different, depending on data entry mode (using keyboard or using mouse). 
+        //Therefore, processing is splitted at this point
 
+    if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
+        OnMouseEventToolMode(event, &dc);
+    else
+        OnMouseEventSelectMode(event, &dc);
 
-    //Let's start with mouse moving events when no dragging: mouse moving over boxes and shapes
-    if (nEventType==wxEVT_MOTION && !fDragging)
-    {
-        OnMouseMove(event, pDC);
-        return;
-    }
+}
 
-
+void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
+{
     //If we reach this point is because it is a mouse dragging or a mouse click event.
     //Let's deal with them.
 
+	#ifdef __WXDEBUG__
+	bool fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmScoreCanvas::OnMouseEvent"));
+	#endif
+
+    // check if a key is pressed
+    int nKeysPressed = lmKEY_NONE;
+    if (event.ShiftDown())
+        nKeysPressed |= lmKEY_SHIFT;
+    if (event.CmdDown())
+        nKeysPressed |= lmKEY_CTRL;
+    if (event.AltDown())
+        nKeysPressed |= lmKEY_ALT;
+
+	bool fDragging = event.Dragging();
 	if (!fDragging)
 	{
 		// Non-dragging events.
@@ -890,36 +921,35 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 
 }
 
-void lmScoreCanvas::OnMouseMove(wxMouseEvent& event, wxDC* pDC)
+void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
 {
-    //It has been determined that mouse is just moving over the score (no dragging). Its position
-    //and page information has been already computed (all static global variables are updated).
-    //This method is invoked to deal with these mouse movements
+    //This method is invoked to deal with mouse events when data entry mode is by using
+    //mouse. At this point mouse position and page information has been already computed
 
     //determine type of area pointed by mouse
-	//determine if mouse is pointing to a selectable shape. If not, find possible
-    //pointed box.
     long nOldMousePointedArea = m_nMousePointedArea;
 	lmGMObject* pGMO = m_pView->FindShapeAt(m_nNumPage, m_uMousePagePos, true);
-    lmShapeStaff* pStaff = (lmShapeStaff*)NULL;
+    lmShapeStaff* pShapeStaff = (lmShapeStaff*)NULL;
     if (pGMO)
     {
+        //pointing to a selectable shape
         if (pGMO->IsShapeStaff())
         {
             m_nMousePointedArea = lmMOUSE_OnStaff;
-            pStaff = (lmShapeStaff*)pGMO;
+            pShapeStaff = (lmShapeStaff*)pGMO;
         }
         else
             m_nMousePointedArea = lmMOUSE_OnOtherShape;
     }
     else
     {
+        //No shape pointed. Check if pointing to a box
         pGMO = m_pView->FindBoxAt(m_nNumPage, m_uMousePagePos);
         if (pGMO)
         {
             if (pGMO->IsBoxSliceInstr())
             {
-                pStaff = ((lmBoxSliceInstr*)pGMO)->GetOwnerSystem()->GetStaffShape(1);
+                pShapeStaff = ((lmBoxSliceInstr*)pGMO)->GetOwnerSystem()->GetStaffShape(1);
                 if ( ((lmBox*)pGMO)->IsPointOnTopMargin(m_uMousePagePos) )
                     m_nMousePointedArea = lmMOUSE_OnAboveStaff;
                 else if ( ((lmBox*)pGMO)->IsPointOnBottomMargin(m_uMousePagePos) )
@@ -935,51 +965,88 @@ void lmScoreCanvas::OnMouseMove(wxMouseEvent& event, wxDC* pDC)
             m_nMousePointedArea = lmMOUSE_OnOther;
     }
 
+    //Now we start dealing with mouse moving and mouse clicks. Dragging (moving the mouse
+    //with a mouse button clicked) is a meaningless operation and will be treated as 
+    //moving. Therefore, only two type of events will be considered: mouse click and
+    //mouse move. Let's start with mouse click events.
+
+	if (event.IsButton())
+	{
+        //mouse click: terminate any possible tool drag operation, process the click, and
+        //restart the tool drag operation
+
+        //first, terminate any possible tool drag operation
+        bool fWasDragging = m_fDraggingTool;
+        if (m_fDraggingTool)
+            TerminateToolDrag(pDC);
+
+        //now process the click
+        OnToolClick(pGMO, m_uMousePagePos);
+
+        //finally, if necessary restart the tool drag operation
+        if (fWasDragging)
+        {
+            //AWARE: after processing the click the graphical model could have been chaged.
+            //Therefore all pointers to GMObjects are no longer valid!!!. We must recover
+            //the new staff shape
+            lmInstrument* pInstr = m_pView->GetDocument()->GetScore()->GetInstrument(m_nInstrNumber);
+            lmStaff* pStaff = pInstr->GetVStaff()->GetStaff(m_nStaffNumber);
+            pShapeStaff = (lmShapeStaff*)pStaff->GetGraphicObject();
+
+            //now we can restart the drag operation
+            StartToolDrag(pDC, pShapeStaff);
+        }
+
+        return;
+    }
+
+
+    //process mouse moving events
+
+    if (event.GetEventType() != wxEVT_MOTION)
+        return;
+
+
+
+    //check if pointed area has changed from valid to invalid or vice versa
 
     long nNowOnValidArea = m_nMousePointedArea & m_nValidAreas;
-    if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
+    long nBeforeOnValidArea = nOldMousePointedArea & m_nValidAreas;
+    if (nBeforeOnValidArea != 0 && nNowOnValidArea == 0 || nBeforeOnValidArea == 0 && nNowOnValidArea != 0)
     {
-        //check if pointed area has changed from valid to invalid or vice versa
-
-        long nBeforeOnValidArea = nOldMousePointedArea & m_nValidAreas;
-        if (nBeforeOnValidArea != 0 && nNowOnValidArea == 0 || nBeforeOnValidArea == 0 && nNowOnValidArea != 0)
+        //change from valida area to invalid, or vice versa, change drag status
+        if (nNowOnValidArea)
         {
-            //change from valida area to invalid, or vice versa, change drag status
-            if (nNowOnValidArea)
-            {
-                //entering on staff influence area
-                wxColour colorF = *wxBLUE;
-                wxColour colorB = *wxWHITE;
-                double rPointSize = ((lmStaff*)pStaff->GetScoreOwner())->GetMusicFontSize();
-                double rScale = m_pView->GetScale() * lmSCALE;
+            //entering on staff influence area
 
-                wxBitmap* pCursorDragImage =
-                    GetBitmapForGlyph(rScale, GLYPH_NOTEHEAD_QUARTER, rPointSize, colorF, colorB);
-                m_vDragHotSpot = lmDPoint(pCursorDragImage->GetWidth() / 2,
-                                          pCursorDragImage->GetHeight() / 2 );
+            //save staff info
+            m_nInstrNumber = ((lmStaff*)pShapeStaff->GetScoreOwner())->GetNumberOfInstrument();
+            m_nStaffNumber = ((lmStaff*)pShapeStaff->GetScoreOwner())->GetNumberOfStaff();
 
-                m_pView->OnImageBeginDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos,
-                                          pStaff, m_vDragHotSpot, m_uHotSpotShift,
-                                          pCursorDragImage );
-            }
-            else
-            {
-                //exiting staff influence area
-                m_pView->OnImageEndDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos);
-            }
+            //start dragging tool
+            StartToolDrag(pDC, pShapeStaff);
         }
         else
         {
-            //no change valid<->invalida area.
-            //if note insertion mode, draw ledger lines if necessary
-            if (m_nEntryMode == lm_DATA_ENTRY_MOUSE && nNowOnValidArea)
-            {
-                //continues in staff influence area
-                m_pView->OnImageContinueDrag(event, true, pDC, m_vCanvasOffset,
-                                             m_uMousePagePos, m_vMouseCanvasPos);
-            }
+            //exiting staff influence area
+            TerminateToolDrag(pDC);
         }
     }
+    else
+    {
+        //no change valid<->invalida area.
+        //if note insertion mode, draw ledger lines if necessary
+        if (m_nEntryMode == lm_DATA_ENTRY_MOUSE && nNowOnValidArea)
+        {
+            //continues in staff influence area
+            wxLogMessage(_T("[lmScoreCanvas::OnMouseEventToolMode] OnImageContinueDrag. m_nMousePointedArea=%d"),
+                            m_nMousePointedArea);
+
+            m_pView->OnImageContinueDrag(event, true, pDC, m_vCanvasOffset,
+                                            m_uMousePagePos, m_vMouseCanvasPos);
+        }
+    }
+
 
     //determine needed icon and change mouse icon if necessary
     wxCursor* pNeeded = m_pCursorElse;
@@ -1023,6 +1090,36 @@ void lmScoreCanvas::OnMouseMove(wxMouseEvent& event, wxDC* pDC)
             m_pMouseOverGMO = (lmGMObject*)NULL;
         }
     }
+}
+
+void lmScoreCanvas::StartToolDrag(wxDC* pDC, lmShapeStaff* pShapeStaff)
+{
+    PrepareToolDragImages();
+    //wxColour colorF = *wxBLUE;
+    //wxColour colorB = *wxWHITE;
+    //double rPointSize = ((lmStaff*)pShapeStaff->GetScoreOwner())->GetMusicFontSize();
+    //double rScale = m_pView->GetScale() * lmSCALE;
+
+    wxBitmap* pCursorDragImage = new wxBitmap(*m_pToolBitmap);
+    m_vDragHotSpot = lmDPoint(pCursorDragImage->GetWidth() / 2,
+                                pCursorDragImage->GetHeight() / 2 );
+
+    wxLogMessage(_T("[lmScoreCanvas::StartToolDrag] OnImageBeginDrag. m_nMousePointedArea=%d"),
+                    m_nMousePointedArea);
+
+    m_pView->OnImageBeginDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos,
+                                pShapeStaff, m_vDragHotSpot, m_uHotSpotShift,
+                                pCursorDragImage );
+    m_fDraggingTool = true;
+}
+
+void lmScoreCanvas::TerminateToolDrag(wxDC* pDC)
+{
+    wxLogMessage(_T("[lmScoreCanvas::TerminateToolDrag] Terminate drag. m_nMousePointedArea=%d"),
+                    m_nMousePointedArea);
+
+    m_pView->OnImageEndDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos);
+    m_fDraggingTool = false;
 }
 
 void lmScoreCanvas::ChangeMouseIcon()
@@ -1708,15 +1805,20 @@ void lmScoreCanvas::GetToolBoxValuesForPage(lmEToolPage nPage)
         default:
             ;
     }
+}
 
+void lmScoreCanvas::PrepareToolDragImages()
+{
     //prepare drag images for current selected tool, for all staff sizes
-    //TODO
-//    if (m_pCursorDragImage)
-//        delete m_pCursorDragImage;
-//    wxColour colorF;
-//    wxColour colorB;
-//    double rPointSize =
-//    m_pCursorDragImage = GetBitmapForGlyph(rScale, GLYPH_EIGHTH_NOTE_UP, GetPointSize(), colorF, colorB);
+
+    wxColour colorF = *wxBLUE;
+    wxColour colorB = *wxWHITE;
+    lmStaff* pStaff = m_pView->GetDocument()->GetScore()->GetFirstInstrument()->GetVStaff()->GetFirstStaff();
+    double rPointSize = pStaff->GetMusicFontSize();
+    double rScale = m_pView->GetScale() * lmSCALE;
+
+    m_pToolBitmap =
+        GetBitmapForGlyph(rScale, GLYPH_NOTEHEAD_QUARTER, rPointSize, colorF, colorB);
 }
 
 void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
@@ -2989,7 +3091,6 @@ void lmScoreCanvas::OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos
     m_fDraggingObject = false;
 
 	m_pView->DrawSelectionArea(dc, m_vStartDrag.x, m_vStartDrag.y, vCanvasPos.x, vCanvasPos.y);
-    //m_pCanvas->CaptureMouse();
 }
 
 void lmScoreCanvas::OnCanvasContinueDragLeft(bool fDraw, lmDPoint vCanvasPos,
@@ -3014,10 +3115,6 @@ void lmScoreCanvas::OnCanvasEndDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos,
     //End a selection with left button
 
     WXUNUSED(nKeys);
-
-    //m_pCanvas->ReleaseMouse();
-
-    //wxClientDC dc(this);
 
 	//remove selection rectangle
     //dc.SetLogicalFunction(wxINVERT);
@@ -3099,6 +3196,8 @@ void lmScoreCanvas::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
         m_nDragState = lmDRAG_NONE;
         m_fDraggingObject = false;
     }
+    else
+        DoCaptureMouse();
 }
 
 void lmScoreCanvas::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC,
@@ -3118,6 +3217,8 @@ void lmScoreCanvas::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC,
     m_pView->OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset,
                                  uPagePos, nKeys);
     m_fDraggingObject = false;
+    wxLogMessage(_T("[lmScoreCanvas::OnObjectEndDragLeft] will invoke DoReleaseMouse"));
+    DoReleaseMouse();
 }
 
 
@@ -3182,6 +3283,49 @@ void lmScoreCanvas::OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC,
     m_fDraggingObject = false;
 }
 
+void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos)
+{
+    if (pGMO->IsShapeStaff())
+    {
+        lmShapeStaff* pSS = (lmShapeStaff*)pGMO;
+        lmBox* pBox = m_pView->FindBoxAt(m_nNumPage, uPagePos);
+        wxASSERT(pBox && pBox->IsBoxSliceInstr());
+        lmBoxSliceInstr* pBSI = (lmBoxSliceInstr*)pBox;
+
+        wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Insert note"));
+        //Move caret
+	    lmVStaff* pVStaff = pBSI->GetInstrument()->GetVStaff();
+	    int nMeasure = pBSI->GetNumMeasure();
+	    int nStaff = pSS->GetNumStaff();
+	    m_pView->MoveCaretNearTo(uPagePos, pVStaff, nStaff, nMeasure);
+
+        GetToolBoxValuesForPage(lmPAGE_NOTES);
+        //compute note/rest duration
+		float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
+
+        //get step and octave from mouse position on staff
+        int nLineSpace = pSS->GetLineSpace(uPagePos.y);     //0=first ledger line below staff
+        //to determine octave and step it is necessary to know the clef. As caret is
+        //placed at insertion point we could get these information from caret
+        lmContext* pContext = m_pView->GetVCursor()->GetCurrentContext();
+        lmEClefType nClefType = pContext->GetClefType();
+        lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
+        dpNote += (nLineSpace - 2);     //pitch for note to insert
+        //get step and octave
+        int nOctave = DPitch_Octave(dpNote);
+        int nStep = DPitch_Step(dpNote);
+        wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Click on line/space %d, octave=%d, step=%d, note=%s"),
+                        nLineSpace, nOctave, nStep, DPitch_ToLDPName(dpNote).c_str() );
+
+        //default values
+        lmNote* pBaseOfChord = (lmNote*)NULL;
+        bool fTiedPrev = false;
+
+        //do insert note
+		InsertNote(lm_ePitchRelative, nStep, nOctave, m_nSelNoteType, rDuration,
+					m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord, fTiedPrev);
+    }
+}
 
 //non-dragging events: click on an object
 void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,

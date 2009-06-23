@@ -1032,6 +1032,21 @@ return 0.0f;
 
 }
 
+int lmScore::GetNumberOfInstrument(lmInstrument* pInstr)
+{
+    //returns the number (1..n) of instrument pInstr in the instruments collection
+
+    std::vector<lmInstrument*>::iterator it;
+    int i;
+    for(i=1, it=m_cInstruments.begin(); it != m_cInstruments.end(); ++it, ++i)
+    {
+        if (*it == pInstr)
+            return i;
+    }
+    wxASSERT(false);
+    return 1;           //compiler happy
+}
+
 lmInstrument* lmScore::GetInstrument(int nInstr)
 {
 	m_nCurNode = nInstr - 2;
