@@ -84,6 +84,19 @@ public:
     //overrides
     void SetBottomSpace(lmLUnits uyValue);
 
+    //table xPositions/timepos
+    void ClearPosTimeTable();
+    void AddPosTimeEntry(lmLUnits uxPos, float rTimepos);
+    float GetTimeForPosition(lmLUnits uxPos);
+    void DrawTimeLines(lmPaper* pPaper, wxColour color, lmLUnits uyTop,
+                       lmLUnits uyBottom);
+
+    #ifdef __WXDEBUG__
+    void DumpPosTimeTable();
+    #endif
+    
+
+
 private:
 
     lmBoxSystem*	m_pBSystem;			//parent system box
@@ -94,6 +107,15 @@ private:
     lmLUnits    m_xStart;
     lmLUnits    m_xEnd;
 
+    //table of positions and timepos
+    typedef struct
+    {
+        float           rTimepos;
+        lmLUnits        uxPos;
+    }
+    lmPosTime;
+
+    std::vector<lmPosTime*>     m_PosTimes;
 };
 
 

@@ -68,6 +68,11 @@ public:
     inline lmBoxScore* GetOwnerBoxScore() { return m_pSlice->GetOwnerBoxScore(); }
     inline lmBoxPage* GetOwnerBoxPage() { return m_pSlice->GetOwnerBoxPage(); }
 
+    //other
+    lmShapeStaff* GetStaffShape(int nStaff);   //1..n
+    void DrawTimeGrid(lmPaper* pPaper);
+
+
 private:
 
     lmBoxSlice*     m_pSlice;           //parent slice

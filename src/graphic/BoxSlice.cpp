@@ -58,6 +58,7 @@ lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, int nNumInSystem,
 
 lmBoxSlice::~lmBoxSlice()
 {
+    ClearPosTimeTable();
 }
 
 lmBoxSliceInstr* lmBoxSlice::AddInstrument(lmInstrument* pInstr)
@@ -106,3 +107,72 @@ void lmBoxSlice::SetBottomSpace(lmLUnits uyValue)
 	//propagate change
     m_Boxes.back()->SetBottomSpace(uyValue);
 }
+
+void lmBoxSlice::ClearPosTimeTable()
+{
+    std::vector<lmPosTime*>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+        delete *it;
+
+    m_PosTimes.clear();
+}
+
+void lmBoxSlice::AddPosTimeEntry(lmLUnits uxPos, float rTimepos)
+{
+    //table xPosition/timepos
+
+    lmPosTime* pPosTime = new lmPosTime;
+    pPosTime->uxPos = uxPos;
+    pPosTime->rTimepos = rTimepos;
+    m_PosTimes.push_back(pPosTime);
+}
+
+float lmBoxSlice::GetTimeForPosition(lmLUnits uxPos)
+{
+    //timepos = 0 if measure is empty
+    if (m_PosTimes.size() == 0)
+        return 0.0f;
+
+    //timepos = 0 if xPos < first entry xPos
+    lmLUnits uxPrev = m_PosTimes.front()->uxPos;
+    if (uxPos <= uxPrev)
+        return 0.0f;
+
+    //otherwise find in table
+    std::vector<lmPosTime*>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        if (uxPos <= (*it)->uxPos)
+            return (*it)->rTimepos;
+    }
+
+    //last timepos
+    return m_PosTimes.back()->rTimepos;
+}
+
+#ifdef __WXDEBUG__
+void lmBoxSlice::DumpPosTimeTable()
+{
+    std::vector<lmPosTime*>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        wxLogMessage(_T("[lmBoxSlice::DumpPosTimeTable] xPos=%.2f, rTimepos=%.2f"),
+                     (*it)->uxPos, (*it)->rTimepos );
+    }
+}
+#endif
+
+void lmBoxSlice::DrawTimeLines(lmPaper* pPaper, wxColour color, lmLUnits uyTop,
+                               lmLUnits uyBottom)
+{
+    //Draw lines for available times in posTimes table.
+    //Paper is already set in XOR mode
+
+    std::vector<lmPosTime*>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        pPaper->SketchLine((*it)->uxPos, uyTop, (*it)->uxPos, uyBottom, color);
+    }
+}
+
+

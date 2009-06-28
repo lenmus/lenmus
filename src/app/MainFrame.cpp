@@ -2687,10 +2687,10 @@ void lmMainFrame::SetStatusBarMousePos(float x, float y)
         m_pStatusBar->SetMousePos(x, y);
 }
 
-void lmMainFrame::SetStatusBarCursorRelPos(float rTime)
+void lmMainFrame::SetStatusBarCursorRelPos(float rTime, int nMeasure)
 {
     if (m_pStatusBar)
-        m_pStatusBar->SetCursorRelPos(rTime);
+        m_pStatusBar->SetCursorRelPos(rTime, nMeasure);
 }
 
 void lmMainFrame::SetStatusBarNumPage(int nPage)

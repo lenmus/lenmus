@@ -217,7 +217,8 @@ public:
 
 
     // rendering methods
-    lmLUnits LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos);
+    lmLUnits LayoutStaffLines(lmBoxSystem* pBoxSystem, lmInstrument* pInstr,
+                              lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos);
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);
     lmLUnits GetStaffLineThick(int nStaff);

@@ -1476,20 +1476,14 @@ void lmScoreView::MoveCursorToObject(lmGMObject* pGMO)
     }
 }
 
-void lmScoreView::OnPaperStartDrag(wxDC* pDC, lmDPoint vCanvasOffset)
+void lmScoreView::PreparePaperForDirectDrawing(wxDC* pDC, lmDPoint vCanvasOffset)
 {
-	//prepare paper for direct drawing
+	//prepare paper for direct drawing. This implies to allocate a direct drawer DC and set
+    //it to use logical units referred to current page origin and scrolling position
 
-	//OnDrag method expects logical units referred to current page origin. Therefore,
-	//we must set DC origing according to current scrolling and page position
 	m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-    //if (m_pDraggedGMO->IsHandler())
-    //    pDC->SetDeviceOrigin(vCanvasOffset.x, vCanvasOffset.y);
-	//else
-	{
-		wxPoint org = GetDCOriginForPage(m_nNumPage);
-		pDC->SetDeviceOrigin(org.x, org.y);
-	}
+	wxPoint org = GetDCOriginForPage(m_nNumPage);
+	pDC->SetDeviceOrigin(org.x, org.y);
 }
 
 //------------------------------------------------------------------------------------------
@@ -1619,6 +1613,17 @@ void lmScoreView::MoveCaretToObject(lmStaffObj* pSO)
     ShowCaret();
 }
 
+void lmScoreView::MoveCaretTo(lmVStaff* pVStaff, int iStaff, int nMeasure,
+                              float rTime)
+{
+    if (!m_pCaret) return;
+
+    HideCaret();
+    m_pScoreCursor->MoveTo(pVStaff, iStaff, nMeasure, rTime);
+    UpdateCaret();
+    ShowCaret();
+}
+
 void lmScoreView::UpdateCaret()
 {
     //updates caret position and status bar related info.
@@ -1631,7 +1636,7 @@ void lmScoreView::UpdateCaret()
 	m_pCaret->Hide();
 
 	//status bar: timepos
-	m_pMainFrame->SetStatusBarCursorRelPos( m_pScoreCursor->GetCursorTime() );
+	m_pMainFrame->SetStatusBarCursorRelPos( m_pScoreCursor->GetCursorTime(), 0);
 
     //DBG ------------------------------------------------------------------------------
     wxString sType = _T("end of collection");
@@ -1790,7 +1795,7 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
 	//m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Starting dragging"));
 
 	#ifdef __WXDEBUG__
-	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnImageBeginDrag()"));
+	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageBeginDrag()"));
 	#endif
 
 	//to draw and move the drag image two mechanism are possible:
@@ -1832,10 +1837,10 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
             return false;       //error
         }
     }
-    m_pCanvas->DoCaptureMouse();
+    //m_pCanvas->DoCaptureMouse();
 
 	//prepare paper for direct drawing
-	OnPaperStartDrag(pDC, vCanvasOffset);
+	PreparePaperForDirectDrawing(pDC, vCanvasOffset);
 
 	//inform shape:
     // - request the nearest valid position to current position
@@ -1896,13 +1901,22 @@ void lmScoreView::OnImageContinueDrag(wxMouseEvent& event, bool fMouseTool, wxDC
 
     if (fDoScroll)
 	{
-	    if (m_pDragImage)
-            m_pDragImage->Hide();
+        //terminate the drag, so that scrolling doesn't create ghost images
+        if (fMouseTool)
+            m_pCanvas->TerminateToolDrag(pDC);
+        else
+	        if (m_pDragImage)
+                m_pDragImage->Hide();
 
+        //now we can safely do the scroll
         DoScroll(xUnits, yUnits);
 
-	    if (m_pDragImage)
-            m_pDragImage->Show();
+        //after scrolling, we need to restore the drag operation
+        if (fMouseTool)
+            m_pCanvas->StartToolDrag(pDC, (lmShapeStaff*)m_pDraggedGMO);
+        else
+	        if (m_pDragImage)
+                m_pDragImage->Show();
 
         //wxLogStatus(_T("Scrolling(%d), vCanvasPos=(%d, %d), canvasSize=(%d, %d)"),
         //    nUnits, vCanvasPos.x, vCanvasPos.y,
@@ -1924,7 +1938,7 @@ void lmScoreView::OnImageContinueDrag(wxMouseEvent& event, bool fMouseTool, wxDC
 	else
 	{
 		//prepare paper for direct drawing
-		OnPaperStartDrag(pDC, vCanvasOffset);
+		PreparePaperForDirectDrawing(pDC, vCanvasOffset);
 
 		//hide image to not interfere with direct drawing
         if (m_pDragImage)
@@ -1963,11 +1977,21 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
 
 
     #ifdef __WXDEBUG__
-	g_pLogger->LogTrace(_T("lmScoreView::OnMouseEvent"), _T("OnImageEndDrag()"));
+    g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageEndDrag(). Mouse tool: "), 
+                        (fMouseTool ? _T("true") : _T("false")) );
 	#endif
 
+    //terminate drag image and delete the image used for dragging
+    if (m_pDragImage)
+    {
+        m_pDragImage->Hide();
+        m_pDragImage->EndDrag();
+        delete m_pDragImage;
+        m_pDragImage = (wxDragImage*) NULL;
+    }
+
     //prepare paper for direct drawing
-    OnPaperStartDrag(pDC, vCanvasOffset);
+    PreparePaperForDirectDrawing(pDC, vCanvasOffset);
 
     //inform the shape. It must not render anything. It should only issue
     //the necessary commands to move the dragged object to its new position.
@@ -1981,20 +2005,16 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
         m_pDraggedGMO->OnEndDrag(&m_Paper, m_pCanvas, uFinalPos);
 
 
-    // delete the image used for dragging
-    if (m_pDragImage)
-    {
-        m_pDragImage->Hide();
-        m_pDragImage->EndDrag();
-        delete m_pDragImage;
-        m_pDragImage = (wxDragImage*) NULL;
-    }
-
-    wxLogMessage(_T("[lmScoreView::OnImageEndDrag] will invoke DoReleaseMouse"));
-    m_pCanvas->DoReleaseMouse();
+    //m_pCanvas->DoReleaseMouse();
     ShowCaret();
 }
 
+void lmScoreView::DrawTimeGrid(wxDC* pDC, lmBoxSliceInstr* pBSI,
+                                lmDPoint vCanvasOffset)
+{
+    PreparePaperForDirectDrawing(pDC, vCanvasOffset);
+    pBSI->DrawTimeGrid(&m_Paper);
+}
 
 
 //-------------------------------------------------------------------------------------

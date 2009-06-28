@@ -310,7 +310,7 @@ void lmDrawLegerLines(int nPosOnStaff, lmLUnits uxLine, lmVStaff* pVStaff, int n
     lmLUnits uThick = pVStaff->GetStaffLineThick(nStaff);
     uxLine -= pVStaff->TenthsToLogical(4, nStaff);
 
-	wxLogMessage(_T("[lmDrawLegerLines] uxLine=%.2f"), uxLine );
+	//wxLogMessage(_T("[lmShapeNot/lmDrawLegerLines] uxLine=%.2f"), uxLine );
 
 	//force to paint lines of at least 1 px
 	lmLUnits uOnePixel = pPaper->DeviceToLogicalY(1);

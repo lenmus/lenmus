@@ -85,6 +85,7 @@
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeStaff.h"
 #include "../graphic/ShapeBarline.h"
+#include "../graphic/BoxSystem.h"
 #include "../widgets/MsgBox.h"
 
 
@@ -1868,10 +1869,12 @@ int lmVStaff::GetNumMeasures()
     return m_cStaffObjs.GetNumMeasures();
 }
 
-lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos)
+lmLUnits lmVStaff::LayoutStaffLines(lmBoxSystem* pBoxSystem, lmInstrument* pInstr,
+                                    lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos)
 {
     //Computes all staff lines of this lmVStaff and creates the necessary shapes
-	//to render them. Add this shapes to the received lmBox object.
+	//to render them. Add this shapes to the received lmBox object. The number
+    //of this instrument (1..n) is received in param. nInstr
     //Returns the Y coord. of last line (line 1, last staff)
 
     bool fVisible = !HideStaffLines();
@@ -1895,7 +1898,7 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, l
 				new lmShapeStaff(pStaff, nStaff, pStaff->GetNumLines(),
 								 pStaff->GetLineThick(), pStaff->GetLineSpacing(),
 								 xFrom, yCur, xTo, *wxBLACK );
-		pBox->AddShape(pShape, lm_eLayerStaff);
+		pBoxSystem->AddStaffShape(pShape, pInstr, nStaff);
         yCur = pShape->GetYBottom();
 		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();
         pShape->SetVisible(fVisible);

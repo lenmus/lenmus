@@ -272,6 +272,7 @@ lmBox::lmBox(lmScoreObj* pOwner, lmEGMOType nType, wxString sName)
     , m_uBottomSpace(0.0f)
     , m_uLeftSpace(0.0f)
     , m_uRightSpace(0.0f)
+    , m_pParentBox((lmBox*)NULL)
 {
 }
 
@@ -314,6 +315,7 @@ void lmBox::AddShape(lmShape* pShape, long nLayer)
 void lmBox::AddBox(lmBox* pBox)
 {
     m_Boxes.push_back(pBox);
+    pBox->SetParentBox(this);
 }
 
 void lmBox::DrawLimits(lmPaper* pPaper, wxColour color)
@@ -375,6 +377,15 @@ bool lmBox::IsPointOnBottomMargin(lmUPoint& uPoint)
 
 
     return uPoint.y > m_uBoundsBottom.y && uLimitsRect.Contains(uPoint);
+}
+
+lmBox* lmBox::GetChildBox(int iBox)
+{
+    //i = 0..n-1
+
+    wxASSERT(iBox >= 0 && iBox < (int)m_Boxes.size());
+
+    return m_Boxes.at(iBox);
 }
 
 lmBox* lmBox::FindBoxAtPos(lmUPoint& uPoint)

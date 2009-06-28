@@ -1036,8 +1036,8 @@ wxBitmap* GetBitmapForGlyph(double rScale, int nGlyph, double rPointSize, wxColo
 
     // Get size of glyph, in logical units
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    wxLogMessage(_T("[GetBitmapForGlyph] rPointSize=%.2f, rScale=%.2f, sGlyph='%s'"),
-                 rPointSize, rScale, sGlyph.c_str());
+    //wxLogMessage(_T("[Shapes/GetBitmapForGlyph] rPointSize=%.2f, rScale=%.2f, sGlyph='%s'"),
+    //             rPointSize, rScale, sGlyph.c_str());
     pDrawer->FtSetFontSize(rPointSize);
     wxRect vBox = pDrawer->FtGetGlyphBoundsInPixels( (unsigned int)sGlyph.GetChar(0) );
 

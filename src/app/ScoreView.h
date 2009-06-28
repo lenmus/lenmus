@@ -58,6 +58,7 @@ class lmRuler;
 class lmCaret;
 class lmMainFrame;
 class lmBoxSystem;
+class lmBoxSliceInstr;
 class lmShapeStaff;
 class lmGMObject;
 class lmGMSelection;
@@ -154,6 +155,11 @@ public:
 	void CaretLeft(bool fAlsoChordNotes = true);
 	void CaretUp();
 	void CaretDown();
+    void HideCaret();
+    void ShowCaret();
+	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
+    void MoveCaretTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
+
     lmVStaffCursor* GetVCursor();
 
 	void LogicalToDevice(lmUPoint& posLogical, int nPage, lmDPoint& posDevice);
@@ -201,11 +207,6 @@ public:
     void SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits uXMax,
                                lmLUnits uYMin, lmLUnits uYMax, bool fRedraw = false);
 
-	//caret management
-    void HideCaret();
-    void ShowCaret();
-	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
-
     //base methods for dragging an image
     bool OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
 						  lmDPoint vCanvasOffset, lmUPoint uPagePos,
@@ -216,6 +217,9 @@ public:
                              lmDPoint vCanvasPos);
 	void OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOffset,
                         lmUPoint uPagePos);
+
+    //mouse tools
+    void DrawTimeGrid(wxDC* pDC, lmBoxSliceInstr* pBSI, lmDPoint vCanvasOffset);
 
 
 private:
@@ -234,7 +238,7 @@ private:
     void OnNewGraphicalModel();
 
 	//auxiliary for dragging
-	void OnPaperStartDrag(wxDC* pDC, lmDPoint vCanvasOffset);
+	void PreparePaperForDirectDrawing(wxDC* pDC, lmDPoint vCanvasOffset);
 
     //housekeeping
     void ComputeVisiblePagesInfo();

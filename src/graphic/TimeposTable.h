@@ -36,6 +36,7 @@ class lmTimeLine;
 class lmTimeposEntry;
 class lmCriticalLine;
 class lmBreaksTable;
+class lmBoxSlice;
 
 //define the class that implements the main table and the algoritms
 class lmTimeposTable
@@ -57,7 +58,7 @@ public:
     lmLUnits GetStartOfBarPosition();
     lmLUnits GetGrossBarSize();
     lmLUnits DoSpacing(bool fTrace = false);
-    lmLUnits RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart);
+    lmLUnits RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart, lmBoxSlice* pBSlice);
 
     //break points computation and related
     bool GetOptimumBreakPoint(lmLUnits uAvailable, float* prTime, lmLUnits* puWidth);

@@ -49,6 +49,7 @@
 #include "../score/Notation.h"
 #include "TimeposTable.h"
 #include "ShapeNote.h"
+#include "BoxSlice.h"
 
 class lmTimeLine;
 class lmBreaksTable;
@@ -209,7 +210,7 @@ public:
     void AddEntry(lmTimeposEntry* pEntry);
     void ComputeBeta(float rFactor);
     lmLUnits RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart,
-                               lmLUnits uOldBarSize);
+                               lmLUnits uOldBarSize, lmBoxSlice* pBSlice);
 
     void InitializeToGetTimepos();
     lmLUnits GetTimepos(float rTime);
@@ -1425,7 +1426,7 @@ void lmCriticalLine::ComputeBeta(float rFactor)
 }
 
 lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart,
-                                           lmLUnits uOldBarSize)
+                                           lmLUnits uOldBarSize, lmBoxSlice* pBSlice)
 {
     //Creates the Pos<->Time table (m_PosTimes)
 
@@ -1437,6 +1438,7 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 
     lmLUnits uBarPosition = 0.0f;
     lmLUnits uOldStart = m_aMainTable.front()->m_xLeft;
+    pBSlice->ClearPosTimeTable();
 
     //all non-timed entries, at beginning, marked as fProlog must be only re-located
     lmLUnits uShiftReloc = uNewStart - uOldStart;
@@ -1472,6 +1474,7 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
             lmLUnits uShift = uDiscount + (uNewStart + (uOldPos - uStartPos) * rProp) - uOldPos;
             lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft - pTPE->m_uxAnchor + uShift};  
             m_PosTimes.push_back(tPosTime);
+            pBSlice->AddPosTimeEntry(tPosTime.uxPos, tPosTime.rTimepos);
         }
         else if (pTPE->m_nType == lm_eOmega)
         {
@@ -1494,6 +1497,7 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     wxLogMessage( DumpPosTimes() );
 #endif
 
+    pBSlice->DumpPosTimeTable();
     return uBarPosition;
 }
 
@@ -1997,16 +2001,20 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
 	return uMeasureSize;
 }
 
-lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart)
+lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart,
+                                           lmBoxSlice* pBSlice)
 {
     //Shift the position of all StaffObjs by the amount given by the difference between current
     //bar start position and the new desired start position.
-    //In addition, the position of the barline at the end of this bar is also shifted so that
-    //the new width on the bar becomes nNewBarWidth.
+    //In addition:
+    // - the position of the barline at the end of this bar is also shifted so that
+    //   the new width on the bar becomes nNewBarWidth.
+    // - A table xPos/timepos is transferred to the received BoxSlice
     //
     //Parameters:
     //   nNewBarWidth - the new width that this bar will have.
     //   uNewStart - the new left position for the start of this bar
+    //   pBoxSlice - ptr. to the box slice 
     //
     //Results and return value:
     //   The new positions are stored in the StaffObjs
@@ -2016,9 +2024,9 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     //Critical line contains all existing timepos in this column.
     //Compute new positions for each timepos
     lmLUnits uOldBarSize = this->GetGrossBarSize();
-    m_pCriticalLine->RedistributeSpace(uNewBarSize, uNewStart, uOldBarSize);
+    m_pCriticalLine->RedistributeSpace(uNewBarSize, uNewStart, uOldBarSize, pBSlice);
 
-    //transfer the new positions to all lines
+    //transfer the new positions to all lines and to BoxSlice
 	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
 	{
 		(*it)->RepositionShapes(m_pCriticalLine, uNewBarSize, uNewStart, uOldBarSize);

@@ -39,6 +39,7 @@ class lmToolBoxPageChangedEvent;
 class lmToolPage;
 class lmScoreProcessor;
 class lmShapeStaff;
+class lmBoxSliceInstr;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -256,6 +257,8 @@ public:
     //mouse processing
     void DoCaptureMouse();
     void DoReleaseMouse();
+    void StartToolDrag(wxDC* pDC, lmShapeStaff* pShapeStaff);
+    void TerminateToolDrag(wxDC* pDC);
 
     //call backs
     void SynchronizeToolBox();
@@ -296,11 +299,9 @@ private:
     //dealing with mouse events
     void OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC);
     void OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC);
-    void StartToolDrag(wxDC* pDC, lmShapeStaff* pShapeStaff);
-    void TerminateToolDrag(wxDC* pDC);
 
     //mouse tools operations
-    void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos);
+    void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime);
     void PrepareToolDragImages();
 
     //mouse cursors
@@ -356,7 +357,7 @@ private:
     wxCursor*               m_pCursorElse;
     wxCursor*               m_pCursorCurrent;           //current displayed mouse cursor
     long                    m_nValidAreas;              //flags defining valid areas
-    wxBitmap*               m_pCursorDragImage;
+    wxBitmap*               m_pToolBitmap;
 
 
 	//to control octave when inserting several consecutive notes
@@ -387,6 +388,35 @@ private:
 	lmEAccidentals  m_nSelAcc;
 	int             m_nSelOctave;
 	int             m_nSelVoice;
+
+    //temporary data for OnMouseEvent method
+
+    lmDPoint     m_vStartDrag;       //initial point (pixels) of dragging area
+    lmDPoint     m_vEndDrag;         //last end point (pixels) of dragging area
+    lmUPoint     m_uStartDrag;       //initial point (logical, page origin) of dragging area
+    bool         m_fDraggingObject;  //dragging an object
+    bool         m_fCheckTolerance;  //to control false dragging starts
+
+    // As wxDragImage works with unscrolled device coordinates, we need current
+    // maouse position in device units (pixels). All device coordinates are
+    // referred to the lmScoreCanvas window.
+    // We also need logical coordinates of point pointed by mouse
+
+    lmUPoint     m_uMousePagePos;        //position (lmLUnits) referred to current page origin
+    lmDPoint     m_vMousePagePos;        //position (pixels) referred to current page origin
+    lmDPoint     m_vMouseCanvasPos;      //position referred to canvas org. (pixels)
+    lmDPoint     m_vCanvasOffset;        //canvas: offset referred to view origin
+    lmDPoint     m_vPageOrg;             //origin (pixels) of current page referred to view origin
+
+    //other information related to mouse pointed point
+    int          m_nNumPage;             //score page number (1..n) on which the mouse is placed
+
+    //dragging a tool
+    long            m_nMousePointedArea;    //type of area pointed by mouse
+    lmShapeStaff*   m_pLastShapeStaff;      //last staff pointed by mouse
+    lmBoxSliceInstr* m_pLastBSI;            //last BoxSliceInstr pointed by mouse
+    bool            m_fDraggingTool;        //dragging a tool
+
 
 
     //new--------------------------------------------------------------

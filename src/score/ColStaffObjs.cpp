@@ -675,6 +675,19 @@ void lmVStaffCursor::MoveToTime(float rNewTime)
         //time does not exist. Cursor is now at first object > rNewTime
 }
 
+void lmVStaffCursor::MoveTo(int iStaff, int nSegment, float rTime)
+{
+    //Within the limits of specified segment, move cursor to first object
+    //with time > rTime in current staff. Time is set to rTime.
+    //If no object found, cursor is moved to end of segment, with time rTime
+
+    //move to start of required staff/segment
+    AdvanceToStartOfSegment(nSegment, iStaff);
+
+    //Now move to requested time
+    MoveToTime(rTime);
+}
+
 void lmVStaffCursor::ResetCursor()
 {
     //Move cursor to first object in first segment. No constrains on staff.
@@ -848,7 +861,8 @@ void lmVStaffCursor::AdvanceToStartOfTimepos()
 
 void lmVStaffCursor::MoveToSegment(int nSegment, int iStaff, lmUPoint uPos)
 {
-    //move cursor to nearest object to uPos, constrained to specified segment and staff.
+    //move cursor to nearest object to uPos, constrained to specified segment
+    //and staff.
 
     wxASSERT(nSegment < m_pColStaffObjs->GetNumMeasures());
 

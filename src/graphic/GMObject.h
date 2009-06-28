@@ -316,6 +316,7 @@ public:
 
 	//owners and related
 	virtual lmBoxSystem* GetOwnerSystem()=0;
+    inline lmBox* GetParentBox() { return m_pParentBox; }
 
     //selection
     virtual void SelectGMObjects(bool fSelect, lmLUnits uXMin, lmLUnits uXMax,
@@ -325,6 +326,9 @@ public:
 
     //access to contained objects
     virtual lmBox* FindBoxAtPos(lmUPoint& uPoint);
+    lmBox* GetChildBox(int iBox);       //i=0..n-1
+    inline int GetNumChildrenBoxes() { return (int)m_Boxes.size() + 1; }
+
 
 	//positioning and bounds
     virtual void UpdateXRight(lmLUnits xRight);
@@ -344,6 +348,7 @@ public:
 
 protected:
     lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _T("Box"));
+    inline void SetParentBox(lmBox* pParentBox) { m_pParentBox = pParentBox; }
 
     bool ContainsXPos(lmLUnits uxPos);
     lmBox* FindChildBoxAt(lmLUnits uxPos);
@@ -359,6 +364,9 @@ protected:
     lmLUnits        m_uBottomSpace;
     lmLUnits        m_uLeftSpace;
     lmLUnits        m_uRightSpace;
+
+    //parent box
+    lmBox*          m_pParentBox;
 
 
 private:

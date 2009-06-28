@@ -46,6 +46,7 @@ class lmBoxSlice;
 class lmBoxPage;
 class lmShapeStaff;
 class lmShapeMargin;
+class lmInstrument;
 
 //
 // Class lmBoxSystem represents a line of music in the printed score. 
@@ -78,8 +79,8 @@ public:
 
 	//miscellaneous info 
 	lmLUnits GetYTopFirstStaff();
-    inline lmShapeStaff* GetStaffShape(int nStaff) 
-                            { wxASSERT(nStaff > 0); return m_ShapeStaff[nStaff - 1]; }
+    lmShapeStaff* GetStaffShape(int nRelStaff); 
+    lmShapeStaff* GetStaffShape(lmInstrument* pInstr, int nStaff); 
 
     //pointing at
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& uPoint);
@@ -93,7 +94,6 @@ public:
 	int GetPageNumber() const;
 
 	//overrides
-	void AddShape(lmShape* pShape, long nLayer);
     void UpdateXRight(lmLUnits xPos);
     void SetBottomSpace(lmLUnits uyValue);
 
@@ -103,8 +103,12 @@ public:
     inline lmBoxPage* GetOwnerBoxPage() { return m_pBPage; }
     lmBoxScore* GetOwnerBoxScore();
 
+    //Staff shapes
+	void AddStaffShape(lmShapeStaff* ShapeStaff, lmInstrument* pInstr, int nStaff);
+
 
 private:
+    void ClearStaffShapesTable();
 
     lmBoxPage*  m_pBPage;           //parent page
     int         m_nNumMeasures;     //number of measures that fit in this system
@@ -114,7 +118,19 @@ private:
     int         m_nNumPage;         //page number (1..n) on which this system is included
 	lmShapeMargin*	m_pTopSpacer;	
 
-	std::vector<lmShapeStaff*>		m_ShapeStaff;		//list of staff shapes, only in first vstaff.
+
+    //table of staff shapes
+    //staff shapes for the system are stored in this list. It also stores additional
+    //information to help in locating a particulat staff shape.
+    typedef struct
+    {
+        lmShapeStaff*   pShape;
+        lmInstrument*   pInstr;
+        int             nStaff;     //1..n, relative to instrument
+    }
+    lmShapeStaffData;
+
+	std::vector<lmShapeStaffData*>  m_ShapeStaff;		//the table
 
 
 };

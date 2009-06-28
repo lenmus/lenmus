@@ -63,6 +63,11 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
+//access to logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
+
 //to give a unique ID to each score
 static long m_nCounterID = 0;
 
@@ -428,16 +433,8 @@ void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int
 	//get instrument
 	lmInstrument* pInstr = pVStaff->GetOwnerInstrument();
 
-	//Find instrument number
-    std::vector<lmInstrument*>::iterator it = (m_pScore->m_cInstruments).begin();
-    int i;
-	for (i=1; it != (m_pScore->m_cInstruments).end(); ++it, i++)
-    {
-        if ((*it) == pInstr) break;
-    }
-
 	//get cursor and position it at required segment and position
-    SelectCursorFromInstr(i);
+    SelectCursorFromInstr( m_pScore->GetNumberOfInstrument(pInstr) );
 	m_pVCursor->MoveToSegment(nMeasure - 1, iStaff, uPos);
 }
 
@@ -461,6 +458,23 @@ void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
 
 	//position it at required staffobj
     m_pVCursor->MoveCursorToObject(pSO);
+}
+
+void lmScoreCursor::MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime)
+{
+    //Within the limits of specified segment, move cursor to first object
+    //with time > rTime in current staff. Time is set to rTime.
+    //If no object found, cursor is moved to end of segment, with time rTime
+
+	if ((m_pScore->m_cInstruments).empty()) return;
+
+	//get VCursor for VStaff pVStaff
+	lmInstrument* pInstr = pVStaff->GetOwnerInstrument();
+    SelectCursorFromInstr( m_pScore->GetNumberOfInstrument(pInstr) );
+    wxASSERT(m_pVCursor);
+
+    //move VCursor to desired staff, segment and time
+    m_pVCursor->MoveTo(iStaff, nMeasure - 1, rTime);
 }
 
 lmUPoint lmScoreCursor::GetCursorPoint(int* pNumPage)
@@ -1721,14 +1735,19 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 lmBoxScore* lmScore::Layout(lmPaper* pPaper)
 {
     //wxLogMessage(this->Dump());
-    wxStopWatch oTimer;
+    #ifdef __WXDEBUG__
+        wxStopWatch oTimer;
+    #endif
+
     lmFormatter4 oFormatter;
     lmBoxScore* pGMObj = oFormatter.LayoutScore(this, pPaper);
     StoreShape(pGMObj);
 
-    oTimer.Pause();
-    wxLogMessage(_T("[lmScore::Layout] %ld ms required for layouting score %d (%s)"),
-                 oTimer.Time(), m_nID, m_sScoreName.c_str() );
+    #ifdef __WXDEBUG__
+        oTimer.Pause();
+        g_pLogger->LogTrace(_T("Timing: Score renderization"), _T("[lmScore::Layout] %ld ms required for layouting score %d (%s)"),
+                            oTimer.Time(), m_nID, m_sScoreName.c_str() );
+    #endif
 
     return pGMObj;
 }

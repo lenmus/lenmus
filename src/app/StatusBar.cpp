@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -77,7 +77,7 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
     m_nNumFields = lm_Field_NUM_FIELDS;
     int ch = GetCharWidth();
 
-    const int widths[] = {-1, 15*ch, 15*ch, 15*ch, 10*ch, 4*ch, 4*ch};
+    const int widths[] = {-1, 15*ch, 15*ch, 15*ch, 15*ch, 4*ch, 4*ch};
     SetFieldsCount(m_nNumFields);
     SetStatusWidths(m_nNumFields, widths);
 
@@ -122,9 +122,11 @@ void lmStatusBar::SetMousePos(float x, float y)
     SetStatusText(wxString::Format(_T("%.2f, %.2f"), x, y), lm_Field_MousePos);
 }
 
-void lmStatusBar::SetCursorRelPos(float rTime)
+void lmStatusBar::SetCursorRelPos(float rTime, int nMeasure)
 {
-    SetStatusText(wxString::Format(_T("%s%.2f"), m_sIconSpace.c_str(), rTime), lm_Field_RelTime);
+    SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.c_str(),
+                                   nMeasure, rTime), 
+                  lm_Field_RelTime);
 }
 
 void lmStatusBar::OnSize(wxSizeEvent& event)

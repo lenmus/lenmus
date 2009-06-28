@@ -304,6 +304,8 @@ public:
     void MoveToFirst(int nStaff=0);
 	void MoveToSegment(int nSegment, int iStaff, lmUPoint uPos);
     void MoveCursorToObject(lmStaffObj* pSO);
+    void MoveTo(int iStaff, int nSegment, float rTime);
+
 
 
     //Advance methods: Intended for internal usage. They do not inform ScoreObj about
@@ -346,8 +348,6 @@ private:
 
     //helper, for cursor common operations
     void PositionAt(float rTargetTimepos);
-
-
 
 
 	lmColStaffObjs*		m_pColStaffObjs;	//collection pointed by this cursor

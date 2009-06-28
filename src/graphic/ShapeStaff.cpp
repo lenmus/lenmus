@@ -123,16 +123,19 @@ int lmShapeStaff::GetLineSpace(lmLUnits uyPos)
     //        5 - on second space
     //        etc.
 
-	lmLUnits uyTopLine = m_uBoundsTop.y;
-	lmLUnits uHalfLine = m_uSpacing / 2.0f;
-	return 10 - int(0.5f + (uyPos - uyTopLine)/uHalfLine );
+	//The received position could be approximate (i.e. mouse position). so, firts, we must
+    //adjust position to the nearest valid notehead position
+
+    int nSteps;
+    lmCheckNoteNewPosition((lmStaff*)GetScoreOwner(), m_uBoundsTop.y, uyPos, &nSteps);
+	return nSteps + 10;
 }
 
 void lmShapeStaff::OnMouseStartMoving()
 {
     m_uxOldPos = -100000.0f;
 
-    wxLogMessage(_T("[lmShapeStaff::OnMouseStartMoving] "));
+    //wxLogMessage(_T("[lmShapeStaff::OnMouseStartMoving] "));
 }
 
 lmUPoint lmShapeStaff::OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos)
@@ -191,15 +194,13 @@ void lmShapeStaff::OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPos)
         lmLUnits uLineLength = 2.5f * m_uSpacing;
         lmVStaff* pVStaff = (lmVStaff*)GetScoreOwner()->GetParentScoreObj();
 
- 	    wxLogMessage(_T("[lmShapeStaff::OnMouseEndMoving] VStaff=0x%x, nStaff=%d, OldSteps=%d, oldPos=%.2f"),
-		             pVStaff, m_nStaff, m_nOldSteps, m_uxOldPos);
+ 	    //wxLogMessage(_T("[lmShapeStaff::OnMouseEndMoving] VStaff=0x%x, nStaff=%d, OldSteps=%d, oldPos=%.2f"),
+		    //         pVStaff, m_nStaff, m_nOldSteps, m_uxOldPos);
 
         lmDrawLegerLines(m_nOldSteps+10, m_uxOldPos, pVStaff, m_nStaff,
                         uLineLength, m_uBoundsTop.y, pPaper, colorC);
     }
-    else
-	    wxLogMessage(_T("[lmShapeStaff::OnMouseEndMoving] No ledger lines to remove") );
+    //else
+	   // wxLogMessage(_T("[lmShapeStaff::OnMouseEndMoving] No ledger lines to remove") );
 
 }
-
-

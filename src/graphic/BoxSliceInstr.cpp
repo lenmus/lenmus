@@ -61,3 +61,32 @@ int lmBoxSliceInstr::GetPageNumber() const
 { 
 	return m_pSlice->GetPageNumber();
 }
+
+lmShapeStaff* lmBoxSliceInstr::GetStaffShape(int nStaff)
+{ 
+    //nStaff = 1..n
+
+    wxASSERT(nStaff > 0 && nStaff <= m_pInstr->GetNumStaves());
+
+    return GetOwnerSystem()->GetStaffShape(m_pInstr, nStaff);
+}
+
+void lmBoxSliceInstr::DrawTimeGrid(lmPaper* pPaper)
+{ 
+	//as painting uses XOR we need the complementary color
+	wxColour color(192,192,192);    //TODO: User option
+	wxColour colorC(255 - (int)color.Red(), 255 - (int)color.Green(), 255 - (int)color.Blue() );
+	pPaper->SetLogicalFunction(wxXOR);
+
+    //Draw the limits rectangle
+    lmUPoint uTopLeft(m_uBoundsTop.x - m_uLeftSpace, m_uBoundsTop.y - m_uTopSpace);
+    lmUSize uSize( GetWidth() + m_uLeftSpace + m_uRightSpace,
+                   GetHeight() + m_uTopSpace + m_uBottomSpace );
+    pPaper->SketchRectangle(uTopLeft, uSize, colorC);
+
+    //draw vertical lines for existing times
+    ((lmBoxSlice*)GetParentBox())->DrawTimeLines( pPaper, colorC, uTopLeft.y,
+                                                  uTopLeft.y + uSize.GetHeight() );
+}
+
+

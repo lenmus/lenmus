@@ -36,6 +36,7 @@
 #include "BoxSliceInstr.h"
 #include "ShapeStaff.h"
 #include "Handlers.h"
+#include "../score/Instrument.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -75,6 +76,7 @@ lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage, int iSystem,
 
 lmBoxSystem::~lmBoxSystem()
 {
+    ClearStaffShapesTable();
 }
 
 void lmBoxSystem::SetPosition(lmLUnits xPos, lmLUnits yPos)
@@ -90,16 +92,21 @@ void lmBoxSystem::SetPosition(lmLUnits xPos, lmLUnits yPos)
 	}
 }
 
-void lmBoxSystem::AddShape(lmShape* pShape, long nLayer)
+void lmBoxSystem::AddStaffShape(lmShapeStaff* pShapeStaff, lmInstrument* pInstr,
+                                int nStaff)
 {
-	//override to avoid adding the staff to the shapes list
-	if (pShape->GetType() == eGMO_ShapeStaff)
-	{
-		m_ShapeStaff.push_back( (lmShapeStaff*)pShape );
-        pShape->SetOwnerBox(this);
-	}
+	//add the shape for staff nStaff (1..n) to the staff shapes list and
+    //to the shapes list
 
-    lmBox::AddShape(pShape, nLayer);
+    lmShapeStaffData* pData = new lmShapeStaffData;
+    pData->nStaff = nStaff;
+    pData->pInstr = pInstr;
+    pData->pShape = pShapeStaff;
+
+	m_ShapeStaff.push_back(pData);
+    pShapeStaff->SetOwnerBox(this);
+
+    lmBox::AddShape(pShapeStaff, lm_eLayerStaff);
 }
 
 void lmBoxSystem::DeleteLastSlice()
@@ -116,7 +123,7 @@ lmLUnits lmBoxSystem::GetYTopFirstStaff()
 {
 	// Returns the Y top position of first staff
 
-	return m_ShapeStaff[0]->GetYTop();
+	return m_ShapeStaff[0]->pShape->GetYTop();
 }
 
 lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& uPoint)
@@ -124,8 +131,8 @@ lmShapeStaff* lmBoxSystem::FindStaffAtPosition(lmUPoint& uPoint)
 	//is it any staff?
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-        if (m_ShapeStaff[i]->BoundsContainsPoint(uPoint))
-			return m_ShapeStaff[i];
+        if (m_ShapeStaff[i]->pShape->BoundsContainsPoint(uPoint))
+			return m_ShapeStaff[i]->pShape;
     }
 	return (lmShapeStaff*)NULL;
 }
@@ -151,7 +158,7 @@ void lmBoxSystem::UpdateXRight(lmLUnits xRight)
 	//update the ShapeStaff final position
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-        m_ShapeStaff[i]->SetXRight(xRight);
+        m_ShapeStaff[i]->pShape->SetXRight(xRight);
     }
 }
 
@@ -167,7 +174,7 @@ wxString lmBoxSystem::Dump(int nIndent)
 
 	// dump the staff
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
-        sDump += m_ShapeStaff[i]->Dump(nIndent);
+        sDump += m_ShapeStaff[i]->pShape->Dump(nIndent);
 
 	//base class
     sDump += lmBox::Dump(nIndent);
@@ -224,5 +231,41 @@ void lmBoxSystem::SetBottomSpace(lmLUnits uyValue)
     std::vector<lmBox*>::iterator itB;
 	for (itB=m_Boxes.begin(); itB != m_Boxes.end(); ++itB)
         (*itB)->SetBottomSpace(uyValue);
+}
+
+lmShapeStaff* lmBoxSystem::GetStaffShape(int nRelStaff) 
+{ 
+	//returns the shape for staff nRelStaff (1..n). nRelStaff is the staff number
+    //relative to total staves in system
+
+    wxASSERT(nRelStaff > 0);
+    return m_ShapeStaff[nRelStaff - 1]->pShape;
+}
+
+lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, int nStaff) 
+{ 
+	//returns the shape for staff nStaff (1..n) in instrument pInstr.
+    //That is, nStaff is relative to the number of staves in the instrument, not
+    //to the total number of staves in the system
+
+    wxASSERT(nStaff > 0  && nStaff <= pInstr->GetNumStaves());
+
+    std::vector<lmShapeStaffData*>::iterator it;
+    for (it=m_ShapeStaff.begin(); it != m_ShapeStaff.end(); ++it)
+    {
+        if ((*it)->pInstr == pInstr && (*it)->nStaff == nStaff)
+            return (*it)->pShape;
+    }
+    wxASSERT(false);    //impossible. It should have found the shape!        
+    return (lmShapeStaff*)NULL;
+}
+
+void lmBoxSystem::ClearStaffShapesTable()
+{
+    std::vector<lmShapeStaffData*>::iterator it;
+    for (it=m_ShapeStaff.begin(); it != m_ShapeStaff.end(); ++it)
+        delete *it;
+
+    m_ShapeStaff.clear();
 }
 

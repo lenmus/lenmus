@@ -45,6 +45,9 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
+//access to logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
 
 
 //-----------------------------------------------------------------------------------------
@@ -130,14 +133,20 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions,
     if (!pBitmap || fReDraw)
     {
         // anti-aliased renderization
-        wxStopWatch oTimer;
+        #ifdef __WXDEBUG__
+            wxStopWatch oTimer;
+        #endif
+
         lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
         m_pPaper->SetDrawer(pDrawer);
         wxASSERT(m_pBoxScore);  //Layout phase omitted?
         m_pBoxScore->RenderPage(nPage, m_pPaper, pRenderWindow, vOffset);
-        oTimer.Pause();
-        wxLogMessage(_T("[lmGraphicManager::RenderScore] %ld ms required for rendering page %d"),
-                    oTimer.Time(), nPage);
+
+        #ifdef __WXDEBUG__
+            oTimer.Pause();
+            g_pLogger->LogTrace(_T("Timing: Score renderization"), _T("[lmGraphicManager::RenderScore] %ld ms required for rendering page %d"),
+                                oTimer.Time(), nPage);
+        #endif
 
         //Make room for the new bitmap
         //TODO

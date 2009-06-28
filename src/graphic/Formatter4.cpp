@@ -601,8 +601,8 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
 
         xStartOfMeasure = m_oTimepos[1].GetStartOfBarPosition();
         for (int i=1; i <= m_nColumnsInSystem; i++) {
-            //GrabarTrace "RedistributeSpace: nNewSize = " & m_uMeasureSize(i) & ", newStart = " & xStartOfMeasure    //dbg
-            xStartOfMeasure = m_oTimepos[i].RedistributeSpace(m_uMeasureSize[i], xStartOfMeasure);
+            lmBoxSlice* pBSlice = (lmBoxSlice*)pBoxSystem->GetChildBox(i - 1);
+            xStartOfMeasure = m_oTimepos[i].RedistributeSpace(m_uMeasureSize[i], xStartOfMeasure, pBSlice);
         }
 
         //dbg ------------------------------------------------------------------------------
@@ -884,7 +884,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nSystem,
 		{
 			// Final xPos is yet unknown, so I use zero.
 			// It will be updated when the system is completed
-			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xStartPos, 0.0, yPaperPos);
+			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, pInstr, 
+                                                    xStartPos, 0.0, yPaperPos);
 		}
         else
 			yBottomLeft = yPaperPos + pVStaff->GetVStaffHeight();
@@ -971,7 +972,8 @@ lmLUnits lmFormatter4::AddEmptySystem(int nSystem, lmBoxSystem* pBoxSystem)
 
         //Add staff lines for current instrument. As final xPos is yet unknown, so I use zero.
 		//It will be updated when the system is completed
-		uyBottom = pVStaff->LayoutStaffLines(pBoxSystem, xStartPos, 0.0, m_pPaper->GetCursorY());
+		uyBottom = pVStaff->LayoutStaffLines(pBoxSystem, pInstr, xStartPos,
+                                             0.0f, m_pPaper->GetCursorY());
 
         //advance paper in height off this lmVStaff
         //AWARE As advancing one staff has the effect of returning

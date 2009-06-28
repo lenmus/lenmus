@@ -177,6 +177,7 @@ public:
     void MoveDown();
 	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
     void MoveCursorToObject(lmStaffObj* pSO);
+    void MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
 
     //current position info
     float GetCursorTime();
