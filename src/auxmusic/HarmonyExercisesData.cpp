@@ -32,16 +32,8 @@
 
 ---*/
 int  nHarmonyExercise1ChordsToCheck = 0;
-lmDPitch nExercise1NotesDPitch[nMAX_E1BCHORDS];
+lmFPitch nExerciseBassNotesFPitch[nMAX_E1BCHORDS]; // check bass note in Excercise 1 and 2
+lmFPitch nExercise2NotesFPitch[nMAX_E1BCHORDS]; // check additional note in Excercise 2
 lmEChordType nExercise1ChordType[nMAX_E1BCHORDS];
 int nHarmonyExcerciseType;
 
-/*---- TODO: REMOVE
-// Exercise 2 checks:
-//   root note
-//   chord type
-// Root notes
-const int nMAX_E2BCHORDS = nMAX_E1BCHORDS;
-extern int  nHarmonyExercise2ChordsToCheck;
-extern lmDPitch nExercise2BassNotesDPitch[nMAX_E2BCHORDS];
-extern lmEChordType nExercise2ChordType[nMAX_E2BCHORDS];  --*/

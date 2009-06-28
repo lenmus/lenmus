@@ -30,7 +30,8 @@
 // Root notes
 const int nMAX_E1BCHORDS = 20;
 extern int  nHarmonyExercise1ChordsToCheck;
-extern lmDPitch nExercise1NotesDPitch[nMAX_E1BCHORDS];
+extern lmFPitch nExerciseBassNotesFPitch[nMAX_E1BCHORDS];
+extern lmFPitch nExercise2NotesFPitch[nMAX_E1BCHORDS];
 extern lmEChordType nExercise1ChordType[nMAX_E1BCHORDS];
 extern int nHarmonyExcerciseType;
 
