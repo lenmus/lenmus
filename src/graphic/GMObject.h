@@ -233,7 +233,7 @@ public:
     void ApplyUserShift(lmUPoint uUserShift);
 
     //managing the drag image of mouse tools 
-    virtual void OnMouseStartMoving() {}
+    virtual lmUPoint OnMouseStartMoving(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; }
     virtual lmUPoint OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; }
     virtual void OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPagePos) {}
 

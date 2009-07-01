@@ -260,6 +260,34 @@ lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, int nStaff)
     return (lmShapeStaff*)NULL;
 }
 
+lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, lmUPoint uPoint)
+{
+	//For instrument nInstr, returns the nearest staff to point. That is, the staff
+    //belongs to instrument nInstr.
+
+    lmLUnits uDistance = 10000000000.0f;                    //any impossible big value
+    lmShapeStaff* pShapeStaff = (lmShapeStaff*)NULL;        //nearest staff
+    std::vector<lmShapeStaffData*>::iterator it;
+    for (it=m_ShapeStaff.begin(); it != m_ShapeStaff.end(); ++it)
+    {
+        if ((*it)->pInstr == pInstr)
+        {
+            lmURect uBounds = (*it)->pShape->GetBounds();
+            lmLUnits uThisDistance = wxMin(abs(uPoint.y - uBounds.GetLeftTop().y),
+                                           abs(uPoint.y - uBounds.GetBottomLeft().y) );
+            if (uDistance > uThisDistance)
+            {
+                uDistance = uThisDistance;
+                pShapeStaff = (*it)->pShape;
+            }
+        }
+        else if (pShapeStaff)
+            return pShapeStaff;
+    }
+    wxASSERT(pShapeStaff);    //It should have found a shape!        
+    return pShapeStaff;
+}
+
 void lmBoxSystem::ClearStaffShapesTable()
 {
     std::vector<lmShapeStaffData*>::iterator it;

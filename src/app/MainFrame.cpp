@@ -1454,7 +1454,10 @@ void lmMainFrame::OnOpenRecentFile(wxCommandEvent &event)
 void lmMainFrame::OpenRecentFile(wxString sFile)
 {
     if (!sFile.empty())
+    {
+        ShowToolBox(true);      //force to display ToolBox
         m_pDocManager->OpenFile(sFile);
+    }
 }
 
 void lmMainFrame::OnCloseWelcomeWnd()
@@ -2244,6 +2247,7 @@ void lmMainFrame::NewScoreWindow(lmEditorMode* pMode, lmScore* pScore)
     //Open a new score editor window in mode pMode
 
     wxASSERT(pScore);
+    ShowToolBox(true);      //force to display ToolBox
     m_pDocManager->OpenDocument(pMode, pScore);
 }
 
@@ -2418,7 +2422,10 @@ void lmMainFrame::OnFileOpen(wxCommandEvent& event)
                                         wxFD_OPEN,      //flags
                                         this);
     if ( !sFilename.IsEmpty() )
+    {
+        ShowToolBox(true);      //force to display ToolBox
         m_pDocManager->OpenFile(sFilename);
+    }
 }
 
 void lmMainFrame::OnFileImport(wxCommandEvent& WXUNUSED(event))
@@ -2437,6 +2444,7 @@ void lmMainFrame::OnFileImport(wxCommandEvent& WXUNUSED(event))
         //wxString sPath = _T("\\<<IMPORT>>//");
         //sPath += sFilename;
         //sPath += _T(".txt");
+        ShowToolBox(true);      //force to display ToolBox
         m_pDocManager->ImportFile(sFilename);   //sPath);
     }
 }

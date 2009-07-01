@@ -59,7 +59,6 @@ class lmCaret;
 class lmMainFrame;
 class lmBoxSystem;
 class lmBoxSliceInstr;
-class lmShapeStaff;
 class lmGMObject;
 class lmGMSelection;
 class lmScoreProcessor;
@@ -151,6 +150,8 @@ public:
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 
 	//caret management
+    void CaretOn();
+    void CaretOff();
 	void CaretRight(bool fAlsoChordNotes = true);
 	void CaretLeft(bool fAlsoChordNotes = true);
 	void CaretUp();
@@ -218,8 +219,6 @@ public:
 	void OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOffset,
                         lmUPoint uPagePos);
 
-    //mouse tools
-    void DrawTimeGrid(wxDC* pDC, lmBoxSliceInstr* pBSI, lmDPoint vCanvasOffset);
 
 
 private:
@@ -292,6 +291,7 @@ private:
     lmUPoint        m_uHotSpotShift;		//distance from shape origin
     wxDragImage*    m_pDragImage;
 	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
+    bool            m_fDraggingTool;        //currently dragging a mouse tool
 
     //cursor
     lmCaret*            m_pCaret;

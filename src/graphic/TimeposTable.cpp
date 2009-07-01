@@ -1497,7 +1497,7 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     wxLogMessage( DumpPosTimes() );
 #endif
 
-    pBSlice->DumpPosTimeTable();
+    //pBSlice->DumpPosTimeTable();
     return uBarPosition;
 }
 

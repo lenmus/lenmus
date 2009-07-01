@@ -62,7 +62,7 @@ public:
 	inline int GetNumStaff() { return m_nStaff; }
 
     //adding notes/rest with mouse
-    void OnMouseStartMoving();
+    lmUPoint OnMouseStartMoving(lmPaper* pPaper, const lmUPoint& uPos);
     lmUPoint OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos);
 	void OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPagePos);
 
@@ -76,6 +76,10 @@ protected:
 	lmLUnits	m_uLineWidth;		//staff lines width
 	lmLUnits	m_uSpacing;			//spacing between lines
 
+    //temporary data to be used when mouse tool moving over the staff
+    int         m_nOldSteps;		//to clear leger lines while dragging
+    lmLUnits    m_uxOldPos;
+    int         m_nPosOnStaff;		//line/space on staff on which this note is placed
 };
 
 #endif    // __LM_SHAPESTAFF_H__

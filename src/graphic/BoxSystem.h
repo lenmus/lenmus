@@ -81,6 +81,7 @@ public:
 	lmLUnits GetYTopFirstStaff();
     lmShapeStaff* GetStaffShape(int nRelStaff); 
     lmShapeStaff* GetStaffShape(lmInstrument* pInstr, int nStaff); 
+    lmShapeStaff* GetStaffShape(lmInstrument* pInstr, lmUPoint uPoint); 
 
     //pointing at
 	lmShapeStaff* FindStaffAtPosition(lmUPoint& uPoint);

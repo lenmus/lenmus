@@ -56,7 +56,6 @@
 #include "../graphic/BoxSystem.h"
 #include "../graphic/BoxSlice.h"
 #include "../graphic/BoxSliceInstr.h"
-#include "../graphic/ShapeStaff.h"
 #include "../graphic/Handlers.h"
 
 
@@ -133,6 +132,7 @@ lmScoreView::lmScoreView()
     , m_yScrollPosition(0)
     , m_rScale(1.0 * lmSCALE)
 	, m_fCaretInit(false)
+    , m_fDraggingTool(false)
 {
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
     m_pDoc = (lmDocument*) NULL;
@@ -1042,10 +1042,18 @@ void lmScoreView::DoScroll(int xScrollSteps, int yScrollSteps)
     if (xScrollSteps == 0 && yScrollSteps == 0)
         return;        // can't scroll further
 
+    //wxLogMessage(_T("[] DoScroll. m_fDraggingTool = %s"), (m_fDraggingTool ? _T("yes") : _T("no")) );
 
-    //hide caret
+    //hide caret and terminate any drag operation, so that scrolling doesn't create ghost images
     HideCaret();
+    bool fDragging = m_fDraggingTool;
+    if (fDragging)
+        m_pCanvas->TerminateToolDrag();
+    else
+	    if (m_pDragImage)
+            m_pDragImage->Hide();
 
+    //now we can safely do the scroll
     // save data and transform steps into pixels
     m_xScrollPosition += xScrollSteps;
     m_yScrollPosition += yScrollSteps;
@@ -1074,6 +1082,14 @@ void lmScoreView::DoScroll(int xScrollSteps, int yScrollSteps)
     int nPage;
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
     m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
+
+    //restore the drag operation
+    if (fDragging)
+        m_pCanvas->StartToolDrag();
+    else
+	    if (m_pDragImage)
+            m_pDragImage->Show();
+
 }
 
 
@@ -1508,6 +1524,18 @@ void lmScoreView::SetInitialCaretPosition()
     //UpdateCaret();
 }
 
+void lmScoreView::CaretOn() 
+{ 
+    if (m_pCaret) 
+        m_pCaret->SetInvisible(false); 
+}
+
+void lmScoreView::CaretOff() 
+{ 
+    if (m_pCaret) 
+        m_pCaret->SetInvisible(true); 
+}
+
 void lmScoreView::HideCaret()
 {
     //wxLogMessage(_T("[lmScoreView::HideCaret] Calls Caret::Hide()"));
@@ -1784,9 +1812,7 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
     //              When dragging a GMO, pBitmap must be NULL, and the necessary bitmap must be
     //              obtained by invoking pDraggedGMO->OnBeginDrag()
     // pDraggedGMO - When dragging a GMO, this parameter is the GMO to drag. When dragging a
-    //              mouse tool this parameter, if not NULL, is the GMO that will receive
-    //              OnMouseMove invokations to trim mouse position and/or to draw (XOR) additional
-    //              marks
+    //              mouse tool this parameter is NULL.
     //
 
 
@@ -1814,12 +1840,7 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
         m_pDragImage = (wxDragImage*) NULL;
     }
 
-    if (fMouseTool)
-    {
-        if (m_pDraggedGMO)
-            m_pDraggedGMO->OnMouseStartMoving();
-    }
-    else
+    if (!fMouseTool)
         pBitmap = m_pDraggedGMO->OnBeginDrag(m_rScale, pDC);
 
     if (pBitmap)
@@ -1837,7 +1858,6 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
             return false;       //error
         }
     }
-    //m_pCanvas->DoCaptureMouse();
 
 	//prepare paper for direct drawing
 	PreparePaperForDirectDrawing(pDC, vCanvasOffset);
@@ -1848,8 +1868,8 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
     lmUPoint uFinalPos = uPagePos - m_uHotSpotShift;
     if (fMouseTool)
     {
-        if (m_pDraggedGMO)
-            uFinalPos = m_pDraggedGMO->OnMouseMoving(&m_Paper, uFinalPos) + m_uHotSpotShift;
+        m_fDraggingTool = true;
+        uFinalPos = m_pCanvas->OnDrawToolMarks(&m_Paper, uFinalPos) + m_uHotSpotShift;
     }
     else
         uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uFinalPos) + m_uHotSpotShift;
@@ -1901,26 +1921,7 @@ void lmScoreView::OnImageContinueDrag(wxMouseEvent& event, bool fMouseTool, wxDC
 
     if (fDoScroll)
 	{
-        //terminate the drag, so that scrolling doesn't create ghost images
-        if (fMouseTool)
-            m_pCanvas->TerminateToolDrag(pDC);
-        else
-	        if (m_pDragImage)
-                m_pDragImage->Hide();
-
-        //now we can safely do the scroll
         DoScroll(xUnits, yUnits);
-
-        //after scrolling, we need to restore the drag operation
-        if (fMouseTool)
-            m_pCanvas->StartToolDrag(pDC, (lmShapeStaff*)m_pDraggedGMO);
-        else
-	        if (m_pDragImage)
-                m_pDragImage->Show();
-
-        //wxLogStatus(_T("Scrolling(%d), vCanvasPos=(%d, %d), canvasSize=(%d, %d)"),
-        //    nUnits, vCanvasPos.x, vCanvasPos.y,
-        //    canvasSize.GetWidth(), canvasSize.GetHeight());
 
         // The user could held the mouse outside the window for a few seconds to force
         // to scroll several pages. As the mouse is not getting moved no new events
@@ -1948,10 +1949,7 @@ void lmScoreView::OnImageContinueDrag(wxMouseEvent& event, bool fMouseTool, wxDC
         //whatever it likes
         lmUPoint uFinalPos = uPagePos - m_uHotSpotShift;
         if (fMouseTool)
-        {
-            if (m_pDraggedGMO)
-                uFinalPos = m_pDraggedGMO->OnMouseMoving(&m_Paper, uFinalPos) + m_uHotSpotShift;
-        }
+            uFinalPos = m_pCanvas->OnRedrawToolMarks(&m_Paper, uFinalPos) + m_uHotSpotShift;
         else
             uFinalPos = m_pDraggedGMO->OnDrag(&m_Paper, uFinalPos) + m_uHotSpotShift;
 
@@ -1998,8 +1996,8 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
     lmUPoint uFinalPos = uPagePos - m_uHotSpotShift;
     if (fMouseTool)
     {
-        if (m_pDraggedGMO)
-            m_pDraggedGMO->OnMouseEndMoving(&m_Paper, uFinalPos);
+        m_fDraggingTool = false;
+        m_pCanvas->OnRemoveToolMarks(&m_Paper, uFinalPos);
     }
     else
         m_pDraggedGMO->OnEndDrag(&m_Paper, m_pCanvas, uFinalPos);
@@ -2007,13 +2005,6 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
 
     //m_pCanvas->DoReleaseMouse();
     ShowCaret();
-}
-
-void lmScoreView::DrawTimeGrid(wxDC* pDC, lmBoxSliceInstr* pBSI,
-                                lmDPoint vCanvasOffset)
-{
-    PreparePaperForDirectDrawing(pDC, vCanvasOffset);
-    pBSI->DrawTimeGrid(&m_Paper);
 }
 
 

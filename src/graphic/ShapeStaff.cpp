@@ -39,11 +39,7 @@
 
 
 
-
-//temporary data to be used when mouse tool moving over the staff
-static int m_nOldSteps;		//to clear leger lines while dragging
-static lmLUnits m_uxOldPos;
-static int m_nPosOnStaff;		//line/space on staff on which this note is placed
+#define lmNO_LEDGER_LINES   -100000.0f
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmShapeStaff: an staff (usually 5 lines)
@@ -56,6 +52,7 @@ lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nStaff, int nNumLines, lmLUnits 
 	, m_nNumLines(nNumLines)
 	, m_uLineWidth(uLineWidth)
 	, m_uSpacing(uSpacing)
+    , m_nOldSteps(lmNO_LEDGER_LINES)
 {
     wxASSERT(nStaff > 0);
 
@@ -131,11 +128,12 @@ int lmShapeStaff::GetLineSpace(lmLUnits uyPos)
 	return nSteps + 10;
 }
 
-void lmShapeStaff::OnMouseStartMoving()
+lmUPoint lmShapeStaff::OnMouseStartMoving(lmPaper* pPaper, const lmUPoint& uPos)
 {
-    m_uxOldPos = -100000.0f;
+    m_uxOldPos = lmNO_LEDGER_LINES;
 
-    //wxLogMessage(_T("[lmShapeStaff::OnMouseStartMoving] "));
+    //wxLogMessage(_T("[lmShapeStaff::OnMouseStartMoving] nStaff=%d"), m_nStaff);
+    return OnMouseMoving(pPaper, uPos);
 }
 
 lmUPoint lmShapeStaff::OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos)
@@ -159,8 +157,8 @@ lmUPoint lmShapeStaff::OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos)
 	wxColour colorC(255 - (int)color.Red(), 255 - (int)color.Green(), 255 - (int)color.Blue() );
 	pPaper->SetLogicalFunction(wxXOR);
 
-    //xLogMessage(_T("[lmShapeStaff::OnMouseMoving] VStaff=0x%x, nStaff=%d, OldSteps=%d, oldPos=%.2f, newSteps=%d, newPos=%.2f"),
-    //            pVStaff, m_nStaff, m_nOldSteps, m_uxOldPos, nSteps, uPos.x );
+    //wxLogMessage(_T("[lmShapeStaff::OnMouseMoving] VStaff=0x%x, nStaff=%d, OldSteps=%d, oldPos=%.2f, newSteps=%d, newPos=%.2f"),
+    //             pVStaff, m_nStaff, m_nOldSteps, m_uxOldPos, nSteps, uPos.x );
 
 	//remove old ledger lines
     lmLUnits uLineLength = 2.5f * m_uSpacing;
@@ -184,7 +182,7 @@ void lmShapeStaff::OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPos)
 	// This method must remove any XOR painted lines.
 
 	//remove old ledger lines
-	if (m_uxOldPos != -100000.0f)
+	if (m_uxOldPos != lmNO_LEDGER_LINES)
     {
 	    //as painting uses XOR we need the complementary color
 	    wxColour color = *wxBLUE;

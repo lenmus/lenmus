@@ -42,10 +42,6 @@
 // Implementation of lmShapeNote
 //-------------------------------------------------------------------------------------
 
-//temporary data to be used during dragging
-static int m_nOldSteps;		//to clear leger lines while dragging
-static lmLUnits m_uxOldPos;
-
 
 
 lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxColour color)

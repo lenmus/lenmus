@@ -257,8 +257,11 @@ public:
     //mouse processing
     void DoCaptureMouse();
     void DoReleaseMouse();
-    void StartToolDrag(wxDC* pDC, lmShapeStaff* pShapeStaff);
+    void StartToolDrag(wxDC* pDC);
+    void ContinueToolDrag(wxMouseEvent& event, wxDC* pDC);
     void TerminateToolDrag(wxDC* pDC);
+    void StartToolDrag();
+    void TerminateToolDrag();
 
     //call backs
     void SynchronizeToolBox();
@@ -282,6 +285,12 @@ public:
 #ifdef __WXDEBUG__
 	void OnDumpShape(wxCommandEvent& event);
 #endif
+
+    //call backs from lmScoreView to paint marks for mouse dragged tools
+    lmUPoint OnDrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
+    lmUPoint OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
+    lmUPoint OnRemoveToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
+
 
 private:
 
@@ -413,8 +422,11 @@ private:
 
     //dragging a tool
     long            m_nMousePointedArea;    //type of area pointed by mouse
-    lmShapeStaff*   m_pLastShapeStaff;      //last staff pointed by mouse
+    lmShapeStaff*   m_pLastShapeStaff;      //last staff for point pointed by mouse
+    lmShapeStaff*   m_pCurShapeStaff;       //current staff for point pointed by mouse
     lmBoxSliceInstr* m_pLastBSI;            //last BoxSliceInstr pointed by mouse
+    lmBoxSliceInstr* m_pCurBSI;             //current BoxSliceInstr pointed by mouse
+    float           m_rCurTime;             //time for current mouse position
     bool            m_fDraggingTool;        //dragging a tool
 
 

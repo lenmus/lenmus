@@ -79,13 +79,13 @@
 	<File name="../../src/app/Printout.h" open="0" top="0" tabpos="14">
 		<Cursor position="1673" topLine="18" />
 	</File>
-	<File name="../../src/app/Processor.cpp" open="0" top="0" tabpos="20">
-		<Cursor position="18689" topLine="552" />
+	<File name="../../src/app/Processor.cpp" open="1" top="1" tabpos="19">
+		<Cursor position="18526" topLine="552" />
 	</File>
 	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="1">
 		<Cursor position="34595" topLine="932" />
 	</File>
-	<File name="../../src/app/ScoreCanvas.h" open="1" top="1" tabpos="7">
+	<File name="../../src/app/ScoreCanvas.h" open="1" top="0" tabpos="7">
 		<Cursor position="17153" topLine="406" />
 	</File>
 	<File name="../../src/app/ScoreCommand.cpp" open="0" top="0" tabpos="22">

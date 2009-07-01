@@ -113,6 +113,10 @@ protected:
 	int				m_nPosOnStaff;		//line/space on staff on which this note is placed
 	lmLUnits		m_uyStaffTopLine;	//y pos. of top staff line (5th line)
 
+    //temporary data to be used during dragging
+    int             m_nOldSteps;		//to clear leger lines while dragging
+    lmLUnits        m_uxOldPos;
+
 };
 
 

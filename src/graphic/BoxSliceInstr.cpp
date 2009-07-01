@@ -71,6 +71,13 @@ lmShapeStaff* lmBoxSliceInstr::GetStaffShape(int nStaff)
     return GetOwnerSystem()->GetStaffShape(m_pInstr, nStaff);
 }
 
+lmShapeStaff* lmBoxSliceInstr::GetNearestStaff(lmUPoint& uPoint)
+{
+    //returns the nearest staff to point uPoint
+
+    return GetOwnerSystem()->GetStaffShape(m_pInstr, uPoint);
+}
+
 void lmBoxSliceInstr::DrawTimeGrid(lmPaper* pPaper)
 { 
 	//as painting uses XOR we need the complementary color
