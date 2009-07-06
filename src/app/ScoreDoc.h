@@ -46,6 +46,7 @@ enum
     lmFORCE_RELAYOUT                = 0x0002,   //force an score re-layout
     lmNO_BITMAPS                    = 0x0004,   //do not re-use offscreen bitmaps
     lmNO_RELAYOUT_ON_PAPER_RESIZE   = 0x0008,   //do not re-layout if paper re-size
+    lmHINT_NEW_SCORE                = 0x0010,   //score replaced in document. Update all
 };
 
 class lmUpdateHint: public wxObject
@@ -78,7 +79,6 @@ public:
     bool OnCreate(const wxString& path, long flags);
 	void UpdateAllViews(wxView* sender=(wxView*)NULL, wxObject* hint=(wxObject*)NULL);
     bool OnOpenDocument(const wxString& filename);
-    //bool OnNewDocument();
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
 #else
@@ -87,10 +87,11 @@ public:
 
     //specific methods
 
-    void UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints);
+    //void UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints);
     bool OnImportDocument(const wxString& filename);
     bool OnNewDocumentWithContent(lmScore* pScore);
     inline lmScore* GetScore() {return m_pScore; };
+    void ReplaceScore(lmScore* pScore);
 
     //Edit mode
     void OnCustomizeController(lmEditorMode* pMode);

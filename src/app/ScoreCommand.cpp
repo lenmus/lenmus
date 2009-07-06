@@ -45,6 +45,8 @@
 #include "../graphic/ShapeArch.h"
 #include "../graphic/ShapeBeam.h"
 #include "../graphic/ShapeText.h"
+#include "../app/Preferences.h"
+#include "../ldp_parser/LDPParser.h"
 
 
 //----------------------------------------------------------------------------------------
@@ -97,7 +99,7 @@ bool lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(fScoreModified);
     //if (m_fUpdateViews)
-        m_pDoc->UpdateAllViews(fScoreModified, new lmUpdateHint(m_nOptions | nOptions) );
+        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions) );
 
     return m_fHistory;
 }
@@ -122,7 +124,7 @@ bool lmScoreCommand::CommandUndone(int nOptions)
     //if (m_fUpdateViews)
     {
         //re-built the graphic model
-        m_pDoc->UpdateAllViews(m_fDocModified, new lmUpdateHint(m_nOptions | nOptions));
+        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions));
     }
     //else
     //{
@@ -139,6 +141,132 @@ bool lmScoreCommand::CommandUndone(int nOptions)
 }
 
 //void lmScoreCommand::SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx,
+//                                         lmPaper* pPaper)
+//{
+//    m_pSCO = pSCO;
+//    m_nShapeIdx = nShapeIdx
+//    m_pPaper = pPaper;
+//}
+
+
+
+
+//----------------------------------------------------------------------------------------
+// lmNewScoreCommand abstract class implementation
+//
+// Do() method will return true to indicate that the action has taken place, false
+// otherwise. Returning false will indicate to the command processor that the action is
+// not undoable and should not be added to the command history.
+//----------------------------------------------------------------------------------------
+
+lmNewScoreCommand::lmNewScoreCommand(const wxString& sName, lmDocument *pDoc,
+                                     lmCursorState& tCursorState, bool fUndoable,
+                                     int nOptions, bool fUpdateViews)
+    : wxCommand(true, sName)
+      , m_pDoc(pDoc)
+	  , m_fDocModified(false)
+      , m_fUndoable(fUndoable)
+      , m_nOptions(nOptions)
+      , m_fUpdateViews(fUpdateViews)
+      , m_pSCO((lmScoreObj*)NULL)
+      , m_tCursorState(tCursorState)
+{
+}
+
+lmNewScoreCommand::~lmNewScoreCommand()
+{
+}
+
+void lmNewScoreCommand::LogCommand()
+{
+    //log command if undoable
+
+    if (!m_fUndoable)
+        return;
+
+    //get score and save source code
+    m_sOldSource = m_pDoc->GetScore()->SourceLDP(true);     //true: export cursor
+}
+
+bool lmNewScoreCommand::Undo()
+{
+    //Default implementation: Restore previous state from LDP source code
+    //Returns true to indicate that the action has taken place, false otherwise.
+    //Returning false will indicate to the command processor that the action is
+    //not redoable and no change should be made to the command history.
+
+    //recover old score
+    lmLDPParser parser;
+    lmScore* pScore = parser.ParseScoreFromText(m_sOldSource);
+    if (!pScore)
+    {
+        wxASSERT(false);
+        return false;
+    }
+
+    ////restore cursor state
+    //m_tCursorState.pSO = (lmStaffObj*)NULL; //TODO: pSO is no longer valid
+    //pScore->GetCursor()->SetState(&m_tCursorState);
+    
+    //ask document to replace current score by old one
+    m_pDoc->ReplaceScore(pScore);
+    return true;        //undo action has taken place
+}
+
+bool lmNewScoreCommand::CommandDone(bool fScoreModified, int nOptions)
+{
+    //common code after executing a command:
+    //- save document current modification status flag, to restore it if command undo
+    //- set document as 'modified'
+    //- update the views with the changes
+    //
+    // Returns false to indicate that the action must not be added to the command history.
+
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(fScoreModified);
+    //if (m_fUpdateViews)
+        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions) );
+
+    return m_fUndoable;
+}
+
+bool lmNewScoreCommand::CommandUndone(int nOptions)
+{
+    //common code after executing an Undo operation:
+    //- reset document to previous 'modified' state
+    //- update the views with the changes
+    //
+    //Returns true to indicate that the action has taken place, false otherwise.
+    //Returning false will indicate to the command processor that the action is
+    //not redoable and no change should be made to the command history.
+
+    //restore cursor
+    if (!IsEmptyState(m_tCursorState))
+        m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
+
+	m_pDoc->Modify(m_fDocModified);
+
+    //update views
+    //if (m_fUpdateViews)
+    {
+        //re-built the graphic model
+        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions));
+    }
+    //else
+    //{
+    //    //the model was not updated when issuing the Do command. Instead the object
+    //    //was selected and only that object was re-rendered. Do it in that way again.
+    //    //if (m_pSCO)
+    //    //{
+    //    //    //m_pSCO->->Select
+    //    //    m_pSCO->GetShapeFromIdx(m_nShapeIdx)->RenderWithHandlers(m_pPaper);
+    //    //}
+    //}
+
+    return true;
+}
+
+//void lmNewScoreCommand::SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx,
 //                                         lmPaper* pPaper)
 //{
 //    m_pSCO = pSCO;
@@ -869,6 +997,71 @@ bool lmCmdInsertNote::Do()
         return false;
     }
 
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdNewInsertNote: Insert a note at current cursor position
+//----------------------------------------------------------------------------------------
+
+lmCmdNewInsertNote::lmCmdNewInsertNote(bool fUndoable, lmCursorState& tCursorState,
+                                 const wxString& sName,
+                                 lmDocument *pDoc,
+                                 lmEPitchType nPitchType,
+								 int nStep, int nOctave,
+								 lmENoteType nNoteType, float rDuration, int nDots,
+								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
+	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+{
+	m_nNoteType = nNoteType;
+	m_nPitchType = nPitchType;
+	m_nStep = nStep;
+	m_nOctave = nOctave;
+    m_nDots = nDots;
+	m_rDuration = rDuration;
+	m_nNotehead = nNotehead;
+	m_nAcc = nAcc;
+	m_nVoice = nVoice;
+	m_pBaseOfChord = pBaseOfChord;
+    m_fTiedPrev = fTiedPrev;
+}
+
+lmCmdNewInsertNote::~lmCmdNewInsertNote()
+{
+}
+
+bool lmCmdNewInsertNote::Do()
+{
+    //log command if undoable
+    LogCommand();
+
+    //insert the note
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
+    m_pVStaff = pCursor->GetVStaff();
+    bool fAutoBar = lmPgmOptions::GetInstance()->GetBoolValue(lm_DO_AUTOBAR);
+
+    lmNote* pNewNote = m_pVStaff->CmdNew_InsertNote(m_nPitchType, m_nStep, m_nOctave, m_nNoteType,
+                                         m_rDuration, m_nDots, m_nNotehead, m_nAcc, 
+                                         m_nVoice, m_pBaseOfChord, m_fTiedPrev, fAutoBar);
+
+    //int nAlter = 0;
+    //int nStaff = 1;
+    //lmNote* pNewNote = m_pVStaff->AddNote(m_nPitchType,
+    //                m_nStep, m_nOctave, nAlter,
+    //                m_nAcc,
+    //                m_nNoteType, m_rDuration, m_nDots,
+    //                nStaff, m_nVoice);
+				//	//bool fVisible = true,
+    // //               bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
+    // //               m_pBaseOfChord,
+    // //               bool fTie = false,
+    // //               lmEStemType nStem = lmSTEM_DEFAULT);
+    if (pNewNote)
+	    return CommandDone(lmSCORE_MODIFIED);
+    else
+        return false;
 }
 
 

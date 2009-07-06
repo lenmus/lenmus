@@ -89,6 +89,8 @@ void lmBoxSliceInstr::DrawTimeGrid(lmPaper* pPaper)
     lmUPoint uTopLeft(m_uBoundsTop.x - m_uLeftSpace, m_uBoundsTop.y - m_uTopSpace);
     lmUSize uSize( GetWidth() + m_uLeftSpace + m_uRightSpace,
                    GetHeight() + m_uTopSpace + m_uBottomSpace );
+    //wxLogMessage(_T("[lmBoxSliceInstr::DrawTimeGrid] rect=(%.2f, %.2f, %.2f, %.2f)"),
+    //             uTopLeft.x, uTopLeft.y, uTopLeft.x+uSize.GetWidth(), uTopLeft.y+uSize.GetHeight() );
     pPaper->SketchRectangle(uTopLeft, uSize, colorC);
 
     //draw vertical lines for existing times

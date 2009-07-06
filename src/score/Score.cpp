@@ -182,25 +182,26 @@ wxString lmSystemInfo::SourceLDP(int nIndent)
 // lmScoreCursor implementation
 //=======================================================================================
 
+//global variable used as default initializator
+lmCursorState g_tNoCursorState = { 0, -1, 0.0f, (lmStaffObj*)NULL };
+
+//global function to compare with g_tNoCursorState
+bool IsEmptyState(lmCursorState& t)
+{
+    return (t.nInstr == 0);
+}
+
 lmScoreCursor::lmScoreCursor(lmScore* pOwnerScore)
+    : m_pScore(pOwnerScore)
+	, m_pVCursor((lmVStaffCursor*)NULL)
+	, m_nInstr(0)		        //instr (1..n), 0=no cursor
+	, m_nStaff(0)               //staff (1..n)
+	, m_rTimepos(0.0f)          //timepos
+	, m_pSO((lmStaffObj*)NULL)  //pointed staffobj
 {
-    m_pScore = pOwnerScore;
-    m_pView = (lmScoreView*)NULL;
-	m_pVCursor = (lmVStaffCursor*)NULL;
-	m_nCursorInstr = 0;		//no cursor
 }
 
-void lmScoreCursor::AttachCursor(lmScoreView* pView)
-{
-    m_pView = pView;
-}
-
-void lmScoreCursor::DetachCursor()
-{
-    m_pView = (lmScoreView*)NULL;
-}
-
-void lmScoreCursor::ResetCursor()
+void lmScoreCursor::MoveToStart()
 {
 	if (!(m_pScore->m_cInstruments).empty())
 	{
@@ -210,44 +211,54 @@ void lmScoreCursor::ResetCursor()
             (*it)->ResetCursor();
         }
         SelectCursorFromInstr(1);
+        MoveToInitialPosition();
+        UpdateState();
 	}
 	else
 	{
 		m_pVCursor = (lmVStaffCursor*)NULL;
-		m_nCursorInstr = 0;		//no cursor
+		m_nInstr = 0;		//no cursor
 	}
 }
 
-lmStaffObj* lmScoreCursor::GetCursorSO()
+void lmScoreCursor::SetState(lmCursorState* pState)
 {
-	if (m_pVCursor)
-		return m_pVCursor->GetStaffObj();
-	else
-		return (lmStaffObj*)NULL;
+    SelectCursorFromInstr(pState->nInstr);
+    lmVCursorState tState = { pState->nStaff, pState->rTimepos, pState->pSO };
+    m_pVCursor->SetNewCursorState(this, &tState);
+    UpdateState();
 }
 
-//int lmScoreCursor::GetPageNumber()
-//{
-//	if (m_pVCursor)
-//		return m_pVCursor->GetPageNumber();
-//	else
-//		return 0;
-//}
-//
+lmCursorState lmScoreCursor::GetState()
+{
+    lmCursorState tState = { m_nInstr, m_nStaff, m_rTimepos, m_pSO };
+    return tState;
+}
+
+void lmScoreCursor::UpdateState()
+{
+    lmVCursorState tState = m_pVCursor->GetState();
+
+    m_nInstr = GetCursorInstrumentNumber();
+    m_nStaff = tState.nStaff;
+    m_rTimepos = tState.rTimepos;
+    m_pSO = tState.pSO;
+}
+
 void lmScoreCursor::SelectCursorFromInstr(int nInstr)
 {
     lmInstrument* pInstr;
 
     //inform previous VCursor that it is not longer used
-    if (m_nCursorInstr > 0)
+    if (m_nInstr > 0)
     {
-        pInstr = m_pScore->m_cInstruments[m_nCursorInstr-1];
+        pInstr = m_pScore->m_cInstruments[m_nInstr-1];
 	    pInstr->DetachCursor();
     }
 
     //inform new VCursor that it is now in use
-    m_nCursorInstr = nInstr;
-    pInstr = m_pScore->m_cInstruments[m_nCursorInstr-1];
+    m_nInstr = nInstr;
+    pInstr = m_pScore->m_cInstruments[m_nInstr-1];
 	m_pVCursor = pInstr->AttachCursor(this);
     m_pVCursor->ResetCursor();
 }
@@ -262,23 +273,24 @@ void lmScoreCursor::MoveRight(bool fAlsoChordNotes)
     {
 		//if current instrument has more staves, advance to next staff.
 		//else to first staff of next instrument
-		lmInstrument* pInstr = m_pScore->m_cInstruments[m_nCursorInstr-1];
+		lmInstrument* pInstr = m_pScore->m_cInstruments[m_nInstr-1];
 		int nStaff = m_pVCursor->GetNumStaff();
 		if (nStaff < pInstr->GetNumStaves())
 		{
 			//advance to next staff of current instrument
 			m_pVCursor->MoveToFirst(++nStaff);
 		}
-		else if ((int)((m_pScore->m_cInstruments).size()) > m_nCursorInstr)
+		else if ((int)((m_pScore->m_cInstruments).size()) > m_nInstr)
 		{
 			//advance to first staff of next instrument
-            SelectCursorFromInstr(m_nCursorInstr+1);
+            SelectCursorFromInstr(m_nInstr+1);
 		}
         else
         {
             //no more instruments. Remain at the end
         }
     }
+    UpdateState();
 }
 
 void lmScoreCursor::MoveLeft(bool fPrevObject)
@@ -292,6 +304,7 @@ void lmScoreCursor::MoveLeft(bool fPrevObject)
         //go back to last staff of prev instrument
         //TODO
     }
+    UpdateState();
 }
 
 void lmScoreCursor::MoveToInitialPosition()
@@ -302,14 +315,16 @@ void lmScoreCursor::MoveToInitialPosition()
     m_pVCursor->MoveToFirst(1);		//move to first object in staff 1
 
     lmStaffObj* pSO = m_pVCursor->GetStaffObj();
-    if (!pSO) return;       //no object
-
-    //advance to skip prolog
-    while(pSO && (pSO->IsClef() || pSO->IsTimeSignature() || pSO->IsKeySignature()) )
+    if (pSO)
     {
-        m_pVCursor->MoveRight();
-        pSO = m_pVCursor->GetStaffObj();
+        //advance to skip prolog
+        while(pSO && (pSO->IsClef() || pSO->IsTimeSignature() || pSO->IsKeySignature()) )
+        {
+            m_pVCursor->MoveRight();
+            pSO = m_pVCursor->GetStaffObj();
+        }
     }
+    UpdateState();
 }
 
 void lmScoreCursor::MoveUp()
@@ -329,16 +344,18 @@ void lmScoreCursor::MoveUp()
 	if (nStaff > 1)
 	{
 		m_pVCursor->MoveToSegment(nMeasure, --nStaff, uPos);
+        UpdateState();
 		return;
 	}
 
 	//else if this is not the first instrument, take last staff of prev. instrument
-	else if (m_nCursorInstr > 1)
+	else if (m_nInstr > 1)
 	{
-		int nInstr = m_nCursorInstr - 1;
+		int nInstr = m_nInstr - 1;
 		nStaff = m_pScore->GetInstrument(nInstr)->GetNumStaves();
 		SelectCursorFromInstr(nInstr);
 		m_pVCursor->MoveToSegment(nMeasure, nStaff, uPos);
+        UpdateState();
 		return;
 	}
 
@@ -362,6 +379,7 @@ void lmScoreCursor::MoveUp()
 					nStaff = m_pScore->GetInstrument(nInstr)->GetNumStaves();
 					SelectCursorFromInstr(nInstr);
 					m_pVCursor->MoveToSegment(nMeasure-1, nStaff, uPos);
+                    UpdateState();
 					return;
 				}
 			}
@@ -369,6 +387,7 @@ void lmScoreCursor::MoveUp()
 	}
 
 	//else, remain at current position
+    UpdateState();
 }
 
 void lmScoreCursor::MoveDown()
@@ -384,18 +403,20 @@ void lmScoreCursor::MoveDown()
 	int nSegment = m_pVCursor->GetSegment();
 
 	//if current instrument has more staves, keep instrument and increment staff
-	lmInstrument* pInstr = m_pScore->GetInstrument(m_nCursorInstr);
+	lmInstrument* pInstr = m_pScore->GetInstrument(m_nInstr);
 	if (pInstr->GetNumStaves() > nStaff)
 	{
 		m_pVCursor->MoveToSegment(nSegment, ++nStaff, uPos);
+        UpdateState();
 		return;
 	}
 
 	//else if there are more instrument, take first staff of next instrument
-	else if (m_nCursorInstr < m_pScore->GetNumInstruments())
+	else if (m_nInstr < m_pScore->GetNumInstruments())
 	{
-		SelectCursorFromInstr(m_nCursorInstr + 1);
+		SelectCursorFromInstr(m_nInstr + 1);
 		m_pVCursor->MoveToSegment(nSegment, 1, uPos);
+        UpdateState();
 		return;
 	}
 
@@ -417,6 +438,7 @@ void lmScoreCursor::MoveDown()
 				{
 					SelectCursorFromInstr(1);
 					m_pVCursor->MoveToSegment(nSegment, 1, uPos);
+                    UpdateState();
 					return;
 				}
 			}
@@ -424,6 +446,7 @@ void lmScoreCursor::MoveDown()
 	}
 
 	//else, remain at current position
+    UpdateState();
 }
 
 void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure)
@@ -436,6 +459,7 @@ void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int
 	//get cursor and position it at required segment and position
     SelectCursorFromInstr( m_pScore->GetNumberOfInstrument(pInstr) );
 	m_pVCursor->MoveToSegment(nMeasure - 1, iStaff, uPos);
+    UpdateState();
 }
 
 void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
@@ -458,6 +482,7 @@ void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
 
 	//position it at required staffobj
     m_pVCursor->MoveCursorToObject(pSO);
+    UpdateState();
 }
 
 void lmScoreCursor::MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime)
@@ -475,11 +500,12 @@ void lmScoreCursor::MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rT
 
     //move VCursor to desired staff, segment and time
     m_pVCursor->MoveTo(iStaff, nMeasure - 1, rTime);
+    UpdateState();
 }
 
 lmUPoint lmScoreCursor::GetCursorPoint(int* pNumPage)
 {
-    if (m_pVCursor)
+    if (IsOK())
         return m_pVCursor->GetCursorPoint(pNumPage);
     else
         return lmUPoint(0.0f, 0.0f);
@@ -487,32 +513,16 @@ lmUPoint lmScoreCursor::GetCursorPoint(int* pNumPage)
 
 lmStaff* lmScoreCursor::GetCursorStaff()
 {
-    if (m_pVCursor)
+    if (IsOK())
         return m_pVCursor->GetCursorStaff();
     else
         return (lmStaff*)NULL;
 }
 
-int lmScoreCursor::GetCursorNumStaff()
-{
-    if (m_pVCursor)
-        return m_pVCursor->GetNumStaff();
-    else
-        return 1;
-}
-
-float lmScoreCursor::GetCursorTime()
-{
-    if (m_pVCursor)
-        return m_pVCursor->GetTimepos();
-    else
-        return 0.0f;;
-}
-
 lmVStaff* lmScoreCursor::GetVStaff()
 {
-    if (m_pVCursor)
-        return m_pScore->GetInstrument(m_nCursorInstr)->GetVStaff();
+    if (IsOK())
+        return m_pScore->GetInstrument(m_nInstr)->GetVStaff();
     else
         return (lmVStaff*)NULL;
 }
@@ -536,12 +546,13 @@ void lmScoreCursor::SelectCursor(lmVStaffCursor* pVCursor)
     wxASSERT(it != (m_pScore->m_cInstruments).end());
 
     //get instrument number
-	m_nCursorInstr = nInstr;
+	m_nInstr = nInstr;
 }
 
 void lmScoreCursor::SetNewCursorState(lmVCursorState* pState)
 {
     m_pVCursor->SetNewCursorState(this, pState);
+    UpdateState();
 }
 
 
@@ -549,6 +560,10 @@ void lmScoreCursor::SetNewCursorState(lmVCursorState* pState)
 //=======================================================================================
 // lmScore implementation
 //=======================================================================================
+
+//global variable for exporting to LDP ScoreCursor data
+lmStaffObj* g_pCursorSO = (lmStaffObj*)NULL;        //not NULL for exporting cursor data
+
 
 lmScore::lmScore()
     : lmScoreObj((lmScoreObj*)NULL)
@@ -867,16 +882,14 @@ lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
 
 void lmScore::DoAddInstrument(lmInstrument* pInstr, lmInstrGroup* pGroup)
 {
-	//if this is the first intrument, initialize edit cursor
-	if (m_cInstruments.empty())
-        m_SCursor.ResetCursor();
-
     //add instrument
 	m_cInstruments.push_back(pInstr);
 
     //include instrument in group
     if (pGroup)
         pGroup->Include(pInstr);
+
+    m_SCursor.MoveToStart();
 }
 
 lmInstrument* lmScore::XML_FindInstrument(wxString sId)
@@ -1131,11 +1144,16 @@ wxString lmScore::Dump(wxString sFilename)
     return sDump;
 }
 
-wxString lmScore::SourceLDP(wxString sFilename)
+wxString lmScore::SourceLDP(bool fExportCursor, wxString sFilename)
 {
+    if(fExportCursor)
+        g_pCursorSO = m_SCursor.GetCursorSO();
+    else
+        g_pCursorSO = (lmStaffObj*)NULL;
+
     wxString sSource = _T("(score\n   (vers 1.6)(language en utf-8)\n");
 
-    //add comment with info about generating program
+    //add comment with info about generator program and version
     sSource += _T("   //LDP file generated by LenMus, version ");
     sSource += wxGetApp().GetVersionNumber();
 	sSource += _T(". Date: ");
@@ -1171,6 +1189,15 @@ wxString lmScore::SourceLDP(wxString sFilename)
     //first system and other systems layout info
     //sSource += m_SystemsInfo.front()->SourceLDP(1);
     //sSource += m_SystemsInfo.back()->SourceLDP(1);
+
+    //score cursor information
+    if (fExportCursor)
+    {
+        sSource += wxString::Format(_T("   (cursor %d %d %.2f)\n"),
+                                    m_SCursor.GetCursorInstrumentNumber(),
+                                    m_SCursor.GetCursorNumStaff(),
+                                    m_SCursor.GetCursorTime() );
+    }
 
     //loop for each instrument
     for (int i=0; i < (int)m_cInstruments.size(); i++)
@@ -1555,18 +1582,6 @@ void lmScore::ResetMeasuresModified()
 	m_aMeasureModified.clear();
 }
 
-lmScoreCursor* lmScore::AttachCursor(lmScoreView* pView)
-{
-    m_SCursor.AttachCursor(pView);
-	m_SCursor.ResetCursor();
-    return &m_SCursor;
-}
-
-void lmScore::DetachCursor()
-{
-    m_SCursor.DetachCursor();
-}
-
 lmScoreCursor* lmScore::SetCursor(lmVStaffCursor* pVCursor)
 {
     //Replace current cursor by the one received as parameter
@@ -1579,6 +1594,18 @@ lmScoreCursor* lmScore::SetNewCursorState(lmVCursorState* pState)
 {
     m_SCursor.SetNewCursorState(pState);
     return &m_SCursor;
+}
+
+lmScoreCursor* lmScore::SetCursorState(lmCursorState* pState)
+{
+    m_SCursor.SetState(pState);
+    return &m_SCursor;
+}
+
+lmScoreCursor* lmScore::SetCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO)
+{
+    lmCursorState tState = {nInstr, nStaff, rTimepos, pSO};
+    return SetCursorState(&tState);
 }
 
 lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, int nPage, lmUPoint& uPos)

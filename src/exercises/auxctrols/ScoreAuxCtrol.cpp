@@ -434,10 +434,10 @@ void lmScoreAuxCtrol::Dump()
 
 }
 
-void lmScoreAuxCtrol::SourceLDP()
+void lmScoreAuxCtrol::SourceLDP(bool fExportCursor)
 {
     if (!m_pScore) return;
-    lmDlgDebug dlg(this, _T("Generated source code"), m_pScore->SourceLDP());
+    lmDlgDebug dlg(this, _T("Generated source code"), m_pScore->SourceLDP(fExportCursor));
     dlg.ShowModal();
 
 }

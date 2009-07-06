@@ -348,7 +348,7 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 
     //update status bar: mouse position, and num page
     GetMainFrame()->SetStatusBarMousePos((float)m_uMousePagePos.x, (float)m_uMousePagePos.y);
-    //GetMainFrame()->SetStatusBarNumPage(m_nNumPage);
+    m_pView->UpdateNumPage(m_nNumPage);
 
 	////for testing and debugging methods DeviceToLogical [ok] and LogicalToDevice [ok]
 	//lmDPoint tempPagePosD;
@@ -1233,16 +1233,15 @@ void lmScoreCanvas::PlayScore(bool fFromCursor)
 
 	//determine measure from cursor or start of selection
 	int nMeasure = 1;
-	lmVStaffCursor* pVCursor = m_pView->GetVCursor();
 	lmGMSelection* pSel = m_pView->GetSelection();
 	bool fFromMeasure = fFromCursor || pSel->NumObjects() > 0;
 	if (pSel->NumObjects() > 0)
 	{
 		nMeasure = ((lmNote*)pSel->GetFirst()->GetScoreOwner())->GetSegment()->GetNumSegment() + 1;
-		m_pView->DeselectAllGMObjects(true);	//redraw, to remove selction highlight
+		m_pView->DeselectAllGMObjects(true);	//redraw, to remove selection highlight
 	}
-	else if (pVCursor)
-		nMeasure = pVCursor->GetSegment() + 1;
+	else
+		nMeasure = m_pView->GetCursorMeasure();
 
 	//play back the score
 	if (fFromMeasure)
@@ -1581,6 +1580,33 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
                                     nVoice, pBaseOfChord, fTiedPrev) );
 }
 
+
+void lmScoreCanvas::New_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
+							   lmENoteType nNoteType, float rDuration, int nDots,
+							   lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                               int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
+{
+	//insert a note at current cursor position
+
+    //get cursor
+    lmScoreCursor* pCursor = m_pView->GetScoreCursor();
+	wxASSERT(pCursor);
+    lmCursorState tState = pCursor->GetState();
+
+	//if new note in chord check that there is a base note at current cursor position
+
+    //prepare command and submit it
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sName = _("Insert note");
+    wxString sOctave = wxString::Format(_T("%d"), nOctave);
+
+    wxString sAllSteps = _T("cdefgab");
+    wxString sStep = sAllSteps.GetChar( nStep );
+
+	pCP->Submit(new lmCmdNewInsertNote(lmUNDOABLE, tState, sName, m_pDoc, nPitchType, nStep, nOctave,
+							        nNoteType, rDuration, nDots, nNotehead, nAcc,
+                                    nVoice, pBaseOfChord, fTiedPrev) );
+}
 void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice)
 {
 	//insert a rest at current cursor position
@@ -1731,7 +1757,40 @@ wxCursor* lmScoreCanvas::GetMouseCursor(lmEMouseCursor nCursorID)
 
 void lmScoreCanvas::OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event)
 {
-    //TODO
+    //set data entry mode if in Notes page
+
+    if (event.GetToolPageType() == lmPAGE_NOTES)
+        GetDataEntryMode();
+}
+
+void lmScoreCanvas::GetDataEntryMode()
+{
+    //Get selected data entry mode and update the internal information
+
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	wxASSERT(pToolBox);
+	m_nEntryMode = pToolBox->GetEntryMode();
+    if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
+    {
+        m_nValidAreas = lmMOUSE_OnStaff | lmMOUSE_OnAboveStaff | lmMOUSE_OnBelowStaff;
+        m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);  //lm_eCursor_Note);
+        m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);  //GetMouseCursor(lm_eCursor_Note);
+        m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+        //hide caret
+        m_pView->CaretOff();
+    }
+    else
+    {
+        m_nValidAreas = lmMOUSE_OnAny;
+        m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
+        m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);
+        m_pCursorElse = GetMouseCursor(lm_eCursor_Pointer);
+        //show caret
+        m_pView->CaretOn();
+    }
+
+    //set cursor
+    ChangeMouseIcon();
 }
 
 void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
@@ -1745,29 +1804,7 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
     //verify if Data entry mode changed
     if (nGroup == lmGRP_EntryMode)
     {
-		m_nEntryMode = pToolBox->GetEntryMode();
-        if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
-        {
-            m_nValidAreas = lmMOUSE_OnStaff | lmMOUSE_OnAboveStaff | lmMOUSE_OnBelowStaff;
-            m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);  //lm_eCursor_Note);
-            m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);  //GetMouseCursor(lm_eCursor_Note);
-            m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
-            //hide caret
-            m_pView->CaretOff();
-        }
-        else
-        {
-            m_nValidAreas = lmMOUSE_OnAny;
-            m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
-            m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);
-            m_pCursorElse = GetMouseCursor(lm_eCursor_Pointer);
-            //show caret
-            m_pView->CaretOn();
-        }
-
-        //set cursor
-        ChangeMouseIcon();
-
+        GetDataEntryMode();
         return;
     }
 
@@ -2600,7 +2637,12 @@ void lmScoreCanvas::OnScoreTitles(wxCommandEvent& event)
 void lmScoreCanvas::OnViewPageMargins(wxCommandEvent& event)
 {
     g_fShowMargins = !g_fShowMargins;
-    GetMainFrame()->GetActiveDoc()->UpdateAllViews();
+    lmDocument* pDoc = GetMainFrame()->GetActiveDoc();
+    if (pDoc)
+    {
+	    pDoc->Modify(true);
+        pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
+    }
 }
 
 #ifdef __WXDEBUG__
@@ -3437,7 +3479,7 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
         bool fTiedPrev = false;
 
         //do insert note
-		InsertNote(lm_ePitchRelative, nStep, nOctave, m_nSelNoteType, rDuration,
+		New_InsertNote(lm_ePitchRelative, nStep, nOctave, m_nSelNoteType, rDuration,
 					m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord, fTiedPrev);
     }
 }

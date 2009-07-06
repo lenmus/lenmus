@@ -41,7 +41,9 @@ class lmVStaffCursor;
 class lmVStaff;
 class lmNote;
 
-
+#define lmUNDOABLE      true        //log command for undo/redo
+#define lmNO_UNDO       false       //the action is not undoable and should not
+                                    //   be added to the command history
 
 
 // base abstract class
@@ -83,6 +85,42 @@ protected:
     lmPaper*            m_pPaper;           //current DC;
 };
 
+
+// base abstract class
+class lmNewScoreCommand: public wxCommand
+{
+public:
+    virtual ~lmNewScoreCommand();
+
+    virtual bool Do()=0;
+    virtual bool Undo();
+
+protected:
+    lmNewScoreCommand(const wxString& name, lmDocument *pDoc, lmCursorState& tCursorState,
+                   bool fUndoable = true, int nOptions=0, bool fUpdateViews = true);
+
+
+    //common methods
+    bool CommandDone(bool fScoreModified, int nOptions=0);
+    bool CommandUndone(int nOptions=0);
+    void LogCommand();
+
+    //save data for direct re-draw
+    //void SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx, lmPaper* pPaper);
+
+    lmDocument*         m_pDoc;
+	bool				m_fDocModified;
+    bool                m_fUndoable;         //include command in undo/redo history
+    bool                m_fUpdateViews;     //Update all views after doing/undoing the command
+    int                 m_nOptions;         //repaint hint options
+    wxString            m_sOldSource;       //source code to restore for undoing this command
+    lmCursorState       m_tCursorState;     //cursor state when issuing the command
+
+    //data used only for direct re-draw, when the graphical model is not re-built
+    lmScoreObj*         m_pSCO;             //object affected by the command
+    int                 m_nShapeIdx;        //command affected shape
+    lmPaper*            m_pPaper;           //current DC;
+};
 
 // Move object command
 //------------------------------------------------------------------------------------
@@ -279,6 +317,39 @@ public:
                     lmENoteHeads nNotehead, lmEAccidentals nAcc,
                     int nVoice, lmNote* pBaseOfChord, bool fTiedPrev);
     ~lmCmdInsertNote();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+
+protected:
+	lmENoteType		    m_nNoteType;
+	lmEPitchType	    m_nPitchType;
+	int		            m_nStep;
+	int		            m_nOctave;
+    int                 m_nDots;
+	float			    m_rDuration;
+	lmENoteHeads	    m_nNotehead;
+	lmEAccidentals	    m_nAcc;
+	int					m_nVoice;
+	lmNote*				m_pBaseOfChord;
+    bool                m_fTiedPrev;
+
+    lmVStaff*           m_pVStaff;      //affected VStaff
+};
+
+// Insert note command
+//------------------------------------------------------------------------------------
+class lmCmdNewInsertNote: public lmNewScoreCommand
+{
+public:
+
+    lmCmdNewInsertNote(bool fUndoable, lmCursorState& tCursorState,
+                    const wxString& name, lmDocument *pDoc,
+					lmEPitchType nPitchType, int nStep, int nOctave,
+					lmENoteType nNoteType, float rDuration, int nDots,
+                    lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                    int nVoice, lmNote* pBaseOfChord, bool fTiedPrev);
+    ~lmCmdNewInsertNote();
 
     //implementation of pure virtual methods in base class
     bool Do();

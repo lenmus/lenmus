@@ -158,6 +158,27 @@ bool lmDocument::OnNewDocumentWithContent(lmScore* pScore)
     return true;
 }
 
+void lmDocument::ReplaceScore(lmScore* pScore)
+{
+    //this method is intended for undo/redo based on saving full scores.
+    //It receives the score that has to replace current one. Current score
+    //must be deleted and all view updated.
+
+    wxASSERT(pScore);
+
+    //copy information from current score, before deleting it
+    pScore->SetScoreName( m_pScore->GetScoreName() );
+
+    //delete current score and update with new one
+    delete m_pScore;
+    m_pScore = pScore;
+
+    //update all view
+    Modify(false);
+    wxView* pView = (wxView*)NULL;
+    UpdateAllViews(pView, new lmUpdateHint(lmHINT_NEW_SCORE));
+}
+
 void lmDocument::OnCustomizeController(lmEditorMode* pMode)
 {
     wxASSERT(m_pScore);
@@ -204,18 +225,18 @@ void lmDocument::OnCustomizeController(lmEditorMode* pMode)
 
 void lmDocument::UpdateAllViews(wxView* sender, wxObject* hint)
 {
-    //Updates all views. If sender is non-NULL, does not update this view.
+    //Updates all views. If sender is non-NULL, does not update that view.
     //hint represents optional information to allow a view to optimize its update.
 
-	m_pScore->SetModified(true);
+	m_pScore->SetModified( IsModified() );
 	wxDocument::UpdateAllViews(sender, hint);
 }
 
-void lmDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
-{
-	m_pScore->SetModified(fScoreModified);
-	wxDocument::UpdateAllViews((wxView*)NULL, pHints);
-}
+//void lmDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
+//{
+//	m_pScore->SetModified(fScoreModified);
+//	wxDocument::UpdateAllViews((wxView*)NULL, pHints);
+//}
 
 #if wxUSE_STD_IOSTREAM
 //For Linux I can not manage to use wxStreams. Therefore, I include both alternatives
@@ -225,7 +246,7 @@ wxSTD ostream& lmDocument::SaveObject(wxSTD ostream& stream)
 
     //TODO: Recode next sentences using std streams
 //	wxTextOutputStream oTextStream(stream);
-//	oTextStream << m_pScore->SourceLDP();
+//	oTextStream << m_pScore->SourceLDP(false);      //false: do not export cursor
 
 	return stream;
 }
@@ -235,7 +256,7 @@ wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
 	wxDocument::SaveObject(stream);
 
 	wxTextOutputStream oTextStream(stream);
-	oTextStream << m_pScore->SourceLDP();
+	oTextStream << m_pScore->SourceLDP(false);      //false: do not export cursor
 
 	return stream;
 }

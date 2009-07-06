@@ -1064,10 +1064,10 @@ wxBitmap* GetBitmapForGlyph(double rScale, int nGlyph, double rPointSize, wxColo
     wxBitmap* pBitmap = new wxBitmap(image);
     delete pDrawer;
 
-    //DBG -----------
-    wxString sFileName = _T("BitmapGlyp.bmp");
-    pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
-    //END DBG -------
+    ////DBG -----------
+    //wxString sFileName = _T("BitmapGlyp.bmp");
+    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    ////END DBG -------
 
     return pBitmap;
 }

@@ -53,27 +53,15 @@ extern lmLogger* g_pLogger;
 //-----------------------------------------------------------------------------------------
 
 lmGraphicManager::lmGraphicManager()
+    : m_pBoxScore((lmBoxScore*) NULL)
+    , m_pScore((lmScore*)NULL)
+    , m_pPaper((lmPaper*)NULL)
+    , m_rScale(0)
+    , m_fReLayout(true)
+    , m_nLastScoreID(-1)
+    , m_xPageSize(0)
+    , m_yPageSize(0)
 {
-    Create((lmScore*)NULL, (lmPaper*)NULL);
-}
-
-lmGraphicManager::lmGraphicManager(lmScore* pScore, lmPaper* pPaper)
-{
-    Create(pScore, pPaper);
-}
-
-void lmGraphicManager::Create(lmScore* pScore, lmPaper* pPaper)
-{
-    m_pScore = pScore;
-    m_pPaper = pPaper;
-
-    //initializations
-    m_pBoxScore = (lmBoxScore*) NULL;
-    m_rScale = 0;
-    m_fReLayout = true;
-    m_nLastScoreID = -1;
-    m_xPageSize = 0;
-    m_yPageSize = 0;
 }
 
 lmGraphicManager::~lmGraphicManager()
@@ -516,7 +504,7 @@ wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize sh
     pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
     //oPaper.SetDrawer(new lmDirectDrawer(&dc));
 
-    lmGraphicManager oGraphMngr(pScore, &oPaper);
+    lmGraphicManager oGraphMngr;
     oGraphMngr.PrepareToRender(pScore, size.x, size.y, rScale, &oPaper,
                                 lmFORCE_RELAYOUT);
     wxBitmap* pBitmap = oGraphMngr.RenderScore(1);

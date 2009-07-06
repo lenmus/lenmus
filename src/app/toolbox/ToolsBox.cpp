@@ -38,6 +38,7 @@
 
 #include "../MainFrame.h"
 #include "ToolsBox.h"
+#include "ToolBoxEvents.h"
 #include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "../TheApp.h"
 #include "../ScoreCanvas.h"
@@ -324,7 +325,13 @@ void lmToolBox::SelectToolPage(lmEToolPage nTool)
     //return focus to active view
     GetMainFrame()->SetFocusOnActiveView();
 
-    //inform to any one interested to know
+    //post tool box page change event to the active controller
+    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+    if (pWnd)
+    {
+        lmToolBoxPageChangedEvent event(nTool);
+        ::wxPostEvent(pWnd, event);
+    }
 
 }
 

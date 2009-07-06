@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus projec
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -65,20 +65,19 @@ BEGIN_EVENT_TABLE(lmCaret, wxEvtHandler)
 END_EVENT_TABLE()
 
 
-lmCaret::lmCaret(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore)
+lmCaret::lmCaret(lmView* pParent, lmCanvas* pCanvas)
+    : m_fNeedsUpdate(true)
+    , m_pView(pParent)
+    , m_pCanvas(pCanvas)
+    , m_fCaretDrawn(false)
+    , m_nCountVisible(0)
+    , m_fInvisible(false)       //visible
+    , m_nBlinkingRate(750)		//caret blinking rate = 750ms
 { 
-    m_pView = pParent;
-    m_pCanvas = pCanvas;
-    m_pScore = pScore;
-
-	//caret initializations
+	//other initializations
 	m_oCaretTimer.SetOwner(this, lmID_TIMER_CURSOR);
 	m_oCaretPos.x = -1;         //means: no position   
-    m_fCaretDrawn = false;
-    m_nCountVisible = 0;
-    m_fInvisible = false;       //visible
     SetColour(*wxBLUE);
-    m_nBlinkingRate = 750;		//caret blinking rate = 750ms
 }
 
 lmCaret::~lmCaret()

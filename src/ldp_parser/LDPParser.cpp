@@ -184,7 +184,12 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
     m_nErrors = 0;
     m_nWarnings = 0;
     g_pLogger->FlushDataErrorLog();
-    lmLDPNode* pRoot = LexicalAnalysis();
+
+    return CreateScore( LexicalAnalysis() );
+}
+
+lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
+{
     lmScore* pScore = (lmScore*) NULL;
 	m_pLastNoteRest = (lmNoteRest*)NULL;
 
@@ -192,15 +197,12 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
     if (pRoot)
         pScore = AnalyzeScore(pRoot);
 
-    // report errors
-    bool fShowLog = true;
-    if (fShowLog && m_nErrors != 0) {
+    // display errors
+    if (fShowErrorLog && m_nErrors != 0)
         g_pLogger->ShowDataErrors(_T("Warnings/errors while reading LenMus score."));
-    }
 
     //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
     return pScore;
-
 }
 
 lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
@@ -209,14 +211,23 @@ lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
     //matched. Otherwise, return error to save time and program failures
     if (!ParenthesisMatch(sSource)) return (lmLDPNode*)NULL;
 
-    //now proceed
+    //clear parser and prepare for new parsing
     Clear();                            //delete old allocated objects
-    m_fFromString = true;                //parsing a string, not a file
+    m_fFromString = true;               //parsing a string, not a file
     m_sFileName = _T("'No file'");
-    m_fStartingTextAnalysis = true;        //signal the start of a new analysis
-    m_sLastBuffer = sSource + sEOF;        //load string to parse into buffer
+    m_sLastBuffer = sSource + sEOF;     //load string to parse into buffer
+
+    m_fStartingTextAnalysis = true;     //signal the start of a new analysis
+    m_nErrors = 0;
+    m_nWarnings = 0;
+    g_pLogger->FlushDataErrorLog();
 
     return LexicalAnalysis();            // and proceed with the analysis
+}
+
+lmScore* lmLDPParser::ParseScoreFromText(const wxString& sSource, bool fErrorMsg)
+{
+    return CreateScore( ParseText(sSource), fErrorMsg );
 }
 
 bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
@@ -266,17 +277,13 @@ const wxString& lmLDPParser::GetNewBuffer()
     else
     {
         //parsing a file
-        //m_sLastBuffer = _T("(n s)") + sEOF;
-//        if (Not fRepetirLinea) {
-            if (m_pFile->Eof()) {
-                m_sLastBuffer = sEOF;
-            } else {
-                m_sLastBuffer = m_pTextFile->ReadLine();
-                m_nNumLine++;
-            }
-//        }
+        if (m_pFile->Eof()) {
+            m_sLastBuffer = sEOF;
+        } else {
+            m_sLastBuffer = m_pTextFile->ReadLine();
+            m_nNumLine++;
+        }
     }
-//    fRepetirLinea = false
     return m_sLastBuffer;
 }
 
@@ -320,23 +327,21 @@ void lmLDPParser::AnalysisError(lmLDPNode* pNode, const wxChar* szFormat, ...)
 
 lmLDPNode* lmLDPParser::LexicalAnalysis()
 {
-    /*
-    This function analyzes string sSource and returns the root node of the analysis.
-    The result of the analysis is a tree of nodes, each one representing an element. The
-    root node is the element representing the element sSource.
+    //This function analyzes string sSource and returns the root node of the analysis.
+    //The result of the analysis is a tree of nodes, each one representing an element. The
+    //root node is the element representing the element sSource.
+    //
+    //In this step a full lexical analysis is performed as well as a first syntactical
+    //analysis limited to verify that sSource has the structure of an element and its content
+    //is also elements (data between parenthesis). This element structure is then transformed
+    //into nodes and arranged into a tree.
+    //
+    //It is admisible that sSource has new line and carriage return characters so that this
+    //funtion can parse a whole file whose content is received into the string sSource.
+    //
+    //The analyzer is implemented with a main loop to keep trace of current automata state and
+    //as many functions as automata states, to perform the steps asociated to each state.
 
-    In this step a full lexical analysis is performed as well as a first syntactical
-    analysis limited to verify that sSource has the structure of an element and its content
-    is also elements (data between parenthesis). This element structure is then transformed
-    into nodes and arranged into a tree.
-
-    It is admisible that sSource has new line and carriage return characters so that this
-    funtion can parse a whole file whose content is received into the string sSource.
-
-    The analyzer is implemented with a main loop to keep trace of current automata state and
-    as many functions as automata states, to perform the steps asociated to each state.
-
-    */
 ////THINK: tal como está ahora, el análisis se hace en fases:
 ////1. Léxico (analysis sintáctico a nivel de tokens) + Analisis sintáctico limitado a
 ////   que todo el archivo tiene una estructura recursiva de elementos (datos
@@ -645,8 +650,14 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
 
 lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
-    //<score> = (score <vers><language>[<creationMode>][<styles>][<pageLayout>][<titles>] <instrument>*)
+    //<score> = (score <vers><language>[<creationMode>][<styles>][<titles>][<pageLayout>]
+    //                 [<cursor>] <instrument>*)
     //<language> = (language LanguageCode Charset)
+
+    //initialize cursor data
+    m_fCursorData = false;
+    m_pCursorSO = (lmStaffObj*)NULL;
+
 
     lmLDPNode* pX;
     long i, iP;
@@ -710,6 +721,15 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
 
+    //parse optional element <cursor>
+    pX = pNode->GetParameter(iP);
+    if (pX->GetName() == _T("cursor") &&  iP <= nNumParms)
+    {
+        AnalyzeCursor(pX, m_pScore);
+        iP++;
+        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+    }
+
     //parse optional elements <opt>
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == _T("opt") &&  iP <= nNumParms)
@@ -737,6 +757,11 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         if (iP <= nNumParms)
             pX = pNode->GetParameter(iP);
     }
+
+    //reposition score cursor
+    m_pScore->MoveCursorToStart();        //point to start of score
+    if (m_fCursorData)
+        m_pScore->SetCursorState(m_nCursorInstr, m_nCursorStaff, m_rCursorTime, m_pCursorSO);
 
     return m_pScore;
 }
@@ -1699,14 +1724,15 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     m_sLastDuration = sDuration;
 
     //analyze optional parameters
+    bool fCursorPoint = false;
 	lmLDPOptionalTags oOptTags(this);
-	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y,
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_CursorPoint, lm_eTag_Location_x, lm_eTag_Location_y,
 						lm_eTag_StaffNum, -1);		//finish list with -1
 
 	lmLocation tPos = g_tDefaultPos;
     int nStaff = m_nCurStaff;
 
-	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &nStaff, &tPos);
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &fCursorPoint, &nStaff, &tPos);
 	m_nCurStaff = nStaff;
 
     //analyze remaining parameters: annotations and attachments
@@ -2058,6 +2084,10 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
 	pNR->SetUserLocation(tPos);
 
+    //save cursor data
+    if (fCursorPoint)
+        m_pCursorSO = pNR;
+
     // Add notations
     if (m_pTuplet) {
         m_pTuplet->Include(pNR);             // add this note/rest to the tuplet
@@ -2406,18 +2436,23 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //analyze remaining optional parameters
     int iP = 2;
+    bool fCursorPoint = false;
 	lmLDPOptionalTags oOptTags(this);
-	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_CursorPoint, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
 	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
-	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &fCursorPoint, NULL, &tPos);
 
 	//create the tiem signature
     lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible);
 	m_nCurVoice = 1;
 	pBarline->SetUserLocation(tPos);
-    return false;
 
+    //save cursor data
+    if (fCursorPoint)
+        m_pCursorSO = pBarline;
+
+    return false;
 }
 
 bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
@@ -2449,22 +2484,26 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     iP++;
 
     //analyze optional parameters
+    bool fCursorPoint = false;
 	lmLDPOptionalTags oOptTags(this);
-	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y,
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_CursorPoint, lm_eTag_Location_x, lm_eTag_Location_y,
 						lm_eTag_StaffNum, -1);		//finish list with -1
 
 	lmLocation tPos = g_tDefaultPos;
     int nStaff = 1;
     bool fVisible = true;
 
-	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &nStaff, &tPos);
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &fCursorPoint, &nStaff, &tPos);
 
 	//create the clef
     lmClef* pClef = pVStaff->AddClef(nClef, nStaff, fVisible);
 	pClef->SetUserLocation(tPos);
 
-    return false;
+    //save cursor data
+    if (fCursorPoint)
+        m_pCursorSO = pClef;
 
+    return false;
 }
 
 //returns true if error; in this case nothing is added to the lmVStaff
@@ -2550,7 +2589,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
 
-	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, NULL, &tPos);
 
     //bool fVisible = true;
     //for (; iP <= nNumParms; iP++) {
@@ -3030,6 +3069,34 @@ bool lmLDPParser::AnalyzeCreationMode(lmLDPNode* pNode, lmScore* pScore)
     return true;
 }
 
+bool lmLDPParser::AnalyzeCursor(lmLDPNode* pNode, lmScore* pScore)
+{
+    // <cursor> = (cursor <instrNumber><staffNumber><timePos>)
+
+    //Returns true if success.
+
+    wxASSERT(pNode && pNode->GetName() == _T("cursor"));
+
+    //check that three parameters are specified
+    if(pNode->GetNumParms() != 3) {
+        AnalysisError(
+            pNode,
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+            pNode->GetName().c_str() );
+        return false;
+    }
+
+    //get the cursor info
+    GetValueIntNumber(pNode, &m_nCursorInstr, 1);
+    GetValueIntNumber(pNode, &m_nCursorStaff, 2);
+    GetValueFloatNumber(pNode, &m_rCursorTime, 3);
+
+    //save data
+    m_fCursorData = true;
+
+    return true;
+}
+
 wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
 {
     // <color> = (color #rrggbb))
@@ -3191,11 +3258,11 @@ bool lmLDPParser::GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& n
     }
 }
 
-bool lmLDPParser::GetValueFloatNumber(lmLDPNode* pNode, float* pValue)
+bool lmLDPParser::GetValueFloatNumber(lmLDPNode* pNode, float* pValue, int iP, float rDefault)
 {
-	//if error, returns true, sets pValue to 0.0f and issues an error message
+	//if error, returns true, sets pValue to rDefault and issues an error message
 
-    wxString sValue = pNode->GetParameter(1)->GetName();
+    wxString sValue = pNode->GetParameter(iP)->GetName();
 	double rNumberDouble;
 	if (!StrToDouble(sValue, &rNumberDouble))
 	{
@@ -3206,7 +3273,27 @@ bool lmLDPParser::GetValueFloatNumber(lmLDPNode* pNode, float* pValue)
 	{
         AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a float number."),
             pNode->GetName().c_str(), sValue.c_str() );
-        *pValue = 0.0f;
+        *pValue = rDefault;
+        return true;
+    }
+}
+
+bool lmLDPParser::GetValueIntNumber(lmLDPNode* pNode, int* pValue, int iP, int nDefault)
+{
+	//if error, returns true, sets pValue to nDefault and issues an error message
+
+    wxString sValue = pNode->GetParameter(iP)->GetName();
+	long nNumberLong;
+	if (sValue.ToLong(&nNumberLong))
+	{
+        *pValue = (int)nNumberLong;
+		return false;
+	}
+    else
+	{
+        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be an integer number."),
+            pNode->GetName().c_str(), sValue.c_str() );
+        *pValue = nDefault;
         return true;
     }
 }
@@ -3295,17 +3382,22 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     iP++;
 
     //analyze optional parameters
+    bool fCursorPoint = false;
 	lmLDPOptionalTags oOptTags(this);
-	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_CursorPoint, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
 	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
-	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &fCursorPoint, NULL, &tPos);
 
 	//create the tiem signature
     lmKeySignature* pKS = pVStaff->AddKeySignature(nKey, fVisible);
 	pKS->SetUserLocation(tPos);
-    return false;
 
+    //save cursor data
+    if (fCursorPoint)
+        m_pCursorSO = pKS;
+
+    return false;
 }
 
 bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
@@ -3341,17 +3433,22 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     sNum2.ToLong(&nBeatType);
 
     //analyze optional parameters
+    bool fCursorPoint = false;
 	lmLDPOptionalTags oOptTags(this);
-	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_CursorPoint, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
 	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
-	oOptTags.AnalyzeCommonOptions(pNode, 3, pVStaff, &fVisible, NULL, &tPos);
+	oOptTags.AnalyzeCommonOptions(pNode, 3, pVStaff, &fVisible, &fCursorPoint, NULL, &tPos);
 
 	//create the tiem signature
     lmTimeSignature* pTS = pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType, fVisible);
 	pTS->SetUserLocation(tPos);
-    return false;
 
+    //save cursor data
+    if (fCursorPoint)
+        m_pCursorSO = pTS;
+
+    return false;
 }
 
 void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -3898,10 +3995,9 @@ lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff, lm
     //analyze optional parameters
 	lmLDPOptionalTags oOptTags(this);
 	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-	oOptTags.AnalyzeCommonOptions(pNode, 2, pVStaff, NULL, NULL, pPos);
+	oOptTags.AnalyzeCommonOptions(pNode, 2, pVStaff, NULL, NULL, NULL, pPos);
 
     return nPlacement;
-
 }
 
 void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
@@ -4414,6 +4510,7 @@ bool lmLDPOptionalTags::VerifyAllowed(lmETagLDP nTag, wxString sName, lmLDPNode*
 void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff* pVStaff,
 									   // variables to return optional values
 									   bool* pfVisible,
+                                       bool* pfCursorPoint,
 									   int* pStaffNum,
 									   lmLocation* pLocation
 									   )
@@ -4441,6 +4538,15 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 		{
 			if (VerifyAllowed(lm_eTag_Visible, sName, pNode)) {
 				*pfVisible = false;
+			}
+            pX->SetProcessed(true);
+        }
+
+		//is cursor pointing this object?
+        else if (sName == _T("cursorPoint"))
+		{
+			if (VerifyAllowed(lm_eTag_CursorPoint, sName, pNode)) {
+				*pfCursorPoint = true;
 			}
             pX->SetProcessed(true);
         }

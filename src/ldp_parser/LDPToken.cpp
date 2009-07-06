@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus projec
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -18,11 +18,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-/*! @class lmLDPToken
-    @ingroup ldp_parser
-    @brief Methods to read and form a token
-
-*/
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "LDPToken.h"
 #endif
@@ -44,6 +39,8 @@
 
 
 //constants for comparations
+const wxChar chCR = _T('\x0d');
+const wxChar chLF = _T('\x0a');
 const wxChar chApostrophe = _T('\'');
 const wxChar chAsterisk = _T('*');
 const wxChar chBar = _T('|');
@@ -68,8 +65,8 @@ const wxChar chTab = _T('\t');
 const wxChar chUnderscore = _T('_');
 
 
-const wxChar nEOF = _T('\x03');        //ETX
-const wxChar nEOL = _T('\x04');        //EOT
+const wxChar nEOF = _T('\x03');     //ETX - To signal End Of File
+const wxChar nEOL = _T('\x04');     //EOT - To signal End Of Line (end of buffer)
 
 const wxString sLetters = _T("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 const wxString sNumbers = _T("0123456789");
@@ -141,7 +138,8 @@ lmLDPTokenBuilder::~lmLDPTokenBuilder()
 {
     //delete tokens in pending array
     int i = m_cPending.GetCount();
-    for(; i > 0; i--) {
+    for(; i > 0; i--)
+    {
         delete m_cPending.Item(i-1);
         m_cPending.RemoveAt(i-1);
     }
@@ -159,7 +157,8 @@ bool lmLDPTokenBuilder::PopToken()
 {
     //returns true if a token is returned
     int i = m_cPending.GetCount();
-    if (i > 0) {
+    if (i > 0)
+    {
         m_token = *(m_cPending.Item(i-1));
         delete m_cPending.Item(i-1);
         m_cPending.RemoveAt(i-1);
@@ -172,7 +171,8 @@ bool lmLDPTokenBuilder::PopToken()
 lmLDPToken* lmLDPTokenBuilder::ReadToken()
 {
 
-    if (m_fRepeatToken) {
+    if (m_fRepeatToken)
+    {
         m_fRepeatToken = false;
         return &m_token;
     }
@@ -181,14 +181,16 @@ lmLDPToken* lmLDPTokenBuilder::ReadToken()
     if (PopToken()) return &m_token;
 
     // To deal with compact notation [ name:value --> (name value) ]
-    if (m_fEndOfElementPending) {
+    if (m_fEndOfElementPending)
+    {
         // when flag 'm_fEndOfElementPending' is set it implies that the 'value' part was
         // the last returned token. Therefore, the next token to return is an implicit ')'
         m_fEndOfElementPending = false;
         m_token.Set(tkEndOfElement, chCloseParenthesis);
         return &m_token;
     }
-    if (m_fNamePartPending) {
+    if (m_fNamePartPending)
+    {
         // when flag 'm_fNamePartPending' is set this implies that last returned token
         // was an implicit '(' and that the real token (the 'name' part of an element
         // written in compact notation) is pending and must be returned now
@@ -196,7 +198,8 @@ lmLDPToken* lmLDPTokenBuilder::ReadToken()
         m_fValuePartPending = true;
         return &m_tokenNamePart;
     }
-    if (m_fValuePartPending) {
+    if (m_fValuePartPending)
+    {
         //next token is the 'value' part. Set flag to indicate that after the value
         //part an implicit 'end of element' must be issued
         m_fValuePartPending = false;
@@ -204,7 +207,8 @@ lmLDPToken* lmLDPTokenBuilder::ReadToken()
     }
 
     // loop until a token is found
-    while(true) {
+    while(true)
+    {
         if (m_sInBuf == _T("")) GetNewBuffer();
 
         //if end of file return
@@ -226,15 +230,21 @@ lmLDPToken* lmLDPTokenBuilder::ReadToken()
 
 void lmLDPTokenBuilder::GNC()
 {
-    // when entering this function m_lastPos points to the last character read
-    if (m_lastPos < m_maxPos) {
-        m_curChar = m_sInBuf.GetChar(m_lastPos);
-    } else {
-        m_curChar = nEOL;
-    }
-    if (m_curChar == chTab) m_curChar = chSpace;    //change Tabs by Spaces
-    m_lastPos++;
+    //Returns the next character to analyze.
+    //When entering this function m_lastPos points to the last character read
 
+    if (m_lastPos < m_maxPos)
+        m_curChar = m_sInBuf.GetChar(m_lastPos);
+    else
+        m_curChar = nEOL;
+
+    //wxLogMessage(_T("[lmLDPTokenBuilder::GNC] char 0x%x"), m_curChar);
+
+    //change Tabs and CR chars by Spaces
+    if (m_curChar == chTab || m_curChar == chCR)
+        m_curChar = chSpace;
+
+    m_lastPos++;
 }
 
 void lmLDPTokenBuilder::GetNewBuffer()
@@ -277,6 +287,7 @@ void lmLDPTokenBuilder::ParseNewToken()
     enum tkStatus {
         FT_Start,
         FT_CMT01,
+        FT_CMT02,
         FT_EOF01,
         FT_EOF02,
         FT_EOF03,
@@ -360,6 +371,9 @@ void lmLDPTokenBuilder::ParseNewToken()
                             m_token.Set(tkSpaces, chSpace);
                             GetNewBuffer();
                             return;
+                        case chLF:
+                            m_token.Set(tkSpaces, chSpace);
+                            return;
                         case chLowerSign:
                             nState = FT_EOF01;
                             break;
@@ -406,13 +420,23 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_CMT01:
                 GNC();
-                if (m_curChar == chSlash) {
-                    m_token.Set(tkComment, Extract(iStart) );
-                    m_sInBuf = _T("");     //flush buffer
-                    return;
-                } else {
+                if (m_curChar == chSlash)
+                    nState = FT_CMT02;
+                else
                     nState = FT_Error;
+                break;
+
+            case FT_CMT02:
+                GNC();
+                if (m_curChar == chLF) {
+                    m_token.Set(tkComment, Extract(iStart, m_lastPos - 1) );
+                    return;
+                } else if (m_curChar == nEOL) {
+                    m_token.Set(tkComment, Extract(iStart, m_lastPos - 1) );
+                    GetNewBuffer();
+                    return;
                 }
+                //else continue in this state
                 break;
 
             case FT_EOF01:
@@ -648,10 +672,6 @@ void lmLDPTokenBuilder::ParseNewToken()
                         nState));
                 } else {
                     m_pParser->ParseMsje(wxString::Format(_T("[lmLDPTokenBuilder::ParseNewToken]: Bad character %d found. File %s"),
-                        // (Char:[%s], Dec:%s, Hex:%s). Token=<%s>"),
-                        //nState, Chr$(m_curChar), m_curChar, Hex$(m_curChar),
-                        //nState, m_curChar, m_curChar, m_curChar,
-                        //Extract(iStart, m_lastPos)) );
                         m_curChar, m_pParser->GetFilename().c_str() ));
                 }
                 nState = FT_Start;

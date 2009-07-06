@@ -880,7 +880,7 @@ void lmCompareScoresCtrol::StopSounds()
 
 void lmCompareScoresCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
 {
-    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP();
+    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP(false);  //false: do not export cursor
 }
 
 void lmCompareScoresCtrol::OnDebugDumpScore(wxCommandEvent& event)
@@ -1054,7 +1054,7 @@ void lmOneScoreCtrol::StopSounds()
 
 void lmOneScoreCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
 {
-    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP();
+    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP(false);  //false: do not export cursor
 }
 
 void lmOneScoreCtrol::OnDebugDumpScore(wxCommandEvent& event)

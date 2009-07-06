@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus projec
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -43,7 +43,7 @@ class lmCaret : public wxEvtHandler
     DECLARE_DYNAMIC_CLASS(lmCaret)
 
 public:
-    lmCaret(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore);
+    lmCaret(lmView* pParent, lmCanvas* pCanvas);
     ~lmCaret();
 
     //event handlers
@@ -73,6 +73,8 @@ public:
     inline bool IsVisible() const { return m_fCaretDrawn; }
         //invisibility status
     inline bool IsInvisible() { return m_fInvisible; }
+    inline bool NeedsUpdate() { return m_fNeedsUpdate; }
+    inline void NeedsUpdate(bool fNeedsUpdate) { m_fNeedsUpdate = fNeedsUpdate; }
 
 
 private:
@@ -83,10 +85,10 @@ private:
 
     lmCanvas*       m_pCanvas;          //the canvas
     lmView*         m_pView;
-    lmScore*        m_pScore;
     double          m_rScale;           //view presentation scale
 
     //caret display status
+    bool            m_fNeedsUpdate;     //user has requested to update its position before displaying it
     bool            m_fCaretDrawn;      //caret visible on screen (it implies it is displayed)
     bool            m_fInvisible;       //true = invisible
     int             m_nCountVisible;    //number of times Show() - number of times Hide()

@@ -131,8 +131,8 @@ lmScoreView::lmScoreView()
     , m_xScrollPosition(0)
     , m_yScrollPosition(0)
     , m_rScale(1.0 * lmSCALE)
-	, m_fCaretInit(false)
     , m_fDraggingTool(false)
+    , m_fDisplayCaret(true)
 {
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
     m_pDoc = (lmDocument*) NULL;
@@ -404,9 +404,6 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
     // This method is only invoked for print and print-preview. It is invoked from
     // lmPrintout to get the number of pages needed to print the score
 
-    wxMemoryDC mDC;
-    //m_Paper.SetDC(&mDC);           //the layout phase requires a DC
-    //m_Paper.SetDrawer(new lmDirectDrawer(&mDC));
     lmScore* pScore = ((lmDocument*)GetDocument())->GetScore();
     if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper))
         OnNewGraphicalModel();
@@ -517,10 +514,17 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
 	WXUNUSED(sender)
     if (!m_pFrame) return;
 
-    //re-paint the score
-    //wxLogMessage(_T("[lmScoreView::OnUpdate] Calls HideCaret()"));
-    HideCaret();
+    //if score replaced in document update score related information
     lmUpdateHint* pHints = (lmUpdateHint*)hint;
+    if (pHints && pHints->Options() == lmHINT_NEW_SCORE)
+    {
+        //reload score cursor
+        m_pScoreCursor = m_pDoc->GetScore()->GetCursor();
+        m_pCaret->NeedsUpdate(true);
+    }
+
+    //re-paint the score
+    HideCaret();
 
     //do repaint now
     wxClientDC dc(m_pCanvas);
@@ -535,14 +539,15 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     lmScore* pScore = m_pDoc->GetScore();
     if (pScore)
     {
-        //hide caret if there are objects selected. Otherwise, show it
-        int nSel = ((lmBoxScore*)pScore->GetGraphicObject())->GetNumObjectsSelected();
-        //wxLogMessage(_T("[lmScoreView::OnUpdate] NumSelected = %d"), nSel);
-        m_pCaret->SetInvisible(((lmBoxScore*)pScore->GetGraphicObject())->GetNumObjectsSelected() > 0);
-    //wxLogMessage(_T("[lmScoreView::OnUpdate] Calls UpdateCaret()"));
-        UpdateCaret();
-    //wxLogMessage(_T("[lmScoreView::OnUpdate] Calls ShowCaret()"));
-        ShowCaret();
+        if (m_fDisplayCaret)
+        {
+            //hide caret if there are objects selected. Otherwise, show it
+            int nSel = ((lmBoxScore*)pScore->GetGraphicObject())->GetNumObjectsSelected();
+            //wxLogMessage(_T("[lmScoreView::OnUpdate] NumSelected = %d"), nSel);
+            m_pCaret->SetInvisible(nSel > 0);
+            UpdateCaret();
+            ShowCaret();
+        }
 
         //delete the MIDI event table
         pScore->DeleteMidiEvents();
@@ -873,6 +878,12 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
 
 }
 
+void lmScoreView::UpdateNumPage(int nNumPage)
+{
+    m_nNumPage = nNumPage;
+    GetMainFrame()->SetStatusBarNumPage(nNumPage);
+}
+
 lmDPoint lmScoreView::GetPageOffset(int nNumPage)
 {
 	// Returns the offset to add to a display point (that is, a point in pixels referred to
@@ -1073,15 +1084,16 @@ void lmScoreView::DoScroll(int xScrollSteps, int yScrollSteps)
         if (m_pVRuler) m_pVRuler->ScrollWindow(0, dy, (wxRect*)NULL);    //rect );
     }
 
-#ifdef __WXMAC__
-    m_pCanvas->MacUpdateImmediately() ;
-#endif
+    m_pCanvas->Update() ;       //force to repaint before painting new tool marks
 
     //Restore caret
-    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-    int nPage;
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
-    m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
+    if (m_fDisplayCaret)
+    {
+        lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+        int nPage;
+        lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+        m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
+    }
 
     //restore the drag operation
     if (fDragging)
@@ -1497,69 +1509,90 @@ void lmScoreView::PreparePaperForDirectDrawing(wxDC* pDC, lmDPoint vCanvasOffset
 	//prepare paper for direct drawing. This implies to allocate a direct drawer DC and set
     //it to use logical units referred to current page origin and scrolling position
 
-	m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-	wxPoint org = GetDCOriginForPage(m_nNumPage);
-	pDC->SetDeviceOrigin(org.x, org.y);
+    lmDirectDrawer* pDrawer = new lmDirectDrawer(pDC);
+	m_Paper.SetDrawer(pDrawer);
+	wxPoint uOrg = GetDCOriginForPage(m_nNumPage);
+	pDC->SetDeviceOrigin(uOrg.x, uOrg.y);
+
+    //clip DC to visible page rectangle
+    std::vector<lmVisiblePageInfo*>::iterator it;
+    for(it = m_VisiblePages.begin(); it != m_VisiblePages.end(); ++it)
+    {
+        if ((*it)->nNumPage == m_nNumPage-1)
+        {
+            m_uClippedRect = (*it)->uVisibleRect;
+            pDrawer->SetClippingRegion(m_uClippedRect);
+            return;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------------------
 // caret management
 //------------------------------------------------------------------------------------------
 
-void lmScoreView::SetInitialCaretPosition()
-{
-	lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-	if (!pBS) return;
-
-	if (!m_fCaretInit)
-	{
-		// Set initial cursor position;
-		m_fCaretInit = true;
-        lmScore* pScore = m_pDoc->GetScore();
-        m_pScoreCursor = pScore->AttachCursor(this);
-        m_pScoreCursor->MoveToInitialPosition();
-        m_nNumPage = 1;
-	}
-    ////wxLogMessage(_T("[lmScoreView::SetInitialCaretPosition] Calls UpdateCaret()"));
-    //UpdateCaret();
-}
-
 void lmScoreView::CaretOn() 
 { 
-    if (m_pCaret) 
+    m_fDisplayCaret = true;
+    if (m_pCaret)
+    {
         m_pCaret->SetInvisible(false); 
+        ShowCaret();    //force to show it
+    }
 }
 
 void lmScoreView::CaretOff() 
 { 
-    if (m_pCaret) 
+    m_fDisplayCaret = false;
+    if (m_pCaret)
+    {
         m_pCaret->SetInvisible(true); 
+        HideCaret();    //force to hide it
+    }
 }
 
 void lmScoreView::HideCaret()
 {
     //wxLogMessage(_T("[lmScoreView::HideCaret] Calls Caret::Hide()"));
-    if (m_pCaret)
+    if (m_pCaret && m_fDisplayCaret)
         m_pCaret->Hide();
 }
 
 void lmScoreView::ShowCaret()
 {
     //wxLogMessage(_T("[lmScoreView::ShowCaret] Calls Caret::Show()"));
-    if (m_pCaret)
-        m_pCaret->Show();
-    else
-    {
-		//initialise caret position
-        lmScore* pScore = m_pDoc->GetScore();
-        if (!pScore) return;
-        m_pCaret = new lmCaret(this, (lmCanvas*)m_pCanvas, pScore);
-        SetInitialCaretPosition();
+    if (!m_fDisplayCaret)
+        return;
 
-        lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
-        int nPage;
-        lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
-        m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
+	//do nothing if the view doesn't contains a score (view creation time)
+    lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore)
+        return;
+
+	//if the caret is not yet created, do it
+    if (!m_pCaret)
+        m_pCaret = new lmCaret(this, (lmCanvas*)m_pCanvas);
+
+	//if no pointer to score cursor, get it and reposition it
+    if (!m_pScoreCursor)
+    {
+        m_pScoreCursor = pScore->MoveCursorToStart();
+        m_nNumPage = 1;
+    }
+
+    //finally, display caret
+    if (m_pCaret)
+    {
+        //if caret is not updated, do it
+        if (m_pCaret->NeedsUpdate())
+        {
+            lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+            int nPage;
+            lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+            m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
+        }
+        else
+            m_pCaret->Show();
     }
 }
 
@@ -1661,29 +1694,30 @@ void lmScoreView::UpdateCaret()
 
     //Hide cursor at old position
     //wxLogMessage(_T("[lmScoreView::UpdateCaret] Calls Caret::Hide()"));
-	m_pCaret->Hide();
+    if (m_fDisplayCaret)
+	    m_pCaret->Hide();
 
 	//status bar: timepos
 	m_pMainFrame->SetStatusBarCursorRelPos( m_pScoreCursor->GetCursorTime(), 0);
 
-    //DBG ------------------------------------------------------------------------------
-    wxString sType = _T("end of collection");
-    lmStaffObj* pSO = m_pScoreCursor->GetCursorSO();
-    if (pSO)
-    {
-        sType = pSO->GetName();
-        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
-        {
-            lmNote* pN = (lmNote*)pSO;
-            lmFPitch fp = FPitch(pN->GetAPitch());
-            lmKeySignature* pKey = pN->GetApplicableKeySignature();
-            lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
-            sType += _T("-");
-            sType += FPitch_ToRelLDPName(fp, nKey);
-        }
-    }
-    m_pMainFrame->SetStatusBarMsg(wxString::Format(_T("cursor pointing to %s"), sType.c_str()));
-    //END DBG --------------------------------------------------------------------------
+    ////DBG ------------------------------------------------------------------------------
+    //wxString sType = _T("end of collection");
+    //lmStaffObj* pSO = m_pScoreCursor->GetCursorSO();
+    //if (pSO)
+    //{
+    //    sType = pSO->GetName();
+    //    if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+    //    {
+    //        lmNote* pN = (lmNote*)pSO;
+    //        lmFPitch fp = FPitch(pN->GetAPitch());
+    //        lmKeySignature* pKey = pN->GetApplicableKeySignature();
+    //        lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+    //        sType += _T("-");
+    //        sType += FPitch_ToRelLDPName(fp, nKey);
+    //    }
+    //}
+    //m_pMainFrame->SetStatusBarMsg(wxString::Format(_T("cursor pointing to %s"), sType.c_str()));
+    ////END DBG --------------------------------------------------------------------------
 
 	//Get cursor new position
     int nPage;
@@ -1704,7 +1738,8 @@ void lmScoreView::UpdateCaret()
     ScrollTo(nPage, cursorRect);
 
     //now we can safely display the caret
-    m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
+    if (m_fDisplayCaret)
+        m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
 
     //inform the controller, for updating other windows (i.e. toolsbox)
     GetController()->SynchronizeToolBox();
@@ -1990,6 +2025,7 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
 
     //prepare paper for direct drawing
     PreparePaperForDirectDrawing(pDC, vCanvasOffset);
+    //set clip region to current clip region (old)
 
     //inform the shape. It must not render anything. It should only issue
     //the necessary commands to move the dragged object to its new position.
@@ -2025,7 +2061,7 @@ void lmScoreView::SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits u
                                         lmLUnits uYMin, lmLUnits uYMax, bool fRedraw)
 {
     //deselect all currently selected objects, if any, and select all objects
-    //in page m_nNumPage, within specified area
+    //in page nNumPage, within specified area
 
     m_graphMngr.NewSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
     SelectionDone(fRedraw);
@@ -2352,11 +2388,11 @@ void lmScoreView::UpdateRulerMarkers(lmDPoint vPagePos)
 
 lmGMObject* lmScoreView::FindShapeAt(int nNumPage, lmUPoint uPos, bool fSelectable)
 {
-    return m_graphMngr.FindShapeAtPagePos(m_nNumPage, uPos, fSelectable);
+    return m_graphMngr.FindShapeAtPagePos(nNumPage, uPos, fSelectable);
 }
 
 lmBox* lmScoreView::FindBoxAt(int nNumPage, lmUPoint uPos)
 {
-    return m_graphMngr.FindBoxAtPagePos(m_nNumPage, uPos);
+    return m_graphMngr.FindBoxAtPagePos(nNumPage, uPos);
 }
 

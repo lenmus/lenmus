@@ -77,6 +77,13 @@ public:
                     int nVoice = 0,
 					lmNote* pBaseOfChord = (lmNote*)NULL,
 					bool fTiedPrev = false) {}
+	virtual void New_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
+					lmENoteType nNoteType, float rDuration, int nDots,
+					lmENoteHeads nNotehead,
+                    lmEAccidentals nAcc = lm_eNoAccidentals,
+                    int nVoice = 0,
+					lmNote* pBaseOfChord = (lmNote*)NULL,
+					bool fTiedPrev = false) {}
 
     virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
@@ -223,6 +230,13 @@ public:
                     int nVoice = 0,
 					lmNote* pBaseOfChord = (lmNote*)NULL,
 					bool fTiedPrev = false);
+	void New_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
+					lmENoteType nNoteType, float rDuration, int nDots,
+					lmENoteHeads nNotehead,
+                    lmEAccidentals nAcc = lm_eNoAccidentals,
+                    int nVoice = 0,
+					lmNote* pBaseOfChord = (lmNote*)NULL,
+					bool fTiedPrev = false);
 
     void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
@@ -312,6 +326,7 @@ private:
     //mouse tools operations
     void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime);
     void PrepareToolDragImages();
+    void GetDataEntryMode();
 
     //mouse cursors
     wxCursor* LoadMouseCursor(wxString sFile, int nHotSpotX, int nHotSpotY);

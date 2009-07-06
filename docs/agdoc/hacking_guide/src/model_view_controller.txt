@@ -272,9 +272,16 @@ Now, in LenMus I have defined:
 
 The wxWidgets document/view architecture is used, and class %%wxDocManager%% orchestrates the creation of the document and the view.
 
-The process starts when an event wxID_NEW or wxID_OPEN is created (i.e. via main menu 'file > new'  or 'file > open').
+The process starts when an event MENU_File_Open or MENU_File_New is created (i.e. via main menu 'file > new'  or 'file > open').
 
-In response to these events, the wxWidgets framework first invokes %%wxDocManager::CreateDocument()%%, to create the lmDocument instace. But this instace is empty, that is, it doesn't contains any score yet. Therefore, lmDocument member variable %%m_pScore%% will be always %%NULL%% at this point.
+In response to these events, the associated method in lmMainFrame (i.e. lmMainFrame::OnFileOpen() ) is invoked. Then method m_pDocManager->OpenFile() is invoked. This method does two things:
+
+    * First it invokes lmDocManager::DoOpenDocument() to create the document. This
+    first creates an empty lmDocument instace. Then it creates the lmScoreProcessor and informs the document [by invoking lmDocument::OnCreateCommandProcessor()]. Next, it asks the document to create the View/Controller by invoking lmDocument::OnCreate(). And, finally, it asks the document to load content in the document, by invoking either lmDocument::OnOpenDocument(path), lmDocument::OnNewDocumentWithContent(pScore) or lmDocument::OnImportDocument(path), depending on the specific way of creating the document.
+    
+    * Second, it asks the document to customize the controller. by invoking lmDocument::OnCustomizeController()
+
+But this instace is empty, that is, it doesn't contains any score yet. Therefore, lmDocument member variable %%m_pScore%% will be always %%NULL%% at this point.
 
 Next, %%wxDocManager%% proceeds to create the view. The invokation path for this complex but, finally, the following invocation takes place: %%wxDocTemplate::CreateView()%%. This invokes the view constructor followed by an invocation to %%wxWiew::OnCreate()%%.
 
@@ -384,22 +391,10 @@ The lmTDIClientWindow will know about the switching event (%%OnPageChanged()%% e
 
     child->OnChildFrameActivated();
 
-Default implementation does nothing. But this method is overriden in %%lmEditFrame%% and in %%lmTextBookFrame%% and in both, the behaviour is to inform %%lmMainFrame%%
+Default implementation does nothing. But this method is overriden in %%lmEditFrame%% and in %%lmTextBookFrame%%.
 
-It would be better to change default implementation to inform %%lmMainFrame%%.
+Method lmEditFrame::OnChildFrameActivated() first informs main frame by invoking %%lmMainFrame::OnActiveChildChanged()%%. And then asks the lmView to set up the appropriate tool box configuration: %%lmView::RestoreToolBoxConfiguration()%%.
 
-
-In any case, method %%lmMainFrame::OnActiveChildChanged()%% is the right place to make the necessary ToolBox customizations.
-
-To do it we need to know:
-    * who has the mvc relationship info? where is the lmEditMode to apply?
-    * It should be in the lmDocTDIChildFrame itself! Now it only has the doc and the view!
-    
-    (The only existing lmDocTDIChildFrame is lmEditFrame)
-
-the frame (%%lmEditFrame%%) is created in %%lmScoreView::OnCreate()%% and this method only receives the doc. It should also receive all other information (the controller and the edit mode)
-
-=> Save the lmEditMode in the document. In any case, the edit mode must be exported to LDP source and loaded from there! Therefore, it is not a bad solution to have it there.
 
 
 \h1 {Continue in 'exercise mode' after reloading an exercise score}

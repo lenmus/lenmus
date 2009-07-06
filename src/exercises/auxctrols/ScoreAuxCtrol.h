@@ -81,7 +81,7 @@ public:
 
     // Debug methods
     void Dump();
-    void SourceLDP();
+    void SourceLDP(bool fExportCursor);
     void SourceXML(int nIndent);
     void DumpMidiEvents();
 

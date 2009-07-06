@@ -842,7 +842,12 @@ wxString lmStaffObj::SourceLDP(int nIndent)
         }
         
         //visible?
-        if (!m_fVisible) { sSource += _T(" noVisible"); }
+        if (!m_fVisible)
+            sSource += _T(" noVisible");
+
+        //is score cursor pointing to this StaffObj?
+        if (g_pCursorSO == this)
+            sSource += _T(" cursorPoint");
     }
 
     // Generate source code for AuxObjs attached to this StaffObj

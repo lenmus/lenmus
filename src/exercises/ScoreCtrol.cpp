@@ -273,7 +273,7 @@ void lmScoreCtrol::StopSounds()
 
 void lmScoreCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
 {
-    m_pScoreCtrol->SourceLDP();
+    m_pScoreCtrol->SourceLDP(false);  //false: do not export cursor
 }
 
 void lmScoreCtrol::OnDebugDumpScore(wxCommandEvent& event)

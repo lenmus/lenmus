@@ -74,6 +74,8 @@ public:
     virtual void SetLineWidth(lmLUnits uWidth) = 0;
     virtual void SetPen(wxColour color, lmLUnits uWidth) = 0;
 
+    //clipping
+    void SetClippingRegion(const lmURect& uRect) {};
 
     //text (platform native rederization)
     virtual void DrawText(const wxString& text, lmLUnits x, lmLUnits y) = 0;
@@ -142,6 +144,9 @@ public:
     void SetLineColor(wxColour color);
     void SetLineWidth(lmLUnits uWidth);
     void SetPen(wxColour color, lmLUnits uWidth);
+
+    //clipping
+    void SetClippingRegion(const lmURect& uRect);
 
     //text
     void DrawText(const wxString& text, lmLUnits ux, lmLUnits uy) {m_pDC->DrawText(text, (int)ux, (int)uy); }

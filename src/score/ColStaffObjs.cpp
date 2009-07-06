@@ -2434,13 +2434,11 @@ void lmColStaffObjs::AssignTime(lmStaffObj* pSO)
 
 	//if it is a note in chord and not base note assign it the time assigned to
 	//base note
-	bool fPartOfChord = false;		//to avoid having to check this many times
     if (pSO->GetClass() == eSFOT_NoteRest && (((lmNoteRest*)pSO)->IsNote())
        && ((lmNote*)pSO)->IsInChord() && !((lmNote*)pSO)->IsBaseOfChord() )
 	{
         lmNote* pNoteBase = ((lmNote*)pSO)->GetChord()->GetBaseNote();
         pSO->SetTimePos(pNoteBase->GetTimePos());
-		fPartOfChord = true;
 	}
 
 	//else, assign it cursor timepos

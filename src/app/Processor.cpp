@@ -89,7 +89,7 @@ void lmScoreProcessor::DoProcess()
     {
         //if changes done in the score, update views
 	    pDoc->Modify(true);
-        pDoc->UpdateAllViews(true, new lmUpdateHint() );
+        pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
 
         //enable undo link
         m_pUndoLink->Enable(true);
@@ -109,7 +109,7 @@ void lmScoreProcessor::UndoProcess()
     {
         //if changes done in the score, update views
 	    pDoc->Modify(true);
-        pDoc->UpdateAllViews(true, new lmUpdateHint() );
+        pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
     }
 
     //disable undo link

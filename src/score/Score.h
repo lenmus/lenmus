@@ -158,51 +158,77 @@ class lmHandler;
 // class lmScoreCursor
 //=======================================================================================
 
+//cursor state
+typedef struct lmCursorState_Struct {
+    int         nInstr;         //instrument (1..n)
+	int         nStaff;         //staff (1..n)
+	float       rTimepos;       //timepos
+	lmStaffObj* pSO;			//current pointed staffobj
+}
+lmCursorState;
+
+//global variable used as default initializator
+extern lmCursorState g_tNoCursorState;
+
+//global function to compare with g_tNoVCursorState
+extern bool IsEmptyState(lmCursorState& t);
+
 class lmScoreCursor
 {
 public:
     lmScoreCursor(lmScore* pOwnerScore);
     ~lmScoreCursor() {}
 
-    //attachment to a ScoreView
-	void AttachCursor(lmScoreView* pView);
-	void DetachCursor();
-
     //positioning
-    void ResetCursor();
+    void MoveToStart();
     void MoveRight(bool fAlsoChordNotes = true);
     void MoveLeft(bool fAlsoChordNotes = true);
-    void MoveToInitialPosition();
     void MoveUp();
     void MoveDown();
 	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
     void MoveCursorToObject(lmStaffObj* pSO);
     void MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
 
-    //current position info
-    float GetCursorTime();
-    lmStaffObj* GetCursorSO();
-    lmUPoint GetCursorPoint(int* pNumPage = NULL);
-    lmStaff* GetCursorStaff();
-    int GetCursorNumStaff();
+    //internal state (setting it implies re-positioning)
+    void SetState(lmCursorState* pState);
+    lmCursorState GetState();
+    wxDEPRECATED( void SetNewCursorState(lmVCursorState* pState) );
+    wxDEPRECATED( void SelectCursor(lmVStaffCursor* pVCursor) );
+
+    //access to state info. Only meaninful if IsOK()
+    inline bool IsOK() { return (m_nInstr != 0) && m_pVCursor != (lmVStaffCursor*)NULL; }
+    inline int GetCursorNumStaff() { return m_nStaff; }
+    inline float GetCursorTime() { return m_rTimepos; }
+    inline lmStaffObj* GetCursorSO() { return m_pSO; }
+	inline int GetCursorInstrumentNumber() { return m_nInstr; }
+
+    //position related info
     lmVStaff* GetVStaff();
-	inline int GetCursorInstrumentNumber() { return m_nCursorInstr; }
+    lmStaff* GetCursorStaff();
+    lmUPoint GetCursorPoint(int* pNumPage = NULL);
+
+    //other info
 	inline lmScore* GetCursorScore() { return m_pScore; }
     inline lmVStaffCursor* GetVCursor() { return m_pVCursor; }
-    void SetNewCursorState(lmVCursorState* pState);
-    void SelectCursor(lmVStaffCursor* pVCursor);
-    //int GetPageNumber();
 
 
 private:
+    void MoveToInitialPosition();
     void SelectCursorFromInstr(int nInstr);
+    void UpdateState();
+
 
     lmScore*            m_pScore;           //owner score
-    lmScoreView*        m_pView;            //View using this cursor
 	lmVStaffCursor*		m_pVCursor;		    //current cursor
-	int					m_nCursorInstr;		//instrument number (1..n) of current cursor
+
+    //cursor state: position pointed by cursor
+    int                 m_nInstr;           //instrument (1..n), 0 = no cursor
+	int                 m_nStaff;           //staff (1..n)
+	float               m_rTimepos;         //timepos
+	lmStaffObj*         m_pSO;			    //pointed staffobj
 
 };
+
 
 
 //=======================================================================================
@@ -359,6 +385,10 @@ enum {
     lmMARGIN_RIGHT,
 };
 
+
+//global variable for exporting to LDP ScoreCursor data
+extern lmStaffObj* g_pCursorSO;        //not NULL for exporting cursor data
+
 class lmScore : public lmScoreObj
 {
 public:
@@ -411,7 +441,7 @@ public:
     // Debug methods. If filename provided writes also to file
     wxString Dump() { return Dump(_T("")); }
     wxString Dump(wxString sFilename);
-    wxString SourceLDP(wxString sFilename = _T(""));
+    wxString SourceLDP(bool fExportCursor, wxString sFilename = _T(""));
     wxString SourceXML(wxString sFilename = _T(""));
     wxString DumpMidiEvents(wxString sFilename = _T(""));
 
@@ -476,12 +506,11 @@ public:
 
 	//cursor management
     lmScoreCursor* SetCursor(lmVStaffCursor* pVCursor);
-    inline void ResetCursor() { m_SCursor.ResetCursor(); }
+    inline lmScoreCursor* MoveCursorToStart() { m_SCursor.MoveToStart(); return &m_SCursor;}
     inline lmScoreCursor* GetCursor() { return &m_SCursor; }
-        //attachment to a ScoreView
-	lmScoreCursor* AttachCursor(lmScoreView* pView);
-	void DetachCursor();
     lmScoreCursor* SetNewCursorState(lmVCursorState* pState);
+    lmScoreCursor* SetCursorState(lmCursorState* pState);
+    lmScoreCursor* SetCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO);
 
 	//pages layout information
 	void SetPageInfo(int nPage);

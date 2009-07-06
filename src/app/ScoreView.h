@@ -161,7 +161,14 @@ public:
 	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
     void MoveCaretTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
 
+    //Score cursor information
     lmVStaffCursor* GetVCursor();
+    inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
+    inline int GetCursorMeasure() { return GetVCursor()->GetSegment() + 1; }
+    inline lmStaff* GetCursorStaff() { return m_pScoreCursor->GetCursorStaff(); }
+	    //get object pointed by the cursor
+    inline lmStaffObj* GetCursorStaffObj() { return GetVCursor()->GetStaffObj(); }
+
 
 	void LogicalToDevice(lmUPoint& posLogical, int nPage, lmDPoint& posDevice);
 
@@ -219,7 +226,8 @@ public:
 	void OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOffset,
                         lmUPoint uPagePos);
 
-
+    //set/update information
+    void UpdateNumPage(int nNumPage);
 
 private:
 
@@ -229,7 +237,6 @@ private:
     void ScrollTo(int nNumPage, lmURect visibleRect);
 
 	//caret management
-    void SetInitialCaretPosition();
     void UpdateCaret();
     void MoveCaretToObject(lmStaffObj* pSO);
 
@@ -292,11 +299,12 @@ private:
     wxDragImage*    m_pDragImage;
 	lmGMObject*		m_pDraggedGMO;			//GMObject being dragged
     bool            m_fDraggingTool;        //currently dragging a mouse tool
+    lmURect         m_uClippedRect;
 
     //cursor
     lmCaret*            m_pCaret;
+    bool                m_fDisplayCaret;        //To hide caret in drag tools with mouse
     lmScoreCursor*      m_pScoreCursor;
-	bool				m_fCaretInit;
     lmStaffObj*         m_pCursorSO;            //for visual feedback
     int                 m_nCursorStaff;
 

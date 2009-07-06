@@ -140,13 +140,24 @@ public:
     lmBarline* Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType = lm_eBarlineSimple,
                                  bool fVisible = true);
 
+    lmBarline* CmdNew_InsertBarline(lmEBarline nType = lm_eBarlineSimple,
+                                 bool fVisible = true);
+
 	lmClef* Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
+                           bool fVisible);
+
+	lmClef* CmdNew_InsertClef(lmEClefType nClefType, int nStaff,
                            bool fVisible);
 
     lmKeySignature* Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
                                     bool fMajor, bool fVisible);
 
 	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, int nStep,
+					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
+					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
+                           int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
+
+	lmNote* CmdNew_InsertNote(lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
 					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
                            int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
@@ -328,7 +339,7 @@ private:
     bool CheckIfNotesAffectedByKey(bool fSkip);
 
     //barlines
-    void CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR);
+    void CheckAndDoAutoBar(lmNoteRest* pNR);
 
     //beams
         //structure with info about a note/rest beam status information

@@ -49,11 +49,8 @@ class lmBoxScore;
 class lmGraphicManager
 {
 public:
-    lmGraphicManager(lmScore* pScore, lmPaper* pPaper);
     lmGraphicManager();
     ~lmGraphicManager();
-
-    void Create(lmScore* pScore, lmPaper* pPaper);
 
     //renderization
     bool PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 

@@ -665,11 +665,16 @@ public:
 // conversions
 #define lmUPointToPoint(uPoint) \
         wxPoint((int)floor(uPoint.x + 0.5), (int)floor(uPoint.y + 0.5))
+
 #define lmDPointToPoint(vPoint) \
         vPoint
 
 #define lmUSizeToSize(uSize) \
         wxSize((int)floor(uSize.x + 0.5), (int)floor(uSize.y + 0.5))
+
+#define lmURectToRect(uRect) \
+        wxRect((int)floor(uRect.x + 0.5), (int)floor(uRect.y + 0.5), \
+               (int)floor(uRect.width + 0.5), (int)floor(uRect.height + 0.5) )           
 
 
 

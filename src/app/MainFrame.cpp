@@ -1821,14 +1821,20 @@ void lmMainFrame::OnDebugRecSelec(wxCommandEvent& event)
 {
     g_fDrawSelRect = event.IsChecked();
     if (GetActiveDoc())
-        GetActiveDoc()->UpdateAllViews();
+    {
+	    GetActiveDoc()->Modify(true);
+        GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
+    }
 }
 
 void lmMainFrame::OnDebugDrawAnchors(wxCommandEvent& event)
 {
     g_fDrawAnchors = event.IsChecked();
     if (GetActiveDoc())
-        GetActiveDoc()->UpdateAllViews();
+    {
+	    GetActiveDoc()->Modify(true);
+        GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
+    }
 }
 
 void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
@@ -1846,7 +1852,10 @@ void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
                     | g_fDrawBoundsShapes;
 
     if (GetActiveDoc())
-        GetActiveDoc()->UpdateAllViews();
+    {
+	    GetActiveDoc()->Modify(true);
+        GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
+    }
 }
 
 void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
@@ -1907,7 +1916,7 @@ void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
         if (GetActiveDoc())
         {
 	        GetActiveDoc()->Modify(true);
-            GetActiveDoc()->UpdateAllViews(true, new lmUpdateHint() );
+            GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
         }
     }
 }
@@ -1924,7 +1933,7 @@ void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
         if (GetActiveDoc())
         {
 	        GetActiveDoc()->Modify(true);
-            GetActiveDoc()->UpdateAllViews(true, new lmUpdateHint() );
+            GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
         }
     }
 }
@@ -1934,7 +1943,7 @@ void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
     lmScore* pScore = GetActiveScore();
     wxASSERT(pScore);
 
-    lmDlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP());
+    lmDlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP(true));     //true: export cursor
     dlg.ShowModal();
 }
 
@@ -2001,8 +2010,8 @@ void lmMainFrame::OnActiveChildChanged(lmTDIChildFrame* pFrame)
     UpdateZoomControls(rScale);
     SetFocusOnActiveView();
 
-    wxLogMessage(_T("[lmMainFrame::OnActiveChildChanged] Is kind of lmDocTDIChildFrame: %s"),
-        pFrame->IsKindOf(CLASSINFO(lmDocTDIChildFrame)) ? _T("yes") : _T("No") );
+    //wxLogMessage(_T("[lmMainFrame::OnActiveChildChanged] Is kind of lmDocTDIChildFrame: %s"),
+    //    pFrame->IsKindOf(CLASSINFO(lmDocTDIChildFrame)) ? _T("yes") : _T("No") );
 }
 
 void lmMainFrame::UpdateZoomControls(double rScale)
@@ -2658,7 +2667,10 @@ void lmMainFrame::OnViewPageMargins(wxCommandEvent& event)
 {
     g_fShowMargins = event.IsChecked();
     if (GetActiveDoc())
-        GetActiveDoc()->UpdateAllViews();
+    {
+	    GetActiveDoc()->Modify(true);
+        GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
+    }
 }
 
 

@@ -103,19 +103,23 @@ public:
     inline void SetLogicalFunction(int function) { m_pDrawer->SetLogicalFunction(function); }
 
     inline wxColour GetFillColor() 
-            { return m_pDrawer->GetFillColor(); };
+            { return m_pDrawer->GetFillColor(); }
     inline void SetFillColor(wxColour color)
-            { m_pDrawer->SetFillColor(color); };
+            { m_pDrawer->SetFillColor(color); }
     inline wxColour GetLineColor() 
-            { return m_pDrawer->GetLineColor(); };
+            { return m_pDrawer->GetLineColor(); }
     inline void SetLineColor(wxColour color)
-            { m_pDrawer->SetLineColor(color); };
+            { m_pDrawer->SetLineColor(color); }
     inline lmLUnits GetLineWidth() 
-            { return m_pDrawer->GetLineWidth(); };
+            { return m_pDrawer->GetLineWidth(); }
     inline void SetLineWidth(lmLUnits uWidth) 
-            { m_pDrawer->SetLineWidth(uWidth); };
+            { m_pDrawer->SetLineWidth(uWidth); }
     inline void SetPen(wxColour color, lmLUnits uWidth)
-            { m_pDrawer->SetPen(color, uWidth); };
+            { m_pDrawer->SetPen(color, uWidth); }
+
+    //clipping
+    inline void SetClippingRegion(const lmURect& uRect)
+            { m_pDrawer->SetClippingRegion(uRect); }
 
     //text
     inline void DrawText(const wxString& text, lmLUnits x, lmLUnits y)

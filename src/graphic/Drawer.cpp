@@ -172,3 +172,9 @@ void lmDirectDrawer::SetPen(wxColour color, lmLUnits uWidth)
     m_uLineWidth = uWidth;
     m_pDC->SetPen( wxPen(m_lineColor, (int)m_uLineWidth, wxSOLID) );
 }
+
+void lmDirectDrawer::SetClippingRegion(const lmURect& uRect)
+{
+    m_pDC->DestroyClippingRegion();
+    m_pDC->SetClippingRegion( lmURectToRect(uRect) );
+}

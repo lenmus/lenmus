@@ -335,6 +335,36 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
     return pClef;
 }
 
+lmClef* lmVStaff::CmdNew_InsertClef(lmEClefType nClefType, int nStaff,
+                                 bool fVisible)
+{
+    wxASSERT(nStaff > 0);
+
+    //if there are notes affected by new clef, get user desired behaviour
+    int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
+    if (CheckIfNotesAffectedByClef(false))
+        nAction = AskUserAboutClef();
+
+    if (nAction == 0)
+        return (lmClef*)NULL;       //Cancel clef insertion
+
+    bool fClefKeepPosition = (nAction == 2);
+
+    //create the clef and prepare its insertion
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
+    lmStaff* pStaff = GetStaff(nStaff);
+    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
+    pContext = pStaff->NewContextAfter(pClef, pContext);
+
+	pClef->SetContext(pContext);
+
+    //proceed to insert the clef
+    m_cStaffObjs.Add(pClef, fClefKeepPosition);
+
+    return pClef;
+}
+
 void lmVStaff::UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef)
 {
     //delete the requested object, and log info to undo history
@@ -522,6 +552,29 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType, 
     return pBarline;
 }
 
+lmBarline* lmVStaff::CmdNew_InsertBarline(lmEBarline nType, bool fVisible)
+{
+
+    //move cursor to start of current timepos
+    //AWARE:
+    //  Cursor might be pointing not to the first SO at current timepos. Therefore
+    //  we have to move to the first SO at current timepos. Otherwise, the barline
+    //  would be inserted between to objects at the same timepos!
+    //  As an example, assume a piano grand staff with a C note on
+    //  first staff and a G note on second staff. Also assume that cursor is pointing 
+    //  to second staff, G note. As both notes C & G are at the same timepos, it would 
+    //  be wrong to insert the barline before the G note. Therefore, it is necessary
+    //  to find the first SO at current timepos (the C note in the example) and insert
+    //  the barline there.
+    m_VCursor.AdvanceToStartOfTimepos();
+
+    //now, proceed to insert the barline
+    lmBarline* pBarline = new lmBarline(nType, this, fVisible);
+    m_cStaffObjs.Add(pBarline);
+
+    return pBarline;
+}
+
 void lmVStaff::UndoCmd_InsertBarline(lmUndoItem* pUndoItem, lmBarline* pBarline)
 {
     //delete the requested object, and log info to undo history
@@ -627,7 +680,105 @@ lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
         //AutoBar is only applied when we are at end of score
         lmSegment* pSegment = pNt->GetSegment();
         if (!pSegment->HasBarline())
-            CheckAndDoAutoBar(pUndoItem, pNt);
+            CheckAndDoAutoBar(pNt);
+    }
+
+    return pNt;
+}
+
+lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
+                                 lmENoteType nNoteType, float rDuration, int nDots,
+								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
+                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
+								 bool fAutoBar)
+{
+    //some previous checks.
+    //
+    //if note in chord, its duration must be the same than the base note
+    if (pBaseOfChord && pBaseOfChord->GetNoteType() != nNoteType)
+    {
+        wxString sMsg = _("Error: Notes in a chord must have the same duration.");
+        lmErrorBox oEB(sMsg, _("Note insertion ignored."));
+        oEB.ShowModal();
+        return (lmNote*)NULL;
+    }
+
+
+    
+    int nStaff = m_VCursor.GetNumStaff();
+
+	//get the applicable context
+    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    lmContext* pContext;
+    if (pCursorSO)
+	    pContext = NewUpdatedContext(nStaff, pCursorSO);
+    else
+        pContext = NewUpdatedLastContext(nStaff);
+
+    //if no Clef defined yet the context will be NULL
+    if (!pContext || !pContext->GetClef())
+    {
+        wxString sQuestion = _("Error: No clef defined yet.");
+        sQuestion += _T("\n\n");
+        sQuestion += _("Would you like to have notes placed on the staff as if a G clef has been defined?");
+
+        lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
+            _("Insert clef"), _("An invisible G clef will be inserted before the note."),
+            _("Cancel"), _("The 'insert note' command will be cancelled.")
+        );
+        int nAnswer = oQB.ShowModal();
+
+		if (nAnswer == 0)   //'Insert clef' button
+		{
+            //insert clef
+            CmdNew_InsertClef(lmE_Sol, nStaff, lmNO_VISIBLE);
+
+			//re-compute context
+			if (pCursorSO)
+				pContext = NewUpdatedContext(nStaff, pCursorSO);
+			else
+				pContext = NewUpdatedLastContext(nStaff);
+			if (!pContext)
+				return (lmNote*)NULL;
+		}
+		else
+			return (lmNote*)NULL;
+    }
+
+    lmTBeamInfo BeamInfo[6];
+    for (int i=0; i < 6; i++) {
+        BeamInfo[i].Repeat = false;
+        BeamInfo[i].Type = eBeamNone;
+    }
+	int nAccidentals = 0;
+
+    lmNote* pNt = new lmNote(this, nPitchType,
+                        nStep, nOctave, nAccidentals, nAcc,
+                        nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
+                        pContext, false, BeamInfo, pBaseOfChord, false, lmSTEM_DEFAULT);
+
+    m_cStaffObjs.Add(pNt);
+
+	delete pContext;
+
+    //if requested to tie it with a previous note, try to do it
+    if (fTiedPrev)
+    {
+        lmNote* pNtStart = FindPossibleStartOfTie(pNt);
+        if (pNtStart)
+        {
+            //create the tie
+            pNt->CreateTie(pNtStart, pNt);
+        }
+    }
+
+    //if this note fills up a measure and AutoBar option is enabled, insert a simple barline
+    if (fAutoBar)
+    {
+        //AutoBar is only applied when we are at end of score
+        lmSegment* pSegment = pNt->GetSegment();
+        if (!pSegment->HasBarline())
+            CheckAndDoAutoBar(pNt);
     }
 
     return pNt;
@@ -660,7 +811,7 @@ lmRest* lmVStaff::Cmd_InsertRest(lmUndoItem* pUndoItem,
 
     //if this rest fills up a measure and AutoBar option is enabled, insert a simple barline
     if (fAutoBar)
-        CheckAndDoAutoBar(pUndoItem, pRest);
+        CheckAndDoAutoBar(pRest);
 
     return pRest;
 }
@@ -673,7 +824,7 @@ void lmVStaff::UndoCmd_InsertRest(lmUndoItem* pUndoItem, lmRest* pRest)
     m_cStaffObjs.Delete(pRest, true);        //true->invoke destructor
 }
 
-void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
+void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
 {
     //Check if note/rest pNR fills a measure. If it does, add a barline if necessary
 
@@ -729,14 +880,16 @@ void lmVStaff::CheckAndDoAutoBar(lmUndoItem* pUndoItem, lmNoteRest* pNR)
   
     //finally, insert the barline if necessary
     if (fInsertBarline)
-    {
-        //Issue an 'insert barline' command
-        lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
-        lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-        lmECmdInsertBarline* pECmd =
-            new lmECmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
-        pUndoLog->LogCommand(pECmd, pNewUndoItem);
-    }
+    //{
+    //    //Issue an 'insert barline' command
+    //    lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
+    //    lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
+    //    lmECmdInsertBarline* pECmd =
+    //        new lmECmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
+    //    pUndoLog->LogCommand(pECmd, pNewUndoItem);
+
+        CmdNew_InsertBarline(lm_eBarlineSimple, lmVISIBLE);
+    //}
 }
 
 bool lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
