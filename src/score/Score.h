@@ -149,85 +149,8 @@ class lmHandler;
 #include "Note.h"
 #include "Rest.h"
 #include "Chord.h"
-#include "ColStaffObjs.h"   //for lmVCursorState;
+#include "ColStaffObjs.h"
 #include "../app/Paper.h"
-
-
-
-//=======================================================================================
-// class lmScoreCursor
-//=======================================================================================
-
-//cursor state
-typedef struct lmCursorState_Struct {
-    int         nInstr;         //instrument (1..n)
-	int         nStaff;         //staff (1..n)
-	float       rTimepos;       //timepos
-	lmStaffObj* pSO;			//current pointed staffobj
-}
-lmCursorState;
-
-//global variable used as default initializator
-extern lmCursorState g_tNoCursorState;
-
-//global function to compare with g_tNoVCursorState
-extern bool IsEmptyState(lmCursorState& t);
-
-class lmScoreCursor
-{
-public:
-    lmScoreCursor(lmScore* pOwnerScore);
-    ~lmScoreCursor() {}
-
-    //positioning
-    void MoveToStart();
-    void MoveRight(bool fAlsoChordNotes = true);
-    void MoveLeft(bool fAlsoChordNotes = true);
-    void MoveUp();
-    void MoveDown();
-	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
-    void MoveCursorToObject(lmStaffObj* pSO);
-    void MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
-
-    //internal state (setting it implies re-positioning)
-    void SetState(lmCursorState* pState);
-    lmCursorState GetState();
-    wxDEPRECATED( void SetNewCursorState(lmVCursorState* pState) );
-    wxDEPRECATED( void SelectCursor(lmVStaffCursor* pVCursor) );
-
-    //access to state info. Only meaninful if IsOK()
-    inline bool IsOK() { return (m_nInstr != 0) && m_pVCursor != (lmVStaffCursor*)NULL; }
-    inline int GetCursorNumStaff() { return m_nStaff; }
-    inline float GetCursorTime() { return m_rTimepos; }
-    inline lmStaffObj* GetCursorSO() { return m_pSO; }
-	inline int GetCursorInstrumentNumber() { return m_nInstr; }
-
-    //position related info
-    lmVStaff* GetVStaff();
-    lmStaff* GetCursorStaff();
-    lmUPoint GetCursorPoint(int* pNumPage = NULL);
-
-    //other info
-	inline lmScore* GetCursorScore() { return m_pScore; }
-    inline lmVStaffCursor* GetVCursor() { return m_pVCursor; }
-
-
-private:
-    void MoveToInitialPosition();
-    void SelectCursorFromInstr(int nInstr);
-    void UpdateState();
-
-
-    lmScore*            m_pScore;           //owner score
-	lmVStaffCursor*		m_pVCursor;		    //current cursor
-
-    //cursor state: position pointed by cursor
-    int                 m_nInstr;           //instrument (1..n), 0 = no cursor
-	int                 m_nStaff;           //staff (1..n)
-	float               m_rTimepos;         //timepos
-	lmStaffObj*         m_pSO;			    //pointed staffobj
-
-};
 
 
 
@@ -508,7 +431,7 @@ public:
     lmScoreCursor* SetCursor(lmVStaffCursor* pVCursor);
     inline lmScoreCursor* MoveCursorToStart() { m_SCursor.MoveToStart(); return &m_SCursor;}
     inline lmScoreCursor* GetCursor() { return &m_SCursor; }
-    lmScoreCursor* SetNewCursorState(lmVCursorState* pState);
+    lmScoreCursor* SetNewCursorState(lmCursorState* pState);
     lmScoreCursor* SetCursorState(lmCursorState* pState);
     lmScoreCursor* SetCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO);
 

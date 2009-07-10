@@ -32,7 +32,7 @@
 #include "ScoreView.h"
 #include "../score/defs.h"
 #include "../score/UndoRedo.h"
-#include "../score/ColStaffObjs.h"      //lmVCursorState
+#include "../score/ColStaffObjs.h"      //lmCursorState
 class lmComponentObj;
 class lmDocument;
 class lmGMObject;
@@ -67,9 +67,6 @@ protected:
     //access to UndoInfo object
     inline lmUndoLog* GetUndoInfo() { return &m_UndoLog; }
 
-    //save data for direct re-draw
-    //void SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx, lmPaper* pPaper);
-
     lmDocument*    m_pDoc;
 	bool				m_fDocModified;
     bool                m_fHistory;         //include command in undo/redo history
@@ -77,12 +74,12 @@ protected:
     int                 m_nOptions;         //repaint hint options
     lmUndoLog           m_UndoLog;          //collection of undo/redo items
     lmUndoItem*         m_pUndoItem;        //undo item for this command
-    lmVCursorState      m_tCursorState;     //VCursor state when issuing the command
+    lmCursorState      m_tCursorState;     //VCursor state when issuing the command
 
-    //data used only for direct re-draw, when the graphical model is not re-built
-    lmScoreObj*         m_pSCO;             //object affected by the command
-    int                 m_nShapeIdx;        //command affected shape
-    lmPaper*            m_pPaper;           //current DC;
+    ////data used only for direct re-draw, when the graphical model is not re-built
+    //lmScoreObj*         m_pSCO;             //object affected by the command
+    //int                 m_nShapeIdx;        //command affected shape
+    //lmPaper*            m_pPaper;           //current DC;
 };
 
 
@@ -99,27 +96,26 @@ protected:
     lmNewScoreCommand(const wxString& name, lmDocument *pDoc, lmCursorState& tCursorState,
                    bool fUndoable = true, int nOptions=0, bool fUpdateViews = true);
 
-
     //common methods
     bool CommandDone(bool fScoreModified, int nOptions=0);
     bool CommandUndone(int nOptions=0);
     void LogCommand();
+    lmVStaff* GetVStaff();
+    lmStaffObj* GetStaffObj(int nInstr, int nStaff, lmIRef nIRef);
 
-    //save data for direct re-draw
-    //void SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx, lmPaper* pPaper);
 
-    lmDocument*         m_pDoc;
-	bool				m_fDocModified;
-    bool                m_fUndoable;         //include command in undo/redo history
+    lmDocument*         m_pDoc;             //+
+	bool				m_fDocModified;     //+
+    bool                m_fUndoable;        //include command in undo/redo history
     bool                m_fUpdateViews;     //Update all views after doing/undoing the command
-    int                 m_nOptions;         //repaint hint options
-    wxString            m_sOldSource;       //source code to restore for undoing this command
-    lmCursorState       m_tCursorState;     //cursor state when issuing the command
+    int                 m_nOptions;         //+repaint hint options
+    wxString            m_sOldSource;       //+source code to restore for undoing this command
+    lmCursorState       m_tCursorState;     //+
 
-    //data used only for direct re-draw, when the graphical model is not re-built
-    lmScoreObj*         m_pSCO;             //object affected by the command
-    int                 m_nShapeIdx;        //command affected shape
-    lmPaper*            m_pPaper;           //current DC;
+    ////data used only for direct re-draw, when the graphical model is not re-built
+    //lmScoreObj*         m_pSCO;             //object affected by the command
+    //int                 m_nShapeIdx;        //command affected shape
+    //lmPaper*            m_pPaper;           //current DC;
 };
 
 // Move object command
@@ -145,21 +141,18 @@ protected:
 
 // Delete staffobj command
 //------------------------------------------------------------------------------------
-class lmCmdDeleteStaffObj: public lmScoreCommand
+class lmCmdDeleteStaffObj: public lmNewScoreCommand
 {
 public:
-    lmCmdDeleteStaffObj(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
-                        lmStaffObj* pSO);
-    ~lmCmdDeleteStaffObj();
+    lmCmdDeleteStaffObj(bool fUndoable, lmCursorState& tCursorState, const wxString& name,
+                        lmDocument *pDoc, lmStaffObj* pSO);
+    ~lmCmdDeleteStaffObj() {}
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
 
 protected:
-    lmVStaff*           m_pVStaff;      //affected VStaff
-    lmStaffObj*         m_pSO;          //deleted note
-    bool                m_fDeleteSO;    //to control if m_pSO must be deleted
+    lmIRef          m_nIRef;        //IRef for object to delete
 };
 
 
@@ -227,12 +220,12 @@ protected:
 
 // Insert barline command
 //------------------------------------------------------------------------------------
-class lmCmdInsertBarline: public lmScoreCommand
+class lmCmdInsertBarline: public lmNewScoreCommand
 {
 public:
 
-    lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
-                       lmEBarline nType);
+    lmCmdInsertBarline(bool fUndoable, lmCursorState& tCursorState, const wxString& name,
+                       lmDocument *pDoc, lmEBarline nType);
     ~lmCmdInsertBarline() {}
 
     //implementation of pure virtual methods in base class
@@ -245,12 +238,12 @@ protected:
 
 // Insert clef command
 //------------------------------------------------------------------------------------
-class lmCmdInsertClef: public lmScoreCommand
+class lmCmdInsertClef: public lmNewScoreCommand
 {
 public:
 
-    lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
-                    lmEClefType nClefType, bool fHistory=true);
+    lmCmdInsertClef(bool fUndoable, lmCursorState& tCursorState, const wxString& name,
+                    lmDocument *pDoc, lmEClefType nClefType);
     ~lmCmdInsertClef() {}
 
     //implementation of pure virtual methods in base class
@@ -258,19 +251,19 @@ public:
 
 protected:
     lmEClefType         m_nClefType;
-
 };
 
 
 
 // Insert time signature command
 //------------------------------------------------------------------------------------
-class lmCmdInsertTimeSignature: public lmScoreCommand
+class lmCmdInsertTimeSignature: public lmNewScoreCommand
 {
 public:
 
-    lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
-                             int nBeats, int nBeatType, bool fVisible, bool fHistory=true);
+    lmCmdInsertTimeSignature(bool fUndoable, lmCursorState& tCursorState,
+                             const wxString& name, lmDocument *pDoc,
+                             int nBeats, int nBeatType, bool fVisible);
     ~lmCmdInsertTimeSignature() {}
 
     //implementation of pure virtual methods in base class
@@ -286,12 +279,13 @@ protected:
 
 // Insert key signature command
 //------------------------------------------------------------------------------------
-class lmCmdInsertKeySignature: public lmScoreCommand
+class lmCmdInsertKeySignature: public lmNewScoreCommand
 {
 public:
 
-    lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
-                            int nFifths, bool fMajor, bool fVisible, bool fHistory=true);
+    lmCmdInsertKeySignature(bool fUndoable, lmCursorState& tCursorState,
+                            const wxString& name, lmDocument *pDoc,
+                            int nFifths, bool fMajor, bool fVisible);
     ~lmCmdInsertKeySignature() {}
 
     //implementation of pure virtual methods in base class
@@ -307,11 +301,12 @@ protected:
 
 // Insert note command
 //------------------------------------------------------------------------------------
-class lmCmdInsertNote: public lmScoreCommand
+class lmCmdInsertNote: public lmNewScoreCommand
 {
 public:
 
-    lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
+    lmCmdInsertNote(bool fUndoable, lmCursorState& tCursorState,
+                    const wxString& name, lmDocument *pDoc,
 					lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
                     lmENoteHeads nNotehead, lmEAccidentals nAcc,
@@ -333,52 +328,18 @@ protected:
 	int					m_nVoice;
 	lmNote*				m_pBaseOfChord;
     bool                m_fTiedPrev;
-
-    lmVStaff*           m_pVStaff;      //affected VStaff
-};
-
-// Insert note command
-//------------------------------------------------------------------------------------
-class lmCmdNewInsertNote: public lmNewScoreCommand
-{
-public:
-
-    lmCmdNewInsertNote(bool fUndoable, lmCursorState& tCursorState,
-                    const wxString& name, lmDocument *pDoc,
-					lmEPitchType nPitchType, int nStep, int nOctave,
-					lmENoteType nNoteType, float rDuration, int nDots,
-                    lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                    int nVoice, lmNote* pBaseOfChord, bool fTiedPrev);
-    ~lmCmdNewInsertNote();
-
-    //implementation of pure virtual methods in base class
-    bool Do();
-
-protected:
-	lmENoteType		    m_nNoteType;
-	lmEPitchType	    m_nPitchType;
-	int		            m_nStep;
-	int		            m_nOctave;
-    int                 m_nDots;
-	float			    m_rDuration;
-	lmENoteHeads	    m_nNotehead;
-	lmEAccidentals	    m_nAcc;
-	int					m_nVoice;
-	lmNote*				m_pBaseOfChord;
-    bool                m_fTiedPrev;
-
-    lmVStaff*           m_pVStaff;      //affected VStaff
 };
 
 
 
 // Insert rest command
 //------------------------------------------------------------------------------------
-class lmCmdInsertRest: public lmScoreCommand
+class lmCmdInsertRest: public lmNewScoreCommand
 {
 public:
 
-    lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& name, lmDocument *pDoc,
+    lmCmdInsertRest(bool fUndoable, lmCursorState& tCursorState,
+                    const wxString& name, lmDocument *pDoc,
 					lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     ~lmCmdInsertRest();
 
@@ -390,8 +351,6 @@ protected:
     int                 m_nDots;
     int                 m_nVoice;
 	float			    m_rDuration;
-
-    lmVStaff*           m_pVStaff;      //affected VStaff
 };
 
 

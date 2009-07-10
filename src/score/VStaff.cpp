@@ -118,9 +118,6 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     m_cStaves[0] = pStaff;
     pStaff->SetStaffDistance( lmToLogicalUnits(20, lmMILLIMETERS) );  //add separation from previous instr.
 
-	//link cursor to collection
-	m_VCursor.AttachToCollection(&m_cStaffObjs);
-
     //default value
     //TODO review this fixed space before the clef
     m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
@@ -132,6 +129,23 @@ lmVStaff::~lmVStaff()
 {
     for (int i=0; i < lmMAX_STAFF; i++)
         if (m_cStaves[i]) delete m_cStaves[i];
+}
+
+lmVStaffCursor* lmVStaff::GetVCursor()
+{
+    //get cursor from the score
+    lmScoreCursor* pCursor = m_pScore->GetCursor();
+    
+    //verify that it is pointing to this collection
+    int nInstr = pCursor->GetCursorInstrumentNumber();
+    wxASSERT(m_pScore->GetInstrument(nInstr) == GetOwnerInstrument());
+    
+    return pCursor->GetVCursor();
+}
+
+void lmVStaff::AttachCursor(lmVStaffCursor* pVCursor)
+{
+    pVCursor->AttachToCollection(&m_cStaffObjs);
 }
 
 lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths)
@@ -275,19 +289,19 @@ lmTimeSignature* lmVStaff::GetApplicableTimeSignature()
 {
     //returns the applicable time signature at current cursor position
 
-    lmStaffObj* pSO = m_VCursor.GetStaffObj();
+    lmStaffObj* pSO = GetCursorStaffObj();
     if (pSO)
         return pSO->GetApplicableTimeSignature();
     else
     {
-        pSO = m_VCursor.GetPreviousStaffobj();
+        pSO = GetVCursor()->GetPreviousStaffobj();
         if (pSO)
             return pSO->GetApplicableTimeSignature();
         else
         {
             //empty segment?
-            lmContext* pContext = m_cStaffObjs.GetStartOfSegmentContext(m_VCursor.GetSegment(),
-                                                  m_VCursor.GetNumStaff() );
+            lmContext* pContext = m_cStaffObjs.GetStartOfSegmentContext(GetCursorSegmentNum(),
+                                                  GetCursorStaffNum() );
             if (pContext)
                 return pContext->GetTime();
             else
@@ -301,11 +315,8 @@ lmTimeSignature* lmVStaff::GetApplicableTimeSignature()
 // Methods for inserting StaffObjs
 //---------------------------------------------------------------------------------------
 
-lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
-                                 bool fVisible)
+lmClef* lmVStaff::CmdNew_InsertClef(lmEClefType nClefType, bool fVisible)
 {
-    wxASSERT(nStaff > 0);
-
     //if there are notes affected by new clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
     if (CheckIfNotesAffectedByClef(false))
@@ -316,12 +327,9 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
 
     bool fClefKeepPosition = (nAction == 2);
 
-    //save answer for undo/redo
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    pUndoData->AddParam<bool>(fClefKeepPosition);
-
     //create the clef and prepare its insertion
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    lmStaffObj* pCursorSO = GetCursorStaffObj();
+    int nStaff = GetCursorStaffNum();
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
@@ -335,59 +343,12 @@ lmClef* lmVStaff::Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, i
     return pClef;
 }
 
-lmClef* lmVStaff::CmdNew_InsertClef(lmEClefType nClefType, int nStaff,
-                                 bool fVisible)
-{
-    wxASSERT(nStaff > 0);
-
-    //if there are notes affected by new clef, get user desired behaviour
-    int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
-    if (CheckIfNotesAffectedByClef(false))
-        nAction = AskUserAboutClef();
-
-    if (nAction == 0)
-        return (lmClef*)NULL;       //Cancel clef insertion
-
-    bool fClefKeepPosition = (nAction == 2);
-
-    //create the clef and prepare its insertion
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
-    lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
-    lmStaff* pStaff = GetStaff(nStaff);
-    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
-    pContext = pStaff->NewContextAfter(pClef, pContext);
-
-	pClef->SetContext(pContext);
-
-    //proceed to insert the clef
-    m_cStaffObjs.Add(pClef, fClefKeepPosition);
-
-    return pClef;
-}
-
-void lmVStaff::UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef)
-{
-    //delete the requested object, and log info to undo history
-    //Precondition: must be in this VStaff
-
-    //recover user option about keeping pitch or position
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    bool fClefKeepPosition = pUndoData->GetParam<bool>();
-
-    //remove the contexts created by the clef
-	pClef->RemoveCreatedContexts();
-
-    //now remove the clef from the staffobjs collection
-    m_cStaffObjs.Delete(pClef, true, fClefKeepPosition);        //true->invoke destructor
-}
-
-lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
-                                    int nBeatType, bool fVisible)
+lmTimeSignature* lmVStaff::CmdNew_InsertTimeSignature(int nBeats, int nBeatType, bool fVisible)
 {
     //It must return NULL if not succedeed
 
     lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, fVisible);
-    if ( InsertKeyTimeSignature(pUndoItem, pTS) )
+    if ( InsertKeyTimeSignature(pTS) )
         return pTS;
     else
     {
@@ -396,19 +357,7 @@ lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nB
     }
 }
 
-void lmVStaff::UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
-{
-    //delete the requested object, and log info to undo history
-
-    //remove the contexts created by the TS
-	pTS->RemoveCreatedContexts();
-
-    //now remove the TS from the staffobjs collection
-    m_cStaffObjs.Delete(pTS, true);        //true->invoke destructor
-}
-
-lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
-                                    bool fMajor, bool fVisible)
+lmKeySignature* lmVStaff::CmdNew_InsertKeySignature(int nFifths, bool fMajor, bool fVisible)
 {
     //It must return NULL if not succedeed
 
@@ -422,12 +371,8 @@ lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFif
 
     bool fKeyKeepPitch = (nAction == 1);
 
-    //save answer for undo/redo
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    pUndoData->AddParam<bool>(fKeyKeepPitch);
-
     lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
-    if ( InsertKeyTimeSignature(pUndoItem, pKS, fKeyKeepPitch) )
+    if ( InsertKeyTimeSignature(pKS, fKeyKeepPitch) )
         return pKS;
     else
     {
@@ -436,24 +381,7 @@ lmKeySignature* lmVStaff::Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFif
     }
 }
 
-void lmVStaff::UndoCmd_InsertKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
-{
-    //delete the requested object, and log info to undo history
-
-    //recover user option about adding/removing accidentals
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    bool fKeyKeepPitch = pUndoData->GetParam<bool>();
-
-    //remove the contexts created by the KS
-	pKS->RemoveCreatedContexts();
-
-    //now remove the KS from the staffobjs collection
-    m_cStaffObjs.Delete(pKS, true, true, fKeyKeepPitch);        //1st true-> invoke destructor
-                                                                //2nd true-> doesn't matter if true or false
-}
-
-bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
-                                      bool fKeyKeepPitch)
+bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
 {
     //This method implements the common part of methods Cmd_InsertKeySignature() and
     //Cmd_InsertTimeSignature. Object pKTS is the key/time signature to insert.
@@ -465,17 +393,13 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
     wxASSERT(pKTS->IsKeySignature() || pKTS->IsTimeSignature());
 
     //save object pointed by cursor
-    lmStaffObj* pSaveSO = m_VCursor.GetStaffObj();
+    lmStaffObj* pSaveSO = GetCursorStaffObj();
 
     //Check that we are at start of measure. Otherwise, insert a double barline
-    if (!IsEqualTime(m_VCursor.GetTimepos(), 0.0f))
+    if (!IsEqualTime(GetCursorTimepos(), 0.0f))
     {
-        //issue an 'insert barline' command
-        lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
-        lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-        lmECmdInsertBarline* pECmd = 
-            new lmECmdInsertBarline(this, pNewUndoItem, lm_eBarlineDouble);
-        pUndoLog->LogCommand(pECmd, pNewUndoItem);
+        //insert barline
+        CmdNew_InsertBarline(lm_eBarlineDouble);
     }
 
     //Locate context insertion points for all staves
@@ -484,7 +408,7 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
     //the key/time insertion point in first staff but we have to locate insertion points
     //for every staff
     std::list<lmVStaffCursor*> cAuxCursors;
-    int nNumMeasure = m_VCursor.GetSegment();
+    int nNumMeasure = GetCursorSegmentNum();
     bool fIsTime = pKTS->IsTimeSignature();
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
@@ -517,9 +441,9 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
     m_cStaffObjs.Add(pKTS, true, fKeyKeepPitch);            //true->fClefKeyPosition. Doesn't matter if true or false
 
     //restore cursor and reposition it at time signature insertion point
-    m_VCursor.AttachToCollection(&m_cStaffObjs, false);    //false-> do not reset it
+    GetVCursor()->AttachToCollection(&m_cStaffObjs, false);    //false-> do not reset it
     if (pSaveSO)
-        m_VCursor.MoveCursorToObject(pSaveSO);
+        GetVCursor()->MoveCursorToObject(pSaveSO);
 
     //delete aux cursors
     std::list<lmVStaffCursor*>::iterator it;
@@ -527,29 +451,6 @@ bool lmVStaff::InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
         delete *it;
 
     return true;    //success
-}
-
-lmBarline* lmVStaff::Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType, bool fVisible)
-{
-
-    //move cursor to start of current timepos
-    //AWARE:
-    //  Cursor might be pointing not to the first SO at current timepos. Therefore
-    //  we have to move to the first SO at current timepos. Otherwise, the barline
-    //  would be inserted between to objects at the same timepos!
-    //  As an example, assume a piano grand staff with a C note on
-    //  first staff and a G note on second staff. Also assume that cursor is pointing 
-    //  to second staff, G note. As both notes C & G are at the same timepos, it would 
-    //  be wrong to insert the barline before the G note. Therefore, it is necessary
-    //  to find the first SO at current timepos (the C note in the example) and insert
-    //  the barline there.
-    m_VCursor.AdvanceToStartOfTimepos();
-
-    //now, proceed to insert the barline
-    lmBarline* pBarline = new lmBarline(nType, this, fVisible);
-    m_cStaffObjs.Add(pBarline);
-
-    return pBarline;
 }
 
 lmBarline* lmVStaff::CmdNew_InsertBarline(lmEBarline nType, bool fVisible)
@@ -566,124 +467,13 @@ lmBarline* lmVStaff::CmdNew_InsertBarline(lmEBarline nType, bool fVisible)
     //  be wrong to insert the barline before the G note. Therefore, it is necessary
     //  to find the first SO at current timepos (the C note in the example) and insert
     //  the barline there.
-    m_VCursor.AdvanceToStartOfTimepos();
+    GetVCursor()->AdvanceToStartOfTimepos();
 
     //now, proceed to insert the barline
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
     m_cStaffObjs.Add(pBarline);
 
     return pBarline;
-}
-
-void lmVStaff::UndoCmd_InsertBarline(lmUndoItem* pUndoItem, lmBarline* pBarline)
-{
-    //delete the requested object, and log info to undo history
-
-    //now remove the barline from the staffobjs collection
-    m_cStaffObjs.Delete(pBarline, true);        //true->invoke destructor
-}
-
-lmNote* lmVStaff::Cmd_InsertNote(lmUndoItem* pUndoItem,
-								 lmEPitchType nPitchType, int nStep, int nOctave,
-                                 lmENoteType nNoteType, float rDuration, int nDots,
-								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
-								 bool fAutoBar)
-{
-    //some previous checks.
-    //
-    //if note in chord, its duration must be the same than the base note
-    if (pBaseOfChord && pBaseOfChord->GetNoteType() != nNoteType)
-    {
-        wxString sMsg = _("Error: Notes in a chord must have the same duration.");
-        lmErrorBox oEB(sMsg, _("Note insertion ignored."));
-        oEB.ShowModal();
-        return (lmNote*)NULL;
-    }
-
-
-    
-    int nStaff = m_VCursor.GetNumStaff();
-
-	//get the applicable context
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
-    lmContext* pContext;
-    if (pCursorSO)
-	    pContext = NewUpdatedContext(nStaff, pCursorSO);
-    else
-        pContext = NewUpdatedLastContext(nStaff);
-
-    //if no Clef defined yet the context will be NULL
-    if (!pContext || !pContext->GetClef())
-    {
-        wxString sQuestion = _("Error: No clef defined yet.");
-        sQuestion += _T("\n\n");
-        sQuestion += _("Would you like to have notes placed on the staff as if a G clef has been defined?");
-
-        lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
-            _("Insert clef"), _("An invisible G clef will be inserted before the note."),
-            _("Cancel"), _("The 'insert note' command will be cancelled.")
-        );
-        int nAnswer = oQB.ShowModal();
-
-		if (nAnswer == 0)   //'Insert clef' button
-		{
-            //issue an 'insert clef' command
-            lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
-            lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-            lmECmdInsertClef* pECmd = 
-                new lmECmdInsertClef(this, pNewUndoItem, lmE_Sol, nStaff, lmNO_VISIBLE);
-            pUndoLog->LogCommand(pECmd, pNewUndoItem);
-
-			//re-compute context
-			if (pCursorSO)
-				pContext = NewUpdatedContext(nStaff, pCursorSO);
-			else
-				pContext = NewUpdatedLastContext(nStaff);
-			if (!pContext)
-				return (lmNote*)NULL;
-		}
-		else
-			return (lmNote*)NULL;
-    }
-
-    lmTBeamInfo BeamInfo[6];
-    for (int i=0; i < 6; i++) {
-        BeamInfo[i].Repeat = false;
-        BeamInfo[i].Type = eBeamNone;
-    }
-	int nAccidentals = 0;
-
-    lmNote* pNt = new lmNote(this, nPitchType,
-                        nStep, nOctave, nAccidentals, nAcc,
-                        nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
-                        pContext, false, BeamInfo, pBaseOfChord, false, lmSTEM_DEFAULT);
-
-    m_cStaffObjs.Add(pNt);
-
-	delete pContext;
-
-    //if requested to tie it with a previous note, try to do it
-    if (fTiedPrev)
-    {
-        lmNote* pNtStart = FindPossibleStartOfTie(pNt);
-        if (pNtStart)
-        {
-            //create the tie
-            pNt->CreateTie(pNtStart, pNt);
-        }
-    }
-
-    //if this note fills up a measure and AutoBar option is enabled, insert a simple barline
-    if (fAutoBar)
-    {
-        //AutoBar is only applied when we are at end of score
-        lmSegment* pSegment = pNt->GetSegment();
-        if (!pSegment->HasBarline())
-            CheckAndDoAutoBar(pNt);
-    }
-
-    return pNt;
 }
 
 lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
@@ -705,10 +495,10 @@ lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOct
 
 
     
-    int nStaff = m_VCursor.GetNumStaff();
+    int nStaff = GetCursorStaffNum();
 
 	//get the applicable context
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
+    lmStaffObj* pCursorSO = GetCursorStaffObj();
     lmContext* pContext;
     if (pCursorSO)
 	    pContext = NewUpdatedContext(nStaff, pCursorSO);
@@ -731,7 +521,7 @@ lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOct
 		if (nAnswer == 0)   //'Insert clef' button
 		{
             //insert clef
-            CmdNew_InsertClef(lmE_Sol, nStaff, lmNO_VISIBLE);
+            CmdNew_InsertClef(lmE_Sol, lmNO_VISIBLE);
 
 			//re-compute context
 			if (pCursorSO)
@@ -784,19 +574,10 @@ lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOct
     return pNt;
 }
 
-void lmVStaff::UndoCmd_InsertNote(lmUndoItem* pUndoItem, lmNote* pNote)
+lmRest* lmVStaff::CmdNew_InsertRest(lmENoteType nNoteType, float rDuration,
+                                 int nDots, int nVoice, bool fAutoBar)
 {
-    //delete the requested object, and log info to undo history
-
-    //remove the note from the staffobjs collection
-    m_cStaffObjs.Delete(pNote, true);        //true->invoke destructor
-}
-
-lmRest* lmVStaff::Cmd_InsertRest(lmUndoItem* pUndoItem,
-                                 lmENoteType nNoteType, float rDuration, int nDots,
-                                 int nVoice, bool fAutoBar)
-{
-    int nStaff = m_VCursor.GetNumStaff();
+    int nStaff = GetCursorStaffNum();
 
     lmTBeamInfo BeamInfo[6];
     for (int i=0; i < 6; i++) {
@@ -804,24 +585,17 @@ lmRest* lmVStaff::Cmd_InsertRest(lmUndoItem* pUndoItem,
         BeamInfo[i].Type = eBeamNone;
     }
 
-    lmRest* pRest = new lmRest(this, nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
-                             false, BeamInfo);
+    lmRest* pRest = new lmRest(this, nNoteType, rDuration, nDots, nStaff, nVoice,
+                               lmVISIBLE, false, BeamInfo);
 
     m_cStaffObjs.Add(pRest);
 
-    //if this rest fills up a measure and AutoBar option is enabled, insert a simple barline
+    //if this rest fills up a measure and AutoBar option is enabled, insert a
+    //simple barline
     if (fAutoBar)
         CheckAndDoAutoBar(pRest);
 
     return pRest;
-}
-
-void lmVStaff::UndoCmd_InsertRest(lmUndoItem* pUndoItem, lmRest* pRest)
-{
-    //delete the requested object, and log info to undo history
-
-    //now remove the rest from the staffobjs collection
-    m_cStaffObjs.Delete(pRest, true);        //true->invoke destructor
 }
 
 void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
@@ -850,7 +624,7 @@ void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
     //Add a barline if no barline in current segment or if more notes/rests after pNR
 
     bool fInsertBarline = false;        //assume no need to add barline
-    lmBarline* pBL = GetBarlineOfMeasure( GetVCursor()->GetSegment() + 1 );
+    lmBarline* pBL = GetBarlineOfMeasure( GetCursorSegmentNum() + 1 );
     if (!pBL)
     {
         //no barline. Add one
@@ -892,46 +666,19 @@ void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
     //}
 }
 
-bool lmVStaff::Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
+bool lmVStaff::CmdNew_DeleteStaffObj(lmStaffObj* pSO)
 {
-    //returns true if deletion cancelled
-
-    //delete the requested object, and log info to undo history
-    wxASSERT(pUndoItem);
-
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-
-    //save positioning information
-    m_cStaffObjs.LogObjectToDeletePosition(pUndoItem->GetUndoData(), pSO);
-
-    //Save info to re-create the object
-    pSO->Freeze(pUndoItem->GetUndoData());
+    //returns true if deletion error
 
     //if object to remove is a clef, key or time signature, the contexts they created
     //have to be removed
 	pSO->RemoveCreatedContexts();
 
     //Delete the object
-    m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
+    m_cStaffObjs.Delete(pSO);
 
     //wxLogMessage(this->Dump());
     return false;       //false->deletion OK
-}
-
-void lmVStaff::UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO)
-{
-    //un-delete the object, according to info in history
-
-    //recover positioning info
-    lmStaffObj* pBeforeSO = pUndoItem->GetUndoData()->GetParam<lmStaffObj*>();
-
-    //unfreeze restored object
-    pSO->UnFreeze(pUndoItem->GetUndoData());
-
-	//re-insert the deleted object
-    m_cStaffObjs.Insert(pSO, pBeforeSO);
-	//wxLogMessage(m_cStaffObjs.Dump());
 }
 
 int lmVStaff::AskUserAboutClef()
@@ -1013,9 +760,9 @@ accidentals to the affected notes?");
          return (int)nOptValue;
 }
 
-bool lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
+bool lmVStaff::CmdNew_DeleteClef(lmClef* pClef)
 {
-    //returns true if deletion cancelled
+    //returns true if deletion error or it is cancelled
 
     //if there are notes affected by deleting clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
@@ -1027,41 +774,18 @@ bool lmVStaff::Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
 
     bool fClefKeepPosition = (nAction == 2);
 
-    //save answer for undo/redo
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    pUndoData->AddParam<bool>(fClefKeepPosition);
-
     //remove the contexts created by the clef
 	pClef->RemoveCreatedContexts();
 
     //now remove the clef from the staffobjs collection
-    m_cStaffObjs.Delete(pClef, false, fClefKeepPosition);        //false->do not invoke destructor
+    m_cStaffObjs.Delete(pClef, fClefKeepPosition);
 
-    return false;       //false->deletion OK
+    return false;       //false: deletion OK
 }
 
-void lmVStaff::UndoCmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef)
+bool lmVStaff::CmdNew_DeleteKeySignature(lmKeySignature* pKS)
 {
-    //recover user option about keeping pitch or position
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    bool fClefKeepPosition = pUndoData->GetParam<bool>();
-
-    //prepare clef insertion
-    lmStaffObj* pCursorSO = m_VCursor.GetStaffObj();
-    int nStaff = pClef->GetStaffNum();
-    lmStaff* pStaff = GetStaff(nStaff);
-    lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
-    pContext = pStaff->NewContextAfter(pClef, pContext);
-
-	pClef->SetContext(pContext);
-
-    //proceed to insert the clef
-    m_cStaffObjs.Add(pClef, fClefKeepPosition);
-}
-
-bool lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
-{
-    //returns true if deletion cancelled
+    //returns true if deletion cancelled or error
 
     //if there are notes affected by key removal, get user desired behaviour
     int nAction = 1;    //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
@@ -1073,76 +797,26 @@ bool lmVStaff::Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS
 
     bool fKeyKeepPitch = (nAction == 1);
 
-    //save answer for undo/redo
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    pUndoData->AddParam<bool>(fKeyKeepPitch);
-
     //remove the contexts created by the KS
 	pKS->RemoveCreatedContexts();
 
     //now remove the KS from the staffobjs collection
-    m_cStaffObjs.Delete(pKS, false);        //false->do not invoke destructor
+    m_cStaffObjs.Delete(pKS);
 
-    return false;       //false->deletion OK
+    return false;       //false: deletion OK
 }
 
-void lmVStaff::UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS)
+bool lmVStaff::CmdNew_DeleteTimeSignature(lmTimeSignature* pTS)
 {
-    //recover user option about keeping pitch
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    bool fKeyKeepPitch = pUndoData->GetParam<bool>();
-
-    //proceed to insert the key signature
-    InsertKeyTimeSignature(pUndoItem, pKS, fKeyKeepPitch);
-}
-
-bool lmVStaff::Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
-{
-    //returns true if deletion cancelled
-
- //   //delete the requested object, and log info to undo history
- //   wxASSERT(pUndoItem);
-
- //   //AWARE: Logged actions must be logged in the required order for re-construction.
- //   //History works as a FIFO stack: first one logged will be the first one to be recovered
-
- //   //save positioning information
- //   m_cStaffObjs.LogObjectToDeletePosition(pUndoItem->GetUndoData(), pSO);
-
- //   //Save info to re-create the object
- //   pSO->Freeze(pUndoItem->GetUndoData());
-
- //   //if object to remove is a clef, key or time signature, the contexts they created
- //   //have to be removed
-	//pSO->RemoveCreatedContexts();
-
- //   //Delete the object
- //   m_cStaffObjs.Delete(pSO, false);    //false = do not delete object, only remove it from collection
+    //returns true if deletion cancelled or error
 
     //remove the contexts created by the TS
 	pTS->RemoveCreatedContexts();
 
     //now remove the TS from the staffobjs collection
-    m_cStaffObjs.Delete(pTS, false);        //false->do not invoke destructor
+    m_cStaffObjs.Delete(pTS);
 
-    return false;       //false->deletion OK
-}
-
-void lmVStaff::UndoCmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS)
-{
- //   //un-delete the object, according to info in history
-
- //   //recover positioning info
- //   lmStaffObj* pBeforeSO = pUndoItem->GetUndoData()->GetParam<lmStaffObj*>();
-
- //   //unfreeze restored object
- //   pSO->UnFreeze(pUndoItem->GetUndoData());
-
-	////re-insert the deleted object
- //   m_cStaffObjs.Insert(pSO, pBeforeSO);
-
-	//wxLogMessage(m_cStaffObjs.Dump());
-    InsertKeyTimeSignature(pUndoItem, pTS);
+    return false;       //false: deletion OK
 }
 
 void lmVStaff::Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)
@@ -2726,7 +2400,7 @@ bool lmVStaff::CheckIfNotesAffectedByClef(bool fSkip)
 
 
     //define iterator from current cursor position
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(&m_VCursor);
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetVCursor());
     if(fSkip && !pIter->EndOfCollection())
         pIter->MoveNext();
     while(!pIter->EndOfCollection())
@@ -2762,7 +2436,7 @@ bool lmVStaff::CheckIfNotesAffectedByKey(bool fSkip)
 
 
     //define iterator from current cursor position
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(&m_VCursor);
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetVCursor());
     if(fSkip && !pIter->EndOfCollection())
         pIter->MoveNext();
     while(!pIter->EndOfCollection())
@@ -2797,7 +2471,7 @@ bool lmVStaff::ShiftTime(float rTimeShift)
 
 float lmVStaff::GetCurrentMesureDuration()
 {
-    return m_cStaffObjs.GetMeasureDuration(m_VCursor.GetSegment()+1);
+    return m_cStaffObjs.GetMeasureDuration(GetCursorSegmentNum()+1);
 }
 
 lmSOControl* lmVStaff::AddNewSystem()

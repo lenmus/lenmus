@@ -3078,11 +3078,11 @@ bool lmLDPParser::AnalyzeCursor(lmLDPNode* pNode, lmScore* pScore)
     wxASSERT(pNode && pNode->GetName() == _T("cursor"));
 
     //check that three parameters are specified
-    if(pNode->GetNumParms() != 3) {
+    if(pNode->GetNumParms() != 4) {
         AnalysisError(
             pNode,
-            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-            pNode->GetName().c_str() );
+            _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
+            pNode->GetName().c_str(), pNode->GetNumParms() );
         return false;
     }
 

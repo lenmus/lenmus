@@ -638,14 +638,9 @@ void lmInstrument::ResetCursor()
     m_pVStaff->ResetCursor(); 
 }
 
-lmVStaffCursor* lmInstrument::AttachCursor(lmScoreCursor* pSCursor)
+void lmInstrument::AttachCursor(lmVStaffCursor* pVCursor)
 { 
-    return m_pVStaff->GetVCursor()->AttachCursor(pSCursor); 
-}
-
-void lmInstrument::DetachCursor() 
-{ 
-    m_pVStaff->GetVCursor()->DetachCursor(); 
+    m_pVStaff->AttachCursor(pVCursor); 
 }
 
 int lmInstrument::GetNumStaves() 

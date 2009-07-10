@@ -77,23 +77,15 @@ public:
                     int nVoice = 0,
 					lmNote* pBaseOfChord = (lmNote*)NULL,
 					bool fTiedPrev = false) {}
-	virtual void New_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
-					lmENoteType nNoteType, float rDuration, int nDots,
-					lmENoteHeads nNotehead,
-                    lmEAccidentals nAcc = lm_eNoAccidentals,
-                    int nVoice = 0,
-					lmNote* pBaseOfChord = (lmNote*)NULL,
-					bool fTiedPrev = false) {}
 
     virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
     virtual void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true) {}
 
         //delete commands
-	virtual void DeleteCaretSatffobj() {}
+	virtual void DeleteStaffObj() {}
     virtual void DeleteSelection() {}
     virtual void DeleteTie(lmNote* pEndNote) {}
-    virtual void DeleteStaffObj(lmStaffObj* pSO) {}
 
         //change/move commands
     virtual void AddTie(lmNote* pStartNote, lmNote* pEndNote) {}
@@ -230,23 +222,15 @@ public:
                     int nVoice = 0,
 					lmNote* pBaseOfChord = (lmNote*)NULL,
 					bool fTiedPrev = false);
-	void New_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
-					lmENoteType nNoteType, float rDuration, int nDots,
-					lmENoteHeads nNotehead,
-                    lmEAccidentals nAcc = lm_eNoAccidentals,
-                    int nVoice = 0,
-					lmNote* pBaseOfChord = (lmNote*)NULL,
-					bool fTiedPrev = false);
 
     void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
     void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 
         //delete commands
-	void DeleteCaretSatffobj();
+	void DeleteStaffObj();
     void DeleteSelection();
     void DeleteTie(lmNote* pEndNote);
-    void DeleteStaffObj(lmStaffObj* pSO);
 
         //change/move commands
     void AddTie(lmNote* pStartNote, lmNote* pEndNote);

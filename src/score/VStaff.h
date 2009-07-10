@@ -25,6 +25,7 @@
 #pragma interface "VStaff.cpp"
 #endif
 
+#include "Score.h"
 #include "StaffObjIterator.h"
 
 class lmScore;
@@ -38,7 +39,6 @@ class lmMetronomeMark;
 class lmScoreCommand;
 class lmUndoItem;
 
-#include "Score.h"
 
 ////enums
 //lmENoteHead
@@ -137,47 +137,31 @@ public:
 	//Edition commands
 
 	    //--- inserting StaffObs
-    lmBarline* Cmd_InsertBarline(lmUndoItem* pUndoItem, lmEBarline nType = lm_eBarlineSimple,
-                                 bool fVisible = true);
-
-    lmBarline* CmdNew_InsertBarline(lmEBarline nType = lm_eBarlineSimple,
-                                 bool fVisible = true);
-
-	lmClef* Cmd_InsertClef(lmUndoItem* pUndoItem, lmEClefType nClefType, int nStaff,
-                           bool fVisible);
-
-	lmClef* CmdNew_InsertClef(lmEClefType nClefType, int nStaff,
-                           bool fVisible);
-
-    lmKeySignature* Cmd_InsertKeySignature(lmUndoItem* pUndoItem, int nFifths,
-                                    bool fMajor, bool fVisible);
-
-	lmNote* Cmd_InsertNote(lmUndoItem* pUndoItem, lmEPitchType nPitchType, int nStep,
-					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
-					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
-                           int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
-
+    lmBarline* CmdNew_InsertBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
+	lmClef* CmdNew_InsertClef(lmEClefType nClefType, bool fVisible = true);
+    lmKeySignature* CmdNew_InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 	lmNote* CmdNew_InsertNote(lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
 					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
                            int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
 
-	lmRest* Cmd_InsertRest(lmUndoItem* pUndoItem, lmENoteType nNoteType,
-                           float rDuration, int nDots, int nVoice, bool fAutoBar);
+	lmRest* CmdNew_InsertRest(lmENoteType nNoteType, float rDuration,
+                           int nDots, int nVoice, bool fAutoBar);
 
-    lmTimeSignature* Cmd_InsertTimeSignature(lmUndoItem* pUndoItem, int nBeats,
-                                    int nBeatType, bool fVisible);
+    lmTimeSignature* CmdNew_InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);
 
 
         //--- deleting StaffObjs
-    bool Cmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
-    bool Cmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef);
-    bool Cmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
-    bool Cmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
+    bool CmdNew_DeleteStaffObj(lmStaffObj* pSO);
+    bool CmdNew_DeleteClef(lmClef* pClef);
+    bool CmdNew_DeleteKeySignature(lmKeySignature* pKS);
+    bool CmdNew_DeleteTimeSignature(lmTimeSignature* pTS);
+
+        //--- deleting AuxObjs
     void Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
     void Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
 
-        //--- Modifying staffobjs
+        //--- Modifying staffobjs/AuxObjs
     void Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
     void Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
     void Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes);
@@ -192,19 +176,7 @@ public:
 
     //--- Undoing edition commands
 
-	    //--- inserting StaffObs
-    void UndoCmd_InsertBarline(lmUndoItem* pUndoItem, lmBarline* pBarline);
-    void UndoCmd_InsertClef(lmUndoItem* pUndoItem, lmClef* pClef);
-    void UndoCmd_InsertKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
-    void UndoCmd_InsertNote(lmUndoItem* pUndoItem, lmNote* pNote);
-    void UndoCmd_InsertRest(lmUndoItem* pUndoItem, lmRest* pRest);
-    void UndoCmd_InsertTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
-
         //--- deleting StaffObjs
-    void UndoCmd_DeleteStaffObj(lmUndoItem* pUndoItem, lmStaffObj* pSO);
-    void UndoCmd_DeleteClef(lmUndoItem* pUndoItem, lmClef* pClef);
-    void UndoCmd_DeleteKeySignature(lmUndoItem* pUndoItem, lmKeySignature* pKS);
-    void UndoCmd_DeleteTimeSignature(lmUndoItem* pUndoItem, lmTimeSignature* pTS);
     void UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
     void UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
 
@@ -300,9 +272,14 @@ public:
     int GetNumberOfStaff(lmStaff* pStaff);       //1..n
 
     //cursor management and cursor related
-	inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }
-    inline void ResetCursor() { m_VCursor.ResetCursor(); }
-    inline lmContext* GetContextAtCursorPoint() { return m_VCursor.GetCurrentContext(); }
+    void AttachCursor(lmVStaffCursor* pVCursor);
+	lmVStaffCursor* GetVCursor();
+    inline void ResetCursor() { GetVCursor()->ResetCursor(); }
+    inline lmContext* GetContextAtCursorPoint() { return GetVCursor()->GetCurrentContext(); }
+    inline int GetCursorStaffNum() { return GetVCursor()->GetNumStaff(); }
+    inline lmStaffObj* GetCursorStaffObj() { return GetVCursor()->GetStaffObj(); }
+    inline int GetCursorSegmentNum() { return GetVCursor()->GetSegment(); }
+    inline float GetCursorTimepos() { return GetVCursor()->GetTimepos(); }
 
     //Debug methods
     wxString Dump();
@@ -321,8 +298,7 @@ private:
     lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
 
     //common code for keys and time signatures
-    bool InsertKeyTimeSignature(lmUndoItem* pUndoItem, lmStaffObj* pKTS,
-                                bool fKeyKeepPitch = false);
+    bool InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch = false);
 
 	//source LDP and MusicXML generation
 	void LDP_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
@@ -366,7 +342,7 @@ private:
     lmScore*            m_pScore;           //lmScore to which this lmVStaff belongs
     lmInstrument*       m_pInstrument;      //lmInstrument to which this lmVStaff belongs
     lmColStaffObjs      m_cStaffObjs;       //collection of StaffObjs that form this lmVStaff
-	lmVStaffCursor	    m_VCursor;			//cursor for the staffobjs collection
+	//lmVStaffCursor	    m_VCursor;			//cursor for the staffobjs collection
 
     // staves
     lmStaff*            m_cStaves[lmMAX_STAFF];     //list of Staves (lmStaff objects) that form this lmVStaff

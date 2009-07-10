@@ -764,6 +764,14 @@ lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
     return m_pVStaff->LogicalToTenths(uUnits, m_nStaffNum);
 }
 
+long lmStaffObj::GetIRef()
+{
+	//lmSegment* pSegment = GetSegment() { return m_pSegment; }
+    int nPos = m_pSegment->FindPosition(this);
+    wxASSERT(nPos >= 0);
+    return CreateIRef(m_pSegment->GetNumSegment(), nPos);
+}
+
 lmContext* lmStaffObj::GetCurrentContext(int nStaff)
 {
 	// Returns the context that is applicable to the this StaffObj.

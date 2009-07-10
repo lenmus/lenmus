@@ -66,12 +66,12 @@ lmScoreCommand::lmScoreCommand(const wxString& sName, lmDocument *pDoc,
       , m_fHistory(fHistory)
       , m_nOptions(nOptions)
       , m_fUpdateViews(fUpdateViews)
-      , m_pSCO((lmScoreObj*)NULL)
+      //, m_pSCO((lmScoreObj*)NULL)
 {
     if (pVCursor)
         m_tCursorState = pVCursor->GetState();
     else
-        m_tCursorState = g_tNoVCursorState;
+        m_tCursorState = g_tNoCursorState;
 }
 
 lmScoreCommand::~lmScoreCommand()
@@ -140,14 +140,6 @@ bool lmScoreCommand::CommandUndone(int nOptions)
     return true;
 }
 
-//void lmScoreCommand::SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx,
-//                                         lmPaper* pPaper)
-//{
-//    m_pSCO = pSCO;
-//    m_nShapeIdx = nShapeIdx
-//    m_pPaper = pPaper;
-//}
-
 
 
 
@@ -168,7 +160,6 @@ lmNewScoreCommand::lmNewScoreCommand(const wxString& sName, lmDocument *pDoc,
       , m_fUndoable(fUndoable)
       , m_nOptions(nOptions)
       , m_fUpdateViews(fUpdateViews)
-      , m_pSCO((lmScoreObj*)NULL)
       , m_tCursorState(tCursorState)
 {
 }
@@ -188,6 +179,17 @@ void lmNewScoreCommand::LogCommand()
     m_sOldSource = m_pDoc->GetScore()->SourceLDP(true);     //true: export cursor
 }
 
+lmVStaff* lmNewScoreCommand::GetVStaff()
+{
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
+    return pCursor->GetVStaff();
+}
+
+lmStaffObj* lmNewScoreCommand::GetStaffObj(int nInstr, int nStaff, lmIRef nIRef)
+{
+    return m_pDoc->GetScore()->GetCursor()->GetReferredObject(nInstr, nStaff, nIRef);
+}
+
 bool lmNewScoreCommand::Undo()
 {
     //Default implementation: Restore previous state from LDP source code
@@ -195,7 +197,7 @@ bool lmNewScoreCommand::Undo()
     //Returning false will indicate to the command processor that the action is
     //not redoable and no change should be made to the command history.
 
-    //recover old score
+    //recover old score and cursor state (it is saved in the score)
     lmLDPParser parser;
     lmScore* pScore = parser.ParseScoreFromText(m_sOldSource);
     if (!pScore)
@@ -204,11 +206,7 @@ bool lmNewScoreCommand::Undo()
         return false;
     }
 
-    ////restore cursor state
-    //m_tCursorState.pSO = (lmStaffObj*)NULL; //TODO: pSO is no longer valid
-    //pScore->GetCursor()->SetState(&m_tCursorState);
-    
-    //ask document to replace current score by old one
+    //ask document to replace current score by the old one
     m_pDoc->ReplaceScore(pScore);
     return true;        //undo action has taken place
 }
@@ -240,9 +238,9 @@ bool lmNewScoreCommand::CommandUndone(int nOptions)
     //Returning false will indicate to the command processor that the action is
     //not redoable and no change should be made to the command history.
 
-    //restore cursor
-    if (!IsEmptyState(m_tCursorState))
-        m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
+    ////restore cursor
+    //if (!IsEmptyState(m_tCursorState))
+    //    m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
 
 	m_pDoc->Modify(m_fDocModified);
 
@@ -265,14 +263,6 @@ bool lmNewScoreCommand::CommandUndone(int nOptions)
 
     return true;
 }
-
-//void lmNewScoreCommand::SetDirectRedrawData(lmScoreObj* pSCO, int nShapeIdx,
-//                                         lmPaper* pPaper)
-//{
-//    m_pSCO = pSCO;
-//    m_nShapeIdx = nShapeIdx
-//    m_pPaper = pPaper;
-//}
 
 
 
@@ -511,16 +501,16 @@ bool lmCmdDeleteSelection::Do()
                 {
                     lmStaffObj* pSO = (lmStaffObj*)(*it)->pObj;
                     lmVStaff* pVStaff = pSO->GetVStaff();      //affected VStaff
-                    if (pSO->IsClef())
-                        pECmd = new lmECmdDeleteClef(pVStaff, pUndoItem, (lmClef*)pSO);
-                    else if (pSO->IsTimeSignature())
-                        pECmd = new lmECmdDeleteTimeSignature(pVStaff, pUndoItem,
-                                                              (lmTimeSignature*)pSO);
-                    else if (pSO->IsKeySignature())
-                        pECmd = new lmECmdDeleteKeySignature(pVStaff, pUndoItem,
-                                                             (lmKeySignature*)pSO);
-                    else
-                        pECmd = new lmECmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
+                    //if (pSO->IsClef())
+                    //    pECmd = new lmECmdDeleteClef(pVStaff, pUndoItem, (lmClef*)pSO);
+                    //else if (pSO->IsTimeSignature())
+                    //    pECmd = new lmECmdDeleteTimeSignature(pVStaff, pUndoItem,
+                    //                                          (lmTimeSignature*)pSO);
+                    //else if (pSO->IsKeySignature())
+                    //    pECmd = new lmECmdDeleteKeySignature(pVStaff, pUndoItem,
+                    //                                         (lmKeySignature*)pSO);
+                    //else
+                        ; //pECmd = new lmECmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
                     //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting staffobj"));
                 }
                 break;
@@ -619,61 +609,38 @@ bool lmCmdDeleteSelection::Undo()
 // lmCmdDeleteStaffObj implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(lmVStaffCursor* pVCursor, const wxString& name,
-                                     lmDocument *pDoc, lmStaffObj* pSO)
-        : lmScoreCommand(name, pDoc, pVCursor)
+lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(bool fUndoable, lmCursorState& tCursorState,
+                                         const wxString& sName,
+                                         lmDocument *pDoc, lmStaffObj* pSO)
+	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
 {
-    m_pVStaff = pSO->GetVStaff();
-    m_pSO = pSO;
-    m_fDeleteSO = false;                //m_pSO is still owned by the score
-}
-
-lmCmdDeleteStaffObj::~lmCmdDeleteStaffObj()
-{
-    if (m_fDeleteSO)
-        delete m_pSO;       //delete frozen object
+    m_nIRef = pSO->GetIRef();
 }
 
 bool lmCmdDeleteStaffObj::Do()
 {
+    //log command if undoable
+    LogCommand();
+
+    //Get pointer to object to delete
+    lmStaffObj* pSO = GetStaffObj(m_tCursorState.nInstr, m_tCursorState.nStaff, m_nIRef);
+
     //Proceed to delete the object
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd;
-    if (m_pSO->IsClef())
-        pECmd = new lmECmdDeleteClef(m_pVStaff, pUndoItem, (lmClef*)m_pSO);
-    else if (m_pSO->IsTimeSignature())
-        pECmd = new lmECmdDeleteTimeSignature(m_pVStaff, pUndoItem,
-                                                (lmTimeSignature*)m_pSO);
-    else if (m_pSO->IsKeySignature())
-        pECmd = new lmECmdDeleteKeySignature(m_pVStaff, pUndoItem,
-                                                (lmKeySignature*)m_pSO);
+    bool fError = false;
+    if (pSO->IsClef())
+        fError = GetVStaff()->CmdNew_DeleteClef((lmClef*)pSO);
+    else if (pSO->IsTimeSignature())
+        fError = GetVStaff()->CmdNew_DeleteTimeSignature((lmTimeSignature*)pSO);
+    else if (pSO->IsKeySignature())
+        fError = GetVStaff()->CmdNew_DeleteKeySignature((lmKeySignature*)pSO);
     else
-        pECmd = new lmECmdDeleteStaffObj(m_pVStaff, pUndoItem, m_pSO);
+        fError = GetVStaff()->CmdNew_DeleteStaffObj(pSO);
 
-    if (pECmd->Success())
-    {
-        m_fDeleteSO = true;                //m_pSO is no longer owned by the score
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+    if (!fError)
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        m_fDeleteSO = false;
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
 }
-
-bool lmCmdDeleteStaffObj::Undo()
-{
-    //undelete the object
-    m_UndoLog.UndoAll();
-    m_fDeleteSO = false;                //m_pSO is again owned by the score
-
-    return CommandUndone();
-}
-
 
 
 
@@ -797,32 +764,25 @@ bool lmCmdMoveObject::Undo()
 // lmCmdInsertBarline: Insert a barline at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertBarline::lmCmdInsertBarline(lmVStaffCursor* pVCursor, const wxString& sName,
-                                       lmDocument *pDoc, lmEBarline nType)
-	: lmScoreCommand(sName, pDoc, pVCursor)
+lmCmdInsertBarline::lmCmdInsertBarline(bool fUndoable, lmCursorState& tCursorState,
+                                       const wxString& sName, lmDocument *pDoc,
+                                       lmEBarline nType)
+	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+    , m_nBarlineType(nType)
 {
-    m_nBarlineType = nType;
 }
 
 bool lmCmdInsertBarline::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-    lmVStaff* pVStaff = pCursor->GetVStaff();
+    //log command if undoable
+    LogCommand();
 
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdInsertBarline(pVStaff, pUndoItem, m_nBarlineType);
-
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+    //insert the barline
+    lmBarline* pBL = GetVStaff()->CmdNew_InsertBarline(m_nBarlineType);
+    if (pBL)
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
 }
 
 
@@ -832,34 +792,25 @@ bool lmCmdInsertBarline::Do()
 // lmCmdInsertClef: Insert a clef at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertClef::lmCmdInsertClef(lmVStaffCursor* pVCursor, const wxString& sName,
-                                 lmDocument *pDoc, lmEClefType nClefType,
-                                 bool fHistory)
-	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
+lmCmdInsertClef::lmCmdInsertClef(bool fUndoable, lmCursorState& tCursorState,
+                                 const wxString& sName,
+                                 lmDocument *pDoc, lmEClefType nClefType)
+	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+    , m_nClefType(nClefType)
 {
-    m_nClefType = nClefType;
 }
 
 bool lmCmdInsertClef::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-    lmVStaff* pVStaff = pCursor->GetVStaff();
+    //log command if undoable
+    LogCommand();
 
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    int nStaff = pCursor->GetCursorNumStaff();
-    lmEditCmd* pECmd = new lmECmdInsertClef(pVStaff, pUndoItem, m_nClefType, nStaff);
-
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+    //insert the barline
+    lmClef* pClef = GetVStaff()->CmdNew_InsertClef(m_nClefType);
+    if (pClef)
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
 }
 
 
@@ -869,36 +820,30 @@ bool lmCmdInsertClef::Do()
 // lmCmdInsertTimeSignature: Insert a time signature at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(lmVStaffCursor* pVCursor, const wxString& sName,
-                             lmDocument *pDoc,  int nBeats, int nBeatType,
-                             bool fVisible, bool fHistory)
-	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
+lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(bool fUndoable,
+                                                   lmCursorState& tCursorState,
+                                                   const wxString& sName,
+                                                   lmDocument *pDoc,  int nBeats,
+                                                   int nBeatType, bool fVisible)
+	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+    , m_nBeats(nBeats)
+    , m_nBeatType(nBeatType)
+    , m_fVisible(fVisible)
 {
-    m_nBeats = nBeats;
-    m_nBeatType = nBeatType;
-    m_fVisible = fVisible;
 }
 
 bool lmCmdInsertTimeSignature::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-    lmVStaff* pVStaff = pCursor->GetVStaff();
+    //log command if undoable
+    LogCommand();
 
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdInsertTimeSignature(pVStaff, pUndoItem, m_nBeats,
-                                                       m_nBeatType, m_fVisible);
-
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+    //insert the barline
+    lmTimeSignature* pTS = GetVStaff()
+        ->CmdNew_InsertTimeSignature(m_nBeats, m_nBeatType, m_fVisible);
+    if (pTS)
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
 }
 
 
@@ -908,38 +853,29 @@ bool lmCmdInsertTimeSignature::Do()
 // lmCmdInsertKeySignature: Insert a key signature at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertKeySignature::lmCmdInsertKeySignature(lmVStaffCursor* pVCursor, const wxString& sName,
+lmCmdInsertKeySignature::lmCmdInsertKeySignature(bool fUndoable, lmCursorState& tCursorState,
+                                                 const wxString& sName,
                              lmDocument *pDoc, int nFifths, bool fMajor,
-                             bool fVisible, bool fHistory)
-	: lmScoreCommand(sName, pDoc, pVCursor, fHistory)
+                             bool fVisible)
+	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+    , m_nFifths(nFifths)
+    , m_fMajor(fMajor)
+    , m_fVisible(fVisible)
 {
-    m_nFifths = nFifths;
-    m_fMajor = fMajor;
-    m_fVisible = fVisible;
 }
 
 bool lmCmdInsertKeySignature::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-    lmVStaff* pVStaff = pCursor->GetVStaff();
+    //log command if undoable
+    LogCommand();
 
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdInsertKeySignature(pVStaff, pUndoItem, m_nFifths,
-                                                      m_fMajor, m_fVisible);
-
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+    //insert the key
+    lmKeySignature* pKey = GetVStaff()->CmdNew_InsertKeySignature(m_nFifths, m_fMajor, m_fVisible);
+    if (pKey)
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
 }
-
 
 
 
@@ -947,65 +883,7 @@ bool lmCmdInsertKeySignature::Do()
 // lmCmdInsertNote: Insert a note at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertNote::lmCmdInsertNote(lmVStaffCursor* pVCursor, const wxString& sName,
-                                 lmDocument *pDoc,
-                                 lmEPitchType nPitchType,
-								 int nStep, int nOctave,
-								 lmENoteType nNoteType, float rDuration, int nDots,
-								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
-	: lmScoreCommand(sName, pDoc, pVCursor)
-{
-	m_nNoteType = nNoteType;
-	m_nPitchType = nPitchType;
-	m_nStep = nStep;
-	m_nOctave = nOctave;
-    m_nDots = nDots;
-	m_rDuration = rDuration;
-	m_nNotehead = nNotehead;
-	m_nAcc = nAcc;
-	m_nVoice = nVoice;
-	m_pBaseOfChord = pBaseOfChord;
-    m_fTiedPrev = fTiedPrev;
-}
-
-lmCmdInsertNote::~lmCmdInsertNote()
-{
-}
-
-bool lmCmdInsertNote::Do()
-{
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-    m_pVStaff = pCursor->GetVStaff();
-
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-
-    lmEditCmd* pECmd = new lmECmdInsertNote(m_pVStaff, pUndoItem, m_nPitchType, m_nStep,
-                                             m_nOctave, m_nNoteType, m_rDuration, m_nDots,
-                                             m_nNotehead, m_nAcc, m_nVoice, m_pBaseOfChord,
-											 m_fTiedPrev);
-
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
-	    return CommandDone(lmSCORE_MODIFIED);
-    }
-    else
-    {
-        delete pUndoItem;
-        delete pECmd;
-        return false;
-    }
-
-}
-
-
-
-//----------------------------------------------------------------------------------------
-// lmCmdNewInsertNote: Insert a note at current cursor position
-//----------------------------------------------------------------------------------------
-
-lmCmdNewInsertNote::lmCmdNewInsertNote(bool fUndoable, lmCursorState& tCursorState,
+lmCmdInsertNote::lmCmdInsertNote(bool fUndoable, lmCursorState& tCursorState,
                                  const wxString& sName,
                                  lmDocument *pDoc,
                                  lmEPitchType nPitchType,
@@ -1014,50 +892,37 @@ lmCmdNewInsertNote::lmCmdNewInsertNote(bool fUndoable, lmCursorState& tCursorSta
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
                                  int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
 	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
-{
-	m_nNoteType = nNoteType;
-	m_nPitchType = nPitchType;
-	m_nStep = nStep;
-	m_nOctave = nOctave;
-    m_nDots = nDots;
-	m_rDuration = rDuration;
-	m_nNotehead = nNotehead;
-	m_nAcc = nAcc;
-	m_nVoice = nVoice;
-	m_pBaseOfChord = pBaseOfChord;
-    m_fTiedPrev = fTiedPrev;
-}
-
-lmCmdNewInsertNote::~lmCmdNewInsertNote()
+	, m_nNoteType(nNoteType)
+	, m_nPitchType(nPitchType)
+	, m_nStep(nStep)
+	, m_nOctave(nOctave)
+    , m_nDots(nDots)
+	, m_rDuration(rDuration)
+	, m_nNotehead(nNotehead)
+	, m_nAcc(nAcc)
+	, m_nVoice(nVoice)
+	, m_pBaseOfChord(pBaseOfChord)
+    , m_fTiedPrev(fTiedPrev)
 {
 }
 
-bool lmCmdNewInsertNote::Do()
+lmCmdInsertNote::~lmCmdInsertNote()
+{
+}
+
+bool lmCmdInsertNote::Do()
 {
     //log command if undoable
     LogCommand();
 
     //insert the note
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
-    m_pVStaff = pCursor->GetVStaff();
     bool fAutoBar = lmPgmOptions::GetInstance()->GetBoolValue(lm_DO_AUTOBAR);
+    lmNote* pNewNote = 
+            GetVStaff()->CmdNew_InsertNote(m_nPitchType, m_nStep, m_nOctave, m_nNoteType,
+                                           m_rDuration, m_nDots, m_nNotehead, m_nAcc, 
+                                           m_nVoice, m_pBaseOfChord, m_fTiedPrev,
+                                           fAutoBar);
 
-    lmNote* pNewNote = m_pVStaff->CmdNew_InsertNote(m_nPitchType, m_nStep, m_nOctave, m_nNoteType,
-                                         m_rDuration, m_nDots, m_nNotehead, m_nAcc, 
-                                         m_nVoice, m_pBaseOfChord, m_fTiedPrev, fAutoBar);
-
-    //int nAlter = 0;
-    //int nStaff = 1;
-    //lmNote* pNewNote = m_pVStaff->AddNote(m_nPitchType,
-    //                m_nStep, m_nOctave, nAlter,
-    //                m_nAcc,
-    //                m_nNoteType, m_rDuration, m_nDots,
-    //                nStaff, m_nVoice);
-				//	//bool fVisible = true,
-    // //               bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
-    // //               m_pBaseOfChord,
-    // //               bool fTie = false,
-    // //               lmEStemType nStem = lmSTEM_DEFAULT);
     if (pNewNote)
 	    return CommandDone(lmSCORE_MODIFIED);
     else
@@ -1070,15 +935,16 @@ bool lmCmdNewInsertNote::Do()
 // lmCmdInsertRest: Insert a rest at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertRest::lmCmdInsertRest(lmVStaffCursor* pVCursor, const wxString& sName,
+lmCmdInsertRest::lmCmdInsertRest(bool fUndoable, lmCursorState& tCursorState,
+                                 const wxString& sName,
                                  lmDocument *pDoc, lmENoteType nNoteType,
                                  float rDuration, int nDots, int nVoice)
-	: lmScoreCommand(sName, pDoc, pVCursor)
+	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	, m_nNoteType(nNoteType)
+    , m_nDots(nDots)
+	, m_rDuration(rDuration)
+	, m_nVoice(nVoice)
 {
-	m_nNoteType = nNoteType;
-    m_nDots = nDots;
-	m_rDuration = rDuration;
-    m_nVoice = nVoice;
 }
 
 lmCmdInsertRest::~lmCmdInsertRest()
@@ -1087,26 +953,18 @@ lmCmdInsertRest::~lmCmdInsertRest()
 
 bool lmCmdInsertRest::Do()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-    m_pVStaff = pCursor->GetVStaff();
+    //log command if undoable
+    LogCommand();
 
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
+    //insert the rest
+    bool fAutoBar = lmPgmOptions::GetInstance()->GetBoolValue(lm_DO_AUTOBAR);
+    lmRest* pRest =  GetVStaff()->CmdNew_InsertRest(m_nNoteType, m_rDuration,
+                                                    m_nDots, m_nVoice, fAutoBar);
 
-    lmEditCmd* pECmd = new lmECmdInsertRest(m_pVStaff, pUndoItem, m_nNoteType,
-                                            m_rDuration, m_nDots, m_nVoice);
-
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+    if (pRest)
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
-
 }
 
 

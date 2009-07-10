@@ -352,6 +352,13 @@ enum EStaffObjType
     eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)
 };
 
+//IRef management definitions
+typedef long lmIRef;            // immutable reference to an StaffObj
+#define GetSegNum(nIRef)                    ((nIRef) >> 16)
+#define GetPosNum(nIRef)                    ((nIRef) & 0x0000FFFF)
+#define CreateIRef(nSegment, nPosition)     ((nSegment) << 16 | (nPosition))
+
+
 
 class lmVStaff;
 class lmAuxObj;
@@ -425,6 +432,7 @@ public:
     inline lmVStaff* GetVStaff() { return m_pVStaff; }
 	inline void SetSegment(lmSegment* pSegment) { m_pSegment = pSegment; }
 	inline lmSegment* GetSegment() { return m_pSegment; }
+    long GetIRef();
     inline bool IsOnStaff(int nStaff) { return (m_nStaffNum == nStaff
                                                 || IsKeySignature()
                                                 || IsTimeSignature()

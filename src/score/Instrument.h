@@ -76,8 +76,7 @@ public:
 	//cursor methods
 	lmVStaffCursor* GetVCursor();
     void ResetCursor();
-	lmVStaffCursor* AttachCursor(lmScoreCursor* pSCursor);
-	void DetachCursor();
+    void AttachCursor(lmVStaffCursor* pVCursor);
 
     //group related methods
     void OnRemovedFromGroup(lmInstrGroup* pGroup);
