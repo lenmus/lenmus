@@ -152,6 +152,8 @@
 		<Unit filename="../../src/auxmusic/Conversion.h" />
 		<Unit filename="../../src/auxmusic/Harmony.cpp" />
 		<Unit filename="../../src/auxmusic/Harmony.h" />
+		<Unit filename="../../src/auxmusic/HarmonyExercisesData.cpp" />
+		<Unit filename="../../src/auxmusic/HarmonyExercisesData.h" />
 		<Unit filename="../../src/auxmusic/Interval.cpp" />
 		<Unit filename="../../src/auxmusic/Interval.h" />
 		<Unit filename="../../src/auxmusic/ScalesManager.cpp" />
@@ -342,8 +344,6 @@
 		<Unit filename="../../src/score/ColStaffObjs.h" />
 		<Unit filename="../../src/score/Context.cpp" />
 		<Unit filename="../../src/score/Context.h" />
-		<Unit filename="../../src/score/EditCmd.cpp" />
-		<Unit filename="../../src/score/EditCmd.h" />
 		<Unit filename="../../src/score/Glyph.cpp" />
 		<Unit filename="../../src/score/Glyph.h" />
 		<Unit filename="../../src/score/InstrGroup.cpp" />
@@ -385,8 +385,6 @@
 		<Unit filename="../../src/score/TimeSignature.h" />
 		<Unit filename="../../src/score/TupletBracket.cpp" />
 		<Unit filename="../../src/score/TupletBracket.h" />
-		<Unit filename="../../src/score/UndoRedo.cpp" />
-		<Unit filename="../../src/score/UndoRedo.h" />
 		<Unit filename="../../src/score/VStaff.cpp" />
 		<Unit filename="../../src/score/VStaff.h" />
 		<Unit filename="../../src/score/defs.cpp" />

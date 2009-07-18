@@ -161,12 +161,10 @@ void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
     lmTenths ytEnd = pVStaff->LogicalToTenths(uEnd.y);
 
     //create arrow
-    lmScoreLine* pLine = new lmScoreLine(xtStart, ytStart, xtEnd, ytEnd, 2, lm_eLineCap_None,
-                                         lm_eLineCap_Arrowhead, lm_eLine_Solid,
-                                         color);
+    pNote1->AttachLine(xtStart, ytStart, xtEnd, ytEnd, 2, lm_eLineCap_None,
+                       lm_eLineCap_Arrowhead, lm_eLine_Solid, color);
     pNote1->SetColour(color);
     pNote2->SetColour(color);
-	pNote1->AttachAuxObj(pLine);
 }
 
 

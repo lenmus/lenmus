@@ -38,7 +38,6 @@
 #include <math.h>
 
 #include "Score.h"
-#include "UndoRedo.h"
 #include "VStaff.h"
 #include "../ldp_parser/AuxString.h"
 #include "../sound/SoundManager.h"
@@ -48,9 +47,9 @@
 //Constructors and destructors
 //====================================================================================================
 
-lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
-               int nNumDots, int nStaff, int nVoice, bool fVisible)
-	: lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
+lmNoteRest::lmNoteRest(lmVStaff* pVStaff, long nID, bool IsRest, lmENoteType nNoteType,
+                       float rDuration, int nNumDots, int nStaff, int nVoice, bool fVisible)
+	: lmStaffObj(pVStaff, nID, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
     , m_nNoteType(nNoteType)
     , m_nNumDots(nNumDots)
     , m_fIsRest(IsRest)
@@ -176,94 +175,6 @@ lmBeam* lmNoteRest::IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam)
     return m_pBeam;
 }
 
-void lmNoteRest::Freeze(lmUndoData* pUndoData)
-{
-    //save info about relations and invalidate ptrs.
-
-    //if note/rest is in a beam, remove it from the beam
-    m_pBeam = FreezeRelationship<lmBeam>(m_pBeam, pUndoData);
-
-    //if note/rest is in a tuplet, remove it from the tuplet
-    m_pTuplet = FreezeRelationship<lmTupletBracket>(m_pTuplet, pUndoData);
-
-    //invalidate other pointers
-    //m_pNotations = (AuxObjsList*)NULL;
-    //m_pLyrics = (AuxObjsList*)NULL;
-
-    //invalidate other pointers
-    //NONE
-
-    //TODO
-    //lmStaffObj::Freeze(pUndoData);
-}
-
-void lmNoteRest::UnFreeze(lmUndoData* pUndoData)
-{
-    //restore pointers
-
-    //restore beam
-    m_pBeam = UnFreezeRelationship<lmBeam>(pUndoData);
-
-    //restore tuplet
-    m_pTuplet = UnFreezeRelationship<lmTupletBracket>(pUndoData);
-
-    //TODO
-    //lmStaffObj::UnFreeze(pUndoData);
-}
-
-template <class T>
-T* lmNoteRest::FreezeRelationship(T* pRel, lmUndoData* pUndoData)
-{
-    //if note/rest is in the relation, remove it from the relation
-    pUndoData->AddParam<bool>(pRel != (T*)NULL);
-    if (pRel != (T*)NULL)
-    {
-		//save position in relation of note to be removed
-		pUndoData->AddParam<int>(pRel->GetNoteIndex(this));
-
-        pRel->Remove(this);
-
-		//save num note/rests, and first note/rest in beam, for recovering relation pointer
-        pUndoData->AddParam<int>( pRel->NumNotes() );
-		pUndoData->AddParam<lmNoteRest*>( pRel->GetStartNoteRest() );
-
-        //if only one note remaining, delete the relation
-        if (pRel->NumNotes() == 1)
-        {
-            pRel->Save(pUndoData);
-			delete pRel;	//this notifies all notes
-        }
-
-        pRel = (T*)NULL;
-    }
-    return pRel;
-}
-
-template <class T>
-T* lmNoteRest::UnFreezeRelationship(lmUndoData* pUndoData)
-{
-    T* pRel =(T*)NULL;
-    bool fInRel = pUndoData->GetParam<bool>();
-    if (fInRel)
-    {
-		int nIndex = pUndoData->GetParam<int>();
-		int nNumNotes = pUndoData->GetParam<int>();
-		lmNoteRest* pFirstNR = pUndoData->GetParam<lmNoteRest*>();
-		if (nNumNotes == 1)
-		{
-			//re-build the relation
-            pRel = new T(pFirstNR, pUndoData);
-		}
-		else
-		{
-			//use existing pointer
-			pRel = pFirstNR->GetRelationship<T>();
-		}
-		pRel->Include(this, nIndex);
-    }
-    return pRel;
-}
-
 void lmNoteRest::OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelClass)
 {	
 	switch (nRelClass)
@@ -323,18 +234,6 @@ void lmNoteRest::OnRemovedFromRelationship(lmRelObj* pRel)
         wxASSERT(false);
 }
 
-
-//----------------------------------------------------------------------------------------
-//template specializations
-//----------------------------------------------------------------------------------------
-
-//for beams
-template <> lmBeam* lmNoteRest::GetRelationship<lmBeam>() { return m_pBeam; }
-
-//for tuplets
-template <> lmTupletBracket* lmNoteRest::GetRelationship<lmTupletBracket>() { return m_pTuplet; }
-
-
 lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
                                  lmLUnits xPos, lmLUnits yPos, wxColour colorC)
 {
@@ -366,10 +265,10 @@ wxString lmNoteRest::Dump()
 
 	//tuplet
 	if (m_pTuplet) {
-        if ((m_pTuplet->GetEndNoteRest())->GetID() == m_nId) {
+        if (m_pTuplet->GetEndNoteRest() == this) {
             sDump += _T(", End of tuplet");
         }
-        else if ((m_pTuplet->GetStartNoteRest())->GetID() == m_nId)
+        else if (m_pTuplet->GetStartNoteRest() == this)
             sDump += _T(", Start of tuplet");
         else
             sDump += _T(", In tuplet");
@@ -393,7 +292,7 @@ wxString lmNoteRest::Dump()
 
 }
 
-wxString lmNoteRest::SourceLDP(int nIndent)
+wxString lmNoteRest::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
 
@@ -420,7 +319,7 @@ wxString lmNoteRest::SourceLDP(int nIndent)
     sSource += wxString::Format(_T(" v%d"), m_nVoice);
 
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent);
+	sSource += lmStaffObj::SourceLDP(nIndent, fUndoData);
 
     return sSource;
 }
@@ -435,13 +334,13 @@ wxString lmNoteRest::SourceXML(int nIndent)
 //====================================================================================================
 // methods related to associated AuxObjs management
 //====================================================================================================
-lmFermata* lmNoteRest::AddFermata(const lmEPlacement nPlacement)
+lmFermata* lmNoteRest::AddFermata(const lmEPlacement nPlacement, long nID)
 {
     SetDirty(true);
 
     if (!m_pNotations) m_pNotations = new AuxObjsList();
 
-    lmFermata* pFermata = new lmFermata(nPlacement);
+    lmFermata* pFermata = new lmFermata(this, nID, nPlacement);
 	AttachAuxObj(pFermata);
     return pFermata;
 }

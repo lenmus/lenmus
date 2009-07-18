@@ -36,7 +36,6 @@
 #include <algorithm>
 
 #include "Score.h"
-#include "UndoRedo.h"
 
 //---------------------------------------------------------
 //   lmTupletBracket implementation
@@ -47,31 +46,6 @@ lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket,
 	: lmMultipleRelationship<lmNoteRest>(lm_eTupletClass)
 {
     Create(fShowNumber, nNumber, fBracket, nAbove, nActualNotes, nNormalNotes);
-}
-
-lmTupletBracket::lmTupletBracket(lmNoteRest* pFirstNote, lmUndoData* pUndoData)
-	: lmMultipleRelationship<lmNoteRest>(lm_eTupletClass, pFirstNote, pUndoData)
-{
-	//Following commented code didn't work. Probably it is a issue of the ordering in which
-	//the compiler recovers the parameters. As the order is important, we cannot let the
-	//compiler to choose it. So I recoded this.
-    //Create(
-    //    pUndoData->GetParam<bool>(),
-    //    pUndoData->GetParam<int>(),
-    //    pUndoData->GetParam<bool>(),
-    //    pUndoData->GetParam<lmEPlacement>(),
-    //    pUndoData->GetParam<int>(),
-    //    pUndoData->GetParam<int>()
-    //);
-	bool fShowNumber = pUndoData->GetParam<bool>();
-	int nTupletNumber = pUndoData->GetParam<int>();
-	bool fBracket = pUndoData->GetParam<bool>();
-	lmEPlacement nAbove = pUndoData->GetParam<lmEPlacement>();
-	int nActualNotes = pUndoData->GetParam<int>();
-	int nNormalNotes = pUndoData->GetParam<int>();
-    Create(fShowNumber, nTupletNumber, fBracket, nAbove, nActualNotes, nNormalNotes);
-
-    Include(pFirstNote);
 }
 
 lmTupletBracket::~lmTupletBracket()
@@ -94,16 +68,6 @@ void lmTupletBracket::Create(bool fShowNumber, int nNumber, bool fBracket,
     m_nFontSize = (int)PointsToLUnits(8);
     m_fBold = false;
     m_fItalic = true;
-}
-
-void lmTupletBracket::Save(lmUndoData* pUndoData)
-{
-    pUndoData->AddParam<bool>(m_fShowNumber);
-    pUndoData->AddParam<int>(m_nTupletNumber);
-    pUndoData->AddParam<bool>(m_fBracket);
-    pUndoData->AddParam<lmEPlacement>(m_nAbove);
-    pUndoData->AddParam<int>(m_nActualNotes);
-    pUndoData->AddParam<int>(m_nNormalNotes);
 }
 
 lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)

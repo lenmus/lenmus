@@ -44,9 +44,10 @@
 #include "Glyph.h"
 
 
-lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, int nNumDots,
-        int nStaff, int nVoice, bool fVisible, bool fBeamed, lmTBeamInfo BeamInfo[])
-    : lmNoteRest(pVStaff, lmDEFINE_REST, nNoteType, rDuration, nNumDots,
+lmRest::lmRest(lmVStaff* pVStaff, long nID, lmENoteType nNoteType, float rDuration,
+               int nNumDots, int nStaff, int nVoice, bool fVisible, bool fBeamed,
+               lmTBeamInfo BeamInfo[])
+    : lmNoteRest(pVStaff, nID, lmDEFINE_REST, nNoteType, rDuration, nNumDots,
                  nStaff, nVoice, fVisible)
 {
     CreateBeam(fBeamed, BeamInfo);
@@ -172,11 +173,14 @@ wxString lmRest::Dump()
     return sDump;
 }
 
-wxString lmRest::SourceLDP(int nIndent)
+wxString lmRest::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(r ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(r#%d "), GetID() );
+    else
+        sSource += _T("(r ");
 
     //duration
     sSource += GetLDPNoteType();
@@ -184,7 +188,7 @@ wxString lmRest::SourceLDP(int nIndent)
         sSource += _T(".");
 
 	//base class
-	sSource += lmNoteRest::SourceLDP(nIndent);
+	sSource += lmNoteRest::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");

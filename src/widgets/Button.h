@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is based on file awx/button.h from AWX 0.2 (Additional wxWindow Classes),
 //	  downloaded from http://www.iftools.com/awx.en.html

@@ -41,7 +41,6 @@
 #include "Staff.h"
 #include "Context.h"
 #include "Glyph.h"
-#include "UndoRedo.h"
 #include "../ldp_parser/AuxString.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeLine.h"
@@ -73,7 +72,7 @@ static lmContext* m_pContext = NULL;	//contains updated context when previous fl
 const bool m_fDrawSmallNotesInBlock = false;    //TODO option depending on used font
 
 
-lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
+lmNote::lmNote(lmVStaff* pVStaff, long nID, lmEPitchType nPitchType,
         int nStep, int nOctave, int nAlter,
         lmEAccidentals nAccidentals,
         lmENoteType nNoteType, float rDuration,
@@ -82,8 +81,8 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         bool fBeamed, lmTBeamInfo BeamInfo[],
         lmNote* pBaseOfChord,
         bool fTie,
-        lmEStemType nStem)  :
-    lmNoteRest(pVStaff, lmDEFINE_NOTE, nNoteType, rDuration, nNumDots, nStaff,
+        lmEStemType nStem)
+    : lmNoteRest(pVStaff, nID, lmDEFINE_NOTE, nNoteType, rDuration, nNumDots, nStaff,
                nVoice, fVisible)
 {
     // Diatonic Pitch is determined by Step
@@ -304,7 +303,7 @@ void lmNote::CreateTie(lmNote* pNtPrev, lmNote* pNtNext)
 
     if (pNtPrev && pNtNext)
     {
-        lmTie* pTie = new lmTie(pNtPrev, pNtNext);
+        lmTie* pTie = new lmTie(pNtPrev, pNtPrev, pNtNext);
         pNtNext->SetTiePrev(pTie);
         pNtPrev->SetTieNext(pTie);
 
@@ -718,7 +717,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     }
 
     // tuplet bracket
-    if (m_pTuplet && (m_pTuplet->GetEndNoteRest())->GetID() == m_nId)
+    if (m_pTuplet && m_pTuplet->GetEndNoteRest() == this)
 		m_pTuplet->LayoutObject(pBox, pPaper, colorC);
 
   //  //ties
@@ -1496,17 +1495,21 @@ wxString lmNote::Dump()
     return sDump;
 }
 
-wxString lmNote::SourceLDP(int nIndent)
+wxString lmNote::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
-    if (IsInChord() && IsBaseOfChord()) {
+    if (IsInChord() && IsBaseOfChord())
+    {
         sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
         sSource += _T("(chord\n");
     }
 
     if (IsInChord()) nIndent++;
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(n ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(n#%d "), GetID() );
+    else
+        sSource += _T("(n ");
 
     //pitch
     if (IsPitchDefined()) {
@@ -1542,7 +1545,7 @@ wxString lmNote::SourceLDP(int nIndent)
     }
 
 	//base class
-	sSource += lmNoteRest::SourceLDP(nIndent);
+	sSource += lmNoteRest::SourceLDP(nIndent, fUndoData);
 
     //close note element
     sSource += _T(")\n");
@@ -1635,105 +1638,6 @@ wxString lmNote::SourceXML(int nIndent)
     sSource += _T("</note>\n");
 
     return sSource;
-}
-
-void lmNote::Freeze(lmUndoData* pUndoData)
-{
-    //save info about relations and invalidate ptrs.
-
-    //if note in chord, remove it from the chord
-    pUndoData->AddParam<bool>(IsInChord());
-    if (IsInChord())
-    {
-		//save position in chord of note to be removed
-		pUndoData->AddParam<int>(m_pChord->GetNoteIndex(this));
-
-		//m_pChord->SaveChord(pUndoData);
-        m_pChord->Remove(this);
-
-		//save num notes, and first note in chord, for recovering chord pointer
-        pUndoData->AddParam<int>( m_pChord->NumNotes() );
-		pUndoData->AddParam<lmNote*>( m_pChord->GetBaseNote() );
-
-        //if only one note remaining, delete chord
-        if (m_pChord->NumNotes() == 1)
-			delete m_pChord;	//this notifies all notes
-
-        m_pChord = (lmChord*)NULL;
-    }
-
-    //save and remove tie with previous note
-    if (m_pTiePrev)
-    {
-        pUndoData->AddParam<lmNote*>( (lmNote*)m_pTiePrev->GetStartNoteRest() );
-        m_pTiePrev->Remove(this);
-        delete m_pTiePrev;
-        m_pTiePrev = (lmTie*)NULL;
-    }
-    else
-        pUndoData->AddParam<lmNote*>( (lmNote*)NULL );
-
-    //save and remove tie with next note
-    if (m_pTieNext)
-    {
-        pUndoData->AddParam<lmNote*>( (lmNote*)m_pTieNext->GetEndNoteRest() );
-        m_pTieNext->Remove(this);
-        delete m_pTieNext;
-        m_pTieNext = (lmTie*)NULL;
-    }
-    else
-        pUndoData->AddParam<lmNote*>( (lmNote*)NULL );
-
-    //mark beam as 'dirty'
-    if (m_pBeam)
-        m_pBeam->NeedsSetUp(true);
-
-    //save accidentals
-    pUndoData->AddParam<lmEAccidentals>(
-        (m_pAccidentals ? m_pAccidentals->GetType() : lm_eNoAccidentals ) );
-    m_pAccidentals = (lmAccidental*)NULL;
-
-    //invalidate other pointers
-    m_pNoteheadShape = (lmShapeGlyph*)NULL;
-    m_pStemShape = (lmShapeStem*)NULL;
-
-    lmNoteRest::Freeze(pUndoData);
-}
-
-void lmNote::UnFreeze(lmUndoData* pUndoData)
-{
-    //restore pointers
-
-    //restore chord
-    bool fInChord = pUndoData->GetParam<bool>();
-    if (fInChord)
-    {
-		int nIndex = pUndoData->GetParam<int>();
-		int nNumNotes = pUndoData->GetParam<int>();
-		lmNote* pFirstNote = pUndoData->GetParam<lmNote*>();
-		if (nNumNotes == 1)
-		{
-			//build chord
-			m_pChord = new lmChord(pFirstNote);
-		}
-		else
-		{
-			//use existing chord
-			m_pChord = pFirstNote->GetChord();
-		}
-		m_pChord->Include(this, nIndex);
-    }
-
-    //restore tie with previous note
-    CreateTie(pUndoData->GetParam<lmNote*>(), this);
-
-    //restore tie with next note
-    CreateTie(this, pUndoData->GetParam<lmNote*>() );
-
-    //restore accidentals
-    m_pAccidentals = CreateAccidentals( pUndoData->GetParam<lmEAccidentals>() );
-
-    lmNoteRest::UnFreeze(pUndoData);
 }
 
 //devuelve true si esta nota puede estar ligada con otra cuyos valores se reciben como argumentos

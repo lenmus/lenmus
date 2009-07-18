@@ -224,12 +224,6 @@
 				RelativePath="..\..\src\score\defs.h">
 			</File>
 			<File
-				RelativePath="..\..\src\score\EditCmd.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\EditCmd.h">
-			</File>
-			<File
 				RelativePath="..\..\src\score\Glyph.cpp">
 			</File>
 			<File
@@ -351,12 +345,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\TupletBracket.h">
-			</File>
-			<File
-				RelativePath="..\..\src\score\UndoRedo.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\UndoRedo.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\VStaff.cpp">

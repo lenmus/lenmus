@@ -1745,11 +1745,6 @@ void lmScoreView::UpdateCaret()
     GetController()->SynchronizeToolBox();
 }
 
-lmVStaffCursor* lmScoreView::GetVCursor()
-{
-    return m_pScoreCursor->GetVCursor();
-}
-
 void lmScoreView::DrawSelectionArea(wxDC& dc, lmPixels x1, lmPixels y1, lmPixels x2, lmPixels y2)
 {
 	//draw a dotted rectangle to show the selected area

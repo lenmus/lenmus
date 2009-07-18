@@ -49,9 +49,9 @@ extern lmFPitch FPitch(int nStep, int nOctave, int nAcc);
 //constructors and destructor
 //
 
-lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible,
-			   wxColour colorC)
-    : lmStaffObj(pStaff, eSFOT_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
+lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, long nID, int nNumStaff,
+               bool fVisible, wxColour colorC)
+    : lmStaffObj(pStaff, nID, eSFOT_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
     , m_nClefType(nClefType)
     , m_fHidden(false)
     , m_pContext((lmContext*)NULL)
@@ -242,15 +242,18 @@ wxString lmClef::Dump()
     return sDump;
 }
 
-wxString lmClef::SourceLDP(int nIndent)
+wxString lmClef::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(clef ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(clef#%d "), GetID() );
+    else
+        sSource += _T("(clef ");
     sSource += GetClefLDPNameFromType(m_nClefType);
 
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent);
+	sSource += lmStaffObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");

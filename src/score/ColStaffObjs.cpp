@@ -42,7 +42,6 @@
 #include "VStaff.h"
 #include "Context.h"
 #include "ColStaffObjs.h"
-#include "UndoRedo.h"
 #include "StaffObjIterator.h"
 #include "../app/ScoreView.h"
 #include "../app/ScoreDoc.h"
@@ -205,18 +204,6 @@ bool IsEmptyState(lmCursorState& t)
     return (t.nInstr == 0);
 }
 
-//global variable used as default initializator
-lmNCursorState g_tNoNCursorState = { -1, 0.0f, -1, 0 };
-
-//global function to compare with g_tNoNCursorState
-bool IsEmptyState(lmNCursorState& t)
-{
-    return (t.nStaff == g_tNoNCursorState.nStaff
-            && t.nSegment == g_tNoNCursorState.nSegment
-            && t.nPosition == g_tNoNCursorState.nPosition
-            && t.rTimepos == g_tNoNCursorState.rTimepos );
-}
-
 
 
 lmScoreCursor::lmScoreCursor(lmScore* pOwnerScore)
@@ -254,10 +241,9 @@ void lmScoreCursor::PointCursorToInstrument(int nInstr)
     m_VCursor.ResetCursor();
 }
 
-lmStaffObj* lmScoreCursor::GetReferredObject(int nInstr, int nStaff, lmIRef nIRef)
+lmStaffObj* lmScoreCursor::GetReferredObject(lmIRef& nIRef)
 {
-    return m_pScore->m_cInstruments[nInstr-1]->GetVStaff()->GetVCursor()
-                   ->GetReferredObject(nStaff, nIRef);
+    return m_VCursor.GetReferredObject(nIRef);
 }
 
 void lmScoreCursor::MoveRight(bool fAlsoChordNotes)
@@ -498,16 +484,10 @@ lmVStaff* lmScoreCursor::GetVStaff()
         return (lmVStaff*)NULL;
 }
 
-void lmScoreCursor::SetNewCursorState(lmCursorState* pState)
-{
-    m_VCursor.SetNewCursorState(this, pState);
-}
-
 void lmScoreCursor::SetState(lmCursorState* pState)
 {
     PointCursorToInstrument(pState->nInstr);
-    lmCursorState tState = { pState->nInstr, pState->nStaff, pState->rTimepos, pState->pSO };
-    m_VCursor.SetNewCursorState(this, &tState, true);     //true = update timepos
+    m_VCursor.SetCursorState(this, pState);     
 }
 
 
@@ -568,7 +548,7 @@ void lmVStaffCursor::AttachToCollection(lmColStaffObjs* pColStaffObjs, bool fRes
 	    ResetCursor();
 }
 
-void lmVStaffCursor::SetNewCursorState(lmScoreCursor* pSCursor,
+void lmVStaffCursor::SetCursorState(lmScoreCursor* pSCursor,
                                        lmCursorState* pState,
                                        bool fUpdateTimepos)
 {
@@ -601,89 +581,16 @@ void lmVStaffCursor::SetNewCursorState(lmScoreCursor* pSCursor,
     m_pScoreCursor = pSCursor;
 }
 
-void lmVStaffCursor::SetNewCursorState(lmScoreCursor* pSCursor,
-                                       lmNCursorState* pState,
-                                       bool fUpdateTimepos)
-{
-    //restore cursor information from save state info.
-    //Preconditions:
-    //  - cursor must be already attached to the collection of staffobjs
-
-    wxASSERT(m_pColStaffObjs);
-
-    m_pScoreCursor = (lmScoreCursor*)NULL;   //supress visual feedback
-    m_nStaff = pState->nStaff;
-    m_rTimepos = pState->rTimepos;
-
-    //get segment and locate StaffObj
-    m_nSegment = pState->nSegment;
-    m_nPosition = pState->nPosition;
-    lmStaffObj* pSO = (lmStaffObj*)NULL;
-
-    if (m_nSegment == -1)
-    {
-        m_nPosition = 0;
-        m_pIt->MoveTo((lmStaffObj*)NULL);
-    }
-    else
-    {
-        //locate the staffObj
-        lmSegment* pSegment = m_pColStaffObjs->GetSegment(m_nSegment);
-        pSO = pSegment->GetStaffObj(m_nPosition);
-        wxASSERT(pSO);
-
-        //update iterator
-        m_pIt->MoveTo(pSO);
-    }
-
-    //update timepos, if requested
-    if (fUpdateTimepos)
-    {
-        if (pSO)
-            m_rTimepos = pSO->GetTimePos();
-        else
-        {
-            //Not pointing to an staffobj. Cursor is at end of collection
-            int nSegment = m_pIt->GetNumSegment();
-            m_rTimepos = m_pColStaffObjs->GetSegment(nSegment)->GetDuration();
-        }
-    }
-
-    //restore ScoreCursor
-    m_pScoreCursor = pSCursor;
-}
-
 lmCursorState lmVStaffCursor::GetState()
 {
     lmCursorState tState = { m_nInstr, m_nStaff, m_rTimepos, m_pIt->GetCurrent() };
     return tState;
 }
 
-lmNCursorState lmVStaffCursor::NewGetState()
+lmStaffObj* lmVStaffCursor::GetReferredObject(lmIRef& nIRef)
 {
-    lmStaffObj* pSO = m_pIt->GetCurrent();
-    int nSegment = -1;      //default: no StaffObj
-    int nPosition = 0;
-    if (pSO)
-    {
-        nSegment = pSO->GetSegment()->GetNumSegment();
-        nPosition = pSO->GetSegment()->FindPosition(pSO);
-        wxASSERT(nPosition >= 0);
-    }
-    lmNCursorState tState = { m_nStaff, m_rTimepos, nSegment, nPosition };
-    return tState;
-}
-
-int lmVStaffCursor::GetSegPosition()
-{
-    lmNCursorState tState = NewGetState();
-    return m_nPosition;
-}
-
-lmStaffObj* lmVStaffCursor::GetReferredObject(int nStaff, lmIRef nIRef)
-{
-    int nSegment = GetSegNum(nIRef);
-    int nPosition = GetPosNum(nIRef);
+    int nSegment = nIRef.GetSegNum();
+    int nPosition = nIRef.GetPosNum();
     return m_pColStaffObjs->GetSegment(nSegment)->GetStaffObj(nPosition);
 }
 
@@ -1518,6 +1425,11 @@ lmSegment::lmSegment(lmColStaffObjs* pOwner, int nSegment)
 
 lmSegment::~lmSegment()
 {
+}
+
+int lmSegment::GetNumInstr() 
+{ 
+    return m_pOwner->GetOwnerVStaff()->GetNumInstr();
 }
 
 lmSegment* lmSegment::GetNextSegment()
@@ -2978,6 +2890,9 @@ void lmColStaffObjs::Insert(lmStaffObj* pNewSO, lmStaffObj* pBeforeSO)
 
 void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKeepPitch)
 {
+    //This is the only method for including objects in the collection. All other methods (Add,
+    //AddToCollection, Insert, etc.) end up invoking this method.
+
 	//add pNewSO into the segment's collection.
 	int nSegment = GetCursorSegment();
 	m_Segments[nSegment]->Store(pNewSO, GetCursor());
@@ -3056,7 +2971,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fClefKeepPosition, bool fKeyKe
     MoveCursorToObject(pSO);
     MoveCursorRight(true);      //true: stop in all chord notes
     lmStaffObj* pCursorSO = GetCursorStaffObj();
-    lmNCursorState tVCState = GetCursor()->NewGetState();
+    lmCursorState tVCState = GetCursor()->GetState();
 
     //get segment and remove object
     lmSegment* pSegment = pSO->GetSegment();
@@ -3087,7 +3002,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fClefKeepPosition, bool fKeyKe
     //other VCursor variables (rTimePos, in particular) are no longer valid and should be
     //updated.
     pSegment->UpdateDuration();     //ensure it is updated
-    GetCursor()->SetNewCursorState(GetCursor()->GetScoreCursor(), &tVCState, true);  //true->update timepos
+    GetCursor()->SetCursorState(GetCursor()->GetScoreCursor(), &tVCState, true);  //true->update timepos with pSO timepos
 
     //finally, invoke destructor for removed staffobj
     delete pSO;
@@ -3125,45 +3040,6 @@ void lmColStaffObjs::AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO)
 		m_pLastSO = pNewSO;
 }
 
-void lmColStaffObjs::LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj* pSO)
-{
-    //log info to locate insertion point when undoing delete command
-
-    //get segment
-    lmSegment* pSegment = pSO->GetSegment();
-
-    //advance to next object
-    if (pSO->GetNextSO())
-    {
-        //not at end of segment. done
-        pUndoData->AddParam<lmStaffObj*>(pSO);
-        return;
-    }
-
-    //we are at end of segment. If we are deleting the barline advance to next segment
-    if (pSO->IsBarline())
-    {
-        //advance to first object of next segment
-        pSegment = pSegment->GetNextSegment();
-        if (pSegment)
-            pSO = pSegment->GetFirstSO();
-
-        if (pSegment && pSO)
-        {
-            //deleting a barline and there is an object in next segment. done
-            pUndoData->AddParam<lmStaffObj*>(pSO);
-        }
-        else
-        {
-            //deleting a barline a no next segment or it is empty. End of score
-            pUndoData->AddParam<lmStaffObj*>((lmStaffObj*)NULL);
-        }
-        return;     //done
-    }
-
-    //we are at end of segment. No barline and no next segment. End of score
-    pUndoData->AddParam<lmStaffObj*>((lmStaffObj*)NULL);
-}
 
 
 //=================================================================================

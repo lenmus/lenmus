@@ -195,18 +195,18 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         lmEChordType nE1ChordTypes[7] =
          // TODO: MAKE A GENERIC METHOD to get chord type from: root note + key sig
         // example: key-sig: DoM
-        //      I             II              III              IV             V             VI             VII        
+        //      I             II              III              IV             V             VI             VII
         {ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
         // For exercise 2, given a numeral (bass note; chord in root poition) : calculate soprano pitch. No inversions
         lmFPitch nBassSopranoInterval[2][7] =  {
-        //      I             II              III              IV             V             VI             VII        
+        //      I             II              III              IV             V             VI             VII
         //{ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
           {   lm_M3,        lm_m3,          lm_p5,          lm_M3,          lm_M3,         lm_m3,         lm_m3},
           {   lm_p5,         lm_p5,         lm_p5,          lm_p5,          lm_p5,         lm_p5,         lm_d5} };
         // TODO: this info could be get from ChordManager.cpp tData, with a global method:
         //  { ... { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
         //  { ... { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
-        //  { ... { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad 
+        //  { ... { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
         //  global method to get interval between voices of a given chord type (specify also nversions)
 
 
@@ -254,10 +254,10 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 //   Exercise 2: get soprano form bass note and store it for later check
                 if (nHarmonyExcerciseType == 2 )
                 {
-                    nExercise2NotesFPitch[nNoteCount] = 
+                    nExercise2NotesFPitch[nNoteCount] =
                         nExerciseBassNotesFPitch[nNoteCount]
                         + nBassSopranoInterval[1][nBassNoteStep]
-                        + lm_p8; // 
+                        + lm_p8; //
                 }
 
                 //   Display note
@@ -281,7 +281,8 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 
                 //    Display the numeral
-                lmTextItem* pNumeralText = new lmTextItem(sNumeralsDegrees[nBassNoteStep], lmHALIGN_DEFAULT, pNumeralStyle);
+                lmTextItem* pNumeralText = new lmTextItem(pNote, 0L, sNumeralsDegrees[nBassNoteStep],
+                                                          lmHALIGN_DEFAULT, pNumeralStyle);
                 pNote->AttachAuxObj(pNumeralText);
                 pNumeralText->SetUserLocation(0.0f, 230.0f );
 
@@ -290,7 +291,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d  pattern:%s")
                       , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).c_str()
-                      , nExerciseBassNotesFPitch[nNoteCount], sPattern);
+                      , nExerciseBassNotesFPitch[nNoteCount], sPattern.c_str());
                 }
                 else if (nHarmonyExcerciseType == 2 )  // soprano
                 {
@@ -298,14 +299,14 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%d %s pattern:%s")
                       , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).c_str()
-                      , nExerciseBassNotesFPitch[nNoteCount] 
+                      , nExerciseBassNotesFPitch[nNoteCount]
                       , nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]).c_str()
                       , nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]).c_str()
                       , nExercise2NotesFPitch[nNoteCount]
                       , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).c_str()
-                      , sPattern);
+                      , sPattern.c_str());
 
                 }
 
@@ -313,7 +314,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
             }
         }
-        nHarmonyExercise1ChordsToCheck = nNoteCount; 
+        nHarmonyExercise1ChordsToCheck = nNoteCount;
     }
 
 
@@ -339,7 +340,7 @@ void lmTheoHarmonyCtrol::OnSettingsChanged()
     //the exercise setting dialog. You receives control just in case
     //you would like to do something (i.e. reconfigure exercise displayed
     //buttons to take into account the new exercise options chosen by the user).
-    
+
     //In this exercise there is no needed to do anything
 }
 
@@ -350,6 +351,6 @@ void lmTheoHarmonyCtrol::InitializeStrings()
     //they are translated to the language chosen by user. Take into account
     //that those strings requiring translation can not be statically initialized,
     //as at compilation time we know nothing about desired language.
-    
+
     //In this exercise there is no needed to translate anything
 }

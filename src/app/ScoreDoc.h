@@ -42,7 +42,7 @@ class lmEditorMode;
 //options to control renderization
 enum
 {
-    lmDO_ONLY_REDRAW                = 0x0001,   //just re-draw the affected pages
+    lmDO_ONLY_REDRAW                = 0x0001,   //No relayout. Just re-draw the shapes
     lmFORCE_RELAYOUT                = 0x0002,   //force an score re-layout
     lmNO_BITMAPS                    = 0x0004,   //do not re-use offscreen bitmaps
     lmNO_RELAYOUT_ON_PAPER_RESIZE   = 0x0008,   //do not re-layout if paper re-size

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -162,12 +162,11 @@ public:
     void MoveCaretTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
 
     //Score cursor information
-    lmVStaffCursor* GetVCursor();
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
-    inline int GetCursorMeasure() { return GetVCursor()->GetSegment() + 1; }
+    inline int GetCursorMeasure() { return m_pScoreCursor->GetSegment() + 1; }
     inline lmStaff* GetCursorStaff() { return m_pScoreCursor->GetCursorStaff(); }
 	    //get object pointed by the cursor
-    inline lmStaffObj* GetCursorStaffObj() { return GetVCursor()->GetStaffObj(); }
+    inline lmStaffObj* GetCursorStaffObj() { return m_pScoreCursor->GetCursorSO(); }
 
 
 	void LogicalToDevice(lmUPoint& posLogical, int nPage, lmDPoint& posDevice);

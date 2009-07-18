@@ -37,18 +37,21 @@ public:
     //constructors and destructor
 
         //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-    lmTimeSignature(lmETimeSignatureType nType, lmVStaff* pVStaff, bool fVisible = true);
+    lmTimeSignature(lmETimeSignatureType nType, lmVStaff* pVStaff, long nID,
+                    bool fVisible = true);
         //constructor for type eTS_SingleNumber
-    lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, bool fVisible = true);
+    lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, long nID, bool fVisible = true);
         //constructors for type eTS_Normal
-    lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, bool fVisible = true);
-    lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible = true);
+    lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, long nID,
+                    bool fVisible = true);
+    lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, long nID,
+                    bool fVisible = true);
         //constructor for type eTS_Composite
     lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType, lmVStaff* pVStaff,
-                  bool fVisible = true);
+                    long nID, bool fVisible = true);
         //constructor for type eTS_Multiple
     lmTimeSignature(int nNumFractions, int nBeats[], int nBeatType[], lmVStaff* pVStaff,
-                  bool fVisible = true);
+                    long nID, bool fVisible = true);
 
     ~lmTimeSignature() {}
 
@@ -59,7 +62,7 @@ public:
 
     //    debugging
     wxString Dump();
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     //sound related methods

@@ -40,15 +40,16 @@ class lmPaper;
 class lmScoreLine : public lmAuxObj
 {
 public:
-    lmScoreLine(lmTenths xStart, lmTenths yStart, lmTenths xEnd, lmTenths yEnd, lmTenths nWidth,
-                lmELineCap nStartCap, lmELineCap nEndCap, lmELineStyle nStyle, wxColour nColor);
+    lmScoreLine(lmScoreObj* pOwner, long nID, lmTenths xStart, lmTenths yStart,
+                lmTenths xEnd, lmTenths yEnd, lmTenths nWidth, lmELineCap nStartCap,
+                lmELineCap nEndCap, lmELineStyle nStyle, wxColour nColor);
     ~lmScoreLine() {}
 
     //implementation of virtual methods from base class
     inline lmEAuxObjType GetAuxObjType() { return eAXOT_Line; }
 
     // source code related methods
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     // debug methods
@@ -65,7 +66,7 @@ public:
 
 private:
     lmTenths        m_txStart;
-    lmTenths        m_tyStart; 
+    lmTenths        m_tyStart;
     lmTenths        m_txEnd;
     lmTenths        m_tyEnd;
     lmTenths        m_tWidth;
@@ -88,7 +89,7 @@ class lmVStaff;
 class lmFermata : public lmAuxObj
 {
 public:
-    lmFermata(lmEPlacement nPlacement);
+    lmFermata(lmScoreObj* pOwner, long nID, lmEPlacement nPlacement);
     ~lmFermata() {}
 
     // overrides for pure virtual methods of base class
@@ -97,7 +98,7 @@ public:
     inline lmEAuxObjType GetAuxObjType() { return eAXOT_Fermata; }
 
     // source code related methods
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     // debug methods
@@ -127,7 +128,8 @@ enum ESyllabicTypes {
 class lmLyric : public lmAuxObj, public lmBasicText
 {
 public:
-    lmLyric(wxString& sText, lmTextStyle* pStyle, ESyllabicTypes nSyllabic = eSyllabicSingle,
+    lmLyric(lmScoreObj* pOwner, wxString& sText, lmTextStyle* pStyle,
+            ESyllabicTypes nSyllabic = eSyllabicSingle,
             int nNumLine=1, wxString sLanguage=_T("it") );
     ~lmLyric() {}
 
@@ -137,14 +139,14 @@ public:
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
     inline lmEAuxObjType GetAuxObjType() { return eAXOT_Lyric; }
 
-    // overrides for virtual methods of base class lmNoteRestObj
-    void SetOwner(lmNoteRest* pOwner);
+    //// overrides for virtual methods of base class lmNoteRestObj
+    //void SetOwner(lmNoteRest* pOwner);
 
     // overrides for virtual methods of base class lmComponentObj
     //void SetFont(lmPaper* pPaper);
 
     // source code related methods
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     // debug methods

@@ -45,7 +45,6 @@
 class lmBox;
 class lmPaper;
 class lmGMObject;
-class lmUndoItem;
 class lmShapeText;
 class lmShapeTitle;
 class lmBox;
@@ -121,7 +120,7 @@ public:
     wxFont* GetSuitableFont(lmPaper* pPaper);
 
     // source code related methods
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     // debug methods
@@ -170,7 +169,8 @@ public:
     void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift);
 
 protected:
-    lmScoreBlock(lmTenths ntWidth = 160.0f, lmTenths ntHeight = 100.0f,
+    lmScoreBlock(lmScoreObj* pOwner, long nID, lmTenths ntWidth = 160.0f,
+                 lmTenths ntHeight = 100.0f,
                  lmTPoint ntPos = lmTPoint(0.0f, 0.0f),
                  lmEBlockAlign nBlockAlign = lmBLOCK_ALIGN_DEFAULT,
                  lmEHAlign nHAlign = lmHALIGN_DEFAULT,
@@ -220,14 +220,15 @@ protected:
 class lmScoreTextParagraph : public lmScoreBlock
 {
 public:
-    lmScoreTextParagraph(lmTenths ntWidth, lmTenths ntHeight, lmTPoint tPos);
+    lmScoreTextParagraph(lmScoreObj* pOwner, long nID, lmTenths ntWidth,
+                         lmTenths ntHeight, lmTPoint tPos);
     virtual ~lmScoreTextParagraph();
 
     //implementation of virtual methods from base class
     inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextParagraph; }
 
     // source code related methods
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     // debug methods
@@ -252,7 +253,7 @@ protected:
 class lmScoreTextBox : public lmScoreBlock
 {
 public:
-    lmScoreTextBox();
+    lmScoreTextBox(lmScoreObj* pOwner, long nID);
 
     virtual ~lmScoreTextBox();
 
@@ -291,17 +292,16 @@ public:
 	virtual lmShape* CreateShape(lmPaper* pPaper, lmUPoint uPos)=0;
 
     //edit commands
-    virtual void Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
-                                lmEHAlign nHAlign, lmLocation tPos, lmTextStyle* pTS);
-    virtual void UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
-                                    lmEHAlign nHAlign, lmLocation tPos, lmTextStyle* pTS);
+    virtual void Cmd_ChangeText(wxString& sText, lmEHAlign nHAlign, lmLocation tPos,
+                                lmTextStyle* pTS);
 
     //edition
 	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
 
 
 protected:
-    lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle);
+    lmScoreText(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEHAlign nHAlign,
+                lmTextStyle* pStyle);
 
     lmEBlockAlign   m_nBlockAlign;
     lmEHAlign       m_nHAlign;
@@ -316,7 +316,8 @@ class lmTextItem : public lmScoreText
 {
 public:
     //simple text constructor
-    lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle);
+    lmTextItem(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEHAlign nHAlign,
+               lmTextStyle* pStyle);
 
     virtual ~lmTextItem() {}
 
@@ -326,7 +327,7 @@ public:
     //implementation of virtual methods from base class
     inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextItem; }
     wxString Dump();
-    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
 
     //layout
@@ -341,11 +342,11 @@ private:
 class lmInstrNameAbbrev : public lmTextItem
 {
 public:
-    lmInstrNameAbbrev(wxString& sTitle, lmTextStyle* pStyle)
-                            : lmTextItem(sTitle, lmHALIGN_LEFT, pStyle) {};
+    lmInstrNameAbbrev(lmScoreObj* pOwner, wxString& sTitle, lmTextStyle* pStyle)
+                            : lmTextItem(pOwner, 0L, sTitle, lmHALIGN_LEFT, pStyle) {};
 
     //specific methods
-    wxString SourceLDP(wxString sTag);
+    wxString SourceLDP(wxString sTag, bool fUndoData);
 };
 
 //------------------------------------------------------------------------------------
@@ -353,8 +354,8 @@ public:
 class lmScoreTitle : public lmScoreText
 {
 public:
-    lmScoreTitle(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
-                lmEVAlign nVAlign, lmTextStyle* pStyle);
+    lmScoreTitle(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEBlockAlign nBlockAlign,
+                 lmEHAlign nHAlign, lmEVAlign nVAlign, lmTextStyle* pStyle);
 
     ~lmScoreTitle() {}
 
@@ -364,7 +365,7 @@ public:
     //implementation of virtual methods from base class
     inline lmEAuxObjType GetAuxObjType() { return eAXOT_ScoreTitle; }
     wxString Dump();
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     //layout

@@ -80,7 +80,7 @@
 		<Cursor position="1673" topLine="18" />
 	</File>
 	<File name="../../src/app/Processor.cpp" open="1" top="1" tabpos="19">
-		<Cursor position="18526" topLine="552" />
+		<Cursor position="18414" topLine="550" />
 	</File>
 	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="1">
 		<Cursor position="34595" topLine="932" />
@@ -229,8 +229,8 @@
 	<File name="../../src/exercises/ScoreCtrol.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="5355" topLine="117" />
 	</File>
-	<File name="../../src/exercises/TheoHarmonyCtrol.cpp" open="0" top="0" tabpos="28">
-		<Cursor position="7169" topLine="192" />
+	<File name="../../src/exercises/TheoHarmonyCtrol.cpp" open="1" top="0" tabpos="21">
+		<Cursor position="13617" topLine="295" />
 	</File>
 	<File name="../../src/exercises/TheoHarmonyCtrol.h" open="0" top="0" tabpos="34">
 		<Cursor position="0" topLine="27" />
@@ -409,8 +409,8 @@
 	<File name="../../src/ldp_parser/LDPNode.h" open="0" top="0" tabpos="86">
 		<Cursor position="2110" topLine="32" />
 	</File>
-	<File name="../../src/ldp_parser/LDPParser.cpp" open="0" top="0" tabpos="25">
-		<Cursor position="134786" topLine="3872" />
+	<File name="../../src/ldp_parser/LDPParser.cpp" open="1" top="0" tabpos="23">
+		<Cursor position="126857" topLine="3640" />
 	</File>
 	<File name="../../src/ldp_parser/LDPParser.h" open="0" top="0" tabpos="26">
 		<Cursor position="7246" topLine="134" />
@@ -478,8 +478,11 @@
 	<File name="../../src/options/ToolbarsOptPanel.h" open="0" top="0" tabpos="38">
 		<Cursor position="1309" topLine="12" />
 	</File>
-	<File name="../../src/score/AuxObj.cpp" open="0" top="0" tabpos="9">
-		<Cursor position="15969" topLine="474" />
+	<File name="../../src/score/AuxObj.cpp" open="1" top="0" tabpos="25">
+		<Cursor position="19780" topLine="600" />
+	</File>
+	<File name="../../src/score/AuxObj.h" open="1" top="0" tabpos="24">
+		<Cursor position="1610" topLine="34" />
 	</File>
 	<File name="../../src/score/Barline.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="3734" topLine="120" />
@@ -533,7 +536,7 @@
 		<Cursor position="37735" topLine="1000" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="1" top="0" tabpos="10">
-		<Cursor position="6496" topLine="568" />
+		<Cursor position="6496" topLine="489" />
 	</File>
 	<File name="../../src/score/NotesRelationship.h" open="0" top="0" tabpos="17">
 		<Cursor position="7533" topLine="27" />
@@ -553,8 +556,8 @@
 	<File name="../../src/score/Score.cpp" open="0" top="0" tabpos="21">
 		<Cursor position="29801" topLine="992" />
 	</File>
-	<File name="../../src/score/Score.h" open="0" top="0" tabpos="25">
-		<Cursor position="8088" topLine="420" />
+	<File name="../../src/score/Score.h" open="1" top="0" tabpos="20">
+		<Cursor position="12174" topLine="354" />
 	</File>
 	<File name="../../src/score/Slur.cpp" open="0" top="0" tabpos="24">
 		<Cursor position="2805" topLine="74" />
@@ -588,9 +591,6 @@
 	</File>
 	<File name="../../src/score/TupletBracket.h" open="0" top="0" tabpos="93">
 		<Cursor position="2031" topLine="33" />
-	</File>
-	<File name="../../src/score/UndoRedo.h" open="0" top="0" tabpos="82">
-		<Cursor position="3241" topLine="94" />
 	</File>
 	<File name="../../src/score/VStaff.cpp" open="0" top="0" tabpos="6">
 		<Cursor position="60390" topLine="1692" />

@@ -48,7 +48,7 @@ public:
 
     //    debugging
     wxString Dump();
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
 

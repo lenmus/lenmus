@@ -443,7 +443,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     // Ask score window to get ready for visual highlight
     bool fVisualHighlight = fVisualTracking && pWindow;
     if (fVisualHighlight && pWindow) {
-        lmScoreHighlightEvent event(m_pScore->GetID(), (lmStaffObj*)NULL, ePrepareForHighlight);
+        lmScoreHighlightEvent event(m_pScore->GetScoreID(), (lmStaffObj*)NULL, ePrepareForHighlight);
         ::wxPostEvent( pWindow, event );
     }
 
@@ -631,7 +631,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 }
 
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOn);
+                    lmScoreHighlightEvent event(m_pScore->GetScoreID(), m_aEvents[i]->pSO, eVisualOn);
                     ::wxPostEvent( pWindow, event );
                 }
 
@@ -655,7 +655,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 }
 
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOff);
+                    lmScoreHighlightEvent event(m_pScore->GetScoreID(), m_aEvents[i]->pSO, eVisualOff);
                     ::wxPostEvent( pWindow, event );
                 }
             }
@@ -668,7 +668,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             {
                 //set visual highlight
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOn);
+                    lmScoreHighlightEvent event(m_pScore->GetScoreID(), m_aEvents[i]->pSO, eVisualOn);
                     ::wxPostEvent( pWindow, event );
                 }
             }
@@ -676,7 +676,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             {
                 //remove visual highlight
                 if (fVisualHighlight && pWindow) {
-                    lmScoreHighlightEvent event(m_pScore->GetID(), m_aEvents[i]->pSO, eVisualOff);
+                    lmScoreHighlightEvent event(m_pScore->GetScoreID(), m_aEvents[i]->pSO, eVisualOff);
                     ::wxPostEvent( pWindow, event );
                 }
             }
@@ -736,7 +736,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     //ensure that all visual highlight is removed in case the loop was exited because
     //stop playing was requested
     if (fVisualHighlight && pWindow) {
-        lmScoreHighlightEvent event(m_pScore->GetID(), (lmStaffObj*)NULL, eRemoveAllHighlight);
+        lmScoreHighlightEvent event(m_pScore->GetScoreID(), (lmStaffObj*)NULL, eRemoveAllHighlight);
         ::wxPostEvent( pWindow, event );
     }
 

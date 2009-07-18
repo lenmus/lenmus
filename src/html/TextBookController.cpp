@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This file is a modified copy of file helpctrl.cpp from wxWidgets 2.6.2 project.
 //    wxWidgets licence is compatible with GNU GPL.

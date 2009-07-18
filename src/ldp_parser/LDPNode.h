@@ -48,6 +48,7 @@ public:
 
     inline wxString GetName() const { return m_sName; }
     inline long GetNumLine() { return m_nNumLine; }
+    inline long GetID() { return m_nID; }
     int GetNumParms();
 
     //random access
@@ -64,6 +65,7 @@ public:
 
 private:
     wxString        m_sName;            //node name
+    long            m_nID;              //element ID
     long            m_nNumLine;         //LDP source file: line number
     bool            m_fIsSimple;        //the node is simple (just a string)
     bool            m_fProcessed;       //the node has been processed

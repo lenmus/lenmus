@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -45,11 +45,19 @@
 
 
 lmLDPNode::lmLDPNode(wxString sData, long nNumLine)
+    : m_nID(0L)
+    , m_nNumLine(nNumLine)
+    , m_fIsSimple(true)
+    , m_fProcessed(false)
 {
-    m_sName = sData;
-    m_nNumLine = nNumLine;
-    m_fIsSimple = true;
-    m_fProcessed = false;
+    int i = sData.Find(_T('#'));
+    if (i > 0)
+    {
+        m_sName = sData.Mid(0, i);
+        sData.Mid(i+1).ToLong(&m_nID);
+    }
+    else
+        m_sName = sData;
 }
 
 lmLDPNode::~lmLDPNode()

@@ -64,7 +64,7 @@ lmTPoint& lmBezier::GetPoint(int nPointID)
     return m_tPoints[nPointID];
 }
 
-wxString lmBezier::SourceLDP(int nIndent)
+wxString lmBezier::SourceLDP(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
 
@@ -105,8 +105,8 @@ wxString lmBezier::SourceXML(int nIndent)
 // lmTie implementation
 //===================================================================================
 
-lmTie::lmTie(lmNote* pStartNote, lmNote* pEndNote)
-    : lmBinaryRelObj(eAXOT_Tie, pStartNote, pEndNote, lmDRAGGABLE)
+lmTie::lmTie(lmScoreObj* pOwner, lmNote* pStartNote, lmNote* pEndNote)
+    : lmBinaryRelObj(pOwner, eAXOT_Tie, pStartNote, pEndNote, lmDRAGGABLE)
 {
     DefineAsMultiShaped();      //define a tie as a multi-shaped ScoreObj
 }
@@ -238,23 +238,23 @@ lmUPoint lmTie::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
     return uOrg;
 }
 
-wxString lmTie::SourceLDP_First(int nIndent)
+wxString lmTie::SourceLDP_First(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
 
     //wxString sSource = _T(" l");
     wxString sSource = wxString::Format(_T(" (tie %d start"), GetID());
-    sSource += m_Bezier[0].SourceLDP(nIndent);
+    sSource += m_Bezier[0].SourceLDP(nIndent, fUndoData);
     sSource += _T(")");
     return sSource;
 }
 
-wxString lmTie::SourceLDP_Last(int nIndent)
+wxString lmTie::SourceLDP_Last(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
 
     wxString sSource = wxString::Format(_T(" (tie %d stop"), GetID());
-    sSource += m_Bezier[1].SourceLDP(nIndent);
+    sSource += m_Bezier[1].SourceLDP(nIndent, fUndoData);
     sSource += _T(")");
     return sSource;
 }

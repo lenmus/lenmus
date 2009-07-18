@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -649,7 +649,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
     // the creation of all objects has been delayed to solve the ordering problem.
     // Now, proceed with its creation in the right order
     if (fKeySignature)  pVStaff->AddKeySignature((int)nFifths, fMajor);
-    if (fTimeSignature)  pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType);
+    if (fTimeSignature)  pVStaff->AddTimeSignature(0L, (int)nBeats, (int)nBeatType);
 
     return true;
 
@@ -1421,7 +1421,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             // create de lmLyric object
             lmTextStyle* pStyle = pVStaff->GetScore()->GetStyleInfo(_("Lyrics"));
             wxASSERT(pStyle);
-            lmLyric* pLyric = new lmLyric(sText, pStyle, nSyllabic, (int)nNumber);
+            lmLyric* pLyric = new lmLyric((lmScoreObj*)NULL, sText, pStyle, nSyllabic, (int)nNumber);
 
             //Add the lmLyric to the list of lyrics
             fLyrics = true;
@@ -1516,7 +1516,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     float rDuration = ((float)nDuration / (float)m_nCurrentDivisions) * XML_DURATION_TO_LDP;
     if (fIsRest)
 	{
-        pNR = pVStaff->AddRest(nNoteType, rDuration, nDots,
+        pNR = pVStaff->AddRest(0L, nNoteType, rDuration, nDots,
                         nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
 		m_pLastNoteRest = pNR;
     }
@@ -1530,7 +1530,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         sAlter.ToLong(&nAux);
         int nAlter = (int)nAux;
 
-        lmNote* pNt = pVStaff->AddNote(lm_ePitchAbsolute,
+        lmNote* pNt = pVStaff->AddNote(0L, lm_ePitchAbsolute,
 									   nStep, nOctave, nAlter, nAccidentals,
 									   nNoteType, rDuration, nDots,
 									   nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo,
@@ -1542,7 +1542,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     }
 
     // Add notations
-    if (fFermata) pNR->AddFermata(nPlacement);
+    if (fFermata) pNR->AddFermata(nPlacement, 0L);
 
     if (m_pTuplet) {
         m_pTuplet->Include(pNR);
@@ -1557,8 +1557,10 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         wxASSERT(cLyrics.GetCount() > 0);
         lmLyric* pLyric = (lmLyric*)NULL;
         wxAuxObjsListNode* pNode = cLyrics.GetFirst();
-        for(; pNode; pNode = pNode->GetNext() ) {
+        for(; pNode; pNode = pNode->GetNext() )
+        {
             pLyric = (lmLyric*)pNode->GetData();
+            pLyric->SetOwner(pNR);
             pNR->AddLyric(pLyric);
         }
     }

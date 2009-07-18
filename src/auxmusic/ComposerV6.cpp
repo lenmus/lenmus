@@ -245,7 +245,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     parserLDP.AnalizeMusicData(pNode, pVStaff);
 
 #else
-    pVStaff->AddTimeSignature( m_nTimeSign );
+    pVStaff->AddTimeSignature(0L, m_nTimeSign);
 
     //
     // Content generation

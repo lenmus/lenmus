@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,8 +39,8 @@ class lmClef: public lmStaffObj
 {
 public:
     //constructor and destructor
-    lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff=1, bool fVisible=true,
-		   wxColour colorC = *wxBLACK);
+    lmClef(lmEClefType nClefType, lmVStaff* pStaff, long nID, int nNumStaff=1, 
+           bool fVisible=true, wxColour colorC = *wxBLACK);
     ~lmClef();
 
 	wxString GetName() const { return _T("clef"); }
@@ -55,7 +55,7 @@ public:
 
     //debugging
     wxString Dump();
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     //rendering related methods

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,7 +39,7 @@ public:
     //constructors and destructor
 
         //constructor for traditional key signatures
-    lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible=true);
+    lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, long nID, bool fVisible=true);
     ~lmKeySignature();
 
 	wxString GetName() const { return _T("key signature"); }
@@ -55,7 +55,7 @@ public:
     wxString Dump();
 
     //source code generation
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     //renderization

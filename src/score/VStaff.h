@@ -36,8 +36,6 @@ class lmNote;
 class lmSOControl;
 class lmTextItem;
 class lmMetronomeMark;
-class lmScoreCommand;
-class lmUndoItem;
 
 
 ////enums
@@ -61,7 +59,7 @@ class lmUndoItem;
 class lmVStaff : public lmScoreObj
 {
 public:
-    lmVStaff(lmScore* pScore, lmInstrument* pInstr);
+    lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID);
     ~lmVStaff();
 
 	//---- virtual methods of base class -------------------------
@@ -78,30 +76,31 @@ public:
 
 	//Adding StaffObs (at the end)
     lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
-    lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true);
+    lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true,
+                        long nID = 0L);
 
-    lmTimeSignature* AddTimeSignature(int nBeats, int nBeatType,
+    lmTimeSignature* AddTimeSignature(long nID, int nBeats, int nBeatType,
                         bool fVisible = true);    //for type eTS_Normal
-    lmTimeSignature* AddTimeSignature(lmETimeSignature nTimeSign,
+    lmTimeSignature* AddTimeSignature(long nID, lmETimeSignature nTimeSign,
                         bool fVisible = true);    //for type eTS_Normal
-    lmTimeSignature* AddTimeSignature(lmETimeSignatureType nType,
+    lmTimeSignature* AddTimeSignature(long nID, lmETimeSignatureType nType,
                         bool fVisible = true);    //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-    lmTimeSignature* AddTimeSignature(int nSingleNumber,
+    lmTimeSignature* AddTimeSignature(long nID, int nSingleNumber,
                         bool fVisible = true);    //for type eTS_SingleNumber
-    lmTimeSignature* AddTimeSignature(int nNumBeats, int nBeats[], int nBeatType,
+    lmTimeSignature* AddTimeSignature(long nID, int nNumBeats, int nBeats[], int nBeatType,
                         bool fVisible = true);    //for type eTS_Composite
-    lmTimeSignature* AddTimeSignature(int nNumFractions, int nBeats[], int nBeatType[],
+    lmTimeSignature* AddTimeSignature(long nID, int nNumFractions, int nBeats[], int nBeatType[],
                         bool fVisible = true);    //for type eTS_Multiple
 
-    lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true);
-    lmKeySignature* AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible = true);
+    lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true, long nID = 0L);
+    lmKeySignature* AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible = true, long nID = 0L);
 
-    lmRest*     AddRest(lmENoteType nNoteType, float rDuration, int nDots,
+    lmRest*     AddRest(long nID, lmENoteType nNoteType, float rDuration, int nDots,
                       int nStaff, int nVoice = 1,
 					  bool fVisible = true,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
-    lmNote*     AddNote(lmEPitchType nPitchType,
+    lmNote*     AddNote(long nID, lmEPitchType nPitchType,
                     int nStep, int nOctave, int nAlter,
                     lmEAccidentals nAccidentals,
                     lmENoteType nNoteType, float rDuration, int nDots,
@@ -112,16 +111,17 @@ public:
                     bool fTie = false,
                     lmEStemType nStem = lmSTEM_DEFAULT);
 
-    lmBarline*  AddBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
+    lmBarline*  AddBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true,
+                           long nID = 0L);
 
     lmMetronomeMark* AddMetronomeMark(int nTicksPerMinute,
-                            bool fParentheses = false, bool fVisible = true);
+                            bool fParentheses = false, bool fVisible = true, long nID = 0L);
     lmMetronomeMark* AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
                             lmENoteType nRightNoteType, int nRightDots,
-                            bool fParentheses = false, bool fVisible = true);
+                            bool fParentheses = false, bool fVisible = true, long nID = 0L);
     lmMetronomeMark* AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
                             int nTicksPerMinute,
-                            bool fParentheses = false, bool fVisible = true);
+                            bool fParentheses = false, bool fVisible = true, long nID = 0L);
 
     lmSOControl* AddNewSystem();
 
@@ -130,9 +130,9 @@ public:
     lmStaffObj* AddAnchorObj();
 
     lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& oFontData,
-                        bool fHasWidth);
+                        bool fHasWidth, long nID = 0L);
     lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
-                        bool fHasWidth);
+                        bool fHasWidth, long nID = 0L);
 
 	//Edition commands
 
@@ -158,37 +158,19 @@ public:
     bool CmdNew_DeleteTimeSignature(lmTimeSignature* pTS);
 
         //--- deleting AuxObjs
-    void Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
-    void Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
+    bool CmdNew_DeleteTuplet(lmNoteRest* pStartNote);
 
         //--- Modifying staffobjs/AuxObjs
-    void Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots);
-    void Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
-    void Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes);
-    void Cmd_DeleteBeam(lmUndoItem* pUndoItem, lmNoteRest* pNR);
+    void CmdNew_ChangeDots(lmNoteRest* pNR, int nDots);
+    void CmdNew_BreakBeam(lmNoteRest* pBeforeNR);
+    void CmdNew_JoinBeam(std::vector<lmNoteRest*>& notes);
+    bool CmdNew_DeleteBeam(lmNoteRest* pNR);
 
         //--- Adding other markup
-    void Cmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
-    void Cmd_AddTuplet(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes,
+    void CmdNew_AddTie(lmNote* pStartNote, lmNote* pEndNote);
+    bool CmdNew_AddTuplet(std::vector<lmNoteRest*>& notes,
                        bool fShowNumber, int nNumber, bool fBracket,
                        lmEPlacement nAbove, int nActual, int nNormal);
-
-
-    //--- Undoing edition commands
-
-        //--- deleting StaffObjs
-    void UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote);
-    void UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNote);
-
-        //--- Modifying staffobjs
-    void UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR);
-    void UndoCmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR);
-    void UndoCmd_JoinBeam(lmUndoItem* pUndoItem);
-    void UndoCmd_DeleteBeam(lmUndoItem* pUndoItem);
-
-        //--- Adding other markup
-    void UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote);
-    void UndoCmd_AddTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR);
 
 
 
@@ -222,7 +204,7 @@ public:
 
 
     //Source code methods
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     // restricted methods
@@ -266,14 +248,17 @@ public:
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
 
+    //general StaffObjs management
+    void AssignID(lmStaffObj* pSO);
+
     //miscellaneous
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
 	inline lmInstrument* GetOwnerInstrument() const { return m_pInstrument; }
     int GetNumberOfStaff(lmStaff* pStaff);       //1..n
+    inline int GetNumInstr() { return m_pInstrument->GetNumInstr(); }
 
     //cursor management and cursor related
     void AttachCursor(lmVStaffCursor* pVCursor);
-	lmVStaffCursor* GetVCursor();
     inline void ResetCursor() { GetVCursor()->ResetCursor(); }
     inline lmContext* GetContextAtCursorPoint() { return GetVCursor()->GetCurrentContext(); }
     inline int GetCursorStaffNum() { return GetVCursor()->GetNumStaff(); }
@@ -287,6 +272,9 @@ public:
 
 private:
     friend class lmColStaffObjs;
+
+    //cursor management
+	lmVStaffCursor* GetVCursor();
 
 	//settings
     void SetFontData(lmStaff* pStaff, lmPaper* pPaper);
@@ -316,25 +304,6 @@ private:
 
     //barlines
     void CheckAndDoAutoBar(lmNoteRest* pNR);
-
-    //beams
-        //structure with info about a note/rest beam status information
-    typedef struct 
-    {
-        lmNoteRest*     pNR;
-        lmTBeamInfo     tBeamInfo[6];
-        int             nBeamRef;
-    }
-    lmBeamNoteInfo;
-
-    void SaveBeamNoteInfo(lmNoteRest* pNR, std::list<lmBeamNoteInfo*>& oListNR, int nBeamIdx);
-    void LogBeamData(lmUndoData* pUndoData, std::list<lmBeamNoteInfo*>& oListNR);
-    void GetLoggedBeamData(lmUndoData* pUndoData, int* pNumNotes,
-                           std::list<lmBeamNoteInfo>& oListNR);
-
-
-
-
 
 
         // member variables

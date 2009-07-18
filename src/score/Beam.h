@@ -30,18 +30,15 @@
 class lmShapeBeam;
 class lmShapeStem;
 class lmShapeNote;
-class lmUndoData;
 
 
 class lmBeam : public lmMultipleRelationship<lmNoteRest>
 {
 public:
     lmBeam(lmNote* pNote);
-    lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData);
     ~lmBeam();
 
 	//implementation of lmMultipleRelationship virtual methods
-    inline void Save(lmUndoData* pUndoData) {}
 	inline lmERelationshipClass GetClass() { return lm_eBeamClass; }
 	void OnRelationshipModified();
 

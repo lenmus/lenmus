@@ -163,7 +163,7 @@ class lmStylesCollection
 public:
     lmStylesCollection();
     ~lmStylesCollection();
-    
+
     //info
     inline int NumObjects() { return (int)m_aTextStyles.size(); }
     inline bool IsEmpty() const { return m_aTextStyles.size()==0; }
@@ -172,7 +172,7 @@ public:
     lmTextStyle* AddStyle(const wxString& sName, lmFontInfo& tFontData, wxColour nColor);
     void RemoveStyle(lmTextStyle* pStyle);
 
-    //access 
+    //access
     lmTextStyle* GetStyleInfo(const wxString& sStyleName);
     lmTextStyle* GetStyleName(lmFontInfo& tFontData, wxColour nColor);
     void StyleInUse(bool fInUse);
@@ -180,7 +180,7 @@ public:
     lmTextStyle* GetNextStyle();
 
     //other
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
 
 
 protected:
@@ -203,8 +203,8 @@ public:
     //constructor: all data in milimeters
     lmPageInfo(int nLeftMargin = 20, int nRightMargin = 15, int nTopMargin = 20,
                int nBottomMargin = 20, int nBindingMargin = 0,
-               wxSize nPageSize = wxSize(210, 297), bool fPortrait = true );            
-    lmPageInfo(lmPageInfo* pPageInfo);            
+               wxSize nPageSize = wxSize(210, 297), bool fPortrait = true );
+    lmPageInfo(lmPageInfo* pPageInfo);
     ~lmPageInfo() {}
 
     //change settings
@@ -234,7 +234,7 @@ public:
     inline lmLUnits GetUsableHeight() { return m_uPageSize.GetHeight() - m_uTopMargin - m_uBottomMargin; }
 
 	//source code
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
 
 
 private:
@@ -246,7 +246,7 @@ private:
     lmLUnits        m_uBindingMargin;
 
     //paper size, in logical units
-    lmUSize         m_uPageSize; 
+    lmUSize         m_uPageSize;
     bool            m_fPortrait;
     bool            m_fNewSection;
 };
@@ -263,7 +263,7 @@ public:
     //constructor: all data in logical units
     lmSystemInfo(lmLUnits uLeftMargin=0.0f, lmLUnits uRightMargin=0.0f,
                  lmLUnits uSystemDistance=0.0f, lmLUnits uTopSystemDistance=0.0f);
-    lmSystemInfo(lmSystemInfo* pSysInfo);            
+    lmSystemInfo(lmSystemInfo* pSysInfo);
     ~lmSystemInfo() {}
 
     //change settings
@@ -276,13 +276,13 @@ public:
 
     inline lmLUnits LeftMargin() { return m_uLeftMargin; }
     inline lmLUnits RightMargin() { return m_uRightMargin; }
-    inline lmLUnits SystemDistance(bool fStartOfPage) 
-                { 
-                    return fStartOfPage ? m_uTopSystemDistance : m_uSystemDistance; 
+    inline lmLUnits SystemDistance(bool fStartOfPage)
+                {
+                    return fStartOfPage ? m_uTopSystemDistance : m_uSystemDistance;
                 }
 
 	//source code
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
 
 
 private:
@@ -356,10 +356,13 @@ public:
     void WaitForTermination();
     void DeleteMidiEvents();
 
-    // serving highlight events
+    // handling highlight events
     void ScoreHighlight(lmStaffObj* pSO, wxDC* pDC, lmEHighlightType nHighlightType);
 	void RemoveAllHighlight(wxWindow* pCanvas);
 
+    // owned ScoreObjs management
+    long AssignID(lmScoreObj* pSO);
+    inline void SetCounterID(long nValue) { m_nCounterID = nValue; }
 
     // Debug methods. If filename provided writes also to file
     wxString Dump() { return Dump(_T("")); }
@@ -375,22 +378,24 @@ public:
     lmInstrument* GetFirstInstrument();
     lmInstrument* GetNextInstrument();
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                wxString sName, wxString sAbbrev=_T(""),
+                                wxString sName, wxString sAbbrev=_T(""), long nID = 0L,
+                                long nVStaffID = 0L,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
                                 lmInstrNameAbbrev* pName,
-                                lmInstrNameAbbrev* pAbbrev,
+                                lmInstrNameAbbrev* pAbbrev, long nID = 0L,
+                                long nVStaffID = 0L,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     inline bool IsFirstInstrument(lmInstrument* pInstr) { return pInstr == m_cInstruments.front(); }
 
 
     // titles related methods
-    lmScoreTitle* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle);
+    lmScoreTitle* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle, long nID = 0L);
 
     // identification
     wxString GetScoreName();
     void SetScoreName(wxString sName);
-    inline long GetID() const { return m_nID; }
+    inline long GetScoreID() const { return m_nScoreID; }
     inline void SetCreationMode(wxString& sName, wxString& sVers) {
                                     m_sCreationModeName = sName;
                                     m_sCreationModeVers = sVers;
@@ -401,6 +406,7 @@ public:
     // properties
     inline bool IsReadOnly() { return m_fReadOnly; }
     inline void SetReadOnly(bool fValue) { m_fReadOnly = fValue; }
+    inline void SetUndoMode() { m_fUndoMode = true; }
 
     // methods related to MusicXML import/export
     lmInstrument* XML_FindInstrument(wxString sId);
@@ -412,11 +418,11 @@ public:
     //systems layout   iSystem: 0..n-1
     lmLUnits GetSystemLeftSpace(int iSystem);
     lmLUnits GetSystemRightSpace(int iSystem);
-    lmLUnits GetSystemDistance(int iSystem, bool fStartOfPage = false); 
+    lmLUnits GetSystemDistance(int iSystem, bool fStartOfPage = false);
     inline lmLUnits GetHeadersHeight() { return m_nHeadersHeight; }
-    inline void SetTopSystemDistance(lmLUnits nDistance) 
+    inline void SetTopSystemDistance(lmLUnits nDistance)
                 { m_SystemsInfo.front()->SetTopSystemDistance(nDistance); }
-    inline void SetSystemDistance(lmLUnits nDistance) 
+    inline void SetSystemDistance(lmLUnits nDistance)
                 { m_SystemsInfo.back()->SetSystemDistance(nDistance); }
 
 	inline void SetModified(bool fValue) { m_fModified = fValue; }
@@ -431,7 +437,6 @@ public:
     lmScoreCursor* SetCursor(lmVStaffCursor* pVCursor);
     inline lmScoreCursor* MoveCursorToStart() { m_SCursor.MoveToStart(); return &m_SCursor;}
     inline lmScoreCursor* GetCursor() { return &m_SCursor; }
-    lmScoreCursor* SetNewCursorState(lmCursorState* pState);
     lmScoreCursor* SetCursorState(lmCursorState* pState);
     lmScoreCursor* SetCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO);
 
@@ -511,7 +516,7 @@ private:
 	bool				    m_fModified;            //to force a repaint
 
     //page size and margins information
-    lmPageInfo*             m_pPageInfo;    //for current page 
+    lmPageInfo*             m_pPageInfo;    //for current page
     int                     m_nNumPage;     //number of current page
 	std::list<lmPageInfo*>  m_PagesInfo;    //info for each score page
 
@@ -522,10 +527,12 @@ private:
 
     //other variables
     bool                    m_fReadOnly;    //the score is in read only mode
+    bool                    m_fUndoMode;    //the score comes from saved data for undo/redo
 	int					    m_nCurNode;     //last returned instrument node
-    long				    m_nID;          //unique ID for this score
+    long				    m_nScoreID;     //unique ID for this score
     wxString			    m_sScoreName;   //for user identification
 	lmStylesCollection      m_TextStyles;   //list of defined styles
+    long                    m_nCounterID;   //to assign ID to ScoreObjs in this score
 
 	//temporary data used for edition/renderization
 	std::list<int>          m_aMeasureModified;		//list of measures modified

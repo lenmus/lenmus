@@ -73,9 +73,7 @@
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
-#include "EditCmd.h"
 #include "Context.h"
-#include "UndoRedo.h"
 #include "Notation.h"
 #include "MetronomeMark.h"
 #include "../sound/SoundManager.h"
@@ -94,8 +92,8 @@
 #define lmGO_BACK  false
 
 //constructor
-lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
-    : lmScoreObj(pScore), m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
+lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID)
+    : lmScoreObj(pScore, nID), m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -310,6 +308,12 @@ lmTimeSignature* lmVStaff::GetApplicableTimeSignature()
     }
 }
 
+void lmVStaff::AssignID(lmStaffObj* pSO)
+{
+    //StaffObj pSO is being added to this VStaff. Assign it an ID
+
+    m_pScore->AssignID(pSO);
+}
 
 //---------------------------------------------------------------------------------------
 // Methods for inserting StaffObjs
@@ -330,7 +334,7 @@ lmClef* lmVStaff::CmdNew_InsertClef(lmEClefType nClefType, bool fVisible)
     //create the clef and prepare its insertion
     lmStaffObj* pCursorSO = GetCursorStaffObj();
     int nStaff = GetCursorStaffNum();
-    lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
+    lmClef* pClef = new lmClef(nClefType, this, 0L, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
     pContext = pStaff->NewContextAfter(pClef, pContext);
@@ -371,7 +375,7 @@ lmKeySignature* lmVStaff::CmdNew_InsertKeySignature(int nFifths, bool fMajor, bo
 
     bool fKeyKeepPitch = (nAction == 1);
 
-    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
+    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, 0L, fVisible);
     if ( InsertKeyTimeSignature(pKS, fKeyKeepPitch) )
         return pKS;
     else
@@ -470,7 +474,7 @@ lmBarline* lmVStaff::CmdNew_InsertBarline(lmEBarline nType, bool fVisible)
     GetVCursor()->AdvanceToStartOfTimepos();
 
     //now, proceed to insert the barline
-    lmBarline* pBarline = new lmBarline(nType, this, fVisible);
+    lmBarline* pBarline = new lmBarline(nType, this, 0L, fVisible);
     m_cStaffObjs.Add(pBarline);
 
     return pBarline;
@@ -542,7 +546,7 @@ lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOct
     }
 	int nAccidentals = 0;
 
-    lmNote* pNt = new lmNote(this, nPitchType,
+    lmNote* pNt = new lmNote(this, 0L, nPitchType,
                         nStep, nOctave, nAccidentals, nAcc,
                         nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
                         pContext, false, BeamInfo, pBaseOfChord, false, lmSTEM_DEFAULT);
@@ -585,7 +589,7 @@ lmRest* lmVStaff::CmdNew_InsertRest(lmENoteType nNoteType, float rDuration,
         BeamInfo[i].Type = eBeamNone;
     }
 
-    lmRest* pRest = new lmRest(this, nNoteType, rDuration, nDots, nStaff, nVoice,
+    lmRest* pRest = new lmRest(this, 0L, nNoteType, rDuration, nDots, nStaff, nVoice,
                                lmVISIBLE, false, BeamInfo);
 
     m_cStaffObjs.Add(pRest);
@@ -654,16 +658,7 @@ void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
   
     //finally, insert the barline if necessary
     if (fInsertBarline)
-    //{
-    //    //Issue an 'insert barline' command
-    //    lmUndoLog* pUndoLog = pUndoItem->GetUndoLog();
-    //    lmUndoItem* pNewUndoItem = new lmUndoItem(pUndoLog);
-    //    lmECmdInsertBarline* pECmd =
-    //        new lmECmdInsertBarline(this, pNewUndoItem, lm_eBarlineSimple, lmVISIBLE);
-    //    pUndoLog->LogCommand(pECmd, pNewUndoItem);
-
         CmdNew_InsertBarline(lm_eBarlineSimple, lmVISIBLE);
-    //}
 }
 
 bool lmVStaff::CmdNew_DeleteStaffObj(lmStaffObj* pSO)
@@ -819,54 +814,17 @@ bool lmVStaff::CmdNew_DeleteTimeSignature(lmTimeSignature* pTS)
     return false;       //false: deletion OK
 }
 
-void lmVStaff::Cmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)
-{
-    //delete the requested tie, and log info to undo history
-    wxASSERT(pUndoItem);
-
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-
-    //save start note
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    lmNote* pStartNote = pEndNote->GetTiedNotePrev();
-    pUndoData->AddParam<lmNote*>( pStartNote );
-
-    //remove tie
-    pEndNote->DeleteTiePrev();
-}
-
-void lmVStaff::UndoCmd_DeleteTie(lmUndoItem* pUndoItem, lmNote* pEndNote)
-{
-    //un-delete the tie, according to info in history
-
-    //recover start note
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    lmNote* pStartNote = pUndoItem->GetUndoData()->GetParam<lmNote*>();
-
-    //re-create the tie
-    pEndNote->CreateTie(pStartNote, pEndNote);
-}
-
-void lmVStaff::Cmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote)
+void lmVStaff::CmdNew_AddTie(lmNote* pStartNote, lmNote* pEndNote)
 {
     //add a tie
     pEndNote->CreateTie(pStartNote, pEndNote);
 }
 
-void lmVStaff::UndoCmd_AddTie(lmUndoItem* pUndoItem, lmNote* pStartNote, lmNote* pEndNote)
-{
-    //remove tie
-    pEndNote->DeleteTiePrev();
-}
-
-void lmVStaff::Cmd_AddTuplet(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes,
+bool lmVStaff::CmdNew_AddTuplet(std::vector<lmNoteRest*>& notes,
                              bool fShowNumber, int nNumber, bool fBracket,
                              lmEPlacement nAbove, int nActual, int nNormal)
 {
-    // add a tuplet
-
-    WXUNUSED(pUndoItem);
+    // add a tuplet. Returns true if cancelled or error
 
     //create the tuplet object
     lmTupletBracket* pTuplet = 
@@ -886,66 +844,23 @@ void lmVStaff::Cmd_AddTuplet(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& no
         (*it)->SetDuration(rNewDuration);
         m_cStaffObjs.RecomputeSegmentDuration(*it, rNewDuration - rOldDuration);
     }
+    return false;       //no error
 }
 
-void lmVStaff::UndoCmd_AddTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
+bool lmVStaff::CmdNew_DeleteTuplet(lmNoteRest* pStartNR)
 {
-    WXUNUSED(pUndoItem);
+    //adjust duration of affected notes/rests, and delete the tuplet
 
     //get the tuplet
     lmTupletBracket* pTuplet = pStartNR->GetTuplet();
+    if (!pTuplet)
+        return false;       //nothing to do. deletion OK;       
 
-    //re-adjust notes/rests duration
+    //adjust notes/rests duration
     float rFactor = (float)pTuplet->GetActualNotes() / (float)pTuplet->GetNormalNotes();
     lmNoteRest* pNR = pTuplet->GetFirstNoteRest();
     while (pNR)
     {
-        //adjust note/rest duration and recompute current measure duration
-        float rOldDuration = pNR->GetDuration();
-        float rNewDuration = rOldDuration * rFactor;
-        pNR->SetDuration(rNewDuration);
-        m_cStaffObjs.RecomputeSegmentDuration(pNR, rNewDuration - rOldDuration);
-
-        //proceed with next note/rest
-        pNR = pTuplet->GetNextNoteRest();
-    }
-
-    //remove the tuplet
-    //pNR = pTuplet->GetFirstNoteRest();
-    //while (pNR)
-    //{
-    //    pNR->OnRemovedFromTuplet();
-    //    pNR = pTuplet->GetNextNoteRest();
-    //}
-    delete pTuplet;
-}
-
-void lmVStaff::Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
-{
-    //delete the tuplet, adjust duration of affected notes/rests, and log info
-    //to undo history
-
-    //get the tuplet
-    lmTupletBracket* pTuplet = pStartNR->GetTuplet();
-    if (!pTuplet) return;       //nothing to do
-
-    //save data for undoing the command
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-    wxASSERT(pUndoItem);
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-
-        //save number of note/rests in the tuplet
-    pUndoData->AddParam<int>( pTuplet->NumNotes() );
-
-    //save pointers to the note/rests and adjust notes/rests duration
-    float rFactor = (float)pTuplet->GetActualNotes() / (float)pTuplet->GetNormalNotes();
-    lmNoteRest* pNR = pTuplet->GetFirstNoteRest();
-    while (pNR)
-    {
-        //save pointer
-        pUndoData->AddParam<lmNoteRest*>( pNR );
-
         //adjust notes/rests duration and recompute current measure duration
         float rOldDuration = pNR->GetDuration();
         float rNewDuration = rOldDuration * rFactor;
@@ -956,56 +871,11 @@ void lmVStaff::Cmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
         pNR = pTuplet->GetNextNoteRest();
     }
 
-    //save tuplet info:
-    pTuplet->Save(pUndoData);
-
-    //remove the tuplet
-    //pNR = pTuplet->GetFirstNoteRest();
-    //while (pNR)
-    //{
-    //    pNR->OnRemovedFromTuplet();
-    //    pNR = pTuplet->GetNextNoteRest();
-    //}
     delete pTuplet;
+    return false;       //false: deletion OK
 }
 
-void lmVStaff::UndoCmd_DeleteTuplet(lmUndoItem* pUndoItem, lmNoteRest* pStartNR)
-{
-    //un-delete the tuplet, according to info in history
-
-    //recover number of note/rests in the tuplet
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    int nNumNotes = pUndoData->GetParam<int>();
-
-    //recover pointers to the note/rests
-    std::vector<lmNoteRest*> notes;
-    for (int i=0; i < nNumNotes; i++)
-        notes.push_back( pUndoData->GetParam<lmNoteRest*>() );
-
-    //recover tuplet info and re-create the tuplet object
-    lmTupletBracket* pTuplet = new lmTupletBracket(pStartNR, pUndoData);
-
-    //add the tuplet to the notes and adjusts their duration
-    float rFactor = (float)pTuplet->GetNormalNotes() / (float)pTuplet->GetActualNotes();
-    std::vector<lmNoteRest*>::iterator it;
-    bool fFirst = true;
-    for (it=notes.begin(); it != notes.end(); ++it)
-    {
-        //skip first note, as it is automatically included at tuplet constructor
-        if (!fFirst)
-            pTuplet->Include(*it);
-
-        //adjust note/rest duration and recompute current measure duration
-        float rOldDuration = (*it)->GetDuration();
-        float rNewDuration = rOldDuration * rFactor;
-        (*it)->SetDuration(rNewDuration);
-        m_cStaffObjs.RecomputeSegmentDuration(*it, rNewDuration - rOldDuration);
-
-        fFirst = false;
-    }
-}
-
-void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
+void lmVStaff::CmdNew_BreakBeam(lmNoteRest* pBeforeNR)
 {
     //break the beamed group before note/rest pBeforeNR. 
 
@@ -1031,22 +901,11 @@ void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
     pPrevNR->SetDirty(true);
     pBeforeNR->SetDirty(true);
 
-    //save data for undoing the command: all note/rests before break point
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-    wxASSERT(pUndoItem);
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-
-    //save number of note/rests before the break point
-    pUndoData->AddParam<int>( nNotesBefore );
-
     //save pointers to the note/rests before break point
     std::vector<lmNoteRest*> notes;
     pNR = pBeam->GetFirstNoteRest();
     while (pNR && pNR != pBeforeNR)
     {
-        //save pointer in undo log and also copy it in local variable
-        pUndoData->AddParam<lmNoteRest*>( pNR );
         notes.push_back( pNR );
         pNR = pBeam->GetNextNoteRest();
     }
@@ -1110,72 +969,7 @@ void lmVStaff::Cmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
         wxASSERT(false);
 }
 
-void lmVStaff::UndoCmd_BreakBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeforeNR)
-{
-    //re-create the beamed group that was broken before note/rest pBeforeNR. 
-
-    //recover the notes before pBeforeNR
-
-    //recover number of note/rests
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    int nNotesBefore = pUndoData->GetParam<int>();
-
-    //recover pointers to the note/rests
-    std::vector<lmNoteRest*> notes;
-    for (int i=0; i < nNotesBefore; i++)
-        notes.push_back( pUndoData->GetParam<lmNoteRest*>() );
-
-    //count notes after break point
-    int nNotesAfter = (pBeforeNR->IsBeamed() ? pBeforeNR->GetBeam()->NumNotes() : 1);
-
-    //re-create the beam. Four cases:
-    //  a) join two single notes    (nNotesBefore == 1 && nNotesAfter == 1)
-    //  b) join single note + beam  (nNotesBefore == 1 && nNotesAfter > 1)
-    //  c) join two beams           (nNotesBefore > 1 && nNotesAfter > 1)
-    //  d) join beam + single note  (nNotesBefore > 1 && nNotesAfter == 1)
-
-    if (nNotesBefore == 1 && nNotesAfter == 1)
-    {
-        //case a) join two single notes
-        lmBeam* pNewBeam = new lmBeam( (lmNote*)notes.front() );
-        pNewBeam->Include(pBeforeNR);
-    }
-    else if (nNotesBefore == 1 && nNotesAfter > 1)
-    {
-        //case b) join single note + beam
-        lmBeam* pBeam = pBeforeNR->GetBeam();
-	    pBeam->Include(notes.front(), 0);
-    }
-    else if (nNotesBefore > 1 && nNotesAfter > 1)
-    {
-        //case c) join two beams
-        //To keep note/rest order we must remove note/rests from the second beam and add them
-        //to the firts one.
-        lmBeam* pBeam1 = notes.front()->GetBeam();
-        lmBeam* pBeam2 = pBeforeNR->GetBeam();
-        lmNoteRest* pNR = pBeam2->GetFirstNoteRest();
-        while (pNR)
-        {
-            pBeam2->Remove(pNR);
-	        pNR->OnRemovedFromRelationship(pBeam2, lm_eBeamClass);   //OnRemovedFromBeam();
-            pBeam1->Include(pNR);
-            //AWARE:  As we have removed the firts note, GetNextNoteRest() will fail because
-            //the internal iterator is now invalid. Moreover, the next note is now the first one.
-            pNR = pBeam2->GetFirstNoteRest();
-        }
-        delete pBeam2;
-    }
-    else if (nNotesBefore > 1 && nNotesAfter == 1)
-    {
-        //case d) join beam + single note
-        lmBeam* pBeam = notes.front()->GetBeam();
-	    pBeam->Include(pBeforeNR);
-    }
-    else
-        wxASSERT(false);
-}
-
-void lmVStaff::Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& notes)
+void lmVStaff::CmdNew_JoinBeam(std::vector<lmNoteRest*>& notes)
 {
     //depending on received note/rests beam status, either:
     // - create a beamed group with the received notes,
@@ -1187,32 +981,16 @@ void lmVStaff::Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& not
     // - note/rests to beam must be eighths or shorter ones
 
 
-    //list of involved note/rests with its beam status information
-    std::list<lmBeamNoteInfo*> oInvolvedNR;
-    int nBeamIdx = 1;
-
     //create beam and add first note
     std::vector<lmNoteRest*>::iterator it = notes.begin();
     lmBeam* pNewBeam;
     if ((*it)->IsBeamed())
     {
-        //First note is beamed. Add notes to this beam
+        //First note is beamed. Use this beam
         pNewBeam = (*it)->GetBeam();
-
-        //save all notes in this beam
-        lmNoteRest* pNR = pNewBeam->GetFirstNoteRest();
-        while (pNR)
-        {
-            SaveBeamNoteInfo(pNR, oInvolvedNR, nBeamIdx);
-            pNR = pNewBeam->GetNextNoteRest();
-        }
-        nBeamIdx++;
     }
     else
     {
-        //save this note/rest info
-        SaveBeamNoteInfo(*it, oInvolvedNR, 0);     //0 -> not beamed
-
         //Create a new beam and add all notes to it
         pNewBeam = new lmBeam((lmNote*)(*it));
     }
@@ -1240,8 +1018,7 @@ void lmVStaff::Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& not
                 std::vector<lmNoteRest*> oldNotes;
                 while(pNR)
                 {
-                    SaveBeamNoteInfo(pNR, oInvolvedNR, nBeamIdx);
-	                pNR->OnRemovedFromRelationship(pOldBeam, lm_eBeamClass);   //OnRemovedFromBeam();
+	                pNR->OnRemovedFromRelationship(pOldBeam, lm_eBeamClass);
                     pNewBeam->Include(pNR);
                     oldNotes.push_back(pNR);
                     pNR = pOldBeam->GetNextNoteRest();
@@ -1257,204 +1034,47 @@ void lmVStaff::Cmd_JoinBeam(lmUndoItem* pUndoItem, std::vector<lmNoteRest*>& not
 			        delete pOldBeam;
                 else
                     pOldBeam->AutoSetUp();
-
-                nBeamIdx++;
             }
         }
         else
         {
             //add the note to target beam
-            SaveBeamNoteInfo(*it, oInvolvedNR, 0);     //0 -> not beamed
             pNewBeam->Include(*it);
         }
     }
 
     //reorganize new beam
     pNewBeam->AutoSetUp();
-
-
-    //save data for undoing the command
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-    wxASSERT(pUndoItem);
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    LogBeamData(pUndoData, oInvolvedNR);
 }
 
-void lmVStaff::UndoCmd_JoinBeam(lmUndoItem* pUndoItem)
-{
-    //Restore beam status for a collection of logged note/rests
-    //AWARE: this method is used also for cmd UndoCmd_DeleteBeam
-
-
-    //recover number of involved note/rests and data about them
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    int nNotes;
-    std::list<lmBeamNoteInfo> notes;
-    GetLoggedBeamData(pUndoData, &nNotes, notes);
-
-
-        // Now we have all necessary information. Proceed to restore previous beam state
-
-    //all note/rests either are in a single beam group or aren't beamed. If they are
-    //in a beam remove noteRests from it an delete this beam
-    std::list<lmBeamNoteInfo>::iterator it;
-    lmBeam* pBeam = (lmBeam*)NULL;
-    if (notes.front().pNR->IsBeamed())
-    {
-        //remove noe/rest from current beam
-        pBeam = notes.front().pNR->GetBeam();
-        for(it = notes.begin(); it != notes.end(); ++it)
-        {
-            pBeam->Remove((*it).pNR);
-            (*it).pNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
-        }
-
-        //delete the old beam
-        wxASSERT(pBeam->NumNotes() == 0);
-	    delete pBeam;
-        pBeam = (lmBeam*)NULL;
-    }
-
-    //re-create each removed beam, and restore notes beam info
-    int nCurBeam = 0;
-    for(it = notes.begin(); it != notes.end(); ++it)
-    {
-        lmNoteRest* pNR = (*it).pNR;
-
-        if ((*it).nBeamRef > 0)
-        {
-            if ((*it).nBeamRef > nCurBeam)
-            {
-                //create a new beam and add the note to it
-                wxASSERT(pNR->IsNote());
-                pBeam = new lmBeam((lmNote*)pNR);
-                ++nCurBeam;
-            }
-            else
-            {
-                //add note/rest to current beam
-                pBeam->Include(pNR);
-            }
-        }
-
-        //restore note/rest beaming info
-        for(int i=0; i < 6; i++)
-            pNR->SetBeamInfo(i, (*it).tBeamInfo[i]);
-    }
-}
-
-void lmVStaff::SaveBeamNoteInfo(lmNoteRest* pNR, std::list<lmBeamNoteInfo*>& oListNR, int nBeamIdx)
-{
-    lmBeamNoteInfo* pInvNR = new lmBeamNoteInfo;
-    pInvNR->pNR = pNR;
-    lmTBeamInfo* pBI = pNR->GetBeamInfo();
-    for(int i=0; i < 6; i++)
-        pInvNR->tBeamInfo[i] = *pBI;
-    pInvNR->nBeamRef = nBeamIdx;
-    oListNR.push_back(pInvNR);
-}
-
-void lmVStaff::LogBeamData(lmUndoData* pUndoData, std::list<lmBeamNoteInfo*>& oListNR)
-{
-    //save number of involved note/rests
-    pUndoData->AddParam<int>( int(oListNR.size()) );
-
-    //save data about the involved note/rests and clear the list
-    std::list<lmBeamNoteInfo*>::iterator it;
-    for (it = oListNR.begin(); it != oListNR.end(); ++it)
-    {
-        pUndoData->AddParam<lmBeamNoteInfo>( **it );
-        delete *it;
-    }
-}
-
-void lmVStaff::GetLoggedBeamData(lmUndoData* pUndoData, int* pNumNotes,
-                                 std::list<lmBeamNoteInfo>& oListNR)
-{
-    //recover number of involved note/rests
-    int nNotes = pUndoData->GetParam<int>();
-    *pNumNotes = nNotes;
-
-    //recover data about the involved note/rests
-    for (int i=0; i < nNotes; i++)
-        oListNR.push_back( pUndoData->GetParam<lmBeamNoteInfo>() );
-}
-
-void lmVStaff::Cmd_DeleteBeam(lmUndoItem* pUndoItem, lmNoteRest* pBeamedNR)
+bool lmVStaff::CmdNew_DeleteBeam(lmNoteRest* pBeamedNR)
 {
     //removes the beam associated to received note/rest
 
     wxASSERT(pBeamedNR->IsBeamed());
 
-    //list of involved note/rests with its beam status information
-    std::list<lmBeamNoteInfo*> oBeamNR;
-
-    //save beam notes and status
+    //remove note/rests from beam
     lmBeam* pBeam = pBeamedNR->GetBeam();
     lmNoteRest* pNR = pBeam->GetFirstNoteRest();
     while (pNR)
     {
-        SaveBeamNoteInfo(pNR, oBeamNR, 1);      //beam 1, the only one we are removing
+        pBeam->Remove(pNR);
+        pNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);
         pNR = pBeam->GetNextNoteRest();
-    }
-
-    //remove note/rests from beam
-    std::list<lmBeamNoteInfo*>::iterator it;
-    for(it = oBeamNR.begin(); it != oBeamNR.end(); ++it)
-    {
-        pBeam->Remove((*it)->pNR);
-        (*it)->pNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);    //OnRemovedFromBeam();
     }
 
     //delete the beam
     wxASSERT(pBeam->NumNotes() == 0);
 	delete pBeam;
-
-    //save data for undoing the command
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-    wxASSERT(pUndoItem);
-    lmUndoData* pUndoData = pUndoItem->GetUndoData();
-    LogBeamData(pUndoData, oBeamNR);
+    return false;       //no error;
 }
 
-void lmVStaff::UndoCmd_DeleteBeam(lmUndoItem* pUndoItem)
-{
-    UndoCmd_JoinBeam(pUndoItem);
-}
-
-void lmVStaff::Cmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR, int nDots)
+void lmVStaff::CmdNew_ChangeDots(lmNoteRest* pNR, int nDots)
 {
     //Change the number of dots of NoteRests pNR. As a consecuence, the measure duration
     //must be reviewed, as in could change
 
-
-    //AWARE: Logged actions must be logged in the required order for re-construction.
-    //History works as a FIFO stack: first one logged will be the first one to be recovered
-
-    //save current note/rest dots
-    wxASSERT(pUndoItem);
-    pUndoItem->GetUndoData()->AddParam<int>( pNR->GetNumDots() );
-
     //change dots and compute timepos increment/decrement
-    float rOldDuration = pNR->GetDuration();
-    pNR->ChangeDots(nDots);
-
-    //recompute current measure duration
-    m_cStaffObjs.RecomputeSegmentDuration(pNR, pNR->GetDuration() - rOldDuration);
-}
-
-void lmVStaff::UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR)
-{
-    //Restore original dots
-
-
-    //recover original dots
-    wxASSERT(pUndoItem);
-    int nDots = pUndoItem->GetUndoData()->GetParam<int>();
-
-    //restore dots and compute timepos increment/decrement
     float rOldDuration = pNR->GetDuration();
     pNR->ChangeDots(nDots);
 
@@ -1467,12 +1087,12 @@ void lmVStaff::UndoCmd_ChangeDots(lmUndoItem* pUndoItem, lmNoteRest* pNR)
 //---------------------------------------------------------------------------------------
 
 // adds a clef to the end of current StaffObjs collection
-lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
+lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible, long nID)
 {
     wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= GetNumStaves());
 
-    lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
+    lmClef* pClef = new lmClef(nClefType, this, nID, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = pStaff->NewContextAfter(pClef, GetLastContext(nStaff));
 	pClef->SetContext(pContext);
@@ -1503,15 +1123,11 @@ lmStaffObj* lmVStaff::AddAnchorObj()
     return pAnchor;
 }
 
-lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
-                    int nStep, int nOctave, int nAlter,
-                    lmEAccidentals nAccidentals,
-                    lmENoteType nNoteType, float rDuration, int nDots,
-                    int nStaff, int nVoice, bool fVisible,
-                    bool fBeamed, lmTBeamInfo BeamInfo[],
-                    lmNote* pBaseOfChord,
-                    bool fTie,
-                    lmEStemType nStem)
+lmNote* lmVStaff::AddNote(long nID, lmEPitchType nPitchType, int nStep, int nOctave,
+                          int nAlter, lmEAccidentals nAccidentals, lmENoteType nNoteType,
+                          float rDuration, int nDots, int nStaff, int nVoice, bool fVisible,
+                          bool fBeamed, lmTBeamInfo BeamInfo[], lmNote* pBaseOfChord,
+                          bool fTie, lmEStemType nStem)
 {
     // Creates a note. Returns a pointer to the lmNote object just created
 
@@ -1520,7 +1136,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
 
     lmContext* pContext = NewUpdatedLastContext(nStaff);
 
-    lmNote* pNt = new lmNote(this, nPitchType,
+    lmNote* pNt = new lmNote(this, nID, nPitchType,
                         nStep, nOctave, nAlter, nAccidentals,
                         nNoteType, rDuration, nDots, nStaff, nVoice,
 						fVisible, pContext, fBeamed, BeamInfo, pBaseOfChord, fTie, nStem);
@@ -1531,7 +1147,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
     return pNt;
 }
 
-lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
+lmRest* lmVStaff::AddRest(long nID, lmENoteType nNoteType, float rDuration, int nDots,
                       int nStaff, int nVoice, bool fVisible,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
 {
@@ -1539,7 +1155,7 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
     wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= GetNumStaves() );
 
-    lmRest* pR = new lmRest(this, nNoteType, rDuration, nDots, nStaff,
+    lmRest* pR = new lmRest(this, nID, nNoteType, rDuration, nDots, nStaff,
 							nVoice, fVisible, fBeamed, BeamInfo);
 
     m_cStaffObjs.Add(pR);
@@ -1548,17 +1164,17 @@ lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration, int nDots,
 }
 
 lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& tFontData,
-                              bool fHasWidth)
+                              bool fHasWidth, long nID)
 {
     lmTextStyle* pTS = m_pScore->GetStyleName(tFontData);
     wxASSERT(pTS);
-    return AddText(sText, nHAlign, pTS, fHasWidth);
+    return AddText(sText, nHAlign, pTS, fHasWidth, nID);
 }
 
 lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
-                              bool fHasWidth)
+                              bool fHasWidth, long nID)
 {
-    lmTextItem* pText = new lmTextItem(sText, nHAlign, pStyle);
+    lmTextItem* pText = new lmTextItem((lmScoreObj*)NULL, nID, sText, nHAlign, pStyle);
 
     // create an anchor object
     lmStaffObj* pAnchor;
@@ -1572,15 +1188,16 @@ lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* p
         //No width. Attach it to an anchor
         pAnchor = AddAnchorObj();
     }
+    pText->SetOwner(pAnchor);
     pAnchor->AttachAuxObj(pText);
 
     return pText;
 }
 
-lmMetronomeMark* lmVStaff::AddMetronomeMark(int nTicksPerMinute,
-                        bool fParentheses, bool fVisible)
+lmMetronomeMark* lmVStaff::AddMetronomeMark(int nTicksPerMinute, bool fParentheses,
+                                            bool fVisible, long nID)
 {
-    lmMetronomeMark* pMM = new lmMetronomeMark(this, nTicksPerMinute,
+    lmMetronomeMark* pMM = new lmMetronomeMark(this, nID, nTicksPerMinute,
                                                fParentheses, fVisible);
     m_cStaffObjs.Add(pMM);
     return pMM;
@@ -1589,9 +1206,9 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(int nTicksPerMinute,
 
 lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
                         lmENoteType nRightNoteType, int nRightDots,
-                        bool fParentheses, bool fVisible)
+                        bool fParentheses, bool fVisible, long nID)
 {
-    lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
+    lmMetronomeMark* pMM = new lmMetronomeMark(this, nID, nLeftNoteType, nLeftDots,
                                                nRightNoteType, nRightDots,
                                                fParentheses, fVisible);
     m_cStaffObjs.Add(pMM);
@@ -1600,9 +1217,9 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeft
 }
 
 lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
-                        int nTicksPerMinute, bool fParentheses, bool fVisible)
+                        int nTicksPerMinute, bool fParentheses, bool fVisible, long nID)
 {
-    lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
+    lmMetronomeMark* pMM = new lmMetronomeMark(this, nID, nLeftNoteType, nLeftDots,
                                                nTicksPerMinute,
                                                fParentheses, fVisible);
     m_cStaffObjs.Add(pMM);
@@ -1612,45 +1229,48 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeft
 
 
 //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignatureType nType, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(long nID, lmETimeSignatureType nType, bool fVisible)
 {
-    lmTimeSignature* pTS = new lmTimeSignature(nType, this, fVisible);
+    lmTimeSignature* pTS = new lmTimeSignature(nType, this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
 //for type eTS_SingleNumber
-lmTimeSignature* lmVStaff::AddTimeSignature(int nSingleNumber, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nSingleNumber, bool fVisible)
 {
-    lmTimeSignature* pTS = new lmTimeSignature(nSingleNumber, this, fVisible);
+    lmTimeSignature* pTS = new lmTimeSignature(nSingleNumber, this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
 //for type eTS_Composite
-lmTimeSignature* lmVStaff::AddTimeSignature(int nNumBeats, int nBeats[], int nBeatType,
-                                        bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nNumBeats, int nBeats[],
+                                            int nBeatType, bool fVisible)
 {
-    lmTimeSignature* pTS = new lmTimeSignature(nNumBeats, nBeats, nBeatType, this, fVisible);
+    lmTimeSignature* pTS = new lmTimeSignature(nNumBeats, nBeats, nBeatType,
+                                               this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
 //for type eTS_Multiple
-lmTimeSignature* lmVStaff::AddTimeSignature(int nNumFractions, int nBeats[], int nBeatType[],
-                                        bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nNumFractions, int nBeats[],
+                                            int nBeatType[], bool fVisible)
 {
-    lmTimeSignature* pTS = new lmTimeSignature(nNumFractions, nBeats, nBeatType, this, fVisible);
+    lmTimeSignature* pTS = new lmTimeSignature(nNumFractions, nBeats, nBeatType, this, 
+                                               nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
 //for type eTS_Normal
-lmTimeSignature* lmVStaff::AddTimeSignature(int nBeats, int nBeatType, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nBeats, int nBeatType, bool fVisible)
 {
-    lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, fVisible);
+    lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
-lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignature nTimeSign, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(long nID, lmETimeSignature nTimeSign,
+                                            bool fVisible)
 {
-    lmTimeSignature* pTS = new lmTimeSignature(nTimeSign, this, fVisible);
+    lmTimeSignature* pTS = new lmTimeSignature(nTimeSign, this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
@@ -1669,9 +1289,10 @@ lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS)
     return pTS;
 }
 
-lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisible)
+lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisible,
+                                          long nID)
 {
-    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
+    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, nID, fVisible);
 
     //iterate over the collection of Staves to add a new context
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
@@ -1684,11 +1305,12 @@ lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisibl
     return pKS;
 }
 
-lmKeySignature* lmVStaff::AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible)
+lmKeySignature* lmVStaff::AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible,
+                                          long nID)
 {
     int nFifths = KeySignatureToNumFifths(nKeySignature);
     bool fMajor = IsMajor(nKeySignature);
-    return AddKeySignature(nFifths, fMajor, fVisible);
+    return AddKeySignature(nFifths, fMajor, fVisible, nID);
 }
 
 int lmVStaff::GetNumMeasures()
@@ -1798,11 +1420,14 @@ lmLUnits lmVStaff::GetStaffOffset(int nStaff)
     return yOffset;
 }
 
-wxString lmVStaff::SourceLDP(int nIndent)
+wxString lmVStaff::SourceLDP(int nIndent, bool fUndoData)
 {
 	wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(musicData\n");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(musicData#%d\n"), GetID() );
+    else
+        sSource += _T("(musicData\n");
     nIndent++;
 
     //iterate over the collection of StaffObjs, ordered by voice.
@@ -1840,7 +1465,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
 						if (!pSO->IsNoteRest() || ((lmNoteRest*)pSO)->GetVoice() == nVoice)
 						{
 							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
-							sSource += pSO->SourceLDP(nIndent);
+							sSource += pSO->SourceLDP(nIndent, fUndoData);
 							rTime = LDP_AdvanceTimeCounter(pSO);
 						}
 					}
@@ -1848,7 +1473,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
 						if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->GetVoice() == nVoice)
 						{
 							LDP_AddShitTimeTagIfNeeded(sSource, nIndent, lmGO_FWD, rTime, pSO);
-							sSource += pSO->SourceLDP(nIndent);
+							sSource += pSO->SourceLDP(nIndent, fUndoData);
 							rTime = LDP_AdvanceTimeCounter(pSO);
 						}
 				}
@@ -1886,7 +1511,7 @@ wxString lmVStaff::SourceLDP(int nIndent)
 
 		//add barline, if present
 		if (pBL)
-			sSource += pBL->SourceLDP(nIndent);
+			sSource += pBL->SourceLDP(nIndent, fUndoData);
 
     }
 
@@ -2136,10 +1761,10 @@ lmLUnits lmVStaff::GetVStaffHeight()
     return m_uHeight;
 }
 
-lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
+lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible, long nID)
 {
     //create and save the barline
-    lmBarline* pBarline = new lmBarline(nType, this, fVisible);
+    lmBarline* pBarline = new lmBarline(nType, this, nID, fVisible);
     m_cStaffObjs.Add(pBarline);
     return pBarline;
 }
@@ -2497,9 +2122,8 @@ lmSOIterator* lmVStaff::CreateIterator()
 
 wxString lmVStaff::Dump()
 {
-    wxString sDump = _T("");
-
 //#if defined(__WXDEBUG__)
+    wxString sDump = wxString::Format(_T("\nVStaff. id=%d\n"), GetID() );
 
     //iterate over the collection of staves to dump contexts chains
     for (int iS=1; iS <= m_nNumStaves; iS++)

@@ -36,7 +36,6 @@ class lmChord;
 class lmShape;
 class lmCompositeShape;
 class lmShapeNote;
-class lmUndoData;
 
 #define lmREMOVE_TIES   true
 #define lmCHANGE_TIED   false
@@ -45,7 +44,7 @@ class lmNote: public lmNoteRest
 {
 public:
 
-    lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
+    lmNote(lmVStaff* pVStaff, long nID, lmEPitchType nPitchType,
         int nStep, int nOctave, int nAlter, lmEAccidentals nAccidentals,
         lmENoteType nNoteType, float rDuration,
         int nNumDots, int nStaff, int nVoice, bool fVisible,
@@ -64,7 +63,7 @@ public:
 	inline wxString GetName() const { return _T("note"); }
 
     wxString    Dump();
-    wxString    SourceLDP(int nIndent);
+    wxString    SourceLDP(int nIndent, bool fUndoData);
     wxString    SourceXML(int nIndent);
 
 	void CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO);
@@ -172,10 +171,6 @@ public:
 	//methods for edition
 	void ChangePitch(int nSteps);
 	void ChangeAccidentals(int nSteps);
-
-    //undo/redo
-    void Freeze(lmUndoData* pUndoData);
-    void UnFreeze(lmUndoData* pUndoData);
 
 
 private:

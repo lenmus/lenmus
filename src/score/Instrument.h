@@ -38,10 +38,10 @@ class lmInstrument : public lmScoreObj
 {
 public:
     //ctors and dtor
-    lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-                 wxString sName, wxString sAbbrev);
-    lmInstrument(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
-                 lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
+    lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
+                 int nMIDIInstr, wxString sName, wxString sAbbrev);
+    lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
+                 int nMIDIInstr, lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
     ~lmInstrument();
 
 	//---- virtual methods of base class -------------------------
@@ -72,9 +72,10 @@ public:
     //properties
 	const wxString& GetInstrName();
     bool IsFirstOfSystem();
+    int GetNumInstr();
+
 
 	//cursor methods
-	lmVStaffCursor* GetVCursor();
     void ResetCursor();
     void AttachCursor(lmVStaffCursor* pVCursor);
 
@@ -86,7 +87,7 @@ public:
 
     //Debug methods
     wxString Dump();
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     //MIDI configuration
@@ -105,7 +106,7 @@ public:
 
 
 private:
-    void Create(lmScore* pScore, int nMIDIChannel, int nMIDIInstr,
+    void Create(lmScore* pScore, long nVStaffID, int nMIDIChannel, int nMIDIInstr,
                 lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
     void AddName(wxString& sName);
     void AddAbbreviation(wxString& sAbbrev);

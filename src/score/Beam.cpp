@@ -44,7 +44,6 @@
 #include <algorithm>
 
 #include "Score.h"
-#include "UndoRedo.h"
 #include "../graphic/ShapeBeam.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
@@ -55,14 +54,6 @@ lmBeam::lmBeam(lmNote* pNote)
 	m_pBeamShape = (lmShapeBeam*)NULL;
     m_fNeedsSetUp = true;
     Include(pNote);
-}
-
-lmBeam::lmBeam(lmNoteRest* pFirstNote, lmUndoData* pUndoData)
-	: lmMultipleRelationship<lmNoteRest>(lm_eBeamClass)
-{
-    WXUNUSED(pUndoData);
-	m_pBeamShape = (lmShapeBeam*)NULL;
-    Include(pFirstNote);
 }
 
 lmBeam::~lmBeam()

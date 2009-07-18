@@ -38,8 +38,6 @@
 #endif
 
 class lmSegment;
-class lmUndoData;
-class lmUndoItem;
 class lmTextItem;
 
 
@@ -145,7 +143,7 @@ public:
 
     // get and set the value of an option
     lmObjOptions* GetCurrentObjOptions();
-    lmObjOptions* GetObjOptions() { return m_pObjOptions; }
+    inline lmObjOptions* GetObjOptions() { return m_pObjOptions; }
     void SetOption(wxString sName, long nLongValue);
     void SetOption(wxString sName, wxString sStringValue);
     void SetOption(wxString sName, double nDoubleValue);
@@ -160,11 +158,12 @@ public:
 
 	//--- ScoreObj properties ------------------------------
 	virtual lmEScoreObjType GetScoreObjType()=0;
-	bool IsInstrument() { return GetScoreObjType() == lmSOT_Instrument; }
-	bool IsScore() { return GetScoreObjType() == lmSOT_Score; }
-	bool IsStaff() { return GetScoreObjType() == lmSOT_Staff; }
-	bool IsComponentObj() { return GetScoreObjType() == lmSOT_ComponentObj; }
-	bool IsVStaff() { return GetScoreObjType() == lmSOT_VStaff; }
+	inline bool IsInstrument() { return GetScoreObjType() == lmSOT_Instrument; }
+	inline bool IsScore() { return GetScoreObjType() == lmSOT_Score; }
+	inline bool IsStaff() { return GetScoreObjType() == lmSOT_Staff; }
+	inline bool IsComponentObj() { return GetScoreObjType() == lmSOT_ComponentObj; }
+	inline bool IsVStaff() { return GetScoreObjType() == lmSOT_VStaff; }
+    inline long GetID() { return m_nId; }
 
     //--- a ScoreObj can own other ScoreObjs -----------------------
     inline lmScoreObj* GetParentScoreObj() { return m_pParent; }
@@ -183,10 +182,10 @@ public:
     //wrapper methods to encapsulate and simplify operations related to score creation by program
     lmAuxObj* AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxString& sText,
                             lmTextStyle* pTextStyle, wxSize size = wxSize(160, 80),
-                            wxColour nBgColor = wxColour(_T("#fffeb0")) );
+                            wxColour nBgColor = wxColour(_T("#fffeb0")), long nID = 0L);
     lmAuxObj* AttachLine(lmTenths xtStart, lmTenths ytStart, lmTenths xtEnd, lmTenths ytEnd,
                          lmTenths ntWidth, lmELineCap nStartCap, lmELineCap nEndCap,
-                         lmELineStyle nStyle, wxColour nColor);
+                         lmELineStyle nStyle, wxColour nColor, long nID = 0L);
 
 
 	//--- a ScoreObj can be renderizable
@@ -252,16 +251,21 @@ public:
 
     //debug methods
 	virtual wxString Dump();
-    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
 
 
 
 protected:
-    lmScoreObj(lmScoreObj* pParent);
+    lmScoreObj(lmScoreObj* pParent, long nID);
     void PrepareToCreateShapes();
 
+    friend class lmScore;
+    inline void SetID(long nValue) { m_nId = nValue; }   //To be used only by lmScore
+
+
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
+    long            m_nId;              //the ID for this object in the score
     long            m_nLayer;           //layer in which it will be rendered
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
@@ -308,7 +312,7 @@ public:
 	//---- specific methods of this class ------------------------
 
 	// type and identificaction
-    inline int GetID() const { return m_nId; }
+    //inline long GetID() { return GetNewID(); } // m_nId; }
     inline lmEComponentObjType GetType() const { return m_nType; }
 	inline bool IsStaffObj() { return m_nType == lm_eStaffObj; }
 	inline bool IsAuxObj() { return m_nType == lm_eAuxObj; }
@@ -323,11 +327,12 @@ public:
 
 
 protected:
-    lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, bool fIsDraggable = false);
+    lmComponentObj(lmScoreObj* pParent, long nID, lmEComponentObjType nType,
+                   bool fIsDraggable = false);
 
 
     lmEComponentObjType     m_nType;        //type of ComponentObj
-    int                     m_nId;          //unique number, to identify each lmComponentObj
+    //int                     m_nId;          //unique number, to identify each lmComponentObj
     bool                    m_fIsDraggable;
 	wxColour		        m_color;        //object color
 
@@ -353,10 +358,28 @@ enum EStaffObjType
 };
 
 //IRef management definitions
-typedef long lmIRef;            // immutable reference to an StaffObj
-#define GetSegNum(nIRef)                    ((nIRef) >> 16)
-#define GetPosNum(nIRef)                    ((nIRef) & 0x0000FFFF)
-#define CreateIRef(nSegment, nPosition)     ((nSegment) << 16 | (nPosition))
+
+// immutable reference to an StaffObj
+class lmIRef
+{
+public:
+    lmIRef() {}
+    lmIRef(int nInstr, int nSegment, int nStaff, int nPos) 
+        : m_nInstr(nInstr), m_nSegment(nSegment), m_nStaff(nStaff), m_nPos(nPos) {}
+
+    inline int GetSegNum() { return m_nSegment; }
+    inline int GetPosNum() { return m_nPos; }
+    inline int GetInstrNum() { return m_nInstr; }
+
+
+protected:
+
+    int m_nInstr;
+    int m_nSegment;
+    int m_nStaff;
+    int m_nPos;
+};
+
 
 
 
@@ -412,7 +435,7 @@ public:
     //inline bool IsRest() { return m_nClass == eSFOT_NoteRest && ((lmNote*)this)->IsRest(); }
 
     // source code related methods
-    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
 
     // methods related to time and duration
@@ -432,7 +455,7 @@ public:
     inline lmVStaff* GetVStaff() { return m_pVStaff; }
 	inline void SetSegment(lmSegment* pSegment) { m_pSegment = pSegment; }
 	inline lmSegment* GetSegment() { return m_pSegment; }
-    long GetIRef();
+    lmIRef GetIRef();
     inline bool IsOnStaff(int nStaff) { return (m_nStaffNum == nStaff
                                                 || IsKeySignature()
                                                 || IsTimeSignature()
@@ -452,11 +475,6 @@ public:
     lmTimeSignature* GetApplicableTimeSignature();
     lmKeySignature* GetApplicableKeySignature();
 
-
-    //undo/redo
-    virtual void Freeze(lmUndoData* pUndoData) {};
-    virtual void UnFreeze(lmUndoData* pUndoData) {};
-
 	//navigation in the VStaff collection and collection management
 	inline lmStaffObj* GetPrevSO() const { return m_pPrevSO; }
 	inline lmStaffObj* GetNextSO() const { return m_pNextSO; }
@@ -466,7 +484,7 @@ public:
 
 
 protected:
-    lmStaffObj(lmScoreObj* pParent, EStaffObjType nType,
+    lmStaffObj(lmScoreObj* pParent, long nID, EStaffObjType nType,
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects
              bool fVisible = true,
              bool fIsDraggable = false);
@@ -571,12 +589,12 @@ public:
     virtual lmEAuxObjType GetAuxObjType()=0;
 
     // source code related methods
-    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
 
 
 protected:
-    lmAuxObj(bool fIsDraggable = false);
+    lmAuxObj(lmScoreObj* pOwner, long nID, bool fIsDraggable = false);
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
 
 };
@@ -595,7 +613,6 @@ public:
     //building/destroying the relationship
     virtual void Include(lmNoteRest* pNR, int nIndex = -1)=0;
     virtual void Remove(lmNoteRest* pNR)=0;
-    virtual void Save(lmUndoData* pUndoData)=0;
 	virtual void OnRelationshipModified()=0;
 
     //information
@@ -604,16 +621,16 @@ public:
     lmEAuxObjType GetAuxObjType() { return m_nRelObjType; }
 
     //source code generation
-    virtual wxString SourceLDP_First(int nIndent) { return wxEmptyString; }
-    virtual wxString SourceLDP_Middle(int nIndent) { return wxEmptyString; }
-    virtual wxString SourceLDP_Last(int nIndent) { return wxEmptyString; }
+    virtual wxString SourceLDP_First(int nIndent, bool fUndoData) { return wxEmptyString; }
+    virtual wxString SourceLDP_Middle(int nIndent, bool fUndoData) { return wxEmptyString; }
+    virtual wxString SourceLDP_Last(int nIndent, bool fUndoData) { return wxEmptyString; }
 
     //overrides
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
 
 protected:
-	lmRelObj(lmEAuxObjType nRelObjType, bool fIsDraggable = true)
-        : lmAuxObj(fIsDraggable), m_nRelObjType(nRelObjType) {}
+	lmRelObj(lmScoreObj* pOwner, lmEAuxObjType nRelObjType, bool fIsDraggable = true)
+        : lmAuxObj(pOwner, 0L, fIsDraggable), m_nRelObjType(nRelObjType) {}
 
     lmEAuxObjType       m_nRelObjType;
 
@@ -635,50 +652,14 @@ public:
 
 
 protected:
-    lmBinaryRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pStartNR, lmNoteRest* pEndNR,
-                   bool fIsDraggable = true);
+    lmBinaryRelObj(lmScoreObj* pOwner, lmEAuxObjType nRelObjType, lmNoteRest* pStartNR,
+                   lmNoteRest* pEndNR, bool fIsDraggable = true);
 
     lmNoteRest*     m_pStartNR;     //notes/rests related by this lmRelObj
     lmNoteRest*		m_pEndNR;
 };
 
 
-
-////An AuxObj relating more than two Notes/Rests
-//class lmMultiRelObj : public lmRelObj
-//{
-//public:
-//    virtual ~lmMultiRelObj() {}
-//
-//    //implementation of some lmRelObj pure virtual methods
-//    virtual void Include(lmNoteRest* pNR, int nIndex = -1);
-//    virtual void Remove(lmNoteRest* pNR);
-//    inline int NumNotes() { return (int)m_Notes.size(); }
-//    inline lmNoteRest* GetStartNoteRest() { return m_Notes.front(); }
-//    inline lmNoteRest* GetEndNoteRest() { return m_Notes.back(); }
-//
-//        //specific methods
-//
-//    virtual int GetNoteIndex(lmNoteRest* pNR);
-//
-//    //access to notes/rests
-//    lmNoteRest* GetFirstNoteRest();
-//    lmNoteRest* GetNextNoteRest();
-//    std::list<lmNoteRest*>& GetListOfNoteRests() { return m_Notes; }
-//
-//
-//protected:
-//    lmMultiRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pFirstNote, lmUndoData* pUndoData,
-//                  bool fIsDraggable = true)
-//        : lmRelObj(nRelObjType, fIsDraggable) {}
-//
-//    lmMultiRelObj(lmEAuxObjType nRelObjType)
-//        : lmRelObj(nRelObjType, true) {}
-//
-//    //notes/rests related by this lmRelObj
-//    std::list<lmNoteRest*>   m_Notes;
-//    std::list<lmNoteRest*>::iterator m_it;   //for methods GetFirstNoteRest() and GetNextNoteRest()
-//};
 
 
 #endif    // __LM_STAFFOBJ_H__

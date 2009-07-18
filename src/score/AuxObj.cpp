@@ -51,8 +51,8 @@ extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 // lmAuxObj implementation
 //========================================================================================
 
-lmAuxObj::lmAuxObj(bool fIsDraggable)
-    : lmComponentObj((lmComponentObj*)NULL, lm_eAuxObj, fIsDraggable)
+lmAuxObj::lmAuxObj(lmScoreObj* pOwner, long nID, bool fIsDraggable)
+    : lmComponentObj(pOwner, nID, lm_eAuxObj, fIsDraggable)
 {
     SetLayer(lm_eLayerAuxObjs);
 }
@@ -88,7 +88,9 @@ lmTenths lmAuxObj::LogicalToTenths(lmLUnits uUnits)
 
 void lmAuxObj::SetOwner(lmScoreObj* pOwner)
 {
+    wxASSERT(!m_pParent);
     m_pParent = pOwner;
+    GetScore()->AssignID(this);
 }
 
 wxFont* lmAuxObj::GetSuitableFont(lmPaper* pPaper)
@@ -153,9 +155,9 @@ wxString lmAuxObj::Dump()
 	return lmComponentObj::Dump();
 }
 
-wxString lmAuxObj::SourceLDP(int nIndent)
+wxString lmAuxObj::SourceLDP(int nIndent, bool fUndoData)
 {
-	return lmComponentObj::SourceLDP(nIndent);
+	return lmComponentObj::SourceLDP(nIndent, fUndoData);
 }
 
 wxString lmAuxObj::SourceXML(int nIndent)
@@ -169,7 +171,7 @@ wxString lmAuxObj::SourceXML(int nIndent)
 // lmRelObj implementation
 //========================================================================================
 
-wxString lmRelObj::SourceLDP(int nIndent)
+wxString lmRelObj::SourceLDP(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
 	return wxEmptyString;
@@ -181,9 +183,9 @@ wxString lmRelObj::SourceLDP(int nIndent)
 // lmBinaryRelObj implementation
 //========================================================================================
 
-lmBinaryRelObj::lmBinaryRelObj(lmEAuxObjType nRelObjType, lmNoteRest* pStartNR, lmNoteRest* pEndNR,
-                               bool fIsDraggable)
-    : lmRelObj(nRelObjType, fIsDraggable)
+lmBinaryRelObj::lmBinaryRelObj(lmScoreObj* pOwner, lmEAuxObjType nRelObjType, lmNoteRest* pStartNR,
+                               lmNoteRest* pEndNR, bool fIsDraggable)
+    : lmRelObj(pOwner, nRelObjType, fIsDraggable)
     , m_pStartNR(pStartNR)
     , m_pEndNR(pEndNR)
 {
@@ -221,8 +223,8 @@ void lmBinaryRelObj::Remove(lmNoteRest* pNR)
 // lmFermata implementation
 //========================================================================================
 
-lmFermata::lmFermata(lmEPlacement nPlacement)
-        : lmAuxObj(lmDRAGGABLE)
+lmFermata::lmFermata(lmScoreObj* pOwner, long nID, lmEPlacement nPlacement)
+        : lmAuxObj(pOwner, nID, lmDRAGGABLE)
 {
     m_nPlacement = nPlacement;
 }
@@ -307,10 +309,15 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
 	return pShape->GetWidth();
 }
 
-wxString lmFermata::SourceLDP(int nIndent)
+wxString lmFermata::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
-	sSource += _T(" (fermata");
+    if (fUndoData)
+        sSource += wxString::Format(_T(" (fermata#%d"), GetID() );
+    else
+	    sSource += _T(" (fermata");
+
+    //placement
     if (m_nPlacement == ep_Default)
         sSource += _T(")");
     else if (m_nPlacement == ep_Above)
@@ -319,7 +326,7 @@ wxString lmFermata::SourceLDP(int nIndent)
         sSource += _T(" below");
 
 	//base class info
-    sSource += lmAuxObj::SourceLDP(nIndent);
+    sSource += lmAuxObj::SourceLDP(nIndent, fUndoData);
 
 	//close element
 	sSource += _T(")");
@@ -348,9 +355,9 @@ wxString lmFermata::Dump()
 // lmLyric object implementation
 //========================================================================================
 
-lmLyric::lmLyric(wxString& sText, lmTextStyle* pStyle, ESyllabicTypes nSyllabic,
+lmLyric::lmLyric(lmScoreObj* pOwner, wxString& sText, lmTextStyle* pStyle, ESyllabicTypes nSyllabic,
                  int nNumLine, wxString sLanguage)
-    : lmAuxObj(lmDRAGGABLE),
+    : lmAuxObj(pOwner, 0L, lmDRAGGABLE),
       lmBasicText(sText, g_tDefaultPos, pStyle, sLanguage)
 {
     m_nNumLine = nNumLine;
@@ -398,13 +405,13 @@ lmLUnits lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCo
 	return 0;
 }
 
-void lmLyric::SetOwner(lmNoteRest* pOwner)
-{
-    //wxASSERT(pOwner);
-    //m_pOwner = pOwner;
-    //m_pVStaff = pOwner->GetVStaff();
-    //m_nStaffNum = pOwner->GetStaffNum();
-}
+//void lmLyric::SetOwner(lmNoteRest* pOwner)
+//{
+//    //wxASSERT(pOwner);
+//    //m_pOwner = pOwner;
+//    //m_pVStaff = pOwner->GetVStaff();
+//    //m_nStaffNum = pOwner->GetStaffNum();
+//}
 
 //void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
 //                        lmLUnits xPos, lmLUnits yPos)
@@ -449,11 +456,14 @@ void lmLyric::SetOwner(lmNoteRest* pOwner)
 //
 //}
 //
-wxString lmLyric::SourceLDP(int nIndent)
+wxString lmLyric::SourceLDP(int nIndent, bool fUndoData)
 {
 	//TODO
     wxString sSource = _T("");
-	sSource += _T("lmLyric");
+    if (fUndoData)
+        sSource += wxString::Format(_T(" (lmLyric#%d"), GetID() );
+    else
+	    sSource += _T(" (lmLyric");
     return sSource;
 }
 wxString lmLyric::SourceXML(int nIndent)
@@ -594,10 +604,11 @@ void lmScoreLineProperties::OnAcceptChanges(lmController* pController)
 // lmScoreLine object implementation
 //========================================================================================
 
-lmScoreLine::lmScoreLine(lmTenths xStart, lmTenths yStart, lmTenths xEnd, lmTenths yEnd,
-                         lmTenths nWidth, lmELineCap nStartCap, lmELineCap nEndCap,
-                         lmELineStyle nStyle, wxColour nColor)
-    : lmAuxObj(lmDRAGGABLE)
+lmScoreLine::lmScoreLine(lmScoreObj* pOwner, long nID, lmTenths xStart, lmTenths yStart,
+                         lmTenths xEnd, lmTenths yEnd, lmTenths nWidth,
+                         lmELineCap nStartCap, lmELineCap nEndCap, lmELineStyle nStyle,
+                         wxColour nColor)
+    : lmAuxObj(pOwner, nID, lmDRAGGABLE)
     , m_txStart(xStart)
     , m_tyStart(yStart)
     , m_txEnd(xEnd)
@@ -611,7 +622,7 @@ lmScoreLine::lmScoreLine(lmTenths xStart, lmTenths yStart, lmTenths xEnd, lmTent
 {
 }
 
-wxString lmScoreLine::SourceLDP(int nIndent)
+wxString lmScoreLine::SourceLDP(int nIndent, bool fUndoData)
 {
     //wxString sSource = _T("");
     //sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
@@ -621,7 +632,10 @@ wxString lmScoreLine::SourceLDP(int nIndent)
 
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(line ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(line#%d "), GetID() );
+    else
+        sSource += _T("(line ");
 
     //location
     sSource += _T("(startPoint dx:");
@@ -652,7 +666,7 @@ wxString lmScoreLine::SourceLDP(int nIndent)
     sSource += _T(")");
 
 	//base class info
-    sSource += lmAuxObj::SourceLDP(nIndent);
+    sSource += lmAuxObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");

@@ -41,16 +41,19 @@ class lmMetronomeMark : public lmStaffObj
 public:
     // constructors / destructor
     lmMetronomeMark(lmVStaff* pVStaff,          // 'note_symbol = 80'
+                    long nID,
                     lmENoteType nNoteType,
                     int nDots,
                     int nTicksPerMinute,
                     bool fParentheses = false,
                     bool fVisible = true);
     lmMetronomeMark(lmVStaff* pVStaff,          // 'm.m. = 80'
+                    long nID,
                     int nTicksPerMinute,
                     bool fParentheses = false,
                     bool fVisible = true);
     lmMetronomeMark(lmVStaff* pVStaff,          // 'note_symbol = note_symbol'
+                    long nID,
                     lmENoteType nLeftNoteType,
                     int nLeftDots,
                     lmENoteType nRightNoteType,
@@ -70,7 +73,7 @@ public:
 
     // debugging
     wxString Dump();
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     //specific methods of this object

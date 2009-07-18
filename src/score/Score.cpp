@@ -42,7 +42,6 @@
 
 #include "Score.h"
 #include "VStaff.h"
-#include "UndoRedo.h"
 #include "InstrGroup.h"
 #include "properties/DlgProperties.h"
 #include "../app/global.h"
@@ -69,7 +68,7 @@ extern lmLogger* g_pLogger;
 
 
 //to give a unique ID to each score
-static long m_nCounterID = 0;
+static long m_nScoreCounterID = 0;
 
 //=======================================================================================
 // helper class lmPageInfo implementation
@@ -115,7 +114,7 @@ void lmPageInfo::SetPageSizeMillimeters(wxSize nSize)
     m_uPageSize.SetWidth(lmToLogicalUnits(nSize.GetWidth(), lmMILLIMETERS));
 }
 
-wxString lmPageInfo::SourceLDP(int nIndent)
+wxString lmPageInfo::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
@@ -160,7 +159,7 @@ lmSystemInfo::lmSystemInfo(lmSystemInfo* pSysInfo)
     m_uSystemDistance = pSysInfo->m_uSystemDistance;
 }
 
-wxString lmSystemInfo::SourceLDP(int nIndent)
+wxString lmSystemInfo::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
@@ -187,14 +186,16 @@ lmStaffObj* g_pCursorSO = (lmStaffObj*)NULL;        //not NULL for exporting cur
 
 
 lmScore::lmScore()
-    : lmScoreObj((lmScoreObj*)NULL)
+    : lmScoreObj((lmScoreObj*)NULL, 0L)
     , m_SCursor(this)
     , m_sCreationModeName(wxEmptyString)
     , m_sCreationModeVers(wxEmptyString)
+    , m_nCounterID(0L)
+    , m_fUndoMode(false)
 {
     //Set up an empty score, that is, without any lmInstrument.
 
-    m_nID = ++m_nCounterID;
+    m_nScoreID = ++m_nScoreCounterID;
 
     //initializations
     m_fReadOnly = false;
@@ -445,13 +446,30 @@ lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
     return (10.0f * uUnits)/uSpacing;
 }
 
-lmScoreTitle* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
+lmScoreTitle* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle,
+                                long nID)
 {
     lmScoreTitle* pTitle =
-        new lmScoreTitle(sTitle, lmBLOCK_ALIGN_BOTH, nHAlign, lmVALIGN_TOP, pStyle);
+        new lmScoreTitle(this, nID, sTitle, lmBLOCK_ALIGN_BOTH, nHAlign, lmVALIGN_TOP, pStyle);
 
     m_nTitles.push_back( AttachAuxObj(pTitle) );
     return pTitle;
+}
+
+long lmScore::AssignID(lmScoreObj* pSO)
+{ 
+    if (m_fUndoMode)
+    {
+        if (pSO->GetID() == 0)
+            wxLogMessage(_T("[lmScore::AssignID] UndoMode: an object does not have a saved ID"));
+    }
+    else
+    {
+        if (pSO->GetID() != 0)
+            wxLogMessage(_T("[lmScore::AssignID] Normal mode: an object has already an ID"));
+    }
+    pSO->SetID(++m_nCounterID);
+    return m_nCounterID;
 }
 
 wxString lmScore::GetScoreName()
@@ -476,13 +494,14 @@ int lmScore::GetNumMeasures()
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                     wxString sName, wxString sAbbrev,
-                                     lmInstrGroup* pGroup)
+                                     wxString sName, wxString sAbbrev, long nID,
+                                     long nVStaffID, lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
 
-    lmInstrument* pInstr = new lmInstrument(this, nMIDIChannel, nMIDIInstr, sName, sAbbrev);
+    lmInstrument* pInstr = new lmInstrument(this, nID, nVStaffID, nMIDIChannel, nMIDIInstr,
+                                            sName, sAbbrev);
 
 	DoAddInstrument(pInstr, pGroup);
     return pInstr;
@@ -490,12 +509,13 @@ lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
 									 lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev,
-                                     lmInstrGroup* pGroup)
+                                     long nID, long nVStaffID, lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
 
-    lmInstrument* pInstr = new lmInstrument(this, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
+    lmInstrument* pInstr = new lmInstrument(this, nID, nVStaffID, nMIDIChannel, nMIDIInstr,
+                                            pName, pAbbrev);
 
 	DoAddInstrument(pInstr, pGroup);
 	return pInstr;
@@ -738,7 +758,7 @@ void lmScore::WriteToFile(wxString sFilename, wxString sContent)
 wxString lmScore::Dump(wxString sFilename)
 {
     //dump global VStaff
-    wxString sDump = wxString::Format(_T("Score ID: %d\nGlobal objects:\n"), GetID());
+    wxString sDump = wxString::Format(_T("Score ID: %d\nGlobal objects:\n"), GetScoreID());
 
     //dump titles and other attached auxobjs
     if (m_pAuxObjs)
@@ -765,9 +785,9 @@ wxString lmScore::Dump(wxString sFilename)
     return sDump;
 }
 
-wxString lmScore::SourceLDP(bool fExportCursor, wxString sFilename)
+wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
 {
-    if(fExportCursor)
+    if(fUndoData)
         g_pCursorSO = m_SCursor.GetCursorSO();
     else
         g_pCursorSO = (lmStaffObj*)NULL;
@@ -781,6 +801,9 @@ wxString lmScore::SourceLDP(bool fExportCursor, wxString sFilename)
 	sSource += (wxDateTime::Now()).Format(_T("%Y-%m-%d"));
     sSource += _T("\n");
 
+    //comment with ID counter value
+    sSource += wxString::Format(_T("   (undoData (idCounter  %d))\n"), m_nCounterID);
+
     //creation mode
     if (!m_sCreationModeName.empty())
     {
@@ -792,38 +815,38 @@ wxString lmScore::SourceLDP(bool fExportCursor, wxString sFilename)
     }
 
     //styles
-    sSource += m_TextStyles.SourceLDP(1);
+    sSource += m_TextStyles.SourceLDP(1, fUndoData);
 
     //titles and other attached auxobjs
     if (m_pAuxObjs)
     {
 	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
 	    {
-		    sSource += (*m_pAuxObjs)[i]->SourceLDP(1);
+		    sSource += (*m_pAuxObjs)[i]->SourceLDP(1, fUndoData);
 	    }
     }
 
     //first page layout info
 	lmPageInfo* pPageInfo = m_PagesInfo.front();
-    sSource += pPageInfo->SourceLDP(1);
+    sSource += pPageInfo->SourceLDP(1, fUndoData);
 
     //first system and other systems layout info
-    //sSource += m_SystemsInfo.front()->SourceLDP(1);
-    //sSource += m_SystemsInfo.back()->SourceLDP(1);
+    //sSource += m_SystemsInfo.front()->SourceLDP(1, fUndoData);
+    //sSource += m_SystemsInfo.back()->SourceLDP(1, fUndoData);
 
     //score cursor information
-    if (fExportCursor)
+    if (fUndoData)
     {
-        sSource += wxString::Format(_T("   (cursor %d %d %.2f)\n"),
-                                    m_SCursor.GetCursorInstrumentNumber(),
-                                    m_SCursor.GetCursorNumStaff(),
-                                    m_SCursor.GetCursorTime() );
+        sSource += wxString::Format(_T("   (cursor %d %d %s)\n"),
+                        m_SCursor.GetCursorInstrumentNumber(),
+                        m_SCursor.GetCursorNumStaff(),
+		                DoubleToStr((double)m_SCursor.GetCursorTime(), 2).c_str() );
     }
 
     //loop for each instrument
     for (int i=0; i < (int)m_cInstruments.size(); i++)
     {
-        sSource += m_cInstruments[i]->SourceLDP(1);
+        sSource += m_cInstruments[i]->SourceLDP(1, fUndoData);
     }
     sSource += _T(")");
 
@@ -1101,7 +1124,7 @@ void lmScore::RemoveAllHighlight(wxWindow* pCanvas)
 	std::list<lmStaffObj*>::iterator pItem;
 	for (pItem = m_cHighlighted.begin(); pItem != m_cHighlighted.end(); pItem++)
 	{
-        lmScoreHighlightEvent event(this->GetID(), *pItem, eVisualOff);
+        lmScoreHighlightEvent event(this->GetScoreID(), *pItem, eVisualOff);
         ::wxPostEvent(pCanvas, event);
     }
 }
@@ -1201,12 +1224,6 @@ bool lmScore::IsMeasureModified(int nMeasure)
 void lmScore::ResetMeasuresModified()
 {
 	m_aMeasureModified.clear();
-}
-
-lmScoreCursor* lmScore::SetNewCursorState(lmCursorState* pState)
-{
-    m_SCursor.SetNewCursorState(pState);
-    return &m_SCursor;
 }
 
 lmScoreCursor* lmScore::SetCursorState(lmCursorState* pState)
@@ -1386,7 +1403,7 @@ lmBoxScore* lmScore::Layout(lmPaper* pPaper)
     #ifdef __WXDEBUG__
         oTimer.Pause();
         g_pLogger->LogTrace(_T("Timing: Score renderization"), _T("[lmScore::Layout] %ld ms required for layouting score %d (%s)"),
-                            oTimer.Time(), m_nID, m_sScoreName.c_str() );
+                            oTimer.Time(), m_nScoreID, m_sScoreName.c_str() );
     #endif
 
     return pGMObj;
@@ -1535,7 +1552,7 @@ lmTextStyle* lmStylesCollection::GetNextStyle()
     return (lmTextStyle*)NULL;
 }
 
-wxString lmStylesCollection::SourceLDP(int nIndent)
+wxString lmStylesCollection::SourceLDP(int nIndent, bool fUndoData)
 {
 	wxString sSource = _T("");
     std::list<lmTextStyle*>::iterator it;

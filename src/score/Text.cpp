@@ -35,7 +35,6 @@
 
 #include "Score.h"
 #include "Text.h"
-#include "UndoRedo.h"
 #include "properties/DlgProperties.h"
 #include "properties/TextProperties.h"
 #include "../graphic/GMObject.h"
@@ -88,8 +87,9 @@ lmBasicText::~lmBasicText()
 // lmScoreText implementation
 //==========================================================================================
 
-lmScoreText::lmScoreText(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
-    : lmAuxObj(lmDRAGGABLE),
+lmScoreText::lmScoreText(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEHAlign nHAlign,
+                         lmTextStyle* pStyle)
+    : lmAuxObj(pOwner, nID, lmDRAGGABLE),
       lmBasicText(sTitle, g_tDefaultPos, pStyle)
 {
     m_nBlockAlign = lmBLOCK_ALIGN_NONE;
@@ -158,20 +158,13 @@ void lmScoreText::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabNa
         pDlg->AddPanel( new lmTextProperties(pDlg->GetNotebook(), this), sTabName);
 }
 
-void lmScoreText::Cmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText, lmEHAlign nAlign,
-                                 lmLocation tPos, lmTextStyle* pTS)
+void lmScoreText::Cmd_ChangeText(wxString& sText, lmEHAlign nAlign, lmLocation tPos,
+                                 lmTextStyle* pTS)
 {
     m_sText = sText;
     m_nHAlign = nAlign;
     m_tTextPos = tPos;
     m_pStyle = pTS;
-}
-
-void lmScoreText::UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
-                                     lmEHAlign nAlign, lmLocation tPos,
-                                     lmTextStyle* pTS)
-{
-    Cmd_ChangeText(pUndoItem, sText, nAlign, tPos, pTS);
 }
 
 
@@ -180,8 +173,9 @@ void lmScoreText::UndoCmd_ChangeText(lmUndoItem* pUndoItem, wxString& sText,
 // lmTextItem implementation
 //==========================================================================================
 
-lmTextItem::lmTextItem(wxString& sTitle, lmEHAlign nHAlign, lmTextStyle* pStyle)
-    : lmScoreText(sTitle, nHAlign, pStyle)
+lmTextItem::lmTextItem(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEHAlign nHAlign,
+                       lmTextStyle* pStyle)
+    : lmScoreText(pOwner, nID, sTitle, nHAlign, pStyle)
 {
     m_nBlockAlign = lmBLOCK_ALIGN_NONE;
     m_nVAlign = lmVALIGN_DEFAULT;
@@ -232,11 +226,14 @@ wxString lmTextItem::Dump()
     return sDump;
 }
 
-wxString lmTextItem::SourceLDP(int nIndent)
+wxString lmTextItem::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(text");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(text#%d"), GetID() );
+    else
+		sSource += _T("(text");
 
     //text goes after main tag
     sSource += _T(" \"");
@@ -257,7 +254,7 @@ wxString lmTextItem::SourceLDP(int nIndent)
     sSource += _T("\")");
 
 	//base class info
-    sSource += lmAuxObj::SourceLDP(nIndent);
+    sSource += lmAuxObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");
@@ -293,7 +290,7 @@ wxString lmTextItem::SourceXML(int nIndent)
 // lmInstrNameAbbrev implementation
 //==========================================================================================
 
-wxString lmInstrNameAbbrev::SourceLDP(wxString sTag)
+wxString lmInstrNameAbbrev::SourceLDP(wxString sTag, bool fUndoData)
 {
     wxString sSource = _T("(");
     sSource += sTag;
@@ -309,7 +306,7 @@ wxString lmInstrNameAbbrev::SourceLDP(wxString sTag)
     sSource += _T("\")");
 
 	//base class info
-    sSource += lmAuxObj::SourceLDP(0);
+    sSource += lmAuxObj::SourceLDP(0, fUndoData);
 
     //close element
     sSource += _T(")");
@@ -323,9 +320,10 @@ wxString lmInstrNameAbbrev::SourceLDP(wxString sTag)
 // lmScoreTitle implementation
 //==========================================================================================
 
-lmScoreTitle::lmScoreTitle(wxString& sTitle, lmEBlockAlign nBlockAlign, lmEHAlign nHAlign,
-                         lmEVAlign nVAlign, lmTextStyle* pStyle)
-    : lmScoreText(sTitle, nHAlign, pStyle)
+lmScoreTitle::lmScoreTitle(lmScoreObj* pOwner, long nID, wxString& sTitle,
+                           lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
+                           lmTextStyle* pStyle)
+    : lmScoreText(pOwner, nID, sTitle, nHAlign, pStyle)
 {
     m_nBlockAlign = nBlockAlign;
     m_nVAlign = nVAlign;
@@ -371,11 +369,14 @@ wxString lmScoreTitle::Dump()
     return sDump;
 }
 
-wxString lmScoreTitle::SourceLDP(int nIndent)
+wxString lmScoreTitle::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(title");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(title#%d"), GetID() );
+    else
+		sSource += _T("(title");
 
     //alignment
     if (m_nHAlign == lmHALIGN_CENTER)
@@ -396,7 +397,7 @@ wxString lmScoreTitle::SourceLDP(int nIndent)
     sSource += _T("\")");
 
 	//base class info
-    sSource += lmAuxObj::SourceLDP(nIndent);
+    sSource += lmAuxObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");
@@ -442,7 +443,7 @@ wxFont* lmBaseText::GetSuitableFont(lmPaper* pPaper)
 	return pFont;
 }
 
-wxString lmBaseText::SourceLDP(int nIndent)
+wxString lmBaseText::SourceLDP(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
 
@@ -477,10 +478,10 @@ wxString lmBaseText::Dump()
 //      rectangle) plus alligment attributes
 //==========================================================================================
 
-lmScoreBlock::lmScoreBlock(lmTenths ntWidth, lmTenths ntHeight, lmTPoint ntPos,
-                           lmEBlockAlign nBlockAlign,
+lmScoreBlock::lmScoreBlock(lmScoreObj* pOwner, long nID, lmTenths ntWidth,
+                           lmTenths ntHeight, lmTPoint ntPos, lmEBlockAlign nBlockAlign,
                            lmEHAlign nHAlign, lmEVAlign nVAlign)
-    : lmAuxObj(lmDRAGGABLE)
+    : lmAuxObj(pOwner, nID, lmDRAGGABLE)
     , m_ntWidth(ntWidth)
     , m_ntHeight(ntHeight)
     , m_ntPos(ntPos)
@@ -720,9 +721,10 @@ bool lmScoreBlock::ComputeAnchorJoinPoint(lmTPoint* ptJoin)
 // lmScoreTextParagraph implementation: box + alignment + collection of lmBaseText
 //==========================================================================================
 
-lmScoreTextParagraph::lmScoreTextParagraph(lmTenths ntWidth, lmTenths ntHeight,
+lmScoreTextParagraph::lmScoreTextParagraph(lmScoreObj* pOwner, long nID,
+                                           lmTenths ntWidth, lmTenths ntHeight,
                                            lmTPoint tPos)
-    : lmScoreBlock(ntWidth, ntHeight, tPos)
+    : lmScoreBlock(pOwner, nID, ntWidth, ntHeight, tPos)
 {
     DefineAsMultiShaped();      //multi-shaped: box (#0) + anchor line (#1)
 }
@@ -756,12 +758,15 @@ void lmScoreTextParagraph::InsertTextUnit(lmBaseText* pText)
     Defragment();
 }
 
-wxString lmScoreTextParagraph::SourceLDP(int nIndent)
+wxString lmScoreTextParagraph::SourceLDP(int nIndent, bool fUndoData)
 {
     //TODO
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(paragraph ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(paragraph#%d "), GetID() );
+    else
+		sSource += _T("(paragraph ");
 
     //location and alignment
     sSource += _T("dx:");
@@ -805,7 +810,7 @@ wxString lmScoreTextParagraph::SourceLDP(int nIndent)
         sSource += _T("\n");
         sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
         sSource += _T("(text ");
-        sSource += (*it)->SourceLDP(0);
+        sSource += (*it)->SourceLDP(0, fUndoData);
         sSource += _T(")");
     }
     --nIndent;
@@ -839,7 +844,7 @@ wxString lmScoreTextParagraph::SourceLDP(int nIndent)
 	//base class info
     sSource += _T("\n");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += lmAuxObj::SourceLDP(nIndent);
+    sSource += lmAuxObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");
@@ -922,8 +927,8 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
 // lmScoreTextBox implementation
 //==========================================================================================
 
-lmScoreTextBox::lmScoreTextBox()
-    : lmScoreBlock()
+lmScoreTextBox::lmScoreTextBox(lmScoreObj* pOwner, long nID)
+    : lmScoreBlock(pOwner, nID)
 {
 }
 
@@ -976,7 +981,7 @@ lmScoreTextBox::~lmScoreTextBox()
 //    return sDump;
 //}
 //
-//wxString lmScoreTextBox::SourceLDP(int nIndent)
+//wxString lmScoreTextBox::SourceLDP(int nIndent, bool fUndoData)
 //{
 //    wxString sSource = _T("");
 //    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
@@ -1001,7 +1006,7 @@ lmScoreTextBox::~lmScoreTextBox()
 //    sSource += _T("\")");
 //
 //	//base class info
-//    sSource += lmAuxObj::SourceLDP(nIndent);
+//    sSource += lmAuxObj::SourceLDP(nIndent, fUndoData);
 //
 //    //close element
 //    sSource += _T(")\n");

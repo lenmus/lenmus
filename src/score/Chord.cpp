@@ -51,7 +51,6 @@
 #include "Score.h"
 #include "VStaff.h"
 #include "Glyph.h"
-#include "UndoRedo.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"

@@ -91,7 +91,6 @@ public:
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     bool        AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptHeight);
     void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);
-    void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmEStemType AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
@@ -156,7 +155,9 @@ protected:
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);
-	bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
+    void        AnalyzeUndoData(lmLDPNode* pNode);
+
+    bool		GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
                                float* pValue);
     lmTextStyle* GetTextStyle(lmLDPNode* pNode, const wxString& sStyle);
 

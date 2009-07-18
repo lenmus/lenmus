@@ -30,7 +30,6 @@
 
 class lmNoteRest;
 class lmNote;
-class lmUndoData;
 
 //instead of using dynamic_cast I define a class type value
 enum lmERelationshipClass
@@ -51,7 +50,6 @@ public:
     virtual void Remove(T* pNR)=0;
     virtual T* GetStartNoteRest()=0;
     virtual T* GetEndNoteRest()=0;
-    virtual void Save(lmUndoData* pUndoData)=0;
 	inline lmERelationshipClass GetClass() { return m_nClass; }
 	virtual void OnRelationshipModified()=0;
 
@@ -112,7 +110,6 @@ public:
 
 protected:
     lmMultipleRelationship(lmERelationshipClass nClass);
-	lmMultipleRelationship(lmERelationshipClass nClass, T* pFirstNote, lmUndoData* pUndoData);
 
     std::list<T*>   m_Notes;        //list of note/rests that form the relation
     typename std::list<T*>::iterator m_it;   //for methods GetFirstNoteRest() and GetNextNoteRest()
@@ -179,10 +176,6 @@ void lmBinaryRelationship<T>::Remove(T* pNR)
     }
 }
 
-    //virtual void Include(T* pNR, int nIndex = -1)=0;
-    //virtual void Save(lmUndoData* pUndoData)=0;
-
-
 
 
 
@@ -192,13 +185,6 @@ void lmBinaryRelationship<T>::Remove(T* pNR)
 
 template <class T>
 lmMultipleRelationship<T>::lmMultipleRelationship(lmERelationshipClass nClass)
-	: lmRelationship<T>(nClass)
-{
-}
-
-template <class T>
-lmMultipleRelationship<T>::lmMultipleRelationship(lmERelationshipClass nClass,
-												  T* pFirstNote, lmUndoData* pUndoData)
 	: lmRelationship<T>(nClass)
 {
 }

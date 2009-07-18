@@ -61,7 +61,7 @@ public:
     lmLUnits GetStaffOffset() const;
 
     //methods related to associated AuxObjs management
-    lmFermata* AddFermata(const lmEPlacement nPlacement);
+    lmFermata* AddFermata(const lmEPlacement nPlacement, long nID);
     void AddLyric(lmLyric* pLyric);
 
     //methods related to duration
@@ -108,17 +108,10 @@ public:
 
 	//source & debug
     virtual wxString Dump();
-    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
 
-    //undo/redo
-    virtual void Freeze(lmUndoData* pUndoData);
-    virtual void UnFreeze(lmUndoData* pUndoData);
-
 	//relationships
-	template <class T> T* FreezeRelationship(T* pRel, lmUndoData* pUndoData);
-	template <class T> T* UnFreezeRelationship(lmUndoData* pUndoData);
-	template <class T> T* GetRelationship();
 	void OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelClass);
 	void OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass);
 	void OnRemovedFromRelationship(lmRelObj* pRel);
@@ -126,8 +119,8 @@ public:
 
 
 protected:
-    lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
-               int nNumDots, int nStaff, int nVoice, bool fVisible);
+    lmNoteRest(lmVStaff* pVStaff, long nID, bool IsRest, lmENoteType nNoteType,
+               float rDuration, int nNumDots, int nStaff, int nVoice, bool fVisible);
 
     lmLUnits AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                          wxColour colorC);

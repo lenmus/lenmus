@@ -34,9 +34,7 @@
 #endif
 
 #include "../score/Score.h"
-#include "../score/UndoRedo.h"
 #include "../score/VStaff.h"
-#include "../score/EditCmd.h"
 #include "../score/properties/DlgProperties.h"
 #include "ScoreCommand.h"
 #include "ScoreDoc.h"
@@ -58,101 +56,7 @@
 //----------------------------------------------------------------------------------------
 
 lmScoreCommand::lmScoreCommand(const wxString& sName, lmDocument *pDoc,
-                               lmVStaffCursor* pVCursor, bool fHistory, int nOptions,
-                               bool fUpdateViews)
-    : wxCommand(true, sName)
-      , m_pDoc(pDoc)
-	  , m_fDocModified(false)
-      , m_fHistory(fHistory)
-      , m_nOptions(nOptions)
-      , m_fUpdateViews(fUpdateViews)
-      //, m_pSCO((lmScoreObj*)NULL)
-{
-    if (pVCursor)
-        m_tCursorState = pVCursor->GetState();
-    else
-        m_tCursorState = g_tNoCursorState;
-}
-
-lmScoreCommand::~lmScoreCommand()
-{
-}
-
-bool lmScoreCommand::Undo()
-{
-    //Default implementation valid for most commands using the undo log.
-
-    //undelete the actions
-    m_UndoLog.UndoAll();
-    return CommandUndone();
-}
-
-bool lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
-{
-    //common code after executing a command:
-    //- save document current modification status flag, to restore it if command undo
-    //- set document as 'modified'
-    //- update the views with the changes
-    //
-    // Returns false to indicate that the action must not be added to the command history.
-
-	m_fDocModified = m_pDoc->IsModified();
-	m_pDoc->Modify(fScoreModified);
-    //if (m_fUpdateViews)
-        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions) );
-
-    return m_fHistory;
-}
-
-bool lmScoreCommand::CommandUndone(int nOptions)
-{
-    //common code after executing an Undo operation:
-    //- reset document to previous 'modified' state
-    //- update the views with the changes
-    //
-    //Returns true to indicate that the action has taken place, false otherwise.
-    //Returning false will indicate to the command processor that the action is
-    //not redoable and no change should be made to the command history.
-
-    //restore cursor
-    if (!IsEmptyState(m_tCursorState))
-        m_pDoc->GetScore()->SetNewCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
-
-    //update views
-    //if (m_fUpdateViews)
-    {
-        //re-built the graphic model
-        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions));
-    }
-    //else
-    //{
-    //    //the model was not updated when issuing the Do command. Instead the object
-    //    //was selected and only that object was re-rendered. Do it in that way again.
-    //    //if (m_pSCO)
-    //    //{
-    //    //    //m_pSCO->->Select
-    //    //    m_pSCO->GetShapeFromIdx(m_nShapeIdx)->RenderWithHandlers(m_pPaper);
-    //    //}
-    //}
-
-    return true;
-}
-
-
-
-
-//----------------------------------------------------------------------------------------
-// lmNewScoreCommand abstract class implementation
-//
-// Do() method will return true to indicate that the action has taken place, false
-// otherwise. Returning false will indicate to the command processor that the action is
-// not undoable and should not be added to the command history.
-//----------------------------------------------------------------------------------------
-
-lmNewScoreCommand::lmNewScoreCommand(const wxString& sName, lmDocument *pDoc,
-                                     lmCursorState& tCursorState, bool fUndoable,
+                                     bool fUndoable,
                                      int nOptions, bool fUpdateViews)
     : wxCommand(true, sName)
       , m_pDoc(pDoc)
@@ -160,15 +64,14 @@ lmNewScoreCommand::lmNewScoreCommand(const wxString& sName, lmDocument *pDoc,
       , m_fUndoable(fUndoable)
       , m_nOptions(nOptions)
       , m_fUpdateViews(fUpdateViews)
-      , m_tCursorState(tCursorState)
 {
 }
 
-lmNewScoreCommand::~lmNewScoreCommand()
+lmScoreCommand::~lmScoreCommand()
 {
 }
 
-void lmNewScoreCommand::LogCommand()
+void lmScoreCommand::LogCommand()
 {
     //log command if undoable
 
@@ -179,18 +82,17 @@ void lmNewScoreCommand::LogCommand()
     m_sOldSource = m_pDoc->GetScore()->SourceLDP(true);     //true: export cursor
 }
 
-lmVStaff* lmNewScoreCommand::GetVStaff()
+lmVStaff* lmScoreCommand::GetVStaff()
 {
-    lmScoreCursor* pCursor = m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
-    return pCursor->GetVStaff();
+    return m_pDoc->GetScore()->GetCursor()->GetVStaff();
 }
 
-lmStaffObj* lmNewScoreCommand::GetStaffObj(int nInstr, int nStaff, lmIRef nIRef)
+lmStaffObj* lmScoreCommand::GetStaffObj(lmIRef& nIRef)
 {
-    return m_pDoc->GetScore()->GetCursor()->GetReferredObject(nInstr, nStaff, nIRef);
+    return m_pDoc->GetScore()->GetCursor()->GetReferredObject(nIRef);
 }
 
-bool lmNewScoreCommand::Undo()
+bool lmScoreCommand::Undo()
 {
     //Default implementation: Restore previous state from LDP source code
     //Returns true to indicate that the action has taken place, false otherwise.
@@ -211,7 +113,7 @@ bool lmNewScoreCommand::Undo()
     return true;        //undo action has taken place
 }
 
-bool lmNewScoreCommand::CommandDone(bool fScoreModified, int nOptions)
+bool lmScoreCommand::CommandDone(bool fScoreModified, int nOptions)
 {
     //common code after executing a command:
     //- save document current modification status flag, to restore it if command undo
@@ -222,13 +124,14 @@ bool lmNewScoreCommand::CommandDone(bool fScoreModified, int nOptions)
 
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(fScoreModified);
-    //if (m_fUpdateViews)
-        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions) );
+
+    //update views
+    m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions) );
 
     return m_fUndoable;
 }
 
-bool lmNewScoreCommand::CommandUndone(int nOptions)
+bool lmScoreCommand::CommandUndone(int nOptions)
 {
     //common code after executing an Undo operation:
     //- reset document to previous 'modified' state
@@ -238,29 +141,12 @@ bool lmNewScoreCommand::CommandUndone(int nOptions)
     //Returning false will indicate to the command processor that the action is
     //not redoable and no change should be made to the command history.
 
-    ////restore cursor
-    //if (!IsEmptyState(m_tCursorState))
-    //    m_pDoc->GetScore()->SetCursorState(&m_tCursorState);
-
-	m_pDoc->Modify(m_fDocModified);
 
     //update views
-    //if (m_fUpdateViews)
-    {
-        //re-built the graphic model
-        m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions));
-    }
-    //else
-    //{
-    //    //the model was not updated when issuing the Do command. Instead the object
-    //    //was selected and only that object was re-rendered. Do it in that way again.
-    //    //if (m_pSCO)
-    //    //{
-    //    //    //m_pSCO->->Select
-    //    //    m_pSCO->GetShapeFromIdx(m_nShapeIdx)->RenderWithHandlers(m_pPaper);
-    //    //}
-    //}
+	m_pDoc->Modify(true);           //set modified, so that the score is repainted
+    m_pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint(m_nOptions | nOptions));
 
+	m_pDoc->Modify(m_fDocModified);     //restore modified state
     return true;
 }
 
@@ -270,29 +156,14 @@ bool lmNewScoreCommand::CommandUndone(int nOptions)
 // lmCmdDeleteSelection implementation
 //----------------------------------------------------------------------------------------
 
-enum        //type of object to delete
+lmCmdDeleteSelection::lmCmdDeleteSelection(bool fUndoable,
+                                           const wxString& sName,
+                                           lmDocument *pDoc,
+                                           lmGMSelection* pSelection)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
-    //lm_eObjArch,
-    lm_eObjBeam,
-    //lm_eObjBrace,
-    //lm_eObjBracket,
-    //lm_eObjGlyph,
-    //lm_eObjInvisible,
-    //lm_eObjLine,
-    //lm_eObjStaff,
-    lm_eObjStaffObj,
-    //lm_eObjStem,
-    lm_eObjText,
-	lm_eObjTextBlock,
-    lm_eObjTie,
-    lm_eObjTuplet,
-};
-
-lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxString& name,
-                                           lmDocument *pDoc, lmGMSelection* pSelection)
-        : lmScoreCommand(name, pDoc, pVCursor)
-{
-    //loop to save objects to delete and its parameters
+    //loop to create and save the commands to delete the selected objects
+    //AWARE: commands are marked as lmNO_UNDO so that they do not save the score
     wxString sCmdName;
     lmGMObject* pGMO = pSelection->GetFirst();
     while (pGMO)
@@ -301,15 +172,11 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
         {
             case eGMO_ShapeTie:
                 {
-                    lmDeletedSO* pSOData = new lmDeletedSO;
-                    pSOData->nObjType = lm_eObjTie;
-                    pSOData->pObj = (void*)NULL;
-                    pSOData->fObjDeleted = false;
-                    pSOData->pParm1 = (void*)( ((lmShapeTie*)pGMO)->GetEndNote() );     //end note
-                    pSOData->pParm2 = (void*)NULL;
-
-                    m_ScoreObjects.push_back( pSOData );
-                    sCmdName = _T("Delete tie");
+                    //sCmdName = _T("Delete tie");
+                    //lmScoreCommand* pCmd 
+                    //    = new lmCmdDeleteTie(lmNO_UNDO, tCursorState, sCmdName, pDoc,
+                    //                         ((lmShapeTie*)pGMO)->GetEndNote() );
+                    //m_Commands.push_back( pCmd );
                 }
                 break;
 
@@ -318,15 +185,6 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
             case eGMO_ShapeNote:
             case eGMO_ShapeRest:
                 {
-                    lmDeletedSO* pSOData = new lmDeletedSO;
-                    pSOData->nObjType = lm_eObjStaffObj;
-                    pSOData->pObj = (void*)pGMO->GetScoreOwner();
-                    pSOData->fObjDeleted = false;
-                    pSOData->pParm1 = (void*)NULL;
-                    pSOData->pParm2 = (void*)NULL;
-
-                    m_ScoreObjects.push_back( pSOData );
-
                     //select command name
                     switch(pGMO->GetType())
                     {
@@ -341,62 +199,79 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                         default:
                             wxASSERT(false);
                     }
+                    lmScoreCommand* pCmd 
+                        = new lmCmdDeleteStaffObj(lmNO_UNDO, sCmdName, pDoc,
+                                             (lmStaffObj*)pGMO->GetScoreOwner() );
+                    m_Commands.push_back( pCmd );
                }
                 break;
 
             case eGMO_ShapeTuplet:
                 {
-                    lmDeletedSO* pSOData = new lmDeletedSO;
-                    pSOData->nObjType = lm_eObjTuplet;
-                    pSOData->pObj = (void*)NULL;
-                    pSOData->fObjDeleted = false;
-                    pSOData->pParm1 = (void*)( ((lmShapeTuplet*)pGMO)->GetScoreOwner() );   //start note
-                    pSOData->pParm2 = (void*)NULL;
+                    //lmToDeleteSO* pSOData = new lmToDeleteSO;
+                    //pSOData->nObjType = lm_eObjTuplet;
+                    //pSOData->nIRef = (void*)( ((lmShapeTuplet*)pGMO)->GetScoreOwner() );   //start note
 
-                    m_ScoreObjects.push_back( pSOData );
-                    sCmdName = _T("Delete tuplet");
+                    //m_Commands.push_back( pSOData );
+                    //sCmdName = _T("Delete tuplet");
+                    //lmScoreCommand* pCmd 
+                    //    = new lmCmdDeleteStaffObj(lmNO_UNDO, tCursorState, sCmdName, pDoc,
+                    //                         (lmStaffObj*)pGMO->GetScoreOwner() );
+                    //m_Commands.push_back( pCmd );
                 }
                 break;
 
             case eGMO_ShapeBeam:
                 {
-                    lmDeletedSO* pSOData = new lmDeletedSO;
-                    pSOData->nObjType = lm_eObjBeam;
-                    pSOData->pObj = (void*)NULL;
-                    pSOData->fObjDeleted = false;
-                    pSOData->pParm1 = (void*)( ((lmShapeBeam*)pGMO)->GetScoreOwner() );   //a note in the beam
-                    pSOData->pParm2 = (void*)NULL;
+                    //lmToDeleteSO* pSOData = new lmToDeleteSO;
+                    //pSOData->nObjType = lm_eObjBeam;
+                    //pSOData->pObj = (void*)NULL;
+                    //pSOData->fObjDeleted = false;
+                    //pSOData->pParm1 = (void*)( ((lmShapeBeam*)pGMO)->GetScoreOwner() );   //a note in the beam
+                    //pSOData->pParm2 = (void*)NULL;
 
-                    m_ScoreObjects.push_back( pSOData );
-                    sCmdName = _T("Delete beam");
+                    //m_Commands.push_back( pSOData );
+                    //sCmdName = _T("Delete beam");
+                    //lmScoreCommand* pCmd 
+                    //    = new lmCmdDeleteStaffObj(lmNO_UNDO, tCursorState, sCmdName, pDoc,
+                    //                         (lmStaffObj*)pGMO->GetScoreOwner() );
+                    //m_Commands.push_back( pCmd );
                 }
                 break;
 
             case eGMO_ShapeText:
                 {
-                    lmDeletedSO* pSOData = new lmDeletedSO;
-                    pSOData->nObjType = lm_eObjText;
-                    pSOData->pObj = (void*)NULL;
-                    pSOData->fObjDeleted = false;
-                    pSOData->pParm1 = (void*)( ((lmShapeText*)pGMO)->GetScoreOwner() );
-                    pSOData->pParm2 = (void*)NULL;
+                    //lmToDeleteSO* pSOData = new lmToDeleteSO;
+                    //pSOData->nObjType = lm_eObjText;
+                    //pSOData->pObj = (void*)NULL;
+                    //pSOData->fObjDeleted = false;
+                    //pSOData->pParm1 = (void*)( ((lmShapeText*)pGMO)->GetScoreOwner() );
+                    //pSOData->pParm2 = (void*)NULL;
 
-                    m_ScoreObjects.push_back( pSOData );
-                    sCmdName = _T("Delete text");
+                    //m_Commands.push_back( pSOData );
+                    //sCmdName = _T("Delete text");
+                    //lmScoreCommand* pCmd 
+                    //    = new lmCmdDeleteStaffObj(lmNO_UNDO, tCursorState, sCmdName, pDoc,
+                    //                         (lmStaffObj*)pGMO->GetScoreOwner() );
+                    //m_Commands.push_back( pCmd );
                 }
                 break;
 
 			case eGMO_ShapeTextBlock:
                 {
-                    lmDeletedSO* pSOData = new lmDeletedSO;
-                    pSOData->nObjType = lm_eObjText;
-                    pSOData->pObj = (void*)NULL;
-                    pSOData->fObjDeleted = false;
-                    pSOData->pParm1 = (void*)( ((lmShapeTitle*)pGMO)->GetScoreOwner() );
-                    pSOData->pParm2 = (void*)NULL;
+                    //lmToDeleteSO* pSOData = new lmToDeleteSO;
+                    //pSOData->nObjType = lm_eObjText;
+                    //pSOData->pObj = (void*)NULL;
+                    //pSOData->fObjDeleted = false;
+                    //pSOData->pParm1 = (void*)( ((lmShapeTitle*)pGMO)->GetScoreOwner() );
+                    //pSOData->pParm2 = (void*)NULL;
 
-                    m_ScoreObjects.push_back( pSOData );
-                    sCmdName = _T("Delete text");
+                    //m_Commands.push_back( pSOData );
+                    //sCmdName = _T("Delete text");
+                    //lmScoreCommand* pCmd 
+                    //    = new lmCmdDeleteStaffObj(lmNO_UNDO, tCursorState, sCmdName, pDoc,
+                    //                         (lmStaffObj*)pGMO->GetScoreOwner() );
+                    //m_Commands.push_back( pCmd );
                 }
                 break;
 
@@ -417,6 +292,7 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
                     wxString::Format(_T("TODO: Code in lmCmdDeleteSelection to delete %s (type %d)"),
                     pGMO->GetName().c_str(), pGMO->GetType() ));
         }
+        wxLogMessage(_T("[lmCmdDeleteSelection::lmCmdDeleteSelection] %s"), sCmdName.c_str());
         pGMO = pSelection->GetNext();
     }
 
@@ -427,179 +303,26 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(lmVStaffCursor* pVCursor, const wxStr
 
 lmCmdDeleteSelection::~lmCmdDeleteSelection()
 {
-    //delete frozen objects
-    std::list<lmDeletedSO*>::iterator it;
-    for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
-    {
-        if ((*it)->fObjDeleted && (*it)->pObj)
-        {
-            switch((*it)->nObjType)
-            {
-                case lm_eObjTie:        delete (lmTie*)(*it)->pObj;             break;
-                case lm_eObjTuplet:     delete (lmTupletBracket*)(*it)->pObj;   break;
-                case lm_eObjStaffObj:   delete (lmStaffObj*)(*it)->pObj;        break;
-                case lm_eObjBeam:       delete (lmStaffObj*)(*it)->pObj;        break;
-				case lm_eObjText:		delete (lmTextItem*)(*it)->pObj;        break;
-				case lm_eObjTextBlock:	delete (lmTextItem*)(*it)->pObj;        break;
-                default:
-                    wxASSERT(false);
-            }
-        }
+    //delete stored data
+    std::list<lmScoreCommand*>::iterator it;
+    for (it = m_Commands.begin(); it != m_Commands.end(); ++it)
         delete *it;
-    }
-    m_ScoreObjects.clear();
+    m_Commands.clear();
 }
 
 bool lmCmdDeleteSelection::Do()
 {
-    //loop to delete the objects
-    bool fSuccess = true;
-    bool fSkipCmd;
-    lmEditCmd* pECmd;
-    std::list<lmDeletedSO*>::iterator it;
-    for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
+    //log command if undoable
+    LogCommand();
+
+    //loop to issue delete commnads
+    std::list<lmScoreCommand*>::iterator it;
+    for (it = m_Commands.begin(); it != m_Commands.end(); ++it)
     {
-        fSkipCmd = false;
-        lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-        switch((*it)->nObjType)
-        {
-            case lm_eObjTie:
-                {
-                    lmNote* pEndNote = (lmNote*)(*it)->pParm1;
-                    //if any of the owner notes is also in the selection, it could get deleted
-                    //before the tie, causing automatically the removal of the tie. So let's
-                    //check that the tie still exists
-                    if (pEndNote->IsTiedToPrev())
-                    {
-                        lmVStaff* pVStaff = pEndNote->GetVStaff();      //affected VStaff
-                        pECmd = new lmECmdDeleteTie(pVStaff, pUndoItem, pEndNote);
-                        //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tie"));
-                    }
-                    else
-                        fSkipCmd = true;
-                }
-                break;
-
-            case lm_eObjBeam:
-                {
-                    lmNote* pNote = (lmNote*)(*it)->pParm1;
-                    //if the owner notes are also in the selection, they could get deleted
-                    //before the beam, causing automatically the removal of the beam.
-                    //So let's check that the beam still exists
-                    if (pNote->IsBeamed())
-                    {
-                        lmVStaff* pVStaff = pNote->GetVStaff();
-                        pECmd = new lmECmdDeleteBeam(pVStaff, pUndoItem, pNote);
-                        //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting beam"));
-                    }
-                    else
-                        fSkipCmd = true;
-                }
-                break;
-
-            case lm_eObjStaffObj:
-                {
-                    lmStaffObj* pSO = (lmStaffObj*)(*it)->pObj;
-                    lmVStaff* pVStaff = pSO->GetVStaff();      //affected VStaff
-                    //if (pSO->IsClef())
-                    //    pECmd = new lmECmdDeleteClef(pVStaff, pUndoItem, (lmClef*)pSO);
-                    //else if (pSO->IsTimeSignature())
-                    //    pECmd = new lmECmdDeleteTimeSignature(pVStaff, pUndoItem,
-                    //                                          (lmTimeSignature*)pSO);
-                    //else if (pSO->IsKeySignature())
-                    //    pECmd = new lmECmdDeleteKeySignature(pVStaff, pUndoItem,
-                    //                                         (lmKeySignature*)pSO);
-                    //else
-                        ; //pECmd = new lmECmdDeleteStaffObj(pVStaff, pUndoItem, pSO);
-                    //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting staffobj"));
-                }
-                break;
-
-            case lm_eObjTuplet:
-                {
-                    lmNote* pStartNote = (lmNote*)(*it)->pParm1;
-                    //if the owner notes are also in the selection, they could get deleted
-                    //before the tuplet, causing automatically the removal of the tuplet.
-                    //So let's check that the tuplet still exists
-                    if (pStartNote->IsInTuplet())
-                    {
-                        lmVStaff* pVStaff = pStartNote->GetVStaff();
-                        pECmd = new lmECmdDeleteTuplet(pVStaff, pUndoItem, pStartNote);
-                        //wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet"));
-                    }
-                    else
-                        fSkipCmd = true;
-                }
-                break;
-
-            case lm_eObjText:
-			case lm_eObjTextBlock:
-                {
-                    lmScoreText* pText = (lmScoreText*)(*it)->pParm1;
-					lmComponentObj* pAnchor = (lmComponentObj*)pText->GetParentScoreObj();
-					pECmd = new lmEDeleteText(pText, pAnchor, pUndoItem);
-					//wxLogMessage(_T("[lmCmdDeleteSelection::Do] Deleting tuplet. %s"),
-					//	(pECmd->Success() ? _T("Success") : _T("Fail")) );
-				}
-                break;
-
-			//case lm_eObjArch:
-            //case lm_eObjBrace:
-            //case lm_eObjBracket:
-            //case lm_eObjComposite:
-            //case lm_eObjGlyph:
-            //case lm_eObjInvisible:
-            //case lm_eObjLine:
-            //case lm_eObjStaff:
-            //case lm_eObjStem:
-            //    break;
-
-            default:
-                wxASSERT(false);
-        }
-
-        if (fSkipCmd)
-            delete pUndoItem;
-        else
-        {
-            if (pECmd->Success())
-            {
-                (*it)->fObjDeleted = true;                //the Obj is no longer owned by the score
-                m_UndoLog.LogCommand(pECmd, pUndoItem);
-            }
-            else
-            {
-                fSuccess = false;
-                delete pUndoItem;
-                delete pECmd;
-            }
-        }
+        (*it)->Do();
     }
 
-    //
-    if (fSuccess)
-   	    return CommandDone(lmSCORE_MODIFIED);
-    else
-    {
-        //undo command for the deleted ScoreObjs
-        Undo();
-        return false;
-    }
-}
-
-bool lmCmdDeleteSelection::Undo()
-{
-    //undelete the object
-    m_UndoLog.UndoAll();
-
-    //mark all objects as valid
-    std::list<lmDeletedSO*>::iterator it;
-    for (it = m_ScoreObjects.begin(); it != m_ScoreObjects.end(); ++it)
-    {
-        (*it)->fObjDeleted = false;      //the Obj is again owned by the score
-    }
-
-    return CommandUndone();
+    return CommandDone(lmSCORE_MODIFIED);
 }
 
 
@@ -609,10 +332,10 @@ bool lmCmdDeleteSelection::Undo()
 // lmCmdDeleteStaffObj implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(bool fUndoable, lmCursorState& tCursorState,
+lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(bool fUndoable, 
                                          const wxString& sName,
                                          lmDocument *pDoc, lmStaffObj* pSO)
-	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
     m_nIRef = pSO->GetIRef();
 }
@@ -623,7 +346,7 @@ bool lmCmdDeleteStaffObj::Do()
     LogCommand();
 
     //Get pointer to object to delete
-    lmStaffObj* pSO = GetStaffObj(m_tCursorState.nInstr, m_tCursorState.nStaff, m_nIRef);
+    lmStaffObj* pSO = GetStaffObj(m_nIRef);
 
     //Proceed to delete the object
     bool fError = false;
@@ -648,34 +371,36 @@ bool lmCmdDeleteStaffObj::Do()
 // lmCmdDeleteTie implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdDeleteTie::lmCmdDeleteTie(const wxString& name, lmDocument *pDoc,
+lmCmdDeleteTie::lmCmdDeleteTie(bool fUndoable,  
+                               const wxString& sName, lmDocument *pDoc,
                                lmNote* pEndNote)
-        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
-    m_pEndNote = pEndNote;
-}
-
-lmCmdDeleteTie::~lmCmdDeleteTie()
-{
+    m_nEndNoteIRef = pEndNote->GetIRef();
+    m_nStartNoteIRef = pEndNote->GetTiedNotePrev()->GetIRef();
 }
 
 bool lmCmdDeleteTie::Do()
 {
-    //Proceed to delete the tie
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdDeleteTie(m_pEndNote->GetVStaff(), pUndoItem, m_pEndNote);
+    //AWARE: Direct command. No need to save the score
 
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
-	    return CommandDone(lmSCORE_MODIFIED);
-    }
-    else
-    {
-        delete pUndoItem;
-        delete pECmd;
-        return false;
-    }
+    //Get pointer to end note
+    lmNote* pEndNote = (lmNote*)GetStaffObj(m_nEndNoteIRef);
+    //remove the tie
+    pEndNote->DeleteTiePrev();
+
+    return CommandDone(lmSCORE_MODIFIED);
+}
+
+bool lmCmdDeleteTie::Undo()
+{
+    //Get pointers to start and end notes
+    lmNote* pEndNote = (lmNote*)GetStaffObj(m_nEndNoteIRef);
+    lmNote* pStartNote = (lmNote*)GetStaffObj(m_nStartNoteIRef);
+    //re-create the tie
+    pEndNote->CreateTie(pStartNote, pEndNote);
+
+    return CommandUndone();
 }
 
 
@@ -685,36 +410,38 @@ bool lmCmdDeleteTie::Do()
 // lmCmdAddTie implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdAddTie::lmCmdAddTie(const wxString& name, lmDocument *pDoc,
-                         lmNote* pStartNote, lmNote* pEndNote)
-        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
+lmCmdAddTie::lmCmdAddTie(bool fUndoable,  const wxString& sName,
+                         lmDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
-    m_pStartNote = pStartNote;
-    m_pEndNote = pEndNote;
-}
-
-lmCmdAddTie::~lmCmdAddTie()
-{
+    m_nStartNoteIRef = pStartNote->GetIRef();
+    m_nEndNoteIRef = pEndNote->GetIRef();
 }
 
 bool lmCmdAddTie::Do()
 {
-    //Proceed to add a tie
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdAddTie(m_pEndNote->GetVStaff(), pUndoItem,
-                                          m_pStartNote, m_pEndNote);
+    //AWARE: Direct command. No need to save the score
 
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
-	    return CommandDone(lmSCORE_MODIFIED);
-    }
-    else
-    {
-        delete pUndoItem;
-        delete pECmd;
-        return false;
-    }
+    //Get pointers to start and end notes
+    lmNote* pEndNote = (lmNote*)GetStaffObj(m_nEndNoteIRef);
+    lmNote* pStartNote = (lmNote*)GetStaffObj(m_nStartNoteIRef);
+
+    //add the tie
+    pEndNote->CreateTie(pStartNote, pEndNote);
+
+    return CommandDone(lmSCORE_MODIFIED);
+}
+
+bool lmCmdAddTie::Undo()
+{
+    //Get pointers to start and end notes
+    lmNote* pEndNote = (lmNote*)GetStaffObj(m_nEndNoteIRef);
+    lmNote* pStartNote = (lmNote*)GetStaffObj(m_nStartNoteIRef);
+
+    //remove the tie
+    pEndNote->DeleteTiePrev();
+
+    return CommandUndone();
 }
 
 
@@ -723,10 +450,11 @@ bool lmCmdAddTie::Do()
 // lmCmdMoveObject implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdMoveObject::lmCmdMoveObject(const wxString& sName, lmDocument *pDoc,
+lmCmdMoveObject::lmCmdMoveObject(bool fUndoable, 
+                                 const wxString& sName, lmDocument *pDoc,
 								 lmGMObject* pGMO, const lmUPoint& uPos,
                                  bool fUpdateViews)
-	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL, true, 0, fUpdateViews)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
 	m_tPos.x = uPos.x;
 	m_tPos.y = uPos.y;
@@ -764,10 +492,10 @@ bool lmCmdMoveObject::Undo()
 // lmCmdInsertBarline: Insert a barline at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertBarline::lmCmdInsertBarline(bool fUndoable, lmCursorState& tCursorState,
+lmCmdInsertBarline::lmCmdInsertBarline(bool fUndoable,
                                        const wxString& sName, lmDocument *pDoc,
                                        lmEBarline nType)
-	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	: lmScoreCommand(sName, pDoc, fUndoable)
     , m_nBarlineType(nType)
 {
 }
@@ -792,10 +520,10 @@ bool lmCmdInsertBarline::Do()
 // lmCmdInsertClef: Insert a clef at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertClef::lmCmdInsertClef(bool fUndoable, lmCursorState& tCursorState,
+lmCmdInsertClef::lmCmdInsertClef(bool fUndoable,
                                  const wxString& sName,
                                  lmDocument *pDoc, lmEClefType nClefType)
-	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	: lmScoreCommand(sName, pDoc, fUndoable)
     , m_nClefType(nClefType)
 {
 }
@@ -821,11 +549,10 @@ bool lmCmdInsertClef::Do()
 //----------------------------------------------------------------------------------------
 
 lmCmdInsertTimeSignature::lmCmdInsertTimeSignature(bool fUndoable,
-                                                   lmCursorState& tCursorState,
                                                    const wxString& sName,
                                                    lmDocument *pDoc,  int nBeats,
                                                    int nBeatType, bool fVisible)
-	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	: lmScoreCommand(sName, pDoc, fUndoable)
     , m_nBeats(nBeats)
     , m_nBeatType(nBeatType)
     , m_fVisible(fVisible)
@@ -853,11 +580,11 @@ bool lmCmdInsertTimeSignature::Do()
 // lmCmdInsertKeySignature: Insert a key signature at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertKeySignature::lmCmdInsertKeySignature(bool fUndoable, lmCursorState& tCursorState,
+lmCmdInsertKeySignature::lmCmdInsertKeySignature(bool fUndoable,
                                                  const wxString& sName,
                              lmDocument *pDoc, int nFifths, bool fMajor,
                              bool fVisible)
-	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	: lmScoreCommand(sName, pDoc, fUndoable)
     , m_nFifths(nFifths)
     , m_fMajor(fMajor)
     , m_fVisible(fVisible)
@@ -883,7 +610,7 @@ bool lmCmdInsertKeySignature::Do()
 // lmCmdInsertNote: Insert a note at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertNote::lmCmdInsertNote(bool fUndoable, lmCursorState& tCursorState,
+lmCmdInsertNote::lmCmdInsertNote(bool fUndoable,
                                  const wxString& sName,
                                  lmDocument *pDoc,
                                  lmEPitchType nPitchType,
@@ -891,7 +618,7 @@ lmCmdInsertNote::lmCmdInsertNote(bool fUndoable, lmCursorState& tCursorState,
 								 lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
                                  int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
-	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 	, m_nNoteType(nNoteType)
 	, m_nPitchType(nPitchType)
 	, m_nStep(nStep)
@@ -935,11 +662,11 @@ bool lmCmdInsertNote::Do()
 // lmCmdInsertRest: Insert a rest at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdInsertRest::lmCmdInsertRest(bool fUndoable, lmCursorState& tCursorState,
+lmCmdInsertRest::lmCmdInsertRest(bool fUndoable,
                                  const wxString& sName,
                                  lmDocument *pDoc, lmENoteType nNoteType,
                                  float rDuration, int nDots, int nVoice)
-	: lmNewScoreCommand(sName, pDoc, tCursorState, fUndoable)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 	, m_nNoteType(nNoteType)
     , m_nDots(nDots)
 	, m_rDuration(rDuration)
@@ -973,9 +700,10 @@ bool lmCmdInsertRest::Do()
 // lmCmdChangeNotePitch: Change pitch of note at current cursor position
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeNotePitch::lmCmdChangeNotePitch(const wxString& sName, lmDocument *pDoc,
-                                 lmNote* pNote, int nSteps)
-	: lmScoreCommand(sName, pDoc, (lmVStaffCursor*)NULL )
+lmCmdChangeNotePitch::lmCmdChangeNotePitch(bool fUndoable,
+                                           const wxString& sName, lmDocument *pDoc,
+                                           lmNote* pNote, int nSteps)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
 	m_nSteps = nSteps;
 	m_pNote = pNote;
@@ -1005,10 +733,10 @@ bool lmCmdChangeNotePitch::Undo()
 //----------------------------------------------------------------------------------------
 
 lmCmdChangeNoteAccidentals::lmCmdChangeNoteAccidentals(
-                                        lmVStaffCursor* pVCursor,
-                                        const wxString& name, lmDocument *pDoc,
+                                        bool fUndoable,
+                                        const wxString& sName, lmDocument *pDoc,
                                         lmGMSelection* pSelection, int nAcc)
-	: lmScoreCommand(name, pDoc, pVCursor)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
 	m_nAcc = nAcc;
 
@@ -1071,20 +799,23 @@ bool lmCmdChangeNoteAccidentals::Undo()
 // lmCmdChangeNoteRestDots: Change dots of notes in current selection
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeNoteRestDots::lmCmdChangeNoteRestDots(lmVStaffCursor* pVCursor,
-                                                 const wxString& name, lmDocument *pDoc,
-                                                 lmGMSelection* pSelection, int nDots)
-	: lmScoreCommand(name, pDoc, pVCursor)
+lmCmdChangeNoteRestDots::lmCmdChangeNoteRestDots(bool fUndoable,
+                                                 const wxString& sName,
+                                                 lmDocument *pDoc,
+                                                 lmGMSelection* pSelection,
+                                                 int nDots)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
 	m_nDots = nDots;
 
-    //loop to save note/rests to modify
+    //loop to save data about note/rests to modify
     lmGMObject* pGMO = pSelection->GetFirst();
     while (pGMO)
     {
         if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
         {
-            m_NoteRests.push_back( (lmNoteRest*)pGMO->GetScoreOwner() );
+            lmNoteRest* pNR = (lmNoteRest*)pGMO->GetScoreOwner();
+            m_NoteRests.push_back( pNR->GetIRef() );
         }
         pGMO = pSelection->GetNext();
     }
@@ -1098,35 +829,19 @@ lmCmdChangeNoteRestDots::~lmCmdChangeNoteRestDots()
 
 bool lmCmdChangeNoteRestDots::Do()
 {
+    //log command if undoable
+    LogCommand();
+
     //loop to change dots
-    bool fSuccess = true;
-    lmEditCmd* pECmd;
-    std::list<lmNoteRest*>::iterator it;
+    std::list<lmIRef>::iterator it;
     for (it = m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
     {
-        lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-        lmVStaff* pVStaff = (*it)->GetVStaff();      //affected VStaff
-        pECmd = new lmECmdChangeDots(pVStaff, pUndoItem, *it, m_nDots);
-
-        if (pECmd->Success())
-            m_UndoLog.LogCommand(pECmd, pUndoItem);     //save command in the undo log
-        else
-        {
-            fSuccess = false;
-            delete pUndoItem;
-            delete pECmd;
-        }
+        //Get pointer to object to delete
+        lmNoteRest* pNR = (lmNoteRest*)GetStaffObj(*it);
+        GetVStaff()->CmdNew_ChangeDots(pNR, m_nDots);
     }
 
-    // return result
-    if (fSuccess)
-   	    return CommandDone(lmSCORE_MODIFIED);
-    else
-    {
-        //undo command for the modified note/rests
-        Undo();
-        return false;
-    }
+    return CommandDone(lmSCORE_MODIFIED);
 }
 
 
@@ -1135,35 +850,27 @@ bool lmCmdChangeNoteRestDots::Do()
 // lmCmdDeleteTuplet implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdDeleteTuplet::lmCmdDeleteTuplet(const wxString& name, lmDocument *pDoc,
+lmCmdDeleteTuplet::lmCmdDeleteTuplet(bool fUndoable,
+                                     const wxString& sName, lmDocument *pDoc,
                                      lmNoteRest* pStartNR)
-        : lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
-    m_pStartNR = pStartNR;
-}
-
-lmCmdDeleteTuplet::~lmCmdDeleteTuplet()
-{
+    m_nStartIRef = pStartNR->GetIRef();
 }
 
 bool lmCmdDeleteTuplet::Do()
 {
-    //Proceed to delete the tuplet
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaff* pVStaff = m_pStartNR->GetVStaff();
-    lmEditCmd* pECmd = new lmECmdDeleteTuplet(pVStaff, pUndoItem, m_pStartNR);
+    //log command if undoable
+    LogCommand();
 
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+    //Get pointer to object to delete
+    lmNoteRest* pNR = (lmNoteRest*)GetStaffObj(m_nStartIRef);
+
+    //Proceed to delete the tuplet
+    if (!GetVStaff()->CmdNew_DeleteTuplet(pNR))
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
 }
 
 
@@ -1172,11 +879,11 @@ bool lmCmdDeleteTuplet::Do()
 // lmCmdAddTuplet implementation: Add a tuplet to notes in current selection
 //----------------------------------------------------------------------------------------
 
-lmCmdAddTuplet::lmCmdAddTuplet(lmVStaffCursor* pVCursor, const wxString& name,
-                               lmDocument *pDoc, lmGMSelection* pSelection,
+lmCmdAddTuplet::lmCmdAddTuplet(bool fUndoable,
+                               const wxString& sName, lmDocument *pDoc, lmGMSelection* pSelection,
                                bool fShowNumber, int nNumber, bool fBracket,
                                lmEPlacement nAbove, int nActual, int nNormal)
-	: lmScoreCommand(name, pDoc, pVCursor)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
     m_fShowNumber = fShowNumber;
     m_nNumber = nNumber;
@@ -1185,13 +892,13 @@ lmCmdAddTuplet::lmCmdAddTuplet(lmVStaffCursor* pVCursor, const wxString& name,
     m_nActual = nActual;
     m_nNormal = nNormal;
 
-    //loop to save note/rests to form the tuplet
+    //loop to save the IRef for the notes/rests to include in the tuplet
     lmGMObject* pGMO = pSelection->GetFirst();
     while (pGMO)
     {
         if (pGMO->GetType() == eGMO_ShapeNote || pGMO->GetType() == eGMO_ShapeRest)
         {
-            m_NotesRests.push_back( (lmNoteRest*)pGMO->GetScoreOwner() );
+            m_NotesRests.push_back( ((lmNoteRest*)pGMO->GetScoreOwner())->GetIRef() );
         }
         pGMO = pSelection->GetNext();
     }
@@ -1205,24 +912,26 @@ lmCmdAddTuplet::~lmCmdAddTuplet()
 
 bool lmCmdAddTuplet::Do()
 {
-    //Proceed to create the tuplet
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaff* pVStaff = m_NotesRests.front()->GetVStaff();
-    lmEditCmd* pECmd =
-        new lmECmdAddTuplet(pVStaff, pUndoItem, m_NotesRests,  m_fShowNumber, m_nNumber,
-                            m_fBracket, m_nAbove, m_nActual, m_nNormal);
+    //log command if undoable
+    LogCommand();
 
-    if (pECmd->Success())
+    //Get pointers to notes/rest to include in tuplet
+    std::vector<lmNoteRest*> notes;
+    std::list<lmIRef>::iterator it;
+    for (it = m_NotesRests.begin(); it != m_NotesRests.end(); ++it)
     {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
+        notes.push_back((lmNoteRest*)GetStaffObj(*it));
+    }
+
+    //Proceed to add the tuplet
+    bool fError = GetVStaff()->CmdNew_AddTuplet(notes, m_fShowNumber, m_nNumber, m_fBracket,
+                                                m_nAbove, m_nActual, m_nNormal);
+    notes.clear();
+
+    if (!fError)
 	    return CommandDone(lmSCORE_MODIFIED);
-    }
     else
-    {
-        delete pUndoItem;
-        delete pECmd;
         return false;
-    }
 }
 
 
@@ -1231,11 +940,11 @@ bool lmCmdAddTuplet::Do()
 // lmCmdBreakBeam implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdBreakBeam::lmCmdBreakBeam(lmVStaffCursor* pVCursor, const wxString& name,
-                                     lmDocument *pDoc, lmNoteRest* pBeforeNR)
-        : lmScoreCommand(name, pDoc, pVCursor)
+lmCmdBreakBeam::lmCmdBreakBeam(bool fUndoable,
+                               const wxString& sName, lmDocument *pDoc, lmNoteRest* pBeforeNR)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
-    m_pBeforeNR = pBeforeNR;
+    m_nBeforeNR = pBeforeNR->GetIRef();
 }
 
 lmCmdBreakBeam::~lmCmdBreakBeam()
@@ -1244,21 +953,13 @@ lmCmdBreakBeam::~lmCmdBreakBeam()
 
 bool lmCmdBreakBeam::Do()
 {
-    //Proceed to delete the object
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdBreakBeam(m_pBeforeNR->GetVStaff(), pUndoItem, m_pBeforeNR);
+    //log command if undoable
+    LogCommand();
 
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
-	    return CommandDone(lmSCORE_MODIFIED);
-    }
-    else
-    {
-        delete pUndoItem;
-        delete pECmd;
-        return false;
-    }
+    //Get pointer to note and issue the command
+    GetVStaff()->CmdNew_BreakBeam( (lmNoteRest*)GetStaffObj(m_nBeforeNR) );
+
+    return CommandDone(lmSCORE_MODIFIED);
 }
 
 
@@ -1267,11 +968,12 @@ bool lmCmdBreakBeam::Do()
 // lmCmdJoinBeam implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdJoinBeam::lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name,
-                                     lmDocument *pDoc, lmGMSelection* pSelection)
-        : lmScoreCommand(name, pDoc, pVCursor)
+lmCmdJoinBeam::lmCmdJoinBeam(bool fUndoable,
+                             const wxString& sName, lmDocument *pDoc,
+                             lmGMSelection* pSelection)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
-    //loop to save the note/rests to beam
+    //loop to save the IRef of the note/rests to beam
     lmGMObject* pGMO = pSelection->GetFirst();
     while (pGMO)
     {
@@ -1282,34 +984,29 @@ lmCmdJoinBeam::lmCmdJoinBeam(lmVStaffCursor* pVCursor, const wxString& name,
             if (pNR->IsRest() || (pNR->IsNote() &&
                                   (!((lmNote*)pNR)->IsInChord() ||
                                    ((lmNote*)pNR)->IsBaseOfChord() )) )
-                m_NotesRests.push_back(pNR);
+                m_NotesRests.push_back(pNR->GetIRef());
         }
         pGMO = pSelection->GetNext();
     }
 }
 
-lmCmdJoinBeam::~lmCmdJoinBeam()
-{
-}
-
 bool lmCmdJoinBeam::Do()
 {
-    //Proceed to create the beam
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmVStaff* pVStaff = m_NotesRests.front()->GetVStaff();
-    lmEditCmd* pECmd = new lmECmdJoinBeam(pVStaff, pUndoItem, m_NotesRests);
+    //log command if undoable
+    LogCommand();
 
-    if (pECmd->Success())
+    //Get pointers to note/rests
+    std::vector<lmNoteRest*> notes;
+    std::vector<lmIRef>::iterator it;
+    for (it = m_NotesRests.begin(); it != m_NotesRests.end(); ++it)
     {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
-	    return CommandDone(lmSCORE_MODIFIED);
+        notes.push_back( (lmNoteRest*)GetStaffObj(*it) );
     }
-    else
-    {
-        delete pUndoItem;
-        delete pECmd;
-        return false;
-    }
+
+    //issue the command
+    GetVStaff()->CmdNew_JoinBeam(notes);
+
+    return CommandDone(lmSCORE_MODIFIED);
 }
 
 
@@ -1318,41 +1015,46 @@ bool lmCmdJoinBeam::Do()
 // lmCmdChangeText: Change ScoreText properties
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeText::lmCmdChangeText(lmVStaffCursor* pVCursor, const wxString& name,
-                                 lmDocument *pDoc, lmScoreText* pST,
-                                 wxString& sText, lmEHAlign nHAlign,
-                                 lmLocation tPos, lmTextStyle* pStyle,
-                                 int nHintOptions)
-	: lmScoreCommand(name, pDoc, pVCursor, true, nHintOptions)
+lmCmdChangeText::lmCmdChangeText(bool fUndoable,
+                                 const wxString& sName, lmDocument *pDoc, lmScoreText* pST,
+                                 wxString& sText, lmEHAlign nHAlign, lmLocation tPos,
+                                 lmTextStyle* pStyle, int nHintOptions)
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
+    //save text auxobj
     m_pST = pST;
+
+    //save new values
     m_sText = sText;
     m_nHAlign = nHAlign;
     m_tPos = tPos;
     m_pStyle = pStyle;
-}
 
-lmCmdChangeText::~lmCmdChangeText()
-{
+    //get and save current values
+    m_sOldText = pST->GetText();
+    m_nOldHAlign = pST->GetAlignment();
+    m_tOldPos = pST->GetLocation();
+    m_pOldStyle = pST->GetStyle();
 }
 
 bool lmCmdChangeText::Do()
 {
-    lmUndoItem* pUndoItem = new lmUndoItem(&m_UndoLog);
-    lmEditCmd* pECmd = new lmECmdChangeText(m_pST, pUndoItem, m_sText, m_nHAlign,
-                                            m_tPos, m_pStyle);
+    //AWARE: Not using UndoLog. Direct execution of command
 
-    if (pECmd->Success())
-    {
-        m_UndoLog.LogCommand(pECmd, pUndoItem);
-	    return CommandDone(lmSCORE_MODIFIED);
-    }
-    else
-    {
-        delete pUndoItem;
-        delete pECmd;
-        return false;
-    }
+    //issue the command
+    m_pST->Cmd_ChangeText(m_sText, m_nHAlign, m_tPos, m_pStyle);
+
+    return CommandDone(lmSCORE_MODIFIED);
+}
+
+bool lmCmdChangeText::Undo()
+{
+    //AWARE: Not using UndoLog. Direct execution of command
+
+    //issue the command
+    m_pST->Cmd_ChangeText(m_sOldText, m_nOldHAlign, m_tOldPos, m_pOldStyle);
+
+    return CommandUndone();
 }
 
 
@@ -1361,10 +1063,11 @@ bool lmCmdChangeText::Do()
 // lmCmdChangePageMargin implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdChangePageMargin::lmCmdChangePageMargin(const wxString& name, lmDocument *pDoc,
+lmCmdChangePageMargin::lmCmdChangePageMargin(bool fUndoable,
+                                             const wxString& sName, lmDocument *pDoc,
                                              lmGMObject* pGMO, int nIdx, int nPage,
 											 lmLUnits uPos)
-	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
 	m_nIdx = nIdx;
 	m_uNewPos = uPos;
@@ -1445,9 +1148,10 @@ void lmCmdChangePageMargin::ChangeMargin(lmLUnits uPos)
 // lmCmdAttachNewText implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdAttachNewText::lmCmdAttachNewText(const wxString& name, lmDocument *pDoc,
+lmCmdAttachNewText::lmCmdAttachNewText(bool fUndoable,
+                                       const wxString& sName, lmDocument *pDoc,
                                        lmComponentObj* pAnchor)
-	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL )
+	: lmScoreCommand(sName, pDoc, fUndoable)
 {
 	m_pAnchor = pAnchor;
     m_fDeleteText = false;
@@ -1456,12 +1160,11 @@ lmCmdAttachNewText::lmCmdAttachNewText(const wxString& name, lmDocument *pDoc,
     lmTextStyle* pStyle = pAnchor->GetScore()->GetStyleInfo(_("Normal text"));
     wxASSERT(pStyle);
 
-    //create the text object
-    wxString sText = _T("");
-    m_pNewText = new lmTextItem(sText, lmHALIGN_DEFAULT, pStyle);
-
-	//This is dirty: To use OnEditProperties() the text must be on the score. so I will
+    //create the text object and attach it to to score
+	//TODO: This is dirty. To use OnEditProperties() the text must be on the score. so I will
 	//attach it provisionally to the score
+    wxString sText = _T("");
+    m_pNewText = new lmTextItem(pAnchor->GetScore(), 0L, sText, lmHALIGN_DEFAULT, pStyle);
 	pAnchor->GetScore()->AttachAuxObj(m_pNewText);
 
     //show dialog to create the text
@@ -1504,8 +1207,8 @@ bool lmCmdAttachNewText::Undo()
 // lmCmdAddNewTitle implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdAddNewTitle::lmCmdAddNewTitle(lmDocument *pDoc)
-	: lmScoreCommand(_("add title"), pDoc, (lmVStaffCursor*)NULL )
+lmCmdAddNewTitle::lmCmdAddNewTitle(bool fUndoable, lmDocument *pDoc)
+	: lmScoreCommand(_("add title"), pDoc, fUndoable)
 {
     m_fDeleteTitle = false;
 
@@ -1514,12 +1217,11 @@ lmCmdAddNewTitle::lmCmdAddNewTitle(lmDocument *pDoc)
     wxASSERT(pStyle);
 
     //create the text object
-    wxString sTitle = _T("");
-    m_pNewTitle = new lmScoreTitle(sTitle, lmBLOCK_ALIGN_BOTH, lmHALIGN_DEFAULT,
-								  lmVALIGN_DEFAULT, pStyle);
-
 	//This is dirty: To use OnEditProperties() the text must be on the score. so I will
 	//attach it provisionally to the score
+    wxString sTitle = _T("");
+    m_pNewTitle = new lmScoreTitle(pDoc->GetScore(), 0L, sTitle, lmBLOCK_ALIGN_BOTH,
+                                   lmHALIGN_DEFAULT, lmVALIGN_DEFAULT, pStyle);
 	pDoc->GetScore()->AttachAuxObj(m_pNewTitle);
 
     //show dialog to create the text
@@ -1571,9 +1273,9 @@ bool lmCmdAddNewTitle::Undo()
 // lmCmdChangeBarline implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeBarline::lmCmdChangeBarline(lmDocument *pDoc, lmBarline* pBL,
+lmCmdChangeBarline::lmCmdChangeBarline(bool fUndoable, lmDocument *pDoc, lmBarline* pBL,
 									   lmEBarline nType, bool fVisible)
-	: lmScoreCommand(_("change barline"), pDoc, (lmVStaffCursor*)NULL )
+	: lmScoreCommand(_("change barline"), pDoc, fUndoable)
 {
     m_pBL = pBL;
     m_nType = nType;
@@ -1610,11 +1312,11 @@ bool lmCmdChangeBarline::Undo()
 // lmCmdChangeMidiSettings implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdChangeMidiSettings::lmCmdChangeMidiSettings(lmDocument *pDoc,
+lmCmdChangeMidiSettings::lmCmdChangeMidiSettings(bool fUndoable, lmDocument *pDoc,
                                                  lmInstrument* pInstr,
                                                  int nMidiChannel,
                                                  int nMidiInstr)
-	: lmScoreCommand(_("change MIDI settings"), pDoc, (lmVStaffCursor*)NULL )
+	: lmScoreCommand(_("change MIDI settings"), pDoc, fUndoable)
 {
     m_pInstr = pInstr;
     m_nMidiChannel = nMidiChannel;
@@ -1651,9 +1353,9 @@ bool lmCmdChangeMidiSettings::Undo()
 // lmCmdMoveNote implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdMoveNote::lmCmdMoveNote(lmDocument *pDoc, lmNote* pNote, const lmUPoint& uPos,
-							 int nSteps)
-	: lmScoreCommand(_("move note"), pDoc, (lmVStaffCursor*)NULL )
+lmCmdMoveNote::lmCmdMoveNote(bool fUndoable, lmDocument *pDoc, lmNote* pNote,
+                             const lmUPoint& uPos, int nSteps)
+	: lmScoreCommand(_("move note"), pDoc, fUndoable)
 {
 	m_uxPos = uPos.x;	//(g_fFreeMove ? uPos.y : pNote->GetUserShift().y);
 	m_pNote = pNote;
@@ -1683,10 +1385,10 @@ bool lmCmdMoveNote::Undo()
 // lmCmdMoveObjectPoints implementation
 //----------------------------------------------------------------------------------------
 
-lmCmdMoveObjectPoints::lmCmdMoveObjectPoints(const wxString& name,
+lmCmdMoveObjectPoints::lmCmdMoveObjectPoints(bool fUndoable, const wxString& name,
                                lmDocument *pDoc, lmGMObject* pGMO,
                                lmUPoint uShift[], int nNumPoints, bool fUpdateViews)
-	: lmScoreCommand(name, pDoc, (lmVStaffCursor*)NULL, true, 0, fUpdateViews)
+	: lmScoreCommand(name, pDoc, fUndoable, 0, fUpdateViews)
       , m_nNumPoints(nNumPoints)
 {
     wxASSERT(nNumPoints > 0);

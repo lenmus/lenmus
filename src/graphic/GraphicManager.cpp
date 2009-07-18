@@ -175,7 +175,7 @@ bool lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmL
 	// - if the score has been modified since last re-layout
     // - if paper size has changed and not re-layout prevented (option lmNO_RELAYOUT_ON_PAPER_RESIZE)
     // - if explicitly requested (option lmFORCE_RELAYOUT)
-    bool fLayoutScore = !m_pScore || m_fReLayout || m_nLastScoreID != pScore->GetID()
+    bool fLayoutScore = !m_pScore || m_fReLayout || m_nLastScoreID != pScore->GetScoreID()
 				|| ( m_pScore->IsModified() && !(nOptions & lmDO_ONLY_REDRAW) )
                 || (nOptions & lmFORCE_RELAYOUT)
                 || ( (m_xPageSize != paperWidth || m_yPageSize != paperHeight) &&
@@ -193,7 +193,7 @@ bool lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmL
     m_xPageSize = (int)paperWidth;
     m_yPageSize = (int)paperHeight;
     m_pScore = pScore;
-    m_nLastScoreID = m_pScore->GetID();
+    m_nLastScoreID = m_pScore->GetScoreID();
 	m_pScore->SetModified(false);
 
 

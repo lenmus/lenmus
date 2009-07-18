@@ -56,7 +56,7 @@ public:
     lmTPoint& GetPoint(int nPointID);
 
     // source code related methods
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
 
@@ -82,7 +82,7 @@ class lmShapeTie;
 class lmTie: public lmBinaryRelObj
 {
 public:
-    lmTie(lmNote* pStartNote, lmNote* pEndNote);
+    lmTie(lmScoreObj* pOwner, lmNote* pStartNote, lmNote* pEndNote);
     ~lmTie();
 
     //creation
@@ -93,16 +93,13 @@ public:
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
     int GetNumPoints() { return lmBEZIER_MAX; }
 
-    //implementation of pure virtual methods in lmBinaryRelObj
-    void Save(lmUndoData* pUndoData) {};
-
     //overrides
     void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift) {}
     void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift) {}
 
     // source code related methods
-    wxString SourceLDP_First(int nIndent);
-    wxString SourceLDP_Last(int nIndent);
+    wxString SourceLDP_First(int nIndent, bool fUndoData);
+    wxString SourceLDP_Last(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
     // debug methods
@@ -128,7 +125,7 @@ protected:
 //class lmSlur : public lmAuxObj
 //{
 //public:
-//    lmSlur(lmNoteRest* pStartNR, lmNoteRest* pEndNR);
+//    lmSlur(lmScoreObj* pOwner, lmNoteRest* pStartNR, lmNoteRest* pEndNR);
 //    ~lmSlur();
 //
 //    // overrides for pure virtual methods of base class
@@ -137,7 +134,7 @@ protected:
 //    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Slur; }
 //
 //    // source code related methods
-//    wxString SourceLDP(int nIndent);
+//    wxString SourceLDP(int nIndent, bool fUndoData);
 //    wxString SourceXML(int nIndent);
 //
 //    // debug methods

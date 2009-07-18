@@ -197,8 +197,8 @@ static lmLUnits m_uRadius;            // for dots
 //constructors and destructor
 //
 
-lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
-    lmStaffObj(pVStaff, eSFOT_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
+lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, long nID, bool fVisible)
+    : lmStaffObj(pVStaff, nID, eSFOT_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
     SetLayer(lm_eLayerBarlines);
@@ -223,16 +223,19 @@ wxString lmBarline::Dump()
     return sDump;
 }
 
-wxString lmBarline::SourceLDP(int nIndent)
+wxString lmBarline::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
 
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(barline ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(barline#%d "), GetID() );
+    else
+        sSource += _T("(barline ");
     sSource += GetBarlineLDPNameFromType(m_nBarlineType);
 
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent);
+	sSource += lmStaffObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");

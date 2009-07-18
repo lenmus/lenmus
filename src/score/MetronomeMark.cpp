@@ -37,9 +37,10 @@
 #include "../graphic/ShapeText.h"
 
 // 'note_symbol = 80'
-lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, lmENoteType nNoteType, int nDots,
-                    int nTicksPerMinute, bool fParentheses, bool fVisible)
-    : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID, lmENoteType nNoteType,
+                                 int nDots, int nTicksPerMinute, bool fParentheses,
+                                 bool fVisible)
+    : lmStaffObj(pVStaff, nID, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_nMarkType(eMMT_Note_Value)
     , m_nLeftNoteType(nNoteType)
     , m_nLeftDots(nDots)
@@ -50,9 +51,9 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, lmENoteType nNoteType, int n
 }
 
 // 'm.m. = 80'
-lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, int nTicksPerMinute,
-                    bool fParentheses, bool fVisible)
-    : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID, int nTicksPerMinute,
+                                 bool fParentheses, bool fVisible)
+    : lmStaffObj(pVStaff, nID, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_nMarkType(eMMT_MM_Value)
     , m_nTicksPerMinute(nTicksPerMinute)
     , m_fParentheses(fParentheses)
@@ -61,11 +62,11 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, int nTicksPerMinute,
 }
 
 // 'note_symbol = note_symbol'
-lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff,
-                    lmENoteType nLeftNoteType, int nLeftDots,
-                    lmENoteType nRightNoteType, int nRightDots,
-                    bool fParentheses, bool fVisible)
-    : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID,
+                                 lmENoteType nLeftNoteType, int nLeftDots,
+                                 lmENoteType nRightNoteType, int nRightDots,
+                                 bool fParentheses, bool fVisible)
+    : lmStaffObj(pVStaff, nID, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_nMarkType(eMMT_Note_Note)
     , m_nLeftNoteType(nLeftNoteType)
     , m_nLeftDots(nLeftDots)
@@ -212,11 +213,14 @@ wxString lmMetronomeMark::Dump()
     return sDump;
 }
 
-wxString lmMetronomeMark::SourceLDP(int nIndent)
+wxString lmMetronomeMark::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(metronome ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(metronome#%d "), GetID() );
+    else
+        sSource += _T("(metronome");
 
     switch (m_nMarkType)
     {
@@ -238,7 +242,7 @@ wxString lmMetronomeMark::SourceLDP(int nIndent)
     if (m_fParentheses) sSource += _T(" parentheses");
 
 	//base class info
-    sSource += lmStaffObj::SourceLDP(nIndent);
+    sSource += lmStaffObj::SourceLDP(nIndent, fUndoData);
 
 	//close element
     sSource += _T(")\n");

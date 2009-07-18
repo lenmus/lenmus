@@ -60,8 +60,9 @@ static wxString m_sLDPKeyName[30] = {
 // lmKeySignature object implementation
 //-------------------------------------------------------------------------------------------------
 
-lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible)
-    : lmStaffObj(pVStaff, eSFOT_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, long nID,
+                               bool fVisible)
+    : lmStaffObj(pVStaff, nID, eSFOT_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_fHidden(false)
     , m_fTraditional(true)
     , m_nFifths(nFifths)
@@ -118,15 +119,18 @@ wxString lmKeySignature::Dump()
     return sDump;
 }
 
-wxString lmKeySignature::SourceLDP(int nIndent)
+wxString lmKeySignature::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(key ");
+    if (fUndoData)
+        sSource += wxString::Format(_T("(key#%d "), GetID() );
+    else
+        sSource += _T("(key");
     sSource += m_sLDPKeyName[m_nKeySignature];
 
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent);
+	sSource += lmStaffObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");

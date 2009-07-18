@@ -41,7 +41,6 @@
 #include "Notation.h"
 #include "Context.h"
 #include "ObjOptions.h"
-#include "UndoRedo.h"
 #include "Text.h"
 #include "../app/ArtProvider.h"
 #include "../graphic/GMObject.h"
@@ -57,17 +56,21 @@ extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 // lmScoreObj implementation
 //-------------------------------------------------------------------------------------
 
-lmScoreObj::lmScoreObj(lmScoreObj* pParent)
+lmScoreObj::lmScoreObj(lmScoreObj* pParent, long nID)
+    : m_nId(nID)
+    , m_pParent(pParent)
+    , m_pObjOptions((lmObjOptions*)NULL)
+    , m_pAuxObjs((lmAuxObjsCol*)NULL)
 {
-    m_pParent = pParent;
-    m_pObjOptions = (lmObjOptions*)NULL;
-    m_pAuxObjs = (lmAuxObjsCol*)NULL;
-
     // initializations: positioning related info
     m_uPaperPos.y = 0.0f,   m_uPaperPos.x = 0.0f;
     m_uComputedPos.x = 0.0f,   m_uComputedPos.y = 0.0f;
 	SetDirty(true);                         //any new created object always needs re-layout!
     m_pShapesMngr = new lmShapesMngr();     //default behaviour: only one shape
+
+    //finally, assign it an ID
+    if (pParent)
+        pParent->GetScore()->AssignID(this);
 }
 
 lmScoreObj::~lmScoreObj()
@@ -189,8 +192,8 @@ int lmScoreObj::AttachAuxObj(lmAuxObj* pAO, int nIndex)
 		}
 	}
 
-	//set owner and return index to attached object
-    pAO->SetOwner(this);
+	//set owner, assign ID and return index to attached object
+    //pAO->SetOwner(this);
 	return nIndex;
 }
 
@@ -525,7 +528,7 @@ wxString lmScoreObj::Dump()
 	return sDump;
 }
 
-wxString lmScoreObj::SourceLDP(int nIndent)
+wxString lmScoreObj::SourceLDP(int nIndent, bool fUndoData)
 {
 	wxString sSource = _T("");
 
@@ -540,6 +543,12 @@ wxString lmScoreObj::SourceLDP(int nIndent)
 	if (uUserShift.y != 0.0f)
 		sSource += wxString::Format(_T(" dy:%s"),
 					DoubleToStr((double)m_pParent->LogicalToTenths(uUserShift.y), 4).c_str() );
+
+  //  //add undo data if requested
+  //  if (fUndoData)
+  //  {
+		//sSource += wxString::Format(_T(" id:%d"), GetID() );
+  //  }
 
 	return sSource;
 }
@@ -571,12 +580,14 @@ void lmScoreObj::PrepareToCreateShapes()
 }
 
 lmAuxObj* lmScoreObj::AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxString& sText,
-                                    lmTextStyle* pTextStyle, wxSize size, wxColour nBgColor) 
+                                    lmTextStyle* pTextStyle, wxSize size, wxColour nBgColor,
+                                    long nID) 
 { 
     //wrapper method to encapsulate and simplify operations related to score creation by program.
     //This method creates and attaches a textbox
 
-    lmScoreTextParagraph* pTextBox = new lmScoreTextParagraph(size.x, size.y, ntBoxPos);
+    lmScoreTextParagraph* pTextBox = new lmScoreTextParagraph(this, nID, size.x, size.y,
+                                                              ntBoxPos);
     this->AttachAuxObj(pTextBox);
     lmBaseText* pBText = new lmBaseText(sText, pTextStyle);
     pTextBox->InsertTextUnit(pBText);
@@ -592,14 +603,14 @@ lmAuxObj* lmScoreObj::AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxS
 
 lmAuxObj* lmScoreObj::AttachLine(lmTenths xtStart, lmTenths ytStart, lmTenths xtEnd, lmTenths ytEnd,
                                  lmTenths ntWidth, lmELineCap nStartCap, lmELineCap nEndCap,
-                                 lmELineStyle nStyle, wxColour nColor)
+                                 lmELineStyle nStyle, wxColour nColor, long nID)
 { 
     //wrapper method to encapsulate and simplify operations related to score creation by program.
     //This method creates and attaches a decorated line
 
     // create the AuxObj and attach it to this object
-    lmScoreLine* pLine = new lmScoreLine(xtStart, ytStart, xtEnd, ytEnd, ntWidth, nStartCap,
-                                         nEndCap, nStyle, nColor);
+    lmScoreLine* pLine = new lmScoreLine(this, nID, xtStart, ytStart, xtEnd, ytEnd, ntWidth,
+                                         nStartCap, nEndCap, nStyle, nColor);
     this->AttachAuxObj(pLine);
     return pLine;
 }
@@ -619,17 +630,14 @@ WX_DEFINE_LIST(AuxObjsList);
 
 static int m_IdCounter = 0;        //to assign unique IDs to ComponentObjs
 
-lmComponentObj::lmComponentObj(lmScoreObj* pParent, lmEComponentObjType nType, bool fIsDraggable)
-    : lmScoreObj(pParent)
+lmComponentObj::lmComponentObj(lmScoreObj* pParent, long nID, lmEComponentObjType nType,
+                               bool fIsDraggable)
+    : lmScoreObj(pParent, nID)
+    , m_nType(nType)
+    , m_fIsDraggable(fIsDraggable)
+    , m_color(*wxBLACK)
 {
-    m_nId = m_IdCounter++;      // give it an ID
-    m_nType = nType;            // save type
-
-    // behaviour
-    m_fIsDraggable = fIsDraggable;
-
-    //other
-    m_color = *wxBLACK;
+    //m_nId = m_IdCounter++;      // give it an ID
 }
 
 lmComponentObj::~lmComponentObj()
@@ -652,9 +660,9 @@ lmUPoint lmComponentObj::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 // lmStaffObj implementation
 //-------------------------------------------------------------------------------------------------
 
-lmStaffObj::lmStaffObj(lmScoreObj* pParent, EStaffObjType nType, lmVStaff* pStaff, int nStaff,
-                   bool fVisible, bool fIsDraggable)
-    : lmComponentObj(pParent, lm_eStaffObj, fIsDraggable)
+lmStaffObj::lmStaffObj(lmScoreObj* pParent, long nID, EStaffObjType nType, lmVStaff* pStaff,
+                       int nStaff, bool fVisible, bool fIsDraggable)
+    : lmComponentObj(pParent, nID, lm_eStaffObj, fIsDraggable)
     , m_fVisible(fVisible)
     , m_nClass(nType)
     , m_pVStaff(pStaff)
@@ -764,12 +772,12 @@ lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
     return m_pVStaff->LogicalToTenths(uUnits, m_nStaffNum);
 }
 
-long lmStaffObj::GetIRef()
+lmIRef lmStaffObj::GetIRef()
 {
-	//lmSegment* pSegment = GetSegment() { return m_pSegment; }
     int nPos = m_pSegment->FindPosition(this);
     wxASSERT(nPos >= 0);
-    return CreateIRef(m_pSegment->GetNumSegment(), nPos);
+    return lmIRef(m_pSegment->GetNumInstr(), m_pSegment->GetNumSegment(),
+                  m_nStaffNum, nPos);
 }
 
 lmContext* lmStaffObj::GetCurrentContext(int nStaff)
@@ -832,7 +840,7 @@ lmKeySignature* lmStaffObj::GetApplicableKeySignature()
 }
 
 
-wxString lmStaffObj::SourceLDP(int nIndent)
+wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
 {
 	wxString sSource = _T("");
 
@@ -868,20 +876,20 @@ wxString lmStaffObj::SourceLDP(int nIndent)
             {
                 lmRelObj* pRO = (lmRelObj*)(*m_pAuxObjs)[i];
                 if ( pRO->GetStartNoteRest() == (lmNoteRest*)this )
-                    sSource += pRO->SourceLDP_First(nIndent);
+                    sSource += pRO->SourceLDP_First(nIndent, fUndoData);
                 else if ( pRO->GetEndNoteRest() == (lmNoteRest*)this )
-                    sSource += pRO->SourceLDP_Last(nIndent);
+                    sSource += pRO->SourceLDP_Last(nIndent, fUndoData);
                 else
-                    sSource += pRO->SourceLDP_Middle(nIndent);
+                    sSource += pRO->SourceLDP_Middle(nIndent, fUndoData);
             }
             else
-                sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent);
+                sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent, fUndoData);
         }
 		nIndent--;
     }
 
     //base class info
-    sSource += lmScoreObj::SourceLDP(nIndent);
+    sSource += lmScoreObj::SourceLDP(nIndent, fUndoData);
 	return sSource;
 }
 

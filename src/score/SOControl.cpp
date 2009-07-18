@@ -50,7 +50,7 @@
 //
 
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
-    : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmVISIBLE, lmNO_DRAGGABLE)
+    : lmStaffObj(pVStaff, 0L, eSFOT_Control, pVStaff, 1, lmVISIBLE, lmNO_DRAGGABLE)
     , m_nCtrolType(nType)
 {
     wxASSERT(nType == lmNEW_SYSTEM);
@@ -77,7 +77,7 @@ wxString lmSOControl::SourceXML(int nIndent)
     return _T("TODO: lmSOControl source XML generation method\n");
 }
 
-wxString lmSOControl::SourceLDP(int nIndent)
+wxString lmSOControl::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
@@ -85,7 +85,10 @@ wxString lmSOControl::SourceLDP(int nIndent)
     switch(m_nCtrolType)
 	{
 		case lmNEW_SYSTEM:
-			sSource += _T("(newSystem)\n");
+            if (fUndoData)
+                sSource += wxString::Format(_T("(newSystem#%d)\n"), GetID() );
+            else
+			    sSource += _T("(newSystem)\n");
 			break;
 		default:
 			wxASSERT_MSG(false, _T("No treatment for this Ctrol type"));
@@ -106,7 +109,7 @@ lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
  //   //create the shape
  //   lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
  //                                       uWidth, uBoundsExtraWidth, lm_eLine_Solid,
- //                                       *wxGREEN, lm_eEdgeNormal, _T("EOS"));
+ //                                       *wxGREEN, lm_eEdgeNormal);
 	//pBox->AddShape(pShape);
  //   m_pGMObj = pShape;
 

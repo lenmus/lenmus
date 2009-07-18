@@ -246,7 +246,7 @@ wxSTD ostream& lmDocument::SaveObject(wxSTD ostream& stream)
 
     //TODO: Recode next sentences using std streams
 //	wxTextOutputStream oTextStream(stream);
-//	oTextStream << m_pScore->SourceLDP(false);      //false: do not export cursor
+//	oTextStream << m_pScore->SourceLDP(false);      //false: do not export undo data
 
 	return stream;
 }
@@ -256,7 +256,7 @@ wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
 	wxDocument::SaveObject(stream);
 
 	wxTextOutputStream oTextStream(stream);
-	oTextStream << m_pScore->SourceLDP(false);      //false: do not export cursor
+	oTextStream << m_pScore->SourceLDP(false);      //false: do not export undo data
 
 	return stream;
 }

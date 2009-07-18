@@ -1287,7 +1287,7 @@ void lmScoreCanvas::AttachNewText(lmComponentObj* pCO)
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("attach text");
-	pCP->Submit(new lmCmdAttachNewText(sName, m_pDoc, pCO));
+	pCP->Submit(new lmCmdAttachNewText(lmUNDOABLE, sName, m_pDoc, pCO));
 }
 
 void lmScoreCanvas::AddTitle()
@@ -1295,7 +1295,7 @@ void lmScoreCanvas::AddTitle()
     //Create a new block of text and attach it to the score
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmCmdAddNewTitle(m_pDoc));
+	pCP->Submit(new lmCmdAddNewTitle(lmUNDOABLE, m_pDoc));
 }
 
 void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos, bool fUpdateViews)
@@ -1304,7 +1304,7 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos, bool fUpd
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_("Move %s"), pGMO->GetName().c_str() );
-	pCP->Submit(new lmCmdMoveObject(sName, m_pDoc, pGMO, uPos, fUpdateViews));
+	pCP->Submit(new lmCmdMoveObject(lmUNDOABLE, sName, m_pDoc, pGMO, uPos, fUpdateViews));
 }
 
 void lmScoreCanvas::MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[],
@@ -1314,7 +1314,7 @@ void lmScoreCanvas::MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[],
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
     wxString sName = wxString::Format(_("%s: move points"), pGMO->GetName().c_str() );
-	pCP->Submit(new lmCmdMoveObjectPoints(sName, m_pDoc, pGMO, uShifts, nNumPoints,
+	pCP->Submit(new lmCmdMoveObjectPoints(lmUNDOABLE, sName, m_pDoc, pGMO, uShifts, nNumPoints,
                                           fUpdateViews) );
 }
 
@@ -1323,7 +1323,7 @@ void lmScoreCanvas::MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps)
 	//Generate move command to move the note and change its pitch
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmCmdMoveNote(m_pDoc, (lmNote*)pGMO->GetScoreOwner(), uPos, nSteps));
+	pCP->Submit(new lmCmdMoveNote(lmUNDOABLE, m_pDoc, (lmNote*)pGMO->GetScoreOwner(), uPos, nSteps));
 }
 
 void lmScoreCanvas::ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos)
@@ -1331,7 +1331,8 @@ void lmScoreCanvas::ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLU
 	//Updates the position of a margin
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmCmdChangePageMargin(_("Change margin"), m_pDoc, pGMO, nIdx, nPage, uPos));
+	pCP->Submit(new lmCmdChangePageMargin(lmUNDOABLE, _("Change margin"), m_pDoc,
+                                          pGMO, nIdx, nPage, uPos));
 }
 
 void lmScoreCanvas::DeleteStaffObj()
@@ -1350,7 +1351,7 @@ void lmScoreCanvas::DeleteStaffObj()
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_("Delete %s"), pCursorSO->GetName().c_str() );
-	pCP->Submit(new lmCmdDeleteStaffObj(lmUNDOABLE, tState, sName, m_pDoc, pCursorSO));
+	pCP->Submit(new lmCmdDeleteStaffObj(lmUNDOABLE, sName, m_pDoc, pCursorSO));
 }
 
 void lmScoreCanvas::DeleteCaretOrSelected()
@@ -1368,31 +1369,26 @@ void lmScoreCanvas::DeleteSelection()
 {
     //Deleted all objects in the selection.
 
-    //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
-	wxASSERT(pVCursor);
-
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Delete selection");
-	pCP->Submit(new lmCmdDeleteSelection(pVCursor, sName, m_pDoc, m_pView->GetSelection()) );
+	pCP->Submit(new lmCmdDeleteSelection(lmUNDOABLE, sName, m_pDoc, m_pView->GetSelection()) );
 }
 
 void lmScoreCanvas::BreakBeam()
 {
     //Break beamed group at selected note (the one pointed by cursor)
 
-    //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
-	wxASSERT(pVCursor);
+    //get cursor state
+    lmCursorState tState = m_pView->GetScoreCursor()->GetState();
 
 	//get object pointed by the cursor
-    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
+    lmStaffObj* pCursorSO = tState.pSO;
 	wxASSERT(pCursorSO && pCursorSO->IsNoteRest());
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Break a beam");
-	pCP->Submit(new lmCmdBreakBeam(pVCursor, sName, m_pDoc, (lmNoteRest*)pCursorSO));
+	pCP->Submit(new lmCmdBreakBeam(lmUNDOABLE, sName, m_pDoc, (lmNoteRest*)pCursorSO));
 }
 
 void lmScoreCanvas::JoinBeam()
@@ -1402,13 +1398,9 @@ void lmScoreCanvas::JoinBeam()
     // - join two or more beamed groups
     // - or add a note to a beamed group
 
-    //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
-	wxASSERT(pVCursor);
-
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Add beam");
-	pCP->Submit(new lmCmdJoinBeam(pVCursor, sName, m_pDoc, m_pView->GetSelection()) );
+	pCP->Submit(new lmCmdJoinBeam(lmUNDOABLE, sName, m_pDoc, m_pView->GetSelection()) );
 }
 
 void lmScoreCanvas::ChangeTie(lmNote* pStartNote, lmNote* pEndNote)
@@ -1428,7 +1420,7 @@ void lmScoreCanvas::DeleteTie(lmNote* pEndNote)
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Delete tie");
-	pCP->Submit(new lmCmdDeleteTie(sName, m_pDoc, pEndNote) );
+	pCP->Submit(new lmCmdDeleteTie(lmUNDOABLE, sName, m_pDoc, pEndNote) );
 }
 
 void lmScoreCanvas::AddTie(lmNote* pStartNote, lmNote* pEndNote)
@@ -1438,7 +1430,7 @@ void lmScoreCanvas::AddTie(lmNote* pStartNote, lmNote* pEndNote)
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Add tie");
-	pCP->Submit(new lmCmdAddTie(sName, m_pDoc, pStartNote, pEndNote) );
+	pCP->Submit(new lmCmdAddTie(lmUNDOABLE, sName, m_pDoc, pStartNote, pEndNote) );
 }
 
 void lmScoreCanvas::AddTuplet()
@@ -1450,13 +1442,9 @@ void lmScoreCanvas::AddTuplet()
     //      it has been checked that all notes/rest in the seleccion are not in a tuplet,
     //      are consecutive and are in the same voice.
 
-    //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
-	wxASSERT(pVCursor);
-
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Add tuplet");
-	pCP->Submit(new lmCmdAddTuplet(pVCursor, sName, m_pDoc, m_pView->GetSelection(),
+	pCP->Submit(new lmCmdAddTuplet(lmUNDOABLE, sName, m_pDoc, m_pView->GetSelection(),
                                    true, 3, true, ep_Default, 3, 2) );
                                //bool fShowNumber, int nNumber, bool fBracket,
                                //lmEPlacement nAbove, int nActual, int nNormal)
@@ -1464,24 +1452,25 @@ void lmScoreCanvas::AddTuplet()
 
 void lmScoreCanvas::DeleteTuplet(lmNoteRest* pStartNR)
 {
-    // Remove tuplet from tuplet group. The first note/rest of the tuplet group is pStartNR
+    // Remove tuplet from tuplet group. The first note/rest of the tuplet group
+    // is pStartNR
     //
     // Precondition:
-    // It has been checked that pStatNR is in a tuplet and that it is the first note/rest.
+    //      It has been checked that pStatNR is in a tuplet and that it is the 
+    //      first note/rest.
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Delete tuplet");
-	pCP->Submit(new lmCmdDeleteTuplet(sName, m_pDoc, pStartNR) );
+	pCP->Submit(new lmCmdDeleteTuplet(lmUNDOABLE, sName, m_pDoc, pStartNR) );
 }
 
 void lmScoreCanvas::InsertClef(lmEClefType nClefType)
 {
 	//insert a Clef at current cursor position
 
-    lmCursorState tState = m_pView->GetScoreCursor()->GetState();
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert clef");
-	pCP->Submit(new lmCmdInsertClef(lmUNDOABLE, tState, sName, m_pDoc, nClefType) );
+	pCP->Submit(new lmCmdInsertClef(lmUNDOABLE, sName, m_pDoc, nClefType) );
 }
 
 void lmScoreCanvas::InsertTimeSignature(int nBeats, int nBeatType, bool fVisible)
@@ -1490,10 +1479,9 @@ void lmScoreCanvas::InsertTimeSignature(int nBeats, int nBeatType, bool fVisible
 
     //wxLogMessage(_T("[lmScoreCanvas::InsertTimeSignature] nBeats=%d, nBeatType=%d"), nBeats, nBeatType);
 
-    lmCursorState tState = m_pView->GetScoreCursor()->GetState();
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert time signature");
-	pCP->Submit(new lmCmdInsertTimeSignature(lmUNDOABLE, tState, sName, m_pDoc,
+	pCP->Submit(new lmCmdInsertTimeSignature(lmUNDOABLE, sName, m_pDoc,
                                              nBeats, nBeatType, fVisible) );
 }
 
@@ -1504,10 +1492,9 @@ void lmScoreCanvas::InsertKeySignature(int nFifths, bool fMajor, bool fVisible)
     //wxLogMessage(_T("[lmScoreCanvas::InsertKeySignature] fifths=%d, %s"),
     //             nFifths, (fMajor ? _T("major") : _T("minor")) );
 
-    lmCursorState tState = m_pView->GetScoreCursor()->GetState();
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert key signature");
-	pCP->Submit(new lmCmdInsertKeySignature(lmUNDOABLE, tState, sName, m_pDoc, nFifths,
+	pCP->Submit(new lmCmdInsertKeySignature(lmUNDOABLE, sName, m_pDoc, nFifths,
                                             fMajor, fVisible) );
 }
 
@@ -1515,10 +1502,9 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 {
 	//insert a barline at current cursor position
 
-    lmCursorState tState = m_pView->GetScoreCursor()->GetState();
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert barline");
-	pCP->Submit(new lmCmdInsertBarline(lmUNDOABLE, tState, sName, m_pDoc, nType) );
+	pCP->Submit(new lmCmdInsertBarline(lmUNDOABLE, sName, m_pDoc, nType) );
 }
 
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
@@ -1527,9 +1513,6 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
                                int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
 {
 	//insert a note at current cursor position
-
-    //get cursor state
-    lmCursorState tState = m_pView->GetScoreCursor()->GetState();
 
 	//if new note in chord check that there is a base note at current cursor position
 
@@ -1540,7 +1523,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
     wxString sAllSteps = _T("cdefgab");
     wxString sStep = sAllSteps.GetChar( nStep );
 
-	pCP->Submit(new lmCmdInsertNote(lmUNDOABLE, tState, sName, m_pDoc, nPitchType, nStep, nOctave,
+	pCP->Submit(new lmCmdInsertNote(lmUNDOABLE, sName, m_pDoc, nPitchType, nStep, nOctave,
 							        nNoteType, rDuration, nDots, nNotehead, nAcc,
                                     nVoice, pBaseOfChord, fTiedPrev) );
 
@@ -1550,36 +1533,33 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
 {
 	//insert a rest at current cursor position
 
-    lmCursorState tState = m_pView->GetScoreCursor()->GetState();
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert rest");
-	pCP->Submit(new lmCmdInsertRest(lmUNDOABLE, tState, sName, m_pDoc, nNoteType,
+	pCP->Submit(new lmCmdInsertRest(lmUNDOABLE, sName, m_pDoc, nNoteType,
                                     rDuration, nDots, nVoice) );
 }
 
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
 {
 	//change pith of note at current cursor position
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+    lmVStaffCursor* pVCursor = m_pDoc->GetScore()->GetCursor()->GetVCursor();
 	wxASSERT(pVCursor);
     lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
 	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change note pitch");
-	pCP->Submit(new lmCmdChangeNotePitch(sName, m_pDoc, (lmNote*)pCursorSO, nSteps) );
+	pCP->Submit(new lmCmdChangeNotePitch(lmUNDOABLE, sName, m_pDoc,
+                                         (lmNote*)pCursorSO, nSteps) );
 }
 
 void lmScoreCanvas::ChangeNoteAccidentals(int nAcc)
 {
 	//change note accidentals for current selected notes
 
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
-	wxASSERT(pVCursor);
-
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change note accidentals");
-	pCP->Submit(new lmCmdChangeNoteAccidentals(pVCursor, sName, m_pDoc,
+	pCP->Submit(new lmCmdChangeNoteAccidentals(lmUNDOABLE, sName, m_pDoc,
                             m_pView->GetSelection(), nAcc) );
 }
 
@@ -1587,13 +1567,10 @@ void lmScoreCanvas::ChangeNoteDots(int nDots)
 {
 	//change note dots for current selected notes
 
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
-	wxASSERT(pVCursor);
-
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change note dots");
-	pCP->Submit(new lmCmdChangeNoteRestDots(pVCursor, sName, m_pDoc,
-                            m_pView->GetSelection(), nDots) );
+	pCP->Submit(new lmCmdChangeNoteRestDots(lmUNDOABLE, sName, m_pDoc,
+                                            m_pView->GetSelection(), nDots) );
 }
 
 void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
@@ -1601,26 +1578,23 @@ void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlig
 {
 	//change properties of a lmTextItem object
 
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
-	wxASSERT(pVCursor);
-
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change text");
-	pCP->Submit(new lmCmdChangeText(pVCursor, sName, m_pDoc, pST, sText,
+	pCP->Submit(new lmCmdChangeText(lmUNDOABLE, sName, m_pDoc, pST, sText,
                                     nAlign, tPos, pStyle, nHintOptions) );
 }
 
 void lmScoreCanvas::ChangeBarline(lmBarline* pBL, lmEBarline nType, bool fVisible)
 {
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmCmdChangeBarline(m_pDoc, pBL, nType, fVisible) );
+	pCP->Submit(new lmCmdChangeBarline(lmUNDOABLE, m_pDoc, pBL, nType, fVisible) );
 }
 
 void lmScoreCanvas::ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel,
                                        int nMidiInstr)
 {
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmCmdChangeMidiSettings(m_pDoc, pInstr, nMidiChannel,
+	pCP->Submit(new lmCmdChangeMidiSettings(lmUNDOABLE, m_pDoc, pInstr, nMidiChannel,
                                             nMidiInstr) );
 }
 
@@ -2087,7 +2061,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 					lmNote* pBaseOfChord = (lmNote*)NULL;
 					if (event.AltDown())
 					{
-						lmStaffObj* pSO = m_pView->GetVCursor()->GetStaffObj();
+						lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetCursorSO();
 						if (pSO && pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
 							pBaseOfChord = (lmNote*)pSO;
 					}
@@ -2707,7 +2681,7 @@ void lmScoreCanvas::SynchronizeToolBoxWithCaret(bool fEnable)
 	if (!pToolBox) return;
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+    lmVStaffCursor* pVCursor = m_pDoc->GetScore()->GetCursor()->GetVCursor();
 	wxASSERT(pVCursor);
 
 	//get object pointed by the cursor
@@ -3060,7 +3034,7 @@ bool lmScoreCanvas::IsCursorValidToCutBeam()
     //  It must not be the first one in the beam
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pView->GetVCursor();
+    lmVStaffCursor* pVCursor = m_pDoc->GetScore()->GetCursor()->GetVCursor();
 	wxASSERT(pVCursor);
 
 	//get object pointed by the cursor
@@ -3398,7 +3372,7 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
         int nLineSpace = pShapeStaff->GetLineSpace(uPagePos.y);     //0=first ledger line below staff
         //to determine octave and step it is necessary to know the clef. As caret is
         //placed at insertion point we could get these information from caret
-        lmContext* pContext = m_pView->GetVCursor()->GetCurrentContext();
+        lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetVCursor()->GetCurrentContext();
         lmEClefType nClefType = pContext->GetClefType();
         lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
         dpNote += (nLineSpace - 2);     //pitch for note to insert

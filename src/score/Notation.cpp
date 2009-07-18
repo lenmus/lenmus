@@ -37,7 +37,7 @@
 
 
 lmNotation::lmNotation(lmVStaff* pVStaff, int nStaff, bool fVisible, bool fIsDraggable)
-    : lmStaffObj(pVStaff, eSFOT_Notation, pVStaff, nStaff, fVisible, fIsDraggable)
+    : lmStaffObj(pVStaff, 0L, eSFOT_Notation, pVStaff, nStaff, fVisible, fIsDraggable)
 {
     wxASSERT(nStaff > 0);
     SetLayer(lm_eLayerNotes);
@@ -100,14 +100,17 @@ wxString lmSpacer::Dump()
     return sDump;
 }
 
-wxString lmSpacer::SourceLDP(int nIndent)
+wxString lmSpacer::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += wxString::Format(_T("(spacer %.0f"), m_nSpacerWidth);
+    if (fUndoData)
+        sSource += wxString::Format(_T("(spacer#%d %.0f"), GetID(), m_nSpacerWidth);
+    else
+        sSource += wxString::Format(_T("(spacer %.0f"), m_nSpacerWidth);
 
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent);
+	sSource += lmStaffObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");
@@ -184,9 +187,9 @@ wxString lmAnchor::Dump()
     return sDump;
 }
 
-wxString lmAnchor::SourceLDP(int nIndent)
+wxString lmAnchor::SourceLDP(int nIndent, bool fUndoData)
 {
-    return lmStaffObj::SourceLDP(nIndent);
+    return lmStaffObj::SourceLDP(nIndent, fUndoData);
 }
 
 wxString lmAnchor::SourceXML(int nIndent)
@@ -240,9 +243,9 @@ wxString lmScoreAnchor::Dump()
     return sDump;
 }
 
-wxString lmScoreAnchor::SourceLDP(int nIndent)
+wxString lmScoreAnchor::SourceLDP(int nIndent, bool fUndoData)
 {
-    return lmStaffObj::SourceLDP(nIndent);
+    return lmStaffObj::SourceLDP(nIndent, fUndoData);
 }
 
 wxString lmScoreAnchor::SourceXML(int nIndent)

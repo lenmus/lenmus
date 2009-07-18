@@ -38,7 +38,7 @@ class lmBarline: public lmStaffObj
 {
 public:
     //constructor and destructor
-    lmBarline(lmEBarline nBarlineType, lmVStaff* pStaff, bool fVisible);
+    lmBarline(lmEBarline nBarlineType, lmVStaff* pStaff, long nID, bool fVisible);
     ~lmBarline();
 
 	wxString GetName() const { return _T("barline"); }
@@ -54,7 +54,7 @@ public:
 
     //source code and debugging
     wxString Dump();
-    wxString SourceLDP(int nIndent);
+    wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
 
 	//edit properties

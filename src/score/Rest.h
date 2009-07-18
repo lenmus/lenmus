@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2008 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -31,10 +31,9 @@
 class lmRest: public lmNoteRest
 {
 public:
-    lmRest(lmVStaff* pVStaff, 
-        lmENoteType nNoteType, float rDuration,
-        int nNumDots, int nStaff, int nVoice, bool fVisible,
-        bool fBeamed, lmTBeamInfo BeamInfo[]);
+    lmRest(lmVStaff* pVStaff, long nID, lmENoteType nNoteType, float rDuration,
+           int nNumDots, int nStaff, int nVoice, bool fVisible, bool fBeamed,
+           lmTBeamInfo BeamInfo[]);
 
     ~lmRest();
 
@@ -46,7 +45,7 @@ public:
 
 
 	wxString    Dump();
-    wxString    SourceLDP(int nIndent);
+    wxString    SourceLDP(int nIndent, bool fUndoData);
     wxString    SourceXML(int nIndent);
 
 

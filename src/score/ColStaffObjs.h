@@ -40,7 +40,6 @@ class lmColStaffObjs;
 class lmBarline;
 class lmView;
 class lmScoreCursor;
-class lmUndoData;
 class lmTimeSignature;
 class lmKeySignature;
 
@@ -81,6 +80,8 @@ public:
 
     //info
 	inline int GetNumSegment() { return m_nNumSegment; }
+    int GetNumInstr();
+
     bool IsSegmentFull();
     inline float GetDuration() { return m_rMaxTime; }
     float GetMaximumTime();
@@ -164,16 +165,6 @@ typedef struct lmCursorState_Struct
 }
 lmCursorState;
 
-typedef struct lmNCursorState_Struct
-{
-	int     nStaff;         //staff (1..n)
-	float   rTimepos;       //timepos
-    //currently pointed staffobj
-    int     nSegment;       //segment number (0..n). -1 if no StaffObj
-    int     nPosition;      //position in the list (0..n)
-}
-lmNCursorState;
-
 
 //global variable used as default initializator
 extern lmCursorState g_tNoCursorState;
@@ -181,15 +172,6 @@ extern lmCursorState g_tNoCursorState;
 //global function to compare with g_tNoCursorState
 extern bool IsEmptyState(lmCursorState& t);
 // Cursor pointing to current position
-
-
-
-
-//global variable used as default initializator
-extern lmNCursorState g_tNoNCursorState;
-
-//global function to compare with g_tNoCursorState
-extern bool IsEmptyState(lmNCursorState& t);
 
 
 
@@ -217,8 +199,6 @@ public:
     void MoveCursorToObject(lmStaffObj* pSO);
     void MoveTo(int iStaff, int nSegment, float rTime);
 
-
-
     //Advance methods: Intended for internal usage. They do not inform ScoreObj about
     //position change.
     void ResetCursor();
@@ -226,11 +206,7 @@ public:
     void AdvanceToNextSegment();
     void AdvanceToStartOfSegment(int nSegment, int nStaff);
     void AdvanceToStartOfTimepos();
-    wxDEPRECATED( void SetNewCursorState(lmScoreCursor* pSCursor,
-                                         lmCursorState* pState,
-                                         bool fUpdateTimepos=false) );
-    void SetNewCursorState(lmScoreCursor* pSCursor, lmNCursorState* pState,
-                           bool fUpdateTimepos=false);
+    void SetCursorState(lmScoreCursor* pSCursor, lmCursorState* pState, bool fUpdateTimepos=false);
     void SkipClefKey(bool fSkipKey);
 
     //current position
@@ -242,11 +218,9 @@ public:
     inline int GetInstrumentNumber() { return m_nInstr; }
     inline float GetTimepos() { return m_rTimepos; }
     inline int GetNumStaff() { return m_nStaff; }
-    int GetSegPosition();
 
     lmStaffObj* GetStaffObj();
-    wxDEPRECATED( lmCursorState GetState() );
-    lmNCursorState NewGetState();
+    lmCursorState GetState();
 
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
     lmStaffObj* GetPreviousStaffobj();
@@ -257,7 +231,7 @@ public:
     lmVStaff* GetVStaff();
 
     //other
-    lmStaffObj* GetReferredObject(int nStaff, lmIRef nIRef);
+    lmStaffObj* GetReferredObject(lmIRef& nIRef);
 
 
 private:
@@ -310,7 +284,6 @@ public:
     //internal state (setting it implies re-positioning)
     void SetState(lmCursorState* pState);
     lmCursorState GetState();
-    wxDEPRECATED( void SetNewCursorState(lmCursorState* pState) );
 
     //access to state info. Only meaninful if IsOK()
     inline bool IsOK() { return (GetCursorInstrumentNumber() != 0); }
@@ -318,6 +291,7 @@ public:
     inline float GetCursorTime() { return m_VCursor.GetTimepos(); }
     inline lmStaffObj* GetCursorSO() { return m_VCursor.GetStaffObj(); }
     inline int GetCursorInstrumentNumber() { return m_VCursor.GetInstrumentNumber(); }
+    inline int GetSegment() { return m_VCursor.GetSegment(); }
 
     //position related info
     lmVStaff* GetVStaff();
@@ -327,7 +301,7 @@ public:
     //other info
 	inline lmScore* GetCursorScore() { return m_pScore; }
     inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }
-    lmStaffObj* GetReferredObject(int nInstr, int nStaff, lmIRef nIRef);
+    lmStaffObj* GetReferredObject(lmIRef& nIRef);
 
 
 private:
@@ -408,9 +382,6 @@ public:
 	//debug
 	wxString Dump();
 
-    //undo/redo related methods
-    void LogObjectToDeletePosition(lmUndoData* pUndoData, lmStaffObj* pSO);
-
     //AutoReBar
     void AutoReBar(lmStaffObj* pFirstSO, lmStaffObj* pLastSO, lmTimeSignature* pNewTS);
 
@@ -443,14 +414,12 @@ private:
     inline int GetCursorSegment() { return GetCursor()->GetSegment(); }
     inline lmStaffObj* GetCursorStaffObj() { return GetCursor()->GetStaffObj(); }
     inline float GetCursorTimepos() { return GetCursor()->GetTimepos(); }
-    ////inline lmNCursorState GetCursorState() { return GetCursor()->NewGetState(); }
 
     inline void AdvanceCursorToNextSegment() { GetCursor()->AdvanceToNextSegment(); }
     inline void AdvanceCursorToTime(float rTimepos) { GetCursor()->AdvanceToTime(rTimepos); }
     inline void MoveCursorToObject(lmStaffObj* pSO) { GetCursor()->MoveCursorToObject(pSO); }
     inline void MoveCursorToTime(float rTimepos) { GetCursor()->MoveToTime(rTimepos); }
     inline void MoveCursorRight(bool fAlsoChordNotes) { GetCursor()->MoveRight(fAlsoChordNotes); }
-    //inline void SetCursorState() { GetCursor()->SetNewCursorState(); }
     inline lmScoreCursor* GetScoreCursor() { return GetCursor()->GetScoreCursor(); }
 
 

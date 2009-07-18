@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2009 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -334,7 +334,7 @@ void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClear
 
 void lmScoreAuxCtrol::DisplayScore(lmScore* pScore, bool fClearMessage)
 {
-    //wxLogMessage(_T("[lmScoreAuxCtrol::DisplayScore] ScoreID=%d"), pScore->GetID() );
+    //wxLogMessage(_T("[lmScoreAuxCtrol::DisplayScore] ScoreID=%d"), pScore->GetScoreID() );
     SetScore(pScore, false);        //false: not hidden
     if (fClearMessage) m_fDisplayMessage = false;
     Refresh();
@@ -391,11 +391,11 @@ void lmScoreAuxCtrol::Pause()
 void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
     if (!m_pScore) return;
-    if (m_pScore->GetID() != event.GetScoreID() )
+    if (m_pScore->GetScoreID() != event.GetScoreID() )
     {
         //the event is not for the score controlled by this control
         wxLogMessage(_T("[lmScoreAuxCtrol::OnVisualHighlight] Ignored higlight event: this score ID =%d, target score ID = %d"),
-                     m_pScore->GetID(), event.GetScoreID() );
+                     m_pScore->GetScoreID(), event.GetScoreID() );
         return;
     }
 
@@ -434,10 +434,10 @@ void lmScoreAuxCtrol::Dump()
 
 }
 
-void lmScoreAuxCtrol::SourceLDP(bool fExportCursor)
+void lmScoreAuxCtrol::SourceLDP(bool fUndoData)
 {
     if (!m_pScore) return;
-    lmDlgDebug dlg(this, _T("Generated source code"), m_pScore->SourceLDP(fExportCursor));
+    lmDlgDebug dlg(this, _T("Generated source code"), m_pScore->SourceLDP(fUndoData));
     dlg.ShowModal();
 
 }
