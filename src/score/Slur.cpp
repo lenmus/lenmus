@@ -242,10 +242,11 @@ wxString lmTie::SourceLDP_First(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
 
-    //wxString sSource = _T(" l");
-    wxString sSource = wxString::Format(_T(" (tie %d start"), GetID());
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += wxString::Format(_T("(tie %d start"), GetID());
     sSource += m_Bezier[0].SourceLDP(nIndent, fUndoData);
-    sSource += _T(")");
+    sSource += _T(")\n");
     return sSource;
 }
 
@@ -253,9 +254,11 @@ wxString lmTie::SourceLDP_Last(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
 
-    wxString sSource = wxString::Format(_T(" (tie %d stop"), GetID());
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += wxString::Format(_T("(tie %d stop"), GetID());
     sSource += m_Bezier[1].SourceLDP(nIndent, fUndoData);
-    sSource += _T(")");
+    sSource += _T(")\n");
     return sSource;
 }
 

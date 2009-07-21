@@ -319,7 +319,7 @@ void lmVStaff::AssignID(lmStaffObj* pSO)
 // Methods for inserting StaffObjs
 //---------------------------------------------------------------------------------------
 
-lmClef* lmVStaff::CmdNew_InsertClef(lmEClefType nClefType, bool fVisible)
+lmClef* lmVStaff::Cmd_InsertClef(lmEClefType nClefType, bool fVisible)
 {
     //if there are notes affected by new clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
@@ -334,7 +334,7 @@ lmClef* lmVStaff::CmdNew_InsertClef(lmEClefType nClefType, bool fVisible)
     //create the clef and prepare its insertion
     lmStaffObj* pCursorSO = GetCursorStaffObj();
     int nStaff = GetCursorStaffNum();
-    lmClef* pClef = new lmClef(nClefType, this, 0L, nStaff, fVisible);
+    lmClef* pClef = new lmClef(nClefType, this, lmNEW_ID, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
     pContext = pStaff->NewContextAfter(pClef, pContext);
@@ -347,7 +347,7 @@ lmClef* lmVStaff::CmdNew_InsertClef(lmEClefType nClefType, bool fVisible)
     return pClef;
 }
 
-lmTimeSignature* lmVStaff::CmdNew_InsertTimeSignature(int nBeats, int nBeatType, bool fVisible)
+lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(int nBeats, int nBeatType, bool fVisible)
 {
     //It must return NULL if not succedeed
 
@@ -361,7 +361,7 @@ lmTimeSignature* lmVStaff::CmdNew_InsertTimeSignature(int nBeats, int nBeatType,
     }
 }
 
-lmKeySignature* lmVStaff::CmdNew_InsertKeySignature(int nFifths, bool fMajor, bool fVisible)
+lmKeySignature* lmVStaff::Cmd_InsertKeySignature(int nFifths, bool fMajor, bool fVisible)
 {
     //It must return NULL if not succedeed
 
@@ -375,7 +375,7 @@ lmKeySignature* lmVStaff::CmdNew_InsertKeySignature(int nFifths, bool fMajor, bo
 
     bool fKeyKeepPitch = (nAction == 1);
 
-    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, 0L, fVisible);
+    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, lmNEW_ID, fVisible);
     if ( InsertKeyTimeSignature(pKS, fKeyKeepPitch) )
         return pKS;
     else
@@ -403,7 +403,7 @@ bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
     if (!IsEqualTime(GetCursorTimepos(), 0.0f))
     {
         //insert barline
-        CmdNew_InsertBarline(lm_eBarlineDouble);
+        Cmd_InsertBarline(lm_eBarlineDouble);
     }
 
     //Locate context insertion points for all staves
@@ -457,7 +457,7 @@ bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
     return true;    //success
 }
 
-lmBarline* lmVStaff::CmdNew_InsertBarline(lmEBarline nType, bool fVisible)
+lmBarline* lmVStaff::Cmd_InsertBarline(lmEBarline nType, bool fVisible)
 {
 
     //move cursor to start of current timepos
@@ -474,13 +474,13 @@ lmBarline* lmVStaff::CmdNew_InsertBarline(lmEBarline nType, bool fVisible)
     GetVCursor()->AdvanceToStartOfTimepos();
 
     //now, proceed to insert the barline
-    lmBarline* pBarline = new lmBarline(nType, this, 0L, fVisible);
+    lmBarline* pBarline = new lmBarline(nType, this, lmNEW_ID, fVisible);
     m_cStaffObjs.Add(pBarline);
 
     return pBarline;
 }
 
-lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
+lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
                                  lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
                                  int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
@@ -525,7 +525,7 @@ lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOct
 		if (nAnswer == 0)   //'Insert clef' button
 		{
             //insert clef
-            CmdNew_InsertClef(lmE_Sol, lmNO_VISIBLE);
+            Cmd_InsertClef(lmE_Sol, lmNO_VISIBLE);
 
 			//re-compute context
 			if (pCursorSO)
@@ -546,7 +546,7 @@ lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOct
     }
 	int nAccidentals = 0;
 
-    lmNote* pNt = new lmNote(this, 0L, nPitchType,
+    lmNote* pNt = new lmNote(this, lmNEW_ID, nPitchType,
                         nStep, nOctave, nAccidentals, nAcc,
                         nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
                         pContext, false, BeamInfo, pBaseOfChord, false, lmSTEM_DEFAULT);
@@ -578,7 +578,7 @@ lmNote* lmVStaff::CmdNew_InsertNote(lmEPitchType nPitchType, int nStep, int nOct
     return pNt;
 }
 
-lmRest* lmVStaff::CmdNew_InsertRest(lmENoteType nNoteType, float rDuration,
+lmRest* lmVStaff::Cmd_InsertRest(lmENoteType nNoteType, float rDuration,
                                  int nDots, int nVoice, bool fAutoBar)
 {
     int nStaff = GetCursorStaffNum();
@@ -589,7 +589,7 @@ lmRest* lmVStaff::CmdNew_InsertRest(lmENoteType nNoteType, float rDuration,
         BeamInfo[i].Type = eBeamNone;
     }
 
-    lmRest* pRest = new lmRest(this, 0L, nNoteType, rDuration, nDots, nStaff, nVoice,
+    lmRest* pRest = new lmRest(this, lmNEW_ID, nNoteType, rDuration, nDots, nStaff, nVoice,
                                lmVISIBLE, false, BeamInfo);
 
     m_cStaffObjs.Add(pRest);
@@ -658,10 +658,10 @@ void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
   
     //finally, insert the barline if necessary
     if (fInsertBarline)
-        CmdNew_InsertBarline(lm_eBarlineSimple, lmVISIBLE);
+        Cmd_InsertBarline(lm_eBarlineSimple, lmVISIBLE);
 }
 
-bool lmVStaff::CmdNew_DeleteStaffObj(lmStaffObj* pSO)
+bool lmVStaff::Cmd_DeleteStaffObj(lmStaffObj* pSO)
 {
     //returns true if deletion error
 
@@ -755,7 +755,7 @@ accidentals to the affected notes?");
          return (int)nOptValue;
 }
 
-bool lmVStaff::CmdNew_DeleteClef(lmClef* pClef)
+bool lmVStaff::Cmd_DeleteClef(lmClef* pClef)
 {
     //returns true if deletion error or it is cancelled
 
@@ -778,7 +778,7 @@ bool lmVStaff::CmdNew_DeleteClef(lmClef* pClef)
     return false;       //false: deletion OK
 }
 
-bool lmVStaff::CmdNew_DeleteKeySignature(lmKeySignature* pKS)
+bool lmVStaff::Cmd_DeleteKeySignature(lmKeySignature* pKS)
 {
     //returns true if deletion cancelled or error
 
@@ -801,7 +801,7 @@ bool lmVStaff::CmdNew_DeleteKeySignature(lmKeySignature* pKS)
     return false;       //false: deletion OK
 }
 
-bool lmVStaff::CmdNew_DeleteTimeSignature(lmTimeSignature* pTS)
+bool lmVStaff::Cmd_DeleteTimeSignature(lmTimeSignature* pTS)
 {
     //returns true if deletion cancelled or error
 
@@ -814,13 +814,13 @@ bool lmVStaff::CmdNew_DeleteTimeSignature(lmTimeSignature* pTS)
     return false;       //false: deletion OK
 }
 
-void lmVStaff::CmdNew_AddTie(lmNote* pStartNote, lmNote* pEndNote)
+void lmVStaff::Cmd_AddTie(lmNote* pStartNote, lmNote* pEndNote)
 {
     //add a tie
     pEndNote->CreateTie(pStartNote, pEndNote);
 }
 
-bool lmVStaff::CmdNew_AddTuplet(std::vector<lmNoteRest*>& notes,
+bool lmVStaff::Cmd_AddTuplet(std::vector<lmNoteRest*>& notes,
                              bool fShowNumber, int nNumber, bool fBracket,
                              lmEPlacement nAbove, int nActual, int nNormal)
 {
@@ -847,7 +847,7 @@ bool lmVStaff::CmdNew_AddTuplet(std::vector<lmNoteRest*>& notes,
     return false;       //no error
 }
 
-bool lmVStaff::CmdNew_DeleteTuplet(lmNoteRest* pStartNR)
+bool lmVStaff::Cmd_DeleteTuplet(lmNoteRest* pStartNR)
 {
     //adjust duration of affected notes/rests, and delete the tuplet
 
@@ -875,7 +875,7 @@ bool lmVStaff::CmdNew_DeleteTuplet(lmNoteRest* pStartNR)
     return false;       //false: deletion OK
 }
 
-void lmVStaff::CmdNew_BreakBeam(lmNoteRest* pBeforeNR)
+void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
 {
     //break the beamed group before note/rest pBeforeNR. 
 
@@ -969,7 +969,7 @@ void lmVStaff::CmdNew_BreakBeam(lmNoteRest* pBeforeNR)
         wxASSERT(false);
 }
 
-void lmVStaff::CmdNew_JoinBeam(std::vector<lmNoteRest*>& notes)
+void lmVStaff::Cmd_JoinBeam(std::vector<lmNoteRest*>& notes)
 {
     //depending on received note/rests beam status, either:
     // - create a beamed group with the received notes,
@@ -1047,7 +1047,7 @@ void lmVStaff::CmdNew_JoinBeam(std::vector<lmNoteRest*>& notes)
     pNewBeam->AutoSetUp();
 }
 
-bool lmVStaff::CmdNew_DeleteBeam(lmNoteRest* pBeamedNR)
+bool lmVStaff::Cmd_DeleteBeam(lmNoteRest* pBeamedNR)
 {
     //removes the beam associated to received note/rest
 
@@ -1069,7 +1069,7 @@ bool lmVStaff::CmdNew_DeleteBeam(lmNoteRest* pBeamedNR)
     return false;       //no error;
 }
 
-void lmVStaff::CmdNew_ChangeDots(lmNoteRest* pNR, int nDots)
+void lmVStaff::Cmd_ChangeDots(lmNoteRest* pNR, int nDots)
 {
     //Change the number of dots of NoteRests pNR. As a consecuence, the measure duration
     //must be reviewed, as in could change
@@ -1101,15 +1101,15 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible, long
 }
 
 // adds a spacer to the end of current StaffObjs collection
-lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth)
+lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth, long nID)
 {
-    lmSpacer* pSpacer = new lmSpacer(this, nWidth);
+    lmSpacer* pSpacer = new lmSpacer(this, nID, nWidth);
     m_cStaffObjs.Add(pSpacer);
     return pSpacer;
 
 }
 
-lmStaffObj* lmVStaff::AddAnchorObj()
+lmStaffObj* lmVStaff::AddAnchorObj(long nID)
 {
     // adds an anchor StaffObj to the end of current StaffObjs collection
 
@@ -1117,7 +1117,7 @@ lmStaffObj* lmVStaff::AddAnchorObj()
     if (IsGlobalStaff())
 		pAnchor = new lmScoreAnchor(this);
     else
-        pAnchor = new lmAnchor(this);
+        pAnchor = new lmAnchor(this, nID);
 
     m_cStaffObjs.Add(pAnchor);
     return pAnchor;
@@ -1164,31 +1164,19 @@ lmRest* lmVStaff::AddRest(long nID, lmENoteType nNoteType, float rDuration, int 
 }
 
 lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& tFontData,
-                              bool fHasWidth, long nID)
+                              lmStaffObj* pAnchor, long nID)
 {
     lmTextStyle* pTS = m_pScore->GetStyleName(tFontData);
     wxASSERT(pTS);
-    return AddText(sText, nHAlign, pTS, fHasWidth, nID);
+    return AddText(sText, nHAlign, pTS, pAnchor, nID);
 }
 
 lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
-                              bool fHasWidth, long nID)
+                              lmStaffObj* pAnchor, long nID)
 {
-    lmTextItem* pText = new lmTextItem((lmScoreObj*)NULL, nID, sText, nHAlign, pStyle);
+    wxASSERT(pAnchor);
 
-    // create an anchor object
-    lmStaffObj* pAnchor;
-    if (fHasWidth)
-    {
-        //attach it to a spacer
-        pAnchor = this->AddSpacer( pText->GetShape()->GetWidth() );
-    }
-    else
-    {
-        //No width. Attach it to an anchor
-        pAnchor = AddAnchorObj();
-    }
-    pText->SetOwner(pAnchor);
+    lmTextItem* pText = new lmTextItem(pAnchor, nID, sText, nHAlign, pStyle);
     pAnchor->AttachAuxObj(pText);
 
     return pText;
@@ -2099,12 +2087,12 @@ float lmVStaff::GetCurrentMesureDuration()
     return m_cStaffObjs.GetMeasureDuration(GetCursorSegmentNum()+1);
 }
 
-lmSOControl* lmVStaff::AddNewSystem()
+lmSOControl* lmVStaff::AddNewSystem(long nID)
 {
     //Inserts a control lmStaffObj to signal a new system
 
     //Insert the control object
-    lmSOControl* pControl = new lmSOControl(lmNEW_SYSTEM, this);
+    lmSOControl* pControl = new lmSOControl(lmNEW_SYSTEM, this, nID);
     m_cStaffObjs.Add(pControl);
     return pControl;
 }

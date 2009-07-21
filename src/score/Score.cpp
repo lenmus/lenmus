@@ -186,7 +186,7 @@ lmStaffObj* g_pCursorSO = (lmStaffObj*)NULL;        //not NULL for exporting cur
 
 
 lmScore::lmScore()
-    : lmScoreObj((lmScoreObj*)NULL, 0L)
+    : lmScoreObj((lmScoreObj*)NULL, lmNEW_ID)
     , m_SCursor(this)
     , m_sCreationModeName(wxEmptyString)
     , m_sCreationModeVers(wxEmptyString)
@@ -461,15 +461,33 @@ long lmScore::AssignID(lmScoreObj* pSO)
     if (m_fUndoMode)
     {
         if (pSO->GetID() == 0)
+        {
             wxLogMessage(_T("[lmScore::AssignID] UndoMode: an object does not have a saved ID"));
+            pSO->SetID(++m_nCounterID);
+        }
+        else
+            m_nCounterID = pSO->GetID();
     }
     else
     {
         if (pSO->GetID() != 0)
+        {
             wxLogMessage(_T("[lmScore::AssignID] Normal mode: an object has already an ID"));
+            m_nCounterID = pSO->GetID();
+        }
+        else
+            pSO->SetID(++m_nCounterID);
     }
-    pSO->SetID(++m_nCounterID);
+    m_ScoreObjs[m_nCounterID] = pSO;
     return m_nCounterID;
+}
+
+lmScoreObj* lmScore::GetScoreObj(long nID)
+{
+    if (nID == lmNULL_ID)
+        return (lmScoreObj*)NULL;
+    else
+        return m_ScoreObjs[nID];
 }
 
 wxString lmScore::GetScoreName()
@@ -1234,8 +1252,8 @@ lmScoreCursor* lmScore::SetCursorState(lmCursorState* pState)
 
 lmScoreCursor* lmScore::SetCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO)
 {
-    lmCursorState tState = {nInstr, nStaff, rTimepos, pSO};
-    return SetCursorState(&tState);
+    lmCursorState oState(nInstr, nStaff, rTimepos, pSO);
+    return SetCursorState(&oState);
 }
 
 lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, int nPage, lmUPoint& uPos)

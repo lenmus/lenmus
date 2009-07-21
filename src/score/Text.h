@@ -343,7 +343,7 @@ class lmInstrNameAbbrev : public lmTextItem
 {
 public:
     lmInstrNameAbbrev(lmScoreObj* pOwner, wxString& sTitle, lmTextStyle* pStyle)
-                            : lmTextItem(pOwner, 0L, sTitle, lmHALIGN_LEFT, pStyle) {};
+                            : lmTextItem(pOwner, lmNEW_ID, sTitle, lmHALIGN_LEFT, pStyle) {};
 
     //specific methods
     wxString SourceLDP(wxString sTag, bool fUndoData);

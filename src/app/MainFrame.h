@@ -148,6 +148,7 @@ public:
     void OnDebugDumpStaffObjs(wxCommandEvent& event);
     void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
     void OnDebugSeeSource(wxCommandEvent& event);
+    void OnDebugSeeSourceForUndo(wxCommandEvent& event);
     void OnDebugSeeXML(wxCommandEvent& event);
     void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
     void OnDebugScoreUI(wxUpdateUIEvent& event);

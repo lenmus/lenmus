@@ -357,7 +357,7 @@ wxString lmFermata::Dump()
 
 lmLyric::lmLyric(lmScoreObj* pOwner, wxString& sText, lmTextStyle* pStyle, ESyllabicTypes nSyllabic,
                  int nNumLine, wxString sLanguage)
-    : lmAuxObj(pOwner, 0L, lmDRAGGABLE),
+    : lmAuxObj(pOwner, lmNEW_ID, lmDRAGGABLE),
       lmBasicText(sText, g_tDefaultPos, pStyle, sLanguage)
 {
     m_nNumLine = nNumLine;

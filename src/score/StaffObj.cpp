@@ -772,14 +772,6 @@ lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
     return m_pVStaff->LogicalToTenths(uUnits, m_nStaffNum);
 }
 
-lmIRef lmStaffObj::GetIRef()
-{
-    int nPos = m_pSegment->FindPosition(this);
-    wxASSERT(nPos >= 0);
-    return lmIRef(m_pSegment->GetNumInstr(), m_pSegment->GetNumSegment(),
-                  m_nStaffNum, nPos);
-}
-
 lmContext* lmStaffObj::GetCurrentContext(int nStaff)
 {
 	// Returns the context that is applicable to the this StaffObj.
@@ -846,7 +838,9 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
 
     //Anchor notations doesn't have a source LDP element. Therefore, only attached AuxObjs must
     //be generated
-    if (!IsNotation() || !( ((lmNotation*)this)->IsAnchor() || ((lmNotation*)this)->IsScoreAnchor() ))
+    if (!IsNotation() || !( ((lmNotation*)this)->IsAnchor() 
+                            || ((lmNotation*)this)->IsScoreAnchor()
+                            || ((lmNotation*)this)->IsSpacer() ))
     {
         //staff num
         if (m_pVStaff->GetNumStaves() > 1
@@ -861,15 +855,17 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
         if (!m_fVisible)
             sSource += _T(" noVisible");
 
-        //is score cursor pointing to this StaffObj?
-        if (g_pCursorSO == this)
-            sSource += _T(" cursorPoint");
     }
+
+    //is score cursor pointing to this StaffObj?
+    if (g_pCursorSO == this)
+        sSource += _T(" cursorPoint");
 
     // Generate source code for AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
     {
 		nIndent++;
+        sSource += _T("\n");
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         {
             if ( (*m_pAuxObjs)[i]->IsRelObj() )

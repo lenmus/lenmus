@@ -799,7 +799,6 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
     wxString sGrpName = _T("");           //no name for group
     wxString sNameStyle = _T("");
     lmEHAlign nNameAlign = lmHALIGN_LEFT;
-    bool fNameHasWidth = false;
     lmFontInfo tNameFont = g_tInstrumentDefaultFont;
     lmLocation tNamePos = g_tDefaultPos;
 
@@ -808,7 +807,6 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
     wxString sGrpAbbrev = _T("");         //no abreviated name for group
     wxString sAbbrevStyle = _T("");
     lmEHAlign nAbbrevAlign = lmHALIGN_LEFT;
-    bool fAbbrevHasWidth = false;
     lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
     lmLocation tAbbrevPos = g_tDefaultPos;
 
@@ -829,12 +827,12 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
         else if (pX->GetName() == _T("name") )
         {
             AnalyzeTextString(pX, &sGrpName, &sNameStyle, &nNameAlign, &tNamePos,
-                              &tNameFont, &fNameHasWidth);
+                              &tNameFont);
         }
         else if (pX->GetName() == _T("abbrev") )
         {
             AnalyzeTextString(pX, &sGrpAbbrev, &sAbbrevStyle, &nAbbrevAlign, &tAbbrevPos,
-                              &tAbbrevFont, &fAbbrevHasWidth);
+                              &tAbbrevFont);
         }
         else if (pX->GetName() == _T("symbol") )
         {
@@ -906,7 +904,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
 	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
     bool fMusicFound = false;               // <MusicData> tag found
-    long nVStaffID = 0L;
+    long nVStaffID = lmNEW_ID;
     wxString sNumStaves = _T("1");          //one staff
 
     //default values for name
@@ -914,7 +912,6 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     wxString sInstrName = _T("");           //no name for instrument
     wxString sInstrNameStyle = _T("");
     lmEHAlign nNameAlign = lmHALIGN_LEFT;
-    bool fNameHasWidth = false;
     lmFontInfo tNameFont = g_tInstrumentDefaultFont;
     lmLocation tNamePos = g_tDefaultPos;
 
@@ -923,7 +920,6 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
     wxString sInstrAbbrevStyle = _T("");
     lmEHAlign nAbbrevAlign = lmHALIGN_LEFT;
-    bool fAbbrevHasWidth = false;
     lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
     lmLocation tAbbrevPos = g_tDefaultPos;
 
@@ -938,13 +934,13 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             break;      //start of MusicData. Exit this loop
         }
         else if (pX->GetName() == _T("name") ) {
-            AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign, &tNamePos,
-                              &tNameFont, &fNameHasWidth);
+            AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign,
+                              &tNamePos, &tNameFont);
         }
         else if (pX->GetName() == _T("abbrev") )
 		{
             AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
-                              &tAbbrevPos, &tAbbrevFont, &fAbbrevHasWidth);
+                              &tAbbrevPos, &tAbbrevFont);
         }
         else if (pX->GetName() == _T("infoMIDI") )
 		{
@@ -1108,7 +1104,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
     }
 
-    //loop to analyze remaining elements: music
+    //loop to analyze remaining elements: music data elements
     for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
         sName = pX->GetName();
@@ -1763,7 +1759,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     bool fThereAreAttachments = false;
     lmEPlacement nFermataPlacement = ep_Default;
 	lmLocation tFermataPos = g_tDefaultPos;
-    long nFermataID = 0L;
+    long nFermataID = lmNEW_ID;
 
     wxString sData;
     int iLevel, nLevel;
@@ -2129,24 +2125,31 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     //note/rest is created. Let's continue analyzing attachments and attaching them to the
     //created note/rest
-    if (!fThereAreAttachments)
-        return pNR;
+    if (fThereAreAttachments)
+        AnalyzeAttachments(pNode, pVStaff, pX, pNR);
+
+    return pNR;
+}
+
+void lmLDPParser::AnalyzeAttachments(lmLDPNode* pNode, lmVStaff* pVStaff,
+                                     lmLDPNode* pX, lmStaffObj* pAnchor)
+{
+    //pX is a parameter of main node pNode
 
     while (pX)
     {
         wxString sName = pX->GetName();
         if (sName == _T("textbox"))
-            AnalyzeLine(pX, pVStaff, pNR);
+            AnalyzeLine(pX, pVStaff, pAnchor);
         else if (sName == _T("textbox"))
-            AnalyzeTextbox(pX, pVStaff, pNR);
+            AnalyzeTextbox(pX, pVStaff, pAnchor);
         else if (sName == _T("text"))
-            AnalyzeText(pX, pVStaff);
+            AnalyzeText(pX, pVStaff, pAnchor);
         else
             AnalysisError(pX, _T("Notation '%s' unknown or not implemented."), sName.c_str());
 
         pX = pNode->GetNextParameter();
     }
-    return pNR;
 }
 
 bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
@@ -2902,7 +2905,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
 
 bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
                                     lmEHAlign* pAlign, lmLocation* pPos,
-                                    lmFontInfo* pFont, bool* pHasWidth)
+                                    lmFontInfo* pFont)
 {
     //A certain number of LDP elements accepts a text-string with additional parameters,
     //such as location, font or alignment. This method parses these elements.
@@ -2912,7 +2915,7 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
     //Returns true if error; in this case return variables are not changed.
     //If no error all variables but pNode are loaded with parsed information
 
-    // <text-string> = (any-tag string [<location>] [{<font> | <style>}] [<alingment>])
+    // <text-string> = (any-tag string [<location>][{<font> | <style>}][<alingment>])
     // <style> = (style <name>)
 
     //check that at least one parameter (text string) is specified
@@ -2930,7 +2933,6 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
     lmEHAlign nAlign;
     lmFontInfo tFont;
     lmLocation tPos;
-    bool fHasWidth;
 
     //load default values
     if (pAlign)
@@ -2944,8 +2946,6 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
     }
     if (pPos)
         tPos = *pPos;
-    if (pHasWidth)
-        fHasWidth = *pHasWidth;
 
     int iP = 1;
 
@@ -2990,7 +2990,8 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
             nAlign = lmHALIGN_CENTER;
         }
         else if (sName == _T("hasWidth")) {
-            fHasWidth = true;
+            AnalysisError(pX, _T("[Element '%s'. Obsolete parameter '%s'. Ignored."),
+                pNode->GetName().c_str(), sName.c_str() );
         }
         else {
             AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
@@ -3006,8 +3007,6 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
         *pPos = tPos;
     if (pFont)
         *pFont = tFont;
-    if (pHasWidth)
-        *pHasWidth = fHasWidth;
     if (pStyle)
         *pStyle = sStyle;
 
@@ -3327,7 +3326,7 @@ bool lmLDPParser::GetValueIntNumber(lmLDPNode* pNode, int* pValue, int iP, int n
     }
 }
 
-bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
+bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget)
 {
     //returns true if error; in this case nothing is added to the VStaff
     // <text> = (text string <location>[<font><alingment>])
@@ -3347,7 +3346,6 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sText;
     wxString sStyle;
     lmEHAlign nAlign = lmHALIGN_LEFT;     //TODO user options instead of fixed values
-    bool fHasWidth = false;
     lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
     lmLocation tPos;
     tPos.xUnits = lmTENTHS;
@@ -3355,7 +3353,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     tPos.x = 0.0f;
     tPos.y = 0.0f;
 
-    if (AnalyzeTextString(pNode, &sText, &sStyle, &nAlign, &tPos, &tFont, &fHasWidth))
+    if (AnalyzeTextString(pNode, &sText, &sStyle, &nAlign, &tPos, &tFont))
         return true;
 
     //no error:
@@ -3378,7 +3376,9 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (!pStyle)
         pStyle = pVStaff->GetScore()->GetStyleName(tFont);
 
-    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, fHasWidth, nID);
+    if (!pTarget)
+        pTarget = pVStaff->AddAnchorObj();
+    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, pTarget, nID);
 	pText->SetUserLocation(tPos);
 
     return false;
@@ -3486,9 +3486,10 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 
 void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-//  <spacer> ::= ("spacer" <width>)     width in tenths
+    // <spacer> = (spacer <width>)     width in tenths
 
     wxString sElmName = pNode->GetName();
+    long nID = pNode->GetID();
 
     //check that the width is specified
     if(pNode->GetNumParms() < 1)
@@ -3498,19 +3499,30 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
         return;
     }
 
-    wxString sNum1 = (pNode->GetParameter(1))->GetName();
-    if (!sNum1.IsNumber()) {
+    //get spacer width
+    int iP = 1;
+    wxString sNum1 = (pNode->GetParameter(iP))->GetName();
+    if (!sNum1.IsNumber())
+    {
         AnalysisError(
             pNode,
             _T("Element '%s': Width expected but found '%s'. Ignored."),
             sElmName.c_str(), sNum1.c_str());
         return;
     }
-
     long nWidth;
     sNum1.ToLong(&nWidth);
-    pVStaff->AddSpacer((lmTenths)nWidth);
+    ++iP;
 
+    //create the spacer
+    lmSpacer* pSpacer = pVStaff->AddSpacer((lmTenths)nWidth, nID);
+
+    //analyze possible attachments
+    if (iP <= pNode->GetNumParms())
+    {
+        lmLDPNode* pX = pNode->StartIterator(iP);
+        AnalyzeAttachments(pNode, pVStaff, pX, (lmStaffObj*)pSpacer);
+    }
 }
 
 void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -3586,7 +3598,6 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
             _T("Element '%s': Type of graphic (%s) unknown. Ignored."),
             sElmName.c_str(), sType.c_str());
     }
-
 }
 
 void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget)
@@ -3710,7 +3721,7 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
             //(text string [<location>] [{<font> | <style>}] [<alignment>])
             //mandatory: string. Optional: style. All others forbidden
             if (AnalyzeTextString(pX, &sText, &sStyle, (lmEHAlign*)NULL,
-                                  (lmLocation*)NULL, (lmFontInfo*)NULL, (bool*)NULL))
+                                  (lmLocation*)NULL, (lmFontInfo*)NULL))
             {
                 //error in text element
                 //TODO
@@ -3960,6 +3971,7 @@ bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
     //<newSystem> ::= (newSystem}
 
     wxASSERT(pNode->GetName() == _T("newSystem"));
+    long nID = pNode->GetID();
 
     //check if there are parameters
     if(pNode->GetNumParms() >= 1) {
@@ -3969,7 +3981,7 @@ bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     //add control object
-    pVStaff->AddNewSystem();
+    pVStaff->AddNewSystem(nID);
     return false;
 
 }

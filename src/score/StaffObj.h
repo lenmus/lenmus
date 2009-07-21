@@ -182,10 +182,11 @@ public:
     //wrapper methods to encapsulate and simplify operations related to score creation by program
     lmAuxObj* AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxString& sText,
                             lmTextStyle* pTextStyle, wxSize size = wxSize(160, 80),
-                            wxColour nBgColor = wxColour(_T("#fffeb0")), long nID = 0L);
+                            wxColour nBgColor = wxColour(_T("#fffeb0")),
+                            long nID = lmNEW_ID);
     lmAuxObj* AttachLine(lmTenths xtStart, lmTenths ytStart, lmTenths xtEnd, lmTenths ytEnd,
                          lmTenths ntWidth, lmELineCap nStartCap, lmELineCap nEndCap,
-                         lmELineStyle nStyle, wxColour nColor, long nID = 0L);
+                         lmELineStyle nStyle, wxColour nColor, long nID = lmNEW_ID);
 
 
 	//--- a ScoreObj can be renderizable
@@ -357,31 +358,6 @@ enum EStaffObjType
     eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)
 };
 
-//IRef management definitions
-
-// immutable reference to an StaffObj
-class lmIRef
-{
-public:
-    lmIRef() {}
-    lmIRef(int nInstr, int nSegment, int nStaff, int nPos) 
-        : m_nInstr(nInstr), m_nSegment(nSegment), m_nStaff(nStaff), m_nPos(nPos) {}
-
-    inline int GetSegNum() { return m_nSegment; }
-    inline int GetPosNum() { return m_nPos; }
-    inline int GetInstrNum() { return m_nInstr; }
-
-
-protected:
-
-    int m_nInstr;
-    int m_nSegment;
-    int m_nStaff;
-    int m_nPos;
-};
-
-
-
 
 class lmVStaff;
 class lmAuxObj;
@@ -455,7 +431,6 @@ public:
     inline lmVStaff* GetVStaff() { return m_pVStaff; }
 	inline void SetSegment(lmSegment* pSegment) { m_pSegment = pSegment; }
 	inline lmSegment* GetSegment() { return m_pSegment; }
-    lmIRef GetIRef();
     inline bool IsOnStaff(int nStaff) { return (m_nStaffNum == nStaff
                                                 || IsKeySignature()
                                                 || IsTimeSignature()
@@ -630,7 +605,7 @@ public:
 
 protected:
 	lmRelObj(lmScoreObj* pOwner, lmEAuxObjType nRelObjType, bool fIsDraggable = true)
-        : lmAuxObj(pOwner, 0L, fIsDraggable), m_nRelObjType(nRelObjType) {}
+        : lmAuxObj(pOwner, lmNEW_ID, fIsDraggable), m_nRelObjType(nRelObjType) {}
 
     lmEAuxObjType       m_nRelObjType;
 

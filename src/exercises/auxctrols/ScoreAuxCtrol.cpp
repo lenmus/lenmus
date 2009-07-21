@@ -269,7 +269,7 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
         wxMemoryDC memoryDC;
         //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
         m_graphMngr.PrepareToRender(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
-                                    lmFORCE_RELAYOUT);
+                                    lmHINT_FORCE_RELAYOUT);
         wxBitmap* pPageBitmap = m_graphMngr.RenderScore(1);
 
         wxASSERT(pPageBitmap && pPageBitmap->Ok());

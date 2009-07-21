@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <list>
+#include <map>
 
 #include "wx/debug.h"
 
@@ -308,7 +309,6 @@ enum {
     lmMARGIN_RIGHT,
 };
 
-
 //global variable for exporting to LDP ScoreCursor data
 extern lmStaffObj* g_pCursorSO;        //not NULL for exporting cursor data
 
@@ -363,6 +363,7 @@ public:
     // owned ScoreObjs management
     long AssignID(lmScoreObj* pSO);
     inline void SetCounterID(long nValue) { m_nCounterID = nValue; }
+    lmScoreObj* GetScoreObj(long nID);
 
     // Debug methods. If filename provided writes also to file
     wxString Dump() { return Dump(_T("")); }
@@ -378,19 +379,21 @@ public:
     lmInstrument* GetFirstInstrument();
     lmInstrument* GetNextInstrument();
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
-                                wxString sName, wxString sAbbrev=_T(""), long nID = 0L,
-                                long nVStaffID = 0L,
+                                wxString sName, wxString sAbbrev=_T(""),
+                                long nID = lmNEW_ID,
+                                long nVStaffID = lmNEW_ID,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
                                 lmInstrNameAbbrev* pName,
-                                lmInstrNameAbbrev* pAbbrev, long nID = 0L,
-                                long nVStaffID = 0L,
+                                lmInstrNameAbbrev* pAbbrev, long nID = lmNEW_ID,
+                                long nVStaffID = lmNEW_ID,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     inline bool IsFirstInstrument(lmInstrument* pInstr) { return pInstr == m_cInstruments.front(); }
 
 
     // titles related methods
-    lmScoreTitle* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle, long nID = 0L);
+    lmScoreTitle* AddTitle(wxString sTitle, lmEHAlign nAlign, lmTextStyle* pStyle,
+                           long nID = lmNEW_ID);
 
     // identification
     wxString GetScoreName();
@@ -523,6 +526,8 @@ private:
     //systems information
 	std::list<lmSystemInfo*>  m_SystemsInfo;    //info for each system
 
+    //table to find an ScoreObj given its ID
+    std::map<long, lmScoreObj*>     m_ScoreObjs;
 
 
     //other variables

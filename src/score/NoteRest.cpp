@@ -319,7 +319,12 @@ wxString lmNoteRest::SourceLDP(int nIndent, bool fUndoData)
     sSource += wxString::Format(_T(" v%d"), m_nVoice);
 
 	//base class
-	sSource += lmStaffObj::SourceLDP(nIndent, fUndoData);
+	wxString sBase = lmStaffObj::SourceLDP(nIndent, fUndoData);
+    if (sBase != _T(""))
+    {
+        sSource += sBase;
+        sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    }
 
     return sSource;
 }

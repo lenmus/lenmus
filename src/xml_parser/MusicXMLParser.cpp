@@ -648,8 +648,10 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
 
     // the creation of all objects has been delayed to solve the ordering problem.
     // Now, proceed with its creation in the right order
-    if (fKeySignature)  pVStaff->AddKeySignature((int)nFifths, fMajor);
-    if (fTimeSignature)  pVStaff->AddTimeSignature(0L, (int)nBeats, (int)nBeatType);
+    if (fKeySignature)
+        pVStaff->AddKeySignature((int)nFifths, fMajor);
+    if (fTimeSignature)  
+        pVStaff->AddTimeSignature(lmNEW_ID, (int)nBeats, (int)nBeatType);
 
     return true;
 
@@ -862,8 +864,9 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
             break;
         case eWords:
             {
+                lmStaffObj* pTarget = pVStaff->AddAnchorObj();
                 lmTextItem* pText =
-                    pVStaff->AddText(sText, lmHALIGN_LEFT, oFontData, false);
+                    pVStaff->AddText(sText, lmHALIGN_LEFT, oFontData, pTarget);
 	            pText->SetUserLocation(tPos);
             }
             break;
@@ -872,7 +875,6 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
     }
 
     return true;
-
 }
 
 bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
@@ -1516,7 +1518,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     float rDuration = ((float)nDuration / (float)m_nCurrentDivisions) * XML_DURATION_TO_LDP;
     if (fIsRest)
 	{
-        pNR = pVStaff->AddRest(0L, nNoteType, rDuration, nDots,
+        pNR = pVStaff->AddRest(lmNEW_ID, nNoteType, rDuration, nDots,
                         nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
 		m_pLastNoteRest = pNR;
     }
@@ -1530,7 +1532,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         sAlter.ToLong(&nAux);
         int nAlter = (int)nAux;
 
-        lmNote* pNt = pVStaff->AddNote(0L, lm_ePitchAbsolute,
+        lmNote* pNt = pVStaff->AddNote(lmNEW_ID, lm_ePitchAbsolute,
 									   nStep, nOctave, nAlter, nAccidentals,
 									   nNoteType, rDuration, nDots,
 									   nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo,
@@ -1542,7 +1544,8 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     }
 
     // Add notations
-    if (fFermata) pNR->AddFermata(nPlacement, 0L);
+    if (fFermata)
+        pNR->AddFermata(nPlacement, lmNEW_ID);
 
     if (m_pTuplet) {
         m_pTuplet->Include(pNR);

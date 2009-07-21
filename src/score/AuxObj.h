@@ -66,7 +66,7 @@ public:
 
 private:
     lmTenths        m_txStart;
-    lmTenths        m_tyStart;
+    lmTenths        m_tyStart; 
     lmTenths        m_txEnd;
     lmTenths        m_tyEnd;
     lmTenths        m_tWidth;

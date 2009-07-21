@@ -77,7 +77,7 @@ public:
 	//Adding StaffObs (at the end)
     lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
     lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true,
-                        long nID = 0L);
+                        long nID = lmNEW_ID);
 
     lmTimeSignature* AddTimeSignature(long nID, int nBeats, int nBeatType,
                         bool fVisible = true);    //for type eTS_Normal
@@ -92,8 +92,10 @@ public:
     lmTimeSignature* AddTimeSignature(long nID, int nNumFractions, int nBeats[], int nBeatType[],
                         bool fVisible = true);    //for type eTS_Multiple
 
-    lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true, long nID = 0L);
-    lmKeySignature* AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible = true, long nID = 0L);
+    lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true,
+                                    long nID = lmNEW_ID);
+    lmKeySignature* AddKeySignature(lmEKeySignatures nKeySignature,
+                                    bool fVisible = true, long nID = lmNEW_ID);
 
     lmRest*     AddRest(long nID, lmENoteType nNoteType, float rDuration, int nDots,
                       int nStaff, int nVoice = 1,
@@ -112,63 +114,66 @@ public:
                     lmEStemType nStem = lmSTEM_DEFAULT);
 
     lmBarline*  AddBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true,
-                           long nID = 0L);
+                           long nID = lmNEW_ID);
 
     lmMetronomeMark* AddMetronomeMark(int nTicksPerMinute,
-                            bool fParentheses = false, bool fVisible = true, long nID = 0L);
+                            bool fParentheses = false, bool fVisible = true,
+                            long nID = lmNEW_ID);
     lmMetronomeMark* AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
                             lmENoteType nRightNoteType, int nRightDots,
-                            bool fParentheses = false, bool fVisible = true, long nID = 0L);
+                            bool fParentheses = false, bool fVisible = true,
+                            long nID = lmNEW_ID);
     lmMetronomeMark* AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
                             int nTicksPerMinute,
-                            bool fParentheses = false, bool fVisible = true, long nID = 0L);
+                            bool fParentheses = false, bool fVisible = true,
+                            long nID = lmNEW_ID);
 
-    lmSOControl* AddNewSystem();
+    lmSOControl* AddNewSystem(long nID = lmNEW_ID);
 
-    lmSpacer* AddSpacer(lmTenths nWidth);
+    lmSpacer* AddSpacer(lmTenths nWidth, long nID = lmNEW_ID);
 
-    lmStaffObj* AddAnchorObj();
+    lmStaffObj* AddAnchorObj(long nID = lmNEW_ID);
 
     lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& oFontData,
-                        bool fHasWidth, long nID = 0L);
+                        lmStaffObj* pAnchor, long nID = lmNEW_ID);
     lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
-                        bool fHasWidth, long nID = 0L);
+                        lmStaffObj* pAnchor, long nID = lmNEW_ID);
 
 	//Edition commands
 
 	    //--- inserting StaffObs
-    lmBarline* CmdNew_InsertBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
-	lmClef* CmdNew_InsertClef(lmEClefType nClefType, bool fVisible = true);
-    lmKeySignature* CmdNew_InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
-	lmNote* CmdNew_InsertNote(lmEPitchType nPitchType, int nStep,
+    lmBarline* Cmd_InsertBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
+	lmClef* Cmd_InsertClef(lmEClefType nClefType, bool fVisible = true);
+    lmKeySignature* Cmd_InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
+	lmNote* Cmd_InsertNote(lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
 					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
                            int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
 
-	lmRest* CmdNew_InsertRest(lmENoteType nNoteType, float rDuration,
+	lmRest* Cmd_InsertRest(lmENoteType nNoteType, float rDuration,
                            int nDots, int nVoice, bool fAutoBar);
 
-    lmTimeSignature* CmdNew_InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);
+    lmTimeSignature* Cmd_InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);
 
 
         //--- deleting StaffObjs
-    bool CmdNew_DeleteStaffObj(lmStaffObj* pSO);
-    bool CmdNew_DeleteClef(lmClef* pClef);
-    bool CmdNew_DeleteKeySignature(lmKeySignature* pKS);
-    bool CmdNew_DeleteTimeSignature(lmTimeSignature* pTS);
+    bool Cmd_DeleteStaffObj(lmStaffObj* pSO);
+    bool Cmd_DeleteClef(lmClef* pClef);
+    bool Cmd_DeleteKeySignature(lmKeySignature* pKS);
+    bool Cmd_DeleteTimeSignature(lmTimeSignature* pTS);
 
         //--- deleting AuxObjs
-    bool CmdNew_DeleteTuplet(lmNoteRest* pStartNote);
+    bool Cmd_DeleteTuplet(lmNoteRest* pStartNote);
 
         //--- Modifying staffobjs/AuxObjs
-    void CmdNew_ChangeDots(lmNoteRest* pNR, int nDots);
-    void CmdNew_BreakBeam(lmNoteRest* pBeforeNR);
-    void CmdNew_JoinBeam(std::vector<lmNoteRest*>& notes);
-    bool CmdNew_DeleteBeam(lmNoteRest* pNR);
+    void Cmd_ChangeDots(lmNoteRest* pNR, int nDots);
+    void Cmd_BreakBeam(lmNoteRest* pBeforeNR);
+    void Cmd_JoinBeam(std::vector<lmNoteRest*>& notes);
+    bool Cmd_DeleteBeam(lmNoteRest* pNR);
 
         //--- Adding other markup
-    void CmdNew_AddTie(lmNote* pStartNote, lmNote* pEndNote);
-    bool CmdNew_AddTuplet(std::vector<lmNoteRest*>& notes,
+    void Cmd_AddTie(lmNote* pStartNote, lmNote* pEndNote);
+    bool Cmd_AddTuplet(std::vector<lmNoteRest*>& notes,
                        bool fShowNumber, int nNumber, bool fBracket,
                        lmEPlacement nAbove, int nActual, int nNormal);
 

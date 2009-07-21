@@ -99,7 +99,8 @@ public:
     inline lmStaffObj* GetFirstSO() { return m_pFirstSO; }
     inline lmStaffObj* GetLastSO() { return m_pLastSO; }
     int FindPosition(lmStaffObj* pSO);
-    lmStaffObj* GetStaffObj(int nPosition);
+    //lmStaffObj* GetStaffObj(int nPosition);
+    lmStaffObj* GetStaffObj(long nID);
 
 	//debug
 	wxString Dump();
@@ -156,22 +157,32 @@ private:
 
 
 //cursor state
-typedef struct lmCursorState_Struct
+class lmCursorState
 {
-    int         nInstr;         //instrument (1..n)
-	int         nStaff;         //staff (1..n)
-	float       rTimepos;       //timepos
-	lmStaffObj* pSO;			//current pointed staffobj
-}
-lmCursorState;
+public:
+    lmCursorState();
+    lmCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO);
+    lmCursorState(int nInstr, int nStaff, float rTimepos, long nObjID);
+    ~lmCursorState() {}
+
+    //accesors
+    inline int GetNumInstr() { return m_nInstr; }       //instrument (1..n)
+    inline int GetNumStaff() { return m_nStaff; }       //staff (1..n)
+    inline float GetTimepos() { return m_rTimepos; }
+    inline long GetObjID() { return m_nObjID; }
+    lmStaffObj* GetStaffObj(lmScore* pScore); 
+
+    //other
+    inline bool IsEmptyState() { return m_nInstr == 0; }
+    inline void IncrementTimepos(float rTime) { m_rTimepos += rTime; }
 
 
-//global variable used as default initializator
-extern lmCursorState g_tNoCursorState;
-
-//global function to compare with g_tNoCursorState
-extern bool IsEmptyState(lmCursorState& t);
-// Cursor pointing to current position
+protected:
+    int         m_nInstr;       //instrument (1..n)
+	int         m_nStaff;       //staff (1..n)
+	float       m_rTimepos;     //timepos
+    long        m_nObjID;       //current pointed staffobj ID or lmNO_ID if NULL
+};
 
 
 
@@ -229,9 +240,6 @@ public:
     lmUPoint GetCursorPoint(int* pNumPage = NULL);
     lmStaff* GetCursorStaff();
     lmVStaff* GetVStaff();
-
-    //other
-    lmStaffObj* GetReferredObject(lmIRef& nIRef);
 
 
 private:
@@ -301,7 +309,6 @@ public:
     //other info
 	inline lmScore* GetCursorScore() { return m_pScore; }
     inline lmVStaffCursor* GetVCursor() { return &m_VCursor; }
-    lmStaffObj* GetReferredObject(lmIRef& nIRef);
 
 
 private:

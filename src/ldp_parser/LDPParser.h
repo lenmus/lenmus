@@ -92,7 +92,8 @@ public:
     bool        AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptHeight);
     void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmEStemType AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
-    bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
+    bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff,
+                               lmStaffObj* pTarget = (lmStaffObj*)NULL);
     void        AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
                                lmStaffObj* pTarget = (lmStaffObj*)NULL);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
@@ -134,6 +135,8 @@ protected:
     void        AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
                                   lmELineStyle* pLineStyle, lmELineCap* pEndStyle,
                                   wxColour* pColor);
+    void        AnalyzeAttachments(lmLDPNode* pNode, lmVStaff* pVStaff,
+                                   lmLDPNode* pX, lmStaffObj* pAnchor);
     void        AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth, lmELineStyle* pLineStyle,
@@ -148,8 +151,8 @@ protected:
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
-                                  lmEHAlign* pAlign, lmLocation* pPos,
-                                  lmFontInfo* pFont, bool* pHasWidth);
+                                  lmEHAlign* pAlign, lmLocation* pPos, 
+                                  lmFontInfo* pFont);
     lmTieInfo*  AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode, float* pValue);
     bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,

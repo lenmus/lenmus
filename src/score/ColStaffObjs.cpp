@@ -191,20 +191,48 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
 }
 
 
+
 //=======================================================================================
-// lmScoreCursor implementation
+// lmCursorState implementation
 //=======================================================================================
 
-//global variable used as default initializator
-lmCursorState g_tNoCursorState = { 0, -1, 0.0f, (lmStaffObj*)NULL };
-
-//global function to compare with g_tNoCursorState
-bool IsEmptyState(lmCursorState& t)
+lmCursorState::lmCursorState()
+    : m_nInstr(0)
+    , m_nStaff(-1)
+	, m_rTimepos(0.0f)
+    , m_nObjID(lmNULL_ID)
 {
-    return (t.nInstr == 0);
+}
+
+lmCursorState::lmCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO)
+    : m_nInstr(nInstr)
+    , m_nStaff(nStaff)
+	, m_rTimepos(rTimepos)
+{
+    if (pSO)
+        m_nObjID = pSO->GetID();
+    else
+        m_nObjID = lmNULL_ID;
+}
+
+lmCursorState::lmCursorState(int nInstr, int nStaff, float rTimepos, long nObjID)
+    : m_nInstr(nInstr)
+    , m_nStaff(nStaff)
+	, m_rTimepos(rTimepos)
+    , m_nObjID(nObjID)
+{
+}
+
+lmStaffObj* lmCursorState::GetStaffObj(lmScore* pScore) 
+{ 
+    return (lmStaffObj*)pScore->GetScoreObj(m_nObjID);
 }
 
 
+
+//=======================================================================================
+// lmScoreCursor implementation
+//=======================================================================================
 
 lmScoreCursor::lmScoreCursor(lmScore* pOwnerScore)
     : m_pScore(pOwnerScore)
@@ -239,11 +267,6 @@ void lmScoreCursor::PointCursorToInstrument(int nInstr)
 	pInstr->AttachCursor(&m_VCursor);
     m_VCursor.AttachCursor(this);       //link back
     m_VCursor.ResetCursor();
-}
-
-lmStaffObj* lmScoreCursor::GetReferredObject(lmIRef& nIRef)
-{
-    return m_VCursor.GetReferredObject(nIRef);
 }
 
 void lmScoreCursor::MoveRight(bool fAlsoChordNotes)
@@ -486,7 +509,7 @@ lmVStaff* lmScoreCursor::GetVStaff()
 
 void lmScoreCursor::SetState(lmCursorState* pState)
 {
-    PointCursorToInstrument(pState->nInstr);
+    PointCursorToInstrument(pState->GetNumInstr());
     m_VCursor.SetCursorState(this, pState);     
 }
 
@@ -558,17 +581,19 @@ void lmVStaffCursor::SetCursorState(lmScoreCursor* pSCursor,
 
     wxASSERT(m_pColStaffObjs);
 
+    lmScore* pScore = m_pScoreCursor->GetCursorScore();
     m_pScoreCursor = (lmScoreCursor*)NULL;   //supress visual feedback
-    wxASSERT(pState->nInstr == m_nInstr);
-    m_nStaff = pState->nStaff;
-    m_rTimepos = pState->rTimepos;
-    m_pIt->MoveTo(pState->pSO);
+    wxASSERT(pState->GetNumInstr() == m_nInstr);
+    m_nStaff = pState->GetNumStaff();
+    m_rTimepos = pState->GetTimepos();
+    m_pIt->MoveTo( pState->GetStaffObj(pScore) );
 
     //update timepos, if requested
     if (fUpdateTimepos)
     {
-        if (pState->pSO)
-            m_rTimepos = pState->pSO->GetTimePos();
+        lmStaffObj* pSO = pState->GetStaffObj(pScore);
+        if (pSO)
+            m_rTimepos = pSO->GetTimePos();
         else
         {
             //Not pointing to an staffobj. Cursor is at end of collection
@@ -583,15 +608,8 @@ void lmVStaffCursor::SetCursorState(lmScoreCursor* pSCursor,
 
 lmCursorState lmVStaffCursor::GetState()
 {
-    lmCursorState tState = { m_nInstr, m_nStaff, m_rTimepos, m_pIt->GetCurrent() };
-    return tState;
-}
-
-lmStaffObj* lmVStaffCursor::GetReferredObject(lmIRef& nIRef)
-{
-    int nSegment = nIRef.GetSegNum();
-    int nPosition = nIRef.GetPosNum();
-    return m_pColStaffObjs->GetSegment(nSegment)->GetStaffObj(nPosition);
+    lmCursorState oState(m_nInstr, m_nStaff, m_rTimepos, m_pIt->GetCurrent());
+    return oState;
 }
 
 lmStaffObj* lmVStaffCursor::GetStaffObj() 
@@ -2176,21 +2194,37 @@ int lmSegment::FindPosition(lmStaffObj* pSO)
     return -1;          //compiler happy
 }
 
-lmStaffObj* lmSegment::GetStaffObj(int nPosition)
+//lmStaffObj* lmSegment::GetStaffObj(int nPosition)
+//{
+//    //returns the StaffObj that occupies position nPosition (0..n) in this segment
+//
+//    wxASSERT(nPosition >= 0);
+//
+//    //advance to requested position 
+//    int nPos = 0;
+//    lmSOIterator it(m_pOwner, m_pFirstSO);
+//	while (!it.EndOfCollection() && nPos != nPosition)
+//	{
+//        ++nPos;
+//        it.MoveNext();
+//	}
+//    wxASSERT(nPos == nPosition);
+//
+//    //found. return it
+//    return it.GetCurrent();
+//}
+
+lmStaffObj* lmSegment::GetStaffObj(long nID)
 {
-    //returns the StaffObj that occupies position nPosition (0..n) in this segment
+    //returns the StaffObj with Id nID. It is stored in this segment
 
-    wxASSERT(nPosition >= 0);
-
-    //advance to requested position 
-    int nPos = 0;
+    //look for the requested StaffObj 
     lmSOIterator it(m_pOwner, m_pFirstSO);
-	while (!it.EndOfCollection() && nPos != nPosition)
+	while (!it.EndOfCollection() && it.GetCurrent()->GetID() != nID)
 	{
-        ++nPos;
         it.MoveNext();
 	}
-    wxASSERT(nPos == nPosition);
+    wxASSERT(!it.EndOfCollection());
 
     //found. return it
     return it.GetCurrent();
@@ -2971,7 +3005,7 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fClefKeepPosition, bool fKeyKe
     MoveCursorToObject(pSO);
     MoveCursorRight(true);      //true: stop in all chord notes
     lmStaffObj* pCursorSO = GetCursorStaffObj();
-    lmCursorState tVCState = GetCursor()->GetState();
+    lmCursorState oVCState = GetCursor()->GetState();
 
     //get segment and remove object
     lmSegment* pSegment = pSO->GetSegment();
@@ -2995,14 +3029,14 @@ void lmColStaffObjs::Delete(lmStaffObj* pSO, bool fClefKeepPosition, bool fKeyKe
 
         //As a consequence of joining segments, saved cursor information is no longer
         //valid. In particular we have to fix rTimePos.
-        tVCState.rTimepos += rTime;
+        oVCState.IncrementTimepos(rTime);
     }
 
     //after removing the staffobj, VCursor iterator is pointing to next staffobj but
     //other VCursor variables (rTimePos, in particular) are no longer valid and should be
     //updated.
     pSegment->UpdateDuration();     //ensure it is updated
-    GetCursor()->SetCursorState(GetCursor()->GetScoreCursor(), &tVCState, true);  //true->update timepos with pSO timepos
+    GetCursor()->SetCursorState(GetCursor()->GetScoreCursor(), &oVCState, true);  //true->update timepos with pSO timepos
 
     //finally, invoke destructor for removed staffobj
     delete pSO;

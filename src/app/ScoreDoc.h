@@ -29,10 +29,6 @@
 #include "wx/cmdproc.h"
 #include "../score/Score.h"
 
-//options for method UpdateAllViews
-#define lmSCORE_MODIFIED        true
-#define lmSCORE_NOT_MODIFIED    false
-
 class lmEditorMode;
 
 //------------------------------------------------------------------------------------
@@ -42,10 +38,10 @@ class lmEditorMode;
 //options to control renderization
 enum
 {
-    lmDO_ONLY_REDRAW                = 0x0001,   //No relayout. Just re-draw the shapes
-    lmFORCE_RELAYOUT                = 0x0002,   //force an score re-layout
-    lmNO_BITMAPS                    = 0x0004,   //do not re-use offscreen bitmaps
-    lmNO_RELAYOUT_ON_PAPER_RESIZE   = 0x0008,   //do not re-layout if paper re-size
+    lmHINT_NO_LAYOUT                = 0x0001,   //No relayout. Just re-draw the shapes
+    lmHINT_FORCE_RELAYOUT           = 0x0002,   //force an score re-layout
+    lmHINT_NO_BITMAPS               = 0x0004,   //do not re-use offscreen bitmaps
+    lmHINT_NO_LAYOUT_ON_PAPER_RESIZE = 0x0008,  //do not re-layout if paper re-size
     lmHINT_NEW_SCORE                = 0x0010,   //score replaced in document. Update all
 };
 

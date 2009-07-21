@@ -53,7 +53,7 @@ public:
 	wxString GetName() const { return _T("notation"); }
 
 protected:
-    lmNotation(lmVStaff* pVStaff, int nStaff=1,
+    lmNotation(lmVStaff* pVStaff, long nID, int nStaff=1,
                bool fVisible = true, 
                bool fIsDraggable = false);
 
@@ -64,7 +64,7 @@ protected:
 class lmSpacer : public lmNotation
 {
 public:
-    lmSpacer(lmVStaff* pStaff, lmTenths nWidth, int nStaff=1);
+    lmSpacer(lmVStaff* pStaff, long nID, lmTenths nWidth, int nStaff=1);
     ~lmSpacer() {}
 
     // properties
@@ -87,24 +87,13 @@ private:
 
 };
 
-class lmAnchor: public lmNotation
+
+//lmAnchor: a spacer of 0 width
+class lmAnchor: public lmSpacer
 {
 public:
-    lmAnchor(lmVStaff* pStaff, int nStaff=1);
-    ~lmAnchor() {}
-
-    // properties
-    lmENotationType GetNotationType() { return eNT_Anchor; }
-
-    //implementation of virtual methods defined in abstract base class lmStaffObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-
-    //    debugging
-    wxString Dump();
-    wxString SourceLDP(int nIndent, bool fUndoData);
-    wxString SourceXML(int nIndent);
-
+    lmAnchor(lmVStaff* pStaff, long nID, int nStaff=1)
+        : lmSpacer(pStaff, nID, 0.0f, nStaff) {}
 };
 
 class lmScoreAnchor: public lmNotation

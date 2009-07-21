@@ -35,6 +35,7 @@
 
 #include <algorithm>
 
+#include "../score/defs.h"
 #include "LDPNode.h"
 
 // lmLDPNode represents an element of the LDP representation language.
@@ -45,7 +46,7 @@
 
 
 lmLDPNode::lmLDPNode(wxString sData, long nNumLine)
-    : m_nID(0L)
+    : m_nID(lmNEW_ID)
     , m_nNumLine(nNumLine)
     , m_fIsSimple(true)
     , m_fProcessed(false)

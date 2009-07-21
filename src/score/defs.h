@@ -118,6 +118,11 @@ typedef wxPoint lmDPoint;           // a point in device units
 // go back to start measure or go forward to end of measure
 #define lmTIME_SHIFT_START_END    1000000.0f
 
+//value for requesting to assing a new ID to an ScoreObj
+#define lmNEW_ID     0L       
+#define lmNULL_ID   -1L
+
+
 //helper macro to for better controlling things to do
 #if defined(__WXDEBUG__)
 #define lmTODO(s)   wxLogMessage(s);

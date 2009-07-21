@@ -281,7 +281,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 
                 //    Display the numeral
-                lmTextItem* pNumeralText = new lmTextItem(pNote, 0L, sNumeralsDegrees[nBassNoteStep],
+                lmTextItem* pNumeralText = new lmTextItem(pNote, lmNEW_ID, sNumeralsDegrees[nBassNoteStep],
                                                           lmHALIGN_DEFAULT, pNumeralStyle);
                 pNote->AttachAuxObj(pNumeralText);
                 pNumeralText->SetUserLocation(0.0f, 230.0f );

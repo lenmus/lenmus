@@ -111,8 +111,8 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions,
     //Options are those defined for lmUpdateHint (see ScoreDoc.h)
 
     //get options
-    bool fUseBitmaps = !(nOptions & lmNO_BITMAPS);
-    bool fReDraw = nOptions & lmDO_ONLY_REDRAW;
+    bool fUseBitmaps = !(nOptions & lmHINT_NO_BITMAPS);
+    bool fReDraw = nOptions & lmHINT_NO_LAYOUT;
 
     wxBitmap* pBitmap = (wxBitmap*)NULL;
     if (fUseBitmaps)
@@ -173,13 +173,13 @@ bool lmGraphicManager::PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmL
     // Yes in following cases:
     // - the first time a score is going to be rendered
 	// - if the score has been modified since last re-layout
-    // - if paper size has changed and not re-layout prevented (option lmNO_RELAYOUT_ON_PAPER_RESIZE)
-    // - if explicitly requested (option lmFORCE_RELAYOUT)
+    // - if paper size has changed and not re-layout prevented (option lmHINT_NO_LAYOUT_ON_PAPER_RESIZE)
+    // - if explicitly requested (option lmHINT_FORCE_RELAYOUT)
     bool fLayoutScore = !m_pScore || m_fReLayout || m_nLastScoreID != pScore->GetScoreID()
-				|| ( m_pScore->IsModified() && !(nOptions & lmDO_ONLY_REDRAW) )
-                || (nOptions & lmFORCE_RELAYOUT)
+				|| ( m_pScore->IsModified() && !(nOptions & lmHINT_NO_LAYOUT) )
+                || (nOptions & lmHINT_FORCE_RELAYOUT)
                 || ( (m_xPageSize != paperWidth || m_yPageSize != paperHeight) &&
-                     !(nOptions & lmNO_RELAYOUT_ON_PAPER_RESIZE) );
+                     !(nOptions & lmHINT_NO_LAYOUT_ON_PAPER_RESIZE) );
 
     //Is it necessary to delete stored offscreen bitmaps?
     //Yes in following cases:
@@ -506,7 +506,7 @@ wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize sh
 
     lmGraphicManager oGraphMngr;
     oGraphMngr.PrepareToRender(pScore, size.x, size.y, rScale, &oPaper,
-                                lmFORCE_RELAYOUT);
+                                lmHINT_FORCE_RELAYOUT);
     wxBitmap* pBitmap = oGraphMngr.RenderScore(1);
     wxASSERT(pBitmap && pBitmap->Ok());
 

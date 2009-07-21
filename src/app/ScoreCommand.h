@@ -40,9 +40,17 @@ class lmVStaffCursor;
 class lmVStaff;
 class lmNote;
 
-#define lmUNDOABLE      true        //log command for undo/redo
-#define lmNO_UNDO       false       //the action is not undoable and should not
-                                    //   be added to the command history
+//predefined values for flag 'fNormalCmd'
+#define lmCMD_NORMAL    true
+#define lmCMD_HIDDEN    false
+//  true  - Normal command. The command will be logged in the undo/redo chain and,
+//          if applicable, the score will be saved for undo.
+//  false - Hidden command. The command is executed but the command will not be
+//          added to the command history and, if applicable, the score will not
+//          be saved for undo. After command execution the screen is not updated.
+//          This option is usefull for building commands by chaining other
+//          commnads. The main command will be undoable and all atomic commands
+//          will not. See, for example, lmCmdDeleteSelection.
 
 
 // base abstract class
@@ -56,22 +64,23 @@ public:
 
 protected:
     lmScoreCommand(const wxString& name, lmDocument *pDoc,
-                   bool fUndoable = true, int nOptions=0, bool fUpdateViews = true);
+                   bool fNormalCmd = true, bool fDoLayout = true);
 
     //common methods
-    bool CommandDone(bool fScoreModified, int nOptions=0);
-    bool CommandUndone(int nOptions=0);
+    bool CommandDone(bool fCmdSuccess, int nUpdateHints=0);
+    bool CommandUndone(int nUpdateHints=0);
     void LogCommand();
+    void RestoreCursor();
     lmVStaff* GetVStaff();
-    lmStaffObj* GetStaffObj(lmIRef& nIRef);
+    lmScoreObj* GetScoreObj(long nID);
 
 
-    lmDocument*         m_pDoc;             //+
-	bool				m_fDocModified;     //+
+    lmDocument*         m_pDoc;             //
+	bool				m_fDocModified;     //
     bool                m_fUndoable;        //include command in undo/redo history
-    bool                m_fUpdateViews;     //Update all views after doing/undoing the command
-    int                 m_nOptions;         //+repaint hint options
-    wxString            m_sOldSource;       //+source code to restore for undoing this command
+    bool                m_fDoLayout;        //Update all views after doing/undoing the command
+    wxString            m_sOldSource;       //source code to restore for undoing this command
+    lmCursorState       m_CursorState;      //cursor state when issuing the command
 };
 
 // Move object command
@@ -79,9 +88,9 @@ protected:
 class lmCmdMoveObject: public lmScoreCommand
 {
 public:
-    lmCmdMoveObject(bool fUndoable, const wxString& sName,
+    lmCmdMoveObject(bool fNormalCmd, const wxString& sName,
                     lmDocument *pDoc, lmGMObject* pGMO,
-					const lmUPoint& uPos, bool fUpdateViews = true);
+					const lmUPoint& uPos);
     ~lmCmdMoveObject() {}
 
     //implementation of pure virtual methods in base class
@@ -91,7 +100,7 @@ public:
 protected:
     lmLocation      m_tPos;
     lmLocation		m_tOldPos;        // for Undo
-	lmScoreObj*		m_pSO;
+	long		    m_nObjectID;
     int             m_nShapeIdx;
 };
 
@@ -101,7 +110,7 @@ protected:
 class lmCmdDeleteStaffObj: public lmScoreCommand
 {
 public:
-    lmCmdDeleteStaffObj(bool fUndoable, const wxString& name,
+    lmCmdDeleteStaffObj(bool fNormalCmd, const wxString& name,
                         lmDocument *pDoc, lmStaffObj* pSO);
     ~lmCmdDeleteStaffObj() {}
 
@@ -109,7 +118,7 @@ public:
     bool Do();
 
 protected:
-    lmIRef          m_nIRef;        //IRef for object to delete
+    long        m_nObjID;       //ID for object to delete
 };
 
 
@@ -118,7 +127,7 @@ protected:
 class lmCmdDeleteSelection: public lmScoreCommand
 {
 public:
-    lmCmdDeleteSelection(bool fUndoable,
+    lmCmdDeleteSelection(bool fNormalCmd,
                          const wxString& sName, lmDocument *pDoc,
                          lmGMSelection* pSelection);
     ~lmCmdDeleteSelection();
@@ -136,7 +145,7 @@ protected:
 class lmCmdDeleteTie: public lmScoreCommand
 {
 public:
-    lmCmdDeleteTie(bool fUndoable, const wxString& sName,
+    lmCmdDeleteTie(bool fNormalCmd, const wxString& sName,
                    lmDocument *pDoc, lmNote* pEndNote);
     ~lmCmdDeleteTie() {}
 
@@ -145,8 +154,8 @@ public:
     bool Undo();
 
 protected:
-    lmIRef      m_nStartNoteIRef;       //start of tie note
-    lmIRef      m_nEndNoteIRef;         //end of tie note
+    long        m_nStartNoteID;         //start of tie note
+    long        m_nEndNoteID;           //end of tie note
 };
 
 
@@ -155,7 +164,7 @@ protected:
 class lmCmdAddTie: public lmScoreCommand
 {
 public:
-    lmCmdAddTie(bool fUndoable, const wxString& sName, 
+    lmCmdAddTie(bool fNormalCmd, const wxString& sName, 
                 lmDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
     ~lmCmdAddTie() {}
 
@@ -164,8 +173,8 @@ public:
     bool Undo();
 
 protected:
-    lmIRef      m_nStartNoteIRef;       //start of tie note
-    lmIRef      m_nEndNoteIRef;         //end of tie note
+    long        m_nStartNoteID;         //start of tie note
+    long        m_nEndNoteID;           //end of tie note
 };
 
 
@@ -175,7 +184,7 @@ class lmCmdInsertBarline: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertBarline(bool fUndoable, const wxString& name,
+    lmCmdInsertBarline(bool fNormalCmd, const wxString& name,
                        lmDocument *pDoc, lmEBarline nType);
     ~lmCmdInsertBarline() {}
 
@@ -193,7 +202,7 @@ class lmCmdInsertClef: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertClef(bool fUndoable, const wxString& name,
+    lmCmdInsertClef(bool fNormalCmd, const wxString& name,
                     lmDocument *pDoc, lmEClefType nClefType);
     ~lmCmdInsertClef() {}
 
@@ -212,7 +221,7 @@ class lmCmdInsertTimeSignature: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertTimeSignature(bool fUndoable,
+    lmCmdInsertTimeSignature(bool fNormalCmd,
                              const wxString& name, lmDocument *pDoc,
                              int nBeats, int nBeatType, bool fVisible);
     ~lmCmdInsertTimeSignature() {}
@@ -234,7 +243,7 @@ class lmCmdInsertKeySignature: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertKeySignature(bool fUndoable,
+    lmCmdInsertKeySignature(bool fNormalCmd,
                             const wxString& name, lmDocument *pDoc,
                             int nFifths, bool fMajor, bool fVisible);
     ~lmCmdInsertKeySignature() {}
@@ -256,7 +265,7 @@ class lmCmdInsertNote: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertNote(bool fUndoable,
+    lmCmdInsertNote(bool fNormalCmd,
                     const wxString& name, lmDocument *pDoc,
 					lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
@@ -277,7 +286,7 @@ protected:
 	lmENoteHeads	    m_nNotehead;
 	lmEAccidentals	    m_nAcc;
 	int					m_nVoice;
-	lmNote*				m_pBaseOfChord;
+	long				m_nBaseOfChordID;
     bool                m_fTiedPrev;
 };
 
@@ -289,7 +298,7 @@ class lmCmdInsertRest: public lmScoreCommand
 {
 public:
 
-    lmCmdInsertRest(bool fUndoable,
+    lmCmdInsertRest(bool fNormalCmd,
                     const wxString& name, lmDocument *pDoc,
 					lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     ~lmCmdInsertRest();
@@ -311,7 +320,7 @@ class lmCmdChangeNotePitch: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeNotePitch(bool fUndoable,
+    lmCmdChangeNotePitch(bool fNormalCmd,
                          const wxString& name, lmDocument *pDoc, lmNote* pNote,
 					     int nSteps);
     ~lmCmdChangeNotePitch() {}
@@ -322,7 +331,7 @@ public:
 
 protected:
 	int				m_nSteps;
-	lmNote*			m_pNote;
+	long			m_nNoteID;
 };
 
 
@@ -332,7 +341,7 @@ class lmCmdChangeNoteAccidentals: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeNoteAccidentals(bool fUndoable,
+    lmCmdChangeNoteAccidentals(bool fNormalCmd,
                                const wxString& name, lmDocument *pDoc,
                                lmGMSelection* pSelection, int nAcc);
     ~lmCmdChangeNoteAccidentals();
@@ -346,7 +355,7 @@ protected:
 
     typedef struct
     {
-        lmNote*         pNote;          //note to modify
+        long			nNoteID;      //note to modify
         int             nAcc;           //current accidentals
     }
     lmCmdNoteData;
@@ -361,7 +370,7 @@ class lmCmdChangeNoteRestDots: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeNoteRestDots(bool fUndoable,
+    lmCmdChangeNoteRestDots(bool fNormalCmd,
                             const wxString& name, lmDocument *pDoc,
                             lmGMSelection* pSelection, int nDots);
     ~lmCmdChangeNoteRestDots();
@@ -371,7 +380,7 @@ public:
 
 protected:
 	int                 m_nDots;
-    std::list<lmIRef>   m_NoteRests;    //modified note/rests
+    std::list<long>     m_NoteRests;    //modified note/rests
 };
 
 
@@ -380,7 +389,7 @@ protected:
 class lmCmdDeleteTuplet: public lmScoreCommand
 {
 public:
-    lmCmdDeleteTuplet(bool fUndoable, 
+    lmCmdDeleteTuplet(bool fNormalCmd, 
                       const wxString& sName, lmDocument *pDoc, lmNoteRest* pStartNR);
     ~lmCmdDeleteTuplet() {}
 
@@ -388,7 +397,7 @@ public:
     bool Do();
 
 protected:
-    lmIRef      m_nStartIRef;       //IRef for start nore/rest
+    long        m_nStartID;     //ID for start nore/rest
 };
 
 
@@ -397,7 +406,7 @@ protected:
 class lmCmdAddTuplet: public lmScoreCommand
 {
 public:
-    lmCmdAddTuplet(bool fUndoable, const wxString& sName,
+    lmCmdAddTuplet(bool fNormalCmd, const wxString& sName,
                    lmDocument *pDoc, lmGMSelection* pSelection, bool fShowNumber, int nNumber,
                    bool fBracket, lmEPlacement nAbove, int nActual, int nNormal);
 
@@ -407,13 +416,13 @@ public:
     bool Do();
 
 protected:
-    bool                    m_fShowNumber;
-    bool                    m_fBracket;
-    int                     m_nNumber;
-    lmEPlacement            m_nAbove;
-    int                     m_nActual;
-    int                     m_nNormal;
-    std::list<lmIRef>       m_NotesRests;
+    bool                m_fShowNumber;
+    bool                m_fBracket;
+    int                 m_nNumber;
+    lmEPlacement        m_nAbove;
+    int                 m_nActual;
+    int                 m_nNormal;
+    std::list<long>     m_NotesRests;
 };
 
 
@@ -422,7 +431,7 @@ protected:
 class lmCmdBreakBeam: public lmScoreCommand
 {
 public:
-    lmCmdBreakBeam(bool fUndoable, const wxString& sName,
+    lmCmdBreakBeam(bool fNormalCmd, const wxString& sName,
                    lmDocument *pDoc, lmNoteRest* pBeforeNR);
     ~lmCmdBreakBeam();
 
@@ -430,7 +439,7 @@ public:
     bool Do();
 
 protected:
-    lmIRef         m_nBeforeNR;
+    long         m_nBeforeNR;
 };
 
 
@@ -439,7 +448,7 @@ protected:
 class lmCmdJoinBeam: public lmScoreCommand
 {
 public:
-    lmCmdJoinBeam(bool fUndoable, const wxString& sName,
+    lmCmdJoinBeam(bool fNormalCmd, const wxString& sName,
                   lmDocument *pDoc, lmGMSelection* pSelection);
     ~lmCmdJoinBeam() {}
 
@@ -447,7 +456,7 @@ public:
     bool Do();
 
 protected:
-    std::vector<lmIRef>     m_NotesRests;
+    std::vector<long>     m_NotesRests;
 };
 
 
@@ -457,7 +466,7 @@ class lmCmdChangeText: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeText(bool fUndoable, const wxString& name,
+    lmCmdChangeText(bool fNormalCmd, const wxString& name,
                     lmDocument *pDoc, lmScoreText* pST, wxString& sText,
                     lmEHAlign nAlign, lmLocation tPos, lmTextStyle* pStyle,
                     int nHintOptions);
@@ -468,19 +477,19 @@ public:
     bool Undo();
 
 protected:
-    lmScoreText*        m_pST;
+    long                m_nTextID;
 
     //new values
     wxString            m_sText;
     lmEHAlign           m_nHAlign;
     lmLocation          m_tPos;
-    lmTextStyle*        m_pStyle;
+    lmTextStyle         m_Style;
 
     //old values
     wxString            m_sOldText;
     lmEHAlign           m_nOldHAlign;
     lmLocation          m_tOldPos;
-    lmTextStyle*        m_pOldStyle;
+    lmTextStyle         m_OldStyle;
 };
 
 
@@ -489,7 +498,7 @@ protected:
 class lmCmdChangePageMargin: public lmScoreCommand
 {
 public:
-    lmCmdChangePageMargin(bool fUndoable,
+    lmCmdChangePageMargin(bool fNormalCmd,
                           const wxString& sName, lmDocument *pDoc, lmGMObject* pGMO,
 					      int nIdx, int nPage, lmLUnits uPos);
     ~lmCmdChangePageMargin() {}
@@ -501,7 +510,6 @@ public:
 protected:
     void ChangeMargin(lmLUnits uPos);
 
-    lmScore*        m_pScore;
 	lmLUnits        m_uNewPos;
 	lmLUnits        m_uOldPos;
     int             m_nIdx;
@@ -509,41 +517,43 @@ protected:
 };
 
 
-// Attach new text to an AuxObj / StaffObj
+// Attach a text item to an AuxObj / StaffObj
 //------------------------------------------------------------------------------------
-class lmCmdAttachNewText: public lmScoreCommand
+class lmCmdAttachText: public lmScoreCommand
 {
 public:
-    lmCmdAttachNewText(bool fUndoable,
-                       const wxString& name, lmDocument *pDoc, lmComponentObj* pAnchor);
-    ~lmCmdAttachNewText();
+    lmCmdAttachText(bool fNormalCmd, lmDocument *pDoc, wxString& sText,
+                    lmTextStyle* pStyle, lmEHAlign nAlign,
+                    lmComponentObj* pAnchor);
+    ~lmCmdAttachText() {}
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
 
 protected:
-	lmComponentObj*     m_pAnchor;
-    lmTextItem*         m_pNewText;
-    bool                m_fDeleteText;
+	long                m_nAnchorID;
+    wxString            m_sText;
+    lmTextStyle         m_Style;
+    lmEHAlign           m_nAlign;
 };
 
 
 // Add a new title to the score
 //------------------------------------------------------------------------------------
-class lmCmdAddNewTitle: public lmScoreCommand
+class lmCmdAddTitle: public lmScoreCommand
 {
 public:
-    lmCmdAddNewTitle(bool fUndoable, lmDocument *pDoc);
-    ~lmCmdAddNewTitle();
+    lmCmdAddTitle(bool fNormalCmd, lmDocument *pDoc, wxString& sText,
+                  lmTextStyle* pStyle, lmEHAlign nAlign);
+    ~lmCmdAddTitle() {}
 
     //implementation of pure virtual methods in base class
     bool Do();
-    bool Undo();
 
 protected:
-    lmScoreTitle*		m_pNewTitle;
-    bool                m_fDeleteTitle;
+    wxString            m_sText;
+    lmTextStyle         m_Style;
+    lmEHAlign           m_nAlign;
 };
 
 
@@ -553,7 +563,7 @@ class lmCmdChangeBarline: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeBarline(bool fUndoable, lmDocument *pDoc, lmBarline* pBL, lmEBarline nType, bool fVisible);
+    lmCmdChangeBarline(bool fNormalCmd, lmDocument *pDoc, lmBarline* pBL, lmEBarline nType, bool fVisible);
     ~lmCmdChangeBarline();
 
     //implementation of pure virtual methods in base class
@@ -561,7 +571,7 @@ public:
     bool Undo();
 
 protected:
-    lmBarline*			m_pBL;
+    long			    m_nBarlineID;
     lmEBarline			m_nType;
     lmEBarline			m_nOldType;
 	bool				m_fVisible;
@@ -576,20 +586,20 @@ class lmCmdChangeMidiSettings: public lmScoreCommand
 {
 public:
 
-    lmCmdChangeMidiSettings(bool fUndoable, lmDocument *pDoc, lmInstrument* pInstr,
+    lmCmdChangeMidiSettings(bool fNormalCmd, lmDocument *pDoc, lmInstrument* pInstr,
                             int nMidiChannel, int nMidiInstr);
-    ~lmCmdChangeMidiSettings();
+    ~lmCmdChangeMidiSettings() {}
 
     //implementation of pure virtual methods in base class
     bool Do();
     bool Undo();
 
 protected:
-    lmInstrument*       m_pInstr;
-    int			        m_nMidiChannel;
-    int			        m_nMidiInstr;
-    int			        m_nOldMidiChannel;
-    int			        m_nOldMidiInstr;
+    long        m_nInstrID;
+    int         m_nMidiChannel;
+    int         m_nMidiInstr;
+    int         m_nOldMidiChannel;
+    int         m_nOldMidiInstr;
 
 };
 
@@ -599,7 +609,7 @@ protected:
 class lmCmdMoveNote: public lmScoreCommand
 {
 public:
-    lmCmdMoveNote(bool fUndoable, lmDocument *pDoc, lmNote* pNote, const lmUPoint& uPos, int nSteps);
+    lmCmdMoveNote(bool fNormalCmd, lmDocument *pDoc, lmNote* pNote, const lmUPoint& uPos, int nSteps);
     ~lmCmdMoveNote() {}
 
     //implementation of pure virtual methods in base class
@@ -609,7 +619,7 @@ public:
 protected:
     lmLUnits        m_uxPos;
     lmLUnits        m_uxOldPos;        // for Undo
-	lmNote*			m_pNote;
+	long			m_nNoteID;
     int             m_nSteps;
 };
 
@@ -619,9 +629,9 @@ protected:
 class lmCmdMoveObjectPoints: public lmScoreCommand
 {
 public:
-    lmCmdMoveObjectPoints(bool fUndoable, const wxString& name, lmDocument *pDoc,
+    lmCmdMoveObjectPoints(bool fNormalCmd, const wxString& name, lmDocument *pDoc,
                           lmGMObject* pGMO, lmUPoint uShifts[],
-                          int nNumPoints, bool fUpdateViews);
+                          int nNumPoints, bool fDoLayout);
     ~lmCmdMoveObjectPoints();
 
     //implementation of pure virtual methods in base class
@@ -629,7 +639,7 @@ public:
     bool Undo();
 
 protected:
-    lmScoreObj*     m_pSCO;
+    long            m_nObjID;
     int             m_nShapeIdx;
     int             m_nNumPoints;
     lmUPoint*       m_pShifts;

@@ -98,8 +98,7 @@ public:
     virtual void AddTuplet() {}
     virtual void DeleteTuplet(lmNoteRest* pStartNote) {}
 	virtual void MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps) {}
-	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos,
-                            bool fUpdateViews = true) {}
+	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
     virtual void MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[], int nNumPoints,
                                   bool fUpdateViews = true) {}
     virtual void BreakBeam() {}
@@ -242,7 +241,7 @@ public:
     void AddTuplet();
     void DeleteTuplet(lmNoteRest* pStartNR);
 	void MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps);
-	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos, bool fUpdateViews = true);
+	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
     void MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[], int nNumPoints,
                           bool fUpdateViews = true);
     void BreakBeam();

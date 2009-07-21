@@ -34,7 +34,7 @@ class lmSOControl: public lmStaffObj
 {
 public:
     //constructors and destructor
-    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM
+    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, long nID);                     //lmNEW_SYSTEM
     ~lmSOControl() {}
 
 	wxString GetName() const { return _T("control object"); }

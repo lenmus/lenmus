@@ -44,7 +44,7 @@
 
 //constructor
 lmStaff::lmStaff(lmVStaff* pVStaff, int nNumLines, lmLUnits uUnits)
-    : lmScoreObj((lmScoreObj*)pVStaff, 0L)
+    : lmScoreObj((lmScoreObj*)pVStaff, lmNEW_ID)
         //lines
     , m_nNumLines(nNumLines)
     , m_uLineThickness(lmToLogicalUnits(0.15, lmMILLIMETERS))     //TODO user option

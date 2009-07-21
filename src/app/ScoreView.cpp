@@ -486,7 +486,7 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
         //Direct renderization on printer DC
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
         fNewModel = m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
-        m_graphMngr.RenderScore(nPage, lmNO_BITMAPS);
+        m_graphMngr.RenderScore(nPage, lmHINT_NO_BITMAPS);
     }
 
     if (fNewModel)
@@ -2073,7 +2073,7 @@ void lmScoreView::SelectionDone(bool fRedraw)
 
     //redraw the view to show the selection
     if (fRedraw)
-        OnUpdate(this, new lmUpdateHint(lmDO_ONLY_REDRAW));
+        OnUpdate(this, new lmUpdateHint(lmHINT_NO_LAYOUT));
 
     //synchronize toolbox selected options with current selected object properties
     GetController()->SynchronizeToolBox();
@@ -2085,7 +2085,7 @@ void lmScoreView::DeselectAllGMObjects(bool fRedraw)
     {
         m_graphMngr.ClearSelection();
         if (fRedraw)
-            OnUpdate(this, new lmUpdateHint(lmDO_ONLY_REDRAW));
+            OnUpdate(this, new lmUpdateHint(lmHINT_NO_LAYOUT));
     }
 
     //restore toolbox selected options to those previously selected by user

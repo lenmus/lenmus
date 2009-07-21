@@ -126,7 +126,7 @@ wxString lmKeySignature::SourceLDP(int nIndent, bool fUndoData)
     if (fUndoData)
         sSource += wxString::Format(_T("(key#%d "), GetID() );
     else
-        sSource += _T("(key");
+        sSource += _T("(key ");
     sSource += m_sLDPKeyName[m_nKeySignature];
 
 	//base class

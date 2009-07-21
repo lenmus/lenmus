@@ -219,6 +219,7 @@ enum
     MENU_Debug_DumpStaffObjs,
 	MENU_Debug_DumpGMObjects,
     MENU_Debug_SeeSource,
+    MENU_Debug_SeeSourceUndo,
     MENU_Debug_SeeXML,
     MENU_Debug_SeeMIDIEvents,
     MENU_Debug_SetTraceLevel,
@@ -430,6 +431,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_UPDATE_UI (MENU_Debug_DumpGMObjects, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeSource, lmMainFrame::OnDebugSeeSource)
     EVT_UPDATE_UI (MENU_Debug_SeeSource, lmMainFrame::OnDebugScoreUI)
+    EVT_MENU      (MENU_Debug_SeeSourceUndo, lmMainFrame::OnDebugSeeSourceForUndo)
+    EVT_UPDATE_UI (MENU_Debug_SeeSourceUndo, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeXML, lmMainFrame::OnDebugSeeXML)
     EVT_UPDATE_UI (MENU_Debug_SeeXML, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEvents)
@@ -1175,6 +1178,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         AddMenuItem(pMenuDebug, MENU_Debug_DumpStaffObjs, _T("&Dump of score") );
 		AddMenuItem(pMenuDebug, MENU_Debug_DumpGMObjects, _T("&Dump of graphical model") );
         AddMenuItem(pMenuDebug, MENU_Debug_SeeSource, _T("See &LDP source") );
+        AddMenuItem(pMenuDebug, MENU_Debug_SeeSourceUndo, _T("See LDP source for &Undo/Redo") );
         AddMenuItem(pMenuDebug, MENU_Debug_SeeXML, _T("See &XML") );
         AddMenuItem(pMenuDebug, MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         AddMenuItem(pMenuDebug, MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
@@ -1943,7 +1947,16 @@ void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
     lmScore* pScore = GetActiveScore();
     wxASSERT(pScore);
 
-    lmDlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP(true));     //true: export cursor
+    lmDlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP(false));    //false: do not include undo/redo data
+    dlg.ShowModal();
+}
+
+void lmMainFrame::OnDebugSeeSourceForUndo(wxCommandEvent& event)
+{
+    lmScore* pScore = GetActiveScore();
+    wxASSERT(pScore);
+
+    lmDlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP(true));     //true: include undo/redo data
     dlg.ShowModal();
 }
 
