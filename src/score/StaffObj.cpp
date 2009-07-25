@@ -733,9 +733,22 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
             if (!(*m_pAuxObjs)[i]->IsRelObj())
+            {
+                //1-R AuxObjs. Layout them
 		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
-            else if ((lmNoteRest*)this == ((lmBinaryRelObj*)(*m_pAuxObjs)[i])->GetEndNoteRest())
-		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
+            }
+            else if ((*m_pAuxObjs)[i]->IsBinaryRelObj())
+            {
+                //2-R AuxObjs. Layout only if this is the last note/rest of relationship
+                if ((lmNoteRest*)this == ((lmBinaryRelObj*)(*m_pAuxObjs)[i])->GetEndNoteRest())
+		            (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
+            }
+            else
+            {
+                //n-R AuxObjs.
+          //      if ((lmNoteRest*)this == ((lmBinaryRelObj*)(*m_pAuxObjs)[i])->GetEndNoteRest())
+		        //(*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
+            }
 	    }
     }
 
@@ -872,11 +885,11 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
             {
                 lmRelObj* pRO = (lmRelObj*)(*m_pAuxObjs)[i];
                 if ( pRO->GetStartNoteRest() == (lmNoteRest*)this )
-                    sSource += pRO->SourceLDP_First(nIndent, fUndoData);
+                    sSource += pRO->SourceLDP_First(nIndent, fUndoData, (lmNoteRest*)this);
                 else if ( pRO->GetEndNoteRest() == (lmNoteRest*)this )
-                    sSource += pRO->SourceLDP_Last(nIndent, fUndoData);
+                    sSource += pRO->SourceLDP_Last(nIndent, fUndoData, (lmNoteRest*)this);
                 else
-                    sSource += pRO->SourceLDP_Middle(nIndent, fUndoData);
+                    sSource += pRO->SourceLDP_Middle(nIndent, fUndoData, (lmNoteRest*)this);
             }
             else
                 sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent, fUndoData);
@@ -891,13 +904,24 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
 
 wxString lmStaffObj::SourceXML(int nIndent)
 {
-    // Generate source code for AuxObjs attached to this StaffObj
+    // Generate MusicXML source code for AuxObjs attached to this StaffObj
 	wxString sSource = _T("");
     if (m_pAuxObjs)
     {
         for (int i=0; i < (int)m_pAuxObjs->size(); i++)
         {
-            sSource += (*m_pAuxObjs)[i]->SourceXML(nIndent);
+            if ( (*m_pAuxObjs)[i]->IsRelObj() )
+            {
+                lmRelObj* pRO = (lmRelObj*)(*m_pAuxObjs)[i];
+                if ( pRO->GetStartNoteRest() == (lmNoteRest*)this )
+                    sSource += pRO->SourceXML_First(nIndent, (lmNoteRest*)this);
+                else if ( pRO->GetEndNoteRest() == (lmNoteRest*)this )
+                    sSource += pRO->SourceXML_Last(nIndent, (lmNoteRest*)this);
+                else
+                    sSource += pRO->SourceXML_Middle(nIndent, (lmNoteRest*)this);
+            }
+            else
+                sSource += (*m_pAuxObjs)[i]->SourceXML(nIndent);
         }
     }
 	return sSource;

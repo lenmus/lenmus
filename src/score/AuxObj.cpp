@@ -183,9 +183,10 @@ wxString lmRelObj::SourceLDP(int nIndent, bool fUndoData)
 // lmBinaryRelObj implementation
 //========================================================================================
 
-lmBinaryRelObj::lmBinaryRelObj(lmScoreObj* pOwner, lmEAuxObjType nRelObjType, lmNoteRest* pStartNR,
-                               lmNoteRest* pEndNR, bool fIsDraggable)
-    : lmRelObj(pOwner, nRelObjType, fIsDraggable)
+lmBinaryRelObj::lmBinaryRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
+                               lmNoteRest* pStartNR, lmNoteRest* pEndNR,
+                               bool fIsDraggable)
+    : lmRelObj(pOwner, nID, nRelObjType, fIsDraggable)
     , m_pStartNR(pStartNR)
     , m_pEndNR(pEndNR)
 {
@@ -215,6 +216,121 @@ void lmBinaryRelObj::Remove(lmNoteRest* pNR)
         m_pStartNR = (lmNoteRest*)NULL;
     else if (m_pEndNR == pNR)
         m_pEndNR = (lmNoteRest*)NULL;
+}
+
+
+
+//========================================================================================
+// lmMultiRelObj implementation
+//========================================================================================
+
+lmMultiRelObj::lmMultiRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
+                             bool fIsDraggable)
+    : lmRelObj(pOwner, nID, nRelObjType, fIsDraggable)
+{
+}
+
+lmMultiRelObj::~lmMultiRelObj()
+{
+    //AWARE: notes must not be deleted as they are part of a lmScore
+    //and will be deleted there.
+
+	//the relationship is going to be removed. Inform notes
+    std::list<lmNoteRest*>::iterator it;
+    for(it=m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
+	{
+        (*it)->OnRemovedFromRelationship(this);
+	}
+    m_NoteRests.clear();
+}
+
+void lmMultiRelObj::Remove(lmNoteRest* pNR)
+{
+    //remove note/rest.
+	//AWARE: This method is always invoked by a NoteRest. Therefore it will
+	//not inform back the NoteRest, as this is unnecessary and causes problems when
+	//deleting the relationship object
+
+    wxASSERT(NumNotes() > 0);
+
+    std::list<lmNoteRest*>::iterator it;
+    it = std::find(m_NoteRests.begin(), m_NoteRests.end(), pNR);
+    m_NoteRests.erase(it);
+    OnRelationshipModified();
+}
+
+void lmMultiRelObj::Include(lmNoteRest* pNR, int nIndex)
+{
+    // Add a note to the relation. nIndex is the position that the added note/rest
+    // must occupy (0..n). If nIndex == -1, note/rest will be added at the end.
+
+	//add the note/rest
+	if (nIndex == -1 || nIndex == NumNotes())
+		m_NoteRests.push_back(pNR);
+	else
+	{
+		int iN;
+		std::list<lmNoteRest*>::iterator it;
+		for(iN=0, it=m_NoteRests.begin(); it != m_NoteRests.end(); ++it, iN++)
+		{
+			if (iN == nIndex)
+			{
+				//insert before current item
+				m_NoteRests.insert(it, pNR);
+				break;
+			}
+		}
+	}
+	//wxLogMessage(Dump());
+	pNR->OnIncludedInRelationship(this);
+    OnRelationshipModified();
+}
+
+wxString lmMultiRelObj::Dump()
+{
+	wxString sDump = _T("");
+	std::list<lmNoteRest*>::iterator it;
+	for(it=m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
+	{
+		sDump += wxString::Format(_T("Note id = %d\n"), (*it)->GetID());
+	}
+	return sDump;
+}
+
+int lmMultiRelObj::GetNoteIndex(lmNoteRest* pNR)
+{
+	//returns the position in the notes list (0..n)
+
+	wxASSERT(NumNotes() > 0);
+
+	int iN;
+    std::list<lmNoteRest*>::iterator it;
+    for(iN=0, it=m_NoteRests.begin(); it != m_NoteRests.end(); ++it, iN++)
+	{
+		if (pNR == *it) return iN;
+	}
+    wxASSERT(false);	//note not found
+	return 0;			//compiler happy
+}
+
+lmNoteRest* lmMultiRelObj::GetFirstNoteRest()
+{
+    m_it = m_NoteRests.begin();
+    if (m_it == m_NoteRests.end())
+        return (lmNoteRest*)NULL;
+    else
+        return *m_it;
+}
+
+lmNoteRest* lmMultiRelObj::GetNextNoteRest()
+{
+    //advance to next one
+    ++m_it;
+    if (m_it != m_NoteRests.end())
+        return *m_it;
+
+    //no more notes/rests
+    return (lmNoteRest*)NULL;
 }
 
 

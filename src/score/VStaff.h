@@ -36,6 +36,7 @@ class lmNote;
 class lmSOControl;
 class lmTextItem;
 class lmMetronomeMark;
+class lmBeamInfo;
 
 
 ////enums
@@ -138,6 +139,9 @@ public:
                         lmStaffObj* pAnchor, long nID = lmNEW_ID);
     lmTextItem* AddText(wxString& sText, lmEHAlign nHAlign, lmTextStyle* pStyle,
                         lmStaffObj* pAnchor, long nID = lmNEW_ID);
+
+    lmBeam* CreateBeam(std::vector<lmBeamInfo*>& cBeamInfo);
+
 
 	//Edition commands
 
@@ -263,13 +267,11 @@ public:
     inline int GetNumInstr() { return m_pInstrument->GetNumInstr(); }
 
     //cursor management and cursor related
-    void AttachCursor(lmVStaffCursor* pVCursor);
-    inline void ResetCursor() { GetVCursor()->ResetCursor(); }
-    inline lmContext* GetContextAtCursorPoint() { return GetVCursor()->GetCurrentContext(); }
-    inline int GetCursorStaffNum() { return GetVCursor()->GetNumStaff(); }
-    inline lmStaffObj* GetCursorStaffObj() { return GetVCursor()->GetStaffObj(); }
-    inline int GetCursorSegmentNum() { return GetVCursor()->GetSegment(); }
-    inline float GetCursorTimepos() { return GetVCursor()->GetTimepos(); }
+    inline lmContext* GetContextAtCursorPoint() { return GetCursor()->GetCurrentContext(); }
+    inline int GetCursorStaffNum() { return GetCursor()->GetCursorNumStaff(); }
+    inline lmStaffObj* GetCursorStaffObj() { return GetCursor()->GetStaffObj(); }
+    inline int GetCursorSegmentNum() { return GetCursor()->GetSegment(); }
+    inline float GetCursorTimepos() { return GetCursor()->GetCursorTime(); }
 
     //Debug methods
     wxString Dump();
@@ -277,9 +279,11 @@ public:
 
 private:
     friend class lmColStaffObjs;
+    friend class lmInstrument;      //access to GetCollection()
 
     //cursor management
-	lmVStaffCursor* GetVCursor();
+	lmScoreCursor* GetCursor();
+    inline lmColStaffObjs* GetCollection() { return &m_cStaffObjs; }
 
 	//settings
     void SetFontData(lmStaff* pStaff, lmPaper* pPaper);
@@ -316,7 +320,6 @@ private:
     lmScore*            m_pScore;           //lmScore to which this lmVStaff belongs
     lmInstrument*       m_pInstrument;      //lmInstrument to which this lmVStaff belongs
     lmColStaffObjs      m_cStaffObjs;       //collection of StaffObjs that form this lmVStaff
-	//lmVStaffCursor	    m_VCursor;			//cursor for the staffobjs collection
 
     // staves
     lmStaff*            m_cStaves[lmMAX_STAFF];     //list of Staves (lmStaff objects) that form this lmVStaff

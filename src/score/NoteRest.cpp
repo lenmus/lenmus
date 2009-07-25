@@ -89,6 +89,7 @@ lmNoteRest::~lmNoteRest()
     //if note/rest to remove is in a beam, inform the beam
 	if (m_pBeam) {
         m_pBeam->Remove(this);
+        DetachAuxObj(m_pBeam);
 		if (m_pBeam->NumNotes() <= 1)
 			delete m_pBeam;
 	}
@@ -160,7 +161,7 @@ lmBeam* lmNoteRest::IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam)
     }
     m_BeamInfo[0].Type = nBeamType;         //eBeamBegin, eBeamContinue or eBeamEnd
 
-    //save beam and include tis note/rest on it
+    //save beam and include this note/rest on it
     if (nBeamType == eBeamBegin)
     {
         wxASSERT (this->IsNote());
@@ -204,10 +205,6 @@ void lmNoteRest::OnRemovedFromRelationship(void* pRel,
 
 	switch (nRelClass)
 	{
-		case lm_eBeamClass:
-			m_pBeam = (lmBeam*)NULL;
-			return;
-
 		case lm_eTupletClass:
 			m_pTuplet = (lmTupletBracket*)NULL;
 			return;
@@ -215,6 +212,19 @@ void lmNoteRest::OnRemovedFromRelationship(void* pRel,
 		default:
 			wxASSERT(false);
 	}
+}
+
+void lmNoteRest::OnIncludedInRelationship(lmRelObj* pRel)
+{
+    SetDirty(true);
+
+	if (pRel->IsBeam())
+    {
+        m_pBeam = (lmBeam*)pRel;
+        AttachAuxObj(m_pBeam);
+    }
+    else
+        wxASSERT(false);
 }
 
 void lmNoteRest::OnRemovedFromRelationship(lmRelObj* pRel)
@@ -226,9 +236,14 @@ void lmNoteRest::OnRemovedFromRelationship(lmRelObj* pRel)
 
     SetDirty(true);
 
-	if ( pRel->GetAuxObjType() == eAXOT_Tie)
-	{
+	if (pRel->IsTie())
+    {
         ((lmNote*)this)->OnRemovedFromRelationship(pRel);
+    }
+	else if (pRel->IsBeam())
+    {
+        DetachAuxObj(m_pBeam);
+        m_pBeam = (lmBeam*)NULL;
     }
     else
         wxASSERT(false);
@@ -296,16 +311,6 @@ wxString lmNoteRest::SourceLDP(int nIndent, bool fUndoData)
 {
     wxString sSource = _T("");
 
-	//start or end of group
-    if (m_pBeam) {
-        if (m_BeamInfo[0].Type == eBeamBegin) {
-            sSource += _T(" g+");
-        }
-        else if (m_BeamInfo[0].Type == eBeamEnd) {
-            sSource += _T(" g-");
-        }
-    }
-
     //tuplets
     if (m_pTuplet)
     {
@@ -331,7 +336,14 @@ wxString lmNoteRest::SourceLDP(int nIndent, bool fUndoData)
 
 wxString lmNoteRest::SourceXML(int nIndent)
 {
+    //TODO
     wxString sSource = _T("");
+
+	//base class
+	wxString sBase = lmStaffObj::SourceXML(nIndent);
+    if (sBase != _T(""))
+        sSource += sBase;
+
     return sSource;
 }
 

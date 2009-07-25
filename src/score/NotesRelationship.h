@@ -31,7 +31,7 @@
 class lmNoteRest;
 class lmNote;
 
-//instead of using dynamic_cast I define a class type value
+//instead of using RTTI I define a class type value
 enum lmERelationshipClass
 {
 	lm_eBeamClass = 0,
@@ -61,25 +61,25 @@ protected:
 };
 
 
-template <class T>      // T is either lmNote or lmNoteRest
-class lmBinaryRelationship : public lmRelationship<T>
-{
-public:
-	virtual ~lmBinaryRelationship();
-
-	//implementation of lmRelationship virtual methods
-    virtual void Remove(T* pNR);
-    inline T* GetStartNoteRest() { return m_pStartNR; }
-    inline T* GetEndNoteRest() { return m_pEndNR; }
-    virtual void OnRelationshipModified() {};
-
-
-protected:
-    lmBinaryRelationship(lmERelationshipClass nClass, T* pStartNR, T* pEndNR);
-
-    T*		m_pStartNR;     //notes/rests related by this object
-    T*		m_pEndNR;
-};
+//template <class T>      // T is either lmNote or lmNoteRest
+//class lmBinaryRelationship : public lmRelationship<T>
+//{
+//public:
+//	virtual ~lmBinaryRelationship();
+//
+//	//implementation of lmRelationship virtual methods
+//    virtual void Remove(T* pNR);
+//    inline T* GetStartNoteRest() { return m_pStartNR; }
+//    inline T* GetEndNoteRest() { return m_pEndNR; }
+//    virtual void OnRelationshipModified() {};
+//
+//
+//protected:
+//    lmBinaryRelationship(lmERelationshipClass nClass, T* pStartNR, T* pEndNR);
+//
+//    T*		m_pStartNR;     //notes/rests related by this object
+//    T*		m_pEndNR;
+//};
 
 
 template <class T>      // T is either lmNote or lmNoteRest
@@ -126,55 +126,55 @@ protected:
 
 
 
-//--------------------------------------------------------------------------------------------
-// lmBinaryRelationship implementation
-//--------------------------------------------------------------------------------------------
-
-template <class T>
-lmBinaryRelationship<T>::lmBinaryRelationship(lmERelationshipClass nClass,
-                                              T* pStartNR, T* pEndNR)
-	: lmRelationship<T>(nClass)
-    , m_pStartNR(pStartNR)
-    , m_pEndNR(pEndNR)
-{
-}
-
-template <class T>
-lmBinaryRelationship<T>::~lmBinaryRelationship()
-{
-    //AWARE: notes must not be deleted as they are part of a lmScore
-    //and will be deleted there.
-
-	//inform the notes
-    if (m_pStartNR)
-        m_pStartNR->OnRemovedFromRelationship(this, lmRelationship<T>::GetClass());
-
-    if (m_pEndNR)
-        m_pEndNR->OnRemovedFromRelationship(this, lmRelationship<T>::GetClass());
-}
-
-template <class T>
-void lmBinaryRelationship<T>::Remove(T* pNR)
-{
-    //remove note/rest.
-	//AWARE: This method is always invoked by a NoteRest. Therefore it will
-	//not inform back the NoteRest, as this is unnecessary and causes problems when
-	//deleting the relationship object
-
-
-    if (m_pStartNR == pNR)
-    {
-        m_pStartNR = (lmNote*)NULL;
-        //m_pEndNR->RemoveTie(this);
-        //m_pEndNR = (lmNote*)NULL;
-    }
-    else if (m_pEndNR == pNR)
-    {
-        m_pEndNR = (lmNote*)NULL;
-        //m_pStartNR->RemoveTie(this);
-        //m_pStartNR = (lmNote*)NULL;
-    }
-}
+////--------------------------------------------------------------------------------------------
+//// lmBinaryRelationship implementation
+////--------------------------------------------------------------------------------------------
+//
+//template <class T>
+//lmBinaryRelationship<T>::lmBinaryRelationship(lmERelationshipClass nClass,
+//                                              T* pStartNR, T* pEndNR)
+//	: lmRelationship<T>(nClass)
+//    , m_pStartNR(pStartNR)
+//    , m_pEndNR(pEndNR)
+//{
+//}
+//
+//template <class T>
+//lmBinaryRelationship<T>::~lmBinaryRelationship()
+//{
+//    //AWARE: notes must not be deleted as they are part of a lmScore
+//    //and will be deleted there.
+//
+//	//inform the notes
+//    if (m_pStartNR)
+//        m_pStartNR->OnRemovedFromRelationship(this, lmRelationship<T>::GetClass());
+//
+//    if (m_pEndNR)
+//        m_pEndNR->OnRemovedFromRelationship(this, lmRelationship<T>::GetClass());
+//}
+//
+//template <class T>
+//void lmBinaryRelationship<T>::Remove(T* pNR)
+//{
+//    //remove note/rest.
+//	//AWARE: This method is always invoked by a NoteRest. Therefore it will
+//	//not inform back the NoteRest, as this is unnecessary and causes problems when
+//	//deleting the relationship object
+//
+//
+//    if (m_pStartNR == pNR)
+//    {
+//        m_pStartNR = (lmNote*)NULL;
+//        //m_pEndNR->RemoveTie(this);
+//        //m_pEndNR = (lmNote*)NULL;
+//    }
+//    else if (m_pEndNR == pNR)
+//    {
+//        m_pEndNR = (lmNote*)NULL;
+//        //m_pStartNR->RemoveTie(this);
+//        //m_pStartNR = (lmNote*)NULL;
+//    }
+//}
 
 
 

@@ -437,11 +437,13 @@ public:
 	void ResetMeasuresModified();
 
 	//cursor management
-    lmScoreCursor* SetCursor(lmVStaffCursor* pVCursor);
-    inline lmScoreCursor* MoveCursorToStart() { m_SCursor.MoveToStart(); return &m_SCursor;}
+    inline lmScoreCursor* MoveCursorToStart() {
+                        m_SCursor.MoveToStartOfInstrument(1);
+                        return &m_SCursor;
+                    }
     inline lmScoreCursor* GetCursor() { return &m_SCursor; }
-    lmScoreCursor* SetCursorState(lmCursorState* pState);
-    lmScoreCursor* SetCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO);
+    lmScoreCursor* SetState(lmCursorState* pState);
+    lmScoreCursor* SetState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO);
 
 	//pages layout information
 	void SetPageInfo(int nPage);

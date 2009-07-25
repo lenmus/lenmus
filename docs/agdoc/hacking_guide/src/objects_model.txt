@@ -131,7 +131,7 @@ As they do not consume time, the Layout phase is done by specific methods, contr
 
 %%lmAuxObj%%s can be attached both to %%lmStaffObj%% and to %%lmAuxObj%%. For example: to put a coloured box around a caesura mark, with an arrow pointing to it and a text attached to the arrow. This can be achieved be drawing a box, an arrow and the text, positioning them as desired, grouping them to form a compound graphic object and attaching it to the caesura %%lmAuxObj%%.
 
-As %%lmAuxObj%%s are not %%lmStaffObj%%s they can not be attached directly to an staff. In order to allow for placing %%lmAuxObj%%s on the staff it is necessary design a mechanism for this. The current solution is by using special StaffOjs (%%lmSpacer, lmAnchor, lmScoreAnchor%%).
+As %%lmAuxObj%%s are not %%lmStaffObj%%s they can not be attached directly to an staff. In order to allow for placing %%lmAuxObj%%s on the staff it is necessary design a mechanism for this. The current solution is by using special StaffObjs (%%lmSpacer, lmAnchor, lmScoreAnchor%%).
 
 
 \h3 {Owning AuxObjs}
@@ -164,15 +164,72 @@ Finally, I have defined other auxiliary objects, non-derived from any other one:
  * lmBasicText: info for a text (font size, font family, ..)
  * lmStaff: Properties for each staff on a VStaff (num.lines, spacing, ...)
  * lmAccidental: accidentals in notes
+ 
+ 
+The full hierarchy of objects is shown in next diagram:
 
+\code
+{
+    lmScoreObj
+        +-- lmScore
+        +-- lmStaff
+        +-- lmInstrument
+        +-- lmVStaff (musicData)
+        |
+        +-- lmComponentObj
+              |
+              +-- lmStaffObj
+              |     +-- lmBarline
+              |     +-- lmClef
+              |     +-- lmKey signature
+              |     +-- lmTimeSignature
+              |     +-- lmNoteRest
+              |     |     +-- lmNote
+              |     |     +-- lmRest
+              |     |
+              |     +-- lmMetronomeMark
+              |     +-- lmSOControl (new system)
+              |     +-- lmNotation
+              |           +-- lmScoreAnchor
+              |           +-- lmSpacer
+              |                 +-- lmAnchor
+              |
+              +-- lmAuxObj
+                    +-- lmScoreLine
+                    +-- lmFermata
+                    +-- lmLyric
+                    +-- lmScoreBlock
+                    |     +-- lmScoreTextParagraph
+                    |     +-- lmScoreTextBox
+                    |
+                    +-- lmScoreText
+                    |     +-- lmScoreTitle
+                    |     +-- lmTextItem
+                    |           +-- lmInstrNameAbbrev
+                    |
+                    +-- lmRelObj
+                          +-- lmBinaryRelObj
+                          |     +-- lmTie
+                          |
+                          +-- lmMultiRelObj
+                                +-- lmBeam
+                                (+-- lmTupletBracket)
 
+    * Auxiliary, non-derived
+        - lmAccidental
+        - lmBasicText
+        - lmBaseText
+        - lmChord
+        - lmMultipleRelationship
+            - lmTupletBracket
 
+}
 
 
 \h1 {Objects model: history and evolution}
 %%%-----------------------------------------
 
-When I stated the LenMus program I didn't have any previous experience about modelling music. I googled for music representation and found \href [http://www.recordare.com/xml.html] {MusicXML}, then a starting project (version 0.7). It was inadequate to my purposes as I needed positioning information and MusicXML 0.7 didn't have plans to include this information. Therefore, to gain first hand experience about music representation problems I decided to design my own representation language: LDP (Lenguaje De Partituras, meaning 'Language For Scores'). But I also though it would be wise to have some reference and so I  started by following the MusicXML model. A second reason to follow it was that I liked to implement export/import MusicXML and so, to simplify this objective, my internal representation should allow for easy conversion to/from MusicXML.
+When I stated the LenMus program I didn't have any previous experience about modelling music. I googled for music representation and found \href [http://www.recordare.com/xml.html] {MusicXML}, that in those days was a starting project (version 0.7). It was inadequate to my purposes as I needed positioning information and MusicXML 0.7 didn't have plans to include this information. Therefore, to gain first hand experience about music representation problems I decided to design my own representation language: LDP (Lenguaje De Partituras, meaning 'Language For Scores'). But I also though it would be wise to have some reference and so I  started by following the MusicXML model. A second reason to follow it was that I liked to implement export/import MusicXML and so, to simplify this objective, my internal representation should allow for easy conversion to/from MusicXML.
 
 \h2 {How is music represented in MusicXML}
 %%%-----------------------------------------

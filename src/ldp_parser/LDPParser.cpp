@@ -65,7 +65,6 @@ extern lmLogger* g_pLogger;
 
 const wxString sEOF = _T("<<$$EOF$$>>");
 
-
 //========================================================================================
 //helper class to keep info about a tie
 //========================================================================================
@@ -76,12 +75,11 @@ public:
     ~lmTieInfo() {}
 
     bool        fStart;
-    long        nTieId;
+    long        nTieNum;
+    long        nTieID;
     lmNote*     pNote;
     lmTPoint    tBezier[4];
 };
-
-
 
 //========================================================================================
 // lmLDPParser implementation
@@ -152,10 +150,16 @@ void lmLDPParser::Clear()
         delete *it;
     m_StackNodes.clear();
 
+    //pending relations
     std::list<lmTieInfo*>::iterator itT;
     for(itT=m_PendingTies.begin(); itT != m_PendingTies.end(); ++itT)
         delete *itT;
     m_PendingTies.clear();
+
+    std::list<lmBeamInfo*>::iterator itB;
+    for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); ++itB)
+        delete *itB;
+    m_PendingBeams.clear();
 
     delete m_pCurNode;
     m_pCurNode = (lmLDPNode*) NULL;
@@ -772,7 +776,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     //reposition score cursor
     m_pScore->MoveCursorToStart();        //point to start of score
     if (m_fCursorData)
-        m_pScore->SetCursorState(m_nCursorInstr, m_nCursorStaff, m_rCursorTime, m_pCursorSO);
+        m_pScore->SetState(m_nCursorInstr, m_nCursorStaff, m_rCursorTime, m_pCursorSO);
 
     return m_pScore;
 }
@@ -1294,6 +1298,8 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //returns a ptr. to a new lmTieInfo struct or NULL if any important error.
 
+    wxASSERT(pNode->GetName() == _T("tie"));
+
     //check that there are parameters
     if (pNode->GetNumParms() < 2 || pNode->GetNumParms() > 3)
     {
@@ -1309,6 +1315,9 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
     for (int i=0; i < 4; i++)
         pTieInfo->tBezier[i] = lmTPoint(0.0f, 0.0f);
 
+    //get tie ID
+    pTieInfo->nTieID = pNode->GetID();
+
     //get tie number
     wxString sNum = pNode->GetParameter(1)->GetName();
     if (!sNum.IsNumber())
@@ -1318,7 +1327,7 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
         delete pTieInfo;
         return (lmTieInfo*)NULL;    //error;
     }
-    sNum.ToLong(&(pTieInfo->nTieId));
+    sNum.ToLong(&(pTieInfo->nTieNum));
 
     //get tie type: start / end
     wxString sType = pNode->GetParameter(2)->GetName();
@@ -1344,6 +1353,75 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //end of analysis
     return pTieInfo;
+}
+
+lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    // <beam> = (beam num <beamtype>+)
+    // <beamtype> = { start | continue | end | forward | backward }
+
+    //returns a ptr. to a new lmBeamInfo struct or NULL if any important error.
+
+    wxASSERT(pNode->GetName() == _T("beam"));
+
+    //check that there are parameters
+    if (pNode->GetNumParms() < 2)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
+            pNode->GetName().c_str() );
+        return (lmBeamInfo*)NULL;    //error
+    }
+
+    //create the lmBeamInfo object to save beam data
+    lmBeamInfo* pBeamInfo = new lmBeamInfo;
+
+    //get beam ID
+    pBeamInfo->nBeamID = pNode->GetID();
+
+    //get beam number
+    wxString sNum = pNode->GetParameter(1)->GetName();
+    if (!sNum.IsNumber())
+    {
+        AnalysisError(pNode,
+            _T("Element 'beam': Number expected but found '%s'. Beam ignored."), sNum.c_str() );
+        delete pBeamInfo;
+        return (lmBeamInfo*)NULL;    //error;
+    }
+    sNum.ToLong(&(pBeamInfo->nBeamNum));
+
+    //get beam type: start / continue / end / forward / backward
+    int iP = 2;
+    int iB = 0;
+    bool fEndOfBeam = true;     //assute it all beam types are 'end'
+    for(; iP <= pNode->GetNumParms(); iP++, iB++)
+    {
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sType = pX->GetName();
+
+        if (sType == _T("begin"))
+            pBeamInfo->nBeamType[iB] = eBeamBegin;
+        else if(sType == _T("continue"))
+            pBeamInfo->nBeamType[iB] = eBeamContinue;
+        else if (sType == _T("end"))
+            pBeamInfo->nBeamType[iB] = eBeamEnd;
+        else if (sType == _T("forward"))
+            pBeamInfo->nBeamType[iB] = eBeamForward;
+        else if (sType == _T("backward"))
+            pBeamInfo->nBeamType[iB] = eBeamBackward;
+        else
+        {
+            AnalysisError(pNode,
+                _T("Element 'beam': Invalid beam type '%s' found. Beam ignored."), sType.c_str() );
+            delete pBeamInfo;
+            return (lmBeamInfo*)NULL;    //error;
+        }
+        fEndOfBeam &= (pBeamInfo->nBeamType[iB] == eBeamEnd
+                       || pBeamInfo->nBeamType[iB] == eBeamBackward);
+    }
+    pBeamInfo->fEndOfBeam = fEndOfBeam;
+
+    //end of analysis
+    return pBeamInfo;
 }
 
 bool lmLDPParser::AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints)
@@ -1505,13 +1583,13 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
     std::list<lmTieInfo*>::iterator itT;
     for(itT=m_PendingTies.begin(); itT != m_PendingTies.end(); ++itT)
     {
-         if ((*itT)->nTieId == pTieInfo->nTieId)
+         if ((*itT)->nTieNum == pTieInfo->nTieNum)
              break;     //found
     }
     if (itT == m_PendingTies.end())
     {
         AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for tie num. %d. Tie ignored."),
-                      pTieInfo->nTieId );
+                      pTieInfo->nTieNum );
         delete pTieInfo;
         return;
     }
@@ -1520,7 +1598,7 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
     if (!(*itT)->fStart)
     {
         AnalysisError((lmLDPNode*)NULL, _T("Duplicated 'stop' element for tie num. %d. Tie ignored."),
-                      pTieInfo->nTieId );
+                      pTieInfo->nTieNum );
         delete pTieInfo;
         delete *itT;
         m_PendingTies.erase(itT);
@@ -1531,7 +1609,7 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
     if((*itT)->pNote->GetFPitch() != pNote->GetFPitch())
     {
         AnalysisError((lmLDPNode*)NULL, _T("Requesting to tie notes of different pitch. Tie %d ignored."),
-                      pTieInfo->nTieId );
+                      pTieInfo->nTieNum );
         delete pTieInfo;
         delete *itT;
         m_PendingTies.erase(itT);
@@ -1539,12 +1617,47 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
     }
 
     //create the tie
-    (*itT)->pNote->CreateTie(pNote, (*itT)->tBezier, pTieInfo->tBezier);
+    (*itT)->pNote->CreateTie(pNote, pTieInfo->nTieID, (*itT)->tBezier, pTieInfo->tBezier);
 
     //remove and delete consumed lmTieInfo elements
     delete pTieInfo;
     delete *itT;
     m_PendingTies.erase(itT);
+}
+
+void lmLDPParser::AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo)
+{
+    //Received the last note of a beam and its lmBeamInfo data
+    //This method must look for the matching lmBeamInfo elements and build the beam
+
+    //look for the matching start/continue elements
+    std::vector<lmBeamInfo*> cBeamInfo;
+    std::list<lmBeamInfo*>::iterator itB;
+    for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); ++itB)
+    {
+         if ((*itB)->nBeamNum == pBeamInfo->nBeamNum)
+             cBeamInfo.push_back(*itB);
+    }
+    if (cBeamInfo.empty())
+    {
+        AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for beam num. %d. Beam ignored."),
+                      pBeamInfo->nBeamNum );
+        delete pBeamInfo;
+        return;
+    }
+
+    //create the beam
+    cBeamInfo.push_back(pBeamInfo);
+    lmVStaff* pVStaff = pNR->GetVStaff();
+    pVStaff->CreateBeam(cBeamInfo);
+
+    //remove and delete consumed lmBeamInfo elements
+    delete pBeamInfo;
+    for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); ++itB)
+    {
+         if ((*itB)->nBeamNum == pBeamInfo->nBeamNum)
+             delete *itB;
+    }
 }
 
 lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
@@ -1581,8 +1694,11 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     bool fIsRest = (sElmName.Left(1) == _T("r"));   //analysing a rest
 
     lmEStemType nStem = lmSTEM_DEFAULT;
-    bool fBeamed = false;
     bool fVisible = true;
+
+    //beam
+    lmBeamInfo* pBeamInfo = (lmBeamInfo*)NULL;
+    bool fBeamed = false;
     lmTBeamInfo BeamInfo[6];
     for (int i=0; i < 6; i++)
     {
@@ -1774,11 +1890,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
             sData = pX->GetName();
             if (sData == _T("l") && !fIsRest)       //Tied to the next one
+            //AWARE: This notation is needed for exercise patterns. Can not be removed!
             {
-                //AWARE: This simple notation is needed for exercise patterns. Can not be removed!
                 fTie = true;
             }
             else if (sData.Left(1) == _T("g"))      //beamed group
+            //AWARE: This notation is needed for exercise patterns. Can not be removed!
             {
                 if (sData.substr(1,1) == _T("+")) {       //Start of beamed group. Simple parameter
                     //compute beaming level dependig on note type
@@ -1959,6 +2076,10 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 else
                     pTieInfo = AnalyzeTie(pX, pVStaff);
             }
+            else if (sData == _T("beam"))     //start/continue/end of beam
+            {
+                pBeamInfo = AnalyzeBeam(pX, pVStaff);
+            }
             else
             {
                 //All other parameters will be considered as attachments. Therefore, I will
@@ -2104,6 +2225,22 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
     }
 	pNR->SetUserLocation(tPos);
+
+    //save beaming information
+    if (pBeamInfo)
+    {
+        pBeamInfo->pNR = pNR;
+        if (pBeamInfo->fEndOfBeam)
+        {
+            //end of beam. Add it to the internal model
+            AddBeam(pNR, pBeamInfo);
+        }
+        else
+        {
+            //start or continuation of beam. Save the information
+            m_PendingBeams.push_back(pBeamInfo);
+        }
+    }
 
     //save cursor data
     if (fCursorPoint)

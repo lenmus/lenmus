@@ -55,8 +55,6 @@ public:
     wxString Dump();
 
 private:
-    //lmLUnits DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote, lmUPoint uPos,
-    //                  wxColour colorC, wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void ComputeStemDirection();
     void ArrangeNoteheads();
     lmNote* CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape);

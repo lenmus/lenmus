@@ -18,19 +18,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-//
-//  class lmChord
-//    Information and methods to group several notes into a chord.
-//
-//    Contains the information needed to group several notes into a chord.
-//    For each chord there exist a lmChord object and a pointer to it is stored on each
-//    note of the chord
-//
-//    The class is named lmChord instead of Chord because there is a function named "Chord"
-//    defined in WinGDI.h (Microsoft), and it causes compilation problems (with MS VC)
-//    as the names collide.
-//
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Chord.h"
 #endif
@@ -78,10 +65,8 @@ lmChord::lmChord(lmNote* pBaseNote)
 
 lmChord::~lmChord()
 {
-    //
     // Destructor. When invoked, only from lmNote destructor, there must be only one
     // note: the base note.
-    //
 
     wxASSERT(m_Notes.size() == 1);
 
@@ -328,59 +313,6 @@ lmNote* lmChord::GetMinNote()
     }
     return pMinNote; 
 }
-
-//lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
-//                                 lmUPoint uPos, wxColour colorC, wxFont* pFont,
-//                                 lmVStaff* pVStaff, int nStaff)
-//{
-//    //Draws the flag using a glyph. Returns the flag width
-//
-//    wxASSERT(nStaff > 0);
-//
-//    lmENoteType nNoteType = pBaseNote->GetNoteType();
-//    bool fStemDown = pBaseNote->StemGoesDown();
-//
-//    lmEGlyphIndex nGlyph = GLYPH_EIGHTH_FLAG_DOWN;
-//    switch (nNoteType) {
-//        case eEighth :
-//            nGlyph = (fStemDown ? GLYPH_EIGHTH_FLAG_DOWN : GLYPH_EIGHTH_FLAG_UP);
-//            break;
-//        case e16th :
-//            nGlyph = (fStemDown ? GLYPH_16TH_FLAG_DOWN : GLYPH_16TH_FLAG_UP);
-//            break;
-//        case e32th :
-//            nGlyph = (fStemDown ? GLYPH_32ND_FLAG_DOWN : GLYPH_32ND_FLAG_UP);
-//            break;
-//        case e64th :
-//            nGlyph = (fStemDown ? GLYPH_64TH_FLAG_DOWN : GLYPH_64TH_FLAG_UP);
-//            break;
-//        case e128th :
-//            nGlyph = (fStemDown ? GLYPH_128TH_FLAG_DOWN : GLYPH_128TH_FLAG_UP);
-//            break;
-//        case e256th :
-//            nGlyph = (fStemDown ? GLYPH_256TH_FLAG_DOWN : GLYPH_256TH_FLAG_UP);
-//            break;
-//        default:
-//            //wxLogMessage(_T("[lmChord::DrawFlag] Error: invalid note type %d."),
-//            //            nNoteType);
-//            wxASSERT(false);
-//        }
-//
-//    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-//
-//    pPaper->SetFont(*pFont);
-//    if (!fMeasuring) {
-//        // drawing phase: do the draw
-//        pPaper->SetTextForeground(colorC);
-//        pPaper->DrawText(sGlyph, uPos.x,
-//            uPos.y + pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, nStaff ) );
-//    }
-//
-//    lmLUnits width, height;
-//    pPaper->GetTextExtent(sGlyph, &width, &height);
-//    return width;
-//
-//}
 
 void lmChord::ComputeStemDirection()
 {

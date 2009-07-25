@@ -166,7 +166,7 @@ public:
     inline int GetCursorMeasure() { return m_pScoreCursor->GetSegment() + 1; }
     inline lmStaff* GetCursorStaff() { return m_pScoreCursor->GetCursorStaff(); }
 	    //get object pointed by the cursor
-    inline lmStaffObj* GetCursorStaffObj() { return m_pScoreCursor->GetCursorSO(); }
+    inline lmStaffObj* GetCursorStaffObj() { return m_pScoreCursor->GetStaffObj(); }
 
 
 	void LogicalToDevice(lmUPoint& posLogical, int nPage, lmDPoint& posDevice);

@@ -637,14 +637,9 @@ bool lmInstrument::IsFirstOfGroup()
     return (m_pGroup && m_pGroup->GetFirstInstrument() == this);
 }
 
-void lmInstrument::ResetCursor() 
+lmColStaffObjs* lmInstrument::GetCollection() 
 { 
-    m_pVStaff->ResetCursor(); 
-}
-
-void lmInstrument::AttachCursor(lmVStaffCursor* pVCursor)
-{ 
-    m_pVStaff->AttachCursor(pVCursor); 
+    return m_pVStaff->GetCollection(); 
 }
 
 int lmInstrument::GetNumStaves() 

@@ -82,11 +82,12 @@ class lmShapeTie;
 class lmTie: public lmBinaryRelObj
 {
 public:
-    lmTie(lmScoreObj* pOwner, lmNote* pStartNote, lmNote* pEndNote);
+    lmTie(lmScoreObj* pOwner, long nID, lmNote* pStartNote, lmNote* pEndNote);
     ~lmTie();
 
     //creation
     void SetBezierPoints(int nBezier, lmTPoint* ptPoints);
+    void SetBezier(int nBezier, lmBezier* pBezier);
 
     // overrides for pure virtual methods of base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
@@ -97,10 +98,14 @@ public:
     void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift) {}
     void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift) {}
 
-    // source code related methods
-    wxString SourceLDP_First(int nIndent, bool fUndoData);
-    wxString SourceLDP_Last(int nIndent, bool fUndoData);
-    wxString SourceXML(int nIndent);
+    //source code related methods. Implementation of needed virtual methods in lmRelObj
+    wxString SourceLDP_First(int nIndent, bool fUndoData, lmNoteRest* pNR);
+    wxString SourceLDP_Last(int nIndent, bool fUndoData, lmNoteRest* pNR);
+    wxString SourceXML_First(int nIndent, lmNoteRest* pNR);
+    wxString SourceXML_Last(int nIndent, lmNoteRest* pNR);
+
+    //information
+    inline lmBezier& GetBezier(int nBezier) { return m_Bezier[nBezier]; }
 
     // debug methods
     wxString Dump();
@@ -112,8 +117,6 @@ public:
 
 protected:
     lmBezier        m_Bezier[2];    //points for main and secondary archs
-
-    lmTPoint        m_tPoints[4];   //main arch: start, end, ctrol1, ctrol2
 };
 
 

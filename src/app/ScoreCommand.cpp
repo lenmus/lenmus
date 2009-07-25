@@ -411,6 +411,10 @@ lmCmdDeleteTie::lmCmdDeleteTie(bool fNormalCmd,
 {
     m_nEndNoteID = pEndNote->GetID();
     m_nStartNoteID = pEndNote->GetTiedNotePrev()->GetID();
+    lmTie* pTie = pEndNote->GetTiePrev();
+    m_nTieID = pTie->GetID();
+    m_Bezier[0] = pTie->GetBezier(0);
+    m_Bezier[1] = pTie->GetBezier(1);
 }
 
 bool lmCmdDeleteTie::Do()
@@ -434,7 +438,10 @@ bool lmCmdDeleteTie::Undo()
     lmNote* pEndNote = (lmNote*)GetScoreObj(m_nEndNoteID);
     lmNote* pStartNote = (lmNote*)GetScoreObj(m_nStartNoteID);
     //re-create the tie
-    pEndNote->CreateTie(pStartNote, pEndNote);
+    pEndNote->CreateTie(pStartNote, pEndNote, m_nTieID);
+    lmTie* pTie = pStartNote->GetTieNext();
+    pTie->SetBezier(0, &m_Bezier[0]);
+    pTie->SetBezier(1, &m_Bezier[1]);
 
     return CommandUndone();
 }
@@ -1189,6 +1196,7 @@ lmCmdAttachText::lmCmdAttachText(bool fNormalCmd, lmDocument *pDoc, wxString& sT
     , m_Style(*pStyle)
     , m_nAlign(nAlign)
     , m_sText(sText)
+    , m_nTextID(lmNEW_ID)
 {
 }
 
@@ -1200,8 +1208,26 @@ bool lmCmdAttachText::Do()
     lmTextStyle* pStyle = m_pDoc->GetScore()
             ->AddStyle(m_Style.sName, m_Style.tFont, m_Style.nColor);
     lmScoreObj* pAnchor = GetScoreObj(m_nAnchorID);
-    lmTextItem* pNewText = new lmTextItem(pAnchor, lmNEW_ID, m_sText, m_nAlign, pStyle);
+    lmTextItem* pNewText = new lmTextItem(pAnchor, m_nTextID, m_sText, m_nAlign, pStyle);
     pAnchor->AttachAuxObj(pNewText);
+    m_nTextID = pNewText->GetID();
+    
+    //AWARE.
+    //It is necessary to ensure that if the command is redone, the text always
+    //get assigned the same ID, as the text could be referenced in a subsequent 
+    //redo commnad.
+    //In normal commands, the same ID is assigned automatically. But in this 
+    //command, the text has been previously created in lmScoreCanvas::AttachNewText()
+    //and then deleted, and this ID number n is discarded. Therefore, the first time
+    //the command is executed the text will get ID = n+1. But in a redo operation, 
+    //the text will not be created and deleted in lmScoreCanvas::AttachNewText(), but
+    //only here. Therefore, the ID that will be assigned in the redo operation will
+    //be the initially deleted ID (n), instead of the correct one (n+1).
+    //And this will invalidate any redo reference.
+    //To avoid this problem, m_nTextID is initialized with lmNEW_ID so the first
+    //time the command is executed, a new ID (n+1) is assigned and saved. And this
+    //saved value is used in any subsequent redo operation, ensuring that
+    //the text receives the right ID (n+1).
 
 	return CommandDone(true);
 }
@@ -1218,6 +1244,7 @@ lmCmdAddTitle::lmCmdAddTitle(bool fNormalCmd, lmDocument *pDoc, wxString& sText,
     , m_Style(*pStyle)
     , m_nAlign(nAlign)
     , m_sText(sText)
+    , m_nTitleID(lmNEW_ID)
 {
 }
 
@@ -1230,9 +1257,12 @@ bool lmCmdAddTitle::Do()
     lmTextStyle* pStyle = pScore->AddStyle(m_Style.sName, m_Style.tFont,
                                            m_Style.nColor);
     lmScoreTitle* pNewTitle 
-        = new lmScoreTitle(pScore, lmNEW_ID, m_sText, lmBLOCK_ALIGN_BOTH,
+        = new lmScoreTitle(pScore, m_nTitleID, m_sText, lmBLOCK_ALIGN_BOTH,
                            lmHALIGN_DEFAULT, lmVALIGN_DEFAULT, pStyle);
 	pScore->AttachAuxObj(pNewTitle);
+    m_nTitleID = pNewTitle->GetID();
+
+    //AWARE: See, in lmCmdAttachText command, an explanation for saving m_nTitleID
 
 	return CommandDone(true);
 }

@@ -32,13 +32,13 @@ class lmVStaff;
 #define lmDEFINE_REST        true
 #define lmDEFINE_NOTE        false
 
-// struct BeamInfo represents raw info about this note beaming. It is the same information
-// present on a <beam> MusicXML tag.
+// struct BeamInfo represents raw info about a note beam
 struct lmTBeamInfo
 {
     lmEBeamType    Type;
     bool        Repeat;
 };
+
 
 class lmLyric;
 
@@ -114,6 +114,7 @@ public:
 	//relationships
 	void OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelClass);
 	void OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass);
+	void OnIncludedInRelationship(lmRelObj* pRel);
 	void OnRemovedFromRelationship(lmRelObj* pRel);
 
 

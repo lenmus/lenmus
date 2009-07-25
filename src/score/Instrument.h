@@ -27,7 +27,7 @@
 
 class lmBox;
 class lmColStaffObjs;
-class lmVStaffCursor;
+class lmScoreCursor;
 class lmInstrGroup;
 class lmVStaff;
 class lmScoreCursor;
@@ -74,11 +74,6 @@ public:
     bool IsFirstOfSystem();
     int GetNumInstr();
 
-
-	//cursor methods
-    void ResetCursor();
-    void AttachCursor(lmVStaffCursor* pVCursor);
-
     //group related methods
     void OnRemovedFromGroup(lmInstrGroup* pGroup);
     void OnIncludedInGroup(lmInstrGroup* pGroup);
@@ -113,6 +108,11 @@ private:
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
 	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmInstrNameAbbrev* pName);
     bool RenderBraket();
+
+    //cursor management
+    friend class lmScoreCursor;         //access to GetCollection()
+    lmColStaffObjs* GetCollection();
+
 
     lmScore*            m_pScore;           //score to whith this instrument belongs
 	lmVStaff*		    m_pVStaff;			//VStaff for this instrument

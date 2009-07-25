@@ -1702,7 +1702,7 @@ void lmScoreView::UpdateCaret()
 
     ////DBG ------------------------------------------------------------------------------
     //wxString sType = _T("end of collection");
-    //lmStaffObj* pSO = m_pScoreCursor->GetCursorSO();
+    //lmStaffObj* pSO = m_pScoreCursor->GetStaffObj();
     //if (pSO)
     //{
     //    sType = pSO->GetName();

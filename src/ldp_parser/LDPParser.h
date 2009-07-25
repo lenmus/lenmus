@@ -38,6 +38,7 @@
 
 class lmInstrGroup;
 class lmTieInfo;
+class lmBeamInfo;
 
 enum lmETagLDP
 {
@@ -137,6 +138,7 @@ protected:
                                   wxColour* pColor);
     void        AnalyzeAttachments(lmLDPNode* pNode, lmVStaff* pVStaff,
                                    lmLDPNode* pX, lmStaffObj* pAnchor);
+    lmBeamInfo* AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints);
     bool        AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth, lmELineStyle* pLineStyle,
@@ -171,6 +173,7 @@ protected:
     bool GetValueYesNo(lmLDPNode* pNode, bool fDefault);
 
     //auxiliary
+    void AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo);
     void AddTie(lmNote* pNote, lmTieInfo* pTieInfo);
 
 
@@ -209,8 +212,9 @@ protected:
     wxString            m_sVersion;         //score in process: used LDP version (i.e. "1.2")
     int                 m_nVersion;         //version in numeric format: 100*num+rev. (i.I.e. 1.2 = 102)
 
-    //list of open ties, waiting for the second note.
+    //list of open relations, waiting for the stop element.
     std::list<lmTieInfo*>   m_PendingTies;
+    std::list<lmBeamInfo*>  m_PendingBeams;
 
     //cursor data
     bool            m_fCursorData;          //true if cursor data found

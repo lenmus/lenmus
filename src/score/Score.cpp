@@ -548,7 +548,7 @@ void lmScore::DoAddInstrument(lmInstrument* pInstr, lmInstrGroup* pGroup)
     if (pGroup)
         pGroup->Include(pInstr);
 
-    m_SCursor.PointCursorToInstrument( (int)m_cInstruments.size() );
+    m_SCursor.MoveToStartOfInstrument( (int)m_cInstruments.size() );
 }
 
 lmInstrument* lmScore::XML_FindInstrument(wxString sId)
@@ -806,7 +806,7 @@ wxString lmScore::Dump(wxString sFilename)
 wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
 {
     if(fUndoData)
-        g_pCursorSO = m_SCursor.GetCursorSO();
+        g_pCursorSO = m_SCursor.GetStaffObj();
     else
         g_pCursorSO = (lmStaffObj*)NULL;
 
@@ -1244,16 +1244,16 @@ void lmScore::ResetMeasuresModified()
 	m_aMeasureModified.clear();
 }
 
-lmScoreCursor* lmScore::SetCursorState(lmCursorState* pState)
+lmScoreCursor* lmScore::SetState(lmCursorState* pState)
 {
     m_SCursor.SetState(pState);
     return &m_SCursor;
 }
 
-lmScoreCursor* lmScore::SetCursorState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO)
+lmScoreCursor* lmScore::SetState(int nInstr, int nStaff, float rTimepos, lmStaffObj* pSO)
 {
     lmCursorState oState(nInstr, nStaff, rTimepos, pSO);
-    return SetCursorState(&oState);
+    return SetState(&oState);
 }
 
 lmUPoint lmScore::CheckHandlerNewPosition(lmHandler* pHandler, int nIdx, int nPage, lmUPoint& uPos)

@@ -129,7 +129,7 @@ lmVStaff::~lmVStaff()
         if (m_cStaves[i]) delete m_cStaves[i];
 }
 
-lmVStaffCursor* lmVStaff::GetVCursor()
+lmScoreCursor* lmVStaff::GetCursor()
 {
     //get cursor from the score
     lmScoreCursor* pCursor = m_pScore->GetCursor();
@@ -138,12 +138,7 @@ lmVStaffCursor* lmVStaff::GetVCursor()
     int nInstr = pCursor->GetCursorInstrumentNumber();
     wxASSERT(m_pScore->GetInstrument(nInstr) == GetOwnerInstrument());
     
-    return pCursor->GetVCursor();
-}
-
-void lmVStaff::AttachCursor(lmVStaffCursor* pVCursor)
-{
-    pVCursor->AttachToCollection(&m_cStaffObjs);
+    return pCursor;
 }
 
 lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths)
@@ -292,7 +287,7 @@ lmTimeSignature* lmVStaff::GetApplicableTimeSignature()
         return pSO->GetApplicableTimeSignature();
     else
     {
-        pSO = GetVCursor()->GetPreviousStaffobj();
+        pSO = GetCursor()->GetPreviousStaffobj();
         if (pSO)
             return pSO->GetApplicableTimeSignature();
         else
@@ -410,19 +405,18 @@ bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
     //The key/time signature is for all staves. Therefore, we have to create a new context
     //in every staff, and chain it, at the right point, in the contexts chain. We know 
     //the key/time insertion point in first staff but we have to locate insertion points
-    //for every staff
-    std::list<lmVStaffCursor*> cAuxCursors;
+    //for every staff. For this, we are going to create a cursor for each staff
+    std::list<lmScoreCursor*> cAuxCursors;
     int nNumMeasure = GetCursorSegmentNum();
     bool fIsTime = pKTS->IsTimeSignature();
     for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
 	{
         // Create an auxiliary cursor and position it at start of desired measure
-        lmVStaffCursor* pAuxCursor = new lmVStaffCursor();
-        pAuxCursor->AttachToCollection(&m_cStaffObjs);
-        pAuxCursor->AdvanceToStartOfSegment(nNumMeasure, nStaff);
-
-        // Advance aux cursor, if necessary, to skip clef and, if applicable, key signature.
-        pAuxCursor->SkipClefKey(fIsTime);           //true -> skip key
+        lmScoreCursor* pAuxCursor = new lmScoreCursor( GetScore() );
+        pAuxCursor->MoveToStartOfInstrument( GetNumInstr() );
+        //advance aux cursor, if necessary, to skip clef and, if applicable, key signature.
+        pAuxCursor->MoveToStartOfSegment(nNumMeasure, nStaff, true, fIsTime);
+            //true -> skip clef. If fIsTime==true, also skip key
 
         //Add a new context at found insertion point
         lmStaffObj* pCursorSO = pAuxCursor->GetStaffObj();
@@ -439,18 +433,21 @@ bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
         cAuxCursors.push_back(pAuxCursor);
     }
 
-    // insert the key/time signature object in first staff
-    lmVStaffCursor* pAuxCursor = cAuxCursors.front();
-    pAuxCursor->AttachToCollection(&m_cStaffObjs, false);   //false: do not reset cursor
+    //save master cursor state
+    lmCursorState oCursorState = GetCursor()->GetState();
+
+    //move cursor to insertion point in first staff, and insert there the key/time signature
+    lmScoreCursor* pAuxCursor = cAuxCursors.front();
+    GetCursor()->SetState( &(pAuxCursor->GetState()) );
     m_cStaffObjs.Add(pKTS, true, fKeyKeepPitch);            //true->fClefKeyPosition. Doesn't matter if true or false
 
-    //restore cursor and reposition it at time signature insertion point
-    GetVCursor()->AttachToCollection(&m_cStaffObjs, false);    //false-> do not reset it
+    //restore master cursor state and reposition it at time signature insertion point
+    GetCursor()->SetState(&oCursorState);
     if (pSaveSO)
-        GetVCursor()->MoveCursorToObject(pSaveSO);
+        GetCursor()->MoveCursorToObject(pSaveSO);
 
     //delete aux cursors
-    std::list<lmVStaffCursor*>::iterator it;
+    std::list<lmScoreCursor*>::iterator it;
     for (it = cAuxCursors.begin(); it != cAuxCursors.end(); ++it)
         delete *it;
 
@@ -471,7 +468,7 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmEBarline nType, bool fVisible)
     //  be wrong to insert the barline before the G note. Therefore, it is necessary
     //  to find the first SO at current timepos (the C note in the example) and insert
     //  the barline there.
-    GetVCursor()->AdvanceToStartOfTimepos();
+    GetCursor()->MoveToStartOfTimepos();
 
     //now, proceed to insert the barline
     lmBarline* pBarline = new lmBarline(nType, this, lmNEW_ID, fVisible);
@@ -922,8 +919,8 @@ void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
     if (nNotesBefore == 1 && nNotesAfter == 1)
     {
         //just remove the beam
-	    pPrevNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);   //OnRemovedFromBeam();
-	    pBeforeNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
+	    pPrevNR->OnRemovedFromRelationship(pBeam);
+	    pBeforeNR->OnRemovedFromRelationship(pBeam);
         delete pBeam;
     }
     //cae b) single note + new beam
@@ -931,7 +928,7 @@ void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
     {
         //remove first note from beam
         pBeam->Remove(pPrevNR);
-	    pPrevNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);   //OnRemovedFromBeam();
+	    pPrevNR->OnRemovedFromRelationship(pBeam);
         pBeam->AutoSetUp();
     }
     //case c) new beam + new beam
@@ -942,14 +939,14 @@ void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
         std::vector<lmNoteRest*>::iterator it = notes.begin();
 
         pBeam->Remove(*it);
-	    (*it)->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
+	    (*it)->OnRemovedFromRelationship(pBeam);
         lmBeam* pBeam1 = new lmBeam((lmNote*)(*it));
 
         ++it;
         while (it != notes.end())
         {
             pBeam->Remove(*it);
-	        (*it)->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
+	        (*it)->OnRemovedFromRelationship(pBeam);
             pBeam1->Include((*it));
             ++it;
         }
@@ -962,11 +959,37 @@ void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
     {
         //remove last note from beam
         pBeam->Remove(pBeforeNR);
-	    pBeforeNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass); //OnRemovedFromBeam();
+	    pBeforeNR->OnRemovedFromRelationship(pBeam);
         pBeam->AutoSetUp();
     }
     else
         wxASSERT(false);
+}
+
+lmBeam* lmVStaff::CreateBeam(std::vector<lmBeamInfo*>& cBeamInfo)
+{
+    //create a beamed group with the received info
+
+    //create beam and add first note
+    //A beamed group can contain rests, but can not start or end with a rest.
+    std::vector<lmBeamInfo*>::iterator it = cBeamInfo.begin();
+    wxASSERT( (*it)->pNR->IsNote() );
+    wxASSERT( cBeamInfo.back()->pNR->IsNote() );
+    for (int i=0; i < 6; ++i)
+        (*it)->pNR->SetBeamType(i, (*it)->nBeamType[i]);
+    lmBeam* pNewBeam = new lmBeam((lmNote*)((*it)->pNR) );
+
+    //here beam is initialized and first note/rest is included. Add remaining
+    //notes to it
+    for (++it; it != cBeamInfo.end(); ++it)
+    {
+        for (int i=0; i < 6; ++i)
+            (*it)->pNR->SetBeamType(i, (*it)->nBeamType[i]);
+        pNewBeam->Include( (*it)->pNR );
+    }
+
+    pNewBeam->NeedsSetUp(false);    //disable auto-setup
+    return pNewBeam;
 }
 
 void lmVStaff::Cmd_JoinBeam(std::vector<lmNoteRest*>& notes)
@@ -1018,7 +1041,7 @@ void lmVStaff::Cmd_JoinBeam(std::vector<lmNoteRest*>& notes)
                 std::vector<lmNoteRest*> oldNotes;
                 while(pNR)
                 {
-	                pNR->OnRemovedFromRelationship(pOldBeam, lm_eBeamClass);
+	                pNR->OnRemovedFromRelationship(pOldBeam);
                     pNewBeam->Include(pNR);
                     oldNotes.push_back(pNR);
                     pNR = pOldBeam->GetNextNoteRest();
@@ -1059,7 +1082,7 @@ bool lmVStaff::Cmd_DeleteBeam(lmNoteRest* pBeamedNR)
     while (pNR)
     {
         pBeam->Remove(pNR);
-        pNR->OnRemovedFromRelationship(pBeam, lm_eBeamClass);
+        pNR->OnRemovedFromRelationship(pBeam);
         pNR = pBeam->GetNextNoteRest();
     }
 
@@ -2013,7 +2036,7 @@ bool lmVStaff::CheckIfNotesAffectedByClef(bool fSkip)
 
 
     //define iterator from current cursor position
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetVCursor());
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetCursor());
     if(fSkip && !pIter->EndOfCollection())
         pIter->MoveNext();
     while(!pIter->EndOfCollection())
@@ -2049,7 +2072,7 @@ bool lmVStaff::CheckIfNotesAffectedByKey(bool fSkip)
 
 
     //define iterator from current cursor position
-    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetVCursor());
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetCursor());
     if(fSkip && !pIter->EndOfCollection())
         pIter->MoveNext();
     while(!pIter->EndOfCollection())

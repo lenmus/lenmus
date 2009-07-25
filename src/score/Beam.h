@@ -32,19 +32,57 @@ class lmShapeStem;
 class lmShapeNote;
 
 
-class lmBeam : public lmMultipleRelationship<lmNoteRest>
+//========================================================================================
+//helper class to keep info about a beam. For building a beam
+//========================================================================================
+class lmBeamInfo
 {
 public:
-    lmBeam(lmNote* pNote);
+    lmBeamInfo() : fEndOfBeam(false)
+                 , nBeamID(lmNEW_ID)
+                 , nBeamNum(0L)
+                 , pNR((lmNoteRest*)NULL)
+            {
+                for (int i=0; i < 6; i++)
+                    nBeamType[i] = eBeamNone;
+            }
+    ~lmBeamInfo() {}
+
+    bool            fEndOfBeam;
+    long            nBeamID;
+    long            nBeamNum;
+    lmEBeamType     nBeamType[6];
+    lmNoteRest*     pNR;
+};
+
+
+
+//========================================================================================
+
+class lmBeam : public lmMultiRelObj
+{
+public:
+    lmBeam(lmNote* pNote, long nID=lmNEW_ID);
     ~lmBeam();
 
-	//implementation of lmMultipleRelationship virtual methods
-	inline lmERelationshipClass GetClass() { return lm_eBeamClass; }
+	//implementation of lmAuxObj virtual methods
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+
+	//implementation of lmRelObj/lmMultiRelObj virtual methods
 	void OnRelationshipModified();
+
+    //source code related methods. Implementation of virtual pure in lmRelObj
+    wxString SourceLDP_First(int nIndent, bool fUndoData, lmNoteRest* pNR);
+    wxString SourceLDP_Middle(int nIndent, bool fUndoData, lmNoteRest* pNR);
+    wxString SourceLDP_Last(int nIndent, bool fUndoData, lmNoteRest* pNR);
+    wxString SourceXML_First(int nIndent, lmNoteRest* pNR);
+    wxString SourceXML_Middle(int nIndent, lmNoteRest* pNR);
+    wxString SourceXML_Last(int nIndent, lmNoteRest* pNR);
+
+    //implementation of lmAuxObj virtual methods
 
 	//specific methods
     void CreateShape();
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
 	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
     void AddRestShape(lmShape* pRestShape);
     void AutoSetUp();
@@ -53,6 +91,8 @@ public:
 
 private:
     int GetBeamingLevel(lmNote* pNote);
+    wxString SourceLDP(int nIndent, bool fUndoData, lmNoteRest* pNR);
+    wxString SourceXML(int nIndent, lmNoteRest* pNR);
 
         //member variables
 
@@ -64,6 +104,11 @@ private:
     int            m_nPosForRests;        //relative position for rests
 
 };
+
+//global functions related to beams
+extern wxString& GetLDPBeamNameFromType(lmEBeamType nType);
+extern wxString& GetXMLBeamNameFromType(lmEBeamType nType);
+
 
 #endif    // __LM_BEAM_H__
 

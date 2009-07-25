@@ -55,12 +55,12 @@ lmSOIterator::lmSOIterator(lmColStaffObjs* pCSO, lmStaffObj* pTargetSO)
     m_fEnd = false;
 }
 
-lmSOIterator::lmSOIterator(lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor)
+lmSOIterator::lmSOIterator(lmColStaffObjs* pCSO, lmScoreCursor* pCursor)
 {
     //creates an iterator pointing to received cursor position
 
     m_pColStaffObjs = pCSO;
-	m_pSO = pVCursor->GetStaffObj();
+	m_pSO = pCursor->GetStaffObj();
     m_fChangeOfMeasure = false;
     m_fEnd = false;
 }

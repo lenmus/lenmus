@@ -512,10 +512,11 @@ enum lmEAuxObjType
 
     //lmBinaryRelObj
     eAXOT_BinaryRelObj,
-    eAXOT_Tie = eAXOT_BinaryRelObj,
+    eAXOT_Tie,
 
     //lmMultiRelObj
     eAXOT_MultiRelObj,
+    eAXOT_Beam,
 
 };
 
@@ -539,6 +540,7 @@ public:
     inline bool IsTextItem() { return GetAuxObjType() == eAXOT_TextItem; }
     inline bool IsTextBlock() { return GetAuxObjType() == eAXOT_ScoreTitle; }
     inline bool IsTie() { return GetAuxObjType() == eAXOT_Tie; }
+    inline bool IsBeam() { return GetAuxObjType() == eAXOT_Beam; }
 
     inline bool IsRelObj() { return GetAuxObjType() >= eAXOT_BinaryRelObj; }
     inline bool IsBinaryRelObj() { return GetAuxObjType() >= eAXOT_BinaryRelObj
@@ -596,44 +598,87 @@ public:
     lmEAuxObjType GetAuxObjType() { return m_nRelObjType; }
 
     //source code generation
-    virtual wxString SourceLDP_First(int nIndent, bool fUndoData) { return wxEmptyString; }
-    virtual wxString SourceLDP_Middle(int nIndent, bool fUndoData) { return wxEmptyString; }
-    virtual wxString SourceLDP_Last(int nIndent, bool fUndoData) { return wxEmptyString; }
+    virtual wxString SourceLDP_First(int nIndent, bool fUndoData, lmNoteRest* pNR)
+                        { return wxEmptyString; }
+    virtual wxString SourceLDP_Middle(int nIndent, bool fUndoData, lmNoteRest* pNR)
+                        { return wxEmptyString; }
+    virtual wxString SourceLDP_Last(int nIndent, bool fUndoData, lmNoteRest* pNR)
+                        { return wxEmptyString; }
+    virtual wxString SourceXML_First(int nIndent, lmNoteRest* pNR)
+                        { return wxEmptyString; }
+    virtual wxString SourceXML_Middle(int nIndent, lmNoteRest* pNR)
+                        { return wxEmptyString; }
+    virtual wxString SourceXML_Last(int nIndent, lmNoteRest* pNR)
+                        { return wxEmptyString; }
 
     //overrides
     wxString SourceLDP(int nIndent, bool fUndoData);
 
 protected:
-	lmRelObj(lmScoreObj* pOwner, lmEAuxObjType nRelObjType, bool fIsDraggable = true)
-        : lmAuxObj(pOwner, lmNEW_ID, fIsDraggable), m_nRelObjType(nRelObjType) {}
+	lmRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
+             bool fIsDraggable = true)
+        : lmAuxObj(pOwner, nID, fIsDraggable)
+        , m_nRelObjType(nRelObjType) {}
 
     lmEAuxObjType       m_nRelObjType;
 
 };
 
 
-//An AuxObj relating two Notes/Rests
+//An AuxObj relating two and only two Notes/Rests
 class lmBinaryRelObj : public lmRelObj
 {
 public:
     virtual ~lmBinaryRelObj();
 
-    //implementation of some lmRelObj pure virtual methods
+    //implementation of lmRelObj pure virtual methods
+    virtual void Include(lmNoteRest* pNR, int nIndex = -1) {};
     virtual void Remove(lmNoteRest* pNR);
     virtual inline lmNoteRest* GetStartNoteRest() { return m_pStartNR; }
     virtual inline lmNoteRest* GetEndNoteRest() { return m_pEndNR; }
     virtual void OnRelationshipModified() {};
-    virtual void Include(lmNoteRest* pNR, int nIndex = -1) {};
 
 
 protected:
-    lmBinaryRelObj(lmScoreObj* pOwner, lmEAuxObjType nRelObjType, lmNoteRest* pStartNR,
-                   lmNoteRest* pEndNR, bool fIsDraggable = true);
+    lmBinaryRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
+                   lmNoteRest* pStartNR, lmNoteRest* pEndNR,
+                   bool fIsDraggable = true);
 
     lmNoteRest*     m_pStartNR;     //notes/rests related by this lmRelObj
     lmNoteRest*		m_pEndNR;
 };
 
+
+//An AuxObj relating two or more Notes/Rests
+class lmMultiRelObj : public lmRelObj
+{
+public:
+    virtual ~lmMultiRelObj();
+
+    //implementation of lmRelObj pure virtual methods
+    virtual void Include(lmNoteRest* pNR, int nIndex = -1);
+    virtual void Remove(lmNoteRest* pNR);
+    lmNoteRest* GetStartNoteRest() { return m_NoteRests.front(); }
+    lmNoteRest* GetEndNoteRest() { return m_NoteRests.back(); }
+    virtual void OnRelationshipModified() {};
+
+        //specific methods
+    int NumNotes() { return (int)m_NoteRests.size(); }
+    int GetNoteIndex(lmNoteRest* pNR);
+
+    //two dirty methods to simplify traversing the collection
+    lmNoteRest* GetFirstNoteRest();
+    lmNoteRest* GetNextNoteRest();
+
+	wxString Dump();
+
+protected:
+    lmMultiRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
+                  bool fIsDraggable = true);
+
+    std::list<lmNoteRest*>   m_NoteRests;   //list of note/rests that form the relation
+    std::list<lmNoteRest*>::iterator m_it;  //for methods GetFirstNoteRest() and GetNextNoteRest()
+};
 
 
 

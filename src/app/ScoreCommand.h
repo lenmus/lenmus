@@ -36,9 +36,10 @@ class lmComponentObj;
 class lmDocument;
 class lmGMObject;
 class lmScoreObj;
-class lmVStaffCursor;
+class lmScoreCursor;
 class lmVStaff;
 class lmNote;
+class lmBezier;
 
 //predefined values for flag 'fNormalCmd'
 #define lmCMD_NORMAL    true
@@ -156,6 +157,8 @@ public:
 protected:
     long        m_nStartNoteID;         //start of tie note
     long        m_nEndNoteID;           //end of tie note
+    long        m_nTieID;               //id of tie to delete
+    lmBezier    m_Bezier[2];            //bezier points data
 };
 
 
@@ -532,6 +535,7 @@ public:
 
 protected:
 	long                m_nAnchorID;
+    long                m_nTextID;
     wxString            m_sText;
     lmTextStyle         m_Style;
     lmEHAlign           m_nAlign;
@@ -551,6 +555,7 @@ public:
     bool Do();
 
 protected:
+    long                m_nTitleID;
     wxString            m_sText;
     lmTextStyle         m_Style;
     lmEHAlign           m_nAlign;

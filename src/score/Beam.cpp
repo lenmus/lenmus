@@ -48,8 +48,8 @@
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
 
-lmBeam::lmBeam(lmNote* pNote)
-	: lmMultipleRelationship<lmNoteRest>(lm_eBeamClass)
+lmBeam::lmBeam(lmNote* pNote, long nID)
+    : lmMultiRelObj(pNote, nID, eAXOT_Beam, lmNO_DRAGGABLE)
 {
 	m_pBeamShape = (lmShapeBeam*)NULL;
     m_fNeedsSetUp = true;
@@ -94,14 +94,14 @@ void lmBeam::CreateShape()
     // ending with a start of group. As this start is in the last note of the score,
     // the group has only one note.
     //
-    if (m_Notes.size() == 1) {
+    if (m_NoteRests.size() == 1) {
         wxLogMessage(_T("*** ERROR *** Beam with just one note!"));
         return;
     }
     // End of BUG_BYPASS   ------------------------------------------------------------
 
     //create the beam container shape
-    m_pBeamShape = new lmShapeBeam(m_Notes.front());
+    m_pBeamShape = new lmShapeBeam(m_NoteRests.front());
 
     // look for the highest and lowest pitch notes so that we can properly position posible
     // rests along the group
@@ -112,7 +112,7 @@ void lmBeam::CreateShape()
     int nNumNotes = 0;
     int i;
     std::list<lmNoteRest*>::iterator it;
-    for(i=0, it=m_Notes.begin(); it != m_Notes.end(); ++it, i++)
+    for(i=0, it=m_NoteRests.begin(); it != m_NoteRests.end(); ++it, i++)
 	{
         if ((*it)->IsNote())      //ignore rests
         {
@@ -159,7 +159,7 @@ void lmBeam::CreateShape()
     nNumNotes = 0;            // total number of notes
     m_fStemsDown = false;        // stems up by default
 
-    for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
+    for(it=m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
 	{
         if ((*it)->IsNote())      //ignore rests
         {
@@ -187,9 +187,9 @@ void lmBeam::CreateShape()
 
     //correct beam position (and reverse stems direction) if first note of beamed group is
     //tied to a previous note and the stems' directions are not forced
-    if (!fStemForced && m_Notes.front()->IsNote())
+    if (!fStemForced && m_NoteRests.front()->IsNote())
     {
-        lmNote* pFirst = (lmNote*)m_Notes.front();
+        lmNote* pFirst = (lmNote*)m_NoteRests.front();
         if (pFirst->IsTiedToPrev())
             m_fStemsDown = pFirst->GetTiedNotePrev()->StemGoesDown();
     }
@@ -198,7 +198,7 @@ void lmBeam::CreateShape()
     //therefore, if stems are not prefixed, let's update stem directions of notes,
     //so that following computations take the right stem directions
     if (!fStemForced) {
-        for(it=m_Notes.begin(); it != m_Notes.end(); ++it)
+        for(it=m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
 	    {
             if ((*it)->IsNote()) {
                 ((lmNote*)(*it))->SetStemDirection(m_fStemsDown);
@@ -208,19 +208,19 @@ void lmBeam::CreateShape()
 
 }
 
-lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
+lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+                              wxColour color)
 {
     // This method is only called from lmNote::LayoutObject(), in particular from the last
     // note of a group of beamed notes. The purpose of this method is to add the beam shape
 	// to graphical model
-
 
 	//BUG_BYPASS: ------------------------------------------------------------------
 	// There is a bug in Composer5 and it some times generate scores
     // ending with a start of group. As this start is in the last note of the score,
     // the group has only one note.
     //
-    if (m_Notes.size() == 1) {
+    if (m_NoteRests.size() == 1) {
         wxLogMessage(_T("*** ERROR *** Group with just one note!"));
         return 0;
     }
@@ -228,7 +228,7 @@ lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 
     //add the beam shape to graphical model
     m_pBeamShape->SetStemsDown(m_fStemsDown);
-    pBox->AddShape(m_pBeamShape, m_Notes.front()->GetLayer());
+    pBox->AddShape(m_pBeamShape, m_NoteRests.front()->GetLayer());
 
 	return m_pBeamShape->GetWidth();
 }
@@ -253,7 +253,7 @@ void lmBeam::AutoSetUp()
     //Filter out any rest in the beam
 	std::vector<lmNote*> cNotes;
     std::list<lmNoteRest*>::iterator it;
-    for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    for (it = m_NoteRests.begin(); it != m_NoteRests.end(); ++it)
     {
         if ((*it)->IsNote())
         {
@@ -439,5 +439,112 @@ int lmBeam::GetBeamingLevel(lmNote* pNote)
         default:
             return -1; //Error: Requesting beaming a note longer than eight
     }
+}
+
+wxString lmBeam::SourceLDP_First(int nIndent, bool fUndoData, lmNoteRest* pNR)
+{
+    return SourceLDP(nIndent, fUndoData, pNR);
+}
+
+wxString lmBeam::SourceLDP_Middle(int nIndent, bool fUndoData, lmNoteRest* pNR)
+{
+    return SourceLDP(nIndent, fUndoData, pNR);
+}
+
+wxString lmBeam::SourceLDP_Last(int nIndent, bool fUndoData, lmNoteRest* pNR)
+{
+    return SourceLDP(nIndent, fUndoData, pNR);
+}
+
+wxString lmBeam::SourceLDP(int nIndent, bool fUndoData, lmNoteRest* pNR)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    if (fUndoData)
+        sSource += wxString::Format(_T("(beam#%d %d"), GetID(), GetID() );
+    else
+        sSource += wxString::Format(_T("(beam %d"), GetID());
+
+    //beam segments info
+    for (int i=0; i < 6; ++i)
+    {
+        lmEBeamType nType = pNR->GetBeamType(i);
+        if (nType == eBeamNone)
+            break;
+        sSource += _T(" ");
+        sSource += GetLDPBeamNameFromType(nType);
+    }
+
+    sSource += _T(")\n");
+    return sSource;
+}
+
+wxString lmBeam::SourceXML_First(int nIndent, lmNoteRest* pNR)
+{
+    return SourceXML(nIndent, pNR);
+}
+
+wxString lmBeam::SourceXML_Middle(int nIndent, lmNoteRest* pNR)
+{
+    return SourceXML(nIndent, pNR);
+}
+
+wxString lmBeam::SourceXML_Last(int nIndent, lmNoteRest* pNR)
+{
+    return SourceXML(nIndent, pNR);
+}
+
+wxString lmBeam::SourceXML(int nIndent, lmNoteRest* pNR)
+{
+	wxString sSource = _T("");
+    for (int i=0; i < 6; ++i)
+    {
+        lmEBeamType nType = pNR->GetBeamType(i);
+        if (nType == eBeamNone)
+            break;
+	    sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+        sSource += wxString::Format(_T("<beam %d beam-level=\"%d\" \""), GetID(), i+1);
+        sSource += GetXMLBeamNameFromType(nType);
+        sSource += _T("\">\n");
+    }
+
+    return sSource;
+}
+
+
+//==================================================================================
+// Global functions related to beams
+//==================================================================================
+
+wxString& GetLDPBeamNameFromType(lmEBeamType nType)
+{
+    //AWARE: indexes in correspondence with enum lmEBeamType
+    static wxString sName[] = {
+        _T("none"),         //eBeamNone
+        _T("begin"),        //eBeamBegin
+        _T("continue"),     //eBeamContinue
+        _T("end"),          //eBeamEnd
+        _T("forward"),      //eBeamForward
+        _T("backward"),     //eBeamBackward
+    };
+    
+    wxASSERT(nType >= eBeamNone && nType <= eBeamBackward);
+    return sName[nType];
+}
+
+wxString& GetXMLBeamNameFromType(lmEBeamType nType)
+{
+    //AWARE: indexes in correspondence with enum lmEBeamType
+    static wxString sName[] = {
+        _T("none"),             //eBeamNone
+        _T("begin"),            //eBeamBegin
+        _T("continue"),         //eBeamContinue
+        _T("end"),              //eBeamEnd
+        _T("forward hook"),     //eBeamForward
+        _T("backward hook"),    //eBeamBackward
+    };
+    
+    wxASSERT(nType >= eBeamNone && nType <= eBeamBackward);
+    return sName[nType];
 }
 

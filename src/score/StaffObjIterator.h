@@ -41,20 +41,26 @@ class lmSOIterator
 public:
     lmSOIterator(lmColStaffObjs* pCSO);
     lmSOIterator(lmColStaffObjs* pCSO, lmStaffObj* pTargetSO);
-    lmSOIterator(lmColStaffObjs* pCSO, lmVStaffCursor* pVCursor);
+    lmSOIterator(lmColStaffObjs* pCSO, lmScoreCursor* pCursor);
     lmSOIterator(lmSOIterator* pIT);    //Copy constructor
 	~lmSOIterator() {}
 
-    inline bool FirstOfCollection() { return (m_pSO && m_pSO == m_pColStaffObjs->GetFirstSO()); }
-    inline bool LastOfCollection() { return (m_pSO && m_pSO == m_pColStaffObjs->GetLastSO()); }
-    inline bool EndOfCollection() { return (m_pSO == (lmStaffObj*)NULL 
-                                            || (FirstOfCollection() && m_fEnd)); }
+    inline bool FirstOfCollection() { 
+                    return (m_pSO && m_pSO == m_pColStaffObjs->GetFirstSO()); }
+    inline bool LastOfCollection() { 
+                    return (m_pSO && m_pSO == m_pColStaffObjs->GetLastSO()); }
+    inline bool StartOfCollection() { 
+                    return FirstOfCollection() || m_pColStaffObjs->IsEmpty(); }
+    inline bool EndOfCollection() { 
+                    return (m_pSO == (lmStaffObj*)NULL || (FirstOfCollection() && m_fEnd)); }
+
     inline bool ChangeOfMeasure() { return m_fChangeOfMeasure; }
 	inline lmStaffObj* GetCurrent() { return m_pSO; }
     inline int GetNumSegment() { return (m_pSO ? m_pSO->GetSegment()->GetNumSegment() 
                                                : m_pColStaffObjs->GetNumSegments()-1 ); }
     inline void ResetFlags() { m_fChangeOfMeasure = false; }
-    inline bool IsManagingCollection(lmColStaffObjs* pCSO) { return pCSO == m_pColStaffObjs; }
+    inline bool IsManagingCollection(lmColStaffObjs* pCSO) { 
+                    return pCSO == m_pColStaffObjs; }
 
 
     void AdvanceToMeasure(int nBar);

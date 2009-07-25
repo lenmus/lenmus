@@ -1605,9 +1605,9 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
 void lmScoreCanvas::ChangeNotePitch(int nSteps)
 {
 	//change pith of note at current cursor position
-    lmVStaffCursor* pVCursor = m_pDoc->GetScore()->GetCursor()->GetVCursor();
-	wxASSERT(pVCursor);
-    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->GetCursor();
+	wxASSERT(pCursor);
+    lmStaffObj* pCursorSO = pCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
 	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -2124,7 +2124,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 					lmNote* pBaseOfChord = (lmNote*)NULL;
 					if (event.AltDown())
 					{
-						lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetCursorSO();
+						lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetStaffObj();
 						if (pSO && pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
 							pBaseOfChord = (lmNote*)pSO;
 					}
@@ -2744,11 +2744,11 @@ void lmScoreCanvas::SynchronizeToolBoxWithCaret(bool fEnable)
 	if (!pToolBox) return;
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pDoc->GetScore()->GetCursor()->GetVCursor();
-	wxASSERT(pVCursor);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->GetCursor();
+	wxASSERT(pCursor);
 
 	//get object pointed by the cursor
-    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
+    lmStaffObj* pCursorSO = pCursor->GetStaffObj();
     switch( pToolBox->GetSelectedToolPage() )
     {
         case lmPAGE_NONE:
@@ -3097,11 +3097,11 @@ bool lmScoreCanvas::IsCursorValidToCutBeam()
     //  It must not be the first one in the beam
 
     //get cursor
-    lmVStaffCursor* pVCursor = m_pDoc->GetScore()->GetCursor()->GetVCursor();
-	wxASSERT(pVCursor);
+    lmScoreCursor* pCursor = m_pDoc->GetScore()->GetCursor();
+	wxASSERT(pCursor);
 
 	//get object pointed by the cursor
-    lmStaffObj* pCursorSO = pVCursor->GetStaffObj();
+    lmStaffObj* pCursorSO = pCursor->GetStaffObj();
     if (pCursorSO && pCursorSO->IsNoteRest())
     {
         //it is a note/rest. Verify if it is beamed
@@ -3110,7 +3110,7 @@ bool lmScoreCanvas::IsCursorValidToCutBeam()
         {
             //ok. it is in a beam. Verify that it is not the first object in the beam
             lmBeam* pBeam = pNR->GetBeam();
-            if (pNR != pBeam->GetFirstNoteRest())
+            if (pNR != pBeam->GetStartNoteRest())
                 return true;
         }
     }
@@ -3435,7 +3435,7 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
         int nLineSpace = pShapeStaff->GetLineSpace(uPagePos.y);     //0=first ledger line below staff
         //to determine octave and step it is necessary to know the clef. As caret is
         //placed at insertion point we could get these information from caret
-        lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetVCursor()->GetCurrentContext();
+        lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetCurrentContext();
         lmEClefType nClefType = pContext->GetClefType();
         lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
         dpNote += (nLineSpace - 2);     //pitch for note to insert

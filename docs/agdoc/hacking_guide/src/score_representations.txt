@@ -154,13 +154,6 @@ Therefore, \b{it is highly recommended that unless it is really necessary, alway
 Here is a description of the methods you have available. After this section you will find usage examples.
 
 
-%%\b{bool EndOfCollection()}%%
-
-\indent
-{
-    Returns true if iterator is at end of collection: after last %%lmStaffObj%% in last measure or in first %%lmStaffObj%% and moving back (but remains in first %%lmStaffObj%%)
-}
-
 %%\b{bool FirstOfCollection()}%%
 
 \indent
@@ -173,6 +166,20 @@ Here is a description of the methods you have available. After this section you 
 \indent
 {
     Returns true if cursor is pointing to last item. Last item must exists; otherwise the collection is empty and LastOfCollection will return false. Be aware that if the collection only has one item, both FirstOfCollection() and  LastOfCollection() will be true when pointing to this only item
+}
+
+%%\b{bool StartOfCollection()}%%
+
+\indent
+{
+    Returns true if iterator is pointing to start of collection. If collection is not empty, this implies that iterator is pointing to first item, and FirstOfCollection() also will return true. Otherwise, if the collection is empty, FirstOfCollection() will return false but StartOfCollection() will be true. Also, as the collection is empty, there is no difference between StartOfCollection() and EndOfCollection(), and both will return true.
+}
+
+%%\b{bool EndOfCollection()}%%
+
+\indent
+{
+    Returns true if iterator is at end of collection: after last %%lmStaffObj%% in last measure or in first %%lmStaffObj%% and moving back (but remains in first %%lmStaffObj%%). Be aware that if the collection is empty, both StartOfCollection() and  EndOfCollection() will return true.
 }
 
 %%\b{bool ChangeOfMeasure()}%%

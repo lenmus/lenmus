@@ -57,7 +57,6 @@ public:
     ~lmNote();
 
     //implementation of virtual methods of base classes
-        // lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	void PlaybackHighlight(wxDC* pDC, wxColour colorC);
 	inline wxString GetName() const { return _T("note"); }
@@ -116,8 +115,11 @@ public:
                     m_pTieNext = pTie;
                     m_fNeedToBeTied = false; 
                 }
-    void CreateTie(lmNote* pNtPrev, lmNote* pNtNext);
-    void CreateTie(lmNote* pNtNext, lmTPoint* pStartBezier, lmTPoint* pEndBezier);
+    inline lmTie* GetTiePrev() { return m_pTiePrev; }
+    inline lmTie* GetTieNext() { return m_pTieNext; }
+    void CreateTie(lmNote* pNtPrev, lmNote* pNtNext, long nID = lmNEW_ID);
+    void CreateTie(lmNote* pNtNext, long nID, lmTPoint* pStartBezier,
+                   lmTPoint* pEndBezier);
     void RemoveTie(lmTie* pTie); 
     inline bool IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
     inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
@@ -126,7 +128,6 @@ public:
     void DeleteTiePrev(); 
 
     //methods for relationships
-    void OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass);
     void OnRemovedFromRelationship(lmRelObj* pRel);
 
     // methods related to sound
@@ -191,7 +192,6 @@ private:
     lmEGlyphIndex AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //auxiliary
-    //int PosOnStaffToPitch(int nSteps);
     void SetUpPitchRelatedVariables(lmDPitch nNewPitch);
     void SetUpStemDirection();
     const lmEAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
@@ -242,7 +242,6 @@ private:
     // constituent shapes
     lmShapeGlyph*   m_pNoteheadShape;
     lmShapeStem*    m_pStemShape;
-
 
 };
 

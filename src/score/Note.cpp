@@ -269,15 +269,6 @@ lmNote::~lmNote()
     if (m_pTieNext)
         delete m_pTieNext;
 
-    ////delete the ties.
-    //DeleteTiePrev();
-
-    //if (m_pTieNext) {
-    //    m_pTieNext->Remove(this);
-    //    delete m_pTieNext;
-    //}
-    //m_pTieNext = (lmTie*)NULL;
-
     //delete accidentals
     if (m_pAccidentals) {
         delete m_pAccidentals;
@@ -296,14 +287,14 @@ lmAccidental* lmNote::CreateAccidentals(lmEAccidentals nAcc)
         return (lmAccidental*)NULL;
 }
 
-void lmNote::CreateTie(lmNote* pNtPrev, lmNote* pNtNext)
+void lmNote::CreateTie(lmNote* pNtPrev, lmNote* pNtNext, long nID)
 {
     //create a tie between the two notes. One of them is this one. The other one can
     //be NULL and in this case the tie is not created.
 
     if (pNtPrev && pNtNext)
     {
-        lmTie* pTie = new lmTie(pNtPrev, pNtPrev, pNtNext);
+        lmTie* pTie = new lmTie(pNtPrev, nID, pNtPrev, pNtNext);
         pNtNext->SetTiePrev(pTie);
         pNtPrev->SetTieNext(pTie);
 
@@ -316,7 +307,8 @@ void lmNote::CreateTie(lmNote* pNtPrev, lmNote* pNtNext)
         SetTieNext((lmTie*)NULL);
 }
 
-void lmNote::CreateTie(lmNote* pNtNext, lmTPoint* pStartBezier, lmTPoint* pEndBezier)
+void lmNote::CreateTie(lmNote* pNtNext, long nID, lmTPoint* pStartBezier,
+                       lmTPoint* pEndBezier)
 {
     //Create a tie between this note (as start of tie) and received note (as end of tie).
     //Bezier information is transferred to the created Tie.
@@ -329,7 +321,7 @@ void lmNote::CreateTie(lmNote* pNtNext, lmTPoint* pStartBezier, lmTPoint* pEndBe
     wxASSERT(pNtNext && pNtNext->GetFPitch() == this->GetFPitch());
     wxASSERT(!m_pTieNext);
 
-    CreateTie(this, pNtNext);
+    CreateTie(this, pNtNext, nID);
     m_pTieNext->SetBezierPoints(0, pStartBezier);
     m_pTieNext->SetBezierPoints(1, pEndBezier);
 }
@@ -531,9 +523,10 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //if this is the first note/rest of a beam, create the beam shape
     //AWARE This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
-    if (m_pBeam && (m_BeamInfo[0].Type == eBeamBegin || m_pBeam->NeedsSetUp()) )
+    if (m_pBeam && (lmNote*)m_pBeam->GetStartNoteRest() == this )
     {
-        m_pBeam->AutoSetUp();
+        if (m_pBeam->NeedsSetUp())
+            m_pBeam->AutoSetUp();
         m_pBeam->CreateShape();
     }
 
@@ -691,13 +684,6 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
     // add shapes for leger lines if necessary
     //--------------------------------------------
-#if 0
-    lmLUnits uxLine = m_pNoteheadShape->GetXLeft() - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-    lmLUnits widthLine = m_pNoteheadShape->GetWidth() +
-                            m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-    AddLegerLineShape(pNoteShape, pPaper, nPosOnStaff, uyStaffTopLine, uxLine,
-                        widthLine, m_nStaffNum);
-#endif
 	pNoteShape->AddLegerLinesInfo(nPosOnStaff, uyStaffTopLine);
 
 
@@ -709,20 +695,16 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 	{
 		lmNote* pBaseNote = m_pChord->GetBaseNote();
 		if (pBaseNote->IsBeamed() && pBaseNote->GetBeamType(0) == eBeamEnd)
-			pBaseNote->GetBeam()->LayoutObject(pBox, pPaper, colorC);
+			pBaseNote->GetBeam()->LayoutObject(pBox, pPaper, lmUPoint(), colorC);
     }
     else if (!IsInChord() && m_pBeam && m_BeamInfo[0].Type == eBeamEnd)
 	{
-        m_pBeam->LayoutObject(pBox, pPaper, colorC);
+        m_pBeam->LayoutObject(pBox, pPaper, lmUPoint(), colorC);
     }
 
     // tuplet bracket
     if (m_pTuplet && m_pTuplet->GetEndNoteRest() == this)
 		m_pTuplet->LayoutObject(pBox, pPaper, colorC);
-
-  //  //ties
-  //  if (m_pTiePrev)
-		//m_pTiePrev->LayoutObject(pBox, pPaper, colorC);
 
 	//if not used, delete stem shape created at start of this method.
     //For chords, stem will be deleted when invoking lmChord::AddStemShape in last note
@@ -1528,9 +1510,6 @@ wxString lmNote::SourceLDP(int nIndent, bool fUndoData)
     for (int i=0; i < m_nNumDots; i++)
         sSource += _T(".");
 
-    ////tied ?
-    //if (IsTiedToNext()) sSource += _T(" l");
-
     //stem
     if (m_nStemType != lmSTEM_DEFAULT)   //default: as decided by program
     {
@@ -1710,31 +1689,6 @@ void lmNote::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
     }
 }
 
-void lmNote::OnRemovedFromRelationship(void* pRel, lmERelationshipClass nRelClass)
-{
-	//AWARE: this method is invoked only when the relationship is being deleted and
-	//this deletion is not requested by this note/rest. If this note/rest would like
-	//to delete the relationship it MUST invoke Remove(this) before deleting the
-	//relationship object
-
-    SetDirty(true);
-
-	switch (nRelClass)
-	{
-		case lm_eTieClass:
-            if (m_pTiePrev && (lmBinaryRelationship<lmNote>*)m_pTiePrev == pRel)
-			    m_pTiePrev = (lmTie*)NULL;
-            else if (m_pTieNext && (lmBinaryRelationship<lmNote>*)m_pTieNext == pRel)
-			    m_pTieNext = (lmTie*)NULL;
-            else
-                wxASSERT(false);
-			return;
-
-		default:
-			lmNoteRest::OnRemovedFromRelationship(pRel, nRelClass);
-	}
-}
-
 void lmNote::OnRemovedFromRelationship(lmRelObj* pRel)
 {
 	//AWARE: this method is invoked only when the relationship is being deleted and
@@ -1760,7 +1714,7 @@ void lmNote::OnRemovedFromRelationship(lmRelObj* pRel)
             wxASSERT(false);
     }
     else
-        wxASSERT(false);
+        lmNoteRest::OnRemovedFromRelationship(pRel);
 }
 
 
