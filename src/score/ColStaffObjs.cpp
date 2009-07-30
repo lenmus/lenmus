@@ -478,7 +478,7 @@ void lmScoreCursor::MoveDown()
 	//else, remain at current position
 }
 
-void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure)
+void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
 {
     //Move cursor to nearest object to uPos, constrained to specified segment and staff.
 
@@ -489,7 +489,7 @@ void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int
 
 	//get cursor and position it at required segment and position
     PointCursorToInstrument( m_pScore->GetNumberOfInstrument(pInstr) );
-	DoMoveToSegment(nMeasure - 1, iStaff, uPos);
+	DoMoveToSegment(nMeasure - 1, nStaff, uPos);
 }
 
 void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
@@ -507,11 +507,14 @@ void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
     UpdateTimepos();
 }
 
-void lmScoreCursor::MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime)
+void lmScoreCursor::MoveTo(lmVStaff* pVStaff, int nStaff, int nMeasure, float rTime,
+                           bool fEndOfTime)
 {
     //Within the limits of specified segment, move cursor to first object
-    //with time > rTime in current staff. Time is set to rTime.
-    //If no object found, cursor is moved to end of segment, with time rTime
+    //with time >= rTime in current staff. Time is set to rTime.
+    //If no object found, cursor is moved to end of segment, with time rTime.
+    //If flag fEndOfTime is set, once positioned at time == rTime advaces after
+    //last object of current staff with time = rTime
 
 	if ((m_pScore->m_cInstruments).empty()) return;
 
@@ -520,10 +523,10 @@ void lmScoreCursor::MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rT
     PointCursorToInstrument( m_pScore->GetNumberOfInstrument(pInstr) );
 
     //move to start of required staff/segment
-    MoveToStartOfSegment(nMeasure-1, iStaff);
+    MoveToStartOfSegment(nMeasure-1, nStaff);
 
     //Now move to requested time
-    MoveToTime(rTime);
+    MoveToTime(rTime, fEndOfTime);
 }
 
 lmStaff* lmScoreCursor::GetCursorStaff()
@@ -597,8 +600,27 @@ lmContext* lmScoreCursor::GetCurrentContext()
     if (!pSO)
         //Not pointing to an staffobj. Cursor is at end of collection
         return m_pColStaffObjs->GetLastContext(m_nStaff);
+
+    //Pointing to an StaffObj. Ensure that pointed object is in this staff
+    lmSOIterator it(m_pColStaffObjs, pSO); 
+    while (pSO)
+    {
+        if (pSO->IsBarline())
+            break;
+
+        if (!pSO->IsKeySignature() && !pSO->IsTimeSignature()  
+            && (pSO->GetStaffNum() == m_nStaff) )
+            break;
+
+        it.MoveNext();
+        pSO = it.GetCurrent();
+    }
+
+    if (!pSO || pSO->IsBarline())
+        //Not pointing to an staffobj. Cursor is at end of collection
+        return m_pColStaffObjs->GetLastContext(m_nStaff);
     else
-        //Pointing to an StaffObj. Get context for it.
+        //Pointing to an StaffObj in right staff.
         return m_pColStaffObjs->GetCurrentContext(pSO);
 }
 
@@ -878,11 +900,13 @@ lmStaffObj* lmScoreCursor::GetPreviousStaffobj()
 	    return it.GetCurrent();
 }
 
-void lmScoreCursor::MoveToTime(float rNewTime)
+void lmScoreCursor::MoveToTime(float rNewTime, bool fEndOfTime)
 {
     //Within the limits of current segment, move cursor to first object
-    //with time > rNewTime in staff m_nStaff.
+    //with time >= rNewTime in staff m_nStaff.
     //If no object found, cursor is moved to end of segment, with time rNewTime
+    //If flag fEndOfTime is set, once positioned at time == rNewTime advaces after
+    //last object of current staff with time = rNewTime
 
     //Move to start of current segment
     lmSegment* pSegment = m_pColStaffObjs->GetSegment(m_pIt->GetNumSegment());
@@ -910,13 +934,21 @@ void lmScoreCursor::MoveToTime(float rNewTime)
             pSO = m_pIt->GetCurrent();
         }
 
-        //if object found, return.
+        //Object found, if not fEndOfTime return. Else advance to end of current time for
+        //current staff
 	    if (pSO
             && IsEqualTime(pSO->GetTimePos(), rNewTime)
             && pSO->IsOnStaff(m_nStaff) )
         {
             //object found.
-            return;
+            if(!fEndOfTime) return;
+
+            //advance to end of current time for current staff
+	        while (pSO && IsEqualTime(pSO->GetTimePos(), rNewTime) && pSO->IsOnStaff(m_nStaff))
+            {
+                m_pIt->MoveNext();
+                pSO = m_pIt->GetCurrent();
+            }
         }
 
         //No object satisfying the constrains is found.
@@ -1068,6 +1100,7 @@ void lmScoreCursor::MoveToStartOfSegment(int nSegment, int nStaff, bool fSkipCle
     wxASSERT(nSegment < m_pColStaffObjs->GetNumMeasures());
 
 	m_pIt->MoveTo(m_pColStaffObjs->GetSegment(nSegment)->GetFirstSO());
+    m_nStaff = nStaff;
 	m_rTimepos = 0.0f;
 
     //skip clef/key if requested
@@ -1107,14 +1140,14 @@ void lmScoreCursor::MoveToStartOfTimepos()
     m_pIt->MoveTo(pFinalPos);
 }
 
-void lmScoreCursor::DoMoveToSegment(int nSegment, int iStaff, lmUPoint uPos)
+void lmScoreCursor::DoMoveToSegment(int nSegment, int nStaff, lmUPoint uPos)
 {
     //move cursor to nearest object to uPos, constrained to specified segment
     //and staff.
 
     wxASSERT(nSegment < m_pColStaffObjs->GetNumMeasures());
 
-    m_nStaff = iStaff;
+    m_nStaff = nStaff;
 	m_pIt->MoveTo(m_pColStaffObjs->GetSegment(nSegment)->GetFirstSO());
 	m_rTimepos = 0.0f;
 
@@ -1714,12 +1747,26 @@ void lmSegment::UpdateMeasureDuration()
     }
     m_rMaxTime = rDuration;
 
-    //if segment's duration is irregular attach a warning tag to it
-    //TODO: if segment's duration is irregular attach a warning tag to it"));
+    //TODO: if segment's duration is irregular attach a warning tag to it
+    //AttachWarning();
 
     //Update barline timepos if barline exists.
     if (m_pLastSO->IsBarline())
         m_pLastSO->SetTimePos( m_rMaxTime );
+}
+
+void lmSegment::AttachWarning()
+{
+    //The measure is irregular. Mark it.
+
+    if (!m_pFirstSO) return;
+
+    lmSOIterator it(m_pOwner, m_pFirstSO);
+	while (!it.ChangeOfMeasure() && !it.EndOfCollection())
+	{
+        it.GetCurrent()->SetColour(*wxRED);
+        it.MoveNext();
+    }
 }
 
 lmBarline* lmSegment::GetBarline()
@@ -2269,6 +2316,7 @@ void lmSegment::AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes)
         {
             lmBeam* pBeam = (*it)->GetBeam();
             pBeam->Remove(*it);
+            (*it)->DetachAuxObj(pBeam);
 		    if (pBeam->NumNotes() <= 1)
 			    delete pBeam;
         }

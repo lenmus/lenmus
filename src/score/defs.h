@@ -465,6 +465,11 @@ enum
 
     lmPOPUP_DumpShape,
 
+    //Tools. Contextual menus
+    lmTOOL_VOICE_SOPRANO,
+	lmTOOL_VOICE_ALTO,
+	lmTOOL_VOICE_TENOR,
+	lmTOOL_VOICE_BASS,
 
     lmMENU_Last_Public_ID
 };

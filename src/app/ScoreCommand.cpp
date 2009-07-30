@@ -653,10 +653,12 @@ lmCmdInsertNote::lmCmdInsertNote(bool fNormalCmd,
 								 int nStep, int nOctave,
 								 lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
+                                 int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
+                                 lmEStemType nStem)
 	: lmScoreCommand(sName, pDoc, fNormalCmd)
 	, m_nNoteType(nNoteType)
 	, m_nPitchType(nPitchType)
+    , m_nStem(nStem)
 	, m_nStep(nStep)
 	, m_nOctave(nOctave)
     , m_nDots(nDots)
@@ -687,7 +689,7 @@ bool lmCmdInsertNote::Do()
             GetVStaff()->Cmd_InsertNote(m_nPitchType, m_nStep, m_nOctave, m_nNoteType,
                                            m_rDuration, m_nDots, m_nNotehead, m_nAcc, 
                                            m_nVoice, pBaseOfChord, m_fTiedPrev,
-                                           fAutoBar);
+                                           m_nStem, fAutoBar);
 
     return CommandDone(pNewNote != (lmNote*)NULL);
 }

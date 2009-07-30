@@ -839,10 +839,13 @@ lmToolPageNotesHarmony::lmToolPageNotesHarmony(wxWindow* parent)
 void lmToolPageNotesHarmony::Create(wxWindow* parent)
 {
     lmToolPageNotes::Create(parent);
+    m_pMenu = (wxMenu*)NULL;
 }
 
 lmToolPageNotesHarmony::~lmToolPageNotesHarmony()
 {
+    if (m_pMenu)
+        delete m_pMenu;
 }
 
 void lmToolPageNotesHarmony::CreateGroups()
@@ -862,3 +865,29 @@ void lmToolPageNotesHarmony::CreateGroups()
 
 	CreateLayout();
 }
+
+wxMenu* lmToolPageNotesHarmony::GetContextualMenuForToolPage()
+{
+	if (m_pMenu)
+        return m_pMenu;
+
+	m_pMenu = new wxMenu();
+
+	m_pMenu->Append(lmTOOL_VOICE_SOPRANO, _("&Soprano"));
+	m_pMenu->Append(lmTOOL_VOICE_ALTO, _("&Alto"));
+	m_pMenu->Append(lmTOOL_VOICE_TENOR, _("&Tenor"));
+	m_pMenu->Append(lmTOOL_VOICE_BASS, _("Bass"));
+
+	return m_pMenu;
+}
+
+void lmToolPageNotesHarmony::OnPopUpMenuEvent(wxCommandEvent& event)
+{
+    int nID = event.GetId();
+    if (nID >= lmTOOL_VOICE_SOPRANO && nID <= lmTOOL_VOICE_BASS)
+    {
+        m_pGrpVoice->SelectButton(nID - lmTOOL_VOICE_SOPRANO);
+        event.Skip();
+    }
+}
+

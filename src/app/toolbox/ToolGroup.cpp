@@ -133,9 +133,9 @@ lmToolButtonsGroup::~lmToolButtonsGroup()
 void lmToolButtonsGroup::ConnectButtonEvents()
 {
     //connect OnButton events
-    m_pParent->Connect( m_nFirstButtonID, m_nFirstButtonID + m_nNumButtons - 1,
-                        wxEVT_COMMAND_BUTTON_CLICKED,
-                        (wxObjectEventFunction)& lmToolButtonsGroup::OnButton );
+    Connect( m_nFirstButtonID, m_nFirstButtonID + m_nNumButtons - 1,
+             wxEVT_COMMAND_BUTTON_CLICKED,
+             (wxObjectEventFunction)& lmToolButtonsGroup::OnButton );
 }
 
 void lmToolButtonsGroup::SelectButton(int iB)
@@ -184,22 +184,14 @@ void lmToolButtonsGroup::SelectPrevButton()
 
 void lmToolButtonsGroup::OnButton(wxCommandEvent& event)
 {
-    //AWARE:
-    //  As this method is connected to the event handler of the parent object,
-    //  when it gets invoked, the 'this' pointer points to the parent (the lmToolBox object).
-    //  Therefore, we must get and use a pointer to the real affected lmToolButtonsGroup
-    //  object.
-    lmToolButtonsGroup* pThis = (lmToolButtonsGroup*)event.GetEventObject();
-
-    int iB = event.GetId() - pThis->GetFirstButtonID();
-    if (pThis->IsNoneAllowed() && pThis->GetSelectedButton() == iB)
-	    pThis->SelectButton(-1);       //no button selected
+    int iB = event.GetId() - GetFirstButtonID();
+    if (IsNoneAllowed() && GetSelectedButton() == iB)
+	    SelectButton(-1);       //no button selected
     else
-	    pThis->SelectButton(iB);
-
+	    SelectButton(iB);
     
     //inform derived class
-    pThis->OnButtonSelected(m_nSelButton);
+    OnButtonSelected( m_nSelButton );
 }
 
 void lmToolButtonsGroup::OnButtonSelected(int nSelButton)

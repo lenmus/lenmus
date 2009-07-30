@@ -114,6 +114,7 @@ private:
     void AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO);
     void ShiftLeftTimepos(lmStaffObj* pStartSO, float rTimeShift, float rStartTimepos, int nVoice);
     void CountObjects();
+    void AttachWarning();
 
     //segment management
     void UpdateMeasureDuration();
@@ -201,10 +202,11 @@ public:
     void MoveLeft(bool fAlsoChordNotes = true);
     void MoveUp();
     void MoveDown();
-	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
+	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
     void MoveCursorToObject(lmStaffObj* pSO);
-    void MoveTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
-    void MoveToTime(float rNewTime);
+    void MoveTo(lmVStaff* pVStaff, int nStaff, int nMeasure, float rTime,
+                bool fEndOfTime = false);
+    void MoveToTime(float rNewTime, bool fEndOfTime = false);
     void AdvanceToTime(float rTime);
     void MoveToNextSegment();
     void MoveToStartOfSegment(int nSegment, int nStaff, bool fSkipClef=false,
@@ -243,7 +245,7 @@ private:
 	void DoMoveRight(bool fAlsoChordNotes = true);
 	void DoMoveLeft(bool fAlsoChordNotes = true);
     void DoMoveToFirst(int nStaff=0);
-	void DoMoveToSegment(int nSegment, int iStaff, lmUPoint uPos);
+	void DoMoveToSegment(int nSegment, int nStaff, lmUPoint uPos);
     void SkipClefKey(bool fSkipKey);
 
     //current position

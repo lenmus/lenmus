@@ -80,18 +80,18 @@ public:
     lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true,
                         long nID = lmNEW_ID);
 
-    lmTimeSignature* AddTimeSignature(long nID, int nBeats, int nBeatType,
-                        bool fVisible = true);    //for type eTS_Normal
-    lmTimeSignature* AddTimeSignature(long nID, lmETimeSignature nTimeSign,
-                        bool fVisible = true);    //for type eTS_Normal
-    lmTimeSignature* AddTimeSignature(long nID, lmETimeSignatureType nType,
-                        bool fVisible = true);    //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-    lmTimeSignature* AddTimeSignature(long nID, int nSingleNumber,
-                        bool fVisible = true);    //for type eTS_SingleNumber
-    lmTimeSignature* AddTimeSignature(long nID, int nNumBeats, int nBeats[], int nBeatType,
-                        bool fVisible = true);    //for type eTS_Composite
-    lmTimeSignature* AddTimeSignature(long nID, int nNumFractions, int nBeats[], int nBeatType[],
-                        bool fVisible = true);    //for type eTS_Multiple
+    lmTimeSignature* AddTimeSignature(int nBeats, int nBeatType,    //for type eTS_Normal
+                                      bool fVisible = true, long nID=lmNEW_ID);    
+    lmTimeSignature* AddTimeSignature(lmETimeSignature nTimeSign,   //for type eTS_Normal
+                                      bool fVisible = true, long nID=lmNEW_ID);    
+    lmTimeSignature* AddTimeSignature(lmETimeSignatureType nType,   //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
+                                      bool fVisible = true, long nID=lmNEW_ID);    
+    lmTimeSignature* AddTimeSignature(int nSingleNumber,            //for type eTS_SingleNumber
+                                      bool fVisible = true, long nID=lmNEW_ID);    
+    lmTimeSignature* AddTimeSignature(int nNumBeats, int nBeats[], int nBeatType,   //for type eTS_Composite
+                                      bool fVisible = true, long nID=lmNEW_ID);    
+    lmTimeSignature* AddTimeSignature(int nNumFractions, int nBeats[], int nBeatType[], //for type eTS_Multiple
+                                      bool fVisible = true, long nID=lmNEW_ID);    
 
     lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true,
                                     long nID = lmNEW_ID);
@@ -152,7 +152,8 @@ public:
 	lmNote* Cmd_InsertNote(lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
 					       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
-                           int nVoice, lmNote* pBaseOfChord, bool fTiedPrev, bool fAutoBar);
+                           int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
+                           lmEStemType nStem, bool fAutoBar);
 
 	lmRest* Cmd_InsertRest(lmENoteType nNoteType, float rDuration,
                            int nDots, int nVoice, bool fAutoBar);

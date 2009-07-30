@@ -76,7 +76,8 @@ public:
                     lmEAccidentals nAcc = lm_eNoAccidentals,
                     int nVoice = 0,
 					lmNote* pBaseOfChord = (lmNote*)NULL,
-					bool fTiedPrev = false) {}
+					bool fTiedPrev = false,
+                    lmEStemType nStem = lmSTEM_DEFAULT) {}
 
     virtual void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice) {}
     virtual void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true) {}    //for type eTS_Normal
@@ -132,6 +133,9 @@ public:
 #ifdef __WXDEBUG__
 	virtual void OnDumpShape(wxCommandEvent& event) {}
 #endif
+
+	//event handlers for ToolBox contextual menus
+    virtual void OnToolPopUpMenuEvent(wxCommandEvent& event) {}
 
     //call backs
     virtual void SynchronizeToolBox() {}
@@ -220,7 +224,8 @@ public:
                     lmEAccidentals nAcc = lm_eNoAccidentals,
                     int nVoice = 0,
 					lmNote* pBaseOfChord = (lmNote*)NULL,
-					bool fTiedPrev = false);
+					bool fTiedPrev = false,
+                    lmEStemType nStem = lmSTEM_DEFAULT);
 
     void InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
     void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
@@ -283,6 +288,9 @@ public:
 	void OnDumpShape(wxCommandEvent& event);
 #endif
 
+	//event handlers for ToolBox contextual menus
+    void OnToolPopUpMenuEvent(wxCommandEvent& event);
+
     //call backs from lmScoreView to paint marks for mouse dragged tools
     lmUPoint OnDrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
     lmUPoint OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
@@ -300,6 +308,8 @@ private:
         //
         lm_eCursor_Max          //the last item.
     };
+
+    wxMenu* GetContextualMenuForTool();
 
 
     //dealing with mouse events

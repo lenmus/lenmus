@@ -318,7 +318,7 @@ wxString DoubleToStr(double rNumber, int nDecimalDigits)
     // I cannot use standard formatting sprintf %f, as decimal point could be
 	// replaced by comma, depending on locale.
 	// So this method edit the number using always a dot and the requested
-	// decimal digits  %.Nf
+	// decimal digits  %.Nf (N = 0..9)
 
 	//I will use standard C funcion
 	//	double modf(double x, double* intpart);
@@ -328,10 +328,14 @@ wxString DoubleToStr(double rNumber, int nDecimalDigits)
 
 	double rIntegerPart;
 	double rDecimalPart = modf(rNumber, &rIntegerPart);
-	double rDecimals = fabs(rDecimalPart) * pow(10.0, nDecimalDigits);
-	//wxLogMessage(_T("[DoubleToStr] number=%.5f, integer=%.2f, decimal part=%.5f, num.decimal=%d, decimals=%.2f"),
-	//	rNumber, rIntegerPart, rDecimalPart, nDecimalDigits, rDecimals);
-	return wxString::Format(_T("%0.f.%0.f"), rIntegerPart, rDecimals );
+	double rDecimals = fabs(rDecimalPart);
+    wxString sDecimalPart = wxString::Format(_T("%0.10f"), rDecimals );
+    wxString sIntegerPart = wxString::Format(_T("%0.f"), rIntegerPart );
+
+	//wxLogMessage(_T("[DoubleToStr] number=%.5f, integer=%.2f, decimal part=%.5f, num.decimal=%d, decimals=%.2f, sInt='%s', sDec='%s', res='%s'"),
+	//	rNumber, rIntegerPart, rDecimalPart, nDecimalDigits, rDecimals, sIntegerPart, sDecimalPart,
+    //  sIntegerPart + _T(".") + sDecimalPart.Mid(2, nDecimalDigits));
+	return sIntegerPart + _T(".") + sDecimalPart.Mid(2, nDecimalDigits);
 
 }
 

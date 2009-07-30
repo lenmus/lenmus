@@ -134,16 +134,19 @@ float lmBoxSlice::GetTimeForPosition(lmLUnits uxPos)
         return 0.0f;
 
     //timepos = 0 if xPos < first entry xPos
+    float rTime = 0.0f;
     lmLUnits uxPrev = m_PosTimes.front()->uxPos;
     if (uxPos <= uxPrev)
-        return 0.0f;
+        return rTime;
 
     //otherwise find in table
     std::vector<lmPosTime*>::iterator it;
     for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
     {
-        if (uxPos <= (*it)->uxPos)
-            return (*it)->rTimepos;
+        uxPrev = uxPrev + ((*it)->uxPos - uxPrev) / 2.0;
+        if (uxPos <= uxPrev)
+            return rTime;
+        rTime = (*it)->rTimepos;
     }
 
     //last timepos

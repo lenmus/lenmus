@@ -273,7 +273,8 @@ public:
 					lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
                     lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                    int nVoice, lmNote* pBaseOfChord, bool fTiedPrev);
+                    int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
+                    lmEStemType nStem);
     ~lmCmdInsertNote();
 
     //implementation of pure virtual methods in base class
@@ -282,6 +283,7 @@ public:
 protected:
 	lmENoteType		    m_nNoteType;
 	lmEPitchType	    m_nPitchType;
+    lmEStemType         m_nStem;
 	int		            m_nStep;
 	int		            m_nOctave;
     int                 m_nDots;

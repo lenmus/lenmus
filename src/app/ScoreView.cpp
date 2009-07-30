@@ -1652,13 +1652,13 @@ void lmScoreView::CaretDown()
     ShowCaret();
 }
 
-void lmScoreView::MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure)
+void lmScoreView::MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
 {
     if (!m_pCaret) return;
 
     //wxLogMessage(_T("[lmScoreView::MoveCaretNearTo]"));
     HideCaret();
-	m_pScoreCursor->MoveNearTo(uPos, pVStaff, iStaff, nMeasure);
+	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
     UpdateCaret();
     ShowCaret();
 }
@@ -1674,15 +1674,15 @@ void lmScoreView::MoveCaretToObject(lmStaffObj* pSO)
     ShowCaret();
 }
 
-void lmScoreView::MoveCaretTo(lmVStaff* pVStaff, int iStaff, int nMeasure,
-                              float rTime)
+void lmScoreView::MoveCursorTo(lmVStaff* pVStaff, int nStaff, int nMeasure,
+                              float rTime, bool fEndOfTime)
 {
-    if (!m_pCaret) return;
+    m_pScoreCursor->MoveTo(pVStaff, nStaff, nMeasure, rTime, fEndOfTime);
+}
 
-    HideCaret();
-    m_pScoreCursor->MoveTo(pVStaff, iStaff, nMeasure, rTime);
-    UpdateCaret();
-    ShowCaret();
+void lmScoreView::MoveCursorToTime(float rTime, bool fEndOfTime)
+{
+    m_pScoreCursor->MoveToTime(rTime, fEndOfTime);
 }
 
 void lmScoreView::UpdateCaret()

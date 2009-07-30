@@ -91,8 +91,8 @@ public:
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Voice; }
 
 	//access to options
-	inline int GetVoice() { return m_nSelButton; }
-	inline void SetVoice(int nVoice) { SelectButton(nVoice); }
+	virtual int GetVoice() { return m_nSelButton; }
+	virtual void SetVoice(int nVoice) { SelectButton(nVoice); }
     void SetVoice(bool fUp);
 
 protected:
@@ -124,6 +124,11 @@ public:
 
     //implement virtual methods
     void CreateControls(wxBoxSizer* pMainSizer);
+
+    //overrides, to avoide voice 0 (AutoVoice)
+    int GetVoice() { return m_nSelButton + 1; }
+	void SetVoice(int nVoice) { SelectButton(nVoice - 1); }
+
 };
 
 
@@ -389,8 +394,12 @@ public:
     void CreateGroups();
     void Create(wxWindow* parent);             //for dynamic creation
 
+    //overrides
+    wxMenu* GetContextualMenuForToolPage();
+    void OnPopUpMenuEvent(wxCommandEvent& event);
 
 protected:
+    wxMenu*         m_pMenu;        //contextual menu
 
 };
 

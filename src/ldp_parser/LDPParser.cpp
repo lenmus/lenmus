@@ -3610,8 +3610,8 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 	oOptTags.AnalyzeCommonOptions(pNode, 3, pVStaff, &fVisible, &fCursorPoint, NULL, &tPos);
 
 	//create the tiem signature
-    lmTimeSignature* pTS = pVStaff->AddTimeSignature(nID, (int)nBeats, (int)nBeatType,
-                                                     fVisible);
+    lmTimeSignature* pTS = pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType,
+                                                     fVisible, nID);
 	pTS->SetUserLocation(tPos);
 
     //save cursor data

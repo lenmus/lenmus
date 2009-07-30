@@ -481,7 +481,7 @@ lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave
                                  lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,
                                  int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
-								 bool fAutoBar)
+								 lmEStemType nStem, bool fAutoBar)
 {
     //some previous checks.
     //
@@ -546,7 +546,7 @@ lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave
     lmNote* pNt = new lmNote(this, lmNEW_ID, nPitchType,
                         nStep, nOctave, nAccidentals, nAcc,
                         nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
-                        pContext, false, BeamInfo, pBaseOfChord, false, lmSTEM_DEFAULT);
+                        pContext, false, BeamInfo, pBaseOfChord, false, nStem);
 
     m_cStaffObjs.Add(pNt);
 
@@ -919,7 +919,9 @@ void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
     if (nNotesBefore == 1 && nNotesAfter == 1)
     {
         //just remove the beam
+        pBeam->Remove(pPrevNR);
 	    pPrevNR->OnRemovedFromRelationship(pBeam);
+        pBeam->Remove(pBeforeNR);
 	    pBeforeNR->OnRemovedFromRelationship(pBeam);
         delete pBeam;
     }
@@ -1240,22 +1242,23 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeft
 
 
 //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-lmTimeSignature* lmVStaff::AddTimeSignature(long nID, lmETimeSignatureType nType, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignatureType nType, bool fVisible,
+                                            long nID)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nType, this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
 //for type eTS_SingleNumber
-lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nSingleNumber, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(int nSingleNumber, bool fVisible, long nID)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nSingleNumber, this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
 //for type eTS_Composite
-lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nNumBeats, int nBeats[],
-                                            int nBeatType, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(int nNumBeats, int nBeats[],
+                                            int nBeatType, bool fVisible, long nID)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nNumBeats, nBeats, nBeatType,
                                                this, nID, fVisible);
@@ -1263,8 +1266,8 @@ lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nNumBeats, int nBeats[
 }
 
 //for type eTS_Multiple
-lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nNumFractions, int nBeats[],
-                                            int nBeatType[], bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(int nNumFractions, int nBeats[],
+                                            int nBeatType[], bool fVisible, long nID)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nNumFractions, nBeats, nBeatType, this, 
                                                nID, fVisible);
@@ -1272,14 +1275,15 @@ lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nNumFractions, int nBe
 }
 
 //for type eTS_Normal
-lmTimeSignature* lmVStaff::AddTimeSignature(long nID, int nBeats, int nBeatType, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(int nBeats, int nBeatType, bool fVisible,
+                                            long nID)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, nID, fVisible);
     return AddTimeSignature(pTS);
 }
 
-lmTimeSignature* lmVStaff::AddTimeSignature(long nID, lmETimeSignature nTimeSign,
-                                            bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignature nTimeSign,
+                                            bool fVisible, long nID)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nTimeSign, this, nID, fVisible);
     return AddTimeSignature(pTS);

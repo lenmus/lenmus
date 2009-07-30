@@ -99,6 +99,11 @@ BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
 #ifdef __WXDEBUG__
     EVT_MENU	(lmPOPUP_DumpShape, lmController::OnDumpShape)
 #endif
+    EVT_MENU	(lmTOOL_VOICE_SOPRANO, lmController::OnToolPopUpMenuEvent)
+	EVT_MENU	(lmTOOL_VOICE_ALTO, lmController::OnToolPopUpMenuEvent)
+	EVT_MENU	(lmTOOL_VOICE_TENOR, lmController::OnToolPopUpMenuEvent)
+	EVT_MENU	(lmTOOL_VOICE_BASS, lmController::OnToolPopUpMenuEvent)
+
 
 END_EVENT_TABLE()
 
@@ -949,8 +954,15 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
             m_pCurShapeStaff = (lmShapeStaff*)pGMO;
             //get the SliceInstr
             pGMO = m_pView->FindBoxAt(m_nNumPage, m_uMousePagePos);
-            wxASSERT(pGMO->IsBoxSliceInstr());
-            m_pCurBSI = (lmBoxSliceInstr*)pGMO;
+            if (pGMO->IsBoxSliceInstr())
+                m_pCurBSI = (lmBoxSliceInstr*)pGMO;
+            else if (pGMO->IsBoxSystem())
+            {
+                //empty score
+                m_pCurShapeStaff = ((lmBoxSystem*)pGMO)->GetStaffShape(1);
+            }
+            else
+                wxASSERT(false);    //Unknown case. Is it possible??????
         }
         else
             m_nMousePointedArea = lmMOUSE_OnOtherShape;
@@ -1015,10 +1027,19 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
 
         //now process the click. To avoid double data entry (first on button down and the on
         //button up) only button up will trigger the processing
-        if (event.GetEventType() == wxEVT_LEFT_UP)
+        if (event.ButtonUp(wxMOUSE_BTN_LEFT))
+        {
             OnToolClick(pGMO, m_uMousePagePos, m_rCurTime);
-        //AWARE: after processing the click the graphical model could have been chaged.
-        //Therefore all pointers to GMObjects are no longer valid!!!
+            //AWARE: after processing the click the graphical model could have been chaged.
+            //Therefore all pointers to GMObjects are no longer valid!!!
+        }
+        else if (event.ButtonUp(wxMOUSE_BTN_RIGHT))
+        {
+            //show too contextual menu
+            wxMenu* pMenu = GetContextualMenuForTool();
+            if (pMenu)
+	            PopupMenu(pMenu);
+        }
 
         //finally, set up information to restart the tool drag operation when moving again
         //the mouse
@@ -1079,6 +1100,15 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
         const wxCursor& oCursor = *pNeeded;
         SetCursor( oCursor );
     }
+}
+
+wxMenu* lmScoreCanvas::GetContextualMenuForTool()
+{
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	if (!pToolBox)
+        return (wxMenu*)NULL;
+
+	return pToolBox->GetContextualMenuForSelectedPage();
 }
 
 void lmScoreCanvas::StartToolDrag(wxDC* pDC)
@@ -1179,7 +1209,7 @@ lmUPoint lmScoreCanvas::OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos)
         m_pLastBSI->DrawTimeGrid(pPaper);
 
     //draw new grid 
-    if (!m_pLastBSI || m_pLastBSI != m_pCurBSI)
+    if (m_pCurBSI && (!m_pLastBSI || m_pLastBSI != m_pCurBSI))
         m_pCurBSI->DrawTimeGrid(pPaper);
 
     return uFinalPos;
@@ -1573,11 +1603,28 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 							   lmENoteType nNoteType, float rDuration, int nDots,
 							   lmENoteHeads nNotehead, lmEAccidentals nAcc,
-                               int nVoice, lmNote* pBaseOfChord, bool fTiedPrev)
+                               int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
+                               lmEStemType nStem)
 {
 	//insert a note at current cursor position
 
 	//if new note in chord check that there is a base note at current cursor position
+
+    //in 'TheoHarmonyCtrol' edit mode, force stem depending on voice
+    lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
+    if (nStem == lmSTEM_DEFAULT && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+    {
+        GetToolBoxValuesForPage(lmPAGE_NOTES);
+        switch(m_nSelVoice)
+        {
+            case 1: nStem = lmSTEM_UP;      break;
+            case 2: nStem = lmSTEM_DOWN;    break;
+            case 3: nStem = lmSTEM_UP;      break;
+            case 4: nStem = lmSTEM_DOWN;    break;
+            default:
+                nStem = lmSTEM_DEFAULT;
+        }
+    }
 
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -1588,7 +1635,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 
 	pCP->Submit(new lmCmdInsertNote(lmCMD_NORMAL, sName, m_pDoc, nPitchType, nStep, nOctave,
 							        nNoteType, rDuration, nDots, nNotehead, nAcc,
-                                    nVoice, pBaseOfChord, fTiedPrev) );
+                                    nVoice, pBaseOfChord, fTiedPrev, nStem) );
 
 }
 
@@ -2131,7 +2178,8 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 
                     //do insert note
 					InsertNote(lm_ePitchRelative, nStep, m_nOctave, m_nSelNoteType, rDuration,
-							   m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord, fTiedPrev);
+							   m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord,
+                               fTiedPrev, lmSTEM_DEFAULT);
 
                     fUnknown = false;
                 }
@@ -2624,6 +2672,15 @@ void lmScoreCanvas::OnDumpShape(wxCommandEvent& event)
     dlg.ShowModal();
 }
 #endif
+
+void lmScoreCanvas::OnToolPopUpMenuEvent(wxCommandEvent& event)
+{
+    //redirect the event to the menu owner page
+
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	wxASSERT(pToolBox);
+	pToolBox->OnPopUpMenuEvent(event);
+}
 
 void lmScoreCanvas::SelectNoteDuration(int iButton)
 {
@@ -3411,23 +3468,48 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
     else if (pGMO->IsBoxSliceInstr())
     {
         pBSI = (lmBoxSliceInstr*)pGMO;
-        pShapeStaff = ((lmBoxSliceInstr*)pGMO)->GetOwnerSystem()->GetStaffShape(1);
+        lmInstrument* pInstr = pBSI->GetInstrument();
+        pShapeStaff = pBSI->GetOwnerSystem()->GetStaffShape(pInstr, uPagePos);
+    }
+    else if (pGMO->IsBoxSystem())
+    {
+        //in empty scores, only box system with staff
+        pShapeStaff = ((lmBoxSystem*)pGMO)->GetStaffShape(1);
     }
     else
         return;     //click out of valid area
 
-    if (pShapeStaff && pBSI)
+    if (pShapeStaff)
     {
         wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Insert note. MousePagePos=(%.2f, %.2f)"),
                      uPagePos.x, uPagePos.y);
-        //Move caret
-	    lmVStaff* pVStaff = pBSI->GetInstrument()->GetVStaff();
-	    int nMeasure = pBSI->GetNumMeasure();
-	    int nStaff = pShapeStaff->GetNumStaff();
-	    m_pView->MoveCaretNearTo(uPagePos, pVStaff, nStaff, nMeasure);
-        //m_pView->MoveCaretTo(pVStaff, nStaff, nMeasure, rTime);
 
         GetToolBoxValuesForPage(lmPAGE_NOTES);
+
+        //in 'TheoHarmonyCtrol' edit mode, force staff depending on voice
+	    int nStaff = pShapeStaff->GetNumStaff();
+        lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
+        if (pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+        {
+            if (m_nSelVoice == 1 || m_nSelVoice == 2)
+                nStaff = 1;
+            else
+                nStaff = 2;
+        }
+            
+        //Move caret to insertion position
+        if (pBSI)
+        {
+	        lmVStaff* pVStaff = pBSI->GetInstrument()->GetVStaff();
+	        int nMeasure = pBSI->GetNumMeasure();
+	        //m_pView->MoveCaretNearTo(uPagePos, pVStaff, nStaff, nMeasure);
+            m_pView->MoveCursorTo(pVStaff, nStaff, nMeasure, rTime, true); //true: move to end of time
+            //m_pView->MoveCursorToTime(rTime);
+        }
+        else
+        {
+            //empty score
+        }
         //compute note/rest duration
 		float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
 
@@ -3436,6 +3518,12 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
         //to determine octave and step it is necessary to know the clef. As caret is
         //placed at insertion point we could get these information from caret
         lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetCurrentContext();
+        if (!pContext)
+        {
+            //there is no clef in score.
+            //TODO: InserNote commnad passing nLineSpace as argument, instead of pitch.
+            return;
+        }
         lmEClefType nClefType = pContext->GetClefType();
         lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
         dpNote += (nLineSpace - 2);     //pitch for note to insert

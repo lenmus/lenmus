@@ -158,8 +158,12 @@ public:
 	void CaretDown();
     void HideCaret();
     void ShowCaret();
-	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int iStaff, int nMeasure);
-    void MoveCaretTo(lmVStaff* pVStaff, int iStaff, int nMeasure, float rTime);
+	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
+
+    //cursor management
+    void MoveCursorTo(lmVStaff* pVStaff, int nStaff, int nMeasure, float rTime,
+                      bool fEndOfTime);
+    void MoveCursorToTime(float rTime, bool fEndOfTime);
 
     //Score cursor information
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }

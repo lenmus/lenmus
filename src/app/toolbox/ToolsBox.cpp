@@ -335,6 +335,11 @@ void lmToolBox::SelectToolPage(lmEToolPage nTool)
 
 }
 
+lmToolPageNotes* lmToolBox::GetNoteProperties() const 
+{ 
+    return (lmToolPageNotes*)m_cPages[ m_cActivePages[lmPAGE_NOTES] ];
+}
+
 void lmToolBox::SelectButton(int nTool)
 {
 	// Set selected button as 'pressed' and all others as 'released'
@@ -387,6 +392,18 @@ void lmToolBox::SetDefaultConfiguration()
         m_pSpecialGroup->Show(false);
 
     SelectToolPage(m_nSelTool);
+}
+
+wxMenu* lmToolBox::GetContextualMenuForSelectedPage()
+{
+    lmToolPage* pSelPage = m_cPages[ m_cActivePages[m_nSelTool] ];
+    return pSelPage->GetContextualMenuForToolPage();
+}
+
+void lmToolBox::OnPopUpMenuEvent(wxCommandEvent& event)
+{
+    lmToolPage* pSelPage = m_cPages[ m_cActivePages[m_nSelTool] ];
+    pSelPage->OnPopUpMenuEvent(event);
 }
 
 

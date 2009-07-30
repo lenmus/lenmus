@@ -651,7 +651,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
     if (fKeySignature)
         pVStaff->AddKeySignature((int)nFifths, fMajor);
     if (fTimeSignature)  
-        pVStaff->AddTimeSignature(lmNEW_ID, (int)nBeats, (int)nBeatType);
+        pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType);
 
     return true;
 

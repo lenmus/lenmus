@@ -38,7 +38,7 @@ public:
     lmToolPage(wxWindow* parent);
     lmToolPage();
     ~lmToolPage();
-    void Create(wxWindow* parent);
+    virtual void Create(wxWindow* parent);
 
 	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void CreateLayout();
@@ -47,6 +47,8 @@ public:
 
     virtual wxString& GetPageToolTip() { return m_sPageToolTip; }
     virtual wxString& GetPageBitmapName() { return m_sPageBitmapName; }
+    virtual wxMenu* GetContextualMenuForToolPage() { return (wxMenu*)NULL; }
+    virtual void OnPopUpMenuEvent(wxCommandEvent& event) { event.Skip(); }
 
     virtual void CreateGroups() = 0;
 

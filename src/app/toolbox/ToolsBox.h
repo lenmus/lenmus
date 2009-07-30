@@ -175,9 +175,12 @@ public:
 	inline wxPanel* GetToolPanel(lmEToolPage nPanel) { return (wxPanel*)m_cPages[nPanel]; }
 
 
-	inline lmToolPageNotes* GetNoteProperties() const { return (lmToolPageNotes*)m_cPages[lmPAGE_NOTES]; }
+	lmToolPageNotes* GetNoteProperties() const;
     //TO_ADD: Add, before this line, a new method to get new tool properties
 
+    //Contextual menus
+    wxMenu* GetContextualMenuForSelectedPage();
+    void OnPopUpMenuEvent(wxCommandEvent& event);
 
     //operations: adding/removing pages
     void AddPage(lmToolPage* pPage, int nToolId);
