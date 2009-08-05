@@ -1973,13 +1973,15 @@ lmLUnits lmCheckNoteNewPosition(lmStaff* pStaff, lmLUnits uyOldPos, lmLUnits uyN
                                 int* pnSteps)
 {
     // A note only can be moved in discrete vertical steps (staff lines/spaces).
-	// This method receives current notehead position and new intended position and
-	// returns the nearest valid yPosition. It also updates content of pnSteps with
-	// the number of steps (half lines) that the note has been moved.
+	// This method receives current notehead position (top-left corner) and new intended
+    // position and returns the nearest valid yPosition (top-left corner). It also updates
+    // content of pnSteps with the number of steps (half lines) that the note has been moved.
 
 	//compute the number of steps (half lines) that the notehead has been moved
 	lmLUnits uHalfLine = pStaff->TenthsToLogical(5.0f);
-	*pnSteps = int(0.5f + (uyOldPos - uyNewPos)/uHalfLine );
+	//*pnSteps = int(0.5f + (uyOldPos - uyNewPos)/uHalfLine );
+    float rSteps = (uyOldPos - uyNewPos)/uHalfLine;
+    *pnSteps = (rSteps > 0.0f ? (int)(rSteps + 0.5f) : (int)(rSteps - 0.5f) );
 
 	//compute the nearest valid discrete position
 	return uyOldPos - uHalfLine * float(*pnSteps);

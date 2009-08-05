@@ -224,6 +224,12 @@
 				RelativePath="..\..\src\score\defs.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\FiguredBass.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\FiguredBass.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Glyph.cpp">
 			</File>
 			<File
@@ -252,12 +258,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\MetronomeMark.h">
-			</File>
-			<File
-				RelativePath="..\..\src\score\Notation.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\Notation.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\Note.cpp">
@@ -309,6 +309,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\SOControl.h">
+			</File>
+			<File
+				RelativePath="..\..\src\score\Spacer.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\Spacer.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\Staff.cpp">

@@ -1011,6 +1011,21 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
         m_rCurTime = pBSlice->GetTimeForPosition(m_uMousePagePos.x);
     }
 
+    //if harmony exercise, allow notes data entry only valid staff for current voice
+    lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
+    if ((m_nMousePointedArea == lmMOUSE_OnStaff 
+         || m_nMousePointedArea == lmMOUSE_OnBelowStaff 
+         || m_nMousePointedArea == lmMOUSE_OnAboveStaff  )
+        && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol") )
+    {
+        GetToolBoxValuesForPage(lmPAGE_NOTES);
+        int nStaff = m_pCurShapeStaff->GetNumStaff();
+        bool fValid = false;
+        if ( ((m_nSelVoice == 1 || m_nSelVoice == 2) && (nStaff != 1))
+             || ((m_nSelVoice == 3 || m_nSelVoice == 4) && (nStaff != 2)) )
+            m_nMousePointedArea = lmMOUSE_OnOther;
+    }
+
     //Now we start dealing with mouse moving and mouse clicks. Dragging (moving the mouse
     //with a mouse button clicked) is a meaningless operation and will be treated as 
     //moving. Therefore, only two type of events will be considered: mouse click and
@@ -1115,8 +1130,9 @@ void lmScoreCanvas::StartToolDrag(wxDC* pDC)
 {
     PrepareToolDragImages();
     wxBitmap* pCursorDragImage = new wxBitmap(*m_pToolBitmap);
-    m_vDragHotSpot = lmDPoint(pCursorDragImage->GetWidth() / 2,
-                                pCursorDragImage->GetHeight() / 2 );
+    //m_vDragHotSpot = lmDPoint(pCursorDragImage->GetWidth() / 2,
+    //                            pCursorDragImage->GetHeight() / 2 );
+    m_vDragHotSpot = m_vToolHotSpot;
 
     //wxLogMessage(_T("[lmScoreCanvas::StartToolDrag] OnImageBeginDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
     //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
@@ -1968,8 +1984,72 @@ void lmScoreCanvas::PrepareToolDragImages()
     double rPointSize = pStaff->GetMusicFontSize();
     double rScale = m_pView->GetScale() * lmSCALE;
 
-    m_pToolBitmap =
-        GetBitmapForGlyph(rScale, GLYPH_NOTEHEAD_QUARTER, rPointSize, colorF, colorB);
+    GetToolBoxValuesForPage(lmPAGE_NOTES);
+
+    //in 'TheoHarmonyCtrol' edit mode, force stem depending on voice
+    bool fStemDown = false;
+    lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
+    if (pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+    {
+        switch(m_nSelVoice)
+        {
+            case 1: fStemDown = false;  break;
+            case 2: fStemDown = true;   break;
+            case 3: fStemDown = false;  break;
+            case 4: fStemDown = true;   break;
+            default:
+                fStemDown = false;
+        }
+    }
+
+    //select glyph
+    lmEGlyphIndex nGlyph = GLYPH_NOTEHEAD_QUARTER;
+    switch (m_nSelNoteType) {
+        case eLonga :
+            nGlyph = GLYPH_LONGA_NOTE;
+            break;
+        case eBreve :
+            nGlyph = GLYPH_BREVE_NOTE;
+            break;
+        case eWhole :
+            nGlyph = GLYPH_WHOLE_NOTE;
+            break;
+        case eHalf :
+            nGlyph = (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
+            break;
+        case eQuarter :
+            nGlyph = (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
+            break;
+        case eEighth :
+            nGlyph = (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
+            break;
+        case e16th :
+            nGlyph = (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
+            break;
+        case e32th :
+            nGlyph = (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
+            break;
+        case e64th :
+            nGlyph = (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
+            break;
+        case e128th :
+            nGlyph = (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
+            break;
+        case e256th :
+            nGlyph = (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
+            break;
+        default:
+            wxASSERT(false);
+    }
+
+    //create the bitmap
+    m_pToolBitmap = GetBitmapForGlyph(rScale, nGlyph, rPointSize, colorF, colorB);
+    //m_vToolHotSpot = lmTPoint(aGlyphsInfo[nGlyph].txDrag, aGlyphsInfo[nGlyph].tyDrag);
+    float rxScale = aGlyphsInfo[nGlyph].txDrag / aGlyphsInfo[nGlyph].thWidth;
+    float ryScale = aGlyphsInfo[nGlyph].tyDrag / aGlyphsInfo[nGlyph].thHeight;
+    m_vToolHotSpot = lmDPoint(m_pToolBitmap->GetWidth() * rxScale,
+                              m_pToolBitmap->GetHeight() * ryScale );
+                        
 }
 
 void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)

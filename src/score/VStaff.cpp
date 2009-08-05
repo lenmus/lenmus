@@ -74,7 +74,7 @@
 #include "Staff.h"
 #include "VStaff.h"
 #include "Context.h"
-#include "Notation.h"
+#include "Spacer.h"
 #include "MetronomeMark.h"
 #include "../sound/SoundManager.h"
 #include "../app/global.h"

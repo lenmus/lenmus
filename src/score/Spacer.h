@@ -18,57 +18,24 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_NOTATION_H__        //to avoid nested includes
-#define __LM_NOTATION_H__
+#ifndef __LM_SPACER__H_        //to avoid nested includes
+#define __LM_SPACER__H_
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "Notation.cpp"
+#pragma interface "Spacer.cpp"
 #endif
-
-// lmNotations are graphical StaffObjs, i.e.: breath mark, spacer, symbol
-// This is an abstract class so specific notations must derive from this one
-// lmNotations do not consume time
-
-enum lmENotationType
-{
-    eNT_Anchor = 1,         // anchor to attach AuxObjs to a VStaff
-    eNT_ScoreAnchor,        // anchor to attach AuxObjs to the score
-    eNT_Spacer,             // spacer (lmSpacer)
-};
-
-class lmNotation : public lmStaffObj
-{
-public:
-    virtual ~lmNotation() {}
-
-    // properties related to the clasification of this lmStaffObj
-    float GetTimePosIncrement() { return 0; }
-    virtual lmENotationType GetNotationType() = 0;
-
-    //classification
-    inline bool IsAnchor() { return GetNotationType() == eNT_Anchor; }
-    inline bool IsScoreAnchor() { return GetNotationType() == eNT_ScoreAnchor; }
-    inline bool IsSpacer() { return GetNotationType() == eNT_Spacer; }
-
-	wxString GetName() const { return _T("notation"); }
-
-protected:
-    lmNotation(lmVStaff* pVStaff, long nID, int nStaff=1,
-               bool fVisible = true, 
-               bool fIsDraggable = false);
-
-};
 
 // lmSpacer is a graphical StaffObj with no graphical representation. It is just an empty
 // space on the staff. The width can be zero.
-class lmSpacer : public lmNotation
+class lmSpacer : public lmStaffObj
 {
 public:
     lmSpacer(lmVStaff* pStaff, long nID, lmTenths nWidth, int nStaff=1);
     ~lmSpacer() {}
 
     // properties
-    lmENotationType GetNotationType() { return eNT_Spacer; }
+    inline float GetTimePosIncrement() { return 0; }
+	inline wxString GetName() const { return _T("spacer"); }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
@@ -92,18 +59,19 @@ private:
 class lmAnchor: public lmSpacer
 {
 public:
-    lmAnchor(lmVStaff* pStaff, long nID, int nStaff=1)
-        : lmSpacer(pStaff, nID, 0.0f, nStaff) {}
+    lmAnchor(lmVStaff* pVStaff, long nID, int nStaff=1)
+        : lmSpacer(pVStaff, nID, 0.0f, nStaff) {}
 };
 
-class lmScoreAnchor: public lmNotation
+class lmScoreAnchor: public lmStaffObj
 {
 public:
-    lmScoreAnchor(lmVStaff* pStaff, int nStaff=1);
+    lmScoreAnchor(lmVStaff* pVStaff, int nStaff=1);
     ~lmScoreAnchor() {}
 
     // properties
-    lmENotationType GetNotationType() { return eNT_ScoreAnchor; }
+    inline float GetTimePosIncrement() { return 0; }
+	inline wxString GetName() const { return _T("score anchor"); }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
@@ -118,5 +86,5 @@ public:
 
 
 
-#endif    // __LM_NOTATION_H__
+#endif    // __LM_SPACER__H_
 

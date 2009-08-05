@@ -375,6 +375,7 @@ private:
     wxCursor*               m_pCursorCurrent;           //current displayed mouse cursor
     long                    m_nValidAreas;              //flags defining valid areas
     wxBitmap*               m_pToolBitmap;
+    lmDPoint                m_vToolHotSpot;             //hot spot for m_pToolBitmap
 
 
 	//to control octave when inserting several consecutive notes

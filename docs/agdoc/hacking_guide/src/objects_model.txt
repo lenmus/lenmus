@@ -111,7 +111,7 @@ An StaffObj is any object that must have an VStaff as owner (measure-attached ob
     * Source code methods (SourceLDP, SourceXML)
     * They have staff information (m_pVStaff, m_nStaffNum, m_numMeasure)
     
-Examples of derived objects: %%lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmNotation%% (Spacer, Anchor, ScoreAnchor), %%lmScoreText, lmSOControl%%(new system).
+Examples of derived objects: %%lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmSpacer, lmAnchor, lmScoreAnchor, lmScoreText, lmSOControl%% (new system).
 
 
 \h3 {lmAuxObj}
@@ -157,12 +157,9 @@ Therefore, the only restriction would be that the root of owners chain must not 
 
 Finally, I have defined other auxiliary objects, non-derived from any other one:
     
- * lmBeam:  info about the beam for a group of notes
  * lmChord: info about a chord
  * lmArch: info to draw an arch
- * lmContext: info about current accidentals 
  * lmBasicText: info for a text (font size, font family, ..)
- * lmStaff: Properties for each staff on a VStaff (num.lines, spacing, ...)
  * lmAccidental: accidentals in notes
  
  
@@ -189,10 +186,11 @@ The full hierarchy of objects is shown in next diagram:
               |     |
               |     +-- lmMetronomeMark
               |     +-- lmSOControl (new system)
-              |     +-- lmNotation
-              |           +-- lmScoreAnchor
-              |           +-- lmSpacer
-              |                 +-- lmAnchor
+              |     +-- lmScoreAnchor
+              |     +-- lmSpacer
+              |     |     +-- lmAnchor
+              |     |
+              |     +-- lmFiguredBass
               |
               +-- lmAuxObj
                     +-- lmScoreLine
@@ -224,6 +222,27 @@ The full hierarchy of objects is shown in next diagram:
             - lmTupletBracket
 
 }
+
+
+\h1 {Key points when creating a StaffObj or AuxObj}
+%%%---------------------------------------------------
+
+When having to create a new object, sometimes it is difficult to decide it i should be an lmStaffObj or an lmAuxObj. The key points to take into accoun are:
+    
+lmStaffObj:
+
+    * measure-attached objects (effects on following music)
+    * They normally 'consume' time and so layout is controlled by its time position.
+    * Layout is controlled mainly by time position
+    * They can own AuxObjs
+
+lmAuxObj:
+
+    * note-attached objects (effects on parent object)
+    * they do not consume time.
+    * Layout is by specific methods, controlled by owner objects.
+        
+
 
 
 \h1 {Objects model: history and evolution}

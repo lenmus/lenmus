@@ -154,12 +154,12 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     score/Context.cpp \
     score/defs.cpp \
     score/EditCmd.cpp \
+    score/FiguredBass.cpp \
     score/Glyph.cpp \
     score/InstrGroup.cpp \
     score/Instrument.cpp \
     score/KeySignature.cpp \
     score/MetronomeMark.cpp \
-    score/Notation.cpp \
     score/Note.cpp \
     score/NoteRest.cpp \
     score/ObjOptions.cpp \
@@ -172,6 +172,7 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     score/Score.cpp \
     score/Slur.cpp \
     score/SOControl.cpp \
+    score/Spacer.cpp \
     score/Staff.cpp \
     score/StaffObj.cpp \
     score/StaffObjIterator.cpp \

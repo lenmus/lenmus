@@ -38,7 +38,7 @@
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
-#include "Notation.h"
+#include "Spacer.h"
 #include "Context.h"
 #include "ObjOptions.h"
 #include "Text.h"
@@ -849,11 +849,9 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
 {
 	wxString sSource = _T("");
 
-    //Anchor notations doesn't have a source LDP element. Therefore, only attached AuxObjs must
+    //Spacers doesn't have a source LDP element. Therefore, only attached AuxObjs must
     //be generated
-    if (!IsNotation() || !( ((lmNotation*)this)->IsAnchor() 
-                            || ((lmNotation*)this)->IsScoreAnchor()
-                            || ((lmNotation*)this)->IsSpacer() ))
+    if ( !( IsAnchor() || IsScoreAnchor() || IsSpacer() ) )
     {
         //staff num
         if (m_pVStaff->GetNumStaves() > 1

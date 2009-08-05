@@ -120,12 +120,23 @@ int lmShapeStaff::GetLineSpace(lmLUnits uyPos)
     //        5 - on second space
     //        etc.
 
-	//The received position could be approximate (i.e. mouse position). so, firts, we must
-    //adjust position to the nearest valid notehead position
+	//The received position could be approximated (i.e. mouse position). So, first, we must
+    //adjust position to the nearest valid line/half-line position
 
-    int nSteps;
-    lmCheckNoteNewPosition((lmStaff*)GetScoreOwner(), m_uBoundsTop.y, uyPos, &nSteps);
-	return nSteps + 10;
+    //int nSteps;
+    //lmCheckNoteNewPosition((lmStaff*)GetScoreOwner(), m_uBoundsTop.y, uyPos, &nSteps);
+    //return nSteps + 10;
+
+    //compute the number of steps (half lines) from line 5 (top staff line = step #10)
+    lmStaff* pStaff = (lmStaff*)GetScoreOwner();
+	lmLUnits uHalfLine = pStaff->TenthsToLogical(5.0f);
+    float rStep = (m_uBoundsTop.y - uyPos)/uHalfLine;
+    int nStep = (rStep > 0.0f ? (int)(rStep + 0.5f) : (int)(rStep - 0.5f) );
+    wxLogMessage(_T("[lmShapeStaff::GetLineSpace] uyPos=%.2f, uHalfLine=%.2f, m_uBoundsTop.y=%.2f, rStep=%.2f, nStep=%d"),
+                 uyPos, uHalfLine, m_uBoundsTop.y, rStep, nStep);
+	return  10 + nStep;
+    //AWARE: Note that y axis is reversed. Therefore we return 10 + steps instead
+    // of 10 - steps. 
 }
 
 lmUPoint lmShapeStaff::OnMouseStartMoving(lmPaper* pPaper, const lmUPoint& uPos)

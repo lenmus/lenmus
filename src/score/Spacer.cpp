@@ -19,7 +19,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "Notation.h"
+#pragma implementation "Spacer.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -31,28 +31,21 @@
 
 
 #include "Score.h"
-#include "Notation.h"
+#include "Spacer.h"
 #include "VStaff.h"
 #include "../graphic/ShapeLine.h"
-
-
-lmNotation::lmNotation(lmVStaff* pVStaff, long nID, int nStaff, bool fVisible,
-                       bool fIsDraggable)
-    : lmStaffObj(pVStaff, nID, eSFOT_Notation, pVStaff, nStaff, fVisible, fIsDraggable)
-{
-    wxASSERT(nStaff > 0);
-    SetLayer(lm_eLayerNotes);
-}
 
 
 //-----------------------------------------------------------------------------------------
 // lmSpacer implementation
 //-----------------------------------------------------------------------------------------
 
-lmSpacer::lmSpacer(lmVStaff* pStaff, long nID, lmTenths nWidth, int nStaff)
-    : lmNotation(pStaff, nID, nStaff, true, (nWidth > 0))
+lmSpacer::lmSpacer(lmVStaff* pVStaff, long nID, lmTenths nWidth, int nStaff)
+    : lmStaffObj(pVStaff, nID, eSFOT_Spacer, pVStaff, nStaff, lmVISIBLE, lmDRAGGABLE)
     , m_nSpacerWidth(nWidth)
 {
+    wxASSERT(nStaff > 0);
+    SetLayer(lm_eLayerNotes);
 }
 
 lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
@@ -135,86 +128,15 @@ wxString lmSpacer::SourceXML(int nIndent)
 }
 
 
-////-----------------------------------------------------------------------------------------
-//// lmAnchor implementation
-////-----------------------------------------------------------------------------------------
-//
-//lmAnchor::lmAnchor(lmVStaff* pStaff, long nID, int nStaff)
-//    : lmSpacer(pStaff, nID, 0.0f, nStaff, lmVISIBLE, lmNO_DRAGGABLE)
-//{
-//}
-//
-//lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
-//{
-//	// if no location is specified in LDP source file, this method is invoked from
-//	// base class to ask derived object to compute a suitable position to
-//	// place itself.
-//	// uOrg is the assigned paper position for this object.
-//
-//	lmUPoint uPos = uOrg;
-//	return uPos;
-//}
-//
-//lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
-//{
-//    lmShape* pShape;
-//    if (g_fDrawAnchors)
-//    {
-//        //Draw a red line to show anchor position
-//        //TODO: draw an small anchor and change show/hide anchor as an user option
-//        //compute position
-//        lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
-//        lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
-//        lmLUnits uWidth = m_pParent->TenthsToLogical(1);
-//        lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
-//
-//        //create the shape
-//        pShape = new lmShapeSimpleLine(this, uPos.x, uyStart, uPos.x, uyEnd, uWidth, uBoundsExtraWidth,
-//                                 *wxRED, _T("Anchor"), lm_eEdgeNormal);
-//
-//    }
-//    else
-//        //pShape = CreateInvisibleShape(pBox, uPos, 0);
-//        pShape = new lmShapeInvisible(this, 0, uPos, lmUSize(0.0, 0.0) );
-//
-//    pBox->AddShape(pShape, GetLayer());
-//    StoreShape(pShape);
-//
-//    return 0.0f;        //returns total width
-//}
-//
-//wxString lmAnchor::Dump()
-//{
-//    wxString sDump = wxString::Format(
-//        _T("%d\tAnchor    \tTimePos=%.2f"), m_nId, m_rTimePos );
-//
-//	sDump += lmStaffObj::Dump();
-//    sDump += _T("\n");
-//    return sDump;
-//}
-//
-//wxString lmAnchor::SourceLDP(int nIndent, bool fUndoData)
-//{
-//    return lmStaffObj::SourceLDP(nIndent, fUndoData);
-//}
-//
-//wxString lmAnchor::SourceXML(int nIndent)
-//{
-//    // TODO
-//    wxString sSource = _T("");
-//    return sSource;
-//
-//}
-
-
-
 //-----------------------------------------------------------------------------------------
 // lmScoreAnchor implementation
 //-----------------------------------------------------------------------------------------
 
-lmScoreAnchor::lmScoreAnchor(lmVStaff* pStaff, int nStaff)
-    : lmNotation(pStaff, lmNEW_ID, nStaff, lmVISIBLE, lmNO_DRAGGABLE)
+lmScoreAnchor::lmScoreAnchor(lmVStaff* pVStaff, int nStaff)
+    : lmStaffObj(pVStaff, lmNEW_ID, eSFOT_ScoreAnchor, pVStaff, nStaff, lmVISIBLE, lmNO_DRAGGABLE)
 {
+    wxASSERT(nStaff > 0);
+    SetLayer(lm_eLayerNotes);
 }
 
 lmUPoint lmScoreAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)

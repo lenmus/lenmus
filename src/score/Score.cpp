@@ -819,8 +819,9 @@ wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
 	sSource += (wxDateTime::Now()).Format(_T("%Y-%m-%d"));
     sSource += _T("\n");
 
-    //comment with ID counter value
-    sSource += wxString::Format(_T("   (undoData (idCounter  %d))\n"), m_nCounterID);
+    //ID counter value for undo/redo
+    if (fUndoData)
+        sSource += wxString::Format(_T("   (undoData (idCounter  %d))\n"), m_nCounterID);
 
     //creation mode
     if (!m_sCreationModeName.empty())

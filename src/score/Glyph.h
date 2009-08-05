@@ -46,43 +46,51 @@
 struct lmGlyph
 {
     // all measurements in tenths
-    wxChar	GlyphChar;
-    int		GlyphOffset;
-    int		SelRectShift;
-    int		SelRectHeight;
-    int		Top;
-    int		Bottom;
+    wxChar	    GlyphChar;
+    int		    GlyphOffset;
+    int		    SelRectShift;
+    int		    SelRectHeight;
+    int		    Top;
+    int		    Bottom;
 	lmTenths	thxPos;
 	lmTenths	thyPos;
 	lmTenths	thWidth;
 	lmTenths	thHeight;
-    wxString    sName;
+	lmTenths	txDrag;
+	lmTenths	tyDrag;
 
-    lmGlyph(const wxChar g, int yo, int ys, int h, int t, int b, 
-		    int xPos, int yPos, int width, int height, const wxString n);
+    lmGlyph(const wxChar glyph, int yOffset, int yShift, int selHeight, int top, int bottom, 
+		    int xPos, int yPos, int width, int height, int xDrag, int yDrag);
 
 };
 
 //indexes for the table
-enum lmEGlyphIndex {
-    // notes and noteheads
-    GLYPH_LONGA_NOTE = 0,   //longa
-    GLYPH_BREVE_NOTE,       //breve, cuadrada
+enum lmEGlyphIndex
+{
+    //noteheads
+    GLYPH_NOTEHEAD_HALF = 0,    //half, blanca
+    GLYPH_NOTEHEAD_QUARTER,     //quarter, negra
+    GLYPH_NOTEHEAD_CROSS,       //cross, aspa
+
+    //notes with stem and flag, in single char
+    GLYPH_LONGA_NOTE,           //longa
+    GLYPH_BREVE_NOTE,           //breve, cuadrada
     GLYPH_WHOLE_NOTE,
-    GLYPH_NOTEHEAD_HALF,    //half, blanca
-    GLYPH_NOTEHEAD_QUARTER, //quarter, negra
-    GLYPH_NOTEHEAD_CROSS,   //cross, aspa
-    GLYPH_EIGHTH_NOTE_DOWN, //eighth, corchea
+    GLYPH_HALF_NOTE_DOWN,       //half, blanca
+    GLYPH_HALF_NOTE_UP,
+    GLYPH_QUARTER_NOTE_DOWN,    //quarter, negra
+    GLYPH_QUARTER_NOTE_UP,
+    GLYPH_EIGHTH_NOTE_DOWN,     //eighth, corchea
     GLYPH_EIGHTH_NOTE_UP,
-    GLYPH_16TH_NOTE_DOWN,   //16th, semicorchea
+    GLYPH_16TH_NOTE_DOWN,       //16th, semicorchea
     GLYPH_16TH_NOTE_UP,
-    GLYPH_32ND_NOTE_DOWN,   //32nd, fusa
+    GLYPH_32ND_NOTE_DOWN,       //32nd, fusa
     GLYPH_32ND_NOTE_UP,
-    GLYPH_64TH_NOTE_DOWN,   //64th, semifusa
+    GLYPH_64TH_NOTE_DOWN,       //64th, semifusa
     GLYPH_64TH_NOTE_UP,
-    GLYPH_128TH_NOTE_DOWN,  //128th garrapatea
+    GLYPH_128TH_NOTE_DOWN,      //128th garrapatea
     GLYPH_128TH_NOTE_UP,
-    GLYPH_256TH_NOTE_DOWN,  //256th semigarrapatea
+    GLYPH_256TH_NOTE_DOWN,      //256th semigarrapatea
     GLYPH_256TH_NOTE_UP,
 
     // rests
@@ -156,7 +164,18 @@ enum lmEGlyphIndex {
     GLYPH_FERMATA_OVER,
     GLYPH_FERMATA_UNDER,
 
-
+    //figured bass. Numbers and other symbols
+    GLYPH_FIGURED_BASS_1,               //number 1
+    GLYPH_FIGURED_BASS_2,               //number 2
+    GLYPH_FIGURED_BASS_3,               //number 3
+    GLYPH_FIGURED_BASS_4,               //number 4
+    GLYPH_FIGURED_BASS_5,               //number 5
+    GLYPH_FIGURED_BASS_6,               //number 6
+    GLYPH_FIGURED_BASS_7,               //number 7
+    GLYPH_FIGURED_BASS_8,               //number 8
+    GLYPH_FIGURED_BASS_9,               //number 9
+    GLYPH_FIGURED_BASS_0,               //number 0
+    GLYPH_FIGURED_BASS_SHARP,           //Sharp symbol
 
 };
 

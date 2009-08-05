@@ -46,7 +46,7 @@
 #include "../score/Score.h"
 #include "../score/Staff.h"
 #include "../score/VStaff.h"
-#include "../score/Notation.h"
+#include "../score/Spacer.h"
 #include "TimeposTable.h"
 #include "ShapeNote.h"
 #include "BoxSlice.h"
@@ -467,10 +467,14 @@ void lmTimeposEntry::AssignSpace(lmTimeposTable* pTT, float rFactor)
 				{
                     m_uFixedSpace = pTT->TenthsToLogical(10, 1);
 				}
-				else if (m_pSO->IsNotation() &&
-                         ((lmNotation*)m_pSO)->GetNotationType()==eNT_Spacer )
+				else if (m_pSO->IsSpacer()
+                         || m_pSO->IsAnchor()
+                         || m_pSO->IsScoreAnchor()
+                         || m_pSO->IsFiguredBass()
+                        )
 				{
-                    ;
+                    ;       //TODO ?
+                    //m_uFixedSpace = ?
 				}
 				else
                     m_uSize = 0.0f;

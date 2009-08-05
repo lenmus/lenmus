@@ -356,6 +356,10 @@ enum EStaffObjType
     eSFOT_Control,              // control element (backup, forward) (lmSOControl)
     eSFOT_MetronomeMark,        // metronome mark (lmMetronomeMark)
     eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)
+    eSFOT_Spacer,               // spacer (lmSpacer)
+    eSFOT_Anchor,               // anchor to attach AuxObjs to a VStaff
+    eSFOT_ScoreAnchor,          // anchor to attach AuxObjs to the score
+    eSFOT_FiguredBass,          // figured bass information (lmFiguredBass)
 };
 
 
@@ -399,13 +403,16 @@ public:
     inline bool IsClef() { return m_nClass == eSFOT_Clef; }
     inline bool IsKeySignature() { return m_nClass == eSFOT_KeySignature; }
     inline bool IsTimeSignature() { return m_nClass == eSFOT_TimeSignature; }
-    inline bool IsNotation() { return m_nClass == eSFOT_Notation; }
     inline bool IsBarline() { return m_nClass == eSFOT_Barline; }
     inline bool IsNoteRest() { return m_nClass == eSFOT_NoteRest; }
     inline bool IsText() { return m_nClass == eSFOT_Text; }
     inline bool IsControl() { return m_nClass == eSFOT_Control; }
     inline bool IsMetronomeMark() { return m_nClass == eSFOT_MetronomeMark; }
     inline bool IsTupletBracket() { return m_nClass == eSFOT_TupletBracket; }
+    inline bool IsSpacer() { return m_nClass == eSFOT_Spacer; }
+    inline bool IsAnchor() { return m_nClass == eSFOT_Anchor; }
+    inline bool IsScoreAnchor() { return m_nClass == eSFOT_ScoreAnchor; }
+    inline bool IsFiguredBass() { return m_nClass == eSFOT_FiguredBass; }
 
     //inline bool IsNote() { return m_nClass == eSFOT_NoteRest && !((lmNote*)this)->IsRest(); }
     //inline bool IsRest() { return m_nClass == eSFOT_NoteRest && ((lmNote*)this)->IsRest(); }
