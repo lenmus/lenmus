@@ -274,14 +274,14 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 {
                     nVoice = 4;
                     nStaff = 2;
-                    sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem up))")
+                    sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem down))")
                        , sNotes[nBassNoteStep].c_str(), nOctave, nStaff, nVoice);
                 }
                 else if (nHarmonyExcerciseType == 2 )  // soprano
                 {
                     nVoice = 1;
                     nStaff = 1;
-                    sPattern = wxString::Format(_T("(n %s q p%d v%d (stem down))")
+                    sPattern = wxString::Format(_T("(n %s q p%d v%d (stem up))")
                        , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).c_str(), nStaff, nVoice);
                 }
                 pNode = parserLDP.ParseText( sPattern );
