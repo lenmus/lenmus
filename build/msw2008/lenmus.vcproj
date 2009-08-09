@@ -304,11 +304,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\score\EditCmd.cpp"
+				RelativePath="..\..\src\score\FiguredBass.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\score\EditCmd.h"
+				RelativePath="..\..\src\score\FiguredBass.h"
 				>
 			</File>
 			<File
@@ -349,14 +349,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\MetronomeMark.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\score\Notation.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\score\Notation.h"
 				>
 			</File>
 			<File
@@ -428,6 +420,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\score\Spacer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\score\Spacer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\score\Staff.cpp"
 				>
 			</File>
@@ -473,14 +473,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\TupletBracket.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\score\UndoRedo.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\score\UndoRedo.h"
 				>
 			</File>
 			<File
@@ -1289,6 +1281,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\auxmusic\Harmony.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\HarmonyExercisesData.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\HarmonyExercisesData.h"
 				>
 			</File>
 			<File

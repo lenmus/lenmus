@@ -111,6 +111,8 @@ void ChordInfoBox::SetYPosition(int nYpos)
 void ChordInfoBox::DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText)
 {
     int nNumChordNotes  = pChordDsct->nNumChordNotes;
+    if (nNumChordNotes < 1)
+        return;  // @@ todo: improve: in this case display a box but not attached to any note
     lmTextStyle* pStyle = pScore->GetStyleName(*m_pFontInfo);
 
     // Display chord info in score with a line and text

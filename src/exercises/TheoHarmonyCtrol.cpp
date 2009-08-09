@@ -194,20 +194,22 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         wxString sNumerals;
         lmEChordType nE1ChordTypes[7] =
          // TODO: MAKE A GENERIC METHOD to get chord type from: root note + key sig
-        // example: key-sig: DoM
+        // example: if key-sig == DoM return this:
         //      I             II              III              IV             V             VI             VII
         {ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
         // For exercise 2, given a numeral (bass note; chord in root poition) : calculate soprano pitch. No inversions
+        //  First index: interval (2 intervals for triad chords)
+        //  Second index: numeral 
         lmFPitch nBassSopranoInterval[2][7] =  {
         //      I             II              III              IV             V             VI             VII
         //{ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
           {   lm_M3,        lm_m3,          lm_p5,          lm_M3,          lm_M3,         lm_m3,         lm_m3},
-          {   lm_p5,         lm_p5,         lm_p5,          lm_p5,          lm_p5,         lm_p5,         lm_d5} };
+          {   lm_p5,        lm_p5,          lm_p5,          lm_p5,          lm_p5,         lm_p5,         lm_d5} };
         // TODO: this info could be get from ChordManager.cpp tData, with a global method:
         //  { ... { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
         //  { ... { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
         //  { ... { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
-        //  global method to get interval between voices of a given chord type (specify also nversions)
+        //  global method to get interval between voices of a given chord type (specify also inversions)
 
 
         //loop the add notes
@@ -232,7 +234,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 //   Generate bass note
                 //     Get numerals from bass note and display it
                 //     Get chord type from bass note
-                //   Exercise 2: get soprano form bass note
+                //   Exercise 2: get soprano from bass note
                 //   Display note
                 //      Ex. 1: bass
                 //      Ex. 2: soprano
@@ -251,11 +253,16 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 //   Get chord type from bass note and store it for later check
                 nExercise1ChordType[nNoteCount] = nE1ChordTypes[nBassNoteStep];
 
-                //   Exercise 2: get soprano form bass note and store it for later check
+                //   Exercise 2: get soprano from bass note and store it for later check
+                //   @@@@@@@@@@@@@@@@TODO: ACLARAR las posibilidades de altura de la soprano; se me ocurre:
+                //    casos básicos:
+                //      1) tercera nota: bajo + 2º intervalo + UNA (o DOS?) octavas  
+                //      2) segunda nota: bajo + 1er intervalo + UNA (o DOS?) octavas
+                //      3) primera nota: bajo + (UNO? o) DOS (o TRES?) octavas
                 if (nHarmonyExcerciseType == 2 )
                 {
                     nExercise2NotesFPitch[nNoteCount] =
-                        nExerciseBassNotesFPitch[nNoteCount]
+                        nExerciseBassNotesFPitch[nNoteCount]    // bass note
                         + nBassSopranoInterval[1][nBassNoteStep]
                         + lm_p8; //
                 }
@@ -267,7 +274,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 {
                     nVoice = 4;
                     nStaff = 2;
-                    sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem down))")
+                    sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem up))")
                        , sNotes[nBassNoteStep].c_str(), nOctave, nStaff, nVoice);
                 }
                 else if (nHarmonyExcerciseType == 2 )  // soprano
@@ -296,17 +303,18 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 else if (nHarmonyExcerciseType == 2 )  // soprano
                 {
 
-                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%d %s pattern:%s")
+                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%s FP:%d ")
                       , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
-                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).c_str()
+//@ todo: remove      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).c_str() // the same as above. Debug only
                       , nExerciseBassNotesFPitch[nNoteCount]
                       , nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]).c_str()
                       , nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]).c_str()
-                      , nExercise2NotesFPitch[nNoteCount]
                       , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).c_str()
-                      , sPattern.c_str());
+                      , nExercise2NotesFPitch[nNoteCount]
+//@  todo: remove     , sPattern // debug only
+                      );
 
                 }
 

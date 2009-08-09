@@ -134,6 +134,7 @@ protected:
 
     lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
     int nNumChords;
+    void ResetChordDescriptor();
 
     lmActiveNotes ActiveNotesList;
 

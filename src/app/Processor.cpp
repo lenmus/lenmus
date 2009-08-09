@@ -340,11 +340,13 @@ lmHarmonyProcessor::~lmHarmonyProcessor()
 {
     //delete all markup pairs
     std::list<lmMarkup*>::iterator it = m_markup.begin();
+    int nCount = 0;
     while (it != m_markup.end())
     {
         lmMarkup* pError = *it;
         m_markup.erase(it++);
         delete pError;
+        nCount++;
     }
 
     assert(nNumChords<lmMAX_NUM_CHORDS);
@@ -352,7 +354,18 @@ lmHarmonyProcessor::~lmHarmonyProcessor()
         delete tChordDescriptor[i].pChord;
 
     delete pBoxSize;
+    delete pErrorBoxSize;
     delete pInfoBox;
+    delete pChordErrorBox;
+}
+
+void lmHarmonyProcessor::ResetChordDescriptor()
+{
+    assert(nNumChords<lmMAX_NUM_CHORDS);
+    for (int i = 0; i <nNumChords; i++)
+        delete tChordDescriptor[i].pChord;
+
+    nNumChords = 0;
 }
 
 bool lmHarmonyProcessor::SetTools()
@@ -442,7 +455,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
     //As an example, I will put red and a green lines pointing to fourth and
     //sixth notes, respectively, and add some texts
     bool fScoreModified = false;
-    nNumChords = 0;
+    ResetChordDescriptor();
 
     float rAbsTime = 0.0f;
     float rTimeAtStartOfMeasure = 0.0f;
