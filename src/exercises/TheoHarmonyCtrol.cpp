@@ -138,22 +138,21 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
     if ( nHarmonyExcerciseType == 1 || nHarmonyExcerciseType == 2 )
     {
-        // Prepare a score with that meets the restrictions
-        // TODO: VER ESTA TONALIDAD
+        // Prepare a score that meets the restrictions
+
         m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
         // TODO: think about exercise options
         //        note duration?
         //        ...
 
-
         int nNumMeasures = 2;
 
         sExerciseDescription  =  wxString::Format(
-            _T(" Fixed %s; root position. Complete the chord notes.")
-            , (nHarmonyExcerciseType == 1? _T("bass"): _T("soprano")) );
+            _(" Fixed %s; root position. Complete the chord notes.")
+            , (nHarmonyExcerciseType == 1? _("bass"): _("soprano")) );
 
-        sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
+        sExerciseTitle = wxString::Format(_(" Exercise type %d : %s ")
             , nHarmonyExcerciseType, sExerciseDescription.c_str());
 
         //create a score with a bass line
@@ -186,7 +185,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         lmFontInfo tNumeralFont = {_T("Times New Roman"), 12, wxFONTSTYLE_NORMAL,
                                     wxFONTWEIGHT_BOLD };
         lmTextStyle* pNumeralStyle = m_pProblemScore->GetStyleName(tNumeralFont);
-        wxString sNotes[7]    = {_T("c"), _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b")};
+        wxString sNotes[7]    = {_("c"), _("d"), _("e"), _("f"), _("g"), _("a"), _("b")};
         // TODO: improve! (calculate numerals from chord info + key signature + mode)
         //        this is provisional; only for key signature = C Major
         wxString sNumeralsDegrees[7] =
@@ -305,7 +304,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
                     wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%s FP:%d ")
                       , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
-//@ todo: remove      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).c_str() // the same as above. Debug only
                       , nExerciseBassNotesFPitch[nNoteCount]
                       , nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]).c_str()
@@ -313,7 +311,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                       , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]).c_str()
                       , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).c_str()
                       , nExercise2NotesFPitch[nNoteCount]
-//@  todo: remove     , sPattern // debug only
                       );
 
                 }

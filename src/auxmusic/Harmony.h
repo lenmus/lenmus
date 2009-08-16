@@ -193,10 +193,9 @@ class lmRule
 public:
   ///  DECLARE_ABSTRACT_CLASS(lmRule) //@@ TODO: aclarar ¿necesario?
 
-    lmRule(int nRuleID, wxString sDescription);
+    lmRule(int nRuleID);
     virtual ~lmRule(){};
     virtual int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )=0;
-//@@TODO QUITAR    virtual bool Evaluate(wxString& sResultDetails, lmChordDescriptor* pFailingChord)=0;
     void SetChordDescriptor(lmChordDescriptor* pChD, int nNumChords)
     {
         m_pChordDescriptor = pChD; 
@@ -205,6 +204,7 @@ public:
     bool IsEnabled(){ return m_fEnabled; };
     void Enable( bool fVal ){ m_fEnabled = fVal; };
     wxString GetDescription() { return m_sDescription;};
+    void SetDescription(const wxString& sDescription) { m_sDescription = sDescription;};
     int GetRuleId() { return m_nRuleId;};
 protected:
     int m_nNumChords;
@@ -225,7 +225,7 @@ public:
     lmRuleList(lmChordDescriptor* pChD, int nNumChords);
     ~lmRuleList();
     
-    bool AddRule(lmRule* pNewRule);  // return: ok
+    bool AddRule(lmRule* pNewRule, const wxString& sDescription );  // return: ok
     bool DeleteRule(int nRuleId);  // arg: lmChordValidationRules; return: ok
     lmRule* GetRule(int nRuleId);  // arg: lmChordValidationRules;
     void SetChordDescriptor(lmChordDescriptor* pChD, int nNumChords);
@@ -240,11 +240,13 @@ protected:
 // Derived classes of rules
 // 
 // TODO: improve this with a template...
-#define LM_CREATE_CHORD_RULE(classname, id, text) \
+// Aware: text describing the rule must be set dynamically, since it 
+//  hast to be translated and therefore it requieres _("") instead of the static _T("")
+#define LM_CREATE_CHORD_RULE(classname, id) \
 class classname : public lmRule  \
 { \
 public: \
-    classname() :lmRule(id, _T(text)) {}; \
+    classname() :lmRule(id) {}; \
     int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox); \
 };
 
@@ -254,11 +256,6 @@ public: \
 // GLOBAL AUX FUNCTIONS
 //
 
-/*----TODO QUITAR!
-extern void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
-                        , wxColour colour, wxString &sText, bool reset);
-
---*/
 // return
 //  -1: negative, 0, 1: positive
 extern int GetHarmonicDirection(int nInterval);
