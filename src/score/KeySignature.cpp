@@ -62,7 +62,7 @@ static wxString m_sLDPKeyName[30] = {
 
 lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, long nID,
                                bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_fHidden(false)
     , m_fTraditional(true)
     , m_nFifths(nFifths)

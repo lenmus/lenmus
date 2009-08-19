@@ -59,6 +59,7 @@
 #include "ToolNotes.h"
 #include "ToolClef.h"
 #include "ToolBarlines.h"
+#include "ToolSymbols.h"
 //TO_ADD: add here the new tool panel include file
 
 
@@ -253,9 +254,11 @@ lmToolPage* lmToolBox::CreatePage(lmEToolPage nPanel)
             pPage->CreateGroups();
             return pPage;
         }
-
         case lmPAGE_BARLINES:
             return new lmToolPageBarlines(this);
+        case lmPAGE_SYMBOLS:
+            return new lmToolPageSymbols(this);
+
         //TO_ADD: Add a new case block for creating the new tool panel
         default:
             wxASSERT(false);
@@ -404,6 +407,32 @@ void lmToolBox::OnPopUpMenuEvent(wxCommandEvent& event)
 {
     lmToolPage* pSelPage = m_cPages[ m_cActivePages[m_nSelTool] ];
     pSelPage->OnPopUpMenuEvent(event);
+}
+
+int lmToolBox::GetEntryMode()
+{
+    //Determines selected entry mode (with keyboard or with mouse) for current page
+
+    //get active page
+    int nEntryMode;
+    switch(m_nSelTool)
+    {
+    case lmPAGE_CLEFS:
+        nEntryMode = lm_DATA_ENTRY_KEYBOARD; 
+        break;
+    case lmPAGE_NOTES:
+        nEntryMode = m_pEntryModeGroup->GetEntryMode(); 
+        break;
+    case lmPAGE_BARLINES:
+        nEntryMode = lm_DATA_ENTRY_KEYBOARD; 
+        break;
+    case lmPAGE_SYMBOLS:
+        nEntryMode = lm_DATA_ENTRY_MOUSE;
+        break;
+    default:
+        wxASSERT(false);
+    }
+    return nEntryMode; 
 }
 
 

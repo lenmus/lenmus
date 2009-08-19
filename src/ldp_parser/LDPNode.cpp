@@ -45,17 +45,23 @@
 //	Compound nodes are (node ... node)
 
 
-lmLDPNode::lmLDPNode(wxString sData, long nNumLine)
+lmLDPNode::lmLDPNode(wxString sData, long nNumLine, bool fIsParameter)
     : m_nID(lmNEW_ID)
     , m_nNumLine(nNumLine)
     , m_fIsSimple(true)
     , m_fProcessed(false)
 {
-    int i = sData.Find(_T('#'));
-    if (i > 0)
+    if (!fIsParameter)
     {
-        m_sName = sData.Mid(0, i);
-        sData.Mid(i+1).ToLong(&m_nID);
+        //it is the name of an element. Find its ID
+        int i = sData.Find(_T('#'));
+        if (i > 0)
+        {
+            m_sName = sData.Mid(0, i);
+            sData.Mid(i+1).ToLong(&m_nID);
+        }
+        else
+            m_sName = sData;
     }
     else
         m_sName = sData;
@@ -72,7 +78,7 @@ lmLDPNode::~lmLDPNode()
 
 void lmLDPNode::AddParameter(wxString sData)
 {
-    lmLDPNode* pNode = new lmLDPNode(sData, m_nNumLine);
+    lmLDPNode* pNode = new lmLDPNode(sData, m_nNumLine, true);  //true -> it's a parameter node
     AddNode(pNode);
 }
 

@@ -47,12 +47,13 @@
 //Constructors and destructors
 //====================================================================================================
 
-lmNoteRest::lmNoteRest(lmVStaff* pVStaff, long nID, bool IsRest, lmENoteType nNoteType,
+lmNoteRest::lmNoteRest(lmVStaff* pVStaff, long nID, bool fIsRest, lmENoteType nNoteType,
                        float rDuration, int nNumDots, int nStaff, int nVoice, bool fVisible)
-	: lmStaffObj(pVStaff, nID, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, (fIsRest ? lm_eSO_Rest : lm_eSO_Note), pVStaff, nStaff,
+                 fVisible, lmDRAGGABLE)
     , m_nNoteType(nNoteType)
     , m_nNumDots(nNumDots)
-    , m_fIsRest(IsRest)
+    //, m_fIsRest(IsRest)
 	, m_nVoice(nVoice)
     , m_pNotations((AuxObjsList*)NULL)
     , m_pLyrics((AuxObjsList*)NULL)

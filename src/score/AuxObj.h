@@ -45,9 +45,6 @@ public:
                 lmELineCap nEndCap, lmELineStyle nStyle, wxColour nColor);
     ~lmScoreLine() {}
 
-    //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Line; }
-
     // source code related methods
     wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);
@@ -92,10 +89,9 @@ public:
     lmFermata(lmScoreObj* pOwner, long nID, lmEPlacement nPlacement);
     ~lmFermata() {}
 
-    // overrides for pure virtual methods of base class
+    // implementation of pure virtual methods of base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Fermata; }
 
     // source code related methods
     wxString SourceLDP(int nIndent, bool fUndoData);
@@ -137,7 +133,6 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	wxFont* GetSuitableFont(lmPaper* pPaper);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Lyric; }
 
     //// overrides for virtual methods of base class lmNoteRestObj
     //void SetOwner(lmNoteRest* pOwner);

@@ -103,6 +103,20 @@ void lmToolGroup::EnableGroup(bool fEnable)
     //}
 }
 
+void lmToolGroup::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
+{
+    //post tool box event to the active controller
+    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+    if (pWnd)
+    {
+	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+                             fSelected);
+        ::wxPostEvent( pWnd, event );
+    }
+}
+
 
 
 

@@ -49,49 +49,13 @@ enum lmEToolPage
 	lmPAGE_CLEFS =0,
 	lmPAGE_NOTES,
 	lmPAGE_BARLINES,
+    lmPAGE_SYMBOLS,
     //TO_ADD: Add, before this line, a new lmPAGE_XXXXX code for the new tool
 	lmPAGE_MAX,		//this MUST BE the last one
     //not used yet
 	lmPAGE_SELECTION,
 	lmPAGE_KEY_SIGN,
 	lmPAGE_TIME_SIGN,
-};
-
-//enum lmEToolGroupID
-//{
-//	//lmPAGE_NOTES
-//    lmGRP_EntryMode,
-//    lmGRP_Octave,
-//    lmGRP_Voice,
-//    lmGRP_NoteDuration,         //notes duration group
-//    lmGRP_NoteAcc,              //Note accidentals group
-//    lmGRP_NoteDots,             //Note dots group
-//    lmGRP_TieTuplet,            //Ties and tuplets group
-//    lmGRP_Beams,                //tools for beams
-//
-//	//lmPAGE_CLEFS
-//    lmGRP_ClefType,
-//    lmGRP_TimeType,
-//    lmGRP_KeyType,
-//
-//	//lmPAGE_BARLINES,
-//	lmGRP_BarlineType,			//barline type
-//
-//};
-
-// Only needed for groups needing an ID for each tool
-enum lmEToolID
-{
-    //lmGRP_TieTuplet
-    lmTOOL_NOTE_TIE,
-    lmTOOL_NOTE_TUPLET,
-
-    //lmGRP_Beams
-    lmTOOL_BEAMS_CUT,
-    lmTOOL_BEAMS_JOIN,
-    lmTOOL_BEAMS_FLATTEN,
-    lmTOOL_BEAMS_SUBGROUP,
-
 };
 
 //--------------------------------------------------------------------------------
@@ -171,6 +135,7 @@ public:
 
 	//current tool and its options
 	inline lmEToolPage GetSelectedToolPage() const { return m_nSelTool; }
+    lmToolPage* GetSelectedPage() { return (lmToolPage*)m_pCurPage; }
 	void SelectToolPage(lmEToolPage nTool);
 	inline wxPanel* GetToolPanel(lmEToolPage nPanel) { return (wxPanel*)m_cPages[nPanel]; }
 
@@ -190,7 +155,7 @@ public:
     void AddSpecialTools(wxPanel* pPanel, wxEvtHandler* pHandler);
 
     //interface with EntryMode tools group
-	inline int GetEntryMode() { return m_pEntryModeGroup->GetEntryMode(); }
+	int GetEntryMode();
     inline void SetEntryMode(int nEntryMode) { m_pEntryModeGroup->SetEntryMode(nEntryMode); }
 
 

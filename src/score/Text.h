@@ -169,7 +169,8 @@ public:
     void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift);
 
 protected:
-    lmScoreBlock(lmScoreObj* pOwner, long nID, lmTenths ntWidth = 160.0f,
+    lmScoreBlock(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
+                 lmTenths ntWidth = 160.0f,
                  lmTenths ntHeight = 100.0f,
                  lmTPoint ntPos = lmTPoint(0.0f, 0.0f),
                  lmEBlockAlign nBlockAlign = lmBLOCK_ALIGN_DEFAULT,
@@ -215,17 +216,22 @@ protected:
 };
 
 //------------------------------------------------------------------------------------
-// lmScoreTextParagraph: box + alignment + collection of lmBaseText
+// lmScoreTextParagraph:
 
-class lmScoreTextParagraph : public lmScoreBlock
+//To be implemented
+
+
+
+
+//------------------------------------------------------------------------------------
+// lmScoreTextBox: box + alignment + collection of lmScoreTextParagraph
+
+class lmScoreTextBox : public lmScoreBlock
 {
 public:
-    lmScoreTextParagraph(lmScoreObj* pOwner, long nID, lmTenths ntWidth,
+    lmScoreTextBox(lmScoreObj* pOwner, long nID, lmTenths ntWidth,
                          lmTenths ntHeight, lmTPoint tPos);
-    virtual ~lmScoreTextParagraph();
-
-    //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextParagraph; }
+    virtual ~lmScoreTextBox();
 
     // source code related methods
     wxString SourceLDP(int nIndent, bool fUndoData);
@@ -245,27 +251,12 @@ protected:
     //collection of text units
     std::list<lmBaseText*>      m_texts;
 
-};
-
-//------------------------------------------------------------------------------------
-// lmScoreTextBox: box + alignment + collection of lmScoreTextParagraph
-
-class lmScoreTextBox : public lmScoreBlock
-{
-public:
-    lmScoreTextBox(lmScoreObj* pOwner, long nID);
-
-    virtual ~lmScoreTextBox();
-
-    //contents modification
-    //void AddText(wxString& sText, lmTextStyle* pStyle,
-    //             const wxString& sLanguage = _T("Unknown"));
-
-protected:
-    //collection of text paragraphs
-    std::list<lmScoreTextParagraph*>      m_paragraphs;
+    //TODO: replace text units by text paragraphs
+    ////collection of text paragraphs
+    //std::list<lmScoreTextBox*>      m_paragraphs;
 
 };
+
 
 
 //------------------------------------------------------------------------------------
@@ -300,8 +291,8 @@ public:
 
 
 protected:
-    lmScoreText(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEHAlign nHAlign,
-                lmTextStyle* pStyle);
+    lmScoreText(lmScoreObj* pOwner, long nID, lmEScoreObjType nType, wxString& sTitle,
+                lmEHAlign nHAlign, lmTextStyle* pStyle);
 
     lmEBlockAlign   m_nBlockAlign;
     lmEHAlign       m_nHAlign;
@@ -325,7 +316,6 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_TextItem; }
     wxString Dump();
     virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
@@ -342,8 +332,8 @@ private:
 class lmInstrNameAbbrev : public lmTextItem
 {
 public:
-    lmInstrNameAbbrev(lmScoreObj* pOwner, wxString& sTitle, lmTextStyle* pStyle)
-                            : lmTextItem(pOwner, lmNEW_ID, sTitle, lmHALIGN_LEFT, pStyle) {};
+    lmInstrNameAbbrev(lmScoreObj* pOwner, long nID, wxString& sTitle, lmTextStyle* pStyle)
+                            : lmTextItem(pOwner, nID, sTitle, lmHALIGN_LEFT, pStyle) {};
 
     //specific methods
     wxString SourceLDP(wxString sTag, bool fUndoData);
@@ -363,7 +353,6 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //implementation of virtual methods from base class
-    inline lmEAuxObjType GetAuxObjType() { return eAXOT_ScoreTitle; }
     wxString Dump();
     wxString SourceLDP(int nIndent, bool fUndoData);
     wxString SourceXML(int nIndent);

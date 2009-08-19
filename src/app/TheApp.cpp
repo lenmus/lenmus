@@ -936,8 +936,8 @@ int lmTheApp::FilterEvent(wxEvent& event)
                 lmToolBox* pTB = g_pMainFrame->GetActiveToolBox();
                 if (pTB)
                 {
-				    pTB->ProcessEvent(event);
-				    return true;	//true: the event had been already processed
+				    pTB->OnKeyPress((wxKeyEvent&)event);
+				    return true;	        //true: the event had been already processed
                 }
                 else
 	                return -1;		//process the event normally

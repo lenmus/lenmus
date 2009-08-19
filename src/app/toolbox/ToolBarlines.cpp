@@ -80,7 +80,7 @@ void lmToolPageBarlines::Create(wxWindow* parent)
     lmToolPage::Create(parent);
 
     //initialize data
-    m_sPageToolTip = _("Select barlines and rehearsal marks edit tools");
+    m_sPageToolTip = _("Edit tools for barlines and rehearsal marks");
     m_sPageBitmapName = _T("tool_barlines");
 
     //create groups

@@ -198,7 +198,7 @@ static lmLUnits m_uRadius;            // for dots
 //
 
 lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, long nID, bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
     SetLayer(lm_eLayerBarlines);

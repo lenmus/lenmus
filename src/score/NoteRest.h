@@ -48,8 +48,8 @@ public:
     //ctors and dtor
     virtual ~lmNoteRest();
 
-    inline bool IsRest() const { return m_fIsRest; }
-    inline bool IsNote() const { return !m_fIsRest; }
+    //inline bool IsRest() const { return m_fIsRest; }
+    //inline bool IsNote() const { return !m_fIsRest; }
 
     //implementation of virtual methods of base class lmStaffObj
     virtual bool IsComposite() { return true; }
@@ -131,7 +131,7 @@ protected:
         // member variables
         //
 
-    bool		m_fIsRest;          //This lmNoteRest is a rest
+    //bool		m_fIsRest;          //This lmNoteRest is a rest
     lmENoteType	m_nNoteType;        //type of note / rest
 	int			m_nVoice;			//voice: 1..lmMAX_VOICE
     

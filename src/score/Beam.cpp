@@ -49,7 +49,7 @@
 #include "../graphic/ShapeNote.h"
 
 lmBeam::lmBeam(lmNote* pNote, long nID)
-    : lmMultiRelObj(pNote, nID, eAXOT_Beam, lmNO_DRAGGABLE)
+    : lmMultiRelObj(pNote, nID, lm_eSO_Beam, lmNO_DRAGGABLE)
 {
 	m_pBeamShape = (lmShapeBeam*)NULL;
     m_fNeedsSetUp = true;

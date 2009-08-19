@@ -205,17 +205,24 @@ const lmGlyph aGlyphsInfo[] =
 	//                                                           ----- FUnits ------------      -- FUnits--
     //                            sel rectangle                  Position    Size                drag point
     //            Glyph   offset  shift   height                 x       y   width   height      x       y
+    lmGlyph(_T('\uF09F'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 0")) ,
     lmGlyph(_T('\uF096'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 1")) ,
     lmGlyph(_T('\uF097'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 2")) ,
     lmGlyph(_T('\uF098'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 3")) ,
     lmGlyph(_T('\uF099'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 4")) ,
     lmGlyph(_T('\uF09A'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 5")) ,
     lmGlyph(_T('\uF09B'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 6")) ,
-    lmGlyph(_T('\uF09C'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 7")) ,
+    lmGlyph(_T('\uF09C'),   0,      0,      0,   0,      0,      0,      0,      0,    664,      0,      0 ),    //_T("Figured bass. Number 7")) ,
     lmGlyph(_T('\uF09D'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 8")) ,
     lmGlyph(_T('\uF09E'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 9")) ,
-    lmGlyph(_T('\uF09F'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Number 0")) ,
     lmGlyph(_T('\uF0A0'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Figured bass. Sharp symbol")) ,
+    lmGlyph(_T('\uF0A1'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_FLAT,                //Flat symbol
+    lmGlyph(_T('\uF0A2'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_NATURAL,             //Natural symbol
+    lmGlyph(_T('\uF0AB'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_PLUS,                // +
+    lmGlyph(_T('\uF0A0'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_MINUS,               // -
+    lmGlyph(_T('\uF0A8'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_OPEN_PARENTHESIS,    // (
+    lmGlyph(_T('\uF0A3'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_CLOSE_PARENTHESIS,   // )
+    lmGlyph(_T('\uF0AA'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_7_STRIKED,           // 7 with overlayered /
 };
 
 //em=2048

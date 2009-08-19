@@ -51,7 +51,7 @@ extern lmFPitch FPitch(int nStep, int nOctave, int nAcc);
 
 lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, long nID, int nNumStaff,
                bool fVisible, wxColour colorC)
-    : lmStaffObj(pStaff, nID, eSFOT_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pStaff, nID, lm_eSO_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
     , m_nClefType(nClefType)
     , m_fHidden(false)
     , m_pContext((lmContext*)NULL)

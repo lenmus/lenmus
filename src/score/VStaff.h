@@ -26,6 +26,7 @@
 #endif
 
 #include "Score.h"
+#include "FiguredBass.h"
 #include "StaffObjIterator.h"
 
 class lmScore;
@@ -38,19 +39,6 @@ class lmTextItem;
 class lmMetronomeMark;
 class lmBeamInfo;
 
-
-////enums
-//lmENoteHead
-//lmENoteType
-//lmEScoreObjType
-//lmEClefType
-//lmETimeSignature
-//lmETimeSignatureType
-//lmEKeySignatures
-//lmEAccidentals
-//lmEPitchType
-//lmEStemType
-//lmEHAlign
 
 
 //----------------------------------------------------------------------------------------
@@ -69,14 +57,13 @@ public:
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
 
-	inline lmEScoreObjType GetScoreObjType() { return lmSOT_VStaff; }
     inline lmScore* GetScore() { return m_pScore; }
 
 
 	//---- specific methods of this class ------------------------
 
 	//Adding StaffObs (at the end)
-    lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
+    lmStaff*    AddStaff(int nNumLines=5, long nID=lmNEW_ID, lmLUnits uUnits=0);
     lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true,
                         long nID = lmNEW_ID);
 
@@ -117,6 +104,8 @@ public:
     lmBarline*  AddBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true,
                            long nID = lmNEW_ID);
 
+    lmFiguredBass* AddFiguredBass(lmFiguredBassInfo* pFBInfo, long nID = lmNEW_ID);
+
     lmMetronomeMark* AddMetronomeMark(int nTicksPerMinute,
                             bool fParentheses = false, bool fVisible = true,
                             long nID = lmNEW_ID);
@@ -148,6 +137,7 @@ public:
 	    //--- inserting StaffObs
     lmBarline* Cmd_InsertBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
 	lmClef* Cmd_InsertClef(lmEClefType nClefType, bool fVisible = true);
+    lmFiguredBass* Cmd_InsertFiguredBass(lmFiguredBassInfo* pFBInfo);
     lmKeySignature* Cmd_InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 	lmNote* Cmd_InsertNote(lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,

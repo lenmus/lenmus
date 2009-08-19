@@ -309,9 +309,6 @@ enum {
     lmMARGIN_RIGHT,
 };
 
-//global variable for exporting to LDP ScoreCursor data
-extern lmStaffObj* g_pCursorSO;        //not NULL for exporting cursor data
-
 class lmScore : public lmScoreObj
 {
 public:
@@ -324,7 +321,6 @@ public:
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
-	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Score; }
     inline lmScore* GetScore() { return this; }
 
 	//---- overrides

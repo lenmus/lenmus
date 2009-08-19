@@ -115,13 +115,53 @@ protected:
 //-------------------------------------------------------------------------------------------
 
 //type of ScoreObj
-enum lmEScoreObjType {
-	lmSOT_Instrument = 0,
-	lmSOT_Score,
-	lmSOT_Staff,
-	lmSOT_ComponentObj,
-	lmSOT_VStaff,
+enum lmEScoreObjType 
+{
+    //simple objects
+	lm_eSO_Score = 0,
+	lm_eSO_Instrument,
+	lm_eSO_Staff,
+	lm_eSO_VStaff,
+
+    //Component objs (StaffObjs & AuxObjs)
+	lm_eSO_ComponentObj,
+
+    //staff objects (lmStaffObj). Objects on the staff. Consume time
+    lm_eSO_StaffObj = lm_eSO_ComponentObj,
+    lm_eSO_Barline = lm_eSO_StaffObj,  // barline (lmBarline)
+    lm_eSO_Clef,                    // clef (lmClef)
+    lm_eSO_KeySignature,            // key signature (lmKeySignature)
+    lm_eSO_TimeSignature,           // time signature (lmTimeSignature)
+    lm_eSO_Note,                    // notes (lmNote -> lmNoteRest)
+    lm_eSO_Rest,                    // rests (lmRest -> lmNoteRest)
+    lm_eSO_Control,                 // control element: new system (lmSOControl)
+    lm_eSO_MetronomeMark,           // metronome mark (lmMetronomeMark)
+    lm_eSO_Spacer,                  // spacer (lmSpacer)
+    lm_eSO_ScoreAnchor,             // anchor to attach AuxObjs to the score
+    lm_eSO_FiguredBass,             // figured bass symbol (lmFiguredBass)
+    lm_eSO_LastStaffObj,
+
+    // aux objects (lmAuxObj). Auxiliary. Owned by StaffObjs
+    lm_eSO_AuxObj = lm_eSO_LastStaffObj, 
+    lm_eSO_Fermata = lm_eSO_AuxObj,
+    lm_eSO_Line,                    // graphic object: line (lmScoreLine)
+    lm_eSO_Lyric,
+    lm_eSO_TextItem,                // score text (lmTextItem)
+	lm_eSO_ScoreTitle,              // score text (lmScoreTitle)
+    lm_eSO_TextBox,                 // score block (lmScoreTextBox)
+
+    //lmBinaryRelObj
+    lm_eSO_BinaryRelObj,
+    lm_eSO_Tie,
+
+    //lmMultiRelObj
+    lm_eSO_MultiRelObj,
+    lm_eSO_Beam,
+    //lm_eSO_TupletBracket,           // tuplet bracket (lmTupletBracket)
+    lm_eSO_LastAuxObj,
+
 };
+
 
 class lmAuxObj;
 typedef std::vector<lmAuxObj*> lmAuxObjsCol;
@@ -157,13 +197,47 @@ public:
     wxString GetOptionString(wxString sOptName);
 
 	//--- ScoreObj properties ------------------------------
-	virtual lmEScoreObjType GetScoreObjType()=0;
-	inline bool IsInstrument() { return GetScoreObjType() == lmSOT_Instrument; }
-	inline bool IsScore() { return GetScoreObjType() == lmSOT_Score; }
-	inline bool IsStaff() { return GetScoreObjType() == lmSOT_Staff; }
-	inline bool IsComponentObj() { return GetScoreObjType() == lmSOT_ComponentObj; }
-	inline bool IsVStaff() { return GetScoreObjType() == lmSOT_VStaff; }
     inline long GetID() { return m_nId; }
+
+    //--- ScoreObj type ------------------------------------
+    inline lmEScoreObjType GetScoreObjType() { return m_nObjType; }
+	inline bool IsInstrument() { return m_nObjType == lm_eSO_Instrument; }
+	inline bool IsScore() { return m_nObjType == lm_eSO_Score; }
+	inline bool IsStaff() { return m_nObjType == lm_eSO_Staff; }
+	inline bool IsVStaff() { return m_nObjType == lm_eSO_VStaff; }
+	inline bool IsComponentObj() { return m_nObjType >= lm_eSO_ComponentObj; }
+	inline bool IsStaffObj() { return m_nObjType >= lm_eSO_StaffObj
+                                      && m_nObjType < lm_eSO_LastStaffObj; }
+	inline bool IsAuxObj() { return m_nObjType >= lm_eSO_AuxObj
+                                      && m_nObjType < lm_eSO_LastAuxObj; }
+    //StaffObjs
+    inline bool IsClef() { return m_nObjType == lm_eSO_Clef; }
+    inline bool IsKeySignature() { return m_nObjType == lm_eSO_KeySignature; }
+    inline bool IsTimeSignature() { return m_nObjType == lm_eSO_TimeSignature; }
+    inline bool IsBarline() { return m_nObjType == lm_eSO_Barline; }
+    inline bool IsNoteRest() { return m_nObjType == lm_eSO_Note
+                                      || m_nObjType == lm_eSO_Rest; }
+    inline bool IsNote() { return m_nObjType == lm_eSO_Note; }
+    inline bool IsRest() { return m_nObjType == lm_eSO_Rest; }
+    inline bool IsControl() { return m_nObjType == lm_eSO_Control; }
+    inline bool IsMetronomeMark() { return m_nObjType == lm_eSO_MetronomeMark; }
+    //inline bool IsTupletBracket() { return m_nObjType == lm_eSO_TupletBracket; }
+    inline bool IsSpacer() { return m_nObjType == lm_eSO_Spacer; }
+    inline bool IsScoreAnchor() { return m_nObjType == lm_eSO_ScoreAnchor; }
+    inline bool IsFiguredBass() { return m_nObjType == lm_eSO_FiguredBass; }
+    //AuxObjs
+    inline bool IsFermata() { return m_nObjType == lm_eSO_Fermata; }
+    inline bool IsLine() { return m_nObjType == lm_eSO_Line; }
+    inline bool IsLyric() { return m_nObjType == lm_eSO_Lyric; }
+    inline bool IsTextItem() { return m_nObjType == lm_eSO_TextItem; }
+    inline bool IsTextBlock() { return m_nObjType == lm_eSO_ScoreTitle; }
+    inline bool IsTie() { return m_nObjType == lm_eSO_Tie; }
+    inline bool IsBeam() { return m_nObjType == lm_eSO_Beam; }
+
+    inline bool IsRelObj() { return m_nObjType >= lm_eSO_BinaryRelObj; }
+    inline bool IsBinaryRelObj() { return m_nObjType >= lm_eSO_BinaryRelObj
+                                          && m_nObjType < lm_eSO_MultiRelObj; }
+    inline bool IsMultiRelObj() { return m_nObjType >= lm_eSO_MultiRelObj; }
 
     //--- a ScoreObj can own other ScoreObjs -----------------------
     inline lmScoreObj* GetParentScoreObj() { return m_pParent; }
@@ -258,7 +332,7 @@ public:
 
 
 protected:
-    lmScoreObj(lmScoreObj* pParent, long nID);
+    lmScoreObj(lmScoreObj* pParent, long nID, lmEScoreObjType nType);
     void PrepareToCreateShapes();
 
     friend class lmScore;
@@ -267,6 +341,7 @@ protected:
 
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
     long            m_nId;              //the ID for this object in the score
+    lmEScoreObjType m_nObjType;         //type of this score obj
     long            m_nLayer;           //layer in which it will be rendered
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
@@ -288,35 +363,12 @@ private:
 // class lmComponentObj
 //-------------------------------------------------------------------------------------------
 
-enum lmEComponentObjType
-{
-    lm_eStaffObj = 1,         // staff objects (lmStaffObj). Main objects. Consume time
-    lm_eAuxObj,               // aux objects (lmAuxObj). Auxiliary. Owned by StaffObjs
-};
-
-
 class lmComponentObj : public lmScoreObj
 {
 public:
     virtual ~lmComponentObj();
 
-	//---- virtual methods of base class -------------------------
-
-    // units conversion
-    virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
-    virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
-
-	inline lmEScoreObjType GetScoreObjType() { return lmSOT_ComponentObj; }
-    virtual lmScore* GetScore()=0;
-
-
 	//---- specific methods of this class ------------------------
-
-	// type and identificaction
-    //inline long GetID() { return GetNewID(); } // m_nId; }
-    inline lmEComponentObjType GetType() const { return m_nType; }
-	inline bool IsStaffObj() { return m_nType == lm_eStaffObj; }
-	inline bool IsAuxObj() { return m_nType == lm_eAuxObj; }
 
     // graphical model
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight = false)=0;
@@ -325,43 +377,18 @@ public:
     //properties
     inline void SetColour(wxColour color) { m_color = color; }
 
-
-
 protected:
-    lmComponentObj(lmScoreObj* pParent, long nID, lmEComponentObjType nType,
+    lmComponentObj(lmScoreObj* pParent, long nID, lmEScoreObjType nType,
                    bool fIsDraggable = false);
 
-
-    lmEComponentObjType     m_nType;        //type of ComponentObj
-    //int                     m_nId;          //unique number, to identify each lmComponentObj
     bool                    m_fIsDraggable;
 	wxColour		        m_color;        //object color
-
 };
 
 
 //-------------------------------------------------------------------------------------------
 //    lmStaffObj
 //-------------------------------------------------------------------------------------------
-
-enum EStaffObjType
-{
-    eSFOT_Clef = 1,             // clef (lmClef)
-    eSFOT_KeySignature,         // key signature (lmKeySignature)
-    eSFOT_TimeSignature,        // time signature (lmTimeSignature)
-    eSFOT_Notation,             // notations (lmNotation). Has subtype
-    eSFOT_Barline,              // barlines (lmBarline)
-    eSFOT_NoteRest,             // notes and rests (lmNoreRest)
-    eSFOT_Text,                 // texts (lmTextItem)
-    eSFOT_Control,              // control element (backup, forward) (lmSOControl)
-    eSFOT_MetronomeMark,        // metronome mark (lmMetronomeMark)
-    eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)
-    eSFOT_Spacer,               // spacer (lmSpacer)
-    eSFOT_Anchor,               // anchor to attach AuxObjs to a VStaff
-    eSFOT_ScoreAnchor,          // anchor to attach AuxObjs to the score
-    eSFOT_FiguredBass,          // figured bass information (lmFiguredBass)
-};
-
 
 class lmVStaff;
 class lmAuxObj;
@@ -396,26 +423,9 @@ public:
     virtual inline bool IsSizeable() { return false; }
     inline bool IsVisible() { return m_fVisible; }
 	inline void SetVisible(bool fVisible) { m_fVisible = fVisible; }
-    inline EStaffObjType GetClass() { return m_nClass; }
 	virtual wxString GetName() const=0;
 
-    //classification
-    inline bool IsClef() { return m_nClass == eSFOT_Clef; }
-    inline bool IsKeySignature() { return m_nClass == eSFOT_KeySignature; }
-    inline bool IsTimeSignature() { return m_nClass == eSFOT_TimeSignature; }
-    inline bool IsBarline() { return m_nClass == eSFOT_Barline; }
-    inline bool IsNoteRest() { return m_nClass == eSFOT_NoteRest; }
-    inline bool IsText() { return m_nClass == eSFOT_Text; }
-    inline bool IsControl() { return m_nClass == eSFOT_Control; }
-    inline bool IsMetronomeMark() { return m_nClass == eSFOT_MetronomeMark; }
-    inline bool IsTupletBracket() { return m_nClass == eSFOT_TupletBracket; }
-    inline bool IsSpacer() { return m_nClass == eSFOT_Spacer; }
-    inline bool IsAnchor() { return m_nClass == eSFOT_Anchor; }
-    inline bool IsScoreAnchor() { return m_nClass == eSFOT_ScoreAnchor; }
-    inline bool IsFiguredBass() { return m_nClass == eSFOT_FiguredBass; }
 
-    //inline bool IsNote() { return m_nClass == eSFOT_NoteRest && !((lmNote*)this)->IsRest(); }
-    //inline bool IsRest() { return m_nClass == eSFOT_NoteRest && ((lmNote*)this)->IsRest(); }
 
     // source code related methods
     virtual wxString SourceLDP(int nIndent, bool fUndoData);
@@ -466,7 +476,7 @@ public:
 
 
 protected:
-    lmStaffObj(lmScoreObj* pParent, long nID, EStaffObjType nType,
+    lmStaffObj(lmScoreObj* pParent, long nID, lmEScoreObjType nType,
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects
              bool fVisible = true,
              bool fIsDraggable = false);
@@ -478,7 +488,6 @@ protected:
 
     //properties
     bool            m_fVisible;     // this lmComponentObj is visible on the score
-    EStaffObjType   m_nClass;       // type of StaffObj
 
     // time related variables
     float			m_rTimePos;		// time from start of measure
@@ -507,27 +516,6 @@ WX_DECLARE_LIST(lmStaffObj, StaffObjsList);
 class lmNoteRest;
 
 
-enum lmEAuxObjType
-{
-    eAXOT_Fermata,
-    eAXOT_Line,
-    eAXOT_Lyric,
-    eAXOT_Slur,
-    eAXOT_TextItem,
-	eAXOT_ScoreTitle,
-    eAXOT_TextParagraph,        // a paragraph of text (lmScoreTextParagraph)
-
-    //lmBinaryRelObj
-    eAXOT_BinaryRelObj,
-    eAXOT_Tie,
-
-    //lmMultiRelObj
-    eAXOT_MultiRelObj,
-    eAXOT_Beam,
-
-};
-
-
 class lmAuxObj : public lmComponentObj
 {
 public:
@@ -539,20 +527,6 @@ public:
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
     inline lmScore* GetScore() { return m_pParent->GetScore(); }
     inline lmStaff* GetStaff() { return m_pParent->GetStaff(); }
-
-    //classification
-    inline bool IsFermata() { return GetAuxObjType() == eAXOT_Fermata; }
-    inline bool IsLine() { return GetAuxObjType() == eAXOT_Line; }
-    inline bool IsLyric() { return GetAuxObjType() == eAXOT_Lyric; }
-    inline bool IsTextItem() { return GetAuxObjType() == eAXOT_TextItem; }
-    inline bool IsTextBlock() { return GetAuxObjType() == eAXOT_ScoreTitle; }
-    inline bool IsTie() { return GetAuxObjType() == eAXOT_Tie; }
-    inline bool IsBeam() { return GetAuxObjType() == eAXOT_Beam; }
-
-    inline bool IsRelObj() { return GetAuxObjType() >= eAXOT_BinaryRelObj; }
-    inline bool IsBinaryRelObj() { return GetAuxObjType() >= eAXOT_BinaryRelObj
-                                          && GetAuxObjType() < eAXOT_MultiRelObj; }
-    inline bool IsMultiRelObj() { return GetAuxObjType() >= eAXOT_MultiRelObj; }
 
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
@@ -569,16 +543,13 @@ public:
     // ownership
     void SetOwner(lmScoreObj* pOwner);
 
-    // class info
-    virtual lmEAuxObjType GetAuxObjType()=0;
-
     // source code related methods
     virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
 
 
 protected:
-    lmAuxObj(lmScoreObj* pOwner, long nID, bool fIsDraggable = false);
+    lmAuxObj(lmScoreObj* pOwner, long nID, lmEScoreObjType nType, bool fIsDraggable = false);
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
 
 };
@@ -602,7 +573,6 @@ public:
     //information
     virtual lmNoteRest* GetStartNoteRest()=0;
     virtual lmNoteRest* GetEndNoteRest()=0;
-    lmEAuxObjType GetAuxObjType() { return m_nRelObjType; }
 
     //source code generation
     virtual wxString SourceLDP_First(int nIndent, bool fUndoData, lmNoteRest* pNR)
@@ -622,13 +592,8 @@ public:
     wxString SourceLDP(int nIndent, bool fUndoData);
 
 protected:
-	lmRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
-             bool fIsDraggable = true)
-        : lmAuxObj(pOwner, nID, fIsDraggable)
-        , m_nRelObjType(nRelObjType) {}
-
-    lmEAuxObjType       m_nRelObjType;
-
+	lmRelObj(lmScoreObj* pOwner, long nID, lmEScoreObjType nType, bool fIsDraggable = true)
+        : lmAuxObj(pOwner, nID, nType, fIsDraggable) {}
 };
 
 
@@ -647,7 +612,7 @@ public:
 
 
 protected:
-    lmBinaryRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
+    lmBinaryRelObj(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
                    lmNoteRest* pStartNR, lmNoteRest* pEndNR,
                    bool fIsDraggable = true);
 
@@ -680,8 +645,7 @@ public:
 	wxString Dump();
 
 protected:
-    lmMultiRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
-                  bool fIsDraggable = true);
+    lmMultiRelObj(lmScoreObj* pOwner, long nID, lmEScoreObjType nType, bool fIsDraggable = true);
 
     std::list<lmNoteRest*>   m_NoteRests;   //list of note/rests that form the relation
     std::list<lmNoteRest*>::iterator m_it;  //for methods GetFirstNoteRest() and GetNextNoteRest()

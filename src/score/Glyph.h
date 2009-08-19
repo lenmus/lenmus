@@ -67,6 +67,8 @@ struct lmGlyph
 //indexes for the table
 enum lmEGlyphIndex
 {
+    GLYPH_NONE = -1,            //special value meaning 'No glyph'
+
     //noteheads
     GLYPH_NOTEHEAD_HALF = 0,    //half, blanca
     GLYPH_NOTEHEAD_QUARTER,     //quarter, negra
@@ -165,17 +167,24 @@ enum lmEGlyphIndex
     GLYPH_FERMATA_UNDER,
 
     //figured bass. Numbers and other symbols
-    GLYPH_FIGURED_BASS_1,               //number 1
-    GLYPH_FIGURED_BASS_2,               //number 2
-    GLYPH_FIGURED_BASS_3,               //number 3
-    GLYPH_FIGURED_BASS_4,               //number 4
-    GLYPH_FIGURED_BASS_5,               //number 5
-    GLYPH_FIGURED_BASS_6,               //number 6
-    GLYPH_FIGURED_BASS_7,               //number 7
-    GLYPH_FIGURED_BASS_8,               //number 8
-    GLYPH_FIGURED_BASS_9,               //number 9
-    GLYPH_FIGURED_BASS_0,               //number 0
-    GLYPH_FIGURED_BASS_SHARP,           //Sharp symbol
+    GLYPH_FIGURED_BASS_0,                   //number 0
+    GLYPH_FIGURED_BASS_1,                   //number 1
+    GLYPH_FIGURED_BASS_2,                   //number 2
+    GLYPH_FIGURED_BASS_3,                   //number 3
+    GLYPH_FIGURED_BASS_4,                   //number 4
+    GLYPH_FIGURED_BASS_5,                   //number 5
+    GLYPH_FIGURED_BASS_6,                   //number 6
+    GLYPH_FIGURED_BASS_7,                   //number 7
+    GLYPH_FIGURED_BASS_8,                   //number 8
+    GLYPH_FIGURED_BASS_9,                   //number 9
+    GLYPH_FIGURED_BASS_SHARP,               //Sharp symbol
+    GLYPH_FIGURED_BASS_FLAT,                //Flat symbol
+    GLYPH_FIGURED_BASS_NATURAL,             //Natural symbol
+    GLYPH_FIGURED_BASS_PLUS,                // +
+    GLYPH_FIGURED_BASS_MINUS,               // -
+    GLYPH_FIGURED_BASS_OPEN_PARENTHESIS,    // (
+    GLYPH_FIGURED_BASS_CLOSE_PARENTHESIS,   // )
+    GLYPH_FIGURED_BASS_7_STRIKED,           // 7 with overlayered /
 
 };
 

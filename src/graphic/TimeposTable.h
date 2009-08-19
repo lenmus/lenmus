@@ -54,7 +54,7 @@ public:
     void EndOfData();        //inform that all data has been suplied
 
     //methods to compute results
-    void ComputeCriticalLine();
+    //void ComputeCriticalLine();
     lmLUnits GetStartOfBarPosition();
     lmLUnits GetGrossBarSize();
     lmLUnits DoSpacing(bool fTrace = false);

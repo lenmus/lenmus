@@ -8,9 +8,11 @@
    (instrument
      (musicData (clef G)(key C)(time 2 4)
        (n c4 h) 
-       (textbox dx:50 dy:5 (size width:160 height:100)(color #fffeb0)
+       (spacer 0
+          (textbox dx:50 dy:5 (size width:160 height:100)(color #fffeb0)
             (border (width 5)(lineStyle dot)(color #000000))
             (text "This is a test of a textbox. The text must be splitted." (style "Textbox"))
+          )
        )
        (barline end)
      )

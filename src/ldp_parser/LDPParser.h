@@ -35,6 +35,7 @@
 #include "LDPToken.h"
 
 #include "../score/Score.h"
+#include "../score/FiguredBass.h"
 
 class lmInstrGroup;
 class lmTieInfo;
@@ -43,7 +44,6 @@ class lmBeamInfo;
 enum lmETagLDP
 {
 	lm_eTag_Visible = 0,
-    lm_eTag_CursorPoint,
 	lm_eTag_Location_x,
 	lm_eTag_Location_y,
 	lm_eTag_StaffNum,
@@ -73,6 +73,7 @@ public:
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
     lmEPlacement AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff, lmLocation* pPos);
+    bool        AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
     int         AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr);
@@ -95,8 +96,7 @@ public:
     lmEStemType AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff,
                                lmStaffObj* pTarget = (lmStaffObj*)NULL);
-    void        AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
-                               lmStaffObj* pTarget = (lmStaffObj*)NULL);
+    void        AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
@@ -118,6 +118,9 @@ public:
                                     int nNormalNotes);
     int GetBeamingLevel(lmENoteType nNoteType);
     bool ParenthesisMatch(const wxString& sSource);
+
+    //static methods for general use
+    static wxString ValidateFiguredBassString(wxString& sData, lmFiguredBassInfo* pFBInfo);
 
 
 protected:
@@ -148,7 +151,7 @@ protected:
     bool        AnalyzeCursor(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
-    void        AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget = (lmStaffObj*)NULL);
+    void        AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget);
     void        AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
@@ -169,13 +172,13 @@ protected:
     bool GetValueLineCap(lmLDPNode* pNode, lmELineCap* pEndStyle);
     bool GetValueFloatNumber(lmLDPNode* pNode, float* pValue, int iP = 1, float rDefault = 0.0f);
     bool GetValueIntNumber(lmLDPNode* pNode, int* pValue, int iP = 1, int nDefault = 0);
+    bool GetValueLongNumber(lmLDPNode* pNode, long* pValue, int iP = 1, long nDefault = 0L);
     bool GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle);
     bool GetValueYesNo(lmLDPNode* pNode, bool fDefault);
 
     //auxiliary
     void AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo);
     void AddTie(lmNote* pNote, lmTieInfo* pTieInfo);
-
 
 
     void Clear();
@@ -220,6 +223,7 @@ protected:
     bool            m_fCursorData;          //true if cursor data found
     int             m_nCursorInstr;
     int             m_nCursorStaff;
+    long            m_nCursorObjID;
     float           m_rCursorTime;
     lmStaffObj*     m_pCursorSO;
 
@@ -274,7 +278,8 @@ public:
 
 	void SetValid(lmETagLDP nTag, ...);
 	void AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff* pVStaff,
-							  bool* pfVisible, bool* pfCursorPoint, int* pStaffNum,
+							  bool* pfVisible, 
+                              int* pStaffNum,
                               lmLocation* pLocation);
 
 private:

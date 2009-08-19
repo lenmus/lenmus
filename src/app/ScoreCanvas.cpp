@@ -43,6 +43,7 @@
 #include "Processor.h"
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 #include "toolbox/ToolNotes.h"
+#include "toolbox/ToolSymbols.h"
 #include "toolbox/ToolBoxEvents.h"
 #include "global.h"
 #include "KbdCmdParser.h"
@@ -56,6 +57,7 @@
 #include "../score/Staff.h"
 #include "../score/Context.h"
 #include "../score/Clef.h"
+#include "../score/FiguredBass.h"
 #include "../score/properties/DlgProperties.h"
 #include "DlgDebug.h"
 
@@ -964,6 +966,8 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
             else
                 wxASSERT(false);    //Unknown case. Is it possible??????
         }
+        else if (pGMO->IsShapeNote() || pGMO->IsShapeRest())
+            m_nMousePointedArea = lmMOUSE_OnNotesRests;
         else
             m_nMousePointedArea = lmMOUSE_OnOtherShape;
     }
@@ -1013,25 +1017,26 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
 
     //if harmony exercise, allow notes data entry only valid staff for current voice
     lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
-    if ((m_nMousePointedArea == lmMOUSE_OnStaff 
-         || m_nMousePointedArea == lmMOUSE_OnBelowStaff 
-         || m_nMousePointedArea == lmMOUSE_OnAboveStaff  )
-        && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol") )
+    if (pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol")
+        && (m_nMousePointedArea == lmMOUSE_OnStaff 
+            || m_nMousePointedArea == lmMOUSE_OnBelowStaff 
+            || m_nMousePointedArea == lmMOUSE_OnAboveStaff) )
     {
         GetToolBoxValuesForPage(lmPAGE_NOTES);
         int nStaff = m_pCurShapeStaff->GetNumStaff();
-        bool fValid = false;
         if ( ((m_nSelVoice == 1 || m_nSelVoice == 2) && (nStaff != 1))
              || ((m_nSelVoice == 3 || m_nSelVoice == 4) && (nStaff != 2)) )
             m_nMousePointedArea = lmMOUSE_OnOther;
     }
+
+    long nNowOnValidArea = m_nMousePointedArea & m_nValidAreas;
 
     //Now we start dealing with mouse moving and mouse clicks. Dragging (moving the mouse
     //with a mouse button clicked) is a meaningless operation and will be treated as 
     //moving. Therefore, only two type of events will be considered: mouse click and
     //mouse move. Let's start with mouse click events.
 
-	if (event.IsButton())
+	if (event.IsButton() && nNowOnValidArea != 0L)
 	{
         //mouse click: terminate any possible tool drag operation, process the click, and
         //restart the tool drag operation
@@ -1040,7 +1045,7 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
         if (m_fDraggingTool)
             TerminateToolDrag(pDC);
 
-        //now process the click. To avoid double data entry (first on button down and the on
+        //now process the click. To avoid double data entry (first, on button down and then on
         //button up) only button up will trigger the processing
         if (event.ButtonUp(wxMOUSE_BTN_LEFT))
         {
@@ -1075,7 +1080,6 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
 
     //check if pointed area has changed from valid to invalid or vice versa
 
-    long nNowOnValidArea = m_nMousePointedArea & m_nValidAreas;
     long nBeforeOnValidArea = nOldMousePointedArea & m_nValidAreas;
     if (nBeforeOnValidArea != 0 && nNowOnValidArea == 0 || nBeforeOnValidArea == 0 && nNowOnValidArea != 0)
     {
@@ -1129,18 +1133,21 @@ wxMenu* lmScoreCanvas::GetContextualMenuForTool()
 void lmScoreCanvas::StartToolDrag(wxDC* pDC)
 {
     PrepareToolDragImages();
-    wxBitmap* pCursorDragImage = new wxBitmap(*m_pToolBitmap);
-    //m_vDragHotSpot = lmDPoint(pCursorDragImage->GetWidth() / 2,
-    //                            pCursorDragImage->GetHeight() / 2 );
-    m_vDragHotSpot = m_vToolHotSpot;
+    if (m_pToolBitmap)
+    {
+        wxBitmap* pCursorDragImage = new wxBitmap(*m_pToolBitmap);
+        m_vDragHotSpot = m_vToolHotSpot;
 
-    //wxLogMessage(_T("[lmScoreCanvas::StartToolDrag] OnImageBeginDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
-    //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
+        //wxLogMessage(_T("[lmScoreCanvas::StartToolDrag] OnImageBeginDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
+        //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
 
-    m_pView->OnImageBeginDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos,
-                              (lmGMObject*)NULL, m_vDragHotSpot, m_uHotSpotShift,
-                              pCursorDragImage );
-    m_fDraggingTool = true;
+        m_pView->OnImageBeginDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos,
+                                (lmGMObject*)NULL, m_vDragHotSpot, m_uHotSpotShift,
+                                pCursorDragImage );
+        m_fDraggingTool = true;
+    }
+    else
+        m_fDraggingTool = false;
 }
 
 void lmScoreCanvas::ContinueToolDrag(wxMouseEvent& event, wxDC* pDC)
@@ -1616,6 +1623,15 @@ void lmScoreCanvas::InsertBarline(lmEBarline nType)
 	pCP->Submit(new lmCmdInsertBarline(lmCMD_NORMAL, sName, m_pDoc, nType) );
 }
 
+void lmScoreCanvas::InsertFiguredBass()
+{
+    //Create a new figured bass and add it to the VStaff
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	wxString sFigBass = _T("5 3");
+	pCP->Submit(new lmCmdInsertFiguredBass(lmCMD_NORMAL, m_pDoc, sFigBass) );
+}
+
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 							   lmENoteType nNoteType, float rDuration, int nDots,
 							   lmENoteHeads nNotehead, lmEAccidentals nAcc,
@@ -1628,7 +1644,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 
     //in 'TheoHarmonyCtrol' edit mode, force stem depending on voice
     lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
-    if (nStem == lmSTEM_DEFAULT && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+    if (nStem == lmSTEM_DEFAULT && pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
     {
         GetToolBoxValuesForPage(lmPAGE_NOTES);
         switch(m_nSelVoice)
@@ -1672,7 +1688,7 @@ void lmScoreCanvas::ChangeNotePitch(int nSteps)
 	wxASSERT(pCursor);
     lmStaffObj* pCursorSO = pCursor->GetStaffObj();
 	wxASSERT(pCursorSO);
-	wxASSERT(pCursorSO->GetClass() == eSFOT_NoteRest && ((lmNoteRest*)pCursorSO)->IsNote() );
+	wxASSERT(pCursorSO->IsNote());
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Change note pitch");
 	pCP->Submit(new lmCmdChangeNotePitch(lmCMD_NORMAL, sName, m_pDoc,
@@ -1714,6 +1730,12 @@ void lmScoreCanvas::ChangeBarline(lmBarline* pBL, lmEBarline nType, bool fVisibl
 {
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	pCP->Submit(new lmCmdChangeBarline(lmCMD_NORMAL, m_pDoc, pBL, nType, fVisible) );
+}
+
+void lmScoreCanvas::ChangeFiguredBass(lmFiguredBass* pFB, wxString& sFigBass)
+{
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdChangeFiguredBass(lmCMD_NORMAL, m_pDoc, pFB, sFigBass) );
 }
 
 void lmScoreCanvas::ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel,
@@ -1768,6 +1790,10 @@ void lmScoreCanvas::LoadAllMouseCursors()
     wxCursor* pCursor = new wxCursor(wxCURSOR_ARROW);
     m_MouseCursors.push_back(pCursor);
 
+    //lm_eCursor_Cross
+    pCursor = new wxCursor(wxCURSOR_CROSS);
+    m_MouseCursors.push_back(pCursor);
+
     // lm_eCursor_Note
     m_MouseCursors.push_back( LoadMouseCursor(_T("cursor-note.png"), 8, 8) );
 
@@ -1791,10 +1817,8 @@ wxCursor* lmScoreCanvas::GetMouseCursor(lmEMouseCursor nCursorID)
 
 void lmScoreCanvas::OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event)
 {
-    //set data entry mode if in Notes page
-
-    if (event.GetToolPageType() == lmPAGE_NOTES)
-        GetDataEntryMode();
+    //set data entry mode
+    GetDataEntryMode();
 }
 
 void lmScoreCanvas::GetDataEntryMode()
@@ -1804,12 +1828,58 @@ void lmScoreCanvas::GetDataEntryMode()
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	wxASSERT(pToolBox);
 	m_nEntryMode = pToolBox->GetEntryMode();
+
+    GetValidAreasAndMouseIcons();
+
+    //set cursor
+    ChangeMouseIcon();
+}
+
+void lmScoreCanvas::GetValidAreasAndMouseIcons()
+{
+    //Determine valid areas and cursor icons. This will depend on selected tool
+
     if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
     {
-        m_nValidAreas = lmMOUSE_OnStaff | lmMOUSE_OnAboveStaff | lmMOUSE_OnBelowStaff;
-        m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);  //lm_eCursor_Note);
-        m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);  //GetMouseCursor(lm_eCursor_Note);
-        m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+        //Determine valid areas and cursor icons. This will depend on the selected tool
+
+	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        lmEToolPage nPage = pToolBox->GetSelectedToolPage();
+        switch(nPage)
+        {
+            case lmPAGE_CLEFS:
+                m_nValidAreas = 0;      //No valid areas
+                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
+                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);
+                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                break;
+
+            case lmPAGE_NOTES:
+                m_nValidAreas = lmMOUSE_OnStaff | lmMOUSE_OnAboveStaff | lmMOUSE_OnBelowStaff;
+                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);  //lm_eCursor_Note);
+                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);  //GetMouseCursor(lm_eCursor_Note);
+                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                break;
+
+            case lmPAGE_BARLINES:
+                m_nValidAreas = 0;      //No valid areas
+                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
+                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);
+                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                break;
+
+            case lmPAGE_SYMBOLS:
+                m_nValidAreas = lmMOUSE_OnNotesRests;
+                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
+                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Cross);    //lm_eCursor_Pointer);
+                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                break;
+
+            default:
+                wxASSERT(false);
+        }
+
         //hide caret
         m_pView->CaretOff();
     }
@@ -1829,24 +1899,22 @@ void lmScoreCanvas::GetDataEntryMode()
 
 void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
 {
-	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	wxASSERT(pToolBox);
-
-    lmEToolPage nPage = event.GetToolPageType();
-    lmEToolGroupID nGroup = event.GetToolGroupID();
-
     //verify if Data entry mode changed
-    if (nGroup == lmGRP_EntryMode)
+    if (event.GetToolGroupID() == lmGRP_EntryMode)
     {
         GetDataEntryMode();
         return;
     }
 
+    lmEToolPage nPage = event.GetToolPageType();
+    lmEToolGroupID nGroup = event.GetToolGroupID();
+    lmEToolID nTool = (lmEToolID)event.GetToolID();
+
     //get values for current page
     GetToolBoxValuesForPage(nPage);
 
     //specific actions on selected objects
-    switch (event.GetToolGroupID())
+    switch (nGroup)
     {
         case lmGRP_NoteAcc:
             //selection of accidentals ----------------------------------------------------
@@ -1936,6 +2004,14 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
             }
             break;
 
+        case lmGRP_Symbols:
+            //texts, figured bass, graphics and symbols ----------------------------------
+       //     if (m_pView->SomethingSelected())
+       //     {
+			    //ChangeNoteDots(m_nSelDots);
+       //     }
+            break;
+
 
         default:
             ;   //ignore the event
@@ -1971,7 +2047,16 @@ void lmScoreCanvas::GetToolBoxValuesForPage(lmEToolPage nPage)
 
 void lmScoreCanvas::PrepareToolDragImages()
 {
-    //prepare drag images for current selected tool, for all staff sizes
+    //prepare drag image for current selected tool.
+    //This method must set variables m_pToolBitmap and m_vToolHotSpot
+    //If m_pToolBitmap is set to NULL it will imply that no drag image will be used.
+
+    //TODO: It should be responsibility of each tool to provide this information. Move 
+    //this code to each Tool in the ToolBox.
+
+    //TODO: Drag image is related to mouse cursor to use. Should we merge this method with
+    //the one used to determine mouse cursor to use?
+
 
     //delete previous bitmaps
     if (m_pToolBitmap)
@@ -1984,71 +2069,101 @@ void lmScoreCanvas::PrepareToolDragImages()
     double rPointSize = pStaff->GetMusicFontSize();
     double rScale = m_pView->GetScale() * lmSCALE;
 
+    //Get values for current tool
+	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+    wxASSERT(pToolBox);
+    lmEToolPage nPage = pToolBox->GetSelectedToolPage();
     GetToolBoxValuesForPage(lmPAGE_NOTES);
 
-    //in 'TheoHarmonyCtrol' edit mode, force stem depending on voice
-    bool fStemDown = false;
-    lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
-    if (pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+    //Determine glyph to use for current tool. Value GLYPH_NONE means "Do not use a drag image".
+    //And in this case only mouse cursor will be used
+    lmEGlyphIndex nGlyph = GLYPH_NONE;      //Default: Do not use a drag image
+    switch (nPage)
     {
-        switch(m_nSelVoice)
-        {
-            case 1: fStemDown = false;  break;
-            case 2: fStemDown = true;   break;
-            case 3: fStemDown = false;  break;
-            case 4: fStemDown = true;   break;
-            default:
-                fStemDown = false;
-        }
-    }
+        case lmPAGE_NOTES:
+            {
+                //in 'TheoHarmonyCtrol' edit mode, force stem depending on voice
+                bool fStemDown = false;
+                lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
+                if (pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+                {
+                    switch(m_nSelVoice)
+                    {
+                        case 1: fStemDown = false;  break;
+                        case 2: fStemDown = true;   break;
+                        case 3: fStemDown = false;  break;
+                        case 4: fStemDown = true;   break;
+                        default:
+                            fStemDown = false;
+                    }
+                }
 
-    //select glyph
-    lmEGlyphIndex nGlyph = GLYPH_NOTEHEAD_QUARTER;
-    switch (m_nSelNoteType) {
-        case eLonga :
-            nGlyph = GLYPH_LONGA_NOTE;
-            break;
-        case eBreve :
-            nGlyph = GLYPH_BREVE_NOTE;
-            break;
-        case eWhole :
-            nGlyph = GLYPH_WHOLE_NOTE;
-            break;
-        case eHalf :
-            nGlyph = (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
-            break;
-        case eQuarter :
-            nGlyph = (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
-            break;
-        case eEighth :
-            nGlyph = (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
-            break;
-        case e16th :
-            nGlyph = (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
-            break;
-        case e32th :
-            nGlyph = (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
-            break;
-        case e64th :
-            nGlyph = (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
-            break;
-        case e128th :
-            nGlyph = (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
-            break;
-        case e256th :
-            nGlyph = (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
-            break;
+                //select glyph
+                switch (m_nSelNoteType) {
+                    case eLonga :
+                        nGlyph = GLYPH_LONGA_NOTE;
+                        break;
+                    case eBreve :
+                        nGlyph = GLYPH_BREVE_NOTE;
+                        break;
+                    case eWhole :
+                        nGlyph = GLYPH_WHOLE_NOTE;
+                        break;
+                    case eHalf :
+                        nGlyph = (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
+                        break;
+                    case eQuarter :
+                        nGlyph = (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
+                        break;
+                    case eEighth :
+                        nGlyph = (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
+                        break;
+                    case e16th :
+                        nGlyph = (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
+                        break;
+                    case e32th :
+                        nGlyph = (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
+                        break;
+                    case e64th :
+                        nGlyph = (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
+                        break;
+                    case e128th :
+                        nGlyph = (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
+                        break;
+                    case e256th :
+                        nGlyph = (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
+                        break;
+                    default:
+                        wxASSERT(false);
+                }
+                break;
+            }
+
+        case lmPAGE_SYMBOLS:
+            {
+                //TODO
+                nGlyph = GLYPH_NONE;    //GLYPH_TOOL_FIGURED_BASS
+                break;
+            }
+
         default:
-            wxASSERT(false);
+            nGlyph = GLYPH_NONE;    //GLYPH_TOOL_GENERIC;
     }
 
     //create the bitmap
-    m_pToolBitmap = GetBitmapForGlyph(rScale, nGlyph, rPointSize, colorF, colorB);
-    //m_vToolHotSpot = lmTPoint(aGlyphsInfo[nGlyph].txDrag, aGlyphsInfo[nGlyph].tyDrag);
-    float rxScale = aGlyphsInfo[nGlyph].txDrag / aGlyphsInfo[nGlyph].thWidth;
-    float ryScale = aGlyphsInfo[nGlyph].tyDrag / aGlyphsInfo[nGlyph].thHeight;
-    m_vToolHotSpot = lmDPoint(m_pToolBitmap->GetWidth() * rxScale,
-                              m_pToolBitmap->GetHeight() * ryScale );
+    if (nGlyph != GLYPH_NONE)
+    {
+        m_pToolBitmap = GetBitmapForGlyph(rScale, nGlyph, rPointSize, colorF, colorB);
+        float rxScale = aGlyphsInfo[nGlyph].txDrag / aGlyphsInfo[nGlyph].thWidth;
+        float ryScale = aGlyphsInfo[nGlyph].tyDrag / aGlyphsInfo[nGlyph].thHeight;
+        m_vToolHotSpot = lmDPoint(m_pToolBitmap->GetWidth() * rxScale,
+                                m_pToolBitmap->GetHeight() * ryScale );
+    }
+    else
+    {
+        //No drag image. Only mouse cursor
+        m_pToolBitmap = (wxBitmap*)NULL;
+    }
                         
 }
 
@@ -2252,7 +2367,7 @@ void lmScoreCanvas::ProcessKey(wxKeyEvent& event)
 					if (event.AltDown())
 					{
 						lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetStaffObj();
-						if (pSO && pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+						if (pSO && pSO->IsNote())
 							pBaseOfChord = (lmNote*)pSO;
 					}
 
@@ -2863,6 +2978,7 @@ void lmScoreCanvas::SynchronizeToolBox()
         case lmPAGE_KEY_SIGN:
         case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
+        case lmPAGE_SYMBOLS:
             lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithCaret] Code to sync. this tool"));
             break;
 
@@ -2910,6 +3026,7 @@ void lmScoreCanvas::SynchronizeToolBoxWithCaret(bool fEnable)
         case lmPAGE_KEY_SIGN:
         case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
+        case lmPAGE_SYMBOLS:
             lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithCaret] Code to sync. this tool"));
             break;
 
@@ -3059,6 +3176,7 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
         case lmPAGE_KEY_SIGN:
         case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
+        case lmPAGE_SYMBOLS:
             lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithSelection] Code to sync. this tool"));
             break;
 
@@ -3098,6 +3216,7 @@ void lmScoreCanvas::RestoreToolBoxSelections()
         case lmPAGE_KEY_SIGN:
         case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
+        case lmPAGE_SYMBOLS:
             lmTODO(_T("[lmScoreCanvas::RestoreToolBoxSelections] Code to restore this tool"));
             break;
 
@@ -3556,9 +3675,10 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
         //in empty scores, only box system with staff
         pShapeStaff = ((lmBoxSystem*)pGMO)->GetStaffShape(1);
     }
-    else
-        return;     //click out of valid area
+    //else
+        //click on other objects or out of valid area
 
+    //Click on staff
     if (pShapeStaff)
     {
         wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Insert note. MousePagePos=(%.2f, %.2f)"),
@@ -3569,7 +3689,7 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
         //in 'TheoHarmonyCtrol' edit mode, force staff depending on voice
 	    int nStaff = pShapeStaff->GetNumStaff();
         lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
-        if (pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+        if (pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
         {
             if (m_nSelVoice == 1 || m_nSelVoice == 2)
                 nStaff = 1;
@@ -3622,6 +3742,42 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
 				   m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice,
                    pBaseOfChord, fTiedPrev);
     }
+
+
+    //Click on Note/resst: Add figured bass
+    if (pGMO->IsShape())
+    {
+        lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        lmEToolPage nPage = pToolBox->GetSelectedToolPage();
+        if (nPage == lmPAGE_SYMBOLS)
+        {
+            lmToolPageSymbols* pPage = (lmToolPageSymbols*)pToolBox->GetSelectedPage();
+            lmEToolID nTool = pPage->GetToolID();
+
+            lmScoreObj* pSCO = ((lmShape*)pGMO)->GetScoreOwner();
+            switch(nTool)
+            {
+                case lmTOOL_FIGURED_BASS:
+                {
+                    //Move caret to insertion position and insert figured bass
+                    wxASSERT(pSCO->IsNote() || pSCO->IsRest());
+                    m_pView->MoveCursorToObject(pGMO);
+                    InsertFiguredBass();
+                    break;
+                }
+
+                case lmTOOL_LINES:
+                case lmTOOL_TEXTBOX:
+                case lmTOOL_TEXT:
+                    break;
+
+                default:
+                    wxASSERT(false);
+            }
+        }
+    }
+
 }
 
 //non-dragging events: click on an object
@@ -3665,7 +3821,7 @@ void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
         //if it is a staffobj move cursor to it. Else do nothing
         wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Click on shape"));
         lmScoreObj* pSCO = pGMO->GetScoreOwner();
-        if (pSCO->GetScoreObjType() == lmSOT_ComponentObj)
+        if (pSCO->IsComponentObj())
             m_pView->MoveCursorToObject(pGMO);
     }
 
@@ -3795,6 +3951,7 @@ lmEditorMode::lmEditorMode(wxClassInfo* pControllerInfo, wxClassInfo* pScoreProc
     , m_pScoreProcInfo(pScoreProcInfo)
     , m_sCreationModeName(wxEmptyString)
     , m_sCreationModeVers(wxEmptyString)
+    , m_pScoreProc((lmScoreProcessor*)NULL)
 {
     for (int i=0; i < lmPAGE_MAX; ++i)
         m_ToolPagesInfo[i] = (wxClassInfo*)NULL;
@@ -3805,6 +3962,7 @@ lmEditorMode::lmEditorMode(wxString& sCreationMode, wxString& sCreationVers)
     , m_pScoreProcInfo(CLASSINFO(lmHarmonyProcessor))
     , m_sCreationModeName(sCreationMode)
     , m_sCreationModeVers(sCreationVers)
+    , m_pScoreProc((lmScoreProcessor*)NULL)
 {
     //TODO
     for (int i=0; i < lmPAGE_MAX; ++i)
@@ -3815,6 +3973,8 @@ lmEditorMode::lmEditorMode(wxString& sCreationMode, wxString& sCreationVers)
 
 lmEditorMode::~lmEditorMode()
 {
+    if (m_pScoreProc)
+        delete m_pScoreProc;
 }
 
 void lmEditorMode::ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo)
@@ -3845,10 +4005,9 @@ lmScoreProcessor* lmEditorMode::CreateScoreProcessor()
     if (m_pScoreProcInfo)
     {
         //create the score processor
-        lmScoreProcessor* pScoreProc =
-            (lmScoreProcessor*)m_pScoreProcInfo->CreateObject();
-        pScoreProc->SetTools();
-        return pScoreProc;
+        m_pScoreProc = (lmScoreProcessor*)m_pScoreProcInfo->CreateObject();
+        m_pScoreProc->SetTools();
+        return m_pScoreProc;
     }
     return (lmScoreProcessor*)NULL;
 }

@@ -388,7 +388,7 @@ lmTimeposEntry::lmTimeposEntry(lmTimeLine* pOwner, eTimeposEntryType nType, lmSt
 
     m_xFinal = 0.0f;
 
-    if (pSO && (pSO->GetClass() == eSFOT_NoteRest || pSO->GetClass() == eSFOT_Barline))
+    if (pSO && (pSO->IsNoteRest() || pSO->IsBarline() || pSO->IsFiguredBass()) )
         m_rTimePos = pSO->GetTimePos();
     else
         m_rTimePos = -1.0f;
@@ -397,7 +397,7 @@ lmTimeposEntry::lmTimeposEntry(lmTimeLine* pOwner, eTimeposEntryType nType, lmSt
     m_xLeft = (pShape ? pShape->GetXLeft() : 0.0f);
     m_xInitialLeft = m_xLeft;
 
-    if (pSO && pSO->GetClass() == eSFOT_NoteRest)
+    if (pSO && pSO->IsNoteRest())
         m_uxAnchor = m_xLeft - pSO->GetAnchorPos();
     else
         m_uxAnchor = 0.0f;
@@ -467,14 +467,14 @@ void lmTimeposEntry::AssignSpace(lmTimeposTable* pTT, float rFactor)
 				{
                     m_uFixedSpace = pTT->TenthsToLogical(10, 1);
 				}
-				else if (m_pSO->IsSpacer()
-                         || m_pSO->IsAnchor()
-                         || m_pSO->IsScoreAnchor()
-                         || m_pSO->IsFiguredBass()
-                        )
+				else if (m_pSO->IsSpacer() || m_pSO->IsScoreAnchor())
 				{
                     ;       //TODO ?
                     //m_uFixedSpace = ?
+				}
+				else if (m_pSO->IsFiguredBass())
+				{
+                    m_uFixedSpace = 0.0f;
 				}
 				else
                     m_uSize = 0.0f;
@@ -561,7 +561,7 @@ wxString lmTimeposEntry::Dump(int iEntry)
         case lm_eOmega:
             sMsg += _T("  Omega");
             if (m_pSO) {
-                sMsg += wxString::Format(_T("%3d          "), m_pSO->GetClass() );
+                sMsg += wxString::Format(_T("%3d          "), m_pSO->GetScoreObjType() );
             } else {
                 sMsg += _T("  -           ");
             }
@@ -570,7 +570,7 @@ wxString lmTimeposEntry::Dump(int iEntry)
         default:
             //lmStaffObj entry
 			sMsg += wxString::Format(_T("  pSO %4d %3d   %s  "),
-									m_pSO->GetClass(),
+									m_pSO->GetScoreObjType(),
 									m_pSO->GetID(),
 									(m_fProlog ? _T("S") : _T(" ")) );
     }
@@ -779,8 +779,7 @@ void lmTimeLine::InformAttachedObjs()
 	{
         if ((*it)->m_nType == lm_eStaffobj)
         {
-            if ((*it)->m_pSO->IsNoteRest() 
-                && ((lmNoteRest*)(*it)->m_pSO)->IsNote()
+            if ((*it)->m_pSO->IsNote()
                 && ((lmNote*)(*it)->m_pSO)->IsTiedToPrev() )
             {
                 //End of tie note. Inform the tie shape.
@@ -1536,6 +1535,9 @@ lmLUnits lmCriticalLine::GetTimepos(float rTime)
 {
     wxASSERT(IsHigherTime(rTime, m_rLastTimepos));
 
+    //wxLogMessage( DumpPosTimes() );
+    //wxLogMessage( this->DumpMainTable() );
+
     for (; m_it != m_PosTimes.end(); ++m_it)
 	{
         if (IsEqualTime((*m_it).rTimepos, rTime))
@@ -1694,7 +1696,7 @@ void lmTimeposTable::AddEntry(int nInstr, lmStaffObj* pSO, lmShape* pShape, bool
     int nVoice;
 	if (nStaff == 0)
 	{
-		if (pSO->GetClass() == eSFOT_NoteRest)
+		if (pSO->IsNoteRest())
 			nVoice = ((lmNoteRest*)pSO)->GetVoice();
 		else
 			nVoice = m_nCurVoice[ pSO->GetStaffNum() - 1 ];

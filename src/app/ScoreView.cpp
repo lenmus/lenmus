@@ -1475,22 +1475,20 @@ void lmScoreView::MoveCursorToObject(lmGMObject* pGMO)
     {
         lmStaffObj* pSO = (lmStaffObj*)NULL;
         lmScoreObj* pSCO = pGMO->GetScoreOwner();
-        if (((lmComponentObj*)pSCO)->GetType() ==  lm_eStaffObj)
+        if (pSCO->IsStaffObj())
         {
             //it is a staffobj. Position cursor on it
             pSO = (lmStaffObj*)pSCO;
         }
-        else if (((lmComponentObj*)pSCO)->GetType() ==  lm_eAuxObj)
+        else if (pSCO->IsAuxObj())
         {
             //it is an auxobj. locate parent staffobj
             lmScoreObj* pParent = pSCO->GetParentScoreObj();
-            while(pParent->GetScoreObjType() == lmSOT_ComponentObj &&
-                  ((lmComponentObj*)pParent)->GetType() ==  lm_eAuxObj)
+            while(pParent->IsAuxObj())
             {
                 pParent = pParent->GetParentScoreObj();
             }
-            if (pParent->GetScoreObjType() == lmSOT_ComponentObj &&
-                ((lmComponentObj*)pParent)->GetType() ==  lm_eStaffObj)
+            if (pParent->IsStaffObj())
                 pSO = (lmStaffObj*)pParent;
             //else
                 //TODO: should we do anything when owner is an instrument or the score?
@@ -1706,7 +1704,7 @@ void lmScoreView::UpdateCaret()
     //if (pSO)
     //{
     //    sType = pSO->GetName();
-    //    if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+    //    if (pSO->IsNote())
     //    {
     //        lmNote* pN = (lmNote*)pSO;
     //        lmFPitch fp = FPitch(pN->GetAPitch());

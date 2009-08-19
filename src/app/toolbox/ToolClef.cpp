@@ -88,7 +88,7 @@ void lmToolPageClefs::Create(wxWindow* parent)
     lmToolPage::Create(parent);
 
     //initialize data
-    m_sPageToolTip = _("Select clef, key and time signature edit tools");
+    m_sPageToolTip = _("Edit tools for clefs, keys and time signatures");
     m_sPageBitmapName = _T("tool_clefs");
 
     //create groups

@@ -36,7 +36,7 @@ class lmLDPNode;
 class lmLDPNode
 {
 public:
-    lmLDPNode(wxString sData, long nNumLine);
+    lmLDPNode(wxString sData, long nNumLine, bool fIsParameter);
     ~lmLDPNode();
 
 	void DumpNode(wxString sIndent=_T(""));

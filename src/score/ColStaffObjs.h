@@ -42,7 +42,7 @@ class lmScoreCursor;
 class lmTimeSignature;
 class lmKeySignature;
 
-#include "StaffObj.h"   //EStaffObjType
+#include "StaffObj.h"   //lmEScoreObjType
 
 
 #define lmNO_TIME_LIMIT     100000000.0f        //a too big measure duration
@@ -304,7 +304,7 @@ public:
     lmTimeSignature* FindFwdTimeSignature(lmStaffObj* pCurSO);
     lmKeySignature* FindFwdKeySignature(lmStaffObj* pCurSO);
     lmClef* FindFwdClef(lmStaffObj* pCurSO);
-    lmStaffObj* FindFwdStaffObj(lmStaffObj* pCurSO, EStaffObjType nType);
+    lmStaffObj* FindFwdStaffObj(lmStaffObj* pCurSO, lmEScoreObjType nType);
     lmStaffObj* FindNextStaffObj(lmStaffObj* pCurSO);
     lmStaffObj* FindPrevStaffObj(lmStaffObj* pCurSO);
     inline lmStaffObj* GetFirstSO() { return m_pFirstSO; }

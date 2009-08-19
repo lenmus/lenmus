@@ -81,8 +81,6 @@ private:
     void        GNC();
     void        GetNewBuffer();
     wxString    Extract(long iFrom, long iTo=0);
-    bool        IsLetter(wxChar ch);
-    bool        IsNumber(wxChar ch);
     void        ParseNewToken();
     void        PushToken(ETokenType nType, wxString sValue);
     bool        PopToken();
@@ -115,5 +113,8 @@ private:
     bool        m_fAbbreviated;
 
 };
+
+extern bool lmIsNumber(wxChar ch);
+extern bool lmIsLetter(wxChar ch);
 
 #endif    // __LMTOKEN_H

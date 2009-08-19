@@ -51,8 +51,8 @@ extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 // lmAuxObj implementation
 //========================================================================================
 
-lmAuxObj::lmAuxObj(lmScoreObj* pOwner, long nID, bool fIsDraggable)
-    : lmComponentObj(pOwner, nID, lm_eAuxObj, fIsDraggable)
+lmAuxObj::lmAuxObj(lmScoreObj* pOwner, long nID, lmEScoreObjType nType, bool fIsDraggable)
+    : lmComponentObj(pOwner, nID, nType, fIsDraggable)
 {
     SetLayer(lm_eLayerAuxObjs);
 }
@@ -183,10 +183,9 @@ wxString lmRelObj::SourceLDP(int nIndent, bool fUndoData)
 // lmBinaryRelObj implementation
 //========================================================================================
 
-lmBinaryRelObj::lmBinaryRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
-                               lmNoteRest* pStartNR, lmNoteRest* pEndNR,
-                               bool fIsDraggable)
-    : lmRelObj(pOwner, nID, nRelObjType, fIsDraggable)
+lmBinaryRelObj::lmBinaryRelObj(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
+                               lmNoteRest* pStartNR, lmNoteRest* pEndNR, bool fIsDraggable)
+    : lmRelObj(pOwner, nID, nType, fIsDraggable)
     , m_pStartNR(pStartNR)
     , m_pEndNR(pEndNR)
 {
@@ -224,9 +223,9 @@ void lmBinaryRelObj::Remove(lmNoteRest* pNR)
 // lmMultiRelObj implementation
 //========================================================================================
 
-lmMultiRelObj::lmMultiRelObj(lmScoreObj* pOwner, long nID, lmEAuxObjType nRelObjType,
+lmMultiRelObj::lmMultiRelObj(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
                              bool fIsDraggable)
-    : lmRelObj(pOwner, nID, nRelObjType, fIsDraggable)
+    : lmRelObj(pOwner, nID, nType, fIsDraggable)
 {
 }
 
@@ -340,7 +339,7 @@ lmNoteRest* lmMultiRelObj::GetNextNoteRest()
 //========================================================================================
 
 lmFermata::lmFermata(lmScoreObj* pOwner, long nID, lmEPlacement nPlacement)
-        : lmAuxObj(pOwner, nID, lmDRAGGABLE)
+        : lmAuxObj(pOwner, nID, lm_eSO_Fermata, lmDRAGGABLE)
 {
     m_nPlacement = nPlacement;
 }
@@ -369,8 +368,7 @@ lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 	//center it on the owner
 	lmLUnits uCenterPos;
-	if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
-		((lmNoteRest*)m_pParent)->IsNote() )
+	if (m_pParent->IsNote() )
 	{
 		//it is a note. Center fermata on notehead shape
 		lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
@@ -473,7 +471,7 @@ wxString lmFermata::Dump()
 
 lmLyric::lmLyric(lmScoreObj* pOwner, wxString& sText, lmTextStyle* pStyle, ESyllabicTypes nSyllabic,
                  int nNumLine, wxString sLanguage)
-    : lmAuxObj(pOwner, lmNEW_ID, lmDRAGGABLE),
+    : lmAuxObj(pOwner, lmNEW_ID, lm_eSO_Lyric, lmDRAGGABLE),
       lmBasicText(sText, g_tDefaultPos, pStyle, sLanguage)
 {
     m_nNumLine = nNumLine;
@@ -724,7 +722,7 @@ lmScoreLine::lmScoreLine(lmScoreObj* pOwner, long nID, lmTenths xStart, lmTenths
                          lmTenths xEnd, lmTenths yEnd, lmTenths nWidth,
                          lmELineCap nStartCap, lmELineCap nEndCap, lmELineStyle nStyle,
                          wxColour nColor)
-    : lmAuxObj(pOwner, nID, lmDRAGGABLE)
+    : lmAuxObj(pOwner, nID, lm_eSO_Line, lmDRAGGABLE)
     , m_txStart(xStart)
     , m_tyStart(yStart)
     , m_txEnd(xEnd)
@@ -740,12 +738,6 @@ lmScoreLine::lmScoreLine(lmScoreObj* pOwner, long nID, lmTenths xStart, lmTenths
 
 wxString lmScoreLine::SourceLDP(int nIndent, bool fUndoData)
 {
-    //wxString sSource = _T("");
-    //sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-	//sSource += wxString::Format(_T("(graphic line %d %d %d %d)\n"),
-	//				(int)(m_txStart + 0.5), (int)(m_tyStart + 0.5),
-	//				(int)(m_txEnd + 0.5), (int)(m_tyEnd + 0.5) );
-
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     if (fUndoData)

@@ -104,7 +104,7 @@ void lmToolPageNotes::Create(wxWindow* parent)
 	//m_pGrpEntryMode = (lmGrpEntryMode*)NULL;
 
     //other data initialization
-    m_sPageToolTip = _("Select notes / rests edit tools");
+    m_sPageToolTip = _("Edit tools for notes and rests");
     m_sPageBitmapName = _T("tool_notes");
 }
 
@@ -538,19 +538,19 @@ void lmGrpTieTuplet::OnTupletButton(wxCommandEvent& event)
     PostToolBoxEvent(lmTOOL_NOTE_TUPLET, event.IsChecked());
 }
 
-void lmGrpTieTuplet::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
-{
-    //post tool box event to the active controller
-    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-    if (pWnd)
-    {
-	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	    wxASSERT(pToolBox);
-        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
-                             fSelected);
-        ::wxPostEvent( pWnd, event );
-    }
-}
+//void lmGrpTieTuplet::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
+//{
+//    //post tool box event to the active controller
+//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+//    if (pWnd)
+//    {
+//	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+//	    wxASSERT(pToolBox);
+//        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+//                             fSelected);
+//        ::wxPostEvent( pWnd, event );
+//    }
+//}
 
 void lmGrpTieTuplet::SetToolTie(bool fChecked)
 {
@@ -676,28 +676,18 @@ void lmGrpBeams::OnButton(wxCommandEvent& event)
     PostToolBoxEvent(nToolID, event.IsChecked());
 }
 
-void lmGrpBeams::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
-{
-    //post tool box event to the active controller
-    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-    if (pWnd)
-    {
-	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	    wxASSERT(pToolBox);
-        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
-                             fSelected);
-        ::wxPostEvent( pWnd, event );
-    }
-}
-
-//void lmGrpBeams::SetToolTie(bool fChecked)
+//void lmGrpBeams::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
 //{
-//    fChecked ? m_pBtnBeamCut->Press() : m_pBtnBeamCut->Release();
-//}
-//
-//void lmGrpBeams::SetToolTuplet(bool fChecked)
-//{
-//    fChecked ? m_pBtnBeamJoin->Press() : m_pBtnBeamJoin->Release();
+//    //post tool box event to the active controller
+//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+//    if (pWnd)
+//    {
+//	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+//	    wxASSERT(pToolBox);
+//        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+//                             fSelected);
+//        ::wxPostEvent( pWnd, event );
+//    }
 //}
 
 void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)

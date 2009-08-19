@@ -604,6 +604,12 @@
 				<File
 					RelativePath="..\..\src\app\toolbox\ToolsBox.h">
 				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolSymbols.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\app\toolbox\ToolSymbols.h">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

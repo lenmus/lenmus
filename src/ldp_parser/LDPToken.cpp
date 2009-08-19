@@ -268,17 +268,6 @@ wxString lmLDPTokenBuilder::Extract(long iFrom, long iTo)
 
 }
 
-bool lmLDPTokenBuilder::IsLetter(wxChar ch)
-{
-    return (sLetters.Find(ch) != -1);
-}
-
-bool lmLDPTokenBuilder::IsNumber(wxChar ch)
-{
-    return (sNumbers.Find(ch) != -1);
-}
-
-
 void lmLDPTokenBuilder::ParseNewToken()
 {
     //at this point m_lastPos points to last read char
@@ -319,7 +308,7 @@ void lmLDPTokenBuilder::ParseNewToken()
         switch (nState) {
             case FT_Start:
                 GNC();
-                if (IsLetter(m_curChar)
+                if (lmIsLetter(m_curChar)
                     || m_curChar == chOpenBracket || m_curChar == chBar
                     || m_curChar == chColon || m_curChar == chAsterisk
                     || m_curChar == chSharp )
@@ -329,7 +318,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                 else if (m_curChar == chApostrophe) {
                     nState = FT_ETQ02;
                 }
-                else if (IsNumber(m_curChar)) {
+                else if (lmIsNumber(m_curChar)) {
                     nState = FT_NUM01;
                 }
                 else {
@@ -533,7 +522,7 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_ETQ01:
                 GNC();
-                if (IsLetter(m_curChar) || IsNumber(m_curChar) ||
+                if (lmIsLetter(m_curChar) || lmIsNumber(m_curChar) ||
                     m_curChar == chUnderscore || m_curChar == chDot ||
                     m_curChar == chPlusSign || m_curChar == chMinusSign ||
                     m_curChar == chSharp || m_curChar == chSlash ||
@@ -574,11 +563,11 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_NUM01:
                 GNC();
-                if (IsNumber(m_curChar)) {
+                if (lmIsNumber(m_curChar)) {
                     nState = FT_NUM01;
                 } else if (m_curChar == chDot) {
                     nState = FT_NUM02;
-                } else if (IsLetter(m_curChar)) {
+                } else if (lmIsLetter(m_curChar)) {
                     nState = FT_ETQ01;
                 } else {
                     m_lastPos = m_lastPos - 1;     //repeat last char
@@ -589,7 +578,7 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_NUM02:
                 GNC();
-                if (IsNumber(m_curChar)) {
+                if (lmIsNumber(m_curChar)) {
                     nState = FT_NUM02;
                 } else {
                     m_lastPos = m_lastPos - 1;     //repeat last char
@@ -625,9 +614,9 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_S01:
                 GNC();
-                if (IsLetter(m_curChar)) {
+                if (lmIsLetter(m_curChar)) {
                     nState = FT_ETQ01;
-                } else if (IsNumber(m_curChar)) {
+                } else if (lmIsNumber(m_curChar)) {
                     nState = FT_NUM01;
                 } else if (m_curChar == chPlusSign || m_curChar == chMinusSign) {
                     nState = FT_S03;
@@ -641,9 +630,9 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_S02:
                 GNC();
-                if (IsLetter(m_curChar)) {
+                if (lmIsLetter(m_curChar)) {
                     nState = FT_ETQ01;
-                } else if (IsNumber(m_curChar)) {
+                } else if (lmIsNumber(m_curChar)) {
                     nState = FT_NUM01;
                 } else if (m_curChar == chPlusSign || m_curChar == chMinusSign) {
                     nState = FT_S03;
@@ -654,9 +643,9 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_S03:
                 GNC();
-                if (IsLetter(m_curChar)) {
+                if (lmIsLetter(m_curChar)) {
                     nState = FT_ETQ01;
-                } else if (IsNumber(m_curChar)) {
+                } else if (lmIsNumber(m_curChar)) {
                     nState = FT_NUM01;
                 } else {
                     nState = FT_Error;
@@ -684,5 +673,20 @@ void lmLDPTokenBuilder::ParseNewToken()
         } // switch
     } // while loop
 
+}
+
+
+//------------------------------------------------------------------------------------------
+// Global functions
+//------------------------------------------------------------------------------------------
+
+bool lmIsLetter(wxChar ch)
+{
+    return (sLetters.Find(ch) != -1);
+}
+
+bool lmIsNumber(wxChar ch)
+{
+    return (sNumbers.Find(ch) != -1);
 }
 

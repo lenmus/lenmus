@@ -56,9 +56,10 @@ extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 // lmScoreObj implementation
 //-------------------------------------------------------------------------------------
 
-lmScoreObj::lmScoreObj(lmScoreObj* pParent, long nID)
+lmScoreObj::lmScoreObj(lmScoreObj* pParent, long nID, lmEScoreObjType nType)
     : m_nId(nID)
     , m_pParent(pParent)
+    , m_nObjType(nType)
     , m_pObjOptions((lmObjOptions*)NULL)
     , m_pAuxObjs((lmAuxObjsCol*)NULL)
 {
@@ -249,7 +250,7 @@ lmLocation lmScoreObj::SetUserLocation(lmLocation tPos, int nShapeIdx)
         this->SaveUserLocation(uUserShift.x, uUserShift.y, nShapeIdx);
 
 		////DBG--------------------------------------------------------------------------------
-		//if (GetScoreObjType()==lmSOT_ComponentObj) // && ((lmComponentObj*)this)->GetID()==4)
+		//if (IsComponentObj() // && ((lmComponentObj*)this)->GetID()==4)
 		//{
 		//    lmUPoint uShapePos = pGMObj->GetBounds().GetTopLeft();
 		//    lmUPoint uShapeOrg = pGMObj->GetOrigin();
@@ -383,10 +384,8 @@ void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
     if (pGMObj)
     {
 		////DBG--------------------------------------------------------------------------------
-		////if (GetScoreObjType()==lmSOT_ComponentObj && ((lmComponentObj*)this)->GetID()==1)
-		//if (GetScoreObjType()==lmSOT_ComponentObj
-  //          && ((lmComponentObj*)this)->GetType()==lm_eStaffObj
-  //          && ((lmStaffObj*)this)->IsClef() )
+		////if (IsComponentObj() && ((lmComponentObj*)this)->GetID()==1)
+		//if (IsClef() )
 		//{
 		//	lmUPoint uNewOrg = m_uComputedPos + m_uUserShift;
 		//	wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] uxShift=%.2f, ShapeIdx=%d"),
@@ -586,8 +585,7 @@ lmAuxObj* lmScoreObj::AttachTextBox(lmTPoint& ntBoxPos, lmTPoint& ntLinePos, wxS
     //wrapper method to encapsulate and simplify operations related to score creation by program.
     //This method creates and attaches a textbox
 
-    lmScoreTextParagraph* pTextBox = new lmScoreTextParagraph(this, nID, size.x, size.y,
-                                                              ntBoxPos);
+    lmScoreTextBox* pTextBox = new lmScoreTextBox(this, nID, size.x, size.y, ntBoxPos);
     this->AttachAuxObj(pTextBox);
     lmBaseText* pBText = new lmBaseText(sText, pTextStyle);
     pTextBox->InsertTextUnit(pBText);
@@ -630,14 +628,12 @@ WX_DEFINE_LIST(AuxObjsList);
 
 static int m_IdCounter = 0;        //to assign unique IDs to ComponentObjs
 
-lmComponentObj::lmComponentObj(lmScoreObj* pParent, long nID, lmEComponentObjType nType,
+lmComponentObj::lmComponentObj(lmScoreObj* pParent, long nID, lmEScoreObjType nType,
                                bool fIsDraggable)
-    : lmScoreObj(pParent, nID)
-    , m_nType(nType)
+    : lmScoreObj(pParent, nID, nType)
     , m_fIsDraggable(fIsDraggable)
     , m_color(*wxBLACK)
 {
-    //m_nId = m_IdCounter++;      // give it an ID
 }
 
 lmComponentObj::~lmComponentObj()
@@ -660,11 +656,10 @@ lmUPoint lmComponentObj::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 // lmStaffObj implementation
 //-------------------------------------------------------------------------------------------------
 
-lmStaffObj::lmStaffObj(lmScoreObj* pParent, long nID, EStaffObjType nType, lmVStaff* pStaff,
+lmStaffObj::lmStaffObj(lmScoreObj* pParent, long nID, lmEScoreObjType nType, lmVStaff* pStaff,
                        int nStaff, bool fVisible, bool fIsDraggable)
-    : lmComponentObj(pParent, nID, lm_eStaffObj, fIsDraggable)
+    : lmComponentObj(pParent, nID, nType, fIsDraggable)
     , m_fVisible(fVisible)
-    , m_nClass(nType)
     , m_pVStaff(pStaff)
     , m_nStaffNum(pStaff ? nStaff : 0)
 	, m_pPrevSO((lmStaffObj*) NULL)
@@ -849,10 +844,10 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
 {
 	wxString sSource = _T("");
 
-    //Spacers doesn't have a source LDP element. Therefore, only attached AuxObjs must
-    //be generated
-    if ( !( IsAnchor() || IsScoreAnchor() || IsSpacer() ) )
-    {
+    ////Spacers doesn't have a source LDP element. Therefore, only attached AuxObjs must
+    ////be generated
+    //if ( !(IsScoreAnchor() || IsSpacer() ) )
+    //{
         //staff num
         if (m_pVStaff->GetNumStaves() > 1
             && !IsKeySignature()            //KS, TS & barlines are common to all staves.
@@ -866,11 +861,7 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
         if (!m_fVisible)
             sSource += _T(" noVisible");
 
-    }
-
-    //is score cursor pointing to this StaffObj?
-    if (g_pCursorSO == this)
-        sSource += _T(" cursorPoint");
+    //}
 
     // Generate source code for AuxObjs attached to this StaffObj
     if (m_pAuxObjs)

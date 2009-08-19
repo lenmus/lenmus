@@ -50,7 +50,7 @@
 //
 
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, long nID)
-    : lmStaffObj(pVStaff, nID, eSFOT_Control, pVStaff, 1, lmVISIBLE, lmNO_DRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_Control, pVStaff, 1, lmVISIBLE, lmNO_DRAGGABLE)
     , m_nCtrolType(nType)
 {
     wxASSERT(nType == lmNEW_SYSTEM);

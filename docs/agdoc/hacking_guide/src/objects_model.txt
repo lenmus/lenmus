@@ -163,24 +163,24 @@ Finally, I have defined other auxiliary objects, non-derived from any other one:
  * lmAccidental: accidentals in notes
  
  
-The full hierarchy of objects is shown in next diagram:
+The full hierarchy of objects is shown in following diagram. Objects marked with (A) means that they are abstract objects:
 
 \code
 {
-    lmScoreObj
+    lmScoreObj (A)
         +-- lmScore
         +-- lmStaff
         +-- lmInstrument
         +-- lmVStaff (musicData)
         |
-        +-- lmComponentObj
+        +-- lmComponentObj (A)
               |
-              +-- lmStaffObj
+              +-- lmStaffObj (A)
               |     +-- lmBarline
               |     +-- lmClef
               |     +-- lmKey signature
               |     +-- lmTimeSignature
-              |     +-- lmNoteRest
+              |     +-- lmNoteRest (A)
               |     |     +-- lmNote
               |     |     +-- lmRest
               |     |
@@ -192,24 +192,24 @@ The full hierarchy of objects is shown in next diagram:
               |     |
               |     +-- lmFiguredBass
               |
-              +-- lmAuxObj
+              +-- lmAuxObj (A)
                     +-- lmScoreLine
                     +-- lmFermata
                     +-- lmLyric
-                    +-- lmScoreBlock
-                    |     +-- lmScoreTextParagraph
+                    +-- lmScoreBlock (A)
+                    |     (+-- lmScoreTextParagraph: not implemented)
                     |     +-- lmScoreTextBox
                     |
-                    +-- lmScoreText
+                    +-- lmScoreText (A)
                     |     +-- lmScoreTitle
                     |     +-- lmTextItem
-                    |           +-- lmInstrNameAbbrev
+                    |           +-- lmInstrNameAbbrev   (name, abbreviation)
                     |
-                    +-- lmRelObj
-                          +-- lmBinaryRelObj
+                    +-- lmRelObj (A)
+                          +-- lmBinaryRelObj (A)
                           |     +-- lmTie
                           |
-                          +-- lmMultiRelObj
+                          +-- lmMultiRelObj (A)
                                 +-- lmBeam
                                 (+-- lmTupletBracket)
 
@@ -218,6 +218,7 @@ The full hierarchy of objects is shown in next diagram:
         - lmBasicText
         - lmBaseText
         - lmChord
+        - lmInstrGroup              (-> relation object?)
         - lmMultipleRelationship
             - lmTupletBracket
 

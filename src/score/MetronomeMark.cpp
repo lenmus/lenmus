@@ -40,7 +40,7 @@
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID, lmENoteType nNoteType,
                                  int nDots, int nTicksPerMinute, bool fParentheses,
                                  bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_nMarkType(eMMT_Note_Value)
     , m_nLeftNoteType(nNoteType)
     , m_nLeftDots(nDots)
@@ -53,7 +53,7 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID, lmENoteType nNoteT
 // 'm.m. = 80'
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID, int nTicksPerMinute,
                                  bool fParentheses, bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_nMarkType(eMMT_MM_Value)
     , m_nTicksPerMinute(nTicksPerMinute)
     , m_fParentheses(fParentheses)
@@ -66,7 +66,7 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID,
                                  lmENoteType nLeftNoteType, int nLeftDots,
                                  lmENoteType nRightNoteType, int nRightDots,
                                  bool fParentheses, bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
     , m_nMarkType(eMMT_Note_Note)
     , m_nLeftNoteType(nLeftNoteType)
     , m_nLeftDots(nLeftDots)

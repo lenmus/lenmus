@@ -52,6 +52,7 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     app/toolbox/ToolNotes.cpp \
     app/toolbox/ToolPage.cpp \
     app/toolbox/ToolsBox.cpp \
+    app/toolbox/ToolSymbols.cpp \
     app/WelcomeWnd.cpp \
     auxmusic/Cadence.cpp \
     auxmusic/ChordManager.cpp \

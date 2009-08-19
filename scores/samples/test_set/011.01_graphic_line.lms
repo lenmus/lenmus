@@ -10,10 +10,14 @@
          (key C)
          (time 2 4 noVisible)
          (spacer 500)
-            (line (startPoint dx:5.0 dy:5.0)(endPoint dx:80.0 dy:-10.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
-            (line (startPoint dx:5.0 dy:15.0)(endPoint dx:80.0 dy:10.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
-            (line (startPoint dx:5.0 dy:25.0)(endPoint dx:80.0 dy:30.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
-            (line (startPoint dx:5.0 dy:35.0)(endPoint dx:80.0 dy:50.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
+         (spacer 0
+            (line (startPoint dx:5.0 dy:5.0)(endPoint dx:80.0 dy:-10.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none)))
+         (spacer 0
+            (line (startPoint dx:5.0 dy:15.0)(endPoint dx:80.0 dy:10.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none)))
+         (spacer 0
+            (line (startPoint dx:5.0 dy:25.0)(endPoint dx:80.0 dy:30.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none)))
+         (spacer 0
+            (line (startPoint dx:5.0 dy:35.0)(endPoint dx:80.0 dy:50.0)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none)))
          (barline end noVisible)
 
          //Measure 2

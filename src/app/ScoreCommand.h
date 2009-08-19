@@ -32,6 +32,8 @@
 #include "ScoreView.h"
 #include "../score/defs.h"
 #include "../score/ColStaffObjs.h"      //lmCursorState
+#include "../score/FiguredBass.h"       //lmFiguredBassInfo struct
+
 class lmComponentObj;
 class lmDocument;
 class lmGMObject;
@@ -70,7 +72,8 @@ protected:
     //common methods
     bool CommandDone(bool fCmdSuccess, int nUpdateHints=0);
     bool CommandUndone(int nUpdateHints=0);
-    void LogCommand();
+    void RestoreCursorAndPrepareForUndo();
+    inline void LogScoreState() {}
     void RestoreCursor();
     lmVStaff* GetVStaff();
     lmScoreObj* GetScoreObj(long nID);
@@ -216,6 +219,23 @@ protected:
     lmEClefType         m_nClefType;
 };
 
+
+// Insert figured bass command
+//------------------------------------------------------------------------------------
+class lmCmdInsertFiguredBass: public lmScoreCommand
+{
+public:
+
+    lmCmdInsertFiguredBass(bool fNormalCmd, lmDocument *pDoc, wxString& sFigBass);
+    ~lmCmdInsertFiguredBass() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+
+protected:
+    lmFiguredBassInfo   m_tFBInfo[lmFB_MAX_INTV+1];
+    bool                m_fFirstTime;
+};
 
 
 // Insert time signature command
@@ -566,7 +586,7 @@ protected:
 
 // Change barline properties
 //------------------------------------------------------------------------------------
-class lmCmdChangeBarline: public lmScoreCommand
+class lmCmdChangeBarline : public lmScoreCommand
 {
 public:
 
@@ -587,9 +607,30 @@ protected:
 };
 
 
+// Change figured bass properties
+//------------------------------------------------------------------------------------
+class lmCmdChangeFiguredBass : public lmScoreCommand
+{
+public:
+    lmCmdChangeFiguredBass(bool fNormalCmd, lmDocument *pDoc, lmFiguredBass* pFB, 
+                           wxString& sFigBass);
+    ~lmCmdChangeFiguredBass();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+
+protected:
+    long			    m_nFigBasID;
+	wxString            m_sFigBass;
+    lmFiguredBassInfo   m_tOldInfo[lmFB_MAX_INTV+1];         //intervals 2..13, indexes 0 & 1 not used
+
+};
+
+
 // Change MIDI settings for a given instrument
 //------------------------------------------------------------------------------------
-class lmCmdChangeMidiSettings: public lmScoreCommand
+class lmCmdChangeMidiSettings : public lmScoreCommand
 {
 public:
 

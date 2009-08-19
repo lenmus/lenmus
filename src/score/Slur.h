@@ -89,7 +89,7 @@ public:
     void SetBezierPoints(int nBezier, lmTPoint* ptPoints);
     void SetBezier(int nBezier, lmBezier* pBezier);
 
-    // overrides for pure virtual methods of base class
+    //implementation of pure virtual methods of base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
     int GetNumPoints() { return lmBEZIER_MAX; }
@@ -134,7 +134,6 @@ protected:
 //    // overrides for pure virtual methods of base class
 //    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 //    lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
-//    inline lmEAuxObjType GetAuxObjType() { return eAXOT_Slur; }
 //
 //    // source code related methods
 //    wxString SourceLDP(int nIndent, bool fUndoData);

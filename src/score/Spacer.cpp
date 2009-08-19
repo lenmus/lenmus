@@ -41,7 +41,7 @@
 //-----------------------------------------------------------------------------------------
 
 lmSpacer::lmSpacer(lmVStaff* pVStaff, long nID, lmTenths nWidth, int nStaff)
-    : lmStaffObj(pVStaff, nID, eSFOT_Spacer, pVStaff, nStaff, lmVISIBLE, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_Spacer, pVStaff, nStaff, lmVISIBLE, lmDRAGGABLE)
     , m_nSpacerWidth(nWidth)
 {
     wxASSERT(nStaff > 0);
@@ -132,8 +132,8 @@ wxString lmSpacer::SourceXML(int nIndent)
 // lmScoreAnchor implementation
 //-----------------------------------------------------------------------------------------
 
-lmScoreAnchor::lmScoreAnchor(lmVStaff* pVStaff, int nStaff)
-    : lmStaffObj(pVStaff, lmNEW_ID, eSFOT_ScoreAnchor, pVStaff, nStaff, lmVISIBLE, lmNO_DRAGGABLE)
+lmScoreAnchor::lmScoreAnchor(lmVStaff* pVStaff, long nID, int nStaff)
+    : lmStaffObj(pVStaff, nID, lm_eSO_ScoreAnchor, pVStaff, nStaff, lmVISIBLE, lmNO_DRAGGABLE)
 {
     wxASSERT(nStaff > 0);
     SetLayer(lm_eLayerNotes);

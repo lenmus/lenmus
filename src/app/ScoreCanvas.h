@@ -40,6 +40,7 @@ class lmToolPage;
 class lmScoreProcessor;
 class lmShapeStaff;
 class lmBoxSliceInstr;
+class lmFiguredBass;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -69,6 +70,7 @@ public:
 	virtual void AddTitle() {}
     virtual void AttachNewText(lmComponentObj* pCO) {}
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
+	virtual void InsertFiguredBass() {}
     virtual void InsertClef(lmEClefType nClefType) {}
 	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
@@ -90,13 +92,18 @@ public:
 
         //change/move commands
     virtual void AddTie(lmNote* pStartNote, lmNote* pEndNote) {}
+    virtual void AddTuplet() {}
+	virtual void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible) {}
+    virtual void ChangeFiguredBass(lmFiguredBass* pFB, wxString& sFigBass) {}
     virtual void ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel,
                                     int nMidiInstr) {}
-	virtual void ChangeNotePitch(int nSteps) {}
 	virtual void ChangeNoteAccidentals(int nAcc) {}
 	virtual void ChangeNoteDots(int nDots) {}
+	virtual void ChangeNotePitch(int nSteps) {}
+    virtual void ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos) {}
     virtual void ChangeTie(lmNote* pStartNote, lmNote* pEndNote) {}
-    virtual void AddTuplet() {}
+    virtual void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
+                            lmLocation tPos, lmTextStyle* pStyle, int nHintOptions=0) {}
     virtual void DeleteTuplet(lmNoteRest* pStartNote) {}
 	virtual void MoveNote(lmGMObject* pGMO, const lmUPoint& uPos, int nSteps) {}
 	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
@@ -104,10 +111,6 @@ public:
                                   bool fUpdateViews = true) {}
     virtual void BreakBeam() {}
     virtual void JoinBeam() {}
-    virtual void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
-                            lmLocation tPos, lmTextStyle* pStyle, int nHintOptions=0) {}
-    virtual void ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos) {}
-	virtual void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible) {}
 
 
 
@@ -169,6 +172,7 @@ private:
 #define lmMOUSE_OnOtherShape    0x0008      //pointing to a shape other than staff
 #define lmMOUSE_OnOtherBox      0x0010      //pointing to a box, other cases
 #define lmMOUSE_OnOther         0x0020      //pointing to other place (score paper)
+#define lmMOUSE_OnNotesRests    0x0040      //pointing to a note or a rest
 #define lmMOUSE_OnAny           0xFFFF      //pointing to any place (all score is valid)
 
 
@@ -217,6 +221,7 @@ public:
 	void AddTitle();
     void AttachNewText(lmComponentObj* pCO);
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
+	void InsertFiguredBass();
     void InsertClef(lmEClefType nClefType);
 	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
@@ -238,10 +243,15 @@ public:
 
         //change/move commands
     void AddTie(lmNote* pStartNote, lmNote* pEndNote);
+	void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible);
+    void ChangeFiguredBass(lmFiguredBass* pFB, wxString& sFigBass);
     void ChangeMidiSettings(lmInstrument* pInstr, int nMidiChannel, int nMidiInstr);
-	void ChangeNotePitch(int nSteps);
 	void ChangeNoteAccidentals(int nAcc);
 	void ChangeNoteDots(int nDots);
+	void ChangeNotePitch(int nSteps);
+    void ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos);
+    void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
+                    lmLocation tPos, lmTextStyle* pStyle, int nHintOptions=0);
     void ChangeTie(lmNote* pStartNote, lmNote* pEndNote);
     void AddTuplet();
     void DeleteTuplet(lmNoteRest* pStartNR);
@@ -251,10 +261,6 @@ public:
                           bool fUpdateViews = true);
     void BreakBeam();
     void JoinBeam();
-    void ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
-                    lmLocation tPos, lmTextStyle* pStyle, int nHintOptions=0);
-    void ChangePageMargin(lmGMObject* pGMO, int nIdx, int nPage, lmLUnits uPos);
-	void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible);
 
     //mouse processing
     void DoCaptureMouse();
@@ -303,14 +309,16 @@ private:
     enum lmEMouseCursor        //AWARE: Must match LoadMouseCursors() implementation
     {
         lm_eCursor_Pointer = 0,
+        lm_eCursor_Cross,
         lm_eCursor_Note,
         lm_eCursor_Note_Forbidden,
         //
         lm_eCursor_Max          //the last item.
     };
 
+    //values that depend on selected tool
     wxMenu* GetContextualMenuForTool();
-
+    void GetValidAreasAndMouseIcons();
 
     //dealing with mouse events
     void OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC);
@@ -399,7 +407,7 @@ private:
     int             m_nTbDuration;
 
     //current values selected in ToolBox
-    //PageNotes
+        //PageNotes
     lmENoteType     m_nSelNoteType;
 	int             m_nSelDots;
 	lmENoteHeads    m_nSelNotehead;
@@ -523,8 +531,7 @@ protected:
     wxClassInfo*            m_pControllerInfo;
     wxClassInfo*            m_pScoreProcInfo;
     wxClassInfo*            m_ToolPagesInfo[lmPAGE_MAX];
-    //lmToolBoxConfiguration  m_config;
-
+    lmScoreProcessor*       m_pScoreProc;
 };
 
 

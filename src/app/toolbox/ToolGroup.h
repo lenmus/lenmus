@@ -59,8 +59,31 @@ enum lmEToolGroupID
 	//in lmPAGE_BARLINES,
 	lmGRP_BarlineType,			//barline type
 
+    //in lmPAGE_SYMBOLS
+    lmGRP_Symbols,              //texts, figured bass, symbols & graphic objects
+
 };
 
+// Only needed for groups needing an ID for each tool
+enum lmEToolID
+{
+    //lmGRP_TieTuplet
+    lmTOOL_NOTE_TIE,
+    lmTOOL_NOTE_TUPLET,
+
+    //lmGRP_Beams
+    lmTOOL_BEAMS_CUT,
+    lmTOOL_BEAMS_JOIN,
+    lmTOOL_BEAMS_FLATTEN,
+    lmTOOL_BEAMS_SUBGROUP,
+
+    //lmGRP_Symbols
+    lmTOOL_FIGURED_BASS = 0,
+    lmTOOL_TEXT,
+    lmTOOL_LINES,
+    lmTOOL_TEXTBOX,
+
+};
 
 class lmToolGroup: public wxPanel
 {    
@@ -84,6 +107,8 @@ public:
 	int GetGroupWitdh();
 
 protected:
+    void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
+
 	wxStaticBox*        m_pBoxTitle;    //the box and title
 	wxPanel*		    m_pParent;      //owner ToolPage
 };
@@ -94,7 +119,8 @@ class lmToolButtonsGroup: public lmToolGroup
 {    
 public:
     lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
-                       wxBoxSizer* pMainSizer, int nFirstButtonID, lmColorScheme* pColours);
+                       wxBoxSizer* pMainSizer, int nFirstButtonID,
+                       lmColorScheme* pColours = (lmColorScheme*)NULL);
     ~lmToolButtonsGroup();
 
     //event handlers

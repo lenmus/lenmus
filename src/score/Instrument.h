@@ -39,7 +39,8 @@ class lmInstrument : public lmScoreObj
 public:
     //ctors and dtor
     lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
-                 int nMIDIInstr, wxString sName, wxString sAbbrev);
+                 int nMIDIInstr, wxString sName, wxString sAbbrev,
+                 long nNameID = lmNEW_ID, long nAbbrevID = lmNEW_ID );
     lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
                  int nMIDIInstr, lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
     ~lmInstrument();
@@ -49,7 +50,6 @@ public:
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
-	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Instrument; }
     inline lmScore* GetScore() { return m_pScore; }
 
 
@@ -103,8 +103,8 @@ public:
 private:
     void Create(lmScore* pScore, long nVStaffID, int nMIDIChannel, int nMIDIInstr,
                 lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
-    void AddName(wxString& sName);
-    void AddAbbreviation(wxString& sAbbrev);
+    void AddName(wxString& sName, long nID);
+    void AddAbbreviation(wxString& sAbbrev, long nID);
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
 	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmInstrNameAbbrev* pName);
     bool RenderBraket();

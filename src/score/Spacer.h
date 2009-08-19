@@ -66,7 +66,7 @@ public:
 class lmScoreAnchor: public lmStaffObj
 {
 public:
-    lmScoreAnchor(lmVStaff* pVStaff, int nStaff=1);
+    lmScoreAnchor(lmVStaff* pVStaff, long nID, int nStaff=1);
     ~lmScoreAnchor() {}
 
     // properties

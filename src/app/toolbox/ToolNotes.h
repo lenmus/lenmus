@@ -216,7 +216,7 @@ public:
 
 
 protected:
-    void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
+    //void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
 
     lmCheckButton*      m_pBtnTie;
     lmCheckButton*      m_pBtnTuplet;
@@ -241,14 +241,11 @@ public:
     //event handlers
     void OnButton(wxCommandEvent& event);
 
-	////access to options
- //   void SetToolTie(bool fChecked);
- //   void SetToolTuplet(bool fChecked);
     void EnableTool(lmEToolID nToolID, bool fEnabled);
 
 
 protected:
-    void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
+    //void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
 
     lmBitmapButton*      m_pBtnBeamCut;
     lmBitmapButton*      m_pBtnBeamJoin;

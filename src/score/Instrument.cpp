@@ -40,6 +40,7 @@
 
 #include "Score.h"
 #include "VStaff.h"
+#include "Staff.h"
 #include "InstrGroup.h"
 #include "wx/debug.h"
 #include "properties/DlgProperties.h"
@@ -292,8 +293,9 @@ void lmMidiProperties::OnButtonTestSoundClick(wxCommandEvent& event)
 //=======================================================================================
 
 lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
-                           int nMIDIInstr, wxString sName, wxString sAbbrev)
-    : lmScoreObj(pScore, nID)
+                           int nMIDIInstr, wxString sName, wxString sAbbrev,
+                           long nNameID, long nAbbrevID)
+    : lmScoreObj(pScore, nID, lm_eSO_Instrument)
 {
     //create objects for name and abbreviation
     lmInstrNameAbbrev* pName = (lmInstrNameAbbrev*)NULL;
@@ -303,14 +305,14 @@ lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIC
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pName = new lmInstrNameAbbrev((lmScoreObj*)NULL, sName, pStyle);
+        pName = new lmInstrNameAbbrev((lmScoreObj*)NULL, nNameID, sName, pStyle);
     }
 
     if (sAbbrev != _T(""))
     { 
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
-        pAbbreviation = new lmInstrNameAbbrev((lmScoreObj*)NULL, sAbbrev, pStyle);
+        pAbbreviation = new lmInstrNameAbbrev((lmScoreObj*)NULL, nAbbrevID, sAbbrev, pStyle);
     }
 
     //create the instrument
@@ -320,7 +322,7 @@ lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIC
 lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
                            int nMIDIInstr, lmInstrNameAbbrev* pName,
                            lmInstrNameAbbrev* pAbbrev)
-    : lmScoreObj(pScore, nID)
+    : lmScoreObj(pScore, nID, lm_eSO_Instrument)
 {
     Create(pScore, nVStaffID, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
 }
@@ -348,25 +350,25 @@ void lmInstrument::Create(lmScore* pScore, long nVStaffID, int nMIDIChannel, int
         pAbbrev->SetOwner(this);
 }
 
-void lmInstrument::AddName(wxString& sName)
+void lmInstrument::AddName(wxString& sName, long nID)
 { 
     if (m_pName)
         delete m_pName;
 
     lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
     wxASSERT(pStyle);
-    m_pName = new lmInstrNameAbbrev(this, sName, pStyle);
+    m_pName = new lmInstrNameAbbrev(this, nID, sName, pStyle);
     //m_pName->SetOwner(this);
 }
 
-void lmInstrument::AddAbbreviation(wxString& sAbbrev)
+void lmInstrument::AddAbbreviation(wxString& sAbbrev, long nID)
 { 
     if (m_pAbbreviation) 
         delete m_pAbbreviation;
 
     lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
     wxASSERT(pStyle);
-    m_pAbbreviation = new lmInstrNameAbbrev(this, sAbbrev, pStyle);
+    m_pAbbreviation = new lmInstrNameAbbrev(this, nID, sAbbrev, pStyle);
     //m_pAbbreviation->SetOwner(this);
 }
 
@@ -432,25 +434,37 @@ wxString lmInstrument::SourceLDP(int nIndent, bool fUndoData)
 	wxString sSource = _T("");
 	sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     if (fUndoData)
-        sSource += wxString::Format(_T("(instrument#%d"), GetID() );
+        sSource += wxString::Format(_T("(instrument#%d\n"), GetID() );
     else
-        sSource += _T("(instrument");
+        sSource += _T("(instrument\n");
+    nIndent++;
 
     //num of staves
-	sSource += wxString::Format(_T(" (staves %d)"), m_pVStaff->GetNumStaves());
+	sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+	sSource += wxString::Format(_T("(staves %d)\n"), m_pVStaff->GetNumStaves());
+    int nStaves = m_pVStaff->GetNumStaves();
+    //for (int i=0; i < nStaves; i++)
+    //    sSource += m_pVStaff->GetStaff(i+1)->SourceLDP(nIndent, fUndoData);
 
 	//MIDI info
-	sSource += wxString::Format(_T(" (infoMIDI %d %d)"), m_nMidiInstr, m_nMidiChannel);
+	sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+	sSource += wxString::Format(_T("(infoMIDI %d %d)\n"), m_nMidiInstr, m_nMidiChannel);
 
     //Name and abbreviation
     if (m_pName)
+    {
+	    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
         sSource += m_pName->SourceLDP(_T("name"), fUndoData);
+        sSource += _T("\n");
+    }
     if (m_pAbbreviation)
+    {
+	    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
         sSource += m_pAbbreviation->SourceLDP(_T("abbrev"), fUndoData);
+        sSource += _T("\n");
+    }
 
     //the music data (lmVStaff)
-    sSource += _T("\n");
-	nIndent++;
 	sSource += m_pVStaff->SourceLDP(nIndent, fUndoData);
 	nIndent--;
 
@@ -458,7 +472,6 @@ wxString lmInstrument::SourceLDP(int nIndent, bool fUndoData)
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sSource += _T(")\n");
     return sSource;
-
 }
 
 wxString lmInstrument::SourceXML(int nIndent)
@@ -658,9 +671,9 @@ void lmInstrument::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabN
 	//add pages to edit name and abbreviation
     wxString sEmpty = _T("");
     if (!m_pName)
-        AddName(sEmpty);
+        AddName(sEmpty, lmNEW_ID);
 	if (!m_pAbbreviation)
-        AddAbbreviation(sEmpty);
+        AddAbbreviation(sEmpty, lmNEW_ID);
 
 	m_pName->OnEditProperties(pDlg, _("Name"));
     m_pAbbreviation->OnEditProperties(pDlg, _("Abbreviation"));

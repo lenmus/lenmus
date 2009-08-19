@@ -181,12 +181,8 @@ wxString lmSystemInfo::SourceLDP(int nIndent, bool fUndoData)
 // lmScore implementation
 //=======================================================================================
 
-//global variable for exporting to LDP ScoreCursor data
-lmStaffObj* g_pCursorSO = (lmStaffObj*)NULL;        //not NULL for exporting cursor data
-
-
 lmScore::lmScore()
-    : lmScoreObj((lmScoreObj*)NULL, lmNEW_ID)
+    : lmScoreObj((lmScoreObj*)NULL, lmNEW_ID, lm_eSO_Score)
     , m_SCursor(this)
     , m_sCreationModeName(wxEmptyString)
     , m_sCreationModeVers(wxEmptyString)
@@ -805,11 +801,6 @@ wxString lmScore::Dump(wxString sFilename)
 
 wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
 {
-    if(fUndoData)
-        g_pCursorSO = m_SCursor.GetStaffObj();
-    else
-        g_pCursorSO = (lmStaffObj*)NULL;
-
     wxString sSource = _T("(score\n   (vers 1.6)(language en utf-8)\n");
 
     //add comment with info about generator program and version
@@ -856,10 +847,12 @@ wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
     //score cursor information
     if (fUndoData)
     {
-        sSource += wxString::Format(_T("   (cursor %d %d %s)\n"),
-                        m_SCursor.GetCursorInstrumentNumber(),
-                        m_SCursor.GetCursorNumStaff(),
-		                DoubleToStr((double)m_SCursor.GetCursorTime(), 2).c_str() );
+        lmCursorState tState = m_SCursor.GetState(); 
+        sSource += wxString::Format(_T("   (cursor %d %d %s %d)\n"),
+                        tState.GetNumInstr(),
+                        tState.GetNumStaff(),
+		                DoubleToStr((double)tState.GetTimepos(), 2).c_str(),
+                        tState.GetObjID() );
     }
 
     //loop for each instrument

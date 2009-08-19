@@ -87,9 +87,10 @@ lmBasicText::~lmBasicText()
 // lmScoreText implementation
 //==========================================================================================
 
-lmScoreText::lmScoreText(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEHAlign nHAlign,
+lmScoreText::lmScoreText(lmScoreObj* pOwner, long nID, lmEScoreObjType nType, 
+                         wxString& sTitle, lmEHAlign nHAlign,
                          lmTextStyle* pStyle)
-    : lmAuxObj(pOwner, nID, lmDRAGGABLE),
+    : lmAuxObj(pOwner, nID, nType, lmDRAGGABLE),
       lmBasicText(sTitle, g_tDefaultPos, pStyle)
 {
     m_nBlockAlign = lmBLOCK_ALIGN_NONE;
@@ -175,7 +176,7 @@ void lmScoreText::Cmd_ChangeText(wxString& sText, lmEHAlign nAlign, lmLocation t
 
 lmTextItem::lmTextItem(lmScoreObj* pOwner, long nID, wxString& sTitle, lmEHAlign nHAlign,
                        lmTextStyle* pStyle)
-    : lmScoreText(pOwner, nID, sTitle, nHAlign, pStyle)
+    : lmScoreText(pOwner, nID, lm_eSO_TextItem, sTitle, nHAlign, pStyle)
 {
     m_nBlockAlign = lmBLOCK_ALIGN_NONE;
     m_nVAlign = lmVALIGN_DEFAULT;
@@ -288,12 +289,15 @@ wxString lmTextItem::SourceXML(int nIndent)
 
 //==========================================================================================
 // lmInstrNameAbbrev implementation
+//  The name or the abbreviation for an instrument name
 //==========================================================================================
 
 wxString lmInstrNameAbbrev::SourceLDP(wxString sTag, bool fUndoData)
 {
     wxString sSource = _T("(");
     sSource += sTag;
+    if (fUndoData)
+        sSource += wxString::Format(_T("#%d"), GetID() );
 
     //text goes after main tag
     sSource += _T(" \"");
@@ -323,7 +327,7 @@ wxString lmInstrNameAbbrev::SourceLDP(wxString sTag, bool fUndoData)
 lmScoreTitle::lmScoreTitle(lmScoreObj* pOwner, long nID, wxString& sTitle,
                            lmEBlockAlign nBlockAlign, lmEHAlign nHAlign, lmEVAlign nVAlign,
                            lmTextStyle* pStyle)
-    : lmScoreText(pOwner, nID, sTitle, nHAlign, pStyle)
+    : lmScoreText(pOwner, nID, lm_eSO_ScoreTitle, sTitle, nHAlign, pStyle)
 {
     m_nBlockAlign = nBlockAlign;
     m_nVAlign = nVAlign;
@@ -478,10 +482,11 @@ wxString lmBaseText::Dump()
 //      rectangle) plus alligment attributes
 //==========================================================================================
 
-lmScoreBlock::lmScoreBlock(lmScoreObj* pOwner, long nID, lmTenths ntWidth,
+lmScoreBlock::lmScoreBlock(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
+                           lmTenths ntWidth,
                            lmTenths ntHeight, lmTPoint ntPos, lmEBlockAlign nBlockAlign,
                            lmEHAlign nHAlign, lmEVAlign nVAlign)
-    : lmAuxObj(pOwner, nID, lmDRAGGABLE)
+    : lmAuxObj(pOwner, nID, nType, lmDRAGGABLE)
     , m_ntWidth(ntWidth)
     , m_ntHeight(ntHeight)
     , m_ntPos(ntPos)
@@ -718,18 +723,18 @@ bool lmScoreBlock::ComputeAnchorJoinPoint(lmTPoint* ptJoin)
 
 
 //==========================================================================================
-// lmScoreTextParagraph implementation: box + alignment + collection of lmBaseText
+// lmScoreTextBox implementation: box + alignment + collection of lmBaseText
 //==========================================================================================
 
-lmScoreTextParagraph::lmScoreTextParagraph(lmScoreObj* pOwner, long nID,
+lmScoreTextBox::lmScoreTextBox(lmScoreObj* pOwner, long nID,
                                            lmTenths ntWidth, lmTenths ntHeight,
                                            lmTPoint tPos)
-    : lmScoreBlock(pOwner, nID, ntWidth, ntHeight, tPos)
+    : lmScoreBlock(pOwner, nID, lm_eSO_TextBox, ntWidth, ntHeight, tPos)
 {
     DefineAsMultiShaped();      //multi-shaped: box (#0) + anchor line (#1)
 }
 
-lmScoreTextParagraph::~lmScoreTextParagraph()
+lmScoreTextBox::~lmScoreTextBox()
 {
     //delete text units
     std::list<lmBaseText*>::iterator it;
@@ -738,7 +743,7 @@ lmScoreTextParagraph::~lmScoreTextParagraph()
     m_texts.clear();
 }
 
-void lmScoreTextParagraph::Defragment()
+void lmScoreTextBox::Defragment()
 {
     //A text paragraph containing text with the same style contains just one lmBaseText object. 
     //When styling is applied to part of this object, the object is decomposed into separate 
@@ -750,7 +755,7 @@ void lmScoreTextParagraph::Defragment()
     //TODO
 }
 
-void lmScoreTextParagraph::InsertTextUnit(lmBaseText* pText)
+void lmScoreTextBox::InsertTextUnit(lmBaseText* pText)
 {
     //TODO: this code just adds the text at the end
     wxASSERT(pText);
@@ -758,15 +763,14 @@ void lmScoreTextParagraph::InsertTextUnit(lmBaseText* pText)
     Defragment();
 }
 
-wxString lmScoreTextParagraph::SourceLDP(int nIndent, bool fUndoData)
+wxString lmScoreTextBox::SourceLDP(int nIndent, bool fUndoData)
 {
-    //TODO
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     if (fUndoData)
-        sSource += wxString::Format(_T("(paragraph#%d "), GetID() );
+        sSource += wxString::Format(_T("(textbox#%d "), GetID() );
     else
-		sSource += _T("(paragraph ");
+		sSource += _T("(textbox ");
 
     //location and alignment
     sSource += _T("dx:");
@@ -851,19 +855,19 @@ wxString lmScoreTextParagraph::SourceLDP(int nIndent, bool fUndoData)
     return sSource;
 }
 
-wxString lmScoreTextParagraph::SourceXML(int nIndent)
+wxString lmScoreTextBox::SourceXML(int nIndent)
 {
     //TODO
     return wxEmptyString;
 }
 
-wxString lmScoreTextParagraph::Dump()
+wxString lmScoreTextBox::Dump()
 {
     //TODO
     return wxEmptyString;
 }
 
-lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
+lmLUnits lmScoreTextBox::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // Creates the shape and returns it
 
@@ -897,7 +901,7 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
         //anchor line (shape #1)
         m_ntAnchorJoinPoint = m_ntPos;
         bool fHidden = ComputeAnchorJoinPoint(&m_ntAnchorJoinPoint);
-        //wxLogMessage(_T("[lmScoreTextParagraph::LayoutObject] Join=(%.2f, %.2f)"),
+        //wxLogMessage(_T("[lmScoreTextBox::LayoutObject] Join=(%.2f, %.2f)"),
         //    m_ntAnchorJoinPoint.x, m_ntAnchorJoinPoint.y );
 
         lmLUnits uxStartAnchor = m_pParent->TenthsToLogical(m_ntAnchorPoint.x) + pPaper->GetCursorX();
@@ -920,104 +924,4 @@ lmLUnits lmScoreTextParagraph::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoi
     }
     return m_pShapeRectangle->GetBounds().GetWidth();
 }
-
-
-
-//==========================================================================================
-// lmScoreTextBox implementation
-//==========================================================================================
-
-lmScoreTextBox::lmScoreTextBox(lmScoreObj* pOwner, long nID)
-    : lmScoreBlock(pOwner, nID)
-{
-}
-
-lmScoreTextBox::~lmScoreTextBox()
-{
-    //delete text units
-    std::list<lmScoreTextParagraph*>::iterator it;
-    for (it = m_paragraphs.begin(); it != m_paragraphs.end(); ++it)
-        delete *it;
-    m_paragraphs.clear();
-}
-
-//lmShape* lmScoreTextBox::CreateShape(lmPaper* pPaper, lmUPoint uPos)
-//{
-//    // Creates the shape and returns it
-//
-//    lmShapeTitle* pGMObj
-//        = new lmShapeTitle(this, m_sText, GetSuitableFont(pPaper), pPaper,
-//                               m_nBlockAlign, m_nHAlign, m_nVAlign,
-//                               uPos.x, uPos.y, 0.0f, 0.0f, m_pStyle->nColor);
-//
-//    StoreShape(pGMObj);
-//    return pGMObj;
-//}
-//
-//lmLUnits lmScoreTextBox::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
-//{
-//    // This method is invoked by the base class (lmStaffObj). It is responsible for
-//    // creating the shape object and adding it to the graphical model.
-//
-//	WXUNUSED(colorC);
-//
-//    //create the shape object
-//    lmShape* pShape = CreateShape(pPaper, uPos);
-//
-//    //add shape to graphic model
-//	pBox->AddShape(pShape);
-//
-//	// set total width
-//	return pShape->GetWidth();
-//}
-//
-//wxString lmScoreTextBox::Dump()
-//{
-//    wxString sDump = wxString::Format(
-//        _T("%d\tTitle '%s'"), m_nId, m_sText.Left(15).c_str() );
-//
-//    sDump += lmAuxObj::Dump();
-//    sDump += _T("\n");
-//    return sDump;
-//}
-//
-//wxString lmScoreTextBox::SourceLDP(int nIndent, bool fUndoData)
-//{
-//    wxString sSource = _T("");
-//    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-//    sSource += _T("(textbox");
-//
-//    //alignment
-//    if (m_nHAlign == lmHALIGN_CENTER)
-//        sSource += _T(" center");
-//    else if (m_nHAlign == lmHALIGN_LEFT)
-//        sSource += _T(" left");
-//    else
-//        sSource += _T(" right");
-//
-//    //text goes after alignment
-//    sSource += _T(" \"");
-//    sSource += m_sText;
-//    sSource += _T("\"");
-//
-//    //style info
-//    sSource += _T(" (style \"");
-//    sSource += m_pStyle->sName;
-//    sSource += _T("\")");
-//
-//	//base class info
-//    sSource += lmAuxObj::SourceLDP(nIndent, fUndoData);
-//
-//    //close element
-//    sSource += _T(")\n");
-//    return sSource;
-//}
-//
-//wxString lmScoreTextBox::SourceXML(int nIndent)
-//{
-//    //TODO
-//    wxString sSource = _T("TODO: lmScoreTextBox XML Source code generation methods");
-//    return sSource;
-//}
-//
 

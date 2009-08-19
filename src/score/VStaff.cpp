@@ -93,7 +93,8 @@
 
 //constructor
 lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID)
-    : lmScoreObj(pScore, nID), m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
+    : lmScoreObj(pScore, nID, lm_eSO_VStaff)
+    , m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -151,10 +152,10 @@ lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits)
 	return LogicalToTenths(uUnits, 1);
 }
 
-lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
+lmStaff* lmVStaff::AddStaff(int nNumLines, long nID, lmLUnits uUnits)
 {
     wxASSERT(m_nNumStaves < lmMAX_STAFF);
-    lmStaff* pStaff = new lmStaff(this, nNumLines, nMicrons);
+    lmStaff* pStaff = new lmStaff(this, nID, nNumLines, uUnits);
     m_cStaves[m_nNumStaves] = pStaff;
     m_nNumStaves++;
     m_cStaffObjs.AddStaff();
@@ -249,7 +250,7 @@ void lmVStaff::OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep,
     while(!it.ChangeOfMeasure() && !it.EndOfCollection())
     {
         lmStaffObj* pSO = it.GetCurrent();
-        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote()
+        if (pSO->IsNote()
             && pSO->GetStaffNum() == nStaff 
             && ((lmNote*)pSO)->GetStep() == nStep)
         {
@@ -475,6 +476,20 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmEBarline nType, bool fVisible)
     m_cStaffObjs.Add(pBarline);
 
     return pBarline;
+}
+
+lmFiguredBass* lmVStaff::Cmd_InsertFiguredBass(lmFiguredBassInfo* pFBInfo)
+{
+    //move cursor to start of current timepos
+    //AWARE:
+    //  Cursor might be pointing not to the first SO at current timepos. Therefore
+    //  we have to move to the first SO at current timepos. Otherwise, the figured bass
+    //  would be inserted between to objects at the same timepos!
+    GetCursor()->MoveToStartOfTimepos();
+
+    lmFiguredBass* pFB = new lmFiguredBass(this, lmNEW_ID, pFBInfo);
+    m_cStaffObjs.Add(pFB);
+    return pFB;
 }
 
 lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
@@ -1111,9 +1126,10 @@ void lmVStaff::Cmd_ChangeDots(lmNoteRest* pNR, int nDots)
 // Methods for adding StaffObjs
 //---------------------------------------------------------------------------------------
 
-// adds a clef to the end of current StaffObjs collection
 lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible, long nID)
 {
+    // adds a clef to the end of current StaffObjs collection
+
     wxASSERT(nStaff > 0);
     wxASSERT(nStaff <= GetNumStaves());
 
@@ -1125,13 +1141,22 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible, long
     return pClef;
 }
 
-// adds a spacer to the end of current StaffObjs collection
+lmFiguredBass* lmVStaff::AddFiguredBass(lmFiguredBassInfo* pFBInfo, long nID)
+{
+    // adds a figured bass object to the end of current StaffObjs collection
+
+    lmFiguredBass* pFB = new lmFiguredBass(this, nID, pFBInfo);
+    m_cStaffObjs.Add(pFB);
+    return pFB;
+}
+
 lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth, long nID)
 {
+    // adds a spacer to the end of current StaffObjs collection
+
     lmSpacer* pSpacer = new lmSpacer(this, nID, nWidth);
     m_cStaffObjs.Add(pSpacer);
     return pSpacer;
-
 }
 
 lmStaffObj* lmVStaff::AddAnchorObj(long nID)
@@ -1140,7 +1165,7 @@ lmStaffObj* lmVStaff::AddAnchorObj(long nID)
 
     lmStaffObj* pAnchor;
     if (IsGlobalStaff())
-		pAnchor = new lmScoreAnchor(this);
+		pAnchor = new lmScoreAnchor(this, nID);
     else
         pAnchor = new lmAnchor(this, nID);
 
@@ -1562,7 +1587,7 @@ float lmVStaff::LDP_AdvanceTimeCounter(lmStaffObj* pSO)
 	//advance counter unless current object is a note in chord and is not the
 	//last note in the chord
 	bool fAdvance = true;
-	if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
+	if (pSO->IsNote())
 	{
 		lmNote* pNote = (lmNote*)pSO;
 		if (pNote->IsInChord() && !pNote->GetChord()->IsLastNoteOfChord(pNote))
@@ -1795,14 +1820,14 @@ lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible, long nID)
 //    while(true)
 //    {
 //        pSO = pIter->GetCurrent();
-//        if (pSO->GetClass() == eSFOT_Barline) break;
+//        if (pSO->IsBarline()) break;
 //		if(pIter->FirstOfCollection()) break;
 //        pIter->MovePrev();
 //    }
 //    delete pIter;
 //
 //    //check that a barline is found. Otherwise no barlines in the score
-//    if (pSO->GetClass() == eSFOT_Barline) {
+//    if (pSO->IsBarline()) {
 //        lmShape* pShape = (lmShape*)pSO->GetShape();
 //        if (!pShape) return false;
 //		*pPos = pShape->GetXRight();
@@ -1889,17 +1914,17 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     while(!pIter->EndOfCollection())
     {
         pSO = pIter->GetCurrent();
-        if (pSO->GetClass() == eSFOT_NoteRest)
+        if (pSO->IsNoteRest())
         {
             pNR = (lmNoteRest*)pSO;
             pNR->AddMidiEvents(pSM, rMeasureStartTime, nChannel, nMeasure);
         }
-        else if (pSO->GetClass() == eSFOT_Barline)
+        else if (pSO->IsBarline())
         {
             rMeasureStartTime += pSO->GetTimePos();        //add measure duration
             nMeasure++;
         }
-        else if (pSO->GetClass() == eSFOT_TimeSignature)
+        else if (pSO->IsTimeSignature())
         {
             //add a RhythmChange event to set up tempo (num beats, duration of a beat)
             pTS = (lmTimeSignature*)pSO;
@@ -2048,14 +2073,11 @@ bool lmVStaff::CheckIfNotesAffectedByClef(bool fSkip)
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsClef())
             break;              //clef found before finding a note. No notes affected
-        else if (pSO->IsNoteRest())
+        else if (pSO->IsNote() )
         {
-            if ( ((lmNoteRest*)pSO)->IsNote() )
-            {
-                //note found
-                delete pIter;
-                return true;
-            }
+            //note found
+            delete pIter;
+            return true;
         }
         pIter->MoveNext();
     }
@@ -2084,14 +2106,11 @@ bool lmVStaff::CheckIfNotesAffectedByKey(bool fSkip)
         lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->IsKeySignature())
             break;              //key found before finding a note. No notes affected
-        else if (pSO->IsNoteRest())
+        else if (pSO->IsNote() )
         {
-            if ( ((lmNoteRest*)pSO)->IsNote() )
-            {
-                //note found
-                delete pIter;
-                return true;
-            }
+            //note found
+            delete pIter;
+            return true;
         }
         pIter->MoveNext();
     }

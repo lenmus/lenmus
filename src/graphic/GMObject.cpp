@@ -1121,8 +1121,7 @@ lmStaffObj* lmGMSelection::GetFirstOwnerStaffObj()
     for (it = m_Selection.begin(); it != m_Selection.end(); ++it)
     {
         lmScoreObj* pSCO = (*it)->GetScoreOwner();
-        if (pSCO->GetScoreObjType() == lmSOT_ComponentObj &&
-            ((lmComponentObj*)pSCO)->GetType() == lm_eStaffObj )
+        if (pSCO->IsStaffObj() )
         {
             return (lmStaffObj*)pSCO;
         }

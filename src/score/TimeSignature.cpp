@@ -51,7 +51,7 @@
 //constructors for type eTS_Normal
 lmTimeSignature::lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, long nID,
                                  bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Normal;
     m_nBeats = nBeats;
@@ -61,7 +61,7 @@ lmTimeSignature::lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, l
 
 lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff,
                                  long nID, bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Normal;
     m_nBeats = GetNumUnitsFromTimeSignType(nTimeSign);
@@ -72,7 +72,7 @@ lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff,
 //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
 lmTimeSignature::lmTimeSignature(lmETimeSignatureType nType, lmVStaff* pVStaff,
                                  long nID, bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = nType;
     Create();
@@ -82,7 +82,7 @@ lmTimeSignature::lmTimeSignature(lmETimeSignatureType nType, lmVStaff* pVStaff,
 //constructor for type eTS_SingleNumber
 lmTimeSignature::lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, long nID,
                                  bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_SingleNumber;
     Create();
@@ -92,7 +92,7 @@ lmTimeSignature::lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, long nID,
 //constructor for type eTS_Composite
 lmTimeSignature::lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType,
                                  lmVStaff* pVStaff, long nID, bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Composite;
     Create();
@@ -102,7 +102,7 @@ lmTimeSignature::lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType,
 //constructor for type eTS_Multiple
 lmTimeSignature::lmTimeSignature(int nNumFractions, int nBeats[], int nBeatType[],
                              lmVStaff* pVStaff, long nID, bool fVisible)
-    : lmStaffObj(pVStaff, nID, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    : lmStaffObj(pVStaff, nID, lm_eSO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Multiple;
     Create();

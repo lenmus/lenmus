@@ -403,15 +403,14 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     while(!pIter->EndOfCollection())
     {
         pSO = pIter->GetCurrent();
-        if (pSO->GetClass() == eSFOT_NoteRest) {
-            pNR = (lmNoteRest*)pSO;
-            if (pNR->IsNote()) {
-                //OK. Note fount. Take duration
-                pNote = (lmNote*)pSO;
-                float rDuration = pNote->GetDuration();
-                fOnlyQuarterNotes &= (rDuration == (float)eQuarterDuration);
-                if (!fOnlyQuarterNotes) break;
-            }
+        if (pSO->IsNote())
+        {
+            //OK. Note fount. Take duration
+            pNote = (lmNote*)pSO;
+            float rDuration = pNote->GetDuration();
+            fOnlyQuarterNotes &= (rDuration == (float)eQuarterDuration);
+            if (!fOnlyQuarterNotes)
+                break;
         }
         pIter->MoveNext();
     }
@@ -679,19 +678,15 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
-        EStaffObjType nType = pSO->GetClass();
-        if (nType == eSFOT_NoteRest)
+        if (pSO->IsNote())
         {
-            if ( ((lmNoteRest*)pSO)->IsNote() )
+            // It is a note. Get its chord position
+            if( ((lmNote*)pSO)->GetBeatPosition() != lmNOT_ON_BEAT)
             {
-                // It is a note. Get its chord position
-                if( ((lmNote*)pSO)->GetBeatPosition() != lmNOT_ON_BEAT)
-                {
-                    // on beat note
-                    nNumPoints++;
-                }
-                pLastNote = (lmNote*)pSO;
+                // on beat note
+                nNumPoints++;
             }
+            pLastNote = (lmNote*)pSO;
         }
 
         pIter->MoveNext();
@@ -740,10 +735,10 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
     while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
-        if (pSO->GetClass() == eSFOT_NoteRest)
+        if (pSO->IsNoteRest())
         {
             // 1. It is a note or a rest
-            if ( ((lmNoteRest*)pSO)->IsNote() )
+            if (pSO->IsNote())
             {
                 // It is a note. Get its chord position
                 pNoteCur = (lmNote*)pSO;
@@ -792,7 +787,7 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
             }
         }
 
-        else if (pSO->GetClass() == eSFOT_Barline)
+        else if (pSO->IsBarline())
         {
             // End of measure:
             // choose the next chord in progression
@@ -824,7 +819,7 @@ void lmComposer6::InstantiateNotesRandom(lmScore* pScore)
     while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
-        if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote())
+        if (pSO->IsNote())
         {
             // Assign it a random pitch
             lmAPitch apPitchNew = RandomPitch();
@@ -1413,15 +1408,11 @@ void lmComposer6::InstantiateWithNote(lmScore* pScore, lmAPitch anPitch)
     while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
-        EStaffObjType nType = pSO->GetClass();
-        if (nType == eSFOT_NoteRest) {
-            if ( ((lmNoteRest*)pSO)->IsNote() )
-            {
-                // It is a note. Instantiate it
-                ((lmNote*)pSO)->ChangePitch(anPitch, lmCHANGE_TIED);
-            }
+        if (pSO->IsNote())
+        {
+            // It is a note. Instantiate it
+            ((lmNote*)pSO)->ChangePitch(anPitch, lmCHANGE_TIED);
         }
-
         pIter->MoveNext();
     }
     delete pIter;

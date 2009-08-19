@@ -1228,7 +1228,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceInstr* pBSI, lmVStaff* pVStaff,
     //The barline lmStaffObj is not included in the loop as it might not exist in the last
     //bar of a score. In theses cases, the loop is exited because the end of the score is
     //reached. In any case we have to close the line
-    if (pSO && pSO->GetClass() == eSFOT_Barline)
+    if (pSO && pSO->IsBarline())
     {
         pIT->MoveNext();    //leave cursor pointing to next measure
 

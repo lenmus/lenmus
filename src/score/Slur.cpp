@@ -106,7 +106,7 @@ wxString lmBezier::SourceXML(int nIndent)
 //===================================================================================
 
 lmTie::lmTie(lmScoreObj* pOwner, long nID, lmNote* pStartNote, lmNote* pEndNote)
-    : lmBinaryRelObj(pOwner, nID, eAXOT_Tie, pStartNote, pEndNote, lmDRAGGABLE)
+    : lmBinaryRelObj(pOwner, nID, lm_eSO_Tie, pStartNote, pEndNote, lmDRAGGABLE)
 {
     DefineAsMultiShaped();      //define a tie as a multi-shaped ScoreObj
 }

@@ -111,18 +111,23 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
 
     //set size. 16x16 is the default
     wxString sSize = _T("_16.png");
-    if (size.GetHeight() == 24) {
-        sSize = _T("_24.png");
+    if (size.GetHeight() == size.GetWidth())
+    {
+        if (size.GetHeight() == 24) {
+            sSize = _T("_24.png");
+        }
+        else if (size.GetHeight() == 32) {
+            sSize = _T("_32.png");
+        }
+        else if (size.GetHeight() == 22) {
+            sSize = _T("_22.png");
+        }
+        else if (size.GetHeight() == 48) {
+            sSize = _T("_48.png");
+        }
     }
-    else if (size.GetHeight() == 32) {
-        sSize = _T("_32.png");
-    }
-    else if (size.GetHeight() == 22) {
-        sSize = _T("_22.png");
-    }
-    else if (size.GetHeight() == 48) {
-        sSize = _T("_48.png");
-    }
+    else
+        sSize = wxString::Format(_T("_%dx%d.png"), size.GetWidth(), size.GetHeight());
 
     //icon for text book controller
     if ( client == wxART_HELP_BROWSER ) {

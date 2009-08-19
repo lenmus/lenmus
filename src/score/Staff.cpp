@@ -43,8 +43,8 @@
 // A lmStaff is a collection of consecutive lines and spaces.
 
 //constructor
-lmStaff::lmStaff(lmVStaff* pVStaff, int nNumLines, lmLUnits uUnits)
-    : lmScoreObj((lmScoreObj*)pVStaff, lmNEW_ID)
+lmStaff::lmStaff(lmVStaff* pVStaff, long nID, int nNumLines, lmLUnits uUnits)
+    : lmScoreObj((lmScoreObj*)pVStaff, nID, lm_eSO_Staff)
         //lines
     , m_nNumLines(nNumLines)
     , m_uLineThickness(lmToLogicalUnits(0.15, lmMILLIMETERS))     //TODO user option
@@ -268,3 +268,53 @@ void lmStaff::RemoveContext(lmContext* pContext, lmStaffObj* pSO)
     if (pNext)
         pNext->PropagateValueWhileInherited(pSO);
 }
+
+wxString lmStaff::SourceLDP(int nIndent, bool fUndoData)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    if (fUndoData)
+        sSource += wxString::Format(_T("(staff#%d %d"), GetID(), GetNumberOfStaff());
+    else
+        sSource += wxString::Format(_T("(staff %d"), GetNumberOfStaff());
+
+    //attributes
+    sSource += _T(" (staffType regular)");
+    sSource += wxString::Format(_T("(staffLines %d)"), m_nNumLines);
+    sSource += wxString::Format(_T("(staffSpacing %s)"),
+                                DoubleToStr((double)m_uSpacing, 2).c_str() );
+    sSource += wxString::Format(_T("(lineThickness %s)"),
+                                DoubleToStr((double)m_uLineThickness, 2).c_str() );
+    sSource += wxString::Format(_T("(staffDistance %s)"),
+                                DoubleToStr((double)m_uStaffDistance, 2).c_str() );
+
+        //base class
+	sSource += lmScoreObj::SourceLDP(nIndent, fUndoData);
+
+    //close element
+    sSource += _T(")\n");
+	return sSource;
+}
+
+wxString lmStaff::SourceXML(int nIndent)
+{
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: lmStaff XML Source code generation method\n");
+    return sSource;
+}
+
+
+
+//------------------------------------------------------------------------------------------
+// lmRefLine class implementation: A reference to line up lyrics, figured bass, other 
+//------------------------------------------------------------------------------------------
+
+lmRefLine::lmRefLine(lmVStaff* pVStaff)
+{
+}
+
+lmRefLine::~lmRefLine()
+{
+}
+

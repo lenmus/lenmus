@@ -37,7 +37,7 @@ class lmStaff : public lmScoreObj
 {
 public:
     //ctor and dtor
-    lmStaff(lmVStaff* pVStaff, int nNumLines=5, lmLUnits nMicrons=0);
+    lmStaff(lmVStaff* pVStaff, long nID=lmNEW_ID, int nNumLines=5, lmLUnits uUnits=0);
     ~lmStaff();
 
 	//---- virtual methods of base class -------------------------
@@ -45,7 +45,6 @@ public:
 	//units conversion
     inline lmLUnits TenthsToLogical(lmTenths rTenths) { return (m_uSpacing * rTenths)/10.0; }
 	inline lmTenths LogicalToTenths(lmLUnits uUnits) { return (uUnits * 10.0) / m_uSpacing; }
-	inline lmEScoreObjType GetScoreObjType() { return lmSOT_Staff; }
     inline lmScore* GetScore() { return m_pParent->GetScore(); }
 
 	//---- specific methods of this class ------------------------
@@ -85,6 +84,10 @@ public:
     wxString DumpContextsChain();
 //#endif
 
+    //source code export/import
+    wxString SourceLDP(int nIndent, bool fUndoData);
+    wxString SourceXML(int nIndent);
+
 
 private:
 	//contexts management
@@ -109,6 +112,18 @@ private:
 	lmContext*		m_pFirstContext;
 	lmContext*		m_pLastContext;
     lmEClefType     m_nPreviousFirstClef;   //to know previous clef when clef is deleted
+
+};
+
+
+//------------------------------------------------------------------------------------------
+// lmRefLine class: a reference to line up lyrics, figured bass, other 
+//------------------------------------------------------------------------------------------
+
+class lmRefLine
+{
+    lmRefLine(lmVStaff* pVStaff);
+    ~lmRefLine();
 
 };
 

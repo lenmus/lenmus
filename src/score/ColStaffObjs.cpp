@@ -69,6 +69,7 @@ extern lmLogger* g_pLogger;
 // - Keep precedence order of clef, key and time signature
 // - keep notes in chord inmediately after base note
 // - Keep the barline at the end
+// - Keep figured bass objects inmediately before the note/rest at same timepos
 //
 //-------------------------------------------------------------------------------------
 bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
@@ -95,16 +96,14 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
     //of a chord go in sequence
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-             && pSO1->IsNoteRest() && pSO2->IsNoteRest()
-             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+             && pSO1->IsNote() && pSO2->IsNote()
              && ((lmNote*)pSO1)->GetChord() < ((lmNote*)pSO2)->GetChord() )
         fValue = true, nCheck=3;
 
     //here they are ordered by timepos and duration. Chords: Ensure base note precedence
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-             && pSO1->IsNoteRest() && pSO2->IsNoteRest()
-             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+             && pSO1->IsNote() && pSO2->IsNote()
              && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
              && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
         fValue = true, nCheck=4;
@@ -112,21 +111,38 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
     //If chord and right ordering, do not make more checks
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-             && pSO1->IsNoteRest() && pSO2->IsNoteRest()
-             && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+             && pSO1->IsNote() && pSO2->IsNote()
              && ( ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord() )
              && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsBaseOfChord() )
         fValue = false, nCheck=5;
 
     //elements of same type ordered by staff number
-    else if (pSO1->GetClass() == pSO2->GetClass()
+    else if (pSO1->GetScoreObjType() == pSO2->GetScoreObjType()
              && IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
              && pSO1->GetStaffNum() < pSO2->GetStaffNum())
         fValue = true, nCheck=6;
 
-    else
-        fValue = false, nCheck=7;
+    //ordered by timepos and duration. Ensure figured bass go after other objects
+    else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && !(pSO1->IsNote() || pSO1->IsRest()) && pSO2->IsFiguredBass() )
+        fValue = true, nCheck=7;
+
+     //ordered by timepos and duration. Ensure figured bass go before notes/rests
+    else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && (pSO1->IsNote() || pSO1->IsRest()) && pSO2->IsFiguredBass())
+        fValue = false, nCheck=8;
+
+    //ordered by timepos and duration. Ensure figured bass go after other objects
+    else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && pSO1->IsFiguredBass() && !(pSO2->IsNote() || pSO2->IsRest()) )
+        fValue = false, nCheck=9;
+
+   else
+        fValue = false, nCheck=10;
 
     wxLogMessage(_T("[SortCompare] SO1=%d (%s at t=%.2f), SO2=%d (%s at t=%.2f) %s (check %d)"),
                  pSO1->GetID(), pSO1->GetName(), pSO1->GetTimePos(),
@@ -155,16 +171,14 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
     //avoiding to mix notes from different chords
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
         && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-        && pSO1->IsNoteRest() && pSO2->IsNoteRest()
-        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+        && pSO1->IsNote() && pSO2->IsNote()
         && ((lmNote*)pSO1)->GetChord() < ((lmNote*)pSO2)->GetChord() )
         return true;
 
     //here they are ordered by timepos and duration. Chords: Ensure base note precedence
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
         && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-        && pSO1->IsNoteRest() && pSO2->IsNoteRest()
-        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+        && pSO1->IsNote() && pSO2->IsNote()
         && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
         && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
         return true;
@@ -172,18 +186,36 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
     //If chord and right ordering, do not make more checks
     if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
         && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
-        && pSO1->IsNoteRest() && pSO2->IsNoteRest()
-        && ((lmNoteRest*)pSO1)->IsNote() && ((lmNoteRest*)pSO2)->IsNote()
+        && pSO1->IsNote() && pSO2->IsNote()
         && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
         && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsBaseOfChord() )
         return false;
 
     //elements of same type ordered by staff number
-    if (pSO1->GetClass() == pSO2->GetClass()
+    if (pSO1->GetScoreObjType() == pSO2->GetScoreObjType()
         && IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
         && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
         && pSO1->GetStaffNum() < pSO2->GetStaffNum())
         return true;
+
+    //ordered by timepos and duration. Ensure figured bass go after other objects
+    if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && !(pSO1->IsNote() || pSO1->IsRest()) && pSO2->IsFiguredBass() )
+        return true;
+
+     //ordered by timepos and duration. Ensure figured bass go before notes/rests
+    if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && (pSO1->IsNote() || pSO1->IsRest()) && pSO2->IsFiguredBass())
+        return false;
+
+    //ordered by timepos and duration. Ensure figured bass go after other objects
+    if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && pSO1->IsFiguredBass() && !(pSO2->IsNote() || pSO2->IsRest()) )
+        return false;
+
 
     return false;
 
@@ -752,8 +784,7 @@ void lmScoreCursor::MoveLeftToPrevTime()
         //Cursor has to be positioned at timepos PrevObj.Timepos
         //if PrevObj is not note in chord
         lmStaffObj* pSO = m_pIt->GetCurrent();
-        if (!pSO->IsNoteRest()
-            || !((lmNoteRest*)pSO)->IsNote()
+        if (!pSO->IsNote()
             || !((lmNote*)pSO)->IsInChord()
             || ((lmNote*)pSO)->IsBaseOfChord() )
         {
@@ -765,8 +796,7 @@ void lmScoreCursor::MoveLeftToPrevTime()
         {
             //place cursor at base note of chord
             //while (PrevObj is note in chord and is not base note)
-            while (pSO->IsNoteRest()
-                    && ((lmNoteRest*)pSO)->IsNote()
+            while (pSO->IsNote()
                     && ((lmNote*)pSO)->IsInChord()
                     && !((lmNote*)pSO)->IsBaseOfChord() )
             {
@@ -878,12 +908,9 @@ lmStaffObj* lmScoreCursor::GetPreviousStaffobj()
         {
             //it is in current staff.
             //We have to skip notes in chord except base note
-            if (!pSO->IsNoteRest()
-                || pSO->IsNoteRest() 
-                && ((lmNoteRest*)pSO)->IsNote() 
-                     && ( !((lmNote*)pSO)->IsInChord() || ((lmNote*)pSO)->IsBaseOfChord())
-                
-                )
+            if (!pSO->IsNote()
+                || ( !((lmNote*)pSO)->IsInChord() || ((lmNote*)pSO)->IsBaseOfChord())
+               )
                 break;
         }
         it.MovePrev();
@@ -1124,7 +1151,7 @@ void lmScoreCursor::MoveToStartOfTimepos()
     lmStaffObj* pFinalPos = pSO;
     m_pIt->MovePrev();
     lmStaffObj* pPrev = m_pIt->GetCurrent();
-	while (!m_pIt->ChangeOfMeasure())
+	while (!m_pIt->ChangeOfMeasure() && !m_pIt->FirstOfCollection())
 	{
         //check if we are at current tiempos
         if (pPrev->GetTimePos() != m_rTimepos)
@@ -1490,7 +1517,7 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
 
     //if removed object is a note not in chord:
     //  - Shift left all note/rests in this voice and sort the collection
-	if (pSO->IsNoteRest() && ((lmNoteRest*)pSO)->IsNote() && !((lmNote*)pSO)->IsInChord())
+	if (pSO->IsNote() && !((lmNote*)pSO)->IsInChord())
     {
         ShiftLeftTimepos(pNext,
                          ((lmNoteRest*)pSO)->GetDuration(),
@@ -1551,8 +1578,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmScoreCursor* pCursor)
     lmStaffObj* pCursorSO = (pCursor ? pCursor->GetStaffObj() : (lmStaffObj*)NULL);
 
     //notes in chord must be added after note pointed by cursor
-    bool fAfter = pNewSO->IsNoteRest() && ((lmNoteRest*)pNewSO)->IsNote() &&
-                  ((lmNote*)pNewSO)->IsInChord();
+    bool fAfter = pNewSO->IsNote() && ((lmNote*)pNewSO)->IsInChord();
 
     //add staffobj to the collection
     if (pCursorSO)
@@ -1587,7 +1613,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmScoreCursor* pCursor)
 
 	//check if added object is a note added to an existing chord
 	bool fAddedToChord = false;
-	if (pNewSO->IsNoteRest() && ((lmNote*)pNewSO)->IsNote() && ((lmNote*)pNewSO)->IsInChord())
+	if (pNewSO->IsNote() && ((lmNote*)pNewSO)->IsInChord())
 	{
 		//added note is part of a chord. Let's check if it is the first note or there
 		//are already more notes in the chord
@@ -1616,7 +1642,7 @@ void lmSegment::Store(lmStaffObj* pNewSO, lmScoreCursor* pCursor)
 	}
 
 	//ensure right ordering
-	if (pNewSO->IsNoteRest())
+	if (pNewSO->IsNoteRest() || pNewSO->IsFiguredBass())
         SortMeasure();
 
 
@@ -2046,8 +2072,7 @@ void lmSegment::Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
 	while (!it.ChangeOfMeasure() && !it.EndOfCollection() && !it.GetCurrent()->IsClef())
 	{
         lmStaffObj* pSO = it.GetCurrent();
-		if (pSO->IsNoteRest() && pSO->GetStaffNum() == nStaff &&
-            ((lmNote*)pSO)->IsNote())
+		if (pSO->IsNote() && pSO->GetStaffNum() == nStaff)
         {
             //note in the affected staff. Re-pitch it to keep staff position
             ((lmNote*)pSO)->ModifyPitch(nNewClefType, nOldClefType);
@@ -2084,7 +2109,7 @@ void lmSegment::AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStart
 	while (!it.ChangeOfMeasure() && !it.EndOfCollection() && !it.GetCurrent()->IsKeySignature())
 	{
         lmStaffObj* pSO = it.GetCurrent();
-		if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
+		if (pSO->IsNote())
         {
             //note. Review displayed accidentals
             int nStep = ((lmNote*)pSO)->GetStep();
@@ -2126,7 +2151,7 @@ void lmSegment::ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
 	while (!it.ChangeOfMeasure() && !it.EndOfCollection() && !it.GetCurrent()->IsKeySignature())
 	{
         lmStaffObj* pSO = it.GetCurrent();
-		if (pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
+		if (pSO->IsNote())
         {
             //note. Review displayed accidentals
             int nStep = ((lmNote*)pSO)->GetStep();
@@ -2223,8 +2248,7 @@ void lmSegment::AutoBeam(int nVoice)
     while (!it.ChangeOfMeasure() && !it.EndOfCollection())
 	{
         pSO = it.GetCurrent();
-		if (pSO->IsNoteRest() &&
-            ((lmNoteRest*)pSO)->IsNote() &&
+		if (pSO->IsNote() &&
             ((lmNoteRest*)pSO)->GetVoice() == nVoice)
             break;
         it.MoveNext();
@@ -2788,8 +2812,7 @@ void lmColStaffObjs::AssignTime(lmStaffObj* pSO)
 
 	//if it is a note in chord and not base note assign it the time assigned to
 	//base note
-    if (pSO->GetClass() == eSFOT_NoteRest && (((lmNoteRest*)pSO)->IsNote())
-       && ((lmNote*)pSO)->IsInChord() && !((lmNote*)pSO)->IsBaseOfChord() )
+    if (pSO->IsNote() && ((lmNote*)pSO)->IsInChord() && !((lmNote*)pSO)->IsBaseOfChord() )
 	{
         lmNote* pNoteBase = ((lmNote*)pSO)->GetChord()->GetBaseNote();
         pSO->SetTimePos(pNoteBase->GetTimePos());
@@ -3112,7 +3135,7 @@ lmBarline* lmColStaffObjs::GetBarlineOfLastNonEmptyMeasure()
         return (lmBarline*)NULL;
 }
 
-lmStaffObj* lmColStaffObjs::FindFwdStaffObj(lmStaffObj* pCurSO, EStaffObjType nType)
+lmStaffObj* lmColStaffObjs::FindFwdStaffObj(lmStaffObj* pCurSO, lmEScoreObjType nType)
 {
     //Find next staffobj of type nType, starting from pCurSO (including it).
 
@@ -3121,7 +3144,7 @@ lmStaffObj* lmColStaffObjs::FindFwdStaffObj(lmStaffObj* pCurSO, EStaffObjType nT
     while(!it.EndOfCollection())
     {
         lmStaffObj* pSO = it.GetCurrent();
-        if (pSO->GetClass() == nType)
+        if (pSO->GetScoreObjType() == nType)
         {
             //object found
             return pSO;
@@ -3135,17 +3158,17 @@ lmStaffObj* lmColStaffObjs::FindFwdStaffObj(lmStaffObj* pCurSO, EStaffObjType nT
 
 lmTimeSignature* lmColStaffObjs::FindFwdTimeSignature(lmStaffObj* pCurSO)
 {
-    return (lmTimeSignature*)FindFwdStaffObj(pCurSO, eSFOT_TimeSignature);
+    return (lmTimeSignature*)FindFwdStaffObj(pCurSO, lm_eSO_TimeSignature);
 }
 
 lmKeySignature* lmColStaffObjs::FindFwdKeySignature(lmStaffObj* pCurSO)
 {
-    return (lmKeySignature*)FindFwdStaffObj(pCurSO, eSFOT_KeySignature);
+    return (lmKeySignature*)FindFwdStaffObj(pCurSO, lm_eSO_KeySignature);
 }
 
 lmClef* lmColStaffObjs::FindFwdClef(lmStaffObj* pCurSO)
 {
-    return (lmClef*)FindFwdStaffObj(pCurSO, eSFOT_Clef);
+    return (lmClef*)FindFwdStaffObj(pCurSO, lm_eSO_Clef);
 }
 
 lmStaffObj* lmColStaffObjs::FindNextStaffObj(lmStaffObj* pCurSO)
@@ -3579,7 +3602,7 @@ void lmColStaffObjs::UpdateSegmentContexts(lmSegment* pSegment)
     while(!fDone && pSO)
 	{
         lmContext* pCT = (lmContext*)NULL;
-        if (pSO->GetClass() == eSFOT_Clef)
+        if (pSO->IsClef())
         {
             int nStaff = pSO->GetStaffNum();
             if (!fStaffDone[nStaff-1])
@@ -3592,16 +3615,15 @@ void lmColStaffObjs::UpdateSegmentContexts(lmSegment* pSegment)
 
         if (!pCT)
         {
-		    if (pSO->GetClass() == eSFOT_KeySignature
-                || pSO->GetClass() == eSFOT_TimeSignature)
+		    if (pSO->IsKeySignature() || pSO->IsTimeSignature())
             {
                 for (int nStaff=1; nStaff <= m_nNumStaves; nStaff++)
                 {
                     if (!fStaffDone[nStaff-1])
                     {
-		                if (pSO->GetClass() == eSFOT_KeySignature)
+		                if (pSO->IsKeySignature())
                             pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-		                else // eSFOT_TimeSignature)
+		                else //TimeSignature
                             pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
 	                    pSegment->SetContext(nStaff-1, pCT);
                         fStaffDone[nStaff-1] = true;
@@ -3771,7 +3793,7 @@ lmContext* lmColStaffObjs::NewUpdatedContext(int nStaff, lmStaffObj* pThisSO)
     it.MoveTo(pSO);
     while(pSO && IsLowerTime(pSO->GetTimePos(), rTime))
 	{
-		if (pSO->GetStaffNum() == nStaff && pSO->IsNoteRest() && ((lmNote*)pSO)->IsNote())
+		if (pSO->GetStaffNum() == nStaff && pSO->IsNote())
 		{
 			//Note found. Update context
 			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
@@ -3803,11 +3825,11 @@ lmContext* lmColStaffObjs::NewUpdatedLastContext(int nStaff)
     while(!it.EndOfCollection() && !it.ChangeOfMeasure())
 	{
         pSO = it.GetCurrent();
-		if (pSO->GetClass() == eSFOT_Clef && nStaff == pSO->GetStaffNum())
+		if (pSO->IsClef() && nStaff == pSO->GetStaffNum())
             pCT = ((lmClef*)pSO)->GetContext();
-		else if (pSO->GetClass() == eSFOT_KeySignature)
+		else if (pSO->IsKeySignature())
             pCT = ((lmKeySignature*)pSO)->GetContext(nStaff);
-		else if (pSO->GetClass() == eSFOT_TimeSignature)
+		else if (pSO->IsTimeSignature())
             pCT = ((lmTimeSignature*)pSO)->GetContext(nStaff);
 
         if (pCT)
@@ -3839,7 +3861,7 @@ lmContext* lmColStaffObjs::NewUpdatedLastContext(int nStaff)
     it.MoveTo(pSO);
     while(pSO)
 	{
-		if (pSO->GetClass() == eSFOT_NoteRest && ((lmNote*)pSO)->IsNote())
+		if (pSO->IsNote())
 		{
 			//Note found. Update context
 			lmAPitch apPitch = ((lmNote*)pSO)->GetAPitch();
