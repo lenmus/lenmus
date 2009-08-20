@@ -90,18 +90,26 @@ lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
     //m_pScoreProc = new lmHarmonyProcessor();
 
     CreateControls();
-
-    //define editor customizations
-    m_pEditMode = new lmEditorMode( CLASSINFO(lmScoreCanvas), CLASSINFO(lmHarmonyProcessor) );
-    m_pEditMode->ChangeToolPage(lmPAGE_NOTES, CLASSINFO(lmToolPageNotesHarmony) );
-    m_pEditMode->SetModeName(_T("TheoHarmonyCtrol"));
-    m_pEditMode->SetModeVers(_T("1"));
 }
 
 lmTheoHarmonyCtrol::~lmTheoHarmonyCtrol()
 {
     //AWARE: As score and EditMode ownership is transferred to the Score Editor window,
     //they MUST NOT be deleted here.
+}
+
+lmEditorMode* lmTheoHarmonyCtrol::CreateEditMode()
+{
+    //This method is invoked each time a new problem is generated, in order to define
+    //editor customizations for the created exercise. Ownership of created lmEditorMode object
+    //is transferred to the document and deleted there.
+
+    lmEditorMode* pEditMode = new lmEditorMode( CLASSINFO(lmScoreCanvas), CLASSINFO(lmHarmonyProcessor) );
+    pEditMode->ChangeToolPage(lmPAGE_NOTES, CLASSINFO(lmToolPageNotesHarmony) );
+    pEditMode->SetModeName(_T("TheoHarmonyCtrol"));
+    pEditMode->SetModeVers(_T("1"));
+
+    return pEditMode;
 }
 
 wxDialog* lmTheoHarmonyCtrol::GetSettingsDlg()

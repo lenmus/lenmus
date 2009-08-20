@@ -155,6 +155,7 @@ protected:
     void        AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
+    void        AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
                                   lmEHAlign* pAlign, lmLocation* pPos, 
                                   lmFontInfo* pFont);
@@ -199,7 +200,6 @@ protected:
     lmScore*            m_pScore;       //the score that is being created
     int					m_nCurStaff;	//default staff num. for the lmNoteRest being processed
     int					m_nCurVoice;	//default voice num. for the lmNoteRest being processed
-    long				m_nNumStaves;	//number of staffs for the lmVStaff being processed
     lmTupletBracket*	m_pTuplet;      //tuplet being analyzed
 	lmNoteRest*			m_pLastNoteRest;	//last rest or note not in chord or base of chord
 

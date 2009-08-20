@@ -127,16 +127,17 @@ void lmToolGroup::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
 //-----------------------------------------------------------------------------------
 
 lmToolButtonsGroup::lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
-                                       wxBoxSizer* pMainSizer, int nFirstButtonID,
+                                       wxBoxSizer* pMainSizer, int nFirstButtonEventID,
+                                       lmEToolID nFirstButtonToolID,
                                        lmColorScheme* pColours)
 	: lmToolGroup(pParent, pColours)
+	, m_nSelButton(-1)	            //none selected
+    , m_nFirstButttonEventID(nFirstButtonEventID)
+    , m_nFirstButttonToolID((int)nFirstButtonToolID)
+    , m_fAllowNone(fAllowNone)
+    , m_nNumButtons(nNumButtons)
 {
-	m_nSelButton = -1;	            //none selected
-    m_nFirstButtonID = nFirstButtonID;
-    m_fAllowNone = fAllowNone;
-    m_nNumButtons = nNumButtons;
     m_pButton.resize(nNumButtons);
-
     ConnectButtonEvents();
 }
 
@@ -147,7 +148,7 @@ lmToolButtonsGroup::~lmToolButtonsGroup()
 void lmToolButtonsGroup::ConnectButtonEvents()
 {
     //connect OnButton events
-    Connect( m_nFirstButtonID, m_nFirstButtonID + m_nNumButtons - 1,
+    Connect( m_nFirstButttonEventID, m_nFirstButttonEventID + m_nNumButtons - 1,
              wxEVT_COMMAND_BUTTON_CLICKED,
              (wxObjectEventFunction)& lmToolButtonsGroup::OnButton );
 }
@@ -198,7 +199,7 @@ void lmToolButtonsGroup::SelectPrevButton()
 
 void lmToolButtonsGroup::OnButton(wxCommandEvent& event)
 {
-    int iB = event.GetId() - GetFirstButtonID();
+    int iB = event.GetId() - GetFirstButtonEventID();
     if (IsNoneAllowed() && GetSelectedButton() == iB)
 	    SelectButton(-1);       //no button selected
     else

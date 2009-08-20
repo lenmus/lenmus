@@ -67,6 +67,8 @@ enum lmEToolGroupID
 // Only needed for groups needing an ID for each tool
 enum lmEToolID
 {
+    lmTOOL_NONE = 0,        //to signal not to use a ToolID
+
     //lmGRP_TieTuplet
     lmTOOL_NOTE_TIE,
     lmTOOL_NOTE_TUPLET,
@@ -78,7 +80,7 @@ enum lmEToolID
     lmTOOL_BEAMS_SUBGROUP,
 
     //lmGRP_Symbols
-    lmTOOL_FIGURED_BASS = 0,
+    lmTOOL_FIGURED_BASS,
     lmTOOL_TEXT,
     lmTOOL_LINES,
     lmTOOL_TEXTBOX,
@@ -119,7 +121,8 @@ class lmToolButtonsGroup: public lmToolGroup
 {    
 public:
     lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
-                       wxBoxSizer* pMainSizer, int nFirstButtonID,
+                       wxBoxSizer* pMainSizer, int nFirstButtonEventID,
+                       lmEToolID nFirstButtonToolID,
                        lmColorScheme* pColours = (lmColorScheme*)NULL);
     ~lmToolButtonsGroup();
 
@@ -128,6 +131,8 @@ public:
 
 	//buttons
     inline int GetSelectedButton() { return m_nSelButton; }
+    lmEToolID GetSelectedToolID() { return (lmEToolID)(m_nSelButton + m_nFirstButttonToolID); }
+
 
 	void SelectButton(int iB);
     void SelectNextButton();
@@ -137,14 +142,15 @@ protected:
     virtual void CreateControls(wxBoxSizer* pMainSizer)=0;
     virtual void OnButtonSelected(int nSelButton);
     void ConnectButtonEvents();
-    inline int GetFirstButtonID() { return m_nFirstButtonID; }
+    inline int GetFirstButtonEventID() { return m_nFirstButttonEventID; }
     inline bool IsNoneAllowed() { return m_fAllowNone; }
 
 
     bool            m_fAllowNone;           //allow no button selected
     int             m_nNumButtons;          //number of buttons in this group
 	int             m_nSelButton;           //selected button (0..n). -1 = none selected
-    int             m_nFirstButtonID;       //even ID of first button
+    int             m_nFirstButttonEventID;     //even ID of first button
+    int             m_nFirstButttonToolID;      //Tool ID of first button
     std::vector<lmCheckButton*> m_pButton;      //buttons
 };
 

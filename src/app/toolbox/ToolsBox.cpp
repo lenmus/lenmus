@@ -443,7 +443,7 @@ int lmToolBox::GetEntryMode()
 
 lmGrpEntryMode::lmGrpEntryMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours)
         : lmToolButtonsGroup(pParent, lm_NUM_ENTRY_MODE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_EntryMode_Keyboard, pColours)
+                             lmID_BT_EntryMode_Keyboard, lmTOOL_NONE, pColours)
 {
     CreateControls(pMainSizer);
 }

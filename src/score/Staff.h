@@ -37,7 +37,8 @@ class lmStaff : public lmScoreObj
 {
 public:
     //ctor and dtor
-    lmStaff(lmVStaff* pVStaff, long nID=lmNEW_ID, int nNumLines=5, lmLUnits uUnits=0);
+    lmStaff(lmVStaff* pVStaff, long nID, int nNumLines=5, lmLUnits uSpacing=0.0f,
+            lmLUnits uDistance=0.0f, lmLUnits uLineThickness=0.0f);
     ~lmStaff();
 
 	//---- virtual methods of base class -------------------------
@@ -57,12 +58,16 @@ public:
     inline lmLUnits GetStaffDistance() { return m_uStaffDistance; }
     inline void SetStaffDistance(lmLUnits uSpace) { m_uStaffDistance = uSpace; }
 
-    //sizes
+    //spacing and size
+    inline lmLUnits GetLineSpacing() { return m_uSpacing; }
+    inline void SetLineSpacing(lmLUnits uSpacing) { m_uSpacing = uSpacing; }
     lmLUnits GetHeight();
 
-    inline lmLUnits GetLineSpacing() { return m_uSpacing; }
+    //lines
     inline lmLUnits GetLineThick() { return m_uLineThickness; }
+    inline void SetLineThick(lmLUnits uTickness) { m_uLineThickness = uTickness; }
     inline int GetNumLines() { return m_nNumLines; }
+    inline void SetNumLines(int nLines) { m_nNumLines = nLines; }
 
     //font to draw music symbols on this staff
     inline wxFont* GetFontDraw() { return m_pFontDraw; }

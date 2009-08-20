@@ -43,22 +43,26 @@
 // A lmStaff is a collection of consecutive lines and spaces.
 
 //constructor
-lmStaff::lmStaff(lmVStaff* pVStaff, long nID, int nNumLines, lmLUnits uUnits)
-    : lmScoreObj((lmScoreObj*)pVStaff, nID, lm_eSO_Staff)
+lmStaff::lmStaff(lmVStaff* pVStaff, long nID, int nNumLines, lmLUnits uSpacing,
+                 lmLUnits uDistance, lmLUnits uLineThickness)
+    : lmScoreObj(pVStaff, nID, lm_eSO_Staff)
         //lines
     , m_nNumLines(nNumLines)
-    , m_uLineThickness(lmToLogicalUnits(0.15, lmMILLIMETERS))     //TODO user option
-        // margins
-    , m_uStaffDistance(lmToLogicalUnits(10, lmMILLIMETERS))
 	    //contexts
 	, m_pFirstContext((lmContext*)NULL)
 	, m_pLastContext((lmContext*)NULL)
     , m_nPreviousFirstClef(lmE_Undefined)
 {
-    if (uUnits == 0)
-        m_uSpacing = lmToLogicalUnits(1.8, lmMILLIMETERS);   //Default 1.8 mm -> lmStaff height = 7.2 mm
-    else
-        m_uSpacing = uUnits;        // in logical units
+    //line distance: default 1.8 mm -> lmStaff height = 7.2 mm    //TODO user option
+    m_uSpacing = (uSpacing == 0.0f ? lmToLogicalUnits(1.8, lmMILLIMETERS) : uSpacing);
+
+    //line thickness: default: 0.15 millimeters     //TODO user option
+   m_uLineThickness = (uLineThickness == 0.0f ?
+                       lmToLogicalUnits(0.15, lmMILLIMETERS) : uLineThickness);
+
+    //top margin: default: 10 millimeters     //TODO user option
+   m_uStaffDistance = (uDistance == 0.0f ?
+                       lmToLogicalUnits(10, lmMILLIMETERS) : uDistance);
 }
 
 lmStaff::~lmStaff()
@@ -283,10 +287,10 @@ wxString lmStaff::SourceLDP(int nIndent, bool fUndoData)
     sSource += wxString::Format(_T("(staffLines %d)"), m_nNumLines);
     sSource += wxString::Format(_T("(staffSpacing %s)"),
                                 DoubleToStr((double)m_uSpacing, 2).c_str() );
-    sSource += wxString::Format(_T("(lineThickness %s)"),
-                                DoubleToStr((double)m_uLineThickness, 2).c_str() );
     sSource += wxString::Format(_T("(staffDistance %s)"),
                                 DoubleToStr((double)m_uStaffDistance, 2).c_str() );
+    sSource += wxString::Format(_T("(lineThickness %s)"),
+                                DoubleToStr((double)m_uLineThickness, 2).c_str() );
 
         //base class
 	sSource += lmScoreObj::SourceLDP(nIndent, fUndoData);

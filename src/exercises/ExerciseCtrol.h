@@ -462,6 +462,7 @@ protected:
     virtual wxDialog* GetSettingsDlg()=0;
     virtual void OnSettingsChanged()=0;
     virtual void SetNewProblem()=0;
+    virtual lmEditorMode* CreateEditMode() = 0;
 
 
     //methods invoked from derived classes
@@ -470,7 +471,6 @@ protected:
 
     // member variables
 
-    lmEditorMode*       m_pEditMode;        //editor mode for the exercise
     lmScore*            m_pProblemScore;    //score with the problem
     wxBoxSizer*         m_pMainSizer;
     lmExerciseOptions*  m_pConstrains;      //constraints for the exercise

@@ -150,7 +150,7 @@ lmToolGroup* lmToolPageNotes::GetToolGroup(lmEToolGroupID nGroupID)
 
 lmGrpNoteDuration::lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_DUR_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_NoteDuration, pParent->GetColors())
+                             lmID_BT_NoteDuration, lmTOOL_NONE, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -208,7 +208,7 @@ lmENoteType lmGrpNoteDuration::GetNoteDuration()
 
 lmGrpOctave::lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_OCTAVE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Octave, pParent->GetColors())
+                             lmID_BT_Octave, lmTOOL_NONE, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -263,7 +263,7 @@ void lmGrpOctave::SetOctave(bool fUp)
 
 lmGrpVoice::lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons)
         : lmToolButtonsGroup(pParent, nNumButtons, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Voice, pParent->GetColors())
+                             lmID_BT_Voice, lmTOOL_NONE, pParent->GetColors())
 {
 }
 
@@ -381,7 +381,7 @@ void lmGrpVoiceHarmony::CreateControls(wxBoxSizer* pMainSizer)
 
 lmGrpNoteAcc::lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_ACC_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
-                             lmID_BT_NoteAcc, pParent->GetColors())
+                             lmID_BT_NoteAcc, lmTOOL_NONE, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }
@@ -434,7 +434,7 @@ lmEAccidentals lmGrpNoteAcc::GetNoteAcc()
 
 lmGrpNoteDots::lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_DOT_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
-                             lmID_BT_NoteDots, pParent->GetColors())
+                             lmID_BT_NoteDots, lmTOOL_NONE, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }

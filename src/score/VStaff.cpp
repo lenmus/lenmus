@@ -92,7 +92,7 @@
 #define lmGO_BACK  false
 
 //constructor
-lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID)
+lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID, long nStaffID)
     : lmScoreObj(pScore, nID, lm_eSO_VStaff)
     , m_cStaffObjs(this, 1)    // 1 = m_nNumStaves
 {
@@ -113,7 +113,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID)
         m_cStaves[i] = (lmStaff*)NULL;
 
     //create one standard staff (five lines, 7.2 mm height)
-    lmStaff* pStaff = new lmStaff(this);
+    lmStaff* pStaff = new lmStaff(this, nStaffID);
     m_cStaves[0] = pStaff;
     pStaff->SetStaffDistance( lmToLogicalUnits(20, lmMILLIMETERS) );  //add separation from previous instr.
 
@@ -152,10 +152,11 @@ lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits)
 	return LogicalToTenths(uUnits, 1);
 }
 
-lmStaff* lmVStaff::AddStaff(int nNumLines, long nID, lmLUnits uUnits)
+lmStaff* lmVStaff::AddStaff(int nNumLines, long nID, lmLUnits uSpacing, lmLUnits uDistance,
+                            lmLUnits uLineThickness)
 {
     wxASSERT(m_nNumStaves < lmMAX_STAFF);
-    lmStaff* pStaff = new lmStaff(this, nID, nNumLines, uUnits);
+    lmStaff* pStaff = new lmStaff(this, nID, nNumLines, uSpacing, uDistance, uLineThickness);
     m_cStaves[m_nNumStaves] = pStaff;
     m_nNumStaves++;
     m_cStaffObjs.AddStaff();
@@ -168,6 +169,38 @@ lmStaff* lmVStaff::GetStaff(int nStaff)
     wxASSERT(nStaff > 0);
 
     return m_cStaves[nStaff-1];
+}
+
+void lmVStaff::SetStaffLineSpacing(int nStaff, lmLUnits uSpacing)
+{
+    //nStaff = 1..n
+
+    wxASSERT(nStaff > 0 && nStaff <= m_nNumStaves);
+    GetStaff(nStaff)->SetLineSpacing(uSpacing);
+}
+
+void lmVStaff::SetStaffLineThickness(int nStaff, lmLUnits uTickness)
+{
+    //nStaff = 1..n
+
+    wxASSERT(nStaff > 0 && nStaff <= m_nNumStaves);
+    GetStaff(nStaff)->SetLineThick(uTickness);
+}
+
+void lmVStaff::SetStaffNumLines(int nStaff, int nLines)
+{
+    //nStaff = 1..n
+
+    wxASSERT(nStaff > 0 && nStaff <= m_nNumStaves);
+    GetStaff(nStaff)->SetNumLines(nLines);
+}
+
+void lmVStaff::SetStaffDistance(int nStaff, lmLUnits uDistance)
+{
+    //nStaff = 1..n
+
+    wxASSERT(nStaff > 0 && nStaff <= m_nNumStaves);
+    GetStaff(nStaff)->SetStaffDistance(uDistance);
 }
 
 lmStaff* lmVStaff::GetFirstStaff()

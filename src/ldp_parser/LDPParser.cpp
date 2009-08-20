@@ -901,11 +901,6 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //<Staves> = (staves {num | overlayered} )
     //<Voice> = (MusicData <music>+ )
 
-    lmLDPNode* pX;
-    wxString sData;
-    long iP;
-    iP = 1;
-
     wxASSERT( pNode->GetName() == _T("instrument") );
     long nID = pNode->GetID();
 
@@ -913,35 +908,54 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
 	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
     bool fMusicFound = false;               // <MusicData> tag found
-    long nVStaffID = lmNEW_ID;
+    long nVStaffID = (nID == lmNEW_ID ? lmNEW_ID : nID+1);
+    long nStaffID = (nVStaffID == lmNEW_ID ? lmNEW_ID : nVStaffID+1);
+
+    //staves
     wxString sNumStaves = _T("1");          //one staff
+    long nNumStaves = 1L;
+    long nAddedStaves = 0L;
 
     //default values for name
-    //TODO user options instead of fixed values
     wxString sInstrName = _T("");           //no name for instrument
     wxString sInstrNameStyle = _T("");
     lmEHAlign nNameAlign = lmHALIGN_LEFT;
     lmFontInfo tNameFont = g_tInstrumentDefaultFont;
     lmLocation tNamePos = g_tDefaultPos;
     long nNameID = lmNEW_ID;
+    lmInstrNameAbbrev* pName = (lmInstrNameAbbrev*)NULL;
 
     //default values for abbreviation
-    //TODO user options instead of fixed values
     wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
     wxString sInstrAbbrevStyle = _T("");
     lmEHAlign nAbbrevAlign = lmHALIGN_LEFT;
     lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
     lmLocation tAbbrevPos = g_tDefaultPos;
     long nAbbrevID = lmNEW_ID;
+    lmInstrNameAbbrev* pAbbrev = (lmInstrNameAbbrev*)NULL;
 
-    // parse optional elements until <MusicData> tag found
-    for (; iP <= pNode->GetNumParms(); iP++) {
+    //create an instrument initialized with default values. Only one staff
+    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr, pName, pAbbrev,
+                                                 nID, nVStaffID, nStaffID, pGroup);
+    lmVStaff* pVStaff = pInstr->GetVStaff();
+    nAddedStaves++;
+
+
+    // parse elements until <musicData> tag found
+    lmLDPNode* pX;
+    for (int iP=1; iP <= pNode->GetNumParms(); iP++) 
+    {
         pX = pNode->GetParameter(iP);
 
         if (pX->GetName() == _T("musicData") )
         {
             fMusicFound = true;
-            nVStaffID = pX->GetID();
+            if (nVStaffID != pX->GetID())
+            {
+                nVStaffID = pX->GetID();
+                AnalysisError(pX, _T("Program error: incoherent ID for VStaff. nID=%d, nVStaffID=%d."),
+                              nID, nVStaffID );
+            }
             break;      //start of MusicData. Exit this loop
         }
         else if (pX->GetName() == _T("name") )
@@ -949,16 +963,62 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             nNameID = pX->GetID();
             AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign,
                               &tNamePos, &tNameFont);
+            if (sInstrName != _T(""))
+            {
+                lmTextStyle* pTS;
+                if (sInstrNameStyle != _T(""))
+                    pTS = pScore->GetStyleInfo(sInstrNameStyle);
+                else
+                    pTS = pScore->GetStyleName(tNameFont);
+                wxASSERT(pTS);
+                pName = pInstr->AddName(sInstrName, nNameID, pTS);
+                //convert position to LUnits. As the text is not yet owned we must use the score
+	            if (tNamePos.xUnits == lmTENTHS)
+                {
+		            tNamePos.x = pScore->TenthsToLogical(tNamePos.x);
+                    tNamePos.xUnits = lmLUNITS;
+                }
+	            if (tNamePos.yUnits == lmTENTHS)
+                {
+		            tNamePos.y = pScore->TenthsToLogical(tNamePos.y);
+                    tNamePos.yUnits = lmLUNITS;
+                }
+                pName->SetUserLocation(tNamePos);
+            }
         }
         else if (pX->GetName() == _T("abbrev") )
 		{
             nAbbrevID = pX->GetID();
             AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
                               &tAbbrevPos, &tAbbrevFont);
+            if (sInstrAbbrev != _T(""))
+            {
+                lmTextStyle* pTS;
+                if (sInstrAbbrevStyle != _T(""))
+                    pTS = pScore->GetStyleInfo(sInstrAbbrevStyle);
+                else
+                    pTS = pScore->GetStyleName(tAbbrevFont);
+                wxASSERT(pTS);
+                pAbbrev = pInstr->AddAbbreviation(sInstrAbbrev, nAbbrevID, pTS);
+                //convert position to LUnits. As the text is not yet owned we must use the score
+	            if (tAbbrevPos.xUnits == lmTENTHS)
+                {
+		            tAbbrevPos.x = pScore->TenthsToLogical(tAbbrevPos.x);
+                    tAbbrevPos.xUnits = lmLUNITS;
+                }
+	            if (tAbbrevPos.yUnits == lmTENTHS)
+                {
+		            tAbbrevPos.y = pScore->TenthsToLogical(tAbbrevPos.y);
+                    tAbbrevPos.yUnits = lmLUNITS;
+                }
+                pAbbrev->SetUserLocation(tAbbrevPos);
+            }
         }
         else if (pX->GetName() == _T("infoMIDI") )
 		{
 			AnalyzeInfoMIDI(pX, &nMIDIChannel, &nMIDIInstr);
+            pInstr->SetMIDIChannel(nMIDIChannel);
+            pInstr->SetMIDIInstrument(nMIDIInstr);
 		}
         else if (pX->GetName() == _T("staves") )
 		{
@@ -974,94 +1034,53 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             else {
                 AnalysisError(pX, _T("Expected value for %s but found element '%s'. Ignored."),
                     _T("staves"), pX->GetName().c_str() );
-           }
+            }
+
+            //check that maximum number of supported staves is not reached
+            sNumStaves.ToLong(&nNumStaves);
+            if (nNumStaves > lmMAX_STAFF)
+            {
+                AnalysisError(pX, _T("Program limit reached: the number of staves per instrument must not be greater than %d. Please inform LenMus developers."),
+                              lmMAX_STAFF);
+                nNumStaves = lmMAX_STAFF;
+            }
         }
-        else {
+        else if (pX->GetName() == _T("staff") )
+		{
+			AnalyzeStaff(pX, pVStaff);
+            nAddedStaves++;
+		}
+        else
+        {
             AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
                 _T("instrument"), pX->GetName().c_str() );
         }
     }
 
-    //set number of staves (to be used by AnalyzeMusicData in order to add staves)
-    sNumStaves.ToLong(&m_nNumStaves);
+        
+    //the default instrument only contains one staff. So if more than one staff
+    //requested and no <staff> elements, we have to add nNumStaves - 1
+    if (nAddedStaves < nNumStaves)
+    {
+        if (nAddedStaves != 1)  
+            AnalysisError(pNode, _T("[instrument]: less <staff> elements (%d) than staves (%d). Default sataves added."),
+                          nAddedStaves, nNumStaves );
+        while (nAddedStaves < nNumStaves)
+        {
+            pVStaff->AddStaff(5);    //five lines staff, standard size
+            nAddedStaves++;
+        }
+    }
 
-    //process firts voice
+
+    // analyze musicData
     if (!fMusicFound) {
         AnalysisError(pX, _T("Expected '%s' but found element %s. Analysis stopped."),
             _T("musicData"), pX->GetName().c_str() );
         return;
     }
-
-    // create the instrument with one empty VStaff
-    lmInstrNameAbbrev* pName = (lmInstrNameAbbrev*)NULL;
-    lmInstrNameAbbrev* pAbbrev = (lmInstrNameAbbrev*)NULL;
-    if (sInstrName != _T(""))
-    {
-        lmTextStyle* pTS;
-        if (sInstrNameStyle != _T(""))
-            pTS = pScore->GetStyleInfo(sInstrNameStyle);
-        else
-            pTS = pScore->GetStyleName(tNameFont);
-        wxASSERT(pTS);
-        pName = new lmInstrNameAbbrev((lmScoreObj*)NULL, nNameID, sInstrName, pTS);
-        //convert position to LUnits. As the text is not yet owned we must use the score
-	    if (tNamePos.xUnits == lmTENTHS)
-        {
-		    tNamePos.x = pScore->TenthsToLogical(tNamePos.x);
-            tNamePos.xUnits = lmLUNITS;
-        }
-	    if (tNamePos.yUnits == lmTENTHS)
-        {
-		    tNamePos.y = pScore->TenthsToLogical(tNamePos.y);
-            tNamePos.yUnits = lmLUNITS;
-        }
-        pName->SetUserLocation(tNamePos);
-    }
-    if (sInstrAbbrev != _T(""))
-    {
-        lmTextStyle* pTS;
-        if (sInstrAbbrevStyle != _T(""))
-            pTS = pScore->GetStyleInfo(sInstrAbbrevStyle);
-        else
-            pTS = pScore->GetStyleName(tAbbrevFont);
-        wxASSERT(pTS);
-        pAbbrev = new lmInstrNameAbbrev((lmScoreObj*)NULL, nAbbrevID, sInstrAbbrev, pTS);
-        //convert position to LUnits. As the text is not yet owned we must use the score
-	    if (tAbbrevPos.xUnits == lmTENTHS)
-        {
-		    tAbbrevPos.x = pScore->TenthsToLogical(tAbbrevPos.x);
-            tAbbrevPos.xUnits = lmLUNITS;
-        }
-	    if (tAbbrevPos.yUnits == lmTENTHS)
-        {
-		    tAbbrevPos.y = pScore->TenthsToLogical(tAbbrevPos.y);
-            tAbbrevPos.yUnits = lmLUNITS;
-        }
-        pAbbrev->SetUserLocation(tAbbrevPos);
-    }
-
-    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr,
-                                        pName, pAbbrev, nID, nVStaffID, pGroup);
-    lmVStaff* pVStaff = pInstr->GetVStaff();
-
-    // analyce first MusicData
     AnalyzeMusicData(pX, pVStaff);
     iP++;
-
-	//CSG: 19/jan/2008. Support for more than one VStaff removed
-    ////analyze other MusicData elements
-    //for(; iP <= pNode->GetNumParms(); iP++) {
-    //    pX = pNode->GetParameter(iP);
-    //    if (pX->GetName() = _T("musicData") ) {
-    //        pVStaff = pInstr->AddVStaff(true);      //true -> overlayered
-    //        AnalyzeMusicData(pX, pVStaff);
-    //    }
-    //    else {
-    //        AnalysisError(pX, _T("Expected '%s' but found element %s. Element ignored."),
-    //            _T("musicData").c_str(), pX->GetName().c_str() );
-    //    }
-    //}
-
 }
 
 bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr)
@@ -1109,16 +1128,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sName;
     lmLDPNode* pX;
 
-    //the VStaff only contains one staff. So if more thant one staves requested for
-    //current instrument we have to add nNumStaves - 1
-    if (m_nNumStaves > 1) {
-        int i;
-        for(i=1; i < m_nNumStaves; i++) {
-            pVStaff->AddStaff(5);    //five lines staff, standard size
-        }
-    }
-
-    //loop to analyze remaining elements: music data elements
+    //loop to analyze music data elements
     for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
         sName = pX->GetName();
@@ -3743,6 +3753,104 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 }
 
+void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //Modifies default staff values with those in the <staff> element
+    //
+    //    <staff> = (staff <num> [<staffType>][<staffLines>][<staffSpacing>]
+    //                     [<staffDistance>][<lineThickness>] )
+    //
+    //    <staffType> = { ossia | cue | editorial | regular | alternate }
+    //    <staffLines> = <num>
+    //    <staffSize> = <num>
+    //    <staffDistance> = <num>
+    //    <lineThickness> = <num>
+
+
+
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("staff"));
+    long nID = pNode->GetID();
+
+    //check that the staff number is specified
+    if(pNode->GetNumParms() < 1)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
+            sElmName.c_str());
+        return;
+    }
+
+    //get staff number
+    int iP = 1;
+    wxString sNum = (pNode->GetParameter(iP))->GetName();
+    if (!sNum.IsNumber())
+    {
+        AnalysisError(pNode, _T("Element 'staff': staff number expected but found '%s'. Ignored."),
+                      sNum.c_str());
+        return;
+    }
+    long nStaffNum;
+    sNum.ToLong(&nStaffNum);
+    int nStaff = (int)nStaffNum;
+
+    //default values
+    wxString nStaffType = _T("regular");
+    int nStaffLines = 5;
+    lmLUnits uStaffSpacing = 0.0f;      //value 0 sets default spacing in constructor
+    lmLUnits uStaffDistance = 0.0f;     //value 0 sets default spacing in constructor
+    lmLUnits uLineThickness = 0.0f;     //value 0 sets default spacing in constructor
+
+    //get remaining optional parameters
+    ++iP;
+    lmLDPNode* pX;
+    for (; iP <= pNode->GetNumParms(); iP++) 
+    {
+        pX = pNode->GetParameter(iP);
+
+        if (pX->GetName() == _T("staffType") )
+        {
+            //TODO
+       }
+        else if (pX->GetName() == _T("staffLines") )
+        {
+            GetValueIntNumber(pX, &nStaffLines);
+            if (nStaff == 1)
+                pVStaff->SetStaffNumLines(nStaff, nStaffLines);
+        }
+        else if (pX->GetName() == _T("staffSpacing") )
+        {
+            GetValueFloatNumber(pX, &uStaffSpacing);
+            if (nStaff == 1)
+                pVStaff->SetStaffLineSpacing(nStaff, uStaffSpacing);
+        }
+        else if (pX->GetName() == _T("staffDistance") )
+        {
+            GetValueFloatNumber(pX, &uStaffDistance);
+            if (nStaff == 1)
+                pVStaff->SetStaffDistance(nStaff, uStaffDistance);
+        }
+        else if (pX->GetName() == _T("lineThickness") )
+        {
+            GetValueFloatNumber(pX, &uLineThickness);
+            if (nStaff == 1)
+                pVStaff->SetStaffLineThickness(nStaff, uLineThickness);
+        }
+        else
+        {
+            AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
+                _T("staff"), pX->GetName().c_str() );
+        }
+    }
+
+    //proceed to create the staff if not staff #1
+    if (nStaff > 1)
+        pVStaff->AddStaff(nStaffLines, nID, uStaffSpacing, uStaffDistance, uLineThickness);
+
+    return;
+}
+
+
 void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     //  <graphic> ::= ("graphic" <type> <params>*)
@@ -4795,7 +4903,7 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
                     ++p;    //GetNextChar()
                     nState = lmFB_NUM01;
                 }
-                else if (*p == _T('#') || *p == _T('+') || *p == _T('='))
+                else if (*p == _T('#') || *p == _T('+'))
                 {
                     sPrefix = *p;
                     nQuality = lm_eIM_RaiseHalf;
@@ -4806,6 +4914,13 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
                 {
                     sPrefix = *p;
                     nQuality = lm_eIM_LowerHalf;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_NUM01;
+                }
+                else if (*p == _T('='))
+                {
+                    sPrefix = *p;
+                    nQuality = lm_eIM_Natural;
                     ++p;    //GetNextChar()
                     nState = lmFB_NUM01;
                 }

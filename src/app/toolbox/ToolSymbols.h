@@ -77,7 +77,7 @@ public:
     void CreateGroups();
 
     //interface with symbols group
-	inline lmEToolID GetToolID() { return (lmEToolID)m_pGrpSymbols->GetSelectedButton(); }
+	inline lmEToolID GetToolID() { return m_pGrpSymbols->GetSelectedToolID(); }
     inline void SetTool(lmEToolID nTool) { m_pGrpSymbols->SelectButton(nTool); }
 
 private:

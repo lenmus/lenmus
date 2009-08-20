@@ -509,29 +509,28 @@ int lmScore::GetNumMeasures()
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
                                      wxString sName, wxString sAbbrev, long nID,
-                                     long nVStaffID, lmInstrGroup* pGroup)
+                                     long nVStaffID, long nStaffID, lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
-    //nMIDIChannel is the MIDI channel to use for playing this instrument
 
-    lmInstrument* pInstr = new lmInstrument(this, nID, nVStaffID, nMIDIChannel, nMIDIInstr,
-                                            sName, sAbbrev);
-
+    lmInstrument* pInstr = new lmInstrument(this, nID, nVStaffID, nStaffID, nMIDIChannel,
+                                            nMIDIInstr, sName, sAbbrev);
 	DoAddInstrument(pInstr, pGroup);
+
     return pInstr;
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
 									 lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev,
-                                     long nID, long nVStaffID, lmInstrGroup* pGroup)
+                                     long nID, long nVStaffID, long nStaffID,
+                                     lmInstrGroup* pGroup)
 {
     //add an lmInstrument.
-    //nMIDIChannel is the MIDI channel to use for playing this instrument
 
-    lmInstrument* pInstr = new lmInstrument(this, nID, nVStaffID, nMIDIChannel, nMIDIInstr,
-                                            pName, pAbbrev);
-
+    lmInstrument* pInstr = new lmInstrument(this, nID, nVStaffID, nStaffID, nMIDIChannel,
+                                            nMIDIInstr, pName, pAbbrev);
 	DoAddInstrument(pInstr, pGroup);
+
 	return pInstr;
 }
 

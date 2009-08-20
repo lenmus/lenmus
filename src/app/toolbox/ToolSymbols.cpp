@@ -122,7 +122,7 @@ void lmToolPageSymbols::CreateGroups()
 
 lmGrpSymbols::lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_SYMBOL_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Symbols, pParent->GetColors())
+                             lmID_BT_Symbols, lmTOOL_FIGURED_BASS, pParent->GetColors())
 {
     CreateControls(pMainSizer);
 }

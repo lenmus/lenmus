@@ -378,11 +378,13 @@ public:
                                 wxString sName, wxString sAbbrev=_T(""),
                                 long nID = lmNEW_ID,
                                 long nVStaffID = lmNEW_ID,
+                                long nStaffID = lmNEW_ID,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     lmInstrument* AddInstrument(int nMIDIChannel, int nMIDIInstr,
                                 lmInstrNameAbbrev* pName,
                                 lmInstrNameAbbrev* pAbbrev, long nID = lmNEW_ID,
                                 long nVStaffID = lmNEW_ID,
+                                long nStaffID = lmNEW_ID,
                                 lmInstrGroup* pGroup = (lmInstrGroup*)NULL );
     inline bool IsFirstInstrument(lmInstrument* pInstr) { return pInstr == m_cInstruments.front(); }
 

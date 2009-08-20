@@ -64,6 +64,7 @@ public:
     wxDialog* GetSettingsDlg();
     void InitializeStrings();
     void OnSettingsChanged();
+    lmEditorMode* CreateEditMode();
 
 
 private:

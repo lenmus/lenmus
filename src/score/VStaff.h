@@ -48,7 +48,7 @@ class lmBeamInfo;
 class lmVStaff : public lmScoreObj
 {
 public:
-    lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID);
+    lmVStaff(lmScore* pScore, lmInstrument* pInstr, long nID, long nStaffID);
     ~lmVStaff();
 
 	//---- virtual methods of base class -------------------------
@@ -63,7 +63,8 @@ public:
 	//---- specific methods of this class ------------------------
 
 	//Adding StaffObs (at the end)
-    lmStaff*    AddStaff(int nNumLines=5, long nID=lmNEW_ID, lmLUnits uUnits=0);
+    lmStaff*    AddStaff(int nNumLines=5, long nID=lmNEW_ID, lmLUnits uSpacing=0.0f,
+                         lmLUnits uDistance=0.0f, lmLUnits uLineThickness=0.0f);
     lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true,
                         long nID = lmNEW_ID);
 
@@ -172,6 +173,12 @@ public:
                        bool fShowNumber, int nNumber, bool fBracket,
                        lmEPlacement nAbove, int nActual, int nNormal);
 
+
+    //staves modification (nStaff = 1..n)
+    void SetStaffLineSpacing(int nStaff, lmLUnits uSpacing);
+    void SetStaffLineThickness(int nStaff, lmLUnits uTickness);
+    void SetStaffNumLines(int nStaff, int nLines);
+    void SetStaffDistance(int nStaff, lmLUnits uDistance);
 
 
     //error management

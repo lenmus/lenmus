@@ -38,10 +38,10 @@ class lmInstrument : public lmScoreObj
 {
 public:
     //ctors and dtor
-    lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
+    lmInstrument(lmScore* pScore, long nID, long nVStaffID, long nStaffID, int nMIDIChannel,
                  int nMIDIInstr, wxString sName, wxString sAbbrev,
                  long nNameID = lmNEW_ID, long nAbbrevID = lmNEW_ID );
-    lmInstrument(lmScore* pScore, long nID, long nVStaffID, int nMIDIChannel,
+    lmInstrument(lmScore* pScore, long nID, long nVStaffID, long nStaffID, int nMIDIChannel,
                  int nMIDIInstr, lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
     ~lmInstrument();
 
@@ -60,12 +60,15 @@ public:
     //Returns the number of staves that this lmInstrument has (1..n)
     int GetNumStaves();
 
+    //name and abbreviation
+    lmInstrNameAbbrev* AddName(wxString& sName, long nID, lmTextStyle* pStyle);
+    lmInstrNameAbbrev* AddAbbreviation(wxString& sAbbrev, long nID, lmTextStyle* pStyle);
+
     //layout
     inline void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_uIndentFirst, pPos); }
     inline void SetIndentOther(lmLocation* pPos) { SetIndent(&m_uIndentOther, pPos); }
     inline lmLUnits GetIndentFirst() { return m_uIndentFirst; }
     inline lmLUnits GetIndentOther() { return m_uIndentOther; }
-
     void MeasureNames(lmPaper* pPaper);
     void AddNameAndBracket(lmBox* pBSystem, lmBox* pBSliceInstr, lmPaper* pPaper, int nSystem);
 
@@ -101,10 +104,8 @@ public:
 
 
 private:
-    void Create(lmScore* pScore, long nVStaffID, int nMIDIChannel, int nMIDIInstr,
-                lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
-    void AddName(wxString& sName, long nID);
-    void AddAbbreviation(wxString& sAbbrev, long nID);
+    void Create(lmScore* pScore, long nVStaffID, long nStaffID, int nMIDIChannel,
+                int nMIDIInstr, lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev);
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
 	void AddNameAbbrevShape(lmBox* pBox, lmPaper* pPaper, lmInstrNameAbbrev* pName);
     bool RenderBraket();
