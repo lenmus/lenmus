@@ -34,9 +34,11 @@ class lmScore;
 class lmStaffObj;
 class lmAuxObj;
 class lmUrlAuxCtrol;
+class lmScoreCommand;
 
 #include "../auxmusic/ChordManager.h"
 #include "../auxmusic/Harmony.h"
+
 
 //--------------------------------------------------------------------------
 // lmScoreProcessor: An abstract class to create score processors
@@ -48,21 +50,19 @@ class lmScoreProcessor : public wxEvtHandler
 public:
     virtual ~lmScoreProcessor();
 
-    virtual bool ProcessScore(lmScore* pScore) = 0;
-    virtual bool UndoChanges(lmScore* pScore) = 0;
+    //this class methods
+    void DoProcess();
     virtual bool SetTools() = 0;
-
 
 protected:
     lmScoreProcessor();
-    void DoProcess();
-    void UndoProcess();
+    friend class lmCmdScoreProcessor;
+    virtual bool ProcessScore(lmScore* pScore) = 0;
 
     //tools panel related
-    bool CreateToolsPanel(wxString sTitle, wxString sDoLink = wxEmptyString,
-                          wxString sUndoLink = wxEmptyString);
+    bool CreateToolsPanel(wxString sTitle, wxString sDoLink = wxEmptyString);
     inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
-    void AddStandardLinks(wxBoxSizer* pSizer, wxString sDoLink, wxString sUndoLink);
+    void AddDoLink(wxBoxSizer* pSizer, wxString sDoLink);
     void RealizePanel();
 
 
@@ -70,7 +70,6 @@ private:
     wxPanel*            m_pToolsPanel;
 	wxBoxSizer*         m_pMainSizer;
     lmUrlAuxCtrol*      m_pDoLink;
-    lmUrlAuxCtrol*      m_pUndoLink;
 };
 
 
@@ -89,12 +88,14 @@ public:
     lmTestProcessor();
     ~lmTestProcessor();
 
-    //implementation of virtual methods
-    bool ProcessScore(lmScore* pScore);
-    bool UndoChanges(lmScore* pScore);
     bool SetTools();
 
 protected:
+    //implementation of virtual methods
+    friend class lmCmdScoreProcessor;
+    bool ProcessScore(lmScore* pScore);
+
+    //other
     void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
 
 };
@@ -112,9 +113,6 @@ public:
     lmHarmonyProcessor();
     ~lmHarmonyProcessor();
 
-    //implementation of virtual methods
-    bool ProcessScore(lmScore* pScore);
-    bool UndoChanges(lmScore* pScore);
     bool SetTools();
 
     //specific methods
@@ -126,6 +124,11 @@ public:
 #endif
 
 protected:
+    //implementation of virtual methods
+    friend class lmCmdScoreProcessor;
+    bool ProcessScore(lmScore* pScore);
+
+    //other
 
     bool ProccessChord(lmScore* pScore, lmChordDescriptor* ptChordDescriptor
         , int* pNumChords, wxString &sStatusStr);

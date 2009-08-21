@@ -50,6 +50,7 @@ extern lmMainFrame* GetMainFrame();
 #include "../score/VStaff.h"
 #include "../score/AuxObj.h"        //lmScoreLine
 #include "../graphic/ShapeNote.h"
+#include "ScoreCommand.h"
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -85,39 +86,12 @@ void lmScoreProcessor::DoProcess()
     lmScore* pScore = pDoc->GetScore();
     if (!pScore) return;
 
-    if (ProcessScore(pScore))
-    {
-        //if changes done in the score, update views
-	    pDoc->Modify(true);
-        pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
-
-        //enable undo link
-        m_pUndoLink->Enable(true);
-    }
+    //create and issue the command
+    wxCommandProcessor* pCP = pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdScoreProcessor(lmCMD_NORMAL, pDoc, this) );
 }
 
-void lmScoreProcessor::UndoProcess()
-{
-    //get the score
-    lmMainFrame* pMainFrame = GetMainFrame();
-    lmDocument* pDoc = pMainFrame->GetActiveDoc();
-    if (!pDoc) return;
-    lmScore* pScore = pDoc->GetScore();
-    if (!pScore) return;
-
-    if (UndoChanges(pScore))
-    {
-        //if changes done in the score, update views
-	    pDoc->Modify(true);
-        pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
-    }
-
-    //disable undo link
-    m_pUndoLink->Enable(false);
-}
-
-bool lmScoreProcessor::CreateToolsPanel(wxString sTitle, wxString sDoLink,
-                                       wxString sUndoLink)
+bool lmScoreProcessor::CreateToolsPanel(wxString sTitle, wxString sDoLink)
 {
     lmMainFrame* pMainFrame = GetMainFrame();
     lmToolBox* pToolbox = pMainFrame->GetActiveToolBox();
@@ -128,12 +102,11 @@ bool lmScoreProcessor::CreateToolsPanel(wxString sTitle, wxString sDoLink,
 
 	m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-    AddStandardLinks(m_pMainSizer, sDoLink, sUndoLink);
+    AddDoLink(m_pMainSizer, sDoLink);
 
     return true;
 }
-void lmScoreProcessor::AddStandardLinks(wxBoxSizer* pSizer, wxString sDoLink,
-                                        wxString sUndoLink)
+void lmScoreProcessor::AddDoLink(wxBoxSizer* pSizer, wxString sDoLink)
 {
     // 'Do process' link
     if (sDoLink != wxEmptyString)
@@ -142,16 +115,6 @@ void lmScoreProcessor::AddStandardLinks(wxBoxSizer* pSizer, wxString sDoLink,
         pSizer->Add(m_pDoLink, 0, wxALL|wxEXPAND, 5);
         m_pToolsPanel->Connect(lmID_DO_PROCESS, lmEVT_URL_CLICK,
                                wxObjectEventFunction(&lmScoreProcessor::DoProcess),
-                               NULL, this);
-    }
-
-    // 'Do process' link
-    if (sDoLink != wxEmptyString)
-    {
-        m_pUndoLink = new lmUrlAuxCtrol(m_pToolsPanel, lmID_UNDO_PROCESS, 1.0, sUndoLink);
-        pSizer->Add(m_pUndoLink, 0, wxALL|wxEXPAND, 5);
-        m_pToolsPanel->Connect(lmID_UNDO_PROCESS, lmEVT_URL_CLICK,
-                               wxObjectEventFunction(&lmScoreProcessor::UndoProcess),
                                NULL, this);
     }
 }
@@ -166,9 +129,6 @@ void lmScoreProcessor::RealizePanel()
     lmToolBox* pToolbox = pMainFrame->GetActiveToolBox();
     if (pToolbox)
         pToolbox->AddSpecialTools(m_pToolsPanel, this);
-
-    //disable undo link
-    m_pUndoLink->Enable(false);
 }
 
 
@@ -262,13 +222,6 @@ bool lmTestProcessor::ProcessScore(lmScore* pScore)
     }
 
 	return fScoreModified;      //true -> score modified
-}
-
-bool lmTestProcessor::UndoChanges(lmScore* pScore)
-{
-    //This method removes all error markup from the score
-
-    return true;
 }
 
 void lmTestProcessor::DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
@@ -377,8 +330,7 @@ bool lmHarmonyProcessor::SetTools()
     //Returns false if failure.
 
     if (!CreateToolsPanel(_("Harmony exercise"),
-                          _("Check harmony"),
-                          _("Clear errors")) )
+                          _("Check harmony")) )
         return false;
 
     //No more tools to add. Show panel in toolbox
@@ -512,7 +464,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
             rAbsTime = rTimeAtStartOfMeasure + rRelativeTime;
 
             // process notes
-            if (((lmNoteRest*)pSO)->IsNote())
+            if (pSO->IsNote())
             {
                 // It is a note. Count it
                 ++nNote;
@@ -547,9 +499,9 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
                 // add new note to the list of active notes
                 ActiveNotesList.AddNote(pCurrentNote, rCurrentNoteAbsTime + pCurrentNote->GetDuration());
 
-            } //  if (((lmNoteRest*)pSO)->IsNote())
+            } //  if (pSO->IsNote())
 
-        } // [else if (pSO->IsNoteRest()) ] ignore other staff objects
+        } // [else if (!pSO->IsNoteRest()) ] ignore other staff objects
 
         pIter->MoveNext();
 
@@ -596,7 +548,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
                 ,nNumChords, nHarmonyExercise1ChordsToCheck);
             wxColour colour = wxColour(255,10,0,128); // R, G, B, Transparency: RED
             pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], colour, sMsg);
-            wxLogMessage(_T(" Error: %s"), sMsg );
+            wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
         }
 
         lmEChordType nChordType;
@@ -764,39 +716,5 @@ int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, 
     }
 
     return nNumErros;
-
 }
-
-
-bool lmHarmonyProcessor::UndoChanges(lmScore* pScore)
-{
-    //This method removes all error markup from the score
-
-    //TODO:
-    //The base class should provide an standard functionality for doing this.
-    //For example, it should maintain a list of changes and it will undo all these
-    //changes. This way, derived classes have nothing to implement, unless an
-    //special behaviour is desired.
-
-    //This code is just an example to undo what we did at ProcessScore()
-
-    WXUNUSED(pScore);
-    std::list<lmMarkup*>::iterator it = m_markup.begin();
-    while (it != m_markup.end())
-    {
-        //undo this markup
-        lmMarkup* pError = *it;
-        lmStaffObj* pParent = pError->first;
-        lmAuxObj* pAttachment = pError->second;
-	    pParent->DetachAuxObj(pAttachment);
-	    pParent->SetColour(*wxBLACK);
-        delete pAttachment;
-
-        //remove used element and move to next item in list
-        m_markup.erase(it++);
-        delete pError;
-    }
-    return true;
-}
-
 

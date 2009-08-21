@@ -26,6 +26,7 @@
 #endif
 
 #include <vector>
+#include <set>
 
 
 #include "wx/txtstrm.h"
@@ -60,6 +61,11 @@ public:
     lmLDPParser();
     lmLDPParser(wxString sLanguage, wxString sCharset);
     ~lmLDPParser();
+
+    //setings and options
+    inline void SetIgnoreList(std::set<long>* pSet) { m_pIgnoreSet = pSet; }
+
+    std::map<long, lmScoreObj*>     m_ScoreObjs;
 
     // "Parse" methods: work on source text
     lmScore*    ParseFile(const wxString& filename, bool fErrorMsg = true);
@@ -227,7 +233,7 @@ protected:
     float           m_rCursorTime;
     lmStaffObj*     m_pCursorSO;
 
-    // parsing control and error variables
+    // parsing control, options and error variables
     bool            m_fDebugMode;
     bool            m_fFromString;        // true: parsing a string. false: parsing a file
     bool            m_fStartingTextAnalysis;    //to signal the start of a new analysis
@@ -235,8 +241,10 @@ protected:
     long            m_nErrors;            // numebr of serious errors during parsing
     long            m_nWarnings;          // number of warnings during parsing
     wxString        m_sFileName;
-    wxFileInputStream*    m_pFile;        // file being parsed
-    wxTextInputStream*    m_pTextFile;    // file being parsed
+    wxFileInputStream*      m_pFile;        // file being parsed
+    wxTextInputStream*      m_pTextFile;    // file being parsed
+    std::set<long>*         m_pIgnoreSet;   //set with elements to ignore
+
 
     //
     //variables to keep settings that propagate

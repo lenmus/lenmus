@@ -26,6 +26,7 @@
 #endif
 
 #include <list>
+#include <set>
 
 #include "wx/cmdproc.h"
 
@@ -42,6 +43,7 @@ class lmScoreCursor;
 class lmVStaff;
 class lmNote;
 class lmBezier;
+class lmScoreProcessor;
 
 //predefined values for flag 'fNormalCmd'
 #define lmCMD_NORMAL    true
@@ -59,6 +61,8 @@ class lmBezier;
 // base abstract class
 class lmScoreCommand: public wxCommand
 {
+	DECLARE_ABSTRACT_CLASS(lmScoreCommand)
+
 public:
     virtual ~lmScoreCommand();
 
@@ -140,7 +144,8 @@ public:
     bool Do();
 
 protected:
-    std::list<lmScoreCommand*>   m_Commands;     //commands to delete the selected objects
+    std::list<lmScoreCommand*>  m_Commands;     //commands to delete the selected objects
+    std::set<long>              m_IgnoreSet;
 };
 
 
@@ -691,6 +696,22 @@ protected:
     int             m_nShapeIdx;
     int             m_nNumPoints;
     lmUPoint*       m_pShifts;
+};
+
+
+// Process the score with a score processor
+//------------------------------------------------------------------------------------
+class lmCmdScoreProcessor: public lmScoreCommand
+{
+public:
+    lmCmdScoreProcessor(bool fNormalCmd, lmDocument *pDoc, lmScoreProcessor* pProc);
+    ~lmCmdScoreProcessor() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+
+protected:
+    lmScoreProcessor*       m_pProc;
 };
 
 

@@ -121,7 +121,7 @@ public:
 
     lmSOControl* AddNewSystem(long nID = lmNEW_ID);
 
-    lmSpacer* AddSpacer(lmTenths nWidth, long nID = lmNEW_ID);
+    lmSpacer* AddSpacer(lmTenths nWidth, long nID = lmNEW_ID, int nStaff = 1);
 
     lmStaffObj* AddAnchorObj(long nID = lmNEW_ID);
 

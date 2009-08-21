@@ -91,6 +91,10 @@ lmScoreObj::~lmScoreObj()
 
     if (m_pShapesMngr) delete m_pShapesMngr;
 
+    ////inform parent
+    //if (m_pParent)
+    //    m_pParent->GetScore()->OnObjectRemoved(GetID());
+
 }
 
 void lmScoreObj::DefineAsMultiShaped()

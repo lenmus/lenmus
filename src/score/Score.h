@@ -358,6 +358,7 @@ public:
 
     // owned ScoreObjs management
     long AssignID(lmScoreObj* pSO);
+    void OnObjectRemoved(long nID);
     inline void SetCounterID(long nValue) { m_nCounterID = nValue; }
     lmScoreObj* GetScoreObj(long nID);
 
@@ -408,6 +409,8 @@ public:
     inline bool IsReadOnly() { return m_fReadOnly; }
     inline void SetReadOnly(bool fValue) { m_fReadOnly = fValue; }
     inline void SetUndoMode() { m_fUndoMode = true; }
+    inline void ResetUndoMode() { m_fUndoMode = false; }
+
 
     // methods related to MusicXML import/export
     lmInstrument* XML_FindInstrument(wxString sId);

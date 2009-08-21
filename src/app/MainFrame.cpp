@@ -1910,36 +1910,17 @@ void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
 
 void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
 {
-    lmScore* pScore = GetActiveScore();
-    wxASSERT(pScore);
-
     lmHarmonyProcessor oProc;
-    if (oProc.ProcessScore(pScore))
-    {
-        //changes done in the score, update views
-        if (GetActiveDoc())
-        {
-	        GetActiveDoc()->Modify(true);
-            GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
-        }
-    }
+    oProc.DoProcess();
 }
 
 void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
 {
-    lmScore* pScore = GetActiveScore();
-    wxASSERT(pScore);
+    //lmTestProcessor oProc;
+    //oProc.DoProcess();
 
-    lmTestProcessor oProc;
-    if (oProc.ProcessScore(pScore))
-    {
-        //changes done in the score, update views
-        if (GetActiveDoc())
-        {
-	        GetActiveDoc()->Modify(true);
-            GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
-        }
-    }
+    lmTestProcessor* pProc = new lmTestProcessor();
+    pProc->DoProcess();
 }
 
 void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)

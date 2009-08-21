@@ -45,6 +45,7 @@
 #include "../graphic/ShapeText.h"
 #include "../app/Preferences.h"
 #include "../ldp_parser/LDPParser.h"
+#include "Processor.h"
 
 
 
@@ -72,6 +73,9 @@
 //              existing boxes/shapes. This option is useful for commands that do
 //              not affect score layout. For instance, changing the color of an object.
 //----------------------------------------------------------------------------------------
+
+
+IMPLEMENT_ABSTRACT_CLASS(lmScoreCommand, wxCommand)
 
 lmScoreCommand::lmScoreCommand(const wxString& sName, lmDocument *pDoc,
                                bool fNormalCmd, bool fDoLayout)
@@ -136,6 +140,7 @@ bool lmScoreCommand::Undo()
     }
 
     //ask document to replace current score by the old one
+    pScore->ResetUndoMode();
     m_pDoc->ReplaceScore(pScore);
     return true;        //undo action has taken place
 }
@@ -207,129 +212,132 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(bool fNormalCmd,
     while (pGMO)
     {
         lmScoreObj* pSCO = pGMO->GetScoreOwner();
-        switch(pSCO->GetScoreObjType())
-        {
-            //StaffObjs
-            case lm_eSO_Barline:
-                sCmdName = _T("Delete barline");
-            case lm_eSO_Clef:
-                sCmdName = _T("Delete clef");
-            case lm_eSO_FiguredBass:
-                sCmdName = _T("Delete figured bass");
-            case lm_eSO_Note:
-                sCmdName = _T("Delete note");
-            case lm_eSO_Rest:
-                sCmdName = _T("Delete rest");
-            case lm_eSO_Control:
-                sCmdName = _T("Delete control object");
-            case lm_eSO_MetronomeMark:
-                sCmdName = _T("Delete metronome mark");
-            case lm_eSO_Spacer:
-                sCmdName = _T("Delete spacer");
-            case lm_eSO_ScoreAnchor:
-                sCmdName = _T("Delete score anchor");
-            case lm_eSO_KeySignature:
-                sCmdName = _T("Delete key signature");
-            case lm_eSO_TimeSignature:
-                sCmdName = _T("Delete time signature");
-            //case lm_eSO_TupletBracket:
-            //    sCmdName = _T("Delete tuplet bracket");
-               {
-                    lmScoreCommand* pCmd 
-                        = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, sCmdName, pDoc, (lmStaffObj*)pSCO);
-                    m_Commands.push_back( pCmd );
-                }
-                break;
+        //add its ID to the ignore set
+        m_IgnoreSet.insert(pSCO->GetID());
+
+    //    switch(pSCO->GetScoreObjType())
+    //    {
+    //        //StaffObjs
+    //        case lm_eSO_Barline:
+    //            sCmdName = _T("Delete barline");
+    //        case lm_eSO_Clef:
+    //            sCmdName = _T("Delete clef");
+    //        case lm_eSO_FiguredBass:
+    //            sCmdName = _T("Delete figured bass");
+    //        case lm_eSO_Note:
+    //            sCmdName = _T("Delete note");
+    //        case lm_eSO_Rest:
+    //            sCmdName = _T("Delete rest");
+    //        case lm_eSO_Control:
+    //            sCmdName = _T("Delete control object");
+    //        case lm_eSO_MetronomeMark:
+    //            sCmdName = _T("Delete metronome mark");
+    //        case lm_eSO_Spacer:
+    //            sCmdName = _T("Delete spacer");
+    //        case lm_eSO_ScoreAnchor:
+    //            sCmdName = _T("Delete score anchor");
+    //        case lm_eSO_KeySignature:
+    //            sCmdName = _T("Delete key signature");
+    //        case lm_eSO_TimeSignature:
+    //            sCmdName = _T("Delete time signature");
+    //        //case lm_eSO_TupletBracket:
+    //        //    sCmdName = _T("Delete tuplet bracket");
+    //           {
+    //                lmScoreCommand* pCmd 
+    //                    = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, sCmdName, pDoc, (lmStaffObj*)pSCO);
+    //                m_Commands.push_back( pCmd );
+    //            }
+    //            break;
 
 
-            // AuxObjs
-            case lm_eSO_Fermata:
-            case lm_eSO_Line:
-            case lm_eSO_Lyric:
-            case lm_eSO_TextItem:
-                //{
-                    //lmToDeleteSO* pSOData = new lmToDeleteSO;
-                    //pSOData->nObjType = lm_eObjText;
-                    //pSOData->pObj = (void*)NULL;
-                    //pSOData->fObjDeleted = false;
-                    //pSOData->pParm1 = (void*)( ((lmShapeText*)pGMO)->GetScoreOwner() );
-                    //pSOData->pParm2 = (void*)NULL;
+    //        // AuxObjs
+    //        case lm_eSO_Fermata:
+    //        case lm_eSO_Line:
+    //        case lm_eSO_Lyric:
+    //        case lm_eSO_TextItem:
+    //            //{
+    //                //lmToDeleteSO* pSOData = new lmToDeleteSO;
+    //                //pSOData->nObjType = lm_eObjText;
+    //                //pSOData->pObj = (void*)NULL;
+    //                //pSOData->fObjDeleted = false;
+    //                //pSOData->pParm1 = (void*)( ((lmShapeText*)pGMO)->GetScoreOwner() );
+    //                //pSOData->pParm2 = (void*)NULL;
 
-                    //m_Commands.push_back( pSOData );
-                    //sCmdName = _T("Delete text");
-                    //lmScoreCommand* pCmd 
-                    //    = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
-                    //                         (lmStaffObj*)pGMO->GetScoreOwner() );
-                    //m_Commands.push_back( pCmd );
-                //}
-                //break;
-            case lm_eSO_ScoreTitle:
-            case lm_eSO_TextBox:
-                {
-                    //lmToDeleteSO* pSOData = new lmToDeleteSO;
-                    //pSOData->nObjType = lm_eObjText;
-                    //pSOData->pObj = (void*)NULL;
-                    //pSOData->fObjDeleted = false;
-                    //pSOData->pParm1 = (void*)( ((lmShapeTitle*)pGMO)->GetScoreOwner() );
-                    //pSOData->pParm2 = (void*)NULL;
+    //                //m_Commands.push_back( pSOData );
+    //                //sCmdName = _T("Delete text");
+    //                //lmScoreCommand* pCmd 
+    //                //    = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
+    //                //                         (lmStaffObj*)pGMO->GetScoreOwner() );
+    //                //m_Commands.push_back( pCmd );
+    //            //}
+    //            //break;
+    //        case lm_eSO_ScoreTitle:
+    //        case lm_eSO_TextBox:
+    //            {
+    //                //lmToDeleteSO* pSOData = new lmToDeleteSO;
+    //                //pSOData->nObjType = lm_eObjText;
+    //                //pSOData->pObj = (void*)NULL;
+    //                //pSOData->fObjDeleted = false;
+    //                //pSOData->pParm1 = (void*)( ((lmShapeTitle*)pGMO)->GetScoreOwner() );
+    //                //pSOData->pParm2 = (void*)NULL;
 
-                    //m_Commands.push_back( pSOData );
-                    //sCmdName = _T("Delete text");
-                    //lmScoreCommand* pCmd 
-                    //    = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
-                    //                         (lmStaffObj*)pGMO->GetScoreOwner() );
-                    //m_Commands.push_back( pCmd );
-                }
-                break;
+    //                //m_Commands.push_back( pSOData );
+    //                //sCmdName = _T("Delete text");
+    //                //lmScoreCommand* pCmd 
+    //                //    = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
+    //                //                         (lmStaffObj*)pGMO->GetScoreOwner() );
+    //                //m_Commands.push_back( pCmd );
+    //            }
+    //            break;
 
-            case lm_eSO_Tie:
-                //{
-                    //sCmdName = _T("Delete tie");
-                    //lmScoreCommand* pCmd 
-                    //    = new lmCmdDeleteTie(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
-                    //                         ((lmShapeTie*)pGMO)->GetEndNote() );
-                    //m_Commands.push_back( pCmd );
-                //}
-                //break;
-            case lm_eSO_Beam:
-                //{
-                    //lmToDeleteSO* pSOData = new lmToDeleteSO;
-                    //pSOData->nObjType = lm_eObjBeam;
-                    //pSOData->pObj = (void*)NULL;
-                    //pSOData->fObjDeleted = false;
-                    //pSOData->pParm1 = (void*)( ((lmShapeBeam*)pGMO)->GetScoreOwner() );   //a note in the beam
-                    //pSOData->pParm2 = (void*)NULL;
+    //        case lm_eSO_Tie:
+    //            //{
+    //                //sCmdName = _T("Delete tie");
+    //                //lmScoreCommand* pCmd 
+    //                //    = new lmCmdDeleteTie(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
+    //                //                         ((lmShapeTie*)pGMO)->GetEndNote() );
+    //                //m_Commands.push_back( pCmd );
+    //            //}
+    //            //break;
+    //        case lm_eSO_Beam:
+    //            //{
+    //                //lmToDeleteSO* pSOData = new lmToDeleteSO;
+    //                //pSOData->nObjType = lm_eObjBeam;
+    //                //pSOData->pObj = (void*)NULL;
+    //                //pSOData->fObjDeleted = false;
+    //                //pSOData->pParm1 = (void*)( ((lmShapeBeam*)pGMO)->GetScoreOwner() );   //a note in the beam
+    //                //pSOData->pParm2 = (void*)NULL;
 
-                    //m_Commands.push_back( pSOData );
-                    //sCmdName = _T("Delete beam");
-                    //lmScoreCommand* pCmd 
-                    //    = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
-                    //                         (lmStaffObj*)pGMO->GetScoreOwner() );
-                    //m_Commands.push_back( pCmd );
-                //}
-                //break;
+    //                //m_Commands.push_back( pSOData );
+    //                //sCmdName = _T("Delete beam");
+    //                //lmScoreCommand* pCmd 
+    //                //    = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, tCursorState, sCmdName, pDoc,
+    //                //                         (lmStaffObj*)pGMO->GetScoreOwner() );
+    //                //m_Commands.push_back( pCmd );
+    //            //}
+    //            //break;
 
-            default:
-                wxMessageBox(
-                    wxString::Format(_T("TODO: Code in lmCmdDeleteSelection to delete %s (type %d, object='%d')"),
-                    pGMO->GetName().c_str(), pGMO->GetType(), pSCO->GetScoreObjType() ));
-        }
-        wxLogMessage(_T("[lmCmdDeleteSelection::lmCmdDeleteSelection] %s"), sCmdName.c_str());
+    //        default:
+    //            wxMessageBox(
+    //                wxString::Format(_T("TODO: Code in lmCmdDeleteSelection to delete %s (type %d, object='%d')"),
+    //                pGMO->GetName().c_str(), pGMO->GetType(), pSCO->GetScoreObjType() ));
+    //    }
+    //    wxLogMessage(_T("[lmCmdDeleteSelection::lmCmdDeleteSelection] %s"), sCmdName.c_str());
         pGMO = pSelection->GetNext();
     }
 
-    //if only one object, change command name for better command identification
-    if (pSelection->NumObjects() == 1)
-        this->m_commandName = sCmdName;
+    ////if only one object, change command name for better command identification
+    //if (pSelection->NumObjects() == 1)
+    //    this->m_commandName = sCmdName;
 }
 
 lmCmdDeleteSelection::~lmCmdDeleteSelection()
 {
-    //delete stored data
-    std::list<lmScoreCommand*>::iterator it;
-    for (it = m_Commands.begin(); it != m_Commands.end(); ++it)
-        delete *it;
-    m_Commands.clear();
+    ////delete stored data
+    //std::list<lmScoreCommand*>::iterator it;
+    //for (it = m_Commands.begin(); it != m_Commands.end(); ++it)
+    //    delete *it;
+    //m_Commands.clear();
 }
 
 bool lmCmdDeleteSelection::Do()
@@ -337,14 +345,37 @@ bool lmCmdDeleteSelection::Do()
     //reposition cursor and save data for undoing the command
     RestoreCursorAndPrepareForUndo();
 
-    //loop to issue delete commnads
-    std::list<lmScoreCommand*>::iterator it;
-    for (it = m_Commands.begin(); it != m_Commands.end(); ++it)
+    ////loop to issue delete commnads
+    //std::list<lmScoreCommand*>::iterator it;
+    //for (it = m_Commands.begin(); it != m_Commands.end(); ++it)
+    //{
+    //    (*it)->Do();
+    //}
+
+    //return CommandDone(true);
+
+    //re-parse the source ignoring objects to delete
+    lmLDPParser parser;
+    parser.SetIgnoreList(&m_IgnoreSet);
+    lmScore* pScore = parser.ParseScoreFromText(m_sOldSource);
+    if (!pScore)
     {
-        (*it)->Do();
+        wxASSERT(false);
+        return false;
     }
 
+    //ask document to replace current score by the new one
+    pScore->ResetUndoMode();
+    m_pDoc->ReplaceScore(pScore);
     return CommandDone(true);
+
+    //success. mark document as 'modified'
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
+
+    //no need to update views as this has been done in ReplaceScore()
+
+    return true;    //success. Add command to command history
 }
 
 
@@ -1556,4 +1587,28 @@ bool lmCmdMoveObjectPoints::Undo()
     return CommandUndone(lmHINT_NO_LAYOUT);
 }
 
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdScoreProcessor implementation
+//----------------------------------------------------------------------------------------
+
+lmCmdScoreProcessor::lmCmdScoreProcessor(bool fNormalCmd, lmDocument *pDoc,
+                                         lmScoreProcessor* pProc)
+	: lmScoreCommand(_("Score processor"), pDoc, fNormalCmd)
+    , m_pProc(pProc)
+{
+    LogScoreState();        //save data for forensic analysis if a crash
+}
+
+bool lmCmdScoreProcessor::Do()
+{
+    //reposition cursor and save data for undoing the command
+    RestoreCursorAndPrepareForUndo();
+
+	lmScore* pScore = m_pDoc->GetScore();
+    bool fOK = m_pProc->ProcessScore(pScore);
+
+	return CommandDone(fOK);
+}
 

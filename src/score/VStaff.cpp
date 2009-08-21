@@ -1183,11 +1183,11 @@ lmFiguredBass* lmVStaff::AddFiguredBass(lmFiguredBassInfo* pFBInfo, long nID)
     return pFB;
 }
 
-lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth, long nID)
+lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth, long nID, int nStaff)
 {
     // adds a spacer to the end of current StaffObjs collection
 
-    lmSpacer* pSpacer = new lmSpacer(this, nID, nWidth);
+    lmSpacer* pSpacer = new lmSpacer(this, nID, nWidth, nStaff);
     m_cStaffObjs.Add(pSpacer);
     return pSpacer;
 }

@@ -478,6 +478,11 @@ long lmScore::AssignID(lmScoreObj* pSO)
     return m_nCounterID;
 }
 
+void lmScore::OnObjectRemoved(long nID)
+{
+    m_ScoreObjs[nID] = (lmScoreObj*)NULL;
+}
+
 lmScoreObj* lmScore::GetScoreObj(long nID)
 {
     if (nID == lmNULL_ID)
