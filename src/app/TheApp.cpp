@@ -699,30 +699,18 @@ int lmTheApp::OnExit(void)
     delete g_pPrintData;
     delete g_pPaperSetupData;
 
-    // path names
-    delete g_pPaths;
-
-    // colors object
-    delete g_pColors;
-
-    // the wxConfig object
-    delete wxConfigBase::Set((wxConfigBase *) NULL);
-
-    // the error's logger
-    delete g_pLogger;
-
-    //the program options object
-    lmPgmOptions::DeleteInstance();
-
-    //locale object
-    delete m_pLocale;
-
-    // single instance checker
+    //single instance checker
     if (m_pInstanceChecker) delete m_pInstanceChecker;
 
-    //music font manager
-    lmMusicFontManager::DeleteInstance();
-
+    //other objects
+    delete g_pPaths;                            //path names
+    delete g_pColors;                           //colors object
+    delete wxConfigBase::Set((wxConfigBase *) NULL);    //the wxConfig object
+    delete g_pLogger;                           //the error's logger
+    lmPgmOptions::DeleteInstance();             //the program options object
+    delete m_pLocale;                           //locale object
+    lmMusicFontManager::DeleteInstance();       //music font manager
+    lmProcessorMngr::DeleteInstance();          //Processor manager
 
 	return 0;
 }

@@ -120,8 +120,7 @@ END_EVENT_TABLE()
 
 
 lmScoreView::lmScoreView()
-    : m_pScoreProc((lmScoreProcessor*)NULL)
-    , m_pToolBoxConfig((lmToolBoxConfiguration*)NULL)
+    : m_pToolBoxConfig((lmToolBoxConfiguration*)NULL)
     , m_pFrame((lmEditFrame*) NULL)
     , m_pCanvas((lmScoreCanvas*) NULL)
     , m_pHRuler((lmRuler*) NULL)
@@ -171,9 +170,6 @@ lmScoreView::~lmScoreView()
 {
     if (m_pCaret)
         delete m_pCaret;
-
-    if (m_pScoreProc)
-        delete m_pScoreProc;
 
     if (m_pToolBoxConfig)
         delete m_pToolBoxConfig;

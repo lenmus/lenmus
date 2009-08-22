@@ -53,11 +53,14 @@ public:
     //this class methods
     void DoProcess();
     virtual bool SetTools() = 0;
+    virtual void* GetProcessOptions() { return (void*)NULL; }
 
 protected:
     lmScoreProcessor();
+
+    //the processor function
     friend class lmCmdScoreProcessor;
-    virtual bool ProcessScore(lmScore* pScore) = 0;
+    virtual bool ProcessScore(lmScore* pScore, void* pOpt)=0;
 
     //tools panel related
     bool CreateToolsPanel(wxString sTitle, wxString sDoLink = wxEmptyString);
@@ -85,15 +88,17 @@ class lmTestProcessor : public lmScoreProcessor
 	DECLARE_DYNAMIC_CLASS(lmTestProcessor)
 
 public:
-    lmTestProcessor();
-    ~lmTestProcessor();
-
     bool SetTools();
 
 protected:
+    //Only Processor Manager can create and destroy instances
+    friend class lmProcessorMngr;
+    lmTestProcessor();
+    ~lmTestProcessor();
+
     //implementation of virtual methods
     friend class lmCmdScoreProcessor;
-    bool ProcessScore(lmScore* pScore);
+    bool ProcessScore(lmScore* pScore, void* pOpt);
 
     //other
     void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
@@ -110,9 +115,7 @@ class lmHarmonyProcessor : public lmScoreProcessor
 	DECLARE_DYNAMIC_CLASS(lmHarmonyProcessor)
 
 public:
-    lmHarmonyProcessor();
-    ~lmHarmonyProcessor();
-
+    //implementation of virtual pure methods
     bool SetTools();
 
     //specific methods
@@ -124,9 +127,14 @@ public:
 #endif
 
 protected:
+    //Only Processor Manager can create and destroy instances
+    friend class lmProcessorMngr;
+    lmHarmonyProcessor();
+    ~lmHarmonyProcessor();
+
     //implementation of virtual methods
     friend class lmCmdScoreProcessor;
-    bool ProcessScore(lmScore* pScore);
+    bool ProcessScore(lmScore* pScore, void* pOpt);
 
     //other
 

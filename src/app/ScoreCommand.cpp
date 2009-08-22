@@ -1598,6 +1598,9 @@ lmCmdScoreProcessor::lmCmdScoreProcessor(bool fNormalCmd, lmDocument *pDoc,
 	: lmScoreCommand(_("Score processor"), pDoc, fNormalCmd)
     , m_pProc(pProc)
 {
+    //get process options
+    m_pOpt = pProc->GetProcessOptions();
+
     LogScoreState();        //save data for forensic analysis if a crash
 }
 
@@ -1607,7 +1610,7 @@ bool lmCmdScoreProcessor::Do()
     RestoreCursorAndPrepareForUndo();
 
 	lmScore* pScore = m_pDoc->GetScore();
-    bool fOK = m_pProc->ProcessScore(pScore);
+    bool fOK = m_pProc->ProcessScore(pScore, m_pOpt);
 
 	return CommandDone(fOK);
 }

@@ -95,8 +95,6 @@ public:
     lmScoreView();
     ~lmScoreView();
 
-    inline void SetScoreProcessor(lmScoreProcessor* pScoreProc) { m_pScoreProc = pScoreProc; }
-
 	//overrides of virtual methods in wxView
     bool OnClose(bool deleteWindow = true);
     void OnUpdate(wxView* sender, wxObject* hint);
@@ -258,7 +256,6 @@ private:
 
     // parents, managers and related
     lmScoreCanvas*          m_pCanvas;          //the MVC controller (C) and the window for rendering the view
-    lmScoreProcessor*       m_pScoreProc;       //the associated score processor, if exists
     lmGraphicManager        m_graphMngr;        //rederization manager
     lmEditFrame*            m_pFrame;           //the frame for the view
     lmMainFrame*            m_pMainFrame;       //for accesing StatusBar

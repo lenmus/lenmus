@@ -1113,7 +1113,6 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         return;
     }
     AnalyzeMusicData(pX, pVStaff);
-    iP++;
 }
 
 bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr)

@@ -802,4 +802,77 @@ extern wxString lmEmptyString;
 
 
 
+//---------------------------------------------------------------------------------------
+//Smart pointer with reference counting:
+//  A smart pointer that destroys its value automatically when the last reference 
+//  to it gets destroyed.
+//
+//  Based on code in book "The C++ Standard Library. A Tutorial and Reference",
+//  Nicolai M. Josuttis, Addison Wesley Longman, Inc, 1999.
+//---------------------------------------------------------------------------------------
+
+template <class T>
+class lmSmartPtr
+{
+public:
+    //initialize pointer with existing pointer
+    //-requires that the pointer p is a return value of new
+    explicit lmSmartPtr (T* p=0)
+        : m_ptr(p), m_count(new long(1)) {}
+
+    //copy pointer (one more owner)
+    lmSmartPtr (const lmSmartPtr<T>& p) throw()
+        : m_ptr(p.m_ptr), m_count(p.m_count)
+    {
+        ++*m_count;
+    }
+
+    //destructor (delete value if this was the last owner)
+    ~lmSmartPtr () throw() { dispose(); }
+
+    //assignment (unshare old and share new value)
+    lmSmartPtr<T>& operator= (const lmSmartPtr<T>& p) throw()
+    {
+        if (this != &p)
+        {
+            dispose();
+            m_ptr = p.m_ptr;
+            m_count = p.m_count;
+            ++*m_count;
+        }
+        return *this;
+    }
+
+    //assignment with cast (unshare old and share new value)
+    template <class U>
+    lmSmartPtr<T>& operator= (const lmSmartPtr<U>& p) throw()
+    {
+        if (this != (T*)&p)
+        {
+            dispose();
+            m_ptr = (T*)p.m_ptr;
+            m_count = p.m_count;
+            ++*m_count;
+        }
+        return *this;
+    }
+
+    //access the value to which the pointer refers
+    T& operator*() const throw() { return *m_ptr; }
+    T* operator->() const throw() { return m_ptr; }
+
+private:
+    void dispose()
+    {
+        if (--*m_count == 0)
+        {
+            delete m_count;
+            delete m_ptr;
+        }
+    }
+
+    T*      m_ptr;    //pointer to the value
+    long*   m_count;  //shared number of owners
+};
+
 #endif    // __LM_DEFS_H__

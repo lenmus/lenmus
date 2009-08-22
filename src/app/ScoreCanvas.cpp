@@ -3964,7 +3964,6 @@ lmEditorMode::lmEditorMode(wxString& sCreationMode, wxString& sCreationVers)
     , m_sCreationModeVers(sCreationVers)
     , m_pScoreProc((lmScoreProcessor*)NULL)
 {
-    //TODO
     for (int i=0; i < lmPAGE_MAX; ++i)
         m_ToolPagesInfo[i] = (wxClassInfo*)NULL;
 
@@ -4002,14 +4001,16 @@ void lmEditorMode::CustomizeToolBoxPages(lmToolBox* pToolBox)
 
 lmScoreProcessor* lmEditorMode::CreateScoreProcessor()
 {
+    m_pScoreProc = (lmScoreProcessor*)NULL;
     if (m_pScoreProcInfo)
     {
         //create the score processor
-        m_pScoreProc = (lmScoreProcessor*)m_pScoreProcInfo->CreateObject();
+        //m_pScoreProc = (lmScoreProcessor*)m_pScoreProcInfo->CreateObject();
+        lmProcessorMngr* pMngr = lmProcessorMngr::GetInstance();
+        m_pScoreProc = pMngr->CreateScoreProcessor( m_pScoreProcInfo );
         m_pScoreProc->SetTools();
-        return m_pScoreProc;
     }
-    return (lmScoreProcessor*)NULL;
+    return m_pScoreProc;
 }
 
 

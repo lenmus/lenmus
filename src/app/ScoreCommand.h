@@ -712,6 +712,7 @@ public:
 
 protected:
     lmScoreProcessor*       m_pProc;
+    void*                   m_pOpt;
 };
 
 

@@ -156,7 +156,7 @@ bool lmTestProcessor::SetTools()
     return true;
 }
 
-bool lmTestProcessor::ProcessScore(lmScore* pScore)
+bool lmTestProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 {
     //This method checks the score and show errors
     //Returns true if it has done any change in the score
@@ -338,7 +338,6 @@ bool lmHarmonyProcessor::SetTools()
     return true;
 }
 
-
 // All chord processing:
 //  analysis of chord notes and intervals
 //  chord creation
@@ -406,7 +405,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
 
 }
 
-bool lmHarmonyProcessor::ProcessScore(lmScore* pScore)
+bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 {
     //This method checks the score and show errors
     //Returns true if it has done any change in the score

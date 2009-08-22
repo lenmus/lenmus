@@ -207,7 +207,8 @@ It can also display windows, for example, to ask for the control parameters requ
 
 From the MVC point of view an score processor is part of the controller: receives user interaction (perhaps just the command 'do process') and issues commands to alter the score.
 
-    
+See 'score processors' (score_processors.txt) for details.
+
 
 \h2 {Exercises using the full score editor}
 %%%-----------------------------------------

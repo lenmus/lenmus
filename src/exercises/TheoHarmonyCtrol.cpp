@@ -87,7 +87,6 @@ lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
     //initializations
     m_pConstrains = pConstrains;
     m_pProblemScore = (lmScore*)NULL;
-    //m_pScoreProc = new lmHarmonyProcessor();
 
     CreateControls();
 }
