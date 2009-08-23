@@ -43,8 +43,8 @@
 #include "wx/splash.h"
 #include <wx/datetime.h>
 #include "wx/txtstrm.h"
-#include "wx/stdpaths.h"		// to get executable path
-#include "wx/memory.h"			// to trace memory leaks
+#include "wx/stdpaths.h"		//to get executable path
+#include "wx/memory.h"			//to trace memory leaks
 
 #include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
 #include "wx/wxsqlite3.h"               //to initialize wxSQLite3 DB
@@ -116,6 +116,7 @@
 #include "wx/fs_zip.h"                  //to use the zip file system
 
 #include "Preferences.h"                //access to user preferences
+#include "Processor.h"                  //to delete the only instance
 #include "../sound/MidiManager.h"       //access to Midi configuration
 #include "../sound/WaveManager.h"       //access to Wave sound manager
 #include "Logger.h"                     //access to error's logger

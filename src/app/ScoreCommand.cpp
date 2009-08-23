@@ -1596,12 +1596,20 @@ bool lmCmdMoveObjectPoints::Undo()
 lmCmdScoreProcessor::lmCmdScoreProcessor(bool fNormalCmd, lmDocument *pDoc,
                                          lmScoreProcessor* pProc)
 	: lmScoreCommand(_("Score processor"), pDoc, fNormalCmd)
-    , m_pProc(pProc)
 {
+    //copy score processor and inform that a copy is going to be used
+    m_pProc = pProc;
+    lmProcessorMngr::GetInstance()->IncrementReference(pProc);
+
     //get process options
     m_pOpt = pProc->GetProcessOptions();
 
     LogScoreState();        //save data for forensic analysis if a crash
+}
+
+lmCmdScoreProcessor::~lmCmdScoreProcessor()
+{
+    lmProcessorMngr::GetInstance()->DeleteScoreProcessor(m_pProc);
 }
 
 bool lmCmdScoreProcessor::Do()

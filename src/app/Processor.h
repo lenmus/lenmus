@@ -75,6 +75,30 @@ private:
     lmUrlAuxCtrol*      m_pDoLink;
 };
 
+//lmProcessorMngr: Helper class for score processors creation and destruction 
+//management. It is a singleton.
+//Its behaviour is similar to a table of smart pointers with reference counting
+//--------------------------------------------------------------------------------
+class lmProcessorMngr
+{
+public:
+    ~lmProcessorMngr();
+    
+    static lmProcessorMngr* GetInstance();
+    static void DeleteInstance();
+    lmScoreProcessor* CreateScoreProcessor(wxClassInfo* pScoreProcInfo);
+    void IncrementReference(lmScoreProcessor* pProc);
+    void DeleteScoreProcessor(lmScoreProcessor* pProc);
+
+
+protected:
+    lmProcessorMngr();
+
+    static lmProcessorMngr*  m_pInstance;    //the only instance of this class
+
+    std::map<lmScoreProcessor*, long>     m_ActiveProcs;
+};
+
 
 //----------------------------------------------------------------------------------------------
 // lmTestProcessor: A processor to do tests and prepare examples without affecting main code

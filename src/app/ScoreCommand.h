@@ -705,7 +705,7 @@ class lmCmdScoreProcessor: public lmScoreCommand
 {
 public:
     lmCmdScoreProcessor(bool fNormalCmd, lmDocument *pDoc, lmScoreProcessor* pProc);
-    ~lmCmdScoreProcessor() {}
+    ~lmCmdScoreProcessor();
 
     //implementation of pure virtual methods in base class
     bool Do();

@@ -3973,7 +3973,7 @@ lmEditorMode::lmEditorMode(wxString& sCreationMode, wxString& sCreationVers)
 lmEditorMode::~lmEditorMode()
 {
     if (m_pScoreProc)
-        delete m_pScoreProc;
+        lmProcessorMngr::GetInstance()->DeleteScoreProcessor(m_pScoreProc);
 }
 
 void lmEditorMode::ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo)

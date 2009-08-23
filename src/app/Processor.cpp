@@ -133,6 +133,75 @@ void lmScoreProcessor::RealizePanel()
 
 
 //-------------------------------------------------------------------------------------------
+// lmProcessorMngr implementation
+//-------------------------------------------------------------------------------------------
+
+lmProcessorMngr* lmProcessorMngr::m_pInstance = (lmProcessorMngr*)NULL;
+
+lmProcessorMngr::lmProcessorMngr()
+{
+}
+
+lmProcessorMngr::~lmProcessorMngr()
+{
+    //delete all alive score processors
+
+    std::map<lmScoreProcessor*, long>::iterator it;
+    for (it = m_ActiveProcs.begin(); it != m_ActiveProcs.end(); ++it)
+    {
+        delete it->first;
+    }
+    m_ActiveProcs.clear();
+}
+
+lmProcessorMngr* lmProcessorMngr::GetInstance()
+{
+    if (!m_pInstance)
+        m_pInstance = new lmProcessorMngr();
+    return m_pInstance;
+}
+
+void lmProcessorMngr::DeleteInstance()
+{
+    if (m_pInstance)
+        delete m_pInstance;
+    m_pInstance = (lmProcessorMngr*)NULL;
+}
+
+lmScoreProcessor* lmProcessorMngr::CreateScoreProcessor(wxClassInfo* pScoreProcInfo)
+{
+    lmScoreProcessor* pProc = (lmScoreProcessor*)NULL;
+    if (pScoreProcInfo)
+    {
+        //create the score processor
+        pProc = (lmScoreProcessor*)pScoreProcInfo->CreateObject();
+        m_ActiveProcs.insert(std::make_pair(pProc, 1L));
+    }
+    return pProc;
+}
+
+void lmProcessorMngr::IncrementReference(lmScoreProcessor* pProc)
+{
+    std::map<lmScoreProcessor*, long>::iterator it = m_ActiveProcs.find(pProc);
+    wxASSERT(it != m_ActiveProcs.end());
+
+    ++(it->second);
+}
+
+void lmProcessorMngr::DeleteScoreProcessor(lmScoreProcessor* pProc)
+{
+    std::map<lmScoreProcessor*, long>::iterator it = m_ActiveProcs.find(pProc);
+    wxASSERT(it != m_ActiveProcs.end());
+
+    if (--(it->second) == 0)
+    {
+        delete it->first;
+        m_ActiveProcs.erase(it);
+    }
+}
+
+
+//-------------------------------------------------------------------------------------------
 // Implementation of class lmTestProcessor
 //-------------------------------------------------------------------------------------------
 #ifdef __WXDEBUG__

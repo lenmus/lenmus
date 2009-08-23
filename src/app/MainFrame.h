@@ -60,30 +60,6 @@ class lmDocument;
 class lmEditorMode;
 
 
-//lmProcessorMngr: Helper class for score processors creation and destruction 
-//management. It is a singleton, owned by the lmMainFrame.
-//Its behaviour is similar to a table of smart pointers with reference counting
-//--------------------------------------------------------------------------------
-class lmProcessorMngr
-{
-public:
-    ~lmProcessorMngr();
-    
-    static lmProcessorMngr* GetInstance();
-    static void DeleteInstance();
-    lmScoreProcessor* CreateScoreProcessor(wxClassInfo* pScoreProcInfo);
-    void IncrementReference(lmScoreProcessor* pProc);
-    void DecrementReference(lmScoreProcessor* pProc);
-
-
-protected:
-    lmProcessorMngr();
-
-    static lmProcessorMngr*  m_pInstance;    //the only instance of this class
-
-    std::map<lmScoreProcessor*, long>     m_ActiveProcs;
-};
-
 // Class lmMainFrame defines the main MDI frame for the application
 //--------------------------------------------------------------------
 class lmMainFrame : public lmDocTDIParentFrame
