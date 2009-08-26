@@ -129,7 +129,7 @@ public:
     int GetOctave(int i) { return FPitch_Octave(m_fpNote[i]); }
     int GetAccidentals(int i) { return FPitch_Accidentals(m_fpNote[i]); }
 
-    bool IsCreated(){ return m_nNumNotes > 0; };
+    bool IsCreated(){ return m_nType != lmINVALID_CHORD_TYPE; };
 
 #ifdef __WXDEBUG__
     void UnitTests();

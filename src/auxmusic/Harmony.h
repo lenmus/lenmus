@@ -127,11 +127,11 @@ typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;
 class ChordInfoBox 
 {
 public:
-    ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+    ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo
         , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
     ~ChordInfoBox() {};
     
-    void Settings(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+    void Settings(wxSize* pSize, lmFontInfo* pFontInfo
         , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
     void DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText);
     void ResetPosition();
@@ -151,7 +151,6 @@ protected:
 
  lmFontInfo* m_pFontInfo;
  wxSize* m_pSize;
- std::list<lmMarkup*>* m_pMarkup; 
 };
 
 

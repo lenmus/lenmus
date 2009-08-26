@@ -24,6 +24,8 @@
 #include "../exercises/ChordConstrains.h"
 #include "../score/Note.h"
 
+//@@@@ TODO: Move these aux data to lmHarmonyConstrains ?
+
 // Exercise 1 checks:
 //   root note
 //   chord type

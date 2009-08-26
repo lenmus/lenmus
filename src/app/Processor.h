@@ -131,8 +131,7 @@ protected:
 #endif
 
 //----------------------------------------------------------------------------------------------
-// lmHarmonyProcessor: A processor to check an score for harmony 'errors' and add markup to 
-// show them
+// lmHarmonyProcessor: A processor to check an score for harmony 'errors' 
 //----------------------------------------------------------------------------------------------
 class lmHarmonyProcessor : public lmScoreProcessor
 {
@@ -167,24 +166,18 @@ protected:
     void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct, wxColour colour
                            , wxString &sText, bool reset=false);
 
+    //@@@@@@@@@@ TODO:Any member information needed to perform the process must be copied in the  options data struct.
     lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
     int nNumChords;
-    void ResetChordDescriptor();
-
     lmActiveNotes ActiveNotesList;
-
-
-    //Error markup: the marked staffobj and its markup attachment
-    typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;
-
-    //list of added markup objects
-    std::list<lmMarkup*> m_markup;   
-
     wxSize* pBoxSize;
     lmFontInfo tFont;
     ChordInfoBox* pInfoBox;
     wxSize* pErrorBoxSize;
     ChordInfoBox* pChordErrorBox;
+
+    void ResetChordDescriptor();
+
 };
 
 #endif    // __LM_PROCESSOR_H__

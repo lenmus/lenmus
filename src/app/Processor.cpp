@@ -347,7 +347,7 @@ lmHarmonyProcessor::lmHarmonyProcessor()
  //  400 --> Initial Box Y position at the bottom
  //    0 --> Line X end position: centered with chord
  //  100 --> Line Y end position: slightly shifted down
-  pInfoBox = new ChordInfoBox(pBoxSize, &tFont, &m_markup, -200, 500, 0, 100, -50);
+  pInfoBox = new ChordInfoBox(pBoxSize, &tFont, -200, 500, 0, 100, -50);
 
  // Text box for errror information
  // -200 --> Box X position shifted to left
@@ -355,7 +355,7 @@ lmHarmonyProcessor::lmHarmonyProcessor()
  //    0 --> Line X end position: centered with chord
  //  100 --> Line Y end position: slightly shifted down
  //  +50 --> Increment y position after each use --> go downwards
-  pChordErrorBox = new ChordInfoBox(pErrorBoxSize, &tFont, &m_markup, -150, -200, 0, 100, +50);
+  pChordErrorBox = new ChordInfoBox(pErrorBoxSize, &tFont, -150, -200, 0, 100, +50);
 }
 
 lmHarmonyProcessor::~lmHarmonyProcessor()
@@ -365,23 +365,10 @@ lmHarmonyProcessor::~lmHarmonyProcessor()
     delete pInfoBox;
     delete pChordErrorBox;
 
-    //delete all markup pairs
-    std::list<lmMarkup*>::iterator it = m_markup.begin();
-    int nCount = 0;
-    while (it != m_markup.end())
-    {
-        lmMarkup* pError = *it;
-        m_markup.erase(it++);
-        delete pError;
-        nCount++;
-    }
-
     assert(nNumChords<lmMAX_NUM_CHORDS);
     for (int i = 0; i <nNumChords; i++)
         delete tChordDescriptor[i].pChord;
 
-    wxLogMessage(_T("TODO: remove (debug) @@@@@@ ~lmHarmonyProcessor completed; deleted %d markups")
-    , nCount);
 }
 
 void lmHarmonyProcessor::ResetChordDescriptor()
@@ -442,10 +429,9 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0]; // Even with inversions, the first note is the root
         ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
 
-
-        wxString sStatusStr = wxString::Format(
+        sStatusStr = wxString::Format(
                 _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString() );
-        // todo: remove: sStatusStr = ptChordDescriptor->ToString();
+
         (*pNumChords)++;
 // todo: set definitive colour       colour = *wxGREEN;
         colour = wxColour(10,255,0,128); // R, G, B, Transparency
@@ -458,7 +444,10 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
        // Even with errors, the chord is created and used for analysis of progression  (TODO: confirm this)
         lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0];
         ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
-        sStatusStr = ptChordDescriptor->ToString();
+
+        sStatusStr = wxString::Format(
+                _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString() );
+
         (*pNumChords)++;
 // todo: set definitive colour       colour = *wxRED;
         colour = wxColour(255,0,0,128); // R, G, B, Transparency
@@ -648,8 +637,12 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 {
                     nExerciseErrors++;
                     wxString sMsg = wxString::Format(
-                    _("Chord %d: The type is %s, but the expected was: %s. Wrong root note?")
+                    _("Chord %d: The type is %s, but the expected was: %s")
                         ,nChordCount+1, ChordTypeToName( nChordType ), ChordTypeToName( nExercise1ChordType[nChordCount] ));
+                    // A different chord type with no inversions implies a different root note (todo: confirm this)
+                    if (nInversions == 0)
+                      sMsg += _(", Wrong root note?");
+
                     wxColour colour = wxColour(255,10,0,128); // R, G, B, Transparency: RED
                     pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
                     wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
@@ -717,7 +710,6 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                             wxColour colour = wxColour(255,10,0,128);
                             pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
                             wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
-                            wxLogMessage(_T(" Error: %s"), sMsg );
                         }
                     }
                 }

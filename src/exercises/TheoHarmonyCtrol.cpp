@@ -126,6 +126,16 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     //This method creates a problem score, satisfiying the restrictions imposed
     //by exercise options and user customizations.
 
+    // TODO: think about exercise options
+    //        ...
+    //  all-exercises generic data
+    const int lmNUM_HARMONY_EXERCISES = 2;  //@@@@@ TODO: HACER EL TERCERO!!!
+    // todo: consider to put as an option: m_nKey
+    // todo: make "num of measures" dependant from the "key"
+    int nNumMeasures = 2;
+    //  each-exercise specific data
+    wxString sExerciseDescription;
+
     // Carlos  jun-09
     //  Three types of problem
     //   1) fixed bass
@@ -134,8 +144,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
     // select a random key signature
     lmRandomGenerator oGenerator;
-    nHarmonyExcerciseType = oGenerator.RandomNumber(1, 2);
-    wxString sExerciseDescription;
+    nHarmonyExcerciseType = oGenerator.RandomNumber(1, lmNUM_HARMONY_EXERCISES);
     wxString sPattern;
     lmNote* pNote;
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
@@ -148,12 +157,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         // Prepare a score that meets the restrictions
 
         m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
-
-        // TODO: think about exercise options
-        //        note duration?
-        //        ...
-
-        int nNumMeasures = 2;
 
         sExerciseDescription  =  wxString::Format(
             _(" Fixed %s; root position. Complete the chord notes.")
@@ -203,7 +206,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         // example: if key-sig == DoM return this:
         //      I             II              III              IV             V             VI             VII
         {ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
-        // For exercise 2, given a numeral (bass note; chord in root poition) : calculate soprano pitch. No inversions
+        // For exercise 2, given a numeral (bass note; chord in root position) : calculate soprano pitch. No inversions
         //  First index: interval (2 intervals for triad chords)
         //  Second index: numeral 
         lmFPitch nBassSopranoInterval[2][7] =  {
@@ -270,7 +273,9 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     nExercise2NotesFPitch[nNoteCount] =
                         nExerciseBassNotesFPitch[nNoteCount]    // bass note
                         + nBassSopranoInterval[1][nBassNoteStep]
-                        + lm_p8; //
+//@ todo: decide number of octaves soprano-bass (0..1?) 
+                        + lm_p8
+                        + (lm_p8 * oGenerator.RandomNumber(0, 1) ); //
                 }
 
                 //   Display note

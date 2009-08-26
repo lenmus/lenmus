@@ -77,12 +77,12 @@ int GetHarmonicMovementType( lmNote* pVoice10, lmNote* pVoice11, lmNote* pVoice2
 // Remember:
 //      x: relative to object; positive: right
 //      y: relative to top line; positive: down
-ChordInfoBox::ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+ChordInfoBox::ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo
                            , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement)
 {
-    Settings(pSize, pFontInfo, pMarkup, nBoxX, nBoxY, nLineX, nLineY, nBoxYIncrement);
+    Settings(pSize, pFontInfo, nBoxX, nBoxY, nLineX, nLineY, nBoxYIncrement);
 }
-void ChordInfoBox::Settings(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMarkup*>* pMarkup
+void ChordInfoBox::Settings(wxSize* pSize, lmFontInfo* pFontInfo
                             , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement)
 {
     m_ntConstBoxXstart = nBoxX;
@@ -90,11 +90,9 @@ void ChordInfoBox::Settings(wxSize* pSize, lmFontInfo* pFontInfo, std::list<lmMa
     m_ntConstLineXstart = nLineX;
     m_ntConstLineYStart = nLineY;
     m_ntConstBoxYIncrement = nBoxYIncrement;
-    m_pMarkup = pMarkup;
     m_pFontInfo = pFontInfo;
     m_pSize = pSize;
 
-    assert(m_pMarkup != NULL);
     assert(m_pFontInfo != NULL);
     assert(m_pSize != NULL);
 
@@ -130,9 +128,6 @@ void ChordInfoBox::DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDs
     lmTPoint lmTBoxPos(m_ntConstBoxXstart, m_ntCurrentBoxYStart);
     lmTPoint lmTLinePos(m_ntConstLineXstart, m_ntConstLineYStart);
     lmAuxObj* pTxtBox = cpSO->AttachTextBox(lmTBoxPos, lmTLinePos, sText, pStyle, *m_pSize, colour);
-
-	lmMarkup* pError = new lmMarkup(cpSO, pTxtBox);
-    m_pMarkup->push_back(pError);
 
     // here increment the static variables
     m_ntCurrentBoxYStart += m_ntConstBoxYIncrement;
@@ -182,14 +177,16 @@ wxString lmChordDescriptor::ToString()
     wxString sStr;
     int nNotes = nNumChordNotes;
     sStr += pChord->GetNameFull().c_str();
-    sStr += _T(" ");
 // Note that the number of notes and the number of inversions is already in the description from GetNameFull
 //    sStr += wxString::Format(_T("%d"), pChord->GetNumNotes());
 //    sStr += _(" notes, ");
 //    sStr += wxString::Format(_T("%d"), pChord->GetInversion());
 //    sStr += _(" inversions, ");
-    sStr += wxString::Format(_T(", %d"), pChord->GetElision());
-    sStr += _(" elisions ");
+    if ( pChord->GetElision() > 0 )
+    {
+      sStr += wxString::Format(_T(", %d"), pChord->GetElision());
+      sStr += _(" elisions");
+    }
     sStr += _(", Notes:");
     for (int nN = 0; nN<nNotes; nN++)
     {
@@ -406,7 +403,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
 
                     if ( nNormalizedDistance == 0 || nNormalizedDistance == lm_p5 )
                     {
-                        wxString sType =  ( nDistance == 0?  _(" octave/unison"): _(" fifth "));
+                        wxString sType =  ( nDistance == 0?  _("octave/unison"): _("fifth"));
                         pNumFailuresInChord[nC] = pNumFailuresInChord[nC]  +1;
 
                         int nFullVoiceInterval = abs ( m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch()

@@ -377,14 +377,17 @@ wxString lmChordManager::ToString()
 {
     wxString sRetStr;
     if ( ! this->IsCreated() )
-        sRetStr = _(" Not created");
+        sRetStr = _("Not recognized");
     else
     {
         int nNumNotes = GetNumNotes();
         // Note that the number of notes and the number of inversions is already in the description from GetNameFull
-        sRetStr = wxString::Format(_(" %s, %d elisions, Notes: ")
-            , GetNameFull().c_str()
-            , m_nElision);
+        sRetStr = wxString::Format(_T(" %s"), GetNameFull().c_str());
+
+        if (m_nElision > 0)
+          sRetStr += wxString::Format(_(", %d elisions"), m_nElision);
+
+        sRetStr += _(", Notes: ");
 
         for (int n=0; n<nNumNotes; n++)
         {
@@ -713,18 +716,21 @@ wxString lmChordManager::GetPattern(int i)
 wxString lmChordManager::GetNameFull()
 {
     wxString sName = ChordTypeToName( m_nType );
-    sName += _T(", ");
-    if (m_nInversion == 0)
-        sName += _("root position");
-    else if (m_nInversion == 1)
-        sName += _("1st inversion");
-    else if (m_nInversion == 2)
-        sName += _("2nd inversion");
-    else if (m_nInversion == 3)
-        sName += _("3rd inversion");
-    else
-        wxASSERT(false);    //impossible
 
+    if ( m_nType != lmINVALID_CHORD_TYPE )
+    {
+        sName += _T(", ");
+        if (m_nInversion == 0)
+            sName += _("root position");
+        else if (m_nInversion == 1)
+            sName += _("1st inversion");
+        else if (m_nInversion == 2)
+            sName += _("2nd inversion");
+        else if (m_nInversion == 3)
+            sName += _("3rd inversion");
+        else
+            wxASSERT(false);    //impossible
+    }
     return sName;
 
 }
@@ -805,7 +811,7 @@ void lmChordManager::UnitTests()
 wxString ChordTypeToName(lmEChordType nType)
 {
     if (nType >= ect_Max)
-        return _("Wrong Chord");
+        return _("Not identified");
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
