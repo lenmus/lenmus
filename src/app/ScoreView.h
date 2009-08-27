@@ -156,6 +156,7 @@ public:
 	void CaretDown();
     void HideCaret();
     void ShowCaret();
+    void DeleteCaret();
 	void MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
     //cursor management
@@ -185,7 +186,7 @@ public:
     void UpdateRulerMarkers(lmDPoint vPagePos);
     lmGMObject* FindShapeAt(int nNumPage, lmUPoint uPos, bool fSelectable);
     lmBox* FindBoxAt(int nNumPage, lmUPoint uPos);
-    void MoveCursorToObject(lmGMObject* pGMO);
+    void MoveCaretToObject(lmGMObject* pGMO);
 
 	// units conversion
 	lmDPoint GetScrollOffset();

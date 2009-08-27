@@ -190,6 +190,10 @@ wxString lmShapeBarline::Dump(int nIndent)
 		m_nOwnerIdx, m_sGMOName.c_str(), m_uxPos, m_uyTop, m_uyBottom );
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
 	return sDump;
 }
 

@@ -82,20 +82,19 @@ static long m_nShapeOrder = 0;       //to assign an ordering to shapes, when the
 
 lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
 					   bool fSelectable, wxString sName, int nOwnerIdx)
+    : m_nShapeLevel(lm_eMainShape)
+    , m_nType(nType)
+	, m_pOwner(pOwner)
+    , m_nOwnerIdx(nOwnerIdx)
+	, m_sGMOName(sName)
+	, m_uBoundsBottom(lmUPoint(0.0f, 0.0f))
+    , m_uBoundsTop(lmUPoint(0.0f, 0.0f))
+    , m_uUserShift(lmUPoint(0.0f, 0.0f))
+	, m_fSelected(false)
+    , m_fSelectable(fSelectable)
+	, m_fLeftDraggable(fDraggable)
 {
     m_nId = m_IdCounter++;      // give it an ID
-    m_nType = nType;
-	m_pOwner = pOwner;
-    m_nOwnerIdx = nOwnerIdx;
-	m_sGMOName = sName;
-
-	//initializations
-	m_uBoundsBottom = lmUPoint(0.0f, 0.0f);
-    m_uBoundsTop = lmUPoint(0.0f, 0.0f);
-    m_uUserShift = lmUPoint(0.0f, 0.0f);
-	m_fSelected = false;
-    m_fSelectable = fSelectable;
-	m_fLeftDraggable = fDraggable;
 }
 
 lmGMObject::~lmGMObject()
@@ -621,6 +620,13 @@ wxString lmShape::DumpSelRect()
     return wxString::Format(_T("SelRect=(%.2f, %.2f, %.2f, %.2f)"),
         	m_uSelRect.x, m_uSelRect.y, m_uSelRect.width, m_uSelRect.height);
 
+}
+
+wxString lmShape::Dump(int nIndent)
+{
+    //Dump info about owner ScoreObj
+
+    return GetScoreOwner()->Dump();
 }
 
 int lmShape::Attach(lmShape* pShape, lmEAttachType nTag)

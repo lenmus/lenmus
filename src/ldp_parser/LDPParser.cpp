@@ -532,7 +532,16 @@ void lmLDPParser::Do_ProcessingParameter()
                 m_nState = A5_ExitError;
             }
             else
-                m_pCurNode->AddNode(pParm);
+            {
+                //Filter out this element if its ID is in the ignore list
+                long nID = pParm->GetID();
+                if (!(m_pIgnoreSet
+                      && nID != lmNEW_ID
+                      && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() ))
+                    m_pCurNode->AddNode(pParm);
+                else
+                    delete pParm;   //discard this node
+            }
             break;
             }
         default:
@@ -835,26 +844,14 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
         else if (pX->GetName() == _T("name") )
         {
             nNameID = pX->GetID();
-            //if this ID is in the ignore set do not process this element
-            if (!(m_pIgnoreSet
-                  && nNameID != lmNEW_ID
-                  && m_pIgnoreSet->find(nNameID) != m_pIgnoreSet->end() ))
-            {
-                AnalyzeTextString(pX, &sGrpName, &sNameStyle, &nNameAlign, &tNamePos,
-                                  &tNameFont);
-            }
+            AnalyzeTextString(pX, &sGrpName, &sNameStyle, &nNameAlign, &tNamePos,
+                                &tNameFont);
         }
         else if (pX->GetName() == _T("abbrev") )
         {
             nAbbrevID = pX->GetID();
-            //if this ID is in the ignore set do not process this element
-            if (!(m_pIgnoreSet
-                  && nAbbrevID != lmNEW_ID
-                  && m_pIgnoreSet->find(nAbbrevID) != m_pIgnoreSet->end() ))
-            {
-                AnalyzeTextString(pX, &sGrpAbbrev, &sAbbrevStyle, &nAbbrevAlign,
-                                  &tAbbrevPos, &tAbbrevFont);
-            }
+            AnalyzeTextString(pX, &sGrpAbbrev, &sAbbrevStyle, &nAbbrevAlign,
+                                &tAbbrevPos, &tAbbrevFont);
         }
         else if (pX->GetName() == _T("symbol") )
         {
@@ -917,12 +914,6 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     wxASSERT( pNode->GetName() == _T("instrument") );
     long nID = pNode->GetID();
 
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return;
-
     //default values
 	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
 	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
@@ -980,14 +971,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else if (pX->GetName() == _T("name") )
         {
             nNameID = pX->GetID();
-            //if this ID is in the ignore set do not process this element
-            if (!(m_pIgnoreSet
-                  && nNameID != lmNEW_ID
-                  && m_pIgnoreSet->find(nNameID) != m_pIgnoreSet->end() ))
-            {
-                AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign,
-                                  &tNamePos, &tNameFont);
-            }
+            AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign,
+                                &tNamePos, &tNameFont);
 
             if (sInstrName != _T(""))
             {
@@ -1015,14 +1000,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else if (pX->GetName() == _T("abbrev") )
 		{
             nAbbrevID = pX->GetID();
-            //if this ID is in the ignore set do not process this element
-            if (!(m_pIgnoreSet
-                  && nAbbrevID != lmNEW_ID
-                  && m_pIgnoreSet->find(nAbbrevID) != m_pIgnoreSet->end() ))
-            {
-                AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
-                                  &tAbbrevPos, &tAbbrevFont);
-            }
+            AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
+                                &tAbbrevPos, &tAbbrevFont);
 
             if (sInstrAbbrev != _T(""))
             {
@@ -1105,14 +1084,9 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         }
     }
 
-
     // analyze musicData
-    if (!fMusicFound) {
-        AnalysisError(pX, _T("Expected '%s' but found element %s. Analysis stopped."),
-            _T("musicData"), pX->GetName().c_str() );
-        return;
-    }
-    AnalyzeMusicData(pX, pVStaff);
+    if (fMusicFound)
+        AnalyzeMusicData(pX, pVStaff);
 }
 
 bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr)
@@ -1640,8 +1614,11 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
     }
     if (itT == m_PendingTies.end())
     {
-        AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for tie num. %d. Tie ignored."),
-                      pTieInfo->nTieNum );
+        //Ignore errors if the parsed score is for undo.
+       if (m_pIgnoreSet == NULL)
+            AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for tie num. %d. Tie ignored."),
+                        pTieInfo->nTieNum );
+
         delete pTieInfo;
         return;
     }
@@ -1670,13 +1647,8 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
 
     //create the tie unless its ID is in the ignore set
     long nID = pTieInfo->nTieID;
-    if (!(m_pIgnoreSet
-          && nID != lmNEW_ID
-          && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() ))
-    {
-        (*itT)->pNote->CreateTie(pNote, pTieInfo->nTieID, (*itT)->tBezier,
-                                 pTieInfo->tBezier);
-    }
+    (*itT)->pNote->CreateTie(pNote, pTieInfo->nTieID, (*itT)->tBezier,
+                                pTieInfo->tBezier);
 
     //remove and delete consumed lmTieInfo elements
     delete pTieInfo;
@@ -1699,22 +1671,19 @@ void lmLDPParser::AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo)
     }
     if (cBeamInfo.empty())
     {
-        AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for beam num. %d. Beam ignored."),
-                      pBeamInfo->nBeamNum );
+        //Ignore errors if the parsed score is for undo. 
+        if (m_pIgnoreSet == NULL)
+            AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for beam num. %d. Beam ignored."),
+                        pBeamInfo->nBeamNum );
+
         delete pBeamInfo;
         return;
     }
 
-    //create the beam unless its ID is in the ignore set
+    //create the beam 
     cBeamInfo.push_back(pBeamInfo);
-    long nID = pBeamInfo->nBeamID;
-    if (!(m_pIgnoreSet
-          && nID != lmNEW_ID
-          && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() ))
-    {
-        lmVStaff* pVStaff = pNR->GetVStaff();
-        pVStaff->CreateBeam(cBeamInfo);
-    }
+    lmVStaff* pVStaff = pNR->GetVStaff();
+    pVStaff->CreateBeam(cBeamInfo);
 
     //remove and delete consumed lmBeamInfo elements
     delete pBeamInfo;
@@ -1755,12 +1724,6 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     wxASSERT(sElmName.Left(1) == _T("n") ||
              sElmName.Left(1) == _T("r") ||
              sElmName == _T("na") );
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return (lmNoteRest*)NULL;
 
     bool fIsRest = (sElmName.Left(1) == _T("r"));   //analysing a rest
 
@@ -2122,14 +2085,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             else if (sData == _T("fermata"))        //fermata attributes
             {
                 nFermataID = pX->GetID();
-                //if this ID is in the ignore set do not process this element
-                if (!(m_pIgnoreSet
-                    && nFermataID != lmNEW_ID
-                    && m_pIgnoreSet->find(nFermataID) != m_pIgnoreSet->end() ))
-                {
-                    fFermata = true;
-                    nFermataPlacement = AnalyzeFermata(pX, pVStaff, &tFermataPos);
-                }
+                fFermata = true;
+                nFermataPlacement = AnalyzeFermata(pX, pVStaff, &tFermataPos);
             }
             else if (sData == _T("t")) {       //start/end of tuplet. Simple parameter (tn / t-)
                 lmTupletBracket* pTuplet;
@@ -2630,12 +2587,6 @@ bool lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxASSERT(sElmName == _T("figuredBass"));
     long nID = pNode->GetID();
 
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
-
     //check number of params.
     int nNumParms = pNode->GetNumParms();
     if(nNumParms < 1)
@@ -2690,12 +2641,6 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sElmName = pNode->GetName();
     long nID = pNode->GetID();
     wxASSERT(sElmName == _T("barline"));
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
 
     //check that bar type is specified
     if(pNode->GetNumParms() < 1) {
@@ -2756,12 +2701,6 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     long nID = pNode->GetID();
     wxASSERT(sElmName == _T("clef"));
 
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
-
     //check that clef type is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
@@ -2814,12 +2753,6 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("metronome"));
     long nID = pNode->GetID();
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
 
     //check that at least one parameter is specified
     int nNumParms = pNode->GetNumParms();
@@ -3078,12 +3011,6 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
 
     wxASSERT(pNode->GetName() == _T("title"));
     long nID = pNode->GetID();
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
 
     //check that at least two parameters (aligment and text string) are specified
     if(pNode->GetNumParms() < 2) {
@@ -3643,12 +3570,6 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
     wxASSERT(pNode->GetName() == _T("text"));
     long nID = pNode->GetID();
 
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
-
     //check that at least two parameters (location and text string) are specified
     if(pNode->GetNumParms() < 2) {
         AnalysisError(
@@ -3711,12 +3632,6 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxASSERT(sElmName == _T("key"));
     long nID = pNode->GetID();
 
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
-
     //check that key value is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
@@ -3763,12 +3678,6 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("time"));
     long nID = pNode->GetID();
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {
@@ -3819,12 +3728,6 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxString sElmName = pNode->GetName();
     long nID = pNode->GetID();
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return;
 
     //check that the width is specified
     if(pNode->GetNumParms() < 1)
@@ -3889,12 +3792,6 @@ void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("staff"));
     long nID = pNode->GetID();
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return;
 
     //check that the staff number is specified
     if(pNode->GetNumParms() < 1)
@@ -3986,12 +3883,6 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
     int nNumParms = pNode->GetNumParms();
     long nID = pNode->GetID();
 
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return;
-
     //check that type is specified
     if(nNumParms < 2)
     {
@@ -4071,12 +3962,6 @@ void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
     int nNumParms = pNode->GetNumParms();
     long nID = pNode->GetID();
 
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return;
-
     //check number of params.
     if(nNumParms < 4)
     {
@@ -4135,12 +4020,6 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
     wxASSERT(sElmName == _T("textbox"));
     int nNumParms = pNode->GetNumParms();
     long nID = pNode->GetID();
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return;
 
     //parameters and their default values
         //box
@@ -4439,12 +4318,6 @@ bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxASSERT(pNode->GetName() == _T("newSystem"));
     long nID = pNode->GetID();
-
-    //if this ID is in the ignore set do not process this element
-    if (m_pIgnoreSet
-        && nID != lmNEW_ID
-        && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() )
-        return false;
 
     //check if there are parameters
     if(pNode->GetNumParms() >= 1) {

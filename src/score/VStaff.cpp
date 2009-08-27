@@ -517,7 +517,7 @@ lmFiguredBass* lmVStaff::Cmd_InsertFiguredBass(lmFiguredBassInfo* pFBInfo)
     //AWARE:
     //  Cursor might be pointing not to the first SO at current timepos. Therefore
     //  we have to move to the first SO at current timepos. Otherwise, the figured bass
-    //  would be inserted between to objects at the same timepos!
+    //  would be inserted between two objects at the same timepos!
     GetCursor()->MoveToStartOfTimepos();
 
     lmFiguredBass* pFB = new lmFiguredBass(this, lmNEW_ID, pFBInfo);
@@ -800,14 +800,14 @@ accidentals to the affected notes?");
          return (int)nOptValue;
 }
 
-bool lmVStaff::Cmd_DeleteClef(lmClef* pClef)
+bool lmVStaff::Cmd_DeleteClef(lmClef* pClef, int nAction)
 {
     //returns true if deletion error or it is cancelled
+    //  nAction:  0=Cancel operation, 1=keep pitch, 2=keep position
 
-    //if there are notes affected by deleting clef, get user desired behaviour
-    int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
-    if (CheckIfNotesAffectedByClef(true))
-        nAction = AskUserAboutClef();
+    ////if there are notes affected by deleting clef, get user desired behaviour
+    //if (fAskUser && CheckIfNotesAffectedByClef(true))
+    //    nAction = AskUserAboutClef();
 
     if (nAction == 0)
         return true;       //Cancel clef deletion
@@ -823,14 +823,14 @@ bool lmVStaff::Cmd_DeleteClef(lmClef* pClef)
     return false;       //false: deletion OK
 }
 
-bool lmVStaff::Cmd_DeleteKeySignature(lmKeySignature* pKS)
+bool lmVStaff::Cmd_DeleteKeySignature(lmKeySignature* pKS, int nAction)
 {
     //returns true if deletion cancelled or error
+    //  nAction:    0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
 
-    //if there are notes affected by key removal, get user desired behaviour
-    int nAction = 1;    //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
-    if (CheckIfNotesAffectedByKey(true))        //true->skip this key
-        nAction = AskUserAboutKey();
+    ////if there are notes affected by key removal, get user desired behaviour
+    //if (fAskUser && CheckIfNotesAffectedByKey(true))        //true->skip this key
+    //    nAction = AskUserAboutKey();
 
     if (nAction == 0)
         return true;       //Cancel key deletion
@@ -1027,7 +1027,7 @@ lmBeam* lmVStaff::CreateBeam(std::vector<lmBeamInfo*>& cBeamInfo)
     wxASSERT( cBeamInfo.back()->pNR->IsNote() );
     for (int i=0; i < 6; ++i)
         (*it)->pNR->SetBeamType(i, (*it)->nBeamType[i]);
-    lmBeam* pNewBeam = new lmBeam((lmNote*)((*it)->pNR) );
+    lmBeam* pNewBeam = new lmBeam((lmNote*)((*it)->pNR), cBeamInfo.front()->nBeamID );
 
     //here beam is initialized and first note/rest is included. Add remaining
     //notes to it
@@ -1890,7 +1890,7 @@ lmBarline* lmVStaff::GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos)
     return pBarline;
 }
 
-lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos)
+lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pxPos, lmLUnits* pyPos)
 {
     // returns the barline for last non-empty measure. If found, updates content
     // of variable pointed by pPos with the X right position of this barline.
@@ -1904,7 +1904,8 @@ lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos)
     if (pBarline)
     {
         lmShape* pShape = (lmShape*)pBarline->GetShape();
-		*pPos = pShape->GetXRight();
+		*pxPos = pShape->GetXRight();
+		*pyPos = pShape->GetYTop();
     }
 
     return pBarline;

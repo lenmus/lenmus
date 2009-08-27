@@ -123,7 +123,7 @@ lmNote::lmNote(lmVStaff* pVStaff, long nID, lmEPitchType nPitchType,
     //}
 
     //get octave, step and context accidentals for this note step
-    int nCurContextAcc = pContext->GetAccidentals(nStep);
+    int nCurContextAcc = (pContext ? pContext->GetAccidentals(nStep) : 0);
     int nNewContextAcc = nCurContextAcc;
     lmEAccidentals nDisplayAcc = nAccidentals;
 
@@ -330,12 +330,16 @@ lmEClefType lmNote::GetClefType()
 {
 	//returns the applicable clef for this note
 
-	//during note construction we have the context. use it
-	if (m_fBeingBuilt)
-		return m_pContext->GetClefType();
+    //Get the context.
+	//During note construction normally we have the context. use it
+	//In other cases, get the context clef
+    lmContext* pContext = (lmContext*)NULL;
+    if (m_fBeingBuilt)
+        pContext = m_pContext;
+    else
+	    pContext = GetCurrentContext();
 
-	//in other cases, get the context clef
-	lmContext* pContext = GetCurrentContext();
+    //Get clef
     lmEClefType nType = (pContext ? pContext->GetClefType() : lmE_Undefined);
     if (nType == lmE_Undefined)
         nType = m_pVStaff->GetStaff(m_nStaffNum)->GetPreviousFirstClefType();

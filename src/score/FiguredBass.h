@@ -76,6 +76,9 @@ public:
     inline float GetTimePosIncrement() { return 0; }
 	inline wxString GetName() const { return _T("figured bass"); }
 
+    //layout
+    bool IsAligned() { return true; }
+
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);

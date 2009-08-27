@@ -67,7 +67,7 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
 //
 //    There are two tables to maintain:
 //    - m_aEvents: contains the MIDI events.
-//    - m_aMeasures (wxArrayInt):
+//    - m_aMeasures (std::vector<int>):
 //        It contains the index over m_aEvents for the first event of each measure.
 //
 //    AWARE
@@ -93,16 +93,18 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
 //-----------------------------------------------------------------------------------------
 
 lmSoundManager::lmSoundManager(lmScore* pScore)
+    : m_nNumMeasures(0)
+    , m_pScore(pScore)
+    , m_pThread((lmSoundManagerThread*) NULL)
+    , m_fPlaying(false)
 {
-    m_pScore = pScore;
-    m_pThread = (lmSoundManagerThread*) NULL;
-    m_fPlaying = false;
 }
 
 void lmSoundManager::DeleteEventsTable()
 {
     //delete events in table
-    for (int i = m_aEvents.GetCount(); i > 0; i--) {
+    for (int i = m_aEvents.GetCount(); i > 0; i--)
+    {
         delete m_aEvents.Item(i-1);
         m_aEvents.RemoveAt(i-1);
     }
@@ -115,7 +117,8 @@ lmSoundManager::~lmSoundManager()
     //So the table MUST BE explicitly deleted by calling DeleteEventsTable() when required
 
     //if the play thread exists, delete it
-    if (m_pThread) {
+    if (m_pThread)
+    {
         m_pThread->Delete();
         m_pThread = (lmSoundManagerThread*)NULL;
     }
@@ -125,9 +128,11 @@ void lmSoundManager::StoreEvent(float rTime, ESoundEventType nEventType, int nCh
                            lmMPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO, int nMeasure)
 {
     //create the event and add it to the table
+
     lmSoundEvent* pEvent = new lmSoundEvent(rTime, nEventType, nChannel, nMidiPitch,
                                             nVolume, nStep, pSO, nMeasure);
-    m_aEvents.Add(pEvent);        //add event to table
+    m_aEvents.Add(pEvent);
+    m_nNumMeasures = wxMax(m_nNumMeasures, nMeasure);
 }
 
 void lmSoundManager::Append(lmSoundManager* pSndMgr)
@@ -135,8 +140,11 @@ void lmSoundManager::Append(lmSoundManager* pSndMgr)
     // Add to this object table the entries from the received table
 
     int nNewRows = pSndMgr->GetNumEvents();
-    for (int i=0; i < nNewRows; i++) {
-        m_aEvents.Add( pSndMgr->GetEvent(i) );
+    for (int i=0; i < nNewRows; i++)
+    {
+        lmSoundEvent* pEvent = pSndMgr->GetEvent(i);
+        m_aEvents.Add( pEvent );
+        m_nNumMeasures = wxMax(m_nNumMeasures, pEvent->Measure);
     }
 }
 
@@ -156,27 +164,38 @@ void lmSoundManager::CloseTable()
             0, 0, 0, 0, (lmStaffObj*)NULL, 0);
 
     //Create the table of measures
-    int nM = -1;
+    m_aMeasures.reserve(m_nNumMeasures+2);          //initial + final control measures
+    m_aMeasures.push_back(0);  
+    for (int i=1; i < m_nNumMeasures+2; i++)
+        m_aMeasures.push_back(-1);  
+
     for (int i=0; i < (int)m_aEvents.GetCount(); i++)
     {
-        if (m_aEvents.Item(i)->Measure != nM)
+        if (m_aMeasures[m_aEvents.Item(i)->Measure] == -1)
         {
-            m_aMeasures.Add(i);
-            nM++;
-            //check that objects are in sequence
-            wxASSERT(nM == m_aEvents.Item(i)->Measure || 0 == m_aEvents.Item(i)->Measure);
+            //Add index to the table
+            m_aMeasures[m_aEvents.Item(i)->Measure] = i;
         }
     }
 }
 
 wxString lmSoundManager::DumpMidiEvents()
 {
-    wxString sMsg = wxEmptyString;
+    wxString sMsg = DumpEventsTable();
+    sMsg += DumpMeasuresTable();
+    return sMsg;
+}
 
-    if (m_aEvents.GetCount() == 0) {
+wxString lmSoundManager::DumpEventsTable()
+{
+    wxString sMsg = _T("");
+
+    if (m_aEvents.GetCount() == 0)
+    {
         sMsg = _T("There are no MIDI events");
     }
-    else {
+    else
+    {
         //headers
         sMsg = _T("Num.\tTime\tChannel\tMeas.\tEvent\t\tPitch\tStep\tVolume\n");
 
@@ -222,20 +241,39 @@ wxString lmSoundManager::DumpMidiEvents()
             sMsg += wxString::Format(_T("\t%d\t%d\t%d\n"),
                         pSE->NotePitch, pSE->NoteStep, pSE->Volume);
         }
+    }
 
+    return sMsg;
+}
+
+wxString lmSoundManager::DumpMeasuresTable()
+{
+    wxString sMsg = _T("");
+
+    if (m_aMeasures.size() == 0)
+    {
+        sMsg = _T("Measures table is empty");
+    }
+    else
+    {
         // measures start time table and first event for each measure
         sMsg += wxString::Format( _T("\n\nMeasures start times and first event (%d measures)\n\n"),
-                    m_aMeasures.GetCount() );
+                    m_aMeasures.size() - 2 );
         sMsg += _T("Num.\tTime\tEvent\n");
-        for(int i=0; i < (int)m_aMeasures.GetCount(); i++) {
+        for(int i=1; i < (int)m_aMeasures.size() - 1; i++)
+        {
             //division line every four entries
-            if (i % 4 == 0) {
+            if (i % 4 == 0)
                 sMsg += _T("-------------------------------------------------------------\n");
-            }
+
             int nEntry = m_aMeasures[i];
-            lmSoundEvent* pSE = m_aEvents.Item(nEntry);
-            sMsg += wxString::Format(_T("%4d:\t%d\t%d\n"),
-                                     i, pSE->DeltaTime, nEntry);
+            if (nEntry >= 0)
+            {
+                lmSoundEvent* pSE = m_aEvents.Item(nEntry);
+                sMsg += wxString::Format(_T("%4d:\t%d\t%d\n"), i, pSE->DeltaTime, nEntry);
+            }
+            else
+                sMsg += _T("Empty entry\n");
        }
     }
 
@@ -284,7 +322,7 @@ void lmSoundManager::Play(bool fVisualTracking, bool fCountOff,
 {
 	//play all the score
 
-    int nEvStart = m_aMeasures.Item(1);     //get first event for firts measure
+    int nEvStart = m_aMeasures[1];     //get first event for firts measure
     int nEvEnd = m_aEvents.GetCount() - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
@@ -299,8 +337,8 @@ void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
     //remember:
     //   real measures 1..n correspond to table items 1..n
     //   items 0 and n+1 are fictitius measures for pre and post control events
-    int nEvStart = m_aMeasures.Item(nMeasure);
-    int nEvEnd = m_aMeasures.Item(nMeasure + 1) - 1;
+    int nEvStart = m_aMeasures[nMeasure];
+    int nEvEnd = m_aMeasures[nMeasure + 1] - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
                 lmNO_COUNTOFF, nMM, pWindow);
@@ -314,7 +352,17 @@ void lmSoundManager::PlayFromMeasure(int nMeasure, bool fVisualTracking,
     //remember:
     //   real measures 1..n correspond to table items 1..n
     //   items 0 and n+1 are fictitius measures for pre and post control events
-    int nEvStart = m_aMeasures.Item(nMeasure);
+    int nEvStart = m_aMeasures[nMeasure];
+    while (nEvStart == -1 && nMeasure < m_nNumMeasures)
+    {
+        //Current measure is empty. Start in next one
+        nEvStart = m_aMeasures[++nMeasure];
+    }
+
+    if (nEvStart == -1)
+        return;     //all measures are empty after selected one!
+
+
     int nEvEnd = m_aEvents.GetCount() - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,

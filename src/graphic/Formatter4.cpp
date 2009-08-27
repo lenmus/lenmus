@@ -382,7 +382,8 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
     lmLUnits nSystemHeight;
 
     m_nAbsColumn = 1;
-    while (m_pSysCursor->ThereAreObjects())
+    bool fContinue = true;      //the loop must be excuted at least once to render the staff.
+    while (fContinue)
     {
         m_nColumnsInSystem = 0;
 
@@ -450,7 +451,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
         //wxASSERT(m_nColumn == (int)m_uMeasureSize.size() - 1);
         //m_oTimepos.push_back(0);
         //wxASSERT(m_nColumn == (int)m_oTimepos.size() - 1);
-        while (m_pSysCursor->ThereAreObjects())
+        while (fContinue)
         {
             //reposition paper vertically at the start of the system. It has been advanced
             //when sizing the previous measure column
@@ -532,6 +533,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
             //if newSystem tag found force to finish current system
             if (fNewSystem) break;
 
+            fContinue = m_pSysCursor->ThereAreObjects();
         }    //end of loop to process a column
 
         //helper flag to signal if current system is the last one.
@@ -632,9 +634,21 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
         {
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
-            lmLUnits xPos;
-            if (pVStaff->GetBarlineOfLastNonEmptyMeasure(&xPos))
-                pBoxSystem->UpdateXRight( xPos - 1 );
+            lmLUnits xFinalPos = 0.0f;
+            lmLUnits yFinalPos = 0.0f;
+            lmInstrument *pI;
+            for (pI = m_pScore->GetFirstInstrument(); pI; pI=m_pScore->GetNextInstrument())
+            {
+                lmLUnits xPos, yPos;
+                pI->GetVStaff()->GetBarlineOfLastNonEmptyMeasure(&xPos, &yPos);
+                if (yPos > yFinalPos)
+                {
+                    yFinalPos = yPos;
+                    xFinalPos = xPos;
+                }
+            }
+            if (xFinalPos > 0.0f)
+                pBoxSystem->UpdateXRight( xFinalPos - 1 );
             else
                 pBoxSystem->UpdateXRight( m_pScore->GetRightMarginXPos() );
         }
@@ -685,6 +699,7 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
         //increment loop information
         nSystem++;
 
+        fContinue = m_pSysCursor->ThereAreObjects();
     }    //while (ThereAreObjects())
 
 
@@ -1307,6 +1322,7 @@ void lmFormatter4::AddProlog(lmBoxSliceInstr* pBSI, bool fDrawTimekey, lmVStaff*
                 {
 					lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
 					lmShape* pShape = pClef->CreateShape(pBSI, m_pPaper, uPos);
+                    pShape->SetShapeLevel(lm_ePrologShape);
 					xPos += pShape->GetWidth();
 					m_oTimepos[m_nColumn].AddEntry(nInstr, pClef, pShape, true);
 				}
@@ -1317,6 +1333,7 @@ void lmFormatter4::AddProlog(lmBoxSliceInstr* pBSI, bool fDrawTimekey, lmVStaff*
             {
                 lmUPoint uPos = lmUPoint(xPos, yStartPos+uyOffset);        //absolute position
                 lmShape* pShape = pKey->CreateShape(pBSI, m_pPaper, uPos, nClef, pStaff);
+                pShape->SetShapeLevel(lm_ePrologShape);
 				xPos += pShape->GetWidth();
 				m_oTimepos[m_nColumn].AddEntry(nInstr, pKey, pShape, true, nStaff);
             }

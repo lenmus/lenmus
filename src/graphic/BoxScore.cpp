@@ -59,9 +59,9 @@ void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper, wxWindow* pRenderWindow,
     
     wxASSERT(nPage > 0 && nPage <= (int)m_aPages.size());
 
-    //if firts page render score titles
-    if (nPage == 1)
-	    RenderShapes(pPaper);
+    ////if firts page render score titles
+    //if (nPage == 1)
+	   // RenderShapes(pPaper);
 
     //render the requested page
     m_aPages[nPage-1]->SetRenderWindow(pRenderWindow);

@@ -3760,9 +3760,9 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
             {
                 case lmTOOL_FIGURED_BASS:
                 {
-                    //Move caret to insertion position and insert figured bass
+                    //Move cursor to insertion position and insert figured bass
                     wxASSERT(pSCO->IsNote() || pSCO->IsRest());
-                    m_pView->MoveCursorToObject(pGMO);
+                    m_pDoc->GetScore()->GetCursor()->MoveCursorToObject((lmStaffObj*)pSCO);
                     InsertFiguredBass();
                     break;
                 }
@@ -3822,7 +3822,7 @@ void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
         wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Click on shape"));
         lmScoreObj* pSCO = pGMO->GetScoreOwner();
         if (pSCO->IsComponentObj())
-            m_pView->MoveCursorToObject(pGMO);
+            m_pView->MoveCaretToObject(pGMO);
     }
 
     m_pView->ShowCaret();

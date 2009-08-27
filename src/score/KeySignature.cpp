@@ -200,6 +200,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
             //create the shape for key signature
             m_pShapes[nStaff-1] = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef,
                                               pStaff, colorC);
+            m_pShapes[nStaff-1]->SetShapeLevel(nStaff==1 ? lm_eMainShape : lm_eSecondaryShape);
             uWidth = wxMax(m_pShapes[nStaff-1]->GetWidth(), uWidth);
 
             //add staff height
@@ -246,6 +247,7 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
 
     //create the container shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, nIdx, colorC, _T("Key signature"), lmDRAGGABLE);
+    pShape->SetShapeLevel(lm_eMainShape);
     StoreShape(pShape);
 	pBox->AddShape(pShape, GetLayer());
 

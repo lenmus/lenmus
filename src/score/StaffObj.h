@@ -425,6 +425,8 @@ public:
 	inline void SetVisible(bool fVisible) { m_fVisible = fVisible; }
 	virtual wxString GetName() const=0;
 
+    //layout properties
+    virtual bool IsAligned() { return false; }
 
 
     // source code related methods

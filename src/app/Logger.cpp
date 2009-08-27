@@ -90,10 +90,11 @@ extern lmMainFrame *g_pMainFrame;
 */
 
 lmLogger::lmLogger()
+    : m_pForensic((wxFile*)NULL)
+    , m_pTrace((wxFile*)NULL)
+    , m_pDataError((wxFile*)NULL)
+    , m_sForensicPath(wxEmptyString)
 {
-    m_pTrace = (wxFile*)NULL;
-    m_pDataError = (wxFile*)NULL;
-
     // For now use wxLog facilities and send messages to Stderr
     #if defined(__WXGTK__)
         wxLog *logger=new wxLogStderr();
@@ -123,22 +124,50 @@ lmLogger::~lmLogger()
         delete m_pDataError;
     }
 
-}
-
-void lmLogger::SetDataErrorTarget(wxString sPath)
-{
-    //prepare data error log file
-    m_sDataErrorPath = sPath;
-    m_pDataError = new wxFile(m_sDataErrorPath, wxFile::write);
-    if (!m_pDataError->IsOpened()) {
-        //TODO
-        m_pDataError = (wxFile*)NULL;
-        return;
+    if (m_pForensic) {
+        m_pForensic->Close();
+        delete m_pForensic;
     }
 
 }
 
-void lmLogger::SetTraceTarget(wxString sPath)
+bool lmLogger::ForensicTargetExists(wxString& sPath)
+{
+    //returns true if forensic file already exists
+    
+    return ::wxFileExists(sPath);
+}
+
+void lmLogger::SetForensicTarget(wxString& sPath)
+{
+    //prepare data error log file
+    m_sForensicPath = sPath;
+    m_pForensic = new wxFile(m_sForensicPath, wxFile::write);
+    if (!m_pForensic->IsOpened())
+    {
+        wxLogMessage(_T("[lmLogger::SetForensicTarget] Error while openning forensic log!"));
+        m_pForensic = (wxFile*)NULL;
+        return;
+    }
+
+    //log time stamp
+    m_pForensic->Write( (wxDateTime::Now()).Format(_T("%Y/%m/%d %H:%M:%S")) + _T("\n") );
+}
+
+void lmLogger::SetDataErrorTarget(wxString& sPath)
+{
+    //prepare data error log file
+    m_sDataErrorPath = sPath;
+    m_pDataError = new wxFile(m_sDataErrorPath, wxFile::write);
+    if (!m_pDataError->IsOpened())
+    {
+        //TODO
+        m_pDataError = (wxFile*)NULL;
+        return;
+    }
+}
+
+void lmLogger::SetTraceTarget(wxString& sPath)
 {
 }
 
@@ -187,6 +216,35 @@ void lmLogger::FlushDataErrorLog()
     //open a new one
     SetDataErrorTarget(m_sDataErrorPath);
 
+}
+
+void lmLogger::FlushForensicLog()
+{
+    // close current file
+    if (m_pForensic)
+    {
+        m_pForensic->Close();
+        delete m_pForensic;
+        m_pForensic = (wxFile*) NULL;
+    }
+
+    //open a new one
+    SetForensicTarget(m_sForensicPath);
+}
+
+void lmLogger::DeleteForensicTarget()
+{
+    //close current file
+    if (m_pForensic)
+    {
+        m_pForensic->Close();
+        delete m_pForensic;
+        m_pForensic = (wxFile*) NULL;
+    }
+
+    //delete the file
+    if (m_sForensicPath != wxEmptyString)
+        ::wxRemoveFile(m_sForensicPath);
 }
 
 void lmLogger::ShowDataErrors(wxString sTitle)
@@ -253,6 +311,16 @@ void lmLogger::LogMessage(const wxChar* szFormat, ...)
     va_list argptr;
     va_start(argptr, szFormat);
     wxVLogMessage(szFormat, argptr);
+    va_end(argptr);
+}
+
+void lmLogger::LogForensic(const wxChar* szFormat, ...)
+{
+    //received data
+    va_list argptr;
+    va_start(argptr, szFormat);
+    m_pForensic->Write( wxString::FormatV(szFormat, argptr) );
+    m_pForensic->Write( _T("\n") );
     va_end(argptr);
 }
 

@@ -516,7 +516,8 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     {
         //reload score cursor
         m_pScoreCursor = m_pDoc->GetScore()->GetCursor();
-        m_pCaret->NeedsUpdate(true);
+        //m_pCaret->NeedsUpdate(true);
+        DeleteCaret();
     }
 
     //re-paint the score
@@ -1186,7 +1187,8 @@ void lmScoreView::PrepareForRepaint(wxDC* pDC, int nRepaintOptions)
 
 	// hide the cursor so repaint doesn't interfere
     //wxLogMessage(_T("[lmScoreView::PrepareForRepaint] Calls HideCaret()"));
-    HideCaret();
+    //HideCaret();
+    DeleteCaret();
 
     // allocate a DC in memory for using the offscreen bitmaps
     wxMemoryDC memoryDC;
@@ -1464,9 +1466,9 @@ void lmScoreView::DumpBitmaps()
     m_graphMngr.BitmapsToFile(sFilename, sExt, wxBITMAP_TYPE_JPEG);
 }
 
-void lmScoreView::MoveCursorToObject(lmGMObject* pGMO)
+void lmScoreView::MoveCaretToObject(lmGMObject* pGMO)
 {
-    //move cursor to object
+    //move caret to object
     if (m_pCaret)
     {
         lmStaffObj* pSO = (lmStaffObj*)NULL;
@@ -1558,9 +1560,10 @@ void lmScoreView::ShowCaret()
     if (!m_fDisplayCaret)
         return;
 
-	//do nothing if the view doesn't contains a score (view creation time)
+	//do nothing if the view doesn't contains a score (view creation time) or if
+    //the document is being edited
     lmScore* pScore = m_pDoc->GetScore();
-    if (!pScore)
+    if (!pScore || m_pDoc->IsBeingEdited())
         return;
 
 	//if the caret is not yet created, do it
@@ -1588,6 +1591,13 @@ void lmScoreView::ShowCaret()
         else
             m_pCaret->Show();
     }
+}
+
+void lmScoreView::DeleteCaret()
+{   
+    if (m_pCaret)
+        delete m_pCaret;
+    m_pCaret = (lmCaret*)NULL;
 }
 
 

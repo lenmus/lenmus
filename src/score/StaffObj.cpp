@@ -547,12 +547,6 @@ wxString lmScoreObj::SourceLDP(int nIndent, bool fUndoData)
 		sSource += wxString::Format(_T(" dy:%s"),
 					DoubleToStr((double)m_pParent->LogicalToTenths(uUserShift.y), 4).c_str() );
 
-  //  //add undo data if requested
-  //  if (fUndoData)
-  //  {
-		//sSource += wxString::Format(_T(" id:%d"), GetID() );
-  //  }
-
 	return sSource;
 }
 

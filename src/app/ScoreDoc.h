@@ -83,11 +83,11 @@ public:
 
     //specific methods
 
-    //void UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints);
+    inline bool IsBeingEdited() { return m_fIsBeingEdited; }
     bool OnImportDocument(const wxString& filename);
     bool OnNewDocumentWithContent(lmScore* pScore);
     inline lmScore* GetScore() {return m_pScore; };
-    void ReplaceScore(lmScore* pScore);
+    void ReplaceScore(lmScore* pScore, bool fUpdateViews = true);
 
     //Edit mode
     void OnCustomizeController(lmEditorMode* pMode);
@@ -97,6 +97,7 @@ private:
     // data to store
     lmScore*            m_pScore;		//the score this document represents
     lmEditorMode*       m_pEditMode;
+    bool                m_fIsBeingEdited;   //the document is being edited
 
 };
 

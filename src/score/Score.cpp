@@ -181,6 +181,54 @@ wxString lmSystemInfo::SourceLDP(int nIndent, bool fUndoData)
 // lmScore implementation
 //=======================================================================================
 
+//tables with default values for options
+typedef struct {
+    wxString    sOptName;
+    bool        fBoolValue;
+} lmBoolOption;
+
+typedef struct {
+    wxString    sOptName;
+    wxString    sStringValue;
+} lmStringOption;
+
+typedef struct {
+    wxString    sOptName;
+    double      rDoubleValue;
+} lmDoubleOption;
+
+typedef struct {
+    wxString    sOptName;
+    long        nLongValue;
+} lmLongOption;
+
+static lmBoolOption m_BoolOptions[] =
+{
+    {_T("Score.FillPageWithEmptyStaves"), false },
+    {_T("StaffLines.StopAtFinalBarline"), true },
+    {_T("Score.JustifyFinalBarline"), false },
+    {_T("StaffLines.Hide"), false },
+    {_T("Staff.DrawLeftBarline"), true },
+};
+
+//static lmStringOption m_StringOptions[] = {};
+
+static lmDoubleOption m_DoubleOptions[] = 
+{
+    {_T("Render.SpacingFactor"), 0.547 },
+        // Note spacing is proportional to duration.
+        // As the duration of quarter note is 64 (duration units), I am
+        // going to map it to 35 tenths. This gives a conversion factor
+        // of 35/64 = 0.547
+};
+
+static lmLongOption m_LongOptions[] =
+{
+    {_T("Staff.UpperLegerLines.Displacement"), 0L },
+    {_T("Render.SpacingMethod"), (long)esm_PropConstantFixed },
+    {_T("Render.SpacingValue"), 15L },       // 15 tenths (1.5 lines)
+};
+
 lmScore::lmScore()
     : lmScoreObj((lmScoreObj*)NULL, lmNEW_ID, lm_eSO_Score)
     , m_SCursor(this)
@@ -212,22 +260,16 @@ lmScore::lmScore()
     pSysInfo = new lmSystemInfo(0.0f, 0.0f, uSystemDistance, uTopSystemDistance);    //Other systems
     m_SystemsInfo.push_back(pSysInfo);
 
-    //default ObjOptions
-    SetOption(_T("Score.FillPageWithEmptyStaves"), false);
-    SetOption(_T("StaffLines.StopAtFinalBarline"), true);
-    SetOption(_T("Score.JustifyFinalBarline"), false);
-    SetOption(_T("StaffLines.Hide"), false);
-    SetOption(_T("Staff.DrawLeftBarline"), true);
-    SetOption(_T("Staff.UpperLegerLines.Displacement"), 0L);
-
-    //default options for renderization algorithms
-        // Note spacing is proportional to duration.
-        // As the duration of quarter note is 64 (duration units), I am
-        // going to map it to 35 tenths. This gives a conversion factor
-        // of 35/64 = 0.547
-    SetOption(_T("Render.SpacingFactor"), 0.547);
-    SetOption(_T("Render.SpacingMethod"), (long)esm_PropConstantFixed);
-    SetOption(_T("Render.SpacingValue"), 15L);       // 15 tenths (1.5 lines)
+    //default options
+    //bool
+    for (int i=0; i < sizeof(m_BoolOptions)/sizeof(lmBoolOption); i++)
+        SetOption(m_BoolOptions[i].sOptName, m_BoolOptions[i].fBoolValue);
+    //long
+    for (int i=0; i < sizeof(m_LongOptions)/sizeof(lmLongOption); i++)
+        SetOption(m_LongOptions[i].sOptName, m_LongOptions[i].nLongValue);
+    //double
+    for (int i=0; i < sizeof(m_DoubleOptions)/sizeof(lmDoubleOption); i++)
+        SetOption(m_DoubleOptions[i].sOptName, m_DoubleOptions[i].rDoubleValue);
 }
 
 lmScore::~lmScore()
@@ -505,11 +547,16 @@ void lmScore::SetScoreName(wxString sName)
 
 int lmScore::GetNumMeasures()
 {
-    //LIMIT: it is being assumed that all instruments have the same number of bars
-    //InstrumentsList::Node *node = m_cInstruments.GetFirst();
-    //lmInstrument *pInstr = node->GetData();
-    lmVStaff *pStaff = m_cInstruments[0]->GetVStaff();
-    return(pStaff->GetNumMeasures());
+    int nNum = 0;
+    std::vector<lmInstrument*>::iterator it;
+	for (it = m_cInstruments.begin(); it != m_cInstruments.end(); ++it)
+	{
+		wxMax(nNum, (*it)->GetVStaff()->GetNumMeasures() );
+	}
+    return nNum;
+
+    //lmVStaff *pStaff = m_cInstruments[0]->GetVStaff();
+    //return(pStaff->GetNumMeasures());
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
@@ -857,6 +904,38 @@ wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
                         tState.GetNumStaff(),
 		                DoubleToStr((double)tState.GetTimepos(), 2).c_str(),
                         tState.GetObjID() );
+    }
+
+    //options with non-default values
+    bool fBoolValue;
+    long nLongValue;
+    double rDoubleValue;
+
+    //bool
+    for (int i=0; i < sizeof(m_BoolOptions)/sizeof(lmBoolOption); i++)
+    {
+        fBoolValue = GetOptionBool(m_BoolOptions[i].sOptName);
+        if (fBoolValue != m_BoolOptions[i].fBoolValue)
+            sSource += wxString::Format(_T("   (opt %s %s)\n"), m_BoolOptions[i].sOptName,
+                                        (fBoolValue ? _T("true") : _T("false")) );
+    }
+
+    //long
+    for (int i=0; i < sizeof(m_LongOptions)/sizeof(lmLongOption); i++)
+    {
+        nLongValue = GetOptionLong(m_LongOptions[i].sOptName);
+        if (nLongValue != m_LongOptions[i].nLongValue)
+            sSource += wxString::Format(_T("   (opt %s %d)\n"), m_LongOptions[i].sOptName,
+                                        nLongValue );
+    }
+
+    //double
+    for (int i=0; i < sizeof(m_DoubleOptions)/sizeof(lmDoubleOption); i++)
+    {
+        rDoubleValue = GetOptionDouble(m_DoubleOptions[i].sOptName);
+        if (rDoubleValue != m_DoubleOptions[i].rDoubleValue)
+            sSource += wxString::Format(_T("   (opt %s %s)\n"), m_DoubleOptions[i].sOptName,
+                                        DoubleToStr(rDoubleValue, 4) );
     }
 
     //loop for each instrument

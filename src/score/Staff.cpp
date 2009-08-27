@@ -292,8 +292,10 @@ wxString lmStaff::SourceLDP(int nIndent, bool fUndoData)
     sSource += wxString::Format(_T("(lineThickness %s)"),
                                 DoubleToStr((double)m_uLineThickness, 2).c_str() );
 
-        //base class
-	sSource += lmScoreObj::SourceLDP(nIndent, fUndoData);
+    //base class
+    //AWARE: commented out because base class only adds location, and this
+    //elements does not apply to staff
+	//sSource += lmScoreObj::SourceLDP(nIndent, fUndoData);
 
     //close element
     sSource += _T(")\n");

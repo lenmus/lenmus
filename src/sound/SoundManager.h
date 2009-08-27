@@ -36,6 +36,8 @@
 #include "wx/wx.h"
 #endif
 
+#include <vector>
+
 #include "../score/Score.h"
 
 
@@ -142,6 +144,8 @@ public:
     void DeleteEventsTable();
     void Initialize(int nPartes, int nTiempoIni, int nDurCompas, int nNumMeasures);
     void Append(lmSoundManager* pSndMgr);
+
+    //debug
     wxString DumpMidiEvents();
 
     // playing
@@ -187,7 +191,9 @@ private:
                      long nMM,
                      wxWindow* pWindow );
 
-
+    //debug
+    wxString DumpEventsTable();
+    wxString DumpMeasuresTable();
 
 
         //member variables
@@ -202,9 +208,10 @@ private:
     //sound events table
     ArraySoundEventPtrs        m_aEvents;        //the events table
     int                        m_iEV;            //index to first free entry
+    int                     m_nNumMeasures;     //higest measure number in events table
 
     //measures table 
-    wxArrayInt        m_aMeasures;        //index on m_aEvents for the first event of each measure
+    std::vector<int>        m_aMeasures;        //index on m_aEvents for the first event of each measure
 
 };
 

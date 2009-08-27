@@ -252,8 +252,6 @@ lmGMObject* lmBoxPage::FindShapeAtPos(lmUPoint& uPoint, bool fSelectable)
 
 void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
 {
-    if (m_nLastSystem == 0) return;
-
     //clear lists with renderization information
     m_ActiveHandlers.clear();
     m_GMObjsWithHandlers.clear();

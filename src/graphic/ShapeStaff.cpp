@@ -95,6 +95,10 @@ wxString lmShapeStaff::Dump(int nIndent)
 	sDump += wxString::Format(_T("Idx: %d %s: "), m_nOwnerIdx, m_sGMOName.c_str());
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
 	return sDump;
 }
 

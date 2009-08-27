@@ -48,11 +48,11 @@ public:
     //ctors and dtor
     virtual ~lmNoteRest();
 
-    //inline bool IsRest() const { return m_fIsRest; }
-    //inline bool IsNote() const { return !m_fIsRest; }
-
     //implementation of virtual methods of base class lmStaffObj
     virtual bool IsComposite() { return true; }
+
+    //layout
+    bool IsAligned() { return true; }
 
 	//methods related to voice
 	inline void SetVoice(int nVoice) { m_nVoice = nVoice; }

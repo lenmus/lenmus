@@ -136,6 +136,9 @@ wxString lmShapeSimpleLine::Dump(int nIndent)
     sDump += DumpBounds();
     sDump += _T("\n");
 
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
 	return sDump;
 }
 
@@ -215,6 +218,9 @@ wxString lmShapeGlyph::Dump(int nIndent)
         m_nOwnerIdx, m_sGMOName.c_str(), m_uGlyphPos.x, m_uGlyphPos.y);
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
 
 	return sDump;
 }
@@ -397,7 +403,12 @@ lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, int nShapeIdx, lmUPoint u
 wxString lmShapeInvisible::Dump(int nIndent)
 {
 	//TODO
-	return _T("lmShapeInvisible\n");
+    wxString sDump = _T("lmShapeInvisible\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
+	return sDump;
 }
 
 void lmShapeInvisible::Render(lmPaper* pPaper, wxColour color)
@@ -598,6 +609,9 @@ wxString lmShapeRectangle::Dump(int nIndent)
                 m_uBorderWidth );
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
 
 	return sDump;
 }

@@ -377,7 +377,8 @@ private:
     inline void AdvanceCursorToNextSegment() { GetCursor()->MoveToNextSegment(); }
     inline void AdvanceCursorToTime(float rTimepos) { GetCursor()->AdvanceToTime(rTimepos); }
     inline void MoveCursorToObject(lmStaffObj* pSO) { GetCursor()->MoveCursorToObject(pSO); }
-    inline void MoveCursorToTime(float rTimepos) { GetCursor()->MoveToTime(rTimepos); }
+    inline void MoveCursorToTime(float rTimepos, bool fToEndOfTime=false)
+                    { GetCursor()->MoveToTime(rTimepos, fToEndOfTime); }
     inline void MoveCursorRight(bool fAlsoChordNotes) { GetCursor()->MoveRight(fAlsoChordNotes); }
     inline lmScoreCursor* GetScoreCursor() { return GetCursor(); }
 

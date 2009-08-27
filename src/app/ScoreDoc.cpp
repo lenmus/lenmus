@@ -59,6 +59,7 @@ IMPLEMENT_DYNAMIC_CLASS(lmDocument, wxDocument)
 lmDocument::lmDocument()
     : m_pEditMode((lmEditorMode*)NULL)
     , m_pScore((lmScore*) NULL)
+    , m_fIsBeingEdited(false)
 {
 }
 
@@ -158,7 +159,7 @@ bool lmDocument::OnNewDocumentWithContent(lmScore* pScore)
     return true;
 }
 
-void lmDocument::ReplaceScore(lmScore* pScore)
+void lmDocument::ReplaceScore(lmScore* pScore, bool fUpdateViews)
 {
     //this method is intended for undo/redo based on saving full scores.
     //It receives the score that has to replace current one. Current score
@@ -175,8 +176,23 @@ void lmDocument::ReplaceScore(lmScore* pScore)
 
     //update all view
     Modify(false);
-    wxView* pView = (wxView*)NULL;
-    UpdateAllViews(pView, new lmUpdateHint(lmHINT_NEW_SCORE));
+    if (fUpdateViews)
+        UpdateAllViews((wxView*)NULL, new lmUpdateHint(lmHINT_NEW_SCORE));
+    else
+    {
+        m_fIsBeingEdited = true;
+
+        ////Invalidate saved data about the score
+        //wxList& aViews = this->GetViews();
+        //wxList::compatibility_iterator node = aViews.GetFirst();
+        //while (node)
+        //{
+        //    wxView* pView = (wxView*)node->GetData();
+        //    if (pView->IsKindOf(CLASSINFO(lmScoreView)))
+        //        ((lmScoreView*)pView)->DeleteCaret();
+        //    node = node->GetNext();
+        //}
+    }
 }
 
 void lmDocument::OnCustomizeController(lmEditorMode* pMode)
@@ -229,14 +245,9 @@ void lmDocument::UpdateAllViews(wxView* sender, wxObject* hint)
     //hint represents optional information to allow a view to optimize its update.
 
 	m_pScore->SetModified( IsModified() );
+    m_fIsBeingEdited = false;
 	wxDocument::UpdateAllViews(sender, hint);
 }
-
-//void lmDocument::UpdateAllViews(bool fScoreModified, lmUpdateHint* pHints)
-//{
-//	m_pScore->SetModified(fScoreModified);
-//	wxDocument::UpdateAllViews((wxView*)NULL, pHints);
-//}
 
 #if wxUSE_STD_IOSTREAM
 //For Linux I can not manage to use wxStreams. Therefore, I include both alternatives

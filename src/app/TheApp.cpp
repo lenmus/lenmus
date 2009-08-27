@@ -308,6 +308,17 @@ bool lmTheApp::OnInit(void)
     sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_DataError_log.txt");
     g_pLogger->SetDataErrorTarget(sLogFile);
 
+    // open forensic log file
+    sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
+    if (g_pLogger->ForensicTargetExists(sLogFile))
+    {
+        //previous program run terminated with a crash.
+        //inform user and request permision to submit file for bug analysis
+        //TODO
+        wxMessageBox(_T("Previous program run abnormal termination. Forensic log deleted."));
+    }
+    g_pLogger->SetForensicTarget(sLogFile);
+
 #ifdef __WXDEBUG__
     //define trace masks to be known by trace system
 	g_pLogger->DefineTraceMask(_T("lmCadence"));
@@ -696,6 +707,10 @@ int lmTheApp::OnExit(void)
     delete g_pDB;
     wxSQLite3Database::ShutdownSQLite();
 
+    //remove forensic log and delete logger
+    g_pLogger->DeleteForensicTarget();
+    delete g_pLogger;                           //the error's logger
+
     // the printer setup data
     delete g_pPrintData;
     delete g_pPaperSetupData;
@@ -707,7 +722,6 @@ int lmTheApp::OnExit(void)
     delete g_pPaths;                            //path names
     delete g_pColors;                           //colors object
     delete wxConfigBase::Set((wxConfigBase *) NULL);    //the wxConfig object
-    delete g_pLogger;                           //the error's logger
     lmPgmOptions::DeleteInstance();             //the program options object
     delete m_pLocale;                           //locale object
     lmMusicFontManager::DeleteInstance();       //music font manager

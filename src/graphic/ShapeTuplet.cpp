@@ -250,6 +250,10 @@ wxString lmShapeTuplet::Dump(int nIndent)
 		m_nOwnerIdx, m_sGMOName.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
 	return sDump;
 }
 

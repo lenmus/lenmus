@@ -90,6 +90,9 @@ wxString lmShapeText::Dump(int nIndent)
     sDump += DumpBounds();
     sDump += _T("\n");
 
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
 	return sDump;
 }
 
@@ -398,6 +401,9 @@ wxString lmShapeTitle::Dump(int nIndent)
         m_uTextPos.x, m_uTextPos.y, m_sText.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
 
 	return sDump;
 }
@@ -719,6 +725,9 @@ wxString lmShapeTextbox::Dump(int nIndent)
     //    m_uTextPos.x, m_uTextPos.y, m_sText.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
 
 	return sDump;
 }

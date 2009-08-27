@@ -248,6 +248,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
             lmShape* pShape = CreateShape(nStaff-1, pBox, pPaper, colorC, sTopGlyphs, uxPosTop,
                                         uyPosTop + yOffset, sBottomGlyphs, uxPosBottom, 
                                         uyPosBottom + yOffset);
+            pShape->SetShapeLevel(nStaff==1 ? lm_eMainShape : lm_eSecondaryShape);
 	        pBox->AddShape(pShape, GetLayer());
             StoreShape(pShape);
 

@@ -241,6 +241,9 @@ wxString lmShapeLine::Dump(int nIndent)
     sDump += DumpBounds();
     sDump += _T("\n");
 
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
 	return sDump;
 }
 

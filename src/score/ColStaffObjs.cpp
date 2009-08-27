@@ -1336,10 +1336,21 @@ lmUPoint lmScoreCursor::GetCursorPoint(int* pNumPage)
     //Take positioning information from staff position
     lmBoxScore* pBS = (lmBoxScore*)pScore->GetGraphicObject();
     lmBoxPage* pBPage = pBS->GetPage(pBS->GetNumPages());
-    lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
-    lmShape* pShape = pBSystem->GetStaffShape(1);
-    uPos.y = pShape->GetYTop();
-    uPos.x = pShape->GetXLeft() + pScore->TenthsToLogical(20);
+    int nSystem = pBPage->GetFirstSystem();
+    if (nSystem > 0)
+    {
+        lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
+        lmShape* pShape = pBSystem->GetStaffShape(1);
+        uPos.y = pShape->GetYTop();
+        uPos.x = pShape->GetXLeft() + pScore->TenthsToLogical(20);
+    }
+    else
+    {
+        //score totally empty. No system displayed!
+        //position cursors at start of page
+        uPos.y = pBPage->GetYTop();
+        uPos.x = pBPage->GetXLeft() + pScore->TenthsToLogical(20);
+    }
 
     if (pNumPage)
         *pNumPage = pBPage->GetPageNumber();
@@ -2639,8 +2650,18 @@ float lmSegment::JoinSegment(lmSegment* pSegment)
 
 
     lmStaffObj* pFirst = pSegment->GetFirstSO();
+    if (!pFirst)
+    {
+        //segment is empty: we have deleted final barline
+        float rTime = 0.0f;
+        if (m_pLastSO)
+            rTime = m_pLastSO->GetTimePos() + m_pLastSO->GetTimePosIncrement();
+        return rTime;     
+    }
+
     lmStaffObj* pStart = m_pLastSO;
     m_pLastSO = pSegment->GetLastSO();
+    wxASSERT(m_pLastSO);    //must exists as segment is not empty
     CountObjects();
 
     //Adjust timepos and update segment pointer in all moved objects
@@ -3661,35 +3682,45 @@ bool lmColStaffObjs::ShiftTime(float rTimeShift)
     // returns true if error
 
     bool fError = false;
-
-    //compute new time
-    float rNewTime = GetCursorTimepos() + rTimeShift;
-
-    //check that new time is in current measure boundaries
+    bool fToEndOfTime = false;
+    float rNewTime;
     float rMaxTime = m_Segments[GetCursorSegment()]->GetDuration();
-    if (IsLowerTime(rNewTime, 0.0f))
+
+
+    if (IsEqualTime(-rTimeShift, lmTIME_SHIFT_START_END))
     {
-        //Move backwards: out of measure
-        if (!IsEqualTime(-rTimeShift, lmTIME_SHIFT_START_END))
+        //move to start of segment
+        rNewTime = 0.0f;
+    }
+    else if (IsEqualTime(rTimeShift, lmTIME_SHIFT_START_END))
+    {
+        //move to end of segment
+        rNewTime = rMaxTime;
+        fToEndOfTime = true;
+    }
+    else
+    {
+        rNewTime = GetCursorTimepos() + rTimeShift;
+
+        //check that new time is in current measure boundaries
+        if (IsLowerTime(rNewTime, 0.0f))
         {
             m_pOwner->SetError(_("Move backwards: out of measure"));
             fError = true;
+            rNewTime = 0.0f;
         }
-        rNewTime = 0.0f;
-    }
-    else if (IsHigherTime(rNewTime, rMaxTime))
-    {
-        //Move forward: out of measure
-        if (!IsEqualTime(rTimeShift, lmTIME_SHIFT_START_END))
+        else if (IsHigherTime(rNewTime, rMaxTime))
         {
             m_pOwner->SetError(_("Move forward: out of measure"));
             fError = true;
+            rNewTime = rMaxTime;
+            fToEndOfTime = true;
         }
-        rNewTime = rMaxTime;
     }
 
     //move cursor to required time
-    MoveCursorToTime(rNewTime);
+    MoveCursorToTime(rNewTime, fToEndOfTime);
+
     return fError;
 }
 

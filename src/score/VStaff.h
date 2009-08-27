@@ -154,8 +154,8 @@ public:
 
         //--- deleting StaffObjs
     bool Cmd_DeleteStaffObj(lmStaffObj* pSO);
-    bool Cmd_DeleteClef(lmClef* pClef);
-    bool Cmd_DeleteKeySignature(lmKeySignature* pKS);
+    bool Cmd_DeleteClef(lmClef* pClef, int nAction);
+    bool Cmd_DeleteKeySignature(lmKeySignature* pKS, int nAction);
     bool Cmd_DeleteTimeSignature(lmTimeSignature* pTS);
 
         //--- deleting AuxObjs
@@ -251,7 +251,7 @@ public:
 
     //renderization related methods
     lmBarline* GetBarlineOfMeasure(int nMeasure, lmLUnits* pPos = (lmLUnits*)NULL);
-    lmBarline* GetBarlineOfLastNonEmptyMeasure(lmLUnits* pPos);
+    lmBarline* GetBarlineOfLastNonEmptyMeasure(lmLUnits* pxPos, lmLUnits* pyPos);
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
 
@@ -273,6 +273,12 @@ public:
 
     //Debug methods
     wxString Dump();
+
+    //to clarify operations
+    int AskUserAboutClef();
+    int AskUserAboutKey();
+    bool CheckIfNotesAffectedByClef(bool fSkip);
+    bool CheckIfNotesAffectedByKey(bool fSkip);
 
 
 private:
@@ -302,12 +308,6 @@ private:
 	void XML_AddShitTimeTagIfNeeded(wxString& sSource, int nIndent, bool fFwd,
 								    float rTime, lmStaffObj* pSO);
     void XML_AddShitTimeTag(wxString& sSource, int nIndent, bool fFwd, float rTime);
-
-    //operations
-    int AskUserAboutClef();
-    int AskUserAboutKey();
-    bool CheckIfNotesAffectedByClef(bool fSkip);
-    bool CheckIfNotesAffectedByKey(bool fSkip);
 
     //barlines
     void CheckAndDoAutoBar(lmNoteRest* pNR);

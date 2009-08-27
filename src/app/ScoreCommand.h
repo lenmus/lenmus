@@ -76,8 +76,8 @@ protected:
     //common methods
     bool CommandDone(bool fCmdSuccess, int nUpdateHints=0);
     bool CommandUndone(int nUpdateHints=0);
-    void RestoreCursorAndPrepareForUndo();
-    inline void LogScoreState() {}
+    void PrepareForRedo();
+    void LogForensicData();
     void RestoreCursor();
     lmVStaff* GetVStaff();
     lmScoreObj* GetScoreObj(long nID);
@@ -95,6 +95,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdMoveObject: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdMoveObject)
 public:
     lmCmdMoveObject(bool fNormalCmd, const wxString& sName,
                     lmDocument *pDoc, lmGMObject* pGMO,
@@ -117,9 +118,10 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdDeleteStaffObj: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdDeleteStaffObj)
 public:
     lmCmdDeleteStaffObj(bool fNormalCmd, const wxString& name,
-                        lmDocument *pDoc, lmStaffObj* pSO);
+                        lmDocument *pDoc, lmStaffObj* pSO, bool fAskUser=true);
     ~lmCmdDeleteStaffObj() {}
 
     //implementation of pure virtual methods in base class
@@ -127,6 +129,8 @@ public:
 
 protected:
     long        m_nObjID;       //ID for object to delete
+    int         m_nAction;      //action to do if conflicts (i.e: ask user, cancel, ...)
+
 };
 
 
@@ -134,6 +138,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdDeleteSelection: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdDeleteSelection)
 public:
     lmCmdDeleteSelection(bool fNormalCmd,
                          const wxString& sName, lmDocument *pDoc,
@@ -144,7 +149,7 @@ public:
     bool Do();
 
 protected:
-    std::list<lmScoreCommand*>  m_Commands;     //commands to delete the selected objects
+    std::list<lmScoreCommand*>  m_Commands;     //commands to delete barlines
     std::set<long>              m_IgnoreSet;
 };
 
@@ -153,6 +158,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdDeleteTie: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdDeleteTie)
 public:
     lmCmdDeleteTie(bool fNormalCmd, const wxString& sName,
                    lmDocument *pDoc, lmNote* pEndNote);
@@ -174,6 +180,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdAddTie: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdAddTie)
 public:
     lmCmdAddTie(bool fNormalCmd, const wxString& sName, 
                 lmDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
@@ -193,8 +200,8 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdInsertBarline: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdInsertBarline)
 public:
-
     lmCmdInsertBarline(bool fNormalCmd, const wxString& name,
                        lmDocument *pDoc, lmEBarline nType);
     ~lmCmdInsertBarline() {}
@@ -211,8 +218,8 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdInsertClef: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdInsertClef)
 public:
-
     lmCmdInsertClef(bool fNormalCmd, const wxString& name,
                     lmDocument *pDoc, lmEClefType nClefType);
     ~lmCmdInsertClef() {}
@@ -229,8 +236,8 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdInsertFiguredBass: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdInsertFiguredBass)
 public:
-
     lmCmdInsertFiguredBass(bool fNormalCmd, lmDocument *pDoc, wxString& sFigBass);
     ~lmCmdInsertFiguredBass() {}
 
@@ -247,8 +254,8 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdInsertTimeSignature: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdInsertTimeSignature)
 public:
-
     lmCmdInsertTimeSignature(bool fNormalCmd,
                              const wxString& name, lmDocument *pDoc,
                              int nBeats, int nBeatType, bool fVisible);
@@ -269,8 +276,8 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdInsertKeySignature: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdInsertKeySignature)
 public:
-
     lmCmdInsertKeySignature(bool fNormalCmd,
                             const wxString& name, lmDocument *pDoc,
                             int nFifths, bool fMajor, bool fVisible);
@@ -291,8 +298,8 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdInsertNote: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdInsertNote)
 public:
-
     lmCmdInsertNote(bool fNormalCmd,
                     const wxString& name, lmDocument *pDoc,
 					lmEPitchType nPitchType, int nStep, int nOctave,
@@ -326,8 +333,8 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdInsertRest: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdInsertRest)
 public:
-
     lmCmdInsertRest(bool fNormalCmd,
                     const wxString& name, lmDocument *pDoc,
 					lmENoteType nNoteType, float rDuration, int nDots, int nVoice);
@@ -348,6 +355,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangeNotePitch: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangeNotePitch)
 public:
 
     lmCmdChangeNotePitch(bool fNormalCmd,
@@ -369,6 +377,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangeNoteAccidentals: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangeNoteAccidentals)
 public:
 
     lmCmdChangeNoteAccidentals(bool fNormalCmd,
@@ -398,6 +407,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangeNoteRestDots: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangeNoteRestDots)
 public:
 
     lmCmdChangeNoteRestDots(bool fNormalCmd,
@@ -418,6 +428,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdDeleteTuplet: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdDeleteTuplet)
 public:
     lmCmdDeleteTuplet(bool fNormalCmd, 
                       const wxString& sName, lmDocument *pDoc, lmNoteRest* pStartNR);
@@ -435,6 +446,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdAddTuplet: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdAddTuplet)
 public:
     lmCmdAddTuplet(bool fNormalCmd, const wxString& sName,
                    lmDocument *pDoc, lmGMSelection* pSelection, bool fShowNumber, int nNumber,
@@ -460,6 +472,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdBreakBeam: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdBreakBeam)
 public:
     lmCmdBreakBeam(bool fNormalCmd, const wxString& sName,
                    lmDocument *pDoc, lmNoteRest* pBeforeNR);
@@ -477,6 +490,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdJoinBeam: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdJoinBeam)
 public:
     lmCmdJoinBeam(bool fNormalCmd, const wxString& sName,
                   lmDocument *pDoc, lmGMSelection* pSelection);
@@ -494,6 +508,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangeText: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangeText)
 public:
 
     lmCmdChangeText(bool fNormalCmd, const wxString& name,
@@ -527,6 +542,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangePageMargin: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangePageMargin)
 public:
     lmCmdChangePageMargin(bool fNormalCmd,
                           const wxString& sName, lmDocument *pDoc, lmGMObject* pGMO,
@@ -551,6 +567,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdAttachText: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdAttachText)
 public:
     lmCmdAttachText(bool fNormalCmd, lmDocument *pDoc, wxString& sText,
                     lmTextStyle* pStyle, lmEHAlign nAlign,
@@ -573,6 +590,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdAddTitle: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdAddTitle)
 public:
     lmCmdAddTitle(bool fNormalCmd, lmDocument *pDoc, wxString& sText,
                   lmTextStyle* pStyle, lmEHAlign nAlign);
@@ -593,6 +611,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangeBarline : public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangeBarline)
 public:
 
     lmCmdChangeBarline(bool fNormalCmd, lmDocument *pDoc, lmBarline* pBL, lmEBarline nType, bool fVisible);
@@ -616,6 +635,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangeFiguredBass : public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangeFiguredBass)
 public:
     lmCmdChangeFiguredBass(bool fNormalCmd, lmDocument *pDoc, lmFiguredBass* pFB, 
                            wxString& sFigBass);
@@ -637,6 +657,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdChangeMidiSettings : public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdChangeMidiSettings)
 public:
 
     lmCmdChangeMidiSettings(bool fNormalCmd, lmDocument *pDoc, lmInstrument* pInstr,
@@ -661,6 +682,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdMoveNote: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdMoveNote)
 public:
     lmCmdMoveNote(bool fNormalCmd, lmDocument *pDoc, lmNote* pNote, const lmUPoint& uPos, int nSteps);
     ~lmCmdMoveNote() {}
@@ -681,6 +703,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdMoveObjectPoints: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdMoveObjectPoints)
 public:
     lmCmdMoveObjectPoints(bool fNormalCmd, const wxString& name, lmDocument *pDoc,
                           lmGMObject* pGMO, lmUPoint uShifts[],
@@ -703,6 +726,7 @@ protected:
 //------------------------------------------------------------------------------------
 class lmCmdScoreProcessor: public lmScoreCommand
 {
+	DECLARE_CLASS(lmCmdScoreProcessor)
 public:
     lmCmdScoreProcessor(bool fNormalCmd, lmDocument *pDoc, lmScoreProcessor* pProc);
     ~lmCmdScoreProcessor();

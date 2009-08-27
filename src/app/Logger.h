@@ -107,19 +107,23 @@ public:
     lmLogger();
     ~lmLogger();
 
-    void SetDataErrorTarget(wxString sPath);
-    void SetTraceTarget(wxString sPath);
+    void SetDataErrorTarget(wxString& sPath);
+    void SetTraceTarget(wxString& sPath);
+    void SetForensicTarget(wxString& sPath);
+    void DeleteForensicTarget();
+    bool ForensicTargetExists(wxString& sPath);
 
     void ReportProblem(const wxChar* szFormat, ...);
     void ReportBug(const wxChar* szFormat, ...);
     void FlushDataErrorLog();
+    void FlushForensicLog();
     void ShowDataErrors(wxString sTitle = _("Errors"));
     void LogDataError(const wxChar* szFormat, ...);
-
     void LogFatalError(const wxChar* szFormat, ...);
     void LogError(const wxChar* szFormat, ...);
     void LogWarning(const wxChar* szFormat, ...);
     void LogMessage(const wxChar* szFormat, ...);
+    void LogForensic(const wxChar* szFormat, ...);
     void LogVerbose(const wxChar* szFormat, ...);
     void LogSysError(const wxChar* szFormat, ...);
 #ifdef __WXDEBUG__
@@ -147,8 +151,10 @@ public:
 private:
     wxFile*         m_pTrace;
     wxFile*         m_pDataError;
+    wxFile*         m_pForensic;
     wxArrayString   m_aMasks;
     wxString        m_sDataErrorPath;
+    wxString        m_sForensicPath;
 
 };
 

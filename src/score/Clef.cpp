@@ -161,6 +161,7 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
         //create the shape object
         lmShape* pShape = CreateShape(pBox, pPaper, uPos, colorC, fSmallClef);
+        pShape->SetShapeLevel(lm_eMainShape);
     }
 
     //return total width (incremented in one line for after space)

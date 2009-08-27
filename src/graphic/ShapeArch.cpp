@@ -114,6 +114,10 @@ wxString lmShapeArch::Dump(int nIndent)
                 (m_fArchUnder ? _T("yes") : _T("no")) );
     sDump += DumpBounds();
     sDump += _T("\n");
+
+    //base class
+    sDump += lmShape::Dump(nIndent);
+
 	return sDump;
 }
 
