@@ -435,8 +435,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         (*pNumChords)++;
 // todo: set definitive colour       colour = *wxGREEN;
         colour = wxColour(10,255,0,128); // R, G, B, Transparency
-        // todo: consider, no necessary to display good chords?
-        pInfoBox->DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
+//todo: remove; not important        pInfoBox->DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
         fOk = true;
     }
     else
@@ -726,8 +725,9 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
         if (nExerciseErrors > 0)
         {
-            wxString sOkMsg = wxString::Format( _(" Exercise errors: %d"), nExerciseErrors);
-           pInfoBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], *wxRED, sOkMsg );
+         // TODO: remove; not important
+         //   wxString sOkMsg = wxString::Format( _(" Exercise errors: %d"), nExerciseErrors);
+         //   pInfoBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], *wxRED, sOkMsg );
         }
         else
         {

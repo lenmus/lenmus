@@ -879,7 +879,8 @@ lmEChordType lmChord::ComputeChordType()
             {
                 lmFIntval fi = GetInterval(i);
                 //look for this interval
-                for (int j = 0; j < nNumIntervals; j++)
+                int j;
+                for (j = 0; j < nNumIntervals; j++)
                 {
                     if (fi == tData[nIntv].nIntervals[j])
                         break;
