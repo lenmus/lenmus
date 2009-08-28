@@ -118,7 +118,7 @@ class lmBarline;
 class lmNoteRest;
 class lmBeam;
 class lmTupletBracket;
-class lmChord;
+class lmChordLayout;
 struct lmTBeamInfo;
 class lmNote;
 class lmRest;
@@ -149,7 +149,6 @@ class lmHandler;
 #include "TupletBracket.h"
 #include "Note.h"
 #include "Rest.h"
-#include "Chord.h"
 #include "ColStaffObjs.h"
 #include "../app/Paper.h"
 

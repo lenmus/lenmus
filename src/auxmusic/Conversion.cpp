@@ -121,7 +121,7 @@ wxString lmConverter::NoteBitsToName(lmNoteBits& tBits, lmEKeySignatures nKey)
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
     int nAccidentals[7];
-    ComputeAccidentals(nKey, nAccidentals);
+    lmComputeAccidentals(nKey, nAccidentals);
 
     //compute accidentals note accidentals
     wxString sResult = _T("");

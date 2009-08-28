@@ -38,7 +38,7 @@
 
 #include "../ldp_parser/LDPParser.h"
 #include "dialogs/DlgCfgIdfyCadence.h"
-#include "../auxmusic/ChordManager.h"
+#include "../auxmusic/Chord.h"
 #include "../auxmusic/Cadence.h"
 
 
@@ -367,7 +367,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
         }
         else {
             // Use tonic chord
-            lmChordManager* pChord = oCad.GetTonicChord();
+            lmChord* pChord = oCad.GetTonicChord();
             int nNumNotes = pChord->GetNumNotes();
             sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" w)");
             pNode = parserLDP.ParseText( sPattern );

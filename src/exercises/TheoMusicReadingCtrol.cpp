@@ -47,7 +47,7 @@ extern lmMainFrame* g_pMainFrame;
 
 
 // access to global functions
-extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
+extern void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
 extern int GetRootNoteIndex(lmEKeySignatures nKeySignature);
 extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
 

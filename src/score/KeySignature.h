@@ -94,7 +94,7 @@ private:
 //
 // global functions related to KeySignatures
 //
-extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
+extern void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
 extern int GetRootNoteIndex(lmEKeySignatures nKeySignature);
 extern bool IsMajor(lmEKeySignatures nKeySignature);
 extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);

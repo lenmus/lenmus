@@ -43,6 +43,7 @@
 #include "Context.h"
 #include "ColStaffObjs.h"
 #include "StaffObjIterator.h"
+#include "ChordLayout.h"
 #include "../app/ScoreView.h"
 #include "../app/ScoreDoc.h"
 #include "../app/MainFrame.h"
@@ -2109,7 +2110,7 @@ void lmSegment::AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStart
 
     //determine new applicable accidentals
     int nAccidentals[7];
-    ComputeAccidentals(pNewKey->GetKeyType(), nAccidentals);
+    lmComputeAccidentals(pNewKey->GetKeyType(), nAccidentals);
 
     //locate start point
     lmStaffObj* pFirst = (pStartSO ? pStartSO : m_pFirstSO);
@@ -2148,8 +2149,8 @@ void lmSegment::ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
 
     //determine increment/decrement of pitch for each step
     int nNewAcc[7], nOldAcc[7], nPitchDiff[7];
-    ComputeAccidentals(pNewKey->GetKeyType(), nNewAcc);
-    ComputeAccidentals(pOldKey->GetKeyType(), nOldAcc);
+    lmComputeAccidentals(pNewKey->GetKeyType(), nNewAcc);
+    lmComputeAccidentals(pOldKey->GetKeyType(), nOldAcc);
     for (int i=0; i < 7; i++)
         nPitchDiff[i] = nNewAcc[i] - nOldAcc[i];
 

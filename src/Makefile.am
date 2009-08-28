@@ -55,7 +55,7 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     app/toolbox/ToolSymbols.cpp \
     app/WelcomeWnd.cpp \
     auxmusic/Cadence.cpp \
-    auxmusic/ChordManager.cpp \
+    auxmusic/Chord.cpp \
     auxmusic/Composer.cpp \
     auxmusic/ComposerV6.cpp \
     auxmusic/Conversion.cpp \
@@ -149,7 +149,7 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     score/AuxObj.cpp \
     score/Barline.cpp \
     score/Beam.cpp \
-    score/Chord.cpp \
+    score/ChordLayout.cpp \
     score/Clef.cpp \
     score/ColStaffObjs.cpp \
     score/Context.cpp \

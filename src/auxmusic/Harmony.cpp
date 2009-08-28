@@ -169,7 +169,7 @@ void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
 //
 // class lmChordDescriptor
 //
-// Todo: consider to merge lmChordDescriptor and lmChordManager into a single class
+// Todo: consider to merge lmChordDescriptor and lmChord into a single class
 //
 wxString lmChordDescriptor::ToString()
 {

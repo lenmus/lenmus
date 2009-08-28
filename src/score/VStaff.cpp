@@ -76,6 +76,7 @@
 #include "Context.h"
 #include "Spacer.h"
 #include "MetronomeMark.h"
+#include "ChordLayout.h"
 #include "../sound/SoundManager.h"
 #include "../app/global.h"
 #include "../app/TheApp.h"		//to access g_rScreenDPI and g_rPixelsPerLU

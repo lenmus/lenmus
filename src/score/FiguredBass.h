@@ -55,6 +55,7 @@ typedef struct lmFiguredBassInfo_Data
     wxString                sPrefix;        //string with all prefix chars.
     wxString                sSuffix;        //string with all suffix chars.
     wxString                sOver;          //string with all overlayed chars
+    bool                    fSounds;        //the interval exists and must sound
 }
 lmFiguredBassInfo;
 
@@ -75,6 +76,10 @@ public:
     // properties
     inline float GetTimePosIncrement() { return 0; }
 	inline wxString GetName() const { return _T("figured bass"); }
+
+    //information
+    lmEIntervalQuality GetIntervalQuality(int nIntv);
+    bool IntervalSounds(int nIntv);
 
     //layout
     bool IsAligned() { return true; }

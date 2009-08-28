@@ -41,6 +41,7 @@
 #include "Staff.h"
 #include "Context.h"
 #include "Glyph.h"
+#include "ChordLayout.h"
 #include "../ldp_parser/AuxString.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeLine.h"
@@ -209,7 +210,7 @@ lmNote::lmNote(lmVStaff* pVStaff, long nID, lmEPitchType nPitchType,
     m_nVolume = -1;
 
     //if the note is part of a chord find the base note and take some values from it
-    m_pChord = (lmChord*)NULL;		//by defaul note is not in chord
+    m_pChord = (lmChordLayout*)NULL;		//by defaul note is not in chord
     m_fNoteheadReversed = false;
     if (pBaseOfChord)
 	{
@@ -217,7 +218,7 @@ lmNote::lmNote(lmVStaff* pVStaff, long nID, lmEPitchType nPitchType,
         if (pBaseOfChord->IsInChord())
             m_pChord = pBaseOfChord->GetChord();
         else
-			m_pChord = new lmChord(pBaseOfChord);
+			m_pChord = new lmChordLayout(pBaseOfChord);
 
         m_pChord->Include(this);
     }
@@ -259,7 +260,7 @@ lmNote::~lmNote()
         m_pChord->Remove(this);
         if (m_pChord->NumNotes() == 1) {
             delete m_pChord;
-            m_pChord = (lmChord*)NULL;
+            m_pChord = (lmChordLayout*)NULL;
         }
     }
 
@@ -502,7 +503,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
                                    m_fStemDown, m_uStemThickness, colorC);
 
 
-    //if this is the first note of a chord, give lmChord the responsibility for
+    //if this is the first note of a chord, give lmChordLayout the responsibility for
 	//layouting the chord (only note heads, accidentals and rests). If it is
     //any other note of a chord, do nothing and mark the note as 'already layouted'.
     bool fNoteLayouted = false;
@@ -673,7 +674,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         m_pChord->AddStemShape(pPaper, colorC, GetSuitableFont(pPaper), m_pVStaff,
 							   m_nStaffNum);
         //AWARE: m_pShapeStem created in all the notes that form the chord at start
-        //of layout method will be deleted in previous method lmChord::AddStemShape
+        //of layout method will be deleted in previous method lmChordLayout::AddStemShape
     }
 
 
@@ -711,7 +712,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 		m_pTuplet->LayoutObject(pBox, pPaper, colorC);
 
 	//if not used, delete stem shape created at start of this method.
-    //For chords, stem will be deleted when invoking lmChord::AddStemShape in last note
+    //For chords, stem will be deleted when invoking lmChordLayout::AddStemShape in last note
     //of the chord, so we cannot delete the stem here.
     //For notes shorter than half notes that are not beamed, stem is not necessary
     //as they are drawn using a single glyph, so we have also to delete the stem shape.

@@ -140,8 +140,11 @@ extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
 // 'no interval defined', 'end of list', etc.
 #define lmNULL_FIntval  -1
 
-//lmFIntval methods
-extern lmFIntval FIntval(wxString& sName);              //interval constructor
+//lmFIntval 'constructors'
+extern lmFIntval FIntval(wxString& sName);
+extern lmFIntval FIntval_FromType(int nIntv, lmEIntervalType nType);
+
+//lmFIntval 'methods'
 extern int FIntval_GetNumber(lmFIntval fi);             //get interval number. i.e. 1, 4
 extern wxString FIntval_GetIntvCode(lmFIntval fi);      //get code i.e. "m2", "p4", "da3"
 extern wxString FIntval_GetName(lmFIntval fi);          //get name. i.e. "Major 3rd"

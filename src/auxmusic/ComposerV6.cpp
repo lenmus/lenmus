@@ -882,7 +882,7 @@ void lmComposer6::FunctionToChordNotes(lmEKeySignatures nKey, long nFunction,
     //D Major, I  --> d4, +f4, a4
 
     int nAcc[7];
-    ComputeAccidentals(nKey, nAcc);
+    lmComputeAccidentals(nKey, nAcc);
     int nStep = GetRootStep(nKey);
     lmAPitch aScale[15];
     int nOctave = lmOCTAVE_4;
@@ -965,7 +965,7 @@ lmAPitch lmComposer6::MoveByChromaticStep(bool fUpStep, lmAPitch nPitch)
 void lmComposer6::GenerateScale(lmEKeySignatures nKey, lmAPitch aNotes[7])
 {
     int nAcc[7];
-    ComputeAccidentals(nKey, nAcc);
+    lmComputeAccidentals(nKey, nAcc);
     int nStep = GetRootStep(nKey);
     for (int iN=0; iN < 7; iN++) {
         aNotes[iN].Set(nStep, lmOCTAVE_4, nAcc[nStep]);

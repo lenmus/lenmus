@@ -44,6 +44,7 @@
 #include <algorithm>
 
 #include "Score.h"
+#include "ChordLayout.h"
 #include "../graphic/ShapeBeam.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"

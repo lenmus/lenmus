@@ -42,7 +42,7 @@
 #include "Interval.h"
 #include "../exercises/CadencesConstrains.h"
 #include "Conversion.h"
-#include "ChordManager.h"
+#include "Chord.h"
 
 
 // auxiliary object to comfortably manage chords
@@ -136,10 +136,10 @@ public:
 
     lmECadenceType GetCadenceType() { return m_nType; }
     int GetNumChords() { return m_nNumChords; }
-    lmChordManager* GetChord(int iC);
+    lmChord* GetChord(int iC);
 	wxString GetName();
     wxString GetNotePattern(int iChord, int iNote);
-    lmChordManager* GetTonicChord();
+    lmChord* GetTonicChord();
 
 
 private:
@@ -148,9 +148,9 @@ private:
                          bool fUseGrandStaff);
 
     int GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
-						   lmChordManager* pChord, int nInversion);
+						   lmChord* pChord, int nInversion);
     int GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
-						  lmChordManager* pChord, int nInversion, int iPrevHChord);
+						  lmChord* pChord, int nInversion, int iPrevHChord);
     int FilterChords(std::vector<lmHChord>& aChords, int nNumChords, lmChordAuxData& tChordData,
                      lmHChord* pPrevChord, bool fExhaustive=false);
     void SelectLessBad(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
@@ -171,8 +171,8 @@ private:
 	int				m_nImperfectCad;		
     lmEKeySignatures  m_nKey;
     bool            m_fTonicCreated;
-    lmChordManager  m_oTonicChord;
-    lmChordManager  m_aChord[lmCHORDS_IN_CADENCE];
+    lmChord  m_oTonicChord;
+    lmChord  m_aChord[lmCHORDS_IN_CADENCE];
     int             m_nInversions[lmCHORDS_IN_CADENCE];
     int             m_nNumChords;       //num of chords in this cadence
     lmHChord        m_Chord[lmCHORDS_IN_CADENCE];

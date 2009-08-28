@@ -45,42 +45,42 @@ lmCommonFBData;
 
 static const lmCommonFBData m_CommonFB[] = 
 {
-    { 0,    _T("#") },
-    { 1,    _T("b") },
-    { 2,    _T("=") },
+    { 0,    _T("#") },        //5 #3
+    { 1,    _T("b") },        //5 b3
+    { 2,    _T("=") },        //5 =3
     { 3,    _T("2") },        //6 4 2
     { 4,    _T("#2") },       //6 4 #2. Raise 2 by a 1/2 step (not necessarily a sharp)
     { 5,    _T("b2") },       //6 4 b2. Lower 2 by a 1/2 step (not necessarily a flat)
     { 6,    _T("=2") },       //6 4 =2. Make 2 natural regardless of key signature
     { 7,    _T("2+") },       //6 4 #2. (Usu. dim. 7th chord) Raise 2 by 1/2 step
-    { 8,    _T("2 3") },      //7 4 2 / 8 5 3. (bass moves, upper voices hold)
-    { 9,    _T("3") },        //8 5 3
-    { 10,   _T("4") },        //8 5 4. (Usu. 4 3)
+    { 8,    _T("2 3") },      //7 4 2 / 8 5 3. (bass moves, upper voices hold)          //??
+    { 9,    _T("3") },        //5 3
+    { 10,   _T("4") },        //5 4. (Usu. 4 3)
     //{ 11,   _T("4 3") },      //8 5 4 / 8 5 3
     { 12,   _T("4 2") },      //6 4 2
     { 13,   _T("4+ 2") },     //6 #4 2. Raise 4 1/2 step
     { 14,   _T("4 3") },      //6 4 3
-    { 15,   _T("5") },        //8 5 3
-    { 16,   _T("5 #") },
-    { 17,   _T("5 b") },
-    { 18,   _T("5+") },       //8 #5 3. Raise 5 1/2 step
+    { 15,   _T("5") },        //5 3
+    { 16,   _T("5 #") },      //5 #3
+    { 17,   _T("5 b") },      //5 b3
+    { 18,   _T("5+") },       //#5 3. Raise 5 1/2 step
     { 19,   _T("5/") },       //6 5 3. indicates dim. 5th
-    { 20,   _T("5 3") },      //8 5 3
-    { 21,   _T("5 4") },      //8 5 4. (Usu. 4 3)
-    { 22,   _T("6") },        //(8) 6 3
-    { 23,   _T("6 #") },
-    { 24,   _T("6 b") },
-    { 25,   _T("6\\") },      //(8) #6 3. (Raise 6 by 1/2 step)
-    { 26,   _T("6 3") },      //(8) 6 3
-    { 27,   _T("6 #3") },
-    { 28,   _T("6 b3") },
-    { 29,   _T("6 4") },      //8 6 4
+    { 20,   _T("5 3") },      //5 3
+    { 21,   _T("5 4") },      //5 4. (Usu. 4 3)
+    { 22,   _T("6") },        //6 3
+    { 23,   _T("6 #") },      //6 #3
+    { 24,   _T("6 b") },      //6 b3
+    { 25,   _T("6\\") },      //#6 3. (Raise 6 by 1/2 step)
+    { 26,   _T("6 3") },      //6 3
+    { 27,   _T("6 #3") },     //6 #3
+    { 28,   _T("6 b3") },     //6 b3
+    { 29,   _T("6 4") },      //6 4
     { 30,   _T("6 4 2") },    //6 4 2
     { 31,   _T("6 4 3") },    //6 4 3
     { 32,   _T("6 5") },      //6 3 5
     { 33,   _T("6 5 3") },    //6 5 3
-    { 34,   _T("7") },        //7 3 5
-    { 35,   _T("7 4 2") },    //7 4 2 / 8 3 (1)
+    { 34,   _T("7") },        //7 5 3
+    { 35,   _T("7 4 2") },    //7 4 2 / 8 3 (1)                         //??
     { 36,   _T("8") },        //Play the bass line alone in octaves
     { 37,   _T("9") },        //9 5 3. (Usu. 9 8)
     { 38,   _T("10") },       //parallel 10ths
@@ -289,6 +289,24 @@ void lmFiguredBass::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
     //copy internal data
     for (int i=0; i <= lmFB_MAX_INTV; i++)
          *(pFBInfo + i) = m_tFBInfo[i];
+}
+
+lmEIntervalQuality lmFiguredBass::GetIntervalQuality(int nIntv)
+{
+    //return the interval quality for interval number nIntv (2..13)
+
+    wxASSERT(nIntv > 1 && nIntv <= 13);
+
+    return m_tFBInfo[nIntv].nQuality;
+}
+
+bool lmFiguredBass::IntervalSounds(int nIntv)
+{
+    //return true if interval number nIntv (2..13) must be present in chord
+
+    wxASSERT(nIntv > 1 && nIntv <= 13);
+
+    return m_tFBInfo[nIntv].fSounds;
 }
 
 lmUPoint lmFiguredBass::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)

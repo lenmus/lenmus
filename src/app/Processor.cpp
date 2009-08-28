@@ -55,7 +55,7 @@ extern lmMainFrame* GetMainFrame();
 //access to error's logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
-#include "../auxmusic/ChordManager.h"
+#include "../auxmusic/Chord.h"
 #include "../auxmusic/HarmonyExercisesData.h"
 
 //-------------------------------------------------------------------------------------------
@@ -427,7 +427,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     if (fCanBeCreated)
     {
         lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0]; // Even with inversions, the first note is the root
-        ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
+        ptChordDescriptor->pChord = new lmChord(pChordBaseNote, tChordInfo);
 
         sStatusStr = wxString::Format(
                 _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString() );
@@ -443,7 +443,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     {
        // Even with errors, the chord is created and used for analysis of progression  (TODO: confirm this)
         lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0];
-        ptChordDescriptor->pChord = new lmChordManager(pChordBaseNote, tChordInfo);
+        ptChordDescriptor->pChord = new lmChord(pChordBaseNote, tChordInfo);
 
         sStatusStr = wxString::Format(
                 _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString() );

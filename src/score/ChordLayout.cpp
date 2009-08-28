@@ -19,7 +19,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "Chord.h"
+#pragma implementation "ChordLayout.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -38,6 +38,7 @@
 #include "Score.h"
 #include "VStaff.h"
 #include "Glyph.h"
+#include "ChordLayout.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
@@ -52,7 +53,7 @@ int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 }
 
 
-lmChord::lmChord(lmNote* pBaseNote)
+lmChordLayout::lmChordLayout(lmNote* pBaseNote)
 {
     // Creates the chord object, with only the base note.
 
@@ -63,7 +64,7 @@ lmChord::lmChord(lmNote* pBaseNote)
 	pBaseNote->OnIncludedInChord(this);
 }
 
-lmChord::~lmChord()
+lmChordLayout::~lmChordLayout()
 {
     // Destructor. When invoked, only from lmNote destructor, there must be only one
     // note: the base note.
@@ -79,7 +80,7 @@ lmChord::~lmChord()
     m_Notes.clear();
 }
 
-wxString lmChord::Dump()
+wxString lmChordLayout::Dump()
 {
     wxString sDump = wxString::Format(_T("Chord: num.notes=%d ("), NumNotes());
 
@@ -95,7 +96,7 @@ wxString lmChord::Dump()
     return sDump;
 }
 
-void lmChord::Include(lmNote* pNewNote, int nIndex)
+void lmChordLayout::Include(lmNote* pNewNote, int nIndex)
 {
     // Add a note to the chord. Index is the position taht the added note must occupy
 	// (0..n). If -1, note will be added at the end.
@@ -127,7 +128,7 @@ void lmChord::Include(lmNote* pNewNote, int nIndex)
 
 }
 
-void lmChord::Remove(lmNote* pNoteToRemove)
+void lmChordLayout::Remove(lmNote* pNoteToRemove)
 {
 	// Removes a note from a chord.
 	// When invoked there must be at least two notes as
@@ -141,7 +142,7 @@ void lmChord::Remove(lmNote* pNoteToRemove)
     m_Notes.erase(it);
 }
 
-int lmChord::GetNoteIndex(lmNote* pNote)
+int lmChordLayout::GetNoteIndex(lmNote* pNote)
 {
 	//returns the position in the notes list (0..n)
 
@@ -157,7 +158,7 @@ int lmChord::GetNoteIndex(lmNote* pNote)
 	return 0;			//compiler happy
 }
 
-void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
+void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
 						   wxFont* pFont, lmVStaff* pVStaff, int nStaff)
 {
 	// Add the shape for the stem of the chord.
@@ -250,7 +251,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShape();
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
-	//wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
+	//wxLogMessage(_T("[lmChordLayout::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
 	//	uxStem, uyStartStem, uyStemEnd, uyFlag, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
     lmShapeStem* pStem =
         new lmShapeStem(pShapeNote->GetScoreOwner(), uxStem, uyStartStem, uExtraLenght,
@@ -280,7 +281,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     }
 }
 
-lmNote* lmChord::GetMaxNote() 
+lmNote* lmChordLayout::GetMaxNote() 
 {
     std::list<lmNote*>::iterator it = m_Notes.begin();
 	lmDPitch dMaxPitch = (*it)->GetDPitch();
@@ -297,7 +298,7 @@ lmNote* lmChord::GetMaxNote()
     return pMaxNote; 
 }
 
-lmNote* lmChord::GetMinNote() 
+lmNote* lmChordLayout::GetMinNote() 
 { 
     std::list<lmNote*>::iterator it = m_Notes.begin();
 	lmDPitch dMinPitch = (*it)->GetDPitch();
@@ -314,7 +315,7 @@ lmNote* lmChord::GetMinNote()
     return pMinNote; 
 }
 
-void lmChord::ComputeStemDirection()
+void lmChordLayout::ComputeStemDirection()
 {
     //  Rules (taken from www.coloradocollege.edu/dept/mu/mu2/musicpress/NotesStems.html
     //
@@ -385,13 +386,13 @@ void lmChord::ComputeStemDirection()
     }
 
     //update max and min notes with conclusion about stem direction.
-    //AWARE: for chords, setting the base note forces to call lmChord::SetStemDirection()
+    //AWARE: for chords, setting the base note forces to call lmChordLayout::SetStemDirection()
     //  to setup also max and min notes
     pBaseNote->SetStemDirection(m_fStemDown);
 
 }
 
-void lmChord::SetStemDirection(bool fStemDown)
+void lmChordLayout::SetStemDirection(bool fStemDown)
 {
     m_fStemDown = fStemDown;
     lmNote* pBaseNote = GetBaseNote();
@@ -402,7 +403,7 @@ void lmChord::SetStemDirection(bool fStemDown)
 
 }
 
-void lmChord::ArrangeNoteheads()
+void lmChordLayout::ArrangeNoteheads()
 {
     //arrange noteheads at left/right of stem to avoid collisions
     //This method asumes that the stem direction has been computed
@@ -442,7 +443,7 @@ void lmChord::ArrangeNoteheads()
 
 }
 
-void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
+void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
 {
     //Step 1) arrange noteheads at left/right of stem to avoid collisions
     //As result, flag fNoteheadReversed is set for all notes in the chord. No
@@ -541,7 +542,7 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
         }
 
         //compute notehead's position
-		///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] adding note %d, xPos=%.2f, reversed=%s"),
+		///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] adding note %d, xPos=%.2f, reversed=%s"),
 		//      	iN, xPos + uPaperPos.x, ((*it)->IsNoteheadReversed() ? _T("yes") : _T("no")) );
 		(*it)->AddNoteShape(pNoteShape, pPaper, xPos + uPaperPos.x, yPos + uPaperPos.y, colorC);
         pNoteHead = (*it)->GetNoteheadShape();
@@ -552,7 +553,7 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
             //try to render at right of colliding accidental
 			lmLUnits uShift = (pCrashNote->GetAccidentals())->GetWidth();
 			(*it)->ShiftNoteHeadShape(uShift);
-			///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] shift note %d, uShift=%.2f"),
+			///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] shift note %d, uShift=%.2f"),
 			//                     iN, uShift );
             //check again for collision
             pCrashNote = CheckIfNoteCollision(pNoteHead);
@@ -567,32 +568,32 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 
     //a) Compute common anchor line as the max anchor line position
 
-	///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] Compute common anchor line:"));
+	///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] Compute common anchor line:"));
     lmLUnits uMaxAnchor = -99999;
 	it = m_Notes.begin();
 	for(; it != m_Notes.end(); ++it)
 	{
         uMaxAnchor = wxMax(uMaxAnchor, (*it)->GetAnchorPos());
-		///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] note %d, uMaxAnchor=%.2f, pNote->GetAnchorPos = %.2f"),
+		///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] note %d, uMaxAnchor=%.2f, pNote->GetAnchorPos = %.2f"),
 		//          	++iNote, uMaxAnchor, pNote->GetAnchorPos() );
     }
 
 	//b) Add a shift to each note so that its anchor line become the max anchor line
-	///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] Adding a shift to each note:"));
+	///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] Adding a shift to each note:"));
     lmLUnits uShift;
 	it = m_Notes.begin();
 	for(; it != m_Notes.end(); ++it)
 	{
         pNoteHead = (*it)->GetNoteheadShape();
         uShift = uMaxAnchor - (*it)->GetAnchorPos();
-		///*dbg*/ wxLogMessage(_T("[lmChord::LayoutNoteHeads] uShift=%.2f"), uShift );
+		///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] uShift=%.2f"), uShift );
         (*it)->ShiftNoteHeadShape(uShift);
     }
 
 
 }
 
-lmLUnits lmChord::GetXRight()
+lmLUnits lmChordLayout::GetXRight()
 {
 	lmLUnits uxRight = 0.0;
 	std::list<lmNote*>::iterator it = m_Notes.begin();
@@ -603,7 +604,7 @@ lmLUnits lmChord::GetXRight()
 	return uxRight;
 }
 
-lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape)
+lmNote* lmChordLayout::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape)
 {
 	//Check to see if the shape pShape overlaps any accidental of
     //the chord, from first note to note iCurNote (excluded, range: 1..NumNotes())
@@ -653,7 +654,7 @@ lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNo
 
 }
 
-lmNote* lmChord::CheckIfNoteCollision(lmShape* pShape)
+lmNote* lmChordLayout::CheckIfNoteCollision(lmShape* pShape)
 {
 	//Check to see if the shape pShape overlaps any accidental of the chord
     //If no collision returns NULL, otherwse, returns the Note
@@ -678,7 +679,7 @@ lmNote* lmChord::CheckIfNoteCollision(lmShape* pShape)
 
 }
 
-void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
+void lmChordLayout::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
 {
     wxASSERT(pNote->HasAccidentals());
 
@@ -701,12 +702,12 @@ void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN
 
         xPos += ((pCrashNote->GetAccidentals())->GetShape())->GetWidth();
         pAccidental->MoveTo(xPos, yPos);
-		//wxLogMessage(_T("[lmChord::ComputeAccidentalLayout] Accidental moved to (%.2f, %.2f)"), xPos, yPos);
+		//wxLogMessage(_T("[lmChordLayout::ComputeAccidentalLayout] Accidental moved to (%.2f, %.2f)"), xPos, yPos);
         //check again for collision
         pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
         nWatchDog++;
         if (nWatchDog > 1000) {
-            wxLogMessage(_T("[lmChord::ComputeAccidentalLayout] Loop detected"));
+            wxLogMessage(_T("[lmChordLayout::ComputeAccidentalLayout] Loop detected"));
             break;
         }
     }

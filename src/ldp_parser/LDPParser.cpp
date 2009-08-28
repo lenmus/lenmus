@@ -4864,6 +4864,7 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
         (pFBInfo+i)->sPrefix = wxEmptyString;
         (pFBInfo+i)->sSuffix = wxEmptyString;
         (pFBInfo+i)->sOver = wxEmptyString;
+        (pFBInfo+i)->fSounds = false;
     }
 
     //interval data being parsed
@@ -4872,6 +4873,7 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
     lmEIntervalQuality nQuality;
     bool fParenthesis;
     wxString sIntval;
+    wxString sFingerPrint = _T("");     //explicit present intervals (i.e. "53", "642")
 
     //Finite automata to parse the string
 
@@ -5022,6 +5024,10 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
                     (pFBInfo+nIntv)->sPrefix = sPrefix;
                     (pFBInfo+nIntv)->sSuffix = sSuffix;
                     (pFBInfo+nIntv)->sOver = sOver;
+                    (pFBInfo+nIntv)->fSounds = true;
+
+                    //add interval to finger print
+                    sFingerPrint += wxString::Format(_T("%d"), nIntv);
 
                     //continue with next interval or finish parser
                     if (*p == _T(' '))
@@ -5049,7 +5055,49 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
         }
     }
 
-    //return values
+    //determine implicit intervals that exists although not present in figured bass notation
+    if (sFingerPrint == _T("3"))        //5 3
+    {
+        (pFBInfo+5)->fSounds = true;        //add 5th
+    }
+    else if (sFingerPrint == _T("5"))   //5 3
+    {
+        (pFBInfo+3)->fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("6"))   //6 3
+    {
+        (pFBInfo+3)->fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("2"))   //6 4 2
+    {
+        (pFBInfo+6)->fSounds = true;        //add 6th
+        (pFBInfo+4)->fSounds = true;        //add 4th
+    }
+    else if (sFingerPrint == _T("42"))  //6 4 2
+    {
+        (pFBInfo+6)->fSounds = true;        //add 6th
+        (pFBInfo+4)->fSounds = true;        //add 4th
+    }
+    else if (sFingerPrint == _T("43"))  //6 4 3
+    {
+        (pFBInfo+6)->fSounds = true;        //add 6th
+    }
+    else if (sFingerPrint == _T("65"))  //6 5 3
+    {
+        (pFBInfo+3)->fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("7"))  //7 5 3
+    {
+        (pFBInfo+5)->fSounds = true;        //add 5th
+        (pFBInfo+3)->fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("9"))  //9 5 3
+    {
+        (pFBInfo+5)->fSounds = true;        //add 5th
+        (pFBInfo+3)->fSounds = true;        //add 3rd
+    }
+
+   //return values
 
     return sError;
 }

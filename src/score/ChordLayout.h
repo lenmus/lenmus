@@ -18,11 +18,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_CHORD_H__        //to avoid nested includes
-#define __LM_CHORD_H__
+#ifndef __LM_CHORDLAYOUT_H__        //to avoid nested includes
+#define __LM_CHORDLAYOUT_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "Chord.cpp"
+#pragma interface "ChordLayout.cpp"
 #endif
 
 #include <list>
@@ -30,11 +30,11 @@
 class lmBox;
 class lmShapeNote;
 
-class lmChord
+class lmChordLayout
 {
 public:
-    lmChord(lmNote* pNote);
-    ~lmChord();
+    lmChordLayout(lmNote* pNote);
+    ~lmChordLayout();
 
     lmNote* GetMaxNote();
     lmNote* GetMinNote();
@@ -71,5 +71,5 @@ private:
     lmEStemType			m_nStemType;	//type of stem
 };
 
-#endif    // __LM_CHORD_H__
+#endif    // __LM_CHORDLAYOUT_H__
 

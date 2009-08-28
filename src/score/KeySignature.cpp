@@ -537,7 +537,7 @@ void lmKeySignature::RemoveCreatedContexts()
 // Global methods related to Key signatures
 //---------------------------------------------------------------------------------------
 
-void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[])
+void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[])
 {
     // Given a key signature (nKeySignature) this function fills the array
     // nAccidentals with the accidentals implied by the key signature.

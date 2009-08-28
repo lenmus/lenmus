@@ -194,10 +194,10 @@
 				RelativePath="..\..\src\score\Beam.h">
 			</File>
 			<File
-				RelativePath="..\..\src\score\Chord.cpp">
+				RelativePath="..\..\src\score\ChordLayout.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\score\Chord.h">
+				RelativePath="..\..\src\score\ChordLayout.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\Clef.cpp">
@@ -945,10 +945,10 @@
 				RelativePath="..\..\src\auxmusic\Cadence.h">
 			</File>
 			<File
-				RelativePath="..\..\src\auxmusic\ChordManager.cpp">
+				RelativePath="..\..\src\auxmusic\Chord.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\auxmusic\ChordManager.h">
+				RelativePath="..\..\src\auxmusic\Chord.h">
 			</File>
 			<File
 				RelativePath="..\..\src\auxmusic\Composer.cpp">

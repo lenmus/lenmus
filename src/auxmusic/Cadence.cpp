@@ -52,7 +52,7 @@ typedef struct lmFunctionDataStruct {
 // Conversion table: harmonic function to chord intervals.
 // Inversions are not necessary except in minor modes. In these cases the inversion
 // is notated without the slash (IVm6,
-// AWARE: The maximum number of notes in a chord is defined in 'ChordManager.h', constant
+// AWARE: The maximum number of notes in a chord is defined in 'Chord.h', constant
 //        lmNOTES_IN_CHORD. Currently its value is 6. Change this value if you need more
 //        notes.
 
@@ -233,7 +233,7 @@ lmCadence::~lmCadence()
 {
 }
 
-lmChordManager* lmCadence::GetChord(int iC)
+lmChord* lmCadence::GetChord(int iC)
 {
     // returns a pointer to chord iC (0..n-1).
     // if iC is out of range returns NULL pointer
@@ -241,7 +241,7 @@ lmChordManager* lmCadence::GetChord(int iC)
     if (iC >=0 && iC < m_nNumChords)
         return &m_aChord[iC];
     else
-        return (lmChordManager*) NULL;
+        return (lmChord*) NULL;
 }
 
 
@@ -357,7 +357,7 @@ wxString lmCadence::GetRootNote(wxString sFunct, lmEKeySignatures nKey, lmEClefT
 
     //Get accidentals for this note
     int nAccidentals[7];
-    ComputeAccidentals(nKey, nAccidentals);
+    lmComputeAccidentals(nKey, nAccidentals);
 
     //convert accidentals to symbol +, -
     wxString sRootNote = _T("");
@@ -406,7 +406,7 @@ wxString lmCadence::GetName()
 //------------------------------------------------------------------------------------
 
 int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
-								  lmChordManager* pChord, int nInversion)
+								  lmChord* pChord, int nInversion)
 {
     // Generates all possible chords for the first chord for a cadence.
     // Returns the number of valid chords found.
@@ -578,7 +578,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
 }
 
 int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
-								 lmChordManager* pChord, int nInversion, int iPrevHChord)
+								 lmChord* pChord, int nInversion, int iPrevHChord)
 {
     // Generates the next chord for a cadence.
     // returns the number of valid chords generated
@@ -916,7 +916,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
     int nPrevAlter[4] = {0,0,0,0};
     if (pPrevChord) {
         int nKeyAccidentals[7];
-        ComputeAccidentals(m_nKey, nKeyAccidentals);
+        lmComputeAccidentals(m_nKey, nKeyAccidentals);
         for (int iN=0; iN < 4; iN++) {
             int nStep = DPitch_Step(pPrevChord->nNote[iN]);
             nPrevAlter[iN] = pPrevChord->nAcc[iN] - nKeyAccidentals[nStep];
@@ -1241,7 +1241,7 @@ void lmCadence::Debug_DumpChord(lmHChord& oChord, int iChord)
 
 }
 
-lmChordManager* lmCadence::GetTonicChord()
+lmChord* lmCadence::GetTonicChord()
 {
     if (!m_fTonicCreated)
     {

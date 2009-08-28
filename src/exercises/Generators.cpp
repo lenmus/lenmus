@@ -174,7 +174,7 @@ wxString lmRandomGenerator::GenerateRandomRootNote(lmEClefType nClef,
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
     int nAccidentals[7];
-    ComputeAccidentals(nKey, nAccidentals);
+    lmComputeAccidentals(nKey, nAccidentals);
 
     wxString sAcc[5] = { _T("--"), _T("-"), _T(""), _T("+"), _T("x") };
     wxString sRootNote = sAcc[nAccidentals[nRoot]+ 2].c_str() +

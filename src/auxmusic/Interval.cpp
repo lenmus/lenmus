@@ -395,7 +395,7 @@ void lmInterval::GetNoteBits(int i, lmNoteBits* pBits)
 
     //now, add the accidentas implied by key signature
     int nAccidentals[7];
-    ComputeAccidentals(m_nKey, nAccidentals);
+    lmComputeAccidentals(m_nKey, nAccidentals);
     pBits->nAccidentals = nAccidentals[pBits->nStep];
 
 }
@@ -708,6 +708,16 @@ lmFIntval FIntval(wxString& sName)
 
     return lmNULL_FIntval;
 
+}
+
+lmFIntval FIntval_FromType(int nIntv, lmEIntervalType nType)
+{
+    for (int i=0; i < 40; i++)
+    {
+        if (m_aIntvData[i].nNumIntv == nIntv && m_aIntvData[i].nType == nType)
+            return i;
+    }
+    wxASSERT(false);
 }
 
 int FIntval_GetNumber(lmFIntval fi)

@@ -36,7 +36,7 @@
 #include "ParamsParser.h"
 #include "../score/Score.h"                 //common enum types
 #include "../exercises/ChordConstrains.h"   //lmEChordType
-#include "../auxmusic/ChordManager.h"       //chord name conversion
+#include "../auxmusic/Chord.h"       //chord name conversion
 #include "../ldp_parser/AuxString.h"        //LDPNameToKey
 
 wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* pKeys)

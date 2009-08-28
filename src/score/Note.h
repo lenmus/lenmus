@@ -32,7 +32,7 @@ class lmContext;
 class lmPaper;
 class lmBox;
 class lmComponentObj;
-class lmChord;
+class lmChordLayout;
 class lmShape;
 class lmCompositeShape;
 class lmShapeNote;
@@ -94,13 +94,13 @@ public:
 
 
     // methods related to chords
-    inline bool IsInChord() { return (m_pChord != (lmChord*)NULL); }        
+    inline bool IsInChord() { return (m_pChord != (lmChordLayout*)NULL); }        
     bool IsBaseOfChord();
-    inline lmChord* GetChord() { return m_pChord; }
+    inline lmChordLayout* GetChord() { return m_pChord; }
     inline void SetNoteheadReversed(bool fValue) { m_fNoteheadReversed = fValue; }
     inline bool IsNoteheadReversed() { return m_fNoteheadReversed; }
-	inline void OnIncludedInChord(lmChord* pChord) { m_pChord = pChord; }
-	inline void OnRemovedFromChord() { m_pChord = (lmChord*)NULL; }
+	inline void OnIncludedInChord(lmChordLayout* pChord) { m_pChord = pChord; }
+	inline void OnRemovedFromChord() { m_pChord = (lmChordLayout*)NULL; }
 
     //methods related to accidentals
     inline bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
@@ -228,7 +228,7 @@ private:
     int             m_nVolume;          // MIDI volume (0-127)
 
     //info for chords
-    lmChord*    m_pChord;           //chord to which this note belongs or NULL if it is a single note
+    lmChordLayout*    m_pChord;           //chord to which this note belongs or NULL if it is a single note
     bool        m_fNoteheadReversed;      //this notehead is reversed to avoid collisions
 
     //tie related variables

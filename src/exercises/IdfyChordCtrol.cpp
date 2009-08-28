@@ -38,7 +38,7 @@
 #include "../ldp_parser/LDPParser.h"
 #include "../auxmusic/Interval.h"
 #include "dialogs/DlgCfgIdfyChord.h"
-#include "../auxmusic/ChordManager.h"
+#include "../auxmusic/Chord.h"
 
 
 #include "../globals/Colors.h"
@@ -311,7 +311,7 @@ wxString lmIdfyChordCtrol::SetNewProblem()
 wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, lmScore** pScore)
 {
     //create the chord
-    lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
+    lmChord oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
 
     //wxLogMessage(_T("[lmIdfyChordCtrol::PrepareScore] sRootNote=%s, nType=%d, nInversion=%d, nKey=%d, name='%s'"),
     //    m_sRootNote.c_str(), nType, m_nInversion, m_nKey, oChordMngr.GetNameFull().c_str() );

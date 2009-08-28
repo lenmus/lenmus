@@ -29,7 +29,7 @@
 #include <map>  
 #include <list>
 
-#include "../auxmusic/ChordManager.h"
+#include "../auxmusic/Chord.h"
 
 //
 // Chord harmony types and classes
@@ -49,7 +49,7 @@ typedef struct lmChordErrorStruct
 
 
 typedef struct lmChordDescriptorStruct {
-    lmChordManager*  pChord;
+    lmChord*  pChord;
     lmNote* pChordNotes[lmNOTES_IN_CHORD-1];
     int nNumChordNotes;
     lmChordError  tChordErrors;

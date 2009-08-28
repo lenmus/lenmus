@@ -36,7 +36,7 @@ class lmAuxObj;
 class lmUrlAuxCtrol;
 class lmScoreCommand;
 
-#include "../auxmusic/ChordManager.h"
+#include "../auxmusic/Chord.h"
 #include "../auxmusic/Harmony.h"
 
 

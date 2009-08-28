@@ -37,7 +37,7 @@ static int m_nIdCounter = 0;
 #endif
 
 //access to global functions
-extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
+extern void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
 
 lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime,
               bool fClefInherited, bool fKeyInherited, bool fTimeInherited)
@@ -101,7 +101,7 @@ void lmContext::InitializeAccidentals()
     }
     if (!m_pKey) return;
 
-    ComputeAccidentals(m_pKey->GetKeyType(), m_nAccidentals);
+    lmComputeAccidentals(m_pKey->GetKeyType(), m_nAccidentals);
 }
 
 void lmContext::CopyAccidentals(lmContext* pContext)

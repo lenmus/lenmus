@@ -18,11 +18,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_CHORDMANAGER_H__        //to avoid nested includes
-#define __LM_CHORDMANAGER_H__
+#ifndef __LM_CHORD_H__        //to avoid nested includes
+#define __LM_CHORD_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ChordManager.cpp"
+#pragma interface "Chord.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -40,6 +40,8 @@
 #include "Interval.h"
 #include "../exercises/ChordConstrains.h"
 #include "Conversion.h"
+
+class lmFiguredBass;
 
 
 //declare global functions defined in this module
@@ -86,23 +88,26 @@ extern wxString NoteId(lmNote &tNote);
 extern  void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
-extern lmEChordType GetChordTypeFromIntervals( lmChordInfo chordInfo, bool fAllowFifthElided=false );
+extern lmEChordType GetChordTypeFromIntervals(lmChordInfo& chordInfo, bool fAllowFifthElided=false );
 extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
 extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
 
 
 
-class lmChordManager
+class lmChord
 {
 public:
     //default constructor
-    lmChordManager();
+    lmChord();
     //build a chord from root note and type
-    lmChordManager(wxString sRootNote, lmEChordType nChordType, int nInversion = 0,
+    lmChord(wxString sRootNote, lmEChordType nChordType, int nInversion = 0,
                    lmEKeySignatures nKey = earmDo);
-    lmChordManager(lmNote* pRootNote, lmChordInfo &chordInfo);
+    //build a chord from the root note and the figured bass
+    lmChord(wxString sRootNote, lmFiguredBass* pFigBass, lmEKeySignatures nKey = earmDo);
+    //??
+    lmChord(lmNote* pRootNote, lmChordInfo &chordInfo);
     //destructor
-    ~lmChordManager();
+    ~lmChord();
 
     // creation
     void Create(wxString sRootNote, lmEChordType nChordType, int nInversion,
@@ -110,6 +115,9 @@ public:
     void Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
     void Create(lmNote* pRootNote, lmChordInfo* chordInfo);
     void Initialize();
+
+    //access to intervals
+    lmFIntval GetInterval(int i);
 
     // for debugging
     wxString ToString();
@@ -137,18 +145,20 @@ public:
 
 private:
     void DoCreateChord(lmFIntval nIntval[]);
+    lmEChordType ComputeChordType();
+
 
 //member variables
 
-    lmEChordType      m_nType;
-    lmEKeySignatures  m_nKey;
-    int             m_nInversion;
-    int             m_nNumNotes;                    //num notes in the chord
-    lmFPitch        m_fpNote[lmNOTES_IN_CHORD];     //the chord notes
-    int             m_nElision; // TODO: consider to make an enum in ChordConstrains...
-    bool            m_fRootIsDuplicated;
+    lmEChordType        m_nType;
+    lmEKeySignatures    m_nKey;
+    int                 m_nInversion;
+    int                 m_nNumNotes;                    //num notes in the chord
+    lmFPitch            m_fpNote[lmNOTES_IN_CHORD];     //the chord notes
+    int                 m_nElision; // TODO: consider to make an enum in ChordConstrains...
+    bool                m_fRootIsDuplicated;
 
 };
 
-#endif  // __LM_CHORDMANAGER_H__
+#endif  // __LM_CHORD_H__
 

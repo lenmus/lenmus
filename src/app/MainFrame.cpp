@@ -78,7 +78,7 @@
 extern lmLogger* g_pLogger;
 
 #include "DlgPatternEditor.h"               // to test DlgPatternEditor dialog
-#include "../auxmusic/ChordManager.h"       //for Unit Tests
+#include "../auxmusic/Chord.h"       //for Unit Tests
 
 // to use html help controller
 #include "wx/html/helpctrl.h"
@@ -1955,7 +1955,7 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 {
 #ifdef __WXDEBUG__
-    lmChordManager oChord(_T("c4"), ect_MajorTriad);
+    lmChord oChord(_T("c4"), ect_MajorTriad);
     oChord.UnitTests();
 #endif
 }
