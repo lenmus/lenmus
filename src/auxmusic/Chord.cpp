@@ -66,26 +66,52 @@ lmChordData;
 // AWARE: Array indexes are in correspondence with enum lmEChordType
 // - intervals are from root note
 
-static lmChordData tChordData[ect_Max] = {
+static lmChordData tChordData[ect_Max] =
+{
+    //Triads:
     { 3, { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
     { 3, { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
     { 3, { lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
     { 3, { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
+    //Suspended:
     { 3, { lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
     { 3, { lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
+    //Sevenths:
     { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
     { 4, { lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
     { 4, { lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
     { 4, { lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
     { 4, { lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
-    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
+    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh <--
     { 4, { lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
     { 4, { lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
+    //Sixths:
     { 4, { lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
     { 4, { lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
-    { 4, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
+    { 4, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth        <--
+    //Functional sixths:
+  //{ 4, { lm_m3, lm_p4 }},      // - NeapolitanSixth
+  //{ 4, { lm_M3, lm_a4, lm_a6 }},      // - ItalianSixth
+  //{ 4, { lm_M3, lm_p5, lm_M6 }},      // - FrenchSixth
+  //{ 4, { lm_M3, lm_p5, lm_M6 }},      // - GermanSixth
+    //Ninths:
+  //{ 5, { lm_M3, lm_p5, lm_m7, lm_M9 }}, // - DominantNinth  = dominant-seventh + major ninth
+  //{ 5, { lm_M3, lm_p5, lm_M7, lm_M9 }}, // - MajorNinth     = major-seventh + major ninth
+  //{ 5, { lm_m3, lm_p5, lm_m7, lm_M9 }}, // - MinorNinth     = minor-seventh + major ninth
+    //11ths:
+  //{ 6, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11 }}, // - Dominant_11th    = dominantNinth + perfect 11th
+  //{ 6, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11 }}, // - Major_11th       = majorNinth + perfect 11th
+  //{ 6, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11 }}, // - Minor_11th       = minorNinth + perfect 11th
+    //13ths:
+  //{ 7, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Dominant_13th    = dominant_11th + major 13th
+  //{ 7, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11, lm_M13 }}, // - Major_13th       = major_11th + major 13th
+  //{ 7, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Minor_13th       = minor_11th + major 13th
+    //Other:
+  //{ 2, { lm_p5 }},                    // - PowerChord     = perfect fifth, (octave)
+  //{ 4, { lm_a2, lm_a4, lm_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
 };
 
+ 
 //-----------------------------------------------------------------------------------
 
 // Function to get a the pitch relative to key signature
@@ -432,8 +458,8 @@ void lmChord::Create(lmNote* pRootNote, lmChordInfo* pChordInfo)
 
 const bool CONSIDER_5TH_ELIDED = true;
 
-// TODO: consider improvement: TryChordCreation might actually CREATE the ChordManager instead of
-//         just trying to do it
+// TODO: consider improvement: TryChordCreation might actually CREATE the lmChord
+//       instead of just trying to do it
 //
 // Look for notes in the score that make up a valid chord
 bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutChordInfo, wxString &sOutStatusStr)
@@ -920,15 +946,6 @@ lmEChordType lmChord::ComputeChordType(int nInversion)
             {
                 fi += GetInterval(i+1);
                 fMatch &= (nIntval[i] == fi);
-                lmFIntval fi = GetInterval(i);
-                //look for this interval
-                int j;
-                for (j = 0; j < nNumIntervals; j++)
-                {
-                    if (fi == tData[nIntv].nIntervals[j])
-                        break;
-                }
-                fMatch = (j != nNumIntervals);
             }
 
             if (fMatch)
@@ -988,6 +1005,16 @@ void lmChord::GetChordIntervals(lmEChordType nType, int nInversion, lmFIntval* p
     }
 
 }
+
+void lmChord::Normalize()
+{
+    //Remove duplicated notes (when not required in the chord) and minimizes
+    //intervals between notes. Examples:
+    // - major chord (c3,e3,g4,e5) -> (c3,e3,g3) root position
+    // - seventh chord (d3,a3,+f4,c5) -> (d3,+f3,a3,c4) root position
+    // - ninth chord (a2,d3,+f4,e5) -> (a2,d3,+f3,d4,e4) first invesion
+}
+
 
 #ifdef __WXDEBUG__
 void lmChord::UnitTests()

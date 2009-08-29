@@ -120,22 +120,23 @@ public:
     // for debugging
     wxString ToString();
 
-    lmEChordType GetChordType() { return m_nType; }
+    inline lmEChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
-    wxString GetName() { return lmChordTypeToName( m_nType ); }
+    inline wxString GetName() { return lmChordTypeToName( m_nType ); }
     int GetNumNotes();
     lmMPitch GetMidiNote(int i);
     wxString GetPattern(int i);
-    int GetInversion() { return m_nInversion; }
-    int GetElision() { return m_nElision; }
-    int IsRootDuplicated() { return m_fRootIsDuplicated; }
+    inline int GetInversion() { return m_nInversion; }
+    inline int GetElision() { return m_nElision; }
+    inline int IsRootDuplicated() { return m_fRootIsDuplicated; }
+    void Normalize();
 
-    // access to note data
-    int GetStep(int i) { return FPitch_Step(m_fpNote[i]); }
-    int GetOctave(int i) { return FPitch_Octave(m_fpNote[i]); }
-    int GetAccidentals(int i) { return FPitch_Accidentals(m_fpNote[i]); }
+    // access to notes data
+    inline int GetStep(int i) { return FPitch_Step(m_fpNote[i]); }
+    inline int GetOctave(int i) { return FPitch_Octave(m_fpNote[i]); }
+    inline int GetAccidentals(int i) { return FPitch_Accidentals(m_fpNote[i]); }
 
-    bool IsCreated(){ return m_nType != lmINVALID_CHORD_TYPE; };
+    inline bool IsCreated() { return m_nType != lmINVALID_CHORD_TYPE; };
 
 #ifdef __WXDEBUG__
     //debug methods
