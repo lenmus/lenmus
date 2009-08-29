@@ -79,7 +79,7 @@ public:
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
     lmEPlacement AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff, lmLocation* pPos);
-    bool        AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff);
+    lmFiguredBass* AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
     int         AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr);

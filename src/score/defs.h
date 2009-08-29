@@ -475,6 +475,10 @@ enum
 };
 
 
+//a lmChord might contain up to 6 notes. Change this for more notes in a lmChord
+#define lmNOTES_IN_CHORD  6
+#define lmINTERVALS_IN_CHORD  (lmNOTES_IN_CHORD - 1)
+
 
 //-------------------------------------------------------------------------------------
 // class lmUSize. Size object in lmLUnits. Based on wxSize

@@ -157,7 +157,7 @@ Therefore, the only restriction would be that the root of owners chain must not 
 
 Finally, I have defined other auxiliary objects, non-derived from any other one:
     
- * lmChord: info about a chord
+ * lmChordLayout: info about a chord for layouting it
  * lmArch: info to draw an arch
  * lmBasicText: info for a text (font size, font family, ..)
  * lmAccidental: accidentals in notes
@@ -217,7 +217,7 @@ The full hierarchy of objects is shown in following diagram. Objects marked with
         - lmAccidental
         - lmBasicText
         - lmBaseText
-        - lmChord
+        - lmChordLayout
         - lmInstrGroup              (-> relation object?)
         - lmMultipleRelationship
             - lmTupletBracket

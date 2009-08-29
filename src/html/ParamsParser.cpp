@@ -123,7 +123,7 @@ wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidCho
                 sChord = sParamValue;
                 sParamValue = _T("");
             }
-            nType = ChordShortNameToType(sChord);
+            nType = lmChordShortNameToType(sChord);
             if (nType == (lmEChordType)-1) {
                 fError = true;
                 break;

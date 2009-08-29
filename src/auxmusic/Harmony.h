@@ -95,20 +95,21 @@ public:
     lmActiveNotes();
     ~lmActiveNotes();
     
-    void SetTime(float r_new_current_time);
-    float GetTime() { return r_current_time; };
+    void SetTime(float rNewCurrentTime);
+    inline float GetTime() { return m_rCurrentTime; };
     void GetChordDescriptor(lmChordDescriptor* ptChordDescriptor);
     void AddNote(lmNote* pNote, float rEndTime);
     void RecalculateActiveNotes();
     int  GetNumActiveNotes();
+
     // For debugging
     wxString ToString();
 
 protected:
     void ResetNotes();
 
-    float r_current_time;
-    std::list<lmActiveNoteInfo*> m_ActiveNotesInfo; 
+    float                           m_rCurrentTime;
+    std::list<lmActiveNoteInfo*>    m_ActiveNotesInfo; 
 };
 
 

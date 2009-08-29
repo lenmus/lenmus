@@ -197,14 +197,15 @@ wxString lmChordDescriptor::ToString()
 }
 
 
-//
+//----------------------------------------------------------------------------------
 // class lmActiveNotes
-//
+//----------------------------------------------------------------------------------
 
 lmActiveNotes::lmActiveNotes()
+    : m_rCurrentTime(0.0f)
 {
-    r_current_time = 0.0f;
 }
+
 lmActiveNotes::~lmActiveNotes()
 {
     std::list<lmActiveNoteInfo*>::iterator it;
@@ -216,19 +217,22 @@ lmActiveNotes::~lmActiveNotes()
     }
 }
 
-void lmActiveNotes::SetTime(float r_new_current_time)
+void lmActiveNotes::SetTime(float rNewCurrentTime)
 {
-    r_current_time = r_new_current_time;
+    m_rCurrentTime = rNewCurrentTime;
     RecalculateActiveNotes();
 }
+
 void lmActiveNotes::ResetNotes()
 {
     m_ActiveNotesInfo.clear();
 }
+
 int lmActiveNotes::GetNumActiveNotes()
 {
     return (int)m_ActiveNotesInfo.size();
 }
+
 void lmActiveNotes::GetChordDescriptor(lmChordDescriptor* ptChordDescriptor)
 {
      std::list<lmActiveNoteInfo*>::iterator it;
@@ -239,11 +243,13 @@ void lmActiveNotes::GetChordDescriptor(lmChordDescriptor* ptChordDescriptor)
      }
      ptChordDescriptor->nNumChordNotes = nCount;
 }
+
 void lmActiveNotes::AddNote(lmNote* pNoteS, float rEndTimeS)
 {
     lmActiveNoteInfo* plmActiveNoteInfo = new lmActiveNoteInfo(pNoteS, rEndTimeS);
 	m_ActiveNotesInfo.push_back( plmActiveNoteInfo );
 }
+
 void lmActiveNotes::RecalculateActiveNotes()
 {
      std::list<lmActiveNoteInfo*>::iterator it;
@@ -251,7 +257,7 @@ void lmActiveNotes::RecalculateActiveNotes()
      while(it != m_ActiveNotesInfo.end())
      {
          // AWARE: EQUAL time considered as finished  (TODO: CONFIRM by music expert)
-         if ( ! IsHigherTime(  (*it)->rEndTime, r_current_time ) )
+         if ( ! IsHigherTime(  (*it)->rEndTime, m_rCurrentTime ) )
          {
              delete *it;
              it = m_ActiveNotesInfo.erase(it);  // aware: "it = " needed to avoid crash in loop....
@@ -267,7 +273,7 @@ wxString lmActiveNotes::ToString()
     wxString sRetStr = _T("");
     wxString auxStr = _T("");
     int nNumNotes = GetNumActiveNotes();
-    sRetStr = wxString::Format(_(" [Time: %f, %d Active notes: ") , r_current_time, nNumNotes);
+    sRetStr = wxString::Format(_(" [Time: %f, %d Active notes: ") , m_rCurrentTime, nNumNotes);
 
     std::list<lmActiveNoteInfo*>::iterator it;
     for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it)

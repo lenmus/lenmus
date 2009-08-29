@@ -40,39 +40,53 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
+#ifdef __WXDEBUG__          //for UnitTests
+#include "../ldp_parser/LDPParser.h"
+#include "../score/Score.h"
+#include "../score/VStaff.h"
+#endif
 
 static wxString m_sChordName[ect_Max];
 static bool m_fStringsInitialized = false;
 
+//----------------------------------------------------------------------------------
+// A table with information about chords
+
+//an entry of the static table with information about chords
+typedef struct lmChordDataStruct
+{
+    int         nNumNotes;
+    lmFIntval   nIntervals[lmINTERVALS_IN_CHORD];
+}
+lmChordData;
+
+#define lmNIL   lmNULL_FIntval
+
+//The table.
 // AWARE: Array indexes are in correspondence with enum lmEChordType
 // - intervals are from root note
-//      number + type:   m=minor, M=major, p=perfect, a=augmented, d=diminished
-#define lmNIL   lmNULL_FIntval
-//TODO: (CDF) consider to improve the creation of this table
-//        for example handle also intervals above 4 (CSG: ??? There is no problem in coding other intervals! What do you refer to? 
-//TODO: (CDF) consider to separate the static information of this table: nNumNotes, nNumIntervals, nIntervals
-//        from the dynamically calculated. (CSG: ? This table only contains staic information! What do you refer to?
-//      Idea: tData should belong to a class/struct more specific than lmChordInfo. Create a new one.
-static lmChordInfo tData[ect_Max] = {
-//  { NumNotes, NumIntervals, NumInversions, FifthElided { intervals } }
-    { 3, 2, 0, 0, false,{ lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
-    { 3, 2, 0, 0, false,{ lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
-    { 3, 2, 0, 0, false,{ lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
-    { 3, 2, 0, 0, false,{ lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
-    { 3, 2, 0, 0, false,{ lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
-    { 3, 2, 0, 0, false,{ lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
-    { 4, 3, 0, 0, false,{ lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
-    { 4, 3, 0, 0, false,{ lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
-    { 4, 3, 0, 0, false,{ lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
-    { 4, 3, 0, 0, false,{ lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
-    { 4, 3, 0, 0, false,{ lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
-    { 4, 3, 0, 0, false,{ lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
-    { 4, 3, 0, 0, false,{ lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
-    { 4, 3, 0, 0, false,{ lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
-    { 4, 3, 0, 0, false,{ lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
-    { 4, 3, 0, 0, false,{ lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
-    { 3, 3, 0, 0, false,{ lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
+
+static lmChordData tChordData[ect_Max] = {
+    { 3, { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
+    { 3, { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
+    { 3, { lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
+    { 3, { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
+    { 3, { lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
+    { 3, { lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
+    { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
+    { 4, { lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
+    { 4, { lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
+    { 4, { lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
+    { 4, { lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
+    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
+    { 4, { lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
+    { 4, { lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
+    { 4, { lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
+    { 4, { lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
+    { 4, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
 };
+
+//-----------------------------------------------------------------------------------
 
 // Function to get a the pitch relative to key signature
 // TODO: consider: global function?  where should it be located?
@@ -197,12 +211,12 @@ lmEChordType GetChordTypeFromIntervals(lmChordInfo& tChordInfo, bool fAllowFifth
     //   every interval
     for (int nIntv = 0; nIntv < ect_Max; nIntv++)
     {
-        if ( tChordInfo.nNumIntervals == tData[nIntv].nNumIntervals)
+        if ( tChordInfo.nNumIntervals == (tChordData[nIntv].nNumNotes - 1))
         {
             bool fDifferent = false;
             for (int i = 0; i < tChordInfo.nNumIntervals && !fDifferent; i++)
             {
-                if (tChordInfo.nIntervals[i] != tData[nIntv].nIntervals[i])
+                if (tChordInfo.nIntervals[i] != tChordData[nIntv].nIntervals[i])
                   fDifferent = true;
             }
             if (!fDifferent)
@@ -216,23 +230,23 @@ lmEChordType GetChordTypeFromIntervals(lmChordInfo& tChordInfo, bool fAllowFifth
         //  TODO: improve?  ONLY ONE POSSIBLE CASE: SECOND INTERVAL MISSING
         for (int nIntv = 0; nIntv < ect_Max; nIntv++)
         {
-            if ( tChordInfo.nNumIntervals == tData[nIntv].nNumIntervals - 1)
+            if ( tChordInfo.nNumIntervals == tChordData[nIntv].nNumNotes - 2)
             {
                 bool fDifferent = false;
                 // Interval 0 must match
                 // Interval 1 is not checked!
                 // For the rest... what TODO:??
-                if (tChordInfo.nIntervals[0] != tData[nIntv].nIntervals[0])
+                if (tChordInfo.nIntervals[0] != tChordData[nIntv].nIntervals[0])
                       fDifferent = true;
     #ifdef __WXDEBUG__
                 else
                      wxLogMessage(_T(" Check fifth ellided, %d intv,  %d == %d, ITEM:%d")
-                        , tChordInfo.nNumIntervals, tChordInfo.nIntervals[0], tData[nIntv].nIntervals[0], nIntv );
+                        , tChordInfo.nNumIntervals, tChordInfo.nIntervals[0], tChordData[nIntv].nIntervals[0], nIntv );
     #endif
                 // For the rest... what TODO:??  for the moment: they must also be the same
-                for (int i = 2; i < tData[nIntv].nNumIntervals && !fDifferent; i++)
+                for (int i = 2; i < tChordData[nIntv].nNumNotes - 1 && !fDifferent; i++)
                 {
-                    if (tChordInfo.nIntervals[i] != tData[nIntv].nIntervals[i+1])
+                    if (tChordInfo.nIntervals[i] != tChordData[nIntv].nIntervals[i+1])
                     {
                       fDifferent = true;
                     }
@@ -529,8 +543,8 @@ lmChord::lmChord(lmNote* pRootNote, lmChordInfo &tChordInfo)
              , tChordInfo.nIntervals[0], tChordInfo.nIntervals[1], tChordInfo.nIntervals[2]  );
 #ifdef __WXDEBUG__
         wxLogMessage(_T(" tData[0]: Num notes %d, i0:%d i1:%d i2:%d")
-            ,  tData[0].nNumNotes, tData[0].nIntervals[0], tData[0].nIntervals[1]
-             , tData[0].nIntervals[2]  );
+            ,  tChordData[0].nNumNotes, tChordData[0].nIntervals[0], tChordData[0].nIntervals[1]
+             , tChordData[0].nIntervals[2]  );
 #endif
     }
     else
@@ -554,6 +568,8 @@ void lmChord::Initialize()
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmChord class
+
+
 
 lmChord::lmChord()
 {
@@ -583,6 +599,7 @@ lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass,
     int nRootOctave = FPitch_Octave( m_fpNote[0] );
     int nRootAcc = FPitch_Accidentals( m_fpNote[0] );
     m_nNumNotes = 1;      //number of notes in the chord
+    //wxLogMessage(_T("Root note=%d"), m_fpNote[0]);
 
     //get accidentals for desired key signature
     int nAccidentals[7];
@@ -596,18 +613,17 @@ lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass,
     for (int i=2; i < 8; i++)
     {
         //determine step and octave
-        if (++nStep == 8)
+        if (++nStep == 7)
         {
             nStep = 0;
             nOctave++;
         }
 
-        //get interval quality
-        lmEIntervalQuality nIQ = pFigBass->GetIntervalQuality(i);
-
         //decide accidentals
         lmFPitch fpNote;
         int nAcc = nAccidentals[nStep];     //accidentals from key signature
+
+        //compute pitch and add note to chord
         if (pFigBass->IntervalSounds(i))
         {
             lmEIntervalQuality nIntvQuality = pFigBass->GetIntervalQuality(i);
@@ -650,8 +666,11 @@ lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass,
                 fpNote = FPitch(nStep, nOctave, nAcc);
 
             //add this note to the chord
-            if (m_nNumNotes < lmNOTES_IN_CHORD-1)
-                m_fpNote[++m_nNumNotes] = fpNote;
+            if (m_nNumNotes < lmNOTES_IN_CHORD)
+            {
+                m_fpNote[m_nNumNotes++] = fpNote;
+                //wxLogMessage(_T("Added note=%d"), fpNote);
+            }
             else
                 wxLogMessage(_T("[lmChord::lmChord] Number of notes in a chord exceeded!"));
 
@@ -663,27 +682,32 @@ lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass,
 
         //here all chord note are created. Compute chord additional info
     
-    //determine inversion type
-        //TO_INVESTIGATE:
-        // - Is it correct to assume that it is inverted if first 
-        //   interval (excluding a possible second) is greater than a third?
-        // - Is it correct to assume than it is first inversion if it is a fourth, 
-        //   second if it is a sixth, and third if it is a seventh?
-    switch(nFirstIntval)
+    //determine chord type and inversion type
+    int nMaxInversion = (m_nNumNotes > 3 ? 3 : 2);
+    for (int i=0; i <= nMaxInversion; i++)
     {
-        case 3:     m_nInversion = 0;   break;
-        case 4:     m_nInversion = 1;   break;
-        case 5:     m_nInversion = 0;   break;      //third elided
-        case 6:     m_nInversion = 2;   break;
-        case 7:     m_nInversion = 3;   break;
-        default:
-            m_nInversion = 0;
-            wxLogMessage(_T("[lmChord::lmChord] Unknown case. nFirstInterval = %d"),
-                         nFirstIntval );
+        m_nType = ComputeChordType(i);
+        if (m_nType != lmINVALID_CHORD_TYPE)
+        {
+            m_nInversion = i;
+            break;
+        }
     }
 
-    //determine chord type
-    m_nType = ComputeChordType();
+    #ifdef __WXDEBUG__
+    if (m_nType == lmINVALID_CHORD_TYPE)
+    {
+        wxString sIntvals = _T("[lmChord::lmChord] Determine chord type: No match found. Intervals: ");
+        lmFIntval fi = 0;
+        for (int i = 1; i <= m_nNumNotes-1; i++)
+        {
+            fi += GetInterval(i);
+            sIntvals += wxString::Format(_T("%d (%s), "), fi, FIntval_GetIntvCode(fi) );
+        }
+        wxLogMessage(sIntvals);
+    }
+    #endif
+
 }
 
 void lmChord::Create(wxString sRootNote, lmEChordType nChordType,
@@ -704,51 +728,54 @@ void lmChord::Create(wxString sRootNote, lmEChordType nChordType,
     m_fpNote[0] = FPitch(sRootNote);
 
     //get the intervals that form the chord
-    lmFIntval nIntval[3], nNewIntv[3];
-    nIntval[0] = (lmFIntval)tData[m_nType].nIntervals[0];
-    nIntval[1] = (lmFIntval)tData[m_nType].nIntervals[1];
-    nIntval[2] = (lmFIntval)tData[m_nType].nIntervals[2];
+    lmFIntval nIntval[3];
+    GetChordIntervals(m_nType, m_nInversion, &nIntval[0]);
 
-    //correction for inversions
-    if (m_nInversion == 1)
-    {
-        nNewIntv[0] = nIntval[1] - nIntval[0];
+    //lmFIntval nIntval[3], nNewIntv[3];
+    //nIntval[0] = (lmFIntval)tChordData[m_nType].nIntervals[0];
+    //nIntval[1] = (lmFIntval)tChordData[m_nType].nIntervals[1];
+    //nIntval[2] = (lmFIntval)tChordData[m_nType].nIntervals[2];
 
-        if (nIntval[2] == lmNIL) {
-            nNewIntv[1] = lm_p8 - nIntval[0];   //invert the interval
-            nNewIntv[2] = lmNIL;
-        }
-        else {
-            nNewIntv[1] = nIntval[2] - nIntval[0];
-            nNewIntv[2] = lm_p8 - nIntval[0];   //invert the interval
-        }
-    }
-    else if (m_nInversion == 2)
-    {
-        if (nIntval[2] == lmNIL) {
-            nNewIntv[0] = lm_p8 - nIntval[1];   //invert the interval
-            nNewIntv[1] = lm_p8 + nIntval[0] - nIntval[1];
-            nNewIntv[2] = lmNIL;
-        }
-        else {
-            nNewIntv[0] = nIntval[2] - nIntval[1];
-            nNewIntv[1] = lm_p8 - nIntval[1];   //invert the interval
-            nNewIntv[2] = lm_p8 + nIntval[0] - nIntval[1];
-        }
-    }
-    else if (m_nInversion == 3)
-    {
-        nNewIntv[0] = lm_p8 - nIntval[2];   //invert the interval
-        nNewIntv[1] = nNewIntv[0] + nIntval[0];
-        nNewIntv[2] = nNewIntv[0] + nIntval[1];
-    }
-    if (m_nInversion != 0) {
-        nIntval[0] = nNewIntv[0];
-        nIntval[1] = nNewIntv[1];
-        nIntval[2] = nNewIntv[2];
-    }
+    ////correction for inversions
+    //if (m_nInversion == 1)
+    //{
+    //    nNewIntv[0] = nIntval[1] - nIntval[0];
 
-    m_nNumNotes = tData[m_nType].nNumNotes;
+    //    if (nIntval[2] == lmNIL) {
+    //        nNewIntv[1] = lm_p8 - nIntval[0];   //invert the interval
+    //        nNewIntv[2] = lmNIL;
+    //    }
+    //    else {
+    //        nNewIntv[1] = nIntval[2] - nIntval[0];
+    //        nNewIntv[2] = lm_p8 - nIntval[0];   //invert the interval
+    //    }
+    //}
+    //else if (m_nInversion == 2)
+    //{
+    //    if (nIntval[2] == lmNIL) {
+    //        nNewIntv[0] = lm_p8 - nIntval[1];   //invert the interval
+    //        nNewIntv[1] = lm_p8 + nIntval[0] - nIntval[1];
+    //        nNewIntv[2] = lmNIL;
+    //    }
+    //    else {
+    //        nNewIntv[0] = nIntval[2] - nIntval[1];
+    //        nNewIntv[1] = lm_p8 - nIntval[1];   //invert the interval
+    //        nNewIntv[2] = lm_p8 + nIntval[0] - nIntval[1];
+    //    }
+    //}
+    //else if (m_nInversion == 3)
+    //{
+    //    nNewIntv[0] = lm_p8 - nIntval[2];   //invert the interval
+    //    nNewIntv[1] = nNewIntv[0] + nIntval[0];
+    //    nNewIntv[2] = nNewIntv[0] + nIntval[1];
+    //}
+    //if (m_nInversion != 0) {
+    //    nIntval[0] = nNewIntv[0];
+    //    nIntval[1] = nNewIntv[1];
+    //    nIntval[2] = nNewIntv[2];
+    //}
+
+    m_nNumNotes = tChordData[m_nType].nNumNotes;
     DoCreateChord(nIntval);
 
 }
@@ -844,7 +871,7 @@ wxString lmChord::GetPattern(int i)
 
 wxString lmChord::GetNameFull()
 {
-    wxString sName = ChordTypeToName( m_nType );
+    wxString sName = lmChordTypeToName( m_nType );
 
     if ( m_nType != lmINVALID_CHORD_TYPE )
     {
@@ -864,19 +891,35 @@ wxString lmChord::GetNameFull()
 
 }
 
-lmEChordType lmChord::ComputeChordType()
+lmEChordType lmChord::ComputeChordType(int nInversion)
 {
-    //look for the chord type that matches this chord intervals
+    //look for the entry in tChordData[] table that matches this chord intervals.
+    //The table icontains chords in root possition. Therefore, before comparison,
+    //each entry must be transformed according desired invesion.
 
     int nNumIntervals = m_nNumNotes - 1;
-    for (int nIntv = 0; nIntv < ect_Max; nIntv++)
+    for (int nType = 0; nType < ect_Max; nType++)
     {
-        if (nNumIntervals == tData[nIntv].nNumIntervals)
+        if (m_nNumNotes == tChordData[nType].nNumNotes)
         {
-            //this entry has the same number of intervals than this chord. Check intervals
+            //the entry has the same number of intervals than this chord.
+            //Check intervals
+
+            //get this entry intervals, re-arranged for current inversion
+            lmFIntval nIntval[3]; 
+            GetChordIntervals((lmEChordType)nType, nInversion, &nIntval[0]);
+
+            
+            //DumpIntervals(wxString::Format(_T("nType=%d, inversion=%d,  "), nType, nInversion),
+            //                               nNumIntervals, &nIntval[0]);
+
+            //now proceed to compare intervals
             bool fMatch = true;
+            lmFIntval fi = 0;
             for (int i = 0; i < nNumIntervals && fMatch; i++)
             {
+                fi += GetInterval(i+1);
+                fMatch &= (nIntval[i] == fi);
                 lmFIntval fi = GetInterval(i);
                 //look for this interval
                 int j;
@@ -887,33 +930,74 @@ lmEChordType lmChord::ComputeChordType()
                 }
                 fMatch = (j != nNumIntervals);
             }
+
             if (fMatch)
-              return (lmEChordType)nIntv;      //found matching item
+                return (lmEChordType)nType;      //found matching item
         }
     }
-
-    #ifdef __WXDEBUG__
-        wxString sIntvals = _T("[lmChord::ComputeChordType] No match found. Intervals: ");
-        for (int i = 0; i < nNumIntervals; i++)
-            sIntvals += wxString::Format(_T("%d, "), GetInterval(i));
-        wxLogMessage(sIntvals);
-    #endif
 
     return lmINVALID_CHORD_TYPE;    //no match found!
 }
 
+void lmChord::GetChordIntervals(lmEChordType nType, int nInversion, lmFIntval* pFI)
+{
+    //get the intervals that form the chord
+    lmFIntval nIntval[3];
+    nIntval[0] = (lmFIntval)tChordData[nType].nIntervals[0];
+    nIntval[1] = (lmFIntval)tChordData[nType].nIntervals[1];
+    nIntval[2] = (lmFIntval)tChordData[nType].nIntervals[2];
+
+    //correction for inversions
+    if (nInversion == 0)
+    {
+        *(pFI+0) = nIntval[0];
+        *(pFI+1) = nIntval[1];
+        *(pFI+2) = nIntval[2];
+    }
+    else if (nInversion == 1)
+    {
+        *(pFI+0) = nIntval[1] - nIntval[0];
+
+        if (nIntval[2] == lmNIL) {
+            *(pFI+1) = lm_p8 - nIntval[0];   //invert the interval
+            *(pFI+2) = lmNIL;
+        }
+        else {
+            *(pFI+1) = nIntval[2] - nIntval[0];
+            *(pFI+2) = lm_p8 - nIntval[0];   //invert the interval
+        }
+    }
+    else if (nInversion == 2)
+    {
+        if (nIntval[2] == lmNIL) {
+            *(pFI+0) = lm_p8 - nIntval[1];   //invert the interval
+            *(pFI+1) = lm_p8 + nIntval[0] - nIntval[1];
+            *(pFI+2) = lmNIL;
+        }
+        else {
+            *(pFI+0) = nIntval[2] - nIntval[1];
+            *(pFI+1) = lm_p8 - nIntval[1];   //invert the interval
+            *(pFI+2) = lm_p8 + nIntval[0] - nIntval[1];
+        }
+    }
+    else if (nInversion == 3)
+    {
+        *(pFI+0) = lm_p8 - nIntval[2];   //invert the interval
+        *(pFI+1) = *(pFI+0) + nIntval[0];
+        *(pFI+2) = *(pFI+0) + nIntval[1];
+    }
+
+}
 
 #ifdef __WXDEBUG__
 void lmChord::UnitTests()
 {
-    int i, j;
-
     //lmConverter::NoteToBits and lmConverter::NoteBitsToName
     wxLogMessage(_T("[lmChord::UnitTests] Test of lmConverter::NoteToBits() method:"));
     wxString sNote[8] = { _T("a4"), _T("+a5"), _T("--b2"), _T("-a4"),
         _T("+e4"), _T("++f6"), _T("b1"), _T("xc4") };
     lmNoteBits tNote;
-    for(i=0; i < 8; i++) {
+    for(int i=0; i < 8; i++) {
         if (lmConverter::NoteToBits(sNote[i], &tNote))
             wxLogMessage(_T("Unexpected error in lmConverter::NoteToBits()"));
         else {
@@ -926,8 +1010,8 @@ void lmChord::UnitTests()
     //ComputeInterval(): interval computation
     wxString sIntv[8] = { _T("M3"), _T("m3"), _T("p8"), _T("p5"),
         _T("a5"), _T("d7"), _T("M6"), _T("M2") };
-    for(i=0; i < 8; i++) {
-        for (j=0; j < 8; j++) {
+    for(int i=0; i < 8; i++) {
+        for (int j=0; j < 8; j++) {
             wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
             wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
                          sNote[i].c_str(), sIntv[j].c_str(), sNewNote.c_str() );
@@ -940,7 +1024,7 @@ void lmChord::UnitTests()
     //IntervalCodeToBits and IntervalBitsToCode
     wxLogMessage(_T("[lmChord::UnitTests] Test of IntervalCodeToBits() method:"));
     lmIntvBits tIntv;
-    for(i=0; i < 8; i++) {
+    for(int i=0; i < 8; i++) {
         if (IntervalCodeToBits(sIntv[i], &tIntv))
             wxLogMessage(_T("Unexpected error in IntervalCodeToBits()"));
         else {
@@ -968,25 +1052,50 @@ void lmChord::UnitTests()
     //        sIntv1[i].c_str(), sIntv2[i].c_str(), AddIntervals(sIntv1[i], sIntv2[i]).c_str() );
     //}
 
-    ////Contructor from lmFiguredBass
-    //wxLogMessage(_T("[lmChord::UnitTests] Contructor from lmFiguredBass:"));
-    //wxLogMessage(_T("==========================================================\n"));
-    //for(i=0; i < 8; i++)
-    //{
-    //    lmFiguredBass* pFB = new lmFiguredBass((lmVStaff*)NULL, 
-    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
-    //        sIntv1[i].c_str(), sIntv2[i].c_str(), AddIntervals(sIntv1[i], sIntv2[i]).c_str() );
-    //}
-
-
 }
+
+void lmChord::DumpIntervals(wxString& sMsg, int nNumInvt, lmFIntval* pFI)
+{
+
+    wxString sIntvals = sMsg;
+    for (int i=0; i < nNumInvt-1; i++)
+    {
+        sIntvals += FIntval_GetIntvCode( *(pFI+i) );
+        sIntvals += _T(", ");
+    }
+    sIntvals += FIntval_GetIntvCode( *(pFI+nNumInvt-1) );
+    wxLogMessage(sIntvals);
+}
+
+void lmChord::DumpIntervals(wxString& sMsg)
+{
+
+    wxString sIntvals = sMsg;
+    if (m_nNumNotes > 1)
+    {
+        lmFIntval fi = 0;
+        for (int i=0; i < m_nNumNotes-2; i++)
+        {
+            fi += GetInterval(i+1);
+            sIntvals += FIntval_GetIntvCode( fi );
+            sIntvals += _T(", ");
+        }
+        fi += GetInterval(m_nNumNotes-1);
+        sIntvals += FIntval_GetIntvCode(fi);
+    }
+    else
+        sIntvals += _T("No chord. Only root note");
+
+    wxLogMessage(sIntvals);
+}
+
 #endif  // __WXDEBUG__
 
 //----------------------------------------------------------------------------------------
 //global functions
 //----------------------------------------------------------------------------------------
 
-wxString ChordTypeToName(lmEChordType nType)
+wxString lmChordTypeToName(lmEChordType nType)
 {
     if (nType >= ect_Max)
         return _("Not identified");
@@ -1024,14 +1133,13 @@ wxString ChordTypeToName(lmEChordType nType)
 
 }
 
-int NumNotesInChord(lmEChordType nChordType)
+int lmNumNotesInChord(lmEChordType nChordType)
 {
     wxASSERT(nChordType < ect_Max);
-    return tData[nChordType].nNumNotes;
-
+    return tChordData[nChordType].nNumNotes;
 }
 
-lmEChordType ChordShortNameToType(wxString sName)
+lmEChordType lmChordShortNameToType(wxString sName)
 {
     // returns -1 if error
     //
@@ -1066,5 +1174,65 @@ lmEChordType ChordShortNameToType(wxString sName)
     else if (sName == _T("a6")) return ect_AugSixth;
 
     return (lmEChordType)-1;  //error
-
 }
+
+
+#ifdef __WXDEBUG__
+//--------------------------------------------------------------------------------
+// Debug global functions
+//--------------------------------------------------------------------------------
+
+bool lmChordUnitTests()
+{
+    //returns true if test passed correctly
+
+    lmChordFromFiguredBassUnitTest(_T("a3"), earmLam); 
+    lmChordFromFiguredBassUnitTest(_T("c4"), earmDo); 
+
+    //TODO: compare results agains control file and set return code accordingly
+    return true;        //test success
+}
+
+bool lmChordFromFiguredBassUnitTest(wxString sRootNote, lmEKeySignatures nKey)
+{
+    //Unit test for lmChord contructor from lmFiguredBass
+    //returns true if test passed correctly
+
+    wxLogMessage(_T("UnitTests: Contructor from lmFiguredBass. Root note='%s', Key='%d'"),
+                 sRootNote, nKey);
+    wxLogMessage(_T("==================================================================="));
+
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPNode* pNode;
+    lmScore* pScore = new lmScore();
+    lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
+    lmVStaff* pVStaff = pInstr->GetVStaff();
+    pVStaff->AddClef( lmE_Sol );
+    pVStaff->AddKeySignature( nKey );
+    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
+    wxString sPattern = _T("(figuredBass \"6 4\")");
+    pNode = parserLDP.ParseText( sPattern );
+    lmFiguredBass* pFB = parserLDP.AnalyzeFiguredBass(pNode, pVStaff);
+
+    lmFiguredBassInfo tFBInfo[14];
+    //lmFiguredBass* pFB = new lmFiguredBass();
+    for (int i=0; i < lmGetFiguredBassInfoSize(); i++)
+    {
+        lmGetFiguredBassInfo(i, &tFBInfo[0]);
+        pFB->SetIntervalsInfo(&tFBInfo[0]);
+        lmChord oChord(sRootNote, pFB, nKey);
+        wxString sMsg = wxString::Format(_T("figured bass ='%s', chord type=%d (%s), inversion=%d, Intvals: "),
+            lmGetFiguredBassString(i).c_str(),
+            oChord.GetChordType(),
+            lmChordTypeToName(oChord.GetChordType()).c_str(),
+            oChord.GetInversion() );
+        oChord.DumpIntervals(sMsg);
+    }
+    delete pScore;
+
+    //TODO: compare results agains control file and set return code accordingly
+    return true;        //test success
+}
+
+#endif      //Debug global methods
+

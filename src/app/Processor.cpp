@@ -420,7 +420,8 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
     assert(ptChordDescriptor->pChordNotes != NULL);
 
     // Create Chord
-    fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes, &tChordInfo,  sStatusStr);
+    fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes,
+                                     &tChordInfo,  sStatusStr);
     
     wxColour colour;
 
@@ -637,7 +638,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     nExerciseErrors++;
                     wxString sMsg = wxString::Format(
                     _("Chord %d: The type is %s, but the expected was: %s")
-                        ,nChordCount+1, ChordTypeToName( nChordType ), ChordTypeToName( nExercise1ChordType[nChordCount] ));
+                        ,nChordCount+1, lmChordTypeToName( nChordType ), lmChordTypeToName( nExercise1ChordType[nChordCount] ));
                     // A different chord type with no inversions implies a different root note (todo: confirm this)
                     if (nInversions == 0)
                       sMsg += _(", Wrong root note?");

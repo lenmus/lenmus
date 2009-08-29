@@ -285,7 +285,7 @@ wxString lmIdfyChordCtrol::SetNewProblem()
     lmEChordType nChordType = m_pConstrains->GetRandomChordType();
     m_nInversion = 0;
     if (m_pConstrains->AreInversionsAllowed())
-        m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
+        m_nInversion = oGenerator.RandomNumber(0, lmNumNotesInChord(nChordType) - 1);
 
     if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
     m_sAnswer = PrepareScore(nClef, nChordType, &m_pProblemScore);
@@ -311,10 +311,10 @@ wxString lmIdfyChordCtrol::SetNewProblem()
 wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, lmScore** pScore)
 {
     //create the chord
-    lmChord oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
+    lmChord oChord(m_sRootNote, nType, m_nInversion, m_nKey);
 
     //wxLogMessage(_T("[lmIdfyChordCtrol::PrepareScore] sRootNote=%s, nType=%d, nInversion=%d, nKey=%d, name='%s'"),
-    //    m_sRootNote.c_str(), nType, m_nInversion, m_nKey, oChordMngr.GetNameFull().c_str() );
+    //    m_sRootNote.c_str(), nType, m_nInversion, m_nKey, oChord.GetNameFull().c_str() );
 
     //delete the previous score
     if (*pScore) {
@@ -329,7 +329,7 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, l
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
-    int nNumNotes = oChordMngr.GetNumNotes();
+    int nNumNotes = oChord.GetNumNotes();
     *pScore = new lmScore();
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     lmInstrument* pInstr = (*pScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
@@ -341,12 +341,12 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, l
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
     int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
-    sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" w)");
+    sPattern = _T("(n ") + oChord.GetPattern(i) + _T(" w)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     for (i=1; i < nNumNotes; i++) {
         sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
-        sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
+        sPattern += oChord.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
         sPattern +=  _T(" w)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
@@ -358,8 +358,8 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, l
 
     //return the chord name
     if (m_pConstrains->AreInversionsAllowed())
-        return oChordMngr.GetNameFull();       //name including inversion
+        return oChord.GetNameFull();       //name including inversion
     else
-        return oChordMngr.GetName();           //only name
+        return oChord.GetName();           //only name
 
 }

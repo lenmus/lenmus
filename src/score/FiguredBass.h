@@ -26,6 +26,7 @@
 #endif
 
 class lmDlgProperties;
+class lmChord;
 
 //interval quality: how the interval is interpreted
 enum lmEIntervalQuality
@@ -67,7 +68,8 @@ lmFiguredBassInfo;
 class lmFiguredBass : public lmStaffObj
 {
 public:
-    lmFiguredBass(lmVStaff* pStaff, long nID, lmFiguredBassInfo* pFBInfo);
+    lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassInfo* pFBInfo);
+    lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord, lmEKeySignatures nKey);
     ~lmFiguredBass() {}
 
     void SetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
@@ -112,6 +114,21 @@ private:
 };
 
 
+//-----------------------------------------------------------------------------------
+// global methods related to figured bass
+//-----------------------------------------------------------------------------------
+
+#ifdef __WXDEBUG__
+
+    //Access to common figured bass data table
+    extern void lmGetFiguredBassInfo(int iString, lmFiguredBassInfo* pFBI);
+    extern int lmGetFiguredBassInfoSize();
+    extern const wxString& lmGetFiguredBassString(int nString);
+
+    //Unit tests
+    extern bool lmFiguredBassUnitTests();
+
+#endif
 
 #endif    // __LM_FIGUREDBASS__H_
 

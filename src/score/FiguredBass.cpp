@@ -35,6 +35,7 @@
 #include "VStaff.h"
 #include "Staff.h"
 #include "../ldp_parser/LDPParser.h"
+#include "../auxmusic/Chord.h"
 
 typedef struct
 {
@@ -83,7 +84,7 @@ static const lmCommonFBData m_CommonFB[] =
     { 35,   _T("7 4 2") },    //7 4 2 / 8 3 (1)                         //??
     { 36,   _T("8") },        //Play the bass line alone in octaves
     { 37,   _T("9") },        //9 5 3. (Usu. 9 8)
-    { 38,   _T("10") },       //parallel 10ths
+    { 38,   _T("10") },       //parallel 10ths                          //??
 };
 
 const int lmFB_NUM_COMMON = sizeof(m_CommonFB) / sizeof(lmCommonFBData);
@@ -273,6 +274,8 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassInfo* pFB
     , m_fEndOfLine(false)
     , m_fParenthesis(false)
 {
+    //Normal constructor from LDP parsed data struct 'lmFiguredBassInfo'
+
     SetLayer(lm_eLayerNotes);
     SetIntervalsInfo(pFBInfo);
 }
@@ -282,6 +285,45 @@ void lmFiguredBass::SetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
     //copy received data
     for (int i=0; i <= lmFB_MAX_INTV; i++)
         m_tFBInfo[i] = *(pFBInfo + i);
+}
+
+lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
+                             lmEKeySignatures nKey)
+    : lmStaffObj(pVStaff, nID, lm_eSO_FiguredBass, pVStaff, 1, lmVISIBLE, lmDRAGGABLE)
+    , m_fStartOfLine(false)
+    , m_fEndOfLine(false)
+    , m_fParenthesis(false)
+{
+    //Constructor from a lmChord and a key signature.
+    //Useful yo know the figured bass that encodes the chord. Key signature is
+    //necessary to know if any chord note has accidentals.
+
+    SetLayer(lm_eLayerNotes);
+
+    //1. determine chord intervals
+    int nNumIntvals = pChord->GetNumNotes() - 1;
+    wxString sIntvals[lmINTERVALS_IN_CHORD];
+    int nIntvalNums[lmINTERVALS_IN_CHORD];
+    if (nNumIntvals > 0)
+    {
+        lmFIntval fi = 0;
+        for (int i=1; i <= nNumIntvals; i++)
+        {
+            fi += pChord->GetInterval(i);
+            sIntvals[i-1]= FIntval_GetIntvCode( fi );
+            nIntvalNums[i-1] = FIntval_GetNumber(fi);
+        }
+    }
+    else
+        //No chord. Only root note.
+        ;
+
+    //2. encode them as number + accidentals
+
+    //3. create figured bass string
+
+    //4. store info in this figured bass object member variables
+
 }
 
 void lmFiguredBass::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
@@ -606,3 +648,39 @@ void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTab
 	pDlg->SetTitle(_("Figured bass properties"));
 }
 
+#ifdef __WXDEBUG__
+//--------------------------------------------------------------------------------
+//Methods for debugging
+//--------------------------------------------------------------------------------
+
+void lmGetFiguredBassInfo(int iString, lmFiguredBassInfo* pFBI)
+{
+    lmFiguredBassInfo tFBInfo[lmFB_MAX_INTV+1];
+    wxString sFB = m_CommonFB[iString].sFiguredBass;
+    lmLDPParser::ValidateFiguredBassString(sFB, pFBI);
+}
+
+int lmGetFiguredBassInfoSize()
+{
+    return lmFB_NUM_COMMON;
+}
+
+const wxString& lmGetFiguredBassString(int iString)
+{
+    return m_CommonFB[iString].sFiguredBass;
+}
+
+bool lmFiguredBassUnitTests()
+{
+    //Unit test for lmFiguredBass contructor from lmChord
+    //returns true if test passed correctly
+
+    wxLogMessage(_T("UnitTests: Contructor from lmChord"));
+    wxLogMessage(_T("====================================="));
+
+
+    //TODO: compare results agains control file and set return code accordingly
+    return true;        //test success
+}
+
+#endif      //Debug global methods

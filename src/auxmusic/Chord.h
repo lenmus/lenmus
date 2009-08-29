@@ -37,6 +37,7 @@
 #endif
 
 #include "../score/Score.h"
+#include "../score/FiguredBass.h"
 #include "Interval.h"
 #include "../exercises/ChordConstrains.h"
 #include "Conversion.h"
@@ -44,14 +45,11 @@
 class lmFiguredBass;
 
 
-//declare global functions defined in this module
-extern wxString ChordTypeToName(lmEChordType nChordType);
-extern int NumNotesInChord(lmEChordType nChordType);
-extern lmEChordType ChordShortNameToType(wxString sName);
 
-//a chord is a sequence of up to 6 notes. Change this for more notes in chord
-#define lmNOTES_IN_CHORD  6
-#define lmINTERVALS_IN_CHORD  (lmNOTES_IN_CHORD - 1)
+//declare global functions defined in this module
+extern wxString lmChordTypeToName(lmEChordType nChordType);
+extern int lmNumNotesInChord(lmEChordType nChordType);
+extern lmEChordType lmChordShortNameToType(wxString sName);
 
 #define lmINVALID_CHORD_TYPE ect_Max
 
@@ -124,7 +122,7 @@ public:
 
     lmEChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
-    wxString GetName() { return ChordTypeToName( m_nType ); }
+    wxString GetName() { return lmChordTypeToName( m_nType ); }
     int GetNumNotes();
     lmMPitch GetMidiNote(int i);
     wxString GetPattern(int i);
@@ -140,12 +138,19 @@ public:
     bool IsCreated(){ return m_nType != lmINVALID_CHORD_TYPE; };
 
 #ifdef __WXDEBUG__
+    //debug methods
     void UnitTests();
+    void DumpIntervals(wxString& sMsg, int nNumInvt, lmFIntval* pFI);
+    void DumpIntervals(wxString& sMsg);
+#else
+    void DumpIntervals(wxString& sMsg, int nNumInvt, lmFIntval* pFI) {}
 #endif
 
 private:
     void DoCreateChord(lmFIntval nIntval[]);
-    lmEChordType ComputeChordType();
+    lmEChordType ComputeChordType(int nInversion);
+    void GetChordIntervals(lmEChordType nType, int nInversion, lmFIntval* pFI);
+
 
 
 //member variables
@@ -159,6 +164,20 @@ private:
     bool                m_fRootIsDuplicated;
 
 };
+
+
+//-----------------------------------------------------------------------------------
+// global methods related to chords
+//-----------------------------------------------------------------------------------
+
+#ifdef __WXDEBUG__
+
+    //Unit tests
+    extern bool lmChordUnitTests();
+    extern bool lmChordFromFiguredBassUnitTest(wxString sRootNote, 
+                                               lmEKeySignatures nKey);
+#endif
+
 
 #endif  // __LM_CHORD_H__
 

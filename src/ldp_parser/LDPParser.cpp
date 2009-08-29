@@ -2551,9 +2551,9 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
 
 }
 
-bool lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff)
+lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    //returns true if error; in this case nothing is added to the lmVStaff
+    //returns NULL if error; in this case nothing is added to the lmVStaff
     //
     //  <figuredBass> = (figuredBass <figuredBassSymbols>[<duration>][<parentheses>])
     //  <parentheses> = (parentheses { yes | no })  default: no
@@ -2593,7 +2593,7 @@ bool lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff)
     {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             sElmName.c_str());
-        return true;    //error
+        return (lmFiguredBass*)NULL;    //error
     }
 
     //get figured bass string and split it into components
@@ -2603,7 +2603,7 @@ bool lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (sError != _T(""))
     {
         AnalysisError(pNode, sError);
-        return true;    //error
+        return (lmFiguredBass*)NULL;    //error
     }
 
     //get options: <duration> and <parenthesis>
@@ -2627,7 +2627,7 @@ bool lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (m_fCursorData && m_nCursorObjID == nID)
         m_pCursorSO = pFB;
 
-    return false;       //no error
+    return pFB;       //no error
 }
 
 bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -5060,6 +5060,10 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
     {
         (pFBInfo+5)->fSounds = true;        //add 5th
     }
+    else if (sFingerPrint == _T("4"))   //5 4
+    {
+        (pFBInfo+5)->fSounds = true;        //add 5th
+    }
     else if (sFingerPrint == _T("5"))   //5 3
     {
         (pFBInfo+3)->fSounds = true;        //add 3rd
@@ -5092,6 +5096,11 @@ wxString lmLDPParser::ValidateFiguredBassString(wxString& sData, lmFiguredBassIn
         (pFBInfo+3)->fSounds = true;        //add 3rd
     }
     else if (sFingerPrint == _T("9"))  //9 5 3
+    {
+        (pFBInfo+5)->fSounds = true;        //add 5th
+        (pFBInfo+3)->fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("10"))  //10 5 3
     {
         (pFBInfo+5)->fSounds = true;        //add 5th
         (pFBInfo+3)->fSounds = true;        //add 3rd
