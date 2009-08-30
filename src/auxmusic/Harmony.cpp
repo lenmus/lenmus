@@ -456,6 +456,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
         }
     }
 
+    wxLogMessage(_T(" Rule %d final error count %d"), this->GetRuleId(), nErrCount);
     return nErrCount;
 }
 
@@ -563,6 +564,7 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
         }
     }
 
+    wxLogMessage(_T(" Rule %d final error count %d"), this->GetRuleId(), nErrCount);
     return nErrCount;
 }
 
@@ -595,12 +597,14 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
         if ( m_pChordDescriptor[nC].pChord->GetInversion() != 0 )
         {
             wxLogMessage(_(" Rule not applicable: not root position: %d inversions"), m_pChordDescriptor[nC].pChord->GetInversion());
-            return 0;
+            //@@@ todo remove: return 0;
+            continue;
         }
         if (  m_pChordDescriptor[nC].pChord->GetInversion() == 0 && ! m_pChordDescriptor[nC].pChord->IsRootDuplicated() )
         {
             wxLogMessage(_(" Rule not applicable: not root position but root note not duplicated"));
-            return 0;
+            //@@@ todo remove: return 0;
+            continue;
         }
 
         nNumNotes = m_pChordDescriptor[nC].nNumChordNotes ;
@@ -641,6 +645,7 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
         }
     }
 
+    wxLogMessage(_T(" Rule %d final error count %d"), this->GetRuleId(), nErrCount);
     return nErrCount;
 }
 
@@ -675,12 +680,14 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
         if ( m_pChordDescriptor[nC].pChord->GetInversion() != 0 )
         {
             wxLogMessage(_T(" Rule not applicable: not root position: %d inversions"), m_pChordDescriptor[nC].pChord->GetInversion());
-            return 0;
+            //@@@ todo remove: return 0;
+            continue;
         }
         if (  m_pChordDescriptor[nC].pChord->GetInversion() == 0 && ! m_pChordDescriptor[nC].pChord->IsRootDuplicated() )
         {
             wxLogMessage(_T(" Rule not applicable: not root position but root note not duplicated"));
-            return 0;
+            //@@@ todo remove: return 0;
+            continue;
         }
 
         nNumNotes = m_pChordDescriptor[nC].nNumChordNotes ;
@@ -689,7 +696,8 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
         if ( nNumNotes !=  4 )
         {
             wxLogMessage(_T(" Rule not applicable: not 4 notes (%d)"), nNumNotes);
-            return 0;
+            //@@@ todo remove: return 0;
+            continue;
         }
         // for all the notes in the chord...
         for (int nN=2; nN<4; nN++)

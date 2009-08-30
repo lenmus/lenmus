@@ -570,6 +570,12 @@ wxString DPitch_GetEnglishNoteName(lmDPitch dp)
     return wxString::Format(_T("%s%d"), m_sNoteName[iNota].c_str(), nOctava );
 
 }
+// return the note letter (A .. G) corresponding to the step of the note, in lmFPitch notation
+wxString FPitch_GetEnglishNoteName(lmFPitch fp)
+{
+    return m_sNoteName[FPitch_Step(fp)].c_str();
+}
+
 
 lmFPitch DPitch_ToFPitch(lmDPitch dp, lmEKeySignatures nKey)
 {

@@ -166,17 +166,11 @@ protected:
     void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct, wxColour colour
                            , wxString &sText, bool reset=false);
 
-    //@@@@@@@@@@ TODO:Any member information needed to perform the process must be copied in the  options data struct.
-    lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
-    int nNumChords;
-    lmActiveNotes ActiveNotesList;
     wxSize* pBoxSize;
     lmFontInfo tFont;
     ChordInfoBox* pInfoBox;
     wxSize* pErrorBoxSize;
     ChordInfoBox* pChordErrorBox;
-
-    void ResetChordDescriptor();
 
 };
 

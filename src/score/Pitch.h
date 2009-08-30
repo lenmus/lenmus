@@ -172,6 +172,8 @@ extern lmMPitch DPitch_ToMPitch(lmDPitch dp);
 extern lmFPitch DPitch_ToFPitch(lmDPitch dp, lmEKeySignatures nKey);
 extern wxString DPitch_GetEnglishNoteName(lmDPitch dp);
 extern wxString DPitch_ToLDPName(lmDPitch dp);
+// return the note letter (A .. G) corresponding to the step of the note, in lmFPitch notation
+extern wxString FPitch_GetEnglishNoteName(lmFPitch fp);
 
 //components extraction
 #define DPitch_Step(dp)   (((int)dp - 1) % 7)

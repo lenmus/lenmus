@@ -24,17 +24,12 @@
 #include "../exercises/ChordConstrains.h"
 #include "../score/Note.h"
 
-//@@@@ TODO: Move these aux data to lmHarmonyConstrains ?
 
-// Exercise 1 checks:
-//   root note
-//   chord type
-// Root notes
-const int nMAX_E1BCHORDS = 20;
-extern int  nHarmonyExercise1ChordsToCheck;
-extern lmFPitch nExerciseBassNotesFPitch[nMAX_E1BCHORDS];
-extern lmFPitch nExercise2NotesFPitch[nMAX_E1BCHORDS];
-extern lmEChordType nExercise1ChordType[nMAX_E1BCHORDS];
+const int nMAX_HARMONY_EXERCISE_CHORDS = 20;
+extern int  nHarmonyExerciseChordsToCheck;
+extern lmFPitch nHE_BassNotesFPitch[nMAX_HARMONY_EXERCISE_CHORDS];
+extern lmFPitch nHE_SopranoNotesFPitch[nMAX_HARMONY_EXERCISE_CHORDS];
+extern lmEChordType nHE_ChordType[nMAX_HARMONY_EXERCISE_CHORDS];
 extern int nHarmonyExcerciseType;
 
 

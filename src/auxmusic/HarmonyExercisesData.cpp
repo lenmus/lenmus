@@ -20,20 +20,21 @@
 
 #include "HarmonyExercisesData.h"
 
+// TODO: consider a storage better than just global (extern) variables
+//  data is exchange between lmTheoHarmonyCtrol and  lmHarmonyProcessor
 
-/*---
- TODO:
-   Idea:
-    comprobar siempre lo que identifica un acorde:
-      - tipo lmEChordType ( <==> intervalos )
-      - root note 
-      - inversion
-      opciones: num. measures
+// todo: improve with inversions: just calculate bass note from root note and inversions
+//       consider: inversions might be an option of the exercise
 
----*/
-int  nHarmonyExercise1ChordsToCheck = 0;
-lmFPitch nExerciseBassNotesFPitch[nMAX_E1BCHORDS]; // check bass note in Excercise 1 and 2
-lmFPitch nExercise2NotesFPitch[nMAX_E1BCHORDS]; // check additional note in Excercise 2
-lmEChordType nExercise1ChordType[nMAX_E1BCHORDS];
+// Exercise 1 checks:
+//   bass note
+// Exercise 2 checks:
+//   soprano note
+//   bass note
+//    todo: consider no to chek the bass: let free the chord degree
+int  nHarmonyExerciseChordsToCheck = 0;
+lmFPitch nHE_BassNotesFPitch[nMAX_HARMONY_EXERCISE_CHORDS]; // check bass note in Excercise 1 and 2
+lmFPitch nHE_SopranoNotesFPitch[nMAX_HARMONY_EXERCISE_CHORDS]; // check Soprano note in Excercise 2
+lmEChordType nHE_ChordType[nMAX_HARMONY_EXERCISE_CHORDS];
 int nHarmonyExcerciseType;
 

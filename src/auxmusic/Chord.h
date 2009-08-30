@@ -83,7 +83,6 @@ typedef struct lmChordInfoStruct {
 extern wxString NoteId(lmNote &tNote);
 
 // TODO: global methods. They could probably be placed inside a class...
-extern  void CreateChordInfo(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
 extern lmEChordType GetChordTypeFromIntervals(lmChordInfo& chordInfo, bool fAllowFifthElided=false );
