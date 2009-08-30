@@ -50,68 +50,77 @@ static wxString m_sChordName[ect_Max];
 static bool m_fStringsInitialized = false;
 
 //----------------------------------------------------------------------------------
-// A table with information about chords
+// Chords data table
+// A master table with information about chords
+//----------------------------------------------------------------------------------
 
-//an entry of the static table with information about chords
+//an entry of the table
 typedef struct lmChordDataStruct
 {
     int         nNumNotes;
-    lmFIntval   nIntervals[lmINTERVALS_IN_CHORD];
+    lmFIntval   nIntervals[lmINTERVALS_IN_CHORD];   //from root note
 }
 lmChordData;
 
 #define lmNIL   lmNULL_FIntval
 
-//The table.
+//The Table.
 // AWARE: Array indexes are in correspondence with enum lmEChordType
 // - intervals are from root note
 
 static lmChordData tChordData[ect_Max] =
 {
     //Triads:
-    { 3, { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
-    { 3, { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
-    { 3, { lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
-    { 3, { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
+    { 3, { lm_M3, lm_p5 }},             //MT        - MajorTriad
+    { 3, { lm_m3, lm_p5 }},             //mT        - MinorTriad
+    { 3, { lm_M3, lm_a5 }},             //aT        - AugTriad
+    { 3, { lm_m3, lm_d5 }},             //dT        - DimTriad
     //Suspended:
-    { 3, { lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
-    { 3, { lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
+    { 3, { lm_p4, lm_p5 }},             //I,IV,V    - Suspended_4th
+    { 3, { lm_M2, lm_p5 }},             //I,II,V    - Suspended_2nd
     //Sevenths:
     { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
     { 4, { lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
     { 4, { lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
     { 4, { lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
     { 4, { lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
-    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh <--
+    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
     { 4, { lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
     { 4, { lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
     //Sixths:
     { 4, { lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
     { 4, { lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
-    { 4, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth        <--
-    //Functional sixths:
-  //{ 4, { lm_m3, lm_p4 }},      // - NeapolitanSixth
-  //{ 4, { lm_M3, lm_a4, lm_a6 }},      // - ItalianSixth
-  //{ 4, { lm_M3, lm_p5, lm_M6 }},      // - FrenchSixth
-  //{ 4, { lm_M3, lm_p5, lm_M6 }},      // - GermanSixth
+    { 4, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth        
     //Ninths:
-  //{ 5, { lm_M3, lm_p5, lm_m7, lm_M9 }}, // - DominantNinth  = dominant-seventh + major ninth
-  //{ 5, { lm_M3, lm_p5, lm_M7, lm_M9 }}, // - MajorNinth     = major-seventh + major ninth
-  //{ 5, { lm_m3, lm_p5, lm_m7, lm_M9 }}, // - MinorNinth     = minor-seventh + major ninth
+    { 5, { lm_M3, lm_p5, lm_m7, lm_M9 }},   // - DominantNinth  = dominant-seventh + major ninth
+    { 5, { lm_M3, lm_p5, lm_M7, lm_M9 }},   // - MajorNinth     = major-seventh + major ninth
+    { 5, { lm_m3, lm_p5, lm_m7, lm_M9 }},   // - MinorNinth     = minor-seventh + major ninth
     //11ths:
-  //{ 6, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11 }}, // - Dominant_11th    = dominantNinth + perfect 11th
-  //{ 6, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11 }}, // - Major_11th       = majorNinth + perfect 11th
-  //{ 6, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11 }}, // - Minor_11th       = minorNinth + perfect 11th
+    { 6, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11 }},   // - Dominant_11th    = dominantNinth + perfect 11th
+    { 6, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11 }},   // - Major_11th       = majorNinth + perfect 11th
+    { 6, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11 }},   // - Minor_11th       = minorNinth + perfect 11th
     //13ths:
-  //{ 7, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Dominant_13th    = dominant_11th + major 13th
-  //{ 7, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11, lm_M13 }}, // - Major_13th       = major_11th + major 13th
-  //{ 7, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Minor_13th       = minor_11th + major 13th
+    { 7, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Dominant_13th    = dominant_11th + major 13th
+    { 7, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11, lm_M13 }}, // - Major_13th       = major_11th + major 13th
+    { 7, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Minor_13th       = minor_11th + major 13th
     //Other:
-  //{ 2, { lm_p5 }},                    // - PowerChord     = perfect fifth, (octave)
-  //{ 4, { lm_a2, lm_a4, lm_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
+    { 2, { lm_p5 }},                    // - PowerChord     = perfect fifth, (octave)
+    { 4, { lm_a2, lm_a4, lm_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
 };
 
- 
+//Special chords table.
+//These chords are normally built as specified in this table.  
+//
+//static lmChordData tSpecialChords[] =
+//{
+//    //Functional sixths:
+//  //{ 3, { lm_m3, lm_p4 }},             // - NeapolitanSixth
+//  //{ 3, { lm_a4, lm_m6 }},             // - ItalianSixth
+//  //{ 4, { lm_M2, lm_a4, lm_m6 }},      // - FrenchSixth
+//  //{ 4, { lm_m3, lm_a4, lm_m6 }},      // - GermanSixth
+//}
+
+
 //-----------------------------------------------------------------------------------
 
 // Function to get a the pitch relative to key signature
@@ -568,7 +577,7 @@ lmChord::lmChord(lmNote* pRootNote, lmChordInfo &tChordInfo)
             , tChordInfo.nNumNotes, tChordInfo.nNumIntervals, tChordInfo.nFifthElided
              , tChordInfo.nIntervals[0], tChordInfo.nIntervals[1], tChordInfo.nIntervals[2]  );
 #ifdef __WXDEBUG__
-        wxLogMessage(_T(" tData[0]: Num notes %d, i0:%d i1:%d i2:%d")
+        wxLogMessage(_T(" tChordData[0]: Num notes %d, i0:%d i1:%d i2:%d")
             ,  tChordData[0].nNumNotes, tChordData[0].nIntervals[0], tChordData[0].nIntervals[1]
              , tChordData[0].nIntervals[2]  );
 #endif
@@ -754,56 +763,11 @@ void lmChord::Create(wxString sRootNote, lmEChordType nChordType,
     m_fpNote[0] = FPitch(sRootNote);
 
     //get the intervals that form the chord
-    lmFIntval nIntval[3];
+    lmFIntval nIntval[lmINTERVALS_IN_CHORD];
     GetChordIntervals(m_nType, m_nInversion, &nIntval[0]);
-
-    //lmFIntval nIntval[3], nNewIntv[3];
-    //nIntval[0] = (lmFIntval)tChordData[m_nType].nIntervals[0];
-    //nIntval[1] = (lmFIntval)tChordData[m_nType].nIntervals[1];
-    //nIntval[2] = (lmFIntval)tChordData[m_nType].nIntervals[2];
-
-    ////correction for inversions
-    //if (m_nInversion == 1)
-    //{
-    //    nNewIntv[0] = nIntval[1] - nIntval[0];
-
-    //    if (nIntval[2] == lmNIL) {
-    //        nNewIntv[1] = lm_p8 - nIntval[0];   //invert the interval
-    //        nNewIntv[2] = lmNIL;
-    //    }
-    //    else {
-    //        nNewIntv[1] = nIntval[2] - nIntval[0];
-    //        nNewIntv[2] = lm_p8 - nIntval[0];   //invert the interval
-    //    }
-    //}
-    //else if (m_nInversion == 2)
-    //{
-    //    if (nIntval[2] == lmNIL) {
-    //        nNewIntv[0] = lm_p8 - nIntval[1];   //invert the interval
-    //        nNewIntv[1] = lm_p8 + nIntval[0] - nIntval[1];
-    //        nNewIntv[2] = lmNIL;
-    //    }
-    //    else {
-    //        nNewIntv[0] = nIntval[2] - nIntval[1];
-    //        nNewIntv[1] = lm_p8 - nIntval[1];   //invert the interval
-    //        nNewIntv[2] = lm_p8 + nIntval[0] - nIntval[1];
-    //    }
-    //}
-    //else if (m_nInversion == 3)
-    //{
-    //    nNewIntv[0] = lm_p8 - nIntval[2];   //invert the interval
-    //    nNewIntv[1] = nNewIntv[0] + nIntval[0];
-    //    nNewIntv[2] = nNewIntv[0] + nIntval[1];
-    //}
-    //if (m_nInversion != 0) {
-    //    nIntval[0] = nNewIntv[0];
-    //    nIntval[1] = nNewIntv[1];
-    //    nIntval[2] = nNewIntv[2];
-    //}
 
     m_nNumNotes = tChordData[m_nType].nNumNotes;
     DoCreateChord(nIntval);
-
 }
 
 void lmChord::Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey)
@@ -856,11 +820,11 @@ void lmChord::Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures n
 
 }
 
-void lmChord::DoCreateChord(lmFIntval nIntval[])
+void lmChord::DoCreateChord(lmFIntval* pFI)
 {
     // root note is created in m_fpNote[0]. Create the remaining notes
     for (int i=1; i < m_nNumNotes; i++) {
-        m_fpNote[i] = m_fpNote[0] + nIntval[i-1];
+        m_fpNote[i] = m_fpNote[0] + *(pFI+i-1);
     }
 
 }
@@ -920,56 +884,33 @@ wxString lmChord::GetNameFull()
 lmEChordType lmChord::ComputeChordType(int nInversion)
 {
     //look for the entry in tChordData[] table that matches this chord intervals.
-    //The table icontains chords in root possition. Therefore, before comparison,
-    //each entry must be transformed according desired invesion.
 
-    int nNumIntervals = m_nNumNotes - 1;
     for (int nType = 0; nType < ect_Max; nType++)
     {
-        if (m_nNumNotes == tChordData[nType].nNumNotes)
-        {
-            //the entry has the same number of intervals than this chord.
-            //Check intervals
-
-            //get this entry intervals, re-arranged for current inversion
-            lmFIntval nIntval[3]; 
-            GetChordIntervals((lmEChordType)nType, nInversion, &nIntval[0]);
-
-            
-            //DumpIntervals(wxString::Format(_T("nType=%d, inversion=%d,  "), nType, nInversion),
-            //                               nNumIntervals, &nIntval[0]);
-
-            //now proceed to compare intervals
-            bool fMatch = true;
-            lmFIntval fi = 0;
-            for (int i = 0; i < nNumIntervals && fMatch; i++)
-            {
-                fi += GetInterval(i+1);
-                fMatch &= (nIntval[i] == fi);
-            }
-
-            if (fMatch)
-                return (lmEChordType)nType;      //found matching item
-        }
+        if (CheckIfIsChordType((lmEChordType)nType, nInversion))
+            return (lmEChordType)nType;
     }
-
     return lmINVALID_CHORD_TYPE;    //no match found!
 }
 
 void lmChord::GetChordIntervals(lmEChordType nType, int nInversion, lmFIntval* pFI)
 {
+    //TODO: Fix for more than 4 notes in a chord
+
     //get the intervals that form the chord
-    lmFIntval nIntval[3];
-    nIntval[0] = (lmFIntval)tChordData[nType].nIntervals[0];
-    nIntval[1] = (lmFIntval)tChordData[nType].nIntervals[1];
-    nIntval[2] = (lmFIntval)tChordData[nType].nIntervals[2];
+    int nNumIntervals = tChordData[nType].nNumNotes - 1;
+    lmFIntval nIntval[lmINTERVALS_IN_CHORD];
+    for (int i=0; i < nNumIntervals; i++)
+        nIntval[i] = (lmFIntval)tChordData[nType].nIntervals[i];
+    for (int i=nNumIntervals; i < lmINTERVALS_IN_CHORD; i++)
+        nIntval[i] = lmNULL_FIntval;
 
     //correction for inversions
     if (nInversion == 0)
     {
-        *(pFI+0) = nIntval[0];
-        *(pFI+1) = nIntval[1];
-        *(pFI+2) = nIntval[2];
+        //nothing to do. copy values to return
+        for (int i=0; i < nNumIntervals; i++)
+            *(pFI+i) = nIntval[i];
     }
     else if (nInversion == 1)
     {
@@ -1006,13 +947,155 @@ void lmChord::GetChordIntervals(lmEChordType nType, int nInversion, lmFIntval* p
 
 }
 
+bool lmChord::CheckIfIsChordType(lmEChordType nType, int nInversion)
+{
+    //Check if the entry in tChordData[] table, for specified chord type, matches
+    //this chord intervals. As the table contains chords in root possition,
+    //before comparison the entry must be transformed according desired inversion.
+
+    if (m_nNumNotes == tChordData[nType].nNumNotes)
+    {
+        //get this entry intervals, re-arranged for current inversion
+        lmFIntval nIntval[lmINTERVALS_IN_CHORD]; 
+        GetChordIntervals((lmEChordType)nType, nInversion, &nIntval[0]);
+
+        
+        //DumpIntervals(wxString::Format(_T("nType=%d, inversion=%d,  "), nType, nInversion),
+        //                               nNumIntervals, &nIntval[0]);
+
+        //now proceed to compare intervals
+        bool fMatch = true;
+        lmFIntval fi = 0;
+        int nNumIntervals = m_nNumNotes - 1;
+        for (int i = 0; i < nNumIntervals && fMatch; i++)
+        {
+            fi += GetInterval(i+1);
+            fMatch &= (nIntval[i] == fi);
+        }
+
+        if (fMatch)
+            return true;      //found matching item
+    }
+    return false;
+}
+
 void lmChord::Normalize()
 {
-    //Remove duplicated notes (when not required in the chord) and minimizes
-    //intervals between notes. Examples:
+    //This method normalizes the chord.
+    //A chord is normalized when it is described by the same intervals than
+    //in chords data table. That is:
+    // - there are no duplicated notes
+    // - the intervals from root note go in ascending order
+    // - the intervals between any two consecutive notes are lower than one
+    //   octave (it should be a third, but there could be elided notes)
+    //
+    //Examples:
     // - major chord (c3,e3,g4,e5) -> (c3,e3,g3) root position
     // - seventh chord (d3,a3,+f4,c5) -> (d3,+f3,a3,c4) root position
-    // - ninth chord (a2,d3,+f4,e5) -> (a2,d3,+f3,d4,e4) first invesion
+    // - ninth chord (a2,d3,+f4,e5) -> (a2,d3,+f3,e4) first invesion
+    //
+    //Rules:
+    //  1. Root note must remain. Start with it.
+    //      Example: ninth chord (a2,d3,d4,+f4,e5) -> root note: a2
+    //  2. Get all other pitches and change their octave so that interval
+    //     from root note is lower than one octave.
+    //      (a2,d3,d4,+f4,e5) -> (a2,d3,d3,+f3,e3)
+    //  3. Order notes by pitch:
+    //      (a2,d3,d3,+f3,e3) order by pitch -> (a2,d3,d3,e3,+f3)
+    //  4. Remove duplicated notes.
+    //      (a2,d3,d3,e3,+f3) -> (a2,d3,e3,+f3)
+    //  5. If the interval between any two consecutive notes is lower than 3th, 
+    //     this is only possible in two cases
+    //TODO: check for more cases in inversions
+    //        * Suspended_4th (lm_p4, lm_p5)
+    //        * AugSixth (lm_M3, lm_a4, lm_a6)
+    //     If the chord it is not any of these cases, add one octave to that
+    //     interval. Then, reorder again by pitch after each change.
+    //      (a2,d3,e3,+f3) intval(d3-e3) -> (a2,d3,e4,+f3)
+    //      (a2,d3,e4,+f3) order by pitch -> a2,d3,+f3,e4.
+    //  6. When previous rule can no longer by applied: done. Chord is normalized.
+    //
+
+
+    //1 & 2. Starting from root note, get all other pitches and change their
+    // ctave so that interval from root note is lower than one octave.
+    for (int i=1; i < m_nNumNotes; i++)
+    {
+        while (m_fpNote[i] - m_fpNote[0] >= lm_p8)
+            m_fpNote[i] -= lm_p8;
+    }
+
+    //3. Order notes by pitch:
+    SortNotes();
+
+    //4. Remove duplicated notes.
+    //Precondition: the notes are sorted by pitch
+    int iLast = 0;      //points to last validated note. Root note is valid.
+    int iCur = 1;       //points to note currently being compared
+    while (iCur < m_nNumNotes)
+    {
+        wxASSERT(m_fpNote[iCur] >= m_fpNote[iLast]);    //check that notes are sorted
+
+        if (m_fpNote[iCur] != m_fpNote[iLast])
+            m_fpNote[++iLast] = m_fpNote[iCur];
+        iCur++;
+    }
+    m_nNumNotes = iLast+1;
+
+    //5a. Check for exceptions:
+    //          - Suspended_4th (p4, p5)
+    //          - AugSixth (M3, a4, a6)
+    if (CheckIfIsChordType(ect_Suspended_4th, 0)
+        || CheckIfIsChordType(ect_Suspended_4th, 1)
+        || CheckIfIsChordType(ect_Suspended_4th, 2)
+        || CheckIfIsChordType(ect_AugSixth, 0)
+        || CheckIfIsChordType(ect_AugSixth, 1)
+        || CheckIfIsChordType(ect_AugSixth, 2)
+        || CheckIfIsChordType(ect_AugSixth, 3)
+        )
+        return;     //done. Chord is normalized
+
+    //5b. If the interval between two consecutive notes is lower than 3th, add
+    //one octave to that interval. Then, reorder again by pitch after each change.
+    bool fIntvalChanged = true;
+    while(fIntvalChanged)
+    {
+        fIntvalChanged = false;
+        for (int i=1; i < m_nNumNotes; i++)
+        {
+            if (m_fpNote[i] - m_fpNote[i-1] < lm_d3)
+            {
+                m_fpNote[i] += lm_p8;
+                fIntvalChanged = true;
+                SortNotes();
+                break;
+            }
+        }
+    }
+
+    //Done. Chord is normalized
+    return;
+}
+
+void lmChord::SortNotes()
+{
+    //sort chord notes by pitch, from lower to higher. Bubble sort algorithm
+
+    bool fSwapDone = true;
+    while (fSwapDone)
+    {
+        fSwapDone = false;
+        for (int i = 0; i < m_nNumNotes - 1; i++)
+        {
+            if (m_fpNote[i] > m_fpNote[i+1])
+            {
+	            lmFPitch fpAux = m_fpNote[i];
+	            m_fpNote[i] = m_fpNote[i+1];
+	            m_fpNote[i+1] = fpAux;
+	            fSwapDone = true;
+            }
+        }
+    }
 }
 
 
@@ -1129,7 +1212,8 @@ wxString lmChordTypeToName(lmEChordType nType)
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    if (!m_fStringsInitialized) {
+    if (!m_fStringsInitialized)
+    {
         // Triads
         m_sChordName[ect_MajorTriad] = _("Major triad");
         m_sChordName[ect_MinorTriad] = _("Minor triad");
@@ -1153,11 +1237,29 @@ wxString lmChordTypeToName(lmEChordType nType)
         m_sChordName[ect_MinorSixth] = _("Minor 6th");
         m_sChordName[ect_AugSixth] = _("Augmented 6th");
 
+        //Ninths
+        m_sChordName[ect_DominantNinth] = _("Dominant ninth");
+        m_sChordName[ect_MajorNinth] = _("Major ninth");
+        m_sChordName[ect_MinorNinth] = _("Minor ninth");
+    
+        //11ths
+        m_sChordName[ect_Dominant_11th] = _("Dominant 11th");
+        m_sChordName[ect_Major_11th] = _("Major 11th");
+        m_sChordName[ect_Minor_11th] = _("Minor 11th");
+
+        //13ths
+        m_sChordName[ect_Dominant_13th] = _("Dominant 13th");
+        m_sChordName[ect_Major_13th] = _("Major 13th");
+        m_sChordName[ect_Minor_13th] = _("Minor 13th");
+
+        //Other
+        m_sChordName[ect_PowerChord] = _("Power chord");
+        m_sChordName[ect_TristanChord] = _("Tristan chord");
+
         m_fStringsInitialized = true;
     }
 
     return m_sChordName[nType];
-
 }
 
 int lmNumNotesInChord(lmEChordType nChordType)

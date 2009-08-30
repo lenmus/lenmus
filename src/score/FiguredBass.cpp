@@ -295,13 +295,26 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     , m_fParenthesis(false)
 {
     //Constructor from a lmChord and a key signature.
-    //Useful yo know the figured bass that encodes the chord. Key signature is
+    //Useful to know the figured bass that encodes the chord. Key signature is
     //necessary to know if any chord note has accidentals.
+    //
+    //Steps:
+    //1. Normalize chord and determine chord intervals
+    //2. Encode intervals as number + accidentals
+    //3. Create figured bass string
+    //4. Build object from this figured bass string
 
     SetLayer(lm_eLayerNotes);
 
-    //1. determine chord intervals
-    int nNumIntvals = pChord->GetNumNotes() - 1;
+
+        //1. Normalize chord and determine chord intervals
+
+    //normalize chord
+    lmChord oChord = *pChord;       //copy chord to not alter received chord
+    oChord.Normalize();
+
+    //get intervals present in the chord
+    int nNumIntvals = oChord.GetNumNotes() - 1;
     wxString sIntvals[lmINTERVALS_IN_CHORD];
     int nIntvalNums[lmINTERVALS_IN_CHORD];
     if (nNumIntvals > 0)
@@ -309,21 +322,28 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
         lmFIntval fi = 0;
         for (int i=1; i <= nNumIntvals; i++)
         {
-            fi += pChord->GetInterval(i);
+            fi += oChord.GetInterval(i);
             sIntvals[i-1]= FIntval_GetIntvCode( fi );
             nIntvalNums[i-1] = FIntval_GetNumber(fi);
         }
     }
     else
         //No chord. Only root note.
-        ;
+        wxASSERT(false);
 
-    //2. encode them as number + accidentals
+
+        //2. encode intervals as number + accidentals
+
+    //get accidentals for desired key signature
+    int nAccidentals[7];
+    ::lmComputeAccidentals(nKey, nAccidentals);
+
 
     //3. create figured bass string
+    //TODO
 
     //4. store info in this figured bass object member variables
-
+    //TODO
 }
 
 void lmFiguredBass::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)

@@ -135,8 +135,12 @@ extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
 #define lm_dd8  38
 #define lm_d8   39 
 #define lm_p8   40
+    //other intervals used in chord definitions
+#define lm_M9   (lm_M2+40)
+#define lm_p11  (lm_p4+40)
+#define lm_M13  (lm_M6+40)
 
-// Lets define a 'NULL interval'. It is usefull to signal special situations such as
+// Define a 'NULL interval'. It is usefull to signal special situations such as
 // 'no interval defined', 'end of list', etc.
 #define lmNULL_FIntval  -1
 

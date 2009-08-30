@@ -148,9 +148,11 @@ public:
 #endif
 
 private:
-    void DoCreateChord(lmFIntval nIntval[]);
+    void DoCreateChord(lmFIntval* pFI);
     lmEChordType ComputeChordType(int nInversion);
     void GetChordIntervals(lmEChordType nType, int nInversion, lmFIntval* pFI);
+    void SortNotes();
+    bool CheckIfIsChordType(lmEChordType nType, int nInversion);
 
 
 

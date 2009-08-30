@@ -718,6 +718,7 @@ lmFIntval FIntval_FromType(int nIntv, lmEIntervalType nType)
             return i;
     }
     wxASSERT(false);
+    return 0;           //compiler happy
 }
 
 int FIntval_GetNumber(lmFIntval fi)

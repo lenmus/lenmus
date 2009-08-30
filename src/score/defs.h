@@ -475,8 +475,9 @@ enum
 };
 
 
-//a lmChord might contain up to 6 notes. Change this for more notes in a lmChord
-#define lmNOTES_IN_CHORD  6
+//a lmChord might contain up to 7 notes (13ths). Change this constant for 
+//more notes in a lmChord
+#define lmNOTES_IN_CHORD  7
 #define lmINTERVALS_IN_CHORD  (lmNOTES_IN_CHORD - 1)
 
 

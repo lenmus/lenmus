@@ -42,16 +42,18 @@
 enum lmEChordType
 {
     // Triads
-    ect_MajorTriad = 0, // 3M5p perfect major
-    ect_MinorTriad,     // 3m5p perfect minor
-    ect_AugTriad,       // 3M5A 5th augmented
-    ect_DimTriad,       // 3m5d 5th diminished
-    ect_Suspended_4th,  // p4p5
-    ect_Suspended_2nd,  // m4p5
+    ect_MajorTriad = 0,     // 3M,5p perfect major
+    ect_FirstTriad = ect_MajorTriad,
+    ect_MinorTriad,         // 3m,5p perfect minor
+    ect_AugTriad,           // 3M,5A 5th augmented
+    ect_DimTriad,           // 3m,5d 5th diminished
+    ect_Suspended_4th,      // p4,p5
+    ect_Suspended_2nd,      // m4,p5
     ect_LastTriad = ect_Suspended_2nd,
 
     // Seventh chords
     ect_MajorSeventh,
+    ect_FirstSeventh = ect_MajorSeventh,
     ect_DominantSeventh,
     ect_MinorSeventh,
     ect_DimSeventh,
@@ -63,9 +65,37 @@ enum lmEChordType
 
     // Sixth chords
     ect_MajorSixth,
+    ect_FirstSixth = ect_MajorSixth,
     ect_MinorSixth,
     ect_AugSixth,
     ect_LastSixth = ect_AugSixth,
+
+    //Ninths
+    ect_DominantNinth,          //dominant-seventh + major ninth
+    ect_FirstNinth = ect_DominantNinth,
+    ect_MajorNinth,             //major-seventh + major ninth
+    ect_MinorNinth,             //minor-seventh + major ninth
+    ect_LastNinth = ect_MinorNinth,
+    
+    //11ths
+    ect_Dominant_11th,          //dominantNinth + perfect 11th
+    ect_First_11th = ect_Dominant_11th,
+    ect_Major_11th,             //majorNinth + perfect 11th
+    ect_Minor_11th,             //minorNinth + perfect 11th
+    ect_Last_11th = ect_Minor_11th,
+
+    //13ths
+    ect_Dominant_13th,          //dominant_11th + major 13th
+    ect_First_13th = ect_Dominant_13th,
+    ect_Major_13th,             //major_11th + major 13th
+    ect_Minor_13th,             //minor_11th + major 13th
+    ect_Last_13th = ect_Minor_13th,
+
+    //Other
+    ect_PowerChord,             //perfect fifth, (octave)
+    ect_FirstOther = ect_PowerChord,
+    ect_TristanChord,           //augmented fourth, augmented sixth, augmented second
+    ect_LastOther = ect_TristanChord,
 
     //last element, to signal End Of Table
     ect_Max
