@@ -90,6 +90,30 @@ extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* 
 extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
 
 
+class lmChordIntervals
+{
+public:
+    lmChordIntervals(int nNumIntv, lmFIntval* pFI);
+    ~lmChordIntervals();
+
+    //accessors
+    inline int GetNumIntervals() { return m_nNumIntv; }
+    inline lmFIntval GetInterval(int i) { return m_nIntervals[i]; }
+
+    //operations
+   void DoInversion();
+   void SortIntervals();
+   void Normalize();
+
+   //debug
+    wxString DumpIntervals();
+
+
+protected:
+    lmFIntval       m_nIntervals[lmINTERVALS_IN_CHORD];
+    int             m_nNumIntv;
+};
+
 
 class lmChord
 {
@@ -103,6 +127,8 @@ public:
     lmChord(wxString sRootNote, lmFiguredBass* pFigBass, lmEKeySignatures nKey = earmDo);
     //??
     lmChord(lmNote* pRootNote, lmChordInfo &chordInfo);
+    //build a chord from a list of notes in LDP source code
+    lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey = earmDo);
     //destructor
     ~lmChord();
 
@@ -114,37 +140,40 @@ public:
     void Initialize();
 
     //access to intervals
+    inline int GetNumIntervals() { return m_nNumNotes - 1; }
     lmFIntval GetInterval(int i);
 
-    // for debugging
-    wxString ToString();
-
-    inline lmEChordType GetChordType() { return m_nType; }
-    wxString GetNameFull();
-    inline wxString GetName() { return lmChordTypeToName( m_nType ); }
-    int GetNumNotes();
-    lmMPitch GetMidiNote(int i);
+    //access to notes
+    inline int GetNumNotes() { return m_nNumNotes; }
+    inline lmFPitch GetNote(int i) { return m_fpNote[i]; }
     wxString GetPattern(int i);
-    inline int GetInversion() { return m_nInversion; }
-    inline int GetElision() { return m_nElision; }
-    inline int IsRootDuplicated() { return m_fRootIsDuplicated; }
-    void Normalize();
-
-    // access to notes data
+    lmMPitch GetMidiNote(int i);
     inline int GetStep(int i) { return FPitch_Step(m_fpNote[i]); }
     inline int GetOctave(int i) { return FPitch_Octave(m_fpNote[i]); }
     inline int GetAccidentals(int i) { return FPitch_Accidentals(m_fpNote[i]); }
 
+    //chord info
+    inline lmEChordType GetChordType() { return m_nType; }
+    wxString GetNameFull();
+    inline wxString GetName() { return lmChordTypeToName( m_nType ); }
+    inline int GetInversion() { return m_nInversion; }
+    inline int GetElision() { return m_nElision; }
+    inline int IsRootDuplicated() { return m_fRootIsDuplicated; }
     inline bool IsCreated() { return m_nType != lmINVALID_CHORD_TYPE; };
+
+    // for debugging
+    wxString ToString();
+
+    //operations
+    void Normalize();
+
 
 #ifdef __WXDEBUG__
     //debug methods
     void UnitTests();
-    void DumpIntervals(wxString& sMsg, int nNumInvt, lmFIntval* pFI);
     void DumpIntervals(wxString& sMsg);
-#else
-    void DumpIntervals(wxString& sMsg, int nNumInvt, lmFIntval* pFI) {}
 #endif
+
 
 private:
     void DoCreateChord(lmFIntval* pFI);
@@ -153,9 +182,7 @@ private:
     void SortNotes();
     bool CheckIfIsChordType(lmEChordType nType, int nInversion);
 
-
-
-//member variables
+        //member variables
 
     lmEChordType        m_nType;
     lmEKeySignatures    m_nKey;
@@ -178,6 +205,7 @@ private:
     extern bool lmChordUnitTests();
     extern bool lmChordFromFiguredBassUnitTest(wxString sRootNote, 
                                                lmEKeySignatures nKey);
+    extern void BuildChordsTable();
 #endif
 
 

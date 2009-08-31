@@ -79,9 +79,12 @@ public:
     inline float GetTimePosIncrement() { return 0; }
 	inline wxString GetName() const { return _T("figured bass"); }
 
-    //information
+    //information about intervals
     lmEIntervalQuality GetIntervalQuality(int nIntv);
     bool IntervalSounds(int nIntv);
+
+    //general information
+    wxString GetFiguredBassString();
 
     //layout
     bool IsAligned() { return true; }
@@ -97,8 +100,6 @@ public:
 
 	//edit properties
 	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
-
-    //specific methods of this object
 
 
 private:

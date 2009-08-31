@@ -92,10 +92,10 @@ enum lmEChordType
     ect_Last_13th = ect_Minor_13th,
 
     //Other
-    ect_PowerChord,             //perfect fifth, (octave)
-    ect_FirstOther = ect_PowerChord,
+    //ect_PowerChord,             //perfect fifth, (octave)
+    //ect_FirstOther = ect_PowerChord,
     ect_TristanChord,           //augmented fourth, augmented sixth, augmented second
-    ect_LastOther = ect_TristanChord,
+    //ect_LastOther = ect_TristanChord,
 
     //last element, to signal End Of Table
     ect_Max

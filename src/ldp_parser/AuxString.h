@@ -38,17 +38,16 @@ extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName);
 // LDP related
 extern bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
                            wxString* sStep, wxString* sOctave);
+extern lmFPitch lmLDPDataToFPitch(wxString& sPitch);
 
 extern int SrcSplitPattern(wxString sSource);
 extern bool SrcIsRest(wxString sElement);
-
 
 extern lmEClefType LDPNameToClef(wxString sClefName);
 extern lmEKeySignatures LDPNameToKey(wxString sKeyName);
 
 extern wxString LineStyleToLDP(lmELineStyle nStyle);
 extern wxString LineCapToLDP(lmELineCap nLineCap);
-
 
 
 // MusicXML related

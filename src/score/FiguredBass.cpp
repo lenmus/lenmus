@@ -303,6 +303,7 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     //2. Encode intervals as number + accidentals
     //3. Create figured bass string
     //4. Build object from this figured bass string
+    //5. Remove implicit intervals
 
     SetLayer(lm_eLayerNotes);
 
@@ -314,9 +315,9 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     oChord.Normalize();
 
     //get intervals present in the chord
-    int nNumIntvals = oChord.GetNumNotes() - 1;
+    int nNumIntvals = oChord.GetNumIntervals();
     wxString sIntvals[lmINTERVALS_IN_CHORD];
-    int nIntvalNums[lmINTERVALS_IN_CHORD];
+    int nIntvalNum[lmINTERVALS_IN_CHORD];
     if (nNumIntvals > 0)
     {
         lmFIntval fi = 0;
@@ -324,7 +325,7 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
         {
             fi += oChord.GetInterval(i);
             sIntvals[i-1]= FIntval_GetIntvCode( fi );
-            nIntvalNums[i-1] = FIntval_GetNumber(fi);
+            nIntvalNum[i-1] = FIntval_GetNumber(fi);
         }
     }
     else
@@ -338,12 +339,110 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     int nAccidentals[7];
     ::lmComputeAccidentals(nKey, nAccidentals);
 
+    //compare note accidentals with key signature accidentals
+    int nDiffAcc[lmNOTES_IN_CHORD];
+    for (int i=0; i < oChord.GetNumNotes(); i++)
+        nDiffAcc[i] = oChord.GetAccidentals(i) - nAccidentals[ oChord.GetStep(i) ];
 
-    //3. create figured bass string
-    //TODO
 
-    //4. store info in this figured bass object member variables
-    //TODO
+        //3,4. create figured bass string and store info in this figured bass object
+        //     member variables
+
+    //initialize interval info
+    for (int i=0; i <= lmFB_MAX_INTV; i++)
+    {
+        m_tFBInfo[i].nQuality = lm_eIM_NotPresent;
+        m_tFBInfo[i].nAspect = lm_eIA_Normal;
+        m_tFBInfo[i].sSource = wxEmptyString;
+        m_tFBInfo[i].sPrefix = wxEmptyString;
+        m_tFBInfo[i].sSuffix = wxEmptyString;
+        m_tFBInfo[i].sOver = wxEmptyString;
+        m_tFBInfo[i].fSounds = false;
+    }
+
+    //store info about existing chord intervals
+    for (int iIntv=oChord.GetNumIntervals()-1; iIntv >= 0; iIntv--)
+    {
+        int i = nIntvalNum[iIntv];
+        bool fIgnore = false;
+        int nAcc = nDiffAcc[iIntv+1] - nDiffAcc[0];
+        if (nAcc == -1)
+        {
+            m_tFBInfo[i].sSource += _T("b");
+            m_tFBInfo[i].nQuality = lm_eIM_LowerHalf;
+        }
+        else if (nAcc == 1)
+        {
+            m_tFBInfo[i].sSource += _T("#");
+            m_tFBInfo[i].nQuality = lm_eIM_RaiseHalf;
+        }
+        else if (nAcc == 0)
+        {
+            m_tFBInfo[i].sSource = _T("");
+            m_tFBInfo[i].nQuality = lm_eIM_AsImplied;
+        }
+        else
+        {
+            wxLogMessage(_T("[lmFiguredBass::lmFiguredBass] No provision for this case."));
+            fIgnore = true;
+        }
+
+        if (fIgnore)
+        {
+            //Not expected case. Ignore this interval to avoid errors/crashes
+            m_tFBInfo[i].nQuality = lm_eIM_NotPresent;
+            m_tFBInfo[i].sSource = _T("");
+            m_tFBInfo[i].fSounds = false;
+        }
+        else
+        {
+            m_tFBInfo[i].sSource += wxString::Format(_T("%d"), nIntvalNum[iIntv] );
+            m_tFBInfo[i].fSounds = true;
+        }
+    }
+
+
+        //5. Remove implicit intervals
+
+    //find typical cases
+    wxString sFigBass = this->GetFiguredBassString();
+    if (sFigBass == _T("5 3"))          // "5 3" --> "(5)"
+    {
+        m_tFBInfo[3].sSource = _T("");
+        m_tFBInfo[3].nAspect = lm_eIA_Understood;
+
+        m_tFBInfo[5].sSource = _T("(5)");
+        m_tFBInfo[5].sPrefix = _T("(");
+        m_tFBInfo[5].sSuffix = _T(")");
+        m_tFBInfo[5].nAspect = lm_eIA_Parenthesis;
+    }
+    else if (sFigBass == _T("6 3"))     // "6 3" --> "6"
+    {
+        m_tFBInfo[3].sSource = _T("");
+        m_tFBInfo[3].nAspect = lm_eIA_Understood;
+    }
+    else if (sFigBass == _T("7 5 3"))   // "7 5 3" --> "7"
+    {
+        m_tFBInfo[3].sSource = _T("");
+        m_tFBInfo[3].nAspect = lm_eIA_Understood;
+
+        m_tFBInfo[5].sSource = _T("");
+        m_tFBInfo[5].nAspect = lm_eIA_Understood;
+    }
+    else if (sFigBass == _T("b7 5 3"))  // "b7 5 3" --> "7/"
+    {
+        m_tFBInfo[3].sSource = _T("");
+        m_tFBInfo[3].nAspect = lm_eIA_Understood;
+
+        m_tFBInfo[5].sSource = _T("");
+        m_tFBInfo[5].nAspect = lm_eIA_Understood;
+
+        m_tFBInfo[7].sSource = _T("7/");
+        m_tFBInfo[7].sPrefix = _T("");
+        m_tFBInfo[7].sSuffix = _T("/");
+    }
+
+
 }
 
 void lmFiguredBass::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
@@ -562,21 +661,7 @@ wxString lmFiguredBass::SourceLDP(int nIndent, bool fUndoData)
 
     //add source string
     sSource += _T("\"");
-    bool fFirstIntval = true;
-    for (int i=lmFB_MAX_INTV; i > 1; i--)
-    {
-        if (m_tFBInfo[i].nQuality != lm_eIM_NotPresent)
-        {
-            if (!fFirstIntval)
-                sSource += _T(" ");
-            if (m_tFBInfo[i].nAspect == lm_eIA_Parenthesis)
-                sSource += _T("(");
-            sSource += m_tFBInfo[i].sSource;
-            if (m_tFBInfo[i].nAspect == lm_eIA_Parenthesis)
-                sSource += _T(")");
-            fFirstIntval = false;
-        }
-    }
+    sSource += GetFiguredBassString();
     sSource += _T("\"");
 
 	//base class
@@ -655,6 +740,23 @@ wxString lmFiguredBass::SourceXML(int nIndent)
 	return sSource;
 }
 
+wxString lmFiguredBass::GetFiguredBassString()
+{
+    //add source string
+    wxString sFigBass = _T("");
+    for (int i=lmFB_MAX_INTV; i > 1; i--)
+    {
+        if (m_tFBInfo[i].nQuality != lm_eIM_NotPresent
+            && m_tFBInfo[i].nAspect != lm_eIA_Understood)
+        {
+            if (sFigBass != _T(""))
+                sFigBass += _T(" ");
+            sFigBass += m_tFBInfo[i].sSource;
+        }
+    }
+    return sFigBass;
+}
+
 void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
 {
 	//invoked to add specific panels to the dialog
@@ -695,12 +797,70 @@ bool lmFiguredBassUnitTests()
     //Unit test for lmFiguredBass contructor from lmChord
     //returns true if test passed correctly
 
-    wxLogMessage(_T("UnitTests: Contructor from lmChord"));
-    wxLogMessage(_T("====================================="));
+    typedef struct lmTestDataStruct
+    {
+        lmEKeySignatures    nKey;       //key signature
+        wxString            sFigBass;   //test result, to validate test
+        int                 nNumNotes;  //num notes in chord
+        wxString            sNotes[6];  //notes for chord
+    }
+    lmTestData;
 
+    static lmTestData tTestChords[] =
+    {
+        //          Test       num.
+        // nKey     result    notes   nChord notes, up to 6. LDP encoding
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("6"),      5,  {_T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmRe, _T("6 4"),    4,  {_T("a2"), _T("+f3"), _T("d4"), _T("+f4") }},
+        //{ earmDo, _T("7"),      5,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("b4") }},
+        //{ earmDo, _T("7/"),     4,  {_T("c3"), _T("-b3"), _T("e4"), _T("g4") }},
+        { earmDo, _T("4"),      4,  {_T("e3"), _T("-b3"), _T("g4"), _T("c5") }},
+        { earmDo, _T("9"),      5,  {_T("a2"), _T("d3"), _T("d4"), _T("+f4"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+    };
 
-    //TODO: compare results agains control file and set return code accordingly
-    return true;        //test success
+    wxLogMessage(_T("UnitTests: Figured bass contructor from lmChord"));
+    wxLogMessage(_T("==============================================="));
+    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmScore* pScore = new lmScore();
+    lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
+    lmVStaff* pVStaff = pInstr->GetVStaff();
+    pVStaff->AddClef( lmE_Sol );
+    pVStaff->AddKeySignature( earmDo );
+    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
+
+    int nNumTestCases = sizeof(tTestChords) / sizeof(lmTestData);
+    bool fTestOK = true;
+    for (int i=0; i < nNumTestCases; i++)
+    {
+        lmChord oChord(tTestChords[i].nNumNotes, &(tTestChords[i].sNotes[0]), tTestChords[i].nKey);
+        lmFiguredBass* pFB = new lmFiguredBass(pVStaff, lmNEW_ID, &oChord, tTestChords[i].nKey);
+        bool fOK = (tTestChords[i].sFigBass == pFB->GetFiguredBassString());
+        fTestOK &= fOK;
+        if (!fOK)
+            wxLogMessage(_T("%s. Case %d, expecting'%s' but result is '%s'"),
+                (fOK ? _T("OK") : _T("FAIL")),
+                i, tTestChords[i].sFigBass.c_str(),
+                pFB->GetFiguredBassString().c_str() );
+
+        delete pFB;
+    }
+    delete pScore;
+
+    return fTestOK;        
 }
 
 #endif      //Debug global methods

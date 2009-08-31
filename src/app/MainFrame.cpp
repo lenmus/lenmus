@@ -1957,7 +1957,19 @@ void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 #ifdef __WXDEBUG__
     //lmChord oChord(_T("c4"), ect_MajorTriad);
     //oChord.UnitTests();
+    wxString sResult = _T("");
+
+    //start tests
     lmChordUnitTests();
+
+    if (!lmFiguredBassUnitTests())
+        sResult += _T("Test failure in lmFiguredBassUnitTests\n");
+
+    //present results
+    if (sResult == _T(""))
+        sResult = _T("Unit test success");
+
+    wxMessageBox(sResult);
 #endif
 }
 

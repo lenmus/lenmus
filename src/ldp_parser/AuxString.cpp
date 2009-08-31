@@ -382,6 +382,64 @@ bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
 
 }
 
+lmFPitch lmLDPDataToFPitch(wxString& sPitch)
+{
+    //returns the FPitch encoded in string sPitch (LDP format).
+    //sPitch is must be 'trimed' (no spaces before or after real data) and in lower case
+    //If any error, returns 0.
+
+    //split the string: accidentals and name
+    wxString sAlter;
+    switch (sPitch.length()) {
+        case 2:
+            sAlter = _T("");
+            break;
+        case 3:
+            sAlter = sPitch.substr(0, 1);
+            sPitch = sPitch.substr(1, 2);
+            break;
+        case 4:
+            sAlter = sPitch.substr(0, 2);
+            sPitch = sPitch.substr(2, 2);
+            break;
+        default:
+            return 0;   //error
+    }
+
+    //get step
+    wxString sStep = sPitch.Left(1);
+    static wxString sSteps = _T("abcdefg");
+    int nStep = LetterToStep(sStep);
+
+    //get octave
+    long nOctave;
+    wxString sOctave = sPitch.substr(1, 1);
+    if (!sOctave.ToLong(&nOctave))
+        return 0;       //error
+
+    //analyse accidentals
+    int nAcc = 0;
+    if (sAlter.IsEmpty())
+        nAcc = 0;
+    else if (sAlter.StartsWith( _T("+") ))
+        nAcc = (sAlter.StartsWith( _T("++") ) ? 2 : 1);
+    else if (sAlter.StartsWith( _T("-") ))
+        nAcc = (sAlter.StartsWith(_T("--")) ? -2 : -1);
+    else if (sAlter.StartsWith( _T("=+") ))
+        nAcc = 1;
+    else if (sAlter.StartsWith( _T("=-") ))
+        nAcc = -1;
+    else if (sAlter.StartsWith( _T("=") ))
+        nAcc = 0;
+    else if (sAlter.StartsWith( _T("x") ))
+        nAcc = 2;
+    else
+        return 0;  //error
+
+    //convert to FPitch
+    return FPitch((int)nStep, (int)nOctave, nAcc);  //no error
+}
+
 lmEClefType LDPNameToClef(wxString sClefName)
 {
     // Returns -1 if error

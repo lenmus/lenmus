@@ -104,7 +104,7 @@ static lmChordData tChordData[ect_Max] =
     { 7, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11, lm_M13 }}, // - Major_13th       = major_11th + major 13th
     { 7, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Minor_13th       = minor_11th + major 13th
     //Other:
-    { 2, { lm_p5 }},                    // - PowerChord     = perfect fifth, (octave)
+    //{ 2, { lm_p5 }},                    // - PowerChord     = perfect fifth, (octave)
     { 4, { lm_a2, lm_a4, lm_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
 };
 
@@ -619,12 +619,12 @@ lmChord::lmChord(wxString sRootNote, lmEChordType nChordType,
     Create(sRootNote, nChordType, nInversion, nKey);
 }
 
-lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass, 
-                               lmEKeySignatures nKey)
+lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass, lmEKeySignatures nKey)
     : m_nKey(nKey)
     , m_nInversion(0)
     , m_nNumNotes(0)
     , m_fRootIsDuplicated(false)
+    , m_nType(lmINVALID_CHORD_TYPE)
 {
     //Creates a chord from the root note, the figured bass, and the key signature.
 
@@ -745,6 +745,22 @@ lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass,
 
 }
 
+lmChord::lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey)
+    : m_nKey(nKey)
+    , m_nInversion(0)
+    , m_nNumNotes(nNumNotes)
+    , m_fRootIsDuplicated(false)
+    , m_nType(lmINVALID_CHORD_TYPE)
+{
+    //Creates a chord from a list of notes in LDP source code
+
+    //get notes' pitch
+    for (int i=0; i < nNumNotes; i++)
+    {
+        m_fpNote[i] = ::lmLDPDataToFPitch( *(pNotes+i) );
+    }
+}
+
 void lmChord::Create(wxString sRootNote, lmEChordType nChordType,
                             int nInversion, lmEKeySignatures nKey)
 {
@@ -839,11 +855,6 @@ lmFIntval lmChord::GetInterval(int i)
 
     wxASSERT(i > 0 && i < m_nNumNotes);
     return m_fpNote[i] - m_fpNote[i-1];
-}
-
-int lmChord::GetNumNotes()
-{
-    return m_nNumNotes;
 }
 
 lmMPitch lmChord::GetMidiNote(int i)
@@ -1018,7 +1029,7 @@ void lmChord::Normalize()
 
 
     //1 & 2. Starting from root note, get all other pitches and change their
-    // ctave so that interval from root note is lower than one octave.
+    // octave so that interval from root note is lower than one octave.
     for (int i=1; i < m_nNumNotes; i++)
     {
         while (m_fpNote[i] - m_fpNote[0] >= lm_p8)
@@ -1164,19 +1175,6 @@ void lmChord::UnitTests()
 
 }
 
-void lmChord::DumpIntervals(wxString& sMsg, int nNumInvt, lmFIntval* pFI)
-{
-
-    wxString sIntvals = sMsg;
-    for (int i=0; i < nNumInvt-1; i++)
-    {
-        sIntvals += FIntval_GetIntvCode( *(pFI+i) );
-        sIntvals += _T(", ");
-    }
-    sIntvals += FIntval_GetIntvCode( *(pFI+nNumInvt-1) );
-    wxLogMessage(sIntvals);
-}
-
 void lmChord::DumpIntervals(wxString& sMsg)
 {
 
@@ -1199,7 +1197,96 @@ void lmChord::DumpIntervals(wxString& sMsg)
     wxLogMessage(sIntvals);
 }
 
+
 #endif  // __WXDEBUG__
+
+
+
+//----------------------------------------------------------------------------------------
+// lmChordIntervals implementation: A list of intervals
+//----------------------------------------------------------------------------------------
+
+lmChordIntervals::lmChordIntervals(int nNumIntv, lmFIntval* pFI)
+    : m_nNumIntv(nNumIntv)
+{
+    for (int i=0; i < m_nNumIntv; i++)
+        m_nIntervals[i] = *(pFI+i);
+}
+
+lmChordIntervals::~lmChordIntervals()
+{
+}
+
+void lmChordIntervals::DoInversion()
+{
+    //Do first inversion of list of intervals. 
+    //Note that second inversion can be obtained by invoking this method
+    //two times. The third inversion, by invoking it three times, etc.
+
+    lmFIntval nNewIntervals[lmINTERVALS_IN_CHORD];
+    for (int i=0; i < m_nNumIntv-1; i++)
+    {
+        nNewIntervals[i] = m_nIntervals[i+1] - m_nIntervals[0];
+        if (nNewIntervals[i] < 0)
+            nNewIntervals[i] += lm_p8;
+    }
+
+    nNewIntervals[m_nNumIntv-1] = lm_p8 - m_nIntervals[0];
+
+    //transfer results
+    for (int i=0; i < m_nNumIntv; i++)
+        m_nIntervals[i] = nNewIntervals[i];
+
+}
+
+void lmChordIntervals::SortIntervals()
+{
+    //sort intervals, from shortest to largest. Bubble method
+
+    bool fSwapDone = true;
+    while (fSwapDone)
+    {
+        fSwapDone = false;
+        for (int i = 0; i < m_nNumIntv - 1; i++)
+        {
+            if (m_nIntervals[i] > m_nIntervals[i+1])
+            {
+	            lmFIntval fiAux = m_nIntervals[i];
+	            m_nIntervals[i] = m_nIntervals[i+1];
+	            m_nIntervals[i+1] = fiAux;
+	            fSwapDone = true;
+            }
+        }
+    }
+}
+
+void lmChordIntervals::Normalize()
+{
+    //reduce any interval grater than the octave
+    //sort intervals
+
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        if (m_nIntervals[i] > lm_p8)
+            m_nIntervals[i] %= lm_p8;
+    }
+
+    SortIntervals();
+}
+
+wxString lmChordIntervals::DumpIntervals()
+{
+    wxString sIntvals = _T("");
+    for (int i=0; i < m_nNumIntv-1; i++)
+    {
+        sIntvals += FIntval_GetIntvCode( m_nIntervals[i] );
+        sIntvals += _T(", ");
+    }
+    sIntvals += FIntval_GetIntvCode( m_nIntervals[m_nNumIntv-1] );
+    return sIntvals;
+}
+
+
 
 //----------------------------------------------------------------------------------------
 //global functions
@@ -1253,7 +1340,7 @@ wxString lmChordTypeToName(lmEChordType nType)
         m_sChordName[ect_Minor_13th] = _("Minor 13th");
 
         //Other
-        m_sChordName[ect_PowerChord] = _("Power chord");
+        //m_sChordName[ect_PowerChord] = _("Power chord");
         m_sChordName[ect_TristanChord] = _("Tristan chord");
 
         m_fStringsInitialized = true;
@@ -1331,6 +1418,8 @@ bool lmChordFromFiguredBassUnitTest(wxString sRootNote, lmEKeySignatures nKey)
                  sRootNote, nKey);
     wxLogMessage(_T("==================================================================="));
 
+    BuildChordsTable();
+
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
@@ -1344,7 +1433,6 @@ bool lmChordFromFiguredBassUnitTest(wxString sRootNote, lmEKeySignatures nKey)
     lmFiguredBass* pFB = parserLDP.AnalyzeFiguredBass(pNode, pVStaff);
 
     lmFiguredBassInfo tFBInfo[14];
-    //lmFiguredBass* pFB = new lmFiguredBass();
     for (int i=0; i < lmGetFiguredBassInfoSize(); i++)
     {
         lmGetFiguredBassInfo(i, &tFBInfo[0]);
@@ -1361,6 +1449,37 @@ bool lmChordFromFiguredBassUnitTest(wxString sRootNote, lmEKeySignatures nKey)
 
     //TODO: compare results agains control file and set return code accordingly
     return true;        //test success
+}
+
+void BuildChordsTable()
+{
+    for (int nType = 0; nType < ect_Max; nType++)
+    {
+        //get entry from master table
+        int nNumNotes = tChordData[nType].nNumNotes;
+        lmChordIntervals oCI(nNumNotes-1, &tChordData[nType].nIntervals[0]);
+
+        //create root position entry
+        int nInversion = 0;
+        wxString sIntvals = oCI.DumpIntervals();
+        oCI.Normalize();
+        wxString sFingerPrint = oCI.DumpIntervals();
+        wxLogMessage(_T("%s - %d, %d, Int:'%s', Fingerprint='%s'"), 
+                        lmChordTypeToName((lmEChordType)nType),
+                        nInversion, nNumNotes, sIntvals, sFingerPrint);
+
+        //create all inversions entries
+        for (nInversion = 1; nInversion < nNumNotes-1; nInversion++)
+        {
+            oCI.DoInversion();
+            wxString sIntvals = oCI.DumpIntervals();
+            oCI.Normalize();
+            wxString sFingerPrint = oCI.DumpIntervals();
+            wxLogMessage(_T("%s - %d, %d, Int:'%s', Fingerprint='%s'"), 
+                         lmChordTypeToName((lmEChordType)nType),
+                         nInversion, nNumNotes, sIntvals, sFingerPrint);
+        }
+    }
 }
 
 #endif      //Debug global methods
