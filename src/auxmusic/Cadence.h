@@ -170,9 +170,8 @@ private:
     lmECadenceType  m_nType;
 	int				m_nImperfectCad;		
     lmEKeySignatures  m_nKey;
-    bool            m_fTonicCreated;
-    lmChord  m_oTonicChord;
-    lmChord  m_aChord[lmCHORDS_IN_CADENCE];
+    lmChord*        m_pTonicChord;
+    lmChord*        m_pChords[lmCHORDS_IN_CADENCE];
     int             m_nInversions[lmCHORDS_IN_CADENCE];
     int             m_nNumChords;       //num of chords in this cadence
     lmHChord        m_Chord[lmCHORDS_IN_CADENCE];

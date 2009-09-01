@@ -131,10 +131,10 @@ static const wxString aImperfect[4][lmCHORDS_IN_CADENCE] = {
 
 
 lmCadence::lmCadence()
+    : m_pTonicChord((lmChord*)NULL)
+    , m_fCreated(false)
+    , m_nNumChords(0)
 {
-    m_fCreated = false;
-    m_nNumChords = 0;
-    m_fTonicCreated = false;
 }
 
 bool lmCadence::Create(lmECadenceType nCadenceType, lmEKeySignatures nKey, bool fUseGrandStaff)
@@ -185,14 +185,14 @@ bool lmCadence::Create(lmECadenceType nCadenceType, lmEKeySignatures nKey, bool 
 				sFunct.c_str(), nKey, sRootNote.c_str());
 
        //Prepare the chord
-        m_aChord[iC].Create(sRootNote, sIntervals, nKey);
+        m_pChords[iC] = new lmChord(sRootNote, sIntervals, nKey);
         m_nNumChords++;
     }
 
     // generate first chord
     std::vector<lmHChord> aFirstChord;
 	lmChordAuxData tFirstChordData;
-    int nValidFirst = GenerateFirstChord(aFirstChord, tFirstChordData, &m_aChord[0], m_nInversions[0]);
+    int nValidFirst = GenerateFirstChord(aFirstChord, tFirstChordData, m_pChords[0], m_nInversions[0]);
     if (nValidFirst == 0) {
         // Select the less bad chord
         SelectLessBad(aFirstChord, tFirstChordData, 0);
@@ -219,7 +219,7 @@ bool lmCadence::Create(lmECadenceType nCadenceType, lmEKeySignatures nKey, bool 
     // Select the second chord
     std::vector<lmHChord> aNextChord;
 	lmChordAuxData tNextChordData;
-    int nValidNext = GenerateNextChord(aNextChord, tNextChordData, &m_aChord[1], m_nInversions[1], 0);
+    int nValidNext = GenerateNextChord(aNextChord, tNextChordData, m_pChords[1], m_nInversions[1], 0);
     if (nValidNext == 0) {
         //Select the less bad chord
         SelectLessBad(aNextChord, tNextChordData, 1);
@@ -231,6 +231,14 @@ bool lmCadence::Create(lmECadenceType nCadenceType, lmEKeySignatures nKey, bool 
 
 lmCadence::~lmCadence()
 {
+    if (m_pTonicChord)
+        delete m_pTonicChord;
+
+    for (int i=0; i < m_nNumChords; i++)
+    {
+        if (m_pChords[i])
+            delete m_pChords[i];
+    }
 }
 
 lmChord* lmCadence::GetChord(int iC)
@@ -239,7 +247,7 @@ lmChord* lmCadence::GetChord(int iC)
     // if iC is out of range returns NULL pointer
 
     if (iC >=0 && iC < m_nNumChords)
-        return &m_aChord[iC];
+        return m_pChords[iC];
     else
         return (lmChord*) NULL;
 }
@@ -1243,7 +1251,7 @@ void lmCadence::Debug_DumpChord(lmHChord& oChord, int iChord)
 
 lmChord* lmCadence::GetTonicChord()
 {
-    if (!m_fTonicCreated)
+    if (!m_pTonicChord)
     {
         //Create tonic chord
 
@@ -1256,11 +1264,9 @@ lmChord* lmCadence::GetTonicChord()
             sIntervals = _T("m3,p5");
 
         //create the chord
-        m_oTonicChord.Create(sRootNote, sIntervals, m_nKey);
-
-        m_fTonicCreated = true;
+        m_pTonicChord = new lmChord(sRootNote, sIntervals, m_nKey);
     }
-    return &m_oTonicChord;
+    return m_pTonicChord;
 }
 
 

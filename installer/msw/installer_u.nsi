@@ -9,7 +9,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2009 Cecilio Salmeron
+;    Copyright (c) 2002-2009 LenMus project
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -38,11 +38,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.0"
+  !define APP_VERSION "4.1b0"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.0"     ;product name displayed by the installer
+  Name "lenmus v4.0 b0"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -260,6 +260,7 @@ Section  "-" "MainSection"
      File "..\..\packages\freetype\bin\freetype6.dll"
      File "..\..\packages\freetype\bin\zlib1.dll"
 ;     File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
+;     File "..\..\packages\wxSQLite3\lib\wxsqlite3u.lib"
      File "..\..\fonts\lmbasic2.ttf"
      File "msvcr71.dll"
      File "msvcp71.dll"

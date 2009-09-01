@@ -1955,8 +1955,6 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 {
 #ifdef __WXDEBUG__
-    //lmChord oChord(_T("c4"), ect_MajorTriad);
-    //oChord.UnitTests();
     wxString sResult = _T("");
 
     //start tests

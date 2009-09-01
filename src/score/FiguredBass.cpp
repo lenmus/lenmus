@@ -320,12 +320,12 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     int nIntvalNum[lmINTERVALS_IN_CHORD];
     if (nNumIntvals > 0)
     {
-        lmFIntval fi = 0;
         for (int i=1; i <= nNumIntvals; i++)
         {
-            fi += oChord.GetInterval(i);
+            lmFIntval fi = oChord.GetInterval(i);
             sIntvals[i-1]= FIntval_GetIntvCode( fi );
             nIntvalNum[i-1] = FIntval_GetNumber(fi);
+            wxASSERT(nIntvalNum[i-1] <= lmFB_MAX_INTV);
         }
     }
     else
@@ -364,6 +364,7 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     for (int iIntv=oChord.GetNumIntervals()-1; iIntv >= 0; iIntv--)
     {
         int i = nIntvalNum[iIntv];
+        wxASSERT(i <= lmFB_MAX_INTV);
         bool fIgnore = false;
         int nAcc = nDiffAcc[iIntv+1] - nDiffAcc[0];
         if (nAcc == -1)

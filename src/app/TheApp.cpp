@@ -122,6 +122,7 @@
 #include "Logger.h"                     //access to error's logger
 #include "../options/Languages.h"       //to check config_ini.txt stored language
 #include "../graphic/AggDrawer.h"       //to delete lmMusicFontManager singleton
+#include "../auxmusic/Chord.h"          //to delete lmChordsDB singleton
 
 //access to global objects
 #include "../globals/Paths.h"
@@ -726,6 +727,7 @@ int lmTheApp::OnExit(void)
     delete m_pLocale;                           //locale object
     lmMusicFontManager::DeleteInstance();       //music font manager
     lmProcessorMngr::DeleteInstance();          //Processor manager
+    lmChordsDB::DeleteInstance();               //Chords Database
 
 	return 0;
 }
