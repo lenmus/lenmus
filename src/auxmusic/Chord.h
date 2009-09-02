@@ -79,9 +79,6 @@ typedef struct lmChordInfoStruct {
     }
 } lmChordInfo;
 
-//TODO: This method was used mainly for debug. Consider to put it inside lmNote
-extern wxString NoteId(lmNote &tNote);
-
 // TODO: global methods. They could probably be placed inside a class...
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
 extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
@@ -155,13 +152,13 @@ public:
     inline int GetAccidentals(int i) { return FPitch_Accidentals(GetNote(i)); }
 
     //chord info
-    inline lmEChordType GetChordType() { return m_nType; }
+    lmEChordType GetChordType();
     wxString GetNameFull();
-    inline wxString GetName() { return lmChordTypeToName( m_nType ); }
-    inline int GetInversion() { return m_nInversion; }
+    inline wxString GetName() { return lmChordTypeToName( GetChordType() ); }
+    int GetInversion();
     inline int GetElision() { return m_nElision; }
     inline int IsRootDuplicated() { return m_fRootIsDuplicated; }
-    inline bool IsStandardChord() { return m_nType != lmINVALID_CHORD_TYPE; };
+    inline bool IsStandardChord() { return GetChordType() != lmINVALID_CHORD_TYPE; };
 
     // for debugging
     wxString ToString();
@@ -172,9 +169,9 @@ private:
 
         //member variables
 
-    lmEChordType        m_nType;
+    lmEChordType        m_nType;        //do not use directly!. Always call GetChordType()
     lmEKeySignatures    m_nKey;
-    int                 m_nInversion;
+    int                 m_nInversion;   //do not use directly!. Always call GetInversion()   
     int                 m_nElision; // TODO: consider to make an enum in ChordConstrains...
     bool                m_fRootIsDuplicated;
     lmFPitch            m_fpRootNote;
@@ -217,8 +214,7 @@ protected:
 
     //Unit tests
     extern bool lmChordUnitTests();
-    extern bool lmChordFromFiguredBassUnitTest(wxString sRootNote, 
-                                               lmEKeySignatures nKey);
+    extern bool lmChordFromFiguredBassUnitTest();
 #endif
 
 

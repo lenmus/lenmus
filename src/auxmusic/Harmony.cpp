@@ -191,7 +191,7 @@ wxString lmChordDescriptor::ToString()
     for (int nN = 0; nN<nNotes; nN++)
     {
         sStr += _T(" ");
-        sStr += NoteId( *pChordNotes[nN] );
+        sStr += pChordNotes[nN]->GetPrintName();
     }
     return sStr;
 }
@@ -279,7 +279,7 @@ wxString lmActiveNotes::ToString()
     for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it)
     {
         auxStr = wxString::Format(_T(" %s  End time: %f ")
-            , NoteId( *(*it)->pNote).c_str(), (*it)->rEndTime  );
+            , (*it)->pNote->GetPrintName().c_str(), (*it)->rEndTime  );
         sRetStr += auxStr;
     }
     sRetStr += _T(" ]");
@@ -419,8 +419,10 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
                         sResultDetails = wxString::Format(
                             _("Parallel motion of %s, chords: %d, %d; v%d %s-->%s, v%d %s-->%s, Distance: %s, Interval: %s")
                             ,sType.c_str(),  (nC-1)+1, (nC)+1
-                            ,(i)+1,  NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]).c_str(), NoteId(*m_pChordDescriptor[nC].pChordNotes[i]).c_str()
-                            ,(nN)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]).c_str(),  NoteId(*m_pChordDescriptor[nC].pChordNotes[nN]).c_str()
+                            ,(i)+1,  m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
+                            , m_pChordDescriptor[nC].pChordNotes[i]->GetPrintName().c_str()
+                            ,(nN)+1, m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
+                            , m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
                             , FIntval_GetIntvCode(nDistance).c_str()
                             , FIntval_GetIntvCode(nFullVoiceInterval).c_str()
                             );
@@ -507,9 +509,11 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                         - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() );
 
                 wxLogMessage(_(" Notes: %s-->%s %s-->%s Movement type:%d  distance:%d")
- , NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]).c_str(), NoteId(*m_pChordDescriptor[nC].pChordNotes[nN]).c_str()
- , NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]).c_str(), NoteId(*m_pChordDescriptor[nC].pChordNotes[i]).c_str()
- ,nVoiceMovementType, nDistance);
+                        , m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
+                        , m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
+                        , m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
+                        , m_pChordDescriptor[nC].pChordNotes[i]->GetPrintName().c_str()
+                        , nVoiceMovementType, nDistance);
 
                 if ( nVoiceMovementType == lm_eDirectMovement && ( nDistance == 0 || nDistance == lm_p5 )  )
                 {
@@ -530,8 +534,10 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                         sResultDetails = wxString::Format(
                _("Direct movement resulting %s. Chords:%d,%d. Voices:%d %s-->%s and %d %s-->%s. Distance: %s, Interval: %s")
                , sType.c_str(), (nC-1)+1, (nC)+1
-               , (nN)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[nN]).c_str(), NoteId(*m_pChordDescriptor[nC].pChordNotes[nN]).c_str()
-               , (i)+1, NoteId(*m_pChordDescriptor[nC-1].pChordNotes[i]).c_str(), NoteId(*m_pChordDescriptor[nC].pChordNotes[i]).c_str()
+               , (nN)+1, m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
+               , m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
+               , (i)+1, m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
+               , m_pChordDescriptor[nC].pChordNotes[i]->GetPrintName().c_str()
                , FIntval_GetIntvCode(nDistance).c_str()
                , FIntval_GetIntvCode(nInterval).c_str());
 
@@ -625,8 +631,8 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
                     sResultDetails = wxString::Format(
                         _("Chord:%d: Voice crossing.  Voice%d(%s) <= Voice%d(%s) ")
                     , (nC)+1
-                    , nVoice[1], NoteId(*m_pChordDescriptor[nC].pChordNotes[nN]).c_str()
-                    , nVoice[0], NoteId(*m_pChordDescriptor[nC].pChordNotes[i]).c_str()
+                    , nVoice[1], m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
+                    , nVoice[0], m_pChordDescriptor[nC].pChordNotes[i]->GetPrintName().c_str()
                     );
 
                     wxLogMessage( sResultDetails );
@@ -714,8 +720,8 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
                 _("Chord %d: Interval %s higher than octave between notes %d (%s) and %d (%s)")
                 , (nC)+1
                 , FIntval_GetIntvCode(nInterval).c_str()
-                , (nN)+1, NoteId(*m_pChordDescriptor[nC].pChordNotes[nN]).c_str()
-                , (nN-1)+1, NoteId(*m_pChordDescriptor[nC].pChordNotes[nN-1]).c_str()
+                , (nN)+1, m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
+                , (nN-1)+1, m_pChordDescriptor[nC].pChordNotes[nN-1]->GetPrintName().c_str()
                 );
 
                 wxLogMessage( sResultDetails );

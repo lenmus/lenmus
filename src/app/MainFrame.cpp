@@ -1958,7 +1958,8 @@ void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
     wxString sResult = _T("");
 
     //start tests
-    lmChordUnitTests();
+    if (!lmChordUnitTests())
+        sResult += _T("Test failure in lmChordUnitTests\n");
 
     if (!lmFiguredBassUnitTests())
         sResult += _T("Test failure in lmFiguredBassUnitTests\n");

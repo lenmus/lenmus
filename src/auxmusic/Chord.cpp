@@ -51,6 +51,8 @@ extern lmLogger* g_pLogger;
 static wxString m_sChordName[ect_Max];
 static bool m_fStringsInitialized = false;
 
+#define lmEMPTY_CHORD_TYPE    ((lmEChordType)-1)
+
 //----------------------------------------------------------------------------------
 // Chords data table
 // A master table with basic information about chords
@@ -316,18 +318,6 @@ lmChordDBEntry* lmChordsDB::Find(lmChordIntervals* pChordIntv)
 
 
 //-----------------------------------------------------------------------------------
-
-// Function to get a the pitch relative to key signature
-// TODO: consider: global function?  where should it be located?
-wxString NoteId(lmNote &tNote)
-{
-    // Get pitch relative to key signature
-    lmFPitch fp = FPitch(tNote.GetAPitch());
-    lmKeySignature* pKey = tNote.GetApplicableKeySignature();
-    lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
-    wxString sPitch = FPitch_ToRelLDPName(fp, nKey);
-    return sPitch;
-}
 
  void SortChordNotes(int nNumNotes, lmNote** pInpChordNotes)
 {
@@ -677,7 +667,7 @@ bool TryChordCreation(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* tOutC
     for (int i=0; i<nNumNotes; i++)
     {
         sOutStatusStr +=  wxString::Format(_T(" %s") 
-            ,NoteId(*pInpChordNotes[i]).c_str() );
+            ,pInpChordNotes[i]->GetPrintName().c_str() );
     }
 
     // Get intervals and Create lmChordInfo from notes
@@ -804,7 +794,7 @@ lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass, lmEKeySignatures n
     , m_nKey(nKey)
     , m_nInversion(0)
     , m_fRootIsDuplicated(false)
-    , m_nType(lmINVALID_CHORD_TYPE)
+    , m_nType(lmEMPTY_CHORD_TYPE)
 {
     //Creates a chord from the root note, the figured bass, and the key signature.
 
@@ -906,7 +896,7 @@ lmChord::lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey)
     , m_nKey(nKey)
     , m_nInversion(0)
     , m_fRootIsDuplicated(false)
-    , m_nType(lmINVALID_CHORD_TYPE)
+    , m_nType(lmEMPTY_CHORD_TYPE)
 {
     //Creates a chord from a list of notes in LDP source code
     
@@ -919,7 +909,7 @@ lmChord::lmChord(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey)
     , m_nKey(nKey)
     , m_nInversion(0)
     , m_fRootIsDuplicated(false)
-    , m_nType(lmINVALID_CHORD_TYPE)
+    , m_nType(lmEMPTY_CHORD_TYPE)
 {
     // prepare root note
     m_fpRootNote = FPitch(sRootNote);
@@ -942,6 +932,26 @@ lmChord::lmChord(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey)
 
 lmChord::~lmChord()
 {
+}
+
+lmEChordType lmChord::GetChordType() 
+{ 
+    if (m_nType != lmEMPTY_CHORD_TYPE)
+        return m_nType; 
+
+    //determine chord type and inversion type
+    ComputeTypeAndInversion();
+    return m_nType;
+}
+
+int lmChord::GetInversion()
+{ 
+    if (m_nType != lmEMPTY_CHORD_TYPE)
+        return m_nInversion; 
+
+    //determine chord type and inversion type
+    ComputeTypeAndInversion();
+    return m_nInversion;
 }
 
 lmFIntval lmChord::GetInterval(int i)
@@ -974,7 +984,7 @@ wxString lmChord::GetPattern(int i)
 
 wxString lmChord::GetNameFull()
 {
-    wxString sName = lmChordTypeToName( m_nType );
+    wxString sName = lmChordTypeToName( GetChordType() );
 
     if ( m_nType != lmINVALID_CHORD_TYPE )
     {
@@ -987,11 +997,17 @@ wxString lmChord::GetNameFull()
             sName += _("2nd inversion");
         else if (m_nInversion == 3)
             sName += _("3rd inversion");
+        else if (m_nInversion == 4)
+            sName += _("4th inversion");
+        else if (m_nInversion == 5)
+            sName += _("5th inversion");
         else
-            wxASSERT(false);    //impossible
+            sName += wxString::Format(_T("%d inversion"), m_nInversion);
     }
-    return sName;
+    else
+        sName = _("unknown chord");
 
+    return sName;
 }
 
 void lmChord::ComputeTypeAndInversion()
@@ -1005,7 +1021,10 @@ void lmChord::ComputeTypeAndInversion()
         m_nInversion = pEntry->nInversion;
     }
     else
+    {
         m_nType = lmINVALID_CHORD_TYPE;    //no match found!
+        m_nInversion = 0;
+    }
 
     #ifdef __WXDEBUG__
     if (m_nType == lmINVALID_CHORD_TYPE)
@@ -1242,8 +1261,9 @@ wxString lmChordTypeToName(lmEChordType nType)
     if (nType >= ect_Max)
         return _("Not identified");
 
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
+    //AWARE: language dependent strings. Can not be statically initiallized because
+    //       then they do not get translated
+
     if (!m_fStringsInitialized)
     {
         // Triads
@@ -1345,54 +1365,164 @@ lmEChordType lmChordShortNameToType(wxString sName)
 
 bool lmChordUnitTests()
 {
-    //returns true if test passed correctly
+    //returns true if all tests passed correctly
 
-    lmChordFromFiguredBassUnitTest(_T("a3"), earmLam); 
-    lmChordFromFiguredBassUnitTest(_T("c4"), earmDo); 
+    bool fTestOK = true;
+    bool fOK;
 
-    //TODO: compare results agains control file and set return code accordingly
-    return true;        //test success
+    //lmChord contructor from lmFiguredBass
+    fOK = lmChordFromFiguredBassUnitTest(); 
+    fTestOK &= fOK;
+
+    //TODO: Add other tests
+
+    return fTestOK;
 }
 
-bool lmChordFromFiguredBassUnitTest(wxString sRootNote, lmEKeySignatures nKey)
+bool lmChordFromFiguredBassUnitTest()
 {
     //Unit test for lmChord contructor from lmFiguredBass
-    //returns true if test passed correctly
+    //returns true if all tests passed correctly
 
-    wxLogMessage(_T("UnitTests: Contructor from lmFiguredBass. Root note='%s', Key='%d'"),
-                 sRootNote, nKey);
-    wxLogMessage(_T("==================================================================="));
+    typedef struct lmTestDataStruct
+    {
+        wxString            sFigBass;   //figured bass string
+        lmEKeySignatures    nKey;       //key signature
+        wxString            sRootNote;  //root note
+        lmEChordType        nChordType; //test result, to validate test
+        int                 nInversion; //test result, to validate test
+        wxString            sIntervals; //test result, to validate test
+    }
+    lmTestData;
+
+    static lmTestData tTestData[] =
+    {
+        //Minor scale
+        //fig   
+        //bass       key      root note  chord type        inversion     Intvals                  
+        { _T("#"),   earmLam, _T("a3"),  ect_MajorTriad,      0, _T("M3,p5") },
+        { _T("b"),   earmLam, _T("a3"),  ect_Max,             0, _T("d3,p5") },
+        { _T("="),   earmLam, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
+        { _T("2"),   earmLam, _T("a3"),  ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
+        { _T("#2"),  earmLam, _T("a3"),  ect_Max,             0, _T("a2,p4,m6") },
+        { _T("b2"),  earmLam, _T("a3"),  ect_MajorSeventh,    3, _T("m2,p4,m6") },
+        { _T("=2"),  earmLam, _T("a3"),  ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
+        { _T("2+"),  earmLam, _T("a3"),  ect_Max,             0, _T("a2,p4,m6") },
+        { _T("2 3"), earmLam, _T("a3"),  ect_Max,             0, _T("M2,m3") },
+        { _T("3"),   earmLam, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
+        { _T("4"),   earmLam, _T("a3"),  ect_Suspended_4th,   0, _T("p4,p5") },
+        { _T("4 2"), earmLam, _T("a3"),  ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
+        { _T("4+ 2"), earmLam, _T("a3"), ect_AugSixth,        1, _T("M2,a4,m6") },
+        { _T("4 3"), earmLam, _T("a3"),  ect_MinorSeventh,    2, _T("m3,p4,m6") },
+        { _T("5"),   earmLam, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
+        { _T("5 #"), earmLam, _T("a3"),  ect_MajorTriad,      0, _T("M3,p5") },
+        { _T("5 b"), earmLam, _T("a3"),  ect_Max,             0, _T("d3,p5") },
+        { _T("5+"),  earmLam, _T("a3"),  ect_Max,             0, _T("m3,a5") },
+        { _T("5/"),  earmLam, _T("a3"),  ect_Max,             0, _T("m3,a5") },
+        { _T("5 3"), earmLam, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
+        { _T("5 4"), earmLam, _T("a3"),  ect_Suspended_4th,   0, _T("p4,p5") },
+        { _T("6"),   earmLam, _T("a3"),  ect_MajorTriad,      1, _T("m3,m6") },
+        { _T("6 #"), earmLam, _T("a3"),  ect_AugTriad,        1, _T("M3,m6") },
+        { _T("6 b"), earmLam, _T("a3"),  ect_Max,             0, _T("d3,m6") },
+        { _T("6\\"),  earmLam, _T("a3"),  ect_Max,             0, _T("m3,d6") },
+        { _T("6 3"), earmLam, _T("a3"),  ect_MajorTriad,      1, _T("m3,m6") },
+        { _T("6 #3"), earmLam, _T("a3"), ect_AugTriad,        1, _T("M3,m6") },
+        { _T("6 b3"), earmLam, _T("a3"), ect_Max,             0, _T("d3,m6") },
+        { _T("6 4"), earmLam, _T("a3"),  ect_MinorTriad,      2, _T("p4,m6") },
+        { _T("6 4 2"), earmLam, _T("a3"),ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
+        { _T("6 4 3"), earmLam, _T("a3"),ect_MinorSeventh,    2, _T("m3,p4,m6") },
+        { _T("6 5"), earmLam, _T("a3"),  ect_MajorSeventh,    1, _T("m3,p5,m6") },
+        { _T("6 5 3"), earmLam, _T("a3"),ect_MajorSeventh,    1, _T("m3,p5,m6") },
+        { _T("7"),   earmLam, _T("a3"),  ect_MinorSeventh,    0, _T("m3,p5,m7") },
+        { _T("7 4 2"), earmLam, _T("a3"), ect_Max,            0, _T("M2,p4,m7") },
+        { _T("8"),   earmLam, _T("a3"),  ect_Max,             0, _T("p8") },
+        { _T("9"),   earmLam, _T("a3"),  ect_Max,             0, _T("m3,p5,M9") },
+        { _T("10"),  earmLam, _T("a3"),  ect_Max,             0, _T("m3,p5,m10") },
+
+        // Mayor scale
+        { _T("#"),   earmDo, _T("c4"), ect_Max,              0, _T("a3,p5") },
+        { _T("b"),   earmDo, _T("c4"), ect_MinorTriad,       0, _T("m3,p5") },
+        { _T("="),   earmDo, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
+        { _T("2"),   earmDo, _T("c4"), ect_MinorSeventh,     3, _T("M2,p4,M6") },
+        { _T("#2"),  earmDo, _T("c4"), ect_Max,              0, _T("a2,p4,M6") },
+        { _T("b2"),  earmDo, _T("c4"), ect_AugMajorSeventh,  3, _T("m2,p4,M6") },
+        { _T("=2"),  earmDo, _T("c4"), ect_MinorSeventh,     3, _T("M2,p4,M6") },
+        { _T("2+"),  earmDo, _T("c4"), ect_Max,              0, _T("a2,p4,M6") },
+        { _T("2 3"), earmDo, _T("c4"), ect_Max,              0, _T("M2,M3") },
+        { _T("3"),   earmDo, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
+        { _T("4"),   earmDo, _T("c4"), ect_Suspended_4th,    0, _T("p4,p5") },
+        { _T("4 2"), earmDo, _T("c4"), ect_MinorSeventh,     3, _T("M2,p4,M6") },
+        { _T("4+ 2"), earmDo, _T("c4"), ect_DominantSeventh, 3, _T("M2,a4,M6") },
+        { _T("4 3"), earmDo, _T("c4"), ect_MajorSeventh,     2, _T("M3,p4,M6") },
+        { _T("5"),   earmDo, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
+        { _T("5 #"), earmDo, _T("c4"), ect_Max,              0, _T("a3,p5") },
+        { _T("5 b"), earmDo, _T("c4"), ect_MinorTriad,       0, _T("m3,p5") },
+        { _T("5+"),  earmDo, _T("c4"), ect_AugTriad,         0, _T("M3,a5") },
+        { _T("5/"),  earmDo, _T("c4"), ect_AugTriad,         0, _T("M3,a5") },
+        { _T("5 3"), earmDo, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
+        { _T("5 4"), earmDo, _T("c4"), ect_Suspended_4th,    0, _T("p4,p5") },
+        { _T("6"),   earmDo, _T("c4"), ect_MinorTriad,       1, _T("M3,M6") },
+        { _T("6 #"), earmDo, _T("c4"), ect_Max,              0, _T("a3,M6") },
+        { _T("6 b"), earmDo, _T("c4"), ect_DimTriad,         1, _T("m3,M6") },
+        { _T("6\\"),  earmDo, _T("c4"), ect_AugTriad,         1, _T("M3,m6") },
+        { _T("6 3"), earmDo, _T("c4"), ect_MinorTriad,       1, _T("M3,M6") },
+        { _T("6 #3"), earmDo, _T("c4"), ect_Max,             0, _T("a3,M6") },
+        { _T("6 b3"), earmDo, _T("c4"), ect_DimTriad,        1, _T("m3,M6") },
+        { _T("6 4"), earmDo, _T("c4"), ect_MajorTriad,       2, _T("p4,M6") },
+        { _T("6 4 2"), earmDo, _T("c4"), ect_MinorSeventh,   3, _T("M2,p4,M6") },
+        { _T("6 4 3"), earmDo, _T("c4"), ect_MajorSeventh,   2, _T("M3,p4,M6") },
+        { _T("6 5"), earmDo, _T("c4"), ect_MinorSeventh,     1, _T("M3,p5,M6") },
+        { _T("6 5 3"), earmDo, _T("c4"), ect_MinorSeventh,   1, _T("M3,p5,M6") },
+        { _T("7"),   earmDo, _T("c4"), ect_MajorSeventh,     0, _T("M3,p5,M7") },
+        { _T("7 4 2"), earmDo, _T("c4"), ect_Max,            0, _T("M2,p4,M7") },
+        { _T("8"),   earmDo, _T("c4"), ect_Max,              0, _T("p8") },
+        { _T("9"),   earmDo, _T("c4"), ect_Max,              0, _T("M3,p5,M9") },
+        { _T("10"),  earmDo, _T("c4"), ect_Max,              0, _T("M3,p5,M10") },
+    };
+
+    int nNumTestCases = sizeof(tTestData) / sizeof(lmTestData);
+        
+    //TODO: Check that following cases are only possible in major scales    
+    //    ect_AugMajorSeventh
+    //    ect_DominantSeventh
+    //    ect_DimTriad
+
+
+    wxLogMessage(_T("UnitTests: Chord contructor from lmFiguredBass"));
+    wxLogMessage(_T("===================================================="));
 
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
-    lmLDPNode* pNode;
-    lmScore* pScore = new lmScore();
-    lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
-    lmVStaff* pVStaff = pInstr->GetVStaff();
-    pVStaff->AddClef( lmE_Sol );
-    pVStaff->AddKeySignature( nKey );
-    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-    wxString sPattern = _T("(figuredBass \"6 4\")");
-    pNode = parserLDP.ParseText( sPattern );
-    lmFiguredBass* pFB = parserLDP.AnalyzeFiguredBass(pNode, pVStaff);
-
-    lmFiguredBassInfo tFBInfo[14];
-    for (int i=0; i < lmGetFiguredBassInfoSize(); i++)
+    bool fTestOK = true;
+    for (int i=0; i < nNumTestCases; i++)
     {
-        lmGetFiguredBassInfo(i, &tFBInfo[0]);
-        pFB->SetIntervalsInfo(&tFBInfo[0]);
-        lmChord oChord(sRootNote, pFB, nKey);
-        wxString sMsg = wxString::Format(_T("figured bass ='%s', chord type=%d (%s), inversion=%d, Intvals: "),
-            lmGetFiguredBassString(i).c_str(),
-            oChord.GetChordType(),
-            lmChordTypeToName(oChord.GetChordType()).c_str(),
-            oChord.GetInversion() );
-        sMsg += oChord.DumpIntervals();
-        wxLogMessage(sMsg);
-    }
-    delete pScore;
+        lmScore* pScore = new lmScore();
+        lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
+        lmVStaff* pVStaff = pInstr->GetVStaff();
+        pVStaff->AddClef( lmE_Sol );
+        pVStaff->AddKeySignature( tTestData[i].nKey );
+        pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
+        wxString sPattern = _T("(figuredBass \"") + tTestData[i].sFigBass + _T("\")");
+        lmLDPNode* pNode = parserLDP.ParseText( sPattern );
+        lmFiguredBass* pFB = parserLDP.AnalyzeFiguredBass(pNode, pVStaff);
 
-    //TODO: compare results agains control file and set return code accordingly
-    return true;        //test success
+        lmChord oChord(tTestData[i].sRootNote, pFB, tTestData[i].nKey);
+        bool fOK = (oChord.DumpIntervals() == tTestData[i].sIntervals) 
+                   && (tTestData[i].nChordType != ect_Max);
+        fTestOK &= fOK;
+        if (!fOK)
+        {
+            wxString sMsg = wxString::Format(_T("figured bass ='%s', chord type=%d (%s), inversion=%d, Intvals: "),
+                tTestData[i].sFigBass.c_str(),
+                oChord.GetChordType(),
+                lmChordTypeToName(oChord.GetChordType()).c_str(),
+                oChord.GetInversion() );
+            sMsg += oChord.DumpIntervals();
+            wxLogMessage(sMsg);
+        }
+        delete pScore;
+    }
+
+    return fTestOK;
 }
 
 

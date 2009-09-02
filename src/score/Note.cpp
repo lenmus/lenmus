@@ -1305,6 +1305,21 @@ lmMPitch lmNote::GetMPitch()
         return 60;      // C4 midi key
 }
 
+wxString lmNote::GetPrintName()
+{
+    // Get pitch relative to key signature
+
+    wxString sPitch = _T("?");
+    if (IsPitchDefined())
+    {
+        lmFPitch fp = GetFPitch();
+        lmKeySignature* pKey = GetApplicableKeySignature();
+        lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+        sPitch = FPitch_ToRelLDPName(fp, nKey);
+    }
+    return sPitch;
+}
+
 bool lmNote::IsPitchDefined()
 {
     return (m_anPitch.ToDPitch() != -1);

@@ -173,6 +173,9 @@ public:
 	void ChangePitch(int nSteps);
 	void ChangeAccidentals(int nSteps);
 
+    //Other info
+    wxString GetPrintName();
+
 
 private:
     //creation related

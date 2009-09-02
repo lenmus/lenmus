@@ -665,7 +665,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
             for (int nxc=0; nxc<tChordDescriptor[nChordCount].nNumChordNotes; nxc++)
             {
                 wxLogMessage( _T(" NOTE %d: %s")
-                    , nxc, NoteId(*tChordDescriptor[nChordCount].pChordNotes[nxc]).c_str() );
+                    , nxc, tChordDescriptor[nChordCount].pChordNotes[nxc]->GetPrintName().c_str() );
             }
 
             // CHECK BASS NOTE
