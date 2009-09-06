@@ -50,45 +50,83 @@ static const lmCommonFBData m_CommonFB[] =
     { 1,    _T("b") },        //5 b3
     { 2,    _T("=") },        //5 =3
     { 3,    _T("2") },        //6 4 2
-    { 4,    _T("#2") },       //6 4 #2. Raise 2 by a 1/2 step (not necessarily a sharp)
-    { 5,    _T("b2") },       //6 4 b2. Lower 2 by a 1/2 step (not necessarily a flat)
-    { 6,    _T("=2") },       //6 4 =2. Make 2 natural regardless of key signature
-    { 7,    _T("2+") },       //6 4 #2. (Usu. dim. 7th chord) Raise 2 by 1/2 step
-    { 8,    _T("2 3") },      //7 4 2 / 8 5 3. (bass moves, upper voices hold)          //??
-    { 9,    _T("3") },        //5 3
-    { 10,   _T("4") },        //5 4. (Usu. 4 3)
-    //{ 11,   _T("4 3") },      //8 5 4 / 8 5 3
-    { 12,   _T("4 2") },      //6 4 2
-    { 13,   _T("4+ 2") },     //6 #4 2. Raise 4 1/2 step
-    { 14,   _T("4 3") },      //6 4 3
+    { 4,    _T("#2") },        //6 4 #2
+    { 5,    _T("b2") },        //6 4 b2
+    { 6,    _T("=2") },        //6 4 =2
+    { 7,    _T("2+") },        //6 4 #2
+    { 8,    _T("2 3") },        //7 4 2
+    { 9,    _T("3") },        //3                 //better "5"
+    { 10,   _T("4") },        //5 4
+    //{ 11,   _T("4 3") },        //8 5 4 / 8 5 3
+    { 12,   _T("4 2") },        //6 4 2
+    { 13,   _T("4+ 2") },       //6 #4 2
+    { 14,   _T("4 3") },        //6 4 3
     { 15,   _T("5") },        //5 3
-    { 16,   _T("5 #") },      //5 #3
-    { 17,   _T("5 b") },      //5 b3
-    { 18,   _T("5+") },       //#5 3. Raise 5 1/2 step
-    { 19,   _T("5/") },       //6 5 3. indicates dim. 5th
-    { 20,   _T("5 3") },      //5 3
-    { 21,   _T("5 4") },      //5 4. (Usu. 4 3)
+    { 16,   _T("5 #") },        //5 #3
+    { 17,   _T("5 b") },        //5 b3
+    { 18,   _T("5+") },        //#5 3
+    { 19,   _T("5/") },        //6 5 3
+    { 20,   _T("5 3") },        //5 3
+    { 21,   _T("5 4") },        //5 4
     { 22,   _T("6") },        //6 3
-    { 23,   _T("6 #") },      //6 #3
-    { 24,   _T("6 b") },      //6 b3
-    { 25,   _T("6\\") },      //#6 3. (Raise 6 by 1/2 step)
-    { 26,   _T("6 3") },      //6 3
-    { 27,   _T("6 #3") },     //6 #3
-    { 28,   _T("6 b3") },     //6 b3
-    { 29,   _T("6 4") },      //6 4
-    { 30,   _T("6 4 2") },    //6 4 2
-    { 31,   _T("6 4 3") },    //6 4 3
-    { 32,   _T("6 5") },      //6 3 5
-    { 33,   _T("6 5 3") },    //6 5 3
+    { 23,   _T("6 #") },        //6 #3
+    { 24,   _T("6 b") },        //6 b3
+    { 25,   _T("6\\") },        //#6 3
+    { 26,   _T("6 3") },        //6 3
+    { 27,   _T("6 #3") },        //6 #3
+    { 28,   _T("6 b3") },        //6 b3
+    { 29,   _T("6 4") },        //6 4
+    { 30,   _T("6 4 2") },        //6 4 2
+    { 31,   _T("6 4 3") },        //6 4 3
+    { 32,   _T("6 5") },        //6 3 5
+    { 33,   _T("6 5 3") },        //6 5 3
     { 34,   _T("7") },        //7 5 3
-    { 35,   _T("7 4 2") },    //7 4 2 / 8 3 (1)                         //??
-    { 36,   _T("8") },        //Play the bass line alone in octaves
-    { 37,   _T("9") },        //9 5 3. (Usu. 9 8)
-    { 38,   _T("10") },       //parallel 10ths                          //??
+    { 35,   _T("7 4 2") },        //7 4 2
+    { 36,   _T("8") },        //8 5 3     //?
+    { 37,   _T("9") },        //9 5 3
+    { 38,   _T("10") },        //10 5 3    //?
 };
 
 const int lmFB_NUM_COMMON = sizeof(m_CommonFB) / sizeof(lmCommonFBData);
 
+typedef struct
+{
+    wxString        sFigBass;
+    wxString        sSimpler;
+}
+lmSimplerFBData;
+
+static const lmSimplerFBData m_SimplerFB[] =
+{
+    { _T("5 3"),    _T("5") },
+    { _T("#5 3"),   _T("5+") },
+    { _T("5 #3"),   _T("#") },
+    { _T("5 b3"),   _T("b") },
+    { _T("5 =3"),   _T("=") },
+    { _T("6 4 2"),  _T("2") },
+    { _T("6 4 #2"), _T("#2") },
+    { _T("6 4 b2"), _T("b2") },
+    { _T("6 4 =2"), _T("=2") },
+    { _T("6 4 #2"), _T("2+") },
+    { _T("7 4 2"),  _T("2 3") },
+    { _T("5 4"),    _T("4") },
+    { _T("6 4 2"),  _T("4 2") },
+    { _T("6 #4 2"), _T("4+ 2") },
+    { _T("6 4 3"),  _T("4 3") },
+    { _T("6 5 3"),  _T("5/") },
+    { _T("6 3"),    _T("6") },
+    { _T("6 #3"),   _T("6 #") },
+    { _T("6 b3"),   _T("6 b") },
+    { _T("#6 3"),   _T("#6") },
+    { _T("=6 3"),   _T("=6") },
+    { _T("b6 3"),   _T("b6") },
+    { _T("6 3 5"),  _T("6 5") },
+    { _T("7 5 3"),  _T("7") },
+    { _T("b7 5 3"), _T("7/") },
+    { _T("8 5 3"),  _T("8") },  
+    { _T("9 5 3"),  _T("9") },
+    { _T("10 5 3"), _T("10") },
+};
 
 //--------------------------------------------------------------------------------------
 /// Class lmFBQuickPanel: panel for quick figured bass selection
@@ -145,7 +183,6 @@ void lmGrpCommonFB::CreateControls(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 
-		//wxString sBtName = _T("figured_bass_3");
         wxString sBtName = wxString::Format(_T("figured_bass_%1d"), m_CommonFB[iB].nBitmapID);
 		wxString sToolTip = wxString::Format(_("Figured bass '%s'"), m_CommonFB[iB].sFiguredBass);
 		m_pButton[iB] = new lmCheckButton(this, lmID_QUICK_BT+iB, wxBitmap(32, 42));
@@ -403,47 +440,20 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     }
 
 
-        //5. Remove implicit intervals
+        //5. look for a simpler formulation
 
-    //find typical cases
     wxString sFigBass = this->GetFiguredBassString();
-    if (sFigBass == _T("5 3"))          // "5 3" --> "(5)"
+    for (int i=0; i < sizeof(m_SimplerFB)/sizeof(lmSimplerFBData); i++)
     {
-        m_tFBInfo[3].sSource = _T("");
-        m_tFBInfo[3].nAspect = lm_eIA_Understood;
-
-        m_tFBInfo[5].sSource = _T("(5)");
-        m_tFBInfo[5].sPrefix = _T("(");
-        m_tFBInfo[5].sSuffix = _T(")");
-        m_tFBInfo[5].nAspect = lm_eIA_Parenthesis;
+        if (m_SimplerFB[i].sFigBass == sFigBass)
+        {
+            //look for a simpler formulation
+            wxString sFB = m_SimplerFB[i].sSimpler;
+            lmFiguredBassInfo tFBInfo[lmFB_MAX_INTV+1];
+            lmLDPParser::ValidateFiguredBassString(sFB, &tFBInfo[0]);
+            SetIntervalsInfo(&tFBInfo[0]);
+        }
     }
-    else if (sFigBass == _T("6 3"))     // "6 3" --> "6"
-    {
-        m_tFBInfo[3].sSource = _T("");
-        m_tFBInfo[3].nAspect = lm_eIA_Understood;
-    }
-    else if (sFigBass == _T("7 5 3"))   // "7 5 3" --> "7"
-    {
-        m_tFBInfo[3].sSource = _T("");
-        m_tFBInfo[3].nAspect = lm_eIA_Understood;
-
-        m_tFBInfo[5].sSource = _T("");
-        m_tFBInfo[5].nAspect = lm_eIA_Understood;
-    }
-    else if (sFigBass == _T("b7 5 3"))  // "b7 5 3" --> "7/"
-    {
-        m_tFBInfo[3].sSource = _T("");
-        m_tFBInfo[3].nAspect = lm_eIA_Understood;
-
-        m_tFBInfo[5].sSource = _T("");
-        m_tFBInfo[5].nAspect = lm_eIA_Understood;
-
-        m_tFBInfo[7].sSource = _T("7/");
-        m_tFBInfo[7].sPrefix = _T("");
-        m_tFBInfo[7].sSuffix = _T("/");
-    }
-
-
 }
 
 void lmFiguredBass::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
@@ -758,6 +768,31 @@ wxString lmFiguredBass::GetFiguredBassString()
     return sFigBass;
 }
 
+bool lmFiguredBass::IsEquivalent(lmFiguredBass* pFBI)
+{
+    //Compares this figured bass with the received one. Returns true if both are
+    //equivalent, that is, if both encode the same chord
+
+    bool fOK = true;
+    for (int i=lmFB_MAX_INTV; i > 1 && fOK; i--)
+    {
+        if (m_tFBInfo[i].fSounds == pFBI->IntervalSounds(i))
+        {
+            if (m_tFBInfo[i].nQuality == lm_eIM_NotPresent)
+                fOK &= (pFBI->GetIntervalQuality(i) == lm_eIM_NotPresent
+                        || pFBI->GetIntervalQuality(i) == lm_eIM_AsImplied);
+            else if (pFBI->GetIntervalQuality(i) == lm_eIM_NotPresent)
+                fOK &= (m_tFBInfo[i].nQuality == lm_eIM_NotPresent
+                        || m_tFBInfo[i].nQuality == lm_eIM_AsImplied);
+            else
+                fOK &= (m_tFBInfo[i].nQuality == pFBI->GetIntervalQuality(i));
+        }
+        else
+            return false;
+    }
+    return fOK;
+}
+
 void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
 {
 	//invoked to add specific panels to the dialog
@@ -811,11 +846,11 @@ bool lmFiguredBassUnitTests()
     {
         //          Test       num.
         // nKey     result    notes   nChord notes, up to 6. LDP encoding
-        //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
-        //{ earmDo, _T("6"),      5,  {_T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
-        //{ earmRe, _T("6 4"),    4,  {_T("a2"), _T("+f3"), _T("d4"), _T("+f4") }},
-        //{ earmDo, _T("7"),      5,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("b4") }},
-        //{ earmDo, _T("7/"),     4,  {_T("c3"), _T("-b3"), _T("e4"), _T("g4") }},
+        { earmDo, _T("5"),      6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        { earmDo, _T("6"),      5,  {_T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},
+        { earmRe, _T("6 4"),    4,  {_T("a2"), _T("+f3"), _T("d4"), _T("+f4") }},
+        { earmDo, _T("7"),      5,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("b4") }},
+        { earmDo, _T("7/"),     4,  {_T("c3"), _T("-b3"), _T("e4"), _T("g4") }},
         { earmDo, _T("4"),      4,  {_T("e3"), _T("-b3"), _T("g4"), _T("c5") }},
         { earmDo, _T("9"),      5,  {_T("a2"), _T("d3"), _T("d4"), _T("+f4"), _T("e5") }},
         //{ earmDo, _T("(5)"),    6,  {_T("c3"), _T("e3"), _T("e4"), _T("g4"), _T("c5"), _T("e5") }},

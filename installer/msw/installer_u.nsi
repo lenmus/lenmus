@@ -38,11 +38,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.1b0"
+  !define APP_VERSION "4.1a0"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.0 b0"     ;product name displayed by the installer
+  Name "lenmus v4.1 a0"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;support for Modern UI
@@ -106,7 +106,7 @@
     !insertmacro MUI_PAGE_INSTFILES
 
   ;finish page: run installed program?
-    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus.exe"
+    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus_d.exe"    ;<--------- lenmus.exe 
     !insertmacro MUI_PAGE_FINISH
 
 
@@ -256,11 +256,11 @@ Section  "-" "MainSection"
      File "..\..\docs\html\images\*.*"
 
      SetOutPath "$INSTDIR\bin"
-     File "..\..\z_bin\lenmus.exe"
+     File "..\..\z_bin\lenmus_d.exe"            ;<--------- lenmus.exe
      File "..\..\packages\freetype\bin\freetype6.dll"
      File "..\..\packages\freetype\bin\zlib1.dll"
 ;     File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
-;     File "..\..\packages\wxSQLite3\lib\wxsqlite3u.lib"
+     File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
      File "..\..\fonts\lmbasic2.ttf"
      File "msvcr71.dll"
      File "msvcp71.dll"
@@ -334,7 +334,9 @@ Section  "-" "MainSection"
      File "..\..\res\sounds\*.*"
      SetOutPath "$INSTDIR\res\keys"
      File "..\..\res\keys\*.png"
-     SetOutPath "$INSTDIR\res\figures"
+     SetOutPath "$INSTDIR\res\cursors"
+     File "..\..\res\cursors\*.png"
+;     SetOutPath "$INSTDIR\res\figures"
 ;     File "..\..\res\figures\*.png"
 
      SetOutPath "$INSTDIR\xrc"
@@ -407,7 +409,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe"
+     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus_d.exe" ;<--------- lenmus.exe"
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 

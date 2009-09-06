@@ -311,6 +311,15 @@ lmChordDBEntry* lmChordsDB::Find(lmChordIntervals* pChordIntv)
         if ((*it)->sFingerPrint == sFingerprint)
             return *it;
     }
+
+    #ifdef __WXDEBUG__
+    wxString sIntvals = _T("[lmChordsDB::Find] No match found. Intervals: ");
+    sIntvals += pChordIntv->DumpIntervals();
+    sIntvals += _T(" fingerprint=");
+    sIntvals += sFingerprint;
+    wxLogMessage(sIntvals);
+    #endif
+
     return (lmChordDBEntry*)NULL;
 }
 
@@ -900,6 +909,9 @@ lmChord::lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey)
 {
     //Creates a chord from a list of notes in LDP source code
     
+    //get root note
+    m_fpRootNote = ::lmLDPDataToFPitch( *pNotes );
+
     //determine chord type and inversion type
     ComputeTypeAndInversion();
 }
@@ -1025,15 +1037,6 @@ void lmChord::ComputeTypeAndInversion()
         m_nType = lmINVALID_CHORD_TYPE;    //no match found!
         m_nInversion = 0;
     }
-
-    #ifdef __WXDEBUG__
-    if (m_nType == lmINVALID_CHORD_TYPE)
-    {
-        wxString sIntvals = _T("[lmChord::ComputeTypeAndInversion] No match found. Intervals: ");
-        sIntvals += ((lmChordIntervals*)this)->DumpIntervals();
-        wxLogMessage(sIntvals);
-    }
-    #endif
 }
 
 
@@ -1226,16 +1229,33 @@ void lmChordIntervals::SortIntervals()
 
 void lmChordIntervals::Normalize()
 {
-    //reduce any interval grater than the octave
+    //reduce any interval grater than the octave and unisons, and remove duplicated.
     //sort intervals
 
+    //reduce any interval greater than the octave
     for (int i=0; i < m_nNumIntv; i++)
     {
-        if (m_nIntervals[i] > lm_p8)
+        if (m_nIntervals[i] >= lm_p8)
             m_nIntervals[i] %= lm_p8;
     }
 
     SortIntervals();
+
+    //remove duplicated and unisons
+    int iCur = 1;
+    int iLast = 0;
+    while (iCur < m_nNumIntv)
+    {
+        if (m_nIntervals[iLast] != m_nIntervals[iCur])
+        {
+            if (m_nIntervals[iLast] != lm_p1)
+                ++iLast;
+            m_nIntervals[iLast] = m_nIntervals[iCur];
+        }
+
+        iCur++;
+    }
+    m_nNumIntv = iLast + 1;
 }
 
 wxString lmChordIntervals::DumpIntervals()

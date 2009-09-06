@@ -74,6 +74,7 @@ public:
 
     void SetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
     void GetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
+    bool IsEquivalent(lmFiguredBass* pFBI);
 
     // properties
     inline float GetTimePosIncrement() { return 0; }
