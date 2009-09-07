@@ -126,15 +126,27 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     //This method creates a problem score, satisfiying the restrictions imposed
     //by exercise options and user customizations.
 
-    // TODO: think about exercise options
-    //        ...
+    // TODO: Possible exercise options:
+    //         exercise 1,2:
+    //             inversions allowed
+    //             elision allowed
+    //          key signature?
+    //
+    // TODO: Possible improvements:
+    //         generalize for chords of N notes
+    //         make "number of measures" dependant from the "key signature"?
+    //         calculate numerals from chord info + key signature + mode
+    //         function to get chord type from: root note + key sig
+    //         calculate note note duration from time signature
+
+
     //  all-exercises generic data
-    const int lmNUM_HARMONY_EXERCISES = 2;  //@@@@@ TODO: HACER EL TERCERO!!!
-    // todo: consider to put as an option: m_nKey
-    // todo: make "num of measures" dependant from the "key"
+    const int lmNUM_HARMONY_EXERCISES = 3; 
     int nNumMeasures = 2;
     //  each-exercise specific data
     wxString sExerciseDescription;
+    wxString sNote = _T("q"); // todo: calculate note note duration from time signature
+    wxString sLDPGoBack = wxString::Format(_T("(musicData (goBack %s) )"), sNote); 
 
     // Carlos  jun-09
     //  Three types of problem
@@ -146,36 +158,39 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     lmRandomGenerator oGenerator;
     nHarmonyExcerciseType = oGenerator.RandomNumber(1, lmNUM_HARMONY_EXERCISES);
     wxString sPattern;
-    lmNote* pNote;
     lmLDPParser parserLDP(_T("en"), _T("utf-8"));
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
+    lmNote* pNoteToAttach = NULL;
     wxString sExerciseTitle;
+    lmFPitch nIntvB[3] = {0, 0, 0};
 
-    if ( nHarmonyExcerciseType == 1 || nHarmonyExcerciseType == 2 )
+    if ( nHarmonyExcerciseType >= 1 && nHarmonyExcerciseType <= lmNUM_HARMONY_EXERCISES )
     {
         // Prepare a score that meets the restrictions
 
         m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
-        sExerciseDescription  =  wxString::Format(
-            _(" Fixed %s; root position. Complete the chord notes.")
-            , (nHarmonyExcerciseType == 1? _("bass"): _("soprano")) );
+        if (nHarmonyExcerciseType == 3)
+            sExerciseDescription  =  wxString::Format(_(" Cipher the chords"));
+        else
+            sExerciseDescription  =  wxString::Format(
+                _(" Fixed %s; root position. Complete the chord notes.")
+                , (nHarmonyExcerciseType == 1? _("bass"): _("soprano")) );
 
         sExerciseTitle = wxString::Format(_(" Exercise type %d : %s ")
             , nHarmonyExcerciseType, sExerciseDescription.c_str());
 
         //create a score with a bass line
 
-        //---- Harmonyexercisedata:
-        // Exercise 1 checks:
-        //   root note
-        //   chord type
-        // Root notes
         for (int i=0; i < nMAX_HARMONY_EXERCISE_CHORDS; i++)
         {
-            nHE_BassNotesFPitch[i] = 0;
-            nHE_SopranoNotesFPitch[i] = 0;
+            for (int v=0; v < nNUM_VOICES_IN_HARMONY_EXERCISE; v++)
+            {
+                nHE_NotesFPitch[v][i] = 0;
+                pHE_Notes[v][i] = NULL;
+            }
+            gnHE_InversionsInChord[i] = 0;
             nHE_ChordType[i] = ect_Max;
         }
 
@@ -209,20 +224,17 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         // For exercise 2, given a numeral (bass note; chord in root position) : calculate soprano pitch. No inversions
         //  First index: interval (2 intervals for triad chords)
         //  Second index: degree 
-        lmFPitch nBassSopranoInterval[2][7] =  {
+        // TODO: USE A FUNCTION INSTEAD OF THIS ARRAY !!!!
+        lmFPitch nIntervalFromBass[3][7] =  {
         //      I             II              III              IV             V             VI             VII
         //{ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
-          {   lm_M3,        lm_m3,          lm_p5,          lm_M3,          lm_M3,         lm_m3,         lm_m3},
-          {   lm_p5,        lm_p5,          lm_p5,          lm_p5,          lm_p5,         lm_p5,         lm_d5} };
-        // TODO: this info could be get from ChordManager.cpp tData, with a global method:
-        //  { ... { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
-        //  { ... { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
-        //  { ... { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
-        //  global method to get interval between voices of a given chord type (specify also inversions)
+          {   0,            0,             0,                0,               0,             0,              0},     // +0 intervals
+          {   lm_M3,        lm_m3,          lm_m3,          lm_M3,          lm_M3,         lm_m3,         lm_m3},    // +1 intervals
+          {   lm_p5,        lm_p5,          lm_p5,          lm_p5,          lm_p5,         lm_p5,         lm_d5} };  // +2 intervals
 
 
         //loop the add notes
-        int nNoteCount = 0;
+        int nChordCount = 0;
         int nOctave;
         int nVoice;
         int nBassNoteStep;
@@ -239,109 +251,264 @@ void lmTheoHarmonyCtrol::SetNewProblem()
             //two chords per measure (time signature is 2 / 4)
             for (int iM=0; iM < 2; iM++)
             {
-                // Process (Exercies 1 and 2)
-                //   Generate bass note
-                //     Get numerals from bass note and display it
-                //     Get chord type from bass note
-                //   Exercise 2: get soprano from bass note
-                //   Display note
-                //      Ex. 1: bass
-                //      Ex. 2: soprano
+                // Process for each chord:
+                //
+                //   Generate the chord
+                //      generate the bass note
+                //      generate the rest of notes
+                //   Calculate other properties: numerals, chord type, figured bass
+                //   Display
+                //       Exercise 1: bass note and numeral
+                //       Exercise 2: soprano note and numeral
+                //       Exercise 3: all notes and numeral
+                //
 
-                // Generate the bass note
-                nOctave = oGenerator.RandomNumber(2, 3);  
-                // this is done to make the notes appear more centered in the bass staff
-                if (nOctave == 3 ) // octave 3 : notes c,d,e
-                   nBassNoteStep = oGenerator.RandomNumber(0, 2);
-                else // octave 2 : notes f,g,a,b
-                   nBassNoteStep = oGenerator.RandomNumber(3, 6); 
-                nAccidentals = 0;
-
-                //  Calculate pitch of bass note and store bass it for later check
-                nHE_BassNotesFPitch[nNoteCount] = FPitch(nBassNoteStep, nOctave, 0);
-
-                //   Get numerals from bass note
-                sNumerals = sNumeralsDegrees[nBassNoteStep];
-
-                //   Get chord type from bass note and store it for later check
-                nHE_ChordType[nNoteCount] = nE1ChordTypes[nBassNoteStep];
-
-                //   Exercise 2: get soprano from bass note and store it for later check
-                if (nHarmonyExcerciseType == 2 )
+                //
+                // Create the chords
+                //
+                for (nVoice = 1; nVoice<=nNUM_VOICES_IN_HARMONY_EXERCISE; nVoice++)
                 {
-                    // 3 possible values for soprano:
-                    //    1: bass + N octaves
-                    //    2: bass + N octaves + 1st interval
-                    //    3: bass + N octaves + 2nd interval
-                    nHE_SopranoNotesFPitch[nNoteCount] =
-                        nHE_BassNotesFPitch[nNoteCount]    // bass note
-                        + (lm_p8 * 2); // + 2 octaves
+                    if (nVoice == 1)
+                    {
+                        // Bass note: generate it
+                        nOctave = oGenerator.RandomNumber(2, 3);  
+                        // this is done to make the notes appear more centered in the bass staff
+                        if (nOctave == 3 ) // octave 3 : notes c,d,e
+                           nBassNoteStep = oGenerator.RandomNumber(0, 2);
+                        else // octave 2 : notes f,g,a,b
+                           nBassNoteStep = oGenerator.RandomNumber(3, 6); 
+                        nAccidentals = 0;
 
-                    int nStype  = oGenerator.RandomNumber(1, 3);
-                    if (nStype == 2)
-                        nHE_SopranoNotesFPitch[nNoteCount] += nBassSopranoInterval[0][nBassNoteStep]; // + 1st interval
-                    else if (nStype == 3)
-                        nHE_SopranoNotesFPitch[nNoteCount] += nBassSopranoInterval[1][nBassNoteStep]; // + 2nd interval
-                    // else soprano = bass
+                        //  Calculate pitch of bass note and store bass it for later check
+                        nHE_NotesFPitch[nChordCount][0] = FPitch(nBassNoteStep, nOctave, 0);
+
+                        wxLogMessage(_T(" Chord %d, V%d, step:%d octave:%d: %d (%s)")
+                            , nChordCount
+                            , nVoice
+                            , nBassNoteStep, nOctave
+                            , nHE_NotesFPitch[nChordCount][0]
+                            , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][0]).c_str());
+
+                        //   Get numerals from bass note
+                        sNumerals = sNumeralsDegrees[nBassNoteStep];
+
+                        // Specific part for all the voices 2..4: interval
+                        // Calculate the 3 possible intervals from the bass : 
+                        //   3 different possibilities (0, interval 1, interval 2); no repetition:
+                        //     calculate permutations of 0,1,2
+                        nIntvB[0] = oGenerator.RandomNumber(0, 2);
+                        nIntvB[1] = (nIntvB[0] + oGenerator.RandomNumber(1, 2)) % 3 ;
+                        nIntvB[2] = 3 - (nIntvB[0] + nIntvB[1] ) ;
+                        wxLogMessage(_T(" nIntvB 0:%d 1:%d 2:%d")
+                            , nIntvB[0], nIntvB[1], nIntvB[2]);
+
+                    }
+                    else
+                    {
+                        //
+                        // Calculate the rest of voices (tenor, baritone, soprano)
+                        //
+                        //  There are three possible values for each voice:
+                        //    1: bass + N octaves
+                        //    2: bass + N octaves + 1st interval
+                        //    3: bass + N octaves + 2nd interval
+                        //
+                        // Strategy:
+                        //   1) for each of the 3 voices: Add N octaves 
+                        //   2) for each of the 3 voices: Add 0, first or second interval, but
+                        //        do not repeat the same interval in different voices
+                        // 
+                        //   todo: Consider to improve this by allowing elisions.
+                        //           This might be an option of the exercise.
+                        //
+
+                        // Common part for all the voices 2..4: bass + N octaves
+                        // To calculate N, this simple rule may be enough
+                        //  tenor: 0,1
+                        //  baritone: 1
+                        //  soprano: 2
+                        int nNumOctavesToAdd = nVoice-2;
+                        nHE_NotesFPitch[nChordCount][nVoice-1] = 
+                            nHE_NotesFPitch[nChordCount][0] + (lm_p8 * nNumOctavesToAdd);
+
+                        wxLogMessage(_T(" Chord %d, V%d, before applying intv %d (%d): %d (%s)")
+                            , nChordCount
+                            , nVoice
+                            , nIntvB[nVoice-2]
+                            , nIntervalFromBass[nIntvB[nVoice-2]][nBassNoteStep]
+                            , nHE_NotesFPitch[nChordCount][nVoice-1]
+                            , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoice-1]).c_str());
+
+                        // Specific part for all the voices 2..4: add an interval (different in each voice!!!!)
+                        // At this point nIntvB stores a permutation of 0,1,2 such as 2,0,1
+                        // For the current voice: add the interval nIntvB[nVoice]
+                        //   more precisely: nIntervalFromBass[nIntvB[nVoice-1]][nBassNoteStep]
+                        // Apply the calculated intervals
+                        nHE_NotesFPitch[nChordCount][nVoice-1] += nIntervalFromBass[nIntvB[nVoice-2]][nBassNoteStep]; 
+
+                        if (nHE_NotesFPitch[nChordCount][nVoice-1] == nHE_NotesFPitch[nChordCount][nVoice-2])
+                        {
+                            wxLogMessage(_T(" V%d added octave to avoid same note"));
+                            nHE_NotesFPitch[nChordCount][nVoice-1] += lm_p8;
+                        }
+                        wxLogMessage(_T(" Chord %d, V%d, AFTER applying intv %d (%d): %d (%s)")
+                            , nChordCount
+                            , nVoice
+                            , nIntvB[nVoice-2]
+                            , nIntervalFromBass[nIntvB[nVoice-2]][nBassNoteStep]
+                            , nHE_NotesFPitch[nChordCount][nVoice-1]
+                            , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoice-1]).c_str());
+                    }
                 }
 
-                //   Display note
-                //      Ex. 1: bass
-                //      Ex. 2: soprano
-                if ( nHarmonyExcerciseType == 1 )  // bass
+                // At this point we have the pitch of each voice
+
+                //
+                // Apply inversions
+                //
+                //  Exercise 3: calculate random inversions
+                //  other exercises: todo:  inversions as an option
+                if (nHarmonyExcerciseType == 3 )
                 {
-                    nVoice = 4;
-                    nStaff = 2;
-                    sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem down))")
-                       , sNotes[nBassNoteStep].c_str(), nOctave, nStaff, nVoice);
+                    // Calculate a random number of inversions and apply them
+                    gnHE_InversionsInChord[nChordCount] = oGenerator.RandomNumber(0, 2);
                 }
-                else if (nHarmonyExcerciseType == 2 )  // soprano
+                // for each inversion...
+                for (int nInv = 0; nInv < gnHE_InversionsInChord[nChordCount]; nInv++)
                 {
-                    nVoice = 1;
-                    nStaff = 1;
-                    sPattern = wxString::Format(_T("(n %s q p%d v%d (stem up))")
-                       , FPitch_ToAbsLDPName(nHE_SopranoNotesFPitch[nNoteCount]).c_str(), nStaff, nVoice);
+                    // move down all the voices except the bass
+                    for (int nV=0; nV<nNUM_VOICES_IN_HARMONY_EXERCISE-1; nV++)
+                    {
+                        nHE_NotesFPitch[nChordCount][nV] = nHE_NotesFPitch[nChordCount][nV+1];
+                    }
+                    // increase one octave the bass
+                    nHE_NotesFPitch[nChordCount][nNUM_VOICES_IN_HARMONY_EXERCISE] += lm_p8;
+                    wxLogMessage(_T("  AFTER %d of %d INVERSIONS, Chord Notes: %d %s, %d %s, %d %s, %d %s")
+                       , nInv
+                       , gnHE_InversionsInChord[nChordCount]
+                       , nHE_NotesFPitch[nChordCount][0]
+                       , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][0]).c_str()
+                       , nHE_NotesFPitch[nChordCount][1]
+                       , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][1]).c_str()
+                       , nHE_NotesFPitch[nChordCount][2]
+                       , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][2]).c_str()
+                       , nHE_NotesFPitch[nChordCount][3]
+                       , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][3]).c_str()
+                           );
                 }
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+
+                //
+                // Create each lmNote
+                //
+                wxString sUpDown[2] = { _T("down"), _T("up")};
+// TODO: ACLARAR  ¿V1 EN P1 O EN P2? 
+//                for (nStaff=1; nStaff<3; nStaff++)  // V1 en P1
+//                for (nStaff=2; nStaff>0; nStaff--)  // V1 en P2              
+                nVoice=1;
+                for (nStaff=2; nStaff>0; nStaff--)
+                {
+                    for (int nVoiceInStaff=1; nVoiceInStaff<3; nVoiceInStaff++,nVoice++)
+                    {
+                        wxLogMessage(_T("  Staff %d, V%d "), nStaff, nVoice);
+//todo:remove                        nVoice = ((nStaff-1)*2)  + nVoiceInStaff;
+                        assert(nVoice >= 1 && nVoice <= 4);
+
+                        sHE_Notes[nChordCount][nVoice-1] = wxString::Format(_T("%s")
+                           , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoice-1]).c_str());
+
+                        sHE_Pattern[nChordCount][nVoice-1] = wxString::Format(_T("(n %s %s p%d v%d (stem %s))")
+                           , sHE_Notes[nChordCount][nVoice-1].c_str()
+                           , sNote
+                           , nStaff, nVoice, sUpDown[nVoiceInStaff-1]);
+
+                        wxLogMessage(_T("   V%d %d %s, pattern: %s")
+                              , nVoice
+                              , nHE_NotesFPitch[nChordCount][nVoice-1]
+                              , sHE_Notes[nChordCount][nVoice-1].c_str()
+                              , sHE_Pattern[nChordCount][nVoice-1].c_str()
+                              );
+
+
+                        // Display the notes in the score
+                        //  Exercise 1: only bass (voice 1)
+                        //  Exercise 2: only soprano (voice 4)
+                        //  Exercise 3: all
+                        if (    (nHarmonyExcerciseType == 1 && nVoice == 1 ) ||
+                                (nHarmonyExcerciseType == 2 && nVoice == 4 ) ||
+                                 nHarmonyExcerciseType == 3
+                            )
+                        {
+                            pNode = parserLDP.ParseText(  sHE_Pattern[nChordCount][nVoice-1] );
+                            pHE_Notes[nChordCount][nVoice-1] = parserLDP.AnalyzeNote(pNode, pVStaff);
+                            pNoteToAttach = pHE_Notes[nChordCount][nVoice-1];
+                            wxLogMessage(_T("   (ExType:%d V:%d) added pattern: %s")
+                              ,nHarmonyExcerciseType, nVoice, sHE_Pattern[nChordCount][nVoice-1]);
+                        }
+                        else
+                            wxLogMessage(_T("   ExType:%d V:%d NOT added pattern: %s")
+                              ,nHarmonyExcerciseType, nVoice, sHE_Pattern[nChordCount][nVoice-1]);
+
+
+
+                        // Go back:
+                        // Exercise 1, 2: Never (only one note per chord)
+                        // Exercise 3: go back after voices 1,2,3
+                        if ( nHarmonyExcerciseType == 3 && (nVoice >=1 &&  nVoice <=3))
+                        {
+                            pNode = parserLDP.ParseText( sLDPGoBack );
+                            parserLDP.AnalyzeMusicData(pNode, pVStaff);
+                            wxLogMessage(_T("  AnalyzeMusicData: %s"),sLDPGoBack) ;
+                        }
+                    }
+
+                }
 
                 //    Display the numeral
-                lmTextItem* pNumeralText = new lmTextItem(pNote, lmNEW_ID, sNumeralsDegrees[nBassNoteStep],
-                                                          lmHALIGN_DEFAULT, pNumeralStyle);
-                pNote->AttachAuxObj(pNumeralText);
+                lmTextItem* pNumeralText = new lmTextItem(
+                    pNoteToAttach, lmNEW_ID, sNumeralsDegrees[nBassNoteStep],
+                    lmHALIGN_DEFAULT, pNumeralStyle);
+                pNoteToAttach->AttachAuxObj(pNumeralText);
                 pNumeralText->SetUserLocation(0.0f, 230.0f );
 
-                if ( nHarmonyExcerciseType == 1 )  // bass
-                {
-                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d  pattern:%s")
-                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
-                      , FPitch_ToAbsLDPName(nHE_BassNotesFPitch[nNoteCount]).c_str()
-                      , nHE_BassNotesFPitch[nNoteCount], sPattern.c_str());
-                }
-                else if (nHarmonyExcerciseType == 2 )  // soprano
-                {
 
-                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%s FP:%d ")
-                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
-                      , nHE_BassNotesFPitch[nNoteCount]
-                      , nHE_BassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]
-                      , FPitch_ToAbsLDPName(nHE_BassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]).c_str()
-                      , nHE_BassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]
-                      , FPitch_ToAbsLDPName(nHE_BassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]).c_str()
-                      , FPitch_ToAbsLDPName(nHE_SopranoNotesFPitch[nNoteCount]).c_str()
-                      , nHE_SopranoNotesFPitch[nNoteCount]
-                      );
+                //
+                // Create the chord
+                //
+                for (int nV=0; nV<nNUM_VOICES_IN_HARMONY_EXERCISE; nV++)
+                    sHE_Notes[nChordCount][nV] =  FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nV]);
 
-                }
+                wxLogMessage(_T("  Chord Notes: %d %s, %d %s, %d %s, %d %s, Inversions: %d")
+                   , nHE_NotesFPitch[nChordCount][0]
+                   , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][0]).c_str()
+                   , nHE_NotesFPitch[nChordCount][1]
+                   , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][1]).c_str()
+                   , nHE_NotesFPitch[nChordCount][2]
+                   , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][2]).c_str()
+                   , nHE_NotesFPitch[nChordCount][3]
+                   , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][3]).c_str()
+                   , gnHE_InversionsInChord[nChordCount]
+                       );
 
-                nNoteCount++;
+                pHE_Chords[nChordCount] = new lmChord(nNUM_VOICES_IN_HARMONY_EXERCISE, &sHE_Notes[nChordCount][0], m_nKey);
+                nHE_ChordType[nChordCount] = pHE_Chords[nChordCount]->GetChordType();
 
+                wxLogMessage(_T("  Chord %d: %s"), nChordCount, pHE_Chords[nChordCount]->ToString());
+
+                // Calculate the figured bass
+                //
+                //  build a chord from a list of notes in LDP source code
+                //    lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey = earmDo);
+                pHE_FiguredBass[nChordCount] = new lmFiguredBass(pVStaff, lmNEW_ID
+                    , pHE_Chords[nChordCount], m_nKey);
+
+                wxLogMessage(_T("Exercise %d, Chord %d, FIGURED BASS:%s")
+                 , nHarmonyExcerciseType , nChordCount, pHE_FiguredBass[nChordCount]->GetFiguredBassString().c_str());
+
+            nChordCount++;
             }
         }
-        nHarmonyExerciseChordsToCheck = nNoteCount;
+        nHarmonyExerciseChordsToCheck = nChordCount;
     }
-
-
 
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);
@@ -352,7 +519,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     lmScoreTitle* pTitle = m_pProblemScore->AddTitle(sExerciseTitle, lmHALIGN_CENTER, pTitleStyle);
     lmLocation tTitlePos = g_tDefaultPos;
     pTitle->SetUserLocation(tTitlePos); // only necessary if wanted to be positioned at a specific point
-
 
     //set the name and the title of the score
     m_pProblemScore->SetScoreName( sExerciseTitle );
