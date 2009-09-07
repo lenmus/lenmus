@@ -418,6 +418,11 @@ bool lmNote::IsBaseOfChord()
 	return m_pChord && m_pChord->IsBaseNote(this);
 }
 
+bool lmNote::IsLastOfChord() 
+{ 
+    return m_pChord && m_pChord->IsLastNoteOfChord(this); 
+}
+
 void lmNote::ComputeVolume()
 {
     // If volume is not set assign a value
@@ -669,7 +674,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
     //if this is the last note of a chord draw the stem of the chord
     //-----------------------------------------------------------------------------
-    if (IsInChord() && m_pChord->IsLastNoteOfChord(this) && m_nNoteType >= eHalf)
+    if (IsInChord() && IsLastOfChord() && m_nNoteType >= eHalf)
     {
         m_pChord->AddStemShape(pPaper, colorC, GetSuitableFont(pPaper), m_pVStaff,
 							   m_nStaffNum);
@@ -696,7 +701,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //----------------------------------------------------------------------------------
 
     // beam lines
-    if (IsInChord() && m_pChord->IsLastNoteOfChord(this))
+    if (IsInChord() && IsLastOfChord())
 	{
 		lmNote* pBaseNote = m_pChord->GetBaseNote();
 		if (pBaseNote->IsBeamed() && pBaseNote->GetBeamType(0) == eBeamEnd)
@@ -1550,7 +1555,7 @@ wxString lmNote::SourceLDP(int nIndent, bool fUndoData)
     sSource += _T(")\n");
 
 	//close chord element
-    if (IsInChord() && m_pChord->IsLastNoteOfChord(this))
+    if (IsInChord() && IsLastOfChord())
 	{
 		nIndent--;
 		sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));

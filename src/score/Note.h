@@ -94,7 +94,8 @@ public:
 
 
     // methods related to chords
-    inline bool IsInChord() { return (m_pChord != (lmChordLayout*)NULL); }        
+    inline bool IsInChord() { return (m_pChord != (lmChordLayout*)NULL); }   
+    bool IsLastOfChord();
     bool IsBaseOfChord();
     inline lmChordLayout* GetChord() { return m_pChord; }
     inline void SetNoteheadReversed(bool fValue) { m_fNoteheadReversed = fValue; }

@@ -302,34 +302,39 @@ void lmFBQuickPanel::OnAcceptChanges(lmController* pController)
 
 
 //-----------------------------------------------------------------------------------------
-// lmFiguredBass implementation
+// lmFiguredBassData implementation
 //-----------------------------------------------------------------------------------------
 
-lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassInfo* pFBInfo)
-    : lmStaffObj(pVStaff, nID, lm_eSO_FiguredBass, pVStaff, 1, lmVISIBLE, lmDRAGGABLE)
-    , m_fStartOfLine(false)
-    , m_fEndOfLine(false)
-    , m_fParenthesis(false)
+lmFiguredBassData::lmFiguredBassData()
+    : m_sError(_T(""))
 {
-    //Normal constructor from LDP parsed data struct 'lmFiguredBassInfo'
-
-    SetLayer(lm_eLayerNotes);
-    SetIntervalsInfo(pFBInfo);
+    Initialize();
 }
 
-void lmFiguredBass::SetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
+void lmFiguredBassData::Initialize()
+{
+    //initialize interval info
+    for (int i=0; i <= lmFB_MAX_INTV; i++)
+    {
+        m_tFBInfo[i].nQuality = lm_eIM_NotPresent;
+        m_tFBInfo[i].nAspect = lm_eIA_Normal;
+        m_tFBInfo[i].sSource = wxEmptyString;
+        m_tFBInfo[i].sPrefix = wxEmptyString;
+        m_tFBInfo[i].sSuffix = wxEmptyString;
+        m_tFBInfo[i].sOver = wxEmptyString;
+        m_tFBInfo[i].fSounds = false;
+    }
+}
+
+void lmFiguredBassData::SetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
 {
     //copy received data
     for (int i=0; i <= lmFB_MAX_INTV; i++)
         m_tFBInfo[i] = *(pFBInfo + i);
 }
 
-lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
-                             lmEKeySignatures nKey)
-    : lmStaffObj(pVStaff, nID, lm_eSO_FiguredBass, pVStaff, 1, lmVISIBLE, lmDRAGGABLE)
-    , m_fStartOfLine(false)
-    , m_fEndOfLine(false)
-    , m_fParenthesis(false)
+lmFiguredBassData::lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey)
+    : m_sError(_T(""))
 {
     //Constructor from a lmChord and a key signature.
     //Useful to know the figured bass that encodes the chord. Key signature is
@@ -339,10 +344,8 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     //1. Normalize chord and determine chord intervals
     //2. Encode intervals as number + accidentals
     //3. Create figured bass string
-    //4. Build object from this figured bass string
+    //4. Build lmFiguredBassData from this figured bass string
     //5. Remove implicit intervals
-
-    SetLayer(lm_eLayerNotes);
 
 
         //1. Normalize chord and determine chord intervals
@@ -386,16 +389,7 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
         //     member variables
 
     //initialize interval info
-    for (int i=0; i <= lmFB_MAX_INTV; i++)
-    {
-        m_tFBInfo[i].nQuality = lm_eIM_NotPresent;
-        m_tFBInfo[i].nAspect = lm_eIA_Normal;
-        m_tFBInfo[i].sSource = wxEmptyString;
-        m_tFBInfo[i].sPrefix = wxEmptyString;
-        m_tFBInfo[i].sSuffix = wxEmptyString;
-        m_tFBInfo[i].sOver = wxEmptyString;
-        m_tFBInfo[i].fSounds = false;
-    }
+    Initialize();
 
     //store info about existing chord intervals
     for (int iIntv=oChord.GetNumIntervals()-1; iIntv >= 0; iIntv--)
@@ -421,7 +415,7 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
         }
         else
         {
-            wxLogMessage(_T("[lmFiguredBass::lmFiguredBass] No provision for this case."));
+            wxLogMessage(_T("[lmFiguredBassData::lmFiguredBassData] No provision for this case."));
             fIgnore = true;
         }
 
@@ -456,29 +450,355 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     }
 }
 
-void lmFiguredBass::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
+void lmFiguredBassData::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
 {
     //copy internal data
     for (int i=0; i <= lmFB_MAX_INTV; i++)
          *(pFBInfo + i) = m_tFBInfo[i];
 }
 
-lmEIntervalQuality lmFiguredBass::GetIntervalQuality(int nIntv)
+lmEIntervalQuality lmFiguredBassData::GetQuality(int nIntv)
 {
     //return the interval quality for interval number nIntv (2..13)
 
-    wxASSERT(nIntv > 1 && nIntv <= 13);
-
+    wxASSERT(nIntv >= lmFB_MIN_INTV && nIntv <= lmFB_MAX_INTV);
     return m_tFBInfo[nIntv].nQuality;
 }
 
-bool lmFiguredBass::IntervalSounds(int nIntv)
+bool lmFiguredBassData::IntervalSounds(int nIntv)
 {
     //return true if interval number nIntv (2..13) must be present in chord
 
-    wxASSERT(nIntv > 1 && nIntv <= 13);
-
+    wxASSERT(nIntv >= lmFB_MIN_INTV && nIntv <= lmFB_MAX_INTV);
     return m_tFBInfo[nIntv].fSounds;
+}
+
+wxString lmFiguredBassData::GetFiguredBassString()
+{
+    //add source string
+    wxString sFigBass = _T("");
+    for (int i=lmFB_MAX_INTV; i >= lmFB_MIN_INTV; i--)
+    {
+        if (m_tFBInfo[i].nQuality != lm_eIM_NotPresent
+            && m_tFBInfo[i].nAspect != lm_eIA_Understood)
+        {
+            if (sFigBass != _T(""))
+                sFigBass += _T(" ");
+            sFigBass += m_tFBInfo[i].sSource;
+        }
+    }
+    return sFigBass;
+}
+
+bool lmFiguredBassData::IsEquivalent(lmFiguredBassData* pFBD)
+{
+    //Compares this figured bass with the received one. Returns true if both are
+    //equivalent, that is, if both encode the same chord
+
+    bool fOK = true;
+    for (int i=lmFB_MAX_INTV; i >= lmFB_MIN_INTV && fOK; i--)
+    {
+        if (IntervalSounds(i) == pFBD->IntervalSounds(i))
+        {
+            if (GetQuality(i) == lm_eIM_NotPresent)
+                fOK &= (pFBD->GetQuality(i) == lm_eIM_NotPresent
+                        || pFBD->GetQuality(i) == lm_eIM_AsImplied);
+            else if (pFBD->GetQuality(i) == lm_eIM_NotPresent)
+                fOK &= (GetQuality(i) == lm_eIM_NotPresent
+                        || GetQuality(i) == lm_eIM_AsImplied);
+            else
+                fOK &= (GetQuality(i) == pFBD->GetQuality(i));
+        }
+        else
+            return false;
+    }
+    return fOK;
+}
+
+lmFiguredBassData::lmFiguredBassData(wxString& sData)
+    : m_sError(_T(""))
+{
+    //returns empty string if no error, or error message 
+
+    Initialize();
+
+    //interval data being parsed
+    const wxChar* pStart;             //pointer to first char of interval string
+    wxString sPrefix, sSuffix, sOver;
+    lmEIntervalQuality nQuality;
+    bool fParenthesis;
+    wxString sIntval;
+    wxString sFingerPrint = _T("");     //explicit present intervals (i.e. "53", "642")
+
+    //Finite automata to parse the string
+
+    //posible automata states
+    enum lmFBState
+    {
+        lmFB_START,
+        lmFB_PFX01,
+        lmFB_NUM01,
+        lmFB_PAR01,
+        lmFB_END01,
+        lmFB_ERROR,
+        lmFB_FINISH,
+    };
+
+    int nState = lmFB_START;            //automata current state
+    const wxChar* pDataStart = sData.c_str();     //points to first char of string
+    const wxChar* p = pDataStart;                 //p points to char being parsed
+    bool fContinueParsing = true;
+    while (fContinueParsing)
+    {
+        switch (nState)
+        {
+            //Starting a new interval
+            case lmFB_START:
+
+                //initialize interval data
+                pStart = p;
+                sPrefix = _T("");
+                sSuffix = _T("");
+                sOver = _T("");
+                sIntval = _T("");
+                nQuality = lm_eIM_AsImplied;
+                fParenthesis = false;
+
+                if (*p == _T('('))
+                {
+                    fParenthesis = true;
+                    ++p;    //GetNextChar()
+                }
+                nState = lmFB_PFX01;
+                break;
+
+            //New interval, without parenthesis
+            case lmFB_PFX01:
+                if (lmIsNumber(*p))
+                {
+                    sIntval = *p;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_NUM01;
+                }
+                else if (*p == _T('#') || *p == _T('+'))
+                {
+                    sPrefix = *p;
+                    nQuality = lm_eIM_RaiseHalf;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_NUM01;
+                }
+                else if (*p == _T('b') || *p == _T('-'))
+                {
+                    sPrefix = *p;
+                    nQuality = lm_eIM_LowerHalf;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_NUM01;
+                }
+                else if (*p == _T('='))
+                {
+                    sPrefix = *p;
+                    nQuality = lm_eIM_Natural;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_NUM01;
+                }
+                else
+                    nState = lmFB_ERROR;
+                break;
+
+            //interval number
+            case lmFB_NUM01:
+                if (lmIsNumber(*p))
+                {
+                    sIntval += *p;
+                    ++p;    //GetNextChar()
+                }
+                else if (*p == _T('#') || *p == _T('+'))
+                {
+                    sSuffix = *p;
+                    nQuality = lm_eIM_RaiseHalf;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_PAR01;
+                }
+                else if (*p == _T('b') || *p == _T('-'))
+                {
+                    sSuffix = *p;
+                    nQuality = lm_eIM_LowerHalf;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_PAR01;
+                }
+                else if (*p == _T('/'))
+                {
+                    sOver = *p;
+                    nQuality = lm_eIM_RaiseHalf;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_PAR01;
+                }
+                else if (*p == _T('\\'))
+                {
+                    sOver = *p;
+                    nQuality = lm_eIM_LowerHalf;
+                    ++p;    //GetNextChar()
+                    nState = lmFB_PAR01;
+                }
+                else
+                    nState = lmFB_PAR01;
+                break;
+
+            //close parenthesis
+            case lmFB_PAR01:
+                if (*p == _T(')'))
+                {
+                    nState = (fParenthesis ? lmFB_END01 : lmFB_ERROR);
+                    ++p;    //GetNextChar()
+                }
+                else
+                    nState = lmFB_END01;
+                break;
+
+            //one interval finished
+            case lmFB_END01:
+
+                //one interval
+                if (*p == _T(' ') || *p == _T('\0'))
+                {
+                    //one interval completed. Get interval number. If number not present
+                    //assume 3
+                    long nIntv;
+                    if (sIntval != _T(""))
+                        sIntval.ToLong(&nIntv);
+                    else
+                    {
+                        nIntv = 3L;
+                        m_tFBInfo[nIntv].nAspect = lm_eIA_Understood;
+                    }
+                    //transfer data to total variables
+                    m_tFBInfo[nIntv].nQuality = nQuality;
+                    if (fParenthesis)
+                        m_tFBInfo[nIntv].nAspect = lm_eIA_Parenthesis;
+                    m_tFBInfo[nIntv].sSource = sData.Mid((size_t)(pStart-pDataStart), (size_t)(p-pStart) );
+                    m_tFBInfo[nIntv].sPrefix = sPrefix;
+                    m_tFBInfo[nIntv].sSuffix = sSuffix;
+                    m_tFBInfo[nIntv].sOver = sOver;
+                    m_tFBInfo[nIntv].fSounds = true;
+
+                    //add interval to finger print
+                    sFingerPrint += wxString::Format(_T("%d"), nIntv);
+
+                    //continue with next interval or finish parser
+                    if (*p == _T(' '))
+                    {
+                        nState = lmFB_START;
+                        ++p;    //GetNextChar()
+                    }
+                    else
+                        fContinueParsing = false;
+                }
+                else
+                    nState = lmFB_ERROR;
+                break;
+
+            //Error state
+            case lmFB_ERROR:
+                m_sError = wxString::Format(_T("Invalid char %c (after %s) in figured bass string %s. Figured bass ignored"),
+                    *p, sData.Left(size_t(p-pDataStart-1)).c_str(), sData.c_str() );
+                fContinueParsing = false;
+                break;
+
+            default:
+                wxASSERT(false);
+                fContinueParsing = false;
+        }
+    }
+
+    //determine implicit intervals that exists although not present in figured bass notation
+    if (sFingerPrint == _T("3"))        //5 3
+    {
+        m_tFBInfo[5].fSounds = true;        //add 5th
+    }
+    else if (sFingerPrint == _T("4"))   //5 4
+    {
+        m_tFBInfo[5].fSounds = true;        //add 5th
+    }
+    else if (sFingerPrint == _T("5"))   //5 3
+    {
+        m_tFBInfo[3].fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("6"))   //6 3
+    {
+        m_tFBInfo[3].fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("2"))   //6 4 2
+    {
+        m_tFBInfo[6].fSounds = true;        //add 6th
+        m_tFBInfo[4].fSounds = true;        //add 4th
+    }
+    else if (sFingerPrint == _T("42"))  //6 4 2
+    {
+        m_tFBInfo[6].fSounds = true;        //add 6th
+        m_tFBInfo[4].fSounds = true;        //add 4th
+    }
+    else if (sFingerPrint == _T("43"))  //6 4 3
+    {
+        m_tFBInfo[6].fSounds = true;        //add 6th
+    }
+    else if (sFingerPrint == _T("65"))  //6 5 3
+    {
+        m_tFBInfo[3].fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("7"))  //7 5 3
+    {
+        m_tFBInfo[5].fSounds = true;        //add 5th
+        m_tFBInfo[3].fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("9"))  //9 5 3
+    {
+        m_tFBInfo[5].fSounds = true;        //add 5th
+        m_tFBInfo[3].fSounds = true;        //add 3rd
+    }
+    else if (sFingerPrint == _T("10"))  //10 5 3
+    {
+        m_tFBInfo[5].fSounds = true;        //add 5th
+        m_tFBInfo[3].fSounds = true;        //add 3rd
+    }
+}
+
+
+
+
+//-----------------------------------------------------------------------------------------
+// lmFiguredBass implementation
+//-----------------------------------------------------------------------------------------
+
+lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassInfo* pFBInfo)
+    : lmStaffObj(pVStaff, nID, lm_eSO_FiguredBass, pVStaff, 1, lmVISIBLE, lmDRAGGABLE)
+    , lmFiguredBassData()
+    , m_fStartOfLine(false)
+    , m_fEndOfLine(false)
+    , m_fParenthesis(false)
+{
+    //Normal constructor from LDP parsed data struct 'lmFiguredBassInfo'
+
+    SetLayer(lm_eLayerNotes);
+    SetIntervalsInfo(pFBInfo);
+}
+
+void lmFiguredBass::SetFiguredBassData(lmFiguredBassData* pFBData)
+{
+    //copy received data
+    SetIntervalsInfo(&(pFBData->m_tFBInfo[0]));
+}
+
+lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
+                             lmEKeySignatures nKey)
+    : lmStaffObj(pVStaff, nID, lm_eSO_FiguredBass, pVStaff, 1, lmVISIBLE, lmDRAGGABLE)
+    , lmFiguredBassData(pChord, nKey)
+    , m_fStartOfLine(false)
+    , m_fEndOfLine(false)
+    , m_fParenthesis(false)
+{
+    //Constructor from a lmChord and a key signature.
+
+    SetLayer(lm_eLayerNotes);
 }
 
 lmUPoint lmFiguredBass::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
@@ -749,48 +1069,6 @@ wxString lmFiguredBass::SourceXML(int nIndent)
 	sSource += _T("</figured-bass>\n");
 
 	return sSource;
-}
-
-wxString lmFiguredBass::GetFiguredBassString()
-{
-    //add source string
-    wxString sFigBass = _T("");
-    for (int i=lmFB_MAX_INTV; i > 1; i--)
-    {
-        if (m_tFBInfo[i].nQuality != lm_eIM_NotPresent
-            && m_tFBInfo[i].nAspect != lm_eIA_Understood)
-        {
-            if (sFigBass != _T(""))
-                sFigBass += _T(" ");
-            sFigBass += m_tFBInfo[i].sSource;
-        }
-    }
-    return sFigBass;
-}
-
-bool lmFiguredBass::IsEquivalent(lmFiguredBass* pFBI)
-{
-    //Compares this figured bass with the received one. Returns true if both are
-    //equivalent, that is, if both encode the same chord
-
-    bool fOK = true;
-    for (int i=lmFB_MAX_INTV; i > 1 && fOK; i--)
-    {
-        if (m_tFBInfo[i].fSounds == pFBI->IntervalSounds(i))
-        {
-            if (m_tFBInfo[i].nQuality == lm_eIM_NotPresent)
-                fOK &= (pFBI->GetIntervalQuality(i) == lm_eIM_NotPresent
-                        || pFBI->GetIntervalQuality(i) == lm_eIM_AsImplied);
-            else if (pFBI->GetIntervalQuality(i) == lm_eIM_NotPresent)
-                fOK &= (m_tFBInfo[i].nQuality == lm_eIM_NotPresent
-                        || m_tFBInfo[i].nQuality == lm_eIM_AsImplied);
-            else
-                fOK &= (m_tFBInfo[i].nQuality == pFBI->GetIntervalQuality(i));
-        }
-        else
-            return false;
-    }
-    return fOK;
 }
 
 void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)

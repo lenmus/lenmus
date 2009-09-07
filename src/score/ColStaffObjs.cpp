@@ -109,6 +109,14 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
              && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
         fValue = true, nCheck=4;
 
+    //if chord, ensure that last note is the last in chord
+    else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+             && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+             && pSO1->IsNote() && pSO2->IsNote()
+             && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
+             && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsLastOfChord() )
+        fValue = true, nCheck=11;
+
     //If chord and right ordering, do not make more checks
     else if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
              && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
@@ -182,6 +190,14 @@ bool SortCompare(lmStaffObj* pSO1, lmStaffObj* pSO2)
         && pSO1->IsNote() && pSO2->IsNote()
         && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
         && ((lmNote*)pSO1)->IsBaseOfChord() && ((lmNote*)pSO2)->IsInChord() )
+        return true;
+
+    //if chord, ensure that last note is the last in chord
+    if (IsEqualTime(pSO1->GetTimePos(), pSO2->GetTimePos())
+        && IsEqualTime(pSO1->GetTimePosIncrement(), pSO2->GetTimePosIncrement())
+        && pSO1->IsNote() && pSO2->IsNote()
+        && ((lmNote*)pSO1)->GetChord() == ((lmNote*)pSO2)->GetChord()
+        && ((lmNote*)pSO1)->IsInChord() && ((lmNote*)pSO2)->IsLastOfChord() )
         return true;
 
     //If chord and right ordering, do not make more checks

@@ -840,7 +840,7 @@ lmChord::lmChord(wxString sRootNote, lmFiguredBass* pFigBass, lmEKeySignatures n
         //compute pitch and add note to chord
         if (pFigBass->IntervalSounds(i))
         {
-            lmEIntervalQuality nIntvQuality = pFigBass->GetIntervalQuality(i);
+            lmEIntervalQuality nIntvQuality = pFigBass->GetQuality(i);
             switch(nIntvQuality)
             {
                 case lm_eIM_NotPresent:

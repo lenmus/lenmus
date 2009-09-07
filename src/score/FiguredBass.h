@@ -60,32 +60,85 @@ typedef struct lmFiguredBassInfo_Data
 }
 lmFiguredBassInfo;
 
-
+#define lmFB_MIN_INTV   2
 #define lmFB_MAX_INTV   13
 
 
+// lmFiguredBassData: helper class with information about a figured bass annotation
+//-------------------------------------------------------------------------------------------
 
-class lmFiguredBass : public lmStaffObj
+class lmFiguredBassData
+{
+public:
+    lmFiguredBassData();
+    lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey);
+    lmFiguredBassData(wxString& sData);
+
+    void SetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
+    void GetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
+
+    //general information
+    wxString GetFiguredBassString();
+    inline wxString& GetError() { return m_sError; }
+    bool IsEquivalent(lmFiguredBassData* pFBD);
+
+    //information about intervals
+    lmEIntervalQuality GetQuality(int nIntv);
+    inline lmEIntervalAspect GetAspect(int nIntv) { return m_tFBInfo[nIntv].nAspect; }
+    inline wxString& GetSource(int nIntv) { return m_tFBInfo[nIntv].sSource; }
+    inline wxString& GetPrefix(int nIntv) { return m_tFBInfo[nIntv].sPrefix; }
+    inline wxString& GetSuffix(int nIntv) { return m_tFBInfo[nIntv].sSuffix; }
+    inline wxString& GetOver(int nIntv) { return m_tFBInfo[nIntv].sOver; }
+    bool IntervalSounds(int nIntv);
+
+    //modify data
+    inline void SetQuality(int nIntv, lmEIntervalQuality nQuality) 
+                    { m_tFBInfo[nIntv].nQuality = nQuality; }
+    inline void SetAspect(int nIntv, lmEIntervalAspect nAspect)
+                    { m_tFBInfo[nIntv].nAspect = nAspect; }
+    inline void SetSource(int nIntv, wxString sSource)
+                    { m_tFBInfo[nIntv].sSource = sSource; }
+    inline void SetPrefix(int nIntv, wxString sPrefix)
+                    { m_tFBInfo[nIntv].sPrefix = sPrefix; }
+    inline void SetSuffix(int nIntv, wxString sSuffix)
+                    { m_tFBInfo[nIntv].sSuffix = sSuffix; }
+    inline void SetOver(int nIntv, wxString sOver)
+                    { m_tFBInfo[nIntv].sOver = sOver; }
+    inline void SetSounds(int nIntv, bool fValue)
+                    { m_tFBInfo[nIntv].fSounds = fValue; }
+
+
+protected:
+    void Initialize();
+
+        //member variables
+
+    wxString            m_sError;       //error msg for constructor from string
+
+public:
+    lmFiguredBassInfo   m_tFBInfo[lmFB_MAX_INTV+1]; //i=0..13 --> intervals 2nd..13th. 0&1 not used
+
+
+};
+
+
+
+// lmFiguredBass: an StaffObj to draw a figured bass annotation
+//-------------------------------------------------------------------------------------------
+
+class lmFiguredBass : public lmStaffObj, public lmFiguredBassData
 {
 public:
     lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassInfo* pFBInfo);
     lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord, lmEKeySignatures nKey);
     ~lmFiguredBass() {}
 
-    void SetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
-    void GetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
-    bool IsEquivalent(lmFiguredBass* pFBI);
+    inline lmFiguredBassData* GetFiguredBassData() { return (lmFiguredBassData*)this; }
+    void SetFiguredBassData(lmFiguredBassData* pFBData);
 
     // properties
     inline float GetTimePosIncrement() { return 0; }
 	inline wxString GetName() const { return _T("figured bass"); }
-
-    //information about intervals
-    lmEIntervalQuality GetIntervalQuality(int nIntv);
-    bool IntervalSounds(int nIntv);
-
-    //general information
-    wxString GetFiguredBassString();
 
     //layout
     bool IsAligned() { return true; }
@@ -107,8 +160,6 @@ private:
     lmLUnits AddSymbol(lmCompositeShape* pShape, lmPaper* pPaper, wxChar ch, wxFont* pFont,
                        lmUPoint uPos, wxColour colorC);
 
-
-    lmFiguredBassInfo   m_tFBInfo[lmFB_MAX_INTV+1]; //i=0..13 --> intervals 2nd..13th. 0&1 not used
     bool                m_fStartOfLine;         //start of line (hold chord)
     bool                m_fEndOfLine;           //change of chord
     bool                m_fParenthesis;         //enclose all figured bass in parenthesis

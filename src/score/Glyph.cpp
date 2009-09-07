@@ -91,7 +91,7 @@ const lmGlyph aGlyphsInfo[] =
     //            Glyph   offset  shift   height                 x       y   width   height      x       y
     lmGlyph(_T('\uF04B'),   0,      0,      0,   0,      0,      0,   -369,    960,    738,    480,    369 ),    //_T("Longa note")) ,
     lmGlyph(_T('\uF04D'),   0,      0,      0,   0,      0,      0,   -283,   1182,    567,    591,    283 ),    //_T("Breve note")) ,
-    lmGlyph(_T('\uF04E'),   0,      0,      0,   0,      0,      0,   -282,   1010,    566,    505,    283 ),    //_T("Whole note")) ,
+    lmGlyph(_T('\uF04E'),   10,      0,      0,   0,      0,      0,   -282,   1010,    566,    505,    283 ),    //_T("Whole note")) ,
     lmGlyph(_T('\uF086'),   0,      0,      0,   0,      0,      0,  -1847,    709,   2127,    354,    279 ),    //_T("Half note, stem down")) ,
     lmGlyph(_T('\uF087'),   0,      0,      0,   0,      0,      0,   -279,    709,   2171,    354,   1923 ),    //_T("Half note, stem up")) ,
     lmGlyph(_T('\uF088'),   0,      0,      0,   0,      0,      0,  -1779,    640,   2027,    320,    248 ),    //_T("Quarter note, stem down")) ,
