@@ -33,7 +33,7 @@
 #include "ScoreView.h"
 #include "../score/defs.h"
 #include "../score/ColStaffObjs.h"      //lmCursorState
-#include "../score/FiguredBass.h"       //lmFiguredBassInfo struct
+#include "../score/FiguredBass.h"       //lmFiguredBassData
 
 class lmComponentObj;
 class lmDocument;
@@ -245,7 +245,7 @@ public:
     bool Do();
 
 protected:
-    lmFiguredBassInfo   m_tFBInfo[lmFB_MAX_INTV+1];
+    lmFiguredBassData   m_FBData;
     bool                m_fFirstTime;
 };
 
@@ -639,7 +639,7 @@ class lmCmdChangeFiguredBass : public lmScoreCommand
 public:
     lmCmdChangeFiguredBass(bool fNormalCmd, lmDocument *pDoc, lmFiguredBass* pFB, 
                            wxString& sFigBass);
-    ~lmCmdChangeFiguredBass();
+    ~lmCmdChangeFiguredBass() {}
 
     //implementation of pure virtual methods in base class
     bool Do();
@@ -648,7 +648,7 @@ public:
 protected:
     long			    m_nFigBasID;
 	wxString            m_sFigBass;
-    lmFiguredBassInfo   m_tOldInfo[lmFB_MAX_INTV+1];         //intervals 2..13, indexes 0 & 1 not used
+    lmFiguredBassData   m_FBData;
 
 };
 

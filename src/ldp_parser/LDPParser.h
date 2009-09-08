@@ -125,9 +125,6 @@ public:
     int GetBeamingLevel(lmENoteType nNoteType);
     bool ParenthesisMatch(const wxString& sSource);
 
-    //static methods for general use
-    static wxString ValidateFiguredBassString(wxString& sData, lmFiguredBassInfo* pFBInfo);
-
 
 protected:
     enum EParsingStates

@@ -512,7 +512,7 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmEBarline nType, bool fVisible)
     return pBarline;
 }
 
-lmFiguredBass* lmVStaff::Cmd_InsertFiguredBass(lmFiguredBassInfo* pFBInfo)
+lmFiguredBass* lmVStaff::Cmd_InsertFiguredBass(lmFiguredBassData* pFBData)
 {
     //move cursor to start of current timepos
     //AWARE:
@@ -521,7 +521,7 @@ lmFiguredBass* lmVStaff::Cmd_InsertFiguredBass(lmFiguredBassInfo* pFBInfo)
     //  would be inserted between two objects at the same timepos!
     GetCursor()->MoveToStartOfTimepos();
 
-    lmFiguredBass* pFB = new lmFiguredBass(this, lmNEW_ID, pFBInfo);
+    lmFiguredBass* pFB = new lmFiguredBass(this, lmNEW_ID, pFBData);
     m_cStaffObjs.Add(pFB);
     return pFB;
 }
@@ -1175,11 +1175,11 @@ lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible, long
     return pClef;
 }
 
-lmFiguredBass* lmVStaff::AddFiguredBass(lmFiguredBassInfo* pFBInfo, long nID)
+lmFiguredBass* lmVStaff::AddFiguredBass(lmFiguredBassData* pFBData, long nID)
 {
     // adds a figured bass object to the end of current StaffObjs collection
 
-    lmFiguredBass* pFB = new lmFiguredBass(this, nID, pFBInfo);
+    lmFiguredBass* pFB = new lmFiguredBass(this, nID, pFBData);
     m_cStaffObjs.Add(pFB);
     return pFB;
 }

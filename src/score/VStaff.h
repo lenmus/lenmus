@@ -105,7 +105,7 @@ public:
     lmBarline*  AddBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true,
                            long nID = lmNEW_ID);
 
-    lmFiguredBass* AddFiguredBass(lmFiguredBassInfo* pFBInfo, long nID = lmNEW_ID);
+    lmFiguredBass* AddFiguredBass(lmFiguredBassData* pFBData, long nID = lmNEW_ID);
 
     lmMetronomeMark* AddMetronomeMark(int nTicksPerMinute,
                             bool fParentheses = false, bool fVisible = true,
@@ -138,7 +138,7 @@ public:
 	    //--- inserting StaffObs
     lmBarline* Cmd_InsertBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
 	lmClef* Cmd_InsertClef(lmEClefType nClefType, bool fVisible = true);
-    lmFiguredBass* Cmd_InsertFiguredBass(lmFiguredBassInfo* pFBInfo);
+    lmFiguredBass* Cmd_InsertFiguredBass(lmFiguredBassData* pFBData);
     lmKeySignature* Cmd_InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 	lmNote* Cmd_InsertNote(lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,

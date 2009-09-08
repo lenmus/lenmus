@@ -575,8 +575,8 @@ lmCmdInsertFiguredBass::lmCmdInsertFiguredBass(bool fNormalCmd, lmDocument *pDoc
                                                wxString& sFigBass)
 	: lmScoreCommand(_("Insert figured bass"), pDoc, fNormalCmd)
     , m_fFirstTime(true)
+    , m_FBData(sFigBass)
 {
-    lmLDPParser::ValidateFiguredBassString(sFigBass, &m_tFBInfo[0]);
 }
 
 bool lmCmdInsertFiguredBass::Do()
@@ -584,10 +584,10 @@ bool lmCmdInsertFiguredBass::Do()
     //reposition cursor and save data for undoing the command
     PrepareForRedo();
 
-    //insert the barline
-    lmFiguredBass* pFB = GetVStaff()->Cmd_InsertFiguredBass(&m_tFBInfo[0]);
+    //insert the figured bass
+    lmFiguredBass* pFB = GetVStaff()->Cmd_InsertFiguredBass(&m_FBData);
 
-    //if not redo, edit the inserted figured bass
+    //if not redo (first time Do() is invoked), edit the inserted figured bass
     if (pFB && m_fFirstTime)
     {
         m_fFirstTime = false;
@@ -596,8 +596,8 @@ bool lmCmdInsertFiguredBass::Do()
 	    dlg.Layout();
 	    if (dlg.ShowModal() == wxID_OK)
         {
-            //save figured bass values, for redo
-            pFB->GetIntervalsInfo(&m_tFBInfo[0]);
+            //save the new figured bass data, for redo
+            m_FBData.CopyDataFrom( (lmFiguredBassData*)pFB );
         }
         else
         {
@@ -1385,11 +1385,7 @@ lmCmdChangeFiguredBass::lmCmdChangeFiguredBass(bool fNormalCmd, lmDocument *pDoc
     , m_nFigBasID(pFB->GetID())
     , m_sFigBass(sFigBass)
 {
-    pFB->GetIntervalsInfo(&m_tOldInfo[0]);
-}
-
-lmCmdChangeFiguredBass::~lmCmdChangeFiguredBass()
-{
+    m_FBData.CopyDataFrom( (lmFiguredBassData*)pFB );
 }
 
 bool lmCmdChangeFiguredBass::Do()
@@ -1400,11 +1396,7 @@ bool lmCmdChangeFiguredBass::Do()
     RestoreCursor();
 
     lmFiguredBass* pFB = (lmFiguredBass*)GetScoreObj(m_nFigBasID);
-
-    lmFiguredBassInfo tFBInfo[lmFB_MAX_INTV+1];         //intervals 2..13, indexes 0 & 1 not used
-    lmLDPParser::ValidateFiguredBassString(m_sFigBass, &tFBInfo[0]);
-
-    pFB->SetIntervalsInfo(&tFBInfo[0]);
+    pFB->SetDataFromString(m_sFigBass);
 	return CommandDone(true);
 }
 
@@ -1412,8 +1404,8 @@ bool lmCmdChangeFiguredBass::Undo()
 {
     //Direct command. NO UNDO LOG
 
-    lmFiguredBass* pFB = (lmFiguredBass*)GetScoreObj(m_nFigBasID);
-    pFB->SetIntervalsInfo(&m_tOldInfo[0]);
+    lmFiguredBassData* pFBData = (lmFiguredBassData*)GetScoreObj(m_nFigBasID);
+    pFBData->CopyDataFrom(&m_FBData);
     return CommandUndone();
 }
 

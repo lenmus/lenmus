@@ -74,8 +74,9 @@ public:
     lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey);
     lmFiguredBassData(wxString& sData);
 
-    void SetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
-    void GetIntervalsInfo(lmFiguredBassInfo* pFBInfo);
+    void SetDataFromString(wxString& sData);
+    void CopyDataFrom(lmFiguredBassData* pFBData);
+
 
     //general information
     wxString GetFiguredBassString();
@@ -114,10 +115,7 @@ protected:
         //member variables
 
     wxString            m_sError;       //error msg for constructor from string
-
-public:
     lmFiguredBassInfo   m_tFBInfo[lmFB_MAX_INTV+1]; //i=0..13 --> intervals 2nd..13th. 0&1 not used
-
 
 };
 
@@ -129,12 +127,9 @@ public:
 class lmFiguredBass : public lmStaffObj, public lmFiguredBassData
 {
 public:
-    lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassInfo* pFBInfo);
+    lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassData* pFBData);
     lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord, lmEKeySignatures nKey);
     ~lmFiguredBass() {}
-
-    inline lmFiguredBassData* GetFiguredBassData() { return (lmFiguredBassData*)this; }
-    void SetFiguredBassData(lmFiguredBassData* pFBData);
 
     // properties
     inline float GetTimePosIncrement() { return 0; }
@@ -172,11 +167,6 @@ private:
 //-----------------------------------------------------------------------------------
 
 #ifdef __WXDEBUG__
-
-    //Access to common figured bass data table
-    extern void lmGetFiguredBassInfo(int iString, lmFiguredBassInfo* pFBI);
-    extern int lmGetFiguredBassInfoSize();
-    extern const wxString& lmGetFiguredBassString(int nString);
 
     //Unit tests
     extern bool lmFiguredBassUnitTests();

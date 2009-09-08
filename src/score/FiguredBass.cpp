@@ -292,9 +292,7 @@ void lmFBQuickPanel::OnAcceptChanges(lmController* pController)
         else
         {
             //Direct creation. Modify object directly
-            lmFiguredBassInfo tFBInfo[lmFB_MAX_INTV+1];
-            lmLDPParser::ValidateFiguredBassString(sFigBass, &tFBInfo[0]);
-            m_pFB->SetIntervalsInfo(&tFBInfo[0]);
+            m_pFB->SetDataFromString(sFigBass);
         }
     }
 }
@@ -318,19 +316,26 @@ void lmFiguredBassData::Initialize()
     {
         m_tFBInfo[i].nQuality = lm_eIM_NotPresent;
         m_tFBInfo[i].nAspect = lm_eIA_Normal;
-        m_tFBInfo[i].sSource = wxEmptyString;
-        m_tFBInfo[i].sPrefix = wxEmptyString;
-        m_tFBInfo[i].sSuffix = wxEmptyString;
-        m_tFBInfo[i].sOver = wxEmptyString;
+        m_tFBInfo[i].sSource = _T("");
+        m_tFBInfo[i].sPrefix = _T("");
+        m_tFBInfo[i].sSuffix = _T("");
+        m_tFBInfo[i].sOver = _T("");
         m_tFBInfo[i].fSounds = false;
     }
 }
 
-void lmFiguredBassData::SetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
+void lmFiguredBassData::CopyDataFrom(lmFiguredBassData* pFBData)
 {
-    //copy received data
     for (int i=0; i <= lmFB_MAX_INTV; i++)
-        m_tFBInfo[i] = *(pFBInfo + i);
+    {
+        m_tFBInfo[i].nQuality = pFBData->m_tFBInfo[i].nQuality;
+        m_tFBInfo[i].nAspect = pFBData->m_tFBInfo[i].nAspect;
+        m_tFBInfo[i].sSource = pFBData->m_tFBInfo[i].sSource;
+        m_tFBInfo[i].sPrefix = pFBData->m_tFBInfo[i].sPrefix;
+        m_tFBInfo[i].sSuffix = pFBData->m_tFBInfo[i].sSuffix;
+        m_tFBInfo[i].sOver = pFBData->m_tFBInfo[i].sOver;
+        m_tFBInfo[i].fSounds = pFBData->m_tFBInfo[i].fSounds;
+    }
 }
 
 lmFiguredBassData::lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey)
@@ -441,20 +446,10 @@ lmFiguredBassData::lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey)
     {
         if (m_SimplerFB[i].sFigBass == sFigBass)
         {
-            //look for a simpler formulation
-            wxString sFB = m_SimplerFB[i].sSimpler;
-            lmFiguredBassInfo tFBInfo[lmFB_MAX_INTV+1];
-            lmLDPParser::ValidateFiguredBassString(sFB, &tFBInfo[0]);
-            SetIntervalsInfo(&tFBInfo[0]);
+            this->SetDataFromString( (wxString)m_SimplerFB[i].sSimpler );
+            break;
         }
     }
-}
-
-void lmFiguredBassData::GetIntervalsInfo(lmFiguredBassInfo* pFBInfo)
-{
-    //copy internal data
-    for (int i=0; i <= lmFB_MAX_INTV; i++)
-         *(pFBInfo + i) = m_tFBInfo[i];
 }
 
 lmEIntervalQuality lmFiguredBassData::GetQuality(int nIntv)
@@ -516,9 +511,14 @@ bool lmFiguredBassData::IsEquivalent(lmFiguredBassData* pFBD)
 }
 
 lmFiguredBassData::lmFiguredBassData(wxString& sData)
-    : m_sError(_T(""))
 {
-    //returns empty string if no error, or error message 
+    SetDataFromString(sData);
+}
+
+void lmFiguredBassData::SetDataFromString(wxString& sData)
+{
+    //Creates intervals data from string.
+    //Sets m_sError with empty string if no error, or with error message 
 
     Initialize();
 
@@ -769,23 +769,17 @@ lmFiguredBassData::lmFiguredBassData(wxString& sData)
 // lmFiguredBass implementation
 //-----------------------------------------------------------------------------------------
 
-lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassInfo* pFBInfo)
+lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassData* pFBData)
     : lmStaffObj(pVStaff, nID, lm_eSO_FiguredBass, pVStaff, 1, lmVISIBLE, lmDRAGGABLE)
     , lmFiguredBassData()
     , m_fStartOfLine(false)
     , m_fEndOfLine(false)
     , m_fParenthesis(false)
 {
-    //Normal constructor from LDP parsed data struct 'lmFiguredBassInfo'
+    //Constructor from lmFiguredBassData
 
     SetLayer(lm_eLayerNotes);
-    SetIntervalsInfo(pFBInfo);
-}
-
-void lmFiguredBass::SetFiguredBassData(lmFiguredBassData* pFBData)
-{
-    //copy received data
-    SetIntervalsInfo(&(pFBData->m_tFBInfo[0]));
+    CopyDataFrom(pFBData);
 }
 
 lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
@@ -1088,23 +1082,6 @@ void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTab
 //--------------------------------------------------------------------------------
 //Methods for debugging
 //--------------------------------------------------------------------------------
-
-void lmGetFiguredBassInfo(int iString, lmFiguredBassInfo* pFBI)
-{
-    lmFiguredBassInfo tFBInfo[lmFB_MAX_INTV+1];
-    wxString sFB = m_CommonFB[iString].sFiguredBass;
-    lmLDPParser::ValidateFiguredBassString(sFB, pFBI);
-}
-
-int lmGetFiguredBassInfoSize()
-{
-    return lmFB_NUM_COMMON;
-}
-
-const wxString& lmGetFiguredBassString(int iString)
-{
-    return m_CommonFB[iString].sFiguredBass;
-}
 
 bool lmFiguredBassUnitTests()
 {
