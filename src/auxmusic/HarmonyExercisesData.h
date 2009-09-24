@@ -32,16 +32,12 @@ extern int  nHarmonyExerciseChordsToCheck;
 extern lmChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS];
 extern int nHarmonyExcerciseType;
 
-// @@@ TODO: RETHINK: CONSIDER TO REMOVE REDUNDANT INFORMATION 
-//   notes, chord type, inversions... are already in lmChord!
 // Notes info
 extern lmFPitch nHE_NotesFPitch[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
 extern wxString sHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
 extern wxString sHE_Pattern[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
 extern lmNote* pHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
 // Chords info
-extern lmEChordType nHE_ChordType[nMAX_HARMONY_EXERCISE_CHORDS];
-extern int gnHE_InversionsInChord[nMAX_HARMONY_EXERCISE_CHORDS];
 extern lmFiguredBass* pHE_FiguredBass[nMAX_HARMONY_EXERCISE_CHORDS];
 extern lmFiguredBass* pHE_UserFiguredBass[nMAX_HARMONY_EXERCISE_CHORDS];  // the introduced by the user
 extern int gnHE_NumUserFiguredBass;

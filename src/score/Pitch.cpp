@@ -102,6 +102,15 @@ lmFPitch FPitch(int nStep, int nOctave, int nAcc)
 
 }
 
+
+lmFPitch FPitchK(int nStep, int nOctave, lmEKeySignatures nKey)
+{
+    int nAccidentals[7];
+    lmComputeAccidentals(nKey, nAccidentals);
+
+    return FPitch(nStep, nOctave, nAccidentals[nStep]);
+}
+
 bool FPitch_IsValid(lmFPitch fp)
 {
     //returns false for invalid pitches (6, 12, 23, 29 & 35)
@@ -380,6 +389,23 @@ lmFPitch FPitch_AddSemitone(lmFPitch fpNote, bool fUseSharps)
     return FPitch(nStep, nOctave, nAcc);
 
 }
+
+ // Interval step2 - step1
+lmFPitch FPitchStepsInterval(int nStep1, int nStep2, lmEKeySignatures nKey)
+{
+    int nAccidentals[7];
+    lmComputeAccidentals(nKey, nAccidentals);
+    int nOctaveInStep2 = 0;
+    if (nStep1 > nStep2) // the step2 must always be higher
+        nOctaveInStep2 = 1;
+
+    lmFPitch fVS2 = FPitch(nStep2, nOctaveInStep2, nAccidentals[nStep2]);
+    lmFPitch fVS1 = FPitch(nStep1, 0, nAccidentals[nStep1]);
+   
+    wxLogMessage(_T("  FPitchStepsInterval  (Step %d oct:%d) %d - (Step %d, octave 0) %d = %d")
+         , nStep2, nOctaveInStep2, fVS2, nStep1, fVS1, fVS2-fVS1);
+    return fVS2 - fVS1;
+}  
 
 
 //-------------------------------------------------------------------------------------

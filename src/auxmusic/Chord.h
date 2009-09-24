@@ -85,6 +85,8 @@ extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordI
 extern lmEChordType GetChordTypeFromIntervals(lmChordInfo& chordInfo, bool fAllowFifthElided=false );
 extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
 extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
+extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncrementSteps);
+
 
 
 // lmChordIntervals: A generic chord (a list of intervals)
@@ -96,6 +98,7 @@ public:
     lmChordIntervals(lmEChordType nChordType, int nInversion);
     lmChordIntervals(wxString sIntervals);
     lmChordIntervals(int nNumNotes, wxString* pNotes);
+    lmChordIntervals(int nStep, lmEKeySignatures nKey, int nNumIntervals);
     
     ~lmChordIntervals();
 
@@ -134,6 +137,8 @@ public:
     lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey = earmDo);
         //build a chord from a list of intervals (as strings)
     lmChord(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
+        // build a chord from "essential" information
+    lmChord(int nDegree, lmEKeySignatures nKey, int nNumIntervals, int nNumInversions, int octave);
 
     //destructor
     ~lmChord();

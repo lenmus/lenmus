@@ -47,6 +47,8 @@ int GetHarmonicDirection(int nInterval)
 //
 // Global functions
 //
+
+
 int GetHarmonicMovementType( lmNote* pVoice10, lmNote* pVoice11, lmNote* pVoice20, lmNote* pVoice21)
 {
     int nMovType = -10;
@@ -108,9 +110,12 @@ void ChordInfoBox::SetYPosition(int nYpos)
 }
 void ChordInfoBox::DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText)
 {
-    int nNumChordNotes  = pChordDsct->nNumChordNotes;
-    if (nNumChordNotes < 1)
+    if (pChordDsct == NULL || pChordDsct->nNumChordNotes < 1)
+    {
+        wxLogMessage(_T(" DisplayChordInfo ERROR: NO notes to attach the textbox"));
         return;  // todo: improvement: in this case, display a box but not attached to any note
+    }
+    int nNumChordNotes  = pChordDsct->nNumChordNotes;
     lmTextStyle* pStyle = pScore->GetStyleName(*m_pFontInfo);
 
     // Display chord info in score with a line and text

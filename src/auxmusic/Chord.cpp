@@ -324,8 +324,21 @@ lmChordDBEntry* lmChordsDB::Find(lmChordIntervals* pChordIntv)
 }
 
 
+//  Get interval in FPitch from: 
+//   chord degree (root note step)
+//   key signature
+//   interval index (1=3rd, 2=5th, etc)
+//  TODO: Used in harmony, but if it useful in general, move it to a better place such as Pitch file
+lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nInterval)
+{
+    // steps: 0 .. 6 (lmSTEP_C .. lmSTEP_B)
+    assert (nRootStep>=lmSTEP_C && nRootStep <= lmSTEP_B);
 
-
+    // aware: in harmony by default an interval has 2 steps, therefore step2 = step1 + 2*N
+    lmFPitch fpPitch = FPitchStepsInterval(nRootStep, (nRootStep+(nInterval*2))%(lmSTEP_B+1), nKey);
+    return (lmFIntval) fpPitch;
+}
+	
 //-----------------------------------------------------------------------------------
 
  void SortChordNotes(int nNumNotes, lmNote** pInpChordNotes)
@@ -942,6 +955,30 @@ lmChord::lmChord(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey)
     ComputeTypeAndInversion();
 }
 
+// Arguments:
+//   chord degree = step of root note. Values lmSTEP_C .. lmSTEP_B 
+//                    (todo: consider to make an enum type for steps)
+//   key signature
+//   number of intervals ( = number of notes -1)
+//   number of inversions
+//   octave
+//        TODO: aware: the octave is NOT required; only the chord degree (step of root note) is necessary!!!
+//              consider to make octave an OPTIONAL argument
+lmChord::lmChord(int nStep, lmEKeySignatures nKey, int nIntervals, int nInversion, int octave)
+    : lmChordIntervals(nStep, nKey, nIntervals)
+    , m_nKey(nKey)
+    , m_nInversion(nInversion)
+    , m_fRootIsDuplicated(false)
+    , m_nType(lmEMPTY_CHORD_TYPE)
+{
+    m_fpRootNote = FPitchK(nStep, octave, nKey);
+
+    wxLogMessage(_T("  RootNote (%d,%d,%d): %d"), nStep, octave, nKey, m_fpRootNote);
+
+    ComputeTypeAndInversion();
+}
+
+
 lmChord::~lmChord()
 {
 }
@@ -977,6 +1014,11 @@ lmFIntval lmChord::GetInterval(int i)
 lmFPitch lmChord::GetNote(int i)
 {
     //i = 0..nNumNotes-1
+    if (i >= GetNumNotes())
+    {
+        wxLogMessage(_T(" Chord error, requesting note %d, max: %d"), i, GetNumNotes());
+        return 0;  //TODO: error protection added by Carlos. Improve it?
+    }
 
     return m_fpRootNote + (i==0 ? 0 : GetInterval(i)); 
 }
@@ -1179,6 +1221,19 @@ lmChordIntervals::lmChordIntervals(int nNumNotes, wxString* pNotes)
         m_nIntervals[i] = ::lmLDPDataToFPitch( *(pNotes+i+1) ) - fpRootNote;
     }
 }
+
+lmChordIntervals::lmChordIntervals(int nRootStep, lmEKeySignatures nKey, int nNumIntervals)
+{
+    m_nNumIntv = nNumIntervals;
+
+    //get intervals
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        m_nIntervals[i] = FPitchInterval(nRootStep, nKey, i+1);
+    }
+
+}
+
 
 lmChordIntervals::~lmChordIntervals()
 {

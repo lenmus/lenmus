@@ -205,6 +205,7 @@ extern lmFPitch FPitch(lmAPitch ap);
 extern lmFPitch FPitch(lmDPitch dp, int nAcc);
 extern lmFPitch FPitch(int nStep, int nOctave, int nAcc);
 extern lmFPitch FPitch(wxString& sLDPNote);
+extern lmFPitch FPitchK(int nStep, int nOctave, lmEKeySignatures nKey);
 
 //validation
 extern bool FPitch_IsValid(lmFPitch fp);
@@ -224,7 +225,8 @@ extern lmAPitch FPitch_ToAPitch(lmFPitch fp);
 //operations
 extern lmFPitch FPitch_AddSemitone(lmFPitch fpNote, lmEKeySignatures nKey);
 extern lmFPitch FPitch_AddSemitone(lmFPitch fpNote, bool fUseSharps);
-
+// Interval between 2 steps
+extern lmFPitch FPitchStepsInterval(int nStep1, int nStep2, lmEKeySignatures nKey);
 
 
 #endif    // __LM_PITCH_H__

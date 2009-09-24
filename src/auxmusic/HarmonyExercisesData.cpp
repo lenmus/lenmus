@@ -37,14 +37,11 @@ int  nHarmonyExerciseChordsToCheck = 0;
 lmChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS];
 int nHarmonyExcerciseType;
 
-// @@@ TODO: RETHINK: REMOVE REDUNDANT INFORMATION (notes, chord type, inversions... are already in lmChord)
 lmFPitch nHE_NotesFPitch[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
 wxString sHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
 wxString sHE_Pattern[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
-lmNote* pHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
+lmNote* pHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS]; // notes of the score
 
-lmEChordType nHE_ChordType[nMAX_HARMONY_EXERCISE_CHORDS];
-int gnHE_InversionsInChord[nMAX_HARMONY_EXERCISE_CHORDS];
 lmFiguredBass* pHE_FiguredBass[nMAX_HARMONY_EXERCISE_CHORDS]; // todo: remove? this also can be calculated from lmChord
 lmFiguredBass* pHE_UserFiguredBass[nMAX_HARMONY_EXERCISE_CHORDS];  // the introduced by the user
 int gnHE_NumUserFiguredBass;
