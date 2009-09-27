@@ -98,7 +98,7 @@ public:
     lmChordIntervals(lmEChordType nChordType, int nInversion);
     lmChordIntervals(wxString sIntervals);
     lmChordIntervals(int nNumNotes, wxString* pNotes);
-    lmChordIntervals(int nStep, lmEKeySignatures nKey, int nNumIntervals);
+    lmChordIntervals(int nStep, lmEKeySignatures nKey, int nNumIntervals, int nInversion);
     
     ~lmChordIntervals();
 

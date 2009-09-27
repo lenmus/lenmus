@@ -965,17 +965,35 @@ lmChord::lmChord(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey)
 //        TODO: aware: the octave is NOT required; only the chord degree (step of root note) is necessary!!!
 //              consider to make octave an OPTIONAL argument
 lmChord::lmChord(int nStep, lmEKeySignatures nKey, int nIntervals, int nInversion, int octave)
-    : lmChordIntervals(nStep, nKey, nIntervals)
+    : lmChordIntervals(nStep, nKey, nIntervals, nInversion)
     , m_nKey(nKey)
     , m_nInversion(nInversion)
     , m_fRootIsDuplicated(false)
     , m_nType(lmEMPTY_CHORD_TYPE)
 {
-    m_fpRootNote = FPitchK(nStep, octave, nKey);
+    wxLogMessage(_T(" Creatig lmChord step:%d key:%d intervals:%d, inversions:%d, octave:%d ")
+        , nStep, nKey, nIntervals, nInversion, octave
+        );
 
-    wxLogMessage(_T("  RootNote (%d,%d,%d): %d"), nStep, octave, nKey, m_fpRootNote);
+
+    m_fpRootNote = FPitchK(nStep, octave, nKey); // only to debug
+    wxLogMessage(_T("   InitialRootNote (%d,%d,%d): %d (%s) ")
+        , nStep, octave, nKey, m_fpRootNote, FPitch_ToAbsLDPName(m_fpRootNote).c_str());
+
+    // aware: for calculating the root note when there are inversions...
+
+    int nnStep = nStep+(2*nInversion); // aware: can be in a higher octave
+    int nIncreaseOctave = nnStep / (lmSTEP_B+1); // aware: after B (6): higher octave
+    nnStep = nnStep % (lmSTEP_B+1); // 0 .. 6
+
+    m_fpRootNote = FPitchK(nnStep, octave+nIncreaseOctave, nKey);
+
+    wxLogMessage(_T("  Final RootNote (%d,%d,%d): %d (%s) ")
+        , nnStep, octave+nIncreaseOctave, nKey, m_fpRootNote, FPitch_ToAbsLDPName(m_fpRootNote).c_str());
 
     ComputeTypeAndInversion();
+
+    wxLogMessage(_T("  Created lmChord: %s"), this->ToString().c_str());
 }
 
 
@@ -1007,8 +1025,16 @@ lmFIntval lmChord::GetInterval(int i)
 {
     //return the chord interval #i (i = 1 .. m_nNumNotes-1)
 
-    wxASSERT(i > 0 && i < m_nNumIntv+1);
-    return m_nIntervals[i-1];
+// Carlos sep 09: warning: lmChordIntervals::GetInterval starts from 0
+
+// Carlos sep09: todo: confirm this change    wxASSERT(i > 0 && i < m_nNumIntv+1);
+//       Interval 0 should be allowed. It should be interpreted as "root note duplicated in chord".
+//       Then, for interval 0, just return "unison"
+    wxASSERT(i >= 0 && i < m_nNumIntv+1);
+    if (i == 0)
+        return lm_p1; // unison
+    else
+        return m_nIntervals[i-1];
 }
 
 lmFPitch lmChord::GetNote(int i)
@@ -1222,7 +1248,7 @@ lmChordIntervals::lmChordIntervals(int nNumNotes, wxString* pNotes)
     }
 }
 
-lmChordIntervals::lmChordIntervals(int nRootStep, lmEKeySignatures nKey, int nNumIntervals)
+lmChordIntervals::lmChordIntervals(int nRootStep, lmEKeySignatures nKey, int nNumIntervals, int nInversion)
 {
     m_nNumIntv = nNumIntervals;
 
@@ -1232,6 +1258,26 @@ lmChordIntervals::lmChordIntervals(int nRootStep, lmEKeySignatures nKey, int nNu
         m_nIntervals[i] = FPitchInterval(nRootStep, nKey, i+1);
     }
 
+    wxLogMessage(_T(" %d lmChordIntervals before %d INVERSIONS "),m_nNumIntv,nInversion );
+    lmFIntval nI;
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        nI = m_nIntervals[i];
+        wxLogMessage(_T("   Interval %d: %d "), i , nI );
+        wxLogMessage(_T("    code (%s) "),  FIntval_GetIntvCode(nI).c_str() );
+    }
+
+    //apply inversions
+    for (int i=0; i < nInversion; i++)
+        DoInversion();
+
+    wxLogMessage(_T(" %d lmChordIntervals AFTER %d INVERSIONS "),m_nNumIntv,nInversion );
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        nI = m_nIntervals[i];
+        wxLogMessage(_T("   Interval %d: %d "), i , nI );
+        wxLogMessage(_T("    code (%s) "),  FIntval_GetIntvCode(nI).c_str() );
+    }
 }
 
 

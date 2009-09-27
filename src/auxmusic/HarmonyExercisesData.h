@@ -32,11 +32,23 @@ extern int  nHarmonyExerciseChordsToCheck;
 extern lmChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS];
 extern int nHarmonyExcerciseType;
 
+extern const int nBassVoice;
+extern const int nTenorVoice;
+extern const int nBaritoneVoice;
+extern const int nSopranoVoice;
+extern const int nBassVoiceIndex;
+extern const int nTenorVoiceIndex;
+extern const int nBaritoneVoiceIndex;
+extern const int nSopranoVoiceIndex;
+
+extern bool bInversionsAllowedInHarmonyExercises;
+
 // Notes info
-extern lmFPitch nHE_NotesFPitch[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
-extern wxString sHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
-extern wxString sHE_Pattern[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
-extern lmNote* pHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
+extern lmFPitch nHE_NotesFPitch[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE];
+extern wxString sHE_Notes[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE];
+extern wxString sHE_Pattern[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE];
+extern lmNote* pHE_Notes[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE]; // notes of the score
+
 // Chords info
 extern lmFiguredBass* pHE_FiguredBass[nMAX_HARMONY_EXERCISE_CHORDS];
 extern lmFiguredBass* pHE_UserFiguredBass[nMAX_HARMONY_EXERCISE_CHORDS];  // the introduced by the user

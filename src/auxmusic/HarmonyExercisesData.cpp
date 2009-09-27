@@ -36,11 +36,22 @@
 int  nHarmonyExerciseChordsToCheck = 0;
 lmChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS];
 int nHarmonyExcerciseType;
+const int nBassVoice = nNUM_VOICES_IN_HARMONY_EXERCISE; // AWARE: BASS IS VOICE 4!!!!
+const int nTenorVoice = nBassVoice - 1;
+const int nBaritoneVoice = nBassVoice - 2;
+const int nSopranoVoice = nBassVoice - 3;
+const int nBassVoiceIndex = nBassVoice - 1;
+const int nTenorVoiceIndex = nTenorVoice - 1;
+const int nBaritoneVoiceIndex = nBaritoneVoice - 1;
+const int nSopranoVoiceIndex = nSopranoVoice - 1;
 
-lmFPitch nHE_NotesFPitch[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
-wxString sHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
-wxString sHE_Pattern[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS];
-lmNote* pHE_Notes[nNUM_VOICES_IN_HARMONY_EXERCISE][nMAX_HARMONY_EXERCISE_CHORDS]; // notes of the score
+bool bInversionsAllowedInHarmonyExercises;
+
+
+lmFPitch nHE_NotesFPitch[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE];
+wxString sHE_Notes[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE];
+wxString sHE_Pattern[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE];
+lmNote* pHE_Notes[nMAX_HARMONY_EXERCISE_CHORDS][nNUM_VOICES_IN_HARMONY_EXERCISE]; // notes of the score
 
 lmFiguredBass* pHE_FiguredBass[nMAX_HARMONY_EXERCISE_CHORDS]; // todo: remove? this also can be calculated from lmChord
 lmFiguredBass* pHE_UserFiguredBass[nMAX_HARMONY_EXERCISE_CHORDS];  // the introduced by the user

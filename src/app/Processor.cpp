@@ -418,7 +418,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         ptChordDescriptor->pChord = new lmChord(pChordBaseNote, tChordInfo);
 
         sStatusStr = wxString::Format(
-                _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString() );
+            _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString().c_str() );
 
         (*pNumChords)++;
 // todo: set definitive colour       colour = *wxGREEN;
@@ -433,7 +433,7 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
         ptChordDescriptor->pChord = new lmChord(pChordBaseNote, tChordInfo);
 
         sStatusStr = wxString::Format(
-                _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString() );
+            _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString().c_str() );
 
         (*pNumChords)++;
 // todo: set definitive colour       colour = *wxRED;
@@ -629,7 +629,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
             nChordType = tChordDescriptor[nChordCount].pChord->GetChordType();
             nInversions = tChordDescriptor[nChordCount].pChord->GetInversion();
             wxLogMessage(_T("Chord %d [%s] Type:%d, %d inversions")
-                ,nChordCount+1, tChordDescriptor[nChordCount].ToString()
+                ,nChordCount+1, tChordDescriptor[nChordCount].ToString().c_str()
                 , nChordType, nInversions, pHE_Chords[nChordCount]->GetChordType());
 
             // if chord is not valid, no need to say anything: the error message was already shown
@@ -637,12 +637,14 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
             {
                 // Check: inversions
                 //  todo: consider to allow inversions as an option
-                if ( nInversions > 0)
+                if ( (!bInversionsAllowedInHarmonyExercises) && nInversions > 0)
                 {
                     nExerciseErrors++;
                     wxString sMsg = wxString::Format(
                         _("Chord %d [%s] is not at root position: %d inversions")
-                        ,nChordCount+1, tChordDescriptor[nChordCount].ToString() ,nInversions);
+                        ,nChordCount+1
+                        , tChordDescriptor[nChordCount].ToString().c_str()
+                        ,nInversions);
                     wxColour colour = wxColour(255,10,0,128); // R, G, B, Transparency: RED
                     pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
                 }
@@ -656,8 +658,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     nExerciseErrors++;
                     wxString sMsg = wxString::Format(
                     _("Chord %d [%s]: The type is %s, but the expected was: %s")
-                        ,nChordCount+1, tChordDescriptor[nChordCount].ToString() 
-                        , lmChordTypeToName( nChordType ), lmChordTypeToName( pHE_Chords[nChordCount]->GetChordType() ));
+                    ,nChordCount+1, tChordDescriptor[nChordCount].ToString().c_str() 
+                    , lmChordTypeToName( nChordType ).c_str()
+                    , lmChordTypeToName( pHE_Chords[nChordCount]->GetChordType() ).c_str()
+                        );
                     // A different chord type with no inversions implies a different root note (todo: confirm this)
                     if (nInversions == 0)
                       sMsg += _(", Wrong root note?");
@@ -694,16 +698,16 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     , nChordCount+1
                     , tChordDescriptor[nChordCount].ToString()
                     , FPitch_ToAbsLDPName(nNotePitch).c_str()
-                    , FPitch_ToAbsLDPName(pHE_Chords[nChordCount]->GetNote(0)).c_str()
+                    , FPitch_GetEnglishNoteName(nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).c_str()
                         );
                 wxLogMessage( sMsg ); 
                 // compare the notes, but just the step, not the absolute pitch
-                if ( nNotePitch !=  pHE_Chords[nChordCount]->GetNote(0) )
+                if ( nNotePitch !=  nHE_NotesFPitch[nChordCount][nBassVoiceIndex] )
                 {
                     nExerciseErrors++;
                     wxColour colour = wxColour(255,10,0,128);
                     pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
-                    wxLogMessage(_T(" Error: %s"), sMsg );
+                    wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
                 }
             }
             if ( nHarmonyExcerciseType == 2 )
@@ -715,16 +719,16 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     , nChordCount+1
                     , tChordDescriptor[nChordCount].ToString()
                     , FPitch_GetEnglishNoteName(nNotePitch).c_str()
-                    , FPitch_GetEnglishNoteName(pHE_Chords[nChordCount]->GetNote(0)).c_str()
+                    , FPitch_GetEnglishNoteName(nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).c_str()
                         );
                 wxLogMessage( sMsg ); 
                 // compare the notes, but just the step, not the absolute pitch
-                if ( FPitch_Step(nNotePitch) !=  FPitch_Step(pHE_Chords[nChordCount]->GetNote(0)) )
+                if ( FPitch_Step(nNotePitch) !=  FPitch_Step(nHE_NotesFPitch[nChordCount][nBassVoiceIndex]) )
                 {
                     nExerciseErrors++;
                     wxColour colour = wxColour(255,10,0,128);
                     pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
-                    wxLogMessage(_T(" Error: %s"), sMsg );
+                    wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
                 }
             }
             // Exercise 2: check also the soprano note...
@@ -733,7 +737,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 if (tChordDescriptor[nChordCount].nNumChordNotes <= 3)
                 {
                     wxString sMsg = wxString::Format( _("Chord %d [%s], Soprano voice is missing")
-                        , nChordCount+1, tChordDescriptor[nChordCount].ToString());
+                        , nChordCount+1, tChordDescriptor[nChordCount].ToString().c_str());
                 }
                 else
                 {
@@ -741,13 +745,13 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     nNotePitch = tChordDescriptor[nChordCount].pChordNotes[3]->GetFPitch();
                     wxString sMsg = wxString::Format( _("Chord %d [%s]: soprano note:%s, expected:%s  ")
                         , nChordCount+1
-                        , tChordDescriptor[nChordCount].ToString()
+                        , tChordDescriptor[nChordCount].ToString().c_str()
                         , FPitch_ToAbsLDPName(nNotePitch).c_str()
-                        , FPitch_ToAbsLDPName(pHE_Chords[nChordCount]->GetNote(3)).c_str()
+                        , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nSopranoVoiceIndex]).c_str()
                             );
                     wxLogMessage( sMsg ); 
                     //  The soprano note must match exactly the original generated by lenmus
-                    if ( nNotePitch !=  pHE_Chords[nChordCount]->GetNote(3) )
+                    if ( nNotePitch != nHE_NotesFPitch[nChordCount][nSopranoVoiceIndex] )
                     {
                         nExerciseErrors++;
                         wxColour colour = wxColour(255,10,0,128);
@@ -774,18 +778,23 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 nExerciseErrors++;
                 wxColour colour = wxColour(255,10,0,128);
                 pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], colour, sMsg);
-                 wxLogMessage( _("DISPLAYED ERROR :%s"), sMsg);
+                wxLogMessage( _("DISPLAYED ERROR :%s"), sMsg.c_str());
             }
 
             // check each Figured bass
             for (int nFB=0; nFB<gnHE_NumUserFiguredBass && nFB<nNumChords; nFB++)
             {
                 sMsg = wxString::Format(
-                    _("Exercise 3: Figured bass %d, user: %s, expected:%s"), nFB
-                    ,pHE_UserFiguredBass[nFB]->GetFiguredBassString()
-                    ,  pHE_FiguredBass[nFB]->GetFiguredBassString());
+                    _("Chord %d [%s] Figured bass: user: {%s}, expected:{%s}")
+                    , nFB+1
+                    , tChordDescriptor[nFB].ToString().c_str()
+                    , pHE_UserFiguredBass[nFB]->GetFiguredBassString().c_str()
+                    , pHE_FiguredBass[nFB]->GetFiguredBassString().c_str()
+                    );
                 wxLogMessage(sMsg.c_str());
-                if (pHE_UserFiguredBass[nFB]->GetFiguredBassString() !=  pHE_FiguredBass[nFB]->GetFiguredBassString())
+                if (    pHE_UserFiguredBass[nFB]->GetFiguredBassString()
+                        !=  pHE_FiguredBass[nFB]->GetFiguredBassString()
+                    )
                 {
                     nExerciseErrors++;
                     wxColour colour = wxColour(255,10,0,128);
@@ -872,8 +881,7 @@ int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, 
             wxLogMessage(_T("Evaluating rule %d, description: %s")
                 , pRule->GetRuleId(), pRule->GetDescription().c_str());
             nNumErros += pRule->Evaluate(sStr, &nNumChordError[0], pChordErrorBox);
-            wxLogMessage(sStr);
-            wxLogMessage(_T("   RESULT of Rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
+            wxLogMessage(_T("   Total error count after rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
             if (nNumErros > 0)
             {
               // TODO: anything else here?

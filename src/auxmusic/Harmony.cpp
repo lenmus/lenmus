@@ -72,6 +72,15 @@ int GetHarmonicMovementType( lmNote* pVoice10, lmNote* pVoice11, lmNote* pVoice2
     return nMovType;
 }
 
+int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1) //@@@ todo remove!!!
+{
+    lmFIntval nDistance  = abs (n2 - n1);    
+    int nIntervalNumber  = FIntval_GetNumber(nDistance);
+    wxLogMessage(_("\t\t GetIntervalNumberFromFPitchDistance: %d-%d D:%d I:%d ")
+        , n2, n1, nDistance, nIntervalNumber);
+    return nIntervalNumber;
+}
+
 
 //
 // Message box to display the results if the chord analysis
@@ -404,17 +413,19 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
             {
                 if ( nVoiceInterval[i] == nVoiceInterval[nN])
                 {
-                    int nDistance = m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
-                        - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() ;
+                     lmFIntval nInterval = abs( 
+                         m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
+                         - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() );
+                     int nIntervalNumber = FIntval_GetNumber(nInterval);
 
-                     int nNormalizedDistance = abs(nDistance) % lm_p8;
+                     wxLogMessage(_(" >>> Check parallel motion in chord %d, notes:%d %d, INTERVAL:%d(%s) {%d}")
+		               ,nC, i,  nN,  nIntervalNumber
+                       , FIntval_GetIntvCode(nInterval).c_str()
+                       , nInterval);
 
-                    wxLogMessage(_(" >>> Parallel motion in chord %d, notes:%d %d, interval:%d, distance:%d")
-		               ,nC, i,  nN, nVoiceInterval[i],  nDistance );
-
-                    if ( nNormalizedDistance == 0 || nNormalizedDistance == lm_p5 )
+                    if ( nIntervalNumber == 1 || nIntervalNumber == 5 )
                     {
-                        wxString sType =  ( nDistance == 0?  _("octave/unison"): _("fifth"));
+                        wxString sType =  FIntval_GetName(nInterval);
                         pNumFailuresInChord[nC] = pNumFailuresInChord[nC]  +1;
 
                         int nFullVoiceInterval = abs ( m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch()
@@ -422,14 +433,15 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
 
 //TODO: accumulate messages?                        sResultDetails += wxString::Format(
                         sResultDetails = wxString::Format(
-                            _("Parallel motion of %s, chords: %d, %d; v%d %s-->%s, v%d %s-->%s, Distance: %s, Interval: %s")
+                            _("Parallel motion of %s, chords: %d, %d; v%d %s-->%s, v%d %s-->%s, Interval: %s")
                             ,sType.c_str(),  (nC-1)+1, (nC)+1
-                            ,(i)+1,  m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
+                            , m_pChordDescriptor[nC].pChordNotes[i]->GetVoice()
+                            , m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
                             , m_pChordDescriptor[nC].pChordNotes[i]->GetPrintName().c_str()
-                            ,(nN)+1, m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
+                            , m_pChordDescriptor[nC].pChordNotes[nN]->GetVoice()
+                            , m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
                             , m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
-                            , FIntval_GetIntvCode(nDistance).c_str()
-                            , FIntval_GetIntvCode(nFullVoiceInterval).c_str()
+                            , FIntval_GetIntvCode(nInterval).c_str()
                             );
 
                         wxLogMessage( sResultDetails );
@@ -487,7 +499,7 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
     wxColour colour( 200, 20+nDifColour, 20+nDifColour, nTransp);
     int nErrCount = 0;
     int nNumNotes;
-    int nVoiceMovementType, nDistance, nInterval;
+    int nVoiceMovementType;
     // Analyze all chords
     for (int nC=1; nC<m_nNumChords; nC++)
     {
@@ -509,41 +521,48 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                   m_pChordDescriptor[nC-1].pChordNotes[nN], m_pChordDescriptor[nC].pChordNotes[nN],
                   m_pChordDescriptor[nC-1].pChordNotes[i], m_pChordDescriptor[nC].pChordNotes[i]);
 
-                nDistance  = abs (
-                          m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
-                        - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() );
 
-                wxLogMessage(_(" Notes: %s-->%s %s-->%s Movement type:%d  distance:%d")
+                lmFIntval nInterval = abs( 
+                         m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
+                         - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() );
+                int nIntervalNumber = FIntval_GetNumber(nInterval);
+
+                wxLogMessage(_(" Notes: %s-->%s %s-->%s Movement type:%d  INTERVAL:%d (%s)")
                         , m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
                         , m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
                         , m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
                         , m_pChordDescriptor[nC].pChordNotes[i]->GetPrintName().c_str()
-                        , nVoiceMovementType, nDistance);
+                        , nVoiceMovementType, nIntervalNumber, FIntval_GetIntvCode(nInterval).c_str());
 
-                if ( nVoiceMovementType == lm_eDirectMovement && ( nDistance == 0 || nDistance == lm_p5 )  )
+                if ( nVoiceMovementType == lm_eDirectMovement && ( nIntervalNumber == 1 || nIntervalNumber == 5 )  )
                 {
-                    // Incorrect, unless: interval is 2th and voice is > 0 (not BASS)
-                    nInterval  = abs (
-                          m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
-                        - m_pChordDescriptor[nC-1].pChordNotes[nN]->GetFPitch() );
+                    // Incorrect, unless: voice interval is 2th and voice is > 0 (not BASS)
+                     lmFIntval nVoiceInterval = abs( 
+                         m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
+                         - m_pChordDescriptor[nC].pChordNotes[i]->GetFPitch() ) ;
+                     int nVoiceIntervalNumber = FIntval_GetNumber(nVoiceInterval);
 
-                    if (  (nInterval == lm_m2 || nInterval == lm_M2)
-                          && nN > 0 )
-                    {
-                       wxLogMessage(_T(" Exception!, voice not BASS and interval is 2th!  "));
-                    }
-                    else
-                    {
-                        wxString sType =  ( nDistance == 0?  _(" octave/unison"): _(" fifth "));
+                     if (  nVoiceIntervalNumber == 2 && nN > 0 )
+                     {
+                        wxLogMessage(_T(" Exception!, voice not BASS and voice interval is 2th!  "));
+                     }
+                     else
+                     {
+                        wxString sType;
+                        if (nInterval > 80) // current limitation in FIntval_GetName
+                           sType = _("higher than 2 octaves");
+                        else
+                           sType =  FIntval_GetName(nInterval);
 
                         sResultDetails = wxString::Format(
-               _("Direct movement resulting %s. Chords:%d,%d. Voices:%d %s-->%s and %d %s-->%s. Distance: %s, Interval: %s")
+               _("Direct movement resulting %s. Chords:%d,%d. Voices:%d %s-->%s and %d %s-->%s. Interval: %s")
                , sType.c_str(), (nC-1)+1, (nC)+1
-               , (nN)+1, m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
+               , m_pChordDescriptor[nC].pChordNotes[nN]->GetVoice()
+               , m_pChordDescriptor[nC-1].pChordNotes[nN]->GetPrintName().c_str()
                , m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
-               , (i)+1, m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
+               , m_pChordDescriptor[nC].pChordNotes[i]->GetVoice()
+               , m_pChordDescriptor[nC-1].pChordNotes[i]->GetPrintName().c_str()
                , m_pChordDescriptor[nC].pChordNotes[i]->GetPrintName().c_str()
-               , FIntval_GetIntvCode(nDistance).c_str()
                , FIntval_GetIntvCode(nInterval).c_str());
 
                         DrawArrow(
@@ -710,23 +729,31 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
             //@@@ todo remove: return 0;
             continue;
         }
-        // for all the notes in the chord...
-        for (int nN=2; nN<4; nN++)
+        // for all the voices in the chord...
+        for (int nN=1; nN<4; nN++)
         {
+            lmFIntval nLimit;
+            if (nN == 1)
+                nLimit = lm_p8*2; // up to 2 octaves allowed for bass-tenor
+            else
+                nLimit = lm_p8; // only ine octave allowed for the rest
+
             // TODO: ensure correspondance VOICE - order
             nInterval = m_pChordDescriptor[nC].pChordNotes[nN]->GetFPitch()
                             - m_pChordDescriptor[nC].pChordNotes[nN-1]->GetFPitch();
 
             wxLogMessage(_T("  Notes %d - %d: interval: %d "), nN, nN-1, nInterval);
 
-            if (  nInterval >= lm_p8 )
+            if (  nInterval > nLimit )
             {
                 sResultDetails = wxString::Format(
-                _("Chord %d: Interval %s higher than octave between notes %d (%s) and %d (%s)")
+                _("Chord %d: Interval %s higher than octave between voices %d (%s) and %d (%s)")
                 , (nC)+1
                 , FIntval_GetIntvCode(nInterval).c_str()
-                , (nN)+1, m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
-                , (nN-1)+1, m_pChordDescriptor[nC].pChordNotes[nN-1]->GetPrintName().c_str()
+                , m_pChordDescriptor[nC].pChordNotes[nN]->GetVoice()
+                , m_pChordDescriptor[nC].pChordNotes[nN]->GetPrintName().c_str()
+                , m_pChordDescriptor[nC].pChordNotes[nN-1]->GetVoice()
+                , m_pChordDescriptor[nC].pChordNotes[nN-1]->GetPrintName().c_str()
                 );
 
                 wxLogMessage( sResultDetails );

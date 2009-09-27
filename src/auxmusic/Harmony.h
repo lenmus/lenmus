@@ -262,6 +262,8 @@ extern int GetHarmonicDirection(int nInterval);
 extern void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
                                            , wxColour colour, wxString &sText, bool reset);
 extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
+//returns interval number ignoring octaves: 1=unison, 2=2nd, ..., 8=8ve
+extern int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1);
 
 enum lmHarmonicMovementType {
     lm_eDirectMovement ,    // 2 voices with the same delta sign (cero included)
