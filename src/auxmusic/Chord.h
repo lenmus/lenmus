@@ -79,15 +79,6 @@ typedef struct lmChordInfoStruct {
     }
 } lmChordInfo;
 
-// TODO: global methods. They could probably be placed inside a class...
-extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
-extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
-extern lmEChordType GetChordTypeFromIntervals(lmChordInfo& chordInfo, bool fAllowFifthElided=false );
-extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
-extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
-extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncrementSteps);
-
-
 
 // lmChordIntervals: A generic chord (a list of intervals)
 //-------------------------------------------------------------------------------------------
@@ -98,6 +89,7 @@ public:
     lmChordIntervals(lmEChordType nChordType, int nInversion);
     lmChordIntervals(wxString sIntervals);
     lmChordIntervals(int nNumNotes, wxString* pNotes);
+    lmChordIntervals(int nNumNotes, lmNote** pNotes);
     lmChordIntervals(int nStep, lmEKeySignatures nKey, int nNumIntervals, int nInversion);
     
     ~lmChordIntervals();
@@ -131,10 +123,10 @@ public:
             lmEKeySignatures nKey = earmDo);
         //build a chord from the root note and the figured bass
     lmChord(wxString sRootNote, lmFiguredBass* pFigBass, lmEKeySignatures nKey = earmDo);
-        //build a chord from a lmChordInfo
-    lmChord(lmNote* pRootNote, lmChordInfo &chordInfo);
         //build a chord from a list of notes in LDP source code
     lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey = earmDo);
+        //build a chord from a list of score note pointers
+    lmChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);  
         //build a chord from a list of intervals (as strings)
     lmChord(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
         // build a chord from "essential" information

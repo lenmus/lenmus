@@ -390,53 +390,53 @@ bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptCho
                                        , int* pNumChords, wxString &sStatusStr)
 {
     bool fOk = false;
-    bool fCanBeCreated = false;
     lmChordDescriptor* ptChordDescriptor = &ptChordDescriptorArray[*pNumChords]; //@@@ TODO MEJORAR...
     int nNumChordNotes = ptChordDescriptor->nNumChordNotes;
 
-    if (nNumChordNotes < 3)
+    if (nNumChordNotes < 3) // a chord can never have less than 3 notes
        return false;
 
     wxLogMessage(_T("ProccessChord %d, num CHORD NOTES: %d")
     , *pNumChords, nNumChordNotes);
 
-    lmChordInfo tChordInfo;
-    tChordInfo.Initalize();
-
     assert(ptChordDescriptor != NULL);
     assert(ptChordDescriptor->pChordNotes != NULL);
 
-    // Create Chord
-    fCanBeCreated = TryChordCreation(nNumChordNotes, ptChordDescriptor->pChordNotes,
-                                     &tChordInfo,  sStatusStr);
-    
-    wxColour colour;
 
-    if (fCanBeCreated)
+    // Sort notes incrementally notes by pitch 
+    lmNote** pNotes = &ptChordDescriptor->pChordNotes[0];
+    int nCount, fSwapDone;
+    lmNote* auxNote;
+    do
     {
-        lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0]; // Even with inversions, the first note is the root
-        ptChordDescriptor->pChord = new lmChord(pChordBaseNote, tChordInfo);
+        fSwapDone = 0;
+        for (nCount = 0; nCount < nNumChordNotes - 1; nCount++)
+        {
+            if (pNotes[nCount]->GetFPitch() > pNotes[nCount+1]->GetFPitch() )
+            {
+	            auxNote = pNotes[nCount];
+	            pNotes[nCount] = pNotes[nCount + 1];
+	            pNotes[nCount + 1] = auxNote;
+	            fSwapDone = 1;
+            }
+        }
+    }while (fSwapDone);
 
-        sStatusStr = wxString::Format(
-            _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString().c_str() );
+    // Create Chord
+    ptChordDescriptor->pChord = new lmChord(nNumChordNotes, pNotes);
 
-        (*pNumChords)++;
-// todo: set definitive colour       colour = *wxGREEN;
-        colour = wxColour(10,255,0,128); // R, G, B, Transparency
-//todo: remove; not important        pInfoBox->DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
+    sStatusStr = wxString::Format(
+        _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString().c_str() );
+
+    (*pNumChords)++;
+
+    wxColour colour;
+    if (ptChordDescriptor->pChord->IsStandardChord())
+    {
         fOk = true;
     }
     else
     {
-       // Even with errors, the chord is created and used for analysis of progression  (TODO: confirm this)
-        lmNote* pChordBaseNote = ptChordDescriptor->pChordNotes[0];
-        ptChordDescriptor->pChord = new lmChord(pChordBaseNote, tChordInfo);
-
-        sStatusStr = wxString::Format(
-            _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString().c_str() );
-
-        (*pNumChords)++;
-// todo: set definitive colour       colour = *wxRED;
         colour = wxColour(255,0,0,128); // R, G, B, Transparency
         pInfoBox->DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
         fOk = false;

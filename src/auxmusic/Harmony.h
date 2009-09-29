@@ -265,6 +265,17 @@ extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color);
 //returns interval number ignoring octaves: 1=unison, 2=2nd, ..., 8=8ve
 extern int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1);
 
+// TODO: global methods. They could probably be placed inside a class...
+extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
+extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
+extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncrementSteps);
+
+/* TODO: REMOVE THESE FUNCTIONS
+extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
+extern lmEChordType GetChordTypeFromIntervals(lmChordInfo& chordInfo, bool fAllowFifthElided=false );
+extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
+*/
+
 enum lmHarmonicMovementType {
     lm_eDirectMovement ,    // 2 voices with the same delta sign (cero included)
     lm_eObliqueMovement ,   // one delta sign is 0, the other not
