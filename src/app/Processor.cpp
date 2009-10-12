@@ -381,74 +381,6 @@ bool lmHarmonyProcessor::SetTools()
     return true;
 }
 
-// All chord processing:
-//  analysis of chord notes and intervals
-//  chord creation
-//  results: display messages...
-//  TODO: consider to improve return: status/reason
-bool lmHarmonyProcessor::ProccessChord(lmScore* pScore, lmChordDescriptor* ptChordDescriptorArray
-                                       , int* pNumChords, wxString &sStatusStr)
-{
-    bool fOk = false;
-    lmChordDescriptor* ptChordDescriptor = &ptChordDescriptorArray[*pNumChords]; //@@@ TODO MEJORAR...
-    int nNumChordNotes = ptChordDescriptor->nNumChordNotes;
-
-    if (nNumChordNotes < 3) // a chord can never have less than 3 notes
-       return false;
-
-    wxLogMessage(_T("ProccessChord %d, num CHORD NOTES: %d")
-    , *pNumChords, nNumChordNotes);
-
-    assert(ptChordDescriptor != NULL);
-    assert(ptChordDescriptor->pChordNotes != NULL);
-
-
-    // Sort notes incrementally notes by pitch 
-    lmNote** pNotes = &ptChordDescriptor->pChordNotes[0];
-    int nCount, fSwapDone;
-    lmNote* auxNote;
-    do
-    {
-        fSwapDone = 0;
-        for (nCount = 0; nCount < nNumChordNotes - 1; nCount++)
-        {
-            if (pNotes[nCount]->GetFPitch() > pNotes[nCount+1]->GetFPitch() )
-            {
-	            auxNote = pNotes[nCount];
-	            pNotes[nCount] = pNotes[nCount + 1];
-	            pNotes[nCount + 1] = auxNote;
-	            fSwapDone = 1;
-            }
-        }
-    }while (fSwapDone);
-
-    // Create Chord
-    ptChordDescriptor->pChord = new lmChord(nNumChordNotes, pNotes);
-
-    sStatusStr = wxString::Format(
-        _("Chord %d: %s"),(*pNumChords)+1,  ptChordDescriptor->ToString().c_str() );
-
-    (*pNumChords)++;
-
-    wxColour colour;
-    if (ptChordDescriptor->pChord->IsStandardChord())
-    {
-        fOk = true;
-    }
-    else
-    {
-        colour = wxColour(255,0,0,128); // R, G, B, Transparency
-        pInfoBox->DisplayChordInfo(pScore, ptChordDescriptor, colour, sStatusStr);
-        fOk = false;
-    }
-
-    wxLogMessage(sStatusStr);
-
-
-
-    return fOk;
-
-}
 
 bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 {
@@ -462,9 +394,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
     // total number of chords (both valid and invalid chords)
     int nNumChords = 0;
     // all the information of each chord
-    lmChordDescriptor tChordDescriptor[lmMAX_NUM_CHORDS];
-    // aux variable to jnow the active notes in each time step
-    lmActiveNotes ActiveNotesList;
+    lmScoreChord* tChordDescriptor[lmMAX_NUM_CHORDS];
+    // aux variable to know the active notes in each time step
+    lmActiveNotes tActiveNotesList;
+    lmNote* pPossibleChordNotes[lmNOTES_IN_CHORD];
 
     float rAbsTime = 0.0f;
     float rTimeAtStartOfMeasure = 0.0f;
@@ -480,6 +413,8 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
     // TODO: improve postioning of the textbox...
     pInfoBox->ResetPosition();
+
+    int nBadChords = 0;
 
     /*---
 
@@ -497,6 +432,8 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
     // loop to process notes/rests in first staff of first instrument
     int nNote = 0;
     lmSOIterator* pIter = pVStaff->CreateIterator();
+    lmEKeySignatures nKey;
+
     while(!pIter->EndOfCollection())
     {
         // process only notes, rests and barlines
@@ -524,7 +461,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 rCurrentNoteAbsTime = rTimeAtStartOfMeasure + rRelativeTime;
 
                 // check new starting time (to analyze previous chord candidate) 
-                if (  IsHigherTime(rCurrentNoteAbsTime, ActiveNotesList.GetTime())  )
+                if (  IsHigherTime(rCurrentNoteAbsTime, tActiveNotesList.GetTime())  )
                 {
                     /*-----
                       if NEW-TIME (i.e. higher) then
@@ -534,20 +471,40 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                       add new note to the list of active notes
                     ---*/
 
+                    // Get the key
+                    if (pCurrentNote->GetApplicableKeySignature())
+                        nKey = pCurrentNote->GetApplicableKeySignature()->GetKeyType();
+                    else
+                        nKey = earmDo;
                
-                    // analyze possible chord with current list of active notes
-                    ActiveNotesList.GetChordDescriptor(&tChordDescriptor[nNumChords]);
+                    // Get the notes
+                    int nNumActiveNotes = tActiveNotesList.GetNotes(&pPossibleChordNotes[0]);
 
-                    bool fChordOk = ProccessChord(pScore, tChordDescriptor, &nNumChords, sStatusStr);
+                    // sort the notes 
+                    SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
+
+                    // 
+                    // Get the chord from the notes
+                    //
+                    tChordDescriptor[nNumChords] = new lmScoreChord
+                        (nNumActiveNotes, &pPossibleChordNotes[0], nKey);
+
+                    if (!tChordDescriptor[nNumChords]->IsStandardChord())
+                    {
+                        wxColour colour = wxColour(255,0,0,128); // R, G, B, Transparency
+                        pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords], colour, tChordDescriptor[nNumChords]->ToString());
+                        nBadChords++;
+                    }
+                    nNumChords++;
 
                     // set new time and recalculate list of active notes
-                    ActiveNotesList.SetTime( rCurrentNoteAbsTime );
+                    tActiveNotesList.SetTime( rCurrentNoteAbsTime );
 
                     fScoreModified = true; // repaint
                 }
 
                 // add new note to the list of active notes
-                ActiveNotesList.AddNote(pCurrentNote, rCurrentNoteAbsTime + pCurrentNote->GetDuration());
+                tActiveNotesList.AddNote(pCurrentNote, rCurrentNoteAbsTime + pCurrentNote->GetDuration());
 
             } //  if (pSO->IsNote())
 
@@ -560,20 +517,51 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
     // Analyze the remaining notes
     // 
-    ActiveNotesList.RecalculateActiveNotes( );
-    ActiveNotesList.GetChordDescriptor(&tChordDescriptor[nNumChords]);
-    bool fChordOk = ProccessChord(pScore, tChordDescriptor, &nNumChords, sStatusStr);
+    tActiveNotesList.RecalculateActiveNotes( );
 
-    int nNumErrors = AnalyzeChordsLinks(&tChordDescriptor[0], nNumChords);
+    // TODO: not sure if this is the correct way of getting the key here...
+    // Get the key
+    if (pCurrentNote->GetApplicableKeySignature())
+        nKey = pCurrentNote->GetApplicableKeySignature()->GetKeyType();
+    else
+        nKey = earmDo;
 
-    wxLogMessage(_T("ANALYSIS RESULT of %d chords:  ok: %d, Num Errors:%d ")
-        ,nNumChords, fChordOk, nNumErrors);
+    // Get the notes
+    int nNumActiveNotes = tActiveNotesList.GetNotes(&pPossibleChordNotes[0]);
 
-    if (fChordOk && nNumErrors == 0)
+    // Sort the notes 
+    SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
+
+    // 
+    // Get the chord from the notes
+    //
+    tChordDescriptor[nNumChords] = new lmScoreChord
+        (nNumActiveNotes, &pPossibleChordNotes[0], nKey);
+
+    if (!tChordDescriptor[nNumChords]->IsStandardChord())
+    {
+        wxColour colour = wxColour(255,0,0,128); // R, G, B, Transparency
+        pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords], colour, tChordDescriptor[nNumChords]->ToString());
+        nBadChords++;
+    }
+    nNumChords++;
+
+    ChordInfoBox* pChordErrorBoxD;
+    if (nHarmonyExerciseChordsToCheck && nHarmonyExcerciseType == 3)
+        pChordErrorBoxD = 0; // do not display chord errors
+    else
+        pChordErrorBoxD = pChordErrorBox;
+
+    int nNumErrors = AnalyzeChordsLinks(&tChordDescriptor[0], nNumChords, pChordErrorBoxD);
+
+    wxLogMessage(_T("ANALYSIS RESULT of %d chords:  bad: %d, Num Errors:%d ")
+        ,nNumChords, nBadChords, nNumErrors);
+
+    if (nBadChords == 0 && nNumErrors == 0)
     {
        wxString sOkMsg = _T(" Harmony is OK.");
        wxLogMessage( sOkMsg );
-       pInfoBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
+       pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
        fScoreModified = true; // repaint
     }
 
@@ -599,7 +587,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 _T("Missing chords; Expected:%d, Actual: %d")
                 ,nNumChords, nHarmonyExerciseChordsToCheck);
             wxColour colour = wxColour(255,10,0,128); // R, G, B, Transparency: RED
-            pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], colour, sMsg);
+            pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1], colour, sMsg);
             wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
         }
 
@@ -626,10 +614,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
             nChordCount<nNumChords && nChordCount<nMAX_HARMONY_EXERCISE_CHORDS && nChordCount < nHarmonyExerciseChordsToCheck; 
             nChordCount++)
         {
-            nChordType = tChordDescriptor[nChordCount].pChord->GetChordType();
-            nInversions = tChordDescriptor[nChordCount].pChord->GetInversion();
+            nChordType = tChordDescriptor[nChordCount]->GetChordType();
+            nInversions = tChordDescriptor[nChordCount]->GetInversion();
             wxLogMessage(_T("Chord %d [%s] Type:%d, %d inversions")
-                ,nChordCount+1, tChordDescriptor[nChordCount].ToString().c_str()
+                ,nChordCount+1, tChordDescriptor[nChordCount]->ToString().c_str()
                 , nChordType, nInversions, pHE_Chords[nChordCount]->GetChordType());
 
             // if chord is not valid, no need to say anything: the error message was already shown
@@ -643,10 +631,10 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     wxString sMsg = wxString::Format(
                         _("Chord %d [%s] is not at root position: %d inversions")
                         ,nChordCount+1
-                        , tChordDescriptor[nChordCount].ToString().c_str()
+                        , tChordDescriptor[nChordCount]->ToString().c_str()
                         ,nInversions);
                     wxColour colour = wxColour(255,10,0,128); // R, G, B, Transparency: RED
-                    pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+                    pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nChordCount], colour, sMsg);
                 }
                 //@@@@@@@@@@@@@@@@@@@@@@@@@
                 // todo: the check of chord type is not necessary. Just check that the chord is valid
@@ -658,7 +646,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     nExerciseErrors++;
                     wxString sMsg = wxString::Format(
                     _("Chord %d [%s]: The type is %s, but the expected was: %s")
-                    ,nChordCount+1, tChordDescriptor[nChordCount].ToString().c_str() 
+                    ,nChordCount+1, tChordDescriptor[nChordCount]->ToString().c_str() 
                     , lmChordTypeToName( nChordType ).c_str()
                     , lmChordTypeToName( pHE_Chords[nChordCount]->GetChordType() ).c_str()
                         );
@@ -678,25 +666,25 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 } --*/
             }
 
-
             wxLogMessage( _T(" Chord %d has %d notes ")
                 , nChordCount+1
-                , tChordDescriptor[nChordCount].nNumChordNotes );
-            for (int nxc=0; nxc<tChordDescriptor[nChordCount].nNumChordNotes; nxc++)
+                , tChordDescriptor[nChordCount]->GetNumNotes() );
+            for (int nxc=0; nxc<tChordDescriptor[nChordCount]->GetNumNotes(); nxc++)
             {
                 wxLogMessage( _T(" NOTE %d: %s")
-                    , nxc, tChordDescriptor[nChordCount].pChordNotes[nxc]->GetPrintName().c_str() );
+                    , nxc, tChordDescriptor[nChordCount]->GetNote(nxc)->GetPrintName().c_str() );
             }
 
+            /*-- TODO REMOVE; not clear...
             // CHECK BASS NOTE
             if ( nHarmonyExcerciseType == 1 )
             {
                 // Check bass note: consider also the octave
                 //  The bass note must match exactly the original generated by lenmus
-                nNotePitch = tChordDescriptor[nChordCount].pChordNotes[0]->GetFPitch();
+                nNotePitch = tChordDescriptor[nChordCount]->GetNote(0)->GetFPitch();
                 wxString sMsg = wxString::Format( _("Chord %d [%s]: bass note:%s, expected:%s ")
                     , nChordCount+1
-                    , tChordDescriptor[nChordCount].ToString()
+                    , tChordDescriptor[nChordCount]->ToString()
                     , FPitch_ToAbsLDPName(nNotePitch).c_str()
                     , FPitch_GetEnglishNoteName(nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).c_str()
                         );
@@ -706,18 +694,18 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 {
                     nExerciseErrors++;
                     wxColour colour = wxColour(255,10,0,128);
-                    pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+                    pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nChordCount], colour, sMsg);
                     wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
                 }
-            }
+            } --*/
             if ( nHarmonyExcerciseType == 2 )
             {
                 // Check bass note: but IGNORE the OCTAVE
                 //  (follow the traditional chord rules)
-                nNotePitch = tChordDescriptor[nChordCount].pChordNotes[0]->GetFPitch();
+                nNotePitch = tChordDescriptor[nChordCount]->GetNote(0)->GetFPitch();
                 wxString sMsg = wxString::Format( _("Chord %d [%s]: bass note:%s, expected:%s ")
                     , nChordCount+1
-                    , tChordDescriptor[nChordCount].ToString()
+                    , tChordDescriptor[nChordCount]->ToString()
                     , FPitch_GetEnglishNoteName(nNotePitch).c_str()
                     , FPitch_GetEnglishNoteName(nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).c_str()
                         );
@@ -727,25 +715,25 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 {
                     nExerciseErrors++;
                     wxColour colour = wxColour(255,10,0,128);
-                    pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+                    pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nChordCount], colour, sMsg);
                     wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
                 }
             }
             // Exercise 2: check also the soprano note...
             if ( nHarmonyExcerciseType == 2 )
             {
-                if (tChordDescriptor[nChordCount].nNumChordNotes <= 3)
+                if (tChordDescriptor[nChordCount]->GetNumNotes() <= 3)
                 {
                     wxString sMsg = wxString::Format( _("Chord %d [%s], Soprano voice is missing")
-                        , nChordCount+1, tChordDescriptor[nChordCount].ToString().c_str());
+                        , nChordCount+1, tChordDescriptor[nChordCount]->ToString().c_str());
                 }
                 else
                 {
                     // CHECK SOPRANO NOTE ( index: 3 )
-                    nNotePitch = tChordDescriptor[nChordCount].pChordNotes[3]->GetFPitch();
+                    nNotePitch = tChordDescriptor[nChordCount]->GetNote(3)->GetFPitch();
                     wxString sMsg = wxString::Format( _("Chord %d [%s]: soprano note:%s, expected:%s  ")
                         , nChordCount+1
-                        , tChordDescriptor[nChordCount].ToString().c_str()
+                        , tChordDescriptor[nChordCount]->ToString().c_str()
                         , FPitch_ToAbsLDPName(nNotePitch).c_str()
                         , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nSopranoVoiceIndex]).c_str()
                             );
@@ -755,7 +743,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     {
                         nExerciseErrors++;
                         wxColour colour = wxColour(255,10,0,128);
-                        pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nChordCount], colour, sMsg);
+                        pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nChordCount], colour, sMsg);
                         wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
                     }
                 }
@@ -777,7 +765,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
             {
                 nExerciseErrors++;
                 wxColour colour = wxColour(255,10,0,128);
-                pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], colour, sMsg);
+                pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1], colour, sMsg);
                 wxLogMessage( _("DISPLAYED ERROR :%s"), sMsg.c_str());
             }
 
@@ -787,7 +775,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 sMsg = wxString::Format(
                     _("Chord %d [%s] Figured bass: user: {%s}, expected:{%s}")
                     , nFB+1
-                    , tChordDescriptor[nFB].ToString().c_str()
+                    , tChordDescriptor[nFB]->ToString().c_str()
                     , pHE_UserFiguredBass[nFB]->GetFiguredBassString().c_str()
                     , pHE_FiguredBass[nFB]->GetFiguredBassString().c_str()
                     );
@@ -798,7 +786,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 {
                     nExerciseErrors++;
                     wxColour colour = wxColour(255,10,0,128);
-                    pChordErrorBox->DisplayChordInfo(pScore, &tChordDescriptor[nFB], colour, sMsg);
+                    pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nFB], colour, sMsg);
                 }
             }
 
@@ -815,7 +803,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
         else
         {
            wxString sOkMsg = _T(" Exercise is OK.");
-           pInfoBox->DisplayChordInfo(pScore, &tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
+           pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
         }
 
         // TODO @@@@@@@@@@@@@@ DELETE
@@ -841,11 +829,12 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
     }
 
     //clean
+/* TODO: REMOVE
     assert(nNumChords<lmMAX_NUM_CHORDS);
     wxLogMessage(_T(" Deleting %d chords"), nNumChords );
     for (int i = 0; i <nNumChords; i++)
         delete tChordDescriptor[i].pChord;
-
+--*/
 
 
 
@@ -854,9 +843,12 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
 }
 
+/*- TODO REVOME (moved to Harmony)
 // return: total number of errors
-int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH)
+int lmHarmonyProcessor::AnalyzeChordsLinks(lmScoreChord** pChordDescriptor, int nNCH, bool fDisplay)
 {
+    ChordInfoBox* pChordErrorBoxD = (fDisplay? pChordErrorBox : 0); // show errors?
+
     wxLogMessage(_T("AnalyzeChordsLinks N:%d "), nNCH);
 
     int nNumChordError[lmMAX_NUM_CHORDS]; // number of errors in each chord
@@ -880,7 +872,7 @@ int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, 
         {
             wxLogMessage(_T("Evaluating rule %d, description: %s")
                 , pRule->GetRuleId(), pRule->GetDescription().c_str());
-            nNumErros += pRule->Evaluate(sStr, &nNumChordError[0], pChordErrorBox);
+            nNumErros += pRule->Evaluate(sStr, &nNumChordError[0], pChordErrorBoxD);
             wxLogMessage(_T("   Total error count after rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
             if (nNumErros > 0)
             {
@@ -890,5 +882,5 @@ int lmHarmonyProcessor::AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, 
     }
 
     return nNumErros;
-}
+} --*/
 

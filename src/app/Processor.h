@@ -141,9 +141,6 @@ public:
     //implementation of virtual pure methods
     bool SetTools();
 
-    //specific methods
-    int AnalyzeChordsLinks(lmChordDescriptor* pChordDescriptor, int nNCH);
-
 #ifdef __WXDEBUG__
     void UnitTests();
     void  TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColour colour);
@@ -160,11 +157,6 @@ protected:
     bool ProcessScore(lmScore* pScore, void* pOpt);
 
     //other
-
-    bool ProccessChord(lmScore* pScore, lmChordDescriptor* ptChordDescriptor
-        , int* pNumChords, wxString &sStatusStr);
-    void  DisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct, wxColour colour
-                           , wxString &sText, bool reset=false);
 
     wxSize* pBoxSize;
     lmFontInfo tFont;

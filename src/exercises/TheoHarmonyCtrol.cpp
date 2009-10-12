@@ -142,6 +142,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
     //  all-exercises generic data
     const int lmNUM_HARMONY_EXERCISES = 3; 
+    const int nNUM_INTERVALS_IN_N_HARMONY_EXERCISE = 2;
     int nNumMeasures = 2;
     //  each-exercise specific data
     wxString sExerciseDescription;
@@ -290,6 +291,42 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 //         to avoid intervals > octave: reduce to minimum voice increase
                 //         to avoid parallel motion and direct movment to 5th: ??
 
+                /*@todo terminar nueva versión que crea acorde (con voces) pero que además
+                //  cumpla que no tiene errores de enlace con los acordes previos
+                //   (podría usarse solo el acorde anterior)
+                int nNumChordLinkErros = -1; 
+                int nMaxTries = 1000;
+                int nInversions = 0;
+                // try to create a new chord until no link error with previous chords
+                while ( nNumChordLinkErros != 0 && nMaxTries)
+                {
+                    // Bass note
+                    nOctave = oGenerator.RandomNumber(2, 3);  
+                    // this is done to make the notes appear more centered in the bass staff
+                    if (nOctave == 3 ) // octave 3 : notes c,d,e
+                       nBassNoteStep = oGenerator.RandomNumber(0, 2);
+                    else // octave 2 : notes f,g,a,b
+                       nBassNoteStep = oGenerator.RandomNumber(3, 6); 
+
+                    nInversions = 0;
+                    if (bInversionsAllowedInHarmonyExercises)
+                    {
+                        // Calculate a random number of inversions and apply them
+                        nInversions = oGenerator.RandomNumber(0, nNUM_INTERVALS_IN_N_HARMONY_EXERCISE);
+                    }
+                    // create the chord
+                    pHE_Chords[nChordCount] = new lmChord(nBassNoteStep, m_nKey
+                        , nNUM_INTERVALS_IN_N_HARMONY_EXERCISE, nInversions, nOctave);
+                    // create the voices
+                    // check: AnalyzeChordLinks
+                    PROBLEMA: lmNote no nos viene bien: debería ser lmFPitch
+                    ¡¡ hacer AnalyzeChordLinks que use lmFPitch** en lugar de lnNote** !!
+
+                    nMaxTries ++;
+                } */
+
+
+
                 //
                 // Create the chords
                 //
@@ -310,7 +347,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 //  Exercise 3: calculate random inversions
                 //  other exercises:  0 inversions (todo: allow inversions as an option)
                 int nInversions = 0;
-                if (nHarmonyExcerciseType == 3 )
+                if (bInversionsAllowedInHarmonyExercises)
                 {
                     // Calculate a random number of inversions and apply them
                     nInversions = oGenerator.RandomNumber(0, 2);
@@ -382,7 +419,12 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 //   nIntvB[1] = (nIntvB[0] + oGenerator.RandomNumber(1, 2)) % 3 ;
                 //   nIntvB[2] = 3 - (nIntvB[0] + nIntvB[1] ) ;
                 // METHOD 2: apply a fixed pattern of intervals that reduces harmony errors
-                nIntvB = &nnNIntvB[nChordCount][0];
+                //   nIntvB = &nnNIntvB[nChordCount][0];
+                // method 1
+                nIntvB = &nnNIntvB[0][0];
+                nIntvB[0] = oGenerator.RandomNumber(0, 2);
+                nIntvB[1] = (nIntvB[0] + oGenerator.RandomNumber(1, 2)) % 3 ;
+                nIntvB[2] = 3 - (nIntvB[0] + nIntvB[1] ) ;
                 wxLogMessage(_T(" nIntvB %d %d %d")
                     , nIntvB[0], nIntvB[1], nIntvB[2]);
 
@@ -455,9 +497,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     // additional limitation: baritone voice should be in upper staff (aprox. octave should be > 3)
                     const int fUpperStaffLimit = (lm_p8*4)-lm_M3;
                     // aware: do not raise more than one octave; otherwise a rule is broken (octave distance)
-//@@todo CLARIFY THIS !!  deberia ser un "if" pero da mas errores que si ponemos "while"  ???? 
                     if ( nVoiceIndex == nBaritoneVoiceIndex && nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] < fUpperStaffLimit )
-                    //while ( nVoiceIndex == nBaritoneVoiceIndex && nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] < fUpperStaffLimit )
                     {
                         nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] += lm_p8;
                         wxLogMessage(_T(" Raise to 2nd staff: added octave to voice V%d: %d (min:%d) ") 

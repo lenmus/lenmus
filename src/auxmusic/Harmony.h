@@ -36,42 +36,6 @@
 //
 
 
-// To store all the possible errors resulting from chord analysis
-// Error <--> broken rule
-// Basically it is a compressed list of rule identifiers. Each rule is a bit
-typedef struct lmChordErrorStruct
-{
-    unsigned int nErrList;
-    bool IncludesError(int nBrokenRule);  // arg: lmChordValidationRules
-    void SetError(int nBrokenRule, bool fVal); // arg1: lmChordValidationRules
-} lmChordError;
-
-
-
-typedef struct lmChordDescriptorStruct {
-    lmChord*  pChord;
-    lmNote* pChordNotes[lmNOTES_IN_CHORD-1];
-    int nNumChordNotes;
-    lmChordError  tChordErrors;
-
-    // methods
-    lmChordDescriptorStruct()
-    {
-        nNumChordNotes = 0;
-        pChord = NULL;
-        for (int i = 0; i<lmNOTES_IN_CHORD-1; i++)
-        {
-            pChordNotes[i] = NULL;
-        }
-        tChordErrors.nErrList = 0;
-    }
-    wxString ToString();
-} lmChordDescriptor;
-#define lmMAX_NUM_CHORDS 50
-
-
-
-
 
 
 //--------------------------------------------------------------------------
@@ -97,7 +61,7 @@ public:
     
     void SetTime(float rNewCurrentTime);
     inline float GetTime() { return m_rCurrentTime; };
-    void GetChordDescriptor(lmChordDescriptor* ptChordDescriptor);
+    int GetNotes(lmNote** pNotes);
     void AddNote(lmNote* pNote, float rEndTime);
     void RecalculateActiveNotes();
     int  GetNumActiveNotes();
@@ -113,10 +77,61 @@ protected:
 };
 
 
+// To store all the possible errors resulting from chord analysis
+// Error <--> broken rule
+// Basically it is a compressed list of rule identifiers. Each rule is a bit
+typedef struct lmChordErrorStruct
+{
+    unsigned int nErrList;
+    bool IncludesError(int nBrokenRule);  // arg: lmChordValidationRules
+    void SetError(int nBrokenRule, bool fVal); // arg1: lmChordValidationRules
+} lmChordError;
+
+
+#define lmMAX_NUM_CHORDS 50
+
+// lmChord is an "abstract" chord: defined by intervals.
+//   lmChord: Number of notes = number of intervals +1
+// lmScoreChord is a "real" chord: it contains a set of actual notes
+//   lmScoreChord: Number of notes can be ANY; IT ALLOWS DUPLICATED NOTES.
+// TODO: consider to store only the essential information in lmScoreChord: 
+//        - notes as lmFPitch instead of lmNote
+//        - remove accesories: lmChordError
+// TODO: move this class to Chord?
+class lmScoreChord: public lmChord
+{
+public:
+    //build a chord from a list of score note pointers
+    lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);  
+    // build a chord from "essential" information
+    lmScoreChord(int nDegree, lmEKeySignatures nKey, int nNumIntervals, int nNumInversions, int octave);
+ /* TODO:  possibly helpful // Creates a chord from an unordered list of ordered score notes
+    lmScoreChord(lmEKeySignatures nKey, lmActiveNotes* pActiveNotesList); --*/
+
+    ~lmScoreChord();
+
+    int GetNumNotes() {return nNumChordNotes;}
+    lmNote* GetNote(int nIndex) {return pChordNotes[nIndex];} ;
+    wxString ToString();
+
+    void SetNotes(int nNumNotes, lmNote** pNotes);
+    void AddNote(lmNote* pNote) {assert(nNumChordNotes<lmNOTES_IN_CHORD-1); pChordNotes[nNumChordNotes++] = pNote;};
+
+    lmChordError  tChordErrors; // todo: not essential; consider to remove it
+private:
+
+    int nNumChordNotes;
+    lmNote* pChordNotes[lmNOTES_IN_CHORD-1];
+};
+
+
+
+
 
 //
 // Message box to display the results if the chord analysis
 // 
+// todo: review these includes: necessary?
 #include "../app/MainFrame.h"
 extern lmMainFrame* GetMainFrame();
 #include "../app/ScoreDoc.h"
@@ -134,7 +149,7 @@ public:
     
     void Settings(wxSize* pSize, lmFontInfo* pFontInfo
         , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
-    void DisplayChordInfo(lmScore* pScore, lmChordDescriptor* pChordDsct, wxColour colour, wxString &sText);
+    void DisplayChordInfo(lmScore* pScore, lmScoreChord* pChordDsct, wxColour colour, wxString &sText);
     void ResetPosition();
     void SetYPosition(int nYpos);
 
@@ -196,7 +211,7 @@ public:
     lmRule(int nRuleID);
     virtual ~lmRule(){};
     virtual int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )=0;
-    void SetChordDescriptor(lmChordDescriptor* pChD, int nNumChords)
+    void SetChordDescriptor(lmScoreChord** pChD, int nNumChords)
     {
         m_pChordDescriptor = pChD; 
         m_nNumChords = nNumChords;
@@ -208,7 +223,7 @@ public:
     int GetRuleId() { return m_nRuleId;};
 protected:
     int m_nNumChords;
-    lmChordDescriptor* m_pChordDescriptor; // array of chords
+    lmScoreChord** m_pChordDescriptor; // array of chord pointers
     bool m_fEnabled;
     wxString m_sDescription;
     wxString m_sDetails;
@@ -222,13 +237,13 @@ protected:
 class lmRuleList 
 {
 public:
-    lmRuleList(lmChordDescriptor* pChD, int nNumChords);
+    lmRuleList(lmScoreChord** pChD, int nNumChords);
     ~lmRuleList();
     
     bool AddRule(lmRule* pNewRule, const wxString& sDescription );  // return: ok
     bool DeleteRule(int nRuleId);  // arg: lmChordValidationRules; return: ok
     lmRule* GetRule(int nRuleId);  // arg: lmChordValidationRules;
-    void SetChordDescriptor(lmChordDescriptor* pChD, int nNumChords);
+    void SetChordDescriptor(lmScoreChord** pChD, int nNumChords);
 
 protected:
     void CreateRules();
@@ -259,22 +274,18 @@ public: \
 // return
 //  -1: negative, 0, 1: positive
 extern int GetHarmonicDirection(int nInterval);
-extern void  HDisplayChordInfo(lmScore* pScore, lmChordDescriptor*  pChordDsct
+extern void  HDisplayChordInfo(lmScore* pScore, lmScoreChord*  pChordDsct
                                            , wxColour colour, wxString &sText, bool reset);
 extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
 //returns interval number ignoring octaves: 1=unison, 2=2nd, ..., 8=8ve
 extern int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1);
+// Analyze a progress (link) errors in a sequence o chords
+extern int AnalyzeChordsLinks(lmScoreChord** pChordDescriptor, int nNCH, ChordInfoBox* pChordErrorBox = 0);
 
 // TODO: global methods. They could probably be placed inside a class...
 extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
-extern int DoInversionsToChord( lmChordInfo* pInOutChordInfo, int nNumTotalInv);
 extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncrementSteps);
 
-/* TODO: REMOVE THESE FUNCTIONS
-extern void GetIntervalsFromNotes(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo);
-extern lmEChordType GetChordTypeFromIntervals(lmChordInfo& chordInfo, bool fAllowFifthElided=false );
-extern bool TryChordCreation(int numNotes, lmNote** inpChordNotes, lmChordInfo* outChordInfo, wxString &outStatusStr);
-*/
 
 enum lmHarmonicMovementType {
     lm_eDirectMovement ,    // 2 voices with the same delta sign (cero included)

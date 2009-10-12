@@ -51,33 +51,9 @@ extern wxString lmChordTypeToName(lmEChordType nChordType);
 extern int lmNumNotesInChord(lmEChordType nChordType);
 extern lmEChordType lmChordShortNameToType(wxString sName);
 
+//todo: improve: constant?  better place?
 #define lmINVALID_CHORD_TYPE ect_Max
 
-typedef struct lmChordInfoStruct {
-    int nNumNotes;
-    int nNumIntervals;
-    int nNumInversions;
-    // TODO: consider to improve the ellision with a generic mechanism
-    //    bool fAllowedElidedIntervals[lmINTERVALS_IN_CHORD];
-    //    bool fElidedIntervals[lmINTERVALS_IN_CHORD];
-    //    now (jun-2009) only 5th ellided is allowed; then, those arrays are not necessary
-    // TODO: confirm music theory: ellided INTERVALS instead of just NOTES
-    int nFifthElided;
-    bool fRootIsDuplicated;
-    lmFIntval nIntervals[lmINTERVALS_IN_CHORD];
-    void Initalize() //TODO: consider possible inmprovement: a constructor?
-    {
-        nNumIntervals = 0;
-        nNumNotes = 0;
-        nNumInversions = 0;
-        fRootIsDuplicated = false;
-        for (int i=0; i<lmINTERVALS_IN_CHORD; i++)
-        {
-          nIntervals[i] = lmNULL_FIntval;
-        }
-        nFifthElided = 0;  // Elision allowed only in second interval
-    }
-} lmChordInfo;
 
 
 // lmChordIntervals: A generic chord (a list of intervals)
