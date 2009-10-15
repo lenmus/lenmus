@@ -73,14 +73,19 @@ public:
     void Start();
     void Stop();
     void Enable(bool fValue) { m_fEnabled = fValue; }
+    void DoClick(bool fFirstBeatOfBar=true);
 
 
 private:
-    long        m_nMM;            //metronome frequency: beats per minute
+    void ClickOn(bool fFirstBeatOfBar);
+    void ClickOff();
+
+    int         m_nSound;       //last click on sound
+    long        m_nMM;          //metronome frequency: beats per minute
     long        m_nInterval;    //metronome period: milliseconds between beats
-    bool        m_fEnabled;        //metronome is enabled
-    bool        m_fRunning;        //true if Start() invoked
-    lmMetronomeTimer*    m_pTimer;        //timer associated to this metronome
+    bool        m_fEnabled;     //metronome is enabled
+    bool        m_fRunning;     //true if Start() invoked
+    lmMetronomeTimer* m_pTimer; //timer associated to this metronome
 
 };
 

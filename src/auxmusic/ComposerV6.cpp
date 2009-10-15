@@ -245,7 +245,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     parserLDP.AnalizeMusicData(pNode, pVStaff);
 
 #else
-    pVStaff->AddTimeSignature(lmNEW_ID, m_nTimeSign);
+    pVStaff->AddTimeSignature(m_nTimeSign, lmVISIBLE, lmNEW_ID);
 
     //
     // Content generation
@@ -430,6 +430,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     // Score is built but pitches are not yet defined.
     // Proceed to instatiate pitches according to key signature
     GetNotesRange();
+    pScore->Dump(_T("lemus_score_dump.txt"));
 #if 0   //useful to generate only the rhymth line, to write documenation
     InstantiateWithNote(pScore, lmAPitch(_T("a4")) );
 #else
@@ -437,7 +438,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
 #endif
 
     // done
-    //pScore->Dump(_T("lenus_score_dump.txt"));
+    //pScore->Dump(_T("lemus_score_dump.txt"));
     return pScore;
 
 }

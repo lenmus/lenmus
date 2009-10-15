@@ -193,7 +193,6 @@ public:
     void OnPlayCursorStart(wxCommandEvent& WXUNUSED(event));
     void OnPlayStop(wxCommandEvent& WXUNUSED(event));
     void OnPlayPause(wxCommandEvent& WXUNUSED(event));
-    void OnPlayUI(wxUpdateUIEvent& event);
 
     //Window menu events
     void OnWindowClose(wxCommandEvent& WXUNUSED(event));
@@ -244,6 +243,7 @@ public:
 
     //options
     bool ShowRulers();
+    bool IsCountOffChecked();
 
     //welcome window
     void ShowWelcomeWindow();

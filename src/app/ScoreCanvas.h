@@ -59,7 +59,7 @@ public:
 	virtual ~lmController();
 
 	//commands without Do/Undo support
-	virtual void PlayScore(bool fFromCursor=false) {}
+	virtual void PlayScore(bool fFromCursor=false, bool fCountOff=false) {}
     virtual void StopPlaying(bool fWait=false) {}
     virtual void PausePlaying() {}
 
@@ -211,7 +211,7 @@ public:
 #endif
 
 	//commands without Do/Undo support
-    void PlayScore(bool fFromCursor=false);
+    void PlayScore(bool fFromCursor=false, bool fCountOff=false);
     void StopPlaying(bool fWait=false);
     void PausePlaying();
 

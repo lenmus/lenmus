@@ -1506,7 +1506,17 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
             lmLUnits uShift = uDiscount + (uNewStart + (uOldPos - uStartPos) * rProp) - uOldPos;
             lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft - pTPE->m_uxAnchor + uShift};  
             m_PosTimes.push_back(tPosTime);
-            pBSlice->AddPosTimeEntry(tPosTime.uxPos, tPosTime.rTimepos);
+            float rDuration = pTPE->m_pSO->GetTimePosIncrement();
+
+            //determine notehead width or rest width
+            lmLUnits uxWidth = 0.0f;
+            if (pTPE->m_pSO->IsRest())
+                uxWidth = pTPE->m_pShape->GetWidth();
+            else if (pTPE->m_pSO->IsNote())
+                uxWidth = ((lmShapeNote*)pTPE->m_pShape)->GetNoteHead()->GetWidth();
+
+            //add entry to box slice table
+            pBSlice->AddPosTimeEntry(tPosTime.uxPos, tPosTime.rTimepos, rDuration, uxWidth);
         }
         else if (pTPE->m_nType == lm_eOmega)
         {
@@ -1529,7 +1539,9 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     wxLogMessage( DumpPosTimes() );
 #endif
 
-    //pBSlice->DumpPosTimeTable();
+    //BoxSlice timepos table data finished. Inform about this.
+    pBSlice->ClosePosTimeTable();
+
     return uBarPosition;
 }
 

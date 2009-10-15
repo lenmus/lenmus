@@ -212,6 +212,7 @@ public:
     void MoveToStartOfSegment(int nSegment, int nStaff, bool fSkipClef=false,
                               bool fSkipKey=false);
     void MoveToStartOfTimepos();
+	void MoveToEnd(lmVStaff* pVStaff, int nStaff=1);
 
     //internal state (setting it implies re-positioning)
     void SetState(lmCursorState* pState, bool fUpdateTimepos=false);

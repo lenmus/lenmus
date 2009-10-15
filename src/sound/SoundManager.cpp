@@ -495,8 +495,8 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         ::wxPostEvent( pWindow, event );
     }
 
-    //Prepare instrument for metronome. Instruments for music voices the instruments
-    //are prepared by events ProgInstr
+    //Prepare instrument for metronome. Instruments for music voices 
+    //are prepared by events of type ProgInstr
     g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
 
     //declaration of some time related variables.
@@ -512,6 +512,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     long nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
     long nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
     long nMeasureDuration = nMtrBeatDuration * 4;                   //assume 4/4 time signature
+    long nMtrNumBeats = 4;
 
     //Execute control events that take place before the segment to play, so that
     //instruments and tempo are properly programmed. Continue in the loop while
@@ -544,6 +545,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         {
             //set up new beat and metronome information
             nMtrBeatDuration = m_aEvents[i]->BeatDuration;            //a beat duration
+            nMtrNumBeats = m_aEvents[i]->NumBeats;
             nMeasureDuration = nMtrBeatDuration * m_aEvents[i]->NumBeats;
             nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
             nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
@@ -555,7 +557,6 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         }
         if (fContinue) i++;
     }
-    //Here i points to the first event of desired measure that is not a control event.
     //Here i points to the first event of desired measure that is not a control event.
 
    // metronome interval in milliseconds
@@ -573,28 +574,28 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 	//will start before the first note
     nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrBeatDuration) * nMtrBeatDuration;
 
-    /*TODO
-        Si el metrónomo no está activo o se solicita que no se marque un compás completo antes de empezar
-        hay que avanzar el contador de tiempo hasta la primera nota
-    */
-//////    if (Not (fPlayWithMetronome && fCountOff)) {
-//////        if (m_nTiempoIni = nMeasureDuration) {
-//////            nTime = (nSpeed * m_nTiempoIni) / lmQUARTER_DURATION;
-//////        } else {
-//////            nTime = (m_nTiempoIni Mod nMtrBeatDuration) * nMtrBeatDuration    //coge partes completas
-//////            nTime = (nSpeed * nTime) / lmQUARTER_DURATION;
-//////        }
-//////        //localiza el primer evento de figsil (los eventos de control están en compas 0)
-//////        for (i = nEvStart To nEvEnd
-//////            if (m_aEvents[i]->Measure <> 0) { Exit For
-//////        }   // i
-//////        wxASSERT(i <= nEvEnd
-//////        nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime \ nMtrBeatDuration) * nMtrBeatDuration
-//////    }
+    //generate count off metronome clicks for a full measure
+    if (fCountOff)
+    {
+        for (int i=nMtrNumBeats; i > 1; --i)
+        {
+            //generate click
+            g_pMidiOut->NoteOn(g_pMidi->MtrChannel(), g_pMidi->MtrTone2(), 127);
+            wxThread::Sleep((unsigned long)(nMtrClickIntval/2));
+            g_pMidiOut->NoteOff(g_pMidi->MtrChannel(), g_pMidi->MtrTone2(), 127);
+            wxThread::Sleep((unsigned long)(nMtrClickIntval/2));
+        }
+        //generate final click
+        g_pMidiOut->NoteOn(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
+        wxThread::Sleep((unsigned long)(nMtrClickIntval/2));
+        g_pMidiOut->NoteOff(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
+        wxThread::Sleep((unsigned long)(nMtrClickIntval/2));
+    }
 
-    //loop to execute events
+    //loop to execute score events
     bool fFirstBeatInMeasure = true;    //first beat of a measure
-    bool fMtrOn = false;
+    bool fMtrOn = false;                //if true, next metronome event is start
+                                        //   metronome click, else stop metronome click
     do
     {
         //if metronome has been just activated compute next metronome event
@@ -645,7 +646,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             nTime = nEvTime;
 
         }
-         else
+        else
         {
             //next even comes from the table. Usually it will be a note on/off
             nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / nMtrBeatDuration;   //lmQUARTER_DURATION;
@@ -736,6 +737,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             {
                 //set up new beat and metronome information
                 nMtrBeatDuration = m_aEvents[i]->BeatDuration;            //a beat duration
+                nMtrNumBeats = m_aEvents[i]->NumBeats;
                 nMeasureDuration = nMtrBeatDuration * m_aEvents[i]->NumBeats;
                 nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
                 nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click

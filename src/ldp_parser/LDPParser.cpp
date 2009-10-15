@@ -3682,7 +3682,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     if(pNode->GetNumParms() < 2) {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Assumed '(Metrica 4 4)'."),
             _T("time") );
-        pVStaff->AddTimeSignature(nID, emtr44);
+        pVStaff->AddTimeSignature(emtr44, lmVISIBLE, nID);
         return false;
     }
 
@@ -3694,7 +3694,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
             _T("Element 'time': Two numbers expected but found '%s' and '%s'. Assumed '(time 4 4)'."),
             sNum1.c_str(),
             sNum2.c_str() );
-        pVStaff->AddTimeSignature(nID, emtr44);
+        pVStaff->AddTimeSignature(emtr44, lmVISIBLE, nID);
         return false;
     }
 

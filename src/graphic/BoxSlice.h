@@ -86,7 +86,8 @@ public:
 
     //table xPositions/timepos
     void ClearPosTimeTable();
-    void AddPosTimeEntry(lmLUnits uxPos, float rTimepos);
+    void AddPosTimeEntry(lmLUnits uxPos, float rTimepos, float rDuration, lmLUnits uxWidth);
+    void ClosePosTimeTable();
     float GetTimeForPosition(lmLUnits uxPos);
     void DrawTimeLines(lmPaper* pPaper, wxColour color, lmLUnits uyTop,
                        lmLUnits uyBottom);
@@ -98,6 +99,9 @@ public:
 
 
 private:
+    bool IsInPosTimeTable(float rTimepos);
+    void InsertInPosTimeTable(float rTimepos);
+
 
     lmBoxSystem*	m_pBSystem;			//parent system box
     int             m_nAbsMeasure;		//number of this measure (absolute, 1..n)
@@ -111,6 +115,7 @@ private:
     typedef struct
     {
         float           rTimepos;
+        float           rDuration;
         lmLUnits        uxPos;
     }
     lmPosTime;

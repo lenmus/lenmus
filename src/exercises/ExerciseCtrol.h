@@ -349,7 +349,7 @@ protected:
     virtual void PrepareAuxScore(int nButton)=0;
 
     //implementation of some virtual methods
-    void Play();
+    virtual void Play() { DoPlay(lmNO_COUNTOFF); }
     void PlaySpecificSound(int nButton);
     void DisplaySolution();
     void DisplayProblem();
@@ -357,6 +357,9 @@ protected:
     void StopSounds();
     wxWindow* CreateDisplayCtrol();
     void DisplayMessage(wxString& sMsg, bool fClearDisplay);
+
+    //specific methods
+    void DoPlay(bool fCountOff);
 
         // member variables
 

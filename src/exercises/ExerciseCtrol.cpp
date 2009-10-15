@@ -948,7 +948,7 @@ wxWindow* lmOneScoreCtrol::CreateDisplayCtrol()
     return pScoreCtrol;
 }
 
-void lmOneScoreCtrol::Play()
+void lmOneScoreCtrol::DoPlay(bool fCountOff)
 {
     if (!m_fPlaying)
     {
@@ -958,7 +958,7 @@ void lmOneScoreCtrol::Play()
         m_pPlayButton->SetLabel(_("Stop"));
 
         //play the score
-        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, lmNO_COUNTOFF,
+        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, fCountOff,
                                 ePM_NormalInstrument, m_nPlayMM);
         m_fPlaying = true;
 

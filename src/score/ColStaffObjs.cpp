@@ -322,6 +322,20 @@ void lmScoreCursor::MoveToStartOfInstrument(int nInstr)
 		m_nInstr = 0;		//cursor no OK
 }
 
+void lmScoreCursor::MoveToEnd(lmVStaff* pVStaff, int nStaff)
+{
+    //Move cursor to end of specified staff in instrument VStaff.
+
+	//point to VStaff owner instrument
+	lmInstrument* pInstr = pVStaff->GetOwnerInstrument();
+    PointCursorToInstrument( m_pScore->GetNumberOfInstrument(pInstr) );
+
+    //move to end of VStaff collection, at specified staff
+    MoveCursorToObject( m_pColStaffObjs->GetLastSO() );
+    m_nStaff = nStaff;
+    MoveRight();
+}
+
 lmCursorState lmScoreCursor::GetState()
 {
     lmCursorState oState(m_nInstr, m_nStaff, m_rTimepos, m_pIt->GetCurrent());
@@ -543,7 +557,7 @@ void lmScoreCursor::MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int
 
 void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
 {
-    //Move cursor to point to required staffobj.
+    //Move cursor to point to specified staffobj..
 
     //get instrument
 	lmInstrument* pInstr = pSO->GetVStaff()->GetOwnerInstrument();   //get instrument
@@ -552,6 +566,7 @@ void lmScoreCursor::MoveCursorToObject(lmStaffObj* pSO)
     PointCursorToInstrument( pInstr->GetNumInstr() );
 
 	//position it at required staffobj
+    m_nStaff = pSO->GetStaffNum();
     m_pIt->MoveTo(pSO);
     UpdateTimepos();
 }
@@ -568,8 +583,7 @@ void lmScoreCursor::MoveTo(lmVStaff* pVStaff, int nStaff, int nMeasure, float rT
 	if ((m_pScore->m_cInstruments).empty()) return;
 
 	//Move to owner instrument of requested VStaff
-	lmInstrument* pInstr = pVStaff->GetOwnerInstrument();
-    PointCursorToInstrument( m_pScore->GetNumberOfInstrument(pInstr) );
+    PointCursorToInstrument( pVStaff->GetNumInstr() );
 
     //move to start of required staff/segment
     MoveToStartOfSegment(nMeasure-1, nStaff);
@@ -1414,10 +1428,7 @@ void lmScoreCursor::UpdateTimepos()
         { 
             //segment is not empty
             if (pSO->IsBarline())
-            {
-                wxASSERT(false);        //we cannot be after the barline !!
                 m_rTimepos = pSO->GetTimePos();
-            }
             else
                 m_rTimepos = pSO->GetTimePos() + pSO->GetTimePosIncrement();
         }
@@ -3125,6 +3136,7 @@ int lmColStaffObjs::GetNumMeasures()
     //if the score ends with a barline.
     //TODO. Create a new method GetNumRealMeasures and change name of this method
     //to GetNumSegments
+
     return m_Segments.size();
 }
 

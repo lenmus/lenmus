@@ -417,6 +417,11 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
             while (pInstr)
             {
                 lmVStaff* pVStaff = pInstr->GetVStaff();
+
+                //move cursor to this VStaff
+                pScore->GetCursor()->MoveToEnd(pVStaff);
+
+                //add key and time
                 if (m_ScoreData.fAddKey)
                     pVStaff->AddKeySignature( m_ScoreData.nFifths, m_ScoreData.fMajor );
                 if (m_ScoreData.fAddTime)
@@ -471,17 +476,33 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
     pScore->SetPageOrientation( m_ScoreData.fPortrait );
 
 
-    //add titles
+    //add default styles
+    lmTextStyle* pTitleStyle[lmNUM_TITLES];
+    if (pScore)
+    {
+        for (int i=0; i < lmNUM_TITLES; ++i)
+        {
+            lmFontInfo tFont;
+            tFont.nFontSize = m_Titles[i].nFontSize;
+            tFont.nFontStyle = m_Titles[i].nFontStyle;
+            tFont.nFontWeight = m_Titles[i].nFontWeight;
+            tFont.sFontName = m_Titles[i].sFontName;
+            pTitleStyle[i] =
+                pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
+        }
+    }
 
-    //prepare a DC to measure texts
-    wxClientDC dc(this);
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale(lmSCALE, lmSCALE);      //any scale is ok, so use 1.0
+    //add titles
 
     int iPrev = -1;             //index to previous added title
     bool fFirstLR = true;
     if (pScore && m_ScoreData.fAddTitles)
     {
+        //prepare a DC to measure texts
+        wxClientDC dc(this);
+        dc.SetMapMode(lmDC_MODE);
+        dc.SetUserScale(lmSCALE, lmSCALE);      //any scale is ok, so use 1.0
+
         for (int i=0; i < lmNUM_TITLES; ++i)
         {
             if (!m_Titles[i].sTitle.IsEmpty())
@@ -537,16 +558,16 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
 
 
                 //add the title
-                lmFontInfo tFont;
-                tFont.nFontSize = m_Titles[i].nFontSize;
-                tFont.nFontStyle = m_Titles[i].nFontStyle;
-                tFont.nFontWeight = m_Titles[i].nFontWeight;
-                tFont.sFontName = m_Titles[i].sFontName;
-                lmTextStyle* pStyle =
-                    pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
+                //lmFontInfo tFont;
+                //tFont.nFontSize = m_Titles[i].nFontSize;
+                //tFont.nFontStyle = m_Titles[i].nFontStyle;
+                //tFont.nFontWeight = m_Titles[i].nFontWeight;
+                //tFont.sFontName = m_Titles[i].sFontName;
+                //lmTextStyle* pStyle =
+                //    pScore->AddStyle(m_Titles[i].sStyleName, tFont, *wxBLACK);
 
                 lmScoreTitle* pTitle =
-                    pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nHAlign, pStyle);
+                    pScore->AddTitle(m_Titles[i].sTitle, m_Titles[i].nHAlign, pTitleStyle[i]);
 	            pTitle->SetUserLocation(m_Titles[i].tPos);
                 iPrev = i;
             }

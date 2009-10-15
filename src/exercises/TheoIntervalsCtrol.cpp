@@ -131,7 +131,7 @@ void lmTheoIntervalCtrol::SetProblemSpace()
     //save current problem space data
     m_pProblemManager->SaveProblemSpace();
 
-    //For ThoeIntervals exercises, question sets are defined by combination of
+    //For TheoIntervals exercises, question sets are defined by combination of
     //problem level and key signature, except for level 0 (only interval names).
     //For level 0 there is only one set
     m_nProblemLevel = m_pConstrains->GetProblemLevel();

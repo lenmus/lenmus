@@ -247,6 +247,7 @@ enum
 	MENU_Play_Cursor_Start,
     MENU_Play_Stop,
     MENU_Play_Pause,
+    MENU_Play_Countoff,
 
     //Menu Options
     MENU_Preferences,
@@ -388,12 +389,13 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_UPDATE_UI (MENU_Play_Stop, lmMainFrame::OnSoundUpdateUI)
     EVT_MENU      (MENU_Play_Pause, lmMainFrame::OnPlayPause)
     EVT_UPDATE_UI (MENU_Play_Pause, lmMainFrame::OnSoundUpdateUI)
+    EVT_MENU      (MENU_Metronome, lmMainFrame::OnMetronomeOnOff)
+    EVT_UPDATE_UI (MENU_Metronome, lmMainFrame::OnSoundUpdateUI)
 
     EVT_MENU (MENU_Preferences, lmMainFrame::OnOptions)
 
     EVT_MENU      (MENU_OpenBook, lmMainFrame::OnOpenBook)
     EVT_UPDATE_UI (MENU_OpenBook, lmMainFrame::OnOpenBookUI)
-    EVT_MENU      (MENU_Metronome, lmMainFrame::OnMetronomeOnOff)
 
     // Window menu
     EVT_MENU (MENU_WindowClose, lmMainFrame::OnWindowClose)
@@ -1220,6 +1222,12 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
                 _("Stop playing back"), wxITEM_NORMAL, _T("tool_stop"));
     AddMenuItem(pMenuSound, MENU_Play_Pause, _("P&ause"),
                 _("Pause playing back"), wxITEM_NORMAL, _T("tool_pause"));
+    AddMenuItem(pMenuSound, MENU_Play_Countoff, _T("&Do count off"),
+                _T("Do count off before starting the play back"), wxITEM_CHECK);
+    pMenuSound->AppendSeparator();
+
+    AddMenuItem(pMenuSound, MENU_Metronome, _T("Metronome on"),
+                _("Turn metronome on/off"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
 
     AddMenuItem(pMenuSound, MENU_Sound_MidiWizard, _("&Run Midi wizard"),
@@ -1314,6 +1322,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     bool fStatusBar = true;
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
     pMenuBar->Check(MENU_View_StatusBar, fStatusBar);
+
+    // do count off
+    pMenuBar->Check(MENU_Play_Countoff, true);
 
     return pMenuBar;
 }
@@ -2544,8 +2555,17 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
 void lmMainFrame::OnSoundUpdateUI(wxUpdateUIEvent &event)
 {
     lmTDIChildFrame* pChild = GetActiveChild();
-    event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
+    switch (event.GetId())
+    {
+		case MENU_Metronome:
+			event.Enable(true);
+			event.Check(m_pMtr->IsRunning());
+			break;
 
+        // Other items: only enabled if a score is displayed
+        default:
+            event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
+    }
 }
 
 void lmMainFrame::RedirectKeyPressEvent(wxKeyEvent& event)
@@ -2602,13 +2622,19 @@ void lmMainFrame::OnOptions(wxCommandEvent& WXUNUSED(event))
 void lmMainFrame::OnPlayStart(wxCommandEvent& WXUNUSED(event))
 {
     lmScoreView* pView = GetActiveScoreView();
-    pView->GetController()->PlayScore(false);	//false: full score or from selection
+    pView->GetController()->PlayScore(false, IsCountOffChecked());	//false: full score or from selection
+}
+
+bool lmMainFrame::IsCountOffChecked() 
+{ 
+    return GetMenuBar()->IsChecked(MENU_Play_Countoff); 
 }
 
 void lmMainFrame::OnPlayCursorStart(wxCommandEvent& WXUNUSED(event))
 {
     lmScoreView* pView = GetActiveScoreView();
-    pView->GetController()->PlayScore(true);	//true: from cursor
+    bool fCountOff = GetMenuBar()->IsChecked(MENU_Play_Countoff);
+    pView->GetController()->PlayScore(true, fCountOff);	//true: from cursor
 }
 
 void lmMainFrame::OnPlayStop(wxCommandEvent& WXUNUSED(event))

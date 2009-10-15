@@ -228,4 +228,8 @@ wxString lmTheoMusicReadingCtrol::SetNewProblem()
 
 }
 
+void lmTheoMusicReadingCtrol::Play()
+{
+    DoPlay( g_pMainFrame->IsCountOffChecked() ); 
+}
 

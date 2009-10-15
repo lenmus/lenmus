@@ -1013,6 +1013,8 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
     {
         lmBoxSlice* pBSlice = (lmBoxSlice*)m_pCurBSI->GetParentBox();
         m_rCurTime = pBSlice->GetTimeForPosition(m_uMousePagePos.x);
+        //wxLogMessage(_T("[lmScoreCanvas::OnMouseEventToolMode] GetTimeForPosition: uxPos=%.2f, rTime=%.2f"),
+        //    m_uMousePagePos.x, m_rCurTime);
     }
 
     //if harmony exercise, allow notes data entry only valid staff for current voice
@@ -1022,7 +1024,7 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
             || m_nMousePointedArea == lmMOUSE_OnBelowStaff 
             || m_nMousePointedArea == lmMOUSE_OnAboveStaff) )
     {
-        GetToolBoxValuesForPage(lmPAGE_NOTES);
+        //GetToolBoxValuesForPage(lmPAGE_NOTES);
         int nStaff = m_pCurShapeStaff->GetNumStaff();
         if ( ((m_nSelVoice == 1 || m_nSelVoice == 2) && (nStaff != 1))
              || ((m_nSelVoice == 3 || m_nSelVoice == 4) && (nStaff != 2)) )
@@ -1280,7 +1282,7 @@ void lmScoreCanvas::ChangeMouseIcon()
     }
 }
 
-void lmScoreCanvas::PlayScore(bool fFromCursor)
+void lmScoreCanvas::PlayScore(bool fFromCursor, bool fCountOff)
 {
     //get the score
     lmScore* pScore = m_pDoc->GetScore();
@@ -1301,7 +1303,7 @@ void lmScoreCanvas::PlayScore(bool fFromCursor)
 	if (fFromMeasure)
 		pScore->PlayFromMeasure(nMeasure, lmVISUAL_TRACKING, ePM_NormalInstrument, 0, this);
 	else
-		pScore->Play(lmVISUAL_TRACKING, lmNO_COUNTOFF, ePM_NormalInstrument, 0, this);
+		pScore->Play(lmVISUAL_TRACKING, fCountOff, ePM_NormalInstrument, 0, this);
 }
 
 void lmScoreCanvas::StopPlaying(bool fWait)
@@ -1646,7 +1648,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
     lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
     if (nStem == lmSTEM_DEFAULT && pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
     {
-        GetToolBoxValuesForPage(lmPAGE_NOTES);
+        //GetToolBoxValuesForPage(lmPAGE_NOTES);
         switch(m_nSelVoice)
         {
             case 1: nStem = lmSTEM_UP;      break;
@@ -3684,7 +3686,7 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
         wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Insert note. MousePagePos=(%.2f, %.2f)"),
                      uPagePos.x, uPagePos.y);
 
-        GetToolBoxValuesForPage(lmPAGE_NOTES);
+        //GetToolBoxValuesForPage(lmPAGE_NOTES);
 
         //in 'TheoHarmonyCtrol' edit mode, force staff depending on voice
 	    int nStaff = pShapeStaff->GetNumStaff();

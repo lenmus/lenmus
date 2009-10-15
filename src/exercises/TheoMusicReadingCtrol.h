@@ -66,7 +66,7 @@ public:
 
     //overrides of virtual methods
     void CreateControls();
-
+    void Play();
 
 
 private:

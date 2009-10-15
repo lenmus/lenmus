@@ -117,14 +117,91 @@ void lmBoxSlice::ClearPosTimeTable()
     m_PosTimes.clear();
 }
 
-void lmBoxSlice::AddPosTimeEntry(lmLUnits uxPos, float rTimepos)
+void lmBoxSlice::AddPosTimeEntry(lmLUnits uxPos, float rTimepos, float rDuration,
+                                 lmLUnits uxWidth)
 {
     //table xPosition/timepos
 
+    if (IsLowerTime(rTimepos, 0.0f))
+        return;
+
     lmPosTime* pPosTime = new lmPosTime;
-    pPosTime->uxPos = uxPos;
+    pPosTime->uxPos = uxPos + uxWidth/2.0f;
     pPosTime->rTimepos = rTimepos;
+    pPosTime->rDuration = rDuration;
     m_PosTimes.push_back(pPosTime);
+}
+
+void lmBoxSlice::ClosePosTimeTable()
+{
+    //All timepos entries loaded in table. Add intermediate timepos
+
+    for (int i=0; i < (int)m_PosTimes.size(); ++i)
+    {
+        if ( !IsInPosTimeTable(m_PosTimes[i]->rTimepos + m_PosTimes[i]->rDuration) )
+            InsertInPosTimeTable( m_PosTimes[i]->rTimepos + m_PosTimes[i]->rDuration );
+    }
+
+    //DumpPosTimeTable();
+}
+
+bool lmBoxSlice::IsInPosTimeTable(float rTimepos)
+{
+    //Returns true if rTimepos is found in table.
+    //It is assumed that the table is not ordered
+
+    if (m_PosTimes.size() == 0)
+        return false;
+
+    //look up in table
+    std::vector<lmPosTime*>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        if (IsEqualTime(rTimepos, (*it)->rTimepos))
+            return true;
+    }
+    return false;
+}
+
+void lmBoxSlice::InsertInPosTimeTable(float rTimepos)
+{
+    //It has been checked that rTimepos is not in table.
+    //Insert it to keep ordering by timepos and interpolate its xPos.
+    //The table can not be empty
+
+    wxASSERT(m_PosTimes.size() > 0);
+
+    //Find insertion point and previous xPos
+    lmLUnits uxPrev = m_PosTimes.front()->uxPos;
+    float rTimePrev = m_PosTimes.front()->rTimepos;
+    std::vector<lmPosTime*>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        if (IsHigherTime((*it)->rTimepos, rTimepos))
+            break;
+        uxPrev = (*it)->uxPos;
+        rTimePrev = (*it)->rTimepos;
+    }
+
+    //here 'it' points to entry with higher tiempos, or to end of table.
+    //variables uxPrev and rTimePrev contains info about previous entry.
+    //Proceed to build the entry and interpolate values 
+    lmPosTime* pPosTime = new lmPosTime;
+    pPosTime->rTimepos = rTimepos;
+    pPosTime->rDuration = 0.0f;
+    if (it == m_PosTimes.end())
+    {
+        //add at the end
+        pPosTime->uxPos = uxPrev + 1000;       //TODO: Estimate space based on measure duration
+        m_PosTimes.push_back(pPosTime);
+    }
+    else
+    {
+        //insert before item pointed by iterator it
+        pPosTime->uxPos = uxPrev + (rTimepos - rTimePrev) *
+            ( ((*it)->uxPos - uxPrev) / ((*it)->rTimepos - rTimePrev) );
+        m_PosTimes.insert(it, pPosTime);
+    }
 }
 
 float lmBoxSlice::GetTimeForPosition(lmLUnits uxPos)
@@ -140,12 +217,13 @@ float lmBoxSlice::GetTimeForPosition(lmLUnits uxPos)
         return rTime;
 
     //otherwise find in table
-    std::vector<lmPosTime*>::iterator it;
-    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    std::vector<lmPosTime*>::iterator it = m_PosTimes.begin();
+    for (++it; it != m_PosTimes.end(); ++it)
     {
-        uxPrev = uxPrev + ((*it)->uxPos - uxPrev) / 2.0;
-        if (uxPos <= uxPrev)
+        int uxLimit = uxPrev + ((*it)->uxPos - uxPrev) / 2.0;
+        if (uxPos <= uxLimit)
             return rTime;
+        uxPrev = (*it)->uxPos;
         rTime = (*it)->rTimepos;
     }
 
@@ -156,11 +234,12 @@ float lmBoxSlice::GetTimeForPosition(lmLUnits uxPos)
 #ifdef __WXDEBUG__
 void lmBoxSlice::DumpPosTimeTable()
 {
+    wxLogMessage(_T("[lmBoxSlice::DumpPosTimeTable] PosTime table for measure %d"), m_nAbsMeasure);
     std::vector<lmPosTime*>::iterator it;
     for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
     {
-        wxLogMessage(_T("[lmBoxSlice::DumpPosTimeTable] xPos=%.2f, rTimepos=%.2f"),
-                     (*it)->uxPos, (*it)->rTimepos );
+        wxLogMessage(_T("[lmBoxSlice::DumpPosTimeTable] xPos=%.2f, rTimepos=%.2f, rDuration=%.2f"),
+                     (*it)->uxPos, (*it)->rTimepos, (*it)->rDuration );
     }
 }
 #endif
@@ -168,13 +247,14 @@ void lmBoxSlice::DumpPosTimeTable()
 void lmBoxSlice::DrawTimeLines(lmPaper* pPaper, wxColour color, lmLUnits uyTop,
                                lmLUnits uyBottom)
 {
-    //Draw lines for available times in posTimes table.
+    //Draw lines for available times in posTimes table. Last timepos corresponds to
+    //barline and its xPos is not valid and is not drawed.
     //Paper is already set in XOR mode
 
-    std::vector<lmPosTime*>::iterator it;
-    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    for (int i=0; i < (int)m_PosTimes.size()-1; ++i)
     {
-        pPaper->SketchLine((*it)->uxPos, uyTop, (*it)->uxPos, uyBottom, color);
+        pPaper->SketchLine(m_PosTimes[i]->uxPos, uyTop, m_PosTimes[i]->uxPos,
+                           uyBottom, color);
     }
 }
 

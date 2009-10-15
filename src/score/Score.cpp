@@ -547,16 +547,16 @@ void lmScore::SetScoreName(wxString sName)
 
 int lmScore::GetNumMeasures()
 {
+    //returns the num of measures in the instrument having more measures. Normally
+    //all instruments will have the same number of measures
+
     int nNum = 0;
     std::vector<lmInstrument*>::iterator it;
 	for (it = m_cInstruments.begin(); it != m_cInstruments.end(); ++it)
 	{
-		wxMax(nNum, (*it)->GetVStaff()->GetNumMeasures() );
+		nNum = wxMax(nNum, (*it)->GetVStaff()->GetNumMeasures());
 	}
     return nNum;
-
-    //lmVStaff *pStaff = m_cInstruments[0]->GetVStaff();
-    //return(pStaff->GetNumMeasures());
 }
 
 lmInstrument* lmScore::AddInstrument(int nMIDIChannel, int nMIDIInstr,
@@ -1604,7 +1604,6 @@ lmTextStyle* lmStylesCollection::AddStyle(const wxString& sName, lmFontInfo& tFo
     {
         if ((*it)->sName == sName)
 			return *it;		//already exists
-            break;
     }
 
     lmTextStyle* pNewTS = new lmTextStyle;
