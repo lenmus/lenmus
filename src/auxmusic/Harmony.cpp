@@ -113,14 +113,14 @@ int GetHarmonicMovementType( lmNote* pVoice10, lmNote* pVoice11, lmNote* pVoice2
 
 int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1) //@@@ todo remove!!!
 {
-    lmFIntval nDistance  = abs (n2 - n1);    
+    lmFIntval nDistance  = abs (n2 - n1);
     int nIntervalNumber  = FIntval_GetNumber(nDistance);
     wxLogMessage(_("\t\t GetIntervalNumberFromFPitchDistance: %d-%d D:%d I:%d ")
         , n2, n1, nDistance, nIntervalNumber);
     return nIntervalNumber;
 }
 
-//  Get interval in FPitch from: 
+//  Get interval in FPitch from:
 //   chord degree (root note step)
 //   key signature
 //   interval index (1=3rd, 2=5th, etc)
@@ -134,11 +134,11 @@ lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nInterval)
     lmFPitch fpPitch = FPitchStepsInterval(nRootStep, (nRootStep+(nInterval*2))%(lmSTEP_B+1), nKey);
     return (lmFIntval) fpPitch;
 }
-	
+
 //-----------------------------------------------------------------------------------
 
 
- void SortChordNotes(int nNumNotes, lmNote** pInpChordNotes)
+void SortChordNotes(int nNumNotes, lmNote** pInpChordNotes)
 {
     wxASSERT(nNumNotes < lmNOTES_IN_CHORD);
     // Classic Bubble sort
@@ -373,7 +373,7 @@ lmScoreChord::lmScoreChord(lmEKeySignatures nKey, lmActiveNotes* pActiveNotesLis
     // Get the notes
     int nNumActiveNotes = pActiveNotesList->GetNotes(&pPossibleChordNotes[0]);
 
-    // sort the notes 
+    // sort the notes
     SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
 
     // now call the constructor of the parent
@@ -522,7 +522,7 @@ lmRuleList::lmRuleList(lmScoreChord** pChD, int nNumChords)
     SetChordDescriptor(pChD, nNumChords);
 };
 
-// TODO: ADD MORE HARMONY RULES 
+// TODO: ADD MORE HARMONY RULES
 //        To add a rule:
 //        1) Create the class (recommended to use the macro LM_CREATE_CHORD_RULE)
 //        2) Add an instance in AddRule
@@ -624,7 +624,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
             {
                 if ( nVoiceInterval[i] == nVoiceInterval[nN])
                 {
-                     lmFIntval nInterval = abs( 
+                     lmFIntval nInterval = abs(
                          m_pChordDescriptor[nC]->GetNote(nN)->GetFPitch()
                          - m_pChordDescriptor[nC]->GetNote(i)->GetFPitch() );
                      int nIntervalNumber = FIntval_GetNumber(nInterval);
@@ -738,7 +738,7 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                   m_pChordDescriptor[nC-1]->GetNote(i), m_pChordDescriptor[nC]->GetNote(i));
 
 
-                lmFIntval nInterval = abs( 
+                lmFIntval nInterval = abs(
                          m_pChordDescriptor[nC]->GetNote(nN)->GetFPitch()
                          - m_pChordDescriptor[nC]->GetNote(i)->GetFPitch() );
                 int nIntervalNumber = FIntval_GetNumber(nInterval);
@@ -753,7 +753,7 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                 if ( nVoiceMovementType == lm_eDirectMovement && ( nIntervalNumber == 1 || nIntervalNumber == 5 )  )
                 {
                     // Incorrect, unless: voice interval is 2th and voice is > 0 (not BASS)
-                     lmFIntval nVoiceInterval = abs( 
+                     lmFIntval nVoiceInterval = abs(
                          m_pChordDescriptor[nC]->GetNote(nN)->GetFPitch()
                          - m_pChordDescriptor[nC]->GetNote(i)->GetFPitch() ) ;
                      int nVoiceIntervalNumber = FIntval_GetNumber(nVoiceInterval);

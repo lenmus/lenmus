@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@
 #endif
 
 // aware: if included <list> before <map>: syntax error !  (MS bug?)
-#include <map>  
+#include <map>
 #include <list>
 
 #include "../auxmusic/Chord.h"
@@ -39,7 +39,7 @@
 
 
 //--------------------------------------------------------------------------
-// A list of notes 
+// A list of notes
 //   with individual absolute end time
 //   with global absolute current time
 //--------------------------------------------------------------------------
@@ -53,12 +53,12 @@ typedef struct lmActiveNoteInfoStruct {
     }
 } lmActiveNoteInfo;
 
-class lmActiveNotes 
+class lmActiveNotes
 {
 public:
     lmActiveNotes();
     ~lmActiveNotes();
-    
+
     void SetTime(float rNewCurrentTime);
     inline float GetTime() { return m_rCurrentTime; };
     int GetNotes(lmNote** pNotes);
@@ -73,7 +73,7 @@ protected:
     void ResetNotes();
 
     float                           m_rCurrentTime;
-    std::list<lmActiveNoteInfo*>    m_ActiveNotesInfo; 
+    std::list<lmActiveNoteInfo*>    m_ActiveNotesInfo;
 };
 
 
@@ -94,7 +94,7 @@ typedef struct lmChordErrorStruct
 //   lmChord: Number of notes = number of intervals +1
 // lmScoreChord is a "real" chord: it contains a set of actual notes
 //   lmScoreChord: Number of notes can be ANY; IT ALLOWS DUPLICATED NOTES.
-// TODO: consider to store only the essential information in lmScoreChord: 
+// TODO: consider to store only the essential information in lmScoreChord:
 //        - notes as lmFPitch instead of lmNote
 //        - remove accesories: lmChordError
 // TODO: move this class to Chord?
@@ -102,7 +102,7 @@ class lmScoreChord: public lmChord
 {
 public:
     //build a chord from a list of score note pointers
-    lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);  
+    lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);
     // build a chord from "essential" information
     lmScoreChord(int nDegree, lmEKeySignatures nKey, int nNumIntervals, int nNumInversions, int octave);
  /* TODO:  possibly helpful // Creates a chord from an unordered list of ordered score notes
@@ -130,7 +130,7 @@ private:
 
 //
 // Message box to display the results if the chord analysis
-// 
+//
 // todo: review these includes: necessary?
 #include "../app/MainFrame.h"
 extern lmMainFrame* GetMainFrame();
@@ -140,13 +140,13 @@ typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;
 // Remember:
 //      x: relative to object; positive: right
 //      y: relative to top line; positive: down
-class ChordInfoBox 
+class ChordInfoBox
 {
 public:
     ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo
         , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
     ~ChordInfoBox() {};
-    
+
     void Settings(wxSize* pSize, lmFontInfo* pFontInfo
         , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
     void DisplayChordInfo(lmScore* pScore, lmScoreChord* pChordDsct, wxColour colour, wxString &sText);
@@ -174,7 +174,7 @@ protected:
 
 
 
-enum  lmChordValidationRules 
+enum  lmChordValidationRules
 {
     lmCVR_ChordHasAllSteps,  // The chord is complete (has all note steps)
     lmCVR_FirstChordValidationRule = lmCVR_ChordHasAllSteps,
@@ -202,8 +202,8 @@ enum  lmChordValidationRules
 
 //
 // Base virtual class of rules
-// 
-class lmRule 
+//
+class lmRule
 {
 public:
   ///  DECLARE_ABSTRACT_CLASS(lmRule) //@@ TODO: aclarar ¿necesario?
@@ -213,7 +213,7 @@ public:
     virtual int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )=0;
     void SetChordDescriptor(lmScoreChord** pChD, int nNumChords)
     {
-        m_pChordDescriptor = pChD; 
+        m_pChordDescriptor = pChD;
         m_nNumChords = nNumChords;
     };
     bool IsEnabled(){ return m_fEnabled; };
@@ -232,14 +232,14 @@ protected:
 
 //
 // The list of rules
-// 
+//
 // possibly useful: typedef std::map<int, lmRule*> lmRuleMapType;
-class lmRuleList 
+class lmRuleList
 {
 public:
     lmRuleList(lmScoreChord** pChD, int nNumChords);
     ~lmRuleList();
-    
+
     bool AddRule(lmRule* pNewRule, const wxString& sDescription );  // return: ok
     bool DeleteRule(int nRuleId);  // arg: lmChordValidationRules; return: ok
     lmRule* GetRule(int nRuleId);  // arg: lmChordValidationRules;
@@ -247,15 +247,15 @@ public:
 
 protected:
     void CreateRules();
-    std::map<int, lmRule*> m_Rules; 
+    std::map<int, lmRule*> m_Rules;
 };
 
 
 //
 // Derived classes of rules
-// 
+//
 // TODO: improve this with a template...
-// Aware: text describing the rule must be set dynamically, since it 
+// Aware: text describing the rule must be set dynamically, since it
 //  hast to be translated and therefore it requieres _("") instead of the static _T("")
 #define LM_CREATE_CHORD_RULE(classname, id) \
 class classname : public lmRule  \
@@ -276,7 +276,7 @@ public: \
 extern int GetHarmonicDirection(int nInterval);
 extern void  HDisplayChordInfo(lmScore* pScore, lmScoreChord*  pChordDsct
                                            , wxColour colour, wxString &sText, bool reset);
-extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
+extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color);
 //returns interval number ignoring octaves: 1=unison, 2=2nd, ..., 8=8ve
 extern int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1);
 // Analyze a progress (link) errors in a sequence o chords

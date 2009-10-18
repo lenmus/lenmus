@@ -213,7 +213,7 @@ static lmBoolOption m_BoolOptions[] =
 
 //static lmStringOption m_StringOptions[] = {};
 
-static lmDoubleOption m_DoubleOptions[] = 
+static lmDoubleOption m_DoubleOptions[] =
 {
     {_T("Render.SpacingFactor"), 0.547 },
         // Note spacing is proportional to duration.
@@ -262,13 +262,13 @@ lmScore::lmScore()
 
     //default options
     //bool
-    for (int i=0; i < sizeof(m_BoolOptions)/sizeof(lmBoolOption); i++)
+    for (int i=0; i < (int)(sizeof(m_BoolOptions)/sizeof(lmBoolOption)); i++)
         SetOption(m_BoolOptions[i].sOptName, m_BoolOptions[i].fBoolValue);
     //long
-    for (int i=0; i < sizeof(m_LongOptions)/sizeof(lmLongOption); i++)
+    for (int i=0; i < (int)(sizeof(m_LongOptions)/sizeof(lmLongOption)); i++)
         SetOption(m_LongOptions[i].sOptName, m_LongOptions[i].nLongValue);
     //double
-    for (int i=0; i < sizeof(m_DoubleOptions)/sizeof(lmDoubleOption); i++)
+    for (int i=0; i < (int)(sizeof(m_DoubleOptions)/sizeof(lmDoubleOption)); i++)
         SetOption(m_DoubleOptions[i].sOptName, m_DoubleOptions[i].rDoubleValue);
 }
 
@@ -309,23 +309,23 @@ lmScore::~lmScore()
 }
 
 lmLUnits lmScore::GetSystemLeftSpace(int iSystem)
-{ 
+{
     // iSystem (0..n-1)
 
     if (iSystem == 0)
-        return m_SystemsInfo.front()->LeftMargin(); 
+        return m_SystemsInfo.front()->LeftMargin();
     else
-        return m_SystemsInfo.back()->LeftMargin(); 
+        return m_SystemsInfo.back()->LeftMargin();
 }
 
 lmLUnits lmScore::GetSystemRightSpace(int iSystem)
-{ 
+{
     // iSystem (0..n-1)
 
     if (iSystem == 0)
-        return m_SystemsInfo.front()->RightMargin(); 
+        return m_SystemsInfo.front()->RightMargin();
     else
-        return m_SystemsInfo.back()->RightMargin(); 
+        return m_SystemsInfo.back()->RightMargin();
 }
 
 lmLUnits lmScore::GetSystemDistance(int iSystem, bool fStartOfPage)
@@ -333,9 +333,9 @@ lmLUnits lmScore::GetSystemDistance(int iSystem, bool fStartOfPage)
     // iSystem (0..n-1)
 
     if (iSystem == 0)
-        return m_SystemsInfo.front()->SystemDistance(fStartOfPage); 
+        return m_SystemsInfo.front()->SystemDistance(fStartOfPage);
     else
-        return m_SystemsInfo.back()->SystemDistance(fStartOfPage); 
+        return m_SystemsInfo.back()->SystemDistance(fStartOfPage);
 }
 
 void lmScore::ClearPages()
@@ -495,7 +495,7 @@ lmScoreTitle* lmScore::AddTitle(wxString sTitle, lmEHAlign nHAlign, lmTextStyle*
 }
 
 long lmScore::AssignID(lmScoreObj* pSO)
-{ 
+{
     if (m_fUndoMode)
     {
         if (pSO->GetID() == 0)
@@ -898,7 +898,7 @@ wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
     //score cursor information
     if (fUndoData)
     {
-        lmCursorState tState = m_SCursor.GetState(); 
+        lmCursorState tState = m_SCursor.GetState();
         sSource += wxString::Format(_T("   (cursor %d %d %s %d)\n"),
                         tState.GetNumInstr(),
                         tState.GetNumStaff(),
@@ -912,30 +912,30 @@ wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
     double rDoubleValue;
 
     //bool
-    for (int i=0; i < sizeof(m_BoolOptions)/sizeof(lmBoolOption); i++)
+    for (int i=0; i < (int)(sizeof(m_BoolOptions)/sizeof(lmBoolOption)); i++)
     {
         fBoolValue = GetOptionBool(m_BoolOptions[i].sOptName);
         if (fBoolValue != m_BoolOptions[i].fBoolValue)
-            sSource += wxString::Format(_T("   (opt %s %s)\n"), m_BoolOptions[i].sOptName,
+            sSource += wxString::Format(_T("   (opt %s %s)\n"), m_BoolOptions[i].sOptName.c_str(),
                                         (fBoolValue ? _T("true") : _T("false")) );
     }
 
     //long
-    for (int i=0; i < sizeof(m_LongOptions)/sizeof(lmLongOption); i++)
+    for (int i=0; i < (int)(sizeof(m_LongOptions)/sizeof(lmLongOption)); i++)
     {
         nLongValue = GetOptionLong(m_LongOptions[i].sOptName);
         if (nLongValue != m_LongOptions[i].nLongValue)
-            sSource += wxString::Format(_T("   (opt %s %d)\n"), m_LongOptions[i].sOptName,
+            sSource += wxString::Format(_T("   (opt %s %d)\n"), m_LongOptions[i].sOptName.c_str(),
                                         nLongValue );
     }
 
     //double
-    for (int i=0; i < sizeof(m_DoubleOptions)/sizeof(lmDoubleOption); i++)
+    for (int i=0; i < (int)(sizeof(m_DoubleOptions)/sizeof(lmDoubleOption)); i++)
     {
         rDoubleValue = GetOptionDouble(m_DoubleOptions[i].sOptName);
         if (rDoubleValue != m_DoubleOptions[i].rDoubleValue)
-            sSource += wxString::Format(_T("   (opt %s %s)\n"), m_DoubleOptions[i].sOptName,
-                                        DoubleToStr(rDoubleValue, 4) );
+            sSource += wxString::Format(_T("   (opt %s %s)\n"), m_DoubleOptions[i].sOptName.c_str(),
+                                        DoubleToStr(rDoubleValue, 4).c_str() );
     }
 
     //loop for each instrument
