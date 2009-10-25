@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the
+//    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this
-//    program. If not, see <http://www.gnu.org/licenses/>.
+//    You should have received a copy of the GNU General Public License along with this 
+//    program. If not, see <http://www.gnu.org/licenses/>. 
 //
-//    For any comment, suggestion or feature request, please contact the manager of
+//    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@
 #endif
 
 // aware: if included <list> before <map>: syntax error !  (MS bug?)
-#include <map>
+#include <map>  
 #include <list>
 
 #include "../auxmusic/Chord.h"
@@ -35,11 +35,35 @@
 // Chord harmony types and classes
 //
 
+//
+// GLOBAL AUX FUNCTIONS
+//
 
+// return
+//  -1: negative, 0, 1: positive
+extern int GetHarmonicDirection(int nInterval);
+extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
+//returns interval number ignoring octaves: 1=unison, 2=2nd, ..., 8=8ve
+extern int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1);
+extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
+extern void SortChordNotes(int nNumNotes, lmFPitch fInpChordNotes[]);
+extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncrementSteps);
+// todo: move this to "Pitch" file o  merge this with FPitch_ToAbsLDPName
+// This is just FPitch_ToAbsLDPName but WITHOUT OCTAVE
+extern wxString NormalizedFPitch_ToAbsLDPName(lmFPitch fp);
+
+
+
+enum lmHarmonicMovementType {
+    lm_eDirectMovement ,    // 2 voices with the same delta sign (cero included)
+    lm_eObliqueMovement ,   // one delta sign is 0, the other not
+    lm_eContraryMovement    // 2 voices with contrary delta sign (cero not included)
+};
+extern int GetHarmonicMovementType( lmFPitch fVoice10, lmFPitch fVoice11, lmFPitch fVoice20, lmFPitch fVoice21);
 
 
 //--------------------------------------------------------------------------
-// A list of notes
+// A list of notes 
 //   with individual absolute end time
 //   with global absolute current time
 //--------------------------------------------------------------------------
@@ -53,12 +77,12 @@ typedef struct lmActiveNoteInfoStruct {
     }
 } lmActiveNoteInfo;
 
-class lmActiveNotes
+class lmActiveNotes 
 {
 public:
     lmActiveNotes();
     ~lmActiveNotes();
-
+    
     void SetTime(float rNewCurrentTime);
     inline float GetTime() { return m_rCurrentTime; };
     int GetNotes(lmNote** pNotes);
@@ -73,7 +97,7 @@ protected:
     void ResetNotes();
 
     float                           m_rCurrentTime;
-    std::list<lmActiveNoteInfo*>    m_ActiveNotesInfo;
+    std::list<lmActiveNoteInfo*>    m_ActiveNotesInfo; 
 };
 
 
@@ -90,38 +114,110 @@ typedef struct lmChordErrorStruct
 
 #define lmMAX_NUM_CHORDS 50
 
+// 
+// lmFPitchChord is a lmChord with notes in lmFPitch
+// lmScoreChord is a lmChord with notes in lmFPitch and in lmNote
+//
+// we implement a very simple RTTI (run-time type information)
+//
+// lmScoreChord inherits from lmFPitchChord
+// 
+// lmRule::Evaluate must be able to work with chord descriptors of both kinds
+//   lmScoreChord: when the results draw thing areound the notes (message box, arrows, etc)
+//   lmFPitchChord: whne the results do not draw anything; just want to know the result of the rule over the chord
+//
+// lmScoreChord must be the type used to access notes from lmRule::Evaluate
+//   
+// 
+
 // lmChord is an "abstract" chord: defined by intervals.
 //   lmChord: Number of notes = number of intervals +1
-// lmScoreChord is a "real" chord: it contains a set of actual notes
-//   lmScoreChord: Number of notes can be ANY; IT ALLOWS DUPLICATED NOTES.
-// TODO: consider to store only the essential information in lmScoreChord:
-//        - notes as lmFPitch instead of lmNote
-//        - remove accesories: lmChordError
+// lmFPitchChord is a "real" chord: it contains a set of actual notes in lmFPitch
+//   lmNChord: Number of notes can be ANY; IT ALLOWS DUPLICATED NOTES.
+// lmScoreChord: lmFPitchChord with notes of in lmNote
 // TODO: move this class to Chord?
-class lmScoreChord: public lmChord
+class lmFPitchChord: public lmChord
+{
+public:
+    //  Constructors from notes
+    //     (the notes can not be added afterwards)
+    //build a chord from a list of ordered notes
+    lmFPitchChord(int nNumNotes, lmFPitch fNotes[], lmEKeySignatures nKey = earmDo);  
+    lmFPitchChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);  
+    //  Constructors without notes
+    //      (the notes can be added afterwards)
+    //     build a chord from "essential" information
+    lmFPitchChord(int nDegree, lmEKeySignatures nKey, int nNumIntervals, int nNumInversions, int octave);
+
+ /* TODO:  possibly helpful // Creates a chord from an unordered list of ordered score notes
+    lmFPitchChord(lmEKeySignatures nKey, lmActiveNotes* pActiveNotesList); --*/
+
+    virtual ~lmFPitchChord(){};
+
+    int GetNumNotes() {return m_nNumChordNotes;}
+    //@@ todo remove lmFPitch GetNote(int nIndex) {return m_fpChordNotes[nIndex];} ;
+
+    wxString ToString();
+
+    lmFPitch GetNoteFpitch(int nIndex) {return m_fpChordNotes[nIndex];} ;
+ //@ todo remove    lmNote* GetNoteLmNote() {return 0;} ; // lmFPitchChord do not have lmNotes!!
+    // GetVoice should not be used for this class since it has no lmNotes (just lmFPitch)
+    //   but just in case, it can be emulated, since the notes are ordered
+    //   note 0 -> voice 4
+    //.. note 3 -> voice 1
+    int GetNoteVoice(int nNoteIndex)
+    {
+        assert(nNoteIndex<m_nNumChordNotes);
+        return m_nNumChordNotes-nNoteIndex;
+    };
+
+    // aware: to be used only after using constructor without notes
+    // return the number of notes
+    int AddNoteLmFPitch(lmFPitch fNote);
+ //   int AddNoteFromInterval(int nInterval, int octaves); // todo: not necessary, remove?
+    void RemoveAllNotes(); // todo: not necessary, remove?
+
+    bool IsBassDuplicated();
+ // todo: consider to implement:   int CreateRandomNotes(int nNumNotes);
+
+protected:
+    int m_nNumChordNotes;
+    lmFPitch m_fpChordNotes[lmNOTES_IN_CHORD];
+    bool m_fCreatedWithNotes;
+};
+
+class lmScoreChord: public lmFPitchChord
 {
 public:
     //build a chord from a list of score note pointers
-    lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);
-    // build a chord from "essential" information
+//@@ todo: necesary?   
+    lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);  
+    //  Constructors without notes
+    //      (the notes can be added afterwards)
+    //     build a chord from "essential" information
     lmScoreChord(int nDegree, lmEKeySignatures nKey, int nNumIntervals, int nNumInversions, int octave);
- /* TODO:  possibly helpful // Creates a chord from an unordered list of ordered score notes
-    lmScoreChord(lmEKeySignatures nKey, lmActiveNotes* pActiveNotesList); --*/
 
-    ~lmScoreChord();
+    virtual ~lmScoreChord() {};  // TODO: review virtual destructors (needed if ancestors destructors must be called)
 
-    int GetNumNotes() {return nNumChordNotes;}
-    lmNote* GetNote(int nIndex) {return pChordNotes[nIndex];} ;
+    void RemoveAllNotes(); // todo: no necessary. Remove?
+
+    bool  HasLmNotes() {return m_nNumLmNotes > 0 && m_nNumLmNotes == m_nNumChordNotes;} 
+
+    // aware: this is only to associate the score note (lmNote) to a note in lmFPitch that already exists
+    //   it is not to add a note!
+    bool SetLmNote(lmNote* pNote);
+ 
+    lmNote* GetNoteLmNote(int nIndex);
+    int GetNoteVoice(int nIndex);
+    int GetNumLmNotes(); // todo: possibly, it can be removed, but does no harm
+
     wxString ToString();
-
-    void SetNotes(int nNumNotes, lmNote** pNotes);
-    void AddNote(lmNote* pNote) {assert(nNumChordNotes<lmNOTES_IN_CHORD-1); pChordNotes[nNumChordNotes++] = pNote;};
 
     lmChordError  tChordErrors; // todo: not essential; consider to remove it
 private:
+    int m_nNumLmNotes;
 
-    int nNumChordNotes;
-    lmNote* pChordNotes[lmNOTES_IN_CHORD-1];
+    lmNote* m_pChordNotes[lmNOTES_IN_CHORD];
 };
 
 
@@ -130,8 +226,8 @@ private:
 
 //
 // Message box to display the results if the chord analysis
-//
-// todo: review these includes: necessary?
+// 
+// ****************************************todo: review these includes: necessary?
 #include "../app/MainFrame.h"
 extern lmMainFrame* GetMainFrame();
 #include "../app/ScoreDoc.h"
@@ -140,13 +236,13 @@ typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;
 // Remember:
 //      x: relative to object; positive: right
 //      y: relative to top line; positive: down
-class ChordInfoBox
+class ChordInfoBox 
 {
 public:
     ChordInfoBox(wxSize* pSize, lmFontInfo* pFontInfo
         , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
     ~ChordInfoBox() {};
-
+    
     void Settings(wxSize* pSize, lmFontInfo* pFontInfo
         , int nBoxX, int nBoxY, int nLineX, int nLineY, int nBoxYIncrement);
     void DisplayChordInfo(lmScore* pScore, lmScoreChord* pChordDsct, wxColour colour, wxString &sText);
@@ -174,7 +270,7 @@ protected:
 
 
 
-enum  lmChordValidationRules
+enum  lmChordValidationRules 
 {
     lmCVR_ChordHasAllSteps,  // The chord is complete (has all note steps)
     lmCVR_FirstChordValidationRule = lmCVR_ChordHasAllSteps,
@@ -202,8 +298,8 @@ enum  lmChordValidationRules
 
 //
 // Base virtual class of rules
-//
-class lmRule
+// 
+class lmRule 
 {
 public:
   ///  DECLARE_ABSTRACT_CLASS(lmRule) //@@ TODO: aclarar ¿necesario?
@@ -213,7 +309,7 @@ public:
     virtual int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )=0;
     void SetChordDescriptor(lmScoreChord** pChD, int nNumChords)
     {
-        m_pChordDescriptor = pChD;
+        m_pChordDescriptor = pChD; 
         m_nNumChords = nNumChords;
     };
     bool IsEnabled(){ return m_fEnabled; };
@@ -232,14 +328,14 @@ protected:
 
 //
 // The list of rules
-//
+// 
 // possibly useful: typedef std::map<int, lmRule*> lmRuleMapType;
-class lmRuleList
+class lmRuleList 
 {
 public:
     lmRuleList(lmScoreChord** pChD, int nNumChords);
     ~lmRuleList();
-
+    
     bool AddRule(lmRule* pNewRule, const wxString& sDescription );  // return: ok
     bool DeleteRule(int nRuleId);  // arg: lmChordValidationRules; return: ok
     lmRule* GetRule(int nRuleId);  // arg: lmChordValidationRules;
@@ -247,15 +343,15 @@ public:
 
 protected:
     void CreateRules();
-    std::map<int, lmRule*> m_Rules;
+    std::map<int, lmRule*> m_Rules; 
 };
 
 
 //
 // Derived classes of rules
-//
+// 
 // TODO: improve this with a template...
-// Aware: text describing the rule must be set dynamically, since it
+// Aware: text describing the rule must be set dynamically, since it 
 //  hast to be translated and therefore it requieres _("") instead of the static _T("")
 #define LM_CREATE_CHORD_RULE(classname, id) \
 class classname : public lmRule  \
@@ -265,33 +361,16 @@ public: \
     int Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox); \
 };
 
-
-
 //
 // GLOBAL AUX FUNCTIONS
 //
 
-// return
-//  -1: negative, 0, 1: positive
-extern int GetHarmonicDirection(int nInterval);
 extern void  HDisplayChordInfo(lmScore* pScore, lmScoreChord*  pChordDsct
                                            , wxColour colour, wxString &sText, bool reset);
-extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color);
-//returns interval number ignoring octaves: 1=unison, 2=2nd, ..., 8=8ve
-extern int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1);
 // Analyze a progress (link) errors in a sequence o chords
-extern int AnalyzeChordsLinks(lmScoreChord** pChordDescriptor, int nNCH, ChordInfoBox* pChordErrorBox = 0);
-
-// TODO: global methods. They could probably be placed inside a class...
-extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
-extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncrementSteps);
+extern int AnalyzeHarmonicProgression(lmScoreChord** pChordDescriptor, int nNCH, ChordInfoBox* pChordErrorBox = 0);
 
 
-enum lmHarmonicMovementType {
-    lm_eDirectMovement ,    // 2 voices with the same delta sign (cero included)
-    lm_eObliqueMovement ,   // one delta sign is 0, the other not
-    lm_eContraryMovement    // 2 voices with contrary delta sign (cero not included)
-};
-extern int GetHarmonicMovementType(  lmNote* pVoice10, lmNote* pVoice11, lmNote* pVoice20, lmNote* pVoice21);
+
 
 #endif

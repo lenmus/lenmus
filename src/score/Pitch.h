@@ -40,13 +40,19 @@ typedef int lmFIntval;      // Intervals, in FPitch mode.
 //  encoded as a number in the range 0..6:
 //      0=C, 1=D, 2=E, 3=F, 4=G, 5=A, 6=B
 
-#define lmSTEP_C    0
-#define lmSTEP_D    1
-#define lmSTEP_E    2
-#define lmSTEP_F    3
-#define lmSTEP_G    4
-#define lmSTEP_A    5
-#define lmSTEP_B    6
+// enum lmSTEPS should be used for steps, but enum types are
+//    hard to use in C++, so we define an integer synonym
+typedef int lmSTEP_TYPE; 
+enum lmSTEPS {
+ lmSTEP_C = 0,
+ lmSTEP_D, // implied = 1 ...
+ lmSTEP_E,
+ lmSTEP_F,
+ lmSTEP_G,
+ lmSTEP_A,
+ lmSTEP_B,
+ lmNUM_STEPS // implied = 7
+};
 
 //-----------------------------------------------------------------------------------------
 // Octaves

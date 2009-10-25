@@ -34,7 +34,7 @@
 //    todo: consider no to chek the bass: let free the chord degree
 
 int  nHarmonyExerciseChordsToCheck = 0;
-lmChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS];
+lmScoreChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS]; //@ TODO CAMBIAR A pHE_Chords
 int nHarmonyExcerciseType;
 const int nBassVoice = nNUM_VOICES_IN_HARMONY_EXERCISE; // AWARE: BASS IS VOICE 4!!!!
 const int nTenorVoice = nBassVoice - 1;

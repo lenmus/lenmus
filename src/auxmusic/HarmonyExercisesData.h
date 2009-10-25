@@ -24,12 +24,14 @@
 #include "../exercises/ChordConstrains.h"
 #include "../score/Note.h"
 #include "../score/FiguredBass.h"
+#include "../auxmusic/Harmony.h"
 
 const int nMAX_HARMONY_EXERCISE_CHORDS = 20;
 const int nNUM_VOICES_IN_HARMONY_EXERCISE = 4;
 
 extern int  nHarmonyExerciseChordsToCheck;
-extern lmChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS];
+extern lmScoreChord* pHE_Chords[nMAX_HARMONY_EXERCISE_CHORDS];
+
 extern int nHarmonyExcerciseType;
 
 extern const int nBassVoice;
