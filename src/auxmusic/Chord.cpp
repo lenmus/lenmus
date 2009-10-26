@@ -670,6 +670,19 @@ int lmChord::IsValidChordNote(lmFPitch fNote)
 }
 
 
+// key independent root note, calculated from bass and inversions
+lmFPitch lmChord::GetNormalizedRoot()
+{
+    int nNumInversions = GetInversion();
+    int nNumNotes = GetNumNotes();
+    int nIntervalToApplyToTheBass = (nNumNotes- nNumInversions) % nNumNotes;
+    lmFPitch fpIntv = GetInterval(nIntervalToApplyToTheBass);
+    lmFPitch fpBass = GetNormalizedBass();
+    lmFPitch fpRootNote = (fpBass + fpIntv) %  lm_p8;
+    wxLogMessage(_T("  GetNormalizedRoot NNotes:%d NInv:%d  Intv:%d=%d  Bass:%d  Root:%d NORMALIZED:%d"),
+        nNumNotes, nNumInversions, nIntervalToApplyToTheBass, fpIntv, fpBass, (fpBass + fpIntv), fpRootNote);
+    return fpRootNote;
+}
 void lmChord::ComputeTypeAndInversion()
 {
     //look for the entry in in the Chords DB that matches this chord intervals.
@@ -698,17 +711,21 @@ wxString lmChord::ToString()
         // Note that the number of notes and the number of inversions is already in the description from GetNameFull
         sRetStr = wxString::Format(_T(" %s"), GetNameFull().c_str());
 
-        sRetStr += wxString::Format(_(", Bass: %s, ")
+        sRetStr += wxString::Format(_(", Bass:%s")
             , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedBass()).c_str());
+
+        sRetStr += wxString::Format(_(", Root:%s")
+            , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedRoot()).c_str());
 
         if (m_nElision > 0)
           sRetStr += wxString::Format(_(", %d elisions"), m_nElision);
 
+        sRetStr += wxString::Format(_T(","));
         sRetStr += this->lmChordIntervals::ToString().c_str();
 
-        sRetStr += _(", Pattern: ");
+        sRetStr += _(", Pattern:");
 
-        for (int n=0; n<nNumNotes; n++)
+        for (int n=0; n<m_nNumIntv; n++)
         {
             sRetStr += _T(" ");
             sRetStr += GetPattern(n);
@@ -1040,10 +1057,11 @@ wxString lmChordIntervals::DumpIntervals()
 
 wxString lmChordIntervals::ToString()
 {
-    wxString sIntvals = _T(" Intervals: ");
+    wxString sIntvals = _T(" Intervals:");
     for (int i=0; i < m_nNumIntv; i++)
     {
-        sIntvals += wxString::Format(_(" %d (%s)"), m_nIntervals[i], FIntval_GetIntvCode( m_nIntervals[i] ).c_str());
+        sIntvals += wxString::Format(_("%s(%d) ")
+            , FIntval_GetIntvCode( m_nIntervals[i] ).c_str(), m_nIntervals[i]);
     }
     return sIntvals;
 }

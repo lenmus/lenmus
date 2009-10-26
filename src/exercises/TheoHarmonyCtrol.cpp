@@ -312,6 +312,8 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     //
                     // create the chord
                     //
+                    wxLogMessage(_T("Creating_lmScoreChord: step:%d octave:%d inversions:%d  key:%d")
+                        , nRootNoteStep, nOctave, nInversions, m_nKey );
                     pHE_Chords[nChordCount] = new lmScoreChord(nRootNoteStep, m_nKey
                         , nNUM_INTERVALS_IN_N_HARMONY_EXERCISE, nInversions, nOctave);
 
@@ -433,15 +435,10 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
                     } // for voice...
 
-                     // check harmonic progression errors
-                    if ( nChordCount > 0)
-                    {
-                        wxLogMessage(_T("###BEFORE %d ANALYSIS OF CHORD LINK ERRORS OF  CHORD %d: %s")
+                    // check harmonic progression errors
+                    wxLogMessage(_T("###BEFORE %d ANALYSIS OF CHORD LINK ERRORS OF  CHORD %d: %s")
                          ,nAttempts, nChordCount , pHE_Chords[nChordCount]->ToString().c_str());
-                         nNumChordLinkErros =  AnalyzeHarmonicProgression(pHE_Chords, nChordCount+1, 0);
-                    }
-                    else
-                        nNumChordLinkErros = 0;
+                    nNumChordLinkErros =  AnalyzeHarmonicProgression(pHE_Chords, nChordCount+1, 0);
 
                     wxLogMessage(_T("##RESULT: %d LINK ERRORS"), nNumChordLinkErros);
 
@@ -560,15 +557,15 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
                 }
 
-                //    Display the numeral
-                int nBassNoteStep = FPitch_Step(pHE_Chords[nChordCount]->GetNormalizedBass());
+                //    Display the numeral, according the root step
+                int nRootStep = FPitch_Step(pHE_Chords[nChordCount]->GetNormalizedRoot());
                 lmTextItem* pNumeralText = new lmTextItem(
-                    pNoteToAttach, lmNEW_ID, sNumeralsDegrees[nBassNoteStep],
+                    pNoteToAttach, lmNEW_ID, sNumeralsDegrees[nRootStep],
                     lmHALIGN_DEFAULT, pNumeralStyle);
                 pNoteToAttach->AttachAuxObj(pNumeralText);
                 pNumeralText->SetUserLocation(0.0f, 230.0f );
 
-                wxLogMessage(_T("******-----   END of Chord %d: %s ------******")
+                wxLogMessage(_T("FINAL_CHORD %d: %s")
                     , nChordCount, pHE_Chords[nChordCount]->ToString().c_str());
 
                 nChordCount++;
@@ -578,6 +575,9 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     }
     wxLogMessage(_T(" CREATED EXERCISE %d with %d chords")
         ,nHarmonyExcerciseType, nHarmonyExerciseChordsToCheck);
+    for (int i=0; i<nHarmonyExerciseChordsToCheck; i++)
+        wxLogMessage(_T(" CHORD %d: %s"), i, pHE_Chords[i]->lmFPitchChord::ToString().c_str());
+
 
     //add final barline
     pVStaff->AddBarline(lm_eBarlineEnd);

@@ -153,6 +153,7 @@ public:
     int IsValidChordNote(lmFPitch fNote);
 
     lmFPitch GetNormalizedBass() { return m_fpRootNote % lm_p8;} // key-independent bass information
+    lmFPitch GetNormalizedRoot(); // key independent root note, calculated from bass and inversions
 
     bool IsEqualTo(lmChord* tOther);
 
