@@ -139,13 +139,13 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
 
     //  all-exercises generic data
-    const int lmNUM_HARMONY_EXERCISES = 3; 
+    const int lmNUM_HARMONY_EXERCISES = 3;
     const int nNUM_INTERVALS_IN_N_HARMONY_EXERCISE = 2;
     int nNumMeasures = 2;
     //  each-exercise specific data
     wxString sExerciseDescription;
     wxString sNote = _T("q"); // todo: calculate note note duration from time signature
-    wxString sLDPGoBack = wxString::Format(_T("(musicData (goBack %s) )"), sNote.c_str()); 
+    wxString sLDPGoBack = wxString::Format(_T("(musicData (goBack %s) )"), sNote.c_str());
 
     // Carlos  jun-09
     //  Three types of problem
@@ -157,7 +157,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     lmRandomGenerator oGenerator;
     nHarmonyExcerciseType = oGenerator.RandomNumber(1, lmNUM_HARMONY_EXERCISES);
 
-    // todo: inversions allowed: make it an exercise option 
+    // todo: inversions allowed: make it an exercise option
     if ( nHarmonyExcerciseType == 3)
         bInversionsAllowedInHarmonyExercises = true;
     else
@@ -170,7 +170,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     lmVStaff* pVStaff;
     lmNote* pNoteToAttach = NULL;
     wxString sExerciseTitle;
-    bool bDebugDisplayHiddenNotes = false; // activate only for debug  
+    bool bDebugDisplayHiddenNotes = false; // activate only for debug
 
     if ( nHarmonyExcerciseType >= 1 && nHarmonyExcerciseType <= lmNUM_HARMONY_EXERCISES )
     {
@@ -261,15 +261,15 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 //   With the new chord:
                 //     Create figured bass
                 //     Calculate numeral
-                //     Create the score notes for the voices 
-                //  
+                //     Create the score notes for the voices
+                //
                 //   Display
                 //       Exercise 1: bass note and numeral
                 //       Exercise 2: soprano note and numeral
                 //       Exercise 3: all notes and numeral
                 //
 
-                int nNumChordLinkErros = -1; 
+                int nNumChordLinkErros = -1;
                 int nAttempts = 0;
                 int nMaxAttempts = 20;
                 int nInversions = 0;
@@ -281,12 +281,12 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     if (nAttempts)
                         wxLogMessage(_T("   ***** NEW ATTEMPT (%d) for CHORD %d *****"), nAttempts, nChordCount );
                     // Root note
-                    nOctave = oGenerator.RandomNumber(2, 3);  
+                    nOctave = oGenerator.RandomNumber(2, 3);
                     // this is done to make the notes appear more centered in the bass staff
                     if (nOctave == 3 ) // octave 3 : notes c,d,e
                        nRootNoteStep = oGenerator.RandomNumber(0, 2);
                     else // octave 2 : notes f,g,a,b
-                       nRootNoteStep = oGenerator.RandomNumber(3, 6); 
+                       nRootNoteStep = oGenerator.RandomNumber(3, 6);
 
                     nInversions = 0;
                     if (bInversionsAllowedInHarmonyExercises)
@@ -323,7 +323,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     if (nHE_NotesFPitch[nChordCount][nBassVoiceIndex] > FPitchK(lmSTEP_D, 3, m_nKey) )
                     {
                         nHE_NotesFPitch[nChordCount][nBassVoiceIndex] -= lm_p8;
-                        wxLogMessage(_T(" Bass reduced one octave to : %d ") 
+                        wxLogMessage(_T(" Bass reduced one octave to : %d ")
                             , nHE_NotesFPitch[nChordCount][nBassVoiceIndex]
                             );
                     }
@@ -393,7 +393,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                         while ( nHE_NotesFPitch[nChordCount][nVoiceIndex+1] >= nHE_NotesFPitch[nChordCount][nVoiceIndex])
                         {
                             nHE_NotesFPitch[nChordCount][nVoiceIndex] += lm_p8;
-                            wxLogMessage(_T(" Added octave to voice V%d: %d ") 
+                            wxLogMessage(_T(" Added octave to voice V%d: %d ")
                                 , nVoice
                                 , nHE_NotesFPitch[nChordCount][nVoiceIndex]);
                         }
@@ -401,11 +401,11 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                         // additional limitation: increase tenor voice a octave if bass is low and tenor is close to bass
                         //  to avoid voice distance problems
                         //  aware: tenor-bass is the only consecutive voices allowed to have a distance higher than octave
-                        if ( nVoiceIndex == nTenorVoiceIndex && nOctave < 3 
+                        if ( nVoiceIndex == nTenorVoiceIndex && nOctave < 3
                             && (nHE_NotesFPitch[nChordCount][nTenorVoiceIndex] - nHE_NotesFPitch[nChordCount][nBassVoiceIndex]) <= lm_M3 )
                         {
                             nHE_NotesFPitch[nChordCount][nTenorVoiceIndex] += lm_p8;
-                            wxLogMessage(_T(" Raise Tenor: added octave to voice V%d: %d ") 
+                            wxLogMessage(_T(" Raise Tenor: added octave to voice V%d: %d ")
                                 , nVoice
                                 , nHE_NotesFPitch[nChordCount][nTenorVoiceIndex]
                                 );
@@ -417,7 +417,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                         if ( nVoiceIndex == nBaritoneVoiceIndex && nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] < fUpperStaffLimit )
                         {
                             nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] += lm_p8;
-                            wxLogMessage(_T(" Raise to 2nd staff: added octave to voice V%d: %d (min:%d) ") 
+                            wxLogMessage(_T(" Raise to 2nd staff: added octave to voice V%d: %d (min:%d) ")
                                 , nVoice
                                 , nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex]
                                 , fUpperStaffLimit);
@@ -437,7 +437,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     if ( nChordCount > 0)
                     {
                         wxLogMessage(_T("###BEFORE %d ANALYSIS OF CHORD LINK ERRORS OF  CHORD %d: %s")
-                         ,nAttempts, nChordCount , pHE_Chords[nChordCount]->ToString());
+                         ,nAttempts, nChordCount , pHE_Chords[nChordCount]->ToString().c_str());
                          nNumChordLinkErros =  AnalyzeHarmonicProgression(pHE_Chords, nChordCount+1, 0);
                     }
                     else
@@ -501,7 +501,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                         // Calculate the pattern required to create the note in the score
                         sHE_Pattern[nChordCount][nVoiceIndex] = wxString::Format(_T("(n %s %s p%d v%d (stem %s))")
                            , sHE_Notes[nChordCount][nVoiceIndex].c_str()
-                           , sNote
+                           , sNote.c_str()
                            , nStaff, nVoice, sUpDown[nVoiceInStaff-1].c_str());
 
                         wxLogMessage(_T("\t Staff %d, V%d (index:%d) %d [%s], pattern: %s")
@@ -523,7 +523,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                         // Exercise 1, 2: Never (only one voice is displayed per chord)
                         // Exercise 3: go back after voices 1,2,3
 
-                        if (  
+                        if (
                             (nHarmonyExcerciseType == 1 && nVoice == nBassVoice ) ||
                             (nHarmonyExcerciseType == 2 && nVoice == nSopranoVoice ) ||
                              nHarmonyExcerciseType == 3

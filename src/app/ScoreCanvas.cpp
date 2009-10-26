@@ -250,10 +250,10 @@ void lmScoreCanvas::DoCaptureMouse()
 }
 
 void lmScoreCanvas::DoReleaseMouse()
-{ 
+{
     wxLogMessage(_T("[lmScoreCanvas::DoReleaseMouse] HasCapture=%s"),
                  (HasCapture() ? _T("yes") : _T("no")) );
-    //if (HasCapture()) 
+    //if (HasCapture())
     //    ReleaseMouse();
 }
 
@@ -387,8 +387,8 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 
 
         //At this point it has been determined all mouse position information. Now we start
-        //dealing with mouse moving, mouse clicks and dragging events. Behaviour from this 
-        //point is different, depending on data entry mode (using keyboard or using mouse). 
+        //dealing with mouse moving, mouse clicks and dragging events. Behaviour from this
+        //point is different, depending on data entry mode (using keyboard or using mouse).
         //Therefore, processing is splitted at this point
 
     if (m_nEntryMode == lm_DATA_ENTRY_MOUSE)
@@ -1020,8 +1020,8 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
     //if harmony exercise, allow notes data entry only valid staff for current voice
     lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
     if (pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol")
-        && (m_nMousePointedArea == lmMOUSE_OnStaff 
-            || m_nMousePointedArea == lmMOUSE_OnBelowStaff 
+        && (m_nMousePointedArea == lmMOUSE_OnStaff
+            || m_nMousePointedArea == lmMOUSE_OnBelowStaff
             || m_nMousePointedArea == lmMOUSE_OnAboveStaff) )
     {
         //GetToolBoxValuesForPage(lmPAGE_NOTES);
@@ -1034,7 +1034,7 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
     long nNowOnValidArea = m_nMousePointedArea & m_nValidAreas;
 
     //Now we start dealing with mouse moving and mouse clicks. Dragging (moving the mouse
-    //with a mouse button clicked) is a meaningless operation and will be treated as 
+    //with a mouse button clicked) is a meaningless operation and will be treated as
     //moving. Therefore, only two type of events will be considered: mouse click and
     //mouse move. Let's start with mouse click events.
 
@@ -1099,7 +1099,7 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
     }
     else
     {
-        //no change valid<->invalida area. If we continue in a valid area draw ledger 
+        //no change valid<->invalida area. If we continue in a valid area draw ledger
         //lines if necessary
         if (nNowOnValidArea)
             ContinueToolDrag(event, pDC);
@@ -1233,7 +1233,7 @@ lmUPoint lmScoreCanvas::OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos)
     if (m_pLastBSI && m_pLastBSI != m_pCurBSI)
         m_pLastBSI->DrawTimeGrid(pPaper);
 
-    //draw new grid 
+    //draw new grid
     if (m_pCurBSI && (!m_pLastBSI || m_pLastBSI != m_pCurBSI))
         m_pCurBSI->DrawTimeGrid(pPaper);
 
@@ -1388,7 +1388,7 @@ void lmScoreCanvas::AddTitle()
     lmTextStyle* pStyle = pScore->GetStyleInfo(_("Title"));
     wxASSERT(pStyle);
     wxString sTitle = _T("");
-    lmScoreTitle* pNewTitle 
+    lmScoreTitle* pNewTitle
         = new lmScoreTitle(pScore, lmNEW_ID, sTitle, lmBLOCK_ALIGN_BOTH,
                            lmHALIGN_DEFAULT, lmVALIGN_DEFAULT, pStyle);
 	pScore->AttachAuxObj(pNewTitle);
@@ -1574,7 +1574,7 @@ void lmScoreCanvas::DeleteTuplet(lmNoteRest* pStartNR)
     // is pStartNR
     //
     // Precondition:
-    //      It has been checked that pStatNR is in a tuplet and that it is the 
+    //      It has been checked that pStatNR is in a tuplet and that it is the
     //      first note/rest.
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -2053,7 +2053,7 @@ void lmScoreCanvas::PrepareToolDragImages()
     //This method must set variables m_pToolBitmap and m_vToolHotSpot
     //If m_pToolBitmap is set to NULL it will imply that no drag image will be used.
 
-    //TODO: It should be responsibility of each tool to provide this information. Move 
+    //TODO: It should be responsibility of each tool to provide this information. Move
     //this code to each Tool in the ToolBox.
 
     //TODO: Drag image is related to mouse cursor to use. Should we merge this method with
@@ -2166,7 +2166,7 @@ void lmScoreCanvas::PrepareToolDragImages()
         //No drag image. Only mouse cursor
         m_pToolBitmap = (wxBitmap*)NULL;
     }
-                        
+
 }
 
 void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)
@@ -3698,7 +3698,7 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime
             else
                 nStaff = 2;
         }
-            
+
         //Move caret to insertion position
         if (pBSI)
         {

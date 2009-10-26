@@ -42,7 +42,7 @@ int AnalyzeHarmonicProgression(lmScoreChord** pChordDescriptor, int nNCH, ChordI
     wxLogMessage(_T("*** AnalyzeHarmonicProgression N:%d "), nNCH);
     for (int i = 0; i<nNCH; i++)
     {
-        wxLogMessage(_T("   Chord %d to analyze: %s"), i, pChordDescriptor[i]->ToString());
+        wxLogMessage(_T("   Chord %d to analyze: %s"), i, pChordDescriptor[i]->ToString().c_str());
     }
 
     int nNumChordError[lmMAX_NUM_CHORDS]; // number of errors in each chord
@@ -116,7 +116,7 @@ int GetHarmonicMovementType( lmFPitch fVoice10, lmFPitch fVoice11, lmFPitch fVoi
 
 int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1) //@@@ todo remove!!!
 {
-    lmFIntval nDistance  = abs (n2 - n1);    
+    lmFIntval nDistance  = abs (n2 - n1);
     int nIntervalNumber  = FIntval_GetNumber(nDistance);
     wxLogMessage(_("\t\t GetIntervalNumberFromFPitchDistance: %d-%d D:%d I:%d ")
         , n2, n1, nDistance, nIntervalNumber);
@@ -147,7 +147,7 @@ wxString NormalizedFPitch_ToAbsLDPName(lmFPitch fp)
 
 
 
-//  Get interval in FPitch from: 
+//  Get interval in FPitch from:
 //   chord degree (root note step)
 //   key signature
 //   interval index (1=3rd, 2=5th, etc)
@@ -161,7 +161,7 @@ lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nInterval)
     lmFPitch fpPitch = FPitchStepsInterval(nRootStep, (nRootStep+(nInterval*2))%(lmSTEP_B+1), nKey);
     return (lmFIntval) fpPitch;
 }
-	
+
 //-----------------------------------------------------------------------------------
 
 
@@ -353,7 +353,7 @@ void ChordInfoBox::DisplayChordInfo(lmScore* pScore, lmScoreChord* pChordDsct, w
     if ( ! pChordDsct->HasLmNotes())
     {
         wxLogMessage(_T(" DisplayChordInfo ERROR: NO score notes!"));
-        return;  
+        return;
     }
     lmTextStyle* pStyle = pScore->GetStyleName(*m_pFontInfo);
 
@@ -420,31 +420,31 @@ void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
 
   lmFPitchChord is a lmChord that can contain also notes in "lmFPitch".
   The lmFPitch notes can be added after the construction, except the root note (bass voice) that is already in lmChord
-    remember: the ROOT NOTE is REQUIRED in ANY chord; 
+    remember: the ROOT NOTE is REQUIRED in ANY chord;
       it is defined in the construction and should never be modified afterwards
-  
-  
+
+
     Possible constructors :
       1 created with NO notes; then added with AddNoteFromLmNote or AddNoteLmFPitch
 	      GetNoteFpitch returns a 0 if the note has not been added
       2 created with notes. NO POSSIBLE TO ADD NOTES.  [controlled with m_fCreatedWithNotes]
     check the number of notes available with GetNumNotes()
 	Notes can not be removed nor modified
-	
+
   lmScoreChord is a 'real score chord': it contains actual notes of the score (lmNotes)
    it is a lmFPitchChord that can contain also notes in "lmNotes"
 
    The lmNotes notes can be added after the construction
 
     aware: the root note might NOT be present. The root note is alway present in lmFPitch, but it may not have
-            a corresponding lmNote. 
-  
+            a corresponding lmNote.
+
     Possible constructors :
       1 created with NO notes; then
              added with AddNoteFromLmNote
 			    adds both lmFPitch and lmNotes
              added ONLY lmFPitch with AddNoteLmFPitch or AddNoteFromInterval
-			   it only adds  lmFPitch !!! 
+			   it only adds  lmFPitch !!!
 			      To add the missing lmNote, use SetLmNote
 			         since the lmFPitch of this note must exist
   					    it must be the same as the note->GetFPitch(). This is checked.
@@ -468,7 +468,7 @@ lmFPitchChord::lmFPitchChord(int nNumNotes, lmFPitch fNotes[], lmEKeySignatures 
         assert( IsValidChordNote(fNotes[i]) );
         if (i == 0)
         {
-            wxLogMessage(_T(" lmFPitchChord  bass noteN: %d   BASSN %d ") 
+            wxLogMessage(_T(" lmFPitchChord  bass noteN: %d   BASSN %d ")
                 , (fNotes[0]  % lm_p8) , GetNormalizedBass() );
             assert( (fNotes[0] % lm_p8) == GetNormalizedBass() );
         }
@@ -493,9 +493,9 @@ lmFPitchChord::lmFPitchChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nK
         assert( IsValidChordNote(pNotes[i]->GetFPitch()) );
         if (i == 0)
         {
-            wxLogMessage(_T(" lmFPitchChord  bass lmNoteN: %d   BASSN %d ") 
+            wxLogMessage(_T(" lmFPitchChord  bass lmNoteN: %d   BASSN %d ")
                     , (pNotes[0]->GetFPitch() % lm_p8), GetNormalizedBass() );
-            assert( (pNotes[0]->GetFPitch() % lm_p8) == GetNormalizedBass() ); 
+            assert( (pNotes[0]->GetFPitch() % lm_p8) == GetNormalizedBass() );
             // actual bass note must be consistent with chord bass note
         }
         m_fpChordNotes[i] = pNotes[i]->GetFPitch();
@@ -506,7 +506,7 @@ lmFPitchChord::lmFPitchChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nK
     }
     m_nNumChordNotes = nNumNotes;
     m_fCreatedWithNotes = true;
-} 
+}
 
 // Creates a chord from "essential" information
 lmFPitchChord::lmFPitchChord(int nDegree, lmEKeySignatures nKey, int nNumIntervals, int nNumInversions, int octave)
@@ -521,7 +521,7 @@ int  lmFPitchChord::AddNoteLmFPitch(lmFPitch fNote)
 {
     if (m_fCreatedWithNotes)
     {
-        wxLogMessage(_T(" lmFPitchChord::AddNoteLmFPitch ERROR, it was created with %d notes ") 
+        wxLogMessage(_T(" lmFPitchChord::AddNoteLmFPitch ERROR, it was created with %d notes ")
             , m_nNumChordNotes );
     }
     else
@@ -532,13 +532,13 @@ int  lmFPitchChord::AddNoteLmFPitch(lmFPitch fNote)
             m_fpChordNotes[m_nNumChordNotes] = fNote;
             m_nNumChordNotes++;
             SortChordNotes(m_nNumChordNotes, m_fpChordNotes); // sort notes so that voice <=> index
-            wxLogMessage(_T("\t\t lmFPitchChord::AddNoteLmFPitch(%d) [%s]    NUM notes:%d Chord:{%s}") 
-                ,fNote,FPitch_ToAbsLDPName(fNote).c_str(), m_nNumChordNotes, this->ToString() );
+            wxLogMessage(_T("\t\t lmFPitchChord::AddNoteLmFPitch(%d) [%s]    NUM notes:%d Chord:{%s}")
+                ,fNote,FPitch_ToAbsLDPName(fNote).c_str(), m_nNumChordNotes, this->ToString().c_str() );
         }
         else
         {
-            wxLogMessage(_T("  @@@@ lmFPitchChord::AddNoteLmFPitch ERROR note %d [%s] does not belong to chord {%s}") 
-                ,fNote,FPitch_ToAbsLDPName(fNote).c_str() , this->ToString() );
+            wxLogMessage(_T("  @@@@ lmFPitchChord::AddNoteLmFPitch ERROR note %d [%s] does not belong to chord {%s}")
+                ,fNote,FPitch_ToAbsLDPName(fNote).c_str() , this->ToString().c_str()  );
         }
 
     }
@@ -566,7 +566,7 @@ int lmFPitchChord::AddNoteFromLmNote(lmNote* pNote)
 {
     if (m_fCreatedWithNotes)
     {
-        wxLogMessage(_T(" lmFPitchChord::AddNoteFromLmNote ERROR, it was created with %d notes ") 
+        wxLogMessage(_T(" lmFPitchChord::AddNoteFromLmNote ERROR, it was created with %d notes ")
             , m_nNumChordNotes );
     }
     else
@@ -583,7 +583,7 @@ int lmFPitchChord::AddNoteFromInterval(int nInterval, int octaves)
 {
     if (m_fCreatedWithNotes)
     {
-        wxLogMessage(_T(" lmFPitchChord::AddNoteFromInterval ERROR, it was created with %d notes ") 
+        wxLogMessage(_T(" lmFPitchChord::AddNoteFromInterval ERROR, it was created with %d notes ")
             , m_nNumChordNotes );
     }
     else
@@ -608,7 +608,7 @@ void lmFPitchChord::RemoveAllNotes()
 
 wxString lmFPitchChord::ToString()
 {
-    // extend the parent information 
+    // extend the parent information
     wxString sStr = this->lmChord::ToString();
     sStr += _("; Notes:");
     for (int nN = 0; nN<m_nNumChordNotes; nN++)
@@ -632,7 +632,7 @@ lmScoreChord::lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey
     //   Whenever a lmNote is added, it should be checked that
     //  - this note matches the corresponding in lmFPitch (m_fpChordNotes)
     //  - the note is valid: it can be obtained from the bass note by adding an interval and +-octaves
-    m_nNumLmNotes = 0; 
+    m_nNumLmNotes = 0;
     assert(nNumNotes<lmNOTES_IN_CHORD);
     for (int i = 0; i<nNumNotes; i++)
     {
@@ -640,10 +640,10 @@ lmScoreChord::lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey
         assert( pNotes[i]->GetFPitch() == m_fpChordNotes[i] );
         if (i == 0)
         {
-            wxLogMessage(_T(" lmScoreChord  bass lmNoteN: %d   BASSN %d ") 
+            wxLogMessage(_T(" lmScoreChord  bass lmNoteN: %d   BASSN %d ")
                     , (pNotes[0]->GetFPitch() % lm_p8), GetNormalizedBass() );
             // ENSURE THE lmFPitch of the note is the same as pNote-> GetFPitch()
-            assert( (pNotes[0]->GetFPitch() % lm_p8) == GetNormalizedBass() ); 
+            assert( (pNotes[0]->GetFPitch() % lm_p8) == GetNormalizedBass() );
             // actual bass note must be consistent with chord bass note
         }
         m_pChordNotes[i] = pNotes[i];
@@ -659,7 +659,7 @@ lmScoreChord::lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey
 lmScoreChord::lmScoreChord(int nDegree, lmEKeySignatures nKey, int nNumIntervals, int nNumInversions, int octave)
     : lmFPitchChord(nDegree, nKey, nNumIntervals, nNumInversions, octave)
 {
-    m_nNumLmNotes = 0; 
+    m_nNumLmNotes = 0;
     for (int i = 0; i<lmNOTES_IN_CHORD; i++)
     {
         m_pChordNotes[i] = 0;
@@ -699,7 +699,7 @@ lmNote* lmScoreChord::GetNoteLmNote(int nIndex)
        return m_pChordNotes[nIndex];
     else
        return 0;
-} 
+}
 int lmScoreChord::GetNoteVoice(int nIndex)
 {
     if (m_pChordNotes[nIndex] != 0)
@@ -854,7 +854,7 @@ lmRuleList::lmRuleList(lmScoreChord** pChD, int nNumChords)
     SetChordDescriptor(pChD, nNumChords);
 };
 
-// TODO: ADD MORE HARMONY RULES 
+// TODO: ADD MORE HARMONY RULES
 //        To add a rule:
 //        1) Create the class (recommended to use the macro LM_CREATE_CHORD_RULE)
 //        2) Add an instance in AddRule
@@ -956,7 +956,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
             {
                 if ( nVoiceInterval[i] == nVoiceInterval[nN])
                 {
-                     lmFIntval nInterval = abs( 
+                     lmFIntval nInterval = abs(
                          m_pChordDescriptor[nC]->GetNoteFpitch(nN)
                          - m_pChordDescriptor[nC]->GetNoteFpitch(i) );
                      int nIntervalNumber = FIntval_GetNumber(nInterval);
@@ -1070,7 +1070,7 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                   m_pChordDescriptor[nC-1]->GetNoteFpitch(i), m_pChordDescriptor[nC]->GetNoteFpitch(i));
 
 
-                lmFIntval nInterval = abs( 
+                lmFIntval nInterval = abs(
                          m_pChordDescriptor[nC]->GetNoteFpitch(nN)
                          - m_pChordDescriptor[nC]->GetNoteFpitch(i) );
                 int nIntervalNumber = FIntval_GetNumber(nInterval);
@@ -1085,7 +1085,7 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                 if ( nVoiceMovementType == lm_eDirectMovement && ( nIntervalNumber == 1 || nIntervalNumber == 5 )  )
                 {
                     // Incorrect, unless: voice interval is 2th and voice is > 0 (not BASS)
-                     lmFIntval nVoiceInterval = abs( 
+                     lmFIntval nVoiceInterval = abs(
                          m_pChordDescriptor[nC]->GetNoteFpitch(nN)
                          - m_pChordDescriptor[nC]->GetNoteFpitch(i) ) ;
                      int nVoiceIntervalNumber = FIntval_GetNumber(nVoiceInterval);
