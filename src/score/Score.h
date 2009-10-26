@@ -343,6 +343,7 @@ public:
                      wxWindow* pWindow = (wxWindow*)NULL );
     void PlayFromMeasure(int nMeasure,
 						 bool fVisualTracking = lmNO_VISUAL_TRACKING,
+                         bool fCountOff = lmNO_COUNTOFF,
 						 lmEPlayMode nPlayMode = ePM_NormalInstrument,
 						 long nMM = 0,
 						 wxWindow* pWindow = (wxWindow*)NULL );

@@ -78,6 +78,10 @@ public:
     //implementation of virtual methods
     lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
     void CreateGroups();
+    bool DeselectRelatedGroups(lmEToolGroupID nGroupID);
+
+    //current tool/group info
+    wxString GetToolShortDescription();
 
 
 private:

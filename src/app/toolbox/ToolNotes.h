@@ -33,30 +33,7 @@ class wxBitmapComboBox;
 class lmCheckButton;
 class lmBitmapButton;
 
-////--------------------------------------------------------------------------------
-//// Group for data entry mode
-////--------------------------------------------------------------------------------
-//
-//#define  lm_DATA_ENTRY_KEYBOARD     0x0000
-//#define  lm_DATA_ENTRY_MOUSE        0x0001
-//
-//class lmGrpEntryMode : public lmToolButtonsGroup
-//{
-//public:
-//    lmGrpEntryMode(lmToolPage* pParent, wxBoxSizer* pMainSizer);
-//    ~lmGrpEntryMode() {}
-//
-//    //implement virtual methods
-//    void CreateControls(wxBoxSizer* pMainSizer);
-//    inline lmEToolGroupID GetToolGroupID() { return lmGRP_EntryMode; }
-//
-//	//access to options
-//	inline int GetEntryMode() { return m_nSelButton; }
-//	inline void SetEntryMode(int nEntryMode) { SelectButton(nEntryMode); }
-//
-//};
-//
-//
+
 //--------------------------------------------------------------------------------
 // Group for octave number
 //--------------------------------------------------------------------------------
@@ -145,11 +122,33 @@ public:
     //implement virtual methods
     void CreateControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteDuration; }
-    //inline int GetNumTools();
-    //inline long GetToolID(int nTool);
 
 	//access to options
 	lmENoteType GetNoteDuration();
+
+    //modify buttons
+    void SetButtonsBitmaps(bool fNotes);
+
+};
+
+
+
+//--------------------------------------------------------------------------------
+// Group to select notes or rests
+//--------------------------------------------------------------------------------
+class lmGrpNoteRest : public lmToolButtonsGroup
+{
+public:
+    lmGrpNoteRest(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpNoteRest() {}
+
+    //implement virtual methods
+    void CreateControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteRest; }
+
+	//access to options
+	bool IsNoteSelected();
+    inline bool IsRestSelected() { return !IsNoteSelected(); }
 
 };
 
@@ -274,8 +273,10 @@ public:
 
     //implementation of virtual methods
     lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
+    bool DeselectRelatedGroups(lmEToolGroupID nGroupID);
 
 	//access to options
+    wxString GetToolShortDescription();
 
     //interface with Octave group
 	inline int GetOctave() { return m_pGrpOctave->GetOctave(); }
@@ -286,6 +287,10 @@ public:
 	inline int GetVoice() { return m_pGrpVoice->GetVoice(); }
     inline void SetVoice(bool fUp) { m_pGrpVoice->SetVoice(fUp); }
     inline void SetVoice(int nVoice) { m_pGrpVoice->SetVoice(nVoice); }
+
+    //interface with Note/Rest group
+	inline bool IsNoteSelected() { return m_pGrpNoteRest->IsNoteSelected(); }
+    inline bool IsRestSelected() { return m_pGrpNoteRest->IsRestSelected(); }
 
     //interface with NoteDuration group
     inline void EnableGrpNoteDuration(bool fEnabled) { m_pGrpNoteDuration->EnableGroup(fEnabled); }
@@ -334,6 +339,7 @@ protected:
     lmToolPageNotes();
 
     //groups
+    lmGrpNoteRest*      m_pGrpNoteRest;
     lmGrpNoteDuration*  m_pGrpNoteDuration;
     lmGrpNoteAcc*       m_pGrpNoteAcc;
     lmGrpNoteDots*      m_pGrpNoteDots;
@@ -341,7 +347,7 @@ protected:
     lmGrpBeams*         m_pGrpBeams;
 	lmGrpOctave*		m_pGrpOctave;
 	lmGrpVoice*			m_pGrpVoice;
-	//lmGrpEntryMode*     m_pGrpEntryMode;
+	//lmGrpMouseMode*     m_pGrpEntryMode;
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;

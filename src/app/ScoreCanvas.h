@@ -318,16 +318,26 @@ private:
 
     //values that depend on selected tool
     wxMenu* GetContextualMenuForTool();
-    void GetValidAreasAndMouseIcons();
+    void UpdateValidAreasAndMouseIcons();
 
     //dealing with mouse events
     void OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC);
     void OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC);
 
     //mouse tools operations
-    void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rTime);
     void PrepareToolDragImages();
-    void GetDataEntryMode();
+    void UpdateStatusBarToolBox();
+    void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
+    void OnToolNotesClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
+                          lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
+    void OnToolClefsClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
+                          lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
+    void OnToolSymbolsClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
+                            lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
+    void OnToolTimeSignatureClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
+                                  lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
+    void OnToolKeySignatureClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
+                                 lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
 
     //mouse cursors
     wxCursor* LoadMouseCursor(wxString sFile, int nHotSpotX, int nHotSpotY);
@@ -353,15 +363,22 @@ private:
     void SelectVoice(bool fUp);
     void SelectVoice(int nVoice);
 
-    //access to ToolBox
-    void GetToolBoxValuesForPage(lmEToolPage nPage);
+    //access to ToolBox values
+    void UpdateSelectedToolInfo();
+    void UpdateToolBoxValues();
 
+    //caret positioning
+    void MoveCursorTo(lmBoxSliceInstr* pBSI, int nStaff, float rTime, bool fEndOfTime);
+    void MoveCursorNearTo(lmBoxSliceInstr* pBSI, lmUPoint uPagePos, int nStaff);
 
     //managing selections and cursor pointed objects
     bool IsSelectionValidForTies(lmNote** ppStartNote = NULL, lmNote** ppEndNote = NULL);
     lmNoteRest* IsSelectionValidForTuplet();
     bool IsCursorValidToCutBeam();
     bool IsSelectionValidToJoinBeam();
+
+    //time grid
+    inline bool UseTimeGrid() { return m_nPageID == lmPAGE_NOTES; }
 
 
 
@@ -372,8 +389,8 @@ private:
 
     wxColour        m_colorBg;			//colour for background
 
-    //data entry mode
-    int             m_nEntryMode;
+    //mouse mode
+    int             m_nMouseMode;
 
     //mouse cursors
     std::vector<wxCursor*>  m_MouseCursors;             //array. Indexes are enum lmEMouseCursor
@@ -407,6 +424,10 @@ private:
     int             m_nTbDuration;
 
     //current values selected in ToolBox
+	lmToolBox*      m_pToolBox;
+    lmEToolPageID   m_nPageID;
+    lmEToolGroupID  m_nGroupID;
+    lmEToolID       m_nToolID;
         //PageNotes
     lmENoteType     m_nSelNoteType;
 	int             m_nSelDots;
@@ -414,6 +435,8 @@ private:
 	lmEAccidentals  m_nSelAcc;
 	int             m_nSelOctave;
 	int             m_nSelVoice;
+        //Page Clefs
+    lmEClefType     m_nClefType;
 
     //temporary data for OnMouseEvent method
 
@@ -443,7 +466,7 @@ private:
     lmShapeStaff*   m_pCurShapeStaff;       //current staff for point pointed by mouse
     lmBoxSliceInstr* m_pLastBSI;            //last BoxSliceInstr pointed by mouse
     lmBoxSliceInstr* m_pCurBSI;             //current BoxSliceInstr pointed by mouse
-    float           m_rCurTime;             //time for current mouse position
+    float           m_rCurGridTime;         //time for current mouse position
     bool            m_fDraggingTool;        //dragging a tool
 
 

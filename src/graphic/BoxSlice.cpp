@@ -204,7 +204,7 @@ void lmBoxSlice::InsertInPosTimeTable(float rTimepos)
     }
 }
 
-float lmBoxSlice::GetTimeForPosition(lmLUnits uxPos)
+float lmBoxSlice::GetGridTimeForPosition(lmLUnits uxPos)
 {
     //timepos = 0 if measure is empty
     if (m_PosTimes.size() == 0)

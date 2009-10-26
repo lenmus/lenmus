@@ -35,14 +35,14 @@ class lmToolPage: public wxPanel
 	DECLARE_ABSTRACT_CLASS(lmToolPage)
 
 public:
-    lmToolPage(wxWindow* parent);
+    lmToolPage(wxWindow* parent, lmEToolPageID nPageID);
     lmToolPage();
     ~lmToolPage();
-    virtual void Create(wxWindow* parent);
+    virtual void CreatePage(wxWindow* parent, lmEToolPageID nPageID);
 
 	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void CreateLayout();
-	inline lmColorScheme* GetColors() { return ((lmToolBox*)GetParent())->GetColors(); }
+	inline lmColorScheme* GetColors() { return GetToolBox()->GetColors(); }
     virtual lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID) = 0;
 
     virtual wxString& GetPageToolTip() { return m_sPageToolTip; }
@@ -51,15 +51,32 @@ public:
     virtual void OnPopUpMenuEvent(wxCommandEvent& event) { event.Skip(); }
 
     virtual void CreateGroups() = 0;
+    virtual bool DeselectRelatedGroups(lmEToolGroupID nGroupID) = 0;
+
+	//current selected group/tool and its options
+    inline lmEToolGroupID GetCurrentGroupID() const { return m_nCurGroupID; }
+    inline lmEToolID GetCurrentToolID() const { return m_nCurToolID; }
+    virtual wxString GetToolShortDescription() = 0;
+
+    //callbacks
+    void OnToolChanged(lmEToolGroupID nGroupID, lmEToolID nToolID);
 
 
 protected:
+    inline lmToolBox* GetToolBox() { return (lmToolBox*)GetParent(); }
+
     wxString    m_sPageToolTip;         //tool tip text
     wxString    m_sPageBitmapName;      //bitmap to use
+    bool        m_fGroupsCreated;       //to avoid handling events until groups created
+
+    //info about current group/tool
+    lmEToolGroupID  m_nCurGroupID;
+    lmEToolID       m_nCurToolID;
 
 private:
-	wxBoxSizer*		m_pMainSizer;	//the main sizer for the panel
+	wxBoxSizer*		m_pMainSizer;	    //the main sizer for the panel
 	lmColorScheme	m_colors;
+    lmEToolPageID   m_nPageID;          //this page ID
 
 };
 

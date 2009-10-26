@@ -344,8 +344,8 @@ void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
                 lmNO_COUNTOFF, nMM, pWindow);
 }
 
-void lmSoundManager::PlayFromMeasure(int nMeasure, bool fVisualTracking,
-                        lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
+void lmSoundManager::PlayFromMeasure(int nMeasure, bool fVisualTracking, bool fCountOff,
+                                     lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
     // Play back from measure n (n = 1 ... num_measures) to end
 
@@ -366,7 +366,7 @@ void lmSoundManager::PlayFromMeasure(int nMeasure, bool fVisualTracking,
     int nEvEnd = m_aEvents.GetCount() - 1;
 
     PlaySegment(nEvStart, nEvEnd, nPlayMode, fVisualTracking,
-                lmNO_COUNTOFF, nMM, pWindow);
+                fCountOff, nMM, pWindow);
 }
 
 

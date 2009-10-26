@@ -1156,15 +1156,16 @@ void lmScore::PlayMeasure(int nMeasure, bool fVisualTracking, lmEPlayMode nPlayM
     m_pSoundMngr->PlayMeasure(nMeasure, fVisualTracking, nPlayMode, nMM, pWindow);
 }
 
-void lmScore::PlayFromMeasure(int nMeasure, bool fVisualTracking, lmEPlayMode nPlayMode,
-							  long nMM, wxWindow* pWindow)
+void lmScore::PlayFromMeasure(int nMeasure, bool fVisualTracking, bool fCountOff,
+                              lmEPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
     if (!m_pSoundMngr) {
         m_pSoundMngr = new lmSoundManager(this);
         ComputeMidiEvents();
     }
 
-    m_pSoundMngr->PlayFromMeasure(nMeasure, fVisualTracking, nPlayMode, nMM, pWindow);
+    m_pSoundMngr->PlayFromMeasure(nMeasure, fVisualTracking, fCountOff, nPlayMode,
+                                  nMM, pWindow);
 }
 
 void lmScore::Pause()

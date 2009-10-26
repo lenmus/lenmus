@@ -41,6 +41,7 @@
 #include "ToolsBox.h"
 #include "ToolClef.h"
 #include "ToolGroup.h"
+#include "ToolBoxEvents.h"
 #include "../ArtProvider.h"         //to use ArtProvider for managing icons
 #include "../TheApp.h"              //to use GetMainFrame()
 #include "../MainFrame.h"           //to get active lmScoreCanvas
@@ -55,17 +56,18 @@
 #define lmSPACING 5
 
 //event IDs
+#define lm_NUM_CLEF_BUTTONS  8
+
 enum {
-    lmID_CLEF_LIST = 2600,
-    lmID_CLEF_ADD,
+	lmID_BT_ClefType = 2600,
+    lmID_CLEF_LIST = lmID_BT_ClefType + lm_NUM_CLEF_BUTTONS,
 
     // Time signature group
-    lmID_BT_TimeType = lmID_CLEF_ADD + 1,
+    lmID_BT_TimeType = lmID_CLEF_LIST + 1,
 
     // Key signature group
     lmID_KEY_TYPE = lmID_BT_TimeType + lmGrpTimeType::lm_NUM_BUTTONS,
     lmID_KEY_LIST = lmID_KEY_TYPE + 2,
-    lmID_KEY_ADD,
 };
 
 
@@ -85,7 +87,7 @@ lmToolPageClefs::lmToolPageClefs(wxWindow* parent)
 void lmToolPageClefs::Create(wxWindow* parent)
 {
     //base class
-    lmToolPage::Create(parent);
+    lmToolPage::CreatePage(parent, lmPAGE_CLEFS);
 
     //initialize data
     m_sPageToolTip = _("Edit tools for clefs, keys and time signatures");
@@ -126,6 +128,82 @@ void lmToolPageClefs::CreateGroups()
     m_pGrpKeyType = new lmGrpKeyType(this, pMainSizer);
     
 	CreateLayout();
+
+    //Select clef group
+    m_pGrpClefType->SetSelected(true);
+    m_pGrpTimeType->SetSelected(false);
+    m_pGrpKeyType->SetSelected(false);
+    this->Refresh();
+    m_nCurGroupID = lmGRP_ClefType;
+    m_nCurToolID = lmTOOL_NONE;
+
+    m_fGroupsCreated = true;
+}
+
+bool lmToolPageClefs::DeselectRelatedGroups(lmEToolGroupID nGroupID)
+{
+    //When there are several groups in the same tool page (i.e, clefs, keys and
+    //time signatures) the groups will behave as if they where a single 'logical
+    //group', that is, selecting a tool in a group will deselect any tool on the
+    //other related groups. To achieve this behaviour the group will call this
+    //method to inform the owner page.
+    //This method must deselect tools in any related groups to the one received
+    //as parameter, and must return 'true' if that group is a tool group of
+    //'false' if it is an options group.
+
+    switch(nGroupID)
+    {
+        case lmGRP_ClefType:
+            m_pGrpClefType->SetSelected(true);
+            m_pGrpTimeType->SetSelected(false);
+            m_pGrpKeyType->SetSelected(false);
+            this->Refresh();
+            return true;        //clef is a tool group
+
+        case lmGRP_TimeType:
+            m_pGrpClefType->SetSelected(false);
+            m_pGrpTimeType->SetSelected(true);
+            m_pGrpKeyType->SetSelected(false);
+            this->Refresh();
+            return true;        //time is a tool group
+
+        case lmGRP_KeyType:
+            m_pGrpClefType->SetSelected(false);
+            m_pGrpTimeType->SetSelected(false);
+            m_pGrpKeyType->SetSelected(true);
+            this->Refresh();
+            return true;        //key is a tool group
+
+        default:
+            wxASSERT(false);
+    }
+    return false;      //compiler happy
+}
+
+wxString lmToolPageClefs::GetToolShortDescription()
+{
+    //returns a short description of the selected tool. This description is used to
+    //be displayed in the status bar
+
+    wxString sDescr;
+    switch( GetCurrentGroupID() )
+    {
+        case lmGRP_ClefType:
+            sDescr = _("Add clef");
+            break;
+
+        case lmGRP_TimeType:
+            sDescr = _("Add time signature");
+            break;
+
+        case lmGRP_KeyType:
+            sDescr = _("Add key signature");
+            break;
+
+        default:
+            sDescr = _T("");
+    }
+    return sDescr;
 }
 
 
@@ -134,9 +212,18 @@ void lmToolPageClefs::CreateGroups()
 // lmGrpClefType implementation
 //--------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(lmGrpClefType, lmToolGroup)
-    EVT_BUTTON      (lmID_CLEF_ADD, lmGrpClefType::OnAddClef)
-END_EVENT_TABLE()
+//aux. class to contain clefs data
+class lmClefData
+{
+public:
+    lmClefData() {}
+    lmClefData(lmEClefType type, wxString name, wxString sBmp) 
+        : sClefName(name), nClefType(type), sButtonBmp(sBmp) {}
+
+    lmEClefType		nClefType;
+    wxString		sClefName;
+    wxString        sButtonBmp;
+};
 
 enum {
     lm_eNUM_CLEFS = 8,
@@ -144,6 +231,14 @@ enum {
 
 static lmClefData m_tClefs[lm_eNUM_CLEFS];
 static bool m_fStringsInitialized = false;
+
+
+#if lmUSE_CLEF_COMBO
+//--------------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(lmGrpClefType, lmToolGroup)
+    EVT_COMBOBOX    (lmID_CLEF_LIST, lmGrpClefType::OnClefList)
+END_EVENT_TABLE()
 
 lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent, pParent->GetColors())
@@ -153,15 +248,26 @@ lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
     if (!m_fStringsInitialized)
     {
         //AWARE: When addign more clefs, update lm_eNUM_CLEFS;
-        m_tClefs[0] = lmClefData( _("G clef on 2nd line"), lmE_Sol );
-        m_tClefs[1] = lmClefData( _("F clef on 4th line"), lmE_Fa4 );
-        m_tClefs[2] = lmClefData( _("F clef on 3rd line"), lmE_Fa3 );
-        m_tClefs[3] = lmClefData( _("C clef on 1st line"), lmE_Do1 );
-        m_tClefs[4] = lmClefData( _("C clef on 2nd line"), lmE_Do2 );
-        m_tClefs[5] = lmClefData( _("C clef on 3rd line"), lmE_Do3 );
-        m_tClefs[6] = lmClefData( _("C clef on 4th line"), lmE_Do4 );
-        m_tClefs[7] = lmClefData( _("Percussion clef"), lmE_Percussion );
-        //
+        m_tClefs[0] = lmClefData(lmE_Sol, _("G clef on 2nd line"), _T("clef_g") );
+        m_tClefs[1] = lmClefData(lmE_Fa4, _("F clef on 4th line"), _T("clef_g") );
+        m_tClefs[2] = lmClefData(lmE_Fa3, _("F clef on 3rd line"), _T("clef_g") );
+        m_tClefs[3] = lmClefData(lmE_Do1, _("C clef on 1st line"), _T("clef_g") );
+        m_tClefs[4] = lmClefData(lmE_Do2, _("C clef on 2nd line"), _T("clef_g") );
+        m_tClefs[5] = lmClefData(lmE_Do3, _("C clef on 3rd line"), _T("clef_g") );
+        m_tClefs[6] = lmClefData(lmE_Do4, _("C clef on 4th line"), _T("clef_g") );
+        m_tClefs[7] = lmClefData(lmE_Percussion, _("Percussion clef"), _T("clef_g") );
+        //// other clefs not yet available
+        //lmE_Do5,
+        //lmE_Fa5,
+        //lmE_Sol1,
+        //lmE_8Sol,       //8 above
+        //lmE_Sol8,       //8 below
+        //lmE_8Fa,        //8 above
+        //lmE_Fa8,        //8 below
+        //lmE_15Sol,      //15 above
+        //lmE_Sol15,      //15 below
+        //lmE_15Fa,       //15 above
+        //lmE_Fa15,       //15 below
         m_fStringsInitialized = true;
     }
 
@@ -171,7 +277,7 @@ lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpClefType::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Add clef"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Clef"));
 
     //bitmap combo box to select the clef
     m_pClefList = new wxBitmapComboBox();
@@ -180,27 +286,17 @@ void lmGrpClefType::CreateControls(wxBoxSizer* pMainSizer)
 
 	pCtrolsSizer->Add( m_pClefList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-    //button to add the clef
-    m_pBtnAddClef = new wxButton(this, lmID_CLEF_ADD, _("Add clef"), wxDefaultPosition, wxDefaultSize, 0 );
-	pCtrolsSizer->Add( m_pBtnAddClef, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
     LoadClefList();
 	this->Layout();
 }
 
-void lmGrpClefType::OnAddClef(wxCommandEvent& event)
+void lmGrpClefType::OnClefList(wxCommandEvent& event)
 {
-    //insert selected key
-	WXUNUSED(event);
-	int iC = m_pClefList->GetSelection();
-    lmController* pSC = GetMainFrame()->GetActiveController();
-    if (pSC)
-    {
-        pSC->InsertClef(m_tClefs[iC].nClefType);
+    //Notify owner page about the tool change
+    WXUNUSED(event);
 
-        //return focus to active view
-        GetMainFrame()->SetFocusOnActiveView();
-    }
+    ((lmToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(),
+                                            (lmEToolID)m_pClefList->GetSelection() );
 }
 
 void lmGrpClefType::LoadClefList()
@@ -215,6 +311,83 @@ void lmGrpClefType::LoadClefList()
     m_pClefList->SetSelection(0);
 }
 
+lmEClefType lmGrpClefType::GetSelectedClef()
+{
+    return (lmEClefType)m_pClefList->GetSelection();
+}
+
+
+
+#else   //USE BUTTONS FOR CLEFS
+//--------------------------------------------------------------------------------
+
+lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+        : lmToolButtonsGroup(pParent, lm_NUM_CLEF_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+                             lmID_BT_ClefType, lmTOOL_NONE, pParent->GetColors())
+{
+    //load language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized)
+    {
+        //AWARE: When addign more clefs, update lm_eNUM_CLEFS;
+        m_tClefs[0] = lmClefData(lmE_Sol, _("G clef on 2nd line"), _T("clef_g") );
+        m_tClefs[1] = lmClefData(lmE_Fa4, _("F clef on 4th line"), _T("clef_g") );
+        m_tClefs[2] = lmClefData(lmE_Fa3, _("F clef on 3rd line"), _T("clef_g") );
+        m_tClefs[3] = lmClefData(lmE_Do1, _("C clef on 1st line"), _T("clef_g") );
+        m_tClefs[4] = lmClefData(lmE_Do2, _("C clef on 2nd line"), _T("clef_g") );
+        m_tClefs[5] = lmClefData(lmE_Do3, _("C clef on 3rd line"), _T("clef_g") );
+        m_tClefs[6] = lmClefData(lmE_Do4, _("C clef on 4th line"), _T("clef_g") );
+        m_tClefs[7] = lmClefData(lmE_Percussion, _("Percussion clef"), _T("clef_g") );
+        //// other clefs not yet available
+        //lmE_Do5,
+        //lmE_Fa5,
+        //lmE_Sol1,
+        //lmE_8Sol,       //8 above
+        //lmE_Sol8,       //8 below
+        //lmE_8Fa,        //8 above
+        //lmE_Fa8,        //8 below
+        //lmE_15Sol,      //15 above
+        //lmE_Sol15,      //15 below
+        //lmE_15Fa,       //15 above
+        //lmE_Fa15,       //15 below
+        m_fStringsInitialized = true;
+    }
+
+    CreateControls(pMainSizer);
+}
+
+void lmGrpClefType::CreateControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Clef"));
+
+    wxBoxSizer* pButtonsSizer;
+    wxSize btSize(32, 48);
+	for (int iB=0; iB < lm_NUM_CLEF_BUTTONS; iB++)
+	{
+		if (iB % 4 == 0) {
+			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+			pCtrolsSizer->Add(pButtonsSizer);
+		}
+
+		m_pButton[iB] = new lmCheckButton(this, lmID_BT_ClefType+iB, wxBitmap(32, 48));
+        m_pButton[iB]->SetBitmapUp(m_tClefs[iB].sButtonBmp, _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(m_tClefs[iB].sButtonBmp, _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(m_tClefs[iB].sButtonBmp, _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetToolTip(m_tClefs[iB].sClefName);
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
+	}
+	this->Layout();
+
+	SelectButton(0);	//select G clef
+}
+
+lmEClefType lmGrpClefType::GetSelectedClef()
+{
+    return (lmEClefType)m_nSelButton;
+}
+
+#endif  //lmUSE_CLEF_COMBO
 
 
 
@@ -243,6 +416,7 @@ static const lmGrpTimeType::lmButton m_tButtons[] = {
 
 lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent, pParent->GetColors())
+        , m_nSelButton(-1)  //none selected
 {
     wxASSERT(sizeof(m_tButtons) / sizeof(lmButton) == lm_NUM_BUTTONS);
     CreateControls(pMainSizer);
@@ -251,7 +425,7 @@ lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpTimeType::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Add a time signature"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Time signature"));
 
     //create the specific controls for this group
     wxBoxSizer* pButtonsSizer;
@@ -272,13 +446,31 @@ void lmGrpTimeType::CreateControls(wxBoxSizer* pMainSizer)
 
 void lmGrpTimeType::OnButton(wxCommandEvent& event)
 {
-	int iB = event.GetId() - lmID_BT_TimeType;
-    lmController* pSC = GetMainFrame()->GetActiveController();
-    if (pSC)
-        pSC->InsertTimeSignature(m_tButtons[iB].nBeats, m_tButtons[iB].nBeatType);
+    //Notify owner page about the tool change
+
+	m_nSelButton = event.GetId() - lmID_BT_TimeType;
+    ((lmToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(), (lmEToolID)m_nSelButton );
 }
 
+int lmGrpTimeType::GetTimeBeats()
+{
+    //Returns 0 if no button selected
 
+    if (m_nSelButton != -1)
+        return m_tButtons[m_nSelButton].nBeats;
+    else
+        return 0;
+}
+
+int lmGrpTimeType::GetTimeBeatType()
+{
+    //Returns 0 if no button selected
+
+    if (m_nSelButton != -1)
+        return m_tButtons[m_nSelButton].nBeatType;
+    else
+        return 0;
+}
 
 
 
@@ -290,7 +482,6 @@ BEGIN_EVENT_TABLE(lmGrpKeyType, lmToolGroup)
     EVT_RADIOBUTTON (lmID_KEY_TYPE, lmGrpKeyType::OnKeyType)
     EVT_RADIOBUTTON (lmID_KEY_TYPE+1, lmGrpKeyType::OnKeyType)
     EVT_COMBOBOX    (lmID_KEY_LIST, lmGrpKeyType::OnKeyList)
-    EVT_BUTTON      (lmID_KEY_ADD, lmGrpKeyType::OnAddKey)
 END_EVENT_TABLE()
 
 #define lmMAX_MINOR_KEYS    lmMAX_MINOR_KEY - lmMIN_MINOR_KEY + 1
@@ -325,7 +516,7 @@ lmGrpKeyType::lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpKeyType::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Add a key signature"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Key signature"));
 
     //create the specific controls for this group
 
@@ -344,10 +535,6 @@ void lmGrpKeyType::CreateControls(wxBoxSizer* pMainSizer)
 
 	pCtrolsSizer->Add( m_pKeyList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-    //button to add the key
-    m_pBtnAddKey = new wxButton(this, lmID_KEY_ADD, _("Add key"), wxDefaultPosition, wxDefaultSize, 0 );
-	pCtrolsSizer->Add( m_pBtnAddKey, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
     //load initial data
     m_pKeyRad[0]->SetValue(true);
     m_pKeyRad[1]->SetValue(false);
@@ -368,29 +555,32 @@ void lmGrpKeyType::OnKeyType(wxCommandEvent& event)
 
 void lmGrpKeyType::OnKeyList(wxCommandEvent& event)
 {
+    //An item has been selected in keys combo. Notify owner page about the tool change
+
     WXUNUSED(event);
+    NotifyToolChange();
 }
 
-void lmGrpKeyType::OnAddKey(wxCommandEvent& event)
+void lmGrpKeyType::NotifyToolChange()
 {
-    //insert selected key
-	WXUNUSED(event);
-	int iK = m_pKeyList->GetSelection();
-    bool fMajor = m_pKeyRad[0]->GetValue();
-    int nFifths = 0;
-    if (fMajor)
-        nFifths = m_tMajorKeys[iK].nFifths;
+    //Notify owner page about the tool change
+
+    ((lmToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(),
+                                            (lmEToolID)m_pKeyList->GetSelection() );
+}
+
+bool lmGrpKeyType::IsMajorKeySignature()
+{
+    return m_pKeyRad[0]->GetValue();
+}
+
+int lmGrpKeyType::GetFifths()
+{
+    int iK = m_pKeyList->GetSelection();
+    if (m_pKeyRad[0]->GetValue())       //if is major key signature
+        return m_tMajorKeys[iK].nFifths;
     else
-        nFifths = m_tMinorKeys[iK].nFifths;
-
-    lmController* pSC = GetMainFrame()->GetActiveController();
-    if (pSC)
-    {
-        pSC->InsertKeySignature(nFifths, fMajor);
-
-        //return focus to active view
-        GetMainFrame()->SetFocusOnActiveView();
-    }
+        return m_tMinorKeys[iK].nFifths;
 }
 
 void lmGrpKeyType::LoadKeyList(int nType)
@@ -418,5 +608,6 @@ void lmGrpKeyType::LoadKeyList(int nType)
         }
     }
     m_pKeyList->SetSelection(0);
+    NotifyToolChange();
 }
 

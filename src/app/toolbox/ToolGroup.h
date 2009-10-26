@@ -39,12 +39,15 @@ class lmColorScheme;
 
 enum lmEToolGroupID
 {
+    lmGRP_Undefined = 0,        //initial status
+
     //on ToolBox main panel
-    lmGRP_EntryMode,
+    lmGRP_MouseMode,
 
 	//in lmPAGE_NOTES
     lmGRP_Octave,
     lmGRP_Voice,
+    lmGRP_NoteRest,             //note or rest selection
     lmGRP_NoteDuration,         //notes duration group
     lmGRP_NoteAcc,              //Note accidentals group
     lmGRP_NoteDots,             //Note dots group
@@ -99,6 +102,7 @@ public:
     //status
     void EnableGroup(bool fEnable);
     //virtual void EnableTool(lmEToolID nToolID, bool fEnable)=0;
+    void SetSelected(bool fSelected);
 
     //identification
     virtual lmEToolGroupID GetToolGroupID()=0;
@@ -113,6 +117,7 @@ protected:
 
 	wxStaticBox*        m_pBoxTitle;    //the box and title
 	wxPanel*		    m_pParent;      //owner ToolPage
+    lmColorScheme*      m_pColours;
 };
 
 
@@ -131,7 +136,7 @@ public:
 
 	//buttons
     inline int GetSelectedButton() { return m_nSelButton; }
-    lmEToolID GetSelectedToolID() { return (lmEToolID)(m_nSelButton + m_nFirstButttonToolID); }
+    lmEToolID GetSelectedToolID() { return (lmEToolID)(m_nSelButton + m_nFirstButtonToolID); }
 
 
 	void SelectButton(int iB);
@@ -142,15 +147,15 @@ protected:
     virtual void CreateControls(wxBoxSizer* pMainSizer)=0;
     virtual void OnButtonSelected(int nSelButton);
     void ConnectButtonEvents();
-    inline int GetFirstButtonEventID() { return m_nFirstButttonEventID; }
+    inline int GetFirstButtonEventID() { return m_nFirstButtonEventID; }
     inline bool IsNoneAllowed() { return m_fAllowNone; }
 
 
     bool            m_fAllowNone;           //allow no button selected
     int             m_nNumButtons;          //number of buttons in this group
 	int             m_nSelButton;           //selected button (0..n). -1 = none selected
-    int             m_nFirstButttonEventID;     //even ID of first button
-    int             m_nFirstButttonToolID;      //Tool ID of first button
+    int             m_nFirstButtonEventID;      //even ID of first button
+    int             m_nFirstButtonToolID;       //Tool ID of first button
     std::vector<lmCheckButton*> m_pButton;      //buttons
 };
 

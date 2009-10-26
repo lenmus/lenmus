@@ -86,6 +86,7 @@ public:
     void SetStatusBarMousePos(float x, float y);
     void SetStatusBarCursorRelPos(float rTime, int nMeasure);
     void SetStatusBarNumPage(int nPage);
+    void SetStatusBarToolboxData(const wxString& sText);
 
     //ToolBox
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }

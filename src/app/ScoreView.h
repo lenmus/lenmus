@@ -163,6 +163,7 @@ public:
     void MoveCursorTo(lmVStaff* pVStaff, int nStaff, int nMeasure, float rTime,
                       bool fEndOfTime);
     void MoveCursorToTime(float rTime, bool fEndOfTime);
+    void MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
     //Score cursor information
     inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }

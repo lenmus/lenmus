@@ -1,0 +1,12 @@
+\ext[.html]
+\outdir[output]
+\config[../agdoc/user_manual.agtempl]
+
+\process_dir[./; src=./src]
+{
+    \process_files [entering-music.txt
+                    tool-box-description.txt
+                    ]
+}
+
+

@@ -69,51 +69,56 @@ lmClef::~lmClef()
 // get fixed measures and values that depend on key type
 //--------------------------------------------------------------------------------------
 
-// returns the y-axis offset from paper cursor position so that shape get correctly
-// positioned over a five-lines staff (units: tenths of inter-line space)
-lmTenths lmClef::GetGlyphOffset()
+lmTenths lmClef::GetGlyphOffset(bool fSmallClef)
 {
-    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    // returns the y-axis offset from paper cursor position so that shape get correctly
+    // positioned over a five-lines staff (units: tenths of inter-line space)
+
+    lmEGlyphIndex nGlyph = lmGetGlyphIndex(m_nClefType);
     lmTenths yOffset = aGlyphsInfo[nGlyph].GlyphOffset;
 
     //add offset to move the clef up/down the required lines
-    switch(m_nClefType)
+    if (fSmallClef)
     {
-        case lmE_Fa3: yOffset += 10;    break;
-        case lmE_Fa5: yOffset -= 10;    break;
-        case lmE_Do1: yOffset += 20;    break;
-        case lmE_Do2: yOffset += 10;    break;
-        case lmE_Do4: yOffset -= 10;    break;
-        case lmE_Do5: yOffset -= 20;    break;
-        default:
-            ;
+        switch(m_nClefType)
+        {
+            case lmE_Sol:           return yOffset;
+            case lmE_Fa3:           return yOffset + 3;
+            case lmE_Fa4:           return yOffset - 7;
+            case lmE_Fa5:           return yOffset - 17;
+            case lmE_Do1:           return yOffset + 16;
+            case lmE_Do2:           return yOffset + 6;
+            case lmE_Do3:           return yOffset - 4;
+            case lmE_Do4:           return yOffset - 14;
+            case lmE_Do5:           return yOffset - 24;
+            case lmE_Percussion:    return yOffset - 6;
+            default:
+                wxLogMessage(_T("[lmClef::GetGlyphOffset] Missing value (%d) in switch statement"),
+                             m_nClefType);
+                return yOffset;
+        }
     }
-
-    return yOffset;
-
-}
-
-lmEGlyphIndex lmClef::GetGlyphIndex()
-{
-    // returns the index (over global glyphs table) to the character to use to print
-    // the clef (LenMus font)
-
-    switch (m_nClefType) {
-        case lmE_Sol: return GLYPH_G_CLEF;
-        case lmE_Fa4: return GLYPH_F_CLEF;
-        case lmE_Fa3: return GLYPH_F_CLEF;
-        case lmE_Do1: return GLYPH_C_CLEF;
-        case lmE_Do2: return GLYPH_C_CLEF;
-        case lmE_Do3: return GLYPH_C_CLEF;
-        case lmE_Do4: return GLYPH_C_CLEF;
-        case lmE_Percussion: return GLYPH_PERCUSSION_CLEF_BLOCK;
-        default:
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
-            return GLYPH_G_CLEF;
+    else
+    {
+        switch(m_nClefType)
+        {
+            case lmE_Sol:           return yOffset;
+            case lmE_Fa3:           return yOffset + 10;
+            case lmE_Fa4:           return yOffset;
+            case lmE_Fa5:           return yOffset - 10;
+            case lmE_Do1:           return yOffset + 20;
+            case lmE_Do2:           return yOffset + 10;
+            case lmE_Do3:           return yOffset;
+            case lmE_Do4:           return yOffset - 10;
+            case lmE_Do5:           return yOffset - 20;
+            case lmE_Percussion:    return yOffset - 1;
+            default:
+                wxLogMessage(_T("[lmClef::GetGlyphOffset] Missing value (%d) in switch statement"),
+                             m_nClefType);
+                return yOffset;
+        }
     }
-
 }
-
 
 
 //-----------------------------------------------------------------------------------------
@@ -202,15 +207,12 @@ lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     {
         // get the shift to the staff on which the clef must be drawn
 	    lmLUnits yPos = uPos.y;
-        yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
-
-        //if small clef add additional shift to compensate small size
-        if (fSmallClef)
-            yPos -= m_pVStaff->TenthsToLogical(10.0);
+        yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(fSmallClef), m_nStaffNum );
 
         //create the shape object
-        pShape = new lmShapeClef(this, nIdx, GetGlyphIndex(), pPaper, lmUPoint(uPos.x, yPos), 
-						         fSmallClef, _T("Clef"), lmDRAGGABLE, colorC);
+        pShape = new lmShapeClef(this, nIdx, lmGetGlyphIndex(m_nClefType), pPaper,
+                                 lmUPoint(uPos.x, yPos), fSmallClef, _T("Clef"),
+                                 lmDRAGGABLE, colorC);
     }
 
     StoreShape(pShape);
@@ -345,5 +347,25 @@ lmDPitch GetFirstLineDPitch(lmEClefType nClef)
             wxASSERT(false);
     }
     return lmNO_DPITCH;
+}
+
+lmEGlyphIndex lmGetGlyphIndex(lmEClefType nClefType)
+{
+    // returns the index (over global glyphs table) to the character to use to print
+    // the clef (LenMus font)
+
+    switch (nClefType) {
+        case lmE_Sol: return GLYPH_G_CLEF;
+        case lmE_Fa4: return GLYPH_F_CLEF;
+        case lmE_Fa3: return GLYPH_F_CLEF;
+        case lmE_Do1: return GLYPH_C_CLEF;
+        case lmE_Do2: return GLYPH_C_CLEF;
+        case lmE_Do3: return GLYPH_C_CLEF;
+        case lmE_Do4: return GLYPH_C_CLEF;
+        case lmE_Percussion: return GLYPH_PERCUSSION_CLEF_BLOCK;
+        default:
+            wxLogMessage(_T("[::lmGetGlyphIndex] Invalid value (%d) for clef type"), nClefType);
+            return GLYPH_G_CLEF;
+    }
 }
 

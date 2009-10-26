@@ -53,11 +53,15 @@
 //-----------------------------------------------------------------------------------
 lmToolGroup::lmToolGroup(wxPanel* pParent, lmColorScheme* pColours)
 	: wxPanel(pParent, wxID_ANY, wxDefaultPosition, lmTOOLGROUP_SIZE)
+    , m_pParent(pParent)
+    , m_pColours(pColours)
 {
-	m_pParent = pParent;
-
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
-    if (pColours)
+
+    //AWARE: ToolGroup is used as a control in properties dialogs. In them, 
+    // the owner is not a lmToolPage and pointer pColors is NULL
+
+    if(pColours)
     {
         SetForegroundColour(pColours->PrettyDark());
 	    SetBackgroundColour(pColours->Bright());    //Normal());
@@ -81,6 +85,25 @@ wxBoxSizer* lmToolGroup::CreateGroup(wxBoxSizer* pMainSizer, wxString sTitle)
 	this->SetSizer( pAuxSizer );
 
 	return pCtrolsSizer;
+}
+
+void lmToolGroup::SetSelected(bool fSelected)
+{
+    //AWARE: ToolGroup is used as a control in properties dialogs. In them, 
+    // the owner is not a lmToolPage and pointer pColors is NULL
+    if(!m_pColours)
+        return;
+
+    if (fSelected)
+    {
+        SetForegroundColour(m_pColours->Dark());
+	    SetBackgroundColour(m_pColours->Bright());
+    }
+    else
+    {
+        SetForegroundColour(m_pColours->PrettyDark());
+	    SetBackgroundColour(m_pColours->Normal());
+    }
 }
 
 int lmToolGroup::GetGroupWitdh()
@@ -111,7 +134,7 @@ void lmToolGroup::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
     {
 	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	    wxASSERT(pToolBox);
-        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(), nToolID,
+        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetCurrentPageID(), nToolID,
                              fSelected);
         ::wxPostEvent( pWnd, event );
     }
@@ -132,8 +155,8 @@ lmToolButtonsGroup::lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool f
                                        lmColorScheme* pColours)
 	: lmToolGroup(pParent, pColours)
 	, m_nSelButton(-1)	            //none selected
-    , m_nFirstButttonEventID(nFirstButtonEventID)
-    , m_nFirstButttonToolID((int)nFirstButtonToolID)
+    , m_nFirstButtonEventID(nFirstButtonEventID)
+    , m_nFirstButtonToolID((int)nFirstButtonToolID)
     , m_fAllowNone(fAllowNone)
     , m_nNumButtons(nNumButtons)
 {
@@ -148,7 +171,7 @@ lmToolButtonsGroup::~lmToolButtonsGroup()
 void lmToolButtonsGroup::ConnectButtonEvents()
 {
     //connect OnButton events
-    Connect( m_nFirstButttonEventID, m_nFirstButttonEventID + m_nNumButtons - 1,
+    Connect( m_nFirstButtonEventID, m_nFirstButtonEventID + m_nNumButtons - 1,
              wxEVT_COMMAND_BUTTON_CLICKED,
              (wxObjectEventFunction)& lmToolButtonsGroup::OnButton );
 }
@@ -211,14 +234,35 @@ void lmToolButtonsGroup::OnButton(wxCommandEvent& event)
 
 void lmToolButtonsGroup::OnButtonSelected(int nSelButton)
 {
-    //post tool box event to the active controller
-    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-    if (pWnd)
+    //Notify owner page about the tool change, unless it is the MouseGroup, In this
+    //case post a tool change event directly to the active controller
+
+    //AWARE: ToolGroup can be used as a control in properties dialogs. In them, 
+    // the owner is not a lmToolPage but a wxPanel. Events will not be posted
+    // to wxPanels
+
+    if ( m_pParent->IsKindOf(CLASSINFO(lmToolPage)) )
     {
-	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-	    wxASSERT(pToolBox);
-        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetSelectedToolPage(),
-                             nSelButton, true);
-        ::wxPostEvent( pWnd, event );
+        //notify owner page about the tool change
+        ((lmToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(),
+                                                (lmEToolID)nSelButton);
+    }
+    else if (this->GetToolGroupID() == lmGRP_MouseMode)
+    {
+        //post tool box event to the active controller
+        wxWindow* pWnd = GetMainFrame()->GetActiveController();
+        if (pWnd)
+        {
+	        lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	        wxASSERT(pToolBox);
+            lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetCurrentPageID(),
+                                nSelButton, true);
+            ::wxPostEvent( pWnd, event );
+        }
+    }
+    else
+    {
+        //this ToolGroup is used as a control in properties dialogs. Default
+        //behaviour is to do nothing
     }
 }

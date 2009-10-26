@@ -75,10 +75,14 @@ public:
     //implementation of virtual methods
     lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
     void CreateGroups();
+    bool DeselectRelatedGroups(lmEToolGroupID nGroupID);
 
     //interface with symbols group
 	inline lmEToolID GetToolID() { return m_pGrpSymbols->GetSelectedToolID(); }
     inline void SetTool(lmEToolID nTool) { m_pGrpSymbols->SelectButton(nTool); }
+
+    //current tool/group info
+    wxString GetToolShortDescription();
 
 private:
 

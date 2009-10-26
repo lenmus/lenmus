@@ -40,6 +40,9 @@
 #include "wx/settings.h"
 
 #include "ToolPage.h"
+#include "ToolBoxEvents.h"
+#include "../TheApp.h"              //to use GetMainFrame()
+#include "../MainFrame.h"           //to use lmMainFrame
 
 
 #define lmPANEL_WIDTH 150
@@ -53,12 +56,12 @@ lmToolPage::lmToolPage()
 {
 }
 
-lmToolPage::lmToolPage(wxWindow* parent)
+lmToolPage::lmToolPage(wxWindow* parent, lmEToolPageID nPageID)
 {
-    Create(parent);
+    CreatePage(parent, nPageID);
 }
 
-void lmToolPage::Create(wxWindow* parent)
+void lmToolPage::CreatePage(wxWindow* parent, lmEToolPageID nPageID)
 {
     //base class
     wxPanel::Create(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1),
@@ -69,11 +72,13 @@ void lmToolPage::Create(wxWindow* parent)
     SetSizer(m_pMainSizer);
 
 	//set colors
-	SetBackgroundColour(GetColors()->Bright());  //.Normal());
+	SetBackgroundColour(GetColors()->Normal());  //Bright());
 
     //initializations
     m_sPageToolTip = _T("");
     m_sPageBitmapName = _T("");
+    m_nPageID = nPageID;
+    m_fGroupsCreated = false;
 }
 
 lmToolPage::~lmToolPage()
@@ -86,4 +91,30 @@ void lmToolPage::CreateLayout()
     m_pMainSizer->Fit(this);
     m_pMainSizer->SetSizeHints(this);
     m_pMainSizer->Layout();
+}
+
+void lmToolPage::OnToolChanged(lmEToolGroupID nGroupID, lmEToolID nToolID)
+{
+    //deselect tools in any related groups to the one issuing the callback
+    //and post tool box event to the active controller
+
+    if (!m_fGroupsCreated)
+        return;
+
+    //deselect tools in any related groups to the one issuing the callback
+    if (DeselectRelatedGroups(nGroupID))
+    {
+        //if this group contains a tool (not an option), save information 
+        //about current group and tool
+        m_nCurGroupID = nGroupID;
+        m_nCurToolID = nToolID;
+    }
+
+    //post tool box event to the active controller
+    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+    if (pWnd)
+    {
+        lmToolBoxToolSelectedEvent event(nGroupID, m_nPageID, nToolID, true);
+        ::wxPostEvent( pWnd, event );
+    }
 }

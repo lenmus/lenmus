@@ -88,7 +88,7 @@ public:
     void ClearPosTimeTable();
     void AddPosTimeEntry(lmLUnits uxPos, float rTimepos, float rDuration, lmLUnits uxWidth);
     void ClosePosTimeTable();
-    float GetTimeForPosition(lmLUnits uxPos);
+    float GetGridTimeForPosition(lmLUnits uxPos);
     void DrawTimeLines(lmPaper* pPaper, wxColour color, lmLUnits uyTop,
                        lmLUnits uyBottom);
 

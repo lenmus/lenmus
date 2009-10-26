@@ -2740,6 +2740,12 @@ void lmMainFrame::SetStatusBarMousePos(float x, float y)
         m_pStatusBar->SetMousePos(x, y);
 }
 
+void lmMainFrame::SetStatusBarToolboxData(const wxString& sText)
+{
+    if (m_pStatusBar)
+        m_pStatusBar->SetToolboxData(sText);
+}
+
 void lmMainFrame::SetStatusBarCursorRelPos(float rTime, int nMeasure)
 {
     if (m_pStatusBar)

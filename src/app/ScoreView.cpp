@@ -1684,6 +1684,15 @@ void lmScoreView::MoveCursorTo(lmVStaff* pVStaff, int nStaff, int nMeasure,
     m_pScoreCursor->MoveTo(pVStaff, nStaff, nMeasure, rTime, fEndOfTime);
 }
 
+void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff,
+                                   int nMeasure)
+{
+    //Move cursor to nearest object after position uPos, constrained to specified
+    //segment and staff. This method is mainly to position cursor at mouse click point
+
+	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
+}
+
 void lmScoreView::MoveCursorToTime(float rTime, bool fEndOfTime)
 {
     m_pScoreCursor->MoveToTime(rTime, fEndOfTime);

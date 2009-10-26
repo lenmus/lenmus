@@ -57,6 +57,7 @@ enum lmEStatusBarField
     lm_Field_RelTime,
     lm_Field_Caps,
     lm_Field_Nums,
+    lm_Field_Toolbox,
     lm_Field_NUM_FIELDS       //MUST BE THE LAST ONE
 };
 
@@ -77,7 +78,7 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
     m_nNumFields = lm_Field_NUM_FIELDS;
     int ch = GetCharWidth();
 
-    const int widths[] = {-1, 15*ch, 15*ch, 15*ch, 15*ch, 4*ch, 4*ch};
+    const int widths[] = {-1, 15*ch, 15*ch, 15*ch, 15*ch, 4*ch, 4*ch, 20*ch};
     SetFieldsCount(m_nNumFields);
     SetStatusWidths(m_nNumFields, widths);
 
@@ -89,13 +90,16 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
 	//wxLogMessage(wxString::Format(_T("nSpaces=%d"), nSpaces));
 	m_sIconSpace.insert(size_t(0), nSpaces, _T(' '));
 
-	//add bitmap for time
-    m_pBmpClock = new wxStaticBitmap(this, wxID_ANY,
-									 wxArtProvider::GetIcon(_T("status_time"), wxART_TOOLBAR, size) );
-
-	//add bitmap for page num
-    m_pBmpPage = new wxStaticBitmap(this, wxID_ANY,
-									 wxArtProvider::GetIcon(_T("status_page"), wxART_TOOLBAR, size) );
+	//load bitmaps
+    m_pBmpClock = new 
+        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_time"),
+        wxART_TOOLBAR, size) );
+    m_pBmpPage = new
+        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_page"),
+        wxART_TOOLBAR, size) );
+    m_pBmpMouse = new
+        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_mouse"),
+        wxART_TOOLBAR, size) );
 
 	SetMinHeight(size.y);
 }
@@ -129,6 +133,11 @@ void lmStatusBar::SetCursorRelPos(float rTime, int nMeasure)
                   lm_Field_RelTime);
 }
 
+void lmStatusBar::SetToolboxData(const wxString& sText)
+{
+    SetStatusText(wxString::Format(_T("%s%s"), m_sIconSpace.c_str(), sText), lm_Field_Toolbox);
+}
+
 void lmStatusBar::OnSize(wxSizeEvent& event)
 {
 	//position bitmaps in the appropiate field area
@@ -144,6 +153,12 @@ void lmStatusBar::OnSize(wxSizeEvent& event)
     GetFieldRect(lm_Field_RelTime, rect);
     size = m_pBmpClock->GetSize();
     m_pBmpClock->Move(rect.x,
+                      rect.y + (rect.height - size.y) / 2);
+
+	//mouse
+    GetFieldRect(lm_Field_Toolbox, rect);
+    size = m_pBmpMouse->GetSize();
+    m_pBmpMouse->Move(rect.x,
                       rect.y + (rect.height - size.y) / 2);
 
     event.Skip();

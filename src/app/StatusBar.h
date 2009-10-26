@@ -58,6 +58,7 @@ public:
     void SetNumPage(int nPage);
     void SetMousePos(float x, float y);
     void SetCursorRelPos(float rTime, int nMeasure);
+    void SetToolboxData(const wxString& sText);
 
     //info
     inline lmEStatusBarLayout GetType() const { return m_nType; }
@@ -69,6 +70,7 @@ private:
     lmEStatusBarLayout  m_nType;
 	wxStaticBitmap*		m_pBmpClock;
 	wxStaticBitmap*		m_pBmpPage;
+	wxStaticBitmap*		m_pBmpMouse;
 	wxString			m_sIconSpace;
 
 

@@ -44,7 +44,7 @@ typedef struct
 }
 lmCommonFBData;
 
-static const lmCommonFBData m_CommonFB[] =
+static const lmCommonFBData m_CommonFB[] = 
 {
     { 0,    _T("#") },        //5 #3
     { 1,    _T("b") },        //5 b3
@@ -123,7 +123,7 @@ static const lmSimplerFBData m_SimplerFB[] =
     { _T("6 3 5"),  _T("6 5") },
     { _T("7 5 3"),  _T("7") },
     { _T("b7 5 3"), _T("7/") },
-    { _T("8 5 3"),  _T("8") },
+    { _T("8 5 3"),  _T("8") },  
     { _T("9 5 3"),  _T("9") },
     { _T("10 5 3"), _T("10") },
 };
@@ -184,7 +184,7 @@ void lmGrpCommonFB::CreateControls(wxBoxSizer* pMainSizer)
 		}
 
         wxString sBtName = wxString::Format(_T("figured_bass_%1d"), m_CommonFB[iB].nBitmapID);
-		wxString sToolTip = wxString::Format(_("Figured bass '%s'"), m_CommonFB[iB].sFiguredBass.c_str());
+		wxString sToolTip = wxString::Format(_("Figured bass '%s'"), m_CommonFB[iB].sFiguredBass);
 		m_pButton[iB] = new lmCheckButton(this, lmID_QUICK_BT+iB, wxBitmap(32, 42));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
@@ -220,7 +220,7 @@ protected:
     //controls
 	wxBitmapButton*     m_pBtQuick[25];
 	wxRadioBox*         m_pRadEnclose;
-
+	
     //other variables
     lmFiguredBass*      m_pFB;
     lmGrpCommonFB*      m_pGrpCommon;
@@ -264,7 +264,7 @@ void lmFBQuickPanel::CreateControls()
 	m_pRadEnclose = new wxRadioBox( this, wxID_ANY, _("Enclose in"), wxDefaultPosition, wxDefaultSize, m_pRadEncloseNChoices, m_pRadEncloseChoices, 3, wxRA_SPECIFY_COLS );
 	m_pRadEnclose->SetSelection( 0 );
 	pMainSizer->Add( m_pRadEnclose, 0, wxALL|wxEXPAND, 5 );
-
+	
 	SetSizer( pMainSizer );
 	Layout();
 }
@@ -442,12 +442,11 @@ lmFiguredBassData::lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey)
         //5. look for a simpler formulation
 
     wxString sFigBass = this->GetFiguredBassString();
-    for (int i=0; i < (int)(sizeof(m_SimplerFB)/sizeof(lmSimplerFBData)); i++)
+    for (int i=0; i < sizeof(m_SimplerFB)/sizeof(lmSimplerFBData); i++)
     {
         if (m_SimplerFB[i].sFigBass == sFigBass)
         {
-            wxString sSimpler = m_SimplerFB[i].sSimpler;
-            this->SetDataFromString( sSimpler );
+            this->SetDataFromString( (wxString)m_SimplerFB[i].sSimpler );
             break;
         }
     }
@@ -519,7 +518,7 @@ lmFiguredBassData::lmFiguredBassData(wxString& sData)
 void lmFiguredBassData::SetDataFromString(wxString& sData)
 {
     //Creates intervals data from string.
-    //Sets m_sError with empty string if no error, or with error message
+    //Sets m_sError with empty string if no error, or with error message 
 
     Initialize();
 
@@ -885,10 +884,10 @@ lmLUnits lmFiguredBass::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
                 else
 		            nGlyph = GLYPH_FIGURED_BASS_0 + (int)i;
 
-		        lmLUnits uyPos = uyPosTop
+		        lmLUnits uyPos = uyPosTop 
 						        + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
                 lmShape* pDigit =
-                    new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPos, uyPos),
+                    new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPos, uyPos), 
 									 _T("intval number"), lmNO_DRAGGABLE, colorC);
                 pIntvShape[i]->Add(pDigit);
 		        uxPos += pDigit->GetBounds().GetWidth();
@@ -956,7 +955,7 @@ lmLUnits lmFiguredBass::AddSymbol(lmCompositeShape* pShape, lmPaper* pPaper, wxC
     }
 
 	//create the shape
-    lmShapeGlyph* pSG =
+    lmShapeGlyph* pSG = 
 		new lmShapeGlyph(this, -1, nGlyph, pPaper, uPos, _T("symbol"),
 				         lmDRAGGABLE, colorC);
 
@@ -1152,7 +1151,7 @@ bool lmFiguredBassUnitTests()
     }
     delete pScore;
 
-    return fTestOK;
+    return fTestOK;        
 }
 
 #endif      //Debug global methods

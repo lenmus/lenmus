@@ -48,22 +48,23 @@ DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_TOOL_SELECTED, -1 )
 class lmToolBoxToolSelectedEvent : public wxCommandEvent
 {
 public:
-    lmToolBoxToolSelectedEvent(lmEToolGroupID nToolGroupID, lmEToolPage nToolPage, long nTool,
-                               bool fToolSelected, int id=0 ) 
+    lmToolBoxToolSelectedEvent(lmEToolGroupID nToolGroupID, lmEToolPageID nToolPageID,
+                               long nToolID, bool fToolSelected, int id=0 ) 
             : wxCommandEvent(lmEVT_TOOLBOX_TOOL_SELECTED, id)
             , m_nToolGroupID(nToolGroupID)
-            , m_nToolPage(nToolPage)
-            , m_nTool(nTool)
+            , m_nToolPageID(nToolPageID)
+            , m_nToolID(nToolID)
             , m_fToolSelected(fToolSelected)
         {
         }
 
     // copy constructor
-    lmToolBoxToolSelectedEvent(const lmToolBoxToolSelectedEvent& event) : wxCommandEvent(event)
+    lmToolBoxToolSelectedEvent(const lmToolBoxToolSelectedEvent& event) 
+        : wxCommandEvent(event)
         {
             m_nToolGroupID = event.m_nToolGroupID;
-            m_nToolPage = event.m_nToolPage;
-            m_nTool = event.m_nTool;
+            m_nToolPageID = event.m_nToolPageID;
+            m_nToolID = event.m_nToolID;
             m_fToolSelected = event.m_fToolSelected;
         }
 
@@ -72,14 +73,14 @@ public:
 
     // accessors
     inline lmEToolGroupID GetToolGroupID() { return m_nToolGroupID; }
-    inline lmEToolPage GetToolPageType() { return m_nToolPage; }
-    inline long GetToolID() { return m_nTool; }
+    inline lmEToolPageID GetToolPageType() { return m_nToolPageID; }
+    inline long GetToolID() { return m_nToolID; }
     inline bool ToolSelected() { return m_fToolSelected; }
 
 private:
     lmEToolGroupID  m_nToolGroupID;     //Group generating the event
-    long            m_nTool;            //ID of the selected tool
-    lmEToolPage     m_nToolPage;        //page issuing the event
+    long            m_nToolID;          //ID of the selected tool
+    lmEToolPageID   m_nToolPageID;      //page issuing the event
     bool            m_fToolSelected;    //tool status
 };
 
@@ -103,7 +104,7 @@ DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_PAGE_CHANGED, -1 )
 class lmToolBoxPageChangedEvent : public wxCommandEvent
 {
 public:
-    lmToolBoxPageChangedEvent(lmEToolPage nToolPage, int id=0 ) 
+    lmToolBoxPageChangedEvent(lmEToolPageID nToolPage, int id=0 ) 
             : wxCommandEvent(lmEVT_TOOLBOX_PAGE_CHANGED, id)
             , m_nToolPage(nToolPage)
         {
@@ -119,10 +120,10 @@ public:
     virtual wxEvent *Clone() const { return new lmToolBoxPageChangedEvent(*this); }
 
     // accessors
-    inline lmEToolPage GetToolPageType() { return m_nToolPage; }
+    inline lmEToolPageID GetToolPageType() { return m_nToolPage; }
 
 private:
-    lmEToolPage     m_nToolPage;        //page issuing the event
+    lmEToolPageID     m_nToolPage;        //page issuing the event
 };
 
 

@@ -39,16 +39,7 @@ class wxListBox;
 // Group for clef type
 //--------------------------------------------------------------------------------
 
-//aux. class to contain clefs data
-class lmClefData
-{
-public:
-    lmClefData() {}
-    lmClefData(wxString name, lmEClefType type) : sClefName(name), nClefType(type) {}
-
-    wxString		sClefName;
-    lmEClefType		nClefType;
-};
+#define lmUSE_CLEF_COMBO    1       //use combo (1) or buttons (0)
 
 //class to implement to tool group
 class lmGrpClefType: public lmToolGroup
@@ -58,19 +49,26 @@ public:
     ~lmGrpClefType() {}
 
     //implement virtual methods
+    void CreateControls(wxBoxSizer* m_pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_ClefType; }
 
-	//event handlers
-    void OnAddClef(wxCommandEvent& event);
+	//access to selected clef
+	lmEClefType GetSelectedClef();
+
+#if lmUSE_CLEF_COMBO
+
+    //event handlers
+    void OnClefList(wxCommandEvent& event);
 
 private:
-    void CreateControls(wxBoxSizer* m_pMainSizer);
+
     void LoadClefList();
 
 	wxBitmapComboBox*   m_pClefList;
-    wxButton*           m_pBtnAddClef;
 
     DECLARE_EVENT_TABLE()
+#endif
+
 };
 
 
@@ -88,6 +86,10 @@ public:
 
 	void OnButton(wxCommandEvent& event);
 
+    //selected time signature
+    int GetTimeBeats();
+    int GetTimeBeatType();
+
     enum {
         lm_NUM_BUTTONS = 12
     };
@@ -104,7 +106,8 @@ public:
 private:
     void CreateControls(wxBoxSizer* m_pMainSizer);
 
-	wxBitmapButton*		m_pButton[lm_NUM_BUTTONS];  //buttons
+	wxBitmapButton* m_pButton[lm_NUM_BUTTONS];  //buttons
+	int             m_nSelButton;               //selected button (0..n). -1 = none selected
 
 
     DECLARE_EVENT_TABLE()
@@ -125,7 +128,10 @@ public:
 
     void OnKeyType(wxCommandEvent& event);
     void OnKeyList(wxCommandEvent& event);
-    void OnAddKey(wxCommandEvent& event);
+
+    //selected key
+    bool IsMajorKeySignature();
+    int GetFifths();
 
     //keys data
     typedef struct lmKeysStruct
@@ -139,6 +145,7 @@ public:
 private:
     void CreateControls(wxBoxSizer* m_pMainSizer);
     void LoadKeyList(int nType);
+    void NotifyToolChange();
 
     wxRadioButton*      m_pKeyRad[2];   //rad.buttons for Major/Minor selection
 	wxBitmapComboBox*   m_pKeyList;
@@ -149,7 +156,7 @@ private:
 
 
 //--------------------------------------------------------------------------------
-// The panel
+// The page
 //--------------------------------------------------------------------------------
 
 class lmToolPageClefs : public lmToolPage
@@ -165,7 +172,20 @@ public:
     //implementation of virtual methods
     lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
     void CreateGroups();
+    bool DeselectRelatedGroups(lmEToolGroupID nGroupID);
 
+    //current tool/group info
+    wxString GetToolShortDescription();
+
+    //interface with groups
+        //clefs
+    inline lmEClefType GetSelectedClef() { return m_pGrpClefType->GetSelectedClef(); }
+        //time signatures
+    inline int GetTimeBeats() { return m_pGrpTimeType->GetTimeBeats(); }
+    inline int GetTimeBeatType() { return m_pGrpTimeType->GetTimeBeatType(); }
+        //key signatures
+    inline bool IsMajorKeySignature() { return m_pGrpKeyType->IsMajorKeySignature(); }
+    inline int GetFifths() { return m_pGrpKeyType->GetFifths(); }
 
 private:
 

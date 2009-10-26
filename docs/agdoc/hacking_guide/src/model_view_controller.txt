@@ -167,7 +167,7 @@ lmDocManager takes also responsibility for orchestrating the creation, destructi
 
 All editor interaction with the score takes place through an %%lmController%%. To define controller response to user commands, each %%lmController%% could use any desired mechanism. A common way of doing this is by placing 'selection/option buttons' on the main toolbar. Then user actions are interpreted based on toolbar selected options.
 
-But I don't like the idea of using the toolbar as it will end up with too many buttons and also it is more difficult to include controls (comboxes, radio buttons, help texts, etc.). So I dedided to replace to toolbar with something better and more user-oriented. The toolbar normally ends up being a mess of buttons and controls with no apparent organization. And it takes too much space on top of the window. So, I decided to experiment with a palette of tools (the ToolBox) similar to that used in many CAD applications.
+But I don't like the idea of using the toolbar as it will end up with too many buttons and also it is more difficult to include controls (comboxes, radio buttons, help texts, etc.). So I decided to replace to toolbar with something better and more user-oriented. The toolbar normally ends up being a mess of buttons and controls with no apparent organization. And it takes too much space on top of the window. So, I decided to experiment with a palette of tools (the ToolBox) similar to that used in many CAD applications.
 
 As the tendency is to have wider screens (for multimedia) I though it would be better to place the toolbox on the left (right) side instead of on top, to give more space for the score. Anyway user should be able to choose a horizontal layout and top/bottom placement.
 
@@ -480,7 +480,8 @@ Therefore, score commands could be classified in three groups:
 \h1 {Things To Do}
 %%%-------------------
 
-    * Code for lmDocument::SaveObject() in Linux.
+    * For Linux, need to create the code for lmDocument::SaveObject().
+    * File history is not working properly. Need to review it.
 
     
     

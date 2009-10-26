@@ -82,13 +82,13 @@ const int NUM_COLUMNS = 4;      //number of buttons per row
 //				 = 4*32 + 2*3*4 + 2*4 = 128+24+8 = 160
 
 //const int ID_BUTTON = 2200;
-#define lm_NUM_ENTRY_MODE_BUTTONS 2
+#define lm_NUM_MOUSE_MODE_BUTTONS 2
 
 enum
 {
     ID_BUTTON = 2200,
-    lmID_BT_EntryMode_Keyboard = ID_BUTTON + 16,    //+ NUM_BUTTONS,
-    lmID_BT_EntryMode_Mouse,
+    lmID_BT_MouseMode_Pointer = ID_BUTTON + 16,    //+ NUM_BUTTONS,
+    lmID_BT_MouseMode_DataEntry,
 };
 
 
@@ -103,7 +103,7 @@ IMPLEMENT_CLASS(lmToolBox, wxPanel)
 
 lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
     : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxBORDER_NONE)
-	, m_nSelTool(lmPAGE_NONE)
+	, m_nCurPageID(lmPAGE_NONE)
 {
 	//set colors
 	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
@@ -111,15 +111,14 @@ lmToolBox::lmToolBox(wxWindow* parent, wxWindowID id)
 	//initialize pages's array with default standard pages
     for (int i=0; i < (int)lmPAGE_MAX; i++)
 	{
-        lmToolPage* pPage = CreatePage((lmEToolPage)i);
-        AddPage(pPage, (lmEToolPage)i);
+        lmToolPage* pPage = CreatePage((lmEToolPageID)i);
+        AddPage(pPage, (lmEToolPageID)i);
         m_cActivePages[i] = (int)m_cPages.size() - 1;
     }
 
 	CreateControls();
 
 	SelectToolPage(lmPAGE_NOTES);
-
 }
 
 void lmToolBox::CreateControls()
@@ -129,8 +128,8 @@ void lmToolBox::CreateControls()
     //the main sizer, to contain the three areas
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
 
-    //panel for the entry mode group
-    m_pEntryModeGroup = new lmGrpEntryMode(this, pMainSizer, &m_colors);
+    //panel for the mouse mode group
+    m_pMouseModeGroup = new lmGrpMouseMode(this, pMainSizer, &m_colors);
 
     //panel for the fixed group
 	m_pSpecialGroup = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
@@ -202,7 +201,7 @@ void lmToolBox::GetConfiguration(lmToolBoxConfiguration* pConfig)
     //other info
     pConfig->m_pSpecialGroup = m_pSpecialGroup;
     pConfig->m_fSpecialGroupVisible = m_pSpecialGroup->IsShown();
-    pConfig->m_nSelTool = m_nSelTool;             //selected tool
+    pConfig->m_nCurPageID = m_nCurPageID;             //selected page
 
     //mark as valid
     pConfig->m_fIsValid = true;
@@ -226,7 +225,7 @@ void lmToolBox::SetConfiguration(lmToolBoxConfiguration* pConfig)
 
     //other info
     m_pSpecialGroup = pConfig->m_pSpecialGroup;   //panel for the special group
-    m_nSelTool = pConfig->m_nSelTool;             //selected tool
+    m_nCurPageID = pConfig->m_nCurPageID;             //selected page
 
     //apply changes
     if (m_pSpecialGroup)
@@ -234,10 +233,10 @@ void lmToolBox::SetConfiguration(lmToolBoxConfiguration* pConfig)
 
     GetSizer()->Layout();
 
-    SelectToolPage(m_nSelTool);
+    SelectToolPage(m_nCurPageID);
 }
 
-lmToolPage* lmToolBox::CreatePage(lmEToolPage nPanel)
+lmToolPage* lmToolBox::CreatePage(lmEToolPageID nPanel)
 {
     switch(nPanel) {
 		case lmPAGE_SELECTION:
@@ -302,16 +301,16 @@ void lmToolBox::SetAsActive(lmToolPage* pPage, int nToolId)
 void lmToolBox::OnButtonClicked(wxCommandEvent& event)
 {
     //identify button pressed
-	SelectToolPage((lmEToolPage)(event.GetId() - ID_BUTTON));
+	SelectToolPage((lmEToolPageID)(event.GetId() - ID_BUTTON));
 }
 
-void lmToolBox::SelectToolPage(lmEToolPage nTool)
+void lmToolBox::SelectToolPage(lmEToolPageID nTool)
 {
 	if (!(nTool > lmPAGE_NONE && nTool < lmPAGE_MAX))
         return;
 
     SelectButton((int)nTool);
-	m_nSelTool = nTool;
+	m_nCurPageID = nTool;
 
     //hide current page and save it
     wxPanel* pOldPage = m_pCurPage;
@@ -394,90 +393,88 @@ void lmToolBox::SetDefaultConfiguration()
     if (m_pSpecialGroup)
         m_pSpecialGroup->Show(false);
 
-    SelectToolPage(m_nSelTool);
+    SelectToolPage(m_nCurPageID);
 }
 
 wxMenu* lmToolBox::GetContextualMenuForSelectedPage()
 {
-    lmToolPage* pSelPage = m_cPages[ m_cActivePages[m_nSelTool] ];
+    lmToolPage* pSelPage = m_cPages[ m_cActivePages[m_nCurPageID] ];
     return pSelPage->GetContextualMenuForToolPage();
 }
 
 void lmToolBox::OnPopUpMenuEvent(wxCommandEvent& event)
 {
-    lmToolPage* pSelPage = m_cPages[ m_cActivePages[m_nSelTool] ];
+    lmToolPage* pSelPage = m_cPages[ m_cActivePages[m_nCurPageID] ];
     pSelPage->OnPopUpMenuEvent(event);
 }
 
-int lmToolBox::GetEntryMode()
+int lmToolBox::GetMouseMode()
 {
-    //Determines selected entry mode (with keyboard or with mouse) for current page
+    //Determines selected mouse mode (pointer, data entry, eraser, etc.)
 
-    //get active page
-    int nEntryMode;
-    switch(m_nSelTool)
-    {
-    case lmPAGE_CLEFS:
-        nEntryMode = lm_DATA_ENTRY_KEYBOARD; 
-        break;
-    case lmPAGE_NOTES:
-        nEntryMode = m_pEntryModeGroup->GetEntryMode(); 
-        break;
-    case lmPAGE_BARLINES:
-        nEntryMode = lm_DATA_ENTRY_KEYBOARD; 
-        break;
-    case lmPAGE_SYMBOLS:
-        nEntryMode = lm_DATA_ENTRY_MOUSE;
-        break;
-    default:
-        wxASSERT(false);
-    }
-    return nEntryMode; 
+    return m_pMouseModeGroup->GetMouseMode();
+}
+
+wxString lmToolBox::GetToolShortDescription()
+{
+    //returns a short description of the selected tool. This description is used to
+    //be displayed in the status bar
+
+    return GetSelectedPage()->GetToolShortDescription();
+}
+
+lmEToolGroupID lmToolBox::GetCurrentGroupID() 
+{ 
+    return GetSelectedPage()->GetCurrentGroupID();
+}
+
+lmEToolID lmToolBox::GetCurrentToolID() 
+{ 
+    return GetSelectedPage()->GetCurrentToolID();
 }
 
 
-
 //--------------------------------------------------------------------------------
-// lmGrpEntryMode implementation
+// lmGrpMouseMode implementation
 //--------------------------------------------------------------------------------
 
-lmGrpEntryMode::lmGrpEntryMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours)
-        : lmToolButtonsGroup(pParent, lm_NUM_ENTRY_MODE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_EntryMode_Keyboard, lmTOOL_NONE, pColours)
+lmGrpMouseMode::lmGrpMouseMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours)
+        : lmToolButtonsGroup(pParent, lm_NUM_MOUSE_MODE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+                             lmID_BT_MouseMode_Pointer, lmTOOL_NONE, pColours)
 {
     CreateControls(pMainSizer);
 }
 
-void lmGrpEntryMode::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpMouseMode::CreateControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Data entry mode"));
+    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Mouse mode"));
 
     wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 	pCtrolsSizer->Add(pButtonsSizer);
     wxSize btSize(24, 24);
 
-    //keyboard entry mode
-	m_pButton[0] = new lmCheckButton(this, lmID_BT_EntryMode_Keyboard, wxBitmap(24, 24));
-    wxString sBtName = _T("data_entry_keyboard");
+    //Selection tool mode
+	m_pButton[0] = new lmCheckButton(this, lmID_BT_MouseMode_Pointer, wxBitmap(24, 24));
+    wxString sBtName = _T("mouse_mode_selection");
     m_pButton[0]->SetBitmapUp(sBtName, _T(""), btSize);
     m_pButton[0]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
     m_pButton[0]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
-	m_pButton[0]->SetToolTip(_T("Use keyboard to enter notes/rests"));
+	m_pButton[0]->SetToolTip(_T("Mouse will behave as pointer and selection tool"));
 	pButtonsSizer->Add(m_pButton[0], wxSizerFlags(0).Border(wxALL, 0) );
 
-    //mouse entry mode
-	m_pButton[1] = new lmCheckButton(this, lmID_BT_EntryMode_Mouse, wxBitmap(24, 24));
-    sBtName = _T("data_entry_mouse");
+    //mouse mode
+	m_pButton[1] = new lmCheckButton(this, lmID_BT_MouseMode_DataEntry, wxBitmap(24, 24));
+    sBtName = _T("mouse_mode_data_entry");
     m_pButton[1]->SetBitmapUp(sBtName, _T(""), btSize);
     m_pButton[1]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
     m_pButton[1]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
-	m_pButton[1]->SetToolTip(_T("Use mouse to enter notes/rests"));
+	m_pButton[1]->SetToolTip(_T("Mouse will be used to add objects to the score"));
 	pButtonsSizer->Add(m_pButton[1], wxSizerFlags(0).Border(wxALL, 0) );
 
     this->Layout();
 
-	SelectButton(0);	//select keyboard data entry mode
+	SelectButton(0);	//set selection tool mode
 }
 
 

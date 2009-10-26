@@ -77,7 +77,7 @@ lmToolPageSymbols::lmToolPageSymbols(wxWindow* parent)
 void lmToolPageSymbols::Create(wxWindow* parent)
 {
     //base class
-    lmToolPage::Create(parent);
+    lmToolPage::CreatePage(parent, lmPAGE_SYMBOLS);
 
     //initialize data
     m_sPageToolTip = _("Edit tools for text, graphics and symbols");
@@ -112,6 +112,37 @@ void lmToolPageSymbols::CreateGroups()
     m_pGrpSymbols = new lmGrpSymbols(this, pMainSizer);
 
 	CreateLayout();
+    m_fGroupsCreated = true;
+}
+
+bool lmToolPageSymbols::DeselectRelatedGroups(lmEToolGroupID nGroupID)
+{
+    //When there are several groups in the same tool page (i.e, clefs, keys and
+    //time signatures) the groups will behave as if they where a single 'logical
+    //group', that is, selecting a tool in a group will deselect any tool on the
+    //other related groups. To achieve this behaviour the group will call this
+    //method to inform the owner page.
+    //This method must deselect tools in any related groups to the one received
+    //as parameter, and must return 'true' if that group is a tool group of
+    //'false' if it is an options group.
+
+    switch(nGroupID)
+    {
+        case lmGRP_Symbols:    
+            return true;
+        default:
+            wxASSERT(false);
+    }
+    return false;      //compiler happy
+}
+
+wxString lmToolPageSymbols::GetToolShortDescription()
+{
+    //returns a short description of the selected tool. This description is used to
+    //be displayed in the status bar
+
+    //TODO
+    return _T("Add symbol");
 }
 
 

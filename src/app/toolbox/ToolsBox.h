@@ -43,7 +43,7 @@
 
 
 //available tool pages
-enum lmEToolPage
+enum lmEToolPageID
 {
 	lmPAGE_NONE = -1,
 	lmPAGE_CLEFS =0,
@@ -59,25 +59,30 @@ enum lmEToolPage
 };
 
 //--------------------------------------------------------------------------------
-// Group for data entry mode
+// Group for mouse mode
 //--------------------------------------------------------------------------------
 
-#define  lm_DATA_ENTRY_KEYBOARD     0x0000
-#define  lm_DATA_ENTRY_MOUSE        0x0001
+//AWARE: enum values must correspond to buttons in lmGrpMouseMode
+enum lmEMouseMode
+{
+    lmMM_UNDEFINED = -1,
+    lmMM_POINTER,
+    lmMM_DATA_ENTRY,
+};
 
-class lmGrpEntryMode : public lmToolButtonsGroup
+class lmGrpMouseMode : public lmToolButtonsGroup
 {
 public:
-    lmGrpEntryMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours);
-    ~lmGrpEntryMode() {}
+    lmGrpMouseMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours);
+    ~lmGrpMouseMode() {}
 
     //implement virtual methods
     void CreateControls(wxBoxSizer* pMainSizer);
-    inline lmEToolGroupID GetToolGroupID() { return lmGRP_EntryMode; }
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_MouseMode; }
 
 	//access to options
-	inline int GetEntryMode() { return m_nSelButton; }
-	inline void SetEntryMode(int nEntryMode) { SelectButton(nEntryMode); }
+	inline int GetMouseMode() { return m_nSelButton; }
+	inline void SetMouseMode(int nMouseMode) { SelectButton(nMouseMode); }
 
 };
 
@@ -96,7 +101,7 @@ public:
 
 
     wxPanel*        m_pSpecialGroup;        //panel for the special group
-    lmEToolPage		m_nSelTool;				//selected tool
+    lmEToolPageID   m_nCurPageID;           //selected page
     bool            m_fIsValid;             //this object has valid data
     bool            m_fSpecialGroupVisible;
     int             m_Pages[lmPAGE_MAX];
@@ -134,11 +139,14 @@ public:
 	inline lmColorScheme* GetColors() { return &m_colors; }
 
 	//current tool and its options
-	inline lmEToolPage GetSelectedToolPage() const { return m_nSelTool; }
-    lmToolPage* GetSelectedPage() { return (lmToolPage*)m_pCurPage; }
-	void SelectToolPage(lmEToolPage nTool);
-	inline wxPanel* GetToolPanel(lmEToolPage nPanel) { return (wxPanel*)m_cPages[nPanel]; }
+	inline lmEToolPageID GetCurrentPageID() const { return m_nCurPageID; }
+    lmEToolGroupID GetCurrentGroupID();
+    lmEToolID GetCurrentToolID();
+    wxString GetToolShortDescription();
 
+    lmToolPage* GetSelectedPage() { return (lmToolPage*)m_pCurPage; }
+	void SelectToolPage(lmEToolPageID nPageID);
+	inline wxPanel* GetToolPanel(lmEToolPageID nPanel) { return (wxPanel*)m_cPages[nPanel]; }
 
 	lmToolPageNotes* GetNoteProperties() const;
     //TO_ADD: Add, before this line, a new method to get new tool properties
@@ -154,27 +162,27 @@ public:
     //Special tools fixed group maganement
     void AddSpecialTools(wxPanel* pPanel, wxEvtHandler* pHandler);
 
-    //interface with EntryMode tools group
-	int GetEntryMode();
-    inline void SetEntryMode(int nEntryMode) { m_pEntryModeGroup->SetEntryMode(nEntryMode); }
+    //interface with mouse mode group
+	int GetMouseMode();
+    inline void SetMouseMode(int nMouseMode) { m_pMouseModeGroup->SetMouseMode(nMouseMode); }
 
 
 private:
 	void CreateControls();
 	void SelectButton(int nTool);
-    lmToolPage* CreatePage(lmEToolPage nPanel);
+    lmToolPage* CreatePage(lmEToolPageID nPanel);
 
 	enum {
 		NUM_BUTTONS = 16,
 	};
 
     //controls
-    lmGrpEntryMode* m_pEntryModeGroup;      //entry mode group
+    lmGrpMouseMode* m_pMouseModeGroup;      //mouse mode group
     wxPanel*        m_pSpecialGroup;        //current special group
     wxPanel*		m_pEmptyPage;           //an empty page
     wxPanel*		m_pCurPage;             //currently displayed page
     wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
-    lmEToolPage		m_nSelTool;				//current selected tool
+    lmEToolPageID   m_nCurPageID;           //currently displayed page ID
 	lmCheckButton*	m_pButton[NUM_BUTTONS];
 
 	//panels for tools' options

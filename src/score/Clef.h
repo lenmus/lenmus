@@ -75,8 +75,7 @@ public:
 private:
 
     // get fixed measures and values that depend on key type
-    lmTenths GetGlyphOffset();
-    lmEGlyphIndex GetGlyphIndex();
+    lmTenths GetGlyphOffset(bool fSmallClef);
 
     //variables
     lmEClefType		m_nClefType;        //type of clef
@@ -90,6 +89,7 @@ private:
 //
 wxString GetClefLDPNameFromType(lmEClefType nType);
 lmDPitch GetFirstLineDPitch(lmEClefType nClef);
+lmEGlyphIndex lmGetGlyphIndex(lmEClefType nClefType);
 
 #endif    // __LM_CLEF_H__
 
