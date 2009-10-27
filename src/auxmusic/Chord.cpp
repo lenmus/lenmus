@@ -859,7 +859,14 @@ lmChordIntervals::lmChordIntervals(int nNumNotes, lmNote** pNotes)
     // AWARE: NOTES MUST BE ALREADY ORDERED INCREMENTALLY
 
     //Creates the intervals from a list of score notes
-    m_nNumIntv = nNumNotes - 1;
+    if (nNumNotes > 0)
+        m_nNumIntv = nNumNotes - 1;
+    else
+    {
+        m_nNumIntv = 0;
+        return;
+    }
+
     if ( pNotes[0] == NULL)
     {
         wxLogMessage(_T(" lmChordIntervals ERROR: note %d is NULL"), 0);
@@ -885,8 +892,13 @@ lmChordIntervals::lmChordIntervals(int nNumNotes, lmNote** pNotes)
 lmChordIntervals::lmChordIntervals(int nNumNotes, lmFPitch fNotes[], int nUseless)
 {
     //Creates the intervals from a list of lmFPitch notes
-
-    m_nNumIntv = nNumNotes - 1;
+    if (nNumNotes > 0)
+        m_nNumIntv = nNumNotes - 1;
+    else
+    {
+        m_nNumIntv = 0;
+        return;
+    }
 
     //get intervals
     for (int i=0; i < m_nNumIntv; i++)
@@ -900,8 +912,13 @@ lmChordIntervals::lmChordIntervals(int nNumNotes, lmFPitch fNotes[], int nUseles
 lmChordIntervals::lmChordIntervals(int nNumNotes, wxString* pNotes)
 {
     //Creates the intervals from a list of notes in LDP source code
-
-    m_nNumIntv = nNumNotes - 1;
+    if (nNumNotes > 0)
+        m_nNumIntv = nNumNotes - 1;
+    else
+    {
+        m_nNumIntv = 0;
+        return;
+    }
     lmFPitch fpRootNote = ::lmLDPDataToFPitch( *pNotes );
 
     //get intervals
@@ -1018,12 +1035,17 @@ void lmChordIntervals::Normalize()
 
 wxString lmChordIntervals::DumpIntervals()
 {
+    wxLogMessage(_T(" DumpIntervals %d "), m_nNumIntv );
     wxString sIntvals = _T("");
+    if (m_nNumIntv < 1)
+        return sIntvals;
     for (int i=0; i < m_nNumIntv-1; i++)
     {
+        wxLogMessage(_T(" Intv %d: %d "), i,  m_nIntervals[i]);
         sIntvals += FIntval_GetIntvCode( m_nIntervals[i] );
         sIntvals += _T(",");
     }
+    wxLogMessage(_T(" Intv %d: %d "), m_nNumIntv-1,  m_nIntervals[m_nNumIntv-1]);
     sIntvals += FIntval_GetIntvCode( m_nIntervals[m_nNumIntv-1] );
     return sIntvals;
 }

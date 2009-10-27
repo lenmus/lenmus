@@ -770,19 +770,12 @@ void lmActiveNotes::RecalculateActiveNotes()
 // TODO: method used for debug. Keep it?
 wxString lmActiveNotes::ToString()
 {
-    wxString sRetStr = _T("");
-    wxString auxStr = _T("");
-    int nNumNotes = GetNumActiveNotes();
-    sRetStr = wxString::Format(_(" [Time: %f, %d Active notes: ") , m_rCurrentTime, nNumNotes);
-
+    wxString sRetStr;
     std::list<lmActiveNoteInfo*>::iterator it;
     for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it)
     {
-        auxStr = wxString::Format(_T(" %s  End time: %f ")
-            , (*it)->pNote->GetPrintName().c_str(), (*it)->rEndTime  );
-        sRetStr += auxStr;
+        sRetStr += wxString::Format(_T(" %s "), (*it)->pNote->GetPrintName().c_str());
     }
-    sRetStr += _T(" ]");
     return sRetStr;
 }
 
