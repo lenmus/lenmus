@@ -153,7 +153,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
     //   2) fixed soprano
     //   3) chord notation
 
-    // select a random key signature
+    // select a random exercise type
     lmRandomGenerator oGenerator;
     nHarmonyExcerciseType = oGenerator.RandomNumber(1, lmNUM_HARMONY_EXERCISES);
 
@@ -465,18 +465,9 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 wxLogMessage(_T("  FIGURED BASS:%s")
                    , pHE_FiguredBass[nChordCount]->GetFiguredBassString().c_str());
 
-                // At this point we already have the notes in FPitch. Now
+                // At this point we already have the notes in FPitch. Now:
                 //  Create the notes of the score
                 //  Display notes and numerals
-
-                wxLogMessage(_T(" FINAL CHORD: %d, VOICES: %s %s %s %s . Note patterns -------")
-                    ,nChordCount
-                    , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][0]).c_str()
-                    , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][1]).c_str()
-                    , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][2]).c_str()
-                    , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][3]).c_str()
-                    );
-
 
                 //
                 // Create each lmNote
@@ -528,7 +519,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                         {
                             if ( nNumDisplayedNotesInChord > 0 && nNumDisplayedNotesInChord < nNUM_VOICES_IN_HARMONY_EXERCISE)
                             {
-                                wxLogMessage(_T("  *** V:%d GoBack ***"), nVoice);
                                 pNode = parserLDP.ParseText( sLDPGoBack );
                                 parserLDP.AnalyzeMusicData(pNode, pVStaff);
                             }

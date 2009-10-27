@@ -25,9 +25,6 @@
 #pragma interface "Harmony.cpp"
 #endif
 
-// aware: if included <list> before <map>: syntax error !  (MS bug?)
-#include <map>  
-#include <list>
 
 #include "../auxmusic/Chord.h"
 
@@ -155,7 +152,6 @@ public:
     virtual ~lmFPitchChord(){};
 
     int GetNumNotes() {return m_nNumChordNotes;}
-    //@@ todo remove lmFPitch GetNote(int nIndex) {return m_fpChordNotes[nIndex];} ;
 
     wxString ToString();
 
@@ -174,7 +170,7 @@ public:
     // aware: to be used only after using constructor without notes
     // return the number of notes
     int AddNoteLmFPitch(lmFPitch fNote);
- //   int AddNoteFromInterval(int nInterval, int octaves); // todo: not necessary, remove?
+
     void RemoveAllNotes(); // todo: not necessary, remove?
 
     bool IsBassDuplicated();
@@ -190,7 +186,6 @@ class lmScoreChord: public lmFPitchChord
 {
 public:
     //build a chord from a list of score note pointers
-//@@ todo: necesary?   
     lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);  
     //  Constructors without notes
     //      (the notes can be added afterwards)
@@ -209,11 +204,9 @@ public:
  
     lmNote* GetNoteLmNote(int nIndex);
     int GetNoteVoice(int nIndex);
-    int GetNumLmNotes(); // todo: possibly, it can be removed, but does no harm
+    int GetNumLmNotes();
 
-    wxString ToString();
-
-    lmChordError  tChordErrors; // todo: not essential; consider to remove it
+    lmChordError  tChordErrors;
 private:
     int m_nNumLmNotes;
 
@@ -227,12 +220,7 @@ private:
 //
 // Message box to display the results if the chord analysis
 // 
-// ****************************************todo: review these includes: necessary?
-#include "../app/MainFrame.h"
-extern lmMainFrame* GetMainFrame();
-#include "../app/ScoreDoc.h"
-//Error markup: the marked staffobj and its markup attachment
-typedef std::pair<lmStaffObj*, lmAuxObj*> lmMarkup;
+
 // Remember:
 //      x: relative to object; positive: right
 //      y: relative to top line; positive: down

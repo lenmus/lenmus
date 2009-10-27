@@ -569,12 +569,12 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
     wxLogMessage(_T("ProcessScore:ANALYSIS of %d chords:  "));
 
-    int nNumErrors = AnalyzeHarmonicProgression(&tChordDescriptor[0], nNumChords, pChordErrorBoxD);
+    int nNumHarmonyErrors = AnalyzeHarmonicProgression(&tChordDescriptor[0], nNumChords, pChordErrorBoxD);
 
     wxLogMessage(_T("ANALYSIS RESULT of %d chords:  bad: %d, Num Errors:%d ")
-        ,nNumChords, nBadChords, nNumErrors);
+        ,nNumChords, nBadChords, nNumHarmonyErrors);
 
-    if (nBadChords == 0 && nNumErrors == 0)
+    if (nBadChords == 0 && nNumHarmonyErrors == 0)
     {
        wxString sOkMsg = _T(" Harmony is OK.");
        wxLogMessage( sOkMsg );
@@ -592,7 +592,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
     if (nHarmonyExerciseChordsToCheck)
     {
-        int nExerciseErrors = nNumErrors;
+        int nExerciseErrors = nNumHarmonyErrors;
 
         wxLogMessage(_T(" *** HARMONY EXERCISE CHECK. Type: %d, Chords:%d ***")
             , nHarmonyExcerciseType, nHarmonyExerciseChordsToCheck);
@@ -811,6 +811,14 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
         }
 
+        wxLogMessage(_T(" SUMMARY"));
+        wxLogMessage(_T(" Created %d chords:"), nNumChords );
+        for (int i = 0; i <nNumChords; i++)
+            wxLogMessage(_T(" Chord %d: %s"), i, pHE_Chords[i]->ToString().c_str() );
+        wxLogMessage(_T(" Checked %d chords:"), nHarmonyExerciseChordsToCheck );
+        for (int i = 0; i <nHarmonyExerciseChordsToCheck; i++)
+            wxLogMessage(_T(" Chord %d: %s"), i, tChordDescriptor[i]->ToString().c_str() );
+        wxLogMessage( _T(" Bad chords: %d, harmony errors:%d"), nBadChords, nNumHarmonyErrors);
         wxLogMessage( _T(" Exercise errors: %d"), nExerciseErrors);
 
         if (nExerciseErrors > 0)
@@ -829,12 +837,12 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
         {
             if (pHE_Chords[i] != NULL)
             {
-               wxLogMessage( _T(" DELETED pHE_Chords[%d]"), i);
+//todo remove               wxLogMessage( _T(" DELETED pHE_Chords[%d]"), i);
                delete pHE_Chords[i];
             }
             if (pHE_FiguredBass[i] != NULL)
             {
-               wxLogMessage( _T(" DELETED pHE_FiguredBass[%d]"), i);
+//todo remove                  wxLogMessage( _T(" DELETED pHE_FiguredBass[%d]"), i);
                delete pHE_FiguredBass[i];
             }
             // pHE_UserFiguredBass: is a copy; do not delete
@@ -844,15 +852,6 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
         nHarmonyExerciseChordsToCheck = 0;
 
     }
-
-    //clean
-/* TODO: REMOVE
-    assert(nNumChords<lmMAX_NUM_CHORDS);
-    wxLogMessage(_T(" Deleting %d chords"), nNumChords );
-    for (int i = 0; i <nNumChords; i++)
-        delete tChordDescriptor[i].pChord;
---*/
-
 
     return fScoreModified;      //true -> score modified
 

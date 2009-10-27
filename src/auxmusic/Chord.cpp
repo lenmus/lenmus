@@ -499,14 +499,7 @@ lmChord::lmChord(int nStep, lmEKeySignatures nKey, int nIntervals, int nInversio
     , m_nInversion(nInversion)
     , m_nType(lmEMPTY_CHORD_TYPE)
 {
-    wxLogMessage(_T(" Creatig lmChord step:%d key:%d intervals:%d, inversions:%d, octave:%d ")
-        , nStep, nKey, nIntervals, nInversion, octave
-        );
-
-
     m_fpRootNote = FPitchK(nStep, octave, nKey); // only to debug
-    wxLogMessage(_T("   InitialRootNote (%d,%d,%d): %d (%s) ")
-        , nStep, octave, nKey, m_fpRootNote, FPitch_ToAbsLDPName(m_fpRootNote).c_str());
 
     // aware: for calculating the root note when there are inversions...
 
@@ -516,12 +509,7 @@ lmChord::lmChord(int nStep, lmEKeySignatures nKey, int nIntervals, int nInversio
 
     m_fpRootNote = FPitchK(nnStep, octave+nIncreaseOctave, nKey);
 
-    wxLogMessage(_T("  Final RootNote (%d,%d,%d): %d (%s) ")
-        , nnStep, octave+nIncreaseOctave, nKey, m_fpRootNote, FPitch_ToAbsLDPName(m_fpRootNote).c_str());
-
     ComputeTypeAndInversion();
-
-    wxLogMessage(_T(" ********** Created lmChord: %s *******"), this->ToString().c_str());
 }
 
 // Creates a chord from a list of score notes
@@ -533,8 +521,6 @@ lmChord::lmChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey)
     , m_nType(lmEMPTY_CHORD_TYPE)
 {
     ComputeTypeAndInversion();
-
-    wxLogMessage(_T("  Created lmChord: {%s} from score notes"), this->ToString().c_str());
 }
 
 // Creates a chord from a list of score notes
@@ -546,8 +532,6 @@ lmChord::lmChord(int nNumNotes, lmFPitch fNotes[], lmEKeySignatures nKey)
     , m_nType(lmEMPTY_CHORD_TYPE)
 {
     ComputeTypeAndInversion();
-
-    wxLogMessage(_T("  Created lmChord: {%s} from lmFPitch notes"), this->ToString().c_str());
 }
 
 
@@ -618,10 +602,13 @@ wxString lmChord::GetPattern(int i)
 
 wxString lmChord::GetNameFull()
 {
-    wxString sName = lmChordTypeToName( GetChordType() );
+    lmEChordType nType = GetChordType();
 
-    if ( m_nType != lmINVALID_CHORD_TYPE )
+    wxString sName;
+
+    if ( nType != lmINVALID_CHORD_TYPE )
     {
+        sName = lmChordTypeToName( nType );
         sName += _T(", ");
         if (m_nInversion == 0)
             sName += _("root position");
@@ -650,22 +637,14 @@ int lmChord::IsValidChordNote(lmFPitch fNote)
 {
     lmFPitch fpNormalizedRoot = this->GetNormalizedBass();
 
-    wxLogMessage(_T("  lmChord::IsValidChordNote %d [%s], ROOT:%d [%s]")
-                ,fNote, FPitch_ToAbsLDPName(fNote).c_str()
-                , fpNormalizedRoot, FPitch_ToAbsLDPName(fpNormalizedRoot).c_str() );
-
     for (int nI=0; nI <= m_nNumIntv; nI++) // note that valid intervals are: 0 .. m_nNumIntv
     {
         lmFPitch fpNormalizedNoteDistance = (  fNote - GetInterval(nI)) % lm_p8;
-        wxLogMessage(_T("    lmChord::IsValidChordNote %d == %d? ")
-                ,fpNormalizedRoot, fpNormalizedNoteDistance );
         if ( fpNormalizedRoot == fpNormalizedNoteDistance)
         {
-            wxLogMessage(_T("     \t OK!!! "));
             return true;
         }
     }
-    wxLogMessage(_T("  @@@lmChord::IsValidChordNote ERROR!!! ") );
     return false;
 }
 
@@ -679,8 +658,6 @@ lmFPitch lmChord::GetNormalizedRoot()
     lmFPitch fpIntv = GetInterval(nIntervalToApplyToTheBass);
     lmFPitch fpBass = GetNormalizedBass();
     lmFPitch fpRootNote = (fpBass + fpIntv) %  lm_p8;
-    wxLogMessage(_T("  GetNormalizedRoot NNotes:%d NInv:%d  Intv:%d=%d  Bass:%d  Root:%d NORMALIZED:%d"),
-        nNumNotes, nNumInversions, nIntervalToApplyToTheBass, fpIntv, fpBass, (fpBass + fpIntv), fpRootNote);
     return fpRootNote;
 }
 void lmChord::ComputeTypeAndInversion()
@@ -723,9 +700,9 @@ wxString lmChord::ToString()
         sRetStr += wxString::Format(_T(","));
         sRetStr += this->lmChordIntervals::ToString().c_str();
 
-        sRetStr += _(", Pattern:");
+        sRetStr += _(" Pattern:");
 
-        for (int n=0; n<m_nNumIntv; n++)
+        for (int n=0; n<=m_nNumIntv; n++)
         {
             sRetStr += _T(" ");
             sRetStr += GetPattern(n);
@@ -879,15 +856,16 @@ lmChordIntervals::lmChordIntervals(wxString sIntervals)
 
 lmChordIntervals::lmChordIntervals(int nNumNotes, lmNote** pNotes)
 {
-    //Creates the intervals from a list of score notes
-    wxLogMessage(_T(" Constr lmChordIntervals %d notes "), nNumNotes);
+    // AWARE: NOTES MUST BE ALREADY ORDERED INCREMENTALLY
 
+    //Creates the intervals from a list of score notes
     m_nNumIntv = nNumNotes - 1;
     if ( pNotes[0] == NULL)
     {
         wxLogMessage(_T(" lmChordIntervals ERROR: note %d is NULL"), 0);
         return;
     }
+
 
     //get intervals
     for (int i=0; i < m_nNumIntv; i++)
@@ -898,10 +876,10 @@ lmChordIntervals::lmChordIntervals(int nNumNotes, lmNote** pNotes)
             return;
         }
 
-        m_nIntervals[i] = pNotes[i+1]->GetFPitch() - pNotes[0]->GetFPitch();
-        wxLogMessage(_T(" @lmChordIntervals i:%d: %d-%d= %d , from score notes ")
-            , i,  pNotes[i+1]->GetFPitch(), pNotes[0]->GetFPitch(), m_nIntervals[i] );
+        m_nIntervals[i] = (pNotes[i+1]->GetFPitch() - pNotes[0]->GetFPitch()) % lm_p8;
     }
+
+    this->Normalize(); // normalize to 1 octave range, remove duplicated and sort.
 }
 
 lmChordIntervals::lmChordIntervals(int nNumNotes, lmFPitch fNotes[], int nUseless)
@@ -914,8 +892,9 @@ lmChordIntervals::lmChordIntervals(int nNumNotes, lmFPitch fNotes[], int nUseles
     for (int i=0; i < m_nNumIntv; i++)
     {
         m_nIntervals[i] = fNotes[i+1] - fNotes[0];
-        wxLogMessage(_T("  @@@lmChordIntervals i:%d : %d, from  lmFPitch notes"), i, m_nIntervals[i]);
     }
+
+    this->Normalize(); // normalize to 1 octave range, remove duplicated and sort.
 }
 
 lmChordIntervals::lmChordIntervals(int nNumNotes, wxString* pNotes)
@@ -942,25 +921,19 @@ lmChordIntervals::lmChordIntervals(int nRootStep, lmEKeySignatures nKey, int nNu
         m_nIntervals[i] = FPitchInterval(nRootStep, nKey, i+1);
     }
 
-    wxLogMessage(_T(" %d lmChordIntervals before %d INVERSIONS "),m_nNumIntv,nInversion );
     lmFIntval nI;
     for (int i=0; i < m_nNumIntv; i++)
     {
         nI = m_nIntervals[i];
-        wxLogMessage(_T("   Interval %d: %d "), i , nI );
-        wxLogMessage(_T("    code (%s) "),  FIntval_GetIntvCode(nI).c_str() );
     }
 
     //apply inversions
     for (int i=0; i < nInversion; i++)
         DoInversion();
 
-    wxLogMessage(_T(" %d lmChordIntervals AFTER %d INVERSIONS "),m_nNumIntv,nInversion );
     for (int i=0; i < m_nNumIntv; i++)
     {
         nI = m_nIntervals[i];
-        wxLogMessage(_T("   Interval %d: %d "), i , nI );
-        wxLogMessage(_T("    code (%s) "),  FIntval_GetIntvCode(nI).c_str() );
     }
 }
 
