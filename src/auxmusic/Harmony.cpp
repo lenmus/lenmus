@@ -967,6 +967,9 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
 int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                                             , int pNumFailuresInChord[], ChordInfoBox* pBox)
 {
+    wxString sMovTypes[] =
+        {_("Direct"), _T("Oblique"), _T("Contrary")};
+
     // Forbidden to arrive to a fifth or octave by means of a direct movement ( both: same delta sign)
     // exceptions:
     //  - voice is soprano (TODO: consider: tenor, contralto??) and distance is 2th
@@ -1011,12 +1014,13 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                          - m_pChordDescriptor[nC]->GetNoteFpitch(i) );
                 int nIntervalNumber = FIntval_GetNumber(nInterval);
 
-                wxLogMessage(_(" Notes: %s-->%s %s-->%s Movement type:%d  INTERVAL:%d (%s)")
+                wxLogMessage(_(" Notes: %s-->%s %s-->%s Movement type:%s  INTERVAL:%d (%s)")
                         , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).c_str()
                         , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
                         , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).c_str()
                         , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).c_str()
-                        , nVoiceMovementType, nIntervalNumber, FIntval_GetIntvCode(nInterval).c_str());
+                        , sMovTypes[nVoiceMovementType].c_str()
+                        , nIntervalNumber, FIntval_GetIntvCode(nInterval).c_str());
 
                 if ( nVoiceMovementType == lm_eDirectMovement && ( nIntervalNumber == 1 || nIntervalNumber == 5 )  )
                 {

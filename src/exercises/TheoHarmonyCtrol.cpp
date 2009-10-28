@@ -233,7 +233,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         // TODO: improve! (calculate numerals from chord info + key signature + mode)
         //        this is provisional; only for key signature = C Major
         wxString sNumeralsDegrees[7] =
-        {_T("I"), _T("II"), _T("III"), _T("IV"), _T("V"), _T("VI"), _T("VII")};
+        {_T(" I"), _T(" II"), _T("III"), _T(" IV"), _T("  V"), _T(" VI"), _T("VII")};
         wxString sNumerals;
 
         //loop the add notes

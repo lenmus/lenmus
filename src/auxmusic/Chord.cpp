@@ -1007,6 +1007,9 @@ void lmChordIntervals::Normalize()
     //reduce any interval grater than the octave and unisons, and remove duplicated.
     //sort intervals
 
+    if (m_nNumIntv < 1) // if no interval to normailze return
+        return; // aware: no only to save time; the while below fails if 0 intervals
+
     //reduce any interval greater than the octave
     for (int i=0; i < m_nNumIntv; i++)
     {
@@ -1035,17 +1038,14 @@ void lmChordIntervals::Normalize()
 
 wxString lmChordIntervals::DumpIntervals()
 {
-    wxLogMessage(_T(" DumpIntervals %d "), m_nNumIntv );
     wxString sIntvals = _T("");
     if (m_nNumIntv < 1)
         return sIntvals;
     for (int i=0; i < m_nNumIntv-1; i++)
     {
-        wxLogMessage(_T(" Intv %d: %d "), i,  m_nIntervals[i]);
         sIntvals += FIntval_GetIntvCode( m_nIntervals[i] );
         sIntvals += _T(",");
     }
-    wxLogMessage(_T(" Intv %d: %d "), m_nNumIntv-1,  m_nIntervals[m_nNumIntv-1]);
     sIntvals += FIntval_GetIntvCode( m_nIntervals[m_nNumIntv-1] );
     return sIntvals;
 }

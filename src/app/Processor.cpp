@@ -481,36 +481,36 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
                     // Get the notes
                     int nNumActiveNotes = tActiveNotesList.GetNotes(&pPossibleChordNotes[0]);
-
-                    // sort the notes
-                    SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
-
-                    // 
-                    // Get the chord from the notes
-                    //
-                    wxLogMessage(_T(" ProcessScore: Get chord from %d notes"), nNumActiveNotes );
-                    tChordDescriptor[nNumChords] = new lmScoreChord
-                        (nNumActiveNotes, &pPossibleChordNotes[0], nKey);
-                    wxLogMessage(_T(" ProcessScore: Chord %d : %s")
-                        , nNumChords, tChordDescriptor[nNumChords]->ToString().c_str());
-
-                    if (!tChordDescriptor[nNumChords]->IsStandardChord())
+                    if (nNumActiveNotes > 0 )
                     {
-                        sStatusStr = wxString::Format(_(" Chord %d: %s; Notes: %s")
-                            , nNumChords+1
-                            , tChordDescriptor[nNumChords]->lmChord::ToString().c_str()
-                            , tActiveNotesList.ToString().c_str());
-                        wxColour colour = wxColour(255,0,0,128); // R, G, B, Transparency
-                        pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords]
-                        , colour, sStatusStr);
-                        nBadChords++;
+                        // sort the notes
+                        SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
+
+                        // 
+                        // Get the chord from the notes
+                        //
+                        tChordDescriptor[nNumChords] = new lmScoreChord
+                            (nNumActiveNotes, &pPossibleChordNotes[0], nKey);
+                        wxLogMessage(_T(" ProcessScore: Chord %d : %s")
+                            , nNumChords, tChordDescriptor[nNumChords]->ToString().c_str());
+
+                        if (!tChordDescriptor[nNumChords]->IsStandardChord())
+                        {
+                            sStatusStr = wxString::Format(_(" Bad chord %d: %s; Notes: %s")
+                                , nNumChords+1
+                                , tChordDescriptor[nNumChords]->lmChord::ToString().c_str()
+                                , tActiveNotesList.ToString().c_str());
+                            wxColour colour = wxColour(255,0,0,128); // R, G, B, Transparency
+                            pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords]
+                            , colour, sStatusStr);
+                            nBadChords++;
+                        }
+                        nNumChords++;
+                        fScoreModified = true; // repaint
                     }
-                    nNumChords++;
 
                     // set new time and recalculate list of active notes
                     tActiveNotesList.SetTime( rCurrentNoteAbsTime );
-
-                    fScoreModified = true; // repaint
                 }
 
                 // add new note to the list of active notes
@@ -538,33 +538,34 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
     // Get the notes
     int nNumActiveNotes = tActiveNotesList.GetNotes(&pPossibleChordNotes[0]);
-
-    // Sort the notes
-    SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
-
-
-    //
-    // Get the chord from the notes
-    //
-    tChordDescriptor[nNumChords] = new lmScoreChord
-        (nNumActiveNotes, &pPossibleChordNotes[0], nKey);
-    wxLogMessage(_T(" ProcessScore: END Chord %d : %s")
-        , nNumChords, tChordDescriptor[nNumChords]->ToString().c_str());
-
-    if (!tChordDescriptor[nNumChords]->IsStandardChord())
+    if (nNumActiveNotes > 0 )
     {
-        sStatusStr = wxString::Format(_(" Chord %d: %s; Notes: %s")
-            , nNumChords+1
-            , tChordDescriptor[nNumChords]->lmChord::ToString().c_str()
-            , tActiveNotesList.ToString().c_str());
-        wxColour colour = wxColour(255,0,0,128); // R, G, B, Transparency
-        pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords]
-            , colour, sStatusStr);
-        nBadChords++;
-    }
-    nNumChords++;
+        // Sort the notes
+        SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
 
-    wxLogMessage(_T("ProcessScore:ANALYSIS of %d chords:  "));
+        //
+        // Get the chord from the notes
+        //
+        tChordDescriptor[nNumChords] = new lmScoreChord
+            (nNumActiveNotes, &pPossibleChordNotes[0], nKey);
+        wxLogMessage(_T(" ProcessScore: END Chord %d : %s")
+            , nNumChords, tChordDescriptor[nNumChords]->ToString().c_str());
+
+        if (!tChordDescriptor[nNumChords]->IsStandardChord())
+        {
+            sStatusStr = wxString::Format(_(" Bad chord %d: %s; Notes: %s")
+                , nNumChords+1
+                , tChordDescriptor[nNumChords]->lmChord::ToString().c_str()
+                , tActiveNotesList.ToString().c_str());
+            wxColour colour = wxColour(255,0,0,128); // R, G, B, Transparency
+            pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords]
+                , colour, sStatusStr);
+            nBadChords++;
+        }
+        nNumChords++;
+    }
+
+    wxLogMessage(_T("ProcessScore:ANALYSIS of %d chords:  "), nNumChords);
 
     int nNumHarmonyErrors = AnalyzeHarmonicProgression(&tChordDescriptor[0], nNumChords, pChordErrorBox);
 
