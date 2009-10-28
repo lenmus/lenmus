@@ -306,15 +306,23 @@ public:
 private:
 
     //mouse cursors
-    enum lmEMouseCursor        //AWARE: Must match LoadMouseCursors() implementation
+    enum lmEMouseCursor
     {
-        lm_eCursor_Pointer = 0,
+        lm_eCursor_Pointer = 0,     //Must start at 0. See LoadAllMouseCursors()
         lm_eCursor_Cross,
+        lm_eCursor_BullsEye,
+        lm_eCursor_Hand,
         lm_eCursor_Note,
         lm_eCursor_Note_Forbidden,
         //
-        lm_eCursor_Max          //the last item.
+        lm_eCursor_Max              //the last item.
     };
+
+    //flags to control tool marks while dragging
+    #define lmMARK_NONE             0L    
+    #define lmMARK_TIME_GRID        1L    
+    #define lmMARK_LEDGER_LINES     2L    
+    #define lmMARK_MEASURE          4L 
 
     //values that depend on selected tool
     wxMenu* GetContextualMenuForTool();
@@ -323,6 +331,7 @@ private:
     //dealing with mouse events
     void OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC);
     void OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC);
+    lmGMObject* GetPointedAreaInfo();
 
     //mouse tools operations
     void PrepareToolDragImages();
@@ -377,8 +386,10 @@ private:
     bool IsCursorValidToCutBeam();
     bool IsSelectionValidToJoinBeam();
 
-    //time grid
-    inline bool UseTimeGrid() { return m_nPageID == lmPAGE_NOTES; }
+    //helper methods to determine which drag marks to render
+    inline bool RequiresTimeGrid() { return (m_nToolMarks & lmMARK_TIME_GRID) != 0L; }
+    inline bool RequiresLedgerLines() { return (m_nToolMarks & lmMARK_LEDGER_LINES) != 0L; }
+    inline bool RequiresMeasureFrame() { return (m_nToolMarks & lmMARK_MEASURE) != 0L; }
 
 
 
@@ -402,6 +413,8 @@ private:
     wxBitmap*               m_pToolBitmap;
     lmDPoint                m_vToolHotSpot;             //hot spot for m_pToolBitmap
 
+    //flags and data to control tool marks while dragging
+    unsigned long                   m_nToolMarks;        //flags defining marks
 
 	//to control octave when inserting several consecutive notes
 	bool			m_fInsertionSequence;
@@ -435,6 +448,7 @@ private:
 	lmEAccidentals  m_nSelAcc;
 	int             m_nSelOctave;
 	int             m_nSelVoice;
+    bool            m_fSelIsNote;
         //Page Clefs
     lmEClefType     m_nClefType;
 

@@ -622,6 +622,7 @@ void lmScoreCursor::SetState(lmCursorState* pState, bool fUpdateTimepos)
     m_nStaff = pState->GetNumStaff();
     m_rTimepos = pState->GetTimepos();
     m_pIt->MoveTo( pState->GetStaffObj(m_pScore) );
+    m_nSegment = m_pIt->GetNumSegment();
 
     //update timepos, if requested
     if (fUpdateTimepos)
@@ -632,8 +633,7 @@ void lmScoreCursor::SetState(lmCursorState* pState, bool fUpdateTimepos)
         else
         {
             //Not pointing to an staffobj. Cursor is at end of collection
-            int nSegment = m_pIt->GetNumSegment();
-            m_rTimepos = m_pColStaffObjs->GetSegment(nSegment)->GetDuration();
+            m_rTimepos = m_pColStaffObjs->GetSegment(m_nSegment)->GetDuration();
         }
     }
 }
@@ -1036,16 +1036,20 @@ void lmScoreCursor::ResetCursor()
 
 void lmScoreCursor::DoMoveToFirst(int nStaff)
 {
-    //Move cursor to first object in first segment on staff nStaff.
+    //Move cursor to first object in staff nStaff. Segment will be that of found
+    //object.
+    //If no object found in requested staff, cursor will be moved to first
+    //object in instrument.
 	//If no staff specified (nStaff==0) remains in current staff
 
 	if (nStaff != 0)
 		m_nStaff = nStaff;
 
 	m_rTimepos = 0.0f;
+    m_nSegment = -1;        //no StaffObj
 	wxASSERT(m_pColStaffObjs->GetNumMeasures() > 0);
 
-	//position in first segment
+	//position in first object
 	m_pIt->MoveFirst();
     if (m_nStaff != 0)
     {
@@ -1055,8 +1059,14 @@ void lmScoreCursor::DoMoveToFirst(int nStaff)
             m_pIt->MoveNext();
         }
     }
-    //found. Update time
-    UpdateTimepos();
+
+    //either found or end of collection. Update time and segment
+    lmStaffObj* pSO = m_pIt->GetCurrent();
+    if (pSO)
+    {
+        m_nSegment = pSO->GetSegment()->GetNumSegment();
+        UpdateTimepos();
+    }
 }
 
 void lmScoreCursor::AdvanceToTime(float rTime)
@@ -1160,6 +1170,7 @@ void lmScoreCursor::MoveToStartOfSegment(int nSegment, int nStaff, bool fSkipCle
 	m_pIt->MoveTo(m_pColStaffObjs->GetSegment(nSegment)->GetFirstSO());
     m_nStaff = nStaff;
 	m_rTimepos = 0.0f;
+    m_nSegment = nSegment;
 
     //skip clef/key if requested
     if (fSkipClef)

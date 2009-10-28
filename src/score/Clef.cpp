@@ -74,7 +74,7 @@ lmTenths lmClef::GetGlyphOffset(bool fSmallClef)
     // returns the y-axis offset from paper cursor position so that shape get correctly
     // positioned over a five-lines staff (units: tenths of inter-line space)
 
-    lmEGlyphIndex nGlyph = lmGetGlyphIndex(m_nClefType);
+    lmEGlyphIndex nGlyph = lmGetGlyphForCLef(m_nClefType);
     lmTenths yOffset = aGlyphsInfo[nGlyph].GlyphOffset;
 
     //add offset to move the clef up/down the required lines
@@ -210,7 +210,7 @@ lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
         yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(fSmallClef), m_nStaffNum );
 
         //create the shape object
-        pShape = new lmShapeClef(this, nIdx, lmGetGlyphIndex(m_nClefType), pPaper,
+        pShape = new lmShapeClef(this, nIdx, lmGetGlyphForCLef(m_nClefType), pPaper,
                                  lmUPoint(uPos.x, yPos), fSmallClef, _T("Clef"),
                                  lmDRAGGABLE, colorC);
     }
@@ -349,7 +349,7 @@ lmDPitch GetFirstLineDPitch(lmEClefType nClef)
     return lmNO_DPITCH;
 }
 
-lmEGlyphIndex lmGetGlyphIndex(lmEClefType nClefType)
+lmEGlyphIndex lmGetGlyphForCLef(lmEClefType nClefType)
 {
     // returns the index (over global glyphs table) to the character to use to print
     // the clef (LenMus font)
@@ -364,7 +364,7 @@ lmEGlyphIndex lmGetGlyphIndex(lmEClefType nClefType)
         case lmE_Do4: return GLYPH_C_CLEF;
         case lmE_Percussion: return GLYPH_PERCUSSION_CLEF_BLOCK;
         default:
-            wxLogMessage(_T("[::lmGetGlyphIndex] Invalid value (%d) for clef type"), nClefType);
+            wxLogMessage(_T("[::lmGetGlyphForCLef] Invalid value (%d) for clef type"), nClefType);
             return GLYPH_G_CLEF;
     }
 }

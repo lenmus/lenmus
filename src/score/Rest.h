@@ -50,8 +50,6 @@ public:
 
 
 private:
-    // access to glyph data to define character to use and selection rectangle 
-    lmEGlyphIndex GetGlyphIndex();
     lmLUnits GetDotShift();
 
 };

@@ -995,29 +995,7 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENot
     // Creates the shape for a note (including stem) using a single glyph.
     // Adds it to the composite shape pNoteShape.
 
-    lmEGlyphIndex nGlyph = GLYPH_EIGHTH_NOTE_UP;
-    switch (nNoteType) {
-        case eEighth :
-            nGlyph = (m_fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
-            break;
-        case e16th :
-            nGlyph = (m_fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
-            break;
-        case e32th :
-            nGlyph = (m_fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
-            break;
-        case e64th :
-            nGlyph = (m_fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
-            break;
-        case e128th :
-            nGlyph = (m_fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
-            break;
-        case e256th :
-            nGlyph = (m_fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
-            break;
-        default:
-            wxASSERT(false);
-    }
+    lmEGlyphIndex nGlyph = lmGetGlyphForNoteRest(nNoteType, true, m_fStemDown);
 
     // adjust 'y' glyph position by adding the glyph offset
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
@@ -1026,7 +1004,6 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENot
     lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, pPaper,
                                             lmUPoint(uxLeft, yPos), _T("NoteSingle"));
 	pNoteShape->AddNoteInBlock(pShape);
-
 }
 
 void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteHeads nNoteheadType,

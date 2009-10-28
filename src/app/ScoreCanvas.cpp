@@ -944,71 +944,10 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
     //selected. At this point mouse position and page information has been already
     //computed
 
-    //determine type of area pointed by mouse and classify it
+    //determine type of area pointed by mouse. Also collect information
+    //about current staff for point pointed by mouse and about related BoxSliceInstr.
     long nOldMousePointedArea = m_nMousePointedArea;
-	lmGMObject* pGMO = m_pView->FindShapeAt(m_nNumPage, m_uMousePagePos, true);
-    m_pCurShapeStaff = (lmShapeStaff*)NULL;
-    m_pCurBSI = (lmBoxSliceInstr*)NULL;
-    if (pGMO)
-    {
-        //pointing to a selectable shape
-        if (pGMO->IsShapeStaff())
-        {
-            m_nMousePointedArea = lmMOUSE_OnStaff;
-            m_pCurShapeStaff = (lmShapeStaff*)pGMO;
-            //get the SliceInstr
-            pGMO = m_pView->FindBoxAt(m_nNumPage, m_uMousePagePos);
-            if (pGMO->IsBoxSliceInstr())
-                m_pCurBSI = (lmBoxSliceInstr*)pGMO;
-            else if (pGMO->IsBoxSystem())
-            {
-                //empty score
-                m_pCurShapeStaff = ((lmBoxSystem*)pGMO)->GetStaffShape(1);
-            }
-            else
-                wxASSERT(false);    //Unknown case. Is it possible??????
-        }
-        else if (pGMO->IsShapeNote() || pGMO->IsShapeRest())
-            m_nMousePointedArea = lmMOUSE_OnNotesRests;
-        else
-            m_nMousePointedArea = lmMOUSE_OnOtherShape;
-    }
-    else
-    {
-        //No shape pointed. Check if pointing to a box
-        pGMO = m_pView->FindBoxAt(m_nNumPage, m_uMousePagePos);
-        if (pGMO)
-        {
-            if (pGMO->IsBoxSliceInstr())
-            {
-                m_pCurBSI = (lmBoxSliceInstr*)pGMO;
-                //determine staff
-                if (m_pLastBSI != m_pCurBSI)
-                {
-                    //first time on this BoxInstrSlice, between two staves
-                    m_pCurShapeStaff = m_pCurBSI->GetNearestStaff(m_uMousePagePos);
-                }
-                else
-                {
-                    //continue in this BoxInstrSlice, in same inter-staves area
-                    m_pCurShapeStaff = m_pLastShapeStaff;
-                }
-                //determine position (above/below) relative to staff
-                if (m_uMousePagePos.y > m_pCurShapeStaff->GetBounds().GetLeftBottom().y)
-                    m_nMousePointedArea = lmMOUSE_OnBelowStaff;
-                else
-                    m_nMousePointedArea = lmMOUSE_OnAboveStaff;
-            }
-            else
-                m_nMousePointedArea = lmMOUSE_OnOtherBox;
-        }
-        else
-            m_nMousePointedArea = lmMOUSE_OnOther;
-    }
-
-    //wxLogMessage(_T("[OnMouseEventToolMode] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d"),
-    //             m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
-    //             m_nMousePointedArea );
+    lmGMObject* pGMO = GetPointedAreaInfo();
 
     //determine timepos at click point, by using time grid
     if (m_pCurBSI)
@@ -1100,7 +1039,7 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
     }
     else
     {
-        //no change valid<->invalida area. If we continue in a valid area draw ledger
+        //no change valid<->invalida area. If we continue in a valid area drag marks
         //lines if necessary
         if (nNowOnValidArea)
             ContinueToolDrag(event, pDC);
@@ -1124,6 +1063,116 @@ void lmScoreCanvas::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
     }
 }
 
+lmGMObject* lmScoreCanvas::GetPointedAreaInfo()
+{
+    //determine type of area pointed by mouse and classify it. Also collect information
+    //about current staff for point pointed by mouse and about related BoxSliceInstr.
+    //Returns the pointed box/shape
+
+    m_pCurShapeStaff = (lmShapeStaff*)NULL;
+    m_pCurBSI = (lmBoxSliceInstr*)NULL;
+
+    //check if pointing to a shape (not to a box)
+	lmGMObject* pGMO = m_pView->FindShapeAt(m_nNumPage, m_uMousePagePos, true);
+    if (pGMO)
+    {
+        //pointing to a selectable shape. Get pointed area type
+        if (pGMO->IsShapeStaff())
+        {
+            m_nMousePointedArea = lmMOUSE_OnStaff;
+            m_pCurShapeStaff = (lmShapeStaff*)pGMO;
+        }
+        else if (pGMO->IsShapeNote() || pGMO->IsShapeRest())
+        {
+            m_nMousePointedArea = lmMOUSE_OnNotesRests;
+        }
+        else
+            m_nMousePointedArea = lmMOUSE_OnOtherShape;
+
+        //get the SliceInstr.
+        lmGMObject* pBox = m_pView->FindBoxAt(m_nNumPage, m_uMousePagePos);
+        //AWARE: Returned box is the smallest one containig to mouse point. If point is
+        //only in lmBoxPage NULL is returned.
+        if (pBox)
+        {
+            if (pBox->IsBoxSliceInstr())
+                m_pCurBSI = (lmBoxSliceInstr*)pBox;
+            else if (pBox->IsBoxSystem())
+            {
+                //empty score. No BoxSliceInstr.
+                //for now assume it is pointing to first staff. 
+                //TODO: check if mouse point is over a shape staff and select it
+                //m_pCurShapeStaff = ((lmBoxSystem*)pGMO)->GetStaffShape(1);
+            }
+            else
+            {
+                wxLogMessage(_T("[lmScoreCanvas::GetPointedAreaInfo] Unknown case '%s'"),
+                            pGMO->GetName().c_str());
+                wxASSERT(false);    //Unknown case. Is it possible??????
+            }
+        }
+
+        //get the ShapeStaff
+        if (m_pCurBSI && !m_pCurShapeStaff)
+        {
+            if (pGMO->GetScoreOwner()->IsStaffObj())
+            {
+                int nStaff = ((lmStaffObj*)pGMO->GetScoreOwner())->GetStaffNum();
+                m_pCurShapeStaff = m_pCurBSI->GetStaffShape(nStaff);
+            }
+            else if (pGMO->GetScoreOwner()->IsAuxObj())
+            {
+                lmStaff* pStaff = ((lmAuxObj*)pGMO->GetScoreOwner())->GetStaff();
+                if (pStaff)
+                    m_pCurShapeStaff = m_pCurBSI->GetStaffShape( pStaff->GetNumberOfStaff() );
+            }
+        }
+    }
+
+    //not pointing to a shape
+    else
+    {
+        //check if pointing to a box
+        pGMO = m_pView->FindBoxAt(m_nNumPage, m_uMousePagePos);
+        if (pGMO)
+        {
+            if (pGMO->IsBoxSliceInstr())
+            {
+                m_pCurBSI = (lmBoxSliceInstr*)pGMO;
+                //determine staff
+                if (m_pLastBSI != m_pCurBSI)
+                {
+                    //first time on this BoxInstrSlice, between two staves
+                    m_pCurShapeStaff = m_pCurBSI->GetNearestStaff(m_uMousePagePos);
+                }
+                else
+                {
+                    //continue in this BoxInstrSlice, in same inter-staves area
+                    m_pCurShapeStaff = m_pLastShapeStaff;
+                }
+                //determine position (above/below) relative to staff
+                if (m_uMousePagePos.y > m_pCurShapeStaff->GetBounds().GetLeftBottom().y)
+                    m_nMousePointedArea = lmMOUSE_OnBelowStaff;
+                else
+                    m_nMousePointedArea = lmMOUSE_OnAboveStaff;
+            }
+            else
+                m_nMousePointedArea = lmMOUSE_OnOtherBox;
+        }
+        else
+            m_nMousePointedArea = lmMOUSE_OnOther;
+    }
+
+    ////DBG --------------------------------------
+    //wxString sSO = (pGMO ? pGMO->GetName() : _T("No object"));
+    //wxLogMessage(_T("[lmScoreCanvas::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
+    //             m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
+    //             m_nMousePointedArea, sSO.c_str() );
+    ////END DBG ----------------------------------
+
+    return pGMO;
+}
+
 wxMenu* lmScoreCanvas::GetContextualMenuForTool()
 {
 	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
@@ -1136,21 +1185,23 @@ wxMenu* lmScoreCanvas::GetContextualMenuForTool()
 void lmScoreCanvas::StartToolDrag(wxDC* pDC)
 {
     PrepareToolDragImages();
+    wxBitmap* pCursorDragImage = (wxBitmap*)NULL;
     if (m_pToolBitmap)
     {
-        wxBitmap* pCursorDragImage = new wxBitmap(*m_pToolBitmap);
+        pCursorDragImage = new wxBitmap(*m_pToolBitmap);
         m_vDragHotSpot = m_vToolHotSpot;
 
         //wxLogMessage(_T("[lmScoreCanvas::StartToolDrag] OnImageBeginDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
         //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
 
-        m_pView->OnImageBeginDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos,
-                                (lmGMObject*)NULL, m_vDragHotSpot, m_uHotSpotShift,
-                                pCursorDragImage );
         m_fDraggingTool = true;
     }
     else
         m_fDraggingTool = false;
+
+    m_pView->OnImageBeginDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos,
+                            (lmGMObject*)NULL, m_vDragHotSpot, m_uHotSpotShift,
+                            pCursorDragImage );
 }
 
 void lmScoreCanvas::ContinueToolDrag(wxMouseEvent& event, wxDC* pDC)
@@ -1199,39 +1250,51 @@ void lmScoreCanvas::StartToolDrag()
 
 lmUPoint lmScoreCanvas::OnDrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos)
 {
-    //draw ledger lines
     lmUPoint uFinalPos = uPos;
-    if (m_pCurShapeStaff)
-        uFinalPos = m_pCurShapeStaff->OnMouseStartMoving(pPaper, uPos);
+
+    //draw ledger lines
+    if (RequiresLedgerLines())
+    {
+        if (m_pCurShapeStaff)
+            uFinalPos = m_pCurShapeStaff->OnMouseStartMoving(pPaper, uPos);
+    }
 
     //update time in status bar
     GetMainFrame()->SetStatusBarCursorRelPos(m_rCurGridTime, 0);
 
     //draw time grid
-    if (m_pCurBSI && UseTimeGrid())
+    if (m_pCurBSI && RequiresTimeGrid())
         m_pCurBSI->DrawTimeGrid(pPaper);
+
+    //draw measure frame
+    if (m_pCurBSI && RequiresMeasureFrame())
+        m_pCurBSI->DrawMeasureFrame(pPaper);
 
     return uFinalPos;
 }
 
 lmUPoint lmScoreCanvas::OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos)
 {
-    //remove and redraw ledger lines
     lmUPoint uFinalPos = uPos;
-    if (m_pLastShapeStaff && m_pLastShapeStaff != m_pCurShapeStaff)
+
+    //remove and redraw ledger lines
+    if (RequiresLedgerLines())
     {
-        m_pLastShapeStaff->OnMouseEndMoving(pPaper, uPos);
-        if (m_pCurShapeStaff)
-            uFinalPos = m_pCurShapeStaff->OnMouseStartMoving(pPaper, uPos);
+        if (m_pLastShapeStaff && m_pLastShapeStaff != m_pCurShapeStaff)
+        {
+            m_pLastShapeStaff->OnMouseEndMoving(pPaper, uPos);
+            if (m_pCurShapeStaff)
+                uFinalPos = m_pCurShapeStaff->OnMouseStartMoving(pPaper, uPos);
+        }
+        else if (m_pCurShapeStaff)
+            uFinalPos = m_pCurShapeStaff->OnMouseMoving(pPaper, uPos);
     }
-    else if (m_pCurShapeStaff)
-        uFinalPos = m_pCurShapeStaff->OnMouseMoving(pPaper, uPos);
 
     //update time
     GetMainFrame()->SetStatusBarCursorRelPos(m_rCurGridTime, 0);
 
     //remove previous grid
-    if (UseTimeGrid())
+    if (RequiresTimeGrid())
     {
         if (m_pLastBSI && m_pLastBSI != m_pCurBSI)
             m_pLastBSI->DrawTimeGrid(pPaper);
@@ -1241,24 +1304,43 @@ lmUPoint lmScoreCanvas::OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos)
             m_pCurBSI->DrawTimeGrid(pPaper);
     }
 
+    //remove previous measure frame
+    if (RequiresMeasureFrame())
+    {
+        if (m_pLastBSI && m_pLastBSI != m_pCurBSI)
+            m_pLastBSI->DrawMeasureFrame(pPaper);
+
+        //draw measure frame
+        if (m_pCurBSI && (!m_pLastBSI || m_pLastBSI != m_pCurBSI))
+            m_pCurBSI->DrawMeasureFrame(pPaper);
+    }
+
     return uFinalPos;
 }
 
 lmUPoint lmScoreCanvas::OnRemoveToolMarks(lmPaper* pPaper, const lmUPoint& uPos)
 {
-    //remove ledger lines
     lmUPoint uFinalPos = uPos;
-    if (m_pLastShapeStaff && m_pLastShapeStaff != m_pCurShapeStaff)
-        m_pLastShapeStaff->OnMouseEndMoving(pPaper, uPos);
-    else if (m_pCurShapeStaff)
-        m_pCurShapeStaff->OnMouseEndMoving(pPaper, uPos);
+
+    //remove ledger lines
+    if (RequiresLedgerLines())
+    {
+        if (m_pLastShapeStaff && m_pLastShapeStaff != m_pCurShapeStaff)
+            m_pLastShapeStaff->OnMouseEndMoving(pPaper, uPos);
+        else if (m_pCurShapeStaff)
+            m_pCurShapeStaff->OnMouseEndMoving(pPaper, uPos);
+    }
 
     //update time
     GetMainFrame()->SetStatusBarCursorRelPos(m_rCurGridTime, 0);
 
     //remove previous time grid
-    if (m_pLastBSI && UseTimeGrid())
+    if (m_pLastBSI && RequiresTimeGrid())
         m_pLastBSI->DrawTimeGrid(pPaper);
+
+    //remove previous measure frame
+    if (m_pLastBSI && RequiresMeasureFrame())
+        m_pLastBSI->DrawMeasureFrame(pPaper);
 
     return uFinalPos;
 }
@@ -1790,23 +1872,60 @@ void lmScoreCanvas::LoadAllMouseCursors()
 {
     //loads all mouse cursors used in lmScoreCanvas
 
-    //AWARE: Cursors MUST BE LOADED in the same order than enum lmEMouseCursor
+    //AWARE: Cursors MUST BE LOADED in the same order than enum lmEMouseCursor.
+    //Therefore, this has been implemented as a 'for' loop, to ensure previous
+    //requirement and simplify code maintenance
 
-    //lm_eCursor_Pointer
-    wxCursor* pCursor = new wxCursor(wxCURSOR_ARROW);
-    m_MouseCursors.push_back(pCursor);
+    wxCursor* pCursor;
+    for (int iCursor = 0; iCursor < (int)lm_eCursor_Max; iCursor++)
+    {
+        switch((lmEMouseCursor)iCursor)
+        {
+            case lm_eCursor_Pointer:
+                pCursor = new wxCursor(wxCURSOR_ARROW);
+                break;
+            case lm_eCursor_Cross:
+                pCursor = new wxCursor(wxCURSOR_CROSS);
+                break;
+            case lm_eCursor_BullsEye:
+                pCursor = new wxCursor(wxCURSOR_BULLSEYE);
+                break;
+            case lm_eCursor_Hand:
+                pCursor = new wxCursor(wxCURSOR_HAND);
+                break;
+            case lm_eCursor_Note:
+                pCursor = LoadMouseCursor(_T("cursor-note.png"), 8, 8);
+                break;
+            case lm_eCursor_Note_Forbidden:
+                pCursor = new wxCursor(wxCURSOR_NO_ENTRY);
+                break;
+            default:
+                wxLogMessage(_T("[lmScoreCanvas::LoadAllMouseCursors] Missing value (%d) in swith statement"),
+                             iCursor);
+                pCursor = new wxCursor(wxCURSOR_ARROW);
+        }
+        m_MouseCursors.push_back(pCursor);
+    }
 
-    //lm_eCursor_Cross
-    pCursor = new wxCursor(wxCURSOR_CROSS);
-    m_MouseCursors.push_back(pCursor);
+    ////lm_eCursor_Pointer
+    //wxCursor* pCursor = new wxCursor(wxCURSOR_BULLSEYE );   //wxCURSOR_ARROW);
+    //m_MouseCursors.push_back(pCursor);
 
-    // lm_eCursor_Note
-    m_MouseCursors.push_back( LoadMouseCursor(_T("cursor-note.png"), 8, 8) );
+    ////lm_eCursor_Cross
+    //pCursor = new wxCursor(wxCURSOR_CROSS);
+    //m_MouseCursors.push_back(pCursor);
 
-    // lm_eCursor_Note_Forbidden,
-    pCursor = new wxCursor(wxCURSOR_NO_ENTRY);
-    m_MouseCursors.push_back(pCursor);
-    //m_MouseCursors.push_back( LoadMouseCursor(_T("cursor-note-forbidden.png"), 8, 8) );
+    ////lm_eCursor_BullsEye
+    //wxCursor* pCursor = new wxCursor(wxCURSOR_BULLSEYE );   //wxCURSOR_ARROW);
+    //m_MouseCursors.push_back(pCursor);
+
+    //// lm_eCursor_Note
+    //m_MouseCursors.push_back( LoadMouseCursor(_T("cursor-note.png"), 8, 8) );
+
+    //// lm_eCursor_Note_Forbidden,
+    //pCursor = new wxCursor(wxCURSOR_NO_ENTRY);
+    //m_MouseCursors.push_back(pCursor);
+    ////m_MouseCursors.push_back( LoadMouseCursor(_T("cursor-note-forbidden.png"), 8, 8) );
 
 
     //set default cursors
@@ -1825,6 +1944,12 @@ void lmScoreCanvas::UpdateValidAreasAndMouseIcons()
 {
     //Determine valid areas and cursor icons. This will depend on selected tool
 
+    //default values
+    lmEMouseCursor nSelected = lm_eCursor_Pointer;
+    lmEMouseCursor nValidArea = lm_eCursor_Pointer;
+    lmEMouseCursor nElse = lm_eCursor_Pointer;
+
+
     if (m_nMouseMode == lmMM_DATA_ENTRY)
     {
         //Determine valid areas and cursor icons. This will depend on the
@@ -1832,31 +1957,41 @@ void lmScoreCanvas::UpdateValidAreasAndMouseIcons()
         switch(m_nPageID)
         {
             case lmPAGE_CLEFS:
-                m_nValidAreas = lmMOUSE_OnStaff;
-                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
-                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);
-                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                switch (m_nGroupID)
+                {
+                    case lmGRP_ClefType:
+                        m_nValidAreas = lmMOUSE_OnStaff;
+                        nValidArea = lm_eCursor_Hand;
+                        break;
+                    case lmGRP_TimeType:
+                    case lmGRP_KeyType:
+                    default:
+                        m_nValidAreas = lmMOUSE_OnStaff | lmMOUSE_OnNotesRests;
+                        nValidArea = lm_eCursor_Pointer;
+                }
+                nSelected = lm_eCursor_Pointer;
+                nElse = lm_eCursor_Note_Forbidden;
                 break;
 
             case lmPAGE_NOTES:
                 m_nValidAreas = lmMOUSE_OnStaff | lmMOUSE_OnAboveStaff | lmMOUSE_OnBelowStaff;
-                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);  //lm_eCursor_Note);
-                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);  //GetMouseCursor(lm_eCursor_Note);
-                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                nSelected = lm_eCursor_Pointer;
+                nValidArea = lm_eCursor_Pointer;
+                nElse = lm_eCursor_Note_Forbidden;
                 break;
 
             case lmPAGE_BARLINES:
                 m_nValidAreas = 0;      //No valid areas
-                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
-                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);
-                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                nSelected = lm_eCursor_Pointer;
+                nValidArea = lm_eCursor_Pointer;
+                nElse = lm_eCursor_Note_Forbidden;
                 break;
 
             case lmPAGE_SYMBOLS:
                 m_nValidAreas = lmMOUSE_OnNotesRests;
-                m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
-                m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Cross);    //lm_eCursor_Pointer);
-                m_pCursorElse = GetMouseCursor(lm_eCursor_Note_Forbidden);
+                nSelected = lm_eCursor_Pointer;
+                nValidArea = lm_eCursor_Hand;
+                nElse = lm_eCursor_Note_Forbidden;
                 break;
 
             default:
@@ -1869,14 +2004,14 @@ void lmScoreCanvas::UpdateValidAreasAndMouseIcons()
     else
     {
         m_nValidAreas = lmMOUSE_OnAny;
-        m_pCursorOnSelectedObject = GetMouseCursor(lm_eCursor_Pointer);
-        m_pCursorOnValidArea = GetMouseCursor(lm_eCursor_Pointer);
-        m_pCursorElse = GetMouseCursor(lm_eCursor_Pointer);
         //show caret
         m_pView->CaretOn();
     }
 
-    //set cursor
+    //set cursors
+    m_pCursorOnSelectedObject = GetMouseCursor(nSelected);
+    m_pCursorOnValidArea = GetMouseCursor(nValidArea);
+    m_pCursorElse = GetMouseCursor(nElse);
     ChangeMouseIcon();
 }
 
@@ -1893,6 +2028,28 @@ void lmScoreCanvas::UpdateSelectedToolInfo()
 
     //get values for current page
     UpdateToolBoxValues();
+
+    //set dragging marks
+    switch(m_nPageID)
+    {
+        case lmPAGE_NOTES:
+            m_nToolMarks = lmMARK_TIME_GRID | lmMARK_LEDGER_LINES;
+            break;
+
+        case lmPAGE_CLEFS:
+            switch (m_nGroupID)
+            {
+                case lmGRP_ClefType:
+                case lmGRP_TimeType:
+                case lmGRP_KeyType:
+                default:
+                    m_nToolMarks = lmMARK_MEASURE;
+            }
+            break;
+
+        default:
+            m_nToolMarks = lmMARK_NONE;
+    }
 }
 
 
@@ -2050,6 +2207,7 @@ void lmScoreCanvas::UpdateToolBoxValues()
 			m_nSelAcc = pNoteOptions->GetNoteAccidentals();
 			m_nOctave = pNoteOptions->GetOctave();
 			m_nSelVoice = pNoteOptions->GetVoice();
+            m_fSelIsNote = pNoteOptions->IsNoteSelected();
             break;
         }
 
@@ -2072,10 +2230,12 @@ void lmScoreCanvas::PrepareToolDragImages()
     //If m_pToolBitmap is set to NULL it will imply that no drag image will be used.
 
     //TODO: It should be responsibility of each tool to provide this information. Move
-    //this code to each Tool in the ToolBox.
+    //this code to each ToolPage in the ToolBox. Later,move to each tool group (not to
+    //options groups)
 
     //TODO: Drag image is related to mouse cursor to use. Should we merge this method with
-    //the one used to determine mouse cursor to use?
+    //the one used to determine mouse cursor to use? --> Yes, as hotspot position depends
+    //on chosen mouse cursor
 
 
     //delete previous bitmaps
@@ -2113,43 +2273,7 @@ void lmScoreCanvas::PrepareToolDragImages()
                 }
 
                 //select glyph
-                switch (m_nSelNoteType) {
-                    case eLonga :
-                        nGlyph = GLYPH_LONGA_NOTE;
-                        break;
-                    case eBreve :
-                        nGlyph = GLYPH_BREVE_NOTE;
-                        break;
-                    case eWhole :
-                        nGlyph = GLYPH_WHOLE_NOTE;
-                        break;
-                    case eHalf :
-                        nGlyph = (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
-                        break;
-                    case eQuarter :
-                        nGlyph = (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
-                        break;
-                    case eEighth :
-                        nGlyph = (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
-                        break;
-                    case e16th :
-                        nGlyph = (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
-                        break;
-                    case e32th :
-                        nGlyph = (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
-                        break;
-                    case e64th :
-                        nGlyph = (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
-                        break;
-                    case e128th :
-                        nGlyph = (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
-                        break;
-                    case e256th :
-                        nGlyph = (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
-                        break;
-                    default:
-                        wxASSERT(false);
-                }
+                nGlyph = lmGetGlyphForNoteRest(m_nSelNoteType, m_fSelIsNote, fStemDown);
                 break;
             }
 
@@ -2174,7 +2298,7 @@ void lmScoreCanvas::PrepareToolDragImages()
                 switch (m_nGroupID)
                 {
                     case lmGRP_ClefType:
-                        nGlyph = lmGetGlyphIndex(m_nClefType);
+                        nGlyph = lmGetGlyphForCLef(m_nClefType);
                         break;
                     case lmGRP_TimeType:
                     case lmGRP_KeyType:
@@ -3756,7 +3880,7 @@ void lmScoreCanvas::OnToolNotesClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff
     //Click on staff
     if (pShapeStaff)
     {
-        wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Insert object. MousePagePos=(%.2f, %.2f)"),
+        wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Insert note/rest. MousePagePos=(%.2f, %.2f)"),
                      uPagePos.x, uPagePos.y);
 
         //in 'TheoHarmonyCtrol' edit mode, force staff depending on voice
@@ -3776,34 +3900,42 @@ void lmScoreCanvas::OnToolNotesClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff
         //compute note/rest duration
 		float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
 
-        //get step and octave from mouse position on staff
-        int nLineSpace = pShapeStaff->GetLineSpace(uPagePos.y);     //0=first ledger line below staff
-        //to determine octave and step it is necessary to know the clef. As caret is
-        //placed at insertion point we could get these information from caret
-        lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetCurrentContext();
-        if (!pContext)
+        if (m_fSelIsNote)
         {
-            //there is no clef in score.
-            //TODO: InserNote commnad passing nLineSpace as argument, instead of pitch.
-            return;
+            //get step and octave from mouse position on staff
+            int nLineSpace = pShapeStaff->GetLineSpace(uPagePos.y);     //0=first ledger line below staff
+            //to determine octave and step it is necessary to know the clef. As caret is
+            //placed at insertion point we could get these information from caret
+            lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetCurrentContext();
+            if (!pContext)
+            {
+                //there is no clef in score.
+                //TODO: InserNote commnad passing nLineSpace as argument, instead of pitch.
+                return;
+            }
+            lmEClefType nClefType = pContext->GetClefType();
+            lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
+            dpNote += (nLineSpace - 2);     //pitch for note to insert
+            //get step and octave
+            int nOctave = DPitch_Octave(dpNote);
+            int nStep = DPitch_Step(dpNote);
+            wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Click on line/space %d, octave=%d, step=%d, note=%s"),
+                            nLineSpace, nOctave, nStep, DPitch_ToLDPName(dpNote).c_str() );
+
+            //default values
+            lmNote* pBaseOfChord = (lmNote*)NULL;
+            bool fTiedPrev = false;
+
+            //do insert note
+		    InsertNote(lm_ePitchRelative, nStep, nOctave, m_nSelNoteType, rDuration,
+				    m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice,
+                    pBaseOfChord, fTiedPrev);
         }
-        lmEClefType nClefType = pContext->GetClefType();
-        lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
-        dpNote += (nLineSpace - 2);     //pitch for note to insert
-        //get step and octave
-        int nOctave = DPitch_Octave(dpNote);
-        int nStep = DPitch_Step(dpNote);
-        wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Click on line/space %d, octave=%d, step=%d, note=%s"),
-                        nLineSpace, nOctave, nStep, DPitch_ToLDPName(dpNote).c_str() );
-
-        //default values
-        lmNote* pBaseOfChord = (lmNote*)NULL;
-        bool fTiedPrev = false;
-
-        //do insert note
-		InsertNote(lm_ePitchRelative, nStep, nOctave, m_nSelNoteType, rDuration,
-				   m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice,
-                   pBaseOfChord, fTiedPrev);
+        else
+        {
+            //Insert rest
+            InsertRest(m_nSelNoteType, rDuration, m_nSelDots, m_nSelVoice);
+        }
     }
 }
 

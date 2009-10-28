@@ -153,9 +153,11 @@ protected:
 };
 
 
-// global functions related to noterests
+// global functions related to notes/rests
 extern float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted);
 extern float NoteTypeToDuration(lmENoteType nNoteType, int nDots);
+extern lmEGlyphIndex lmGetGlyphForNoteRest(lmENoteType nNoteType, bool fForNote,
+                                           bool fStemDown = false);
 
 
 

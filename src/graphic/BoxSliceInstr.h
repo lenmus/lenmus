@@ -72,6 +72,7 @@ public:
     lmShapeStaff* GetStaffShape(int nStaff);   //1..n
     lmShapeStaff* GetNearestStaff(lmUPoint& uPoint);
     void DrawTimeGrid(lmPaper* pPaper);
+    void DrawMeasureFrame(lmPaper* pPaper);
 
 
 private:

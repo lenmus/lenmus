@@ -381,7 +381,7 @@ lmTimeSignature* lmVStaff::Cmd_InsertTimeSignature(int nBeats, int nBeatType, bo
 {
     //It must return NULL if not succedeed
 
-    lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, fVisible);
+    lmTimeSignature* pTS = new lmTimeSignature(nBeats, nBeatType, this, lmNEW_ID, fVisible);
     if ( InsertKeyTimeSignature(pTS) )
         return pTS;
     else

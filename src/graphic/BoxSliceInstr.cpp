@@ -98,4 +98,27 @@ void lmBoxSliceInstr::DrawTimeGrid(lmPaper* pPaper)
                                                   uTopLeft.y + uSize.GetHeight() );
 }
 
+void lmBoxSliceInstr::DrawMeasureFrame(lmPaper* pPaper)
+{ 
+	//as painting uses XOR we need the complementary color
+	wxColour color(255,0,0);    //TODO: User option
+	wxColour colorC(255 - (int)color.Red(), 255 - (int)color.Green(), 255 - (int)color.Blue() );
+	pPaper->SetLogicalFunction(wxXOR);
+
+    //determine first and last staves
+    lmShape* pFirstStaff = (lmShape*)GetStaffShape(1);
+    lmShape* pLastStaff = (lmShape*)GetStaffShape( m_pInstr->GetNumStaves() );
+    lmLUnits yTop = pFirstStaff->GetBounds().GetLeftTop().y;
+    lmLUnits dyHalfLine = (pFirstStaff->GetBounds().GetLeftBottom().y - yTop) / 8.0;
+    lmLUnits yBottom = pLastStaff->GetBounds().GetLeftBottom().y;
+    yTop -= dyHalfLine;
+    yBottom += dyHalfLine;
+
+    //Draw the limits rectangle
+    lmUPoint uTopLeft(m_uBoundsTop.x - m_uLeftSpace, yTop);
+    lmUSize uSize( GetWidth() + m_uLeftSpace + m_uRightSpace, yBottom - yTop );
+    pPaper->SketchRectangle(uTopLeft, uSize, colorC);
+}
+
+
 

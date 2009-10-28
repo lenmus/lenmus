@@ -523,6 +523,55 @@ float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted
     if (fDoubleDotted) { rDuration *= 1.75; }
 
     return rDuration;
-
 }
+
+lmEGlyphIndex lmGetGlyphForNoteRest(lmENoteType nNoteType, bool fForNote, bool fStemDown)
+{
+    // returns the index (over global glyphs table) to the character to use to print
+    // the note (fForNote==true) or for rest (fForNote==false) (LenMus font)
+
+    if (fForNote)
+    {
+        //notes
+        switch (nNoteType)
+        {
+            case eLonga: return GLYPH_LONGA_NOTE;
+            case eBreve: return GLYPH_BREVE_NOTE;
+            case eWhole: return GLYPH_WHOLE_NOTE;
+            case eHalf: return (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
+            case eQuarter: return (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
+            case eEighth: return (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
+            case e16th: return (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
+            case e32th: return (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
+            case e64th: return (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
+            case e128th: return (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
+            case e256th: return (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
+            default:
+                wxLogMessage(_T("[::lmGetGlyphForNoteRest] Invalid value (%d) for note type"), nNoteType);
+                return GLYPH_EIGHTH_NOTE_UP;
+        }
+    }
+    else
+    {
+        //rests
+        switch (nNoteType)
+        {
+            case eLonga:        return GLYPH_LONGA_REST;
+            case eBreve:        return GLYPH_BREVE_REST;
+            case eWhole:        return GLYPH_WHOLE_REST;
+            case eHalf:         return GLYPH_HALF_REST;
+            case eQuarter:      return GLYPH_QUARTER_REST;
+            case eEighth:       return GLYPH_EIGHTH_REST;
+            case e16th:         return GLYPH_16TH_REST;
+            case e32th:         return GLYPH_32ND_REST;
+            case e64th:         return GLYPH_64TH_REST;
+            case e128th:        return GLYPH_128TH_REST;
+            case e256th:        return GLYPH_256TH_REST;
+            default:
+                wxLogMessage(_T("[::lmGetGlyphForNoteRest] Invalid value (%d) for rest type"), nNoteType);
+                return GLYPH_QUARTER_REST;
+        }
+    }
+}
+
 

@@ -57,39 +57,6 @@ lmRest::~lmRest()
 {
 }
 
-
-//--------------------------------------------------------------------------------------
-// get glyph data to define character to use and selection rectangle
-//--------------------------------------------------------------------------------------
-
-lmEGlyphIndex lmRest::GetGlyphIndex()
-{
-    // returns the index (over global glyphs table) to the character to use to print
-    // the rest (LenMus font)
-
-    switch (m_nNoteType) {
-        case eLonga:        return GLYPH_LONGA_REST;
-        case eBreve:        return GLYPH_BREVE_REST;
-        case eWhole:        return GLYPH_WHOLE_REST;
-        case eHalf:         return GLYPH_HALF_REST;
-        case eQuarter:      return GLYPH_QUARTER_REST;
-        case eEighth:       return GLYPH_EIGHTH_REST;
-        case e16th:         return GLYPH_16TH_REST;
-        case e32th:         return GLYPH_32ND_REST;
-        case e64th:         return GLYPH_64TH_REST;
-        case e128th:        return GLYPH_128TH_REST;
-        case e256th:        return GLYPH_256TH_REST;
-        default:
-            wxASSERT(false);
-            return GLYPH_QUARTER_REST;
-    }
-
-}
-
-//====================================================================================================
-// implementation of virtual methods defined in base abstract class lmNoteRest
-//====================================================================================================
-
 lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
@@ -123,7 +90,8 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         StoreShape(pRestShape);
 
         // create shape for the rest symbol
-        lmEGlyphIndex nGlyph = GetGlyphIndex();
+        //lmEGlyphIndex nGlyph = GetGlyphIndex();
+        lmEGlyphIndex nGlyph = lmGetGlyphForNoteRest(m_nNoteType, false);
         lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
         lmShapeGlyph* pShape = new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxLeft, yPos),
                                                 _T("RestGlyph"), lmDRAGGABLE, colorC);

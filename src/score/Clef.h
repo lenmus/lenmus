@@ -89,7 +89,7 @@ private:
 //
 wxString GetClefLDPNameFromType(lmEClefType nType);
 lmDPitch GetFirstLineDPitch(lmEClefType nClef);
-lmEGlyphIndex lmGetGlyphIndex(lmEClefType nClefType);
+lmEGlyphIndex lmGetGlyphForCLef(lmEClefType nClefType);
 
 #endif    // __LM_CLEF_H__
 
