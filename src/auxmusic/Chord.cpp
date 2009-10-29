@@ -652,14 +652,24 @@ int lmChord::IsValidChordNote(lmFPitch fNote)
 // key independent root note, calculated from bass and inversions
 lmFPitch lmChord::GetNormalizedRoot()
 {
+    if (m_nType == lmINVALID_CHORD_TYPE)
+        return 0;
     int nNumInversions = GetInversion();
     int nNumNotes = GetNumNotes();
-    int nIntervalToApplyToTheBass = (nNumNotes- nNumInversions) % nNumNotes;
+    int nIntervalToApplyToTheBass = (nNumNotes - nNumInversions) % nNumNotes;
     lmFPitch fpIntv = GetInterval(nIntervalToApplyToTheBass);
     lmFPitch fpBass = GetNormalizedBass();
     lmFPitch fpRootNote = (fpBass + fpIntv) %  lm_p8;
     return fpRootNote;
 }
+
+lmStepType lmChord::GetChordDegree() // Chord degree == root step
+{
+    if (m_nType == lmINVALID_CHORD_TYPE)
+        return 0;
+    return FPitch_Step(GetNormalizedRoot());
+}
+
 void lmChord::ComputeTypeAndInversion()
 {
     //look for the entry in in the Chords DB that matches this chord intervals.

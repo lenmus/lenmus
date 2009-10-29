@@ -154,6 +154,7 @@ public:
 
     lmFPitch GetNormalizedBass() { return m_fpRootNote % lm_p8;} // key-independent bass information
     lmFPitch GetNormalizedRoot(); // key independent root note, calculated from bass and inversions
+    lmStepType GetChordDegree();
 
     bool IsEqualTo(lmChord* tOther);
 

@@ -42,15 +42,17 @@ typedef int lmFIntval;      // Intervals, in FPitch mode.
 
 // enum lmSTEPS should be used for steps, but enum types are
 //    hard to use in C++, so we define an integer synonym
-typedef int lmSTEP_TYPE; 
+typedef int lmStepType; 
 enum lmSTEPS {
- lmSTEP_C = 0,
+ lmMIN_STEP = 0,
+ lmSTEP_C = lmMIN_STEP,
  lmSTEP_D, // implied = 1 ...
  lmSTEP_E,
  lmSTEP_F,
  lmSTEP_G,
  lmSTEP_A,
  lmSTEP_B,
+ lmMAX_STEP = lmSTEP_B,
  lmNUM_STEPS // implied = 7
 };
 

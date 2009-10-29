@@ -230,8 +230,6 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                                     wxFONTWEIGHT_BOLD };
         lmTextStyle* pNumeralStyle = m_pProblemScore->GetStyleName(tNumeralFont);
 
-        // TODO: improve! (calculate numerals from chord info + key signature + mode)
-        //        this is provisional; only for key signature = C Major
         wxString sNumeralsDegrees[7] =
         {_T(" I"), _T(" II"), _T("III"), _T(" IV"), _T("  V"), _T(" VI"), _T("VII")};
         wxString sNumerals;
@@ -548,7 +546,9 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 }
 
                 //    Display the numeral, according the root step
-                int nRootStep = FPitch_Step(pHE_Chords[nChordCount]->GetNormalizedRoot());
+//todo remove                lmStepType nRootStep = FPitch_Step(pHE_Chords[nChordCount]->GetNormalizedRoot());
+                lmStepType nRootStep = pHE_Chords[nChordCount]->GetChordDegree();
+                // todo: use GetDegreeString( pHE_Chords[nChordCount]->GetChordDegree() )
                 lmTextItem* pNumeralText = new lmTextItem(
                     pNoteToAttach, lmNEW_ID, sNumeralsDegrees[nRootStep],
                     lmHALIGN_DEFAULT, pNumeralStyle);

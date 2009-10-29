@@ -130,10 +130,10 @@ int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1) //@@@ todo rem
 
 // todo: move this to "Pitch" file o  merge this with FPitch_ToAbsLDPName
 // This is just FPitch_ToAbsLDPName but WITHOUT OCTAVE
+static  wxString m_sNoteName[7] = {
+            _T("c"),  _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b") };
 wxString NormalizedFPitch_ToAbsLDPName(lmFPitch fp)
 {
-    wxString m_sNoteName[7] = {
-            _T("c"),  _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b") };
     wxString sAnswer;
     switch(FPitch_Accidentals(fp)) {
         case -2: sAnswer =_T("--"); break;
@@ -148,6 +148,19 @@ wxString NormalizedFPitch_ToAbsLDPName(lmFPitch fp)
     return sAnswer;
 }
 
+static wxString m_sNumeralsDegrees[7] =
+        {_T(" I"), _T(" II"), _T("III"), _T(" IV"), _T("  V"), _T(" VI"), _T("VII")};
+
+wxString GetChordDegreeString(lmStepType nStep )
+{
+    if (nStep < lmMIN_STEP ||  nStep > lmMAX_STEP)
+    {
+        wxLogMessage(_("GetDegreeString: Invalid step %d"), nStep);
+        nStep = 0;
+    }
+ 
+    return m_sNumeralsDegrees[nStep];
+}
 
 
 

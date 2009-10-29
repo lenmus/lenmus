@@ -48,6 +48,7 @@ extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncre
 // todo: move this to "Pitch" file o  merge this with FPitch_ToAbsLDPName
 // This is just FPitch_ToAbsLDPName but WITHOUT OCTAVE
 extern wxString NormalizedFPitch_ToAbsLDPName(lmFPitch fp);
+extern wxString GetChordDegreeString(lmStepType nStep);
 
 
 
