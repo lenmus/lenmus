@@ -77,7 +77,7 @@ public:
     ~lmGrpMouseMode() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_MouseMode; }
 
 	//access to options

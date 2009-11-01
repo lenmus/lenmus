@@ -35,6 +35,7 @@
 class lmToolPage;
 class lmCheckButton;
 class lmColorScheme;
+//class lmGroupBox;
 
 
 enum lmEToolGroupID
@@ -90,14 +91,27 @@ enum lmEToolID
 
 };
 
-class lmToolGroup: public wxPanel
+class lmToolGroup : public wxPanel
 {    
 public:
     lmToolGroup(wxPanel* pParent, lmColorScheme* pColours);
     virtual ~lmToolGroup();
 
     //creation
-    wxBoxSizer* CreateGroup(wxBoxSizer* pParentSizer, wxString sTitle);
+    wxBoxSizer* CreateGroupSizer(wxBoxSizer* pParentSizer);
+    virtual void CreateGroupControls(wxBoxSizer* pMainSizer)=0;
+    inline void SetGroupTitle(const wxString& sTitle) { m_sText = sTitle; }
+
+    //event handlers
+    void OnPaintEvent(wxPaintEvent & event);
+    void OnMouseDown(wxMouseEvent& event);
+    void OnMouseReleased(wxMouseEvent& event);
+    void OnMouseLeftWindow(wxMouseEvent& event);
+    //void OnMouseWheelMoved(wxMouseEvent& event);
+    //void OnMouseMoved(wxMouseEvent& event);
+    //void OnRightClick(wxMouseEvent& event);
+    //void OnKeyPressed(wxKeyEvent& event);
+    //void OnKeyReleased(wxKeyEvent& event);
 
     //status
     void EnableGroup(bool fEnable);
@@ -114,13 +128,23 @@ public:
 
 protected:
     void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
+    void DoRender(wxDC& dc);
+    void DoPaintNow();
 
-	wxStaticBox*        m_pBoxTitle;    //the box and title
 	wxPanel*		    m_pParent;      //owner ToolPage
+    wxPanel*            m_pBoxPanel;
+    wxPanel*            m_pGroupPanel; 
+    wxBoxSizer*         m_pCtrolsSizer;
+    wxBoxSizer*         m_pBoxSizer;
+    wxBoxSizer*         m_pGroupSizer;
     lmColorScheme*      m_pColours;
+    bool                m_fMousePressedDown;
+    bool                m_fSelected;    //this group is the selected one
+    wxString            m_sText;        //group title
+
+    DECLARE_EVENT_TABLE()
 };
-
-
+ 
 
 class lmToolButtonsGroup: public lmToolGroup
 {    
@@ -144,7 +168,7 @@ public:
     void SelectPrevButton();
 
 protected:
-    virtual void CreateControls(wxBoxSizer* pMainSizer)=0;
+    virtual void CreateGroupControls(wxBoxSizer* pMainSizer)=0;
     virtual void OnButtonSelected(int nSelButton);
     void ConnectButtonEvents();
     inline int GetFirstButtonEventID() { return m_nFirstButtonEventID; }

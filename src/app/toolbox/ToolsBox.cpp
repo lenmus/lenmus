@@ -130,14 +130,20 @@ void lmToolBox::CreateControls()
 
     //panel for the mouse mode group
     m_pMouseModeGroup = new lmGrpMouseMode(this, pMainSizer, &m_colors);
+    m_pMouseModeGroup->CreateGroupControls(pMainSizer);
 
     //panel for the fixed group
 	m_pSpecialGroup = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
 	pMainSizer->Add( m_pSpecialGroup, 0, wxEXPAND, 5 );
     m_pSpecialGroup->Show(false);
 
+    //line
+	wxStaticLine* pLine1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	pMainSizer->Add( pLine1, 0, wxEXPAND|wxTOP, 3);
+
     //the tool page buttons selection area
-	wxPanel* pSelectPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxPanel* pSelectPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxBORDER_RAISED|wxTAB_TRAVERSAL );
     pSelectPanel->SetBackgroundColour(m_colors.Normal());
 
 	wxBoxSizer* pSelectSizer = new wxBoxSizer( wxVERTICAL );
@@ -174,7 +180,7 @@ void lmToolBox::CreateControls()
 
 	int nWidth = NUM_COLUMNS * BUTTON_SIZE + 2*(NUM_COLUMNS-1)*BUTTON_SPACING + 2*SPACING;
     m_pEmptyPage = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(-1, 800),
-							   wxBORDER_SUNKEN|wxTAB_TRAVERSAL );
+							   wxBORDER_NONE|wxTAB_TRAVERSAL );
     m_pEmptyPage->SetBackgroundColour(m_colors.Bright());
 	m_pCurPage = m_pEmptyPage;
 	m_pPageSizer->Add( m_pCurPage, 1, wxEXPAND, SPACING );
@@ -442,13 +448,13 @@ lmGrpMouseMode::lmGrpMouseMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColor
         : lmToolButtonsGroup(pParent, lm_NUM_MOUSE_MODE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_MouseMode_Pointer, lmTOOL_NONE, pColours)
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpMouseMode::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Mouse mode"));
+    SetGroupTitle(_("Mouse mode"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 	pCtrolsSizer->Add(pButtonsSizer);

@@ -25,7 +25,10 @@
 #pragma interface "ScoreCanvas.cpp"
 #endif
 
-#include "wx/docview.h"
+#include <wx/docview.h>
+class wxTipWindow;
+
+
 #include "global.h"
 class lmScoreHighlightEvent;
 #include "../sound/SoundEvents.h"
@@ -41,6 +44,7 @@ class lmScoreProcessor;
 class lmShapeStaff;
 class lmBoxSliceInstr;
 class lmFiguredBass;
+class lmInfoWindow;
 
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
@@ -335,6 +339,7 @@ private:
 
     //mouse tools operations
     void PrepareToolDragImages();
+    void UpdateToolInfoString();
     void UpdateStatusBarToolBox();
     void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
     void OnToolNotesClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
@@ -482,6 +487,8 @@ private:
     lmBoxSliceInstr* m_pCurBSI;             //current BoxSliceInstr pointed by mouse
     float           m_rCurGridTime;         //time for current mouse position
     bool            m_fDraggingTool;        //dragging a tool
+    lmInfoWindow*   m_pInfoWindow; 
+    wxString        m_sToolInfo;
 
 
 

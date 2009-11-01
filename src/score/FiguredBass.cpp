@@ -158,7 +158,7 @@ public:
 
     //implement virtual methods
     inline lmEToolGroupID GetToolGroupID() { return (lmEToolGroupID)-1; }
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
 
 };
 
@@ -166,13 +166,13 @@ lmGrpCommonFB::lmGrpCommonFB(wxPanel* pParent, wxBoxSizer* pMainSizer, int nNumB
         : lmToolButtonsGroup(pParent, nNumButtons, lmTBG_ALLOW_NONE, pMainSizer,
                              lmID_QUICK_BT, lmTOOL_NONE)
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpCommonFB::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpCommonFB::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Frequent symbols"));
+    SetGroupTitle(_("Frequent symbols"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(32, 42);
@@ -258,6 +258,7 @@ void lmFBQuickPanel::CreateControls()
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
 
     m_pGrpCommon = new lmGrpCommonFB(this, pMainSizer, lmFB_NUM_COMMON);
+    m_pGrpCommon->CreateGroupControls(pMainSizer);
 
 	wxString m_pRadEncloseChoices[] = { _("None"), _("Parenthesis"), _("Squared bracktes") };
 	int m_pRadEncloseNChoices = sizeof( m_pRadEncloseChoices ) / sizeof( wxString );

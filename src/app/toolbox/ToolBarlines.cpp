@@ -110,6 +110,7 @@ void lmToolPageBarlines::CreateGroups()
     wxBoxSizer *pMainSizer = GetMainSizer();
 
     m_pGrpBarlines = new lmGrpBarlines(this, pMainSizer);
+    AddGroup(m_pGrpBarlines);
     
 	CreateLayout();
     m_fGroupsCreated = true;
@@ -153,7 +154,7 @@ BEGIN_EVENT_TABLE(lmGrpBarlines, lmToolGroup)
     EVT_BUTTON      (lmID_BARLINE_ADD, lmGrpBarlines::OnAddBarline)
 END_EVENT_TABLE()
 
-static lmBarlinesDBEntry tBarlinesDB[lm_eMaxBarline+1];
+static lmBarlinesDBEntry m_tBarlinesDB[lm_eMaxBarline+1];
 
 
 lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer)
@@ -164,22 +165,19 @@ lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer)
     int i;
     for (i = 0; i < lm_eMaxBarline; i++)
     {
-        tBarlinesDB[i].nBarlineType = (lmEBarline)i;
-        tBarlinesDB[i].sBarlineName = GetBarlineName((lmEBarline)i);
+        m_tBarlinesDB[i].nBarlineType = (lmEBarline)i;
+        m_tBarlinesDB[i].sBarlineName = GetBarlineName((lmEBarline)i);
     }
     //End of table item
-    tBarlinesDB[i].nBarlineType = (lmEBarline)-1;
-    tBarlinesDB[i].sBarlineName = _T("");
-
-    CreateControls(pMainSizer);
-	LoadBarlinesBitmapComboBox(m_pBarlinesList, tBarlinesDB);
-	SelectBarlineBitmapComboBox(m_pBarlinesList, lm_eBarlineSimple);
+    m_tBarlinesDB[i].nBarlineType = (lmEBarline)-1;
+    m_tBarlinesDB[i].sBarlineName = _T("");
 }
 
-void lmGrpBarlines::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpBarlines::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Add barline"));
+    SetGroupTitle(_("Barline"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //bitmap combo box to select the clef
     m_pBarlinesList = new wxBitmapComboBox();
@@ -193,6 +191,10 @@ void lmGrpBarlines::CreateControls(wxBoxSizer* pMainSizer)
 	pCtrolsSizer->Add( m_pBtAddBarline, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	this->Layout();
+
+    //initializations
+	LoadBarlinesBitmapComboBox(m_pBarlinesList, m_tBarlinesDB);
+	SelectBarlineBitmapComboBox(m_pBarlinesList, lm_eBarlineSimple);
 }
 
 void lmGrpBarlines::OnAddBarline(wxCommandEvent& event)
@@ -203,7 +205,7 @@ void lmGrpBarlines::OnAddBarline(wxCommandEvent& event)
     lmController* pSC = GetMainFrame()->GetActiveController();
     if (pSC)
     {
-        pSC->InsertBarline(tBarlinesDB[iB].nBarlineType);
+        pSC->InsertBarline(m_tBarlinesDB[iB].nBarlineType);
 
         //return focus to active view
         GetMainFrame()->SetFocusOnActiveView();

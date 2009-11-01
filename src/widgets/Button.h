@@ -98,9 +98,11 @@ protected:
 	void Create(const wxPoint& pos, const wxSize& size);
     void Redraw();
 
+    wxString    m_sNameUp;
+    wxString    m_sNameDis;
     wxSize      m_btSize;
-    int		m_dx;
-    int		m_dy;
+    int		    m_dx;
+    int		    m_dy;
 
     bool	m_enabled;
 

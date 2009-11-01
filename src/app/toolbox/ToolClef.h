@@ -49,7 +49,7 @@ public:
     ~lmGrpClefType() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* m_pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_ClefType; }
 
 	//access to selected clef
@@ -104,7 +104,7 @@ public:
     } lmButton;
 
 private:
-    void CreateControls(wxBoxSizer* m_pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
 
 	wxBitmapButton* m_pButton[lm_NUM_BUTTONS];  //buttons
 	int             m_nSelButton;               //selected button (0..n). -1 = none selected
@@ -143,7 +143,7 @@ public:
     } lmKeysData;
 
 private:
-    void CreateControls(wxBoxSizer* m_pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     void LoadKeyList(int nType);
     void NotifyToolChange();
 

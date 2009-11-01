@@ -25,6 +25,8 @@
 #pragma interface "ToolPage.cpp"
 #endif
 
+#include <list>
+
 #include "ColorScheme.h"
 #include "ToolsBox.h"
 #include "ToolGroup.h"
@@ -39,6 +41,7 @@ public:
     lmToolPage();
     ~lmToolPage();
     virtual void CreatePage(wxWindow* parent, lmEToolPageID nPageID);
+    void AddGroup(lmToolGroup* pGroup);
 
 	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void CreateLayout();
@@ -77,6 +80,7 @@ private:
 	wxBoxSizer*		m_pMainSizer;	    //the main sizer for the panel
 	lmColorScheme	m_colors;
     lmEToolPageID   m_nPageID;          //this page ID
+    std::list<lmToolGroup*> m_Groups;   //groups in this page
 
 };
 

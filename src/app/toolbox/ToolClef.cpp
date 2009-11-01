@@ -126,6 +126,9 @@ void lmToolPageClefs::CreateGroups()
     m_pGrpClefType = new lmGrpClefType(this, pMainSizer);
     m_pGrpTimeType = new lmGrpTimeType(this, pMainSizer);
     m_pGrpKeyType = new lmGrpKeyType(this, pMainSizer);
+    AddGroup(m_pGrpClefType);
+    AddGroup(m_pGrpKeyType);
+    AddGroup(m_pGrpTimeType);
     
 	CreateLayout();
 
@@ -270,14 +273,13 @@ lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         //lmE_Fa15,       //15 below
         m_fStringsInitialized = true;
     }
-
-    CreateControls(pMainSizer);
 }
 
-void lmGrpClefType::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpClefType::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Clef"));
+    SetGroupTitle(_("Clef"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //bitmap combo box to select the clef
     m_pClefList = new wxBitmapComboBox();
@@ -352,14 +354,13 @@ lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         //lmE_Fa15,       //15 below
         m_fStringsInitialized = true;
     }
-
-    CreateControls(pMainSizer);
 }
 
-void lmGrpClefType::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpClefType::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Clef"));
+    SetGroupTitle(_("Clef"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(32, 48);
@@ -419,13 +420,13 @@ lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         , m_nSelButton(-1)  //none selected
 {
     wxASSERT(sizeof(m_tButtons) / sizeof(lmButton) == lm_NUM_BUTTONS);
-    CreateControls(pMainSizer);
 }
 
-void lmGrpTimeType::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpTimeType::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Time signature"));
+    SetGroupTitle(_("Time signature"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
     wxBoxSizer* pButtonsSizer;
@@ -509,14 +510,13 @@ lmGrpKeyType::lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         m_tMinorKeys[j].sKeyName = GetKeySignatureName((lmEKeySignatures)i);    //wxString::Format(_T("%s (%d%s)"),;
         m_tMinorKeys[j].nFifths = KeySignatureToNumFifths((lmEKeySignatures)i);
     }
-
-    CreateControls(pMainSizer);
 }
 
-void lmGrpKeyType::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpKeyType::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Key signature"));
+    SetGroupTitle(_("Key signature"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
 

@@ -110,6 +110,7 @@ void lmToolPageSymbols::CreateGroups()
     wxBoxSizer *pMainSizer = GetMainSizer();
 
     m_pGrpSymbols = new lmGrpSymbols(this, pMainSizer);
+    AddGroup(m_pGrpSymbols);
 
 	CreateLayout();
     m_fGroupsCreated = true;
@@ -155,10 +156,9 @@ lmGrpSymbols::lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_SYMBOL_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_Symbols, lmTOOL_FIGURED_BASS, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpSymbols::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the buttons for the group
 
@@ -172,7 +172,8 @@ void lmGrpSymbols::CreateControls(wxBoxSizer* pMainSizer)
 
     int nNumButtons = sizeof(cButtons) / sizeof(lmToolButtonData);
 
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _T("")); //_("Text, symbols, graphics"));
+    SetGroupTitle(_T(""));  //_("Text, symbols, graphics"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));
 

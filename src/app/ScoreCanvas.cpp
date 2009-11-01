@@ -30,6 +30,8 @@
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
+#else
+#include <wx/tipwin.h>
 #endif
 
 
@@ -149,6 +151,56 @@ wxMenu* lmController::GetContextualMenu(bool fInitialize)
 	return (wxMenu*)NULL;
 }
 
+
+
+//----------------------------------------------------------------------------
+// Helper class to display popup window with information about dragged tool
+//----------------------------------------------------------------------------
+class lmInfoWindow: public wxPopupTransientWindow
+{
+public:
+    lmInfoWindow( wxWindow *parent );
+    virtual ~lmInfoWindow();
+
+    wxScrolledWindow* GetChild() { return m_panel; }
+
+private:
+    wxScrolledWindow *m_panel;
+
+    DECLARE_CLASS(lmInfoWindow)
+};
+
+//----------------------------------------------------------------------------
+// lmInfoWindow
+//----------------------------------------------------------------------------
+IMPLEMENT_CLASS(lmInfoWindow,wxPopupTransientWindow)
+
+lmInfoWindow::lmInfoWindow( wxWindow *parent )
+    : wxPopupTransientWindow( parent )
+{
+    m_panel = new wxScrolledWindow( this, wxID_ANY );
+    m_panel->SetBackgroundColour( wxColour(255,255,170) );    //pale yellow
+
+    wxStaticText *text = new wxStaticText( m_panel, wxID_ANY,
+                          _T("Hola. Nota C4") );
+
+
+    wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
+    topSizer->Add( text, 0, wxALL, 5 );
+
+    m_panel->SetAutoLayout( true );
+    m_panel->SetSizer( topSizer );
+    topSizer->Fit(m_panel);
+    topSizer->Fit(this);
+}
+
+lmInfoWindow::~lmInfoWindow()
+{
+}
+
+
+
+
 //-------------------------------------------------------------------------------------
 // implementation of lmScoreCanvas
 //-------------------------------------------------------------------------------------
@@ -204,6 +256,7 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* 
     , m_pToolBitmap((wxBitmap*)NULL)
     , m_pLastShapeStaff((lmShapeStaff*)NULL)
     , m_pLastBSI((lmBoxSliceInstr*)NULL)
+    , m_sToolInfo(_T(""))
 {
 	//attach the edit menu to the command processor
 	m_pDoc->GetCommandProcessor()->SetEditMenu( GetMainFrame()->GetEditMenu() );
@@ -1163,12 +1216,12 @@ lmGMObject* lmScoreCanvas::GetPointedAreaInfo()
             m_nMousePointedArea = lmMOUSE_OnOther;
     }
 
-    ////DBG --------------------------------------
-    //wxString sSO = (pGMO ? pGMO->GetName() : _T("No object"));
-    //wxLogMessage(_T("[lmScoreCanvas::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
-    //             m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
-    //             m_nMousePointedArea, sSO.c_str() );
-    ////END DBG ----------------------------------
+    //DBG --------------------------------------
+    wxString sSO = (pGMO ? pGMO->GetName() : _T("No object"));
+    wxLogMessage(_T("[lmScoreCanvas::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
+                 m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
+                 m_nMousePointedArea, sSO.c_str() );
+    //END DBG ----------------------------------
 
     return pGMO;
 }
@@ -1185,6 +1238,7 @@ wxMenu* lmScoreCanvas::GetContextualMenuForTool()
 void lmScoreCanvas::StartToolDrag(wxDC* pDC)
 {
     PrepareToolDragImages();
+    UpdateToolInfoString();
     wxBitmap* pCursorDragImage = (wxBitmap*)NULL;
     if (m_pToolBitmap)
     {
@@ -1261,6 +1315,17 @@ lmUPoint lmScoreCanvas::OnDrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos)
 
     //update time in status bar
     GetMainFrame()->SetStatusBarCursorRelPos(m_rCurGridTime, 0);
+
+    ////show tool tip
+    //m_pInfoWindow = new lmInfoWindow(this);
+    //wxSize sz = m_pInfoWindow->GetSize();
+    //wxPoint pos(m_vMouseCanvasPos.x + m_vCanvasOffset.x, 
+    //            m_vMouseCanvasPos.y + m_vCanvasOffset.y );
+    //m_pInfoWindow->Position(pos, sz );
+    //m_pInfoWindow->Popup();
+    //this->SetFocus();
+
+
 
     //draw time grid
     if (m_pCurBSI && RequiresTimeGrid())
@@ -2187,6 +2252,7 @@ void lmScoreCanvas::UpdateStatusBarToolBox()
 	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	    wxASSERT(pToolBox);
         sMsg = pToolBox->GetToolShortDescription();
+        sMsg += m_sToolInfo;
     }
 
     GetMainFrame()->SetStatusBarToolboxData(sMsg);
@@ -2326,6 +2392,30 @@ void lmScoreCanvas::PrepareToolDragImages()
         m_pToolBitmap = (wxBitmap*)NULL;
     }
 
+}
+
+void lmScoreCanvas::UpdateToolInfoString()
+{
+    //if (m_fSelIsNote)
+    //{
+    //    //get step and octave from mouse position on staff
+    //    int nLineSpace = pShapeStaff->GetLineSpace(uPagePos.y);     //0=first ledger line below staff
+    //    //to determine octave and step it is necessary to know the clef. As caret is
+    //    //placed at insertion point we could get these information from caret
+    //    lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetCurrentContext();
+    //    if (!pContext)
+    //    {
+    //        //there is no clef in score.
+    //        //TODO: InserNote commnad passing nLineSpace as argument, instead of pitch.
+    //        return;
+    //    }
+    //    lmEClefType nClefType = pContext->GetClefType();
+    //    lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
+    //    dpNote += (nLineSpace - 2);     //pitch for note to insert
+    //    _T(" %s"),DPitch_ToLDPName(dpNote).c_str() );
+    //}
+    //m_sToolInfo = _T(" C4");
+    //UpdateStatusBarToolBox();
 }
 
 void lmScoreCanvas::OnKeyDown(wxKeyEvent& event)

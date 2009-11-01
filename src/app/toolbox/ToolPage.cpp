@@ -65,7 +65,7 @@ void lmToolPage::CreatePage(wxWindow* parent, lmEToolPageID nPageID)
 {
     //base class
     wxPanel::Create(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1),
-                    wxBORDER_SUNKEN|wxTAB_TRAVERSAL);
+                    wxBORDER_NONE|wxTAB_TRAVERSAL);
 
 	//main sizer
     m_pMainSizer = new wxBoxSizer(wxVERTICAL);
@@ -87,6 +87,12 @@ lmToolPage::~lmToolPage()
 
 void lmToolPage::CreateLayout()
 {
+    //create groups' controls
+    std::list<lmToolGroup*>::iterator it;
+    for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
+    {
+        (*it)->CreateGroupControls(m_pMainSizer);
+    }
     SetAutoLayout(true);
     m_pMainSizer->Fit(this);
     m_pMainSizer->SetSizeHints(this);
@@ -118,3 +124,9 @@ void lmToolPage::OnToolChanged(lmEToolGroupID nGroupID, lmEToolID nToolID)
         ::wxPostEvent( pWnd, event );
     }
 }
+
+void lmToolPage::AddGroup(lmToolGroup* pGroup)
+{
+    m_Groups.push_back(pGroup);
+}
+

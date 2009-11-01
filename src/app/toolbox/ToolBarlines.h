@@ -52,7 +52,7 @@ public:
 
 
 private:
-    void CreateControls(wxBoxSizer* m_pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
 
 	wxBitmapComboBox*   m_pBarlinesList;
     wxButton*           m_pBtAddBarline;

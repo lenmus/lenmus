@@ -199,13 +199,13 @@ lmGrpNoteDuration::lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer
         : lmToolButtonsGroup(pParent, lm_NUM_DUR_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_NoteDuration, lmTOOL_NONE, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpNoteDuration::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpNoteDuration::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Duration"));
+    SetGroupTitle(_("Duration"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
     wxBoxSizer* pButtonsSizer;
@@ -285,13 +285,13 @@ lmGrpNoteRest::lmGrpNoteRest(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_NR_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_NoteRest, lmTOOL_NONE, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpNoteRest::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpNoteRest::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Notes or rests"));
+    SetGroupTitle(_("Notes or rests"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_NR_BUTTONS] = {
@@ -334,13 +334,13 @@ lmGrpOctave::lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_OCTAVE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_Octave, lmTOOL_NONE, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpOctave::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpOctave::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Octave (Ctrl)"));
+    SetGroupTitle(_("Octave (Ctrl)"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(16, 16);
@@ -412,13 +412,13 @@ void lmGrpVoice::SetVoice(bool fUp)
 lmGrpVoiceStd::lmGrpVoiceStd(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmGrpVoice(pParent, pMainSizer, lm_NUM_VOICE_BUTTONS)
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpVoiceStd::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpVoiceStd::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Voice (Alt)"));
+    SetGroupTitle(_("Voice (Alt)"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(16, 16);
@@ -463,10 +463,9 @@ void lmGrpVoiceStd::CreateControls(wxBoxSizer* pMainSizer)
 lmGrpVoiceHarmony::lmGrpVoiceHarmony(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmGrpVoice(pParent, pMainSizer, 4)
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpVoiceHarmony::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpVoiceHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //voice names
     static const wxString sBtName[4] = { _T("opt_voice_S"), _T("opt_voice_A"),
@@ -475,7 +474,8 @@ void lmGrpVoiceHarmony::CreateControls(wxBoxSizer* pMainSizer)
                                   _("Select voice Tenor"), _("Select voice Bass") };
 
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Voice (Alt)"));
+    SetGroupTitle(_("Voice (Alt)"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
     pCtrolsSizer->Add(pButtonsSizer);
@@ -507,13 +507,13 @@ lmGrpNoteAcc::lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_ACC_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
                              lmID_BT_NoteAcc, lmTOOL_NONE, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpNoteAcc::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpNoteAcc::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Accidentals"));
+    SetGroupTitle(_("Accidentals"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_ACC_BUTTONS] = {
@@ -560,13 +560,13 @@ lmGrpNoteDots::lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_NUM_DOT_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
                              lmID_BT_NoteDots, lmTOOL_NONE, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpNoteDots::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpNoteDots::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Dots"));
+    SetGroupTitle(_("Dots"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_DOT_BUTTONS] = {
@@ -616,13 +616,13 @@ END_EVENT_TABLE()
 lmGrpTieTuplet::lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
 }
 
-void lmGrpTieTuplet::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpTieTuplet::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Modifiers"));
+    SetGroupTitle(_("Modifiers"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
 
@@ -727,17 +727,13 @@ END_EVENT_TABLE()
 lmGrpBeams::lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent, pParent->GetColors())
 {
-    CreateControls(pMainSizer);
-
-    //disable buttons not yet used
-    m_pBtnBeamFlatten->Enable(false);
-    m_pBtnBeamSubgroup->Enable(false);
 }
 
-void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
+void lmGrpBeams::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    wxBoxSizer* pCtrolsSizer = CreateGroup(pMainSizer, _("Beams"));
+    SetGroupTitle(_("Beams"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     //create the specific controls for this group
 
@@ -783,6 +779,10 @@ void lmGrpBeams::CreateControls(wxBoxSizer* pMainSizer)
 
 	pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
 	this->Layout();
+
+    //disable buttons not yet used
+    m_pBtnBeamFlatten->Enable(false);
+    m_pBtnBeamSubgroup->Enable(false);
 }
 
 void lmGrpBeams::OnButton(wxCommandEvent& event)
@@ -885,6 +885,14 @@ void lmToolPageNotesStd::CreateGroups()
     m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
     m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
     m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
+    AddGroup(m_pGrpOctave);
+    AddGroup(m_pGrpVoice);
+    AddGroup(m_pGrpNoteRest);
+    AddGroup(m_pGrpNoteDuration);
+    AddGroup(m_pGrpNoteAcc);
+    AddGroup(m_pGrpNoteDots);
+    AddGroup(m_pGrpTieTuplet);
+    AddGroup(m_pGrpBeams);
 
 	CreateLayout();
     m_fGroupsCreated = true;
@@ -933,6 +941,14 @@ void lmToolPageNotesHarmony::CreateGroups()
     m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
     m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
     m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
+    AddGroup(m_pGrpOctave);
+    AddGroup(m_pGrpVoice);
+    AddGroup(m_pGrpNoteRest);
+    AddGroup(m_pGrpNoteDuration);
+    AddGroup(m_pGrpNoteAcc);
+    AddGroup(m_pGrpNoteDots);
+    AddGroup(m_pGrpTieTuplet);
+    AddGroup(m_pGrpBeams);
 
 	CreateLayout();
     m_fGroupsCreated = true;

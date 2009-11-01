@@ -98,7 +98,7 @@ bool lmScoreProcessor::CreateToolsPanel(wxString sTitle, wxString sDoLink)
     if (!pToolbox) return false;        //false -> failure
 
     m_pToolsPanel = new wxPanel(pToolbox, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+                                wxBORDER_NONE|wxTAB_TRAVERSAL );
 
 	m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 

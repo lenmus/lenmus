@@ -91,6 +91,7 @@ void lmBitmapButton::Create(const wxPoint& pos, const wxSize& size)
 	   //m_btSize.y = size.y;
     //}
 
+    m_btSize = size;
     m_state = lm_eButtonUp;
     m_enabled = true;
 	m_nBorderDown = lm_eBorderSunken;
@@ -226,22 +227,30 @@ void lmBitmapButton::OnPaint(wxPaintEvent & event)
 	if (m_bitmaps[m_state].IsOk())
     {
         wxPaintDC dc(this);
+	    ////dc.DrawBitmap(m_bitmaps[m_state], 0, 0, false);
+     //   if ((m_state == lm_eButtonUp || m_state == lm_eButtonDis) && m_sNameUp != _T(""))
+     //   {
+     //       //recreate the bitmap to take into account a possible background color change
+     //       CreateBitmap((m_state == lm_eButtonUp ? m_sNameUp : m_sNameDis),
+     //                    _T(""), m_btSize);
+     //   }
+     //   //wxClientDC dc(this);
 	    dc.DrawBitmap(m_bitmaps[m_state], 0, 0, false);
     }
 }
 
 void lmBitmapButton::OnEraseBackground(wxEraseEvent &event)
 {
-#ifdef __WIN32__
-    Redraw();
-    event.Skip();
-#else
-    // at this time, the background image isn't repaint by the toolbar,
-    // so defer the redraw for later
-    wxSizeEvent ev(GetSize(),GetId());
-    AddPendingEvent(ev);
-    event.Skip();
-#endif
+//#ifdef __WIN32__
+//    Redraw();
+//    event.Skip();
+//#else
+//    // at this time, the background image isn't repaint by the toolbar,
+//    // so defer the redraw for later
+//    wxSizeEvent ev(GetSize(),GetId());
+//    AddPendingEvent(ev);
+//    event.Skip();
+//#endif
 }
 
 void lmBitmapButton::OnMouseEvent(wxMouseEvent & event)
@@ -317,6 +326,12 @@ void lmBitmapButton::Redraw()
 {
 	if (m_bitmaps[m_state].IsOk())
     {
+        //if ((m_state == lm_eButtonUp || m_state == lm_eButtonDis) && m_sNameUp != _T(""))
+        //{
+        //    //recreate the bitmap to take into account a possible background color change
+        //    CreateBitmap((m_state == lm_eButtonUp ? m_sNameUp : m_sNameDis),
+        //                 _T(""), m_btSize);
+        //}
         wxClientDC dc(this);
 	    dc.DrawBitmap(m_bitmaps[m_state], 0, 0, false);
     }
@@ -389,11 +404,13 @@ void lmBitmapButton::SetBitmapOver(wxString sBmpName, wxString sBg, wxSize size)
 
 void lmBitmapButton::SetBitmapUp(wxString sBmpName, wxString sBg, wxSize size)
 {
+    m_sNameUp = sBmpName;
 	m_bitmaps[lm_eButtonUp] = CreateBitmap(sBmpName, sBg, size);
 }
 
 void lmBitmapButton::SetBitmapDisabled(wxString sBmpName, wxString sBg, wxSize size)
 {
+    m_sNameDis = sBmpName;
 	m_bitmaps[lm_eButtonDis] = CreateBitmap(sBmpName, sBg, size);
 }
 

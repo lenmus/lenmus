@@ -91,7 +91,7 @@ const lmGlyph aGlyphsInfo[] =
     //            Glyph   offset  shift   height                 x       y   width   height      x       y
     lmGlyph(_T('\uF04B'),   0,      0,      0,   0,      0,      0,   -369,    960,    738,    480,    369 ),    //_T("Longa note")) ,
     lmGlyph(_T('\uF04D'),   0,      0,      0,   0,      0,      0,   -283,   1182,    567,    591,    283 ),    //_T("Breve note")) ,
-    lmGlyph(_T('\uF04E'),   10,      0,      0,   0,      0,      0,   -282,   1010,    566,    505,    283 ),    //_T("Whole note")) ,
+    lmGlyph(_T('\uF04E'),  10,      0,      0,   0,      0,      0,   -282,   1010,    566,    505,    283 ),    //_T("Whole note")) ,
     lmGlyph(_T('\uF086'),   0,      0,      0,   0,      0,      0,  -1847,    709,   2127,    354,    279 ),    //_T("Half note, stem down")) ,
     lmGlyph(_T('\uF087'),   0,      0,      0,   0,      0,      0,   -279,    709,   2171,    354,   1923 ),    //_T("Half note, stem up")) ,
     lmGlyph(_T('\uF088'),   0,      0,      0,   0,      0,      0,  -1779,    640,   2027,    320,    248 ),    //_T("Quarter note, stem down")) ,
@@ -113,17 +113,17 @@ const lmGlyph aGlyphsInfo[] =
 	//                                                      ----- FUnits ------------      -- FUnits--
     //                       sel rectangle                  Position    Size                drag point
     //       Glyph   offset  shift   height                 x       y   width   height      x       y
-    lmGlyph(_T('}'), -20,      0,     0,    0,      0,      0,    512,    288,   1024,      0,      0 ),    //_T("Longa rest")) ,     //larga
-    lmGlyph(_T('|'), -20,      0,     0,    0,      0,      0,   1024,    307,    512,      0,      0 ),    //_T("Breve rest")) ,    //breve, cuadrada
-    lmGlyph(_T('{'), -20,      0,     0,    0,      0,      0,   1280,    720,    256,      0,      0 ),    //_T("Whole rest")) ,    //whole redonda
-    lmGlyph(_T('z'), -20,      0,     0,    0,      0,      0,   1024,    720,    256,      0,      0 ),    //_T("Half rest")) ,     //half blanca
-    lmGlyph(_T('y'), -20,      0,     0,    0,      0,      0,    343,    510,   1362,      0,      0 ),    //_T("Quarter rest")) ,  //quarter negra
-    lmGlyph(_T('x'), -20,      0,     0,    0,      0,      0,    512,    480,    888,      0,      0 ),    //_T("Eight rest")) ,    //eighth corchea
-    lmGlyph(_T('w'), -20,      0,     0,    0,      0,      0,      0,    618,   1368,      0,      0 ),    //_T("16th rest")) ,     //16th semicorchea
-    lmGlyph(_T('v'), -20,      0,     0,    0,      0,      0,      0,    726,   1848,      0,      0 ),    //_T("32nd rest")) ,     //32nd fusa
-    lmGlyph(_T('u'), -20,      0,     0,    0,      0,      0,   -450,    792,   2322,      0,      0 ),    //_T("64th rest")) ,     //64th semifusa
-    lmGlyph(_T('t'), -20,      0,     0,    0,      0,      0,   -512,    828,   2802,      0,      0 ),    //_T("128th rest")) ,    //128th garrapatea
-    lmGlyph(_T('s'), -20,      0,     0,    0,      0,      0,   -924,    924,   3288,      0,      0 ),    //_T("256th rest")) ,    //256th semigarrapatea
+    lmGlyph(_T('}'), -20,      0,     0,    0,      0,      0,    512,    288,   1024,    144,      0 ),    //_T("Longa rest")) ,     //larga
+    lmGlyph(_T('|'), -20,      0,     0,    0,      0,      0,   1024,    307,    512,    154,      0 ),    //_T("Breve rest")) ,    //breve, cuadrada
+    lmGlyph(_T('{'), -20,      0,     0,    0,      0,      0,   1280,    720,    256,    360,      0 ),    //_T("Whole rest")) ,    //whole redonda
+    lmGlyph(_T('z'), -20,      0,     0,    0,      0,      0,   1024,    720,    256,    360,      0 ),    //_T("Half rest")) ,     //half blanca
+    lmGlyph(_T('y'), -20,      0,     0,    0,      0,      0,    343,    510,   1362,    205,   1705 ),    //_T("Quarter rest")) ,  //quarter negra
+    lmGlyph(_T('x'), -20,      0,     0,    0,      0,      0,    512,    480,    888,    240,    700 ),    //_T("Eight rest")) ,    //eighth corchea
+    lmGlyph(_T('w'), -20,      0,     0,    0,      0,      0,      0,    618,   1368,    309,    684 ),    //_T("16th rest")) ,     //16th semicorchea
+    lmGlyph(_T('v'), -20,      0,     0,    0,      0,      0,      0,    726,   1848,    363,    924 ),    //_T("32nd rest")) ,     //32nd fusa
+    lmGlyph(_T('u'), -20,      0,     0,    0,      0,      0,   -450,    792,   2322,    396,    936 ),    //_T("64th rest")) ,     //64th semifusa
+    lmGlyph(_T('t'), -20,      0,     0,    0,      0,      0,   -512,    828,   2802,    414,   1145 ),    //_T("128th rest")) ,    //128th garrapatea
+    lmGlyph(_T('s'), -20,      0,     0,    0,      0,      0,   -924,    924,   3288,    462,   1182 ),    //_T("256th rest")) ,    //256th semigarrapatea
 
 //flags for notes.
     //  shift and height info is no needed
@@ -159,11 +159,11 @@ const lmGlyph aGlyphsInfo[] =
 	//                                                      ----- FUnits ------------      -- FUnits--
     //                       sel rectangle                  Position    Size                drag point
     //       Glyph   offset  shift   height                 x       y   width   height      x       y
-    lmGlyph(_T('A'), -20,      0,      0,   0,      0,      0,   -853,   1243,   3606,      0,      0 ),    //_T("G clef")) ,
-    lmGlyph(_T('B'), -20,      0,      0,   0,      0,      0,    324,   1451,   1728,      0,      0 ),    //_T("F clef")) ,
+    lmGlyph(_T('A'), -20,      0,      0,   0,      0,      0,   -853,   1243,   3606,    621,   1377 ),    //_T("G clef")) ,
+    lmGlyph(_T('B'), -20,      0,      0,   0,      0,      0,    324,   1451,   1728,    725,   1026 ),    //_T("F clef")) ,
     lmGlyph(_T('D'), -20,     20,     35,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("F clef ottava alta")) ,
     lmGlyph(_T('E'), -20,     20,     35,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("F clef ottava bassa")) ,
-    lmGlyph(_T('C'), -20,      0,      0,   0,      0,      0,      0,   1393,   2050,      0,      0 ),    //_T("C clef")) ,
+    lmGlyph(_T('C'), -20,      0,      0,   0,      0,      0,      0,   1393,   2050,    681,   1025 ),    //_T("C clef")) ,
     lmGlyph(_T('G'), -19,     20,     35,   0,      0,      0,      0,      0,      0,      0,      0 ),    //_T("Percussion clef, block")) ,
 
 //numbers for time signatures

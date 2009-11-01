@@ -44,7 +44,7 @@ public:
     ~lmGrpOctave() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Octave; }
 
 	//access to options
@@ -64,7 +64,7 @@ public:
     ~lmGrpVoice() {}
 
     //implement virtual methods
-    //void CreateControls(wxBoxSizer* pMainSizer) = 0;
+    //void CreateGroupControls(wxBoxSizer* pMainSizer) = 0;
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Voice; }
 
 	//access to options
@@ -87,7 +87,7 @@ public:
     ~lmGrpVoiceStd() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
 };
 
 //--------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ public:
     ~lmGrpVoiceHarmony() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
 
     //overrides, to avoide voice 0 (AutoVoice)
     int GetVoice() { return m_nSelButton + 1; }
@@ -120,7 +120,7 @@ public:
     ~lmGrpNoteDuration() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteDuration; }
 
 	//access to options
@@ -143,7 +143,7 @@ public:
     ~lmGrpNoteRest() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteRest; }
 
 	//access to options
@@ -163,7 +163,7 @@ public:
     ~lmGrpNoteAcc() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteAcc; }
 
 	//access to options
@@ -182,7 +182,7 @@ public:
     ~lmGrpNoteDots() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteDots; }
 
 	//access to options
@@ -201,7 +201,7 @@ public:
     ~lmGrpTieTuplet() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_TieTuplet; }
 
     //event handlers
@@ -234,7 +234,7 @@ public:
     ~lmGrpBeams() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Beams; }
 
     //event handlers

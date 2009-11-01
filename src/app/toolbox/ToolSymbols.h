@@ -51,7 +51,7 @@ public:
     ~lmGrpSymbols() {}
 
     //implement virtual methods
-    void CreateControls(wxBoxSizer* m_pMainSizer);
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Symbols; }
 
 };

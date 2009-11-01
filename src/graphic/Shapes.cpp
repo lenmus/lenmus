@@ -1079,6 +1079,7 @@ wxBitmap* GetBitmapForGlyph(double rScale, int nGlyph, double rPointSize, wxColo
     delete pDrawer;
 
     ////DBG -----------
+    //wxLogMessage(_T("[Shapes: GetBitmapForGlyph] Bitmap saved as BitmapGlyp.bmp"));
     //wxString sFileName = _T("BitmapGlyp.bmp");
     //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
     ////END DBG -------

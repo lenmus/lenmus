@@ -202,7 +202,8 @@ lmUPoint lmShapeNote::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	// origin. The returned new allowed shape position must also be in in logical units
 	// and referred to page origin.
 
-	if (g_fFreeMove) return uPos;
+	if (g_fFreeMove)
+        return uPos;
 
     // A note only can be moved in discrete vertical steps (staff lines/spaces)
     //return lmUPoint(uPos.x, GetYTop());	//only horizontal movement
