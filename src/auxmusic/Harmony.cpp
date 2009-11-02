@@ -707,6 +707,26 @@ void lmScoreChord::RemoveAllNotes()
     }
 }
 
+// todo: remove this method in the final release: it just shows redundant note information
+wxString lmScoreChord::ToString()
+{
+    wxString sStr = this->lmFPitchChord::ToString();
+    /*- todo remove: the notes should be the same as in lmFPitchChord
+    sStr += wxString::Format(_T("; %d lmNotes:"), m_nNumLmNotes);
+    for (int nN = 0; nN<m_nNumLmNotes; nN++)
+    {
+        if (m_pChordNotes[nN] != 0 && m_fpChordNotes[nN] != 0)
+        {
+            sStr += _T(" ");
+            sStr += m_pChordNotes[nN]->GetPrintName().c_str();
+        }
+    } */
+    return sStr;
+}
+
+
+
+
 
 //----------------------------------------------------------------------------------
 // class lmActiveNotes

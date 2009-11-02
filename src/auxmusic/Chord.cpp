@@ -699,10 +699,14 @@ wxString lmChord::ToString()
         sRetStr = wxString::Format(_T(" %s"), GetNameFull().c_str());
 
         sRetStr += wxString::Format(_(", Bass:%s")
-            , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedBass()).c_str());
+                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedBass()).c_str());
 
-        sRetStr += wxString::Format(_(", Root:%s")
-            , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedRoot()).c_str());
+        if ( m_nInversion > 0)
+        {
+            // aware: if no inversions then root == bass
+            sRetStr += wxString::Format(_(", Root:%s")
+                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedRoot()).c_str());
+        }
 
         if (m_nElision > 0)
           sRetStr += wxString::Format(_(", %d elisions"), m_nElision);

@@ -162,7 +162,9 @@ protected:
     lmFontInfo tFont;
     ChordInfoBox* pInfoBox;
     wxSize* pErrorBoxSize;
+    wxSize* pBigErrorBoxSize;
     ChordInfoBox* pChordErrorBox;
+    ChordInfoBox* pBigChordErrorBox;
 
 };
 

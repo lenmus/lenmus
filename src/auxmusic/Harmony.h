@@ -206,6 +206,7 @@ public:
     lmNote* GetNoteLmNote(int nIndex);
     int GetNoteVoice(int nIndex);
     int GetNumLmNotes();
+    wxString ToString();
 
     lmChordError  tChordErrors;
 private:
