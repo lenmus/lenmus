@@ -70,6 +70,7 @@ lmToolGroup::lmToolGroup(wxPanel* pParent, lmColorScheme* pColours)
     , m_pParent(pParent)
     , m_pColours(pColours)
     , m_fSelected(true)
+    , m_fPointerMode(false)
 {
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
@@ -81,7 +82,8 @@ lmToolGroup::lmToolGroup(wxPanel* pParent, lmColorScheme* pColours)
         SetForegroundColour(pColours->PrettyDark());
 	    SetBackgroundColour(pColours->Normal());        //Bright()); 
     }
-//    m_sText = label;
+
+//    m_sTitle = label;
     m_fMousePressedDown = false;
 }
 
@@ -97,7 +99,8 @@ wxBoxSizer* lmToolGroup::CreateGroupSizer(wxBoxSizer* pMainSizer)
 	m_pCtrolsSizer = new wxBoxSizer( wxVERTICAL );
 	
     //spacer for group title
-	m_pCtrolsSizer->Add( 0, 0, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 10 );
+    if (m_sTitle != _T(""))
+	    m_pCtrolsSizer->Add( 0, 0, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 10 );
 	
 	m_pGroupSizer = new wxBoxSizer( wxVERTICAL );
 	m_pCtrolsSizer->Add( m_pGroupSizer, 1, wxEXPAND|wxALL, 5 );
@@ -105,7 +108,7 @@ wxBoxSizer* lmToolGroup::CreateGroupSizer(wxBoxSizer* pMainSizer)
 	this->SetSizer( m_pCtrolsSizer );
 	this->Layout();
 	m_pCtrolsSizer->Fit( this );
-	pMainSizer->Add( this, 0, wxLEFT|wxRIGHT|wxTOP|wxEXPAND, 5 );
+	pMainSizer->Add( this, 0, wxLEFT|wxRIGHT|wxTOP|wxEXPAND, 2 );
 
     return m_pGroupSizer;
 }
@@ -125,15 +128,7 @@ int lmToolGroup::GetGroupWitdh()
 void lmToolGroup::EnableGroup(bool fEnable)
 {
     Enable(fEnable);
-    //m_pBoxTitle->Enable(fEnable);
-    ////wxWindowListNode* pNode = this->GetChildren().GetFirst();
-    ////while(pNode)
-    ////{
-    ////  wxWindow* pCtrol = pNode->GetData();
-    ////  pCtrol->Enable(fEnable);
-    //// 
-    ////  pNode = pNode->GetNext();
-    ////}
+    DoPaintNow();
 }
 
 void lmToolGroup::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
@@ -152,11 +147,9 @@ void lmToolGroup::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
  
 void lmToolGroup::OnPaintEvent(wxPaintEvent & evt)
 {
+    //called by the system when the panel needs to be redrawn. You can also trigger
+    //this call by calling Refresh()/Update().
 
-    //called by the system when the panel needs
-    //to be redrawn. You can also trigger this call by
-    //calling Refresh()/Update().
-    // depending on your system you may need to look at double-buffered dcs
     wxPaintDC dc(this);
     DoRender(dc);
 }
@@ -166,17 +159,10 @@ void lmToolGroup::DoRender(wxDC& dc)
     //Here we do the actual rendering. It is a separate method so that it can work
     //no matter what type of DC is used (i.e. wxPaintDC or wxClientDC)
 
-    //if (m_fMousePressedDown)
-    //    dc.SetBrush( *wxRED_BRUSH );
-    //else
-    //    dc.SetBrush( *wxGREY_BRUSH );
-    
-    wxRect rect;
-    GetClientSize(&rect.width, &rect.height);
-    //rect.y += 2;
-    //rect.height -= 4;
+    //set colors
+    //AWARE: ToolGroup is used as a control in properties dialogs. In them, 
+    // the owner is not a lmToolPage and pointer pColors is NULL
 
-    //colors
     wxColour colorMaxHight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHIGHLIGHT);   //button highlight 
     wxColour colorHiLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHILIGHT); 
     wxColour colorMoreLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DLIGHT );
@@ -184,70 +170,130 @@ void lmToolGroup::DoRender(wxDC& dc)
     wxColour colorLessLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DSHADOW);  //button shadow  
     wxColour colorDark = wxSystemSettings::GetColour( wxSYS_COLOUR_3DDKSHADOW );
 
-    //AWARE: ToolGroup is used as a control in properties dialogs. In them, 
-    // the owner is not a lmToolPage and pointer pColors is NULL
-
-    //backgroud
+    //background color
     wxColour colorBg = colorLight;
     if (m_pColours)
-        colorBg = m_pColours->Normal();
-        //colorBg = (m_fSelected ? m_pColours->Bright() : m_pColours->Normal() );
+    {
+        //if (m_fSelected)
+        //    colorBg = m_pColours->GetColour(lmCOLOUR_GROUP_BACKGROUND_SELECTED);
+        //else
+            colorBg = m_pColours->GetColour(lmCOLOUR_GROUP_BACKGROUND_NORMAL);
+    }
+
+    //border color
+    wxColour colorBorder = colorLessLight;
+    if (m_pColours)
+        colorBorder = m_pColours->GetColour(lmCOLOUR_GROUP_BORDER_ACTIVE);
+
+    //title color
+    wxColour colorTitle = colorLessLight;
+    if (m_pColours)
+    {
+        if (IsEnabled())
+            colorTitle = m_pColours->GetColour(lmCOLOUR_GROUP_TITLE_ACTIVE);
+        else
+            colorTitle = m_pColours->GetColour(lmCOLOUR_GROUP_TITLE_INACTIVE);
+    }
+
+
+        //Do the painting
+
+    //background
+    wxRect rect;
+    GetClientSize(&rect.width, &rect.height);
+
     wxRect rectBg = rect;
     rectBg.Deflate(1, 1);
+#if 1
     dc.SetPen( wxPen(colorBg));
     dc.SetBrush( wxBrush(colorBg));
     dc.DrawRectangle(rectBg);
-    //dc.GradientFillLinear(rectBg, colorMoreLight, colorLight, wxSOUTH );
+    //title background
+    if (m_sTitle != _T(""))
+    {
+        rectBg.SetHeight(13);
+        //if (m_fSelected)
+        //{
+        //    wxColour cTop = wxColour(215,224,224);  //lmColorScheme::LightenColour(colorBg, 0.9f);
+        //    wxColour cBottom = wxColour(182,202,202);  //lmColorScheme::DarkenColour(cTop, 0.2f);
+        //    dc.GradientFillLinear(rectBg, cTop, cBottom, wxSOUTH );
+        //}
+        //else
+        {
+            wxColour cTop = lmColorScheme::LightenColour(colorBg, 0.6f);
+            wxColour cBottom = colorBg; //lmColorScheme::DarkenColour(colorBg, 0.15f);
+            dc.GradientFillLinear(rectBg, cTop, cBottom, wxSOUTH );
+        }
+    }
+#else
+    dc.GradientFillLinear(rectBg, colorMoreLight, colorLight, wxSOUTH );
+#endif
 
-    // draw the rectangle
-    dc.SetPen(*wxLIGHT_GREY_PEN);
-    //left line
+    //group border
+    dc.SetPen(colorBorder);
+        //left line
     dc.DrawLine(rect.GetLeft(), rect.GetTop()+2,
-                rect.GetLeft(), rect.GetBottom()-1);
-    //top line
+                rect.GetLeft(), rect.GetBottom()-2);
+        //top line
     dc.DrawLine(rect.GetLeft()+2, rect.GetTop(),
-                rect.GetRight()-1, rect.GetTop());
-    //right line
-    dc.DrawLine(rect.GetRight(), rect.GetTop()+2,
-                rect.GetRight(), rect.GetBottom()-1);
+                rect.GetRight()-2, rect.GetTop());
+        //right line
+    dc.DrawLine(rect.GetRight()-1, rect.GetTop()+2,
+                rect.GetRight()-1, rect.GetBottom()-2);
 
-    //bottom line
-    dc.DrawLine(rect.GetLeft()+2, rect.GetBottom(),
-                rect.GetRight()-1, rect.GetBottom());
+        //bottom line
+    dc.DrawLine(rect.GetLeft()+2, rect.GetBottom()-1,
+                rect.GetRight()-2, rect.GetBottom()-1);
 
-    //top left corner
+        //top left corner
     dc.DrawPoint(rect.GetLeft()+1, rect.GetTop()+1);
     dc.DrawPoint(rect.GetLeft()+1, rect.GetTop()+2);
     dc.DrawPoint(rect.GetLeft()+2, rect.GetTop()+1);
     
-    //top right corner
-    dc.DrawPoint(rect.GetRight()-1, rect.GetTop()+1);
-    dc.DrawPoint(rect.GetRight()-1, rect.GetTop()+2);
+        //top right corner
     dc.DrawPoint(rect.GetRight()-2, rect.GetTop()+1);
+    dc.DrawPoint(rect.GetRight()-2, rect.GetTop()+2);
+    dc.DrawPoint(rect.GetRight()-3, rect.GetTop()+1);
     
-    //bottom right corner
-    dc.DrawPoint(rect.GetRight()-1, rect.GetBottom()-1);
-    dc.DrawPoint(rect.GetRight()-1, rect.GetBottom()-2);
-    dc.DrawPoint(rect.GetRight()-2, rect.GetBottom()-1);
+        //bottom right corner
+    dc.DrawPoint(rect.GetRight()-2, rect.GetBottom()-2);
+    dc.DrawPoint(rect.GetRight()-2, rect.GetBottom()-3);
+    dc.DrawPoint(rect.GetRight()-3, rect.GetBottom()-2);
     
-    //bottom left corner
-    dc.DrawPoint(rect.GetLeft()+1, rect.GetBottom()-1);
+        //bottom left corner
     dc.DrawPoint(rect.GetLeft()+1, rect.GetBottom()-2);
-    dc.DrawPoint(rect.GetLeft()+2, rect.GetBottom()-1);
-    
+    dc.DrawPoint(rect.GetLeft()+1, rect.GetBottom()-3);
+    dc.DrawPoint(rect.GetLeft()+2, rect.GetBottom()-2);
 
-    dc.SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
-    if (!this->IsEnabled())
+        //white carving
+    dc.SetPen( lmColorScheme::LightenColour(colorBg, 0.9f) );
+        //left line
+    dc.DrawLine(rect.GetLeft()+1, rect.GetTop()+3,
+                rect.GetLeft()+1, rect.GetBottom()-3);
+        //top line
+    dc.DrawLine(rect.GetLeft()+3, rect.GetTop()+1,
+                rect.GetRight()-3, rect.GetTop()+1);
+        //right line
+    dc.DrawLine(rect.GetRight(), rect.GetTop()+2,
+                rect.GetRight(), rect.GetBottom()-2);
+
+        //bottom line
+    dc.DrawLine(rect.GetLeft()+3, rect.GetBottom(),
+                rect.GetRight()-2, rect.GetBottom());
+
+    
+    
+    //group title
+    if (m_sTitle != _T(""))
     {
-        dc.SetTextForeground(*wxWHITE);
-        dc.DrawText( m_sText, 6, 2 );
-        dc.SetTextForeground( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNSHADOW ) );
-        dc.DrawText( m_sText, 5, 1 );
-    }
-    else
-    {
-        dc.SetTextForeground( wxSystemSettings::GetColour( wxSYS_COLOUR_ACTIVECAPTION ) );
-        dc.DrawText( m_sText, 5, 1 );
+        dc.SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+        if (!this->IsEnabled())
+        {
+            dc.SetTextForeground(*wxWHITE);
+            dc.DrawText( m_sTitle, 5, 2 );
+        }
+        dc.SetTextForeground(colorTitle);
+        dc.DrawText( m_sTitle, 4, 1 );
     }
 }
  
@@ -286,6 +332,16 @@ void lmToolGroup::OnMouseLeftWindow(wxMouseEvent& event)
     //    m_fMousePressedDown = false;
     //    DoPaintNow();
     //}
+}
+
+void lmToolGroup::EnableForMouseMode(int nMode)
+{
+    //Enable/disable this group, depending on its usability for specified mouse mode
+
+    if (nMode == lmMM_POINTER)
+        EnableGroup(m_fPointerMode);
+    else
+        EnableGroup(true);
 }
 
 

@@ -27,6 +27,7 @@
 
 #include <vector>
 
+
 //some helper definitions de define the behaviour of lmToolButtonsGroup
 #define lmTBG_ALLOW_NONE    true
 #define lmTBG_ONE_SELECTED  false
@@ -100,7 +101,7 @@ public:
     //creation
     wxBoxSizer* CreateGroupSizer(wxBoxSizer* pParentSizer);
     virtual void CreateGroupControls(wxBoxSizer* pMainSizer)=0;
-    inline void SetGroupTitle(const wxString& sTitle) { m_sText = sTitle; }
+    inline void SetGroupTitle(const wxString& sTitle) { m_sTitle = sTitle; }
 
     //event handlers
     void OnPaintEvent(wxPaintEvent & event);
@@ -117,6 +118,7 @@ public:
     void EnableGroup(bool fEnable);
     //virtual void EnableTool(lmEToolID nToolID, bool fEnable)=0;
     void SetSelected(bool fSelected);
+    void EnableForMouseMode(int nMode);
 
     //identification
     virtual lmEToolGroupID GetToolGroupID()=0;
@@ -131,16 +133,17 @@ protected:
     void DoRender(wxDC& dc);
     void DoPaintNow();
 
-	wxPanel*		    m_pParent;      //owner ToolPage
-    wxPanel*            m_pBoxPanel;
-    wxPanel*            m_pGroupPanel; 
-    wxBoxSizer*         m_pCtrolsSizer;
-    wxBoxSizer*         m_pBoxSizer;
-    wxBoxSizer*         m_pGroupSizer;
-    lmColorScheme*      m_pColours;
-    bool                m_fMousePressedDown;
-    bool                m_fSelected;    //this group is the selected one
-    wxString            m_sText;        //group title
+	wxPanel*        m_pParent;      //owner ToolPage
+    wxPanel*        m_pBoxPanel;
+    wxPanel*        m_pGroupPanel; 
+    wxBoxSizer*     m_pCtrolsSizer;
+    wxBoxSizer*     m_pBoxSizer;
+    wxBoxSizer*     m_pGroupSizer;
+    lmColorScheme*  m_pColours;
+    bool            m_fMousePressedDown;
+    bool            m_fSelected;        //this group is the selected one
+    bool            m_fPointerMode;     //enable this group in mouse pointer mode
+    wxString        m_sTitle;           //group title
 
     DECLARE_EVENT_TABLE()
 };

@@ -125,9 +125,11 @@ public:
     lmToolBox(wxWindow* parent, wxWindowID id = wxID_ANY);
     virtual ~lmToolBox();
 
+    //event handlers
     void OnButtonClicked(wxCommandEvent& event);
     void OnKeyPress(wxKeyEvent& event);
     void OnResize(wxSizeEvent& event);
+    void OnEraseBackground(wxEraseEvent& event);
 
     //configuration
     void GetConfiguration(lmToolBoxConfiguration* pConfig);

@@ -32,6 +32,7 @@
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
+//#else
 #endif
 
 #include "wx/colour.h"
@@ -77,6 +78,21 @@ void lmColorScheme::SetBaseColor(wxColour color)
 	m_bright = HSL_To_RGB(h, s, l+Lup+Lup);
 	m_prettyBright = HSL_To_RGB(h, s, l+Lup+Lup+Lup);
 #endif
+
+    wxColour colorMaxHight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHIGHLIGHT);   //button highlight 
+    wxColour colorHiLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHILIGHT); 
+    wxColour colorMoreLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DLIGHT );
+    wxColour colorLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE);    //button face
+    wxColour colorLessLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DSHADOW);  //button shadow  
+    wxColour colorDark = wxSystemSettings::GetColour( wxSYS_COLOUR_3DDKSHADOW );
+
+    //initialize theme variables
+    m_GroupBorderActivePen = wxPen(colorLessLight);
+    m_GroupBorderInactivePen = m_GroupBorderActivePen;
+    m_GroupTitleActive = wxColour( wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION) );
+    m_GroupTitleInactive = wxColour(m_lightDark);   // wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION) );
+    m_GroupBackgroundSelectedBrush = wxBrush(m_normal);
+    m_GroupBackgroundNormalBrush = wxBrush(m_normal);
 }
 
 wxColour lmColorScheme::ChangeLuminance(wxColour C, float luminance)
@@ -315,3 +331,60 @@ wxColour lmColorScheme::HSV_To_RGB(float H, float S, float V)
 			return color;
 	}
 }
+
+wxColour lmColorScheme::GetColour(lmEColours iColor)
+{
+    switch (iColor)
+    {
+        //ToolGroup
+        case lmCOLOUR_GROUP_BORDER_ACTIVE:          return m_GroupBorderActivePen.GetColour();
+        case lmCOLOUR_GROUP_BORDER_INACTIVE:        return m_GroupBorderInactivePen.GetColour();
+        case lmCOLOUR_GROUP_TITLE_ACTIVE:           return m_GroupTitleActive;
+        case lmCOLOUR_GROUP_TITLE_INACTIVE:         return m_GroupTitleInactive;
+        case lmCOLOUR_GROUP_BACKGROUND_SELECTED:    return m_GroupBackgroundSelectedBrush.GetColour();
+        case lmCOLOUR_GROUP_BACKGROUND_NORMAL:      return m_GroupBackgroundNormalBrush.GetColour();
+        default:
+            wxLogMessage(_T("[lmColorScheme::GetColour] Missing value (%d) in switch statement"), iColor);
+    }
+
+    return wxColour();
+}
+
+wxPen& lmColorScheme::GetPen(lmEPens iPen)
+{
+    return m_GroupBorderInactivePen;
+}
+
+wxBrush& lmColorScheme::GetBrush(lmEBrushes iBrush)
+{
+    return m_GroupBackgroundSelectedBrush;
+}
+
+wxColour lmColorScheme::DarkenColour(const wxColour& c, float rPercentage)
+{
+    //darkens a color, based on the specified percentage.
+    //Parameter rPercentage must be in the range [0.0, 1.0]. A value of 0.0
+    //will return the same colour without change. A value of 1.0 will return
+    //pure black  
+
+    wxASSERT(rPercentage >= 0.0f && rPercentage <= 1.0f);
+
+	float h, s, l;
+    lmColorScheme::RGB_To_HSL(c, h, s, l);
+    return lmColorScheme::HSL_To_RGB(h, s, l * (1.0f - rPercentage));
+}
+
+wxColour lmColorScheme::LightenColour(const wxColour& c, float rPercentage)
+{
+    //lightens a color, based on the specified percentage.
+    //Parameter rPercentage must be in the range [0.0, 1.0]. A value of 0.0
+    //will return the same colour without change. A value of 1.0 will return
+    //pure white  
+
+    wxASSERT(rPercentage >= 0.0f && rPercentage <= 1.0f);
+
+	float h, s, l;
+    lmColorScheme::RGB_To_HSL(c, h, s, l);
+    return lmColorScheme::HSL_To_RGB(h, s, (1.0f - l) * rPercentage + l);
+}
+

@@ -800,20 +800,6 @@ void lmGrpBeams::OnButton(wxCommandEvent& event)
     PostToolBoxEvent(nToolID, event.IsChecked());
 }
 
-//void lmGrpBeams::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
-//{
-//    //post tool box event to the active controller
-//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-//    if (pWnd)
-//    {
-//	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-//	    wxASSERT(pToolBox);
-//        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetCurrentPageID(), nToolID,
-//                             fSelected);
-//        ::wxPostEvent( pWnd, event );
-//    }
-//}
-
 void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)
 {
     switch (nToolID)
@@ -827,11 +813,11 @@ void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)
             break;
 
         case lmTOOL_BEAMS_FLATTEN:
-            m_pBtnBeamFlatten->Enable(fEnabled);
+            //m_pBtnBeamFlatten->Enable(fEnabled);
             break;
 
         case lmTOOL_BEAMS_SUBGROUP:
-            m_pBtnBeamSubgroup->Enable(fEnabled);
+            //m_pBtnBeamSubgroup->Enable(fEnabled);
             break;
 
         default:
@@ -842,6 +828,9 @@ void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)
     bool fEnableGroup = m_pBtnBeamCut->IsEnabled() || m_pBtnBeamJoin->IsEnabled() ||
                         m_pBtnBeamFlatten->IsEnabled() || m_pBtnBeamSubgroup->IsEnabled();
     EnableGroup(fEnableGroup);
+    //disable buttons not yet used
+    m_pBtnBeamFlatten->Enable(false);
+    m_pBtnBeamSubgroup->Enable(false);
 }
 
 

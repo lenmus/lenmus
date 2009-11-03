@@ -2184,7 +2184,7 @@ void lmMainFrame::ShowToolBox(bool fShow)
         wxAuiPaneInfo panel = m_mgrAUI.GetPane(_T("ToolBox"));
         if (!panel.IsOk())
             m_mgrAUI.AddPane(m_pToolBox, wxAuiPaneInfo(). Name(_T("ToolBox")).
-                                Caption(_("Edit tool box")).Left().
+                                Caption(_("Edit toolbox")).Left().
 							    Floatable(true).
 							    Resizable(false).
 							    TopDockable(true).

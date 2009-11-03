@@ -43,6 +43,9 @@ public:
     virtual void CreatePage(wxWindow* parent, lmEToolPageID nPageID);
     void AddGroup(lmToolGroup* pGroup);
 
+    //event handlers
+    void OnPaintEvent(wxPaintEvent & event);
+
 	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void CreateLayout();
 	inline lmColorScheme* GetColors() { return GetToolBox()->GetColors(); }
@@ -55,6 +58,7 @@ public:
 
     virtual void CreateGroups() = 0;
     virtual bool DeselectRelatedGroups(lmEToolGroupID nGroupID) = 0;
+    void ReconfigureForMouseMode(lmEMouseMode nMode);
 
 	//current selected group/tool and its options
     inline lmEToolGroupID GetCurrentGroupID() const { return m_nCurGroupID; }
@@ -82,6 +86,7 @@ private:
     lmEToolPageID   m_nPageID;          //this page ID
     std::list<lmToolGroup*> m_Groups;   //groups in this page
 
+    DECLARE_EVENT_TABLE()
 };
 
 #endif    // __LM_TOOLPAGE_H__

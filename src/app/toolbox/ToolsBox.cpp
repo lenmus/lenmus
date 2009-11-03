@@ -96,6 +96,7 @@ BEGIN_EVENT_TABLE(lmToolBox, wxPanel)
 	EVT_CHAR (lmToolBox::OnKeyPress)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmToolBox::OnButtonClicked)
     EVT_SIZE (lmToolBox::OnResize)
+    //EVT_ERASE_BACKGROUND(lmToolBox::OnEraseBackground)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmToolBox, wxPanel)
@@ -139,12 +140,12 @@ void lmToolBox::CreateControls()
 
     //line
 	wxStaticLine* pLine1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-	pMainSizer->Add( pLine1, 0, wxEXPAND|wxTOP, 3);
+	pMainSizer->Add( pLine1, 0, wxEXPAND|wxTOP, 2);
 
     //the tool page buttons selection area
 	wxPanel* pSelectPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxBORDER_RAISED|wxTAB_TRAVERSAL );
-    pSelectPanel->SetBackgroundColour(m_colors.Normal());
+                                        wxBORDER_NONE|wxTAB_TRAVERSAL );
+    pSelectPanel->SetBackgroundColour(m_colors.Bright());
 
 	wxBoxSizer* pSelectSizer = new wxBoxSizer( wxVERTICAL );
 
@@ -175,6 +176,10 @@ void lmToolBox::CreateControls()
 	pSelectSizer->Fit( pSelectPanel );
 	pMainSizer->Add( pSelectPanel, 0, 0, SPACING );
 
+    //line
+	wxStaticLine* pLine2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	pMainSizer->Add( pLine2, 0, wxEXPAND, 0);
+
     //the pages
 	m_pPageSizer = new wxBoxSizer( wxVERTICAL );
 
@@ -189,6 +194,7 @@ void lmToolBox::CreateControls()
 
 	SetSizer( pMainSizer );
     pMainSizer->SetSizeHints(this);
+
 	Layout();
 }
 
@@ -438,6 +444,14 @@ lmEToolID lmToolBox::GetCurrentToolID()
 { 
     return GetSelectedPage()->GetCurrentToolID();
 }
+
+void lmToolBox::OnEraseBackground(wxEraseEvent& event)
+{
+    //wxDC* pDC = event.GetDC();
+    //pDC->SetBrush(*wxRED_BRUSH);
+    //pDC->DrawRectangle(this->GetRect());
+}
+
 
 
 //--------------------------------------------------------------------------------

@@ -406,7 +406,7 @@ private:
     wxColour        m_colorBg;			//colour for background
 
     //mouse mode
-    int             m_nMouseMode;
+    lmEMouseMode    m_nMouseMode;
 
     //mouse cursors
     std::vector<wxCursor*>  m_MouseCursors;             //array. Indexes are enum lmEMouseCursor

@@ -2089,7 +2089,14 @@ void lmScoreCanvas::UpdateSelectedToolInfo()
     m_nPageID = m_pToolBox->GetCurrentPageID();
     m_nGroupID = m_pToolBox->GetCurrentGroupID();
     m_nToolID = m_pToolBox->GetCurrentToolID();
-	m_nMouseMode = m_pToolBox->GetMouseMode();
+
+    //get mouse mode and, if changed, reconfigure toolbox for new mouse mode
+    lmEMouseMode nNewMouseMode = (lmEMouseMode)m_pToolBox->GetMouseMode();
+	if (nNewMouseMode != m_nMouseMode)
+    {
+        m_nMouseMode = nNewMouseMode;
+        //m_pToolBox->GetSelectedPage()->ReconfigureForMouseMode(m_nMouseMode);
+    }
 
     //get values for current page
     UpdateToolBoxValues();

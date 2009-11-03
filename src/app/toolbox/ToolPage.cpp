@@ -48,6 +48,9 @@
 #define lmPANEL_WIDTH 150
 
 
+BEGIN_EVENT_TABLE(lmToolPage, wxPanel)
+    //EVT_PAINT(lmToolPage::OnPaintEvent)
+END_EVENT_TABLE()
 
 IMPLEMENT_ABSTRACT_CLASS(lmToolPage, wxPanel)
 
@@ -64,7 +67,7 @@ lmToolPage::lmToolPage(wxWindow* parent, lmEToolPageID nPageID)
 void lmToolPage::CreatePage(wxWindow* parent, lmEToolPageID nPageID)
 {
     //base class
-    wxPanel::Create(parent, -1, wxDefaultPosition, wxSize(lmPANEL_WIDTH, -1),
+    wxPanel::Create(parent, -1, wxPoint(0,0), wxDefaultSize,    //wxDefaultPosition, wxSize(-1, -1),  //lmPANEL_WIDTH, -1),
                     wxBORDER_NONE|wxTAB_TRAVERSAL);
 
 	//main sizer
@@ -129,4 +132,29 @@ void lmToolPage::AddGroup(lmToolGroup* pGroup)
 {
     m_Groups.push_back(pGroup);
 }
+
+void lmToolPage::OnPaintEvent(wxPaintEvent & event)
+{
+    wxPaintDC dc(this);
+    dc.SetBrush(*wxRED_BRUSH);
+    wxRect rect;
+    GetClientSize(&rect.width, &rect.height);
+    dc.DrawRectangle(rect);
+}
+
+void lmToolPage::ReconfigureForMouseMode(lmEMouseMode nMode)
+{
+    //Enable/disable each group in this page, depending on its usability for
+    //currently selected mouse mode
+
+    if (nMode == lmMM_UNDEFINED)
+        return;
+
+    //std::list<lmToolGroup*>::iterator it;
+    //for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
+    //{
+    //    (*it)->EnableForMouseMode(nMode);
+    //}
+}
+
 

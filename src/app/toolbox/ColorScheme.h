@@ -25,6 +25,39 @@
 #pragma interface "ColorScheme.cpp"
 #endif
 
+enum lmEColours
+{
+    //ToolGroup
+    lmCOLOUR_GROUP_BORDER_ACTIVE = 0,
+    lmCOLOUR_GROUP_BORDER_INACTIVE,
+    lmCOLOUR_GROUP_TITLE_ACTIVE,
+    lmCOLOUR_GROUP_TITLE_INACTIVE,
+    lmCOLOUR_GROUP_BACKGROUND_SELECTED,
+    lmCOLOUR_GROUP_BACKGROUND_NORMAL,
+};
+
+enum lmEPens
+{
+    //ToolGroup
+    lmPEN_GROUP_BORDER_ACTIVE = 0,
+    lmPEN_GROUP_BORDER_INACTIVE,
+    lmPEN_GROUP_TITLE_ACTIVE,
+    lmPEN_GROUP_TITLE_INACTIVE,
+    lmPEN_GROUP_BACKGROUND_SELECTED,
+    lmPEN_GROUP_BACKGROUND_NORMAL,
+};
+
+enum lmEBrushes
+{
+    //ToolGroup
+    lmBRUSH_GROUP_BORDER_ACTIVE = 0,
+    lmBRUSH_GROUP_BORDER_INACTIVE,
+    lmBRUSH_GROUP_TITLE_ACTIVE,
+    lmBRUSH_GROUP_TITLE_INACTIVE,
+    lmBRUSH_GROUP_BACKGROUND_SELECTED,
+    lmBRUSH_GROUP_BACKGROUND_NORMAL,
+};
+
 
 class lmColorScheme
 {
@@ -45,14 +78,22 @@ public:
 	inline wxColour Bright() { return m_bright; }
 	inline wxColour PrettyBright() { return m_prettyBright; }
 
+    wxColour GetColour(lmEColours iColor);
+    wxPen& GetPen(lmEPens iPen);
+    wxBrush& GetBrush(lmEBrushes iBrush);
+
+    //Utilities
+    static wxColour ChangeLuminance(wxColour C, float luminance);
+	static wxColour ChangeSaturation(wxColour C, float saturation);
+	static wxColour ChangeValue(wxColour C, float value);
+	static void RGB_To_HSL(wxColour C, float& H, float& S, float& L);
+	static wxColour HSL_To_RGB(float H, float S, float L);
+	static void RGB_To_HSV(wxColour C, float& H, float& S, float& V);
+	static wxColour HSV_To_RGB(float H, float S, float V);
+    static wxColour DarkenColour(const wxColour& c, float rPercentage);
+    static wxColour LightenColour(const wxColour& c, float rPercentage);
+
 private:
-	wxColour ChangeLuminance(wxColour C, float luminance);
-	wxColour ChangeSaturation(wxColour C, float saturation);
-	wxColour ChangeValue(wxColour C, float value);
-	void RGB_To_HSL(wxColour C, float& H, float& S, float& L);
-	wxColour HSL_To_RGB(float H, float S, float L);
-	void RGB_To_HSV(wxColour C, float& H, float& S, float& V);
-	wxColour HSV_To_RGB(float H, float S, float V);
 
 	//the colors that form the scheme
 	wxColour			m_prettyDark;
@@ -63,7 +104,18 @@ private:
 	wxColour			m_bright;
 	wxColour			m_prettyBright;
 
+    //colours
+    wxPen       m_GroupBorderActivePen;
+    wxPen       m_GroupBorderInactivePen;
+    wxColour    m_GroupTitleActive;
+    wxColour    m_GroupTitleInactive;
+    wxBrush     m_GroupBackgroundSelectedBrush;
+    wxBrush     m_GroupBackgroundNormalBrush;
+    //wxFont m_caption_font;
+    //int m_border_size;
 };
+
+
 
 #endif	// __LM_COLORSCHEME_H__
 

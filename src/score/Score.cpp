@@ -516,6 +516,15 @@ long lmScore::AssignID(lmScoreObj* pSO)
         else
             pSO->SetID(++m_nCounterID);
     }
+    //check if ID already exists
+    if (m_ScoreObjs.find(m_nCounterID) != m_ScoreObjs.end())
+    {
+        g_pLogger->LogForensic(
+            wxString::Format(_T("Duplicated ID (%d)"), m_nCounterID) );
+        wxMessageBox(_T("Carlos, por favor toma nota detallada de todo lo que has \n")
+                     _T("hecho en esta partitura (añadir, borrar, etc.), no sigas \n")
+                     _T("editando y mándame el forensic_log. Gracias."));
+    }
     m_ScoreObjs[m_nCounterID] = pSO;
     return m_nCounterID;
 }
