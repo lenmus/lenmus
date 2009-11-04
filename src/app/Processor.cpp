@@ -335,8 +335,8 @@ lmHarmonyProcessor::lmHarmonyProcessor()
     : lmScoreProcessor()
 {
   pBoxSize = new wxSize(400, 60);
-  pErrorBoxSize = new wxSize(580, 80);  //@@@@TODO REMOVE: antes (510, 60) (550, 60) (560, 60)...
-  pBigErrorBoxSize = new wxSize(580, 120); // todo: Provisional. Do the delete like pErrorBoxSize
+  pErrorBoxSize = new wxSize(580, 80); 
+  pBigErrorBoxSize = new wxSize(580, 120);
 
   tFont.sFontName = _("Comic Sans MS");
   tFont.nFontSize = 6;
@@ -582,7 +582,15 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
     {
        wxString sOkMsg = _T(" Harmony is OK.");
        wxLogMessage( sOkMsg );
-       pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
+       if (nHarmonyExerciseChordsToCheck && nHarmonyExcerciseType == 3)
+       {
+           // In exercise 3 we just check the figured bass of automatically generated chords
+           //  therefore there is no need to say that the chords are correct
+       }
+       else
+       {
+            pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
+       }
        fScoreModified = true; // repaint
     }
 
@@ -744,7 +752,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                             wxLogMessage(_T(" Error: %s"), sMsg.c_str() );
                         }
                     }
-               }
+                }
                 // Check: the chord
                 //  todo: this check might be removed
                 //        idea: If the chords are not "equivalent" then 'something iw wrong'
@@ -856,6 +864,12 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
             }
             // pHE_UserFiguredBass: is a copy; do not delete
             // pHE_Notes: is a copy; do not delete
+        }
+
+        for (int i = 0; i <nNumChords; i++)
+        {
+            delete tChordDescriptor[i];
+            tChordDescriptor[i] = 0;
         }
 
         nHarmonyExerciseChordsToCheck = 0;
