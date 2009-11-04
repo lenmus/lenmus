@@ -615,6 +615,7 @@ END_EVENT_TABLE()
 
 lmGrpTieTuplet::lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent, pParent->GetColors())
+        , m_nSelectedToolID(lmTOOL_NONE)
 {
 }
 
@@ -654,11 +655,13 @@ void lmGrpTieTuplet::CreateGroupControls(wxBoxSizer* pMainSizer)
 
 void lmGrpTieTuplet::OnTieButton(wxCommandEvent& event)
 {
+    m_nSelectedToolID = lmTOOL_NOTE_TIE;
     PostToolBoxEvent(lmTOOL_NOTE_TIE, event.IsChecked());
 }
 
 void lmGrpTieTuplet::OnTupletButton(wxCommandEvent& event)
 {
+    m_nSelectedToolID = lmTOOL_NOTE_TUPLET;
     PostToolBoxEvent(lmTOOL_NOTE_TUPLET, event.IsChecked());
 }
 
@@ -726,6 +729,7 @@ END_EVENT_TABLE()
 
 lmGrpBeams::lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent, pParent->GetColors())
+        , m_nSelectedToolID(lmTOOL_NONE)
 {
 }
 
@@ -787,17 +791,16 @@ void lmGrpBeams::CreateGroupControls(wxBoxSizer* pMainSizer)
 
 void lmGrpBeams::OnButton(wxCommandEvent& event)
 {
-    lmEToolID nToolID;
     switch(event.GetId())
     {
-        case lmID_BT_Beam_Cut:          nToolID = lmTOOL_BEAMS_CUT;         break;
-        case lmID_BT_Beam_Join:         nToolID = lmTOOL_BEAMS_JOIN;        break;
-        case lmID_BT_Beam_Flatten:      nToolID = lmTOOL_BEAMS_FLATTEN;     break;
-        case lmID_BT_Beam_Subgroup:     nToolID = lmTOOL_BEAMS_SUBGROUP;    break;
+        case lmID_BT_Beam_Cut:      m_nSelectedToolID = lmTOOL_BEAMS_CUT;         break;
+        case lmID_BT_Beam_Join:     m_nSelectedToolID = lmTOOL_BEAMS_JOIN;        break;
+        case lmID_BT_Beam_Flatten:  m_nSelectedToolID = lmTOOL_BEAMS_FLATTEN;     break;
+        case lmID_BT_Beam_Subgroup: m_nSelectedToolID = lmTOOL_BEAMS_SUBGROUP;    break;
         default:
             wxASSERT(false);
     }
-    PostToolBoxEvent(nToolID, event.IsChecked());
+    PostToolBoxEvent(m_nSelectedToolID, event.IsChecked());
 }
 
 void lmGrpBeams::EnableTool(lmEToolID nToolID, bool fEnabled)
@@ -884,6 +887,11 @@ void lmToolPageNotesStd::CreateGroups()
     AddGroup(m_pGrpBeams);
 
 	CreateLayout();
+
+    //initialize info about selected group/tool
+    m_nCurGroupID = lmGRP_NoteRest;
+    m_nCurToolID = m_pGrpNoteRest->GetCurrentToolID();
+
     m_fGroupsCreated = true;
 }
 
@@ -940,6 +948,11 @@ void lmToolPageNotesHarmony::CreateGroups()
     AddGroup(m_pGrpBeams);
 
 	CreateLayout();
+
+    //initialize info about selected group/tool
+    m_nCurGroupID = lmGRP_NoteRest;
+    m_nCurToolID = m_pGrpNoteRest->GetCurrentToolID();
+
     m_fGroupsCreated = true;
 }
 

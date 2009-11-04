@@ -529,6 +529,14 @@ long lmScore::AssignID(lmScoreObj* pSO)
     return m_nCounterID;
 }
 
+void lmScore::UpdateCounterID(long nValue) 
+{
+    //Updates the CounterID, with the gratest value: the current value or the
+    //received as parameter
+
+    m_nCounterID = wxMax(nValue, m_nCounterID);
+}
+
 void lmScore::OnObjectRemoved(long nID)
 {
     m_ScoreObjs[nID] = (lmScoreObj*)NULL;

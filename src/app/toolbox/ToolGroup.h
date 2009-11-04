@@ -95,7 +95,8 @@ enum lmEToolID
 class lmToolGroup : public wxPanel
 {    
 public:
-    lmToolGroup(wxPanel* pParent, lmColorScheme* pColours);
+    lmToolGroup(wxPanel* pParent, lmColorScheme* pColours,
+                int nValidMouseModes = 0xFFFF);
     virtual ~lmToolGroup();
 
     //creation
@@ -122,8 +123,9 @@ public:
 
     //identification
     virtual lmEToolGroupID GetToolGroupID()=0;
+    virtual lmEToolID GetCurrentToolID()=0;
+
     //virtual int GetNumTools();
-    //virtual lmEToolID GetToolID(int nTool);
 
 	//info
 	int GetGroupWitdh();
@@ -142,7 +144,7 @@ protected:
     lmColorScheme*  m_pColours;
     bool            m_fMousePressedDown;
     bool            m_fSelected;        //this group is the selected one
-    bool            m_fPointerMode;     //enable this group in mouse pointer mode
+    int             m_nValidMouseModes;  //to enable this group in valid modes
     wxString        m_sTitle;           //group title
 
     DECLARE_EVENT_TABLE()
@@ -155,11 +157,15 @@ public:
     lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
                        wxBoxSizer* pMainSizer, int nFirstButtonEventID,
                        lmEToolID nFirstButtonToolID,
-                       lmColorScheme* pColours = (lmColorScheme*)NULL);
+                       lmColorScheme* pColours = (lmColorScheme*)NULL,
+                       int nValidMouseModes = 0xFFFF);
     ~lmToolButtonsGroup();
 
     //event handlers
     void OnButton(wxCommandEvent& event);
+
+    //implement virtual methods
+    virtual lmEToolID GetCurrentToolID() { return GetSelectedToolID(); }
 
 	//buttons
     inline int GetSelectedButton() { return m_nSelButton; }

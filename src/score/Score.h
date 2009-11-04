@@ -359,7 +359,7 @@ public:
     // owned ScoreObjs management
     long AssignID(lmScoreObj* pSO);
     void OnObjectRemoved(long nID);
-    inline void SetCounterID(long nValue) { m_nCounterID = nValue; }
+    void UpdateCounterID(long nValue);
     lmScoreObj* GetScoreObj(long nID);
 
     // Debug methods. If filename provided writes also to file
@@ -410,6 +410,7 @@ public:
     inline void SetReadOnly(bool fValue) { m_fReadOnly = fValue; }
     inline void SetUndoMode() { m_fUndoMode = true; }
     inline void ResetUndoMode() { m_fUndoMode = false; }
+    inline bool IsInUndoMode() { return m_fUndoMode; }
 
 
     // methods related to MusicXML import/export

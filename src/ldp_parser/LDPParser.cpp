@@ -87,18 +87,19 @@ public:
 
 lmLDPParser::lmLDPParser()
 {
-    Create(_T("en"), _T("utf-8"));     //default tags in English
+    CreateParser(_T("en"), _T("utf-8"));     //default tags in English
 }
 
 lmLDPParser::lmLDPParser(wxString sLanguage, wxString sCharset)
 {
-    Create(sLanguage, sCharset);
+    CreateParser(sLanguage, sCharset);
 }
 
-void lmLDPParser::Create(const wxString& sLanguage, const wxString& sCharset)
+void lmLDPParser::CreateParser(const wxString& sLanguage, const wxString& sCharset)
 {
     m_pTokenizer = new lmLDPTokenBuilder(this);
     m_nNumLine = 0;
+    m_nMaxID = 0L;
     m_pCurNode = (lmLDPNode*) NULL;
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmLDPParser"));
     m_pTuplet = (lmTupletBracket*)NULL;
@@ -166,6 +167,12 @@ void lmLDPParser::Clear()
     m_pCurNode = (lmLDPNode*) NULL;
 }
 
+long lmLDPParser::GetNodeID(lmLDPNode* pNode)
+{
+    long nID = pNode->GetID();
+    m_nMaxID = wxMax(m_nMaxID, nID);
+    return nID;
+}
 
 lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 {
@@ -534,7 +541,7 @@ void lmLDPParser::Do_ProcessingParameter()
             else
             {
                 //Filter out this element if its ID is in the ignore list
-                long nID = pParm->GetID();
+                long nID = GetNodeID(pParm);
                 if (!(m_pIgnoreSet
                       && nID != lmNEW_ID
                       && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() ))
@@ -789,6 +796,10 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     if (m_fCursorData)
         m_pScore->SetState(m_nCursorInstr, m_nCursorStaff, m_rCursorTime, m_pCursorSO);
 
+    //update ScoreObjs ID counter if in Undo mode
+    if (m_pScore->IsInUndoMode())
+        m_pScore->UpdateCounterID(m_nMaxID);
+
     return m_pScore;
 }
 
@@ -843,13 +854,13 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
         }
         else if (pX->GetName() == _T("name") )
         {
-            nNameID = pX->GetID();
+            nNameID = GetNodeID(pX);
             AnalyzeTextString(pX, &sGrpName, &sNameStyle, &nNameAlign, &tNamePos,
                                 &tNameFont);
         }
         else if (pX->GetName() == _T("abbrev") )
         {
-            nAbbrevID = pX->GetID();
+            nAbbrevID = GetNodeID(pX);
             AnalyzeTextString(pX, &sGrpAbbrev, &sAbbrevStyle, &nAbbrevAlign,
                                 &tAbbrevPos, &tAbbrevFont);
         }
@@ -912,7 +923,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //<Voice> = (MusicData <music>+ )
 
     wxASSERT( pNode->GetName() == _T("instrument") );
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //default values
 	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
@@ -962,7 +973,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             fMusicFound = true;
             if (nVStaffID != pX->GetID())
             {
-                nVStaffID = pX->GetID();
+                nVStaffID = GetNodeID(pX);
                 AnalysisError(pX, _T("Program error: incoherent ID for VStaff. nID=%d, nVStaffID=%d."),
                               nID, nVStaffID );
             }
@@ -970,7 +981,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         }
         else if (pX->GetName() == _T("name") )
         {
-            nNameID = pX->GetID();
+            nNameID = GetNodeID(pX);
             AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign,
                                 &tNamePos, &tNameFont);
 
@@ -999,7 +1010,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         }
         else if (pX->GetName() == _T("abbrev") )
 		{
-            nAbbrevID = pX->GetID();
+            nAbbrevID = GetNodeID(pX);
             AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
                                 &tAbbrevPos, &tAbbrevFont);
 
@@ -1342,7 +1353,7 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
         pTieInfo->tBezier[i] = lmTPoint(0.0f, 0.0f);
 
     //get tie ID
-    pTieInfo->nTieID = pNode->GetID();
+    pTieInfo->nTieID = GetNodeID(pNode);
 
     //get tie number
     wxString sNum = pNode->GetParameter(1)->GetName();
@@ -1402,7 +1413,7 @@ lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
     lmBeamInfo* pBeamInfo = new lmBeamInfo;
 
     //get beam ID
-    pBeamInfo->nBeamID = pNode->GetID();
+    pBeamInfo->nBeamID = GetNodeID(pNode);
 
     //get beam number
     wxString sNum = pNode->GetParameter(1)->GetName();
@@ -1720,7 +1731,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
 
     wxString sElmName = pNode->GetName();       //for error messages
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
     wxASSERT(sElmName.Left(1) == _T("n") ||
              sElmName.Left(1) == _T("r") ||
              sElmName == _T("na") );
@@ -2084,7 +2095,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
             else if (sData == _T("fermata"))        //fermata attributes
             {
-                nFermataID = pX->GetID();
+                nFermataID = GetNodeID(pX);
                 fFermata = true;
                 nFermataPlacement = AnalyzeFermata(pX, pVStaff, &tFermataPos);
             }
@@ -2585,7 +2596,7 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("figuredBass"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check number of params.
     int nNumParms = pNode->GetNumParms();
@@ -2638,7 +2649,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     //              "startRepetition" | "endRepetition" | "doubleRepetition" }
 
     wxString sElmName = pNode->GetName();
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
     wxASSERT(sElmName == _T("barline"));
 
     //check that bar type is specified
@@ -2697,7 +2708,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     //                [<numStaff>] [<Visible>] )
 
     wxString sElmName = pNode->GetName();
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
     wxASSERT(sElmName == _T("clef"));
 
     //check that clef type is specified
@@ -2751,7 +2762,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("metronome"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that at least one parameter is specified
     int nNumParms = pNode->GetNumParms();
@@ -3009,7 +3020,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     //  (title <alignment> string [<font>][<location>])
 
     wxASSERT(pNode->GetName() == _T("title"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that at least two parameters (aligment and text string) are specified
     if(pNode->GetNumParms() < 2) {
@@ -3567,7 +3578,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
     // <text> = (text string <location>[<font><alingment>])
 
     wxASSERT(pNode->GetName() == _T("text"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that at least two parameters (location and text string) are specified
     if(pNode->GetNumParms() < 2) {
@@ -3629,7 +3640,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("key"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that key value is specified
     if(pNode->GetNumParms() < 1) {
@@ -3676,7 +3687,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("time"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {
@@ -3726,7 +3737,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
     // <spacer> = (spacer <width>[<numStaff>])     width in tenths
 
     wxString sElmName = pNode->GetName();
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that the width is specified
     if(pNode->GetNumParms() < 1)
@@ -3790,7 +3801,7 @@ void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("staff"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that the staff number is specified
     if(pNode->GetNumParms() < 1)
@@ -3880,7 +3891,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxString sElmName = pNode->GetName();
     int nNumParms = pNode->GetNumParms();
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check that type is specified
     if(nNumParms < 2)
@@ -3959,7 +3970,7 @@ void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
 
     wxString sElmName = pNode->GetName();
     int nNumParms = pNode->GetNumParms();
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check number of params.
     if(nNumParms < 4)
@@ -4018,7 +4029,7 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("textbox"));
     int nNumParms = pNode->GetNumParms();
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //parameters and their default values
         //box
@@ -4316,7 +4327,7 @@ bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
     //<newSystem> ::= (newSystem}
 
     wxASSERT(pNode->GetName() == _T("newSystem"));
-    long nID = pNode->GetID();
+    long nID = GetNodeID(pNode);
 
     //check if there are parameters
     if(pNode->GetNumParms() >= 1) {

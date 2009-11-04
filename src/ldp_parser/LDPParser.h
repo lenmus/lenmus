@@ -137,7 +137,7 @@ protected:
         A5_ExitError
     };
 
-    void        Create(const wxString& sLanguage, const wxString& sCharset);
+    void        CreateParser(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
     void        AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
                                   lmELineStyle* pLineStyle, lmELineCap* pEndStyle,
@@ -197,6 +197,8 @@ protected:
     void ParseError(EParsingStates nState, lmLDPToken* pTk);
     lmScore* CreateScore(lmLDPNode* pRoot, bool fShowErrorLog = true);
 
+    long GetNodeID(lmLDPNode* pNode);
+
 
 
     // variables to store temporary values as the file is being analized.
@@ -207,6 +209,7 @@ protected:
 	lmNoteRest*			m_pLastNoteRest;	//last rest or note not in chord or base of chord
 
     long                m_nNumLine;         //number of line read
+    long                m_nMaxID;           //maximun ID found
 
     lmLDPTokenBuilder*  m_pTokenizer;       //ptr to token builder object
     lmLDPToken*         m_pTk;              //current token

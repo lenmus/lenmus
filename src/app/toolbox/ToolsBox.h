@@ -50,25 +50,20 @@ enum lmEToolPageID
 	lmPAGE_NOTES,
 	lmPAGE_BARLINES,
     lmPAGE_SYMBOLS,
-    //TO_ADD: Add, before this line, a new lmPAGE_XXXXX code for the new tool
-	lmPAGE_MAX,		//this MUST BE the last one
-    //not used yet
-	lmPAGE_SELECTION,
-	lmPAGE_KEY_SIGN,
-	lmPAGE_TIME_SIGN,
+    //TO_ADD: Add, before this line, a new lmPAGE_XXXXX code for the new page
+	lmPAGE_MAX,		//this one MUST BE the last one
 };
 
 //--------------------------------------------------------------------------------
 // Group for mouse mode
 //--------------------------------------------------------------------------------
 
-//AWARE: enum values must correspond to buttons in lmGrpMouseMode
-enum lmEMouseMode
-{
-    lmMM_UNDEFINED = -1,
-    lmMM_POINTER,
-    lmMM_DATA_ENTRY,
-};
+//values for mouse modes
+#define lmMM_UNDEFINED      0x0000
+#define lmMM_POINTER        0x0001
+#define lmMM_DATA_ENTRY     0x0002
+#define lmMM_ALL            (lmMM_POINTER | lmMM_DATA_ENTRY)
+
 
 class lmGrpMouseMode : public lmToolButtonsGroup
 {
@@ -81,8 +76,8 @@ public:
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_MouseMode; }
 
 	//access to options
-	inline int GetMouseMode() { return m_nSelButton; }
-	inline void SetMouseMode(int nMouseMode) { SelectButton(nMouseMode); }
+	int GetMouseMode();
+	void SetMouseMode(int nMouseMode);
 
 };
 

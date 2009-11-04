@@ -41,11 +41,12 @@ class wxListBox;
 class lmGrpBarlines: public lmToolGroup
 {
 public:
-    lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~lmGrpBarlines() {}
 
     //implement virtual methods
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_BarlineType; }
+    inline lmEToolID GetCurrentToolID() { return (lmEToolID)m_pBarlinesList->GetSelection(); }
 
 	//event handlers
     void OnAddBarline(wxCommandEvent& event);

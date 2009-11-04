@@ -45,15 +45,16 @@ class wxListBox;
 class lmGrpClefType: public lmToolGroup
 {
 public:
-    lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~lmGrpClefType() {}
 
     //implement virtual methods
     void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_ClefType; }
+    inline lmEToolID GetCurrentToolID() { return (lmEToolID)m_pClefList->GetSelection(); }
 
 	//access to selected clef
-	lmEClefType GetSelectedClef();
+	inline lmEClefType GetSelectedClef() { return (lmEClefType)m_pClefList->GetSelection(); }
 
 #if lmUSE_CLEF_COMBO
 
@@ -78,11 +79,12 @@ private:
 class lmGrpTimeType: public lmToolGroup
 {
 public:
-    lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~lmGrpTimeType() {}
 
     //implement virtual methods
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_TimeType; }
+    inline lmEToolID GetCurrentToolID() { return (lmEToolID)m_nSelButton; }
 
 	void OnButton(wxCommandEvent& event);
 
@@ -120,11 +122,12 @@ private:
 class lmGrpKeyType: public lmToolGroup
 {
 public:
-    lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~lmGrpKeyType() {}
 
     //implement virtual methods
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_KeyType; }
+    inline lmEToolID GetCurrentToolID() { return (lmEToolID)m_pKeyList->GetSelection(); }
 
     void OnKeyType(wxCommandEvent& event);
     void OnKeyList(wxCommandEvent& event);

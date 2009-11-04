@@ -47,7 +47,7 @@ lmToolButtonData;
 class lmGrpSymbols: public lmToolButtonsGroup
 {
 public:
-    lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~lmGrpSymbols() {}
 
     //implement virtual methods

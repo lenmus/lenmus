@@ -251,14 +251,8 @@ void lmToolBox::SetConfiguration(lmToolBoxConfiguration* pConfig)
 lmToolPage* lmToolBox::CreatePage(lmEToolPageID nPanel)
 {
     switch(nPanel) {
-		case lmPAGE_SELECTION:
-            return (lmToolPage*)NULL;
         case lmPAGE_CLEFS:
             return new lmToolPageClefs(this);
-		case lmPAGE_KEY_SIGN:
-            return (lmToolPage*)NULL;
-		case lmPAGE_TIME_SIGN:
-            return (lmToolPage*)NULL;
         case lmPAGE_NOTES:
         {
             lmToolPageNotes* pPage = new lmToolPageNotesStd(this);
@@ -494,7 +488,27 @@ void lmGrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     this->Layout();
 
-	SelectButton(0);	//set selection tool mode
+	SetMouseMode(lmMM_POINTER);	    //select pointer tool mode
 }
 
+int lmGrpMouseMode::GetMouseMode() 
+{ 
+    switch(m_nSelButton)
+    {
+        case 0:     return lmMM_POINTER;
+        case 1:     return lmMM_DATA_ENTRY;
+        default:    return lmMM_UNDEFINED;
+    }
+}
+
+void lmGrpMouseMode::SetMouseMode(int nMouseMode) 
+{ 
+    switch(nMouseMode)
+    {
+        case lmMM_POINTER:      SelectButton(0);    break;
+        case lmMM_DATA_ENTRY:   SelectButton(1);    break;
+        default:
+            wxASSERT(false);
+    }
+}
 

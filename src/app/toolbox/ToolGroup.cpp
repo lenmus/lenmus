@@ -65,12 +65,13 @@ BEGIN_EVENT_TABLE(lmToolGroup, wxPanel)
     EVT_PAINT(lmToolGroup::OnPaintEvent)
 END_EVENT_TABLE()
 
-lmToolGroup::lmToolGroup(wxPanel* pParent, lmColorScheme* pColours)
+lmToolGroup::lmToolGroup(wxPanel* pParent, lmColorScheme* pColours,
+                         int nValidMouseModes)
 	: wxPanel(pParent, wxID_ANY, wxDefaultPosition, lmTOOLGROUP_SIZE)
     , m_pParent(pParent)
     , m_pColours(pColours)
     , m_fSelected(true)
-    , m_fPointerMode(false)
+    , m_nValidMouseModes(nValidMouseModes)
 {
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
@@ -338,10 +339,7 @@ void lmToolGroup::EnableForMouseMode(int nMode)
 {
     //Enable/disable this group, depending on its usability for specified mouse mode
 
-    if (nMode == lmMM_POINTER)
-        EnableGroup(m_fPointerMode);
-    else
-        EnableGroup(true);
+    EnableGroup((m_nValidMouseModes & nMode) != 0);
 }
 
 
@@ -355,8 +353,9 @@ void lmToolGroup::EnableForMouseMode(int nMode)
 lmToolButtonsGroup::lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
                                        wxBoxSizer* pMainSizer, int nFirstButtonEventID,
                                        lmEToolID nFirstButtonToolID,
-                                       lmColorScheme* pColours)
-	: lmToolGroup(pParent, pColours)
+                                       lmColorScheme* pColours,
+                                       int nValidMouseModes)
+	: lmToolGroup(pParent, pColours, nValidMouseModes)
 	, m_nSelButton(-1)	            //none selected
     , m_nFirstButtonEventID(nFirstButtonEventID)
     , m_nFirstButtonToolID((int)nFirstButtonToolID)

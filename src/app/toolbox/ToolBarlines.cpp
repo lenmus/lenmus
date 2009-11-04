@@ -109,10 +109,15 @@ void lmToolPageBarlines::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpBarlines = new lmGrpBarlines(this, pMainSizer);
+    m_pGrpBarlines = new lmGrpBarlines(this, pMainSizer, lmMM_DATA_ENTRY);
     AddGroup(m_pGrpBarlines);
     
 	CreateLayout();
+
+    //initialize info about selected group/tool
+    m_nCurGroupID = lmGRP_BarlineType;
+    m_nCurToolID = m_pGrpBarlines->GetCurrentToolID();
+
     m_fGroupsCreated = true;
 }
 
@@ -157,8 +162,9 @@ END_EVENT_TABLE()
 static lmBarlinesDBEntry m_tBarlinesDB[lm_eMaxBarline+1];
 
 
-lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent, pParent->GetColors())
+lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer,
+                             int nValidMouseModes)
+        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
 {
     //To avoid having to translate again barline names, we are going to load them
     //by using global function GetBarlineName()

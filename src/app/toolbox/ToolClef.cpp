@@ -123,22 +123,22 @@ void lmToolPageClefs::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpClefType = new lmGrpClefType(this, pMainSizer);
-    m_pGrpTimeType = new lmGrpTimeType(this, pMainSizer);
-    m_pGrpKeyType = new lmGrpKeyType(this, pMainSizer);
+    m_pGrpClefType = new lmGrpClefType(this, pMainSizer, lmMM_DATA_ENTRY);
+    m_pGrpTimeType = new lmGrpTimeType(this, pMainSizer, lmMM_DATA_ENTRY);
+    m_pGrpKeyType = new lmGrpKeyType(this, pMainSizer, lmMM_DATA_ENTRY);
     AddGroup(m_pGrpClefType);
     AddGroup(m_pGrpKeyType);
     AddGroup(m_pGrpTimeType);
     
-	CreateLayout();
-
     //Select clef group
     m_pGrpClefType->SetSelected(true);
     m_pGrpTimeType->SetSelected(false);
     m_pGrpKeyType->SetSelected(false);
-    this->Refresh();
+	CreateLayout();
+
+    //initialize info about selected group/tool
     m_nCurGroupID = lmGRP_ClefType;
-    m_nCurToolID = lmTOOL_NONE;
+    m_nCurToolID = m_pGrpClefType->GetCurrentToolID();
 
     m_fGroupsCreated = true;
 }
@@ -243,8 +243,9 @@ BEGIN_EVENT_TABLE(lmGrpClefType, lmToolGroup)
     EVT_COMBOBOX    (lmID_CLEF_LIST, lmGrpClefType::OnClefList)
 END_EVENT_TABLE()
 
-lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent, pParent->GetColors())
+lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
+                             int nValidMouseModes)
+        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
 {
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -311,11 +312,6 @@ void lmGrpClefType::LoadClefList()
                                                        m_tClefs[i].nClefType) );
     }
     m_pClefList->SetSelection(0);
-}
-
-lmEClefType lmGrpClefType::GetSelectedClef()
-{
-    return (lmEClefType)m_pClefList->GetSelection();
 }
 
 
@@ -415,8 +411,9 @@ static const lmGrpTimeType::lmButton m_tButtons[] = {
     { _T("time_4_8"), 4, 8 },
 };
 
-lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent, pParent->GetColors())
+lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
+                             int nValidMouseModes)
+        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
         , m_nSelButton(-1)  //none selected
 {
     wxASSERT(sizeof(m_tButtons) / sizeof(lmButton) == lm_NUM_BUTTONS);
@@ -492,8 +489,9 @@ static lmGrpKeyType::lmKeysData m_tMajorKeys[lmMAX_MAJOR_KEYS];
 static lmGrpKeyType::lmKeysData m_tMinorKeys[lmMAX_MINOR_KEYS];
 
 
-lmGrpKeyType::lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent, pParent->GetColors())
+lmGrpKeyType::lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
+                           int nValidMouseModes)
+        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
 {
     //To avoid having to translate again key signature names, we are going to load them
     //by using global function GetKeySignatureName()

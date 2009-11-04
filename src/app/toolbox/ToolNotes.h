@@ -203,6 +203,7 @@ public:
     //implement virtual methods
     void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_TieTuplet; }
+    inline lmEToolID GetCurrentToolID() { return m_nSelectedToolID; }
 
     //event handlers
     void OnTieButton(wxCommandEvent& event);
@@ -219,6 +220,7 @@ protected:
 
     lmCheckButton*      m_pBtnTie;
     lmCheckButton*      m_pBtnTuplet;
+    lmEToolID           m_nSelectedToolID;      //clicked tool
 
     DECLARE_EVENT_TABLE()
 };
@@ -236,6 +238,7 @@ public:
     //implement virtual methods
     void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Beams; }
+    inline lmEToolID GetCurrentToolID() { return m_nSelectedToolID; }
 
     //event handlers
     void OnButton(wxCommandEvent& event);
@@ -246,10 +249,11 @@ public:
 protected:
     //void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
 
-    lmBitmapButton*      m_pBtnBeamCut;
-    lmBitmapButton*      m_pBtnBeamJoin;
-    lmBitmapButton*      m_pBtnBeamFlatten;
-    lmBitmapButton*      m_pBtnBeamSubgroup;
+    lmBitmapButton*     m_pBtnBeamCut;
+    lmBitmapButton*     m_pBtnBeamJoin;
+    lmBitmapButton*     m_pBtnBeamFlatten;
+    lmBitmapButton*     m_pBtnBeamSubgroup;
+    lmEToolID           m_nSelectedToolID;      //clicked tool
 
     DECLARE_EVENT_TABLE()
 };

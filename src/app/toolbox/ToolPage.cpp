@@ -135,14 +135,31 @@ void lmToolPage::AddGroup(lmToolGroup* pGroup)
 
 void lmToolPage::OnPaintEvent(wxPaintEvent & event)
 {
+#if 0
     wxPaintDC dc(this);
-    dc.SetBrush(*wxRED_BRUSH);
     wxRect rect;
     GetClientSize(&rect.width, &rect.height);
-    dc.DrawRectangle(rect);
+
+    //dc.SetBrush(*wxRED_BRUSH);
+    //dc.DrawRectangle(rect);
+
+    int nWidth1 = 40;
+    wxRect rectBg = rect;
+    rectBg.SetWidth(nWidth1);
+    wxColour colorBg = GetColors()->GetColour(lmCOLOUR_GROUP_BACKGROUND_NORMAL);
+    wxColour colorLigth = lmColorScheme::LightenColour(colorBg, 0.4f);
+    wxColour colorDark = lmColorScheme::DarkenColour(colorBg, 0.15f);
+    dc.GradientFillLinear(rectBg, colorDark, colorLigth, wxEAST );
+
+    colorLigth = lmColorScheme::LightenColour(colorBg, 0.3f);
+    colorDark = lmColorScheme::DarkenColour(colorBg, 0.1f);
+    rectBg.SetWidth(rect.width - nWidth1);
+    rectBg.x = nWidth1;
+    dc.GradientFillLinear(rectBg, colorLigth, colorDark, wxEAST );
+#endif
 }
 
-void lmToolPage::ReconfigureForMouseMode(lmEMouseMode nMode)
+void lmToolPage::ReconfigureForMouseMode(int nMode)
 {
     //Enable/disable each group in this page, depending on its usability for
     //currently selected mouse mode
@@ -150,11 +167,11 @@ void lmToolPage::ReconfigureForMouseMode(lmEMouseMode nMode)
     if (nMode == lmMM_UNDEFINED)
         return;
 
-    //std::list<lmToolGroup*>::iterator it;
-    //for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
-    //{
-    //    (*it)->EnableForMouseMode(nMode);
-    //}
+    std::list<lmToolGroup*>::iterator it;
+    for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
+    {
+        (*it)->EnableForMouseMode(nMode);
+    }
 }
 
 

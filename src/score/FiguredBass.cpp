@@ -157,7 +157,7 @@ public:
     ~lmGrpCommonFB() {}
 
     //implement virtual methods
-    inline lmEToolGroupID GetToolGroupID() { return (lmEToolGroupID)-1; }
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_Undefined; } //(lmEToolGroupID)-1; }
     void CreateGroupControls(wxBoxSizer* pMainSizer);
 
 };
@@ -1126,7 +1126,7 @@ bool lmFiguredBassUnitTests()
 
     wxLogMessage(_T("UnitTests: Figured bass contructor from lmChord"));
     wxLogMessage(_T("==============================================="));
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmScore* pScore = new lmScore();
     lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
     lmVStaff* pVStaff = pInstr->GetVStaff();

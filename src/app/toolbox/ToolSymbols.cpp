@@ -109,10 +109,15 @@ void lmToolPageSymbols::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpSymbols = new lmGrpSymbols(this, pMainSizer);
+    m_pGrpSymbols = new lmGrpSymbols(this, pMainSizer, lmMM_DATA_ENTRY);
     AddGroup(m_pGrpSymbols);
 
 	CreateLayout();
+
+    //initialize info about selected group/tool
+    m_nCurGroupID = lmGRP_Symbols;
+    m_nCurToolID = m_pGrpSymbols->GetCurrentToolID();
+
     m_fGroupsCreated = true;
 }
 
@@ -152,9 +157,11 @@ wxString lmToolPageSymbols::GetToolShortDescription()
 // lmGrpSymbols implementation
 //--------------------------------------------------------------------------------
 
-lmGrpSymbols::lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+lmGrpSymbols::lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer,
+                           int nValidMouseModes)
         : lmToolButtonsGroup(pParent, lm_NUM_SYMBOL_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Symbols, lmTOOL_FIGURED_BASS, pParent->GetColors())
+                             lmID_BT_Symbols, lmTOOL_FIGURED_BASS, pParent->GetColors(),
+                             nValidMouseModes)
 {
 }
 
@@ -191,6 +198,7 @@ void lmGrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapDisabled(sBtName + _T("_dis"), _T(""), btSize);
 		m_pButton[iB]->SetToolTip(cButtons[iB].sToolTip);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
 		pButtonsSizer->Add( new wxStaticText(this, wxID_ANY, cButtons[iB].sToolTip),

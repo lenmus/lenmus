@@ -1216,12 +1216,12 @@ lmGMObject* lmScoreCanvas::GetPointedAreaInfo()
             m_nMousePointedArea = lmMOUSE_OnOther;
     }
 
-    //DBG --------------------------------------
-    wxString sSO = (pGMO ? pGMO->GetName() : _T("No object"));
-    wxLogMessage(_T("[lmScoreCanvas::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
-                 m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
-                 m_nMousePointedArea, sSO.c_str() );
-    //END DBG ----------------------------------
+    ////DBG --------------------------------------
+    //wxString sSO = (pGMO ? pGMO->GetName() : _T("No object"));
+    //wxLogMessage(_T("[lmScoreCanvas::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
+    //             m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
+    //             m_nMousePointedArea, sSO.c_str() );
+    ////END DBG ----------------------------------
 
     return pGMO;
 }
@@ -2086,16 +2086,18 @@ void lmScoreCanvas::UpdateSelectedToolInfo()
 
 	m_pToolBox = GetMainFrame()->GetActiveToolBox();
 	wxASSERT(m_pToolBox);
-    m_nPageID = m_pToolBox->GetCurrentPageID();
+    lmEToolPageID nPageID = m_pToolBox->GetCurrentPageID();
     m_nGroupID = m_pToolBox->GetCurrentGroupID();
     m_nToolID = m_pToolBox->GetCurrentToolID();
 
     //get mouse mode and, if changed, reconfigure toolbox for new mouse mode
-    lmEMouseMode nNewMouseMode = (lmEMouseMode)m_pToolBox->GetMouseMode();
-	if (nNewMouseMode != m_nMouseMode)
+    int nNewMouseMode = m_pToolBox->GetMouseMode();
+	if (nNewMouseMode != m_nMouseMode || m_nPageID != nPageID)
     {
         m_nMouseMode = nNewMouseMode;
-        //m_pToolBox->GetSelectedPage()->ReconfigureForMouseMode(m_nMouseMode);
+        m_nPageID = nPageID;
+        m_pToolBox->GetSelectedPage()->ReconfigureForMouseMode(m_nMouseMode);
+        SynchronizeToolBox();
     }
 
     //get values for current page
@@ -2151,7 +2153,8 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
     //Do actions on selected objects
     if (m_pView->SomethingSelected())
     {
-        switch (m_nGroupID)
+        lmEToolGroupID nGroupID = event.GetToolGroupID();   //clicked group
+        switch (nGroupID)
         {
             case lmGRP_MouseMode:
                 //change of mode while something selected. Nothing to do ----------------------
@@ -3231,10 +3234,7 @@ void lmScoreCanvas::SynchronizeToolBox()
             }
             break;
 
-        case lmPAGE_SELECTION:
         case lmPAGE_CLEFS:
-        case lmPAGE_KEY_SIGN:
-        case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
         case lmPAGE_SYMBOLS:
             lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithCaret] Code to sync. this tool"));
@@ -3279,13 +3279,9 @@ void lmScoreCanvas::SynchronizeToolBoxWithCaret(bool fEnable)
             }
             break;
 
-        case lmPAGE_SELECTION:
         case lmPAGE_CLEFS:
-        case lmPAGE_KEY_SIGN:
-        case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
         case lmPAGE_SYMBOLS:
-            lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithCaret] Code to sync. this tool"));
             break;
 
         default:
@@ -3429,13 +3425,9 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
             }
             break;
 
-        case lmPAGE_SELECTION:
         case lmPAGE_CLEFS:
-        case lmPAGE_KEY_SIGN:
-        case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
         case lmPAGE_SYMBOLS:
-            lmTODO(_T("[lmScoreCanvas::SynchronizeToolBoxWithSelection] Code to sync. this tool"));
             break;
 
         default:
@@ -3469,10 +3461,7 @@ void lmScoreCanvas::RestoreToolBoxSelections()
             }
             break;
 
-        case lmPAGE_SELECTION:
         case lmPAGE_CLEFS:
-        case lmPAGE_KEY_SIGN:
-        case lmPAGE_TIME_SIGN:
         case lmPAGE_BARLINES:
         case lmPAGE_SYMBOLS:
             lmTODO(_T("[lmScoreCanvas::RestoreToolBoxSelections] Code to restore this tool"));

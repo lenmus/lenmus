@@ -58,7 +58,7 @@ public:
 
     virtual void CreateGroups() = 0;
     virtual bool DeselectRelatedGroups(lmEToolGroupID nGroupID) = 0;
-    void ReconfigureForMouseMode(lmEMouseMode nMode);
+    void ReconfigureForMouseMode(int nMode);
 
 	//current selected group/tool and its options
     inline lmEToolGroupID GetCurrentGroupID() const { return m_nCurGroupID; }

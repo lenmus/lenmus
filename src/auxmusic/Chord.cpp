@@ -1329,7 +1329,7 @@ bool lmChordFromFiguredBassUnitTest()
     wxLogMessage(_T("UnitTests: Chord contructor from lmFiguredBass"));
     wxLogMessage(_T("===================================================="));
 
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     bool fTestOK = true;
     for (int i=0; i < nNumTestCases; i++)
     {

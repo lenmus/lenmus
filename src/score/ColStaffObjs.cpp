@@ -1439,7 +1439,7 @@ void lmScoreCursor::UpdateTimepos()
         { 
             //segment is not empty
             if (pSO->IsBarline())
-                m_rTimepos = pSO->GetTimePos();
+                m_rTimepos = 0.0f;  //pSO->GetTimePos();
             else
                 m_rTimepos = pSO->GetTimePos() + pSO->GetTimePosIncrement();
         }
