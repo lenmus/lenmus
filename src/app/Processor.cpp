@@ -850,6 +850,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
            pInfoBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1], *wxGREEN, sOkMsg );
         }
 
+        wxLogMessage(_T("Deleting exercise chords") );
         for (int i = 0; i <nHarmonyExerciseChordsToCheck; i++)
         {
             if (pHE_Chords[i] != NULL)
@@ -866,16 +867,18 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
             // pHE_Notes: is a copy; do not delete
         }
 
-        for (int i = 0; i <nNumChords; i++)
-        {
-            delete tChordDescriptor[i];
-            tChordDescriptor[i] = 0;
-        }
-
         nHarmonyExerciseChordsToCheck = 0;
 
     }
 
+    wxLogMessage(_T("Deleting analyzed chords") );
+    for (int i = 0; i <nNumChords; i++)
+    {
+        delete tChordDescriptor[i];
+        tChordDescriptor[i] = 0;
+    }
+
+    wxLogMessage(_T("End of ProcessScore") );
     return fScoreModified;      //true -> score modified
 
 }
