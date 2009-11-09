@@ -136,8 +136,8 @@ int lmShapeStaff::GetLineSpace(lmLUnits uyPos)
 	lmLUnits uHalfLine = pStaff->TenthsToLogical(5.0f);
     float rStep = (m_uBoundsTop.y - uyPos)/uHalfLine;
     int nStep = (rStep > 0.0f ? (int)(rStep + 0.5f) : (int)(rStep - 0.5f) );
-    wxLogMessage(_T("[lmShapeStaff::GetLineSpace] uyPos=%.2f, uHalfLine=%.2f, m_uBoundsTop.y=%.2f, rStep=%.2f, nStep=%d"),
-                 uyPos, uHalfLine, m_uBoundsTop.y, rStep, nStep);
+    //wxLogMessage(_T("[lmShapeStaff::GetLineSpace] uyPos=%.2f, uHalfLine=%.2f, m_uBoundsTop.y=%.2f, rStep=%.2f, nStep=%d"),
+    //             uyPos, uHalfLine, m_uBoundsTop.y, rStep, nStep);
 	return  10 + nStep;
     //AWARE: Note that y axis is reversed. Therefore we return 10 + steps instead
     // of 10 - steps. 

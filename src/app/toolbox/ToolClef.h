@@ -76,6 +76,10 @@ private:
 //--------------------------------------------------------------------------------
 // Group for time signature type
 //--------------------------------------------------------------------------------
+
+#define lmUSE_TIME_OLD    0       //use ToolButtonsGroup (0) or ToolGroup (1)
+
+#if lmUSE_TIME_OLD
 class lmGrpTimeType: public lmToolGroup
 {
 public:
@@ -92,28 +96,36 @@ public:
     int GetTimeBeats();
     int GetTimeBeatType();
 
-    enum {
-        lm_NUM_BUTTONS = 12
-    };
-
-    //buttons data
-    typedef struct lmButtonStruct
-    {
-        wxString    sBitmap;
-        int         nBeats;
-	    int     	nBeatType;
-
-    } lmButton;
-
 private:
     void CreateGroupControls(wxBoxSizer* pMainSizer);
 
-	wxBitmapButton* m_pButton[lm_NUM_BUTTONS];  //buttons
-	int             m_nSelButton;               //selected button (0..n). -1 = none selected
+	wxBitmapButton* m_pButton[12];      //buttons
+	int             m_nSelButton;       //selected button (0..n). -1 = none selected
 
 
     DECLARE_EVENT_TABLE()
 };
+
+#else
+class lmGrpTimeType: public lmToolButtonsGroup
+{
+public:
+    lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
+    ~lmGrpTimeType() {}
+
+    //implement virtual methods
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_TimeType; }
+
+	void OnButton(wxCommandEvent& event);
+
+    //selected time signature
+    int GetTimeBeats();
+    int GetTimeBeatType();
+
+};
+
+#endif
 
 
 //--------------------------------------------------------------------------------
@@ -173,9 +185,7 @@ public:
     void Create(wxWindow* parent);
 
     //implementation of virtual methods
-    lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
     void CreateGroups();
-    bool DeselectRelatedGroups(lmEToolGroupID nGroupID);
 
     //current tool/group info
     wxString GetToolShortDescription();

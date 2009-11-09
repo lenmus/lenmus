@@ -113,37 +113,11 @@ void lmToolPageNotes::Create(wxWindow* parent)
 
 lmToolPageNotes::~lmToolPageNotes()
 {
-    if(m_pGrpNoteRest) delete m_pGrpNoteRest;
-	if(m_pGrpOctave) delete m_pGrpOctave;
-	if(m_pGrpVoice) delete m_pGrpVoice;
-    if(m_pGrpNoteDuration) delete m_pGrpNoteDuration;
-    if(m_pGrpNoteAcc) delete m_pGrpNoteAcc;
-    if(m_pGrpNoteDots) delete m_pGrpNoteDots;
-    if(m_pGrpTieTuplet) delete m_pGrpTieTuplet;
-    if(m_pGrpBeams) delete m_pGrpBeams;
 }
 
 lmENoteHeads lmToolPageNotes::GetNoteheadType()
 {
     return enh_Quarter; //(lmENoteHeads)m_pCboNotehead->GetSelection();
-}
-
-lmToolGroup* lmToolPageNotes::GetToolGroup(lmEToolGroupID nGroupID)
-{
-    switch(nGroupID)
-    {
-        case lmGRP_NoteRest:        return m_pGrpNoteRest;
-        case lmGRP_Octave:			return m_pGrpOctave;
-        case lmGRP_Voice:			return m_pGrpVoice;
-        case lmGRP_NoteDuration:    return m_pGrpNoteDuration;
-        case lmGRP_NoteAcc:         return m_pGrpNoteAcc;
-        case lmGRP_NoteDots:        return m_pGrpNoteDots;
-        case lmGRP_TieTuplet:       return m_pGrpTieTuplet;
-        case lmGRP_Beams:           return m_pGrpBeams;
-        default:
-            wxASSERT(false);
-    }
-    return (lmToolGroup*)NULL;      //compiler happy
 }
 
 wxString lmToolPageNotes::GetToolShortDescription()
@@ -157,38 +131,6 @@ wxString lmToolPageNotes::GetToolShortDescription()
         return _("Add rest");
 }
 
-bool lmToolPageNotes::DeselectRelatedGroups(lmEToolGroupID nGroupID)
-{
-    //When there are several groups in the same tool page (i.e, clefs, keys and
-    //time signatures) the groups will behave as if they where a single 'logical
-    //group', that is, selecting a tool in a group will deselect any tool on the
-    //other related groups. To achieve this behaviour the group will call this
-    //method to inform the owner page.
-    //This method must deselect tools in any related groups to the one received
-    //as parameter, and must return 'true' if that group is a tool group of
-    //'false' if it is an options group.
-
-    switch(nGroupID)
-    {
-        case lmGRP_NoteRest:
-            m_pGrpNoteDuration->SetButtonsBitmaps( m_pGrpNoteRest->IsNoteSelected() );
-            m_pGrpNoteDuration->Refresh();
-            return true;
-
-        case lmGRP_Octave:
-        case lmGRP_Voice:
-        case lmGRP_NoteDuration:
-        case lmGRP_NoteAcc:
-        case lmGRP_NoteDots:
-        case lmGRP_TieTuplet:
-        case lmGRP_Beams:
-            return false;
-
-        default:
-            wxASSERT(false);
-    }
-    return false;      //compiler happy
-}
 
 
 //--------------------------------------------------------------------------------
@@ -196,7 +138,8 @@ bool lmToolPageNotes::DeselectRelatedGroups(lmEToolGroupID nGroupID)
 //--------------------------------------------------------------------------------
 
 lmGrpNoteDuration::lmGrpNoteDuration(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_DUR_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+        : lmToolButtonsGroup(pParent, lm_eGT_Options, lm_NUM_DUR_BUTTONS,
+                             lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_NoteDuration, lmTOOL_NONE, pParent->GetColors())
 {
 }
@@ -282,7 +225,8 @@ void lmGrpNoteDuration::SetButtonsBitmaps(bool fNotes)
 //--------------------------------------------------------------------------------
 
 lmGrpNoteRest::lmGrpNoteRest(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_NR_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+        : lmToolButtonsGroup(pParent, lm_eGT_ToolSelector, lm_NUM_NR_BUTTONS,
+                             lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_NoteRest, lmTOOL_NONE, pParent->GetColors())
 {
 }
@@ -331,7 +275,8 @@ bool lmGrpNoteRest::IsNoteSelected()
 //--------------------------------------------------------------------------------
 
 lmGrpOctave::lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_OCTAVE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+        : lmToolButtonsGroup(pParent, lm_eGT_Options, lm_NUM_OCTAVE_BUTTONS,
+                             lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_Octave, lmTOOL_NONE, pParent->GetColors())
 {
 }
@@ -339,7 +284,8 @@ lmGrpOctave::lmGrpOctave(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpOctave::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Octave (Ctrl)"));
+    wxString sTitle = _("Octave");
+    SetGroupTitle(sTitle + _T(" (Ctrl)"));
     wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
@@ -386,8 +332,9 @@ void lmGrpOctave::SetOctave(bool fUp)
 //--------------------------------------------------------------------------------
 
 lmGrpVoice::lmGrpVoice(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons)
-        : lmToolButtonsGroup(pParent, nNumButtons, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Voice, lmTOOL_NONE, pParent->GetColors())
+        : lmToolButtonsGroup(pParent, lm_eGT_Options, nNumButtons, lmTBG_ONE_SELECTED,
+                             pMainSizer, lmID_BT_Voice, lmTOOL_NONE,
+                             pParent->GetColors())
 {
 }
 
@@ -417,7 +364,8 @@ lmGrpVoiceStd::lmGrpVoiceStd(lmToolPage* pParent, wxBoxSizer* pMainSizer)
 void lmGrpVoiceStd::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Voice (Alt)"));
+    wxString sTitle = _("Voice");
+    SetGroupTitle(sTitle + _T(" (Alt)"));
     wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
@@ -504,7 +452,8 @@ void lmGrpVoiceHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
 //--------------------------------------------------------------------------------
 
 lmGrpNoteAcc::lmGrpNoteAcc(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_ACC_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
+        : lmToolButtonsGroup(pParent, lm_eGT_Options, lm_NUM_ACC_BUTTONS,
+                             lmTBG_ALLOW_NONE, pMainSizer,
                              lmID_BT_NoteAcc, lmTOOL_NONE, pParent->GetColors())
 {
 }
@@ -557,7 +506,8 @@ lmEAccidentals lmGrpNoteAcc::GetNoteAcc()
 //--------------------------------------------------------------------------------
 
 lmGrpNoteDots::lmGrpNoteDots(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_DOT_BUTTONS, lmTBG_ALLOW_NONE, pMainSizer,
+        : lmToolButtonsGroup(pParent, lm_eGT_Options, lm_NUM_DOT_BUTTONS,
+                             lmTBG_ALLOW_NONE, pMainSizer,
                              lmID_BT_NoteDots, lmTOOL_NONE, pParent->GetColors())
 {
 }
@@ -614,7 +564,7 @@ END_EVENT_TABLE()
 
 
 lmGrpTieTuplet::lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent, pParent->GetColors())
+        : lmToolGroup(pParent, lm_eGT_Options, pParent->GetColors())
         , m_nSelectedToolID(lmTOOL_NONE)
 {
 }
@@ -728,7 +678,7 @@ END_EVENT_TABLE()
 
 
 lmGrpBeams::lmGrpBeams(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolGroup(pParent, pParent->GetColors())
+        : lmToolGroup(pParent, lm_eGT_Options, pParent->GetColors())
         , m_nSelectedToolID(lmTOOL_NONE)
 {
 }

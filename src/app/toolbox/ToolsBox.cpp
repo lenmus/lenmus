@@ -453,7 +453,8 @@ void lmToolBox::OnEraseBackground(wxEraseEvent& event)
 //--------------------------------------------------------------------------------
 
 lmGrpMouseMode::lmGrpMouseMode(wxPanel* pParent, wxBoxSizer* pMainSizer, lmColorScheme* pColours)
-        : lmToolButtonsGroup(pParent, lm_NUM_MOUSE_MODE_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+        : lmToolButtonsGroup(pParent, lm_eGT_Options, lm_NUM_MOUSE_MODE_BUTTONS,
+                             lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_MouseMode_Pointer, lmTOOL_NONE, pColours)
 {
 }

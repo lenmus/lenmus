@@ -57,16 +57,17 @@
 
 //event IDs
 #define lm_NUM_CLEF_BUTTONS  8
+#define lm_NUM_TIME_BUTTONS  12
 
 enum {
 	lmID_BT_ClefType = 2600,
     lmID_CLEF_LIST = lmID_BT_ClefType + lm_NUM_CLEF_BUTTONS,
 
     // Time signature group
-    lmID_BT_TimeType = lmID_CLEF_LIST + 1,
+    lmID_BT_TIME = lmID_CLEF_LIST + 1,
 
     // Key signature group
-    lmID_KEY_TYPE = lmID_BT_TimeType + lmGrpTimeType::lm_NUM_BUTTONS,
+    lmID_KEY_TYPE = lmID_BT_TIME + lm_NUM_TIME_BUTTONS,
     lmID_KEY_LIST = lmID_KEY_TYPE + 2,
 };
 
@@ -99,22 +100,6 @@ void lmToolPageClefs::Create(wxWindow* parent)
 
 lmToolPageClefs::~lmToolPageClefs()
 {
-    delete m_pGrpClefType;
-    delete m_pGrpTimeType;
-    delete m_pGrpKeyType;
-}
-
-lmToolGroup* lmToolPageClefs::GetToolGroup(lmEToolGroupID nGroupID)
-{
-    switch(nGroupID)
-    {
-        case lmGRP_ClefType:    return m_pGrpClefType;
-        case lmGRP_TimeType:    return m_pGrpTimeType;
-        case lmGRP_KeyType:     return m_pGrpKeyType;
-        default:
-            wxASSERT(false);
-    }
-    return (lmToolGroup*)NULL;      //compiler happy
 }
 
 void lmToolPageClefs::CreateGroups()
@@ -130,57 +115,19 @@ void lmToolPageClefs::CreateGroups()
     AddGroup(m_pGrpKeyType);
     AddGroup(m_pGrpTimeType);
     
-    //Select clef group
-    m_pGrpClefType->SetSelected(true);
-    m_pGrpTimeType->SetSelected(false);
-    m_pGrpKeyType->SetSelected(false);
 	CreateLayout();
+
+    //Select clef group
+    SelectGroup(m_pGrpClefType);
+    //m_pGrpClefType->SetSelected(true);
+    //m_pGrpTimeType->SetSelected(false);
+    //m_pGrpKeyType->SetSelected(false);
 
     //initialize info about selected group/tool
     m_nCurGroupID = lmGRP_ClefType;
     m_nCurToolID = m_pGrpClefType->GetCurrentToolID();
 
     m_fGroupsCreated = true;
-}
-
-bool lmToolPageClefs::DeselectRelatedGroups(lmEToolGroupID nGroupID)
-{
-    //When there are several groups in the same tool page (i.e, clefs, keys and
-    //time signatures) the groups will behave as if they where a single 'logical
-    //group', that is, selecting a tool in a group will deselect any tool on the
-    //other related groups. To achieve this behaviour the group will call this
-    //method to inform the owner page.
-    //This method must deselect tools in any related groups to the one received
-    //as parameter, and must return 'true' if that group is a tool group of
-    //'false' if it is an options group.
-
-    switch(nGroupID)
-    {
-        case lmGRP_ClefType:
-            m_pGrpClefType->SetSelected(true);
-            m_pGrpTimeType->SetSelected(false);
-            m_pGrpKeyType->SetSelected(false);
-            this->Refresh();
-            return true;        //clef is a tool group
-
-        case lmGRP_TimeType:
-            m_pGrpClefType->SetSelected(false);
-            m_pGrpTimeType->SetSelected(true);
-            m_pGrpKeyType->SetSelected(false);
-            this->Refresh();
-            return true;        //time is a tool group
-
-        case lmGRP_KeyType:
-            m_pGrpClefType->SetSelected(false);
-            m_pGrpTimeType->SetSelected(false);
-            m_pGrpKeyType->SetSelected(true);
-            this->Refresh();
-            return true;        //key is a tool group
-
-        default:
-            wxASSERT(false);
-    }
-    return false;      //compiler happy
 }
 
 wxString lmToolPageClefs::GetToolShortDescription()
@@ -245,7 +192,8 @@ END_EVENT_TABLE()
 
 lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
                              int nValidMouseModes)
-        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
+        : lmToolGroup(pParent, lm_eGT_ToolSelector, pParent->GetColors(),
+                      nValidMouseModes)
 {
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -320,7 +268,8 @@ void lmGrpClefType::LoadClefList()
 //--------------------------------------------------------------------------------
 
 lmGrpClefType::lmGrpClefType(lmToolPage* pParent, wxBoxSizer* pMainSizer)
-        : lmToolButtonsGroup(pParent, lm_NUM_CLEF_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
+        : lmToolButtonsGroup(pParent, lm_eGT_ToolSelector, lm_NUM_CLEF_BUTTONS,
+                             lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_ClefType, lmTOOL_NONE, pParent->GetColors())
 {
     //load language dependent strings. Can not be statically initiallized because
@@ -392,31 +341,44 @@ lmEClefType lmGrpClefType::GetSelectedClef()
 // lmGrpTimeType implementation
 //--------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(lmGrpTimeType, lmToolGroup)
-	EVT_COMMAND_RANGE (lmID_BT_TimeType, lmID_BT_TimeType+lm_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpTimeType::OnButton)
-END_EVENT_TABLE()
+//buttons data
+typedef struct lmTimeButtonStruct
+{
+    wxString    sBitmap;
+    int         nBeats;
+	int     	nBeatType;
 
-static const lmGrpTimeType::lmButton m_tButtons[] = {
+} lmTimeButton;
+
+static const lmTimeButton m_tButtons[] = {
     { _T("time_2_2"), 2, 2 },
     { _T("time_2_4"), 2, 4 },
-    { _T("time_6_8"), 6, 8 },
     { _T("time_2_8"), 2, 8 },
     { _T("time_3_2"), 3, 2 },
     { _T("time_3_4"), 3, 4 },
-    { _T("time_9_8"), 9, 8 },
     { _T("time_3_8"), 3, 8 },
     { _T("time_4_2"), 4, 2 },
     { _T("time_4_4"), 4, 4 },
-    { _T("time_12_8"), 12, 8 },
     { _T("time_4_8"), 4, 8 },
+    { _T("time_6_8"), 6, 8 },
+    { _T("time_9_8"), 9, 8 },
+    { _T("time_12_8"), 12, 8 },
 };
+
+#if lmUSE_TIME_OLD
+//--------------------
+
+BEGIN_EVENT_TABLE(lmGrpTimeType, lmToolGroup)
+	EVT_COMMAND_RANGE (lmID_BT_TIME, lmID_BT_TIME+lm_NUM_TIME_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmGrpTimeType::OnButton)
+END_EVENT_TABLE()
 
 lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
                              int nValidMouseModes)
-        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
+        : lmToolGroup(pParent, lm_eGT_ToolSelector, pParent->GetColors(),
+                      nValidMouseModes)
         , m_nSelButton(-1)  //none selected
 {
-    wxASSERT(sizeof(m_tButtons) / sizeof(lmButton) == lm_NUM_BUTTONS);
+    wxASSERT(sizeof(m_tButtons) / sizeof(lmButton) == lm_NUM_TIME_BUTTONS);
 }
 
 void lmGrpTimeType::CreateGroupControls(wxBoxSizer* pMainSizer)
@@ -427,14 +389,14 @@ void lmGrpTimeType::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     //create the specific controls for this group
     wxBoxSizer* pButtonsSizer;
-	for (int iB=0; iB < lm_NUM_BUTTONS; iB++)
+	for (int iB=0; iB < lm_NUM_TIME_BUTTONS; iB++)
 	{
 		if (iB % 4 == 0) {
 			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 		m_pButton[iB] =
-            new wxBitmapButton(this, lmID_BT_TimeType+iB,
+            new wxBitmapButton(this, lmID_BT_TIME+iB,
 				wxArtProvider::GetBitmap(m_tButtons[iB].sBitmap, wxART_TOOLBAR, wxSize(24, 24)),
                 wxDefaultPosition, wxSize(24, 24) );
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
@@ -446,7 +408,7 @@ void lmGrpTimeType::OnButton(wxCommandEvent& event)
 {
     //Notify owner page about the tool change
 
-	m_nSelButton = event.GetId() - lmID_BT_TimeType;
+	m_nSelButton = event.GetId() - lmID_BT_TIME;
     ((lmToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(), (lmEToolID)m_nSelButton );
 }
 
@@ -470,6 +432,72 @@ int lmGrpTimeType::GetTimeBeatType()
         return 0;
 }
 
+//-------------------------------
+#else
+//-------------------------------
+
+lmGrpTimeType::lmGrpTimeType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
+                             int nValidMouseModes)
+    : lmToolButtonsGroup(pParent, lm_eGT_ToolSelector, lm_NUM_TIME_BUTTONS,
+                         lmTBG_ONE_SELECTED, pMainSizer,
+                         lmID_BT_TIME, lmTOOL_NONE, pParent->GetColors(),
+                         nValidMouseModes)
+{
+}
+
+void lmGrpTimeType::CreateGroupControls(wxBoxSizer* pMainSizer)
+{
+    //create the common controls for a group
+
+    SetGroupTitle(_("Time signature"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+
+    //create the specific controls for this group
+    wxBoxSizer* pButtonsSizer;
+    wxSize btSize(24, 24);
+	for (int iB=0; iB < lm_NUM_TIME_BUTTONS; iB++)
+	{
+		if (iB % 6 == 0) {
+			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+			pCtrolsSizer->Add(pButtonsSizer);
+		}
+		wxString sBtName = m_tButtons[iB].sBitmap;
+		m_pButton[iB] = new lmCheckButton(this, lmID_BT_TIME+iB, wxBitmap(24, 24));
+        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapDisabled(sBtName + _T("_dis"), _T(""), btSize);
+        wxString sTip = wxString::Format(_("Select time signature %d/%d"),
+            m_tButtons[iB].nBeats, m_tButtons[iB].nBeatType);
+		m_pButton[iB]->SetToolTip(sTip);
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxTOP|wxBOTTOM, 2) );
+	}
+	this->Layout();
+
+	SelectButton(0);
+}
+
+int lmGrpTimeType::GetTimeBeats()
+{
+    //Returns 0 if no button selected
+
+    if (m_nSelButton != -1)
+        return m_tButtons[m_nSelButton].nBeats;
+    else
+        return 0;
+}
+
+int lmGrpTimeType::GetTimeBeatType()
+{
+    //Returns 0 if no button selected
+
+    if (m_nSelButton != -1)
+        return m_tButtons[m_nSelButton].nBeatType;
+    else
+        return 0;
+}
+
+#endif
 
 
 //--------------------------------------------------------------------------------
@@ -491,7 +519,8 @@ static lmGrpKeyType::lmKeysData m_tMinorKeys[lmMAX_MINOR_KEYS];
 
 lmGrpKeyType::lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
                            int nValidMouseModes)
-        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
+        : lmToolGroup(pParent, lm_eGT_ToolSelector, pParent->GetColors(), 
+                      nValidMouseModes)
 {
     //To avoid having to translate again key signature names, we are going to load them
     //by using global function GetKeySignatureName()

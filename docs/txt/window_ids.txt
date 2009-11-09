@@ -16,6 +16,7 @@ wxID_HIGHEST and increments its value).
 
 
 MainFrame: 1000 - 1299
+StatusBar: 1300 - 1319
 
 TextBookFrame: 2000-2099
 

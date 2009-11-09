@@ -110,8 +110,8 @@ extern lmLogger* g_pLogger;
 #endif
 
 #if USE_GENERIC_TBAR
-    #if !wxUSE_TOOLBAR_SIMPLE
-        #error wxToolBarSimple is not compiled in, set wxUSE_TOOLBAR_SIMPLE \
+    #if !wxUSE_mtbTOOLBAR_SIMPLE
+        #error wxToolBarSimple is not compiled in, set wxUSE_mtbTOOLBAR_SIMPLE \
                to 1 in setup.h and recompile the library.
     #else
         #include <wx/tbarsmpl.h>
@@ -518,11 +518,8 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
     m_pStatusBar = (lmStatusBar*)NULL;
     bool fStatusBar = false;
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
-    if (!m_pStatusBar && fStatusBar) {
-        // create a status bar (by default with 1 pane only)
+    if (!m_pStatusBar && fStatusBar)
         CreateTheStatusBar();
-        m_pStatusBar->SetMsgText(_("Welcome to LenMus!"));
-    }
 
     // initialize flags for toggle buttons status
     m_fHelpOpened = false;
@@ -2740,16 +2737,23 @@ void lmMainFrame::SetStatusBarMousePos(float x, float y)
         m_pStatusBar->SetMousePos(x, y);
 }
 
-void lmMainFrame::SetStatusBarToolboxData(const wxString& sText)
+void lmMainFrame::SetStatusBarMouseData(int nPage, float rTime, int nMeasure,
+                                        lmUPoint uPos)
 {
     if (m_pStatusBar)
-        m_pStatusBar->SetToolboxData(sText);
+        m_pStatusBar->SetMouseData(nPage, rTime, nMeasure, uPos);
 }
 
-void lmMainFrame::SetStatusBarCursorRelPos(float rTime, int nMeasure)
+void lmMainFrame::SetStatusBarTimePosInfo(float rTime, int nMeasure)
 {
     if (m_pStatusBar)
-        m_pStatusBar->SetCursorRelPos(rTime, nMeasure);
+        m_pStatusBar->SetTimePosInfo(rTime, nMeasure);
+}
+
+void lmMainFrame::SetStatusBarCaretData(int nPage, float rTime, int nMeasure)
+{
+    if (m_pStatusBar)
+        m_pStatusBar->SetCaretData(nPage, rTime, nMeasure);
 }
 
 void lmMainFrame::SetStatusBarNumPage(int nPage)

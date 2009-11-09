@@ -52,12 +52,9 @@ enum lmEStatusBarField
 {
     lm_Field_Message = 0,
     lm_Field_MousePos,
+    lm_Field_MouseCaret,
     lm_Field_NumPage,
-    lm_Field_AbsTime,
     lm_Field_RelTime,
-    lm_Field_Caps,
-    lm_Field_Nums,
-    lm_Field_Toolbox,
     lm_Field_NUM_FIELDS       //MUST BE THE LAST ONE
 };
 
@@ -65,20 +62,33 @@ enum lmEStatusBarField
 // ----------------------------------------------------------------------------
 // lmStatusBar implementation
 // ----------------------------------------------------------------------------
+#define BMP_BUTTON_SIZE_X   16 
+#define BMP_BUTTON_SIZE_Y   16
+
+enum {
+    lmID_BUTTON_MOUSE = 1300,
+    lmID_BUTTON_CARET,
+};
+
 BEGIN_EVENT_TABLE(lmStatusBar, wxStatusBar)
     EVT_SIZE(lmStatusBar::OnSize)
+    EVT_BUTTON(lmID_BUTTON_MOUSE, lmStatusBar::OnButtonMouse)
+    EVT_BUTTON(lmID_BUTTON_CARET, lmStatusBar::OnButtonCaret)
 END_EVENT_TABLE()
 
 
 lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID id)
-           : wxStatusBar(pFrame, wxID_ANY, wxST_SIZEGRIP)
+    : wxStatusBar(pFrame, wxID_ANY, wxST_SIZEGRIP)
+    , m_fMouseDisplay(true)
+    , m_pFrame(pFrame)
+    , m_nType(lm_eStatBar_ScoreEdit)
+    , m_nNumFields(lm_Field_NUM_FIELDS)
 {
-    m_pFrame = pFrame;
-    m_nType = lm_eStatBar_ScoreEdit;
-    m_nNumFields = lm_Field_NUM_FIELDS;
     int ch = GetCharWidth();
 
-    const int widths[] = {-1, 15*ch, 15*ch, 15*ch, 15*ch, 4*ch, 4*ch, 20*ch};
+    //                        Mouse  Mouse  Num   Rel
+    //                    Msg Pos    Caret  Page  Time
+    const int widths[] = {-1, 25*ch, 8*ch,  8*ch, 18*ch};
     SetFieldsCount(m_nNumFields);
     SetStatusWidths(m_nNumFields, widths);
 
@@ -101,11 +111,66 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
         wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_mouse"),
         wxART_TOOLBAR, size) );
 
+    //create buttons
+    m_pBtMouse = new wxBitmapButton(this, lmID_BUTTON_MOUSE, CreateMouseBitmap(true),
+                                    wxDefaultPosition, wxDefaultSize,
+                                    wxBU_EXACTFIT);
+
+    m_pBtCaret = new wxBitmapButton(this, lmID_BUTTON_CARET, CreateMouseBitmap(false),
+                                    wxDefaultPosition, wxDefaultSize,
+                                    wxBU_EXACTFIT);
+
 	SetMinHeight(size.y);
 }
 
 lmStatusBar::~lmStatusBar()
 {
+}
+
+wxBitmap lmStatusBar::CreateMouseBitmap(bool fOn)
+{
+    wxBitmap bitmap(BMP_BUTTON_SIZE_X, BMP_BUTTON_SIZE_Y);
+    wxMemoryDC dc;
+    dc.SelectObject(bitmap);
+    dc.SetBrush(fOn ? *wxGREEN_BRUSH : *wxRED_BRUSH);
+    dc.SetBackground(*wxLIGHT_GREY_BRUSH);
+    dc.Clear();
+    dc.DrawEllipse(0, 0, BMP_BUTTON_SIZE_X, BMP_BUTTON_SIZE_Y);
+    dc.SelectObject(wxNullBitmap);
+
+    return bitmap;
+}
+
+void lmStatusBar::OnButtonMouse(wxCommandEvent& WXUNUSED(event))
+{
+    DoSelectMouseInfo();
+}
+
+void lmStatusBar::OnButtonCaret(wxCommandEvent& WXUNUSED(event))
+{
+    DoSelectCaretInfo();
+}
+
+void lmStatusBar::DoSelectMouseInfo()
+{
+    m_pBtMouse->SetBitmapLabel(CreateMouseBitmap(true));
+    m_pBtMouse->Refresh();
+    m_pBtCaret->SetBitmapLabel(CreateMouseBitmap(false));
+    m_pBtMouse->Refresh();
+
+    m_fMouseDisplay = true;
+    UpdateTimeInfo();
+}
+
+void lmStatusBar::DoSelectCaretInfo()
+{
+    m_pBtMouse->SetBitmapLabel(CreateMouseBitmap(false));
+    m_pBtMouse->Refresh();
+    m_pBtCaret->SetBitmapLabel(CreateMouseBitmap(true));
+    m_pBtMouse->Refresh();
+
+    m_fMouseDisplay = false;
+    UpdateTimeInfo();
 }
 
 void lmStatusBar::SetMsgText(const wxString& sMsg)
@@ -121,31 +186,82 @@ void lmStatusBar::SetNumPage(int nPage)
         SetStatusText(_T(""), lm_Field_NumPage);
 }
 
-void lmStatusBar::SetMousePos(float x, float y)
+void lmStatusBar::SetMousePos(float xPos, float yPos)
 {
-    SetStatusText(wxString::Format(_T("%.2f, %.2f"), x, y), lm_Field_MousePos);
+    float x = xPos/1000.0f;
+    float y = yPos/1000.0f;
+    SetStatusText(wxString::Format(_T("%sx=%.2f y=%.2f cm"), m_sIconSpace.c_str(), x, y),
+                  lm_Field_MousePos);
 }
 
-void lmStatusBar::SetCursorRelPos(float rTime, int nMeasure)
+void lmStatusBar::SetTimePosInfo(float rTime, int nMeasure)
 {
     SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.c_str(),
                                    nMeasure, rTime), 
                   lm_Field_RelTime);
 }
 
-void lmStatusBar::SetToolboxData(const wxString& sText)
+void lmStatusBar::SetMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos)
 {
-    SetStatusText(wxString::Format(_T("%s%s"), m_sIconSpace.c_str(), sText), lm_Field_Toolbox);
+    //save mouse info
+    m_nMousePage = nPage;
+    m_rMouseTime = rTime;
+    m_nMouseMeasure = nMeasure;
+
+    //update displayed info
+    UpdateTimeInfo();
+    SetMousePos(uPos.x, uPos.y);
+}
+
+void lmStatusBar::SetCaretData(int nPage, float rTime, int nMeasure)
+{
+    //save caret info
+    m_nCaretPage = nPage;
+    m_rCaretTime = rTime;
+    m_nCaretMeasure = nMeasure;
+
+    //update displayed info
+    UpdateTimeInfo();
+}
+
+void lmStatusBar::UpdateTimeInfo()
+{
+    if (m_fMouseDisplay)
+    {
+        SetNumPage(m_nMousePage);
+        SetTimePosInfo(m_rMouseTime, m_nMouseMeasure);
+    }
+    else
+    {
+        SetNumPage(m_nCaretPage);
+        SetTimePosInfo(m_rCaretTime, m_nCaretMeasure);
+    }
 }
 
 void lmStatusBar::OnSize(wxSizeEvent& event)
 {
 	//position bitmaps in the appropiate field area
 
-	//page
 	wxRect rect;
+    wxSize size;
+
+	//mouse
+    GetFieldRect(lm_Field_MousePos, rect);
+    size = m_pBmpMouse->GetSize();
+    m_pBmpMouse->Move(rect.x,
+                      rect.y + (rect.height - size.y) / 2);
+
+    //mouse/caret buttons
+    GetFieldRect(lm_Field_MouseCaret, rect);
+    size = wxSize(BMP_BUTTON_SIZE_X, BMP_BUTTON_SIZE_Y);
+    m_pBtMouse->Move(rect.x,
+                     rect.y + (rect.height - size.y) / 2);
+    m_pBtCaret->Move(rect.x + rect.width/2,
+                     rect.y + (rect.height - size.y) / 2);
+
+	//page
     GetFieldRect(lm_Field_NumPage, rect);
-    wxSize size = m_pBmpPage->GetSize();
+    size = m_pBmpPage->GetSize();
     m_pBmpPage->Move(rect.x,
                      rect.y + (rect.height - size.y) / 2);
 
@@ -153,12 +269,6 @@ void lmStatusBar::OnSize(wxSizeEvent& event)
     GetFieldRect(lm_Field_RelTime, rect);
     size = m_pBmpClock->GetSize();
     m_pBmpClock->Move(rect.x,
-                      rect.y + (rect.height - size.y) / 2);
-
-	//mouse
-    GetFieldRect(lm_Field_Toolbox, rect);
-    size = m_pBmpMouse->GetSize();
-    m_pBmpMouse->Move(rect.x,
                       rect.y + (rect.height - size.y) / 2);
 
     event.Skip();

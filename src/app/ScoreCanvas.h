@@ -335,23 +335,19 @@ private:
     //dealing with mouse events
     void OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC);
     void OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC);
-    lmGMObject* GetPointedAreaInfo();
+    void GetPointedAreaInfo();
 
     //mouse tools operations
     void PrepareToolDragImages();
     void UpdateToolInfoString();
-    void UpdateStatusBarToolBox();
+    void UpdateStatusBarToolBox(wxString sMoreInfo = _T(""));
     void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
-    void OnToolNotesClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
-                          lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
-    void OnToolClefsClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
-                          lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
-    void OnToolSymbolsClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
-                            lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
-    void OnToolTimeSignatureClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
-                                  lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
-    void OnToolKeySignatureClick(lmGMObject* pGMO, lmShapeStaff* pShapeStaff,
-                                 lmBoxSliceInstr* pBSI, lmUPoint uPagePos, float rGridTime);
+    void OnToolNotesClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
+    void OnToolClefsClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
+    void OnToolSymbolsClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
+    void OnToolTimeSignatureClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
+    void OnToolKeySignatureClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
+    void OnToolBarlinesClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
 
     //mouse cursors
     wxCursor* LoadMouseCursor(wxString sFile, int nHotSpotX, int nHotSpotY);
@@ -396,7 +392,8 @@ private:
     inline bool RequiresLedgerLines() { return (m_nToolMarks & lmMARK_LEDGER_LINES) != 0L; }
     inline bool RequiresMeasureFrame() { return (m_nToolMarks & lmMARK_MEASURE) != 0L; }
 
-
+    //other helper methods
+    lmDPitch GetNotePitchFromPosition(lmShapeStaff* pShapeStaff, lmUPoint uPagePos);
 
 
     lmScoreView*    m_pView;            //owner view
@@ -480,15 +477,17 @@ private:
     int          m_nNumPage;             //score page number (1..n) on which the mouse is placed
 
     //dragging a tool
-    long            m_nMousePointedArea;    //type of area pointed by mouse
     lmShapeStaff*   m_pLastShapeStaff;      //last staff for point pointed by mouse
-    lmShapeStaff*   m_pCurShapeStaff;       //current staff for point pointed by mouse
     lmBoxSliceInstr* m_pLastBSI;            //last BoxSliceInstr pointed by mouse
-    lmBoxSliceInstr* m_pCurBSI;             //current BoxSliceInstr pointed by mouse
-    float           m_rCurGridTime;         //time for current mouse position
     bool            m_fDraggingTool;        //dragging a tool
     lmInfoWindow*   m_pInfoWindow; 
-    wxString        m_sToolInfo;
+
+    //mouse position related info ( updated in GetPointedAreaInfo() )
+    lmShapeStaff*   m_pCurShapeStaff;       //current staff for point pointed by mouse
+    lmBoxSliceInstr* m_pCurBSI;             //current BoxSliceInstr pointed by mouse
+    lmGMObject*     m_pCurGMO;              //current GMObjcet pointed by mouse
+    long            m_nMousePointedArea;    //type of area pointed by mouse
+    float           m_rCurGridTime;         //time for current mouse position
 
 
 

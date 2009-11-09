@@ -117,7 +117,7 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('|'), -20,      0,     0,    0,      0,      0,   1024,    307,    512,    154,      0 ),    //_T("Breve rest")) ,    //breve, cuadrada
     lmGlyph(_T('{'), -20,      0,     0,    0,      0,      0,   1280,    720,    256,    360,      0 ),    //_T("Whole rest")) ,    //whole redonda
     lmGlyph(_T('z'), -20,      0,     0,    0,      0,      0,   1024,    720,    256,    360,      0 ),    //_T("Half rest")) ,     //half blanca
-    lmGlyph(_T('y'), -20,      0,     0,    0,      0,      0,    343,    510,   1362,    205,   1705 ),    //_T("Quarter rest")) ,  //quarter negra
+    lmGlyph(_T('y'), -20,      0,     0,    0,      0,      0,    343,    510,   1362,    205,    975 ),    //_T("Quarter rest")) ,  //quarter negra
     lmGlyph(_T('x'), -20,      0,     0,    0,      0,      0,    512,    480,    888,    240,    700 ),    //_T("Eight rest")) ,    //eighth corchea
     lmGlyph(_T('w'), -20,      0,     0,    0,      0,      0,      0,    618,   1368,    309,    684 ),    //_T("16th rest")) ,     //16th semicorchea
     lmGlyph(_T('v'), -20,      0,     0,    0,      0,      0,      0,    726,   1848,    363,    924 ),    //_T("32nd rest")) ,     //32nd fusa

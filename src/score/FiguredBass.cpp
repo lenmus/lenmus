@@ -163,8 +163,8 @@ public:
 };
 
 lmGrpCommonFB::lmGrpCommonFB(wxPanel* pParent, wxBoxSizer* pMainSizer, int nNumButtons)
-        : lmToolButtonsGroup(pParent, nNumButtons, lmTBG_ALLOW_NONE, pMainSizer,
-                             lmID_QUICK_BT, lmTOOL_NONE)
+        : lmToolButtonsGroup(pParent, lm_eGT_Options, nNumButtons, lmTBG_ALLOW_NONE,
+                             pMainSizer, lmID_QUICK_BT, lmTOOL_NONE)
 {
 }
 

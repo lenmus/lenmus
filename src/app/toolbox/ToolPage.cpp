@@ -86,6 +86,12 @@ void lmToolPage::CreatePage(wxWindow* parent, lmEToolPageID nPageID)
 
 lmToolPage::~lmToolPage()
 {
+    //delete groups
+    std::list<lmToolGroup*>::iterator it;
+    for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
+    {
+        delete *it;
+    }
 }
 
 void lmToolPage::CreateLayout()
@@ -110,11 +116,12 @@ void lmToolPage::OnToolChanged(lmEToolGroupID nGroupID, lmEToolID nToolID)
     if (!m_fGroupsCreated)
         return;
 
-    //deselect tools in any related groups to the one issuing the callback
-    if (DeselectRelatedGroups(nGroupID))
+    //if selected group is a tool selector one, deselect any other 
+    //tool-selector group in this page and save information about current
+    //group and tool
+    if (GetToolGroup(nGroupID)->IsToolSelectorGroup())
     {
-        //if this group contains a tool (not an option), save information 
-        //about current group and tool
+        DeselectRelatedGroups(nGroupID);
         m_nCurGroupID = nGroupID;
         m_nCurToolID = nToolID;
     }
@@ -124,6 +131,70 @@ void lmToolPage::OnToolChanged(lmEToolGroupID nGroupID, lmEToolID nToolID)
     if (pWnd)
     {
         lmToolBoxToolSelectedEvent event(nGroupID, m_nPageID, nToolID, true);
+        ::wxPostEvent( pWnd, event );
+    }
+}
+
+lmToolGroup* lmToolPage::GetToolGroup(lmEToolGroupID nGroupID)
+{
+    //return pointer to group nGroupID
+
+    std::list<lmToolGroup*>::iterator it;
+    for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
+    {
+        if ((*it)->GetToolGroupID() == nGroupID)
+            return *it;
+    }
+    wxASSERT(false);
+    return (lmToolGroup*)NULL;      //compiler happy
+}
+
+void lmToolPage::DeselectRelatedGroups(lmEToolGroupID nGroupID)
+{
+    //When there are several groups in the same tool page (i.e, clefs, keys and
+    //time signatures) the groups must behave as if they where a single 'logical
+    //group', that is, selecting a tool in a group will deselect any tool on the
+    //other related groups. 
+    //If selected group is a tool-selector one, this method is invoked to deselect
+    //any other tool-selector group in this page.
+
+    //select/deselect groups
+    std::list<lmToolGroup*>::iterator it;
+    for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
+    {
+        if ((*it)->IsToolSelectorGroup())
+            (*it)->SetSelected((*it)->GetToolGroupID() == nGroupID);
+    }
+}
+
+void lmToolPage::SelectGroup(lmToolGroup* pGroup)
+{
+    //Selects received group (it MUST be a tool-selector one) and deselects
+    //any other tool-selector group in the same page. Sends a tool box event
+    //to the active controller.
+
+
+    //select/deselect groups
+    //When there are several tool-selector groups in the same tool page (i.e, clefs,
+    //keys and time signatures) the groups must behave as if they where a single
+    //'logical group', that is, selecting a tool in a group will deselect any tool 
+    //on the other related groups. 
+    std::list<lmToolGroup*>::iterator it;
+    for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
+    {
+        if ((*it)->IsToolSelectorGroup())
+            (*it)->SetSelected(pGroup == *it);
+    }
+
+    //save information about current group and tool
+    m_nCurGroupID = pGroup->GetToolGroupID();
+    m_nCurToolID = pGroup->GetCurrentToolID();
+
+    //post tool box event to the active controller
+    wxWindow* pWnd = GetMainFrame()->GetActiveController();
+    if (pWnd)
+    {
+        lmToolBoxToolSelectedEvent event(m_nCurGroupID, m_nPageID, m_nCurToolID, true);
         ::wxPostEvent( pWnd, event );
     }
 }

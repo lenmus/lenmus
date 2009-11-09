@@ -36,6 +36,9 @@
 #include "wx/wx.h"
 #endif
 
+#include "../score/defs.h"
+
+
 //different layouts
 enum lmEStatusBarLayout
 {
@@ -52,19 +55,29 @@ public:
 
 	//event handlers
 	void OnSize(wxSizeEvent& event);
+    void OnButtonMouse(wxCommandEvent& WXUNUSED(event));
+    void OnButtonCaret(wxCommandEvent& WXUNUSED(event));
 
     //updating fields
     void SetMsgText(const wxString& sText);
     void SetNumPage(int nPage);
     void SetMousePos(float x, float y);
-    void SetCursorRelPos(float rTime, int nMeasure);
-    void SetToolboxData(const wxString& sText);
+    void SetTimePosInfo(float rTime, int nMeasure);
+
+    //updateing status bar
+    void SetMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos);
+    void SetCaretData(int nPage, float rTime, int nMeasure);
 
     //info
     inline lmEStatusBarLayout GetType() const { return m_nType; }
 
 
 private:
+    void DoSelectMouseInfo();
+    void DoSelectCaretInfo();
+    void UpdateTimeInfo();
+    wxBitmap CreateMouseBitmap(bool fOn);
+
     wxFrame*            m_pFrame;       //parent frame
     int                 m_nNumFields;
     lmEStatusBarLayout  m_nType;
@@ -72,6 +85,20 @@ private:
 	wxStaticBitmap*		m_pBmpPage;
 	wxStaticBitmap*		m_pBmpMouse;
 	wxString			m_sIconSpace;
+    wxBitmapButton*     m_pBtMouse;
+    wxBitmapButton*     m_pBtCaret;
+
+    bool            m_fMouseDisplay;        //display mouse or caret info
+
+    //mouse info
+    int             m_nMousePage;
+    float           m_rMouseTime;
+    int             m_nMouseMeasure;
+
+    //caret info
+    int             m_nCaretPage;
+    float           m_rCaretTime;
+    int             m_nCaretMeasure;
 
 
     DECLARE_EVENT_TABLE()

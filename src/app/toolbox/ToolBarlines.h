@@ -48,22 +48,24 @@ public:
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_BarlineType; }
     inline lmEToolID GetCurrentToolID() { return (lmEToolID)m_pBarlinesList->GetSelection(); }
 
+	//access to selected barline
+	lmEBarline GetSelectedBarline();
+
 	//event handlers
-    void OnAddBarline(wxCommandEvent& event);
+    void OnBarlinesList(wxCommandEvent& event);
 
 
 private:
     void CreateGroupControls(wxBoxSizer* pMainSizer);
 
 	wxBitmapComboBox*   m_pBarlinesList;
-    wxButton*           m_pBtAddBarline;
 
     DECLARE_EVENT_TABLE()
 };
 
 
 //--------------------------------------------------------------------------------
-// The panel
+// The page panel
 //--------------------------------------------------------------------------------
 
 class lmToolPageBarlines : public lmToolPage
@@ -77,12 +79,14 @@ public:
     void Create(wxWindow* parent);
 
     //implementation of virtual methods
-    lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
     void CreateGroups();
-    bool DeselectRelatedGroups(lmEToolGroupID nGroupID);
 
     //current tool/group info
     wxString GetToolShortDescription();
+
+    //interface with groups
+        //barlines
+    inline lmEBarline GetSelectedBarline() { return m_pGrpBarlines->GetSelectedBarline(); }
 
 
 private:

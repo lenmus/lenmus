@@ -84,9 +84,10 @@ public:
     //status bar
     void SetStatusBarMsg(const wxString& sText);
     void SetStatusBarMousePos(float x, float y);
-    void SetStatusBarCursorRelPos(float rTime, int nMeasure);
+    void SetStatusBarTimePosInfo(float rTime, int nMeasure);
     void SetStatusBarNumPage(int nPage);
-    void SetStatusBarToolboxData(const wxString& sText);
+    void SetStatusBarMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos);
+    void SetStatusBarCaretData(int nPage, float rTime, int nMeasure);
 
     //ToolBox
 	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }

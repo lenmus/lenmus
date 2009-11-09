@@ -166,6 +166,13 @@ bool lmScoreCommand::CommandDone(bool fCmdSuccess, int nUpdateHints)
     //command to command history, and do not update views"
     if (!fCmdSuccess || !m_fUndoable)
         return false;
+
+    ////DBG ---------------------------------------------
+    //wxLogMessage(_T("[lmScoreCommand::CommandDone] Dump of new score follows:"));
+    //wxLogMessage( m_pDoc->GetScore()->Dump() );
+    //wxLogMessage( m_pDoc->GetScore()->SourceLDP(true) );
+    //wxMessageBox(_T("Barline inserted"));
+    ////END DBG -----------------------------------------
     
     //success. mark document as 'modified'
 	m_fDocModified = m_pDoc->IsModified();

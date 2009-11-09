@@ -65,27 +65,33 @@ BEGIN_EVENT_TABLE(lmToolGroup, wxPanel)
     EVT_PAINT(lmToolGroup::OnPaintEvent)
 END_EVENT_TABLE()
 
-lmToolGroup::lmToolGroup(wxPanel* pParent, lmColorScheme* pColours,
-                         int nValidMouseModes)
+lmToolGroup::lmToolGroup(wxPanel* pParent, lmEGroupType nGroupType, 
+                         lmColorScheme* pColours, int nValidMouseModes)
 	: wxPanel(pParent, wxID_ANY, wxDefaultPosition, lmTOOLGROUP_SIZE)
     , m_pParent(pParent)
+    , m_nGroupType(nGroupType)
     , m_pColours(pColours)
-    , m_fSelected(true)
     , m_nValidMouseModes(nValidMouseModes)
+    , m_fMousePressedDown(false)
+    , m_fSelected(true)
 {
+    //set font to draw group labels
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
 
-    //AWARE: ToolGroup is used as a control in properties dialogs. In them, 
-    // the owner is not a lmToolPage and pointer pColors is NULL
+    //Any ToolGroup can be used as a control in properties dialogs. In them, 
+    //the owner is not a lmToolPage and pointer pColors is NULL
+    m_fGuiControl = (m_pParent->IsKindOf(CLASSINFO(lmToolPage)) ? false : true);
 
     if(pColours)
     {
         SetForegroundColour(pColours->PrettyDark());
 	    SetBackgroundColour(pColours->Normal());        //Bright()); 
     }
-
-//    m_sTitle = label;
-    m_fMousePressedDown = false;
+    else
+    {
+        //the group must be used as GUI control
+        wxASSERT(m_fGuiControl);
+    }
 }
 
 lmToolGroup::~lmToolGroup()
@@ -116,7 +122,23 @@ wxBoxSizer* lmToolGroup::CreateGroupSizer(wxBoxSizer* pMainSizer)
 
 void lmToolGroup::SetSelected(bool fSelected)
 {
+    //set selected/deselected state for tool-selector groups
+    //If group was disabled it is first enabled.
+
+    wxASSERT(IsToolSelectorGroup());
+
+    //check if anything to do
+    if (m_fSelected == fSelected)
+        return;
+
+    //change selected/deselected state
     m_fSelected = fSelected;
+
+    //if group is disabled, enable it
+    if (!this->IsEnabled())
+        EnableGroup(true);
+    else
+        DoPaintNow();
 }
 
 int lmToolGroup::GetGroupWitdh()
@@ -128,6 +150,23 @@ int lmToolGroup::GetGroupWitdh()
 
 void lmToolGroup::EnableGroup(bool fEnable)
 {
+    //enable/disable the group and repaints group to display new state
+    //if enable, for tool-selector groups the previous state (selected/deselected)
+    //is restored
+
+    //check if anything to do
+    if (this->IsEnabled() == fEnable)
+        return;
+
+    //for tool-selector groups save/restore state before disabling/enabling the group
+    if (IsToolSelectorGroup())
+    {
+        if (fEnable)
+            m_fSelected = m_fSaveSelected;
+        else
+            m_fSaveSelected = m_fSelected;
+    }
+
     Enable(fEnable);
     DoPaintNow();
 }
@@ -324,6 +363,9 @@ void lmToolGroup::OnMouseReleased(wxMouseEvent& event)
     //DoPaintNow();
     //
     ////wxMessageBox( _T("Click on group") );
+    //select tool group by clicking on it
+    if (!m_fGuiControl && IsToolSelectorGroup() && this->IsEnabled())
+        ((lmToolPage*)m_pParent)->SelectGroup(this);
 }
 
 void lmToolGroup::OnMouseLeftWindow(wxMouseEvent& event)
@@ -350,13 +392,15 @@ void lmToolGroup::EnableForMouseMode(int nMode)
 //  can have no button selected
 //-----------------------------------------------------------------------------------
 
-lmToolButtonsGroup::lmToolButtonsGroup(wxPanel* pParent, int nNumButtons, bool fAllowNone,
+lmToolButtonsGroup::lmToolButtonsGroup(wxPanel* pParent, lmEGroupType nGroupType,
+                                       int nNumButtons, bool fAllowNone,
                                        wxBoxSizer* pMainSizer, int nFirstButtonEventID,
                                        lmEToolID nFirstButtonToolID,
                                        lmColorScheme* pColours,
                                        int nValidMouseModes)
-	: lmToolGroup(pParent, pColours, nValidMouseModes)
+	: lmToolGroup(pParent, nGroupType, pColours, nValidMouseModes)
 	, m_nSelButton(-1)	            //none selected
+    , m_nSelButtonSave(-1)
     , m_nFirstButtonEventID(nFirstButtonEventID)
     , m_nFirstButtonToolID((int)nFirstButtonToolID)
     , m_fAllowNone(fAllowNone)
@@ -383,6 +427,8 @@ void lmToolButtonsGroup::SelectButton(int iB)
     // Set selected button as 'pressed' and all others as 'released'
 
 	m_nSelButton = iB;
+    if (m_nSelButtonSave == -1)
+        m_nSelButtonSave = iB;
 	for(int i=0; i < m_nNumButtons; i++)
 	{
 		if (i != iB)
@@ -395,6 +441,25 @@ void lmToolButtonsGroup::SelectButton(int iB)
 
     //return focus to active view
     GetMainFrame()->SetFocusOnActiveView();
+}
+
+void lmToolButtonsGroup::SetSelected(bool fSelected)
+{
+    //check if something to do
+    if (fSelected == m_fSelected)
+        return;
+
+    //change status
+    m_fSelected = fSelected;
+
+    //if not allowed 'no button selected' hide/restore selected button
+    if (fSelected && !m_fAllowNone && m_nSelButtonSave != -1)
+        SelectButton(m_nSelButtonSave);
+    else if (!fSelected && !m_fAllowNone && m_nSelButton != -1)
+    {
+        m_pButton[m_nSelButton]->Release();
+        m_nSelButtonSave = m_nSelButton;
+    }
 }
 
 void lmToolButtonsGroup::SelectNextButton()
@@ -428,9 +493,12 @@ void lmToolButtonsGroup::OnButton(wxCommandEvent& event)
     if (IsNoneAllowed() && GetSelectedButton() == iB)
 	    SelectButton(-1);       //no button selected
     else
+    {
 	    SelectButton(iB);
+        m_nSelButtonSave = iB;
+    }
     
-    //inform derived class
+    //inform owner page
     OnButtonSelected( m_nSelButton );
 }
 

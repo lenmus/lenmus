@@ -108,12 +108,14 @@ public:
 
 private:
 
+    //voices management
     void VoiceUsed(int nVoice);
+
     void SortMeasure();
     void ShiftRightTimepos(lmStaffObj* pStartSO, float rTimeShift);
     void AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO);
     void ShiftLeftTimepos(lmStaffObj* pStartSO, float rTimeShift, float rStartTimepos, int nVoice);
-    void CountObjects();
+    void CountObjectsAndVoices();
     void AttachWarning();
 
     //segment management

@@ -1564,6 +1564,9 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
     }
     --m_nNumSO;
 
+    //if removed object is a note/rest update used voices
+	if (pSO->IsNoteRest())
+        CountObjectsAndVoices();
 
     //if removed object is a note not in chord:
     //  - Shift left all note/rests in this voice and sort the collection
@@ -1895,6 +1898,15 @@ bool lmSegment::IsSegmentFull()
 wxString lmSegment::Dump()
 {
     wxString sDump = wxString::Format(_T("\nSegment %d\n"), m_nNumSegment+1);
+    wxString sVoices = _T("Used voices:");
+    for (int i=0; i <= lmMAX_VOICE; i++)
+    {
+        if (IsVoiceUsed(i))
+            sVoices += wxString::Format(_T(" %d"), i);
+    }
+    sDump += sVoices;
+    sDump += _T("\n");
+
     for (int i=0; i < lmMAX_STAFF; i++)
     {
         if (m_pContext[i]) {
@@ -2646,7 +2658,7 @@ void lmSegment::SetCollection(lmStaffObj* pFirstSO, lmStaffObj* pLastSO)
 
     m_pFirstSO = pFirstSO;
     m_pLastSO = pLastSO;
-    CountObjects();
+    CountObjectsAndVoices();
 
     //compute segment duration
     UpdateDuration();
@@ -2660,6 +2672,8 @@ void lmSegment::SetCollection(lmStaffObj* pFirstSO, lmStaffObj* pLastSO)
         {
             pSO->SetTimePos( pSO->GetTimePos() - rTime );
             pSO->SetSegment(this);
+            if (pSO == pLastSO) 
+                break;
             pSO = pSO->GetNextSO();
         }
     }
@@ -2674,7 +2688,7 @@ void lmSegment::FinishSegmentAt(lmStaffObj* pLastSO)
     wxASSERT(pLastSO);
 
     m_pLastSO = pLastSO;
-    CountObjects();
+    CountObjectsAndVoices();
 
     //compute segment duration
     UpdateDuration();
@@ -2701,7 +2715,7 @@ float lmSegment::JoinSegment(lmSegment* pSegment)
     lmStaffObj* pStart = m_pLastSO;
     m_pLastSO = pSegment->GetLastSO();
     wxASSERT(m_pLastSO);    //must exists as segment is not empty
-    CountObjects();
+    CountObjectsAndVoices();
 
     //Adjust timepos and update segment pointer in all moved objects
 	//Re-assign time to all appended objects and chage ptr to segment.
@@ -2719,17 +2733,29 @@ float lmSegment::JoinSegment(lmSegment* pSegment)
     return rTime;
 }
 
-void lmSegment::CountObjects()
+void lmSegment::CountObjectsAndVoices()
 {
-    //count the number of objects in the collection
+    //count the number of objects in the collection and recompute the voices
+    //used in this segment
 
     m_nNumSO = 0;
-    if (!m_pFirstSO) return;
+    m_bVoices = 0x00;
+    if (!m_pFirstSO)
+        return;
 
     lmSOIterator it(m_pOwner, m_pFirstSO);
 	while (!it.ChangeOfMeasure() && !it.EndOfCollection())
 	{
+        //count object
         ++m_nNumSO;
+
+        //update used voices
+        lmStaffObj* pSO = it.GetCurrent();
+        if (pSO->IsNoteRest())
+            VoiceUsed( ((lmNoteRest*)pSO)->GetVoice() );
+        else
+            VoiceUsed(0);
+
         it.MoveNext();
     }
 }

@@ -89,18 +89,6 @@ void lmToolPageSymbols::Create(wxWindow* parent)
 
 lmToolPageSymbols::~lmToolPageSymbols()
 {
-    delete m_pGrpSymbols;
-}
-
-lmToolGroup* lmToolPageSymbols::GetToolGroup(lmEToolGroupID nGroupID)
-{
-    switch(nGroupID)
-    {
-        case lmGRP_Symbols:    return m_pGrpSymbols;
-        default:
-            wxASSERT(false);
-    }
-    return (lmToolGroup*)NULL;      //compiler happy
 }
 
 void lmToolPageSymbols::CreateGroups()
@@ -121,27 +109,6 @@ void lmToolPageSymbols::CreateGroups()
     m_fGroupsCreated = true;
 }
 
-bool lmToolPageSymbols::DeselectRelatedGroups(lmEToolGroupID nGroupID)
-{
-    //When there are several groups in the same tool page (i.e, clefs, keys and
-    //time signatures) the groups will behave as if they where a single 'logical
-    //group', that is, selecting a tool in a group will deselect any tool on the
-    //other related groups. To achieve this behaviour the group will call this
-    //method to inform the owner page.
-    //This method must deselect tools in any related groups to the one received
-    //as parameter, and must return 'true' if that group is a tool group of
-    //'false' if it is an options group.
-
-    switch(nGroupID)
-    {
-        case lmGRP_Symbols:    
-            return true;
-        default:
-            wxASSERT(false);
-    }
-    return false;      //compiler happy
-}
-
 wxString lmToolPageSymbols::GetToolShortDescription()
 {
     //returns a short description of the selected tool. This description is used to
@@ -159,9 +126,10 @@ wxString lmToolPageSymbols::GetToolShortDescription()
 
 lmGrpSymbols::lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer,
                            int nValidMouseModes)
-        : lmToolButtonsGroup(pParent, lm_NUM_SYMBOL_BUTTONS, lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Symbols, lmTOOL_FIGURED_BASS, pParent->GetColors(),
-                             nValidMouseModes)
+    : lmToolButtonsGroup(pParent, lm_eGT_ToolSelector, lm_NUM_SYMBOL_BUTTONS,
+                         lmTBG_ONE_SELECTED, pMainSizer,
+                         lmID_BT_Symbols, lmTOOL_FIGURED_BASS, pParent->GetColors(),
+                         nValidMouseModes)
 {
 }
 

@@ -57,7 +57,6 @@
 //event IDs
 enum {
     lmID_BARLINES_LIST = 2600,
-    lmID_BARLINE_ADD,
 };
 
 
@@ -89,18 +88,6 @@ void lmToolPageBarlines::Create(wxWindow* parent)
 
 lmToolPageBarlines::~lmToolPageBarlines()
 {
-    delete m_pGrpBarlines;
-}
-
-lmToolGroup* lmToolPageBarlines::GetToolGroup(lmEToolGroupID nGroupID)
-{
-    switch(nGroupID)
-    {
-        case lmGRP_BarlineType:    return m_pGrpBarlines;
-        default:
-            wxASSERT(false);
-    }
-    return (lmToolGroup*)NULL;      //compiler happy
 }
 
 void lmToolPageBarlines::CreateGroups()
@@ -121,26 +108,6 @@ void lmToolPageBarlines::CreateGroups()
     m_fGroupsCreated = true;
 }
 
-bool lmToolPageBarlines::DeselectRelatedGroups(lmEToolGroupID nGroupID)
-{
-    //When there are several groups in the same tool page (i.e, clefs, keys and
-    //time signatures) the groups will behave as if they where a single 'logical
-    //group', that is, selecting a tool in a group will deselect any tool on the
-    //other related groups. To achieve this behaviour the group will call this
-    //method to inform the owner page.
-    //This method must deselect tools in any related groups to the one received
-    //as parameter, and must return 'true' if that group is a tool group of
-    //'false' if it is an options group.
-
-    switch(nGroupID)
-    {
-        case lmGRP_BarlineType:    return true;
-        default:
-            wxASSERT(false);
-    }
-    return false;      //compiler happy
-}
-
 wxString lmToolPageBarlines::GetToolShortDescription()
 {
     //returns a short description of the selected tool. This description is used to
@@ -156,7 +123,7 @@ wxString lmToolPageBarlines::GetToolShortDescription()
 //--------------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(lmGrpBarlines, lmToolGroup)
-    EVT_BUTTON      (lmID_BARLINE_ADD, lmGrpBarlines::OnAddBarline)
+    EVT_COMBOBOX    (lmID_BARLINES_LIST, lmGrpBarlines::OnBarlinesList)
 END_EVENT_TABLE()
 
 static lmBarlinesDBEntry m_tBarlinesDB[lm_eMaxBarline+1];
@@ -164,7 +131,8 @@ static lmBarlinesDBEntry m_tBarlinesDB[lm_eMaxBarline+1];
 
 lmGrpBarlines::lmGrpBarlines(lmToolPage* pParent, wxBoxSizer* pMainSizer,
                              int nValidMouseModes)
-        : lmToolGroup(pParent, pParent->GetColors(), nValidMouseModes)
+        : lmToolGroup(pParent, lm_eGT_ToolSelector, pParent->GetColors(),
+                      nValidMouseModes)
 {
     //To avoid having to translate again barline names, we are going to load them
     //by using global function GetBarlineName()
@@ -192,10 +160,6 @@ void lmGrpBarlines::CreateGroupControls(wxBoxSizer* pMainSizer)
 
 	pCtrolsSizer->Add( m_pBarlinesList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-    //button to add the clef
-    m_pBtAddBarline = new wxButton(this, lmID_BARLINE_ADD, _("Add barline"), wxDefaultPosition, wxDefaultSize, 0 );
-	pCtrolsSizer->Add( m_pBtAddBarline, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
 	this->Layout();
 
     //initializations
@@ -203,17 +167,31 @@ void lmGrpBarlines::CreateGroupControls(wxBoxSizer* pMainSizer)
 	SelectBarlineBitmapComboBox(m_pBarlinesList, lm_eBarlineSimple);
 }
 
-void lmGrpBarlines::OnAddBarline(wxCommandEvent& event)
+void lmGrpBarlines::OnBarlinesList(wxCommandEvent& event)
 {
-    //insert selected barline
-	WXUNUSED(event);
-	int iB = m_pBarlinesList->GetSelection();
-    lmController* pSC = GetMainFrame()->GetActiveController();
-    if (pSC)
-    {
-        pSC->InsertBarline(m_tBarlinesDB[iB].nBarlineType);
+    //Notify owner page about the tool change
+    WXUNUSED(event);
 
-        //return focus to active view
-        GetMainFrame()->SetFocusOnActiveView();
-    }
+    ((lmToolPage*)m_pParent)->OnToolChanged(GetToolGroupID(), GetCurrentToolID());
 }
+
+lmEBarline lmGrpBarlines::GetSelectedBarline() 
+{ 
+	int iB = m_pBarlinesList->GetSelection();
+    return m_tBarlinesDB[iB].nBarlineType;
+}
+
+//void lmGrpBarlines::OnAddBarline(wxCommandEvent& event)
+//{
+//    //insert selected barline
+//	WXUNUSED(event);
+//	int iB = m_pBarlinesList->GetSelection();
+//    lmController* pSC = GetMainFrame()->GetActiveController();
+//    if (pSC)
+//    {
+//        pSC->InsertBarline(m_tBarlinesDB[iB].nBarlineType);
+//
+//        //return focus to active view
+//        GetMainFrame()->SetFocusOnActiveView();
+//    }
+//}

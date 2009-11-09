@@ -49,7 +49,7 @@ public:
 	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void CreateLayout();
 	inline lmColorScheme* GetColors() { return GetToolBox()->GetColors(); }
-    virtual lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID) = 0;
+    virtual lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
 
     virtual wxString& GetPageToolTip() { return m_sPageToolTip; }
     virtual wxString& GetPageBitmapName() { return m_sPageBitmapName; }
@@ -57,10 +57,10 @@ public:
     virtual void OnPopUpMenuEvent(wxCommandEvent& event) { event.Skip(); }
 
     virtual void CreateGroups() = 0;
-    virtual bool DeselectRelatedGroups(lmEToolGroupID nGroupID) = 0;
     void ReconfigureForMouseMode(int nMode);
 
 	//current selected group/tool and its options
+    void SelectGroup(lmToolGroup* pGroup);
     inline lmEToolGroupID GetCurrentGroupID() const { return m_nCurGroupID; }
     inline lmEToolID GetCurrentToolID() const { return m_nCurToolID; }
     virtual wxString GetToolShortDescription() = 0;
@@ -71,6 +71,7 @@ public:
 
 protected:
     inline lmToolBox* GetToolBox() { return (lmToolBox*)GetParent(); }
+    void DeselectRelatedGroups(lmEToolGroupID nGroupID);
 
     wxString    m_sPageToolTip;         //tool tip text
     wxString    m_sPageBitmapName;      //bitmap to use

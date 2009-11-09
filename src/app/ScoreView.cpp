@@ -878,7 +878,7 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
 void lmScoreView::UpdateNumPage(int nNumPage)
 {
     m_nNumPage = nNumPage;
-    GetMainFrame()->SetStatusBarNumPage(nNumPage);
+    //GetMainFrame()->SetStatusBarNumPage(nNumPage);
 }
 
 lmDPoint lmScoreView::GetPageOffset(int nNumPage)
@@ -1710,9 +1710,6 @@ void lmScoreView::UpdateCaret()
     if (m_fDisplayCaret)
 	    m_pCaret->Hide();
 
-	//status bar: timepos
-	m_pMainFrame->SetStatusBarCursorRelPos( m_pScoreCursor->GetCursorTime(), 0);
-
     ////DBG ------------------------------------------------------------------------------
     //wxString sType = _T("end of collection");
     //lmStaffObj* pSO = m_pScoreCursor->GetStaffObj();
@@ -1735,7 +1732,6 @@ void lmScoreView::UpdateCaret()
 	//Get cursor new position
     int nPage;
     lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
-    m_pMainFrame->SetStatusBarNumPage(nPage);
 
     //if new cursos position is out of currently displayed page/area it is necesary
     //to adjust scrolling to ensure that cursor is visible and that it is displayed at
@@ -1753,6 +1749,10 @@ void lmScoreView::UpdateCaret()
     //now we can safely display the caret
     if (m_fDisplayCaret)
         m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
+
+    //update status bar info
+	m_pMainFrame->SetStatusBarCaretData(nPage,
+                                        m_pScoreCursor->GetCursorTime(), 0);
 
     //inform the controller, for updating other windows (i.e. toolsbox)
     GetController()->SynchronizeToolBox();

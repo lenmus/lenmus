@@ -275,10 +275,6 @@ public:
     virtual void CreateGroups() = 0;
     virtual void Create(wxWindow* parent);
 
-    //implementation of virtual methods
-    lmToolGroup* GetToolGroup(lmEToolGroupID nGroupID);
-    bool DeselectRelatedGroups(lmEToolGroupID nGroupID);
-
 	//access to options
     wxString GetToolShortDescription();
 
