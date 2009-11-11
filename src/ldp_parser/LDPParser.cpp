@@ -87,22 +87,13 @@ public:
 
 lmLDPParser::lmLDPParser()
 {
-    CreateParser(_T("en"), _T("utf-8"));     //default tags in English
-}
-
-lmLDPParser::lmLDPParser(wxString sLanguage, wxString sCharset)
-{
-    CreateParser(sLanguage, sCharset);
-}
-
-void lmLDPParser::CreateParser(const wxString& sLanguage, const wxString& sCharset)
-{
     m_pTokenizer = new lmLDPTokenBuilder(this);
     m_nNumLine = 0;
     m_nMaxID = 0L;
     m_pCurNode = (lmLDPNode*) NULL;
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmLDPParser"));
     m_pTuplet = (lmTupletBracket*)NULL;
+
     // default values for font and aligment for <title> elements
     //TODO user options instead of fixed values
     m_nTitleAlignment = lmHALIGN_CENTER;
@@ -686,7 +677,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     wxString sData;
     int nNumParms = pNode->GetNumParms();
 
-    //parse element <language>
+    //parse element <language> [Obsolete since 1.6]
     wxString sLangCode = _T("en");
     wxString sCharset = _T("");
     iP = 2;      //first parameter is always the version and is already analyzed. So, skip it

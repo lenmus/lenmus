@@ -353,7 +353,7 @@ lmClef* lmVStaff::Cmd_InsertClef(lmEClefType nClefType, bool fVisible)
 {
     //if there are notes affected by new clef, get user desired behaviour
     int nAction = 1;        //0=Cancel operation, 1=keep pitch, 2=keep position
-    if (CheckIfNotesAffectedByClef(false))
+    if (CheckIfNotesAffectedByAddingClef(nClefType))
         nAction = AskUserAboutClef();
 
     if (nAction == 0)
@@ -805,10 +805,9 @@ bool lmVStaff::Cmd_DeleteClef(lmClef* pClef, int nAction)
 {
     //returns true if deletion error or it is cancelled
     //  nAction:  0=Cancel operation, 1=keep pitch, 2=keep position
-
-    ////if there are notes affected by deleting clef, get user desired behaviour
-    //if (fAskUser && CheckIfNotesAffectedByClef(true))
-    //    nAction = AskUserAboutClef();
+    //AWARE: This method DOES NOT verify if there are notes affected by deleting
+    //  the clef. This check MUST be done before invoking this method, by 
+    //  calling method CheckIfNotesAffectedByDeletingClef()
 
     if (nAction == 0)
         return true;       //Cancel clef deletion
@@ -828,10 +827,9 @@ bool lmVStaff::Cmd_DeleteKeySignature(lmKeySignature* pKS, int nAction)
 {
     //returns true if deletion cancelled or error
     //  nAction:    0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
-
-    ////if there are notes affected by key removal, get user desired behaviour
-    //if (fAskUser && CheckIfNotesAffectedByKey(true))        //true->skip this key
-    //    nAction = AskUserAboutKey();
+    //AWARE: This method DOES NOT verify if there are notes affected by deleting
+    //  the key. This check MUST be done before invoking this method, by 
+    //  calling method CheckIfNotesAffectedByKey(true)
 
     if (nAction == 0)
         return true;       //Cancel key deletion
@@ -2089,20 +2087,28 @@ lmNote* lmVStaff::FindPossibleEndOfTie(lmNote* pStartNote)
     return (lmNote*)NULL;        //no suitable note found
 }
 
-bool lmVStaff::CheckIfNotesAffectedByClef(bool fSkip)
+bool lmVStaff::CheckIfNotesAffectedByDeletingClef()
 {
-    //  This method is used when a clef is going to be added/changed/deleted, to verify
-    //  if the clef change affects any subsequent note.
-    //  
-    //  Returns true if, starting from current position, no note is found or a clef is
-    //  found before finding a note. Flag fSkip request to skip current pointed SO, as it is
-    //  the clef to be changed/deleted
+    //This method is used when a clef is going to be deleted, to verify
+    //if the clef change affects any subsequent note.
+    //Returns false if clef can be safely deleted without affecting any note.
+    //There are notes affected by deletion only when:
+    //  - There are notes after clef to delete and either     
+    //      - There is a clef before clef to delete, and both are different, or
+    //      - There is no clef before clef to delete
+    //
+    //AWARE: when this method is invoked cursor MUST point to clef to delete
 
-
-    //define iterator from current cursor position
+    //define iterator from current cursor position (clef to delete)
     lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetCursor());
-    if(fSkip && !pIter->EndOfCollection())
-        pIter->MoveNext();
+
+    //check that cursor points to clef to delete
+    wxASSERT(!pIter->EndOfCollection() && (pIter->GetCurrent())->IsClef());
+    lmEClefType nClefType = ((lmClef*)(pIter->GetCurrent()))->GetClefType();
+    pIter->MoveNext();
+
+    //determine if there are notes after clef to delete
+    bool fThereAreNotes = false;        //assume no notes after clef to delete
     while(!pIter->EndOfCollection())
     {
         lmStaffObj* pSO = pIter->GetCurrent();
@@ -2111,15 +2117,85 @@ bool lmVStaff::CheckIfNotesAffectedByClef(bool fSkip)
         else if (pSO->IsNote() )
         {
             //note found
-            delete pIter;
-            return true;
+            fThereAreNotes = true;
+            break;
+        }
+        pIter->MoveNext();
+    }
+    delete pIter;
+
+    if (!fThereAreNotes)
+        return false;       //No notes affected. Cleft can be safely deleted.
+
+    //There are notes. Check if there is a previous clef and its type
+    lmEClefType nPrevClefType = lmE_Undefined;
+    pIter = m_cStaffObjs.CreateIteratorFrom(GetCursor());   //start at clef to delete
+    pIter->MovePrev();
+    while(!pIter->EndOfCollection())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsClef())
+        {
+            //clef found before finding a note
+            nPrevClefType = ((lmClef*)pSO)->GetClefType();
+            break;              
+        }
+        else if (pSO->IsNote() )
+        {
+            //note found. Get applicable clef
+            nPrevClefType = ((lmNote*)pSO)->GetApplicableClefType();
+            break;
+        }
+        pIter->MovePrev();
+    }
+    delete pIter;
+
+    //Decide what to answer
+    if (nPrevClefType == lmE_Undefined)
+    {
+        //clef to delete is the first clef in score. Notes affected.
+        return true;        //No safe clef deletion
+    }
+    else if (nPrevClefType == nClefType)
+    {
+        //clef to delete is the same than the previous clef. No problem.
+        return false;        //No problem. Safe clef deletion
+    }
+    else
+    {
+        //clef to delete is different than the previous clef. Notes affected.
+        return true;        //No safe clef deletion
+    }
+}
+
+bool lmVStaff::CheckIfNotesAffectedByAddingClef(lmEClefType nClefType)
+{
+    //This method is used when a clef is going to be added, to verify
+    //if the clef change affects any subsequent note.
+    //Returns false if clef can be added without affecting notes.
+
+
+    //define iterator from current cursor position
+    bool fAffected = false;     //assume no notes affected.
+    lmSOIterator* pIter = m_cStaffObjs.CreateIteratorFrom(GetCursor());
+    while(!pIter->EndOfCollection())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        if (pSO->IsClef())
+            break;              //clef found before finding a note. No notes affected
+        else if (pSO->IsNote() )
+        {
+            //note found. Check if current applicable clef is the same than clef 
+            //to insert
+            fAffected = (nClefType != ((lmNote*)pSO)->GetApplicableClefType());
+            break;
         }
         pIter->MoveNext();
     }
 
     //clef found before finding a note or no note found
     delete pIter;
-    return false;
+    return fAffected;
 }
 
 bool lmVStaff::CheckIfNotesAffectedByKey(bool fSkip)

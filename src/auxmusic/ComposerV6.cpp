@@ -216,7 +216,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
 
 
     // prepare and initialize the score
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
     lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
@@ -430,7 +430,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     // Score is built but pitches are not yet defined.
     // Proceed to instatiate pitches according to key signature
     GetNotesRange();
-    pScore->Dump(_T("lemus_score_dump.txt"));
+    //pScore->Dump(_T("lemus_score_dump.txt"));
 #if 0   //useful to generate only the rhymth line, to write documenation
     InstantiateWithNote(pScore, lmAPitch(_T("a4")) );
 #else

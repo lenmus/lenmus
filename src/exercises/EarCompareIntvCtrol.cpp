@@ -152,7 +152,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     //
 
     lmNote* pNote[2];
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 

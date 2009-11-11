@@ -271,7 +271,7 @@ void lmScoreCtrolParams::PrepareScore()
 
     //create the score
     lmMusicXMLParser parserXML;
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
 
     switch(m_nScoreType) {
         case eHST_fileXML:

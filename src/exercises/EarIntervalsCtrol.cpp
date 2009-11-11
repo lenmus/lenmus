@@ -315,7 +315,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     //create a score with the interval
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmLDPNode* pNode;
     *pScore = new lmScore();
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);

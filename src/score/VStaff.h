@@ -277,7 +277,8 @@ public:
     //to clarify operations
     int AskUserAboutClef();
     int AskUserAboutKey();
-    bool CheckIfNotesAffectedByClef(bool fSkip);
+    bool CheckIfNotesAffectedByAddingClef(lmEClefType nClefType);
+    bool CheckIfNotesAffectedByDeletingClef();
     bool CheckIfNotesAffectedByKey(bool fSkip);
 
 

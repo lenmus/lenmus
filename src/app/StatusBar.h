@@ -60,11 +60,6 @@ public:
 
     //updating fields
     void SetMsgText(const wxString& sText);
-    void SetNumPage(int nPage);
-    void SetMousePos(float x, float y);
-    void SetTimePosInfo(float rTime, int nMeasure);
-
-    //updateing status bar
     void SetMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos);
     void SetCaretData(int nPage, float rTime, int nMeasure);
 
@@ -73,10 +68,13 @@ public:
 
 
 private:
+    //updating fields
+    void SetNumPage(int nPage);
+    void SetMousePos(float x, float y);
+    void SetTimePosInfo(float rTime, int nMeasure, bool fEmpty);
     void DoSelectMouseInfo();
     void DoSelectCaretInfo();
     void UpdateTimeInfo();
-    wxBitmap CreateMouseBitmap(bool fOn);
 
     wxFrame*            m_pFrame;       //parent frame
     int                 m_nNumFields;
@@ -87,6 +85,13 @@ private:
 	wxString			m_sIconSpace;
     wxBitmapButton*     m_pBtMouse;
     wxBitmapButton*     m_pBtCaret;
+
+    //for mouse/caret buttons
+    wxBitmap            m_bmpMouseInfoNormal;
+    wxBitmap            m_bmpMouseInfoSel;
+    wxBitmap            m_bmpCaretInfoNormal;
+    wxBitmap            m_bmpCaretInfoSel;
+
 
     bool            m_fMouseDisplay;        //display mouse or caret info
 

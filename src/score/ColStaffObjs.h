@@ -72,10 +72,10 @@ public:
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
 	inline lmContext* GetContext(int iStaff) { return m_pContext[iStaff]; }
-    void DoContextInsertion(lmKeySignature* pNewKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
-    void DoContextInsertion(lmClef* pNewClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
-    void DoContextRemoval(lmKeySignature* pOldKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
-    void DoContextRemoval(lmClef* pOldClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
+    void OnContextInserted(lmKeySignature* pNewKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
+    void OnContextInserted(lmClef* pNewClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
+    void OnContextRemoved(lmKeySignature* pOldKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
+    void OnContextRemoved(lmClef* pOldClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
 
     //info
 	inline int GetNumSegment() { return m_nNumSegment; }
@@ -126,13 +126,13 @@ private:
 
     //context management
     lmContext* FindEndOfSegmentContext(int nStaff);
-    void PropagateContextChange(lmContext* pStartContext, int nStaff,
-                                lmKeySignature* pNewKey, lmKeySignature* pOldKey,
-                                bool fKeyKeepPitch);
-    void PropagateContextChange(lmContext* pStartContext, int nStaff,
-                                lmEClefType nNewClefType, lmEClefType nOldClefType,
-                                bool fClefKeepPosition);
-    void PropagateContextChange(lmContext* pStartContext, int nStaff);
+    void OnContextChanged(lmContext* pStartContext, int nStaff,
+                          lmKeySignature* pNewKey, lmKeySignature* pOldKey,
+                          bool fKeyKeepPitch);
+    void OnContextChanged(lmContext* pStartContext, int nStaff,
+                          lmEClefType nNewClefType, lmEClefType nOldClefType,
+                          bool fClefKeepPosition);
+    void OnContextChanged(lmContext* pStartContext, int nStaff);
 
     //staffobjs management
     void Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,

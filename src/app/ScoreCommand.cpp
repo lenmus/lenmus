@@ -258,7 +258,7 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(bool fNormalCmd,
                 else if (pSCO->IsTimeSignature())
                     sName = _T("Delete time signature");
                 lmScoreCommand* pCmd = new lmCmdDeleteStaffObj(lmCMD_HIDDEN, sName, pDoc,
-                                                    (lmStaffObj*)pSCO, false);      //don't ask user
+                                                    (lmStaffObj*)pSCO);
                 m_Commands.push_back( pCmd );
             }
             else if (pSCO->IsStaff() || pSCO->IsVStaff())
@@ -340,7 +340,7 @@ lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(bool fNormalCmd,
     //if there are notes affected by clef or key removal, get user desired behaviour
     if (pSO->IsClef())
     {
-        if (fAskUser && pSO->GetVStaff()->CheckIfNotesAffectedByClef(true))
+        if (fAskUser && pSO->GetVStaff()->CheckIfNotesAffectedByDeletingClef())
             m_nAction = pSO->GetVStaff()->AskUserAboutClef();
         else
             m_nAction = 1;      //keep pitch
@@ -565,7 +565,7 @@ bool lmCmdInsertClef::Do()
     //reposition cursor and save data for undoing the command
     PrepareForRedo();
 
-    //insert the barline
+    //insert the clef
     lmClef* pClef = GetVStaff()->Cmd_InsertClef(m_nClefType);
     return CommandDone(pClef != (lmClef*)NULL);
 }

@@ -410,8 +410,7 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 	bool fDebugMode = g_pLogger->IsAllowedTraceMask(_T("OnMouseEvent"));
 	#endif
 
-    //update status bar: mouse position, and num page
-    GetMainFrame()->SetStatusBarMousePos((float)m_uMousePagePos.x, (float)m_uMousePagePos.y);
+    //update mouse num page
     m_pView->UpdateNumPage(m_nNumPage);
 
 	////for testing and debugging methods DeviceToLogical [ok] and LogicalToDevice [ok]
@@ -2150,16 +2149,15 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
     //update status bar: mouse mode and selected tool
     UpdateStatusBarToolBox();
 
+    //AWARE: clicked group/tool could be an options group. m_nGroupID and
+    //m_nToolID refers only to the curren tool-selection group!
+    lmEToolGroupID nGroupID = event.GetToolGroupID();   //clicked group
+
     //Do actions on selected objects
     if (m_pView->SomethingSelected())
     {
-        lmEToolGroupID nGroupID = event.GetToolGroupID();   //clicked group
         switch (nGroupID)
         {
-            case lmGRP_MouseMode:
-                //change of mode while something selected. Nothing to do ----------------------
-                break;
-
             case lmGRP_NoteAcc:
                 //selection of accidentals ----------------------------------------------------
 			    int nAcc;
@@ -2219,10 +2217,6 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
                 //Beam tools ------------------------------------------------------------------
                 switch(event.GetToolID())
                 {
-                    case lmTOOL_BEAMS_CUT:
-                        BreakBeam();
-                        break;
-
                     case lmTOOL_BEAMS_JOIN:
                         JoinBeam();
                         break;
@@ -2235,17 +2229,35 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
                         break;
 
                     default:
-                        wxASSERT(false);
+                        ;
                 }
                 break;
 
-            case lmGRP_Symbols:
-                //texts, figured bass, graphics and symbols ----------------------------------
-                break;
-
-
             default:
                 ;   //ignore the event
+        }
+    }
+
+    //No objects selected. Do actions on caret pointed objects
+    else
+    {
+        switch (nGroupID)
+        {
+            case lmGRP_Beams:
+                //Beam tools ------------------------------------------------------------------
+                switch(event.GetToolID())
+                {
+                    case lmTOOL_BEAMS_CUT:
+                        BreakBeam();
+                        break;
+
+                    default:
+                        ;
+                }
+                break;
+
+            default:
+                ;   //Nothing to do. ignore the event
         }
     }
 }

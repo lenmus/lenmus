@@ -878,7 +878,6 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
 void lmScoreView::UpdateNumPage(int nNumPage)
 {
     m_nNumPage = nNumPage;
-    //GetMainFrame()->SetStatusBarNumPage(nNumPage);
 }
 
 lmDPoint lmScoreView::GetPageOffset(int nNumPage)

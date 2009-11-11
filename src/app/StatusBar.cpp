@@ -62,8 +62,6 @@ enum lmEStatusBarField
 // ----------------------------------------------------------------------------
 // lmStatusBar implementation
 // ----------------------------------------------------------------------------
-#define BMP_BUTTON_SIZE_X   16 
-#define BMP_BUTTON_SIZE_Y   16
 
 enum {
     lmID_BUTTON_MOUSE = 1300,
@@ -83,6 +81,12 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
     , m_pFrame(pFrame)
     , m_nType(lm_eStatBar_ScoreEdit)
     , m_nNumFields(lm_Field_NUM_FIELDS)
+    , m_nMousePage(0)
+    , m_rMouseTime(0.0f)
+    , m_nMouseMeasure(0)
+    , m_nCaretPage(0)
+    , m_rCaretTime(0.0f)
+    , m_nCaretMeasure(0)
 {
     int ch = GetCharWidth();
 
@@ -111,34 +115,30 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
         wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_mouse"),
         wxART_TOOLBAR, size) );
 
-    //create buttons
-    m_pBtMouse = new wxBitmapButton(this, lmID_BUTTON_MOUSE, CreateMouseBitmap(true),
-                                    wxDefaultPosition, wxDefaultSize,
-                                    wxBU_EXACTFIT);
+    m_bmpMouseInfoNormal = wxArtProvider::GetBitmap(_T("show_mouse_info"),
+                                                    wxART_TOOLBAR, size);
+    m_bmpMouseInfoSel = wxArtProvider::GetBitmap(_T("show_mouse_info_over"),
+                                                 wxART_TOOLBAR, size);
+    m_bmpCaretInfoNormal = wxArtProvider::GetBitmap(_T("show_caret_info"),
+                                                    wxART_TOOLBAR, size);
+    m_bmpCaretInfoSel = wxArtProvider::GetBitmap(_T("show_caret_info_over"),
+                                                 wxART_TOOLBAR, size);
 
-    m_pBtCaret = new wxBitmapButton(this, lmID_BUTTON_CARET, CreateMouseBitmap(false),
-                                    wxDefaultPosition, wxDefaultSize,
-                                    wxBU_EXACTFIT);
+
+    //create buttons
+    m_pBtMouse = new wxBitmapButton(this, lmID_BUTTON_MOUSE, m_bmpMouseInfoSel,
+                                    wxDefaultPosition, size, wxBU_EXACTFIT);
+    m_pBtMouse->SetToolTip(_T("Display page and time referred to mouse position"));
+
+    m_pBtCaret = new wxBitmapButton(this, lmID_BUTTON_CARET, m_bmpCaretInfoNormal,
+                                    wxDefaultPosition, size, wxBU_EXACTFIT);
+    m_pBtCaret->SetToolTip(_T("Display page and time referred to caret position"));
 
 	SetMinHeight(size.y);
 }
 
 lmStatusBar::~lmStatusBar()
 {
-}
-
-wxBitmap lmStatusBar::CreateMouseBitmap(bool fOn)
-{
-    wxBitmap bitmap(BMP_BUTTON_SIZE_X, BMP_BUTTON_SIZE_Y);
-    wxMemoryDC dc;
-    dc.SelectObject(bitmap);
-    dc.SetBrush(fOn ? *wxGREEN_BRUSH : *wxRED_BRUSH);
-    dc.SetBackground(*wxLIGHT_GREY_BRUSH);
-    dc.Clear();
-    dc.DrawEllipse(0, 0, BMP_BUTTON_SIZE_X, BMP_BUTTON_SIZE_Y);
-    dc.SelectObject(wxNullBitmap);
-
-    return bitmap;
 }
 
 void lmStatusBar::OnButtonMouse(wxCommandEvent& WXUNUSED(event))
@@ -153,9 +153,9 @@ void lmStatusBar::OnButtonCaret(wxCommandEvent& WXUNUSED(event))
 
 void lmStatusBar::DoSelectMouseInfo()
 {
-    m_pBtMouse->SetBitmapLabel(CreateMouseBitmap(true));
+    m_pBtMouse->SetBitmapLabel(m_bmpMouseInfoSel);
     m_pBtMouse->Refresh();
-    m_pBtCaret->SetBitmapLabel(CreateMouseBitmap(false));
+    m_pBtCaret->SetBitmapLabel(m_bmpCaretInfoNormal);
     m_pBtMouse->Refresh();
 
     m_fMouseDisplay = true;
@@ -164,9 +164,9 @@ void lmStatusBar::DoSelectMouseInfo()
 
 void lmStatusBar::DoSelectCaretInfo()
 {
-    m_pBtMouse->SetBitmapLabel(CreateMouseBitmap(false));
+    m_pBtMouse->SetBitmapLabel(m_bmpMouseInfoNormal);
     m_pBtMouse->Refresh();
-    m_pBtCaret->SetBitmapLabel(CreateMouseBitmap(true));
+    m_pBtCaret->SetBitmapLabel(m_bmpCaretInfoSel);
     m_pBtMouse->Refresh();
 
     m_fMouseDisplay = false;
@@ -190,15 +190,18 @@ void lmStatusBar::SetMousePos(float xPos, float yPos)
 {
     float x = xPos/1000.0f;
     float y = yPos/1000.0f;
-    SetStatusText(wxString::Format(_T("%sx=%.2f y=%.2f cm"), m_sIconSpace.c_str(), x, y),
-                  lm_Field_MousePos);
+    SetStatusText(wxString::Format(_T("%sx=%.2f y=%.2f cm"),
+                                    m_sIconSpace.c_str(), x, y), lm_Field_MousePos);
 }
 
-void lmStatusBar::SetTimePosInfo(float rTime, int nMeasure)
+void lmStatusBar::SetTimePosInfo(float rTime, int nMeasure, bool fEmpty)
 {
-    SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.c_str(),
-                                   nMeasure, rTime), 
-                  lm_Field_RelTime);
+    if (!fEmpty)
+        SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.c_str(),
+                                       nMeasure, rTime), 
+                      lm_Field_RelTime);
+    else
+        SetStatusText(_T(""), lm_Field_RelTime);
 }
 
 void lmStatusBar::SetMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos)
@@ -229,12 +232,12 @@ void lmStatusBar::UpdateTimeInfo()
     if (m_fMouseDisplay)
     {
         SetNumPage(m_nMousePage);
-        SetTimePosInfo(m_rMouseTime, m_nMouseMeasure);
+        SetTimePosInfo(m_rMouseTime, m_nMouseMeasure, m_nMousePage < 1);
     }
     else
     {
         SetNumPage(m_nCaretPage);
-        SetTimePosInfo(m_rCaretTime, m_nCaretMeasure);
+        SetTimePosInfo(m_rCaretTime, m_nCaretMeasure, m_nCaretPage < 1);
     }
 }
 
@@ -253,7 +256,7 @@ void lmStatusBar::OnSize(wxSizeEvent& event)
 
     //mouse/caret buttons
     GetFieldRect(lm_Field_MouseCaret, rect);
-    size = wxSize(BMP_BUTTON_SIZE_X, BMP_BUTTON_SIZE_Y);
+    size = wxSize(16,16);
     m_pBtMouse->Move(rect.x,
                      rect.y + (rect.height - size.y) / 2);
     m_pBtCaret->Move(rect.x + rect.width/2,

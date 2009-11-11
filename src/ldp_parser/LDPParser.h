@@ -59,7 +59,6 @@ class lmLDPParser
 {
 public:
     lmLDPParser();
-    lmLDPParser(wxString sLanguage, wxString sCharset);
     ~lmLDPParser();
 
     //setings and options
@@ -137,7 +136,6 @@ protected:
         A5_ExitError
     };
 
-    void        CreateParser(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
     void        AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
                                   lmELineStyle* pLineStyle, lmELineCap* pEndStyle,

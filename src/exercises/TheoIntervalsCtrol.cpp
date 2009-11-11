@@ -417,7 +417,7 @@ wxString lmBuildIntervalCtrol::PrepareScores()
 
     //prepare solution score
     lmNote* pNote[2];
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
@@ -712,7 +712,7 @@ wxString lmIdfyIntervalCtrol::PrepareScores()
 
     //create the score with the interval
     lmNote* pNote[2];
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 

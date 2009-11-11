@@ -165,7 +165,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
 
     wxString sPattern;
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
     lmNote* pNoteToAttach = NULL;

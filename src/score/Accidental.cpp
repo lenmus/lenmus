@@ -157,8 +157,9 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
 wxString lmAccidental::GetLDPEncoding()
 {
     switch(m_nType) {
-        case lm_eNatural:		return _T("");
-        case lm_eSharp:		return _T("+");
+        case lm_eNoAccidentals: return _T("");
+        case lm_eNatural:		return _T("=");
+        case lm_eSharp:		    return _T("+");
         case lm_eFlat:			return _T("-");
         case lm_eFlatFlat:		return _T("--");
         case lm_eDoubleSharp:	return _T("x");

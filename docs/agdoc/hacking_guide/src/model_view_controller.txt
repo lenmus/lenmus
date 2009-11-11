@@ -1,3 +1,5 @@
+\include ../../agdoc/replacements
+
 \title{The LenMus Model-View-Controller architecture}
 
 \toc

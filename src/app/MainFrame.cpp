@@ -333,6 +333,10 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_UPDATE_UI (MENU_File_New, lmMainFrame::OnFileUpdateUI)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, lmMainFrame::OnOpenRecentFile)
 
+    //eBooks menu/toolbar
+    EVT_TOOL_RANGE(lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmMainFrame::OnBookFrame)
+    EVT_UPDATE_UI_RANGE (lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmMainFrame::OnBookFrameUpdateUI)
+
     //Edit menu/toolbar
     EVT_MENU      (MENU_Edit_Copy, lmMainFrame::OnEditCopy)
     EVT_UPDATE_UI (MENU_Edit_Copy, lmMainFrame::OnEditUpdateUI)
@@ -454,10 +458,6 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_TEXT        (lmID_SPIN_METRONOME,    lmMainFrame::OnMetronomeUpdateText)
     EVT_TIMER       (lmID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
-    //TextBookFrame
-    EVT_TOOL_RANGE(lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmMainFrame::OnBookFrame)
-    EVT_UPDATE_UI_RANGE (lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmMainFrame::OnBookFrameUpdateUI)
-
     //other events
     EVT_CLOSE(lmMainFrame::OnCloseWindow)
 
@@ -502,6 +502,7 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
 
     // create main menu
 	m_pMenuEdit = (wxMenu*)NULL;
+    m_pMenuBooks = (wxMenu*)NULL;
     wxMenuBar* menu_bar = CreateMenuBar(NULL, NULL);
     SetMenuBar(menu_bar);
 
@@ -1090,6 +1091,26 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     m_pRecentFiles->AddFilesToMenu(pMenuFile);
 
 
+    // eBooks menu -------------------------------------------------------------------
+    m_pMenuBooks = new wxMenu;
+    AddMenuItem(m_pMenuBooks, MENU_OpenBook, _("Open &books"),
+                _("Hide/show eMusicBooks"), wxITEM_NORMAL, _T("tool_open_ebook"));
+    AddMenuItem(m_pMenuBooks, lmMENU_eBookPanel, _("View index"),
+                _("Show/hide navigation panel"), wxITEM_CHECK, _T("tool_index_panel"));
+
+    m_pMenuBooks->AppendSeparator();
+    AddMenuItem(m_pMenuBooks, lmMENU_eBook_PagePrev, _("Back page"),
+            _("Previous page of current eMusicBook"), wxITEM_NORMAL, _T("tool_page_previous") );
+    AddMenuItem(m_pMenuBooks, lmMENU_eBook_PageNext, _("Next page"),
+            _("Next page of current eMusicBook"), wxITEM_NORMAL, _T("tool_page_next") );
+
+    m_pMenuBooks->AppendSeparator();
+    AddMenuItem(m_pMenuBooks, lmMENU_eBook_GoBack, _("Go back"),
+            _("Go to previous visited page"), wxITEM_NORMAL, _T("tool_previous") );
+    AddMenuItem(m_pMenuBooks, lmMENU_eBook_GoForward, _("Go forward"),
+            _("Go to next visited page"), wxITEM_NORMAL, _T("tool_next") );
+
+
     // edit menu -------------------------------------------------------------------
 
     m_pMenuEdit = new wxMenu;
@@ -1285,6 +1306,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     // in frame creation.
     wxMenuBar* pMenuBar = new wxMenuBar;
     pMenuBar->Append(pMenuFile, _("&File"));
+    pMenuBar->Append(m_pMenuBooks, _("e&Books"));
     pMenuBar->Append(m_pMenuEdit, _("&Edit"));
     pMenuBar->Append(pMenuView, _("&View"));
 	pMenuBar->Append(pMenuScore, _("S&core"));
@@ -1565,20 +1587,47 @@ void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
     bool fEnabled = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame)) &&
                     m_pBookController;
 
-    if (fEnabled) {
-        // TextBookFrame is visible. Enable/disable buttons
-        lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
-        if (pBookFrame)
-            pBookFrame->UpdateUIEvent(event, m_pTbTextBooks);
+    if (event.GetEventObject()->IsKindOf(CLASSINFO(wxToolBar)) )
+    {
+        //Update toolbar items
+        if (fEnabled)
+        {
+            // TextBookFrame is visible. Enable/disable buttons
+            lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
+            if (pBookFrame)
+                pBookFrame->UpdateUIEvent(event, m_pTbTextBooks);
+        }
+        else
+        {
+            // Bug in wxWidgets: if the button is a check button, disabled image is not
+            // set unless the button is unchecked. To bypass this bug, first uncheck button
+            // then disable it and finally, restore check state
+            bool fChecked = event.GetChecked();
+            event.Check(false);
+            event.Enable(false);
+            event.Check(fChecked);
+        }
     }
-    else {
-        // Bug in wxWidgets: if the button is a check button, disabled image is not
-        // set unless the button is unchecked. To bypass this bug, first uncheck button
-        // then disable it and finally, restore check state
-        bool fChecked = event.GetChecked();
-        event.Check(false);
-        event.Enable(false);
-        event.Check(fChecked);
+    else
+    {
+        //enable/disable menu items
+        if (fEnabled)
+        {
+            // TextBookFrame is visible. Enable/disable menu items according toolbar state
+            lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
+            if (pBookFrame)
+            {
+                m_pMenuBooks->Enable(event.GetId(),
+                                     m_pTbTextBooks->GetToolEnabled(event.GetId()));
+                if (event.GetId() == lmMENU_eBookPanel)
+                {
+                    m_pMenuBooks->Check(lmMENU_eBookPanel,
+                                        pBookFrame->IsNavPanelVisible());
+                }
+            }
+        }
+        else
+            event.Enable(false);
     }
 }
 
@@ -2731,12 +2780,6 @@ void lmMainFrame::SetStatusBarMsg(const wxString& sText)
         m_pStatusBar->SetMsgText(sText);
 }
 
-void lmMainFrame::SetStatusBarMousePos(float x, float y)
-{
-    if (m_pStatusBar)
-        m_pStatusBar->SetMousePos(x, y);
-}
-
 void lmMainFrame::SetStatusBarMouseData(int nPage, float rTime, int nMeasure,
                                         lmUPoint uPos)
 {
@@ -2744,22 +2787,10 @@ void lmMainFrame::SetStatusBarMouseData(int nPage, float rTime, int nMeasure,
         m_pStatusBar->SetMouseData(nPage, rTime, nMeasure, uPos);
 }
 
-void lmMainFrame::SetStatusBarTimePosInfo(float rTime, int nMeasure)
-{
-    if (m_pStatusBar)
-        m_pStatusBar->SetTimePosInfo(rTime, nMeasure);
-}
-
 void lmMainFrame::SetStatusBarCaretData(int nPage, float rTime, int nMeasure)
 {
     if (m_pStatusBar)
         m_pStatusBar->SetCaretData(nPage, rTime, nMeasure);
-}
-
-void lmMainFrame::SetStatusBarNumPage(int nPage)
-{
-    if (m_pStatusBar)
-        m_pStatusBar->SetNumPage(nPage);
 }
 
 void lmMainFrame::OnKeyPress(wxKeyEvent& event)

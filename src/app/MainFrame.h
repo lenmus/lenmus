@@ -83,9 +83,6 @@ public:
 
     //status bar
     void SetStatusBarMsg(const wxString& sText);
-    void SetStatusBarMousePos(float x, float y);
-    void SetStatusBarTimePosInfo(float rTime, int nMeasure);
-    void SetStatusBarNumPage(int nPage);
     void SetStatusBarMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos);
     void SetStatusBarCaretData(int nPage, float rTime, int nMeasure);
 
@@ -316,6 +313,7 @@ protected:
 
 	// menus
 	wxMenu*			m_pMenuEdit;
+    wxMenu*         m_pMenuBooks;
 
     // tool bars
     wxToolBar*      m_pTbFile;          // file toolbar

@@ -339,7 +339,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
     //create a score with the chord
     wxString sPattern;
     lmNote* pNote;
-    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+    lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
