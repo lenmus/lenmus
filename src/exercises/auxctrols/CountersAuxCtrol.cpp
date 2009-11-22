@@ -124,7 +124,8 @@ lmQuizAuxCtrol::lmQuizAuxCtrol(wxWindow* parent, wxWindowID id, int nNumTeams, d
 
     //'reset counters' link
     pMainSizer->Add(
-        new lmUrlAuxCtrol(this, lmID_LINK_RESET_COUNTERS, rScale, _("Reset counters") ),
+        new lmUrlAuxCtrol(this, lmID_LINK_RESET_COUNTERS, rScale, _("Reset counters"),
+                          _T("link_reset") ),
         0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5);
 
     //set main window sizer
@@ -367,7 +368,7 @@ void lmLeitnerAuxCtrol::CreateControls()
 	//
 	//m_pFirstLineSizer->Add( m_pLinkExplain, 0, wxRIGHT|wxLEFT, 5 );
     m_pFirstLineSizer->Add(
-        new lmUrlAuxCtrol(this, lmID_LINK_EXPLAIN, m_rScale, _T("?") ),
+        new lmUrlAuxCtrol(this, lmID_LINK_EXPLAIN, m_rScale, _T("?"), lmNO_BITMAP),
         0, wxRIGHT|wxLEFT, 5);
     //END OF MODIFICATION----------------------------------
 	
@@ -554,7 +555,8 @@ void lmPractiseAuxCtrol::CreateControls()
 	//
 	//pCtrolSizer->Add( m_pLinkResetCounters, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
     pCtrolSizer->Add(
-        new lmUrlAuxCtrol(this, lmID_LINK_RESET_COUNTERS, m_rScale, _("Reset counters") ),
+        new lmUrlAuxCtrol(this, lmID_LINK_RESET_COUNTERS, m_rScale, _("Reset counters"),
+                          _T("link_reset")),
         0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
     //END OF MODIFICATION----------------------------------
 	

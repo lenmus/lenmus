@@ -68,6 +68,7 @@ BEGIN_EVENT_TABLE(lmEBookCtrol, wxWindow)
     LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEBookCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEBookCtrol::OnSettingsButton)
     LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, lmEBookCtrol::OnGoBackButton)
+    EVT_CHECKBOX        (ID_LINK_COUNTOFF, lmEBookCtrol::OnDoCountoff)
 
 END_EVENT_TABLE()
 
@@ -77,14 +78,14 @@ lmEBookCtrol::lmEBookCtrol(wxWindow* parent, wxWindowID id,
                            lmEBookCtrolOptions* pOptions,
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
+    , m_fDoCountOff(true)
+    , m_pOptions(pOptions)
+    , m_fControlsCreated(false)
+    , m_rScale(1.0)
+    , m_pPlayButton((lmUrlAuxCtrol*)NULL)
 {
     //initializations
     SetBackgroundColour(*wxWHITE);
-    m_pOptions = pOptions;
-    m_fControlsCreated = false;
-    m_rScale = 1.0;
-    m_pPlayButton = (lmUrlAuxCtrol*)NULL;
-
 }
 
 lmEBookCtrol::~lmEBookCtrol()
@@ -125,6 +126,11 @@ void lmEBookCtrol::OnSize(wxSizeEvent& event)
 void lmEBookCtrol::OnPlay(wxCommandEvent& event)
 {
     Play();
+}
+
+void lmEBookCtrol::OnDoCountoff(wxCommandEvent& event)
+{
+    m_fDoCountOff = event.IsChecked();
 }
 
 
@@ -219,13 +225,13 @@ void lmExerciseCtrol::CreateControls()
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
         lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
-             _("Exercise options") );
+             _("Exercise options"), _T("link_settings"));
         pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
     // "Go back to theory" link
     if (m_pConstrains->IncludeGoBackLink()) {
         lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale,
-            _("Go back to theory") );
+            _("Go back to theory"), _T("link_back") );
         pTopLineSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
 
@@ -234,17 +240,19 @@ void lmExerciseCtrol::CreateControls()
     {
         // "See source score"
         pTopLineSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score"),
+                              lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
 
         // "Dump score"
         pTopLineSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score"), lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
 
         // "See MIDI events"
         pTopLineSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events") ),
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events"),
+                              lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
 
@@ -310,12 +318,15 @@ void lmExerciseCtrol::CreateControls()
 
     // "new problem" button
     pLinksSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
+                          _T("link_new")),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
 
     // "play" button
     if (m_pConstrains->IncludePlayLink()) {
-        m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale, _("Play") );
+        m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale,
+                                          _("Play"), _T("link_play"),
+                                          _("Stop playing"), _T("link_stop") );
         pLinksSizer->Add(
             m_pPlayButton,
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
@@ -323,7 +334,8 @@ void lmExerciseCtrol::CreateControls()
 
     // "show solution" button
     if (m_pConstrains->IncludeSolutionLink()) {
-        m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, m_rScale, _("Show solution") );
+        m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, m_rScale,
+                                        _("Show solution"), _T("link_solution"));
         pLinksSizer->Add(
             m_pShowSolution,
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 4*nSpacing) );
@@ -745,7 +757,8 @@ void lmCompareScoresCtrol::Play()
         // Play button pressed
 
         //change link from "Play" to "Stop"
-        m_pPlayButton->SetLabel(_("Stop"));
+        //m_pPlayButton->SetLabel(_("Stop"));
+        m_pPlayButton->SetAlternativeLabel();
         m_fPlaying = true;
 
         //AWARE: The link label is restored to "Play" when the EndOfPlay() event is
@@ -804,14 +817,16 @@ void lmCompareScoresCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
         else {
             //wxLogMessage(_T("EndOfPlay event: play stopped"));
             m_fPlaying = false;
-            m_pPlayButton->SetLabel(_("Play"));
+            //m_pPlayButton->SetLabel(_("Play"));
+            m_pPlayButton->SetNormalLabel();
         }
     }
     else
     {
         //playing after solution is displayed: just change link label
         m_fPlaying = false;
-        m_pPlayButton->SetLabel(_("Play"));
+        //m_pPlayButton->SetLabel(_("Play"));
+        m_pPlayButton->SetNormalLabel();
     }
 
 }
@@ -825,7 +840,8 @@ void lmCompareScoresCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
     }
     else {
         //wxLogMessage(_T("Timer event: play stopped"));
-        m_pPlayButton->SetLabel(_("Play"));
+        //m_pPlayButton->SetLabel(_("Play"));
+        m_pPlayButton->SetNormalLabel();
     }
 }
 
@@ -849,6 +865,7 @@ void lmCompareScoresCtrol::DisplayProblem()
     }
     else {
         //ear training
+        m_pPlayButton->SetAlternativeLabel();
         Play();
     }
 }
@@ -954,8 +971,11 @@ void lmOneScoreCtrol::DoPlay(bool fCountOff)
     {
         // Play button pressed
 
-        //change link from "Play" to "Stop"
-        m_pPlayButton->SetLabel(_("Stop"));
+        ////change link from "Play" to "Stop"
+        //m_pPlayButton->SetLabel(_("Stop"));
+        //change link from "Play" to "Stop playing" label
+        m_pPlayButton->SetAlternativeLabel();
+
 
         //play the score
         ((lmScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, fCountOff,
@@ -974,7 +994,8 @@ void lmOneScoreCtrol::DoPlay(bool fCountOff)
 
 void lmOneScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
 {
-    m_pPlayButton->SetLabel(_("Play"));
+    //m_pPlayButton->SetLabel(_("Play"));
+    m_pPlayButton->SetNormalLabel();
     m_fPlaying = false;
 }
 
@@ -1024,6 +1045,7 @@ void lmOneScoreCtrol::DisplayProblem()
     }
     else {
         //ear training
+        m_pPlayButton->SetAlternativeLabel();
         Play();
     }
 }
@@ -1128,7 +1150,8 @@ void lmCompareMidiCtrol::Play()
         // Starting to play
 
         //change link from "Play" to "Stop"
-        m_pPlayButton->SetLabel(_("Stop"));
+        //m_pPlayButton->SetLabel(_("Stop"));
+        m_pPlayButton->SetAlternativeLabel();
 
         //AWARE: The link label is restored to "Play" when the OnTimerEvent() event is
         //       received. Flag m_fPlaying is also reset there
@@ -1145,7 +1168,8 @@ void lmCompareMidiCtrol::Play()
         // "Stop" button pressed
         m_oTimer.Stop();
         m_nNowPlaying = -1;
-        m_pPlayButton->SetLabel(_("Play"));
+        //m_pPlayButton->SetLabel(_("Play"));
+        m_pPlayButton->SetNormalLabel();
         StopSounds();
     }
 
@@ -1167,6 +1191,7 @@ void lmCompareMidiCtrol::DisplaySolution()
 
 void lmCompareMidiCtrol::DisplayProblem()
 {
+    m_pPlayButton->SetAlternativeLabel();
     Play();
 }
 
@@ -1199,7 +1224,8 @@ void lmCompareMidiCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
         //wxLogMessage(_T("Timer event: play stopped"));
         m_nNowPlaying = -1;
         StopSounds();
-        m_pPlayButton->SetLabel(_("Play"));
+        //m_pPlayButton->SetLabel(_("Play"));
+        m_pPlayButton->SetNormalLabel();
     }
 }
 
@@ -1292,19 +1318,20 @@ void lmFullEditorExercise::CreateControls()
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
         lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
-             _("Exercise options") );
+             _("Exercise options"), _T("link_settings"));
         m_pMainSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
     }
     // "Go back to theory" link
     if (m_pConstrains->IncludeGoBackLink()) {
         lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale,
-            _("Go back to theory") );
+            _("Go back to theory"), _T("link_back"));
         m_pMainSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
     }
 
     // "new problem" button
     m_pMainSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
+                          _T("link_new")),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
 
     //finish creation

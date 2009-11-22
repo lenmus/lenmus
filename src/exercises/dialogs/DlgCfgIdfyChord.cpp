@@ -194,7 +194,7 @@ lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow* parent,
 
     //initialize check boxes for allowed chords with current settings
     int i;
-    for (i=0; i < ect_Max; i++) {
+    for (i=0; i < ect_LastInExercises; i++) {
         m_pChkChord[i]->SetValue( m_pConstrains->IsChordValid((lmEChordType)i) );
     }
     
@@ -243,7 +243,7 @@ void lmDlgCfgIdfyChord::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 
     //save allowed chords
     int i;
-    for (i=0; i < ect_Max; i++) {
+    for (i=0; i < ect_LastInExercises; i++) {
         m_pConstrains->SetChordValid((lmEChordType)i, m_pChkChord[i]->GetValue());
     }
     
@@ -297,7 +297,7 @@ bool lmDlgCfgIdfyChord::VerifyData()
     // check that at least one chord type is selected
     fError = false;
     fAtLeastOne = false;
-    for (i=0; i < ect_Max; i++) {
+    for (i=0; i < ect_LastInExercises; i++) {
         if (m_pChkChord[i]->GetValue()) {
             fAtLeastOne = true;
             break;

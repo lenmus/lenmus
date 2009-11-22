@@ -144,8 +144,9 @@ void lmScoreCtrol::CreateControls()
     // "play" link
     if (m_pOptions->fPlayCtrol)
     {
-        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, rScale, m_pOptions->sPlayLabel,
-                                        m_pOptions->sStopPlayLabel );
+        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, rScale,
+                                        m_pOptions->sPlayLabel, _T("link_play"),
+                                        m_pOptions->sStopPlayLabel, _T("link_stop") );
         pLinksSizer->Add(m_pPlayLink,
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
@@ -154,7 +155,7 @@ void lmScoreCtrol::CreateControls()
     if (m_pOptions->fSolfaCtrol)
     {
         m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, rScale, m_pOptions->sSolfaLabel,
-                                         m_pOptions->sStopSolfaLabel );
+                                         m_pOptions->sStopSolfaLabel, lmNO_BITMAP);
         pLinksSizer->Add(m_pSolfaLink,
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
@@ -176,6 +177,7 @@ void lmScoreCtrol::CreateControls()
             m_pMeasureLink[i] =
                 new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, rScale,
                         wxString::Format(m_pOptions->sMeasuresLabel, i+1),
+                        lmNO_BITMAP,
                         wxString::Format(m_pOptions->sStopMeasureLabel, i+1) );
             pLinksSizer->Add(m_pMeasureLink[i],
                         0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
@@ -189,15 +191,17 @@ void lmScoreCtrol::CreateControls()
 
         // "See source score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, rScale, _("See source score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, rScale, _("See source score"),
+                              lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
         // "Dump score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, rScale, _("Dump score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, rScale, _("Dump score"), lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
         // "See MIDI events"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, rScale, _("See MIDI events") ),
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, rScale, _("See MIDI events"),
+                              lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
     }
 
@@ -253,6 +257,7 @@ void lmScoreCtrol::DoPlay(lmEPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeas
     else {
         // is playing. "Stop playing" button pressed
         m_pScoreCtrol->Stop();
+        pLink->SetNormalLabel();
     }
     //TODO Piano form
     //    if (FMain.fFrmPiano) { FPiano.HabilitarMarcado = false;

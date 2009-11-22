@@ -70,6 +70,8 @@ enum lmEChordType
     ect_AugSixth,
     ect_LastSixth = ect_AugSixth,
 
+    ect_LastInExercises = ect_LastSixth,    //<-- AWARE: Last value for exercises
+
     //Ninths
     ect_DominantNinth,          //dominant-seventh + major ninth
     ect_FirstNinth = ect_DominantNinth,

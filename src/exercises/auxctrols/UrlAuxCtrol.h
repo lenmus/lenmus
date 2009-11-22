@@ -47,7 +47,10 @@ DECLARE_EVENT_TYPE(lmEVT_URL_CLICK, 7777)        // any number is OK. It doesn' 
     ),
 
 
-class lmUrlAuxCtrol : public wxStaticText
+//compatibility
+#define lmNO_BITMAP  wxEmptyString
+
+class lmUrlAuxCtrol : public wxPanel
 {
        DECLARE_DYNAMIC_CLASS(lmUrlAuxCtrol)
 
@@ -55,22 +58,41 @@ public:
 
     // constructor and destructor
     lmUrlAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
-                const wxString& sNormalLabel, const wxString& sAltLabel = _T("??????"),
-                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-                long style = 0, const wxString& name = _T("lmUrlAuxCtrol"));
-
+                  const wxString& sNormalLabel, 
+                  const wxString& sBitmap = wxEmptyString,
+                  const wxString& sAltLabel = wxEmptyString,
+                  const wxString& sAltBitmap = wxEmptyString,
+                  const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = wxDefaultSize,
+                  long style = 0,
+                  const wxString& name = _T("lmUrlAuxCtrol"));
     ~lmUrlAuxCtrol() {}
 
     // event handlers
     void OnClick(wxMouseEvent& event);
 
-    // operations
-    void SetNormalLabel() { SetLabel(m_sNormalLabel); }
-    void SetAlternativeLabel() { SetLabel(m_sAltLabel); }
+    //overrides
+    bool Enable(bool fEnable = true);
 
-private:
-    wxString    m_sNormalLabel;     //Label displayed normally (i.e. "play")
-    wxString    m_sAltLabel;        //Alternative label (i.e. "stop playing")
+    // operations
+    void SetNormalLabel(bool fNormal = true);
+    inline void SetAlternativeLabel() { SetNormalLabel(false); }
+
+protected:
+    void CreateCtrol();
+
+	wxStaticBitmap* m_pBitmap;
+	wxStaticText*   m_pAnchor;
+
+    wxString        m_sNormalLabel;     //Label displayed normally (i.e. "play")
+    wxString        m_sAltLabel;        //Alternative label (i.e. "stop playing")
+    wxString        m_sBitmap;          //bitmap file name
+    wxString        m_sAltBitmap;       //bitmap to use with alternative label. Empty to use normal bitmap
+    wxBitmap        m_oEnaBitmap;
+    wxBitmap        m_oDisBitmap;
+    wxBitmap        m_oAltEnaBitmap;
+    wxBitmap        m_oAltDisBitmap;
+    bool            m_fNormal;          //true when normal label
 
     DECLARE_EVENT_TABLE()
 };

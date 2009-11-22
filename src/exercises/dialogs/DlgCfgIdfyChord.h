@@ -55,7 +55,7 @@ private:
     wxCheckBox*     m_pChkAllowInversions;
     wxCheckBox*     m_pChkDisplayKey;
     wxCheckBox*     m_pChkPlayMode[3];          // allowed play modes
-    wxCheckBox*     m_pChkChord[ect_Max];       // Allowed chords check boxes
+    wxCheckBox*     m_pChkChord[ect_LastInExercises];       // Allowed chords check boxes
     wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
     wxStaticBox*    m_pBoxPlayModes;            // box with play mode check boxes
 

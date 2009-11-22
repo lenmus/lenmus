@@ -113,24 +113,35 @@ void lmTheoMusicReadingCtrol::CreateControls()
     // "Go back to theory" button
     if (m_pConstrains->IncludeGoBackLink()) {
         m_pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale, _("Go back to theory") ),
+            new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale, _("Go back to theory"),
+                              _T("link_back")),
             wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 
     // "new problem" button
     m_pButtonsSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
+                          _T("link_new")),
         wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 
     // "play" button
-    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale, m_pConstrains->sPlayLabel, m_pConstrains->sStopPlayLabel );
+    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale,
+                                      m_pConstrains->sPlayLabel, _T("link_play"),
+                                      m_pConstrains->sStopPlayLabel, _T("link_stop") );
     m_pButtonsSizer->Add(
         m_pPlayButton,
         wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 
+    // "count off" check box
+    wxCheckBox* m_pChkCountOff = new wxCheckBox(this, ID_LINK_COUNTOFF, _("Count off to start"));
+    m_pChkCountOff->SetValue(m_fDoCountOff);
+    m_pButtonsSizer->Add(
+        m_pChkCountOff,
+        wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
+
     // "solfa" button
     if (m_pConstrains->fSolfaCtrol) {
-        //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, m_rScale, m_pConstrains->sSolfaLabel, m_pConstrains->sStopSolfaLabel );
+        //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, m_rScale, m_pConstrains->sSolfaLabel, lmNO_BITMAP, m_pConstrains->sStopSolfaLabel );
         //m_pButtonsSizer->Add(
         //    m_pPlayButton,
         //    wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
@@ -140,15 +151,17 @@ void lmTheoMusicReadingCtrol::CreateControls()
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         // "See source score"
         m_pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score"),
+                              lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
         // "Dump score"
         m_pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score"), lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
         // "See MIDI events"
         m_pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events") ),
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events"),
+                              lmNO_BITMAP),
             wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 
@@ -158,7 +171,8 @@ void lmTheoMusicReadingCtrol::CreateControls()
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
         lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
-                                                         _("Exercise options") );
+                                                         _("Exercise options"),
+                                                         _T("link_settings"));
         m_pButtonsSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 
@@ -230,6 +244,6 @@ wxString lmTheoMusicReadingCtrol::SetNewProblem()
 
 void lmTheoMusicReadingCtrol::Play()
 {
-    DoPlay( g_pMainFrame->IsCountOffChecked() ); 
+    DoPlay(m_fDoCountOff); 
 }
 

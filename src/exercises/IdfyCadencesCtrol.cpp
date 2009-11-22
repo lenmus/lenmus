@@ -85,8 +85,8 @@ lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
     m_nKey = earmDo;
 
     CreateControls();
-    if (m_pConstrains->IsTheoryMode()) NewProblem();
-
+    if (m_pConstrains->IsTheoryMode())
+        NewProblem();
 }
 
 lmIdfyCadencesCtrol::~lmIdfyCadencesCtrol()

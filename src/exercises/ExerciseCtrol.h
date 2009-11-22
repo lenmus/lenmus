@@ -75,6 +75,7 @@ public:
     virtual void OnPlay(wxCommandEvent& event);
     virtual void OnSettingsButton(wxCommandEvent& event);
     virtual void OnGoBackButton(wxCommandEvent& event);
+    virtual void OnDoCountoff(wxCommandEvent& event);
 
 protected:
     //IDs for controls
@@ -85,6 +86,7 @@ protected:
         ID_LINK_PLAY,
         ID_LINK_SETTINGS,
         ID_LINK_GO_BACK,
+        ID_LINK_COUNTOFF,
     };
 
     //virtual methods to be implemented by derived classes
@@ -104,6 +106,7 @@ protected:
     lmEBookCtrolOptions* m_pOptions;        //options for the exercise
     lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
     bool                m_fControlsCreated; 
+    bool                m_fDoCountOff;
     double              m_rScale;           // Current scaling factor
 
 private:

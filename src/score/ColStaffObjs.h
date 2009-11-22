@@ -72,10 +72,8 @@ public:
 	//context management
     inline void SetContext(int iStaff, lmContext* pContext) { m_pContext[iStaff] = pContext; }
 	inline lmContext* GetContext(int iStaff) { return m_pContext[iStaff]; }
-    void OnContextInserted(lmKeySignature* pNewKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
-    void OnContextInserted(lmClef* pNewClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
-    void OnContextRemoved(lmKeySignature* pOldKey, lmStaffObj* pNextSO, bool fKeyKeepPitch);
-    void OnContextRemoved(lmClef* pOldClef, lmStaffObj* pNextSO, bool fClefKeepPosition);
+    void OnContextInserted(lmStaffObj* pNewCCSO, lmStaffObj* pNextSO, bool fKeepPitchPosition);
+    void OnContextRemoved(lmStaffObj* pOldCCSO, lmStaffObj* pNextSO, bool fKeepPitchPosition);
 
     //info
 	inline int GetNumSegment() { return m_nNumSegment; }
@@ -125,18 +123,18 @@ private:
     void AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes);
 
     //context management
+    void OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj* pNextSO,
+                               bool fKeepPitchPosition);
     lmContext* FindEndOfSegmentContext(int nStaff);
-    void OnContextChanged(lmContext* pStartContext, int nStaff,
-                          lmKeySignature* pNewKey, lmKeySignature* pOldKey,
-                          bool fKeyKeepPitch);
-    void OnContextChanged(lmContext* pStartContext, int nStaff,
-                          lmEClefType nNewClefType, lmEClefType nOldClefType,
-                          bool fClefKeepPosition);
-    void OnContextChanged(lmContext* pStartContext, int nStaff);
+    void OnContextChanged(lmContext* pStartContext, int nStaff, lmStaffObj* pOldCCSO,
+                          lmStaffObj* pNewCCSO, bool fKeepPitchPosition);
 
-    //staffobjs management
-    void Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
-                   lmStaffObj* pStartSO, int nStaff);
+    //staffobjs management when context change
+    void UpdateNotesClefChange(lmClef* pOldClef, lmClef* pNewClef,
+                               lmStaffObj* pNextSO, bool fClefKeepPosition);
+    void UpdateNotesKeyChange(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
+                              lmStaffObj* pNextSO, bool fKeepPitch);
+    void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO, int nStaff);
     void AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStartSO);
     void ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey, lmStaffObj* pStartSO);
 

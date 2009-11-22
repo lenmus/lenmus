@@ -88,7 +88,7 @@ void lmChordConstrains::SaveSettings()
     // allowed chords
     int i;
     wxString sKey;
-    for (i=0; i < ect_Max; i++) {
+    for (i=0; i < ect_LastInExercises; i++) {
         sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
             m_sSection.c_str(), i );
         g_pPrefs->Write(sKey, m_fValidChords[i]);
@@ -129,7 +129,7 @@ void lmChordConstrains::LoadSettings()
     // allowed chords. Default: four main triads
     int i;
     wxString sKey;
-    for (i=0; i < ect_Max; i++) {
+    for (i=0; i < ect_LastInExercises; i++) {
         sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
             m_sSection.c_str(), i );
         g_pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
@@ -168,9 +168,9 @@ lmEChordType lmChordConstrains::GetRandomChordType()
 {
     lmRandomGenerator oGenerator;
     int nWatchDog = 0;
-    int nType = oGenerator.RandomNumber(0, ect_Max-1);
+    int nType = oGenerator.RandomNumber(0, ect_LastInExercises-1);
     while (!IsChordValid((lmEChordType)nType)) {
-        nType = oGenerator.RandomNumber(0, ect_Max-1);
+        nType = oGenerator.RandomNumber(0, ect_LastInExercises-1);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in lmChordConstrains::GetRandomChordType."));
             return (lmEChordType)0;

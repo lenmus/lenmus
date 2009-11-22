@@ -111,7 +111,8 @@ void lmScoreProcessor::AddDoLink(wxBoxSizer* pSizer, wxString sDoLink)
     // 'Do process' link
     if (sDoLink != wxEmptyString)
     {
-        m_pDoLink = new lmUrlAuxCtrol(m_pToolsPanel, lmID_DO_PROCESS, 1.0, sDoLink);
+        m_pDoLink = new lmUrlAuxCtrol(m_pToolsPanel, lmID_DO_PROCESS, 1.0, sDoLink,
+                                      lmNO_BITMAP);
         pSizer->Add(m_pDoLink, 0, wxALL|wxEXPAND, 5);
         m_pToolsPanel->Connect(lmID_DO_PROCESS, lmEVT_URL_CLICK,
                                wxObjectEventFunction(&lmScoreProcessor::DoProcess),
