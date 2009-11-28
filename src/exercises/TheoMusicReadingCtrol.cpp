@@ -133,7 +133,7 @@ void lmTheoMusicReadingCtrol::CreateControls()
         wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 
     // "count off" check box
-    wxCheckBox* m_pChkCountOff = new wxCheckBox(this, ID_LINK_COUNTOFF, _("Count off to start"));
+    wxCheckBox* m_pChkCountOff = new wxCheckBox(this, ID_LINK_COUNTOFF, _("Start with count off"));
     m_pChkCountOff->SetValue(m_fDoCountOff);
     m_pButtonsSizer->Add(
         m_pChkCountOff,

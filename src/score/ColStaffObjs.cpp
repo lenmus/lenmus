@@ -1594,7 +1594,8 @@ void lmSegment::Remove(lmStaffObj* pSO, bool fDelete, bool fClefKeepPosition,
             if (pLastSO)
                 pLastSO = m_pOwner->FindPrevStaffObj(pLastSO);
 
-            m_pOwner->AutoReBar(pNext, pLastSO, pNewTS);
+            //m_pOwner->AutoReBar(pNext, pLastSO, pNewTS);
+            OnContextRemoved(pSO, pNext, fClefKeepPosition);
         }
     }
     else
@@ -2012,15 +2013,31 @@ void lmSegment::OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj
         lmKeySignature* pKey = (lmKeySignature*)pCCSO;
         pNewKey = (fAdded ? pKey : pKey->GetApplicableKeySignature());
         pOldKey = (fAdded ? pKey->GetApplicableKeySignature() : pKey);
-        UpdateNotesKeyChange(pOldKey, pNewKey, pNextSO, fKeepPitchPosition);
+        lmEKeySignatures nOldKeyType = (pOldKey ? pOldKey ->GetKeyType() : earmDo);
+        lmEKeySignatures nNewKeyType = (pNewKey ? pNewKey ->GetKeyType() : earmDo);
+        UpdateNotesKeyChange(nOldKeyType, nNewKeyType, pNextSO, fKeepPitchPosition);
     }
     else if (pCCSO->IsClef())
     {
         lmClef* pClef = (lmClef*)pCCSO;
-        pNewClef = (fAdded ? pClef : pClef->GetApplicableClef());
         pOldClef = (fAdded ? pClef->GetApplicableClef() : pClef);
-        UpdateNotesClefChange(pOldClef, pNewClef, pNextSO, fKeepPitchPosition);
+        pNewClef = (fAdded ? pClef : pClef->GetApplicableClef());
+        lmEClefType nNewClefType = (fAdded ? pClef->GetClefType() 
+                                           : pClef->GetCtxApplicableClefType());
+        lmEClefType nOldClefType = (fAdded ? pClef->GetCtxApplicableClefType() 
+                                           : pClef->GetClefType());
+
+        int nStaff = pClef->GetStaffNum();
+        if (nNewClefType == lmE_Undefined)
+            nNewClefType = m_pOwner->GetOwnerVStaff()->GetStaff(nStaff)->GetDefaultClef();
+        if (nOldClefType == lmE_Undefined)
+            nOldClefType = m_pOwner->GetOwnerVStaff()->GetStaff(nStaff)->GetDefaultClef();
+
+        UpdateNotesClefChange(nOldClefType, nNewClefType, pNextSO, nStaff,
+                              fKeepPitchPosition);
     }
+    else if (pCCSO->IsTimeSignature())
+        ;   //nothing to do with the notes
     else
         wxASSERT(false);
 
@@ -2047,7 +2064,7 @@ void lmSegment::OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj
     else if (pCCSO->IsClef())
     {
         //Clef: only one staff affected
-        int nStaff = pNewClef->GetStaffNum();
+        int nStaff = (pNewClef ? pNewClef->GetStaffNum() : pOldClef->GetStaffNum());
 
         //4.1. compute new context for this staff at end of segment
         lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
@@ -2056,25 +2073,39 @@ void lmSegment::OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj
         pNextSegment->OnContextChanged(pLastContext, nStaff, pOldClef, pNewClef,
                                        fKeepPitchPosition);
     }
+    else if (pCCSO->IsTimeSignature())
+    {
+        //time signature: all staves affected
+        for (int nStaff=1; nStaff <= lmMAX_STAFF; nStaff++)
+        {
+            //4.1. compute new context for this staff at end of segment
+            lmContext* pLastContext = FindEndOfSegmentContext(nStaff);
+
+            //4.2 inform next segment
+            pNextSegment->OnContextChanged(pLastContext, nStaff);
+        }
+    }
     else
         wxASSERT(false);
 
 }
 
-void lmSegment::UpdateNotesKeyChange(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
+void lmSegment::UpdateNotesKeyChange(lmEKeySignatures nOldKeyType,
+                                     lmEKeySignatures nNewKeyType,
                                      lmStaffObj* pNextSO, bool fKeepPitch)
 {
     if (pNextSO)
     {
         if (fKeepPitch)
-            AddRemoveAccidentals(pNewKey, pNextSO);
+            AddRemoveAccidentals(nNewKeyType, pNextSO);
         else
-            ChangePitch(pOldKey, pNewKey, pNextSO);
+            ChangePitch(nOldKeyType, nNewKeyType, pNextSO);
     }
 }
 
-void lmSegment::UpdateNotesClefChange(lmClef* pOldClef, lmClef* pNewClef,
-                                      lmStaffObj* pNextSO, bool fClefKeepPosition)
+void lmSegment::UpdateNotesClefChange(lmEClefType nOldClefType, lmEClefType nNewClefType,
+                                      lmStaffObj* pNextSO, int nStaff,
+                                      bool fClefKeepPosition)
 {
     //if pNextSO is NULL it means that there are no StaffObjs after the inserted clef.
     //Therefore, nothing to do. Also, if it has been requested not to keep notes
@@ -2082,7 +2113,7 @@ void lmSegment::UpdateNotesClefChange(lmClef* pOldClef, lmClef* pNewClef,
     if (!(pNextSO && fClefKeepPosition))
         return;
 
-    Transpose(pNewClef, pOldClef, pNextSO, pNewClef->GetStaffNum());
+    Transpose(nNewClefType, nOldClefType, pNextSO, nStaff);
 }
 
 void lmSegment::OnContextChanged(lmContext* pStartContext, int nStaff,
@@ -2119,29 +2150,41 @@ void lmSegment::OnContextChanged(lmContext* pStartContext, int nStaff,
 
     //3. Update notes in current segment (to transpose, change accidentals, etc.), 
     //if requested
-    if (pNewCCSO->IsClef())
+    if (pNewCCSO)
     {
-        lmEClefType nNewClefType = ((lmClef*)pNewCCSO)->GetClefType();
-        if (fKeepPitchPosition && nNewClefType != lmE_Undefined)
+        if (pNewCCSO->IsClef())
         {
-            Transpose((lmClef*)pNewCCSO, (lmClef*)pOldCCSO, (lmStaffObj*)NULL, nStaff);
+            if (fKeepPitchPosition)
+            {
+                Transpose( ((lmClef*)pNewCCSO)->GetClefType(),
+                           ((lmClef*)pOldCCSO)->GetClefType(),
+                           (lmStaffObj*)NULL,
+                           nStaff );
+            }
         }
-    }
-    else if (pNewCCSO->IsKeySignature())
-    {
-        if (fKeepPitchPosition)
-            AddRemoveAccidentals((lmKeySignature*)pNewCCSO, (lmStaffObj*)NULL);
+        else if (pNewCCSO->IsKeySignature())
+        {
+            if (fKeepPitchPosition)
+            {
+                AddRemoveAccidentals( ((lmKeySignature*)pNewCCSO)->GetKeyType(),
+                                      (lmStaffObj*)NULL );
+            }
+            else
+            {
+                if (!pOldCCSO)
+                    return;       //Nothing to do
+                ChangePitch( ((lmKeySignature*)pOldCCSO)->GetKeyType(),
+                             ((lmKeySignature*)pNewCCSO)->GetKeyType(),
+                             (lmStaffObj*)NULL  );
+            }
+        }
+        else if (pNewCCSO->IsTimeSignature())
+        {
+            //for time signature changes no notes to update
+        }
         else
-            ChangePitch((lmKeySignature*)pOldCCSO, (lmKeySignature*)pNewCCSO,
-                        (lmStaffObj*)NULL);
+            wxASSERT(false);
     }
-    else if (pNewCCSO->IsTimeSignature())
-    {
-        //for time signature changes no notes to update
-    }
-    else
-        wxASSERT(false);
-
 
         //propagate to next segment if necessary
 
@@ -2172,8 +2215,8 @@ void lmSegment::OnContextChanged(lmContext* pStartContext, int nStaff,
                                    fKeepPitchPosition);
 }
 
-void lmSegment::Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO,
-                          int nStaff)
+void lmSegment::Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
+                          lmStaffObj* pStartSO, int nStaff)
 {
     //A clef has been inserted. Iterate along the staffobjs of this segment and re-pitch
     //the notes to maintain its staff position.
@@ -2182,13 +2225,12 @@ void lmSegment::Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStart
     //NULL the whole segment will be transposed. 
 
     wxASSERT(nStaff > 0);
+    if (nOldClefType == lmE_Undefined || nNewClefType == lmE_Undefined)
+        return;         //the only valid option is to do nothing (keep pitch)
 
     //locate start point
     lmStaffObj* pFirst = (pStartSO ? pStartSO : m_pFirstSO);
     if (!pFirst) return;
-
-    lmEClefType nNewClefType = pNewClef->GetClefType();
-    lmEClefType nOldClefType = pOldClef->GetClefType();
 
     //iterate until end of segment or new cleft
     lmSOIterator it(m_pOwner, pFirst);
@@ -2204,7 +2246,7 @@ void lmSegment::Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStart
 	}
 }
 
-void lmSegment::AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStartSO)
+void lmSegment::AddRemoveAccidentals(lmEKeySignatures nNewKeyType, lmStaffObj* pStartSO)
 {
     //A key signature has been added/removed or changed. As a consequence, the pitch of
     //notes after the key signature might be affected. User has requested to add/remove
@@ -2217,11 +2259,10 @@ void lmSegment::AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStart
     // - new context to apply (new key signature)
     // - what to do if no key signature ? -> do not change anything
 
-    if (!pNewKey) return;       //Nothing to do
 
     //determine new applicable accidentals
     int nAccidentals[7];
-    lmComputeAccidentals(pNewKey->GetKeyType(), nAccidentals);
+    lmComputeAccidentals(nNewKeyType, nAccidentals);
 
     //locate start point
     lmStaffObj* pFirst = (pStartSO ? pStartSO : m_pFirstSO);
@@ -2242,7 +2283,7 @@ void lmSegment::AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStart
 	}
 }
 
-void lmSegment::ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
+void lmSegment::ChangePitch(lmEKeySignatures nOldKeyType, lmEKeySignatures nNewKeyType,
                             lmStaffObj* pStartSO)
 {
     //A key signature has been added/removed or changed. As a consequence, the pitch of
@@ -2256,12 +2297,10 @@ void lmSegment::ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
     // - old and new key signatures that apply.
     // - what to do if no new key signature or no old key signature? -> do not change anything
 
-    if (!pNewKey || !pOldKey) return;       //Nothing to do
-
     //determine increment/decrement of pitch for each step
     int nNewAcc[7], nOldAcc[7], nPitchDiff[7];
-    lmComputeAccidentals(pNewKey->GetKeyType(), nNewAcc);
-    lmComputeAccidentals(pOldKey->GetKeyType(), nOldAcc);
+    lmComputeAccidentals(nNewKeyType, nNewAcc);
+    lmComputeAccidentals(nOldKeyType, nOldAcc);
     for (int i=0; i < 7; i++)
         nPitchDiff[i] = nNewAcc[i] - nOldAcc[i];
 

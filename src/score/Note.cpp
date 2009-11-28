@@ -327,25 +327,20 @@ void lmNote::CreateTie(lmNote* pNtNext, long nID, lmTPoint* pStartBezier,
     m_pTieNext->SetBezierPoints(1, pEndBezier);
 }
 
-lmEClefType lmNote::GetClefType()
+lmEClefType lmNote::GetCtxApplicableClefType()
 {
-	//returns the applicable clef for this note
+	//returns the clef type applicable to this note, according to context
 
-    //Get the context.
-	//During note construction normally we have the context. use it
-	//In other cases, get the context clef
+    //This is an override of lmStaffObj::GetCtxApplicableClefType() to speed
+    //context search during note construction,as there normally we have the
+    //context and can use it. In other cases, get the context
     lmContext* pContext = (lmContext*)NULL;
     if (m_fBeingBuilt)
         pContext = m_pContext;
     else
 	    pContext = GetCurrentContext();
 
-    //Get clef
-    lmEClefType nType = (pContext ? pContext->GetClefType() : lmE_Undefined);
-    if (nType == lmE_Undefined)
-        nType = m_pVStaff->GetStaff(m_nStaffNum)->GetPreviousFirstClefType();
-
-    return nType;
+    return (pContext ? pContext->GetClefType() : lmE_Undefined);
 }
 
 lmTimeSignature* lmNote::GetTimeSignature()
@@ -1171,7 +1166,12 @@ int lmNote::GetPosOnStaff()
         // if pitch is not yet defined, return line 0 (first bottom ledger line
         return 0;
     else
-        return PitchToPosOnStaff(GetClefType(), m_anPitch);
+    {
+        lmEClefType nType = GetCtxApplicableClefType();
+        if (nType == lmE_Undefined)
+            nType = m_pVStaff->GetStaff(m_nStaffNum)->GetDefaultClef();
+        return lmPitchToPosOnStaff(nType, m_anPitch);
+    }
 }
 
 const lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
@@ -1265,7 +1265,7 @@ void lmNote::ModifyPitch(lmEClefType nNewClefType, lmEClefType nOldClefType)
     // if pitch is not yet defined, nothing to do
     if (!IsPitchDefined()) return;
 
-    int nOldPos = PitchToPosOnStaff(nOldClefType, m_anPitch);
+    int nOldPos = lmPitchToPosOnStaff(nOldClefType, m_anPitch);
     lmDPitch nNewDPitch = PosOnStaffToPitch(nNewClefType, nOldPos);
     m_anPitch.Set(DPitch_Step(nNewDPitch), DPitch_Octave(nNewDPitch), m_anPitch.Accidentals());
     SetDirty(true);
@@ -1894,7 +1894,7 @@ wxString GetNoteNamePhysicists(lmDPitch nPitch)
 
 }
 
-int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch)
+int lmPitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch)
 {
     // Returns the position on the staff (line/space) referred to the first ledger line of
     // the staff. Depends on clef:
@@ -1908,7 +1908,6 @@ int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch)
 
 	// pitch is defined. Position will depend on key
     switch (nClef) {
-        case lmE_Undefined :
         case lmE_Sol :
             return aPitch.ToDPitch() - lmC4_DPITCH;
         case lmE_Fa4 :
@@ -1928,8 +1927,9 @@ int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch)
         case lmE_Do5 :
             return aPitch.ToDPitch() - lmC4_DPITCH + 10;
         default:
-            // no clef, assume lmE_Sol
-            return aPitch.ToDPitch() - lmC4_DPITCH;
+            wxLogMessage(_T("[lmPitchToPosOnStaff] Case %d not treated in switch statement"), nClef);
+            wxASSERT(false);
+            return aPitch.ToDPitch() - lmC4_DPITCH;     //assume G clef
     }
 }
 

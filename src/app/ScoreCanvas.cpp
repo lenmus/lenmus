@@ -2442,13 +2442,9 @@ lmDPitch lmScoreCanvas::GetNotePitchFromPosition(lmShapeStaff* pShapeStaff, lmUP
     //to determine octave and step it is necessary to know the clef. As caret is
     //placed at insertion point we could get these information from caret
     lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetCurrentContext();
-    if (!pContext)
-    {
-        //there is no clef in score.
-        //TODO: InserNote commnad passing nLineSpace as argument, instead of pitch.
-        return lmNO_DPITCH;
-    }
-    lmEClefType nClefType = pContext->GetClefType();
+    lmEClefType nClefType = (pContext ? pContext->GetClefType() : lmE_Undefined);
+    if (nClefType == lmE_Undefined)
+        nClefType = ((lmStaff*)(pShapeStaff->GetScoreOwner()))->GetDefaultClef();
     lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
     dpNote += (nLineSpace - 2);     //pitch for note to insert
 
@@ -3680,11 +3676,13 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
             if (!pStart)
             {
                 //This is the first note/rest. If not beamed, it must be a note
+                //shorter than quarter
                 pStart = (lmNoteRest*)pGMO->GetScoreOwner();
                 nVoice = pStart->GetVoice();
                 if (!pStart->IsBeamed())
                 {
                     fValid &= pStart->IsNote();
+                    fValid &= ((lmNote*)pStart)->GetNoteType() >= eEighth;
                     fAllBeamed = false;
                 }
                 else

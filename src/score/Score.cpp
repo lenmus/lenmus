@@ -159,11 +159,14 @@ lmSystemInfo::lmSystemInfo(lmSystemInfo* pSysInfo)
     m_uSystemDistance = pSysInfo->m_uSystemDistance;
 }
 
-wxString lmSystemInfo::SourceLDP(int nIndent, bool fUndoData)
+wxString lmSystemInfo::SourceLDP(int nIndent, bool fFirst, bool fUndoData)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sSource += _T("(systemLayout ");
+
+    //add order
+    sSource += (fFirst ? _T("first ") : _T("other ") );
 
 	//margins: left,top,right,bottom, binding
 	sSource += wxString::Format(_T("(systemMargins %.0f %.0f %.0f %.0f)"),
@@ -466,6 +469,50 @@ void lmScore::SetPageNewSection(bool fNewSection, int nPage)
 {
 	SetPageInfo(nPage);
 	m_pPageInfo->SetNewSection(fNewSection);
+}
+
+void lmScore::SetTopSystemDistance(lmLUnits nDistance, bool fFirstPage, int nSection)
+{ 
+    //fFirstPage in section
+    //nSection: 0..n-1
+
+    if (fFirstPage)
+        m_SystemsInfo.front()->SetTopSystemDistance(nDistance);
+    else
+        m_SystemsInfo.back()->SetTopSystemDistance(nDistance);
+}
+
+void lmScore::SetSystemDistance(lmLUnits nDistance, bool fFirstPage, int nSection)
+{ 
+    //fFirstPage in section
+    //nSection: 0..n-1
+
+    if (fFirstPage)
+        m_SystemsInfo.front()->SetSystemDistance(nDistance);
+    else
+        m_SystemsInfo.back()->SetSystemDistance(nDistance);
+}
+
+void lmScore::SetSystemLeftSpace(lmLUnits nDistance, bool fFirstPage, int nSection)
+{
+    //fFirstPage in section
+    //nSection: 0..n-1
+
+    if (fFirstPage)
+        m_SystemsInfo.front()->SetLeftMargin(nDistance);
+    else
+        m_SystemsInfo.back()->SetLeftMargin(nDistance);
+}
+
+void lmScore::SetSystemRightSpace(lmLUnits nDistance, bool fFirstPage, int nSection)
+{
+    //fFirstPage in section
+    //nSection: 0..n-1
+
+    if (fFirstPage)
+        m_SystemsInfo.front()->SetRightMargin(nDistance);
+    else
+        m_SystemsInfo.back()->SetRightMargin(nDistance);
 }
 
 lmLUnits lmScore::TenthsToLogical(lmTenths nTenths)
@@ -904,13 +951,23 @@ wxString lmScore::SourceLDP(bool fUndoData, wxString sFilename)
 	    }
     }
 
-    //first page layout info
-	lmPageInfo* pPageInfo = m_PagesInfo.front();
-    sSource += pPageInfo->SourceLDP(1, fUndoData);
-
-    //first system and other systems layout info
-    //sSource += m_SystemsInfo.front()->SourceLDP(1, fUndoData);
-    //sSource += m_SystemsInfo.back()->SourceLDP(1, fUndoData);
+    //first section layout info
+    //TODO: sections
+    //int nSection = 0;
+    {
+        //page layout info
+#if 0
+		std::list<lmPageInfo*>::iterator it;
+		for (it = m_PagesInfo.begin(); it != m_PagesInfo.end(); ++it)
+            sSource += (*it)->SourceLDP(1, fUndoData);
+#else
+        lmPageInfo* pPageInfo = m_PagesInfo.front();
+        sSource += pPageInfo->SourceLDP(1, fUndoData);
+#endif
+        //first system and other systems layout info
+        sSource += m_SystemsInfo.front()->SourceLDP(1, true, fUndoData);
+        sSource += m_SystemsInfo.back()->SourceLDP(1, false, fUndoData);
+    }
 
     //score cursor information
     if (fUndoData)

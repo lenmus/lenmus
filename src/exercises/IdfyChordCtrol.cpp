@@ -222,7 +222,7 @@ void lmIdfyChordCtrol::OnSettingsChanged()
     if (m_pConstrains->IsValidGroup(ecg_Sixths)) {
         iR = iB / m_NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Other chords:"));
-        for (iC=ect_LastSeventh+1; iC < ect_Max; iC++) {
+        for (iC=ect_LastSeventh+1; iC < ect_MaxInExercises; iC++) {
             if (m_pConstrains->IsChordValid((lmEChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );

@@ -93,7 +93,6 @@ public:
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmNoteRest* AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     void        AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject);
-	bool		AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore);
 	lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     bool        AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptHeight);
@@ -155,6 +154,8 @@ protected:
     void        AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget);
     void        AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos);
     bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, int* pNumDots);
+	bool		AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore);
+	bool		AnalyzeSystemLayout(lmLDPNode* pNode, lmScore* pScore);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     void        AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,

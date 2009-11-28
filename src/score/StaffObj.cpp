@@ -793,15 +793,12 @@ lmContext* lmStaffObj::NewUpdatedContext()
 	return m_pVStaff->NewUpdatedContext(this->GetStaffNum(), this);
 }
 
-lmEClefType lmStaffObj::GetApplicableClefType()
+lmEClefType lmStaffObj::GetCtxApplicableClefType()
 {
-    //returns the clef applicable to this staffobj, if any
+    //returns the clef applicable to this staffobj, if any.
 
     lmContext* pContext = GetCurrentContext();
-    if (pContext)
-        return pContext->GetClefType();
-    else
-        return lmE_Undefined;
+    return (pContext ? pContext->GetClefType() : lmE_Undefined);
 }
 
 lmClef* lmStaffObj::GetApplicableClef()

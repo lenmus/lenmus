@@ -14,9 +14,9 @@ tying a triplet to the next note:</para>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4 noVisible)
-        (n * c g+ t3)(n * c)(n * c g- t- l)(n * n))
-        (c (n * c g+ t3)(n * c)(n * c g- t- l)(n * c g+)(n * c g-)(Barra Final))
+        (time 2 4 noVisible)
+        (n * e g+ t3)(n * e)(n * e g- t- l)(n * q)
+        (n * e g+ t3)(n * e)(n * e g- t- l)(n * e g+)(n * e g-)(barline end)
     </music>
 </score></para>
 
@@ -31,11 +31,11 @@ measures 2 and 4 are similar to measures 1 and 3 but tying the triplets.</para>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4)
-           (n * c g+ t3)(n * c)(n * c g- t-)(n * n))
-        (c (n * c g+ t3)(n * c)(n * c g- t- l)(n * n))
-        (c (n * c g+ t3)(n * c)(n * c g- t-)(n * c g+)(n * c g-))
-        (c (n * c g+ t3)(n * c)(n * c l g- t-)(n * c g+)(n * c g-)(Barra Final))
+        (time 2 4)
+           (n * e g+ t3)(n * e)(n * e g- t-)(n * q)
+        (n * e g+ t3)(n * e)(n * e g- t- l)(n * q)
+        (n * e g+ t3)(n * e)(n * e g- t-)(n * e g+)(n * e g-)
+        (n * e g+ t3)(n * e)(n * e l g- t-)(n * e g+)(n * e g-)(barline end)
     </music>
 </score></para>
 </part>
@@ -67,12 +67,12 @@ studied in this lesson.</para>
     <control_go_back>thm217</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24,34,44;(n * c g+ t3)(n * c)(n * c l g- t-)(n * n)</fragment>
-    <fragment>24,34,44;(n * c g+ t3)(n * c)(n * c l g- t-)(n * c g+)(n * c g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e l g- t-)(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e l g- t-)(n * e g+)(n * e g-)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 
@@ -88,16 +88,16 @@ studied in this lesson.</para>
     <control_go_back>thm217</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24,34,44;(s c)(n * c),(n * c g+ t3)(n * c)(n * c l g- t-),(n * c g+)(n * c g-),(n * n),(n * c)(s c)</fragment>
-    <fragment>24,34,44;(n * n),(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+ t3)(n * c)(n * c l g- t-),(n * c g+)(n * c g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * c g+ t3)(n * c)(n * c l g- t-),(n * c g+)(n * c g-),(n * c g+)(n * c g-),(n * c g+ t3)(n * c)(n * c l g- t-),(n * n),(n * c g+)(n * c g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * c)(n * n)(n * c),(n * c g+ t3)(n * c)(n * c l g- t-),(n * n)</fragment>
-    <fragment>24,34,44;(n * n.)(n * c),(n * c g+ t3)(n * c)(n * c l g- t-),(n * n)</fragment>
-    <fragment>24,34,44;(n * c g+ t3)(n * c)(n * c l g- t-),(n * n),(n * c g+ t3)(n * c)(n * c l g- t-),(n * n),(n * c g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c g-),(n * n)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>24,34,44;(r e)(n * e),(n * e g+ t3)(n * e)(n * e l g- t-),(n * e g+)(n * e g-),(n * q),(n * e)(r e)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+ t3)(n * e)(n * e l g- t-),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e l g- t-),(n * e g+)(n * e g-),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e)(n * q)(n * e),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q)</fragment>
+    <fragment>24,34,44;(n * q.)(n * e),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e l g- t-),(n * q),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 

@@ -171,7 +171,7 @@ bool lmScoreCommand::CommandDone(bool fCmdSuccess, int nUpdateHints)
     //wxLogMessage(_T("[lmScoreCommand::CommandDone] Dump of new score follows:"));
     //wxLogMessage( m_pDoc->GetScore()->Dump() );
     //wxLogMessage( m_pDoc->GetScore()->SourceLDP(true) );
-    //wxMessageBox(_T("Barline inserted"));
+    //wxMessageBox(_T("[lmScoreCommand::CommandDone] Dump completed."));
     ////END DBG -----------------------------------------
     
     //success. mark document as 'modified'

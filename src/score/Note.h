@@ -167,7 +167,7 @@ public:
 
 	//context related information
 	lmTimeSignature* GetTimeSignature();
-	lmEClefType GetClefType();
+	lmEClefType GetCtxApplicableClefType();
 	int GetContextAccidentals(int nStep);
 
 	//methods for edition
@@ -255,7 +255,7 @@ private:
 extern wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad, 
                                      lmDPitch* pPitch = (lmDPitch*)NULL);
 extern wxString GetNoteNamePhysicists(lmDPitch nPitch);
-extern int PitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch);
+extern int lmPitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch);
 extern lmDPitch PosOnStaffToPitch(lmEClefType nClef, int nPos);
 extern lmLUnits lmCheckNoteNewPosition(lmStaff* pStaff, lmLUnits uyOldPos, lmLUnits uyNewPos,
                                        int* pnSteps);

@@ -81,7 +81,12 @@ public:
     lmContext* NewContextAfter(lmTimeSignature* pNewTime, lmContext* pPrevContext);
     inline lmContext* GetLastContext() { return m_pLastContext; }
     void RemoveContext(lmContext* pContext, lmStaffObj* pSO = (lmStaffObj*)NULL);
-    inline lmEClefType GetPreviousFirstClefType() const { return m_nPreviousFirstClef; }
+
+    //default clef and key signature
+    inline lmEClefType GetDefaultClef() { return m_nDefaultClefType; }
+    void SetDefaultClef(lmEClefType nType);
+    inline lmEKeySignatures GetDefaultKey() { return m_nDefaultKeyType; }
+    void SetDefaultKey(lmEKeySignatures nType);
 
     //debug
     wxString Dump();
@@ -112,11 +117,13 @@ private:
     wxFont*     m_pFontDraw;        //font to use for drawing on this staff
     double      m_rFontPoints;      //font size
 
+    //default clef and key signature
+    lmEClefType         m_nDefaultClefType;
+    lmEKeySignatures    m_nDefaultKeyType;
 
 	//Contexts are organized as a double linked list. First and last nodes:
 	lmContext*		m_pFirstContext;
 	lmContext*		m_pLastContext;
-    lmEClefType     m_nPreviousFirstClef;   //to know previous clef when clef is deleted
 
 };
 

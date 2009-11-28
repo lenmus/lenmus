@@ -17,8 +17,8 @@ a 8th note. The measure is occupied by a dotted quarter note.</para>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 9 8)(n a4 b. l)(n a4 c g+)(n a4 c)(n a4 c g-) )
-        (c (n a4 b. l)(n a4 n.)(Barra Final))
+        (time 9 8)(n a4 h. l)(n a4 e g+)(n a4 e)(n a4 e g-)
+        (n a4 h. l)(n a4 q.)(barline end)
     </music>
 </score></para>
 
@@ -48,12 +48,12 @@ studied in this lesson.</para>
     <control_go_back>thm206</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>98;(n * b. l),(n * c g+)(n * c)(n * c g-)</fragment>
-    <fragment>98;(n * b. l),(n * n.)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>98;(n * h. l),(n * e g+)(n * e)(n * e g-)</fragment>
+    <fragment>98;(n * h. l),(n * q.)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>98</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 
@@ -70,13 +70,13 @@ studied in this lesson.</para>
     <control_go_back>thm206</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>68,98,128;(n * c g+)(n * c)(n * c g-),(n * c g+)(s c)(n * c g-),(n * c)(n * n),(n * b. l),(n * n.)</fragment>
-    <fragment>68,98,128;(n * b. l),(n * c g+)(n * c)(n * c g-),(n * n.)</fragment>
-    <fragment>68,98,128;(n * b. l),(n * c g+)(n * c)(n * c g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>68,98,128;(n * e g+)(n * e)(n * e g-),(n * e g+)(r e)(n * e g-),(n * e)(n * q),(n * h. l),(n * q.)</fragment>
+    <fragment>68,98,128;(n * h. l),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
+    <fragment>68,98,128;(n * h. l),(n * e g+)(n * e)(n * e g-)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>68,98,128</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 

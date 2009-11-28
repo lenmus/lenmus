@@ -126,17 +126,21 @@ private:
     void OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj* pNextSO,
                                bool fKeepPitchPosition);
     lmContext* FindEndOfSegmentContext(int nStaff);
-    void OnContextChanged(lmContext* pStartContext, int nStaff, lmStaffObj* pOldCCSO,
-                          lmStaffObj* pNewCCSO, bool fKeepPitchPosition);
+    void OnContextChanged(lmContext* pStartContext, int nStaff,
+                          lmStaffObj* pOldCCSO = (lmStaffObj*)NULL,
+                          lmStaffObj* pNewCCSO = (lmStaffObj*)NULL,
+                          bool fKeepPitchPosition = true);
 
     //staffobjs management when context change
-    void UpdateNotesClefChange(lmClef* pOldClef, lmClef* pNewClef,
-                               lmStaffObj* pNextSO, bool fClefKeepPosition);
-    void UpdateNotesKeyChange(lmKeySignature* pOldKey, lmKeySignature* pNewKey,
+    void UpdateNotesClefChange(lmEClefType nOldClefType, lmEClefType nNewClefType,
+                               lmStaffObj* pNextSO, int nStaff, bool fClefKeepPosition);
+    void UpdateNotesKeyChange(lmEKeySignatures nOldKeyType, lmEKeySignatures nNewKeyType,
                               lmStaffObj* pNextSO, bool fKeepPitch);
-    void Transpose(lmClef* pNewClef, lmClef* pOldClef, lmStaffObj* pStartSO, int nStaff);
-    void AddRemoveAccidentals(lmKeySignature* pNewKey, lmStaffObj* pStartSO);
-    void ChangePitch(lmKeySignature* pOldKey, lmKeySignature* pNewKey, lmStaffObj* pStartSO);
+    void Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
+                   lmStaffObj* pStartSO, int nStaff);
+    void AddRemoveAccidentals(lmEKeySignatures nNewKeyType, lmStaffObj* pStartSO);
+    void ChangePitch(lmEKeySignatures nOldKeyType, lmEKeySignatures nNewKeyType,
+                     lmStaffObj* pStartSO);
 
 
     //member variables

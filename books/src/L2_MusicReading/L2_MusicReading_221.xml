@@ -13,10 +13,10 @@
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4 noVisible)
-           (n * s g+)(n * c. g-)(Barra Doble))
-        (c (n * s g+)(n * c. l g-)(n * n)(Barra Doble))
-        (c (n * s g+)(n * c. l g-)(n * c g+)(n * c g-)(Barra Final))
+        (time 2 4 noVisible)
+        (n * s g+)(n * e. g-)(barline double)
+        (n * s g+)(n * e. l g-)(n * q)(barline double)
+        (n * s g+)(n * e. l g-)(n * e g+)(n * e g-)(barline end)
     </music>
 </score></para>
 
@@ -28,10 +28,10 @@
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4)
-           (n * s g+)(n * c. g-)(n * s g+)(n * c. g-))
-        (c (n * s g+)(n * c. l g-)(n * n))
-        (c (n * s g+)(n * c. l g-)(n * c g+)(n * c g-)(Barra Final))
+        (time 2 4)
+        (n * s g+)(n * e. g-)(n * s g+)(n * e. g-)
+        (n * s g+)(n * e. l g-)(n * q)
+        (n * s g+)(n * e. l g-)(n * e g+)(n * e g-)(barline end)
     </music>
 </score></para>
 </part>
@@ -71,11 +71,11 @@ studied in this lesson.</para>
     <control_go_back>thm221</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24,34,44;(n * s g+)(n * c. g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>24,34,44;(n * s g+)(n * e. g-)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 
@@ -91,11 +91,11 @@ studied in this lesson.</para>
     <control_go_back>thm221</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24,34,44;(n * s g+)(n * c. l g-)(n * n)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>24,34,44;(n * s g+)(n * e. l g-)(n * q)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 
@@ -111,11 +111,11 @@ studied in this lesson.</para>
     <control_go_back>thm221</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24,34,44;(n * s g+)(n * c. l g-)(n * c g+)(n * c g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>24,34,44;(n * s g+)(n * e. l g-)(n * e g+)(n * e g-)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 
@@ -131,20 +131,20 @@ studied in this lesson.</para>
     <control_go_back>thm221</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24,34,44;(n * s g+)(n * c. g-),(n * c)(s c)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. g-),(n * s g+)(n * c. g-),(n * s g+)(n * c. g-)</fragment>
-    <fragment>24,34,44;(n * n l),(n * c. g+)(n * s g-),(n * c. g+)(n * s g-),(n * c. g+)(n * s g-),(n * c g+)(n * c l g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. l g-),(n * c g+)(n * c g-),(n * c g+ t3)(n * c)(n * c g- t-),(n * c. g+)(n * s g-),(n * c g+ t3)(n * c)(n * c g- t-),(n * n)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. l g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. l g-),(n * c g+)(n * c g-)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. l g-),(n * c g+)(n * c g-),(n * c)(s c)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. g-),(n * s g+)(n * c. l g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * s g+)(n * c. g-),(n * c g+)(n * c g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>24,34,44;(n * s g+)(n * e. g-),(n * e)(r e)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. g-),(n * s g+)(n * e. g-),(n * s g+)(n * e. g-)</fragment>
+    <fragment>24,34,44;(n * q l),(n * e. g+)(n * s g-),(n * e. g+)(n * s g-),(n * e. g+)(n * s g-),(n * e g+)(n * e l g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. l g-),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * e. g+)(n * s g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * q)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. l g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. l g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. l g-),(n * e g+)(n * e g-),(n * e)(r e)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. g-),(n * s g+)(n * e. l g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * e. g-),(n * e g+)(n * e g-)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>Do</key>
+    <key>C</key>
 </exercise>
 </theme>
 

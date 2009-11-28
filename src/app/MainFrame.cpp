@@ -459,7 +459,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_TIMER       (lmID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
     //other events
-    EVT_CLOSE(lmMainFrame::OnCloseWindow)
+    EVT_CLOSE   (lmMainFrame::OnCloseWindow)
+    EVT_SIZE    (lmMainFrame::OnSize)
+
 
 END_EVENT_TABLE()
 
@@ -471,9 +473,15 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
     , m_pWelcomeWnd((lmWelcomeWnd*)NULL)
     , m_pHelp((lmHelpController*) NULL)
     , m_pBookController((lmTextBookController*) NULL)
-	, m_pTbTextBooks((wxToolBar*) NULL)
     , m_pHtmlWin((lmHtmlWindow*) NULL)
-
+        // initialize tool bars
+    , m_pToolbar((wxToolBar*) NULL)
+    , m_pTbPlay((wxToolBar*)NULL)
+    , m_pTbMtr((wxToolBar*)NULL)
+    , m_pTbFile((wxToolBar*)NULL)
+    , m_pTbEdit((wxToolBar*)NULL)
+    , m_pTbZoom((wxToolBar*)NULL)
+    , m_pTbTextBooks((wxToolBar*)NULL)
 {
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
@@ -491,7 +499,7 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
     SetAcceleratorTable(accel);
 
     //load recent files
-    m_pRecentFiles = new wxFileHistory();
+    m_pRecentFiles = pDocManager->GetFileHistory();
     LoadRecentFiles();
 
 	// create main metronome and associate it to frame metronome controls
@@ -505,15 +513,6 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
     m_pMenuBooks = (wxMenu*)NULL;
     wxMenuBar* menu_bar = CreateMenuBar(NULL, NULL);
     SetMenuBar(menu_bar);
-
-    // initialize tool bars
-    m_pToolbar = (wxToolBar*) NULL;
-    m_pTbPlay = (wxToolBar*)NULL;
-    m_pTbMtr = (wxToolBar*)NULL;
-    m_pTbFile = (wxToolBar*)NULL;
-    m_pTbEdit = (wxToolBar*)NULL;
-    m_pTbZoom = (wxToolBar*)NULL;
-    m_pTbTextBooks = (wxToolBar*)NULL;
 
     // initialize status bar
     m_pStatusBar = (lmStatusBar*)NULL;
@@ -542,15 +541,17 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
 void lmMainFrame::LoadRecentFiles()
 {
     //m_pRecentFiles->Load( *wxConfigBase::Get() );
-    //wxFileHistory::Load() does not use any key to look for the files and this causes problems.
-    //So lets do it here
-    for (int nFile = 1; nFile <= 9; nFile++)
+    //wxFileHistory::Load() does not use any key to look for the files and this
+    //causes problems. So lets do it here
+
+    //file #1 is the newest one one and #9 the oldest one. Therefore, load 
+    //them in reverse order
+    for (int nFile = 9; nFile > 0; --nFile)
     {
         wxString sKey = wxString::Format(_T("/RecentFiles/file%d"), nFile);
         wxString sFile = g_pPrefs->Read(sKey, _T(""));
-        if (sFile.empty())
-            break;
-        m_pRecentFiles->AddFileToHistory(sFile);
+        if (!sFile.empty())
+            m_pRecentFiles->AddFileToHistory(sFile);
     }
 
     //if no recent files, load some samples
@@ -560,8 +561,8 @@ void lmMainFrame::LoadRecentFiles()
         wxFileName oFile1(sPath, _T("greensleeves_v15.lms"));
         wxFileName oFile2(sPath, _T("chopin_prelude20_v15.lms"));
         wxFileName oFile3(sPath, _T("beethoven_moonlight_sonata_v15.lms"));
-        wxLogMessage(_T("[lmMainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
-                     sPath.c_str(), oFile1.GetFullPath().c_str() );
+        //wxLogMessage(_T("[lmMainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
+        //             sPath.c_str(), oFile1.GetFullPath().c_str() );
         m_pRecentFiles->AddFileToHistory(oFile1.GetFullPath());
         m_pRecentFiles->AddFileToHistory(oFile2.GetFullPath());
         m_pRecentFiles->AddFileToHistory(oFile3.GetFullPath());
@@ -573,17 +574,16 @@ void lmMainFrame::SaveRecentFiles()
     //wxFileHistory is not using a key to save the files, and this causes problems. Therefore
     //I will implement my own function
 
-    if (!m_pRecentFiles) return;
+    if (!m_pRecentFiles)
+        return;
 
+    //file #1 is the newest one
     int nNumFiles = m_pRecentFiles->GetCount();
-    for (int i = 1; i <= 9; i++)
+    for (int i = 1; i <= wxMin(nNumFiles, 9); ++i)
     {
         wxString buf;
         buf.Printf(_T("/RecentFiles/file%d"), i);
-        if (i <= nNumFiles)
-            g_pPrefs->Write(buf, m_pRecentFiles->GetHistoryFile(i-1));
-        else
-            g_pPrefs->Write(buf, wxEmptyString);
+        g_pPrefs->Write(buf, m_pRecentFiles->GetHistoryFile(i-1));
     }
 }
 
@@ -1379,7 +1379,6 @@ lmMainFrame::~lmMainFrame()
 
     //save and delete other objects
     SaveRecentFiles();
-    delete m_pRecentFiles;
 }
 
 void lmMainFrame::OnCloseBookFrame()
@@ -1798,6 +1797,53 @@ void lmMainFrame::OnCloseWindow(wxCloseEvent& event)
     if (CloseAll())     //force to close all windows
         event.Skip();   //allow event to continue normal processing if all closed
     m_fClosingAll = false;
+}
+
+void lmMainFrame::OnSize(wxSizeEvent& event)
+{
+    //Reorganize toolbar items in rows, to fit frame size 
+    
+    if (!m_pTbMtr) return;      //toolbars not yet created
+
+    //AS I can not measure the grip witdh I will use a good approx.: half toolbar height
+    int nGripWidth = m_pTbMtr->GetSize().GetHeight() / 2 + 1;
+
+    int nRow = 0;
+    int nPos = 0;
+    wxSize size = this->GetClientSize();
+    int nWidth;
+    int nAvailable = size.x;
+
+    //Pointers, in presentation order: 
+    wxToolBar* pTool[7];
+    pTool[0] = m_pTbFile;       //File tools
+    pTool[1] = m_pTbEdit;       //Edit tools
+    pTool[2] = m_pTbZoom;       //Zooming tools
+    pTool[3] = m_pToolbar;      //Main tools
+    pTool[4] = m_pTbPlay;       //Play tools
+    pTool[5] = m_pTbMtr;        //Metronome tools
+    pTool[6] = m_pTbTextBooks;  //Textbooks
+
+    //at least the longest toolbar
+    nWidth = m_pTbEdit->GetSize().GetWidth() + nGripWidth;
+    if (nAvailable < nWidth)
+        return;
+
+    for (int i=0; i < 7; i++)
+    {
+        nWidth = pTool[i]->GetSize().GetWidth() + nGripWidth;
+        if (nAvailable < nWidth)
+        {
+            ++nRow;
+            nPos = 0;
+            nAvailable = size.x;
+        }
+        nAvailable -= nWidth;
+        m_mgrAUI.GetPane(pTool[i]).Top().Row(nRow).Position(nPos);
+    }
+
+    // tell the manager to "commit" all the changes just made
+    m_mgrAUI.Update();
 }
 
 void lmMainFrame::OnWindowClose(wxCommandEvent& WXUNUSED(event))

@@ -298,9 +298,17 @@ bool StrToDouble(wxString sValue, double* pNumber)
 		double rRight;
 		wxString sRight = sValue.substr(i+1);
 		fError |= !sRight.ToDouble(&rRight);
+        //double rDecimals = pow(10.0, (int)sRight.length()) + 0.000005;
+        double rDiv = 1.0;
+        for (int i=(int)sRight.length(); i > 0; --i)
+            rDiv *= 10.0;
+        double rDecimals = rRight / rDiv + 0.000005;
 		if (!fError)
 		{
-			*pNumber += rRight / pow(10.0, (int)sRight.length());
+            if (*pNumber > 0.0)
+			    *pNumber += rDecimals;
+            else
+			    *pNumber -= rDecimals;
 			return false;
 		}
 	}

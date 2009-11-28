@@ -189,9 +189,10 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
         {
-            //get current clef
-            lmClef* pClef = m_pContext[nStaff-1]->GetClef();
-            lmEClefType nClef = (pClef ? pClef->GetClefType() : lmE_Undefined);
+            //get current clef type
+            lmEClefType nClef = m_pContext[nStaff-1]->GetClefType();
+            if (nClef == lmE_Undefined)
+                nClef = pStaff->GetDefaultClef();
 
             //add top margin if not first staff
             if (nStaff > 1)

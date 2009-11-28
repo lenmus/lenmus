@@ -51,7 +51,9 @@ lmStaff::lmStaff(lmVStaff* pVStaff, long nID, int nNumLines, lmLUnits uSpacing,
 	    //contexts
 	, m_pFirstContext((lmContext*)NULL)
 	, m_pLastContext((lmContext*)NULL)
-    , m_nPreviousFirstClef(lmE_Undefined)
+        //default clef and key signature
+    , m_nDefaultClefType(lmE_Sol)       //G in 2nd line
+    , m_nDefaultKeyType(earmDo)         //C major
 {
     //line distance: default 1.8 mm -> lmStaff height = 7.2 mm    //TODO user option
     m_uSpacing = (uSpacing == 0.0f ? lmToLogicalUnits(1.8, lmMILLIMETERS) : uSpacing);
@@ -95,6 +97,18 @@ lmLUnits lmStaff::GetHeight()
     // distance between first and last line
     return (m_nNumLines - 1) * m_uSpacing;
 }
+void lmStaff::SetDefaultClef(lmEClefType nType) 
+{ 
+    if (nType == lmE_Undefined)
+        m_nDefaultClefType = lmE_Sol;     //G in 2nd line
+    else
+        m_nDefaultClefType = nType; 
+}
+
+void lmStaff::SetDefaultKey(lmEKeySignatures nType) 
+{ 
+    m_nDefaultKeyType = nType; 
+}
 
 
 
@@ -105,10 +119,10 @@ lmLUnits lmStaff::GetHeight()
 
 wxString lmStaff::DumpContextsChain()
 {
-    wxString sDump = wxString::Format(_T("\nStaff. Contexts: First: %d, Last: %d, Previous clef = %s\n"),
+    wxString sDump = wxString::Format(_T("\nStaff. Contexts: First: %d, Last: %d, Default clef = %s\n"),
         (m_pFirstContext ? m_pFirstContext->GetContextId() : 0),
         (m_pLastContext ? m_pLastContext->GetContextId() : 0),
-        GetClefLDPNameFromType(m_nPreviousFirstClef).c_str() );
+        GetClefLDPNameFromType(m_nDefaultClefType).c_str() );
 
     sDump += _T("Fwd chain: ");
     lmContext* pContext = m_pFirstContext;
@@ -149,10 +163,12 @@ lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
     //get current values
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
+    lmClef* pPrevClef = (lmClef*)NULL;
     if (pPrevContext)
 	{
         pKey = pPrevContext->GetKey();
         pTime = pPrevContext->GetTime();
+        pPrevClef = pPrevContext->GetClef();
     }
 
 	//create the new context
@@ -163,6 +179,12 @@ lmContext* lmStaff::NewContextAfter(lmClef* pNewClef, lmContext* pPrevContext)
 	//chain it in the list and update following contexts in the context chain
     lmContext* pNextContext = (pPrevContext ? pPrevContext->GetNext() : m_pFirstContext);
     InsertContextAfter(pNewContext, pPrevContext, pNextContext, pNewClef);
+
+    //FIX_ME: default clef should be replaced only if there are no notes before the
+    //clef.
+    ////if this is the first clef, save it as default clef
+    //if (!pPrevClef)
+    //    m_nDefaultClefType = pNewClef->GetClefType();
 
     //wxLogMessage(this->DumpContextsChain());
 
@@ -257,13 +279,7 @@ void lmStaff::RemoveContext(lmContext* pContext, lmStaffObj* pSO)
         m_pLastContext = pPrev;
 
     if (pContext == m_pFirstContext)
-    {
         m_pFirstContext = pNext;
-
-        //removed context was the first context. If it was created by a clef save the clef type
-        if (pSO->IsClef())
-            m_nPreviousFirstClef = ((lmClef*)pSO)->GetClefType();
-    }
 
     //update following contexts in the context chain. If following context inherited a value
     //form removed context, we have to update these inherited values. An example: if we are 

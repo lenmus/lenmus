@@ -745,6 +745,15 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
 
+    //parse optional elements <systemLayout>
+    pX = pNode->GetParameter(iP);
+    while(pX->GetName() == _T("systemLayout") &&  iP <= nNumParms)
+    {
+        AnalyzeSystemLayout(pX, m_pScore);
+        iP++;
+        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+    }
+
     //parse optional element <cursor>
     pX = pNode->GetParameter(iP);
     if (pX->GetName() == _T("cursor") &&  iP <= nNumParms)
@@ -2919,20 +2928,23 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
 
     //verify option name and determine required data type
     int nDataType;
-    if (sName == _T("StaffLines.StopAtFinalBarline"))
+    if (   (sName == _T("StaffLines.StopAtFinalBarline"))
+        || (sName == _T("StaffLines.Hide"))
+        || (sName == _T("Staff.DrawLeftBarline"))
+        || (sName == _T("Score.FillPageWithEmptyStaves"))
+        || (sName == _T("Score.JustifyFinalBarline"))
+       )
         nDataType = lmBoolean;
-    else if (sName == _T("StaffLines.Hide"))
-        nDataType = lmBoolean;
-    else if (sName == _T("Staff.DrawLeftBarline"))
-        nDataType = lmBoolean;
-    else if (sName == _T("Staff.UpperLegerLines.Displacement"))
+
+    else if (   (sName == _T("Staff.UpperLegerLines.Displacement"))
+             || (sName == _T("Render.SpacingMethod"))
+             || (sName == _T("Render.SpacingValue"))
+            )
         nDataType = lmNumberLong;
+
     else if (sName == _T("Render.SpacingFactor"))
         nDataType = lmNumberDouble;
-    else if (sName == _T("Render.SpacingMethod"))
-        nDataType = lmString;
-    else if (sName == _T("Render.SpacingValue"))
-        nDataType = lmNumberLong;
+
     else
     {
         AnalysisError(pNode, _T("Option '%s' unknown. Ignored."), sName.c_str());
@@ -3479,6 +3491,79 @@ bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
             sName.c_str() );
 		pScore->SetPageOrientation(true);
     }
+
+	return true;
+}
+
+bool lmLDPParser::AnalyzeSystemLayout(lmLDPNode* pNode, lmScore* pScore)
+{
+    //  <systemLayout> = (systemLayout {first | other} <systemMargins>)
+	//  <systemMargins> = (systemMargins <leftMargin><rightMargin><systemDistance>
+    //                     <topSystemDistance>)
+	//  <leftMargin>, <rightMargin>, <systemDistance>, <topSystemDistance> = number
+
+    //Analyzes a 'systemLayout' tag and, if successful, pass layout data to the
+    //received score. Returns true if success.
+
+    wxASSERT(pNode->GetName() == _T("systemLayout"));
+
+    //check that one parameter is specified
+    if(pNode->GetNumParms() != 2) {
+        AnalysisError(
+            pNode,
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+            pNode->GetName().c_str() );
+        return false;
+    }
+
+    //get 'first / other' parameter
+    int iP = 1;
+    lmLDPNode* pX = pNode->GetParameter(iP);
+    wxString sName = pX->GetName();
+    if (! (sName == _T("first") || sName == _T("other")) )
+    {
+        AnalysisError(pX, _T("Expected '%s' value but found '%s'. Ignored."),
+            _T("first / other"), sName.c_str() );
+		return false;
+    }
+    bool fFirstPage = (sName == _T("first"));
+    iP++;
+
+    //get 'systemMargins'
+    pX = pNode->GetParameter(iP);
+    sName = pX->GetName();
+    if (sName != _T("systemMargins"))
+    {
+        AnalysisError(pX, _T("Expected '%s' element but found '%s'. Ignored."),
+            _T("systemMargins"), sName.c_str() );
+		return false;
+    }
+    if(pX->GetNumParms() != 4)
+    {
+        AnalysisError(
+            pNode,
+            _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
+				_T("systemMargins"), pX->GetNumParms() );
+        return false;
+    }
+    lmLUnits uLeftMargin, uRightMargin, uSystemDistance, uTopSystemDistance;
+    wxString sValue = (pX->GetParameter(1))->GetName();
+	if (GetFloatNumber(pNode, sValue, sName, &uLeftMargin))
+        return false;
+    sValue = (pX->GetParameter(2))->GetName();
+	if (GetFloatNumber(pNode, sValue, sName, &uRightMargin))
+        return false;
+    sValue = (pX->GetParameter(3))->GetName();
+	if (GetFloatNumber(pNode, sValue, sName, &uSystemDistance))
+        return false;
+    sValue = (pX->GetParameter(4))->GetName();
+	if (GetFloatNumber(pNode, sValue, sName, &uTopSystemDistance))
+        return false;
+
+    pScore->SetTopSystemDistance(uTopSystemDistance, fFirstPage);
+    pScore->SetSystemDistance(uSystemDistance, fFirstPage);
+    pScore->SetSystemLeftSpace(uLeftMargin, fFirstPage);
+    pScore->SetSystemRightSpace(uRightMargin, fFirstPage);
 
 	return true;
 }

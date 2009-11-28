@@ -231,6 +231,7 @@ public:
 
     //other events
     void OnCloseWindow(wxCloseEvent& event);
+    void OnSize(wxSizeEvent& event);
 
     // other methods
     void SetOpenHelpButton(bool fButtonPressed);

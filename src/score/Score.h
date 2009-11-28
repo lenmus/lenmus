@@ -282,7 +282,7 @@ public:
                 }
 
 	//source code
-    wxString SourceLDP(int nIndent, bool fUndoData);
+    wxString SourceLDP(int nIndent, bool fFirst, bool fUndoData);
 
 
 private:
@@ -429,6 +429,13 @@ public:
                 { m_SystemsInfo.front()->SetTopSystemDistance(nDistance); }
     inline void SetSystemDistance(lmLUnits nDistance)
                 { m_SystemsInfo.back()->SetSystemDistance(nDistance); }
+
+    //sections layout
+    void SetTopSystemDistance(lmLUnits nDistance, bool fFirstPage, int nSection=0);
+    void SetSystemDistance(lmLUnits nDistance, bool fFirstPage, int nSection=0);
+    void SetSystemLeftSpace(lmLUnits nDistance, bool fFirstPage, int nSection=0);
+    void SetSystemRightSpace(lmLUnits nDistance, bool fFirstPage, int nSection=0);
+
 
 	inline void SetModified(bool fValue) { m_fModified = fValue; }
 	inline bool IsModified() { return m_fModified; }

@@ -851,7 +851,7 @@ lmTimeposEntry* lmTimeLine::GetMinAlignedObjForTime(float rTime)
 	//When entering this method iterator m_it points to the next aligned entry or
 	//to end iterator. This method doen't change m_it
 
-    float rMinDuration = 100000.0f;     //any too big value
+    float rMinDuration = 100000000.0f;     //any too big value
     lmLUnits uMaxSpace = 0.0f;
     lmTimeposEntry* pEntry = (lmTimeposEntry*)NULL;
 	lmItEntries itEnd = m_aMainTable.end();
@@ -862,7 +862,7 @@ lmTimeposEntry* lmTimeLine::GetMinAlignedObjForTime(float rTime)
         {
             //this object consumes less time. Select it unless it is a barline and there is
             //already an object selected
-            if (rMinDuration == 100000.0f || !(*it)->m_pSO->IsBarline())
+            if (rMinDuration == 100000000.0f || !(*it)->m_pSO->IsBarline())
             {
                 pEntry = *it;
                 uMaxSpace = (*it)->GetTotalSize();
@@ -1929,7 +1929,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
         //If computing critical line, also find the aligned object at timepos rTime, with minimum
         //time duration; if several objects with this minimum duration, take the widest one.
         lmTimeposEntry* pShortestEntry = (lmTimeposEntry*)NULL;
-        float rMinDuration = 100000.0f;       //any too big value
+        float rMinDuration = 100000000.0f;       //any too big value
 		for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
 		{
 			lmLUnits uxMinPossiblePos = (*it)->GetMinPossiblePosForTime(rTime);     //returns m_xLeft for that line
@@ -1957,7 +1957,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
                     {
                         //this object consumes less time. Select it unless it is a barline and there is
                         //already an object selected
-                        if (rMinDuration == 100000.0f || !pEntry->m_pSO->IsBarline())
+                        if (rMinDuration == 100000000.0f || !pEntry->m_pSO->IsBarline())
                         {
                             rMinDuration = rDuration;
                             pShortestEntry = pEntry;
@@ -2015,7 +2015,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
         //which returns the next timepos in each line and updates uxObjMaxPos with the
         //start position for next timepos
 		fContinue = false;
-		float rNextTime = 10000.0f;		//any too big value
+		float rNextTime = 100000000.0f;		//any too big value
         lmLUnits uxMaxPos = 0.0f;
 		for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
 		{
@@ -2060,7 +2060,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
 	//Get measure size and, if computing critical line, determine longest omega entry
 	lmLUnits uMeasureSize = 0.0f;
     lmTimeposEntry* pOmegaEntry = (lmTimeposEntry*)NULL;
-    lmLUnits uOmegaSize = -10000.0f;        //any too low value
+    lmLUnits uOmegaSize = -100000000.0f;        //any too low value
     float rOmegaTime = 0.0f;
     int iLine=0;
 	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)

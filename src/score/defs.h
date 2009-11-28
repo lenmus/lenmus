@@ -277,10 +277,22 @@ enum lmEAccidentals
     lm_eThreeQuartersSharp
 };
 
-//! key signatures
+//key signatures
+//
+//AWARE: names for key signatures are defined in object lmKeySignature. There is an
+//array, named sKeySignatureName, and the key signatures names are defined
+//assuming a predefined order in the enum lmEKeySignatures
+//
+//AWARE items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals.
+//'earmDo' must be 0 and consecutive orden must be kept.
+
 enum lmEKeySignatures
 {
+    lm_eKeyUndefined = -1,
+
     earmDo = 0,
+    lmMIN_KEY = earmDo,         //minimum valid value
+    lmMIN_MAJOR_KEY = earmDo,   //first major key
     earmSol,
     earmRe,
     earmLa,
@@ -295,9 +307,12 @@ enum lmEKeySignatures
     earmMib,
     earmSib,
     earmFa,
-    //AWARE minor keys must go after major keys. This is exploited in IsMajor() global
-    //function
+    lmMAX_MAJOR_KEY = earmFa,   //last major key
+
+    //AWARE: minor keys must go after major keys. This is exploited 
+    //in IsMajor() global function
     earmLam,
+    lmMIN_MINOR_KEY = earmLam,      //first minor key
     earmMim,
     earmSim,
     earmFasm,
@@ -311,23 +326,11 @@ enum lmEKeySignatures
     earmFam,
     earmDom,
     earmSolm,
-    earmRem
+    earmRem,
+    lmMAX_MINOR_KEY = earmRem,      //last minor key
+    lmMAX_KEY = earmRem,            //maximum valid key
 };
-// AWARE enum constats lmEKeySignatures are going to be ramdomly generated in object
-// Generators. The next constant defines de maximum and minimum values.
-#define lmMIN_KEY  earmDo
-#define lmMAX_KEY  earmRem
 #define lmNUM_KEYS lmMAX_KEY - lmMIN_KEY + 1
-#define lmMIN_MAJOR_KEY  earmDo
-#define lmMAX_MAJOR_KEY  earmFa
-#define lmMIN_MINOR_KEY  earmLam
-#define lmMAX_MINOR_KEY  earmRem
-
-// AWARE names for key signatures are defined in object lmKeySignature. There is an
-// array, named sKeySignatureName, and the key signatures names are defined
-// assuming a predefined order in the enum lmEKeySignatures
-// AWARE items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals.
-//  'earmDo' must be 0 and consecutive orden must be kept.
 
 
 //! TimeSignatureType indicates the signature encoding being used

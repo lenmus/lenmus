@@ -184,7 +184,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         if (sType.Left(5) == _T("SHORT")) {
             if (sType == _T("SHORT")) {
                 m_nScoreType = eHST_short;
-                m_nVersion = 13;    //1.3
+                m_nVersion = 15;    //1.5
                 m_sLanguage = _T("en");
             }
             else {
