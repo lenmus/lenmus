@@ -35,11 +35,11 @@ learn the original one with ties.</para>
     <control_measures></control_measures>
     <music>
         (time 2 8)
-        (n * e g+)(n * s)(n * s g-)
-        (n * e l g+)(n * s)(n * s g-)
-        (n * e. g+)(n * s g-)
-        (n * s g+)(n * s)(n * s)(n * s g-)
-        (n * s l g+)(n * s)(n * s)(n * s g-)
+        (n * e g+)(n * s)(n * s g-)(barline)
+        (n * e l g+)(n * s)(n * s g-)(barline)
+        (n * e. g+)(n * s g-)(barline)
+        (n * s g+)(n * s)(n * s)(n * s g-)(barline)
+        (n * s l g+)(n * s)(n * s)(n * s g-)(barline)
         (n * e g+)(n * s)(n * s g-)(barline end)
     </music>
 </score></para>
@@ -52,9 +52,9 @@ learn the original one with ties.</para>
     <control_measures></control_measures>
     <music>
         (time 2 8)
-        (n * q)(n * e. g+)(n * s g-)
-        (n * q l)(n * e. g+)(n * s g-)
-        (n * e g+)(n * e g-)(n * e. g+)(n * s g-)
+        (n * q)(n * e. g+)(n * s g-)(barline)
+        (n * q l)(n * e. g+)(n * s g-)(barline)
+        (n * e g+)(n * e g-)(n * e. g+)(n * s g-)(barline)
         (n * e g+)(n * e l g-)(n * e. g+)(n * s g-)(barline end)
     </music>
 </score></para>
@@ -99,7 +99,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -119,7 +119,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -139,7 +139,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -167,7 +167,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 

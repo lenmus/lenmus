@@ -1280,9 +1280,9 @@ const wxString lmLeitnerManager::GetProgressReport()
         _("New questions:") + wxString::Format(_T(" %d"), m_nUnlearned) + _T("<br>") +
         _("Questions to review:") + wxString::Format(_T(" %d"), m_nToReview) + _T("<br>") +
         _("Average answer time:") + sAvrgRespTime + _T("<br>") +
-       _T("</p><center><h3>") + _("Progress report") + _T("</h3></center><p>") +
-        _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
-        _("Your computer information:") +
+       //_T("</p><center><h3>") + _("Progress report") + _T("</h3></center><p>") +
+       // _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
+       // _("Your computer information:") +
         _T("</p></body></html>");
 
     return sContent;

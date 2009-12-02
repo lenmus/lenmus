@@ -463,6 +463,12 @@ lmBoxScore* lmFormatter4::LayoutScore(lmScore* pScore, lmPaper* pPaper)
                 _T("m_uMeasure=%d, Paper X = %.2f"), m_nColumn, pPaper->GetCursorX() );
             #endif
 
+            //if start of system, set system length. This is needed because for
+            //placing ties (and probably other objects) it is necessary to know
+            //system box position/size.
+            if (m_nColumn == 1)
+                pBoxSystem->UpdateXRight( m_pScore->GetRightMarginXPos() );
+
             //size this measure column create BoxSlice (and BoxSlice hierarchy) for
             //the measure being processed
             m_uMeasureSize[m_nColumn] =

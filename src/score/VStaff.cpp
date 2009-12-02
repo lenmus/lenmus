@@ -1926,24 +1926,8 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     //Returns the lmSoundManager object. It is not retained by the lmVStaff, so 
     //it is caller responsibility to delete it when no longer needed.
 
-
-    //TODO review this commented code
-//    Dim nMetrica As lmETimeSignature, nDurCompas As Long, nTiempoIni As Long
-//
-//    nMetrica = this.MetricaInicial
-//    nDurCompas = GetDuracionMetrica(nMetrica)
-//    nTiempoIni = nDurCompas - this.DuracionCompas(1)
-//
-//    wxASSERT(nTiempoIni >= 0        //El compas tiene más notas de las que caben
-//
-//    //Si el primer compas no es anacrusa, retrasa todo un compas para que
-//    //se marque un compas completo antes de comenzar
-//    if (nTiempoIni = 0 { nTiempoIni = nDurCompas
-
     //Create lmSoundManager and initialize MIDI events table
     lmSoundManager* pSM = new lmSoundManager(m_pScore);
-    //TODO review next line
-//    pSM->Inicializar GetStaffsCompas(nMetrica), nTiempoIni, nDurCompas, this.NumCompases
 
     //iterate over the collection to create the MIDI events
     float rMeasureStartTime = 0;

@@ -28,7 +28,7 @@
     <control_measures></control_measures>
     <music>
         (time 6 8)
-        (n * e)(n * q l)(n * q)(n * e)
+        (n * e)(n * q l)(n * q)(n * e)(barline)
         (n * q)(n * e l)(n * q.)(barline end)
     </music>
 </score></para>
@@ -68,7 +68,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>68</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -88,7 +88,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>68</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -113,7 +113,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>68,98,128</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 

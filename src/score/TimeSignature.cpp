@@ -64,7 +64,7 @@ lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff,
     : lmStaffObj(pVStaff, nID, lm_eSO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Normal;
-    m_nBeats = GetNumUnitsFromTimeSignType(nTimeSign);
+    m_nBeats = lmGetNumBeatsFromTimeSignType(nTimeSign);
     m_nBeatType = GetBeatTypeFromTimeSignType(nTimeSign);
     Create();
 }
@@ -318,8 +318,8 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
     int nBeatDuration = (int)GetBeatDuration(m_nBeatType);
 
     //add the RhythmChange event
-    pSM->StoreEvent( rTime, eSET_RhythmChange, 0, m_nBeats, 0, nBeatDuration, this, nMeasure);
-
+    pSM->StoreEvent(rTime, eSET_RhythmChange, 0, m_nBeats, GetNumPulses(),
+                    nBeatDuration, this, nMeasure);
 }
 
 void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
@@ -356,6 +356,17 @@ float lmTimeSignature::GetMeasureDuration()
     return m_nBeats * GetBeatDuration(m_nBeatType);
 }
 
+int lmTimeSignature::GetNumPulses()
+{
+    //returns the number of beats (metronome pulses) implied by this TS
+
+    //determine if compound meter (6/x, 9/x & 12/x)
+    bool fCompound = (m_nBeats==6 || m_nBeats==9 || m_nBeats==12);
+    if (fCompound)
+        return m_nBeats / 3;
+    else
+        return m_nBeats;
+}
 
 
 
@@ -363,9 +374,11 @@ float lmTimeSignature::GetMeasureDuration()
 // global functions related to TimeSignatures
 //----------------------------------------------------------------------------------------
 
-//! returns the numerator of time signature fraction
-int GetNumUnitsFromTimeSignType(lmETimeSignature nTimeSign)
+int lmGetNumPulsesForTimeSignature(lmETimeSignature nTimeSign)
 {
+    //returns the number of beats (metronome pulses) implied by the received
+    //time signature
+
     switch (nTimeSign) {
         case emtr24:
             return 2;
@@ -382,19 +395,21 @@ int GetNumUnitsFromTimeSignType(lmETimeSignature nTimeSign)
         case emtr32:
             return 3;
         case emtr68:
-            return 6;
+            return 2;
         case emtr98:
-            return 9;
+            return 3;
         case emtr128:
-            return 12;
+            return 4;
         default:
             wxASSERT(false);
             return 4;
     }
 }
 
-int GetNumBeatsFromTimeSignType(lmETimeSignature nTimeSign)
+int lmGetNumBeatsFromTimeSignType(lmETimeSignature nTimeSign)
 {
+    //returns the numerator of time signature fraction
+
     switch (nTimeSign) {
         case emtr24:
             return 2;
@@ -480,7 +495,7 @@ float GetMeasureDuration(lmETimeSignature nTimeSign)
 {
     // Returns the required duration for a measure in the received time signature
 
-    float rNumBeats = (float)GetNumBeatsFromTimeSignType(nTimeSign);
+    float rNumBeats = (float)lmGetNumBeatsFromTimeSignType(nTimeSign);
     return rNumBeats * GetBeatDuration(nTimeSign);
 }
 

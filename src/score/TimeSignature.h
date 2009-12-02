@@ -67,6 +67,7 @@ public:
 
     //sound related methods
     void AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure);
+    int GetNumPulses();
 
     // access to information
     int GetNumBeats() { return m_nBeats; }
@@ -114,13 +115,13 @@ private:
 //
 #define lmNOT_ON_BEAT    -1
 
-extern int GetNumUnitsFromTimeSignType(lmETimeSignature nTimeSign);
+extern int lmGetNumPulsesForTimeSignature(lmETimeSignature nTimeSign);
 extern int GetBeatTypeFromTimeSignType(lmETimeSignature nTimeSign);
-extern int GetNumBeatsFromTimeSignType(lmETimeSignature nTimeSign);
+extern int lmGetNumBeatsFromTimeSignType(lmETimeSignature nTimeSign);
 extern float GetBeatDuration(lmETimeSignature nTimeSign);
 extern float GetBeatDuration(int nBeatType);
 extern float GetMeasureDuration(lmETimeSignature nTimeSign);
-//extern bool IsBinaryTimeSignature(lmETimeSignature nTimeSign);
+//extern bool lmIsCompoundMeter(lmETimeSignature nTimeSign);
 extern int AssignVolume(float rTimePos, int nBeats, int nBeatType);
 extern int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType);
 extern int GetBeatPosition(float rTimePos, float rDuration, int nBeats, int nBeatType);

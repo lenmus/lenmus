@@ -201,10 +201,16 @@ void lmPaths::SetLanguageCode(wxString sLangCode)
     oLocalePath.AppendDir(m_sLangCode);
     m_sLocale = oLocalePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
+#if 0
     wxFileName oBooksPath = m_root;
     oBooksPath.AppendDir(_T("books"));
     oBooksPath.AppendDir(m_sLangCode);
     m_sBooks = oBooksPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+#else
+    wxFileName oBooksPath = oLocalePath;
+    oBooksPath.AppendDir(_T("books"));
+    m_sBooks = oBooksPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+#endif
 
     wxFileName oHelpPath = oLocalePath;
     oHelpPath.AppendDir(_T("help"));

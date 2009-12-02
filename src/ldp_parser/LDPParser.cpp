@@ -1141,6 +1141,12 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
     //AWARE: The ID of the musicData element (VStaff) is extracted and used in 
     //  caller method AnalyzeInstrument105()
 
+    //wxLogMessage(_T("[lmLDPParser::AnalyzeMusicData] sLine = '%s'"), m_sLastBuffer);
+
+    //disable edition options that will interfere with direct score creation
+    bool fAutoBeam = g_fAutoBeam;
+    g_fAutoBeam = false;
+
     long iP = 1;
     wxString sName;
     lmLDPNode* pX;
@@ -1227,6 +1233,9 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
     }
 	m_nCurVoice = 1;
+
+    //restore edition options that will interfere with direct score creation
+    g_fAutoBeam = fAutoBeam;
 }
 
 void lmLDPParser::AnalyzeUndoData(lmLDPNode* pNode)
@@ -1729,7 +1738,6 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     // <Rest> = (s <NoteType> [<RestFlags>]*)
     // <RestFlags> = {C | AMR | G | P}
 
-
     wxString sElmName = pNode->GetName();       //for error messages
     long nID = GetNodeID(pNode);
     wxASSERT(sElmName.Left(1) == _T("n") ||
@@ -2142,12 +2150,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     {
         if (m_pLastNoteRest)
         {
-            if (m_pLastNoteRest->IsBeamed())
+           if (m_pLastNoteRest->IsBeamed())
             {
                 //it can be the end of a group. Let's verify that at least a beam is open
-                for (iLevel=0; iLevel <= 6; iLevel++)
+                for (iLevel=0; iLevel < 6; iLevel++)
                 {
-                    if ((m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin)
+                   if ((m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin)
                          || (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue))
                     {
                             fBeamed = true;

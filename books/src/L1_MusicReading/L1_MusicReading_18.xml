@@ -78,6 +78,7 @@ this rhythm.</para>
     <control_play></control_play>
     <control_solfa></control_solfa>
     <fragment>24;(n * e g+)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24;(n * e g+)(n * e g-),(n * e g+)(n * s)(n * s g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F;a2;f4</clef>
     <time>24</time>
@@ -111,7 +112,7 @@ this rhythm.</para>
     <key>F</key>
     <key>d</key>
     <key>D</key>
-    <key>b-</key>
+    <key>B-</key>
     <key>g</key>
     <key>b</key>
     <time>24,34,44</time>

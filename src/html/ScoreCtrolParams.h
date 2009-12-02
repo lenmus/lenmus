@@ -391,9 +391,9 @@ wxString lmScoreCtrolParams::FinishShortScore(wxString sPattern)
                     _T("(datosMusica (clave Sol)(tonalidad Do)");
         }
         else {
-            sPart = _T("(score (vers 1.5)(language en iso-8859-1)")
+            sPart = _T("(score (vers 1.6)(language en iso-8859-1)")
                     _T("(instrument ")
-                    _T("(musicData (clef treble)(key Do)");
+                    _T("(musicData (clef G)(key C)");
         }
         sPart += sPattern;
         sPart += _T(" )))");

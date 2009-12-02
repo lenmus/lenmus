@@ -28,7 +28,7 @@
     <control_measures></control_measures>
     <music>
         (time 2 4)
-        (n * q l)(n * s g+)(n * s)(n * s)(n * s g-)
+        (n * q l)(n * s g+)(n * s)(n * s)(n * s g-)(barline)
         (n * e g+)(n * e l g-)(n * s g+)(n * s)(n * s)(n * s g-)(barline end)
     </music>
 </score></para>
@@ -69,7 +69,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -89,7 +89,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -109,13 +109,13 @@ studied in this lesson.</para>
     <fragment>24,34,44;(n * e g+)(n * s)(n * s g-),(n * e. g+)(n * s g-),(n * e g+)(n * e l g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * q)</fragment>
     <fragment>24,34,44;(n * q l),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * e)(r e)</fragment>
     <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * e g+)(n * e l g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * q)</fragment>
-    <fragment>24,34,44;(r e)(n * q)(n * e),(n * q l),(n * s g+)(n * s)(n * s)(n * s g-),(n * b)</fragment>
+    <fragment>24,34,44;(r e)(n * q)(n * e),(n * q l),(n * s g+)(n * s)(n * s)(n * s g-),(n * h)</fragment>
     <fragment>24,34,44;(n * e g+)(n * e l g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * q)</fragment>
     <fragment>24,34,44;(n * q),(r e)(n * s g+)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * q l),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+)(n * e g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 

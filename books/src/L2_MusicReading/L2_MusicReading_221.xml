@@ -29,8 +29,8 @@
     <control_measures></control_measures>
     <music>
         (time 2 4)
-        (n * s g+)(n * e. g-)(n * s g+)(n * e. g-)
-        (n * s g+)(n * e. l g-)(n * q)
+        (n * s g+)(n * e. g-)(n * s g+)(n * e. g-)(barline)
+        (n * s g+)(n * e. l g-)(n * q)(barline)
         (n * s g+)(n * e. l g-)(n * e g+)(n * e g-)(barline end)
     </music>
 </score></para>
@@ -75,7 +75,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -95,7 +95,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -115,7 +115,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 
@@ -144,7 +144,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
 </exercise>
 </theme>
 

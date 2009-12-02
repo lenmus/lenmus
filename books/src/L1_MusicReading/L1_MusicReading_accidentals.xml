@@ -19,20 +19,36 @@ the 'sharp', the 'flat' and the 'natural':
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
-         (instrument
-          (musicData (clef G)(key C)
-            (time 2 4 noVisible)
-            (text ''sharp'' dx:20 dy:70)
-            (spacer 20)
-            (n +g4 q)(n +c5 q) (spacer 20)(barline double)
-            (spacer 20)
-            (text ''flat'' dx:0 dy:70)
-            (n -g4 q)(n -c5 q) (spacer 20)(barline double)
-            (spacer 20)
-            (text ''natural'' dx:0 dy:70)
-            (n =g4 q)(n =c5 q) (spacer 20)(barline end)
-        )))
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle ''Style0'' (font ''Times New Roman'' 10pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (instrument
+      (staves 1)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (infoMIDI 0 0)
+      (musicData
+         (clef G)
+         (spacer 0
+            (text ''sharp'' left (style ''Style0'') dx:34.0 dy:78.0)
+         )
+         (n +g4 q v1)
+         (n +c5 q v1)
+         (barline double)
+         (spacer 0
+            (text ''flat'' left (style ''Style0'') dx:23.0 dy:78.0)
+         )
+         (n -g4 q v1)
+         (n -c5 q v1)
+         (barline double)
+         (spacer 0
+            (text ''natural'' left (style ''Style0'') dx:24.0 dy:78.0)
+         )
+         (n =g4 q v1)
+         (n =c5 q v1)
+         (barline end)
+)))
     </music>
 </score></para>
 
@@ -67,19 +83,15 @@ C notes will have sharp signs placed before them. For example (play it):
     <control_play></control_play>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingFactor 0.4)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)
-            (spacer 20)
             (n d4 q)(n e4 q)(barline simple)
             (n +f4 q)(n g4 q)(barline simple)
             (n a4 q)(n b4 q)(barline simple)
             (n +c5 q)(n d5 q)(barline simple)
             (n d4 q)(n +f4 q)(barline simple)
-            (n a4 q)(n d5 q)
-            (spacer 20)
-            (barline end)
+            (n a4 q)(n d5 q)(barline end)
         )))
     </music>
 </score></para>

@@ -1,8 +1,8 @@
 ;==============================================================================================
 ; LenMus project.
-; Windows intaller to install a language
+; Windows intaller for a language pack
 ;
-; NSIS v2.15 script for generating the exe installer and uninstaller
+; NSIS v2.15 script for generating the installer for a language pack
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
@@ -37,7 +37,7 @@
 ;some helper defines and variables
   !define LANG_CODE "fr"
   !define LANG_NAME "French"
-  !define APP_VERSION "4.0"
+  !define APP_VERSION "4.1"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
   Name "'Lenmus ${LANG_NAME} files'"     ;product name displayed by the installer
@@ -139,7 +139,6 @@ Section  "-" "MainSection"
      ClearErrors
      SetOverWrite try
      SetOutPath "$INSTDIR\docs"
-
      File ".\locale\license_${LANG_CODE}.txt"
      
      SetOutPath "$INSTDIR\books\${LANG_CODE}"

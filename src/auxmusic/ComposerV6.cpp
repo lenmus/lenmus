@@ -217,6 +217,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
 
     // prepare and initialize the score
     lmLDPParser parserLDP;
+
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
     lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
@@ -255,7 +256,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     #define NUM_MEASURES   8        //num of measures to generate
     int nMeasuresToGenerate = NUM_MEASURES - 1;
     int nNumMeasures = 0;
-    //int nMeasureDuration = GetNumBeatsFromTimeSignType(m_nTimeSign);
+    //int nMeasureDuration = lmGetNumBeatsFromTimeSignType(m_nTimeSign);
     float rMeasureDuration = GetMeasureDuration(m_nTimeSign);       //tm
     float rBeatDuration = GetBeatDuration(m_nTimeSign);             //tb
     float rTimeRemaining;           //tr
@@ -440,7 +441,6 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     // done
     //pScore->Dump(_T("lemus_score_dump.txt"));
     return pScore;
-
 }
 
 void lmComposer6::GetNotesRange()

@@ -294,7 +294,7 @@ Acceptable values: numeric, greater than 0\n"),
 _T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable format: <Clef,LowerNote,UpperNote> \n \
-Acceptable clef values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n \
+Acceptable clef values: G | F4 | F3 | C4 | C3 | C2 | C1 \n \
 Acceptable note pitch: c0 - c9"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
@@ -431,7 +431,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeTime(wxString sLine)
 /// returns true if error
 bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
 {
-    //i.e.: "all" , "do,sol,fa,"
+    //i.e.: "all" , "C,G,F4"
 
     if (sLine == _T("all")) {
         // allow all key signatures

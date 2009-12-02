@@ -194,7 +194,7 @@ void lmShapeArch::Draw(lmPaper* pPaper, wxColour colorC, bool fSketch)
     // variable, to suit a minimun resolution of 5 points / mm.
 
     // determine number of interpolation points to use
-    int nNumPoints = (int)((m_uPoint[lmBEZIER_END].x - m_uPoint[lmBEZIER_START].x) / lmToLogicalUnits(0.2, lmMILLIMETERS) );
+    int nNumPoints = abs((int)((m_uPoint[lmBEZIER_END].x - m_uPoint[lmBEZIER_START].x) / lmToLogicalUnits(0.2, lmMILLIMETERS) ));
     if (nNumPoints < 5) nNumPoints = 5;
 
     // compute increment for mu variable

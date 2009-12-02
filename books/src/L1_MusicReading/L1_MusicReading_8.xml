@@ -51,13 +51,12 @@ the dotted half note, equivalent to a half note tied to a quarter note:
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingFactor 0.3)
          (instrument
           (musicData (clef G)(key C)
             (time 3 4 noVisible)
-            (n a4 h.)(barline double)
-            (n a4 h l)(n a4 q)(barline double)
-            (r h.)(barline double)
+            (n a4 h.)(spacer 20)(barline double)
+            (n a4 h l)(n a4 q)(spacer 20)(barline double)
+            (r h.)(spacer 20)(barline double)
         )))
     </music>
 </score></para>
@@ -102,7 +101,7 @@ this rhythm.</para>
     <key>F</key>
     <key>d</key>
     <key>D</key>
-    <key>b-</key>
+    <key>B-</key>
     <key>g</key>
     <key>b</key>
     <time>34</time>

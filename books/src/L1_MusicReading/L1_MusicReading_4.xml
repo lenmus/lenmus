@@ -154,7 +154,7 @@ this rhythm.</para>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q)</fragment>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e g-)(n * q),(n * q)(n * q)</fragment>
     <fragment>24;(r q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * h)</fragment>
-    <fragment>24;(r q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q),(n * q l) n </fragment>
+    <fragment>24;(r q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q),(n * q l)(n * q)</fragment>
 </exercise>
 
 </theme>

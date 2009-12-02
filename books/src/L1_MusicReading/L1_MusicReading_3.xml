@@ -73,7 +73,12 @@ one leger line. In following lessons the range will be extended.
 
 <para>
 <link linkend="mr1_thm3_E1">Exercise 1</link> - Practise reading scores with 
-leger lines.
+leger lines below first line.
+</para>
+
+<para>
+<link linkend="mr1_thm3_E2">Exercise 2</link> - Practise reading scores with 
+leger lines above fifth line.
 </para>
 
 </part>
@@ -86,15 +91,42 @@ leger lines.
 
 <theme id="mr1_thm3_E1" toc="no">
 <titleabbrev>Lesson %d. Exercise 1</titleabbrev>
-<title>Leger lines</title>
+<title>Leger lines below</title>
 
-<para>Practise reading scores with leger lines.</para>
+<para>Practise reading scores with leger lines below first line.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">
     <control_go_back>mr1_thm3</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>G;c4;c5</clef>
+    <clef>G;c4;g4</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(n * q)(n * q),(n * h),(r h)</fragment>
+</exercise>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 2  -->
+<!-- ====================== -->
+
+<theme id="mr1_thm3_E2" toc="no">
+<titleabbrev>Lesson %d. Exercise 2</titleabbrev>
+<title>Leger lines above</title>
+
+<para>Practise reading scores with leger lines above fifth line.</para>
+
+<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+    <control_go_back>mr1_thm3</control_go_back>
+    <control_play></control_play>
+    <control_solfa></control_solfa>
+    <clef>G;d5;a5</clef>
     <key>C</key>
     <key>a</key>
     <time>24</time>

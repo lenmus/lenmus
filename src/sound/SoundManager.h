@@ -65,15 +65,18 @@ public:
     ~lmSoundEvent() {}
 
 
-    long                DeltaTime;        //Relative to metronome speed
+    long                DeltaTime;      //Relative to metronome speed
     ESoundEventType     EventType;
     int                 Channel;
     union {
-        int             NotePitch;          //MIDI pitch
-        int             lmInstrument;       //MIDI instrument for eSET_ProgInstr events
-        int             NumBeats;          //for RhythmChange events
+        int             NotePitch;      //MIDI pitch
+        int             lmInstrument;   //MIDI instrument for eSET_ProgInstr events
+        int             NumBeats;       //for RhythmChange events
     };
-    int                 Volume;
+    union {
+        int             Volume;         //for notes
+        int             NumPulses;      //For time signatures
+    };
     union {
         int             NoteStep;       //lmNote step 0..6 : 0-Do, 1-Re, ... 6-Si
         int             BeatDuration;   //for RhythmChange events. In LDP duration units

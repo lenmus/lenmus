@@ -15,7 +15,7 @@ tying a triplet to the next note:</para>
     <control_measures></control_measures>
     <music>
         (time 2 4 noVisible)
-        (n * e g+ t3)(n * e)(n * e g- t- l)(n * q)
+        (n * e g+ t3)(n * e)(n * e g- t- l)(n * q)(barline)
         (n * e g+ t3)(n * e)(n * e g- t- l)(n * e g+)(n * e g-)(barline end)
     </music>
 </score></para>
@@ -32,9 +32,9 @@ measures 2 and 4 are similar to measures 1 and 3 but tying the triplets.</para>
     <control_measures></control_measures>
     <music>
         (time 2 4)
-           (n * e g+ t3)(n * e)(n * e g- t-)(n * q)
-        (n * e g+ t3)(n * e)(n * e g- t- l)(n * q)
-        (n * e g+ t3)(n * e)(n * e g- t-)(n * e g+)(n * e g-)
+        (n * e g+ t3)(n * e)(n * e g- t-)(n * q)(barline)
+        (n * e g+ t3)(n * e)(n * e g- t- l)(n * q)(barline)
+        (n * e g+ t3)(n * e)(n * e g- t-)(n * e g+)(n * e g-)(barline)
         (n * e g+ t3)(n * e)(n * e l g- t-)(n * e g+)(n * e g-)(barline end)
     </music>
 </score></para>
@@ -72,7 +72,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>G</key><key>e</key><key>F</key><key>d</key><key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key>
 </exercise>
 </theme>
 
@@ -97,7 +97,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>G</key><key>e</key><key>F</key><key>d</key><key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key>
 </exercise>
 </theme>
 

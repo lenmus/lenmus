@@ -177,6 +177,10 @@ void lmSoundManager::CloseTable()
             m_aMeasures[m_aEvents.Item(i)->Measure] = i;
         }
     }
+
+    //Item n+1 corresponds to control events after the final bar, normally only
+    //the EndOfTable control event.
+    m_aMeasures[m_nNumMeasures+1] = (int)m_aEvents.GetCount() - 1;
 }
 
 wxString lmSoundManager::DumpMidiEvents()
@@ -260,7 +264,7 @@ wxString lmSoundManager::DumpMeasuresTable()
         sMsg += wxString::Format( _T("\n\nMeasures start times and first event (%d measures)\n\n"),
                     m_aMeasures.size() - 2 );
         sMsg += _T("Num.\tTime\tEvent\n");
-        for(int i=1; i < (int)m_aMeasures.size() - 1; i++)
+        for(int i=1; i < (int)m_aMeasures.size(); i++)
         {
             //division line every four entries
             if (i % 4 == 0)
@@ -273,7 +277,7 @@ wxString lmSoundManager::DumpMeasuresTable()
                 sMsg += wxString::Format(_T("%4d:\t%d\t%d\n"), i, pSE->DeltaTime, nEntry);
             }
             else
-                sMsg += _T("Empty entry\n");
+                sMsg += wxString::Format(_T("%4d:\tEmpty entry\n"), i);
        }
     }
 
@@ -501,18 +505,20 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 
     //declaration of some time related variables.
     //DeltaTime variables refer to relative time (LDP time)
-    //Time variables refer to absolute time, that is, DeltaTime converted to real time
+    //TU = LenMus Time Units. One quarte note = 64TU.
+    //Time variables refer to absolute time (milisecs), that is, DeltaTime (TU)
+    //converted to real time
     long nEvTime;           //time for next event
     long nMtrEvDeltaTime;   //time for next metronome click
 
     //default beat and metronome information. It is going to be properly set
     //when a eSET_RhythmChange event is found (a time signature object). So these
     //default settings will be used when no time signature in the score.
-    long nMtrBeatDuration = lmQUARTER_DURATION;                     //a beat duration
-    long nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
-    long nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
-    long nMeasureDuration = nMtrBeatDuration * 4;                   //assume 4/4 time signature
-    long nMtrNumBeats = 4;
+    long nMtrPulseDuration = lmQUARTER_DURATION;                     //a beat duration, in TU
+    long nMtrIntvalOff = wxMin(7, nMtrPulseDuration / 4);            //click sound duration, in TU
+    long nMtrIntvalNextClick = nMtrPulseDuration - nMtrIntvalOff;    //interval from click off to next click
+    long nMeasureDuration = nMtrPulseDuration * 4;                   //in TU. Assume 4/4 time signature
+    long nMtrNumPulses = 4;                                          //assume 4/4 time signature
 
     //Execute control events that take place before the segment to play, so that
     //instruments and tempo are properly programmed. Continue in the loop while
@@ -544,13 +550,14 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         else if (m_aEvents[i]->EventType == eSET_RhythmChange)
         {
             //set up new beat and metronome information
-            nMtrBeatDuration = m_aEvents[i]->BeatDuration;            //a beat duration
-            nMtrNumBeats = m_aEvents[i]->NumBeats;
-            nMeasureDuration = nMtrBeatDuration * m_aEvents[i]->NumBeats;
-            nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
-            nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
+            nMeasureDuration = m_aEvents[i]->BeatDuration * m_aEvents[i]->NumBeats;
+            nMtrNumPulses = m_aEvents[i]->NumPulses;
+            nMtrPulseDuration = nMeasureDuration / nMtrNumPulses;       //a pulse duration, in TU
+            nMtrIntvalOff = wxMin(7, nMtrPulseDuration / 4);            //click sound duration (interval to click off), in TU
+            nMtrIntvalNextClick = nMtrPulseDuration - nMtrIntvalOff;    //interval from click off to next click, in TU
         }
-        else {
+        else
+        {
             // it is not a control event. Continue in the loop only
             // if we have not reached the start of the segment to play
             fContinue = (i < nEvStart);
@@ -559,25 +566,28 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     }
     //Here i points to the first event of desired measure that is not a control event.
 
-   // metronome interval in milliseconds
-   long nMtrClickIntval = (nMM == 0 ? pMtr->GetInterval() : 60000/nMM) * nMtrBeatDuration / lmQUARTER_DURATION;
+   // metronome interval duration, in milliseconds
+   long nMtrClickIntval = (nMM == 0 ? pMtr->GetInterval() : 60000/nMM);
+
+   //Therefore, conversion factor to transform event delta time (TU) into event real
+   //time (ms) will be  r = nMtrClickIntval (ms) / nMtrPulseDuration (TU)
 
     //Define and initialize time counter. If playback starts not at the begining but 
 	//in another measure, advance time counter to that measure
     long nTime = 0;
 	if (nEvStart > 1) {
-		nTime = (pMtr->GetInterval() * m_aEvents[nEvStart]->DeltaTime) / nMtrBeatDuration; //lmQUARTER_DURATION;
+		nTime = (pMtr->GetInterval() * m_aEvents[nEvStart]->DeltaTime) / nMtrPulseDuration;
 	}
 
 
     //first note could be a syncopated note or an off-beat note. In these cases metronome
 	//will start before the first note
-    nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrBeatDuration) * nMtrBeatDuration;
+    nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrPulseDuration) * nMtrPulseDuration;
 
     //generate count off metronome clicks for a full measure
     if (fCountOff)
     {
-        for (int i=nMtrNumBeats; i > 1; --i)
+        for (int i=nMtrNumPulses; i > 1; --i)
         {
             //generate click
             g_pMidiOut->NoteOn(g_pMidi->MtrChannel(), g_pMidi->MtrTone2(), 127);
@@ -600,7 +610,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     {
         //if metronome has been just activated compute next metronome event
         if (!fPlayWithMetronome && pMtr->IsRunning()) {
-            nMtrEvDeltaTime = ((m_aEvents[i]->DeltaTime / nMtrBeatDuration) + 1) * nMtrBeatDuration;
+            nMtrEvDeltaTime = ((m_aEvents[i]->DeltaTime / nMtrPulseDuration) + 1) * nMtrPulseDuration;
             fMtrOn = false;
         }
         fPlayWithMetronome = pMtr->IsRunning();
@@ -609,7 +619,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         if (fPlayWithMetronome && nMtrEvDeltaTime <= m_aEvents[i]->DeltaTime)
         {
             //Next event shoul be a metronome click or the click off event for the previous metronome click
-            nEvTime = (nMtrClickIntval * nMtrEvDeltaTime) / nMtrBeatDuration;
+            nEvTime = (nMtrClickIntval * nMtrEvDeltaTime) / nMtrPulseDuration;
             if (nTime < nEvTime) {
                 //::wxMilliSleep(nEvTime - nTime);
                 wxThread::Sleep((unsigned long)(nEvTime - nTime));
@@ -649,7 +659,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         else
         {
             //next even comes from the table. Usually it will be a note on/off
-            nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / nMtrBeatDuration;   //lmQUARTER_DURATION;
+            nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / nMtrPulseDuration;   //lmQUARTER_DURATION;
             if (nTime < nEvTime) {
                 //::wxMilliSleep((unsigned long)(nEvTime - nTime));
                 wxThread::Sleep((unsigned long)(nEvTime - nTime));
@@ -736,11 +746,11 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             else if (m_aEvents[i]->EventType == eSET_RhythmChange)
             {
                 //set up new beat and metronome information
-                nMtrBeatDuration = m_aEvents[i]->BeatDuration;            //a beat duration
-                nMtrNumBeats = m_aEvents[i]->NumBeats;
-                nMeasureDuration = nMtrBeatDuration * m_aEvents[i]->NumBeats;
-                nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
-                nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
+                nMeasureDuration = m_aEvents[i]->BeatDuration * m_aEvents[i]->NumBeats;
+                nMtrNumPulses = m_aEvents[i]->NumPulses;
+                nMtrPulseDuration = nMeasureDuration / nMtrNumPulses;        //a pulse duration
+                nMtrIntvalOff = wxMin(7, nMtrPulseDuration / 4);            //click duration (interval to click off)
+                nMtrIntvalNextClick = nMtrPulseDuration - nMtrIntvalOff;    //interval from click off to next click
             }
             else if (m_aEvents[i]->EventType == eSET_ProgInstr)
             {

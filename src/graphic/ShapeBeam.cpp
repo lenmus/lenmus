@@ -461,7 +461,7 @@ void lmShapeBeam::AdjustStems()
             lmLUnits uyShift = uMiddle - uRestCenter;
 
             //TODO: ensure that rest doesn't collide with beam line
-            lmTODO(_T("[lmShapeBeam::AdjustStems] TODO: Ensure that rest doesn't collide with beam line"));
+            //lmTODO(_T("[lmShapeBeam::AdjustStems] TODO: Ensure that rest doesn't collide with beam line"));
 
             //shift rest
             pShapeRest->Shift(0.0f, uyShift);

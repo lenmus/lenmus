@@ -2479,6 +2479,8 @@ void lmSegment::AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes)
     //be beamed toghether. Review current beam information and modify it so that they
     //form a beamed group.
 
+    wxLogMessage(_T("[lmSegment::AutoBeam_CreateBeam] Is this to be blamed?"));
+
     if (cBeamedNotes.size() == 0) return;
 
     //remove rests at the end

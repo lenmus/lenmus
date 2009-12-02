@@ -12,7 +12,7 @@
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (time 2 4 noVisible)(n a4 s g+)(n a4 s)(n a4 e g-)
+        (time 2 4 noVisible)(n a4 s g+)(n a4 s)(n a4 e g-)(barline)
         (n a4 s g+)(n a4 s)(n a4 e l g-)(n a4 q)(barline end)
     </music>
 </score></para>
@@ -28,9 +28,9 @@ the different rhythmic accent between measures 3 and 4.</para>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (time 2 8)(n a4 s g+)(n a4 s)(n a4 s)(n a4 s g-)
-        (n a4 s g+)(n a4 s)(n a4 s l)(n a4 s g-)
-        (n a4 s g+)(n a4 s)(n a4 e g-)
+        (time 2 8)(n a4 s g+)(n a4 s)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s)(n a4 s l)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s)(n a4 e g-)(barline)
         (n a4 e g+)(n a4 s)(n a4 s g-)(barline end)
     </music>
 </score></para>
@@ -67,7 +67,7 @@ studied in this lesson.</para>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24</time>
-    <key>C</key>
+    <key>C</key><key>a</key><key>G</key><key>e</key><key>F</key><key>d</key><key>D</key><key>b</key><key>B-</key><key>g</key>
 </exercise>
 </theme>
 
@@ -88,11 +88,11 @@ studied in this lesson.</para>
     <fragment>24,34,44;(n * e g+)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * e)(n * q.)</fragment>
     <fragment>24,34,44;(n * e g+)(n * e)(n * e)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * q),(n * q)</fragment>
     <fragment>34,44;(n * q)(n * e)(n * q)(n * e)(n * e g+)(n * e g-)(n * e g+)(n * e l g-)(n * e g+)(n * s)(n * s g-)(n * e g+)(n * s)(n * s g-)(n * e g+)(n * e l g-)(n * q)</fragment>
-    <fragment>24,34,44;(r e)(n * e),(n * s g+)(n * s)(n * s)(n * s g-),(n * e)(n * q)(n * s g+)(n * s g-),(n * b)</fragment>
+    <fragment>24,34,44;(r e)(n * e),(n * s g+)(n * s)(n * s)(n * s g-),(n * e)(n * q)(n * s g+)(n * s g-),(n * h)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
-    <key>C</key>
+    <key>C</key><key>a</key><key>G</key><key>e</key><key>F</key><key>d</key><key>D</key><key>b</key><key>B-</key><key>g</key>
 </exercise>
 </theme>
 

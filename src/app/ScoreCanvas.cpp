@@ -1281,6 +1281,9 @@ void lmScoreCanvas::TerminateToolDrag(wxDC* pDC)
     //wxLogMessage(_T("[lmScoreCanvas::TerminateToolDrag] Terminate drag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
     //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
 
+    if (!m_fDraggingTool)
+        return;
+
     m_pView->OnImageEndDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos);
     m_fDraggingTool = false;
 }
