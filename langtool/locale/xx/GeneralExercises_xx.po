@@ -1,0 +1,168 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: LenMus 4.0\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-01-13 09:08+0100\n"
+"Last-Translator: \n"
+"Language-Team:  <cecilios@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: ../src\n"
+"X-Poedit-SearchPath-0: GeneralExercises\n"
+
+#: GeneralExercises/GeneralExercises.cpp:2
+msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:3
+msgid "Licensed under the terms of the GNU Free Documentation License v1.3"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:4
+msgid "the teacher of music"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:5
+msgid "Cover page"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:6
+msgid "General exercises"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:7
+msgid "General exercises, customizable to suit your needs at any moment."
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:8
+msgid "LenMus project"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:9
+msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:10
+msgid "http://www.gnu.org/licenses/fdl.html"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:11
+msgid "Contents"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:12
+msgid "Introduction to general exercises"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:13
+msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:14
+msgid "Exercises for aural training"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:15
+#: GeneralExercises/GeneralExercises.cpp:29
+msgid "Intervals' comparison"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:16
+#: GeneralExercises/GeneralExercises.cpp:31
+msgid "Intervals' identification"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:17
+#: GeneralExercises/GeneralExercises.cpp:23
+#: GeneralExercises/GeneralExercises.cpp:33
+#: GeneralExercises/GeneralExercises.cpp:43
+msgid "Chords' identification"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:18
+#: GeneralExercises/GeneralExercises.cpp:24
+#: GeneralExercises/GeneralExercises.cpp:35
+#: GeneralExercises/GeneralExercises.cpp:45
+msgid "Scales' identification"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:19
+#: GeneralExercises/GeneralExercises.cpp:25
+#: GeneralExercises/GeneralExercises.cpp:37
+#: GeneralExercises/GeneralExercises.cpp:47
+msgid "Cadences' identification"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:20
+msgid "Exercises to practise theory"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:21
+#: GeneralExercises/GeneralExercises.cpp:40
+msgid "Key signatures' identification"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:22
+#: GeneralExercises/GeneralExercises.cpp:42
+msgid "Interval's identification and construction"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:26
+#: GeneralExercises/GeneralExercises.cpp:49
+msgid "Other exercises"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:27
+msgid "Clefs reading"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:28
+msgid "Aural training exercises"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:30
+msgid "Exercise: Lesson two intervals and identify which one is greater"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:32
+msgid "Exercise: Lesson an interval and identify it"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:34
+msgid "Exercise: Lesson a chord and identify its type"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:36
+msgid "Exercise: Listen a scale and identify its type"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:38
+msgid "Exercise: Listen a cadence and identify its type"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:39
+msgid "Theory exercises"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:41
+msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:44
+msgid "Exercise: Identify the type of the shown chord"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:46
+msgid "Exercise: Identify the scale shown"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:48
+msgid "Exercise: Identify the cadence shown"
+msgstr ""
+
+#: GeneralExercises/GeneralExercises.cpp:50
+msgid "Clefs Reading"
+msgstr ""
+

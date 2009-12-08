@@ -1,0 +1,848 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wxMidi\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-08-18 18:07+0100\n"
+"Last-Translator: cs <cs>\n"
+"Language-Team: LenMus org\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Basepath: ../src\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Poedit-SearchPath-0: wxMidi\n"
+
+#: wxMidi/wxMidi.cpp:129
+#: wxMidi/wxMidi.cpp:142
+msgid "Error: Device not properly created"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:619
+msgid "PortMidi: `Host error'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:621
+msgid "PortMidi: `Invalid device ID'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:623
+msgid "PortMidi: `Insufficient memory'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:625
+msgid "PortMidi: 'Buffer too small'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:627
+msgid "PortMidi: `Bad pointer'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:629
+msgid "PortMidi: 'Internal PortMidi Error'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:631
+msgid "PortMidi: 'Buffer overflow'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:633
+msgid "PortMidi: 'Invalid MIDI message Data'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:635
+msgid "PortMidi: 'Buffer is already as large as it can be'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:639
+msgid "wxMidi: 'Already lisening!'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:641
+msgid "wxMidi: 'Error while creating the thread object'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:643
+msgid "wxMidi: 'Error while starting the thread execution'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:645
+msgid "wxMidi. 'Bad sysex msg: It does not start with 0xF0'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:647
+msgid "wxMidi. 'Bad sysex msg: Length greater than 10000 or no final byte 0xF7'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:649
+msgid "wxMidi. 'There are no MIDI messages pending to be read'"
+msgstr ""
+
+#: wxMidi/wxMidi.cpp:652
+msgid "wxMidi: 'Illegal error number'"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:90
+msgid "Acoustic Grand Piano"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:91
+msgid "Bright Acoustic Piano"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:92
+msgid "Electric Grand Piano"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:93
+msgid "Honky-tonk Piano"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:94
+msgid "Electric Piano 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:95
+msgid "Electric Piano 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:96
+msgid "Harpsichord"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:97
+msgid "Clavinet"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:98
+msgid "Celesta"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:99
+msgid "Glockenspiel"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:100
+msgid "Music Box"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:101
+msgid "Vibraphone"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:102
+msgid "Marimba"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:103
+msgid "Xylophone"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:104
+msgid "Tubular Bells"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:105
+msgid "Dulcimer"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:106
+msgid "Drawbar Organ"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:107
+msgid "Percussive Organ"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:108
+msgid "Rock Organ"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:109
+msgid "Church Organ"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:110
+msgid "Reed Organ"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:111
+msgid "Accordion"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:112
+msgid "Harmonica"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:113
+msgid "Tango Accordion"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:114
+msgid "Acoustic Guitar (nylon)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:115
+msgid "Acoustic Guitar (steel)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:116
+msgid "Electric Guitar (jazz)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:117
+msgid "Electric Guitar (clean)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:118
+msgid "Electric Guitar (muted)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:119
+msgid "Overdriven Guitar"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:120
+msgid "Distortion Guitar"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:121
+msgid "Guitar harmonics"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:122
+msgid "Acoustic Bass"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:123
+msgid "Electric Bass (finger)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:124
+msgid "Electric Bass (pick)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:125
+msgid "Fretless Bass"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:126
+msgid "Slap Bass 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:127
+msgid "Slap Bass 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:128
+msgid "Synth Bass 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:129
+msgid "Synth Bass 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:130
+msgid "Violin"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:131
+msgid "Viola"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:132
+msgid "Cello"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:133
+msgid "Contrabass"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:134
+msgid "Tremolo Strings"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:135
+msgid "Pizzicato Strings"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:136
+msgid "Orchestral Harp"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:137
+msgid "Timpani"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:138
+msgid "String Ensemble 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:139
+msgid "String Ensemble 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:140
+msgid "SynthStrings 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:141
+msgid "SynthStrings 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:142
+msgid "Choir Aahs"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:143
+msgid "Voice Oohs"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:144
+msgid "Synth Voice"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:145
+msgid "Orchestra Hit"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:146
+msgid "Trumpet"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:147
+msgid "Trombone"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:148
+msgid "Tuba"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:149
+msgid "Muted Trumpet"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:150
+msgid "French Horn"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:151
+msgid "Brass Section"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:152
+msgid "SynthBrass 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:153
+msgid "SynthBrass 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:154
+msgid "Soprano Sax"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:155
+msgid "Alto Sax"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:156
+msgid "Tenor Sax"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:157
+msgid "Baritone Sax"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:158
+msgid "Oboe"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:159
+msgid "English Horn"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:160
+msgid "Bassoon"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:161
+msgid "Clarinet"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:162
+msgid "Piccolo"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:163
+msgid "Flute"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:164
+msgid "Recorder"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:165
+msgid "Pan Flute"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:166
+msgid "Blown Bottle"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:167
+msgid "Shakuhachi"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:168
+msgid "Whistle"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:169
+msgid "Ocarina"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:170
+msgid "Lead 1 (square)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:171
+msgid "Lead 2 (sawtooth)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:172
+msgid "Lead 3 (calliope)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:173
+msgid "Lead 4 (chiff)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:174
+msgid "Lead 5 (charang)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:175
+msgid "Lead 6 (voice)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:176
+msgid "Lead 7 (fifths)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:177
+msgid "Lead 8 (bass + lead)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:178
+msgid "Pad 1 (new age)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:179
+msgid "Pad 2 (warm)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:180
+msgid "Pad 3 (polysynth)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:181
+msgid "Pad 4 (choir)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:182
+msgid "Pad 5 (bowed)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:183
+msgid "Pad 6 (metallic)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:184
+msgid "Pad 7 (halo)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:185
+msgid "Pad 8 (sweep)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:186
+msgid "FX 1 (rain)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:187
+msgid "FX 2 (soundtrack)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:188
+msgid "FX 3 (crystal)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:189
+msgid "FX 4 (atmosphere)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:190
+msgid "FX 5 (brightness)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:191
+msgid "FX 6 (goblins)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:192
+msgid "FX 7 (echoes)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:193
+msgid "FX 8 (sci-fi)"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:194
+msgid "Sitar"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:195
+msgid "Banjo"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:196
+msgid "Shamisen"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:197
+msgid "Koto"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:198
+msgid "Kalimba"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:199
+msgid "Bag pipe"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:200
+msgid "Fiddle"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:201
+msgid "Shanai"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:202
+msgid "Tinkle Bell"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:203
+msgid "Agogo"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:204
+msgid "Steel Drums"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:205
+msgid "Woodblock"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:206
+msgid "Taiko Drum"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:207
+msgid "Melodic Tom"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:208
+msgid "Synth Drum"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:209
+msgid "Reverse Cymbal"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:210
+msgid "Guitar Fret Noise"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:211
+msgid "Breath Noise"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:212
+msgid "Seashore"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:213
+msgid "Bird Tweet"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:214
+msgid "Telephone Ring"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:215
+msgid "Helicopter"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:216
+msgid "Applause"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:217
+msgid "Gunshot"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:354
+msgid "35-Acoustic Bass Drum"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:355
+msgid "36-Bass Drum 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:356
+msgid "37-Side Stick"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:357
+msgid "38-Acoustic Snare"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:358
+msgid "39-Hand clap"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:359
+msgid "40-Electric Snare"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:360
+msgid "41_Low Floor Tom"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:361
+msgid "42_Closed High-Hat"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:362
+msgid "43-High Floor Tom"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:363
+msgid "44-Pedal High-Hat"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:364
+msgid "45-Low Tom"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:365
+msgid "46-Open High-Hat"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:366
+msgid "47-Low-Mid Tom"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:367
+msgid "48-High-Mid Tom"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:368
+msgid "49-Crash Cymbal 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:369
+msgid "50-High Tom"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:370
+msgid "51-Ride Cymbal 1"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:371
+msgid "52-Chinese Cymbal"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:372
+msgid "53-Ride Bell"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:373
+msgid "54-Tambourine"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:374
+msgid "55-Splash Cymbal"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:375
+msgid "56-Cowbell"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:376
+msgid "57-Crash Cymbal 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:377
+msgid "58-Vibraslap"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:378
+msgid "59-Ride Cymbal 2"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:379
+msgid "60-High Bongo"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:380
+msgid "61-Low Bongo"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:381
+msgid "62-Mute High Conga"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:382
+msgid "63-Open High Conga"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:383
+msgid "64-Low Conga"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:384
+msgid "65-High Timbale"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:385
+msgid "66-Low Timbale"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:386
+msgid "67-High Agogo"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:387
+msgid "68-Low Agogo"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:388
+msgid "69-Casaba"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:389
+msgid "70-Maracas"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:390
+msgid "71-Short Whistle"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:391
+msgid "72-Long Whistle"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:392
+msgid "73-Short Guiro"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:393
+msgid "74-Long Guiro"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:394
+msgid "75-Claves"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:395
+msgid "76-High Wood Block"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:396
+msgid "77-Low Wood Block"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:397
+msgid "78-Mute Cuica"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:398
+msgid "79-Open Cuica"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:399
+msgid "80-Mute Triangle"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:400
+msgid "81-Open Triangle"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:420
+msgid "Keyboards"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:432
+msgid "Chromatic percussion"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:444
+msgid "Organs and harmonicas"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:456
+msgid "Guitars"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:468
+msgid "Basses"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:480
+msgid "Strings"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:492
+msgid "Ensembles"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:504
+msgid "Brass"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:516
+msgid "Reed"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:528
+msgid "Pipe"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:540
+msgid "Synth. lead"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:552
+msgid "Synth. pad"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:564
+msgid "Synth. F/X"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:576
+msgid "Ethnic"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:588
+msgid "Percussive"
+msgstr ""
+
+#: wxMidi/wxMidiDatabase.cpp:600
+msgid "Sound F/X"
+msgstr ""
+
