@@ -63,8 +63,8 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(lmDlgDebug, wxDialog)
 
 lmDlgDebug::lmDlgDebug(wxWindow * parent, wxString sTitle, wxString sData)
-    :  wxDialog(parent, -1, sTitle,
-            wxDefaultPosition, wxSize(800, 430), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
+    : wxDialog(parent, -1, sTitle, wxDefaultPosition, wxSize(800, 430),
+               wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
     Centre();
 

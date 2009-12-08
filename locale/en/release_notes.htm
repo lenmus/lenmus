@@ -2,7 +2,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>LenMus 4.1 Release Notes</title>
-<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" >
+<link rel="stylesheet" media="all" href="../common/singledoc.css" type="text/css" >
 </head>
 <body>
 
@@ -12,49 +12,78 @@
 
 <p>The main changes introduced by release 4.1 are the following:<p>
 
-
-
-The interval's exercise has been reviewed and splitted into two exercises, one to identify intervals and aonother one to build them. The identification exercise has been structured into four difficulty levels.
-
-The exercise settings has been rebuild and there are now more options.
-
-
-// Leitner learning method. The idea is to generate questions not at random but giving priority
-// according to individual user needs. The method gradually adapt questions priorities to user
-// needs based on success/failures to previous questions, to generate an optimal sequence
-// of question repetitions, tailored to user profile.
-
-
-<p><b>Bug fixes</b></p>
-
+<h4>The score editor</h4>
+<p>
+The score editor is much more stable, as a lot of debbuging was done and all known bugs have been fixed; nevertheless, it is still not finished and continues in beta status. The editor includes now more features but few of them will be noticeable in this release. The most visible are:
 <ul>
-<li>Clef was not correctly saved in edited scores (04/mar/2009).</li>
+<li><b>data entry using the mouse</b>. The user interface (including the toolbox) has been improved and now data entry using the mouse (point and click) is available. Data entry using keyboard has been restricted to notes and rests (but mouse can also be used). For all other, the mouse is now mandatory.
+</li>
+
+<li><b>lines, ties, and, in general, geometric figures, are now editable by dragging control points</b>. I have added support to deal with new objects such as textboxes and figured bass annotations, but data entry of these objects is still under testing and has been disabled in this version.
+</li>
 </ul>
 
-<!--
+<p>
+Among the 'hidden' improvements the following should be mentioned:
+<ul>
+<li><b>Support for 'Score processors'</b>. There is a need for tools to process (or alter) a full score. For example, a tool to transpose a score, to add colours to voices, to make a piano reduction, etc. I call 'score processors' to these type of specific tools. Support to develop and use score processors has been added and it is currently being tested with the four voices harmony and figured bass exercises that will be included in comming releases.
+</li>
 
-<p><b>Score editor</b></p>
+<li><b>Support to use the score editor for exercises</b>. The problem is presented as a score that the student has to modify. As the full editor is used, the student can save the score so that he/she can later continue the exercise. This facility is currently being tested with the harmony and figured bass exercises.</li>
 
-The score editor now supports an 'exercises mode'. Working in this mode, the
-editor is restricted to use only the options required by the exercise. For example, for four-parts harmony exercises for beginners level, the editor is restricted to use only quarter notes, four voices, etc. Also the toolbox will include special buttons for the exercise.
+<li><b>Customizable editor modes</b>. For exercises using the score editor to elaborate the answer (for example: dictation exercises, harmony exercises, etc.) there is a need to customize the score editor for the needs of a particular exercise. For example, in the four-parts harmony exercises the editor is restricted to use only four voices. To implement this idea, the score editor now supports 'editor modes'. An 'editor mode' is just a set of restrictions and customizations that forces the score editor to behave in a predefined way and customizes the toolbox to include different tools.
+</li>
 
+</ul>
+</p>
 
-<p><b>Harmony exercises</b></p>
-
-Two new exercises included:
-The four-parts harmony exercise is oriented to learn and practice (write, listen to) four-parts harmony. Its main purpose is checking and explaining every possible error.
-
-Two exercise types: given bass (or given soprano).
-
-The score can be saved so that later you can continue the exercise.
-
-
-<p><b>Theory on intervals, chords and scales</b></p>
-
-More chapters has been added to the eBook 'Theory and harmony', to explain theory about intervals, chords and scales.
+<p>
+To finish the debugging of the editor <b>I need your help</b>. Really!. Take into account that most of my time is devoted to programming, not to use the program. Therefore you probably will catch more errors than me!. In order that you can collaborate in this task, the program now saves data about the score being edited and the action performed, and if the program crashes it saves these data in a "forensic log". It is a simple file, in text format (you can open it at see its contents) and it does not contains any identification data of any nature (personal, equipment, internet address, etc). It only has the score being edited an the actions being performed. Please, consider e-mailing me this log if you experience a crash. Thank you.
+</p>
 
 
--->
+<h4>Exercises and eBooks</h4>
+
+<p>
+The interval's exercise has been reviewed and splitted into two exercises, one to identify intervals and aonother one to build them. The identification exercise has been re-structured into four difficulty levels. The exercise settings has been rebuild and there are now more options.
+</p>
+
+<p>
+eBook Theory & harmony now includes <b>a new chapter on intervals</b>. But only the first lesson is included. Sorry! I have no more time!
+</p>
+
+<p class='news_text'>
+<b>The <i>Leitner</i> learning methodology is now included in some exercises.</b>
+Originally, LenMus exercises were not based on any particular learning methodology. Questions were selected just at random and no student performance data was saved. Version 4.1 now includes support in some exercises for a
+<a href="http://en.wikipedia.org/wiki/Spaced_repetition">spaced repetition</a>
+learning technique, also known as
+<a href="http://en.wikipedia.org/wiki/Flashcard">Leitner method</a> or flashcards method.
+A database to save user data about exercises and answers has already been added and I have started to modify exercises to include four working modes: 'learning', 'practising', 'exam' and 'quiz'</p>
+
+<ul>
+  <li>In 'learning' mode the program analyses your answers and schedule questions to systematically covering all the subject and to focus on those questions that are troubling you. This mode is the most systematic one and asked questions are adapted your learning needs, to minimize your study time and optimise your learning rate. Your performance data is saved and the next time  you return again to the exercise, the program takes care of asking questions to ensure an optimal learning path. The result is, ideally, a reduction in the amount of time needed to study a subject and the assurance that the subject has been systematically reviewed. This mode is based on the 'spaced repetition' or 'Leitner method'.</li>
+
+  <li>In 'practising' mode the program uses your performance data, saved in learning mode, to choose questions. It selects questions at random but giving more probability to those that are troubling you. Your performance data in this mode is not saved. This mode is useful when you have finished your daily assignment and you would like to practise more.</li>
+
+  <li>In 'exam' mode, neither your saved performance data not your answers to previous questions are taken into account to formulate the next question. At any moment, all possible questions have the same probability of being asked. This mode is useful for testing your knowledge before taking an examination, but is less useful for learning.
+  </li>
+
+  <li>The 'quiz' mode is similar to the 'exam' mode but two answer counters are displayed and questions are accounted in both counters: one in first counter and the next one in the second counter. This mode is useful to work in pairs or in teams at classroom.</li>
+</ul>
+
+<h4>User requests and other changes</h4>
+
+<ol>
+<li>Some users requested to have a <b>count off before starting any score play back</b>. Count off has been added for scores opened in the editor and for scores in music reading exercises.</li>
+<li>I received some reports on problems when using low screen resolutions or big size icons in the toolbar, as the buttons didn't fit on the available space and some of them were not visible on the screen; as the actions performed with these buttons were not available on the main menu the user could not interact with the program. Now:
+    <ul>
+    <li><b>all toolbar actions are also on the main menu</b>, and</li>
+    <li><b>the toolbar automatically resizes and splits to fit in the main window</b>.</li>
+    </ul>
+    </li>
+</ol>
+
+
 
 </body>
 </html>

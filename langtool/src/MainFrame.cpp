@@ -206,11 +206,30 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
                                         this);
     if ( sPath.IsEmpty() ) return;
 
+    //Create the .cpp file with all strings
     ::wxBeginBusyCursor();
     lmEbookProcessor oEBP(0, m_pText);
     wxFileName oFSrc(sPath);
     oEBP.GenerateLMB(sPath, _T("en"), _T("utf-8"), lmLANG_FILE);
     wxString sFolder = oFSrc.GetName();
+
+    //Delete created .htm and .toc files
+    wxFileName oFTmp( g_pPaths->GetLocalePath() );  
+	oFTmp.AppendDir(_T("src"));	    // 'langtool/locale/src'
+    oFTmp.SetName( sFolder );
+    wxString sTmp = oFTmp.GetFullPath();
+    //remove .htm files
+    sTmp += _T("*.htm");
+    wxString sHtmFile = wxFindFirstFile(sTmp);
+    while ( !sHtmFile.empty() )
+    {
+        ::wxRemoveFile(sHtmFile);
+        sHtmFile = wxFindNextFile();
+    }
+    //remove .toc file
+    sTmp = oFTmp.GetFullPath();
+    sTmp += _T(".toc");
+    ::wxRemoveFile(sTmp);       
 
     //create the PO files if they do not exist
     LogMessage(_T("Creating PO files:\n"));
@@ -221,7 +240,9 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
         oFDest.AppendDir(sLang);
         oFDest.SetName( oFSrc.GetName() + _T("_") + sLang );
         oFDest.SetExt(_T("po"));
-        if (!oFDest.FileExists()) {     //if file does not exist
+        if (!oFDest.FileExists()) 
+        {   
+            //if file does not exist
             LogMessage(_T("Creating PO file %s\n"), oFDest.GetFullName());
             wxString sCharset = g_tLanguages[i].sCharCode;
             wxString sLangName = g_tLanguages[i].sLangName;
@@ -280,7 +301,7 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
 {
     lmCompileBookOptions rOptions;
     rOptions.sSrcPath = wxEmptyString;
-    rOptions.sDestPath = m_sLenMusPath + _T("books\\");
+    rOptions.sDestPath = m_sLenMusPath + _T("locale\\");
 
     lmDlgCompileBook oDlg(this, &rOptions); 
     int retcode = oDlg.ShowModal();
@@ -303,11 +324,13 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
     //Loop to use each selected language
     for(int i=0; i < eLangLast; i++) 
     {
-        if (rOptions.fLanguage[i]) {
+        if (rOptions.fLanguage[i])
+        {
             wxLocale* pLocale = (wxLocale*)NULL;
             wxString sLang = g_tLanguages[i].sLang;
             wxString sCharCode = g_tLanguages[i].sCharCode;
-            if (i != 0) {
+            if (i != 0)
+            {
                 pLocale = new wxLocale();
                 wxString sNil = _T("");
                 wxString sLangName = g_tLanguages[i].sLangName;

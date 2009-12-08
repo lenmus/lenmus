@@ -43,7 +43,8 @@ class lmDocManager;
 // Class lmTheApp defines the lenmus application
 class lmTheApp: public wxApp
 {
-  public:
+public:
+    lmTheApp();
 
       // event handlers
     bool OnInit();
@@ -62,6 +63,8 @@ class lmTheApp: public wxApp
 
 	//overrides
 	int FilterEvent(wxEvent& event);
+    // called when a crash occurs in this application
+    virtual void OnFatalException();
 
 
 private:
@@ -72,7 +75,7 @@ private:
     void SetUpLocale(wxString lang);
     lmSplashFrame* RecreateGUI(int nMilliseconds);
 	void FindOutScreenDPI();
-
+    void SendForensicLog(wxString& sLogFile, bool fHandlingCrash);
 
     lmDocManager*	m_pDocManager;
     wxLocale*       m_pLocale;          //locale we'll be using (user config)

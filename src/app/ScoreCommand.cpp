@@ -1388,7 +1388,7 @@ IMPLEMENT_CLASS(lmCmdChangeFiguredBass, lmScoreCommand)
 
 lmCmdChangeFiguredBass::lmCmdChangeFiguredBass(bool fNormalCmd, lmDocument *pDoc,
                                                lmFiguredBass* pFB, wxString& sFigBass)
-	: lmScoreCommand(_("change figured bass"), pDoc, fNormalCmd)
+	: lmScoreCommand(_("Change figured bass"), pDoc, fNormalCmd)
     , m_nFigBasID(pFB->GetID())
     , m_sFigBass(sFigBass)
 {

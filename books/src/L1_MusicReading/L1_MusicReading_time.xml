@@ -34,7 +34,7 @@ above and below the third line:
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)
-            (text ''A 2/4 time signature'' dx:0 dy:80)
+            (text _''A 2/4 time signature'' dx:0 dy:80)
             (spacer 280)
             (barline end noVisible)
         )))

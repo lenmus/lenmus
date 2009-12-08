@@ -31,19 +31,19 @@ the 'sharp', the 'flat' and the 'natural':
       (musicData
          (clef G)
          (spacer 0
-            (text ''sharp'' left (style ''Style0'') dx:34.0 dy:78.0)
+            (text _''sharp'' left (style ''Style0'') dx:34.0 dy:78.0)
          )
          (n +g4 q v1)
          (n +c5 q v1)
          (barline double)
          (spacer 0
-            (text ''flat'' left (style ''Style0'') dx:23.0 dy:78.0)
+            (text _''flat'' left (style ''Style0'') dx:23.0 dy:78.0)
          )
          (n -g4 q v1)
          (n -c5 q v1)
          (barline double)
          (spacer 0
-            (text ''natural'' left (style ''Style0'') dx:24.0 dy:78.0)
+            (text _''natural'' left (style ''Style0'') dx:24.0 dy:78.0)
          )
          (n =g4 q v1)
          (n =c5 q v1)

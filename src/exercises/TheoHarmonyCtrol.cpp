@@ -179,18 +179,18 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
         if (nHarmonyExcerciseType == 3)
-            sExerciseDescription  =  wxString::Format(_(" Cipher the chords"));
+            sExerciseDescription  =  wxString::Format(_T(" Cipher the chords"));
         else
             sExerciseDescription  =  wxString::Format(
-                _(" Fixed %s; root position. Complete the chord notes.")
-                , (nHarmonyExcerciseType == 1? _("bass"): _("soprano")) );
+                _T(" Fixed %s; root position. Complete the chord notes.")
+                , (nHarmonyExcerciseType == 1? _T("bass"): _T("soprano")) );
 
-        sExerciseTitle = wxString::Format(_(" Exercise type %d : %s ")
+        sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
             , nHarmonyExcerciseType, sExerciseDescription.c_str());
 
         //create a score with a bass line
 
-        wxLogMessage(_(" CLEARING DATA "));
+        wxLogMessage(_T(" CLEARING DATA "));
         for (int nC=0; nC < nMAX_HARMONY_EXERCISE_CHORDS; nC++)
         {
             if (pHE_Chords[nC] != NULL)

@@ -82,7 +82,7 @@ void lmPaths::Init()
 	oLenMusPath.RemoveLastDir();		// 'lenmus/'
     m_sLenMus = oLenMusPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-	oLenMusPath.AppendDir(_T("books"));		// 'lenmus/books'
+	oLenMusPath.AppendDir(_T("locale"));		// 'lenmus/locale'
     m_sBooksRoot = oLenMusPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 	oLenMusPath.RemoveLastDir();

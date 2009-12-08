@@ -35,7 +35,7 @@ class wxTextCtrl;
 class wxWindow;
 
 
-class lmDlgDebug:public wxDialog
+class lmDlgDebug : public wxDialog
 {
    DECLARE_DYNAMIC_CLASS(lmDlgDebug)
 

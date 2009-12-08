@@ -106,8 +106,8 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
 {
     // returns false if error
     // PO and lang.cpp are created in sDestName (langtool\locale\)
-    // book.lmb is created in sDestName (lenmus\books\xx\)
-    // book.toc is temporarily created in sDestName (lenmus\books\xx\)
+    // book.lmb is created in sDestName (lenmus\locale\xx\books\)
+    // book.toc is temporarily created in sDestName (lenmus\locale\xx\books\)
 
     // Prepare for a new XML file processing
     m_fProcessingBookinfo = false;
@@ -137,7 +137,8 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     m_sExtEntityName = wxEmptyString;       //so, no name
 
     // Prepare Lang file
-    if (m_fOnlyLangFile) {
+    if (m_fOnlyLangFile)
+ {
         if (!StartLangFile( sFilename )) {
             LogMessage(_T("Error: Lang file '%s' can not be created."), sFilename);
             oRoot.DestroyIfUnlinked();
@@ -677,15 +678,15 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode)
     wxString sMusic;
     bool fError = ProcessChildAndSiblings(oNode, 0, &sMusic);
 
-    //locate all translatable strings
+    //locate all translatable strings (start with underscore)
     wxString sNoTrans, sTrans;
     int iStart, iEnd, nQuoteLength;
 
-    iStart = sMusic.Find(_T("&quot;"));
-    nQuoteLength = 6;   //length of string "&quot;"
+    iStart = sMusic.Find(_T("_&quot;"));
+    nQuoteLength = 7;   //length of string "_&quot;"
     if (iStart == wxNOT_FOUND) {
-        iStart = sMusic.Find(_T("''"));
-        nQuoteLength = 2;   //length of string "''"
+        iStart = sMusic.Find(_T("_''"));
+        nQuoteLength = 3;   //length of string "_''"
     }
 
     while (sMusic.Length() > 0 && iStart != wxNOT_FOUND)
@@ -717,11 +718,11 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode)
 
             //remaining
             sMusic = sMusic.Mid(iEnd+nQuoteLength);
-            iStart = sMusic.Find(_T("&quot;"));
-            nQuoteLength = 6;   //length of string "&quot;"
+            iStart = sMusic.Find(_T("_&quot;"));
+            nQuoteLength = 7;   //length of string "&quot;"
             if (iStart == wxNOT_FOUND) {
-                iStart = sMusic.Find(_T("''"));
-                nQuoteLength = 2;   //length of string "''"
+                iStart = sMusic.Find(_T("_''"));
+                nQuoteLength = 3;   //length of string "''"
             }
         }
     }
@@ -1785,6 +1786,7 @@ bool lmEbookProcessor::StartLmbFile(wxString sFilename, wxString sLangCode,
     wxFileName oFNP( sFilename );
     wxFileName oFDest( g_pPaths->GetBooksRootPath() );
     oFDest.AppendDir(sLangCode);
+    oFDest.AppendDir(_T("books"));
     oFDest.SetName( oFNP.GetName() );
     oFDest.SetExt(_T("lmb"));
     m_pZipOutFile = new wxFFileOutputStream( oFDest.GetFullPath() );
@@ -1906,7 +1908,8 @@ bool lmEbookProcessor::CreatePoFile(wxString sFilename, wxString& sCharSet,
     //oFDest.SetExt(_T("po"));
     //wxFile oFile(oFDest.GetFullPath(), wxFile::write);
     wxFile oFile(sFilename, wxFile::write);
-    if (!m_pLangFile->IsOpened()) {
+    if (!m_pLangFile->IsOpened())
+    {
         wxLogMessage(_T("Error: File %s can not be created"), sFilename);
         m_pLangFile = (wxFile*)NULL;
         return false;        //error

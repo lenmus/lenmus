@@ -206,7 +206,7 @@ void lmDocument::OnCustomizeController(lmEditorMode* pMode)
         sQuestion += _("Would you like to continue in exercise mode?");
 
         lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
-            _("Exercise mode"), _("Continue in exercise mode. ToolBox will include the additional exercise tools required by the exercise"),
+            _("Exercise mode"), _("Continue in exercise mode. The toolbox will include the additional exercise tools required by the exercise"),
             _("Normal mode"), _("Continue in normal mode. No special tools will be included.")
         );
         int nAnswer = oQB.ShowModal();

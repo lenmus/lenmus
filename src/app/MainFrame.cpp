@@ -1179,11 +1179,11 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
             _T("Force to draw bound rectangles around BoxSlice objects"), wxITEM_CHECK);
         AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoxSliceInstr, _T("BoxSliceInstr bounds"),
             _T("Force to draw bound rectangles around BoxSliceInstr objects"), wxITEM_CHECK);
-        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoundsShapes, _("Non-boxes: shapes bounds"),
+        AddMenuItem(pSubmenuDrawBounds, MENU_Debug_DrawBounds_BoundsShapes, _T("Non-boxes: shapes bounds"),
             _T("Force to draw bound rectangles around shapes"), wxITEM_CHECK);
 
-        pItem = new wxMenuItem(pMenuDebug, MENU_Debug_DrawBounds, _("Draw bounds ..."),
-                            _("Force to draw bound rectangles"), wxITEM_NORMAL, pSubmenuDrawBounds);
+        pItem = new wxMenuItem(pMenuDebug, MENU_Debug_DrawBounds, _T("Draw bounds ..."),
+                            _T("Force to draw bound rectangles"), wxITEM_NORMAL, pSubmenuDrawBounds);
         pMenuDebug->Append(pItem);
 
 

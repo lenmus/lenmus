@@ -72,6 +72,10 @@ FORM {
     DISPLAY: inline; MARGIN: 0px
 }
 
+LI {
+    MARGIN-TOP: 0.5em; 
+}
+
 pre {
     background: #f0f0f0;
 }

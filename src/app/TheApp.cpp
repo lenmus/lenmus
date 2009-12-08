@@ -36,23 +36,18 @@
     #pragma hdrstop
 #endif
 
-#include "wx/wx.h"
-#include "wx/frame.h"
-#include "wx/image.h"
-#include "wx/xrc/xmlres.h"          // use the xrc resource system
-#include "wx/splash.h"
+#include <wx/wx.h>
+#include <wx/frame.h>
+#include <wx/image.h>
+#include <wx/xrc/xmlres.h>      // use the xrc resource system
+#include <wx/splash.h>
 #include <wx/datetime.h>
-#include "wx/txtstrm.h"
-#include "wx/stdpaths.h"		//to get executable path
-#include "wx/memory.h"			//to trace memory leaks
+#include <wx/txtstrm.h>
+#include <wx/stdpaths.h>		//to get executable path
+#include <wx/memory.h>			//to trace memory leaks
 
-#include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
-#include "wx/wxsqlite3.h"               //to initialize wxSQLite3 DB
-
-//#ifdef __WXMSW__
-////Support for alpha channel on toolbar bitmaps
-//#include "wx/sysopt.h"      // to access wxSystemOptions.
-//#endif
+#include <wx/arrstr.h>          //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
+#include <wx/wxsqlite3.h>       //to initialize wxSQLite3 DB
 
 
 //#if defined(__WXMSW__) && !defined(__WXDEBUG__)
@@ -103,6 +98,7 @@
 #include "ScoreDoc.h"
 #include "ScoreView.h"
 #include "AboutDialog.h"
+#include "DlgUploadLog.h"               //upload forensic log
 #include "LangChoiceDlg.h"
 #include "ArtProvider.h"
 #include "toolbox/ToolsBox.h"
@@ -127,7 +123,6 @@
 //access to global objects
 #include "../globals/Paths.h"
 #include "../globals/Colors.h"
-
 
 
 //-------------------------------------------------------------------------------------------
@@ -191,6 +186,11 @@ IMPLEMENT_APP(lmTheApp)
 // ----------------------------------------------------------------------------
 // the application class
 // ----------------------------------------------------------------------------
+lmTheApp::lmTheApp()
+{
+    //tell base class to call our OnFatalException()
+    wxHandleFatalExceptions();
+}
 
 bool lmTheApp::OnInit(void)
 {
@@ -313,10 +313,11 @@ bool lmTheApp::OnInit(void)
     sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
     if (g_pLogger->ForensicTargetExists(sLogFile))
     {
-        //previous program run terminated with a crash.
-        //inform user and request permision to submit file for bug analysis
-        //TODO
-        wxMessageBox(_T("Previous program run abnormal termination. Forensic log deleted."));
+        //previous program run terminated with a crash and forensic log was not
+        //uploaded (probably we were in debug mode and program execution was 
+        //cancelled. Inform user and request permision to submit file for bug
+        //analysis
+        SendForensicLog(sLogFile, false);       //false: not handling a crash
     }
     g_pLogger->SetForensicTarget(sLogFile);
 
@@ -840,7 +841,7 @@ void lmTheApp::FindOutScreenDPI()
 const wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("4.1a1");
+    wxString sVersion = _T("4.1b3");
     return sVersion;
 }
 
@@ -955,6 +956,36 @@ int lmTheApp::FilterEvent(wxEvent& event)
 	}
 
 	return -1;		//process the event normally
+}
+
+void lmTheApp::OnFatalException() 
+{
+    //called when a crash occurs in this application
+
+    // open forensic log file
+    wxString sUserId = ::wxGetUserId();
+    wxString sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
+    if (g_pLogger->ForensicTargetExists(sLogFile))
+    {
+        //previous program run terminated with a crash.
+        //inform user and request permision to submit file for bug analysis
+        SendForensicLog(sLogFile, true);    //true: handling a crash
+    }
+}
+
+void lmTheApp::SendForensicLog(wxString& sLogFile, bool fHandlingCrash)
+{
+    //create the report
+#if defined(__WXDEBUG__)
+    wxString sURL = _T("http://localhost/forensic.php/");
+#else
+    wxString sURL = _T("http://www.lenmus.org/forensic.php/");
+#endif
+    wxString sCurlPath = g_pPaths->GetBinPath();
+    lmForensicLog oFLog(sLogFile, sCurlPath);
+    oFLog.UploadLog(sURL, _T("file"), _T(""), fHandlingCrash);
+    //AWARE: In Windows, after a crash program execution never returns to here because
+    //the main loop to handle events will be stopped!
 }
 
 

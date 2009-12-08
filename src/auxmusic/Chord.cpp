@@ -698,23 +698,23 @@ wxString lmChord::ToString()
         // Note that the number of notes and the number of inversions is already in the description from GetNameFull
         sRetStr = wxString::Format(_T(" %s"), GetNameFull().c_str());
 
-        sRetStr += wxString::Format(_(", Bass:%s")
+        sRetStr += wxString::Format(_T(", Bass:%s")
                 , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedBass()).c_str());
 
         if ( m_nInversion > 0)
         {
             // aware: if no inversions then root == bass
-            sRetStr += wxString::Format(_(", Root:%s")
+            sRetStr += wxString::Format(_T(", Root:%s")
                 , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedRoot()).c_str());
         }
 
         if (m_nElision > 0)
-          sRetStr += wxString::Format(_(", %d elisions"), m_nElision);
+          sRetStr += wxString::Format(_T(", %d elisions"), m_nElision);
 
         sRetStr += wxString::Format(_T(","));
         sRetStr += this->lmChordIntervals::ToString().c_str();
 
-        sRetStr += _(" Pattern:");
+        sRetStr += _T(" Pattern:");
 
         for (int n=0; n<=m_nNumIntv; n++)
         {
@@ -1069,7 +1069,7 @@ wxString lmChordIntervals::ToString()
     wxString sIntvals = _T(" Intervals:");
     for (int i=0; i < m_nNumIntv; i++)
     {
-        sIntvals += wxString::Format(_("%s(%d) ")
+        sIntvals += wxString::Format(_T("%s(%d) ")
             , FIntval_GetIntvCode( m_nIntervals[i] ).c_str(), m_nIntervals[i]);
     }
     return sIntvals;

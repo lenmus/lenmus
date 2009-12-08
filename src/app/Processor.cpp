@@ -339,7 +339,7 @@ lmHarmonyProcessor::lmHarmonyProcessor()
   pErrorBoxSize = new wxSize(580, 80); 
   pBigErrorBoxSize = new wxSize(580, 120);
 
-  tFont.sFontName = _("Comic Sans MS");
+  tFont.sFontName = _T("Comic Sans MS");
   tFont.nFontSize = 6;
   tFont.nFontStyle = wxFONTSTYLE_NORMAL;
   tFont.nFontWeight = wxFONTWEIGHT_NORMAL;
@@ -377,8 +377,8 @@ bool lmHarmonyProcessor::SetTools()
     //Create a panel with the exercise buttons, and place it on the ToolBox
     //Returns false if failure.
 
-    if (!CreateToolsPanel(_("Harmony exercise"),
-                          _("Check harmony")) )
+    if (!CreateToolsPanel(_T("Harmony exercise"),
+                          _T("Check harmony")) )
         return false;
 
     //No more tools to add. Show panel in toolbox
@@ -505,7 +505,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
                         if (!tChordDescriptor[nNumChords]->IsStandardChord())
                         {
-                            sStatusStr = wxString::Format(_(" Bad chord %d: %s; Notes: %s")
+                            sStatusStr = wxString::Format(_T(" Bad chord %d: %s; Notes: %s")
                                 , nNumChords+1
                                 , tChordDescriptor[nNumChords]->lmChord::ToString().c_str()
                                 , tActiveNotesList.ToString().c_str());
@@ -561,7 +561,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
 
         if (!tChordDescriptor[nNumChords]->IsStandardChord())
         {
-            sStatusStr = wxString::Format(_(" Bad chord %d: %s; Notes: %s")
+            sStatusStr = wxString::Format(_T(" Bad chord %d: %s; Notes: %s")
                 , nNumChords+1
                 , tChordDescriptor[nNumChords]->lmChord::ToString().c_str()
                 , tActiveNotesList.ToString().c_str());
@@ -661,7 +661,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 {
                     nChordExerciseErrors++;
                     wxString sMsg = wxString::Format(
-                        _("Chord %d [%s] is not at root position: %d inversions")
+                        _T("Chord %d [%s] is not at root position: %d inversions")
                         ,nChordCount+1
                         , tChordDescriptor[nChordCount]->lmFPitchChord::ToString().c_str()
                         ,nInversions);
@@ -684,7 +684,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     // Check absolute value of bass note (it was a prerequisite of the exercise)
                     lmFPitch nExpectedBassNotePitch = pHE_Chords[nChordCount]->GetNoteFpitch(0);
                     lmFPitch nActualBassNotePitch = tChordDescriptor[nChordCount]->GetNoteFpitch(0);
-                    wxString sMsg = wxString::Format( _("Chord %d [%s]: bass note:%s, expected:%s ")
+                    wxString sMsg = wxString::Format( _T("Chord %d [%s]: bass note:%s, expected:%s ")
                         , nChordCount+1
                         , tChordDescriptor[nChordCount]->lmFPitchChord::ToString().c_str()
                         , NormalizedFPitch_ToAbsLDPName(nActualBassNotePitch).c_str()
@@ -707,7 +707,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 int nExpectedRootStep = FPitch_Step(pHE_Chords[nChordCount]->GetNormalizedRoot());
                 int nActualRootStep = FPitch_Step(tChordDescriptor[nChordCount]->GetNormalizedRoot());
                 wxString sMsg = wxString::Format( 
-                    _("Chord %d [%s]: Degree:%s(root:%s), expected: %s(root:%s)")
+                    _T("Chord %d [%s]: Degree:%s(root:%s), expected: %s(root:%s)")
                     , nChordCount+1
                     , tChordDescriptor[nChordCount]->lmFPitchChord::ToString().c_str()
                     , GetChordDegreeString(nActualRootStep)
@@ -729,7 +729,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 {
                     if (tChordDescriptor[nChordCount]->GetNumNotes() <= 3)
                     {
-                        wxString sMsg = wxString::Format( _("Chord %d [%s], Soprano voice is missing")
+                        wxString sMsg = wxString::Format( _T("Chord %d [%s], Soprano voice is missing")
                             , nChordCount+1, tChordDescriptor[nChordCount]->lmFPitchChord::ToString().c_str());
                     }
                     else
@@ -737,7 +737,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                         // CHECK SOPRANO NOTE ( index: 3 )
                         lmFPitch nExpectedSopranoNotePitch = pHE_Chords[nChordCount]->GetNoteFpitch(3);
                         lmFPitch nActualSopranoNotePitch = tChordDescriptor[nChordCount]->GetNoteFpitch(3);
-                        wxString sMsg = wxString::Format( _("Chord %d [%s]: soprano note:%s, expected:%s  ")
+                        wxString sMsg = wxString::Format( _T("Chord %d [%s]: soprano note:%s, expected:%s  ")
                             , nChordCount+1
                             , tChordDescriptor[nChordCount]->lmFPitchChord::ToString().c_str()
                             , FPitch_ToAbsLDPName(nActualSopranoNotePitch).c_str()
@@ -771,7 +771,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     {
                         nChordExerciseErrors++;
                         wxString sMsg = wxString::Format(
-                            _("Chord %d [%s] is not the expected: %s")
+                            _T("Chord %d [%s] is not the expected: %s")
                             , nChordCount+1
                             , tChordDescriptor[nChordCount]->lmChord::ToString().c_str()
                             , pHE_Chords[nChordCount]->lmChord::ToString().c_str()
@@ -793,7 +793,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
         if ( nHarmonyExcerciseType == 3 )
         {
             wxString sMsg = wxString::Format(
-                _("Exercise 3: Number of figured bass introduced by user:%d, expected:%d")
+                _T("Exercise 3: Number of figured bass introduced by user:%d, expected:%d")
                 , gnHE_NumUserFiguredBass,  nNumChords);
             wxLogMessage(sMsg.c_str());
 
@@ -803,7 +803,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 nExerciseErrors++;
                 pChordErrorBox->DisplayChordInfo(pScore, tChordDescriptor[nNumChords-1]
                     , colourForGenericErrors, sMsg);
-                wxLogMessage( _("DISPLAYED ERROR :%s"), sMsg.c_str());
+                wxLogMessage( _T("DISPLAYED ERROR :%s"), sMsg.c_str());
             }
 
             // check each Figured bass
@@ -815,7 +815,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 if ( nChordType != lmINVALID_CHORD_TYPE )
                 {
                     sMsg = wxString::Format(
-                        _("Chord %d [%s] Figured bass: user: {%s}, expected:{%s}")
+                        _T("Chord %d [%s] Figured bass: user: {%s}, expected:{%s}")
                         , nFB+1
                         , tChordDescriptor[nFB]->lmFPitchChord::ToString().c_str()
                         , pHE_UserFiguredBass[nFB]->GetFiguredBassString().c_str()

@@ -4,6 +4,9 @@
 
 \toc
 
+%%%[Related: score-processors.txt]
+
+
 \h1 {The Model-View-Controller architecture}
 
 The Model-View-Controller (MVC) architecture is a well known design pattern that uses three kinds of objects:

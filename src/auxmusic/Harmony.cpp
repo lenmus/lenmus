@@ -123,7 +123,7 @@ int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1) //@@@ todo rem
 {
     lmFIntval nDistance  = abs (n2 - n1);
     int nIntervalNumber  = FIntval_GetNumber(nDistance);
-    wxLogMessage(_("\t\t GetIntervalNumberFromFPitchDistance: %d-%d D:%d I:%d ")
+    wxLogMessage(_T("\t\t GetIntervalNumberFromFPitchDistance: %d-%d D:%d I:%d ")
         , n2, n1, nDistance, nIntervalNumber);
     return nIntervalNumber;
 }
@@ -155,7 +155,7 @@ wxString GetChordDegreeString(lmStepType nStep )
 {
     if (nStep < lmMIN_STEP ||  nStep > lmMAX_STEP)
     {
-        wxLogMessage(_("GetDegreeString: Invalid step %d"), nStep);
+        wxLogMessage(_T("GetDegreeString: Invalid step %d"), nStep);
         nStep = 0;
     }
  
@@ -268,7 +268,7 @@ void GetIntervalsFromNotes(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* 
         }
         if (nExistingIntvIndex < nCurrentIntvIndex)
         {
-            wxLogMessage(_(" Interval %d: IGNORED, already in %d")
+            wxLogMessage(_T(" Interval %d: IGNORED, already in %d")
             , fpIntv, nExistingIntvIndex);
         }
         else
@@ -586,7 +586,7 @@ wxString lmFPitchChord::ToString()
 {
     // extend the parent information
     wxString sStr = this->lmChord::ToString();
-    sStr += _("; Notes:");
+    sStr += _T("; Notes:");
     for (int nN = 0; nN<m_nNumChordNotes; nN++)
     {
         sStr += _T(" ");
@@ -844,13 +844,13 @@ LM_CREATE_CHORD_RULE(lmNoIntervalHigherThanOctave, lmCVR_NoIntervalHigherThanOct
 void lmRuleList::CreateRules()
 {
     AddRule( new lmRuleNoParallelMotion(),
-        _("No parallel motion of perfect octaves, perfect fifths, and unisons") );
+        _T("No parallel motion of perfect octaves, perfect fifths, and unisons") );
     AddRule( new lmRuleNoResultingFifthOctaves(),
-        _("No resulting fifths and octaves") );
+        _T("No resulting fifths and octaves") );
     AddRule( new lmRuleNoVoicesCrossing(),
-        _("Do not allow voices crossing. No duplicates (only for root position and root duplicated)") );
+        _T("Do not allow voices crossing. No duplicates (only for root position and root duplicated)") );
     AddRule( new lmNoIntervalHigherThanOctave(),
-        _("Voices interval not greater than one octave (except bass-tenor)") );
+        _T("Voices interval not greater than one octave (except bass-tenor)") );
 }
 
 
@@ -894,7 +894,7 @@ lmRule::lmRule(int nRuleID)
 // return number of errors
 int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )
 {
-    sResultDetails = _("Rule: No parallel motion ");
+    sResultDetails = _T("Rule: No parallel motion ");
     if ( m_pChordDescriptor == NULL)
     {
         wxLogMessage(_T(" lmRuleNoParallelMotion: m_pChordDescriptor NULL "));
@@ -930,7 +930,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
                          - m_pChordDescriptor[nC]->GetNoteFpitch(i) );
                      int nIntervalNumber = FIntval_GetNumber(nInterval);
 
-                     wxLogMessage(_(" >>> Check parallel motion in chord %d, notes:%d %d, INTERVAL:%d(%s) {%d}")
+                     wxLogMessage(_T(" >>> Check parallel motion in chord %d, notes:%d %d, INTERVAL:%d(%s) {%d}")
 		               ,nC, i,  nN,  nIntervalNumber
                        , FIntval_GetIntvCode(nInterval).c_str()
                        , nInterval);
@@ -945,7 +945,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
 
 //TODO: accumulate messages?                        sResultDetails += wxString::Format(
                         sResultDetails = wxString::Format(
-                            _("Parallel motion of %s, chords: %d, %d; v%d %s-->%s, v%d %s-->%s, Interval: %s")
+                            _T("Parallel motion of %s, chords: %d, %d; v%d %s-->%s, v%d %s-->%s, Interval: %s")
                             ,sType.c_str(),  (nC-1)+1, (nC)+1
                             , m_pChordDescriptor[nC]->GetNoteVoice(i)
                             , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).c_str()
@@ -1001,13 +1001,13 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                                             , int pNumFailuresInChord[], ChordInfoBox* pBox)
 {
     wxString sMovTypes[] =
-        {_("Direct"), _T("Oblique"), _T("Contrary")};
+        {_T("Direct"), _T("Oblique"), _T("Contrary")};
 
     // Forbidden to arrive to a fifth or octave by means of a direct movement ( both: same delta sign)
     // exceptions:
     //  - voice is soprano (TODO: consider: tenor, contralto??) and distance is 2th
     //  - TODO: consider: fifth and one sound existed??
-    sResultDetails = _("Rule: No resulting fifth/octaves ");
+    sResultDetails = _T("Rule: No resulting fifth/octaves ");
     if ( m_pChordDescriptor == NULL)
     {
         wxLogMessage(_T(" lmRuleNoResultingFifthOctaves: m_pChordDescriptor NULL "));
@@ -1047,7 +1047,7 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                          - m_pChordDescriptor[nC]->GetNoteFpitch(i) );
                 int nIntervalNumber = FIntval_GetNumber(nInterval);
 
-                wxLogMessage(_(" Notes: %s-->%s %s-->%s Movement type:%s  INTERVAL:%d (%s)")
+                wxLogMessage(_T(" Notes: %s-->%s %s-->%s Movement type:%s  INTERVAL:%d (%s)")
                         , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).c_str()
                         , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
                         , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).c_str()
@@ -1071,12 +1071,12 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                      {
                         wxString sType;
                         if (nInterval > 80) // current limitation in FIntval_GetName
-                           sType = _("higher than 2 octaves");
+                           sType = _T("higher than 2 octaves");
                         else
                            sType =  FIntval_GetName(nInterval);
 
                         sResultDetails = wxString::Format(
-               _("Direct movement resulting %s. Chords:%d,%d. Voices:%d %s-->%s and %d %s-->%s. Interval: %s")
+               _T("Direct movement resulting %s. Chords:%d,%d. Voices:%d %s-->%s and %d %s-->%s. Interval: %s")
                , sType.c_str(), (nC-1)+1, (nC)+1
                , m_pChordDescriptor[nC]->GetNoteVoice(nN)
                , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).c_str()
@@ -1153,13 +1153,13 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
         //  root note is duplicated
         if ( m_pChordDescriptor[nC]->GetInversion() != 0 )
         {
-            wxLogMessage(_(" Rule not applicable: not root position: %d inversions"), m_pChordDescriptor[nC]->GetInversion());
+            wxLogMessage(_T(" Rule not applicable: not root position: %d inversions"), m_pChordDescriptor[nC]->GetInversion());
             //@@@ todo remove: return 0;
             continue;
         }
         if (  m_pChordDescriptor[nC]->GetInversion() == 0 && ! m_pChordDescriptor[nC]->IsBassDuplicated() )
         {
-            wxLogMessage(_(" Rule not applicable: not root position but root note not duplicated"));
+            wxLogMessage(_T(" Rule not applicable: not root position but root note not duplicated"));
             //@@@ todo remove: return 0;
             continue;
         }
@@ -1180,7 +1180,7 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
                       nPitch[1] <= nPitch[0] )
                 {
                     sResultDetails = wxString::Format(
-                        _("Chord:%d: Voice crossing.  Voice%d(%s) <= Voice%d(%s) ")
+                        _T("Chord:%d: Voice crossing.  Voice%d(%s) <= Voice%d(%s) ")
                     , (nC)+1
                     , nVoice[1], FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
                     , nVoice[0], FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).c_str()
@@ -1214,7 +1214,7 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
 int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[]
                                            , ChordInfoBox* pBox)
 {
-    sResultDetails = _(" Rule: no interval higher than octave");
+    sResultDetails = _T(" Rule: no interval higher than octave");
     if ( m_pChordDescriptor == NULL)
     {
         wxLogMessage(_T(" lmNoIntervalHigherThanOctave:  m_pChordDescriptor NULL "));
@@ -1230,7 +1230,7 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
     // Analyze all chords
     for (int nC=0; nC<m_nNumChords; nC++)
     {
-        wxLogMessage(_("Check chord %d "), nC);
+        wxLogMessage(_T("Check chord %d "), nC);
 
         pNumFailuresInChord[nC] = 0;
 
@@ -1277,7 +1277,7 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
             if (  nInterval > nLimit )
             {
                 sResultDetails = wxString::Format(
-                _("Chord %d: Interval %s higher than octave between voices %d (%s) and %d (%s)")
+                _T("Chord %d: Interval %s higher than octave between voices %d (%s) and %d (%s)")
                 , (nC)+1
                 , FIntval_GetIntvCode(nInterval).c_str()
                 , m_pChordDescriptor[nC]->GetNoteVoice(nN)

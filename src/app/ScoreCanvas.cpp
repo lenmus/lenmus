@@ -1586,7 +1586,9 @@ void lmScoreCanvas::MoveObjectPoints(lmGMObject* pGMO, lmUPoint uShifts[],
 	//Generate move command to move the lmComponentObj and update the document
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-    wxString sName = wxString::Format(_("%s: move points"), pGMO->GetName().c_str() );
+    wxString sName = pGMO->GetName().c_str();
+    sName += _T(": ");
+    sName += _("move points");
 	pCP->Submit(new lmCmdMoveObjectPoints(lmCMD_NORMAL, sName, m_pDoc, pGMO, uShifts, nNumPoints,
                                           fUpdateViews) );
 }
@@ -2432,7 +2434,7 @@ void lmScoreCanvas::UpdateToolInfoString()
         return;
 
     lmDPitch dpNote = GetNotePitchFromPosition(m_pCurShapeStaff, m_uMousePagePos);
-    wxString sMoreInfo = wxString::Format(_(" %s"), DPitch_ToLDPName(dpNote).c_str() );
+    wxString sMoreInfo = wxString::Format(_T(" %s"), DPitch_ToLDPName(dpNote).c_str() );
     UpdateStatusBarToolBox(sMoreInfo);
 }
 

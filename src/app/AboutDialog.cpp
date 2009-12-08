@@ -35,9 +35,11 @@
 
 #include "wx/dialog.h"
 #include "wx/button.h"
-#include "wx/xrc/xmlres.h"
 
 #include "AboutDialog.h"
+#include "TheApp.h"         //to get access to locale info.
+#include "../html/HtmlWindow.h"
+#include "ArtProvider.h"
 
 #include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
 #include "wx/wxsqlite3.h"               //to access wxSQLite3 DB
@@ -51,13 +53,10 @@ extern bool g_fReleaseBehaviour;    // This flag is only used to force release b
 //to get wxMidi version
 #include "wxMidi.h"
 
-#include "TheApp.h"         //to get access to locale info.
-
 // To get char and scale info
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
 
-#include "../html/HtmlWindow.h"
 
 //IDs for controls
 const int lmID_BTN_ACCEPT = wxNewId();
@@ -76,7 +75,6 @@ BEGIN_EVENT_TABLE(lmAboutDialog, wxDialog)
     EVT_BUTTON(lmID_BTN_DEVELOPERS, lmAboutDialog::OnDevelopers )
     EVT_BUTTON(lmID_BTN_ART_CREDITS, lmAboutDialog::OnArtCredits )
     EVT_BUTTON(lmID_BTN_SOFTWARE_CREDITS, lmAboutDialog::OnSoftwareCredits )
-    //EVT_BUTTON( XRCID( "btnTranslators" ), lmAboutDialog::OnTranslators )
     EVT_BUTTON(lmID_BTN_BUILD_INFO, lmAboutDialog::OnBuildInfo )
 
 END_EVENT_TABLE()
@@ -323,7 +321,7 @@ Unlike client-server database management systems, the SQLite engine is not a sta
 with which the program communicates. Instead, the SQLite library is linked with your program \
 and becomes an integral part of it. SQLite was created by D. Richard Hipp and the source code \
 is in the public domain and is thus free for use for any purpose, commercial or private. \
-software. Wrapper wxSQLite3 was written by Ulrich Telle.") +
+Wrapper wxSQLite3 was written by Ulrich Telle.") +
         _T("</p><p>") +
         _("LenMus Phonascus is built using the <b>wxWidgets</b> application framework \
 (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
@@ -392,12 +390,18 @@ void lmAboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
 _("This program has been designed and developed by volunteers. \
 Some of them devoted a few hours, others months or years. But all them \
 gave their time for free to the project. Thanks to all them.") +
-    _T("</p><p>&nbsp;</p><p>") +
+    _T("</p><p>") +
     _T("<table border='0' width='100%' cellpadding='0' cellspacing='0'>")
         //
     _T("<tr><td colspan='3'><b>") +
-        _("Management and programming:") + _T("</b></td></tr>")
+        _("Project management:") + _T("</b></td></tr>")
     _T("  <tr><td width='40'>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    _T("<tr><td colspan='3'><b>") +
+        _("Programming:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Carlos De La Fuente</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +
@@ -449,6 +453,7 @@ gave their time for free to the project. Thanks to all them.") +
     _T("<tr><td colspan='3'><b>") +
         _("Thanks also to:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Miguel Fernandez Fidalgo</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Mar&iacute;a Jes&uacute;s Mart&iacute;nez Pascua</td></tr>")
     _T("</table><p>&nbsp;</p><p>") +

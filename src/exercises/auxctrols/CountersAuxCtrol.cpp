@@ -345,7 +345,7 @@ void lmLeitnerAuxCtrol::CreateControls()
 	
 	m_pFirstLineSizer->Add( 0, 0, 1, wxEXPAND, 5 );
 	
-	m_pLblEST = new wxStaticText( this, wxID_ANY, _("EST:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblEST = new wxStaticText( this, wxID_ANY, _T("EST:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblEST->Wrap( -1 );
 	m_pLblEST->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
 	

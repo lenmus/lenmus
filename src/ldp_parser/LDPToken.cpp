@@ -287,8 +287,9 @@ void lmLDPTokenBuilder::ParseNewToken()
         FT_EOF08,
         FT_EOF09,
         FT_EOF10,
-        FT_ETQ02,
         FT_ETQ01,
+        FT_ETQ02,
+        FT_ETQ03,
         FT_NUM01,
         FT_NUM02,
         FT_SPC01,
@@ -317,6 +318,10 @@ void lmLDPTokenBuilder::ParseNewToken()
                 }
                 else if (m_curChar == chApostrophe) {
                     nState = FT_ETQ02;
+                }
+                else if (m_curChar == chUnderscore) {
+                    nState = FT_ETQ03;
+                    iStart++;
                 }
                 else if (lmIsNumber(m_curChar)) {
                     nState = FT_NUM01;
@@ -386,6 +391,16 @@ void lmLDPTokenBuilder::ParseNewToken()
                 } else {
                     nState = FT_ETQ01;
                 }
+                break;
+
+            case FT_ETQ03:
+                GNC();
+                if (m_curChar == chApostrophe)
+                    nState = FT_ETQ02;
+                else if (m_curChar == chQuotes)
+                    nState = FT_STR01;                
+                else
+                    nState = FT_Error;
                 break;
 
             case FT_STR02:

@@ -165,7 +165,7 @@ bool lmUpdater::DoCheck(wxString sPlatform, bool fSilent)
         //Setup user-agent string to be identified not as a bot but as a browser
         wxProtocol& oProt = oURL.GetProtocol();
         wxHTTP* pHTTP = (wxHTTP*)&oProt;
-        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus_updater"));
         oProt.SetTimeout(10);              // 90 sec
 
         //get proxy options
