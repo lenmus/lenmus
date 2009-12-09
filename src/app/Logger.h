@@ -111,7 +111,7 @@ public:
     void SetTraceTarget(wxString& sPath);
     void SetForensicTarget(wxString& sPath);
     void DeleteForensicTarget();
-    bool ForensicTargetExists(wxString& sPath);
+    bool IsValidForensicTarget(wxString& sPath);
 
     void ReportProblem(const wxChar* szFormat, ...);
     void ReportBug(const wxChar* szFormat, ...);

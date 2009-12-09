@@ -40,7 +40,7 @@ class lmDlgDebug : public wxDialog
    DECLARE_DYNAMIC_CLASS(lmDlgDebug)
 
 public:
-    lmDlgDebug(wxWindow* parent, wxString sTitle, wxString sData);
+    lmDlgDebug(wxWindow* parent, wxString sTitle, wxString sData, bool fSave = true);
     virtual ~lmDlgDebug();
 
     void OnOK(wxCommandEvent& WXUNUSED(event));
@@ -49,7 +49,8 @@ public:
     void AppendText(wxString sText);
 
 private:
-    wxTextCtrl*        m_pTxtData;
+    wxTextCtrl*     m_pTxtData;
+    bool            m_fSave;        //true to include 'Save' button
 
     DECLARE_EVENT_TABLE()
 };

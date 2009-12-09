@@ -58,6 +58,7 @@
 
 
 #include "DlgUploadLog.h"
+#include "DlgDebug.h"
 
 // access to paths
 #include "../globals/Paths.h"
@@ -78,80 +79,6 @@ enum
 };
 
 #define lmUSE_SOCKETS   0   //for uploading the log either use curl or sockets
-
-// ----------------------------------------------------------------------------
-// wxDumpPreviewDlg: simple class for showing ASCII preview of dump files
-// Copied from wxWidgets as it is defined in implementation file and
-// is not accesible!!
-// ----------------------------------------------------------------------------
-
-class wxDumpPreviewDlg : public wxDialog
-{
-public:
-    wxDumpPreviewDlg(wxWindow *parent,
-                     const wxString& title,
-                     const wxString& text);
-
-private:
-    // the text we show
-    wxTextCtrl *m_text;
-
-    DECLARE_NO_COPY_CLASS(wxDumpPreviewDlg)
-};
-
-wxDumpPreviewDlg::wxDumpPreviewDlg(wxWindow *parent,
-                                   const wxString& title,
-                                   const wxString& text)
-                : wxDialog(parent, wxID_ANY, title,
-                           wxDefaultPosition, wxDefaultSize,
-                           wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
-{
-    // create controls
-    // ---------------
-
-    // use wxTE_RICH2 style to avoid 64kB limit under MSW and display big files
-    // faster than with wxTE_RICH
-    m_text = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
-                            wxPoint(0, 0), wxDefaultSize,
-                            wxTE_MULTILINE |
-                            wxTE_READONLY |
-                            wxTE_NOHIDESEL |
-                            wxTE_RICH2);
-    m_text->SetValue(text);
-
-    // use fixed-width font
-    m_text->SetFont(wxFont(12, wxFONTFAMILY_TELETYPE,
-                           wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-
-    wxButton *btnClose = new wxButton(this, wxID_CANCEL, _("Close"));
-
-
-    // layout them
-    // -----------
-
-    wxSizer *sizerTop = new wxBoxSizer(wxVERTICAL),
-            *sizerBtns = new wxBoxSizer(wxHORIZONTAL);
-
-    sizerBtns->Add(btnClose, 0, 0, 1);
-
-    sizerTop->Add(m_text, 1, wxEXPAND);
-    sizerTop->Add(sizerBtns, 0, wxALIGN_RIGHT | wxTOP | wxBOTTOM | wxRIGHT, 1);
-
-    // set the sizer &c
-    // ----------------
-
-    // make the text window bigger to show more contents of the file
-    sizerTop->SetItemMinSize(m_text, 600, 300);
-    SetSizer(sizerTop);
-
-    Layout();
-    Fit();
-
-    m_text->SetFocus();
-}
-
-
-
 
 //----------------------------------------------------------------------------------
 // Helper class lmDebugReportDialog: the dialog to inform user about the upload
@@ -215,6 +142,7 @@ lmDebugReportDialog::lmDebugReportDialog(lmForensicLog* pDbgReport, bool fHandli
                wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
     , m_pDbgReport(pDbgReport)
 {
+    m_sLogFilename = m_pDbgReport->GetLogFilename();
     CreateDialog();
 
     if (!fHandlingCrash)
@@ -331,18 +259,17 @@ bool lmDebugReportDialog::TransferDataFromWindow()
 
 void lmDebugReportDialog::OnView(wxCommandEvent& event)
 {
-    wxString str;
+    wxString sFileContent;
     wxFFile file(m_sLogFilename);
-    if ( file.IsOpened() && file.ReadAll(&str) )
+    if ( file.IsOpened() && file.ReadAll(&sFileContent) )
     {
-        wxDumpPreviewDlg dlg(this, m_sLogFilename, str);
+        lmDlgDebug dlg(this, _T("Forensic log preview"), sFileContent, false);     //false: no 'Save' button
         dlg.ShowModal();
     }
 }
 
 void lmDebugReportDialog::OnUpload(wxCommandEvent& event)
 {
-    //TODO: Replace busy cursor by a progress bar
     ::wxBeginBusyCursor();
     m_pDbgReport->DoUpload();
     ::wxEndBusyCursor();

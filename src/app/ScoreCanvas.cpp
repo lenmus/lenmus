@@ -1624,9 +1624,11 @@ void lmScoreCanvas::DeleteStaffObj()
         return;
 
     //prepare command and submit it
+    ::wxBeginBusyCursor();
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = wxString::Format(_("Delete %s"), pCursorSO->GetName().c_str() );
 	pCP->Submit(new lmCmdDeleteStaffObj(lmCMD_NORMAL, sName, m_pDoc, pCursorSO));
+    ::wxEndBusyCursor();
 }
 
 void lmScoreCanvas::DeleteCaretOrSelected()
@@ -1644,9 +1646,11 @@ void lmScoreCanvas::DeleteSelection()
 {
     //Deleted all objects in the selection.
 
+    ::wxBeginBusyCursor();
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Delete selection");
 	pCP->Submit(new lmCmdDeleteSelection(lmCMD_NORMAL, sName, m_pDoc, m_pView->GetSelection()) );
+    ::wxEndBusyCursor();
 }
 
 void lmScoreCanvas::BreakBeam()

@@ -62,45 +62,51 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmDlgDebug, wxDialog)
 
-lmDlgDebug::lmDlgDebug(wxWindow * parent, wxString sTitle, wxString sData)
+lmDlgDebug::lmDlgDebug(wxWindow * parent, wxString sTitle, wxString sData, bool fSave)
     : wxDialog(parent, -1, sTitle, wxDefaultPosition, wxSize(800, 430),
                wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
+    , m_fSave(fSave)
 {
     Centre();
 
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
 
-    m_pTxtData = new wxTextCtrl(this, -1, sData,
-                                wxPoint(10, 10),
-                                wxSize(780, 380),
-                                wxTE_MULTILINE | wxHSCROLL | wxTE_READONLY );
-    m_pTxtData->SetFont(wxFont(10, wxFONTFAMILY_MODERN, wxNORMAL, wxNORMAL, FALSE, _T("Courier")));
+    // use wxTE_RICH2 style to avoid 64kB limit under MSW and display big files
+    // faster than with wxTE_RICH
+    m_pTxtData = new wxTextCtrl(this, wxID_ANY, sData,
+                                wxPoint(0, 0), wxDefaultSize,
+                                wxTE_MULTILINE | wxTE_READONLY | wxTE_NOHIDESEL
+                                | wxTE_RICH2);
+
+    // use fixed-width font
+    m_pTxtData->SetFont(wxFont(10, wxFONTFAMILY_TELETYPE,
+                               wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
     pMainSizer->Add(m_pTxtData,
-                    1,            // make vertically stretchable
-                    wxEXPAND |    // make horizontally stretchable
-                    wxALL,        //   and make border all around
-                    10 );         // set border width to 10
+                    1,            //vertically stretchable
+                    wxEXPAND |    //horizontally stretchable
+                    wxALL,        //some space border all around
+                    5 );          //set border width to 5 px
 
     wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxButton *cmdOK = new wxButton(this, wxID_OK, _("OK"), wxPoint(150, 390),
-								   wxSize(80, 25));
-	cmdOK->SetDefault();
+    wxButton *cmdOK = new wxButton(this, wxID_OK, _("OK"));
+    pButtonsSizer->Add(cmdOK, 0, 0, 1);
+    cmdOK->SetDefault();
     cmdOK->SetFocus();
 
-	wxButton *cmdSave = new wxButton(this, lmID_SAVE, _("Save"), wxPoint(150, 390),
-									 wxSize(80, 25));
+    if (m_fSave)
+    {
+	    wxButton *cmdSave = new wxButton(this, lmID_SAVE, _("Save"));
 
-	pButtonsSizer->Add(cmdOK, 0, wxALIGN_CENTER | wxALL, 10);
-	pButtonsSizer->Add(cmdSave, 0, wxALIGN_CENTER | wxALL, 10);
+	    pButtonsSizer->Add(cmdSave, 0, 0, 1);
+    }
 
-    pMainSizer->Add(pButtonsSizer, 0, wxALIGN_CENTER | wxALL, 10);
+    pMainSizer->Add(pButtonsSizer, 0, wxALIGN_CENTER | wxALL, 5);
 
     // set autolayout based on sizers
     SetAutoLayout(true);
     SetSizer(pMainSizer);
-
 }
 
 lmDlgDebug::~lmDlgDebug()

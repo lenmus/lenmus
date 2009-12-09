@@ -131,11 +131,17 @@ lmLogger::~lmLogger()
 
 }
 
-bool lmLogger::ForensicTargetExists(wxString& sPath)
+bool lmLogger::IsValidForensicTarget(wxString& sPath)
 {
-    //returns true if forensic file already exists
+    //returns true if forensic file already exists and contains a score
     
-    return ::wxFileExists(sPath);
+    //file must exist and must contain a score
+    wxString sFileContent;
+    wxFFile file(sPath);
+    if ( file.IsOpened() && file.ReadAll(&sFileContent) )
+        return sFileContent.Contains(_T("(score"));
+
+    return false;
 }
 
 void lmLogger::SetForensicTarget(wxString& sPath)

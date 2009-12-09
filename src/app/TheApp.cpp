@@ -188,8 +188,11 @@ IMPLEMENT_APP(lmTheApp)
 // ----------------------------------------------------------------------------
 lmTheApp::lmTheApp()
 {
+#ifndef __WXDEBUG__
+    //in release version we will deal with crashes.
     //tell base class to call our OnFatalException()
     wxHandleFatalExceptions();
+#endif
 }
 
 bool lmTheApp::OnInit(void)
@@ -311,7 +314,7 @@ bool lmTheApp::OnInit(void)
 
     // open forensic log file
     sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
-    if (g_pLogger->ForensicTargetExists(sLogFile))
+    if (g_pLogger->IsValidForensicTarget(sLogFile))
     {
         //previous program run terminated with a crash and forensic log was not
         //uploaded (probably we were in debug mode and program execution was 
@@ -965,7 +968,7 @@ void lmTheApp::OnFatalException()
     // open forensic log file
     wxString sUserId = ::wxGetUserId();
     wxString sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
-    if (g_pLogger->ForensicTargetExists(sLogFile))
+    if (g_pLogger->IsValidForensicTarget(sLogFile))
     {
         //previous program run terminated with a crash.
         //inform user and request permision to submit file for bug analysis
@@ -975,17 +978,15 @@ void lmTheApp::OnFatalException()
 
 void lmTheApp::SendForensicLog(wxString& sLogFile, bool fHandlingCrash)
 {
-    //create the report
-#if defined(__WXDEBUG__)
-    wxString sURL = _T("http://localhost/forensic.php/");
-#else
+    //upload the report
+
+    //wxString sURL = _T("http://localhost/forensic.php/");
     wxString sURL = _T("http://www.lenmus.org/forensic.php/");
-#endif
     wxString sCurlPath = g_pPaths->GetBinPath();
     lmForensicLog oFLog(sLogFile, sCurlPath);
     oFLog.UploadLog(sURL, _T("file"), _T(""), fHandlingCrash);
     //AWARE: In Windows, after a crash program execution never returns to here because
-    //the main loop to handle events will be stopped!
+    //the main loop to handle events was stopped in previous sentence!
 }
 
 
