@@ -571,6 +571,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\app\DlgUploadLog.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\app\DlgUploadLog.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\app\EditFrame.cpp"
 				>
 			</File>
