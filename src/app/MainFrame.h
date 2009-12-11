@@ -238,8 +238,8 @@ public:
     void UpdateToolbarsLayout();
     void SilentlyCheckForUpdates(bool fSilent);
 	inline wxMenu* GetEditMenu() {return m_pMenuEdit; }
-    void OpenRecentFile(wxString sFile);      //call back from WelcomeDlg
     void NewScoreWindow(lmEditorMode* pMode, lmScore* pScore);
+    void OpenScore(wxString& sFilename, bool fAsNew);
 
     //options
     bool ShowRulers();

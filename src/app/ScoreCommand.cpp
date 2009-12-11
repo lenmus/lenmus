@@ -215,7 +215,7 @@ void lmScoreCommand::LogForensicData()
                          this->GetClassInfo()->GetClassName(),
                          this->GetName()
                          ));
-    g_pLogger->LogForensic(m_sOldSource);
+    g_pLogger->LogScore(m_sOldSource);
 }
 
 

@@ -334,7 +334,7 @@ void lmWelcomeWnd::OnOpenEBooks(wxHyperlinkEvent& event)
 void lmWelcomeWnd::OnOpenRecent(wxHyperlinkEvent& event)
 {
     wxString sFile = m_pLinkRecent[event.GetId() - lmLINK_Recent1]->GetURL();
-    g_pMainFrame->OpenRecentFile(sFile);
+    g_pMainFrame->OpenScore(sFile, false);    //false: it is not a new file
 }
 
 void lmWelcomeWnd::OnCloseWindow(wxCloseEvent& event)

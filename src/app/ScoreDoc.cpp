@@ -148,13 +148,11 @@ bool lmDocument::OnNewDocumentWithContent(lmScore* pScore)
     //otherwise assign it the name of the score
     wxString name = m_pScore->GetScoreName();
     if (name == _T(""))
-    {
-        GetDocumentManager()->MakeDefaultName(name);
-    }
+        name = GetDocumentManager()->MakeNewDocumentName();
     SetTitle(name);
     SetFilename(name, true);
 
-    Modify(false);
+    Modify(true);           //as it is new, to ask for saving it
     UpdateAllViews();
     return true;
 }

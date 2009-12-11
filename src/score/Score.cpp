@@ -247,7 +247,8 @@ lmScore::lmScore()
     //initializations
     m_fReadOnly = false;
     m_pSoundMngr = (lmSoundManager*)NULL;
-    m_sScoreName = _T("New score");
+    m_sScoreName = _("Unnamed");
+    m_sScoreName += wxString::Format(_T("_%d"), m_nScoreID);
     m_pTenthsConverter = (lmVStaff*)NULL;
 
     //paper size and margins

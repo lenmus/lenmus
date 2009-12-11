@@ -64,7 +64,7 @@ lmMsgBoxBase::~lmMsgBoxBase()
 
 void lmMsgBoxBase::CreateControls()
 {
-	this->SetSizeHints(wxSize(500, -1), wxSize( 500,-1 ));
+	this->SetSizeHints(wxSize(-1, -1), wxSize( -1,-1 ));
 	m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 	
 	m_pMainSizer->Add( 0, 10, 0, wxALL, 5 );
@@ -84,13 +84,17 @@ void lmMsgBoxBase::CreateControls()
     m_pButtonsSizer = new wxBoxSizer( wxVERTICAL );
 	m_pMainSizer->Add( m_pButtonsSizer, 1, wxEXPAND|wxALL, 20 );
 
+    //a new sizer to center the buttons
+	wxBoxSizer* pCenterButtonsSizer = new wxBoxSizer( wxVERTICAL );
+	m_pButtonsSizer->Add( pCenterButtonsSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+	
     //loop to add buttons
     int nTextWrap = 500 - 2*25 - 10 - m_nMaxButtonWidth;
     for (int i=0; i < m_nNumButtons; i++)
     {
         //sizer for the button and its explanation text
         wxBoxSizer* pBtSizer = new wxBoxSizer( wxHORIZONTAL );
-        m_pButtonsSizer->Add( pBtSizer, 0, wxALIGN_CENTER_VERTICAL, 5 );
+        pCenterButtonsSizer->Add( pBtSizer, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
         //the button
 	    m_pButton[i]->SetMinSize( wxSize(m_nMaxButtonWidth, -1) );
@@ -100,18 +104,14 @@ void lmMsgBoxBase::CreateControls()
 	    m_pText[i]->Wrap(nTextWrap);
         pBtSizer->Add(m_pText[i], 0, wxALL|wxEXPAND, 5 );
     }
+}
 
-	this->SetSizer( m_pMainSizer );
+void lmMsgBoxBase::FinishLayout()
+{
+    this->SetSizer( m_pMainSizer );
     SetAutoLayout( true );
-    //m_pMainSizer->SetSizeHints( this );
     m_pMainSizer->Fit( this );
 	this->Layout();
-    wxSize size( GetSize() );
-    if (size.x < 500)
-    {
-        size.x = 500;
-        SetSize( size );
-    }
 
     Centre( wxBOTH | wxCENTER_FRAME);
 }
@@ -170,7 +170,7 @@ lmQuestionBox::lmQuestionBox(const wxString& sMessage, int nNumButtons, ...)
     CreateControls();
 
     m_pBitmap->SetBitmap( wxArtProvider::GetBitmap(_T("msg_idea"), wxART_OTHER, wxSize(48, 48)) );
-	this->Layout();
+    FinishLayout();
 }
 
 //------------------------------------------------------------------------------------
@@ -186,6 +186,6 @@ lmErrorBox::lmErrorBox(const wxString& sMessage, const wxString& sButtonText)
     CreateControls();
 
     m_pBitmap->SetBitmap( wxArtProvider::GetBitmap(_T("msg_error"), wxART_OTHER, wxSize(32, 32)) );
-	this->Layout();
+    FinishLayout();
 }
 

@@ -94,6 +94,7 @@ lmLogger::lmLogger()
     , m_pTrace((wxFile*)NULL)
     , m_pDataError((wxFile*)NULL)
     , m_sForensicPath(wxEmptyString)
+    , m_sScorePath(wxEmptyString)
 {
     // For now use wxLog facilities and send messages to Stderr
     #if defined(__WXGTK__)
@@ -144,10 +145,28 @@ bool lmLogger::IsValidForensicTarget(wxString& sPath)
     return false;
 }
 
-void lmLogger::SetForensicTarget(wxString& sPath)
+void lmLogger::LogScore(wxString sScore)
 {
+    LogForensic(sScore);
+
+    //save the score, to be recovered later
+    wxFile oFile(m_sScorePath, wxFile::write);
+    if (!oFile.IsOpened())
+    {
+        wxLogMessage(_T("[lmLogger::LogScore] Error while saving score. Path '%s'"),
+            m_sScorePath);
+        return;
+    }
+    oFile.Write(sScore);
+    oFile.Close();
+}
+
+void lmLogger::SetForensicTarget(wxString& sLogPath, wxString& sScorePath)
+{
+    m_sScorePath = sScorePath;
+
     //prepare data error log file
-    m_sForensicPath = sPath;
+    m_sForensicPath = sLogPath;
     m_pForensic = new wxFile(m_sForensicPath, wxFile::write);
     if (!m_pForensic->IsOpened())
     {
@@ -235,7 +254,7 @@ void lmLogger::FlushForensicLog()
     }
 
     //open a new one
-    SetForensicTarget(m_sForensicPath);
+    SetForensicTarget(m_sForensicPath, m_sScorePath);
 }
 
 void lmLogger::DeleteForensicTarget()
@@ -251,6 +270,10 @@ void lmLogger::DeleteForensicTarget()
     //delete the file
     if (m_sForensicPath != wxEmptyString)
         ::wxRemoveFile(m_sForensicPath);
+
+    //delete any previous score
+    if (m_sScorePath != wxEmptyString)
+        ::wxRemoveFile(m_sScorePath);
 }
 
 void lmLogger::ShowDataErrors(wxString sTitle)

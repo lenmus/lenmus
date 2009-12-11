@@ -19,8 +19,12 @@ The score editor is much more stable, as a lot of debbuging was done and all kno
 <li><b>data entry using the mouse</b>. The user interface (including the toolbox) has been improved and now data entry using the mouse (point and click) is available. Data entry using keyboard has been restricted to notes and rests (but mouse can also be used). For all other, the mouse is now mandatory.
 </li>
 
+<li><b>Automatic recovery of the score being edited</b>. After a crash, the program now attempts to recover (normally with success) the score being edited.
+</li>
+
 <li><b>lines, ties, and, in general, geometric figures, are now editable by dragging control points</b>. I have added support to deal with new objects such as textboxes and figured bass annotations, but data entry of these objects is still under testing and has been disabled in this version.
 </li>
+
 </ul>
 
 <p>
@@ -37,19 +41,14 @@ Among the 'hidden' improvements the following should be mentioned:
 </ul>
 </p>
 
-<p>
-To finish the debugging of the editor <b>I need your help</b>. Really!. Take into account that most of my time is devoted to programming, not to use the program. Therefore you probably will catch more errors than me!. In order that you can collaborate in this task, the program now saves data about the score being edited and the action performed, and if the program crashes it saves these data in a "forensic log". It is a simple file, in text format (you can open it at see its contents) and it does not contains any identification data of any nature (personal, equipment, internet address, etc). It only has the score being edited an the actions being performed. Please, consider e-mailing me this log if you experience a crash. Thank you.
-</p>
-
-
 <h4>Exercises and eBooks</h4>
 
 <p>
-The interval's exercise has been reviewed and splitted into two exercises, one to identify intervals and aonother one to build them. The identification exercise has been re-structured into four difficulty levels. The exercise settings has been rebuild and there are now more options.
+<b>The interval's exercise has been reviewed</b> and splitted into two exercises, one to identify intervals and aonother one to build them. The identification exercise has been re-structured into four difficulty levels. The exercise settings has been rebuild and there are now more options.
 </p>
 
 <p>
-eBook Theory & harmony now includes <b>a new chapter on intervals</b>. But only the first lesson is included. Sorry! I have no more time!
+<b>A new chapter on intervals</b> has been included in eBook Theory & harmony. But only the first lesson is included. Sorry! I have no more time!
 </p>
 
 <p class='news_text'>
@@ -74,16 +73,20 @@ A database to save user data about exercises and answers has already been added 
 <h4>User requests and other changes</h4>
 
 <ol>
-<li>Some users requested to have a <b>count off before starting any score play back</b>. Count off has been added for scores opened in the editor and for scores in music reading exercises.</li>
+
+<li><b>Countoff before starting any score play back</b>. Some users requested it so it has been added for scores opened in the editor and for scores in music reading exercises.</li>
+
+<li><b>Forensic log</b>. To finish debugging the editor I need your help. Take into account that most of my time is devoted to programming, not to use the program. Therefore you probably will catch more errors than me!. The program now saves data about the score being edited and the action performed, and if the program crashes it saves these data in a "forensic log" and uatomatically (after asking for user permission) sends it to LenMus.
+</li>
+
 <li>I received some reports on problems when using low screen resolutions or big size icons in the toolbar, as the buttons didn't fit on the available space and some of them were not visible on the screen; as the actions performed with these buttons were not available on the main menu the user could not interact with the program. Now:
     <ul>
     <li><b>all toolbar actions are also on the main menu</b>, and</li>
     <li><b>the toolbar automatically resizes and splits to fit in the main window</b>.</li>
     </ul>
     </li>
+
 </ol>
-
-
 
 </body>
 </html>

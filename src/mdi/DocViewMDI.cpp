@@ -230,9 +230,10 @@ void lmDocTDIChildFrame::OnCloseWindow(wxCloseEvent& event)
 
 enum 
 {
-    lmDOC_OPEN = 0,
-    lmDOC_LOAD,
-    lmDOC_IMPORT,
+    lmDOC_OPEN = 0,         //Open an existing LDP score file
+    lmDOC_OPEN_NEW,         //Open an LDP score file, but treat it as New
+    lmDOC_LOAD,             //Create an lmDocumento from an already created lmScore
+    lmDOC_IMPORT,           //Import a MusicXML score file
 };
 
 lmDocManager::lmDocManager(long nFlags, bool fInitialize)
@@ -257,9 +258,9 @@ void lmDocManager::ImportFile(wxString& sPath)
     pDoc->OnCustomizeController( (lmEditorMode*)NULL );
 }
 
-void lmDocManager::OpenFile(wxString& sPath)
+void lmDocManager::OpenFile(wxString& sPath, bool fAsNew)
 {
-    lmDocument* pDoc = DoOpenDocument(sPath, lmDOC_OPEN);
+    lmDocument* pDoc = DoOpenDocument(sPath, (fAsNew ? lmDOC_OPEN_NEW : lmDOC_OPEN));
     if (!pDoc)
     {
         OnOpenFileFailure();
@@ -355,7 +356,7 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
     {
         pNewDoc->SetDocumentName(pTemplate->GetDocumentName());  //It's not the name! It is the 'Type name'
         bool fOK = false;
-        if (nOperation == lmDOC_OPEN)
+        if (nOperation == lmDOC_OPEN || nOperation == lmDOC_OPEN_NEW)
             fOK = pNewDoc->OnOpenDocument(path);
         else if (nOperation == lmDOC_LOAD)
             fOK = pNewDoc->OnNewDocumentWithContent(pScore);
@@ -370,7 +371,8 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
             // delete pNewDoc; // Implicitly deleted by DeleteAllViews
             return (lmDocument*)NULL;
         }
-        AddFileToHistory(path);
+        if (nOperation != lmDOC_OPEN_NEW)
+            AddFileToHistory(path);
     }
     return pNewDoc;
 }

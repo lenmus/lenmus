@@ -234,8 +234,8 @@ protected:
 /// Implementation of lmFBQuickPanel
 //--------------------------------------------------------------------------------------
 
-#include "../graphic/GraphicManager.h"	//to use GenerateBitmapForBarlineCtrol()
-#include "../app/ScoreCanvas.h"			//lmConroller
+//#include "../graphic/GraphicManager.h"	//to use GenerateBitmapForBarlineCtrol()
+#include "../app/ScoreCanvas.h"			//lmController
 BEGIN_EVENT_TABLE(lmFBQuickPanel, lmPropertiesPage)
 
 END_EVENT_TABLE()
@@ -275,6 +275,257 @@ lmFBQuickPanel::~lmFBQuickPanel()
 }
 
 void lmFBQuickPanel::OnAcceptChanges(lmController* pController)
+{
+    int iB = m_pGrpCommon->GetSelectedButton();
+    wxString sFigBass;
+    if (iB == -1)
+        return;     //user didn't selected any common value
+    else
+    {
+        //User has selected a quick button
+        sFigBass = m_CommonFB[iB].sFiguredBass;
+
+        if (pController)
+        {
+            //Editing and existing object. Do changes by issuing edit commands
+            pController->ChangeFiguredBass(m_pFB, sFigBass);
+        }
+        else
+        {
+            //Direct creation. Modify object directly
+            m_pFB->SetDataFromString(sFigBass);
+        }
+    }
+}
+
+
+//--------------------------------------------------------------------------------------------
+// Helper class lmFBCustomPanel: panel for properties
+//--------------------------------------------------------------------------------------------
+
+class lmFBCustomPanel : public lmPropertiesPage
+{
+public:
+	lmFBCustomPanel(wxWindow* parent, lmFiguredBass* pBL);
+	~lmFBCustomPanel();
+
+    //implementation of pure virtual methods in base class
+    void OnAcceptChanges(lmController* pController);
+
+    // event handlers
+
+protected:
+    void CreateControls();
+
+    //controls
+		wxStaticText* m_pLblExplain1;
+		wxStaticText* m_pLblExplain2;
+		wxStaticText* m_pLblExplain3;
+		wxStaticText* m_pLblExplain311;
+		wxStaticText* m_pLblExplain312;
+		wxStaticText* m_pLblExplain321;
+		wxStaticText* m_pLblExplain322;
+		wxStaticText* m_pLblExplain331;
+		wxStaticText* m_pLblExplain332;
+		wxStaticText* m_pLblExplain341;
+		wxStaticText* m_pLblExplain342;
+		wxStaticText* m_pLblExplain351;
+		wxStaticText* m_pLblExplain352;
+		wxStaticText* m_pLblExplain361;
+		wxStaticText* m_pLblExplain362;
+		wxStaticText* m_pLblExplain372;
+		wxStaticText* m_pLblExplain371;
+		wxStaticText* m_pLblExplain38;
+		
+		wxStaticText* m_pLblTop;
+		wxTextCtrl* m_pTxtTop;
+		wxStaticText* m_pLblMiddle;
+		wxTextCtrl* m_pTxtMiddle;
+		wxStaticText* m_pLblBottom;
+		wxTextCtrl* m_pTxtBottom;
+		
+		wxStaticText* m_pLblPreview;
+		wxStaticBitmap* m_pBmpPreview;
+	
+    //other variables
+    lmFiguredBass*      m_pFB;
+    lmGrpCommonFB*      m_pGrpCommon;
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+//--------------------------------------------------------------------------------------
+/// Implementation of lmFBCustomPanel
+//--------------------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(lmFBCustomPanel, lmPropertiesPage)
+
+END_EVENT_TABLE()
+
+
+//AWARE: pScore is needed as parameter in the constructor for those cases in
+//wich the object is being created and is not yet included in the score. In this
+//cases method GetScore() will fail, so we can not use it in the implementation
+//of this class
+lmFBCustomPanel::lmFBCustomPanel(wxWindow* parent, lmFiguredBass* pFB)
+    : lmPropertiesPage(parent)
+    , m_pFB(pFB)
+{
+    CreateControls();
+}
+
+void lmFBCustomPanel::CreateControls()
+{
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* pExplainSizer;
+	pExplainSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pLblExplain1 = new wxStaticText( this, wxID_ANY, _("Enter the number for each interval or leave it empty."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain1->Wrap( -1 );
+	pExplainSizer->Add( m_pLblExplain1, 0, wxRIGHT|wxLEFT, 5 );
+	
+	m_pLblExplain2 = new wxStaticText( this, wxID_ANY, _("Each interval can be enclosed in parenthesis."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain2->Wrap( -1 );
+	pExplainSizer->Add( m_pLblExplain2, 0, wxRIGHT|wxLEFT, 5 );
+	
+	m_pLblExplain3 = new wxStaticText( this, wxID_ANY, _("Before or after the number you can also add the following symbols:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain3->Wrap( -1 );
+	pExplainSizer->Add( m_pLblExplain3, 0, wxRIGHT|wxLEFT, 5 );
+	
+	pMainSizer->Add( pExplainSizer, 0, wxTOP|wxLEFT, 20 );
+	
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 4, 4, 0, 0 );
+	fgSizer1->SetFlexibleDirection( wxBOTH );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_pLblExplain311 = new wxStaticText( this, wxID_ANY, _("#    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain311->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain311, 0, 0, 5 );
+	
+	m_pLblExplain312 = new wxStaticText( this, wxID_ANY, _("sharp"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain312->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain312, 0, wxLEFT, 5 );
+	
+	m_pLblExplain321 = new wxStaticText( this, wxID_ANY, _("b    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain321->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain321, 0, wxLEFT, 5 );
+	
+	m_pLblExplain322 = new wxStaticText( this, wxID_ANY, _("flat"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain322->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain322, 0, wxLEFT, 5 );
+	
+	m_pLblExplain331 = new wxStaticText( this, wxID_ANY, _("=    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain331->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain331, 0, 0, 5 );
+	
+	m_pLblExplain332 = new wxStaticText( this, wxID_ANY, _("natural"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain332->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain332, 0, wxLEFT, 5 );
+	
+	m_pLblExplain341 = new wxStaticText( this, wxID_ANY, _("x    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain341->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain341, 0, wxLEFT, 5 );
+	
+	m_pLblExplain342 = new wxStaticText( this, wxID_ANY, _("double sharp"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain342->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain342, 0, wxLEFT, 5 );
+	
+	m_pLblExplain351 = new wxStaticText( this, wxID_ANY, _("bb   -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain351->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain351, 0, 0, 5 );
+	
+	m_pLblExplain352 = new wxStaticText( this, wxID_ANY, _("double flat"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain352->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain352, 0, wxLEFT, 5 );
+	
+	m_pLblExplain361 = new wxStaticText( this, wxID_ANY, _("/    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain361->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain361, 0, wxLEFT, 5 );
+	
+	m_pLblExplain362 = new wxStaticText( this, wxID_ANY, _("overlay a forward slash"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain362->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain362, 0, wxLEFT, 5 );
+	
+	m_pLblExplain372 = new wxStaticText( this, wxID_ANY, _("\\    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain372->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain372, 0, 0, 5 );
+	
+	m_pLblExplain371 = new wxStaticText( this, wxID_ANY, _("overlay a backwards slash"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain371->Wrap( -1 );
+	fgSizer1->Add( m_pLblExplain371, 0, wxLEFT, 5 );
+	
+	pMainSizer->Add( fgSizer1, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+	
+	wxBoxSizer* pExampleSizer;
+	pExampleSizer = new wxBoxSizer( wxVERTICAL );
+	
+	m_pLblExplain38 = new wxStaticText( this, wxID_ANY, _("Examples:  \"#3\", \"5/\", \"(3)\", \"2#\",  \"#\".\n"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain38->Wrap( -1 );
+	pExampleSizer->Add( m_pLblExplain38, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+	
+	pMainSizer->Add( pExampleSizer, 0, wxEXPAND|wxLEFT, 20 );
+	
+	wxBoxSizer* pFiguredBassSizer;
+	pFiguredBassSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	
+	pFiguredBassSizer->Add( 0, 0, 3, wxEXPAND, 5 );
+	
+	wxGridSizer* pGridSizer;
+	pGridSizer = new wxGridSizer( 3, 2, 0, 0 );
+	
+	m_pLblTop = new wxStaticText( this, wxID_ANY, _("Top figure:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblTop->Wrap( -1 );
+	pGridSizer->Add( m_pLblTop, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pTxtTop = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	pGridSizer->Add( m_pTxtTop, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pLblMiddle = new wxStaticText( this, wxID_ANY, _("Middle figure:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblMiddle->Wrap( -1 );
+	pGridSizer->Add( m_pLblMiddle, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
+	
+	m_pTxtMiddle = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	pGridSizer->Add( m_pTxtMiddle, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pLblBottom = new wxStaticText( this, wxID_ANY, _("Bottom figure:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblBottom->Wrap( -1 );
+	pGridSizer->Add( m_pLblBottom, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pTxtBottom = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	pGridSizer->Add( m_pTxtBottom, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	pFiguredBassSizer->Add( pGridSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxLEFT, 5 );
+	
+	
+	pFiguredBassSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_pLblPreview = new wxStaticText( this, wxID_ANY, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblPreview->Wrap( -1 );
+	pFiguredBassSizer->Add( m_pLblPreview, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize( 50,50 ), wxSIMPLE_BORDER );
+	pFiguredBassSizer->Add( m_pBmpPreview, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	
+	pFiguredBassSizer->Add( 0, 0, 3, wxEXPAND, 5 );
+	
+	pMainSizer->Add( pFiguredBassSizer, 0, wxEXPAND|wxBOTTOM, 5 );
+	
+	this->SetSizer( pMainSizer );
+	this->Layout();
+}
+
+lmFBCustomPanel::~lmFBCustomPanel()
+{
+}
+
+void lmFBCustomPanel::OnAcceptChanges(lmController* pController)
 {
     int iB = m_pGrpCommon->GetSelectedButton();
     wxString sFigBass;
@@ -1074,6 +1325,9 @@ void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTab
 
 	pDlg->AddPanel( new lmFBQuickPanel(pDlg->GetNotebook(), this),
 				_("Quick selection"));
+
+	pDlg->AddPanel( new lmFBCustomPanel(pDlg->GetNotebook(), this),
+				_("Custom figured bass"));
 
 	//change dialog title
 	pDlg->SetTitle(_("Figured bass properties"));

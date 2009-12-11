@@ -49,6 +49,7 @@ public:
 protected:
     lmMsgBoxBase(const wxString& sMessage, const wxString& sTitle);
     void CreateControls();
+    void FinishLayout();
     void AddButton(const wxString& sLabel, const wxString& sDescr);
 
     enum {

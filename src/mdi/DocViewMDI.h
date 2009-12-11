@@ -57,7 +57,7 @@ public:
     //specific methods
 
     void ImportFile(wxString& sPath);
-    void OpenFile(wxString& sPath);
+    void OpenFile(wxString& sPath, bool fAsNew);
     void OpenDocument(lmEditorMode* pMode, lmScore* pScore);
 
 protected:

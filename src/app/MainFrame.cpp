@@ -69,6 +69,7 @@
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "../updater/Updater.h"
 #include "../graphic/BoxScore.h"
+#include "../ldp_parser/LDPParser.h"        //for OpenScore()
 
 #include "Processor.h"      //Debug: Harmony processor
 
@@ -1480,16 +1481,7 @@ void lmMainFrame::OnOpenRecentFile(wxCommandEvent &event)
     if (m_pRecentFiles)
     {
         wxString sFile(m_pRecentFiles->GetHistoryFile(event.GetId() - wxID_FILE1));
-        OpenRecentFile(sFile);
-    }
-}
-
-void lmMainFrame::OpenRecentFile(wxString sFile)
-{
-    if (!sFile.empty())
-    {
-        ShowToolBox(true);      //force to display ToolBox
-        m_pDocManager->OpenFile(sFile);
+        OpenScore(sFile, false);    //false: it is not a new file
     }
 }
 
@@ -2370,6 +2362,23 @@ void lmMainFrame::NewScoreWindow(lmEditorMode* pMode, lmScore* pScore)
     m_pDocManager->OpenDocument(pMode, pScore);
 }
 
+void lmMainFrame::OpenScore(wxString& sFilename, bool fAsNew)
+{
+    if (!sFilename.empty())
+    {
+        if (fAsNew)
+        {
+            lmLDPParser parser;
+            NewScoreWindow((lmEditorMode*)NULL, parser.ParseFile(sFilename));
+        }
+        else
+        {
+            ShowToolBox(true);      //force to display ToolBox
+            m_pDocManager->OpenFile(sFilename, fAsNew);
+        }
+    }
+}
+
 //-----------------------------------------------------------------------------------------------
 // Print/preview
 //-----------------------------------------------------------------------------------------------
@@ -2543,7 +2552,7 @@ void lmMainFrame::OnFileOpen(wxCommandEvent& event)
     if ( !sFilename.IsEmpty() )
     {
         ShowToolBox(true);      //force to display ToolBox
-        m_pDocManager->OpenFile(sFilename);
+        m_pDocManager->OpenFile(sFilename, false);  //false: it is not a new file
     }
 }
 
@@ -2560,11 +2569,8 @@ void lmMainFrame::OnFileImport(wxCommandEvent& WXUNUSED(event))
                                         this);
     if ( !sFilename.IsEmpty() )
     {
-        //wxString sPath = _T("\\<<IMPORT>>//");
-        //sPath += sFilename;
-        //sPath += _T(".txt");
         ShowToolBox(true);      //force to display ToolBox
-        m_pDocManager->ImportFile(sFilename);   //sPath);
+        m_pDocManager->ImportFile(sFilename);
     }
 }
 

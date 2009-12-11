@@ -109,7 +109,7 @@ public:
 
     void SetDataErrorTarget(wxString& sPath);
     void SetTraceTarget(wxString& sPath);
-    void SetForensicTarget(wxString& sPath);
+    void SetForensicTarget(wxString& sLogPath, wxString& sScorePath);
     void DeleteForensicTarget();
     bool IsValidForensicTarget(wxString& sPath);
 
@@ -124,6 +124,7 @@ public:
     void LogWarning(const wxChar* szFormat, ...);
     void LogMessage(const wxChar* szFormat, ...);
     void LogForensic(const wxChar* szFormat, ...);
+    void LogScore(wxString sScore);
     void LogVerbose(const wxChar* szFormat, ...);
     void LogSysError(const wxChar* szFormat, ...);
 #ifdef __WXDEBUG__
@@ -155,6 +156,7 @@ private:
     wxArrayString   m_aMasks;
     wxString        m_sDataErrorPath;
     wxString        m_sForensicPath;
+    wxString        m_sScorePath;
 
 };
 

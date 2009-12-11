@@ -103,6 +103,7 @@
 #include "ArtProvider.h"
 #include "toolbox/ToolsBox.h"
 #include "../mdi/DocViewMDI.h"         //lmDocManager
+#include "../widgets/MsgBox.h"
 
 // to save config information into a file
 #include "wx/confbase.h"
@@ -314,6 +315,7 @@ bool lmTheApp::OnInit(void)
 
     // open forensic log file
     sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
+    wxString sLogScore = g_pPaths->GetLogPath() + sUserId + _T("_score.lmb");
     if (g_pLogger->IsValidForensicTarget(sLogFile))
     {
         //previous program run terminated with a crash and forensic log was not
@@ -322,7 +324,7 @@ bool lmTheApp::OnInit(void)
         //analysis
         SendForensicLog(sLogFile, false);       //false: not handling a crash
     }
-    g_pLogger->SetForensicTarget(sLogFile);
+    g_pLogger->SetForensicTarget(sLogFile, sLogScore);
 
 #ifdef __WXDEBUG__
     //define trace masks to be known by trace system
@@ -570,6 +572,24 @@ bool lmTheApp::OnInit(void)
     #if !defined(__WXDEBUG__)       //in debug version, start with nothing displayed
         g_pMainFrame->ShowWelcomeWindow();
     #endif
+
+    //open any existing score being edited before a crash
+    if (::wxFileExists(sLogScore))
+    {
+        wxString sQuestion = 
+            _("An score being edited before a program crash has been detected!");
+        sQuestion += _T("\n\n");
+        sQuestion += _("Should the program attempt to recover it?");
+        lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
+            //labels (2 per button: button text + explanation)
+            _("Yes"), _("Yes, try to recover the score"),
+            _("No"), _("No, forget about that score") 
+        );
+        int nAnswer = oQB.ShowModal();
+
+		if (nAnswer == 0)       //'Yes' button
+            g_pMainFrame->OpenScore(sLogScore, true);    //true: as new file
+    }
 
     //cursor normal
     ::wxEndBusyCursor();
