@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE book [
     <!ENTITY ch_intervals_10  SYSTEM "TheoryHarmony_10_intervals.xml">
+    <!ENTITY ch_g6t1_harmony  SYSTEM "TheoryHarmony_g6t1_harmony.xml">
+    <!ENTITY ch_g6t2_triads-chords  SYSTEM "TheoryHarmony_g6t2_triads-chords.xml">
     <!ENTITY ch_cadences  SYSTEM "TheoryHarmony_cadences.xml">
     <!ENTITY ch_terminal  SYSTEM "TheoryHarmony_terminal.xml">
     <!ENTITY ch_transient SYSTEM "TheoryHarmony_transient.xml">
@@ -37,6 +39,9 @@ Therefore the 'Theory and harmony' eBook is currently just a collection of un-or
 
 </theme>
 
+
+&ch_g6t1_harmony;
+
 <chapter id="ch1">
 <titleabbrev>Intervals</titleabbrev>
 <title>Intervals</title>
@@ -46,8 +51,16 @@ Therefore the 'Theory and harmony' eBook is currently just a collection of un-or
 </chapter>
 
 <chapter id="ch2">
-<titleabbrev>Harmony</titleabbrev>
-<title>Harmony</title>
+<titleabbrev>Chords</titleabbrev>
+<title>Chords</title>
+
+    &ch_g6t2_triads-chords;
+    
+</chapter>
+
+<chapter id="ch3">
+<titleabbrev>Cadences</titleabbrev>
+<title>Cadences</title>
 
     &ch_cadences;
     &ch_terminal;
