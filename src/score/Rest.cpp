@@ -63,6 +63,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // creating the shape object and adding it to the graphical model.
     // Paper cursor must be used as the base for positioning.
 
+    //wxLogMessage(_T("[lmRest::LayoutObject] id=%d"), GetID());
     if (lmPRESERVE_SHAPES && !IsDirty())
     {
         //Not dirty: just add existing shapes to the Box

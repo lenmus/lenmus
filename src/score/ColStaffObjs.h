@@ -243,7 +243,7 @@ private:
     //movement
     void ResetCursor();
     void PointCursorToInstrument(int nInstr);
-    void MoveAfterProlog();
+    void MoveAfterProlog(int nStaff=1);
     void MoveRightToNextTime();
     void MoveLeftToPrevTime();
     void PositionAt(float rTargetTimepos);

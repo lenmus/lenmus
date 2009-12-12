@@ -459,12 +459,12 @@ wxString lmBeam::SourceLDP_Last(int nIndent, bool fUndoData, lmNoteRest* pNR)
 
 wxString lmBeam::SourceLDP(int nIndent, bool fUndoData, lmNoteRest* pNR)
 {
+    WXUNUSED(nIndent);
     wxString sSource = _T("");
-    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     if (fUndoData)
-        sSource += wxString::Format(_T("(beam#%d %d"), GetID(), GetID() );
+        sSource += wxString::Format(_T(" (beam#%d %d"), GetID(), GetID() );
     else
-        sSource += wxString::Format(_T("(beam %d"), GetID());
+        sSource += wxString::Format(_T(" (beam %d"), GetID());
 
     //beam segments info
     for (int i=0; i < 6; ++i)
@@ -476,7 +476,7 @@ wxString lmBeam::SourceLDP(int nIndent, bool fUndoData, lmNoteRest* pNR)
         sSource += GetLDPBeamNameFromType(nType);
     }
 
-    sSource += _T(")\n");
+    sSource += _T(")");
     return sSource;
 }
 

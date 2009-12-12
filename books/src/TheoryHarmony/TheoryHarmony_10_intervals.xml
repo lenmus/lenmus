@@ -45,7 +45,7 @@ The following score shows some examples of intervals within one octave:
         (score
            (vers 1.5)(language en utf-8)
            (defineStyle ''Normal text'' (font ''Times New Roman'' 10pt normal) (color #000000))
-           (opt Render.SpacingMethod fixed)
+           (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
               (musicData

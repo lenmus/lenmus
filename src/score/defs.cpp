@@ -84,12 +84,12 @@ bool IsEqualTime(float t1, float t2)
 
 bool IsLowerTime(float t1, float t2)
 {
-    return (t1 < t2) && ((t2 - t1) >= 0.1f);
+    return (t1 < t2) && (fabs(t2 - t1) >= 0.1f);
 }
 
 bool IsHigherTime(float t1, float t2)
 {
-    return (t1 > t2) && ((t1 - t2) >= 0.1f);
+    return (t1 > t2) && (fabs(t1 - t2) >= 0.1f);
 }
 
 

@@ -413,11 +413,12 @@ void lmScoreCursor::MoveLeft(bool fPrevObject)
     }
 }
 
-void lmScoreCursor::MoveAfterProlog()
+void lmScoreCursor::MoveAfterProlog(int nStaff)
 {
-    //move cursor to initial position of current instrument: at timepos 0 after prolog.
+    //move cursor to initial position of current instrument: at timepos 0 after
+    //prolog, in staff nStaff [1..n].
 
-    DoMoveToFirst(1);		//move to first object in staff 1
+    DoMoveToFirst(nStaff);		//move to first object in staff nStaff
 
     lmStaffObj* pSO = GetStaffObj();
     if (pSO)
@@ -1219,6 +1220,7 @@ void lmScoreCursor::DoMoveToSegment(int nSegment, int nStaff, lmUPoint uPos)
     m_nStaff = nStaff;
 	m_pIt->MoveTo(m_pColStaffObjs->GetSegment(nSegment)->GetFirstSO());
 	m_rTimepos = 0.0f;
+    m_nSegment = nSegment;
 
 	//if segment empty finish. We are at start of segment
 	if (m_pIt->EndOfCollection())
@@ -1227,11 +1229,17 @@ void lmScoreCursor::DoMoveToSegment(int nSegment, int nStaff, lmUPoint uPos)
     //move cursor to nearest object to uPos, constrained to this segment and staff
 	lmLUnits uMinDist = 1000000.0f;	//any too big value
 	lmStaffObj* pFoundSO = (lmStaffObj*)NULL;
+    lmStaffObj* pLastNR = (lmStaffObj*)NULL;
 	while (!m_pIt->EndOfCollection() && !m_pIt->ChangeOfMeasure())
 	{
         lmStaffObj* pSO = m_pIt->GetCurrent();
         if (pSO->IsOnStaff(m_nStaff))
         {
+            //save last note
+            if (pSO->IsNoteRest())
+                pLastNR = pSO;
+
+            //compute distance
 		    lmLUnits xPos = pSO->GetShape()->GetXLeft();
 		    lmLUnits uDist = xPos - uPos.x;
 		    if (uDist > 0.0f && uDist < uMinDist)
@@ -1245,7 +1253,31 @@ void lmScoreCursor::DoMoveToSegment(int nSegment, int nStaff, lmUPoint uPos)
 
 	//object found or end of segment reached
 	if (pFoundSO)
-        m_pIt->MoveTo(pFoundSO);
+    {
+        //if found object is a barline, the caret will be moved after last
+        //note rest found
+        if (pFoundSO->IsBarline())
+        {
+            if (pLastNR)
+            {
+                //move after the note/rest
+                MoveCursorToObject(pLastNR);
+                MoveRightToNextTime();
+                return;
+            }
+            else
+            {
+                //move to timepos 0
+                if (nSegment == 0)
+                    MoveAfterProlog(m_nStaff);
+                else
+	                MoveToStartOfSegment(nSegment, m_nStaff, true, true);  //true=skip clef and key if any
+                return;
+            }
+        }
+        else
+            m_pIt->MoveTo(pFoundSO);
+    }
     UpdateTimepos();
 }
 
@@ -1870,11 +1902,18 @@ void lmSegment::UpdateDuration()
 
 float lmSegment::GetMaximumTime()
 {
-    //returns theoretical segment duration for current time signature
+    //if the segment is ended with a barline, returns barline timepos.
+    //Else returns theoretical segment duration for current time signature
 
+    //TODO: Whait is the logic of this? if segment is empty we should return
+    //the theoretical duration, based on time signature!
     //get last SO in this segment
     if (!m_pLastSO)
         return lmNO_TIME_LIMIT;
+
+    //if it is a barline, return its timepos
+    if (m_pLastSO->IsBarline())
+        return m_pLastSO->GetTimePos();
 
     //get applicable time signature
     lmTimeSignature* pTS = m_pLastSO->GetApplicableTimeSignature();
@@ -2479,8 +2518,6 @@ void lmSegment::AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes)
     //be beamed toghether. Review current beam information and modify it so that they
     //form a beamed group.
 
-    wxLogMessage(_T("[lmSegment::AutoBeam_CreateBeam] Is this to be blamed?"));
-
     if (cBeamedNotes.size() == 0) return;
 
     //remove rests at the end
@@ -2987,6 +3024,9 @@ void lmColStaffObjs::Add(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKeyKe
             //Advance cursor to time t + duration of inserted object or to next measure
             //if we are at end of measure
             float rTime = pNewSO->GetTimePos() + pNewSO->GetTimePosIncrement();
+            //wxLogMessage(_T("[lmColStaffObjs::Add] NumSegments=%d, nSegment=%d, MaximunTime=%.2f, rTime=%.2f, IsLowerTime=%s"),
+            //    GetNumSegments(), nSegment, m_Segments[nSegment]->GetMaximumTime(),
+            //    rTime, (IsLowerTime(rTime, m_Segments[nSegment]->GetMaximumTime()) ? _T("yes") : _T("no")) );
             if (!IsLowerTime(rTime, m_Segments[nSegment]->GetMaximumTime())
                 && nSegment < GetNumSegments()-1 )
                 AdvanceCursorToNextSegment();

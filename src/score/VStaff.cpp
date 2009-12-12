@@ -555,46 +555,6 @@ lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave
     else
         pContext = NewUpdatedLastContext(nStaff);
 
-  //  //if no Clef defined yet the context will be NULL
-  //  if (!pContext || !pContext->GetClef())
-  //  {
-  //      //wxString sQuestion = _("Error: No clef defined yet.");
-  //      //sQuestion += _T("\n\n");
-  //      //sQuestion += _("Would you like to have notes placed on the staff as if a G clef has been defined?");
-
-  //      //lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
-  //      //    _("Insert clef"), _("An invisible G clef will be inserted before the note."),
-  //      //    _("Cancel"), _("The 'insert note' command will be cancelled.")
-  ////      wxString sQuestion = _("Warning: No clef defined yet.");
-  ////      sQuestion += _T("\n\n");
-  ////      wxString sClefMsg = wxString::Format(
-  ////              _("Notes will be placed on the staff assuming a %s clef."), 
-  ////              GetClefLDPNameFromType( GetStaff(nStaff)->GetDefaultClef() ).c_str() );
-  ////      sQuestion += sClefMsg;
-
-  ////      lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
-  ////          _("Accept"), sClefMsg,
-  ////          _("Cancel"), _("The 'insert note' command will be cancelled.")
-  ////      );
-  ////      int nAnswer = oQB.ShowModal();
-
-		////if (nAnswer == 0)   //'Insert clef' button
-		////{
-  // //         //insert clef
-  // //         Cmd_InsertClef(lmE_Sol, lmNO_VISIBLE);
-
-		//	////re-compute context
-		//	//if (pCursorSO)
-		//	//	pContext = NewUpdatedContext(nStaff, pCursorSO);
-		//	//else
-		//	//	pContext = NewUpdatedLastContext(nStaff);
-		//	//if (!pContext)
-		//	//	return (lmNote*)NULL;
-		////}
-		////else
-		////	return (lmNote*)NULL;
-  //  }
-
     lmTBeamInfo BeamInfo[6];
     for (int i=0; i < 6; i++) {
         BeamInfo[i].Repeat = false;

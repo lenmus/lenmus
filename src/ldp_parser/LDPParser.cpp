@@ -800,6 +800,8 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     if (m_pScore->IsInUndoMode())
         m_pScore->UpdateCounterID(m_nMaxID);
 
+    //wxLogMessage(m_pScore->Dump());
+    //wxLogMessage(m_pScore->SourceLDP(false));
     return m_pScore;
 }
 
@@ -2312,8 +2314,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 		pFermata->SetUserLocation(tFermataPos);
 	}
 
-    //note/rest is created. Let's continue analyzing attachments and attaching them to the
-    //created note/rest
+    //note/rest is created. Let's continue analyzing StaffObj options and 
+    //attachments for the created note/rest
     if (fThereAreAttachments)
         AnalyzeAttachments(pNode, pVStaff, pX, pNR);
 
@@ -2328,7 +2330,12 @@ void lmLDPParser::AnalyzeAttachments(lmLDPNode* pNode, lmVStaff* pVStaff,
     while (pX)
     {
         wxString sName = pX->GetName();
-        if (sName == _T("line"))
+        //options for StaffObj
+        if (sName == _T("color"))
+            pAnchor->SetColour( AnalyzeColor(pX) );
+
+        //attachments
+        else if (sName == _T("line"))
             AnalyzeLine(pX, pVStaff, pAnchor);
         else if (sName == _T("textbox"))
             AnalyzeTextbox(pX, pVStaff, pAnchor);

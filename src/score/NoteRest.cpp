@@ -324,6 +324,21 @@ wxString lmNoteRest::SourceLDP(int nIndent, bool fUndoData)
     //Voice
     sSource += wxString::Format(_T(" v%d"), m_nVoice);
 
+    //beam
+    //AWARE. This is necessary because LDP parser needs to have beam info to create
+    //the note, before it can process any other attachment. Therefore, we should
+    //force to create the beam tag here and exclude its generation in lmStaffObj
+    //base class
+    if (m_pBeam)
+    {
+        if ( m_pBeam->GetStartNoteRest() == this )
+            sSource += m_pBeam->SourceLDP_First(nIndent, fUndoData, this);
+        else if ( m_pBeam->GetEndNoteRest() == this )
+            sSource += m_pBeam->SourceLDP_Last(nIndent, fUndoData, this);
+        else
+            sSource += m_pBeam->SourceLDP_Middle(nIndent, fUndoData, this);
+    }
+
 	//base class
 	wxString sBase = lmStaffObj::SourceLDP(nIndent, fUndoData);
     if (sBase != _T(""))

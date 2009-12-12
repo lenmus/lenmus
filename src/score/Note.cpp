@@ -470,10 +470,11 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // creating the shape object and adding it to the graphical model.
 
     ////DBG
-    //if (GetID() == 25)
-	//{
+    //if (GetID() == 11)
+    //{
     //    int nDbg = 0;	// set break point here
     //}
+    //wxLogMessage(_T("[lmNote::LayoutObject] id=%d"), GetID());
 
     bool fDrawStem = true;            // assume stem
     bool fInChord = IsInChord();

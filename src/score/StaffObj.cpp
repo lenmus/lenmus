@@ -839,24 +839,27 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
 {
 	wxString sSource = _T("");
 
-    ////Spacers doesn't have a source LDP element. Therefore, only attached AuxObjs must
-    ////be generated
-    //if ( !(IsScoreAnchor() || IsSpacer() ) )
-    //{
-        //staff num
-        if (m_pVStaff->GetNumStaves() > 1
-            && !IsKeySignature()            //KS, TS & barlines are common to all staves.
-            && !IsTimeSignature()
-            && !IsBarline() )
-        {
-            sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
-        }
-        
-        //visible?
-        if (!m_fVisible)
-            sSource += _T(" noVisible");
+    //staff num
+    if (m_pVStaff->GetNumStaves() > 1
+        && !IsKeySignature()            //KS, TS & barlines are common to all staves.
+        && !IsTimeSignature()
+        && !IsBarline() )
+    {
+        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+    }
+    
+    //visible?
+    if (!m_fVisible)
+        sSource += _T(" noVisible");
 
-    //}
+    //color (if not black)
+    if (m_color != *wxBLACK)
+    {
+        sSource += _T(" (color ");
+        sSource += m_color.GetAsString(wxC2S_HTML_SYNTAX);
+        sSource += _T(")");
+    }
+
 
     // Generate source code for AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
@@ -868,12 +871,21 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
             if ( (*m_pAuxObjs)[i]->IsRelObj() )
             {
                 lmRelObj* pRO = (lmRelObj*)(*m_pAuxObjs)[i];
-                if ( pRO->GetStartNoteRest() == (lmNoteRest*)this )
-                    sSource += pRO->SourceLDP_First(nIndent, fUndoData, (lmNoteRest*)this);
-                else if ( pRO->GetEndNoteRest() == (lmNoteRest*)this )
-                    sSource += pRO->SourceLDP_Last(nIndent, fUndoData, (lmNoteRest*)this);
-                else
-                    sSource += pRO->SourceLDP_Middle(nIndent, fUndoData, (lmNoteRest*)this);
+
+                //exclude beams, as source code for them is generted in lmNote.
+                //AWARE. This is necessary because LDP parser needs to have beam
+                //info to crete the note, before it can process any other attachment.
+                //Therefore, it was decided to generate beam tag before generating
+                //attachment tags.
+                if (!pRO->IsBeam())
+                {
+                    if ( pRO->GetStartNoteRest() == (lmNoteRest*)this )
+                        sSource += pRO->SourceLDP_First(nIndent, fUndoData, (lmNoteRest*)this);
+                    else if ( pRO->GetEndNoteRest() == (lmNoteRest*)this )
+                        sSource += pRO->SourceLDP_Last(nIndent, fUndoData, (lmNoteRest*)this);
+                    else
+                        sSource += pRO->SourceLDP_Middle(nIndent, fUndoData, (lmNoteRest*)this);
+                }
             }
             else
                 sSource += (*m_pAuxObjs)[i]->SourceLDP(nIndent, fUndoData);
