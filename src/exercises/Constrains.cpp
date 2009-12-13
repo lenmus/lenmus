@@ -175,6 +175,7 @@ lmScoreCtrolOptions::lmScoreCtrolOptions(wxString sSection)
     sStopMeasureLabel = _("Stop %d");
     rScale = 1.0;
     m_nMM = 0;
+    rTopMargin = 0.0;       //millimeters
 }
 
 void lmScoreCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop)

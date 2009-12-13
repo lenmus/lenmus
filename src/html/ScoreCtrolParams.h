@@ -155,6 +155,9 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         metronome       Set a fixed metronome rate to play this piece of music
                         Value="MM number". Default: user value in metronome control
 
+        top_margin      Score top margin, in millimeters (decimals and negative 
+                        allowed).
+                        Default: 0.0 mm
 
     */
 
@@ -256,6 +259,22 @@ Acceptable values: numeric, greater than 0\n"),
         }
         else {
             m_pOptions->SetMetronomeMM(nMM);
+        }
+    }
+
+    // top_margin
+    else if ( sName == _T("TOP_MARGIN") ) {
+        wxString sMargin = tag.GetParam(_T("VALUE"));
+        double rMargin = 0.0;
+	    if (StrToDouble(sMargin, &rMargin))
+	    {
+            m_sParamErrors += wxString::Format(
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Acceptable values: float number\n"),
+                tag.GetAllParams().c_str(), sMargin.c_str() );
+        }
+        else {
+            m_pOptions->rTopMargin = rMargin;
         }
     }
 

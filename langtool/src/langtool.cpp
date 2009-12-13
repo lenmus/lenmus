@@ -114,30 +114,28 @@ bool MyApp::OnInit()
     g_pPaths = new lmPaths(sHomeDir);
 
 
-    //// Load all of the XRC files that will be used. You can put everything
-    //// into one giant XRC file if you wanted, but then they become more
-    //// difficult to manage, and harder to reuse in later projects.
-    //wxFileName oFN(oRootPath);
-    //oFN.AppendDir(_T("xrc"));
-    //    // Initialize all the XRC handlers.
-    //wxXmlResource::Get()->InitAllHandlers();
-    //    // The score generation settings dialog
-    //oFN.SetFullName(_T("DlgCompileBook.xrc"));
-    //wxXmlResource::Get()->Load( oFN.GetFullPath() );
-
     // get and process command line
     //m_fnames = new wxArrayString();
     ProcessCmdLine(argv, argc);
 
         // Create GUI
 
-    if (m_fUseGUI) {
+    if (m_fUseGUI)
+    {
         // create the main application window
         ltMainFrame *frame = new ltMainFrame(_T("LangTool - eMusicBooks and Lang files processor"), sHomeDir);
 
         // and show it (the frames, unlike simple controls, are not shown when
         // created initially)
         frame->Show(true);
+
+        #if defined(__WXDEBUG__)
+            //in Debug build, use a window to show wxLog messages. This is
+            //the only way I found to see wxLog messages with Code::Blocks
+            wxLogWindow* pMyLog = new wxLogWindow(frame, _T("Debug window: wxLogMessages"));
+            wxLog::SetActiveTarget(pMyLog);
+            pMyLog->Flush();
+        #endif
 
         // success: wxApp::OnRun() will be called which will enter the main message
         // loop and the application will run. If we returned false here, the

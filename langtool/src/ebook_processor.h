@@ -72,11 +72,15 @@ private:
     // Tags' processors
     bool AbstractTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool AuthorTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool BrTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool BookTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool BookinfoTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ChapterTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ContentTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool CopyrightSymbolTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool CopyrightTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool CreditsTag(const wxXml2Node& oNode, int nOptions, wxString* pText);
+    bool CreditsItemTag(const wxXml2Node& oNode, int nOptions, wxString* pText);
     bool EmphasisTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool HolderTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ImagedataTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
@@ -92,6 +96,9 @@ private:
     bool ScoreTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool SectionTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool SimplelistTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool TableTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool TrTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool TdTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ThemeTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool TitleTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool TitleabbrevTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);

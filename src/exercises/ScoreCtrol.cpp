@@ -117,6 +117,7 @@ void lmScoreCtrol::CreateControls()
     //ensure that sizes are properly scaled.
     //not necessary to scale the size as it is received alreday scaled
     double rScale = m_pOptions->rScale;
+    double rTopMargin = m_pOptions->rTopMargin;
     int nSpacing = (int)(5.0 * rScale + 0.5);       //5 pixels, scaled
 
     //the window is divided into two regions: top, for score
@@ -131,7 +132,8 @@ void lmScoreCtrol::CreateControls()
     m_pScore->SetTopSystemDistance( lmToLogicalUnits(10, lmMILLIMETERS) );
 
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS) * rScale,
-                              lmToLogicalUnits(10, lmMILLIMETERS) * rScale, 0.0f);
+                              lmToLogicalUnits(10, lmMILLIMETERS) * rScale,
+                              lmToLogicalUnits(rTopMargin, lmMILLIMETERS) * rScale);
     m_pScoreCtrol->SetScale( (float)rScale * m_pScoreCtrol->GetScale() );
 
 

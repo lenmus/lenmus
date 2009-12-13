@@ -269,6 +269,8 @@ public:
     bool        fBorder;                // border around control
     bool        fMusicBorder;           // border around music
 
+    double      rTopMargin;             //top margin for score, in millimeters
+
     double      rScale;
 
 private:
