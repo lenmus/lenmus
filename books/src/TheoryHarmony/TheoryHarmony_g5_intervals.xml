@@ -1,0 +1,801 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- ABRSM Grade Five Music Theory                   -->
+<!-- =============================================== -->
+
+<theme id="g5t1_intervals">
+<title>Intervals</title>
+
+<para>
+An "interval" is the distance between any two notes. Each interval has a number and a quality, which you have to know for Grade 5 Theory. "Melodic intervals" are read horizontally and are found in melodies, whereas "harmonic intervals" are read vertically, and are found in chords. They are analysed in the same way.
+</para>
+
+<para>
+
+<score width="310" height='90' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+    (score
+       (vers 1.6)(language en utf-8)
+       (defineStyle "StyleA" (font "Times New Roman" 8pt normal) (color #000000))
+       (systemLayout first (systemMargins 0 0 0 2000))
+       (systemLayout other (systemMargins 0 0 3000 2000))
+       (opt StaffLines.StopAtFinalBarline true)
+       (instrument
+          (staves 1)
+          (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+          (infoMIDI 0 1)
+          (musicData
+         (clef G)
+         (key C)
+         (n b4 q v1
+            (text "B-D as a melodic (horizontal) interval" left (style "StyleA") dx:-50.0000 dy:85.0000)
+         )
+         (n d5 q v1)
+         (spacer 0
+            (line (startPoint dx:-40 dy:-20)(endPoint dx:-40 dy:-5)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
+         )
+         (spacer 0
+            (line (startPoint dx:-90 dy:-20)(endPoint dx:-90 dy:-5)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
+         )
+         (spacer 0
+            (line (startPoint dx:-90 dy:-20)(endPoint dx:-40 dy:-20)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
+         )
+         (barline simple noVisible)
+    )))
+    </music>
+</score>
+
+<score width="310" height='90' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+    (score
+       (vers 1.6)(language en utf-8)
+       (defineStyle "StyleA" (font "Times New Roman" 8pt normal) (color #000000))
+       (systemLayout first (systemMargins 0 0 0 2000))
+       (systemLayout other (systemMargins 0 0 3000 2000))
+       (opt StaffLines.StopAtFinalBarline true)
+       (instrument
+          (staves 1)
+          (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+          (infoMIDI 0 1)
+          (musicData
+         (clef G)
+         (key C)
+         (chord
+            (n b4 q v1)
+            (n d5 q v1
+               (text "B-D as a harmonic (vertical) interval" left (style "StyleA") dx:-50.0000 dy:85.0000)
+            )
+         )
+         (spacer 0
+            (line (startPoint dx:-30 dy:5)(endPoint dx:-20 dy:5)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
+         )
+         (spacer 0
+            (line (startPoint dx:-30 dy:25)(endPoint dx:-20 dy:25)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
+         )
+         (spacer 0
+            (line (startPoint dx:-20 dy:5)(endPoint dx:-20 dy:25)(width 1.0)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
+         )
+         (barline simple noVisible)
+    )))
+    </music>
+</score>
+
+</para>
+
+
+
+<part>
+<title>Interval Numbers</title>
+
+<para>
+To find the number of an interval, first find the note names of the two notes, (ignore any sharps and flats for now), and count the letter names, starting with the lower note on the stave, (it could be the first or second note along on the stave if it is a melodic interval).
+</para>
+
+<para>
+Some examples:
+</para>
+
+<para>
+
+<table role='center'>
+<tr>
+<td>Letter Names<br />(start with lower note)</td>
+<td>No. of Notes</td>
+<td>Interval Number</td>
+<td>Example</td>
+</tr>
+
+<tr>
+<td>F-G</td>   
+<td align='center'>2</td>
+<td>a second</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+
+<tr>
+<td>B-D</td>
+<td align='center'>3</td>
+<td>a third</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+
+<tr>
+<td>B-D sharp</td>
+<td>3</td>
+<td>a third</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+
+<tr>
+<td>E-A</td>
+<td>4</td>
+<td>a fourth</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+
+<tr>
+<td>C sharp - G sharp</td>
+<td>5</td>
+<td>a fifth</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+
+<tr>
+<td>C-G sharp</td>
+<td>5</td>
+<td>a fifth</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+
+<tr>
+<td>D-B flat</td>
+<td>6</td>
+<td>a sixth</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+
+<tr>
+<td>A-G</td>
+<td>7</td>
+<td>a seventh</td>
+<td>
+    <score width="180" height='60' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (opt StaffLines.StopAtFinalBarline true)
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G p1)
+                 (key C)
+                 (n f4 q)
+                 (n g4 q)
+        )))
+        </music>
+    </score>
+</td>
+</tr>
+</table>
+
+
+<para>
+If the letter name is the same, the interval will be either "unison" (the same note), or "octave" (the next one up or down).
+</para>
+
+<para>
+
+A unison
+
+G-G is a unison
+
+An octave
+
+G-G1 is an octave
+</para>
+
+</part>
+
+
+<part>
+<title>Starting on the Higher Note - a Very Common Mistake!</title>
+
+<para>
+What happens if you try to calculate an interval by starting with the higher note on the stave? You will get the wrong answer! This is a common mistake, so let’s look at an example of what can go wrong. What is the following harmonic interval?
+</para>
+
+<para>
+What is this harmonic interval
+</para>
+
+<para>
+Smiley faceFirst, the correct way: starting on the lower note (C), we count letter names to the higher note, (G), C-D-E-F-G =5, which gives us a 5th. This is the right answer!
+</para>
+
+<para>
+Sad faceNow the wrong way. Starting on the first note (G), we count the letter names to the second note (C), G-A-B-C =4, which gives us a 4th. This is the wrong answer!
+</para>
+
+</part>
+
+
+<part>
+<title>Interval Qualities</title>
+
+<para>
+Each interval has quality name which goes before it, for example " major sixth".
+</para>
+
+<para>
+There are 5 quality names which are: perfect, major, minor, augmented and diminished.
+We will look at each of these interval qualities in more detail.
+</para>
+
+</part>
+
+
+<part>
+<title>Perfect Intervals</title>
+
+<para>
+Think of the scales of G major and G minor. What’s the difference? Let’s look at the note names: (the differences are underlined).
+</para>
+
+<para>
+
+G Major:
+    
+
+G
+    
+
+A
+    
+
+B
+    
+
+C
+    
+
+D
+    
+
+E
+    
+
+F sharp
+    
+
+G
+
+G Minor Harmonic:
+    
+
+G
+    
+
+A
+    
+
+B flat
+    
+
+C
+    
+
+D
+    
+
+E flat
+    
+
+F sharp
+    
+
+G
+
+G Minor Melodic up:
+    
+
+G
+    
+
+A
+    
+
+B flat
+    
+
+C
+    
+
+D
+    
+
+E
+    
+
+F sharp
+    
+
+G
+
+G Minor Melodic down:
+    
+
+G
+    
+
+F natural
+    
+
+E flat
+    
+
+D
+    
+
+C
+    
+
+B flat
+    
+
+A
+    
+
+G
+</para>
+
+<para>
+Let’s start with two intervals all the scales have in common- G-C and G-D. These intervals exist in both major and minor scales, and we call them perfect.
+</para>
+
+<para>
+
+Perfect fourth
+
+G-C is a perfect fourth and
+
+Perfect fifth
+</para>
+
+<para>
+
+G-D is a perfect fifth.
+</para>
+
+<para>
+If you turn the intervals upside down, you get a mirror image (called inversion). Here are the above intervals inverted (remember, we always start on the lowest note):
+
+Perfect 5th
+
+C-G is a perfect fifth and
+
+Perfect fourth
+
+D-G is a perfect fourth.
+</para>
+
+<para>
+The intervals of a fourth and a fifth are perfect intervals, when the higher note exists in either the major or minor scale of the lower note. Exact unisons and octaves are also defined as perfect.
+</para>
+
+</part>
+
+
+<part>
+<title>Major and Minor Thirds and Sixths</title>
+
+<para>
+Now let’s look more closely at the differences in the scales. G major has G-B, but both G minor scales (harmonic and melodic) have G-B flat.
+</para>
+
+<para>
+
+Major third
+
+So, G-B is a major third but
+
+Minor third
+
+G-B flat is a minor third.
+</para>
+
+<para>
+
+If you turn those intervals upside down (or invert them), you have a mirror image too, and you find the sixths. Notice that major becomes minor, and minor becomes major:
+</para>
+
+<para>
+Minor sixth
+
+B-G is a minor sixth but
+
+Major sixth
+
+B flat -G is a major sixth.
+</para>
+
+<para>
+Watch out here! B natural occurs in G major, but B-G is a minor interval, and although B flat occurs in G minor, B flat-G is a major interval! You should always think of your lower note as a kind of key signature when calculating intervals.
+</para>
+
+<para>
+Think of B-G as an interval in the key of B. G only occurs in B minor, so B-G is a minor interval. Similarly, with B flat - G, think of the key of B flat. G occurs in B flat major, so B flat- G is a major interval.
+</para>
+
+<para>
+Tip! A major 3rd/6th is always a minor 6th/3rd if inverted!
+</para>
+
+</part>
+
+
+<part>
+<title>Major and Minor Seconds and Sevenths</title>
+
+<para>
+A tone is a major second (think of A-B in G major) but a semitone is a minor second (think A-B flat in G minor).
+</para>
+
+<para>
+Major second
+
+Similarly, D-E is a major second (think of C major) but
+
+Minor second
+
+D-E flat is a minor second (think of C minor).
+</para>
+
+<para>
+The phenomenon of mirror images (inversion) applies here too, so inverted seconds become sevenths:
+</para>
+
+<para>
+Minor seventh
+
+E-D is a minor seventh (D natural occurs in E minor melodic descending) but
+
+Major seventh
+
+E flat -D is a major seventh (D occurs in E flat major).
+</para>
+
+<para>
+Tip! A major 2nd/7th is always a minor 7th/2nd if inverted!
+</para>
+
+<part>
+<title>More about Inversions</title>
+
+<para>
+Double checking by inversions can be a quick and convenient way to check your answers to interval questions.
+</para>
+
+<para>
+All inversions add up to 9: an inverted 3rd is a 6th (and vice versa), 3+6=9. An inverted 5th is a 4th; 4+5=9. An inverted 2nd is a 7th; 2+7=9.
+</para>
+
+<para>
+All major intervals become minor intervals when inverted, and vice versa.
+</para>
+
+</part>
+
+
+<part>
+<title>Summary of the Common Intervals and their Inversions</title>
+
+<para>
+Here’s a summary of the common technical interval names, in order of size, starting with the smallest, with an example of each:
+</para>
+
+<para>
+1
+    
+
+Minor 2nd
+
+2
+    
+
+Major 2nd
+    Major 2nd
+
+3
+    
+
+Minor 3rd
+    Minor 3rd
+
+4
+    Major 3rd   Major 3rd
+
+5
+    
+
+Perfect 4th
+    Perfect 4th
+
+6
+    
+
+Perfect 5th
+    Perfect 5th
+
+7
+    
+
+Minor 6th
+    Minor 6th
+
+8
+    
+
+Major 6th
+    Major 6th
+
+9
+    
+
+Minor 7th
+    Minor 7th
+
+10
+    
+
+Major 7th
+    Major 7th
+
+</para>
+
+</part>
+
+
+<part>
+<title>Diminished and Augmented Fourths and Fifths</title>
+
+<para>
+Diminished intervals are narrower than normal, and augmented intervals are wider than normal, by the difference of one semitone.
+</para>
+
+<para>
+C-G is a perfect 5th
+
+So, the interval C-G is a perfect 5th, but
+
+C-G# is an augmented 5th
+
+the interval C-G sharp is an augmented 5th, and
+
+C-Gb is a diminished 5th
+
+C-G flat is a diminished 5th.
+
+C-F is a perfect 4th
+
+Similarly, C-F is a perfect 4th, but
+
+C-F sharp is an augmented 4th
+
+C-F sharp is an augmented 4th.
+</para>
+
+<para>
+Notice that although G flat and F sharp are the same note on the piano, they are not the same technically!
+</para>
+
+</part>
+
+
+<part>
+<title>Diminished and Augmented Seconds and Sevenths</title>
+
+<para>
+In the harmonic minor scale, you will remember that we have a step of 3 semitones (marked 3S below):
+</para>
+
+<para>
+The harmonic scale - tones and semitones
+</para>
+
+<para>
+Here, D flat to E natural is clearly an interval of a second, since we count D - E which is 2 notes - but what kind of second is it?
+</para>
+
+<para>
+If we had D flat to E flat, we would have a major 2nd. The E natural makes the interval wider, so the interval D flat to E natural is an augmented 2nd.
+</para>
+
+<para>
+Tip! Every minor harmonic scale contains an augmented second between the sixth and seventh notes.
+</para>
+
+<para>
+Remember our laws of inversions? Well, an inverted diminished interval is an augmented interval, and vice versa. So, if D flat to E natural is an augmented second, what is E natural to D flat? Point your mouse at the image below to find out!
+Augmented 2ndWhat's this interval
+</para>
+
+
+</part>
+
+<credits>
+<creditsitem>
+Lesson based on material from
+<ulink url="http://www.mymusictheory.com/">www.mymusictheory.com</ulink>
+</creditsitem>
+<creditsitem>
+Copyright <copyrightsymbol /> Victoria K. Williams. Used here with her permission.
+</creditsitem>
+</credits>
+
+
+</theme>
+

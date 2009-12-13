@@ -26,12 +26,14 @@
     </copyright>
     <legalnotice>
         <para>Permission is granted to copy, distribute and/or modify this document
-        under the terms of the GNU Free Documentation License, Version 1.3 or any
-        later version published by the Free Software Foundation; with no Invariant
-        Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
-        A copy of the license is included in the documentation received with
-        this program, and it is also available at
-        <ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>
+        under the terms of the Creative Commons Attribution-Share-Alike License 3.0 
+        or later, with the exceptions of those pages where another author or group 
+        of authors has been clearly marked. The text of the licence is available at
+        <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
+        http://creativecommons.org/licenses/by-sa/3.0/</ulink>
+        </para>
+        <para role='center'>
+        <imagedata fileref='cc-by-sa.png' />
         </para>
     </legalnotice>
 </bookinfo>

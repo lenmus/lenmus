@@ -8,23 +8,51 @@ omissions from this list.
 
 
 
-Developers  (alphabetical order)
+Management
 ---------------------------------
 Cecilio Salmerón
-    Project management and main developer.
+    Project management and hands for all
 
 
-Contributors  (alphabetical order)
+Developers  (alphabetical order)
+---------------------------------
+Carlos De La Fuente
+    Release 4.1: Harmoniy exercises
+    
+Cecilio Salmerón
+    Main developer.
+
+
+Music eBooks  (alphabetical order)
+------------------------------------
+Marcelo Gálvez
+    Cadences theory texts and corrections in other music theory texts. Advise
+    on musical issues. Help in designing and testing the cadences exercises.
+    Suggestions for new exercises.
+
+Cecilio Salmerón
+    Music reading eBooks, General execises eBook, transforming texts in eBooks.
+    
+Victoria K. Williams
+    Release 4.1: Texts on harmony
+
+
+Porting to other platforms (alphabetical order)
+----------------------------
+Miguel Fernandez Fidalgo
+    First makefiles for linux with autotools
+    
+
+Other contributions  (alphabetical order)
 ------------------------------------
 Carlos Alarcía
     'Options internet' icon design. Help in testing 3.3 to 3.5 releases.
 
 Javier Alejano
     Help in testing 3.6 release. Suggestions to improve exercises.
-
+    
 Marcelo Gálvez
-    Cadences theory texts and corrections in other music theory texts. Advise
-    on musical issues. Help in designing and testing the cadences exercises.
+    Advise on musical issues. Help in designing and testing the cadences exercises.
     Suggestions for new exercises.
 
 Jack Van Handenhove
@@ -39,7 +67,7 @@ Ana Madorrán
 Mª J. Martínez-Pascua
     Release 3.6: Spanish translation review and corrections ; help in
     testing release 3.6.
-
+    
     
 
 

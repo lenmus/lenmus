@@ -27,6 +27,10 @@ There are 4 melodic lines (or "voices") here, the soprano, alto, tenor and bass:
 (score
    (vers 1.6)(language en utf-8)
    (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (defineStyle "StyleB" (font "Times New Roman" 8pt normal) (color #000000))
+   (defineStyle "StyleS" (font "Times New Roman" 8pt normal) (color #ff0000))
+   (defineStyle "StyleA" (font "Times New Roman" 8pt normal) (color #00a000))
+   (defineStyle "StyleT" (font "Times New Roman" 8pt normal) (color #0000ff))
    (systemLayout first (systemMargins 0 0 0 2000))
    (systemLayout other (systemMargins 0 0 3000 2000))
    (opt StaffLines.StopAtFinalBarline true)
@@ -40,48 +44,50 @@ There are 4 melodic lines (or "voices") here, the soprano, alto, tenor and bass:
          (clef F p2)
          (key D)
          (time 4 4)
-         (n f4 q (stem up) v1 p1         )
+         (n f4 q (stem up) v1 p1 (color #ff0000))
+
          (goBack start)
-         (n d4 q (stem down) v2 p1         )
+         (n d4 q (stem down) v2 p1 (color #00a000))
+
          (goBack start)
-         (n a3 q (stem up) v3 p2         )
+         (n a3 q (stem up) v3 p2 (color #0000ff))
 
          (goBack start)
          (n d3 q (stem down) v4 p2)
          (goFwd end)
          (barline simple)
 
-         (n b4 q (stem up) v1 p1         )
-         (n a4 q (stem up) v1 p1         )
-         (n g4 q (stem up) v1 p1         )
-         (n f4 q (stem up) v1 p1         )
+         (n b4 q (stem up) v1 p1 (color #ff0000))
+         (n a4 q (stem up) v1 p1 (color #ff0000))
+         (n g4 q (stem up) v1 p1 (color #ff0000))
+         (n f4 q (stem up) v1 p1 (color #ff0000))
 
          (goBack start)
-         (n d4 q (stem down) v2 p1         )
-         (n d4 q (stem down) v2 p1         )
-         (n d4 e (stem down) v2 p1
-            (beam 23 begin)
+         (n d4 q (stem down) v2 p1 (color #00a000))
+         (n d4 q (stem down) v2 p1 (color #00a000))
+         (n d4 e (stem down) v2 p1 
+            (beam 23 begin) (color #00a000)
          )
-         (n e4 e (stem down) v2 p1
-            (beam 23 end)
+         (n e4 e (stem down) v2 p1 
+            (beam 23 end) (color #00a000)
          )
-         (n e4 e (stem down) v2 p1
-            (beam 26 begin)
+         (n e4 e (stem down) v2 p1 
+            (beam 26 begin) (color #00a000)
  dx:10.0555         )
-         (n d4 e (stem down) v2 p1
-            (beam 26 end)
+         (n d4 e (stem down) v2 p1 
+            (beam 26 end) (color #00a000)
          )
 
          (goBack start)
-         (n g3 q (stem up) v3 p2         )
-         (n a3 q (stem up) v3 p2         )
+         (n g3 q (stem up) v3 p2 (color #0000ff))
+         (n a3 q (stem up) v3 p2 (color #0000ff))
          (n b3 e (stem up) v3 p2
-            (beam 31 begin)
+            (beam 31 begin) (color #0000ff)
          )
          (n a3 e (stem up) v3 p2
-            (beam 31 end)
+            (beam 31 end) (color #0000ff)
          )
-         (n a3 q (stem up) v3 p2         )
+         (n a3 q (stem up) v3 p2 (color #0000ff))
 
          (goBack start)
          (n g3 q (stem down) v4 p2)
@@ -94,9 +100,8 @@ There are 4 melodic lines (or "voices") here, the soprano, alto, tenor and bass:
          (goFwd end)
          (barline simple)
 
-         (n e4 h (stem up) v1 p1         )
-         (n f4 q (stem up) v1 p1
- (fermata above)         )
+         (n e4 h (stem up) v1 p1 (color #ff0000))
+         (n f4 q (stem up) v1 p1 (fermata above) (color #ff0000))
          (spacer 0 p1
             (line (startPoint dx:-27 dy:35.2222)(endPoint dx:55 dy:20)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
          )
@@ -110,33 +115,32 @@ There are 4 melodic lines (or "voices") here, the soprano, alto, tenor and bass:
             (line (startPoint dx:-27 dy:139.8333)(endPoint dx:55 dy:160)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
          )
          (spacer 0 p1
-            (text _"Soprano or 'melody' line" left (style "Style6") dx:60 dy:30)
+            (text _"Soprano or 'melody' line" left (style "StyleS") dx:60 dy:30)
          )
          (spacer 0 p1
-            (text _"Alto line" left (style "Style6") dx:60 dy:65)
+            (text _"Alto line" left (style "StyleA") dx:60 dy:65)
          )
          (spacer 0 p1
-            (text _"Tenor line" left (style "Style6") dx:60 dy:130)
+            (text _"Tenor line" left (style "StyleT") dx:60 dy:130)
          )
          (spacer 0 p1
-            (text _"Bass line or 'continuo'" left (style "Style6") dx:60 dy:170)
+            (text _"Bass line or 'continuo'" left (style "StyleB") dx:60 dy:170)
          )
 
          (goBack start)
-         (n d4 q (stem down) v2 p1 dx:11.3888         )
-         (n e4 q (stem down) v2 p1         )
-         (n d4 q (stem down) v2 p1         )
+         (n d4 q (stem down) v2 p1 dx:11.3888  (color #00a000))
+         (n e4 q (stem down) v2 p1 (color #00a000))
+         (n d4 q (stem down) v2 p1 (color #00a000))
 
          (goBack start)
-         (n b3 q (stem up) v3 p2         )
-         (n a3 q (stem up) v3 p2         )
-         (n a3 q (stem up) v3 p2         )
+         (n b3 q (stem up) v3 p2 (color #0000ff))
+         (n a3 q (stem up) v3 p2 (color #0000ff))
+         (n a3 q (stem up) v3 p2 (color #0000ff))
 
          (goBack start)
          (n g2 q (stem down) v4 p2)
          (n a2 q (stem down) v4 p2)
-         (n d3 q (stem down) v4 p2
- (fermata below dy:130.0000))
+         (n d3 q (stem down) v4 p2 (fermata below dy:130.0000))
          (goFwd end)
          (barline simple)
       )
@@ -147,9 +151,11 @@ There are 4 melodic lines (or "voices") here, the soprano, alto, tenor and bass:
 
 
 <para>
-On each beat of the bar, those four voices combine to make chords: 
+On each beat of the bar, those four voices combine to make chords. 
+As an example, I've coloured one chord on each bar: 
 </para>
 
+<para>
 <score width="600" height='200' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
@@ -171,16 +177,16 @@ On each beat of the bar, those four voices combine to make chords:
          (clef F p2)
          (key D)
          (time 4 4)
-         (n f4 q (stem up) v1 p1         )
+         (n f4 q (stem up) v1 p1 (color #0000ff))
 
          (goBack start)
-         (n d4 q (stem down) v2 p1         )
+         (n d4 q (stem down) v2 p1 (color #0000ff))
 
          (goBack start)
-         (n a3 q (stem up) v3 p2         )
+         (n a3 q (stem up) v3 p2 (color #0000ff))
 
          (goBack start)
-         (n d3 q (stem down) v4 p2
+         (n d3 q (stem down) v4 p2 (color #0000ff)
             (text "I" right (style "Normal text") dy:230.0000)
          )
          (goFwd end)
@@ -188,14 +194,14 @@ On each beat of the bar, those four voices combine to make chords:
 
          (n b4 q (stem up) v1 p1         )
          (n a4 q (stem up) v1 p1         )
-         (n g4 q (stem up) v1 p1         )
+         (n g4 q (stem up) v1 p1 (color #0000ff))
          (n f4 q (stem up) v1 p1         )
 
          (goBack start)
          (n d4 q (stem down) v2 p1         )
          (n d4 q (stem down) v2 p1         )
          (n d4 e (stem down) v2 p1
-            (beam 23 begin)
+            (beam 23 begin) (color #0000ff)
          )
          (n e4 e (stem down) v2 p1
             (beam 23 end)
@@ -211,7 +217,7 @@ On each beat of the bar, those four voices combine to make chords:
          (n g3 q (stem up) v3 p2         )
          (n a3 q (stem up) v3 p2         )
          (n b3 e (stem up) v3 p2
-            (beam 31 begin)
+            (beam 31 begin) (color #0000ff)
          )
          (n a3 e (stem up) v3 p2
             (beam 31 end)
@@ -226,7 +232,7 @@ On each beat of the bar, those four voices combine to make chords:
             (text "I" right (style "Normal text") dy:230.0000)
          )
          (n b2 e (stem down) v4 p2
-            (beam 40 begin)
+            (beam 40 begin) (color #0000ff)
             (text "IV" right (style "Normal text") dy:230.0000)
          )
          (n c3 e (stem down) v4 p2
@@ -239,21 +245,21 @@ On each beat of the bar, those four voices combine to make chords:
          (goFwd end)
          (barline simple)
 
-         (n e4 h (stem up) v1 p1         )
+         (n e4 h (stem up) v1 p1 (color #0000ff))
          (n f4 q (stem up) v1 p1 (fermata above))
 
          (goBack start)
-         (n d4 q (stem down) v2 p1 dx:11.3888         )
+         (n d4 q (stem down) v2 p1 dx:11.3888  (color #0000ff))
          (n e4 q (stem down) v2 p1         )
          (n d4 q (stem down) v2 p1         )
 
          (goBack start)
-         (n b3 q (stem up) v3 p2         )
+         (n b3 q (stem up) v3 p2  (color #0000ff))
          (n a3 q (stem up) v3 p2         )
          (n a3 q (stem up) v3 p2         )
 
          (goBack start)
-         (n g2 q (stem down) v4 p2
+         (n g2 q (stem down) v4 p2 (color #0000ff)
             (text "ii" right (style "Normal text") dy:230.0000)
          )
          (n a2 q (stem down) v4 p2
@@ -269,13 +275,10 @@ On each beat of the bar, those four voices combine to make chords:
 )
     </music>
 </score>
-
-<para>
-Music is all about combining sound and rhythm to create fellings. As happens with the plot of good films and books, a good musical composition normally requires to alternate fellings of tension and rest. The science of how we combine notes into chords, and how the chords work together to create tensions and rests, is called "harmony".
 </para>
 
 <para>
-But fellings of tension and rest can also be created by playing with other elements, such as rhythm and volume. This is what is known as "atonal music" and is going to be studied in upper levels.
+The science of how we combine notes into chords, and how the chords work together is called "harmony".
 </para>
 
 
@@ -301,5 +304,14 @@ In this part of the course we're going to study:
 </itemizedlist>
 
 </part>
+
+<credits>
+<creditsitem>
+    Lesson based on material from
+    <ulink url="http://www.mymusictheory.com/">www.mymusictheory.com</ulink>
+    <br />
+    Copyright <copyrightsymbol /> Victoria K. Williams. Used here with her permission.
+</creditsitem>
+</credits>
 
 </theme>
