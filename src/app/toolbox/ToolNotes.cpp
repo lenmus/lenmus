@@ -66,6 +66,7 @@ enum {
     lmID_BT_NoteDots = lmID_BT_NoteAcc + lm_NUM_ACC_BUTTONS,
     lmID_BT_Tie = lmID_BT_NoteDots + lm_NUM_DOT_BUTTONS,
     lmID_BT_Tuplet,
+    lmID_BT_ToggleStem,
     lmID_BT_Beam_Cut,
     lmID_BT_Beam_Join,
     lmID_BT_Beam_Flatten,
@@ -100,7 +101,7 @@ void lmToolPageNotes::Create(wxWindow* parent)
     m_pGrpNoteDuration = (lmGrpNoteDuration*)NULL;
     m_pGrpNoteAcc = (lmGrpNoteAcc*)NULL;
     m_pGrpNoteDots = (lmGrpNoteDots*)NULL;
-    m_pGrpTieTuplet = (lmGrpTieTuplet*)NULL;
+    m_pGrpModifiers = (lmGrpNoteModifiers*)NULL;
     m_pGrpBeams = (lmGrpBeams*)NULL;
 	m_pGrpOctave = (lmGrpOctave*)NULL;
 	m_pGrpVoice = (lmGrpVoice*)NULL;
@@ -554,22 +555,23 @@ int lmGrpNoteDots::GetNoteDots()
 
 
 //--------------------------------------------------------------------------------
-// lmGrpTieTuplet implementation
+// lmGrpNoteModifiers implementation
 //--------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(lmGrpTieTuplet, lmToolGroup)
-    EVT_BUTTON  (lmID_BT_Tie, lmGrpTieTuplet::OnTieButton)
-    EVT_BUTTON  (lmID_BT_Tuplet, lmGrpTieTuplet::OnTupletButton)
+BEGIN_EVENT_TABLE(lmGrpNoteModifiers, lmToolGroup)
+    EVT_BUTTON  (lmID_BT_Tie, lmGrpNoteModifiers::OnTieButton)
+    EVT_BUTTON  (lmID_BT_Tuplet, lmGrpNoteModifiers::OnTupletButton)
+    EVT_BUTTON  (lmID_BT_ToggleStem, lmGrpNoteModifiers::OnToggleStemButton)
 END_EVENT_TABLE()
 
 
-lmGrpTieTuplet::lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer)
+lmGrpNoteModifiers::lmGrpNoteModifiers(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolGroup(pParent, lm_eGT_Options, pParent->GetColors())
         , m_nSelectedToolID(lmTOOL_NONE)
 {
 }
 
-void lmGrpTieTuplet::CreateGroupControls(wxBoxSizer* pMainSizer)
+void lmGrpNoteModifiers::CreateGroupControls(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
     SetGroupTitle(_("Modifiers"));
@@ -598,48 +600,54 @@ void lmGrpTieTuplet::CreateGroupControls(wxBoxSizer* pMainSizer)
     m_pBtnTuplet->SetToolTip(_("Add/remove tuplet to/from selected notes"));
 	pRow1Sizer->Add( m_pBtnTuplet, wxSizerFlags(0).Border(wxALL, 2) );
 
-	pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
+    // Toggle stem button
+	m_pBtnToggleStem = new lmCheckButton(this, lmID_BT_ToggleStem, wxBitmap(24,24));
+    m_pBtnToggleStem->SetBitmapUp(_T("toggle_stem"), _T(""), btSize);
+    m_pBtnToggleStem->SetBitmapDown(_T("toggle_stem"), _T("button_selected_flat"), btSize);
+    m_pBtnToggleStem->SetBitmapOver(_T("toggle_stem"), _T("button_over_flat"), btSize);
+    m_pBtnToggleStem->SetBitmapDisabled(_T("toggle_stem_dis"), _T(""), btSize);
+    m_pBtnToggleStem->SetToolTip(_("Toggle stem in selected notes"));
+	pRow1Sizer->Add( m_pBtnToggleStem, wxSizerFlags(0).Border(wxALL, 2) );
+
+    pCtrolsSizer->Add( pRow1Sizer, 0, wxEXPAND, 5 );
 
 	this->Layout();
 }
 
-void lmGrpTieTuplet::OnTieButton(wxCommandEvent& event)
+void lmGrpNoteModifiers::OnTieButton(wxCommandEvent& event)
 {
     m_nSelectedToolID = lmTOOL_NOTE_TIE;
     PostToolBoxEvent(lmTOOL_NOTE_TIE, event.IsChecked());
 }
 
-void lmGrpTieTuplet::OnTupletButton(wxCommandEvent& event)
+void lmGrpNoteModifiers::OnTupletButton(wxCommandEvent& event)
 {
     m_nSelectedToolID = lmTOOL_NOTE_TUPLET;
     PostToolBoxEvent(lmTOOL_NOTE_TUPLET, event.IsChecked());
 }
 
-//void lmGrpTieTuplet::PostToolBoxEvent(lmEToolID nToolID, bool fSelected)
-//{
-//    //post tool box event to the active controller
-//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-//    if (pWnd)
-//    {
-//	    lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-//	    wxASSERT(pToolBox);
-//        lmToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetCurrentPageID(), nToolID,
-//                             fSelected);
-//        ::wxPostEvent( pWnd, event );
-//    }
-//}
+void lmGrpNoteModifiers::OnToggleStemButton(wxCommandEvent& event)
+{
+    m_nSelectedToolID = lmTOOL_NOTE_TOGGLE_STEM;
+    PostToolBoxEvent(lmTOOL_NOTE_TOGGLE_STEM, event.IsChecked());
+}
 
-void lmGrpTieTuplet::SetToolTie(bool fChecked)
+void lmGrpNoteModifiers::SetToolTie(bool fChecked)
 {
     fChecked ? m_pBtnTie->Press() : m_pBtnTie->Release();
 }
 
-void lmGrpTieTuplet::SetToolTuplet(bool fChecked)
+void lmGrpNoteModifiers::SetToolTuplet(bool fChecked)
 {
     fChecked ? m_pBtnTuplet->Press() : m_pBtnTuplet->Release();
 }
 
-void lmGrpTieTuplet::EnableTool(lmEToolID nToolID, bool fEnabled)
+void lmGrpNoteModifiers::SetToolToggleStem(bool fChecked)
+{
+    fChecked ? m_pBtnToggleStem->Press() : m_pBtnToggleStem->Release();
+}
+
+void lmGrpNoteModifiers::EnableTool(lmEToolID nToolID, bool fEnabled)
 {
     switch (nToolID)
     {
@@ -647,9 +655,12 @@ void lmGrpTieTuplet::EnableTool(lmEToolID nToolID, bool fEnabled)
             m_pBtnTie->Enable(fEnabled);
             break;
 
-
         case lmTOOL_NOTE_TUPLET:
             m_pBtnTuplet->Enable(fEnabled);
+            break;
+
+        case lmTOOL_NOTE_TOGGLE_STEM:
+            m_pBtnToggleStem->Enable(fEnabled);
             break;
 
         default:
@@ -657,7 +668,8 @@ void lmGrpTieTuplet::EnableTool(lmEToolID nToolID, bool fEnabled)
     }
 
     //enable /disable group
-    bool fEnableGroup = m_pBtnTie->IsEnabled() || m_pBtnTuplet->IsEnabled();
+    bool fEnableGroup = m_pBtnTie->IsEnabled() || m_pBtnTuplet->IsEnabled()
+                        || m_pBtnToggleStem->IsEnabled();
     EnableGroup(fEnableGroup);
 }
 
@@ -825,7 +837,7 @@ void lmToolPageNotesStd::CreateGroups()
     m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
     m_pGrpNoteAcc = new lmGrpNoteAcc(this, pMainSizer);
     m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
-    m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
+    m_pGrpModifiers = new lmGrpNoteModifiers(this, pMainSizer);
     m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
     AddGroup(m_pGrpOctave);
     AddGroup(m_pGrpVoice);
@@ -833,7 +845,7 @@ void lmToolPageNotesStd::CreateGroups()
     AddGroup(m_pGrpNoteDuration);
     AddGroup(m_pGrpNoteAcc);
     AddGroup(m_pGrpNoteDots);
-    AddGroup(m_pGrpTieTuplet);
+    AddGroup(m_pGrpModifiers);
     AddGroup(m_pGrpBeams);
 
 	CreateLayout();
@@ -886,7 +898,7 @@ void lmToolPageNotesHarmony::CreateGroups()
     m_pGrpNoteDuration = new lmGrpNoteDuration(this, pMainSizer);
     m_pGrpNoteAcc = new lmGrpNoteAcc(this, pMainSizer);
     m_pGrpNoteDots = new lmGrpNoteDots(this, pMainSizer);
-    m_pGrpTieTuplet = new lmGrpTieTuplet(this, pMainSizer);
+    m_pGrpModifiers = new lmGrpNoteModifiers(this, pMainSizer);
     m_pGrpBeams = new lmGrpBeams(this, pMainSizer);
     AddGroup(m_pGrpOctave);
     AddGroup(m_pGrpVoice);
@@ -894,7 +906,7 @@ void lmToolPageNotesHarmony::CreateGroups()
     AddGroup(m_pGrpNoteDuration);
     AddGroup(m_pGrpNoteAcc);
     AddGroup(m_pGrpNoteDots);
-    AddGroup(m_pGrpTieTuplet);
+    AddGroup(m_pGrpModifiers);
     AddGroup(m_pGrpBeams);
 
 	CreateLayout();

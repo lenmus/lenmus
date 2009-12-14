@@ -1586,3 +1586,61 @@ bool lmCmdScoreProcessor::Do()
 	return CommandDone(fOK);
 }
 
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdToggleNoteStem: Toggle stem of notes in current selection
+//----------------------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(lmCmdToggleNoteStem, lmScoreCommand)
+
+lmCmdToggleNoteStem::lmCmdToggleNoteStem(bool fNormalCmd, lmDocument *pDoc,
+                                         lmGMSelection* pSelection)
+	: lmScoreCommand(_("Toggle stem"), pDoc, fNormalCmd)
+{
+    //loop to save data about note/rests to modify
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote)
+        {
+            lmNote* pNote = (lmNote*)pGMO->GetScoreOwner();
+            m_Notes.push_back( pNote->GetID() );
+        }
+        pGMO = pSelection->GetNext();
+    }
+}
+
+lmCmdToggleNoteStem::~lmCmdToggleNoteStem()
+{
+    //delete selection data
+    m_Notes.clear();
+}
+
+bool lmCmdToggleNoteStem::Do()
+{
+    //Direct command. NO UNDO LOG
+
+    //loop to toggle stems
+    std::list<long>::iterator it;
+    for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    {
+        ((lmNote*)GetScoreObj(*it))->ToggleStem();
+    }
+
+    return CommandDone(true);
+}
+
+bool lmCmdToggleNoteStem::Undo()
+{
+    //Direct command. NO UNDO LOG
+
+    //loop to toggle stems
+    std::list<long>::iterator it;
+    for (it = m_Notes.begin(); it != m_Notes.end(); ++it)
+    {
+        ((lmNote*)GetScoreObj(*it))->ToggleStem();
+    }
+
+    return CommandUndone();
+}

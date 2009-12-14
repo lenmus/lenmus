@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: MusicReading_L2\n"
+"Project-Id-Version: LenMus 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-30 22:20+0100\n"
-"PO-Revision-Date: 2009-01-06 22:47+0100\n"
+"PO-Revision-Date: 2009-12-08 17:44+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: ../src\n"
 "X-Poedit-Language: Dutch\n"
-"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-Country: BELGIUM\n"
 "X-Poedit-SearchPath-0: L2_MusicReading\n"
 
 #: L2_MusicReading/L2_MusicReading.cpp:2
@@ -402,7 +402,8 @@ msgid "Compound time of 12/8. 8th note tied to 16th notes"
 msgstr "Samengestelde tijd van 12/8. 8ste noot gebonden aan 16de noten"
 
 #: L2_MusicReading/L2_MusicReading.cpp:76
-msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. Ii is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
+#, fuzzy
+msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. It is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
 msgstr "De samengestelde maat van 12/8 heeft vier tellen en elke tel stemt overeen met een gepunteerde vierde noot. Het accent ligt op de eerste tel. Deze maatsoort is vergelijkbaar met 6/8 en 9/8 maar heeft vier tellen. De noot die een volledige maat in beslag neemt is de gepunteerde hele noot."
 
 #: L2_MusicReading/L2_MusicReading.cpp:77

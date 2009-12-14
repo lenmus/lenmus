@@ -102,6 +102,7 @@ BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
     EVT_MENU	(lmPOPUP_AttachText, lmController::OnAttachText)
     EVT_MENU	(lmPOPUP_Score_Titles, lmController::OnScoreTitles)
     EVT_MENU	(lmPOPUP_View_Page_Margins, lmController::OnViewPageMargins)
+    EVT_MENU	(lmPOPUP_ToggleStem, lmController::OnToggleStem)
 #ifdef __WXDEBUG__
     EVT_MENU	(lmPOPUP_DumpShape, lmController::OnDumpShape)
 #endif
@@ -1877,6 +1878,14 @@ void lmScoreCanvas::ChangeNoteDots(int nDots)
                                             m_pView->GetSelection(), nDots) );
 }
 
+void lmScoreCanvas::ToggleStem()
+{
+    //toggle stem in all selected notes.
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdToggleNoteStem(lmCMD_NORMAL, m_pDoc, m_pView->GetSelection()) );
+}
+
 void lmScoreCanvas::ChangeText(lmScoreText* pST, wxString sText, lmEHAlign nAlign,
                                lmLocation tPos, lmTextStyle* pStyle, int nHintOptions)
 {
@@ -2191,7 +2200,7 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
 			    ChangeNoteDots(m_nSelDots);
                 break;
 
-            case lmGRP_TieTuplet:
+            case lmGRP_NoteModifiers:
                 //Tie, Tuplet tools -----------------------------------------------------------
                 switch(event.GetToolID())
                 {
@@ -2214,6 +2223,12 @@ void lmScoreCanvas::OnToolBoxEvent(lmToolBoxToolSelectedEvent& event)
                                 else
                                     AddTuplet();
                             }
+                        }
+                        break;
+
+                    case lmTOOL_NOTE_TOGGLE_STEM:
+                        {
+                            ToggleStem();
                         }
                         break;
 
@@ -3121,10 +3136,16 @@ void lmScoreCanvas::OnDeleteTiePrev(wxCommandEvent& event)
 	WXUNUSED(event);
 	wxASSERT(m_pMenuOwner->IsComponentObj());
     wxASSERT( ((lmComponentObj*)m_pMenuOwner)->IsStaffObj());
-    wxASSERT( ((lmStaffObj*)m_pMenuOwner)->IsNoteRest());
-    wxASSERT( ((lmNoteRest*)m_pMenuOwner)->IsNote());
+    wxASSERT( ((lmStaffObj*)m_pMenuOwner)->IsNote());
 
     DeleteTie( (lmNote*)m_pMenuOwner );
+}
+
+void lmScoreCanvas::OnToggleStem(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+
+    ToggleStem();
 }
 
 void lmScoreCanvas::OnAttachText(wxCommandEvent& event)
@@ -3345,6 +3366,7 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
                 bool fEnableTuplet = false;
                 bool fCheckTuplet = false;
                 bool fEnableJoinBeam = false;
+                bool fEnableToggleStem = false;
 
                 if (fEnable && !pSelection->IsEmpty())
                 {
@@ -3428,6 +3450,11 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
                             fEnableTuplet = false;
                     }
 
+                    //toggle stems
+                    fEnableToggleStem = fNoteFound;
+                    if (fNoteFound)
+                        fEnableToggleStem = IsSelectionValidToToggleStem();
+
                     //Join beams
                     fEnableJoinBeam = fNoteFound;
                     if (fNoteFound)
@@ -3438,16 +3465,19 @@ void lmScoreCanvas::SynchronizeToolBoxWithSelection(bool fEnable)
                 //enable/disable tools
 
                 //Ties
-                lmGrpTieTuplet* pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
+                lmGrpNoteModifiers* pGrp = (lmGrpNoteModifiers*)pPage->GetToolGroup(lmGRP_NoteModifiers);
                 pGrp->EnableTool(lmTOOL_NOTE_TIE, fEnableTie);
                 if (fEnableTie)
                     pPage->SetToolTie(fCheckTie);
 
                 //Tuples
-                pGrp = (lmGrpTieTuplet*)pPage->GetToolGroup(lmGRP_TieTuplet);
                 pGrp->EnableTool(lmTOOL_NOTE_TUPLET, fEnableTuplet);
                 if (fEnableTuplet)
                     pPage->SetToolTuplet(fCheckTuplet);
+
+                //Toggle stems
+                pGrp->EnableTool(lmTOOL_NOTE_TOGGLE_STEM, fEnableToggleStem);
+                pPage->SetToolToggleStem(false);
 
                 //Join beams
                 lmGrpBeams* pGrpBeams = (lmGrpBeams*)pPage->GetToolGroup(lmGRP_Beams);
@@ -3721,7 +3751,28 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
     return fValid && !fAllBeamed && nNumNotes > 1;
 }
 
+bool lmScoreCanvas::IsSelectionValidToToggleStem()
+{
+    //Returns TRUE if current selection is valid to toggle stems.
+    //It is valid if there si at least a note with stem
 
+    //verify conditions
+    lmGMSelection* pSelection = m_pView->GetSelection();
+    lmGMObject* pGMO = pSelection->GetFirst();
+    while (pGMO)
+    {
+        if (pGMO->GetType() == eGMO_ShapeNote)
+        {
+            lmNote* pNote = (lmNote*)pGMO->GetScoreOwner();
+            if (pNote->GetNoteType() > eWhole && !pNote->IsInChord()
+                && pNote->GetStemType() != lmSTEM_NONE)
+                return true;
+        }
+        pGMO = pSelection->GetNext();
+    }
+
+    return false;
+}
 
 //dragging on canvas with left button: selection
 void lmScoreCanvas::OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos,

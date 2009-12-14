@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: L2_MusicReading 4.0\n"
+"Project-Id-Version: L2_MusicReading 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-06 22:54+0100\n"
+"PO-Revision-Date: 2009-12-08 17:30+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -401,8 +401,8 @@ msgid "Compound time of 12/8. 8th note tied to 16th notes"
 msgstr "Subdivisión ternaria. Compás de 12/8. Redonda con puntillo. Corchea ligada a siguiente parte fuerte"
 
 #: L2_MusicReading/L2_MusicReading.cpp:76
-msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. Ii is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
-msgstr "El compás de 12/8 es de subdivisión ternaria y tiene cuatro tiempos. La primera parte es fuerte y las otras tres son débiles. Es un compás similar a los ya estudiados de 6/8 y 9/8 pero con cuatro partes. La figura que ocupa todo el compás es la redonda con puntillo."
+msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. It is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
+msgstr "El compás de 12/8 es de subdivisión ternaria, tiene cuatro tiempos y cada parte se rellena con una negra con puntillo. La primera parte es fuerte y las otras tres son débiles. Es un compás similar a los ya estudiados de 6/8 y 9/8 pero con cuatro partes. La figura que ocupa todo el compás es la redonda con puntillo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:77
 msgid "In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:"

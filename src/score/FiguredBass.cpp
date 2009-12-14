@@ -234,7 +234,6 @@ protected:
 /// Implementation of lmFBQuickPanel
 //--------------------------------------------------------------------------------------
 
-//#include "../graphic/GraphicManager.h"	//to use GenerateBitmapForBarlineCtrol()
 #include "../app/ScoreCanvas.h"			//lmController
 BEGIN_EVENT_TABLE(lmFBQuickPanel, lmPropertiesPage)
 
@@ -349,7 +348,7 @@ protected:
 	
     //other variables
     lmFiguredBass*      m_pFB;
-    lmGrpCommonFB*      m_pGrpCommon;
+    wxString            m_sFigBass;
 
 
     DECLARE_EVENT_TABLE()
@@ -527,25 +526,20 @@ lmFBCustomPanel::~lmFBCustomPanel()
 
 void lmFBCustomPanel::OnAcceptChanges(lmController* pController)
 {
-    int iB = m_pGrpCommon->GetSelectedButton();
     wxString sFigBass;
-    if (iB == -1)
-        return;     //user didn't selected any common value
+    sFigBass = m_pTxtTop->GetValue() + _T(" ")
+               + m_pTxtMiddle->GetValue() + _T(" ")
+               + m_pTxtBottom->GetValue();
+
+    if (pController)
+    {
+        //Editing and existing object. Do changes by issuing edit commands
+        pController->ChangeFiguredBass(m_pFB, sFigBass);
+    }
     else
     {
-        //User has selected a quick button
-        sFigBass = m_CommonFB[iB].sFiguredBass;
-
-        if (pController)
-        {
-            //Editing and existing object. Do changes by issuing edit commands
-            pController->ChangeFiguredBass(m_pFB, sFigBass);
-        }
-        else
-        {
-            //Direct creation. Modify object directly
-            m_pFB->SetDataFromString(sFigBass);
-        }
+        //Direct creation. Modify object directly
+        m_pFB->SetDataFromString(sFigBass);
     }
 }
 

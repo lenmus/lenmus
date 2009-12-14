@@ -115,7 +115,7 @@ public:
                                   bool fUpdateViews = true) {}
     virtual void BreakBeam() {}
     virtual void JoinBeam() {}
-
+    virtual void ToggleStem() {}
 
 
     // event handlers
@@ -137,6 +137,7 @@ public:
     virtual void OnAttachText(wxCommandEvent& event) {}
 	virtual void OnScoreTitles(wxCommandEvent& event) {}
 	virtual void OnViewPageMargins(wxCommandEvent& event) {}
+    virtual void OnToggleStem(wxCommandEvent& event) {}
 #ifdef __WXDEBUG__
 	virtual void OnDumpShape(wxCommandEvent& event) {}
 #endif
@@ -265,6 +266,7 @@ public:
                           bool fUpdateViews = true);
     void BreakBeam();
     void JoinBeam();
+    void ToggleStem();
 
     //mouse processing
     void DoCaptureMouse();
@@ -294,6 +296,7 @@ public:
     void OnAttachText(wxCommandEvent& event);
     void OnScoreTitles(wxCommandEvent& event);
     void OnViewPageMargins(wxCommandEvent& event);
+    void OnToggleStem(wxCommandEvent& event);
 #ifdef __WXDEBUG__
 	void OnDumpShape(wxCommandEvent& event);
 #endif
@@ -386,6 +389,7 @@ private:
     lmNoteRest* IsSelectionValidForTuplet();
     bool IsCursorValidToCutBeam();
     bool IsSelectionValidToJoinBeam();
+    bool IsSelectionValidToToggleStem();
 
     //helper methods to determine which drag marks to render
     inline bool RequiresTimeGrid() { return (m_nToolMarks & lmMARK_TIME_GRID) != 0L; }

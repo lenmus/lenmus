@@ -194,32 +194,33 @@ public:
 //--------------------------------------------------------------------------------
 // Group for tuplets, ties, ...
 //--------------------------------------------------------------------------------
-class lmGrpTieTuplet : public lmToolGroup
+class lmGrpNoteModifiers : public lmToolGroup
 {
 public:
-    lmGrpTieTuplet(lmToolPage* pParent, wxBoxSizer* pMainSizer);
-    ~lmGrpTieTuplet() {}
+    lmGrpNoteModifiers(lmToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~lmGrpNoteModifiers() {}
 
     //implement virtual methods
     void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline lmEToolGroupID GetToolGroupID() { return lmGRP_TieTuplet; }
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_NoteModifiers; }
     inline lmEToolID GetCurrentToolID() { return m_nSelectedToolID; }
 
     //event handlers
     void OnTieButton(wxCommandEvent& event);
     void OnTupletButton(wxCommandEvent& event);
+    void OnToggleStemButton(wxCommandEvent& event);
 
 	//access to options
     void SetToolTie(bool fChecked);
     void SetToolTuplet(bool fChecked);
+    void SetToolToggleStem(bool fChecked);
     void EnableTool(lmEToolID nToolID, bool fEnabled);
 
 
 protected:
-    //void PostToolBoxEvent(lmEToolID nToolID, bool fSelected);
-
     lmCheckButton*      m_pBtnTie;
     lmCheckButton*      m_pBtnTuplet;
+    lmCheckButton*      m_pBtnToggleStem;
     lmEToolID           m_nSelectedToolID;      //clicked tool
 
     DECLARE_EVENT_TABLE()
@@ -317,15 +318,16 @@ public:
     inline int GetNoteDotsButton() { return m_pGrpNoteDots->GetSelectedButton(); }
     inline void SetNoteDotsButton(int iB) { m_pGrpNoteDots->SelectButton(iB); }
 
-    //interface with TieTuplet group
-    inline void EnableGrpTieTuplet(bool fEnabled) { m_pGrpTieTuplet->EnableGroup(fEnabled); }
-    inline void SetToolTie(bool fChecked) { m_pGrpTieTuplet->SetToolTie(fChecked); }
-    inline void SetToolTuplet(bool fChecked) { m_pGrpTieTuplet->SetToolTuplet(fChecked); }
+    //interface with Modifiers group
+    inline void EnabelGrpModifiers(bool fEnabled) { m_pGrpModifiers->EnableGroup(fEnabled); }
+    inline void SetToolTie(bool fChecked) { m_pGrpModifiers->SetToolTie(fChecked); }
+    inline void SetToolTuplet(bool fChecked) { m_pGrpModifiers->SetToolTuplet(fChecked); }
+    inline void SetToolToggleStem(bool fChecked) { m_pGrpModifiers->SetToolToggleStem(fChecked); }
 
     //interface with Beam tools group
-    //inline void EnableGrpTieTuplet(bool fEnabled) { m_pGrpTieTuplet->EnableGroup(fEnabled); }
-    //inline void SetToolTie(bool fChecked) { m_pGrpTieTuplet->SetToolTie(fChecked); }
-    //inline void SetToolTuplet(bool fChecked) { m_pGrpTieTuplet->SetToolTuplet(fChecked); }
+    //inline void EnabelGrpModifiers(bool fEnabled) { m_pGrpModifiers->EnableGroup(fEnabled); }
+    //inline void SetToolTie(bool fChecked) { m_pGrpModifiers->SetToolTie(fChecked); }
+    //inline void SetToolTuplet(bool fChecked) { m_pGrpModifiers->SetToolTuplet(fChecked); }
 
 
     //interface with NoteheadType group
@@ -343,7 +345,7 @@ protected:
     lmGrpNoteDuration*  m_pGrpNoteDuration;
     lmGrpNoteAcc*       m_pGrpNoteAcc;
     lmGrpNoteDots*      m_pGrpNoteDots;
-    lmGrpTieTuplet*     m_pGrpTieTuplet;
+    lmGrpNoteModifiers*     m_pGrpModifiers;
     lmGrpBeams*         m_pGrpBeams;
 	lmGrpOctave*		m_pGrpOctave;
 	lmGrpVoice*			m_pGrpVoice;

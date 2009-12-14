@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-30 22:39+0100\n"
-"PO-Revision-Date: 2009-12-03 20:20+0100\n"
+"PO-Revision-Date: 2009-12-08 16:54+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: ../../src\n"
 "X-Poedit-Language: Spanish\n"
+"X-Poedit-Basepath: ../../src\n"
 "X-Poedit-SearchPath-0: app\n"
 "X-Poedit-SearchPath-1: ./app/toolbox\n"
 "X-Poedit-SearchPath-2: auxmusic\n"
@@ -32,43 +32,43 @@ msgstr ""
 "X-Poedit-SearchPath-17: xml_parser\n"
 "X-Poedit-SearchPath-18: ../xrc\n"
 
-#: app/AboutDialog.cpp:109
-#: app/AboutDialog.cpp:142
+#: app/AboutDialog.cpp:107
+#: app/AboutDialog.cpp:140
 msgid "A free program for music language learning"
 msgstr "Un programa gratuito para el aprendizaje del lenguaje musical"
 
-#: app/AboutDialog.cpp:138
-#: app/AboutDialog.cpp:143
+#: app/AboutDialog.cpp:136
+#: app/AboutDialog.cpp:141
 msgid "Arial"
 msgstr "Arial"
 
-#: app/AboutDialog.cpp:160
-#: app/AboutDialog.cpp:200
+#: app/AboutDialog.cpp:158
+#: app/AboutDialog.cpp:198
 msgid "Purpose"
 msgstr "Propósito"
 
-#: app/AboutDialog.cpp:163
+#: app/AboutDialog.cpp:161
 msgid "Licence"
 msgstr "Licencia"
 
-#: app/AboutDialog.cpp:166
-#: app/AboutDialog.cpp:389
+#: app/AboutDialog.cpp:164
+#: app/AboutDialog.cpp:387
 msgid "Project team"
 msgstr "Equipo del proyecto"
 
-#: app/AboutDialog.cpp:169
+#: app/AboutDialog.cpp:167
 msgid "Art design"
 msgstr "Diseño artístico"
 
-#: app/AboutDialog.cpp:172
+#: app/AboutDialog.cpp:170
 msgid "Software used"
 msgstr "Software utilizado"
 
-#: app/AboutDialog.cpp:175
+#: app/AboutDialog.cpp:173
 msgid "Build info."
 msgstr "Información de versión"
 
-#: app/AboutDialog.cpp:180
+#: app/AboutDialog.cpp:178
 #: app/DlgDebug.cpp:172
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:464
 #: score/properties/DlgEditText.cpp:149
@@ -82,159 +82,164 @@ msgstr "Información de versión"
 msgid "Accept"
 msgstr "Aceptar"
 
-#: app/AboutDialog.cpp:202
+#: app/AboutDialog.cpp:200
 msgid "LenMus is a free program to help you in the study of music theory and  ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
 msgstr "LenMus es un programa gratuito para ayudarte en el estudio del lenguaje musical y en la educación del oido. Está disponible para Windows pero pronto estará también para Mac OS X, Linux, y demás sistemas basados en Unix."
 
-#: app/AboutDialog.cpp:206
+#: app/AboutDialog.cpp:204
 msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and open access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developing publicly available knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
 msgstr "El proyecto LenMus es un proyecto abierto, sin objetivos comerciales, y comprometido con el software libre, la libertad de acceso a la enseñanza y a la información. Busca explorar ideas, desarrollar algoritmos públicos, aprender e investigar en todas las áreas relacionadas con el lenguaje musical, su enseñanza, y su representación y manejo por ordenadores. Y a la vez, proporciona software de calidad y gratuito a estudiantes, profesores y músicos aficionados."
 
-#: app/AboutDialog.cpp:214
+#: app/AboutDialog.cpp:212
 msgid "If you find a bug or have a suggestion, please contact us. We depend on your feedback in order to continue to improve LenMus. So please visit our website and give us your bug reports and feature requests. Thank you very much."
 msgstr "Si encuentras algún error o tienes alguna sugerencia, por favor, comunícanoslo. Dependemos de tus comentarios y sugerencias para continuar mejorando el programa. Por favor, visita nuestra web e infórmanos de los errores que detectes y las sugerencias que tengas. Muchas gracias."
 
-#: app/AboutDialog.cpp:228
+#: app/AboutDialog.cpp:226
 msgid "License"
 msgstr "Licencia"
 
-#: app/AboutDialog.cpp:232
+#: app/AboutDialog.cpp:230
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
 msgstr "Este programa es 'Software Libre'. Está permitido redistribuirlo y/o modificarlo, siempre y cuando se haga bajo los términos y condiciones de la Licencia Pública General GNU publicada por la Free Software Foundation, ya sea en su versión 3 o cualquier otra de las posteriores a la misma."
 
-#: app/AboutDialog.cpp:237
+#: app/AboutDialog.cpp:235
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at "
 msgstr "Este programa se distribuye con la intención de que sea útil, sin embargo carece de garantía, ni siquiera tiene la garantía implícita de tipo comercial o inherente al propósito del  programa. Ver la Licencia Pública General GNU para más detalles, consultándola en"
 
-#: app/AboutDialog.cpp:252
+#: app/AboutDialog.cpp:250
 msgid "Art desing credits"
 msgstr "Diseño artístico. Créditos."
 
-#: app/AboutDialog.cpp:253
+#: app/AboutDialog.cpp:251
 msgid "Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:"
 msgstr "Algunos iconos son diseños originales del proyecto LenMus; todos ellos se licencian bajo la licencia GNU GPL y bajo licencia Creative Commons Attribution-ShareAlike; puedes elegir la que mejor se adapte a los fines para los que quieres utilizarlos. Los restantes iconos se han tomado de diversas fuentes:"
 
-#: app/AboutDialog.cpp:258
+#: app/AboutDialog.cpp:256
 msgid "Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want."
 msgstr "Copiados o derivados de los iconos disponibles en la colección Ximian (http://www.novell.com/coolsolutions/feature/1637.html). Novell, quien posee los derechos, licencia estos iconos bajo licencia GNU LGPL."
 
-#: app/AboutDialog.cpp:266
+#: app/AboutDialog.cpp:264
 msgid "Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike license."
 msgstr "Copiados o derivados de los iconos del proyecto GNOME (http://art.gnome.org/themes/icon/1150), tema 'Tango'. Estos iconos se hayan sujetos a la licencia Creative Commons Attribution-ShareAlike license."
 
-#: app/AboutDialog.cpp:270
+#: app/AboutDialog.cpp:268
 msgid "These icons are taken or derived from KDE project (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). These icons are released under the GNU GPL license."
 msgstr "Tomados del proyecto KDE (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). Estos iconos se hayan sujetos a la licencia GNU GPL license."
 
-#: app/AboutDialog.cpp:274
+#: app/AboutDialog.cpp:272
 msgid "Taken or derived from eMule project (http://sourceforge.net/projects/emule) icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL."
 msgstr "Copiados o derivados del proyecto eMule (http://sourceforge.net/projects/emule) icons. eMule es un proyecto con licencia GNU GPL. Por tanto, a falta de más detalles, se ha supuesto que los iconos tambén está sujetos a esa licencia."
 
-#: app/AboutDialog.cpp:277
+#: app/AboutDialog.cpp:275
 msgid "Taken or derived from John Zaitseff's icons (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what is said there, these icons are released under the terms of the GNU General Public License."
 msgstr "Copiados o derivados de la colección de  John Zaitseff's (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). Según lo expuesto en dicha página, esos iconos están sujetos a la licencia GNU General Public License."
 
-#: app/AboutDialog.cpp:281
+#: app/AboutDialog.cpp:279
 msgid "To LenMus developers knowledge, all used icons are freely usable either under GNU GPL, LGPL licence, or Creative Commons. If this were not the case, please, let us know to stop using them. See file \"icons.htm\" in folder \"res/icons\" for more details."
 msgstr "Hasta donde he podido averiguar, todos los iconos usados estan sujetos a una de las licencias GNU GPL, GNU LGPL o Creative Commomns, por lo que pueden usarse en este proyecto. Si no fuera así, por favor, comunícamelo inmediatamente para dejar de utilizarlos. Para más detalles consulta el documento \"icons.htm\" en la carpeta \"res/icons\".</p>"
 
-#: app/AboutDialog.cpp:296
+#: app/AboutDialog.cpp:294
 msgid "Software credits"
 msgstr "Software. Créditos"
 
-#: app/AboutDialog.cpp:297
+#: app/AboutDialog.cpp:295
 msgid "LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library (http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits free use."
 msgstr "LenMus Phonascus utiliza <b>PortMidi</b> (the Portable Real-Time MIDI Library) disponible en http://www.cs.cmu.edu/~music/portmusic/. PortMidi tiene copyright (c) 1999-2000 Ross Bencina y Phil Burk y copyright (c) 2001 Roger B. Dannenberg. Su licencia permite uso gratuito."
 
-#: app/AboutDialog.cpp:302
+#: app/AboutDialog.cpp:300
 msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a light weight design, and very good reliability and stability."
 msgstr "Este programa usa el software <b>Anti-Grain Geometry</b> (http://www.antigrain.com) , desarrollado por Maxim Shemanarev. AGG es una excelente librería gráfica y es  open source. Produce imágenes en memoria a partir de datos vectoriales y soporta anti-aliasing; tiene un alto rendimiento, es independiente de plataforma, extensible y muy flexible, con un peso ligero y muy buena fiabilidad y estabilidad."
 
-#: app/AboutDialog.cpp:311
+#: app/AboutDialog.cpp:309
 msgid "This program uses the <b>FreeType 2</b> software. It is a free open source font engine, designed to be small, efficient, highly customizable and portable, while capable of producing high-quality output (glyph images). It can be used in graphics libraries, display servers, font conversion tools, text image generation tools, and many other products as well. It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
 msgstr "Este programa utiliza el software <b>FreeType 2</b>. Es un motor de manejo y renderizado de fuentes, gratuito y open source, diseñado para ser pequeño, eficiente, altamente personalizable y portable. Permite generar imágenes de alta calidad. Puede utilizarse en paquetes gráficos, servidores de renderizado, herramientas de conversión de fonts y de renderizado de texto y en muchos otros productos. Ha sido desarrollado por David Turner, Robert Wilhelm, y Werner Lemberg. FreeType tiene todos los derechos reservados. Copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
 
-#: app/AboutDialog.cpp:319
+#: app/AboutDialog.cpp:317
 msgid "LenMus uses <b>sqlite3</b> (http://www.sqlite.org/), with <b>wxSQLite3</b> wrapper (http://wxcode.sourceforge.net/components/wxsqlite3) for wxWidgets. SQLite is a widely used library that implements a transactional SQL database engine. Unlike client-server database management systems, the SQLite engine is not a standalone process with which the program communicates. Instead, the SQLite library is linked with your program and becomes an integral part of it. SQLite was created by D. Richard Hipp and the source code is in the public domain and is thus free for use for any purpose, commercial or private. Wrapper wxSQLite3 was written by Ulrich Telle."
 msgstr ""
 
-#: app/AboutDialog.cpp:328
+#: app/AboutDialog.cpp:326
 msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
 msgstr "LenMus Phonascus está construido utilizando <b>wxWidgets</b>, un conjunto de clases C++ para desarrollo de aplicaciones multiplataforma (http://www.wxwidgets.org). wxWidgets es 'Open Source', es fácil de aprender, tiene una generosa comunidad de usuarios y puede usarse tambien en productos comerciales sin necesidad de licencia."
 
-#: app/AboutDialog.cpp:333
+#: app/AboutDialog.cpp:331
 msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
 msgstr "Muchos de los glifos del font 'lmbasic.ttf' han sito tomados del projecto <b>LilyPond</b> (http://lilypond.org), del font Feta. Este proyecto tiene licencia GNU GPL."
 
-#: app/AboutDialog.cpp:368
+#: app/AboutDialog.cpp:366
 msgid "Build information"
 msgstr "Información de versión"
 
-#: app/AboutDialog.cpp:369
+#: app/AboutDialog.cpp:367
 msgid "Program build date:"
 msgstr "Fecha de construcción del programa:"
 
-#: app/AboutDialog.cpp:373
+#: app/AboutDialog.cpp:371
 msgid "Your computer information:"
 msgstr "Información del equipo:"
 
-#: app/AboutDialog.cpp:390
+#: app/AboutDialog.cpp:388
 msgid "(alphabetical order)"
 msgstr "(orden alfabético)"
 
-#: app/AboutDialog.cpp:392
+#: app/AboutDialog.cpp:390
 msgid "This program has been designed and developed by volunteers. Some of them devoted a few hours, others months or years. But all them gave their time for free to the project. Thanks to all them."
 msgstr "Este programa ha sido diseñado y desarrollado por voluntarios. Unos han dedicado unas cuantas horas, otros meses o años. Pero todos ellos han dedicado su tiempo gratuitamente a este proyecto. Gracias a todos ellos."
 
-#: app/AboutDialog.cpp:399
-msgid "Management and programming:"
-msgstr "Dirección y programación:"
+#: app/AboutDialog.cpp:397
+#, fuzzy
+msgid "Project management:"
+msgstr "Equipo del proyecto"
 
-#: app/AboutDialog.cpp:404
+#: app/AboutDialog.cpp:402
+msgid "Programming:"
+msgstr ""
+
+#: app/AboutDialog.cpp:408
 msgid "Music texts and exercises:"
 msgstr "Textos de música y ejercicios:"
 
-#: app/AboutDialog.cpp:415
+#: app/AboutDialog.cpp:419
 msgid "Translation:"
 msgstr "Traducción:"
 
-#: app/AboutDialog.cpp:416
+#: app/AboutDialog.cpp:420
 msgid "Basque"
 msgstr "Vascuence"
 
-#: app/AboutDialog.cpp:419
+#: app/AboutDialog.cpp:423
 msgid "Dutch"
 msgstr "Holandés"
 
-#: app/AboutDialog.cpp:422
+#: app/AboutDialog.cpp:426
 msgid "French"
 msgstr "Francés"
 
-#: app/AboutDialog.cpp:427
+#: app/AboutDialog.cpp:431
 msgid "Galician"
 msgstr "Gallego"
 
-#: app/AboutDialog.cpp:432
+#: app/AboutDialog.cpp:436
 msgid "Italian"
 msgstr "Italiano"
 
-#: app/AboutDialog.cpp:435
+#: app/AboutDialog.cpp:439
 msgid "Spanish"
 msgstr "Español"
 
-#: app/AboutDialog.cpp:438
+#: app/AboutDialog.cpp:442
 msgid "Turkish"
 msgstr "Turco"
 
-#: app/AboutDialog.cpp:444
+#: app/AboutDialog.cpp:448
 msgid "Website maintenace:"
 msgstr "Mantenimiento de la web:"
 
-#: app/AboutDialog.cpp:450
+#: app/AboutDialog.cpp:454
 msgid "Thanks also to:"
 msgstr "Gracias también a:"
 
-#: app/AboutDialog.cpp:455
+#: app/AboutDialog.cpp:460
 msgid "If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
 msgstr "Si quieres unirte al proyecto y ayudar en la programación o de cualquier otra manera, eres bienvenido/a. Por favor, visita la web de LenMus en www.lenmus.org y déjame un mesaje en la página de 'contactar'. Muchas gracias y bienvenido/a."
 
@@ -253,6 +258,79 @@ msgstr "Guardar"
 #, fuzzy
 msgid "File to save"
 msgstr "Herramientas de archivo"
+
+#: app/DlgUploadLog.cpp:126
+#, fuzzy
+msgid "Close"
+msgstr "Cerrar"
+
+#: app/DlgUploadLog.cpp:214
+msgid "Abnormal program termination"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:223
+msgid "Debug log file from a previous crash"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:224
+msgid "A debug log from previous crash has been detected!"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:236
+msgid "Debug report preview"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:238
+msgid "An abnormal program termination has been detected!"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:244
+msgid "The program has created a text file with information about the score being edited and the action performed. This debug file will be sent to LenMus to help us to debug the program. The file to send does not contain any identification data of any nature (personal, equipment, internet address, etc). It only has the score being edited an the actions being performed. The file is at:"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:251
+#, fuzzy
+msgid "View content"
+msgstr "Ligada a la siguiente"
+
+#: app/DlgUploadLog.cpp:257
+msgid "Additional info"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:259
+msgid "If you have any additional information pertaining to this bug report, please enter it here and it will be attached:"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:271
+msgid "To debug the program I need your help!"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:277
+msgid "Take into account that most of my time is devoted to programming, not to using the program. Therefore you probably will catch more errors than me! Anyway, if you wish to suppress this debug report completely, please choose the \"Cancel\" button."
+msgstr ""
+
+#: app/DlgUploadLog.cpp:281
+msgid "Thank you for your collaboration. I'm sorry for the inconvenience."
+msgstr ""
+
+#: app/DlgUploadLog.cpp:293
+msgid "Send file"
+msgstr ""
+
+#: app/DlgUploadLog.cpp:296
+#: exercises/dialogs/DlgCfgTheoIntervals.cpp:468
+#: score/VStaff.cpp:759
+#: score/VStaff.cpp:799
+#: score/properties/DlgEditText.cpp:155
+#: score/properties/DlgProperties.cpp:94
+#: widgets/Wizard.cpp:137
+#: ../xrc/xrc_strings.cpp:63
+#: ../xrc/xrc_strings.cpp:158
+#: ../xrc/xrc_strings.cpp:252
+#: ../xrc/xrc_strings.cpp:306
+#: ../xrc/xrc_strings.cpp:398
+msgid "Cancel"
+msgstr "Cancelar"
 
 #: app/FontManager.cpp:117
 #: score/AuxObj.cpp:491
@@ -1361,7 +1439,7 @@ msgstr "Software libre bajo licencia GNU GPL (General Public License), versión 
 msgid "Another instance of LenMus is already running."
 msgstr "Ya hay otra instancia de LenMus ejecutándose"
 
-#: app/TheApp.cpp:808
+#: app/TheApp.cpp:809
 msgid "LenMus First Run"
 msgstr "Primera ejecución de LenMus"
 
@@ -2356,12 +2434,6 @@ msgstr "El segundo es más grande"
 msgid "Both are equal"
 msgstr "Ambos son iguales"
 
-#: exercises/FiguredBassConstrains.cpp:149
-#: exercises/HarmonyConstrains.cpp:149
-#, fuzzy
-msgid "Program error: Loop detected in lmHarmonyConstrains::GetRandomCadence."
-msgstr "Error de programa: detectado bucle en lmCadencesConstrains::GetRandomCadence."
-
 #: exercises/Generators.cpp:87
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateClef."
 msgstr "Error de programa: detectado bucle en lmRandomGenerator::GenerateClef."
@@ -2403,6 +2475,11 @@ msgstr ""
 #: exercises/Generators.cpp:1282
 msgid "Average answer time:"
 msgstr ""
+
+#: exercises/HarmonyConstrains.cpp:149
+#, fuzzy
+msgid "Program error: Loop detected in lmHarmonyConstrains::GetRandomCadence."
+msgstr "Error de programa: detectado bucle en lmCadencesConstrains::GetRandomCadence."
 
 #: exercises/IdfyCadencesCtrol.cpp:147
 #: ../xrc/xrc_strings.cpp:310
@@ -3504,20 +3581,6 @@ msgstr "Melódico descendente"
 msgid "Other"
 msgstr "Otros"
 
-#: exercises/dialogs/DlgCfgTheoIntervals.cpp:468
-#: score/VStaff.cpp:759
-#: score/VStaff.cpp:799
-#: score/properties/DlgEditText.cpp:155
-#: score/properties/DlgProperties.cpp:94
-#: widgets/Wizard.cpp:137
-#: ../xrc/xrc_strings.cpp:63
-#: ../xrc/xrc_strings.cpp:158
-#: ../xrc/xrc_strings.cpp:252
-#: ../xrc/xrc_strings.cpp:306
-#: ../xrc/xrc_strings.cpp:398
-msgid "Cancel"
-msgstr "Cancelar"
-
 #: graphic/BoxScore.cpp:39
 msgid "score"
 msgstr "partitura"
@@ -3527,7 +3590,6 @@ msgid "system"
 msgstr "sistema"
 
 #: graphic/Formatter4.cpp:810
-#: graphic/Formatter4_475.cpp:804
 msgid "Program failure: not enough space for drawing just one bar."
 msgstr "Fallo de programa: no hay bastante espacio para dibujar un compas."
 

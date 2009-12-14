@@ -465,6 +465,7 @@ enum
     lmPOPUP_AttachText,
 	lmPOPUP_Score_Titles,
 	lmPOPUP_View_Page_Margins,
+    lmPOPUP_ToggleStem,
 
     lmPOPUP_DumpShape,
 

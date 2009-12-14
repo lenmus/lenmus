@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.7\n"
+"Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-02-17 21:15+0100\n"
+"PO-Revision-Date: 2009-12-08 17:34+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -63,339 +63,380 @@ msgstr "eBook bat prestatzeak oso luze jotzen du. Beraz, kapituluak, gaiak eta a
 
 #: TheoryHarmony/TheoryHarmony.cpp:14
 #: TheoryHarmony/TheoryHarmony.cpp:15
-msgid "Harmony"
-msgstr "Harmonia"
+msgid "Intervals"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:16
-msgid "Cadences"
-msgstr "Kadentziak"
+#: TheoryHarmony/TheoryHarmony.cpp:22
+msgid "What is an interval?"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:17
-msgid "In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function it is to create a sensation of either stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in music, they serve to structure the musical phrases and they also help to establish tonality. Listen for example to the following three chords:"
-msgstr "Musikan 'kadentzia' terminoak hainbat esangura ditu. Harmonian aipagai darabilgu normalean bi akorderen sekuentzia berezi bat, eginkizun duena  egonkortasun, atseden eta amaiera sentsazio bat sortzea edo eten, tentsio eta ezegonkortasunarena. Kadentziek puntuazio markek hizkuntza idatzian betetzen dutenaren antzeko eginkizuna dute (koma, puntua e.a.): Musikan arnasa non hartu eta non gelditu markatzen dute, musika perpausak egituratzeko balio dute, eta, gainera, tonalitatea egonkortzen ere laguntzen dute. Entzun, adibidez, hurrengo hiru akordeak: "
+msgid "Why should you learn about 'intervals'?"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:18
-#: TheoryHarmony/TheoryHarmony.cpp:20
-#: TheoryHarmony/TheoryHarmony.cpp:22
-#: TheoryHarmony/TheoryHarmony.cpp:23
-#: TheoryHarmony/TheoryHarmony.cpp:45
-#: TheoryHarmony/TheoryHarmony.cpp:47
-#: TheoryHarmony/TheoryHarmony.cpp:59
-#: TheoryHarmony/TheoryHarmony.cpp:62
-#: TheoryHarmony/TheoryHarmony.cpp:93
-msgid "I"
-msgstr "I"
+msgid "A great step in studying something is understanding its purpose."
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:19
-#: TheoryHarmony/TheoryHarmony.cpp:26
-#: TheoryHarmony/TheoryHarmony.cpp:44
-#: TheoryHarmony/TheoryHarmony.cpp:83
-#: TheoryHarmony/TheoryHarmony.cpp:87
-#: TheoryHarmony/TheoryHarmony.cpp:91
-#: TheoryHarmony/TheoryHarmony.cpp:96
-#: TheoryHarmony/TheoryHarmony.cpp:100
-#: TheoryHarmony/TheoryHarmony.cpp:102
-msgid "V"
-msgstr "V"
+msgid "If you are interested in harmony and composition, you should know that intervals are the building blocks of harmony: you will not be able to understand harmony without studying about intervals."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:20
+msgid "But even if you are not interested on harmony and on theory about music, understanding intervals and being able to quickly and accurately recognize them is vital for reading and singing a score accurately. Also, it is essential for music dictation (writing the music you hear)."
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:21
-msgid "You will notice the feeling of conclusion, of reaching the end of a musical piece. The chord sequence does not create expectations of continuation. The composer could end the musical composition in the last chord and the listener will perceive that the end has been reached and remain 'satisfied' with finishing at that point. On the contrary, listen to the following chord sequence:"
-msgstr "Amaiera sentsazioa, musika pieza bukatuz doalakoa nabarituko duzu. Akorde sekuentziak ez du jarraipen itxaropenik sortzen. Konpositoreak musika konposizioa azken akordean eten zezakeen eta entzuleak amaiera heldua zela sentituta, 'pozik' senti zitekeen une hartan amaituta. Entzun, ordea, hurrengo akorde sekuentzia:"
+#, fuzzy
+msgid "Therefore, we encourage you to study intervals and do all proposed exercises until you master recognition of intervals, both aurally and on written music."
+msgstr "Gai honetan kadentziak belarriz zein musika idatzian identifikatzeko ariketa osagarri batzuk besterik ez dizugu proposatzen."
+
+#: TheoryHarmony/TheoryHarmony.cpp:23
+msgid "An interval is the distance between two pitches. Intervals are named by the number of steps between the two tones. So, to determine the interval between two notes we just count the number of notes, including both. For example, the interval C-E is three notes (C, D E). Therefore, the interval C-E is named a 'third'. Another example, interval E-B is a 'fifth', because there are five notes between E-B (E, F, G, A B)."
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:24
-#: TheoryHarmony/TheoryHarmony.cpp:61
-#: TheoryHarmony/TheoryHarmony.cpp:85
-#: TheoryHarmony/TheoryHarmony.cpp:90
-msgid "6"
-msgstr "6"
+msgid "The following score shows some examples of intervals within one octave:"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:25
-#: TheoryHarmony/TheoryHarmony.cpp:86
-msgid "4"
-msgstr "4"
+msgid "3rd"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:26
+msgid "5th"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:27
-msgid "Now the sensation is not conclusive. It is more like a short pause and it creates an expectation of continuation. If we end the music piece at the last chord, we will leave the listener with a longing for more."
-msgstr "Oraingoan ez dago amaiera sentsaziorik. Areago iradokitzen du etenaldi labur bat, eta jarraipen itxaropena sortzen du. Musika pieza azken akordean amaituz gero, entzulea gehiagoren irrikan utziko dugu."
+msgid "7th"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:28
-msgid "Cadences are not difficult to recognize by ear but it is sometimes harder to recognize them in written music."
-msgstr "Ez da zaila kadentziak belarriz ezagutzea, baina, batzuetan, nekezagoa da musika idatzian halakoak ezagutzea."
+msgid "4th"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:29
-msgid "Cadence types"
-msgstr "Kadentzi motak"
+msgid "Unison"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:30
-msgid "Depending on the sensation they create, cadences are classified in two fundamental types:"
-msgstr "Sortzen duten sentsazioaren arabera, kadentziak bi mota nagusitan sailkatzen dira: "
+msgid "2nd"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:31
-#: TheoryHarmony/TheoryHarmony.cpp:36
-#: TheoryHarmony/TheoryHarmony.cpp:68
-#: TheoryHarmony/TheoryHarmony.cpp:71
-msgid "Terminal cadences"
-msgstr "Kadentzia terminalak"
+msgid "8ve"
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:32
-msgid ". They create a sensation of stability, rest and ending of the musical phrase or sentence."
-msgstr ". Egonkortasun, atseden eta amaiera sentsazioa sortzen dute musika esaldi edo perpaus baten amaieran. "
+msgid "At first you may need to count the notes to determine the interval size but with practise you will learn to determine the intervals at first sight."
+msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:33
-#: TheoryHarmony/TheoryHarmony.cpp:74
+#: TheoryHarmony/TheoryHarmony.cpp:75
+#: TheoryHarmony/TheoryHarmony.cpp:99
 #: TheoryHarmony/TheoryHarmony.cpp:113
-msgid "Transient cadences"
-msgstr "Kadentzia iragankorrak"
-
-#: TheoryHarmony/TheoryHarmony.cpp:34
-msgid ". They typically result in creating tension and a sensation of unstablility, as well as an expectation of continuation."
-msgstr ". Normalean, emaitza izaten dituzte tentsioa eta ezegonkortasun sentipena sortzea, baita jarraipen itxaroa ere."
-
-#: TheoryHarmony/TheoryHarmony.cpp:35
-msgid "As an exercise you will hear a cadence and based on the sensation it provokes, try to identify if the cadence is terminal or transient."
-msgstr "Ariketa moduan, kadentzia bat entzungo duzu eta hark eragiten dizun sentsazioan oinarrituta, kadentzia terminala ala iragankorra den identifikatzen saiatu behar duzu. "
-
-#: TheoryHarmony/TheoryHarmony.cpp:37
-msgid "Terminal cadences create a sensation of stability and conclusion of the musical phrase or sentence. This feeling is achieved by moving to the tonic grade (grade I) from any other chord grade. Depending on the starting chord grade, two types of cadences are considered:"
-msgstr "Kadentzia terminalek musika esaldi edo perpausean egonkortasun eta amaiera sentsazioa sortzen dute. Sentipen hori lortzen da gradu tonikora (I. gradua) beste edozein akorde gradutatik mugituta. Akorde maila non hasten den, bi kadentzi mota hartzen dira kontuan:"
-
-#: TheoryHarmony/TheoryHarmony.cpp:38
-msgid " authentic cadences"
-msgstr "benetako kadentziak"
-
-#: TheoryHarmony/TheoryHarmony.cpp:39
-#: TheoryHarmony/TheoryHarmony.cpp:77
-msgid " and"
-msgstr " eta"
-
-#: TheoryHarmony/TheoryHarmony.cpp:40
-msgid " plagal cadences"
-msgstr "kadentzia plagalak"
-
-#: TheoryHarmony/TheoryHarmony.cpp:41
-#: TheoryHarmony/TheoryHarmony.cpp:79
-msgid "."
-msgstr "."
-
-#: TheoryHarmony/TheoryHarmony.cpp:42
-msgid "Authentic cadences"
-msgstr "Benetako kadentziak"
-
-#: TheoryHarmony/TheoryHarmony.cpp:43
-msgid "An authentic cadence takes place when grade V, dominant, (or V7, a V chord with an added seventh) resolves in grade I (tonic). The authentic cadence is the strongest terminal cadence, with great conclusive power."
-msgstr "Benetako kadentzia  gertatzen da V. gradua, dominantea (edo V7, zazpiduna gehituriko bostun akordea) I. graduan (tonikoa) amaitzen denean. Benetako kadentzia kadentzia terminalik indartsuena da, amaiera indar handia duelako."
-
-#: TheoryHarmony/TheoryHarmony.cpp:46
-msgid "V7"
-msgstr "V7"
-
-#: TheoryHarmony/TheoryHarmony.cpp:48
-msgid "When the authentic cadence satisfies the following conditions:"
-msgstr "Benetako kadentziak honako baldintza hauek betetzen dituenean:"
-
-#: TheoryHarmony/TheoryHarmony.cpp:49
-msgid "both chords are in root position;"
-msgstr "bi akordeak funtsezko posizioan egotea;"
-
-#: TheoryHarmony/TheoryHarmony.cpp:50
-msgid "the first chord is the V or the V7 ; and"
-msgstr "lehenengo akordea  V.a edo V/.a izatea; eta"
-
-#: TheoryHarmony/TheoryHarmony.cpp:51
-msgid "the melody (soprano voice) ends on the tonic pitch."
-msgstr "melodia (soprano ahotsa) tonu tonikoan amaitzea."
-
-#: TheoryHarmony/TheoryHarmony.cpp:52
-msgid "then the cadence has its strongest conclusive power and it creates the most final sounding of all cadences. Due to this fact, if the previously listed conditions are satisfied, the cadence is named 'perfect authentic cadence' or just 'perfect cadence'. If the conditions are not satisfied, the conclusive sensation of the cadence is less strong and then the cadence is named 'imperfect authentic cadence' or just 'imperfect cadence'."
-msgstr "orduan kadentziak amaiera indarrik indartsuena izaten du eta, kadentzia guztien artetik, amaierarik soinutsuena sortzen du. Gertaera horren ondorioz, lehen zerrendaturiko baldintzak betez gero, kadentziari 'benetako kadentzia perfektua' edo 'kadentzia perfektua' deritzote. Baldintzak bete ezean, kadentziaren amaiera sentsazioa ez da halako indartsua eta, ondorioz, kadentziari 'benetako kadentzia inperfektua' edo 'kadentzia inperfektua' deritzote."
-
-#: TheoryHarmony/TheoryHarmony.cpp:53
-msgid "There are theoretical discussions about considering the imperfect cadence as a terminal cadence. Nevertheless, we have opted to include it in the terminal group due to sonority considerations."
-msgstr "Teorilariek eztabaidatzen dute ea kadentzia inperfektua kadentzia terminala ote den. Nolanahi ere, guk terminalen taldean sartu dugu sonoritate arrazoiak direla-eta."
-
-#: TheoryHarmony/TheoryHarmony.cpp:54
-msgid "The perfect cadence is usually found at the end of a piece of music and the end of significant sections."
-msgstr "Kadentzia perfektua normalean musika pieza baten amaieran eta atal esanguratsuen amaieran agertu ohi da."
-
-#: TheoryHarmony/TheoryHarmony.cpp:55
-msgid "Plagal cadences"
-msgstr "Kadentzia plagalak"
-
-#: TheoryHarmony/TheoryHarmony.cpp:56
-msgid "A plagal cadence takes place when grade IV (subdominant) resolves in grade I (tonic), both in root position. The plagal cadence is less strong than the authentic cadence and it is also known as the &quot;Amen&quot; cadence as it is used at the end of most church hymns."
-msgstr "Kadentzia plagala gertatzen da IV. gradua (subdominantea) I. graduan (tonikoa) amaitzen denean, biak funtsezko posizioan daudela. Kadentzia plagala ez da benetako kadentzia bezain indartsua eta 'amen' kadentzia ere deritzote; eliz himno askoren amaieran erabiltzen da."
-
-#: TheoryHarmony/TheoryHarmony.cpp:57
-msgid "In both cadence types, authentic and plagal, other chords playing the same harmonic functions can be used. For example, in the authentic cadence the V (dominant function) can be played by the VII. And in the plagal cadence the IV (subdominant function) can be played by the II. These replacements add variety and harmonic colour to the cadence."
-msgstr "Bi kadentzia motatan, benetakoan eta plagalean, harmoniko funtzio berberak jotzen dituzten bestelako akordeak ere erabil daitezke. Esaterako, benetako kadentzian V.a (funtzio dominantea) VII.arekin batera jo daiteke. Eta kadentzia plagalean IV.a (funtzio subdominantea) II.arekin batera jo daiteke. "
-
-#: TheoryHarmony/TheoryHarmony.cpp:58
-#: TheoryHarmony/TheoryHarmony.cpp:82
-#: TheoryHarmony/TheoryHarmony.cpp:89
-#: TheoryHarmony/TheoryHarmony.cpp:101
-msgid "IV"
-msgstr "IV"
-
-#: TheoryHarmony/TheoryHarmony.cpp:60
-#: TheoryHarmony/TheoryHarmony.cpp:84
-msgid "II"
-msgstr "II"
-
-#: TheoryHarmony/TheoryHarmony.cpp:63
-#: TheoryHarmony/TheoryHarmony.cpp:105
-#: TheoryHarmony/TheoryHarmony.cpp:119
 msgid "Exercises"
 msgstr "Ariketak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:64
-#: TheoryHarmony/TheoryHarmony.cpp:106
-msgid "Theory"
-msgstr "Teoria"
+#: TheoryHarmony/TheoryHarmony.cpp:34
+msgid "Music reading"
+msgstr ""
 
-#: TheoryHarmony/TheoryHarmony.cpp:65
-msgid " - Practise to recognize in a score if a terminal cadence is authentic perfect or plagal."
-msgstr " - Jardun ezazu partitura batean asmatzen ea kadentzia terminal bat perfektua ala plagala den."
+#: TheoryHarmony/TheoryHarmony.cpp:35
+msgid " - Recognize intervals on a score."
+msgstr ""
 
-#: TheoryHarmony/TheoryHarmony.cpp:66
-#: TheoryHarmony/TheoryHarmony.cpp:108
+#: TheoryHarmony/TheoryHarmony.cpp:36
+#: TheoryHarmony/TheoryHarmony.cpp:78
+#: TheoryHarmony/TheoryHarmony.cpp:102
 msgid "Aural training"
 msgstr "Entzumena trebatzen"
 
+#: TheoryHarmony/TheoryHarmony.cpp:37
+msgid " - Listen two intervals and identify which one is greater."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:38
+msgid "Intervals. Music reading"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:39
+msgid "Recognize intervals on a score"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:40
+#, fuzzy
+msgid "Intervals. Aural training"
+msgstr "Entzumena trebatzen"
+
+#: TheoryHarmony/TheoryHarmony.cpp:41
+msgid "Intervals' comparison"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:42
+msgid "Exercise: Lesson two intervals and identify which one is greater"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:43
+#: TheoryHarmony/TheoryHarmony.cpp:44
+msgid "Harmony"
+msgstr "Harmonia"
+
+#: TheoryHarmony/TheoryHarmony.cpp:45
+msgid "Cadences"
+msgstr "Kadentziak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:46
+msgid "In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function it is to create a sensation of either stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in music, they serve to structure the musical phrases and they also help to establish tonality. Listen for example to the following three chords:"
+msgstr "Musikan 'kadentzia' terminoak hainbat esangura ditu. Harmonian aipagai darabilgu normalean bi akorderen sekuentzia berezi bat, eginkizun duena  egonkortasun, atseden eta amaiera sentsazio bat sortzea edo eten, tentsio eta ezegonkortasunarena. Kadentziek puntuazio markek hizkuntza idatzian betetzen dutenaren antzeko eginkizuna dute (koma, puntua e.a.): Musikan arnasa non hartu eta non gelditu markatzen dute, musika perpausak egituratzeko balio dute, eta, gainera, tonalitatea egonkortzen ere laguntzen dute. Entzun, adibidez, hurrengo hiru akordeak: "
+
+#: TheoryHarmony/TheoryHarmony.cpp:47
+msgid "You will notice the feeling of conclusion, of reaching the end of a musical piece. The chord sequence does not create expectations of continuation. The composer could end the musical composition in the last chord and the listener will perceive that the end has been reached and remain 'satisfied' with finishing at that point. On the contrary, listen to the following chord sequence:"
+msgstr "Amaiera sentsazioa, musika pieza bukatuz doalakoa nabarituko duzu. Akorde sekuentziak ez du jarraipen itxaropenik sortzen. Konpositoreak musika konposizioa azken akordean eten zezakeen eta entzuleak amaiera heldua zela sentituta, 'pozik' senti zitekeen une hartan amaituta. Entzun, ordea, hurrengo akorde sekuentzia:"
+
+#: TheoryHarmony/TheoryHarmony.cpp:48
+msgid "Now the sensation is not conclusive. It is more like a short pause and it creates an expectation of continuation. If we end the music piece at the last chord, we will leave the listener with a longing for more."
+msgstr "Oraingoan ez dago amaiera sentsaziorik. Areago iradokitzen du etenaldi labur bat, eta jarraipen itxaropena sortzen du. Musika pieza azken akordean amaituz gero, entzulea gehiagoren irrikan utziko dugu."
+
+#: TheoryHarmony/TheoryHarmony.cpp:49
+msgid "Cadences are not difficult to recognize by ear but it is sometimes harder to recognize them in written music."
+msgstr "Ez da zaila kadentziak belarriz ezagutzea, baina, batzuetan, nekezagoa da musika idatzian halakoak ezagutzea."
+
+#: TheoryHarmony/TheoryHarmony.cpp:50
+msgid "Cadence types"
+msgstr "Kadentzi motak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:51
+msgid "Depending on the sensation they create, cadences are classified in two fundamental types:"
+msgstr "Sortzen duten sentsazioaren arabera, kadentziak bi mota nagusitan sailkatzen dira: "
+
+#: TheoryHarmony/TheoryHarmony.cpp:52
+#: TheoryHarmony/TheoryHarmony.cpp:57
+#: TheoryHarmony/TheoryHarmony.cpp:80
+#: TheoryHarmony/TheoryHarmony.cpp:83
+msgid "Terminal cadences"
+msgstr "Kadentzia terminalak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:53
+msgid ". They create a sensation of stability, rest and ending of the musical phrase or sentence."
+msgstr ". Egonkortasun, atseden eta amaiera sentsazioa sortzen dute musika esaldi edo perpaus baten amaieran. "
+
+#: TheoryHarmony/TheoryHarmony.cpp:54
+#: TheoryHarmony/TheoryHarmony.cpp:86
+#: TheoryHarmony/TheoryHarmony.cpp:107
+msgid "Transient cadences"
+msgstr "Kadentzia iragankorrak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:55
+msgid ". They typically result in creating tension and a sensation of unstablility, as well as an expectation of continuation."
+msgstr ". Normalean, emaitza izaten dituzte tentsioa eta ezegonkortasun sentipena sortzea, baita jarraipen itxaroa ere."
+
+#: TheoryHarmony/TheoryHarmony.cpp:56
+msgid "As an exercise you will hear a cadence and based on the sensation it provokes, try to identify if the cadence is terminal or transient."
+msgstr "Ariketa moduan, kadentzia bat entzungo duzu eta hark eragiten dizun sentsazioan oinarrituta, kadentzia terminala ala iragankorra den identifikatzen saiatu behar duzu. "
+
+#: TheoryHarmony/TheoryHarmony.cpp:58
+msgid "Terminal cadences create a sensation of stability and conclusion of the musical phrase or sentence. This feeling is achieved by moving to the tonic grade (grade I) from any other chord grade. Depending on the starting chord grade, two types of cadences are considered:"
+msgstr "Kadentzia terminalek musika esaldi edo perpausean egonkortasun eta amaiera sentsazioa sortzen dute. Sentipen hori lortzen da gradu tonikora (I. gradua) beste edozein akorde gradutatik mugituta. Akorde maila non hasten den, bi kadentzi mota hartzen dira kontuan:"
+
+#: TheoryHarmony/TheoryHarmony.cpp:59
+msgid " authentic cadences"
+msgstr "benetako kadentziak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:60
+#: TheoryHarmony/TheoryHarmony.cpp:89
+msgid " and"
+msgstr " eta"
+
+#: TheoryHarmony/TheoryHarmony.cpp:61
+msgid " plagal cadences"
+msgstr "kadentzia plagalak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:62
+#: TheoryHarmony/TheoryHarmony.cpp:91
+msgid "."
+msgstr "."
+
+#: TheoryHarmony/TheoryHarmony.cpp:63
+msgid "Authentic cadences"
+msgstr "Benetako kadentziak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:64
+msgid "An authentic cadence takes place when grade V, dominant, (or V7, a V chord with an added seventh) resolves in grade I (tonic). The authentic cadence is the strongest terminal cadence, with great conclusive power."
+msgstr "Benetako kadentzia  gertatzen da V. gradua, dominantea (edo V7, zazpiduna gehituriko bostun akordea) I. graduan (tonikoa) amaitzen denean. Benetako kadentzia kadentzia terminalik indartsuena da, amaiera indar handia duelako."
+
+#: TheoryHarmony/TheoryHarmony.cpp:65
+msgid "When the authentic cadence satisfies the following conditions:"
+msgstr "Benetako kadentziak honako baldintza hauek betetzen dituenean:"
+
+#: TheoryHarmony/TheoryHarmony.cpp:66
+msgid "both chords are in root position;"
+msgstr "bi akordeak funtsezko posizioan egotea;"
+
 #: TheoryHarmony/TheoryHarmony.cpp:67
+msgid "the first chord is the V or the V7 ; and"
+msgstr "lehenengo akordea  V.a edo V/.a izatea; eta"
+
+#: TheoryHarmony/TheoryHarmony.cpp:68
+msgid "the melody (soprano voice) ends on the tonic pitch."
+msgstr "melodia (soprano ahotsa) tonu tonikoan amaitzea."
+
+#: TheoryHarmony/TheoryHarmony.cpp:69
+msgid "then the cadence has its strongest conclusive power and it creates the most final sounding of all cadences. Due to this fact, if the previously listed conditions are satisfied, the cadence is named 'perfect authentic cadence' or just 'perfect cadence'. If the conditions are not satisfied, the conclusive sensation of the cadence is less strong and then the cadence is named 'imperfect authentic cadence' or just 'imperfect cadence'."
+msgstr "orduan kadentziak amaiera indarrik indartsuena izaten du eta, kadentzia guztien artetik, amaierarik soinutsuena sortzen du. Gertaera horren ondorioz, lehen zerrendaturiko baldintzak betez gero, kadentziari 'benetako kadentzia perfektua' edo 'kadentzia perfektua' deritzote. Baldintzak bete ezean, kadentziaren amaiera sentsazioa ez da halako indartsua eta, ondorioz, kadentziari 'benetako kadentzia inperfektua' edo 'kadentzia inperfektua' deritzote."
+
+#: TheoryHarmony/TheoryHarmony.cpp:70
+msgid "There are theoretical discussions about considering the imperfect cadence as a terminal cadence. Nevertheless, we have opted to include it in the terminal group due to sonority considerations."
+msgstr "Teorilariek eztabaidatzen dute ea kadentzia inperfektua kadentzia terminala ote den. Nolanahi ere, guk terminalen taldean sartu dugu sonoritate arrazoiak direla-eta."
+
+#: TheoryHarmony/TheoryHarmony.cpp:71
+msgid "The perfect cadence is usually found at the end of a piece of music and the end of significant sections."
+msgstr "Kadentzia perfektua normalean musika pieza baten amaieran eta atal esanguratsuen amaieran agertu ohi da."
+
+#: TheoryHarmony/TheoryHarmony.cpp:72
+msgid "Plagal cadences"
+msgstr "Kadentzia plagalak"
+
+#: TheoryHarmony/TheoryHarmony.cpp:73
+msgid "A plagal cadence takes place when grade IV (subdominant) resolves in grade I (tonic), both in root position. The plagal cadence is less strong than the authentic cadence and it is also known as the &quot;Amen&quot; cadence as it is used at the end of most church hymns."
+msgstr "Kadentzia plagala gertatzen da IV. gradua (subdominantea) I. graduan (tonikoa) amaitzen denean, biak funtsezko posizioan daudela. Kadentzia plagala ez da benetako kadentzia bezain indartsua eta 'amen' kadentzia ere deritzote; eliz himno askoren amaieran erabiltzen da."
+
+#: TheoryHarmony/TheoryHarmony.cpp:74
+msgid "In both cadence types, authentic and plagal, other chords playing the same harmonic functions can be used. For example, in the authentic cadence the V (dominant function) can be played by the VII. And in the plagal cadence the IV (subdominant function) can be played by the II. These replacements add variety and harmonic colour to the cadence."
+msgstr "Bi kadentzia motatan, benetakoan eta plagalean, harmoniko funtzio berberak jotzen dituzten bestelako akordeak ere erabil daitezke. Esaterako, benetako kadentzian V.a (funtzio dominantea) VII.arekin batera jo daiteke. Eta kadentzia plagalean IV.a (funtzio subdominantea) II.arekin batera jo daiteke. "
+
+#: TheoryHarmony/TheoryHarmony.cpp:76
+#: TheoryHarmony/TheoryHarmony.cpp:100
+msgid "Theory"
+msgstr "Teoria"
+
+#: TheoryHarmony/TheoryHarmony.cpp:77
+msgid " - Practise to recognize in a score if a terminal cadence is authentic perfect or plagal."
+msgstr " - Jardun ezazu partitura batean asmatzen ea kadentzia terminal bat perfektua ala plagala den."
+
+#: TheoryHarmony/TheoryHarmony.cpp:79
 msgid " - Train your ear and practise to identify if a terminal cadence is authentic perfect or plagal."
 msgstr "- Trebatu zure belarria eta jardun ezazu identifikatzen  ea kadentzia terminal bat perfektua ala plagala den."
 
-#: TheoryHarmony/TheoryHarmony.cpp:69
-#: TheoryHarmony/TheoryHarmony.cpp:72
+#: TheoryHarmony/TheoryHarmony.cpp:81
+#: TheoryHarmony/TheoryHarmony.cpp:84
 msgid "Authentic and plagal cadences"
 msgstr "Kadentzia benetakoak eta plagalak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:70
+#: TheoryHarmony/TheoryHarmony.cpp:82
 msgid "Theory: Identify if a terminal cadence is authentic perfect or plagal."
 msgstr "Teoria: Asma ezazu ea kadentzia terminal bat benetako perfektua ala plagala den."
 
-#: TheoryHarmony/TheoryHarmony.cpp:73
+#: TheoryHarmony/TheoryHarmony.cpp:85
 msgid "Aural training: Identify if a terminal cadence is authentic perfect or plagal."
 msgstr "Asma ezazu ea kadentzia terminal bat benetako perfektua ala plagala den."
 
-#: TheoryHarmony/TheoryHarmony.cpp:75
+#: TheoryHarmony/TheoryHarmony.cpp:87
 msgid "Transient cadences are not conclusive. They create a sensation of tension and unstability and an expectation of continuation. They are more like a short pause in the musical flow. There are two types of transient cadences:"
 msgstr "Kadentzia iragankorrak ez dira amaierakoak. Tentsio eta ezegonkortasun sentsazioa sortzen dute, jarraipen itxaropen bat. Areago dira eten labur bat musikaren joanean. Bi kandentzia iragankor mota daude:"
 
-#: TheoryHarmony/TheoryHarmony.cpp:76
+#: TheoryHarmony/TheoryHarmony.cpp:88
 msgid " half cadences"
 msgstr "kadentzia erdiak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:78
+#: TheoryHarmony/TheoryHarmony.cpp:90
 msgid " deceptive cadences"
 msgstr "kadentzia iruzurtiak "
 
-#: TheoryHarmony/TheoryHarmony.cpp:80
+#: TheoryHarmony/TheoryHarmony.cpp:92
 msgid "Half cadences"
 msgstr "Kadentzia erdiak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:81
+#: TheoryHarmony/TheoryHarmony.cpp:93
 msgid "A half cadence takes place when the harmony moves to the V degree (dominant) from any other degree, except the tonic (I). The ending on V causes it to sound incomplete or 'suspended' due to the unstableness of the dominant chord. It is considered as the weakest cadence and cannot be used to end a musical phrase."
 msgstr "Kadentzia erdia gertatzen da harmonia V. gradura (dominantea) mugitzen denean beste edozein gradutatik, tonikoa (I) salbuespena dela.  V.ean amaitzeak osatu gabe edo 'luzaturik' entzutea eragiten du, akorde dominantearen ezegonkortasunagatik.  Kadentziarik ahulenetako bat da eta ezin da erabili musika esaldi bat amaitzeko. "
 
-#: TheoryHarmony/TheoryHarmony.cpp:88
+#: TheoryHarmony/TheoryHarmony.cpp:94
 msgid "A particular case of the half cadence is the Phrygian half cadence. It consists of a IV chord in first inversion that resolves to a V (or V7) chord in root position. It only occurs in minor keys (the IV is minor) and was widely used during the Baroque period to end a slow musical movement in minor mode, continued by a fast movement in major mode."
 msgstr "Kadentzia erdiaren kasu berezi bat dugu frigiar kadentzia erdia. Akorde laudun bat da, lehen inbertsioan, V.era (edo V7ra) aldatzen dena funtsezko posizioan. Armadura minorretan baino ez da gertatzen (IV.a minorra da) eta oso erabilera zabala izan zuen Barrokoan musika mugimendu geldo bat modu minorrean amaitzeko, jarraian modu nagusi bat doala."
 
-#: TheoryHarmony/TheoryHarmony.cpp:92
+#: TheoryHarmony/TheoryHarmony.cpp:95
 msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the VI degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
 msgstr "Beste kasu berezi-berezi bat kadentzia andaluziarra da. Armadura minorretan baino ez da gertatzen eta I-VII-VI-V progresioak sortzen du, VI. gradua ordezka daitekeela. Kadentzia honek kolore berezia du zazpidunaren funtsezkotik bostunaren hirugarrenera doan pausu erdi kromatikoagatik.  "
 
-#: TheoryHarmony/TheoryHarmony.cpp:94
-msgid "VII"
-msgstr "VII"
-
-#: TheoryHarmony/TheoryHarmony.cpp:95
-#: TheoryHarmony/TheoryHarmony.cpp:103
-msgid "VI"
-msgstr "VI"
-
-#: TheoryHarmony/TheoryHarmony.cpp:97
-msgid "7"
-msgstr "7"
-
-#: TheoryHarmony/TheoryHarmony.cpp:98
+#: TheoryHarmony/TheoryHarmony.cpp:96
 msgid "Deceptive cadences"
 msgstr "Kadentzia iruzurtiak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:99
+#: TheoryHarmony/TheoryHarmony.cpp:97
 msgid "A deceptive cadence occurs when a V chord does not resolve to a I chord, as the ear is expecting, but instead resolves to any other chord, typically to one containing the tonic pitch (the VI or the IV degrees)."
 msgstr "Kadentzia iruzurtia gertatzen da akorde bostun bat lehenengo akordera aldatzen ez denean, belarriak espero bezala, haren ordez beste beste edozein akordetara aldatzen dela, normalean tonu tonikoa duen batera (VI. edo IV. graduak)."
 
-#: TheoryHarmony/TheoryHarmony.cpp:104
+#: TheoryHarmony/TheoryHarmony.cpp:98
 msgid "The deceptive cadence is considered a weak cadence because of the 'surprise' and 'hanging' feelings it invokes. Therefore, it is never used to end a piece of music. However, it provides variety and surprise by resolving to a minor chord in major keys, and to a major chord in minor keys. And when used near the end of a piece, it helps to sustain the musical interest at the moment when the final authentic cadence is expected."
 msgstr "Kadentzia iruzurtia kadentzia ahultzat jotzen dute sortzen dituen 'harrimen' eta 'zintzilikatze' sentipenengatik. Ondorioz, inoiz ez dute erabiltzen musika pieza bat azkentzeko. Nolanahi ere, askotarikotasuna eta harrimena ematen akorde minorretik armadura maiorretara igarotzeko eta akorde maiorrera armadura minorretan. Eta pieza baten amaieratik hurbil darabiltenean, lagungarri gertatzen da musika interesari eusteko benetako amaiera espero den unean."
 
-#: TheoryHarmony/TheoryHarmony.cpp:107
+#: TheoryHarmony/TheoryHarmony.cpp:101
 msgid " - Practise to recognize in a score if a transient cadence is a half cadence or a deceptive one."
 msgstr "- Jardun ezazu partitura batean asmatzen ea kadentzia iragankor bat kadentzia erdia ala iruzurtia ote den."
 
-#: TheoryHarmony/TheoryHarmony.cpp:109
+#: TheoryHarmony/TheoryHarmony.cpp:103
 msgid " - Train your ear and practise to identify if a transient cadence is a half cadence or a deceptive cadence."
 msgstr "- Trebatu zure belarria eta jardun ezazu identifikatzen ea kadentzia iragankor bat kadentzia erdia edo kadentzia iruzurtia ote den."
 
-#: TheoryHarmony/TheoryHarmony.cpp:110
+#: TheoryHarmony/TheoryHarmony.cpp:104
 msgid "Trasient cadences"
 msgstr "Kadentzia iragankorrak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:111
-#: TheoryHarmony/TheoryHarmony.cpp:114
+#: TheoryHarmony/TheoryHarmony.cpp:105
+#: TheoryHarmony/TheoryHarmony.cpp:108
 msgid "Deceptive and half cadences"
 msgstr "Kadentzia iruzurtiak eta erdiak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:112
+#: TheoryHarmony/TheoryHarmony.cpp:106
 msgid "Theory: Identify if a transient cadence is a half cadence or a deceptive cadence."
 msgstr "Teoria: Asma ezazu ea kadentzia iragankor bat kadentzia erdia ala iruzurtia ote den. "
 
-#: TheoryHarmony/TheoryHarmony.cpp:115
+#: TheoryHarmony/TheoryHarmony.cpp:109
 msgid "Aural training: Identify if a transient cadence is a half cadence or a deceptive cadence."
 msgstr "Entzumena trebatzen: Asma ezazu ea kadentzia iragankor bat kadentzia erdia ala iruzurtia ote den. "
 
-#: TheoryHarmony/TheoryHarmony.cpp:116
+#: TheoryHarmony/TheoryHarmony.cpp:110
 msgid "Exercises on cadences"
 msgstr "Kadentzi ariketak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:117
+#: TheoryHarmony/TheoryHarmony.cpp:111
 msgid "Once you have reviewed all cadence types it is important to learn to recognize and identify them. A useful trick is to associate each cadence with a melody or song you know well. Practise to recognise cadences while you listen to music."
 msgstr "Kadentzi mota guztiak ikusi ondoren, garrantzitsua da haiek ezagutzen eta identifikatzen ikastea. Trikimailu baliagarria da kadentzia bakoitza lotzea ondo ezagutzen duzun melodia edo kanta bati. Jardun ezazu kadentziak igartzen musika entzun ahala."
 
-#: TheoryHarmony/TheoryHarmony.cpp:118
+#: TheoryHarmony/TheoryHarmony.cpp:112
 msgid "In this theme we just propose you some additional exercises to identify cadences, both aurally and in written music."
 msgstr "Gai honetan kadentziak belarriz zein musika idatzian identifikatzeko ariketa osagarri batzuk besterik ez dizugu proposatzen."
 
-#: TheoryHarmony/TheoryHarmony.cpp:120
+#: TheoryHarmony/TheoryHarmony.cpp:114
 msgid "Exercise 1"
 msgstr "1. ariketa"
 
-#: TheoryHarmony/TheoryHarmony.cpp:121
+#: TheoryHarmony/TheoryHarmony.cpp:115
 msgid " - Aural training: identify the type of cadence: perfect, imperfect, plagal, half or deceptive."
 msgstr "- Entzumena trebatzen: Kadentzi mota identifikatzea: perfektua, inperfektua, plagala, erdia eta iruzurtia. "
 
-#: TheoryHarmony/TheoryHarmony.cpp:122
+#: TheoryHarmony/TheoryHarmony.cpp:116
 msgid "Exercise 2"
 msgstr "2. ariketa"
 
-#: TheoryHarmony/TheoryHarmony.cpp:123
+#: TheoryHarmony/TheoryHarmony.cpp:117
 msgid " - Theory: identify the type of cadence: perfect, imperfect, plagal, half or deceptive."
 msgstr "- Teoria: Kadentzi mota identifikatzea: perfektua, inperfektua, plagala, erdia eta iruzurtia. "
 
-#: TheoryHarmony/TheoryHarmony.cpp:124
-#: TheoryHarmony/TheoryHarmony.cpp:125
-#: TheoryHarmony/TheoryHarmony.cpp:127
-#: TheoryHarmony/TheoryHarmony.cpp:128
+#: TheoryHarmony/TheoryHarmony.cpp:118
+#: TheoryHarmony/TheoryHarmony.cpp:119
+#: TheoryHarmony/TheoryHarmony.cpp:121
+#: TheoryHarmony/TheoryHarmony.cpp:122
 msgid "All cadences"
 msgstr "Kadentzia guztiak"
 
-#: TheoryHarmony/TheoryHarmony.cpp:126
+#: TheoryHarmony/TheoryHarmony.cpp:120
 msgid "Aural training: identify the type of cadence."
 msgstr "Entzumena trebatzen: kadentzi mota identifikatzea."
 
-#: TheoryHarmony/TheoryHarmony.cpp:129
+#: TheoryHarmony/TheoryHarmony.cpp:123
 msgid "Theory: identify the type of cadence."
 msgstr "Teoria:  kadentzi mota identifikatzea."
 

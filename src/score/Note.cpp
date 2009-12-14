@@ -1442,6 +1442,17 @@ void lmNote::OnAccidentalsChanged(int nStep, int nNewAcc)
     SetDirty(true);
 }
 
+void lmNote::ToggleStem()
+{
+    //Toggle note stem
+
+    m_fStemDown = !m_fStemDown;
+
+    if (m_fStemDown)
+        m_nStemType = lmSTEM_DOWN;
+    else
+        m_nStemType = lmSTEM_UP;
+}
 
 wxString lmNote::Dump()
 {
@@ -1689,6 +1700,11 @@ void lmNote::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
     {
         pMenu->AppendSeparator();
         pMenu->Append(lmPOPUP_DeleteTiePrev, _("Delete tie &previous"));
+    }
+
+    if (m_nStemType != lmSTEM_NONE && m_nNoteType > eWhole && !IsInChord())
+    {
+        pMenu->Append(lmPOPUP_ToggleStem, _("Toggle stem"));
     }
 }
 

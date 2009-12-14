@@ -83,6 +83,7 @@ public:
     inline lmLUnits GetStemThickness() {return m_uStemThickness; }
     inline lmLUnits GetStemLength() { return m_uStemLength; }
     inline bool StemGoesDown() { return m_fStemDown; }
+    void ToggleStem();
 
 	//stems: methods related to layout phase
     lmLUnits GetXStemLeft();

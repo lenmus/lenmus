@@ -740,4 +740,23 @@ protected:
 };
 
 
+// Toggle note stem
+//------------------------------------------------------------------------------------
+class lmCmdToggleNoteStem : public lmScoreCommand
+{
+	DECLARE_CLASS(lmCmdToggleNoteStem)
+public:
+    lmCmdToggleNoteStem(bool fNormalCmd, lmDocument *pDoc, lmGMSelection* pSelection);
+    ~lmCmdToggleNoteStem();
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+    bool Undo();
+
+protected:
+    std::list<long>     m_Notes;        //modified notes
+
+};
+
+
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

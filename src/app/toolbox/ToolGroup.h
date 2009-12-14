@@ -52,7 +52,7 @@ enum lmEToolGroupID
     lmGRP_NoteDuration,         //notes duration group
     lmGRP_NoteAcc,              //Note accidentals group
     lmGRP_NoteDots,             //Note dots group
-    lmGRP_TieTuplet,            //Ties and tuplets group
+    lmGRP_NoteModifiers,            //Ties and tuplets group
     lmGRP_Beams,                //tools for beams
 
 	//in lmPAGE_CLEFS
@@ -73,9 +73,10 @@ enum lmEToolID
 {
     lmTOOL_NONE = 0,        //to signal not to use a ToolID
 
-    //lmGRP_TieTuplet
+    //lmGRP_NoteModifiers
     lmTOOL_NOTE_TIE,
     lmTOOL_NOTE_TUPLET,
+    lmTOOL_NOTE_TOGGLE_STEM,
 
     //lmGRP_Beams
     lmTOOL_BEAMS_CUT,

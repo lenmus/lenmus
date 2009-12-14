@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: MusicReading_L2 4.0\n"
+"Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-06 22:38+0100\n"
+"PO-Revision-Date: 2009-12-08 17:37+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -400,7 +400,8 @@ msgid "Compound time of 12/8. 8th note tied to 16th notes"
 msgstr "Temps composé à 12/8. Croche liée à des doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:76
-msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. Ii is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
+#, fuzzy
+msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. It is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
 msgstr "Le temps composé de 12/8 a quatre unités et chaque pulsation est occupée par une noire pointée. L'accent est placé sur la première. C'est un temps similaire aux temps de 6/8 et 9/8 mais avec quatre pulsations. La note qui occupe toute la mesure est la ronde pointée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:77
