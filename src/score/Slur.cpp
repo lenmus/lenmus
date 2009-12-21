@@ -78,10 +78,10 @@ wxString lmBezier::SourceLDP(int nIndent, bool fUndoData)
         {
             fDefault = false;
             if (m_tPoints[i].x != 0.0f)
-		        sSource += wxString::Format(_T(" % s-x:%s"), sPointNames[i].c_str(),
+		        sSource += wxString::Format(_T(" %s-x:%s"), sPointNames[i].c_str(),
                                     DoubleToStr((double)m_tPoints[i].x, 4).c_str() );
             if (m_tPoints[i].y != 0.0f)
-		        sSource += wxString::Format(_T(" % s-y:%s"), sPointNames[i].c_str(),
+		        sSource += wxString::Format(_T(" %s-y:%s"), sPointNames[i].c_str(),
                                     DoubleToStr((double)m_tPoints[i].y, 4).c_str() );
         }
     }
@@ -163,8 +163,8 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
                                          pShapeEnd, fTieUnderNote, color, lmVISIBLE);
     StoreShape(pShape1);
 	pBox->AddShape(pShape1, m_pEndNR->GetLayer());
-	pShapeStart->Attach(pShape1, lm_eGMA_StartNote);
-	pShapeEnd->Attach(pShape1, lm_eGMA_EndNote);
+	pShapeStart->Attach(pShape1, lm_eGMA_StartObj);
+	pShapeEnd->Attach(pShape1, lm_eGMA_EndObj);
     pShapeEnd->OnTieAttached(0, pShape1);     //inform end note shape of this attachment
 
 
@@ -183,8 +183,8 @@ lmLUnits lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColo
                                          pShapeEnd, fTieUnderNote, color, lmNO_VISIBLE);
     StoreShape(pShape2);
 	pBox->AddShape(pShape2, m_pStartNR->GetLayer());
-	pShapeStart->Attach(pShape2, lm_eGMA_StartNote);
-	pShapeEnd->Attach(pShape2, lm_eGMA_EndNote);
+	pShapeStart->Attach(pShape2, lm_eGMA_StartObj);
+	pShapeEnd->Attach(pShape2, lm_eGMA_EndObj);
     pShapeEnd->OnTieAttached(1, pShape2);     //inform end note shape of this attachment
 
 	//link both ties

@@ -139,6 +139,7 @@ public:
     lmBarline* Cmd_InsertBarline(lmEBarline nType = lm_eBarlineSimple, bool fVisible = true);
 	lmClef* Cmd_InsertClef(lmEClefType nClefType, bool fVisible = true);
     lmFiguredBass* Cmd_InsertFiguredBass(lmFiguredBassData* pFBData);
+    lmFiguredBassLine* Cmd_InsertFBLine();
     lmKeySignature* Cmd_InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
 	lmNote* Cmd_InsertNote(lmEPitchType nPitchType, int nStep,
 					       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
@@ -312,6 +313,9 @@ private:
 
     //barlines
     void CheckAndDoAutoBar(lmNoteRest* pNR);
+
+    //other
+    lmFiguredBass* FindFiguredBass(bool fFwd, lmStaffObj* pStartSO);
 
 
         // member variables

@@ -8,6 +8,7 @@
     <!ENTITY ch_terminal  SYSTEM "TheoryHarmony_terminal.xml">
     <!ENTITY ch_transient SYSTEM "TheoryHarmony_transient.xml">
     <!ENTITY ch_cad_review SYSTEM "TheoryHarmony_cad_review.xml">
+    <!ENTITY ch_g6_figured_bass SYSTEM "TheoryHarmony_g6_figured_bass.xml">
 ]>
 
 <book id="TheoryHarmony">
@@ -79,6 +80,14 @@ Therefore the 'Theory and harmony' eBook is currently just a collection of un-or
     &ch_terminal;
     &ch_transient;
     &ch_cad_review;
+    
+</chapter>
+
+<chapter id="ch4">
+<titleabbrev>Figured bass</titleabbrev>
+<title>Figured bass</title>
+
+    &ch_g6_figured_bass;
     
 </chapter>
 

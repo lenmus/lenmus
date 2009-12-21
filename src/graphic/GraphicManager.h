@@ -128,8 +128,7 @@ private:
 extern wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey);
 extern wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef);
 extern wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType);
-extern wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size,
-							   wxSize shift = wxSize(0,0));
+extern wxBitmap lmGenerateBitmap(lmScore* pScore, wxSize size, double rScale=1.0);
 
 #endif  // __LM_GRAPHICMANAGER_H__
 

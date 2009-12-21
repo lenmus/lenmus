@@ -57,6 +57,7 @@
 #include "../graphic/BoxSystem.h"
 #include "../graphic/BoxScore.h"
 #include "../graphic/Handlers.h"
+#include "../ldp_parser/AuxString.h"
 
 // access to colors
 #include "../globals/Colors.h"
@@ -1758,9 +1759,7 @@ wxString lmStylesCollection::SourceLDP(int nIndent, lmTextStyle* pStyle)
     sSource += _T(")");
 
     //color
-    sSource += _T(" (color ");
-    sSource += pStyle->nColor.GetAsString(wxC2S_HTML_SYNTAX);
-    sSource += _T(")");
+    sSource += lmColorToLDP(pStyle->nColor, false);   //false=always generate source
 
     //close element
     sSource += _T(")\n");

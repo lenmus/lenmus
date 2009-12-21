@@ -64,7 +64,8 @@ enum lmEToolGroupID
 	lmGRP_BarlineType,			//barline type
 
     //in lmPAGE_SYMBOLS
-    lmGRP_Symbols,              //texts, figured bass, symbols & graphic objects
+    lmGRP_Symbols,              //texts, symbols & graphic objects
+    lmGRP_Harmony,              //figured bass & harmony symbols
 
 };
 
@@ -85,10 +86,13 @@ enum lmEToolID
     lmTOOL_BEAMS_SUBGROUP,
 
     //lmGRP_Symbols
-    lmTOOL_FIGURED_BASS,
     lmTOOL_TEXT,
     lmTOOL_LINES,
     lmTOOL_TEXTBOX,
+
+    //lmGRP_Harmony
+    lmTOOL_FIGURED_BASS,
+    lmTOOL_FB_LINE
 
 };
 
@@ -125,6 +129,7 @@ public:
     //state
     void EnableGroup(bool fEnable);
     void EnableForMouseMode(int nMode);
+    inline void SetAsAlwaysDisabled() { m_fAlwaysDisabled = true; }
 
     //identification
     inline bool IsToolSelectorGroup() { return m_nGroupType == lm_eGT_ToolSelector; }
@@ -157,6 +162,7 @@ protected:
     bool            m_fSelected;        //(only tool-selector) selected / deselected state when enabled
     bool            m_fSaveSelected;    //(only tool-selector) to save/restore state when disabled/enabled
     bool            m_fGuiControl;      //group not used in toolbox, but as a GUI control
+    bool            m_fAlwaysDisabled;  //for groups under development
     wxString        m_sTitle;           //group title
 
     DECLARE_EVENT_TABLE()

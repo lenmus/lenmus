@@ -69,11 +69,11 @@ class lmScore;
 class lmBarlineProperties : public lmPropertiesPage
 {
 public:
-	lmBarlineProperties(wxWindow* parent, lmBarline* pBL);
+	lmBarlineProperties(lmDlgProperties* parent, lmBarline* pBL);
 	~lmBarlineProperties();
 
     //implementation of pure virtual methods in base class
-    void OnAcceptChanges(lmController* pController);
+    void OnAcceptChanges(lmController* pController, bool fCurrentPage);
 
     // event handlers
 
@@ -97,7 +97,7 @@ protected:
 //--------------------------------------------------------------------------------------
 
 #include "../graphic/GraphicManager.h"	//to use GenerateBitmapForBarlineCtrol()
-#include "../app/ScoreCanvas.h"			//lmConroller
+#include "../app/ScoreCanvas.h"			//lmController
 
 enum {
     lmID_BARLINE = 2600,
@@ -115,7 +115,7 @@ static lmBarlinesDBEntry tBarlinesDB[lm_eMaxBarline+1];
 //wich the text is being created and is not yet included in the score. In this
 //cases method GetScore() will fail, so we can not use it in the implementation
 //of this class
-lmBarlineProperties::lmBarlineProperties(wxWindow* parent, lmBarline* pBL)
+lmBarlineProperties::lmBarlineProperties(lmDlgProperties* parent, lmBarline* pBL)
     : lmPropertiesPage(parent)
 {
     m_pBL = pBL;
@@ -162,7 +162,7 @@ lmBarlineProperties::~lmBarlineProperties()
 {
 }
 
-void lmBarlineProperties::OnAcceptChanges(lmController* pController)
+void lmBarlineProperties::OnAcceptChanges(lmController* pController, bool fCurrentPage)
 {
 	int iB = m_pBarlinesList->GetSelection();
     lmEBarline nType = tBarlinesDB[iB].nBarlineType;
@@ -329,8 +329,7 @@ void lmBarline::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName
 
     WXUNUSED(sTabName)
 
-	pDlg->AddPanel( new lmBarlineProperties(pDlg->GetNotebook(), this),
-				_("Barline"));
+	pDlg->AddPanel( new lmBarlineProperties(pDlg, this), _("Barline"));
 
 	//change dialog title
 	pDlg->SetTitle(_("Barline properties"));

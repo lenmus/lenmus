@@ -265,7 +265,8 @@ BEGIN_EVENT_TABLE( lmScoreWizard, lmWizard )
 END_EVENT_TABLE()
 
 lmScoreWizard::lmScoreWizard(wxWindow* parent, lmScore** pPtrScore)
-    : lmWizard(parent, lmID_SCORE_WIZARD, _("Score configuration wizard"), wxDefaultPosition)
+    : lmWizard(parent, lmID_SCORE_WIZARD, _("Score configuration wizard"),
+               wxDefaultPosition, wxSize(600, 430))
 {
     SetExtraStyle(GetExtraStyle() | wxWIZARD_EX_HELPBUTTON);
 
@@ -397,6 +398,32 @@ lmScoreWizard::~lmScoreWizard()
 
 void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
 {
+    PrepareScore();
+}
+
+void lmScoreWizard::OnWizardCancel( wxWizardEvent& event )
+{
+    //delete existing score
+    if (*m_pPtrScore)
+        delete *m_pPtrScore;
+    *m_pPtrScore = (lmScore*)NULL;
+}
+
+void lmScoreWizard::OnPageChanged( wxWizardEvent& event )
+{
+    //The page has changed. The event page points to the page to be displayed now.
+    //Inform the page
+
+    ((lmWizardPage*)event.GetPage())->OnEnterPage();
+}
+
+void lmScoreWizard::PrepareScore()
+{
+    //delete existing score
+    if (*m_pPtrScore)
+        delete *m_pPtrScore;
+    *m_pPtrScore = (lmScore*)NULL;
+
     lmScore* pScore = (lmScore*)NULL;
     wxString sFile = m_Templates[m_nSelTemplate].sTemplate;
 
@@ -574,22 +601,19 @@ void lmScoreWizard::OnWizardFinished( wxWizardEvent& event )
         }
     }
 
-    //return the created score
+    //save the created score
     *m_pPtrScore = pScore;
 }
 
-void lmScoreWizard::OnWizardCancel( wxWizardEvent& event )
+void lmScoreWizard::UpdatePreview(wxStaticBitmap* pBmpPreview)
 {
+    wxSize size = pBmpPreview->GetSize();
+    PrepareScore();
+
+    //render score in a bitmap
+	wxBitmap oBM = lmGenerateBitmap(*m_pPtrScore, size, 0.5);
+    pBmpPreview->SetBitmap(oBM);
 }
-
-void lmScoreWizard::OnPageChanged( wxWizardEvent& event )
-{
-    //The page has changed. The event page points to the page to be displayed now.
-    //Inform the page
-
-    ((lmWizardPage*)event.GetPage())->OnEnterPage();
-}
-
 
 //--------------------------------------------------------------------------------
 // lmScoreWizardLayout implementation
@@ -618,7 +642,6 @@ bool lmScoreWizardLayout::Create(wxWizard* parent)
 {
     // page creation
     CreateControls();
-    m_pBmpPreview->SetBitmap( wxArtProvider::GetIcon(_T("preview"), wxART_OTHER) );
     GetSizer()->Fit(this);
 
         // populate controls
@@ -641,7 +664,7 @@ bool lmScoreWizardLayout::Create(wxWizard* parent)
     m_pRadOrientation->SetSelection(m_ScoreData.fPortrait ? 1 : 0);
 
     //bitmap preview
-	//m_pBmpPreview;
+    ((lmScoreWizard*)parent)->UpdatePreview(m_pBmpPreview);
 
     return true;
 }
@@ -657,33 +680,33 @@ void lmScoreWizardLayout::CreateControls()
 	wxStaticBoxSizer* pLayoutSizer;
 	pLayoutSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select instruments and style") ), wxVERTICAL );
 
-	m_pLstEnsemble = new wxListBox( this, lmID_LIST_ENSEMBLE, wxDefaultPosition, wxSize( 240,-1 ), 0, NULL, 0 );
-	pLayoutSizer->Add( m_pLstEnsemble, 1, wxALL, 5 );
+	m_pLstEnsemble = new wxListBox( this, lmID_LIST_ENSEMBLE, wxDefaultPosition, wxSize( -1,-1 ), 0, NULL, 0 );
+	pLayoutSizer->Add( m_pLstEnsemble, 1, wxALL|wxEXPAND, 5 );
 
 	pLeftColumnSizer->Add( pLayoutSizer, 1, wxEXPAND|wxALL, 5 );
 
 	wxStaticBoxSizer* pPaperSizer;
-	pPaperSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select paper size and orientation") ), wxHORIZONTAL );
-
+	pPaperSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select paper size and orientation") ), wxVERTICAL );
+	
 	wxBoxSizer* pCboSizeSizer;
 	pCboSizeSizer = new wxBoxSizer( wxVERTICAL );
-
+	
 	m_pLblPaper = new wxStaticText( this, wxID_ANY, _("Paper size"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPaper->Wrap( -1 );
 	pCboSizeSizer->Add( m_pLblPaper, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxRIGHT|wxLEFT, 5 );
-
+	
 	wxArrayString m_pCboPaperChoices;
 	m_pCboPaper = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_pCboPaperChoices, 0 );
 	m_pCboPaper->SetSelection( 0 );
-	pCboSizeSizer->Add( m_pCboPaper, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	pPaperSizer->Add( pCboSizeSizer, 0, wxALIGN_CENTER_VERTICAL, 5 );
-
+	pCboSizeSizer->Add( m_pCboPaper, 1, wxALIGN_CENTER_VERTICAL|wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+	
+	pPaperSizer->Add( pCboSizeSizer, 1, wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	
 	wxString m_pRadOrientationChoices[] = { _("Landscape"), _("Portrait") };
 	int m_pRadOrientationNChoices = sizeof( m_pRadOrientationChoices ) / sizeof( wxString );
-	m_pRadOrientation = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_pRadOrientationNChoices, m_pRadOrientationChoices, 1, wxRA_SPECIFY_COLS );
+	m_pRadOrientation = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_pRadOrientationNChoices, m_pRadOrientationChoices, 1, wxRA_SPECIFY_ROWS );
 	m_pRadOrientation->SetSelection( 0 );
-	pPaperSizer->Add( m_pRadOrientation, 0, wxALL, 5 );
+	pPaperSizer->Add( m_pRadOrientation, 0, wxRIGHT|wxLEFT, 5 );
 
 	pLeftColumnSizer->Add( pPaperSizer, 0, wxALL|wxEXPAND, 5 );
 
@@ -695,8 +718,8 @@ void lmScoreWizardLayout::CreateControls()
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
 
-	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN );
-	sbSizer4->Add( m_pBmpPreview, 1, wxALL|wxEXPAND, 5 );
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(240,315), wxBORDER_SUNKEN );
+	sbSizer4->Add( m_pBmpPreview, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	pRightColumnSizer->Add( sbSizer4, 1, wxEXPAND, 5 );
 
@@ -713,6 +736,9 @@ void lmScoreWizardLayout::OnEnsembleSelected(wxCommandEvent& event)
 
     //When selecting template 'empty' do not allow next page. Only finish
     ((lmWizard*)GetParentWizard())->EnableButtonNext(m_nSelTemplate != m_nEmptyTemplate);
+
+    //update preview
+    ((lmScoreWizard*)GetParentWizard())->UpdatePreview(m_pBmpPreview);
 }
 
 bool lmScoreWizardLayout::TransferDataFromWindow()
@@ -769,6 +795,7 @@ IMPLEMENT_DYNAMIC_CLASS( lmScoreWizardKey, lmWizardPage )
 
 BEGIN_EVENT_TABLE( lmScoreWizardKey, lmWizardPage )
     EVT_RADIOBOX (lmID_RADIO_KEY, lmScoreWizardKey::OnKeyType)
+    EVT_COMBOBOX (lmID_COMBO_KEY, lmScoreWizardKey::OnComboKey)
 END_EVENT_TABLE()
 
 
@@ -819,7 +846,6 @@ bool lmScoreWizardKey::Create(wxWizard* parent)
 
     // page creation
     CreateControls();
-    m_pBmpPreview->SetBitmap( wxArtProvider::GetIcon(_T("preview"), wxART_OTHER) );
     GetSizer()->Fit(this);
 
     //initial selection
@@ -863,8 +889,8 @@ void lmScoreWizardKey::CreateControls()
 	wxStaticBoxSizer* pPreviewSizer;
 	pPreviewSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
 
-	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
-	pPreviewSizer->Add( m_pBmpPreview, 1, wxALL|wxEXPAND, 5 );
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(240,315), wxSUNKEN_BORDER );
+	pPreviewSizer->Add( m_pBmpPreview, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	pRightColumnSizer->Add( pPreviewSizer, 1, wxEXPAND, 5 );
 
@@ -898,6 +924,7 @@ void lmScoreWizardKey::LoadKeyList(int nType)
 {
     //nType: 0=major, 1=minor
 
+	int iK = m_pKeyList->GetSelection();
     if (nType==0)
     {
         m_pKeyList->Clear();
@@ -918,7 +945,7 @@ void lmScoreWizardKey::LoadKeyList(int nType)
                                                          m_tMinorKeys[i].nKeyType) );
         }
     }
-    m_pKeyList->SetSelection(0);
+    m_pKeyList->SetSelection(iK);
 }
 
 void lmScoreWizardKey::OnKeyType(wxCommandEvent& event)
@@ -926,6 +953,18 @@ void lmScoreWizardKey::OnKeyType(wxCommandEvent& event)
     //load list box with the appropiate keys for selected key type
 
     LoadKeyList(event.GetSelection());
+
+    //update preview
+    TransferDataFromWindow();
+    ((lmScoreWizard*)GetParentWizard())->UpdatePreview(m_pBmpPreview);
+}
+
+void lmScoreWizardKey::OnComboKey(wxCommandEvent& event)
+{
+    //update preview
+
+    TransferDataFromWindow();
+    ((lmScoreWizard*)GetParentWizard())->UpdatePreview(m_pBmpPreview);
 }
 
 void lmScoreWizardKey::OnEnterPage()
@@ -936,6 +975,10 @@ void lmScoreWizardKey::OnEnterPage()
 
     m_ScoreData.fAddTime = false;
     m_ScoreData.fAddTitles = false;
+
+    //bitmap preview
+    TransferDataFromWindow();
+    ((lmScoreWizard*)GetParentWizard())->UpdatePreview(m_pBmpPreview);
 }
 
 
@@ -989,7 +1032,6 @@ bool lmScoreWizardTime::Create(wxWizard* parent)
 {
     // page creation
     CreateControls();
-    m_pBmpPreview->SetBitmap( wxArtProvider::GetIcon(_T("preview"), wxART_OTHER) );
     GetSizer()->Fit(this);
 
     //initialize controls
@@ -1068,8 +1110,8 @@ void lmScoreWizardTime::CreateControls()
 	wxStaticBoxSizer* pPreviewSizer;
 	pPreviewSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
 
-	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
-	pPreviewSizer->Add( m_pBmpPreview, 1, wxALL|wxEXPAND, 5 );
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(240,315), wxSUNKEN_BORDER );
+	pPreviewSizer->Add( m_pBmpPreview, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	pRightColumnSizer->Add( pPreviewSizer, 1, wxEXPAND|wxALL, 5 );
 
@@ -1105,6 +1147,10 @@ void lmScoreWizardTime::OnTimeType(wxCommandEvent& event)
     //disable the static box
 
     EnableOtherTimeSignatures( m_anBeats[event.GetSelection()] == -1);
+
+    //bitmap preview
+    TransferDataFromWindow();
+    ((lmScoreWizard*)GetParentWizard())->UpdatePreview(m_pBmpPreview);
 }
 
 void lmScoreWizardTime::EnableOtherTimeSignatures(bool fEnable)
@@ -1123,6 +1169,10 @@ void lmScoreWizardTime::OnEnterPage()
     //This is necessary in case user moves backwards and finish.
 
     m_ScoreData.fAddTitles = false;
+
+    //bitmap preview
+    TransferDataFromWindow();
+    ((lmScoreWizard*)GetParentWizard())->UpdatePreview(m_pBmpPreview);
 }
 
 

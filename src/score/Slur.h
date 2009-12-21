@@ -79,7 +79,7 @@ class lmBox;
 class lmShapeTie;
 
 //Rest are never tied (http://www.dolmetsch.com/musictheory2.htm)
-class lmTie: public lmBinaryRelObj
+class lmTie : public lmBinaryRelObj
 {
 public:
     lmTie(lmScoreObj* pOwner, long nID, lmNote* pStartNote, lmNote* pEndNote);

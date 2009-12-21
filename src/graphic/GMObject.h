@@ -99,6 +99,8 @@ enum lmEGMOType
     eGMO_ShapeBracket,
     eGMO_ShapeClef,
 	eGMO_ShapeComposite,
+    eGMO_ShapeFiguredBass,
+    eGMO_ShapeFBLine,
 	eGMO_ShapeGlyph,
 	eGMO_ShapeInvisible,
 	eGMO_ShapeLine,
@@ -399,21 +401,24 @@ private:
 enum lmEAttachType
 {
 	lm_eGMA_Simple,
-    lm_eGMA_StartNote,
-	lm_eGMA_MiddleNote,
-	lm_eGMA_EndNote,
+    lm_eGMA_StartObj,
+	lm_eGMA_MiddleObj,
+	lm_eGMA_EndObj,
 };
 
-enum lmEParentEvent {
+enum lmEParentEvent
+{
 	lmSHIFT_EVENT = 0,
 	lmMOVE_EVENT,
 };
 
-typedef struct lmVertexStruct {
+typedef struct lmVertexStruct
+{
     lmLUnits    ux_coord;
     lmLUnits    uy_coord;
     unsigned    cmd;
-} lmVertex;
+}
+lmVertex;
     
 class lmAttachPoint;
 

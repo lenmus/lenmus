@@ -35,7 +35,11 @@
 #include "VStaff.h"
 #include "Staff.h"
 #include "../ldp_parser/LDPParser.h"
+#include "../ldp_parser/AuxString.h"
 #include "../auxmusic/Chord.h"
+#include "../graphic/GraphicManager.h"
+#include "../graphic/ShapeLine.h"
+#include "./properties/DlgProperties.h"
 
 typedef struct
 {
@@ -143,6 +147,9 @@ class lmScore;
 
 enum {
     lmID_QUICK_BT = 2600,
+	lmID_FIG_TOP,
+	lmID_FIG_MIDDLE,
+	lmID_FIG_BOTTOM,
 };
 
 
@@ -183,8 +190,8 @@ void lmGrpCommonFB::CreateGroupControls(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 
-        wxString sBtName = wxString::Format(_T("figured_bass_%1d"), m_CommonFB[iB].nBitmapID);
-		wxString sToolTip = wxString::Format(_("Figured bass '%s'"), m_CommonFB[iB].sFiguredBass);
+        wxString sBtName = wxString::Format(_T("figured_bass_%1d"), m_CommonFB[iB].nBitmapID );
+        wxString sToolTip = wxString::Format(_("Figured bass '%s'"), m_CommonFB[iB].sFiguredBass );
 		m_pButton[iB] = new lmCheckButton(this, lmID_QUICK_BT+iB, wxBitmap(32, 42));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
@@ -192,7 +199,8 @@ void lmGrpCommonFB::CreateGroupControls(wxBoxSizer* pMainSizer)
 		m_pButton[iB]->SetToolTip(sToolTip);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
 	}
-	this->Layout();
+
+    this->Layout();
 
 	SelectButton(4);	//select ?
 }
@@ -206,16 +214,17 @@ void lmGrpCommonFB::CreateGroupControls(wxBoxSizer* pMainSizer)
 class lmFBQuickPanel : public lmPropertiesPage
 {
 public:
-	lmFBQuickPanel(wxWindow* parent, lmFiguredBass* pBL);
+	lmFBQuickPanel(lmDlgProperties* parent, lmFiguredBass* pBL);
 	~lmFBQuickPanel();
 
     //implementation of pure virtual methods in base class
-    void OnAcceptChanges(lmController* pController);
+    void OnAcceptChanges(lmController* pController, bool fCurrentPage);
 
     // event handlers
 
 protected:
     void CreateControls();
+    void OnEnterPage();
 
     //controls
 	wxBitmapButton*     m_pBtQuick[25];
@@ -244,7 +253,7 @@ END_EVENT_TABLE()
 //wich the object is being created and is not yet included in the score. In this
 //cases method GetScore() will fail, so we can not use it in the implementation
 //of this class
-lmFBQuickPanel::lmFBQuickPanel(wxWindow* parent, lmFiguredBass* pFB)
+lmFBQuickPanel::lmFBQuickPanel(lmDlgProperties* parent, lmFiguredBass* pFB)
     : lmPropertiesPage(parent)
     , m_pFB(pFB)
 {
@@ -273,8 +282,17 @@ lmFBQuickPanel::~lmFBQuickPanel()
 {
 }
 
-void lmFBQuickPanel::OnAcceptChanges(lmController* pController)
+void lmFBQuickPanel::OnEnterPage()
 {
+    EnableAcceptButton(true);
+}
+
+void lmFBQuickPanel::OnAcceptChanges(lmController* pController, bool fCurrentPage)
+{
+    //do not process this page if it is not visible
+    if (!fCurrentPage)
+        return;
+
     int iB = m_pGrpCommon->GetSelectedButton();
     wxString sFigBass;
     if (iB == -1)
@@ -305,16 +323,19 @@ void lmFBQuickPanel::OnAcceptChanges(lmController* pController)
 class lmFBCustomPanel : public lmPropertiesPage
 {
 public:
-	lmFBCustomPanel(wxWindow* parent, lmFiguredBass* pBL);
+	lmFBCustomPanel(lmDlgProperties* parent, lmFiguredBass* pBL);
 	~lmFBCustomPanel();
 
     //implementation of pure virtual methods in base class
-    void OnAcceptChanges(lmController* pController);
+    void OnAcceptChanges(lmController* pController, bool fCurrentPage);
+    void OnEnterPage();
 
     // event handlers
+    void OnFiguresChanged(wxCommandEvent& event);
 
 protected:
     void CreateControls();
+    void UpdatePanel();
 
     //controls
 		wxStaticText* m_pLblExplain1;
@@ -360,7 +381,9 @@ protected:
 //--------------------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(lmFBCustomPanel, lmPropertiesPage)
-
+    EVT_TEXT(lmID_FIG_TOP, lmFBCustomPanel::OnFiguresChanged)
+    EVT_TEXT(lmID_FIG_MIDDLE, lmFBCustomPanel::OnFiguresChanged)
+    EVT_TEXT(lmID_FIG_BOTTOM, lmFBCustomPanel::OnFiguresChanged)
 END_EVENT_TABLE()
 
 
@@ -368,7 +391,7 @@ END_EVENT_TABLE()
 //wich the object is being created and is not yet included in the score. In this
 //cases method GetScore() will fail, so we can not use it in the implementation
 //of this class
-lmFBCustomPanel::lmFBCustomPanel(wxWindow* parent, lmFiguredBass* pFB)
+lmFBCustomPanel::lmFBCustomPanel(lmDlgProperties* parent, lmFiguredBass* pFB)
     : lmPropertiesPage(parent)
     , m_pFB(pFB)
 {
@@ -482,24 +505,24 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblTop->Wrap( -1 );
 	pGridSizer->Add( m_pLblTop, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_pTxtTop = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_pTxtTop = new wxTextCtrl( this, lmID_FIG_TOP, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pGridSizer->Add( m_pTxtTop, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_pLblMiddle = new wxStaticText( this, wxID_ANY, _("Middle figure:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblMiddle->Wrap( -1 );
 	pGridSizer->Add( m_pLblMiddle, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	
-	m_pTxtMiddle = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_pTxtMiddle = new wxTextCtrl( this, lmID_FIG_MIDDLE, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pGridSizer->Add( m_pTxtMiddle, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_pLblBottom = new wxStaticText( this, wxID_ANY, _("Bottom figure:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblBottom->Wrap( -1 );
 	pGridSizer->Add( m_pLblBottom, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_pTxtBottom = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_pTxtBottom = new wxTextCtrl( this, lmID_FIG_BOTTOM, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pGridSizer->Add( m_pTxtBottom, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	pFiguredBassSizer->Add( pGridSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxLEFT, 5 );
+	pFiguredBassSizer->Add( pGridSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	
 	pFiguredBassSizer->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -508,7 +531,7 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblPreview->Wrap( -1 );
 	pFiguredBassSizer->Add( m_pLblPreview, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize( 50,50 ), wxSIMPLE_BORDER );
+	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(75,80 ), wxSIMPLE_BORDER );
 	pFiguredBassSizer->Add( m_pBmpPreview, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	
@@ -524,12 +547,21 @@ lmFBCustomPanel::~lmFBCustomPanel()
 {
 }
 
-void lmFBCustomPanel::OnAcceptChanges(lmController* pController)
+void lmFBCustomPanel::OnEnterPage()
 {
-    wxString sFigBass;
-    sFigBass = m_pTxtTop->GetValue() + _T(" ")
-               + m_pTxtMiddle->GetValue() + _T(" ")
-               + m_pTxtBottom->GetValue();
+    UpdatePanel();
+}
+
+void lmFBCustomPanel::OnAcceptChanges(lmController* pController, bool fCurrentPage)
+{
+    //do not process this page if it is not visible
+    if (!fCurrentPage)
+        return;
+
+    wxString sFigBass = m_pTxtTop->GetValue().Trim(true).Trim(false) + _T(" ")
+                        + m_pTxtMiddle->GetValue().Trim(true).Trim(false) + _T(" ")
+                        + m_pTxtBottom->GetValue().Trim(true).Trim(false);
+    sFigBass.Trim(true).Trim(false);
 
     if (pController)
     {
@@ -540,6 +572,59 @@ void lmFBCustomPanel::OnAcceptChanges(lmController* pController)
     {
         //Direct creation. Modify object directly
         m_pFB->SetDataFromString(sFigBass);
+    }
+}
+
+void lmFBCustomPanel::OnFiguresChanged(wxCommandEvent& event)
+{
+    UpdatePanel();
+}
+
+void lmFBCustomPanel::UpdatePanel()
+{
+    //update the preview image
+
+    //parse the figured bass string
+    wxString sFigBass = m_pTxtTop->GetValue().Trim(true).Trim(false) + _T(" ")
+                        + m_pTxtMiddle->GetValue().Trim(true).Trim(false) + _T(" ")
+                        + m_pTxtBottom->GetValue().Trim(true).Trim(false);
+    sFigBass.Trim(true).Trim(false);
+
+    lmFiguredBassData oFBData;
+    oFBData.SetDataFromString(sFigBass);
+    wxString sError = oFBData.GetError();
+    bool fOk = sError.IsEmpty();
+    EnableAcceptButton(fOk);
+    if (fOk)
+    {
+        //create the score
+        lmLDPParser parserLDP;
+        lmScore* pScore = new lmScore();
+        lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
+        lmVStaff* pVStaff = pInstr->GetVStaff();
+        pVStaff->GetStaff(1)->SetLineSpacing( lmToLogicalUnits(3, lmMILLIMETERS) );
+        pVStaff->AddClef( lmE_Sol, 1, lmNO_VISIBLE );
+        pVStaff->AddKeySignature( earmDo, lmNO_VISIBLE );
+        pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
+        lmLDPNode* pNode = parserLDP.ParseText( _T("(n g4 q)") );
+        lmNote* pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        lmFiguredBass* pFB = pVStaff->AddFiguredBass(&oFBData, lmNEW_ID);
+
+        //render score in a bitmap
+        pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(-45, 1) );     // -4.5 lines
+	    wxBitmap oBM = lmGenerateBitmap(pScore, wxSize(300, 200), 1.0);
+
+        //cut the bitmap to keep only the figured bass
+        wxRect rect(wxPoint(90, 70), m_pBmpPreview->GetSize());
+        m_pBmpPreview->SetBitmap( oBM.GetSubBitmap(rect) );
+        //m_pBmpPreview->SetBitmap(oBM);
+
+        delete pScore;
+    }
+    else
+    {
+        //TODO bitmap with question mark? error message? other?
+        m_pBmpPreview->SetBitmap( wxNullBitmap );
     }
 }
 
@@ -557,6 +642,8 @@ lmFiguredBassData::lmFiguredBassData()
 
 void lmFiguredBassData::Initialize()
 {
+    m_fAsPrevious = false;
+
     //initialize interval info
     for (int i=0; i <= lmFB_MAX_INTV; i++)
     {
@@ -582,6 +669,8 @@ void lmFiguredBassData::CopyDataFrom(lmFiguredBassData* pFBData)
         m_tFBInfo[i].sOver = pFBData->m_tFBInfo[i].sOver;
         m_tFBInfo[i].fSounds = pFBData->m_tFBInfo[i].fSounds;
     }
+
+    m_fAsPrevious = pFBData->m_fAsPrevious;
 }
 
 lmFiguredBassData::lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey)
@@ -716,7 +805,7 @@ bool lmFiguredBassData::IntervalSounds(int nIntv)
 
 wxString lmFiguredBassData::GetFiguredBassString()
 {
-    //add source string
+    //add source string for each present interval
     wxString sFigBass = _T("");
     for (int i=lmFB_MAX_INTV; i >= lmFB_MIN_INTV; i--)
     {
@@ -728,6 +817,7 @@ wxString lmFiguredBassData::GetFiguredBassString()
             sFigBass += m_tFBInfo[i].sSource;
         }
     }
+
     return sFigBass;
 }
 
@@ -735,6 +825,10 @@ bool lmFiguredBassData::IsEquivalent(lmFiguredBassData* pFBD)
 {
     //Compares this figured bass with the received one. Returns true if both are
     //equivalent, that is, if both encode the same chord
+
+    //TODO: code to take into account FB lines:
+    // line == line?   ==> always true?
+    // line == chrod?  ==> locate chord for line and compared chords?
 
     bool fOK = true;
     for (int i=lmFB_MAX_INTV; i >= lmFB_MIN_INTV && fOK; i--)
@@ -917,6 +1011,14 @@ void lmFiguredBassData::SetDataFromString(wxString& sData)
                         nIntv = 3L;
                         m_tFBInfo[nIntv].nAspect = lm_eIA_Understood;
                     }
+                    //check interval. Greater than 1 and lower than 13
+                    if (nIntv < 2 || nIntv > lmFB_MAX_INTV)
+                    {
+                        m_sError = wxString::Format(_T("Invalid interval %d. in figured bass string %s. Figured bass ignored"),
+                            nIntv, sData.c_str() );
+                        fContinueParsing = false;
+                        break;
+                    }
                     //transfer data to total variables
                     m_tFBInfo[nIntv].nQuality = nQuality;
                     if (fParenthesis)
@@ -1021,11 +1123,14 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassData* pFB
     , m_fStartOfLine(false)
     , m_fEndOfLine(false)
     , m_fParenthesis(false)
+    , m_pPrevFBLine((lmFiguredBassLine*)NULL)
+    , m_pNextFBLine((lmFiguredBassLine*)NULL)
 {
     //Constructor from lmFiguredBassData
 
     SetLayer(lm_eLayerNotes);
     CopyDataFrom(pFBData);
+    FixHoldLine();
 }
 
 lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
@@ -1039,6 +1144,42 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     //Constructor from a lmChord and a key signature.
 
     SetLayer(lm_eLayerNotes);
+    FixHoldLine();
+}
+
+lmFiguredBass::~lmFiguredBass()
+{
+    //delete figured bass lines starting or ending in this object
+    if (m_pPrevFBLine)
+        delete m_pPrevFBLine;
+    if (m_pNextFBLine)
+        delete m_pNextFBLine;
+}
+
+void lmFiguredBass::FixHoldLine()
+{
+    //when creating/deleting a FB it is necessary to locate previous and next FB
+    //and maintain coherence of start and end of lines
+
+    //locate prev and next FB
+
+    //Case 1. This FB is not line 
+    //1.1 Prev is line:
+        //end the line in this
+        //1.1.1 Next is line:
+            //start new line in this
+        //1.1.2 Next is not line: 
+ //   // verify if the previous FB is start of FB is tied to this one and if so, build the tie
+ //   lmNote* pNtPrev = m_pVStaff->FindPossibleStartOfTie(this, true);    //true->note is not yet in the collection
+ //   if (pNtPrev && pNtPrev->NeedToBeTied())
+	//{
+ //       //do the tie between previous note and this one
+ //       CreateTie(pNtPrev, this);
+
+ //       //if stem direction is not forced, choose it to be as that of the start of tie note
+ //       if (nStem == lmSTEM_DEFAULT)
+ //           m_fStemDown = pNtPrev->StemGoesDown();
+ //   }
 }
 
 lmUPoint lmFiguredBass::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
@@ -1055,7 +1196,7 @@ lmUPoint lmFiguredBass::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 lmLUnits lmFiguredBass::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     //TODO: This code draws the figured bass after last staff, with a separation from it
-    // of GetStaffDistance(). We need to define a reference position for figyred bass and
+    // of GetStaffDistance(). We need to define a reference position for figured bass and
     // to take its existance into account for margins, spacings, etc.
 
     //get the position on which the figured bass must be drawn
@@ -1077,10 +1218,15 @@ lmLUnits lmFiguredBass::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
         uyPosTop += pStaff->GetHeight();
     }
 
+    //shape for line FB
+    if (m_fStartOfLine)
+    {
+    }
+
 	//create the shape object
     int nShapeIdx = 0;
-    lmCompositeShape* pShape = new lmCompositeShape(this, nShapeIdx, colorC, _T("Figured bass"),
-                                                    lmDRAGGABLE);
+    lmShapeFiguredBass* pShape = new lmShapeFiguredBass(this, nShapeIdx, colorC);
+
 	//loop to create glyphs for each interval
     lmLUnits uIntervalsSpacing = 1.4f * m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_FIGURED_BASS_7].thHeight, m_nStaffNum );
   	wxFont* pFont = GetSuitableFont(pPaper);
@@ -1317,15 +1463,274 @@ void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTab
 
     WXUNUSED(sTabName)
 
-	pDlg->AddPanel( new lmFBQuickPanel(pDlg->GetNotebook(), this),
-				_("Quick selection"));
-
-	pDlg->AddPanel( new lmFBCustomPanel(pDlg->GetNotebook(), this),
-				_("Custom figured bass"));
+	pDlg->AddPanel( new lmFBQuickPanel(pDlg, this), _("Quick selection"));
+	pDlg->AddPanel( new lmFBCustomPanel(pDlg, this), _("Custom figured bass"));
 
 	//change dialog title
 	pDlg->SetTitle(_("Figured bass properties"));
 }
+
+lmFiguredBassLine* lmFiguredBass::CreateFBLine(long nID, lmFiguredBass* pEndFB)
+{
+    //create a line between the two figured bass objects. The start of the
+    //line is this FB. The other is the end FB and can be NULL and in this 
+    //case the line will continue until the last note/rest.
+
+
+    //check that there is no other line starting in this FB
+    if (m_pNextFBLine)
+        return (lmFiguredBassLine*)NULL;
+
+    lmFiguredBassLine* pFBL = (lmFiguredBassLine*)NULL;
+    if (pEndFB)
+    {
+        pFBL = new lmFiguredBassLine(this, nID, this, pEndFB);
+        this->SetAsStartOfFBLine(pFBL);
+        pEndFB->SetAsEndOfFBLine(pFBL);
+
+        this->AttachAuxObj(pFBL);
+        pEndFB->AttachAuxObj(pFBL);
+    }
+    //else if (!pStartFB)
+    //    SetTiePrev((lmFiguredBassLine*)NULL);
+    //else if (!pEndFB)
+    //    SetTieNext((lmFiguredBassLine*)NULL);
+    return pFBL;
+}
+
+lmFiguredBassLine* lmFiguredBass::CreateFBLine(lmFiguredBass* pEndFB, long nID,
+                                               lmLocation tStartLine,
+                                               lmLocation tEndLine,
+                                               lmTenths ntWidth,
+                                               wxColour nColor)
+{
+    //This method is to be used only during score creation from LDP file.
+    //Creates a line between the two figured bass objects. The start of the
+    //line is this FB. The other is the received one. Line info is 
+    //transferred to the created line.
+    //No checks so, before invoking this method you should have verified that:
+    //  - there is no next line already created
+    //
+
+    wxASSERT(!m_pNextFBLine);
+
+    lmFiguredBassLine* pFBL = CreateFBLine(nID, pEndFB);
+    //m_pNextFBLine->SetLinePoints(0, pStartLine, pEndLine);
+    //m_pNextFBLine->SetBezierPoints(1, pEndBezier);
+    return pFBL;
+}
+
+void lmFiguredBass::OnRemovedFromRelation(lmRelObX* pRel)
+{
+	//AWARE: this method is invoked only when the relation is being deleted and
+	//this deletion is not requested by this FB. If this FB would like
+	//to delete the relation it MUST invoke Remove(this) before deleting the
+	//relation object
+
+    SetDirty(true);
+
+	if (pRel->IsFiguredBassLine())
+	{
+        if (m_pPrevFBLine == pRel)
+        {
+            this->DetachAuxObj(m_pPrevFBLine);
+			m_pPrevFBLine = (lmFiguredBassLine*)NULL;
+        }
+        else if (m_pNextFBLine == pRel)
+        {
+            this->DetachAuxObj(m_pNextFBLine);
+			m_pNextFBLine = (lmFiguredBassLine*)NULL;
+        }
+        else
+        {
+            wxLogMessage(_T("[lmFiguredBass::OnRemovedFromRelation] Non existing relation!"));
+            wxASSERT(false);
+        }
+    }
+    else
+    {
+        wxLogMessage(_T("[lmFiguredBass::OnRemovedFromRelation] Not expected relation %d !"),
+                    pRel->GetScoreObjType() );
+        wxASSERT(false);
+    }
+}
+
+
+
+//-------------------------------------------------------------------------------------------
+// lmFiguredBassLine: an auxliary relation object to model the 'hold chord' line
+//-------------------------------------------------------------------------------------------
+
+lmFiguredBassLine::lmFiguredBassLine(lmScoreObj* pOwner, long nID,
+                                     lmFiguredBass* pStartFB, lmFiguredBass* pEndFB,
+                                     wxColour nColor, lmTenths tWidth)
+    : lmBinaryRelObX(pOwner, nID, lm_eSO_FBLine, pStartFB, pEndFB, lmDRAGGABLE)
+    , m_tWidth(tWidth)
+	, m_nColor(nColor)
+{
+    DefineAsMultiShaped();      //define as a multi-shaped ScoreObj, because
+                                //the line can be broken into two lines at system break
+}
+
+lmFiguredBassLine::~lmFiguredBassLine()
+{
+}
+
+lmLUnits lmFiguredBassLine::LayoutObject(lmBox* pBox, lmPaper* pPaper,
+                                         lmUPoint uPos, wxColour colorC)
+{
+	// This method is always invoked from the 'end' figured bass of the line.
+    // Create two line shapes. Both line shapes will have attached both
+    // figured bass shapes. One of the line shapes will be normally invisible
+
+    WXUNUSED(uPos);
+
+    //prepare information
+    lmShapeFiguredBass* pShapeStartFB = (lmShapeFiguredBass*)GetStartSO()->GetShape();
+    lmShapeFiguredBass* pShapeEndFB = (lmShapeFiguredBass*)GetEndSO()->GetShape();
+
+    //convert line displacements to logical units
+    lmUPoint uPoints[4];
+    for (int i=0; i < 4; i++)
+    {
+        uPoints[i].x = m_pParent->TenthsToLogical(m_tPoint[i].x);
+        uPoints[i].y = m_pParent->TenthsToLogical(m_tPoint[i].y);
+    }
+
+	//create the first line shape
+    lmShapeFBLine* pShape1 = new lmShapeFBLine(this, 0, (lmFiguredBass*)m_pStartSO,
+                                               uPoints[0].x, uPoints[0].y,
+                                               uPoints[1].x, uPoints[1].y,
+                                               m_tWidth,
+                                               pShapeStartFB, pShapeEndFB,
+                                               colorC, lmVISIBLE);      
+    StoreShape(pShape1);
+	pBox->AddShape(pShape1, GetStartSO()->GetLayer());
+	pShapeStartFB->Attach(pShape1, lm_eGMA_StartObj);
+	pShapeEndFB->Attach(pShape1, lm_eGMA_EndObj);
+    pShapeEndFB->OnFBLineAttached(0, pShape1);  //inform end FB shape of this attachment
+
+	//create the second line shape
+    lmShapeFBLine* pShape2 = new lmShapeFBLine(this, 1, (lmFiguredBass*)m_pEndSO,
+                                               uPoints[2].x, uPoints[2].y,
+                                               uPoints[3].x, uPoints[3].y,
+                                               m_tWidth, 
+                                               pShapeStartFB, pShapeEndFB,
+                                               colorC, lmNO_VISIBLE);      
+    StoreShape(pShape2);
+	pBox->AddShape(pShape2, GetStartSO()->GetLayer());
+	pShapeStartFB->Attach(pShape2, lm_eGMA_StartObj);
+	pShapeEndFB->Attach(pShape2, lm_eGMA_EndObj);
+    pShapeEndFB->OnFBLineAttached(1, pShape2);  //inform end FB shape of this attachment
+
+	//link both ties
+	pShape1->SetBrotherLine(pShape2);
+	pShape2->SetBrotherLine(pShape1);
+
+	//return the shape width
+    return pShape1->GetWidth();
+}
+
+lmUPoint lmFiguredBassLine::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
+{
+    return uOrg;
+}
+
+wxString lmFiguredBassLine::SourceLDP_First(int nIndent, bool fUndoData,
+                                            lmStaffObj* pSO)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    if (fUndoData)
+        sSource += wxString::Format(_T("(fbline#%d %d start "), GetID(), GetID() );
+    else
+        sSource += wxString::Format(_T("(fbline %d start "), GetID());
+
+    //location of first line
+    sSource += lmTPointToLDP(m_tPoint[0], _T("startPoint"));
+    sSource += lmTPointToLDP(m_tPoint[1], _T("endPoint"));
+
+    //width (if != 1.0f) and color (if not black)
+    sSource += lmFloatToLDP(m_tWidth, _T("width"), true, 1.0f);
+    sSource += lmColorToLDP(m_nColor, true, *wxBLACK);
+    sSource += _T(")\n");
+
+    return sSource;
+}
+
+wxString lmFiguredBassLine::SourceLDP_Last(int nIndent, bool fUndoData,
+                                           lmStaffObj* pSO)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    if (fUndoData)
+        sSource += wxString::Format(_T("(fbline#%d %d stop "), GetID(), GetID() );
+    else
+        sSource += wxString::Format(_T("(fbline %d stop "), GetID());
+
+    //location of second line
+    sSource += lmTPointToLDP(m_tPoint[2], _T("startPoint"));
+    sSource += lmTPointToLDP(m_tPoint[3], _T("endPoint"));
+
+    sSource += _T(")\n");
+
+    return sSource;
+}
+
+wxString lmFiguredBassLine::SourceXML_First(int nIndent, lmStaffObj* pSO)
+{
+    //TODO
+    return _T("");
+}
+
+wxString lmFiguredBassLine::SourceXML_Last(int nIndent, lmStaffObj* pSO)
+{
+    //TODO
+    return _T("");
+}
+
+wxString lmFiguredBassLine::Dump()
+{
+    //TODO
+    return _T("");
+}
+
+void lmFiguredBassLine::MoveObjectPoints(int nNumPoints, int nShapeIdx,
+                                         lmUPoint* pShifts, bool fAddShifts)
+{
+    //TODO
+    wxLogMessage(_T("[lmFiguredBassLine::MoveObjectPoints] TODO. nNumPoints=%d, nShapeIdx=%d"),
+        nNumPoints, nShapeIdx);
+
+    //This method is only used during interactive edition.
+    //It receives a vector with the shifts for object points and a flag to signal
+    //whether to add or to substract shifts.
+
+    wxASSERT(nNumPoints == 2);
+    wxASSERT(nShapeIdx == 0 || nShapeIdx == 1);
+
+    int j = (nShapeIdx == 0 ? 0 : 2);
+    for (int i=0; i < nNumPoints; i++)
+    {
+        if (fAddShifts)
+        {
+            m_tPoint[j + i].x += m_pParent->LogicalToTenths((*(pShifts+i)).x);
+            m_tPoint[j + i].y += m_pParent->LogicalToTenths((*(pShifts+i)).y);
+        }
+        else
+        {
+            m_tPoint[j + i].x -= m_pParent->LogicalToTenths((*(pShifts+i)).x);
+            m_tPoint[j + i].y -= m_pParent->LogicalToTenths((*(pShifts+i)).y);
+        }
+    }
+
+    //inform the shape
+    lmShapeFBLine* pShape = (lmShapeFBLine*)GetGraphicObject(nShapeIdx);
+    wxASSERT(pShape);
+    pShape->MovePoints(nNumPoints, nShapeIdx, pShifts, fAddShifts);
+}
+
+
 
 #ifdef __WXDEBUG__
 //--------------------------------------------------------------------------------

@@ -273,38 +273,60 @@ lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPape
         //return CreateInvisibleShape(pBox, lmUPoint(uxPosTop, uyPosTop), nShapeIdx);
         return new lmShapeInvisible(this, nShapeIdx, lmUPoint(uxPosTop, uyPosTop), lmUSize(0.0, 0.0) );
 
+    switch(m_nType)
+    {
+        case eTS_Normal:    //a single fraction
+        {
+	        //create the shape object
+            lmCompositeShape* pShape = new lmCompositeShape(this, nShapeIdx, colorC, _T("Time signature"),
+                                                            lmDRAGGABLE);
+	        //loop to create glyphs for the top number
+	        long nDigit;
+	        for (int i=0; i < (int)sTopGlyphs.length(); i++)
+	        {
+		        wxString sDigit = sTopGlyphs.substr(i, 1);
+		        sDigit.ToLong(&nDigit);
+		        int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
+		        lmLUnits uyPos = uyPosTop 
+						        + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
+                pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosTop, uyPos), 
+									        _T("Beats"), lmNO_DRAGGABLE, colorC) );
+		        uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
+	        }
 
-	//create the shape object
-    lmCompositeShape* pShape = new lmCompositeShape(this, nShapeIdx, colorC, _T("Time signature"),
-                                                    lmDRAGGABLE);
-	//loop to create glyphs for the top number
-	long nDigit;
-	for (int i=0; i < (int)sTopGlyphs.length(); i++)
-	{
-		wxString sDigit = sTopGlyphs.substr(i, 1);
-		sDigit.ToLong(&nDigit);
-		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
-		lmLUnits uyPos = uyPosTop 
-						 + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-        pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosTop, uyPos), 
-									 _T("Beats"), lmNO_DRAGGABLE, colorC) );
-		uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
-	}
+	        //loop to create glyphs for the bottom number
+	        for (int i=0; i < (int)sBottomGlyphs.length(); i++)
+	        {
+		        wxString sDigit = sBottomGlyphs.substr(i, 1);
+		        sDigit.ToLong(&nDigit);
+		        int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
+		        lmLUnits uyPos = uyPosBottom 
+						        + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
+		        pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosBottom, uyPos), 
+									        _T("BeatType"), lmNO_DRAGGABLE, colorC) );
+		        uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
+	        }
+            return pShape;
+        }
 
-	//loop to create glyphs for the bottom number
-	for (int i=0; i < (int)sBottomGlyphs.length(); i++)
-	{
-		wxString sDigit = sBottomGlyphs.substr(i, 1);
-		sDigit.ToLong(&nDigit);
-		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
-		lmLUnits uyPos = uyPosBottom 
-						+ m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-		pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosBottom, uyPos), 
-									 _T("BeatType"), lmNO_DRAGGABLE, colorC) );
-		uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
-	}
+        case eTS_Common:        // a C symbol
+        case eTS_Cut:           // a C/ symbol
+        {
+            int nGlyph = (m_nType==eTS_Common ? GLYPH_COMMON_TIME : GLYPH_CUT_TIME);
+		    lmLUnits uyPos = uyPosTop 
+						    + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
+            lmShape* pShape = new lmShapeGlyph(this, nShapeIdx, nGlyph, pPaper,
+                                               lmUPoint(uxPosTop, uyPos), 
+									           _T("Time signature"), lmNO_DRAGGABLE,
+                                               colorC );
+		    uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
+            return pShape;
+        }
 
-    return pShape;
+        default:
+            wxLogMessage(_T("[] Time signatures of type %D not yet implemented."), m_nType);
+    }
+    return new lmShapeInvisible(this, nShapeIdx, lmUPoint(uxPosTop, uyPosTop), lmUSize(0.0, 0.0) );
 }
 
 void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure)

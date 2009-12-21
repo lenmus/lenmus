@@ -62,11 +62,11 @@ class lmScore;
 class lmGeneralProperties : public lmPropertiesPage 
 {
 public:
-	lmGeneralProperties(wxWindow* parent, lmScoreObj* pSCO, lmScore* pScore);
+	lmGeneralProperties(lmDlgProperties* parent, lmScoreObj* pSCO, lmScore* pScore);
 	~lmGeneralProperties();
 
     //implementation of pure virtual methods in base class
-    void OnAcceptChanges(lmController* pController);
+    void OnAcceptChanges(lmController* pController, bool fCurrentPage);
 
     // event handlers
 

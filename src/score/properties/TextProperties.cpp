@@ -70,7 +70,7 @@ BEGIN_EVENT_TABLE(lmTextProperties, lmPropertiesPage)
 END_EVENT_TABLE()
 
 
-lmTextProperties::lmTextProperties(wxWindow* parent, lmScoreText* pParentText)
+lmTextProperties::lmTextProperties(lmDlgProperties* parent, lmScoreText* pParentText)
     : lmPropertiesPage(parent)
 {
 	m_pScore = pParentText->GetScore();
@@ -276,7 +276,7 @@ void lmTextProperties::DoChangeAlignment()
 	m_pTxtCtrl->SelectNone();
 }
 
-void lmTextProperties::OnAcceptChanges(lmController* pController)
+void lmTextProperties::OnAcceptChanges(lmController* pController, bool fCurrentPage)
 {
     lmTextStyle* pStyle = m_pScore->GetStyleInfo( m_pCboTextStyle->GetStringSelection() );
 

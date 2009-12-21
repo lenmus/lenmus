@@ -75,6 +75,7 @@ public:
     virtual void AttachNewText(lmComponentObj* pCO) {}
 	virtual void InsertBarline(lmEBarline nType = lm_eBarlineSimple) {}
 	virtual void InsertFiguredBass() {}
+	virtual void InsertFiguredBassLine() {}
     virtual void InsertClef(lmEClefType nClefType) {}
 	virtual void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
@@ -227,6 +228,7 @@ public:
     void AttachNewText(lmComponentObj* pCO);
 	void InsertBarline(lmEBarline nType = lm_eBarlineSimple);
 	void InsertFiguredBass();
+	void InsertFiguredBassLine();
     void InsertClef(lmEClefType nClefType);
 	void InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 					lmENoteType nNoteType, float rDuration, int nDots,
@@ -348,6 +350,7 @@ private:
     void OnToolNotesClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
     void OnToolClefsClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
     void OnToolSymbolsClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
+    void OnToolHarmonyClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
     void OnToolTimeSignatureClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
     void OnToolKeySignatureClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
     void OnToolBarlinesClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);

@@ -74,6 +74,7 @@ lmToolGroup::lmToolGroup(wxPanel* pParent, lmEGroupType nGroupType,
     , m_nValidMouseModes(nValidMouseModes)
     , m_fMousePressedDown(false)
     , m_fSelected(true)
+    , m_fAlwaysDisabled(false)
 {
     //set font to draw group labels
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
@@ -153,6 +154,9 @@ void lmToolGroup::EnableGroup(bool fEnable)
     //enable/disable the group and repaints group to display new state
     //if enable, for tool-selector groups the previous state (selected/deselected)
     //is restored
+
+    //force disabled if gris marked as 'always disabled'
+    fEnable &= !m_fAlwaysDisabled;
 
     //check if anything to do
     if (this->IsEnabled() == fEnable)
@@ -515,7 +519,7 @@ void lmToolButtonsGroup::OnButtonSelected(int nSelButton)
     {
         //notify owner page about the tool change
         ((lmToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(),
-                                                (lmEToolID)nSelButton);
+                                                (lmEToolID)(nSelButton+m_nFirstButtonToolID));
     }
     else if (this->GetToolGroupID() == lmGRP_MouseMode)
     {

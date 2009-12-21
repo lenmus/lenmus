@@ -82,6 +82,25 @@ public:
 };
 
 //========================================================================================
+//helper class to keep info about a FB line
+//========================================================================================
+class lmFBLineInfo
+{
+public:
+    lmFBLineInfo() {}
+    ~lmFBLineInfo() {}
+
+    bool            fStart;
+    long            nFBLineNum;
+    long            nFBLineID;
+    lmFiguredBass*  pFB;
+	lmLocation      tStartPos;
+	lmLocation      tEndPos;
+    lmTenths        ntWidth;
+    wxColour        nColor;
+};
+
+//========================================================================================
 // lmLDPParser implementation
 //========================================================================================
 
@@ -153,6 +172,11 @@ void lmLDPParser::Clear()
     for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); ++itB)
         delete *itB;
     m_PendingBeams.clear();
+
+    std::list<lmFBLineInfo*>::iterator itFBL;
+    for(itFBL=m_PendingFBLines.begin(); itFBL != m_PendingFBLines.end(); ++itFBL)
+        delete *itFBL;
+    m_PendingFBLines.clear();
 
     delete m_pCurNode;
     m_pCurNode = (lmLDPNode*) NULL;
@@ -1403,6 +1427,84 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
     return pTieInfo;
 }
 
+lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    // <fbline> = (fbline num [start | stop] 
+    //              [<startPoint>][<endPoint>][<width>][<color>]
+
+    //returns a ptr. to a new lmFBLineInfo struct or NULL if any important error.
+
+    wxASSERT(pNode->GetName() == _T("fbline"));
+
+    //check that there are parameters
+    if (pNode->GetNumParms() < 2 || pNode->GetNumParms() > 3)
+    {
+        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
+            pNode->GetName().c_str() );
+        return (lmFBLineInfo*)NULL;    //error
+    }
+
+    //create the lmFBLineInfo struct to save FB line data
+    lmFBLineInfo* pFBLineInfo = new lmFBLineInfo;
+
+    //initialize points and default values
+	pFBLineInfo->tStartPos = g_tDefaultPos;
+	pFBLineInfo->tEndPos = g_tDefaultPos;
+    pFBLineInfo->ntWidth = 1.0f;
+    pFBLineInfo->nColor = *wxBLACK;
+
+    //get FB line ID
+    pFBLineInfo->nFBLineID = GetNodeID(pNode);
+
+    //get FB line number
+    int iP = 1;
+    wxString sNum = pNode->GetParameter(iP)->GetName();
+    if (!sNum.IsNumber())
+    {
+        AnalysisError(pNode,
+            _T("Element 'FB line': Number expected but found '%s'. FB line ignored."), sNum.c_str() );
+        delete pFBLineInfo;
+        return (lmFBLineInfo*)NULL;    //error;
+    }
+    sNum.ToLong(&(pFBLineInfo->nFBLineNum));
+
+    //get FB line type: start / end
+    iP++;
+    wxString sType = pNode->GetParameter(iP)->GetName();
+    if (!(sType == _T("start") || sType == _T("stop")) )
+    {
+        AnalysisError(pNode,
+            _T("Element 'FB line': Type must be 'start' or 'stop' but found '%s'. FB line ignored."), sType.c_str() );
+        delete pFBLineInfo;
+        return (lmFBLineInfo*)NULL;    //error;
+    }
+    pFBLineInfo->fStart = (sType == _T("start"));
+
+    //loop to analyze line parameters
+    iP++;
+    for(; iP <= pNode->GetNumParms(); iP++)
+    {
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        if (sName == _T("startPoint"))
+            AnalyzeLocationPoint(pX, &(pFBLineInfo->tStartPos));
+        else if (sName == _T("endPoint"))
+            AnalyzeLocationPoint(pX, &(pFBLineInfo->tEndPos));
+        else if(sName == _T("width"))
+            GetValueFloatNumber(pX, &(pFBLineInfo->ntWidth));
+        else if(sName == _T("color"))
+            pFBLineInfo->nColor = AnalyzeColor(pX);
+        else
+        {
+            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                          _T("fbline"), sName.c_str() );
+        }
+    }
+
+    //end of analysis
+    return pFBLineInfo;
+}
+
 lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     // <beam> = (beam num <beamtype>+)
@@ -1624,7 +1726,7 @@ bool lmLDPParser::AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode,
 
 void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
 {
-    //Received a note with a tie of type 'stop' and the lmTieInfo for the stop tie element.
+    //Receives a note with a tie of type 'stop' and the lmTieInfo for the stop tie element.
     //This method must look for the matching start element and, if found, build the tie
 
     //look for the matching start element
@@ -1667,8 +1769,7 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
         return;
     }
 
-    //create the tie unless its ID is in the ignore set
-    long nID = pTieInfo->nTieID;
+    //create the tie
     (*itT)->pNote->CreateTie(pNote, pTieInfo->nTieID, (*itT)->tBezier,
                                 pTieInfo->tBezier);
 
@@ -1676,6 +1777,52 @@ void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
     delete pTieInfo;
     delete *itT;
     m_PendingTies.erase(itT);
+}
+
+void lmLDPParser::AddFBLine(lmFiguredBass* pFB, lmFBLineInfo* pFBLineInfo)
+{
+    //Receives a FB with a FB line of type 'stop' and the lmFBLineInfo for the stop
+    //FB line element. This method must look for the matching start element and,
+    //if found, build the FB line
+
+    //look for the matching start element
+    std::list<lmFBLineInfo*>::iterator itFBL;
+    for(itFBL=m_PendingFBLines.begin(); itFBL != m_PendingFBLines.end(); ++itFBL)
+    {
+         if ((*itFBL)->nFBLineNum == pFBLineInfo->nFBLineNum)
+             break;     //found
+    }
+    if (itFBL == m_PendingFBLines.end())
+    {
+        //Ignore errors if the parsed score is for undo.
+       if (m_pIgnoreSet == NULL)
+            AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for FB line num. %d. FBLine ignored."),
+                          pFBLineInfo->nFBLineNum );
+
+        delete pFBLineInfo;
+        return;
+    }
+
+    //element found. verify that it is of type 'start'
+    if (!(*itFBL)->fStart)
+    {
+        AnalysisError((lmLDPNode*)NULL, _T("Duplicated 'stop' element for FB line num. %d. FBLine ignored."),
+                      pFBLineInfo->nFBLineNum );
+        delete pFBLineInfo;
+        delete *itFBL;
+        m_PendingFBLines.erase(itFBL);
+        return;
+    }
+
+    //create the FB line
+    (*itFBL)->pFB->CreateFBLine(pFB, pFBLineInfo->nFBLineID, (*itFBL)->tStartPos,
+                                pFBLineInfo->tEndPos, pFBLineInfo->ntWidth,
+                                pFBLineInfo->nColor);
+
+    //remove and delete consumed lmFBLineInfo elements
+    delete pFBLineInfo;
+    delete *itFBL;
+    m_PendingFBLines.erase(itFBL);
 }
 
 void lmLDPParser::AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo)
@@ -2581,7 +2728,7 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
 {
     //returns NULL if error; in this case nothing is added to the lmVStaff
     //
-    //  <figuredBass> = (figuredBass <figuredBassSymbols>[<duration>][<parentheses>])
+    //  <figuredBass> = (figuredBass <figuredBassSymbols>[<parentheses>][<fbline>])
     //  <parentheses> = (parentheses { yes | no })  default: no
     //
     //  <figuredBassSymbols> = an string.
@@ -2599,10 +2746,6 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
     //    b6              (figuredBass "b6 b")
     //    b
     //
-    //    7 ________      (figuredBass "7 5 2" w)
-    //    5 
-    //    2
-    //    
     //    6               (figuredBass "6 (3)")
     //   (3)
     //
@@ -2631,11 +2774,33 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
         return (lmFiguredBass*)NULL;    //error
     }
 
-    //get options: <duration> and <parenthesis>
+    //initialize options with default values
+    //AWARE: There can be two fblines, one starting in this FB and another
+    //one ending in it.
+    int nFBL=0;     //index to next fbline
+    lmFBLineInfo* pFBLineInfo[2];
+    pFBLineInfo[0] = (lmFBLineInfo*)NULL;
+    pFBLineInfo[1] = (lmFBLineInfo*)NULL;
+
+    //get options: <parenthesis> & <fbline>
     int iP;
-    for(iP=2; iP <= nNumParms; iP++)
+    for(iP=2; iP <= nNumParms; ++iP)
     {
-        lmLDPNode* pX = pNode->GetParameter(1);
+        lmLDPNode* pX = pNode->GetParameter(iP);
+        wxString sName = pX->GetName();
+        if (sName == _T("parenthesis"))
+            ;   //TODO
+        else if (sName == _T("fbline"))     //start/end of figured bass line
+        {
+            if (nFBL > 1)
+                AnalysisError(pX, _T("[Element '%s'. More than two 'fbline'. Ignored."),
+                            sElmName.c_str() );
+            else
+                pFBLineInfo[nFBL++] = AnalyzeFBLine(pX, pVStaff);
+        }
+        else
+            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                          sElmName.c_str(), sName.c_str() );
     }
 
     //analyze remaining optional parameters: <location>, <cursorPoint>
@@ -2651,6 +2816,25 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
     //save cursor data
     if (m_fCursorData && m_nCursorObjID == nID)
         m_pCursorSO = pFB;
+
+    //add FB line, if exists
+    for(int i=0; i < 2; i++)
+    {
+        if (pFBLineInfo[i])
+        {
+            if (pFBLineInfo[i]->fStart)
+            {
+                //start of FB line. Save the information
+                pFBLineInfo[i]->pFB = pFB;
+                m_PendingFBLines.push_back(pFBLineInfo[i]);
+            }
+            else
+            {
+                //end of FB line. Add it to the internal model
+                AddFBLine(pFB, pFBLineInfo[i]);
+            }
+        }
+    }
 
     return pFB;       //no error
 }

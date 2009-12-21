@@ -69,11 +69,11 @@ class lmController;
 class lmMidiProperties : public lmPropertiesPage 
 {
 public:
-	lmMidiProperties(wxWindow* parent, lmInstrument* pInstr);
+	lmMidiProperties(lmDlgProperties* parent, lmInstrument* pInstr);
 	~lmMidiProperties();
 
     //implementation of pure virtual methods in base class
-    void OnAcceptChanges(lmController* pController);
+    void OnAcceptChanges(lmController* pController, bool fCurrentPage);
 
     //overrides
     void OnCancelChanges();
@@ -132,7 +132,7 @@ BEGIN_EVENT_TABLE(lmMidiProperties, lmPropertiesPage)
 END_EVENT_TABLE()
 
 
-lmMidiProperties::lmMidiProperties(wxWindow* parent, lmInstrument* pInstr)
+lmMidiProperties::lmMidiProperties(lmDlgProperties* parent, lmInstrument* pInstr)
     : lmPropertiesPage(parent)
 {
     m_pInstr = pInstr;
@@ -215,7 +215,7 @@ lmMidiProperties::~lmMidiProperties()
 {
 }
 
-void lmMidiProperties::OnAcceptChanges(lmController* pController)
+void lmMidiProperties::OnAcceptChanges(lmController* pController, bool fCurrentPage)
 {
     int nInstr = m_pInstrCombo->GetSelection();
     int nSect = m_pGroupCombo->GetSelection();
@@ -661,8 +661,7 @@ void lmInstrument::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabN
 {
 	//invoked to add specific panels to the dialog
 
-	pDlg->AddPanel( new lmMidiProperties(pDlg->GetNotebook(), this),
-				_("MIDI"));
+	pDlg->AddPanel( new lmMidiProperties(pDlg, this), _("MIDI"));
 
 	//add pages to edit name and abbreviation
     wxString sEmpty = _T("");

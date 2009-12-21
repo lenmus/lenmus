@@ -424,8 +424,8 @@ lmShapeTie::lmShapeTie(lmTie* pOwner, int nShapeIdx, lmNote* pEndNote, lmUPoint*
         m_uUserShifts[i] = *(pPoints+i);
 
     //compute the default arch
-    OnAttachmentPointMoved(pShapeStart, lm_eGMA_StartNote, 0.0, 0.0, lmSHIFT_EVENT);
-    OnAttachmentPointMoved(pShapeEnd, lm_eGMA_EndNote, 0.0, 0.0, lmSHIFT_EVENT);
+    OnAttachmentPointMoved(pShapeStart, lm_eGMA_StartObj, 0.0, 0.0, lmSHIFT_EVENT);
+    OnAttachmentPointMoved(pShapeEnd, lm_eGMA_EndObj, 0.0, 0.0, lmSHIFT_EVENT);
     m_fUserShiftsApplied = false;
 }
 
@@ -467,9 +467,9 @@ void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
             pSNH->GetYTop() + uHeightNH + uyPos : pSNH->GetYTop() - uyPos );
 
     //update arch start/end points
-	if (nTag == lm_eGMA_StartNote)
+	if (nTag == lm_eGMA_StartObj)
         SetStartPoint(uxPos, uyPos);
-	else if (nTag == lm_eGMA_EndNote)
+	else if (nTag == lm_eGMA_EndObj)
         SetEndPoint(uxPos, uyPos);
 
     // check if the tie have to be splitted

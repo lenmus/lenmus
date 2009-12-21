@@ -608,15 +608,38 @@ bool lmCmdInsertFiguredBass::Do()
         }
         else
         {
-            //user has cancelled insertion.
-            //TODO. Either
-            // - Remove object
-            // - Leave object with default values "? ? ?"
+            //user has cancelled insertion. Remove object
+            GetVStaff()->Cmd_DeleteStaffObj(pFB);
         }
     }
 
-    pFB->GetScore()->Dump(_T("dump.txt"));
+    //pFB->GetScore()->Dump(_T("dump.txt"));
     return CommandDone(pFB != (lmFiguredBass*)NULL);
+}
+
+
+
+//----------------------------------------------------------------------------------------
+// lmCmdInsertFBLine: Insert a figured bass line at current cursor timepos
+//----------------------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(lmCmdInsertFBLine, lmScoreCommand)
+
+lmCmdInsertFBLine::lmCmdInsertFBLine(bool fNormalCmd, lmDocument *pDoc)
+	: lmScoreCommand(_("Insert figured bass"), pDoc, fNormalCmd)
+{
+}
+
+bool lmCmdInsertFBLine::Do()
+{
+    //reposition cursor and save data for undoing the command
+    PrepareForRedo();
+
+    //insert the figured bass line
+    lmFiguredBassLine* pFBL = GetVStaff()->Cmd_InsertFBLine();
+
+    //pFB->GetScore()->Dump(_T("dump.txt"));
+    return CommandDone(pFBL != (lmFiguredBassLine*)NULL);
 }
 
 

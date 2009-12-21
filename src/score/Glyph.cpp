@@ -181,6 +181,10 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('8'), -20,      0,      0,   0,      0,      0,     37,    714,    950,      0,      0 ),    //_T("Number 8")) ,
     lmGlyph(_T('9'), -20,      0,      0,   0,      0,      0,     37,    648,    950,      0,      0 ),    //_T("Number 9")) ,
 
+//other for time signatures
+    lmGlyph(_T('>'),   0,      0,      0,   0,      0,      0,     37,    702,    950,      0,      0 ),    //GLYPH_COMMON_TIME,
+    lmGlyph(_T('?'),   0,      0,      0,   0,      0,      0,     37,    702,    950,      0,      0 ),    //GLYPH_CUT_TIME,
+
 //signs
 	//                                                      ----- FUnits ------------      -- FUnits--
     //                       sel rectangle                  Position    Size                drag point
@@ -219,7 +223,7 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('\uF0A1'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_FLAT,                //Flat symbol
     lmGlyph(_T('\uF0A2'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_NATURAL,             //Natural symbol
     lmGlyph(_T('\uF0AB'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_PLUS,                // +
-    lmGlyph(_T('\uF0A0'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_MINUS,               // -
+    lmGlyph(_T('\uF0AC'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_MINUS,               // -
     lmGlyph(_T('\uF0A8'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_OPEN_PARENTHESIS,    // (
     lmGlyph(_T('\uF0A3'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_CLOSE_PARENTHESIS,   // )
     lmGlyph(_T('\uF0AA'),   0,      0,      0,   0,      0,      0,      0,      0,      0,      0,      0 ),    //GLYPH_FIGURED_BASS_7_STRIKED,           // 7 with overlayered /

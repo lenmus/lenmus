@@ -48,6 +48,7 @@
 #include "../app/ScoreCanvas.h"
 #include "properties/DlgProperties.h"
 #include "properties/GeneralProperties.h"
+#include "../ldp_parser/AuxString.h"
 
 extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 
@@ -468,7 +469,7 @@ void lmScoreObj::OnProperties(lmController* pController, lmGMObject* pGMO)
 
 void lmScoreObj::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
 {
-	pDlg->AddPanel( new lmGeneralProperties(pDlg->GetNotebook(), this, this->GetScore()),
+	pDlg->AddPanel( new lmGeneralProperties(pDlg, this, this->GetScore()),
 				_("General"));
 }
 
@@ -725,7 +726,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
 		    pPaper->SetCursorX(m_uComputedPos.x);
 		    pPaper->SetCursorY(m_uComputedPos.y);
 
-            if (!(*m_pAuxObjs)[i]->IsRelObj())
+            if (!(*m_pAuxObjs)[i]->IsRelObj() && !(*m_pAuxObjs)[i]->IsRelObX())
             {
                 //1-R AuxObjs. Layout them
 		        (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
@@ -734,6 +735,12 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, bool fHighlight)
             {
                 //2-R AuxObjs. Layout only if this is the last note/rest of relationship
                 if ((lmNoteRest*)this == ((lmBinaryRelObj*)(*m_pAuxObjs)[i])->GetEndNoteRest())
+		            (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
+            }
+            else if ((*m_pAuxObjs)[i]->IsBinaryRelObX())
+            {
+                //2-R AuxObjs. Layout only if this is the last note/rest of relationship
+                if (this == ((lmBinaryRelObX*)(*m_pAuxObjs)[i])->GetEndSO())
 		            (*m_pAuxObjs)[i]->Layout(pBox, pPaper, fHighlight);
             }
             else
@@ -853,13 +860,7 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
         sSource += _T(" noVisible");
 
     //color (if not black)
-    if (m_color != *wxBLACK)
-    {
-        sSource += _T(" (color ");
-        sSource += m_color.GetAsString(wxC2S_HTML_SYNTAX);
-        sSource += _T(")");
-    }
-
+    sSource += lmColorToLDP(m_color, true, *wxBLACK);
 
     // Generate source code for AuxObjs attached to this StaffObj
     if (m_pAuxObjs)
@@ -885,6 +886,25 @@ wxString lmStaffObj::SourceLDP(int nIndent, bool fUndoData)
                         sSource += pRO->SourceLDP_Last(nIndent, fUndoData, (lmNoteRest*)this);
                     else
                         sSource += pRO->SourceLDP_Middle(nIndent, fUndoData, (lmNoteRest*)this);
+                }
+            }
+            else if ( (*m_pAuxObjs)[i]->IsRelObX() )
+            {
+                lmRelObX* pRO = (lmRelObX*)(*m_pAuxObjs)[i];
+
+                //exclude beams, as source code for them is generted in lmNote.
+                //AWARE. This is necessary because LDP parser needs to have beam
+                //info to crete the note, before it can process any other attachment.
+                //Therefore, it was decided to generate beam tag before generating
+                //attachment tags.
+                if (!pRO->IsBeam())
+                {
+                    if (pRO->GetStartSO() == this)
+                        sSource += pRO->SourceLDP_First(nIndent, fUndoData, this);
+                    else if (pRO->GetEndSO() == this)
+                        sSource += pRO->SourceLDP_Last(nIndent, fUndoData, this);
+                    else
+                        sSource += pRO->SourceLDP_Middle(nIndent, fUndoData, this);
                 }
             }
             else
@@ -915,6 +935,16 @@ wxString lmStaffObj::SourceXML(int nIndent)
                     sSource += pRO->SourceXML_Last(nIndent, (lmNoteRest*)this);
                 else
                     sSource += pRO->SourceXML_Middle(nIndent, (lmNoteRest*)this);
+            }
+            else if ( (*m_pAuxObjs)[i]->IsRelObX() )
+            {
+                lmRelObX* pRO = (lmRelObX*)(*m_pAuxObjs)[i];
+                if (pRO->GetStartSO() == this)
+                    sSource += pRO->SourceXML_First(nIndent, this);
+                else if (pRO->GetEndSO() == this)
+                    sSource += pRO->SourceXML_Last(nIndent, this);
+                else
+                    sSource += pRO->SourceXML_Middle(nIndent, this);
             }
             else
                 sSource += (*m_pAuxObjs)[i]->SourceXML(nIndent);

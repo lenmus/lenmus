@@ -685,7 +685,7 @@ void lmShape::InformAttachedShapes(lmLUnits uxShift, lmLUnits uyShift, lmEParent
     //Parent shape has been shifted by (uxShift, uyShift). Inform attached shapes
 
 	std::list<lmAttachPoint*>::iterator pItem;
-	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
+	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); ++pItem)
 	{
 		lmAttachPoint* pData = *pItem;
         pData->pShape->OnAttachmentPointMoved(this, pData->nType, uxShift, uyShift, nEvent);
@@ -815,17 +815,19 @@ int lmCompositeShape::Add(lmShape* pShape)
 
 }
 
-void lmCompositeShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmCompositeShape::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
 {
 	//Default behaviour is to shift all components
 	m_fDoingShift = true;		//semaphore to avoid recomputing constantly the bounds
     for (int i=0; i < (int)m_Components.size(); i++)
     {
-        m_Components[i]->Shift(xIncr, yIncr);
+        m_Components[i]->Shift(uxIncr, uyIncr);
     }
 	m_fDoingShift = false;
 
-	ShiftBoundsAndSelRec(xIncr, yIncr);
+	ShiftBoundsAndSelRec(uxIncr, uyIncr);
+
+	InformAttachedShapes(uxIncr, uyIncr, lmSHIFT_EVENT);
 }
 
 wxString lmCompositeShape::Dump(int nIndent)

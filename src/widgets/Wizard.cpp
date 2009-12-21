@@ -68,8 +68,8 @@ BEGIN_EVENT_TABLE(lmWizard, wxDialog)
 END_EVENT_TABLE()
 
 lmWizard::lmWizard(wxWindow *parent, int id, const wxString& title,
-                   const wxPoint& pos, long style)
-    : wxDialog(parent, id, title, pos, wxDefaultSize, style)
+                   const wxPoint& pos, const wxSize& size, long style)
+    : wxDialog(parent, id, title, pos, size, style)
 {
     m_posWizard = pos;
     m_pFirstPage = (lmWizardPage*)NULL;
@@ -143,6 +143,10 @@ void lmWizard::CreateControls()
 void lmWizard::OnCancel(wxCommandEvent& WXUNUSED(eventUnused))
 {
     EndModal(wxID_CANCEL);
+
+    //notify the user
+    wxWizardEvent event(wxEVT_WIZARD_CANCEL, GetId(), false, 0);
+    (void)GetEventHandler()->ProcessEvent(event);
 }
 
 void lmWizard::AddPage(lmWizardPage* pPage, bool fOptional)

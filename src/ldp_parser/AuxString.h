@@ -48,6 +48,12 @@ extern lmEKeySignatures LDPNameToKey(wxString sKeyName);
 
 extern wxString LineStyleToLDP(lmELineStyle nStyle);
 extern wxString LineCapToLDP(lmELineCap nLineCap);
+extern wxString lmTPointToLDP(lmTPoint& tPoint, const wxString& sName=wxEmptyString,
+                              bool fEmptyIfZero=true);
+extern wxString lmColorToLDP(const wxColour& nColor, bool fEmptyIfEqual=true,
+                             const wxColour& nRefColor=*wxBLACK);
+extern wxString lmFloatToLDP(float rValue, const wxString& sName, 
+                             bool fEmptyIfEqual=false, float rRefValue=0.0f);
 
 
 // MusicXML related

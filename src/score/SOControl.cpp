@@ -107,10 +107,11 @@ lmLUnits lmSOControl::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
  //   lmLUnits uBoundsExtraWidth = TenthsToLogical(2);
 
  //   //create the shape
- //   lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
- //                                       uWidth, uBoundsExtraWidth, lm_eLine_Solid,
- //                                       *wxGREEN, lm_eEdgeNormal);
-	//pBox->AddShape(pShape);
+    //lmShapeLine* pShape = new lmShapeLine(this, 0, uPos.x, uyStart, uPos.x, uyEnd,
+    //                                      uWidth, uBoundsExtraWidth, lm_eLine_Solid,
+    //                                      *wxGREEN, lm_eEdgeNormal, lmDRAGGABLE,
+    //                                      lmSELECTABLE, lmVISIBLE); 
+	//pBox->AddShape(pShape, 1);    //1 = layer 1
  //   m_pGMObj = pShape;
 
  //   return 0.0;

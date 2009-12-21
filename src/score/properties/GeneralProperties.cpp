@@ -73,7 +73,7 @@ END_EVENT_TABLE()
 //wich the text is being created and is not yet included in the score. In this
 //cases method GetScore() will fail, so we can not use it in the implementation
 //of this class
-lmGeneralProperties::lmGeneralProperties(wxWindow* parent, lmScoreObj* pSCO,
+lmGeneralProperties::lmGeneralProperties(lmDlgProperties* parent, lmScoreObj* pSCO,
                                    lmScore* pScore)
     : lmPropertiesPage(parent)
 {
@@ -107,6 +107,6 @@ lmGeneralProperties::~lmGeneralProperties()
 {
 }
 
-void lmGeneralProperties::OnAcceptChanges(lmController* pController)
+void lmGeneralProperties::OnAcceptChanges(lmController* pController, bool fCurrentPage)
 {
 }

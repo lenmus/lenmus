@@ -4,6 +4,7 @@
 
 \toc
 
+%%%Related: relation_objects.txt
 
 
 \h1 {Objects model}
@@ -208,6 +209,7 @@ The full hierarchy of objects is shown in following diagram. Objects marked with
                     +-- lmRelObj (A)
                           +-- lmBinaryRelObj (A)
                           |     +-- lmTie
+                          |     +-- lmFiguredBassLine
                           |
                           +-- lmMultiRelObj (A)
                                 +-- lmBeam

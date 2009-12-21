@@ -647,3 +647,74 @@ wxString LineCapToLDP(lmELineCap nLineCap)
     }
 };
 
+wxString lmTPointToLDP(lmTPoint& tPoint, const wxString& sName,
+                       bool fEmptyIfZero)
+{
+    //if sName != empty generates "(<sName> dx:<x> dy:<y>)"
+    //else generates "dx:<x> dy:<y>".
+    //if fEmptyIfZero==true values 0.0 are not generated. For instance:
+    //  tPoint=(0.0, 3.7) will generate "dy:3.7"
+    //if both are 0 will return empty string
+
+	wxString sSource = _T("");
+
+    if (fEmptyIfZero && tPoint.x == 0.0f && tPoint.y == 0.0f)
+        return sSource;
+
+    //element name
+    if (sName != wxEmptyString)
+        sSource = _T("(") + sName;
+
+    //dx & dy values
+    if (!(fEmptyIfZero && tPoint.x == 0.0f))
+    {
+		sSource += _T(" dx:");
+        sSource += DoubleToStr((double)tPoint.x, 4);
+    }
+    if (!(fEmptyIfZero && tPoint.y == 0.0f))
+    {
+		sSource += _T(" dy:");
+        sSource += DoubleToStr((double)tPoint.y, 4);
+    }
+
+    //close element
+    if (sName != wxEmptyString)
+        sSource += _T(")");
+
+    return sSource;
+}
+
+wxString lmColorToLDP(const wxColour& nColor, bool fEmptyIfEqual, 
+                      const wxColour& nRefColor)
+{
+    //Generates "(color #rrggbb)"
+    //if fEmptyIfEqual==true and nRefColor==nColor returns empty string
+
+    if (fEmptyIfEqual && nRefColor==nColor)
+        return wxEmptyString;
+
+    //element name
+	wxString sSource = _T("(color ");
+    sSource += nColor.GetAsString(wxC2S_HTML_SYNTAX);
+    sSource += _T(")");
+
+    return sSource;
+}
+
+wxString lmFloatToLDP(float rValue, const wxString& sName, 
+                      bool fEmptyIfEqual, float rRefValue)
+{
+    //Generates "(<sName> <value>)"
+    //if fEmptyIfEqual==true and rRefValue==rValue returns empty string
+
+    if (fEmptyIfEqual && rRefValue==rValue)
+        return wxEmptyString;
+
+    //element name
+    wxString sSource = wxString::Format(_T("(%s "), sName);
+	sSource += DoubleToStr((double)rValue, 4);
+    sSource += _T(")");
+
+    return sSource;
+}
+

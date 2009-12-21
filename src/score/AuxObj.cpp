@@ -174,6 +174,7 @@ wxString lmAuxObj::SourceXML(int nIndent)
 wxString lmRelObj::SourceLDP(int nIndent, bool fUndoData)
 {
     WXUNUSED(nIndent);
+    WXUNUSED(fUndoData);
 	return wxEmptyString;
 }
 
@@ -330,6 +331,174 @@ lmNoteRest* lmMultiRelObj::GetNextNoteRest()
 
     //no more notes/rests
     return (lmNoteRest*)NULL;
+}
+
+
+
+//========================================================================================
+// lmRelObX implementation
+//========================================================================================
+
+wxString lmRelObX::SourceLDP(int nIndent, bool fUndoData)
+{
+    WXUNUSED(nIndent);
+    WXUNUSED(fUndoData);
+	return wxEmptyString;
+}
+
+
+
+//========================================================================================
+// lmBinaryRelObX implementation
+//========================================================================================
+
+lmBinaryRelObX::lmBinaryRelObX(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
+                               lmStaffObj* pStartSO, lmStaffObj* pEndSO, bool fIsDraggable)
+    : lmRelObX(pOwner, nID, nType, fIsDraggable)
+    , m_pStartSO(pStartSO)
+    , m_pEndSO(pEndSO)
+{
+}
+
+lmBinaryRelObX::~lmBinaryRelObX()
+{
+    //AWARE: StaffObjs must not be deleted as they are part of a lmScore
+    //and will be deleted there.
+
+	//inform the StaffObjs
+    if (m_pStartSO)
+        m_pStartSO->OnRemovedFromRelation(this);
+
+    if (m_pEndSO)
+        m_pEndSO->OnRemovedFromRelation(this);
+}
+
+void lmBinaryRelObX::Remove(lmStaffObj* pSO)
+{
+    //remove StaffObj.
+	//AWARE: This method is always invoked by a SO. Therefore it will
+	//not inform back the SO, as this is unnecessary and causes problems when
+	//deleting the relationship object
+
+    if (m_pStartSO == pSO)
+        m_pStartSO = (lmStaffObj*)NULL;
+    else if (m_pEndSO == pSO)
+        m_pEndSO = (lmStaffObj*)NULL;
+}
+
+
+
+//========================================================================================
+// lmMultiRelObX implementation
+//========================================================================================
+
+lmMultiRelObX::lmMultiRelObX(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
+                             bool fIsDraggable)
+    : lmRelObX(pOwner, nID, nType, fIsDraggable)
+{
+}
+
+lmMultiRelObX::~lmMultiRelObX()
+{
+    //AWARE: StaffObjs must not be deleted as they are part of a lmScore
+    //and will be deleted there.
+
+	//the relationship is going to be removed. Inform StaffObjs
+    std::list<lmStaffObj*>::iterator it;
+    for(it=m_relatedSO.begin(); it != m_relatedSO.end(); ++it)
+	{
+        (*it)->OnRemovedFromRelation(this);
+	}
+    m_relatedSO.clear();
+}
+
+void lmMultiRelObX::Remove(lmStaffObj* pSO)
+{
+    //remove StaffObj.
+	//AWARE: This method is always invoked by a SO. Therefore it will
+	//not inform back the SO, as this is unnecessary and causes problems when
+	//deleting the relationship object
+
+    wxASSERT(NumObjects() > 0);
+
+    std::list<lmStaffObj*>::iterator it;
+    it = std::find(m_relatedSO.begin(), m_relatedSO.end(), pSO);
+    m_relatedSO.erase(it);
+    OnRelationshipModified();
+}
+
+void lmMultiRelObX::Include(lmStaffObj* pSO, int nIndex)
+{
+    // Add a note to the relation. nIndex is the position that the added StaffObj
+    // must occupy (0..n). If nIndex == -1, StaffObj will be added at the end.
+
+	//add the StaffObj
+	if (nIndex == -1 || nIndex == NumObjects())
+		m_relatedSO.push_back(pSO);
+	else
+	{
+		int iN;
+		std::list<lmStaffObj*>::iterator it;
+		for(iN=0, it=m_relatedSO.begin(); it != m_relatedSO.end(); ++it, iN++)
+		{
+			if (iN == nIndex)
+			{
+				//insert before current item
+				m_relatedSO.insert(it, pSO);
+				break;
+			}
+		}
+	}
+	//wxLogMessage(Dump());
+	pSO->OnAddedToRelation(this);
+    OnRelationshipModified();
+}
+
+wxString lmMultiRelObX::Dump()
+{
+	wxString sDump = _T("");
+	std::list<lmStaffObj*>::iterator it;
+	for(it=m_relatedSO.begin(); it != m_relatedSO.end(); ++it)
+	{
+		sDump += wxString::Format(_T("Note id = %d\n"), (*it)->GetID());
+	}
+	return sDump;
+}
+
+int lmMultiRelObX::GetSOIndex(lmStaffObj* pSO)
+{
+	//returns the position in the StaffObjs list (0..n)
+
+	wxASSERT(NumObjects() > 0);
+
+	int iN;
+    std::list<lmStaffObj*>::iterator it;
+    for(iN=0, it=m_relatedSO.begin(); it != m_relatedSO.end(); ++it, iN++)
+	{
+		if (pSO == *it) return iN;
+	}
+    wxASSERT(false);	//note not found
+	return 0;			//compiler happy
+}
+
+lmStaffObj* lmMultiRelObX::GetFirstSO()
+{
+    m_it = m_relatedSO.begin();
+    if (m_it == m_relatedSO.end())
+        return (lmStaffObj*)NULL;
+    else
+        return *m_it;
+}
+
+lmStaffObj* lmMultiRelObX::GetNextSO()
+{
+    //advance to next one
+    ++m_it;
+    if (m_it != m_relatedSO.end())
+        return *m_it;
+
+    //no more StaffObjs/rests
+    return (lmStaffObj*)NULL;
 }
 
 
@@ -607,11 +776,11 @@ wxString lmLyric::Dump()
 class lmScoreLineProperties : public lmPropertiesPage
 {
 public:
-	lmScoreLineProperties(wxWindow* parent, lmScoreLine* pLine);
+	lmScoreLineProperties(lmDlgProperties* parent, lmScoreLine* pLine);
 	~lmScoreLineProperties();
 
     //implementation of pure virtual methods in base class
-    void OnAcceptChanges(lmController* pController);
+    void OnAcceptChanges(lmController* pController, bool fCurrentPage);
 
     // event handlers
 
@@ -646,7 +815,7 @@ END_EVENT_TABLE()
 
 //static lmBarlinesDBEntry tBarlinesDB[lm_eMaxBarline+1];
 
-lmScoreLineProperties::lmScoreLineProperties(wxWindow* parent, lmScoreLine* pLine)
+lmScoreLineProperties::lmScoreLineProperties(lmDlgProperties* parent, lmScoreLine* pLine)
     : lmPropertiesPage(parent)
     , m_pLine(pLine)
 {
@@ -693,7 +862,7 @@ lmScoreLineProperties::~lmScoreLineProperties()
 {
 }
 
-void lmScoreLineProperties::OnAcceptChanges(lmController* pController)
+void lmScoreLineProperties::OnAcceptChanges(lmController* pController, bool fCurrentPage)
 {
 	//int iB = m_pBarlinesList->GetSelection();
  //   lmEBarline nType = tBarlinesDB[iB].nBarlineType;
@@ -759,9 +928,8 @@ wxString lmScoreLine::SourceLDP(int nIndent, bool fUndoData)
     //width and color
     sSource += _T("(width ");
 	sSource += DoubleToStr((double)m_tWidth, 4);
-    sSource += _T(")(color ");
-    sSource += m_nColor.GetAsString(wxC2S_HTML_SYNTAX);
     sSource += _T(")");
+    sSource += lmColorToLDP(m_nColor, false);   //false=always generate source
 
     //line style and caps
     sSource += _T("(lineStyle ") + LineStyleToLDP(m_nStyle);
@@ -825,7 +993,8 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
     //create the shape
     lmShapeLine* pShape = new lmShapeLine(this, 0, uxStart, uyStart, uxEnd, uyEnd,
                                           uWidth, uBoundsExtraWidth, m_nStyle,
-                                          m_nColor, m_nEdge, _T("GraphLine"));
+                                          m_nColor, m_nEdge, lmDRAGGABLE,
+                                          lmSELECTABLE, lmVISIBLE, _T("GraphLine"));
     pShape->SetHeadType(m_nStartCap);
     pShape->SetTailType(m_nEndCap);
 	pBox->AddShape(pShape, GetLayer());
@@ -870,7 +1039,7 @@ void lmScoreLine::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabNa
 
     WXUNUSED(sTabName)
 
-	pDlg->AddPanel( new lmScoreLineProperties(pDlg->GetNotebook(), this), _("Line"));
+	pDlg->AddPanel( new lmScoreLineProperties(pDlg, this), _("Line"));
 
 	//change dialog title
 	pDlg->SetTitle(_("Line properties"));

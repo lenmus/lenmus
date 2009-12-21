@@ -47,6 +47,7 @@ class lmPaper;
 class lmHandlerSquare;
 class lmHandlerLine;
 class lmShapeLine;
+class lmShapeFBLine;
 
 
 //------------------------------------------------------------------------------------
@@ -259,6 +260,25 @@ public:
 private:
 	bool	    m_fStemDown;
     lmLUnits    m_uExtraLength;
+
+};
+
+//------------------------------------------------------------------------------------
+
+class lmShapeFiguredBass : public lmCompositeShape
+{
+public:
+    lmShapeFiguredBass(lmScoreObj* pOwner, int nShapeIdx, wxColour nColor)
+        : lmCompositeShape(pOwner, nShapeIdx, nColor, _T("Figured bass"), true)  //true= lmDRAGGABLE
+        { m_nType = eGMO_ShapeFiguredBass; }
+    ~lmShapeFiguredBass() {}
+
+	//info about related shapes
+    inline void OnFBLineAttached(int nLine, lmShapeLine* pShapeFBLine) 
+                    { m_pFBLineShape[nLine] = pShapeFBLine; }
+
+private:
+    lmShapeLine*  m_pFBLineShape[2];     //The two lines of a FB line. This is the end FB of the line
 
 };
 

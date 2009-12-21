@@ -43,9 +43,12 @@
 // Implementation of lmDlgProperties
 //--------------------------------------------------------------------------------------
 
+const long lmID_NOTEBOOK = ::wxNewId();
+
 BEGIN_EVENT_TABLE(lmDlgProperties, wxDialog)
     EVT_BUTTON(wxID_OK, lmDlgProperties::OnAccept)
     EVT_BUTTON(wxID_CANCEL, lmDlgProperties::OnCancel)
+    EVT_NOTEBOOK_PAGE_CHANGED(lmID_NOTEBOOK, lmDlgProperties::OnPageChanged)
 END_EVENT_TABLE()
 
 
@@ -63,20 +66,7 @@ void lmDlgProperties::CreateControls()
 
     m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-    m_pNotebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-    //m_pPages[0] = new wxPanel( m_pNotebook, wxID_ANY, wxDefaultPosition, wxSize( 500,350 ), wxTAB_TRAVERSAL );
-    //wxBoxSizer* bSizer3;
-    //bSizer3 = new wxBoxSizer( wxVERTICAL );
-    //
-    //wxTextCtrl* m_textCtrl1 = new wxTextCtrl( m_pPages[0], wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 450,300 ), 0 );
-    //bSizer3->Add( m_textCtrl1, 0, wxALL, 5 );
-    //
-    //m_pPages[0]->SetSizer( bSizer3 );
-    //m_pPages[0]->Layout();
-    //m_pNotebook->AddPage( m_pPages[0], _("a page"), false );
-    //m_pPages[1] = new wxPanel( m_pNotebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    //m_pNotebook->AddPage( m_pPages[1], _("a page"), false );
-
+    m_pNotebook = new wxNotebook( this, lmID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, 0 );
     m_pMainSizer->Add( m_pNotebook, 1, wxEXPAND | wxALL, 5 );
 
     wxBoxSizer* pButtonsSizer;
@@ -114,10 +104,13 @@ void lmDlgProperties::OnAccept(wxCommandEvent& WXUNUSED(event))
 {
     //apply changes
 
+    //get current page
+    lmPropertiesPage* pCurPage = (lmPropertiesPage*)m_pNotebook->GetCurrentPage() ;
+
     //Editing an existing object. Do changes by issuing edit commands
     std::list<lmPropertiesPage*>::iterator it;
     for (it = m_pPages.begin(); it != m_pPages.end(); ++it)
-        (*it)->OnAcceptChanges(m_pController);
+        (*it)->OnAcceptChanges(m_pController, pCurPage == *it);
 
     EndModal(wxID_OK);
 }
@@ -139,5 +132,29 @@ void lmDlgProperties::AddPanel(lmPropertiesPage* pPanel, const wxString& sTabNam
     pPanel->Layout();
     this->Layout();
     m_pMainSizer->Fit( this );
+}
+
+void lmDlgProperties::OnPageChanged(wxNotebookEvent& event)
+{
+    size_t nPage = (size_t)event.GetSelection();
+    lmPropertiesPage* pPage = (lmPropertiesPage*)m_pNotebook->GetPage(nPage);
+    pPage->OnEnterPage();
+}
+
+
+//---------------------------------------------------------------------------------------
+// Abstract class lmPropertiesPage: the property pages to display
+//---------------------------------------------------------------------------------------
+
+lmPropertiesPage::lmPropertiesPage(lmDlgProperties* parent)
+    : wxPanel(parent->GetNotebook(), wxID_ANY, wxDefaultPosition, wxSize(400, 250),
+              wxTAB_TRAVERSAL)
+    , m_pParent(parent)
+{
+}
+
+void lmPropertiesPage::EnableAcceptButton(bool fEnable)
+{
+    m_pParent->EnableAcceptButton(fEnable);
 }
 

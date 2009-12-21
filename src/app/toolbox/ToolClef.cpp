@@ -119,9 +119,6 @@ void lmToolPageClefs::CreateGroups()
 
     //Select clef group
     SelectGroup(m_pGrpClefType);
-    //m_pGrpClefType->SetSelected(true);
-    //m_pGrpTimeType->SetSelected(false);
-    //m_pGrpKeyType->SetSelected(false);
 
     //initialize info about selected group/tool
     m_nCurGroupID = lmGRP_ClefType;

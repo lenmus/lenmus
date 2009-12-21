@@ -54,11 +54,13 @@
 
 #define lmSPACING 5
 
-#define lm_NUM_SYMBOL_BUTTONS 4
+#define lm_NUM_HARMONY_BUTTONS  2
+#define lm_NUM_SYMBOL_BUTTONS   3
 
 //event IDs
 enum {
-    lmID_BT_Symbols = 2600,
+    lmID_BT_Harmony = 2600,
+    lmID_BT_Symbols = lmID_BT_Harmony + lm_NUM_HARMONY_BUTTONS,
 };
 
 
@@ -97,16 +99,24 @@ void lmToolPageSymbols::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
+    m_pGrpHarmony = new lmGrpHarmony(this, pMainSizer, lmMM_DATA_ENTRY);
+    AddGroup(m_pGrpHarmony);
     m_pGrpSymbols = new lmGrpSymbols(this, pMainSizer, lmMM_DATA_ENTRY);
     AddGroup(m_pGrpSymbols);
 
 	CreateLayout();
 
+    //Select harmony group
+    SelectGroup(m_pGrpHarmony);
+
     //initialize info about selected group/tool
-    m_nCurGroupID = lmGRP_Symbols;
-    m_nCurToolID = m_pGrpSymbols->GetCurrentToolID();
+    m_nCurGroupID = lmGRP_Harmony;
+    m_nCurToolID = m_pGrpHarmony->GetCurrentToolID();
 
     m_fGroupsCreated = true;
+
+    //for now disable symbols group
+    m_pGrpSymbols->SetAsAlwaysDisabled();
 }
 
 wxString lmToolPageSymbols::GetToolShortDescription()
@@ -114,8 +124,33 @@ wxString lmToolPageSymbols::GetToolShortDescription()
     //returns a short description of the selected tool. This description is used to
     //be displayed in the status bar
 
-    //TODO
-    return _T("Add symbol");
+    wxString sDescr;
+    switch( GetCurrentToolID() )
+    {
+        case lmTOOL_FIGURED_BASS:
+            sDescr = _("Add figured bass");
+            break;
+
+        case lmTOOL_FB_LINE:
+            sDescr = _("Add 'hold chord' figured bass line");
+            break;
+
+        case lmTOOL_TEXT:
+            sDescr = _("Add text");
+            break;
+
+        case lmTOOL_LINES:
+            sDescr = _("Add line or arrow");
+            break;
+
+        case lmTOOL_TEXTBOX:
+            sDescr = _("Add textbox");
+            break;
+
+        default:
+            sDescr = _T("");
+    }
+    return sDescr;
 }
 
 
@@ -128,7 +163,7 @@ lmGrpSymbols::lmGrpSymbols(lmToolPage* pParent, wxBoxSizer* pMainSizer,
                            int nValidMouseModes)
     : lmToolButtonsGroup(pParent, lm_eGT_ToolSelector, lm_NUM_SYMBOL_BUTTONS,
                          lmTBG_ONE_SELECTED, pMainSizer,
-                         lmID_BT_Symbols, lmTOOL_FIGURED_BASS, pParent->GetColors(),
+                         lmID_BT_Symbols, lmTOOL_TEXT, pParent->GetColors(),
                          nValidMouseModes)
 {
 }
@@ -139,7 +174,6 @@ void lmGrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     lmToolButtonData cButtons[] =
     {
-        { lmTOOL_FIGURED_BASS,  _("Figured bass"),          _T("symbols_figured_bass") },
         { lmTOOL_TEXT,          _("Text"),                  _T("symbols_text") },
         { lmTOOL_LINES,         _("Lines and arrows"),      _T("symbols_line") },
         { lmTOOL_TEXTBOX,       _("Text boxes"),            _T("symbols_textbox") },
@@ -147,7 +181,7 @@ void lmGrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     int nNumButtons = sizeof(cButtons) / sizeof(lmToolButtonData);
 
-    SetGroupTitle(_T(""));  //_("Text, symbols, graphics"));
+    SetGroupTitle(_("Text and graphics"));
     wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));
@@ -163,6 +197,62 @@ void lmGrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
 
 		wxString sBtName = cButtons[iB].sBitmapName;
 		m_pButton[iB] = new lmCheckButton(this, lmID_BT_Symbols+iB, wxBitmap(24, 24));
+        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapDisabled(sBtName + _T("_dis"), _T(""), btSize);
+		m_pButton[iB]->SetToolTip(cButtons[iB].sToolTip);
+		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
+		pButtonsSizer->Add( new wxStaticText(this, wxID_ANY, cButtons[iB].sToolTip),
+                            wxSizerFlags(0).Border(wxLEFT|wxTOP|wxBOTTOM, 5) );
+	}
+
+	this->Layout();
+
+	SelectButton(0);	//select text button
+}
+
+
+
+//--------------------------------------------------------------------------------
+// lmGrpHarmony implementation
+//--------------------------------------------------------------------------------
+
+lmGrpHarmony::lmGrpHarmony(lmToolPage* pParent, wxBoxSizer* pMainSizer,
+                           int nValidMouseModes)
+    : lmToolButtonsGroup(pParent, lm_eGT_ToolSelector, lm_NUM_HARMONY_BUTTONS,
+                         lmTBG_ONE_SELECTED, pMainSizer,
+                         lmID_BT_Harmony, lmTOOL_FIGURED_BASS, pParent->GetColors(),
+                         nValidMouseModes)
+{
+}
+
+void lmGrpHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
+{
+    //create the buttons for the group
+
+    lmToolButtonData cButtons[] =
+    {
+        { lmTOOL_FIGURED_BASS,  _("Figured bass"),          _T("harmony_figured_bass") },
+        { lmTOOL_FB_LINE,       _("'Hold chord' line"),     _T("harmony_fb_line") },
+    };
+
+    int nNumButtons = sizeof(cButtons) / sizeof(lmToolButtonData);
+
+    SetGroupTitle(_T("Harmony"));
+    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+
+    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));
+
+    wxBoxSizer* pButtonsSizer;
+    wxSize btSize(24, 24);
+	for (int iB=0; iB < nNumButtons; iB++)
+	{
+		pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+		pCtrolsSizer->Add(pButtonsSizer);
+
+		wxString sBtName = cButtons[iB].sBitmapName;
+		m_pButton[iB] = new lmCheckButton(this, lmID_BT_Harmony+iB, wxBitmap(24, 24));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);

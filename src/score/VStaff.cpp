@@ -526,6 +526,49 @@ lmFiguredBass* lmVStaff::Cmd_InsertFiguredBass(lmFiguredBassData* pFBData)
     return pFB;
 }
 
+lmFiguredBassLine* lmVStaff::Cmd_InsertFBLine()
+{
+    //move cursor to start of current timepos
+    //AWARE:
+    //  Cursor might be pointing not to the first SO at current timepos. Therefore
+    //  we have to move to the first SO at current timepos. Otherwise, the figured bass
+    //  line would be inserted between two objects at the same timepos!
+    GetCursor()->MoveToStartOfTimepos();
+    lmStaffObj* pCursorObj = GetCursorStaffObj();
+
+    //find previous and next FB
+    lmFiguredBass* pStartFB = FindFiguredBass(false, pCursorObj);   //false=backwards (previous)
+    lmFiguredBass* pEndFB = FindFiguredBass(true, pCursorObj);      //true=forwards (next)
+
+    //link both FB with a FB line
+    return pStartFB->CreateFBLine(lmNEW_ID, pEndFB);
+}
+
+lmFiguredBass* lmVStaff::FindFiguredBass(bool fFwd, lmStaffObj* pStartSO)
+{
+    //starting at current cursor position returns the first figured bass object
+    //that is found. Search could be forward or backwards, depending on flag fFwd
+
+    //loop to find a figured bass
+    lmFiguredBass* pFB = (lmFiguredBass*)NULL;
+    lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom( pStartSO );
+    while(!pIT->EndOfCollection())
+    {
+        lmStaffObj* pSO = pIT->GetCurrent();
+		if (pSO->IsFiguredBass())
+        {
+            pFB = (lmFiguredBass*)pSO;
+            break;
+        }
+
+        //advance iterator
+        fFwd ? pIT->MoveNext() : pIT->MovePrev();
+    }
+    delete pIT;
+
+    return pFB;
+}
+
 lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
                                  lmENoteType nNoteType, float rDuration, int nDots,
 								 lmENoteHeads nNotehead, lmEAccidentals nAcc,

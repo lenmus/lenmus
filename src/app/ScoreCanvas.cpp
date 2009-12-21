@@ -1796,6 +1796,14 @@ void lmScoreCanvas::InsertFiguredBass()
 	pCP->Submit(new lmCmdInsertFiguredBass(lmCMD_NORMAL, m_pDoc, sFigBass) );
 }
 
+void lmScoreCanvas::InsertFiguredBassLine()
+{
+    //Create a new figured bass line and add it to the VStaff
+
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmCmdInsertFBLine(lmCMD_NORMAL, m_pDoc) );
+}
+
 void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 							   lmENoteType nNoteType, float rDuration, int nDots,
 							   lmENoteHeads nNotehead, lmEAccidentals nAcc,
@@ -3994,26 +4002,37 @@ void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGrid
             return OnToolNotesClick(pGMO, uPagePos, rGridTime);
 
         case lmPAGE_SYMBOLS:
-            return OnToolSymbolsClick(pGMO, uPagePos, rGridTime);
+        {
+            switch (m_nGroupID)
+            {
+                case lmGRP_Symbols:
+                    return OnToolSymbolsClick(pGMO, uPagePos, rGridTime);
+                case lmGRP_Harmony:
+                    return OnToolHarmonyClick(pGMO, uPagePos, rGridTime);
+                default:
+                    wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Missing value (%d) in switch statement"), m_nGroupID); 
+                    return;
+            }
+        }
 
         case lmPAGE_BARLINES:
             return OnToolBarlinesClick(pGMO, uPagePos, rGridTime);
 
         case lmPAGE_CLEFS:
+        {
+            switch (m_nGroupID)
             {
-                switch (m_nGroupID)
-                {
-                    case lmGRP_ClefType:
-                        return OnToolClefsClick(pGMO, uPagePos, rGridTime);
-                    case lmGRP_TimeType:
-                        return OnToolTimeSignatureClick(pGMO, uPagePos, rGridTime);
-                    case lmGRP_KeyType:
-                        return OnToolKeySignatureClick(pGMO, uPagePos, rGridTime);
-                    default:
-                        wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Missing value (%d) in switch statement"), m_nGroupID); 
-                        return;
-                }
+                case lmGRP_ClefType:
+                    return OnToolClefsClick(pGMO, uPagePos, rGridTime);
+                case lmGRP_TimeType:
+                    return OnToolTimeSignatureClick(pGMO, uPagePos, rGridTime);
+                case lmGRP_KeyType:
+                    return OnToolKeySignatureClick(pGMO, uPagePos, rGridTime);
+                default:
+                    wxLogMessage(_T("[lmScoreCanvas::OnToolClick] Missing value (%d) in switch statement"), m_nGroupID); 
+                    return;
             }
+        }
 
         default:
             return;
@@ -4078,7 +4097,7 @@ void lmScoreCanvas::OnToolNotesClick(lmGMObject* pGMO, lmUPoint uPagePos,
     }
 }
 
-void lmScoreCanvas::OnToolSymbolsClick(lmGMObject* pGMO, lmUPoint uPagePos,
+void lmScoreCanvas::OnToolHarmonyClick(lmGMObject* pGMO, lmUPoint uPagePos,
                                        float rGridTime)
 {
     //Click on Note/rest: Add figured bass
@@ -4086,32 +4105,61 @@ void lmScoreCanvas::OnToolSymbolsClick(lmGMObject* pGMO, lmUPoint uPagePos,
     {
         lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 	    wxASSERT(pToolBox);
-        lmEToolPageID nPage = pToolBox->GetCurrentPageID();
-        if (nPage == lmPAGE_SYMBOLS)
+        lmToolPageSymbols* pPage = (lmToolPageSymbols*)pToolBox->GetSelectedPage();
+        lmEToolID nTool = pPage->GetCurrentToolID();
+        lmScoreObj* pSCO = ((lmShape*)pGMO)->GetScoreOwner();
+        switch(nTool)
         {
-            lmToolPageSymbols* pPage = (lmToolPageSymbols*)pToolBox->GetSelectedPage();
-            lmEToolID nTool = pPage->GetToolID();
-
-            lmScoreObj* pSCO = ((lmShape*)pGMO)->GetScoreOwner();
-            switch(nTool)
+            case lmTOOL_FIGURED_BASS:
             {
-                case lmTOOL_FIGURED_BASS:
-                {
-                    //Move cursor to insertion position and insert figured bass
-                    wxASSERT(pSCO->IsNote() || pSCO->IsRest());
-                    m_pDoc->GetScore()->GetCursor()->MoveCursorToObject((lmStaffObj*)pSCO);
-                    InsertFiguredBass();
-                    break;
-                }
-
-                case lmTOOL_LINES:
-                case lmTOOL_TEXTBOX:
-                case lmTOOL_TEXT:
-                    break;
-
-                default:
-                    wxASSERT(false);
+                //Move cursor to insertion position and insert figured bass
+                wxASSERT(pSCO->IsNote() || pSCO->IsRest());
+                m_pDoc->GetScore()->GetCursor()->MoveCursorToObject((lmStaffObj*)pSCO);
+                InsertFiguredBass();
+                break;
             }
+
+            case lmTOOL_FB_LINE:
+                //Move cursor to insertion position and insert figured bass line
+                wxASSERT(pSCO->IsNote() || pSCO->IsRest());
+                m_pDoc->GetScore()->GetCursor()->MoveCursorToObject((lmStaffObj*)pSCO);
+                InsertFiguredBassLine();
+                break;
+
+            default:
+                wxASSERT(false);
+        }
+    }
+}
+
+void lmScoreCanvas::OnToolSymbolsClick(lmGMObject* pGMO, lmUPoint uPagePos,
+                                       float rGridTime)
+{
+    //TODO
+    //Click on Note/rest: Add symbol
+    if (pGMO->IsShape())
+    {
+        lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
+	    wxASSERT(pToolBox);
+        lmToolPageSymbols* pPage = (lmToolPageSymbols*)pToolBox->GetSelectedPage();
+        lmEToolID nTool = pPage->GetCurrentToolID();
+        lmScoreObj* pSCO = ((lmShape*)pGMO)->GetScoreOwner();
+        switch(nTool)
+        {
+            case lmTOOL_LINES:
+                lmTODO(_T("[lmScoreCanvas::OnToolSymbolsClick] TODO: handle LINES tool"));
+                break;
+
+            case lmTOOL_TEXTBOX:
+                lmTODO(_T("[lmScoreCanvas::OnToolSymbolsClick] TODO: handle TEXTBOX tool"));
+                break;
+
+            case lmTOOL_TEXT:
+                lmTODO(_T("[lmScoreCanvas::OnToolSymbolsClick] TODO: handle TEXT tool"));
+                break;
+
+            default:
+                wxASSERT(false);
         }
     }
 }
@@ -4259,7 +4307,7 @@ void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
     else
     {
         //if it is a staffobj move cursor to it. Else do nothing
-        wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Click on shape"));
+        //wxLogMessage(_T("[lmScoreCanvas::OnLeftClickOnObject] Click on shape"));
         lmScoreObj* pSCO = pGMO->GetScoreOwner();
         if (pSCO->IsComponentObj())
             m_pView->MoveCaretToObject(pGMO);

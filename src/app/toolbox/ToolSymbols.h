@@ -33,7 +33,7 @@ class lmBitmapButton;
 
 
 //--------------------------------------------------------------------------------
-// Group for texts, figured bass, symbols & graphic objects
+// Group for texts, symbols & graphic objects
 //--------------------------------------------------------------------------------
 //one entry in the buttons table
 typedef struct
@@ -53,6 +53,24 @@ public:
     //implement virtual methods
     void CreateGroupControls(wxBoxSizer* pMainSizer);
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_Symbols; }
+
+};
+
+
+
+//--------------------------------------------------------------------------------
+// Group for figured bass and harmony symbols
+//--------------------------------------------------------------------------------
+
+class lmGrpHarmony: public lmToolButtonsGroup
+{
+public:
+    lmGrpHarmony(lmToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
+    ~lmGrpHarmony() {}
+
+    //implement virtual methods
+    void CreateGroupControls(wxBoxSizer* pMainSizer);
+    inline lmEToolGroupID GetToolGroupID() { return lmGRP_Harmony; }
 
 };
 
@@ -86,6 +104,7 @@ private:
 
     //groups
     lmGrpSymbols*           m_pGrpSymbols;
+    lmGrpHarmony*           m_pGrpHarmony;
 
 };
 

@@ -91,7 +91,8 @@ public:
                 lmLUnits uxStart, lmLUnits uyStart, lmLUnits uxEnd, lmLUnits uyEnd,
                 lmLUnits uWidth, lmLUnits uBoundsExtraWidth, lmELineStyle nStyle,
                 wxColour nColor, lmELineEdges nEdge = lm_eEdgeNormal,
-                wxString sName = _T("Line"));      
+                bool fDraggable = true, bool fSelectable = true,
+                bool fVisible = true, wxString sName = _T("Line"));      
 
     lmShapeLine(lmScoreObj* pOwner);
 
@@ -169,6 +170,48 @@ protected:
     lmELineStyle        m_nStyle;
     lmELineCap         m_nStartCap;
     lmELineCap         m_nEndCap;
+
+};
+
+//------------------------------------------------------------------------------------
+
+class lmFiguredBass;
+
+class lmShapeFBLine : public lmShapeLine
+{
+public:
+    lmShapeFBLine(lmScoreObj* pOwner, int nShapeIdx, lmFiguredBass* pEndFB,
+                  lmLUnits uxStart, lmLUnits uyStart, lmLUnits uxEnd, lmLUnits uyEnd,
+                  lmTenths tWidth, lmShapeFiguredBass* pShapeStartFB,
+                  lmShapeFiguredBass* pShapeEndFB, wxColour nColor, bool fVisible);
+    ~lmShapeFBLine();
+
+	//layout changes
+	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
+								lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
+	//splitting
+	inline void SetBrotherLine(lmShapeFBLine* pBrotherLine)
+                    { m_pBrotherLine = pBrotherLine; }
+
+    //access to information
+    //lmFiguredBass* GetStartFB();
+    lmFiguredBass* GetEndFB();
+
+    //changing values
+    inline void SetStartPoint(lmUPoint uPos) { m_uPoint[lmID_START] = uPos; }
+    inline void SetEndPoint(lmUPoint uPos) { m_uPoint[lmID_END] = uPos; }
+
+    //access to information
+    inline lmLUnits GetStartPosX() const { return m_uPoint[lmID_START].x; }
+    inline lmLUnits GetStartPosY() const { return m_uPoint[lmID_START].y; }
+    inline lmLUnits GetEndPosX() const { return m_uPoint[lmID_END].x; }
+    inline lmLUnits GetEndPosY() const { return m_uPoint[lmID_END].y; }
+
+private:
+	lmShapeFBLine*  m_pBrotherLine;		    //when line is splitted
+    lmFiguredBass*  m_pEndFB;
+    bool            m_fUserShiftsApplied;
+    lmUPoint        m_uUserShifts[4];
 
 };
 

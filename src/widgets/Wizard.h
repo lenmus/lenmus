@@ -64,7 +64,9 @@ class lmWizard : public wxDialog
 {
 public:
     lmWizard(wxWindow *parent, int id = wxID_ANY, const wxString& title = wxEmptyString,
-             const wxPoint& pos = wxDefaultPosition, long style = wxDEFAULT_DIALOG_STYLE);
+             const wxPoint& pos = wxDefaultPosition, 
+             const wxSize& size = wxDefaultSize,
+             long style = wxDEFAULT_DIALOG_STYLE);
     virtual ~lmWizard();
 
     //adding pages

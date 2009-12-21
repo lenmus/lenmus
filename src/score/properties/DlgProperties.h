@@ -58,6 +58,7 @@
 
 class lmTextItem;
 class lmController;
+class lmDlgProperties;
 
 
 //---------------------------------------------------------------------------------------
@@ -69,13 +70,17 @@ class lmPropertiesPage : public wxPanel
 public:
     virtual ~lmPropertiesPage() {}
 
-    virtual void OnAcceptChanges(lmController* pController)=0;
+    //handlers
+    virtual void OnAcceptChanges(lmController* pController, bool fCurrentPage)=0;
     virtual void OnCancelChanges() {}
+    virtual void OnEnterPage() {}
+
+    virtual void EnableAcceptButton(bool fEnable);
 
 protected:
-    lmPropertiesPage(wxWindow* parent) :
-         wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(400, 250), wxTAB_TRAVERSAL) {}
+    lmPropertiesPage(lmDlgProperties* parent);
 
+    lmDlgProperties*    m_pParent;
 };
 
 
@@ -93,10 +98,13 @@ public:
     // event handlers
     void OnAccept(wxCommandEvent& WXUNUSED(event));
     void OnCancel(wxCommandEvent& WXUNUSED(event));
+    void OnPageChanged(wxNotebookEvent& event);
 
     //panels
     inline wxNotebook* GetNotebook() { return m_pNotebook; }
     void AddPanel(lmPropertiesPage* pPanel, const wxString& sTabName);
+
+    inline void EnableAcceptButton(bool fEnable) { m_pBtAccept->Enable(fEnable); }
 
 
 protected:

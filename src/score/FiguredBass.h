@@ -25,8 +25,12 @@
 #pragma interface "FiguredBass.cpp"
 #endif
 
+#include "defs.h"
+#include "StaffObj.h"
+
 class lmDlgProperties;
 class lmChord;
+class lmFiguredBassLine;
 
 //interval quality: how the interval is interpreted
 enum lmEIntervalQuality
@@ -116,6 +120,8 @@ protected:
 
     wxString            m_sError;       //error msg for constructor from string
     lmFiguredBassInfo   m_tFBInfo[lmFB_MAX_INTV+1]; //i=0..13 --> intervals 2nd..13th. 0&1 not used
+    bool                m_fAsPrevious;      //this FB is the same than previous FB (line FB)
+                                            //If this flag is true m_tFBInfo is not valid
 
 };
 
@@ -129,7 +135,7 @@ class lmFiguredBass : public lmStaffObj, public lmFiguredBassData
 public:
     lmFiguredBass(lmVStaff* pVStaff, long nID, lmFiguredBassData* pFBData);
     lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord, lmEKeySignatures nKey);
-    ~lmFiguredBass() {}
+    ~lmFiguredBass();
 
     // properties
     inline float GetTimePosIncrement() { return 0; }
@@ -150,14 +156,74 @@ public:
 	//edit properties
 	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
 
+    //methods related to figured bass lines
+    lmFiguredBassLine* CreateFBLine(long nID, lmFiguredBass* pEndFB);
+    inline SetAsStartOfFBLine(lmFiguredBassLine* pFBLine) { m_pNextFBLine = pFBLine; }
+    inline SetAsEndOfFBLine(lmFiguredBassLine* pFBLine) { m_pPrevFBLine = pFBLine; }
+    lmFiguredBassLine* CreateFBLine(lmFiguredBass* pEndFB, long nID,
+                                    lmLocation tStartLine, lmLocation tEndLine,
+                                    lmTenths ntWidth, wxColour nColor);
+
+	//overrides to deal with relations (figured bass lines)
+    void OnRemovedFromRelation(lmRelObX* pRel);
+
+
 
 private:
     lmLUnits AddSymbol(lmCompositeShape* pShape, lmPaper* pPaper, wxChar ch, wxFont* pFont,
                        lmUPoint uPos, wxColour colorC);
+    void FixHoldLine();
 
     bool                m_fStartOfLine;         //start of line (hold chord)
     bool                m_fEndOfLine;           //change of chord
     bool                m_fParenthesis;         //enclose all figured bass in parenthesis
+    lmFiguredBassLine*  m_pPrevFBLine;
+    lmFiguredBassLine*  m_pNextFBLine;
+
+
+};
+
+
+
+// lmFiguredBassLine: an auxliary relation object to model the 'hold chord' line
+//-------------------------------------------------------------------------------------------
+
+class lmFiguredBassLine : public lmBinaryRelObX
+{
+public:
+    lmFiguredBassLine(lmScoreObj* pOwner, long nID, lmFiguredBass* pStartFB,
+                      lmFiguredBass* pEndFB, wxColour nColor = *wxBLACK,
+                      lmTenths tWidth = 1.0f);
+    ~lmFiguredBassLine();
+
+    //implementation of pure virtual methods of base class
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
+    int GetNumPoints() { return 2; }
+
+    //overrides
+    void OnParentComputedPositionShifted(lmLUnits uxShift, lmLUnits uyShift) {}
+    void OnParentMoved(lmLUnits uxShift, lmLUnits uyShift) {}
+
+    //source code related methods. Implementation of needed virtual methods in lmRelObj
+    wxString SourceLDP_First(int nIndent, bool fUndoData, lmStaffObj* pSO);
+    wxString SourceLDP_Last(int nIndent, bool fUndoData, lmStaffObj* pSO);
+    wxString SourceXML_First(int nIndent, lmStaffObj* pSO);
+    wxString SourceXML_Last(int nIndent, lmStaffObj* pSO);
+
+    // debug methods
+    wxString Dump();
+
+    //undoable edition commands
+    void MoveObjectPoints(int nNumPoints, int nShapeIdx, lmUPoint* pShifts, bool fAddShifts);
+
+protected:
+    lmTenths        m_tWidth;
+    wxColour        m_nColor;
+
+    //user displacements on computed line points. Four points: two for start & end
+    //of first line (points 0, 1) and two for start & end of second line (points 2, 3)
+    lmTPoint    m_tPoint[4];
 
 };
 

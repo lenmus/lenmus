@@ -250,6 +250,20 @@ protected:
 };
 
 
+// Insert figured bass line command
+//------------------------------------------------------------------------------------
+class lmCmdInsertFBLine: public lmScoreCommand
+{
+	DECLARE_CLASS(lmCmdInsertFBLine)
+public:
+    lmCmdInsertFBLine(bool fNormalCmd, lmDocument *pDoc);
+    ~lmCmdInsertFBLine() {}
+
+    //implementation of pure virtual methods in base class
+    bool Do();
+};
+
+
 // Insert time signature command
 //------------------------------------------------------------------------------------
 class lmCmdInsertTimeSignature: public lmScoreCommand

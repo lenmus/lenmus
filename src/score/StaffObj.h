@@ -158,8 +158,16 @@ enum lmEScoreObjType
     lm_eSO_MultiRelObj,
     lm_eSO_Beam,
     //lm_eSO_TupletBracket,           // tuplet bracket (lmTupletBracket)
-    lm_eSO_LastAuxObj,
 
+    //lmBinaryRelObX
+    lm_eSO_BinaryRelObX,
+    lm_eSO_FBLine,                  //'hold chord' figured bass line
+
+    //lmMultiRelObX
+    lm_eSO_MultiRelObX,
+
+    //end of table
+    lm_eSO_LastAuxObj,
 };
 
 
@@ -227,6 +235,7 @@ public:
     inline bool IsFiguredBass() { return m_nObjType == lm_eSO_FiguredBass; }
     //AuxObjs
     inline bool IsFermata() { return m_nObjType == lm_eSO_Fermata; }
+    inline bool IsFiguredBassLine() { return m_nObjType == lm_eSO_FBLine; }
     inline bool IsLine() { return m_nObjType == lm_eSO_Line; }
     inline bool IsLyric() { return m_nObjType == lm_eSO_Lyric; }
     inline bool IsTextItem() { return m_nObjType == lm_eSO_TextItem; }
@@ -234,9 +243,13 @@ public:
     inline bool IsTie() { return m_nObjType == lm_eSO_Tie; }
     inline bool IsBeam() { return m_nObjType == lm_eSO_Beam; }
 
-    inline bool IsRelObj() { return m_nObjType >= lm_eSO_BinaryRelObj; }
+    inline bool IsRelObj() { return m_nObjType >= lm_eSO_BinaryRelObj
+                                    && m_nObjType < lm_eSO_BinaryRelObX; }
+    inline bool IsRelObX() { return m_nObjType >= lm_eSO_BinaryRelObX; }
     inline bool IsBinaryRelObj() { return m_nObjType >= lm_eSO_BinaryRelObj
                                           && m_nObjType < lm_eSO_MultiRelObj; }
+    inline bool IsBinaryRelObX() { return m_nObjType >= lm_eSO_BinaryRelObX
+                                          && m_nObjType < lm_eSO_MultiRelObX; }
     inline bool IsMultiRelObj() { return m_nObjType >= lm_eSO_MultiRelObj; }
 
     //--- a ScoreObj can own other ScoreObjs -----------------------
@@ -396,6 +409,7 @@ class lmContext;
 class lmClef;
 class lmTimeSignature;
 class lmKeySignature;
+class lmRelObX;
 
 
 class lmStaffObj : public lmComponentObj
@@ -474,6 +488,10 @@ public:
 	inline lmStaffObj* GetNextSO() const { return m_pNextSO; }
 	inline void SetPrevSO(lmStaffObj* pPrevSO) { m_pPrevSO = pPrevSO; }
 	inline void SetNextSO(lmStaffObj* pNextSO) { m_pNextSO = pNextSO; }
+
+	//relationships
+    virtual void OnAddedToRelation(lmRelObX* pRel) {}
+    virtual void OnRemovedFromRelation(lmRelObX* pRel) {}
 
 
 
@@ -653,6 +671,103 @@ protected:
     std::list<lmNoteRest*>::iterator m_it;  //for methods GetFirstNoteRest() and GetNextNoteRest()
 };
 
+//NEW ====================================================================
+//NEW ====================================================================
+//NEW ====================================================================
+//NEW ====================================================================
+
+//An abstract AuxObj relating at least two StaffObjs
+class lmRelObX : public lmAuxObj
+{
+public:
+	virtual ~lmRelObX() {}
+
+    //building/destroying the relationship
+    virtual void Include(lmStaffObj* pSO, int nIndex = -1)=0;
+    virtual void Remove(lmStaffObj* pSO)=0;
+	virtual void OnRelationshipModified()=0;
+
+    //information
+    virtual lmStaffObj* GetStartSO()=0;
+    virtual lmStaffObj* GetEndSO()=0;
+
+    //source code generation
+    virtual wxString SourceLDP_First(int nIndent, bool fUndoData, lmStaffObj* pSO)
+                        { return wxEmptyString; }
+    virtual wxString SourceLDP_Middle(int nIndent, bool fUndoData, lmStaffObj* pSO)
+                        { return wxEmptyString; }
+    virtual wxString SourceLDP_Last(int nIndent, bool fUndoData, lmStaffObj* pSO)
+                        { return wxEmptyString; }
+    virtual wxString SourceXML_First(int nIndent, lmStaffObj* pSO)
+                        { return wxEmptyString; }
+    virtual wxString SourceXML_Middle(int nIndent, lmStaffObj* pSO)
+                        { return wxEmptyString; }
+    virtual wxString SourceXML_Last(int nIndent, lmStaffObj* pSO)
+                        { return wxEmptyString; }
+
+    //overrides
+    wxString SourceLDP(int nIndent, bool fUndoData);
+
+protected:
+	lmRelObX(lmScoreObj* pOwner, long nID, lmEScoreObjType nType, bool fIsDraggable = true)
+        : lmAuxObj(pOwner, nID, nType, fIsDraggable) {}
+};
+
+
+//An abstract AuxObj relating two and only two StaffObjs
+class lmBinaryRelObX : public lmRelObX
+{
+public:
+    virtual ~lmBinaryRelObX();
+
+    //implementation of lmRelObX pure virtual methods
+    virtual void Include(lmStaffObj* pSO, int nIndex = -1) {};
+    virtual void Remove(lmStaffObj* pSO);
+    virtual inline lmStaffObj* GetStartSO() { return m_pStartSO; }
+    virtual inline lmStaffObj* GetEndSO() { return m_pEndSO; }
+    virtual void OnRelationshipModified() {};
+
+
+protected:
+    lmBinaryRelObX(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
+                   lmStaffObj* pStartSO, lmStaffObj* pEndSO,
+                   bool fIsDraggable = true);
+
+    lmStaffObj*     m_pStartSO;     //StaffObjs related by this lmRelObX
+    lmStaffObj*		m_pEndSO;
+};
+
+
+//An abstract AuxObj relating two or more StaffObjs
+class lmMultiRelObX : public lmRelObX
+{
+public:
+    virtual ~lmMultiRelObX();
+
+    //implementation of lmRelObX pure virtual methods
+    virtual void Include(lmStaffObj* pSO, int nIndex = -1);
+    virtual void Remove(lmStaffObj* pSO);
+    lmStaffObj* GetStartSO() { return m_relatedSO.front(); }
+    lmStaffObj* GetEndSO() { return m_relatedSO.back(); }
+    virtual void OnRelationshipModified() {};
+
+        //specific methods
+    int NumObjects() { return (int)m_relatedSO.size(); }
+    int GetSOIndex(lmStaffObj* pSO);
+
+    //two dirty methods to simplify traversing the collection
+    lmStaffObj* GetFirstSO();
+    lmStaffObj* GetNextSO();
+
+	wxString Dump();
+
+protected:
+    lmMultiRelObX(lmScoreObj* pOwner, long nID, lmEScoreObjType nType,
+                  bool fIsDraggable = true);
+
+    std::list<lmStaffObj*>   m_relatedSO;   //list of StaffObjs that form the relation
+    std::list<lmStaffObj*>::iterator m_it;  //for methods GetFirstSO() and GetNextSO()
+};
 
 
 #endif    // __LM_STAFFOBJ_H__

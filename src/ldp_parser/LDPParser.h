@@ -41,6 +41,7 @@
 class lmInstrGroup;
 class lmTieInfo;
 class lmBeamInfo;
+class lmFBLineInfo;
 
 enum lmETagLDP
 {
@@ -150,6 +151,7 @@ protected:
     bool        AnalyzeCreationMode(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeCursor(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore);
+    lmFBLineInfo* AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff);
 	bool		AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr);
     void        AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget);
     void        AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos);
@@ -182,7 +184,7 @@ protected:
     //auxiliary
     void AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo);
     void AddTie(lmNote* pNote, lmTieInfo* pTieInfo);
-
+    void AddFBLine(lmFiguredBass* pFB, lmFBLineInfo* pFBLineInfo);
 
     void Clear();
     void FileParsingError(const wxString& sMsg);
@@ -221,8 +223,9 @@ protected:
     int                 m_nVersion;         //version in numeric format: 100*num+rev. (i.I.e. 1.2 = 102)
 
     //list of open relations, waiting for the stop element.
-    std::list<lmTieInfo*>   m_PendingTies;
-    std::list<lmBeamInfo*>  m_PendingBeams;
+    std::list<lmTieInfo*>       m_PendingTies;
+    std::list<lmBeamInfo*>      m_PendingBeams;
+    std::list<lmFBLineInfo*>    m_PendingFBLines;
 
     //cursor data
     bool            m_fCursorData;          //true if cursor data found

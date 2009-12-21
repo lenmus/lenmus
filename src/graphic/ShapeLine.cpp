@@ -32,8 +32,11 @@
 #include "Handlers.h"
 #include "ShapeLine.h"
 #include "AggDrawer.h"
-#include "../score/Score.h"
 #include "BoxPage.h"
+#include "BoxSystem.h"
+#include "../score/Score.h"
+#include "../score/Score.h"
+#include "../score/FiguredBass.h"
 #include "../app/ScoreCanvas.h"
 
 //access to colors
@@ -51,8 +54,10 @@ lmShapeLine::lmShapeLine(lmScoreObj* pOwner, int nShapeIdx,
                          lmLUnits uxStart, lmLUnits uyStart,
                          lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uWidth,
                          lmLUnits uBoundsExtraWidth, lmELineStyle nStyle,
-                         wxColour nColor, lmELineEdges nEdge, wxString sName)
-    : lmSimpleShape(eGMO_ShapeLine, pOwner, nShapeIdx, sName)
+                         wxColour nColor, lmELineEdges nEdge, bool fDraggable,
+                         bool fSelectable, bool fVisible, wxString sName)
+    : lmSimpleShape(eGMO_ShapeLine, pOwner, nShapeIdx, sName, fDraggable,
+                    fSelectable, nColor, fVisible)
     , m_nStyle(nStyle)
 {
 	Create(uxStart, uyStart, uxEnd, uyEnd, uWidth, uBoundsExtraWidth, nColor, nEdge,
@@ -247,14 +252,16 @@ wxString lmShapeLine::Dump(int nIndent)
 	return sDump;
 }
 
-void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeLine::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
 {
-    m_uPoint[lmID_START].x += xIncr;
-    m_uPoint[lmID_START].y += yIncr;
-    m_uPoint[lmID_END].x += xIncr;
-    m_uPoint[lmID_END].y += yIncr;
+    m_uPoint[lmID_START].x += uxIncr;
+    m_uPoint[lmID_START].y += uyIncr;
+    m_uPoint[lmID_END].x += uxIncr;
+    m_uPoint[lmID_END].y += uyIncr;
 
-    ShiftBoundsAndSelRec(xIncr, yIncr);
+    ShiftBoundsAndSelRec(uxIncr, uyIncr);
+
+	InformAttachedShapes(uxIncr, uyIncr, lmSHIFT_EVENT);
 
 	//if included in a composite shape update parent bounding and selection rectangles
 	if (this->IsChildShape())
@@ -437,5 +444,125 @@ void lmShapeLine::SubtractVectors(lmUVector& v0, lmUVector& v1, lmUVector& v)
 lmLUnits lmShapeLine::VectorMagnitude(lmUVector& v)
 {
     return sqrt(v.x * v.x + v.y * v.y);
+}
+
+
+
+//-------------------------------------------------------------------------------
+//class lmShapeFBLine implementation
+//-------------------------------------------------------------------------------
+
+lmShapeFBLine::lmShapeFBLine(lmScoreObj* pOwner, int nShapeIdx,
+                             lmFiguredBass* pEndFB,
+                             lmLUnits uxStart, lmLUnits uyStart,    //user shift
+                             lmLUnits uxEnd, lmLUnits uyEnd,        //user shift
+                             lmTenths tWidth,
+                             lmShapeFiguredBass* pShapeStartFB,
+                             lmShapeFiguredBass* pShapeEndFB,
+                             wxColour nColor, bool fVisible)
+    : lmShapeLine(pOwner, nShapeIdx, uxStart, uyStart, uxEnd, uyEnd, 
+                  pOwner->TenthsToLogical(tWidth),
+                  pOwner->TenthsToLogical(tWidth + 1.0f),       //BoundsExtraWidth
+                  lm_eLine_Solid, nColor, lm_eEdgeNormal, lmDRAGGABLE,
+                  lmSELECTABLE, fVisible, _T("FB Line"))
+    , m_pEndFB(pEndFB)
+    , m_pBrotherLine((lmShapeFBLine*)NULL)
+{
+    m_nType = eGMO_ShapeFBLine;
+    
+    //save user shifts
+    m_uUserShifts[0] = lmUPoint(uxStart, uyStart);
+    m_uUserShifts[1] = lmUPoint(uxEnd, uyEnd);
+
+    //compute the default line
+    OnAttachmentPointMoved(pShapeStartFB, lm_eGMA_StartObj, 0.0, 0.0, lmSHIFT_EVENT);
+    OnAttachmentPointMoved(pShapeEndFB, lm_eGMA_EndObj, 0.0, 0.0, lmSHIFT_EVENT);
+    m_fUserShiftsApplied = false;
+}
+
+lmShapeFBLine::~lmShapeFBLine()
+{
+}
+
+void lmShapeFBLine::OnAttachmentPointMoved(lmShape* pSFB, lmEAttachType nTag,
+								           lmLUnits uxShift, lmLUnits uyShift,
+                                           lmEParentEvent nEvent)
+{
+    //start or end figured bass object moved. Recompute start/end of line and,
+    //if necessary, split the line
+
+	WXUNUSED(uxShift);
+	WXUNUSED(uyShift);
+	WXUNUSED(nEvent);
+
+	//Compute new attachment point and update line start/end point. FB line is
+    //placed 20 tenths appart from the FB number, and 10 tenths down
+    lmUPoint uPos;
+    uPos.y = pSFB->GetYTop() + ((lmStaffObj*)m_pOwner)->TenthsToLogical(10.0);
+	if (nTag == lm_eGMA_StartObj)
+    {
+        uPos.x = pSFB->GetXRight() + ((lmStaffObj*)m_pOwner)->TenthsToLogical(20.0);
+        SetStartPoint(uPos);
+    }
+	else if (nTag == lm_eGMA_EndObj)
+    {
+        uPos.x = pSFB->GetXLeft() - ((lmStaffObj*)m_pOwner)->TenthsToLogical(20.0);
+        SetEndPoint(uPos);
+    }
+
+    // check if the line have to be splitted
+	if (!m_pBrotherLine) return;		//creating the line. No information yet
+
+    lmUPoint paperPosEnd = GetEndFB()->GetReferencePaperPos();
+    lmUPoint paperPosStart = m_pBrotherLine->GetEndFB()->GetReferencePaperPos();
+    if (paperPosEnd.y != paperPosStart.y)
+	{
+        //if start FB paperPos Y is not the same than end FB paperPos Y the
+		//FBs are in different systems. Therefore, the line must be splitted.
+		//To do it:
+		//	- detach the two intermediate points.
+		//	- make both shapes visible.
+		//
+		// As there is no controller object to perform these actions, the first line
+		// detecting the need must co-ordinate the necessary actions.
+
+		//determine which line is the first one
+		lmShapeFBLine* pFirstLine = this;		//assume this is the first one
+		lmShapeFBLine* pSecondLine = m_pBrotherLine;
+		if (paperPosStart.y > paperPosEnd.y)
+		{
+			//wrong assumption. Reverse asignment
+			pFirstLine = m_pBrotherLine;
+			pSecondLine = this;
+		}
+
+        //first line end point is right paper margin
+		lmBoxSystem* pSystem = this->GetOwnerSystem();
+		lmUPoint uEnd;
+		uEnd.x = pSystem->GetSystemFinalX();
+		uEnd.y = pFirstLine->GetStartPosY();
+		pFirstLine->SetEndPoint(uEnd);
+		pFirstLine->SetVisible(true);
+
+		//second line start point is begining of system
+		lmUPoint uStart;
+		uStart.x = pSystem->GetPositionX();
+		uStart.y = pSecondLine->GetEndPosY();
+		pSecondLine->SetStartPoint(uStart);
+		pSecondLine->SetVisible(true);
+	}
+}
+
+//lmFiguredBass* lmShapeFBLine::GetStartFB()
+//{
+//    //the owner of a FB line is always the end note. Therefore, to get the start
+//    //FB let's access the end FB
+//    return m_pEndFB->GetTiedNotePrev();
+//}
+
+lmFiguredBass* lmShapeFBLine::GetEndFB()
+{
+    //the owner of a FB line is always the end note
+    return m_pEndFB;
 }
 

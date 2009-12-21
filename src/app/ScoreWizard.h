@@ -52,6 +52,10 @@ public:
     void OnWizardFinished( wxWizardEvent& event );
     void OnPageChanged( wxWizardEvent& event );
 
+    void PrepareScore();
+    void UpdatePreview(wxStaticBitmap* pBmpPreview);
+    inline lmScore* GetScore() { return *m_pPtrScore; }
+
 private:
     lmScore**       m_pPtrScore;
 };
@@ -102,6 +106,7 @@ public:
 
     //event handlers
     void OnKeyType(wxCommandEvent& event);
+    void OnComboKey(wxCommandEvent& event);
 
     bool TransferDataFromWindow();
     void OnEnterPage();

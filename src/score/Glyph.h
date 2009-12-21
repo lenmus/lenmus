@@ -149,6 +149,10 @@ enum lmEGlyphIndex
     GLYPH_NUMBER_8,
     GLYPH_NUMBER_9,
 
+    //other for time signatures
+    GLYPH_COMMON_TIME,
+    GLYPH_CUT_TIME,
+
     //signs
     GLYPH_DOT,                          //dot, for dotted notes
     GLYPH_SMALL_QUARTER_NOTE,           //small quarter note up, for metronome marks

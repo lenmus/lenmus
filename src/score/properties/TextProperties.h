@@ -72,11 +72,11 @@ class lmScore;
 class lmTextProperties : public lmPropertiesPage
 {
 public:
-	lmTextProperties(wxWindow* parent, lmScoreText* pParentText);
+	lmTextProperties(lmDlgProperties* parent, lmScoreText* pParentText);
 	~lmTextProperties();
 
     //implementation of pure virtual methods in base class
-    void OnAcceptChanges(lmController* pController);
+    void OnAcceptChanges(lmController* pController, bool fCurrentPage);
 
     // event handlers
     void OnCut(wxCommandEvent& event);

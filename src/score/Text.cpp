@@ -133,30 +133,20 @@ void lmScoreText::OnProperties(lmController* pController, lmGMObject* pGMO)
 	wxASSERT(pGMO);
 
     lmDlgProperties dlg(pController);
-    dlg.AddPanel( new lmTextProperties(dlg.GetNotebook(), this),
-                  _("Text"));
+    dlg.AddPanel( new lmTextProperties(&dlg, this), _("Text"));
     dlg.Layout();
 
     dlg.ShowModal();
 }
-
-//void lmScoreText::EditText(lmScore* pScore)
-//{
-//    lmDlgProperties dlg((lmController*)NULL);
-//    dlg.AddPanel( new lmTextProperties(dlg.GetNotebook(), this), _("Text"));
-//    dlg.Layout();
-//
-//    dlg.ShowModal();
-//}
 
 void lmScoreText::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName)
 {
 	//invoked to add specific panels to the dialog
 
 	if (sTabName == wxEmptyString)
-        pDlg->AddPanel( new lmTextProperties(pDlg->GetNotebook(), this), _("Text"));
+        pDlg->AddPanel( new lmTextProperties(pDlg, this), _("Text"));
     else
-        pDlg->AddPanel( new lmTextProperties(pDlg->GetNotebook(), this), sTabName);
+        pDlg->AddPanel( new lmTextProperties(pDlg, this), sTabName);
 }
 
 void lmScoreText::Cmd_ChangeText(wxString& sText, lmEHAlign nAlign, lmLocation tPos,
@@ -792,9 +782,9 @@ wxString lmScoreTextBox::SourceLDP(int nIndent, bool fUndoData)
 	sSource += DoubleToStr((double)m_ntWidth, 4);
     sSource += _T(")(height ");
 	sSource += DoubleToStr((double)m_ntHeight, 4);
-    sSource += _T("))(color ");
-    sSource += m_nBgColor.GetAsString(wxC2S_HTML_SYNTAX);
-    sSource += _T(")\n");
+    sSource += _T("))");
+    sSource += lmColorToLDP(m_nBgColor, false);   //false=always generate source
+    sSource += _T("\n");
 
     //border
     //<border> ::= (border <width><lineStyle><color>)
@@ -803,9 +793,8 @@ wxString lmScoreTextBox::SourceLDP(int nIndent, bool fUndoData)
 	sSource += DoubleToStr((double)m_ntBorderWidth, 4);
     sSource += _T(")(lineStyle ") + LineStyleToLDP(m_nBorderStyle);
     sSource += _T(")");
-    sSource += _T("(color ");
-    sSource += m_nBorderColor.GetAsString(wxC2S_HTML_SYNTAX);
-    sSource += _T("))");
+    sSource += lmColorToLDP(m_nBorderColor, false);   //false=always generate source
+    sSource += _T(")");
 
     //text
     std::list<lmBaseText*>::iterator it;
@@ -834,9 +823,7 @@ wxString lmScoreTextBox::SourceLDP(int nIndent, bool fUndoData)
 		    sSource += DoubleToStr((double)m_ntAnchorPoint.y, 4);
             sSource += _T(" (lineStyle ") + LineStyleToLDP(m_nAnchorLineStyle);
             sSource += _T(")");
-            sSource += _T("(color ");
-            sSource += m_nAnchorLineColor.GetAsString(wxC2S_HTML_SYNTAX);
-            sSource += _T(")");
+            sSource += lmColorToLDP(m_nAnchorLineColor, false);   //false=always generate source
             sSource += _T("(width ");
 		    sSource += DoubleToStr((double)m_ntAnchorLineWidth, 4);
             sSource += _T(")");

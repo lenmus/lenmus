@@ -438,9 +438,23 @@ wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey)
     lmVStaff *pVStaff = pInstr->GetVStaff();
     oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
     pVStaff->AddClef( lmE_Sol, 1, lmNO_VISIBLE );
-    pVStaff->AddKeySignature(nKey);
+    lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddKeySignature(nKey);
 
-	return GenerateBitmap(&oScore, sKeyName, wxSize(108, 64));
+    if (sKeyName != _T(""))
+    {
+        //define the font to use for text
+        lmFontInfo tFont = {_("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+        lmTextStyle* pStyle = oScore.GetStyleName(tFont);
+        lmTextItem* pText = 
+            pVStaff->AddText(sKeyName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
+	    pText->SetUserLocation(20, 70);    //lmTenths
+    }
+
+    oScore.SetPageTopMargin(0.0f);
+    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+
+    return lmGenerateBitmap(&oScore, wxSize(108, 64), 1.0);
 }
 
 wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
@@ -450,32 +464,83 @@ wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
     lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = pInstr->GetVStaff();
     oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
-    pVStaff->AddClef( nClef );
+    lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddClef( nClef );
 
-	return GenerateBitmap(&oScore, sClefName, wxSize(108, 64), wxSize(0, 10));
+    if (sClefName != _T(""))
+    {
+        //define the font to use for text
+        lmFontInfo tFont = {_("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+        lmTextStyle* pStyle = oScore.GetStyleName(tFont);
+        lmTextItem* pText = 
+            pVStaff->AddText(sClefName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
+	    pText->SetUserLocation(-10, 85);    //lmTenths
+    }
+
+    oScore.SetPageTopMargin(0.0f);
+    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+
+    return lmGenerateBitmap(&oScore, wxSize(108, 64), 1.0);
 }
 
 wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
 {
-    //create a score with a barline
+    //create a score with a barline and its name
     lmScore oScore;
 	oScore.SetOption(_T("Staff.DrawLeftBarline"), false);
     lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = pInstr->GetVStaff();
     oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
-	pVStaff->AddSpacer(40);
+	lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddSpacer(40);
     pVStaff->AddBarline(nBarlineType);
 	pVStaff->AddSpacer(40);
 
-	return GenerateBitmap(&oScore, sName, wxSize(108, 64));
+    if (sName != _T(""))
+    {
+        //define the font to use for text
+        lmFontInfo tFont = {_("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+        lmTextStyle* pStyle = oScore.GetStyleName(tFont);
+        lmTextItem* pText = 
+            pVStaff->AddText(sName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
+	    pText->SetUserLocation(-30, 75);    //lmTenths
+    }
+
+    oScore.SetPageTopMargin(0.0f);
+    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+
+    return lmGenerateBitmap(&oScore, wxSize(108, 64), 1.0);
 }
 
-wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize shift)
+//OBSOLETE:
+//Obsolete code. Left here as an example on how to write text into a bitmap
+//
+//wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize shift)
+//{
+//    wxBitmap bitmap = lmGenerateBitmap(pScore, size, 1.0);
+//    wxASSERT(bitmap.Ok());
+//
+//   //write text in black
+//    wxMemoryDC dc;
+//    dc.SelectObject(bitmap);
+//    dc.SetMapMode(wxMM_TEXT);
+//    dc.SetUserScale(1.0, 1.0);
+//
+//    int h, w;
+//    dc.SetPen(*wxBLACK);
+//    dc.SetFont(*wxNORMAL_FONT);
+//    dc.GetTextExtent(sName, &w, &h);
+//    dc.DrawText(sName, shift.x+(size.x-w)/2, shift.y+(size.y-h)/2 + h);
+//
+//    //clean up and return the bitmap
+//    dc.SelectObject(wxNullBitmap);
+//    return bitmap;
+//}
+
+wxBitmap lmGenerateBitmap(lmScore* pScore, wxSize size, double rScale)
 {
 	//use a graphic manager object to render the score in a memory DC
 	//and return the bitmap
-	// size - (in pixels) is the size of the bitmap
-	// shift - (in pixels) is the shift to apply to the text
 
     //allocate a memory dc
     wxMemoryDC dc;
@@ -488,42 +553,26 @@ wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize sh
 	dc.Clear();
 
     // prepare and do renderization
-    double rScale = 1.0 * lmSCALE;
+    rScale = rScale * lmSCALE;
+
+    //adjust score size to fit in bitmap
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( rScale, rScale );
-
-    lmPaper oPaper;
     lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(size.x);
     lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(size.y);
+    lmUSize uScoreSize = pScore->GetPaperSize();
     pScore->SetPageSize(xLU, yLU);
 
-    lmInstrument* pInstr = pScore->GetFirstInstrument();
-    lmVStaff *pVStaff = pInstr->GetVStaff();
-    pScore->SetPageTopMargin(0.0f);
-    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
-    //oPaper.SetDrawer(new lmDirectDrawer(&dc));
-
+    lmPaper oPaper;
     lmGraphicManager oGraphMngr;
     oGraphMngr.PrepareToRender(pScore, size.x, size.y, rScale, &oPaper,
                                 lmHINT_FORCE_RELAYOUT);
     wxBitmap* pBitmap = oGraphMngr.RenderScore(1);
-    wxASSERT(pBitmap && pBitmap->Ok());
 
+    //restore score size
+    pScore->SetPageSize(uScoreSize.GetWidth(), uScoreSize.GetHeight());
 
-        //write key signature name in black
-    dc.SelectObject(*pBitmap);
-    dc.SetMapMode(wxMM_TEXT);
-    dc.SetUserScale(1.0, 1.0);
-
-    int h, w;
-    dc.SetPen(*wxBLACK);
-    dc.SetFont(*wxNORMAL_FONT);
-    dc.GetTextExtent(sName, &w, &h);
-    dc.DrawText(sName, shift.x+(size.x-w)/2, shift.y+(size.y-h)/2 + h);
-
-
-        //clean up and return new bitmap
+    //clean up and return new bitmap
     dc.SelectObject(wxNullBitmap);
     return *pBitmap;
 }

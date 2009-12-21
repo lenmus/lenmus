@@ -1,0 +1,701 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- ABRSM Grade Six Music Theory                    -->
+<!-- =============================================== -->
+
+<theme id="g6_figured_bass">
+<title>Figured Bass</title>
+
+
+<part>
+<title>What is Figured Bass?</title>
+
+<para>
+Figured bass might look a bit mysterious if you've never seen it before. Even if you have heard of it, you might think it's rather strange. Let's find out what figured bass is all about.
+</para>
+
+<para>
+This is what it looks like - the figured bass is the little numbers written underneath the lower stave:
+
+Figured Bass
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+<para>
+Figured bass is a shorthand method of composing. It was invented during the Baroque period (about 1600-1750). In those days it was common practice for a composer to write out only a melody and a bass line (and not any of the middle parts). The melody was played (or sung) by a soloist, and the bass line was usually played on a keyboard instrument, such as the harpsichord or organ. 
+</para>
+
+<para>
+Obviously, the keyboard player needed to do a bit more than just play the bass line with his or her left hand, but where was the rest of the music? Well, he or she had to improvise! The composer added small numbers underneath the bass line, like a kind of code, which told the player which chords to play. However, this code (which is the "figured bass") didn't tell the player exactly how to play the chords - for example, they could choose to play them as solid chords, broken chords or could weave them into heavily decorated individual voice lines.
+</para>
+
+<para>
+In fact, keyboard players in those days were judged on their ability to create amazing improvisations from a figured bass - and of course, the same piece of music would be played in totally different ways by different musicians. Don't worry though - in grade six theory you only need to write out the chords in their most basic forms - you don't need to add melodic decoration or anything fancy!
+</para>
+
+<para>
+In the modern world, you can find a similar kind of thing in sheet music for pop songs. Have you ever seen a tune written out with chord markings for piano or guitar? The accompanist uses the suggested chords, but plays them in whatever way they feel like. Figured bass is just the same, except that there are a few rules you have to obey - the rules of harmony which you studied in lesson 6.
+</para>
+
+<para>
+Figured bass is virtually never used today except in music theory exams. So why is it tested? Well, it's probably been part of the study of music theory for hundreds of years and it's an excellent way to test your knowledge of harmony. Although no one composes using figured bass any more, it's still a useful way of referring to chords and chord progressions quickly. Figured bass is a compulsory part of Grade Six Theory, and actually it's quite simple to get the hang of, you'll be pleased to know! So let's get started!
+</para>
+
+</part>
+
+
+<part>
+<title>The Figures</title>
+
+<para>
+Figured bass is written underneath the bass line. (Sometimes a bass line with figures is called a "continuo".) The numbers in figured bass tell you what chord to build up from the bass note. The numbers also tell you about the chord's inversion, so that you can work out which notes are needed.
+</para>
+
+<para>
+The single most important thing to remember about figured bass is that the bass line shows you the lowest note, and that you must build a chord upwards from that note. Never, ever write a chord note which is lower than the bass note.
+</para>
+
+<para>
+Each number tells you the interval above the bass note which you need to write, in order to create a triad.
+</para>
+
+<para>
+(Note, although figured bass is really all about playing and improvising, rather than writing, we will talk about writing here because we are training you for an exam, after all!)
+</para>
+
+</part>
+
+
+<part>
+<title>5-3</title>
+
+<para>
+5-3 means root position. From the bass note, write the note a third higher, and then the note a fifth higher.
+</para>
+
+5-3 Root position
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+<para>
+Remember that the interpretation of the triad is up to the performer. Only the bass note is fixed. If we write the triad as a four-note chord we need to add three more parts above the bass line, and we'll need to repeat one of the notes from the triad. But, it doesn't matter at all what order we write the notes of the chord, or in which octave. For example, we could write either of these two chords:
+</para>
+
+5-3 root position
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+5-3 root position, another example
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+<para>
+Because root position chords are so very common, sometimes the 5-3 figure is left out. If you see a bass note without any numbers at all, it means it's a 5-3 or root position chord.
+</para>
+
+</part>
+
+<part>
+<title>6-3</title>
+
+<para>
+A 6-3 chord is a first inversion chord. The notes we need to write are a third and a sixth above the bass note.
+</para>
+
+6-3 - first inversion
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+<para>
+Here the bass note is C. The figured bass tells us to add the notes E (a third above C) and A (a sixth above C). Our chord notes are C-E-A, which is A minor in the first inversion.
+</para>
+
+<para>
+Some examples of 6-3 chords:
+</para>
+
+6-3 first inversion chord
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+another 6-3 first inversion chord
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+<para>
+Because 6-3 chords are also very common, sometimes they are just written as 6 instead of 6-3. The figure 6 means first inversion.
+</para>
+
+</part>
+
+
+<part>
+<title>6-4</title>
+
+<para>
+A 6-4 chord is a second inversion chord. The notes we need to write are a fourth and a sixth higher than the bass note.
+</para>
+
+6-4 second inversion
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+<para>
+Here the bass note is C. The figured bass tells us to add F (a fourth above C) and A (a sixth above C). The chord notes are C-F-A, which is F major in second inversion.
+</para>
+
+6-4 second inversion chord
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+Another 6-4 chord
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+</part>
+
+
+<part>
+<title>Chromatic Alteration</title>
+
+<para>
+You can add sharps and flats to figured bass. The accidental is written next to the number which it affects.
+</para>
+
+<para>
+If the accidental is not next to a number, but just appears on its own, then it refers to the 3rd of the chord.
+</para>
+
+<para>
+For example:
+
+Chromatic alteration - sharp third 
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+<para>
+= sharpen the 3rd. The chord notes will be F#, A# and C#.
+</para>
+
+Sharpened 3rd
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+Sharpen the 6th
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+= sharpen the 6th. The chord notes will be C#, F# and A#.
+
+Sharpened 6th
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+
+<para>
+Chromatic alteration is very common in minor keys, where the dominant chord has a sharpened third which does not appear in the key signature. For example in A minor, the dominant chord is E major, with a G sharp accidental.
+</para>
+
+</part>
+
+
+<part>
+<title>Lines</title>
+
+<para>
+Horizontal lines in figured bass mean that the same harmony applies to two or more notes. It means "don't change the chord!".
+</para>
+
+Horizontal line in figured bass
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+
+<itemizedlist>
+    <listitem>No numbers = 5-3, root position chord. B - D - F#.</listitem>
+    <listitem>No numbers = 5-3, root position chord with a sharpened third.. F# - A# - C#.</listitem>
+    <listitem>Line = keep the same chord as in 2.</listitem>
+    <listitem>6 = 6-3, first inversion chord. D - B - F#.</listitem>
+    <listitem>6-4 = second inversion chord. F# - B - D.</listitem>
+</itemizedlist>
+
+The bass realised
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+
+</part>
+
+
+<part>
+<title>The Cadential 6-4</title>
+
+<para>
+When we use the chords Ic-Va-Ia, and notate them in figured bass, they are written as 6-4, 5-3, 5-3. This is also known as the" 6-4 - 5-3 progression" or cadential 6-4. This is one of the very few chord progressions where you are allowed to use a second inversion chord.
+</para>
+
+<para>
+Cadential 6-4s work really well at the end of a piece, because there is a very strong emphasis on the dominant note in the bass for two chords (Ic and Va) instead of just one (e.g. V7). When the final Ia chord is finally reached, our ears and brains feel very satisfied, because we've had to wait just a tiny bit longer to hear the tonic.
+</para>
+
+<para>
+Let's add a bar to the previous example, to finish off with a cadential 6-4:
+</para>
+
+Realised figured bass with a cadential six-four
+<score width="600" height='200' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play />
+    <music>
+(score
+   (vers 1.6)(language en utf-8)
+   (defineStyle "Normal text" (font "Times New Roman" 8pt normal) (color #000000))
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline true)
+   (instrument
+      (staves 2)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (staff 2 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 1500.00)(lineThickness 15.00))
+      (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F p2)
+         (key D)
+         (time 4 4)
+         (n f4 q (stem up) v1 p1)
+         (barline simple)
+      )
+   )
+)
+    </music>
+</score>
+
+</part>
+
+<credits>
+<creditsitem>
+    Lesson based on material from
+    <ulink url="http://www.mymusictheory.com/">www.mymusictheory.com</ulink>
+    <br />
+    Copyright <copyrightsymbol /> Victoria K. Williams. Used here with her permission.
+</creditsitem>
+</credits>
+
+</theme>
