@@ -995,6 +995,19 @@ lmLUnits lmShapeStem::GetXCenterStem()
 
 
 //========================================================================================
+// lmShapeFiguredBass object implementation: a composite shape that can have
+// attached shapes.
+//========================================================================================
+
+void lmShapeFiguredBass::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
+{
+	lmCompositeShape::Shift(uxIncr, uyIncr);
+	InformAttachedShapes(uxIncr, uyIncr, lmSHIFT_EVENT);
+}
+
+
+
+//========================================================================================
 // lmShapeWindow object implementation: an auxiliary shape to embbed any wxWindow
 //  (Button, TextCtrol, etc.) on the score
 //========================================================================================

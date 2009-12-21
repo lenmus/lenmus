@@ -277,6 +277,9 @@ public:
     inline void OnFBLineAttached(int nLine, lmShapeLine* pShapeFBLine) 
                     { m_pFBLineShape[nLine] = pShapeFBLine; }
 
+    //overrides
+    void Shift(lmLUnits uxIncr, lmLUnits uyIncr);
+
 private:
     lmShapeLine*  m_pFBLineShape[2];     //The two lines of a FB line. This is the end FB of the line
 

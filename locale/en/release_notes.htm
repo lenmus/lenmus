@@ -14,19 +14,32 @@
 
 <h4>The score editor</h4>
 <p>
-The score editor is much more stable, as a lot of debbuging was done and all known bugs have been fixed; nevertheless, it is still not finished and continues in beta status. The editor includes now more features but few of them will be noticeable in this release. The most visible are:
+The score editor is much more stable but it is not yet finished and continues in beta status. The editor includes now more features but few of them will be noticeable in this release. The most visible are:
 <ul>
-<li><b>data entry using the mouse</b>. The user interface (including the toolbox) has been improved and now data entry using the mouse (point and click) is available. Data entry using keyboard has been restricted to notes and rests (but mouse can also be used). For all other, the mouse is now mandatory.
+<li><b>Data entry using the mouse</b>. The user interface (including the toolbox) has been improved and now data entry using the mouse (point and click) is available. Data entry using keyboard has been restricted to notes and rests (but mouse can also be used). For all other, the mouse is now mandatory.
 </li>
 
-<li><b>lines, ties, and, in general, geometric figures, are now editable by dragging control points</b>. I have added support to deal with new objects such as textboxes and figured bass annotations, but data entry of these objects is still under testing and has been disabled in this version.
+<li><b>Lines, ties, and, in general, geometric figures, are now editable by dragging control points</b>.
 </li>
+
+<li><b>Figured bass symbols</b>. Now it is possible to add figured bass annotations to the score. This was required for the planned exercises on figured bass to be included in a coming version.
+</li>
+
+<li><b>Notes stem direction now editable</b>. The tool box now includes bottons to control stem direction.
+</li>
+
+<li><b>The score being edited is now automatically recovered after a crash</b>. The score editor is much more stable, as a lot of debbuging was done and all known bugs have been fixed; nevertheless, it is still not finished and continues in beta status. But now, after a program crash you will not loose (normally) the score being edited and it will be recovered automatically when you run again the program.
+</li>
+
+<li><b>Automatic upload of a 'forensic log'</b>. I need your help to debug the score editor. Take into account that most of my time is devoted to programming, not to use the program. Therefore you probably will catch more errors than me!. In order that you can collaborate in this task, the program now saves data about the score being edited and the action performed, and if the program crashes, it asks for your permission and sends me a "forensic log". It is a simple file, in text format (you can open it at see its contents) and it does not contains any identification data of any nature (personal, equipment, internet address, etc). It only has the score being edited an the actions being performed. Thanks for your collaboration!
+</li>
+
 </ul>
 
 <p>
 Among the 'hidden' improvements the following should be mentioned:
 <ul>
-<li><b>Support for 'Score processors'</b>. There is a need for tools to process (or alter) a full score. For example, a tool to transpose a score, to add colours to voices, to make a piano reduction, etc. I call 'score processors' to these type of specific tools. Support to develop and use score processors has been added and it is currently being tested with the four voices harmony and figured bass exercises that will be included in comming releases.
+<li><b>Support for 'Score processors'</b>. There is a need for tools to process (or alter) a full score. For example, a tool to transpose a score, to add colours to voices, to make a piano reduction, etc. I call 'score processors' to these type of tools that process the whole score and can alter it. Support to develop and use score processors has been added and it is currently being tested with the four voices harmony and figured bass exercises that will be included in comming releases.
 </li>
 
 <li><b>Support to use the score editor for exercises</b>. The problem is presented as a score that the student has to modify. As the full editor is used, the student can save the score so that he/she can later continue the exercise. This facility is currently being tested with the harmony and figured bass exercises.</li>
@@ -37,20 +50,22 @@ Among the 'hidden' improvements the following should be mentioned:
 </ul>
 </p>
 
-<p>
-To finish the debugging of the editor <b>I need your help</b>. Really!. Take into account that most of my time is devoted to programming, not to use the program. Therefore you probably will catch more errors than me!. In order that you can collaborate in this task, the program now saves data about the score being edited and the action performed, and if the program crashes it saves these data in a "forensic log". It is a simple file, in text format (you can open it at see its contents) and it does not contains any identification data of any nature (personal, equipment, internet address, etc). It only has the score being edited an the actions being performed. Please, consider e-mailing me this log if you experience a crash. Thank you.
-</p>
 
 
 <h4>Exercises and eBooks</h4>
 
 <p>
-The interval's exercise has been reviewed and splitted into two exercises, one to identify intervals and aonother one to build them. The identification exercise has been re-structured into four difficulty levels. The exercise settings has been rebuild and there are now more options.
+<b>The interval's exercise has been reviewed and splitted into two exercises</b>, one to identify intervals and aonother one to build them. The identification exercise has been re-structured into four difficulty levels. The exercise settings has been rebuild and there are now more options.
 </p>
 
 <p>
 eBook Theory & harmony now includes <b>a new chapter on intervals</b>. But only the first lesson is included. Sorry! I have no more time!
 </p>
+
+<p>
+The <b>eBooks license has been changed to Creative Commons Attributtion-Share Alike License</b>. I think this license is clearer than the GNU Free Documentation License and is compatible with it. This changes also simplifies life for using texts from other free public sources or for integrating LenMus texts in other public sources.
+</p>
+
 
 <p class='news_text'>
 <b>The <i>Leitner</i> learning methodology is now included in some exercises.</b>

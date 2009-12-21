@@ -827,7 +827,10 @@ void lmCompositeShape::Shift(lmLUnits uxIncr, lmLUnits uyIncr)
 
 	ShiftBoundsAndSelRec(uxIncr, uyIncr);
 
-	InformAttachedShapes(uxIncr, uyIncr, lmSHIFT_EVENT);
+    //Do this in derived classes because it causes problems in Beams (I didn't
+    //investigate but probably the attached shapes are informed twice and, therefore,
+    //get shifted too much!
+	//InformAttachedShapes(uxIncr, uyIncr, lmSHIFT_EVENT);
 }
 
 wxString lmCompositeShape::Dump(int nIndent)
